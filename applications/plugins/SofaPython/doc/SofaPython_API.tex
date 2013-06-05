@@ -38,7 +38,7 @@ Despite the ability of Python to support multi-heritage, this feature has not be
 \begin{center}
 \Tree [.Base [.BaseContext [.Context [.BaseNode Node ] ] ] 
 			[.BaseObject [.BaseState [.BaseMechanicalState MechanicalObject ] ] [.BaseLoader MeshLoader ] 
-			[.Topology MeshTopology ] ] ]
+			[.Topology [.BaseMeshTopology [.MeshTopology GridTopoligy ] ] ] ] ]
 \Tree [.Vector3 ]
 \Tree [.LinearSpring ]
 \Tree [.Data DisplayFlagsData ]
@@ -67,6 +67,50 @@ Attributes :
 \item \textcode{Ks} : spring stiffness
 \item \textcode{Kd} : damping factor
 \item \textcode{L} : rest length of the spring
+\end{itemize}
+
+%Sofa.Topology
+\subsubsection{Sofa.Topology}
+Methods :
+\begin{itemize}
+\item \textcode{haspos()} 
+\item \textcode{getNbPoints()}
+\item \textcode{setNbPoints(n)}
+\item \textcode{getPX(i)} 
+\item \textcode{getPY(i)} 
+\item \textcode{getPZ(i)} 
+\end{itemize}
+
+%Sofa.BaseMeshTopology
+\subsubsection{Sofa.BaseMeshTopology}
+Methods :
+\begin{itemize}
+\item \textcode{getNbEdges()} 
+\item \textcode{getNbTriangles()}
+\item \textcode{getNbQuads()}
+\item \textcode{getNbTetrahedra()}
+\item \textcode{getNbHexahedra()}
+\end{itemize}
+
+%Sofa.GridTopology
+\subsubsection{Sofa.GridTopology}
+Methods :
+\begin{itemize}
+\item \textcode{setSize(nx,ny,nz)} 
+\item \textcode{setNumVertices(nx,ny,nz)} 
+\item \textcode{getNx()}
+\item \textcode{getNy()}
+\item \textcode{getNz()}
+\item \textcode{setNx(n)}
+\item \textcode{setNy(n)}
+\item \textcode{setNz(n)}
+\end{itemize}
+
+%Sofa.RegularGridTopology
+\subsubsection{Sofa.RegularGridTopology}
+Methods :
+\begin{itemize}
+\item \textcode{setPos(xmin,xmax,ymin,ymax,zmin,zmax))} 
 \end{itemize}
 
 %BASE

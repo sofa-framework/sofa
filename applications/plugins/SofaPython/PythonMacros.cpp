@@ -10,6 +10,10 @@
 #include <sofa/core/loader/BaseLoader.h>
 #include <sofa/core/loader/MeshLoader.h>
 #include <sofa/core/topology/Topology.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/component/topology/MeshTopology.h>
+#include <sofa/component/topology/GridTopology.h>
+#include <sofa/component/topology/RegularGridTopology.h>
 #include <sofa/component/typedef/Sofa_typedef.h>
 #include "PythonScriptController.h"
 
@@ -19,6 +23,7 @@ using namespace sofa::core::objectmodel;
 using namespace sofa::core;
 using namespace sofa::core::loader;
 using namespace sofa::core::topology;
+using namespace sofa::component::topology;
 using namespace sofa::core::behavior;
 using namespace sofa::component::controller;
 
@@ -33,6 +38,10 @@ using namespace sofa::component::controller;
 #include "Binding_BaseLoader.h"
 #include "Binding_MeshLoader.h"
 #include "Binding_Topology.h"
+#include "Binding_BaseMeshTopology.h"
+#include "Binding_MeshTopology.h"
+#include "Binding_GridTopology.h"
+#include "Binding_RegularGridTopology.h"
 #include "Binding_PythonScriptController.h"
 
 using namespace sofa::core;
@@ -55,6 +64,14 @@ PyObject* SP_BUILD_PYSPTR(Base* obj)
     if (dynamic_cast<BaseLoader*>(obj))
         return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(BaseLoader));
 
+    if (dynamic_cast<RegularGridTopology*>(obj))
+        return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(RegularGridTopology));
+    if (dynamic_cast<GridTopology*>(obj))
+        return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(GridTopology));
+    if (dynamic_cast<MeshTopology*>(obj))
+        return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(MeshTopology));
+    if (dynamic_cast<BaseMeshTopology*>(obj))
+        return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(BaseMeshTopology));
     if (dynamic_cast<Topology*>(obj))
         return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(Topology));
 

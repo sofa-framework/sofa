@@ -43,14 +43,14 @@ extern "C" PyObject * BaseMechanicalState_applyTranslation(PyObject *self, PyObj
         if (!PyArg_ParseTuple(args, "iii",&ix,&iy,&iz))
         {
             PyErr_BadArgument();
-            return 0;
+            Py_RETURN_NONE;
         }
         dx = (double)ix;
         dy = (double)iy;
         dz = (double)iz;
     }
     obj->applyTranslation(dx,dy,dz);
-    return Py_BuildValue("i",0);
+    Py_RETURN_NONE;
 }
 
 extern "C" PyObject * BaseMechanicalState_applyScale(PyObject *self, PyObject * args)
@@ -70,7 +70,7 @@ extern "C" PyObject * BaseMechanicalState_applyScale(PyObject *self, PyObject * 
         dz = (double)iz;
     }
     obj->applyScale(dx,dy,dz);
-    return Py_BuildValue("i",0);
+    Py_RETURN_NONE;
 }
 
 extern "C" PyObject * BaseMechanicalState_applyRotation(PyObject *self, PyObject * args)
@@ -83,14 +83,14 @@ extern "C" PyObject * BaseMechanicalState_applyRotation(PyObject *self, PyObject
         if (!PyArg_ParseTuple(args, "iii",&ix,&iy,&iz))
         {
             PyErr_BadArgument();
-            return 0;
+            Py_RETURN_NONE;
         }
         dx = (double)ix;
         dy = (double)iy;
         dz = (double)iz;
     }
     obj->applyRotation(dx,dy,dz);
-    return Py_BuildValue("i",0);
+    Py_RETURN_NONE;
 }
 
 

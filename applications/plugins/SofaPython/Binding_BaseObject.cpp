@@ -32,42 +32,42 @@ extern "C" PyObject * BaseObject_init(PyObject *self, PyObject * /*args*/)
 {
     BaseObject* obj=dynamic_cast<BaseObject*>(((PySPtr<Base>*)self)->object.get());
     obj->init();
-    return Py_BuildValue("i",0);
+    Py_RETURN_NONE;
 }
 
 extern "C" PyObject * BaseObject_bwdInit(PyObject *self, PyObject * /*args*/)
 {
     BaseObject* obj=dynamic_cast<BaseObject*>(((PySPtr<Base>*)self)->object.get());
     obj->bwdInit();
-    return Py_BuildValue("i",0);
+    Py_RETURN_NONE;
 }
 
 extern "C" PyObject * BaseObject_reinit(PyObject *self, PyObject * /*args*/)
 {
     BaseObject* obj=dynamic_cast<BaseObject*>(((PySPtr<Base>*)self)->object.get());
     obj->reinit();
-    return Py_BuildValue("i",0);
+    Py_RETURN_NONE;
 }
 
 extern "C" PyObject * BaseObject_storeResetState(PyObject *self, PyObject * /*args*/)
 {
     BaseObject* obj=dynamic_cast<BaseObject*>(((PySPtr<Base>*)self)->object.get());
     obj->storeResetState();
-    return Py_BuildValue("i",0);
+    Py_RETURN_NONE;
 }
 
 extern "C" PyObject * BaseObject_reset(PyObject *self, PyObject * /*args*/)
 {
     BaseObject* obj=dynamic_cast<BaseObject*>(((PySPtr<Base>*)self)->object.get());
     obj->reset();
-    return Py_BuildValue("i",0);
+    Py_RETURN_NONE;
 }
 
 extern "C" PyObject * BaseObject_cleanup(PyObject *self, PyObject * /*args*/)
 {
     BaseObject* obj=dynamic_cast<BaseObject*>(((PySPtr<Base>*)self)->object.get());
     obj->cleanup();
-    return Py_BuildValue("i",0);
+    Py_RETURN_NONE;
 }
 
 extern "C" PyObject * BaseObject_getContext(PyObject *self, PyObject * /*args*/)
@@ -91,11 +91,11 @@ extern "C" PyObject * BaseObject_setSrc(PyObject *self, PyObject * args)
     if (!PyArg_ParseTuple(args, "sO",&valueString,&pyLoader))
     {
         PyErr_BadArgument();
-        return 0;
+        Py_RETURN_NONE;
     }
     BaseObject* loader=dynamic_cast<BaseObject*>(((PySPtr<Base>*)pyLoader)->object.get());
     obj->setSrc(valueString,loader);
-    return Py_BuildValue("i",0);
+    Py_RETURN_NONE;
 }
 
 

@@ -44,14 +44,14 @@ extern "C" PyObject * MechanicalObject_setTranslation(PyObject *self, PyObject *
         if (!PyArg_ParseTuple(args, "iii",&ix,&iy,&iz))
         {
             PyErr_BadArgument();
-            return 0;
+            Py_RETURN_NONE;
         }
         dx = (double)ix;
         dy = (double)iy;
         dz = (double)iz;
     }
     obj->setTranslation(dx,dy,dz);
-    return Py_BuildValue("i",0);
+    Py_RETURN_NONE;
 }
 
 extern "C" PyObject * MechanicalObject_setScale(PyObject *self, PyObject * args)
@@ -64,14 +64,14 @@ extern "C" PyObject * MechanicalObject_setScale(PyObject *self, PyObject * args)
         if (!PyArg_ParseTuple(args, "iii",&ix,&iy,&iz))
         {
             PyErr_BadArgument();
-            return 0;
+            Py_RETURN_NONE;
         }
         dx = (double)ix;
         dy = (double)iy;
         dz = (double)iz;
     }
     obj->setScale(dx,dy,dz);
-    return Py_BuildValue("i",0);
+    Py_RETURN_NONE;
 }
 
 extern "C" PyObject * MechanicalObject_setRotation(PyObject *self, PyObject * args)
@@ -84,14 +84,14 @@ extern "C" PyObject * MechanicalObject_setRotation(PyObject *self, PyObject * ar
         if (!PyArg_ParseTuple(args, "iii",&ix,&iy,&iz))
         {
             PyErr_BadArgument();
-            return 0;
+            Py_RETURN_NONE;
         }
         dx = (double)ix;
         dy = (double)iy;
         dz = (double)iz;
     }
     obj->setRotation(dx,dy,dz);
-    return Py_BuildValue("i",0);
+    Py_RETURN_NONE;
 }
 
 extern "C" PyObject * MechanicalObject_getTranslation(PyObject *self, PyObject * /*args*/)

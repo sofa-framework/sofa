@@ -47,7 +47,7 @@ extern "C" PyObject * Sofa_createObject(PyObject * /*self*/, PyObject * args, Py
     if (!PyArg_ParseTuple(args, "s",&type))
     {
         PyErr_BadArgument();
-        return 0;
+        Py_RETURN_NONE;
     }
 
     printf("<SofaPython> WARNING Sofa.createObject is deprecated; use Sofa.Node.createObject instead.\n");
@@ -75,7 +75,7 @@ extern "C" PyObject * Sofa_createObject(PyObject * /*self*/, PyObject * args, Py
                 desc.getName().c_str(),
                 desc.getAttribute("type",""));
         PyErr_BadArgument();
-        return 0;
+        Py_RETURN_NONE;
     }
 
     // par défaut, ce sera toujours au minimum un BaseObject...
@@ -104,7 +104,7 @@ extern "C" PyObject * Sofa_getObject(PyObject * /*self*/, PyObject * /*args*/)
     // deprecated on date 2012/07/18
     printf("<SofaPython> ERROR: Sofa.getObject(BaseContext,path) is deprecated.\nPlease use BaseContext.getObject(path) instead.\n");
     PyErr_BadArgument();
-    return 0;
+    Py_RETURN_NONE;
 
 }
 
@@ -142,7 +142,7 @@ extern "C" PyObject * Sofa_getChildNode(PyObject * /*self*/, PyObject * /*args*/
     // deprecated on date 2012/07/18
     printf("<SofaPython> ERROR: Sofa.getChildNode(Node,path) is deprecated.\nPlease use Node.getChild(path) instead.\n");
     PyErr_BadArgument();
-    return 0;
+    Py_RETURN_NONE;
 }
 
 using namespace sofa::gui;
@@ -153,7 +153,7 @@ extern "C" PyObject * Sofa_sendGUIMessage(PyObject * /*self*/, PyObject * args)
     char *msgType;
     char *msgValue;
     if (!PyArg_ParseTuple(args, "ss",&msgType,&msgValue))
-        return 0;
+        Py_RETURN_NONE;
     BaseGUI *gui = GUIManager::getGUI();
     if (!gui)
     {
@@ -163,7 +163,7 @@ extern "C" PyObject * Sofa_sendGUIMessage(PyObject * /*self*/, PyObject * args)
     gui->sendMessage(msgType,msgValue);
 
 
-    return Py_BuildValue("i",0);
+    Py_RETURN_NONE;
 }
 
 

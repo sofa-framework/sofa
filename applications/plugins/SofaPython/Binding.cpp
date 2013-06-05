@@ -37,6 +37,11 @@
 #include "Binding_BaseLoader.h"
 #include "Binding_MeshLoader.h"
 #include "Binding_Topology.h"
+#include "Binding_BaseMeshTopology.h"
+#include "Binding_MeshTopology.h"
+#include "Binding_GridTopology.h"
+#include "Binding_RegularGridTopology.h"
+#include "Binding_GridTopology.h"
 #include "Binding_BaseMechanicalState.h"
 #include "Binding_MechanicalObject.h"
 #include "Binding_PythonScriptController.h"
@@ -92,6 +97,10 @@ void bindSofaPythonModule()
             SP_ADD_CLASS(SofaPythonModule,BaseLoader)
                 SP_ADD_CLASS(SofaPythonModule,MeshLoader)
             SP_ADD_CLASS(SofaPythonModule,Topology)
+                SP_ADD_CLASS(SofaPythonModule,BaseMeshTopology)
+                    SP_ADD_CLASS(SofaPythonModule,MeshTopology)
+                        SP_ADD_CLASS(SofaPythonModule,GridTopology)
+                            SP_ADD_CLASS(SofaPythonModule,RegularGridTopology)
 /*
             SP_ADD_CLASS(SofaPythonModule,BaseController)
                 SP_ADD_CLASS(SofaPythonModule,Controller)

@@ -6,7 +6,7 @@ include_directories(${PYTHON_INCLUDE_DIRS})
 
 set(HEADER_FILES
 
-	initSofaPython.h
+    initSofaPython.h
     ScriptController.h
     PythonScriptController.h
     PythonMacros.h
@@ -28,6 +28,10 @@ set(HEADER_FILES
     Binding_MeshLoader.h
     Binding_Vector.h
     Binding_Topology.h
+    Binding_BaseMeshTopology.h
+    Binding_MeshTopology.h
+    Binding_GridTopology.h
+    Binding_RegularGridTopology.h
     Binding_MechanicalObject.h
     Binding_BaseMechanicalState.h
     Binding_PythonScriptController.h
@@ -38,7 +42,7 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
 
-	initSofaPython.cpp
+    initSofaPython.cpp
     ScriptController.cpp
     PythonScriptController.cpp
     PythonEnvironment.cpp
@@ -60,6 +64,10 @@ set(SOURCE_FILES
     Binding_MeshLoader.cpp
     Binding_Vector.cpp
     Binding_Topology.cpp
+    Binding_BaseMeshTopology.cpp
+    Binding_MeshTopology.cpp
+    Binding_GridTopology.cpp
+    Binding_RegularGridTopology.cpp
     Binding_MechanicalObject.cpp
     Binding_BaseMechanicalState.cpp
     Binding_PythonScriptController.cpp

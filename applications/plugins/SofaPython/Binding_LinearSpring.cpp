@@ -31,7 +31,7 @@ extern "C" PyObject * LinearSpring_getAttr_Index1(PyObject *self, void*)
     if (!obj)
     {
         PyErr_BadArgument();
-        return 0;
+        Py_RETURN_NONE;
     }
     return PyInt_FromLong(obj->m1);
 }

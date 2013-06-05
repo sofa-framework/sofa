@@ -25,7 +25,7 @@
 
 #include "Binding_Vector.h"
 
-extern "C" PyObject * Vector3_getAttr_x(PyObject *self, void*)
+SP_CLASS_ATTR_GET(Vector3,x)(PyObject *self, void*)
 {
     Vector3* obj=dynamic_cast<Vector3*>(((PyPtr<Vector3>*)self)->object);
     if (!obj)
@@ -35,7 +35,7 @@ extern "C" PyObject * Vector3_getAttr_x(PyObject *self, void*)
     }
     return PyFloat_FromDouble(obj->x());
 }
-extern "C" int Vector3_setAttr_x(PyObject *self, PyObject * args, void*)
+SP_CLASS_ATTR_SET(Vector3,x)(PyObject *self, PyObject * args, void*)
 {
     Vector3* obj=dynamic_cast<Vector3*>(((PyPtr<Vector3>*)self)->object);
     if (!obj)
@@ -47,7 +47,7 @@ extern "C" int Vector3_setAttr_x(PyObject *self, PyObject * args, void*)
     return 0;
 }
 
-extern "C" PyObject * Vector3_getAttr_y(PyObject *self, void*)
+SP_CLASS_ATTR_GET(Vector3,y)(PyObject *self, void*)
 {
     Vector3* obj=dynamic_cast<Vector3*>(((PyPtr<Vector3>*)self)->object);
     if (!obj)
@@ -57,7 +57,7 @@ extern "C" PyObject * Vector3_getAttr_y(PyObject *self, void*)
     }
     return PyFloat_FromDouble(obj->y());
 }
-extern "C" int Vector3_setAttr_y(PyObject *self, PyObject * args, void*)
+SP_CLASS_ATTR_SET(Vector3,y)(PyObject *self, PyObject * args, void*)
 {
     Vector3* obj=dynamic_cast<Vector3*>(((PyPtr<Vector3>*)self)->object);
     if (!obj)
@@ -69,7 +69,7 @@ extern "C" int Vector3_setAttr_y(PyObject *self, PyObject * args, void*)
     return 0;
 }
 
-extern "C" PyObject * Vector3_getAttr_z(PyObject *self, void*)
+SP_CLASS_ATTR_GET(Vector3,z)(PyObject *self, void*)
 {
     Vector3* obj=dynamic_cast<Vector3*>(((PyPtr<Vector3>*)self)->object);
     if (!obj)
@@ -79,7 +79,7 @@ extern "C" PyObject * Vector3_getAttr_z(PyObject *self, void*)
     }
     return PyFloat_FromDouble(obj->z());
 }
-extern "C" int Vector3_setAttr_z(PyObject *self, PyObject * args, void*)
+SP_CLASS_ATTR_SET(Vector3,z)(PyObject *self, PyObject * args, void*)
 {
     Vector3* obj=dynamic_cast<Vector3*>(((PyPtr<Vector3>*)self)->object);
     if (!obj)

@@ -22,77 +22,34 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "initSofaPython.h"
-#include "SceneLoaderPY.h"
 
-namespace sofa
+#include "Binding_RegularGridTopology.h"
+#include "Binding_GridTopology.h"
+
+#include <sofa/component/topology/RegularGridTopology.h>
+using namespace sofa::component::topology;
+
+extern "C" PyObject * RegularGridTopology_setPos(PyObject *self, PyObject * args)
 {
-
-namespace component
-{
-
-//Here are just several convenient functions to help user to know what contains the plugin
-
-extern "C" {
-    SOFA_SOFAPYTHON_API void initExternalModule();
-    SOFA_SOFAPYTHON_API const char* getModuleName();
-    SOFA_SOFAPYTHON_API const char* getModuleVersion();
-    SOFA_SOFAPYTHON_API const char* getModuleLicense();
-    SOFA_SOFAPYTHON_API const char* getModuleDescription();
-    SOFA_SOFAPYTHON_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
-{
-    static bool first = true;
-    if (first)
+    RegularGridTopology* obj=dynamic_cast<RegularGridTopology*>(((PySPtr<Base>*)self)->object.get());
+    double xmin,xmax,ymin,ymax,zmin,zmax;
+    if (!PyArg_ParseTuple(args, "dddddd",&xmin,&xmax,&ymin,&ymax,&zmin,&zmax))
     {
-        first = false;        
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
     }
-}
-
-const char* getModuleName()
-{
-    return "SofaPython";
-}
-
-const char* getModuleVersion()
-{
-    return "0.2";
-}
-
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-
-const char* getModuleDescription()
-{
-    return "Imbeds Python scripts in Sofa";
-}
-
-const char* getModuleComponentList()
-{
-    /// string containing the names of the classes provided by the plugin
-    return "PythonScriptController";
+    obj->setPos(xmin,xmax,ymin,ymax,zmin,zmax);
+    Py_RETURN_NONE;
 }
 
 
 
-}
-
-}
-
-/// Use the SOFA_LINK_CLASS macro for each class, to enable linking on all platforms
-//SOFA_LINK_CLASS(MyMappingPendulumInPlane)
-//SOFA_LINK_CLASS(MyBehaviorModel)
-//SOFA_LINK_CLASS(MyProjectiveConstraintSet)
-SOFA_LINK_CLASS(PythonController)
+SP_CLASS_METHODS_BEGIN(RegularGridTopology)
+SP_CLASS_METHOD(RegularGridTopology,setPos)
+SP_CLASS_METHODS_END
 
 
-// register the loader in the factory
-static sofa::simulation::SceneLoader* loaderPY = sofa::simulation::SceneLoaderFactory::getInstance()->addEntry(new sofa::simulation::SceneLoaderPY());
+SP_CLASS_TYPE_SPTR(RegularGridTopology,RegularGridTopology,GridTopology)
 
 
 
