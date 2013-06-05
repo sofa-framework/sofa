@@ -44,10 +44,11 @@ using namespace helper;
 SOFA_DECL_CLASS(Capsule)
 
 int CapsuleModelClass = core::RegisterObject("Collision model which represents a set of Capsules")
-#ifdef SOFA_FLOAT
-        .add<  TCapsuleModel<Vec3fTypes> >()
-#else
-        .add < TCapsuleModel<Vec3dTypes> >()
+#ifndef SOFA_FLOAT
+        .add<  TCapsuleModel<Vec3dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add < TCapsuleModel<Vec3fTypes> >()
 #endif
         .addAlias("Capsule")
         .addAlias("CapsuleModel")

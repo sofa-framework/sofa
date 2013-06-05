@@ -17,10 +17,11 @@ using namespace helper;
 SOFA_DECL_CLASS(OBB)
 
 int OBBModelClass = core::RegisterObject("Collision model which represents a set of OBBs")
-#ifdef SOFA_FLOAT
-        .add<  TOBBModel<Rigid3fTypes> >()
-#else
-        .add < TOBBModel<Rigid3dTypes> >()
+#ifndef SOFA_FLOAT
+        .add<  TOBBModel<Rigid3dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add < TOBBModel<Rigid3fTypes> >()
 #endif
         .addAlias("OBB")
         .addAlias("OBBModel")
