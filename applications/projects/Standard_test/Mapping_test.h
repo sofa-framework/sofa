@@ -86,6 +86,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
     typedef typename Mapping::Out Out;
     typedef component::container::MechanicalObject<Out> OutDOFs;
     typedef typename OutDOFs::Coord     OutCoord;
+    typedef typename OutDOFs::Deriv     OutDeriv;
     typedef typename OutDOFs::VecCoord  OutVecCoord;
     typedef typename OutDOFs::VecDeriv  OutVecDeriv;
     typedef typename OutDOFs::ReadVecCoord  ReadOutVecCoord;
@@ -132,6 +133,10 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
     {
         return a-b;
     }
+
+    /** Possible child force pre-treatment, does nothing by default
+      */
+    virtual OutVecDeriv preTreatment( const OutVecDeriv& f ) { return f; }
 
 
     /** Test the mapping using the given values and small changes.
@@ -259,6 +264,19 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         }
 
 
+        // compute parent forces from pre-treated child forces (in most cases, the pre-treatment does nothing)
+        // the pre-treatement can be useful to be able to compute 2 comparable results of applyJT with a small displacement to test applyDJT
+        fp.fill( InDeriv() );
+        copyToData( inDofs->writeForces(), fp );  // reset parent forces before accumulating child forces
+        copyToData( outDofs->writeForces(), preTreatment(fc) );
+        mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
+        copyFromData( fp, inDofs->readForces() );
+
+
+
+        ///////////////////////////////
+
+
         // propagate small displacement
         copyToData( inDofs->writePositions(), xp1 );
 //        cout<<"new parent positions xp1 = " << xp1 << endl;
@@ -278,9 +296,11 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         }
 
 
+
         // update parent force based on the same child forces
         fp2.fill( InDeriv() );
         copyToData( inDofs->writeForces(), fp2 );  // reset parent forces before accumulating child forces
+        copyToData( outDofs->writeForces(), preTreatment(fc) );
         mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
         copyFromData( fp2, inDofs->readForces() );
 //        cout<<"updated parent forces fp2 = "<< fp2 << endl;
