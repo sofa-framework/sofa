@@ -1,158 +1,133 @@
 <?xml version="1.0"?>
-<Node 	name="root" gravity="0 0 0" dt=".1"  >
+<Node name="root" gravity="0 0 0" dt=".1"  >
   <VisualStyle displayFlags="showVisual" />
-  
-  
   <MeshObjLoader name="mesh1" filename="mesh/bubille_in1.obj" triangulate="1"/>
   <MeshObjLoader name="mesh2" filename="mesh/bubille_in2.obj" triangulate="1"/>
   <MeshObjLoader name="mesh3" filename="mesh/bubille_out.obj" triangulate="1"/>
-  
-  
+
   <Node name="using MergeImages (the most powerful solution)">
-  
-  <MeshToImageEngine template="ImageUC" value="1" name="rasterizer1" src="@../mesh1" voxelSize="0.2" padSize="2" rotateImage="false" printLog="true"/>
-  <MeshToImageEngine template="ImageUC" value="2" name="rasterizer2" src="@../mesh2" voxelSize="0.2" padSize="2" rotateImage="false" printLog="true"/>
-  <MeshToImageEngine template="ImageUC" value="3" name="rasterizer3" src="@../mesh3" voxelSize="0.2" padSize="2" rotateImage="false" printLog="true"/>
+    <MeshToImageEngine template="ImageUC" value="1" name="rasterizer1" src="@../mesh1" voxelSize="0.2" padSize="2" rotateImage="false" printLog="true"/>
+    <MeshToImageEngine template="ImageUC" value="2" name="rasterizer2" src="@../mesh2" voxelSize="0.2" padSize="2" rotateImage="false" printLog="true"/>
+    <MeshToImageEngine template="ImageUC" value="3" name="rasterizer3" src="@../mesh3" voxelSize="0.2" padSize="2" rotateImage="false" printLog="true"/>
 
-<MergeImages  template="ImageUC" name="merge" nbImages="3" overlap="1" interpolation="0"
-image1="@rasterizer1.image" transform1="@rasterizer1.transform" 	
-image2="@rasterizer2.image" transform2="@rasterizer2.transform" 	
-image3="@rasterizer3.image" transform3="@rasterizer3.transform" 	
-		/>
+    <MergeImages  template="ImageUC" name="merge" nbImages="3" overlap="1" interpolation="0"
+                                     image1="@rasterizer1.image" transform1="@rasterizer1.transform"
+                                     image2="@rasterizer2.image" transform2="@rasterizer2.transform"
+                                     image3="@rasterizer3.image" transform3="@rasterizer3.transform"/>
+    <TransferFunction name="youngM" template="ImageUC,ImageD" inputImage="@merge.image" param="0 0 1 1000 2 10 3 100"/>
+    <ImageContainer template="ImageD" name="image" image="@youngM.outputImage" transform="@merge.transform" drawBB="false"/>
+    <!-- <ImageViewer template="ImageD" name="viewer" src="@image" /> -->
 
-  <TransferFunction name="youngM" template="ImageUC,ImageD" inputImage="@merge.image" param="0 0 1 1000 2 10 3 100"/>
-  <ImageContainer template="ImageD" name="image" image="@youngM.outputImage" transform="@merge.transform" drawBB="false"/>
-  <!-- <ImageViewer template="ImageD" name="viewer" src="@image" /> -->
+    <Node name="flexible" >
+      <EulerImplicitSolver />
+      <CGLinearSolver iterations="25"/>
 
-  <Node name="flexible" >
-    	    <EulerImplicitSolver />
-    	    <CGLinearSolver iterations="25"/>
+      <ImageSampler template="ImageD" name="sampler" src="@../image" method="1" param="10" fixedPosition="-1.5 0 0"  />
+      <MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />
+      <MechanicalObject template="Affine" name="parent" useMask="0" showObject="true" showObjectScale="0.2" src="@merged" />
+      <VoronoiShapeFunction template="ShapeFunction3d,ImageD" name="SF" position="@parent.rest_position" src="@../image" bias="true"/>
 
-	    <ImageSampler template="ImageD" name="sampler" src="@../image" method="1" param="10" fixedPosition="-1.5 0 0"  /> 
-	    <MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />
-	    <MechanicalObject template="Affine" name="parent" useMask="0" showObject="true" showObjectScale="0.2" src="@merged" />
-	    <VoronoiShapeFunction template="ShapeFunction3d,ImageD" name="SF" position="@parent.rest_position" src="@../image" bias="true"/>
+      <Node name="behavior">
+        <ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="1" targetNumber="100" />
+        <MechanicalObject template="F331" />
+        <LinearMapping template="Mapping&lt;Affine,F331&gt;" />
 
-	    <Node 	name="behavior"   >
-		<ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="1" targetNumber="100" />
-		<MechanicalObject template="F331" />
-	    	<LinearMapping template="Mapping&lt;Affine,F331&gt;" />
+        <Node name="E">
+          <ImageValuesFromPositions name="youngM" position="@../sampler.position" src="@../../../image" />
+          <MechanicalObject  template="E331" />
+          <CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" />
+          <HookeForceField  template="E331" youngModulus="@youngM.values" poissonRatio="0" viscosity="0"/>
+        </Node>
+      </Node>
 
-		<Node 	name="E"   >
-    		    <ImageValuesFromPositions name="youngM" position="@../sampler.position" src="@../../../image" />
-		    <MechanicalObject  template="E331" /> 
-		    <CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" />
-		    <HookeForceField  template="E331" youngModulus="@youngM.values" poissonRatio="0" viscosity="0"/> 
-		</Node>
-	    </Node>
+      <Node name="mass">
+        <MechanicalObject  src="@../behavior/sampler"  />
+        <UniformMass totalMass="200" />
+        <LinearMapping template="MechanicalMapping&lt;Affine,Vec3d&gt;"/>
+      </Node>
 
-	    <Node 	name="mass"   >
-		<MechanicalObject  src="@../behavior/sampler"  />
-		<UniformMass totalMass="200" />
-	    	<LinearMapping template="MechanicalMapping&lt;Affine,Vec3d&gt;"/>
-	    </Node>
+      <Node name="Gelatin-Visu">
+        <VisualModel name="Gelatin" fileMesh="mesh/bubille_8x8x16.obj" color="0.1 .8 .3 .6" />
+        <LinearMapping template="MechanicalMapping&lt;Affine,ExtVec3f&gt;"/>
+      </Node>
 
-		<Node name="Gelatin-Visu">
-			<VisualModel name="Gelatin" fileMesh="mesh/bubille_8x8x16.obj" color="0.1 .8 .3 .6" />
-			<LinearMapping template="MechanicalMapping&lt;Affine,ExtVec3f&gt;"/>
-		</Node>
+      <Node name="Ball1-Visu">
+        <VisualModel name="Ball1" fileMesh="mesh/bubille_in1.obj" color="1 0 0 1" />
+        <LinearMapping template="MechanicalMapping&lt;Affine,ExtVec3f&gt;"/>
+      </Node>
 
-		<Node name="Ball1-Visu">
-			<VisualModel name="Ball1" fileMesh="mesh/bubille_in1.obj" color="1 0 0 1" />
-			<LinearMapping template="MechanicalMapping&lt;Affine,ExtVec3f&gt;"/>
-		</Node>
-
-		<Node name="Ball2-Visu">
-			<VisualModel name="Ball2" fileMesh="mesh/bubille_in2.obj" color="0 0 1 1" />
-			<LinearMapping template="MechanicalMapping&lt;Affine,ExtVec3f&gt;"/>
-		</Node>
-		<Node name="Collision">
-			<MeshObjLoader name="MeshLoader" filename="mesh/bubille_out.obj"/>
-			<Mesh src="@MeshLoader" /> 
-			<MechanicalObject useMask="1" />
-		    	<LinearMapping template="MechanicalMapping&lt;Affine,Vec3d&gt;"/>
-		</Node>
+      <Node name="Ball2-Visu">
+        <VisualModel name="Ball2" fileMesh="mesh/bubille_in2.obj" color="0 0 1 1" />
+        <LinearMapping template="MechanicalMapping&lt;Affine,ExtVec3f&gt;"/>
+      </Node>
+      <Node name="Collision">
+        <MeshObjLoader name="MeshLoader" filename="mesh/bubille_out.obj"/>
+        <Mesh src="@MeshLoader" />
+        <MechanicalObject useMask="1" />
+        <LinearMapping template="MechanicalMapping&lt;Affine,Vec3d&gt;"/>
+      </Node>
     </Node>
+  </Node>
+
+  <Node name="Voxelizing several meshes in one image (the prefered solution in most cases)" >
+    <MeshToImageEngine template="ImageD" name="rasterizer"  nbMeshes="3"   
+                       value="100" position="@../mesh3.position" triangles="@../mesh3.triangles"   
+                       value2="10" position2="@../mesh2.position" triangles2="@../mesh2.triangles"   
+                       value3="1000" position3="@../mesh1.position" triangles3="@../mesh1.triangles"   
+                       voxelSize="0.2 0.2 0.2" padSize="2" rotateImage="false" printLog="true"/>
+    <ImageContainer template="ImageD" name="image" src="@rasterizer" drawBB="false"/>
+    <!-- <ImageViewer template="ImageD" name="viewer" src="@image" /> -->
+
+    <Node name="flexible" >
+      <EulerImplicitSolver />
+      <CGLinearSolver iterations="25"/>
+
+      <ImageSampler template="ImageD" name="sampler" src="@../image" method="1" param="10" fixedPosition="-1.5 0 0"  />
+      <MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />
+      <MechanicalObject template="Affine" name="parent" useMask="0" showObject="true" showObjectScale="0.2" src="@merged" />
+      <VoronoiShapeFunction template="ShapeFunction3d,ImageD" name="SF" position="@parent.rest_position" src="@../image" bias="true"/>
+
+      <Node name="behavior">
+        <ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="1" targetNumber="100" />
+        <MechanicalObject template="F331" />
+        <LinearMapping template="Mapping&lt;Affine,F331&gt;" />
+
+        <Node name="E">
+          <ImageValuesFromPositions name="youngM" position="@../sampler.position" src="@../../../image" />
+          <MechanicalObject  template="E331" />
+          <CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" />
+          <HookeForceField  template="E331" youngModulus="@youngM.values" poissonRatio="0" viscosity="0"/>
+        </Node>
+      </Node>
+
+      <Node name="mass">
+        <MechanicalObject  src="@../behavior/sampler"  />
+        <UniformMass totalMass="200" />
+        <LinearMapping template="MechanicalMapping&lt;Affine,Vec3d&gt;"/>
+      </Node>
+
+      <Node name="Gelatin-Visu">
+        <VisualModel name="Gelatin" fileMesh="mesh/bubille_8x8x16.obj" color="0.1 .8 .3 .6" />
+        <LinearMapping template="MechanicalMapping&lt;Affine,ExtVec3f&gt;"/>
+      </Node>
+
+      <Node name="Ball1-Visu">
+        <VisualModel name="Ball1" fileMesh="mesh/bubille_in1.obj" color="1 0 0 1" />
+        <LinearMapping template="MechanicalMapping&lt;Affine,ExtVec3f&gt;"/>
+      </Node>
+
+      <Node name="Ball2-Visu">
+        <VisualModel name="Ball2" fileMesh="mesh/bubille_in2.obj" color="0 0 1 1" />
+        <LinearMapping template="MechanicalMapping&lt;Affine,ExtVec3f&gt;"/>
+      </Node>
+      <Node name="Collision">
+        <MeshObjLoader name="MeshLoader" filename="mesh/bubille_out.obj"/>
+        <Mesh src="@MeshLoader" />
+        <MechanicalObject useMask="1" />
+        <LinearMapping template="MechanicalMapping&lt;Affine,Vec3d&gt;"/>
+      </Node>
     </Node>
-    
-    
-    
-      <Node name="Voxelizing several meshes in one image (the prefered solution in most cases)" >
-    
-    
-  
-  <MeshToImageEngine template="ImageD" name="rasterizer"  nbMeshes="3"   value="100" position="@../mesh3.position" triangles="@../mesh3.triangles"   value2="10" position2="@../mesh2.position" triangles2="@../mesh2.triangles"   value3="1000" position3="@../mesh1.position" triangles3="@../mesh1.triangles"   voxelSize="0.2 0.2 0.2" padSize="2" rotateImage="false" printLog="true"/>
-
-  
-  <ImageContainer template="ImageD" name="image" src="@rasterizer" drawBB="false"/>
-<!-- <ImageViewer template="ImageD" name="viewer" src="@image" /> -->
-
-  <Node name="flexible" >
-    	    <EulerImplicitSolver />
-    	    <CGLinearSolver iterations="25"/>
-
-	    <ImageSampler template="ImageD" name="sampler" src="@../image" method="1" param="10" fixedPosition="-1.5 0 0"  /> 
-	    <MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />
-	    <MechanicalObject template="Affine" name="parent" useMask="0" showObject="true" showObjectScale="0.2" src="@merged" />
-	    <VoronoiShapeFunction template="ShapeFunction3d,ImageD" name="SF" position="@parent.rest_position" src="@../image" bias="true"/>
-
-	    <Node 	name="behavior"   >
-		<ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="1" targetNumber="100" />
-		<MechanicalObject template="F331" />
-	    	<LinearMapping template="Mapping&lt;Affine,F331&gt;" />
-
-		<Node 	name="E"   >
-    		    <ImageValuesFromPositions name="youngM" position="@../sampler.position" src="@../../../image" />
-		    <MechanicalObject  template="E331" /> 
-		    <CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" />
-		    <HookeForceField  template="E331" youngModulus="@youngM.values" poissonRatio="0" viscosity="0"/> 
-		</Node>
-	    </Node>
-
-	    <Node 	name="mass"   >
-		<MechanicalObject  src="@../behavior/sampler"  />
-		<UniformMass totalMass="200" />
-	    	<LinearMapping template="MechanicalMapping&lt;Affine,Vec3d&gt;"/>
-	    </Node>
-
-		<Node name="Gelatin-Visu">
-			<VisualModel name="Gelatin" fileMesh="mesh/bubille_8x8x16.obj" color="0.1 .8 .3 .6" />
-			<LinearMapping template="MechanicalMapping&lt;Affine,ExtVec3f&gt;"/>
-		</Node>
-
-		<Node name="Ball1-Visu">
-			<VisualModel name="Ball1" fileMesh="mesh/bubille_in1.obj" color="1 0 0 1" />
-			<LinearMapping template="MechanicalMapping&lt;Affine,ExtVec3f&gt;"/>
-		</Node>
-
-		<Node name="Ball2-Visu">
-			<VisualModel name="Ball2" fileMesh="mesh/bubille_in2.obj" color="0 0 1 1" />
-			<LinearMapping template="MechanicalMapping&lt;Affine,ExtVec3f&gt;"/>
-		</Node>
-		<Node name="Collision">
-			<MeshObjLoader name="MeshLoader" filename="mesh/bubille_out.obj"/>
-			<Mesh src="@MeshLoader" /> 
-			<MechanicalObject useMask="1" />
-		    	<LinearMapping template="MechanicalMapping&lt;Affine,Vec3d&gt;"/>
-		</Node>
-    </Node>
-
-
-
-
-
-
-</Node>
-
-
-
-
-
-
-
-    
-    
-    
+  </Node>
 
 </Node>
 
