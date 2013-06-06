@@ -128,36 +128,40 @@ int MeshMinProximityIntersection::computeIntersection(Line& e1, Line& e2, Output
 {
     const double alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
 
-    const Vector3 AB = e1.p2()-e1.p1();
-    const Vector3 CD = e2.p2()-e2.p1();
-    const Vector3 AC = e2.p1()-e1.p1();
-    Matrix2 A;
-    Vector2 b;
+//    const Vector3 AB = e1.p2()-e1.p1();
+//    const Vector3 CD = e2.p2()-e2.p1();
+//    const Vector3 AC = e2.p1()-e1.p1();
+//    Matrix2 A;
+//    Vector2 b;
 
-    A[0][0] = AB*AB;
-    A[1][1] = CD*CD;
-    A[0][1] = A[1][0] = -CD*AB;
-    b[0] = AB*AC;
-    b[1] = -CD*AC;
-    const double det = determinant(A);
+//    A[0][0] = AB*AB;
+//    A[1][1] = CD*CD;
+//    A[0][1] = A[1][0] = -CD*AB;
+//    b[0] = AB*AC;
+//    b[1] = -CD*AC;
+//    const double det = determinant(A);
 
-    double alpha = 0.5;
-    double beta = 0.5;
+//    double alpha = 0.5;
+//    double beta = 0.5;
 
-    if (det < -1.0e-15 || det > 1.0e-15)
-    {
-        alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
-        beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
-        if (alpha < 0.000001 || alpha > 0.999999 ||
-            beta  < 0.000001 || beta  > 0.999999 )
-            return 0;
-    }
+//    if (det < -1.0e-15 || det > 1.0e-15)
+//    {
+//        alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
+//        beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
+//        if (alpha < 0.000001 || alpha > 0.999999 ||
+//            beta  < 0.000001 || beta  > 0.999999 )
+//            return 0;
+//    }
+
+//    Vector3 P,Q,PQ;
+//    P = e1.p1() + AB * alpha;
+//    Q = e2.p1() + CD * beta;
+//    PQ = Q-P;
 
     Vector3 P,Q,PQ;
-    P = e1.p1() + AB * alpha;
-    Q = e2.p1() + CD * beta;
-    PQ = Q-P;
+    IntrUtil<SReal>::segNearestPoints(e1.p1(),e1.p2(),e2.p1(),e2.p2(),P,Q);
 
+    PQ  = Q - P;
     if (PQ.norm2() >= alarmDist*alarmDist)
         return 0;
 
@@ -381,16 +385,25 @@ int MeshMinProximityIntersection::computeIntersection(Line& e2, Point& e1, Outpu
 
     double alpha = 0.5;
 
+    Vector3 P,Q,QP;
+
     //if (A < -0.000001 || A > 0.000001)
     {
         alpha = b/A;
-        if (alpha < 0.000001 || alpha > 0.999999)
-            return 0;
+
+        if (alpha <= 0.0){
+            Q = e2.p1();
+        }
+        else if (alpha >= 1.0){
+            Q = e2.p2();
+            alpha = 1.0;
+        }
+        else{
+            Q = e2.p1() + AB * alpha;
+        }
     }
 
-    Vector3 P,Q,QP;
     P = e1.p();
-    Q = e2.p1() + AB * alpha;
     QP = P-Q;
 
     if (QP.norm2() >= alarmDist*alarmDist)
