@@ -42,7 +42,5 @@ if(${CMAKE_COMPILER_IS_GNUCC})
     AddCompilerFlags("-fPIC")
 endif()
 
-AddCompilerDefinitions("MINI_FLOWVR")
-	
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
 

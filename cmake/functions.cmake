@@ -171,10 +171,10 @@ endfunction()
 # path parameter is the path to the cmake project if any (may be needed to enable the project)
 function(RegisterDependencies)
 	set(dependencies)
-	set(optionName)
-	set(noOptionName)
-	set(compilerDefinitions)
-	set(projectPath)
+	set(optionName "")
+	set(noOptionName "")
+	set(compilerDefinitions "")
+	set(projectPath "")
 	
 	set(mode 0)
 	foreach(arg ${ARGV})
@@ -235,6 +235,14 @@ function(RegisterDependencies)
 			#message("== ${dependency} in ${SOFA_PROJECT_FOLDER}")
 			set(GLOBAL_PROJECT_OPTION_FOLDER_${dependency} ${SOFA_PROJECT_FOLDER} CACHE INTERNAL "${dependency} solution folder" FORCE)
 		endif()
+	endforeach()
+endfunction()
+
+# AddCompilerDefinitionsFromDependency(<dependency>)
+# retrieve the compiler defines set when the dependency has been registered (using RegisterDependencies and not every compiler defines set when the dependency is being generated) and add it in the current compiler defines
+function(AddCompilerDefinitionsFromDependency)
+	foreach(dependency ${ARGV})
+		set(COMPILER_DEFINES ${COMPILER_DEFINES} ${GLOBAL_PROJECT_OPTION_COMPILER_DEFINITIONS_${dependency}} PARENT_SCOPE)
 	endforeach()
 endfunction()
 
@@ -340,9 +348,9 @@ function(ComputeDependencies projectName forceEnable fromProject offset)
 			endif()
 			
 			# also register global compiler definitions - will be added to every projects at the end of the projects configuration
-			if(GLOBAL_PROJECT_OPTION_COMPILER_DEFINITIONS_${projectName})
-				set(GLOBAL_COMPILER_DEFINES ${GLOBAL_COMPILER_DEFINES} ${GLOBAL_PROJECT_OPTION_COMPILER_DEFINITIONS_${projectName}} CACHE INTERNAL "Global Compiler Defines" FORCE)
-			endif()
+			#if(GLOBAL_PROJECT_OPTION_COMPILER_DEFINITIONS_${projectName})
+			#	set(GLOBAL_COMPILER_DEFINES ${GLOBAL_COMPILER_DEFINES} ${GLOBAL_PROJECT_OPTION_COMPILER_DEFINITIONS_${projectName}} CACHE INTERNAL "Global Compiler Defines" FORCE)
+			#endif()
 			
 			# add the current project
 			if(GLOBAL_PROJECT_PATH_${projectName}) # TODO: if there is no path try a find_package / find_library
@@ -358,15 +366,26 @@ function(ComputeDependencies projectName forceEnable fromProject offset)
 			# retrieve its dependencies
 			set(dependencies ${GLOBAL_PROJECT_DEPENDENCIES_${projectName}})
 			
+			# and compute its compiler definitions
+			set(compilerDefines ${${projectName}_COMPILER_DEFINES})
+			
 			#message(STATUS "${offset} + ${projectName}")
 			foreach(dependency ${dependencies})
 				ComputeDependencies(${dependency} true "${projectName}" "${offset} ")
+				
+				set(compilerDefines ${compilerDefines} ${GLOBAL_PROJECT_OPTION_COMPILER_DEFINITIONS_${dependency}})
 			endforeach()
 			#message(STATUS "${offset} - ${projectName}")
 			
+			# set the updated compiler definitions of the current project
+			if(TARGET ${projectName})
+				set(compilerDefines ${compilerDefines} ${GLOBAL_PROJECT_OPTION_COMPILER_DEFINITIONS_${projectName}})
+				list(REMOVE_DUPLICATES compilerDefines)
+				set_target_properties(${projectName} PROPERTIES COMPILE_DEFINITIONS "${compilerDefines}")
+			endif()
+			
 			# retrieve include directories from the current project and its dependencies
 			list(APPEND includeDirs ${${projectName}_INCLUDE_DIR})
-			#list(REMOVE_DUPLICATES includeDirs)
 			foreach(dependency ${dependencies})
 				if(TARGET ${dependency})
 					if(${dependency}_INCLUDE_DIR)
@@ -390,12 +409,12 @@ endfunction()
 # <projectName> the project to compute
 function(ApplyGlobalCompilerDefinitions projectName)
 	# process the project
-	if(TARGET ${projectName})
-		set(compilerDefines ${GLOBAL_COMPILER_DEFINES})
-		list(APPEND compilerDefines ${GLOBAL_PROJECT_COMPILER_DEFINITIONS_${projectName}})
-		list(REMOVE_DUPLICATES compilerDefines)
-		set_target_properties(${projectName} PROPERTIES COMPILE_DEFINITIONS "${compilerDefines}")
-	endif()
+	#if(TARGET ${projectName})
+	#	set(compilerDefines ${GLOBAL_COMPILER_DEFINES})
+	#	list(APPEND compilerDefines ${GLOBAL_PROJECT_COMPILER_DEFINITIONS_${projectName}})
+	#	list(REMOVE_DUPLICATES compilerDefines)
+	#	set_target_properties(${projectName} PROPERTIES COMPILE_DEFINITIONS "${compilerDefines}")
+	#endif()
 endfunction()
 
 # AddCompilerDefinitions(compiler_definition0 [compiler_definition1 [...]])

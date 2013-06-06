@@ -83,7 +83,7 @@ endif()
 set(SOFA-EXTERNAL_GEOMETRIC_TOOLS_PATH "" CACHE PATH "Path to Geometric tools folder containing the cmake project")
 if(EXISTS ${SOFA-EXTERNAL_GEOMETRIC_TOOLS_PATH})
 	set(SOFA-EXTERNAL_HAVE_GEOMETRIC_TOOLS 1 CACHE INTERNAL "Build and use geometric tools" FORCE)
-	list(APPEND compilerDefines SOFA_HAVE_GEOMETRIC_TOOLS)
+	# list(APPEND compilerDefines SOFA_HAVE_GEOMETRIC_TOOLS) # set this compiler defininition using RegisterProjectDependencies (to avoid the need of rebuilding everything if you change this option)
 else()
 	set(SOFA-EXTERNAL_HAVE_GEOMETRIC_TOOLS 0 CACHE INTERNAL "Build and use geometric tools" FORCE)
 endif()
@@ -99,39 +99,21 @@ mark_as_advanced(SOFA-EXTERNAL_TINYXML_DEBUG_LIBRARY)
 
 ## zlib
 option(SOFA-EXTERNAL_HAVE_ZLIB "Use the ZLib library" ON)
-if(SOFA-EXTERNAL_HAVE_ZLIB)
-	list(APPEND compilerDefines SOFA_HAVE_ZLIB)
-endif()
 
 ## libpng
 option(SOFA-EXTERNAL_HAVE_PNG "Use the LibPNG library" ON)
-if(SOFA-EXTERNAL_HAVE_PNG)
-	list(APPEND compilerDefines SOFA_HAVE_PNG)
-endif()
 
 ## freeglut
 option(SOFA-EXTERNAL_HAVE_FREEGLUT "Use the FreeGLUT library (instead of regular GLUT)" OFF)
-if(SOFA-EXTERNAL_HAVE_FREEGLUT)
-	list(APPEND compilerDefines SOFA_HAVE_FREEGLUT)
-endif()
 
 ## glew
 option(SOFA-EXTERNAL_HAVE_GLEW "Use the GLEW library" ON)
-if(SOFA-EXTERNAL_HAVE_GLEW)
-	list(APPEND compilerDefines SOFA_HAVE_GLEW)
-endif()
 
 ## ffmpeg
-option(SOFA-EXTERNAL_HAVE_FFMPEG "Use the FFMPEG library" OFF)
-if(SOFA-EXTERNAL_HAVE_FFMPEG)
-	list(APPEND compilerDefines SOFA_HAVE_FFMPEG)
-endif()
+option(SOFA-EXTERNAL_HAVE_FFMPEG "Use the FFMPEG library" OFF) # SOFA_HAVE_FFMPEG
 
 ## METIS
-option(SOFA-EXTERNAL_HAVE_METIS "Use Metis" OFF)
-if(SOFA-EXTERNAL_HAVE_METIS)
-	list(APPEND compilerDefines SOFA_HAVE_METIS)
-endif()
+option(SOFA-EXTERNAL_HAVE_METIS "Use Metis" OFF) # SOFA_HAVE_METIS
 
 ## CSPARSE
 option(SOFA-EXTERNAL_HAVE_CSPARSE "Use CSparse" OFF)
@@ -144,9 +126,6 @@ option(SOFA-EXTERNAL_HAVE_EIGEN2 "Use Eigen" OFF)
 option(SOFA-MISC_NO_OPENGL "Disable OpenGL" OFF)
 if(SOFA-MISC_NO_OPENGL)
 	list(APPEND compilerDefines SOFA_NO_OPENGL)
-	if (SOFA-EXTERNAL_HAVE_GLEW)
-		list(REMOVE_ITEM compilerDefines SOFA_HAVE_GLEW)
-	endif()
 	set(SOFA_VISUAL_LIB SofaBaseVisual)
 else()
 	set(SOFA_VISUAL_LIB SofaOpenglVisual)
@@ -334,12 +313,10 @@ if(SOFA-MISC_TESTS)
 endif()
 
 # miscellaneous
-option(SOFA-MISC_DEVELOPER_MODE "Build and use the applications-dev projects (dev-plugins may need them)" OFF)
+option(SOFA-MISC_DEVELOPER_MODE "Use developer mode" OFF)
 if(SOFA-MISC_DEVELOPER_MODE)
 	list(APPEND compilerDefines SOFA_DEV)
 endif()
-
-set(GLOBAL_COMPILER_DEFINES ${GLOBAL_COMPILER_DEFINES} ${compilerDefines} CACHE INTERNAL "Global Compiler Defines" FORCE)
 
 # os-specific
 if(XBOX)
@@ -350,8 +327,8 @@ if(XBOX)
 	endif()
 	if (SOFA-EXTERNAL_HAVE_EIGEN2)
 		# cpuid identification code does not exist on the platform, it's cleaner to disable it here.
-		list(APPEND GLOBAL_COMPILER_DEFINES EIGEN_NO_CPUID)
+		list(APPEND compilerDefines EIGEN_NO_CPUID)
 	endif()
 endif()
 
-
+set(GLOBAL_COMPILER_DEFINES ${GLOBAL_COMPILER_DEFINES} ${compilerDefines} CACHE INTERNAL "Global Compiler Defines" FORCE)
