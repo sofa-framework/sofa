@@ -221,7 +221,7 @@ void SkinningMapping<TIn, TOut>::updateWeights ()
         {
             Vec<3,InReal> cfrom; In::get( cfrom[0],cfrom[1],cfrom[2], xfrom[j] );
             InReal w=(cto-cfrom)*(cto-cfrom);
-            if(w!=0) w=1./w;
+            if(w!=0) w=1.0f/w;
             else w=std::numeric_limits<InReal>::max();
             unsigned int m=0; while (m!=nbref && m_weights[i][m]>w) m++;
             if(m!=nbref)
@@ -615,7 +615,7 @@ void SkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
                             color = (m_weights[indexPoint][m] - minValue) / (maxValue - minValue);
 
                     points.push_back(defaulttype::Vector3(xto[indexPoint][0],xto[indexPoint][1],xto[indexPoint][2]));
-                    colors.push_back(defaulttype::Vec<4,float>(color, 0.0, 0.0,1.0));
+                    colors.push_back(defaulttype::Vec<4,float>((float)color, 0.0f, 0.0f, 1.0f));
                 }
             }
             vparams->drawTool()->drawTriangles(points, normals, colors);
@@ -635,8 +635,8 @@ void SkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
                     if(index[i][m]==showFromIndex.getValue())
                         color = (m_weights[i][m] - minValue) / (maxValue - minValue);
 
-                glColor3f( color, 0.0, 0.0);
-                glVertex3f( xto[i][0], xto[i][1], xto[i][2]);
+                glColor3f( (float)color, 0.0f, 0.0f);
+                glVertex3f( (float)xto[i][0], (float)xto[i][1], (float)xto[i][2]);
             }
             glEnd();
         }

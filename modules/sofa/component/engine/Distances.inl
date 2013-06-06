@@ -576,7 +576,7 @@ void Distances< DataTypes >::addContribution ( double& valueWrite, int& nbTest, 
         if (useStiffnessMap)
         {
             unsigned int hexaID1;
-            const Coord hexaIDpos (x, y, z);
+            const Coord hexaIDpos ((Real)x, (Real)y, (Real)z);
             find1DCoord(hexaID1, hexaIDpos);
             stiffnessCoeff = densityValues[hexaID1]; //TODO use max if this is a frame
         }
@@ -621,48 +621,48 @@ void Distances< DataTypes >::computeGradients ( const unsigned int mapIndex, vec
         hexaID = hexaGeoAlgo->getTopoIndexFromRegularGridIndex ( gridID+1, existing );
         if ( existing && distanceMap[mapIndex][hexaID]!=-1.0 )
         {
-            grad[0] += distanceMap[mapIndex][hexaID] - distance;
+            grad[0] += (Real)( distanceMap[mapIndex][hexaID] - distance );
             nbTest++;
         }
         hexaID = hexaGeoAlgo->getTopoIndexFromRegularGridIndex ( gridID-1, existing );
         if ( existing && distanceMap[mapIndex][hexaID]!=-1.0 )
         {
-            grad[0] += distance - distanceMap[mapIndex][hexaID];
+            grad[0] += (Real)( distance - distanceMap[mapIndex][hexaID] );
             nbTest++;
         }
-        if ( nbTest != 0 ) grad[0] /= (nbTest * voxelSize[0]);
+        if ( nbTest != 0 ) grad[0] /= (Real)(nbTest * voxelSize[0]);
 
         // Test on Y
         nbTest = 0;
         hexaID = hexaGeoAlgo->getTopoIndexFromRegularGridIndex ( gridID+res[0], existing );
         if ( existing && distanceMap[mapIndex][hexaID]!=-1.0 )
         {
-            grad[1] += distanceMap[mapIndex][hexaID] - distance;
+            grad[1] += (Real)( distanceMap[mapIndex][hexaID] - distance );
             nbTest++;
         }
         hexaID = hexaGeoAlgo->getTopoIndexFromRegularGridIndex ( gridID-res[0], existing );
         if ( existing && distanceMap[mapIndex][hexaID]!=-1.0 )
         {
-            grad[1] += distance - distanceMap[mapIndex][hexaID];
+            grad[1] += (Real)( distance - distanceMap[mapIndex][hexaID] );
             nbTest++;
         }
-        if ( nbTest != 0 ) grad[1] /= (nbTest * voxelSize[1]);
+        if ( nbTest != 0 ) grad[1] /= (Real)(nbTest * voxelSize[1]);
 
         // Test on Z
         nbTest = 0;
         hexaID = hexaGeoAlgo->getTopoIndexFromRegularGridIndex ( gridID+res[0]*res[1], existing );
         if ( existing && distanceMap[mapIndex][hexaID]!=-1.0 )
         {
-            grad[2] += distanceMap[mapIndex][hexaID] - distance;
+            grad[2] += (Real)( distanceMap[mapIndex][hexaID] - distance );
             nbTest++;
         }
         hexaID = hexaGeoAlgo->getTopoIndexFromRegularGridIndex ( gridID-res[0]*res[1], existing );
         if ( existing && distanceMap[mapIndex][hexaID]!=-1.0 )
         {
-            grad[2] += distance - distanceMap[mapIndex][hexaID];
+            grad[2] += (Real)( distance - distanceMap[mapIndex][hexaID] );
             nbTest++;
         }
-        if ( nbTest != 0 ) grad[2] /= (nbTest * voxelSize[2]);
+        if ( nbTest != 0 ) grad[2] /= (Real)(nbTest * voxelSize[2]);
         //*/
 
         gradients.push_back ( grad );
@@ -719,7 +719,7 @@ void Distances< DataTypes >::draw(const core::visual::VisualParams* )
     // Display the distance on each hexa of the grid
     if ( showDistanceMap.getValue() )
     {
-        glColor3f ( 1.0, 0.0, 0.3 );
+        glColor3f ( 1.0f, 0.0f, 0.3f );
         const vector<double>& distMap = distanceMap[showMapIndex.getValue()%distanceMap.size()];
         for ( unsigned int j = 0; j < distMap.size(); j++ )
         {

@@ -282,7 +282,7 @@ void InciseAlongPathPerformer::draw(const core::visual::VisualParams* )
     positions[positions.size()-1] = pointB;
 
     glDisable(GL_LIGHTING);
-    glColor3f(0.3,0.8,0.3);
+    glColor3f(0.3f,0.8f,0.3f);
     glBegin(GL_LINES);
 
     for (unsigned int i = 1; i<positions.size(); ++i)

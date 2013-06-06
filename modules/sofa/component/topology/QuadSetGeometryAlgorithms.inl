@@ -359,8 +359,8 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
     {
         Mat<4,4, GLfloat> modelviewM;
         const VecCoord& coords = *(this->object->getX());
-        const sofa::defaulttype::Vector3& color = _drawColor.getValue();
-        glColor3f(color[0]-0.2, color[1]-0.2, color[2]-0.2);
+        const sofa::defaulttype::Vec3f& color = _drawColor.getValue();
+        glColor3f(color[0]-0.2f, color[1]-0.2f, color[2]-0.2f);
         glDisable(GL_LIGHTING);
         float scale = this->getIndicesScale();
 
@@ -423,7 +423,7 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
             const VecCoord& coords = *(this->object->getX());
 
             glDisable(GL_LIGHTING);
-            const sofa::defaulttype::Vector3& color = _drawColor.getValue();
+            const sofa::defaulttype::Vec3f& color = _drawColor.getValue();
             glColor3f(color[0], color[1], color[2]);
             glBegin(GL_QUADS);
             for (unsigned int i = 0; i<quadArray.size(); i++)
@@ -438,7 +438,7 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
             }
             glEnd();
 
-            glColor3f(color[0]-0.2, color[1]-0.2, color[2]-0.2);
+            glColor3f(color[0]-0.2f, color[1]-0.2f, color[2]-0.2f);
             glBegin(GL_LINES);
             const sofa::helper::vector<Edge> &edgeArray = this->m_topology->getEdges();
 

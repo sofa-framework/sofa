@@ -372,9 +372,9 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::draw(const core::vi
     if (!bDraw.getValue()) return;
     Real1 cx2=0, cy2=0, cz2=0;
 
-    cx2=vars.pos6D.getCenter()[0];
-    cy2=vars.pos6D.getCenter()[1];
-    cz2=vars.pos6D.getCenter()[2];
+    cx2=(Real1)vars.pos6D.getCenter()[0];
+    cy2=(Real1)vars.pos6D.getCenter()[1];
+    cz2=(Real1)vars.pos6D.getCenter()[2];
 
     for (unsigned int e=0; e<vars.nelems; ++e)
     {

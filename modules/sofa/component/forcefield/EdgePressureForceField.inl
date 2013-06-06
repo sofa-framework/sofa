@@ -264,19 +264,19 @@ void EdgePressureForceField<DataTypes>::updateEdgeInformation()
         Vec3d orig(0,0,0);
 
         Vec3d tang = p2 - p1;
-        tang.norm();
+        tang.norm(); /// @TODO: shouldn't this be normalize() ?
 
         Deriv myPressure;
 
         if( (p1[0] - orig[0]) * tang[1] > 0)
-            myPressure[0] = tang[1];
+            myPressure[0] = (Real)tang[1];
         else
-            myPressure[0] = - tang[1];
+            myPressure[0] = - (Real)tang[1];
 
         if( (p1[1] - orig[1]) * tang[0] > 0)
-            myPressure[1] = tang[0];
+            myPressure[1] = (Real)tang[0];
         else
-            myPressure[1] = - tang[0];
+            myPressure[1] = - (Real)tang[0];
 
         //my_subset[i].force=pressure.getValue()*(my_subset[i].length);
         my_subset[i].force=myPressure*(my_subset[i].length);

@@ -51,7 +51,7 @@ namespace behavior
  *
  *  It is often also a ForceField, computing gravity-related forces.
  */
-class BaseMass : public virtual objectmodel::BaseObject
+class SOFA_CORE_API BaseMass : public virtual objectmodel::BaseObject
 {
 public:
     SOFA_ABSTRACT_CLASS(BaseMass, objectmodel::BaseObject);

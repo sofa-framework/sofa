@@ -58,7 +58,7 @@ enum TopologyObjectType
 
 
 
-class Topology : public virtual core::objectmodel::BaseObject
+class SOFA_CORE_API Topology : public virtual core::objectmodel::BaseObject
 {
 public:
     /// Topology global typedefs

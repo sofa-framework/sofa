@@ -73,7 +73,7 @@ void TriangleOctree::draw (const core::visual::VisualParams* vparams)
         center =
             (Vector3 (x, y, z) + Vector3 (size / 2, size / 2, size / 2));
         glPushMatrix ();
-        glTranslatef (center[0], center[1], center[2]);
+        glTranslatef ((float)center[0], (float)center[1], (float)center[2]);
         glutWireCube (size);
         glPopMatrix ();
     }

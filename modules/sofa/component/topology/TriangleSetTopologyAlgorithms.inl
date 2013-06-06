@@ -1511,11 +1511,11 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
                         if (quad[j][k] == p1)
                             for (unsigned int u = 0; u<3; u++)
                                 for (unsigned int v = 0; v<3; v++)
-                                    pos[k][v] = pos[k][v] + coords[theTriangleFirst[u]][v]*coords_list[i][u];
+                                    pos[k][v] = pos[k][v] + coords[theTriangleFirst[u]][v]*(Real)coords_list[i][u];
                         else if (quad[j][k] == p2)
                             for (unsigned int u = 0; u<3; u++)
                                 for (unsigned int v = 0; v<3; v++)
-                                    pos[k][v] = pos[k][v] + coords[theTriangleFirst[u]][v]*coords_list[i+1][u];
+                                    pos[k][v] = pos[k][v] + coords[theTriangleFirst[u]][v]*(Real)coords_list[i+1][u];
                         else
                             pos[k]= coords[quad[j][k]];
 

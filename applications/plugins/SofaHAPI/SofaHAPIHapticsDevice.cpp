@@ -104,8 +104,8 @@ SofaHAPIHapticsDevice::SofaHAPIHapticsDevice()
     , toolTransitionSpringStiffness(initData(&toolTransitionSpringStiffness, 0.0, "toolTransitionSpringStiffness", "Stiffness of haptic springs when switching instruments (0 to disable)"))
     , driverName(initData(&driverName, std::string("Any"), "driverName", "Name of the HAPI device driver"))
     , drawDevice(initData(&drawDevice, false, "drawDevice", "Visualize the position of the interface in the virtual scene"))
-    , drawHandleSize(initData(&drawHandleSize, 0.0, "drawHandleSize", "Visualize the handle direction of the interface in the virtual scene"))
-    , drawForceScale(initData(&drawForceScale, 0.0, "drawForceScale", "Visualize the haptics force in the virtual scene"))
+    , drawHandleSize(initData(&drawHandleSize, 0.0f, "drawHandleSize", "Visualize the handle direction of the interface in the virtual scene"))
+    , drawForceScale(initData(&drawForceScale, 0.0f, "drawForceScale", "Visualize the haptics force in the virtual scene"))
     , feedbackEffects(initLink("feedbackEffects", "Force feedback effects list"))
     , mState(NULL)
     , isToolControlled(true)
@@ -258,18 +258,18 @@ void SofaHAPIHapticsDevice::draw(const sofa::core::visual::VisualParams* vparams
         Vec3d wpos = world_H_virtualTool.getOrigin();
 
         vparams->drawTool()->setLightingEnabled(true); //Enable lightning
-        if (drawHandleSize.getValue() == 0.0)
+        if (drawHandleSize.getValue() == 0.0f)
         {
             std::vector<Vec3d> points;
             points.push_back(wpos);
-            vparams->drawTool()->drawSpheres(points, 1.0, sofa::defaulttype::Vec<4,float>(0,0,1,1));
+            vparams->drawTool()->drawSpheres(points, 1.0f, sofa::defaulttype::Vec<4,float>(0,0,1,1));
         }
         else
         {
             Vec3d wposH = wpos + data.world_H_baseDevice.projectVector( baseDevice_H_endDevice.projectVector(Vec3d(0.0,0.0,drawHandleSize.getValue())));
             vparams->drawTool()->drawArrow(wposH, wpos, drawHandleSize.getValue()*0.05f, sofa::defaulttype::Vec<4,float>(0,0,1,1));
         }
-        if (force.norm() > 0 && drawForceScale.getValue() != 0.0)
+        if (force.norm() > 0 && drawForceScale.getValue() != 0.0f)
         {
             //std::cout << "F = " << force << std::endl;
             Vec3d fscaled = force*(drawForceScale.getValue()*data.scale);

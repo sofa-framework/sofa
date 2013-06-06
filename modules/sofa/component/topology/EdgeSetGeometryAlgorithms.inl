@@ -509,7 +509,7 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
     {
         Mat<4,4, GLfloat> modelviewM;
         const VecCoord& coords = *(this->object->getX());
-        const sofa::defaulttype::Vector3& color = _drawColor.getValue();
+        const sofa::defaulttype::Vec3f& color = _drawColor.getValue();
         glColor3f(color[0], color[1], color[2]);
         glDisable(GL_LIGHTING);
         float scale = this->getIndicesScale();
@@ -568,7 +568,7 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
         if (!edgeArray.empty())
         {
             glDisable(GL_LIGHTING);
-            const sofa::defaulttype::Vector3& color = _drawColor.getValue();
+            const sofa::defaulttype::Vec3f& color = _drawColor.getValue();
             glColor3f(color[0], color[1], color[2]);
 
             const VecCoord& coords = *(this->object->getX());

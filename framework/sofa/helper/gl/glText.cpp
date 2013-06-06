@@ -87,20 +87,20 @@ void GlText::draw()
     const char* s = text.c_str();
     glPushMatrix();
 
-    glTranslatef ( position[0],  position[1],  position[2]);
-    glScalef ( scale,scale,scale );
+    glTranslatef ( (float)position[0], (float)position[1], (float)position[2]);
+    glScalef ( (float)scale, (float)scale, (float)scale );
 
     // Makes text always face the viewer by removing the scene rotation
     // get the current modelview matrix
     glGetFloatv ( GL_MODELVIEW_MATRIX , modelviewM.ptr() );
     modelviewM.transpose();
 
-    Vec3d temp ( position[0],  position[1],  position[2]);
+    Vec3d temp ( position[0],  position[1],  position[2] );
     temp = modelviewM.transform ( temp );
 
     glLoadIdentity();
-    glTranslatef ( temp[0], temp[1], temp[2] );
-    glScalef ( scale,scale,scale );
+    glTranslatef ( (float)temp[0], (float)temp[1], (float)temp[2] );
+    glScalef ( (float)scale, (float)scale, (float)scale );
 
     while ( *s )
     {

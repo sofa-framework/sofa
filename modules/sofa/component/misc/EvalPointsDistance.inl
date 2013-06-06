@@ -175,7 +175,7 @@ SReal EvalPointsDistance<DataTypes>::doEval(const VecCoord& x1, const VecCoord& 
 
     const Vec3 minBox = box1.minBBox();
     const Vec3 maxBox = box1.maxBBox();
-    Real meanRefSize = ((maxBox[0]-minBox[0])+(maxBox[1]-minBox[1])+(maxBox[2]-minBox[2]))/3.0;
+    Real meanRefSize = (Real)((maxBox[0]-minBox[0])+(maxBox[1]-minBox[1])+(maxBox[2]-minBox[2]))/3.0f;
     helper::vector<Real> &distances = *dist.beginEdit();
     distances.resize(n);
     for (int i=0; i<n; ++i)

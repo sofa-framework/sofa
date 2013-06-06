@@ -2135,8 +2135,8 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
     {
         Mat<4,4, GLfloat> modelviewM;
         const VecCoord& coords = *(this->object->getX());
-        const sofa::defaulttype::Vector3& color = _drawColor.getValue();
-        glColor3f(color[0]-0.2, color[1]-0.2, color[2]-0.2);
+        const sofa::defaulttype::Vec3f& color = _drawColor.getValue();
+        glColor3f(color[0]-0.2f, color[1]-0.2f, color[2]-0.2f);
         glDisable(GL_LIGHTING);
         float scale = this->getIndicesScale();
 
@@ -2198,7 +2198,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
             const VecCoord& coords = *(this->object->getX());
 
             glDisable(GL_LIGHTING);
-            const sofa::defaulttype::Vector3& color = _drawColor.getValue();
+            const sofa::defaulttype::Vec3f& color = _drawColor.getValue();
             glColor3f(color[0], color[1], color[2]);
             glBegin(GL_TRIANGLES);
             for (unsigned int i = 0; i<triangleArray.size(); i++)
@@ -2213,7 +2213,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
             }
             glEnd();
 
-            glColor3f(color[0]-0.2, color[1]-0.2, color[2]-0.2);
+            glColor3f(color[0]-0.2f, color[1]-0.2f, color[2]-0.2f);
             glBegin(GL_LINES);
             const sofa::helper::vector<Edge> &edgeArray = this->m_topology->getEdges();
 
@@ -2282,7 +2282,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
             for(unsigned int j=0; j<3; j++)
                 colors[j] = fabs (normal[j]);
 
-            glColor3f (colors[0], colors[1], colors[2]);
+            glColor3f ((float)colors[0], (float)colors[1], (float)colors[2]);
 
             glVertex3d(center[0], center[1], center[2]);
             glVertex3d(point2[0], point2[1], point2[2]);

@@ -107,7 +107,7 @@ PyObject *GetDataValuePython(BaseData* data)
         if (typeinfo->Integer())
         {
             // it's some Integer...
-            return PyInt_FromLong(typeinfo->getIntegerValue(data->getValueVoidPtr(),0));
+            return PyInt_FromLong((long)typeinfo->getIntegerValue(data->getValueVoidPtr(),0));
         }
     }
     else
@@ -134,7 +134,7 @@ PyObject *GetDataValuePython(BaseData* data)
                 else if (typeinfo->Integer())
                 {
                     // it's some Integer...
-                    PyList_SetItem(row,j,PyInt_FromLong(typeinfo->getIntegerValue(data->getValueVoidPtr(),i*rowWidth+j)));
+                    PyList_SetItem(row,j,PyInt_FromLong((long)typeinfo->getIntegerValue(data->getValueVoidPtr(),i*rowWidth+j)));
                 }
                 else
                 {
@@ -595,7 +595,7 @@ extern "C" PyObject * Data_getValue(PyObject *self, PyObject * args)
     if (typeinfo->Scalar())
         return PyFloat_FromDouble(typeinfo->getScalarValue(data->getValueVoidPtr(),index));
     if (typeinfo->Integer())
-        return PyInt_FromLong(typeinfo->getIntegerValue(data->getValueVoidPtr(),index));
+        return PyInt_FromLong((long)typeinfo->getIntegerValue(data->getValueVoidPtr(),index));
     if (typeinfo->Text())
         return PyString_FromString(typeinfo->getTextValue(data->getValueVoidPtr(),index).c_str());
 

@@ -257,7 +257,7 @@ void TextureInterpolation<DataTypes>::draw(const core::visual::VisualParams* )
         }
 
         // Recompute, in case Box has moved.
-        float scale = (sceneMaxBBox - sceneMinBBox).norm() * showIndicesScale.getValue();
+        float scale = (float)(sceneMaxBBox - sceneMinBBox).norm() * showIndicesScale.getValue();
 
         for (unsigned int i = 0; i<nbr; i++)
         {
@@ -267,8 +267,8 @@ void TextureInterpolation<DataTypes>::draw(const core::visual::VisualParams* )
             const char* s = tmp.c_str();
             glPushMatrix();
 
-            glTranslatef(coords[i][0], coords[i][1], coords[i][2]);
-            glScalef(scale,scale,scale);
+            glTranslatef((float)coords[i][0], (float)coords[i][1], (float)coords[i][2]);
+            glScalef(scale, scale, scale);
 
             // Makes text always face the viewer by removing the scene rotation
             // get the current modelview matrix
@@ -281,8 +281,8 @@ void TextureInterpolation<DataTypes>::draw(const core::visual::VisualParams* )
             //glLoadMatrixf(modelview);
             glLoadIdentity();
 
-            glTranslatef(temp[0], temp[1], temp[2]);
-            glScalef(scale,scale,scale);
+            glTranslatef((float)temp[0], (float)temp[1], (float)temp[2]);
+            glScalef(scale, scale, scale);
 
             while(*s)
             {

@@ -134,10 +134,10 @@ void CatmullRomSplineMapping<TIn, TOut>::init()
             xto0[count] = xfrom[id[1]]*t + xfrom[id[2]]*(1.0-t);
             xto[count] = xto0[count]; xtoReset[count] = xto0[count];
             m_index[count] = id;
-            m_weight[count][0] = (-t3 + 2*t2 - t)/2.;
-            m_weight[count][1] = (3*t3 - 5*t2 + 2)/2.;
-            m_weight[count][2] = (-3*t3 + 4*t2 + t)/2.;
-            m_weight[count][3] = (t3 - t2)/2.;
+            m_weight[count][0] = (InReal)(-t3 + 2*t2 - t)/2.0f;
+            m_weight[count][1] = (InReal)(3*t3 - 5*t2 + 2)/2.0f;
+            m_weight[count][2] = (InReal)(-3*t3 + 4*t2 + t)/2.0f;
+            m_weight[count][3] = (InReal)(t3 - t2)/2.0f;
 
             count++;
         }

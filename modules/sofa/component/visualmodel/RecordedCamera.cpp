@@ -479,11 +479,11 @@ void RecordedCamera::draw(const core::visual::VisualParams* )
         glBegin(GL_LINES);
         for (unsigned int i=0; i<m_rotationPoints.size()-1; ++i)
         {
-            glVertex3f(m_rotationPoints[i][0], m_rotationPoints[i][1], m_rotationPoints[i][2]);
-            glVertex3f(m_rotationPoints[i+1][0], m_rotationPoints[i+1][1], m_rotationPoints[i+1][2]);
+            glVertex3f((float)m_rotationPoints[i  ][0], (float)m_rotationPoints[i  ][1], (float)m_rotationPoints[i  ][2]);
+            glVertex3f((float)m_rotationPoints[i+1][0], (float)m_rotationPoints[i+1][1], (float)m_rotationPoints[i+1][2]);
         }
-        glVertex3f(m_rotationPoints.back()[0], m_rotationPoints.back()[1], m_rotationPoints.back()[2]);
-        glVertex3f(m_rotationPoints[0][0], m_rotationPoints[0][1], m_rotationPoints[0][2]);
+        glVertex3f((float)m_rotationPoints.back()[0], (float)m_rotationPoints.back()[1], (float)m_rotationPoints.back()[2]);
+        glVertex3f((float)m_rotationPoints[0    ][0], (float)m_rotationPoints[0    ][1], (float)m_rotationPoints[0    ][2]);
         glEnd();
 
         Vec3 _lookAt = m_rotationLookAt.getValue();
@@ -492,8 +492,8 @@ void RecordedCamera::draw(const core::visual::VisualParams* )
         glBegin(GL_LINES);
         for (unsigned int i=0; i<dx; ++i)
         {
-            glVertex3f(m_rotationPoints[i*ratio][0], m_rotationPoints[i*ratio][1], m_rotationPoints[i*ratio][2]);
-            glVertex3f(_lookAt[0], _lookAt[1], _lookAt[2]);
+            glVertex3f((float)m_rotationPoints[i*ratio][0], (float)m_rotationPoints[i*ratio][1], (float)m_rotationPoints[i*ratio][2]);
+            glVertex3f((float)_lookAt[0], (float)_lookAt[1], (float)_lookAt[2]);
         }
         glEnd();
     }

@@ -67,7 +67,7 @@ protected:
         : TriangleSetGeometryAlgorithms<DataTypes>()
         ,showTetrahedraIndices (core::objectmodel::Base::initData(&showTetrahedraIndices, (bool) false, "showTetrahedraIndices", "Debug : view Tetrahedrons indices"))
         , _draw(core::objectmodel::Base::initData(&_draw, false, "drawTetrahedra","if true, draw the tetrahedra in the topology"))
-        , _drawColor(initData(&_drawColor, sofa::defaulttype::Vector3(1.0,1.0,0.0), "drawColorTetrahedra", "RGB code color used to draw tetrahedra."))
+        , _drawColor(initData(&_drawColor, sofa::defaulttype::Vec3f(1.0f,1.0f,0.0f), "drawColorTetrahedra", "RGB code color used to draw tetrahedra."))
     {
         core::objectmodel::Base::addAlias(&showTetrahedraIndices, "showTetrasIndices");
     }
@@ -125,7 +125,7 @@ public:
 protected:
     Data<bool> showTetrahedraIndices;
     Data<bool> _draw;
-    Data<sofa::defaulttype::Vector3> _drawColor;
+    Data<sofa::defaulttype::Vec3f> _drawColor;
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETGEOMETRYALGORITHMS_CPP)

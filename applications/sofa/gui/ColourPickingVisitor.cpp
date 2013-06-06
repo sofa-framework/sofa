@@ -202,7 +202,7 @@ void ColourPickingVisitor::processSphereModel(simulation::Node * node, sofa::com
         Sphere t(smodel,i);
         Coord p = t.p();
         points.push_back(p);
-        radius.push_back(t.r());
+        radius.push_back((float)t.r());
     }
     glDisable(GL_LIGHTING);
     glDisable(GL_COLOR_MATERIAL);
