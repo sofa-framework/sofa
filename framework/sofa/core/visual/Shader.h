@@ -22,20 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//
-// C++ Interface: Shader
-//
-// Description:
-//
-//
-// Author: The SOFA team </www.sofa-framework.org>, (C) 2007
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
 #ifndef SOFA_CORE_VISUAL_SHADER_H
 #define SOFA_CORE_VISUAL_SHADER_H
 
+#include <sofa/core/objectmodel/BaseObject.h>
 
 namespace sofa
 {
@@ -52,13 +42,13 @@ namespace visual
  *
  *
  */
-class Shader : public virtual objectmodel::BaseObject
+class SOFA_CORE_API Shader : public virtual objectmodel::BaseObject
 {
 public:
     SOFA_ABSTRACT_CLASS(Shader, objectmodel::BaseObject);
 protected:
     /// Destructor
-    virtual ~Shader() { };
+    virtual ~Shader() { }
 public:
     /// Start the shader
     virtual void start() = 0;
@@ -75,11 +65,11 @@ public:
  *
  *
  */
-class ShaderElement: public virtual objectmodel::BaseObject
+class SOFA_CORE_API ShaderElement: public virtual objectmodel::BaseObject
 {
-public:
+protected:
     /// Destructor
-    virtual ~ShaderElement() { };
+    virtual ~ShaderElement() { }
 };
 
 } // namespace visual

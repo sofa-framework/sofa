@@ -1068,11 +1068,11 @@ void SimpleGUI::calcProjection()
         gluPerspective(currentCamera->getFieldOfView(), (double) width / (double) height, vparams->zNear(), vparams->zFar());
     else
     {
-        float ratio = vparams->zFar() / (vparams->zNear() * 20);
+        float ratio = (float)( vparams->zFar() / (vparams->zNear() * 20) );
         Vector3 tcenter = vparams->sceneTransform() * center;
         if (tcenter[2] < 0.0)
         {
-            ratio = -300 * (tcenter.norm2()) / tcenter[2];
+            ratio = (float)( -300 * (tcenter.norm2()) / tcenter[2] );
         }
         glOrtho((-xNear * xFactor) * ratio, (xNear * xFactor) * ratio, (-yNear
                 * yFactor) * ratio, (yNear * yFactor) * ratio,
@@ -1511,8 +1511,8 @@ void SimpleGUI::mouseEvent ( int type, int eventX, int eventY, int button )
             int dy = eventY - _mouseInteractorSavedPosY;
             if (dx || dy)
             {
-                _lightPosition[0] -= dx*0.1;
-                _lightPosition[1] += dy*0.1;
+                _lightPosition[0] -= dx*0.1f;
+                _lightPosition[1] += dy*0.1f;
                 std::cout << "Light = "<< _lightPosition[0] << " "<< _lightPosition[1] << " "<< _lightPosition[2] << std::endl;
                 redraw();
                 _mouseInteractorSavedPosX = eventX;

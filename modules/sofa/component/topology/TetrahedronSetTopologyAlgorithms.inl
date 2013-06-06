@@ -52,7 +52,7 @@ void TetrahedronSetTopologyAlgorithms< DataTypes >::init()
     this->getContext()->get(m_modifier);
     this->getContext()->get(m_geometryAlgorithms);
     m_intialNbPoints=m_container->getNbPoints();
-    m_baryLimit=0.2;
+    m_baryLimit=0.2f;
 }
 
 template<class DataTypes>

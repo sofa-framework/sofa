@@ -1508,7 +1508,7 @@ void TopologicalChangeProcessor::draw(const core::visual::VisualParams* vparams)
     {
         trianglesToDraw.clear();
         /* initialize random seed: */
-        srand ( time(NULL) );
+        srand ( (unsigned int)time(NULL) );
 
         for (unsigned int i = 0 ; i < errorTrianglesIndices.size() ; i++)
         {
@@ -1520,7 +1520,7 @@ void TopologicalChangeProcessor::draw(const core::visual::VisualParams* vparams)
         }
 
         vparams->drawTool()->drawTriangles(trianglesToDraw,
-                Vec<4,float>(1.0,(Real)rand() / (Real)RAND_MAX, (Real)rand() / (Real)RAND_MAX, 1.0));
+                Vec<4,float>(1.0f,(float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX, 1.0f));
     }
 //                if (vparams->displayFlags().getShowWireFrame())
 //                      vparams->drawTool()->setPolygonMode(0,false);

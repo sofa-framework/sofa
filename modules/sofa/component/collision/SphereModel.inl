@@ -88,7 +88,7 @@ void TSphereModel<DataTypes>::resize(int size)
     {
         r.reserve(size);
         while ((int)r.size() < size)
-            r.push_back(defaultRadius.getValue());
+            r.push_back((Real)defaultRadius.getValue());
     }
     else
     {
@@ -148,7 +148,7 @@ void TSphereModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
             TSphere<DataTypes> t(this,i);
             Vector3 p = t.p();
             points.push_back(p);
-            radius.push_back(t.r());
+            radius.push_back((float)t.r());
         }
 
         vparams->drawTool()->setLightingEnabled(true); //Enable lightning
@@ -247,7 +247,7 @@ typename TSphereModel<DataTypes>::Real TSphereModel<DataTypes>::getRadius(const 
     if(i < (int) this->radius.getValue().size())
         return radius.getValue()[i];
     else
-        return defaultRadius.getValue();
+        return (Real) defaultRadius.getValue();
 }
 
 

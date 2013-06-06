@@ -2747,8 +2747,8 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperMeshTopology<In,Out>::getJ
         for ( unsigned int i=0; i<map2d.size(); i++ )
         {
             const int out = i+i0;
-            const OutReal fx = ( OutReal ) map2d[i].baryCoords[0];
-            const OutReal fy = ( OutReal ) map2d[i].baryCoords[1];
+            const Real fx = ( Real ) map2d[i].baryCoords[0];
+            const Real fy = ( Real ) map2d[i].baryCoords[1];
             int index = map2d[i].in_index;
             if ( index<c0 )
             {
@@ -2774,9 +2774,9 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperMeshTopology<In,Out>::getJ
         for ( unsigned int i=0; i<map3d.size(); i++ )
         {
             const int out = i+i0;
-            const OutReal fx = ( OutReal ) map3d[i].baryCoords[0];
-            const OutReal fy = ( OutReal ) map3d[i].baryCoords[1];
-            const OutReal fz = ( OutReal ) map3d[i].baryCoords[2];
+            const Real fx = ( Real ) map3d[i].baryCoords[0];
+            const Real fy = ( Real ) map3d[i].baryCoords[1];
+            const Real fz = ( Real ) map3d[i].baryCoords[2];
             int index = map3d[i].in_index;
             if ( index<c0 )
             {
@@ -2843,9 +2843,9 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperRegularGridTopology<In,Out
 #else
         const topology::RegularGridTopology::Cube cube = this->fromTopology->getCubeCopy ( this->map[i].in_index );
 #endif
-        const OutReal fx = ( OutReal ) map[i].baryCoords[0];
-        const OutReal fy = ( OutReal ) map[i].baryCoords[1];
-        const OutReal fz = ( OutReal ) map[i].baryCoords[2];
+        const Real fx = ( Real ) map[i].baryCoords[0];
+        const Real fy = ( Real ) map[i].baryCoords[1];
+        const Real fz = ( Real ) map[i].baryCoords[2];
         this->addMatrixContrib(matrixJ, out, cube[0], ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) ));
         this->addMatrixContrib(matrixJ, out, cube[1], ( ( fx ) * ( 1-fy ) * ( 1-fz ) ));
 #ifdef SOFA_NEW_HEXA
@@ -2891,9 +2891,9 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperSparseGridTopology<In,Out>
 #else
         const topology::SparseGridTopology::Cube cube = this->fromTopology->getCube ( this->map[i].in_index );
 #endif
-        const OutReal fx = ( OutReal ) map[i].baryCoords[0];
-        const OutReal fy = ( OutReal ) map[i].baryCoords[1];
-        const OutReal fz = ( OutReal ) map[i].baryCoords[2];
+        const Real fx = ( Real ) map[i].baryCoords[0];
+        const Real fy = ( Real ) map[i].baryCoords[1];
+        const Real fz = ( Real ) map[i].baryCoords[2];
         this->addMatrixContrib(matrixJ, out, cube[0], ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) ));
         this->addMatrixContrib(matrixJ, out, cube[1], ( ( fx ) * ( 1-fy ) * ( 1-fz ) ));
 #ifdef SOFA_NEW_HEXA

@@ -145,12 +145,12 @@ void GlText::draw ( const T& text, const defaulttype::Vector3& position, const d
     glGetFloatv ( GL_MODELVIEW_MATRIX , modelviewM.ptr() );
     modelviewM.transpose();
 
-    defaulttype::Vec3d temp ( position[0],  position[1],  position[2]);
+    defaulttype::Vec3d temp ( position[0],  position[1],  position[2] );
     temp = modelviewM.transform ( temp );
 
     glLoadIdentity();
-    glTranslatef ( temp[0], temp[1], temp[2] );
-    glScalef ( scale,scale,scale );
+    glTranslatef ( (float)temp[0], (float)temp[1], (float)temp[2] );
+    glScalef ( (float)scale, (float)scale, (float)scale );
 
     while ( *s )
     {

@@ -683,12 +683,12 @@ void MechanicalObject<DataTypes>::applyScale(const double sx,const double sy,con
 {
     helper::WriteAccessor< Data<VecCoord> > x_wA = *this->write(VecCoordId::position());
 
-    const Vector3 s(sx, sy, sz);
+    const Vec<3,Real> s((Real)sx, (Real)sy, (Real)sz);
     for (unsigned int i=0; i<x_wA.size(); i++)
     {
-        x_wA[i][0] = x_wA[i][0] * sx;
-        x_wA[i][1] = x_wA[i][1] * sy;
-        x_wA[i][2] = x_wA[i][2] * sz;
+        x_wA[i][0] = x_wA[i][0] * s[0];
+        x_wA[i][1] = x_wA[i][1] * s[1];
+        x_wA[i][2] = x_wA[i][2] * s[2];
     }
 }
 
@@ -732,7 +732,7 @@ void MechanicalObject<DataTypes>::computeWeightedValue( const unsigned int i, co
                 for (j = 0; j < ancestorsSize; ++j)
                 {
                     ancestorsCoord[j] = vecCoord[ancestors[j]];
-                    ancestorsCoefs[j] = coefs[j];
+                    ancestorsCoefs[j] = (Real)coefs[j];
                 }
 
                 vecCoord[i] = DataTypes::interpolate(ancestorsCoord, ancestorsCoefs);
@@ -753,7 +753,7 @@ void MechanicalObject<DataTypes>::computeWeightedValue( const unsigned int i, co
                 for (j = 0; j < ancestorsSize; ++j)
                 {
                     ancestorsDeriv[j] = vecDeriv[ancestors[j]];
-                    ancestorsCoefs[j] = coefs[j];
+                    ancestorsCoefs[j] = (Real)coefs[j];
                 }
 
                 vecDeriv[i] = DataTypes::interpolate(ancestorsDeriv, ancestorsCoefs);
@@ -827,7 +827,7 @@ void MechanicalObject<DataTypes>::copyFromBaseVector(VecId dest, const defaultty
             for (unsigned int j = 0; j < coordDim; j++)
             {
                 Real tmp;
-                tmp = src->element(offset + i * coordDim + j);
+                tmp = (Real)src->element(offset + i * coordDim + j);
                 DataTypeInfo<Coord>::setValue(vDest[i], j, tmp);
             }
         }
@@ -844,7 +844,7 @@ void MechanicalObject<DataTypes>::copyFromBaseVector(VecId dest, const defaultty
             for (unsigned int j = 0; j < derivDim; j++)
             {
                 Real tmp;
-                tmp = src->element(offset + i * derivDim + j);
+                tmp = (Real)src->element(offset + i * derivDim + j);
                 DataTypeInfo<Deriv>::setValue(vDest[i], j, tmp);
             }
         }
@@ -2481,7 +2481,7 @@ inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* 
     if (showIndices.getValue())
     {
         glColor3f(1.0,1.0,1.0);
-        float scale = ( vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox() ).norm() * showIndicesScale.getValue();
+        float scale = (float)( ( vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox() ).norm() * showIndicesScale.getValue() );
 
         Mat<4,4, GLfloat> modelviewM;
 
@@ -2494,7 +2494,7 @@ inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* 
             //glVertex3f(getPX(i),getPY(i),getPZ(i) );
             glPushMatrix();
 
-            glTranslatef(getPX(i), getPY(i), getPZ(i));
+            glTranslatef((float)getPX(i), (float)getPY(i), (float)getPZ(i));
             glScalef(scale,scale,scale);
 
             // Makes text always face the viewer by removing the scene rotation
@@ -2508,7 +2508,7 @@ inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* 
             //glLoadMatrixf(modelview);
             glLoadIdentity();
 
-            glTranslatef(temp[0], temp[1], temp[2]);
+            glTranslatef((float)temp[0], (float)temp[1], (float)temp[2]);
             glScalef(scale,scale,scale);
 
             while(*s)
@@ -2542,7 +2542,7 @@ inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* 
             Vector3 p1 = Vector3(getPX(i), getPY(i), getPZ(i));
             Vector3 p2 = Vector3(getPX(i)+scale*vx, getPY(i)+scale*vy, getPZ(i)+scale*vz);
 
-            float rad = (p1-p2).norm()/20.0;
+            float rad = (float)( (p1-p2).norm()/20.0 );
             switch (drawMode.getValue())
             {
             case 0:
@@ -3155,8 +3155,8 @@ bool MechanicalObject<DataTypes>::pickParticles(const core::ExecParams* /* param
     {
         // seems to be valid DOFs
         const VecCoord& x = *this->getX();
-        Vec<3,Real> origin(rayOx, rayOy, rayOz);
-        Vec<3,Real> direction(rayDx, rayDy, rayDz);
+        Vec<3,Real> origin((Real)rayOx, (Real)rayOy, (Real)rayOz);
+        Vec<3,Real> direction((Real)rayDx, (Real)rayDy, (Real)rayDz);
 //                    cerr<<"MechanicalObject<DataTypes>::pickParticles, ray point = " << rayOx << ", " << rayOy << ", " << rayOz << endl;
 //                    cerr<<"MechanicalObject<DataTypes>::pickParticles, ray dir = " << rayDx << ", " << rayDy << ", " << rayDz << endl;
 //                    cerr<<"MechanicalObject<DataTypes>::pickParticles, radius0 = " << radius0 << endl;

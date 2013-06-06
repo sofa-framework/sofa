@@ -55,9 +55,9 @@ void ConicalForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* 
 
 
     const Coord center = coneCenter.getValue();
-    Real d = 0.0;
-    Real alpha = 0.0;
-    Real length_cp_prime = 0.0;
+    Real d = 0.0f;
+    Real alpha = 0.0f;
+    Real length_cp_prime = 0.0f;
     Coord p, p_prime, cp, dir, n_cp, cp_new, cp_prime, pp_prime, t;
     Coord n = coneHeight.getValue();
     n.normalize();
@@ -94,7 +94,7 @@ void ConicalForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* 
                 if (dot(cp,n) > 0)
                 {
                     n_cp = cp/cp.norm();
-                    alpha = acos(n_cp*n) - coneAngle.getValue()*3.1459/180 ;
+                    alpha = (Real)( acos(n_cp*n) - coneAngle.getValue()*M_PI/180 );
                     t = n.cross(cp) ;
                     t /= t.norm();
                     defaulttype::Quat q(t, -alpha);
@@ -139,7 +139,7 @@ void ConicalForceField<DataTypes>::addDForce(const sofa::core::MechanicalParams*
     VecDeriv& df1 = *(datadF.beginEdit());
     const VecCoord& dx1=datadX.getValue();
 
-    const Real kFact = mparams->kFactor();
+    const Real kFact = (Real) mparams->kFactor();
 
     df1.resize(dx1.size());
     for (unsigned int i=0; i<this->contacts.getValue().size(); i++)
@@ -172,7 +172,7 @@ void ConicalForceField<DataTypes>::draw(const core::visual::VisualParams* vparam
     const Real a = coneAngle.getValue();
     Coord height = coneHeight.getValue();
     const Real h = sqrt(pow(coneHeight.getValue()[0],2) + pow(coneHeight.getValue()[1],2) +	pow(coneHeight.getValue()[2],2));
-    const Real b = tan((a/180*3.14)) * h;
+    const Real b = (Real)tan((a/180*M_PI)) * h;
     const Coord c = coneCenter.getValue();
     Coord axis = height.cross(Coord(0,0,1));
 
@@ -184,7 +184,7 @@ void ConicalForceField<DataTypes>::draw(const core::visual::VisualParams* vparam
 
     glPushMatrix();
     glTranslated(c[0], c[1], c[2]);
-    glRotated(acos(height*Coord(0,0,1)/h)*180/3.14 ,-axis[0], axis[1], axis[2]);
+    glRotated(acos(height*Coord(0,0,1)/h)*180/M_PI ,-axis[0], axis[1], axis[2]);
     glRotatef(180.0,1.0,0.0,0.0);
     glTranslated(0.0, 0.0, -h);
 
@@ -230,7 +230,7 @@ bool ConicalForceField<DataTypes>::isIn(Coord p)
     for(unsigned i=0 ; i<3 ; ++i)
         vecP[i]=p[i]-c[i];
 
-    if ( (acos(vecP*height/(h*distP))*180/3.14) > coneAngle.getValue() )
+    if ( (acos(vecP*height/(h*distP))*180/M_PI) > coneAngle.getValue() )
     {
 
         return false;

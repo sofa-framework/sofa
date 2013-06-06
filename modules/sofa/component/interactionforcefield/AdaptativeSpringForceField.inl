@@ -346,21 +346,21 @@ void AdaptativeSpringForceField<DataTypes>::draw(const core::visual::VisualParam
 
             if((ksMean-ksSigma*(j+1)*d)<=stiffness && stiffness<=(ksMean-ksSigma*(j)*d))
             {
-                c2[0] = (float) 0.5-0.5*k/(sepNb);
-                c2[1] = (float) 0.5+0.5*(k/(sepNb));
-                c2[2] = (float) 0.25+0.25*(k/(sepNb));
+                c2[0] = (float)( 0.5-0.5*k/(sepNb) );
+                c2[1] = (float)( 0.5+0.5*(k/(sepNb)) );
+                c2[2] = (float)( 0.25+0.25*(k/(sepNb)) );
             }
             else if((ksMean+ksSigma*j*d)<=stiffness && stiffness<=(ksMean+ksSigma*(j+1)*d))
             {
-                c2[0] = (float) 0.5+0.5*k/(sepNb);
-                c2[1] = (float) 0.5-0.5*(k/(sepNb));
-                c2[2] = (float) 0.25-0.25*(k/(sepNb));
+                c2[0] = (float)( 0.5+0.5*k/(sepNb) );
+                c2[1] = (float)( 0.5-0.5*(k/(sepNb)) );
+                c2[2] = (float)( 0.25-0.25*(k/(sepNb)) );
             }
             else if (stiffness<(ksMean-ksSigma*d*sepNb))
             {
                 c2[0] = 0;
                 c2[1] = 1;
-                c2[2] = 0.5;
+                c2[2] = 0.5f;
             }
             else if (stiffness>(ksMean+ksSigma*d*sepNb))
             {

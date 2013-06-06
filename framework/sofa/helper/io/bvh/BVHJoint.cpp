@@ -87,7 +87,7 @@ void BVHJoint::display(int frameNum)
     glVertex3d(0.0, 0.0, 0.0);
     glVertex3d(offset->x, offset->y, offset->z);
     glEnd();
-    glTranslatef(offset->x, offset->y, offset->z);
+    glTranslatef((float)offset->x, (float)offset->y, (float)offset->z);
 
     glGetDoublev(GL_MODELVIEW_MATRIX,matrix);
 
@@ -98,22 +98,22 @@ void BVHJoint::display(int frameNum)
             switch (channels->channels[i])
             {
             case BVHChannels::Xposition:
-                glTranslatef(motion->frames[frameNum][i],0,0);
+                glTranslatef((float)motion->frames[frameNum][i],0,0);
                 break;
             case BVHChannels::Yposition:
-                glTranslatef(0,motion->frames[frameNum][i],0);
+                glTranslatef(0,(float)motion->frames[frameNum][i],0);
                 break;
             case BVHChannels::Zposition:
-                glTranslatef(0,0,motion->frames[frameNum][i]);
+                glTranslatef(0,0,(float)motion->frames[frameNum][i]);
                 break;
             case BVHChannels::Xrotation:
-                glRotatef(motion->frames[frameNum][i],1,0,0);
+                glRotatef((float)motion->frames[frameNum][i],1,0,0);
                 break;
             case BVHChannels::Yrotation:
-                glRotatef(motion->frames[frameNum][i],0,1,0);
+                glRotatef((float)motion->frames[frameNum][i],0,1,0);
                 break;
             case BVHChannels::Zrotation:
-                glRotatef(motion->frames[frameNum][i],0,0,1);
+                glRotatef((float)motion->frames[frameNum][i],0,0,1);
                 break;
             default:
                 break;

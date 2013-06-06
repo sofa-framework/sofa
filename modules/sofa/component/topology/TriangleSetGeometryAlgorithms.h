@@ -63,7 +63,7 @@ protected:
         : EdgeSetGeometryAlgorithms<DataTypes>()
         ,showTriangleIndices (initData(&showTriangleIndices, (bool) false, "showTriangleIndices", "Debug : view Triangle indices"))
         , _draw(initData(&_draw, false, "drawTriangles","if true, draw the triangles in the topology"))
-        , _drawColor(initData(&_drawColor, sofa::defaulttype::Vector3(0.2,1.0,1.0), "drawColorTriangles", "RGB code color used to draw edges."))
+        , _drawColor(initData(&_drawColor, sofa::defaulttype::Vec3f(0.2f,1.0f,1.0f), "drawColorTriangles", "RGB code color used to draw edges."))
         , _drawNormals(initData(&_drawNormals, false, "drawNormals","if true, draw the triangles in the topology"))
         , _drawNormalLength (initData(&_drawNormalLength, (SReal)10, "drawNormalLength", "Fiber length visualisation."))
         , p_recomputeTrianglesOrientation(initData(&p_recomputeTrianglesOrientation, false, "recomputeTrianglesOrientation","if true, will recompute triangles orientation according to normals."))
@@ -267,7 +267,7 @@ public:
 protected:
     Data<bool> showTriangleIndices;
     Data<bool> _draw;
-    Data<sofa::defaulttype::Vector3> _drawColor;
+    Data<sofa::defaulttype::Vec3f> _drawColor;
     Data<bool> _drawNormals;
     Data <SReal> _drawNormalLength;
     Data<bool> p_recomputeTrianglesOrientation;

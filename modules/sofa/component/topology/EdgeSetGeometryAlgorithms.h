@@ -75,7 +75,7 @@ protected:
         : PointSetGeometryAlgorithms<DataTypes>()
         , showEdgeIndices(core::objectmodel::Base::initData(&showEdgeIndices, (bool) false, "showEdgeIndices", "Debug : view Edge indices."))
         , _draw(core::objectmodel::Base::initData(&_draw, false, "drawEdges","if true, draw the edges in the topology."))
-        , _drawColor(initData(&_drawColor, sofa::defaulttype::Vector3(0.4,1.0,0.3), "drawColorEdges", "RGB code color used to draw edges."))
+        , _drawColor(initData(&_drawColor, sofa::defaulttype::Vec3f(0.4f,1.0f,0.3f), "drawColorEdges", "RGB code color used to draw edges."))
     {
     }
     virtual ~EdgeSetGeometryAlgorithms() {}
@@ -155,7 +155,7 @@ public:
 protected:
     Data<bool> showEdgeIndices;
     Data<bool> _draw;
-    Data<sofa::defaulttype::Vector3> _drawColor;
+    Data<sofa::defaulttype::Vec3f> _drawColor;
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_CPP)

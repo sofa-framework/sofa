@@ -580,13 +580,13 @@ sofa::helper::vector <unsigned int> RemovePrimitivePerformer<DataTypes>::getElem
     if (root) root = root->getRoot();
     if (root) { sceneMinBBox = root->f_bbox.getValue().minBBox(); sceneMaxBBox = root->f_bbox.getValue().maxBBox(); }
     else      { sceneMinBBox = mstateCollision->getContext()->f_bbox.getValue().minBBox(); sceneMaxBBox = mstateCollision->getContext()->f_bbox.getValue().maxBBox(); }
-    Real BB_size = (sceneMaxBBox - sceneMinBBox).norm();
+    Real BB_size = (Real)(sceneMaxBBox - sceneMinBBox).norm();
     if (BB_size == 0)
     {
         std::cerr << "Error while computing Boundingbox size, size return null." << std::endl;
         BB_size = 1; // not to crash program
     }
-    Real zone_size = (BB_size*selectorScale)/200;
+    Real zone_size = (Real)(BB_size*selectorScale)/200;
     Real dist;
     Coord center = picked.point;
 
@@ -676,7 +676,7 @@ void RemovePrimitivePerformer<DataTypes>::draw(const core::visual::VisualParams*
     //core::topology::BaseMeshTopology* topo = picked.body->getMeshTopology();
 
     glDisable(GL_LIGHTING);
-    glColor3f(0.3,0.8,0.3);
+    glColor3f(0.3f,0.8f,0.3f);
 
 
     if (topoType == QUAD || topoType == HEXAHEDRON)

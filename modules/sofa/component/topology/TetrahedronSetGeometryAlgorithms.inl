@@ -134,10 +134,10 @@ bool TetrahedronSetGeometryAlgorithms< DataTypes >::isPointInTetrahedron(const T
     {
         if( (v0/V > -ZERO) && (v1/V > -ZERO) && (v2/V > -ZERO) && (v3/V > -ZERO) )
         {
-            shapeFunctions[0] = v0/V;
-            shapeFunctions[1] = v1/V;
-            shapeFunctions[2] = v2/V;
-            shapeFunctions[3] = v3/V;
+            shapeFunctions[0] = (Real)( v0/V );
+            shapeFunctions[1] = (Real)( v1/V );
+            shapeFunctions[2] = (Real)( v2/V );
+            shapeFunctions[3] = (Real)( v3/V );
             return true;
         }
         else
@@ -559,7 +559,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visua
     {
         Mat<4,4, GLfloat> modelviewM;
         const VecCoord& coords = *(this->object->getX());
-        const sofa::defaulttype::Vector3& color = _drawColor.getValue();
+        const sofa::defaulttype::Vec3f& color = _drawColor.getValue();
         glColor3f(color[0], color[1], color[2]);
         glDisable(GL_LIGHTING);
         float scale = this->getIndicesScale();
@@ -621,7 +621,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visua
         if (!tetraArray.empty())
         {
             glDisable(GL_LIGHTING);
-            const sofa::defaulttype::Vector3& color = _drawColor.getValue();
+            const sofa::defaulttype::Vec3f& color = _drawColor.getValue();
             glColor3f(color[0], color[1], color[2]);
             glBegin(GL_LINES);
             const VecCoord& coords = *(this->object->getX());

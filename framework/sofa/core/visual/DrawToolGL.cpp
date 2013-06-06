@@ -31,7 +31,7 @@
 #include <sofa/helper/gl/Axis.h>
 #include <sofa/helper/gl/Cylinder.h>
 #include <sofa/helper/gl/template.h>
-
+#include <math.h>
 
 namespace sofa
 {
@@ -328,7 +328,7 @@ void DrawToolGL::drawCapsule(const Vector3& p1, const Vector3 &p2, float radius,
     for (i2=0 ; i2<=subd ; i2++)
     {
         /* sweep out a circle */
-        theta =  i2 * 2.0 * 3.14 / subd;
+        theta =  (float)( i2 * 2.0f * M_PI / subd );
         st = sin(theta);
         ct = cos(theta);
         /* construct normal */
@@ -397,7 +397,7 @@ void DrawToolGL::drawCone(const Vector3& p1, const Vector3 &p2, float radius1, f
     for (i2=0 ; i2<=subd ; i2++)
     {
         /* sweep out a circle */
-        theta =  i2 * 2.0 * 3.14 / subd;
+        theta =  (float)( i2 * 2.0f * M_PI / subd );
         st = sin(theta);
         ct = cos(theta);
         /* construct normal */
@@ -467,7 +467,7 @@ void DrawToolGL::drawArrow(const Vector3& p1, const Vector3 &p2, float radius, c
 
     Vector3 p3 = p1*.2+p2*.8;
     drawCylinder( p1,p3,radius,colour,subd);
-    drawCone( p3,p2,radius*2.5,0,colour,subd);
+    drawCone( p3,p2,radius*2.5f,0,colour,subd);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -563,41 +563,41 @@ void DrawToolGL::drawBoundingBox( const Vector3 &min, const Vector3 &max )
     glBegin( GL_LINES );
 
     // 0-1
-    glVertex3f( min[0], min[1], min[2] );
-    glVertex3f( max[0], min[1], min[2] );
+    glVertex3f( (float)min[0], (float)min[1], (float)min[2] );
+    glVertex3f( (float)max[0], (float)min[1], (float)min[2] );
     // 2-3
-    glVertex3f( max[0], max[1], min[2] );
-    glVertex3f( min[0], max[1], min[2] );
+    glVertex3f( (float)max[0], (float)max[1], (float)min[2] );
+    glVertex3f( (float)min[0], (float)max[1], (float)min[2] );
     // 4-5
-    glVertex3f( min[0], min[1], max[2] );
-    glVertex3f( max[0], min[1], max[2] );
+    glVertex3f( (float)min[0], (float)min[1], (float)max[2] );
+    glVertex3f( (float)max[0], (float)min[1], (float)max[2] );
     // 6-7
-    glVertex3f( max[0], max[1], max[2] );
-    glVertex3f( min[0], max[1], max[2] );
+    glVertex3f( (float)max[0], (float)max[1], (float)max[2] );
+    glVertex3f( (float)min[0], (float)max[1], (float)max[2] );
     // 0-3
-    glVertex3f( min[0], min[1], min[2] );
-    glVertex3f( min[0], max[1], min[2] );
+    glVertex3f( (float)min[0], (float)min[1], (float)min[2] );
+    glVertex3f( (float)min[0], (float)max[1], (float)min[2] );
     // 1-2
-    glVertex3f( max[0], min[1], min[2] );
-    glVertex3f( max[0], max[1], min[2] );
+    glVertex3f( (float)max[0], (float)min[1], (float)min[2] );
+    glVertex3f( (float)max[0], (float)max[1], (float)min[2] );
     // 4-7
-    glVertex3f( min[0], min[1], max[2] );
-    glVertex3f( min[0], max[1], max[2] );
+    glVertex3f( (float)min[0], (float)min[1], (float)max[2] );
+    glVertex3f( (float)min[0], (float)max[1], (float)max[2] );
     // 5-6
-    glVertex3f( max[0], min[1], max[2] );
-    glVertex3f( max[0], max[1], max[2] );
+    glVertex3f( (float)max[0], (float)min[1], (float)max[2] );
+    glVertex3f( (float)max[0], (float)max[1], (float)max[2] );
     // 0-4
-    glVertex3f( min[0], min[1], min[2] );
-    glVertex3f( min[0], min[1], max[2] );
+    glVertex3f( (float)min[0], (float)min[1], (float)min[2] );
+    glVertex3f( (float)min[0], (float)min[1], (float)max[2] );
     // 1-5
-    glVertex3f( max[0], min[1], min[2] );
-    glVertex3f( max[0], min[1], max[2] );
+    glVertex3f( (float)max[0], (float)min[1], (float)min[2] );
+    glVertex3f( (float)max[0], (float)min[1], (float)max[2] );
     // 2-6
-    glVertex3f( max[0], max[1], min[2] );
-    glVertex3f( max[0], max[1], max[2] );
+    glVertex3f( (float)max[0], (float)max[1], (float)min[2] );
+    glVertex3f( (float)max[0], (float)max[1], (float)max[2] );
     // 3-7
-    glVertex3f( min[0], max[1], min[2] );
-    glVertex3f( min[0], max[1], max[2] );
+    glVertex3f( (float)min[0], (float)max[1], (float)min[2] );
+    glVertex3f( (float)min[0], (float)max[1], (float)max[2] );
 
     glEnd();
 }
@@ -705,7 +705,7 @@ void DrawToolGL::writeOverlayText( int x, int y, unsigned fontSize, const Vec4f 
     glGetIntegerv( GL_VIEWPORT, viewport );
 
 
-    static const float letterSize = glutStrokeWidth( GLUT_STROKE_ROMAN, 'm' );
+    static const float letterSize = (float)glutStrokeWidth( GLUT_STROKE_ROMAN, 'm' );
 
     float scale = fontSize / letterSize;
 
@@ -741,7 +741,7 @@ void DrawToolGL::writeOverlayText( int x, int y, unsigned fontSize, const Vec4f 
 
     glScalef( scale, scale, scale );
 
-    glLineWidth( fontSize/20.0 );
+    glLineWidth( fontSize/20.0f );
 
     for( const char*c = text ; *c ; ++c )
     {

@@ -164,7 +164,7 @@ void ShapeMatching<DataTypes>::update()
             for (it = clust[i].begin(), itEnd = clust[i].end(); it != itEnd ; ++it)
             {
                 Coord p0 = (*it<nbp)?restPositions[*it]:fixedPositions0[*it-nbp];
-                Real w = (*it<nbp)?1.0:this->fixedweight.getValue();
+                Real w = (*it<nbp)?(Real)1.0:this->fixedweight.getValue();
                 Xcm0[i] += p0*w;
                 Qxinv[i] += covNN(p0,p0)*w;
                 W[i] += w;
@@ -192,7 +192,7 @@ void ShapeMatching<DataTypes>::update()
             {
                 Coord p0 = (*it<nbp)?restPositions[*it]:fixedPositions0[*it-nbp];
                 Coord p = (*it<nbp)?targetPos[*it]:fixedPositions[*it-nbp];
-                Real w = (*it<nbp)?1.0:this->fixedweight.getValue();
+                Real w = (*it<nbp)?(Real)1.0:this->fixedweight.getValue();
                 Xcm[i] += p*w;
                 T[i] += covNN(p,p0)*w;
             }
@@ -206,7 +206,7 @@ void ShapeMatching<DataTypes>::update()
                 //if (determinant(R) < 0) for(unsigned int j=0 ; j<3;j++) R[j][0] *= -1;  // handle symmetry
             }
             if(affineRatio.getValue()!=(Real)0.0)
-                T[i] = T[i] * Qxinv[i] * (affineRatio.getValue()) + R * (1.0-affineRatio.getValue());
+                T[i] = T[i] * Qxinv[i] * (affineRatio.getValue()) + R * (1.0f-affineRatio.getValue());
             else T[i] = R;
         }
 

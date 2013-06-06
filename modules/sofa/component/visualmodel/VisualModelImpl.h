@@ -54,7 +54,7 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::loader;
 
 
-class RigidState : public core::State< Rigid3fTypes >
+class SOFA_BASE_VISUAL_API RigidState : public core::State< Rigid3fTypes >
 {
 public:
     VecCoord xforms;
@@ -87,7 +87,7 @@ public:
     virtual const Data<MatrixDeriv>*  read(core::ConstMatrixDerivId /* v */) const {  return NULL; }
 };
 
-class ExtVec3fState : public core::State< ExtVec3fTypes >
+class SOFA_BASE_VISUAL_API ExtVec3fState : public core::State< ExtVec3fTypes >
 {
 public:
     topology::PointData< ResizableExtVector<Coord> > m_positions;

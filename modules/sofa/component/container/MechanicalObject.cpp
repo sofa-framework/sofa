@@ -231,8 +231,8 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::draw(const core::visual::Visua
 
     if (showIndices.getValue())
     {
-        glColor3f(1.0,1.0,1.0);
-        float scale = ( vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox() ).norm() * showIndicesScale.getValue();
+        glColor3f(1.0f,1.0f,1.0f);
+        float scale = (float)( ( vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox() ).norm() * showIndicesScale.getValue() );
 
         Mat<4,4, GLfloat> modelviewM;
 
@@ -245,7 +245,7 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::draw(const core::visual::Visua
             //glVertex3f(getPX(i),getPY(i),getPZ(i) );
             glPushMatrix();
 
-            glTranslatef(getPX(i), getPY(i), getPZ(i));
+            glTranslatef((float)getPX(i), (float)getPY(i), (float)getPZ(i));
             glScalef(scale,scale,scale);
 
             // Makes text always face the viewer by removing the scene rotation
@@ -259,7 +259,7 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::draw(const core::visual::Visua
             //glLoadMatrixf(modelview);
             glLoadIdentity();
 
-            glTranslatef(temp[0], temp[1], temp[2]);
+            glTranslatef((float)temp[0], (float)temp[1], (float)temp[2]);
             glScalef(scale,scale,scale);
 
             while(*s)
@@ -339,7 +339,7 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::addFromBaseVectorDifferentSize
             q_dest = q_src*q_dest;
             for (unsigned int j=0; j<4; j++)
             {
-                Real tmp=q_dest[j];
+                Real tmp=(Real)q_dest[j];
                 DataTypeInfo<Coord>::setValue(vDest[i+offset], j+3, tmp);
             }
         }
@@ -395,7 +395,7 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::addFromBaseVectorSameSize(core
             q_dest = q_src*q_dest;
             for (unsigned int j=0; j<4; j++)
             {
-                Real tmp=q_dest[j];
+                Real tmp=(Real)q_dest[j];
                 DataTypeInfo<Coord>::setValue(vDest[i], j+3, tmp);
             }
         }
@@ -435,7 +435,7 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::draw(const core::visual::Visua
         glColor3f(1.0,1.0,1.0);
         glPushAttrib(GL_LIGHTING_BIT);
         glDisable(GL_LIGHTING);
-        float scale = ( vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox() ).norm() * showIndicesScale.getValue();
+        float scale = (float)( ( vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox() ).norm() * showIndicesScale.getValue() );
 
         Mat<4,4, GLfloat> modelviewM;
 
@@ -448,7 +448,7 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::draw(const core::visual::Visua
             //glVertex3f(getPX(i),getPY(i),getPZ(i) );
             glPushMatrix();
 
-            glTranslatef(getPX(i), getPY(i), getPZ(i));
+            glTranslatef((float)getPX(i), (float)getPY(i), (float)getPZ(i));
             glScalef(scale,scale,scale);
 
             // Makes text always face the viewer by removing the scene rotation
@@ -462,7 +462,7 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::draw(const core::visual::Visua
             //glLoadMatrixf(modelview);
             glLoadIdentity();
 
-            glTranslatef(temp[0], temp[1], temp[2]);
+            glTranslatef((float)temp[0], (float)temp[1], (float)temp[2]);
             glScalef(scale,scale,scale);
 
             while(*s)
@@ -505,7 +505,7 @@ void MechanicalObject<defaulttype::LaparoscopicRigid3Types>::draw(const core::vi
         glColor3f(1.0,1.0,1.0);
         glPushAttrib(GL_LIGHTING_BIT);
         glDisable(GL_LIGHTING);
-        float scale = ( vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox() ).norm() * showIndicesScale.getValue();
+        float scale = (float)( ( vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox() ).norm() * showIndicesScale.getValue() );
 
         Mat<4,4, GLfloat> modelviewM;
 
@@ -518,7 +518,7 @@ void MechanicalObject<defaulttype::LaparoscopicRigid3Types>::draw(const core::vi
             //glVertex3f(getPX(i),getPY(i),getPZ(i) );
             glPushMatrix();
 
-            glTranslatef(getPX(i), getPY(i), getPZ(i));
+            glTranslatef((float)getPX(i), (float)getPY(i), (float)getPZ(i));
             glScalef(scale,scale,scale);
 
             // Makes text always face the viewer by removing the scene rotation
@@ -532,7 +532,7 @@ void MechanicalObject<defaulttype::LaparoscopicRigid3Types>::draw(const core::vi
             //glLoadMatrixf(modelview);
             glLoadIdentity();
 
-            glTranslatef(temp[0], temp[1], temp[2]);
+            glTranslatef((float)temp[0], (float)temp[1], (float)temp[2]);
             glScalef(scale,scale,scale);
 
             while(*s)
@@ -553,7 +553,7 @@ void MechanicalObject<defaulttype::LaparoscopicRigid3Types>::draw(const core::vi
         for (int i = 0; i < vsize; ++i)
         {
             vparams->drawTool()->pushMatrix();
-            glTranslatef(getPX(i), getPY(i), getPZ(i));
+            glTranslatef((float)getPX(i), (float)getPY(i), (float)getPZ(i));
             vparams->drawTool()->scale ( scale );
             vparams->drawTool()->drawFrame(Vector3(), x[i].getOrientation(), Vector3(1.0,1.0,1.0));
             vparams->drawTool()->popMatrix();

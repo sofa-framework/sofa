@@ -105,7 +105,7 @@ private:
 
     //rest data
     unsigned int oldRestPositionSize;
-    unsigned int oldfixedweight;
+    Real oldfixedweight;
     VecCoord Xcm0;
     VecCoord Xcm;
     helper::vector<unsigned int> nbClust;

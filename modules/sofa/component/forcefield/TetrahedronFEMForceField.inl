@@ -1713,7 +1713,7 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
     const VecReal & youngModulus = _youngModulus.getValue();
 
     /// vonMises stress
-    Real minVM = 1e20, maxVM = -1e20;
+    Real minVM = (Real)1e20, maxVM = (Real)-1e20;
     helper::ReadAccessor<Data<helper::vector<Real> > > vM =  _vonMises;
     if (_computeVonMisesStress.getValue() > 0) {
         if (updateVonMisesStress)

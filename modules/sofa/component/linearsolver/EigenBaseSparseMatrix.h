@@ -115,7 +115,7 @@ public:
 
     /// Schedule the addition of the value at the given place. Scheduled additions must be finalized using function compress() .
     void add( int row, int col, SReal value ){
-        incoming.push_back( Triplet(row,col,value) );
+        incoming.push_back( Triplet(row,col,(Real)value) );
     }
 
     /// Insert in the compressed matrix. There must be no value at this place already. Efficient only if the value is inserted at the last place of the last row.

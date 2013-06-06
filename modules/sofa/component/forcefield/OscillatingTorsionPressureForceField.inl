@@ -156,7 +156,7 @@ void OscillatingTorsionPressureForceField<DataTypes>::addForce(const core::Mecha
 
     // apply remaining moment
     //Real check = 0;
-    Real remainingMoment = moment.getValue() * getAmplitude() - appliedMoment;
+    Real remainingMoment = (Real)( moment.getValue() * getAmplitude() - appliedMoment );
     for (unsigned int i=0; i<x.size(); i++) if (pointActive[i])
         {
             if (distFromCenter[i] > 1e-10)

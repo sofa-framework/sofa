@@ -310,8 +310,8 @@ void ValuesFromPositions<DataTypes>::update()
     Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
     sofa::simulation::Node* context = dynamic_cast<sofa::simulation::Node*>(this->getContext());
     sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
-    data.bmin = *sceneMinBBox.ptr();
-    data.bmax = *sceneMaxBBox.ptr();
+    data.bmin = (Real)*sceneMinBBox.ptr(); /// @TODO: shouldn't this be dot(sceneMinBBox,data.dir) ?
+    data.bmax = (Real)*sceneMaxBBox.ptr(); /// @TODO: shouldn't this be dot(sceneMaxBBox,data.dir) ?
 
     //std::cout << "data.bmax: " << sceneMaxBBox << std::endl;
     //std::cout << "data.bmin: " << sceneMinBBox << std::endl;
@@ -443,7 +443,7 @@ void ValuesFromPositions<DataTypes>::draw(const core::visual::VisualParams* )
         helper::WriteAccessor< Data<sofa::helper::vector<Vec3> > > tetrahedronVectors = f_tetrahedronVectors;
 
         CPos point2, point1;
-        Vec<3,double> colors(0,0,1);
+        Vec<3,float> colors(0,0,1);
 
         float vectorLength = p_vectorLength.getValue();
         glBegin(GL_LINES);
@@ -459,7 +459,7 @@ void ValuesFromPositions<DataTypes>::draw(const core::visual::VisualParams* )
             point2 = point1 + tetrahedronVectors[i]*vectorLength;
 
             for(unsigned int j=0; j<3; j++)
-                colors[j] = fabs (tetrahedronVectors[i][j]);
+                colors[j] = (float)fabs (tetrahedronVectors[i][j]);
 
             glColor3f (colors[0], colors[1], colors[2]);
 

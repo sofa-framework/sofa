@@ -331,7 +331,7 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::applyJT( typename In:
     actualOut.resize(out.size());
     for (size_t i = 0; i < out.size(); i++)
         for (size_t j = 0; j < out[i].size(); j++)
-            actualOut[i][j] = 0.1*out[i][j];
+            actualOut[i][j] = 0.1f*out[i][j];
 
 }  //applyJT
 
