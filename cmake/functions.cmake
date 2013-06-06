@@ -68,7 +68,7 @@ macro(SOFA_QT4_WRAP_CPP outfiles )
 
 	set(defines)
 	foreach(it ${GLOBAL_COMPILER_DEFINES})
-		list(APPEND defines "-D${it}")
+		list(APPEND defines "-D${it}")	
 	endforeach()
 
 	foreach(it ${moc_files})
@@ -367,19 +367,20 @@ function(ComputeDependencies projectName forceEnable fromProject offset)
 			set(dependencies ${GLOBAL_PROJECT_DEPENDENCIES_${projectName}})
 			
 			# and compute its compiler definitions
-			set(compilerDefines ${${projectName}_COMPILER_DEFINES})
+			set(dependenciesCompilerDefines)
 			
 			#message(STATUS "${offset} + ${projectName}")
 			foreach(dependency ${dependencies})
 				ComputeDependencies(${dependency} true "${projectName}" "${offset} ")
 				
-				set(compilerDefines ${compilerDefines} ${GLOBAL_PROJECT_OPTION_COMPILER_DEFINITIONS_${dependency}})
+				set(dependenciesCompilerDefines ${dependenciesCompilerDefines} ${GLOBAL_PROJECT_REGISTERED_COMPILER_DEFINITIONS_${dependency}})
 			endforeach()
 			#message(STATUS "${offset} - ${projectName}")
 			
 			# set the updated compiler definitions of the current project
+			set(GLOBAL_PROJECT_REGISTERED_COMPILER_DEFINITIONS_${projectName} ${dependenciesCompilerDefines} ${GLOBAL_PROJECT_OPTION_COMPILER_DEFINITIONS_${projectName}} CACHE INTERNAL "${projectName} compiler definitions from option and dependencies options" FORCE)
 			if(TARGET ${projectName})
-				set(compilerDefines ${compilerDefines} ${GLOBAL_PROJECT_OPTION_COMPILER_DEFINITIONS_${projectName}})
+				set(compilerDefines ${${projectName}_COMPILER_DEFINES} ${GLOBAL_PROJECT_REGISTERED_COMPILER_DEFINITIONS_${projectName}})
 				list(REMOVE_DUPLICATES compilerDefines)
 				set_target_properties(${projectName} PROPERTIES COMPILE_DEFINITIONS "${compilerDefines}")
 			endif()
