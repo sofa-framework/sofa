@@ -132,6 +132,9 @@ __global__ void UniformMassCudaRigid3t_addMDx_kernel(const unsigned int size, co
 		tmp[6*threadIdx.x] *= mass;
 		tmp[6*threadIdx.x+1] *= mass;
 		tmp[6*threadIdx.x+2] *= mass;
+		tmp[6*threadIdx.x+3] *= mass;
+		tmp[6*threadIdx.x+4] *= mass;
+		tmp[6*threadIdx.x+5] *= mass;
 	}
 	
 	__syncthreads();
@@ -143,17 +146,6 @@ __global__ void UniformMassCudaRigid3t_addMDx_kernel(const unsigned int size, co
 	res[4*BSIZE+bid+threadIdx.x] += tmp[4*BSIZE+threadIdx.x];
 	res[5*BSIZE+bid+threadIdx.x] += tmp[5*BSIZE+threadIdx.x];
 	
-// 	if( gid < size )
-// 		printf("%d : %f %f %f %f %f %f\n", gid, res[6*gid+0], res[6*gid+1], res[6*gid+2], res[6*gid+3], res[6*gid+4], res[6*gid+5]);
-	
-// 	if( gid < size )
-// 	{
-// 		real dxi = dx[gid];
-// 		real ri = res[gid];
-// 		ri += dxi * mass;
-// 		res[gid] = ri;
-// // 		printf("%d : dx = %f - ri = %f\n", gid, dxi, ri);
-// 	}
 }
 
 template<class real>
@@ -221,6 +213,9 @@ __global__ void UniformMassCudaRigid3t_accFromF_kernel(const unsigned int size, 
 		tmp[6*threadIdx.x] *= inv_mass;
 		tmp[6*threadIdx.x+1] *= inv_mass;
 		tmp[6*threadIdx.x+2] *= inv_mass;
+		tmp[6*threadIdx.x+3] *= inv_mass;
+		tmp[6*threadIdx.x+4] *= inv_mass;
+		tmp[6*threadIdx.x+5] *= inv_mass;
 	}
 	
 	__syncthreads();
