@@ -11,7 +11,7 @@
 #include "./utils/cast.h"
 #include "./utils/sparse.h"
 
-#include <boost/graph/graphviz.hpp>
+// #include <boost/graph/graphviz.hpp>
 
 namespace sofa {
 namespace simulation {
@@ -674,11 +674,11 @@ struct writer {
 	
 };
 
-template<class G>
-static void debug_graph(const G& g) {
-	std::ofstream out("/tmp/graph");
-	boost::write_graphviz(out, g, writer<G>(g));
-}
+// template<class G>
+// static void debug_graph(const G& g) {
+// 	std::ofstream out("/tmp/graph");
+// 	boost::write_graphviz(out, g, writer<G>(g));
+// }
 
 
 struct AssemblyVisitor::process_helper {
