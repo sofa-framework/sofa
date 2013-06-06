@@ -759,14 +759,34 @@ FindContactSet<TOBB<TDataTypes> >::FindContactSet (const Vec<3,Real> segment[2],
     }
 }
 
+template <typename Real>
+Vec<3,Real> IntrUtil<Real>::nearestPointOnSeg(const Vec<3,Real> & seg0,const Vec<3,Real> & seg1,const Vec<3,Real> & point){
+    const Vec<3,Real> AB = seg1-seg0;
+    const Vec<3,Real> AQ = point -seg0;
+    double A;
+    double b;
+    A = AB*AB;
+    b = AQ*AB;
+
+    Real alpha = b/A;
+    if (alpha <= 0.0){
+        return seg0;
+    }
+    else if (alpha >= 1.0){
+        return seg1;
+    }
+    else{
+        return seg0 + AB * alpha;
+    }
+}
 
 
 template <typename Real>
-void IntrUtil<Real>::segNearestPoints(const Vec<3,Real> * p, const Vec<3,Real> * q,Vec<3,Real> & P,Vec<3,Real> & Q)
-{
-    const Vec<3,Real> AB = p[1]-p[0];
-    const Vec<3,Real> CD = q[1]-q[0];
-    const Vec<3,Real> AC = q[0]-p[0];
+void IntrUtil<Real>::segNearestPoints(const Vec<3,Real> & p0,const Vec<3,Real> & p1, const Vec<3,Real> & q0,const Vec<3,Real> & q1,Vec<3,Real> & P,Vec<3,Real> & Q){
+    const Vec<3,Real> AB = p1-p0;
+    const Vec<3,Real> CD = q1-q0;
+    const Vec<3,Real> AC = q0-p0;
+
     Matrix2 Amat;//matrix helping us to find the two nearest points lying on the segments of the two segments
     Vector2 b;
 
@@ -802,8 +822,8 @@ void IntrUtil<Real>::segNearestPoints(const Vec<3,Real> * p, const Vec<3,Real> *
         //So the nearest points are p and q which are respecively in the middle of cB and Cb:
         //            A--------c---p---B
         //                     C---q---b--------D
-        Vec<3,Real> AD = q[1] - p[0];
-        Vec<3,Real> CB = p[1] - q[0];
+        Vec<3,Real> AD = q1 - p0;
+        Vec<3,Real> CB = p1 - q0;
 
         double c_proj= b[0]/AB_norm2;//alpha = (AB * AC)/AB_norm2
         double d_proj = (AB * AD)/AB_norm2;
@@ -874,28 +894,28 @@ void IntrUtil<Real>::segNearestPoints(const Vec<3,Real> * p, const Vec<3,Real> *
             }
         }
 
-        P = p[0] + AB * alpha;
-        Q = q[0] + CD * beta;
+        P = p0 + AB * alpha;
+        Q = q0 + CD * beta;
 
         return;
     }
 
     if(alpha < 0){
         alpha = 0;
-        beta = (CD * (p[0] - q[0]))/CD_norm2;
+        beta = (CD * (p0 - q0))/CD_norm2;
     }
     else if(alpha > 1){
         alpha = 1;
-        beta = (CD * (p[1] - q[0]))/CD_norm2;
+        beta = (CD * (p1 - q0))/CD_norm2;
     }
 
     if(beta < 0){
         beta = 0;
-        alpha = (AB * (q[0] - p[0]))/AB_norm2;
+        alpha = (AB * (q0 - p0))/AB_norm2;
     }
     else if(beta > 1){
         beta = 1;
-        alpha = (AB * (q[1] - p[0]))/AB_norm2;
+        alpha = (AB * (q1 - p0))/AB_norm2;
     }
 
     if(alpha < 0)
@@ -903,9 +923,18 @@ void IntrUtil<Real>::segNearestPoints(const Vec<3,Real> * p, const Vec<3,Real> *
     else if (alpha > 1)
         alpha = 1;
 
-    P = p[0] + AB * alpha;
-    Q = q[0] + CD * beta;
+    P = p0 + AB * alpha;
+    Q = q0 + CD * beta;
 }
+
+
+
+template <typename Real>
+void IntrUtil<Real>::segNearestPoints(const Vec<3,Real> * p, const Vec<3,Real> * q,Vec<3,Real> & P,Vec<3,Real> & Q)
+{
+    segNearestPoints(p[0],p[1],q[0],q[1],P,Q);
+}
+
 //----------------------------------------------------------------------------
 template <class TDataTypes>
 FindContactSet<TOBB<TDataTypes> >::FindContactSet (const Box& box0,
