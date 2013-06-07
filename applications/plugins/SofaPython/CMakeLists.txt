@@ -1,7 +1,14 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 ## plugin external dependencies
-find_package(PythonLibs 2.7 REQUIRED)
+if (APPLE)
+    # on MacOS you must use macport to use python SDK
+    # standard FindPythonLibs script mess with macports and apple version
+    set(PYTHON_LIBRARIES "-F/opt/local/Library/Frameworks/ -framework Python")
+    set(PYTHON_INCLUDE_DIRS "/opt/local/Library/Frameworks/Python.framework/Headers") 
+else()
+    find_package(PythonLibs 2.7 REQUIRED)
+endif()
 include_directories(${PYTHON_INCLUDE_DIRS})
 
 set(HEADER_FILES
