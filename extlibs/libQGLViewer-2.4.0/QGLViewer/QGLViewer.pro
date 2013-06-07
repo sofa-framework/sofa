@@ -12,6 +12,7 @@ load(sofa/pre)
 TEMPLATE = lib
 TARGET = QGLViewer
 VERSION = 2.4.0
+CONFIG -= debug debug_and_release
 CONFIG *= qt opengl warn_on shared thread create_prl rtti no_keywords
 
 QGL_HEADERS = qglviewer.h \
@@ -52,6 +53,12 @@ QT_VERSION=$$[QT_VERSION]
 
 contains ( QT_VERSION, "^5.*" ) {
     QT *= widgets
+}
+
+
+contains(CONFIGSTATIC, static) {
+    CONFIG -= shared
+    QGLVIEWER_STATIC = qglviewer_static
 }
 
 !isEmpty( QGLVIEWER_STATIC ) {
@@ -172,7 +179,7 @@ unix {
   }
   
   MOC_DIR = .moc
-  OBJECTS_DIR = .obj
+#   OBJECTS_DIR = .obj
 
   # Adds a -P option so that "make install" as root creates files owned by root and links are preserved.
   # This is not a standard option, and it may have to be removed on old Unix flavors.
@@ -184,6 +191,7 @@ unix {
   QMAKE_CFLAGS_RELEASE -= -g
   QMAKE_CXXFLAGS_RELEASE -= -g
 
+  contains(DEFINES, INSTALL_QGLVIEWER) {
   # install header
   include.path = $${INCLUDE_DIR_}/QGLViewer
   # Should be $$replace(TRANSLATIONS, .ts, .qm), but 'replace' only appeared in Qt 4.3
@@ -215,6 +223,7 @@ unix {
 
   # "make install" configuration options
   INSTALLS *= target include documentation docImages docRefManual
+  }
 }
 
 
