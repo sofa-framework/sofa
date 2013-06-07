@@ -102,7 +102,7 @@ typename Component::SPtr addNew( Node::SPtr parentNode, std::string name="" )
 
 
 /// Create an assembly of a siff hexahedral grid with other objects
-simulation::Node::SPtr createGridScene(Vec3 startPoint, Vec3 endPoint, unsigned numX, unsigned numY, unsigned numZ, double totalMass, double stiffnessValue, double dampingRatio=0.0 )
+simulation::Node::SPtr createGridScene(Vec3 startPoint, Vec3 endPoint, unsigned numX, unsigned numY, unsigned numZ, double totalMass, double /*stiffnessValue*/, double /*dampingRatio*/=0.0 )
 {
     using helper::vector;
 
