@@ -1,17 +1,11 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 
-# include_directories(${OPENGL_INCLUDE_DIR})
-
 # in order to be able to include generated files (ui and moc)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 
-
 UseQt()
-# SET(QT_USE_QTXML TRUE)
-# SET(QT_USE_QTOPENGL TRUE)
-
 
 
 set(HEADER_FILES
@@ -38,25 +32,41 @@ set(SOURCE_FILES
 	mouseGrabber.cpp 
 	quaternion.cpp 
 	vec.cpp
+	
+	VRender/BackFaceCullingOptimizer.cpp
+	VRender/EPSExporter.cpp
+	VRender/FIGExporter.cpp
+	VRender/NVector3.cpp
+	VRender/Primitive.cpp
+	VRender/TopologicalSortMethod.cpp
+	VRender/Vector3.cpp
+	VRender/VRender.cpp
+	VRender/BSPSortMethod.cpp
+	VRender/Exporter.cpp
+	VRender/gpc.cpp
+	VRender/ParserGL.cpp
+	VRender/PrimitivePositioning.cpp
+	VRender/Vector2.cpp
+	VRender/VisibilityOptimizer.cpp
 
 	)
 	
 	
 
-	
+
 if(SOFA-EXTERNAL_PREFER_QT4)
 
 	
 	set(UI_FILES
 
-	  "ImageInterface.ui"
-# 	  VRenderInterface.Qt4.ui
+	  ImageInterface.ui
+ 	  VRenderInterface.ui
 	
 	)	
 	
 	SOFA_QT4_WRAP_CPP(MOC_FILES ${HEADER_FILES})
 	QT4_WRAP_UI(FORM_FILES ${UI_FILES})
-	SOFA_QT4_WRAP_CPP(MOC2_FILES ${FORM_FILES})
+	SOFA_QT4_WRAP_CPP(MOC_UI_FILES ${FORM_FILES})
 else()
 
 	# problem regarding .ui filenames
@@ -68,7 +78,7 @@ endif()
 
 # make mocced header / form files path from absolute to relative
 ToRelativePath(MOC_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${MOC_FILES}")
-ToRelativePath(MOC2_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${MOC2_FILES}")
+ToRelativePath(MOC_UI_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${MOC_UI_FILES}")
 ToRelativePath(FORM_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${FORM_FILES}")
 
 
@@ -81,17 +91,32 @@ list(APPEND HEADER_FILES
 	mouseGrabber.h 
 	quaternion.h 
 	vec.h 
+	
+	VRender/AxisAlignedBox.h
+	VRender/Exporter.h
+	VRender/gpc.h
+	VRender/NVector3.h
+	VRender/Optimizer.h
+	VRender/ParserGL.h
+	VRender/Primitive.h
+	VRender/PrimitivePositioning.h
+	VRender/SortMethod.h
+	VRender/Types.h
+	VRender/Vector2.h
+	VRender/Vector3.h
+	VRender/VRender.h
+	
 	)
 
 
 set(MOC_FILES_GROUP "Generated")
+set(MOC_UI_FILES_GROUP "Generated")
 set(FORM_FILES_GROUP "Generated")
 
 
 include_directories("..")
 
-AddCompilerDefinitions("NO_VECTORIAL_RENDER")
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_FILES} ${MOC2_FILES} ${FORM_FILES} ${SOURCE_FILES})
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_FILES} ${MOC_UI_FILES} ${FORM_FILES} ${SOURCE_FILES})
 AddLinkerDependencies(${OPENGL_LIBRARIES})
 
 # fix link errors when linked with shared libraries
