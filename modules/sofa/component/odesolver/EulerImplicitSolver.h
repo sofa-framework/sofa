@@ -180,8 +180,6 @@ public:
         else
             return vect[outputDerivative];
     }
-
-    sofa::core::MultiVecDerivId xID;
 };
 
 } // namespace odesolver

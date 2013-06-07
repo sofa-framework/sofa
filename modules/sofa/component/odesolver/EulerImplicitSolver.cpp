@@ -87,15 +87,10 @@ void EulerImplicitSolver::solve(const core::ExecParams* params /* PARAMS FIRST *
     MultiVecCoord pos(&vop, core::VecCoordId::position() );
     MultiVecDeriv vel(&vop, core::VecDerivId::velocity() );
     MultiVecDeriv f(&vop, core::VecDerivId::force() );
+    MultiVecDeriv x(&vop);
     MultiVecDeriv b(&vop);
     MultiVecCoord newPos(&vop, xResult );
     MultiVecDeriv newVel(&vop, vResult );
-
-    if (this->getContext()->getTime()==0.0) {
-        vop.v_alloc(xID);
-    }
-
-    MultiVecDeriv x(&vop,xID);
 
 
 #ifdef SOFA_DUMP_VISITOR_INFO
