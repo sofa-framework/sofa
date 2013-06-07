@@ -26,16 +26,15 @@ set(README_FILES
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
-include_directories("${SOFA_EXTLIBS_DIR}/CGAL")
-find_library(CGAL_LIBRARIES NAMES CGAL cgal HINTS "${SOFA_EXTLIBS_DIR}/CGAL")
+find_package(CGAL REQUIRED)
+include_directories("${CGAL_DIR}/include")
 
-include_directories("${SOFA_EXTLIBS_DIR}/gmp")
-find_library(GMP_LIBRARIES NAMES gmp HINTS "${SOFA_EXTLIBS_DIR}/gmp)
+find_package(GMP REQUIRED)
+include_directories("${GMP_INCLUDE_DIR}")
 
-include_directories("${SOFA_EXTLIBS_DIR}/mpfr")
-find_library(MPRF_LIBRARIES NAMES mpfr HINTS "${SOFA_EXTLIBS_DIR}/mpfr)
+find_package(MPFR REQUIRED)
 
 AddCompilerDefinitions("SOFA_BUILD_CGALPLUGIN")
-AddLinkerDependencies(SofaGuiQt ${Boost_LIBRARIES} ${CGAL_LIBRARIES} ${GMP_LIBRARIES} ${MPRF_LIBRARIES})
+AddLinkerDependencies(SofaGuiQt ${Boost_LIBRARIES} ${GMP_LIBRARIES} ${MPFR_LIBRARIES})
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
