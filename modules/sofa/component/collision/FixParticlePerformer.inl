@@ -34,7 +34,7 @@
 
 #include <sofa/component/collision/SphereModel.h>
 #include <sofa/component/collision/TriangleModel.h>
-
+#include <sofa/component/collision/OBBModel.h>
 #include <sofa/component/collision/CapsuleModel.h>
 
 
@@ -105,14 +105,15 @@ void FixParticlePerformer<DataTypes>::execute()
 template <class DataTypes>
 void FixParticlePerformer<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    for (unsigned int i=0; i<fixations.size(); ++i)
-    {
-        bool b = vparams->displayFlags().getShowBehaviorModels();
-        core::visual::DisplayFlags* flags = const_cast<core::visual::DisplayFlags*>(&vparams->displayFlags());
-        flags->setShowBehaviorModels(true);
-        simulation::getSimulation()->draw(const_cast<core::visual::VisualParams*>(vparams),fixations[i]);
-        flags->setShowBehaviorModels(b);
-    }
+    /// @todo fix draw
+//    for (unsigned int i=0; i<fixations.size(); ++i)
+//    {
+//        bool b = vparams->displayFlags().getShowBehaviorModels();
+//        core::visual::DisplayFlags* flags = const_cast<core::visual::DisplayFlags*>(&vparams->displayFlags());
+//        flags->setShowBehaviorModels(true);
+//        simulation::getSimulation()->draw(const_cast<core::visual::VisualParams*>(vparams),fixations[i]);
+//        flags->setShowBehaviorModels(b);
+//    }
 }
 
 
@@ -125,7 +126,6 @@ FixParticlePerformer<DataTypes>::FixParticlePerformer(BaseMouseInteractor *i):TI
 template <class DataTypes>
 sofa::component::container::MechanicalObject< DataTypes >* FixParticlePerformer<DataTypes>::getFixationPoints(const BodyPicked &b, helper::vector<unsigned int> &points, typename DataTypes::Coord &fixPoint)
 {
-    exit(-1);
     const int idx=b.indexCollisionElement;
     MouseContainer* collisionState=0;
 
@@ -152,7 +152,7 @@ sofa::component::container::MechanicalObject< DataTypes >* FixParticlePerformer<
             points.push_back(capsule->point1Index(idx));
             points.push_back(capsule->point2Index(idx));
         }
-        else if(dynamic_cast<RigidSphereModel*>(b.body)){
+        else if(dynamic_cast<RigidSphereModel*>(b.body)||dynamic_cast<OBBModel*>(b.body)){
             collisionState = dynamic_cast<MouseContainer*>(b.mstate);
             fixPoint = (*(collisionState->getX()))[idx];
             points.push_back(idx);
