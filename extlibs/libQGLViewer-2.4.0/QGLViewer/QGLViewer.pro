@@ -11,7 +11,7 @@ load(sofa/pre)
 
 TEMPLATE = lib
 TARGET = QGLViewer
-VERSION = 2.4.0
+#VERSION = 2.4.0
 CONFIG -= debug debug_and_release
 CONFIG *= qt opengl warn_on shared thread create_prl rtti no_keywords
 
@@ -53,12 +53,6 @@ QT_VERSION=$$[QT_VERSION]
 
 contains ( QT_VERSION, "^5.*" ) {
     QT *= widgets
-}
-
-
-contains(CONFIGSTATIC, static) {
-    CONFIG -= shared
-    QGLVIEWER_STATIC = qglviewer_static
 }
 
 !isEmpty( QGLVIEWER_STATIC ) {
