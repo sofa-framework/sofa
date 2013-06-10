@@ -115,7 +115,7 @@ void drawSphere(const V& center, const float& rad, const int subd1=8, const int 
     helper::gl::glTranslateT( center );
     gluSphere(sphere,2.0*rad,subd1,subd2);
     glPopMatrix();
-// 		delete sphere;
+    // 		delete sphere;
 }
 
 template <typename V>
@@ -128,12 +128,58 @@ void drawWireSphere(const V& center, const float& rad, const int subd1=8, const 
     helper::gl::glTranslateT( center );
     gluSphere(sphere,2.0*rad,subd1,subd2);
     glPopMatrix();
-// 		delete sphere;
+    // 		delete sphere;
 }
 
+template <typename V>
+void drawTorus(const float* coordinateMatrix, const float& bodyRad=0.0,  const float& rad=1.0, const int precision=20, const V& color=Vec3i(255,215,180))
+{
+    GLUquadricObj* disk = gluNewQuadric();
+    glColor3ub(color.x(), color.y(), color.z());
+    gluQuadricDrawStyle(disk, GLU_FILL);
+    gluQuadricOrientation(disk, GLU_OUTSIDE);
+    gluQuadricNormals(disk, GLU_SMOOTH);
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glMultMatrixf(coordinateMatrix);
+    //gluDisk(disk, 2.0*bodyRad, 2.0*rad, 10, 10);
 
+    float rr=1.5f*bodyRad;
+    double dv=2*M_PI/precision;
+    double dw=2*M_PI/precision;
+    double v=0.0f;
+    double w=0.0f;
+
+    while(w < 2*M_PI+dw)
+    {
+        v=0.0f;
+        glBegin(GL_TRIANGLE_STRIP);
+        // inner loop
+        while(v<2*M_PI+dv)
+        {
+            glNormal3d( (rad+rr*cos(v))*cos(w)-(rad+bodyRad*cos(v))*cos(w),
+                        (rad+rr*cos(v))*sin(w)-(rad+bodyRad*cos(v))*sin(w),
+                        (rr*sin(v)-bodyRad*sin(v)));
+            glVertex3d((rad+bodyRad*cos(v))*cos(w),
+                       (rad+bodyRad*cos(v))*sin(w),
+                       bodyRad*sin(v));
+            glNormal3d( (rad+rr*cos(v+dv))*cos(w+dw)-(rad+bodyRad*cos(v+dv))*cos(w+dw),
+                        (rad+rr*cos(v+dv))*sin(w+dw)-(rad+bodyRad*cos(v+dv))*sin(w+dw),
+                        rr*sin(v+dv)-bodyRad*sin(v+dv));
+            glVertex3d((rad+bodyRad*cos(v+dv))*cos(w+dw),
+                       (rad+bodyRad*cos(v+dv))*sin(w+dw),
+                       bodyRad*sin(v+dv));
+            v+=dv;
+        } // inner loop
+        glEnd();
+        w+=dw;
+        glPopMatrix();
+        //         delete torus;
+    }
 }
 }
+}
+
 }
 
 #endif /* SOFA_NO_OPENGL */
