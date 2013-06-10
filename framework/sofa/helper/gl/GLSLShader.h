@@ -25,6 +25,10 @@
 #ifndef SOFA_HELPER_GL_GLSLSHADER_H
 #define SOFA_HELPER_GL_GLSLSHADER_H
 
+#ifndef SOFA_HAVE_GLEW
+#error GL Shader support requires GLEW. Please define SOFA_HAVE_GLEW to use shaders.
+#endif
+
 #ifdef SOFA_HAVE_GLEW
 
 #include <sofa/helper/system/gl.h>
@@ -47,9 +51,7 @@ namespace helper
 namespace gl
 {
 
-#ifndef SOFA_HAVE_GLEW
-//#error GL Shader support requires GLEW. Please define SOFA_HAVE_GLEW to use shaders.
-#endif
+
 
 class SOFA_HELPER_API GLSLShader
 {

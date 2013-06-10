@@ -86,7 +86,6 @@ typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphSc
 bool startAnim = true;
 bool verbose = false;
 SReal complianceValue = 0.1;
-SReal dampingRatio = 0.1;
 Vec3 gravity(0,-1,0);
 SReal dt = 0.01;
 
@@ -102,7 +101,7 @@ typename Component::SPtr addNew( Node::SPtr parentNode, std::string name="" )
 
 
 /// Create an assembly of a siff hexahedral grid with other objects
-simulation::Node::SPtr createGridScene(Vec3 startPoint, Vec3 endPoint, unsigned numX, unsigned numY, unsigned numZ, double totalMass, double /*stiffnessValue*/, double /*dampingRatio*/=0.0 )
+simulation::Node::SPtr createGridScene(Vec3 startPoint, Vec3 endPoint, unsigned numX, unsigned numY, unsigned numZ, double totalMass/*, double stiffnessValue, double dampingRatio=0.0*/ )
 {
     using helper::vector;
 
@@ -271,7 +270,7 @@ int main(int argc, char** argv)
     sofa::gui::GUIManager::SetDimension(800,600);
 
     //=================================================
-    sofa::simulation::Node::SPtr groot = createGridScene(Vec3(0,0,0), Vec3(5,1,1), 6,2,2, 1.0, 100 );
+    sofa::simulation::Node::SPtr groot = createGridScene(Vec3(0,0,0), Vec3(5,1,1), 6,2,2, 1.0 );
     //=================================================
 
     sofa::simulation::getSimulation()->init(groot.get());

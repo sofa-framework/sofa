@@ -103,7 +103,7 @@ void FixParticlePerformer<DataTypes>::execute()
 
 
 template <class DataTypes>
-void FixParticlePerformer<DataTypes>::draw(const core::visual::VisualParams* vparams)
+void FixParticlePerformer<DataTypes>::draw(const core::visual::VisualParams* /*vparams*/)
 {
     /// @todo fix draw
 //    for (unsigned int i=0; i<fixations.size(); ++i)
