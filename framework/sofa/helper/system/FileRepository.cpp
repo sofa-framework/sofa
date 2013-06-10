@@ -68,12 +68,10 @@ static FileRepository createSofaDataPath()
     FileRepository repository("SOFA_DATA_PATH");
 #if defined (WIN32) || defined (_XBOX) || defined(PS3)
     repository.addLastPath( sofa_tostring(SOFA_BUILD_DIR) );
-    repository.addLastPath( ADD_SOFA_SRC_BIN_DIR( /.. ) );
     repository.addLastPath( ADD_SOFA_SRC_BIN_DIR( /../share ) );
     repository.addLastPath( ADD_SOFA_SRC_BIN_DIR( /../examples ) );
 #elif defined (__APPLE__)
     repository.addLastPath( sofa_tostring(SOFA_BUILD_DIR) );
-    repository.addLastPath( ADD_SOFA_SRC_BIN_DIR( /.. ) );
     repository.addLastPath( ADD_SOFA_SRC_BIN_DIR( /../share ) );
     repository.addLastPath( ADD_SOFA_SRC_BIN_DIR( /../examples ) );
     repository.addLastPath( ADD_SOFA_SRC_BIN_DIR( /../Resources/examples ) );
@@ -82,7 +80,6 @@ static FileRepository createSofaDataPath()
     repository.addLastPath( ADD_SOFA_SRC_BIN_DIR( /../../../../share ) );
 #else // LINUX
     repository.addLastPath( sofa_tostring(SOFA_BUILD_DIR) );
-    repository.addLastPath( ADD_SOFA_SRC_BIN_DIR( /.. ) );
     repository.addLastPath( ADD_SOFA_SRC_BIN_DIR( /../share ) );
     repository.addLastPath( ADD_SOFA_SRC_BIN_DIR( /../examples ) );
     repository.addLastPath( ADD_SOFA_SRC_BIN_DIR( /../../Verification/data ) );
