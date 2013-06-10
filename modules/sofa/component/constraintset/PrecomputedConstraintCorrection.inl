@@ -233,22 +233,30 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         this->getContext()->get(cgLinearSolver);
         this->getContext()->get(linearSolver);
 
+#ifdef SOFA_HAVE_EIGEN2
         simulation::Node *solvernode = NULL;
+#endif
 
         if (eulerSolver && cgLinearSolver)
         {
             sout << "use EulerImplicitSolver & CGLinearSolver" << sendl;
+#ifdef SOFA_HAVE_EIGEN2
             solvernode = (simulation::Node*)eulerSolver->getContext();
+#endif
         }
         else if (eulerSolver && linearSolver)
         {
             sout << "use EulerImplicitSolver & LinearSolver" << sendl;
+#ifdef SOFA_HAVE_EIGEN2
             solvernode = (simulation::Node*)eulerSolver->getContext();
+#endif
         }
         else if(eulerSolver)
         {
             sout << "use EulerImplicitSolver" << sendl;
+#ifdef SOFA_HAVE_EIGEN2
             solvernode = (simulation::Node*)eulerSolver->getContext();
+#endif
         }
         else
         {
