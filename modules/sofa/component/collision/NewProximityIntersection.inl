@@ -103,39 +103,7 @@ bool NewProximityIntersection::testIntersection(TSphere<DataTypes> &,OBB &){
 template <class DataTypes1,class DataTypes2>
 int NewProximityIntersection::computeIntersection(TSphere<DataTypes1>& sph1, TSphere<DataTypes2>& sph2, OutputVector* contacts)
 {
-//    const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity() + e1.r() + e2.r();
-//    int n = doIntersectionPointPoint(alarmDist*alarmDist, e1.center(), e2.center(), contacts, (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex());
-//    if (n>0)
-//    {
-//        const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity() + e1.r() + e2.r();
-//        for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
-//        {
-//            detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
-//            detection->value -= contactDist;
-//        }
-//    }
-//    return n;
-    double r = sph1.r() + sph2.r();
-    double alarmDist = getAlarmDistance() + r;
-    Vector3 dist = sph2.center() - sph1.center();
-
-    if (dist.norm2() >= alarmDist*alarmDist)
-        return 0;
-
-    contacts->resize(contacts->size()+1);
-    DetectionOutput *detection = &*(contacts->end()-1);
-    detection->normal = dist;
-    double distSph1Sph2 = detection->normal.norm();
-    detection->normal /= distSph1Sph2;
-    detection->point[0] = sph1.center() + detection->normal * sph1.r();
-    detection->point[1] = sph2.center() - detection->normal * sph2.r();
-
-    detection->value = distSph1Sph2 - r - getContactDistance() - sph1.getProximity() - sph2.getProximity();
-    detection->elem.first = sph1;
-    detection->elem.second = sph2;
-    detection->id = (sph1.getCollisionModel()->getSize() > sph2.getCollisionModel()->getSize()) ? sph1.getIndex() : sph2.getIndex();
-
-    return 1;
+    return BaseIntTool::computeIntersection(sph1,sph2,sph1.getProximity() + sph2.getProximity() + getAlarmDistance(),getContactDistance(),contacts);
 }
 
 } // namespace collision

@@ -456,6 +456,94 @@ int MeshIntTool::computeIntersection(Triangle& tri,int flags,OBB & obb,double al
     return 0;
 }
 
+int MeshIntTool::projectPointOnTriangle(int flags, const Vector3& p1, const Vector3& p2, const Vector3& p3, Vector3 & to_be_projected)
+{
+    const Vector3 AB = p2-p1;
+    const Vector3 AC = p3-p1;
+    const Vector3 AQ = to_be_projected -p1;
+    Matrix2 A;
+    Vector2 b;
+    A[0][0] = AB*AB;
+    A[1][1] = AC*AC;
+    A[0][1] = A[1][0] = AB*AC;
+    b[0] = AQ*AB;
+    b[1] = AQ*AC;
+    const double det = determinant(A);
+
+    double alpha = 0.5;
+    double beta = 0.5;
+
+    //if (det < -0.000000000001 || det > 0.000000000001)
+    {
+        alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
+        beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
+        //if (alpha < 0.000001 ||
+        //    beta  < 0.000001 ||
+        //    alpha + beta  > 0.999999)
+        //        return 0;
+        if (alpha < 0.000001 || beta < 0.000001 || alpha + beta > 0.999999)
+        {
+            // nearest point is on an edge or corner
+            // barycentric coordinate on AB
+            double pAB = b[0] / A[0][0]; // AQ*AB / AB*AB
+            // barycentric coordinate on AC
+            double pAC = b[1] / A[1][1]; // AQ*AB / AB*AB
+            if (pAB < 0.000001 && pAC < 0.0000001)
+            {
+                // closest point is A
+                if (!(flags&TriangleModel::FLAG_P1)) return 0; // this corner is not considered
+                alpha = 0.0;
+                beta = 0.0;
+            }
+            else if (pAB < 0.999999 && beta < 0.000001)
+            {
+                // closest point is on AB
+                if (!(flags&TriangleModel::FLAG_E12)) return 0; // this edge is not considered
+                alpha = pAB;
+                beta = 0.0;
+            }
+            else if (pAC < 0.999999 && alpha < 0.000001)
+            {
+                // closest point is on AC
+                if (!(flags&TriangleModel::FLAG_E12)) return 0; // this edge is not considered
+                alpha = 0.0;
+                beta = pAC;
+            }
+            else
+            {
+                // barycentric coordinate on BC
+                // BQ*BC / BC*BC = (AQ-AB)*(AC-AB) / (AC-AB)*(AC-AB) = (AQ*AC-AQ*AB + AB*AB-AB*AC) / (AB*AB+AC*AC-2AB*AC)
+                double pBC = (b[1] - b[0] + A[0][0] - A[1][1]) / (A[0][0] + A[1][1] - 2*A[0][1]); // BQ*BC / BC*BC
+                if (pBC < 0.000001)
+                {
+                    // closest point is B
+                    if (!(flags&TriangleModel::FLAG_P2)) return 0; // this edge is not considered
+                    alpha = 1.0;
+                    beta = 0.0;
+                }
+                else if (pBC > 0.999999)
+                {
+                    // closest point is C
+                    if (!(flags&TriangleModel::FLAG_P3)) return 0; // this edge is not considered
+                    alpha = 0.0;
+                    beta = 1.0;
+                }
+                else
+                {
+                    // closest point is on BC
+                    if (!(flags&TriangleModel::FLAG_E31)) return 0; // this edge is not considered
+                    alpha = 1.0-pBC;
+                    beta = pBC;
+                }
+            }
+        }
+    }
+
+    to_be_projected = p1 + AB * alpha + AC * beta;
+
+    return 1;
+}
+
 class SOFA_MESH_COLLISION_API MeshIntTool;
 
 }

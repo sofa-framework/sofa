@@ -63,7 +63,7 @@ void NewProximityIntersection::init()
     intersectors.add<SphereModel, SphereModel, NewProximityIntersection>(this);
     intersectors.add<CapsuleModel,CapsuleModel, NewProximityIntersection> (this);
     intersectors.add<CapsuleModel,SphereModel, NewProximityIntersection> (this);
-    intersectors.add<OBBModel,OBBModel, NewProximityIntersection> (this);
+    //intersectors.add<OBBModel,OBBModel, NewProximityIntersection> (this);
     intersectors.add<CapsuleModel,OBBModel, NewProximityIntersection> (this);
     intersectors.add<SphereModel,OBBModel, NewProximityIntersection> (this);
 
@@ -77,20 +77,7 @@ void NewProximityIntersection::init()
 
 bool NewProximityIntersection::testIntersection(Cube &cube1, Cube &cube2)
 {
-    const Vector3& minVect1 = cube1.minVect();
-    const Vector3& minVect2 = cube2.minVect();
-    const Vector3& maxVect1 = cube1.maxVect();
-    const Vector3& maxVect2 = cube2.maxVect();
-
-    const double alarmDist = getAlarmDistance() + cube1.getProximity() + cube2.getProximity();
-
-    for (int i = 0; i < 3; i++)
-    {
-        if ( minVect1[i] > maxVect2[i] + alarmDist || minVect2[i] > maxVect1[i] + alarmDist )
-            return false;
-    }
-
-    return true;
+    return BaseIntTool::testIntersection(cube1,cube2,getAlarmDistance() + cube1.getProximity() + cube2.getProximity());
 }
 
 

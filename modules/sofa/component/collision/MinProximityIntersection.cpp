@@ -33,6 +33,7 @@
 #include <iostream>
 #include <algorithm>
 #include <sofa/helper/gl/template.h>
+#include <sofa/component/collision/BaseIntTool.h>
 
 #define DYNAMIC_CONE_ANGLE_COMPUTATION
 
@@ -71,20 +72,7 @@ void MinProximityIntersection::init()
 
 bool MinProximityIntersection::testIntersection(Cube &cube1, Cube &cube2)
 {
-    const Vector3& minVect1 = cube1.minVect();
-    const Vector3& minVect2 = cube2.minVect();
-    const Vector3& maxVect1 = cube1.maxVect();
-    const Vector3& maxVect2 = cube2.maxVect();
-
-    const double alarmDist = getAlarmDistance() + cube1.getProximity() + cube2.getProximity();
-
-    for (int i = 0; i < 3; i++)
-    {
-        if ( minVect1[i] > maxVect2[i] + alarmDist || minVect2[i] > maxVect1[i] + alarmDist )
-            return false;
-    }
-
-    return true;
+    return BaseIntTool::testIntersection(cube1,cube2,getAlarmDistance() + cube1.getProximity() + cube2.getProximity());
 }
 
 int MinProximityIntersection::computeIntersection(Cube&, Cube&, OutputVector* /*contacts*/)
@@ -97,7 +85,19 @@ int MinProximityIntersection::computeIntersection(Capsule & e1,Capsule & e2,Outp
 }
 
 int MinProximityIntersection::computeIntersection(Capsule & cap, Sphere & sph,OutputVector* contacts){
-    return CapsuleIntTool::computeIntersection(cap,sph,getAlarmDistance() + cap.getProximity() + sph.getProximity(),getContactDistance()+ cap.getProximity() + sph.getProximity(),contacts);
+    return CapsuleIntTool::computeIntersection(cap,sph,getAlarmDistance() + cap.getProximity() + sph.getProximity(),getContactDistance() + cap.getProximity() + sph.getProximity(),contacts);
+}
+
+int MinProximityIntersection::computeIntersection(Capsule& cap, OBB& obb,OutputVector* contacts){
+    return CapsuleIntTool::computeIntersection(cap,obb,getAlarmDistance() + cap.getProximity() + obb.getProximity(),getContactDistance()+ cap.getProximity() + obb.getProximity(),contacts);
+}
+
+int MinProximityIntersection::computeIntersection( Sphere& sph,OBB& obb,OutputVector* contacts){
+    return OBBIntTool::computeIntersection(sph,obb,getAlarmDistance() + sph.getProximity() + obb.getProximity(),getContactDistance()+ sph.getProximity() + obb.getProximity(),contacts);
+}
+
+int MinProximityIntersection::computeIntersection(OBB& obb0,OBB& obb1,OutputVector* contacts){
+    return OBBIntTool::computeIntersection(obb0,obb1,getAlarmDistance() + obb0.getProximity() + obb1.getProximity(),getContactDistance()+ obb0.getProximity() + obb1.getProximity(),contacts);
 }
 
 /*

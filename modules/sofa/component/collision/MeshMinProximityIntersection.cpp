@@ -409,8 +409,6 @@ int MeshMinProximityIntersection::computeIntersection(Line& e2, Point& e1, Outpu
     if (QP.norm2() >= alarmDist*alarmDist)
         return 0;
 
-    //Vector3 PQ = Q-P;
-
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
 

@@ -9,7 +9,7 @@ namespace collision
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 
-bool CapsuleIntTool::computeIntersection(Capsule & e1,Capsule & e2,double alarmDist,double contactDist,OutputVector * contacts){
+int CapsuleIntTool::computeIntersection(Capsule & e1,Capsule & e2,double alarmDist,double contactDist,OutputVector * contacts){
     double contact_exists = e1.radius() + e2.radius() + alarmDist;
 
     Vector3 A = e1.point1();
@@ -167,7 +167,7 @@ bool CapsuleIntTool::computeIntersection(Capsule & e1,Capsule & e2,double alarmD
     PQ = Q-P;
 
     if (PQ.norm2() >= contact_exists * contact_exists)
-        return false;    
+        return 0;
 
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
@@ -184,11 +184,11 @@ bool CapsuleIntTool::computeIntersection(Capsule & e1,Capsule & e2,double alarmD
     detection->normal /= detection->value;
 
     detection->value -= theory_contactDist;
-    return true;
+    return 1;
 }
 
 
-bool CapsuleIntTool::computeIntersection(Capsule& cap, OBB& obb,double alarmDist,double contactDist,OutputVector* contacts){
+int CapsuleIntTool::computeIntersection(Capsule& cap, OBB& obb,double alarmDist,double contactDist,OutputVector* contacts){
     IntrCapsuleOBB intr(cap,obb);
     if(intr.Find(alarmDist)){
         OBB::Real dist2 = (intr.pointOnFirst() - intr.pointOnSecond()).norm2();
