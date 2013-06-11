@@ -44,6 +44,7 @@ HEADERS = \
 		AssembledSystem.h \
 		AssembledSolver.h \
 		Projector.h \
+        utils/*.h
 
 
 README_FILE = Compliant.txt

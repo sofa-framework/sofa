@@ -117,6 +117,9 @@ public:
 
     static Simulation::SPtr theSimulation;
 
+    /// Can the simulation handle a directed acyclic graph?
+    virtual bool isDirectedAcyclicGraph() = 0;
+
 protected:
     /// The only one top root Node of the Sofa scene
     static Node::SPtr sRoot;

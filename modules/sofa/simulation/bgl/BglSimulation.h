@@ -66,18 +66,22 @@ public:
     /// creates and returns a new node.
     virtual Node::SPtr createNewNode(const std::string& name);
 
-
-
-
     void reset ( Node* root );
 
     /// Initialize all the nodes and edges depth-first
     void init(Node* root);
+
+    /// Can the simulation handle a directed acyclic graph?
+    virtual bool isDirectedAcyclicGraph() { return true; }
+
     /// @}
+
 };
 
 SOFA_SIMULATION_BGL_API Simulation* getSimulation();
 }
+
+
 }
 }
 
