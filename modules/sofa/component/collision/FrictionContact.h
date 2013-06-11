@@ -75,7 +75,7 @@ protected:
 };
 
 
-template <class TCollisionModel1, class TCollisionModel2>
+template <class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes = sofa::defaulttype::Vec3Types >
 class FrictionContact : public core::collision::Contact, public Identifier
 {
 public:
@@ -83,8 +83,11 @@ public:
     typedef TCollisionModel1 CollisionModel1;
     typedef TCollisionModel2 CollisionModel2;
     typedef core::collision::Intersection Intersection;
-    typedef typename CollisionModel1::DataTypes DataTypes1;
-    typedef typename CollisionModel2::DataTypes DataTypes2;
+//    typedef typename CollisionModel1::DataTypes DataTypes1;
+//    typedef typename CollisionModel2::DataTypes DataTypes2;
+    typedef ResponseDataTypes DataTypes1;
+    typedef ResponseDataTypes DataTypes2;
+
     typedef core::behavior::MechanicalState<DataTypes1> MechanicalState1;
     typedef core::behavior::MechanicalState<DataTypes2> MechanicalState2;
     typedef typename CollisionModel1::Element CollisionElement1;
