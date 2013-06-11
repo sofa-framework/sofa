@@ -325,6 +325,12 @@ function(ComputeDependencies projectName forceEnable fromProject offset)
 			endif()
 		endif()
 	endif()
+	# check if the project is a test, if this is the case but SOFA-MISC_TESTS is disabled we do not enable the project
+	if(check EQUAL 1 AND NOT SOFA-MISC_TESTS)
+		if(projectName MATCHES ".*_test.*")
+			set(check 0)
+		endif()
+	endif()
 	# process the project
 	if(check EQUAL 1)
 		# process the project if it has not been processed yet
