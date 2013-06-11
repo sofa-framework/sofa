@@ -57,7 +57,6 @@ DiscreteIntersection::DiscreteIntersection()
     intersectors.add<SphereModel,     SphereModel,       DiscreteIntersection> (this);
     intersectors.add<CapsuleModel,CapsuleModel, DiscreteIntersection> (this);
     intersectors.add<CapsuleModel,SphereModel, DiscreteIntersection> (this);
-    intersectors.add<RigidSphereModel,RigidSphereModel, DiscreteIntersection> (this);
     intersectors.add<OBBModel,OBBModel,DiscreteIntersection>(this);
     intersectors.add<CapsuleModel,OBBModel,DiscreteIntersection>(this);
     intersectors.add<SphereModel,OBBModel, DiscreteIntersection> (this);
@@ -73,23 +72,8 @@ ElementIntersector* DiscreteIntersection::findIntersector(core::CollisionModel* 
 }
 
 bool DiscreteIntersection::testIntersection(Cube& cube1, Cube& cube2)
-{
-    //std::cout<<"CUBE/CUBE testIntersection!!!!!!!!!!!!!!!!!!!!"<<std::endl;
-
-    const Vector3& minVect1 = cube1.minVect();
-    const Vector3& minVect2 = cube2.minVect();
-    const Vector3& maxVect1 = cube1.maxVect();
-    const Vector3& maxVect2 = cube2.maxVect();
-
-    for (int i=0; i<3; i++)
-    {
-        if (minVect1[i] > maxVect2[i] || minVect2[i] > maxVect1[i])
-            return false;
-    }
-
-    //sout << "Box <"<<minVect1[0]<<","<<minVect1[1]<<","<<minVect1[2]<<">-<"<<maxVect1[0]<<","<<maxVect1[1]<<","<<maxVect1[2]
-    //  <<"> collide with Box "<<minVect2[0]<<","<<minVect2[1]<<","<<minVect2[2]<<">-<"<<maxVect2[0]<<","<<maxVect2[1]<<","<<maxVect2[2]<<">"<<sendl;
-    return true;
+{    
+    return BaseIntTool::testIntersection(cube1,cube2,getAlarmDistance());
 }
 
 int DiscreteIntersection::computeIntersection(Cube&, Cube&, OutputVector*)
@@ -110,31 +94,6 @@ bool DiscreteIntersection::testIntersection(Capsule&, Sphere&){
 bool DiscreteIntersection::testIntersection(RigidSphere&,RigidSphere&){
     return false;
 }
-
-
-int DiscreteIntersection::computeIntersection(RigidSphere& sph1,RigidSphere & sph2, OutputVector *contacts){
-    double r = sph1.r() + sph2.r();
-    Vector3 dist = sph2.center() - sph1.center();
-
-    if (dist.norm2() >= r*r)
-        return 0;
-
-    contacts->resize(contacts->size()+1);
-    DetectionOutput *detection = &*(contacts->end()-1);
-    detection->normal = dist;
-    double distSph1Sph2 = detection->normal.norm();
-    detection->normal /= distSph1Sph2;
-    detection->point[0] = sph1.center() + detection->normal * sph1.r();
-    detection->point[1] = sph2.center() - detection->normal * sph2.r();
-
-    detection->value = distSph1Sph2 - r;
-    detection->elem.first = sph1;
-    detection->elem.second = sph2;
-    detection->id = (sph1.getCollisionModel()->getSize() > sph2.getCollisionModel()->getSize()) ? sph1.getIndex() : sph2.getIndex();
-
-    return 1;
-}
-
 
 int DiscreteIntersection::computeIntersection(Capsule & e1,Capsule & e2,OutputVector * contacts){
     return CapsuleIntTool::computeIntersection(e1,e2,getAlarmDistance(),getContactDistance(),contacts);
@@ -159,15 +118,15 @@ bool DiscreteIntersection::testIntersection(Sphere &,OBB &){
 }
 
 int DiscreteIntersection::computeIntersection(OBB & box0, OBB & box1,OutputVector* contacts){
-    return OBBIntTool::computeIntersection(box0,box1,box0.getProximity() + box1.getProximity() + getAlarmDistance(),box0.getProximity() + box1.getProximity() + getContactDistance(),contacts);
+    return OBBIntTool::computeIntersection(box0,box1,getAlarmDistance(), getContactDistance(),contacts);
 }
 
 int DiscreteIntersection::computeIntersection(Capsule & cap, OBB & box,OutputVector* contacts){
-    return CapsuleIntTool::computeIntersection(cap,box,cap.getProximity() + box.getProximity() + getAlarmDistance(),box.getProximity() + cap.getProximity() + getContactDistance(),contacts);
+    return CapsuleIntTool::computeIntersection(cap,box,getAlarmDistance(),getContactDistance(),contacts);
 }
 
 int DiscreteIntersection::computeIntersection(Sphere & sph, OBB & box,OutputVector* contacts){
-    return OBBIntTool::computeIntersection(sph,box,sph.getProximity() + box.getProximity() + getAlarmDistance(),box.getProximity() + sph.getProximity() + getContactDistance(),contacts);
+    return OBBIntTool::computeIntersection(sph,box,getAlarmDistance(),getContactDistance(),contacts);
 }
 
 //int DiscreteIntersection::computeIntersection(Triangle&, Triangle&, OutputVector*)

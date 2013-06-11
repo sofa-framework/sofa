@@ -34,6 +34,7 @@
 #include <sofa/component/collision/CapsuleIntTool.h>
 #include <sofa/component/collision/OBBModel.h>
 #include <sofa/component/collision/OBBIntTool.h>
+#include <sofa/component/collision/BaseIntTool.h>
 
 namespace sofa
 {
@@ -77,7 +78,6 @@ public:
     int computeIntersection(Sphere&, Cube&, OutputVector*);
     int computeIntersection(Capsule&, Capsule&,OutputVector* contacts);
     int computeIntersection(Capsule&, Sphere&,OutputVector* contacts);
-    int computeIntersection(RigidSphere&,RigidSphere &,OutputVector* contacts);
     int computeIntersection(OBB &, OBB &,OutputVector* contacts);
     int computeIntersection(Capsule &, OBB &,OutputVector* contacts);
     int computeIntersection(Sphere &, OBB &,OutputVector* contacts);

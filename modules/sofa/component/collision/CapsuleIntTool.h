@@ -18,16 +18,16 @@ class SOFA_BASE_COLLISION_API CapsuleIntTool{
 public:
     typedef sofa::helper::vector<sofa::core::collision::DetectionOutput> OutputVector;
 
-    static bool computeIntersection(Capsule&, Capsule&,double alarmDist,double contactDist,OutputVector* contacts);
+    static int computeIntersection(Capsule&, Capsule&,double alarmDist,double contactDist,OutputVector* contacts);
 
     template <class DataTypes>
-    static bool computeIntersection(Capsule&, TSphere<DataTypes>&,double alarmDist,double contactDist,OutputVector* contacts);
+    static int computeIntersection(Capsule&, TSphere<DataTypes>&,double alarmDist,double contactDist,OutputVector* contacts);
 
-    static bool computeIntersection(Capsule&, OBB&,double alarmDist,double contactDist,OutputVector* contacts);
+    static int computeIntersection(Capsule&, OBB&,double alarmDist,double contactDist,OutputVector* contacts);
 };
 
 template <class DataTypes>
-bool CapsuleIntTool::computeIntersection(Capsule & cap, TSphere<DataTypes> & sph,double alarmDist,double contactDist,OutputVector* contacts){
+int CapsuleIntTool::computeIntersection(Capsule & cap, TSphere<DataTypes> & sph,double alarmDist,double contactDist,OutputVector* contacts){
     Vector3 sph_center = sph.center();
     Vector3 cap_p1 = cap.point1();
     Vector3 cap_p2 = cap.point2();
@@ -47,7 +47,7 @@ bool CapsuleIntTool::computeIntersection(Capsule & cap, TSphere<DataTypes> & sph
         Vector3 PQ = sph_center - cap_p1;
 
         if(PQ.norm2() > contact_exists * contact_exists)
-            return false;
+            return 0;
 
         contacts->resize(contacts->size()+1);
         sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
@@ -62,7 +62,7 @@ bool CapsuleIntTool::computeIntersection(Capsule & cap, TSphere<DataTypes> & sph
         detection->point[1] = sph_center - sph_rad * detection->normal;
         detection->value -= theory_contactDist;
 
-        return true;
+        return 1;
     }
     else if(alpha > 0.999999){//the case :
                               //                         S
@@ -70,7 +70,7 @@ bool CapsuleIntTool::computeIntersection(Capsule & cap, TSphere<DataTypes> & sph
         Vector3 PQ = sph_center - cap_p2;
 
         if(PQ.norm2() > contact_exists * contact_exists)
-            return false;
+            return 0;
 
         contacts->resize(contacts->size()+1);
         sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
@@ -85,7 +85,7 @@ bool CapsuleIntTool::computeIntersection(Capsule & cap, TSphere<DataTypes> & sph
         detection->point[1] = sph_center - sph_rad * detection->normal;
         detection->value -= theory_contactDist;
 
-        return true;
+        return 1;
     }
     else{//the case :
          //              S
@@ -94,7 +94,7 @@ bool CapsuleIntTool::computeIntersection(Capsule & cap, TSphere<DataTypes> & sph
         Vector3 PQ = sph_center - P;
 
         if(PQ.norm2() > contact_exists * contact_exists)
-            return false;
+            return 0;
 
         contacts->resize(contacts->size()+1);
         sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
@@ -109,7 +109,7 @@ bool CapsuleIntTool::computeIntersection(Capsule & cap, TSphere<DataTypes> & sph
         detection->point[1] = sph_center - sph_rad * detection->normal;
         detection->value -= theory_contactDist;
 
-        return true;
+        return 1;
     }
 }
 

@@ -14,14 +14,14 @@ public:
     typedef sofa::helper::vector<sofa::core::collision::DetectionOutput> OutputVector;
     typedef sofa::core::collision::DetectionOutput DetectionOutput;
 
-    static bool computeIntersection(OBB&, OBB&,double alarmDist,double contactDist,OutputVector* contacts);
+    static int computeIntersection(OBB&, OBB&,double alarmDist,double contactDist,OutputVector* contacts);
 
     template <class DataTypes>
-    static bool computeIntersection(TSphere<DataTypes> &sphere, OBB &box,double alarmDist,double contactDist,OutputVector* contacts);
+    static int computeIntersection(TSphere<DataTypes> &sph1, OBB &box,double alarmDist,double contactDist,OutputVector* contacts);
 };
 
 template <class DataTypes>
-bool OBBIntTool::computeIntersection(TSphere<DataTypes> & sphere,OBB & box,double alarmDist,double contactDist,OutputVector* contacts){
+int OBBIntTool::computeIntersection(TSphere<DataTypes> & sphere,OBB & box,double alarmDist,double contactDist,OutputVector* contacts){
     TIntrSphereOBB<DataTypes,OBB::DataTypes> intr(sphere,box);
     //double max_time = helper::rsqrt((alarmDist * alarmDist)/((box1.lvelocity() - box0.lvelocity()).norm2()));
     if(/*intr.Find(max_time,box0.lvelocity(),box1.lvelocity())*/intr.Find()){

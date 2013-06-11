@@ -5,7 +5,7 @@ namespace component{
 namespace collision{
 
 
-bool OBBIntTool::computeIntersection(OBB & box0, OBB & box1,double alarmDist,double contactDist,OutputVector* contacts){
+int OBBIntTool::computeIntersection(OBB & box0, OBB & box1,double alarmDist,double contactDist,OutputVector* contacts){
 //    OBB::Real r02 = box0.extent(0)* box0.extent(0) + box0.extent(1)* box0.extent(1) + box0.extent(2)* box0.extent(2);
 //    OBB::Real r12 = box1.extent(0)* box1.extent(0) + box1.extent(1)* box1.extent(1) + box1.extent(2)* box1.extent(2);
 //    OBB::Real r0 = helper::rsqrt(r02);

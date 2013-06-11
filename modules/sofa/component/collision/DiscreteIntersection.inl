@@ -50,27 +50,27 @@ using namespace sofa::core::collision;
 template <class Sphere>
 int DiscreteIntersection::computeIntersection(Sphere& sph1, Sphere& sph2, OutputVector* contacts)
 {
-    std::cout<<"HEy !"<<std::endl;
-    double r = sph1.r() + sph2.r();
-    Vector3 dist = sph2.center() - sph1.center();
+    return BaseIntTool::computeIntersection(sph1,sph2,getAlarmDistance(),getContactDistance(),contacts);
+//    double r = sph1.r() + sph2.r();
+//    Vector3 dist = sph2.center() - sph1.center();
 
-    if (dist.norm2() >= r*r)
-        return 0;
+//    if (dist.norm2() >= r*r)
+//        return 0;
 
-    contacts->resize(contacts->size()+1);
-    DetectionOutput *detection = &*(contacts->end()-1);
-    detection->normal = dist;
-    double distSph1Sph2 = detection->normal.norm();
-    detection->normal /= distSph1Sph2;
-    detection->point[0] = sph1.center() + detection->normal * sph1.r();
-    detection->point[1] = sph2.center() - detection->normal * sph2.r();
+//    contacts->resize(contacts->size()+1);
+//    DetectionOutput *detection = &*(contacts->end()-1);
+//    detection->normal = dist;
+//    double distSph1Sph2 = detection->normal.norm();
+//    detection->normal /= distSph1Sph2;
+//    detection->point[0] = sph1.center() + detection->normal * sph1.r();
+//    detection->point[1] = sph2.center() - detection->normal * sph2.r();
 
-    detection->value = distSph1Sph2 - r;
-    detection->elem.first = sph1;
-    detection->elem.second = sph2;
-    detection->id = (sph1.getCollisionModel()->getSize() > sph2.getCollisionModel()->getSize()) ? sph1.getIndex() : sph2.getIndex();
+//    detection->value = distSph1Sph2 - r;
+//    detection->elem.first = sph1;
+//    detection->elem.second = sph2;
+//    detection->id = (sph1.getCollisionModel()->getSize() > sph2.getCollisionModel()->getSize()) ? sph1.getIndex() : sph2.getIndex();
 
-    return 1;
+//    return 1;
 }
 
 template <class Sphere>

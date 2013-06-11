@@ -30,6 +30,7 @@
 #include <sofa/component/collision/CapsuleModel.h>
 #include <sofa/component/collision/SphereModel.h>
 #include <sofa/component/collision/CubeModel.h>
+#include <sofa/component/collision/BaseIntTool.h>
 
 namespace sofa
 {
@@ -61,6 +62,10 @@ public:
     int computeIntersection(Sphere&, Sphere&, OutputVector*);
     int computeIntersection(Capsule&, Capsule&, OutputVector*);
     int computeIntersection(Capsule&, Sphere&, OutputVector*);
+    int computeIntersection(Capsule& cap, OBB& obb,OutputVector* contacts);
+    int computeIntersection(Sphere& sph,OBB& obb, OutputVector* contacts);
+    int computeIntersection(OBB& obb0, OBB& obb1,OutputVector* contacts);
+
     //int computeIntersection(Ray&, Triangle&, OutputVector*);
 
     void draw(const core::visual::VisualParams* vparams);

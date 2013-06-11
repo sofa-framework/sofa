@@ -52,37 +52,6 @@ using namespace helper;
 
 inline int MeshNewProximityIntersection::doIntersectionLineLine(double dist2, const Vector3& p1, const Vector3& p2, const Vector3& q1, const Vector3& q2, OutputVector* contacts, int id)
 {  
-//    const Vector3 AB = p2-p1;
-//    const Vector3 CD = q2-q1;
-//    const Vector3 AC = q1-p1;
-//    Matrix2 A;
-//    Vector2 b;
-//    A[0][0] = AB*AB;
-//    A[1][1] = CD*CD;
-//    A[0][1] = A[1][0] = -CD*AB;
-//    b[0] = AB*AC;
-//    b[1] = -CD*AC;
-//    const double det = determinant(A);
-
-//    double alpha = 0.5;
-//    double beta = 0.5;
-
-//    if (det < -0.000000000001 || det > 0.000000000001)
-//    {
-//        alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
-//        beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
-
-//        if (alpha < 0.000001 || alpha > 0.999999 || beta < 0.000001 || beta > 0.999999 )
-//            return 0;
-//    }
-
-//    Vector3 p,q,pq;
-//    p = p1 + AB * alpha;
-//    q = q1 + CD * beta;
-//    pq = q-p;
-//    if (pq.norm2() >= dist2)
-//        return 0;
-
     Vector3 p,q,pq;
     IntrUtil<SReal>::segNearestPoints(p1,p2,q1,q2,p,q);
 
@@ -105,32 +74,8 @@ inline int MeshNewProximityIntersection::doIntersectionLineLine(double dist2, co
 
 inline int MeshNewProximityIntersection::doIntersectionLinePoint(double dist2, const Vector3& p1, const Vector3& p2, const Vector3& q, OutputVector* contacts, int id, bool swapElems)
 {
-    const Vector3 AB = p2-p1;
-    const Vector3 AQ = q -p1;
-    double A;
-    double b;
-    A = AB*AB;
-    b = AQ*AB;
-
-    double alpha = 0.5;
     Vector3 p,pq;
-
-    //if (A < -0.000001 || A > 0.000001)
-    {
-        alpha = b/A;
-        //if (alpha < 0.000001 || alpha > 0.999999)
-        //        return 0;
-        if (alpha <= 0.0){
-            p = p1;
-        }
-        else if (alpha >= 1.0){
-            p = p2;
-            alpha = 1.0;
-        }
-        else{
-            p = p1 + AB * alpha;
-        }
-    }
+    p = IntrUtil<double>::nearestPointOnSeg(p1,p2,q);
 
     pq = q-p;
     if (pq.norm2() >= dist2)
