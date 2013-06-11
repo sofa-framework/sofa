@@ -77,6 +77,10 @@ public:
 
     /// creates and returns a new node.
     virtual Node::SPtr createNewNode(const std::string& name);
+
+    /// Can the simulation handle a directed acyclic graph?
+    virtual bool isDirectedAcyclicGraph() { return false; }
+
 protected:
     Node *visualNode;
     Data<bool> parallelCompile;

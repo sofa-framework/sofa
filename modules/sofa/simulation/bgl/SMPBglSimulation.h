@@ -75,6 +75,9 @@ public:
     virtual void animate(Node* root, double dt=0.0);
     virtual void generateTasks(Node* root, double dt=0.0);
 
+    /// Can the simulation handle a directed acyclic graph?
+    virtual bool isDirectedAcyclicGraph() { return true; } // I guess yes, but I am not use
+
 protected:
     Node *visualNode;
     Data<bool> parallelCompile;

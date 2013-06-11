@@ -118,8 +118,6 @@ void DAGNode::moveChild(BaseNode::SPtr node)
 void DAGNode::detachFromGraph()
 {
     DAGNode::SPtr me = this; // make sure we don't delete ourself before the end of this method
-    //Sequence<BglNode>::iterator it=parents.begin(), it_end=parents.end();
-    //for (;it!=it_end;++it) (*it)->removeChild(this);
     LinkParents::Container parents = l_parents.getValue();
     for ( unsigned int i = 0; i < parents.size() ; i++)
     {

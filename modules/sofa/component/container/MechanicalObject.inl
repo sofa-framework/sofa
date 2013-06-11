@@ -683,12 +683,11 @@ void MechanicalObject<DataTypes>::applyScale(const double sx,const double sy,con
 {
     helper::WriteAccessor< Data<VecCoord> > x_wA = *this->write(VecCoordId::position());
 
-    const Vec<3,Real> s((Real)sx, (Real)sy, (Real)sz);
     for (unsigned int i=0; i<x_wA.size(); i++)
     {
-        x_wA[i][0] = x_wA[i][0] * s[0];
-        x_wA[i][1] = x_wA[i][1] * s[1];
-        x_wA[i][2] = x_wA[i][2] * s[2];
+        x_wA[i][0] = x_wA[i][0] * (Real)sx;
+        x_wA[i][1] = x_wA[i][1] * (Real)sy;
+        x_wA[i][2] = x_wA[i][2] * (Real)sz;
     }
 }
 

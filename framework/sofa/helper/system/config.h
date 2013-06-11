@@ -107,4 +107,13 @@ typedef double SReal;
 #   endif
 #endif
 
+
+// utility for debug tracing
+#ifdef _MSC_VER
+    #define SOFA_CLASS_METHOD ( std::string(this->getClassName()) + "::" + __FUNCTION__ + " " )
+#else
+    #define SOFA_CLASS_METHOD ( std::string(this->getClassName()) + "::" + __func__ + " " )
+#endif
+
+
 #endif
