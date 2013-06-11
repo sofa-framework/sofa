@@ -472,7 +472,7 @@ public slots:
     void onPlane(const unsigned int /*axis*/,const sofa::defaulttype::Vec3d& ip,const sofa::defaulttype::Vec3d& p,const QString& val)
     {
         label1->setText("Pixel value = " + val);
-        label2->setText("Image position = [ " + QString().setNum((int)round(ip[0])) + "," + QString().setNum((int)round(ip[1])) + "," + QString().setNum((int)round(ip[2]))+ " ]");
+        label2->setText("Image position = [ " + QString().setNum((int)sofa::helper::round(ip[0])) + "," + QString().setNum((int)sofa::helper::round(ip[1])) + "," + QString().setNum((int)sofa::helper::round(ip[2]))+ " ]");
         label3->setText("3D position = [ " + QString().setNum((float)p[0]) + "," + QString().setNum((float)p[1]) + "," + QString().setNum((float)p[2])+ " ]");
     }
 

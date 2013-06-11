@@ -135,7 +135,7 @@ public:
     void fromGraph(const QPointF &pt,const bool clicked)
     {
         if(!this->histo) return;
-        const T pos=this->histo->fromHistogram((unsigned int)round( pt.x()));
+        const T pos=this->histo->fromHistogram((unsigned int)sofa::helper::round( pt.x()));
         if(!clicked)	this->currentpos=pos;
         else
         {

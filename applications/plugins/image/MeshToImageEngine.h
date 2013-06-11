@@ -418,7 +418,7 @@ protected:
         Coord P (P0);
         for (unsigned int t = 0; t<=dmax; ++t)
         {
-            im((unsigned int)round(P[0]),(unsigned int)round(P[1]),(unsigned int)round(P[2]))=color;
+            im((unsigned int)sofa::helper::round(P[0]),(unsigned int)sofa::helper::round(P[1]),(unsigned int)sofa::helper::round(P[2]))=color;
             P+=dP;
         }
     }

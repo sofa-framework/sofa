@@ -771,9 +771,12 @@ public:
     /// example: returning (-1,0,0) means neighbourIndex is at the LEFT position of index
     inline NeighbourOffset getDirection( unsigned index1D, unsigned neighbourIndex1D ) const
     {
-        for( int x=-1 ; x<=1 ; ++x )
-        for( int y=-1 ; y<=1 ; ++y )
-        for( int z=-1 ; z<=1 ; ++z )
+        unsigned X0,Y0,Z0;
+        index1Dto3D( index1D, X0,Y0,Z0 );
+
+        for( int x=-1 ; x<=1 ; ++x ) if((int)X0+x>=0) if((int)X0+x<(int)dimension[DIMENSION_X])
+        for( int y=-1 ; y<=1 ; ++y ) if((int)Y0+y>=0) if((int)Y0+y<(int)dimension[DIMENSION_Y])
+        for( int z=-1 ; z<=1 ; ++z ) if((int)Z0+z>=0) if((int)Z0+z<(int)dimension[DIMENSION_Z])
             if( neighbourIndex1D == index1D+x+y*dimension[DIMENSION_X]+z*sliceSize ) { return NeighbourOffset(x,y,z); } // connected neighbours
 
         // not connected neighbours
