@@ -161,7 +161,7 @@ protected:
             // COARSE TRANSFORM
             transform.getScale() *= nb;
             // transform translation is given from the center of the pixel (0,0,0), but we want the corners (0,0,0) to be at the same spatial position
-            transform.getTranslation() += ( transform.getScale() - inputTransform.getValue().getScale() ) / 2.0;
+            transform.getTranslation() = inputTransform.getValue().getTranslation() + inputTransform.getValue().fromImage(typename TransformType::Coord (-0.5,-0.5,-0.5)) - transform.fromImage(typename TransformType::Coord (-0.5,-0.5,-0.5));
 
             for( unsigned t=0 ; t<outputDimension[BranchingImageTypes::DIMENSION_T] ; ++t )
             {

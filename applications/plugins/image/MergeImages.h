@@ -300,7 +300,7 @@ protected:
                         {
                             pt.vals.push_back(vector<double>());
                             for(unsigned int k=0; k<indim[3] && k<dim[3]; k++) // channels
-                                pt.vals[t].push_back((double)inImg(t).atXYZ(round((double)inp[0]),round((double)inp[1]),round((double)inp[2]),k));
+                                pt.vals[t].push_back((double)inImg(t).atXYZ(sofa::helper::round((double)inp[0]),sofa::helper::round((double)inp[1]),sofa::helper::round((double)inp[2]),k));
                         }
                     else if(Interpolation.getValue().getSelectedId()==INTERPOLATION_LINEAR)
                         for(unsigned int t=0; t<indim[4] && t<dim[4]; t++) // time

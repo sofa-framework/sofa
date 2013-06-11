@@ -446,7 +446,7 @@ protected:
                             for(unsigned int k=0; k<nbc; k++) img(l)(x,y,z,k) = OutValue;
                         else
                         {
-                            if(interpolation==0) for(unsigned int k=0; k<nbc; k++) img(l)(x,y,z,k) = (To) inimg(l).atXYZ(round((double)p[0]),round((double)p[1]),round((double)p[2]),k);
+                            if(interpolation==0) for(unsigned int k=0; k<nbc; k++) img(l)(x,y,z,k) = (To) inimg(l).atXYZ(sofa::helper::round((double)p[0]),sofa::helper::round((double)p[1]),sofa::helper::round((double)p[2]),k);
                             else if(interpolation==1) for(unsigned int k=0; k<nbc; k++) img(l)(x,y,z,k) = (To) inimg(l).linear_atXYZ(p[0],p[1],p[2],k,OutValue);
                             else if(interpolation==2) for(unsigned int k=0; k<nbc; k++) img(l)(x,y,z,k) = (To) inimg(l).cubic_atXYZ(p[0],p[1],p[2],k,OutValue,cimg::type<Ti>::min(),cimg::type<Ti>::max());
                         }

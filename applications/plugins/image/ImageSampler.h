@@ -568,15 +568,15 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
                                 else if( dir[2]==-1 ) // BACK
                                 {
                                     assert( dir[1]==0 );
-//                                    mergeVertexIndex( h, hexa[1], neighbor[4] );
-//                                    mergeVertexIndex( h, hexa[2], neighbor[7] );
+                                    mergeVertexIndex( h, hexa[1], neighbor[4] );
+                                    mergeVertexIndex( h, hexa[2], neighbor[7] );
                                 }
                                 else // FRONT
                                 {
                                     assert( dir[2]==1 );
                                     assert( dir[1]==0 );
-                                    mergeVertexIndex( h, hexa[5], neighbor[0] );
-                                    mergeVertexIndex( h, hexa[6], neighbor[3] );
+//                                    mergeVertexIndex( h, hexa[5], neighbor[0] );
+//                                    mergeVertexIndex( h, hexa[6], neighbor[3] );
                                 }
                             }
                             else // CENTER
@@ -602,13 +602,13 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
                                 {
                                     if( dir[2]==-1 ) // BACK
                                     {
-//                                        mergeVertexIndex( h, hexa[2], neighbor[5] );
-//                                        mergeVertexIndex( h, hexa[3], neighbor[4] );
+                                        mergeVertexIndex( h, hexa[2], neighbor[5] );
+                                        mergeVertexIndex( h, hexa[3], neighbor[4] );
                                     }
                                     else // FRONT
                                     {
-                                        mergeVertexIndex( h, hexa[6], neighbor[1] );
-                                        mergeVertexIndex( h, hexa[7], neighbor[0] );
+//                                        mergeVertexIndex( h, hexa[6], neighbor[1] );
+//                                        mergeVertexIndex( h, hexa[7], neighbor[0] );
                                     }
                                 }
                             }
@@ -635,11 +635,11 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
                                 {
                                     if( dir[2]==-1 ) // BACK
                                     {
-//                                        mergeVertexIndex( h, hexa[3], neighbor[5] );
+                                        mergeVertexIndex( h, hexa[3], neighbor[5] );
                                     }
                                     else // FRONT
                                     {
-                                        mergeVertexIndex( h, hexa[7], neighbor[1] );
+//                                        mergeVertexIndex( h, hexa[7], neighbor[1] );
                                     }
                                 }
                             }
@@ -649,11 +649,11 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
                                 {
                                     if( dir[2]==-1 ) // BACK
                                     {
-//                                        mergeVertexIndex( h, hexa[1], neighbor[7] );
+                                        mergeVertexIndex( h, hexa[1], neighbor[7] );
                                     }
                                     else // FRONT
                                     {
-                                        mergeVertexIndex( h, hexa[5], neighbor[3] );
+//                                        mergeVertexIndex( h, hexa[5], neighbor[3] );
                                     }
                                 }
                                 else // TOP
@@ -881,7 +881,7 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
         {
             fpos_voronoiIndex.push_back(i+1);
             Coord p = inT->toImage(fpos[i]);
-            VoxelIndex ind (dist.index3Dto1D(round(p[0]),round(p[1]),round(p[2])), 0); // take first superimposed voxel    TO DO: identify it from fine resolution
+            VoxelIndex ind (dist.index3Dto1D(sofa::helper::round(p[0]),sofa::helper::round(p[1]),sofa::helper::round(p[2])), 0); // take first superimposed voxel    TO DO: identify it from fine resolution
             fpos_VoxelIndex.push_back(ind);
             AddSeedPoint<Real>(trial,dist,voronoi, fpos_VoxelIndex[i],fpos_voronoiIndex[i]);
         }

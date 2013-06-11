@@ -144,7 +144,7 @@ protected:
             {
                 Coord Tp = inT->toImage(pos[i]);
                 if(Tp[0]<0 || Tp[1]<0 || Tp[2]<0 || Tp[0]>=img.width() || Tp[1]>=img.height() || Tp[2]>=img.depth())  val[i] = outval;
-                else val[i] = (Real)img.atXYZ(round((double)Tp[0]),round((double)Tp[1]),round((double)Tp[2]));
+                else val[i] = (Real)img.atXYZ(sofa::helper::round((double)Tp[0]),sofa::helper::round((double)Tp[1]),sofa::helper::round((double)Tp[2]));
             }
         }
         else if(Interpolation.getValue().getSelectedId()==INTERPOLATION_LINEAR)

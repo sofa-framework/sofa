@@ -20,7 +20,6 @@
    	<ImageContainer template="ImageD" name="dist" image="@imageConverter.image" transform="@branchingImage.transform" drawBB="false"/> 
    	<ImageViewer template="ImageD" name="distviewer" src="@dist" /> 
   
-
    	<MechanicalObject  template="Rigid" name="DOFs" src="@branchingImageSampler" />
    	<UniformMass template="Rigid" name="mass"  mass="50 50 [1 0 0,0 1 0,0 0 1]" showAxisSizeFactor='1'/>
 
