@@ -1,5 +1,5 @@
 # group files
-macro(GroupFiles fileGroup topGroup baseDir)	
+macro(GroupFiles fileGroup topGroup baseDir)
 	string(REPLACE "_" " " fileGroupName ${fileGroup})
 	string(TOLOWER ${fileGroupName} fileGroupName)
 	string(REGEX MATCHALL "([^ ]+)" fileGroupNameSplit ${fileGroupName})
