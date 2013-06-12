@@ -43,8 +43,6 @@ int OBBIntTool::computeIntersection(OBB & box0, OBB & box1,double alarmDist,doub
 }
 
 
-class SOFA_BASE_COLLISION_API OBBIntTool;
-
 }
 }
 }
