@@ -426,6 +426,7 @@ endfunction()
 
 # AddCompilerDefinitions(compiler_definition0 [compiler_definition1 [...]])
 function(AddCompilerDefinitions)
+	add_definitions("-D${ARGV}")
 	set(COMPILER_DEFINES ${COMPILER_DEFINES} ${ARGV} PARENT_SCOPE)
 endfunction()
 
