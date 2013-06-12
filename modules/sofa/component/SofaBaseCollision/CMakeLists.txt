@@ -33,6 +33,7 @@ set(HEADER_FILES
     ../collision/IntrCapsuleOBB.inl 
     ../collision/IntrSphereOBB.inl 
     ../collision/Intersector.h
+    ../collision/BaseIntTool.h
     
     )
     
@@ -57,6 +58,7 @@ set(SOURCE_FILES
     ../collision/IntrUtility3.cpp 
     ../collision/IntrCapsuleOBB.cpp 
     ../collision/IntrSphereOBB.cpp
+    ../collision/BaseIntTool.cpp
 
     )
 
