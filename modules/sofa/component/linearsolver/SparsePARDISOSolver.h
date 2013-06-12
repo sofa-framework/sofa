@@ -64,6 +64,8 @@ public:
 
     Data<bool> f_verbose;
 
+    Data<bool> f_saveDataToFile;
+
     SparsePARDISOSolver();
     ~SparsePARDISOSolver();
     virtual void init();
@@ -77,6 +79,8 @@ public:
     }
 
 protected:
+    int numStep;
+    int numPrevNZ, numActNZ;
     class SparsePARDISOSolverInvertData : public MatrixInvertData
     {
     public :
@@ -100,6 +104,7 @@ protected:
         }
 
     };
+
 
     int callPardiso(SparsePARDISOSolverInvertData* data, int phase, Vector* vx = NULL, Vector* vb = NULL);
 };
