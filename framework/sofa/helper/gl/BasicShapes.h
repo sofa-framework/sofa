@@ -173,9 +173,8 @@ void drawTorus(const float* coordinateMatrix, const float& bodyRad=0.0,  const f
         } // inner loop
         glEnd();
         w+=dw;
-        glPopMatrix();
-        //         delete torus;
     }
+    glPopMatrix();
 }
 }
 }
