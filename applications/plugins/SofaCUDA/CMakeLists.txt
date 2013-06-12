@@ -179,6 +179,47 @@ set(README_FILES
 	SofaCUDA.txt
 	)
 
+
+#Option to activate double-precision support in CUDA (requires GT200+ GPU and -arch sm_13 flag)
+option(SOFA-CUDA_DOUBLE "SOFA-CUDA_DOUBLE" OFF)
+if(SOFA-CUDA_DOUBLE)
+	AddCompilerDefinitions("SOFA_GPU_CUDA_DOUBLE")
+endif()
+
+#Option to use IEEE 754-compliant floating point operations
+option(SOFA-CUDA_PRECISE "SOFA-CUDA_PRECISE" OFF)
+if(SOFA-CUDA_PRECISE)
+	AddCompilerDefinitions("SOFA_GPU_CUDA_PRECISE")
+endif()
+
+# Option to get double-precision for sqrt/div...
+# (requires compute capability >= 2 and CUDA_VERSION > 3.0)
+# (with SOFA_GPU_CUDA_PRECISE and SOFA_GPU_CUDA_DOUBLE you get IEEE 754-compliant floating point
+#  operations for addition and multiplication only)
+option(SOFA-CUDA_DOUBLE_PRECISE "SOFA-CUDA_DOUBLE_PRECISE" OFF)
+if(SOFA-CUDA_DOUBLE_PRECISE)
+	AddCompilerDefinitions("SOFA_GPU_CUDA_DOUBLE_PRECISE")
+endif()
+
+# Option to activate cublas support in CUDA (requires SOFA_GPU_CUDA_DOUBLE)
+option(SOFA-CUDA_CUBLAS "SOFA-CUDA_CUBLAS" OFF)
+if(SOFA-CUDA_CUBLAS)
+	AddCompilerDefinitions("SOFA_GPU_CUBLAS")
+endif()
+
+# Option to activate CUDPP (for RadixSort)
+option(SOFA-CUDA_CUDPP "SOFA-CUDA_CUDPP" OFF)
+if(SOFA-CUDA_CUDPP)
+	AddCompilerDefinitions("SOFA_GPU_CUDPP")
+endif()
+
+# Option to activate THRUST (for RadixSort)
+# Note: THRUST is included in CUDA SDK 4.0+, it is recommended to use it if available
+option(SOFA-CUDA_THRUST "SOFA-CUDA_THRUST" OFF)
+if(SOFA-CUDA_THRUST)
+	AddCompilerDefinitions("SOFA_GPU_THRUST")
+endif()
+
 #Give current directory to nvcc compiler
 cuda_include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 cuda_include_directories(${SOFA_FRAMEWORK_DIR})
