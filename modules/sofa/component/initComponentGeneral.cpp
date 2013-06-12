@@ -37,6 +37,13 @@
 #ifdef SOFA_HAVE_CSPARSE
 #include <sofa/component/initSparseSolver.h>
 #endif
+#ifdef SOFA_HAVE_TAUCS
+#include <sofa/component/initTaucsSolver.h>
+#endif
+#ifdef SOFA_HAVE_PARDISO
+#include <sofa/component/initPardisoSolver.h>
+#endif
+
 #include <sofa/component/initPreconditioner.h>
 #include <sofa/component/initOpenGLVisual.h>
 
@@ -69,6 +76,13 @@ void initComponentGeneral()
 #ifdef SOFA_HAVE_CSPARSE
     initSparseSolver();
 #endif
+#ifdef SOFA_HAVE_TAUCS
+    initTaucsSolver();
+#endif
+#ifdef SOFA_HAVE_PARDISO
+    initPardisoSolver();
+#endif
+
     initPreconditioner();
 #ifndef SOFA_NO_OPENGL
     initOpenGLVisual();
