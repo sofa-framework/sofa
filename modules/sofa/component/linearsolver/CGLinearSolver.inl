@@ -60,6 +60,7 @@ CGLinearSolver<TMatrix,TVector>::CGLinearSolver()
     : f_maxIter( initData(&f_maxIter,(unsigned)25,"iterations","maximum number of iterations of the Conjugate Gradient solution") )
     , f_tolerance( initData(&f_tolerance,1e-5,"tolerance","desired precision of the Conjugate Gradient Solution (ratio of current residual norm over initial residual norm)") )
     , f_smallDenominatorThreshold( initData(&f_smallDenominatorThreshold,1e-5,"threshold","minimum value of the denominator in the conjugate Gradient solution") )
+    , f_warmStart( initData(&f_warmStart,false,"warmStart","Use previous solution as initial solution") )
     , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
     , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )
 {
@@ -120,11 +121,18 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
     if( verbose )
         serr<<"CGLinearSolver, b = "<< b <<sendl;
 
-    x.clear();
-    r = b; // initial residual
+    if( f_warmStart.getValue() )
+    {
+        r = M * x;
+        r.eq( b, r, -1.0 );   //  initial residual r = b - Ax;
+    }
+    else
+    {
+        x.clear();
+        r = b; // initial residual
+    }
 
-    double normb2 = b.dot(b);
-    double normb = sqrt(normb2);
+    double normb = b.norm();
     std::map < std::string, sofa::helper::vector<double> >& graph = *f_graph.beginEdit();
     sofa::helper::vector<double>& graph_error = graph[(this->isMultiGroup()) ? this->currentNode->getName()+std::string("-Error") : std::string("Error")];
     graph_error.clear();
@@ -156,7 +164,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
 
         //z = r; // no precond
         //rho = r.dot(z);
-        rho = (nb_iter==1) ? normb2 : r.dot(r);
+        rho = r.dot(r);
 
         if (nb_iter>1)
         {

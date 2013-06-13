@@ -120,6 +120,12 @@ public:
         (*this) = a;
     }
 
+    /// v = a+b*f
+    void eq(const NewMatVector& a, const NewMatVector& b, double f=1.0)
+    {
+        (*this) = a + b*f;
+    }
+
     /// v += a*f
     void peq(const NewMatVector& a, double f=1.0)
     {

@@ -77,20 +77,26 @@ void EulerImplicitSolver::init()
     sofa::core::behavior::OdeSolver::init();
 }
 
+
+
 void EulerImplicitSolver::solve(const core::ExecParams* params /* PARAMS FIRST */, double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
     sofa::simulation::Visitor::printNode("SolverVectorAllocation");
 #endif
+
     sofa::simulation::common::VectorOperations vop( params, this->getContext() );
     sofa::simulation::common::MechanicalOperations mop( params, this->getContext() );
-    MultiVecCoord pos(&vop, core::VecCoordId::position() );
-    MultiVecDeriv vel(&vop, core::VecDerivId::velocity() );
-    MultiVecDeriv f(&vop, core::VecDerivId::force() );
-    MultiVecDeriv x(&vop);
-    MultiVecDeriv b(&vop);
-    MultiVecCoord newPos(&vop, xResult );
-    MultiVecDeriv newVel(&vop, vResult );
+
+    MultiVecCoord pos( &vop, core::VecCoordId::position() );
+    MultiVecDeriv vel( &vop, core::VecDerivId::velocity() );
+    MultiVecDeriv f( &vop, core::VecDerivId::force() );
+    MultiVecDeriv b( &vop );
+    MultiVecCoord newPos( &vop, xResult );
+    MultiVecDeriv newVel( &vop, vResult );
+
+    simulation::MechanicalVInitVisitor< core::V_DERIV >( params, core::VecDerivId::solverSolution() ).execute( this->getContext() );
+    MultiVecDeriv x( &vop, core::VecDerivId::solverSolution() );
 
 
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -120,7 +126,7 @@ void EulerImplicitSolver::solve(const core::ExecParams* params /* PARAMS FIRST *
     }
 #endif
 
-    double h = dt;
+    const double h = dt;
     const bool verbose  = f_verbose.getValue();
     const bool firstOrder = f_firstOrder.getValue();
 
