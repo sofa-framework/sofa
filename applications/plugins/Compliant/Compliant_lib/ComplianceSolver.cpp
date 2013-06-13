@@ -32,11 +32,7 @@ using namespace core::behavior;
 SOFA_DECL_CLASS(ComplianceSolver);
 int ComplianceSolverClass = core::RegisterObject("A simple explicit time integrator").add< ComplianceSolver >();
 
-#ifdef _MSC_VER
-	#define __METHOD__ ( std::string(this->getClassName()) + "::" + __FUNCTION__)
-#else
-	#define __METHOD__ ( std::string(this->getClassName()) + "::" + __func__)
-#endif
+
 
 
 
@@ -94,11 +90,11 @@ void ComplianceSolver::solveEquation()
         VectorEigen& lambda = _vecLambda =  _vecPhi - _matJ * ( PMinvP() * _vecF );
 
         if( verbose.getValue() ) {
-            cerr<< __METHOD__ << " schur complement = " << endl << Eigen::MatrixXd(schur) << endl
-                << __METHOD__ << " Minv * vecF = " << (PMinvP() * _vecF).transpose() << endl
-                << __METHOD__ << " matJ * ( Minv * vecF)  = " << ( _matJ * ( PMinvP() * _vecF)).transpose() << endl
-                << __METHOD__ << " vecPhi  = " <<  _vecPhi.transpose() << endl
-                << __METHOD__ << " right-hand term = " << lambda.transpose() << endl;
+            cerr<< SOFA_CLASS_METHOD << " schur complement = " << endl << Eigen::MatrixXd(schur) << endl
+                << SOFA_CLASS_METHOD << " Minv * vecF = " << (PMinvP() * _vecF).transpose() << endl
+                << SOFA_CLASS_METHOD << " matJ * ( Minv * vecF)  = " << ( _matJ * ( PMinvP() * _vecF)).transpose() << endl
+                << SOFA_CLASS_METHOD << " vecPhi  = " <<  _vecPhi.transpose() << endl
+                << SOFA_CLASS_METHOD << " right-hand term = " << lambda.transpose() << endl;
         }
 
         // Lagrange multipliers
@@ -111,9 +107,9 @@ void ComplianceSolver::solveEquation()
         _vecDv = PMinvP() * netForces;
 
         if( verbose.getValue() ) {
-            cerr<< __METHOD__ << " constraint forces = " << lambda.transpose() << endl
-                << __METHOD__ << " net forces = " << _vecF.transpose() << endl
-                << __METHOD__ << " vecDv = " << _vecDv.transpose() << endl;
+            cerr<< SOFA_CLASS_METHOD << " constraint forces = " << lambda.transpose() << endl
+                << SOFA_CLASS_METHOD << " net forces = " << _vecF.transpose() << endl
+                << SOFA_CLASS_METHOD << " vecDv = " << _vecDv.transpose() << endl;
         }
 
     } else {
@@ -189,7 +185,7 @@ void ComplianceSolver::solve(const core::ExecParams* params,
             mop.projectResponse(f);
 
             if( verbose.getValue() ) {
-                cerr << __METHOD__ << " filtered external forces = " << f << endl;
+                cerr << SOFA_CLASS_METHOD << " filtered external forces = " << f << endl;
             }
         }
 
@@ -218,15 +214,15 @@ void ComplianceSolver::solve(const core::ExecParams* params,
             _PMinvP_isDirty = true;
 
             if( verbose.getValue() ) {
-                cerr<<__METHOD__ << " assembly performed ==================================== " << endl ;
-                cerr<<__METHOD__ << " assembled M = " << endl << DenseMatrix(_matM) << endl;
-                cerr<<__METHOD__ << " assembled K = " << endl << DenseMatrix(_matK) << endl;
-                cerr<<__METHOD__ << " assembled P = " << endl << DenseMatrix(P()) << endl;
-                cerr<<__METHOD__ << " assembled C = " << endl << DenseMatrix(_matC) << endl;
-                cerr<<__METHOD__ << " assembled J = " << endl << DenseMatrix(_matJ) << endl;
-                cerr<<__METHOD__ << " assembled f = "   << _vecF.transpose() << endl;
-                cerr<<__METHOD__ << " assembled phi = " << _vecPhi.transpose() << endl;
-                cerr<<__METHOD__ << " assembled v = "   << _vecV.transpose() << endl;
+                cerr<<SOFA_CLASS_METHOD << " assembly performed ==================================== " << endl ;
+                cerr<<SOFA_CLASS_METHOD << " assembled M = " << endl << DenseMatrix(_matM) << endl;
+                cerr<<SOFA_CLASS_METHOD << " assembled K = " << endl << DenseMatrix(_matK) << endl;
+                cerr<<SOFA_CLASS_METHOD << " assembled P = " << endl << DenseMatrix(P()) << endl;
+                cerr<<SOFA_CLASS_METHOD << " assembled C = " << endl << DenseMatrix(_matC) << endl;
+                cerr<<SOFA_CLASS_METHOD << " assembled J = " << endl << DenseMatrix(_matJ) << endl;
+                cerr<<SOFA_CLASS_METHOD << " assembled f = "   << _vecF.transpose() << endl;
+                cerr<<SOFA_CLASS_METHOD << " assembled phi = " << _vecPhi.transpose() << endl;
+                cerr<<SOFA_CLASS_METHOD << " assembled v = "   << _vecV.transpose() << endl;
             }
         }
 
@@ -253,8 +249,8 @@ void ComplianceSolver::solve(const core::ExecParams* params,
             _matM -= _matK * (h + rs);
 
             if( verbose.getValue() ) {
-                cerr << __METHOD__ << " implicit matrix = " << endl << _matM << endl
-                     << __METHOD__ << " right-hand term = " << _vecF.transpose() << endl;
+                cerr << SOFA_CLASS_METHOD << " implicit matrix = " << endl << _matM << endl
+                     << SOFA_CLASS_METHOD << " right-hand term = " << _vecF.transpose() << endl;
             }
         }
     }
@@ -487,7 +483,7 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::doSystemAss
             // TODO HARDCODE
             if( std::abs(l) < 1.0e-10 ) {
                 solver->serr << ffield->getName() << ", l is not invertible in "
-                             << __METHOD__ << solver->sendl;
+                             << SOFA_CLASS_METHOD << solver->sendl;
             }
 
             SReal invl = 1.0 / l;
