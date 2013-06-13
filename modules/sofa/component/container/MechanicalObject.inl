@@ -1650,7 +1650,9 @@ void MechanicalObject<DataTypes>::vInit(const core::ExecParams* params /* PARAMS
         vec_d->forceSet(params);
 
         if (vSrcId != ConstVecCoordId::null())
-            vOp(params, vId, vSrcId);
+            vOp(params, vId, vSrcId); // copy from source
+        else
+            vOp(params, vId); // init to 0
     }
 }
 
@@ -1663,8 +1665,10 @@ void MechanicalObject<DataTypes>::vInit(const core::ExecParams* params /* PARAMS
     {
         vec_d->forceSet(params);
 
-        if (vSrcId != ConstVecDerivId::null())
+        if (vSrcId != ConstVecDerivId::null()) // copy from source
             vOp(params, vId, vSrcId);
+        else
+            vOp(params, vId); // init to 0
     }
 }
 

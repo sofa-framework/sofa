@@ -105,16 +105,17 @@ class TStandardVec<V_DERIV, vaccess>
 public:
     typedef TVecId<V_DERIV, vaccess> MyVecId;
 
-    static MyVecId velocity()      { return MyVecId(1);}
-    static MyVecId resetVelocity()  { return MyVecId(2);}
-    static MyVecId freeVelocity()  { return MyVecId(3);}
-    static MyVecId normal()        { return MyVecId(4);}
-    static MyVecId force()         { return MyVecId(5);}
-    static MyVecId externalForce() { return MyVecId(6);}
-    static MyVecId dx()            { return MyVecId(7);}
-    static MyVecId dforce()        { return MyVecId(8);}
-    static MyVecId accFromFrame()  { return MyVecId(9);}
-    enum { V_FIRST_DYNAMIC_INDEX = 10 }; ///< This is the first index used for dynamically allocated vectors
+    static MyVecId velocity()       { return MyVecId(1); }
+    static MyVecId resetVelocity()  { return MyVecId(2); }
+    static MyVecId freeVelocity()   { return MyVecId(3); }
+    static MyVecId normal()         { return MyVecId(4); }
+    static MyVecId force()          { return MyVecId(5); }
+    static MyVecId externalForce()  { return MyVecId(6); }
+    static MyVecId dx()             { return MyVecId(7); }
+    static MyVecId dforce()         { return MyVecId(8); }
+    static MyVecId accFromFrame()   { return MyVecId(9); }
+    static MyVecId solverSolution() { return MyVecId(10);} // useful to have a specific VecId where to store the solver solution to be able to to warm start
+    enum { V_FIRST_DYNAMIC_INDEX = 11 }; ///< This is the first index used for dynamically allocated vectors
 
     static std::string getName(const MyVecId& v)
     {
@@ -140,6 +141,8 @@ public:
         case 8: result+= "dforce";
             break;
         case 9: result+= "accFromFrame";
+            break;
+        case 10: result+= "solverSolution";
             break;
         default:
             std::ostringstream out;

@@ -56,6 +56,7 @@ public:
     Data<unsigned> f_maxIter;
     Data<double> f_tolerance;
     Data<double> f_smallDenominatorThreshold;
+    Data<bool> f_warmStart;
     Data<bool> f_verbose;
     Data<std::map < std::string, sofa::helper::vector<double> > > f_graph;
 #ifdef DISPLAY_TIME
