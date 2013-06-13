@@ -119,6 +119,9 @@ option(SOFA-EXTERNAL_HAVE_METIS "Use Metis" OFF) # SOFA_HAVE_METIS
 option(SOFA-EXTERNAL_HAVE_CSPARSE "Use CSparse" OFF)
 option(SOFA-EXTERNAL_HAVE_FLOWVR "Use FlowVR (otherwise miniFlowVR will be used from extlib)" OFF) #TODO port features/sofa/flowvr.prf
 option(SOFA-EXTERNAL_HAVE_EIGEN2 "Use Eigen" OFF)
+if(SOFA-EXTERNAL_HAVE_EIGEN2)
+	list(APPEND compilerDefines SOFA_HAVE_EIGEN2) # since we currently do not have non-linker dependencies, we have to do this
+endif()
 
 # Miscellaneous features
 

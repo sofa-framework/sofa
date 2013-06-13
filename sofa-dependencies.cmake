@@ -128,11 +128,8 @@ if(WIN32)
 	endif()
 endif()
 
-# copying config files but .ini
-file(GLOB configFiles "${SOFA_SRC_DIR}/share/config/*.*")
+# copying default config files
+file(GLOB configFiles "${SOFA_SRC_DIR}/share/config/default/*.*")
 foreach(configFile ${configFiles})
-	get_filename_component(fileExtension "${configFile}" EXT)
-	if(NOT fileExtension STREQUAL ".ini")
-		file(COPY ${configFile} DESTINATION "${SOFA_BUILD_DIR}/share/config")
-	endif()
+	file(COPY ${configFile} DESTINATION "${SOFA_BUILD_DIR}/share/config")
 endforeach()
