@@ -15,7 +15,7 @@ SOURCES += linearsolver/SparsePARDISOSolver.cpp \
 
 }
 
-LIBS *= -lsofa_base_linear_solver -lpardiso412-GNU450-X86-64
+LIBS *= -lsofa_base_linear_solver -lpardiso412-GNU450-X86-64 -lblas -llapack
 
 # Make sure there are no cross-dependencies
 INCLUDEPATH -= $$SOFA_INSTALL_INC_DIR/applications

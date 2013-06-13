@@ -407,6 +407,11 @@ public:
         return ((T*) (((char*) hostPointer) + pitch_host*y)) + x;
     }
 
+    T getSingle( int y=0, int x=0 ) const {
+        copyToHostSingle(y,x);
+        return ((const T*) (((const char*) hostPointer) + pitch_host*y))[x];
+    }
+
     const T& operator() (size_type y,size_type x) const {
 #ifdef DEBUG_OUT_MATRIX
         checkIndex (y,x);
@@ -469,6 +474,12 @@ protected:
         DEBUG_OUT_M(SPACEN << "copyToHost host : " << ((unsigned long) hostPointer) << " pitchH : " << pitch_host << " | device : " << ((unsigned long)devicePointer) << " pitchD : " << pitch_device << " | (" << sizeX*sizeof(T) << "," << sizeY << ")" << std::endl);
         mycudaMemcpyDeviceToHost2D ( hostPointer, pitch_host, devicePointer, pitch_device, sizeX*sizeof(T), sizeY);
         hostIsValid = true;
+    }
+
+    void copyToHostSingle(size_type y,size_type x) const
+    {
+        if ( hostIsValid ) return;
+        mycudaMemcpyDeviceToHost(((T*)(((char *) hostPointer)+(pitch_host*y))) + x, ((T*)(((char *) devicePointer)+(pitch_device*y))) + x, sizeof ( T ) );
     }
 
     void copyToDevice() const {        
