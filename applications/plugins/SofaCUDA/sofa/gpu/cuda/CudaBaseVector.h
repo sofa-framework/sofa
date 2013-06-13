@@ -109,6 +109,7 @@ public :
     virtual T * hostWrite(int off=0) = 0;
     virtual void invalidateDevice() = 0;
     virtual void invalidateHost() = 0;
+    virtual T getSingle(int off=0) = 0;
 
     /// this += a*f
     template<typename Real>
@@ -253,6 +254,11 @@ public :
     T * hostWrite(int off=0)
     {
         return v.hostWriteAt(off);
+    }
+
+    T getSingle(int off)
+    {
+        return v.getSingle(off);
     }
 
     static const char* Name(); /* {
