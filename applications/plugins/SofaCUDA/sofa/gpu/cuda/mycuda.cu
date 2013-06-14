@@ -336,12 +336,16 @@ void mycudaMemset(void *devPtr, int val, size_t size,int d)
 }
 
 
+#if CUDA_VERSION > 4000
+
 void mycudaThreadSynchronize()
 {
     if (!cudaInitCalled) return; // no need to synchronize if no-one used cuda yet
 
     cudaThreadSynchronize();
 }
+
+#endif
 
 void mycudaDeviceSynchronize()
 {
