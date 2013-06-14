@@ -1,9 +1,6 @@
 // File modified from GeometricTools
 // http://www.geometrictools.com/
 
-#include "IntrUtility3.h"
-
-
 namespace sofa{
 namespace component{
 namespace collision{
