@@ -215,6 +215,9 @@ private:
 		tmp_p_type() : base() {} 
 		tmp_p_type(const tmp_p_type&) : base() { }
 	} tmp_p;
+
+	simulation::Node* start_node;
+
 };
 		
 }
