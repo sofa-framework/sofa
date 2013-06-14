@@ -336,7 +336,6 @@ void mycudaMemset(void *devPtr, int val, size_t size,int d)
 }
 
 
-#if CUDA_VERSION > 4000
 
 void mycudaThreadSynchronize()
 {
@@ -345,7 +344,7 @@ void mycudaThreadSynchronize()
     cudaThreadSynchronize();
 }
 
-#endif
+#if CUDA_VERSION > 4000
 
 void mycudaDeviceSynchronize()
 {
@@ -353,6 +352,7 @@ void mycudaDeviceSynchronize()
 	
 	cudaDeviceSynchronize();
 }
+#endif
 
 void mycudaCheckError(const char* src)
 {
