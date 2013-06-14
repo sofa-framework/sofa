@@ -1,4 +1,7 @@
+#include <sofa/component/collision/IntrMeshUtility.h>
+#ifndef SOFA_NO_EXTERN_TEMPLATE
 #include <sofa/component/collision/IntrMeshUtility.inl>
+#endif
 
 namespace sofa{
 namespace component{
