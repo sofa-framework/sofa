@@ -40,9 +40,6 @@ namespace helper
 namespace gl
 {
 
-using namespace sofa::defaulttype;
-
-
 template <typename V>
 void drawCone(const V& p1, const V& p2, const float& radius1, const float& radius2, const int subd=8)
 {
@@ -176,10 +173,53 @@ void drawTorus(const float* coordinateMatrix, const float& bodyRad=0.0,  const f
     }
     glPopMatrix();
 }
-}
+
+template <typename V>
+void drawEmptyParallelepiped(const V& vert1, const V& vert2, const V& vert3, const V& vert4, const V& vecFromFaceToOppositeFace, const float& rad=1.0, const int precision=8, const V& color=Vec3i(255,0,0))
+{
+	GLUquadricObj* parallelepiped = gluNewQuadric();
+    glColor3ub(255, 255, 255);
+    gluQuadricDrawStyle(parallelepiped, GLU_FILL);
+    gluQuadricOrientation(parallelepiped, GLU_OUTSIDE);
+    gluQuadricNormals(parallelepiped, GLU_SMOOTH);
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+
+	//Vertices of the parallelepiped
+	drawSphere(vert1,2.0*rad);
+	drawSphere(vert2,2.0*rad);
+	drawSphere(vert3,2.0*rad);
+	drawSphere(vert4,2.0*rad);
+	drawSphere(vert1 + vecFromFaceToOppositeFace,2.0*rad);
+	drawSphere(vert2 + vecFromFaceToOppositeFace,2.0*rad);
+	drawSphere(vert3 + vecFromFaceToOppositeFace,2.0*rad);
+	drawSphere(vert4 + vecFromFaceToOppositeFace,2.0*rad);
+
+	glColor3ub(color.x(), color.y(), color.z());
+	//First face
+	drawCylinder(vert1,vert2,rad,precision);
+	drawCylinder(vert2,vert3,rad,precision);
+	drawCylinder(vert3,vert4,rad,precision);
+	drawCylinder(vert4,vert1,rad,precision);
+	
+	//The opposite face
+	drawCylinder(vert1 + vecFromFaceToOppositeFace,vert2 + vecFromFaceToOppositeFace,rad,precision);
+	drawCylinder(vert2 + vecFromFaceToOppositeFace,vert3 + vecFromFaceToOppositeFace,rad,precision);
+	drawCylinder(vert3 + vecFromFaceToOppositeFace,vert4 + vecFromFaceToOppositeFace,rad,precision);
+	drawCylinder(vert4 + vecFromFaceToOppositeFace,vert1 + vecFromFaceToOppositeFace,rad,precision);
+	
+	//Connect the two faces
+	drawCylinder(vert1,vert1 + vecFromFaceToOppositeFace,rad,precision);
+	drawCylinder(vert2,vert2 + vecFromFaceToOppositeFace,rad,precision);
+	drawCylinder(vert3,vert3 + vecFromFaceToOppositeFace,rad,precision);
+	drawCylinder(vert4,vert4 + vecFromFaceToOppositeFace,rad,precision);
+
+	glPopMatrix();
 }
 
-}
+} //gl
+} //helper
+} //sofa
 
 #endif /* SOFA_NO_OPENGL */
 
