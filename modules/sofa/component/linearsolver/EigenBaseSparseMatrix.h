@@ -73,7 +73,7 @@ class EigenBaseSparseMatrix : public defaulttype::BaseMatrix
 {
     /** Impossible using this class
     */
-    void set(int /*i*/, int /*j*/, double /*v*/)
+    void set(int /*i*/, int /*j*/, SReal /*v*/)
     {
         assert( false && "EigenBaseSparseMatrix::set(int i, int j, double v) is not implemented !");
     }

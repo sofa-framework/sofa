@@ -35,12 +35,18 @@ namespace behavior
 
 using namespace sofa::defaulttype;
 
+#ifdef SOFA_FLOAT
+template class SOFA_CORE_API ConstraintCorrection< Vec3fTypes >;
+template class SOFA_CORE_API ConstraintCorrection< Vec1fTypes >;
+template class SOFA_CORE_API ConstraintCorrection< Rigid3fTypes >;
+#else
 template class SOFA_CORE_API ConstraintCorrection< Vec3dTypes >;
 template class SOFA_CORE_API ConstraintCorrection< Vec3fTypes >;
 template class SOFA_CORE_API ConstraintCorrection< Vec1dTypes >;
 template class SOFA_CORE_API ConstraintCorrection< Vec1fTypes >;
 template class SOFA_CORE_API ConstraintCorrection< Rigid3dTypes >;
 template class SOFA_CORE_API ConstraintCorrection< Rigid3fTypes >;
+#endif
 
 
 } // namespace behavior

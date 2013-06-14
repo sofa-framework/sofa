@@ -1937,14 +1937,14 @@ void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMa
     Rot[1][0]=Rot[1][2]=0;
     Rot[2][0]=Rot[2][1]=0;
 
-    if (sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<3,3,double> > * crsmat = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<3,3,double> > * >(mat))
+    if (sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<3,3,SReal> > * crsmat = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<3,3,SReal> > * >(mat))
     {
         for(it = _indexedElements->begin(), IT=0 ; it != _indexedElements->end() ; ++it,++IT)
         {
             if (method == SMALL) computeStiffnessMatrix(JKJt,tmp,materialsStiffnesses[IT], strainDisplacements[IT],Rot);
             else computeStiffnessMatrix(JKJt,tmp,materialsStiffnesses[IT], strainDisplacements[IT],rotations[IT]);
 
-            defaulttype::Mat<3,3,double> tmpBlock[4][4];
+            defaulttype::Mat<3,3,SReal> tmpBlock[4][4];
             // find index of node 1
             for (n1=0; n1<4; n1++)
             {
@@ -1987,7 +1987,7 @@ void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMa
             if (method == SMALL) computeStiffnessMatrix(JKJt,tmp,materialsStiffnesses[IT], strainDisplacements[IT],Rot);
             else computeStiffnessMatrix(JKJt,tmp,materialsStiffnesses[IT], strainDisplacements[IT],rotations[IT]);
 
-            defaulttype::Mat<3,3,double> tmpBlock[4][4];
+            defaulttype::Mat<3,3,SReal> tmpBlock[4][4];
             // find index of node 1
             for (n1=0; n1<4; n1++)
             {

@@ -41,6 +41,7 @@ namespace collision
 
 using namespace defaulttype;
 
+#ifdef SOFA_EXTERN_TEMPLATE
 #ifndef SOFA_DOUBLE
 template class SOFA_BASE_COLLISION_API BaseContactMapper< defaulttype::Vec3fTypes>;
 template class SOFA_BASE_COLLISION_API BaseContactMapper< defaulttype::Rigid3fTypes >;
@@ -48,6 +49,7 @@ template class SOFA_BASE_COLLISION_API BaseContactMapper< defaulttype::Rigid3fTy
 #ifndef SOFA_FLOAT
 template class SOFA_BASE_COLLISION_API BaseContactMapper< defaulttype::Vec3dTypes>;
 template class SOFA_BASE_COLLISION_API BaseContactMapper< defaulttype::Rigid3dTypes >;
+#endif
 #endif
 
 } // namespace collision

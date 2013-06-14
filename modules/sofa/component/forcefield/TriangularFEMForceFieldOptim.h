@@ -35,7 +35,9 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/component/topology/TopologyData.h>
+#ifndef SOFA_NO_OPENGL
 #include <sofa/component/visualmodel/ColorMap.h>
+#endif
 
 #include <map>
 #include <sofa/helper/map.h>

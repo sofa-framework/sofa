@@ -45,8 +45,9 @@
 #endif
 
 #include <sofa/component/initPreconditioner.h>
+#ifndef SOFA_NO_OPENGL
 #include <sofa/component/initOpenGLVisual.h>
-
+#endif
 
 namespace sofa
 {

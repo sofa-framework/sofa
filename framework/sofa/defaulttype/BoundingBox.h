@@ -50,8 +50,9 @@ public:
     /// Define using xmin, xmax, ymin, ymax, zmin, zmax in this order
     BoundingBox(const Vec6f& bbox);
     /// Define using xmin, xmax, ymin, ymax, zmin, zmax in this order
-    BoundingBox(const Vec6d& bbox);
-
+#ifndef SOFA_FLOAT
+	BoundingBox(const Vec6d& bbox);
+#endif
     static BoundingBox neutral_bbox();
 
     operator bbox_t() const;
@@ -139,8 +140,9 @@ public:
     /// Define using xmin, xmax, ymin, ymax in this order
     BoundingBox2D(const Vec4f& bbox);
     /// Define using xmin, xmax, ymin, ymax in this order
+#ifndef SOFA_FLOAT
     BoundingBox2D(const Vec4d& bbox);
-
+#endif
     static BoundingBox2D neutral_bbox();
 
     operator bbox_t() const;
@@ -213,8 +215,9 @@ public:
     /// Define using xmin, xmax in this order
     BoundingBox1D(const Vec2f& bbox);
     /// Define using xmin, xmax in this order
+#ifndef SOFA_FLOAT
     BoundingBox1D(const Vec2d& bbox);
-
+#endif
     static BoundingBox1D neutral_bbox();
 
     operator bbox_t() const;
