@@ -75,7 +75,8 @@ static AssemblyVisitor::mat shift_right(unsigned off, unsigned size, unsigned to
 		
 AssemblyVisitor::AssemblyVisitor(const core::MechanicalParams* mparams) 
 	: base( mparams ),
-	  mparams( mparams )
+	  mparams( mparams ),
+	  start_node(0)
 
 { }
 		
@@ -630,7 +631,7 @@ struct AssemblyVisitor::propagation_helper {
 		// TODO use out_edges instead lol ?
 		chunk& c = chunks[ dofs ];
 		
-		// std::cerr << "propagating from " << pretty(c.dofs) << std::endl;
+ 		// std::cerr << "propagating from " << pretty(c.dofs) << std::endl;
 
 		if( c.mechanical ) {
 			
@@ -1132,6 +1133,8 @@ void AssemblyVisitor::clear() {
 
 		
 Visitor::Result AssemblyVisitor::processNodeTopDown(simulation::Node* node) {
+	if( !start_node ) start_node = node;
+	
 	if( node->mechanicalState ) fill_prefix( node );
 	return RESULT_CONTINUE;
 }
@@ -1139,8 +1142,8 @@ Visitor::Result AssemblyVisitor::processNodeTopDown(simulation::Node* node) {
 void AssemblyVisitor::processNodeBottomUp(simulation::Node* node) {
 	if( node->mechanicalState ) fill_postfix( node );
 
-	// are we finished ?
-	if( node->getParents().empty() ) {
+	// are we finished yo ?
+	if( node == start_node ) {
 		// std::cerr << "finishing lol " << node->getTime() << std::endl;
 		
 		// gather prefix traversal
@@ -1148,6 +1151,8 @@ void AssemblyVisitor::processNodeBottomUp(simulation::Node* node) {
 		
 		// postfix mechanical flags propagation (and geometric stiffness)
 		std::for_each(prefix.rbegin(), prefix.rend(), propagation_helper(chunks) );
+		
+		start_node = 0;
 	}
 }
 		
