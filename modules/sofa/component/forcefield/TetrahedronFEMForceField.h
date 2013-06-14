@@ -34,7 +34,10 @@
 #include <sofa/core/behavior/BaseRotationFinder.h>
 #include <sofa/core/behavior/RotationMatrix.h>
 #include <sofa/helper/OptionsGroup.h>
+
+#ifndef SOFA_NO_OPENGL
 #include <sofa/component/visualmodel/ColorMap.h>
+#endif
 
 // corotational tetrahedron from
 // @InProceedings{NPF05,

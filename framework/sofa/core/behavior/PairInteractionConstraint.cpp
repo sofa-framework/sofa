@@ -34,7 +34,13 @@ namespace behavior
 {
 
 using namespace sofa::defaulttype;
-
+#ifdef SOFA_FLOAT
+template class SOFA_CORE_API PairInteractionConstraint<Vec3fTypes>;
+template class SOFA_CORE_API PairInteractionConstraint<Vec2fTypes>;
+template class SOFA_CORE_API PairInteractionConstraint<Vec1fTypes>;
+template class SOFA_CORE_API PairInteractionConstraint<Rigid3fTypes>;
+template class SOFA_CORE_API PairInteractionConstraint<Rigid2fTypes>;
+#else
 template class SOFA_CORE_API PairInteractionConstraint<Vec3dTypes>;
 template class SOFA_CORE_API PairInteractionConstraint<Vec2dTypes>;
 template class SOFA_CORE_API PairInteractionConstraint<Vec1dTypes>;
@@ -46,7 +52,7 @@ template class SOFA_CORE_API PairInteractionConstraint<Vec2fTypes>;
 template class SOFA_CORE_API PairInteractionConstraint<Vec1fTypes>;
 template class SOFA_CORE_API PairInteractionConstraint<Rigid3fTypes>;
 template class SOFA_CORE_API PairInteractionConstraint<Rigid2fTypes>;
-
+#endif
 
 
 } // namespace behavior

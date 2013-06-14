@@ -30,7 +30,11 @@ namespace internal {
 typedef __vector float          Packet4f;
 typedef __vector int            Packet4i;
 typedef __vector unsigned int   Packet4ui;
+#ifndef __SNC__
 typedef __vector __bool int     Packet4bi;
+#else
+typedef __vector bool			Packet4bi;
+#endif
 typedef __vector short int      Packet8i;
 typedef __vector unsigned char  Packet16uc;
 
@@ -326,6 +330,7 @@ template<> EIGEN_STRONG_INLINE void pstoreu<int>(int*      to, const Packet4i& f
 
   MSQ = vec_ld(0, (unsigned char *)to);                     // most significant quadword
   LSQ = vec_ld(15, (unsigned char *)to);                    // least significant quadword
+
   edgeAlign = vec_lvsl(0, to);                              // permute map to extract edges
   edges=vec_perm(LSQ, MSQ, edgeAlign);                      // extract the edges
   align = vec_lvsr( 0, to );                                // permute map to misalign data
@@ -335,8 +340,14 @@ template<> EIGEN_STRONG_INLINE void pstoreu<int>(int*      to, const Packet4i& f
   vec_st( MSQ, 0, (unsigned char *)to );                    // Store the MSQ part
 }
 
+#ifdef __SNC__
+template<> EIGEN_STRONG_INLINE void prefetch<float>(const float* addr) {  }
+template<> EIGEN_STRONG_INLINE void prefetch<int>(const int*     addr) {  }
+
+#else
 template<> EIGEN_STRONG_INLINE void prefetch<float>(const float* addr) { vec_dstt(addr, DST_CTRL(2,2,32), DST_CHAN); }
 template<> EIGEN_STRONG_INLINE void prefetch<int>(const int*     addr) { vec_dstt(addr, DST_CTRL(2,2,32), DST_CHAN); }
+#endif
 
 template<> EIGEN_STRONG_INLINE float  pfirst<Packet4f>(const Packet4f& a) { float EIGEN_ALIGN16 x[4]; vec_st(a, 0, x); return x[0]; }
 template<> EIGEN_STRONG_INLINE int    pfirst<Packet4i>(const Packet4i& a) { int   EIGEN_ALIGN16 x[4]; vec_st(a, 0, x); return x[0]; }

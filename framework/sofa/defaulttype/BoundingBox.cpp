@@ -68,12 +68,12 @@ BoundingBox::BoundingBox(const Vec6f& v )
     :bbox(std::make_pair(Vector3(v[0],v[2],v[4]),Vector3(v[1],v[3],v[5])))
 {
 }
-
+#ifndef SOFA_FLOAT
 BoundingBox::BoundingBox(const Vec6d& v )
     :bbox(std::make_pair(Vector3(v[0],v[2],v[4]),Vector3(v[1],v[3],v[5])))
 {
 }
-
+#endif
 
 /*static*/
 BoundingBox BoundingBox::neutral_bbox()
@@ -318,12 +318,12 @@ BoundingBox2D::BoundingBox2D(const Vec4f& v )
     :bbox(std::make_pair(Vector2(v[0],v[2]),Vector2(v[1],v[3])))
 {
 }
-
+#ifndef SOFA_FLOAT
 BoundingBox2D::BoundingBox2D(const Vec4d& v )
     :bbox(std::make_pair(Vector2(v[0],v[2]),Vector2(v[1],v[3])))
 {
 }
-
+#endif
 
 /*static*/
 BoundingBox2D BoundingBox2D::neutral_bbox()
@@ -539,12 +539,12 @@ BoundingBox1D::BoundingBox1D(const Vec2f& v )
     :bbox(std::make_pair((SReal)v[0],(SReal)v[1]))
 {
 }
-
+#ifndef SOFA_FLOAT
 BoundingBox1D::BoundingBox1D(const Vec2d& v )
      :bbox(std::make_pair((SReal)v[0],(SReal)v[1]))
 {
 }
-
+#endif
 
 /*static*/
 BoundingBox1D BoundingBox1D::neutral_bbox()

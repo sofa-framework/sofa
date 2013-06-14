@@ -76,7 +76,7 @@ public:
     }
 
     /// Write the value of the element at row i, column j (using 0-based indices)
-    virtual void set(int i, int j, double v)
+    virtual void set(int i, int j, SReal v)
     {
         int bd = (i/3)*3;
         if ((j<bd) || (j>bd+2)) return;
@@ -84,7 +84,7 @@ public:
     }
 
     /// Add v to the existing value of the element at row i, column j (using 0-based indices)
-    virtual void add(int i, int j, double v)
+    virtual void add(int i, int j, SReal v)
     {
         int bd = (i/3)*3;
         if ((j<bd) || (j>bd+2)) return;

@@ -262,7 +262,7 @@ private:
     void	PrintString(void* font, char* string);
     void	Display3DText(float x, float y, float z, char* string);
     void	DrawAxis(double xpos, double ypos, double zpos, double arrowSize);
-    void	DrawBox(double* minBBox, double* maxBBox, double r=0.0);
+    void	DrawBox(SReal* minBBox, SReal* maxBBox, double r=0.0);
     void	DrawXYPlane(double zo, double xmin, double xmax, double ymin,
             double ymax, double step);
     void	DrawYZPlane(double xo, double ymin, double ymax, double zmin,

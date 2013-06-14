@@ -34,7 +34,13 @@ namespace core
 
 using namespace sofa::defaulttype;
 using namespace core;
-
+#ifdef SOFA_FLOAT
+template class SOFA_CORE_API Mapping< Vec3fTypes, Vec3fTypes >;
+template class SOFA_CORE_API Mapping< Rigid3fTypes, Vec3fTypes >;
+template class SOFA_CORE_API Mapping< Vec3fTypes, ExtVec3fTypes >;
+template class SOFA_CORE_API Mapping< Vec3fTypes, Vec1fTypes >;
+template class SOFA_CORE_API Mapping< Rigid2fTypes, Vec2fTypes >;
+#else
 template class SOFA_CORE_API Mapping< Vec3dTypes, Vec3dTypes >;
 template class SOFA_CORE_API Mapping< Rigid3dTypes, Vec3dTypes >;
 template class SOFA_CORE_API Mapping< Vec3dTypes, ExtVec3fTypes >;
@@ -53,6 +59,7 @@ template class SOFA_CORE_API Mapping< Vec3fTypes, Vec1fTypes >;
 
 template class SOFA_CORE_API Mapping< Rigid2fTypes, Vec2fTypes >;
 template class SOFA_CORE_API Mapping< Rigid2dTypes, Vec2dTypes >;
+#endif
 
 } // namespace core
 

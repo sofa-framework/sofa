@@ -372,9 +372,9 @@ public:
         for(int i=0; i<L; i++)
             for(int j=0; j<P; j++)
             {
-                r[i][j]=(*this)[i][0] * m[0][j];
+                r[i][j]= this->elems[i][0] * m[0][j];
                 for(int k=1; k<C; k++)
-                    r[i][j] += (*this)[i][k] * m[k][j];
+                    r[i][j] += this->elems[i][k] * m[k][j];
             }
         return r;
     }
@@ -384,7 +384,7 @@ public:
     {
         Mat<L,C,real> r(NOINIT);
         for(int i = 0; i < L; i++)
-            r[i] = (*this)[i] + m[i];
+            r[i] = this->elems[i] + m[i];
         return r;
     }
 
@@ -393,7 +393,7 @@ public:
     {
         Mat<L,C,real> r(NOINIT);
         for(int i = 0; i < L; i++)
-            r[i] = (*this)[i] - m[i];
+            r[i] = this->elems[i] - m[i];
         return r;
     }
 

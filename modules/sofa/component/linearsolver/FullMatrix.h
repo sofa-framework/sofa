@@ -192,7 +192,7 @@ public:
         return data[i*pitch+j];
     }
 
-    void set(int i, int j, double v)
+    void set(int i, int j, SReal v)
     {
 #ifdef FULLMATRIX_VERBOSE
         std::cout << /*this->Name() <<*/ "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = "<<v<<std::endl;
@@ -207,7 +207,7 @@ public:
         data[i*pitch+j] = (Real)v;
     }
 
-    void add(int i, int j, double v)
+    void add(int i, int j, SReal v)
     {
 #ifdef FULLMATRIX_VERBOSE
         std::cout << /*this->Name() << */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") += "<<v<<std::endl;
