@@ -806,8 +806,7 @@ struct AssemblyVisitor::prefix_helper {
 
 AssemblyVisitor::process_type AssemblyVisitor::process() const {
 	// scoped::timer step("mapping processing");
-
-
+	
 	process_type res;
 
 	unsigned& size_m = res.size_m;
@@ -838,10 +837,7 @@ AssemblyVisitor::process_type AssemblyVisitor::process() const {
 	size_m = off_m;
 	size_c = off_c;
 	
-	// postfix mechanical flags propagation
-	std::for_each(prefix.rbegin(), prefix.rend(), propagation_helper(chunks) );
-
-	// prefix mapping propagation TODO merge with offsets computation
+	// prefix mapping concatenation and stuff TODO merge with offsets computation ?
 	std::for_each(prefix.begin(), prefix.end(), process_helper(res, chunks) );
 	
 	return res;
@@ -1144,8 +1140,15 @@ void AssemblyVisitor::processNodeBottomUp(simulation::Node* node) {
 	if( node->mechanicalState ) fill_postfix( node );
 
 	// are we finished ?
-	if( node->getParents().empty() ) utils::dfs( graph, prefix_helper( prefix ) );
-	
+	if( node->getParents().empty() ) {
+		// std::cerr << "finishing lol " << node->getTime() << std::endl;
+		
+		// gather prefix traversal
+		utils::dfs( graph, prefix_helper( prefix ) );
+		
+		// postfix mechanical flags propagation (and geometric stiffness)
+		std::for_each(prefix.rbegin(), prefix.rend(), propagation_helper(chunks) );
+	}
 }
 		
 
