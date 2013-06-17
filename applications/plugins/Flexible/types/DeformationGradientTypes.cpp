@@ -244,7 +244,6 @@ SOFA_DECL_CLASS ( DefGradientMechanicalObject )
 using namespace sofa::defaulttype;
 
 int DefGradientMechanicalObjectClass = core::RegisterObject ( "mechanical state vectors" )
-
         .add< MechanicalObject<F331Types> >()
         .add< MechanicalObject<F321Types> >()
         .add< MechanicalObject<F311Types> >()
