@@ -431,17 +431,21 @@ static Mat<9,3,Real> SpatialToQuadraticCoordGradient(const Vec<3,Real>& p)
 }
 
 
-
+#ifndef SOFA_FLOAT
 typedef StdQuadraticTypes<3, double> Quadratic3dTypes;
+#endif
+#ifndef SOFA_DOUBLE
 typedef StdQuadraticTypes<3, float> Quadratic3fTypes;
+#endif
 
 /// Note: Many scenes use Quadratic as template for 3D double-precision rigid type. Changing it to Quadratic3d would break backward compatibility.
 #ifdef SOFA_FLOAT
-template<> inline const char* Quadratic3dTypes::Name() { return "Quadratic3d"; }
 template<> inline const char* Quadratic3fTypes::Name() { return "Quadratic"; }
 #else
 template<> inline const char* Quadratic3dTypes::Name() { return "Quadratic"; }
+#ifndef SOFA_DOUBLE
 template<> inline const char* Quadratic3fTypes::Name() { return "Quadratic3f"; }
+#endif
 #endif
 
 #ifdef SOFA_FLOAT
@@ -472,8 +476,14 @@ template<> struct DataTypeInfo< sofa::defaulttype::Quadratic3dTypes::Deriv > : p
 // The next line hides all those methods from the doxygen documentation
 /// \cond TEMPLATE_OVERRIDES
 
-template<> struct DataTypeName< defaulttype::Quadratic3fTypes::Coord > { static const char* name() { return "Quadratic3fTypes::Coord"; } };
+
+#ifndef SOFA_FLOAT
 template<> struct DataTypeName< defaulttype::Quadratic3dTypes::Coord > { static const char* name() { return "Quadratic3dTypes::Coord"; } };
+#endif
+#ifndef SOFA_DOUBLE
+template<> struct DataTypeName< defaulttype::Quadratic3fTypes::Coord > { static const char* name() { return "Quadratic3fTypes::Coord"; } };
+#endif
+
 
 /// \endcond
 
@@ -633,8 +643,14 @@ inline typename StdQuadraticTypes<_spatial_dimensions,_Real>::Deriv operator*(co
     return d * m;
 }
 
+
+
+#ifndef SOFA_FLOAT
 typedef QuadraticMass<3, double> Quadratic3dMass;
+#endif
+#ifndef SOFA_DOUBLE
 typedef QuadraticMass<3, float> Quadratic3fMass;
+#endif
 
 
 #ifdef SOFA_FLOAT
@@ -648,8 +664,13 @@ typedef Quadratic3dMass Quadratic3Mass;
 // The next line hides all those methods from the doxygen documentation
 /// \cond TEMPLATE_OVERRIDES
 
-template<> struct DataTypeName< defaulttype::Quadratic3fMass > { static const char* name() { return "Quadratic3fMass"; } };
+
+#ifndef SOFA_FLOAT
 template<> struct DataTypeName< defaulttype::Quadratic3dMass > { static const char* name() { return "Quadratic3dMass"; } };
+#endif
+#ifndef SOFA_DOUBLE
+template<> struct DataTypeName< defaulttype::Quadratic3fMass > { static const char* name() { return "Quadratic3fMass"; } };
+#endif
 
 /// \endcond
 
