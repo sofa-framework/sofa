@@ -332,6 +332,15 @@ if(SOFA-MISC_DEVELOPER_MODE)
 	list(APPEND compilerDefines SOFA_DEV)
 endif()
 
+# float / double or both
+option(SOFA-MISC_USE_FLOAT "Use single precision floating point (float)" OFF)
+option(SOFA-MISC_USE_DOUBLE "Use double precision floating point (double)" OFF)
+if(SOFA-MISC_USE_FLOAT AND NOT SOFA-MISC_USE_DOUBLE)
+	list(APPEND compilerDefines SOFA_FLOAT)
+elseif(SOFA-MISC_USE_DOUBLE AND NOT SOFA-MISC_USE_FLOAT)
+	list(APPEND compilerDefines SOFA_DOUBLE)
+endif()
+
 # os-specific
 if(XBOX)
 	if(SOFA-EXTERNAL_HAVE_BOOST)
