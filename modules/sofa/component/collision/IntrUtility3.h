@@ -326,12 +326,10 @@ extern template SOFA_BASE_COLLISION_API Vec<3,Rigid3fTypes::Real> getPointFromIn
 extern template SOFA_BASE_COLLISION_API class CapIntrConfiguration<float>;
 #endif
 #endif
+
 }
 }
 }
 
-#ifdef SOFA_NO_EXTERN_TEMPLATE
-	#include "IntrUtility3.inl"
-#endif
 
 #endif

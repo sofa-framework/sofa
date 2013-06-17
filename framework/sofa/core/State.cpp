@@ -22,36 +22,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/State.h>
-
+#include <sofa/core/State.inl>
 
 namespace sofa
 {
 
 namespace core
 {
-using namespace sofa::defaulttype;
-#include <sofa/core/State.inl>
 
-#ifdef SOFA_FLOAT
-#ifdef __SNC__
-#pragma instanciate State<defaulttype::Vec3fTypes>;
-#pragma instanciate State<defaulttype::Vec2fTypes>;
-#pragma instanciate State<defaulttype::Vec1fTypes>;
-#pragma instanciate State<defaulttype::Vec6fTypes>;
-#pragma instanciate State<defaulttype::Rigid3fTypes>;
-#pragma instanciate State<defaulttype::Rigid2fTypes>;
-#pragma instanciate State<defaulttype::ExtVec3fTypes>;
-#else
-template class SOFA_CORE_API State<Vec3fTypes>;
-template class SOFA_CORE_API State<Vec2fTypes>;
-template class SOFA_CORE_API State<Vec1fTypes>;
-template class SOFA_CORE_API State<Vec6fTypes>;
-template class SOFA_CORE_API State<Rigid3fTypes>;
-template class SOFA_CORE_API State<Rigid2fTypes>;
-template class SOFA_CORE_API State<ExtVec3fTypes>;
-#endif
-#else
+using namespace sofa::defaulttype;
+
 template class SOFA_CORE_API State<Vec3dTypes>;
 template class SOFA_CORE_API State<Vec2dTypes>;
 template class SOFA_CORE_API State<Vec1dTypes>;
@@ -68,7 +48,6 @@ template class SOFA_CORE_API State<Rigid2fTypes>;
 
 template class SOFA_CORE_API State<ExtVec3dTypes>;
 template class SOFA_CORE_API State<ExtVec3fTypes>;
-#endif
 
 } // namespace core
 

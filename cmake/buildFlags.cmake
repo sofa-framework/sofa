@@ -42,11 +42,6 @@ if(NOT CMAKE_BUILD_TYPE MATCHES "Debug")
     list(APPEND compilerDefines "NDEBUG")
 endif()
 
-if(PS3)
-   list(APPEND compilerDefines "SOFA_FLOAT")
-   list(APPEND compilerDefines "SOFA_NO_EXTERN_TEMPLATE")
-endif()
-
 # SOFA_DEBUG preprocessor macro
 if(CMAKE_BUILD_TYPE MATCHES "Debug")
     list(APPEND compilerDefines "SOFA_DEBUG")

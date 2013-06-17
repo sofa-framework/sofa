@@ -160,16 +160,6 @@ option(SOFA-APPLICATION_SOFA_TYPEDEFS "Build SofaTypedefs application " OFF)
 option(SOFA-APPLICATION_SOFA_VERIFICATION "Build SofaVerification application " OFF)
 
 ## tutorial
-if(PS3)
-option(SOFA-TUTORIAL_CHAIN_HYBRID "Build Chain hybrid tutorial" OFF)
-option(SOFA-TUTORIAL_COMPOSITE_OBJECT "Build Composite object tutorial" OFF)
-option(SOFA-TUTORIAL_HOUSE_OF_CARDS "Build House of cards tutorial" OFF)
-option(SOFA-TUTORIAL_MIXED_PENDULUM "Build Mixed Pendulum tutorial" OFF)
-option(SOFA-TUTORIAL_ONE_PARTICLE "Build One particle tutorial" OFF)
-#option(SOFA-TUTORIAL_ONE_PARTICLE_WITH_SOFA_TYPEDEFS "Build One particle with sofa typedefs tutorial" OFF)
-option(SOFA-TUTORIAL_ONE_TETRAHEDRON "Build One tetrahedron tutorial" OFF)
-#option(SOFA-TUTORIAL_ANATOMY_MODELLING "Build Anatomy modelling tutorial" OFF)
-else()
 option(SOFA-TUTORIAL_CHAIN_HYBRID "Build Chain hybrid tutorial" ON)
 option(SOFA-TUTORIAL_COMPOSITE_OBJECT "Build Composite object tutorial" ON)
 option(SOFA-TUTORIAL_HOUSE_OF_CARDS "Build House of cards tutorial" OFF)
@@ -178,7 +168,6 @@ option(SOFA-TUTORIAL_ONE_PARTICLE "Build One particle tutorial" ON)
 #option(SOFA-TUTORIAL_ONE_PARTICLE_WITH_SOFA_TYPEDEFS "Build One particle with sofa typedefs tutorial" OFF)
 option(SOFA-TUTORIAL_ONE_TETRAHEDRON "Build One tetrahedron tutorial" ON)
 #option(SOFA-TUTORIAL_ANATOMY_MODELLING "Build Anatomy modelling tutorial" OFF)
-endif()
 
 # core
 option(SOFA-LIB_CORE "" ON)
@@ -313,7 +302,7 @@ option(SOFA-LIB_SIMULATION_GRAPH_BGL "Boost graph library" OFF)
 # optionnal features
 CMAKE_DEPENDENT_OPTION(SOFA-LIB_GUI_QTVIEWER "Use QT Viewer" ON "NOT OPTION_NO_OPENGL;NOT OPTION_NO_QT;NOT PS3" OFF)
 CMAKE_DEPENDENT_OPTION(SOFA-LIB_GUI_QGLVIEWER "Use QGLViewer" OFF
-	"NOT SOFA-MISC_NO_OPENGL; NOT SOFA-MISC_NO_QT" OFF)
+	"NOT SOFA-MISC_NO_OPENGL; NOT SOFA-MISC_NO_QT;NOT PS3" OFF)
 CMAKE_DEPENDENT_OPTION(SOFA-LIB_GUI_GLUT "Use GLUT interface" ON
 	"NOT SOFA-MISC_NO_OPENGL" OFF)
 option(SOFA-LIB_GUI_INTERACTION "Enable interaction mode" OFF)

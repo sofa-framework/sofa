@@ -37,13 +37,6 @@ namespace behavior
 
 using namespace sofa::defaulttype;
 
-#ifdef SOFA_FLOAT
-template class SOFA_CORE_API ProjectiveConstraintSet<Vec3fTypes>;
-template class SOFA_CORE_API ProjectiveConstraintSet<Vec2fTypes>;
-template class SOFA_CORE_API ProjectiveConstraintSet<Vec1fTypes>;
-template class SOFA_CORE_API ProjectiveConstraintSet<Rigid3fTypes>;
-template class SOFA_CORE_API ProjectiveConstraintSet<Rigid2fTypes>;
-#else
 template class SOFA_CORE_API ProjectiveConstraintSet<Vec3dTypes>;
 template class SOFA_CORE_API ProjectiveConstraintSet<Vec2dTypes>;
 template class SOFA_CORE_API ProjectiveConstraintSet<Vec1dTypes>;
@@ -55,7 +48,7 @@ template class SOFA_CORE_API ProjectiveConstraintSet<Vec2fTypes>;
 template class SOFA_CORE_API ProjectiveConstraintSet<Vec1fTypes>;
 template class SOFA_CORE_API ProjectiveConstraintSet<Rigid3fTypes>;
 template class SOFA_CORE_API ProjectiveConstraintSet<Rigid2fTypes>;
-#endif
+
 } // namespace behavior
 
 } // namespace core

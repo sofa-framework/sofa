@@ -708,7 +708,7 @@ public:
         return traits::v(bloc(i, j), bi, bj);
     }
 
-    void set(int i, int j, SReal v)
+    void set(int i, int j, double v)
     {
 #ifdef SPARSEMATRIX_VERBOSE
         std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = "<<v<<std::endl;
@@ -727,7 +727,7 @@ public:
         traits::v(*wbloc(i,j,true), bi, bj) = (Real)v;
     }
 
-    void add(int i, int j, SReal v)
+    void add(int i, int j, double v)
     {
 #ifdef SPARSEMATRIX_VERBOSE
         std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") += "<<v<<std::endl;

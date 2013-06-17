@@ -140,7 +140,7 @@ public:
         return ite->second;
     }
 
-    void set(int i, int j, SReal v)
+    void set(int i, int j, double v)
     {
 #ifdef SPARSEMATRIX_VERBOSE
         std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = "<<v<<std::endl;
@@ -155,7 +155,7 @@ public:
         data[i][j] = (Real)v;
     }
 
-    void add(int i, int j, SReal v)
+    void add(int i, int j, double v)
     {
 #ifdef SPARSEMATRIX_VERBOSE
         std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") += "<<v<<std::endl;

@@ -59,9 +59,9 @@ public:
     /// Reset all values to 0
     virtual void clear() = 0;
     /// Write the value of the element at row i, column j (using 0-based indices)
-    virtual void set(int i, int j, SReal v) = 0;
+    virtual void set(int i, int j, double v) = 0;
     /// Add v to the existing value of the element at row i, column j (using 0-based indices)
-    virtual void add(int i, int j, SReal v) = 0;
+    virtual void add(int i, int j, double v) = 0;
     /*    /// Write the value of the element at row i, column j (using 0-based indices)
         virtual void set(int i, int j, float v) { set(i,j,(double)v); }
         /// Add v to the existing value of the element at row i, column j (using 0-based indices)

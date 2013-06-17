@@ -75,7 +75,7 @@ inline int MeshNewProximityIntersection::doIntersectionLineLine(double dist2, co
 inline int MeshNewProximityIntersection::doIntersectionLinePoint(double dist2, const Vector3& p1, const Vector3& p2, const Vector3& q, OutputVector* contacts, int id, bool swapElems)
 {
     Vector3 p,pq;
-    p = IntrUtil<SReal>::nearestPointOnSeg(p1,p2,q);
+    p = IntrUtil<double>::nearestPointOnSeg(p1,p2,q);
 
     pq = q-p;
     if (pq.norm2() >= dist2)

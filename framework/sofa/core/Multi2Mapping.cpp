@@ -37,11 +37,7 @@ namespace core
 using namespace sofa::defaulttype;
 using namespace core::behavior;
 
-#ifdef SOFA_FLOAT
-template class Multi2Mapping< Vec3fTypes, Rigid3fTypes, Vec3fTypes >;
-template class Multi2Mapping< Vec3fTypes, Rigid3fTypes, Rigid3fTypes >;
-template class Multi2Mapping< Vec1fTypes, Rigid3fTypes, Rigid3fTypes >;
-#else
+
 template class Multi2Mapping< Vec3dTypes, Vec3fTypes, Vec3dTypes >;
 template class Multi2Mapping< Vec3dTypes, Vec3fTypes, Vec3fTypes >;
 
@@ -81,7 +77,6 @@ template class Multi2Mapping< Vec1dTypes, Rigid3fTypes, Rigid3dTypes >;
 template class Multi2Mapping< Vec1fTypes, Rigid3dTypes, Rigid3fTypes >;
 template class Multi2Mapping< Vec1dTypes, Rigid3fTypes, Rigid3fTypes >;
 template class Multi2Mapping< Vec1dTypes, Rigid3dTypes, Rigid3fTypes >;
-#endif
 }
 
 }

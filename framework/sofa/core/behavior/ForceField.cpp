@@ -35,14 +35,6 @@ namespace behavior
 
 using namespace sofa::defaulttype;
 
-#ifdef SOFA_FLOAT
-template class SOFA_CORE_API ForceField<Vec3fTypes>;
-template class SOFA_CORE_API ForceField<Vec2fTypes>;
-template class SOFA_CORE_API ForceField<Vec1fTypes>;
-template class SOFA_CORE_API ForceField<Vec6fTypes>;
-template class SOFA_CORE_API ForceField<Rigid3fTypes>;
-template class SOFA_CORE_API ForceField<Rigid2fTypes>;
-#else
 template class SOFA_CORE_API ForceField<Vec3dTypes>;
 template class SOFA_CORE_API ForceField<Vec2dTypes>;
 template class SOFA_CORE_API ForceField<Vec1dTypes>;
@@ -56,7 +48,7 @@ template class SOFA_CORE_API ForceField<Vec1fTypes>;
 template class SOFA_CORE_API ForceField<Vec6fTypes>;
 template class SOFA_CORE_API ForceField<Rigid3fTypes>;
 template class SOFA_CORE_API ForceField<Rigid2fTypes>;
-#endif
+
 } // namespace behavior
 
 } // namespace core

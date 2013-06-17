@@ -94,7 +94,4 @@ extern template struct SOFA_MESH_COLLISION_API IntrConfigManager<TTriangle<Vec3f
 }
 }
 }
-#ifdef SOFA_NO_EXTERN_TEMPLATE
-#include "IntrMeshUtility.inl"
-#endif
 #endif // INTRMESHUTIL_H
