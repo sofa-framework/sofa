@@ -10,7 +10,7 @@
 #ifndef _CXA_DEMANGLE_H
 #define _CXA_DEMANGLE_H
 
-#include <sofa/core/ps3/cxxabi.h>
+#include <cxxabi.h>
 
 #pragma GCC visibility push(hidden)
 

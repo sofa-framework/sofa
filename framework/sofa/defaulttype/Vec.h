@@ -707,37 +707,7 @@ Vec<N,real> operator*(const real& a, const Vec<N,real>& V)
 {
     return V * a;
 }
-#ifdef SOFA_FLOAT
-typedef Vec<1,float> Vec1f;
-typedef Vec1f Vec1d;
-typedef Vec<1,int> Vec1i;
-typedef Vec<1,unsigned> Vec1u;
 
-
-typedef Vec<2,float> Vec2f;
-typedef Vec2f Vec2d;
-typedef Vec<2,int> Vec2i;
-typedef Vec<2,unsigned> Vec2u;
-
-typedef sofa::defaulttype::Vec<3,float> Vec3f;
-typedef Vec3f Vec3d;
-
-
-typedef Vec<3,int> Vec3i;
-typedef Vec<3,unsigned> Vec3u;
-
-
-typedef Vec<4,float> Vec4f;
-typedef Vec4f Vec4d;
-typedef Vec<4,int> Vec4i;
-typedef Vec<4,unsigned> Vec4u;
-
-
-typedef Vec<6,float> Vec6f;
-typedef Vec6f Vec6d;
-typedef Vec<6,int> Vec6i;
-typedef Vec<6,unsigned> Vec6u;
-#else
 typedef Vec<1,float> Vec1f;
 typedef Vec<1,double> Vec1d;
 typedef Vec<1,int> Vec1i;
@@ -749,10 +719,9 @@ typedef Vec<2,double> Vec2d;
 typedef Vec<2,int> Vec2i;
 typedef Vec<2,unsigned> Vec2u;
 
+
 typedef Vec<3,float> Vec3f;
 typedef Vec<3,double> Vec3d;
-
-
 typedef Vec<3,int> Vec3i;
 typedef Vec<3,unsigned> Vec3u;
 
@@ -767,7 +736,7 @@ typedef Vec<6,float> Vec6f;
 typedef Vec<6,double> Vec6d;
 typedef Vec<6,int> Vec6i;
 typedef Vec<6,unsigned> Vec6u;
-#endif
+
 
 #ifdef SOFA_FLOAT
 typedef Vec1f Vector1; ///< alias
@@ -810,13 +779,6 @@ struct DataTypeInfo< sofa::defaulttype::VecNoInit<N,real> > : public FixedArrayT
 // The next line hides all those methods from the doxygen documentation
 /// \cond TEMPLATE_OVERRIDES
 
-#ifdef SOFA_FLOAT
-template<> struct DataTypeName<defaulttype::Vec1f> { static const char* name() { return "Vec1f"; } };
-template<> struct DataTypeName<defaulttype::Vec2f> { static const char* name() { return "Vec2f"; } };
-template<> struct DataTypeName<defaulttype::Vec3f> { static const char* name() { return "Vec3f"; } };
-template<> struct DataTypeName<defaulttype::Vec4f> { static const char* name() { return "Vec4f"; } };
-template<> struct DataTypeName<defaulttype::Vec6f> { static const char* name() { return "Vec6f"; } };
-#else
 template<> struct DataTypeName<defaulttype::Vec1f> { static const char* name() { return "Vec1f"; } };
 template<> struct DataTypeName<defaulttype::Vec1d> { static const char* name() { return "Vec1d"; } };
 template<> struct DataTypeName<defaulttype::Vec2f> { static const char* name() { return "Vec2f"; } };
@@ -827,7 +789,7 @@ template<> struct DataTypeName<defaulttype::Vec4f> { static const char* name() {
 template<> struct DataTypeName<defaulttype::Vec4d> { static const char* name() { return "Vec4d"; } };
 template<> struct DataTypeName<defaulttype::Vec6f> { static const char* name() { return "Vec6f"; } };
 template<> struct DataTypeName<defaulttype::Vec6d> { static const char* name() { return "Vec6d"; } };
-#endif
+
 /// \endcond
 
 } // namespace defaulttype

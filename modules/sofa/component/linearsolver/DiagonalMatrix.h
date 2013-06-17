@@ -106,12 +106,12 @@ public:
         return data[i];
     }
 
-    void set(int i, int j, SReal v)
+    void set(int i, int j, double v)
     {
         if (i==j) data[i] = (Real)v;
     }
 
-    void add(int i, int j, SReal v)
+    void add(int i, int j, double v)
     {
         if (i==j) data[i] += (Real)v;
     }

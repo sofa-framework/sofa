@@ -35,6 +35,7 @@
 #include <memory>
 #include <cstdlib>
 
+
 namespace sofa
 {
 
@@ -415,37 +416,20 @@ public:
 // 3D
 //
 
-
+/// 3D DOFs, double precision
+typedef StdVectorTypes<Vec3d,Vec3d,double> Vec3dTypes;
 /// 3D DOFs, single precision
 typedef StdVectorTypes<Vec3f,Vec3f,float> Vec3fTypes;
 
-#ifdef SOFA_FLOAT
-typedef Vec3fTypes Vec3dTypes;
-#else
-/// 3D DOFs, double precision
-typedef StdVectorTypes<Vec3d,Vec3d,double> Vec3dTypes;
-#endif
-
-
-#ifndef SOFA_FLOAT
 template<> inline const char* Vec3dTypes::Name() { return "Vec3d"; }
-#endif
-
 template<> inline const char* Vec3fTypes::Name() { return "Vec3f"; }
 
 /// 3D external DOFs, double precision
-#ifdef SOFA_FLOAT
-typedef ExtVectorTypes<Vec3d,Vec3d,float> ExtVec3dTypes;
-#else
 typedef ExtVectorTypes<Vec3d,Vec3d,double> ExtVec3dTypes;
-#endif
 /// 3D external DOFs, single precision
 typedef ExtVectorTypes<Vec3f,Vec3f,float> ExtVec3fTypes;
 
-#ifndef SOFA_FLOAT
 template<> inline const char* ExtVec3dTypes::Name() { return "ExtVec3d"; }
-#endif
-
 template<> inline const char* ExtVec3fTypes::Name() { return "ExtVec3f"; }
 
 //
@@ -453,65 +437,39 @@ template<> inline const char* ExtVec3fTypes::Name() { return "ExtVec3f"; }
 //
 
 /// 2D DOFs, double precision
-#ifdef SOFA_FLOAT
-typedef StdVectorTypes<Vec2f,Vec2f,float> Vec2fTypes;
-typedef Vec2fTypes Vec2dTypes;
-#else
 typedef StdVectorTypes<Vec2d,Vec2d,double> Vec2dTypes;
 /// 2D DOFs, single precision
 typedef StdVectorTypes<Vec2f,Vec2f,float> Vec2fTypes;
-template<> inline const char* Vec2dTypes::Name() { return "Vec2d"; }
-#endif
 
+template<> inline const char* Vec2dTypes::Name() { return "Vec2d"; }
 template<> inline const char* Vec2fTypes::Name() { return "Vec2f"; }
 
-
-#ifdef SOFA_FLOAT
-/// 2D external DOFs, single precision
-typedef ExtVectorTypes<Vec2f,Vec2f,float> ExtVec2fTypes;
-typedef ExtVec2fTypes ExtVec2dTypes;
-#else
 /// 2D external DOFs, double precision
 typedef ExtVectorTypes<Vec2d,Vec2d,double> ExtVec2dTypes;
 /// 2D external DOFs, single precision
 typedef ExtVectorTypes<Vec2f,Vec2f,float> ExtVec2fTypes;
 
 template<> inline const char* ExtVec2dTypes::Name() { return "ExtVec2d"; }
-#endif
 template<> inline const char* ExtVec2fTypes::Name() { return "ExtVec2f"; }
 
 //
 // 1D
 //
 
-#ifdef SOFA_FLOAT
-/// 1D DOFs, single precision
-typedef StdVectorTypes<Vec1f,Vec1f,float> Vec1fTypes;
-/// 1D DOFs, double precision
-typedef Vec1fTypes Vec1dTypes;
-#else
 /// 1D DOFs, double precision
 typedef StdVectorTypes<Vec1d,Vec1d,double> Vec1dTypes;
 /// 1D DOFs, single precision
 typedef StdVectorTypes<Vec1f,Vec1f,float> Vec1fTypes;
 
 template<> inline const char* Vec1dTypes::Name() { return "Vec1d"; }
-#endif
 template<> inline const char* Vec1fTypes::Name() { return "Vec1f"; }
 
-#ifdef SOFA_FLOAT
-/// 1D external DOFs, single precision
-typedef ExtVectorTypes<Vec1f,Vec1f,float> ExtVec1fTypes;
-/// 1D external DOFs, double precision
-typedef ExtVec1fTypes ExtVec1dTypes;
-#else
 /// 1D external DOFs, double precision
 typedef ExtVectorTypes<Vec1d,Vec1d,double> ExtVec1dTypes;
 /// 1D external DOFs, single precision
 typedef ExtVectorTypes<Vec1f,Vec1f,float> ExtVec1fTypes;
 
 template<> inline const char* ExtVec1dTypes::Name() { return "ExtVec1d"; }
-#endif
 template<> inline const char* ExtVec1fTypes::Name() { return "ExtVec1f"; }
 
 //

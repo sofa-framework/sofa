@@ -917,31 +917,30 @@ public:
 
 };
 
-#ifdef SOFA_FLOAT
-typedef StdRigidTypes<3,float> Rigid3fTypes;
-typedef Rigid3fTypes Rigid3dTypes;
-typedef RigidMass<3,float> Rigid3fMass;
-typedef Rigid3fMass Rigid3dMass;
-
-template<> inline const char* Rigid3fTypes::Name() { return "Rigid3f"; }
-
-typedef Rigid3dTypes Rigid3Types;
-typedef Rigid3dMass Rigid3Mass;
-typedef Rigid3Types RigidTypes;
-#else
 typedef StdRigidTypes<3,double> Rigid3dTypes;
 typedef StdRigidTypes<3,float> Rigid3fTypes;
+
 typedef RigidMass<3,double> Rigid3dMass;
 typedef RigidMass<3,float> Rigid3fMass;
+//typedef Rigid3Mass RigidMass;
 
+/// Note: Many scenes use Rigid as template for 3D double-precision rigid type. Changing it to Rigid3d would break backward compatibility.
+#ifdef SOFA_FLOAT
 template<> inline const char* Rigid3dTypes::Name() { return "Rigid3d"; }
+template<> inline const char* Rigid3fTypes::Name() { return "Rigid"; }
+#else
+template<> inline const char* Rigid3dTypes::Name() { return "Rigid"; }
 template<> inline const char* Rigid3fTypes::Name() { return "Rigid3f"; }
-
-typedef Rigid3dTypes Rigid3Types;
-typedef Rigid3dMass Rigid3Mass;
-typedef Rigid3Types RigidTypes;
 #endif
 
+#ifdef SOFA_FLOAT
+typedef Rigid3fTypes Rigid3Types;
+typedef Rigid3fMass Rigid3Mass;
+#else
+typedef Rigid3dTypes Rigid3Types;
+typedef Rigid3dMass Rigid3Mass;
+#endif
+typedef Rigid3Types RigidTypes;
 //=============================================================================
 // 2D Rigids
 //=============================================================================
@@ -1722,14 +1721,7 @@ struct DataTypeInfo< sofa::defaulttype::RigidCoord<N,real> > : public FixedArray
 
 // The next line hides all those methods from the doxygen documentation
 /// \cond TEMPLATE_OVERRIDES
-#ifdef SOFA_FLOAT
-template<> struct DataTypeName< defaulttype::Rigid2fTypes::Coord > { static const char* name() { return "Rigid2fTypes::Coord"; } };
-template<> struct DataTypeName< defaulttype::Rigid2fTypes::Deriv > { static const char* name() { return "Rigid2fTypes::Deriv"; } };
-template<> struct DataTypeName< defaulttype::Rigid3fTypes::Coord > { static const char* name() { return "Rigid3fTypes::Coord"; } };
-template<> struct DataTypeName< defaulttype::Rigid3fTypes::Deriv > { static const char* name() { return "Rigid3fTypes::Deriv"; } };
-template<> struct DataTypeName< defaulttype::Rigid2fMass > { static const char* name() { return "Rigid2fMass"; } };
-template<> struct DataTypeName< defaulttype::Rigid3fMass > { static const char* name() { return "Rigid3fMass"; } };
-#else
+
 template<> struct DataTypeName< defaulttype::Rigid2fTypes::Coord > { static const char* name() { return "Rigid2fTypes::Coord"; } };
 template<> struct DataTypeName< defaulttype::Rigid2fTypes::Deriv > { static const char* name() { return "Rigid2fTypes::Deriv"; } };
 template<> struct DataTypeName< defaulttype::Rigid2dTypes::Coord > { static const char* name() { return "Rigid2dTypes::Coord"; } };
@@ -1742,7 +1734,6 @@ template<> struct DataTypeName< defaulttype::Rigid2fMass > { static const char* 
 template<> struct DataTypeName< defaulttype::Rigid2dMass > { static const char* name() { return "Rigid2dMass"; } };
 template<> struct DataTypeName< defaulttype::Rigid3fMass > { static const char* name() { return "Rigid3fMass"; } };
 template<> struct DataTypeName< defaulttype::Rigid3dMass > { static const char* name() { return "Rigid3dMass"; } };
-#endif
 
 /// \endcond
 

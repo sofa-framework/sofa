@@ -25,9 +25,16 @@
 #ifndef SOFA_CORE_STATE_INL
 #define SOFA_CORE_STATE_INL
 
+#include <sofa/core/State.h>
+
+namespace sofa
+{
+
+namespace core
+{
 
 template<class DataTypes>
-sofa::core::objectmodel::BaseData* sofa::core::State<DataTypes>::baseWrite(VecId v)
+objectmodel::BaseData* State<DataTypes>::baseWrite(VecId v)
 {
     switch (v.getType())
     {
@@ -40,7 +47,7 @@ sofa::core::objectmodel::BaseData* sofa::core::State<DataTypes>::baseWrite(VecId
 }
 
 template<class DataTypes>
-const sofa::core::objectmodel::BaseData* sofa::core::State<DataTypes>::baseRead(ConstVecId v) const
+const objectmodel::BaseData* State<DataTypes>::baseRead(ConstVecId v) const
 {
     switch (v.getType())
     {
@@ -53,7 +60,7 @@ const sofa::core::objectmodel::BaseData* sofa::core::State<DataTypes>::baseRead(
 }
 
 template<class DataTypes>
-void sofa::core::State<DataTypes>::computeBBox(const core::ExecParams* params)
+void State<DataTypes>::computeBBox(const core::ExecParams* params)
 {
     const VecCoord& x = read(ConstVecCoordId::position())->getValue(params);
     const unsigned int xSize = x.size();
@@ -81,5 +88,9 @@ void sofa::core::State<DataTypes>::computeBBox(const core::ExecParams* params)
 
     this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
 }
+
+} // namespace core
+
+} // namespace sofa
 
 #endif

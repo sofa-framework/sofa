@@ -34,9 +34,7 @@
 #include <sofa/core/behavior/ForceField.inl>
 
 #include <sofa/core/visual/VisualParams.h>
-#ifndef SOFA_NO_OPENGL
 #include <sofa/component/visualmodel/ColorMap.h>
-#endif
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/system/gl.h>
 

@@ -249,14 +249,14 @@ public:
         asub(bi, bj, nrow, ncol) = m;
     }
 
-    void set(int i, int j, SReal v)
+    void set(int i, int j, double v)
     {
         int bi = i / BSIZE; i = i % BSIZE;
         int bj = j / BSIZE; j = j % BSIZE;
         bloc(bi,bj)[i][j] = (Real)v;
     }
 
-    void add(int i, int j, SReal v)
+    void add(int i, int j, double v)
     {
         int bi = i / BSIZE; i = i % BSIZE;
         int bj = j / BSIZE; j = j % BSIZE;
@@ -638,7 +638,7 @@ public:
         asub(bi, bj, nrow, ncol) = m;
     }
 
-    void set(int i, int j, SReal v)
+    void set(int i, int j, double v)
     {
         int bi = i / BSIZE; i = i % BSIZE;
         int bj = j / BSIZE; j = j % BSIZE;
@@ -647,7 +647,7 @@ public:
         data[bi*3+bindex][i][j] = (Real)v;
     }
 
-    void add(int i, int j, SReal v)
+    void add(int i, int j, double v)
     {
         int bi = i / BSIZE; i = i % BSIZE;
         int bj = j / BSIZE; j = j % BSIZE;
