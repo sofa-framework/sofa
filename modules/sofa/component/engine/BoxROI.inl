@@ -445,7 +445,10 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
         for (unsigned int i=0; i<pointsInROI.size() ; ++i)
         {
             CPos p = DataTypes::getCPos(pointsInROI[i]);
-            vertices.push_back( sofa::defaulttype::Vector3(p[0], p[1], p[2]) );
+            sofa::defaulttype::Vector3 pv;
+            for( unsigned int j=0 ; j<DataTypes::spatial_dimensions ; ++j )
+                pv[j] = p[j];
+            vertices.push_back( pv );
         }
         vparams->drawTool()->drawPoints(vertices, pointsWidth, color);
     }
@@ -463,7 +466,10 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
             for (unsigned int j=0 ; j<2 ; j++)
             {
                 CPos p = DataTypes::getCPos((*x0)[e[j]]);
-                vertices.push_back( sofa::defaulttype::Vector3(p[0], p[1], p[2]) );
+                sofa::defaulttype::Vector3 pv;
+                for( unsigned int j=0 ; j<DataTypes::spatial_dimensions ; ++j )
+                    pv[j] = p[j];
+                vertices.push_back( pv );
             }
         }
         vparams->drawTool()->drawLines(vertices, linesWidth, color);
@@ -481,7 +487,10 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
             for (unsigned int j=0 ; j<3 ; j++)
             {
                 CPos p = DataTypes::getCPos((*x0)[t[j]]);
-                vertices.push_back( sofa::defaulttype::Vector3(p[0], p[1], p[2]) );
+                sofa::defaulttype::Vector3 pv;
+                for( unsigned int j=0 ; j<DataTypes::spatial_dimensions ; ++j )
+                    pv[j] = p[j];
+                vertices.push_back( pv );
             }
         }
         vparams->drawTool()->drawTriangles(vertices, color);
@@ -500,19 +509,34 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
             for (unsigned int j=0 ; j<4 ; j++)
             {
                 CPos p = DataTypes::getCPos((*x0)[t[j]]);
-                vertices.push_back( sofa::defaulttype::Vector3(p[0], p[1], p[2]) );
+                sofa::defaulttype::Vector3 pv;
+                for( unsigned int k=0 ; k<DataTypes::spatial_dimensions ; ++k )
+                    pv[k] = p[k];
+                vertices.push_back( pv );
+
                 p = DataTypes::getCPos((*x0)[t[(j+1)%4]]);
-                vertices.push_back( sofa::defaulttype::Vector3(p[0], p[1], p[2]) );
+                for( unsigned int k=0 ; k<DataTypes::spatial_dimensions ; ++k )
+                    pv[k] = p[k];
+                vertices.push_back( pv );
             }
 
             CPos p = DataTypes::getCPos((*x0)[t[0]]);
-            vertices.push_back( sofa::defaulttype::Vector3(p[0], p[1], p[2]) );
+            sofa::defaulttype::Vector3 pv;
+            for( unsigned int j=0 ; j<DataTypes::spatial_dimensions ; ++j )
+                pv[j] = p[j];
+            vertices.push_back( pv );
             p = DataTypes::getCPos((*x0)[t[2]]);
-            vertices.push_back( sofa::defaulttype::Vector3(p[0], p[1], p[2]) );
+            for( unsigned int j=0 ; j<DataTypes::spatial_dimensions ; ++j )
+                pv[j] = p[j];
+            vertices.push_back( pv );
             p = DataTypes::getCPos((*x0)[t[1]]);
-            vertices.push_back( sofa::defaulttype::Vector3(p[0], p[1], p[2]) );
+            for( unsigned int j=0 ; j<DataTypes::spatial_dimensions ; ++j )
+                pv[j] = p[j];
+            vertices.push_back( pv );
             p = DataTypes::getCPos((*x0)[t[3]]);
-            vertices.push_back( sofa::defaulttype::Vector3(p[0], p[1], p[2]) );
+            for( unsigned int j=0 ; j<DataTypes::spatial_dimensions ; ++j )
+                pv[j] = p[j];
+            vertices.push_back( pv );
         }
         vparams->drawTool()->drawLines(vertices, linesWidth, color);
     }
