@@ -412,85 +412,73 @@ public:
     }
 };
 
-//
-// 3D
-//
+
+
+#ifndef SOFA_FLOAT
 
 /// 3D DOFs, double precision
 typedef StdVectorTypes<Vec3d,Vec3d,double> Vec3dTypes;
-/// 3D DOFs, single precision
-typedef StdVectorTypes<Vec3f,Vec3f,float> Vec3fTypes;
-
 template<> inline const char* Vec3dTypes::Name() { return "Vec3d"; }
-template<> inline const char* Vec3fTypes::Name() { return "Vec3f"; }
-
 /// 3D external DOFs, double precision
 typedef ExtVectorTypes<Vec3d,Vec3d,double> ExtVec3dTypes;
-/// 3D external DOFs, single precision
-typedef ExtVectorTypes<Vec3f,Vec3f,float> ExtVec3fTypes;
-
 template<> inline const char* ExtVec3dTypes::Name() { return "ExtVec3d"; }
-template<> inline const char* ExtVec3fTypes::Name() { return "ExtVec3f"; }
-
-//
-// 2D
-//
 
 /// 2D DOFs, double precision
 typedef StdVectorTypes<Vec2d,Vec2d,double> Vec2dTypes;
-/// 2D DOFs, single precision
-typedef StdVectorTypes<Vec2f,Vec2f,float> Vec2fTypes;
-
 template<> inline const char* Vec2dTypes::Name() { return "Vec2d"; }
-template<> inline const char* Vec2fTypes::Name() { return "Vec2f"; }
-
 /// 2D external DOFs, double precision
 typedef ExtVectorTypes<Vec2d,Vec2d,double> ExtVec2dTypes;
-/// 2D external DOFs, single precision
-typedef ExtVectorTypes<Vec2f,Vec2f,float> ExtVec2fTypes;
-
 template<> inline const char* ExtVec2dTypes::Name() { return "ExtVec2d"; }
-template<> inline const char* ExtVec2fTypes::Name() { return "ExtVec2f"; }
-
-//
-// 1D
-//
 
 /// 1D DOFs, double precision
 typedef StdVectorTypes<Vec1d,Vec1d,double> Vec1dTypes;
-/// 1D DOFs, single precision
-typedef StdVectorTypes<Vec1f,Vec1f,float> Vec1fTypes;
-
 template<> inline const char* Vec1dTypes::Name() { return "Vec1d"; }
-template<> inline const char* Vec1fTypes::Name() { return "Vec1f"; }
-
 /// 1D external DOFs, double precision
 typedef ExtVectorTypes<Vec1d,Vec1d,double> ExtVec1dTypes;
-/// 1D external DOFs, single precision
-typedef ExtVectorTypes<Vec1f,Vec1f,float> ExtVec1fTypes;
-
 template<> inline const char* ExtVec1dTypes::Name() { return "ExtVec1d"; }
-template<> inline const char* ExtVec1fTypes::Name() { return "ExtVec1f"; }
-
-//
-// 6D (3 coordinates + 3 angles)
-//
 
 /// 6D DOFs, double precision
 typedef StdVectorTypes<Vec6d,Vec6d,double> Vec6dTypes;
-/// 6D DOFs, single precision
-typedef StdVectorTypes<Vec6f,Vec6f,float> Vec6fTypes;
-
 template<> inline const char* Vec6dTypes::Name() { return "Vec6d"; }
-template<> inline const char* Vec6fTypes::Name() { return "Vec6f"; }
-
 /// 6D external DOFs, double precision
 typedef ExtVectorTypes<Vec6d,Vec6d,double> ExtVec6dTypes;
-/// 6D external DOFs, single precision
-typedef ExtVectorTypes<Vec6f,Vec6f,float> ExtVec6fTypes;
-
 template<> inline const char* ExtVec6dTypes::Name() { return "ExtVec6d"; }
+
+#endif
+
+#ifndef SOFA_DOUBLE
+
+/// 3f DOFs, single precision
+typedef StdVectorTypes<Vec3f,Vec3f,float> Vec3fTypes;
+template<> inline const char* Vec3fTypes::Name() { return "Vec3f"; }
+/// 3f external DOFs, single precision
+typedef ExtVectorTypes<Vec3f,Vec3f,float> ExtVec3fTypes;
+template<> inline const char* ExtVec3fTypes::Name() { return "ExtVec3f"; }
+
+/// 2f DOFs, single precision
+typedef StdVectorTypes<Vec2f,Vec2f,float> Vec2fTypes;
+template<> inline const char* Vec2fTypes::Name() { return "Vec2f"; }
+/// 2f external DOFs, single precision
+typedef ExtVectorTypes<Vec2f,Vec2f,float> ExtVec2fTypes;
+template<> inline const char* ExtVec2fTypes::Name() { return "ExtVec2f"; }
+
+/// 1f DOFs, single precision
+typedef StdVectorTypes<Vec1f,Vec1f,float> Vec1fTypes;
+template<> inline const char* Vec1fTypes::Name() { return "Vec1f"; }
+/// 1f external DOFs, single precision
+typedef ExtVectorTypes<Vec1f,Vec1f,float> ExtVec1fTypes;
+template<> inline const char* ExtVec1fTypes::Name() { return "ExtVec1f"; }
+
+/// 6f DOFs, single precision
+typedef StdVectorTypes<Vec6f,Vec6f,float> Vec6fTypes;
+template<> inline const char* Vec6fTypes::Name() { return "Vec6f"; }
+/// 6f external DOFs, single precision
+typedef ExtVectorTypes<Vec6f,Vec6f,float> ExtVec6fTypes;
 template<> inline const char* ExtVec6fTypes::Name() { return "ExtVec6f"; }
+
+#endif
+
+
 
 #ifdef SOFA_FLOAT
 /// 6D DOFs, double precision (default)
