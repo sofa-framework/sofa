@@ -2,6 +2,7 @@
 #define SOFA_FLEXIBLE_ImageDensityMass_INL
 
 #include "ImageDensityMass.h"
+#include <sofa/core/State.inl>
 #include <sofa/core/behavior/Mass.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
