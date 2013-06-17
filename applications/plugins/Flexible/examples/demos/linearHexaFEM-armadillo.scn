@@ -1,6 +1,12 @@
 <?xml version="1.0"?>
 <Node 	name="Root" gravity="0 0 0" dt="1"  >
+  
+  <RequiredPlugin pluginName="Flexible"/>
+  <RequiredPlugin pluginName="sofaimage"/>
+   
     <VisualStyle displayFlags="showVisual" />
+    
+    
     <DefaultAnimationLoop />
     <DefaultVisualManagerLoop />
     
@@ -24,17 +30,13 @@
 
 	    <Node 	name="Strain"   >
 		<MechanicalObject  template="E331" name="E"  />
-	    	<GreenStrainMapping template="Mapping&lt;F331,E331&gt;" assembleJ="false"/>
+<!-- 	    	<GreenStrainMapping template="Mapping&lt;F331,E331&gt;" assembleJ="false"/> -->
+	    	<CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" assembleJ="false"/>
 	        <HookeForceField  template="E331" name="ff" youngModulus="3000" poissonRatio="0.3" viscosity="0" assembleK="false" assembleB="false"/>	    </Node>
     </Node>
 
-<UniformMass totalMass="100" />
-<!--	<Node 	name="mass"   >
-	     <MechanicalObject position="@../mesh.position" />
-	     <UniformMass totalMass="100" />
-	     <LinearMapping template="Mapping&lt;Vec3d,Vec3d&gt;" assembleJ="false"/>
-        </Node>
--->
+    <MeshMatrixMass massDensity="0.001" lumping="false"/>
+    
   <Node name="Visual"  >
         <VisualModel  fileMesh="mesh/Armadillo_simplified.obj"   />
         <LinearMapping template="MechanicalMapping&lt;Vec3d,ExtVec3f&gt;" assembleJ="true"/>
