@@ -40,6 +40,8 @@ namespace helper
 namespace gl
 {
 
+using namespace sofa::defaulttype;
+
 template <typename V>
 void drawCone(const V& p1, const V& p2, const float& radius1, const float& radius2, const int subd=8)
 {
