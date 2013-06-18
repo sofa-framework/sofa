@@ -80,13 +80,13 @@ public:
     //@{
 	typedef typename ShapeFunctionTypes::VRef VRef;
 	typedef typename ShapeFunctionTypes::VReal VReal;
-	typedef typename ShapeFunctionTypes::Coord Coord;                          ///< Material coordinate: parameters of a point in the object (1 for a wire, 2 for a hull, 3 for a volumetric object)
+    typedef typename ShapeFunctionTypes::Coord Coord;                          ///< Spatial coordinates in world space
 	typedef typename ShapeFunctionTypes::VCoord VCoord;
-	typedef typename ShapeFunctionTypes::Gradient Gradient;                       ///< Gradient of a scalar value in material space
+    typedef typename ShapeFunctionTypes::Gradient Gradient;                       ///< Gradient of a scalar value in world space
 	typedef typename ShapeFunctionTypes::VGradient VGradient;
-	typedef typename ShapeFunctionTypes::Hessian Hessian;    ///< Hessian (second derivative) of a scalar value in material space
+    typedef typename ShapeFunctionTypes::Hessian Hessian;                       ///< Hessian (second derivative) of a scalar value in world space
 	typedef typename ShapeFunctionTypes::VHessian VHessian;
-	typedef typename ShapeFunctionTypes::MaterialToSpatial MaterialToSpatial;           ///< local transformation from material to spatial space = linear for now..
+    typedef typename ShapeFunctionTypes::MaterialToSpatial MaterialToSpatial;          ///< local transformation from material to spatial space ( linear for now). Used in mapping to convert gradients and hessians to material space
 	typedef typename ShapeFunctionTypes::VMaterialToSpatial VMaterialToSpatial;
 
 	typedef typename ShapeFunctionTypes::VecVRef VecVRef;
@@ -99,7 +99,7 @@ public:
     /** @name data */
     //@{
     Data<unsigned int > f_nbRef;      ///< maximum number of parents per child
-    Data< VCoord > f_position;  ///< material coordinates of the parent nodes
+    Data< VCoord > f_position;  ///< spatial coordinates of the parent nodes
 	InternalData m_internalData;
     //@}
 
@@ -110,11 +110,9 @@ public:
 
     virtual void init()
     {
-        if(!f_position.isSet())
-            // material positions are not given, so we compute them based on the current spatial positions
+        if(!f_position.isSet())   // node positions are not given, so we retrieve them from the local mechanical state
         {
-            if( !_state ) this->getContext()->get(_state,core::objectmodel::BaseContext::Local);
-
+            if(!_state) this->getContext()->get(_state,core::objectmodel::BaseContext::Local);
             if(!_state) { serr<<"state not found"<< sendl; return; }
             else
             {
@@ -124,7 +122,6 @@ public:
                 {
                     StdVectorTypes<Coord,Coord>::set( pos[i], _state->getPX(i),_state->getPY(i),_state->getPZ(i) );
 //                    pos[i]=Coord(_state->getPX(i),_state->getPY(i),_state->getPZ(i));
-//                std::cout<<"pts: "<<_state->getPX(0)<<", "<<_state->getPY(0)<<", "<<_state->getPZ(0);
 				}
             }
         }
@@ -132,17 +129,24 @@ public:
     }
 
     /// interpolate shape function values (and their first and second derivatives) at a given child position
+    /// 'cell' might be used to target a specific element/voxel in case on overlapping elements/voxels.
     /// this function is typically used for collision and visual points
-	virtual void computeShapeFunction(const Coord& childPosition, MaterialToSpatial& M, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL)=0;
+    virtual void computeShapeFunction(const Coord& childPosition, MaterialToSpatial& M, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL, const int cell=-1)=0;
 
-    /// wrapper
-	virtual void computeShapeFunction(const VCoord& childPosition, VMaterialToSpatial& M, VecVRef& ref, VecVReal& w, VecVGradient& dw,VecVHessian& ddw)
+    /// wrappers
+    void computeShapeFunction(const VCoord& childPosition, VMaterialToSpatial& M, VecVRef& ref, VecVReal& w, VecVGradient& dw,VecVHessian& ddw)
     {
 		unsigned int nb=childPosition.size();
         M.resize(nb); ref.resize(nb);        w.resize(nb);   dw.resize(nb);  ddw.resize(nb);
         for(unsigned i=0; i<nb; i++)            computeShapeFunction(childPosition[i],M[i],ref[i],w[i],&dw[i],&ddw[i]);
 	}
 
+    void computeShapeFunction(const VCoord& childPosition, VMaterialToSpatial& M, VecVRef& ref, VecVReal& w, VecVGradient& dw,VecVHessian& ddw,  const vector<int>& cells)
+    {
+        unsigned int nb=childPosition.size();
+        M.resize(nb); ref.resize(nb);        w.resize(nb);   dw.resize(nb);  ddw.resize(nb);
+        for(unsigned i=0; i<nb; i++)            computeShapeFunction(childPosition[i],M[i],ref[i],w[i],&dw[i],&ddw[i],cells[i]);
+    }
 
     /// used to make a partition of unity: $sum_i w_i(x)=1$ and adjust derivatives accordingly
     void normalize(VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL)

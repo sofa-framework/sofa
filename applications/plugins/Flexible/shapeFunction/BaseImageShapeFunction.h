@@ -73,8 +73,9 @@ struct BaseImageShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
         bisf->f_fineToCoarseMappingTransform.setDisplayed( false );
     }
 
+    /// interpolate weights and their derivatives at a spatial position
     template<class BaseImageShapeFunction>
-    static void computeShapeFunction( BaseImageShapeFunction* bisf, const typename BaseImageShapeFunction::Coord& childPosition, typename BaseImageShapeFunction::MaterialToSpatial& M, typename BaseImageShapeFunction::VRef& ref, typename BaseImageShapeFunction::VReal& w, typename BaseImageShapeFunction::VGradient* dw=NULL, typename BaseImageShapeFunction::VHessian* ddw=NULL )
+    static void computeShapeFunction( BaseImageShapeFunction* bisf, const typename BaseImageShapeFunction::Coord& childPosition, typename BaseImageShapeFunction::MaterialToSpatial& M, typename BaseImageShapeFunction::VRef& ref, typename BaseImageShapeFunction::VReal& w, typename BaseImageShapeFunction::VGradient* dw=NULL, typename BaseImageShapeFunction::VHessian* ddw=NULL, const int /*cell*/=-1 )
     {
         typedef typename BaseImageShapeFunction::Real Real;
         typedef typename BaseImageShapeFunction::IndT IndT;
@@ -112,16 +113,12 @@ struct BaseImageShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
         if(dw) order=1;
 
         //get closest voxel with non zero weights
-        bool project=false;
-        if(P[0]<=0 || P[1]<=0 || P[2]<=0 || P[0]>=indices.width()-1 || P[1]>=indices.height()-1 || P[2]>=indices.depth()-1) project=true;
-        else if(indices(P[0],P[1],P[2],0)==0) project=true;
-        if(project)
+        if(P[0]<=0 || P[1]<=0 || P[2]<=0 || P[0]>=indices.width()-1 || P[1]>=indices.height()-1 || P[2]>=indices.depth()-1 ||
+                indices(P[0],P[1],P[2],0)==0)
         {
             Real dmin=cimg::type<Real>::max();
-            Coord newP=P;
-            cimg_for_insideXYZ(indices,x,y,z,1) if(indices(x,y,z,0)) {Real d=(Coord(x,y,z)-p).norm2(); if(d<dmin) { newP=Coord(x,y,z); dmin=d; } }
+            cimg_for_insideXYZ(indices,x,y,z,1) if(indices(x,y,z,0)) {Real d=(Coord(x,y,z)-p).norm2(); if(d<dmin) { P=Coord(x,y,z); dmin=d; } }
             if(dmin==cimg::type<Real>::max()) return;
-            P=newP;
         }
 
         // prepare neighborood
@@ -192,9 +189,9 @@ struct BaseImageShapeFunctionSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMA
     }
 
 
-    // @TODO implemented without any verifications -> needs to be checked when really used
+    /// interpolate weights and their derivatives at a spatial position
     template<class BaseImageShapeFunction>
-    static void computeShapeFunction( BaseImageShapeFunction* bisf, const typename BaseImageShapeFunction::Coord& childPosition, typename BaseImageShapeFunction::MaterialToSpatial& M, typename BaseImageShapeFunction::VRef& ref, typename BaseImageShapeFunction::VReal& w, typename BaseImageShapeFunction::VGradient* dw=NULL, typename BaseImageShapeFunction::VHessian* ddw=NULL )
+    static void computeShapeFunction( BaseImageShapeFunction* bisf, const typename BaseImageShapeFunction::Coord& childPosition, typename BaseImageShapeFunction::MaterialToSpatial& M, typename BaseImageShapeFunction::VRef& ref, typename BaseImageShapeFunction::VReal& w, typename BaseImageShapeFunction::VGradient* dw=NULL, typename BaseImageShapeFunction::VHessian* ddw=NULL, const int /*cell*/=-1)
     {
 
         // AN IDEA
@@ -233,11 +230,10 @@ struct BaseImageShapeFunctionSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMA
         const typename BaseImageShapeFunction::DistTypes::BranchingImage3D& weights = weightData->imgList[0];
 
         // interpolate weights in neighborhood
-
+// TODO adapt to new mapping image implementation
         typename BaseImageShapeFunction::raFineToCoarseMappingImage fineToCoarseMappingImage( bisf->f_fineToCoarseMappingImage );
         const CImg<unsigned long>& fineToCoarseMapping = fineToCoarseMappingImage->getCImg();
         typename BaseImageShapeFunction::raTransform fineToCoarseMappingTransform( bisf->f_fineToCoarseMappingTransform );
-
 
         Coord pfine = fineToCoarseMappingTransform->toImage(childPosition); // float fine image coord
         Coord Pfine;  for (unsigned int j=0; j<3; j++)  Pfine[j] = sofa::helper::round(pfine[j]); // int fine image coord
@@ -245,7 +241,6 @@ struct BaseImageShapeFunctionSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMA
         unsigned int order=0;
         /*if(ddw) order=2; else */  // do not use order 2 for local weight interpolation. Order two is used only in weight fitting over regions
         if(dw) order=1;
-
 
         // get closest existing fine voxel
         if( Pfine[0]<=0 || Pfine[1]<=0 || Pfine[2]<=0 || Pfine[0]>=fineToCoarseMapping.width()-1 || Pfine[1]>=fineToCoarseMapping.height()-1 || Pfine[2]>=fineToCoarseMapping.depth()-1 ||
@@ -256,13 +251,10 @@ struct BaseImageShapeFunctionSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMA
             if(dmin==cimg::type<Real>::max()) return;
         }
 
-
         typename BaseImageShapeFunction::IndTypes::VoxelIndex voxelIndex; // coarse voxel index
         voxelIndex.offset = fineToCoarseMapping(Pfine[0],Pfine[1],Pfine[2],0);
         Coord P = inT->toImageInt( fineToCoarseMappingTransform->fromImage( Pfine[0],Pfine[1],Pfine[2] ) ); // int coarse image coord
         voxelIndex.index = indices->index3Dto1D( P[0], P[1], P[2] );
-
-
 
         // prepare neighborood
         sofa::defaulttype::Vec<27,  Coord > lpos;      // precomputed local positions
@@ -394,126 +386,10 @@ public:
 
 
     /// interpolate weights and their derivatives at a spatial position
-    void computeShapeFunction(const Coord& childPosition, MaterialToSpatial& M, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL)
+    void computeShapeFunction(const Coord& childPosition, MaterialToSpatial& M, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL, const int cell=-1)
     {
-        BaseImageShapeFunctionSpecialization<ImageTypes::label>::computeShapeFunction( this, childPosition, M, ref, w, dw, ddw );
+        BaseImageShapeFunctionSpecialization<ImageTypes::label>::computeShapeFunction( this, childPosition, M, ref, w, dw, ddw, cell );
     }
-
-/*
-    /// fit weights and their derivatives in gauss point regions
-    void computeShapeFunction(const VCoord& childPosition, VMaterialToSpatial& M, vector<VRef>& ref, vector<VReal>& w, vector<VGradient>& dw,vector<VHessian>& ddw, const unsigned int* region)
-    {
-        if(!region || !this->averageInRegion.getValue())
-            Inherit::computeShapeFunction(childPosition,M,ref,w,dw,ddw);        // weight averaging over a region not supported -> get interpolated values
-        else
-        {
-            // get precomputed indices and weights
-            raInd indData(this->f_index);
-            if(!indData->getCImgList().size()) { serr<<"Weights not available"<<sendl; return; }
-            const CImg<IndT>& indices = indData->getCImg();
-            // cast region into a get shared memory image
-            const CImg<unsigned int> reg(region,indices.width(),indices.height(),indices.depth(),1,true);
-            // compute
-            unsigned int nb=childPosition.size();
-            M.resize(nb); ref.resize(nb);        w.resize(nb);   dw.resize(nb);  ddw.resize(nb);
-            for(unsigned i=0; i<nb; i++)   computeShapeFunctionInRegion(i,reg,childPosition[i],M[i],ref[i],w[i],&dw[i],&ddw[i]);
-        }
-    }
-
-    void computeShapeFunctionInRegion(const unsigned int index, const CImg<unsigned int>& region,const Coord& childPosition, MaterialToSpatial& M, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL)
-    {
-        // resize input
-        unsigned int nbRef=this->f_nbRef.getValue();
-        ref.resize(nbRef); ref.fill(0);
-        w.resize(nbRef); w.fill(0);
-        if(dw) { dw->resize(nbRef); for (unsigned int j=0; j<nbRef; j++ ) (*dw)[j].fill(0); }
-        if(ddw) { ddw->resize(nbRef); for (unsigned int j=0; j<nbRef; j++ ) (*ddw)[j].fill(0); }
-
-        // get transform
-        raTransform inT(this->transform);
-
-        // material to world transformation = image orientation
-        helper::Quater<Real> q = helper::Quater< Real >::createQuaterFromEuler(inT->getRotation() * (Real)M_PI / (Real)180.0);
-        Mat<3,3,Real> R; q.toMatrix(R);
-        for ( unsigned int i = 0; i < spatial_dimensions; i++ )  for ( unsigned int j = 0; j < material_dimensions; j++ ) M[i][j]=R[i][j];
-
-        // get precomputed indices and weights
-        raInd indData(this->f_index);
-        raDist weightData(this->f_w);
-        if(!indData->getCImgList().size() || !weightData->getCImgList().size()) { serr<<"Weights not available"<<sendl; return; }
-
-        const CImg<IndT>& indices = indData->getCImg();
-        const CImg<DistT>& weights = weightData->getCImg();
-
-        // fit weights in region
-        unsigned int order=0; if(ddw) order=2; else if(dw) order=1;
-
-        // get neighborood
-        vector<Coord> pi;
-        cimg_forXYZ(region,x,y,z) if(region(x,y,z)==index+1) pi.push_back( inT->fromImage(Coord(x,y,z)) - childPosition );
-        unsigned int nbs=pi.size();
-
-        // get indices
-        typedef std::map<unsigned int, vector<DistT> > wiMap;
-        typedef typename wiMap::iterator wiMapIt;
-        wiMap wi;
-        unsigned int count =0;
-        cimg_forXYZ(region,x,y,z) if(region(x,y,z)==index+1)
-        {
-            for (unsigned int v=0; v<nbRef; v++)
-            {
-                IndT ind=indices(x,y,z,v);
-                if(ind>0)
-                {
-                    wiMapIt wIt=wi.find(ind);
-                    if(wIt==wi.end()) {wi[ind]=vector<Real>((int)nbs,0); wIt=wi.find(ind);}
-                    wIt->second[count]=weights(x,y,z,v);
-                }
-            }
-            count++;
-        }
-        // clamp to nbref weights
-        while(wi.size()>nbRef)
-        {
-            DistT nmin = cimg::type<DistT>::max();
-            wiMapIt wItMin;
-            for(wiMapIt wIt=wi.begin(); wIt!=wi.end(); wIt++)
-            {
-                DistT n=0; for (unsigned int i=0; i<nbs; i++) n+=wIt->second[i];
-                if(nmin>n) { nmin=n; wItMin=wIt;}
-            }
-            wi.erase(wItMin);
-        }
-
-        // fit
-        count =0;
-        Real totalerr=0;
-        for(wiMapIt wIt=wi.begin(); wIt!=wi.end(); wIt++)
-        {
-            vector<Real> coeff;
-            defaulttype::PolynomialFit(coeff,wIt->second,pi,order);
-            Real err = defaulttype::getPolynomialFit_Error(coeff,wIt->second,pi);
-            totalerr+=err;
-            if(!dw) defaulttype::getPolynomialFit_differential(coeff,w[count]);
-            else if(!ddw) defaulttype::getPolynomialFit_differential(coeff,w[count],&(*dw)[count]);
-            else defaulttype::getPolynomialFit_differential(coeff,w[count],&(*dw)[count],&(*ddw)[count]);
-            ref[count]=wIt->first-1;
-
-            if(w[count]<0) // clamp negative weights
-            {
-                w[count]=0;
-                if(dw) (*dw)[count].fill(0);
-                if(ddw) (*ddw)[count].fill(0);
-            }
-
-            count++;
-        }
-        //if(this->f_printLog.getValue()) std::cout<<"BaseImageShapeFunction: weight fitting error on sample "<<index<<" = "<<totalerr<<std::endl;
-
-        // normalize
-        this->normalize(w,dw,ddw);
-    }
-*/
 
     virtual void init()
     {

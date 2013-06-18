@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
 <Node 	name="Root" gravity="0 -1 0" dt="0.01"  >
+    <RequiredPlugin pluginName="sofaimage"/>
+
     <VisualStyle displayFlags="showVisual showForceFields showWireframe" />
     <DefaultAnimationLoop />
     <DefaultVisualManagerLoop />
@@ -14,14 +16,14 @@
   <ImageToBranchingImageConverter template="ImageUC,BranchingImageUC" name="coarsener" inputImage="@image.image" inputTransform="@image.transform" coarseningLevels="6" superimpositionType="0" printLog="true" createMappingImage="true" connectivity="26"/>
   <ImageContainer template="BranchingImageUC" name="branchingImage" branchingImage="@coarsener.branchingImage" transform="@coarsener.transform" drawBB="true"/>
 
-<!--  Visualization on flatten branching image-->
+<!--  Visualization of flatten branching image-->
 <!--   <BranchingImageToImageConverter template="BranchingImageUC,ImageUC" name="imageConverter" inputBranchingImage="@branchingImage.branchingImage" conversionType="2" printLog="true"/>  -->
 <!--   <ImageContainer template="ImageUC" name="image2" image="@imageConverter.image" transform="@branchingImage.transform" drawBB="false"/> -->
 <!--   <ImageViewer template="ImageUC" name="viewer2" src="@image2" /> -->
   
 <!--  Visualization of mapping image -->
-   <ImageContainer template="ImageUL" name="image3" image="@coarsener.outputMappingImage" transform="@image.transform" drawBB="false"/>
-   <ImageViewer template="ImageUL" name="viewer2" src="@image3" plane="5  -1 -1 " />
+   <ImageContainer template="ImageI" name="image3" image="@coarsener.outputMappingImage" transform="@image.transform" drawBB="false"/>
+   <ImageViewer template="ImageI" name="viewer2" src="@image3" plane="5  -1 -1 " />
   
    <ImageSampler template="BranchingImageUC" name="sampler" src="@branchingImage" param="1" showEdges="false" printLog="true"/>
 
@@ -35,6 +37,7 @@
   <Node name="Collision"  >
      <Mesh  src="@../loader" />
      <MechanicalObject />
+     <!--  BarycentricMapping does not support overlapping elements. Mappings in Flexible plugin fixes this (see BranchingImage_hexaFEM.scn example) -->
      <BarycentricMapping input="@.." output="@." />
      <RestShapeSpringsForceField points="10" stiffness="100" />
      <Node name="Visual"  >
