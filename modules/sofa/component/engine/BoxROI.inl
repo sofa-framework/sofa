@@ -435,6 +435,8 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
         }
     }
 
+    const unsigned int max_spatial_dimensions = std::min((unsigned int)3,(unsigned int)DataTypes::spatial_dimensions);
+
     ///draw points in ROI
     if( p_drawPoints.getValue())
     {
@@ -446,7 +448,7 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
         {
             CPos p = DataTypes::getCPos(pointsInROI[i]);
             sofa::defaulttype::Vector3 pv;
-            for( unsigned int j=0 ; j<DataTypes::spatial_dimensions ; ++j )
+            for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
                 pv[j] = p[j];
             vertices.push_back( pv );
         }
@@ -467,7 +469,7 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
             {
                 CPos p = DataTypes::getCPos((*x0)[e[j]]);
                 sofa::defaulttype::Vector3 pv;
-                for( unsigned int j=0 ; j<DataTypes::spatial_dimensions ; ++j )
+                for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
                     pv[j] = p[j];
                 vertices.push_back( pv );
             }
@@ -488,7 +490,7 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
             {
                 CPos p = DataTypes::getCPos((*x0)[t[j]]);
                 sofa::defaulttype::Vector3 pv;
-                for( unsigned int j=0 ; j<DataTypes::spatial_dimensions ; ++j )
+                for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
                     pv[j] = p[j];
                 vertices.push_back( pv );
             }
@@ -510,31 +512,31 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
             {
                 CPos p = DataTypes::getCPos((*x0)[t[j]]);
                 sofa::defaulttype::Vector3 pv;
-                for( unsigned int k=0 ; k<DataTypes::spatial_dimensions ; ++k )
+                for( unsigned int k=0 ; k<max_spatial_dimensions ; ++k )
                     pv[k] = p[k];
                 vertices.push_back( pv );
 
                 p = DataTypes::getCPos((*x0)[t[(j+1)%4]]);
-                for( unsigned int k=0 ; k<DataTypes::spatial_dimensions ; ++k )
+                for( unsigned int k=0 ; k<max_spatial_dimensions ; ++k )
                     pv[k] = p[k];
                 vertices.push_back( pv );
             }
 
             CPos p = DataTypes::getCPos((*x0)[t[0]]);
             sofa::defaulttype::Vector3 pv;
-            for( unsigned int j=0 ; j<DataTypes::spatial_dimensions ; ++j )
+            for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
                 pv[j] = p[j];
             vertices.push_back( pv );
             p = DataTypes::getCPos((*x0)[t[2]]);
-            for( unsigned int j=0 ; j<DataTypes::spatial_dimensions ; ++j )
+            for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
                 pv[j] = p[j];
             vertices.push_back( pv );
             p = DataTypes::getCPos((*x0)[t[1]]);
-            for( unsigned int j=0 ; j<DataTypes::spatial_dimensions ; ++j )
+            for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
                 pv[j] = p[j];
             vertices.push_back( pv );
             p = DataTypes::getCPos((*x0)[t[3]]);
-            for( unsigned int j=0 ; j<DataTypes::spatial_dimensions ; ++j )
+            for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
                 pv[j] = p[j];
             vertices.push_back( pv );
         }
