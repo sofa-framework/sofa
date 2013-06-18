@@ -24,10 +24,12 @@ int DampingComplianceClass = core::RegisterObject("Damping Compliance")
 
 SOFA_DECL_CLASS(DampingCompilance)
 
-
+#ifndef SOFA_FLOAT
 template class SOFA_Compliant_API DampingCompliance<Vec6fTypes>;
+#endif
+#ifndef SOFA_DOUBLE
 template class SOFA_Compliant_API DampingCompliance<Vec6dTypes>;
-
+#endif
 }
 }
 }

@@ -56,16 +56,14 @@ public:
     bool testIntersection(FFDDistanceGridCollisionElement&, RigidDistanceGridCollisionElement&);
     bool testIntersection(FFDDistanceGridCollisionElement&, FFDDistanceGridCollisionElement&);
     bool testIntersection(FFDDistanceGridCollisionElement&, Point&);
-    template<class Sphere>
-    bool testIntersection(FFDDistanceGridCollisionElement&, Sphere&);
+    template<class T> bool testIntersection(FFDDistanceGridCollisionElement&, TSphere<T>&);
     bool testIntersection(FFDDistanceGridCollisionElement&, Triangle&);
     bool testIntersection(Ray&, FFDDistanceGridCollisionElement&);
 
     int computeIntersection(FFDDistanceGridCollisionElement&, RigidDistanceGridCollisionElement&, OutputVector*);
     int computeIntersection(FFDDistanceGridCollisionElement&, FFDDistanceGridCollisionElement&, OutputVector*);
     int computeIntersection(FFDDistanceGridCollisionElement&, Point&, OutputVector*);
-    template<class Sphere>
-    int computeIntersection(FFDDistanceGridCollisionElement&, Sphere&, OutputVector*);
+    template<class T> int computeIntersection(FFDDistanceGridCollisionElement&, TSphere<T>&, OutputVector*);
     int computeIntersection(FFDDistanceGridCollisionElement&, Triangle&, OutputVector*);
     int computeIntersection(Ray&, FFDDistanceGridCollisionElement&, OutputVector*);
 

@@ -63,10 +63,9 @@ void NewProximityIntersection::init()
     intersectors.add<SphereModel, SphereModel, NewProximityIntersection>(this);
     intersectors.add<CapsuleModel,CapsuleModel, NewProximityIntersection> (this);
     intersectors.add<CapsuleModel,SphereModel, NewProximityIntersection> (this);
-    //intersectors.add<OBBModel,OBBModel, NewProximityIntersection> (this);
+    intersectors.add<OBBModel,OBBModel, NewProximityIntersection> (this);
     intersectors.add<CapsuleModel,OBBModel, NewProximityIntersection> (this);
     intersectors.add<SphereModel,OBBModel, NewProximityIntersection> (this);
-
     intersectors.add<RigidSphereModel,RigidSphereModel, NewProximityIntersection> (this);
     intersectors.add<SphereModel,RigidSphereModel, NewProximityIntersection> (this);
     intersectors.add<CapsuleModel,RigidSphereModel, NewProximityIntersection> (this);

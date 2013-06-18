@@ -27,15 +27,16 @@ int UniformComplianceClass = core::RegisterObject("Uniform compliance")
 
 SOFA_DECL_CLASS(UniformCompliance)
 
-
+#ifndef SOFA_FLOAT
 template class SOFA_Compliant_API UniformCompliance<Vec1dTypes>;
 template class SOFA_Compliant_API UniformCompliance<Vec3dTypes>;
 template class SOFA_Compliant_API UniformCompliance<Vec6dTypes>;
-
+#endif
+#ifndef SOFA_DOUBLE
 template class SOFA_Compliant_API UniformCompliance<Vec1fTypes>;
 template class SOFA_Compliant_API UniformCompliance<Vec3fTypes>;
 template class SOFA_Compliant_API UniformCompliance<Vec6fTypes>;
-
+#endif
 
 }
 }

@@ -54,13 +54,20 @@ int DiscreteIntersectionClass = core::RegisterObject("TODO-DiscreteIntersectionC
 DiscreteIntersection::DiscreteIntersection()
 {
     intersectors.add<CubeModel,       CubeModel,         DiscreteIntersection> (this);
+
     intersectors.add<SphereModel,     SphereModel,       DiscreteIntersection> (this);
+
     intersectors.add<CapsuleModel,CapsuleModel, DiscreteIntersection> (this);
     intersectors.add<CapsuleModel,SphereModel, DiscreteIntersection> (this);
-    intersectors.add<OBBModel,OBBModel,DiscreteIntersection>(this);
-    intersectors.add<CapsuleModel,OBBModel,DiscreteIntersection>(this);
-    intersectors.add<SphereModel,OBBModel, DiscreteIntersection> (this);
 
+    intersectors.add<OBBModel,OBBModel,DiscreteIntersection>(this);
+    intersectors.add<SphereModel,OBBModel, DiscreteIntersection> (this);
+    intersectors.add<CapsuleModel,OBBModel,DiscreteIntersection>(this);
+
+    intersectors.add<RigidSphereModel,RigidSphereModel,DiscreteIntersection>(this);
+    intersectors.add<SphereModel,RigidSphereModel, DiscreteIntersection> (this);
+    intersectors.add<CapsuleModel,RigidSphereModel,DiscreteIntersection>(this);
+    intersectors.add<RigidSphereModel,OBBModel,DiscreteIntersection>(this);
 
     IntersectorFactory::getInstance()->addIntersectors(this);
 }
@@ -81,28 +88,19 @@ int DiscreteIntersection::computeIntersection(Cube&, Cube&, OutputVector*)
     return 0; /// \todo
 }
 
+
+
 bool DiscreteIntersection::testIntersection(Capsule&, Capsule&){
     //TO DO
     return false;
 }
 
-bool DiscreteIntersection::testIntersection(Capsule&, Sphere&){
-    //TO DO
-    return false;
-}
-
-bool DiscreteIntersection::testIntersection(RigidSphere&,RigidSphere&){
-    return false;
-}
 
 int DiscreteIntersection::computeIntersection(Capsule & e1,Capsule & e2,OutputVector * contacts){
     return CapsuleIntTool::computeIntersection(e1,e2,getAlarmDistance(),getContactDistance(),contacts);
 }
 
 
-int DiscreteIntersection::computeIntersection(Capsule & cap, Sphere & sph,OutputVector* contacts){
-    return CapsuleIntTool::computeIntersection(cap,sph,getAlarmDistance(),getContactDistance(),contacts);
-}
 
 
 bool DiscreteIntersection::testIntersection(OBB &,OBB &){
@@ -113,9 +111,8 @@ bool DiscreteIntersection::testIntersection(Capsule &,OBB &){
     return false;
 }
 
-bool DiscreteIntersection::testIntersection(Sphere &,OBB &){
-    return false;
-}
+
+
 
 int DiscreteIntersection::computeIntersection(OBB & box0, OBB & box1,OutputVector* contacts){
     return OBBIntTool::computeIntersection(box0,box1,getAlarmDistance(), getContactDistance(),contacts);
@@ -125,15 +122,7 @@ int DiscreteIntersection::computeIntersection(Capsule & cap, OBB & box,OutputVec
     return CapsuleIntTool::computeIntersection(cap,box,getAlarmDistance(),getContactDistance(),contacts);
 }
 
-int DiscreteIntersection::computeIntersection(Sphere & sph, OBB & box,OutputVector* contacts){
-    return OBBIntTool::computeIntersection(sph,box,getAlarmDistance(),getContactDistance(),contacts);
-}
 
-//int DiscreteIntersection::computeIntersection(Triangle&, Triangle&, OutputVector*)
-//{
-//	sout<<"Distance correction between Triangle - Triangle"<<sendl;
-//	return 0;
-//}
 
 } // namespace collision
 
