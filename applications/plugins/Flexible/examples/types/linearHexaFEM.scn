@@ -41,8 +41,8 @@
 
         <Node 	name="behavior"   >
 	    <TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamples="false" method="0" order="2" />
-	    <MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
-    	    <LinearMapping template="Mapping&lt;Vec3d,F331&gt;" assembleJ="false"/>
+	    <MechanicalObject  template="F331" name="F" />
+    	    <LinearMapping template="Mapping&lt;Vec3d,F331&gt;" assembleJ="false" />
 
 	    <Node 	name="Strain"   >
 		<MechanicalObject  template="E331" name="E"  />

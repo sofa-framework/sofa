@@ -67,6 +67,7 @@ public:
     Data< vector<unsigned int> > f_cell;
     //@}
 
+    Data< vector<Real> > f_fineVolumes;
 
     virtual std::string getTemplateName() const    { return templateName(this);    }
     static std::string templateName(const TopologyGaussPointSampler* = NULL) { return std::string();    }
@@ -82,6 +83,7 @@ public:
         }
 
         addInput(&f_inPosition);
+        addInput(&f_fineVolumes);
         addOutput(&f_cell);
         setDirtyValue();
     }
@@ -93,6 +95,7 @@ protected:
       , f_inPosition(initData(&f_inPosition,SeqPositions(),"inPosition","input node positions"))
       , parentTopology( 0 )
       , f_cell(initData(&f_cell,"cell","cell index associated with each sample"))
+      , f_fineVolumes(initData(&f_fineVolumes,"fineVolumes","input cell volumes (typically computed from a fine model)"))
     {
     }
 
@@ -137,7 +140,7 @@ protected:
                     {
                         const Coord& p1=parent[edges[i][0]],p2=parent[edges[i][1]];
                         pos[i] = (p1+p2)*0.5;
-                        vol[i].resize(1); vol[i][0]=(p1-p2).norm();
+                        vol[i].resize(1);  if(f_fineVolumes.getValue().size()>i) vol[i][0]=f_fineVolumes.getValue()[i]; else  vol[i][0]=(p1-p2).norm();
                         cel[i] = i;
                         // to do : volume integrals for elastons
                     }
@@ -156,7 +159,7 @@ protected:
                     {
                         const Coord& p1=parent[triangles[i][0]],p2=parent[triangles[i][1]],p3=parent[triangles[i][2]];
                         pos[i] = (p1+p2+p3)/(Real)3.;
-                        vol[i].resize(1); vol[i][0] = cross(p2-p1,p3-p1).norm()*0.5;
+                        vol[i].resize(1);  if(f_fineVolumes.getValue().size()>i) vol[i][0]=f_fineVolumes.getValue()[i]; else  vol[i][0] = cross(p2-p1,p3-p1).norm()*0.5;
                         cel[i] = i;
                         // to do : volume integrals for elastons
                     }
@@ -165,7 +168,7 @@ protected:
                     {
                         const Coord& p1=parent[quads[i][0]],p2=parent[quads[i][1]],p3=parent[quads[i][2]],p4=parent[quads[i][3]];
                         pos[i+c0] = (p1+p2+p3+p4)*0.25;
-                        vol[i+c0].resize(1); vol[i+c0][0] = cross(p2-p1,p3-p1).norm();
+                        vol[i+c0].resize(1);  if(f_fineVolumes.getValue().size()>i+c0) vol[i+c0][0]=f_fineVolumes.getValue()[i+c0]; else  vol[i+c0][0] = cross(p2-p1,p3-p1).norm();
                         cel[i+c0] = i+c0;
                         // to do : volume integrals for elastons
                     }
@@ -183,7 +186,8 @@ protected:
                     {
                         const Coord& p1=parent[quads[i][0]],p2=parent[quads[i][1]],p3=parent[quads[i][2]],p4=parent[quads[i][3]];
                         Coord u=(p2-p1),v=(p4-p1);
-                        const Real V=u.norm()*v.norm()*0.25;
+                        Real V;
+                        if(f_fineVolumes.getValue().size()>i) V=f_fineVolumes.getValue()[i]*0.25; else  V=u.norm()*v.norm()*0.25;
                         u*=offset; v*=offset;
                         const Coord c = (p1+p2+p3+p4)*0.25;
                         for (int gx2=-1; gx2<=1; gx2+=2)
@@ -213,7 +217,7 @@ protected:
                 {
                     const Coord& p1=parent[tetrahedra[i][0]],p2=parent[tetrahedra[i][1]],p3=parent[tetrahedra[i][2]],p4=parent[tetrahedra[i][3]];
                     pos[i] = (p1+p2+p3+p4)*0.25;
-                    vol[i].resize(1); vol[i][0] = fabs(dot(cross(p4-p1,p3-p1),p2-p1))/(Real)6.;
+                    vol[i].resize(1); if(f_fineVolumes.getValue().size()>i) vol[i][0]=f_fineVolumes.getValue()[i]; else  vol[i][0] = fabs(dot(cross(p4-p1,p3-p1),p2-p1))/(Real)6.;
                     cel[i] = i;
                     // to do : volume integrals for elastons
                 }
@@ -224,7 +228,8 @@ protected:
                     pos[i+c0] = (p1+p2+p3+p4+p5+p6+p7+p8)*0.125;
                     cel[i+c0] = i+c0;
                     getCubeVolumes(vol[i+c0],p1,p2,p3,p4,this->f_order.getValue());
-                    //vol[i+c0].resize(1); vol[i+c0][0] = fabs(dot(cross(p4-p1,p3-p1),p2-p1));
+                    if(f_fineVolumes.getValue().size()>i+c0) { Real fact=f_fineVolumes.getValue()[i+c0]/vol[i+c0][0];   for (unsigned int j=0; j<vol[i+c0].size(); j++) vol[i+c0][j]*=fact; }
+                    //vol[i+c0].resize(1); if(f_fineVolumes.getValue().size()>i+c0) vol[i+c0][0]=f_fineVolumes.getValue()[i+c0]; else  vol[i+c0][0] = fabs(dot(cross(p4-p1,p3-p1),p2-p1));
                 }
             }
             else if(this->f_method.getValue().getSelectedId() == GAUSSLEGENDRE || this->f_order.getValue()==2)
@@ -241,7 +246,9 @@ protected:
                 {
                     const Coord& p1=parent[cubes[i][0]],p2=parent[cubes[i][1]],p3=parent[cubes[i][2]],p4=parent[cubes[i][3]],p5=parent[cubes[i][4]],p6=parent[cubes[i][5]],p7=parent[cubes[i][6]],p8=parent[cubes[i][7]];
                     Coord u=(p2-p1),v=(p5-p1),w=(p4-p1);
-                    const Real V=u.norm()*v.norm()*w.norm()/(Real)8.;
+                    Real V;
+                    if(f_fineVolumes.getValue().size()>i) V=f_fineVolumes.getValue()[i]/(Real)8; else  V=u.norm()*v.norm()*w.norm()/(Real)8.;
+
                     u*=offset; v*=offset; w*=offset;
                     const Coord c = (p1+p2+p3+p4+p5+p6+p7+p8)*0.125;
                     for (int gx1=-1; gx1<=1; gx1+=2)

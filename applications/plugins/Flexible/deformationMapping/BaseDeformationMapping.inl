@@ -56,7 +56,8 @@ BaseDeformationMappingT<JacobianBlockType>::BaseDeformationMappingT (core::State
     , f_w ( initData ( &f_w,"weights","influence weights of the Dofs" ) )
     , f_dw ( initData ( &f_dw,"weightGradients","weight gradients" ) )
     , f_ddw ( initData ( &f_ddw,"weightHessians","weight Hessians" ) )
-    , f_F0 ( initData ( &f_F0,"M","Transformations from material to 3d space (linear for now..)" ) )
+    , f_F0 ( initData ( &f_F0,"M","Linear transformations from material to 3d space" ) )
+    , f_cell ( initData ( &f_cell,"cell","indices required by shape function in case of overlapping elements" ) )
     , assembleJ ( initData ( &assembleJ,false, "assembleJ","Assemble the Jacobian matrix or use optimized Jacobian/vector multiplications" ) )
     , assembleK ( initData ( &assembleK,false, "assembleK","Assemble the geometric stiffness matrix or use optimized Jacobian/vector multiplications" ) )
     , f_pos0 ( initData ( &f_pos0,"restPosition","initial spatial positions of children" ) )
@@ -129,8 +130,10 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
         vector<mCoord> mpos0;
         mpos0.resize(pos0.size());
         for(unsigned int i=0; i<pos0.size(); ++i)  StdVectorTypes<mCoord,mCoord>::set( mpos0[i], pos0[i][0] , pos0[i][1] , pos0[i][2]);
+
         // interpolate weights at sample positions
-        _shapeFunction->computeShapeFunction(mpos0,*this->f_F0.beginEdit(),*this->f_index.beginEdit(),*this->f_w.beginEdit(),*this->f_dw.beginEdit(),*this->f_ddw.beginEdit());
+        if(this->f_cell.getValue().size()==size) _shapeFunction->computeShapeFunction(mpos0,*this->f_F0.beginEdit(),*this->f_index.beginEdit(),*this->f_w.beginEdit(),*this->f_dw.beginEdit(),*this->f_ddw.beginEdit(),this->f_cell.getValue());
+        else _shapeFunction->computeShapeFunction(mpos0,*this->f_F0.beginEdit(),*this->f_index.beginEdit(),*this->f_w.beginEdit(),*this->f_dw.beginEdit(),*this->f_ddw.beginEdit());
         this->f_index.endEdit();     this->f_F0.endEdit();    this->f_w.endEdit();        this->f_dw.endEdit();        this->f_ddw.endEdit();
 
         // use custom rest positions (to set material directions or set residual deformations)

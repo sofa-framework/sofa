@@ -1,9 +1,13 @@
 <?xml version="1.0"?>
 <Node 	name="root" gravity="0 0 0" dt=".1"  >
+
+<RequiredPlugin name="Flexible" pluginName="Flexible" />
+<RequiredPlugin name="Image" pluginName="sofaimage" />
+
     <EulerImplicitSolver />
     <CGLinearSolver iterations="25"/>
 
-  <VisualStyle displayFlags="showWireframe showVisual hideBehavior" />
+  <VisualStyle displayFlags="showWireframe showVisual showBehaviorModels" />
   <MeshObjLoader name="mesh" filename="mesh/Armadillo_simplified.obj" triangulate="1"/>
   <MeshToImageEngine  name="rasterizer" src="@mesh" voxelSize="0.5" padSize="2" rotateImage="true" />
   <ImageContainer template="ImageB" name="image" src="@rasterizer" drawBB="false"/>

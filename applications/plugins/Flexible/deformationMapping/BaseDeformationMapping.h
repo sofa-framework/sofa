@@ -260,6 +260,7 @@ public:
     Data<vector<VGradient> >   f_dw;
     Data<vector<VHessian> >    f_ddw;
     Data<VMaterialToSpatial>    f_F0;
+    Data< vector<int> > f_cell;    ///< indices required by shape function in case of overlapping elements
 
 
     Data<bool> assembleJ;

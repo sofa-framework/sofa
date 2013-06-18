@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<Node 	name="Root" gravity="0 -1 0" dt="0.1"  >
+      <RequiredPlugin pluginName="Flexible"/>
+      <RequiredPlugin pluginName="sofaimage"/>
+
+    <VisualStyle displayFlags="showVisual showBehaviorModels showForceFields hideWireframe" />
+    <DefaultAnimationLoop />
+    <DefaultVisualManagerLoop />
+    
+
+  <MeshObjLoader name="loader" filename="mesh/c.obj" triangulate="1"/>
+  <MeshToImageEngine  name="rasterizer" template="ImageUC" src="@loader" voxelSize=".2" padSize="1" rotateImage="true" />
+  <ImageContainer template="ImageUC" name="image" src="@rasterizer" drawBB="false"/>
+<!--  <ImageViewer template="ImageUC" name="viewer" src="@image"  /> -->
+  
+  
+  <ImageToBranchingImageConverter template="ImageUC,BranchingImageUC" name="coarsener" inputImage="@image.image" inputTransform="@image.transform" coarseningLevels="6" superimpositionType="0" printLog="true" createMappingImage="true" computeVolumes="true" connectivity="26"/>
+  <ImageContainer template="BranchingImageUC" name="branchingImage" branchingImage="@coarsener.branchingImage" transform="@coarsener.transform" drawBB="true"/>
+
+<!--  Visualization of flatten branching image-->
+<!--   <BranchingImageToImageConverter template="BranchingImageUC,ImageUC" name="imageConverter" inputBranchingImage="@branchingImage.branchingImage" conversionType="2" printLog="true"/>  -->
+<!--   <ImageContainer template="ImageUC" name="image2" image="@imageConverter.image" transform="@branchingImage.transform" drawBB="false"/> -->
+<!--   <ImageViewer template="ImageUC" name="viewer2" src="@image2" /> -->
+  
+<!--  Visualization of mapping image -->
+   <ImageContainer template="ImageI" name="image3" image="@coarsener.outputMappingImage" transform="@image.transform" drawBB="false"/>
+   <ImageViewer template="ImageI" name="viewer2" src="@image3" plane="5  -1 -1 " />
+  
+   <ImageSampler template="BranchingImageUC" name="sampler" src="@branchingImage" param="1" showEdges="false" printLog="true"/>
+
+  <EulerImplicit />
+  <CGLinearSolver />
+  <Mesh name="mesh" src="@sampler" />
+  <MechanicalObject  name="dofs" />
+
+
+        <BarycentricShapeFunction  nbRef="8" />
+
+        <Node 	name="behavior"   >
+	    <!--  Exact volumes (from fine grid) are retrieved from ImageToBranchingImageConverter  -->
+	    <TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamples="false" method="0" order="2" fineVolumes="@../coarsener.volume"/>
+
+	    <MechanicalObject  template="F331" />
+	    <!--  cell indices are retrieved from GaussPointSampler (needed by shapefunction to differentiate overlapping cells) -->
+    	    <LinearMapping template="Mapping&lt;Vec3d,F331&gt;" assembleJ="false" cell="@sampler.cell" showDeformationGradientScale="1"/>
+
+	    <Node 	name="Strain"   >
+		<MechanicalObject  template="E331" name="E"  />
+	    	<CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" assembleJ="false" method="polar"/>
+	        <HookeForceField  template="E331" name="ff" youngModulus="100" poissonRatio="0" viscosity="0" assembleK="false" assembleB="false"/>	    
+	    </Node>
+        </Node>
+
+
+	<Node 	name="mass"   >
+		<Mesh name="mesh" src="@../loader" />
+     		<MechanicalObject />
+	        <RestShapeSpringsForceField points="10" stiffness="100" />
+	        <UniformMass totalMass="100" />
+	        
+	    	<!--  cell indices are retrieved from mappingImage (needed by shapefunction to differentiate overlapping cells) -->
+		<ImageValuesFromPositions name="cell" template="ImageI" interpolation="0" position ="@mesh.position" image="@../coarsener.outputMappingImage" transform="@../image.transform" />
+		<LinearMapping template="Mapping&lt;Vec3d,Vec3d&gt;" assembleJ="false" cell="@cell.values"/>
+
+	        <Node name="Visual"  >
+			<VisualModel  />
+			<IdentityMapping />
+	        </Node>
+        </Node>
+
+</Node>
+
+

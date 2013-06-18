@@ -61,9 +61,106 @@ Voronoi shape functions are natural neighbor interpolants
 there are computed from an image (typically a rasterized object)
   */
 
+
+
+/// Default implementation does not compile
+template <int imageTypeLabel>
+struct VoronoiShapeFunctionSpecialization
+{
+};
+
+
+/// Specialization for regular Image
+template <>
+struct VoronoiShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
+{
+    template<class VoronoiShapeFunction>
+    static void init(VoronoiShapeFunction* This)
+    {
+        typedef typename VoronoiShapeFunction::Real Real;
+        typedef typename VoronoiShapeFunction::Coord Coord;
+        typedef typename VoronoiShapeFunction::T T;
+        typedef typename VoronoiShapeFunction::imCoord imCoord;
+        typedef typename VoronoiShapeFunction::raImage raImage;
+        typedef typename VoronoiShapeFunction::raTransform raTransform;
+        typedef typename VoronoiShapeFunction::DistT DistT;
+        typedef typename VoronoiShapeFunction::waDist waDist;
+        typedef typename VoronoiShapeFunction::IndT IndT;
+        typedef typename VoronoiShapeFunction::waInd waInd;
+        typedef typename VoronoiShapeFunction::iCoord iCoord;
+        typedef typename VoronoiShapeFunction::DistanceToPoint DistanceToPoint;
+
+        helper::ReadAccessor<Data<vector<Coord> > > parent(This->f_position);
+        if(!parent.size()) { This->serr<<"Parent nodes not found"<<This->sendl; return; }
+
+        // get tranform and image at time t
+        raImage in(This->image);
+        raTransform inT(This->transform);
+        if(!in->getCImgList().size())  { This->serr<<"Image not found"<<This->sendl; return; }
+        const CImg<T>& inimg = in->getCImg(0);  // suppose time=0
+        const CImg<T>* biasFactor=This->biasDistances.getValue()?&inimg:NULL;
+        const Vec<3,Real>& voxelsize=This->transform.getValue().getScale();
+
+        // init voronoi and distances
+        imCoord dim = in->getDimensions(); dim[3]=dim[4]=1;
+        waInd vorData(This->f_voronoi); vorData->setDimensions(dim);
+        CImg<IndT>& voronoi = vorData->getCImg(); voronoi.fill(0);
+
+        waDist distData(This->f_distances);         distData->setDimensions(dim);
+        CImg<DistT>& dist = distData->getCImg(); dist.fill(-1);
+        cimg_forXYZC(inimg,x,y,z,c) if(inimg(x,y,z,c)) dist(x,y,z)=cimg::type<DistT>::max();
+
+        // init indices and weights images
+        unsigned int nbref=This->f_nbRef.getValue();
+        dim[3]=nbref;
+        waInd indData(This->f_index); indData->setDimensions(dim);
+        CImg<IndT>& indices = indData->getCImg(); indices.fill(0);
+
+        waDist weightData(This->f_w);         weightData->setDimensions(dim);
+        CImg<DistT>& weights = weightData->getCImg(); weights.fill(0);
+
+        vector<iCoord> parentiCoord;
+        for(unsigned int i=0; i<parent.size(); i++)
+        {
+            Coord p = inT->toImage(parent[i]);
+            parentiCoord.push_back(iCoord(sofa::helper::round(p[0]),sofa::helper::round(p[1]),sofa::helper::round(p[2])));
+        }
+
+        // compute voronoi and distances based on nodes
+        std::set<DistanceToPoint> trial;                // list of seed points
+        for(unsigned int i=0; i<parent.size(); i++)
+        {
+            trial.insert( DistanceToPoint(0.,parentiCoord[i]) );
+            voronoi(parentiCoord[i][0],parentiCoord[i][1],parentiCoord[i][2])=i+1;
+            dist(parentiCoord[i][0],parentiCoord[i][1],parentiCoord[i][2])=0;
+        }
+        if(This->useDijkstra.getValue()) dijkstra<Real,T>(trial,dist, voronoi, voxelsize , biasFactor); else fastMarching<Real,T>(trial,dist, voronoi, voxelsize ,biasFactor );
+
+        // compute weights from voronoi
+        if(This->method.getValue().getSelectedId() == DISTANCE)  This->ComputeWeigths_DistanceRatio(indices,weights,voronoi,dist,biasFactor,parentiCoord);
+        else This->ComputeWeigths_NaturalNeighbors(indices,weights,voronoi,dist,biasFactor);
+    }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 template <class ShapeFunctionTypes_,class ImageTypes_>
 class VoronoiShapeFunction : public BaseImageShapeFunction<ShapeFunctionTypes_,ImageTypes_>
 {
+    friend struct VoronoiShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>;
+    friend struct VoronoiShapeFunctionSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>;
+
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(VoronoiShapeFunction, ShapeFunctionTypes_,ImageTypes_) , SOFA_TEMPLATE2(BaseImageShapeFunction, ShapeFunctionTypes_,ImageTypes_));
     typedef BaseImageShapeFunction<ShapeFunctionTypes_,ImageTypes_> Inherit;
@@ -112,55 +209,7 @@ public:
     {
         Inherit::init();
 
-        helper::ReadAccessor<Data<vector<Coord> > > parent(this->f_position);
-        if(!parent.size()) { serr<<"Parent nodes not found"<<sendl; return; }
-
-        // get tranform and image at time t
-        raImage in(this->image);
-        raTransform inT(this->transform);
-        if(!in->getCImgList().size())  { serr<<"Image not found"<<sendl; return; }
-        const CImg<T>& inimg = in->getCImg(0);  // suppose time=0
-        const CImg<T>* biasFactor=biasDistances.getValue()?&inimg:NULL;
-        const Vec<3,Real>& voxelsize=this->transform.getValue().getScale();
-
-        // init voronoi and distances
-        imCoord dim = in->getDimensions(); dim[3]=dim[4]=1;
-        waInd vorData(this->f_voronoi); vorData->setDimensions(dim);
-        CImg<IndT>& voronoi = vorData->getCImg(); voronoi.fill(0);
-
-        waDist distData(this->f_distances);         distData->setDimensions(dim);
-        CImg<DistT>& dist = distData->getCImg(); dist.fill(-1);
-        cimg_forXYZC(inimg,x,y,z,c) if(inimg(x,y,z,c)) dist(x,y,z)=cimg::type<DistT>::max();
-
-        // init indices and weights images
-        unsigned int nbref=this->f_nbRef.getValue();
-        dim[3]=nbref;
-        waInd indData(this->f_index); indData->setDimensions(dim);
-        CImg<IndT>& indices = indData->getCImg(); indices.fill(0);
-
-        waDist weightData(this->f_w);         weightData->setDimensions(dim);
-        CImg<DistT>& weights = weightData->getCImg(); weights.fill(0);
-
-        vector<iCoord> parentiCoord;
-        for(unsigned int i=0; i<parent.size(); i++)
-        {
-            Coord p = inT->toImage(parent[i]);
-            parentiCoord.push_back(iCoord(sofa::helper::round(p[0]),sofa::helper::round(p[1]),sofa::helper::round(p[2])));
-        }
-
-        // compute voronoi and distances based on nodes
-        std::set<DistanceToPoint> trial;                // list of seed points
-        for(unsigned int i=0; i<parent.size(); i++)
-        {
-            trial.insert( DistanceToPoint(0.,parentiCoord[i]) );
-            voronoi(parentiCoord[i][0],parentiCoord[i][1],parentiCoord[i][2])=i+1;
-            dist(parentiCoord[i][0],parentiCoord[i][1],parentiCoord[i][2])=0;
-        }
-        if(useDijkstra.getValue()) dijkstra<Real,T>(trial,dist, voronoi, voxelsize , biasFactor); else fastMarching<Real,T>(trial,dist, voronoi, voxelsize ,biasFactor );
-
-        // compute weights from voronoi
-        if(this->method.getValue().getSelectedId() == DISTANCE)  ComputeWeigths_DistanceRatio(indices,weights,voronoi,dist,biasFactor,parentiCoord);
-        else ComputeWeigths_NaturalNeighbors(indices,weights,voronoi,dist,biasFactor);
+        VoronoiShapeFunctionSpecialization<ImageTypes::label>::init( this );
     }
 
 
@@ -174,9 +223,9 @@ protected:
         , useDijkstra(initData(&useDijkstra,true,"useDijkstra","Use Dijkstra for geodesic distance computation (use fastmarching otherwise)"))
     {
         helper::OptionsGroup methodOptions(3,"0 - Distance ratio"
-                ,"1 - Laplace interpolant"
-                ,"2 - Sibson interpolant"
-                                          );
+                                           ,"1 - Laplace interpolant"
+                                           ,"2 - Sibson interpolant"
+                                           );
         methodOptions.setSelectedItem(DISTANCE);
         method.setValue(methodOptions);
 

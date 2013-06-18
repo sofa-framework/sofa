@@ -80,7 +80,7 @@ public:
     Data< bool > f_useLocalOrientation;
     //@}
 
-    void computeShapeFunction(const Coord& childPosition, MaterialToSpatial& M, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL)
+    void computeShapeFunction(const Coord& childPosition, MaterialToSpatial& M, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL, const int cell=-1)
     {
         M=MaterialToSpatial();
         for ( unsigned int i = 0; i < material_dimensions; i++ ) M[i][i]=(Real)1.; //identity
@@ -116,6 +116,7 @@ public:
                 if ( edges.empty() ) return;
                 //no 3D elements, nor 2D elements -> map on 1D elements
                 for ( unsigned int i = 0; i < edges.size(); i++ )
+                    if(cell==-1 || cell==(int)i)
                 {
                     Coord v = bases[i] * ( childPosition - parent[edges[i][0]] );
                     double d = std::max ( -v[0], v[0]-(Real)1. );
@@ -136,6 +137,7 @@ public:
             {
                 // no 3D elements -> map on 2D elements
                 for ( unsigned int i = 0; i < triangles.size(); i++ )
+                    if(cell==-1 || cell==(int)i)
                 {
                     Coord v = bases[i] * ( childPosition - parent[triangles[i][0]] );
                     double d = std::max ( std::max ( -v[0],-v[1] ),std::max ( ( v[2]<0?-v[2]:v[2] )-(Real)0.01,v[0]+v[1]-(Real)1. ) );
@@ -143,6 +145,7 @@ public:
                 }
                 int c0 = triangles.size();
                 for ( unsigned int i = 0; i < quads.size(); i++ )
+                    if(cell==-1 || cell==(int)(i+c0))
                 {
                     Coord v = bases[c0+i] * ( childPosition - parent[quads[i][0]] );
                     double d = std::max ( std::max ( -v[0],-v[1] ),std::max ( std::max ( v[1]-(Real)1.,v[0]-(Real)1. ),std::max ( v[2]-(Real)0.01,-v[2]-(Real)0.01 ) ) );
@@ -195,6 +198,7 @@ public:
         {
             // map on 3D elements
             for ( unsigned int i = 0; i < tetrahedra.size(); i++ )
+                if(cell==-1 || cell==(int)i)
             {
                 Coord v = bases[i] * ( childPosition - parent[tetrahedra[i][0]] );
                 double d = std::max ( std::max ( -v[0],-v[1] ),std::max ( -v[2],v[0]+v[1]+v[2]-(Real)1. ) );
@@ -202,6 +206,7 @@ public:
             }
             int c0 = tetrahedra.size();
             for ( unsigned int i = 0; i < cubes.size(); i++ )
+                if(cell==-1 || cell==(int)(i+c0))
             {
                 //Coord v = bases[c0+i] * ( childPosition - parent[cubes[i][0]] );  // for cuboid hexahedra
                 Coord v; Coord ph[8];  for ( unsigned int j = 0; j < 8; j++ ) ph[j]=parent[cubes[i][j]]; this->computeHexaTrilinearWeights(v,ph,childPosition,1E-10); // for arbitrary hexahedra
