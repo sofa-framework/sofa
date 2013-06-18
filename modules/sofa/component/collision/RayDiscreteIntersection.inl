@@ -47,8 +47,8 @@ namespace collision
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 
-template<class Sphere>
-bool RayDiscreteIntersection::testIntersection(Ray& ray1, Sphere& sph2)
+template<class T>
+bool RayDiscreteIntersection::testIntersection(Ray& ray1, TSphere<T>& sph2)
 {
     //sout<<"intersectionSphereRay: Collision between Sphere - Ray"<<sendl;
     // Center of the sphere
@@ -66,8 +66,8 @@ bool RayDiscreteIntersection::testIntersection(Ray& ray1, Sphere& sph2)
     return (dist2 < (radius1*radius1));
 }
 
-template<class Sphere>
-int RayDiscreteIntersection::computeIntersection(Ray& ray1, Sphere& sph2, OutputVector* contacts)
+template<class T>
+int RayDiscreteIntersection::computeIntersection(Ray& ray1, TSphere<T>& sph2, OutputVector* contacts)
 {
     // Center of the sphere
     const Vector3 sph2Pos(sph2.center());

@@ -55,15 +55,13 @@ public:
 
     bool testIntersection(RigidDistanceGridCollisionElement&, RigidDistanceGridCollisionElement&);
     bool testIntersection(RigidDistanceGridCollisionElement&, Point&);
-    template<class Sphere>
-    bool testIntersection(RigidDistanceGridCollisionElement&, Sphere&);
+    template<class T> bool testIntersection(RigidDistanceGridCollisionElement&, TSphere<T>&);
     bool testIntersection(RigidDistanceGridCollisionElement&, Triangle&);
     bool testIntersection(Ray&, RigidDistanceGridCollisionElement&);
 
     int computeIntersection(RigidDistanceGridCollisionElement&, RigidDistanceGridCollisionElement&, OutputVector*);
     int computeIntersection(RigidDistanceGridCollisionElement&, Point&, OutputVector*);
-    template<class Sphere>
-    int computeIntersection(RigidDistanceGridCollisionElement&, Sphere&, OutputVector*);
+    template<class T> int computeIntersection(RigidDistanceGridCollisionElement&, TSphere<T>&, OutputVector*);
     int computeIntersection(RigidDistanceGridCollisionElement&, Triangle&, OutputVector*);
     int computeIntersection(Ray&, RigidDistanceGridCollisionElement&, OutputVector*);
 

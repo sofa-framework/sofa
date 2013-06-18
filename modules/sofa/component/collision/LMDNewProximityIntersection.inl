@@ -411,8 +411,8 @@ inline int LMDNewProximityIntersection::doIntersectionTrianglePoint(double dist2
     return 1;
 }
 
-template<class Sphere>
-bool LMDNewProximityIntersection::testIntersection(Sphere& e1, Point& e2)
+template<class T>
+bool LMDNewProximityIntersection::testIntersection(TSphere<T>& e1, Point& e2)
 {
     OutputVector contacts;
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity() + e1.r();
@@ -424,8 +424,8 @@ bool LMDNewProximityIntersection::testIntersection(Sphere& e1, Point& e2)
     return (n > 0);
 }
 
-template<class Sphere>
-int LMDNewProximityIntersection::computeIntersection(Sphere& e1, Point& e2, OutputVector* contacts)
+template<class T>
+int LMDNewProximityIntersection::computeIntersection(TSphere<T>& e1, Point& e2, OutputVector* contacts)
 {
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity() + e1.r();
 
@@ -445,8 +445,8 @@ int LMDNewProximityIntersection::computeIntersection(Sphere& e1, Point& e2, Outp
     return n;
 }
 
-template<class Sphere>
-bool LMDNewProximityIntersection::testIntersection(Sphere& e1, Sphere& e2)
+template<class T1, class T2>
+bool LMDNewProximityIntersection::testIntersection(TSphere<T1>& e1, TSphere<T2>& e2)
 {
     OutputVector contacts;
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity() + e1.r() + e2.r();
@@ -457,8 +457,8 @@ bool LMDNewProximityIntersection::testIntersection(Sphere& e1, Sphere& e2)
     return (n > 0);
 }
 
-template<class Sphere>
-int LMDNewProximityIntersection::computeIntersection(Sphere& e1, Sphere& e2, OutputVector* contacts)
+template<class T1,class T2>
+int LMDNewProximityIntersection::computeIntersection(TSphere<T1>& e1, TSphere<T2>& e2, OutputVector* contacts)
 {
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity() + e1.r() + e2.r();
     EmptyFilter emptyFilter;
@@ -477,15 +477,15 @@ int LMDNewProximityIntersection::computeIntersection(Sphere& e1, Sphere& e2, Out
     return n;
 }
 
-template<class Sphere>
-bool LMDNewProximityIntersection::testIntersection(Line&, Sphere&)
+template<class T>
+bool LMDNewProximityIntersection::testIntersection(Line&, TSphere<T>&)
 {
     serr << "Unnecessary call to NewProximityIntersection::testIntersection(Line,Sphere)."<<sendl;
     return true;
 }
 
-template<class Sphere>
-int LMDNewProximityIntersection::computeIntersection(Line& e1, Sphere& e2, OutputVector* contacts)
+template<class T>
+int LMDNewProximityIntersection::computeIntersection(Line& e1, TSphere<T>& e2, OutputVector* contacts)
 {
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity() + e2.r();
     EmptyFilter emptyFilter;
@@ -505,15 +505,15 @@ int LMDNewProximityIntersection::computeIntersection(Line& e1, Sphere& e2, Outpu
     return n;
 }
 
-template<class Sphere>
-bool LMDNewProximityIntersection::testIntersection(Triangle&, Sphere&)
+template<class T>
+bool LMDNewProximityIntersection::testIntersection(Triangle&, TSphere<T>&)
 {
     serr << "Unnecessary call to NewProximityIntersection::testIntersection(Triangle,Sphere)."<<sendl;
     return true;
 }
 
-template<class Sphere>
-int LMDNewProximityIntersection::computeIntersection(Triangle& e1, Sphere& e2, OutputVector* contacts)
+template<class T>
+int LMDNewProximityIntersection::computeIntersection(Triangle& e1, TSphere<T>& e2, OutputVector* contacts)
 {
 
 // index of lines:

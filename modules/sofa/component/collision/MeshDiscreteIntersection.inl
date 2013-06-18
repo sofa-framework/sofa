@@ -48,8 +48,8 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 
 
-template<class Sphere>
-bool MeshDiscreteIntersection::testIntersection( Sphere& sph, Triangle& triangle)
+template<class T>
+bool MeshDiscreteIntersection::testIntersection( TSphere<T>& sph, Triangle& triangle)
 {
     double EPSILON = 0.00001;
     //Vertices of the triangle:
@@ -99,8 +99,8 @@ bool MeshDiscreteIntersection::testIntersection( Sphere& sph, Triangle& triangle
     return false;
 }
 
-template<class Sphere>
-int MeshDiscreteIntersection::computeIntersection( Sphere& sph, Triangle& triangle, OutputVector* contacts)
+template<class T>
+int MeshDiscreteIntersection::computeIntersection( TSphere<T>& sph, Triangle& triangle, OutputVector* contacts)
 {
     double EPSILON = 0.00001;
     //Vertices of the triangle:

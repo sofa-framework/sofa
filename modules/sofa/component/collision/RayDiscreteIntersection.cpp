@@ -56,6 +56,7 @@ RayDiscreteIntersection::RayDiscreteIntersection(DiscreteIntersection* object, b
     if (addSelf)
     {
         intersection->intersectors.add<RayModel, SphereModel,                     RayDiscreteIntersection>  (this);
+        intersection->intersectors.add<RayModel, RigidSphereModel,                RayDiscreteIntersection>  (this);
         intersection->intersectors.add<RayModel, TriangleModel,                   RayDiscreteIntersection>  (this);
 
         intersection->intersectors.ignore<RayModel, PointModel>();

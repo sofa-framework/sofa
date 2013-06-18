@@ -51,12 +51,10 @@ class SOFA_USER_INTERACTION_API RayDiscreteIntersection : public core::collision
 public:
     RayDiscreteIntersection(DiscreteIntersection* object, bool addSelf=true);
 
-    template<class Sphere>
-    bool testIntersection(Ray&, Sphere&);
+    template<class T> bool testIntersection(Ray&, TSphere<T>&);
     bool testIntersection(Ray&, Triangle&);
 
-    template<class Sphere>
-    int computeIntersection(Ray&, Sphere&, OutputVector*);
+    template<class T> int computeIntersection(Ray&, TSphere<T>&, OutputVector*);
     int computeIntersection(Ray&, Triangle&, OutputVector*);
 
 protected:

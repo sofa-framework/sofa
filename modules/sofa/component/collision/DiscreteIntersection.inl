@@ -47,52 +47,17 @@ namespace collision
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 
-template <class Sphere>
-int DiscreteIntersection::computeIntersection(Sphere& sph1, Sphere& sph2, OutputVector* contacts)
+
+
+
+template <class DataTypes1,class DataTypes2>
+bool DiscreteIntersection::testIntersection(TSphere<DataTypes1>& sph1, TSphere<DataTypes2>& sph2)
 {
-    return BaseIntTool::computeIntersection(sph1,sph2,getAlarmDistance(),getContactDistance(),contacts);
-//    double r = sph1.r() + sph2.r();
-//    Vector3 dist = sph2.center() - sph1.center();
-
-//    if (dist.norm2() >= r*r)
-//        return 0;
-
-//    contacts->resize(contacts->size()+1);
-//    DetectionOutput *detection = &*(contacts->end()-1);
-//    detection->normal = dist;
-//    double distSph1Sph2 = detection->normal.norm();
-//    detection->normal /= distSph1Sph2;
-//    detection->point[0] = sph1.center() + detection->normal * sph1.r();
-//    detection->point[1] = sph2.center() - detection->normal * sph2.r();
-
-//    detection->value = distSph1Sph2 - r;
-//    detection->elem.first = sph1;
-//    detection->elem.second = sph2;
-//    detection->id = (sph1.getCollisionModel()->getSize() > sph2.getCollisionModel()->getSize()) ? sph1.getIndex() : sph2.getIndex();
-
-//    return 1;
+    return BaseIntTool::testIntersection( sph1, sph2, getAlarmDistance() );
 }
 
-template <class Sphere>
-int DiscreteIntersection::computeIntersection(Sphere& /*sph1*/, Cube& /*cube*/, OutputVector* /*contacts*/)
-{
-    //to do
-    return 0;
-}
-
-template <class Sphere>
-bool DiscreteIntersection::testIntersection(Sphere& sph1, Sphere& sph2)
-{
-    //sout<<"Collision between Sphere - Sphere"<<sendl;
-    typename Sphere::Coord sph1Pos(sph1.center());
-    typename Sphere::Coord sph2Pos(sph2.center());
-    typename Sphere::Real radius1 = sph1.r(), radius2 = sph2.r();
-    typename Sphere::Coord tmp = sph1Pos - sph2Pos;
-    return (tmp.norm2() < (radius1 + radius2) * (radius1 + radius2));
-}
-
-template <class Sphere>
-bool DiscreteIntersection::testIntersection( Sphere& sph1, Cube& cube)
+template <class DataTypes>
+bool DiscreteIntersection::testIntersection( TSphere<DataTypes>& sph1, Cube& cube )
 {
     // Values of the "aligned" bounding box
     Vector3 Bmin = cube.minVect();
@@ -112,6 +77,35 @@ bool DiscreteIntersection::testIntersection( Sphere& sph1, Cube& cube)
 
     return (dmin <= r2 );
 }
+
+
+template <class DataTypes1,class DataTypes2>
+int DiscreteIntersection::computeIntersection(TSphere<DataTypes1>& sph1, TSphere<DataTypes2>& sph2, OutputVector* contacts)
+{
+    return BaseIntTool::computeIntersection(sph1,sph2,getAlarmDistance(),getContactDistance(),contacts);
+}
+
+template <class DataTypes>
+bool DiscreteIntersection::testIntersection(Capsule&, TSphere<DataTypes>&){
+    //TO DO
+    return false;
+}
+
+template <class DataTypes>
+int DiscreteIntersection::computeIntersection(Capsule & cap, TSphere<DataTypes> & sph,OutputVector* contacts){
+    return CapsuleIntTool::computeIntersection(cap,sph,getAlarmDistance(),getContactDistance(),contacts);
+}
+
+template <class DataTypes>
+bool DiscreteIntersection::testIntersection(TSphere<DataTypes> &,OBB &){
+    return false;
+}
+
+template <class DataTypes>
+int DiscreteIntersection::computeIntersection(TSphere<DataTypes> & sph, OBB & box,OutputVector* contacts){
+    return OBBIntTool::computeIntersection(sph,box,getAlarmDistance(),getContactDistance(),contacts);
+}
+
 
 
 } // namespace collision

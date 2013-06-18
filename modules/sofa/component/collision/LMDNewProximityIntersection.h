@@ -59,34 +59,26 @@ public:
 
     bool testIntersection(Cube& ,Cube&);
     bool testIntersection(Point&, Point&);
-    template<class Sphere>
-    bool testIntersection(Sphere&, Point&);
-    template<class Sphere>
-    bool testIntersection(Sphere&, Sphere&);
+    template<class T> bool testIntersection(TSphere<T>&, Point&);
+    template<class T1, class T2> bool testIntersection(TSphere<T1>&, TSphere<T2>&);
     bool testIntersection(Line&, Point&);
-    template<class Sphere>
-    bool testIntersection(Line&, Sphere&);
+    template<class T> bool testIntersection(Line&, TSphere<T>&);
     bool testIntersection(Line&, Line&);
     bool testIntersection(Triangle&, Point&);
-    template<class Sphere>
-    bool testIntersection(Triangle&, Sphere&);
+    template<class T> bool testIntersection(Triangle&, TSphere<T>&);
     bool testIntersection(Triangle&, Line&);
     bool testIntersection(Triangle&, Triangle&);
     bool testIntersection(Ray&, Triangle&);
 
     int computeIntersection(Cube&, Cube&, OutputVector*);
     int computeIntersection(Point&, Point&, OutputVector*);
-    template<class Sphere>
-    int computeIntersection(Sphere&, Point&, OutputVector*);
-    template<class Sphere>
-    int computeIntersection(Sphere&, Sphere&, OutputVector*);
+    template<class T> int computeIntersection(TSphere<T>&, Point&, OutputVector*);
+    template<class T1, class T2> int computeIntersection(TSphere<T1>&, TSphere<T2>&, OutputVector*);
     int computeIntersection(Line&, Point&, OutputVector*);
-    template<class Sphere>
-    int computeIntersection(Line&, Sphere&, OutputVector*);
+    template<class T> int computeIntersection(Line&, TSphere<T>&, OutputVector*);
     int computeIntersection(Line&, Line&, OutputVector*);
     int computeIntersection(Triangle&, Point&, OutputVector*);
-    template<class Sphere>
-    int computeIntersection(Triangle&, Sphere&, OutputVector*);
+    template<class T> int computeIntersection(Triangle&, TSphere<T>&, OutputVector*);
     int computeIntersection(Triangle&, Line&, OutputVector*);
     int computeIntersection(Triangle&, Triangle&, OutputVector*);
     int computeIntersection(Ray&, Triangle&, OutputVector*);

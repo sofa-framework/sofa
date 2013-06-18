@@ -87,7 +87,7 @@ bool NewProximityIntersection::testIntersection(Capsule&, TSphere<DataTypes>&){
 
 template <class DataTypes>
 int NewProximityIntersection::computeIntersection(Capsule & cap, TSphere<DataTypes> & sph,OutputVector* contacts){
-    return CapsuleIntTool::computeIntersection(cap,sph,getAlarmDistance(),getContactDistance(),contacts);
+    return CapsuleIntTool::computeIntersection(cap,sph,getAlarmDistance()+cap.getProximity()+sph.getProximity(),getContactDistance()+cap.getProximity()+sph.getProximity(),contacts);
 }
 
 template <class DataTypes>
@@ -103,7 +103,7 @@ bool NewProximityIntersection::testIntersection(TSphere<DataTypes> &,OBB &){
 template <class DataTypes1,class DataTypes2>
 int NewProximityIntersection::computeIntersection(TSphere<DataTypes1>& sph1, TSphere<DataTypes2>& sph2, OutputVector* contacts)
 {
-    return BaseIntTool::computeIntersection(sph1,sph2,sph1.getProximity() + sph2.getProximity() + getAlarmDistance(),getContactDistance(),contacts);
+    return BaseIntTool::computeIntersection(sph1,sph2,sph1.getProximity() + sph2.getProximity() + getAlarmDistance(),sph1.getProximity() + sph2.getProximity() +getContactDistance(),contacts);
 }
 
 } // namespace collision

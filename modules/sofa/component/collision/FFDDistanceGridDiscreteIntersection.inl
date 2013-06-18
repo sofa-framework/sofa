@@ -47,14 +47,14 @@ namespace collision
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 
-template<class Sphere>
-bool FFDDistanceGridDiscreteIntersection::testIntersection(FFDDistanceGridCollisionElement&, Sphere&)
+template<class T>
+bool FFDDistanceGridDiscreteIntersection::testIntersection(FFDDistanceGridCollisionElement&, TSphere<T>&)
 {
     return true;
 }
 
-template<class Sphere>
-int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e1, Sphere& e2, OutputVector* contacts)
+template<class T>
+int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e1, TSphere<T>& e2, OutputVector* contacts)
 {
 
     DistanceGrid* grid1 = e1.getGrid();

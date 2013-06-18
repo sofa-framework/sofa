@@ -26,6 +26,14 @@ public:
     static bool testIntersection(Cube& ,Cube&,double alarmDist);
 
     template <class DataTypes1,class DataTypes2>
+    static bool testIntersection(TSphere<DataTypes1>& sph1, TSphere<DataTypes2>& sph2,double alarmDist)
+    {
+        typename TSphere<DataTypes1>::Real tworadius = sph1.r() + sph2.r();
+        return ( sph1.center() - sph2.center() ).norm2() < tworadius*tworadius + alarmDist;
+    }
+
+
+    template <class DataTypes1,class DataTypes2>
     static int computeIntersection(TSphere<DataTypes1>& sph1, TSphere<DataTypes2>& sph2,double alarmDist,double contactDist,OutputVector* contacts);
 
     template <class TReal>

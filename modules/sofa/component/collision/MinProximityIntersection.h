@@ -54,19 +54,22 @@ public:
 
     virtual void init();
 
-    bool testIntersection(Cube&, Cube&);
-    bool testIntersection(Sphere&, Sphere&);
-    //bool testIntersection(Ray&, Triangle&);
+    bool testIntersection(Cube& ,Cube&);
+    template <class DataTypes1,class DataTypes2> bool testIntersection(TSphere<DataTypes1>&, TSphere<DataTypes2>&);
+    bool testIntersection(Capsule&,Capsule&);
+    template <class DataTypes>  bool testIntersection(Capsule&,TSphere<DataTypes>&);
+    bool testIntersection(OBB&, OBB&);
+    template <class DataTypes> bool testIntersection(TSphere<DataTypes>&, OBB&);
+    bool testIntersection(Capsule&, OBB&);
 
     int computeIntersection(Cube&, Cube&, OutputVector*);
-    int computeIntersection(Sphere&, Sphere&, OutputVector*);
-    int computeIntersection(Capsule&, Capsule&, OutputVector*);
-    int computeIntersection(Capsule&, Sphere&, OutputVector*);
-    int computeIntersection(Capsule& cap, OBB& obb,OutputVector* contacts);
-    int computeIntersection(Sphere& sph,OBB& obb, OutputVector* contacts);
-    int computeIntersection(OBB& obb0, OBB& obb1,OutputVector* contacts);
+    template <class DataTypes1,class DataTypes2> int computeIntersection(TSphere<DataTypes1>&, TSphere<DataTypes2>&, OutputVector*);
+    int computeIntersection(Capsule&, Capsule&,OutputVector* contacts);
+    template <class DataTypes> int computeIntersection(Capsule&, TSphere<DataTypes>&,OutputVector* contacts);
+    int computeIntersection(OBB&, OBB&,OutputVector* contacts);
+    template <class DataTypes> int computeIntersection(TSphere<DataTypes>&,OBB&,OutputVector * contacts);
+    int computeIntersection(Capsule&,OBB&,OutputVector * contacts);
 
-    //int computeIntersection(Ray&, Triangle&, OutputVector*);
 
     void draw(const core::visual::VisualParams* vparams);
 
@@ -74,6 +77,52 @@ private:
     double mainAlarmDistance;
     double mainContactDistance;
 };
+
+
+
+
+
+template <class DataTypes1,class DataTypes2>
+bool MinProximityIntersection::testIntersection(TSphere<DataTypes1>& e1, TSphere<DataTypes2>& e2)
+{
+    return BaseIntTool::testIntersection( e1, e2, getAlarmDistance() + e1.getProximity() + e2.getProximity() );
+}
+
+template <class DataTypes>
+bool MinProximityIntersection::testIntersection(Capsule&, TSphere<DataTypes>&){
+    //you can do but not useful because it is not called
+    return false;
+}
+
+template <class DataTypes>
+int MinProximityIntersection::computeIntersection(Capsule & cap, TSphere<DataTypes> & sph,OutputVector* contacts){
+    return CapsuleIntTool::computeIntersection(cap,sph,getAlarmDistance()+cap.getProximity()+sph.getProximity(),getContactDistance()+cap.getProximity()+sph.getProximity(),contacts);
+}
+
+template <class DataTypes>
+int MinProximityIntersection::computeIntersection(TSphere<DataTypes> & sph, OBB & box,OutputVector* contacts){
+    return OBBIntTool::computeIntersection(sph,box, + getAlarmDistance(),box.getProximity() + sph.getProximity() + getContactDistance(),contacts);
+}
+
+template <class DataTypes>
+bool MinProximityIntersection::testIntersection(TSphere<DataTypes> &,OBB &){
+    return true;
+}
+
+template <class DataTypes1,class DataTypes2>
+int MinProximityIntersection::computeIntersection(TSphere<DataTypes1>& sph1, TSphere<DataTypes2>& sph2, OutputVector* contacts)
+{
+    return BaseIntTool::computeIntersection(sph1,sph2,sph1.getProximity() + sph2.getProximity() + getAlarmDistance(),sph1.getProximity() + sph2.getProximity() +getContactDistance(),contacts);
+}
+
+
+
+
+
+
+
+
+
 
 } // namespace collision
 

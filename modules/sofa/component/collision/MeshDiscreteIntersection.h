@@ -54,12 +54,10 @@ public:
     MeshDiscreteIntersection(DiscreteIntersection* object, bool addSelf=true);
 
     bool testIntersection(Triangle&, Line&);
-    template<class Sphere>
-    bool testIntersection(Sphere&, Triangle&);
+    template<class T> bool testIntersection(TSphere<T>&, Triangle&);
 
     int computeIntersection(Triangle& e1, Line& e2, OutputVector* contacts);
-    template<class Sphere>
-    int computeIntersection(Sphere&, Triangle&, OutputVector*);
+    template<class T> int computeIntersection(TSphere<T>&, Triangle&, OutputVector*);
 
     int computeIntersection(Triangle & e1,Capsule & e2, OutputVector* contacts);
 

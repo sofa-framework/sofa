@@ -49,14 +49,14 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 
 
-template<class Sphere>
-bool RigidDistanceGridDiscreteIntersection::testIntersection(RigidDistanceGridCollisionElement&, Sphere&)
+template<class T>
+bool RigidDistanceGridDiscreteIntersection::testIntersection(RigidDistanceGridCollisionElement&, TSphere<T>&)
 {
     return true;
 }
 
-template<class Sphere>
-int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement& e1, Sphere& e2, OutputVector* contacts)
+template<class T>
+int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement& e1, TSphere<T>& e2, OutputVector* contacts)
 {
     DistanceGrid* grid1 = e1.getGrid();
     bool useXForm = e1.isTransformed();

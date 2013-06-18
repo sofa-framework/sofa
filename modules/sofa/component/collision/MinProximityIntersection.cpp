@@ -66,7 +66,17 @@ MinProximityIntersection::MinProximityIntersection()
 void MinProximityIntersection::init()
 {
     intersectors.add<CubeModel, CubeModel, MinProximityIntersection>(this);
-//        intersectors.add<RayModel, TriangleModel, MinProximityIntersection>(this);
+    intersectors.add<SphereModel, SphereModel, MinProximityIntersection>(this);
+    intersectors.add<CapsuleModel,CapsuleModel, MinProximityIntersection> (this);
+    intersectors.add<CapsuleModel,SphereModel, MinProximityIntersection> (this);
+    intersectors.add<OBBModel,OBBModel, MinProximityIntersection> (this);
+    intersectors.add<CapsuleModel,OBBModel, MinProximityIntersection> (this);
+    intersectors.add<SphereModel,OBBModel, MinProximityIntersection> (this);
+    intersectors.add<RigidSphereModel,RigidSphereModel, MinProximityIntersection> (this);
+    intersectors.add<SphereModel,RigidSphereModel, MinProximityIntersection> (this);
+    intersectors.add<CapsuleModel,RigidSphereModel, MinProximityIntersection> (this);
+    intersectors.add<RigidSphereModel,OBBModel, MinProximityIntersection> (this);
+
     IntersectorFactory::getInstance()->addIntersectors(this);
 }
 
@@ -75,95 +85,46 @@ bool MinProximityIntersection::testIntersection(Cube &cube1, Cube &cube2)
     return BaseIntTool::testIntersection(cube1,cube2,getAlarmDistance() + cube1.getProximity() + cube2.getProximity());
 }
 
-int MinProximityIntersection::computeIntersection(Cube&, Cube&, OutputVector* /*contacts*/)
-{
-    return 0; /// \todo
+
+bool MinProximityIntersection::testIntersection(Capsule&, Capsule&){
+    return true;
 }
+
 
 int MinProximityIntersection::computeIntersection(Capsule & e1,Capsule & e2,OutputVector * contacts){
     return CapsuleIntTool::computeIntersection(e1,e2,e1.getProximity() + e2.getProximity() + getAlarmDistance(),e1.getProximity() + e2.getProximity() + getContactDistance(),contacts);
 }
 
-int MinProximityIntersection::computeIntersection(Capsule & cap, Sphere & sph,OutputVector* contacts){
-    return CapsuleIntTool::computeIntersection(cap,sph,getAlarmDistance() + cap.getProximity() + sph.getProximity(),getContactDistance() + cap.getProximity() + sph.getProximity(),contacts);
-}
 
-int MinProximityIntersection::computeIntersection(Capsule& cap, OBB& obb,OutputVector* contacts){
-    return CapsuleIntTool::computeIntersection(cap,obb,getAlarmDistance() + cap.getProximity() + obb.getProximity(),getContactDistance()+ cap.getProximity() + obb.getProximity(),contacts);
-}
-
-int MinProximityIntersection::computeIntersection( Sphere& sph,OBB& obb,OutputVector* contacts){
-    return OBBIntTool::computeIntersection(sph,obb,getAlarmDistance() + sph.getProximity() + obb.getProximity(),getContactDistance()+ sph.getProximity() + obb.getProximity(),contacts);
-}
-
-int MinProximityIntersection::computeIntersection(OBB& obb0,OBB& obb1,OutputVector* contacts){
-    return OBBIntTool::computeIntersection(obb0,obb1,getAlarmDistance() + obb0.getProximity() + obb1.getProximity(),getContactDistance()+ obb0.getProximity() + obb1.getProximity(),contacts);
-}
-
-/*
-bool MinProximityIntersection::testIntersection(Ray &t1,Triangle &t2)
+int MinProximityIntersection::computeIntersection(Cube&, Cube&, OutputVector* /*contacts*/)
 {
-	Vector3 P,Q,PQ;
-	static DistanceSegTri proximitySolver;
-
-	const double alarmDist = getAlarmDistance() + t1.getProximity() + t2.getProximity();
-
-	if (fabs(t2.n() * t1.direction()) < 0.000001)
-		return false; // no intersection for edges parallel to the triangle
-
-	Vector3 A = t1.origin();
-	Vector3 B = A + t1.direction() * t1.l();
-
-	proximitySolver.NewComputation( &t2, A, B,P,Q);
-	PQ = Q-P;
-
-	if (PQ.norm2() < alarmDist*alarmDist)
-	{
-		//sout<<"Collision between Line - Triangle"<<sendl;
-		return true;
-	}
-	else
-		return false;
+    return 0; /// \todo
 }
 
-int MinProximityIntersection::computeIntersection(Ray &t1, Triangle &t2, OutputVector* contacts)
-{
-	const double alarmDist = getAlarmDistance() + t1.getProximity() + t2.getProximity();
-
-
-	if (fabs(t2.n() * t1.direction()) < 0.000001)
-		return false; // no intersection for edges parallel to the triangle
-
-	Vector3 A = t1.origin();
-	Vector3 B = A + t1.direction() * t1.l();
-
-	Vector3 P,Q,PQ;
-	static DistanceSegTri proximitySolver;
-
-	proximitySolver.NewComputation( &t2, A,B,P,Q);
-	PQ = Q-P;
-
-	if (PQ.norm2() >= alarmDist*alarmDist)
-		return 0;
-
-	const double contactDist = alarmDist;
-	contacts->resize(contacts->size()+1);
-	DetectionOutput *detection = &*(contacts->end()-1);
-
-	detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(t1, t2);
-    detection->id = t1.getIndex();
-	detection->point[1]=P;
-	detection->point[0]=Q;
-#ifdef DETECTIONOUTPUT_FREEMOTION
-	detection->freePoint[1] = P;
-	detection->freePoint[0] = Q;
-#endif
-	detection->normal=-t2.n();
-	detection->value = PQ.norm();
-	detection->value -= contactDist;
-	return 1;
+bool MinProximityIntersection::testIntersection(OBB&, OBB&){
+    return true;
 }
-*/
+
+int MinProximityIntersection::computeIntersection(OBB & box0, OBB & box1,OutputVector* contacts){
+    return OBBIntTool::computeIntersection(box0,box1,box0.getProximity() + box1.getProximity() + getAlarmDistance(),box0.getProximity() + box1.getProximity() + getContactDistance(),contacts);
+}
+
+
+int MinProximityIntersection::computeIntersection(Capsule& cap,OBB& obb,OutputVector * contacts){
+    return CapsuleIntTool::computeIntersection(cap,obb,cap.getProximity() + obb.getProximity() + getAlarmDistance(),cap.getProximity() + obb.getProximity() + getContactDistance(),contacts);
+}
+
+
+bool MinProximityIntersection::testIntersection(Capsule&, OBB&){
+    return true;
+}
+
+
+
+
+
+
+
 void MinProximityIntersection::draw(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowCollisionModels())

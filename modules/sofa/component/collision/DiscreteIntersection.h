@@ -59,28 +59,21 @@ public:
     typedef core::collision::IntersectorFactory<DiscreteIntersection> IntersectorFactory;
 
     bool testIntersection(Cube&, Cube&);
-
-    template <class Sphere>
-    bool testIntersection(Sphere&, Sphere&);
-    template <class Sphere>
-    bool testIntersection(Sphere&, Cube&);
+    template <class DataTypes1,class DataTypes2> bool testIntersection(TSphere<DataTypes1>&, TSphere<DataTypes2>&);
+    template <class DataTypes> bool testIntersection(TSphere<DataTypes>&, Cube&);
     bool testIntersection(Capsule&, Capsule&);
-    bool testIntersection(Capsule&, Sphere&);
-    bool testIntersection(RigidSphere &,RigidSphere &);
+    template <class DataTypes> bool testIntersection(Capsule&, TSphere<DataTypes>&);
     bool testIntersection(OBB &,OBB &);
+    template <class DataTypes> bool testIntersection(TSphere<DataTypes> &,OBB &);
     bool testIntersection(Capsule &,OBB &);
-    bool testIntersection(Sphere &,OBB &);
 
     int computeIntersection(Cube&, Cube&, OutputVector*);    
-    template <class Sphere>
-    int computeIntersection(Sphere&, Sphere&, OutputVector*);    
-    template <class Sphere>
-    int computeIntersection(Sphere&, Cube&, OutputVector*);
+    template <class DataTypes1,class DataTypes2> int computeIntersection(TSphere<DataTypes1>&, TSphere<DataTypes2>&, OutputVector*);
     int computeIntersection(Capsule&, Capsule&,OutputVector* contacts);
-    int computeIntersection(Capsule&, Sphere&,OutputVector* contacts);
+    template <class DataTypes> int computeIntersection(Capsule&, TSphere<DataTypes>&,OutputVector* contacts);
     int computeIntersection(OBB &, OBB &,OutputVector* contacts);
+    template <class DataTypes> int computeIntersection(TSphere<DataTypes> &, OBB &,OutputVector* contacts);
     int computeIntersection(Capsule &, OBB &,OutputVector* contacts);
-    int computeIntersection(Sphere &, OBB &,OutputVector* contacts);
 };
 
 } // namespace collision
