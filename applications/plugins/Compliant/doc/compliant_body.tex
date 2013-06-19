@@ -21,9 +21,11 @@
 \newcommand{\M}{\mat M}
 \newcommand{\Minv}{\mat M^{-1}}
 \renewcommand{\P}{\mat P}
+\newcommand{\I}{\mat I}
 \newcommand{\J}{\mat J}
 \newcommand{\Jt}{\mat J^T}
 \newcommand{\C}{\mat C}
+\newcommand{\D}{\mat D}
 \newcommand{\K}{\mat K}
 \newcommand{\violation}{ \phi}
 \newcommand{\dviolation}{\dot \violation}
@@ -137,7 +139,7 @@ The average constraint forces are computed  using equations \ref{eq lambda}, \re
 &=& -\frac{1}{c_i} ( \violation + d\dviolation + \alpha h \dviolation + \alpha(h\beta+d)\J \dv )
 \end{eqnarray*}
 We can rewrite the previous equation as:
-\begin{equation}
+\begin{equation} \label{eq bottom}
  \J \dv + \frac{1}{\alpha(h\beta+d)}\C\avlam = - \frac{1}{\alpha(h\beta+d)} (\violation + (d+\alpha h)\dviolation)
 \end{equation}
 where values without indices denote current values.
@@ -251,6 +253,22 @@ The BaseMass function used by the plugin is:
  \item \texttt{addMToMatrix} to create the mass matrix. This function is not specific to the \textit{Compliant} plugin.
 \end{itemize}
 
+
+\section{Alternative model} \label{sec alternative model}
+To allow more flexibility in the definition of damping in the compliance approach, the following variant is possible.
+We replace eq.~\ref{eq generalized constraint} with the following.
+\begin{equation}\label{eq generalized damped constraint}
+\lam = - \C^{-1} \violation - \D \dviolation
+\end{equation}
+where $\violation$ and $\dviolation$ are vectors, and $\C$ and $\D$ symmetric matrices.
+This allows us to define non-uniform damping coefficients.
+We rewrite eq.~\ref{eq bottom} as:
+\begin{equation}
+ \label{eq bottom alt}
+ \alpha( h \beta \I + \C \D) \J \dv + \C \avlam = -\violation - \alpha(h\I + \C\D )\dviolation
+\end{equation}
+where $\I$ is the identity matrix of the appropriate size.
+Unfortunately, the diagonal matrix in the left of $\J$ in the term on $\dv$ now makes the Schur complement unsymmetric. Therefore, we have not implemented this approach.
 
 
 
