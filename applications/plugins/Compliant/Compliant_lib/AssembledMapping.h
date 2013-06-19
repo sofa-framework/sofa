@@ -13,11 +13,14 @@ namespace sofa {
 			// implement apply and assemble
 			template<class In, class Out>
 			class AssembledMapping : public core::Mapping<In, Out> {
+
 				typedef AssembledMapping self;
 	
 				typedef vector<sofa::defaulttype::BaseMatrix*> js_type;
 				js_type js;
 			public:
+
+                SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE2(AssembledMapping,In,Out), SOFA_TEMPLATE2(core::Mapping,In,Out));
 	
 				// TODO make this final ?
 				void init() {
