@@ -27,7 +27,7 @@ Mode=LaTeX
 ReadWrite=true
 
 [document-settings,item:compliant_body.tex]
-Bookmarks=
+Bookmarks=139
 Encoding=UTF-8
 FoldedColumns=
 FoldedLines=
@@ -58,32 +58,32 @@ order=-1
 
 [item:compliant.tex]
 archive=true
-column=0
+column=7
 encoding=UTF-8
 highlight=LaTeX
-line=0
+line=25
 mode=LaTeX
 open=true
 order=0
 
 [item:compliant_body.tex]
 archive=true
-column=48
+column=56
 encoding=UTF-8
 highlight=LaTeX
-line=49
+line=256
 mode=LaTeX
 open=true
 order=1
 
 [view-settings,view=0,item:compliant.tex]
-CursorColumn=0
-CursorLine=0
+CursorColumn=7
+CursorLine=25
 JumpList=
 ViMarks=
 
 [view-settings,view=0,item:compliant_body.tex]
-CursorColumn=48
-CursorLine=49
+CursorColumn=56
+CursorLine=256
 JumpList=
-ViMarks=
+ViMarks=a,139,0
