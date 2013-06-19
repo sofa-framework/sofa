@@ -183,12 +183,14 @@ set(README_FILES
 #Option to activate double-precision support in CUDA (requires GT200+ GPU and -arch sm_13 flag)
 option(SOFA-CUDA_DOUBLE "SOFA-CUDA_DOUBLE" OFF)
 if(SOFA-CUDA_DOUBLE)
+	add_definitions("-DSOFA_GPU_CUDA_DOUBLE")
 	AddCompilerDefinitions("SOFA_GPU_CUDA_DOUBLE")
 endif()
 
 #Option to use IEEE 754-compliant floating point operations
 option(SOFA-CUDA_PRECISE "SOFA-CUDA_PRECISE" OFF)
 if(SOFA-CUDA_PRECISE)
+	add_definitions("-DSOFA_GPU_CUDA_PRECISE")
 	AddCompilerDefinitions("SOFA_GPU_CUDA_PRECISE")
 endif()
 
@@ -198,26 +200,36 @@ endif()
 #  operations for addition and multiplication only)
 option(SOFA-CUDA_DOUBLE_PRECISE "SOFA-CUDA_DOUBLE_PRECISE" OFF)
 if(SOFA-CUDA_DOUBLE_PRECISE)
+	add_definitions("-DSOFA_GPU_CUDA_DOUBLE_PRECISE")
 	AddCompilerDefinitions("SOFA_GPU_CUDA_DOUBLE_PRECISE")
 endif()
 
 # Option to activate cublas support in CUDA (requires SOFA_GPU_CUDA_DOUBLE)
 option(SOFA-CUDA_CUBLAS "SOFA-CUDA_CUBLAS" OFF)
 if(SOFA-CUDA_CUBLAS)
+	add_definitions("-DSOFA_GPU_CUBLAS")
 	AddCompilerDefinitions("SOFA_GPU_CUBLAS")
 endif()
 
 # Option to activate CUDPP (for RadixSort)
 option(SOFA-CUDA_CUDPP "SOFA-CUDA_CUDPP" OFF)
 if(SOFA-CUDA_CUDPP)
+	add_definitions("-DSOFA_GPU_CUDPP")
 	AddCompilerDefinitions("SOFA_GPU_CUDPP")
+	if(SOFA-EXTERNAL_HAVE_CUDPP)
+		AddLinkerDependencies(cudpp)
+	endif()
 endif()
 
 # Option to activate THRUST (for RadixSort)
 # Note: THRUST is included in CUDA SDK 4.0+, it is recommended to use it if available
 option(SOFA-CUDA_THRUST "SOFA-CUDA_THRUST" OFF)
 if(SOFA-CUDA_THRUST)
+	add_definitions("-DSOFA_GPU_THRUST")
 	AddCompilerDefinitions("SOFA_GPU_THRUST")
+	if(SOFA-EXTERNAL_HAVE_THRUST)
+		AddLinkerDependencies(thrust)
+	endif()
 endif()
 
 #Give current directory to nvcc compiler
@@ -237,13 +249,5 @@ cuda_add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${CUDA_S
 
 AddCompilerDefinitions("SOFA_BUILD_GPU_CUDA")
 AddLinkerDependencies(SofaHelper SofaOpenglVisual SofaEngine SofaSphFluid SofaUserInteraction SofaVolumetricData)
-
-if(SOFA-EXTERNAL_HAVE_CUDPP)
-	AddLinkerDependencies(cudpp)
-endif()
-
-if(SOFA-EXTERNAL_HAVE_THRUST)
-	AddLinkerDependencies(thrust)
-endif()
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
