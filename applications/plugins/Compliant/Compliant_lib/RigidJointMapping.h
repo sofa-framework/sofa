@@ -37,7 +37,7 @@ namespace mapping
 template <class TIn, class TOut >
 class RigidJointMapping : public AssembledMapping<TIn, TOut> {
 public:
-	SOFA_CLASS(SOFA_TEMPLATE2(RigidJointMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
+    SOFA_CLASS(SOFA_TEMPLATE2(RigidJointMapping,TIn,TOut), SOFA_TEMPLATE2(AssembledMapping,TIn,TOut));
 	
 	typedef defaulttype::Vec<2, unsigned> index_pair;
 	typedef vector< index_pair > pairs_type;
@@ -103,7 +103,7 @@ protected:
 			mat33 dlog = se3::dlog( se3::rotation(diff) );
 				
 			if( rotation.getValue() ) {
-				mat33 Rp = se3::Ad(in_pos[ p[i][0]].getOrientation());
+//				mat33 Rp = se3::Ad(in_pos[ p[i][0]].getOrientation());
 				mat33 Rc = se3::Ad(in_pos[ p[i][1]].getOrientation());
 				
 				blocks[0].template bottomRightCorner<3, 3>() = -dlog * Rc.transpose();

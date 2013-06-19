@@ -65,7 +65,7 @@ template <class TIn, class TOut>
 class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TIn, TOut> {
   public:
 	SOFA_CLASS(SOFA_TEMPLATE2(AssembledRigidRigidMapping,TIn,TOut), 
-	           SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
+               SOFA_TEMPLATE2(AssembledMapping,TIn,TOut));
 
 	
 	AssembledRigidRigidMapping() 
