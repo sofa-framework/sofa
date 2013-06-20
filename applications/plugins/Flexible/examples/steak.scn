@@ -16,38 +16,29 @@
 
   <TransferFunction name="youngM" template="ImageUC,ImageD" inputImage="@extruder.outputImage" param="0 0 1 20000 254 5000 255 15000000000"/>
   <!--  <ImageViewer template="ImageD" name="viewer" image="@youngM.outputImage" transform="@extruder.outputTransform" /> -->
-
   <TransferFunction name="densityTF" template="ImageUC,ImageD" inputImage="@extruder.outputImage" param="0 0 1 0.01"/>
-
 
   <EulerImplicitSolver rayleighStiffness="0.05"  rayleighMass="0.05" />
   <CGLinearSolver template="GraphScattered" iterations="10"  threshold="1e-008" />
 
   <Node 	name="Flexible"   >
-
     <ImageSampler template="ImageUC" name="sampler" src="@../image" method="1" param="1" fixedPosition="2.4 0.45 0 1.5 2.5 0" />
     <MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />
     <MechanicalObject template="Affine" name="parent" useMask="0" showObject="true" src="@merged" showObjectScale="1"/>
     <FixedConstraint indices="0" />
-
     <VoronoiShapeFunction name="SF" template="ShapeFunction3d,ImageD" image="@../youngM.outputImage" transform="@../extruder.outputTransform" nbRef="2" method="0" bias="true" printLog="false" />
     <!--           <ImageViewer template="ImageUI" name="viewer" image="@SF.indices" transform="@SF.transform" plane="-1 -1 4"/>-->
     <ImageViewer template="ImageD" name="viewer" image="@SF.weights" transform="@SF.transform" plane="-1 -1 4"/>
-
     <ImageDensityMass  template="Affine3d,ShapeFunction3d" densityImage="@../densityTF.outputImage" transform="@../extruder.outputTransform" lumping="0" />
 
     <Node 	name="behavior"   >
-
       <ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" showSamples="false" printLog="false" targetNumber="1"/>
       <!--  <ImageViewer template="ImageD" name="viewer" image="@sampler.error" transform="@sampler.transform" plane="-1 -1 4"/>    -->
       <!--  <ImageViewer template="ImageUI" name="viewer" image="@sampler.region" transform="@sampler.transform" plane="-1 -1 4"/>  -->
-
       <MechanicalObject template="F332" name="F"  useMask="0"  showObject="1" showObjectScale="0.05" />
       <LinearMapping template="Mapping&lt;Affine,F332&gt;" assembleJ="false"/>
-
       <Node 	name="E"   >
         <ImageValuesFromPositions name="youngM" position="@../sampler.position" image="@../../../youngM.outputImage" transform="@../../../extruder.outputTransform" />
-
         <MechanicalObject  template="E333" name="E"  />
         <GreenStrainMapping template="Mapping&lt;F332,E333&gt;" assembleJ="false"/>
         <HookeForceField  template="E333" name="ff" youngModulus="@youngM.values" poissonRatio="0" viscosity="0" assembleK="false"/>
