@@ -2361,7 +2361,7 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
                 }
             }
 
-            Mat33 strain = 0.5*(gradU + gradU.transposed());
+            Mat33 strain = Real(0.5)*(gradU + gradU.transposed());
 
             for (size_t i = 0; i < 3; i++)
                 vStrain[i] = strain[i][i];
