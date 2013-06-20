@@ -820,14 +820,12 @@ protected:
         {
             if (isDeviceValid(d))
             {
-                if (deviceVectorSize[d]>i) {
+                if (i<deviceVectorSize[d]) {
                     DEBUG_OUT_V(SPACEN << "MemoryManager::memcpyDeviceToHost " << i << std::endl);
                     MemoryManager::memcpyDeviceToHost(d, ((T*)hostPointer)+i, MemoryManager::deviceOffset(devicePointer[d],i), sizeof ( T ) );
-                } else if (i < clearSize) {
+                } else {
                     DEBUG_OUT_V(SPACEN << "MemoryManager::memsetHost " << i << std::endl);
                     MemoryManager::memsetHost(((T*)hostPointer)+i,0,sizeof(T));
-                } else {
-                    hostPointer[i] = 0;
                 }
                 break;
             }
