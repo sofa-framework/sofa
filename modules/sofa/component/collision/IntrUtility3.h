@@ -165,7 +165,7 @@ struct IntrUtil<TOBB<DataType> >{
     typedef TOBB<DataType> Box;
 
     /**
-      *Returns the squared distance between old pt and projected pt.
+      *Project pt on the Box box, caution,  works only if pt is outside the box.
       */
     static void project(Vec<3,Real> & pt,const Box & box);
 };

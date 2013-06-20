@@ -953,15 +953,17 @@ FindContactSet<TOBB<TDataTypes> >::FindContactSet (const Box& box0,
         // box1 on left of box0
         if (box0Cfg.mMap == IntrConfiguration<Real>::m1_1)
         {
+            std::cout<<"box0 point"<<std::endl;
             pt_on_first = getPointFromIndex(b0Index[0], box0);
-            pt_on_second = pt_on_first;
-            IntrUtil<Box>::project(pt_on_second,box1);
+            pt_on_second = pt_on_first - axis * tfirst;
+            //IntrUtil<Box>::project(pt_on_second,box1);
         }
         else if (box1Cfg.mMap == IntrConfiguration<Real>::m1_1)
         {
+            std::cout<<"box1 point"<<std::endl;
             pt_on_second = getPointFromIndex(b1Index[7], box1);
-            pt_on_first = pt_on_second;
-            IntrUtil<Box>::project(pt_on_first,box0);
+            pt_on_first = pt_on_second + axis * tfirst;
+            //IntrUtil<Box>::project(pt_on_first,box0);
         }
         else if (box0Cfg.mMap == IntrConfiguration<Real>::m2_2)
         {
@@ -1077,14 +1079,12 @@ FindContactSet<TOBB<TDataTypes> >::FindContactSet (const Box& box0,
         if (box0Cfg.mMap == IntrConfiguration<Real>::m1_1)
         {
             pt_on_first = getPointFromIndex(b0Index[7], box0);
-            pt_on_second = pt_on_first;
-            IntrUtil<Box>::project(pt_on_second,box1);
+            pt_on_second = pt_on_first + tfirst * axis;
         }
         else if (box1Cfg.mMap == IntrConfiguration<Real>::m1_1)
         {
             pt_on_second = getPointFromIndex(b1Index[0], box1);
-            pt_on_first = pt_on_second;
-            IntrUtil<Box>::project(pt_on_first,box0);
+            pt_on_first = pt_on_second - tfirst * axis;
         }
         else if (box0Cfg.mMap == IntrConfiguration<Real>::m2_2)
         {

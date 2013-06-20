@@ -24,6 +24,7 @@ int OBBIntTool::computeIntersection(OBB & box0, OBB & box1,double alarmDist,doub
         DetectionOutput *detection = &*(contacts->end()-1);
 
         detection->normal = intr.separatingAxis();
+
         detection->point[0] = intr.pointOnFirst();
         detection->point[1] = intr.pointOnSecond();
 

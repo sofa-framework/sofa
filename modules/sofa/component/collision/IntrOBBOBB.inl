@@ -528,8 +528,9 @@ bool TIntrOBBOBB<TDataTypes>::Find (Real dmax)
                 if(side == IntrConfiguration<Real>::LEFT)
                     _sep_axis *= -1.0;
 
-                if(mContactTime < 0)
+                if(mContactTime < 0){
                     _is_colliding = true;
+                }
 
                 return true;
             }
@@ -598,7 +599,6 @@ bool TIntrOBBOBB<TDataTypes>::Find (Real dmax)
 //            return false;
 //        }
     }
-
 
     FindContactSet<Box,Box>(*mBox0,*mBox1,_sep_axis,side,box0Cfg,box1Cfg,mContactTime,_pt_on_first,_pt_on_second);
 
