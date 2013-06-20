@@ -471,6 +471,25 @@ bool TestOBB::faceVertex(){
     if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
         return false;
 
+    //in the other sens//////////////////////
+
+    detectionOUTPUT.clear();
+
+    if(!sofa::component::collision::OBBIntTool::computeIntersection(obb1,obb0,1.0,1.0,&detectionOUTPUT))
+        return false;
+
+    //the intersection point of obb0 (detectionOUTPUT[0].point[0]) should be (0,0,0)
+    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0)).norm() > 1e-6)
+        return false;
+
+    //the intersection point of obb1 (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
+    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0.01)).norm() > 1e-6)
+        return false;
+
+    //the contact response direction (detectionOUTPUT[0].normal) should be (0,0,1)
+    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
+        return false;
+
     return true;
 }
 
@@ -504,6 +523,19 @@ bool TestOBB::vertexVertex(){
     if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0.01)).norm() > 1e-6)
         return false;
 
+    //in the other sens//////////////////////
+
+    detectionOUTPUT.clear();
+
+    if(!sofa::component::collision::OBBIntTool::computeIntersection(obb1,obb0,1.0,1.0,&detectionOUTPUT))
+        return false;
+
+    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0)).norm() > 1e-6)
+        return false;
+
+    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0.01)).norm() > 1e-6)
+        return false;
+
     return true;
 }
 
@@ -529,6 +561,25 @@ bool TestOBB::faceFace(){
     if((detectionOUTPUT[0].point[1] - Vec3d(0,0.5,0.01)).norm() > 1e-6)
         return false;
 
+    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
+        return false;
+
+    //in the other sens//////////////////////
+
+    detectionOUTPUT.clear();
+
+    if(!sofa::component::collision::OBBIntTool::computeIntersection(obb1,obb0,1.0,1.0,&detectionOUTPUT))
+        return false;
+
+    //the intersection point of obb0 (detectionOUTPUT[0].point[0]) should be (0,0,0)
+    if((detectionOUTPUT[0].point[1] - Vec3d(0,0.5,0)).norm() > 1e-6)
+        return false;
+
+    //the intersection point of obb1 (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
+    if((detectionOUTPUT[0].point[0] - Vec3d(0,0.5,0.01)).norm() > 1e-6)
+        return false;
+
+    //the contact response direction (detectionOUTPUT[0].normal) should be (0,0,1)
     if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
         return false;
 
@@ -564,6 +615,25 @@ bool TestOBB::faceEdge(){
     if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0.01)).norm() > 1e-6)
         return false;
 
+    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
+        return false;
+
+    //in the other sens//////////////////////
+
+    detectionOUTPUT.clear();
+
+    if(!sofa::component::collision::OBBIntTool::computeIntersection(obb1,obb0,1.0,1.0,&detectionOUTPUT))
+        return false;
+
+    //the intersection point of obb0 (detectionOUTPUT[0].point[0]) should be (0,0,0)
+    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0)).norm() > 1e-6)
+        return false;
+
+    //the intersection point of obb1 (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
+    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0.01)).norm() > 1e-6)
+        return false;
+
+    //the contact response direction (detectionOUTPUT[0].normal) should be (0,0,1)
     if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
         return false;
 

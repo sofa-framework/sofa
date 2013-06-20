@@ -598,15 +598,13 @@ FindContactSet<TTriangle<TDataTypes1>,TOBB<TDataTypes2> >::FindContactSet (const
         {
             //P[0] = triFinal[tIndex[0]];
             pt_on_tri = tri.p(tIndex[0]);
-            pt_on_box = pt_on_tri;
-            IntrUtil<Box>::project(pt_on_box,box);
+            pt_on_box = pt_on_tri - tfirst * axis;
         }
         else if (boxCfg.mMap == IntrConfiguration<Real>::m1_1)
         {
             //P[0] = GetPointFromIndex(bIndex[7], boxFinal);
             pt_on_box = getPointFromIndex(bIndex[7], box);
-            pt_on_tri = pt_on_box;
-            IntrUtil<IntrTri>::project(pt_on_tri,tri);
+            pt_on_tri = pt_on_box + tfirst * axis;
         }
         else if (triCfg.mMap == IntrConfiguration<Real>::m21)
         {
