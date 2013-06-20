@@ -280,7 +280,7 @@ void TetrahedronFEMForceField<DataTypes>::computeMaterialStiffness(int i, Index&
     materialsStiffnesses[i] *= (youngModulus*(1-poissonRatio))/((1+poissonRatio)*(1-2*poissonRatio));
 
 
-    if (_computeVonMisesStress.getValue() == 2) {
+    if (_computeVonMisesStress.getValue() >0) {
         elemLambda[i] = materialsStiffnesses[i][0][1];
         elemMu[i] = materialsStiffnesses[i][3][3];
     }
@@ -307,7 +307,7 @@ void TetrahedronFEMForceField<DataTypes>::computeMaterialStiffness(int i, Index&
     Coord B = initialPoints[c] - initialPoints[a];
     Coord C = initialPoints[d] - initialPoints[a];
     Coord AB = cross(A, B);
-    Real volumes6 = fabs( dot( AB, C ) );
+    Real volumes6 = fabs( dot( AB, C ) );    
     if (volumes6<0)
     {
         serr << "ERROR: Negative volume for tetra "<<i<<" <"<<a<<','<<b<<','<<c<<','<<d<<"> = "<<volumes6/6<<sendl;
@@ -340,7 +340,7 @@ void TetrahedronFEMForceField<DataTypes>::computeMaterialStiffness(MaterialStiff
     Coord B = (*X0)[c] - (*X0)[a];
     Coord C = (*X0)[d] - (*X0)[a];
     Coord AB = cross(A, B);
-    Real volumes6 = fabs( dot( AB, C ) );
+    Real volumes6 = fabs( dot( AB, C ) );    
     if (volumes6<0)
     {
         serr << "ERROR: Negative volume for tetra"<<a<<','<<b<<','<<c<<','<<d<<"> = "<<volumes6/6<<sendl;
@@ -1022,7 +1022,7 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceLarge( Vector& f
     else
     {
         serr << "TODO(TetrahedronFEMForceField): support for assembling system matrix when using plasticity."<<sendl;
-    }
+    }    
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -1512,7 +1512,7 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
         rotations.resize( _indexedElements->size() );
         _initialRotations.resize( _indexedElements->size() );
         _rotationIdx.resize(_indexedElements->size() *4);
-        _rotatedInitialElements.resize(_indexedElements->size());
+        _rotatedInitialElements.resize(_indexedElements->size());        
         for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
         {
             Index a = (*it)[0];
@@ -1521,7 +1521,7 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
             Index d = (*it)[3];
             computeMaterialStiffness(i,a,b,c,d);
             initLarge(i,a,b,c,d);
-        }
+        }        
         break;
     }
     case POLAR :
@@ -1564,13 +1564,13 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
         }
         break;
     }
-    }
+    }    
 
-    if (_computeVonMisesStress.getValue() == 1)
+    if (_computeVonMisesStress.getValue() > 0) {
         elemDisplacements.resize(  _indexedElements->size() );
 
 
-    if (_computeVonMisesStress.getValue() == 2) {
+    //if (_computeVonMisesStress.getValue() == 2) {
         helper::ReadAccessor<Data<VecCoord> > X0 =  _initialPoints;
 
         elemShapeFun.resize(_indexedElements->size());
@@ -1593,7 +1593,7 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
 
 template<class DataTypes>
 inline void TetrahedronFEMForceField<DataTypes>::addForce (const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& /* d_v */)
-{
+{    
     VecDeriv& f = *d_f.beginEdit();
     const VecCoord& p = d_x.getValue();
 
@@ -1651,7 +1651,7 @@ inline void TetrahedronFEMForceField<DataTypes>::addForce (const core::Mechanica
 
 template<class DataTypes>
 inline void TetrahedronFEMForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
-{
+{    
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
     double kFactor = mparams->kFactor();
@@ -1728,7 +1728,9 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
             maxVM = prevMaxStress;
 
         //std::cout << "Min VMs: " << minVM << "   max: " << maxVM << std::endl;
-    }
+        maxVM*=_showStressAlpha.getValue();
+        //maxVM=20000;
+    }   
 
 
     vparams->drawTool()->setLightingEnabled(false);
@@ -1780,9 +1782,18 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
 
                 for(unsigned int i=0 ; i<3 ; i++) points[i].clear();
             } else {
-                if (_computeVonMisesStress.getValue() > 0) {
+                if (_computeVonMisesStress.getValue() > 0) {                    
                     visualmodel::ColorMap::evaluator<Real> evalColor = _showStressColorMapReal->getEvaluator(minVM, maxVM);
-                    Vec4f col = evalColor(helper::rabs(vM[i]));
+                    Vec4f col = evalColor(vM[i]); //*vM[i]);
+                    //col[3] = _showStressAlpha.getValue();
+
+                    col[3] = (vM[i]/maxVM); //*(vM[i]/maxVM);
+
+                    if (fabs(maxVM - minVM) < 1e-1)
+                        col[3]=0.01;
+
+                    if (col[3] < 0.009)
+                        col[3] = 0.009;
 
                     vparams->drawTool()->drawLines(points[0],1,col );
                     vparams->drawTool()->drawLines(points[1],1,col );
@@ -1855,7 +1866,15 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
             } else {
                 if (_computeVonMisesStress.getValue() > 0) {
                     visualmodel::ColorMap::evaluator<Real> evalColor = _showStressColorMapReal->getEvaluator(minVM, maxVM);
-                    Vec4f col = evalColor(helper::rabs(vM[i]));
+                    Vec4f col = evalColor(vM[i]); //*vM[i]);
+
+                    col[3] = (vM[i]/maxVM); //*(vM[i]/maxVM);
+
+                    if (fabs(maxVM - minVM) < 1e-1)
+                        col[3]=0.01;
+
+                    if (col[3] < 0.009)
+                        col[3] = 0.009;
 
                     vparams->drawTool()->drawTriangles(points[0],col);
                     vparams->drawTool()->drawTriangles(points[1],col);
@@ -1920,7 +1939,7 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
 
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset)
-{
+{    
     // Build Matrix Block for this ForceField
     int i,j,n1, n2, row, column, ROW, COLUMN , IT;
 
@@ -2001,7 +2020,8 @@ void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMa
                         }
                     }
                 }
-            }
+            }            
+
             *crsmat->wbloc(offd3 + (*it)[0], offd3 + (*it)[0],true) += tmpBlock[0][0];
             *crsmat->wbloc(offd3 + (*it)[0], offd3 + (*it)[1],true) += tmpBlock[0][1];
             *crsmat->wbloc(offd3 + (*it)[0], offd3 + (*it)[2],true) += tmpBlock[0][2];
@@ -2060,7 +2080,7 @@ void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMa
         }
 
     }
-//        cerr<<"TetrahedronFEMForceField<DataTypes>::addKToMatrix, final matrix = " << endl << *mat << endl;
+    //std::cout << this->getName() << " M = " << *mat << std::endl;
 }
 
 template<class DataTypes>
@@ -2237,12 +2257,12 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
     for(it = _indexedElements->begin(), el = 0 ; it != _indexedElements->end() ; ++it, ++el)
     {
         Vec<6,Real> vStrain;
+        Mat33 gradU;
 
         if (_computeVonMisesStress.getValue() == 2) {
             Mat44& shf = elemShapeFun[el];
 
             /// compute gradU
-            Mat33 gradU;
             for (size_t k = 0; k < 3; k++) {
                 for (size_t l = 0; l < 3; l++)  {
                     gradU[k][l] = 0.0;
@@ -2261,8 +2281,97 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
             vStrain[5] = strain[0][1];
         }
 
-        if (_computeVonMisesStress.getValue() == 1) { /// TODO: real corotational strain
-            //vStrain = elemStrains[el];
+        if (_computeVonMisesStress.getValue() == 1) {
+            Element index = *it;
+            size_t elementIndex = el;
+
+            // Rotation matrix (deformed and displaced Tetrahedron/world)
+            Transformation R_0_2;
+            Displacement D;
+            if (method == LARGE) {
+                computeRotationLarge( R_0_2, X, index[0],index[1],index[2]);
+
+                rotations[elementIndex].transpose(R_0_2);
+                //        serr<<"R_0_2 large : "<<R_0_2<<sendl;
+
+                // positions of the deformed and displaced Tetrahedron in its frame
+                helper::fixed_array<Coord,4> deforme;
+                for(int i=0; i<4; ++i)
+                    deforme[i] = R_0_2*X[index[i]];
+
+                deforme[1][0] -= deforme[0][0];
+                deforme[2][0] -= deforme[0][0];
+                deforme[2][1] -= deforme[0][1];
+                deforme[3] -= deforme[0];
+
+                // displacement
+                D[0] = 0;
+                D[1] = 0;
+                D[2] = 0;
+                D[3] = _rotatedInitialElements[elementIndex][1][0] - deforme[1][0];
+                D[4] = 0;
+                D[5] = 0;
+                D[6] = _rotatedInitialElements[elementIndex][2][0] - deforme[2][0];
+                D[7] = _rotatedInitialElements[elementIndex][2][1] - deforme[2][1];
+                D[8] = 0;
+                D[9] = _rotatedInitialElements[elementIndex][3][0] - deforme[3][0];
+                D[10] = _rotatedInitialElements[elementIndex][3][1] - deforme[3][1];
+                D[11] =_rotatedInitialElements[elementIndex][3][2] - deforme[3][2];
+            }
+
+            if (method == POLAR) {
+                Transformation A;
+                A[0] = X[index[1]]-X[index[0]];
+                A[1] = X[index[2]]-X[index[0]];
+                A[2] = X[index[3]]-X[index[0]];
+
+                helper::Decompose<Real>::polarDecomposition( A, R_0_2 );
+
+
+                rotations[elementIndex].transpose(R_0_2);
+                //        serr<<"R_0_2 large : "<<R_0_2<<sendl;
+
+                // positions of the deformed and displaced Tetrahedron in its frame
+                helper::fixed_array<Coord,4> deforme;
+                for(int i=0; i<4; ++i)
+                    deforme[i] = R_0_2*X[index[i]];
+
+                D[0] = _rotatedInitialElements[elementIndex][0][0] - deforme[0][0];
+                D[1] = _rotatedInitialElements[elementIndex][0][1] - deforme[0][1];
+                D[2] = _rotatedInitialElements[elementIndex][0][2] - deforme[0][2];
+                D[3] = _rotatedInitialElements[elementIndex][1][0] - deforme[1][0];
+                D[4] = _rotatedInitialElements[elementIndex][1][1] - deforme[1][1];
+                D[5] = _rotatedInitialElements[elementIndex][1][2] - deforme[1][2];
+                D[6] = _rotatedInitialElements[elementIndex][2][0] - deforme[2][0];
+                D[7] = _rotatedInitialElements[elementIndex][2][1] - deforme[2][1];
+                D[8] = _rotatedInitialElements[elementIndex][2][2] - deforme[2][2];
+                D[9] = _rotatedInitialElements[elementIndex][3][0] - deforme[3][0];
+                D[10] = _rotatedInitialElements[elementIndex][3][1] - deforme[3][1];
+                D[11] = _rotatedInitialElements[elementIndex][3][2] - deforme[3][2];
+            }
+
+            Mat44& shf = elemShapeFun[el];
+
+            /// compute gradU
+            for (size_t k = 0; k < 3; k++) {
+                for (size_t l = 0; l < 3; l++)  {
+                    gradU[k][l] = 0.0;
+                    for (size_t m = 0; m < 4; m++)
+                        gradU[k][l] += shf[l+1][m] * D[3*m+k];
+                }
+            }
+
+            Mat33 strain = 0.5*(gradU + gradU.transposed());
+
+            for (size_t i = 0; i < 3; i++)
+                vStrain[i] = strain[i][i];
+            vStrain[3] = strain[1][2];
+            vStrain[4] = strain[0][2];
+            vStrain[5] = strain[0][1];
+
+            //std::cout << "D= " << D << std::endl;
+            //std::cout << "vStrain= " << D << std::endl;
+
         }
 
         Real lambda=elemLambda[el];
@@ -2283,15 +2392,15 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
         for (size_t k = 0; k < 3; k++)
             s[k] += lambda*traceStrain;
 
-        //std::cout << "Stress: " << s << std::endl;
-
         helper::WriteAccessor<Data<helper::vector<Real> > > vM =  _vonMises;
         vM[el] = helper::rsqrt(s[0]*s[0] + s[1]*s[1] + s[2]*s[2] - s[0]*s[1] - s[1]*s[2] - s[2]*s[0] + 3*s[3]*s[3] + 3*s[4]*s[4] + 3*s[5]*s[5]);
+        if (vM[el] < 1e-10)
+            vM[el] = 0.0;
 
-        updateVonMisesStress=false;
-
-        //std::cout << "Mises: " << vM[el] << std::endl;
+        //std::cout << "VMStress: " << vM[el] << std::endl;
     }
+
+    updateVonMisesStress=false;
 }
 
 

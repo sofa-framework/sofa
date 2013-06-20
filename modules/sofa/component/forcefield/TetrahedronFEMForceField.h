@@ -281,6 +281,7 @@ public:
 #endif
 
     Data<std::string> _showStressColorMap;
+    Data<float> _showStressAlpha;
 
     helper::vector<Vec<6,Real> > elemDisplacements;
 
@@ -311,6 +312,7 @@ protected:
         , _showStressColorMapReal(sofa::core::objectmodel::New< visualmodel::ColorMap >())
 #endif
         , _showStressColorMap(initData(&_showStressColorMap,"showStressColorMap", "Color map used to show stress values"))
+        , _showStressAlpha(initData(&_showStressAlpha, 1.0f, "showStressAlpha", "Alpha for vonMises visualisation"))
     {
         data.initPtrData(this);
         this->addAlias(&_assembling, "assembling");
