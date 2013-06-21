@@ -45,12 +45,14 @@ void BaseMatrix::compress() {
 
 static inline void opVresize(defaulttype::BaseVector& vec, int n) { vec.resize(n); }
 template<class Real2> static inline void opVresize(Real2* vec, int n) { for (const Real2* end=vec+n; vec != end; ++vec) *vec = (Real2)0; }
-static inline double opVget(const defaulttype::BaseVector& vec, int i) { return (double)vec.element(i); }
-template<class Real2> static inline double opVget(const Real2* vec, int i) { return (double)vec[i]; }
-static inline void opVset(defaulttype::BaseVector& vec, int i, double v) { vec.set(i, v); }
-template<class Real2> static inline void opVset(Real2* vec, int i, double v) { vec[i] = (Real2)v; }
+static inline SReal opVget(const defaulttype::BaseVector& vec, int i) { return (SReal)vec.element(i); }
+template<class Real2> static inline SReal opVget(const Real2* vec, int i) { return (SReal)vec[i]; }
+static inline void opVset(defaulttype::BaseVector& vec, int i, SReal v) { vec.set(i, v); }
+template<class Real2> static inline void opVset(Real2* vec, int i, SReal v) { vec[i] = (Real2)v; }
 static inline void opVadd(defaulttype::BaseVector& vec, int i, double v) { vec.add(i, (SReal)v); }
+static inline void opVadd(defaulttype::BaseVector& vec, int i, float v) { vec.add(i, (SReal)v); }
 template<class Real2> static inline void opVadd(Real2* vec, int i, double v) { vec[i] += (Real2)v; }
+template<class Real2> static inline void opVadd(Real2* vec, int i, float v) { vec[i] += (Real2)v; }
 
 template <class Real, int NL, int NC, bool add, bool transpose, class M, class V1, class V2>
 struct BaseMatrixLinearOpMV_BlockDiagonal

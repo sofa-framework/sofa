@@ -118,26 +118,26 @@ void ArticulatedHierarchyBVHController::applyController(void)
             ArtVecIt itEnd = (*artCenterIt)->articulations.end();
             while (it != itEnd)
             {
-                std::vector< core::behavior::MechanicalState<sofa::defaulttype::Vec1dTypes>* > articulatedObjects;
+                std::vector< core::behavior::MechanicalState<sofa::defaulttype::Vec1Types>* > articulatedObjects;
 
                 sofa::simulation::Node* curNode = dynamic_cast<sofa::simulation::Node*>(this->getContext());
                 if (curNode)
-                    curNode->getTreeObjects<core::behavior::MechanicalState<sofa::defaulttype::Vec1dTypes>, std::vector< core::behavior::MechanicalState<sofa::defaulttype::Vec1dTypes>* > >(&articulatedObjects);
+                    curNode->getTreeObjects<core::behavior::MechanicalState<sofa::defaulttype::Vec1Types>, std::vector< core::behavior::MechanicalState<sofa::defaulttype::Vec1Types>* > >(&articulatedObjects);
 
                 if (!articulatedObjects.empty())
                 {
                     // Reference potential initial articulations value for interaction springs
                     // and Current articulation value at the coresponding artculation
 
-                    std::vector< core::behavior::MechanicalState<sofa::defaulttype::Vec1dTypes>* >::iterator articulatedObjIt = articulatedObjects.begin();
+                    std::vector< core::behavior::MechanicalState<sofa::defaulttype::Vec1Types>* >::iterator articulatedObjIt = articulatedObjects.begin();
                     //std::vector< core::behavior::MechanicalState<sofa::defaulttype::Vec1dTypes>* >::iterator articulatedObjItEnd = articulatedObjects.end();
 
                     //	while (articulatedObjIt != articulatedObjItEnd)
                     if ((*it)->translation.getValue())
                     {
                         double diffMotions = (*it)->motion[frame+1] - (*it)->motion[frame];
-                        helper::WriteAccessor<Data<sofa::defaulttype::Vec1dTypes::VecCoord> > x = *(*articulatedObjIt)->write(sofa::core::VecCoordId::position());
-                        helper::WriteAccessor<Data<sofa::defaulttype::Vec1dTypes::VecCoord> > xfree = *(*articulatedObjIt)->write(sofa::core::VecCoordId::freePosition());
+                        helper::WriteAccessor<Data<sofa::defaulttype::Vec1Types::VecCoord> > x = *(*articulatedObjIt)->write(sofa::core::VecCoordId::position());
+                        helper::WriteAccessor<Data<sofa::defaulttype::Vec1Types::VecCoord> > xfree = *(*articulatedObjIt)->write(sofa::core::VecCoordId::freePosition());
 
                         x[(*it)->articulationIndex.getValue()] = (*it)->motion[frame] + alpha*diffMotions;
                         xfree[(*it)->articulationIndex.getValue()] = (*it)->motion[frame] + alpha*diffMotions;
@@ -145,8 +145,8 @@ void ArticulatedHierarchyBVHController::applyController(void)
                     else
                     {
                         double diffMotions = (((*it)->motion[frame+1]/180.0)*3.14) - (((*it)->motion[frame]/180.0)*3.14);
-                        helper::WriteAccessor<Data<sofa::defaulttype::Vec1dTypes::VecCoord> > x = *(*articulatedObjIt)->write(sofa::core::VecCoordId::position());
-                        helper::WriteAccessor<Data<sofa::defaulttype::Vec1dTypes::VecCoord> > xfree = *(*articulatedObjIt)->write(sofa::core::VecCoordId::freePosition());
+                        helper::WriteAccessor<Data<sofa::defaulttype::Vec1Types::VecCoord> > x = *(*articulatedObjIt)->write(sofa::core::VecCoordId::position());
+                        helper::WriteAccessor<Data<sofa::defaulttype::Vec1Types::VecCoord> > xfree = *(*articulatedObjIt)->write(sofa::core::VecCoordId::freePosition());
                         x[(*it)->articulationIndex.getValue()] = (((*it)->motion[frame]/180.0)*3.14) + alpha*diffMotions;
                         xfree[(*it)->articulationIndex.getValue()] = (((*it)->motion[frame]/180.0)*3.14) + alpha*diffMotions;
                     }

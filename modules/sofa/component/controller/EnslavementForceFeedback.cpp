@@ -50,7 +50,7 @@ void EnslavementForceFeedback::init()
 {
     this->ForceFeedback::init();
 
-    mState = dynamic_cast<core::behavior::MechanicalState<Rigid3dTypes> *> (context->getMechanicalState());
+    mState = dynamic_cast<core::behavior::MechanicalState<Rigid3Types> *> (context->getMechanicalState());
     if (!mState)
         serr << "EnslavementForceFeedback has no binding MechanicalState" << sendl;
 

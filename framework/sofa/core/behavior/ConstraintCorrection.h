@@ -187,14 +187,17 @@ protected:
 
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_CORE)
-
+#ifndef SOFA_FLOAT
 extern template class SOFA_CORE_API ConstraintCorrection< sofa::defaulttype::Vec3dTypes >;
-extern template class SOFA_CORE_API ConstraintCorrection< sofa::defaulttype::Vec3fTypes >;
 extern template class SOFA_CORE_API ConstraintCorrection< sofa::defaulttype::Vec1dTypes >;
-extern template class SOFA_CORE_API ConstraintCorrection< sofa::defaulttype::Vec1fTypes >;
 extern template class SOFA_CORE_API ConstraintCorrection< sofa::defaulttype::Rigid3dTypes >;
-extern template class SOFA_CORE_API ConstraintCorrection< sofa::defaulttype::Rigid3fTypes >;
+#endif
 
+#ifndef SOFA_DOUBLE
+extern template class SOFA_CORE_API ConstraintCorrection< sofa::defaulttype::Vec1fTypes >;
+extern template class SOFA_CORE_API ConstraintCorrection< sofa::defaulttype::Vec3fTypes >;
+extern template class SOFA_CORE_API ConstraintCorrection< sofa::defaulttype::Rigid3fTypes >;
+#endif
 #endif
 
 } // namespace behavior

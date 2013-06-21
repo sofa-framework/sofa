@@ -35,6 +35,7 @@
 #include "../types/StrainTypes.h"
 #include <sofa/helper/decompose.h>
 
+
 namespace sofa
 {
 

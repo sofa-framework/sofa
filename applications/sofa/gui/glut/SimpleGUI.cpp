@@ -632,7 +632,7 @@ void SimpleGUI::DrawAxis(double xpos, double ypos, double zpos,
 // ---
 // ---
 // ---------------------------------------------------
-void SimpleGUI::DrawBox(double* minBBox, double* maxBBox, double r)
+void SimpleGUI::DrawBox(SReal* minBBox, SReal* maxBBox, double r)
 {
     //std::cout << "box = < " << minBBox[0] << ' ' << minBBox[1] << ' ' << minBBox[2] << " >-< " << maxBBox[0] << ' ' << maxBBox[1] << ' ' << maxBBox[2] << " >"<< std::endl;
     if (r==0.0)

@@ -42,7 +42,7 @@ namespace collision
 class FixParticlePerformerConfiguration
 {
 public:
-    void setStiffness(double s) {stiffness=s;}
+    void setStiffness(SReal s) {stiffness=s;}
 protected:
     SReal stiffness;
 };

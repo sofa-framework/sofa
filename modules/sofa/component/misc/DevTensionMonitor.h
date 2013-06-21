@@ -42,10 +42,10 @@ namespace misc
 {
 
 template <class TDataTypes>
-class DevTensionMonitor: public virtual DevMonitor<sofa::defaulttype::Vec1dTypes>
+class DevTensionMonitor: public virtual DevMonitor<sofa::defaulttype::Vec1Types>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(DevTensionMonitor,TDataTypes), SOFA_TEMPLATE(DevMonitor,sofa::defaulttype::Vec1dTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(DevTensionMonitor,TDataTypes), SOFA_TEMPLATE(DevMonitor,sofa::defaulttype::Vec1Types));
 
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;

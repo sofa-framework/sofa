@@ -37,6 +37,7 @@ namespace behavior
 
 using namespace sofa::defaulttype;
 
+#ifndef SOFA_FLOAT
 template class SOFA_CORE_API LMConstraint<Vec3dTypes,Vec3dTypes>;
 template class SOFA_CORE_API LMConstraint<Vec3dTypes,Vec2dTypes>;
 template class SOFA_CORE_API LMConstraint<Vec3dTypes,Vec1dTypes>;
@@ -66,7 +67,9 @@ template class SOFA_CORE_API LMConstraint<Rigid2dTypes,Vec2dTypes>;
 template class SOFA_CORE_API LMConstraint<Rigid2dTypes,Vec1dTypes>;
 template class SOFA_CORE_API LMConstraint<Rigid2dTypes,Rigid3dTypes>;
 template class SOFA_CORE_API LMConstraint<Rigid2dTypes,Rigid2dTypes>;
+#endif
 
+#ifndef SOFA_DOUBLE
 template class SOFA_CORE_API LMConstraint<Vec3fTypes,Vec3fTypes>;
 template class SOFA_CORE_API LMConstraint<Vec3fTypes,Vec2fTypes>;
 template class SOFA_CORE_API LMConstraint<Vec3fTypes,Vec1fTypes>;
@@ -96,10 +99,14 @@ template class SOFA_CORE_API LMConstraint<Rigid2fTypes,Vec2fTypes>;
 template class SOFA_CORE_API LMConstraint<Rigid2fTypes,Vec1fTypes>;
 template class SOFA_CORE_API LMConstraint<Rigid2fTypes,Rigid3fTypes>;
 template class SOFA_CORE_API LMConstraint<Rigid2fTypes,Rigid2fTypes>;
-
+#endif
 
 //Need the combinations
+#ifndef SOFA_FLOAT
+#ifndef SOFA_DOUBLE
 
+#endif
+#endif
 } // namespace behavior
 
 } // namespace core

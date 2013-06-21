@@ -51,9 +51,12 @@ SOFA_DECL_CLASS ( MeshGenerator );
 
 // Register in the Factory
 int MeshGeneratorClass = core::RegisterObject ( "Special case of mapping where HexahedronSetTopology is converted to QuadSetTopology" )
-        .add< MeshGenerator<Vec3dTypes> >()
-        ;
-
+#ifndef SOFA_FLOAT   
+	.add< MeshGenerator<Vec3dTypes> >();
+#endif
+#ifndef SOFA_DOUBLE
+	.add< MeshGenerator<Vec3fTypes> >();
+#endif
 
 } // namespace engine
 

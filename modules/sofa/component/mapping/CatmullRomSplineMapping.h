@@ -113,9 +113,14 @@ public:
 
 };
 
+#ifndef SOFA_FLOAT
 using sofa::defaulttype::Vec3dTypes;
+#endif
+
+#ifndef SOFA_DOUBLE
 using sofa::defaulttype::Vec3fTypes;
 using sofa::defaulttype::ExtVec3fTypes;
+#endif
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_CATMULLROMSPLINEMAPPING_CPP)
 #ifndef SOFA_FLOAT

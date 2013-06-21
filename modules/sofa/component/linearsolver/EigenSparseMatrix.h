@@ -475,9 +475,13 @@ private:
 
 };
 
+#ifndef SOFA_FLOAT
 template<> inline const char* EigenSparseMatrix<defaulttype::Vec3dTypes, defaulttype::Vec1dTypes >::Name() { return "EigenSparseMatrix3d1d"; }
-template<> inline const char* EigenSparseMatrix<defaulttype::Vec3fTypes, defaulttype::Vec1fTypes >::Name() { return "EigenSparseMatrix3f1f"; }
+#endif
 
+#ifndef SOFA_DOUBLE
+template<> inline const char* EigenSparseMatrix<defaulttype::Vec3fTypes, defaulttype::Vec1fTypes >::Name() { return "EigenSparseMatrix3f1f"; }
+#endif
 
 // max: much cleaner like this :)
 

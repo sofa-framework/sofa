@@ -545,9 +545,9 @@ void VisualModelImpl::applyUVTransformation()
     m_translationTex.setValue(TexCoord(0,0));
 }
 
-void VisualModelImpl::applyTranslation(const double dx, const double dy, const double dz)
+void VisualModelImpl::applyTranslation(const Real dx, const Real dy, const Real dz)
 {
-    Coord d((Real)dx,(Real)dy,(Real)dz);
+    Coord d(dx,dy,dz);
 
     Data< VecCoord >* d_x = this->write(core::VecCoordId::position());
     VecCoord &x = *d_x->beginEdit();
@@ -562,9 +562,9 @@ void VisualModelImpl::applyTranslation(const double dx, const double dy, const d
     updateVisual();
 }
 
-void VisualModelImpl::applyRotation(const double rx, const double ry, const double rz)
+void VisualModelImpl::applyRotation(const Real rx, const Real ry, const Real rz)
 {
-    Quaternion q = helper::Quater<SReal>::createQuaterFromEuler( Vec<3,SReal>(rx,ry,rz)*M_PI/180.0);
+    Quaternion q = helper::Quater<SReal>::createQuaterFromEuler( Vec<3,Real>(rx,ry,rz)*M_PI/180.0);
     applyRotation(q);
 }
 
@@ -583,16 +583,16 @@ void VisualModelImpl::applyRotation(const Quat q)
     updateVisual();
 }
 
-void VisualModelImpl::applyScale(const double sx, const double sy, const double sz)
+void VisualModelImpl::applyScale(const Real sx, const Real sy, const Real sz)
 {
     Data< VecCoord >* d_x = this->write(core::VecCoordId::position());
     VecCoord &x = *d_x->beginEdit();
 
     for (unsigned int i = 0; i < x.size(); i++)
     {
-		x[i][0] *= (Real) sx;
-		x[i][1] *= (Real) sy;
-		x[i][2] *= (Real) sz;
+		x[i][0] *=  sx;
+		x[i][1] *=  sy;
+		x[i][2] *=  sz;
     }
 
     d_x->endEdit();
@@ -600,24 +600,24 @@ void VisualModelImpl::applyScale(const double sx, const double sy, const double 
     updateVisual();
 }
 
-void VisualModelImpl::applyUVTranslation(const double dU, const double dV)
+void VisualModelImpl::applyUVTranslation(const Real dU, const Real dV)
 {
     VecTexCoord& vtexcoords = *(m_vtexcoords.beginEdit());
     for (unsigned int i = 0; i < vtexcoords.size(); i++)
     {
-		vtexcoords[i][0] += (Real) dU;
-		vtexcoords[i][1] += (Real) dV;
+		vtexcoords[i][0] += dU;
+		vtexcoords[i][1] += dV;
     }
     m_vtexcoords.endEdit();
 }
 
-void VisualModelImpl::applyUVScale(const double scaleU, const double scaleV)
+void VisualModelImpl::applyUVScale(const Real scaleU, const Real scaleV)
 {
     VecTexCoord& vtexcoords = *(m_vtexcoords.beginEdit());
     for (unsigned int i = 0; i < vtexcoords.size(); i++)
     {
-		vtexcoords[i][0] *= (Real) scaleU;
-		vtexcoords[i][1] *= (Real) scaleV;
+		vtexcoords[i][0] *= scaleU;
+		vtexcoords[i][1] *= scaleV;
     }
     m_vtexcoords.endEdit();
 }

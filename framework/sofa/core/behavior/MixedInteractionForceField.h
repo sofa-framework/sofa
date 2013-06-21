@@ -280,6 +280,7 @@ protected:
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_CORE)
+#ifndef SOFA_FLOAT
 extern template class SOFA_CORE_API MixedInteractionForceField<defaulttype::Vec1dTypes, defaulttype::Vec3dTypes>;
 extern template class SOFA_CORE_API MixedInteractionForceField<defaulttype::Vec1dTypes, defaulttype::Rigid3dTypes>;
 
@@ -292,7 +293,9 @@ extern template class SOFA_CORE_API MixedInteractionForceField<defaulttype::Vec3
 extern template class SOFA_CORE_API MixedInteractionForceField<defaulttype::Vec2dTypes, defaulttype::Rigid2dTypes>;
 extern template class SOFA_CORE_API MixedInteractionForceField<defaulttype::Rigid3dTypes, defaulttype::Vec3dTypes>;
 extern template class SOFA_CORE_API MixedInteractionForceField<defaulttype::Rigid2dTypes, defaulttype::Vec2dTypes>;
+#endif
 
+#ifndef SOFA_DOUBLE
 extern template class SOFA_CORE_API MixedInteractionForceField<defaulttype::Vec1fTypes, defaulttype::Vec3fTypes>;
 extern template class SOFA_CORE_API MixedInteractionForceField<defaulttype::Vec1fTypes, defaulttype::Rigid3fTypes>;
 
@@ -305,7 +308,10 @@ extern template class SOFA_CORE_API MixedInteractionForceField<defaulttype::Vec3
 extern template class SOFA_CORE_API MixedInteractionForceField<defaulttype::Vec2fTypes, defaulttype::Rigid2fTypes>;
 extern template class SOFA_CORE_API MixedInteractionForceField<defaulttype::Rigid3fTypes, defaulttype::Vec3fTypes>;
 extern template class SOFA_CORE_API MixedInteractionForceField<defaulttype::Rigid2fTypes, defaulttype::Vec2fTypes>;
+#endif
 
+#ifndef SOFA_DOUBLE
+#ifndef SOFA_FLOAT
 extern template class SOFA_CORE_API MixedInteractionForceField<defaulttype::Vec1dTypes, defaulttype::Vec3fTypes>;
 extern template class SOFA_CORE_API MixedInteractionForceField<defaulttype::Vec1fTypes, defaulttype::Vec3dTypes>;
 
@@ -331,7 +337,8 @@ extern template class SOFA_CORE_API MixedInteractionForceField<defaulttype::Vec2
 extern template class SOFA_CORE_API MixedInteractionForceField<defaulttype::Rigid3fTypes, defaulttype::Vec3dTypes>;
 extern template class SOFA_CORE_API MixedInteractionForceField<defaulttype::Rigid2fTypes, defaulttype::Vec2dTypes>;
 #endif
-
+#endif
+#endif
 } // namespace behavior
 
 } // namespace core

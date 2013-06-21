@@ -258,7 +258,7 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::applyJT( typename In:
         for ( unsigned int i=0; i<map.size(); i++ )
         {
             //get velocity of the DoF
-            const defaulttype::Rigid3dTypes::DPos v = defaulttype::Rigid3dTypes::getDPos(in[i]);
+            const defaulttype::Rigid3Types::DPos v = defaulttype::Rigid3Types::getDPos(in[i]);
 
             //get its coordinated wrt to the associated tetra with given index
             const OutReal fx = ( OutReal ) map[i].baryCoords[0];
@@ -303,7 +303,7 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::applyJT( typename In:
         for (it=indices.begin(); it!=indices.end(); it++)
         {
             const int i=(int)(*it);
-            const defaulttype::Rigid3dTypes::DPos v = defaulttype::Rigid3dTypes::getDPos(in[i]);
+            const defaulttype::Rigid3Types::DPos v = defaulttype::Rigid3Types::getDPos(in[i]);
             const OutReal fx = ( OutReal ) map[i].baryCoords[0];
             const OutReal fy = ( OutReal ) map[i].baryCoords[1];
             const OutReal fz = ( OutReal ) map[i].baryCoords[2];

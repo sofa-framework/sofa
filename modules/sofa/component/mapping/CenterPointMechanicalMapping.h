@@ -90,9 +90,14 @@ protected:
     core::topology::BaseMeshTopology* outputTopo;
 };
 
+#ifndef SOFA_FLOAT
 using sofa::defaulttype::Vec3dTypes;
+#endif
+
+#ifndef SOFA_DOUBLE
 using sofa::defaulttype::Vec3fTypes;
 using sofa::defaulttype::ExtVec3fTypes;
+#endif
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_CENTERPOINTMECHANICALMAPPING_CPP)  //// ATTENTION PB COMPIL WIN3Z
 #ifndef SOFA_FLOAT

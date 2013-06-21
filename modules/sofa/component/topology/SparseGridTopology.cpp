@@ -613,11 +613,9 @@ void SparseGridTopology::updateMesh()
     //Creating if needed collision models and visual models
     // 	    using sofa::simulation::Node;
 
-    sofa::helper::vector< sofa::core::topology::BaseMeshTopology * > list_meshf;
-    sofa::helper::vector< Data< Vec3fTypes::VecCoord >* > list_Xf;
-    sofa::helper::vector< sofa::core::topology::BaseMeshTopology * > list_meshd;
-    sofa::helper::vector< Data< Vec3dTypes::VecCoord >* > list_Xd;
-
+    sofa::helper::vector< sofa::core::topology::BaseMeshTopology * > list_mesh;
+    sofa::helper::vector< Data< Vec3Types::VecCoord >* > list_X;
+   
     //Get Collision Model
     sofa::helper::vector< sofa::core::topology::BaseMeshTopology* > m_temp;
     this->getContext()->get< sofa::core::topology::BaseMeshTopology >(&m_temp, sofa::core::objectmodel::BaseContext::SearchDown);
@@ -631,26 +629,16 @@ void SparseGridTopology::updateMesh()
     // sout << m_temp << " " <<  (m_temp != this) << " " << m_temp->getNbTriangles()  << " !!!! test to enter "<<sendl;
     if ( collisionTopology != NULL && collisionTopology->getNbTriangles() == 0)
     {
-#ifndef SOFA_FLOAT
-        core::behavior::MechanicalState< Vec3dTypes > *mecha_tempd = collisionTopology->getContext()->get< core::behavior::MechanicalState< Vec3dTypes > >();
-        if (mecha_tempd != NULL && mecha_tempd->getX()->size() < 2) //a triangle mesh has minimum 3elements
-        {
-            list_meshd.push_back(collisionTopology);
-            list_Xd.push_back(mecha_tempd->write(core::VecCoordId::position()));
-        }
-#endif
-#ifndef SOFA_DOUBLE
-        core::behavior::MechanicalState< Vec3fTypes > *mecha_tempf = collisionTopology->getContext()->get< core::behavior::MechanicalState< Vec3fTypes > >();
+        core::behavior::MechanicalState< Vec3Types > *mecha_tempf = collisionTopology->getContext()->get< core::behavior::MechanicalState< Vec3Types > >();
         if (mecha_tempf != NULL && mecha_tempf->getX()->size() < 2) //a triangle mesh has minimum 3elements
         {
 
-            list_meshf.push_back(collisionTopology);
-            list_Xf.push_back(mecha_tempf->write(core::VecCoordId::position()));
+            list_mesh.push_back(collisionTopology);
+            list_X.push_back(mecha_tempf->write(core::VecCoordId::position()));
         }
-#endif
     }
 
-    if (list_meshf.empty() && list_meshd.empty() )
+    if (list_mesh.empty())
         return;				 //No Marching Cube to run
 
     //Configuration of the Marching Cubes algorithm
@@ -662,10 +650,8 @@ void SparseGridTopology::updateMesh()
     marchingCubes.setStep(marchingCubeStep.getValue());
     marchingCubes.setConvolutionSize(convolutionSize.getValue()); //apply Smoothing if convolutionSize > 0
 
-    if (! list_meshf.empty())
-        constructCollisionModels(list_meshf, list_Xf);
-    else
-        constructCollisionModels(list_meshd, list_Xd);
+    if (! list_mesh.empty())
+        constructCollisionModels(list_mesh, list_X);
 }
 
 

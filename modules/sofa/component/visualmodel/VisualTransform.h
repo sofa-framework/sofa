@@ -45,7 +45,7 @@ class SOFA_BASE_VISUAL_API VisualTransform : public sofa::core::visual::VisualMo
 public:
     SOFA_CLASS(VisualTransform,sofa::core::visual::VisualModel);
 
-    typedef defaulttype::Rigid3dTypes::Coord Coord;
+    typedef defaulttype::Rigid3Types::Coord Coord;
 
 protected:
     VisualTransform();

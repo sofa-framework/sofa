@@ -171,6 +171,7 @@ protected:
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_CORE)
+#ifndef SOFA_FLOAT
 extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec3dTypes,defaulttype::Vec3dTypes>;
 extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec3dTypes,defaulttype::Vec2dTypes>;
 extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec3dTypes,defaulttype::Vec1dTypes>;
@@ -200,7 +201,9 @@ extern template class SOFA_CORE_API LMConstraint<defaulttype::Rigid2dTypes,defau
 extern template class SOFA_CORE_API LMConstraint<defaulttype::Rigid2dTypes,defaulttype::Vec1dTypes>;
 extern template class SOFA_CORE_API LMConstraint<defaulttype::Rigid2dTypes,defaulttype::Rigid3dTypes>;
 extern template class SOFA_CORE_API LMConstraint<defaulttype::Rigid2dTypes,defaulttype::Rigid2dTypes>;
+#endif
 
+#ifndef SOFA_DOUBLE
 extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec3fTypes,defaulttype::Vec3fTypes>;
 extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec3fTypes,defaulttype::Vec2fTypes>;
 extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec3fTypes,defaulttype::Vec1fTypes>;
@@ -230,6 +233,7 @@ extern template class SOFA_CORE_API LMConstraint<defaulttype::Rigid2fTypes,defau
 extern template class SOFA_CORE_API LMConstraint<defaulttype::Rigid2fTypes,defaulttype::Vec1fTypes>;
 extern template class SOFA_CORE_API LMConstraint<defaulttype::Rigid2fTypes,defaulttype::Rigid3fTypes>;
 extern template class SOFA_CORE_API LMConstraint<defaulttype::Rigid2fTypes,defaulttype::Rigid2fTypes>;
+#endif
 #endif
 
 } // namespace behavior

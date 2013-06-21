@@ -34,19 +34,21 @@ namespace behavior
 {
 
 using namespace sofa::defaulttype;
-
+#ifndef SOFA_FLOAT
 template class SOFA_CORE_API Constraint<Vec3dTypes>;
 template class SOFA_CORE_API Constraint<Vec2dTypes>;
 template class SOFA_CORE_API Constraint<Vec1dTypes>;
 template class SOFA_CORE_API Constraint<Rigid3dTypes>;
 template class SOFA_CORE_API Constraint<Rigid2dTypes>;
+#endif
 
+#ifndef SOFA_DOUBLE
 template class SOFA_CORE_API Constraint<Vec3fTypes>;
 template class SOFA_CORE_API Constraint<Vec2fTypes>;
 template class SOFA_CORE_API Constraint<Vec1fTypes>;
 template class SOFA_CORE_API Constraint<Rigid3fTypes>;
 template class SOFA_CORE_API Constraint<Rigid2fTypes>;
-
+#endif
 } // namespace behavior
 
 } // namespace core

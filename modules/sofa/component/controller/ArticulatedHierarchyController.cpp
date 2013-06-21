@@ -374,24 +374,24 @@ void ArticulatedHierarchyController::applyController(void)
                     {
                         if ((*it)->articulationIndex.getValue() == articulationIndex)
                         {
-                            std::vector< MechanicalState<sofa::defaulttype::Vec1dTypes>* > articulatedObjects;
+                            std::vector< MechanicalState<sofa::defaulttype::Vec1Types>* > articulatedObjects;
 
                             sofa::simulation::Node* curNode = dynamic_cast<sofa::simulation::Node*>(this->getContext());
                             if (curNode)
-                                curNode->getTreeObjects<MechanicalState<sofa::defaulttype::Vec1dTypes>, std::vector< MechanicalState<sofa::defaulttype::Vec1dTypes>* > >(&articulatedObjects);
+                                curNode->getTreeObjects<MechanicalState<sofa::defaulttype::Vec1Types>, std::vector< MechanicalState<sofa::defaulttype::Vec1Types>* > >(&articulatedObjects);
 
                             if (!articulatedObjects.empty())
                             {
                                 // Reference potential initial articulations value for interaction springs
                                 // and Current articulation value at the coresponding artculation
 
-                                std::vector< MechanicalState<sofa::defaulttype::Vec1dTypes>* >::iterator articulatedObjIt = articulatedObjects.begin();
+                                std::vector< MechanicalState<sofa::defaulttype::Vec1Types>* >::iterator articulatedObjIt = articulatedObjects.begin();
 //								std::vector< MechanicalState<sofa::defaulttype::Vec1dTypes>* >::iterator articulatedObjItEnd = articulatedObjects.end();
 
                                 //	while (articulatedObjIt != articulatedObjItEnd)
                                 {
-                                    helper::WriteAccessor<Data<sofa::defaulttype::Vec1dTypes::VecCoord> > x = *(*articulatedObjIt)->write(sofa::core::VecCoordId::position());
-                                    helper::WriteAccessor<Data<sofa::defaulttype::Vec1dTypes::VecCoord> > xfree = *(*articulatedObjIt)->write(sofa::core::VecCoordId::freePosition());
+                                    helper::WriteAccessor<Data<sofa::defaulttype::Vec1Types::VecCoord> > x = *(*articulatedObjIt)->write(sofa::core::VecCoordId::position());
+                                    helper::WriteAccessor<Data<sofa::defaulttype::Vec1Types::VecCoord> > xfree = *(*articulatedObjIt)->write(sofa::core::VecCoordId::freePosition());
                                     x[(*it)->articulationIndex.getValue()].x() += signFactor * distributedAngleDelta;
                                     xfree[(*it)->articulationIndex.getValue()].x() += signFactor * distributedAngleDelta;
                                     ++articulatedObjIt;

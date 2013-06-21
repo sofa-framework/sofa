@@ -135,10 +135,15 @@ public:
 
 };
 
+#ifndef SOFA_FLOAT
 using sofa::defaulttype::Vec3dTypes;
-using sofa::defaulttype::Vec3fTypes;
 using sofa::defaulttype::Rigid3dTypes;
+#endif
+
+#ifndef SOFA_DOUBLE
+using sofa::defaulttype::Vec3fTypes;
 using sofa::defaulttype::Rigid3fTypes;
+#endif
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPINGRIGID_CPP)
 #ifndef SOFA_FLOAT

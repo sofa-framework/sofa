@@ -134,7 +134,7 @@ bool MassSpringLoader::load(const char *filename)
                 fixed = true;
             }
             addMass((SReal)px,(SReal)py,(SReal)pz,(SReal)vx,(SReal)vy,(SReal)vz,(SReal)mass,(SReal)elastic,fixed,surface);
-            masses.push_back(Vector3(px,py,pz));
+            masses.push_back(Vector3((SReal)px,(SReal)py,(SReal)pz));
         }
         else if (!strcmp(cmd,"lspg"))	// linear springs connector
         {

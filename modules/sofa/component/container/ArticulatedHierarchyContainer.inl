@@ -227,7 +227,7 @@ void ArticulatedHierarchyContainer::init ()
 
         buildCenterArticulationsTree(joint, 0, "Root", articulationCenters.get());
 
-        component::container::MechanicalObject<Vec1dTypes>* mm1 = dynamic_cast<component::container::MechanicalObject<Vec1dTypes>*>(context->getMechanicalState());
+        component::container::MechanicalObject<Vec1Types>* mm1 = dynamic_cast<component::container::MechanicalObject<Vec1Types>*>(context->getMechanicalState());
         mm1->resize(id);
 
         context = (context->child.begin())->get();

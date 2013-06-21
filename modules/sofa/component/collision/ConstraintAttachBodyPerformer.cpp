@@ -49,7 +49,7 @@ namespace collision
 //      template class SOFA_USER_INTERACTION_API  ConstraintAttachBodyPerformer<defaulttype::Rigid3fTypes>;
 //#endif
 //#ifndef SOFA_FLOAT
-template class SOFA_CONSTRAINT_API  ConstraintAttachBodyPerformer<defaulttype::Vec3dTypes>;
+template class SOFA_CONSTRAINT_API  ConstraintAttachBodyPerformer<defaulttype::Vec3Types>;
 //      template class SOFA_USER_INTERACTION_API  ConstraintAttachBodyPerformer<defaulttype::Rigid3dTypes>;
 //#endif
 
@@ -87,7 +87,7 @@ template class SOFA_CONSTRAINT_API  ConstraintAttachBodyPerformer<defaulttype::V
 
 //#endif
 //#ifndef SOFA_FLOAT
-helper::Creator<InteractionPerformer::InteractionPerformerFactory, ConstraintAttachBodyPerformer<defaulttype::Vec3dTypes> >  ConstraintAttachBodyPerformerVec3dClass("ConstraintAttachBody",true);
+helper::Creator<InteractionPerformer::InteractionPerformerFactory, ConstraintAttachBodyPerformer<defaulttype::Vec3Types> >  ConstraintAttachBodyPerformerVec3dClass("ConstraintAttachBody",true);
 //      helper::Creator<InteractionPerformer::InteractionPerformerFactory, ConstraintAttachBodyPerformer<defaulttype::Rigid3dTypes> >  ConstraintAttachBodyPerformerRigid3dClass("ConstraintAttachBody",true);
 
 /*      template <>

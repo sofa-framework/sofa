@@ -95,8 +95,8 @@ public:
         Real J = U1*U2*U3;
         Real Jm1 = J-1;
         Real squareU[3] = { U1*U1, U2*U2, U3*U3 };
-        return C1Vol*((squareU[0]+squareU[1]+squareU[2])*pow(J,-2.0/3.0)-(Real)3.) +
-                C2Vol*((squareU[0]*squareU[1]+squareU[1]*squareU[2]+squareU[2]*squareU[0])*pow(J,-4.0/3.0)-(Real)3.) +
+        return C1Vol*((squareU[0]+squareU[1]+squareU[2])*pow(J,static_cast<Real>(-2.0/3.0))-(Real)3.) +
+                C2Vol*((squareU[0]*squareU[1]+squareU[1]*squareU[2]+squareU[2]*squareU[0])*pow(J,static_cast<Real>(-4.0/3.0))-(Real)3.) +
                 0.5*bulkVol*Jm1*Jm1;
     }
 

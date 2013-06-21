@@ -37,46 +37,46 @@ namespace core
 using namespace sofa::defaulttype;
 using namespace core::behavior;
 
-
+#ifndef SOFA_FLOAT
+#ifndef SOFA_DOUBLE
 template class Multi2Mapping< Vec3dTypes, Vec3fTypes, Vec3dTypes >;
 template class Multi2Mapping< Vec3dTypes, Vec3fTypes, Vec3fTypes >;
-
-template class Multi2Mapping< Vec3dTypes, Rigid3dTypes, Vec3dTypes >;
 template class Multi2Mapping< Vec3dTypes, Rigid3fTypes, Vec3dTypes >;
-
 template class Multi2Mapping< Vec3dTypes, Rigid3dTypes, Vec3fTypes >;
 template class Multi2Mapping< Vec3dTypes, Rigid3fTypes, Vec3fTypes >;
-
 template class Multi2Mapping< Vec3fTypes, Rigid3dTypes, Vec3dTypes >;
 template class Multi2Mapping< Vec3fTypes, Rigid3fTypes, Vec3dTypes >;
-
 template class Multi2Mapping< Vec3fTypes, Rigid3dTypes, Vec3fTypes >;
-template class Multi2Mapping< Vec3fTypes, Rigid3fTypes, Vec3fTypes >;
-
 template class Multi2Mapping< Vec3dTypes, Vec3fTypes, Rigid3dTypes >;
 template class Multi2Mapping< Vec3dTypes, Vec3fTypes, Rigid3fTypes >;
-
 template class Multi2Mapping< Vec3dTypes, Rigid3dTypes, Rigid3dTypes >;
 template class Multi2Mapping< Vec3dTypes, Rigid3fTypes, Rigid3dTypes >;
-
 template class Multi2Mapping< Vec3dTypes, Rigid3dTypes, Rigid3fTypes >;
 template class Multi2Mapping< Vec3dTypes, Rigid3fTypes, Rigid3fTypes >;
-
 template class Multi2Mapping< Vec3fTypes, Rigid3dTypes, Rigid3dTypes >;
 template class Multi2Mapping< Vec3fTypes, Rigid3fTypes, Rigid3dTypes >;
-
 template class Multi2Mapping< Vec3fTypes, Rigid3dTypes, Rigid3fTypes >;
-template class Multi2Mapping< Vec3fTypes, Rigid3fTypes, Rigid3fTypes >;
-
-template class Multi2Mapping< Vec1dTypes, Rigid3dTypes, Rigid3dTypes >;
-template class Multi2Mapping< Vec1fTypes, Rigid3fTypes, Rigid3fTypes >;
-
 template class Multi2Mapping< Vec1fTypes, Rigid3fTypes, Rigid3dTypes >;
 template class Multi2Mapping< Vec1fTypes, Rigid3dTypes, Rigid3dTypes >;
 template class Multi2Mapping< Vec1dTypes, Rigid3fTypes, Rigid3dTypes >;
 template class Multi2Mapping< Vec1fTypes, Rigid3dTypes, Rigid3fTypes >;
 template class Multi2Mapping< Vec1dTypes, Rigid3fTypes, Rigid3fTypes >;
 template class Multi2Mapping< Vec1dTypes, Rigid3dTypes, Rigid3fTypes >;
+#endif
+#endif
+
+#ifndef SOFA_FLOAT
+template class Multi2Mapping< Vec1dTypes, Rigid3dTypes, Rigid3dTypes >;
+template class Multi2Mapping< Vec3dTypes, Rigid3dTypes, Vec3dTypes >;
+template class Multi2Mapping< Vec3dTypes, Rigid3dTypes, Rigid3dTypes >;
+#endif
+
+#ifndef SOFA_DOUBLE
+template class Multi2Mapping< Vec3fTypes, Rigid3fTypes, Rigid3fTypes >;
+template class Multi2Mapping< Vec3fTypes, Rigid3fTypes, Vec3fTypes >;
+template class Multi2Mapping< Vec1fTypes, Rigid3fTypes, Rigid3fTypes >;
+#endif
+
 }
 
 }

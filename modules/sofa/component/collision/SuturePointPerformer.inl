@@ -81,7 +81,7 @@ void SuturePointPerformer<DataTypes>::start()
         sofa::component::topology::TriangleSetTopologyContainer* triangleContainer;
         CollisionModel->getContext()->get (triangleContainer);
 
-        sofa::component::container::MechanicalObject <defaulttype::Vec3dTypes>* MechanicalObject;
+        sofa::component::container::MechanicalObject <defaulttype::Vec3Types>* MechanicalObject;
         CollisionModel->getContext()->get (MechanicalObject,  sofa::core::objectmodel::BaseContext::SearchRoot);
 
         CollisionModel->getContext()->get (FixObject, sofa::core::objectmodel::BaseContext::SearchRoot);

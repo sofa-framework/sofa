@@ -102,10 +102,15 @@ public:
     void draw(const core::visual::VisualParams* vparams);
 };
 
+#ifndef SOFA_FLOAT
 using sofa::defaulttype::Vec3dTypes;
-using sofa::defaulttype::Vec3fTypes;
 using sofa::defaulttype::Vec2dTypes;
+#endif
+
+#ifndef SOFA_DOUBLE
+using sofa::defaulttype::Vec3fTypes;
 using sofa::defaulttype::Vec2fTypes;
+#endif
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_PARTICLESREPULSIONFORCEFIELD_CPP)
 

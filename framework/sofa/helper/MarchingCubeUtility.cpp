@@ -417,9 +417,9 @@ void MarchingCubeUtility::vertexInterp ( Vector3 &p, const float isolevel,
     p = p1 + ( p2 - p1 ) * mu;
     p = ( ( p + Vector3 ( 1.0f, 1.0f, 1.0f ) ) *0.5f ).linearProduct ( dataVoxelSize.linearProduct ( dataResolution ) ) + dataVoxelSize/2.0;
     p += verticesTranslation;
-    p[0] = ( int ) helper::round( p[0]*PRECISION ) /PRECISION;
-    p[1] = ( int ) helper::round( p[1]*PRECISION ) /PRECISION;
-    p[2] = ( int ) helper::round( p[2]*PRECISION ) /PRECISION;
+    p[0] = ( int ) helper::round( p[0] * (SReal)PRECISION ) / (SReal)PRECISION;
+    p[1] = ( int ) helper::round( p[1] * (SReal)PRECISION ) / (SReal)PRECISION;
+    p[2] = ( int ) helper::round( p[2] * (SReal)PRECISION ) / (SReal)PRECISION;
 }
 
 
@@ -819,7 +819,7 @@ void MarchingCubeUtility::findSeeds ( vector<Vec3i>& seeds, const float isoValue
 void MarchingCubeUtility::findSeedsFromRealCoords ( vector<Vec3i>& mCubeCoords, const vector<Vector3>& realCoords ) const
 {
     mCubeCoords.clear();
-    Vector3 gridSize = Vector3 ( 1.0 / dataVoxelSize[0]*cubeStep, 1.0 / dataVoxelSize[1]*cubeStep, 1.0 / dataVoxelSize[2]*cubeStep );
+    Vector3 gridSize = Vector3 ( (SReal) 1.0 / dataVoxelSize[0]*cubeStep, (SReal) 1.0 / dataVoxelSize[1]*cubeStep, (SReal) 1.0 / dataVoxelSize[2]*cubeStep );
 
     for ( vector<Vector3>::const_iterator it = realCoords.begin(); it != realCoords.end(); it++ )
     {

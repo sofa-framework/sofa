@@ -446,7 +446,7 @@ template<> inline const char* ExtVec6dTypes::Name() { return "ExtVec6d"; }
 
 #endif
 
-#ifndef SOFA_DOUBLE
+/*#ifndef SOFA_DOUBLE*/
 
 /// 3f DOFs, single precision
 typedef StdVectorTypes<Vec3f,Vec3f,float> Vec3fTypes;
@@ -476,7 +476,7 @@ template<> inline const char* Vec6fTypes::Name() { return "Vec6f"; }
 typedef ExtVectorTypes<Vec6f,Vec6f,float> ExtVec6fTypes;
 template<> inline const char* ExtVec6fTypes::Name() { return "ExtVec6f"; }
 
-#endif
+//#endif
 
 
 

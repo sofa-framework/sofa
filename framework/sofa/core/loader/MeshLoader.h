@@ -77,9 +77,9 @@ public:
 
     /// @name Initial transformations accessors.
     /// @{
-    void setTranslation(double dx, double dy, double dz) {translation.setValue(Vector3(dx,dy,dz));}
-    void setRotation(double rx, double ry, double rz) {rotation.setValue(Vector3(rx,ry,rz));}
-    void setScale(double sx, double sy, double sz) {scale.setValue(Vector3(sx,sy,sz));}
+    void setTranslation(SReal dx, SReal dy, SReal dz) {translation.setValue(Vector3(dx,dy,dz));}
+    void setRotation(SReal rx, SReal ry, SReal rz) {rotation.setValue(Vector3(rx,ry,rz));}
+    void setScale(SReal sx, SReal sy, SReal sz) {scale.setValue(Vector3(sx,sy,sz));}
 
     virtual Vector3 getTranslation() const {return translation.getValue();}
     virtual Vector3 getRotation() const {return rotation.getValue();}

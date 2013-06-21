@@ -45,10 +45,10 @@ namespace component
 namespace misc
 {
 
-class DevMonitorManager : public DevMonitor<sofa::defaulttype::Vec3dTypes>
+class DevMonitorManager : public DevMonitor<sofa::defaulttype::Vec3Types>
 {
 public:
-    SOFA_CLASS(DevMonitorManager, SOFA_TEMPLATE(DevMonitor,sofa::defaulttype::Vec3dTypes));
+    SOFA_CLASS(DevMonitorManager, SOFA_TEMPLATE(DevMonitor,sofa::defaulttype::Vec3Types));
 protected:
     DevMonitorManager();
     virtual ~DevMonitorManager();

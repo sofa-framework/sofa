@@ -62,7 +62,7 @@ protected:
     Data<double>	stiffness;
     Data<double>	angular_stiffness;
 
-    core::behavior::MechanicalState<defaulttype::Rigid3dTypes> *mState; ///< The haptic interface try to follow this mechanical state.
+    core::behavior::MechanicalState<defaulttype::Rigid3Types> *mState; ///< The haptic interface try to follow this mechanical state.
     sofa::helper::vector<core::CollisionModel*> collisionModels;
 };
 

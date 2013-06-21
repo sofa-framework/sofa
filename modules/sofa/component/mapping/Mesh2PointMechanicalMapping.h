@@ -86,15 +86,19 @@ protected:
     core::topology::BaseMeshTopology* outputTopo;
 };
 
-
+#ifndef SOFA_FLOAT
 using sofa::defaulttype::Vec3dTypes;
+#endif
+
+#ifndef SOFA_DOUBLE
 using sofa::defaulttype::Vec3fTypes;
 using sofa::defaulttype::ExtVec3fTypes;
+#endif
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_MESH2POINTMECHANICALMAPPING_CPP)  //// ATTENTION PB COMPIL WIN3Z
 #ifndef SOFA_FLOAT
 extern template class SOFA_TOPOLOGY_MAPPING_API Mesh2PointMechanicalMapping< Vec3dTypes, Vec3dTypes >;
-extern template class SOFA_TOPOLOGY_MAPPING_API Mesh2PointMechanicalMapping< Vec3dTypes, ExtVec3fTypes >;
+extern template class SOFA_TOPOLOGY_MAPPING_API Mesh2PointMechanicalMapping< Vec3dTypes, ExtVec3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
 extern template class SOFA_TOPOLOGY_MAPPING_API Mesh2PointMechanicalMapping< Vec3fTypes, Vec3fTypes >;
@@ -105,6 +109,8 @@ extern template class SOFA_TOPOLOGY_MAPPING_API Mesh2PointMechanicalMapping< Vec
 #ifndef SOFA_DOUBLE
 extern template class SOFA_TOPOLOGY_MAPPING_API Mesh2PointMechanicalMapping< Vec3dTypes, Vec3fTypes >;
 extern template class SOFA_TOPOLOGY_MAPPING_API Mesh2PointMechanicalMapping< Vec3fTypes, Vec3dTypes >;
+extern template class SOFA_TOPOLOGY_MAPPING_API Mesh2PointMechanicalMapping< Vec3fTypes, ExtVec3dTypes >;
+extern template class SOFA_TOPOLOGY_MAPPING_API Mesh2PointMechanicalMapping< Vec3dTypes, ExtVec3fTypes >;
 #endif
 #endif
 #endif

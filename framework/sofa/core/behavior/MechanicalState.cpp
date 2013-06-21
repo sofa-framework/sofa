@@ -36,22 +36,25 @@ namespace behavior
 
 using namespace sofa::defaulttype;
 
+#ifndef SOFA_FLOAT
 template class SOFA_CORE_API MechanicalState<Vec3dTypes>;
 template class SOFA_CORE_API MechanicalState<Vec2dTypes>;
 template class SOFA_CORE_API MechanicalState<Vec1dTypes>;
 template class SOFA_CORE_API MechanicalState<Vec6dTypes>;
 template class SOFA_CORE_API MechanicalState<Rigid3dTypes>;
 template class SOFA_CORE_API MechanicalState<Rigid2dTypes>;
+template class SOFA_CORE_API MechanicalState<ExtVec3dTypes>;
+#endif
 
+#ifndef SOFA_DOUBLE
 template class SOFA_CORE_API MechanicalState<Vec3fTypes>;
 template class SOFA_CORE_API MechanicalState<Vec2fTypes>;
 template class SOFA_CORE_API MechanicalState<Vec1fTypes>;
 template class SOFA_CORE_API MechanicalState<Vec6fTypes>;
 template class SOFA_CORE_API MechanicalState<Rigid3fTypes>;
 template class SOFA_CORE_API MechanicalState<Rigid2fTypes>;
-
-template class SOFA_CORE_API MechanicalState<ExtVec3dTypes>;
 template class SOFA_CORE_API MechanicalState<ExtVec3fTypes>;
+#endif
 
 } // namespace behavior
 

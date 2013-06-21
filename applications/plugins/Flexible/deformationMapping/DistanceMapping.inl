@@ -214,7 +214,7 @@ void DistanceMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
     helper::ReadAccessor< Data<InVecCoord > > targetPositions(f_targetPositions);
     helper::ReadAccessor< Data<vector<unsigned> > > indices(f_indices);
 
-    vector< Vec3d > points;
+	vector< Vector3 > points;
 
     for(unsigned i=0; i<indices.size(); i++ )
     {
