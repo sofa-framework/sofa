@@ -198,7 +198,7 @@ public:
         return nTCol;
     }
 
-    Real element(int i, int j) const
+    SReal element(int i, int j) const
     {
         int bi = i / BSIZE; i = i % BSIZE;
         int bj = j / BSIZE; j = j % BSIZE;
@@ -579,7 +579,7 @@ public:
         return nTCol;
     }
 
-    Real element(int i, int j) const
+    SReal element(int i, int j) const
     {
         int bi = i / BSIZE; i = i % BSIZE;
         int bj = j / BSIZE; j = j % BSIZE;

@@ -414,7 +414,7 @@ public:
             return wbloc(i);
     }
 
-    Real element(int i, int j) const
+    SReal element(int i, int j) const
     {
         int bi=0, bj=0; traits::split_row_index(i, bi); traits::split_col_index(j, bj);
         if (i != j) return 0;
