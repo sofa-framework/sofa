@@ -15,7 +15,7 @@ bool TIntrSphereOBB<TDataTypes,TDataTypes2>::Find(){
 
     _pt_on_second = mBox->center();
     _pt_on_first = _sph->center();
-    Vec<3,Real> centeredPt = _pt_on_first - _pt_on_second;
+    const Vec<3,Real> centeredPt = _pt_on_first - _pt_on_second;
 
     //projecting the center of the sphere on the OBB
     Real coord_i;
@@ -35,15 +35,44 @@ bool TIntrSphereOBB<TDataTypes,TDataTypes2>::Find(){
         _pt_on_second += coord_i * mBox->axis(i);
     }
 
-    //The normal response which _sep_axis have the same direction than the one which goes from the sphere center to the OBB contact point.
-    //If the sphere and the OBB are colliding
-    _sep_axis = _pt_on_second - _pt_on_first;
-    IntrUtil<Real>::normalize(_sep_axis);
+    if(_is_colliding){//need to to replace the obb contact point on its surface when the sphere center is in the OBB
+        int num_axis = 0;
+        Real alpha = mBox->axis(0) * centeredPt/mBox->extent(0);
+        for(int i = 1 ; i < 3 ; ++i){
+            double temp = mBox->axis(i) * centeredPt/mBox->extent(i);
+            if(fabs(temp) > fabs(alpha)){
+                alpha = temp;
+                num_axis = i;
+            }
+        }
 
-    _pt_on_first += _sph->r() * _sep_axis;
+        _sep_axis = mBox->axis(num_axis);
 
-    if((!_is_colliding) && ((_pt_on_second - _pt_on_first) * centeredPt > 0))
-        _is_colliding = true;
+        if(_sep_axis * (mBox->center() - _sph->center()) < 0)
+            _sep_axis *= (Real)(-1.0);
+
+        _pt_on_first = _sph->center() + _sph->r() * _sep_axis;
+
+        if(alpha > 0){
+            _pt_on_second = mBox->center() + mBox->extent(num_axis) * mBox->axis(num_axis) + centeredPt;
+        }
+        else{
+            _pt_on_second = mBox->center() - mBox->extent(num_axis) * mBox->axis(num_axis) + centeredPt;
+        }
+
+        _pt_on_second[num_axis] -= centeredPt[num_axis];
+    }
+    else{
+        //The normal response which _sep_axis have the same direction than the one which goes from the sphere center to the OBB contact point.
+        //If the sphere and the OBB are colliding
+        _sep_axis = _pt_on_second - _pt_on_first;
+        IntrUtil<Real>::normalize(_sep_axis);
+
+        _pt_on_first += _sph->r() * _sep_axis;
+
+        if((!_is_colliding) && ((_pt_on_second - _pt_on_first) * centeredPt > 0))
+            _is_colliding = true;
+    }
 
     return true;
 }
