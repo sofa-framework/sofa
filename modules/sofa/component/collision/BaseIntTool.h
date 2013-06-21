@@ -58,6 +58,14 @@ public:
     inline static int computeIntersection(TSphere<DataType> &sph, OBB &obb, double alarmDist, double contactDist, OutputVector *contacts){
         return OBBIntTool::computeIntersection(sph,obb,alarmDist,contactDist,contacts);
     }
+
+    template <class TReal>
+	static int computeIntersection(TSphere<StdVectorTypes<Vec<3,TReal>,Vec<3,TReal>,TReal> >& sph1, TSphere<StdRigidTypes<3,TReal> >& sph2,
+	                                   double alarmDist, double contactDist, OutputVector * contacts);
+
+    template <class TReal>
+	static int computeIntersection(TSphere<StdVectorTypes<Vec<3,TReal>,Vec<3,TReal>,TReal> >& sph1, TSphere<StdVectorTypes<Vec<3,TReal>,Vec<3,TReal>,TReal> >& sph2,
+	                                   double alarmDist, double contactDist, OutputVector * contacts);
 };
 
 template <class DataTypes1,class DataTypes2>
@@ -86,6 +94,64 @@ int BaseIntTool::computeIntersection(TSphere<DataTypes1>& sph1, TSphere<DataType
 
     return 1;
 }
+
+//CAUTION the next methods are different, the point of contact differs depending the sphere data type, if the sphere data type is vectortype,
+//then the point of contact is the center of the sphere, otherwise, it is the real point of contact on the sphere surface.
+template <class TReal>
+int BaseIntTool::computeIntersection(TSphere<StdVectorTypes<Vec<3,TReal>,Vec<3,TReal>,TReal> >& sph1, TSphere<StdRigidTypes<3,TReal> >& sph2,
+                                     double alarmDist, double contactDist, OutputVector * contacts)
+{
+    double r = sph1.r() + sph2.r();
+    double myAlarmDist = alarmDist + r;
+    Vector3 dist = sph2.center() - sph1.center();
+    SReal norm2 = dist.norm2();
+
+    if (norm2 >= myAlarmDist*myAlarmDist)
+        return 0;
+
+    contacts->resize(contacts->size()+1);
+    DetectionOutput *detection = &*(contacts->end()-1);
+    detection->normal = dist;
+    double distSph1Sph2 = helper::rsqrt(norm2);
+    detection->normal /= distSph1Sph2;
+    detection->point[0] = sph1.center();//difference is here
+    detection->point[1] = sph2.center() - detection->normal * sph2.r();//difference is here
+    detection->value = distSph1Sph2 - r - contactDist;
+    detection->elem.first = sph1;
+    detection->elem.second = sph2;
+    detection->id = (sph1.getCollisionModel()->getSize() > sph2.getCollisionModel()->getSize()) ? sph1.getIndex() : sph2.getIndex();
+
+    return 1;
+}
+
+
+template <class TReal>
+int BaseIntTool::computeIntersection(TSphere<StdVectorTypes<Vec<3,TReal>,Vec<3,TReal>,TReal> >& sph1, TSphere<StdVectorTypes<Vec<3,TReal>,Vec<3,TReal>,TReal> >& sph2,
+                                     double alarmDist, double contactDist, OutputVector * contacts)
+{
+    double r = sph1.r() + sph2.r();
+    double myAlarmDist = alarmDist + r;
+    Vector3 dist = sph2.center() - sph1.center();
+
+    if (dist.norm2() >= myAlarmDist*myAlarmDist)
+        return 0;
+
+    contacts->resize(contacts->size()+1);
+    DetectionOutput *detection = &*(contacts->end()-1);
+    detection->normal = dist;
+    double distSph1Sph2 = detection->normal.norm();
+    detection->normal /= distSph1Sph2;
+    detection->point[0] = sph1.center();//difference is here
+    detection->point[1] = sph2.center();//difference is here
+
+    detection->value = distSph1Sph2 - r - contactDist;
+    detection->elem.first = sph1;
+    detection->elem.second = sph2;
+    detection->id = (sph1.getCollisionModel()->getSize() > sph2.getCollisionModel()->getSize()) ? sph1.getIndex() : sph2.getIndex();
+
+    return 1;
+}
+
 
 }
 }
