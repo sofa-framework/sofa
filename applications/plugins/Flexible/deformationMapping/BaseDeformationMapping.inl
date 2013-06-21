@@ -668,7 +668,7 @@ void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::Visual
 
     if (vparams->displayFlags().getShowMechanicalMappings())
     {
-        vector< Vector3 > edge;     edge.resize(2);
+        vector< defaulttype::Vector3 > edge;     edge.resize(2);
         Vec<4,float> col;
 
         for(unsigned i=0; i<out.size(); i++ )
