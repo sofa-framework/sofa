@@ -212,23 +212,17 @@ sofa::defaulttype::Vector3 HexahedronSetGeometryAlgorithms<DataTypes>::computeHe
     Coord	p[8];
     getRestHexahedronVertexCoordinates(h, p);
 
-    sofa::defaulttype::Vector3 origin;
-    origin[0] = p[0][0];
-    origin[1] = p[0][1];
-    origin[2] = p[0][2];
+    const unsigned int max_spatial_dimensions = std::min((unsigned int)3,(unsigned int)DataTypes::spatial_dimensions);
 
-    sofa::defaulttype::Vector3 p1, p3, p4;
-    p1[0] = p[1][0];
-    p1[1] = p[1][1];
-    p1[2] = p[1][2];
-
-    p3[0] = p[3][0];
-    p3[1] = p[3][1];
-    p3[2] = p[3][2];
-
-    p4[0] = p[4][0];
-    p4[1] = p[4][1];
-    p4[2] = p[4][2];
+    sofa::defaulttype::Vector3 origin, p1, p3, p4, pnt;
+    for( unsigned int w=0 ; w<max_spatial_dimensions ; ++w )
+    {
+        origin[w] = p[0][w];
+        p1[w] = p[1][w];
+        p3[w] = p[3][w];
+        p4[w] = p[4][w];
+        pnt[w] = pos[w];
+    }
 
     Mat3x3d		m, mt, base;
     m[0] = p1-origin;
@@ -236,11 +230,6 @@ sofa::defaulttype::Vector3 HexahedronSetGeometryAlgorithms<DataTypes>::computeHe
     m[2] = p4-origin;
     mt.transpose(m);
     base.invert(mt);
-
-    sofa::defaulttype::Vector3 pnt;
-    pnt[0] = pos[0];
-    pnt[1] = pos[1];
-    pnt[2] = pos[2];
 
     return base * (pnt - origin);
 }
@@ -256,23 +245,17 @@ sofa::defaulttype::Vector3 HexahedronSetGeometryAlgorithms<DataTypes>::computeHe
     Coord	p[8];
     getHexahedronVertexCoordinates(h, p);
 
-    sofa::defaulttype::Vector3 origin;
-    origin[0] = p[0][0];
-    origin[1] = p[0][1];
-    origin[2] = p[0][2];
+    const unsigned int max_spatial_dimensions = std::min((unsigned int)3,(unsigned int)DataTypes::spatial_dimensions);
 
-    sofa::defaulttype::Vector3 p1, p3, p4;
-    p1[0] = p[1][0];
-    p1[1] = p[1][1];
-    p1[2] = p[1][2];
-
-    p3[0] = p[3][0];
-    p3[1] = p[3][1];
-    p3[2] = p[3][2];
-
-    p4[0] = p[4][0];
-    p4[1] = p[4][1];
-    p4[2] = p[4][2];
+    sofa::defaulttype::Vector3 origin, p1, p3, p4, pnt;
+    for( unsigned int w=0 ; w<max_spatial_dimensions ; ++w )
+    {
+        origin[w] = p[0][w];
+        p1[w] = p[1][w];
+        p3[w] = p[3][w];
+        p4[w] = p[4][w];
+        pnt[w] = pos[w];
+    }
 
     Mat3x3d		m, mt, base;
     m[0] = p1-origin;
@@ -280,11 +263,6 @@ sofa::defaulttype::Vector3 HexahedronSetGeometryAlgorithms<DataTypes>::computeHe
     m[2] = p4-origin;
     mt.transpose(m);
     base.invert(mt);
-
-    sofa::defaulttype::Vector3 pnt;
-    pnt[0] = pos[0];
-    pnt[1] = pos[1];
-    pnt[2] = pos[2];
 
     return base * (pnt - origin);
 }
