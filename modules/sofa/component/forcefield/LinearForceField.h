@@ -149,17 +149,21 @@ template <>
 double LinearForceField<defaulttype::Rigid2fTypes>::getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& ) const;
 #endif
 
+#ifndef SOFA_FLOAT
 using sofa::defaulttype::Vec6dTypes;
-using sofa::defaulttype::Vec6fTypes;
 using sofa::defaulttype::Vec3dTypes;
-using sofa::defaulttype::Vec3fTypes;
 using sofa::defaulttype::Vec2dTypes;
-using sofa::defaulttype::Vec2fTypes;
 using sofa::defaulttype::Vec1dTypes;
-using sofa::defaulttype::Vec1fTypes;
 using sofa::defaulttype::Rigid3dTypes;
-using sofa::defaulttype::Rigid3fTypes;
+#endif
 
+#ifndef SOFA_DOUBLE
+using sofa::defaulttype::Vec6fTypes;
+using sofa::defaulttype::Vec3fTypes;
+using sofa::defaulttype::Vec2fTypes;
+using sofa::defaulttype::Vec1fTypes;
+using sofa::defaulttype::Rigid3fTypes;
+#endif
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_LINEARFORCEFIELD_CPP)
 

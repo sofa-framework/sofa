@@ -398,19 +398,19 @@ simulation::Node::SPtr SimpleObjectCreator::createGridScene(Vec3 startPoint, Vec
 
     // The rigid object
     Node::SPtr rigidNode = simulatedScene->createChild("rigidNode");
-    MechanicalObjectRigid3d::SPtr rigid_dof = addNew<MechanicalObjectRigid3d>(rigidNode, "dof");
-    UniformMassRigid3d::SPtr rigid_mass = addNew<UniformMassRigid3d>(rigidNode,"mass");
-    FixedConstraintRigid3d::SPtr rigid_fixedConstraint = addNew<FixedConstraintRigid3d>(rigidNode,"fixedConstraint");
+    MechanicalObjectRigid3::SPtr rigid_dof = addNew<MechanicalObjectRigid3>(rigidNode, "dof");
+    UniformMassRigid3::SPtr rigid_mass = addNew<UniformMassRigid3>(rigidNode,"mass");
+    FixedConstraintRigid3::SPtr rigid_fixedConstraint = addNew<FixedConstraintRigid3>(rigidNode,"fixedConstraint");
 
     // Particles mapped to the rigid object
     Node::SPtr mappedParticles = rigidNode->createChild("mappedParticles");
-    MechanicalObject3d::SPtr mappedParticles_dof = addNew< MechanicalObject3d>(mappedParticles,"dof");
-    RigidMappingRigid3d_to_3d::SPtr mappedParticles_mapping = addNew<RigidMappingRigid3d_to_3d>(mappedParticles,"mapping");
+    MechanicalObject3::SPtr mappedParticles_dof = addNew< MechanicalObject3>(mappedParticles,"dof");
+    RigidMappingRigid3_to_3::SPtr mappedParticles_mapping = addNew<RigidMappingRigid3_to_3>(mappedParticles,"mapping");
     mappedParticles_mapping->setModels( rigid_dof.get(), mappedParticles_dof.get() );
 
     // The independent particles
     Node::SPtr independentParticles = simulatedScene->createChild("independentParticles");
-    MechanicalObject3d::SPtr independentParticles_dof = addNew< MechanicalObject3d>(independentParticles,"dof");
+    MechanicalObject3::SPtr independentParticles_dof = addNew< MechanicalObject3>(independentParticles,"dof");
 
     // The deformable grid, connected to its 2 parents using a MultiMapping
     Node::SPtr deformableGrid = independentParticles->createChild("deformableGrid"); // first parent
@@ -420,9 +420,9 @@ simulation::Node::SPtr SimpleObjectCreator::createGridScene(Vec3 startPoint, Vec
     deformableGrid_grid->setNumVertices(numX,numY,numZ);
     deformableGrid_grid->setPos(startPoint[0],endPoint[0],startPoint[1],endPoint[1],startPoint[2],endPoint[2]);
 
-    MechanicalObject3d::SPtr deformableGrid_dof = addNew< MechanicalObject3d>(deformableGrid,"dof");
+    MechanicalObject3::SPtr deformableGrid_dof = addNew< MechanicalObject3>(deformableGrid,"dof");
 
-    SubsetMultiMapping3d_to_3d::SPtr deformableGrid_mapping = addNew<SubsetMultiMapping3d_to_3d>(deformableGrid,"mapping");
+    SubsetMultiMapping3_to_3::SPtr deformableGrid_mapping = addNew<SubsetMultiMapping3_to_3>(deformableGrid,"mapping");
     deformableGrid_mapping->addInputModel(independentParticles_dof.get()); // first parent
     deformableGrid_mapping->addInputModel(mappedParticles_dof.get());      // second parent
     deformableGrid_mapping->addOutputModel(deformableGrid_dof.get());
@@ -460,9 +460,9 @@ simulation::Node::SPtr SimpleObjectCreator::createGridScene(Vec3 startPoint, Vec
     boxes[1] = BoundingBox(Vec3d(endPoint[0]-eps, startPoint[1]-eps, startPoint[2]-eps),
                            Vec3d(endPoint[0]+eps,   endPoint[1]+eps,   endPoint[2]+eps));
     rigid_dof->resize(numRigid);
-    MechanicalObjectRigid3d::WriteVecCoord xrigid = rigid_dof->writePositions();
-    xrigid[0].getCenter()=Vec3d(startPoint[0], 0.5*(startPoint[1]+endPoint[1]), 0.5*(startPoint[2]+endPoint[2]));
-    xrigid[1].getCenter()=Vec3d(  endPoint[0], 0.5*(startPoint[1]+endPoint[1]), 0.5*(startPoint[2]+endPoint[2]));
+    MechanicalObjectRigid3::WriteVecCoord xrigid = rigid_dof->writePositions();
+    xrigid[0].getCenter()=Vec3(startPoint[0], 0.5*(startPoint[1]+endPoint[1]), 0.5*(startPoint[2]+endPoint[2]));
+    xrigid[1].getCenter()=Vec3(  endPoint[0], 0.5*(startPoint[1]+endPoint[1]), 0.5*(startPoint[2]+endPoint[2]));
 
     // find the particles in each box
     vector<bool> isFree(xgrid.size(),true);
@@ -485,7 +485,7 @@ simulation::Node::SPtr SimpleObjectCreator::createGridScene(Vec3 startPoint, Vec
     MechanicalObject3::WriteVecCoord xmapped = mappedParticles_dof->writePositions();
     mappedParticles_mapping->globalToLocalCoords.setValue(true); // to define the mapped positions in world coordinates
     MechanicalObject3::WriteVecCoord xindependent = independentParticles_dof->writePositions();
-    vector< pair<MechanicalObject3d*,unsigned> > parentParticles(xgrid.size());
+    vector< pair<MechanicalObject3*,unsigned> > parentParticles(xgrid.size());
 
     // independent particles
     unsigned independentIndex=0;

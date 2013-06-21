@@ -145,10 +145,15 @@ protected:
     bool getShow(const core::BaseMapping* /*m*/, const core::visual::VisualParams* vparams) const { return vparams->displayFlags().getShowMechanicalMappings(); }
 };
 
+#ifndef SOFA_FLOAT
 using sofa::defaulttype::Rigid2dTypes;
 using sofa::defaulttype::Rigid3dTypes;
+#endif
+
+#ifndef SOFA_DOUBLE
 using sofa::defaulttype::Rigid2fTypes;
 using sofa::defaulttype::Rigid3fTypes;
+#endif
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_RIGIDRIGIDMAPPING_CPP)
 #ifndef SOFA_FLOAT

@@ -59,7 +59,7 @@ BoundingBox::BoundingBox(const Vector3& minBBox, const Vector3& maxBBox)
 }
 
 BoundingBox::BoundingBox(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax )
-    :bbox(std::make_pair(Vector3(xmin, ymin,zmin),Vector3(xmax,ymax,zmax)))
+    :bbox(std::make_pair(Vector3((SReal)xmin, (SReal)ymin, (SReal)zmin),Vector3( (SReal)xmax, (SReal)ymax, (SReal)zmax)))
 {
 }
 
@@ -70,7 +70,7 @@ BoundingBox::BoundingBox(const Vec6f& v )
 }
 
 BoundingBox::BoundingBox(const Vec6d& v )
-    :bbox(std::make_pair(Vector3(v[0],v[2],v[4]),Vector3(v[1],v[3],v[5])))
+    :bbox(std::make_pair(Vector3((SReal)v[0],(SReal)v[2],(SReal)v[4]),Vector3((SReal)v[1],(SReal)v[3],(SReal)v[5])))
 {
 }
 
@@ -309,7 +309,7 @@ BoundingBox2D::BoundingBox2D(const Vector2& minBBox, const Vector2& maxBBox)
 }
 
 BoundingBox2D::BoundingBox2D(double xmin, double xmax, double ymin, double ymax )
-    :bbox(std::make_pair(Vector2(xmin, ymin),Vector2(xmax,ymax)))
+    :bbox(std::make_pair(Vector2((SReal)xmin, (SReal)ymin),Vector2((SReal)xmax,(SReal)ymax)))
 {
 }
 
@@ -320,7 +320,7 @@ BoundingBox2D::BoundingBox2D(const Vec4f& v )
 }
 
 BoundingBox2D::BoundingBox2D(const Vec4d& v )
-    :bbox(std::make_pair(Vector2(v[0],v[2]),Vector2(v[1],v[3])))
+    :bbox(std::make_pair(Vector2((SReal)v[0],(SReal)v[2]),Vector2((SReal)v[1],(SReal)v[3])))
 {
 }
 

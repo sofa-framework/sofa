@@ -236,12 +236,12 @@ void TriangleDeformationMapping<TIn, TOut>::draw(const core::visual::VisualParam
 
 
     // x axes
-    vector< Vec3d > points;
+    vector< Vector3 > points;
     for(unsigned i=0; i<triangles.size(); i++ )
     {
 //        cerr<<"TriangleDeformationMapping<TIn, TOut>::draw, F = " << endl << pos[i].getF() << endl;
 //        cerr<<"TriangleDeformationMapping<TIn, TOut>::draw, F = " << endl << pos[i].getVec() << endl;
-        Vec3d centre = vert[triangles[i][0]]*1./3 + vert[triangles[i][1]]*1./3 + vert[triangles[i][2]]*1./3;
+        Vector3 centre = vert[triangles[i][0]]*1./3 + vert[triangles[i][1]]*1./3 + vert[triangles[i][2]]*1./3;
         points.push_back(centre);
         unsigned id=0; // x
         InDeriv axis( pos[i].getF()[0][id], pos[i].getF()[1][id], pos[i].getF()[2][id] ) ;
@@ -254,7 +254,7 @@ void TriangleDeformationMapping<TIn, TOut>::draw(const core::visual::VisualParam
     points.clear();
     for(unsigned i=0; i<triangles.size(); i++ )
     {
-        Vec3d centre = vert[triangles[i][0]]*1./3 + vert[triangles[i][1]]*1./3 + vert[triangles[i][2]]*1./3;
+        Vector3 centre = vert[triangles[i][0]]*1./3 + vert[triangles[i][1]]*1./3 + vert[triangles[i][2]]*1./3;
         points.push_back(centre);
         unsigned id=1; // y
         InDeriv axis( pos[i].getF()[0][id], pos[i].getF()[1][id], pos[i].getF()[2][id] );

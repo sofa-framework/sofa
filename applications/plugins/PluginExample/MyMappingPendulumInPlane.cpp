@@ -40,13 +40,17 @@ namespace mapping
 {
 
 using namespace sofa::defaulttype;
+
+#ifndef SOFA_FLOAT
 using sofa::defaulttype::Vec3dTypes;
-using sofa::defaulttype::Vec3fTypes;
 using sofa::defaulttype::Vec2dTypes;
 using sofa::defaulttype::Vec1dTypes;
+#endif
+
+#ifndef SOFA_DOUBLE
+using sofa::defaulttype::Vec3fTypes;
 using sofa::defaulttype::Vec1fTypes;
-
-
+#endif
 
 SOFA_DECL_CLASS(MyMappingPendulumInPlane)
 

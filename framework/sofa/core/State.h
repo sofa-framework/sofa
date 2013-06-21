@@ -190,26 +190,34 @@ public:
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_CORE)
+#ifndef SOFA_FLOAT
 extern template class SOFA_CORE_API State<defaulttype::Vec3dTypes>;
 extern template class SOFA_CORE_API State<defaulttype::Vec2dTypes>;
 extern template class SOFA_CORE_API State<defaulttype::Vec1dTypes>;
 extern template class SOFA_CORE_API State<defaulttype::Vec6dTypes>;
 extern template class SOFA_CORE_API State<defaulttype::Rigid3dTypes>;
 extern template class SOFA_CORE_API State<defaulttype::Rigid2dTypes>;
+extern template class SOFA_CORE_API State<defaulttype::ExtVec3dTypes>;
+#endif
 
+#ifndef SOFA_DOUBLE
 extern template class SOFA_CORE_API State<defaulttype::Vec3fTypes>;
 extern template class SOFA_CORE_API State<defaulttype::Vec2fTypes>;
 extern template class SOFA_CORE_API State<defaulttype::Vec1fTypes>;
 extern template class SOFA_CORE_API State<defaulttype::Vec6fTypes>;
-extern template class SOFA_CORE_API State<defaulttype::Rigid3fTypes>;
 extern template class SOFA_CORE_API State<defaulttype::Rigid2fTypes>;
-
-extern template class SOFA_CORE_API State<defaulttype::ExtVec3dTypes>;
-extern template class SOFA_CORE_API State<defaulttype::ExtVec3fTypes>;
 #endif
 
+extern template class SOFA_CORE_API State<defaulttype::ExtVec3fTypes>;
+extern template class SOFA_CORE_API State<defaulttype::Rigid3fTypes>;
+
+#endif
 } // namespace core
 
 } // namespace sofa
+
+#ifndef SOFA_EXTERN_TEMPLATE
+#include <sofa/core/State.inl>
+#endif
 
 #endif

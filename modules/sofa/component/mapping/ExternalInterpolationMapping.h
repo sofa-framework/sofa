@@ -101,14 +101,19 @@ private:
     bool doNotMap;
 };
 
+#ifndef SOFA_FLOAT
 using sofa::defaulttype::Vec1dTypes;
 using sofa::defaulttype::Vec2dTypes;
 using sofa::defaulttype::Vec3dTypes;
+#endif
+
+#ifndef SOFA_DOUBLE
 using sofa::defaulttype::Vec1fTypes;
 using sofa::defaulttype::Vec2fTypes;
 using sofa::defaulttype::Vec3fTypes;
 using sofa::defaulttype::ExtVec2fTypes;
 using sofa::defaulttype::ExtVec3fTypes;
+#endif
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_EXTERNALINTERPOLATIONMAPPING_CPP)
 #ifndef SOFA_FLOAT

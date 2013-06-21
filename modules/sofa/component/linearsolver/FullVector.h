@@ -192,7 +192,7 @@ public:
     SReal element(int i) const
     {
         checkIndex(i);
-        return data[i];
+        return (SReal) data[i];
     }
 
     void set(int i, SReal v)

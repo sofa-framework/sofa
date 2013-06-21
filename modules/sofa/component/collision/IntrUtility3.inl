@@ -1,6 +1,7 @@
 // File modified from GeometricTools
 // http://www.geometrictools.com/
-
+#ifndef INTRUTILITY3_INL
+#define INTRUTILITY3_INL
 #include "IntrUtility3.h"
 
 
@@ -1776,3 +1777,5 @@ void MyBox<TReal>::showVertices()const{
 }
 }
 }
+
+#endif // INTRUTILITY3_INL

@@ -69,8 +69,8 @@ void LocalMinDistanceFilter::bwdInit()
     if(this->isRigid())
     {
         std::cout<<"+++++++++++ is Rigid !!"<<std::endl;
-        RigidMapping< Rigid3dTypes, Vec3dTypes > *r_mapping= NULL;
-        r_mapping = this->getContext()->get< RigidMapping< Rigid3dTypes, Vec3dTypes > >();
+        RigidMapping< Rigid3Types, Vec3Types > *r_mapping= NULL;
+        r_mapping = this->getContext()->get< RigidMapping< Rigid3Types, Vec3Types > >();
 
         if(r_mapping==NULL)
         {

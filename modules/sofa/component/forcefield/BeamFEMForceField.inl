@@ -431,7 +431,7 @@ void BeamFEMForceField<DataTypes>::initLarge(int i, Index a, Index b)
     const VecCoord& x = *this->mstate->getX();
 
     Quat quatA, quatB, dQ;
-    Vec3d dW;
+    Vec3 dW;
 
     quatA = x[a].getOrientation();
     quatB = x[b].getOrientation();

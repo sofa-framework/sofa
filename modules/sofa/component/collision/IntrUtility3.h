@@ -314,6 +314,7 @@ extern template SOFA_BASE_COLLISION_API class CapIntrConfiguration<double>;
 #endif
 #ifndef SOFA_DOUBLE
 extern template struct SOFA_BASE_COLLISION_API IntrUtil<float>;
+extern template struct SOFA_BASE_COLLISION_API IntrUtil<double>; // Special see if we need to explicitly instanciate on doubles
 extern template struct SOFA_BASE_COLLISION_API IntrUtil<TOBB<Rigid3fTypes> >;
 extern template class SOFA_BASE_COLLISION_API FindContactSet<TOBB<defaulttype::Rigid3fTypes> >;
 extern template class SOFA_BASE_COLLISION_API IntrAxis<TOBB<defaulttype::Rigid3fTypes> >;
@@ -331,5 +332,8 @@ extern template SOFA_BASE_COLLISION_API class CapIntrConfiguration<float>;
 }
 }
 
+#ifndef SOFA_EXTERN_TEMPLATE
+#include <sofa/component/collision/IntrUtility3.inl>
+#endif
 
 #endif

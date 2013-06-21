@@ -54,7 +54,7 @@ public:
     typedef DataTypes::Real Real;
 
     typedef core::CollisionModel ToolModel;
-    typedef core::behavior::MechanicalState<defaulttype::Vec1dTypes> ToolDOFs;
+    typedef core::behavior::MechanicalState<defaulttype::Vec1Types> ToolDOFs;
 
     Data < bool > active;
     Data < char > keyEvent;

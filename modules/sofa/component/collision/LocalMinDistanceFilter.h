@@ -196,7 +196,7 @@ public:
      */
     void invalidate();
 protected:
-    Rigid3dTypes::Coord *pos;
+    Rigid3Types::Coord *pos;
 
 
 private:

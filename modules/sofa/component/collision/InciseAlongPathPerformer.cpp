@@ -168,7 +168,7 @@ void InciseAlongPathPerformer::PerformCompleteIncision()
 
 
     // Get new coordinate of first incision point:
-    sofa::component::container::MechanicalObject<defaulttype::Vec3dTypes>* MechanicalObject=NULL;
+    sofa::component::container::MechanicalObject<defaulttype::Vec3Types>* MechanicalObject=NULL;
     startBody.body->getContext()->get(MechanicalObject, sofa::core::objectmodel::BaseContext::SearchRoot);
     const sofa::defaulttype::Vector3& the_point = (*MechanicalObject->getX())[initialNbPoints];
 

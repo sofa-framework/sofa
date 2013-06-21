@@ -244,7 +244,7 @@ void ExtensionMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams
     typename core::behavior::MechanicalState<In>::ReadVecCoord pos = this->getFromModel()->readPositions();
     SeqEdges links = edgeContainer->getEdges();
 
-    vector< Vec3d > points;
+    vector< Vector3 > points;
 
     for(unsigned i=0; i<links.size(); i++ )
     {

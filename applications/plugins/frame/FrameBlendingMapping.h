@@ -221,21 +221,25 @@ public:
     Data<vector<int> > restrictInterpolationToLabel;  ///< restrict interpolation to a certain label in the gridmaterial
 };
 
+#ifndef SOFA_FLOAT
 using sofa::defaulttype::Vec3dTypes;
-using sofa::defaulttype::Vec3fTypes;
-using sofa::defaulttype::ExtVec3fTypes;
 using sofa::defaulttype::ExtVec3dTypes;
 using sofa::defaulttype::Affine3dTypes;
-using sofa::defaulttype::Affine3fTypes;
 using sofa::defaulttype::Quadratic3dTypes;
-using sofa::defaulttype::Quadratic3fTypes;
 using sofa::defaulttype::Rigid3dTypes;
-using sofa::defaulttype::Rigid3fTypes;
 using sofa::defaulttype::DeformationGradient331dTypes;
+using sofa::defaulttype::DeformationGradient332dTypes;
+#endif
+
+#ifndef SOFA_DOUBLE
+using sofa::defaulttype::Vec3fTypes;
+using sofa::defaulttype::ExtVec3fTypes;
+using sofa::defaulttype::Affine3fTypes;
+using sofa::defaulttype::Quadratic3fTypes;
+using sofa::defaulttype::Rigid3fTypes;
 using sofa::defaulttype::DeformationGradient331fTypes;
 using sofa::defaulttype::DeformationGradient332fTypes;
-using sofa::defaulttype::DeformationGradient332dTypes;
-
+#endif
 
 //#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_FRAMEBLENDINGMAPPING_CPP)
 //#ifndef SOFA_FLOAT

@@ -156,10 +156,20 @@ public:
 template <int N, int M, class Real>
 struct IdentityMappingMatrixHelper;
 
+#ifndef SOFA_FLOAT
 using sofa::defaulttype::Vec1dTypes;
 using sofa::defaulttype::Vec2dTypes;
 using sofa::defaulttype::Vec3dTypes;
 using sofa::defaulttype::Vec6dTypes;
+using sofa::defaulttype::Rigid2dTypes;
+using sofa::defaulttype::Rigid3dTypes;
+using sofa::defaulttype::ExtVec1dTypes;
+using sofa::defaulttype::ExtVec2dTypes;
+using sofa::defaulttype::ExtVec3dTypes;
+using sofa::defaulttype::ExtVec3fTypes;
+#endif
+
+#ifndef SOFA_DOUBLE
 using sofa::defaulttype::Vec1fTypes;
 using sofa::defaulttype::Vec2fTypes;
 using sofa::defaulttype::Vec3fTypes;
@@ -167,10 +177,9 @@ using sofa::defaulttype::Vec6fTypes;
 using sofa::defaulttype::ExtVec1fTypes;
 using sofa::defaulttype::ExtVec2fTypes;
 using sofa::defaulttype::ExtVec3fTypes;
-using sofa::defaulttype::Rigid2dTypes;
-using sofa::defaulttype::Rigid3dTypes;
 using sofa::defaulttype::Rigid2fTypes;
 using sofa::defaulttype::Rigid3fTypes;
+#endif
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_IDENTITYMAPPING_CPP)
 

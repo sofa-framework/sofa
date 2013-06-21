@@ -51,8 +51,8 @@ struct BodyPicked
 #ifdef DETECTIONOUTPUT_BARYCENTRICINFO
     Vector3 baryCoords;
 #endif
-    double dist;
-    double rayLength;
+    SReal dist;
+    SReal rayLength;
 };
 
 class SOFA_USER_INTERACTION_API BaseMouseInteractor : public core::BehaviorModel

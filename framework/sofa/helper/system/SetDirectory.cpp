@@ -56,8 +56,8 @@ namespace system
 	char* getcwd(char *buffer, int maxlen) { -1; } // NOT IMPLEMENTED
 #elif defined(PS3)
 	std::string g_currentWorkingDir = std::string("/app_home/");
-	char* getcwd(char *buffer, int maxlen) { strcpy(buffer, g_currentWorkingDir.c_str()); }
-	int chdir(const char* path) { g_currentWorkingDir = path; }
+	char* getcwd(char *buffer, int maxlen) { strcpy(buffer, g_currentWorkingDir.c_str()); return buffer;}
+	int chdir(const char* path) { g_currentWorkingDir = path; return 1;}
 #endif
 
 SetDirectory::SetDirectory(const char* filename)

@@ -75,7 +75,7 @@ public:
     void draw(const core::visual::VisualParams* vparams);
     void clear();
 
-    void setStiffness(double s) {stiffness=s;}
+    void setStiffness(SReal s) {stiffness=s;}
     void setArrowSize(float s) {size=s;}
     void setShowFactorSize(float s) {showFactorSize = s;}
 
@@ -103,7 +103,7 @@ protected:
     */
 
     MouseContactMapper  *mapper;
-    constraintset::BilateralInteractionConstraint<defaulttype::Vec3dTypes>::SPtr m_constraint;
+    constraintset::BilateralInteractionConstraint<defaulttype::Vec3Types>::SPtr m_constraint;
 
     core::visual::DisplayFlags flags;
 

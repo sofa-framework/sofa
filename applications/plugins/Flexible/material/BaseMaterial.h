@@ -28,6 +28,12 @@
 #include <sofa/defaulttype/Mat.h>
 #include "../quadrature/BaseGaussPointSampler.h"
 
+// Hack to fix compilation of mixing types to remove once the macro for constants is setted up
+inline float pow(float f, double exp)
+{
+	return powf(f, static_cast<double>(exp));
+}
+
 namespace sofa
 {
 namespace defaulttype

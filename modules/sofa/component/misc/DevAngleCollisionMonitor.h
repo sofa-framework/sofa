@@ -46,10 +46,10 @@ namespace misc
 {
 
 template <class TDataTypes>
-class DevAngleCollisionMonitor: public virtual DevMonitor<sofa::defaulttype::Vec1dTypes>
+class DevAngleCollisionMonitor: public virtual DevMonitor<sofa::defaulttype::Vec1Types>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(DevAngleCollisionMonitor,TDataTypes), SOFA_TEMPLATE(DevMonitor,sofa::defaulttype::Vec1dTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(DevAngleCollisionMonitor,TDataTypes), SOFA_TEMPLATE(DevMonitor,sofa::defaulttype::Vec1Types));
 
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -69,7 +69,7 @@ public:
     core::behavior::BaseMechanicalState* getMechModel1() { return mstate1; }
 
     /// Retrieve the associated MechanicalState (Second model)
-    core::behavior::MechanicalState<defaulttype::Vec3dTypes>* getMState2() { return mstate2; }
+    core::behavior::MechanicalState<defaulttype::Vec3Types>* getMState2() { return mstate2; }
     core::behavior::BaseMechanicalState* getMechModel2() { return mstate2; }
 
 
@@ -82,7 +82,7 @@ public:
         {
             if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object1",".."))) == NULL)
                 return false;
-            if (dynamic_cast<core::behavior::MechanicalState<defaulttype::Vec3dTypes>*>(arg->findObject(arg->getAttribute("object2",".."))) == NULL)
+            if (dynamic_cast<core::behavior::MechanicalState<defaulttype::Vec3Types>*>(arg->findObject(arg->getAttribute("object2",".."))) == NULL)
                 return false;
         }
         else
@@ -102,7 +102,7 @@ public:
         if (arg && (arg->getAttribute("object1") || arg->getAttribute("object2")))
         {
             obj->mstate1 = dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object1","..")));
-            obj->mstate2 = dynamic_cast<core::behavior::MechanicalState<defaulttype::Vec3dTypes>*>(arg->findObject(arg->getAttribute("object2","..")));
+            obj->mstate2 = dynamic_cast<core::behavior::MechanicalState<defaulttype::Vec3Types>*>(arg->findObject(arg->getAttribute("object2","..")));
         }
 
         return obj;
@@ -122,7 +122,7 @@ protected:
     /// First model mechanical state
     core::behavior::MechanicalState<DataTypes> *mstate1;
     /// Second model mechanical state
-    core::behavior::MechanicalState<defaulttype::Vec3dTypes> *mstate2;
+    core::behavior::MechanicalState<defaulttype::Vec3Types> *mstate2;
 
     /// Point model of first object
     sofa::component::collision::PointModel *pointsCM;

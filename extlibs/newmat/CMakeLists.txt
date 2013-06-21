@@ -44,6 +44,9 @@ set(SOURCE_FILES
 add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${SOURCE_FILES})
 
 AddCompilerDefinitions("use_namespace")
+if(SOFA-MISC_USE_FLOAT)
+AddCompilerDefinitions("SOFA_FLOAT")
+endif()
 
 # fix link errors when linked with shared libraries
 if(${CMAKE_COMPILER_IS_GNUCC})

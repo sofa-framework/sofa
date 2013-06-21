@@ -41,8 +41,12 @@ namespace linearsolver
 SOFA_DECL_CLASS(BTDLinearSolver)
 
 int BTDLinearSolverClass = core::RegisterObject("Linear system solver using Thomas Algorithm for Block Tridiagonal matrices")
-        .add< BTDLinearSolver<BTDMatrix<6,double>,BlockVector<6,double> > >(true)
+#ifndef SOFA_FLOAT
+.add< BTDLinearSolver<BTDMatrix<6,double>,BlockVector<6,double> > >(true)
+#endif
+#ifndef SOFA_DOUBLE
         .add< BTDLinearSolver<BTDMatrix<6,float>,BlockVector<6,float> > >()
+#endif
 //.add< BTDLinearSolver<BTDMatrix<3,double>,BlockVector<3,double> > >()
 //.add< BTDLinearSolver<BTDMatrix<3,float>,BlockVector<3,float> > >()
 //.add< BTDLinearSolver<BTDMatrix<2,double>,BlockVector<2,double> > >()

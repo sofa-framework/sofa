@@ -189,6 +189,7 @@ void ForceField<DataTypes>::addDForce(VecDeriv& , const VecDeriv& )
 template<class DataTypes>
 double ForceField<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams) const
 {
+
     if (this->mstate)
         return getPotentialEnergy(mparams /* PARAMS FIRST */, *mparams->readX(mstate));
     return 0;

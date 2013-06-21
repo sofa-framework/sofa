@@ -157,14 +157,19 @@ private:
 
 
 // Specialization for rigids
+#ifndef SOFA_FLOAT
 template <>
 void LinearVelocityConstraint<defaulttype::Rigid3dTypes >::draw(const core::visual::VisualParams* vparams);
 template <>
+void LinearVelocityConstraint<defaulttype::Vec6dTypes >::draw(const core::visual::VisualParams* vparams);
+#endif
+
+#ifndef SOFA_DOUBLE
+template <>
 void LinearVelocityConstraint<defaulttype::Rigid3fTypes >::draw(const core::visual::VisualParams* vparams);
 template <>
-void LinearVelocityConstraint<defaulttype::Vec6dTypes >::draw(const core::visual::VisualParams* vparams);
-template <>
 void LinearVelocityConstraint<defaulttype::Vec6fTypes >::draw(const core::visual::VisualParams* vparams);
+#endif
 
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_LINEARVELOCITYCONSTRAINT_CPP)

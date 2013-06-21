@@ -24,6 +24,7 @@ template SOFA_BASE_COLLISION_API class CapIntrConfiguration<double>;
 #endif
 #ifndef SOFA_DOUBLE
 template struct SOFA_BASE_COLLISION_API IntrUtil<float>;
+template struct SOFA_BASE_COLLISION_API IntrUtil<double>;
 template struct SOFA_BASE_COLLISION_API IntrUtil<TOBB<Rigid3fTypes> >;
 template class SOFA_BASE_COLLISION_API IntrConfiguration<float>;
 template struct SOFA_BASE_COLLISION_API IntrConfigManager<TOBB<Rigid3fTypes> >;

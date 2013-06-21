@@ -47,7 +47,7 @@ using namespace core::topology;
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 using namespace sofa::core::behavior;
-
+#ifndef SOFA_FLOAT
 template<>
 inline void AttachConstraint<defaulttype::Rigid3dTypes>::projectPosition(Coord& x1, Coord& x2, bool freeRotations, unsigned index)
 {
@@ -81,7 +81,9 @@ inline void AttachConstraint<defaulttype::Rigid3dTypes>::projectPosition(Coord& 
             x2.getOrientation() = x1.getOrientation();
     }
 }
+#endif
 
+#ifndef SOFA_DOUBLE
 template<>
 inline void AttachConstraint<defaulttype::Rigid3fTypes>::projectPosition(Coord& x1, Coord& x2, bool freeRotations, unsigned index)
 {
@@ -98,7 +100,9 @@ inline void AttachConstraint<defaulttype::Rigid3fTypes>::projectPosition(Coord& 
     if (!freeRotations)
         x2.getOrientation() = x1.getOrientation();
 }
+#endif
 
+#ifndef SOFA_FLOAT
 template<>
 inline void AttachConstraint<defaulttype::Rigid2dTypes>::projectPosition(Coord& x1, Coord& x2, bool freeRotations, unsigned index)
 {
@@ -115,7 +119,9 @@ inline void AttachConstraint<defaulttype::Rigid2dTypes>::projectPosition(Coord& 
     if (!freeRotations)
         x2.getOrientation() = x1.getOrientation();
 }
+#endif
 
+#ifndef SOFA_DOUBLE
 template<>
 inline void AttachConstraint<defaulttype::Rigid2fTypes>::projectPosition(Coord& x1, Coord& x2, bool freeRotations, unsigned index)
 {
@@ -132,7 +138,9 @@ inline void AttachConstraint<defaulttype::Rigid2fTypes>::projectPosition(Coord& 
     if (!freeRotations)
         x2.getOrientation() = x1.getOrientation();
 }
+#endif
 
+#ifndef SOFA_FLOAT
 template<>
 inline void AttachConstraint<defaulttype::Rigid3dTypes>::projectVelocity(Deriv& x1, Deriv& x2, bool freeRotations, unsigned index)
 {
@@ -144,7 +152,9 @@ inline void AttachConstraint<defaulttype::Rigid3dTypes>::projectVelocity(Deriv& 
         getVOrientation(x2) = getVOrientation(x1);
     //x2 = Deriv();
 }
+#endif
 
+#ifndef SOFA_DOUBLE
 template<>
 inline void AttachConstraint<defaulttype::Rigid3fTypes>::projectVelocity(Deriv& x1, Deriv& x2, bool freeRotations, unsigned index)
 {
@@ -155,7 +165,9 @@ inline void AttachConstraint<defaulttype::Rigid3fTypes>::projectVelocity(Deriv& 
     if (!freeRotations)
         getVOrientation(x2) = getVOrientation(x1);
 }
+#endif
 
+#ifndef SOFA_FLOAT
 template<>
 inline void AttachConstraint<defaulttype::Rigid2dTypes>::projectVelocity(Deriv& x1, Deriv& x2, bool freeRotations, unsigned index)
 {
@@ -166,7 +178,9 @@ inline void AttachConstraint<defaulttype::Rigid2dTypes>::projectVelocity(Deriv& 
     if (!freeRotations)
         getVOrientation(x2) = getVOrientation(x1);
 }
+#endif
 
+#ifndef SOFA_DOUBLE
 template<>
 inline void AttachConstraint<defaulttype::Rigid2fTypes>::projectVelocity(Deriv& x1, Deriv& x2, bool freeRotations, unsigned index)
 {
@@ -177,7 +191,9 @@ inline void AttachConstraint<defaulttype::Rigid2fTypes>::projectVelocity(Deriv& 
     if (!freeRotations)
         getVOrientation(x2) = getVOrientation(x1);
 }
+#endif
 
+#ifndef SOFA_FLOAT
 template<>
 inline void AttachConstraint<defaulttype::Rigid3dTypes>::projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool twoway, unsigned index)
 {
@@ -205,7 +221,9 @@ inline void AttachConstraint<defaulttype::Rigid3dTypes>::projectResponse(Deriv& 
         }
     }
 }
+#endif
 
+#ifndef SOFA_DOUBLE
 template<>
 inline void AttachConstraint<defaulttype::Rigid3fTypes>::projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool twoway, unsigned index)
 {
@@ -233,7 +251,9 @@ inline void AttachConstraint<defaulttype::Rigid3fTypes>::projectResponse(Deriv& 
         }
     }
 }
+#endif
 
+#ifndef SOFA_FLOAT
 template<>
 inline void AttachConstraint<defaulttype::Rigid2dTypes>::projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool twoway, unsigned index)
 {
@@ -261,7 +281,9 @@ inline void AttachConstraint<defaulttype::Rigid2dTypes>::projectResponse(Deriv& 
         }
     }
 }
+#endif
 
+#ifndef SOFA_DOUBLE
 template<>
 inline void AttachConstraint<defaulttype::Rigid2fTypes>::projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool twoway, unsigned index)
 {
@@ -289,7 +311,9 @@ inline void AttachConstraint<defaulttype::Rigid2fTypes>::projectResponse(Deriv& 
         }
     }
 }
+#endif
 
+#ifndef SOFA_FLOAT
 template<>
 inline unsigned int AttachConstraint<defaulttype::Rigid3dTypes>::DerivConstrainedSize(bool freeRotations)
 {
@@ -298,7 +322,9 @@ inline unsigned int AttachConstraint<defaulttype::Rigid3dTypes>::DerivConstraine
     else
         return Deriv::total_size;
 }
+#endif
 
+#ifndef SOFA_DOUBLE
 template<>
 inline unsigned int AttachConstraint<defaulttype::Rigid3fTypes>::DerivConstrainedSize(bool freeRotations)
 {
@@ -307,7 +333,9 @@ inline unsigned int AttachConstraint<defaulttype::Rigid3fTypes>::DerivConstraine
     else
         return Deriv::total_size;
 }
+#endif
 
+#ifndef SOFA_FLOAT
 template<>
 inline unsigned int AttachConstraint<defaulttype::Rigid2dTypes>::DerivConstrainedSize(bool freeRotations)
 {
@@ -316,7 +344,9 @@ inline unsigned int AttachConstraint<defaulttype::Rigid2dTypes>::DerivConstraine
     else
         return Deriv::total_size;
 }
+#endif
 
+#ifndef SOFA_DOUBLE
 template<>
 inline unsigned int AttachConstraint<defaulttype::Rigid2fTypes>::DerivConstrainedSize(bool freeRotations)
 {
@@ -325,6 +355,7 @@ inline unsigned int AttachConstraint<defaulttype::Rigid2fTypes>::DerivConstraine
     else
         return Deriv::total_size;
 }
+#endif
 
 #if 0
 // Define TestNewPointFunction

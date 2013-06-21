@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include <sofa/core/objectmodel/BaseClass.h>
 #ifdef __GNUC__
-#include <cxxabi.h>
+#include <sofa/core/ps3/cxxabi.h>
 #endif
 
 namespace sofa

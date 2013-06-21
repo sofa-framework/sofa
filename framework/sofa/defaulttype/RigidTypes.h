@@ -922,8 +922,9 @@ public:
 typedef StdRigidTypes<3,double> Rigid3dTypes;
 typedef RigidMass<3,double> Rigid3dMass;
 #endif
-#ifndef SOFA_DOUBLE
+
 typedef StdRigidTypes<3,float> Rigid3fTypes;
+#ifndef SOFA_DOUBLE
 typedef RigidMass<3,float> Rigid3fMass;
 #endif
 
@@ -932,9 +933,9 @@ typedef RigidMass<3,float> Rigid3fMass;
 template<> inline const char* Rigid3fTypes::Name() { return "Rigid"; }
 #else
 template<> inline const char* Rigid3dTypes::Name() { return "Rigid"; }
-#ifndef SOFA_DOUBLE
+//#ifndef SOFA_DOUBLE
 template<> inline const char* Rigid3fTypes::Name() { return "Rigid3f"; }
-#endif
+//#endif
 #endif
 
 #ifdef SOFA_FLOAT

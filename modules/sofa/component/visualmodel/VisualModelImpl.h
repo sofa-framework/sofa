@@ -245,32 +245,32 @@ public:
     Data< TexCoord > m_scaleTex;
     Data< TexCoord > m_translationTex;
 
-    void applyTranslation(const double dx, const double dy, const double dz);
+    void applyTranslation(const Real dx, const Real dy, const Real dz);
 
     /// Apply Rotation from Euler angles (in degree!)
-    void applyRotation (const double rx, const double ry, const double rz);
+    void applyRotation (const Real rx, const Real ry, const Real rz);
 
     void applyRotation(const Quat q);
 
-    void applyScale(const double sx, const double sy, const double sz);
+    void applyScale(const Real sx, const Real sy, const Real sz);
 
     virtual void applyUVTransformation();
 
-    void applyUVTranslation(const double dU, const double dV);
+    void applyUVTranslation(const Real dU, const Real dV);
 
-    void applyUVScale(const double su, const double sv);
+    void applyUVScale(const Real su, const Real sv);
 
-    void setTranslation(double dx, double dy, double dz)
+    void setTranslation(SReal dx, SReal dy, SReal dz)
     {
         m_translation.setValue(Vector3(dx,dy,dz));
     };
 
-    void setRotation(double rx, double ry, double rz)
+    void setRotation(SReal rx, SReal ry, SReal rz)
     {
         m_rotation.setValue(Vector3(rx,ry,rz));
     };
 
-    void setScale(double sx, double sy, double sz)
+    void setScale(SReal sx, SReal sy, SReal sz)
     {
         m_scale.setValue(Vector3(sx,sy,sz));
     };

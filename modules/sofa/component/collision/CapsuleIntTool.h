@@ -31,15 +31,15 @@ int CapsuleIntTool::computeIntersection(Capsule & cap, TSphere<DataTypes> & sph,
     Vector3 sph_center = sph.center();
     Vector3 cap_p1 = cap.point1();
     Vector3 cap_p2 = cap.point2();
-    double cap_rad = cap.radius();
-    double sph_rad = sph.r();
+    SReal cap_rad = cap.radius();
+    SReal sph_rad = sph.r();
 
     Vector3 AB = cap_p2 - cap_p1;
     Vector3 AC = sph_center - cap_p1;
 
-    double theory_contactDist = cap_rad + sph_rad + contactDist;
-    double contact_exists = cap_rad + sph_rad + alarmDist;
-    double alpha = (AB * AC)/AB.norm2();//projection of the sphere center on the capsule segment
+    SReal theory_contactDist = (SReal) cap_rad + sph_rad + contactDist;
+    SReal contact_exists = (SReal) cap_rad + sph_rad + alarmDist;
+    SReal alpha = (SReal) (AB * AC)/AB.norm2();//projection of the sphere center on the capsule segment
                                         //alpha is the coefficient such as the projected point P = cap_p1 + alpha * AB
     if(alpha < 0.000001){//S is the sphere center, here is the case :
                          //        S
