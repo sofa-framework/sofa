@@ -49,7 +49,6 @@ template class Multi2Mapping< Vec3fTypes, Rigid3fTypes, Vec3dTypes >;
 template class Multi2Mapping< Vec3fTypes, Rigid3dTypes, Vec3fTypes >;
 template class Multi2Mapping< Vec3dTypes, Vec3fTypes, Rigid3dTypes >;
 template class Multi2Mapping< Vec3dTypes, Vec3fTypes, Rigid3fTypes >;
-template class Multi2Mapping< Vec3dTypes, Rigid3dTypes, Rigid3dTypes >;
 template class Multi2Mapping< Vec3dTypes, Rigid3fTypes, Rigid3dTypes >;
 template class Multi2Mapping< Vec3dTypes, Rigid3dTypes, Rigid3fTypes >;
 template class Multi2Mapping< Vec3dTypes, Rigid3fTypes, Rigid3fTypes >;
