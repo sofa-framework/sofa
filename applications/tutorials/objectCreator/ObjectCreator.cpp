@@ -285,8 +285,7 @@ simulation::Node::SPtr SimpleObjectCreator::CreateCollisionNodeRigid(simulation:
     CollisionNode->addObject(loader_surf);
 
     component::topology::MeshTopology::SPtr meshTorus_surf= sofa::core::objectmodel::New<component::topology::MeshTopology>();
-    //    meshTorus_surf->setSrc("@"+loader_surf->getName(), loader_surf.get());
-    meshTorus_surf->setSrc("", loader_surf.get());
+    meshTorus_surf->setSrc("@"+loader_surf->getName(), loader_surf.get());
     CollisionNode->addObject(meshTorus_surf);
 
     MechanicalObject3::SPtr dof_surf = sofa::core::objectmodel::New<MechanicalObject3>(); dof_surf->setName(dofSurfName);
