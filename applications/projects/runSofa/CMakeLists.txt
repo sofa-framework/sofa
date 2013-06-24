@@ -8,8 +8,14 @@ set(SOURCE_FILES
 if(SOFA-LIB_GUI_QTVIEWER)
 	UseQt()
 endif()
+
+if(APPLE)
+    set(RC_FILES "../Modeler.icns")
+else()
+    set(RC_FILES "sofa.rc")
+endif()
 	
-add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${RC_FILES})
 
 AddLinkerDependencies(SofaGuiMain SofaComponentMain)
 
