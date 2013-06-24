@@ -130,6 +130,24 @@ if(WIN32)
 			file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
 		endforeach()
 	endif()
+	
+	## boost dlls
+	if(NOT SOFA-EXTERNAL_HAVE_BOOST STREQUAL "")
+		file(GLOB sharedObjects "${Boost_LIBRARY_DIRS}/boost_graph*.dll")
+		foreach(sharedObject ${sharedObjects})
+			file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
+		endforeach()
+		
+		file(GLOB sharedObjects "${Boost_LIBRARY_DIRS}/boost_thread*.dll")
+		foreach(sharedObject ${sharedObjects})
+			file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
+		endforeach()
+		
+		file(GLOB sharedObjects "${Boost_LIBRARY_DIRS}/boost_system*.dll")
+		foreach(sharedObject ${sharedObjects})
+			file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
+		endforeach()
+	endif()
 endif()
 
 # copying default config files
