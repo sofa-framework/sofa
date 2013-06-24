@@ -12,7 +12,7 @@ if(APPLE)
     
 else()
     
-    set(RC_FILES "sofa.rc")    
+    set(RC_FILES "sofa.rc")
 
 endif()
 
