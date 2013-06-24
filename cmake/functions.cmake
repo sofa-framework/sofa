@@ -434,6 +434,11 @@ function(AddCompilerFlags)
 	set(COMPILER_FLAGS ${COMPILER_FLAGS} ${ARGV} PARENT_SCOPE)
 endfunction()
 
+# AddSourceDependencies(source_dependency0 [source_dependency1 [...]])
+function(AddSourceDependencies)
+	set(SOURCE_DEPENDENCIES ${SOURCE_DEPENDENCIES} ${ARGV} PARENT_SCOPE)
+endfunction()
+
 # AddLinkerDependencies(linker_dependency0 [linker_dependency1 [...]])
 function(AddLinkerDependencies)
 	set(LINKER_DEPENDENCIES ${LINKER_DEPENDENCIES} ${ARGV} PARENT_SCOPE)

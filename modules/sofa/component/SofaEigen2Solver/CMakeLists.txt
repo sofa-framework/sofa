@@ -25,6 +25,7 @@ set(GROUP_BASE_DIR "..")
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_EIGEN2_SOLVER")
+AddSourceDependencies(eigen)
 AddLinkerDependencies(SofaDenseSolver)   #eigen-unsupported??
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
