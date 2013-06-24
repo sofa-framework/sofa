@@ -70,6 +70,7 @@ VTKExporter::VTKExporter()
     , exportEveryNbSteps( initData(&exportEveryNbSteps, (unsigned int)0, "exportEveryNumberOfSteps", "export file only at specified number of steps (0=disable)"))
     , exportAtBegin( initData(&exportAtBegin, false, "exportAtBegin", "export file at the initialization"))
     , exportAtEnd( initData(&exportAtEnd, false, "exportAtEnd", "export file when the simulation is finished"))
+    , overwrite( initData(&overwrite, false, "overwrite", "overwrite the file, otherwise create a new file at each export, with suffix in the filename"))
 {
 }
 
@@ -361,8 +362,21 @@ std::string VTKExporter::segmentString(std::string str, unsigned int n)
 void VTKExporter::writeVTKSimple()
 {
     std::string filename = vtkFilename.getFullPath();
-    filename += ".vtu";
-//	std::cout << filename << std::endl;
+
+    std::ostringstream oss;
+    oss << nbFiles;
+
+    if ( filename.size() > 3 && filename.substr(filename.size()-4)==".vtu")
+    {
+        if (!overwrite.getValue())
+            filename = filename.substr(0,filename.size()-4) + oss.str() + ".vtu";
+    }
+    else
+    {
+        if (!overwrite.getValue())
+            filename += oss.str();
+        filename += ".vtu";
+    }
 
     outfile = new std::ofstream(filename.c_str());
     if( !outfile->is_open() )
@@ -513,15 +527,28 @@ void VTKExporter::writeVTKSimple()
     }
     outfile->close();
     sout << filename << " written" << sendl;
+
+    ++nbFiles;
 }
 
 void VTKExporter::writeVTKXML()
 {
     std::string filename = vtkFilename.getFullPath();
+
     std::ostringstream oss;
     oss << nbFiles;
-    filename += oss.str() + ".vtu";
-//	std::cout << filename << std::endl;
+
+    if ( filename.size() > 3 && filename.substr(filename.size()-4)==".vtu")
+    {
+        if (!overwrite.getValue())
+            filename = filename.substr(0,filename.size()-4) + oss.str() + ".vtu";
+    }
+    else
+    {
+        if (!overwrite.getValue())
+            filename += oss.str();
+        filename += ".vtu";
+    }
 
     outfile = new std::ofstream(filename.c_str());
     if( !outfile->is_open() )

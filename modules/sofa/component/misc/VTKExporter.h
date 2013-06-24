@@ -84,6 +84,7 @@ public:
     Data<unsigned int> exportEveryNbSteps;
     Data<bool> exportAtBegin;
     Data<bool> exportAtEnd;
+    Data<bool> overwrite;
 
     int nbFiles;
 
