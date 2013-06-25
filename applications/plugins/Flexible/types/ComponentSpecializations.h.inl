@@ -37,7 +37,7 @@ template <> SOFA_Flexible_API
 void MechanicalObject<defaulttype::TYPEABSTRACTNAME3fTypes>::draw(const core::visual::VisualParams* vparams);
 #endif
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(FLEXIBLE_TYPEABSTRACTNAMEComponents_CPP)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(FLEXIBLE_COMPILING_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::TYPEABSTRACTNAME3dTypes>;
 extern template class SOFA_Flexible_API MechanicalObject<defaulttype::TYPEABSTRACTNAME3dTypes>;
@@ -108,7 +108,7 @@ namespace core
 namespace behavior
 {
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(FLEXIBLE_TYPEABSTRACTNAMEComponents_CPP)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(FLEXIBLE_COMPILING_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_Flexible_API ForceField<defaulttype::TYPEABSTRACTNAME3dTypes>;
 #endif
