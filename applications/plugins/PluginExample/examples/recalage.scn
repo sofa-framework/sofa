@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<Node 	name="Root" gravity="0 0 0" dt="0.02" >
+    <RequiredPlugin name="SofaPython" pluginName="SofaPython" />
+	
+
+	<PythonScriptController filename="Recalage_grille_foie_all_refonte.py" classname="RecalageController"/>
+	<!--<PythonScriptController filename="Essais/recalage_grille_foie_test.py" classname="RecalageController"/>-->
+</Node>
