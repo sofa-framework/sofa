@@ -334,8 +334,8 @@ endif()
 
 # use external template
 option(SOFA-MISC_EXTERN_TEMPLATE "Use extern template" ON)
-if(SOFA-MISC_EXTERN_TEMPLATE)
-	list(APPEND compilerDefines SOFA_EXTERN_TEMPLATE)
+if(NOT SOFA-MISC_EXTERN_TEMPLATE)
+	list(APPEND compilerDefines SOFA_NO_EXTERN_TEMPLATE)
 endif()
 
 # float / double or both
