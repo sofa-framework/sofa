@@ -332,6 +332,12 @@ if(SOFA-MISC_DEVELOPER_MODE)
 	list(APPEND compilerDefines SOFA_DEV)
 endif()
 
+# use external template
+option(SOFA-MISC_EXTERN_TEMPLATE "Use extern template" ON)
+if(SOFA-MISC_EXTERN_TEMPLATE)
+	list(APPEND compilerDefines SOFA_EXTERN_TEMPLATE)
+endif()
+
 # float / double or both
 option(SOFA-MISC_USE_FLOAT "Use single precision floating point (float)" OFF)
 option(SOFA-MISC_USE_DOUBLE "Use double precision floating point (double)" OFF)
