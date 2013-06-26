@@ -95,8 +95,10 @@ void EulerImplicitSolver::solve(const core::ExecParams* params /* PARAMS FIRST *
     MultiVecCoord newPos( &vop, xResult );
     MultiVecDeriv newVel( &vop, vResult );
 
-    simulation::MechanicalVInitVisitor< core::V_DERIV >( params, core::VecDerivId::solverSolution() ).execute( this->getContext() );
     MultiVecDeriv x( &vop, core::VecDerivId::solverSolution() );
+    // perform allocation of VecDerivId::solverSolution for every MechanicalObjects (only perfomed once, each time a new MechanicalObject appears in the scene)
+    simulation::MechanicalVInitVisitor< core::V_DERIV >( params, core::VecDerivId::solverSolution(), core::VecDerivId::null(), true ).execute( ((simulation::Node*)this->getContext())->getRootContext() );
+
 
 
 #ifdef SOFA_DUMP_VISITOR_INFO
