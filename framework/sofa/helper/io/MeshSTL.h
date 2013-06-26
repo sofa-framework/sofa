@@ -22,11 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_IO_MESHTOPOLOGYLOADER_H
-#define SOFA_HELPER_IO_MESHTOPOLOGYLOADER_H
+#ifndef SOFA_HELPER_IO_MESHSTL_H
+#define SOFA_HELPER_IO_MESHSTL_H
 
-#include <sofa/helper/helper.h>
 #include <sofa/helper/io/Mesh.h>
+#include <sofa/helper/helper.h>
 #include <fstream>
 
 namespace sofa
@@ -38,38 +38,24 @@ namespace helper
 namespace io
 {
 
-class SOFA_HELPER_API MeshTopologyLoader
+using namespace sofa::defaulttype;
+
+class SOFA_HELPER_API MeshSTL : public Mesh
 {
 public:
-    MeshTopologyLoader():mesh(NULL) {}
-    virtual ~MeshTopologyLoader() {}
-    bool load(const char *filename);
-    virtual void setNbPoints(int /*n*/) {}
-    virtual void setNbLines(int /*n*/) {}
-    virtual void setNbEdges(int /*n*/) {}
-    virtual void setNbTriangles(int /*n*/) {}
-    virtual void setNbQuads(int /*n*/) {}
-    virtual void setNbTetrahedra(int /*n*/) {}
-    virtual void setNbCubes(int /*n*/) {}
-    virtual void addPoint(double /*px*/, double /*py*/, double /*pz*/) {}
-    virtual void addLine(int /*p1*/, int /*p2*/) {}
-    virtual void addTriangle(int /*p1*/, int /*p2*/, int /*p3*/) {}
-    virtual void addQuad(int /*p1*/, int /*p2*/, int /*p3*/, int /*p4*/) {}
-    virtual void addTetra(int /*p1*/, int /*p2*/, int /*p3*/, int /*p4*/) {}
-    virtual void addCube(int /*p1*/, int /*p2*/, int /*p3*/, int /*p4*/, int /*p5*/, int /*p6*/, int /*p7*/, int /*p8*/) {}
-private:
-    bool loadObj(const char *filename);
-    bool loadMeshFile(const char *filename);
-    bool loadVtk(const char *filename);
-    bool loadStl(const char *filename);
 
-    bool loadGmsh(std::ifstream &file, const int);
-    bool loadXsp(std::ifstream &file, bool);
-    bool loadMesh(std::ifstream &file);
-    bool loadCGAL(const char *filename);
+    MeshSTL(const std::string& filename)
+    {
+        init (filename);
+    }
+
+    void init (std::string filename);
 
 protected:
-    helper::io::Mesh* mesh;
+
+    void readSTL (const std::string &filename);
+    void readBinarySTL (const std::string &filename);
+
 };
 
 } // namespace io

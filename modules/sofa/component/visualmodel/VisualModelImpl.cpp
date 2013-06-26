@@ -44,6 +44,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/helper/io/MeshOBJ.h>
+#include <sofa/helper/io/MeshSTL.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/accessor.h>
 #include <sstream>
@@ -443,7 +444,11 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
 
 bool VisualModelImpl::load(const std::string& filename, const std::string& loader, const std::string& textureName)
 {
-//	bool tex = !textureName.empty() || putOnlyTexCoords.getValue();
+    using sofa::helper::io::Mesh;
+    using sofa::helper::io::MeshSTL;
+    using sofa::helper::io::MeshOBJ;
+    
+    //      bool tex = !textureName.empty() || putOnlyTexCoords.getValue();
     if (!textureName.empty())
     {
         std::string textureFilename(textureName);
@@ -455,7 +460,7 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
         else
             serr << "Texture \"" << textureName << "\" not found" << sendl;
     }
-
+    
     // Make sure all Data are up-to-date
     m_vertices2.updateIfDirty();
     m_vnormals.updateIfDirty();
@@ -464,35 +469,42 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
     m_vbitangents.updateIfDirty();
     m_triangles.updateIfDirty();
     m_quads.updateIfDirty();
-
+    
     if (!filename.empty() && (m_positions.getValue()).size() == 0 && (m_vertices2.getValue()).size() == 0)
     {
         std::string meshFilename(filename);
         if (sofa::helper::system::DataRepository.findFile(meshFilename))
         {
             //name = filename;
-            std::auto_ptr<helper::io::Mesh> objLoader;
+            std::auto_ptr<Mesh> objLoader;
             if (loader.empty())
             {
-                objLoader.reset(helper::io::Mesh::Create(filename));
+                objLoader.reset(Mesh::Create(filename));
             }
             else
             {
-                objLoader.reset(helper::io::Mesh::Create(loader, filename));
+                objLoader.reset(Mesh::Create(loader, filename));
             }
-
+            
             if (objLoader.get() == 0)
             {
                 return false;
             }
             else
             {
-                //Modified: previously, the texture coordinates were not loaded correctly if no texture name was specified.
-                //setMesh(*objLoader,tex);
-                setMesh(*objLoader, true);
-                //sout << "VisualModel::load, vertices.size = "<< vertices.size() <<sendl;
+                //if( MeshSTL *Loader = dynamic_cast< MeshSTL *>(objLoader.get()) )
+                if(objLoader.get()->loaderType == "stl")
+                {
+                    setMesh(*objLoader, false);
+                }
+                else
+                {
+                    //Modified: previously, the texture coordinates were not loaded correctly if no texture name was specified.
+                    //setMesh(*objLoader,tex);
+                    setMesh(*objLoader, true);
+                }
             }
-
+            
             if(textureName.empty())
             {
                 //we check how many textures are linked with a material (only if a texture name is not defined in the scn file)
@@ -524,10 +536,10 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
             sout << "VisualModel: will use Topology." << sendl;
             useTopology = true;
         }
-
+        
         modified = true;
     }
-
+    
     if (!xformsModified)
     {
         // add one identity matrix

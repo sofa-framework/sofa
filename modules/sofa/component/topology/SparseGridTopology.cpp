@@ -244,7 +244,7 @@ void SparseGridTopology::init()
 void SparseGridTopology::buildAsFinest(  )
 {
     //	serr<<"SparseGridTopology::buildAsFinest(  )"<<sendl;
-
+    
     VoxelLoader *loader;
     getContext()->get(loader);
     if( loader )
@@ -272,17 +272,22 @@ void SparseGridTopology::buildAsFinest(  )
             // seqPoints, seqHexahedra.getValue(), nbPoints
             if(_filename.length() > 4 && _filename.compare(_filename.length()-4, 4, ".obj")==0)
             {
-                //			std::cout << "SparseGridTopology: using mesh "<<_filename<<std::endl;
+                // std::cout << "SparseGridTopology: using mesh "<<_filename<<std::endl;
                 buildFromTriangleMesh(_filename);
             }
             else if(_filename.length() > 6 && _filename.compare(_filename.length()-6, 6, ".trian")==0)
             {
-                //			std::cout << "SparseGridTopology: using mesh "<<_filename<<std::endl;
+                // std::cout << "SparseGridTopology: using mesh "<<_filename<<std::endl;
+                buildFromTriangleMesh(_filename);
+            }
+            else if(_filename.length() > 4 && _filename.compare(_filename.length()-4, 4, ".stl")==0)
+            {
+                // std::cout << "SparseGridTopology: using mesh "<<_filename<<std::endl;
                 buildFromTriangleMesh(_filename);
             }
             else if(_filename.length() > 4 && _filename.compare(_filename.length()-4, 4, ".raw")==0)
             {
-                //			std::cout << "SparseGridTopology: using mesh "<<_filename<<std::endl;
+                // std::cout << "SparseGridTopology: using mesh "<<_filename<<std::endl;
                 _usingMC = true;
 
                 buildFromRawVoxelFile(_filename);
@@ -290,6 +295,11 @@ void SparseGridTopology::buildAsFinest(  )
             else if(_filename.length() > 6 && _filename.compare(_filename.length()-6, 6, ".voxel")==0)
             {
                 buildFromVoxelFile(_filename);
+            }
+            else
+            {
+                serr << "SparseGridTopology::buildAsFinest: extension unrecognized " << sendl;
+                return;
             }
         }
         else
@@ -613,9 +623,11 @@ void SparseGridTopology::updateMesh()
     //Creating if needed collision models and visual models
     // 	    using sofa::simulation::Node;
 
-    sofa::helper::vector< sofa::core::topology::BaseMeshTopology * > list_mesh;
-    sofa::helper::vector< Data< Vec3Types::VecCoord >* > list_X;
-   
+    sofa::helper::vector< sofa::core::topology::BaseMeshTopology * > list_meshf;
+    sofa::helper::vector< Data< Vec3fTypes::VecCoord >* > list_Xf;
+    sofa::helper::vector< sofa::core::topology::BaseMeshTopology * > list_meshd;
+    sofa::helper::vector< Data< Vec3dTypes::VecCoord >* > list_Xd;
+
     //Get Collision Model
     sofa::helper::vector< sofa::core::topology::BaseMeshTopology* > m_temp;
     this->getContext()->get< sofa::core::topology::BaseMeshTopology >(&m_temp, sofa::core::objectmodel::BaseContext::SearchDown);
@@ -629,16 +641,26 @@ void SparseGridTopology::updateMesh()
     // sout << m_temp << " " <<  (m_temp != this) << " " << m_temp->getNbTriangles()  << " !!!! test to enter "<<sendl;
     if ( collisionTopology != NULL && collisionTopology->getNbTriangles() == 0)
     {
-        core::behavior::MechanicalState< Vec3Types > *mecha_tempf = collisionTopology->getContext()->get< core::behavior::MechanicalState< Vec3Types > >();
+#ifndef SOFA_FLOAT
+        core::behavior::MechanicalState< Vec3dTypes > *mecha_tempd = collisionTopology->getContext()->get< core::behavior::MechanicalState< Vec3dTypes > >();
+        if (mecha_tempd != NULL && mecha_tempd->getX()->size() < 2) //a triangle mesh has minimum 3elements
+        {
+            list_meshd.push_back(collisionTopology);
+            list_Xd.push_back(mecha_tempd->write(core::VecCoordId::position()));
+        }
+#endif
+#ifndef SOFA_DOUBLE
+        core::behavior::MechanicalState< Vec3fTypes > *mecha_tempf = collisionTopology->getContext()->get< core::behavior::MechanicalState< Vec3fTypes > >();
         if (mecha_tempf != NULL && mecha_tempf->getX()->size() < 2) //a triangle mesh has minimum 3elements
         {
 
-            list_mesh.push_back(collisionTopology);
-            list_X.push_back(mecha_tempf->write(core::VecCoordId::position()));
+            list_meshf.push_back(collisionTopology);
+            list_Xf.push_back(mecha_tempf->write(core::VecCoordId::position()));
         }
+#endif
     }
 
-    if (list_mesh.empty())
+    if (list_meshf.empty() && list_meshd.empty() )
         return;				 //No Marching Cube to run
 
     //Configuration of the Marching Cubes algorithm
@@ -650,8 +672,10 @@ void SparseGridTopology::updateMesh()
     marchingCubes.setStep(marchingCubeStep.getValue());
     marchingCubes.setConvolutionSize(convolutionSize.getValue()); //apply Smoothing if convolutionSize > 0
 
-    if (! list_mesh.empty())
-        constructCollisionModels(list_mesh, list_X);
+    if (! list_meshf.empty())
+        constructCollisionModels(list_meshf, list_Xf);
+    else
+        constructCollisionModels(list_meshd, list_Xd);
 }
 
 
@@ -707,7 +731,7 @@ void SparseGridTopology::constructCollisionModels(const sofa::helper::vector< so
 void SparseGridTopology::buildFromTriangleMesh(const std::string& filename)
 {
     helper::io::Mesh* mesh = NULL;
-
+    
     if (filename.empty())
     {
         mesh = new helper::io::Mesh();
@@ -781,6 +805,8 @@ void SparseGridTopology::buildFromTriangleMesh(const std::string& filename)
 
     buildFromRegularGridTypes(_regularGrid, regularGridTypes);
 
+    std::cout << "Mesh Loaded .... " << std::endl;
+    
     delete mesh;
 }
 
