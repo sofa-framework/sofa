@@ -35,6 +35,7 @@ HEADERS += helper.h \
     io/MassSpringLoader.h \
     io/Mesh.h \
     io/MeshOBJ.h \
+    io/MeshSTL.h \
     io/MeshTopologyLoader.h \
     io/MeshTrian.h \
     io/SphereLoader.h \
@@ -112,6 +113,7 @@ SOURCES += ArgumentParser.cpp \
     io/MassSpringLoader.cpp \
     io/Mesh.cpp \
     io/MeshOBJ.cpp \
+    io/MeshOBJ.h \
     io/MeshTopologyLoader.cpp \
     io/MeshTrian.cpp \
     io/SphereLoader.cpp \
