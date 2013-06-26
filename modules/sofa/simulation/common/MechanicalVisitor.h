@@ -500,16 +500,19 @@ public:
     DestMultiVecId vDest;
     SrcMultiVecId vSrc;
     bool m_propagate;
+    bool m_interactionForceField;
 
     /// Default constructor
     /// \param _vDest output vector
     /// \param _vSrc input vector
     /// \param propagate sets to true propagates vector initialization to mapped mechanical states
-    MechanicalVInitVisitor(const core::ExecParams* params /* PARAMS FIRST =core::ExecParams::defaultInstance()*/, DestMultiVecId _vDest, SrcMultiVecId _vSrc = SrcMultiVecId::null(), bool propagate=false)
+    /// \param interactionForceField sets to true also initializes external mechanical states linked by an interaction force field
+    MechanicalVInitVisitor(const core::ExecParams* params /* PARAMS FIRST =core::ExecParams::defaultInstance()*/, DestMultiVecId _vDest, SrcMultiVecId _vSrc = SrcMultiVecId::null(), bool propagate=false, bool interactionForceField=false)
         : BaseMechanicalVisitor(params)
         , vDest(_vDest)
         , vSrc(_vSrc)
         , m_propagate(propagate)
+        , m_interactionForceField(interactionForceField)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
@@ -524,6 +527,8 @@ public:
     virtual Result fwdMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm);
 
     virtual Result fwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm);
+
+    virtual Result fwdInteractionForceField(simulation::Node* node, core::behavior::BaseInteractionForceField* ff);
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
