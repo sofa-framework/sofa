@@ -25,7 +25,7 @@ using namespace core::behavior;
 
 AssembledSolver::AssembledSolver()
 	: use_velocity(initData(&use_velocity, 
-	                        false,
+	                        true,
 	                        "use_velocity",
 	                        "solve velocity dynamics (otherwise acceleration)")),
 	  warm_start(initData(&warm_start, 
