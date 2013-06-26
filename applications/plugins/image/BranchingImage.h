@@ -797,7 +797,7 @@ public:
         return NeighbourOffset(0,0,0);
     }
 
-    bool isEmpty() const { if( imgList ) return true; else return false;}
+    bool isEmpty() const { if( imgList ) return false; else return true;}
 
     /// \returns the 5 image dimensions (x,y,z,s,t)
     const Dimension& getDimension() const
