@@ -31,6 +31,8 @@ set(SOURCE_FILES
 #	QImageMouseButtonsWidget.cpp 
     VectorVisualizationWidget.cpp 
     BranchingImageConverter.cpp 
+    BranchingCellIndicesFromPositions.cpp
+    BranchingCellVolumes.cpp
 	)
 
 if(SOFA_HAVE_LIBFREENECT)
@@ -75,6 +77,8 @@ list(APPEND HEADER_FILES
     Containers.h 
     BranchingImage.h 
     BranchingImageConverter.h
+    BranchingCellIndicesFromPositions.h
+    BranchingCellVolumes.h
 	)
 
 # make mocced header / form files path from absolute to relative

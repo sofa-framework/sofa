@@ -48,7 +48,8 @@ HEADERS += \
         Containers.h \
         BranchingImage.h \
         BranchingImageConverter.h \
-
+        BranchingCellIndicesFromPositions.h \
+        BranchingCellVolumes.h \
 
 SOURCES += \
 	initImage.cpp \
@@ -70,7 +71,8 @@ SOURCES += \
 #	QImageMouseButtonsWidget.cpp \
     VectorVisualizationWidget.cpp \
     BranchingImageConverter.cpp \
-
+    BranchingCellIndicesFromPositions.cpp \
+    BranchingCellVolumes.cpp \
 
 README_FILE = image.txt
 	

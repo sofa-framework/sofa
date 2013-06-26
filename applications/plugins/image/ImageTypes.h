@@ -74,6 +74,8 @@ struct Image
     typedef CImg<T> CImgT;
 
     static const int label = IMAGELABEL_IMAGE; // type identifier, must be unique
+    /// the 5 dimension labels of an image ( x, y, z, spectrum=nb channels , time )
+    typedef enum{ DIMENSION_X=0, DIMENSION_Y, DIMENSION_Z, DIMENSION_S /* spectrum = nb channels*/, DIMENSION_T /*4th dimension = time*/, NB_DimensionLabel } DimensionLabel;
 
 protected:
     CImgList<T> img; // list of images along temporal dimension. Each image is 4-dimensional (x,y,z,s) where s is the spectrum (e.g. channels for color images, vector or tensor values, etc.)
@@ -104,6 +106,21 @@ public:
     CImg<T>& getCImg(const unsigned int t=0) { if (t>=img.size())   return *img._data;		return img(t);    }
     const CImg<T>& getCImg(const unsigned int t=0) const {   if (t>=img.size())   return *img._data;		return img(t);   }
 
+    inline bool isEmpty() const {return img.size()==0;}
+
+    /// check if image coordinates are inside bounds
+    template<class t>
+    inline bool isInside( t x, t y, t z ) const
+    {
+        if(isEmpty()) return false;
+        if(x<0) return false;
+        if(y<0) return false;
+        if(z<0) return false;
+        if(x>=(t)img(0).width()) return false;
+        if(y>=(t)img(0).height()) return false;
+        if(z>=(t)img(0).depth()) return false;
+        return true;
+    }
 
     imCoord getDimensions() const
     {
@@ -245,7 +262,7 @@ public:
         {
             for (unsigned int i = 0; i < position.size() ; i++)
             {
-                Vec<3,unsigned int> pt((unsigned int)round(position[i][0]),(unsigned int)round(position[i][1]),(unsigned int)round(position[i][2]));
+                Vec<3,unsigned int> pt((unsigned int)helper::round(position[i][0]),(unsigned int)helper::round(position[i][1]),(unsigned int)helper::round(position[i][2]));
                 if(pt[axis]==coord) if(pt[0]>=ROI[0][0] && pt[0]<=ROI[1][0]) if(pt[1]>=ROI[0][1] && pt[1]<=ROI[1][1])	if(pt[2]>=ROI[0][2] && pt[2]<=ROI[1][2])
                             {
                                 if(axis==0)			ret(pt[2]-ROI[0][2],pt[1]-ROI[0][1])=true;
@@ -265,7 +282,7 @@ public:
 
             for (unsigned int i = 0; i < triangle.size() ; i++)  // box/ triangle intersection -> polygon with a maximum of 5 edges, to draw
             {
-                for (unsigned int j = 0; j < 3 ; j++) { v[j] = position[triangle[i][j]]; pt[j]=Vec<3,int>((int)round(v[j][0]),(int)round(v[j][1]),(int)round(v[j][2])); }
+                for (unsigned int j = 0; j < 3 ; j++) { v[j] = position[triangle[i][j]]; pt[j]=Vec<3,int>((int)helper::round(v[j][0]),(int)helper::round(v[j][1]),(int)helper::round(v[j][2])); }
 
                 vector<Vec<3,int> > pts;
                 for (unsigned int j = 0; j < 3 ; j++)
@@ -274,13 +291,13 @@ public:
                     unsigned int k=(j==2)?0:j+1;
                     if(pt[j][axis]<pt[k][axis])
                     {
-                        alpha=((Real)coord-0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(Vec<3,int>((int)round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
-                        alpha=((Real)coord+0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(Vec<3,int>((int)round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
+                        alpha=((Real)coord-0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(Vec<3,int>((int)helper::round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)helper::round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)helper::round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
+                        alpha=((Real)coord+0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(Vec<3,int>((int)helper::round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)helper::round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)helper::round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
                     }
                     else
                     {
-                        alpha=((Real)coord+0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(Vec<3,int>((int)round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
-                        alpha=((Real)coord-0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(Vec<3,int>((int)round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
+                        alpha=((Real)coord+0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(Vec<3,int>((int)helper::round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)helper::round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)helper::round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
+                        alpha=((Real)coord-0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(Vec<3,int>((int)helper::round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)helper::round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)helper::round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
                     }
                 }
                 for (unsigned int j = 0; j < pts.size() ; j++)
@@ -296,7 +313,7 @@ public:
             }
             for (unsigned int i = 0; i < quad.size() ; i++)
             {
-                for (unsigned int j = 0; j < 4 ; j++) { v[j] = position[quad[i][j]]; pt[j]=Vec<3,int>((int)round(v[j][0]),(int)round(v[j][1]),(int)round(v[j][2])); }
+                for (unsigned int j = 0; j < 4 ; j++) { v[j] = position[quad[i][j]]; pt[j]=Vec<3,int>((int)helper::round(v[j][0]),(int)helper::round(v[j][1]),(int)helper::round(v[j][2])); }
 
                 vector<Vec<3,int> > pts;
                 for (unsigned int j = 0; j < 4 ; j++)
@@ -305,13 +322,13 @@ public:
                     unsigned int k=(j==2)?0:j+1;
                     if(pt[j][axis]<pt[k][axis])
                     {
-                        alpha=((Real)coord-0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(Vec<3,int>((int)round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
-                        alpha=((Real)coord+0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(Vec<3,int>((int)round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
+                        alpha=((Real)coord-0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(Vec<3,int>((int)helper::round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)helper::round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)helper::round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
+                        alpha=((Real)coord+0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(Vec<3,int>((int)helper::round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)helper::round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)helper::round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
                     }
                     else
                     {
-                        alpha=((Real)coord+0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(Vec<3,int>((int)round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
-                        alpha=((Real)coord-0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(Vec<3,int>((int)round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
+                        alpha=((Real)coord+0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(Vec<3,int>((int)helper::round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)helper::round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)helper::round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
+                        alpha=((Real)coord-0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(Vec<3,int>((int)helper::round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)helper::round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)helper::round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
                     }
                 }
                 for (unsigned int j = 0; j < pts.size() ; j++)

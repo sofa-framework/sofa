@@ -22,20 +22,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_IMAGE_ImageValuesFromPositions_H
-#define SOFA_IMAGE_ImageValuesFromPositions_H
+#ifndef SOFA_IMAGE_BranchingCellIndicesFromPositions_H
+#define SOFA_IMAGE_BranchingCellIndicesFromPositions_H
 
 #include "initImage.h"
 #include "ImageTypes.h"
+#include "BranchingImage.h"
 #include <sofa/component/component.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
-#include <sofa/helper/OptionsGroup.h>
 #include <sofa/defaulttype/Vec.h>
-
-#define INTERPOLATION_NEAREST 0
-#define INTERPOLATION_LINEAR 1
-#define INTERPOLATION_CUBIC 2
 
 namespace sofa
 {
@@ -51,16 +47,16 @@ using namespace helper;
 using namespace cimg_library;
 
 /**
- * Get image intensities at sample locations
+ * Returns global index of branching image voxels at sample locations, given a fine image of superimposed offsets
  */
 
 
-template <class _ImageTypes>
-class ImageValuesFromPositions : public core::DataEngine
+template <class _ImageTypes,class _BranchingImageTypes>
+class BranchingCellIndicesFromPositions : public core::DataEngine
 {
 public:
     typedef core::DataEngine Inherited;
-    SOFA_CLASS(SOFA_TEMPLATE(ImageValuesFromPositions,_ImageTypes),Inherited);
+    SOFA_CLASS(SOFA_TEMPLATE2(BranchingCellIndicesFromPositions,_ImageTypes,_BranchingImageTypes),Inherited);
 
     typedef SReal Real;
 
@@ -70,50 +66,53 @@ public:
     typedef helper::ReadAccessor<Data< ImageTypes > > raImage;
     Data< ImageTypes > image;
 
+    typedef _BranchingImageTypes BranchingImageTypes;
+    typedef typename BranchingImageTypes::T bT;
+    typedef helper::ReadAccessor<Data< BranchingImageTypes > > raBranchingImage;
+    Data< BranchingImageTypes > branchingImage;
+
     typedef defaulttype::ImageLPTransform<Real> TransformType;
     typedef typename TransformType::Coord Coord;
     typedef helper::ReadAccessor<Data< TransformType > > raTransform;
     Data< TransformType > transform;
+    Data< TransformType > branchingImageTransform;
 
     typedef vector<Vec<3,Real> > SeqPositions;
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
     Data< SeqPositions > position;
 
-    Data< helper::OptionsGroup > Interpolation;  ///< nearest, linear, cubic
-
-    typedef vector<Real> valuesType;
+    typedef vector<unsigned int> valuesType;
     typedef helper::WriteAccessor<Data< valuesType > > waValues;
-    Data< valuesType > values;  ///< output interpolated values
-    Data< Real > outValue;
-
+    Data< valuesType > cell;  ///< output interpolated values
 
     virtual std::string getTemplateName() const    { return templateName(this);    }
-    static std::string templateName(const ImageValuesFromPositions<ImageTypes>* = NULL) { return ImageTypes::Name();    }
+    static std::string templateName(const BranchingCellIndicesFromPositions<ImageTypes,BranchingImageTypes>* = NULL) { return ImageTypes::Name()+std::string(",")+BranchingImageTypes::Name();    }
 
-    ImageValuesFromPositions()    :   Inherited()
+    BranchingCellIndicesFromPositions()    :   Inherited()
         , image(initData(&image,ImageTypes(),"image",""))
+        , branchingImage(initData(&branchingImage,BranchingImageTypes(),"branchingImage",""))
         , transform(initData(&transform,TransformType(),"transform",""))
+        , branchingImageTransform(initData(&branchingImageTransform,TransformType(),"branchingImageTransform",""))
         , position(initData(&position,SeqPositions(),"position","input positions"))
-        , Interpolation( initData ( &Interpolation,"interpolation","Interpolation method." ) )
-        , values( initData ( &values,"values","Interpolated values." ) )
-        , outValue(initData(&outValue,(Real)0,"outValue","default value outside image"))
+        , cell( initData ( &cell,"cell","cell indices." ) )
         , time((unsigned int)0)
     {
-        helper::OptionsGroup InterpolationOptions(3,"Nearest", "Linear", "Cubic");
-        InterpolationOptions.setSelectedItem(INTERPOLATION_LINEAR);
-        Interpolation.setValue(InterpolationOptions);
-
+        this->addAlias(&branchingImageTransform, "branchingTransform");
         image.setReadOnly(true);
+        branchingImage.setReadOnly(true);
         transform.setReadOnly(true);
+        branchingImageTransform.setReadOnly(true);
         f_listening.setValue(true);
     }
 
     virtual void init()
     {
         addInput(&image);
+        addInput(&branchingImage);
         addInput(&transform);
+        addInput(&branchingImageTransform);
         addInput(&position);
-        addOutput(&values);
+        addOutput(&cell);
         setDirtyValue();
     }
 
@@ -128,44 +127,40 @@ protected:
         cleanDirty();
 
         raImage in(this->image);
+        raBranchingImage bin(this->branchingImage);
         raTransform inT(this->transform);
+        raTransform binT(this->branchingImageTransform);
         raPositions pos(this->position);
 
-        // get image at time t
-        const CImg<T>& img = in->getCImg(this->time);
+        // get images at time t
+        const typename ImageTypes::CImgT& img = in->getCImg(this->time);
+        const typename BranchingImageTypes::BranchingImage3D& bimg = bin->imgList[this->time];
 
-        waValues val(this->values);
-        Real outval=this->outValue.getValue();
+        waValues val(this->cell);
+        unsigned int outval=0;
         val.resize(pos.size());
 
-        if(Interpolation.getValue().getSelectedId()==INTERPOLATION_NEAREST)
-        {
             for(unsigned int i=0; i<pos.size(); i++)
             {
-                Coord Tp = inT->toImage(pos[i]);
+                Coord Tp = inT->toImageInt(pos[i]);
                 if(!in->isInside(Tp[0],Tp[1],Tp[2]))  val[i] = outval;
-                else val[i] = (Real)img.atXYZ(sofa::helper::round((double)Tp[0]),sofa::helper::round((double)Tp[1]),sofa::helper::round((double)Tp[2]));
+                else
+                {
+                    typename BranchingImageTypes::VoxelIndex vi;
+                    Coord bTp = binT->toImageInt(pos[i]);
+                    vi.index1d=bin->index3Dto1D(bTp[0],bTp[1],bTp[2]);
+                    vi.offset=img.atXYZ(Tp[0],Tp[1],Tp[2]);
+                    if(vi.offset<=0) val[i] = outval;
+                    else if(vi.offset>bimg[vi.index1d].size()) val[i] = outval;
+                    else
+                    {
+                        // count to retrieve global index.
+                        val[i]=0;
+                        for(unsigned int i1d=0;i1d<vi.index1d;i1d++) val[i]+=bimg[i1d].size();
+                        val[i]+=vi.offset-1;
+                    }
+                }
             }
-        }
-        else if(Interpolation.getValue().getSelectedId()==INTERPOLATION_LINEAR)
-        {
-            for(unsigned int i=0; i<pos.size(); i++)
-            {
-                Coord Tp = inT->toImage(pos[i]);
-                if(!in->isInside(Tp[0],Tp[1],Tp[2])) val[i] = outval;
-                else val[i] = (Real)img.linear_atXYZ(Tp[0],Tp[1],Tp[2],0,(T)outval);
-            }
-        }
-        else
-        {
-            for(unsigned int i=0; i<pos.size(); i++)
-            {
-                Coord Tp = inT->toImage(pos[i]);
-                if(!in->isInside(Tp[0],Tp[1],Tp[2]))  val[i] = outval;
-                else val[i] = (Real)img.cubic_atXYZ(Tp[0],Tp[1],Tp[2],0,(T)outval,cimg::type<T>::min(),cimg::type<T>::max());
-            }
-        }
-
     }
 
     void handleEvent(sofa::core::objectmodel::Event *event)
@@ -194,4 +189,4 @@ protected:
 } // namespace component
 } // namespace sofa
 
-#endif // SOFA_IMAGE_ImageValuesFromPositions_H
+#endif // SOFA_IMAGE_BranchingCellIndicesFromPositions_H

@@ -579,7 +579,7 @@ public:
     BranchingImage<T>& operator=(const BranchingImage<T>& im)
     {
         // allocate & copy everything
-        setDimension( im.getDimension() );
+        setDimensions( im.getDimension() );
 
         for( unsigned t=0 ; t<dimension[DIMENSION_T] ; ++t )
         {
@@ -600,7 +600,7 @@ public:
     template<class T2>
     void fromImage( const Image<T2>& im, BranchingImageConnectivity connectivity )
     {
-        setDimension( im.getDimensions() );
+        setDimensions( im.getDimensions() );
 
         for( unsigned t=0 ; t<dimension[DIMENSION_T] ; ++t )
         {
@@ -704,6 +704,19 @@ public:
     }
 
 
+    /// check if image coordinates are inside bounds
+    template<class t>
+    inline bool isInside( t x, t y, t z ) const
+    {
+        if(isEmpty()) return false;
+        if(x<0) return false;
+        if(y<0) return false;
+        if(z<0) return false;
+        if(x>=(t)dimension[DIMENSION_X]) return false;
+        if(y>=(t)dimension[DIMENSION_Y]) return false;
+        if(z>=(t)dimension[DIMENSION_Z]) return false;
+        return true;
+    }
 
     /// compute the map key in BranchingImage from the pixel position
     inline unsigned index3Dto1D( unsigned x, unsigned y, unsigned z ) const
@@ -784,7 +797,7 @@ public:
         return NeighbourOffset(0,0,0);
     }
 
-
+    bool isEmpty() const { if( imgList ) return true; else return false;}
 
     /// \returns the 5 image dimensions (x,y,z,s,t)
     const Dimension& getDimension() const
@@ -798,7 +811,7 @@ public:
 
     /// resizing
     /// @warning data is deleted
-    void setDimension( const Dimension& newDimension )
+    void setDimensions( const Dimension& newDimension )
     {
         clear();
 
@@ -812,12 +825,20 @@ public:
             imgList[t].resize( imageSize );
     }
 
+    /// copy only the topology and initialize values based on available DIMENSION_T and DIMENSION_S
+    template<typename T2>
+    void cloneTopology( const BranchingImage<T2>& other, const T defaultValue=(T)0)
+    {
+        for( unsigned t=0 ; t<dimension[DIMENSION_T] ; ++t )
+            imgList[t].cloneTopology<T2>(other.imgList[t],dimension[DIMENSION_S],defaultValue);
+    }
+
     /// read dimensions
     inline friend std::istream& operator >> ( std::istream& in, BranchingImage<T>& im )
     {
         Dimension dim;
         in >> dim;
-        im.setDimension( dim );
+        im.setDimensions( dim );
         return in;
     }
 
@@ -1204,7 +1225,7 @@ public:
         fileStream.open( imageFilename.c_str(), std::ifstream::in );
         if( !fileStream.is_open() ) { std::cout << "Can not open " << imageFilename << std::endl; clear(); return false; }
 
-        setDimension( Dimension( dim[0], dim[1], dim[2], nbchannels, dim[3] ) );
+        setDimensions( Dimension( dim[0], dim[1], dim[2], nbchannels, dim[3] ) );
 
         for( unsigned t=0 ; t<dimension[DIMENSION_T] ; ++t )
         {

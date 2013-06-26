@@ -260,6 +260,7 @@ protected:
 
         // set image
         raImage in0(this->inputImages[0]);
+        if(in0->isEmpty()) return;
         imCoord dim=in0->getDimensions();
         Coord MaxP=outT->toImage(BB[1]); // corner pixel = dim-1
         dim[0]=(unsigned int)MaxP[0]+1;

@@ -88,7 +88,7 @@ struct ImageExporterSpecialization<defaulttype::IMAGELABEL_IMAGE>
 
         typename ImageExporter::raImage rimage(exporter.image);
         typename ImageExporter::raTransform rtransform(exporter.transform);
-        if (!rimage->getCImgList()) { exporter.serr << "ImageExporter: no image "<<exporter.name<<exporter.sendl; return false; }
+        if (rimage->isEmpty()) { exporter.serr << "ImageExporter: no image "<<exporter.name<<exporter.sendl; return false; }
 
         if(fname.find(".mhd")!=std::string::npos || fname.find(".MHD")!=std::string::npos || fname.find(".Mhd")!=std::string::npos
            || fname.find(".raw")!=std::string::npos || fname.find(".RAW")!=std::string::npos || fname.find(".Raw")!=std::string::npos)

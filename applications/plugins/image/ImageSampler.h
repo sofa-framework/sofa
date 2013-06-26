@@ -859,12 +859,12 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
         dim[ImageSampler::ImageTypes::DIMENSION_T]=1;
 
         defaulttype::BranchingImageUI voronoi;
-        voronoi.setDimension(dim);
+        voronoi.setDimensions(dim);
         voronoi.imgList[0].cloneTopology<T>(inimg,1,0);
 
         typename ImageSampler::waDist wadist(sampler->distances);
         DistTypes& dist = wadist.wref();
-        dist.setDimension(dim);
+        dist.setDimensions(dim);
         dist.imgList[0].cloneTopology<T> (inimg,1,-1.0);
 
         bimg_forCVoffT(in.ref(),c,v,off1D,t) if(t==sampler->time) if(in->getValue(off1D,v,c,t)) dist.getValue(off1D,v,c,0)=cimg::type<Real>::max();
