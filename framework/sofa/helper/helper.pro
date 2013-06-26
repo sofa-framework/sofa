@@ -113,7 +113,7 @@ SOURCES += ArgumentParser.cpp \
     io/MassSpringLoader.cpp \
     io/Mesh.cpp \
     io/MeshOBJ.cpp \
-    io/MeshOBJ.h \
+    io/MeshSTL.cpp \
     io/MeshTopologyLoader.cpp \
     io/MeshTrian.cpp \
     io/SphereLoader.cpp \
