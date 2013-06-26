@@ -537,6 +537,21 @@ Visitor::Result MechanicalVInitVisitor<vtype>::fwdMappedMechanicalState(simulati
 }
 
 template< VecType vtype>
+Visitor::Result MechanicalVInitVisitor<vtype>::fwdInteractionForceField(simulation::Node* /*node*/, core::behavior::BaseInteractionForceField* ff)
+{
+    if (m_interactionForceField)
+    {
+        core::behavior::BaseMechanicalState* mm = ff->getMechModel1();
+        mm->vInit(this->params /* PARAMS FIRST */, vDest.getId(mm), vSrc.getId(mm));
+        mm = ff->getMechModel2();
+        mm->vInit(this->params /* PARAMS FIRST */, vDest.getId(mm), vSrc.getId(mm));
+    }
+
+    return RESULT_CONTINUE;
+}
+
+
+template< VecType vtype>
 std::string  MechanicalVInitVisitor<vtype>::getInfos() const
 {
     std::string name = "[" + vDest.getName() + "]";
