@@ -114,7 +114,6 @@ public:
     static MyVecId dx()             { return MyVecId(7); }
     static MyVecId dforce()         { return MyVecId(8); }
     static MyVecId accFromFrame()   { return MyVecId(9); }
-    static MyVecId solverSolution() { return MyVecId(10);} // useful to have a specific VecId where to store the solver solution to be able to to warm start
     enum { V_FIRST_DYNAMIC_INDEX = 11 }; ///< This is the first index used for dynamically allocated vectors
 
     static std::string getName(const MyVecId& v)
@@ -141,8 +140,6 @@ public:
         case 8: result+= "dforce";
             break;
         case 9: result+= "accFromFrame";
-            break;
-        case 10: result+= "solverSolution";
             break;
         default:
             std::ostringstream out;

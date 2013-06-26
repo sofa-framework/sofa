@@ -103,6 +103,7 @@ public:
     Data<bool> f_verbose;
 protected:
     EulerImplicitSolver();
+    ~EulerImplicitSolver();
 public:
     void init();
 
@@ -180,6 +181,9 @@ public:
         else
             return vect[outputDerivative];
     }
+
+    /// the solution vector is stored for warm-start
+    core::behavior::MultiVecDeriv x;
 };
 
 } // namespace odesolver

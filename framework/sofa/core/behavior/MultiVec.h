@@ -64,6 +64,10 @@ private:
     TMultiVec(const TMultiVec<vtype>& ) {}
 
 public:
+    /// Default constructor, to combine with the set method
+    TMultiVec() : vop(NULL), v(MyMultiVecId::null()), dynamic(false)
+    {}
+
     /// Refers to a state vector with the given ID (VecId::position(), VecId::velocity(), etc).
     TMultiVec( BaseVectorOperations* vop, MyMultiVecId v) : vop(vop), v(v), dynamic(false)
     {}
@@ -73,6 +77,12 @@ public:
     {
         BOOST_STATIC_ASSERT(vtype == V_COORD || vtype == V_DERIV);
         vop->v_alloc( v );
+    }
+
+    void set( BaseVectorOperations* vop )
+    {
+        // not yet allocated
+        if( v.isNull() ) vop->v_alloc( v );
     }
 
     ~TMultiVec()
@@ -86,10 +96,8 @@ public:
     operator AllMultiVecId() {  return v;  }
     operator ConstAllMultiVecId() {  return v;  }
 
-    const MyMultiVecId& id()
-    {
-        return v;
-    }
+    const MyMultiVecId& id() const { return v; }
+    MyMultiVecId& id() { return v; }
 
     BaseVectorOperations* ops() { return vop; }
     void setOps(BaseVectorOperations* op) { vop = op; }
