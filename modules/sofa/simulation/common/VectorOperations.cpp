@@ -78,10 +78,21 @@ void VectorOperations::v_free(sofa::core::MultiVecCoordId& id)
     executeVisitor( MechanicalVFreeVisitor<V_COORD>( params /* PARAMS FIRST */, id) );
 }
 
-void VectorOperations::v_free(sofa::core::MultiVecDerivId& id)
+void VectorOperations::v_free(sofa::core::MultiVecDerivId& id, bool interactionForceField)
 {
-    executeVisitor( MechanicalVFreeVisitor<V_DERIV>(params /* PARAMS FIRST */, id) );
+    executeVisitor( MechanicalVFreeVisitor<V_DERIV>(params /* PARAMS FIRST */, id, interactionForceField) );
 }
+
+void VectorOperations::v_realloc(sofa::core::MultiVecCoordId& id, bool interactionForceField)
+{
+    executeVisitor( MechanicalVInitVisitor<V_COORD>(params /* PARAMS FIRST */, id, sofa::core::MultiVecCoordId::null(), true, interactionForceField) );
+}
+
+void VectorOperations::v_realloc(sofa::core::MultiVecDerivId& id, bool interactionForceField)
+{
+    executeVisitor( MechanicalVInitVisitor<V_DERIV>(params /* PARAMS FIRST */, id, sofa::core::MultiVecDerivId::null(), true, interactionForceField) );
+}
+
 
 void VectorOperations::v_clear(sofa::core::MultiVecId v) //v=0
 {

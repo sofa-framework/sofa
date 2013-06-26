@@ -64,6 +64,13 @@ EulerImplicitSolver::EulerImplicitSolver()
 {
 }
 
+EulerImplicitSolver::~EulerImplicitSolver()
+{
+    // free the locally created vector x (including eventual external mechanical states linked by an InteractionForceField)
+    sofa::simulation::common::VectorOperations vop( core::ExecParams::defaultInstance(), this->getContext() );
+    vop.v_free( x.id(), true );
+}
+
 void EulerImplicitSolver::init()
 {
     if (!this->getTags().empty())
@@ -95,10 +102,10 @@ void EulerImplicitSolver::solve(const core::ExecParams* params /* PARAMS FIRST *
     MultiVecCoord newPos( &vop, xResult );
     MultiVecDeriv newVel( &vop, vResult );
 
-    MultiVecDeriv x( &vop, core::VecDerivId::solverSolution() );
-    // perform allocation of VecDerivId::solverSolution for every MechanicalObjects (only perfomed once, each time a new MechanicalObject appears in the scene)
-    simulation::MechanicalVInitVisitor< core::V_DERIV >( params, core::VecDerivId::solverSolution(), core::VecDerivId::null(), true, true ).execute( this->getContext() );
-
+    x.set( &vop );
+    // perform allocation of VecDerivId::solverSolution for every MechanicalObjects (only perfomed once, each time a new MechanicalObject appears in the scene).
+    // Warning, this includes external mechanical states linked by an interactionForceField TODO: remove this allocation by seeing these external mechanical states as abstract null vectors
+    vop.v_realloc( x.id(), true );
 
 
 #ifdef SOFA_DUMP_VISITOR_INFO

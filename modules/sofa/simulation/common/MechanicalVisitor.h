@@ -596,14 +596,18 @@ class SOFA_SIMULATION_COMMON_API MechanicalVFreeVisitor : public BaseMechanicalV
 public:
     typedef sofa::core::TMultiVecId<vtype,V_WRITE> MyMultiVecId;
     MyMultiVecId v;
-    MechanicalVFreeVisitor( const sofa::core::ExecParams* params /* PARAMS FIRST */, MyMultiVecId v)
-        : BaseMechanicalVisitor(params) , v(v)
+    bool interactionForceField;
+
+    MechanicalVFreeVisitor( const sofa::core::ExecParams* params /* PARAMS FIRST */, MyMultiVecId v, bool interactionForceField=false)
+        : BaseMechanicalVisitor(params) , v(v), interactionForceField(interactionForceField)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
+
+    virtual Result fwdInteractionForceField(simulation::Node* node, core::behavior::BaseInteractionForceField* ff);
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes

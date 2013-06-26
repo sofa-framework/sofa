@@ -596,6 +596,18 @@ Visitor::Result MechanicalVFreeVisitor<vtype>::fwdMechanicalState(simulation::No
 }
 
 template< VecType vtype>
+Visitor::Result MechanicalVFreeVisitor<vtype>::fwdInteractionForceField(simulation::Node* node, core::behavior::BaseInteractionForceField* ff)
+{
+    if( interactionForceField )
+    {
+        core::behavior::BaseMechanicalState* mm = ff->getMechModel1();
+        mm->vFree( this->params /* PARAMS FIRST */, v.getId(mm) );
+        mm = ff->getMechModel2();
+        mm->vFree( this->params /* PARAMS FIRST */, v.getId(mm) );
+    }
+}
+
+template< VecType vtype>
 std::string  MechanicalVFreeVisitor<vtype>::getInfos() const
 {
     std::string name="[" + v.getName() + "]";
