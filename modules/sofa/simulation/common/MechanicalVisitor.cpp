@@ -605,6 +605,7 @@ Visitor::Result MechanicalVFreeVisitor<vtype>::fwdInteractionForceField(simulati
         mm = ff->getMechModel2();
         mm->vFree( this->params /* PARAMS FIRST */, v.getId(mm) );
     }
+    return RESULT_CONTINUE;
 }
 
 template< VecType vtype>
