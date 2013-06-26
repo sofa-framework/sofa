@@ -166,7 +166,7 @@ protected:
         raTransform inT(this->inputTransform);
         raTransform outT(this->outputTransform);
 
-        if(!in->getCImgList().size()) return;
+        if(in->isEmpty()) return;
         const CImg<T>& img = in->getCImg(this->time);
         imCoord dim = in->getDimensions();
 

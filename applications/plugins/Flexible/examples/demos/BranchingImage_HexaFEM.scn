@@ -14,17 +14,15 @@
 <!--  <ImageViewer template="ImageUC" name="viewer" src="@image"  /> -->
   
   
-  <ImageToBranchingImageConverter template="ImageUC,BranchingImageUC" name="coarsener" inputImage="@image.image" inputTransform="@image.transform" coarseningLevels="6" superimpositionType="0" printLog="true" createMappingImage="true" computeVolumes="true" connectivity="26"/>
+  <ImageToBranchingImageConverter template="ImageUC,BranchingImageUC" name="coarsener" inputImage="@image.image" inputTransform="@image.transform" coarseningLevels="6" superimpositionType="0" printLog="true" createFineImage="true" connectivity="26"/>
   <ImageContainer template="BranchingImageUC" name="branchingImage" branchingImage="@coarsener.branchingImage" transform="@coarsener.transform" drawBB="true"/>
 
 <!--  Visualization of flatten branching image-->
 <!--   <BranchingImageToImageConverter template="BranchingImageUC,ImageUC" name="imageConverter" inputBranchingImage="@branchingImage.branchingImage" conversionType="2" printLog="true"/>  -->
-<!--   <ImageContainer template="ImageUC" name="image2" image="@imageConverter.image" transform="@branchingImage.transform" drawBB="false"/> -->
-<!--   <ImageViewer template="ImageUC" name="viewer2" src="@image2" /> -->
+<!--   <ImageViewer template="ImageUC" name="viewer2" image="@imageConverter.image" transform="@branchingImage.transform" /> -->
   
 <!--  Visualization of mapping image -->
-   <ImageContainer template="ImageI" name="image3" image="@coarsener.outputMappingImage" transform="@image.transform" drawBB="false"/>
-   <ImageViewer template="ImageI" name="viewer2" src="@image3" plane="5  -1 -1 " />
+   <ImageViewer template="ImageUI" name="viewer2" image="@coarsener.outputFineImage" transform="@image.transform"  plane="5  -1 -1 " />
   
    <ImageSampler template="BranchingImageUC" name="sampler" src="@branchingImage" param="1" showEdges="false" printLog="true"/>
 
@@ -37,8 +35,9 @@
         <BarycentricShapeFunction  nbRef="8" />
 
         <Node 	name="behavior"   >
-	    <!--  Exact volumes (from fine grid) are retrieved from ImageToBranchingImageConverter  -->
-	    <TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamples="false" method="0" order="2" fineVolumes="@../coarsener.volume"/>
+	    <!--  Exact cell volumes are computed based on branching and fine image  -->
+	    <BranchingCellVolumes name="vol" image="@../coarsener.outputFineImage" transform="@../image.transform" branchingImage="@../coarsener.branchingImage" branchingImageTransform="@../coarsener.transform" />
+	    <TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamples="false" method="0" order="2" fineVolumes="@vol.volumes"/>
 
 	    <MechanicalObject  template="F331" />
 	    <!--  cell indices are retrieved from GaussPointSampler (needed by shapefunction to differentiate overlapping cells) -->
@@ -51,6 +50,15 @@
 	    </Node>
         </Node>
 
+ 	<Node name="VisuHexa"  >
+		<VisualModel color="0.8 0.8 1 0.3" />
+		<IdentityMapping />
+	</Node>
+ 	<Node name="VisuHexa2"  >
+		<VisualStyle displayFlags="showWireframe"/>
+		<VisualModel color="0.8 0.8 1 1" />
+		<IdentityMapping />
+	</Node>
 
 	<Node 	name="mass"   >
 		<Mesh name="mesh" src="@../loader" />
@@ -58,9 +66,9 @@
 	        <RestShapeSpringsForceField points="10" stiffness="100" />
 	        <UniformMass totalMass="100" />
 	        
-	    	<!--  cell indices are retrieved from mappingImage (needed by shapefunction to differentiate overlapping cells) -->
-		<ImageValuesFromPositions name="cell" template="ImageI" interpolation="0" position ="@mesh.position" image="@../coarsener.outputMappingImage" transform="@../image.transform" />
-		<LinearMapping template="Mapping&lt;Vec3d,Vec3d&gt;" assembleJ="false" cell="@cell.values"/>
+	    	<!--  cell indices are retrieved from FineImage (needed by shapefunction to differentiate overlapping cells) -->
+		<BranchingCellIndicesFromPositions name="cell" position ="@mesh.position" image="@../coarsener.outputFineImage" transform="@../image.transform" branchingImage="@../coarsener.branchingImage" branchingImageTransform="@../coarsener.transform" />
+		<LinearMapping template="Mapping&lt;Vec3d,Vec3d&gt;" assembleJ="false" cell="@cell.cell"/>
 
 	        <Node name="Visual"  >
 			<VisualModel  />

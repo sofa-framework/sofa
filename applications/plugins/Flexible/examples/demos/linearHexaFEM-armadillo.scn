@@ -14,7 +14,7 @@
   <MeshToImageEngine  name="rasterizer" src="@mesh" voxelSize="0.8" padSize="1" rotateImage="true" />
   <ImageContainer template="ImageB" name="image" src="@rasterizer" drawBB="false"/>
   <!-- <ImageViewer template="ImageB" name="viewer" src="@image"  /> -->
-  <ImageSampler template="ImageB" name="sampler" src="@image" param="1" showEdges="true" printLog="true"/>
+  <ImageSampler template="ImageB" name="sampler" src="@image" param="1" showEdges="false" printLog="true"/>
 
   <EulerImplicit rayleighMass="1" rayleighStiffness="0.03" />
   <CGLinearSolver />
@@ -24,7 +24,7 @@
   <BarycentricShapeFunction nbRef="8" />
 
     <Node 	name="behavior"   >
-	<TopologyGaussPointSampler name="sampler" inPosition="@../dofs.rest_position" showSamples="true" method="0" order="2"/>
+	<TopologyGaussPointSampler name="sampler" inPosition="@../dofs.rest_position" showSamples="false" method="0" order="2"/>
 	<MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
     	<LinearMapping template="Mapping&lt;Vec3d,F331&gt;" assembleJ="true"/>
 
@@ -42,6 +42,16 @@
         <LinearMapping template="MechanicalMapping&lt;Vec3d,ExtVec3f&gt;" assembleJ="true"/>
    </Node>
 
+ 	<Node name="VisuHexa"  >
+		<VisualModel color="0.8 0.8 1 0.1" />
+		<IdentityMapping />
+	</Node>
+
+ 	<Node name="VisuHexa2"  >
+		<VisualStyle displayFlags="showWireframe"/>
+		<VisualModel color="0.8 0.8 1 1" />
+		<IdentityMapping />
+	</Node>
 <!--
 	  <HexahedronFEMForceField youngModulus="3000.0" poissonRatio="0.3" method="large" updateStiffnessMatrix="false" />
 	  <Node name="Visual"  >
