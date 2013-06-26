@@ -139,7 +139,7 @@ protected:
         // read input image and transform
         raImage in(this->f_image);
         raTransform inT(this->f_transform);
-        if(!in->getCImgList().size())  { serr<<"Image not found"<<sendl; return; }
+        if(in->isEmpty())  { serr<<"Image not found"<<sendl; return; }
         const CImg<T>& inimg = in->getCImg(0);  // suppose time=0
 
         // init indices and weights images

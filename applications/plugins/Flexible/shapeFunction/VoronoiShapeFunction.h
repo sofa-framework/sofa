@@ -32,6 +32,7 @@
 
 #include <image/ImageTypes.h>
 #include <image/ImageAlgorithms.h>
+#include <image/BranchingImage.h>
 
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/OptionsGroup.h>
@@ -77,6 +78,7 @@ struct VoronoiShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
     template<class VoronoiShapeFunction>
     static void init(VoronoiShapeFunction* This)
     {
+        typedef typename VoronoiShapeFunction::ImageTypes ImageTypes;
         typedef typename VoronoiShapeFunction::Real Real;
         typedef typename VoronoiShapeFunction::Coord Coord;
         typedef typename VoronoiShapeFunction::T T;
@@ -84,8 +86,10 @@ struct VoronoiShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
         typedef typename VoronoiShapeFunction::raImage raImage;
         typedef typename VoronoiShapeFunction::raTransform raTransform;
         typedef typename VoronoiShapeFunction::DistT DistT;
+        typedef typename VoronoiShapeFunction::DistTypes DistTypes;
         typedef typename VoronoiShapeFunction::waDist waDist;
         typedef typename VoronoiShapeFunction::IndT IndT;
+        typedef typename VoronoiShapeFunction::IndTypes IndTypes;
         typedef typename VoronoiShapeFunction::waInd waInd;
         typedef typename VoronoiShapeFunction::iCoord iCoord;
         typedef typename VoronoiShapeFunction::DistanceToPoint DistanceToPoint;
@@ -96,28 +100,28 @@ struct VoronoiShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
         // get tranform and image at time t
         raImage in(This->image);
         raTransform inT(This->transform);
-        if(!in->getCImgList().size())  { This->serr<<"Image not found"<<This->sendl; return; }
-        const CImg<T>& inimg = in->getCImg(0);  // suppose time=0
-        const CImg<T>* biasFactor=This->biasDistances.getValue()?&inimg:NULL;
+        if(in->isEmpty())  { This->serr<<"Image not found"<<This->sendl; return; }
+        const typename ImageTypes::CImgT& inimg = in->getCImg(0);  // suppose time=0
+        const typename ImageTypes::CImgT* biasFactor=This->biasDistances.getValue()?&inimg:NULL;
         const Vec<3,Real>& voxelsize=This->transform.getValue().getScale();
 
         // init voronoi and distances
         imCoord dim = in->getDimensions(); dim[3]=dim[4]=1;
         waInd vorData(This->f_voronoi); vorData->setDimensions(dim);
-        CImg<IndT>& voronoi = vorData->getCImg(); voronoi.fill(0);
+        typename IndTypes::CImgT& voronoi = vorData->getCImg(); voronoi.fill(0);
 
         waDist distData(This->f_distances);         distData->setDimensions(dim);
-        CImg<DistT>& dist = distData->getCImg(); dist.fill(-1);
+        typename DistTypes::CImgT& dist = distData->getCImg(); dist.fill(-1);
         cimg_forXYZC(inimg,x,y,z,c) if(inimg(x,y,z,c)) dist(x,y,z)=cimg::type<DistT>::max();
 
         // init indices and weights images
         unsigned int nbref=This->f_nbRef.getValue();
         dim[3]=nbref;
         waInd indData(This->f_index); indData->setDimensions(dim);
-        CImg<IndT>& indices = indData->getCImg(); indices.fill(0);
+        typename IndTypes::CImgT& indices = indData->getCImg(); indices.fill(0);
 
         waDist weightData(This->f_w);         weightData->setDimensions(dim);
-        CImg<DistT>& weights = weightData->getCImg(); weights.fill(0);
+        typename DistTypes::CImgT& weights = weightData->getCImg(); weights.fill(0);
 
         vector<iCoord> parentiCoord;
         for(unsigned int i=0; i<parent.size(); i++)
@@ -146,6 +150,93 @@ struct VoronoiShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
 
 
 
+
+/// Specialization for branching Image
+template <>
+struct VoronoiShapeFunctionSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
+{
+    template<class VoronoiShapeFunction>
+    static void init(VoronoiShapeFunction* This)
+    {
+        typedef typename VoronoiShapeFunction::ImageTypes ImageTypes;
+        typedef typename VoronoiShapeFunction::Real Real;
+        typedef typename VoronoiShapeFunction::Coord Coord;
+        typedef typename VoronoiShapeFunction::T T;
+        typedef typename VoronoiShapeFunction::imCoord imCoord;
+        typedef typename VoronoiShapeFunction::raImage raImage;
+        typedef typename VoronoiShapeFunction::raTransform raTransform;
+        typedef typename VoronoiShapeFunction::DistT DistT;
+        typedef typename VoronoiShapeFunction::DistTypes DistTypes;
+        typedef typename VoronoiShapeFunction::waDist waDist;
+        typedef typename VoronoiShapeFunction::IndT IndT;
+        typedef typename VoronoiShapeFunction::IndTypes IndTypes;
+        typedef typename VoronoiShapeFunction::waInd waInd;
+        typedef typename VoronoiShapeFunction::iCoord iCoord;
+        typedef typename VoronoiShapeFunction::DistanceToPoint DistanceToPoint;
+
+        typedef typename VoronoiShapeFunction::FineImage FineImage;
+        typedef typename VoronoiShapeFunction::raFineImage raFineImage;
+
+        helper::ReadAccessor<Data<vector<Coord> > > parent(This->f_position);
+        if(!parent.size()) { This->serr<<"Parent nodes not found"<<This->sendl; return; }
+
+        // get tranform and image at time t
+        raImage in(This->image);
+        raTransform inT(This->transform);
+        if(!in.ref().imgList)  { This->serr<<"Image not found"<<This->sendl; return; }
+        const ImageTypes* biasFactor=This->biasDistances.getValue()?&in.ref():NULL;
+        const Vec<3,Real>& voxelsize=This->transform.getValue().getScale();
+
+        // init voronoi and distances
+        imCoord dim = in->getDimensions();    dim[ImageTypes::DIMENSION_S]=dim[ImageTypes::DIMENSION_T]=1;
+
+        waInd vorData(This->f_voronoi);  IndTypes& voronoi = vorData.wref();
+        voronoi.setDimensions(dim);
+        voronoi.cloneTopology (in.ref(),0);
+
+        waDist distData(This->f_distances);        DistTypes& dist = distData.wref();
+        dist.setDimensions(dim);
+        dist.cloneTopology (in.ref(),-1.0);
+        bimg_forCVoffT(in.ref(),c,v,off1D,t) if(t==0 && c==0) if(in->getValue(off1D,v,c,t)) dist.getValue(off1D,v,c,0)=cimg::type<DistT>::max();
+
+        // init indices and weights images
+        unsigned int nbref=This->f_nbRef.getValue();        dim[ImageTypes::DIMENSION_S]=nbref;
+
+        waInd indData(This->f_index); IndTypes& indices = indData.wref();
+        indices.setDimensions(dim);
+        indices.cloneTopology (in.ref(),0);
+
+        waDist weightData(This->f_w);    DistTypes& weights = weightData.wref();
+        weights.setDimensions(dim);
+        weights.cloneTopology (in.ref(),0);
+
+        const typename FineImage::CImgT& fine = This->f_fineImage.getValue().getCImg();
+        raTransform fineTransform( This->f_fineTransform );
+
+// todo: finish this!
+//        vector<iCoord> parentiCoord;
+//        for(unsigned int i=0; i<parent.size(); i++)
+//        {
+//            Coord p = inT->toImage(parent[i]);
+//            parentiCoord.push_back(iCoord(sofa::helper::round(p[0]),sofa::helper::round(p[1]),sofa::helper::round(p[2])));
+//        }
+
+//        // compute voronoi and distances based on nodes
+//        std::set<DistanceToPoint> trial;                // list of seed points
+//        for(unsigned int i=0; i<parent.size(); i++)
+//        {
+//            trial.insert( DistanceToPoint(0.,parentiCoord[i]) );
+//            voronoi(parentiCoord[i][0],parentiCoord[i][1],parentiCoord[i][2])=i+1;
+//            dist(parentiCoord[i][0],parentiCoord[i][1],parentiCoord[i][2])=0;
+//        }
+//        if(This->useDijkstra.getValue()) dijkstra<Real,T>(trial,dist, voronoi, voxelsize , biasFactor); else fastMarching<Real,T>(trial,dist, voronoi, voxelsize ,biasFactor );
+
+//        // compute weights from voronoi
+//        if(This->method.getValue().getSelectedId() == DISTANCE)  This->ComputeWeigths_DistanceRatio(indices,weights,voronoi,dist,biasFactor,parentiCoord);
+//        else This->ComputeWeigths_NaturalNeighbors(indices,weights,voronoi,dist,biasFactor);
+    }
+
+};
 
 
 
@@ -192,6 +283,10 @@ public:
 
     typedef Vec<3,int> iCoord;
     typedef std::pair<Real,iCoord > DistanceToPoint;
+
+    // only used for branching image
+    typedef typename Inherit::FineImage FineImage;
+    typedef typename Inherit::raFineImage raFineImage;
     //@}
 
     /** @name  Options */

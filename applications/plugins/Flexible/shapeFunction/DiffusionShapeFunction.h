@@ -109,7 +109,7 @@ public:
 //        // get tranform and image at time t
 //        raImage in(this->image);
 //        raTransform inT(this->transform);
-//        if(!in->getCImgList().size())  { serr<<"Image not found"<<sendl; return; }
+//        if(in->isEmpty())  { serr<<"Image not found"<<sendl; return; }
 //        const CImg<T>& inimg = in->getCImg(0);  // suppose time=0
 //        const CImg<T>* biasFactor=biasDistances.getValue()?&inimg:NULL;
 //        const Vec<3,Real>& voxelsize=this->transform.getValue().getScale();

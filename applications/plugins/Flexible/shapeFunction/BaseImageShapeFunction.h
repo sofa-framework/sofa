@@ -66,44 +66,37 @@ struct BaseImageShapeFunctionSpecialization
 template <>
 struct BaseImageShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
 {
+    typedef SReal DistT;
+    typedef defaulttype::Image<DistT> DistTypes;
+    typedef unsigned int IndT;
+    typedef defaulttype::Image<IndT> IndTypes;
+
     template<class BaseImageShapeFunction>
-    static void constructor( BaseImageShapeFunction* bisf )
+    static void constructor( BaseImageShapeFunction* This )
     {
-        bisf->f_fineToCoarseMapping.setDisplayed( false );
-        bisf->f_fineToCoarseMappingTransform.setDisplayed( false );
+        This->f_fineImage.setDisplayed( false );
+        This->f_fineTransform.setDisplayed( false );
     }
 
     /// interpolate weights and their derivatives at a spatial position
     template<class BaseImageShapeFunction>
-    static void computeShapeFunction( BaseImageShapeFunction* bisf, const typename BaseImageShapeFunction::Coord& childPosition, typename BaseImageShapeFunction::MaterialToSpatial& M, typename BaseImageShapeFunction::VRef& ref, typename BaseImageShapeFunction::VReal& w, typename BaseImageShapeFunction::VGradient* dw=NULL, typename BaseImageShapeFunction::VHessian* ddw=NULL, const int /*cell*/=-1 )
+    static void computeShapeFunction( BaseImageShapeFunction* This, const typename BaseImageShapeFunction::Coord& childPosition, typename BaseImageShapeFunction::MaterialToSpatial& /*M*/, typename BaseImageShapeFunction::VRef& ref, typename BaseImageShapeFunction::VReal& w, typename BaseImageShapeFunction::VGradient* dw=NULL, typename BaseImageShapeFunction::VHessian* ddw=NULL, const int /*cell*/=-1 )
     {
         typedef typename BaseImageShapeFunction::Real Real;
         typedef typename BaseImageShapeFunction::IndT IndT;
         typedef typename BaseImageShapeFunction::DistT DistT;
         typedef typename BaseImageShapeFunction::Coord Coord;
 
-        // resize input
-        unsigned int nbRef=bisf->f_nbRef.getValue();
-        ref.resize(nbRef); ref.fill(0);
-        w.resize(nbRef); w.fill(0);
-        if(dw) { dw->resize(nbRef); for (unsigned int j=0; j<nbRef; j++ ) (*dw)[j].fill(0); }
-        if(ddw) { ddw->resize(nbRef); for (unsigned int j=0; j<nbRef; j++ ) (*ddw)[j].fill(0); }
-
         // get transform
-        typename BaseImageShapeFunction::raTransform inT(bisf->transform);
-
-        // material to world transformation = image orientation
-        helper::Quater<Real> q = helper::Quater< Real >::createQuaterFromEuler(inT->getRotation() * (Real)M_PI / (Real)180.0);
-        Mat<3,3,Real> R; q.toMatrix(R);
-        for ( unsigned int i = 0; i < BaseImageShapeFunction::spatial_dimensions; i++ )  for ( unsigned int j = 0; j < BaseImageShapeFunction::material_dimensions; j++ ) M[i][j]=R[i][j];
+        typename BaseImageShapeFunction::raTransform inT(This->transform);
 
         // get precomputed indices and weights
-        typename BaseImageShapeFunction::raInd indData(bisf->f_index);
-        typename BaseImageShapeFunction::raDist weightData(bisf->f_w);
-        if(!indData->getCImgList().size() || !weightData->getCImgList().size()) { bisf->serr<<"Weights not available"<<bisf->sendl; return; }
+        typename BaseImageShapeFunction::raInd indData(This->f_index);
+        typename BaseImageShapeFunction::raDist weightData(This->f_w);
+        if(indData->isEmpty() || weightData->isEmpty()) { This->serr<<"Weights not available"<<This->sendl; return; }
 
-        const CImg<IndT>& indices = indData->getCImg();
-        const CImg<DistT>& weights = weightData->getCImg();
+        const typename BaseImageShapeFunction::IndTypes::CImgT& indices = indData->getCImg();
+        const typename BaseImageShapeFunction::DistTypes::CImgT& weights = weightData->getCImg();
 
         // interpolate weights in neighborhood
         Coord p = inT->toImage(childPosition);
@@ -117,7 +110,7 @@ struct BaseImageShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
                 indices(P[0],P[1],P[2],0)==0)
         {
             Real dmin=cimg::type<Real>::max();
-            cimg_for_insideXYZ(indices,x,y,z,1) if(indices(x,y,z,0)) {Real d=(Coord(x,y,z)-p).norm2(); if(d<dmin) { P=Coord(x,y,z); dmin=d; } }
+            cimg_for_insideXYZ(indices,x,y,z,1) if(indices(x,y,z,0)) {Real d=(Coord(x,y,z)-p).norm2(); if(d<dmin) { P.set(x,y,z); dmin=d; } }
             if(dmin==cimg::type<Real>::max()) return;
         }
 
@@ -128,6 +121,7 @@ struct BaseImageShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
 
         // get indices at P
         int index=0;
+        unsigned int nbRef=This->f_nbRef.getValue();
         for (unsigned int r=0; r<nbRef; r++)
         {
             IndT ind=indices(P[0],P[1],P[2],r);
@@ -154,7 +148,7 @@ struct BaseImageShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
                 if(!dw) defaulttype::getPolynomialFit_differential(coeff,w[index]);
                 else if(!ddw) defaulttype::getPolynomialFit_differential(coeff,w[index],&(*dw)[index]);
                 else defaulttype::getPolynomialFit_differential(coeff,w[index],&(*dw)[index],&(*ddw)[index]);
-                ref[index]=ind-1;
+                ref[index]=ind-1; // remove offset from indices image
                 if(w[index]<=0) // clamp negative weights
                 {
                     w[index]=0;
@@ -171,9 +165,6 @@ struct BaseImageShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
         w.resize(index);
         if(dw)  dw->resize(index);
         if(ddw) ddw->resize(index);
-
-        // normalize
-        bisf->normalize(w,dw,ddw);
     }
 };
 
@@ -182,108 +173,99 @@ struct BaseImageShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
 template <>
 struct BaseImageShapeFunctionSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
 {
+    typedef SReal DistT;
+    typedef defaulttype::BranchingImage<DistT> DistTypes;
+    typedef unsigned int IndT;
+    typedef defaulttype::BranchingImage<IndT> IndTypes;
+
+    typedef IndTypes::ConnectionVoxel ConnectionVoxel;
+    typedef IndTypes::VoxelIndex VoxelIndex;
+    typedef IndTypes::Neighbours Neighbours;
+
     template<class BaseImageShapeFunction>
-    static void constructor( BaseImageShapeFunction* bisf )
+    static void constructor( BaseImageShapeFunction* This )
     {
-        bisf->addAlias( &bisf->image, "branchingImage" );
+        This->addAlias( &This->image, "branchingImage" );
     }
 
 
     /// interpolate weights and their derivatives at a spatial position
     template<class BaseImageShapeFunction>
-    static void computeShapeFunction( BaseImageShapeFunction* bisf, const typename BaseImageShapeFunction::Coord& childPosition, typename BaseImageShapeFunction::MaterialToSpatial& M, typename BaseImageShapeFunction::VRef& ref, typename BaseImageShapeFunction::VReal& w, typename BaseImageShapeFunction::VGradient* dw=NULL, typename BaseImageShapeFunction::VHessian* ddw=NULL, const int /*cell*/=-1)
+    static void computeShapeFunction( BaseImageShapeFunction* This, const typename BaseImageShapeFunction::Coord& childPosition, typename BaseImageShapeFunction::MaterialToSpatial& /*M*/, typename BaseImageShapeFunction::VRef& ref, typename BaseImageShapeFunction::VReal& w, typename BaseImageShapeFunction::VGradient* dw=NULL, typename BaseImageShapeFunction::VHessian* ddw=NULL, const int /*cell*/=-1)
     {
-
-        // AN IDEA
-        // rather than having an indice image + a weight image, it seems it would be possible to have only a weight branching image with connectivity, where connected voxels is similar to have the same indice
-        // all same indice voxel are connected, right? So if connections in the weight image are only close neighbours, it should be enough
-        // if using a indice image, no connectivity needs to be store in indice&weight images, but only superimposed voxel values
-
-
-
         typedef typename BaseImageShapeFunction::Real Real;
         typedef typename BaseImageShapeFunction::IndT IndT;
         typedef typename BaseImageShapeFunction::DistT DistT;
         typedef typename BaseImageShapeFunction::Coord Coord;
 
-        // resize input
-        unsigned int nbRef=bisf->f_nbRef.getValue();
-        ref.resize(nbRef); ref.fill(0);
-        w.resize(nbRef); w.fill(0);
-        if(dw) { dw->resize(nbRef); for (unsigned int j=0; j<nbRef; j++ ) (*dw)[j].fill(0); }
-        if(ddw) { ddw->resize(nbRef); for (unsigned int j=0; j<nbRef; j++ ) (*ddw)[j].fill(0); }
-
         // get transform
-        typename BaseImageShapeFunction::raTransform inT(bisf->transform);
-
-        // material to world transformation = image orientation
-        helper::Quater<Real> q = helper::Quater< Real >::createQuaterFromEuler(inT->getRotation() * (Real)M_PI / (Real)180.0);
-        Mat<3,3,Real> R; q.toMatrix(R);
-        for ( unsigned int i = 0; i < BaseImageShapeFunction::spatial_dimensions; i++ )  for ( unsigned int j = 0; j < BaseImageShapeFunction::material_dimensions; j++ ) M[i][j]=R[i][j];
+        typename BaseImageShapeFunction::raTransform inT(This->transform);
 
         // get precomputed indices and weights
-        typename BaseImageShapeFunction::raInd indData(bisf->f_index);
-        typename BaseImageShapeFunction::raDist weightData(bisf->f_w);
-        if(!indData->imgList.size() || !weightData->imgList.size()) { bisf->serr<<"Weights not available"<<bisf->sendl; return; }
+        typename BaseImageShapeFunction::raInd indData(This->f_index);
+        typename BaseImageShapeFunction::raDist weightData(This->f_w);
+        if(indData->isEmpty() || weightData->isEmpty()) { This->serr<<"Weights not available"<<This->sendl; return; }
 
         const typename BaseImageShapeFunction::IndTypes::BranchingImage3D& indices = indData->imgList[0];
         const typename BaseImageShapeFunction::DistTypes::BranchingImage3D& weights = weightData->imgList[0];
 
+        // get fine image to differentiate overlapping coarse voxels
+        typename BaseImageShapeFunction::raFineImage fineImage( This->f_fineImage );
+        const typename BaseImageShapeFunction::FineImage::CImgT& fine = fineImage->getCImg();
+        typename BaseImageShapeFunction::raTransform fineTransform( This->f_fineTransform );
+
         // interpolate weights in neighborhood
-// TODO adapt to new mapping image implementation
-        typename BaseImageShapeFunction::raFineToCoarseMappingImage fineToCoarseMappingImage( bisf->f_fineToCoarseMappingImage );
-        const CImg<unsigned long>& fineToCoarseMapping = fineToCoarseMappingImage->getCImg();
-        typename BaseImageShapeFunction::raTransform fineToCoarseMappingTransform( bisf->f_fineToCoarseMappingTransform );
-
-        Coord pfine = fineToCoarseMappingTransform->toImage(childPosition); // float fine image coord
+        Coord pfine = fineTransform->toImage(childPosition); // float fine image coord
         Coord Pfine;  for (unsigned int j=0; j<3; j++)  Pfine[j] = sofa::helper::round(pfine[j]); // int fine image coord
-
         unsigned int order=0;
         /*if(ddw) order=2; else */  // do not use order 2 for local weight interpolation. Order two is used only in weight fitting over regions
         if(dw) order=1;
 
         // get closest existing fine voxel
-        if( Pfine[0]<=0 || Pfine[1]<=0 || Pfine[2]<=0 || Pfine[0]>=fineToCoarseMapping.width()-1 || Pfine[1]>=fineToCoarseMapping.height()-1 || Pfine[2]>=fineToCoarseMapping.depth()-1 ||
-            fineToCoarseMapping(Pfine[0],Pfine[1],Pfine[2],0)==0 )
+        if( Pfine[0]<=0 || Pfine[1]<=0 || Pfine[2]<=0 || Pfine[0]>=fine.width()-1 || Pfine[1]>=fine.height()-1 || Pfine[2]>=fine.depth()-1 ||
+                fine(Pfine[0],Pfine[1],Pfine[2],0)==0 )
         {
             Real dmin=cimg::type<Real>::max();
-            cimg_for_insideXYZ(fineToCoarseMapping,x,y,z,1) if(fineToCoarseMapping(x,y,z,0)) {Real d=(Coord(x,y,z)-pfine).norm2(); if(d<dmin) { Pfine.set(x,y,z); dmin=d; } }
+            cimg_for_insideXYZ(fine,x,y,z,1) if(fine(x,y,z,0)) {Real d=(Coord(x,y,z)-pfine).norm2(); if(d<dmin) { Pfine.set(x,y,z); dmin=d; } }
             if(dmin==cimg::type<Real>::max()) return;
         }
 
-        typename BaseImageShapeFunction::IndTypes::VoxelIndex voxelIndex; // coarse voxel index
-        voxelIndex.offset = fineToCoarseMapping(Pfine[0],Pfine[1],Pfine[2],0);
-        Coord P = inT->toImageInt( fineToCoarseMappingTransform->fromImage( Pfine[0],Pfine[1],Pfine[2] ) ); // int coarse image coord
-        voxelIndex.index = indices->index3Dto1D( P[0], P[1], P[2] );
+        Coord P = inT->toImageInt( fineTransform->fromImage(Pfine) ); // int coarse image coord
+        const VoxelIndex voxelIndex (indData->index3Dto1D( P[0], P[1], P[2] ) , fine(Pfine[0],Pfine[1],Pfine[2],0)-1);
+        const ConnectionVoxel& indV = indices[voxelIndex.index1d][voxelIndex.offset];
 
         // prepare neighborood
-        sofa::defaulttype::Vec<27,  Coord > lpos;      // precomputed local positions
-        int count=0;
-        for (int k=-1; k<=1; k++) for (int j=-1; j<=1; j++) for (int i=-1; i<=1; i++) lpos[count++] = inT->fromImage(P+Coord(i,j,k)) - childPosition;
+        const Neighbours& indN = indV.neighbours;
+        vector< Coord > lpos;
+        lpos.push_back ( inT->fromImage(P) - childPosition ); // add central voxel
+        for (unsigned int n=0; n<indN.size(); n++) // add neighbors
+        {
+            Vec<3,unsigned int> P2;  indData->index1Dto3D( indN[n].index1d, P2[0], P2[1], P2[2] );
+            lpos.push_back ( inT->fromImage(P2) - childPosition );
+        }
 
         // get indices at P
         int index=0;
+        const unsigned int nbRef = This->f_nbRef.getValue();
         for (unsigned int r=0; r<nbRef; r++)
         {
-            IndT ind = indices[voxelIndex.index][voxelIndex.offset][r];
+            IndT ind=indV[r];
             if(ind>0)
             {
-                vector<DistT> val; val.reserve(27);
-                vector<Coord> pos; pos.reserve(27);
+                vector<DistT> val; val.reserve(lpos.size());
+                vector<Coord> pos; pos.reserve(lpos.size());
+
+                val.push_back(weights[voxelIndex.index1d][voxelIndex.offset][r]);
+                pos.push_back(lpos[0]);
+
                 // add neighbors with same index
-                count=0;
-                for (int k=-1; k<=1; k++) for (int j=-1; j<=1; j++) for (int i=-1; i<=1; i++)
-                {
-                    unsigned neighbourIndex = indices->index3Dto1D( P[0]+i, P[1]+j, P[2]+k );
-                    for (unsigned v=0;v<indices[neighbourIndex].size();v++) // superimposedvoxels
+                for (unsigned int n=0; n<indN.size(); n++)
                     for (unsigned int r2=0;r2<nbRef;r2++)
-                        if(indices[neighbourIndex][v][r2]==ind)
+                        if(indices[indN[n].index1d][indN[n].offset][r2]==ind)
                         {
-                            val.push_back(weights[neighbourIndex][v][r2]);
-                            pos.push_back(lpos[count]);
+                            val.push_back(weights[indN[n].index1d][indN[n].offset][r2]);
+                            pos.push_back(lpos[n+1]);
                         }
-                    count++;
-                }
                 // fit weights
                 vector<Real> coeff;
                 defaulttype::PolynomialFit(coeff,val,pos, order);
@@ -291,7 +273,7 @@ struct BaseImageShapeFunctionSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMA
                 if(!dw) defaulttype::getPolynomialFit_differential(coeff,w[index]);
                 else if(!ddw) defaulttype::getPolynomialFit_differential(coeff,w[index],&(*dw)[index]);
                 else defaulttype::getPolynomialFit_differential(coeff,w[index],&(*dw)[index],&(*ddw)[index]);
-                ref[index]=ind-1;
+                ref[index]=ind-1;  // remove offset from indices image
                 if(w[index]<=0) // clamp negative weights
                 {
                     w[index]=0;
@@ -300,7 +282,6 @@ struct BaseImageShapeFunctionSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMA
                     index--;
                 }
                 index++;
-
             }
         }
         // remove unecessary weights
@@ -308,9 +289,6 @@ struct BaseImageShapeFunctionSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMA
         w.resize(index);
         if(dw)  dw->resize(index);
         if(ddw) ddw->resize(index);
-
-        // normalize
-        bisf->normalize(w,dw,ddw);
     }
 };
 
@@ -361,24 +339,23 @@ public:
     typedef helper::ReadAccessor<Data< TransformType > > raTransform;
     Data< TransformType > transform;
 
-    typedef Real DistT;
-    typedef defaulttype::Image<DistT> DistTypes;
+    typedef typename BaseImageShapeFunctionSpecialization<ImageTypes::label>::DistT DistT;
+    typedef typename BaseImageShapeFunctionSpecialization<ImageTypes::label>::DistTypes DistTypes;
     typedef helper::ReadAccessor<Data< DistTypes > > raDist;
     typedef helper::WriteAccessor<Data< DistTypes > > waDist;
     Data< DistTypes > f_w;
 
-    typedef unsigned int IndT;
-    typedef defaulttype::Image<IndT> IndTypes;
+    typedef typename BaseImageShapeFunctionSpecialization<ImageTypes::label>::IndT IndT;
+    typedef typename BaseImageShapeFunctionSpecialization<ImageTypes::label>::IndTypes IndTypes;
     typedef helper::ReadAccessor<Data< IndTypes > > raInd;
     typedef helper::WriteAccessor<Data< IndTypes > > waInd;
     Data< IndTypes > f_index;
 
     // only used for branching image
-    typedef defaulttype::Image<unsigned long> FineToCoarseMappingImage;
-    typedef helper::ReadAccessor<Data< FineToCoarseMappingImage > > raFineToCoarseMappingImage;
-    typedef helper::WriteAccessor<Data< FineToCoarseMappingImage > > waFineToCoarseMappingImage;
-    Data< FineToCoarseMappingImage > f_fineToCoarseMapping;
-    Data< TransformType > f_fineToCoarseMappingTransform;
+    typedef defaulttype::Image<unsigned long> FineImage;
+    typedef helper::ReadAccessor<Data< FineImage > > raFineImage;
+    Data< FineImage > f_fineImage;
+    Data< TransformType > f_fineTransform;
     //@}
 
     virtual std::string getTemplateName() const    { return templateName(this); }
@@ -388,7 +365,22 @@ public:
     /// interpolate weights and their derivatives at a spatial position
     void computeShapeFunction(const Coord& childPosition, MaterialToSpatial& M, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL, const int cell=-1)
     {
+        // resize input
+        unsigned int nbRef=this->f_nbRef.getValue();
+        ref.resize(nbRef); ref.fill(0);
+        w.resize(nbRef); w.fill(0);
+        if(dw) { dw->resize(nbRef); for (unsigned int j=0; j<nbRef; j++ ) (*dw)[j].fill(0); }
+        if(ddw) { ddw->resize(nbRef); for (unsigned int j=0; j<nbRef; j++ ) (*ddw)[j].fill(0); }
+
+        // material to world transformation = image orientation
+        helper::Quater<Real> q = helper::Quater< Real >::createQuaterFromEuler(this->transform.getValue().getRotation() * (Real)M_PI / (Real)180.0);
+        Mat<3,3,Real> R; q.toMatrix(R);
+        for ( unsigned int i = 0; i < BaseImageShapeFunction::spatial_dimensions; i++ )  for ( unsigned int j = 0; j < BaseImageShapeFunction::material_dimensions; j++ ) M[i][j]=R[i][j];
+
         BaseImageShapeFunctionSpecialization<ImageTypes::label>::computeShapeFunction( this, childPosition, M, ref, w, dw, ddw, cell );
+
+        // normalize
+        this->normalize(w,dw,ddw);
     }
 
     virtual void init()
@@ -403,8 +395,8 @@ protected:
         , transform(initData(&transform,TransformType(),"transform",""))
         , f_w(initData(&f_w,DistTypes(),"weights",""))
         , f_index(initData(&f_index,IndTypes(),"indices",""))
-        , f_fineToCoarseMapping(initData(&f_fineToCoarseMapping,FineToCoarseMappingImage(),"fineToCoarseMapping",""))
-        , f_fineToCoarseMappingTransform(initData(&f_fineToCoarseMappingTransform,TransformType(),"fineToCoarseMappingTransform",""))
+        , f_fineImage(initData(&f_fineImage,FineImage(),"fineImage",""))
+        , f_fineTransform(initData(&f_fineTransform,TransformType(),"fineTransform",""))
     {
         image.setReadOnly(true);
         transform.setReadOnly(true);

@@ -172,8 +172,8 @@ protected:
         cleanDirty();
 
         // get tranform and images at time t
-        raDist rweights(this->f_w);             if(!rweights->getCImgList().size())  { serr<<"Weights not found"<<sendl; return; }
-        raInd rindices(this->f_index);          if(!rindices->getCImgList().size())  { serr<<"Indices not found"<<sendl; return; }
+        raDist rweights(this->f_w);             if(rweights->isEmpty())  { serr<<"Weights not found"<<sendl; return; }
+        raInd rindices(this->f_index);          if(rindices->isEmpty())  { serr<<"Indices not found"<<sendl; return; }
         raTransform transform(this->f_transform);
         const CImg<IndT>& indices = rindices->getCImg(0);  // suppose time=0
 
@@ -182,7 +182,7 @@ protected:
 
 //        raMask rmask(this->f_mask);
 //        const CImg<bool>* mask = NULL;
-//        if(rmask->getCImgList().size()) mask=&rmask->getCImg();
+//        if(!rmask->isEmpty()) mask=&rmask->getCImg();
 
         // get output data
         waPositions pos(this->f_position);
@@ -383,13 +383,13 @@ protected:
     void Cluster_SimilarIndices()
     {
         // get tranform and images at time t
-        raInd rindices(this->f_index);          if(!rindices->getCImgList().size())  { serr<<"Indices not found"<<sendl; return; }
+        raInd rindices(this->f_index);          if(rindices->isEmpty())  { serr<<"Indices not found"<<sendl; return; }
         raTransform transform(this->f_transform);
         const CImg<IndT>& indices = rindices->getCImg(0);  // suppose time=0
 
         raMask rmask(this->f_mask);
         const CImg<bool>* mask = NULL;
-        if(rmask->getCImgList().size()) mask=&rmask->getCImg();
+        if(!rmask->isEmpty()) mask=&rmask->getCImg();
 
         // get regimg
         waInd wreg(this->f_region);
@@ -507,8 +507,8 @@ protected:
     void fillPolynomialFactors(defaulttype::PolynomialFitFactors<Real>& fact, const bool writeOutput=false)
     {
         // get tranform and images at time t
-        raDist rweights(this->f_w);             if(!rweights->getCImgList().size())  { serr<<"Weights not found"<<sendl; return; }
-        raInd rindices(this->f_index);          if(!rindices->getCImgList().size())  { serr<<"Indices not found"<<sendl; return; }
+        raDist rweights(this->f_w);             if(rweights->isEmpty())  { serr<<"Weights not found"<<sendl; return; }
+        raInd rindices(this->f_index);          if(rindices->isEmpty())  { serr<<"Indices not found"<<sendl; return; }
         raTransform transform(this->f_transform);
         const CImg<DistT>& weights = rweights->getCImg(0);  // suppose time=0
         const CImg<IndT>& indices = rindices->getCImg(0);  // suppose time=0
