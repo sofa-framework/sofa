@@ -33,11 +33,8 @@
 #include <sofa/helper/io/Mesh.h>
 #include <map>
 
-
-
 namespace sofa
 {
-
 namespace helper
 {
 using sofa::defaulttype::Vec;
@@ -90,7 +87,6 @@ public:
         setBoundingBox( min, max);
     }
 
-
     /// Set the bounding box (in the data space) to apply mCube localy.
     void setROI ( const Vec3i& min, const Vec3i& max )
     {
@@ -104,13 +100,12 @@ public:
         if ( roi.max[2] > dataResolution[2] )roi.max[2] = dataResolution[2];
     }
 
-
     /// Set the bounding box (in the data space) to apply mCube localy.
     void setBoundingBox ( const Vec6i& roi )
     {
-        Vec3i min( roi[0], roi[1], roi[2]);
-        Vec3i max( roi[3], roi[4], roi[5]);
-        setBoundingBox( min, max);
+        Vec3i _min( roi[0], roi[1], roi[2]);
+        Vec3i _max( roi[3], roi[4], roi[5]);
+        setBoundingBox( _min, _max);
     }
 
     /// Set the bounding box (in the data space) to apply mCube localy.
@@ -238,10 +233,7 @@ private:
 extern SOFA_HELPER_API const int MarchingCubeEdgeTable[256];
 extern SOFA_HELPER_API const int MarchingCubeFaceTable[256];
 extern SOFA_HELPER_API const int MarchingCubeTriTable[256][16];
-
 } // namespace helper
-
 } // namespace sofa
 
 #endif
-
