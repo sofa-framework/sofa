@@ -596,7 +596,7 @@ Visitor::Result MechanicalVFreeVisitor<vtype>::fwdMechanicalState(simulation::No
 }
 
 template< VecType vtype>
-Visitor::Result MechanicalVFreeVisitor<vtype>::fwdInteractionForceField(simulation::Node* node, core::behavior::BaseInteractionForceField* ff)
+Visitor::Result MechanicalVFreeVisitor<vtype>::fwdInteractionForceField(simulation::Node* /*node*/, core::behavior::BaseInteractionForceField* ff)
 {
     if( interactionForceField )
     {
