@@ -45,6 +45,13 @@ using namespace sofa::defaulttype;
 
 bool MeshTopologyLoader::loadObj(const char *filename)
 {
+    #ifndef NDEBUG
+    std::string fname(filename);
+    std::size_t namepos = fname.find_last_of("/");
+    std::string name = fname.substr(namepos+1);
+    std::cout << "Loading OBJ topology : " << name << std::endl;
+    #endif
+    
     mesh = helper::io::Mesh::Create(filename);
     if (mesh==NULL)
         return false;
@@ -71,7 +78,7 @@ bool MeshTopologyLoader::loadObj(const char *filename)
                 addLine(facet[1],facet[0]);
         }
         else if (facet.size()==4)
-        {
+        {  
             // Quad
             addQuad(facet[0],facet[1],facet[2],facet[3]);
         }
@@ -108,6 +115,36 @@ bool MeshTopologyLoader::loadObj(const char *filename)
 
 //    delete mesh;
     return true;
+}
+
+bool MeshTopologyLoader::loadStl(const char *filename)
+{
+    #ifndef NDEBUG
+    std::string fname(filename);
+    std::size_t namepos = fname.find_last_of("/");
+    std::string name = fname.substr(namepos+1);
+    std::cout << "Loading STL topology : " << name << std::endl;
+    #endif
+    
+    mesh = helper::io::Mesh::Create(filename);
+    if (mesh==NULL)
+        return false;
+    
+    setNbPoints(mesh->getVertices().size());
+    const vector< vector < vector <int> > > & facets = mesh->getFacets();
+    
+    for (unsigned int i=0; i<mesh->getVertices().size(); i++)
+    {
+        addPoint((double)mesh->getVertices()[i][0],
+                (double)mesh->getVertices()[i][1],
+                (double)mesh->getVertices()[i][2]);
+    }
+    for (unsigned int i=0; i<facets.size(); i++)
+    {
+        addTriangle(i,i+1,i+2);
+    }
+    return true;
+  
 }
 
 bool MeshTopologyLoader::loadGmsh(std::ifstream &file, const int gmshFormat)
@@ -356,7 +393,7 @@ bool MeshTopologyLoader::loadXsp(std::ifstream &file, bool vector_spring)
 // 	if (nlines>0)  std::cout << ' ' << nlines  << " lines";
 // 	if (ntris>0)   std::cout << ' ' << ntris   << " triangles";
 // 	if (nquads>0)  std::cout << ' ' << nquads  << " quads";
-// 	if (ntetrahedra>0) std::cout << ' ' << ntetrahedra << " tetrahedra";
+// 	if (ntetrahedra>0) std:doc format stl:cout << ' ' << ntetrahedra << " tetrahedra";
 // 	if (ncubes>0)  std::cout << ' ' << ncubes  << " cubes";
 // 	std::cout << std::endl;
 
@@ -1090,6 +1127,8 @@ bool MeshTopologyLoader::load(const char *filename)
         fileLoaded = loadObj(fname.c_str());
     else if (strlen(filename)>4 && !strcmp(filename+strlen(filename)-4,".vtk"))
         fileLoaded = loadVtk(fname.c_str());
+    else if (strlen(filename)>4 && !strcmp(filename+strlen(filename)-4,".stl"))
+        fileLoaded = loadStl(fname.c_str());
     else if (strlen(filename)>9 && !strcmp(filename+strlen(filename)-9,".vtk_swap"))
         fileLoaded = loadVtk(fname.c_str());
     else if (strlen(filename)>5 && !strcmp(filename+strlen(filename)-5,".mesh"))
@@ -1099,7 +1138,7 @@ bool MeshTopologyLoader::load(const char *filename)
 
     if(!fileLoaded)
         printf("Error loading mesh file: %s \n", fname.c_str());
-
+    
     return fileLoaded;
 }
 

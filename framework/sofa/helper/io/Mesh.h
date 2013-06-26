@@ -63,6 +63,11 @@ protected:
     std::vector<PrimitiveGroup> groups;
 
     std::string textureName;
+    
+public:
+    
+    std::string loaderType;
+    
 public:
 
     vector<Vector3> & getVertices()
@@ -97,7 +102,7 @@ public:
     {
         return new Object(arg);
     }
-
+    
 };
 
 } // namespace io
