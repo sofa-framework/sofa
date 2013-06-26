@@ -187,6 +187,8 @@ protected:
         waImageo out(this->outputImage);
         waTransform outT(this->outputTransform);
 
+        if(in->isEmpty()) return;
+
         const CImgList<Ti>& inimg = in->getCImgList();
         CImgList<To>& img = out->getCImgList();
         if(updateImage) img.assign(inimg);	// copy

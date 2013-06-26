@@ -122,6 +122,7 @@ protected:
         cleanDirty();
         raParam p(this->param);
         raImagei in(this->inputImage);
+        if(in->isEmpty()) return;
         const CImgList<Ti>& inimg = in->getCImgList();
 
         waImageo out(this->outputImage);

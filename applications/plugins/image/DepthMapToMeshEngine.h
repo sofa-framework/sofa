@@ -171,7 +171,7 @@ protected:
         Real f = this->depthFactor.getValue();
 
         // update texture
-        if(inTex->getCImgList())
+        if(!inTex->isEmpty())
         {
             const CImg<T>& tex = inTex->getCImg(this->time);
             CImg<unsigned char> plane=convertToUC( tex.get_resize(texture_res,texture_res,1,-100,1) );
@@ -259,7 +259,7 @@ protected:
 
         glEnable( GL_LIGHTING);
 
-        if(inTex->getCImgList()) { glEnable( GL_TEXTURE_2D ); texture->bind();}
+        if(!inTex->isEmpty()) { glEnable( GL_TEXTURE_2D ); texture->bind();}
 
         glBegin(GL_TRIANGLES);
         for (unsigned int i=0; i<tri.size(); ++i)
@@ -276,7 +276,7 @@ protected:
         }
         glEnd();
 
-        if(inTex->getCImgList()) { texture->unbind(); 	glDisable( GL_TEXTURE_2D ); }
+        if(!inTex->isEmpty()) { texture->unbind(); 	glDisable( GL_TEXTURE_2D ); }
 
         glPopAttrib();
     }

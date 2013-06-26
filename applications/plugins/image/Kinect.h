@@ -274,7 +274,7 @@ public:
         waDepth wdepth(this->depthImage);
         waTransform wdt(this->depthTransform);
 
-        if(!wimage->getCImgList().size()) wimage->getCImgList().push_back(CImg<T>());
+        if(wimage->isEmpty()) wimage->getCImgList().push_back(CImg<T>());
         CImg<T>& rgbimg=wimage->getCImg(0);
         if(vf==FREENECT_VIDEO_IR_8BIT && res==FREENECT_RESOLUTION_MEDIUM) rgbimg.resize(640,488,1,1);
         else if(vf==FREENECT_VIDEO_IR_8BIT && res==FREENECT_RESOLUTION_HIGH) rgbimg.resize(1280,1024,1,1);
@@ -285,7 +285,7 @@ public:
         wt->setCamPos((Real)(wimage->getDimensions()[0]-1)/2.0,(Real)(wimage->getDimensions()[1]-1)/2.0); // for perspective transforms
         wt->update(); // update of internal data
 
-        if(!wdepth->getCImgList().size()) wdepth->getCImgList().push_back(CImg<dT>());
+        if(wdepth->isEmpty()) wdepth->getCImgList().push_back(CImg<dT>());
         CImg<dT>& depthimg=wdepth->getCImg(0);
         depthimg.resize(640,480,1,1);
 
@@ -346,7 +346,7 @@ public:
                 waImage wimage(this->image);
                 waTransform wt(this->transform);
 
-                if(wimage->getCImgList().size())
+                if(!wimage->isEmpty())
                 {
                     CImg<T>& rgbimg=wimage->getCImg(0);
                     if(vf==FREENECT_VIDEO_IR_8BIT && res==FREENECT_RESOLUTION_MEDIUM) rgbimg.resize(640,488,1,1);
@@ -422,7 +422,7 @@ protected:
                 waDepth wdepth(this->depthImage);
                 waTransform wdt(this->depthTransform);
 
-                if(wdepth->getCImgList().size())
+                if(!wdepth->isEmpty())
                 {
                     CImg<dT>& depth=wdepth->getCImg(0);
                     mutex_lock();
@@ -436,7 +436,7 @@ protected:
                 waImage wimage(this->image);
                 waTransform wt(this->transform);
 
-                if(wimage->getCImgList().size())
+                if(!wimage->isEmpty())
                 {
                     CImg<T>& rgbimg=wimage->getCImg(0);
                     mutex_lock();

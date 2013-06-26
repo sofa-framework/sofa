@@ -88,7 +88,7 @@ struct ImageContainerSpecialization<defaulttype::IMAGELABEL_IMAGE>
         typedef typename ImageContainer::T T;
 
         typename ImageContainer::waImage wimage(container->image);
-        if( !wimage->getCImgList().size() )
+        if( wimage->isEmpty() )
             if( !container->load() )
                 if( !container->loadCamera() )
                 {
@@ -192,7 +192,7 @@ struct ImageContainerSpecialization<defaulttype::IMAGELABEL_IMAGE>
         }
         else wimage->getCImgList().push_back(CImg<T>().load(fname.c_str()));
 
-        if(wimage->getCImgList().size()) container->sout << "Loaded image " << fname <<" ("<< wimage->getCImg().pixel_type() <<")"  << container->sendl;
+        if(!wimage->isEmpty()) container->sout << "Loaded image " << fname <<" ("<< wimage->getCImg().pixel_type() <<")"  << container->sendl;
         else return false;
 
         return true;
@@ -242,9 +242,9 @@ struct ImageContainerSpecialization<defaulttype::IMAGELABEL_IMAGE>
 
 #ifdef cimg_use_opencv
         typename ImageContainer::waImage wimage(container->image);
-        if(!wimage->getCImgList().size()) wimage->getCImgList().push_back(CImg<T>().load_camera());
+        if(wimage->isEmpty() wimage->getCImgList().push_back(CImg<T>().load_camera());
         else wimage->getCImgList()[0].load_camera();
-        if(wimage->getCImgList().size())  return true;  else return false;
+        if(!wimage->isEmpty())  return true;  else return false;
 #else
         return false;
 #endif

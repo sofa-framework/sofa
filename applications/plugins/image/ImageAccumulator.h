@@ -128,12 +128,12 @@ protected:
         if(!accumulate.getValue()) return;
 
         raImage in(this->inputImage);
-        if(!in->getCImgList().size()) return;
+        if(in->isEmpty()) return;
         waImage out(this->outputImage);
         raTransform inT(this->inputTransform);
         waTransform outT(this->outputTransform);
 
-        if(!out->getCImgList().size()) {t0=CTime::getTime(); outT->operator=(inT);}
+        if(out->isEmpty()) {t0=CTime::getTime(); outT->operator=(inT);}
         else { count++; t=CTime::getTime(); outT->getScaleT()=0.000001*(t-t0)/(Real)count; } // update time scale to fit acquisition rate
 
         out->getCImgList().push_back(in->getCImg(0));
