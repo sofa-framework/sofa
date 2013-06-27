@@ -136,28 +136,26 @@ void AssemblyVisitor::vector(dofs_type* dofs, core::VecId id, const vec::ConstSe
 }		
 		
 
-AssemblyVisitor::vec AssemblyVisitor::vector(simulation::Node* node, core::ConstVecId id) {
-	assert( node->mechanicalState );
-				
-	unsigned size = node->mechanicalState->getMatrixSize();
+AssemblyVisitor::vec AssemblyVisitor::vector(dofs_type* dofs, core::ConstVecId id) {
+	unsigned size = dofs->getMatrixSize();
 
 	const bool fast = false;
 			
 	if( fast ) {
 		// map data
-		const void* data = node->mechanicalState->baseRead(id)->getValueVoidPtr();
-			
+		const void* data = dofs->baseRead(id)->getValueVoidPtr();
+		
 		// TODO need to know if we're dealing with double or floats
 		return Eigen::Map<const vec>( reinterpret_cast<const double*>(data), size);
 	} else {
-				
+		
 		// realloc
 		if( size > tmp.size() ) tmp.resize(size);
-
+		
 		unsigned off = 0;
 		wrap w(tmp);
-				
-		node->mechanicalState->copyToBaseVector(&w , id, off);
+		
+		dofs->copyToBaseVector(&w , id, off);
 				
 		return tmp.head(size);
 	}
@@ -371,12 +369,12 @@ AssemblyVisitor::mat AssemblyVisitor::stiff(simulation::Node* node) {
 		
 AssemblyVisitor::vec AssemblyVisitor::force(simulation::Node* node) {
 	assert( node->mechanicalState );
-	return vector(node, core::VecDerivId::force());	
+	return vector(node->mechanicalState, core::VecDerivId::force());	
 }
 
 AssemblyVisitor::vec AssemblyVisitor::vel(simulation::Node* node) {
 	assert( node->mechanicalState );
-	return vector(node, core::VecDerivId::velocity());	
+	return vector(node->mechanicalState, core::VecDerivId::velocity());	
 }
 
 AssemblyVisitor::real AssemblyVisitor::damping(simulation::Node* node) {
@@ -415,7 +413,7 @@ AssemblyVisitor::vec AssemblyVisitor::lambda(simulation::Node* node) {
 	assert( node->mechanicalState );
 	assert( !lagrange.isNull() );
 	
-	return vector(node, lagrange.getId(node->mechanicalState) );	
+	return vector(node->mechanicalState, lagrange.getId(node->mechanicalState) );	
 }
 
 
@@ -500,7 +498,12 @@ void AssemblyVisitor::fill_prefix(simulation::Node* node) {
 			c.damping = damping( node );
 			c.flags = flags( node );
 
-			if( !lagrange.isNull() ) c.lambda = lambda( node );
+			// if( !lagrange.isNull() ) {
+				c.lambda = lambda( node );
+				assert( c.lambda.size() );
+			// } else {
+			// 	std::cerr << "bad lagrange yo" << std::endl;
+			// }
 			
 			// hack
 			c.extra = extra( node );
@@ -644,7 +647,7 @@ void AssemblyVisitor::distribute_compliant(core::behavior::MultiVecDeriv::MyMult
 		// paranoia
 		// c.check();
 		
-		if( c.compliant() ) {
+		if( c.compliant() ) { 
 			vector(prefix[i], id.getId(prefix[i]), data.segment(off, c.size) );
 			off += c.size;
 		}
