@@ -41,6 +41,7 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
 	                   sofa::core::MultiVecDerivId vResult);
 
 	AssembledSolver();
+	~AssembledSolver();
 	
   protected:
 				
@@ -82,6 +83,10 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
 	// solve velocity dynamics ?
 	Data<bool> use_velocity, warm_start;
 
+	// this is for warm start and returning constraint forces
+	core::behavior::MultiVecDeriv lagrange;
+
+	void alloc(const core::ExecParams& params);
 };
 
 }

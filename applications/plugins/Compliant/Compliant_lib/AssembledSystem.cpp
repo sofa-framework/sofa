@@ -34,7 +34,8 @@ AssembledSystem::AssembledSystem(unsigned m, unsigned n)
 
 		C.resize(n, n);
 		phi = vec::Zero(n); 
-
+		lambda = vec::Zero(n); 
+		
 		flags.setConstant(n, SolverFlags::NO_FLAG);
 	}
 				
@@ -59,6 +60,9 @@ void AssembledSystem::debug(SReal thres) const {
 	if( n ) { 
 		std::cerr << "phi:" << std::endl
 		          << phi.transpose() << std::endl;
+
+		std::cerr << "lambda:" << std::endl
+		          << lambda.transpose() << std::endl;
 		
 		std::cerr << "J:" << std::endl 
 		          << J << std::endl
