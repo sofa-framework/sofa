@@ -43,6 +43,8 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
 	AssembledSolver();
 	~AssembledSolver();
 	
+	virtual void cleanup();
+
   protected:
 				
 	// send a visitor 
