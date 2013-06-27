@@ -74,12 +74,16 @@ void AssembledSolver::alloc(const core::ExecParams& params) {
 	sofa::simulation::common::VectorOperations vop( &params, this->getContext() );
 	
 	lagrange.set(&vop);
-	vop.v_realloc( lagrange.id(), false );
+	lagrange.realloc( true );
+
 }
 
 AssembledSolver::~AssembledSolver() {
-	// sofa::simulation::common::VectorOperations vop( core::ExecParams::defaultInstance(), this->getContext() );
-	// vop.v_free( lagrange.id(), false );
+}
+
+void AssembledSolver::cleanup() {
+	sofa::simulation::common::VectorOperations vop( core::ExecParams::defaultInstance(), this->getContext() );
+	vop.v_free( lagrange.id(), false );
 }
 
 		
@@ -238,7 +242,7 @@ void AssembledSolver::solve(const core::ExecParams* params,
 	// assembly visitor
 	simulation::AssemblyVisitor vis(&mparams);
 	
-	// TODO do this inside visitor ctor
+	// TODO do this inside visitor ctor instead
 	vis.lagrange = lagrange.id();
 	
 	// fetch data
@@ -266,6 +270,7 @@ void AssembledSolver::solve(const core::ExecParams* params,
 		vis.distribute_compliant( lagrange.id(), lambda(sys, x) );
 
 		if( propagate_lambdas.getValue() ) {
+			scoped::timer step("lambdas propagation");
 			propagate_visitor prop( &mparams );
 			prop.out = core::VecId::force();
 			prop.in = lagrange.id();

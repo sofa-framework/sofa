@@ -498,12 +498,12 @@ void AssemblyVisitor::fill_prefix(simulation::Node* node) {
 			c.damping = damping( node );
 			c.flags = flags( node );
 
-			// if( !lagrange.isNull() ) {
+			if( !lagrange.isNull() ) {
 				c.lambda = lambda( node );
 				assert( c.lambda.size() );
-			// } else {
-			// 	std::cerr << "bad lagrange yo" << std::endl;
-			// }
+			} else {
+				std::cerr << "bad lagrange yo" << std::endl;
+			}
 			
 			// hack
 			c.extra = extra( node );
