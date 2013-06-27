@@ -41,7 +41,8 @@ using sofa::component::topology::EdgeSetTopologyContainer;
 using sofa::component::odesolver::ComplianceSolver;
 #include <sofa/simulation/common/InitVisitor.h>
 
-
+// max: hopefully fixes link errors
+#include <../applications/plugins/Flexible/deformationMapping/DistanceMapping.inl>
 
 namespace sofa
 {
