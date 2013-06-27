@@ -252,7 +252,7 @@ struct SE3 {
 			return q.vec();
 		} else {
 			// TODO q.vec() / sinc(theta) instead ?
-			return theta * q.vec().normalized();
+			return (2 * theta) * q.vec().normalized();
 		}
 
 	}
