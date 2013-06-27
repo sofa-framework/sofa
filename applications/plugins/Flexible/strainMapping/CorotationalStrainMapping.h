@@ -186,7 +186,7 @@ protected:
 
         dOut.endEdit();
 
-        /*if(!BlockType::constant)*/ if(this->assembleJ.getValue()) this->updateJ();
+        /*if(!BlockType::constant)*/ if(this->assemble.getValue()) this->updateJ();
     }
 
     virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId )
@@ -202,7 +202,7 @@ protected:
         helper::ReadAccessor<Data<typename Inherit::InVecDeriv> > parentDisplacement (parentDisplacementData);
         helper::ReadAccessor<Data<typename Inherit::OutVecDeriv> > childForce (childForceData);
 
-        if(this->assembleK.getValue())
+        if(this->assemble.getValue())
         {
             this->updateK(childForce.ref());
             this->K.addMult(parentForceData,parentDisplacementData,mparams->kFactor());
