@@ -126,7 +126,7 @@ public:
 	};
 
 	static mat convert( const defaulttype::BaseMatrix* m);
-	vec vector(simulation::Node* node, core::ConstVecId id); // get
+	vec vector(dofs_type* dofs, core::ConstVecId id); // get
 
 	void vector(dofs_type*, core::VecId id, const vec::ConstSegmentReturnType& data); // set
 			

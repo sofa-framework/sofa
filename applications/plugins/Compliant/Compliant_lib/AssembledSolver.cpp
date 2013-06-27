@@ -31,7 +31,11 @@ AssembledSolver::AssembledSolver()
 	  warm_start(initData(&warm_start, 
 	                      true,
 	                      "warm_start",
-	                      "warm start iterative solvers: avoids biasing solution towards zero (and speeds-up resolution)"))
+	                      "warm start iterative solvers: avoids biasing solution towards zero (and speeds-up resolution)")),
+	  propagate_lambdas(initData(&propagate_lambdas, 
+	                             false,
+	                             "propagate_lambdas",
+	                             "propagate Lagrange multipliers in force vector at the end of time step"))
 {
 	
 }
@@ -149,7 +153,14 @@ linearsolver::KKTSolver::vec AssembledSolver::warm(const system_type& sys) const
 
 	// warm starting is a bad idea anyways
 	if( warm_start.getValue() ) {
-		if( use_velocity.getValue() ) res.head( sys.m ) = sys.P * sys.v;
+		if( use_velocity.getValue() ) {
+			
+			res.head( sys.m ) = sys.P * sys.v;
+			if( sys.n ) res.tail( sys.n ) = sys.dt * sys.lambda;
+			
+		} else {
+			if( sys.n ) res.tail( sys.n ) = sys.lambda;
+		}
 	}
 
 	return res;	
@@ -182,12 +193,32 @@ AssembledSolver::kkt_type::vec AssembledSolver::velocity(const system_type& sys,
 	else return sys.P * (sys.v + sys.dt * x.head( sys.m ));
 }
 
+// this is a force
 AssembledSolver::kkt_type::vec AssembledSolver::lambda(const system_type& sys,
                                                        const kkt_type::vec& x) const {
 	if( use_velocity.getValue() ) return x.tail( sys.n ) / sys.dt;
 	else return x.tail( sys.n );
 
 }
+
+
+struct propagate_visitor : simulation::MechanicalVisitor {
+
+	core::MultiVecDerivId out, in;
+	
+	propagate_visitor(const sofa::core::MechanicalParams* mparams) : simulation::MechanicalVisitor(mparams) { }
+	
+	Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) {
+		// clear dst
+		mm->resetForce(this->params /* PARAMS FIRST */, out.getId(mm));
+		return RESULT_CONTINUE;
+	}
+	
+	void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) {
+		map->applyJT(mparams /* PARAMS FIRST */, out, in);
+	}
+	
+};
 
 
 
@@ -230,8 +261,17 @@ void AssembledSolver::solve(const core::ExecParams* params,
 	 
 	// distribute (projected) velocities
 	vis.distribute_master( core::VecId::velocity(), velocity(sys, x) );
+	
 	if( sys.n ) {
 		vis.distribute_compliant( lagrange.id(), lambda(sys, x) );
+
+		if( propagate_lambdas.getValue() ) {
+			propagate_visitor prop( &mparams );
+			prop.out = core::VecId::force();
+			prop.in = lagrange.id();
+			
+			send( prop );
+		}
 	}
 	
 	// update positions TODO use xResult/vResult

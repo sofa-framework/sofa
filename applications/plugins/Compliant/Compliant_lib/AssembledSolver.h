@@ -81,7 +81,7 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
 	virtual kkt_type::vec lambda(const system_type& sys, const kkt_type::vec& x) const;
 	
 	// solve velocity dynamics ?
-	Data<bool> use_velocity, warm_start;
+	Data<bool> use_velocity, warm_start, propagate_lambdas;
 
 	// this is for warm start and returning constraint forces
 	core::behavior::MultiVecDeriv lagrange;
