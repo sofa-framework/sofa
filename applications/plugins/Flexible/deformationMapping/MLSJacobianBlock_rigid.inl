@@ -87,7 +87,7 @@ public:
     Jacobian:    \f$ dp = w.dt + Omega x q0 \f$
       */
 
-    static const bool constantJ=false;
+    static const bool constant=false;
 
     Real Pt;      ///< =   w         =  dp/dt
     OutCoord Pa0;   ///< =  q0    : weighted point in local frame
@@ -183,7 +183,7 @@ public:
     Jacobian:    \f$ dp = w.dt + Omega x q0 \f$
       */
 
-    static const bool constantJ=false;
+    static const bool constant=false;
 
     Real Pt;      ///< =   w         =  dp/dt
     OutCoord Pa0;   ///< =  q0    : weighted point in local frame
@@ -283,7 +283,7 @@ public:
         - \f$ d F = dt.grad w.M + Omega x.A.A0^{-1}.grad(p*-w.t0).M\f$
     */
 
-    static const bool constantJ=false;
+    static const bool constant=false;
 
     mGradient Ft;       ///< =   grad w.M     =  d F/dt
     OutCoord PFa0;      ///< =   A0^{-1}.(grad p*- t0.grad w).M   =  dF/dA
@@ -394,7 +394,7 @@ public:
         - \f$ d F = dt.grad w.M + Omega x.A.A0^{-1}.grad(p*-w.t0).M\f$
     */
 
-    static const bool constantJ=false;
+    static const bool constant=false;
 
     mGradient Ft;       ///< =   grad w.M     =  d F/dt
     OutCoord PFa0;      ///< =   A0^{-1}.(grad p*- t0.grad w).M   =  dF/dA
@@ -505,7 +505,7 @@ public:
         - \f$ d F = dt.grad w.M + Omega x.A.A0^{-1}.grad(p*-w.t0).M\f$
     */
 
-    static const bool constantJ=false;
+    static const bool constant=false;
 
     mGradient Ft;       ///< =   grad w.M     =  d F/dt
     OutCoord PFa0;      ///< =   A0^{-1}.(grad p*- t0.grad w).M   =  dF/dA
@@ -621,7 +621,7 @@ public:
         - \f$ d(grad F)_k = dt.(grad2 w)_k^T.M + Omega x. A.A0^{-1}.[ grad2(p*)_k - t0.grad2(w)_k].M
     */
 
-    static const bool constantJ=false;
+    static const bool constant=false;
 
     mGradient Ft;       ///< =   grad w.M     =  d F/dt
     mHessian dFt;      ///< =   (grad2 w)_k^T.M   =  d (grad F)_k/dt

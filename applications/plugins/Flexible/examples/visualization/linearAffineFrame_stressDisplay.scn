@@ -34,11 +34,11 @@
 	  <Node 	name="behavior"   >
 	  	<ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="1" targetNumber="300" />
 		<MechanicalObject template="F331" name="F" />
-	    	<LinearMapping template="Mapping&lt;Affine,F331&gt;" assembleJ="false"/>
+	    	<LinearMapping template="Mapping&lt;Affine,F331&gt;"  />
 
 		<Node 	name="E"   >
 		    <MechanicalObject  template="E331" name="E"  /> 
-		    <GreenStrainMapping template="Mapping&lt;F331,E331&gt;" assembleJ="false"  />
+		    <GreenStrainMapping template="Mapping&lt;F331,E331&gt;"    />
 		    <HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="5"/> 
 		    <!-- pyhon script takes a path to a node containing a static mesh named 'mesh' and mapped points -->
 		    <PythonScriptController filename="../data/visualization/VonMisesStressFrames" classname="ColorMap" variables="../../collision "/> 

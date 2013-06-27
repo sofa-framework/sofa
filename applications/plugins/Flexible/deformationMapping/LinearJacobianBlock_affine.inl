@@ -78,7 +78,7 @@ public:
     Jacobian:    \f$ dp = w.dt + w.dA.q0\f$
       */
 
-    static const bool constantJ=true;
+    static const bool constant=true;
 
     Real Pt;      ///< =   w         =  dp/dt
     OutCoord Pa;   ///< =  w.q0      =  dp/dA
@@ -164,7 +164,7 @@ public:
     Jacobian:    \f$ dp = w.dt + w.dA.q0\f$
     */
 
-    static const bool constantJ=true;
+    static const bool constant=true;
 
     Real Pt;      ///< =   w         =  dp/dt
     OutCoord Pa;   ///< =  w.q0      =  dp/dA
@@ -254,7 +254,7 @@ public:
         - \f$ d F = dt.grad w.M + dA.( q0.grad w + w.A0^{-1} ).M\f$
     */
 
-    static const bool constantJ=true;
+    static const bool constant=true;
 
     mGradient Ft;       ///< =   grad w.M     =  d F/dt
     OutCoord PFa;      ///< =   q0.grad w.M + w.A0^{-1}.M   =  dF/dA
@@ -351,7 +351,7 @@ public:
         - \f$ d F = dt.grad w.M + dA.( q0.grad w + w.A0^{-1} ).M\f$
     */
 
-    static const bool constantJ=true;
+    static const bool constant=true;
 
     mGradient Ft;       ///< =   grad w.M     =  d F/dt
     OutCoord PFa;      ///< =   q0.grad w.M + w.A0^{-1}.M   =  dF/dA
@@ -449,7 +449,7 @@ public:
         - \f$ d F = dt.grad w.M + dA.( q0.grad w + w.A0^{-1} ).M\f$
     */
 
-    static const bool constantJ=true;
+    static const bool constant=true;
 
     mGradient Ft;       ///< =   grad w.M     =  d F/dt
     OutCoord PFa;      ///< =   q0.grad w.M + w.A0^{-1}.M   =  dF/dA
@@ -549,7 +549,7 @@ public:
         - \f$ d (grad F)_k = [dt.(grad2 w)_k^T + dA.[q0.(grad2 w)_k^T + (grad w)_k.A0^{-1} +  A0^{-1}_k.grad w] ].M \f$
     */
 
-    static const bool constantJ=true;
+    static const bool constant=true;
 
     mGradient Ft;       ///< =   grad w     =  d F/dt
     mHessian dFt;      ///< =   (grad2 w)_k^T   =  d (grad F)_k/dt
@@ -663,7 +663,7 @@ public:
         - \f$ d F = w.dA.A0^{-1}.F0\f$
     */
 
-    static const bool constantJ=true;
+    static const bool constant=true;
 
     Real Pt;      ///< =   w         =  dp/dt
     OutCoord Pa;      ///< =   w.q0      =  dp/dA  , w.A0^{-1}.F0   =  dF/dA

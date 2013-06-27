@@ -58,7 +58,6 @@ public:
 
     typedef Mat<Out::deriv_total_size,In::deriv_total_size,Real> MatBlock;
     typedef Mat<In::deriv_total_size,In::deriv_total_size,Real> KBlock;
-    static const bool constantJ = false; ///< tells if the jacobian is constant (to avoid recomputations)
 
     // Called in Apply
     virtual void addapply( OutCoord& result, const InCoord& data )=0;

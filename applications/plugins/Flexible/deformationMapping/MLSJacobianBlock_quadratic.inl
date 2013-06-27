@@ -87,7 +87,7 @@ public:
     Jacobian:    \f$ dp = w.dt + w.dA.q0^*\f$
       */
 
-    static const bool constantJ=true;
+    static const bool constant=true;
 
     Real Pt;      ///< =   w         =  dp/dt
     QuadraticCoord Pa;   ///< =  q0^*      =  dp/dA
@@ -177,7 +177,7 @@ public:
     Jacobian:    \f$ dp = w.dt + w.dA.q0^*\f$
       */
 
-    static const bool constantJ=true;
+    static const bool constant=true;
 
     Real Pt;      ///< =   w         =  dp/dt
     QuadraticCoord Pa;   ///< =  q0^*      =  dp/dA
@@ -271,7 +271,7 @@ public:
         - \f$ d F = dt.grad w.M + dA.A0^{-1}.grad(p*-w.t0^*).M\f$
     */
 
-    static const bool constantJ=true;
+    static const bool constant=true;
 
     mGradient Ft;       ///< =   grad w.M     =  d F/dt
     Mat<dimq,mdim,Real> PFa;      ///< =   A0^{-1}.(grad p*- t0^*.grad w).M   =  dF/dA
@@ -375,7 +375,7 @@ public:
         - \f$ d F = dt.grad w.M + dA.A0^{-1}.grad(p*-w.t0^*).M\f$
     */
 
-    static const bool constantJ=true;
+    static const bool constant=true;
 
     mGradient Ft;       ///< =   grad w.M     =  d F/dt
     Mat<dimq,mdim,Real> PFa;      ///< =   A0^{-1}.(grad p*- t0^*.grad w).M   =  dF/dA
@@ -479,7 +479,7 @@ public:
         - \f$ d F = dt.grad w.M + dA.A0^{-1}.grad(p*-w.t0^*).M\f$
     */
 
-    static const bool constantJ=true;
+    static const bool constant=true;
 
     mGradient Ft;       ///< =   grad w.M     =  d F/dt
     Mat<dimq,mdim,Real> PFa;      ///< =   A0^{-1}.(grad p*- t0^*.grad w).M   =  dF/dA
@@ -585,7 +585,7 @@ public:
         - \f$ d (grad F)_k = [dt.(grad2 w)_k^T + dA.[q0^*.(grad2 w)_k^T + (grad w)_k.grad q0^* +  grad q0^*_k.grad w] ].M \f$
     */
 
-    static const bool constantJ=true;
+    static const bool constant=true;
 
     mGradient Ft;       ///< =   grad w     =  d F/dt
     mHessian dFt;      ///< =   (grad2 w)_k^T   =  d (grad F)_k/dt

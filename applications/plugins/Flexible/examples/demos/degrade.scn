@@ -35,14 +35,14 @@
 	<ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" showSamples="false" printLog="false" targetNumber="1"/>
 
 	<MechanicalObject template="F332" name="F"  useMask="0"  showObject="1" showObjectScale="0.05" />
-    	<LinearMapping template="Mapping&lt;Affine,F332&gt;" assembleJ="false"/>
+    	<LinearMapping template="Mapping&lt;Affine,F332&gt;"  />
 
 
 	<Node 	name="E"   >
 	    <ImageValuesFromPositions name="youngM" position="@../sampler.position" image="@../../../youngM.outputImage" transform="@../../../extruder.outputTransform" />
 
 	    <MechanicalObject  template="E332" name="E"  />
-	    <CorotationalStrainMapping template="Mapping&lt;F332,E332&gt;" assembleJ="false"/>
+	    <CorotationalStrainMapping template="Mapping&lt;F332,E332&gt;"  />
 	    <HookeForceField  template="E332" name="ff" youngModulus="@youngM.values" poissonRatio="0" viscosity="100"/>
 	</Node>
 	

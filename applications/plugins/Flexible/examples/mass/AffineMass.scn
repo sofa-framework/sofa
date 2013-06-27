@@ -37,11 +37,11 @@
       <ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" showSamples="false" printLog="false" targetNumber="1" />
 
       <MechanicalObject template="F332" name="F"  useMask="0"  showObject="1" showObjectScale="0.05" />
-      <LinearMapping template="Mapping&lt;Affine,F332&gt;" assembleJ="false"/>
+      <LinearMapping template="Mapping&lt;Affine,F332&gt;"  />
 
       <Node 	name="E"   >
         <MechanicalObject  template="E333" name="E"  />
-        <GreenStrainMapping template="Mapping&lt;F332,E333&gt;" assembleJ="false"  />
+        <GreenStrainMapping template="Mapping&lt;F332,E333&gt;"    />
         <HookeForceField  template="E333" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0"/>
 
       </Node>
@@ -53,7 +53,7 @@
       <Mesh name="mesh" src="@loader" />
       <MechanicalObject />
       <UniformMass totalMass="250" />
-      <LinearMapping template="Mapping&lt;Affine,Vec3d&gt;" assembleJ="false"/>
+      <LinearMapping template="Mapping&lt;Affine,Vec3d&gt;"  />
     </Node>
     <Node 	name="collision"   >
       <MeshObjLoader name="MeshLoader" filename="mesh/torus.obj"/>
@@ -102,11 +102,11 @@
       <ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" showSamples="false" printLog="false" targetNumber="1" />
 
       <MechanicalObject template="F332" name="F"  useMask="0"  showObject="1" showObjectScale="0.05" />
-      <LinearMapping template="Mapping&lt;Affine,F332&gt;" assembleJ="false"/>
+      <LinearMapping template="Mapping&lt;Affine,F332&gt;"  />
 
       <Node 	name="E"   >
         <MechanicalObject  template="E333" name="E"  />
-        <GreenStrainMapping template="Mapping&lt;F332,E333&gt;" assembleJ="false"  />
+        <GreenStrainMapping template="Mapping&lt;F332,E333&gt;"    />
         <HookeForceField  template="E333" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0"/>
 
       </Node>
@@ -154,11 +154,11 @@
       <ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" showSamples="false" printLog="false" targetNumber="1" />
 
       <MechanicalObject template="F332" name="F"  useMask="0"  showObject="1" showObjectScale="0.05" />
-      <LinearMapping template="Mapping&lt;Affine,F332&gt;" assembleJ="false"/>
+      <LinearMapping template="Mapping&lt;Affine,F332&gt;"  />
 
       <Node 	name="E"   >
         <MechanicalObject  template="E333" name="E"  />
-        <GreenStrainMapping template="Mapping&lt;F332,E333&gt;" assembleJ="false"  />
+        <GreenStrainMapping template="Mapping&lt;F332,E333&gt;"    />
         <HookeForceField  template="E333" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0"/>
 
       </Node>
@@ -207,11 +207,11 @@
       <ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" showSamples="false" printLog="false" targetNumber="1" />
 
       <MechanicalObject template="F332" name="F"  useMask="0"  showObject="1" showObjectScale="0.05" />
-      <LinearMapping template="Mapping&lt;Affine,F332&gt;" assembleJ="false"/>
+      <LinearMapping template="Mapping&lt;Affine,F332&gt;"  />
 
       <Node 	name="E"   >
         <MechanicalObject  template="E333" name="E"  />
-        <GreenStrainMapping template="Mapping&lt;F332,E333&gt;" assembleJ="false"  />
+        <GreenStrainMapping template="Mapping&lt;F332,E333&gt;"    />
         <HookeForceField  template="E333" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0"/>
 
       </Node>
@@ -260,11 +260,11 @@
       <ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" showSamples="false" printLog="false" targetNumber="1" />
 
       <MechanicalObject template="F332" name="F"  useMask="0"  showObject="1" showObjectScale="0.05" />
-      <LinearMapping template="Mapping&lt;Affine,F332&gt;" assembleJ="false"/>
+      <LinearMapping template="Mapping&lt;Affine,F332&gt;"  />
 
       <Node 	name="E"   >
         <MechanicalObject  template="E333" name="E"  />
-        <GreenStrainMapping template="Mapping&lt;F332,E333&gt;" assembleJ="false"  />
+        <GreenStrainMapping template="Mapping&lt;F332,E333&gt;"    />
         <HookeForceField  template="E333" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0"/>
 
       </Node>

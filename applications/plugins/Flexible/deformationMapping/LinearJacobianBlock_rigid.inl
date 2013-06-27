@@ -83,7 +83,7 @@ public:
     Jacobian:    \f$ dp = w.dt + Omega x w.q0 \f$
       */
 
-    static const bool constantJ=false;
+    static const bool constant=false;
 
     Real Pt;      ///< =   w         =  dp/dt
     OutCoord Pa0;   ///< =  w.q0    : weighted point in local frame
@@ -171,7 +171,7 @@ public:
     Jacobian:    \f$ dp = w.dt + Omega x A.w.q0 \f$
       */
 
-    static const bool constantJ=false;
+    static const bool constant=false;
 
     Real Pt;      ///< =   w         =  dp/dt
     OutCoord Pa0;   ///< =  w.q0    : weighted point in local frame
@@ -265,7 +265,7 @@ public:
         - \f$ d F = dt.grad w.M + Omega x. A( q0.grad w + w.A0^{-1} ).M\f$
     */
 
-    static const bool constantJ=false;
+    static const bool constant=false;
 
     mGradient Ft;       ///< =   grad w.M     =  d F/dt
     OutCoord PFa0;      ///< =   q0.grad w.M + w.A0^{-1}.M
@@ -374,7 +374,7 @@ public:
         - \f$ d F = dt.grad w.M + Omega x. A( q0.grad w + w.A0^{-1} ).M\f$
     */
 
-    static const bool constantJ=false;
+    static const bool constant=false;
 
     mGradient Ft;       ///< =   grad w.M     =  d F/dt
     OutCoord PFa0;      ///< =   q0.grad w.M + w.A0^{-1}.M
@@ -478,7 +478,7 @@ public:
         - \f$ d F = dt.grad w.M + Omega x. A( q0.grad w + w.A0^{-1} ).M\f$
     */
 
-    static const bool constantJ=false;
+    static const bool constant=false;
 
     mGradient Ft;       ///< =   grad w.M     =  d F/dt
     OutCoord PFa0;      ///< =   q0.grad w.M + w.A0^{-1}.M
@@ -586,7 +586,7 @@ public:
         - \f$ d (grad F)_k = dt.(grad2 w)_k^T.M + Omega x. A [q0.(grad2 w)_k^T + (grad w)_k.A0^{-1} +  A0^{-1}_k.grad w].M \f$
     */
 
-    static const bool constantJ=false;
+    static const bool constant=false;
 
     mGradient Ft;       ///< =   grad w     =  d F/dt
     mHessian dFt;      ///< =   (grad2 w)_k^T   =  d (grad F)_k/dt
@@ -719,7 +719,7 @@ public:
         - \f$ d F = w.Omega x. A.A0^{-1}.F0\f$
     */
 
-    static const bool constantJ=false;
+    static const bool constant=false;
 
     Real Pt;      ///< =   w         =  dp/dt
     OutCoord Pa0;      ///< =   w.q0      =  dp/dA  , w.A0^{-1}.F0   =  dF/dA  : weighted affine in local frame

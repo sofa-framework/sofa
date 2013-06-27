@@ -126,9 +126,12 @@ public:
     virtual void reinit()
     {
         // reinit matrices
-        if(this->assembleC.getValue()) updateC();
-        if(this->assembleK.getValue()) updateK();
-        if(this->assembleB.getValue()) updateB();
+        if(this->assemble.getValue())
+        {
+            updateC();
+            updateK();
+            updateB();
+        }
 
         addForce(NULL, *this->mstate->write(core::VecDerivId::force()), *this->mstate->read(core::ConstVecCoordId::position()), *this->mstate->read(core::ConstVecDerivId::velocity()));
 
@@ -151,11 +154,11 @@ public:
         }
         _f.endEdit();
 
-        if(!BlockType::constantK)
+        if(!BlockType::constantK && this->assemble.getValue())
         {
-            if(this->assembleC.getValue()) updateC();
-            if(this->assembleK.getValue()) updateK();
-            if(this->assembleB.getValue()) updateB();
+            updateC();
+            updateK();
+            updateB();
         }
 
         if(this->f_printLog.getValue())
@@ -169,43 +172,44 @@ public:
     {
         if( isCompliance.getValue() ) return; // if seen as a compliance, then apply no force directly, they will be applied as constraints
 
-        if(this->assembleK.getValue())
+        VecDeriv&  df = *_df.beginEdit();
+        const VecDeriv&  dx = _dx.getValue();
+
+        if(this->assemble.getValue())
         {
-            K.addMult(_df,_dx,mparams->kFactor());
-            if(this->assembleB.getValue())   B.addMult(_df,_dx,mparams->bFactor());
+            B.addMult(df,dx,mparams->bFactor());
+            K.addMult(df,dx,mparams->kFactor());
         }
         else
         {
-            VecDeriv&  df = *_df.beginEdit();
-            const VecDeriv&  dx = _dx.getValue();
-
             for(unsigned int i=0; i<material.size(); i++)
             {
                 material[i].addDForce(df[i],dx[i],mparams->kFactor(),mparams->bFactor());
             }
-            _df.endEdit();
         }
+
+        _df.endEdit();
     }
 
 
     const defaulttype::BaseMatrix* getComplianceMatrix(const core::MechanicalParams * /*mparams*/)
     {
         if( !isCompliance.getValue() ) return NULL; // if seen as a stiffness, then return no compliance matrix
-        if(!this->assembleC.getValue()) updateC();
+        if(!this->assemble.getValue() || !BlockType::constantK) updateC();
         return &C;
     }
 
     virtual const sofa::defaulttype::BaseMatrix* getStiffnessMatrix(const core::MechanicalParams*)
     {
         if( isCompliance.getValue() ) return NULL; // if seen as a compliance, then return no stiffness matrix
-        if(!this->assembleK.getValue()) updateK();
+        if(!this->assemble.getValue() || !BlockType::constantK) updateK();
 //        cerr<<"BaseMaterialForceField::getStiffnessMatrix, K = " << K << endl;
         return &K;
     }
 
     const defaulttype::BaseMatrix* getB(const core::MechanicalParams * /*mparams*/)
     {
-        if(!this->assembleB.getValue()) updateB();
+        if(!this->assemble.getValue() || !BlockType::constantK) updateB();
         return &B;
     }
 
@@ -263,9 +267,7 @@ protected:
 
     BaseMaterialForceFieldT(core::behavior::MechanicalState<DataTypes> *mm = NULL)
         : Inherit(mm)
-        , assembleC ( initData ( &assembleC,false, "assembleC","Assemble the Compliance matrix" ) )
-        , assembleK ( initData ( &assembleK,false, "assembleK","Assemble the Stiffness matrix" ) )
-        , assembleB ( initData ( &assembleB,false, "assembleB","Assemble the Damping matrix" ) )
+        , assemble ( initData ( &assemble,false, "assemble","Assemble the needed material matrices (compliance C,stiffness K,damping B)" ) )
         , isCompliance( initData(&isCompliance, false, "isCompliance", "Consider the component as a compliance, else as a stiffness"))
     {
 
@@ -275,7 +277,8 @@ protected:
 
     SparseMatrix material;
 
-    Data<bool> assembleC;
+    Data<bool> assemble;
+
     SparseMatrixEigen C;
 
     void updateC()
@@ -299,7 +302,6 @@ protected:
         C.compress();
     }
 
-    Data<bool> assembleK;
     SparseMatrixEigen K;
 
     void updateK()
@@ -324,7 +326,6 @@ protected:
     }
 
 
-    Data<bool> assembleB;
     SparseMatrixEigen B;
 
     void updateB()

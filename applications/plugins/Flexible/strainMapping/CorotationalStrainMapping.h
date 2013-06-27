@@ -186,13 +186,13 @@ protected:
 
         dOut.endEdit();
 
-        /*if(!BlockType::constantJ)*/ if(this->assembleJ.getValue()) this->updateJ();
+        /*if(!BlockType::constant)*/ if(this->assembleJ.getValue()) this->updateJ();
     }
 
     virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId )
     {
         if( !f_geometricStiffness.getValue() ) return;
-        if(BlockType::constantJ) return;
+        if(BlockType::constant) return;
 
         Data<typename Inherit::InVecDeriv>& parentForceData = *parentDfId[this->fromModel.get(mparams)].write();
         const Data<typename Inherit::InVecDeriv>& parentDisplacementData = *mparams->readDx(this->fromModel);

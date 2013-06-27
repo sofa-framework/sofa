@@ -106,17 +106,17 @@ protected:
 
 	  };
 	  
-	  template<class VecDeriv>
-	  static typename map_traits<VecDeriv>::const_map_type
-	  map(const helper::ReadAccessor< Data<VecDeriv> >& data) {
-		  return map_traits<VecDeriv>::const_map(&data[0][0], data.size());
-	  }
+      template<class VecDeriv>
+      static typename map_traits<VecDeriv>::const_map_type
+      map(const helper::ReadAccessor< Data<VecDeriv> >& data) {
+          return map_traits<VecDeriv>::const_map(&data[0][0], data.size());
+      }
 	
-	  template<class VecDeriv>
-	  static typename map_traits<VecDeriv>::map_type
-	  map(helper::WriteAccessor< Data<VecDeriv> >& data) {
-		  return map_traits<VecDeriv>::map(&data[0][0], data.size());
-	  }
+      template<class VecDeriv>
+      static typename map_traits<VecDeriv>::map_type
+      map(helper::WriteAccessor< Data<VecDeriv> >& data) {
+          return map_traits<VecDeriv>::map(&data[0][0], data.size());
+      }
 
 	  template<class VecDeriv>
 	  static typename map_traits<VecDeriv>::const_map_type
@@ -414,6 +414,10 @@ public:
 	    addMult_impl(result, data, 1.0);
     }
       
+    /// compute result += A * data
+    void addMult( OutVecDeriv& result, const InVecDeriv& data, const OutReal fact ) const {
+        addMult_impl(result, data, fact);
+    }
 
     /// compute result += A * data
     void addMult( Data<OutVecDeriv>& result, const Data<InVecDeriv>& data) const {

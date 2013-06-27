@@ -79,7 +79,7 @@ public:
         - \f$  dE_kk = [ F_k^T.dF_k + dF_k^T.F_k ]/2 \f$
       */
 
-    static const bool constantJ=false;
+    static const bool constant=false;
 
     InCoord F;   ///< =  store deformation gradient to compute J
 

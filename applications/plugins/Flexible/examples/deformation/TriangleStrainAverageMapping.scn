@@ -28,7 +28,7 @@
     <Node name="deformationNode" >
 	<TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamples="false" method="0" order="1" />
         <MechanicalObject template="F321"  name="triangleDeformationsDOF" />
-  	<LinearMapping template="Mapping&lt;Vec3d,F321&gt;" assembleJ="false"/>
+  	<LinearMapping template="Mapping&lt;Vec3d,F321&gt;"  />
     
         <TriangleSetTopologyContainer triangles="@../mesh.triangles" />
 <!--

@@ -177,7 +177,7 @@ public:
         }
         dOut.endEdit();
 
-        if(!BlockType::constantJ) if(this->assembleJ.getValue()) updateJ();
+        if(!BlockType::constant) if(this->assembleJ.getValue()) updateJ();
     }
 
     virtual void applyJ(const core::MechanicalParams * /*mparams*/ , Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)
@@ -226,7 +226,7 @@ public:
 
     virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId )
     {
-        if(BlockType::constantJ) return;
+        if(BlockType::constant) return;
 
         Data<InVecDeriv>& parentForceData = *parentDfId[this->fromModel.get(mparams)].write();
         const Data<InVecDeriv>& parentDisplacementData = *mparams->readDx(this->fromModel);
@@ -255,14 +255,14 @@ public:
 
     const defaulttype::BaseMatrix* getJ(const core::MechanicalParams * /*mparams*/)
     {
-        if(!this->assembleJ.getValue()) updateJ();
+        if(!this->assembleJ.getValue() || !BlockType::constant) updateJ();
         return &eigenJacobian;
     }
 
     // Compliant plugin experimental API
     virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs()
     {
-        if(!this->assembleJ.getValue()) updateJ();
+        if(!this->assembleJ.getValue() || !BlockType::constant) updateJ();
         return &baseMatrices;
     }
 

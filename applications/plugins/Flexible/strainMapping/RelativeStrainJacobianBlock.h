@@ -61,7 +61,7 @@ public:
     enum { order = TStrain::order };
     enum { spatial_dimensions = TStrain::spatial_dimensions };
 
-    static const bool constantJ = true;
+    static const bool constant = true;
 
 
     /**
