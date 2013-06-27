@@ -27,11 +27,11 @@ AssembledSolver::AssembledSolver()
 	: use_velocity(initData(&use_velocity, 
 	                        true,
 	                        "use_velocity",
-	                        "solve velocity dynamics (otherwise acceleration)")),
+	                        "solve velocity dynamics (otherwise acceleration). this might cause damping when used with iterative solver unless warm_start is on.")),
 	  warm_start(initData(&warm_start, 
-	                      false,
+	                      true,
 	                      "warm_start",
-	                      "warm start iterative solvers: avoids biasing solution towards zero."))
+	                      "warm start iterative solvers: avoids biasing solution towards zero (and speeds-up resolution)"))
 {
 	
 }
@@ -97,14 +97,22 @@ core::MechanicalParams AssembledSolver::mparams(const core::ExecParams& params,
 	return res;
 }
 			
-// velocity implicit euler
+// implicit euler
 linearsolver::KKTSolver::vec AssembledSolver::rhs(const system_type& sys) const {
 
 	kkt_type::vec res = kkt_type::vec::Zero( sys.size() );
 
-	kkt_type::vec p = sys.p  +  sys.dt * sys.f;
-	
-	res.head( sys.m ) = sys.P * (use_velocity.getValue() ? p : sys.f);	
+	if( use_velocity.getValue() ) {
+		res.head( sys.m ) = sys.P * (sys.p  +  sys.dt * sys.f);
+	} else {
+		
+    // H = M - h^2 K
+		// p = M v
+		// hence hKv = 1/h ( p - H v )
+		
+		kkt_type::vec hKv = (sys.p - (sys.H * sys.v)) / sys.dt;
+		res.head( sys.m ) = sys.P * (sys.f + hKv);
+	}
 	
 	if( sys.n ) {
 
