@@ -64,13 +64,6 @@ EulerImplicitSolver::EulerImplicitSolver()
 {
 }
 
-EulerImplicitSolver::~EulerImplicitSolver()
-{
-    // free the locally created vector x (including eventual external mechanical states linked by an InteractionForceField)
-    sofa::simulation::common::VectorOperations vop( core::ExecParams::defaultInstance(), this->getContext() );
-    vop.v_free( x.id(), true );
-}
-
 void EulerImplicitSolver::init()
 {
     if (!this->getTags().empty())
@@ -81,10 +74,17 @@ void EulerImplicitSolver::init()
         for (unsigned int i=0; i<objs.size(); ++i)
             sout << "  " << objs[i]->getClassName() << ' ' << objs[i]->getName() << sendl;
     }
+
     sofa::core::behavior::OdeSolver::init();
 }
 
 
+void EulerImplicitSolver::cleanup()
+{
+    // free the locally created vector x (including eventual external mechanical states linked by an InteractionForceField)
+    sofa::simulation::common::VectorOperations vop( core::ExecParams::defaultInstance(), this->getContext() );
+    vop.v_free( x.id(), true );
+}
 
 void EulerImplicitSolver::solve(const core::ExecParams* params /* PARAMS FIRST */, double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
@@ -102,10 +102,11 @@ void EulerImplicitSolver::solve(const core::ExecParams* params /* PARAMS FIRST *
     MultiVecCoord newPos( &vop, xResult );
     MultiVecDeriv newVel( &vop, vResult );
 
+    // set the VectorOperations with current ExecParams (if not already done, it gets a MultiVecId and allocate mechanical states in the sub-graph)
     x.set( &vop );
-    // perform allocation of VecDerivId::solverSolution for every MechanicalObjects (only perfomed once, each time a new MechanicalObject appears in the scene).
+    // perform allocation of x for every newly appeared mechanical states (initializing them to 0 and does not modify already allocated mechanical states).
     // Warning, this includes external mechanical states linked by an interactionForceField TODO: remove this allocation by seeing these external mechanical states as abstract null vectors
-    vop.v_realloc( x.id(), true );
+    x.realloc( true );
 
 
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -318,6 +319,7 @@ int EulerImplicitSolverClass = core::RegisterObject("Implicit time integrator us
         .addAlias("ParallelEulerImplicit")
 #endif
         ;
+
 
 } // namespace odesolver
 

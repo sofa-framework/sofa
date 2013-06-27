@@ -75,12 +75,12 @@ void VectorOperations::v_alloc(sofa::core::MultiVecDerivId& v)
 
 void VectorOperations::v_free(sofa::core::MultiVecCoordId& id)
 {
-    executeVisitor( MechanicalVFreeVisitor<V_COORD>( params /* PARAMS FIRST */, id) );
+    if( !id.isNull() ) executeVisitor( MechanicalVFreeVisitor<V_COORD>( params /* PARAMS FIRST */, id) );
 }
 
 void VectorOperations::v_free(sofa::core::MultiVecDerivId& id, bool interactionForceField)
 {
-    executeVisitor( MechanicalVFreeVisitor<V_DERIV>(params /* PARAMS FIRST */, id, interactionForceField) );
+    if( !id.isNull() ) executeVisitor( MechanicalVFreeVisitor<V_DERIV>(params /* PARAMS FIRST */, id, interactionForceField) );
 }
 
 void VectorOperations::v_realloc(sofa::core::MultiVecCoordId& id, bool interactionForceField)

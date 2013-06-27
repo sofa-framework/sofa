@@ -116,6 +116,7 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
                         if (mergeSolvers)
                         {
                             solver2.odeSolver = group2->solver[0];
+//                            solver2.odeSolver->cleanup();
                             group2->removeObject(solver2.odeSolver);
                             if (!group2->linearSolver.empty())
                             {
@@ -152,6 +153,7 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
                 if (!group->solver.empty())
                 {
                     core::behavior::OdeSolver* solver2 = group->solver[0];
+//                    solver2->cleanup();
                     group->removeObject(solver2);
                     //delete solver2;
                 }
@@ -168,11 +170,20 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
                     //delete solver2;
                 }
                 if (solver.odeSolver)
+                {
                     group->addObject(solver.odeSolver);
+                    solver.odeSolver->init();
+                }
                 if (solver.linearSolver)
+                {
                     group->addObject(solver.linearSolver);
+                    solver.linearSolver->init();
+                }
                 if (solver.constraintSolver)
+                {
                     group->addObject(solver.constraintSolver);
+                    solver.constraintSolver->init();
+                }
             }
         }
         contactGroup.push_back(group);

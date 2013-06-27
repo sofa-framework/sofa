@@ -28,7 +28,6 @@
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/component/component.h>
 
-
 namespace sofa
 {
 
@@ -103,9 +102,10 @@ public:
     Data<bool> f_verbose;
 protected:
     EulerImplicitSolver();
-    ~EulerImplicitSolver();
 public:
     void init();
+
+    void cleanup();
 
     void solve (const core::ExecParams* params /* PARAMS FIRST */, double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult);
 
@@ -182,8 +182,13 @@ public:
             return vect[outputDerivative];
     }
 
+
+protected:
+
     /// the solution vector is stored for warm-start
     core::behavior::MultiVecDeriv x;
+
+
 };
 
 } // namespace odesolver
