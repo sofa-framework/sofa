@@ -6,6 +6,9 @@
 
 #include "utils/se3.h"
 
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/helper/gl/Axis.h>
+
 namespace sofa
 {
 
@@ -79,7 +82,29 @@ public:
 	typedef core::objectmodel::Data<VecCoord> DataVecCoord;
 	typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
+	void draw(const core::visual::VisualParams* vparams) {
 
+		if ( !vparams->displayFlags().getShowBehaviorModels() )
+			return;
+		helper::ReadAccessor<VecCoord> x = *this->mstate->getX();
+
+
+		for(unsigned i = 0, n = x.size(); i < n; ++i) {
+			const unsigned index = clamp(i);
+
+			double m00 = inertia.getValue()[index][0];
+			double m11 = inertia.getValue()[index][1];
+			double m22 = inertia.getValue()[index][2];
+			
+			defaulttype::Vec3d len;
+			len[0] = sqrt(m11+m22-m00);
+			len[1] = sqrt(m00+m22-m11);
+			len[2] = sqrt(m00+m11-m22);
+			
+			helper::gl::Axis::draw(x[i].getCenter(), x[i].getOrientation(), len);
+		}
+		
+	}
 
 	void addForce(const core::MechanicalParams*  /* PARAMS FIRST */, 
 	              DataVecDeriv& _f, 
