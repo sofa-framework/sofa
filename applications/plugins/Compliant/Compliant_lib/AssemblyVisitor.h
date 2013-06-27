@@ -71,10 +71,15 @@ public:
 
 	// distribute data over compliant dofs
 	void distribute_compliant(core::VecId id, const vec& data);
+	void distribute_compliant(core::behavior::MultiVecDeriv::MyMultiVecId id, const vec& data);
 			
 	// outputs data to std::cout
 	void debug() const; 
 
+	// TODO wrap this
+	typedef core::behavior::MultiVecDeriv::MyMultiVecId lagrange_type;
+	lagrange_type lagrange;
+	
 public:
 	
 	typedef core::behavior::BaseMechanicalState dofs_type;
@@ -96,8 +101,7 @@ public:
 				
 		// TODO only expose sofa data through eigen maps ?
 
-		// TODO lambda ?
-		vec f, v, phi;
+		vec f, v, phi, lambda;
 
 		system_type::flags_type flags;
 
@@ -123,10 +127,13 @@ public:
 
 	static mat convert( const defaulttype::BaseMatrix* m);
 	vec vector(simulation::Node* node, core::ConstVecId id); // get
+
 	void vector(dofs_type*, core::VecId id, const vec::ConstSegmentReturnType& data); // set
 			
 public:
 	mat mass(simulation::Node* node);
+
+	
 	mat compliance(simulation::Node* node);
 	mat stiff(simulation::Node* node);
 	mat proj(simulation::Node* node);
@@ -140,7 +147,10 @@ public:
 	system_type::flags_type flags(simulation::Node* node);
 	
 	vec vel(simulation::Node* node);
-	vec rhs(simulation::Node* node);
+	vec phi(simulation::Node* node);
+	vec lambda(simulation::Node* node);
+
+	// TODO is this needed ?
 	real damping(simulation::Node* node);
 
 	// fill data chunk for node

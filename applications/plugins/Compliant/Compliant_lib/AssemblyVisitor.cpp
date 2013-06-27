@@ -120,7 +120,7 @@ AssemblyVisitor::mat AssemblyVisitor::convert( const defaulttype::BaseMatrix* m)
 	return res;
 }
 		
-		
+// this is not thread safe
 void AssemblyVisitor::vector(dofs_type* dofs, core::VecId id, const vec::ConstSegmentReturnType& data) {
 	volatile unsigned int size = dofs->getMatrixSize();
 	assert( size == data.size() );
@@ -392,7 +392,7 @@ AssemblyVisitor::real AssemblyVisitor::damping(simulation::Node* node) {
 	return 0;
 }
 
-AssemblyVisitor::vec AssemblyVisitor::rhs(simulation::Node* node) {
+AssemblyVisitor::vec AssemblyVisitor::phi(simulation::Node* node) {
 	assert( node->mechanicalState );
 	assert( node->forceField.size() <= 1 );
 		
@@ -409,6 +409,16 @@ AssemblyVisitor::vec AssemblyVisitor::rhs(simulation::Node* node) {
 			
 	return res;
 }
+
+
+AssemblyVisitor::vec AssemblyVisitor::lambda(simulation::Node* node) {
+	assert( node->mechanicalState );
+	assert( !lagrange.isNull() );
+	
+	return vector(node, lagrange.getId(node->mechanicalState) );	
+}
+
+
 
 AssemblyVisitor::chunk::extra_type AssemblyVisitor::extra(simulation::Node* node) { 
 	// hacks !
@@ -486,10 +496,12 @@ void AssemblyVisitor::fill_prefix(simulation::Node* node) {
 		c.C = compliance( node );
 		
 		if( !empty(c.C) ) {
-			c.phi = rhs( node );
+			c.phi = phi( node );
 			c.damping = damping( node );
 			c.flags = flags( node );
 
+			if( !lagrange.isNull() ) c.lambda = lambda( node );
+			
 			// hack
 			c.extra = extra( node );
 			
@@ -616,6 +628,33 @@ void AssemblyVisitor::distribute_compliant(core::VecId id, const vec& data) {
 	
 	assert( data.size() == off );
 }
+
+// TODO copypasta
+void AssemblyVisitor::distribute_compliant(core::behavior::MultiVecDeriv::MyMultiVecId id, const vec& data) {
+	// scoped::timer step("solution distribution");
+			
+	unsigned off = 0;
+	for(unsigned i = 0, n = prefix.size(); i < n; ++i) {
+		
+		// TODO optimize map lookup by saving prefix independent state
+		// list 
+		// TODO or: save offsets in chunks ?
+		const chunk& c = find(chunks, prefix[i]);
+
+		// paranoia
+		// c.check();
+		
+		if( c.compliant() ) {
+			vector(prefix[i], id.getId(prefix[i]), data.segment(off, c.size) );
+			off += c.size;
+		}
+		
+	}
+	
+	assert( data.size() == off );
+}
+
+
 
  
 // this is used to propagate mechanical flag upwards mappings (prefix
@@ -1052,6 +1091,8 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const{
 			
 				// rhs
 				res.phi.segment(off_c, c.size) = c.phi;
+				
+				if( c.lambda.size() ) res.lambda.segment( off_c, c.size ) = c.lambda;
 				
 				// damping 
 				// res.damping.segment(off_c, c.size).setConstant( c.damping );

@@ -45,7 +45,7 @@ public:
 		C, J, P;
 	
 	// force, velocity and deformation vectors
-	vec p, f, v, phi; 					// should we have lambda ?
+	vec p, f, v, phi, lambda;
 	 
 
 	void debug(SReal threshold = 0) const;

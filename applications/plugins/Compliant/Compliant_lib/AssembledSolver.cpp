@@ -63,7 +63,21 @@ void AssembledSolver::integrate(const core::MechanicalParams* params) {
 				
 	vop.v_multiop( multi );
 }
-			
+		
+
+void AssembledSolver::alloc(const core::ExecParams& params) {
+	scoped::timer step("lambdas alloc");
+	sofa::simulation::common::VectorOperations vop( &params, this->getContext() );
+	
+	lagrange.set(&vop);
+	vop.v_realloc( lagrange.id(), false );
+}
+
+AssembledSolver::~AssembledSolver() {
+	// sofa::simulation::common::VectorOperations vop( core::ExecParams::defaultInstance(), this->getContext() );
+	// vop.v_free( lagrange.id(), false );
+}
+
 		
 void AssembledSolver::forces(const core::ExecParams& params) {
 	scoped::timer step("forces computation");
@@ -192,7 +206,10 @@ void AssembledSolver::solve(const core::ExecParams* params,
 				
 	// assembly visitor
 	simulation::AssemblyVisitor vis(&mparams);
-				
+	
+	// TODO do this inside visitor ctor
+	vis.lagrange = lagrange.id();
+	
 	// fetch data
 	send( vis );
 	
@@ -214,8 +231,7 @@ void AssembledSolver::solve(const core::ExecParams* params,
 	// distribute (projected) velocities
 	vis.distribute_master( core::VecId::velocity(), velocity(sys, x) );
 	if( sys.n ) {
-		vis.distribute_compliant( core::VecId::force(), lambda(sys, x) );
-
+		vis.distribute_compliant( lagrange.id(), lambda(sys, x) );
 	}
 	
 	// update positions TODO use xResult/vResult
