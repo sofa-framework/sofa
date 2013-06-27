@@ -139,7 +139,7 @@ public:
 
     virtual void reinit()
     {
-        if(this->assembleJ.getValue()) updateJ();
+        if(this->assemble.getValue()) updateJ();
 
         // clear forces
         helper::WriteAccessor<Data< OutVecDeriv > >  f(*this->toModel->write(core::VecDerivId::force())); for(unsigned int i=0;i<f.size();i++) f[i].clear();
@@ -177,12 +177,12 @@ public:
         }
         dOut.endEdit();
 
-        if(!BlockType::constant) if(this->assembleJ.getValue()) updateJ();
+        if(!BlockType::constant) if(this->assemble.getValue()) updateJ();
     }
 
     virtual void applyJ(const core::MechanicalParams * /*mparams*/ , Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)
     {
-        if(this->assembleJ.getValue())  eigenJacobian.mult(dOut,dIn);
+        if(this->assemble.getValue())  eigenJacobian.mult(dOut,dIn);
         else
         {
             OutVecDeriv&  out = *dOut.beginEdit();
@@ -203,7 +203,7 @@ public:
 
     virtual void applyJT(const core::MechanicalParams * /*mparams*/ , Data<InVecDeriv>& dIn, const Data<OutVecDeriv>& dOut)
     {
-        if(this->assembleJ.getValue())  eigenJacobian.addMultTranspose(dIn,dOut);
+        if(this->assemble.getValue())  eigenJacobian.addMultTranspose(dIn,dOut);
         else
         {
             InVecDeriv&  in = *dIn.beginEdit();
@@ -238,7 +238,7 @@ public:
 
 //        cerr<<"BaseStrainMapping::applyDJT, parentForce before = " << parentForce << endl;
 
-        if(this->assembleK.getValue())
+        if(this->assemble.getValue())
         {
             updateK(childForce.ref());
             K.addMult(parentForceData,parentDisplacementData,mparams->kFactor());
@@ -255,14 +255,14 @@ public:
 
     const defaulttype::BaseMatrix* getJ(const core::MechanicalParams * /*mparams*/)
     {
-        if(!this->assembleJ.getValue() || !BlockType::constant) updateJ();
+        if(!this->assemble.getValue() || !BlockType::constant) updateJ();
         return &eigenJacobian;
     }
 
     // Compliant plugin experimental API
     virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs()
     {
-        if(!this->assembleJ.getValue() || !BlockType::constant) updateJ();
+        if(!this->assemble.getValue() || !BlockType::constant) updateJ();
         return &baseMatrices;
     }
 
@@ -275,15 +275,13 @@ public:
 
 
 
-    Data<bool> assembleJ;
-    Data<bool> assembleK;
+    Data<bool> assemble;
 
 
 protected:
     BaseStrainMappingT (core::State<In>* from = NULL, core::State<Out>* to= NULL)
         : Inherit ( from, to )
-        , assembleJ ( initData ( &assembleJ,false, "assembleJ","Assemble the Jacobian matrix or use optimized matrix/vector multiplications" ) )
-        , assembleK ( initData ( &assembleK,false, "assembleK","Assemble the geometric stiffness matrix or use optimized matrix/vector multiplications" ) )
+        , assemble ( initData ( &assemble,false, "assemble","Assemble the matrices (Jacobian and Geometric Stiffness) or use optimized matrix/vector multiplications" ) )
         , maskFrom(NULL)
         , maskTo(NULL)
     {
