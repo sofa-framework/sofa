@@ -81,7 +81,7 @@ public:
     Jacobian:    \f$ dp = w.dt + dA.q0\f$
       */
 
-    static const bool constantJ=true;
+    static const bool constant=true;
 
     Real Pt;      ///< =   w         =  dp/dt
     OutCoord Pa;   ///< =  q0      =  dp/dA
@@ -168,7 +168,7 @@ public:
     Jacobian:    \f$ dp = w.dt + dA.q0\f$
       */
 
-    static const bool constantJ=true;
+    static const bool constant=true;
 
     Real Pt;      ///< =   w         =  dp/dt
     OutCoord Pa;   ///< =  q0      =  dp/dA
@@ -261,7 +261,7 @@ public:
       */
 
 
-    static const bool constantJ=true;
+    static const bool constant=true;
 
     mGradient Ft;       ///< =   grad w.M     =  d F/dt
     OutCoord PFa;      ///< =   A0^{-1}.(grad p*- t0.grad w).M   =  dF/dA
@@ -360,7 +360,7 @@ public:
       */
 
 
-    static const bool constantJ=true;
+    static const bool constant=true;
 
     mGradient Ft;       ///< =   grad w.M     =  d F/dt
     OutCoord PFa;      ///< =   A0^{-1}.(grad p*- t0.grad w).M   =  dF/dA
@@ -459,7 +459,7 @@ public:
       */
 
 
-    static const bool constantJ=true;
+    static const bool constant=true;
 
     mGradient Ft;       ///< =   grad w.M     =  d F/dt
     OutCoord PFa;      ///< =   A0^{-1}.(grad p*- t0.grad w).M   =  dF/dA
@@ -562,7 +562,7 @@ public:
 
 
 
-    static const bool constantJ=true;
+    static const bool constant=true;
 
     mGradient Ft;       ///< =   grad w.M     =  d F/dt
     mHessian dFt;      ///< =   (grad2 w)_k^T.M   =  d (grad F)_k/dt

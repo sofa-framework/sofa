@@ -36,14 +36,14 @@
 	   <!--  <ImageViewer template="ImageUI" name="viewer" image="@sampler.region" transform="@sampler.transform" plane="-1 -1 4"/>  -->
  
 	<MechanicalObject template="F332" name="F"  useMask="0"  showObject="1" showObjectScale="0.05" />
-    	<LinearMapping template="Mapping&lt;Affine,F332&gt;" assembleJ="false"/>
+    	<LinearMapping template="Mapping&lt;Affine,F332&gt;"  />
 
 	<Node 	name="E"   >
 	    <ImageValuesFromPositions name="youngM" position="@../sampler.position" image="@../../../youngM.outputImage" transform="@../../../extruder.outputTransform" />
 
 	    <MechanicalObject  template="E333" name="E"  />
-	    <GreenStrainMapping template="Mapping&lt;F332,E333&gt;" assembleJ="false"/>
-	    <HookeForceField  template="E333" name="ff" youngModulus="@youngM.values" poissonRatio="0" viscosity="0" assembleK="false"/>
+	    <GreenStrainMapping template="Mapping&lt;F332,E333&gt;"  />
+	    <HookeForceField  template="E333" name="ff" youngModulus="@youngM.values" poissonRatio="0" viscosity="0"  />
 	</Node>
 		
     </Node>

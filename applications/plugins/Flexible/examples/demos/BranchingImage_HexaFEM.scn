@@ -9,7 +9,7 @@
     
 
   <MeshObjLoader name="loader" filename="mesh/c.obj" triangulate="1"/>
-  <MeshToImageEngine  name="rasterizer" template="ImageUC" src="@loader" voxelSize=".2" padSize="1" rotateImage="true" />
+  <MeshToImageEngine  name="rasterizer" template="ImageUC" src="@loader" voxelSize=".05 .2 .2" padSize="1" rotateImage="true" />
   <ImageContainer template="ImageUC" name="image" src="@rasterizer" drawBB="false"/>
 <!--  <ImageViewer template="ImageUC" name="viewer" src="@image"  /> -->
   
@@ -41,12 +41,12 @@
 
 	    <MechanicalObject  template="F331" />
 	    <!--  cell indices are retrieved from GaussPointSampler (needed by shapefunction to differentiate overlapping cells) -->
-    	    <LinearMapping template="Mapping&lt;Vec3d,F331&gt;" assembleJ="false" cell="@sampler.cell" showDeformationGradientScale="1"/>
+    	    <LinearMapping template="Mapping&lt;Vec3d,F331&gt;"   cell="@sampler.cell" showDeformationGradientScale="1"/>
 
 	    <Node 	name="Strain"   >
 		<MechanicalObject  template="E331" name="E"  />
-	    	<CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" assembleJ="false" method="polar"/>
-	        <HookeForceField  template="E331" name="ff" youngModulus="100" poissonRatio="0" viscosity="0" assembleK="false" assembleB="false"/>	    
+	    	<CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;"   method="polar"/>
+	        <HookeForceField  template="E331" name="ff" youngModulus="100" poissonRatio="0" viscosity="0"    />	    
 	    </Node>
         </Node>
 
@@ -68,7 +68,7 @@
 	        
 	    	<!--  cell indices are retrieved from FineImage (needed by shapefunction to differentiate overlapping cells) -->
 		<BranchingCellIndicesFromPositions name="cell" position ="@mesh.position" image="@../coarsener.outputFineImage" transform="@../image.transform" branchingImage="@../coarsener.branchingImage" branchingImageTransform="@../coarsener.transform" />
-		<LinearMapping template="Mapping&lt;Vec3d,Vec3d&gt;" assembleJ="false" cell="@cell.cell"/>
+		<LinearMapping template="Mapping&lt;Vec3d,Vec3d&gt;"   cell="@cell.cell"/>
 
 	        <Node name="Visual"  >
 			<VisualModel  />

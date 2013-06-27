@@ -227,12 +227,16 @@ public:
 
     const defaulttype::BaseMatrix* getJ(const core::MechanicalParams * /*mparams*/)
     {
-        if(!this->assembleJ.getValue()) updateJ();
+        if(!this->assemble.getValue() || !BlockType::constant) updateJ();
         return &eigenJacobian;
     }
 
     // Compliant plugin experimental API
-    virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs() { return &baseMatrices; }
+    virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs()
+    {
+        if(!this->assemble.getValue() || !BlockType::constant) updateJ();
+        return &baseMatrices;
+    }
 
     void draw(const core::visual::VisualParams* vparams);
 
@@ -252,7 +256,11 @@ public:
     virtual void mapDeformationGradient(MaterialToSpatial& F, const Coord &p0, const MaterialToSpatial& M, const VRef& ref, const VReal& w, const VGradient& dw)=0;
     //@}
 
-    SparseMatrix& getJacobianBlocks() { return jacobian; }
+    SparseMatrix& getJacobianBlocks()
+    {
+        if(!this->assemble.getValue() || !BlockType::constant) updateJ();
+        return jacobian;
+    }
 
     BaseShapeFunction* _shapeFunction;        ///< where the weights are computed
     Data<vector<VRef> > f_index;            ///< The numChildren * numRefs column indices. index[i][j] is the index of the j-th parent influencing child i.
@@ -263,8 +271,7 @@ public:
     Data< vector<int> > f_cell;    ///< indices required by shape function in case of overlapping elements
 
 
-    Data<bool> assembleJ;
-    Data<bool> assembleK;
+    Data<bool> assemble;
 
 protected:
     BaseDeformationMappingT (core::State<In>* from = NULL, core::State<Out>* to= NULL);

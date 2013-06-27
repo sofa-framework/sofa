@@ -60,11 +60,11 @@
 <!--    <ImageViewer template="ImageD" name="viewer" image="@sampler.error" transform="@sampler.transform" plane="6 -1 -1"/> -->
 <!--    <ImageViewer template="ImageUI" name="viewer" image="@sampler.region" transform="@sampler.transform" plane="6 -1 -1"/> -->
 		<MechanicalObject template="F331" name="F"  useMask="0"  showObject="1" showObjectScale="0.05" />
-	    	<LinearMapping template="Mapping&lt;Affine,F331&gt;" assembleJ="false"/>
+	    	<LinearMapping template="Mapping&lt;Affine,F331&gt;"  />
 
 		<Node 	name="E"   >
 		    <MechanicalObject  template="E331" name="E"  /> 
-		    <GreenStrainMapping template="Mapping&lt;F331,E331&gt;" assembleJ="false"  />
+		    <GreenStrainMapping template="Mapping&lt;F331,E331&gt;"    />
 		    <HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0"/> 
 
 		</Node>
@@ -77,7 +77,7 @@
 	      <Mesh name="mesh" src="@loader" />
 	      <MechanicalObject />
 	      <UniformMass totalMass="20" />
-	      <LinearMapping template="Mapping&lt;Affine,Vec3d&gt;" assembleJ="false"/>
+	      <LinearMapping template="Mapping&lt;Affine,Vec3d&gt;"  />
         </Node>
 
 	    <Node 	name="collision"   >

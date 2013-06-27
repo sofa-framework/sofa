@@ -76,7 +76,7 @@ public:
     Jacobian:    \f$ dp = w.dt \f$
       */
 
-    static const bool constantJ=true;
+    static const bool constant=true;
 
     OutCoord C;   ///< =  w.(p0-t0)  =  constant term
     Real Pt;      ///< =   w         =  dp/dt
@@ -154,7 +154,7 @@ public:
     Jacobian:    \f$ dp = w.dt \f$
       */
 
-    static const bool constantJ=true;
+    static const bool constant=true;
 
     OutCoord C;   ///< =  w.(p0-t0)  =  constant term
     Real Pt;      ///< =   w         =  dp/dt
@@ -238,7 +238,7 @@ public:
         - \f$ d F = dt.grad w.M \f$
       */
 
-    static const bool constantJ=true;
+    static const bool constant=true;
 
     OutCoord C;       ///< =  (p0-t0).grad w.M + w.M   =  constant term
     mGradient Ft;  ///< =   grad w.M     =  d F/dt
@@ -323,7 +323,7 @@ public:
         - \f$ d F = dt.grad w.M \f$
       */
 
-    static const bool constantJ=true;
+    static const bool constant=true;
 
     OutCoord C;       ///< =  (p0-t0).grad w.M + w.M   =  constant term
     mGradient Ft;  ///< =   grad w.M     =  d F/dt
@@ -408,7 +408,7 @@ public:
         - \f$ d F = dt.grad w.M \f$
       */
 
-    static const bool constantJ=true;
+    static const bool constant=true;
 
     OutCoord C;       ///< =  (p0-t0).grad w.M + w.M   =  constant term
     mGradient Ft;  ///< =   grad w.M     =  d F/dt
@@ -496,7 +496,7 @@ public:
         - \f$ d (grad F)_k = dt.(grad2 w)_k^T.M \f$
       */
 
-    static const bool constantJ=true;
+    static const bool constant=true;
 
     OutCoord C;       ///< =  w.(p0-t0)   ,  (p0-t0).grad w + w.I,  (p0-t0).(grad2 w)_k^T + [(grad w)_k.I +  I_k.grad w]   =  constant term
     Real Pt;           ///< =   w     =  dp/dt

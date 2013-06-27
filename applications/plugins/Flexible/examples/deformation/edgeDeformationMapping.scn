@@ -19,11 +19,11 @@
     <Node name="deformationNode" >
 	<TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamples="false" method="0" order="1" />
         <MechanicalObject template="F311"  name="triangleDeformationsDOF" />
-  	<LinearMapping template="Mapping&lt;Vec3d,F311&gt;" assembleJ="true"/>
+  	<LinearMapping template="Mapping&lt;Vec3d,F311&gt;"  />
         <Node name="StrainNode">
             <MechanicalObject template="E311"  name="VoigtStrainDOF" />
-	    <GreenStrainMapping template="Mapping&lt;F311,E311&gt;" assembleJ="true" assembleK="true" /> 
-            <HookeForceField template="E311" youngModulus="1" poissonRatio="0" assembleK="true" assembleC="true" />
+	    <GreenStrainMapping template="Mapping&lt;F311,E311&gt;"     /> 
+            <HookeForceField template="E311" youngModulus="1" poissonRatio="0"     />
         </Node>
     </Node>
 
@@ -51,11 +51,11 @@
     <Node name="deformationNode" >
 	<TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamples="false" method="0" order="1" />
         <MechanicalObject template="F311"  name="triangleDeformationsDOF" />
-  	<LinearMapping template="Mapping&lt;Vec3d,F311&gt;" assembleJ="true"/>
+  	<LinearMapping template="Mapping&lt;Vec3d,F311&gt;"  />
         <Node name="StrainNode">
             <MechanicalObject template="E311"  name="VoigtStrainDOF" />
-	    <CorotationalStrainMapping template="Mapping&lt;F311,E311&gt;" geometricStiffness="true" assembleJ="true" assembleK="true"/>
-            <HookeForceField template="E311" youngModulus="1" poissonRatio="0" assembleC="true" assembleK="true"/>
+	    <CorotationalStrainMapping template="Mapping&lt;F311,E311&gt;" geometricStiffness="true"    />
+            <HookeForceField template="E311" youngModulus="1" poissonRatio="0"    />
         </Node>
     </Node>
 

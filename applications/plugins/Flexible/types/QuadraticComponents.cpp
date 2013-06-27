@@ -1,4 +1,4 @@
-#define FLEXIBLE_QuadraticComponents_CPP // warning this define must follow the shape FLEXIBLE_TYPEABSTRACTNAMEComponents_CPP
+#define FLEXIBLE_QuadraticComponents_CPP
 
 #include "QuadraticComponents.h"
 

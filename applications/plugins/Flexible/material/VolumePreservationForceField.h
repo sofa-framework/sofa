@@ -155,11 +155,11 @@ protected:
 
         _f.endEdit();
 
-        if(!BlockType::constantK)
+        if( !BlockType::constantK && this->assemble.getValue() )
         {
-            if(this->assembleC.getValue()) this->updateC();
-            if(this->assembleK.getValue()) this->updateK();
-            if(this->assembleB.getValue()) this->updateB();
+            this->updateC();
+            this->updateK();
+            this->updateB();
         }
     }
 

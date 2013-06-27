@@ -49,11 +49,11 @@
 <!--	    <TopologyGaussPointSampler name="sampler" inPosition="@mesh.position" showSamples="false" method="0" order="1" />-->
 
 		<MechanicalObject template="F331" name="F" />
-	    	<MLSMapping template="Mapping&lt;Affine,F331&gt;" assembleJ="false" showDeformationGradientScale="0.1"/>
+	    	<MLSMapping template="Mapping&lt;Affine,F331&gt;"   showDeformationGradientScale="0.1"/>
 
 		<Node 	name="E"   >
 		    <MechanicalObject  template="E331" name="E"  /> 
-		    <CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" assembleJ="false" method="svd" geometricStiffness="1"/>
+		    <CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;"   method="svd" geometricStiffness="1"/>
 		    <HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0"/>
 		</Node>
 	    </Node>

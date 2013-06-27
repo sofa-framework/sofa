@@ -58,8 +58,7 @@ BaseDeformationMappingT<JacobianBlockType>::BaseDeformationMappingT (core::State
     , f_ddw ( initData ( &f_ddw,"weightHessians","weight Hessians" ) )
     , f_F0 ( initData ( &f_F0,"M","Linear transformations from material to 3d space" ) )
     , f_cell ( initData ( &f_cell,"cell","indices required by shape function in case of overlapping elements" ) )
-    , assembleJ ( initData ( &assembleJ,false, "assembleJ","Assemble the Jacobian matrix or use optimized Jacobian/vector multiplications" ) )
-    , assembleK ( initData ( &assembleK,false, "assembleK","Assemble the geometric stiffness matrix or use optimized Jacobian/vector multiplications" ) )
+    , assemble ( initData ( &assemble,false, "assemble","Assemble the matrices (Jacobian/Geometric Stiffness) or use optimized Jacobian/vector multiplications" ) )
     , f_pos0 ( initData ( &f_pos0,"restPosition","initial spatial positions of children" ) )
     , missingInformationDirty(true)
     , KdTreeDirty(true)
@@ -224,7 +223,7 @@ void BaseDeformationMappingT<JacobianBlockType>::init()
 template <class JacobianBlockType>
 void BaseDeformationMappingT<JacobianBlockType>::reinit()
 {
-    if(this->assembleJ.getValue()) updateJ();
+    if(this->assemble.getValue()) updateJ();
 
     apply(NULL, *this->toModel->write(core::VecCoordId::position()), *this->fromModel->read(core::ConstVecCoordId::position()));
     if(this->toModel->write(core::VecDerivId::velocity())) applyJ(NULL, *this->toModel->write(core::VecDerivId::velocity()), *this->fromModel->read(core::ConstVecDerivId::velocity()));
@@ -315,7 +314,7 @@ void BaseDeformationMappingT<JacobianBlockType>::apply(const core::MechanicalPar
     }
     dOut.endEdit();
 
-    if(!BlockType::constantJ) if(this->assembleJ.getValue()) updateJ();
+    if(!BlockType::constant) if(this->assemble.getValue()) updateJ();
 
     this->missingInformationDirty=true; this->KdTreeDirty=true; // need to update spatial positions of defo grads if needed for visualization
 }
@@ -325,7 +324,7 @@ void BaseDeformationMappingT<JacobianBlockType>::apply(const core::MechanicalPar
 template <class JacobianBlockType>
 void BaseDeformationMappingT<JacobianBlockType>::applyJ(const core::MechanicalParams * /*mparams*/ , Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)
 {
-    if(this->assembleJ.getValue())  eigenJacobian.mult(dOut,dIn);
+    if(this->assemble.getValue())  eigenJacobian.mult(dOut,dIn);
     else
     {
         OutVecDeriv&  out = *dOut.beginEdit();
@@ -369,7 +368,7 @@ void BaseDeformationMappingT<JacobianBlockType>::applyJ(const core::MechanicalPa
 template <class JacobianBlockType>
 void BaseDeformationMappingT<JacobianBlockType>::applyJT(const core::MechanicalParams * /*mparams*/ , Data<InVecDeriv>& dIn, const Data<OutVecDeriv>& dOut)
 {
-    if(this->assembleJ.getValue())  eigenJacobian.addMultTranspose(dIn,dOut);
+    if(this->assemble.getValue())  eigenJacobian.addMultTranspose(dIn,dOut);
     else
     {
         InVecDeriv&  in = *dIn.beginEdit();
@@ -409,7 +408,7 @@ void BaseDeformationMappingT<JacobianBlockType>::applyJT(const core::MechanicalP
 template <class JacobianBlockType>
 void BaseDeformationMappingT<JacobianBlockType>::applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId )
 {
-    if(BlockType::constantJ) return;
+    if(BlockType::constant) return;
 
     Data<InVecDeriv>& parentForceData = *parentDfId[this->fromModel.get(mparams)].write();
     const Data<InVecDeriv>& parentDisplacementData = *mparams->readDx(this->fromModel);
@@ -419,7 +418,7 @@ void BaseDeformationMappingT<JacobianBlockType>::applyDJT(const core::Mechanical
     helper::ReadAccessor<Data<InVecDeriv> > parentDisplacement (parentDisplacementData);
     helper::ReadAccessor<Data<OutVecDeriv> > childForce (childForceData);
 
-    if(this->assembleK.getValue())
+    if(this->assemble.getValue())
     {
         updateK(childForce.ref());
         K.addMult(parentForceData,parentDisplacementData,mparams->kFactor());

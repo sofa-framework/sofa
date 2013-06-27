@@ -92,12 +92,12 @@
 <!--   <ImageViewer template="ImageD" name="viewer" image="@sampler.error" transform="@sampler.transform" plane="6 6 30"/> -->
 <!--   <ImageViewer template="ImageUI" name="viewer" image="@sampler.region" transform="@sampler.transform" plane="6 6 30"/> -->
 	<MechanicalObject template="F331" name="F"  />
-	<LinearMapping template="Mapping&lt;Rigid,F331&gt;" assembleJ="false"/>
+	<LinearMapping template="Mapping&lt;Rigid,F331&gt;"  />
 
 	<Node 	name="E"   >
 	    <VisualStyle displayFlags="hideBehaviorModels " />
 	    <MechanicalObject  template="E331" name="E"  /> 
-	    <CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" assembleJ="false" method="polar" />
+	    <CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;"   method="polar" />
 	    <HookeForceField  template="E331" name="ff" youngModulus="1000.0" poissonRatio="0" viscosity="0"/>
 	</Node>
     </Node>

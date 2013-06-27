@@ -235,7 +235,7 @@ public:
       */
 
 
-    static const bool constantJ = false;
+    static const bool constant = false;
 
     Affine _R;   ///< =  store rotational part of deformation gradient to compute J
 
@@ -510,7 +510,7 @@ public:
     Jacobian:    \f$  dE = [R^T dF + dF^T R ]/2 \f$
     */
 
-    static const bool constantJ=false;
+    static const bool constant=false;
 
     Affine _R;   ///< =  store rotational part of deformation gradient to compute J
 
@@ -684,7 +684,7 @@ public:
     Jacobian:    \f$  dE = [R^T dF + dF^T R ]/2 \f$
     */
 
-    static const bool constantJ=false;
+    static const bool constant=false;
 
     Affine _R;   ///< =  store unit vector to compute J
     Real nrm;   ///< =  store norm of deformation gradient to compute dJ

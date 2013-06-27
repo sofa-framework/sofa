@@ -175,7 +175,7 @@ public:
 
     static const Real MIN_DETERMINANT() {return 0.001;} ///< J is clamped to avoid undefined deviatoric expressions
 
-    static const bool constantJ=false;
+    static const bool constant=false;
     bool deviatoric;
     Real Jm13; Real Jm23; Real Jm43; Real Jm53; ///< stored variables to handle deviatoric invariants
 
@@ -347,7 +347,7 @@ public:
 
 //    static const Real MIN_DETERMINANT() {return 0.001;} ///< J is clamped to avoid undefined deviatoric expressions
 
-//    static const bool constantJ=false;
+//    static const bool constant=false;
 //    bool deviatoric;
 
 //    /// mapping parameters

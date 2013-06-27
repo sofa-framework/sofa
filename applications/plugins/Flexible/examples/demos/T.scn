@@ -35,11 +35,11 @@
 	    <Node 	name="behavior"   >
 		<ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" showSamples="false" printLog="false" targetNumber="1"/>
 		<MechanicalObject template="F332" name="F"  useMask="0"  showObject="0" showObjectScale="0.05" />
-	    	<LinearMapping template="Mapping&lt;Affine,F332&gt;" assembleJ="false"/>
+	    	<LinearMapping template="Mapping&lt;Affine,F332&gt;"  />
 
 		<Node 	name="E"   >
 		    <MechanicalObject  template="E332" name="E"  /> 
-		    <CorotationalStrainMapping template="Mapping&lt;F332,E332&gt;" assembleJ="false" method="polar" />
+		    <CorotationalStrainMapping template="Mapping&lt;F332,E332&gt;"   method="polar" />
 		    <HookeForceField  template="E332" name="ff" youngModulus="1000.0" poissonRatio="0.4" viscosity="0"/>
 		</Node>
 
@@ -48,7 +48,7 @@
 	<Node 	name="mass"   >
 	     <MechanicalObject position="@../behavior/sampler.position"  />
 	     <UniformMass totalMass="10" />
-	     <LinearMapping template="Mapping&lt;Affine,Vec3d&gt;" assembleJ="false"/>
+	     <LinearMapping template="Mapping&lt;Affine,Vec3d&gt;"  />
         </Node>
 
 	    <Node 	name="collision"   >	

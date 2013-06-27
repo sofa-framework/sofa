@@ -84,7 +84,7 @@ public:
                \f$  dE_k = Ut.dF_k.V \f$
     */
 
-    static const bool constantJ = false;
+    static const bool constant = false;
 
     SpatialMaterialMat _U;  ///< Spatial Rotation
     MaterialMaterialMat _V; ///< Material Rotation
@@ -272,7 +272,7 @@ public:
     Note that superior orders should not be possible because the gradients E_k are not necessary diagonal -> DiagonalStrain (including non-diagonal terms) can be used instead
     */
 
-    static const bool constantJ = false;
+    static const bool constant = false;
 
     SpatialMaterialMat _U;  ///< Spatial Rotation
     MaterialMaterialMat _V; ///< Material Rotation

@@ -44,17 +44,17 @@
         <Node 	name="behavior"   >
 	    <TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamples="false" method="0" order="1" />
 	    <MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
-    	    <LinearMapping template="Mapping&lt;Vec3d,F331&gt;" assembleJ="false"/>
+    	    <LinearMapping template="Mapping&lt;Vec3d,F331&gt;"  />
 
 	    <Node 	name="Strain"   >
 		<MechanicalObject  template="E331" name="E"  />
-	    	<CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" assembleJ="false" method="svd"/>
-	        <HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0" assembleK="false" assembleB="false"/>	    
+	    	<CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;"   method="svd"/>
+	        <HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0"    />	    
 	    </Node>
 	    
 	    <!--<Node 	name="I"   >
 		    <MechanicalObject  template="I331" name="I"  />
-		    <InvariantMapping template="Mapping&lt;F331,I331&gt;" assembleJ="false" deviatoric="true"/>
+		    <InvariantMapping template="Mapping&lt;F331,I331&gt;"   deviatoric="true"/>
 		    <VolumePreservationForceField  template="I331" k="1000"/> 
 		</Node>-->
 		
@@ -63,7 +63,7 @@
 	<Node 	name="mass"   >
 	     <MechanicalObject position="@../mesh.position"  />
 	     <UniformMass totalMass="250" />
-	     <LinearMapping template="Mapping&lt;Vec3d,Vec3d&gt;" assembleJ="false"/>
+	     <LinearMapping template="Mapping&lt;Vec3d,Vec3d&gt;"  />
         </Node>
 
 	<Node name="collision"  >
@@ -120,19 +120,19 @@
         <Node 	name="behavior"   >
 	    <TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamples="false" method="0" order="1" />
 	    <MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
-    	    <LinearMapping template="Mapping&lt;Vec3d,F331&gt;" assembleJ="false"/>
+    	    <LinearMapping template="Mapping&lt;Vec3d,F331&gt;"  />
 
 	    <Node 	name="Strain"   >
 		<MechanicalObject  template="E331" name="E"  />
-	    	<GreenStrainMapping template="Mapping&lt;F331,E331&gt;" assembleJ="false" assembleK="false" />
-	        <HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0" assembleK="false" assembleB="false"/>	    
+	    	<GreenStrainMapping template="Mapping&lt;F331,E331&gt;"     />
+	        <HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0"    />	    
             </Node>
         </Node>
 
 	<Node 	name="mass"   >
 	     <MechanicalObject position="@../mesh.position" />
 	     <UniformMass totalMass="250" />
-	     <LinearMapping template="Mapping&lt;Vec3d,Vec3d&gt;" assembleJ="false"/>
+	     <LinearMapping template="Mapping&lt;Vec3d,Vec3d&gt;"  />
         </Node>
 
 	<Node name="collision"  >
