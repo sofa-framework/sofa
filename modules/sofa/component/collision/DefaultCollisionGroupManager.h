@@ -29,6 +29,7 @@
 #include <sofa/simulation/common/Node.h>
 #include <sofa/component/component.h>
 #include <sofa/simulation/common/DeleteVisitor.h>
+#include <sofa/simulation/common/CleanupVisitor.h>
 
 
 namespace sofa
@@ -79,6 +80,8 @@ protected:
         core::objectmodel::BaseNode::SPtr parent = *inNodes.begin();
         while(!group->child.empty()) parent->moveChild(*group->child.begin());
 
+        simulation::CleanupVisitor cleanupvis(sofa::core::ExecParams::defaultInstance());
+        cleanupvis.execute(group.get());
         simulation::DeleteVisitor vis(sofa::core::ExecParams::defaultInstance());
         vis.execute(group.get());
         group->detachFromGraph();

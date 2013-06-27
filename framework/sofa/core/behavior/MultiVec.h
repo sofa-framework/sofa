@@ -79,9 +79,10 @@ public:
         vop->v_alloc( v );
     }
 
-    void set( BaseVectorOperations* vop )
+    /// Set the BaseVectorOperations and if not already done, it gets a MultiVecID and allocate the vector in the sub-graph
+    void set( BaseVectorOperations* _vop )
     {
-        // not yet allocated
+        vop = _vop;
         if( v.isNull() ) vop->v_alloc( v );
     }
 
@@ -101,6 +102,13 @@ public:
 
     BaseVectorOperations* ops() { return vop; }
     void setOps(BaseVectorOperations* op) { vop = op; }
+
+    /// allocates vector for every newly appeared mechanical states (initializing them to 0 and does not modify already allocated mechanical states)
+    /// \param interactionForceField set to true, also allocate external mechanical states linked by an InteractionForceField
+    void realloc( bool interactionForceField=false )
+    {
+        vop->v_realloc(v, interactionForceField);
+    }
 
     /// v = 0
     void clear()
