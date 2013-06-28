@@ -29,6 +29,7 @@ HEADERS += \
 	ImageContainer.h \
    	ImageViewer.h \
 	ImageFilter.h \
+        ImageTransform.h \
         TransferFunction.h \
         ImageValuesFromPositions.h \
         MergeImages.h \
@@ -56,6 +57,7 @@ SOURCES += \
 	ImageContainer.cpp \
 	ImageViewer.cpp \
 	ImageFilter.cpp \
+        ImageTransform.cpp \
         TransferFunction.cpp \
         ImageValuesFromPositions.cpp \
         MergeImages.cpp \
