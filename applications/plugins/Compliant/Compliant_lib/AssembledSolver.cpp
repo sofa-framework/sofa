@@ -74,7 +74,7 @@ void AssembledSolver::alloc(const core::ExecParams& params) {
 	sofa::simulation::common::VectorOperations vop( &params, this->getContext() );
 	
 	lagrange.set(&vop);
-	lagrange.realloc( true );
+	lagrange.realloc( false );
 
 }
 
