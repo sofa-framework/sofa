@@ -35,6 +35,10 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/component/component.h>
 #include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/Mat.h>
+#include <sofa/core/objectmodel/DataFileName.h>
+#include <sofa/helper/OptionsGroup.h>
 
 namespace sofa
 {
@@ -45,6 +49,7 @@ namespace component
 namespace engine
 {
 
+using namespace core::objectmodel;
 using namespace core::behavior;
 using namespace core::topology;
 using namespace core::objectmodel;
@@ -52,7 +57,8 @@ using namespace core::objectmodel;
 /**
  * This class transforms the positions of one DataFields into new positions after applying a transformation
 This transformation can be either : projection on a plane (plane defined by an origin and a normal vector),
-translation, rotation, scale and some combinations of translation, rotation and scale
+translation, rotation, scale and some combinations of translation, rotation and scale, affine or read from a
+transformation file
  */
 template <class DataTypes>
 class TransformPosition : public core::DataEngine
@@ -63,6 +69,10 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
     typedef sofa::helper::vector<unsigned int> SetIndex;
+    typedef sofa::defaulttype::Vec<16,Real> Vec16;
+    typedef sofa::defaulttype::Vec<4,Real> Vec4;
+    typedef sofa::defaulttype::Mat<4,4,Real> Mat4x4;
+    typedef sofa::defaulttype::Mat<3,3,Real> Mat3x3;
 
     typedef enum
     {
@@ -72,13 +82,27 @@ public:
         RANDOM,
         SCALE,
         SCALE_TRANSLATION,
-        SCALE_ROTATION_TRANSLATION
+        SCALE_ROTATION_TRANSLATION,
+        AFFINE
     } TransformationMethod;
 
 protected:
+
+    class AffineMatrix : public Mat4x4
+    {
+    public:
+        AffineMatrix() : Mat4x4(){this->identity();}
+    };
+
     TransformPosition();
 
     ~TransformPosition() {}
+
+    void getTransfoFromTxt();//read a transformation in a txt or xfm file
+    void getTransfoFromTrm();//read a transformation in a trm file
+    void getTransfoFromTfm();//read a transformation in a tfm file
+    void selectTransformationMethod();
+
 public:
     void init();
 
@@ -124,11 +148,13 @@ protected:
     Data<Coord> f_normal; // normal used by projectOnPlane
     Data<Coord> f_translation; // translation
     Data<Coord> f_rotation; // rotation
-    Data<Real> f_scale; // scale
-    Data<std::string> f_method; // the method of the transformation
+    Data<Coord> f_scale; // scale
+    Data<AffineMatrix> f_affineMatrix; // affine transformation
+    Data<sofa::helper::OptionsGroup> f_method; // the method of the transformation
     Data<long> f_seed; // the seed for the random generator
     Data<Real> f_maxRandomDisplacement; // the maximum displacement for the random generator
     Data<SetIndex> f_fixedIndices; // the indices of the elements that are not transformed
+    DataFileName f_filename; //filename of an affine matrix
     MechanicalState<DataTypes>* mstate;
     const VecCoord* x0;
 
