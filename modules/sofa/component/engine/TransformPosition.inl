@@ -39,7 +39,7 @@
 #include <iostream>
 #include <fstream>
 #include <algorithm>
-#include <boost/algorithm/string.hpp>
+//#include <boost/algorithm/string.hpp>
 
 namespace sofa
 {
@@ -176,57 +176,57 @@ void TransformPosition<DataTypes>::reinit()
 template <class DataTypes>
 void TransformPosition<DataTypes>::getTransfoFromTfm()
 {
-    std::string fname(this->f_filename.getFullPath());
-    sout << "Loading .tfm file " << fname << sendl;
+//    std::string fname(this->f_filename.getFullPath());
+//    sout << "Loading .tfm file " << fname << sendl;
 
-    std::ifstream stream(fname.c_str());
-    if (stream)
-    {
-        std::string line;
-        AffineMatrix mat;
+//    std::ifstream stream(fname.c_str());
+//    if (stream)
+//    {
+//        std::string line;
+//        AffineMatrix mat;
 
-        bool found = false;
-        while (getline(stream,line) && !found)
-        {
-            if (line.find("Parameters")!=std::string::npos)
-            {
-                found=true;
+//        bool found = false;
+//        while (getline(stream,line) && !found)
+//        {
+//            if (line.find("Parameters")!=std::string::npos)
+//            {
+//                found=true;
 
-                typedef std::vector<std::string> vecString;
-                vecString vLine;
-                boost::split(vLine, line, boost::is_any_of(" "), boost::token_compress_on);
+//                typedef std::vector<std::string> vecString;
+//                vecString vLine;
+//                boost::split(vLine, line, boost::is_any_of(" "), boost::token_compress_on);
 
-                std::vector<Real> values;
-                for (vecString::iterator it = vLine.begin(); it < vLine.end(); it++)
-                {
-                    std::string c = *it;
-                    if ( c.find_first_of("1234567890.-") != std::string::npos)
-                        values.push_back(atof(c.c_str()));
-                }
+//                std::vector<Real> values;
+//                for (vecString::iterator it = vLine.begin(); it < vLine.end(); it++)
+//                {
+//                    std::string c = *it;
+//                    if ( c.find_first_of("1234567890.-") != std::string::npos)
+//                        values.push_back(atof(c.c_str()));
+//                }
 
-                if (values.size() != 12)
-                    serr << "Error in file " << fname << sendl;
-                else
-                {
-                    for(unsigned int i = 0 ; i < 3; i++)
-                    {
-                        for (unsigned int j = 0 ; j < 3; j++)
-                        {
-                            mat[i][j] = values[i*3+j];//rotation matrix
-                        }
-                        mat[i][3] = values[values.size()-1-i];//translation
-                    }
-                }
-            }
-        }
+//                if (values.size() != 12)
+//                    serr << "Error in file " << fname << sendl;
+//                else
+//                {
+//                    for(unsigned int i = 0 ; i < 3; i++)
+//                    {
+//                        for (unsigned int j = 0 ; j < 3; j++)
+//                        {
+//                            mat[i][j] = values[i*3+j];//rotation matrix
+//                        }
+//                        mat[i][3] = values[values.size()-1-i];//translation
+//                    }
+//                }
+//            }
+//        }
 
-        if (!found) serr << "Transformation not found in " << fname << sendl;
-        f_affineMatrix.setValue(mat);
-    }
-    else
-    {
-        serr << "Could not open file " << fname << sendl << "Matrix set to identity" << sendl;
-    }
+//        if (!found) serr << "Transformation not found in " << fname << sendl;
+//        f_affineMatrix.setValue(mat);
+//    }
+//    else
+//    {
+//        serr << "Could not open file " << fname << sendl << "Matrix set to identity" << sendl;
+//    }
 }
 
 /**************************************************
@@ -237,68 +237,68 @@ void TransformPosition<DataTypes>::getTransfoFromTfm()
 template <class DataTypes>
 void TransformPosition<DataTypes>::getTransfoFromTrm()
 {
-    std::string fname(this->f_filename.getFullPath());
-    sout << "Loading .trm file " << fname << sendl;
+//    std::string fname(this->f_filename.getFullPath());
+//    sout << "Loading .trm file " << fname << sendl;
 
-    std::ifstream stream(fname.c_str());
-    if (stream)
-    {
-        std::string line;
-        unsigned int nbLines = 0;
-        AffineMatrix mat;
+//    std::ifstream stream(fname.c_str());
+//    if (stream)
+//    {
+//        std::string line;
+//        unsigned int nbLines = 0;
+//        AffineMatrix mat;
 
-        while (getline(stream,line))
-        {
-            if (line == "") continue;
-            nbLines++;
+//        while (getline(stream,line))
+//        {
+//            if (line == "") continue;
+//            nbLines++;
 
-            if (nbLines > 4)
-            {
-                serr << "File with more than 4 lines" << sendl;
-                break;
-            }
+//            if (nbLines > 4)
+//            {
+//                serr << "File with more than 4 lines" << sendl;
+//                break;
+//            }
 
-            std::vector<std::string> vLine;
-            boost::split(vLine, line, boost::is_any_of(" "), boost::token_compress_on);
+//            std::vector<std::string> vLine;
+//            boost::split(vLine, line, boost::is_any_of(" "), boost::token_compress_on);
 
-            if (vLine.size()>3 )
-            {
-                for (unsigned int i = 3; i < vLine.size();i++)
-                {
-                    if (vLine[i]!="")
-                    {
-                        serr << "Should be a line of 3 values" << sendl;
-                        break;
-                    }
-                }
-            }
-            else if (vLine.size()<3) {serr << "Should be a line of 3 values" << sendl;continue;}
+//            if (vLine.size()>3 )
+//            {
+//                for (unsigned int i = 3; i < vLine.size();i++)
+//                {
+//                    if (vLine[i]!="")
+//                    {
+//                        serr << "Should be a line of 3 values" << sendl;
+//                        break;
+//                    }
+//                }
+//            }
+//            else if (vLine.size()<3) {serr << "Should be a line of 3 values" << sendl;continue;}
 
-            if (nbLines == 1)
-            {
-                //translation vector
-                Coord tr;
-                for ( unsigned int i = 0; i < std::min((unsigned int)vLine.size(),(unsigned int)3); i++)
-                {
-                    tr[i] = mat[i][3] = atof(vLine[i].c_str());
-                }
-                f_translation.setValue(tr);
+//            if (nbLines == 1)
+//            {
+//                //translation vector
+//                Coord tr;
+//                for ( unsigned int i = 0; i < std::min((unsigned int)vLine.size(),(unsigned int)3); i++)
+//                {
+//                    tr[i] = mat[i][3] = atof(vLine[i].c_str());
+//                }
+//                f_translation.setValue(tr);
 
-            }
-            else
-            {
-                //rotation matrix
-                for ( unsigned int i = 0; i < std::min((unsigned int)vLine.size(),(unsigned int)3); i++)
-                    mat[nbLines-2][i] = atof(vLine[i].c_str());
-            }
+//            }
+//            else
+//            {
+//                //rotation matrix
+//                for ( unsigned int i = 0; i < std::min((unsigned int)vLine.size(),(unsigned int)3); i++)
+//                    mat[nbLines-2][i] = atof(vLine[i].c_str());
+//            }
 
-        }
-        f_affineMatrix.setValue(mat);
-    }
-    else
-    {
-        serr << "Could not open file " << fname << sendl << "Matrix set to identity" << sendl;
-    }
+//        }
+//        f_affineMatrix.setValue(mat);
+//    }
+//    else
+//    {
+//        serr << "Could not open file " << fname << sendl << "Matrix set to identity" << sendl;
+//    }
 
 }
 
@@ -309,53 +309,53 @@ void TransformPosition<DataTypes>::getTransfoFromTrm()
 template <class DataTypes>
 void TransformPosition<DataTypes>::getTransfoFromTxt()
 {
-    std::string fname(this->f_filename.getFullPath());
-    sout << "Loading matrix file " << fname << sendl;
+//    std::string fname(this->f_filename.getFullPath());
+//    sout << "Loading matrix file " << fname << sendl;
 
-    std::ifstream stream(fname.c_str());
-    if (stream)
-    {
-        std::string line;
-        unsigned int nbLines = 0;
-        AffineMatrix mat;
+//    std::ifstream stream(fname.c_str());
+//    if (stream)
+//    {
+//        std::string line;
+//        unsigned int nbLines = 0;
+//        AffineMatrix mat;
 
-        while (getline(stream,line))
-        {
-            if (line == "") continue;
-            nbLines++;
+//        while (getline(stream,line))
+//        {
+//            if (line == "") continue;
+//            nbLines++;
 
-            if (nbLines > 4)
-            {
-                serr << "Matrix is not 4x4" << sendl;
-                break;
-            }
+//            if (nbLines > 4)
+//            {
+//                serr << "Matrix is not 4x4" << sendl;
+//                break;
+//            }
 
-            std::vector<std::string> vLine;
-            boost::split(vLine, line, boost::is_any_of(" "), boost::token_compress_on);
+//            std::vector<std::string> vLine;
+//            boost::split(vLine, line, boost::is_any_of(" "), boost::token_compress_on);
 
-            if (vLine.size()>4 )
-            {
-                for (unsigned int i = 4; i < vLine.size();i++)
-                {
-                    if (vLine[i]!="")
-                    {
-                        serr << "Matrix is not 4x4." << sendl;
-                        break;
-                    }
-                }
-            }
-            else if (vLine.size()<4) {serr << "Matrix is not 4x4." << sendl;continue;}
+//            if (vLine.size()>4 )
+//            {
+//                for (unsigned int i = 4; i < vLine.size();i++)
+//                {
+//                    if (vLine[i]!="")
+//                    {
+//                        serr << "Matrix is not 4x4." << sendl;
+//                        break;
+//                    }
+//                }
+//            }
+//            else if (vLine.size()<4) {serr << "Matrix is not 4x4." << sendl;continue;}
 
-            for ( unsigned int i = 0; i < std::min((unsigned int)vLine.size(),(unsigned int)4); i++)
-                mat[nbLines-1][i] = atof(vLine[i].c_str());
-        }
-        f_affineMatrix.setValue(mat);
+//            for ( unsigned int i = 0; i < std::min((unsigned int)vLine.size(),(unsigned int)4); i++)
+//                mat[nbLines-1][i] = atof(vLine[i].c_str());
+//        }
+//        f_affineMatrix.setValue(mat);
 
-    }
-    else
-    {
-        serr << "Could not open file " << fname << sendl << "Matrix set to identity" << sendl;
-    }
+//    }
+//    else
+//    {
+//        serr << "Could not open file " << fname << sendl << "Matrix set to identity" << sendl;
+//    }
 }
 
 
