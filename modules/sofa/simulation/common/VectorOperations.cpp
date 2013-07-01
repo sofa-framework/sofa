@@ -83,14 +83,30 @@ void VectorOperations::v_free(sofa::core::MultiVecDerivId& id, bool interactionF
     if( !id.isNull() ) executeVisitor( MechanicalVFreeVisitor<V_DERIV>(params /* PARAMS FIRST */, id, interactionForceField) );
 }
 
-void VectorOperations::v_realloc(sofa::core::MultiVecCoordId& id, bool interactionForceField)
+void VectorOperations::v_realloc(sofa::core::MultiVecCoordId& v, bool interactionForceField)
 {
-    executeVisitor( MechanicalVInitVisitor<V_COORD>(params /* PARAMS FIRST */, id, sofa::core::MultiVecCoordId::null(), true, interactionForceField) );
+    if( v.isNull() )
+    {
+        VecCoordId id(VecCoordId::V_FIRST_DYNAMIC_INDEX);
+        MechanicalVAvailVisitor<V_COORD> avail(params /* PARAMS FIRST */, id);
+        executeVisitor( &avail );
+        //v.assign(id);
+        v.setId(avail.states, id);
+    }
+    executeVisitor( MechanicalVReallocVisitor<V_COORD>(params /* PARAMS FIRST */, &v, interactionForceField) );
 }
 
-void VectorOperations::v_realloc(sofa::core::MultiVecDerivId& id, bool interactionForceField)
+void VectorOperations::v_realloc(sofa::core::MultiVecDerivId& v, bool interactionForceField)
 {
-    executeVisitor( MechanicalVInitVisitor<V_DERIV>(params /* PARAMS FIRST */, id, sofa::core::MultiVecDerivId::null(), true, interactionForceField) );
+    if( v.isNull() )
+    {
+        VecDerivId id(VecDerivId::V_FIRST_DYNAMIC_INDEX);
+        MechanicalVAvailVisitor<V_DERIV> avail(params /* PARAMS FIRST */, id);
+        executeVisitor( &avail );
+        //v.assign(id);
+        v.setId(avail.states, id);
+    }
+    executeVisitor( MechanicalVReallocVisitor<V_DERIV>(params /* PARAMS FIRST */, &v, interactionForceField) );
 }
 
 

@@ -486,8 +486,9 @@ public:
 };
 
 
+
 /**
- * Initialize unset MState destVecId vectors with srcVecId vectors value or 0 if srcVecId is NULL.
+ * Initialize unset MState destVecId vectors with srcVecId vectors value.
  *
  */
 template< VecType vtype >
@@ -500,19 +501,16 @@ public:
     DestMultiVecId vDest;
     SrcMultiVecId vSrc;
     bool m_propagate;
-    bool m_interactionForceField;
 
     /// Default constructor
     /// \param _vDest output vector
     /// \param _vSrc input vector
     /// \param propagate sets to true propagates vector initialization to mapped mechanical states
-    /// \param interactionForceField sets to true also initializes external mechanical states linked by an interaction force field
-    MechanicalVInitVisitor(const core::ExecParams* params /* PARAMS FIRST =core::ExecParams::defaultInstance()*/, DestMultiVecId _vDest, SrcMultiVecId _vSrc = SrcMultiVecId::null(), bool propagate=false, bool interactionForceField=false)
+    MechanicalVInitVisitor(const core::ExecParams* params /* PARAMS FIRST =core::ExecParams::defaultInstance()*/, DestMultiVecId _vDest, SrcMultiVecId _vSrc = SrcMultiVecId::null(), bool propagate=false)
         : BaseMechanicalVisitor(params)
         , vDest(_vDest)
         , vSrc(_vSrc)
         , m_propagate(propagate)
-        , m_interactionForceField(interactionForceField)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
@@ -527,8 +525,6 @@ public:
     virtual Result fwdMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm);
 
     virtual Result fwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm);
-
-    virtual Result fwdInteractionForceField(simulation::Node* node, core::behavior::BaseInteractionForceField* ff);
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
@@ -553,6 +549,8 @@ public:
     }
 #endif
 };
+
+
 
 
 /** Reserve an auxiliary vector identified by a symbolic constant.
@@ -588,6 +586,78 @@ public:
     }
 #endif
 };
+
+
+/**
+ * Reserve an auxiliary vector identified by a symbolic constant.
+ *
+ */
+template< VecType vtype >
+class SOFA_SIMULATION_COMMON_API MechanicalVReallocVisitor : public BaseMechanicalVisitor
+{
+public:
+    typedef sofa::core::TMultiVecId<vtype,V_WRITE> DestMultiVecId;
+    typedef sofa::core::TVecId<vtype,V_WRITE> MyVecId;
+
+
+    DestMultiVecId *v;
+//    bool m_propagate;
+    bool m_interactionForceField;
+
+    /// Default constructor
+    /// \param _vDest output vector
+    /// \param propagate sets to true propagates vector initialization to mapped mechanical states
+    /// \param interactionForceField sets to true also initializes external mechanical states linked by an interaction force field
+    MechanicalVReallocVisitor(const core::ExecParams* params /* PARAMS FIRST =core::ExecParams::defaultInstance()*/, DestMultiVecId *v, /*bool propagate=false,*/ bool interactionForceField=false)
+        : BaseMechanicalVisitor(params)
+        , v(v)
+//        , m_propagate(propagate)
+        , m_interactionForceField(interactionForceField)
+    {
+#ifdef SOFA_DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
+
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
+    {
+        return false;
+    }
+
+    virtual Result fwdMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm);
+
+//    virtual Result fwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm);
+
+    virtual Result fwdInteractionForceField(simulation::Node* node, core::behavior::BaseInteractionForceField* ff);
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const
+    {
+        return "MechanicalVReallocVisitor";
+    }
+
+    virtual std::string getInfos() const;
+
+    /// Specify whether this action can be parallelized.
+    virtual bool isThreadSafe() const
+    {
+        return true;
+    }
+
+#ifdef SOFA_DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+        addWriteVector(*v);
+    }
+#endif
+protected:
+
+
+    MyVecId getId( core::behavior::BaseMechanicalState* mm );
+};
+
+
 
 /** Free an auxiliary vector identified by a symbolic constant */
 template< VecType vtype >
