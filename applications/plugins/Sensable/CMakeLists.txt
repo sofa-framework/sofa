@@ -1,8 +1,8 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 ##plugin external dependencies
-find_package(SofaSensableLibs REQUIRED)
-include_directories(${SOFASENSABLE_INCLUDE_DIRS})
+##find_package(SofaSensableLibs REQUIRED)
+##include_directories(${SOFASENSABLE_INCLUDE_DIRS})
 
 set(HEADER_FILES
 
@@ -24,16 +24,13 @@ set(README_FILES
 	PluginSensable.txt
 	)
 
+find_package(OPENHAPTICS REQUIRED)
+include_directories(${OPENHAPTICS_INCLUDE_DIR})
+include_directories(${OPENHAPTICS_UTIL_INCLUDE_DIR})
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_SENSABLEPLUGIN")
-AddLinkerDependencies(SofaGuiQt SofaComponentGeneral SofaHaptics )
-
-if(UNIX)
-    AddLinkerDependencies("HD")
-    AddLinkerDependencies("HL")
-    AddLinkerDependencies("HDU")
-    AddLinkerDependencies("HLU")
-endif()
+AddLinkerDependencies(SofaGuiQt SofaComponentGeneral SofaHaptics ${OPENHAPTICS_LIBRARIES})
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
