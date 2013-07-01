@@ -1611,6 +1611,30 @@ void MechanicalObject<DataTypes>::vAlloc(const core::ExecParams* params /* PARAM
 }
 
 template <class DataTypes>
+void MechanicalObject<DataTypes>::vRealloc(const core::ExecParams* params /* PARAMS FIRST */, VecCoordId v)
+{
+    Data<VecCoord>* vec_d = this->write(v);
+
+    if ( !vec_d->isSet(params) /*&& v.index >= sofa::core::VecCoordId::V_FIRST_DYNAMIC_INDEX*/ )
+    {
+        vec_d->beginEdit(params)->resize(vsize);
+        vec_d->endEdit(params);
+    }
+}
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::vRealloc(const core::ExecParams* params /* PARAMS FIRST */, VecDerivId v)
+{
+    Data<VecDeriv>* vec_d = this->write(v);
+
+    if ( !vec_d->isSet(params) /*&& v.index >= sofa::core::VecDerivId::V_FIRST_DYNAMIC_INDEX*/ )
+    {
+        vec_d->beginEdit(params)->resize(vsize);
+        vec_d->endEdit(params);
+    }
+}
+
+template <class DataTypes>
 void MechanicalObject<DataTypes>::vFree(const core::ExecParams* params /* PARAMS FIRST */, VecCoordId vId)
 {
     if (vId.index >= sofa::core::VecCoordId::V_FIRST_DYNAMIC_INDEX)
@@ -1651,8 +1675,6 @@ void MechanicalObject<DataTypes>::vInit(const core::ExecParams* params /* PARAMS
 
         if (vSrcId != ConstVecCoordId::null())
             vOp(params, vId, vSrcId); // copy from source
-        else
-            vOp(params, vId); // init to 0
     }
 }
 
@@ -1667,8 +1689,6 @@ void MechanicalObject<DataTypes>::vInit(const core::ExecParams* params /* PARAMS
 
         if (vSrcId != ConstVecDerivId::null()) // copy from source
             vOp(params, vId, vSrcId);
-        else
-            vOp(params, vId); // init to 0
     }
 }
 

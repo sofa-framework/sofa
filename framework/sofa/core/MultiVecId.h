@@ -345,11 +345,11 @@ public:
         defaultId = id;
     }
 
-    template<class StateSet>
-    void setId(const StateSet& states, const MyVecId& id)
+    template<class State>
+    void setId(const std::set<State>& states, const MyVecId& id)
     {
         IdMap& map = writeIdMap();
-        for (typename StateSet::const_iterator it = states.begin(), itend = states.end(); it != itend; ++it)
+        for (typename std::set<State>::const_iterator it = states.begin(), itend = states.end(); it != itend; ++it)
             map[*it] = id;
     }
 

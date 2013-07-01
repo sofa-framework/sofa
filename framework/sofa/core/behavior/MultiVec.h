@@ -64,27 +64,22 @@ private:
     TMultiVec(const TMultiVec<vtype>& ) {}
 
 public:
-    /// Default constructor, to combine with the set method
-    TMultiVec() : vop(NULL), v(MyMultiVecId::null()), dynamic(false)
-    {}
 
     /// Refers to a state vector with the given ID (VecId::position(), VecId::velocity(), etc).
     TMultiVec( BaseVectorOperations* vop, MyMultiVecId v) : vop(vop), v(v), dynamic(false)
     {}
 
+    /// Refers to a not yet allocated state vector
+    TMultiVec() : vop(NULL), v(MyMultiVecId::null()), dynamic(false)
+    {}
+
     /// Allocate a new temporary vector with the given type (sofa::core::V_COORD or sofa::core::V_DERIV).
-    TMultiVec( BaseVectorOperations* vop) : vop(vop), v(MyMultiVecId::null()), dynamic(true)
+    TMultiVec( BaseVectorOperations* vop, bool dynamic=true) : vop(vop), v(MyMultiVecId::null()), dynamic(dynamic)
     {
         BOOST_STATIC_ASSERT(vtype == V_COORD || vtype == V_DERIV);
         vop->v_alloc( v );
     }
 
-    /// Set the BaseVectorOperations and if not already done, it gets a MultiVecID and allocate the vector in the sub-graph
-    void set( BaseVectorOperations* _vop )
-    {
-        vop = _vop;
-        if( v.isNull() ) vop->v_alloc( v );
-    }
 
     ~TMultiVec()
     {
@@ -104,9 +99,10 @@ public:
     void setOps(BaseVectorOperations* op) { vop = op; }
 
     /// allocates vector for every newly appeared mechanical states (initializing them to 0 and does not modify already allocated mechanical states)
-    /// \param interactionForceField set to true, also allocate external mechanical states linked by an InteractionForceField
-    void realloc( bool interactionForceField=false )
+    /// \param interactionForceField set to true, also allocate external mechanical states linked by an InteractionForceField (TODO remove this option by seeing external mmstates as abstract null vectors)
+    void realloc( BaseVectorOperations* _vop, bool interactionForceField=false )
     {
+        vop = _vop;
         vop->v_realloc(v, interactionForceField);
     }
 
@@ -218,6 +214,8 @@ public:
 typedef TMultiVec<V_COORD> MultiVecCoord;
 typedef TMultiVec<V_DERIV> MultiVecDeriv;
 typedef TMultiVec<V_MATDERIV> MultiVecMatrixDeriv;
+
+
 
 } // namespace behavior
 

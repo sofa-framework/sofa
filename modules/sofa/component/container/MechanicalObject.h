@@ -336,6 +336,12 @@ public:
     /// Allocate a new temporary vector
     //virtual void vAlloc(core::MatrixDerivId v);
 
+    /// Reallocate a new temporary vector
+    virtual void vRealloc(const core::ExecParams* params /* PARAMS FIRST  = ExecParams::defaultInstance()*/, core::VecCoordId v);
+    /// Reallocate a new temporary vector
+    virtual void vRealloc(const core::ExecParams* params /* PARAMS FIRST  = ExecParams::defaultInstance()*/, core::VecDerivId v);
+
+
     /// Free a temporary vector
     virtual void vFree(const core::ExecParams* params /* PARAMS FIRST */, core::VecCoordId v);
     /// Free a temporary vector
