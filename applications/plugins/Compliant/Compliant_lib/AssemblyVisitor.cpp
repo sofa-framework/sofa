@@ -1178,6 +1178,9 @@ void AssemblyVisitor::processNodeBottomUp(simulation::Node* node) {
 		// postfix mechanical flags propagation (and geometric stiffness)
 		std::for_each(prefix.rbegin(), prefix.rend(), propagation_helper(graph) );
 		
+		// customization
+		apply_callbacks();
+
 		start_node = 0;
 	}
 }
@@ -1201,10 +1204,16 @@ void AssemblyVisitor::apply_callbacks() const {
 	for(unsigned j = 0; j < m; ++j) cb[j]->start();
 
 	for(unsigned i = 0, n = prefix.size(); i < n; ++i) {
+		dofs_type* dofs = graph[prefix[i]].dofs;
 
-		
-
+		if( graph[prefix[i]].data->master() ) {
+			for(unsigned j = 0; j < m; ++j) cb[j]->master( dofs );
+		} else if( graph[prefix[i]].data->compliant() ) {
+			for(unsigned j = 0; j < m; ++j) cb[j]->compliant( dofs );
+		}
 	}
+	
+	for(unsigned j = 0; j < m; ++j) cb[j]->end();
 	
 }
 
