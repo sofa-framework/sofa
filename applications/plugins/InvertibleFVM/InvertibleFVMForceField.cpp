@@ -55,10 +55,10 @@ int InvertibleFVMForceFieldClass = core::RegisterObject("Invertible Finite Volum
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_SIMPLE_FEM_API InvertibleFVMForceField<Vec3dTypes>;
+template class SOFA_InvertibleFVM_API InvertibleFVMForceField<Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_SIMPLE_FEM_API InvertibleFVMForceField<Vec3fTypes>;
+template class SOFA_InvertibleFVM_API InvertibleFVMForceField<Vec3fTypes>;
 #endif
 
 } // namespace forcefield

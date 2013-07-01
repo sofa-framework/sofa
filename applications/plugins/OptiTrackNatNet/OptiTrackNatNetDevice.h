@@ -25,6 +25,10 @@
 #ifndef OPTITRACKNATNETDEVICE_H
 #define OPTITRACKNATNETDEVICE_H
 
+#include <boost/asio.hpp>
+#include <boost/array.hpp>
+#include <iostream>
+
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/component/controller/Controller.h>
@@ -32,10 +36,6 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include "OptiTrackNatNetClient.h"
-
-#include <iostream>
-#include <boost/array.hpp>
-#include <boost/asio.hpp>
 
 namespace SofaOptiTrackNatNet
 {

@@ -25,14 +25,14 @@
 #ifndef OPTITRACKNATNETCLIENT_H
 #define OPTITRACKNATNETCLIENT_H
 
+#include <boost/asio.hpp>
+#include <boost/array.hpp>
+#include <iostream>
+
 #include <sofa/core/objectmodel/BaseObject.h>
 //#include <sofa/core/behavior/BaseController.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Quat.h>
-
-#include <iostream>
-#include <boost/array.hpp>
-#include <boost/asio.hpp>
 
 namespace SofaOptiTrackNatNet
 {
