@@ -25,6 +25,7 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_InvertibleFVMForceField_H
 #define SOFA_COMPONENT_FORCEFIELD_InvertibleFVMForceField_H
 
+#include "initPlugin.h"
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/helper/vector.h>
@@ -189,10 +190,10 @@ public:
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_InvertibleFVMForceField_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_SIMPLE_FEM_API InvertibleFVMForceField<defaulttype::Vec3dTypes>;
+extern template class SOFA_InvertibleFVM_API InvertibleFVMForceField<defaulttype::Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_SIMPLE_FEM_API InvertibleFVMForceField<defaulttype::Vec3fTypes>;
+extern template class SOFA_InvertibleFVM_API InvertibleFVMForceField<defaulttype::Vec3fTypes>;
 #endif
 #endif
 
