@@ -17,12 +17,20 @@ struct graph_traits {
 	                        boost::property< boost::edge_color_t, boost::default_color_type> > edge_properties;
     
 	typedef boost::adjacency_list<boost::vecS, boost::vecS, Direction, vertex_properties, edge_properties > graph_type;
+
+
 	
-};
+}; 
 
 template<class Vertex, class Edge, class Direction = boost::undirectedS>
 struct graph : graph_traits<Vertex, Edge, Direction>::graph_type {
 	
+	// some handy typedefs
+	typedef std::pair<typename graph::in_edge_iterator,
+	                  typename graph::in_edge_iterator> in_edge_range;
+
+	typedef std::pair<typename graph::out_edge_iterator,
+	                  typename graph::out_edge_iterator> out_edge_range;
 
 };
 
