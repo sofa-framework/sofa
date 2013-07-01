@@ -80,10 +80,33 @@ public:
 	typedef core::behavior::MultiVecDeriv::MyMultiVecId lagrange_type;
 	lagrange_type lagrange;
 	
+
+	
 public:
 	
+
 	typedef core::behavior::BaseMechanicalState dofs_type;
 			
+
+	struct callback { 
+		virtual ~callback();
+
+		// TODO this might change
+		virtual void start();
+		virtual void compliant(dofs_type* dofs);
+		virtual void master(dofs_type* dofs);
+		virtual void end();
+
+	};
+
+	// these get called in prefix order (parents first) on the mapping
+	// graph (the assembly order
+	typedef std::vector< callback* > cb_type;
+	cb_type cb;
+
+	void apply_callbacks() const;
+
+
 	// data chunk for each dofs
 	struct chunk {
 		chunk();
@@ -197,12 +220,13 @@ public:
 	static void debug_chunk(const chunks_type::const_iterator& );
 
 	// traversal order
-	typedef std::vector< dofs_type* > prefix_type;
-	mutable prefix_type prefix;
-			
-	// mapping graph
+	typedef std::vector< unsigned > prefix_type;
+	prefix_type prefix;
+	
+	// TODO we don't even need dofs since they are in data
 	struct vertex {
 		dofs_type* dofs;
+		chunk* data;					// avoids map lookups 
 	};
 
 	struct edge {

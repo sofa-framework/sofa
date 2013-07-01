@@ -458,7 +458,7 @@ void AssemblyVisitor::fill_prefix(simulation::Node* node) {
 
 
 	// backup prefix order
-	prefix.push_back( node->mechanicalState );
+	// prefix.push_back( node->mechanicalState );
 
 	// fill chunk for current dof
 	chunk& c = chunks[ node->mechanicalState ];
@@ -466,7 +466,7 @@ void AssemblyVisitor::fill_prefix(simulation::Node* node) {
 	c.size = node->mechanicalState->getMatrixSize();
 	c.dofs = node->mechanicalState;
 	
-	vertex v; v.dofs = c.dofs;
+	vertex v; v.dofs = c.dofs; v.data = &c;
 	
 	c.M = mass( node );
 	add(c.K, stiff( node ));
@@ -498,12 +498,12 @@ void AssemblyVisitor::fill_prefix(simulation::Node* node) {
 			c.damping = damping( node );
 			c.flags = flags( node );
 
-			if( !lagrange.isNull() ) {
+			// if( !lagrange.isNull() ) {
 				c.lambda = lambda( node );
 				assert( c.lambda.size() );
-			} else {
-				std::cerr << "bad lagrange yo" << std::endl;
-			}
+			// } else {
+			// 	std::cerr << "bad lagrange yo" << std::endl;
+			// }
 			
 			// hack
 			c.extra = extra( node );
@@ -588,18 +588,12 @@ void AssemblyVisitor::distribute_master(core::VecId id, const vec& data) {
 			
 	unsigned off = 0;
 	for(unsigned i = 0, n = prefix.size(); i < n; ++i) {
-				
-		// TODO optimize map lookup by saving prefix independent state
-		// list 
-		// TODO or: save offsets in chunks ?
-		const chunk& c = find(chunks, prefix[i]);
 
-		// paranoia
-		// c.check();
+		const chunk* c = graph[prefix[i]].data; // find(chunks, prefix[i]);
 		
-		if( c.master() ) {
-			vector(prefix[i], id, data.segment(off, c.size) );
-			off += c.size;
+		if( c->master() ) {
+			vector(graph[prefix[i]].dofs, id, data.segment(off, c->size) );
+			off += c->size;
 		}
 		
 	}
@@ -614,17 +608,11 @@ void AssemblyVisitor::distribute_compliant(core::VecId id, const vec& data) {
 	unsigned off = 0;
 	for(unsigned i = 0, n = prefix.size(); i < n; ++i) {
 				
-		// TODO optimize map lookup by saving prefix independent state
-		// list 
-		// TODO or: save offsets in chunks ?
-		const chunk& c = find(chunks, prefix[i]);
+		const chunk* c = graph[prefix[i]].data; // find(chunks, prefix[i]);
 
-		// paranoia
-		// c.check();
-		
-		if( c.compliant() ) {
-			vector(prefix[i], id, data.segment(off, c.size) );
-			off += c.size;
+		if( c->compliant() ) {
+			vector(graph[prefix[i]].dofs, id, data.segment(off, c->size) );
+			off += c->size;
 		}
 		
 	}
@@ -639,17 +627,11 @@ void AssemblyVisitor::distribute_compliant(core::behavior::MultiVecDeriv::MyMult
 	unsigned off = 0;
 	for(unsigned i = 0, n = prefix.size(); i < n; ++i) {
 		
-		// TODO optimize map lookup by saving prefix independent state
-		// list 
-		// TODO or: save offsets in chunks ?
-		const chunk& c = find(chunks, prefix[i]);
-
-		// paranoia
-		// c.check();
+		const chunk* c = graph[prefix[i]].data; // find(chunks, prefix[i]);
 		
-		if( c.compliant() ) { 
-			vector(prefix[i], id.getId(prefix[i]), data.segment(off, c.size) );
-			off += c.size;
+		if( c->compliant() ) { 
+			vector( graph[ prefix[i] ] .dofs, id.getId( graph[prefix[i]].dofs), data.segment(off, c->size) );
+			off += c->size;
 		}
 		
 	}
@@ -665,37 +647,40 @@ void AssemblyVisitor::distribute_compliant(core::behavior::MultiVecDeriv::MyMult
 struct AssemblyVisitor::propagation_helper {
 
 	// should be const lol
-	chunks_type& chunks;
-
-	propagation_helper(chunks_type& chunks) : chunks(chunks) {} 
+	graph_type& g;
 	
-	void operator()( dofs_type* dofs) const {
-		// TODO use out_edges instead lol ?
-		chunk& c = chunks[ dofs ];
+	propagation_helper(graph_type& g) : g(g) {} 
+	
+	void operator()( unsigned v ) const {
 		
- 		// std::cerr << "propagating from " << pretty(c.dofs) << std::endl;
+		dofs_type* dofs = g[v].dofs;
+		chunk* c = g[v].data;
+		
+		// std::cerr << "propagating from " << pretty(c.dofs) << std::endl;
+		
+		if( c->mechanical ) {
+		
+			for(graph_type::out_edge_range e = boost::out_edges(v, g); e.first != e.second; ++e.first) {
 
-		if( c.mechanical ) {
-			
-			for(chunk::map_type::const_iterator mi = c.map.begin(), me = c.map.end();
-			    mi != me; ++mi) {
+			// for(chunk::map_type::const_iterator mi = c.map.begin(), me = c.map.end();
+			//     mi != me; ++mi) {
 
-				chunk& p = chunks[ mi->first ];
-				p.mechanical = true;
-							
-				if(!zero(mi->second.K)) { 
-					add(p.K, mi->second.K);
+				chunk* p = g[ boost::target(*e.first, g) ].data; // chunks[ mi->first ];
+				p->mechanical = true;
+				
+				if(!zero( g[*e.first].data->K)) { 
+					add(p->K, g[*e.first].data->K );
 				}
 				// std::cerr << "becomes mechanical lol " << pretty(mi->first) << std::endl;
 			}
-		
+			
 		}
 	}
 
-	template<class G>
-	void operator()(unsigned v, const G& g) const {
-		(*this)(g[v].dofs);
-	}
+	// template<class G>
+	// void operator()(unsigned v, const G& ) const {
+	// 	(*this)(v);
+	// }
 	
 };
 
@@ -727,58 +712,50 @@ struct writer {
 struct AssemblyVisitor::process_helper {
 	
 	process_type& res;
-	const chunks_type& chunks;
+	const graph_type& g;
+	// const chunks_type& chunks;
 	
-	process_helper(process_type& res,
-	               const chunks_type& chunks)
-		: res(res),
-		  chunks(chunks) {
+	process_helper(process_type& res, const graph_type& g)
+		: res(res), g(g)  {
 		// std::cerr << "avanti" << std::endl;
 	}
 
-	template<class G>
-	void operator()(unsigned v, const G& g) const {
-		(*this)(g[v].dofs);
-	}
-
-	void operator()(dofs_type* curr) const {
+	void operator()(unsigned v) const {
+	
 		// cerr << "processing " << pretty( curr ) << std::endl;
 
+		dofs_type* curr = g[v].dofs;
+		chunk* c = g[v].data;
+		
 		const unsigned& size_m = res.size_m;
 		full_type& full = res.full;
 		offset_type& offsets = res.offset.master;
 		
-		// current data chunk/mapping matrix
-		const chunk& c = find(chunks, curr);
-
-		if( !c.mechanical ) return;
+		if( !c->mechanical ) return;
 		
 		mat& Jc = full[ curr ];
 		assert( empty(Jc) );
 		
-		// add regular stiffness 
-		// mat& Kc = fc.K;
-		// add(Kc, c.K);
-		
-		// concatenate mapping wrt independent dofs
-		for(chunk::map_type::const_iterator mi = c.map.begin(), me = c.map.end();
-		    mi != me; ++mi) {
+		// TODO use graph and out_edges
+		for( graph_type::out_edge_range e = boost::out_edges(v, g); e.first != e.second; ++e.first) {
+			
+			vertex vp = g[ boost::target(*e.first, g) ];
 
 			// parent data chunk/mapping matrix
-			const chunk& p = find(chunks, mi->first);
-			mat& Jp = full[ mi->first ];
+			const chunk* p = vp.data; // find(chunks, mi->first);
+			mat& Jp = full[ vp.dofs ];
 			{
 				// scoped::timer step("mapping concatenation");
 				
 				// mapping blocks
-				const mat& jc = mi->second.J;
+				const mat& jc = g[*e.first].data->J;
 				
 				// parent is not mapped: we put a shift matrix with the
 				// correct offset as its full mapping matrix, so that its
 				// children will get the right place on multiplication
-				if( p.master() && empty(Jp) ) {
+				if( p->master() && empty(Jp) ) {
 					// scoped::timer step("shift matrix");
-					Jp = shift_right( find(offsets, mi->first), p.size, size_m);
+					Jp = shift_right( find(offsets, vp.dofs), p->size, size_m);
 				}
 				
 				// Jp is empty for children of a non-master dof (e.g. mouse)
@@ -788,18 +765,18 @@ struct AssemblyVisitor::process_helper {
 					// TODO optimize this, it is the most costly part
 					add(Jc, jc * Jp );
 				} else {
-					std::cerr << "parent: " << pretty(p.dofs) << " has empty J matrix" << std::endl;
+					std::cerr << "parent: " << pretty(p->dofs) << " has empty J matrix" << std::endl;
 					assert( false );
 				}
 			}
- 
-			if( ! (c.master() || !zero(Jc) )  )  {
+			
+			if( ! (c->master() || !zero(Jc) )  )  {
 				using namespace std;
-
-				cerr << "houston we have a problem with " << c.dofs->getName()  << " under " << c.dofs->getContext()->getName() << endl
-				     << "master: " << c.master() << endl 
-				     << "mapped: " << (c.map.empty() ? string("nope") : p.dofs->getName() )<< endl
-				     << "p mechanical ? " << p.mechanical << endl
+				
+				cerr << "houston we have a problem with " << c->dofs->getName()  << " under " << c->dofs->getContext()->getName() << endl
+				     << "master: " << c->master() << endl 
+				     << "mapped: " << (c->map.empty() ? string("nope") : p->dofs->getName() )<< endl
+				     << "p mechanical ? " << p->mechanical << endl
 				     << "empty Jp " << empty(Jp) << endl
 				     << "empty Jc " << empty(Jc) << endl;
 				
@@ -839,8 +816,8 @@ struct AssemblyVisitor::prefix_helper {
 	}
 	
 	template<class G>
-	void operator()(unsigned v, const G& g) const {
-		res.push_back(g[v].dofs);
+	void operator()(unsigned v, const G& ) const {
+		res.push_back( v );
 	}
 	
 };
@@ -865,15 +842,17 @@ AssemblyVisitor::process_type AssemblyVisitor::process() const {
 	
 	for(unsigned i = 0, n = prefix.size(); i < n; ++i) {
 		
-		const chunk& c = find(chunks, prefix[i]);
+		// const chunk& c = find(chunks, prefix[i]);
+		const chunk* c = graph[ prefix[i] ].data;
+		
 		// independent
-		if( c.master() ) {
-			offsets[ prefix[i] ] = off_m;
-			off_m += c.size;
-		} else if( !empty(c.C) ) {
-			off_c += c.size;
+		if( c->master() ) {
+			offsets[ graph[ prefix[i] ].dofs ] = off_m;
+			off_m += c->size;
+		} else if( !empty(c->C) ) {
+			off_c += c->size;
 		}
-				
+		
 	}
 	
 	// update total sizes
@@ -881,7 +860,9 @@ AssemblyVisitor::process_type AssemblyVisitor::process() const {
 	size_c = off_c;
 	
 	// prefix mapping concatenation and stuff TODO merge with offsets computation ?
-	std::for_each(prefix.begin(), prefix.end(), process_helper(res, chunks) );
+	// TODO use prefix instead
+	// utils::dfs( graph, process_helper( res ) );
+	std::for_each(prefix.begin(), prefix.end(), process_helper(res, graph) );
 	
 	return res;
 }
@@ -986,46 +967,47 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const{
 	for(unsigned i = 0, n = prefix.size(); i < n; ++i) {
 
 		// current chunk
-		const chunk& c = find(chunks, prefix[i]);
-		assert( c.size );
+		// const chunk& c = find(chunks, prefix[i]);
+		const chunk* c = graph[ prefix[i] ].data;
+		assert( c->size );
 
-		if( !c.mechanical ) continue;
+		if( !c->mechanical ) continue;
 		
 		// full mapping chunk
-		const mat& Jc = p.full[ prefix[i] ];
+		const mat& Jc = p.full[ graph[ prefix[i] ].dofs ];
 		
 		// independent dofs: fill mass/stiffness
-		if( c.master() ) {
+		if( c->master() ) {
 			// scoped::timer step("independent dofs");
-			mat shift = shift_right(off_m, c.size, p.size_m);
-				
-			mat H(c.size, c.size);
+			mat shift = shift_right(off_m, c->size, p.size_m);
 			
-			if( !zero(c.M) ) {
+			mat H(c->size, c->size);
+			
+			if( !zero(c->M) ) {
 				
-				// res.M.middleRows(off_m, c.size) = c.M * shift;
-				H += c.M; // res.H.middleRows(off_m, c.size) = res.H.middleRows(off_m, c.size) + c.M * shift;
+				// res.M.middleRows(off_m, c.size) = c->M * shift;
+				H += c->M; // res.H.middleRows(off_m, c.size) = res.H.middleRows(off_m, c.size) + c.M * shift;
 				
-				res.p.segment(off_m, c.size).noalias() += c.M * c.v;
+				res.p.segment(off_m, c->size).noalias() += c->M * c->v;
 			}
 			
-			if( !zero(c.K) )  {
+			if( !zero(c->K) )  {
 				// res.K.middleRows(off_m, c.size) = Kc * shift;
-				H -= dt2 * c.K;
+				H -= dt2 * c->K;
 				
 				// res.H.middleRows(off_m, c.size) = res.H.middleRows(off_m, c.size) - dt2 * (Kc * shift);
 			}
 			
 			if( !zero(H) ) {
-				res.H.middleRows(off_m, c.size) = res.H.middleRows(off_m, c.size) + H * shift;
+				res.H.middleRows(off_m, c->size) = res.H.middleRows(off_m, c->size) + H * shift;
 			}
 			
 			// these should not be empty
-			if( !zero(c.f) ) res.f.segment(off_m, c.size) = c.f;
-			if( !zero(c.v) ) res.v.segment(off_m, c.size) = c.v;
-			if( !zero(c.P) ) res.P.middleRows(off_m, c.size) = c.P * shift;
+			if( !zero(c->f) ) res.f.segment(off_m, c->size) = c->f;
+			if( !zero(c->v) ) res.v.segment(off_m, c->size) = c->v;
+			if( !zero(c->P) ) res.P.middleRows(off_m, c->size) = c->P * shift;
 			
-			off_m += c.size;
+			off_m += c->size;
 		} 
 				
 		// mapped dofs
@@ -1040,27 +1022,27 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const{
 // #pragma omp parallel sections
 				{
 // #pragma omp section
-					mat H(c.size, c.size);
+					mat H(c->size, c->size);
 					
-					if( !zero(c.M) ) {
+					if( !zero(c->M) ) {
 						// contribute mapped mass
 						// res.M += ltdl(Jc, c.M); 
 
-						assert( c.v.size() == int(c.size) );
-						assert( c.M.cols() == int(c.size) ); 
-						assert( c.M.rows() == int(c.size) );
+						assert( c->v.size() == int(c->size) );
+						assert( c->M.cols() == int(c->size) ); 
+						assert( c->M.rows() == int(c->size) );
 
 						// momentum
-						res.p.noalias() += Jc.transpose() * (c.M * c.v);
+						res.p.noalias() += Jc.transpose() * (c->M * c->v);
 
-						H += c.M;
+						H += c->M;
 					}
 // #pragma omp section
 
-					if( !zero(c.K) ) {
+					if( !zero(c->K) ) {
 						// res.K += ltdl(Jc, Kc); // contribute mapped stiffness
 						
-						H -= dt2 * c.K;
+						H -= dt2 * c->K;
 					}
 					
 					if( !zero(H) ) {
@@ -1072,58 +1054,58 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const{
 			}					
 					
 			// compliant dofs: fill compliance matrix/rhs
-			if( c.compliant() ) { // !empty(c.C)
+			if( c->compliant() ) { // !empty(c.C)
 				// scoped::timer step("compliant dofs");
 				assert( !zero(Jc) );
 				
 				// mapping
-				res.J.middleRows(off_c, c.size) = Jc;
+				res.J.middleRows(off_c, c->size) = Jc;
 						
 				// compliance
-				if(!zero(c.C) ) {
+				if(!zero(c->C) ) {
 					
 					// you never know
 					assert( mparams->implicitVelocity() == 1 );
 					assert( mparams->implicitPosition() == 1 );
 
-					SReal l = res.dt + c.damping;
+					SReal l = res.dt + c->damping;
 
 					// zero damping => C / dt2
-					res.C.middleRows(off_c, c.size) = ( c.C / (res.dt * l )) * shift_right(off_c, c.size, p.size_c);
+					res.C.middleRows(off_c, c->size) = ( c->C / (res.dt * l )) * shift_right(off_c, c->size, p.size_c);
 				}
 			
 				// rhs
-				res.phi.segment(off_c, c.size) = c.phi;
+				res.phi.segment(off_c, c->size) = c->phi;
 				
-				if( c.lambda.size() ) res.lambda.segment( off_c, c.size ) = c.lambda;
+				if( c->lambda.size() ) res.lambda.segment( off_c, c->size ) = c->lambda;
 				
 				// damping 
 				// res.damping.segment(off_c, c.size).setConstant( c.damping );
 				
 				// equation flags
-				if( c.flags.size() ) {
-					res.flags.segment(off_c, c.size) = c.flags;
+				if( c->flags.size() ) {
+					res.flags.segment(off_c, c->size) = c->flags;
 				}
 				
 				{
 					// add blocks, one per compliant dof
 					unsigned off = off_c;
-					unsigned dim = c.dofs->getDerivDimension();
+					unsigned dim = c->dofs->getDerivDimension();
 				
-					for( unsigned k = 0, max = c.dofs->getSize(); k < max; ++k) {
+					for( unsigned k = 0, max = c->dofs->getSize(); k < max; ++k) {
 					
 						AssembledSystem::block block(off, dim);
 					
 						// hack
-						block.data = c.extra;
+						block.data = c->extra;
 					
 						res.blocks.push_back( block );
 						off += dim;
 					}
-					assert( off == off_c + c.size );
+					assert( off == off_c + c->size );
 				}
 				
-				off_c += c.size;
+				off_c += c->size;
 			}
 		}
 	}
@@ -1194,12 +1176,37 @@ void AssemblyVisitor::processNodeBottomUp(simulation::Node* node) {
 		utils::dfs( graph, prefix_helper( prefix ) );
 		
 		// postfix mechanical flags propagation (and geometric stiffness)
-		std::for_each(prefix.rbegin(), prefix.rend(), propagation_helper(chunks) );
+		std::for_each(prefix.rbegin(), prefix.rend(), propagation_helper(graph) );
 		
 		start_node = 0;
 	}
 }
 		
+
+
+// callback stuff
+AssemblyVisitor::callback::~callback() { }
+
+void AssemblyVisitor::callback::start() { }
+void AssemblyVisitor::callback::end() { }
+void AssemblyVisitor::callback::compliant(dofs_type* dofs) { }
+void AssemblyVisitor::callback::master(dofs_type* dofs) { }
+
+
+
+void AssemblyVisitor::apply_callbacks() const {
+
+	unsigned m = cb.size();
+
+	for(unsigned j = 0; j < m; ++j) cb[j]->start();
+
+	for(unsigned i = 0, n = prefix.size(); i < n; ++i) {
+
+		
+
+	}
+	
+}
 
 }
 }
