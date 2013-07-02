@@ -368,7 +368,7 @@ sofa::helper::vector< double > EdgeSetGeometryAlgorithms<DataTypes>::computePoin
     sofa::defaulttype::Vec<3,double> ortho_ABC = cross (AB, AC)*1000;
     sofa::defaulttype::Vec<3,double> coef_CH = cross (ortho_ABC, AB)*1000;
 
-    for (unsigned int i = 0; i<3; i++)
+    for (unsigned int i = 0; i<Coord::spatial_dimensions; i++)
         coord_edge2[1][i] = coord_edge2[0][i] + (float)coef_CH[i];
 
     // Compute Coord of projection point H:
@@ -446,7 +446,7 @@ typename DataTypes::Coord EdgeSetGeometryAlgorithms<DataTypes>::compute2EdgesInt
     double alpha = 0.0;
 
     // Searching vector composante not null:
-    for (unsigned int i=0; i<3; i++)
+    for (unsigned int i=0; i<Coord::spatial_dimensions; i++)
     {
         if ( (vec1[i] > epsilon) || (vec1[i] < -epsilon) )
         {
@@ -481,13 +481,13 @@ typename DataTypes::Coord EdgeSetGeometryAlgorithms<DataTypes>::compute2EdgesInt
     }
 
     // Compute X coords:
-    for (unsigned int i = 0; i<3; i++)
+    for (unsigned int i = 0; i<Coord::spatial_dimensions; i++)
         X[i] = edge1[0][i] + (float)lambda * vec1[i];
 
     intersected = true;
 
     // Check if lambda found is really a solution
-    for (unsigned int i = 0; i<3; i++)
+    for (unsigned int i = 0; i<Coord::spatial_dimensions; i++)
         if ( (X[i] - edge2[0][i] - alpha * vec2[i]) > 0.1 )
         {
             std::cout << "Error: EdgeSetGeometryAlgorithms::compute2EdgeIntersection, edges don't intersect themself." << std::endl;
