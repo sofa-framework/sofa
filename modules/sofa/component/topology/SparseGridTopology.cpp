@@ -805,7 +805,7 @@ void SparseGridTopology::buildFromTriangleMesh(const std::string& filename)
 
     buildFromRegularGridTypes(_regularGrid, regularGridTypes);
 
-    std::cout << "Mesh Loaded .... " << std::endl;
+    sout << "Mesh Loaded" << sendl;
     
     delete mesh;
 }

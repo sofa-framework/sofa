@@ -121,68 +121,82 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::loadRigidMass(std::string filename)
                 //if (fgets(cmd, 7, file) != NULL && !strcmp(cmd,"Xsp 3.0"))
                 {
                     skipToEOL(file);
-                    int result;
                     while (fscanf(file, "%s", cmd) != EOF)
                     {
                         if (!strcmp(cmd,"inrt"))
                         {
                             for (int i = 0; i < 3; i++)
                                 for (int j = 0; j < 3; j++)
-                                    result = fscanf(file, "%lf", &(m.inertiaMatrix[i][j]));
+                                    if( fscanf(file, "%lf", &(m.inertiaMatrix[i][j])) < 1 )
+                                        serr << SOFA_CLASS_METHOD << "error reading file '" << filename << "'." << sendl;
                         }
                         else if (!strcmp(cmd,"cntr") || !strcmp(cmd,"center") )
                         {
                             Vec3d center;
                             for (int i = 0; i < 3; ++i)
                             {
-                                result = fscanf(file, "%lf", &(center[i]));
+                                if( fscanf(file, "%lf", &(center[i])) < 1 )
+                                    serr << SOFA_CLASS_METHOD << "error reading file '" << filename << "'." << sendl;
                             }
                         }
                         else if (!strcmp(cmd,"mass"))
                         {
                             double mass;
-                            result = fscanf(file, "%lf", &mass);
-                            if (!this->mass.isSet())
-                                m.mass = mass;
+                            if( fscanf(file, "%lf", &mass) > 0 )
+                            {
+                                if (!this->mass.isSet())
+                                    m.mass = mass;
+                            }
+                            else
+                                serr << SOFA_CLASS_METHOD << "error reading file '" << filename << "'." << sendl;
                         }
                         else if (!strcmp(cmd,"volm"))
                         {
-                            result = fscanf(file, "%lf", &(m.volume));
+                            if( fscanf(file, "%lf", &(m.volume)) < 1 )
+                                serr << SOFA_CLASS_METHOD << "error reading file '" << filename << "'." << sendl;
                         }
                         else if (!strcmp(cmd,"frme"))
                         {
                             Quatd orient;
                             for (int i = 0; i < 4; ++i)
                             {
-                                result = fscanf(file, "%lf", &(orient[i]));
+                                if( fscanf(file, "%lf", &(orient[i])) < 1 )
+                                    serr << SOFA_CLASS_METHOD << "error reading file '" << filename << "'." << sendl;
                             }
                             orient.normalize();
                         }
                         else if (!strcmp(cmd,"grav"))
                         {
                             Vec3d gravity;
-                            result = fscanf(file, "%lf %lf %lf\n", &(gravity.x()),
-                                    &(gravity.y()), &(gravity.z()));
+                            if( fscanf(file, "%lf %lf %lf\n", &(gravity.x()), &(gravity.y()), &(gravity.z())) < 3 )
+                                serr << SOFA_CLASS_METHOD << "error reading file '" << filename << "'." << sendl;
                         }
                         else if (!strcmp(cmd,"visc"))
                         {
                             double viscosity = 0;
-                            result = fscanf(file, "%lf", &viscosity);
+                            if( fscanf(file, "%lf", &viscosity) < 1 )
+                                serr << SOFA_CLASS_METHOD << "error reading file '" << filename << "'." << sendl;
+
                         }
                         else if (!strcmp(cmd,"stck"))
                         {
                             double tmp;
-                            result = fscanf(file, "%lf", &tmp); //&(MSparams.default_stick));
+                            if( fscanf(file, "%lf", &tmp) < 1 ) //&(MSparams.default_stick));
+                                serr << SOFA_CLASS_METHOD << "error reading file '" << filename << "'." << sendl;
                         }
                         else if (!strcmp(cmd,"step"))
                         {
                             double tmp;
-                            result = fscanf(file, "%lf", &tmp); //&(MSparams.default_dt));
+                            if( fscanf(file, "%lf", &tmp) < 1 ) //&(MSparams.default_dt));
+                                serr << SOFA_CLASS_METHOD << "error reading file '" << filename << "'." << sendl;
                         }
                         else if (!strcmp(cmd,"prec"))
                         {
                             double tmp;
-                            result = fscanf(file, "%lf", &tmp); //&(MSparams.default_prec));
+                            if( fscanf(file, "%lf", &tmp) < 1 ) //&(MSparams.default_prec));
+                            {
+                                serr << SOFA_CLASS_METHOD << "error reading file '" << filename << "'." << sendl;
+                            }
                         }
                         else if (cmd[0] == '#')	// it's a comment
                         {
@@ -480,68 +494,80 @@ void UniformMass<Rigid3fTypes, Rigid3fMass>::loadRigidMass(std::string filename)
                 //if (fgets(cmd, 7, file) != NULL && !strcmp(cmd,"Xsp 3.0"))
                 {
                     skipToEOL(file);
-                    int result;
                     while (fscanf(file, "%s", cmd) != EOF)
                     {
                         if (!strcmp(cmd,"inrt"))
                         {
                             for (int i = 0; i < 3; i++)
                                 for (int j = 0; j < 3; j++)
-                                    result = fscanf(file, "%f", &(m.inertiaMatrix[i][j]));
+                                    if( fscanf(file, "%f", &(m.inertiaMatrix[i][j])) < 1 )
+                                        serr << SOFA_CLASS_METHOD << "error reading file '" << filename << "'." << sendl;
+
                         }
                         else if (!strcmp(cmd,"cntr"))
                         {
                             Vec3d center;
                             for (int i = 0; i < 3; ++i)
                             {
-                                result = fscanf(file, "%lf", &(center[i]));
+                                if( fscanf(file, "%lf", &(center[i])) < 1 )
+                                    serr << SOFA_CLASS_METHOD << "error reading file '" << filename << "'." << sendl;
                             }
                         }
                         else if (!strcmp(cmd,"mass"))
                         {
                             float mass;
-                            result = fscanf(file, "%f", &mass);
-                            if (!this->mass.isSet())
-                                m.mass = mass;
+                            if( fscanf(file, "%f", &mass) > 0 )
+                            {
+                                if (!this->mass.isSet())
+                                    m.mass = mass;
+                            }
+                            else
+                                serr << SOFA_CLASS_METHOD << "error reading file '" << filename << "'." << sendl;
                         }
                         else if (!strcmp(cmd,"volm"))
                         {
-                            result = fscanf(file, "%f", &(m.volume));
+                            if( fscanf(file, "%f", &(m.volume)) < 1 )
+                                serr << SOFA_CLASS_METHOD << "error reading file '" << filename << "'." << sendl;
                         }
                         else if (!strcmp(cmd,"frme"))
                         {
                             Quatd orient;
                             for (int i = 0; i < 4; ++i)
                             {
-                                result = fscanf(file, "%lf", &(orient[i]));
+                                if( fscanf(file, "%lf", &(orient[i])) < 1 )
+                                    serr << SOFA_CLASS_METHOD << "error reading file '" << filename << "'." << sendl;
                             }
                             orient.normalize();
                         }
                         else if (!strcmp(cmd,"grav"))
                         {
                             Vec3d gravity;
-                            result = fscanf(file, "%lf %lf %lf\n", &(gravity.x()),
-                                    &(gravity.y()), &(gravity.z()));
+                            if( fscanf(file, "%lf %lf %lf\n", &(gravity.x()), &(gravity.y()), &(gravity.z())) < 3 )
+                                serr << SOFA_CLASS_METHOD << "error reading file '" << filename << "'." << sendl;
                         }
                         else if (!strcmp(cmd,"visc"))
                         {
                             double viscosity = 0;
-                            result = fscanf(file, "%lf", &viscosity);
+                            if( fscanf(file, "%lf", &viscosity) < 1 )
+                                serr << SOFA_CLASS_METHOD << "error reading file '" << filename << "'." << sendl;
                         }
                         else if (!strcmp(cmd,"stck"))
                         {
                             double tmp;
-                            result = fscanf(file, "%lf", &tmp); //&(MSparams.default_stick));
+                            if( fscanf(file, "%lf", &tmp) < 1 ) //&(MSparams.default_stick));
+                                serr << SOFA_CLASS_METHOD << "error reading file '" << filename << "'." << sendl;
                         }
                         else if (!strcmp(cmd,"step"))
                         {
                             double tmp;
-                            result = fscanf(file, "%lf", &tmp); //&(MSparams.default_dt));
+                            if( fscanf(file, "%lf", &tmp) < 1 ) //&(MSparams.default_dt));
+                                serr << SOFA_CLASS_METHOD << "error reading file '" << filename << "'." << sendl;
                         }
                         else if (!strcmp(cmd,"prec"))
                         {
                             double tmp;
-                            result = fscanf(file, "%lf", &tmp); //&(MSparams.default_prec));
+                            if( fscanf(file, "%lf", &tmp) < 1 ) //&(MSparams.default_prec));
+                                serr << SOFA_CLASS_METHOD << "error reading file '" << filename << "'." << sendl;
                         }
                         else if (cmd[0] == '#')	// it's a comment
                         {

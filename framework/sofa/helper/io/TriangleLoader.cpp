@@ -78,7 +78,6 @@ void TriangleLoader::loadTriangles(FILE *file)
     assert (file != NULL);
 
     char buf[128];
-    int result;
 
     std::vector<Vector3> normals;
     Vector3 n;
@@ -107,11 +106,13 @@ void TriangleLoader::loadTriangles(FILE *file)
             case '\0':
                 /* vertex */
                 //p = new Vector3();
-                result = fscanf(file, "%f %f %f", &x, &y, &z);
-                addVertices(x, y, z);
+                if( fscanf(file, "%f %f %f", &x, &y, &z) == 3 )
+                    addVertices(x, y, z);
 
                 // fgets(buf, sizeof(buf), file);
                 // numvertices++;
+                else
+                    std::cerr << "Error: TriangleLoader: fscanf function has encountered an error." << std::endl;
                 break;
             case 'n':
                 /* normal */
@@ -175,77 +176,85 @@ void TriangleLoader::loadTriangles(FILE *file)
             break;
         case 'f':
             /* face */
-            result = fscanf(file, "%s", buf);
-            int n1, n2, n3, v1, v2, v3, t1, t2, t3;
-            /* can be one of %d, %d//%d, %d/%d, %d/%d/%d %d//%d */
-            if (strstr(buf, "//"))
+            if( fscanf(file, "%s", buf) == 1 )
             {
-                /* v//n */
-                sscanf(buf, "%d//%d", &v1, &n1);
-                result = fscanf(file, "%d//%d", &v2, &n2);
-                result = fscanf(file, "%d//%d", &v3, &n3);
-                //Triangle *t = new Triangle(vertices[v1 - 1],
-                //						   vertices[v2 - 1],
-                //						   vertices[v3 - 1],
-                //						   velocityVertices[v1 - 1],
-                //						   velocityVertices[v2 - 1],
-                //						   velocityVertices[v3 - 1],
-                //						   (normals[n1] + normals[n2] + normals[n3]) / 3,
-                //						   this);
-                //elems.push_back(t);
-                addTriangle(v1 - 1, v2 - 1, v3 -1);
-            }
-            else if (sscanf(buf, "%d/%d/%d", &v1, &t1, &n1) == 3)
-            {
-                /* v/t/n */
+                int n1, n2, n3, v1, v2, v3, t1, t2, t3;
+                /* can be one of %d, %d//%d, %d/%d, %d/%d/%d %d//%d */
+                if (strstr(buf, "//"))
+                {
+                    /* v//n */
+                    sscanf(buf, "%d//%d", &v1, &n1);
+                    if( fscanf(file, "%d//%d", &v2, &n2) == 2 && fscanf(file, "%d//%d", &v3, &n3) == 2 )
+                    //Triangle *t = new Triangle(vertices[v1 - 1],
+                    //						   vertices[v2 - 1],
+                    //						   vertices[v3 - 1],
+                    //						   velocityVertices[v1 - 1],
+                    //						   velocityVertices[v2 - 1],
+                    //						   velocityVertices[v3 - 1],
+                    //						   (normals[n1] + normals[n2] + normals[n3]) / 3,
+                    //						   this);
+                    //elems.push_back(t);
+                    addTriangle(v1 - 1, v2 - 1, v3 -1);
+                    else
+                        std::cerr << "Error: TriangleLoader: fscanf function has encountered an error." << std::endl;
+                }
+                else if (sscanf(buf, "%d/%d/%d", &v1, &t1, &n1) == 3)
+                {
+                    /* v/t/n */
 
-                result = fscanf(file, "%d/%d/%d", &v2, &t2, &n2);
-                result = fscanf(file, "%d/%d/%d", &v3, &t3, &n3);
-                /* Triangle *t = new Triangle(vertices[v1 - 1],
-                						   vertices[v2 - 1],
-                						   vertices[v3 - 1],
-                						   velocityVertices[v1 - 1],
-                						   velocityVertices[v2 - 1],
-                						   velocityVertices[v3 - 1],
-                						   (normals[n1] + normals[n2] + normals[n3]) / 3,
-                						   this);
-                elems.push_back(t); */
-                addTriangle(v1 - 1, v2 - 1, v3 -1);
-            }
-            else if (sscanf(buf, "%d/%d", &v1, &t1) == 2)
-            {
-                /* v/t */
-                result = fscanf(file, "%d/%d", &v2, &t2);
-                result = fscanf(file, "%d/%d", &v3, &t3);
-                /* Triangle *t = new Triangle(vertices[v1 - 1],
-                						   vertices[v2 - 1],
-                						   vertices[v3 - 1],
-                						   velocityVertices[v1 - 1],
-                						   velocityVertices[v2 - 1],
-                						   velocityVertices[v3 - 1],
-                						   (normals[n1] + normals[n2] + normals[n3]) / 3,
-                						   this);
-                elems.push_back(t); */
-                addTriangle(v1 - 1, v2 - 1, v3 -1);
+                    if( fscanf(file, "%d/%d/%d", &v2, &t2, &n2) == 3 && fscanf(file, "%d/%d/%d", &v3, &t3, &n3) == 3 )
+                    /* Triangle *t = new Triangle(vertices[v1 - 1],
+                                               vertices[v2 - 1],
+                                               vertices[v3 - 1],
+                                               velocityVertices[v1 - 1],
+                                               velocityVertices[v2 - 1],
+                                               velocityVertices[v3 - 1],
+                                               (normals[n1] + normals[n2] + normals[n3]) / 3,
+                                               this);
+                    elems.push_back(t); */
+                    addTriangle(v1 - 1, v2 - 1, v3 -1);
+                    else
+                        std::cerr << "Error: TriangleLoader: fscanf function has encountered an error." << std::endl;
+                }
+                else if (sscanf(buf, "%d/%d", &v1, &t1) == 2)
+                {
+                    /* v/t */
+                    if( fscanf(file, "%d/%d", &v2, &t2) == 2 && fscanf(file, "%d/%d", &v3, &t3) == 2 )
+                    /* Triangle *t = new Triangle(vertices[v1 - 1],
+                                               vertices[v2 - 1],
+                                               vertices[v3 - 1],
+                                               velocityVertices[v1 - 1],
+                                               velocityVertices[v2 - 1],
+                                               velocityVertices[v3 - 1],
+                                               (normals[n1] + normals[n2] + normals[n3]) / 3,
+                                               this);
+                    elems.push_back(t); */
+                    addTriangle(v1 - 1, v2 - 1, v3 -1);
+                    else
+                        std::cerr << "Error: TriangleLoader: fscanf function has encountered an error." << std::endl;
+                }
+                else
+                {
+                    /* v */
+                    sscanf(buf, "%d", &v1);
+                    if( fscanf(file, "%d", &v2) == 1 && fscanf(file, "%d", &v3) == 1 )
+
+                    // compute the normal
+                    /* Triangle *t = new Triangle(vertices[v1 - 1],
+                                               vertices[v2 - 1],
+                                               vertices[v3 - 1],
+                                               velocityVertices[v1 - 1],
+                                               velocityVertices[v2 - 1],
+                                               velocityVertices[v3 - 1],
+                                               this);
+                    elems.push_back(t); */
+                    addTriangle(v1 - 1, v2 - 1, v3 -1);
+                    else
+                        std::cerr << "Error: TriangleLoader: fscanf function has encountered an error." << std::endl;
+                }
             }
             else
-            {
-                /* v */
-                result = sscanf(buf, "%d", &v1);
-                result = fscanf(file, "%d", &v2);
-                result = fscanf(file, "%d", &v3);
-
-                // compute the normal
-                /* Triangle *t = new Triangle(vertices[v1 - 1],
-                						   vertices[v2 - 1],
-                						   vertices[v3 - 1],
-                						   velocityVertices[v1 - 1],
-                						   velocityVertices[v2 - 1],
-                						   velocityVertices[v3 - 1],
-                						   this);
-                elems.push_back(t); */
-                addTriangle(v1 - 1, v2 - 1, v3 -1);
-            }
+                std::cerr << "Error: TriangleLoader: fscanf function has encountered an error." << std::endl;
             break;
 
         default:
