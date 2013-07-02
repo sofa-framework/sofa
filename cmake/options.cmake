@@ -347,6 +347,9 @@ elseif(SOFA-MISC_USE_DOUBLE AND NOT SOFA-MISC_USE_FLOAT)
 	list(APPEND compilerDefines SOFA_DOUBLE)
 endif()
 
+# use OpenMP multithreading
+option(SOFA-MISC_OPENMP "Use OpenMP multithreading" OFF)
+
 # os-specific
 if(XBOX)
 	if(SOFA-EXTERNAL_HAVE_BOOST)
