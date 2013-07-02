@@ -22,6 +22,19 @@ set(HEADER_FILES
 	AssembledSystem.h
 	AssembledSolver.h
 	Projector.h
+	
+      utils/cast.h
+      utils/cg.h
+      utils/find.h
+      utils/force_assert.h
+      utils/graph.h
+      utils/krylov.h
+      utils/minres.h
+      utils/pair.h
+      utils/scoped.h
+      utils/se3.h
+      utils/sparse.h
+      utils/thread_local.h
 	)
 
 set(SOURCE_FILES
