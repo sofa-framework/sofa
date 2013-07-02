@@ -52,4 +52,12 @@ if(CMAKE_BUILD_TYPE MATCHES "Debug")
     list(APPEND compilerDefines "SOFA_DEBUG")
 endif()
 
+# OpenMP flags
+if(SOFA-MISC_OPENMP)
+	list(APPEND compilerDefines "USING_OMP_PRAGMAS")
+	set(CMAKE_CXX_LINK_FLAGS "${CMAKE_CXX_LINK_FLAGS} -fopenmp")
+	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fopenmp")
+endif()
+
+
 set(GLOBAL_COMPILER_DEFINES ${compilerDefines} CACHE INTERNAL "Global Compiler Defines" FORCE)
