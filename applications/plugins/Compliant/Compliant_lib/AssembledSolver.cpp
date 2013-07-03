@@ -73,7 +73,7 @@ void AssembledSolver::alloc(const core::ExecParams& params) {
 	scoped::timer step("lambdas alloc");
 	sofa::simulation::common::VectorOperations vop( &params, this->getContext() );
 	
-	lagrange.set(&vop);
+	// lagrange.set(&vop);
 	lagrange.realloc( false );
 
 }
