@@ -12,7 +12,6 @@ set(HEADER_FILES
 	DampingCompliance.h
 	RigidMass.h
 #	UnilateralMask.h
-	SolverFlags.h
 	RigidJointMapping.h
 	AssembledRigidRigidMapping.h
 	KKTSolver.h
@@ -46,7 +45,6 @@ set(SOURCE_FILES
 	DampingCompliance.cpp
 	RigidMass.cpp
 #	UnilateralMask.cpp
-	SolverFlags.cpp
 	RigidJointMapping.cpp
 	AssembledRigidRigidMapping.cpp
 	LDLTSolver.cpp
