@@ -35,6 +35,6 @@ include_directories("${GMP_INCLUDE_DIR}")
 find_package(MPFR REQUIRED)
 
 AddCompilerDefinitions("SOFA_BUILD_CGALPLUGIN")
-AddLinkerDependencies(SofaGuiQt ${Boost_LIBRARIES} ${GMP_LIBRARIES} ${MPFR_LIBRARIES})
+AddLinkerDependencies(SofaGuiQt ${Boost_LIBRARIES} ${GMP_LIBRARIES} ${MPFR_LIBRARIES} ${CGAL_LIBRARIES})
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

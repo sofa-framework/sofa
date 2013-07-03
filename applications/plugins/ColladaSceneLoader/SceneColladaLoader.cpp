@@ -36,23 +36,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/SetDirectory.h>
 
-////////////////
-// DEPENDENCY //
-////////////////
-//
-// ../../../lib\sofa_loader_1_0.lib
-// ../../../lib\sofasimulation_1_0.lib
-// ../../../lib\sofa_base_mechanics_1_0.lib
-// ../../../lib\sofa_rigid_1_0.lib
-// ../../../lib\sofa_boundary_condition_1_0.lib
-// ../../../lib\sofa_base_topology_1_0.lib
-// ../../../lib\sofa_base_visual_1_0.lib
-// ../../../lib\sofa_opengl_visual_1_0.lib
-//
-////////////////
-////////////////
-////////////////
-
 #include <stack>
 
 namespace sofa

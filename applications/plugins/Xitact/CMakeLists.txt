@@ -1,9 +1,5 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
-##plugin external dependencies
-find_package( SofaXitactLibs REQUIRED)
-include_directories(${SOFAXITACT_INCLUDE_DIRS})
-
 set(HEADER_FILES
 
     XiTrocarInterface.h 
@@ -11,7 +7,6 @@ set(HEADER_FILES
     PaceMaker.h 
     IHPDriver.h
     ITPDriver.h 
-
 	)
 
 set(SOURCE_FILES

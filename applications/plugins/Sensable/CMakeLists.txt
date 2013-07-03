@@ -1,14 +1,9 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
-##plugin external dependencies
-##find_package(SofaSensableLibs REQUIRED)
-##include_directories(${SOFASENSABLE_INCLUDE_DIRS})
-
 set(HEADER_FILES
 
     NewOmniDriver.h 
     OmniDriver.h
-
 	)
 
 set(SOURCE_FILES
@@ -16,7 +11,6 @@ set(SOURCE_FILES
     initSensable.cpp 
     NewOmniDriver.cpp 
     OmniDriver.cpp 
-
 	)
 
 set(README_FILES

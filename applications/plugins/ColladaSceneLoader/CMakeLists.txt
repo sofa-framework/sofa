@@ -1,28 +1,42 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
-
-##plugin external dependencies
-find_package(ColladaSceneLoaderLibs REQUIRED)
-include_directories(${COLLADASCENELOADER_INCLUDE_DIRS})
-
 set(HEADER_FILES
 
-    SceneColladaLoader.h 
 	initPlugin.h
-
+    SceneColladaLoader.h 
 	)
 
 set(SOURCE_FILES
 
-    SceneColladaLoader.cpp 
 	initPlugin.cpp
-
+    SceneColladaLoader.cpp 
 	)
 	
 set(README_FILES
 
 	ColladaSceneLoader.txt
-	)	
+	)
+
+if(WIN32)
+	include_directories("assimp/include")
+	if(CMAKE_CL_64)
+		link_directories("assimp/lib/x64")
+	else()
+		link_directories("assimp/lib/x86")
+	endif()
+	
+	## assimp dll
+	if(CMAKE_CL_64)
+		file(GLOB sharedObjects "assimp/lib/x64/*.dll")
+	else()
+		file(GLOB sharedObjects "assimp/lib/x86/*.dll")
+	endif()
+	foreach(sharedObject ${sharedObjects})
+		file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
+	endforeach()
+else()
+	include_directories("assimp")
+endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 

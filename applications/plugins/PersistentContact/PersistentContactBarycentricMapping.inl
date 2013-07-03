@@ -264,7 +264,7 @@ int PersistentContactBarycentricMapperSparseGridTopology<In,Out>::addContactPoin
         centers[c] = ( in[cubes[c][0]]+in[cubes[c][1]]+in[cubes[c][2]]+in[cubes[c][3]]+in[cubes[c][4]]+in[cubes[c][5]]+in[cubes[c][6]]+in[cubes[c][7]] ) *0.125;
     }
 
-    Real coefs[3];
+    SReal coefs[3];
     int index = -1;
     double distance = 1e10;
 
@@ -276,7 +276,7 @@ int PersistentContactBarycentricMapperSparseGridTopology<In,Out>::addContactPoin
             d = (pos - centers[c]).norm2();
         if (d < distance)
         {
-            coefs[0] = v[0]; coefs[1] = v[1]; coefs[2] = v[2]; // conversion Real / double
+            coefs[0] = (SReal) v[0]; coefs[1] = (SReal) v[1]; coefs[2] = (SReal) v[2]; // conversion Real / double
             distance = d;
             index = c;
         }
@@ -293,7 +293,13 @@ int PersistentContactBarycentricMapperSparseGridTopology<In,Out>::keepContactPoi
     {
         CubeData &c_data = m_storedMap[index];
         //	std::cout << "Keep " << c_data << std::endl;
-        return this->addPointInCube(c_data.in_index, c_data.baryCoords);
+
+		SReal baryCoords[3];
+		baryCoords[0] = (SReal) c_data.baryCoords[0];
+		baryCoords[1] = (SReal) c_data.baryCoords[1];
+		baryCoords[2] = (SReal) c_data.baryCoords[2];
+
+        return this->addPointInCube(c_data.in_index, baryCoords);
     }
 
     serr << "Warning! PersistentContactBarycentricMapperSparseGridTopology keepContactPointFromInputMapping method refers to an unstored index" << sendl;
@@ -367,7 +373,13 @@ int PersistentContactBarycentricMapperTetrahedronSetTopology<In,Out>::keepContac
     {
         MappingData &t_data = m_storedMap[index];
         //	std::cout << "Keep " << t_data << std::endl;
-        return this->addPointInTetra(t_data.in_index, t_data.baryCoords);
+
+		SReal baryCoords[3];
+		baryCoords[0] = (SReal) t_data.baryCoords[0];
+		baryCoords[1] = (SReal) t_data.baryCoords[1];
+		baryCoords[2] = (SReal) t_data.baryCoords[2];
+
+        return this->addPointInTetra(t_data.in_index, baryCoords);
     }
 
     serr << "Warning! PersistentContactBarycentricMapperTetrahedronSetTopology keepContactPointFromInputMapping method refers to an unstored index" << sendl;
