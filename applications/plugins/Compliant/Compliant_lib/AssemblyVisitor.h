@@ -55,39 +55,29 @@ public:
 	// reset state
 	void clear();
 
-	// WARNING: EXPLICIT/IMPLICIT KEYWORDS ARE BUILT-IN MACROS ON WINDOWS
-	typedef enum {
-		OPTION_EXPLICIT,
-		OPTION_IMPLICIT
-	} assemble_option;
-	
-	// builds assembled system (needs to send visitor first)
+	// build assembled system (needs to send visitor first)
 	typedef component::linearsolver::AssembledSystem system_type;
 	system_type assemble() const;
-			
-
-	// distribute data over master dofs
+	
+	// distribute data over master dofs, in given vecid
 	void distribute_master(core::VecId id, const vec& data);
 
-	// distribute data over compliant dofs
+	// distribute data over compliant dofs, in given vecid
 	void distribute_compliant(core::VecId id, const vec& data);
 	void distribute_compliant(core::behavior::MultiVecDeriv::MyMultiVecId id, const vec& data);
 			
 	// outputs data to std::cout
 	void debug() const; 
 
-	// TODO wrap this
+	// TODO encapsulate this
 	typedef core::behavior::MultiVecDeriv::MyMultiVecId lagrange_type;
 	lagrange_type lagrange;
 	
-
-	
 public:
 	
-
 	typedef core::behavior::BaseMechanicalState dofs_type;
 	
-	// data chunk for each dofs
+	// data chunk for each dof
 	struct chunk {
 		chunk();
 				
@@ -102,7 +92,7 @@ public:
 		typedef std::map< dofs_type*, mapped> map_type;
 		map_type map;
 				
-		// TODO only expose sofa data through eigen maps ?
+		// TODO only expose sofa data through eigen maps ? but ... casts ?
 
 		vec f, v, phi, lambda;
 		real damping;
@@ -119,6 +109,8 @@ public:
 		
 		// check consistency
 		bool check() const;
+
+		void debug() const;
 	};
 
 	static mat convert( const defaulttype::BaseMatrix* m);
@@ -142,7 +134,6 @@ public:
 	vec phi(simulation::Node* node);
 	vec lambda(simulation::Node* node);
 
-	// TODO is this needed ?
 	real damping(simulation::Node* node);
 
 	// fill data chunk for node
@@ -151,8 +142,12 @@ public:
 
 protected:
 
-	// TODO hide
+	// TODO hide this ! but adaptive stuff needs it
 public:
+	
+	// TODO remove maps, stick everything in chunk ? again, adaptive
+	// stuff might need it
+
 	// full mapping/stiffness matrices
 	typedef std::map<dofs_type*, mat> full_type;
 
@@ -173,10 +168,10 @@ public:
 				
 	};
 
-
 	// builds global mapping / full stiffness matrices + sizes
 	virtual process_type process() const;
 			
+	// helper functors
 	struct process_helper;
 	struct propagation_helper;
 	struct prefix_helper;
@@ -184,8 +179,6 @@ public:
 	// data chunks
 	typedef std::map< dofs_type*, chunk > chunks_type;
 	mutable chunks_type chunks;
-
-	static void debug_chunk(const chunks_type::const_iterator& );
 
 	// traversal order
 	typedef std::vector< unsigned > prefix_type;
@@ -205,9 +198,7 @@ public:
 	graph_type graph;
 	
 private:
-	// total dofs size
-	// unsigned size;
-			
+
 	// temporaries
 	mutable vec tmp;
 

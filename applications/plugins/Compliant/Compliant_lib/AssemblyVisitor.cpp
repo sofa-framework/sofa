@@ -45,7 +45,7 @@ static std::string pretty(AssemblyVisitor::dofs_type* dofs) {
 
 		
 // right-shift matrix, size x (off + size) matrix: (0, id)
-static AssemblyVisitor::mat shift_right(unsigned off, unsigned size, unsigned total_cols) {
+static AssemblyVisitor::mat shift_right(unsigned off, unsigned size, unsigned total_cols, SReal value = 1.0 ) {
 	AssemblyVisitor::mat res( size, total_cols); 
 	assert( total_cols >= (off + size) );
 	
@@ -53,7 +53,7 @@ static AssemblyVisitor::mat shift_right(unsigned off, unsigned size, unsigned to
 	
 	for(unsigned i = 0; i < size; ++i) {
 		res.startVec( i );
-		res.insertBack(i, off + i) = 1.0;
+		res.insertBack(i, off + i) = value;
 	}
 	res.finalize();
 	
@@ -441,30 +441,30 @@ void AssemblyVisitor::fill_postfix(simulation::Node* node) {
 
 
 
-void AssemblyVisitor::debug_chunk(const AssemblyVisitor::chunks_type::const_iterator& i) {
+void AssemblyVisitor::chunk::debug() const {
 	using namespace std;
 			
-	cout << "chunk: " << i->first->getName() << endl
-	     << "offset:" << i->second.offset << endl
-	     << "size: " << i->second.size << endl
-	     << "M:" << endl << i->second.M << endl
-	     << "K:" << endl << i->second.K << endl
-	     << "P:" << endl << i->second.P << endl
-	     << "C:" << endl << i->second.C << endl
-	     << "f:  " << i->second.f.transpose() << endl
-	     << "v:  " << i->second.v.transpose() << endl
-	     << "phi: " << i->second.phi.transpose() << endl
-	     << "damping: " << i->second.damping << endl
+	cout << "chunk: " << dofs->getName() << endl
+	     << "offset:" << offset << endl
+	     << "size: " << size << endl
+	     << "M:" << endl << M << endl
+	     << "K:" << endl << K << endl
+	     << "P:" << endl << P << endl
+	     << "C:" << endl << C << endl
+	     << "f:  " << f.transpose() << endl
+	     << "v:  " << v.transpose() << endl
+	     << "phi: " << phi.transpose() << endl
+	     << "damping: " << damping << endl
 	     << "map: " << endl
 		;
-	for(chunk::map_type::const_iterator mi = i->second.map.begin(), me = i->second.map.end();
+	
+	for(map_type::const_iterator mi = map.begin(), me = map.end();
 	    mi != me; ++mi) {
 		cout << "from: " << mi->first->getName() << endl
 		     << "J: " << endl
 		     << mi->second.J << endl
 		     << "K: " << endl
 		     << mi->second.K << endl
-			
 			;
 	}
 }
@@ -472,9 +472,9 @@ void AssemblyVisitor::debug_chunk(const AssemblyVisitor::chunks_type::const_iter
 void AssemblyVisitor::debug() const {
 
 	for(chunks_type::const_iterator i = chunks.begin(), e = chunks.end(); i != e; ++i ) {
-		debug_chunk(i);			
+		i->second.debug();			
 	}
-			
+	
 }
 
 
@@ -570,22 +570,18 @@ struct AssemblyVisitor::propagation_helper {
 
 
 
-
+// multiplies mapping matrices together for everyone in the graph
 struct AssemblyVisitor::process_helper {
 	
 	process_type& res;
 	const graph_type& g;
-	// const chunks_type& chunks;
 	
 	process_helper(process_type& res, const graph_type& g)
 		: res(res), g(g)  {
-		// std::cerr << "avanti" << std::endl;
+
 	}
 
 	void operator()(unsigned v) const {
-	
-		// cerr << "processing " << pretty( curr ) << std::endl;
-
 		dofs_type* curr = g[v].dofs;
 		chunk* c = g[v].data;
 		
@@ -604,11 +600,9 @@ struct AssemblyVisitor::process_helper {
 			vertex vp = g[ boost::target(*e.first, g) ];
 
 			// parent data chunk/mapping matrix
-			const chunk* p = vp.data; // find(chunks, mi->first);
+			const chunk* p = vp.data; 
 			mat& Jp = full[ vp.dofs ];
 			{
-				// scoped::timer step("mapping concatenation");
-				
 				// mapping blocks
 				const mat& jc = g[*e.first].data->J;
 				
@@ -627,8 +621,7 @@ struct AssemblyVisitor::process_helper {
 					// TODO optimize this, it is the most costly part
 					add(Jc, jc * Jp );
 				} else {
-					std::cerr << "parent: " << pretty(p->dofs) << " has empty J matrix" << std::endl;
-					assert( false );
+					assert( false && "parent has empty J matrix :-/" );
 				}
 			}
 			
@@ -643,8 +636,6 @@ struct AssemblyVisitor::process_helper {
 				     << "empty Jc " << empty(Jc) << endl;
 				
 				assert( false );
-				
-				
 			}
 			
 		
@@ -724,9 +715,8 @@ static inline AssemblyVisitor::mat ltdl(const AssemblyVisitor::mat& l,
 }
 		
 
-// TODO organize this mess
+// produce actual system assembly
 AssemblyVisitor::system_type AssemblyVisitor::assemble() const{
-	// scoped::timer step("system assembly");
 	assert(!chunks.empty() && "need to send a visitor first");
 
 	// concatenate mappings and obtain sizes
@@ -747,7 +737,6 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const{
 	for(unsigned i = 0, n = prefix.size(); i < n; ++i) {
 
 		// current chunk
-		// const chunk& c = find(chunks, prefix[i]);
 		const chunk* c = graph[ prefix[i] ].data;
 		assert( c->size );
 
@@ -764,15 +753,15 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const{
 			mat shift = shift_right(off_m, c->size, p.size_m);
 			
 			mat H(c->size, c->size);
-			
+
+			// mass matrix / momentum
 			if( !zero(c->M) ) {
 				
-				// res.M.middleRows(off_m, c.size) = c->M * shift;
-				H += c->M; // res.H.middleRows(off_m, c.size) = res.H.middleRows(off_m, c.size) + c.M * shift;
-				
+				H += c->M; 
 				res.p.segment(off_m, c->size).noalias() += c->M * c->v;
 			}
 			
+			// stiffness matrix
 			if( !zero(c->K) )  {
 				// res.K.middleRows(off_m, c.size) = Kc * shift;
 				H -= dt2 * c->K;
@@ -780,11 +769,12 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const{
 				// res.H.middleRows(off_m, c.size) = res.H.middleRows(off_m, c.size) - dt2 * (Kc * shift);
 			}
 			
+			// TODO this is costly, find a faster way to do it
 			if( !zero(H) ) {
 				res.H.middleRows(off_m, c->size) = res.H.middleRows(off_m, c->size) + H * shift;
 			}
 			
-			// these should not be empty
+			// these should not be empty anyways
 			if( !zero(c->f) ) res.f.segment(off_m, c->size) = c->f;
 			if( !zero(c->v) ) res.v.segment(off_m, c->size) = c->v;
 			if( !zero(c->P) ) res.P.middleRows(off_m, c->size) = c->P * shift;
@@ -798,18 +788,11 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const{
 			if( !zero(Jc) ) {
 				assert( Jc.cols() == int(p.size_m) );
 				
-				// scoped::timer step("mass/stiffness mapping");
-						
-				// TODO possibly merge these two operations ?
-// #pragma omp parallel sections
 				{
-// #pragma omp section
 					mat H(c->size, c->size);
 					
 					if( !zero(c->M) ) {
 						// contribute mapped mass
-						// res.M += ltdl(Jc, c.M); 
-
 						assert( c->v.size() == int(c->size) );
 						assert( c->M.cols() == int(c->size) ); 
 						assert( c->M.rows() == int(c->size) );
@@ -819,14 +802,13 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const{
 
 						H += c->M;
 					}
-// #pragma omp section
-
+					
+					// mapped stiffness
 					if( !zero(c->K) ) {
-						// res.K += ltdl(Jc, Kc); // contribute mapped stiffness
-						
 						H -= dt2 * c->K;
 					}
 					
+					// actual response matrix mapping
 					if( !zero(H) ) {
 						res.H += ltdl(Jc, H);
 					}
@@ -835,8 +817,8 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const{
 				
 			}					
 					
-			// compliant dofs: fill compliance matrix/rhs
-			if( c->compliant() ) { // !empty(c.C)
+			// compliant dofs: fill compliance/phi/lambda
+			if( c->compliant() ) { 
 				res.compliant.push_back( c->dofs );
 				// scoped::timer step("compliant dofs");
 				assert( !zero(Jc) );
@@ -854,10 +836,13 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const{
 					SReal l = res.dt + c->damping;
 
 					// zero damping => C / dt2
-					res.C.middleRows(off_c, c->size) = ( c->C / (res.dt * l )) * shift_right(off_c, c->size, p.size_c);
+
+					SReal factor = 1.0 / (res.dt * l );
+					res.C.middleRows(off_c, c->size) = 
+						c->C * shift_right(off_c, c->size, p.size_c, factor);
 				}
 			
-				// rhs
+				// phi
 				res.phi.segment(off_c, c->size) = c->phi;
 				
 				if( c->lambda.size() ) res.lambda.segment( off_c, c->size ) = c->lambda;
@@ -898,7 +883,6 @@ bool AssemblyVisitor::chunk::check() const {
 	// should be outer size ?
 	assert( empty(K) || K.rows() == int(size) );
 	assert( empty(M) || M.rows() == int(size) );
-	
 
 	return true;
 }
@@ -926,13 +910,16 @@ void AssemblyVisitor::processNodeBottomUp(simulation::Node* node) {
 
 	// are we finished yo ?
 	if( node == start_node ) {
-		// std::cerr << "finishing lol " << node->getTime() << std::endl;
-		
-		// gather prefix traversal
+
+		// backup prefix traversal order
 		utils::dfs( graph, prefix_helper( prefix ) );
 		
-		// postfix mechanical flags propagation (and geometric stiffness)
+		// postfix mechanical flags propagation (and geometric stiffness matrices)
 		std::for_each(prefix.rbegin(), prefix.rend(), propagation_helper(graph) );
+		
+		// TODO at this point it could be a good thing to prune
+		// non-mechanical nodes in the graph, in order to avoid unneeded
+		// mapping concatenations, then rebuild the prefix order
 		
 		start_node = 0;
 	}
