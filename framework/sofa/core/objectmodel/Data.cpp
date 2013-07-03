@@ -65,10 +65,12 @@ bool SOFA_CORE_API TData<bool>::read( const std::string& str )
     return true;
 }
 
+#if defined(SOFA_EXTERN_TEMPLATE)
 template class SOFA_CORE_API TData< std::string >;
 template class SOFA_CORE_API Data< std::string >;
 template class SOFA_CORE_API TData< bool >;
 template class SOFA_CORE_API Data< bool >;
+#endif
 
 } // objectmodel
 
