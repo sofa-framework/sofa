@@ -21,8 +21,6 @@ set(HEADER_FILES
 	AssemblyVisitor.h
 	AssembledSystem.h
 	AssembledSolver.h
-	Projector.h
-	
       utils/cast.h
       utils/cg.h
       utils/find.h
@@ -56,7 +54,6 @@ set(SOURCE_FILES
 	AssemblyVisitor.cpp
 	AssembledSystem.cpp
 	AssembledSolver.cpp
-	Projector.cpp
 	)
 
 set(README_FILES

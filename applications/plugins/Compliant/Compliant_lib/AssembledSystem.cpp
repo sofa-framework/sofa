@@ -1,21 +1,16 @@
 #include "AssembledSystem.h"
 
+#include <iostream>
+
 namespace sofa {
 namespace component {
 namespace linearsolver {
-		
-AssembledSystem::block::block(unsigned offset, unsigned size) 
-	: offset(offset),
-	  size(size),
-	  data(0) {
 
-}
 
 AssembledSystem::AssembledSystem(unsigned m, unsigned n) 
 	: m(m), 
 	  n(n),
-	  dt(0),
-	  blocks()
+	  dt(0)
 {
 	if( !m ) return;
 				
@@ -36,7 +31,6 @@ AssembledSystem::AssembledSystem(unsigned m, unsigned n)
 		phi = vec::Zero(n); 
 		lambda = vec::Zero(n); 
 		
-		flags.setConstant(n, SolverFlags::NO_FLAG);
 	}
 				
 }
