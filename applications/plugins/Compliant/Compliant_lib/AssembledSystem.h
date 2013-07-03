@@ -1,13 +1,17 @@
 #ifndef ASSEMBLED_SYSTEM_H
 #define ASSEMBLED_SYSTEM_H
 
-#include "SolverFlags.h"
-
 #include <Eigen/SparseCore>
 #include <Eigen/Core>
 #include <sofa/helper/system/config.h>
 
 namespace sofa {
+namespace core {
+namespace behavior {
+class BaseMechanicalState;
+}
+}
+
 namespace component {
 namespace linearsolver {
 			
@@ -46,26 +50,13 @@ public:
 	
 	// force, velocity and deformation vectors
 	vec p, f, v, phi, lambda;
-	 
-
-	void debug(SReal threshold = 0) const;
-
-	// only for compliant dofs for now
-	typedef Eigen::Matrix< SolverFlags::value_type, Eigen::Dynamic, 1> flags_type;
-	flags_type flags;
 	
-	struct block {
-		block(unsigned off, unsigned size);
-		
-		unsigned offset, size;
-
-		typedef core::objectmodel::Base* data_type;
-		data_type data;
-		
-	};
-
-	typedef std::vector<block> blocks_type;
-	blocks_type blocks;
+	// master/compliant dofs, sorted consistently with the above
+	typedef core::behavior::BaseMechanicalState dofs_type;
+	std::vector< dofs_type* > master, compliant;
+	
+	void debug(SReal threshold = 0) const;
+	
 };
 
 

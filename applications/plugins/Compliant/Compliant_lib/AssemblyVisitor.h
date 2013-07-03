@@ -86,27 +86,7 @@ public:
 	
 
 	typedef core::behavior::BaseMechanicalState dofs_type;
-			
-
-	struct callback { 
-		virtual ~callback();
-
-		// TODO this might change
-		virtual void start();
-		virtual void compliant(dofs_type* dofs);
-		virtual void master(dofs_type* dofs);
-		virtual void end();
-
-	};
-
-	// these get called in prefix order (parents first) on the mapping
-	// graph (the assembly order
-	typedef std::vector< callback* > cb_type;
-	cb_type cb;
-
-	void apply_callbacks() const;
-
-
+	
 	// data chunk for each dofs
 	struct chunk {
 		chunk();
@@ -125,13 +105,6 @@ public:
 		// TODO only expose sofa data through eigen maps ?
 
 		vec f, v, phi, lambda;
-
-		system_type::flags_type flags;
-
-		// extra info, hacks go here :)
-		typedef system_type::block::data_type extra_type;
-		extra_type extra;
-		
 		real damping;
 
 		// this is to remove f*cking mouse dofs
@@ -164,10 +137,6 @@ public:
 	chunk::map_type mapping(simulation::Node* node);
 			
 	vec force(simulation::Node* node);
-	
-	chunk::extra_type extra(simulation::Node* node);
-
-	system_type::flags_type flags(simulation::Node* node);
 	
 	vec vel(simulation::Node* node);
 	vec phi(simulation::Node* node);
@@ -206,7 +175,6 @@ public:
 
 
 	// builds global mapping / full stiffness matrices + sizes
-	// TODO pass prefix/chunks as parameters
 	virtual process_type process() const;
 			
 	struct process_helper;

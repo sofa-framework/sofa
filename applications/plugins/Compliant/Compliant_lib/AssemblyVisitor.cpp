@@ -3,15 +3,10 @@
 #include <sofa/component/linearsolver/EigenVectorWrapper.h>
 #include <sofa/component/linearsolver/SingleMatrixAccessor.h>
 
-#include "SolverFlags.h"
-#include "Projector.h"
-
 #include "./utils/scoped.h"
 #include "./utils/find.h"
 #include "./utils/cast.h"
 #include "./utils/sparse.h"
-
-// #include <boost/graph/graphviz.hpp>
 
 namespace sofa {
 namespace simulation {
@@ -48,25 +43,20 @@ static std::string pretty(AssemblyVisitor::dofs_type* dofs) {
 	return dofs->getContext()->getName() + " / " + dofs->getName();
 }
 
-
 		
-// right-shift, size x (off + size) matrix: (0, id)
+// right-shift matrix, size x (off + size) matrix: (0, id)
 static AssemblyVisitor::mat shift_right(unsigned off, unsigned size, unsigned total_cols) {
 	AssemblyVisitor::mat res( size, total_cols); 
 	assert( total_cols >= (off + size) );
 	
-	// res.resize(size, total_cols );
-	// res.reserve(Eigen::VectorXi::Constant(size, 1));
 	res.reserve( size );
 	
 	for(unsigned i = 0; i < size; ++i) {
 		res.startVec( i );
 		res.insertBack(i, off + i) = 1.0;
-		// res.insert(i, off + i) = 1.0;
 	}
 	res.finalize();
 	
-	// res.makeCompressed(); // TODO is this needed ?
 	return res;
 }
 
@@ -91,11 +81,12 @@ AssemblyVisitor::chunk::chunk()
 }
 
 		
+// convert a basematrix to a sparse matrix. TODO move this somewhere else ?
 AssemblyVisitor::mat AssemblyVisitor::convert( const defaulttype::BaseMatrix* m) {
 	assert( m );
 			
 	typedef EigenBaseSparseMatrix<double> matrixd;
-				
+	
 	const matrixd* smd = dynamic_cast<const matrixd*> (m);
 	if ( smd ) return smd->compressedMatrix.cast<SReal>();
 			
@@ -167,7 +158,7 @@ static inline std::string mapping_name(simulation::Node* node) {
 	return node->mechanicalMapping->getName() + " (class: " + node->mechanicalMapping->getClassName() + ") ";
 }
 		
-		
+// mapping informations as a map (parent dofs -> (J, K) matrices )
 AssemblyVisitor::chunk::map_type AssemblyVisitor::mapping(simulation::Node* node) {
 	chunk::map_type res;
 			
@@ -225,70 +216,8 @@ AssemblyVisitor::chunk::map_type AssemblyVisitor::mapping(simulation::Node* node
 }
 
 
-				
-// TODO optimize !!!
-struct derp_matrix : defaulttype::BaseMatrix {
-	static void derp() { throw std::logic_error("not implemented"); }
-
-	unsigned rowSize() const { derp(); return 0; }
-	unsigned colSize() const { derp(); return 0; }
-
-	SReal element(int , int ) const { derp(); return 0; }
-	void resize(int , int ) { derp(); }
-	void clear() { derp(); }
-
-	void set(int, int, double) { derp(); }
-	void add(int, int, double) { derp(); }
-};
-
-struct add_matrix : derp_matrix {
-
-	AssemblyVisitor::mat& res;
-	
-	typedef std::map< std::pair<int, int>, SReal > values_type;
-	values_type values;
-	
-	add_matrix(AssemblyVisitor::mat& res) : res(res) { 
-		// res should have nnz allocated first
-		last.i = -1; last.j = -1;
-	}
-
-	~add_matrix() { 
-		res.reserve( values.size() );
-		
-		int row = -1;
-		for(values_type::const_iterator it = values.begin(), end = values.end(); 
-		    it != end; ++it) {
-			int i = it->first.first;
-			int j = it->first.second;
-			
-			if( row == -1 || row < i ) res.startVec(i);
-			res.insertBack(i, j) = it->second;
-		}
-		
-		
-		res.finalize();
-	}
-	
-	unsigned rowSize() const { return res.rows(); }
-	unsigned colSize() const { return res.cols(); }
-	
-	struct { int i, j; } last;
-	
-	void add(int i, int j, double value) {
-
-		if( value ) values[ std::make_pair(i, j) ] += value;
-		
-		// if( last.i == -1 || i > last.i ) res.startVec( i );
-		// res.insertBack(i, j) = value;
  
-		// last.i = i;
-		// last.j = j;
-	}
-
-};
- 
-
+// mass matrix
 AssemblyVisitor::mat AssemblyVisitor::mass(simulation::Node* node) {
 	unsigned size = node->mechanicalState->getMatrixSize();
 
@@ -300,20 +229,17 @@ AssemblyVisitor::mat AssemblyVisitor::mass(simulation::Node* node) {
 	Sqmat sqmat( size, size );
 
 	{
-		// add_matrix add(res);
-		// SingleMatrixAccessor accessor( &add );
-
 		SingleMatrixAccessor accessor( &sqmat );
 		node->mass->addMToMatrix( mparams, &accessor );
 	}
- 	
+	
 	sqmat.compress();
 	res = sqmat.compressedMatrix.selfadjointView<Eigen::Upper>();
 	return res;
 }
 		
 
-		
+// projection matrix
 AssemblyVisitor::mat AssemblyVisitor::proj(simulation::Node* node) {
 	assert( node->mechanicalState );
 			
@@ -329,7 +255,8 @@ AssemblyVisitor::mat AssemblyVisitor::proj(simulation::Node* node) {
 	return tmp_p.compressedMatrix;
 }
 
-		
+
+// compliance matrix
 AssemblyVisitor::mat AssemblyVisitor::compliance(simulation::Node* node) {
 			
 	mat res;
@@ -347,6 +274,7 @@ AssemblyVisitor::mat AssemblyVisitor::compliance(simulation::Node* node) {
 }
 
 		
+// stiffness matrix
 AssemblyVisitor::mat AssemblyVisitor::stiff(simulation::Node* node) {
 			
 	mat res;
@@ -366,17 +294,21 @@ AssemblyVisitor::mat AssemblyVisitor::stiff(simulation::Node* node) {
 	return res;
 }
 
-		
+
+// fetches force
 AssemblyVisitor::vec AssemblyVisitor::force(simulation::Node* node) {
 	assert( node->mechanicalState );
 	return vector(node->mechanicalState, core::VecDerivId::force());	
 }
 
+
+// fetches velocity
 AssemblyVisitor::vec AssemblyVisitor::vel(simulation::Node* node) {
 	assert( node->mechanicalState );
 	return vector(node->mechanicalState, core::VecDerivId::velocity());	
 }
 
+// fetches damping term
 AssemblyVisitor::real AssemblyVisitor::damping(simulation::Node* node) {
 	assert( node->mechanicalState );
 			
@@ -390,6 +322,7 @@ AssemblyVisitor::real AssemblyVisitor::damping(simulation::Node* node) {
 	return 0;
 }
 
+// fetches phi term
 AssemblyVisitor::vec AssemblyVisitor::phi(simulation::Node* node) {
 	assert( node->mechanicalState );
 	assert( node->forceField.size() <= 1 );
@@ -411,55 +344,23 @@ AssemblyVisitor::vec AssemblyVisitor::phi(simulation::Node* node) {
 
 AssemblyVisitor::vec AssemblyVisitor::lambda(simulation::Node* node) {
 	assert( node->mechanicalState );
-	assert( !lagrange.isNull() );
+
+	// TODO assertion should be checked !
+	// assert( !lagrange.isNull() );
 	
 	return vector(node->mechanicalState, lagrange.getId(node->mechanicalState) );	
 }
 
 
 
-AssemblyVisitor::chunk::extra_type AssemblyVisitor::extra(simulation::Node* node) { 
-	// hacks !
 
-	assert( node->mechanicalState );
-	
-	// look for a projector
-	return 
-		node->mechanicalState->getContext()->get<component::linearsolver::Projector>(core::objectmodel::BaseContext::Local);
-	
-}
 
-AssemblyVisitor::system_type::flags_type AssemblyVisitor::flags(simulation::Node* node) {
-	assert( node->mechanicalState );
-	
-	component::linearsolver::SolverFlags* flags = 
-		node->mechanicalState->getContext()->get<component::linearsolver::SolverFlags>(core::objectmodel::BaseContext::Local);
-	
-	system_type::flags_type res;
-	
-	if( flags ) {
-		unsigned n = node->mechanicalState->getMatrixSize();
-		res.resize( n );
-		unsigned written = flags->write( res.data() );
-		assert( written == n );
-		
-	}
-	
-	return res;
-}
-	
-
-// top-down
+// this is called on the top-down traversal, once for each node. we
+// simply fetch infos for each dof.
 void AssemblyVisitor::fill_prefix(simulation::Node* node) {
 	assert( node->mechanicalState );
 	assert( chunks.find( node->mechanicalState ) == chunks.end() );
 	
-	// std::cerr << "prefix fill " << pretty(node->mechanicalState) << std::endl;
-
-
-	// backup prefix order
-	// prefix.push_back( node->mechanicalState );
-
 	// fill chunk for current dof
 	chunk& c = chunks[ node->mechanicalState ];
 			
@@ -494,27 +395,22 @@ void AssemblyVisitor::fill_prefix(simulation::Node* node) {
 		c.C = compliance( node );
 		
 		if( !empty(c.C) ) {
+			c.mechanical = true;
+			
 			c.phi = phi( node );
 			c.damping = damping( node );
-			c.flags = flags( node );
 
+			// TODO this test should work but it doesn't :-/
 			// if( !lagrange.isNull() ) {
-				c.lambda = lambda( node );
-				assert( c.lambda.size() );
+			c.lambda = lambda( node );
+			assert( c.lambda.size() );
 			// } else {
-			// 	std::cerr << "bad lagrange yo" << std::endl;
+			// 	std::cerr << "bad lagrange state vector :-/" << std::endl;
 			// }
-			
-			// hack
-			c.extra = extra( node );
-			
-			c.mechanical = true;
-		
 		}
 
 	}
 
-	// if( c.mechanical ) std::cerr << "mechanincal !" << std::endl;
 	
 }
 
@@ -630,7 +526,7 @@ void AssemblyVisitor::distribute_compliant(core::behavior::MultiVecDeriv::MyMult
 		const chunk* c = graph[prefix[i]].data; // find(chunks, prefix[i]);
 		
 		if( c->compliant() ) { 
-			vector( graph[ prefix[i] ] .dofs, id.getId( graph[prefix[i]].dofs), data.segment(off, c->size) );
+			vector( graph[ prefix[i] ].dofs, id.getId( graph[prefix[i]].dofs), data.segment(off, c->size) );
 			off += c->size;
 		}
 		
@@ -646,7 +542,6 @@ void AssemblyVisitor::distribute_compliant(core::behavior::MultiVecDeriv::MyMult
 // in the graph order)
 struct AssemblyVisitor::propagation_helper {
 
-	// should be const lol
 	graph_type& g;
 	
 	propagation_helper(graph_type& g) : g(g) {} 
@@ -656,57 +551,24 @@ struct AssemblyVisitor::propagation_helper {
 		dofs_type* dofs = g[v].dofs;
 		chunk* c = g[v].data;
 		
-		// std::cerr << "propagating from " << pretty(c.dofs) << std::endl;
-		
 		if( c->mechanical ) {
 		
 			for(graph_type::out_edge_range e = boost::out_edges(v, g); e.first != e.second; ++e.first) {
-
-			// for(chunk::map_type::const_iterator mi = c.map.begin(), me = c.map.end();
-			//     mi != me; ++mi) {
-
-				chunk* p = g[ boost::target(*e.first, g) ].data; // chunks[ mi->first ];
+				
+				chunk* p = g[ boost::target(*e.first, g) ].data; 
 				p->mechanical = true;
 				
 				if(!zero( g[*e.first].data->K)) { 
 					add(p->K, g[*e.first].data->K );
 				}
-				// std::cerr << "becomes mechanical lol " << pretty(mi->first) << std::endl;
 			}
 			
 		}
 	}
 
-	// template<class G>
-	// void operator()(unsigned v, const G& ) const {
-	// 	(*this)(v);
-	// }
-	
 };
 
 
-
-template<class G>
-struct writer {
-	const G& g;
-	writer(const G& g) :g(g) { }
-	
-	void operator()(std::ostream& out, typename G::vertex_descriptor vertex) const {
-		out << "[label=\"" << g[vertex].dofs->getContext()->getName() << "\"]";
-	}
-
-	void operator()(std::ostream& out, typename G::edge_descriptor edge) const {
-		// out << g[vertex].dofs->getContext()->getName();
-	}
-	
-	
-};
-
-// template<class G>
-// static void debug_graph(const G& g) {
-// 	std::ofstream out("/tmp/graph");
-// 	boost::write_graphviz(out, g, writer<G>(g));
-// }
 
 
 struct AssemblyVisitor::process_helper {
@@ -782,19 +644,7 @@ struct AssemblyVisitor::process_helper {
 				
 				assert( false );
 				
-				// { 
-				// 	// scoped::timer step("geometric stiffness propagation");
-				// 	// geometric stiffness
-				// 	const mat& kc = mi->second.K;
-
-				// 	if( !zero(kc) ) {
-				// 		// std::cerr << "geometric stiffness lol" << std::endl;
-				// 		// contribute stiffness block to parent
-				// 		mat& Kp = fp.K;
-				// 		add(Kp, kc);
-				// 	}
-				// }
-
+				
 			}
 			
 		
@@ -842,7 +692,6 @@ AssemblyVisitor::process_type AssemblyVisitor::process() const {
 	
 	for(unsigned i = 0, n = prefix.size(); i < n; ++i) {
 		
-		// const chunk& c = find(chunks, prefix[i]);
 		const chunk* c = graph[ prefix[i] ].data;
 		
 		// independent
@@ -859,79 +708,14 @@ AssemblyVisitor::process_type AssemblyVisitor::process() const {
 	size_m = off_m;
 	size_c = off_c;
 	
-	// prefix mapping concatenation and stuff TODO merge with offsets computation ?
-	// TODO use prefix instead
-	// utils::dfs( graph, process_helper( res ) );
-	std::for_each(prefix.begin(), prefix.end(), process_helper(res, graph) );
-	
+	// prefix mapping concatenation and stuff 
+	std::for_each(prefix.begin(), prefix.end(), process_helper(res, graph) ); 	// TODO merge with offsets computation ?
+
 	return res;
 }
 
 
-template<class It1, class It2, class F>
-static inline void parallel_iter(It1& it1,
-                                 It2& it2,
-                                 const F& f) {
-	while( it1 && it2 ) {
-		if( it1.col() < it2.row() ) ++it1;
-		else if( it1.col() > it2.row() ) ++it2;
-		else {
-			f(it1.value(), it2.value());
-			++it1, ++it2;
-		}
-	}
-	
-}
 
-struct add_prod {
-	SReal& res;
-	
-	add_prod(SReal& res) : res(res) { }
-	
-	inline void operator()(const SReal& x, const SReal& y) const {
-		res += x * y;
-	}
-	
-};
-
-
-
-struct dot {
-	const AssemblyVisitor::mat& l;
-	const AssemblyVisitor::mat& d;
-	
-	dot(const AssemblyVisitor::mat& l,
-	    const AssemblyVisitor::mat& d) 
-		: l(l), d(d) { }
-	
-
-	inline SReal operator()(unsigned i, unsigned j) const {
-		SReal res = 0;
-	
-		for(unsigned u = 0, n = d.rows(); u < n; ++u) {
-			AssemblyVisitor::mat::InnerIterator duv(d, u);
-		
-			unsigned v = duv.col();
-		
-			res += l.coeff(u, i) * duv.value() * l.coeff(v, j);
-		}
-
-		
-		// for(AssemblyVisitor::cmat::InnerIterator lui(l, i); lui; ++lui) {
-
-		// 	SReal tmp = 0;
-		// 	AssemblyVisitor::mat::InnerIterator duv(d, lui.row() );
-		// 	AssemblyVisitor::cmat::InnerIterator lvj(l, j);
-
-		// 	parallel_iter(duv, lvj, add_prod(tmp) );
-			
-		// 	res += lui.value() * tmp;
-		// }
-		
-		return res;
-	}
-
-};
 
 // this is meant to optimize L^T D L products
 static inline AssemblyVisitor::mat ltdl(const AssemblyVisitor::mat& l, 
@@ -950,10 +734,6 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const{
 			
 	// result system
 	system_type res(p.size_m, p.size_c);
-	
-	// TODO tighter
-	unsigned n_blocks = prefix.size();
-	res.blocks.reserve( n_blocks );
 	
 	res.dt = mparams->dt();
 			
@@ -978,6 +758,8 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const{
 		
 		// independent dofs: fill mass/stiffness
 		if( c->master() ) {
+			res.master.push_back( c->dofs );
+
 			// scoped::timer step("independent dofs");
 			mat shift = shift_right(off_m, c->size, p.size_m);
 			
@@ -1055,6 +837,7 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const{
 					
 			// compliant dofs: fill compliance matrix/rhs
 			if( c->compliant() ) { // !empty(c.C)
+				res.compliant.push_back( c->dofs );
 				// scoped::timer step("compliant dofs");
 				assert( !zero(Jc) );
 				
@@ -1067,7 +850,7 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const{
 					// you never know
 					assert( mparams->implicitVelocity() == 1 );
 					assert( mparams->implicitPosition() == 1 );
-
+					
 					SReal l = res.dt + c->damping;
 
 					// zero damping => C / dt2
@@ -1078,32 +861,6 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const{
 				res.phi.segment(off_c, c->size) = c->phi;
 				
 				if( c->lambda.size() ) res.lambda.segment( off_c, c->size ) = c->lambda;
-				
-				// damping 
-				// res.damping.segment(off_c, c.size).setConstant( c.damping );
-				
-				// equation flags
-				if( c->flags.size() ) {
-					res.flags.segment(off_c, c->size) = c->flags;
-				}
-				
-				{
-					// add blocks, one per compliant dof
-					unsigned off = off_c;
-					unsigned dim = c->dofs->getDerivDimension();
-				
-					for( unsigned k = 0, max = c->dofs->getSize(); k < max; ++k) {
-					
-						AssembledSystem::block block(off, dim);
-					
-						// hack
-						block.data = c->extra;
-					
-						res.blocks.push_back( block );
-						off += dim;
-					}
-					assert( off == off_c + c->size );
-				}
 				
 				off_c += c->size;
 			}
@@ -1134,7 +891,6 @@ bool AssemblyVisitor::chunk::check() const {
 		if(!empty(C)) {
 			assert( phi.size() == int(size) );
 			assert( damping >= 0 );
-			assert( !flags.size() || flags.size() == int(size) );
 		}
 
 	}
@@ -1178,44 +934,11 @@ void AssemblyVisitor::processNodeBottomUp(simulation::Node* node) {
 		// postfix mechanical flags propagation (and geometric stiffness)
 		std::for_each(prefix.rbegin(), prefix.rend(), propagation_helper(graph) );
 		
-		// customization
-		apply_callbacks();
-
 		start_node = 0;
 	}
 }
 		
 
-
-// callback stuff
-AssemblyVisitor::callback::~callback() { }
-
-void AssemblyVisitor::callback::start() { }
-void AssemblyVisitor::callback::end() { }
-void AssemblyVisitor::callback::compliant(dofs_type* dofs) { }
-void AssemblyVisitor::callback::master(dofs_type* dofs) { }
-
-
-
-void AssemblyVisitor::apply_callbacks() const {
-
-	unsigned m = cb.size();
-
-	for(unsigned j = 0; j < m; ++j) cb[j]->start();
-
-	for(unsigned i = 0, n = prefix.size(); i < n; ++i) {
-		dofs_type* dofs = graph[prefix[i]].dofs;
-
-		if( graph[prefix[i]].data->master() ) {
-			for(unsigned j = 0; j < m; ++j) cb[j]->master( dofs );
-		} else if( graph[prefix[i]].data->compliant() ) {
-			for(unsigned j = 0; j < m; ++j) cb[j]->compliant( dofs );
-		}
-	}
-	
-	for(unsigned j = 0; j < m; ++j) cb[j]->end();
-	
-}
 
 }
 }

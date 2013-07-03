@@ -14,7 +14,6 @@ SOURCES = \
     ComplianceSolver.cpp \
 		DampingCompliance.cpp \
 		RigidMass.cpp \
-		SolverFlags.cpp \
 		RigidJointMapping.cpp \
 		AssembledRigidRigidMapping.cpp \
 		LDLTSolver.cpp \
@@ -22,7 +21,6 @@ SOURCES = \
 		AssemblyVisitor.cpp \
 		AssembledSystem.cpp \
 		AssembledSolver.cpp \
-		Projector.cpp \
 
 HEADERS = \
     initCompliant.h \
@@ -34,7 +32,6 @@ HEADERS = \
     ComplianceSolver.h \
 		DampingCompliance.h \
 		RigidMass.h \
-		SolverFlags.h \
 		RigidJointMapping.h \
 		AssembledRigidRigidMapping.h \
 		KKTSolver.h \
@@ -43,8 +40,7 @@ HEADERS = \
 		AssemblyVisitor.h \
 		AssembledSystem.h \
 		AssembledSolver.h \
-		Projector.h \
-        utils/*.h
+    utils/*.h
 
 
 README_FILE = Compliant.txt
