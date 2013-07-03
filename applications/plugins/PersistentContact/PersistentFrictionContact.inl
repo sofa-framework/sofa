@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_COLLISION_PERSISTENTFRICTIONCONTACT_INL
 
 #include "PersistentFrictionContact.h"
-#include "PersistentUnilateralInteractionConstraint.h"
+#include "PersistentUnilateralInteractionConstraint.inl"
 
 #include <sofa/component/collision/FrictionContact.inl>
 
