@@ -454,6 +454,7 @@ namespace container
 template <> SOFA_Flexible_API
 void MechanicalObject<TYPEABSTRACTNAME3dTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
 
     if ( showIndices.getValue() )
@@ -531,12 +532,14 @@ void MechanicalObject<TYPEABSTRACTNAME3dTypes>::draw(const core::visual::VisualP
             vparams->drawTool()->popMatrix();
         }
     }
+#endif /* SOFA_NO_OPENGL */
 }
 #endif
 #ifndef SOFA_DOUBLE
 template <> SOFA_Flexible_API
 void MechanicalObject<TYPEABSTRACTNAME3fTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
 
     if ( showIndices.getValue() )
@@ -614,6 +617,7 @@ void MechanicalObject<TYPEABSTRACTNAME3fTypes>::draw(const core::visual::VisualP
             vparams->drawTool()->popMatrix();
         }
     }
+#endif /* SOFA_NO_OPENGL */
 }
 #endif
 // ==========================================================================
