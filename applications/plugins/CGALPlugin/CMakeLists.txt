@@ -24,6 +24,17 @@ set(README_FILES
 	CGALPlugin.txt
 	)
 
+if(WIN32)
+
+    #copy required CGAL dlls
+    file(GLOB sharedObjects "${CGAL_DIR}/bin/*.dll")
+    foreach(sharedObject ${sharedObjects})
+        file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
+    endforeach()    
+
+endif()
+
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
 find_package(CGAL REQUIRED)
