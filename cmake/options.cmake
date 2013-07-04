@@ -76,7 +76,7 @@ if(EXISTS ${SOFA-EXTERNAL_BOOST_PATH})
 	set(SOFA-EXTERNAL_HAVE_BOOST 1 CACHE INTERNAL "Use the system / user compiled boost library instead of extlib/miniBoost" FORCE)
 	list(APPEND compilerDefines SOFA_HAVE_BOOST)
 else()
-	set(SOFA-EXTERNAL_HAVE_BOOST 0 CACHE INTERNAL "Use the system / user compiled boost library instead of extlib/miniBoost" FORCE)
+	unset(SOFA-EXTERNAL_HAVE_BOOST CACHE)
 endif()
 
 ## geometric tools
