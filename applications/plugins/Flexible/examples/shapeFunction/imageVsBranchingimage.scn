@@ -1,0 +1,97 @@
+<?xml version="1.0"?>
+<Node 	name="Root" gravity="0 -9.8 0 " dt="0.05"  >
+
+      <RequiredPlugin pluginName="Flexible"/>
+      <RequiredPlugin pluginName="sofaimage"/>
+
+    <VisualStyle displayFlags="showVisual showBehaviorModels showForceFields showWireframe" />
+    <DefaultAnimationLoop />
+    <DefaultVisualManagerLoop />
+    
+    <EulerImplicitSolver rayleighStiffness="0" rayleighMass="0"/> 
+    <CGSolver tolerance="1.0e-9" threshold="1.0e-9" />
+
+    <Node 	name="RegularImage"   >
+	  <MeshObjLoader name="loader" filename="mesh/torus.obj" triangulate="1"/>
+	  <MeshToImageEngine template="ImageUC" name="rasterizer" src="@loader" voxelSize="0.1" padSize="1" rotateImage="true" />
+	  <ImageContainer template="ImageUC" name="image" src="@rasterizer" drawBB="false"/>
+
+	  <ImageSampler template="ImageUC" name="sampler" src="@image" method="1" param="10" /> 
+	  <MechanicalObject template="Affine" name="dof" showObject="1" showObjectScale="0.5" src="@sampler" />
+	  <VoronoiShapeFunction name="SF" position="@dof.rest_position" src="@image" method="0" nbRef="4" clearData="false"/>
+	  <ImageViewer template="ImageUI" name="viewer" image="@SF.voronoi" transform="@image.transform" plane="3 -1 -1"/>  
+		
+          <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@sampler.position" name="FixedROI"/>
+          <FixedConstraint indices="@FixedROI.indices" />
+
+	    <Node 	name="behavior"   >
+		<ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="0" showSamples="true" printLog="true" targetNumber="30" />
+		<MechanicalObject template="F331" name="F"  useMask="0"  showObject="1" showObjectScale="0.05" />
+	    	<LinearMapping template="Mapping&lt;Affine,F331&gt;" />
+
+		<Node 	name="E"   >
+		    <MechanicalObject  template="E331" name="E"  /> 
+		    <GreenStrainMapping template="Mapping&lt;F331,E331&gt;"  />
+		    <HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0"/> 
+		</Node>
+
+	    </Node>
+
+	<Node 	name="mass"   >
+	      <Mesh name="mesh" src="@../loader" /> 
+	      <MechanicalObject />
+	      <UniformMass totalMass="20" />
+	      <LinearMapping template="Mapping&lt;Affine,Vec3d&gt;" />
+	      <Node 	name="visual"   >
+		<VisualModel />
+		<IdentityMapping />
+	      </Node>
+        </Node>
+
+    </Node>
+
+    <Node 	name="BranchingImage"   >
+	  <MeshObjLoader name="loader" filename="mesh/torus.obj" triangulate="1" translation="0 0 5"/>
+	  <MeshToImageEngine template="ImageUC" name="rasterizer" src="@loader" voxelSize="0.1" padSize="1" rotateImage="true" />
+	  <ImageToBranchingImageConverter template="ImageUC,BranchingImageUC" name="coarsener" inputImage="@rasterizer.image" inputTransform="@rasterizer.transform" coarseningLevels="0" superimpositionType="1" createFineImage="true" connectivity="26"/>
+
+ 	  <ImageSampler template="BranchingImageUC" name="sampler" image="@coarsener.branchingImage" transform="@coarsener.transform" method="1" param="10" />
+	  <ImageValuesFromPositions name="cell" template="ImageUI" interpolation="0" position ="@sampler.position" image="@coarsener.outputFineImage" transform="@rasterizer.transform" />
+	  <MechanicalObject template="Affine" name="dof" showObject="1" showObjectScale="0.5" src="@sampler" />
+	  <VoronoiShapeFunction name="SF" template="ShapeFunction3d,BranchingImageUC" position="@dof.rest_position" image="@coarsener.branchingImage" transform="@coarsener.transform" method="0" nbRef="4" cell="@cell.values" clearData="false"/>
+
+   	  <BranchingImageToImageConverter template="BranchingImageUI,ImageUI" name="imageConverter" inputBranchingImage="@SF.voronoi" conversionType="0" printLog="true"/>  
+   	  <ImageViewer template="ImageUI" name="viewer" image="@imageConverter.image" transform="@coarsener.transform" plane="3 -1 -1"/> 
+
+          <BoxROI template="Vec3d" box="0 -2 5 5 2 10" position="@sampler.position" name="FixedROI"/>
+          <FixedConstraint indices="@FixedROI.indices" />
+
+	    <Node 	name="behavior"   >
+		<ImageGaussPointSampler template="BranchingImageD" name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="0" showSamples="true" printLog="true" targetNumber="30" />
+		<MechanicalObject template="F331" name="F"  useMask="0"  showObject="1" showObjectScale="0.05" />
+	    	<LinearMapping template="Mapping&lt;Affine,F331&gt;" />
+
+		<Node 	name="E"   >
+		    <MechanicalObject  template="E331" name="E"  /> 
+		    <GreenStrainMapping template="Mapping&lt;F331,E331&gt;"  />
+		    <HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0"/> 
+		</Node>
+	    </Node>
+
+	<Node 	name="mass"   >
+	      <Mesh name="mesh" src="@../loader" /> 
+	      <MechanicalObject />
+	      <UniformMass totalMass="20" />
+	      <LinearMapping template="Mapping&lt;Affine,Vec3d&gt;" />
+	      <Node 	name="visual"   >
+		<VisualModel />
+		<IdentityMapping />
+	      </Node>
+        </Node>
+
+    </Node>
+
+<!--	<ImageOperation name="comp" template="ImageUI" image1="@RegularImage/viewer.image" image2="@BranchingImage/viewer.image" />-->
+<!--	<ImageViewer template="ImageUI" image="@comp.image" transform="@BranchingImage/coarsener.transform" plane="3 -1 -1"/> -->
+
+</Node>

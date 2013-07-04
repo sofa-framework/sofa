@@ -16,6 +16,7 @@ set(SOURCE_FILES
 	ImageContainer.cpp 
 	ImageViewer.cpp 
 	ImageFilter.cpp 
+	ImageOperation.cpp 
     ImageTransform.cpp
     TransferFunction.cpp 
     ImageValuesFromPositions.cpp 
@@ -63,6 +64,7 @@ list(APPEND HEADER_FILES
 	ImageContainer.h 
    	ImageViewer.h 
 	ImageFilter.h 
+	ImageOperation.h 
     ImageTransform.h
     TransferFunction.h 
     ImageValuesFromPositions.h 

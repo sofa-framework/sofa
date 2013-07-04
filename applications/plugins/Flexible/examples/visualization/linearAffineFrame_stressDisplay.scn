@@ -32,7 +32,7 @@
 	    </Node>
 
 	  <Node 	name="behavior"   >
-	  	<ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="1" targetNumber="300" />
+	  	<ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="1" targetNumber="300" clearData="false"/>
 		<MechanicalObject template="F331" name="F" />
 	    	<LinearMapping template="Mapping&lt;Affine,F331&gt;"  />
 

@@ -867,7 +867,7 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
         dist.setDimensions(dim);
         dist.imgList[0].cloneTopology<T> (inimg,1,-1.0);
 
-        bimg_forCVoffT(in.ref(),c,v,off1D,t) if(t==sampler->time) if(in->getValue(off1D,v,c,t)) dist.getValue(off1D,v,c,0)=cimg::type<Real>::max();
+        bimg_forCVoffT(in.ref(),c,v,off1D,t) if(t==sampler->time) if(in.ref()(off1D,v,c,t)) dist(off1D,v,c,0)=cimg::type<Real>::max();
 
         // list of seed points
         typedef typename ImageSampler::ImageTypes::VoxelIndex VoxelIndex;
@@ -880,15 +880,15 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
         for(unsigned int i=0; i<fpos.size(); i++)
         {
             fpos_voronoiIndex.push_back(i+1);
-            Coord p = inT->toImage(fpos[i]);
-            VoxelIndex ind (dist.index3Dto1D(sofa::helper::round(p[0]),sofa::helper::round(p[1]),sofa::helper::round(p[2])), 0); // take first superimposed voxel    TO DO: identify it from fine resolution
+            Coord p = inT->toImageInt(fpos[i]);
+            VoxelIndex ind (dist.index3Dto1D(p[0],p[1],p[2]), 0); // take first superimposed voxel    TO DO: identify it from fine resolution
             fpos_VoxelIndex.push_back(ind);
             AddSeedPoint<Real>(trial,dist,voronoi, fpos_VoxelIndex[i],fpos_voronoiIndex[i]);
         }
         if(fpos.size())
         {
             if(useDijkstra) dijkstra<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(), biasFactor);
-            //else fastMarching<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(), biasFactor );
+            else fastMarching<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(), biasFactor );
         }
 
         // farthest point sampling using geodesic distances
@@ -897,14 +897,14 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
         while(pos_VoxelIndex.size()<nb)
         {
             Real dmax=0;  VoxelIndex indMax;
-            bimg_forCVoffT(dist,c,v,off1D,t) if(dist.getValue(off1D,v,c,t)>dmax) { dmax=dist.getValue(off1D,v,c,t); indMax = VoxelIndex(off1D,v); }
+            bimg_forCVoffT(dist,c,v,off1D,t) if(dist(off1D,v,c,t)>dmax) { dmax=dist(off1D,v,c,t); indMax = VoxelIndex(off1D,v); }
             if(dmax)
             {
                 pos_voronoiIndex.push_back(fpos_VoxelIndex.size()+pos_VoxelIndex.size()+1);
                 pos_VoxelIndex.push_back(indMax);
                 AddSeedPoint<Real>(trial,dist,voronoi, pos_VoxelIndex.back(),pos_voronoiIndex.back());
                 if(useDijkstra) dijkstra<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(), biasFactor);
-                //else fastMarching<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(),biasFactor );
+                else fastMarching<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(),biasFactor );
             }
             else break;
         }
@@ -917,11 +917,11 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
             if(Lloyd<Real>(pos_VoxelIndex,pos_voronoiIndex,voronoi)) // one lloyd iteration
             {
                 // recompute distance from scratch
-                bimg_forCVoffT(dist,c,v,off1D,t) if(dist.getValue(off1D,v,c,t)!=-1) dist.getValue(off1D,v,c,t)=cimg::type<Real>::max();
+                bimg_forCVoffT(dist,c,v,off1D,t) if(dist(off1D,v,c,t)!=-1) dist(off1D,v,c,t)=cimg::type<Real>::max();
                 for(unsigned int i=0; i<fpos_voronoiIndex.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, fpos_VoxelIndex[i], fpos_voronoiIndex[i]);
                 for(unsigned int i=0; i<pos_voronoiIndex.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, pos_VoxelIndex[i], pos_voronoiIndex[i]);
                 if(useDijkstra) dijkstra<Real,T>(trial,dist, voronoi,  sampler->transform.getValue().getScale(), biasFactor);
-//                else fastMarching<Real,T>(trial,dist, voronoi,  sampler->transform.getValue().getScale(), biasFactor);
+                else fastMarching<Real,T>(trial,dist, voronoi,  sampler->transform.getValue().getScale(), biasFactor);
                 it++; if(it>=lloydIt) converged=true;
             }
             else converged=true;
@@ -1035,6 +1035,7 @@ public:
 
     //@name visu data
     /**@{*/
+    Data<bool> f_clearData;
     Data< bool > showSamples;
     Data< bool > showEdges;
     Data< bool > showGraph;
@@ -1054,6 +1055,7 @@ public:
         , graphEdges(initData(&graphEdges,SeqEdges(),"graphEdges","oriented graph connecting parent to child nodes"))
         , hexahedra(initData(&hexahedra,SeqHexahedra(),"hexahedra","output hexahedra"))
         , distances(initData(&distances,DistTypes(),"distances",""))
+        , f_clearData(initData(&f_clearData,true,"clearData","clear distance image after computation"))
         , showSamples(initData(&showSamples,false,"showSamples","show samples"))
         , showEdges(initData(&showEdges,false,"showEdges","show edges"))
         , showGraph(initData(&showGraph,false,"showGraph","show graph"))
@@ -1117,6 +1119,12 @@ protected:
             // sampling
             if(!computeRecursive.getValue()) uniformSampling(nb,bias,lloydIt,Dij);
             else recursiveUniformSampling(nb,bias,lloydIt,Dij,N);
+        }
+
+        // clear distance image ?
+        if(this->f_clearData.getValue())
+        {
+            waDist dist(this->distances); dist->clear();
         }
 
         if(this->f_printLog.getValue())
