@@ -144,7 +144,7 @@ endif()
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_Flexible" )
-AddLinkerDependencies(SofaGuiQt)
+AddLinkerDependencies(SofaBaseVisual)
 
 if(SOFA-PLUGIN_IMAGE)
     if(SOFA-PLUGIN_OPENCV)

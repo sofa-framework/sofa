@@ -650,6 +650,7 @@ void drawEllipsoid(const Mat<3,matdim,Real> & F, const Vec<3,Real> &p, const flo
 template <class JacobianBlockType>
 void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowMechanicalMappings() && !showDeformationGradientScale.getValue() && showColorOnTopology.getValue().getSelectedId()==0) return;
 
     helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
@@ -784,6 +785,7 @@ void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::Visual
         vparams->drawTool()->drawTriangles(points, normals, colors);
         glPopAttrib();
     }
+#endif /* SOFA_NO_OPENGL */
 }
 
 
