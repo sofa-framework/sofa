@@ -40,12 +40,15 @@ using namespace defaulttype;
 SOFA_DECL_CLASS(ImageGaussPointSampler)
 
 // Register in the Factory
-int ImageGaussPointSamplerClass = core::RegisterObject("Samples an object represented by an image")
+int ImageGaussPointSamplerClass = core::RegisterObject("Samples an object represented by an image with gauss points")
 
         .add<ImageGaussPointSampler<ImageD> >(true)
+        .add<ImageGaussPointSampler<BranchingImageD> >()
+
         ;
 
 template class SOFA_Flexible_API ImageGaussPointSampler<ImageD>;
+template class SOFA_Flexible_API ImageGaussPointSampler<BranchingImageD>;
 
 } // namespace engine
 } // namespace component

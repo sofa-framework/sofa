@@ -74,8 +74,7 @@ struct BaseImageShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
     template<class BaseImageShapeFunction>
     static void constructor( BaseImageShapeFunction* This )
     {
-        This->f_fineImage.setDisplayed( false );
-        This->f_fineTransform.setDisplayed( false );
+        This->f_cell.setDisplayed( false );
     }
 
     /// interpolate weights and their derivatives at a spatial position
@@ -191,7 +190,7 @@ struct BaseImageShapeFunctionSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMA
 
     /// interpolate weights and their derivatives at a spatial position
     template<class BaseImageShapeFunction>
-    static void computeShapeFunction( BaseImageShapeFunction* This, const typename BaseImageShapeFunction::Coord& childPosition, typename BaseImageShapeFunction::MaterialToSpatial& /*M*/, typename BaseImageShapeFunction::VRef& ref, typename BaseImageShapeFunction::VReal& w, typename BaseImageShapeFunction::VGradient* dw=NULL, typename BaseImageShapeFunction::VHessian* ddw=NULL, const int /*cell*/=-1)
+    static void computeShapeFunction( BaseImageShapeFunction* This, const typename BaseImageShapeFunction::Coord& childPosition, typename BaseImageShapeFunction::MaterialToSpatial& /*M*/, typename BaseImageShapeFunction::VRef& ref, typename BaseImageShapeFunction::VReal& w, typename BaseImageShapeFunction::VGradient* dw=NULL, typename BaseImageShapeFunction::VHessian* ddw=NULL, const int cell=-1)
     {
         typedef typename BaseImageShapeFunction::Real Real;
         typedef typename BaseImageShapeFunction::IndT IndT;
@@ -209,32 +208,26 @@ struct BaseImageShapeFunctionSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMA
         const typename BaseImageShapeFunction::IndTypes::BranchingImage3D& indices = indData->imgList[0];
         const typename BaseImageShapeFunction::DistTypes::BranchingImage3D& weights = weightData->imgList[0];
 
-        // get fine image to differentiate overlapping coarse voxels
-        typename BaseImageShapeFunction::raFineImage fineImage( This->f_fineImage );
-        const typename BaseImageShapeFunction::FineImage::CImgT& fine = fineImage->getCImg();
-        typename BaseImageShapeFunction::raTransform fineTransform( This->f_fineTransform );
-
         // interpolate weights in neighborhood
-        Coord pfine = fineTransform->toImage(childPosition); // float fine image coord
-        Coord Pfine;  for (unsigned int j=0; j<3; j++)  Pfine[j] = sofa::helper::round(pfine[j]); // int fine image coord
+        Coord p = inT->toImage( childPosition );
+        Coord P;  for (unsigned int j=0; j<3; j++)  P[j]=sofa::helper::round(p[j]);
+        VoxelIndex voxelIndex (indData->index3Dto1D( P[0], P[1], P[2] ) , 0);
+        if(cell>0) voxelIndex.offset=cell-1;
         unsigned int order=0;
         /*if(ddw) order=2; else */  // do not use order 2 for local weight interpolation. Order two is used only in weight fitting over regions
         if(dw) order=1;
 
-        // get closest existing fine voxel
-        if( Pfine[0]<=0 || Pfine[1]<=0 || Pfine[2]<=0 || Pfine[0]>=fine.width()-1 || Pfine[1]>=fine.height()-1 || Pfine[2]>=fine.depth()-1 ||
-                fine(Pfine[0],Pfine[1],Pfine[2],0)==0 )
+        // get closest voxel with non zero weights
+        if( !indData.ref().isInside(P[0],p[1],P[2]) ||
+                indices[voxelIndex.index1d].size()>voxelIndex.offset )
         {
             Real dmin=cimg::type<Real>::max();
-            cimg_for_insideXYZ(fine,x,y,z,1) if(fine(x,y,z,0)) {Real d=(Coord(x,y,z)-pfine).norm2(); if(d<dmin) { Pfine.set(x,y,z); dmin=d; } }
+            bimg_forXYZ(indData.ref(),x,y,z) if(indices[indData->index3Dto1D(x,y,z)].size()) {Real d=(Coord(x,y,z)-p).norm2(); if(d<dmin) { P.set(x,y,z); dmin=d;  voxelIndex.index1d=indData->index3Dto1D( P[0], P[1], P[2] );   voxelIndex.offset=0; } }
             if(dmin==cimg::type<Real>::max()) return;
         }
 
-        Coord P = inT->toImageInt( fineTransform->fromImage(Pfine) ); // int coarse image coord
-        const VoxelIndex voxelIndex (indData->index3Dto1D( P[0], P[1], P[2] ) , fine(Pfine[0],Pfine[1],Pfine[2],0)-1);
-        const ConnectionVoxel& indV = indices[voxelIndex.index1d][voxelIndex.offset];
-
         // prepare neighborood
+        const ConnectionVoxel& indV = indices[voxelIndex.index1d][voxelIndex.offset];
         const Neighbours& indN = indV.neighbours;
         vector< Coord > lpos;
         lpos.push_back ( inT->fromImage(P) - childPosition ); // add central voxel
@@ -352,10 +345,7 @@ public:
     Data< IndTypes > f_index;
 
     // only used for branching image
-    typedef defaulttype::Image<unsigned long> FineImage;
-    typedef helper::ReadAccessor<Data< FineImage > > raFineImage;
-    Data< FineImage > f_fineImage;
-    Data< TransformType > f_fineTransform;
+     Data< vector<int> > f_cell;    ///< indices required by shape function in case of overlapping elements
     //@}
 
     virtual std::string getTemplateName() const    { return templateName(this); }
@@ -395,8 +385,7 @@ protected:
         , transform(initData(&transform,TransformType(),"transform",""))
         , f_w(initData(&f_w,DistTypes(),"weights",""))
         , f_index(initData(&f_index,IndTypes(),"indices",""))
-        , f_fineImage(initData(&f_fineImage,FineImage(),"fineImage",""))
-        , f_fineTransform(initData(&f_fineTransform,TransformType(),"fineTransform",""))
+        , f_cell ( initData ( &f_cell,"cell","indices of surimposed voxels required in case of overlapping elements" ) )
     {
         image.setReadOnly(true);
         transform.setReadOnly(true);

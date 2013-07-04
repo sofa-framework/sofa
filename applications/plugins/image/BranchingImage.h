@@ -696,6 +696,8 @@ public:
     /// delete everything, free memory
     void clear()
     {
+        dimension.clear(); imageSize = sliceSize = 0;
+
         if( imgList )
         {
             delete [] imgList;
@@ -775,10 +777,10 @@ public:
 
     /// \returns image value at a given voxel index, time and channel
     /// @warning validity of indices, channel and time not checked
-    inline const T& getValue(const unsigned& off1D, const unsigned& v, const unsigned c=0, const unsigned t=0) const  { return this->imgList[t][off1D][v].value[c]; }
-    inline T& getValue(const unsigned& off1D, const unsigned& v, const unsigned c=0, const unsigned t=0) { return this->imgList[t][off1D][v].value[c]; }
-    inline const T& getValue(const VoxelIndex& index, const unsigned c=0, const unsigned t=0) const  { return this->imgList[t][index.index1d][index.offset].value[c]; }
-    inline T& getValue(const VoxelIndex& index, const unsigned c=0, const unsigned t=0) { return this->imgList[t][index.index1d][index.offset].value[c]; }
+    inline const T& operator()(const unsigned& off1D, const unsigned& v, const unsigned c=0, const unsigned t=0) const  { return this->imgList[t][off1D][v].value[c]; }
+    inline       T& operator()(const unsigned& off1D, const unsigned& v, const unsigned c=0, const unsigned t=0)        { return this->imgList[t][off1D][v].value[c]; }
+    inline const T& operator()(const VoxelIndex& index, const unsigned c=0, const unsigned t=0)                 const   { return this->imgList[t][index.index1d][index.offset].value[c]; }
+    inline       T& operator()(const VoxelIndex& index, const unsigned c=0, const unsigned t=0)                         { return this->imgList[t][index.index1d][index.offset].value[c]; }
 
     /// \returns the offset between two neighbour voxels
     /// example: returning (-1,0,0) means neighbourIndex is at the LEFT position of index

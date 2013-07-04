@@ -22,47 +22,54 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define FLEXIBLE_VoronoiShapeFunction_CPP
+#define SOFA_IMAGE_IMAGEFILTER_CPP
 
-#include "../initFlexible.h"
-#include "../shapeFunction/VoronoiShapeFunction.h"
+#include "ImageOperation.h"
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
+
 namespace component
 {
-namespace shapefunction
+
+namespace engine
 {
 
 using namespace defaulttype;
-using namespace core::behavior;
 
-SOFA_DECL_CLASS(VoronoiShapeFunction)
+SOFA_DECL_CLASS(ImageOperation)
 
-// Register in the Factory
-int VoronoiShapeFunctionClass = core::RegisterObject("Computes natural neighbor shape functions in images")
-
-        .add< VoronoiShapeFunction<ShapeFunction3,ImageUC> >(true)
-        .add< VoronoiShapeFunction<ShapeFunction3,ImageD> >()
-        .add< VoronoiShapeFunction<ShapeFunction3,ImageB> >()
-        .add< VoronoiShapeFunction<ShapeFunction3,ImageF> >()
-
-        .add<VoronoiShapeFunction<ShapeFunction3,BranchingImageB> >()
-        .add<VoronoiShapeFunction<ShapeFunction3,BranchingImageUC> >()
-        .add<VoronoiShapeFunction<ShapeFunction3,BranchingImageD> >()
-        .add<VoronoiShapeFunction<ShapeFunction3,BranchingImageUS> >()
+int ImageOperationClass = core::RegisterObject("This class computes an image as an operation between two images")
+        .add<ImageOperation<ImageUC> >(true)
+        .add<ImageOperation<ImageD> >()
+#ifdef BUILD_ALL_IMAGE_TYPES
+        .add<ImageOperation<ImageC> >()
+        .add<ImageOperation<ImageI> >()
+        .add<ImageOperation<ImageUI> >()
+        .add<ImageOperation<ImageS> >()
+        .add<ImageOperation<ImageUS> >()
+        .add<ImageOperation<ImageL> >()
+        .add<ImageOperation<ImageUL> >()
+        .add<ImageOperation<ImageF> >()
+        .add<ImageOperation<ImageB> >()
+#endif
         ;
 
-template class SOFA_Flexible_API VoronoiShapeFunction<ShapeFunction3,ImageUC>;
-template class SOFA_Flexible_API VoronoiShapeFunction<ShapeFunction3,ImageD>;
-template class SOFA_Flexible_API VoronoiShapeFunction<ShapeFunction3,ImageB>;
-template class SOFA_Flexible_API VoronoiShapeFunction<ShapeFunction3,ImageF>;
+template class SOFA_IMAGE_API ImageOperation<ImageUC>;
+template class SOFA_IMAGE_API ImageOperation<ImageD>;
+#ifdef BUILD_ALL_IMAGE_TYPES
+template class SOFA_IMAGE_API ImageOperation<ImageC>;
+template class SOFA_IMAGE_API ImageOperation<ImageI>;
+template class SOFA_IMAGE_API ImageOperation<ImageUI>;
+template class SOFA_IMAGE_API ImageOperation<ImageS>;
+template class SOFA_IMAGE_API ImageOperation<ImageUS>;
+template class SOFA_IMAGE_API ImageOperation<ImageL>;
+template class SOFA_IMAGE_API ImageOperation<ImageUL>;
+template class SOFA_IMAGE_API ImageOperation<ImageF>;
+template class SOFA_IMAGE_API ImageOperation<ImageB>;
+#endif
+} //
+} // namespace component
+} // namespace sofa
 
-template class SOFA_Flexible_API VoronoiShapeFunction<ShapeFunction3,BranchingImageB>;
-template class SOFA_Flexible_API VoronoiShapeFunction<ShapeFunction3,BranchingImageUC>;
-template class SOFA_Flexible_API VoronoiShapeFunction<ShapeFunction3,BranchingImageD>;
-template class SOFA_Flexible_API VoronoiShapeFunction<ShapeFunction3,BranchingImageUS>;
-}
-}
-}

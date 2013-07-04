@@ -15,7 +15,7 @@ class ColorMap(Sofa.PythonScriptController):
 		self.mynode.createObject('TriangleSetTopologyContainer' )
   		self.mynode.createObject('TriangleSetTopologyModifier' )
   		self.mynode.createObject('Quad2TriangleTopologicalMapping' )
-		self.disp =self.mynode.createObject('DataDisplay')
+		self.disp =self.mynode.createObject('DataDisplay',maximalRange="false")
 		self.mynode.createObject('ColorMap',colorScheme='Blue to Red')
 		self.mynode.createObject('IdentityMapping',input=path, output='@.')
 		return 0

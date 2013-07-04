@@ -91,7 +91,7 @@ public:
     {
         inputImage.setReadOnly(true);
         outputBranchingImage.setReadOnly(true);
-        this->addAlias(&inputImage, "image");
+        this->addAlias(&outputBranchingImage, "image");
         this->addAlias(&outputBranchingImage, "branchingImage");
         this->addAlias(&outputTransform, "transform");
     }
@@ -478,6 +478,7 @@ public:
     {
         inputBranchingImage.setReadOnly(true);
         this->addAlias(&inputBranchingImage, "branchingImage");
+        this->addAlias(&inputBranchingImage, "inputImage");
         this->addAlias(&image, "outputImage");
     }
 

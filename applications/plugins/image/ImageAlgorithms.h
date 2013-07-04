@@ -121,7 +121,7 @@ bool Lloyd (std::vector<typename sofa::defaulttype::BranchingImage<real>::VoxelI
         unsigned int count=0;
         bool valid=false;
 
-        bimg_forCVoffT(voronoi,c,v,off1D,t) if(voronoi.getValue(off1D,v,c,t)==voronoiIndex[i])
+        bimg_forCVoffT(voronoi,c,v,off1D,t) if(voronoi(off1D,v,c,t)==voronoiIndex[i])
         {
             unsigned x,y,z; voronoi.index1Dto3D(off1D,x,y,z);
             C+=Coord(x,y,z);;
@@ -131,20 +131,25 @@ bool Lloyd (std::vector<typename sofa::defaulttype::BranchingImage<real>::VoxelI
         C/=(real)count;
 
         // check validity
+        p.index1d = voronoi.index3Dto1D(sofa::helper::round(C[0]),sofa::helper::round(C[1]),sofa::helper::round(C[2]));
+        p.offset=0;
+
+        while(!valid && p.offset<voronoi.imgList[0][p.index1d].size()) if (voronoi(p)==voronoiIndex[i]) valid=true; else p.offset++;
+        for (unsigned int j=0; j<nbp; j++) if(i!=j) if(pos[j].index1d==p.index1d && pos[j].offset==p.offset)  valid=false; // check occupancy
+
         while(!valid)  // get closest unoccupied point in voronoi
         {
             real dmin=cimg::type<real>::max();
-            bimg_forCVoffT(voronoi,c,v,off1D,t) if(voronoi.getValue(off1D,v,c,t)==voronoiIndex[i])
+            bimg_forCVoffT(voronoi,c,v,off1D,t) if(voronoi(off1D,v,c,t)==voronoiIndex[i])
             {
                 unsigned x,y,z; voronoi.index1Dto3D(off1D,x,y,z);
                 real d2=(C-Coord(x,y,z)).norm2();
                 if(dmin>d2) { dmin=d2; p=VoxelIndex(off1D,v); }
             }
             if(dmin==cimg::type<real>::max()) goto stop;// no point found
-
             bool val2=true;  for (unsigned int j=0; j<nbp; j++) if(i!=j) if(pos[j].index1d==p.index1d && pos[j].offset==p.offset)  val2=false;  // check occupancy
             if(val2) valid=true;
-            else voronoi.getValue(p.index1d,p.offset,0,0)=0;  // discard voxel if already occupied
+            else voronoi(p.index1d,p.offset,0,0)=0;  // discard voxel if already occupied
         }
 
         if(p.index1d!=pos[i].index1d || p.offset!=pos[i].offset) // set new position if different
@@ -273,6 +278,11 @@ void fastMarching (std::set<std::pair<real,sofa::defaulttype::Vec<3,int> > > &tr
     }
 }
 
+template<typename real,typename T>
+void fastMarching (std::set<std::pair<real,typename sofa::defaulttype::BranchingImage<real>::VoxelIndex> > &/*trial*/, sofa::defaulttype::BranchingImage<real>& /*distances*/, sofa::defaulttype::BranchingImage<unsigned int>& /*voronoi*/, const sofa::defaulttype::Vec<3,real>& /*voxelsize*/, const sofa::defaulttype::BranchingImage<T>* /*biasFactor*/=NULL)
+{
+    std::cout<<"fastMarching not implemented for branching images"<<std::endl;
+}
 
 
 /**
@@ -354,7 +364,7 @@ void dijkstra (std::set<std::pair<real,typename sofa::defaulttype::BranchingImag
         VoxelIndex v = top.second;
         //alive(v)=true;
 
-        const unsigned int vor = voronoi.getValue(v);
+        const unsigned int vor = voronoi(v);
 
         std::vector< real > nDist;
         const typename sofa::defaulttype::BranchingImage<real>::Neighbours& nList = ( biasFactor ? biasFactor->getNeighboursAndDistances(nDist, top.second, voxelsize, 0) : voronoi.getNeighboursAndDistances(nDist, top.second, voxelsize, 0) );
@@ -364,13 +374,13 @@ void dijkstra (std::set<std::pair<real,typename sofa::defaulttype::BranchingImag
             VoxelIndex v2 = nList[i];
             //if(!alive(v2))
             {
-                const real newDist = distances.getValue(v) + nDist[i];
-                const real oldDist = distances.getValue(v2);
+                const real newDist = distances(v) + nDist[i];
+                const real oldDist = distances(v2);
                 if(oldDist>newDist)
                 {
                     typename std::set<DistanceToPoint>::iterator it=trial.find(DistanceToPoint(oldDist,v2)); if(it!=trial.end()) trial.erase(it);
-                    voronoi.getValue(v2) = vor;
-                    distances.getValue(v2) = newDist;
+                    voronoi(v2) = vor;
+                    distances(v2) = newDist;
                     trial.insert( DistanceToPoint(newDist,v2) );
                 }
             }
