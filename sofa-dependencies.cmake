@@ -132,7 +132,7 @@ if(WIN32)
 	endif()
 	
 	## boost dlls
-	if(NOT SOFA-EXTERNAL_HAVE_BOOST STREQUAL "")
+	if(SOFA-EXTERNAL_HAVE_BOOST)
 		file(GLOB sharedObjects "${Boost_LIBRARY_DIRS}/boost_graph*.dll")
 		foreach(sharedObject ${sharedObjects})
 			file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
