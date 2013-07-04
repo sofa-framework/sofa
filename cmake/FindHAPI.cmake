@@ -4,6 +4,7 @@
 #  HAPI_INCLUDE_DIR -  where to find HAPI.h, etc.
 #  HAPI_LIBRARIES    - List of libraries when using HAPI.
 #  HAPI_FOUND        - True if HAPI found.
+#  HAPI_DIR - where External files are found
 
 GET_FILENAME_COMPONENT(module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 
@@ -14,6 +15,11 @@ FIND_PATH(HAPI_INCLUDE_DIR NAMES HAPI/HAPI.h
                                  ${module_file_path}/../../../HAPI/include)
 MARK_AS_ADVANCED(HAPI_INCLUDE_DIR)
 
+FIND_PATH(HAPI_DIR NAMES bin/HAPI_VC9.dll
+                            PATHS $ENV{H3D_ROOT}/../
+                                  ../../
+                                  ${module_file_path}/../../../)
+MARK_AS_ADVANCED(HAPI_DIR)
 
 # Look for the library.
 IF(MSVC70 OR MSVC71)
@@ -63,10 +69,12 @@ IF(HAPI_INCLUDE_DIR AND HAVE_HAPI_LIBRARY)
   
   SET(HAPI_INCLUDE_DIR ${HAPI_INCLUDE_DIR} )
   SET(HAPI_LIBRARIES ${HAPI_LIBRARIES} )
+  SET(HAPI_EXTERNAL_DIR ${HAPI_EXTERNAL_DIR})
 ELSE(HAPI_INCLUDE_DIR AND HAVE_HAPI_LIBRARY)
   SET(HAPI_FOUND 0)
   SET(HAPI_LIBRARIES)
   SET(HAPI_INCLUDE_DIR)
+  SET(HAPI_EXTERNAL_DIR)
 ENDIF(HAPI_INCLUDE_DIR AND HAVE_HAPI_LIBRARY)
 
 # Report the results.
