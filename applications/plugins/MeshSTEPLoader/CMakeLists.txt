@@ -30,18 +30,35 @@ set(README_FILES
 	PluginMeshSTEPLoader.txt
 	)	
 
+find_package(OPENCASCADE REQUIRED)
+include_directories(${OPENCASCADE_INCLUDE_DIR})
+#required for OpenCASCADE
+AddCompilerDefinitions("WNT")
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_MESHSTEPLOADERPLUGIN")
 AddLinkerDependencies(SofaBaseTopology )
 
-if(UNIX)
-    AddLinkerDependencies("TK")
-    AddLinkerDependencies("GL")
-endif()
+set(TKLibraries
 
-if(WIN32)
-    AddLinkerDependencies("OpenCascade" )
-endif()
+    TKBRep
+    TKernel
+    TKG3d
+    TKGeomBase
+    TKMath
+    TKMesh
+    TKPrim
+    TKShHealing
+    TKStep
+    TKStepBase
+    TKTopAlgo
+    TKXSBase
+)
+
+foreach(TKLibrary ${TKLibraries})
+    AddLinkerDependencies(${OPENCASCADE_LIBRARIES_DIR}/${TKLibrary}.lib)
+    file(COPY ${OPENCASCADE_LIBRARIES_DIR}/../bin/${TKLibrary}.dll DESTINATION ${SOFA_BIN_DIR})
+endforeach()
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
