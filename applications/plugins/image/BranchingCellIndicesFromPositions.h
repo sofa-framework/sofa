@@ -143,7 +143,7 @@ protected:
             for(unsigned int i=0; i<pos.size(); i++)
             {
                 Coord Tp = inT->toImageInt(pos[i]);
-                if(!in->isInside(Tp[0],Tp[1],Tp[2]))  val[i] = outval;
+                if(!in->isInside((int)Tp[0],(int)Tp[1],(int)Tp[2]))  val[i] = outval;
                 else
                 {
                     typename BranchingImageTypes::VoxelIndex vi;

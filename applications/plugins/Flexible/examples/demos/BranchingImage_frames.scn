@@ -12,53 +12,51 @@
   <CGLinearSolver />
 
   <MeshObjLoader name="loader" filename="mesh/knot32.obj" triangulate="1"/>
-  <MeshToImageEngine  name="rasterizer" template="ImageUC" src="@loader" voxelSize=".02" padSize="1" rotateImage="true" />
+  <MeshToImageEngine  name="rasterizer" template="ImageUC" src="@loader" voxelSize=".025" padSize="1" rotateImage="true" />
   <ImageContainer template="ImageUC" name="image" src="@rasterizer" drawBB="false"/>
 <!--  <ImageViewer template="ImageUC" name="viewer" src="@image"  /> -->
   
-  <ImageToBranchingImageConverter template="ImageUC,BranchingImageUC" name="coarsener" inputImage="@image.image" inputTransform="@image.transform" coarseningLevels="2" superimpositionType="1" printLog="false" createFineImage="true" connectivity="26"/>
+  <ImageToBranchingImageConverter template="ImageUC,BranchingImageUC" name="coarsener" inputImage="@image.image" inputTransform="@image.transform" coarseningLevels="4" superimpositionType="1" printLog="true" createFineImage="true" connectivity="26"/>
   <ImageContainer template="BranchingImageUC" name="branchingImage" branchingImage="@coarsener.branchingImage" transform="@coarsener.transform" drawBB="true"/>
 
 <!--  Visualization of flatten branching image-->
-   <BranchingImageToImageConverter template="BranchingImageUC,ImageUC" name="imageConverter" inputBranchingImage="@branchingImage.branchingImage" conversionType="0" printLog="true"/>  
-   <ImageViewer template="ImageUC" name="viewer2" image="@imageConverter.image" transform="@branchingImage.transform"/> 
+<!--   <BranchingImageToImageConverter template="BranchingImageUC,ImageUC" name="imageConverter" inputBranchingImage="@branchingImage.branchingImage" conversionType="0" printLog="true"/>  -->
+<!--   <ImageViewer template="ImageUC" name="viewer2" image="@imageConverter.image" transform="@branchingImage.transform"/> -->
   
-
  	<ImageSampler template="BranchingImageUC" name="sampler" src="@branchingImage" method="1" param="10" />
 	<MechanicalObject template="Affine" name="dof" showObject="true" showObjectScale="0.7" src="@sampler" />
 
+<!-- voxels indices at nodes are passed to the shape function (needed in case of overlapping voxels) -->
 	<ImageValuesFromPositions name="cell" template="ImageUI" interpolation="0" position ="@sampler.position" image="@coarsener.outputFineImage" transform="@image.transform" />
+	<VoronoiShapeFunction name="SF" template="ShapeFunction3d,BranchingImageUC" position="@dof.rest_position" src="@branchingImage" method="0" nbRef="4" cell="@cell.values" />
 
-	<VoronoiShapeFunction name="SF" template="ShapeFunction3d,BranchingImageUC" position="@dof.rest_position" src="@branchingImage" method="0" nbRef="4" cell="@cell.values"/>
+<!--  Visualization ShapeFunction data -->
+<!--   <BranchingImageToImageConverter template="BranchingImageUI,ImageUI" name="imageConverter" inputBranchingImage="@SF.indices" conversionType="0" printLog="true"/>  -->
+<!--   <ImageViewer template="ImageUI" name="viewer2" image="@imageConverter.image" transform="@branchingImage.transform"/> -->
 
-   <BranchingImageToImageConverter template="BranchingImageD,ImageD" name="imageConverter" inputBranchingImage="@SF.weights" conversionType="0" printLog="true"/>  
-   <ImageViewer template="ImageD" name="viewer2" image="@imageConverter.image" transform="@branchingImage.transform"/> 
-  
 	    <Node 	name="behavior"   >
-		<ImageGaussPointSampler name="sampler" template="BranchingImageD" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="1" showSamples="true" printLog="true" targetNumber="200" />
-		<MechanicalObject template="F331" name="F"  useMask="0"  showObject="1" showObjectScale="0.05" />
-	    	<LinearMapping template="Mapping&lt;Affine,F331&gt;" />
+		<ImageGaussPointSampler name="sampler" template="BranchingImageD" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" targetNumber="1" />
+		<MechanicalObject template="F332" />
+	    	<LinearMapping template="Mapping&lt;Affine,F332&gt;" />
 
 		<Node 	name="E"   >
-		    <MechanicalObject  template="E331" name="E"  /> 
-		    <GreenStrainMapping template="Mapping&lt;F331,E331&gt;"   />
-		    <HookeForceField  template="E331" name="ff" youngModulus="100.0" poissonRatio="0" viscosity="0"/> 
+		    <MechanicalObject  template="E332" name="E"  /> 
+		    <CorotationalStrainMapping template="Mapping&lt;F332,E332&gt;"   />
+		    <HookeForceField  template="E332" name="ff" youngModulus="100.0" poissonRatio="0" viscosity="0"/> 
 		</Node>
 
 	    </Node>
-
 
 	    <Node 	name="collision"   >
 		<Mesh name="mesh" src="@../loader" /> 
 		<MechanicalObject  template="Vec3d" name="pts"   />
 	        <RestShapeSpringsForceField points="10" stiffness="100" />
 	        <UniformMass totalMass="100" />
-	    	<LinearMapping template="MechanicalMapping&lt;Affine,Vec3d&gt;"/>
+		<ImageValuesFromPositions name="cell" template="ImageUI" interpolation="0" position ="@mesh.position" image="@../coarsener.outputFineImage" transform="@../image.transform" />
+	    	<LinearMapping template="MechanicalMapping&lt;Affine,Vec3d&gt;" cell="@cell.values"/>
 		    <Node 	name="visual"   >
 			<VisualModel />
 		    	<IdentityMapping />
 		    </Node>
 	    </Node>
-
-
 </Node>
