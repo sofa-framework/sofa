@@ -97,7 +97,7 @@ endif()
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES} ${README_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_IMAGE")
-AddLinkerDependencies(SofaGuiQt ${OPENGL_LIBRARIES})
+AddLinkerDependencies(SofaBaseVisual ${OPENGL_LIBRARIES})
 
 if(SOFA-EXTERNAL_HAVE_OPENCV)
 

@@ -25,7 +25,7 @@
 #include "Main.h"
 #include "GUIManager.h"
 #include "BatchGUI.h"
-#if defined(SOFA_GUI_QTVIEWER) || defined(SOFA_GUI_QGLVIEWER)
+#if defined(SOFA_GUI_QT) || defined(SOFA_GUI_QTVIEWER) || defined(SOFA_GUI_QGLVIEWER)
 #include "qt/RealGUI.h"
 #endif
 #ifdef SOFA_GUI_GLUT
@@ -63,12 +63,10 @@ int MtGUIClass = GUIManager::RegisterGUI("glut-mt", &glut::MultithreadGUI::Creat
 #endif
 
 #ifdef SOFA_GUI_QGLVIEWER
-
 int QGLViewerGUIClass = GUIManager::RegisterGUI ( "qglviewer", &qt::RealGUI::CreateGUI, &qt::RealGUI::InitGUI, 3 );
 #endif
 
 #ifdef SOFA_GUI_QTVIEWER
-
 int QtGUIClass = GUIManager::RegisterGUI ( "qt", &qt::RealGUI::CreateGUI, &qt::RealGUI::InitGUI, 2 );
 #endif
 
