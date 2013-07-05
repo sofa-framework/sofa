@@ -233,12 +233,10 @@ protected:
                         {
                         case 1: // average
                         {
+                            vector<Real> vout (outputDimension[BranchingImageTypes::DIMENSION_S]);
                             for( unsigned v=0 ; v<output_t[index1d].size() ; ++v )
                             {
-                                typename BranchingImageTypes::ConnectionVoxel& voutput = output_t[index1d][v];
-                                voutput.resize( outputDimension[BranchingImageTypes::DIMENSION_S] );
-                                bimg_forC(output,s) voutput[s]=0;
-                                // count nb pixels==v in subLabelImage
+                                bimg_forC(output,s) vout[s]=0;
                                 int nbLabelsV = 0;
                                 cimg_forXYZ( subLabelImage, subx,suby,subz )
                                         if( subLabelImage(subx,suby,subz) == (LabelTypes)(v+1) )
@@ -246,11 +244,13 @@ protected:
                                     nbLabelsV++;
                                     bimg_forC(output,s)
                                     {
-                                        assert( typeid(Tout)==typeid(bool) ||voutput[s] <= std::numeric_limits<Tout>::max()-subImage(subx,suby,subz,s) );
-                                        voutput[s] += (Tout)subImage(subx,suby,subz,s);
+//                                        assert( typeid(Tout)==typeid(bool) ||voutput[s] <= std::numeric_limits<Tout>::max()-subImage(subx,suby,subz,s) );
+                                        vout[s] += (Real)subImage(subx,suby,subz,s);
                                     }
                                 }
-                                bimg_forC(output,s) voutput[s] /= (Tout)nbLabelsV;
+                                typename BranchingImageTypes::ConnectionVoxel& voutput = output_t[index1d][v];
+                                voutput.resize( outputDimension[BranchingImageTypes::DIMENSION_S] );
+                                bimg_forC(output,s) { vout[s]/=(Real)nbLabelsV; voutput[s]=(Tout)vout[s]; }
                             }
                             break;
                         }
@@ -261,10 +261,9 @@ protected:
                                 typename BranchingImageTypes::ConnectionVoxel& voutput = output_t[index1d][v];
                                 voutput.resize( outputDimension[BranchingImageTypes::DIMENSION_S] );
                                 bimg_forC(output,s) voutput[s]=0;
-                                // count nb pixels==v in subLabelImage
                                 int nbLabelsV = 0;
                                 cimg_foroff( subLabelImage, off ) if( subLabelImage(off) == (LabelTypes)(v+1) ) nbLabelsV++;
-                                bimg_forC(output,s) voutput[s] = (Tout)1.0/(Tout)nbLabelsV;
+                                bimg_forC(output,s) voutput[s] = (Tout) (1.0/(Real)nbLabelsV);
                             }
                             break;
                         }
@@ -274,7 +273,6 @@ protected:
                             {
                                 typename BranchingImageTypes::ConnectionVoxel& voutput = output_t[index1d][v];
                                 voutput.resize( outputDimension[BranchingImageTypes::DIMENSION_S] );
-                                // count nb pixels==v in subLabelImage
                                 int nbLabelsV = 0;
                                 cimg_foroff( subLabelImage, off ) if( subLabelImage(off) == (LabelTypes)(v+1) ) nbLabelsV++;
                                 bimg_forC(output,s) voutput[s] = (Tout)nbLabelsV;
@@ -284,20 +282,22 @@ protected:
                         case 0: // sum
                         default:
                         {
+                            vector<Real> vout (outputDimension[BranchingImageTypes::DIMENSION_S]);
                             for( unsigned v=0 ; v<output_t[index1d].size() ; ++v )
                             {
-                                typename BranchingImageTypes::ConnectionVoxel& voutput = output_t[index1d][v];
-                                voutput.resize( outputDimension[BranchingImageTypes::DIMENSION_S] );
-                                bimg_forC(output,s) voutput[s]=0;
+                                bimg_forC(output,s) vout[s]=0;
                                 cimg_forXYZ( subLabelImage, subx,suby,subz )
                                         if( subLabelImage(subx,suby,subz) == (LabelTypes)(v+1) )
                                 {
                                     bimg_forC(output,s)
                                     {
-                                        assert( typeid(Tout)==typeid(bool) || voutput[s] <= std::numeric_limits<Tout>::max()-subImage(subx,suby,subz,s) );
-                                        voutput[s] += (Tout)subImage(subx,suby,subz,s);
+//                                        assert( typeid(Tout)==typeid(bool) || voutput[s] <= std::numeric_limits<Tout>::max()-subImage(subx,suby,subz,s) );
+                                        vout[s] += (Real)subImage(subx,suby,subz,s);
                                     }
                                 }
+                                typename BranchingImageTypes::ConnectionVoxel& voutput = output_t[index1d][v];
+                                voutput.resize( outputDimension[BranchingImageTypes::DIMENSION_S] );
+                                bimg_forC(output,s) voutput[s]=(Tout)vout[s];
                             }
                             break;
                         }

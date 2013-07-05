@@ -218,13 +218,14 @@ struct BaseImageShapeFunctionSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMA
         if(dw) order=1;
 
         // get closest voxel with non zero weights
-        if( !indData.ref().isInside(P[0],p[1],P[2]) ||
+        if( !indData.ref().isInside((int)P[0],(int)p[1],(int)P[2]) ||
                 indices[voxelIndex.index1d].size()>voxelIndex.offset )
         {
             Real dmin=cimg::type<Real>::max();
-            bimg_forXYZ(indData.ref(),x,y,z) if(indices[indData->index3Dto1D(x,y,z)].size()) {Real d=(Coord(x,y,z)-p).norm2(); if(d<dmin) { P.set(x,y,z); dmin=d;  voxelIndex.index1d=indData->index3Dto1D( P[0], P[1], P[2] );   voxelIndex.offset=0; } }
+            bimg_forXYZ(indData.ref(),x,y,z) if(indices[indData->index3Dto1D(x,y,z)].size()) {Real d=(Coord(x,y,z)-p).norm2(); if(d<dmin) { P.set(x,y,z); dmin=d;  voxelIndex.index1d=indData->index3Dto1D( P[0], P[1], P[2] );   } }
             if(dmin==cimg::type<Real>::max()) return;
         }
+        if(voxelIndex.offset>=indices[voxelIndex.index1d].size()) voxelIndex.offset=0;
 
         // prepare neighborood
         const ConnectionVoxel& indV = indices[voxelIndex.index1d][voxelIndex.offset];
