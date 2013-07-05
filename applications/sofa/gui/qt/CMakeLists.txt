@@ -108,16 +108,22 @@ if(SOFA_DUMP_VISITOR_INFO)
 	list(APPEND UI_FILES VisitorGUI.ui)
 endif()
 
+
 if(SOFA-LIB_GUI_QTVIEWER)
 	list(APPEND HEADER_FILES viewer/qt/QtViewer.h)
-	
+# 	
 	list(APPEND SOURCE_FILES viewer/qt/QtViewer.cpp)
+	
+	AddCompilerDefinitions("SOFA_GUI_QTVIEWER")
 endif()
 
 if(SOFA-LIB_GUI_QGLVIEWER)
 	list(APPEND HEADER_FILES viewer/qgl/QtGLViewer.h)
-	
+
 	list(APPEND SOURCE_FILES viewer/qgl/QtGLViewer.cpp)
+	
+	AddCompilerDefinitions("SOFA_GUI_QGLVIEWER")
+	AddLinkerDependencies(QGLViewer)
 endif()
 
 UseQt()
@@ -159,9 +165,6 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_FILES} ${FORM_FILES} ${
 AddCompilerDefinitions("SOFA_BUILD_SOFAGUIQT")
 AddLinkerDependencies(SofaGuiCommon Qwt SofaBaseVisual SofaExporter SofaLoader SofaOpenglVisual SofaMiscForceField)
 
-if(SOFA-LIB_GUI_QGLVIEWER)
-    AddLinkerDependencies(QGLViewer)
-endif()
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
 

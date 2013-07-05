@@ -5,7 +5,7 @@ set(SOURCE_FILES
 	Main.cpp
 	)
 
-if(SOFA-LIB_GUI_QTVIEWER)
+if(SOFA-LIB_GUI_QT)
 	UseQt()
 endif()
 

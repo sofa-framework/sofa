@@ -73,7 +73,9 @@ set(FORM_FILES_GROUP "Generated")
 
 add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${MOC_FILES} ${FORM_FILES} ${SOURCE_FILES})
 
-AddLinkerDependencies(SofaGuiMain SofaComponentMain)
+AddLinkerDependencies(SofaGuiMain SofaComponentMain Qwt SofaGuiQt)
+
+# SofaGuiCommon Qwt SofaBaseVisual SofaExporter SofaLoader SofaOpenglVisual SofaMiscForceField
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
 

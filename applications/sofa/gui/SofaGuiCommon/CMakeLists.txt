@@ -3,7 +3,7 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 set(HEADER_FILES
 
 	../BaseGUI.h
-    ../BaseViewer.h
+        ../BaseViewer.h
 	../BatchGUI.h
 	../ColourPickingVisitor.h
 	../MouseOperations.h
@@ -18,7 +18,7 @@ set(HEADER_FILES
 set(SOURCE_FILES
 
 	../BaseGUI.cpp
-    ../BaseViewer.cpp
+        ../BaseViewer.cpp
 	../BatchGUI.cpp
 	../ColourPickingVisitor.cpp
 	../FilesRecentlyOpenedManager.cpp
@@ -31,6 +31,7 @@ set(SOURCE_FILES
 set(GROUP_BASE_DIR "..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+
 
 AddCompilerDefinitions("SOFA_BUILD_SOFAGUI")
 AddLinkerDependencies(SofaComponentMain SofaGraphComponent SofaBaseCollision SofaUserInteraction SofaBaseVisual)

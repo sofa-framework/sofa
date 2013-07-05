@@ -54,8 +54,8 @@ set(README_FILES
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
-AddCompilerDefinitions("SOFA_BUILD_QTOGREVIEWERPLUGIN SOFA_GUI_QT")
-AddLinkerDependencies()
+AddCompilerDefinitions("SOFA_BUILD_QTOGREVIEWERPLUGIN")
+AddLinkerDependencies(SofaGuiQt)
 
 if(APPLE)
     AddLinkerDependencies("Ogre")
