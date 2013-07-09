@@ -41,7 +41,9 @@
 
 #include "BaseDeformationMapping.h"
 
-#include <omp.h>
+#ifdef USING_OMP_PRAGMAS
+    #include <omp.h>
+#endif
 
 #include <Eigen/Dense>
 

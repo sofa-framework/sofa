@@ -141,7 +141,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::init()
     }
 
     // check inputs
-    raImage im(this->image);    if( ! im->getCImgList().size() ) serr<<"IntensityProfileRegistrationForceField: Target data not found"<< endl;
+    raImage im(this->image);    if( im->isEmpty() ) serr<<"IntensityProfileRegistrationForceField: Target data not found"<< endl;
 
     usingThresholdFinding = false;
     if(edgeIntensityThreshold.getValue())
@@ -151,7 +151,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::init()
 
     if(!usingThresholdFinding)
     {
-        raImage rim(this->refImage),rp(this->refProfiles);    if( ! rim->getCImgList().size() && ! rp->getCImgList().size() ) serr<<"IntensityProfileRegistrationForceField: Reference data not found"<< endl;
+        raImage rim(this->refImage),rp(this->refProfiles);    if( rim->isEmpty() && rp->isEmpty() ) serr<<"IntensityProfileRegistrationForceField: Reference data not found"<< endl;
     }
     this->udpateProfiles(true);
 
@@ -164,7 +164,7 @@ template<class DataTypes,class ImageTypes>
 void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateProfiles(bool ref)
 {
     raImage in(ref?this->refImage:this->image);
-    if( ! in->getCImgList().size() || !this->mstate)  return;
+    if( in->isEmpty() || !this->mstate)  return;
     raTransform inT(ref?this->refTransform:this->transform);
 
     // get current time modulo dimt
@@ -186,7 +186,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateProfile
     Vec<4,unsigned int> dims(sizes[0]+sizes[1]+1,nbpoints,1,img.spectrum());
 
     waImage out(ref?this->refProfiles:this->profiles);
-    if( ! out->getCImgList().size() )  out->getCImgList().push_back(CImg<T>());
+    if( out->isEmpty() )  out->getCImgList().push_back(CImg<T>());
     CImg<T> &prof = out->getCImg(0);    
 
     if(dims[0]!= (unsigned int)prof.width() || dims[1]!=(unsigned int)prof.height() || dims[2]!=(unsigned int)prof.depth()  || dims[3]!=(unsigned int)prof.spectrum())
@@ -212,8 +212,8 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateProfile
             for(unsigned int j=0;j<dims[0];j++)
             {
                 Coord Tp = inT->toImage(p);
-                if(Tp[0]<0 || Tp[1]<0 || Tp[2]<0 || Tp[0]>=img.width() || Tp[1]>=img.height() || Tp[2]>=img.depth()) for(unsigned int k=0;k<dims[3];k++) { prof(j,i,0,k) = OutValue; msk(j,i,0,k) = 1; }
-                else for(unsigned int k=0;k<dims[3];k++) prof(j,i,0,k) = img.atXYZ(round((double)Tp[0]),round((double)Tp[1]),round((double)Tp[2]),k);
+                if(!in->isInside(Tp[0],Tp[1],Tp[2])) for(unsigned int k=0;k<dims[3];k++) { prof(j,i,0,k) = OutValue; msk(j,i,0,k) = 1; }
+                else for(unsigned int k=0;k<dims[3];k++) prof(j,i,0,k) = img.atXYZ(sofa::helper::round((double)Tp[0]),sofa::helper::round((double)Tp[1]),sofa::helper::round((double)Tp[2]),k);
                 p+=dp;
             }
         }
@@ -230,7 +230,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateProfile
             for(unsigned int j=0;j<dims[0];j++)
             {
                 Coord Tp = inT->toImage(p);
-                if(Tp[0]<0 || Tp[1]<0 || Tp[2]<0 || Tp[0]>=img.width() || Tp[1]>=img.height() || Tp[2]>=img.depth()) for(unsigned int k=0;k<dims[3];k++) { prof(j,i,0,k) = OutValue; msk(j,i,0,k) = 1; }
+                if(!in->isInside(Tp[0],Tp[1],Tp[2])) for(unsigned int k=0;k<dims[3];k++) { prof(j,i,0,k) = OutValue; msk(j,i,0,k) = 1; }
                 else for(unsigned int k=0;k<dims[3];k++) prof(j,i,0,k) = img.linear_atXYZ(Tp[0],Tp[1],Tp[2],k,OutValue);
                 p+=dp;
             }
@@ -248,7 +248,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateProfile
             for(unsigned int j=0;j<dims[0];j++)
             {
                 Coord Tp = inT->toImage(p);
-                if(Tp[0]<0 || Tp[1]<0 || Tp[2]<0 || Tp[0]>=img.width() || Tp[1]>=img.height() || Tp[2]>=img.depth()) for(unsigned int k=0;k<dims[3];k++) { prof(j,i,0,k) = OutValue; msk(j,i,0,k) = 1; }
+                if(!in->isInside(Tp[0],Tp[1],Tp[2])) for(unsigned int k=0;k<dims[3];k++) { prof(j,i,0,k) = OutValue; msk(j,i,0,k) = 1; }
                 else for(unsigned int k=0;k<dims[3];k++) prof(j,i,0,k) = img.cubic_atXYZ(Tp[0],Tp[1],Tp[2],k,OutValue,cimg::type<T>::min(),cimg::type<T>::max());
                 p+=dp;
             }
@@ -263,7 +263,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateSimilar
     raImage IPref(this->refProfiles);
     raImage IP(this->profiles);
 
-    if( ! IP->getCImgList().size() || ! IPref->getCImgList().size() || !this->mstate)  return;
+    if( IP->isEmpty() || IPref->isEmpty() || !this->mstate)  return;
 
     const VecCoord& pos = *this->mstate->getX();
     const CImg<T>& prof = IP->getCImg(0);
@@ -274,7 +274,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateSimilar
     Vec<4,unsigned int> dims(2*searchRange.getValue()+1,nbpoints,1,1);
 
     waSimilarity out(this->similarity);
-    if( ! out->getCImgList().size() )  out->getCImgList().push_back(CImg<Ts>());
+    if( out->isEmpty() )  out->getCImgList().push_back(CImg<Ts>());
     CImg<Ts> &simi = out->getCImg(0);
 
     if(dims[0]!= (unsigned int)simi.width() || dims[1]!=(unsigned int)simi.height() || dims[2]!=(unsigned int)simi.depth()  || dims[3]!=(unsigned int)simi.spectrum())
@@ -463,7 +463,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::addForce(cons
         else
         {
             raSimilarity out(this->similarity);
-            if( ! out->getCImgList().size())  return;
+            if( out->isEmpty())  return;
             const CImg<Ts> &simi = out->getCImg(0);
 
             int L=(int)searchRange.getValue();

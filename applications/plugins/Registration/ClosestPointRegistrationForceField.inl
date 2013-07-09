@@ -34,7 +34,11 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <iostream>
 #include <map>
-#include <omp.h>
+
+#ifdef USING_OMP_PRAGMAS
+    #include <omp.h>
+#endif
+
 #include <sofa/component/loader/MeshObjLoader.h>
 #include <sofa/component/engine/NormalsFromPoints.h>
 #include <limits>

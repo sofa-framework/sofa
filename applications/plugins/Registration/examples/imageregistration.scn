@@ -32,9 +32,8 @@
 		refImage="@rimage.image" refTransform="@rimage.transform"
                 directions="@NormalsFromPoints.normals"
                 stiffness="1" damping="0" threshold="0.5" step="0.02" sizes="10 5" searchRange="5" measure="1"/>
-
-        <ImageViewer  name="view_prof"  image="@ipff.profiles" transform="1 0 0 0 0 0 .1 .01 .1 0 1 0"/>
         <ImageViewer  name="view_refprof"  image="@ipff.refProfiles" transform="5 0 0 0 0 0 .1 .01 .1 0 1 0"/>
+        <ImageViewer  name="view_prof"  image="@ipff.profiles" transform="1 0 0 0 0 0 .1 .01 .1 0 1 0"/>
         <ImageViewer template="ImageD" name="view_simi"  image="@ipff.similarity" transform="10 0 0 0 0 0 .1 .01 .1 0 1 0"/>
 
         <Node name="Visu">

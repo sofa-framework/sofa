@@ -35,7 +35,9 @@
 #include <set>
 #include <vector>
 
-#include <omp.h>
+#ifdef USING_OMP_PRAGMAS
+    #include <omp.h>
+#endif
 
 #ifdef Success
 #undef Success // dirty workaround to cope with the (dirtier) X11 define. See http://eigen.tuxfamily.org/bz/show_bug.cgi?id=253
