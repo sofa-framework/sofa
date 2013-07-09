@@ -301,7 +301,7 @@ struct VoronoiShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
         unsigned int nbref=This->f_nbRef.getValue();
 
         Coord voxelsize(inT->getScale());
-        Real pixelvol=dist[0]*voxelsize[1]*voxelsize[2];
+        Real pixelvol=voxelsize[0]*voxelsize[1]*voxelsize[2];
         Vec<3,Real> pixelsurf(voxelsize[1]*voxelsize[2],voxelsize[0]*voxelsize[2],voxelsize[0]*voxelsize[1]);
         unsigned int indexPt=This->f_position.getValue().size()+1; // voronoi index of points that will be added to compute NNI
 

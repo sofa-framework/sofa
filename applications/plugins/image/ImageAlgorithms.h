@@ -34,7 +34,9 @@
 #include <set>
 #include <vector>
 
-#include <omp.h>
+#ifdef USING_OMP_PRAGMAS
+    #include <omp.h>
+#endif
 
 using namespace cimg_library;
 

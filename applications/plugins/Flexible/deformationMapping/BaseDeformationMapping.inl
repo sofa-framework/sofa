@@ -30,7 +30,10 @@
 #include "../quadrature/BaseGaussPointSampler.h"
 #include <sofa/helper/gl/Color.h>
 
-#include <omp.h>
+#ifdef USING_OMP_PRAGMAS
+    #include <omp.h>
+#endif
+
 #include <limits>
 
 #include <Eigen/Core>

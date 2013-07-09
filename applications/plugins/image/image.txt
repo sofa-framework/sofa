@@ -7,6 +7,8 @@
 
 AUTHORS :
  - Benjamin Gilles
+ - Matthieu Nesme
+ - Brina Goyette
 
 
 

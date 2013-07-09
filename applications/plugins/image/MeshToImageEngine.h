@@ -39,7 +39,10 @@
 #include <sofa/defaulttype/Quat.h>
 #include <newmat/newmat.h>
 #include <newmat/newmatap.h>
-#include <omp.h>
+
+#ifdef USING_OMP_PRAGMAS
+    #include <omp.h>
+#endif
 
 namespace sofa
 {

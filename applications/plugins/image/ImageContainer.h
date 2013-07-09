@@ -106,10 +106,11 @@ struct ImageContainerSpecialization<defaulttype::IMAGELABEL_IMAGE>
         typename ImageContainer::waImage wimage(container->image);
         typename ImageContainer::waTransform wtransform(container->transform);
 
-         // read image
+        // read image
         //Load .inr.gz using ZLib
         if(fname.size() >= 3 && (fname.substr(fname.size()-7)==".inr.gz" || fname.substr(fname.size()-4)==".inr") )
         {
+#ifdef SOFA_HAVE_ZLIB
             float voxsize[3];
             float translation[3]={0.,0.,0.}, rotation[3]={0.,0.,0.};
             CImg<T> img = _load_gz_inr<T>(NULL, fname.c_str(), voxsize, translation, rotation);
@@ -128,9 +129,10 @@ struct ImageContainerSpecialization<defaulttype::IMAGELABEL_IMAGE>
                 wtransform->getRotation()[1]=asin(2*(q[3]*q[1]-q[2]*q[0])) * (Real)180.0 / (Real)M_PI;
                 wtransform->getRotation()[2]=atan2(2*(q[3]*q[2]+q[0]*q[1]),1-2*(q[1]*q[1]+q[2]*q[2])) * (Real)180.0 / (Real)M_PI;
             }
-//			Real t0 = wtransform->getRotation()[0];
-//			Real t1 = wtransform->getRotation()[1];
-//			Real t2 = wtransform->getRotation()[2];
+            //			Real t0 = wtransform->getRotation()[0];
+            //			Real t1 = wtransform->getRotation()[1];
+            //			Real t2 = wtransform->getRotation()[2];
+#endif
 
         }
         else if(fname.find(".mhd")!=std::string::npos || fname.find(".MHD")!=std::string::npos || fname.find(".Mhd")!=std::string::npos
@@ -198,39 +200,39 @@ struct ImageContainerSpecialization<defaulttype::IMAGELABEL_IMAGE>
         return true;
     }
 
-//    template<class ImageContainer>
-//    static bool load( ImageContainer* container, std::FILE* const file, std::string fname)
-//    {
-//        typedef typename ImageContainer::T T;
-//        typedef typename ImageContainer::Real Real;
+    //    template<class ImageContainer>
+    //    static bool load( ImageContainer* container, std::FILE* const file, std::string fname)
+    //    {
+    //        typedef typename ImageContainer::T T;
+    //        typedef typename ImageContainer::Real Real;
 
-//        typename ImageContainer::waImage wimage(container->image);
-//        typename ImageContainer::waTransform wtransform(container->transform);
+    //        typename ImageContainer::waImage wimage(container->image);
+    //        typename ImageContainer::waTransform wtransform(container->transform);
 
-//        if(fname.find(".cimg")!=std::string::npos || fname.find(".CIMG")!=std::string::npos || fname.find(".Cimg")!=std::string::npos || fname.find(".CImg")!=std::string::npos)
-//            wimage->getCImgList().load_cimg(file);
-//        else if (fname.find(".hdr")!=std::string::npos || fname.find(".nii")!=std::string::npos)
-//        {
-//            float voxsize[3];
-//            wimage->getCImgList().push_back(CImg<T>().load_analyze(file,voxsize));
-//            for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)voxsize[i];
-//        }
-//        else if (fname.find(".inr")!=std::string::npos)
-//        {
-//            float voxsize[3];
-//            wimage->getCImgList().push_back(CImg<T>().load_inr(file,voxsize));
-//            for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)voxsize[i];
-//        }
-//        else
-//        {
-//            container->serr << "Error (ImageContainer): Compression is not supported for container filetype: " << fname << container->sendl;
-//        }
+    //        if(fname.find(".cimg")!=std::string::npos || fname.find(".CIMG")!=std::string::npos || fname.find(".Cimg")!=std::string::npos || fname.find(".CImg")!=std::string::npos)
+    //            wimage->getCImgList().load_cimg(file);
+    //        else if (fname.find(".hdr")!=std::string::npos || fname.find(".nii")!=std::string::npos)
+    //        {
+    //            float voxsize[3];
+    //            wimage->getCImgList().push_back(CImg<T>().load_analyze(file,voxsize));
+    //            for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)voxsize[i];
+    //        }
+    //        else if (fname.find(".inr")!=std::string::npos)
+    //        {
+    //            float voxsize[3];
+    //            wimage->getCImgList().push_back(CImg<T>().load_inr(file,voxsize));
+    //            for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)voxsize[i];
+    //        }
+    //        else
+    //        {
+    //            container->serr << "Error (ImageContainer): Compression is not supported for container filetype: " << fname << container->sendl;
+    //        }
 
-//        if(wimage->getCImg()) container->sout << "Loaded image " << fname <<" ("<< wimage->getCImg().pixel_type() <<")"  << container->sendl;
-//        else return false;
+    //        if(wimage->getCImg()) container->sout << "Loaded image " << fname <<" ("<< wimage->getCImg().pixel_type() <<")"  << container->sendl;
+    //        else return false;
 
-//        return true;
-//    }
+    //        return true;
+    //    }
 
     template<class ImageContainer>
     static bool loadCamera( ImageContainer* container )
@@ -243,9 +245,9 @@ struct ImageContainerSpecialization<defaulttype::IMAGELABEL_IMAGE>
 #ifdef cimg_use_opencv
         typename ImageContainer::waImage wimage(container->image);
         if(wimage->isEmpty() wimage->getCImgList().push_back(CImg<T>().load_camera());
-        else wimage->getCImgList()[0].load_camera();
-        if(!wimage->isEmpty())  return true;  else return false;
-#else
+                else wimage->getCImgList()[0].load_camera();
+                if(!wimage->isEmpty())  return true;  else return false;
+        #else
         return false;
 #endif
     }
@@ -277,7 +279,7 @@ struct ImageContainerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
         typedef typename ImageContainer::Real Real;
 
         if( fname.find(".mhd")!=std::string::npos || fname.find(".MHD")!=std::string::npos || fname.find(".Mhd")!=std::string::npos
-              || fname.find(".bia")!=std::string::npos || fname.find(".BIA")!=std::string::npos || fname.find(".Bia")!=std::string::npos)
+                || fname.find(".bia")!=std::string::npos || fname.find(".BIA")!=std::string::npos || fname.find(".Bia")!=std::string::npos)
         {
             if(fname.find(".bia")!=std::string::npos || fname.find(".BIA")!=std::string::npos || fname.find(".Bia")!=std::string::npos)      fname.replace(fname.find_last_of('.')+1,fname.size(),"mhd");
 
@@ -309,10 +311,10 @@ struct ImageContainerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
         return false;
     }
 
-//    template<class ImageContainer>
-//    static bool load( ImageContainer* container, std::FILE* const file, std::string fname)
-//    {
-//    }
+    //    template<class ImageContainer>
+    //    static bool load( ImageContainer* container, std::FILE* const file, std::string fname)
+    //    {
+    //    }
 
     template<class ImageContainer>
     static bool loadCamera( ImageContainer* )
@@ -434,49 +436,49 @@ public:
 
 protected:
 
-	Mat<3,3,Real> RotVec3DToRotMat3D(float *rotVec)
-	{
-		Mat<3,3,Real> rotMatrix;
-		float c, s, k1, k2;
-		float TH_TINY = 0.00001;
+    Mat<3,3,Real> RotVec3DToRotMat3D(float *rotVec)
+    {
+        Mat<3,3,Real> rotMatrix;
+        float c, s, k1, k2;
+        float TH_TINY = 0.00001;
 
-	    float theta2 =  rotVec[0]*rotVec[0] + rotVec[1]*rotVec[1] + rotVec[2]*rotVec[2];
-	    float theta = sqrt( theta2 );
-	    if (theta > TH_TINY){
-			c = cos(theta);
-			s = sin(theta);
-			k1 = s / theta;
-			k2 = (1 - c) / theta2;
-		}
-		else {  // Taylor expension around theta = 0
-			k2 = 1.0/2.0 - theta2/24.0;
-			c = 1.0 - theta2*k2;
-			k1 = 1.0 - theta2/6;
-		}
+        float theta2 =  rotVec[0]*rotVec[0] + rotVec[1]*rotVec[1] + rotVec[2]*rotVec[2];
+        float theta = sqrt( theta2 );
+        if (theta > TH_TINY){
+            c = cos(theta);
+            s = sin(theta);
+            k1 = s / theta;
+            k2 = (1 - c) / theta2;
+        }
+        else {  // Taylor expension around theta = 0
+            k2 = 1.0/2.0 - theta2/24.0;
+            c = 1.0 - theta2*k2;
+            k1 = 1.0 - theta2/6;
+        }
 
-	   /* I + M*Mt */
-		for (int i = 0; i < 3; i++)
-		{
-			for (int j = 0; j <= i; j++){
-				rotMatrix(i,j) = k2 * rotVec[i] * rotVec[j] ;
-				if (i != j)
-					rotMatrix(j,i) = rotMatrix(i,j);
-				else
-					rotMatrix(i,i) = rotMatrix(i,i) + c ;
-		     }
-		}
-	   double aux = k1 * rotVec[2];
-	   rotMatrix(0,1) = rotMatrix(0,1) - aux;
-	   rotMatrix(1,0) = rotMatrix(1,0) + aux;
-	   aux = k1 * rotVec[1];
-	   rotMatrix(0,2) = rotMatrix(0,2) + aux;
-	   rotMatrix(2,0) = rotMatrix(2,0) - aux;
-	   aux = k1 * rotVec[0];
-	   rotMatrix(1,2) = rotMatrix(1,2) - aux;
-	   rotMatrix(2,1) = rotMatrix(2,1) + aux;
+        /* I + M*Mt */
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j <= i; j++){
+                rotMatrix(i,j) = k2 * rotVec[i] * rotVec[j] ;
+                if (i != j)
+                    rotMatrix(j,i) = rotMatrix(i,j);
+                else
+                    rotMatrix(i,i) = rotMatrix(i,i) + c ;
+            }
+        }
+        double aux = k1 * rotVec[2];
+        rotMatrix(0,1) = rotMatrix(0,1) - aux;
+        rotMatrix(1,0) = rotMatrix(1,0) + aux;
+        aux = k1 * rotVec[1];
+        rotMatrix(0,2) = rotMatrix(0,2) + aux;
+        rotMatrix(2,0) = rotMatrix(2,0) - aux;
+        aux = k1 * rotVec[0];
+        rotMatrix(1,2) = rotMatrix(1,2) - aux;
+        rotMatrix(2,1) = rotMatrix(2,1) + aux;
 
-	   return rotMatrix;
-	}
+        return rotMatrix;
+    }
 
     bool load()
     {
@@ -501,10 +503,10 @@ protected:
         return ImageContainerSpecialization<ImageTypes::label>::load( this, fname );
     }
 
-//    bool load(std::FILE* const file, std::string fname)
-//    {
-//       return ImageContainerSpecialization<ImageTypes::label>::load( this, file, fname );
-//    }
+    //    bool load(std::FILE* const file, std::string fname)
+    //    {
+    //       return ImageContainerSpecialization<ImageTypes::label>::load( this, file, fname );
+    //    }
 
     bool loadCamera()
     {

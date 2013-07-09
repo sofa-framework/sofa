@@ -34,7 +34,10 @@
 #include <sofa/helper/OptionsGroup.h>
 
 #include <sofa/component/component.h>
-#include <omp.h>
+
+#ifdef USING_OMP_PRAGMAS
+    #include <omp.h>
+#endif
 
 #define AVERAGE 0
 #define ORDER 1
