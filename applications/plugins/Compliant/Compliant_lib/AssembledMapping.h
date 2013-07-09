@@ -20,13 +20,13 @@ namespace sofa {
 				js_type js;
 			public:
 
-                SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE2(AssembledMapping,In,Out), SOFA_TEMPLATE2(core::Mapping,In,Out));
+				SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE2(AssembledMapping,In,Out), SOFA_TEMPLATE2(core::Mapping,In,Out));
 	
 				// TODO make this final ?
 				void init() {
 					js.resize(1);
 					js[0] = &jacobian;
-					assemble( in_pos() );
+					// assemble( in_pos() );
 	  
 					typedef typename core::Mapping<In, Out> base; // fixes g++-4.4
 					base::init();
