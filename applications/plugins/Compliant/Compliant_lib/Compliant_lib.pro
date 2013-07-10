@@ -21,7 +21,7 @@ SOURCES = \
 		AssemblyVisitor.cpp \
 		AssembledSystem.cpp \
 		AssembledSolver.cpp \
-		PostStabilization.cpp \
+		Stabilization.cpp \
 
 HEADERS = \
     initCompliant.h \
@@ -41,7 +41,7 @@ HEADERS = \
 		AssemblyVisitor.h \
 		AssembledSystem.h \
 		AssembledSolver.h \
-		PostStabilization.h \
+		Stabilization.h \
     utils/*.h
 
 
