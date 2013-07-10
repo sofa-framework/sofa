@@ -26,7 +26,7 @@
 #define INTENSITYPROFILEREGISTRATIONFORCEFIELD_H
 
 #include "initRegistration.h"
-#include "ImageTypes.h"
+#include <image/ImageTypes.h>
 
 #include <sofa/core/core.h>
 #include <sofa/core/behavior/BaseForceField.h>
