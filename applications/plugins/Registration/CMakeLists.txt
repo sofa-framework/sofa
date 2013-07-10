@@ -27,13 +27,15 @@ set(SOURCE_FILES
 
 	)
 	
-if(SOFA_HAVE_IMAGE)
+if(SOFA-PLUGIN_IMAGE)
     
     list(APPEND HEADER_FILES "IntensityProfileRegistrationForceField.h")
     list(APPEND HEADER_FILES "IntensityProfileRegistrationForceField.inl")
     list(APPEND SOURCE_FILES "IntensityProfileRegistrationForceField.cpp")
     
-endif()	
+    include_directories("${SOFA_EXTLIBS_DIR}")
+    include_directories("${SOFA_APPLICATIONS_PLUGINS_DIR}")
+endif()
 
 set(README_FILES
 
