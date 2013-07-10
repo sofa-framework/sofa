@@ -390,23 +390,89 @@ bool DAGNode::hasAncestor(const BaseContext* context) const
 /// This method bypass the actionScheduler of this node if any.
 void DAGNode::doExecuteVisitor(simulation::Visitor* action)
 {
-    // TODO
-    // construire un sous-graphe de parcours du graphe et un "itérateur" pour cette liste
-    // pour chaque noeud "prune" on continue à parcourir quand même juste pour marquer le noeud comme parcouru
     // on ne passe à un enfant que si tous ses parents ont été visités
     // un enfant n'est pruné que si tous ses parents le sont
-    // NE PAS stocker les infos de parcours dans le DAGNode, plusieurs visiteurs pouvant parcourir le graphe simultanément
+    // pour chaque noeud "prune" on continue à parcourir quand même juste pour marquer le noeud comme parcouru (mais on n'execute rien)
 
-    DAGSubGraphNode* subGraph = createSubGraphDownward(NULL);
-    DAGSubGraphNode::Nodes visitedNodes;
-    subGraph->executeVisitorTopDown(action,&visitedNodes);
-    while (!visitedNodes.empty())
+    // NE PAS stocker les infos de parcours dans le DAGNode, plusieurs visiteurs pouvant parcourir le graphe simultanément (ici dans une map par visiteur)
+
+    StatusMap statusMap;
+    NodeList executedNodes;
+
+    executeVisitorTopDown( action, executedNodes, statusMap, true );
+
+    while ( !executedNodes.empty() )
     {
-        visitedNodes.back()->executeVisitorBottomUp(action);
-        visitedNodes.pop_back();
+        action->processNodeBottomUp( executedNodes.back() );
+        executedNodes.pop_back();
     }
 
-    delete subGraph;
+}
+
+
+void DAGNode::executeVisitorTopDown(simulation::Visitor* action, NodeList& executedNodes, StatusMap& statusMap, bool root )
+{
+
+    if (statusMap[this]!=NOT_VISITED)
+    {
+//        std::cout << "...skipped (already visited)" << std::endl;
+        return; // skipped (already visited)
+    }
+
+
+    // pour chaque noeud "prune" on continue à parcourir quand même juste pour marquer le noeud comme parcouru
+
+    // check du "visitedStatus" des parents:
+    // un enfant n'est pruné que si tous ses parents le sont
+    // on ne passe à un enfant que si tous ses parents ont été visités
+    bool allParentsPruned = true;
+    bool hasParent = false;
+
+    if( !root )
+    {
+        const LinkParents::Container &parents = l_parents.getValue();
+        for ( unsigned int i = 0; i < parents.size() ; i++ )
+        {
+            if ( parents[i] )
+            {
+                if ( statusMap[parents[i]] == NOT_VISITED ) return; // skipped for now... the other parent should come latter
+
+                /// @WARNING @TODO if the visitor is run from a sub-graph containing a multinode linked with a node outside of the subgraph, it will never come-back there
+                /// it could be forbidden to run a visitor in this configuration and the user should know it? Otherwise how to manage it?
+
+                allParentsPruned = allParentsPruned && ( statusMap[parents[i]] == PRUNED );
+                hasParent = true;
+            }
+        }
+    }
+
+    // all parents have been visited, let's go with the visitor
+    if ( allParentsPruned && hasParent )
+    {
+        // do not execute the visitor on this node
+        statusMap[this] = PRUNED;
+//        std::cout << "...pruned (all parents pruned)" << std::endl;
+        // ... but continue the recursion anyway!
+        for(unsigned int i = 0; i<child.size(); ++i)
+            static_cast<DAGNode*>(child[i].get())->executeVisitorTopDown(action,executedNodes,statusMap);
+    }
+    else
+    {
+        // execute the visitor on this node
+        Visitor::Result result = action->processNodeTopDown(this);
+
+        // update status
+        statusMap[this] = ( result == simulation::Visitor::RESULT_PRUNE ? PRUNED : VISITED );
+
+        executedNodes.push_back(this);
+
+        // ... and continue the recursion
+        for(unsigned int i = 0; i<child.size(); ++i)
+            static_cast<DAGNode*>(child[i].get())->executeVisitorTopDown(action,executedNodes,statusMap);
+    }
+
+
+
 }
 
 
@@ -467,25 +533,25 @@ void DAGNode::updateSimulationContext()
     simulation::Node::updateSimulationContext();
 }
 
-/// build a subgraph of DAGSubGraphNode objects
-DAGSubGraphNode* DAGNode::createSubGraphDownward(DAGSubGraphNode *parent)
-{
-//    std::cout << "DAGNode::createSubGraphDownward " << getName() << std::endl;
+///// build a subgraph of DAGSubGraphNode objects
+//DAGSubGraphNode* DAGNode::createSubGraphDownward(DAGSubGraphNode *parent)
+//{
+////    std::cout << "DAGNode::createSubGraphDownward " << getName() << std::endl;
 
-    DAGSubGraphNode *node = new DAGSubGraphNode(this);
-    if (parent) parent->addChild(node);
-    for (ChildIterator it = child.begin(); it!=child.end(); it++)
-    {
-        DAGSubGraphNode *childSubGraphNode = node->getRoot()->findNode(dynamic_cast<DAGNode*>(it->get()),DAGSubGraphNode::downward);
-        // create child, or multi-map it ?
-        if (!childSubGraphNode)
-            dynamic_cast<DAGNode*>(it->get())->createSubGraphDownward(node);
-        else
-            node->addChild(childSubGraphNode);
-    }
-    return node;
+//    DAGSubGraphNode *node = new DAGSubGraphNode(this);
+//    if (parent) parent->addChild(node);
+//    for (ChildIterator it = child.begin(); it!=child.end(); it++)
+//    {
+//        DAGSubGraphNode *childSubGraphNode = node->getRoot()->findNode(dynamic_cast<DAGNode*>(it->get()),DAGSubGraphNode::downward);
+//        // create child, or multi-map it ?
+//        if (!childSubGraphNode)
+//            dynamic_cast<DAGNode*>(it->get())->createSubGraphDownward(node);
+//        else
+//            node->addChild(childSubGraphNode);
+//    }
+//    return node;
 
-}
+//}
 
 
 
