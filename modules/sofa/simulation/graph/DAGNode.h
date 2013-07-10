@@ -163,17 +163,21 @@ protected:
 
     /// all child nodes (unordered)
     std::set<DAGNode*> _descendancy;
-    /// add @node to ancestor's descendancy until root
-    void addToAncestorDescendancy( DAGNode* node );
-    /// remove @node to ancestor's descendancy until root
-    void removeToAncestorDescendancy( DAGNode* node );
 
-    // update the ancestor descendancy
+    /// bottom-up traversal removing descendancy
+    void setDirtyDescendancy();
+
+    /// traversal updating the descendancy
+    void updateDescendancy();
+
+
+    // need to update the ancestor descendancy
     virtual void notifyAddChild(Node::SPtr node);
-    // update the ancestor descendancy
+    // need to update the ancestor descendancy
     virtual void notifyRemoveChild(Node::SPtr node);
-    // update the ancestor descendancy
+    // need to update the ancestor descendancy
     virtual void notifyMoveChild(Node::SPtr node, Node* prev);
+
 
 
     /// traversal flags
@@ -207,8 +211,8 @@ protected:
     /// @internal performing only the top-down traversal on a DAG
     /// @executedNodes will be fill with the DAGNodes where the top-down action is processed
     /// @statusMap the visitor's flag map
-    /// @root node from where the visitor has been run
-    void executeVisitorTopDown(simulation::Visitor* action, NodeList& executedNodes, StatusMap& statusMap, DAGNode* root );
+    /// @visitorRoot node from where the visitor has been run
+    void executeVisitorTopDown(simulation::Visitor* action, NodeList& executedNodes, StatusMap& statusMap, DAGNode* visitorRoot );
 
     /// @}
 

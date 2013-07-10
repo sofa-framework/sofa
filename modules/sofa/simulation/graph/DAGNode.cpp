@@ -36,6 +36,9 @@ namespace simulation
 namespace graph
 {
 
+
+
+
 DAGNode::DAGNode(const std::string& name, DAGNode* parent)
     : simulation::Node(name)
     , l_parents(initLink("parents", "Parents nodes in the graph"))
@@ -132,21 +135,19 @@ void DAGNode::detachFromGraph()
 
 void DAGNode::notifyAddChild(Node::SPtr node)
 {
-    addToAncestorDescendancy( static_cast<DAGNode*>(node.get()) );
+    setDirtyDescendancy();
     Node::notifyAddChild(node);
 }
 
 void DAGNode::notifyRemoveChild(Node::SPtr node)
 {
-    removeToAncestorDescendancy( static_cast<DAGNode*>(node.get()) );
+    setDirtyDescendancy();
     Node::notifyRemoveChild(node);
 }
 
 void DAGNode::notifyMoveChild(Node::SPtr node, Node* prev)
 {
-    DAGNode* dagnode = static_cast<DAGNode*>(node.get());
-    static_cast<DAGNode*>(prev)->removeToAncestorDescendancy( dagnode );
-    addToAncestorDescendancy( dagnode );
+    setDirtyDescendancy();
     Node::notifyMoveChild(node,prev);
 }
 
@@ -440,10 +441,9 @@ void DAGNode::doExecuteVisitor(simulation::Visitor* action)
 }
 
 
-void DAGNode::executeVisitorTopDown(simulation::Visitor* action, NodeList& executedNodes, StatusMap& statusMap, DAGNode* root )
+void DAGNode::executeVisitorTopDown(simulation::Visitor* action, NodeList& executedNodes, StatusMap& statusMap, DAGNode* visitorRoot )
 {
-
-    if (statusMap[this]!=NOT_VISITED)
+    if ( statusMap[this] != NOT_VISITED )
     {
 //        std::cout << "...skipped (already visited)" << std::endl;
         return; // skipped (already visited)
@@ -458,15 +458,18 @@ void DAGNode::executeVisitorTopDown(simulation::Visitor* action, NodeList& execu
     bool allParentsPruned = true;
     bool hasParent = false;
 
-    if( root != this )
+    if( visitorRoot != this )
     {
+        // the graph structure is generally modified during an action anterior to the traversal but can possibly be modified during the current traversal
+        visitorRoot->updateDescendancy();
+
         const LinkParents::Container &parents = l_parents.getValue();
         for ( unsigned int i = 0; i < parents.size() ; i++ )
         {
             if ( parents[i] )
             {
                 // if the visitor is run from a sub-graph containing a multinode linked with a node outside of the subgraph, do not consider the outside node by looking on the sub-graph descendancy
-                if ( root->_descendancy.find(parents[i])!=root->_descendancy.end() && statusMap[parents[i]] == NOT_VISITED ) return; // skipped for now... the other parent should come latter
+                if ( visitorRoot->_descendancy.find(parents[i])!=visitorRoot->_descendancy.end() && statusMap[parents[i]] == NOT_VISITED ) return; // skipped for now... the other parent should come latter
 
                 allParentsPruned = allParentsPruned && ( statusMap[parents[i]] == PRUNED );
                 hasParent = true;
@@ -482,7 +485,7 @@ void DAGNode::executeVisitorTopDown(simulation::Visitor* action, NodeList& execu
 //        std::cout << "...pruned (all parents pruned)" << std::endl;
         // ... but continue the recursion anyway!
         for(unsigned int i = 0; i<child.size(); ++i)
-            static_cast<DAGNode*>(child[i].get())->executeVisitorTopDown(action,executedNodes,statusMap,root);
+            static_cast<DAGNode*>(child[i].get())->executeVisitorTopDown(action,executedNodes,statusMap,visitorRoot);
     }
     else
     {
@@ -496,7 +499,7 @@ void DAGNode::executeVisitorTopDown(simulation::Visitor* action, NodeList& execu
 
         // ... and continue the recursion
         for(unsigned int i = 0; i<child.size(); ++i)
-            static_cast<DAGNode*>(child[i].get())->executeVisitorTopDown(action,executedNodes,statusMap,root);
+            static_cast<DAGNode*>(child[i].get())->executeVisitorTopDown(action,executedNodes,statusMap,visitorRoot);
     }
 
 
@@ -504,33 +507,26 @@ void DAGNode::executeVisitorTopDown(simulation::Visitor* action, NodeList& execu
 }
 
 
-
-
-
-void DAGNode::addToAncestorDescendancy( DAGNode* node )
+void DAGNode::setDirtyDescendancy()
 {
-    if( node != this ) _descendancy.insert( node );
-
+    _descendancy.clear();
     const LinkParents::Container &parents = l_parents.getValue();
     for ( unsigned int i = 0; i < parents.size() ; i++ )
     {
-        if ( parents[i] )
-        {
-            parents[i]->addToAncestorDescendancy( node );
-        }
+        if ( parents[i] ) parents[i]->setDirtyDescendancy();
     }
 }
 
-void DAGNode::removeToAncestorDescendancy( DAGNode* node )
+void DAGNode::updateDescendancy()
 {
-    if( node != this ) _descendancy.erase( node );
-
-    const LinkParents::Container &parents = l_parents.getValue();
-    for ( unsigned int i = 0; i < parents.size() ; i++ )
+    if( _descendancy.empty() && !child.empty() )
     {
-        if ( parents[i] )
+        for(unsigned int i = 0; i<child.size(); ++i)
         {
-            parents[i]->removeToAncestorDescendancy( node );
+            DAGNode* dagnode = static_cast<DAGNode*>(child[i].get());
+            dagnode->updateDescendancy();
+            _descendancy.insert( dagnode->_descendancy.begin(), dagnode->_descendancy.end() );
+            _descendancy.insert( dagnode );
         }
     }
 }
