@@ -21,7 +21,7 @@ set(HEADER_FILES
 	AssembledSystem.h
 	AssembledSolver.h
 	AssembledMapping.h
-	PostStabilization.h
+	Stabilization.h
 	
       utils/cast.h
       utils/cg.h
@@ -54,7 +54,7 @@ set(SOURCE_FILES
 	AssemblyVisitor.cpp
 	AssembledSystem.cpp
 	AssembledSolver.cpp
-	PostStabilization.cpp 
+	Stabilization.cpp 
 	)
 
 set(README_FILES

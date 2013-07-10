@@ -7,6 +7,7 @@
 #include <sofa/simulation/common/VectorOperations.h>
 
 #include "AssemblyVisitor.h"
+#include "Stabilization.h"
 
 #include "utils/minres.h"
 #include "utils/scoped.h"
@@ -35,7 +36,11 @@ AssembledSolver::AssembledSolver()
 	  propagate_lambdas(initData(&propagate_lambdas, 
 	                             false,
 	                             "propagate_lambdas",
-	                             "propagate Lagrange multipliers in force vector at the end of time step"))
+	                             "propagate Lagrange multipliers in force vector at the end of time step")),
+	  post_stabilization(initData(&post_stabilization, 
+	                             false,
+	                             "post_stabilization",
+	                             "apply a post-stabilization pass on kinematic constraints requesting it"))
 {
 	
 }
@@ -203,6 +208,40 @@ AssembledSolver::kkt_type::vec AssembledSolver::lambda(const system_type& sys,
 }
 
 
+AssembledSolver::kkt_type::vec AssembledSolver::stab_mask(const system_type& sys) const {
+	kkt_type::vec res;
+
+	if( !sys.n ) return res;
+	if( !post_stabilization.getValue() ) return res;
+
+	res = kkt_type::vec::Zero( sys.n );
+	
+	unsigned off = 0;
+
+	bool none = true;
+	
+	for(unsigned i = 0, n = sys.compliant.size(); i < n; ++i) {
+		
+		system_type::dofs_type* const dofs = sys.compliant[i];
+		unsigned dim = dofs->getMatrixSize();
+
+		Stabilization* post = dofs->getContext()->get<Stabilization>(core::objectmodel::BaseContext::Local);
+				
+		if( post ) {
+			res.segment( off, dim ).setOnes();
+			none = false;
+		}
+		
+		off += dim;
+	}
+	
+	// empty vec
+	if( none ) res.resize( 0 );
+	
+	return res;
+}
+
+
 struct propagate_visitor : simulation::MechanicalVisitor {
 
 	core::MultiVecDerivId out, in;
@@ -253,13 +292,42 @@ void AssembledSolver::solve(const core::ExecParams* params,
 	
 	// solution vector
 	system_type::vec x = warm( sys );
+
+	// stab mask
+	system_type::vec mask = stab_mask( sys );
 	
 	{
-		scoped::timer step("system solve");
+		scoped::timer step("system factor");
 		kkt->factor( sys );
-		kkt->solve(x, sys, rhs( sys ) );
 	}
-	 
+
+	{
+		scoped::timer step("system solve");
+	
+		system_type::vec b = rhs(sys);
+		
+		if( mask.size() ) {
+			scoped::timer step("stabilization");
+			assert( use_velocity.getValue() && "does not work on acceleration !");
+			
+			// stabilization
+			system_type::vec tmp_b = system_type::vec::Zero(sys.size());
+			tmp_b.tail( sys.n ) = b.tail(sys.n).array() * mask.array();
+			
+			system_type::vec tmp_x = system_type::vec::Zero( sys.size() );
+			
+			kkt->solve(tmp_x, sys, tmp_b);
+			vis.distribute_master( core::VecId::velocity(), velocity(sys, tmp_x) );
+			integrate( &mparams );
+			
+			// zero stabilized constraints
+			b.tail(sys.n).array() *= 1 - mask.array();
+		}
+		
+		kkt->solve(x, sys, b);
+	}
+	
+	
 	// distribute (projected) velocities
 	vis.distribute_master( core::VecId::velocity(), velocity(sys, x) );
 	
@@ -278,6 +346,8 @@ void AssembledSolver::solve(const core::ExecParams* params,
 	
 	// update positions TODO use xResult/vResult
 	integrate( &mparams );
+
+	
 }
 
 			

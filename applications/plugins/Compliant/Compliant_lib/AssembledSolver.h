@@ -64,7 +64,6 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
 	                                       double dt) const;
 				
 
-
 	// linear solver: TODO hide in pimpl ?
 	typedef linearsolver::KKTSolver kkt_type;
 	kkt_type::SPtr kkt;
@@ -81,9 +80,12 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
 
 	// constraint forces from system solution
 	virtual kkt_type::vec lambda(const system_type& sys, const kkt_type::vec& x) const;
+
+	// mask for constraints to be stabilized
+	kkt_type::vec stab_mask(const system_type& sys) const;
 	
 	// solve velocity dynamics ?
-	Data<bool> use_velocity, warm_start, propagate_lambdas;
+	Data<bool> use_velocity, warm_start, propagate_lambdas, post_stabilization;
 
 	// this is for warm start and returning constraint forces
 	core::behavior::MultiVecDeriv lagrange;
