@@ -2,7 +2,7 @@
 <Node 	name="root" gravity="0 0 0" dt=".1"  >
 
 <RequiredPlugin name="Flexible" pluginName="Flexible" />
-<RequiredPlugin name="Image" pluginName="sofaimage" />
+<RequiredPlugin name="Image" pluginName="image" />
 
     <EulerImplicitSolver />
     <CGLinearSolver iterations="25"/>

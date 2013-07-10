@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <Node name="Scene" gravity="0 0 0" dt="1" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0">
-	<RequiredPlugin name="Registration" pluginName="sofaRegistration" />
+	<RequiredPlugin name="Registration" pluginName="Registration" />
 
 	<CollisionPipeline verbose="0" draw="1" depth="1"/>
 	<BruteForceDetection name="N2" draw="1"/>

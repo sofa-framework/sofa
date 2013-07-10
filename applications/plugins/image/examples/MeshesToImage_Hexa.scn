@@ -2,7 +2,7 @@
 <Node 	name="root" gravity="0 0 0" dt=".1"  >
 
 <RequiredPlugin name="Flexible" pluginName="Flexible" />
-<RequiredPlugin name="Image" pluginName="sofaimage" />
+  <RequiredPlugin pluginName="image"/>
 
   <VisualStyle displayFlags="showVisual" />
   <MeshObjLoader name="mesh1" filename="mesh/bubille_in1.obj" triangulate="1"/>

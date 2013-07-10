@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node 	name="root" gravity="0 0 0" dt="1"  >
+  <RequiredPlugin pluginName="image"/>
   <ImageContainer  name="image"  transform="0 0 0 0 0 0 0.1 0.1 100 0 1 1"  filename="data/depth0014-scale.bmp" />
   <ImageViewer  name="viewer"  src="@image" />
   <ImageFilter name="filter" filter="7"  param="512 512 1 1"  src="@image" />
