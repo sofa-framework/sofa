@@ -76,7 +76,7 @@ void DAGNode::doRemoveChild(DAGNode::SPtr node)
 void DAGNode::addChild(core::objectmodel::BaseNode::SPtr node)
 {
 //    printf("DAGNode::addChild this=%s child=%s\n",getName().c_str(),node->getName().c_str());
-    DAGNode::SPtr dagnode = sofa::core::objectmodel::SPtr_dynamic_cast<DAGNode>(node);
+    DAGNode::SPtr dagnode = sofa::core::objectmodel::SPtr_static_cast<DAGNode>(node);
     notifyAddChild(dagnode);
     doAddChild(dagnode);
 }
@@ -84,7 +84,7 @@ void DAGNode::addChild(core::objectmodel::BaseNode::SPtr node)
 /// Remove a child
 void DAGNode::removeChild(core::objectmodel::BaseNode::SPtr node)
 {
-    DAGNode::SPtr dagnode = sofa::core::objectmodel::SPtr_dynamic_cast<DAGNode>(node);
+    DAGNode::SPtr dagnode = sofa::core::objectmodel::SPtr_static_cast<DAGNode>(node);
     notifyRemoveChild(dagnode);
     doRemoveChild(dagnode);
 }
@@ -93,7 +93,7 @@ void DAGNode::removeChild(core::objectmodel::BaseNode::SPtr node)
 /// Move a node from another node
 void DAGNode::moveChild(BaseNode::SPtr node)
 {
-    DAGNode::SPtr dagnode = sofa::core::objectmodel::SPtr_dynamic_cast<DAGNode>(node);
+    DAGNode::SPtr dagnode = sofa::core::objectmodel::SPtr_static_cast<DAGNode>(node);
     if (!dagnode) return;
 
     core::objectmodel::BaseNode::Parents  nodeParents = dagnode->getParents();
@@ -105,7 +105,7 @@ void DAGNode::moveChild(BaseNode::SPtr node)
     {
         for (core::objectmodel::BaseNode::Parents::iterator it = nodeParents.begin(); it != nodeParents.end(); ++it)
         {
-            DAGNode *prev = dynamic_cast<DAGNode*>(*it);
+            DAGNode *prev = static_cast<DAGNode*>(*it);
             notifyMoveChild(dagnode,prev);
             prev->doRemoveChild(dagnode);
         }
@@ -124,6 +124,36 @@ void DAGNode::detachFromGraph()
         parents[i]->removeChild(this);
     }
 }
+
+
+
+
+
+
+void DAGNode::notifyAddChild(Node::SPtr node)
+{
+    addToAncestorDescendancy( static_cast<DAGNode*>(node.get()) );
+    Node::notifyAddChild(node);
+}
+
+void DAGNode::notifyRemoveChild(Node::SPtr node)
+{
+    removeToAncestorDescendancy( static_cast<DAGNode*>(node.get()) );
+    Node::notifyRemoveChild(node);
+}
+
+void DAGNode::notifyMoveChild(Node::SPtr node, Node* prev)
+{
+    DAGNode* dagnode = static_cast<DAGNode*>(node.get());
+    static_cast<DAGNode*>(prev)->removeToAncestorDescendancy( dagnode );
+    addToAncestorDescendancy( dagnode );
+    Node::notifyMoveChild(node,prev);
+}
+
+
+
+
+
 
 /// Generic object access, possibly searching up or down from the current context
 ///
@@ -399,7 +429,7 @@ void DAGNode::doExecuteVisitor(simulation::Visitor* action)
     StatusMap statusMap;
     NodeList executedNodes;
 
-    executeVisitorTopDown( action, executedNodes, statusMap, true );
+    executeVisitorTopDown( action, executedNodes, statusMap, this );
 
     while ( !executedNodes.empty() )
     {
@@ -410,7 +440,7 @@ void DAGNode::doExecuteVisitor(simulation::Visitor* action)
 }
 
 
-void DAGNode::executeVisitorTopDown(simulation::Visitor* action, NodeList& executedNodes, StatusMap& statusMap, bool root )
+void DAGNode::executeVisitorTopDown(simulation::Visitor* action, NodeList& executedNodes, StatusMap& statusMap, DAGNode* root )
 {
 
     if (statusMap[this]!=NOT_VISITED)
@@ -428,17 +458,15 @@ void DAGNode::executeVisitorTopDown(simulation::Visitor* action, NodeList& execu
     bool allParentsPruned = true;
     bool hasParent = false;
 
-    if( !root )
+    if( root != this )
     {
         const LinkParents::Container &parents = l_parents.getValue();
         for ( unsigned int i = 0; i < parents.size() ; i++ )
         {
             if ( parents[i] )
             {
-                if ( statusMap[parents[i]] == NOT_VISITED ) return; // skipped for now... the other parent should come latter
-
-                /// @WARNING @TODO if the visitor is run from a sub-graph containing a multinode linked with a node outside of the subgraph, it will never come-back there
-                /// it could be forbidden to run a visitor in this configuration and the user should know it? Otherwise how to manage it?
+                // if the visitor is run from a sub-graph containing a multinode linked with a node outside of the subgraph, do not consider the outside node by looking on the sub-graph descendancy
+                if ( root->_descendancy.find(parents[i])!=root->_descendancy.end() && statusMap[parents[i]] == NOT_VISITED ) return; // skipped for now... the other parent should come latter
 
                 allParentsPruned = allParentsPruned && ( statusMap[parents[i]] == PRUNED );
                 hasParent = true;
@@ -454,7 +482,7 @@ void DAGNode::executeVisitorTopDown(simulation::Visitor* action, NodeList& execu
 //        std::cout << "...pruned (all parents pruned)" << std::endl;
         // ... but continue the recursion anyway!
         for(unsigned int i = 0; i<child.size(); ++i)
-            static_cast<DAGNode*>(child[i].get())->executeVisitorTopDown(action,executedNodes,statusMap);
+            static_cast<DAGNode*>(child[i].get())->executeVisitorTopDown(action,executedNodes,statusMap,root);
     }
     else
     {
@@ -468,12 +496,45 @@ void DAGNode::executeVisitorTopDown(simulation::Visitor* action, NodeList& execu
 
         // ... and continue the recursion
         for(unsigned int i = 0; i<child.size(); ++i)
-            static_cast<DAGNode*>(child[i].get())->executeVisitorTopDown(action,executedNodes,statusMap);
+            static_cast<DAGNode*>(child[i].get())->executeVisitorTopDown(action,executedNodes,statusMap,root);
     }
 
 
 
 }
+
+
+
+
+
+void DAGNode::addToAncestorDescendancy( DAGNode* node )
+{
+    if( node != this ) _descendancy.insert( node );
+
+    const LinkParents::Container &parents = l_parents.getValue();
+    for ( unsigned int i = 0; i < parents.size() ; i++ )
+    {
+        if ( parents[i] )
+        {
+            parents[i]->addToAncestorDescendancy( node );
+        }
+    }
+}
+
+void DAGNode::removeToAncestorDescendancy( DAGNode* node )
+{
+    if( node != this ) _descendancy.erase( node );
+
+    const LinkParents::Container &parents = l_parents.getValue();
+    for ( unsigned int i = 0; i < parents.size() ; i++ )
+    {
+        if ( parents[i] )
+        {
+            parents[i]->removeToAncestorDescendancy( node );
+        }
+    }
+}
+
 
 
 /// Return the full path name of this node
@@ -533,25 +594,7 @@ void DAGNode::updateSimulationContext()
     simulation::Node::updateSimulationContext();
 }
 
-///// build a subgraph of DAGSubGraphNode objects
-//DAGSubGraphNode* DAGNode::createSubGraphDownward(DAGSubGraphNode *parent)
-//{
-////    std::cout << "DAGNode::createSubGraphDownward " << getName() << std::endl;
 
-//    DAGSubGraphNode *node = new DAGSubGraphNode(this);
-//    if (parent) parent->addChild(node);
-//    for (ChildIterator it = child.begin(); it!=child.end(); it++)
-//    {
-//        DAGSubGraphNode *childSubGraphNode = node->getRoot()->findNode(dynamic_cast<DAGNode*>(it->get()),DAGSubGraphNode::downward);
-//        // create child, or multi-map it ?
-//        if (!childSubGraphNode)
-//            dynamic_cast<DAGNode*>(it->get())->createSubGraphDownward(node);
-//        else
-//            node->addChild(childSubGraphNode);
-//    }
-//    return node;
-
-//}
 
 
 
