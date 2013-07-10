@@ -21,6 +21,7 @@ set(HEADER_FILES
 	AssembledSystem.h
 	AssembledSolver.h
 	AssembledMapping.h
+	PostStabilization.h
 	
       utils/cast.h
       utils/cg.h
@@ -46,7 +47,6 @@ set(SOURCE_FILES
     ComplianceSolver.cpp
 	DampingCompliance.cpp
 	RigidMass.cpp
-#	UnilateralMask.cpp
 	RigidJointMapping.cpp
 	AssembledRigidRigidMapping.cpp
 	LDLTSolver.cpp
@@ -54,6 +54,7 @@ set(SOURCE_FILES
 	AssemblyVisitor.cpp
 	AssembledSystem.cpp
 	AssembledSolver.cpp
+	PostStabilization.cpp 
 	)
 
 set(README_FILES
