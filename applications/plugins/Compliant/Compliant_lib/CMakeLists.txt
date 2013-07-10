@@ -20,6 +20,8 @@ set(HEADER_FILES
 	AssemblyVisitor.h
 	AssembledSystem.h
 	AssembledSolver.h
+	AssembledMapping.h
+	
       utils/cast.h
       utils/cg.h
       utils/find.h
