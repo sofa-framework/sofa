@@ -6,7 +6,6 @@ set(HEADER_FILES
 	DAGNode.h 
 	DAGNodeMultiMappingElement.h 
 	DAGSimulation.h 
-	DAGSubGraphNode.h
 	)
 
 set(SOURCE_FILES
@@ -14,7 +13,6 @@ set(SOURCE_FILES
 	DAGNode.cpp 
 	DAGNodeMultiMappingElement.cpp 
 	DAGSimulation.cpp 
-	DAGSubGraphNode.cpp
 	)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})

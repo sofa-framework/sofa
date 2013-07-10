@@ -30,9 +30,6 @@
 #include <sofa/core/objectmodel/Link.h>
 using namespace sofa::core::objectmodel;
 
-#include "DAGSubGraphNode.h"
-
-
 
 namespace sofa
 {
@@ -157,12 +154,48 @@ protected:
     /// Execute a recursive action starting from this node.
     /// This method bypass the actionScheduler of this node if any.
     void doExecuteVisitor(simulation::Visitor* action);
-    // VisitorScheduler can use doExecuteVisitor() method
-    friend class simulation::VisitorScheduler;
 
 
-    /// creates a subset of the graph, starting from this node
-    DAGSubGraphNode* createSubGraphDownward(DAGSubGraphNode *parent);
+
+    /// @name @internal stuff related to the DAG traversal
+    /// @{
+
+    /// traversal flags
+    typedef enum
+    {
+        NOT_VISITED=0,
+        VISITED,
+        PRUNED
+    } VisitedStatus;
+
+
+    /// wrapper to use VisitedStatus in a std::map (to ensure the default map insertion will give NOT_VISITED)
+    struct StatusStruct
+    {
+        StatusStruct() : status(NOT_VISITED) {}
+        StatusStruct( const VisitedStatus& s ) : status(s) {}
+        inline void operator=( const VisitedStatus& s ) { status=s; }
+        inline bool operator==( const VisitedStatus& s ) { return status==s; }
+        inline bool operator==( const StatusStruct& s ) { return status==s.status; }
+        inline bool operator!=( const VisitedStatus& s ) { return status!=s; }
+        inline bool operator!=( const StatusStruct& s ) { return status!=s.status; }
+        VisitedStatus status;
+    };
+
+    /// map structure to store a traversal flag for each DAGNode
+    typedef std::map<DAGNode*,StatusStruct> StatusMap;
+
+    /// list of DAGNode*
+    typedef std::list<DAGNode*> NodeList;
+
+    /// @internal performing only the top-down traversal on a DAG
+    /// @executedNodes will be fill with the DAGNodes where the top-down action is processed
+    /// @statusMap the visitor's flag map
+    /// @root is this the node from where the visitor has been run?
+    void executeVisitorTopDown(simulation::Visitor* action, NodeList& executedNodes, StatusMap& statusMap, bool root = false );
+
+    /// @}
+
 
 };
 
