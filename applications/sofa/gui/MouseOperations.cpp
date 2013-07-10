@@ -39,7 +39,7 @@
 #endif
 #include <sofa/component/collision/SuturePointPerformer.h>
 #ifdef SOFA_HAVE_ARPLUGIN
-#include "./../../../applications-dev/plugins/ARPlugin/AdaptativeAttachPerformer.h"
+#include "./../../../applications-dev/plugins/ARPlugin/ARPSAttachPerformer.h"
 #endif
 
 namespace sofa
