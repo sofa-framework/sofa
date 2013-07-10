@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <Node name="" gravity="0 -10 0" dt="0.02">
-    <VisualStyle displayFlags="showBehavior hideVisual showMechanicalMappings" />
+    <RequiredPlugin name="Flexible" pluginName="Flexible" />
+
+    <VisualStyle displayFlags="showBehavior showVisual hideMechanicalMappings" />
     <Node name="Cube grid" >
 <!--        <EulerImplicitSolver name="cg_odesolver" printLog="0" /> <CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25" tolerance="1e-6" />-->
         <ComplianceSolver verbose="0" implicitVelocity="1" implicitPosition="1" />
@@ -28,12 +30,12 @@
             <Node 	name="behavior"   >
                 <TopologyGaussPointSampler name="sampler" inPosition="@../../DOF.rest_position" showSamples="false"/>
                 <MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
-                <LinearMapping template="Mapping&lt;Vec3d,F331&gt;" name="linearMapping" assembleJ="true"/>
+                <LinearMapping template="Mapping&lt;Vec3d,F331&gt;" name="linearMapping" assemble="true"/>
 
                 <Node 	name="Strain"   >
                     <MechanicalObject  template="E331" name="E"  />
-                    <CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" assembleJ="true" method="large" name="corotstrainmap"/>
-                    <HookeForceField  template="E331" name="ff" youngModulus="4000" poissonRatio="0.3" viscosity="0" assembleK="true" assembleB="false"/>
+                    <CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" assemble="true" method="large" name="corotstrainmap"/>
+                    <HookeForceField  template="E331" name="ff" youngModulus="4000" poissonRatio="0.3" viscosity="0" assemble="true" />
                 </Node>
             </Node>
         </Node>
@@ -46,16 +48,25 @@
             <Node 	name="behavior"   >
                 <TopologyGaussPointSampler name="sampler" inPosition="@../../DOF.rest_position" showSamples="false" method="0" order="2"/>
                 <MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
-                <LinearMapping template="Mapping&lt;Vec3d,F331&gt;" name="linearMapping" assembleJ="true"/>
+                <LinearMapping template="Mapping&lt;Vec3d,F331&gt;" name="linearMapping" assemble="true"/>
 
                 <Node 	name="Strain"   >
                     <MechanicalObject  template="E331" name="E"  />
-                    <CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" assembleJ="true" method="large" name="corotstrainmap"/>
-                    <HookeForceField  template="E331" name="ff" youngModulus="4000" poissonRatio="0.3" viscosity="0" assembleK="true" assembleB="false"/>
+                    <CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" assemble="true" method="large" name="corotstrainmap"/>
+                    <HookeForceField  template="E331" name="ff" youngModulus="4000" poissonRatio="0.3" viscosity="0" assemble="true" />
                 </Node>
             </Node>
         </Node>
 
+ 	<Node name="VisuHexa"  >
+		<VisualModel color="0.8 0.8 1 0.3" />
+		<IdentityMapping />
+	</Node>
+ 	<Node name="VisuHexa2"  >
+		<VisualStyle displayFlags="showWireframe"/>
+		<VisualModel color="0.8 0.8 1 1" />
+		<IdentityMapping />
+	</Node>
 
     </Node>
 </Node>

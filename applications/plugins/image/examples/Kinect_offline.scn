@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node 	name="root" gravity="0 0 0" dt="0.02"  >
+  <RequiredPlugin pluginName="image"/>
   <ImageContainer template="ImageUS" name="depth"  filename="data/Kinect-depth.raw" />
   <ImageContainer  name="image"  filename="data/Kinect-rgb.raw" />
 

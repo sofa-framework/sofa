@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <Node name="Scene" gravity="0 0 0" dt="1"  >
-	<RequiredPlugin name="Registration" pluginName="sofaRegistration" />
+	<RequiredPlugin name="Registration" pluginName="Registration" />
 	
 	<VisualStyle displayFlags="showBehavior showVisual" />
 	

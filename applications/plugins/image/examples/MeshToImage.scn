@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node 	name="root" gravity="0 0 0" dt="1"  >
+  <RequiredPlugin pluginName="image"/>
   <VisualStyle displayFlags="showWireframe showVisual" />
   <MeshObjLoader name="mesh" filename="mesh/Armadillo_simplified.obj" triangulate="1"/>
   <OglModel name="mesh"  src="@mesh" color="0.5 0.5 1 .1"/> 
