@@ -28,6 +28,7 @@
 #include <sofa/core/CollisionModel.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/Simulation.h>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
@@ -39,6 +40,18 @@ namespace collision
 {
 
 using core::collision::Contact;
+
+
+SOFA_DECL_CLASS(DefaultCollisionGroupManager);
+
+int DefaultCollisionGroupManagerClass = core::RegisterObject("Responsible for gathering colliding objects in the same group, for consistent time integration")
+        .add< DefaultCollisionGroupManager >()
+        .addAlias( "CollisionGroupManager" )
+        .addAlias( "CollisionGroup" )
+        .addAlias( "TreeCollisionGroupManager" ) // for backward compatibility with old scene files but could be removed
+        ;
+
+
 
 
 DefaultCollisionGroupManager::DefaultCollisionGroupManager()
@@ -72,7 +85,7 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
             // same group, no new group necessary
             group = group1;
         }
-        else if (simulation::Node* parent=findCommonParent(group1,group2))
+        else if (simulation::Node* parent=group1->findCommonParent(group2))
         {
             // we can merge the groups
             // if solvers are compatible...
@@ -219,6 +232,20 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
     //if (!groups.empty())
     //	sout << groups.size()<<" collision groups created."<<sendl;
 }
+
+
+void DefaultCollisionGroupManager::clearGroups(core::objectmodel::BaseContext* /*scene*/)
+{
+    for (std::set<simulation::Node::SPtr>::iterator it = groupSet.begin(); it!=groupSet.end(); ++it)
+    {
+        if (*it) clearGroup( (*it)->getParents(), *it );
+    }
+
+    groupSet.clear();
+    groups.clear();
+}
+
+
 
 simulation::Node* DefaultCollisionGroupManager::getIntegrationNode(core::CollisionModel* model)
 {

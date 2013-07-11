@@ -52,15 +52,6 @@ Simulation* getSimulation()
 
 DAGSimulation::DAGSimulation()// : visualNode(NULL)
 {
-    //-------------------------------------------------------------------------------------------------------
-    sofa::core::ObjectFactory::AddAlias("DefaultCollisionGroupManager",
-            "TreeCollisionGroupManager", true, 0);
-
-    sofa::core::ObjectFactory::AddAlias("CollisionGroup",
-            "TreeCollisionGroupManager", true, 0);
-
-
-
     sofa::simulation::xml::BaseElement::NodeFactory::DuplicateEntry("GNodeMultiMapping","MultiMappingObject");
 }
 

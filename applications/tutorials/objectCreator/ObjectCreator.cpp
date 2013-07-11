@@ -41,7 +41,7 @@
 //Including components for collision detection
 #include <sofa/component/collision/DefaultPipeline.h>
 #include <sofa/component/collision/DefaultContactManager.h>
-#include <sofa/component/collision/TreeCollisionGroupManager.h>
+#include <sofa/component/collision/DefaultCollisionGroupManager.h>
 #include <sofa/component/collision/BruteForceDetection.h>
 #include <sofa/component/collision/MinProximityIntersection.h>
 
@@ -103,13 +103,10 @@ simulation::Node::SPtr SimpleObjectCreator::CreateRootWithCollisionPipeline(cons
     contactManager->setDefaultResponseType(responseType);
     root->addObject(contactManager);
 
-    if (simulationType == "tree")
-    {
-        //--> adding component to handle groups of collision.
-        component::collision::TreeCollisionGroupManager::SPtr collisionGroupManager = sofa::core::objectmodel::New<component::collision::TreeCollisionGroupManager>();
-        collisionGroupManager->setName("Collision Group Manager");
-        root->addObject(collisionGroupManager);
-    }
+    //--> adding component to handle groups of collision.
+    component::collision::DefaultCollisionGroupManager::SPtr collisionGroupManager = sofa::core::objectmodel::New<component::collision::DefaultCollisionGroupManager>();
+    collisionGroupManager->setName("Collision Group Manager");
+    root->addObject(collisionGroupManager);
 
     return root;
 }

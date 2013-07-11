@@ -412,6 +412,38 @@ void GNode::updateSimulationContext()
     simulation::Node::updateSimulationContext();
 }
 
+
+
+Node* GNode::findCommonParent( simulation::Node* node2 )
+{
+    GNode *gnodeGroup1=this,
+                             *gnodeGroup2=static_cast<GNode*>(node2);
+    helper::vector<GNode*> hierarchyParent;
+
+    gnodeGroup1=static_cast<GNode*>(gnodeGroup1->getParent());
+    while ( gnodeGroup1)
+    {
+        hierarchyParent.push_back(gnodeGroup1);
+        gnodeGroup1=static_cast<GNode*>(gnodeGroup1->getParent());
+    }
+    if (hierarchyParent.empty())   return NULL;
+
+    gnodeGroup2=static_cast<GNode*>(gnodeGroup2->getParent());
+    while (gnodeGroup2)
+    {
+        helper::vector<GNode*>::iterator it=std::find(hierarchyParent.begin(), hierarchyParent.end(), gnodeGroup2);
+        if (it != hierarchyParent.end())
+        {
+            return gnodeGroup2;
+            break;
+        }
+        gnodeGroup2=static_cast<GNode*>(gnodeGroup2->getParent());
+    }
+
+    return NULL;
+}
+
+
 SOFA_DECL_CLASS(GNode)
 
 //helper::Creator<xml::NodeElement::Factory, GNode> GNodeDefaultClass("default");

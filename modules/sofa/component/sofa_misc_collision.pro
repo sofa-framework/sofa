@@ -7,7 +7,6 @@ DEFINES += SOFA_BUILD_MISC_COLLISION
 
 HEADERS += initMiscCollision.h \
            collision/TriangleModelInRegularGrid.h \
-           collision/TreeCollisionGroupManager.h \
            collision/RuleBasedContactManager.h \
            collision/DefaultCollisionGroupManager.h \
            collision/SolverMerger.h \
@@ -20,7 +19,6 @@ HEADERS += initMiscCollision.h \
 SOURCES += initMiscCollision.cpp \
 		   collision/FrictionContact_DistanceGrid.cpp \
            collision/TriangleModelInRegularGrid.cpp \
-           collision/TreeCollisionGroupManager.cpp \
            collision/RuleBasedContactManager.cpp \
            collision/DefaultCollisionGroupManager.cpp \
            collision/SolverMerger.cpp \

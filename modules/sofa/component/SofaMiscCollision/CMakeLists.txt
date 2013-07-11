@@ -3,8 +3,7 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 set(HEADER_FILES
 
     ../initMiscCollision.h 
-    ../collision/TriangleModelInRegularGrid.h 
-    ../collision/TreeCollisionGroupManager.h 
+    ../collision/TriangleModelInRegularGrid.h
     ../collision/RuleBasedContactManager.h 
     ../collision/DefaultCollisionGroupManager.h 
     ../collision/SolverMerger.h 
@@ -20,8 +19,7 @@ set(SOURCE_FILES
 
     ../initMiscCollision.cpp 
 	../collision/FrictionContact_DistanceGrid.cpp 
-    ../collision/TriangleModelInRegularGrid.cpp 
-    ../collision/TreeCollisionGroupManager.cpp 
+    ../collision/TriangleModelInRegularGrid.cpp
     ../collision/RuleBasedContactManager.cpp 
     ../collision/DefaultCollisionGroupManager.cpp 
     ../collision/SolverMerger.cpp 
