@@ -1,4 +1,0 @@
-RegisterDependencies("CenterOfMassMapping" OPTION SOFA-APPLICATION_BOOST_KERNEL PATH "${CMAKE_CURRENT_SOURCE_DIR}/applications/centerOfMassMapping")
-RegisterDependencies("CenterOfMassMulti2MappingChain" OPTION SOFA-APPLICATION_BOOST_KERNEL PATH "${CMAKE_CURRENT_SOURCE_DIR}/applications/centerOfMassMulti2MappingChain")
-RegisterDependencies("CenterOfMassMultiMappingChain" OPTION SOFA-APPLICATION_BOOST_KERNEL PATH "${CMAKE_CURRENT_SOURCE_DIR}/applications/centerOfMassMultiMappingChain")
-RegisterDependencies("SubsetMultiMapping" OPTION SOFA-APPLICATION_BOOST_KERNEL PATH "${CMAKE_CURRENT_SOURCE_DIR}/applications/subsetMultimapping")

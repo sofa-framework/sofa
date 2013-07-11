@@ -11,9 +11,6 @@ AddLinkerDependencies(SofaSimulationTree SofaComponentMain SofaGuiMain)
 if(SOFA-LIB_SIMULATION_GRAPH_DAG)
     AddLinkerDependencies(SofaSimulationGraph)
 endif()
-if(SOFA-LIB_SIMULATION_GRAPH_BGL)
-    AddLinkerDependencies(SofaSimulationBGL)
-endif()
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
 

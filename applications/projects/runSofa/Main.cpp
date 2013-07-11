@@ -32,9 +32,6 @@
 #ifdef SOFA_HAVE_DAG
 #include <sofa/simulation/graph/DAGSimulation.h>
 #endif
-#ifdef SOFA_HAVE_BGL
-#include <sofa/simulation/bgl/BglSimulation.h>
-#endif
 #ifdef SOFA_SMP
 #include <sofa/simulation/tree/SMPSimulation.h>
 #endif
@@ -166,17 +163,12 @@ int main(int argc, char** argv)
         sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
     else
 #endif
-#ifdef SOFA_HAVE_BGL
-        if (simulationType == "bgl")
-            sofa::simulation::setSimulation(new sofa::simulation::bgl::BglSimulation());
+#ifdef SOFA_SMP
+        if (simulationType == "smp")
+            sofa::simulation::setSimulation(new sofa::simulation::tree::SMPSimulation());
         else
 #endif
-#ifdef SOFA_SMP
-            if (simulationType == "smp")
-                sofa::simulation::setSimulation(new sofa::simulation::tree::SMPSimulation());
-            else
-#endif
-                sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
+            sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
 
     sofa::component::init();
     sofa::simulation::xml::initXml();

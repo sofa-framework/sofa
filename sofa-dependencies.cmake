@@ -59,7 +59,6 @@ add_subdirectory("${SOFA_APPLICATIONS_DIR}/sofa/gui")
 
 ## projects
 set(SOFA_PROJECT_FOLDER "SofaApplication")
-add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/BoostKernel")
 
 RegisterDependencies("GenerateDoc" OPTION SOFA-APPLICATION_GENERATE_DOC PATH "${SOFA_APPLICATIONS_DIR}/projects/generateDoc")
 RegisterDependencies("GenerateRigid" OPTION SOFA-APPLICATION_GENERATE_RIGID PATH "${SOFA_APPLICATIONS_DIR}/projects/GenerateRigid")

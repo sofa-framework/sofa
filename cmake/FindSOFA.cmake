@@ -205,7 +205,6 @@ set(SOFA_INCLUDE_DIRS
 ## ###########################################################################################
 ## Put the name of the library SOFA CORE to search and put it associate CMakeName
 list(APPEND SOFA_LIB_NAME
-    sofabgl             SOFA_LIB_BGL            
     sofagui             SOFA_LIB_GUI            
     sofatree            SOFA_LIB_TREE            
     sofacore            SOFA_LIB_CORE              

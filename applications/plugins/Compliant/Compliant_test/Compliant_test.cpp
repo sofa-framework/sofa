@@ -53,9 +53,6 @@
 #ifdef SOFA_HAVE_DAG
 #include <sofa/simulation/graph/DAGSimulation.h>
 #endif
-#ifdef SOFA_HAVE_BGL
-#include <sofa/simulation/bgl/BglSimulation.h>
-#endif
 #include <sofa/component/misc/ReadState.h>
 #include <sofa/component/misc/CompareState.h>
 #include <sofa/helper/Factory.h>

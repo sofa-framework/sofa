@@ -28,9 +28,6 @@
 #include <sofa/helper/ArgumentParser.h>
 #include <sofa/core/ExecParams.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
-#ifdef SOFA_HAVE_BGL
-#include <sofa/simulation/bgl/BglSimulation.h>
-#endif
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/DeleteVisitor.h>
 
