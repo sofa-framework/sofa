@@ -10,7 +10,7 @@ if(SOFA-LIB_GUI_QT)
 endif()
 
 if(APPLE)
-    set(RC_FILES "../Modeler.icns")
+    set(RC_FILES "runSOFA.icns")
 else()
     set(RC_FILES "sofa.rc")
 endif()
