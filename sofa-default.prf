@@ -93,9 +93,6 @@ contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 
 } # END SOFA_DEV
 
-# Uncomment if you want Boost Graph Library support
-# DEFINES += SOFA_HAVE_BGL
-
 # Uncomment if you want Directed Acyclic Graph support
 DEFINES += SOFA_HAVE_DAG
 

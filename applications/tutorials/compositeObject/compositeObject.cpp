@@ -37,9 +37,6 @@
 #ifdef SOFA_HAVE_DAG
 #include <sofa/simulation/graph/DAGSimulation.h>
 #endif
-#ifdef SOFA_HAVE_BGL
-#include <sofa/simulation/bgl/BglSimulation.h>
-#endif
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/xml/initXml.h>
 
@@ -256,8 +253,6 @@ int main(int argc, char** argv)
 
 #if defined(SOFA_HAVE_DAG)
     sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
-#elif defined(SOFA_HAVE_BGL)
-    sofa::simulation::setSimulation(new sofa::simulation::bgl::BglSimulation());
 #else
     sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
 #endif

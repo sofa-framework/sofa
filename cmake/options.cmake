@@ -138,7 +138,6 @@ endif()
 option(SOFA-APPLICATION_GENERATE_DOC "Build GenerateCoc application " OFF)
 option(SOFA-APPLICATION_GENERATE_RIGID "Build GenerateRigid application " OFF)
 option(SOFA-APPLICATION_GENERATE_TYPEDEFS "Build GenerateTypedefs application " OFF)
-option(SOFA-APPLICATION_BOOST_KERNEL "Build BoostKernel application " OFF)
 option(SOFA-APPLICATION_MESH_CONV "Build MeshConv application " OFF)
 if(PS3)
 option(SOFA-APPLICATION_RUN_SOFA "Build RunSofa application " OFF)
@@ -306,8 +305,7 @@ mark_as_advanced(SOFA-LIB_VOLUMETRIC_DATA)
 endif()
 
 # simulation
-option(SOFA-LIB_SIMULATION_GRAPH_DAG "Directed acyclic graph" OFF)
-option(SOFA-LIB_SIMULATION_GRAPH_BGL "Boost graph library" OFF)
+option(SOFA-LIB_SIMULATION_GRAPH_DAG "Directed acyclic graph" ON)
 
 
 # optionnal features

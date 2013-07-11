@@ -42,9 +42,6 @@
 #include <sofa/component/collision/DefaultPipeline.h>
 #include <sofa/component/collision/DefaultContactManager.h>
 #include <sofa/component/collision/TreeCollisionGroupManager.h>
-#ifdef SOFA_HAVE_BGL
-#include <sofa/component/collision/BglCollisionGroupManager.h>
-#endif
 #include <sofa/component/collision/BruteForceDetection.h>
 #include <sofa/component/collision/MinProximityIntersection.h>
 
@@ -106,23 +103,14 @@ simulation::Node::SPtr SimpleObjectCreator::CreateRootWithCollisionPipeline(cons
     contactManager->setDefaultResponseType(responseType);
     root->addObject(contactManager);
 
-#ifdef SOFA_HAVE_BGL
-    //--> adding component to handle groups of collision.
-    if (simulationType == "bgl")
+    if (simulationType == "tree")
     {
-        component::collision::BglCollisionGroupManager::SPtr collisionGroupManager = sofa::core::objectmodel::New<component::collision::BglCollisionGroupManager>();
+        //--> adding component to handle groups of collision.
+        component::collision::TreeCollisionGroupManager::SPtr collisionGroupManager = sofa::core::objectmodel::New<component::collision::TreeCollisionGroupManager>();
         collisionGroupManager->setName("Collision Group Manager");
         root->addObject(collisionGroupManager);
     }
-    else
-#endif
-        if (simulationType == "tree")
-        {
-            //--> adding component to handle groups of collision.
-            component::collision::TreeCollisionGroupManager::SPtr collisionGroupManager = sofa::core::objectmodel::New<component::collision::TreeCollisionGroupManager>();
-            collisionGroupManager->setName("Collision Group Manager");
-            root->addObject(collisionGroupManager);
-        }
+
     return root;
 }
 

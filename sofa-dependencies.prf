@@ -61,14 +61,11 @@ addToBuildGroup(sofa/framework, sofahelper sofadefaulttype sofacore)
 declare(sofasimulation, modules/sofa/simulation/common, sofacore tinyxml)
 declare(sofatree,       modules/sofa/simulation/tree,   sofasimulation)
 declare(sofagraph,      modules/sofa/simulation/graph,  sofasimulation)
-declare(sofabgl,        modules/sofa/simulation/bgl,    sofasimulation)
 declare(sofapml,        modules/sofa/simulation/filemanager/sofapml, sofasimulation)
 
 addToBuildGroup(sofa/simulation, sofasimulation sofatree sofapml)
 
-contains(DEFINES, SOFA_HAVE_BGL) {
-    addToBuildGroup(sofa/simulation, sofabgl)
-}
+
 
 contains(DEFINES, SOFA_HAVE_DAG) {
     addToBuildGroup(sofa/simulation, sofagraph)
@@ -112,7 +109,7 @@ declare(sofa_misc_mapping, modules/sofa/component/sofa_misc_mapping.pro, sofa_si
 declare(sofa_misc_forcefield, modules/sofa/component/sofa_misc_forcefield.pro, sofa_deformable sofa_boundary_condition sofa_misc_topology)
 declare(sofa_misc_fem, modules/sofa/component/sofa_misc_fem.pro, sofa_simple_fem)
 declare(sofa_misc_engine, modules/sofa/component/sofa_misc_engine.pro, sofa_non_uniform_fem)
-declare(sofa_misc_collision, modules/sofa/component/sofa_misc_collision.pro, sofa_mesh_collision sofa_constraint sofa_volumetric_data sofa_explicit_ode_solver sofa_implicit_ode_solver sofabgl)
+declare(sofa_misc_collision, modules/sofa/component/sofa_misc_collision.pro, sofa_mesh_collision sofa_constraint sofa_volumetric_data sofa_explicit_ode_solver sofa_implicit_ode_solver sofagraph)
 declare(sofa_misc_solver, modules/sofa/component/sofa_misc_solver.pro, sofatree)
 declare(sofa_misc, modules/sofa/component/sofa_misc.pro, sofa_mesh_collision sofa_misc_topology sofa_topology_mapping)
 
@@ -169,7 +166,7 @@ declare(sofaguimain, applications/sofa/gui/libguimain.pro, sofagui sofaguiqt sof
 addToBuildGroup(sofa/gui, sofagui sofaguiqt sofaguiglut sofaguimain)
 
 #--- Projects ---#
-declare(runSofa,          applications/projects/runSofa,          sofaguimain sofa_component sofagraph sofabgl)
+declare(runSofa,          applications/projects/runSofa,          sofaguimain sofa_component sofagraph)
 declare(generateDoc,      applications/projects/generateDoc,      sofa_component)
 declare(GenerateRigid,    applications/projects/GenerateRigid,    sofa_component)
 declare(generateTypedefs, applications/projects/generateTypedefs, sofaguimain)
@@ -189,10 +186,6 @@ declare(sofaInfo, applications/projects/sofaInfo, sofaguimain)
 declare(sofaBatch, applications/projects/sofaBatch, sofa_component)
 #declare(runLem,          applications/projects/fissuration/lem/exe,     sofaguimain)
 
-declare(centerOfMassMapping,            applications/projects/BoostKernel/applications/centerOfMassMapping,             sofa_component sofaobjectcreator sofaguimain)
-declare(centerOfMassMulti2MappingChain, applications/projects/BoostKernel/applications/centerOfMassMulti2MappingChain,  sofa_component sofaobjectcreator sofaguimain)
-declare(centerOfMassMultiMappingChain,  applications/projects/BoostKernel/applications/centerOfMassMultiMappingChain,   sofa_component sofaobjectcreator sofaguimain)
-declare(subsetMultimapping,             applications/projects/BoostKernel/applications/subsetMultimapping,              sofa_component sofaobjectcreator sofaguimain)
 
 declare(sofatests,        tests,                                  sofacore)
 
@@ -206,7 +199,7 @@ declare(mixedPendulum,       			applications/tutorials/mixedPendulum, sofa_compo
 declare(oneParticle,        			applications/tutorials/oneParticle,  sofa_component sofaguimain)
 declare(oneParticleWithSofaTypedefs,	applications/tutorials/oneParticleWithSofaTypedefs,    sofa_component sofaguimain sofaTypedefs)
 declare(oneTetrahedron,      			applications/tutorials/oneTetrahedron,  sofa_component sofaguimain)
-declare(compositeObject,				applications/tutorials/compositeObject, sofa_component sofaguimain sofagraph sofabgl)
+declare(compositeObject,				applications/tutorials/compositeObject, sofa_component sofaguimain sofagraph)
 declare(anatomyModelling,				applications/tutorials/anatomyModelling, sofa_component sofaguimain sofagraph image Flexible)
 
 
@@ -270,9 +263,7 @@ enable(sofacore)
 
 enable(sofasimulation)
 enable(sofatree)
-contains (DEFINES, SOFA_HAVE_BGL) {
-    enable(sofabgl)
-} 
+
 contains (DEFINES, SOFA_HAVE_DAG) {
     enable(sofagraph)
 } 
@@ -419,14 +410,7 @@ contains(DEFINES, SOFA_GPU_OPENCL) {
 	    enable(sofapml)
     }
 
-    contains (DEFINES, SOFA_HAVE_BOOSTKERNEL) {
-    # SOFA_HAVE_BOOSTKERNEL depend of SOFA_HAVE_TUTORIALS
-    DEFINES += SOFA_HAVE_BOOSTKERNEL
-    	enable(centerOfMassMapping)
-    	enable(centerOfMassMulti2MappingChain)
-    	enable(centerOfMassMultiMappingChain)
-    	enable(subsetMultimapping)
-    }
+    
 } # END !SOFA_RELEASE
 
 
