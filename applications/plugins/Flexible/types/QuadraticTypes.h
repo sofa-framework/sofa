@@ -36,6 +36,8 @@
 
 #include <sofa/defaulttype/Quat.h>
 
+#include "FrameMass.h"
+
 namespace sofa
 {
 
@@ -497,164 +499,11 @@ template<> struct DataTypeName< defaulttype::Quadratic3fTypes::Coord > { static 
 // ====================================================================
 // QuadraticMass
 
-
-using std::endl;
-using helper::vector;
-
-/** Mass associated with an Quadratic deformable frame */
-template<int _spatial_dimensions,typename _Real>
-class QuadraticMass : public Mat<StdQuadraticTypes<_spatial_dimensions,_Real>::deriv_total_size, StdQuadraticTypes<_spatial_dimensions,_Real>::deriv_total_size, _Real>
-{
-public:
-    typedef _Real Real;
-
-    static const unsigned int spatial_dimensions = _spatial_dimensions;  ///< Number of dimensions the frame is moving in, typically 3
-    static const unsigned int VSize = StdQuadraticTypes<spatial_dimensions,Real>::deriv_total_size;
-
-    typedef Mat<VSize, VSize, Real> MassMatrix;
-
-
-    QuadraticMass() : MassMatrix(), m_invMassMatrix(NULL)
-    {
-    }
-
-    /// build a uniform, diagonal matrix
-    QuadraticMass( Real m ) : MassMatrix(), m_invMassMatrix(NULL)
-    {
-        setValue( m );
-    }
-
-
-    ~QuadraticMass()
-    {
-        if( m_invMassMatrix )
-        {
-            delete m_invMassMatrix;
-            m_invMassMatrix = NULL;
-        }
-    }
-
-    /// make a null inertia matrix
-    void clear()
-    {
-        MassMatrix::clear();
-        if( m_invMassMatrix ) m_invMassMatrix->clear();
-    }
-
-
-    static const char* Name();
-
-    /// @returns the invert of the mass matrix
-    const MassMatrix& getInverse() const
-    {
-        // optimization: compute the mass invert only once (needed by explicit solvers)
-        if( !m_invMassMatrix )
-        {
-            m_invMassMatrix = new MassMatrix;
-            m_invMassMatrix->invert( *this );
-        }
-        return *m_invMassMatrix;
-    }
-
-    /// set a uniform, diagonal matrix
-    virtual void setValue( Real m )
-    {
-        for( unsigned i=0 ; i<VSize ; ++i ) (*this)(i,i) = m;
-        updateInverse();
-    }
-
-
-    /// copy
-    void operator= ( const MassMatrix& m )
-    {
-        *((MassMatrix*)this) = m;
-        updateInverse();
-    }
-
-    /// this += m
-    void operator+= ( const MassMatrix& m )
-    {
-        *((MassMatrix*)this) += m;
-        updateInverse();
-    }
-
-    /// this -= m
-    void operator-= ( const MassMatrix& m )
-    {
-        *((MassMatrix*)this) -= m;
-        updateInverse();
-    }
-
-    /// this *= m
-    void operator*= ( const MassMatrix& m )
-    {
-        *((MassMatrix*)this) *= m;
-        updateInverse();
-    }
-
-    /// apply a factor to the mass matrix
-    void operator*= ( Real m )
-    {
-        *((MassMatrix*)this) *= m;
-        updateInverse();
-    }
-
-    /// apply a factor to the mass matrix
-    void operator/= ( Real m )
-    {
-        *((MassMatrix*)this) /= m;
-        updateInverse();
-    }
-
-
-
-    /// operator to cast to const Real, supposing the mass is uniform (and so diagonal)
-    operator const Real() const
-    {
-        return (*this)(0,0);
-    }
-
-
-    /// @todo overload these functions so they can be able to update 'm_invMassMatrix' after modifying 'this'
-    //void fill(real r)
-    // transpose
-    // transpose(m)
-    // addtranspose
-   //subtranspose
-
-
-
-protected:
-
-    mutable MassMatrix *m_invMassMatrix; ///< a pointer to the inverse of the mass matrix
-
-    /// when the mass matrix is changed, if the inverse exists, it has to be updated
-    /// @warning there are certainly cases (non overloaded functions or non virtual) that modify 'this' without updating 'm_invMassMatrix'. Another solution = keep a copy of 'this' each time the inversion is done, and when getInverse, if copy!=this -> update
-    void updateInverse()
-    {
-        if( m_invMassMatrix ) m_invMassMatrix->invert( *this );
-    }
-};
-
-template<int _spatial_dimensions,typename _Real>
-inline typename StdQuadraticTypes<_spatial_dimensions,_Real>::Deriv operator/(const typename StdQuadraticTypes<_spatial_dimensions,_Real>::Deriv& d, const QuadraticMass<_spatial_dimensions, _Real>& m)
-{
-    return m.getInverse() * d;
-}
-
-template<int _spatial_dimensions,typename _Real>
-inline typename StdQuadraticTypes<_spatial_dimensions,_Real>::Deriv operator*(const QuadraticMass<_spatial_dimensions, _Real>& m,const typename StdQuadraticTypes<_spatial_dimensions,_Real>::Deriv& d)
-{
-    return d * m;
-}
-
-
-
 #ifndef SOFA_FLOAT
-typedef QuadraticMass<3, double> Quadratic3dMass;
+typedef FrameMass<3, StdQuadraticTypes<3,double>::deriv_total_size, double> Quadratic3dMass;
 #endif
 #ifndef SOFA_DOUBLE
-typedef QuadraticMass<3, float> Quadratic3fMass;
+typedef FrameMass<3, StdQuadraticTypes<3,float>::deriv_total_size, float> Quadratic3fMass;
 #endif
 
 

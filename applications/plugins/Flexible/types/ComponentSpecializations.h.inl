@@ -3,6 +3,8 @@
 #include "../initFlexible.h"
 
 
+
+
 #include <sofa/component/container/MechanicalObject.h>
 
 
@@ -11,8 +13,11 @@
 
 #include <sofa/core/behavior/ForceField.h>
 
+#include "../mass/ImageDensityMass.h"
 
 #include "ComponentSpecializationsDefines.h"
+
+
 
 
 
@@ -65,12 +70,12 @@ namespace mass
 {
 
 template<int N, typename Real>
-class AddMToMatrixFunctor< typename defaulttype::StdTYPEABSTRACTNAMETypes<N,Real>::Deriv, defaulttype::TYPEABSTRACTNAMEMass<N,Real> >
+class AddMToMatrixFunctor< typename defaulttype::StdTYPEABSTRACTNAMETypes<N,Real>::Deriv, defaulttype::FrameMass<N,defaulttype::StdTYPEABSTRACTNAMETypes<N,Real>::deriv_total_size,Real> >
 {
 public:
-    void operator()(defaulttype::BaseMatrix * mat, const defaulttype::TYPEABSTRACTNAMEMass<N,Real>& mass, int pos, double fact)
+    void operator()(defaulttype::BaseMatrix * mat, const defaulttype::FrameMass<N,defaulttype::StdTYPEABSTRACTNAMETypes<N,Real>::deriv_total_size,Real>& mass, int pos, double fact)
     {
-        typedef defaulttype::TYPEABSTRACTNAMEMass<N,Real> TYPEABSTRACTNAMEMass;
+        typedef defaulttype::FrameMass<N,defaulttype::StdTYPEABSTRACTNAMETypes<N,Real>::deriv_total_size,Real> TYPEABSTRACTNAMEMass;
         for( unsigned i=0; i<TYPEABSTRACTNAMEMass::VSize; ++i )
             for( unsigned j=0; j<TYPEABSTRACTNAMEMass::VSize; ++j )
             {
@@ -92,6 +97,21 @@ template <> SOFA_Flexible_API
 void UniformMass<defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::TYPEABSTRACTNAME3fMass>::draw( const core::visual::VisualParams* vparams );
 template <> SOFA_Flexible_API
 double UniformMass<defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::TYPEABSTRACTNAME3fMass>::getPotentialEnergy( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& vx ) const;
+#endif
+
+
+
+
+
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(FLEXIBLE_COMPILING_CPP)
+#ifndef SOFA_FLOAT
+extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::TYPEABSTRACTNAME3dTypes,core::behavior::ShapeFunction3d,defaulttype::TYPEABSTRACTNAME3dMass>;
+extern template class SOFA_Flexible_API UniformMass<defaulttype::TYPEABSTRACTNAME3dTypes,defaulttype::TYPEABSTRACTNAME3dMass>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::TYPEABSTRACTNAME3fTypes,core::behavior::ShapeFunction3f,defaulttype::TYPEABSTRACTNAME3fMass>;
+extern template class SOFA_Flexible_API UniformMass<defaulttype::TYPEABSTRACTNAME3fTypes,defaulttype::TYPEABSTRACTNAME3fMass>;
+#endif
 #endif
 
 

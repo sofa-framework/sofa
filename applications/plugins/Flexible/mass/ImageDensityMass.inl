@@ -1,12 +1,17 @@
 #ifndef SOFA_FLEXIBLE_ImageDensityMass_INL
 #define SOFA_FLEXIBLE_ImageDensityMass_INL
 
+
 #include "ImageDensityMass.h"
+
+#include <Flexible/shapeFunction/BaseShapeFunction.h>
+
 #include <sofa/core/State.inl>
 #include <sofa/core/behavior/Mass.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 //#include <sofa/component/mass/AddMToMatrixFunctor.h>
+
 
 
 #include <sofa/helper/gl/template.h>
@@ -24,9 +29,6 @@ using namespace	sofa::component::topology;
 using namespace core::topology;
 using namespace sofa::defaulttype;
 using namespace sofa::core::behavior;
-
-
-
 
 
 ///////////////////////////////////////////
@@ -170,9 +172,10 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::reinit()
                     }
                     else
                         Mkk += JltmJk;
-
-
                 }
+
+
+
 
 
                 for( unsigned l=k+1; l<nbControlPoints ; l++ )
@@ -206,7 +209,6 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::reinit()
 
                             MassType& Mll = *m_massMatrix.wbloc(cp_l,cp_l,true);
                             Mll += JltmJk.transposed();
-
                         }
                         else
                         {
@@ -409,11 +411,11 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::addForce(const
     // gravity
     Vec3d g ( this->getContext()->getGravity() );
     Deriv theGravity;
-    DataTypes::set ( theGravity, g[0], g[1], g[2]);
+    DataTypes::set( theGravity, g[0], g[1], g[2] );
 
 
     // add weight
-    m_massMatrix.addMul_by_line( _f, theGravity );
+    m_massMatrix.template addMul_by_line<Real,VecDeriv,Deriv>( _f, theGravity );
 
     f.endEdit();
 }

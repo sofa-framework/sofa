@@ -379,7 +379,9 @@ void BaseDeformationMappingT<JacobianBlockType>::applyJT(const core::MechanicalP
 
         if((!this->maskTo)||(this->maskTo&& !(this->maskTo->isInUse())) )
         {
-            //#pragma omp parallel for
+//#ifdef USING_OMP_PRAGMAS
+//        #pragma omp parallel for
+//#endif
             for(unsigned int i=0; i<jacobian.size(); i++)
             {
                 for(unsigned int j=0; j<jacobian[i].size(); j++)
@@ -430,7 +432,9 @@ void BaseDeformationMappingT<JacobianBlockType>::applyDJT(const core::Mechanical
     {
         if((!this->maskTo)||(this->maskTo&& !(this->maskTo->isInUse())) )
         {
-            //#pragma omp parallel for
+//#ifdef USING_OMP_PRAGMAS
+//        #pragma omp parallel for
+//#endif
             for(unsigned int i=0; i<jacobian.size(); i++)
             {
                 for(unsigned int j=0; j<jacobian[i].size(); j++)

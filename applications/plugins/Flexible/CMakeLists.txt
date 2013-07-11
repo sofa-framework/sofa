@@ -12,6 +12,11 @@ set(HEADER_FILES
     types/QuadraticTypes.h 
     types/QuadraticComponents.h 
     types/PolynomialBasis.h 
+    types/ComponentSpecializations.h.inl
+    types/ComponentSpecializations.cpp.inl
+    types/ComponentSpecializationsDefines.h
+    types/ComponentSpecializationsUndef.h
+    types/FrameMass.h
     quadrature/BaseGaussPointSampler.h 
     quadrature/TopologyGaussPointSampler.h 
     shapeFunction/BaseShapeFunction.h 

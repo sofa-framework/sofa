@@ -15,14 +15,12 @@
 
 #include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
 
-#include <Flexible/types/AffineComponents.h>
 #include <Flexible/shapeFunction/BaseShapeFunction.h>
-
+//#include "../deformationMapping/LinearJacobianBlock.h"
 #include "../deformationMapping/LinearJacobianBlock_point.inl"
 #include "../deformationMapping/LinearJacobianBlock_rigid.inl"
 #include "../deformationMapping/LinearJacobianBlock_affine.inl"
 #include "../deformationMapping/LinearJacobianBlock_quadratic.inl"
-
 
 #include <image/ImageTypes.h>
 
@@ -30,6 +28,8 @@
 
 namespace sofa
 {
+
+
 
 namespace component
 {
@@ -180,12 +180,12 @@ protected:
 #ifndef SOFA_FLOAT
 extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::Vec3dTypes,core::behavior::ShapeFunction3d,defaulttype::Mat3x3d>; // volume FEM (tetra, hexa)
 extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::Vec3dTypes,core::behavior::ShapeFunction2d,defaulttype::Mat3x3d>; // surface FEM (triangles, quads)
-extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::Affine3dTypes,core::behavior::ShapeFunction3d,defaulttype::Affine3dMass>; // affine frames
+//extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::Rigid3dTypes,core::behavior::ShapeFunction3d,defaulttype::Rigid3dMass>; // rigid frame
 #endif
 #ifndef SOFA_DOUBLE
 extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::Vec3fTypes,core::behavior::ShapeFunction3f,defaulttype::Mat3x3f>;
 extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::Vec3fTypes,core::behavior::ShapeFunction2f,defaulttype::Mat3x3f>;
-extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::Affine3fTypes,core::behavior::ShapeFunction3f,defaulttype::Affine3fMass>;
+//extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::Rigid3fTypes,core::behavior::ShapeFunction3f,defaulttype::Rigid3fMass>; // rigid frame
 #endif
 #endif
 
