@@ -46,6 +46,11 @@ SOURCES = initSofaPython.cpp \
     Binding_MeshTopology.cpp \
     Binding_GridTopology.cpp \
     Binding_RegularGridTopology.cpp \
+    Binding_BaseMapping.cpp \
+    Binding_MultiMapping.cpp \
+    Binding_SubsetMultiMapping.cpp \
+    Binding_Mapping.cpp \
+    Binding_RigidMapping.cpp \
     Binding_MechanicalObject.cpp \
     Binding_BaseMechanicalState.cpp \
     Binding_PythonScriptController.cpp \
@@ -79,6 +84,11 @@ HEADERS = initSofaPython.h \
     Binding_MeshTopology.h \
     Binding_GridTopology.h \
     Binding_RegularGridTopology.h \
+    Binding_BaseMapping.h \
+    Binding_MultiMapping.h \
+    Binding_SubsetMultiMapping.h \
+    Binding_Mapping.cpp \
+    Binding_RigidMapping.cpp \    
     Binding_MechanicalObject.h \
     Binding_BaseMechanicalState.h \
     Binding_PythonScriptController.h \

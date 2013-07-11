@@ -46,6 +46,11 @@
 #include "Binding_MechanicalObject.h"
 #include "Binding_PythonScriptController.h"
 #include "Binding_LinearSpring.h"
+#include "Binding_BaseMapping.h"
+//#include "Binding_Mapping.h"
+//#include "Binding_RigidMapping.h"
+//#include "Binding_MultiMapping.h"
+#include "Binding_SubsetMultiMapping.h"
 
 #if defined(_MSC_VER)
 // undefine _DEBUG since we want to always link to the release version of
@@ -94,6 +99,11 @@ void bindSofaPythonModule()
                 SP_ADD_CLASS(SofaPythonModule,BaseState)
                     SP_ADD_CLASS(SofaPythonModule,BaseMechanicalState)
                         SP_ADD_CLASS(SofaPythonModule,MechanicalObject)
+                SP_ADD_CLASS(SofaPythonModule,BaseMapping)
+//                    SP_ADD_CLASS(SofaPythonModule,Mapping)
+//                        SP_ADD_CLASS(SofaPythonModule,RigidMapping)
+//                    SP_ADD_CLASS(SofaPythonModule,MultiMapping3_to_3)
+                        SP_ADD_CLASS(SofaPythonModule,SubsetMultiMapping3_to_3)
             SP_ADD_CLASS(SofaPythonModule,BaseLoader)
                 SP_ADD_CLASS(SofaPythonModule,MeshLoader)
             SP_ADD_CLASS(SofaPythonModule,Topology)
