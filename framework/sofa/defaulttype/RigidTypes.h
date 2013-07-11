@@ -727,6 +727,15 @@ inline RigidDeriv<3,real> operator*(const RigidDeriv<3,real>& d, const RigidMass
 }
 
 template<typename real>
+inline RigidDeriv<3,real> operator*(const RigidMass<3,real>& m, const RigidDeriv<3,real>& d)
+{
+    RigidDeriv<3,real> res;
+    getVCenter(res) = getVCenter(d) * m.mass;
+    getVOrientation(res) = m.inertiaMassMatrix * getVOrientation(d);
+    return res;
+}
+
+template<typename real>
 inline RigidDeriv<3,real> operator/(const RigidDeriv<3,real>& d, const RigidMass<3, real>& m)
 {
     RigidDeriv<3,real> res;

@@ -53,7 +53,7 @@ public:
     typedef Vec<3,SReal> Vec3;
     typedef Vec<1,SReal> Vec1;
 
-    static simulation::Node::SPtr CreateRootWithCollisionPipeline(const std::string &simulationType, const std::string &responseType=std::string("default"));
+    static simulation::Node::SPtr CreateRootWithCollisionPipeline(const std::string &responseType=std::string("default"));
     static simulation::Node::SPtr CreateEulerSolverNode(simulation::Node::SPtr parent, const std::string& name, const std::string &integrationScheme=std::string("Implicit"));
 
 

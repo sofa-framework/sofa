@@ -198,7 +198,6 @@ int main(int argc, char** argv)
 
     sofa::gui::initMain();
 
-    std::string simulationType="tree";
     unsigned int sizeHouseOfCards=4;
     SReal angle=20.0;
     SReal distanceInBetween=0.1;
@@ -212,7 +211,6 @@ int main(int argc, char** argv)
     gui_help += ")";
 
     sofa::helper::parse("This is a SOFA application. Here are the command line arguments")
-    .option(&simulationType,'s',"simulation","type of the simulation(bgl,tree)")
     .option(&sizeHouseOfCards,'l',"level","number of level of the house of cards")
     .option(&angle,'a',"angle","angle formed by two cards")
     .option(&distanceInBetween,'d',"distance","distance between two cards")
@@ -221,16 +219,11 @@ int main(int argc, char** argv)
     .option(&gui,'g',"gui",gui_help.c_str())
     (argc,argv);
 
-//#ifdef SOFA_DEV
-//    if (simulationType == "bgl")
-//        sofa::simulation::setSimulation(new sofa::simulation::bgl::BglSimulation());
-//    else
-//#endif
-        sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
 
+    sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
 
     // The graph root node
-    Node::SPtr root = sofa::SimpleObjectCreator::CreateRootWithCollisionPipeline(simulationType,"distanceLMConstraint");
+    Node::SPtr root = sofa::SimpleObjectCreator::CreateRootWithCollisionPipeline("distanceLMConstraint");
     root->setGravity( Coord3(0,-10,0) );
     root->setDt(0.001);
 

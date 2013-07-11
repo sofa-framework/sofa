@@ -73,7 +73,7 @@ using namespace component::forcefield;
 
 typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
 
-simulation::Node::SPtr SimpleObjectCreator::CreateRootWithCollisionPipeline(const std::string &simulationType, const std::string& responseType)
+simulation::Node::SPtr SimpleObjectCreator::CreateRootWithCollisionPipeline(const std::string& responseType)
 {
 
     simulation::Node::SPtr root = simulation::getSimulation()->createNewGraph("root");
