@@ -466,10 +466,11 @@ void DAGNode::executeVisitorTopDown(simulation::Visitor* action, NodeList& execu
         const LinkParents::Container &parents = l_parents.getValue();
         for ( unsigned int i = 0; i < parents.size() ; i++ )
         {
-            if ( parents[i] )
+            // if the visitor is run from a sub-graph containing a multinode linked with a node outside of the subgraph, do not consider the outside node by looking on the sub-graph descendancy
+            if ( parents[i] && visitorRoot->_descendancy.find(parents[i])!=visitorRoot->_descendancy.end() )
             {
-                // if the visitor is run from a sub-graph containing a multinode linked with a node outside of the subgraph, do not consider the outside node by looking on the sub-graph descendancy
-                if ( visitorRoot->_descendancy.find(parents[i])!=visitorRoot->_descendancy.end() && statusMap[parents[i]] == NOT_VISITED ) return; // skipped for now... the other parent should come latter
+                // all parents must have been visited before
+                if ( statusMap[parents[i]] == NOT_VISITED ) return; // skipped for now... the other parent should come latter
 
                 allParentsPruned = allParentsPruned && ( statusMap[parents[i]] == PRUNED );
                 hasParent = true;
