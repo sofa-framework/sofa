@@ -51,37 +51,28 @@ class SparseLDLSolver : public sofa::component::linearsolver::SparseLDLSolverImp
 {
 public :
     SOFA_CLASS(SOFA_TEMPLATE3(SparseLDLSolver,TMatrix,TVector,TThreadManager),SOFA_TEMPLATE3(sofa::component::linearsolver::SparseLDLSolverImpl,TMatrix,TVector,TThreadManager));
-    typedef sofa::component::linearsolver::SparseLDLSolverImpl<TMatrix,TVector,TThreadManager> Inherit;
 
-public:
     typedef TMatrix Matrix;
     typedef TVector Vector;
-    typedef TThreadManager ThreadManager;
     typedef typename Matrix::Real Real;
+    typedef sofa::component::linearsolver::SparseLDLSolverImpl<TMatrix,TVector,TThreadManager> Inherit;
+    typedef typename Inherit::ResMatrixType ResMatrixType;
+    typedef typename Inherit::JMatrixType JMatrixType;
+    typedef SpaseLDLImplInvertData<helper::vector<int>, helper::vector<Real> > InvertData;
 
-    SparseLDLSolver();
     void solve (Matrix& M, Vector& x, Vector& b);
     void invert(Matrix& M);
+    bool addJMInvJtLocal(TMatrix * M, ResMatrixType * result, JMatrixType * J, double fact);
 
-    MatrixInvertData * createInvertData()
-    {
-        return new SparseLDLSolverInvertData();
+    MatrixInvertData * createInvertData() {
+        return new InvertData();
     }
 
 protected :
-    helper::vector<Real> B;
+    SparseLDLSolver();
 
-    class SparseLDLSolverInvertData : public MatrixInvertData
-    {
-    public :
-        sofa::component::linearsolver::CompressedRowSparseMatrix<Real> Mfiltered;
-        int n,nnz;
-
-        helper::vector<Real> values,D;
-        helper::vector<int> rowind,colptr;
-        helper::vector<int> perm, invperm; //premutation inverse
-    };
-
+    FullMatrix<Real> Jminv,Jdense;
+//    helper::vector<Real> line,res;
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_SPARSE_SOLVER)

@@ -91,6 +91,7 @@ public:
     helper::vector< Data< helper::vector< helper::fixed_array<unsigned int,8> > >* > vf_hexahedra;
 
 
+    Data<unsigned> f_output_npoints;
     Data<VecCoord> f_output_positions;
     Data< helper::vector< helper::fixed_array <unsigned int,2> > > f_output_edges;
     Data< helper::vector< helper::fixed_array <unsigned int,3> > > f_output_triangles;
