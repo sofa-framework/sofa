@@ -58,11 +58,9 @@ public:
 
     virtual void createGroups(core::objectmodel::BaseContext* scene, const sofa::helper::vector<core::collision::Contact::SPtr>& contacts);
 
-    virtual void clearGroups(core::objectmodel::BaseContext* scene)=0;
+    virtual void clearGroups(core::objectmodel::BaseContext* scene);
 
 protected:
-    //Given to nodes, we find the parent node in common: if none is found, we return NULL
-    virtual simulation::Node* findCommonParent(simulation::Node *group1, simulation::Node* group2)=0;
 
     //Find the node containing the ode solver used to animate the mechanical model associated to the collision model
     virtual simulation::Node* getIntegrationNode(core::CollisionModel* model);

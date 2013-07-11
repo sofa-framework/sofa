@@ -151,6 +151,9 @@ public:
 
     GNode* parent() const { return l_parent.get(); }
 
+    /// return the smallest common parent between this and node2 (returns NULL if separated sub-graphes)
+    virtual Node* findCommonParent( simulation::Node* node2 );
+
 protected:
 
     SingleLink<GNode,GNode,BaseLink::FLAG_DOUBLELINK> l_parent;

@@ -42,7 +42,7 @@ void initMiscCollision()
     }
 }
 
-SOFA_LINK_CLASS(TreeCollisionGroupManager)
+SOFA_LINK_CLASS(DefaultCollisionGroupManager)
 SOFA_LINK_CLASS(TetrahedronDiscreteIntersection)
 SOFA_LINK_CLASS(SpatialGridPointModel)
 SOFA_LINK_CLASS(TetrahedronModel)

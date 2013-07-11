@@ -592,6 +592,26 @@ void DAGNode::updateSimulationContext()
 }
 
 
+Node* DAGNode::findCommonParent( simulation::Node* node2 )
+{
+    return static_cast<DAGNode*>(getSimulation()->GetRoot().get())->findCommonParent( this, static_cast<DAGNode*>(node2) );
+}
+
+
+DAGNode* DAGNode::findCommonParent( DAGNode* node1, DAGNode* node2 )
+{
+    updateDescendancy();
+
+    for(unsigned int i = 0; i<child.size(); ++i)
+    {
+        DAGNode* childcommon = static_cast<DAGNode*>(child[i].get())->findCommonParent( node1, node2 );
+
+        if( childcommon ) return childcommon;
+        else if( _descendancy.find(node1)!=_descendancy.end() && _descendancy.find(node2)!=_descendancy.end() ) return this;
+    }
+
+    return NULL;
+}
 
 
 

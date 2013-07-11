@@ -143,7 +143,15 @@ public:
         return obj;
     }
 
+
+    /// return the smallest common parent between this and node2 (returns NULL if separated sub-graphes)
+    virtual Node* findCommonParent( Node* node2 );
+
 protected:
+
+    /// bottom-up traversal, returning the first node which have a descendancy containing both node1 & node2
+    DAGNode* findCommonParent( DAGNode* node1, DAGNode* node2 );
+
 
     LinkParents l_parents;
 

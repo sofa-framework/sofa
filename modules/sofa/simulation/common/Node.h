@@ -481,6 +481,9 @@ public:
 
     static Node::SPtr create( const std::string& name );
 
+    /// return the smallest common parent between this and node2 (returns NULL if separated sub-graphes)
+    virtual Node* findCommonParent( simulation::Node* node2 ) = 0;
+
 protected:
     bool debug_;
     bool initialized;
