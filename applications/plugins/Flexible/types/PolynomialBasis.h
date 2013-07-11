@@ -36,7 +36,7 @@
 #include <vector>
 
 #ifdef USING_OMP_PRAGMAS
-    #include <omp.h>
+	#include <omp.h>
 #endif
 
 #ifdef Success
@@ -192,6 +192,77 @@ inline void getCompleteBasis(vector<real>& basis, const Vec<3,real>& p,const uns
     return; // order>4 not implemented...
 }
 
+
+
+/** Returns the integral of the Complete Basis vector inside a cuboid of lenghts l, centered on p
+  **/
+
+template<typename real>
+inline void getCompleteBasisIntegralInCube(vector<real>& basis, const Vec<3,real>& p, const Vec<3,real>& l, const unsigned int order)
+{
+    typedef Vec<3,real> Coord;
+
+    unsigned int j,dim=(order+1)*(order+2)*(order+3)/6;
+
+    basis.resize(dim);  for (j=0; j<dim; j++) basis[j]=0;
+
+    unsigned int count=0;
+    real v=l[0]*l[1]*l[2];
+
+    // order 0
+    basis[count]=v; count++;
+    if (count==dim) return;
+
+    // order 1
+    basis[count]=p[0]*v; count++;
+    basis[count]=p[1]*v; count++;
+    basis[count]=p[2]*v; count++;
+    if (count==dim) return;
+
+    // order 2
+    Coord l2;  for (j=0; j<3; j++) l2[j]=l[j]*l[j];
+    Coord p2;  for (j=0; j<3; j++) p2[j]=p[j]*p[j];
+    real inv12 = 1./12.;
+    basis[count]=( inv12*l2[0] + p2[0] )*v; count++;
+    basis[count]= p[0]*p[1]*v; count++;
+    basis[count]= p[0]*p[2]*v; count++;
+    basis[count]= ( inv12*l2[1] + p2[1] )*v; count++;
+    basis[count]= p[1]*p[2]*v; count++;
+    basis[count]= ( inv12*l2[2] + p2[2] )*v; count++;
+    if (count==dim) return;
+
+    // order 3
+    Coord p3;    for (j=0; j<3; j++) p3[j]=p2[j]*p[j];
+    basis[count]= p[0]*p[1]*p[2]*v; count++;
+    basis[count]= ( 0.25*l2[0]*p[0] + p3[0] )*v; count++;
+    basis[count]= ( inv12*l2[0]*p[1] + p2[0]*p[1] )*v; count++;
+    basis[count]= ( inv12*l2[0]*p[2] + p2[0]*p[2] )*v; count++;
+    basis[count]= ( inv12*p[0]*l2[1] + p[0]*p2[1] )*v; count++;
+    basis[count]= ( 0.25*l2[1]*p[1] + p3[1] )*v; count++;
+    basis[count]= ( inv12*l2[1]*p[2] + p2[1]*p[2] )*v; count++;
+    basis[count]= ( inv12*p[0]*l2[2] + p[0]*p2[2] )*v; count++;
+    basis[count]= ( inv12*p[1]*l2[2] + p[1]*p2[2] )*v; count++;
+    basis[count]= ( 0.25*l2[2]*p[2] + p3[2] )*v; count++;
+    if (count==dim) return;
+
+    // order 4
+    real inv144 = 1./144.;
+    basis[count]= ( 0.0125*l2[0]*l2[0] + 0.5*l2[0]*p2[0] + p2[0]*p2[0] )*v; count++;
+    basis[count]= ( inv144*l2[0]*l2[1] + inv12*l2[0]*p2[1] + inv12*p2[0]*l2[1] + p2[0]*p2[1] )*v; count++;
+    basis[count]= ( inv144*l2[0]*l2[2] + inv12*l2[0]*p2[2] + inv12*p2[0]*l2[2] + p2[0]*p2[2] )*v; count++;
+    basis[count]= ( 0.0125*l2[1]*l2[1] + 0.5*l2[1]*p2[1] + p2[1]*p2[1] )*v; count++;
+    basis[count]= ( inv144*l2[1]*l2[2] + inv12*l2[1]*p2[2] + inv12*p2[1]*l2[2] + p2[1]*p2[2] )*v; count++;
+    basis[count]= ( 0.0125*l2[2]*l2[2] + 0.5*l2[2]*p2[2] + p2[2]*p2[2] )*v; count++;
+    basis[count]= ( inv12*l2[0]*p[1]*p[2] + p2[0]*p[1]*p[2] )*v; count++;
+    basis[count]= ( inv12*p[0]*l2[1]*p[2] + p[0]*p2[1]*p[2] )*v; count++;
+    basis[count]= ( inv12*p[0]*p[1]*l2[2] + p[0]*p[1]*p2[2] )*v; count++;
+    basis[count]= ( 0.25*l2[0]*p[0]*p[1] + p3[0]*p[1] )*v; count++;
+    basis[count]= ( 0.25*l2[0]*p[0]*p[2] + p3[0]*p[2] )*v; count++;
+    basis[count]= ( 0.25*p[0]*l2[1]*p[1] + p[0]*p3[1] )*v; count++;
+    basis[count]= ( 0.25*l2[1]*p[1]*p[2] + p3[1]*p[2] )*v; count++;
+    basis[count]= ( 0.25*p[0]*l2[2]*p[2] + p[0]*p3[2] )*v; count++;
+    basis[count]= ( 0.25*p[1]*l2[2]*p[2] + p[1]*p3[2] )*v; count++;
+}
 
 
 template<typename real>
@@ -603,7 +674,7 @@ struct PolynomialFitFactors
     void setParents(const std::set<unsigned int>& parents)     { parentsToNodeIndex.clear();  unsigned int i=0; for( std::set<unsigned int>::const_iterator it=parents.begin();it!=parents.end();it++)  parentsToNodeIndex[*it]=i++; }
 
     // compute factors. vals is a num_nodes x nbp matrix
-    void fill( const Matrix& val, const vector<Vec<3,real> >& pos, const unsigned int order, const real dv, const unsigned int volOrder)
+    void fill( const Matrix& val, const vector<Vec<3,real> >& pos, const unsigned int order, const Vec<3,real>& voxelsize, const unsigned int volOrder)
     {
         unsigned int num_nodes = val.rows(); if(!num_nodes) return;
 
@@ -618,7 +689,8 @@ struct PolynomialFitFactors
         {
             vector<real> basis;
             defaulttype::getCompleteBasis(basis,pos[i]-center,order); Eigen::Map<Vector> ebasis(&basis[0],dim); X.row(i) = ebasis;
-            defaulttype::getCompleteBasis(basis,pos[i]-center,volOrder); Eigen::Map<Vector> ebasis2(&basis[0],volDim); vol += ebasis2*dv;
+            defaulttype::getCompleteBasisIntegralInCube(basis,pos[i]-center,voxelsize,volOrder); Eigen::Map<Vector> ebasis2(&basis[0],volDim); vol += ebasis2; // treat voxels as volume elements
+            //defaulttype::getCompleteBasis(basis,pos[i]-center,volOrder); Eigen::Map<Vector> ebasis2(&basis[0],volDim); vol += ebasis2*voxelsize[0]*voxelsize[1]*voxelsize[2]; // treat voxels as points (simpler but less accurate)
         }
         a = X.transpose()*X;
         b = val*X;
