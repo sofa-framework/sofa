@@ -225,7 +225,7 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
                     if (PyList_Size(row)!=size)
                     {
                         // only a warning; do not raise an exception...
-                        printf("<SofaPython> Warning: row %i size mismatch for data \"%s\"\n",i,data->getName().c_str());
+                        printf("<SofaPython> Warning: row %i size mismatch for data \"%s\" (src=%dx%d dst=%dx%d)\n",i,data->getName().c_str(),(int)PyList_Size(row),nbRows,size,nbRows);
                         if (PyList_Size(row)<size)
                             size = PyList_Size(row);
                     }
@@ -270,7 +270,7 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
                 if (PyList_Size(args)!=size)
                 {
                     // only a warning; do not raise an exception...
-                    printf("<SofaPython> Warning: list size mismatch for data \"%s\"\n",data->getName().c_str());
+                    printf("<SofaPython> Warning: list size mismatch for data \"%s\" (src=%d dst=%d)\n",data->getName().c_str(),(int)PyList_Size(args),size);
                     if (PyList_Size(args)<size)
                         size = PyList_Size(args);
                 }
@@ -479,7 +479,7 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
             if (PyList_Size(args)!=size)
             {
                 // only a warning; do not raise an exception...
-                printf("<SofaPython> Warning: list size mismatch for data \"%s\"\n",data->getName().c_str());
+                printf("<SofaPython> Warning: list size mismatch for data \"%s\" (src=%d dst=%d)\n",data->getName().c_str(),(int)PyList_Size(args),size);
                 if (PyList_Size(args)<size)
                     size = PyList_Size(args);
             }
@@ -657,11 +657,40 @@ extern "C" PyObject * Data_getValueString(PyObject *self, PyObject * /*args*/)
     return PyString_FromString(data->getValueString().c_str());
 }
 
+extern "C" PyObject * Data_getSize(PyObject *self, PyObject * /*args*/)
+{
+    BaseData* data=((PyPtr<BaseData>*)self)->object;
+
+    const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
+    int rowWidth = typeinfo->size();
+    int nbRows = typeinfo->size(data->getValueVoidPtr()) / typeinfo->size();
+
+    printf("Data_getSize rowWidth=%d nbRows=%d\n",rowWidth,nbRows);
+
+    return PyInt_FromLong(0); //temp
+}
+
+extern "C" PyObject * Data_setSize(PyObject *self, PyObject * args)
+{
+    BaseData* data=((PyPtr<BaseData>*)self)->object;
+    int size;
+    if (!PyArg_ParseTuple(args, "i",&size))
+    {
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+    const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
+    typeinfo->setSize((void*)data->getValueVoidPtr(),size);
+    Py_RETURN_NONE;
+}
+
 SP_CLASS_METHODS_BEGIN(Data)
 SP_CLASS_METHOD(Data,getValueTypeString)
 SP_CLASS_METHOD(Data,getValueString)
 SP_CLASS_METHOD(Data,setValue)
 SP_CLASS_METHOD(Data,getValue)
+SP_CLASS_METHOD(Data,getSize)
+SP_CLASS_METHOD(Data,setSize)
 SP_CLASS_METHODS_END
 
 
