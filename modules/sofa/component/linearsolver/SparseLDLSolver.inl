@@ -37,87 +37,133 @@
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/component/linearsolver/CompressedRowSparseMatrix.inl>
 
-namespace sofa
-{
+namespace sofa {
 
-namespace component
-{
+namespace component {
 
-namespace linearsolver
-{
-
-using namespace sofa::defaulttype;
-using namespace sofa::core::behavior;
-using namespace sofa::simulation;
-using namespace sofa::core::objectmodel;
-using sofa::helper::system::thread::CTime;
-using sofa::helper::system::thread::ctime_t;
-using std::cerr;
-using std::endl;
+namespace linearsolver {
 
 template<class TMatrix, class TVector, class TThreadManager>
 SparseLDLSolver<TMatrix,TVector,TThreadManager>::SparseLDLSolver() {}
 
 template<class TMatrix, class TVector, class TThreadManager>
-void SparseLDLSolver<TMatrix,TVector,TThreadManager>::solve (Matrix& M, Vector& z, Vector& r)
-{
-    SparseLDLSolverInvertData * data = (SparseLDLSolverInvertData *) this->getMatrixInvertData(&M);
-
-    B.resize(data->n);
-
-    // permutation according to metis
-    for (int i=0; i<data->n; i++) B[i] = r[data->perm[i]];
-
-    for (int j = 0 ; j < data->n ; j++)
-    {
-        for (int p = data->colptr [j] ; p < data->colptr[j+1] ; p++)
-        {
-            B [data->rowind [p]] -= data->values[p] * B[j] ;
-        }
-    }
-    for (int j = 0 ; j < data->n ; j++)
-    {
-        B [j] /= data->D[j] ;
-    }
-
-    for (int j = data->n-1 ; j >= 0 ; j--)
-    {
-        for (int p = data->colptr[j] ; p < data->colptr[j+1] ; p++)
-        {
-            B [j] -= data->values[p] * B [data->rowind[p]] ;
-        }
-    }
-
-    for (int i=0; i<data->n; i++) z[i] = B[data->invperm[i]];
+void SparseLDLSolver<TMatrix,TVector,TThreadManager>::solve (Matrix& M, Vector& z, Vector& r) {
+    Inherit::solve_cpu(&z[0],&r[0],(InvertData *) this->getMatrixInvertData(&M));
 }
 
 template<class TMatrix, class TVector, class TThreadManager>
-void SparseLDLSolver<TMatrix,TVector,TThreadManager>::invert(Matrix& M)
-{
-    SparseLDLSolverInvertData * data = (SparseLDLSolverInvertData *) this->getMatrixInvertData(&M);
-    //remplir A avec M
-    data->n = M.colSize();// number of columns
-    data->Mfiltered.clear();
-    data->Mfiltered.resize(M.rowSize(),M.colSize());
-    data->Mfiltered.copyNonZeros(M);
-    data->Mfiltered.compress();
+void SparseLDLSolver<TMatrix,TVector,TThreadManager>::invert(Matrix& M) {
+    Inherit::factorize(M,(InvertData *) this->getMatrixInvertData(&M));
+}
 
-    int * Mcolptr = (int *) &data->Mfiltered.getRowBegin()[0];
-    int * Mrowind = (int *) &data->Mfiltered.getColsIndex()[0];
-    Real * Mvalues = (Real *) &data->Mfiltered.getColsValue()[0];
-    data->perm.resize(data->n);
-    data->invperm.resize(data->n);
-    data->colptr.resize(data->n+1);
-    data->D.resize(data->n);
+/// Default implementation of Multiply the inverse of the system matrix by the transpose of the given matrix, and multiply the result with the given matrix J
+template<class TMatrix, class TVector, class TThreadManager>
+bool SparseLDLSolver<TMatrix,TVector,TThreadManager>::addJMInvJtLocal(TMatrix * M, ResMatrixType * result, JMatrixType * J, double fact) {
+    if (J->rowSize()==0) return true;
 
-    this->LDL_ordering(data->n,Mcolptr,Mrowind,&data->perm[0],&data->invperm[0]);
-    this->LDL_symbolic(data->n,Mcolptr,Mrowind,&data->colptr[0],&data->perm[0],&data->invperm[0]);
+    InvertData * data = (InvertData *) getMatrixInvertData(M);
 
-    data->nnz = data->colptr[data->n];
-    data->rowind.resize(data->nnz);
-    data->values.resize(data->nnz);
+    Jdense.clear();
+    Jdense.resize(J->rowSize(),data->n);
+    Jminv.resize(J->rowSize(),data->n);
 
-    this->LDL_numeric(data->n,Mcolptr,Mrowind,Mvalues,&data->colptr[0],&data->rowind[0],&data->values[0],&data->D[0],&data->perm[0],&data->invperm[0]);
+    for (typename SparseMatrix<Real>::LineConstIterator jit = J->begin() , jitend = J->end(); jit != jitend; ++jit) {
+        int l = jit->first;
+        Real * line = Jdense[l];
+        for (typename SparseMatrix<Real>::LElementConstIterator it = jit->second.begin(), i2end = jit->second.end(); it != i2end; ++it) {
+            int col = data->invperm[it->first];
+            double val = it->second;
+
+            line[col] = val;
+        }
+    }
+
+    //Solve the lower triangular system
+    for (unsigned c=0;c<J->rowSize();c++) {
+        Real * line = Jdense[c];
+
+        for (int j=0; j<data->n; j++) {
+            for (int p = data->LT_colptr[j] ; p<data->LT_colptr[j+1] ; p++) {
+                int col = data->LT_rowind[p];
+                double val = data->LT_values[p];
+                line[j] -= val * line[col];
+            }
+        }
+    }
+
+    //apply diagonal
+    for (unsigned j=0; j<J->rowSize(); j++) {
+        Real * lineD = Jdense[j];
+        Real * lineM = Jminv[j];
+        for (unsigned i=0;i<J->colSize();i++) {
+            lineM[i] = lineD[i] * data->invD[i];
+        }
+    }
+
+    for (unsigned j=0; j<J->rowSize(); j++) {
+        Real * lineJ = Jminv[j];
+        for (unsigned i=j;i<J->rowSize();i++) {
+            Real * lineI = Jdense[i];
+
+            double acc = 0.0;
+            for (unsigned k=0;k<J->colSize();k++) {
+                acc += lineJ[k] * lineI[k];
+            }
+            result->add(j,i,acc*fact);
+            if(i!=j) result->add(i,j,acc*fact);
+        }
+    }
+
+
+//    //Solve the lower triangular system
+//    res.resize(data->n);
+//    for (typename SparseMatrix<Real>::LineConstIterator jit = J->begin() , jitend = J->end(); jit != jitend; ++jit) {
+//        int row = jit->first;
+
+//        line.clear();
+//        line.resize(data->n);
+
+//        for (typename SparseMatrix<Real>::LElementConstIterator it = jit->second.begin(), i2end = jit->second.end(); it != i2end; ++it) {
+//            int col = data->invperm[it->first];
+//            double val = it->second;
+//            line[col] = val;
+//        }
+
+//        for (int j=0; j<data->n; j++) {
+//            for (int p = data->LT_colptr[j] ; p<data->LT_colptr[j+1] ; p++) {
+//                int col = data->LT_rowind[p];
+//                double val = data->LT_values[p];
+//                line[j] -= val * line[col];
+//            }
+//        }
+
+//        for (int j = data->n-1 ; j >= 0 ; j--) {
+//            line[j] *= data->invD[j];
+
+//            for (int p = data->L_colptr[j] ; p < data->L_colptr[j+1] ; p++) {
+//                int col = data->L_rowind[p];
+//                double val = data->L_values[p];
+//                line[j] -= val * line[col];
+//            }
+
+//            res[data->perm[j]] = line[j];
+//        }
+
+//        for (typename SparseMatrix<Real>::LineConstIterator jit = J->begin() , jitend = J->end(); jit != jitend; ++jit) {
+//            int row2 = jit->first;
+//            double acc = 0.0;
+//            for (typename SparseMatrix<Real>::LElementConstIterator i2 = jit->second.begin(), i2end = jit->second.end(); i2 != i2end; ++i2) {
+//                int col2 = i2->first;
+//                double val2 = i2->second;
+//                acc += val2 * res[col2];
+//            }
+//            acc *= fact;
+//            result->add(row2,row,acc);
+//        }
+//    }
+
+
+    return true;
 }
 
 } // namespace linearsolver

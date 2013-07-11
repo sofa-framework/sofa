@@ -45,6 +45,7 @@ using namespace core::objectmodel;
 template <class DataTypes>
 MergeMeshes<DataTypes>::MergeMeshes()
     : f_nbMeshes( initData (&f_nbMeshes, (unsigned)2, "nbMeshes", "number of meshes to merge") )
+    , f_output_npoints( initData (&f_output_npoints, (unsigned)0, "npoints", "Number Of out points") )
     , f_output_positions(initData(&f_output_positions,"position","Output Vertices of the merged mesh"))
     , f_output_edges(initData(&f_output_edges,"edges","Output Edges of the merged mesh"))
     , f_output_triangles(initData(&f_output_triangles,"triangles","Output Triangles of the merged mesh"))
@@ -120,6 +121,7 @@ void MergeMeshes<DataTypes>::init()
     addInput(&f_nbMeshes);
     createInputMeshesData();
 
+    addOutput(&f_output_npoints);
     addOutput(&f_output_positions);
     addOutput(&f_output_edges);
     addOutput(&f_output_triangles);
@@ -151,6 +153,11 @@ void MergeMeshes<DataTypes>::update()
     mergeInputDataVector(nb, f_output_quads, vf_quads, vf_positions);
     mergeInputDataVector(nb, f_output_tetrahedra, vf_tetrahedra, vf_positions);
     mergeInputDataVector(nb, f_output_hexahedra, vf_hexahedra, vf_positions);
+
+    unsigned & npoints = *f_output_npoints.beginEdit();
+    npoints = (unsigned) f_output_positions.getValue().size();
+    f_output_npoints.endEdit();
+
     sout << "Created merged mesh: "
             << f_output_positions.getValue().size() << " points, ";
     if (f_output_edges.getValue().size() > 0)

@@ -43,6 +43,17 @@ namespace component
 namespace linearsolver
 {
 
+//defaut structure for a LDL factorization
+template<class VecInt,class VecReal>
+class SpaseLDLImplInvertData : public MatrixInvertData {
+public :
+    int n, P_nnz, L_nnz;
+    VecInt P_rowind,P_colptr,L_rowind,L_colptr,LT_rowind,LT_colptr;
+    VecInt perm, invperm;
+    VecReal P_values,L_values,LT_values,invD;
+    helper::vector<int> Parent;
+};
+
 template<class TMatrix, class TVector, class TThreadManager>
 class SparseLDLSolverImpl : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector,TThreadManager>
 {
@@ -59,6 +70,127 @@ public:
 protected :
 
     SparseLDLSolverImpl() : Inherit() {}
+
+    template<class VecInt,class VecReal>
+    void solve_cpu(Real * x,const Real * b,SpaseLDLImplInvertData<VecInt,VecReal> * data) {
+        int n = data->n;
+        const Real * invD = &data->invD[0];
+        const int * perm = &data->perm[0];
+        const int * L_colptr = &data->L_colptr[0];
+        const int * L_rowind = &data->L_rowind[0];
+        const Real * L_values = &data->L_values[0];
+        const int * LT_colptr = &data->LT_colptr[0];
+        const int * LT_rowind = &data->LT_rowind[0];
+        const Real * LT_values = &data->LT_values[0];
+
+        Tmp.resize(n);
+
+        for (int j = 0 ; j < n ; j++) {
+            Real acc = b[perm[j]];
+            for (int p = LT_colptr [j] ; p < LT_colptr[j+1] ; p++) {
+                acc -= LT_values[p] * Tmp[LT_rowind[p]];
+            }
+            Tmp[j] = acc;
+        }
+
+        for (int j = n-1 ; j >= 0 ; j--) {
+            Tmp[j] *= invD[j];
+
+            for (int p = L_colptr[j] ; p < L_colptr[j+1] ; p++) {
+                Tmp[j] -= L_values[p] * Tmp[L_rowind[p]];
+            }
+
+            x[perm[j]] = Tmp[j];
+        }
+    }
+
+    template<class VecInt,class VecReal>
+    void factorize(TMatrix & M,SpaseLDLImplInvertData<VecInt,VecReal> * data) {
+        Mfiltered.copyNonZeros(M);
+        Mfiltered.compress();
+
+        int * M_colptr = (int *) &Mfiltered.getRowBegin()[0];
+        int * M_rowind = (int *) &Mfiltered.getColsIndex()[0];
+        Real * M_values = (Real *) &Mfiltered.getColsValue()[0];
+
+        bool new_factorization_needed = need_symbolic_factorization(data->P_colptr,data->P_rowind);
+
+        // we test if the matrix has the same struct as previous factorized matrix
+        if (new_factorization_needed) {
+            sout << "RECOMPUTE NEW FACTORIZATION" << sendl;
+            data->n = M.colSize();
+            data->P_nnz = M_colptr[data->n];
+
+            data->perm.clear();data->perm.resize(data->n);
+            data->invperm.clear();data->invperm.resize(data->n);
+            data->invD.clear();data->invD.resize(data->n);
+            data->P_colptr.clear();data->P_colptr.resize(data->n+1);
+            data->L_colptr.clear();data->L_colptr.resize(data->n+1);
+            data->LT_colptr.clear();data->LT_colptr.resize(data->n+1);
+            data->P_rowind.clear();data->P_rowind.resize(data->P_nnz);
+            data->P_values.clear();data->P_values.resize(data->P_nnz);
+
+            memcpy(&data->P_colptr[0],M_colptr,(data->n+1) * sizeof(int));
+            memcpy(&data->P_rowind[0],M_rowind,data->P_nnz * sizeof(int));
+            memcpy(&data->P_values[0],M_values,data->P_nnz * sizeof(Real));
+
+            //ordering function
+            LDL_ordering(data->n,M_colptr,M_rowind,&data->perm[0],&data->invperm[0]);
+
+            data->Parent.clear();
+            data->Parent.resize(data->n);
+
+            //symbolic factorization
+            LDL_symbolic(data->n,M_colptr,M_rowind,&data->L_colptr[0],&data->perm[0],&data->invperm[0],&data->Parent[0]);
+
+            data->L_nnz = data->L_colptr[data->n];
+
+            data->L_rowind.clear();data->L_rowind.resize(data->L_nnz);
+            data->L_values.clear();data->L_values.resize(data->L_nnz);
+            data->LT_rowind.clear();data->LT_rowind.resize(data->L_nnz);
+            data->LT_values.clear();data->LT_values.resize(data->L_nnz);
+        }
+
+        Real * D = &data->invD[0];
+        int * rowind = &data->L_rowind[0];
+        int * colptr = &data->L_colptr[0];
+        Real * values = &data->L_values[0];
+        int * tran_rowind = &data->LT_rowind[0];
+        int * tran_colptr = &data->LT_colptr[0];
+        Real * tran_values = &data->LT_values[0];
+
+        //Numeric Factorization
+        LDL_numeric(data->n,M_colptr,M_rowind,M_values,colptr,rowind,values,D,&data->perm[0],&data->invperm[0],&data->Parent[0]);
+
+        //inverse the diagonal
+        for (int i=0;i<data->n;i++) D[i] = 1.0/D[i];
+
+        if (new_factorization_needed) {
+            //Compute transpose in tran_colptr, tran_rowind, tran_values, tran_D
+            tran_countvec.clear();
+            tran_countvec.resize(data->n);
+
+            //First we count the number of value on each row.
+            for (int j=0;j<data->L_nnz;j++) tran_countvec[rowind[j]]++;
+
+            //Now we make a scan to build tran_colptr
+            tran_colptr[0] = 0;
+            for (int j=0;j<data->n;j++) tran_colptr[j+1] = tran_colptr[j] + tran_countvec[j];
+        }
+
+        //we clear tran_countvec becaus we use it now to stro hown many value are written on each line
+        tran_countvec.clear();
+        tran_countvec.resize(data->n);
+
+        for (int j=0;j<data->n;j++) {
+          for (int i=colptr[j];i<colptr[j+1];i++) {
+            int line = rowind[i];
+            tran_rowind[tran_colptr[line] + tran_countvec[line]] = j;
+            tran_values[tran_colptr[line] + tran_countvec[line]] = values[i];
+            tran_countvec[line]++;
+          }
+        }
+    }
 
     void LDL_ordering(int n,int * M_colptr,int * M_rowind,int * perm,int * invperm)
     {
@@ -92,13 +224,12 @@ protected :
 #endif
     }
 
-    void LDL_symbolic (int n,int * M_colptr,int * M_rowind,int * colptr,int * perm,int * invperm)
+    void LDL_symbolic (int n,int * M_colptr,int * M_rowind,int * colptr,int * perm,int * invperm,int * Parent)
     {
-        Parent.clear();
         Lnz.clear();
         Flag.clear();
         Pattern.clear();
-        Parent.resize(n);
+
         Lnz.resize(n);
         Flag.resize(n);
         Pattern.resize(n);
@@ -131,7 +262,7 @@ protected :
         for (int k = 0 ; k < n ; k++) colptr[k+1] = colptr[k] + Lnz[k] ;
     }
 
-    void LDL_numeric(int n,int * M_colptr,int * M_rowind,Real * M_values,int * colptr,int * rowind,Real * values,Real * D,int * perm,int * invperm)
+    void LDL_numeric(int n,int * M_colptr,int * M_rowind,Real * M_values,int * colptr,int * rowind,Real * values,Real * D,int * perm,int * invperm,int * Parent)
     {
         Real yi, l_ki ;
         int i, p, kk, len, top ;
@@ -185,10 +316,34 @@ protected :
         }
     }
 
+    template<class VecInt>
+    bool need_symbolic_factorization(const VecInt & P_colptr,const VecInt & P_rowind) {
+        if (P_colptr.size() != Mfiltered.getRowBegin().size()) return true;
+        if (P_rowind.size() != Mfiltered.getColsIndex().size()) return true;
 
+        const int * M_colptr = (int *) &Mfiltered.getRowBegin()[0];
+        const int * M_rowind = (int *) &Mfiltered.getColsIndex()[0];
+        const int * colptr = &P_colptr[0];
+        const int * rowind = &P_rowind[0];
+
+        for (unsigned i=0;i<P_colptr.size();i++) {
+            if (M_colptr[i]!=colptr[i]) return true;
+        }
+
+        for (unsigned i=0;i<P_rowind.size();i++) {
+            if (M_rowind[i]!=rowind[i]) return true;
+        }
+
+        return false;
+    }
+
+    helper::vector<Real> Tmp;
+private : //the folowing variables are used during the factorization they canno be used in the main thread !
     helper::vector<int> xadj,adj;
     helper::vector<Real> Y;
-    helper::vector<int> Parent,Lnz,Flag,Pattern;
+    helper::vector<int> Lnz,Flag,Pattern;
+    sofa::component::linearsolver::CompressedRowSparseMatrix<Real> Mfiltered;
+    helper::vector<int> tran_countvec;
 //    helper::vector<int> perm, invperm; //premutation inverse
 
 };
