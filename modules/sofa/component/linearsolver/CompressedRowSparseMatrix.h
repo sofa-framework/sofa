@@ -1663,6 +1663,11 @@ public:
     {
         taddMul_by_line< Real2,V,defaulttype::Vec<NC,Real2> >( res, v );
     }
+    template< typename Real, typename V, typename V2 >
+    void addMul_by_line( V& res, const V2& v ) const
+    {
+        taddMul_by_line< Real,V,V2 >( res, v );
+    }
 
 
     /// result += this * v

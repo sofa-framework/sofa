@@ -222,10 +222,8 @@ int main(int argc, char** argv)
     glutInit(&argc,argv);
 
     std::vector<std::string> files;
-    std::string simulationType="tree";
 
     sofa::helper::parse("This is a SOFA application. Here are the command line arguments")
-    .option(&simulationType,'s',"simulation","type of the simulation(bgl,tree)")
     (argc,argv);
 
 
@@ -235,7 +233,7 @@ int main(int argc, char** argv)
     sofa::gui::GUIManager::Init(argv[0]);
 
     // The graph root node
-    Node::SPtr root = sofa::SimpleObjectCreator::CreateRootWithCollisionPipeline(simulationType);
+    Node::SPtr root = sofa::SimpleObjectCreator::CreateRootWithCollisionPipeline();
     root->setGravity( Coord3(0,0,-10) );
 
     //Add the objects
