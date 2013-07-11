@@ -404,7 +404,6 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
         raInd rreg(This->f_region);        const typename IndTypes::CImgT& regimg = rreg->getCImg();
         raTransform transform(This->f_transform);
         const Coord voxelsize(transform->getScale());
-        const Real dv =  voxelsize[0] * voxelsize[1] * voxelsize[2];
 
         // list of absolute coords
         factType &fact = This->Reg[factIndex];
@@ -430,7 +429,7 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
             }
         }
 
-        fact.fill(wi,pi,This->fillOrder(),dv,This->volOrder());
+        fact.fill(wi,pi,This->fillOrder(),voxelsize,This->volOrder());
 
         //  std::cout<<"pt "<<*(fact.voronoiIndices.begin())-1<<" : "<<fact.center<<std::endl<<std::endl<<std::endl<<pi<<std::endl<<std::endl<<wi<<std::endl;
         //test: fact.directSolve(wi,pi); std::cout<<"Jacobi err="<<fact.getError()<<std::endl;
@@ -819,7 +818,6 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMA
         raInd rreg(This->f_region);        const IndTypes& regimg = rreg.ref();
         raTransform transform(This->f_transform);
         const Coord voxelsize(transform->getScale());
-        const Real dv =  voxelsize[0] * voxelsize[1] * voxelsize[2];
 
         // list of absolute coords
         factType &fact = This->Reg[factIndex];
@@ -846,7 +844,7 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMA
             }
         }
 
-        fact.fill(wi,pi,This->fillOrder(),dv,This->volOrder());
+        fact.fill(wi,pi,This->fillOrder(),voxelsize,This->volOrder());
 
         //  std::cout<<"pt "<<*(fact.voronoiIndices.begin())-1<<" : "<<fact.center<<std::endl<<std::endl<<std::endl<<pi<<std::endl<<std::endl<<wi<<std::endl;
         //test: fact.directSolve(wi,pi); std::cout<<"Jacobi err="<<fact.getError()<<std::endl;
