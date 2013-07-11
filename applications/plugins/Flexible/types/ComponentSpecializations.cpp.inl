@@ -5,6 +5,14 @@
 
 #include "ComponentSpecializationsDefines.h"
 
+#ifdef Success
+#undef Success // before include eigen stuff http://eigen.tuxfamily.org/bz/show_bug.cgi?id=253
+#endif
+#include <sofa/component/projectiveconstraintset/ProjectToPointConstraint.inl>
+#include <sofa/component/projectiveconstraintset/ProjectToLineConstraint.inl>
+#include <sofa/component/projectiveconstraintset/ProjectToPlaneConstraint.inl>
+#include <sofa/component/projectiveconstraintset/ProjectDirectionConstraint.inl>
+
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/simulation/common/Node.h>
@@ -13,10 +21,6 @@
 
 #include <sofa/component/projectiveconstraintset/FixedConstraint.inl>
 #include <sofa/component/projectiveconstraintset/PartialFixedConstraint.inl>
-#include <sofa/component/projectiveconstraintset/ProjectToPointConstraint.inl>
-#include <sofa/component/projectiveconstraintset/ProjectToLineConstraint.inl>
-#include <sofa/component/projectiveconstraintset/ProjectToPlaneConstraint.inl>
-#include <sofa/component/projectiveconstraintset/ProjectDirectionConstraint.inl>
 #include <sofa/core/behavior/ProjectiveConstraintSet.inl>
 
 #include <sofa/component/engine/BoxROI.inl>
@@ -33,6 +37,8 @@
 #include <sofa/component/mapping/SubsetMultiMapping.inl>
 
 #include <sofa/core/behavior/ForceField.inl>
+
+#include "../mass/ImageDensityMass.inl"
 
 
 
@@ -763,9 +769,9 @@ double UniformMass<defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::TYPEABSTRA
     // ==========================================================================
     // Instanciation
 
-    SOFA_DECL_CLASS ( EVALUATOR(TYPEABSTRACTNAME,UniformMass) )
-
     using namespace sofa::defaulttype;
+
+    SOFA_DECL_CLASS ( EVALUATOR(TYPEABSTRACTNAME,UniformMass) )
 
     int EVALUATOR(TYPEABSTRACTNAME,UniformMassClass) = core::RegisterObject ( "Define the same mass for all the particles" )
 #ifndef SOFA_FLOAT
@@ -777,12 +783,26 @@ double UniformMass<defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::TYPEABSTRA
             ;
 
 
+    SOFA_DECL_CLASS ( EVALUATOR(TYPEABSTRACTNAME,ImageDensityMass) )
+
+    int EVALUATOR(TYPEABSTRACTNAME,ImageDensityMassClass) = core::RegisterObject ( "Define a global mass matrix including non diagonal terms" )
+#ifndef SOFA_FLOAT
+    .add< ImageDensityMass<TYPEABSTRACTNAME3dTypes,core::behavior::ShapeFunction3d,TYPEABSTRACTNAME3dMass> >()
+#endif
+#ifndef SOFA_DOUBLE
+    .add< ImageDensityMass<TYPEABSTRACTNAME3fTypes,core::behavior::ShapeFunction3f,TYPEABSTRACTNAME3fMass> >()
+#endif
+            ;
+
+
 
 #ifndef SOFA_FLOAT
     template class SOFA_Flexible_API UniformMass<TYPEABSTRACTNAME3dTypes,TYPEABSTRACTNAME3dMass>;
+    template class SOFA_Flexible_API ImageDensityMass<TYPEABSTRACTNAME3dTypes,core::behavior::ShapeFunction3d,TYPEABSTRACTNAME3dMass>;
 #endif
 #ifndef SOFA_DOUBLE
     template class SOFA_Flexible_API UniformMass<TYPEABSTRACTNAME3fTypes,TYPEABSTRACTNAME3fMass>;
+    template class SOFA_Flexible_API ImageDensityMass<TYPEABSTRACTNAME3fTypes,core::behavior::ShapeFunction3f,TYPEABSTRACTNAME3fMass>;
 #endif
 
 
