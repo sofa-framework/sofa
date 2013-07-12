@@ -37,10 +37,10 @@ AssembledSolver::AssembledSolver()
 	                             false,
 	                             "propagate_lambdas",
 	                             "propagate Lagrange multipliers in force vector at the end of time step")),
-	  post_stabilization(initData(&post_stabilization, 
-	                             false,
-	                             "post_stabilization",
-	                             "apply a post-stabilization pass on kinematic constraints requesting it"))
+	  stabilization(initData(&stabilization, 
+	                         false,
+	                         "stabilization",
+	                         "apply a stabilization pass on kinematic constraints requesting it"))
 {
 	
 }
@@ -212,7 +212,7 @@ AssembledSolver::kkt_type::vec AssembledSolver::stab_mask(const system_type& sys
 	kkt_type::vec res;
 
 	if( !sys.n ) return res;
-	if( !post_stabilization.getValue() ) return res;
+	if( !stabilization.getValue() ) return res;
 
 	res = kkt_type::vec::Zero( sys.n );
 	
