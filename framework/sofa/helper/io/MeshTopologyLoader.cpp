@@ -141,7 +141,9 @@ bool MeshTopologyLoader::loadStl(const char *filename)
     }
     for (unsigned int i=0; i<facets.size(); i++)
     {
-        addTriangle(i,i+1,i+2);
+        const vector<int>& facet = facets[i][0];
+        for (unsigned int j=2; j<facet.size(); j++)
+            addTriangle(facet[0],facet[j-1],facet[j]);
     }
     return true;
   
