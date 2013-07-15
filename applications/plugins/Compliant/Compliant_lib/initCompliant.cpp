@@ -24,6 +24,7 @@
 ******************************************************************************/
 #include "initCompliant.h"
 #include "CompliantAttachPerformer.h"
+#include "CompliantSolverMerger.h"
 #include <sofa/gui/OperationFactory.h>
 #include <sofa/gui/MouseOperations.h>
 
@@ -57,8 +58,10 @@ void initExternalModule()
     if (first)
     {
         first = false;
+
+        gui::RegisterOperation("CompliantAttach").add< gui::CompliantAttachOperation >();
+        component::collision::addCompliantSolverMerger();
     }
-    gui::RegisterOperation("CompliantAttach").add< gui::CompliantAttachOperation >();
 }
 
 const char* getModuleName()
@@ -84,8 +87,7 @@ const char* getModuleDescription()
 
 const char* getModuleComponentList()
 {
-//    return "MyMappingPendulumInPlane, MyBehaviorModel, MyProjectiveConstraintSet";
-    return "";
+    return ""; /// @TODO
 }
 
 

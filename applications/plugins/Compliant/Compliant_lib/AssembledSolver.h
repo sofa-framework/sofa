@@ -45,6 +45,9 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
 	
 	virtual void cleanup();
 
+    // solve velocity dynamics ?
+    Data<bool> use_velocity, warm_start, propagate_lambdas, stabilization;
+
   protected:
 				
 	// send a visitor 
@@ -83,9 +86,6 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
 
 	// mask for constraints to be stabilized
 	kkt_type::vec stab_mask(const system_type& sys) const;
-	
-	// solve velocity dynamics ?
-	Data<bool> use_velocity, warm_start, propagate_lambdas, stabilization;
 
 	// this is for warm start and returning constraint forces
 	core::behavior::MultiVecDeriv lagrange;
