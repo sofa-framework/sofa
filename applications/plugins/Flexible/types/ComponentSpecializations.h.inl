@@ -70,12 +70,12 @@ namespace mass
 {
 
 template<int N, typename Real>
-class AddMToMatrixFunctor< typename defaulttype::StdTYPEABSTRACTNAMETypes<N,Real>::Deriv, defaulttype::FrameMass<N,defaulttype::StdTYPEABSTRACTNAMETypes<N,Real>::deriv_total_size,Real> >
+class AddMToMatrixFunctor< typename defaulttype::StdTYPEABSTRACTNAMETypes<N,Real>::Deriv, defaulttype::DeformableFrameMass<N,defaulttype::StdTYPEABSTRACTNAMETypes<N,Real>::deriv_total_size,Real> >
 {
 public:
-    void operator()(defaulttype::BaseMatrix * mat, const defaulttype::FrameMass<N,defaulttype::StdTYPEABSTRACTNAMETypes<N,Real>::deriv_total_size,Real>& mass, int pos, double fact)
+    void operator()(defaulttype::BaseMatrix * mat, const defaulttype::DeformableFrameMass<N,defaulttype::StdTYPEABSTRACTNAMETypes<N,Real>::deriv_total_size,Real>& mass, int pos, double fact)
     {
-        typedef defaulttype::FrameMass<N,defaulttype::StdTYPEABSTRACTNAMETypes<N,Real>::deriv_total_size,Real> TYPEABSTRACTNAMEMass;
+        typedef defaulttype::DeformableFrameMass<N,defaulttype::StdTYPEABSTRACTNAMETypes<N,Real>::deriv_total_size,Real> TYPEABSTRACTNAMEMass;
         for( unsigned i=0; i<TYPEABSTRACTNAMEMass::VSize; ++i )
             for( unsigned j=0; j<TYPEABSTRACTNAMEMass::VSize; ++j )
             {

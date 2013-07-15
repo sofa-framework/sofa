@@ -15,7 +15,7 @@ namespace defaulttype
 
     /** Mass associated with a frame */
     template<int _spatial_dimensions,int _dim, typename _Real>
-    class FrameMass : public Mat<_dim,_dim, _Real>
+    class DeformableFrameMass : public Mat<_dim,_dim, _Real>
     {
     public:
         typedef _Real Real;
@@ -26,18 +26,18 @@ namespace defaulttype
         typedef Mat<VSize, VSize, Real> MassMatrix;
 
 
-        FrameMass() : MassMatrix(), m_invMassMatrix(NULL)
+        DeformableFrameMass() : MassMatrix(), m_invMassMatrix(NULL)
         {
         }
 
         /// build a uniform, diagonal matrix
-        FrameMass( Real m ) : MassMatrix(), m_invMassMatrix(NULL)
+        DeformableFrameMass( Real m ) : MassMatrix(), m_invMassMatrix(NULL)
         {
             setValue( m );
         }
 
 
-        ~FrameMass()
+        ~DeformableFrameMass()
         {
             if( m_invMassMatrix )
             {
@@ -149,13 +149,13 @@ namespace defaulttype
     };
 
     template<class Deriv,int _spatial_dimensions,int _dim,typename _Real>
-    Deriv operator/(const Deriv& d, const FrameMass<_spatial_dimensions, _dim, _Real>& m)
+    Deriv operator/(const Deriv& d, const DeformableFrameMass<_spatial_dimensions, _dim, _Real>& m)
     {
         return m.getInverse() * d;
     }
 
     template<class Deriv,int _spatial_dimensions,int _dim,typename _Real>
-    Deriv operator*(const FrameMass<_spatial_dimensions, _dim,_Real>& m,const Deriv& d)
+    Deriv operator*(const DeformableFrameMass<_spatial_dimensions, _dim,_Real>& m,const Deriv& d)
     {
         return d * m;
     }

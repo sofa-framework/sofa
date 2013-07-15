@@ -16,7 +16,7 @@ set(HEADER_FILES
     types/ComponentSpecializations.cpp.inl
     types/ComponentSpecializationsDefines.h
     types/ComponentSpecializationsUndef.h
-    types/FrameMass.h
+    types/DeformableFrameMass.h
     quadrature/BaseGaussPointSampler.h 
     quadrature/TopologyGaussPointSampler.h 
     shapeFunction/BaseShapeFunction.h 
