@@ -22,6 +22,7 @@ set(HEADER_FILES
 	AssembledSolver.h
 	AssembledMapping.h
 	Stabilization.h
+    CompliantSolverMerger.h
 	
       utils/cast.h
       utils/cg.h
