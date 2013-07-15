@@ -56,6 +56,7 @@ set(SOURCE_FILES
 	AssembledSystem.cpp
 	AssembledSolver.cpp
 	Stabilization.cpp 
+    CompliantSolverMerger.cpp
 	)
 
 set(README_FILES
