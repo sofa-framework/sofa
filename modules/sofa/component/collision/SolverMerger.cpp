@@ -45,7 +45,7 @@ namespace component
 namespace collision
 {
 using sofa::core::behavior::OdeSolver;
-using sofa::core::behavior::LinearSolver;
+using sofa::core::behavior::BaseLinearSolver;
 using sofa::core::behavior::ConstraintSolver;
 
 namespace solvermergers
@@ -141,7 +141,7 @@ SolverSet createSolverRungeKutta4RungeKutta4(odesolver::RungeKutta4Solver& solve
 
 typedef linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector> DefaultCGLinearSolver;
 
-LinearSolver::SPtr createLinearSolver(OdeSolver* solver1, OdeSolver* solver2)
+BaseLinearSolver::SPtr createLinearSolver(OdeSolver* solver1, OdeSolver* solver2)
 {
     DefaultCGLinearSolver::SPtr lsolver = sofa::core::objectmodel::New<DefaultCGLinearSolver>();
     DefaultCGLinearSolver* lsolver1 = NULL; if (solver1!=NULL) solver1->getContext()->get(lsolver1, core::objectmodel::BaseContext::SearchDown);
