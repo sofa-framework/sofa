@@ -185,16 +185,26 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
                 if (solver.odeSolver)
                 {
                     group->addObject(solver.odeSolver);
-                    solver.odeSolver->init();
                 }
                 if (solver.linearSolver)
                 {
                     group->addObject(solver.linearSolver);
-                    solver.linearSolver->init();
                 }
                 if (solver.constraintSolver)
                 {
                     group->addObject(solver.constraintSolver);
+                }
+                // perform init only once everyone has been added (in case of explicit dependencies)
+                if (solver.odeSolver)
+                {
+                    solver.odeSolver->init();
+                }
+                if (solver.linearSolver)
+                {
+                    solver.linearSolver->init();
+                }
+                if (solver.constraintSolver)
+                {
                     solver.constraintSolver->init();
                 }
             }

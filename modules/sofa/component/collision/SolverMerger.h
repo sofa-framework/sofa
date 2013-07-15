@@ -57,7 +57,14 @@ class SolverMerger
 public:
     static SolverSet merge(core::behavior::OdeSolver* solver1, core::behavior::OdeSolver* solver2);
 
+    template<typename SolverType1, typename SolverType2, SolverSet (*F)(SolverType1&,SolverType2&),bool symmetric> static void addDispatcher()
+    {
+        getInstance()->solverDispatcher.add<SolverType1,SolverType2,F,symmetric>();
+    }
+
 protected:
+
+    static SolverMerger* getInstance();
 
     helper::FnDispatcher<core::behavior::OdeSolver, SolverSet> solverDispatcher;
 
