@@ -70,6 +70,8 @@ void AssembledSystem::debug(SReal /*thres*/) const {
 
 bool AssembledSystem::isDiagonalDominant() const
 {
+    typedef typename mat::Index Index;
+
     mat PH = P*H;
 
     if( n )
@@ -81,8 +83,8 @@ bool AssembledSystem::isDiagonalDominant() const
             real d = helper::rabs(PH.coeff(i,i));
 
             real o = -d;
-            for( unsigned j=0 ; j<PH.cols()  ; ++j ) o += helper::rabs(PH.coeff(i,j));
-            for( unsigned j=0 ; j<PJt.cols() ; ++j ) o += helper::rabs(PJt.coeff(i,j));
+            for( Index j=0 ; j<PH.cols()  ; ++j ) o += helper::rabs(PH.coeff(i,j));
+            for( Index j=0 ; j<PJt.cols() ; ++j ) o += helper::rabs(PJt.coeff(i,j));
 
             if( o > d ) return false;
         }
@@ -92,8 +94,8 @@ bool AssembledSystem::isDiagonalDominant() const
             real d = helper::rabs(C.coeff(i,i));
 
             real o = -d;
-            for( unsigned j=0 ; j<C.cols() ; ++j ) o += helper::rabs(C.coeff(i,j));
-            for( unsigned j=0 ; j<J.cols() ; ++j ) o += helper::rabs(J.coeff(i,j));
+            for( Index j=0 ; j<C.cols() ; ++j ) o += helper::rabs(C.coeff(i,j));
+            for( Index j=0 ; j<J.cols() ; ++j ) o += helper::rabs(J.coeff(i,j));
 
             if( o > d ) return false;
         }
@@ -105,7 +107,7 @@ bool AssembledSystem::isDiagonalDominant() const
             real d = helper::rabs(PH.coeff(i,i));
 
             real o = -d;
-            for( unsigned j=0 ; j<PH.cols() ; ++j ) o += helper::rabs(PH.coeff(i,j));
+            for( Index j=0 ; j<PH.cols() ; ++j ) o += helper::rabs(PH.coeff(i,j));
 
             if( o > d ) return false;
         }

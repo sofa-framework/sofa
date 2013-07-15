@@ -1,69 +1,49 @@
 #ifndef __COMPLIANT_COMPLIANTSOLVERMERGER_H__
 #define __COMPLIANT_COMPLIANTSOLVERMERGER_H__
 
+#include <sofa/core/behavior/LinearSolver.h>
 
-#include <sofa/component/collision/SolverMerger.h>
-
-#include "AssembledSolver.h"
-#include "ComplianceSolver.h"
-
-#include "MinresSolver.h"
-#include "LDLTSolver.h"
 
 namespace sofa
 {
+
+namespace core
+{
+namespace behavior
+{
+    class OdeSolver;
+} // namespace behavior
+} // namespace core
+
 namespace component
 {
 namespace collision
 {
 
 
-
-    SolverSet createComplianceSolver(odesolver::ComplianceSolver& solver1, odesolver::ComplianceSolver& solver2)
+    class CompliantSolverMerger
     {
-        odesolver::ComplianceSolver::SPtr solver = sofa::core::objectmodel::New<odesolver::ComplianceSolver>();
-//        solver->f_rayleighStiffness.setValue( solver1.f_rayleighStiffness.getValue() < solver2.f_rayleighStiffness.getValue() ? solver1.f_rayleighStiffness.getValue() : solver2.f_rayleighStiffness.getValue() );
+    public:
 
-//        solver->f_rayleighMass.setValue( solver1.f_rayleighMass.getValue() < solver2.f_rayleighMass.getValue() ? solver1.f_rayleighMass.getValue() : solver2.f_rayleighMass.getValue() );
-//        solver->f_velocityDamping.setValue( solver1.f_velocityDamping.getValue() > solver2.f_velocityDamping.getValue() ? solver1.f_velocityDamping.getValue() : solver2.f_velocityDamping.getValue());
-        return SolverSet(solver,
-                0,
-                0 );
-    }
+        static void add();
 
+        static core::behavior::BaseLinearSolver::SPtr mergeLinearSolver(core::behavior::OdeSolver* solver1, core::behavior::OdeSolver* solver2);
 
-    core::behavior::BaseLinearSolver::SPtr createCompliantLinearSolver(const core::behavior::OdeSolver& solver1, const core::behavior::OdeSolver& solver2)
-    {
-        linearsolver::MinresSolver::SPtr lsolver = sofa::core::objectmodel::New<linearsolver::MinresSolver>();
+        template<typename SolverType1, typename SolverType2, core::behavior::BaseLinearSolver::SPtr (*F)(SolverType1&,SolverType2&),bool symmetric> static void addLinearSolverDispatcher()
+        {
+            getInstance()->_linearSolverDispatcher.add<SolverType1,SolverType2,F,symmetric>();
+        }
 
-//        core::behavior::LinearSolver* lsolver1 = NULL; if (solver1!=NULL) solver1->getContext()->get(lsolver1, core::objectmodel::BaseContext::SearchDown);
-//        core::behavior::LinearSolver* lsolver2 = NULL; if (solver2!=NULL) solver2->getContext()->get(lsolver2, core::objectmodel::BaseContext::SearchDown);
+    protected:
 
-        // TODO  handle all cases of input linearsolver + data values, etc....
+        static CompliantSolverMerger* getInstance();
 
-        return lsolver;
-    }
+        helper::FnDispatcher<core::behavior::BaseLinearSolver, core::behavior::BaseLinearSolver::SPtr> _linearSolverDispatcher;
+
+        CompliantSolverMerger();
+    };
 
 
-    SolverSet createAssembledSolver(odesolver::AssembledSolver& solver1, odesolver::AssembledSolver& solver2)
-    {
-        odesolver::AssembledSolver::SPtr solver = sofa::core::objectmodel::New<odesolver::AssembledSolver>();
-
-        solver->use_velocity.setValue( solver1.use_velocity.getValue() || solver2.use_velocity.getValue() );
-        solver->warm_start.setValue( solver1.warm_start.getValue() && solver2.warm_start.getValue() );
-        solver->propagate_lambdas.setValue( solver1.propagate_lambdas.getValue() && solver2.propagate_lambdas.getValue() );
-        solver->stabilization.setValue( solver1.stabilization.getValue() || solver2.stabilization.getValue() );
-
-        return SolverSet(solver,
-                createCompliantLinearSolver(solver1,solver2),
-                0 );
-    }
-
-    void addCompliantSolverMerger()
-    {
-        SolverMerger::addDispatcher<odesolver::ComplianceSolver,odesolver::ComplianceSolver,createComplianceSolver,true>();
-        SolverMerger::addDispatcher<odesolver::AssembledSolver,odesolver::AssembledSolver,createAssembledSolver,true>();
-    }
 
 
 

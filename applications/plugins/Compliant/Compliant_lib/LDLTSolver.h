@@ -32,6 +32,9 @@ class SOFA_Compliant_API LDLTSolver : public KKTSolver {
 
 	LDLTSolver();
 	~LDLTSolver();
+
+
+    Data<SReal> damping;
 	
   private:
 	
@@ -51,8 +54,7 @@ class SOFA_Compliant_API LDLTSolver : public KKTSolver {
 
 	
 	mutable thread_local<pimpl_type> pimpl;
-	
-	Data<SReal> damping;
+
 };
 
 

@@ -22,6 +22,7 @@ SOURCES = \
 		AssembledSystem.cpp \
 		AssembledSolver.cpp \
 		Stabilization.cpp \
+	  CompliantSolverMerger.cpp
 
 HEADERS = \
     initCompliant.h \
@@ -42,6 +43,7 @@ HEADERS = \
 		AssembledSystem.h \
 		AssembledSolver.h \
 		Stabilization.h \
+    CompliantSolverMerger.h \
     utils/*.h
 
 

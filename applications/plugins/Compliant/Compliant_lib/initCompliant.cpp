@@ -60,7 +60,7 @@ void initExternalModule()
         first = false;
 
         gui::RegisterOperation("CompliantAttach").add< gui::CompliantAttachOperation >();
-        component::collision::addCompliantSolverMerger();
+        component::collision::CompliantSolverMerger::add();
     }
 }
 
