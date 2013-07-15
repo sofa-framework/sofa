@@ -171,7 +171,6 @@ SolverSet createSolverEulerImplicitEulerImplicit(odesolver::EulerImplicitSolver&
 {
     odesolver::EulerImplicitSolver::SPtr solver = sofa::core::objectmodel::New<odesolver::EulerImplicitSolver>();
     solver->f_rayleighStiffness.setValue( solver1.f_rayleighStiffness.getValue() < solver2.f_rayleighStiffness.getValue() ? solver1.f_rayleighStiffness.getValue() : solver2.f_rayleighStiffness.getValue() );
-
     solver->f_rayleighMass.setValue( solver1.f_rayleighMass.getValue() < solver2.f_rayleighMass.getValue() ? solver1.f_rayleighMass.getValue() : solver2.f_rayleighMass.getValue() );
     solver->f_velocityDamping.setValue( solver1.f_velocityDamping.getValue() > solver2.f_velocityDamping.getValue() ? solver1.f_velocityDamping.getValue() : solver2.f_velocityDamping.getValue());
     return SolverSet(solver,
@@ -211,13 +210,16 @@ SolverSet createSolverEulerImplicitRungeKutta4(odesolver::EulerImplicitSolver& s
 
 using namespace solvermergers;
 
-SolverSet SolverMerger::merge(core::behavior::OdeSolver* solver1, core::behavior::OdeSolver* solver2)
+
+SolverMerger* SolverMerger::getInstance()
 {
     static SolverMerger instance;
-    SolverSet obj=instance.solverDispatcher.go(*solver1, *solver2);
+    return &instance;
+}
 
-
-    return obj;
+SolverSet SolverMerger::merge(core::behavior::OdeSolver* solver1, core::behavior::OdeSolver* solver2)
+{
+    return getInstance()->solverDispatcher.go(*solver1, *solver2);
 }
 
 SolverMerger::SolverMerger()
