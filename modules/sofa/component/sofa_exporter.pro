@@ -12,6 +12,7 @@ HEADERS += initExporter.h \
            misc/WriteTopology.inl \
            misc/VTKExporter.h \
            misc/OBJExporter.h \
+           misc/STLExporter.h \
            misc/MeshExporter.h
 
 SOURCES += initExporter.cpp \
@@ -19,6 +20,7 @@ SOURCES += initExporter.cpp \
            misc/WriteTopology.cpp \
            misc/VTKExporter.cpp \
            misc/OBJExporter.cpp \
+           misc/STLExporter.cpp \
            misc/MeshExporter.cpp
 
 # Make sure there are no cross-dependencies
