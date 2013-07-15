@@ -172,7 +172,7 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
                 }
                 if (!group->linearSolver.empty())
                 {
-                    core::behavior::LinearSolver* solver2 = group->linearSolver[0];
+                    core::behavior::BaseLinearSolver* solver2 = group->linearSolver[0];
                     group->removeObject(solver2);
                     //delete solver2;
                 }
@@ -268,7 +268,7 @@ simulation::Node* DefaultCollisionGroupManager::getIntegrationNode(core::Collisi
     simulation::Node* solvernode = static_cast<simulation::Node*>(listSolver.back()->getContext());
     if (solvernode->linearSolver.empty())
         return solvernode; // no linearsolver
-    core::behavior::LinearSolver * linearSolver = solvernode->linearSolver[0];
+    core::behavior::BaseLinearSolver * linearSolver = solvernode->linearSolver[0];
     if (!linearSolver->isMultiGroup())
     {
         //std::cout << "Linear solver " << linearSolver->getName() << " of CM " << model->getName() << " is not multi-group" << std::endl;

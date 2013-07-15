@@ -43,12 +43,12 @@ namespace collision
 {
 struct SolverSet
 {
-    SolverSet(core::behavior::OdeSolver::SPtr o=NULL,core::behavior::LinearSolver::SPtr l=NULL,core::behavior::ConstraintSolver::SPtr c=NULL):
+    SolverSet(core::behavior::OdeSolver::SPtr o=NULL,core::behavior::BaseLinearSolver::SPtr l=NULL,core::behavior::ConstraintSolver::SPtr c=NULL):
         odeSolver(o),linearSolver(l),constraintSolver(c)
     {}
 
     core::behavior::OdeSolver::SPtr odeSolver;
-    core::behavior::LinearSolver::SPtr linearSolver;
+    core::behavior::BaseLinearSolver::SPtr linearSolver;
     core::behavior::ConstraintSolver::SPtr constraintSolver;
 };
 

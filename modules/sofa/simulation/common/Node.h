@@ -269,7 +269,7 @@ public:
 
     Sequence<core::behavior::OdeSolver> solver;
     Sequence<core::behavior::ConstraintSolver> constraintSolver;
-    Sequence<core::behavior::LinearSolver> linearSolver;
+    Sequence<core::behavior::BaseLinearSolver> linearSolver;
 
     Single<core::topology::Topology> topology;
     Single<core::topology::BaseMeshTopology> meshTopology;

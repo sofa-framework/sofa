@@ -41,14 +41,36 @@ namespace core
 namespace behavior
 {
 
+
+/**
+ *  \brief Abstract base class (as type identifier) for linear system solvers without any API
+ *
+ */
+class SOFA_CORE_API BaseLinearSolver : public virtual objectmodel::BaseObject
+{
+public:
+    SOFA_ABSTRACT_CLASS(BaseLinearSolver, objectmodel::BaseObject);
+
+    /// Check if this solver handle multiple independent integration groups, placed as child nodes in the scene graph.
+    /// If this is the case, then when collisions occur, the CollisionGroupManager can simply group the interacting groups into new child nodes without creating a new solver to handle them.
+    virtual bool isMultiGroup() const
+    {
+        return false;
+    }
+
+}; // class BaseLinearSolver
+
+
+
+
 /**
  *  \brief Abstract interface for linear system solvers
  *
  */
-class SOFA_CORE_API LinearSolver : public virtual objectmodel::BaseObject
+class SOFA_CORE_API LinearSolver : public BaseLinearSolver
 {
 public:
-    SOFA_ABSTRACT_CLASS(LinearSolver, objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(LinearSolver, BaseLinearSolver);
 protected:
     LinearSolver();
 
@@ -135,13 +157,7 @@ public:
     /// Ask the solver to no longer update the system matrix
     virtual void freezeSystemMatrix() { frozen = true; }
 
-    /// Check if this solver handle multiple multiple independent integration groups, placed as child nodes in the scene graph.
-    ///
-    /// If this is the case, then when collisions occur, the CollisionGroupManager can simply group the interacting groups into new child nodes without creating a new solver to handle them.
-    virtual bool isMultiGroup() const
-    {
-        return false;
-    }
+
 
 protected:
 

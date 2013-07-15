@@ -549,7 +549,7 @@ void Node::doAddObject(BaseObject::SPtr sobj)
     int inserted=0;
     inserted+= animationManager.add(dynamic_cast< core::behavior::BaseAnimationLoop* >(obj));
     inserted+= solver.add(dynamic_cast< core::behavior::OdeSolver* >(obj));
-    inserted+= linearSolver.add(dynamic_cast< core::behavior::LinearSolver* >(obj));
+    inserted+= linearSolver.add(dynamic_cast< core::behavior::BaseLinearSolver* >(obj));
     inserted+= constraintSolver.add(dynamic_cast< core::behavior::ConstraintSolver* >(obj));
     inserted+= visualLoop.add(dynamic_cast< core::visual::VisualLoop* >(obj));
     inserted+= state.add(dynamic_cast< core::BaseState* >(obj));
@@ -606,7 +606,7 @@ void Node::doRemoveObject(BaseObject::SPtr sobj)
     BaseObject* obj = sobj.get();
     animationManager.remove(dynamic_cast< core::behavior::BaseAnimationLoop* >(obj));
     solver.remove(dynamic_cast< core::behavior::OdeSolver* >(obj));
-    linearSolver.remove(dynamic_cast< core::behavior::LinearSolver* >(obj));
+    linearSolver.remove(dynamic_cast< core::behavior::BaseLinearSolver* >(obj));
     constraintSolver.remove(dynamic_cast< core::behavior::ConstraintSolver* >(obj));
     visualLoop.remove(dynamic_cast< core::visual::VisualLoop* >(obj));
     state.remove(dynamic_cast< core::BaseState* >(obj));
@@ -969,7 +969,7 @@ void Node::printComponents()
     for ( Sequence<OdeSolver>::iterator i=solver.begin(), iend=solver.end(); i!=iend; i++ )
         serr<<(*i)->getName()<<" ";
     serr<<sendl<<"LinearSolver: ";
-    for ( Sequence<LinearSolver>::iterator i=linearSolver.begin(), iend=linearSolver.end(); i!=iend; i++ )
+    for ( Sequence<BaseLinearSolver>::iterator i=linearSolver.begin(), iend=linearSolver.end(); i!=iend; i++ )
         serr<<(*i)->getName()<<" ";
     serr<<sendl<<"ConstraintSolver: ";
     for ( Sequence<ConstraintSolver>::iterator i=constraintSolver.begin(), iend=constraintSolver.end(); i!=iend; i++ )
