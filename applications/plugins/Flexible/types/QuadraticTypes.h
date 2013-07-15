@@ -36,7 +36,7 @@
 
 #include <sofa/defaulttype/Quat.h>
 
-#include "FrameMass.h"
+#include "DeformableFrameMass.h"
 
 namespace sofa
 {
@@ -500,10 +500,10 @@ template<> struct DataTypeName< defaulttype::Quadratic3fTypes::Coord > { static 
 // QuadraticMass
 
 #ifndef SOFA_FLOAT
-typedef FrameMass<3, StdQuadraticTypes<3,double>::deriv_total_size, double> Quadratic3dMass;
+typedef DeformableFrameMass<3, StdQuadraticTypes<3,double>::deriv_total_size, double> Quadratic3dMass;
 #endif
 #ifndef SOFA_DOUBLE
-typedef FrameMass<3, StdQuadraticTypes<3,float>::deriv_total_size, float> Quadratic3fMass;
+typedef DeformableFrameMass<3, StdQuadraticTypes<3,float>::deriv_total_size, float> Quadratic3fMass;
 #endif
 
 
