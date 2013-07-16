@@ -434,7 +434,10 @@ void DAGNode::doExecuteVisitor(simulation::Visitor* action)
 
     while ( !executedNodes.empty() )
     {
-        action->processNodeBottomUp( executedNodes.back() );
+        updateDescendancy();
+        DAGNode* node = executedNodes.back();
+        if( this == node || _descendancy.find( node ) != _descendancy.end() ) // not removed during traversal
+            action->processNodeBottomUp( node );
         executedNodes.pop_back();
     }
 
