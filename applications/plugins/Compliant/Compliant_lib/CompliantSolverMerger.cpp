@@ -106,8 +106,8 @@ namespace collision
 
 
 
-} // namespace component
 } // namespace collision
+} // namespace component
 } // namespace sofa
 
 
