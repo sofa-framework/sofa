@@ -113,8 +113,7 @@ AssemblyVisitor::mat AssemblyVisitor::convert( const defaulttype::BaseMatrix* m)
 		
 // this is not thread safe
 void AssemblyVisitor::vector(dofs_type* dofs, core::VecId id, const vec::ConstSegmentReturnType& data) {
-	volatile unsigned int size = dofs->getMatrixSize();
-	assert( size == data.size() );
+    assert( dofs->getMatrixSize() == data.size() );
 			
 	// realloc
 	if( data.size() > tmp.size() ) tmp.resize(data.size() );
@@ -175,7 +174,7 @@ AssemblyVisitor::chunk::map_type AssemblyVisitor::mapping(simulation::Node* node
 	vector<core::BaseState*> from = node->mechanicalMapping->getFrom();
 	
 	dofs_type* to = safe_cast<dofs_type>(node->mechanicalMapping->getTo()[0]);
-	unsigned rows = to->getMatrixSize();
+//	unsigned rows = to->getMatrixSize();
 	
 	for( unsigned i = 0, n = from.size(); i < n; ++i ) {
 
@@ -191,7 +190,7 @@ AssemblyVisitor::chunk::map_type AssemblyVisitor::mapping(simulation::Node* node
 		if( js ) c.J = convert( (*js)[i] );
 				
 		if( empty(c.J) ) {
-			unsigned cols = p->getMatrixSize(); 
+//			unsigned cols = p->getMatrixSize();
 			
 			std::string msg("empty mapping block for " + mapping_name(node) + " (is mapping matrix assembled ?)" );
 			assert( false ); 
@@ -548,7 +547,7 @@ struct AssemblyVisitor::propagation_helper {
 	
 	void operator()( unsigned v ) const {
 		
-		dofs_type* dofs = g[v].dofs;
+//		dofs_type* dofs = g[v].dofs;
 		chunk* c = g[v].data;
 		
 		if( c->mechanical ) {
@@ -673,7 +672,7 @@ AssemblyVisitor::process_type AssemblyVisitor::process() const {
 	unsigned& size_m = res.size_m;
 	unsigned& size_c = res.size_c;
 
-	full_type& full = res.full;
+//	full_type& full = res.full;
 			
 	// independent dofs offsets (used for shifting parent)
 	offset_type& offsets = res.offset.master;
