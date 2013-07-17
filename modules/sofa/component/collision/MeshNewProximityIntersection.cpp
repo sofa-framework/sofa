@@ -77,7 +77,7 @@ MeshNewProximityIntersection::MeshNewProximityIntersection(NewProximityIntersect
 bool MeshNewProximityIntersection::testIntersection(Point& e1, Point& e2)
 {
     OutputVector contacts;
-    const double alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
+    const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
     int n = intersection->doIntersectionPointPoint(alarmDist*alarmDist, e1.p(), e2.p(), &contacts, -1);
     return n>0;
 }
@@ -85,11 +85,11 @@ bool MeshNewProximityIntersection::testIntersection(Point& e1, Point& e2)
 
 int MeshNewProximityIntersection::computeIntersection(Point& e1, Point& e2, OutputVector* contacts)
 {
-    const double alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
+    const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
     int n = intersection->doIntersectionPointPoint(alarmDist*alarmDist, e1.p(), e2.p(), contacts, (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex());
     if (n>0)
     {
-        const double contactDist = intersection->getContactDistance() + e1.getProximity() + e2.getProximity();
+        const SReal contactDist = intersection->getContactDistance() + e1.getProximity() + e2.getProximity();
         for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
         {
             detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
@@ -109,11 +109,11 @@ bool MeshNewProximityIntersection::testIntersection(Line&, Point&)
 
 int MeshNewProximityIntersection::computeIntersection(Line& e1, Point& e2, OutputVector* contacts)
 {
-    const double alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
+    const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
     int n = doIntersectionLinePoint(alarmDist*alarmDist, e1.p1(),e1.p2(), e2.p(), contacts, e2.getIndex());
     if (n>0)
     {
-        const double contactDist = intersection->getContactDistance() + e1.getProximity() + e2.getProximity();
+        const SReal contactDist = intersection->getContactDistance() + e1.getProximity() + e2.getProximity();
         for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
         {
             detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
@@ -133,13 +133,13 @@ bool MeshNewProximityIntersection::testIntersection(Line&, Line&)
 
 int MeshNewProximityIntersection::computeIntersection(Line& e1, Line& e2, OutputVector* contacts)
 {
-    const double alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
-    const double dist2 = alarmDist*alarmDist;
+    const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
+    const SReal dist2 = alarmDist*alarmDist;
     const int id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
     int n = doIntersectionLineLine(dist2, e1.p1(),e1.p2(), e2.p1(),e2.p2(), contacts, id);
     if (n>0)
     {
-        const double contactDist = intersection->getContactDistance() + e1.getProximity() + e2.getProximity();
+        const SReal contactDist = intersection->getContactDistance() + e1.getProximity() + e2.getProximity();
         for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
         {
             detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
@@ -159,12 +159,12 @@ bool MeshNewProximityIntersection::testIntersection(Triangle&, Point&)
 
 int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Point& e2, OutputVector* contacts)
 {
-    const double alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
-    const double dist2 = alarmDist*alarmDist;
+    const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
+    const SReal dist2 = alarmDist*alarmDist;
     int n = doIntersectionTrianglePoint(dist2, e1.flags(),e1.p1(),e1.p2(),e1.p3(),e1.n(), e2.p(), contacts, e2.getIndex());
     if (n>0)
     {
-        const double contactDist = intersection->getContactDistance() + e1.getProximity() + e2.getProximity();
+        const SReal contactDist = intersection->getContactDistance() + e1.getProximity() + e2.getProximity();
         for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
         {
             detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
@@ -184,8 +184,8 @@ bool MeshNewProximityIntersection::testIntersection(Triangle&, Line&)
 
 int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Line& e2, OutputVector* contacts)
 {
-    const double alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
-    const double    dist2 = alarmDist*alarmDist;
+    const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
+    const SReal    dist2 = alarmDist*alarmDist;
     const Vector3& p1 = e1.p1();
     const Vector3& p2 = e1.p2();
     const Vector3& p3 = e1.p3();
@@ -225,7 +225,7 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Line& e2, Ou
 
     if (n>0)
     {
-        const double contactDist = intersection->getContactDistance() + e1.getProximity() + e2.getProximity();
+        const SReal contactDist = intersection->getContactDistance() + e1.getProximity() + e2.getProximity();
         for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
         {
             detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
@@ -259,8 +259,8 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2
         return 0;
     }
 
-    const double alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
-    const double dist2 = alarmDist*alarmDist;
+    const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
+    const SReal dist2 = alarmDist*alarmDist;
     const Vector3& p1 = e1.p1();
     const Vector3& p2 = e1.p2();
     const Vector3& p3 = e1.p3();
@@ -327,7 +327,7 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2
 
     if (n>0)
     {
-        const double contactDist = intersection->getContactDistance() + e1.getProximity() + e2.getProximity();
+        const SReal contactDist = intersection->getContactDistance() + e1.getProximity() + e2.getProximity();
         for (int i = 0; i < n; ++i)
         {
             (*contacts)[contacts->size()-n+i].elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);

@@ -2,7 +2,7 @@
 
 namespace sofa{namespace component{namespace collision{
 
-bool BaseIntTool::testIntersection(Cube &cube1, Cube &cube2,double alarmDist)
+bool BaseIntTool::testIntersection(Cube &cube1, Cube &cube2,SReal alarmDist)
 {
     const Vector3& minVect1 = cube1.minVect();
     const Vector3& minVect2 = cube2.minVect();

@@ -73,7 +73,7 @@ public:
     template <class DataTypes> int computeIntersection(TSphere<DataTypes>&,OBB&,OutputVector * contacts);
     int computeIntersection(Capsule&,OBB&,OutputVector * contacts);
 
-    static inline int doIntersectionPointPoint(double dist2, const Vector3& p, const Vector3& q, OutputVector* contacts, int id);
+    static inline int doIntersectionPointPoint(SReal dist2, const Vector3& p, const Vector3& q, OutputVector* contacts, int id);
 
 };
 
