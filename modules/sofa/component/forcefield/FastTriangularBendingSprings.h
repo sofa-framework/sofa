@@ -51,6 +51,10 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/component/topology/TopologyData.h>
 
+#ifdef SOFA_HAVE_EIGEN2
+#include <sofa/component/linearsolver/EigenSparseMatrix.h>
+#endif
+
 namespace sofa
 {
 
@@ -107,6 +111,11 @@ public:
     virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset); // compute and add all the element stiffnesses to the global stiffness matrix
     virtual double getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& d_x) const;
 
+#ifdef SOFA_HAVE_EIGEN2
+    virtual const sofa::defaulttype::BaseMatrix* getStiffnessMatrix(const sofa::core::MechanicalParams* mparams);
+    linearsolver::EigenSparseMatrix<DataTypes,DataTypes> matS;
+#endif
+
 
     void draw(const core::visual::VisualParams* vparams);
 
@@ -127,6 +136,8 @@ protected:
         bool is_activated;
 
         bool is_initialized;
+
+        typedef defaulttype::Mat<12,12,Real> StiffnessMatrix;
 
         /// Store the vertex indices and perform all the precomputations
         void setEdgeSpring( const VecCoord& p, unsigned iA, unsigned iB, unsigned iC, unsigned iD, Real materialBendingStiffness )
@@ -178,19 +189,25 @@ protected:
             if( !is_activated ) return;
             for( unsigned j=0; j<4; j++ )
                 for( unsigned k=0; k<4; k++ )
-                    df[vid[j]] -= dp[vid[k]] * alpha[j] * alpha[k] * kfactor;
+                    df[vid[j]] -= dp[vid[k]] * lambda * alpha[j] * alpha[k] * kfactor;
         }
 
         /// Stiffness matrix assembly
         void addStiffness( sofa::defaulttype::BaseMatrix *bm, unsigned int offset, SReal scale, core::behavior::ForceField< _DataTypes>* ff ) const
         {
-            defaulttype::Mat<12,12,Real> K;
+            StiffnessMatrix K;
+            getStiffness( K );
+            ff->addToMatrix(bm,offset,vid,K,scale);
+        }
+
+        /// Compliant stiffness matrix assembly
+        void getStiffness( StiffnessMatrix &K ) const
+        {
             for( unsigned j=0; j<4; j++ )
                 for( unsigned k=0; k<4; k++ )
                 {
-                    K[j*3][k*3] =  K[j*3+1][k*3+1] =  K[j*3+2][k*3+2] = -alpha[j] * alpha[k];
+                    K[j*3][k*3] = K[j*3+1][k*3+1] = K[j*3+2][k*3+2] = -lambda * alpha[j] * alpha[k];
                 }
-            ff->addToMatrix(bm,offset,vid,K,scale);
         }
 
         /// replace a vertex index with another one

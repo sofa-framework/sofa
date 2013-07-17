@@ -502,6 +502,34 @@ void FastTriangularBendingSprings<DataTypes>::addKToMatrix(sofa::defaulttype::Ba
 }
 
 
+#ifdef SOFA_HAVE_EIGEN2
+template<class DataTypes>
+const sofa::defaulttype::BaseMatrix* FastTriangularBendingSprings<DataTypes>::getStiffnessMatrix(const core::MechanicalParams* /*mparams*/)
+{
+    //TODO check if already build during the time step???
+
+    typename MechanicalState::ReadVecCoord X = this->mstate->readPositions();
+
+    matS.resizeBlocks(X.size(),X.size());
+
+    typedef Eigen::Triplet<SReal> Triplet;
+    std::vector<Triplet> tripletList;
+    typename EdgeSpring::StiffnessMatrix K;
+
+    const helper::vector<EdgeSpring>& springs = edgeSprings.getValue();
+    for(unsigned i=0; i< springs.size() ; i++)
+    {
+        springs[i].getStiffness( K );
+        addToTriplets( tripletList, springs[i].vid, K );
+    }
+
+    matS.compressedMatrix.setFromTriplets(tripletList.begin(), tripletList.end());
+
+    return &matS;
+}
+#endif
+
+
 template<class DataTypes>
 void FastTriangularBendingSprings<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
