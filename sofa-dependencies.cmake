@@ -150,7 +150,11 @@ if(WIN32)
 endif()
 
 # copying default config files
-file(GLOB configFiles "${SOFA_SRC_DIR}/share/config/default/*.*")
-foreach(configFile ${configFiles})
-	file(COPY ${configFile} DESTINATION "${SOFA_BUILD_DIR}/share/config")
-endforeach()
+if(NOT CONFIG_FILES_ALREADY_COPIED)
+	file(GLOB configFiles "${SOFA_SRC_DIR}/share/config/default/*.*")
+	foreach(configFile ${configFiles})
+		file(COPY ${configFile} DESTINATION "${SOFA_BUILD_DIR}/share/config")
+	endforeach()
+	
+	set(CONFIG_FILES_ALREADY_COPIED 1 CACHE INTERNAL "Config files copied" FORCE)
+endif()
