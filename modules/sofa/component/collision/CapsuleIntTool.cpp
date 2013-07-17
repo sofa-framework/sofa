@@ -9,8 +9,8 @@ namespace collision
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 
-int CapsuleIntTool::computeIntersection(Capsule & e1,Capsule & e2,double alarmDist,double contactDist,OutputVector * contacts){
-    double contact_exists = e1.radius() + e2.radius() + alarmDist;
+int CapsuleIntTool::computeIntersection(Capsule & e1,Capsule & e2,SReal alarmDist,SReal contactDist,OutputVector * contacts){
+    SReal contact_exists = e1.radius() + e2.radius() + alarmDist;
 
     Vector3 A = e1.point1();
     Vector3 B = e1.point2();
@@ -27,12 +27,12 @@ int CapsuleIntTool::computeIntersection(Capsule & e1,Capsule & e2,double alarmDi
     Amat[0][1] = Amat[1][0] = -CD*AB;
     b[0] = AB*AC;
     b[1] = -CD*AC;
-    const double det = determinant(Amat);
+    const SReal det = determinant(Amat);
 
-    double AB_norm2 = AB.norm2();
-    double CD_norm2 = CD.norm2();
-    double alpha = 0.5;
-    double beta = 0.5;
+    SReal AB_norm2 = AB.norm2();
+    SReal CD_norm2 = CD.norm2();
+    SReal alpha = 0.5;
+    SReal beta = 0.5;
     Vector3 P,Q,PQ;
     //Check that the determinant is not null which would mean that the capsule segments are lying on a same plane.
     //in this case we can solve the little system which gives us
@@ -69,10 +69,10 @@ int CapsuleIntTool::computeIntersection(Capsule & e1,Capsule & e2,double alarmDi
         Vector3 AD = D - A;
         Vector3 CB = B - C;
 
-        double c_proj= b[0]/AB_norm2;//alpha = (AB * AC)/AB_norm2
-        double d_proj = (AB * AD)/AB_norm2;
-        double a_proj = b[1]/CD_norm2;//beta = (-CD*AC)/CD_norm2
-        double b_proj= (CD*CB)/CD_norm2;
+        SReal c_proj= b[0]/AB_norm2;//alpha = (AB * AC)/AB_norm2
+        SReal d_proj = (AB * AD)/AB_norm2;
+        SReal a_proj = b[1]/CD_norm2;//beta = (-CD*AC)/CD_norm2
+        SReal b_proj= (CD*CB)/CD_norm2;
 
         if(c_proj >= 0 && c_proj <= 1){//projection of C on AB is lying on AB
             if(d_proj > 1){//case :
@@ -172,7 +172,7 @@ int CapsuleIntTool::computeIntersection(Capsule & e1,Capsule & e2,double alarmDi
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
 
-    const double theory_contactDist = e1.radius() + e2.radius() + contactDist;
+    const SReal theory_contactDist = e1.radius() + e2.radius() + contactDist;
 
     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
     detection->id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
@@ -188,7 +188,7 @@ int CapsuleIntTool::computeIntersection(Capsule & e1,Capsule & e2,double alarmDi
 }
 
 
-int CapsuleIntTool::computeIntersection(Capsule& cap, OBB& obb,double alarmDist,double contactDist,OutputVector* contacts){
+int CapsuleIntTool::computeIntersection(Capsule& cap, OBB& obb,SReal alarmDist,SReal contactDist,OutputVector* contacts){
     IntrCapsuleOBB intr(cap,obb);
     if(intr.Find(alarmDist)){
         OBB::Real dist2 = (intr.pointOnFirst() - intr.pointOnSecond()).norm2();

@@ -75,8 +75,8 @@ public:
         CubeSortPredicate(int axis) : axis(axis) {}
         bool operator()(const CubeData& c1,const CubeData& c2) const
         {
-            double v1 = c1.minBBox[axis]+c1.maxBBox[axis];
-            double v2 = c2.minBBox[axis]+c2.maxBBox[axis];
+            SReal v1 = c1.minBBox[axis]+c1.maxBBox[axis];
+            SReal v2 = c2.minBBox[axis]+c2.maxBBox[axis];
             return v1 < v2;
         }
         template<int Axis>
@@ -84,8 +84,8 @@ public:
         {
             const CubeModel::CubeData* c1 = (const CubeModel::CubeData*)p1;
             const CubeModel::CubeData* c2 = (const CubeModel::CubeData*)p2;
-            double v1 = c1->minBBox[Axis] + c1->maxBBox[Axis];
-            double v2 = c2->minBBox[Axis] + c2->maxBBox[Axis];
+            SReal v1 = c1->minBBox[Axis] + c1->maxBBox[Axis];
+            SReal v2 = c2->minBBox[Axis] + c2->maxBBox[Axis];
 
             if (v1 < v2)
                 return -1;

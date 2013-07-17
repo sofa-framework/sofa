@@ -15,9 +15,9 @@ struct IntrUtil<TTriangle<DataType> >{
     /**
       *Returns the squared distance between old pt and projected pt.
       */
-    static double project(Vec<3,Real> & pt,const TTriangle<DataType> & tri);
+    static SReal project(Vec<3,Real> & pt,const TTriangle<DataType> & tri);
 
-    static double triSegNearestPoints(const IntrTri & tri,const Vec<3,Real> seg[2],Vec<3,Real> & pt_on_tri,Vec<3,Real> & pt_on_seg);
+    static SReal triSegNearestPoints(const IntrTri & tri,const Vec<3,Real> seg[2],Vec<3,Real> & pt_on_tri,Vec<3,Real> & pt_on_seg);
 
     static void triFaceNearestPoints(const IntrTri & tri,const Vec<3,Real> * face,int n,Vec<3,Real> & pt_on_tri,Vec<3,Real> & pt_on_face);
 };

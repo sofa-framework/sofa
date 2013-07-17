@@ -18,16 +18,16 @@ class SOFA_BASE_COLLISION_API CapsuleIntTool{
 public:
     typedef sofa::helper::vector<sofa::core::collision::DetectionOutput> OutputVector;
 
-    static int computeIntersection(Capsule&, Capsule&,double alarmDist,double contactDist,OutputVector* contacts);
+    static int computeIntersection(Capsule&, Capsule&,SReal alarmDist,SReal contactDist,OutputVector* contacts);
 
     template <class DataTypes>
-    static int computeIntersection(Capsule&, TSphere<DataTypes>&,double alarmDist,double contactDist,OutputVector* contacts);
+    static int computeIntersection(Capsule&, TSphere<DataTypes>&,SReal alarmDist,SReal contactDist,OutputVector* contacts);
 
-    static int computeIntersection(Capsule&, OBB&,double alarmDist,double contactDist,OutputVector* contacts);
+    static int computeIntersection(Capsule&, OBB&,SReal alarmDist,SReal contactDist,OutputVector* contacts);
 };
 
 template <class DataTypes>
-int CapsuleIntTool::computeIntersection(Capsule & cap, TSphere<DataTypes> & sph,double alarmDist,double contactDist,OutputVector* contacts){
+int CapsuleIntTool::computeIntersection(Capsule & cap, TSphere<DataTypes> & sph,SReal alarmDist,SReal contactDist,OutputVector* contacts){
     Vector3 sph_center = sph.center();
     Vector3 cap_p1 = cap.point1();
     Vector3 cap_p2 = cap.point2();

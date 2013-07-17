@@ -66,7 +66,7 @@ bool RayNewProximityIntersection::testIntersection(Ray &t1,Triangle &t2)
 {
     Vector3 P,Q,PQ;
     static DistanceSegTri proximitySolver;
-    const double alarmDist = intersection->getAlarmDistance() + t1.getProximity() + t2.getProximity();
+    const SReal alarmDist = intersection->getAlarmDistance() + t1.getProximity() + t2.getProximity();
 
     if (fabs(t2.n() * t1.direction()) < 0.000001)
         return false; // no intersection for edges parallel to the triangle
@@ -89,7 +89,7 @@ bool RayNewProximityIntersection::testIntersection(Ray &t1,Triangle &t2)
 
 int RayNewProximityIntersection::computeIntersection(Ray &t1, Triangle &t2, OutputVector* contacts)
 {
-    const double alarmDist = intersection->getAlarmDistance() + t1.getProximity() + t2.getProximity();
+    const SReal alarmDist = intersection->getAlarmDistance() + t1.getProximity() + t2.getProximity();
 
     if (fabs(t2.n() * t1.direction()) < 0.000001)
         return false; // no intersection for edges parallel to the triangle
@@ -106,7 +106,7 @@ int RayNewProximityIntersection::computeIntersection(Ray &t1, Triangle &t2, Outp
     if (PQ.norm2() >= alarmDist*alarmDist)
         return 0;
 
-    const double contactDist = alarmDist;
+    const SReal contactDist = alarmDist;
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
 

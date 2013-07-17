@@ -48,7 +48,7 @@ void IntrUtil<TTriangle<DataTypes> >::triFaceNearestPoints(const IntrTri & tri,c
 }
 
 template <typename DataType>
-double IntrUtil<TTriangle<DataType> >::triSegNearestPoints(const IntrTri & tri,const Vec<3,Real> seg[2], Vec<3,Real> & pt_on_face,Vec<3,Real> & pt_on_seg){
+SReal IntrUtil<TTriangle<DataType> >::triSegNearestPoints(const IntrTri & tri,const Vec<3,Real> seg[2], Vec<3,Real> & pt_on_face,Vec<3,Real> & pt_on_seg){
     Real min = std::numeric_limits<Real>::max();
     Vec<3,Real> cur_pt_on_face,cur_pt_on_seg;
     Vec<3,Real> face_seg[2];
@@ -76,7 +76,7 @@ double IntrUtil<TTriangle<DataType> >::triSegNearestPoints(const IntrTri & tri,c
 }
 
 template <class DataType>
-double IntrUtil<TTriangle<DataType> >::project(Vec<3,Real> & pt,const TTriangle<DataType> & tri){
+SReal IntrUtil<TTriangle<DataType> >::project(Vec<3,Real> & pt,const TTriangle<DataType> & tri){
     Vec<3,Real> diff = tri.p(0) - pt;
     Vec<3,Real> edge0 = tri.p(1) - tri.p(0);
     Vec<3,Real> edge1 = tri.p(2) - tri.p(0);

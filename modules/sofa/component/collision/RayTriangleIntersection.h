@@ -45,8 +45,8 @@ public:
     RayTriangleIntersection(); // start a Proximity solver
     ~RayTriangleIntersection();
 
-    bool NewComputation( const sofa::defaulttype::Vector3 &p1, const sofa::defaulttype::Vector3 &p2, const sofa::defaulttype::Vector3 &p3, const sofa::defaulttype::Vector3 &origin, const sofa::defaulttype::Vector3 &direction,  double &t,  double &u, double &v);
-    bool NewComputation( Triangle *triP, const sofa::defaulttype::Vector3 &origin, const sofa::defaulttype::Vector3 &direction,  double &t,  double &u, double &v)
+    bool NewComputation( const sofa::defaulttype::Vector3 &p1, const sofa::defaulttype::Vector3 &p2, const sofa::defaulttype::Vector3 &p3, const sofa::defaulttype::Vector3 &origin, const sofa::defaulttype::Vector3 &direction,  SReal &t,  SReal &u, SReal &v);
+    bool NewComputation( Triangle *triP, const sofa::defaulttype::Vector3 &origin, const sofa::defaulttype::Vector3 &direction,  SReal &t,  SReal &u, SReal &v)
     {
         return NewComputation( triP->p1(), triP->p2(), triP->p3(), origin, direction, t, u, v);
     }

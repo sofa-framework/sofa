@@ -764,8 +764,8 @@ template <typename Real>
 Vec<3,Real> IntrUtil<Real>::nearestPointOnSeg(const Vec<3,Real> & seg0,const Vec<3,Real> & seg1,const Vec<3,Real> & point){
     const Vec<3,Real> AB = seg1-seg0;
     const Vec<3,Real> AQ = point -seg0;
-    double A;
-    double b;
+    SReal A;
+    SReal b;
     A = AB*AB;
     b = AQ*AB;
 
@@ -796,12 +796,12 @@ void IntrUtil<Real>::segNearestPoints(const Vec<3,Real> & p0,const Vec<3,Real> &
     Amat[0][1] = Amat[1][0] = -CD*AB;
     b[0] = AB*AC;
     b[1] = -CD*AC;
-    const double det = determinant(Amat);
+    const SReal det = determinant(Amat);
 
-    double AB_norm2 = AB.norm2();
-    double CD_norm2 = CD.norm2();
-    double alpha = 0.5;
-    double beta = 0.5;
+    SReal AB_norm2 = AB.norm2();
+    SReal CD_norm2 = CD.norm2();
+    SReal alpha = 0.5;
+    SReal beta = 0.5;
     //Check that the determinant is not null which would mean that the segment segments are lying on a same plane.
     //in this case we can solve the little system which gives us
     //the two coefficients alpha and beta. We obtain the two nearest points P and Q lying on the segments of the two segments.
@@ -826,10 +826,10 @@ void IntrUtil<Real>::segNearestPoints(const Vec<3,Real> & p0,const Vec<3,Real> &
         Vec<3,Real> AD = q1 - p0;
         Vec<3,Real> CB = p1 - q0;
 
-        double c_proj= b[0]/AB_norm2;//alpha = (AB * AC)/AB_norm2
-        double d_proj = (AB * AD)/AB_norm2;
-        double a_proj = b[1]/CD_norm2;//beta = (-CD*AC)/CD_norm2
-        double b_proj= (CD*CB)/CD_norm2;
+        SReal c_proj= b[0]/AB_norm2;//alpha = (AB * AC)/AB_norm2
+        SReal d_proj = (AB * AD)/AB_norm2;
+        SReal a_proj = b[1]/CD_norm2;//beta = (-CD*AC)/CD_norm2
+        SReal b_proj= (CD*CB)/CD_norm2;
 
         if(c_proj >= 0 && c_proj <= 1){//projection of C on AB is lying on AB
             if(d_proj > 1){//case :

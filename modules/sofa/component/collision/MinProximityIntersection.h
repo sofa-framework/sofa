@@ -74,8 +74,8 @@ public:
     void draw(const core::visual::VisualParams* vparams);
 
 private:
-    double mainAlarmDistance;
-    double mainContactDistance;
+    SReal mainAlarmDistance;
+    SReal mainContactDistance;
 };
 
 

@@ -54,15 +54,15 @@ bool RayDiscreteIntersection::testIntersection(Ray& ray1, TSphere<T>& sph2)
     // Center of the sphere
     const Vector3 sph2Pos(sph2.center());
     // Radius of the sphere
-    const double radius1 = sph2.r();
+    const SReal radius1 = sph2.r();
 
     const Vector3 ray1Origin(ray1.origin());
     const Vector3 ray1Direction(ray1.direction());
-    const double length2 = ray1.l();
+    const SReal length2 = ray1.l();
     const Vector3 tmp = sph2Pos - ray1Origin;
-    const double rayPos = tmp*ray1Direction;
-    const double rayPosInside = std::max(std::min(rayPos,length2),0.0);
-    const double dist2 = tmp.norm2() - (rayPosInside*rayPosInside);
+    const SReal rayPos = tmp*ray1Direction;
+    const SReal rayPosInside = std::max(std::min(rayPos,length2),0.0);
+    const SReal dist2 = tmp.norm2() - (rayPosInside*rayPosInside);
     return (dist2 < (radius1*radius1));
 }
 
@@ -72,19 +72,19 @@ int RayDiscreteIntersection::computeIntersection(Ray& ray1, TSphere<T>& sph2, Ou
     // Center of the sphere
     const Vector3 sph2Pos(sph2.center());
     // Radius of the sphere
-    const double radius1 = sph2.r();
+    const SReal radius1 = sph2.r();
 
     const Vector3 ray1Origin(ray1.origin());
     const Vector3 ray1Direction(ray1.direction());
-    const double length2 = ray1.l();
+    const SReal length2 = ray1.l();
     const Vector3 tmp = sph2Pos - ray1Origin;
-    const double rayPos = tmp*ray1Direction;
-    const double rayPosInside = std::max(std::min(rayPos,length2),0.0);
-    const double dist2 = tmp.norm2() - (rayPosInside*rayPosInside);
+    const SReal rayPos = tmp*ray1Direction;
+    const SReal rayPosInside = std::max(std::min(rayPos,length2),0.0);
+    const SReal dist2 = tmp.norm2() - (rayPosInside*rayPosInside);
     if (dist2 >= (radius1*radius1))
         return 0;
 
-    const double dist = sqrt(dist2);
+    const SReal dist = sqrt(dist2);
 
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);

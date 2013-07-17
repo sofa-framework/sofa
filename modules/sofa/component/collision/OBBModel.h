@@ -164,7 +164,7 @@ public:
 
     virtual void computeBoundingTree(int maxDepth=0);
 
-    //virtual void computeContinuousBoundingTree(double dt, int maxDepth=0);
+    //virtual void computeContinuousBoundingTree(SReal dt, int maxDepth=0);
 
     void draw(const core::visual::VisualParams* vparams,int index);
 

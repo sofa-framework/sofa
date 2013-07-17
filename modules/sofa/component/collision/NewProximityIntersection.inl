@@ -49,23 +49,24 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 using namespace helper;
 
-inline int NewProximityIntersection::doIntersectionPointPoint(double dist2, const Vector3& p, const Vector3& q, OutputVector* contacts, int id)
+inline int NewProximityIntersection::doIntersectionPointPoint(SReal dist2, const Vector3& p, const Vector3& q, OutputVector* contacts, int id)
 {
-    Vector3 pq;
-    pq = q-p;
-    if (pq.norm2() >= dist2)
+    Vector3 pq = q-p;
+
+    SReal norm2 = pq.norm2();
+
+    if ( norm2 >= dist2)
         return 0;
 
-    //const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
+    //const SReal contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
     //detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
     detection->id = id;
     detection->point[0]=p;
     detection->point[1]=q;
-    detection->normal=pq;
-    detection->value = detection->normal.norm();
-    detection->normal /= detection->value;
+    detection->value = helper::rsqrt(norm2);
+    detection->normal=pq/detection->value;
     //detection->value -= contactDist;
     return 1;
 }
@@ -74,9 +75,8 @@ template <class DataTypes1,class DataTypes2>
 bool NewProximityIntersection::testIntersection(TSphere<DataTypes1>& e1, TSphere<DataTypes2>& e2)
 {
     OutputVector contacts;
-    const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity() + e1.r() + e2.r();
-    int n = doIntersectionPointPoint(alarmDist*alarmDist, e1.center(), e2.center(), &contacts, -1);
-    return n>0;
+    const SReal alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity() + e1.r() + e2.r();
+    return doIntersectionPointPoint(alarmDist*alarmDist, e1.center(), e2.center(), &contacts, -1) > 0;
 }
 
 template <class DataTypes>
