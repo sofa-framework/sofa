@@ -70,8 +70,8 @@ void AssembledSystem::debug(SReal /*thres*/) const {
 
 bool AssembledSystem::isDiagonalDominant() const
 {
-    typedef typename mat::Index Index;
-
+    typedef mat::Index Index;
+    
     mat PH = P*H;
 
     if( n )
