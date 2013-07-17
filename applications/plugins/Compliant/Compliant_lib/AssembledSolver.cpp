@@ -113,6 +113,7 @@ core::MechanicalParams AssembledSolver::mparams(const core::ExecParams& params,
 	core::MechanicalParams res( params );
 				
 	res.setMFactor( 1.0 );
+    res.setKFactor( 1.0 ); // not necessary but just in case it is used somewhere
 	res.setDt( dt );
 				
 	res.setImplicitVelocity( 1 );
