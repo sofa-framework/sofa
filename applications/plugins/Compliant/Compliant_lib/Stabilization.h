@@ -14,7 +14,11 @@ class SOFA_Compliant_API Stabilization : public core::objectmodel::BaseObject {
 
 	SOFA_CLASS(Stabilization, core::objectmodel::BaseObject);
 
-	// TODO add fancy options here (pre/post/multistep/...)
+    /// flagging which constraint lines must be stabilized (if empty, all constraints are stabilized)
+    std::vector<bool> mask;
+
+
+    // TODO add fancy options here (pre/post/multistep/...)
 
 	
 };
