@@ -660,7 +660,7 @@ void BeamFEMForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPara
 
 #ifdef SOFA_HAVE_EIGEN2
 template<class DataTypes>
-const sofa::defaulttype::BaseMatrix* BeamFEMForceField<DataTypes>::getStiffnessMatrix(const core::MechanicalParams* mparams) {
+const sofa::defaulttype::BaseMatrix* BeamFEMForceField<DataTypes>::getStiffnessMatrix(const core::MechanicalParams*) {
     //std::cout << this->getName() << ": getStiffnessMatrix " << std::endl;
 
     double actualTime = this->getContext()->getTime();
@@ -675,7 +675,6 @@ const sofa::defaulttype::BaseMatrix* BeamFEMForceField<DataTypes>::getStiffnessM
     lastUpdatedStep = actualTime;
     sout << this->getName() << "Assemble matrix in step " << actualTime << sendl;
 
-    double k = mparams->kFactor();
     unsigned int offset = 0; // r.offset;
 
     matS.clear();
@@ -718,7 +717,7 @@ const sofa::defaulttype::BaseMatrix* BeamFEMForceField<DataTypes>::getStiffnessM
                 index[6+x1] = offset+b*6+x1;
             for (int x1=0; x1<12; ++x1)
                 for (int y1=0; y1<12; ++y1)
-                    tripletList.push_back(Triplet(index[x1], index[y1], - K(x1,y1)*k));
+                    tripletList.push_back(Triplet(index[x1], index[y1], - K(x1,y1)));
         }
     }
     else
@@ -753,7 +752,7 @@ const sofa::defaulttype::BaseMatrix* BeamFEMForceField<DataTypes>::getStiffnessM
                 index[6+x1] = offset+b*6+x1;
             for (int x1=0; x1<12; ++x1)
                 for (int y1=0; y1<12; ++y1) {                    
-                    tripletList.push_back(Triplet(index[x1], index[y1], - K(x1,y1)*k));
+                    tripletList.push_back(Triplet(index[x1], index[y1], - K(x1,y1)));
                 }
         }
     }

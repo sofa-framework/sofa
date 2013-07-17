@@ -390,7 +390,7 @@ void RestShapeSpringsForceField<DataTypes>::addSubKToMatrix(const core::Mechanic
 
 #ifdef SOFA_HAVE_EIGEN2
 template<class DataTypes>
-const sofa::defaulttype::BaseMatrix* RestShapeSpringsForceField<DataTypes>::getStiffnessMatrix(const core::MechanicalParams* mparams) {
+const sofa::defaulttype::BaseMatrix* RestShapeSpringsForceField<DataTypes>::getStiffnessMatrix(const core::MechanicalParams* /*mparams*/) {
     sout << this->getName() << ": getStiffnessMatrix " << sendl;
 
     double actualTime = this->getContext()->getTime();
@@ -406,7 +406,6 @@ const sofa::defaulttype::BaseMatrix* RestShapeSpringsForceField<DataTypes>::getS
     sout << this->getName() << "Assemble matrix in step " << actualTime << sendl;
 
     unsigned int offset = 0;
-    double kFact = mparams->kFactor();
     const int N = Coord::total_size;
 
     unsigned int curIndex = 0;
@@ -422,7 +421,7 @@ const sofa::defaulttype::BaseMatrix* RestShapeSpringsForceField<DataTypes>::getS
         {
             curIndex = m_indices[index];    
             for(int i = 0; i < N; i++)
-                tripletList.push_back(Triplet(offset + N * curIndex + i, offset + N * curIndex + i, -kFact * k0));
+                tripletList.push_back(Triplet(offset + N * curIndex + i, offset + N * curIndex + i, k0));
         }        
     }
     else
@@ -432,7 +431,7 @@ const sofa::defaulttype::BaseMatrix* RestShapeSpringsForceField<DataTypes>::getS
             curIndex = m_indices[index];
 
             for(int i = 0; i < N; i++)
-                tripletList.push_back(Triplet(offset + N * curIndex + i, offset + N * curIndex + i, -kFact * k[index]));
+                tripletList.push_back(Triplet(offset + N * curIndex + i, offset + N * curIndex + i, k[index]));
         }
     }        
 
