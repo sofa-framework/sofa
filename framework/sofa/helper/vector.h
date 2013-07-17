@@ -172,6 +172,12 @@ public:
     {
         std::fill( this->begin(), this->end(), value );
     }
+
+    /// this function is usefull for vector_device because it resize the vector without device operation (if device is not valid).
+    /// Therefore the function is used in asynchronous code to safly resize a vector which is either cuda of helper::vector
+    void fastResize(size_type n) {
+        this->resize(n);
+    }
 };
 
 

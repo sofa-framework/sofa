@@ -103,6 +103,81 @@ public:
 
 };
 
+/** Compute the size of a mechanical matrix (mass or stiffness) of the whole scene */
+class SOFA_SIMULATION_COMMON_API MechanicalGetConstraintJacobianVisitor : public BaseMechanicalVisitor
+{
+public:
+    defaulttype::BaseMatrix * J;
+    const sofa::core::behavior::MultiMatrixAccessor* matrix;
+    int offset;
+
+    MechanicalGetConstraintJacobianVisitor(
+        const core::ExecParams* params /* PARAMS FIRST  = core::ExecParams::defaultInstance()*/, defaulttype::BaseMatrix * _J, const sofa::core::behavior::MultiMatrixAccessor* _matrix = NULL)
+        : BaseMechanicalVisitor(params) , J(_J), matrix(_matrix), offset(0)
+    {}
+
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* ms)
+    {
+        if (matrix) offset = matrix->getGlobalOffset(ms);
+
+        unsigned int o = (unsigned int)offset;
+        ms->getConstraintJacobian(this->params,J,o);
+        offset = (int)o;
+        return RESULT_CONTINUE;
+    }
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalGetConstraintJacobianVisitor"; }
+};
+
+/** Compute the size of a mechanical matrix (mass or stiffness) of the whole scene */
+class SOFA_SIMULATION_COMMON_API MechanicalIntegrateConstraintsVisitor : public BaseMechanicalVisitor
+{
+public:
+
+
+    const BaseVector *src;
+    const double positionFactor;// use the OdeSolver to get the position integration factor
+    const double velocityFactor;// use the OdeSolver to get the position integration factor
+    const sofa::core::behavior::MultiMatrixAccessor* matrix;
+    int offset;
+
+    MechanicalIntegrateConstraintsVisitor(
+        const core::ExecParams* params /* PARAMS FIRST  = core::ExecParams::defaultInstance()*/, defaulttype::BaseVector * _src, double pf,double vf, const sofa::core::behavior::MultiMatrixAccessor* _matrix = NULL)
+        : BaseMechanicalVisitor(params) , src(_src), positionFactor(pf), velocityFactor(vf), matrix(_matrix), offset(0)
+    {}
+
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* ms)
+    {
+        if (matrix) offset = matrix->getGlobalOffset(ms);
+        if (src!= NULL && offset >= 0)
+        {
+            unsigned int o = (unsigned int)offset;
+            ms->copyFromBaseVector(core::VecDerivId::dx(), src, o);
+            offset = (int)o;
+
+            //x = x_free + dx * positionFactor;
+            ms->vOp(params,core::VecCoordId::position(),core::ConstVecCoordId::freePosition(),core::VecDerivId::dx(),positionFactor);
+
+            //v = v_free + dx * velocityFactor;
+            ms->vOp(params,core::VecDerivId::velocity(),core::ConstVecDerivId::freeVelocity(),core::VecDerivId::dx(),velocityFactor);
+
+            ms->vOp(params,core::VecDerivId::dx(),core::VecDerivId::null(),core::ConstVecDerivId::dx(),positionFactor);
+
+            //force = 0
+//            ms->vOp(params,core::VecDerivId::force(),core::ConstVecDerivId::null(),core::VecDerivId::null(),0.0);
+        }
+
+        return RESULT_CONTINUE;
+    }
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalIntegrateConstraintsVisitor"; }
+};
+
+
 
 /** Accumulate the entries of a mechanical matrix (mass or stiffness) of the whole scene */
 class SOFA_SIMULATION_COMMON_API MechanicalAddMBK_ToMatrixVisitor : public MechanicalVisitor

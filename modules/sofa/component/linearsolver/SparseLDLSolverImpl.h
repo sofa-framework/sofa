@@ -83,7 +83,8 @@ protected :
         const int * LT_rowind = &data->LT_rowind[0];
         const Real * LT_values = &data->LT_values[0];
 
-        Tmp.resize(n);
+        Tmp.clear();
+        Tmp.fastResize(n);
 
         for (int j = 0 ; j < n ; j++) {
             Real acc = b[perm[j]];
@@ -121,14 +122,14 @@ protected :
             data->n = M.colSize();
             data->P_nnz = M_colptr[data->n];
 
-            data->perm.clear();data->perm.resize(data->n);
-            data->invperm.clear();data->invperm.resize(data->n);
-            data->invD.clear();data->invD.resize(data->n);
-            data->P_colptr.clear();data->P_colptr.resize(data->n+1);
-            data->L_colptr.clear();data->L_colptr.resize(data->n+1);
-            data->LT_colptr.clear();data->LT_colptr.resize(data->n+1);
-            data->P_rowind.clear();data->P_rowind.resize(data->P_nnz);
-            data->P_values.clear();data->P_values.resize(data->P_nnz);
+            data->perm.clear();data->perm.fastResize(data->n);
+            data->invperm.clear();data->invperm.fastResize(data->n);
+            data->invD.clear();data->invD.fastResize(data->n);
+            data->P_colptr.clear();data->P_colptr.fastResize(data->n+1);
+            data->L_colptr.clear();data->L_colptr.fastResize(data->n+1);
+            data->LT_colptr.clear();data->LT_colptr.fastResize(data->n+1);
+            data->P_rowind.clear();data->P_rowind.fastResize(data->P_nnz);
+            data->P_values.clear();data->P_values.fastResize(data->P_nnz);
 
             memcpy(&data->P_colptr[0],M_colptr,(data->n+1) * sizeof(int));
             memcpy(&data->P_rowind[0],M_rowind,data->P_nnz * sizeof(int));
@@ -145,10 +146,10 @@ protected :
 
             data->L_nnz = data->L_colptr[data->n];
 
-            data->L_rowind.clear();data->L_rowind.resize(data->L_nnz);
-            data->L_values.clear();data->L_values.resize(data->L_nnz);
-            data->LT_rowind.clear();data->LT_rowind.resize(data->L_nnz);
-            data->LT_values.clear();data->LT_values.resize(data->L_nnz);
+            data->L_rowind.clear();data->L_rowind.fastResize(data->L_nnz);
+            data->L_values.clear();data->L_values.fastResize(data->L_nnz);
+            data->LT_rowind.clear();data->LT_rowind.fastResize(data->L_nnz);
+            data->LT_values.clear();data->LT_values.fastResize(data->L_nnz);
         }
 
         Real * D = &data->invD[0];

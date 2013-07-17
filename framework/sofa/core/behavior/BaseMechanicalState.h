@@ -211,6 +211,9 @@ public:
     /// Reset the constraint matrix
     virtual void resetConstraint(const ExecParams* params = ExecParams::defaultInstance()) = 0;
 
+    /// build the jacobian of the constraint in a baseMatrix
+    virtual void getConstraintJacobian(const ExecParams* params, sofa::defaulttype::BaseMatrix* J,unsigned int & off) = 0;
+
     /// Renumber the constraint ids with the given permutation vector
     virtual void renumberConstraintId(const sofa::helper::vector<unsigned>& renumbering) = 0;
 

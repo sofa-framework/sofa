@@ -33,6 +33,7 @@
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/AdvancedTimer.h>
+#include <sofa/component/linearsolver/MatrixLinearSolver.inl>
 
 #include <sofa/core/ObjectFactory.h>
 #include <iostream>

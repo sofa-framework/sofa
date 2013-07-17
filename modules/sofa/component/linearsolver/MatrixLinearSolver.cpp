@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_LINEARSOLVER_MATRIXLINEARSOLVER_CPP
-#include <sofa/component/linearsolver/MatrixLinearSolver.h>
+#include <sofa/component/linearsolver/MatrixLinearSolver.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/MechanicalMatrixVisitor.h>
@@ -46,6 +46,7 @@ namespace linearsolver
 
 using sofa::core::behavior::LinearSolver;
 using sofa::core::objectmodel::BaseContext;
+
 
 template<>
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::resetSystem()
@@ -167,6 +168,11 @@ template<>
 GraphScatteredMatrix* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::createMatrix()
 {
     return new GraphScatteredMatrix();
+}
+
+template<>
+void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::applyContactForce(const defaulttype::BaseVector* /*f*/,double /*positionFactor*/,double /*velocityFactor*/) {
+    serr << "applyContactForce is not supported with the conjugate gradient" << sendl;
 }
 
 template<>

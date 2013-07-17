@@ -22,76 +22,74 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LINEARSOLVER_BLOCKJACOBIPRECONDITIONER_H
-#define SOFA_COMPONENT_LINEARSOLVER_BLOCKJACOBIPRECONDITIONER_H
+#ifndef SOFA_CORE_COLLISION_GENERICCONTACTCORRECTION_H
+#define SOFA_CORE_COLLISION_GENERICCONTACTCORRECTION_H
 
+#include <sofa/core/behavior/ConstraintCorrection.h>
+
+#include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/behavior/LinearSolver.h>
-#include <sofa/component/linearsolver/MatrixLinearSolver.inl>
-#include <sofa/simulation/common/MechanicalVisitor.h>
+
+#include <sofa/defaulttype/Mat.h>
+#include <sofa/defaulttype/Vec.h>
+
 #include <sofa/component/linearsolver/SparseMatrix.h>
 #include <sofa/component/linearsolver/FullMatrix.h>
-#include <sofa/component/linearsolver/DiagonalMatrix.h>
-#include <sofa/helper/map.h>
 
-#include <math.h>
+namespace sofa {
 
-namespace sofa
-{
+namespace component {
 
-namespace component
-{
+namespace constraintset {
 
-namespace linearsolver
-{
+using namespace sofa::core;
+using namespace sofa::core::behavior;
+using namespace sofa::defaulttype;
 
-template<class TVector>
-class BlockJacibiPreconditionerInternalData
-{
-};
-
-
-/// Linear solver based on a NxN bloc diagonal matrix (i.e. block Jacobi preconditioner)
-template<class TMatrix, class TVector>
-class BlockJacobiPreconditioner : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector>
-{
+class GenericConstraintCorrection : public BaseConstraintCorrection {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(BlockJacobiPreconditioner,TMatrix,TVector),SOFA_TEMPLATE2(sofa::component::linearsolver::MatrixLinearSolver,TMatrix,TVector));
+    SOFA_CLASS(GenericConstraintCorrection, BaseConstraintCorrection);
 
-    typedef TMatrix Matrix;
-    typedef TVector Vector;
-    typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
-    typedef typename TMatrix::Bloc SubMatrix;
-
-    Data<bool> f_verbose;
 protected:
-    BlockJacobiPreconditioner();
-public:
-    void solve (Matrix& M, Vector& x, Vector& b);
-    void invert(Matrix& M);
+    GenericConstraintCorrection();
+    virtual ~GenericConstraintCorrection();
 
-    BlockJacibiPreconditionerInternalData<TVector> internalData; //not use in CPU
+public:
+    virtual void bwdInit();
+
+    virtual void addComplianceInConstraintSpace(const ConstraintParams *cparams, defaulttype::BaseMatrix* W);
+
+    virtual void getComplianceMatrix(defaulttype::BaseMatrix* ) const;
+
+    virtual void computeAndApplyMotionCorrection(const ConstraintParams *cparams, MultiVecCoordId x, MultiVecDerivId v, MultiVecDerivId f, const BaseVector * lambda);
+
+    virtual void computeAndApplyPositionCorrection(const ConstraintParams *cparams, MultiVecCoordId x, MultiVecDerivId f, const BaseVector *lambda);
+
+    virtual void computeAndApplyVelocityCorrection(const ConstraintParams *cparams, MultiVecDerivId v, MultiVecDerivId f, const BaseVector *lambda);
+
+    virtual void applyPredictiveConstraintForce(const core::ConstraintParams * /*cparams*/, core::MultiVecDerivId /*f*/, const defaulttype::BaseVector *lambda);
+
+    virtual void rebuildSystem(double massFactor, double forceFactor);
+
+    virtual void applyContactForce(const defaulttype::BaseVector *f);
+
+    virtual void resetContactForce();
+
+    Data< helper::vector< std::string > >  solverName;
 
     /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
     template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        return sofa::core::objectmodel::BaseObject::canCreate(obj, context, arg);
+    static bool canCreate(T*& obj, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg) {
+        return BaseConstraintCorrection::canCreate(obj, context, arg);
     }
 
-    virtual std::string getTemplateName() const
-    {
-        return templateName(this);
-    }
+protected:
 
-    static std::string templateName(const BlockJacobiPreconditioner<TMatrix,TVector>* = NULL)
-    {
-        return TVector::Name();
-    }
-
+    behavior::OdeSolver* odesolver;
+    std::vector<sofa::core::behavior::LinearSolver*> linearsolvers;
 };
 
-} // namespace linearsolver
+} // namespace collision
 
 } // namespace component
 

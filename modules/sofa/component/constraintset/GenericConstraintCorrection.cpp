@@ -22,67 +22,29 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LINEARSOLVER_JACOBIPRECONDITIONER_H
-#define SOFA_COMPONENT_LINEARSOLVER_JACOBIPRECONDITIONER_H
+#define SOFA_COMPONENT_CONSTRAINT_GENERICCONSTRAINTCORRECTION_CPP
+#include "GenericConstraintCorrection.inl"
+#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/core/ObjectFactory.h>
 
-#include <sofa/core/behavior/LinearSolver.h>
-#include <sofa/component/linearsolver/MatrixLinearSolver.inl>
-#include <sofa/simulation/common/MechanicalVisitor.h>
-#include <sofa/helper/map.h>
+namespace sofa {
 
-#include <math.h>
+namespace component {
 
-namespace sofa
-{
+namespace constraintset {
 
-namespace component
-{
+using namespace sofa::defaulttype;
 
-namespace linearsolver
-{
+SOFA_DECL_CLASS(GenericConstraintCorrection)
 
-/// Linear solver based on a diagonal matrix (i.e. Jacobi preconditioner)
-template<class TMatrix, class TVector>
-class JacobiPreconditioner : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector>
-{
-public:
-    SOFA_CLASS(SOFA_TEMPLATE2(JacobiPreconditioner,TMatrix,TVector),SOFA_TEMPLATE2(sofa::component::linearsolver::MatrixLinearSolver,TMatrix,TVector));
+int GenericConstraintCorrectionClass = core::RegisterObject("")
+.add< GenericConstraintCorrection >()
+;
 
-    typedef TMatrix Matrix;
-    typedef TVector Vector;
-    typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
-    Data<bool> f_verbose;
-protected:
-    JacobiPreconditioner();
-public:
-    void setSystemMBKMatrix(const core::MechanicalParams* mparams);
-    void solve (Matrix& M, Vector& x, Vector& b);
-    void invert(Matrix& M);
+class SOFA_CONSTRAINT_API GenericConstraintCorrection;
 
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
-    template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        return sofa::core::objectmodel::BaseObject::canCreate(obj, context, arg);
-    }
-
-    virtual std::string getTemplateName() const
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const JacobiPreconditioner<TMatrix,TVector>* = NULL)
-    {
-        return TMatrix::Name();
-    }
-
-};
-
-} // namespace linearsolver
+} // namespace collision
 
 } // namespace component
 
 } // namespace sofa
-
-#endif

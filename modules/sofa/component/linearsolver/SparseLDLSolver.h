@@ -62,7 +62,7 @@ public :
 
     void solve (Matrix& M, Vector& x, Vector& b);
     void invert(Matrix& M);
-    bool addJMInvJtLocal(TMatrix * M, ResMatrixType * result, JMatrixType * J, double fact);
+    bool addJMInvJtLocal(TMatrix * M, ResMatrixType * result,const JMatrixType * J, double fact);
 
     MatrixInvertData * createInvertData() {
         return new InvertData();
