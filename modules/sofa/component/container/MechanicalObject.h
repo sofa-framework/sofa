@@ -376,6 +376,8 @@ public:
 
     virtual void resetConstraint(const core::ExecParams* params);
 
+    virtual void getConstraintJacobian(const core::ExecParams* params, sofa::defaulttype::BaseMatrix* J,unsigned int & off);
+
     /// @}
 
     /// @name Debug

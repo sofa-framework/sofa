@@ -26,6 +26,8 @@ HEADERS += initConstraint.h \
            constraintset/PrecomputedConstraintCorrection.inl \
            constraintset/LinearSolverConstraintCorrection.h \
            constraintset/LinearSolverConstraintCorrection.inl \
+           constraintset/GenericConstraintCorrection.h \
+           constraintset/GenericConstraintCorrection.inl \           
            constraintset/LCPConstraintSolver.h \
            constraintset/ConstraintSolverImpl.h \
            animationloop/FreeMotionAnimationLoop.h \
@@ -51,6 +53,7 @@ SOURCES += initConstraint.cpp \
            constraintset/UncoupledConstraintCorrection.cpp \
            constraintset/PrecomputedConstraintCorrection.cpp \
            constraintset/LinearSolverConstraintCorrection.cpp \
+           constraintset/GenericConstraintCorrection.cpp \
            constraintset/LCPConstraintSolver.cpp \
            constraintset/ConstraintSolverImpl.cpp \
            animationloop/FreeMotionAnimationLoop.cpp \

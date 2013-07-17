@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_LINEARSOLVER_CholeskySolver_INL
 
 #include <sofa/component/linearsolver/CholeskySolver.h>
+#include <sofa/component/linearsolver/MatrixLinearSolver.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/linearsolver/FullMatrix.h>
 #include <sofa/component/linearsolver/SparseMatrix.h>

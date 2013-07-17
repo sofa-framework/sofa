@@ -35,6 +35,7 @@
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/AdvancedTimer.h>
+#include <sofa/component/linearsolver/MatrixLinearSolver.cpp>
 
 #include <sofa/core/ObjectFactory.h>
 #include <iostream>
@@ -316,8 +317,8 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
 SOFA_DECL_CLASS(ShewchukPCGLinearSolver)
 
 int ShewchukPCGLinearSolverClass = core::RegisterObject("Linear system solver using the conjugate gradient iterative algorithm")
-        .add< ShewchukPCGLinearSolver<GraphScatteredMatrix,GraphScatteredVector> >(true)
-        .addAlias("PCGLinearSolver");
+.add< ShewchukPCGLinearSolver<GraphScatteredMatrix,GraphScatteredVector> >(true)
+.addAlias("PCGLinearSolver");
 ;
 
 } // namespace linearsolver

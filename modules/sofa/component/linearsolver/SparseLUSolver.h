@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_LINEARSOLVER_SparseLUSolver_H
 
 #include <sofa/core/behavior/LinearSolver.h>
-#include <sofa/component/linearsolver/MatrixLinearSolver.h>
+#include <sofa/component/linearsolver/MatrixLinearSolver.inl>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/component/linearsolver/SparseMatrix.h>
 #include <sofa/component/linearsolver/FullMatrix.h>

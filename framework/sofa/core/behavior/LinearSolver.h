@@ -126,6 +126,23 @@ public:
         return false;
     }
 
+    /// Build the jacobian of the constraints using a visitor
+    ///
+    /// @param result the variable where the result will be added
+    /// @param fact integrator parameter
+    /// @return false if the solver does not support this operation, of it the system matrix is not invertible
+    virtual bool buildComplianceMatrix(defaulttype::BaseMatrix* /*result*/, double /*fact*/)
+    {
+        serr << "Error buildComplianceMatrix has not been implemented" << sendl;
+        return false;
+    }
+
+    /// Apply the contactforce dx = Minv * J * f and store the resut in VecId
+    virtual void applyContactForce(const defaulttype::BaseVector* /*f*/,double /*positionFactor*/,double /*velocityFactor*/) {
+        serr << "Error applyContactForce has not been implemented" << sendl;
+    }
+
+
     /// Multiply the inverse of the system matrix by the transpose of the given matrix, and multiply the result with the given matrix J
     ///
     /// @param result the variable where the result will be added

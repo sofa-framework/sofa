@@ -73,12 +73,6 @@ public:
         sout << "getComplianceWithConstraintMerge is not implemented yet " << sendl;
     }
 
-    virtual void CudaGetCompliance(defaulttype::BaseMatrix* W)
-    {
-        sout << "warning : CudaGetCompliance(defaulttype::BaseMatrix* W) is not implemented in " << this->getTypeName() << sendl;
-        addComplianceInConstraintSpace(ConstraintParams::defaultInstance(), W); // par defaut si la methode cuda n'est pas implementé on resoud sur CPU
-    }
-
     /// @}
 
 

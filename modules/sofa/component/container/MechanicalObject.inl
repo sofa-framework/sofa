@@ -2382,6 +2382,34 @@ void MechanicalObject<DataTypes>::resetConstraint(const core::ExecParams* params
 }
 
 template <class DataTypes>
+void MechanicalObject<DataTypes>::getConstraintJacobian(const core::ExecParams* /*params*/, sofa::defaulttype::BaseMatrix* J,unsigned int & off)
+{
+    // Compute J
+    const unsigned int N = Deriv::size();
+    const MatrixDeriv& c = *this->getC();
+
+    MatrixDerivRowConstIterator rowItEnd = c.end();
+
+    for (MatrixDerivRowConstIterator rowIt = c.begin(); rowIt != rowItEnd; ++rowIt)
+    {
+        const int cid = rowIt.index();
+
+        MatrixDerivColConstIterator colItEnd = rowIt.end();
+
+        for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt) {
+            const unsigned int dof = colIt.index();
+            const Deriv n = colIt.val();
+
+            for (unsigned int r = 0; r < N; ++r) {
+                J->add(cid, off + dof * N + r, n[r]);
+            }
+        }
+    }
+
+    off += this->getSize() * N;
+}
+
+template <class DataTypes>
 void MechanicalObject<DataTypes>::renumberConstraintId(const sofa::helper::vector<unsigned>& /*renumbering*/)
 {
     this->serr << "MechanicalObject<DataTypes>::renumberConstraintId not implemented in the MatrixDeriv constraint API" << this->sendl;
