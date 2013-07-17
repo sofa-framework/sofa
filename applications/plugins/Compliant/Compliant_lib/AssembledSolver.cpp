@@ -228,7 +228,16 @@ AssembledSolver::kkt_type::vec AssembledSolver::stab_mask(const system_type& sys
 		Stabilization* post = dofs->getContext()->get<Stabilization>(core::objectmodel::BaseContext::Local);
 				
 		if( post ) {
-			res.segment( off, dim ).setOnes();
+
+            if( post->mask.size() == dim )
+            {
+                for( unsigned j=0 ; j<dim ; ++j )
+                    res[off+j] = post->mask[j] ? (SReal)1.0 : (SReal)0.0;
+            }
+            else
+            {
+                res.segment( off, dim ).setOnes();
+            }
 			none = false;
 		}
 		
