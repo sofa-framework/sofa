@@ -102,11 +102,9 @@ public:
     typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
     typedef typename Inherited::PersistentID PersistentID;
     typedef typename Inherited::Contact Contact;
-#ifdef SOFA_DEV // ??
     typedef typename PersistentUnilateralConstraintResolutionWithFriction<DataTypes>::ContactState ContactState;
     typedef typename std::map< int, ContactState > ContactStateMap;
     typedef typename ContactStateMap::const_iterator contactStateIterator;
-#endif
 
 
     PersistentUnilateralInteractionConstraint(MechanicalState* object1, MechanicalState* object2)
@@ -130,7 +128,6 @@ public:
 
     virtual void addContact(double mu, Deriv norm, Real contactDistance, int m1, int m2, long id=0, PersistentID localid=0);
 
-#ifdef SOFA_DEV
     void getConstraintResolution(std::vector< core::behavior::ConstraintResolution* >& resTab, unsigned int& offset);
 
 
@@ -182,8 +179,6 @@ public:
     void clearInitForces();
 
     // @}
-
-#endif
 
     void draw(const core::visual::VisualParams* vparams);
 };
