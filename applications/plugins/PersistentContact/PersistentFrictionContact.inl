@@ -209,7 +209,6 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::keepStickyCon
 {
     using sofa::core::collision::DetectionOutput;
 
-#ifdef SOFA_DEV
     typedef constraintset::PersistentUnilateralInteractionConstraint< Vec3Types > PersistentConstraint;
 
     m_stickedContacts.clear();
@@ -296,7 +295,6 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::keepStickyCon
 
         resetConstraintStoredData();
     }
-#endif
 }
 
 
