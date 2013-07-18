@@ -15,8 +15,8 @@ UniformCompliance<DataTypes>::UniformCompliance( core::behavior::MechanicalState
     : Inherit(mm)
     , compliance( initData(&compliance, (Real)0, "compliance", "Compliance value uniformly applied to all the DOF."))
     , dampingRatio( initData(&dampingRatio, (Real)0.1, "dampingRatio", "weight of the velocity in the constraint violation"))
-    , isCompliance( initData(&isCompliance, true, "isCompliance", "Consider the component as a compliance, else as a stiffness"))
 {
+    this->isCompliance.setValue(true);
 }
 
 template<class DataTypes>
@@ -33,7 +33,7 @@ void UniformCompliance<DataTypes>::reinit()
     core::behavior::BaseMechanicalState* state = this->getContext()->getMechanicalState();
     assert(state);
 
-    Real c = isCompliance.getValue() ?  compliance.getValue() : -1/compliance.getValue();  // the stiffness df/dx is the opposite of the inverse compliance
+    Real c = this->isCompliance.getValue() ?  compliance.getValue() : -1/compliance.getValue();  // the stiffness df/dx is the opposite of the inverse compliance
 
     matC.resize(state->getMatrixSize(),state->getMatrixSize());
     for(unsigned i=0; i<state->getMatrixSize(); i++)
@@ -77,27 +77,19 @@ void UniformCompliance<DataTypes>::writeConstraintValue(const core::MechanicalPa
 template<class DataTypes>
 const sofa::defaulttype::BaseMatrix* UniformCompliance<DataTypes>::getComplianceMatrix(const core::MechanicalParams*)
 {
-    if( isCompliance.getValue() )
-    {
-        return &matC;
-    }
-    else return NULL;
+    return &matC;
 }
 
 template<class DataTypes>
 const sofa::defaulttype::BaseMatrix* UniformCompliance<DataTypes>::getStiffnessMatrix(const core::MechanicalParams*)
 {
-    if( isCompliance.getValue())
-        return NULL;
-    else return &matC;
+    // todo diagonal inverse
+    return NULL;
 }
 
 template<class DataTypes>
 void UniformCompliance<DataTypes>::addForce(const core::MechanicalParams *, DataVecDeriv& _f, const DataVecCoord& _x, const DataVecDeriv& _v)
 {
-    if( isCompliance.getValue())
-        return;
-
     helper::ReadAccessor< DataVecCoord >  x(_x);
     helper::ReadAccessor< DataVecDeriv >  v(_v);
     helper::WriteAccessor< DataVecDeriv > f(_f);
@@ -115,9 +107,6 @@ template<class DataTypes>
 void UniformCompliance<DataTypes>::addDForce(const core::MechanicalParams *mparams, DataVecDeriv& _df,  const DataVecDeriv& _dx)
 {
     Real kfactor = mparams->kFactor();
-
-    if( isCompliance.getValue())
-        return;
 
     helper::ReadAccessor< DataVecDeriv >  dx(_dx);
     helper::WriteAccessor< DataVecDeriv > df(_df);

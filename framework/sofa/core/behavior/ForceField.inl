@@ -43,7 +43,8 @@ namespace behavior
 
 template<class DataTypes>
 ForceField<DataTypes>::ForceField(MechanicalState<DataTypes> *mm)
-    : mstate(initLink("mstate", "MechanicalState used by this ForceField"), mm)
+    : BaseForceField()
+    , mstate(initLink("mstate", "MechanicalState used by this ForceField"), mm)
 {
 }
 
@@ -209,6 +210,7 @@ double ForceField<DataTypes>::getPotentialEnergy(const VecCoord&) const
     return 0.0;
 }
 #endif
+
 
 
 template<class DataTypes>

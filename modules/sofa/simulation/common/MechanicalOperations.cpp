@@ -201,6 +201,18 @@ void MechanicalOperations::computeForce(core::MultiVecDerivId result, bool clear
     executeVisitor( MechanicalComputeForceVisitor(&mparams /* PARAMS FIRST */, result, accumulate) );
 }
 
+/// Compute the current force (given the latest propagated position and velocity) neglecting compliance
+void MechanicalOperations::computeForceNeglectingCompliance(core::MultiVecDerivId result, bool clear, bool accumulate)
+{
+    setF(result);
+    if (clear)
+    {
+        executeVisitor( MechanicalResetForceVisitor(&mparams /* PARAMS FIRST */, result, false) );
+        //finish();
+    }
+    executeVisitor( MechanicalComputeForceNeglectingComplianceVisitor(&mparams /* PARAMS FIRST */, result, accumulate) );
+}
+
 /// Compute the current force delta (given the latest propagated displacement)
 void MechanicalOperations::computeDf(core::MultiVecDerivId df, bool clear, bool accumulate)
 {

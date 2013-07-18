@@ -33,7 +33,11 @@ namespace core
 namespace behavior
 {
 
-
+BaseForceField::BaseForceField()
+    : objectmodel::BaseObject()
+    , isCompliance( initData(&isCompliance, false, "isCompliance", "Consider the component as a compliance, else as a stiffness"))
+{
+}
 
 void BaseForceField::addMBKdx(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId dfId)
 {
@@ -68,6 +72,8 @@ void BaseForceField::addSubKToMatrix(const MechanicalParams* mparams /* PARAMS F
 void BaseForceField::addSubBToMatrix(const MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<unsigned> & /*subMatrixIndex*/) {
     addBToMatrix(mparams,matrix);
 }
+
+
 
 
 } // namespace behavior

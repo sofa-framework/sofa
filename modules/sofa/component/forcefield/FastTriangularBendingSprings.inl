@@ -506,7 +506,7 @@ void FastTriangularBendingSprings<DataTypes>::addKToMatrix(sofa::defaulttype::Ba
 template<class DataTypes>
 const sofa::defaulttype::BaseMatrix* FastTriangularBendingSprings<DataTypes>::getStiffnessMatrix(const core::MechanicalParams* /*mparams*/)
 {
-    //TODO check if already build during the time step???
+//    if( matS.rowSize() ) return matS; // constant stiffness matrix already computed (warning runtime modification of Data won't be considered)
 
     typename MechanicalState::ReadVecCoord X = this->mstate->readPositions();
 

@@ -15,8 +15,8 @@ DiagonalCompliance<DataTypes>::DiagonalCompliance( core::behavior::MechanicalSta
     : Inherit(mm)
     , diagonal( initData(&diagonal, "compliance", "Compliance value diagonally applied to all the DOF."))
     , dampingRatio( initData(&dampingRatio, (Real)0.1, "dampingRatio", "weight of the velocity in the constraint violation"))
-    , isCompliance( initData(&isCompliance, true, "isCompliance", "Consider the component as a compliance, else as a stiffness"))
 {
+    this->isCompliance.setValue(true);
 }
 
 template<class DataTypes>
@@ -83,27 +83,19 @@ void DiagonalCompliance<DataTypes>::writeConstraintValue(const core::MechanicalP
 template<class DataTypes>
 const sofa::defaulttype::BaseMatrix* DiagonalCompliance<DataTypes>::getComplianceMatrix(const core::MechanicalParams*)
 {
-    if( isCompliance.getValue() )
-    {
-        return &matC;
-    }
-    else return NULL;
+    return &matC;
 }
 
 template<class DataTypes>
 const sofa::defaulttype::BaseMatrix* DiagonalCompliance<DataTypes>::getStiffnessMatrix(const core::MechanicalParams*)
 {
-    if( isCompliance.getValue())
-        return NULL;
-    else return &matC;
+    // todo diagonal inverse...
+    return NULL;
 }
 
 template<class DataTypes>
 void DiagonalCompliance<DataTypes>::addForce(const core::MechanicalParams *, DataVecDeriv& _f, const DataVecCoord& _x, const DataVecDeriv& _v)
 {
-    if( isCompliance.getValue())
-        return;
-
     helper::ReadAccessor< DataVecCoord >  x(_x);
     helper::ReadAccessor< DataVecDeriv >  v(_v);
     helper::WriteAccessor< DataVecDeriv > f(_f);

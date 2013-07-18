@@ -35,7 +35,6 @@ public:
 
     Data< Real > compliance;    ///< Same compliance applied to all the DOFs
     Data< Real > dampingRatio;  ///< Same damping ratio applied to all the DOFs
-    Data< bool > isCompliance;  ///< Consider as compliance, else consider as stiffness
 
 //    /// Set a uniform, diagonal compliance. c must be a positive real. If this is a stiffness (flag isCompliance set to false) then c must be non-zero.
 //    void setCompliance( Real c );
@@ -51,10 +50,10 @@ public:
     /// Set the constraint value
     virtual void writeConstraintValue(const core::MechanicalParams* mparams, core::MultiVecDerivId fId );
 
-    /// Return a pointer to the compliance matrix, or NULL if isCompliance it false
+    /// Return a pointer to the compliance matrix
     virtual const sofa::defaulttype::BaseMatrix* getComplianceMatrix(const core::MechanicalParams*);
 
-    /// Return a pointer to the stiffness matrix, or NULL if isCompliance it true
+    /// Return a pointer to the stiffness matrix
     virtual const sofa::defaulttype::BaseMatrix* getStiffnessMatrix(const core::MechanicalParams*);
 
     /// addForce does nothing when this component is processed like a compliance.

@@ -101,7 +101,7 @@ void AssembledSolver::forces(const core::ExecParams& params) {
 				
 	MultiVecDeriv f  (&vop, core::VecDerivId::force() );
 				
-	mop.computeForce(f);
+    mop.computeForceNeglectingCompliance(f);
 	// mop.projectResponse(f); 
 }
 

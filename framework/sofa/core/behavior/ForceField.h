@@ -62,6 +62,7 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE(ForceField, TDataTypes), BaseForceField);
 
     typedef TDataTypes DataTypes;
+    typedef typename DataTypes::Real             Real;
     typedef typename DataTypes::Coord            Coord;
     typedef typename DataTypes::Deriv            Deriv;
     typedef typename DataTypes::VecCoord         VecCoord;
@@ -157,6 +158,7 @@ public:
     /// @deprecated
     virtual double getPotentialEnergy(const VecCoord& x) const;
 #endif
+
 
     /// @}
 
