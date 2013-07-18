@@ -173,7 +173,7 @@ AssemblyVisitor::chunk::map_type AssemblyVisitor::mapping(simulation::Node* node
 	
 	vector<core::BaseState*> from = node->mechanicalMapping->getFrom();
 	
-	dofs_type* to = safe_cast<dofs_type>(node->mechanicalMapping->getTo()[0]);
+//	dofs_type* to = safe_cast<dofs_type>(node->mechanicalMapping->getTo()[0]);
 //	unsigned rows = to->getMatrixSize();
 	
 	for( unsigned i = 0, n = from.size(); i < n; ++i ) {
@@ -262,10 +262,15 @@ AssemblyVisitor::mat AssemblyVisitor::compliance(simulation::Node* node) {
 			
 	for(unsigned i = 0; i < node->forceField.size(); ++i ) {
 		BaseForceField* ffield = node->forceField[i];
+
+        if( !ffield->isCompliance.getValue() ) continue;
 					
 		const BaseMatrix* c = ffield->getComplianceMatrix(mparams);
 				
 		if( c ) return convert( c );
+#ifndef NDEBUG
+        else std::cerr<<SOFA_CLASS_METHOD<<ffield->getName()<<" getComplianceMatrix not implemented"<<sendl;
+#endif
 				
 	}
 			
@@ -279,18 +284,19 @@ AssemblyVisitor::mat AssemblyVisitor::stiff(simulation::Node* node) {
 	mat res;
 	for(unsigned i = 0; i < node->forceField.size(); ++i ) {
 		BaseForceField* ffield = node->forceField[i];
+
+        if( ffield->isCompliance.getValue() ) continue;
 				
-		const BaseMatrix* k = ffield->getStiffnessMatrix(mparams);
+        const BaseMatrix* k = ffield->getStiffnessMatrix(mparams);
+#ifndef NDEBUG
+        else std::cerr<<SOFA_CLASS_METHOD<<ffield->getName()<<" getStiffnessMatrix not implemented"<<sendl;
+#endif
 		
-		if( k ) {
-			add(res, convert( k ));
-		} else {
-			// std::cerr << ffield->getName() << " has no stiffness matrix lol" << std::endl;
-		}
+        if( k ) add(res, convert( k ));
 				
-	}
-	
-	return res;
+    }
+
+    return res;
 }
 
 
@@ -331,7 +337,7 @@ AssemblyVisitor::vec AssemblyVisitor::phi(simulation::Node* node) {
 	for(unsigned i = 0; i < node->forceField.size(); ++i ) {
 		BaseForceField* ffield = node->forceField[i];
 				
-		if( ffield->getComplianceMatrix(mparams) ) { 
+        if( ffield->isCompliance.getValue() ) {
 			ffield->writeConstraintValue( mparams, core::VecDerivId::force() );
 			return force( node );
 		}

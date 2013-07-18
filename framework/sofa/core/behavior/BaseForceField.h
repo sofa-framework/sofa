@@ -63,6 +63,7 @@ class SOFA_CORE_API BaseForceField : public virtual objectmodel::BaseObject
 public:
     SOFA_ABSTRACT_CLASS(BaseForceField, objectmodel::BaseObject);
 protected:
+    BaseForceField();
     virtual ~BaseForceField() {}
 public:
     /// @name Vector operations
@@ -174,23 +175,27 @@ public:
 
     /** @name Experimental API used in the Compliant solver to perform global matrix assembly (François Faure, 2012)
      * Each ForceField may be processed either as a traditional force function, or a as a compliance (provided that its stiffness matrix is invertible).
-     * If getStiffnessMatrix returns a non-null pointer, then the ForceField is handled as a traditional force function, and getComplianceMatrix must return a null pointer.
+     * If isCompliance==false then the ForceField is handled as a traditional force function.
      * In this case, the stiffness matrix is used to set up the implicit equation matrix, while addForce is used to set up the right-hand term as usual.
-     * If getStiffnessMatrix returns a null pointer, the ForceField is handled as a compliance and getComplianceMatrix must return a non-null pointer.
+     * If isCompliance==true, the ForceField is handled as a compliance and getComplianceMatrix must return a non-null pointer.
      * In this case, writeConstraintValue and getDampingRatio are used to set up the constraint equation.
      */
     /// @{
-    /// Return a pointer to the stiffness matrix, or NULL if this should be seen as a compliance.
+
+    /// Considered as compliance, else consider as stiffness
+    Data< bool > isCompliance;
+
+    /// Return a pointer to the stiffness matrix
     virtual const sofa::defaulttype::BaseMatrix* getStiffnessMatrix(const MechanicalParams*) { return NULL; }
 
-    /// Return a pointer to the compliance matrix, or NULL if this should be seen as a stiffness
+    /// Return a pointer to the compliance matrix
     virtual const sofa::defaulttype::BaseMatrix* getComplianceMatrix(const MechanicalParams*) { return NULL; }
 
     /// Set the constraint value to a weighted sum of violation and violation rate, based on damping ratio and parameters defined in cparams.
     virtual void writeConstraintValue(const MechanicalParams*, MultiVecDerivId ) { serr<<"BaseForceField::writeConstraintValue not implemented"<<sendl;}
 
     /// Uniform damping ratio applied to all the constrained values. The damping coefficient is the product of the stiffness with this ratio.
-    virtual SReal getDampingRatio() { serr<<"BaseForceField::getDampingRatio not implemented"<<sendl; return 0; }
+    virtual SReal getDampingRatio() { return 0; }
 
     /// @}
 

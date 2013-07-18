@@ -1269,6 +1269,13 @@ void MechanicalComputeForceVisitor::bwdMechanicalState(simulation::Node* , core:
     mm->forceMask.activate(false);
 }
 
+Visitor::Result MechanicalComputeForceNeglectingComplianceVisitor::fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff)
+{
+    //cerr<<"MechanicalComputeForceVisitor::fwdForceField "<<ff->getName()<<endl;
+    if( !ff->isCompliance.getValue() ) ff->addForce(this->mparams /* PARAMS FIRST */, res);
+    return RESULT_CONTINUE;
+}
+
 
 Visitor::Result MechanicalComputeDfVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /* mm */)
 {

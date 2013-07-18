@@ -181,7 +181,7 @@ void ComplianceSolver::solve(const core::ExecParams* params,
         {
             scoped::timer step("forces in the right-hand term");
 
-            mop.computeForce(f);
+            mop.computeForceNeglectingCompliance(f);
             mop.projectResponse(f);
 
             if( verbose.getValue() ) {
@@ -469,51 +469,69 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::doSystemAss
     for(unsigned i = 0; i < node->forceField.size(); ++i ) {
         BaseForceField* ffield = node->forceField[i];
 
-        if( ffield->getComplianceMatrix(mparams) ) {
-            scoped::timer step( "local C and right-hand term" );
+        if( ffield->isCompliance.getValue() ) {
 
-            // compute scaling of C, based on time step, damping and
-            // implicit coefficients
+            const defaulttype::BaseMatrix* baseC = ffield->getComplianceMatrix(mparams);
 
-            SReal alpha = cparams.implicitVelocity(); // implicit velocity
-            SReal beta  = cparams.implicitPosition(); // implicit position
+            if( baseC )
+            {
+                scoped::timer step( "local C and right-hand term" );
 
-            SReal l = alpha * (beta * mparams->dt() + ffield->getDampingRatio() );
+                // compute scaling of C, based on time step, damping and
+                // implicit coefficients
 
-            // TODO HARDCODE
-            if( std::abs(l) < 1.0e-10 ) {
-                solver->serr << ffield->getName() << ", l is not invertible in "
-                             << SOFA_CLASS_METHOD << solver->sendl;
+                SReal alpha = cparams.implicitVelocity(); // implicit velocity
+                SReal beta  = cparams.implicitPosition(); // implicit position
+
+                SReal l = alpha * (beta * mparams->dt() + ffield->getDampingRatio() );
+
+                // TODO HARDCODE
+                if( std::abs(l) < 1.0e-10 ) {
+                    solver->serr << ffield->getName() << ", l is not invertible in "
+                                 << SOFA_CLASS_METHOD << solver->sendl;
+                }
+
+                SReal invl = 1.0 / l;
+
+                localC = getSMatrix(baseC) *  invl;
+
+                // Right-hand side term
+                ffield->writeConstraintValue( &cparams, core::VecDerivId::force() );
+
+                // use a copy, because the parameter is modified by addToBaseVector
+                unsigned offset = c_offset;
+
+                Wrap wrapPhi(solver->_vecPhi); // wrap as linearsolver::BaseVector for use as function parameter
+                node->mechanicalState->addToBaseVector(&wrapPhi, core::VecDerivId::force(), offset );
+
+                // compliance entry point for derived classes
+                onCompliance(ffield, c_offset, offset - c_offset);
             }
-
-            SReal invl = 1.0 / l;
-
-            localC = getSMatrix(ffield->getComplianceMatrix(mparams)) *  invl;
-
-            // Right-hand side term
-            ffield->writeConstraintValue( &cparams, core::VecDerivId::force() );
-
-            // use a copy, because the parameter is modified by addToBaseVector
-            unsigned offset = c_offset;
-
-            Wrap wrapPhi(solver->_vecPhi); // wrap as linearsolver::BaseVector for use as function parameter
-            node->mechanicalState->addToBaseVector(&wrapPhi, core::VecDerivId::force(), offset );
-
-            // compliance entry point for derived classes
-            onCompliance(ffield, c_offset, offset - c_offset);
-
+#ifndef NDEBUG
+            else std::cerr<<SOFA_CLASS_METHOD<<ffield->getName()<<" getComplianceMatrix not implemented"<<sendl;
+#endif
         }
-        else if (ffield->getStiffnessMatrix(mparams)) {
-            // accumulate the stiffness if the matrix is not null.
-            // TODO: Rayleigh damping
+        else // !ffield->isCompliance.getValue()
+        {
+            const defaulttype::BaseMatrix* baseK = ffield->getStiffnessMatrix(mparams);
 
-            scoped::timer step("local K");
+            if( baseK )
+            {
 
-            // TODO conservativeResize here ?
-            if( localK.rows() != (int) localSize ) {
-                localK.resize(localSize, localSize);
+                // accumulate the stiffness if the matrix is not null.
+                // TODO: Rayleigh damping
+
+                scoped::timer step("local K");
+
+                // TODO conservativeResize here ?
+                if( localK.rows() != (int) localSize ) {
+                    localK.resize(localSize, localSize);
+                }
+                localK += getSMatrix(baseK);
             }
-            localK += getSMatrix(ffield->getStiffnessMatrix(mparams));
+#ifndef NDEBUG
+            else std::cerr<<SOFA_CLASS_METHOD<<ffield->getName()<<" getStiffnessMatrix not implemented"<<sendl;
+#endif
         }
     }
 

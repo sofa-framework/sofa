@@ -35,7 +35,7 @@ public:
 	typedef core::objectmodel::Data<VecCoord> DataVecCoord;
 	typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
-	DampingCompliance() : damping(initData(&damping, real(0.0), "damping", "damping value")) { }
+    DampingCompliance() : damping(initData(&damping, real(0.0), "damping", "damping value")) { this->isCompliance.setValue(true); }
 
 	/// Set the constraint value
 	virtual void writeConstraintValue(const core::MechanicalParams* params, 
@@ -51,7 +51,7 @@ public:
 			f[i] = - v[i];       
 	}
 
-	/// Return a pointer to the compliance matrix, or NULL if isCompliance it false
+    /// Return a pointer to the compliance matrix
 	virtual const sofa::defaulttype::BaseMatrix* getComplianceMatrix(const core::MechanicalParams* params) {
 		if( !damping.getValue() ) return 0;
 		

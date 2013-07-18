@@ -1590,6 +1590,20 @@ public:
 #endif
 };
 
+
+/** Accumulate the forces (internal and interactions) neglecting compliance.
+This action is typically called after a MechanicalResetForceVisitor.
+*/
+class SOFA_SIMULATION_COMMON_API MechanicalComputeForceNeglectingComplianceVisitor : public MechanicalComputeForceVisitor
+{
+public:
+    MechanicalComputeForceNeglectingComplianceVisitor(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST  = sofa::core::MechanicalParams::defaultInstance()*/, MultiVecDerivId res, bool accumulate = true )
+        : MechanicalComputeForceVisitor(mparams,res,accumulate)
+    {}
+
+    virtual Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff);
+};
+
 /** Compute the variation of force corresponding to a variation of position.
 This action is typically called after a MechanicalPropagateDxVisitor.
 */

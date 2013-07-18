@@ -142,8 +142,6 @@ public:
     {
         if(this->mstate->getSize()!=(int)material.size()) resize();
 
-        if( isCompliance.getValue() ) return; // if seen as a compliance, then apply no force directly, they will be applied as constraints in writeConstraints
-
         VecDeriv&  f = *_f.beginEdit();
         const VecCoord&  x = _x.getValue();
         const VecDeriv&  v = _v.getValue();
@@ -170,8 +168,6 @@ public:
 
     virtual void addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv&   _df , const DataVecDeriv&   _dx )
     {
-        if( isCompliance.getValue() ) return; // if seen as a compliance, then apply no force directly, they will be applied as constraints
-
         VecDeriv&  df = *_df.beginEdit();
         const VecDeriv&  dx = _dx.getValue();
 
@@ -194,14 +190,12 @@ public:
 
     const defaulttype::BaseMatrix* getComplianceMatrix(const core::MechanicalParams * /*mparams*/)
     {
-        if( !isCompliance.getValue() ) return NULL; // if seen as a stiffness, then return no compliance matrix
         if(!this->assemble.getValue() || !BlockType::constantK) updateC();
         return &C;
     }
 
-    virtual const sofa::defaulttype::BaseMatrix* getStiffnessMatrix(const core::MechanicalParams*)
+    virtual const sofa::defaulttype::BaseMatrix* getStiffnessMatrix(const core::MechanicalParams * /*mparams*/)
     {
-        if( isCompliance.getValue() ) return NULL; // if seen as a compliance, then return no stiffness matrix
         if(!this->assemble.getValue() || !BlockType::constantK) updateK();
 //        cerr<<"BaseMaterialForceField::getStiffnessMatrix, K = " << K << endl;
         return &K;
@@ -221,8 +215,6 @@ public:
     /// Set the constraint value
     virtual void writeConstraintValue(const core::MechanicalParams* params, core::MultiVecDerivId constraintId )
     {
-        if( ! this->isCompliance.getValue() ) return; // if not seen as a compliance, then apply  forces in addForce
-
         helper::ReadAccessor< typename Inherit::DataVecCoord > x = params->readX(this->mstate);
         helper::ReadAccessor< typename Inherit::DataVecDeriv > v = params->readV(this->mstate);
         helper::WriteAccessor<typename Inherit::DataVecDeriv > c = *constraintId[this->mstate.get(params)].write();
@@ -233,12 +225,6 @@ public:
 
         for(unsigned i=0; i<c.size(); i++)
             c[i] = -( x[i] + v[i] * (d + alpha*h) ) * (1./ (alpha * (h*beta +d)));
-    }
-
-    /// Uniform damping ratio (i.e. viscosity/stiffness) applied to all the constrained values.
-    virtual SReal getDampingRatio()
-    {
-        return 0;
     }
 
 
@@ -268,7 +254,6 @@ protected:
     BaseMaterialForceFieldT(core::behavior::MechanicalState<DataTypes> *mm = NULL)
         : Inherit(mm)
         , assemble ( initData ( &assemble,false, "assemble","Assemble the needed material matrices (compliance C,stiffness K,damping B)" ) )
-        , isCompliance( initData(&isCompliance, false, "isCompliance", "Consider the component as a compliance, else as a stiffness"))
     {
 
     }
@@ -348,8 +333,6 @@ protected:
 //        B.endEdit();
         B.compress();
     }
-
-    Data< bool > isCompliance;  ///< Consider as compliance, else consider as stiffness
 
 };
 

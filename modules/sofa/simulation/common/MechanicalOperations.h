@@ -79,6 +79,8 @@ public:
 
     /// Compute the current force (given the latest propagated position and velocity)
     void computeForce(core::MultiVecDerivId result, bool clear = true, bool accumulate = true);
+    /// Compute the current force (given the latest propagated position and velocity) neglecting compliance
+    void computeForceNeglectingCompliance(core::MultiVecDerivId result, bool clear = true, bool accumulate = true);
     /// Compute the current force delta (given the latest propagated displacement)
     void computeDf(core::MultiVecDerivId df, bool clear = true, bool accumulate = true);
     /// Compute the current force delta (given the latest propagated velocity)

@@ -157,19 +157,22 @@ public:
         vOrientation /= a;
     }
 
-    RigidDeriv<3,real> operator*(float a) const
+    template<typename real2>
+    RigidDeriv<3,real> operator*(real2 a) const
     {
         RigidDeriv r = *this;
         r*=a;
         return r;
     }
 
-    RigidDeriv<3,real> operator*(double a) const
+    template<typename real2>
+    RigidDeriv<3,real> operator/(real2 a) const
     {
         RigidDeriv r = *this;
-        r*=a;
+        r/=a;
         return r;
     }
+
 
     RigidDeriv<3,real> operator-() const
     {
@@ -415,6 +418,11 @@ public:
         return RigidCoord<3,real>(this->center + a.getCenter(), a.orientation * this->orientation);
     }
 
+    RigidCoord<3,real> operator-() const
+    {
+        return RigidCoord<3,real>( -this->center, this->orientation.inverse() );
+    }
+
     void operator +=(const RigidCoord<3,real>& a)
     {
         center += a.getCenter();
@@ -445,7 +453,13 @@ public:
         return r;
     }
 
-
+    template<typename real2>
+    RigidCoord<3,real> operator/(real2 a) const
+    {
+        RigidCoord r = *this;
+        r/=a;
+        return r;
+    }
 
 
 
@@ -1063,17 +1077,19 @@ public:
         vOrientation /= (Real)a;
     }
 
-    RigidDeriv<2,real> operator*(float a) const
+    template<typename real2>
+    RigidDeriv<2,real> operator*(real2 a) const
     {
         RigidDeriv<2,real> r = *this;
         r *= a;
         return r;
     }
 
-    RigidDeriv<2,real> operator*(double a) const
+    template<typename real2>
+    RigidDeriv<2,real> operator/(real2 a) const
     {
         RigidDeriv<2,real> r = *this;
-        r *= a;
+        r /= a;
         return r;
     }
 
@@ -1228,6 +1244,13 @@ public:
         return RigidCoord<2,real>(this->center + a.getCenter(), this->orientation + a.orientation);
     }
 
+
+    RigidCoord<2,real> operator-() const
+    {
+        return RigidCoord<2,real>( -this->center, this->orientation.inverse() );
+    }
+
+
     void operator +=(const RigidCoord<2,real>& a)
     {
         //         std::cout << "+="<<std::endl;
@@ -1256,6 +1279,14 @@ public:
     {
         RigidCoord<2,real> r = *this;
         r *= a;
+        return r;
+    }
+
+    template<typename real2>
+    RigidCoord<2,real> operator/(real2 a) const
+    {
+        RigidCoord<2,real> r = *this;
+        r /= a;
         return r;
     }
 
