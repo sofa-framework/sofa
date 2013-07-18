@@ -54,20 +54,17 @@ static AssembledSystem::mat shift_right(unsigned off, unsigned size, unsigned to
 	}
 	res.finalize();
 	
-	res.makeCompressed(); // TODO is this needed ?
 	return res;
 }
 
 
 void LDLTSolver::factor(const AssembledSystem& sys) {
 	
-    pimpl->H = sys.H.selfadjointView<Eigen::Upper>();
-
-	pimpl->Hinv.compute( pimpl->H );
+	pimpl->Hinv.compute( sys.H );
 	
 	if( pimpl->Hinv.info() == Eigen::NumericalIssue ) {
 		std::cerr << "H is not psd :-/" << std::endl;
-
+		
 		std::cerr << pimpl->H << std::endl;
 	}
 	
@@ -77,14 +74,15 @@ void LDLTSolver::factor(const AssembledSystem& sys) {
 
 	if( sys.n ) {
 		pimpl_type::cmat schur(sys.n, sys.n);
-		pimpl_type::cmat JT = sys.J.transpose(); 
+		pimpl_type::cmat PJT = sys.P.transpose() * sys.J.transpose(); 
 		
-		pimpl->HinvJT.resize(sys.m, sys.n);
-		pimpl->HinvJT = pimpl->Hinv.solve( JT );
-		
-		schur = (sys.C.transpose() + (sys.J * pimpl->HinvJT )).selfadjointView<Eigen::Upper>();
+		pimpl->HinvPJT.resize(sys.m, sys.n);
+		pimpl->HinvPJT = pimpl->Hinv.solve( PJT );
+
+		schur = (sys.C.transpose() + (PJT.transpose() * pimpl->HinvPJT )).selfadjointView<Eigen::Upper>();
 		
 		pimpl->schur.compute( schur );
+		
 		if( pimpl->schur.info() == Eigen::NumericalIssue ) {
 			std::cerr << "schur is not psd :-/" << std::endl;
 			std::cerr << schur << std::endl;
@@ -97,28 +95,30 @@ void LDLTSolver::factor(const AssembledSystem& sys) {
 
 
 void LDLTSolver::solve(AssembledSystem::vec& res,
-                         const AssembledSystem& system,
+                         const AssembledSystem& sys,
                          const AssembledSystem::vec& rhs) const {
-	assert( res.size() == pimpl->m + pimpl->n);
-	assert( rhs.size() == pimpl->m + pimpl->n);
 
-	unsigned m = pimpl->m;
-	unsigned n = pimpl->n;
+	assert( res.size() == sys.size() );	
+	assert( rhs.size() == sys.size() );
 	
 
-	SReal alpha = 1 / ( 1 + damping.getValue() * pimpl->dt );
+	SReal alpha = 1.0 / ( 1.0 + damping.getValue() * pimpl->dt );
 	
-	res.head( m ) = pimpl->Hinv.solve( alpha * rhs.head(m) );
+	vec tmp = alpha * (sys.P * rhs.head(sys.m));
+	
+	// in place solve
+	tmp = pimpl->Hinv.solve(tmp);
+	
+	res.head( sys.m ) = sys.P * tmp;
 
-	// std::cerr << "LDLTSolver, rhs" << std::endl
-	//           << rhs.transpose() << std::endl;
+	if( sys.n ) {
+		vec tmp = rhs.tail( sys.n ) - sys.P * (pimpl->HinvPJT.transpose() * rhs.head( sys.m ));
 
-	if( n ) {
 		// lambdas
-		res.tail( n ) = pimpl->schur.solve( pimpl->HinvJT.transpose() * rhs.head( m ) - rhs.tail( n ) );
+		res.tail( sys.n ) = pimpl->schur.solve( tmp );
 		
 		// constraint forces
-		res.head( m ) -= pimpl->HinvJT * res.tail(n);
+		res.head( sys.m ) += sys.P * (pimpl->HinvPJT * res.tail( sys.n));
 	} 
 	
 } 

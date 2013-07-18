@@ -47,7 +47,7 @@ class SOFA_Compliant_API LDLTSolver : public KKTSolver {
 		
 		unsigned m, n;
 		solver_type Hinv, schur;
-		cmat H, HinvJT;
+		cmat H, HinvPJT;
 		SReal dt;
 		
 	};
