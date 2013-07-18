@@ -272,3 +272,119 @@ Unfortunately, the diagonal matrix in the left of $\J$ in the term on $\dv$ now 
 
 
 
+\section{Additional Notes}
+\label{sec:additional notes}
+
+\newcommand{\component}[1]{\texttt{#1}}
+\newcommand{\compopt}[2]{\texttt{#1}=''#2''\\}
+
+The initial implementation of the compliance framework is provided by
+\component{ComplianceSolver}, which performs system assembly, system
+solves and time-stepping. It uses a sparse Cholesky solver and is able
+to handle bilateral constraints only.
+
+With time, this component has been broken down to the following
+components:
+
+\begin{itemize}
+\item \component{AssembledSolver}, which performs system assembly
+  (through an internal \component{AssemblyVisitor}) and
+  time-stepping.
+\item \component{KKTSolver}, which performs the KKT solve associated
+  with an \component{AssembledSystem}, itself provided by the
+  \component{AssembledSolver} though its internal
+  \component{AssemblyVisitor}. 
+\end{itemize}
+
+\component{KKTSolver} is a virtual base class implemented in
+\component{MinresSolver} and \component{LDLTSolver} for bilateral
+constraints. The CompliantDev plugin contains additional KKT solvers
+for unilateral and frictional constraints.
+
+We now give a quick user documentation for the above components.
+
+\subsection{AssembledSolver}
+
+This component implements a linearized implicit Euler solver. The KKT
+system is first assembled by an \component{AssemblyVisitor}, and
+factorized by the \component{KKTSolver}.
+
+The right-hand-side is then computed depending on constraint
+stabilization and order of resolution, and the \component{KKTSolver}
+provides system solves.
+
+At the end of the time-step, velocities are updated and the system is
+stepped forward. Optionally, one can propagate the computed Lagrange
+multipliers upwards in the scene graph at the end of the time step in
+the \emph{force} state vector for easy access.
+
+\subsubsection{Order of Resolution}
+
+\compopt{use\_velocity}{\textbf{true}, false}
+
+Formulates the system at the velocity level. Acceleration is used
+otherwise. This is mostly for debugging purpose, unless warm-starts
+are disabled (see below).
+
+\subsubsection{Warm Starts}
+
+\compopt{warm\_start}{\textbf{true}, false}
+
+Warm starts iterative solvers with previous velocity/lambda (velocity-level). At the
+acceleration level, only the lambda are used.
+
+When disabled and used with iterative solvers and premature exit, this
+biases the solution towards zero, thus this results in numerical
+damping with velocity-level.
+
+This is mostly for debugging purpose.
+
+\subsubsection{Constraint Stabilization}
+
+\compopt{stablization}{\textbf{false}, true}
+
+Performs simple constraint stabilization. This causes an additional
+KKT solve during the time step.
+
+You need to add a \component{Stabilization} component next to any
+compliance you wish to stabilize. Only use with zero-compliance
+(holonomic constraints).
+
+TODO more, example
+
+\subsection{Lagrange Multiplier Propagation}
+
+\compopt{propagate\_lambdas}{\textbf{false}, true}
+
+Optionally propagate/aggregate Lagrange multipliers from compliant
+DOFs to independent DOFs at the end of the time step. This erases the
+\emph{force} state vector.
+
+TODO example
+
+\subsection{LDLTSolver}
+
+no options 
+
+TODO more
+
+\subsection{MinresSolver}
+
+\compopt{iterations}{\textbf{false}, true}
+
+iteration count
+
+\compopt{precision}{\textbf{1e-8}}
+
+residual norm threshold
+
+\compopt{relative}{\textbf{true}, false}
+
+use relative precision, otherwise absolute
+
+
+TODO parallel ?
+TODO schur complement ?
+
+TODO better description
+
