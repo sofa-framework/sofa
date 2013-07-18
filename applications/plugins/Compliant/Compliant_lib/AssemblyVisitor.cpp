@@ -611,6 +611,10 @@ struct AssemblyVisitor::process_helper {
 				if( p->master() && empty(Jp) ) {
 					// scoped::timer step("shift matrix");
 					Jp = shift_right( find(offsets, vp.dofs), p->size, size_m);
+
+					// TODO optimize! 
+					// filter absolute mapping to get filtered mapped mass/stiffness.
+					if(! zero(p->P) ) Jp = p->P * Jp;
 				}
 				
 				// Jp is empty for children of a non-master dof (e.g. mouse)
@@ -755,7 +759,6 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const{
 
 			// mass matrix / momentum
 			if( !zero(c->M) ) {
-				
 				H += c->M; 
 				res.p.segment(off_m, c->size).noalias() += c->M * c->v;
 			}
