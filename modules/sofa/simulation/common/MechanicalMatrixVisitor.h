@@ -163,6 +163,7 @@ public:
             //v = v_free + dx * velocityFactor;
             ms->vOp(params,core::VecDerivId::velocity(),core::ConstVecDerivId::freeVelocity(),core::VecDerivId::dx(),velocityFactor);
 
+            //dx *= positionFactor;
             ms->vOp(params,core::VecDerivId::dx(),core::VecDerivId::null(),core::ConstVecDerivId::dx(),positionFactor);
 
             //force = 0

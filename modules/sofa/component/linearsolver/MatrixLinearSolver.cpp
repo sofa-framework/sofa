@@ -172,7 +172,21 @@ GraphScatteredMatrix* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVect
 
 template<>
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::applyContactForce(const defaulttype::BaseVector* /*f*/,double /*positionFactor*/,double /*velocityFactor*/) {
-    serr << "applyContactForce is not supported with the conjugate gradient" << sendl;
+//    FullVector<Real> temporaryVector;
+//    temporaryVector.resize(currentGroup->systemMatrix->rowSize());
+//    internalData.projectForceInConstraintSpace(&temporaryVector,f);
+
+//    std::cout << "temporaryVector1 = " << temporaryVector << std::endl;
+
+//    executeVisitor( simulation::MechanicalMultiVectorFromBaseVectorVisitor(core::ExecParams::defaultInstance(), currentGroup->systemRHVector->id(), &temporaryVector, &(currentGroup->matrixAccessor)) );
+
+//    this->solve(*currentGroup->systemMatrix,*currentGroup->systemLHVector,*currentGroup->systemRHVector);
+
+//    executeVisitor( simulation::MechanicalMultiVectorToBaseVectorVisitor(core::ExecParams::defaultInstance(), currentGroup->systemLHVector->id(), &temporaryVector, &(currentGroup->matrixAccessor)) );
+
+//    std::cout << "temporaryVector2 = " << temporaryVector << std::endl;
+
+//    executeVisitor(simulation::MechanicalIntegrateConstraintsVisitor(core::ExecParams::defaultInstance(),&temporaryVector,positionFactor,velocityFactor,&(currentGroup->matrixAccessor)));
 }
 
 template<>

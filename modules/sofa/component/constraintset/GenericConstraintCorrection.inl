@@ -31,6 +31,8 @@
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/component/linearsolver/GraphScatteredTypes.h>
+#include <sofa/component/linearsolver/MatrixLinearSolver.inl>
 
 #include <sstream>
 #include <list>
@@ -61,8 +63,13 @@ void GenericConstraintCorrection::bwdInit() {
         sofa::core::behavior::LinearSolver* s = NULL;
         c->get(s, solverNames[i]);
 
-        if (s) linearsolvers.push_back(s);
-        else serr << "Solver \"" << solverNames[i] << "\" not found." << sendl;
+        if (s) {
+            if (s->getTemplateName() == "GraphScattered") {
+                serr << "ERROR GenericConstraintCorrection cannot use the solver " << solverNames[i] << " because it is templated on GraphScatteredType" << sendl;
+            } else {
+                linearsolvers.push_back(s);
+            }
+        } else serr << "Solver \"" << solverNames[i] << "\" not found." << sendl;
     }
 
     if (odesolver == NULL) {
