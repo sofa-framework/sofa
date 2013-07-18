@@ -40,7 +40,11 @@ AssembledSolver::AssembledSolver()
 	  stabilization(initData(&stabilization, 
 	                         false,
 	                         "stabilization",
-	                         "apply a stabilization pass on kinematic constraints requesting it"))
+	                         "apply a stabilization pass on kinematic constraints requesting it")),
+	debug(initData(&debug, 
+	               false,
+	               "debug",
+	               "print debug stuff"))
 {
 	
 }
@@ -299,6 +303,10 @@ void AssembledSolver::solve(const core::ExecParams* params,
 	sofa::helper::AdvancedTimer::stepBegin( "assembly" );
 	system_type sys = vis.assemble();
 	sofa::helper::AdvancedTimer::stepEnd( "assembly" );
+	
+	if( debug.getValue() ){
+		sys.debug();
+	}
 	
 	// solution vector
 	system_type::vec x = warm( sys );

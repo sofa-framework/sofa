@@ -46,8 +46,8 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
 	virtual void cleanup();
 
     // solve velocity dynamics ?
-    Data<bool> use_velocity, warm_start, propagate_lambdas, stabilization;
-
+	Data<bool> use_velocity, warm_start, propagate_lambdas, stabilization, debug;
+	
   protected:
 				
 	// send a visitor 
