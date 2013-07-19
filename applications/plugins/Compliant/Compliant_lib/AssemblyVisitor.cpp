@@ -269,7 +269,7 @@ AssemblyVisitor::mat AssemblyVisitor::compliance(simulation::Node* node) {
 				
 		if( c ) return convert( c );
 #ifndef NDEBUG
-        else std::cerr<<SOFA_CLASS_METHOD<<ffield->getName()<<" getComplianceMatrix not implemented"<<sendl;
+		else std::cerr<<SOFA_CLASS_METHOD<<ffield->getName()<<" getComplianceMatrix not implemented"<< std::endl;
 #endif
 				
 	}
@@ -288,12 +288,12 @@ AssemblyVisitor::mat AssemblyVisitor::stiff(simulation::Node* node) {
         if( ffield->isCompliance.getValue() ) continue;
 				
         const BaseMatrix* k = ffield->getStiffnessMatrix(mparams);
+
+        if( k ) add(res, convert( k ));
 #ifndef NDEBUG
-        else std::cerr<<SOFA_CLASS_METHOD<<ffield->getName()<<" getStiffnessMatrix not implemented"<<sendl;
+        else std::cerr<<SOFA_CLASS_METHOD<<ffield->getName()<<" getStiffnessMatrix not implemented"<< std::endl;
 #endif
 		
-        if( k ) add(res, convert( k ));
-				
     }
 
     return res;
