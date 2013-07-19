@@ -119,6 +119,9 @@ protected:
 
 };
 
+
+using sofa::defaulttype::ExtVec3fTypes;
+
 #ifndef SOFA_FLOAT
 using sofa::defaulttype::Vec3dTypes;
 using sofa::defaulttype::Rigid3dTypes;
@@ -126,7 +129,6 @@ using sofa::defaulttype::Rigid3dTypes;
 
 #ifndef SOFA_DOUBLE
 using sofa::defaulttype::Vec3fTypes;
-using sofa::defaulttype::ExtVec3fTypes;
 using sofa::defaulttype::Rigid3fTypes;
 #endif
 
