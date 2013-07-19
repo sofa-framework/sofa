@@ -38,29 +38,4 @@
 
 
 
-
-#include <sofa/component/linearsolver/PrecomputedWarpPreconditioner.h>
-#include <sofa/component/linearsolver/WarpPreconditioner.h>
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for PrecomputedWarpPreconditioner
-typedef sofa::component::linearsolver::PrecomputedWarpPreconditioner<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > PrecomputedWarpPreconditioner3f;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for WarpPreconditioner
-typedef sofa::component::linearsolver::WarpPreconditioner<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > WarpPreconditioner3f;
-
-
-
-
-
-#ifdef SOFA_FLOAT
-typedef PrecomputedWarpPreconditioner3f PrecomputedWarpPreconditioner3;
-typedef WarpPreconditioner3f WarpPreconditioner3;
-#endif
-
 #endif

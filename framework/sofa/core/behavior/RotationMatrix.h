@@ -37,10 +37,11 @@ namespace linearsolver
 {
 
 /// Direct linear solver based on Sparse LDL^T factorization, implemented with the CSPARSE library
-template<class Real>
+template<class TReal>
 class RotationMatrix : public defaulttype::BaseMatrix
 {
 public:
+    typedef TReal Real;
 
     virtual unsigned int rowSize(void) const
     {
@@ -194,6 +195,48 @@ public:
         defaulttype::BaseMatrix::opMulTM(bresult,bm);
     }
 
+    void rotateMatrix(defaulttype::BaseMatrix * mat,const defaulttype::BaseMatrix * Jmat)
+    {
+        if (mat!=Jmat) {
+            mat->clear();
+            mat->resize(Jmat->rowSize(),Jmat->colSize());
+        }
+
+        if (const SparseMatrix<float> * J = dynamic_cast<const SparseMatrix<float> * >(Jmat)) {
+            for (typename sofa::component::linearsolver::SparseMatrix<float>::LineConstIterator jit1 = J->begin(), jend = J->end() ; jit1 != jend; jit1++)
+            {
+                int l = jit1->first;
+                for (typename sofa::component::linearsolver::SparseMatrix<float>::LElementConstIterator i1 = jit1->second.begin(), jitend = jit1->second.end(); i1 != jitend;)
+                {
+                    int c = i1->first;
+                    Real v0 = (Real)i1->second; i1++; if (i1==jitend) break;
+                    Real v1 = (Real)i1->second; i1++; if (i1==jitend) break;
+                    Real v2 = (Real)i1->second; i1++;
+                    mat->set(l,c+0,v0 * data[(c+0)*3+0] + v1 * data[(c+1)*3+0] + v2 * data[(c+2)*3+0] );
+                    mat->set(l,c+1,v0 * data[(c+0)*3+1] + v1 * data[(c+1)*3+1] + v2 * data[(c+2)*3+1] );
+                    mat->set(l,c+2,v0 * data[(c+0)*3+2] + v1 * data[(c+1)*3+2] + v2 * data[(c+2)*3+2] );
+                }
+            }
+        } else if (const SparseMatrix<double> * J = dynamic_cast<const SparseMatrix<double> * >(Jmat)) {
+            for (typename sofa::component::linearsolver::SparseMatrix<double>::LineConstIterator jit1 = J->begin(), jend = J->end() ; jit1 != jend; jit1++)
+            {
+                int l = jit1->first;
+                for (typename sofa::component::linearsolver::SparseMatrix<double>::LElementConstIterator i1 = jit1->second.begin(), jitend = jit1->second.end(); i1 != jitend;)
+                {
+                    int c = i1->first;
+                    Real v0 = (Real)i1->second; i1++; if (i1==jitend) break;
+                    Real v1 = (Real)i1->second; i1++; if (i1==jitend) break;
+                    Real v2 = (Real)i1->second; i1++;
+                    mat->set(l,c+0,v0 * data[(c+0)*3+0] + v1 * data[(c+1)*3+0] + v2 * data[(c+2)*3+0] );
+                    mat->set(l,c+1,v0 * data[(c+0)*3+1] + v1 * data[(c+1)*3+1] + v2 * data[(c+2)*3+1] );
+                    mat->set(l,c+2,v0 * data[(c+0)*3+2] + v1 * data[(c+1)*3+2] + v2 * data[(c+2)*3+2] );
+                }
+            }
+        } else {
+            std::cerr << "rotateMatrix for this kind of matrix is not implemented" << std::endl;
+        }
+    }
+
     friend std::ostream& operator << (std::ostream& out, const RotationMatrix<Real> & v )
     {
         std::cout.precision(4);
@@ -209,10 +252,22 @@ public:
         return out;
     }
 
+    static const char* Name();
+
 protected :
     helper::vector<Real> data;
 
 };
+
+template<>
+inline const char* RotationMatrix<float>::Name() {
+    return "RotationMatrixf";
+}
+
+template<>
+inline const char* RotationMatrix<double>::Name() {
+    return "RotationMatrixd";
+}
 
 } // namespace misc
 

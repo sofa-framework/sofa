@@ -407,13 +407,7 @@ bool MatrixLinearSolver<Matrix,Vector>::buildComplianceMatrix(defaulttype::BaseM
 
     executeVisitor(simulation::MechanicalGetConstraintJacobianVisitor(core::ExecParams::defaultInstance(),j_local));
 
-    ResMatrixType * res_local = internalData.getLocalRes(result);
-
-    bool res = addJMInvJtLocal(currentGroup->systemMatrix,res_local,j_local,fact);
-
-    internalData.addLocalRes(result);
-
-    return res;
+    return addJMInvJt(result,j_local,fact);
 }
 
 template<class Matrix, class Vector>
