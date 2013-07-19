@@ -929,13 +929,16 @@ void LinearSolverConstraintCorrection<DataTypes>::draw(const core::visual::Visua
         helper::ReadAccessor<Data<VecCoord> > x = *this->mstate->read(VecId::position());
         const VecDeriv & f = this->contactForce.getValue();
 
+		Real scale = f_draw_scale.getValue();
+		Vector4 color = f_drawColor.getValue();
+
         for (unsigned i=0;i<f.size();i++) {
             if (f[i][0]+f[i][1]+f[i][2]!=0.0) {
 
                 Vector3 pos(x[i][0],x[i][1],x[i][2]);
                 Vector3 force(f[i][0],f[i][1],f[i][2]);
 
-                vparams->drawTool()->drawArrow(pos,pos+force*f_draw_scale.getValue(),f_draw_scale.getValue()/10.0, f_drawColor.getValue());
+                vparams->drawTool()->drawArrow(pos, pos+force*scale, scale/10.0, color);
             }
         }
     }
