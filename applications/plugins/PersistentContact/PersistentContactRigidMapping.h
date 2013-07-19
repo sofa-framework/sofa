@@ -122,14 +122,19 @@ protected:
     void setDefaultValues();
 };
 
+#ifndef SOFA_FLOAT
 using sofa::defaulttype::Vec2dTypes;
 using sofa::defaulttype::Vec3dTypes;
-using sofa::defaulttype::Vec2fTypes;
-using sofa::defaulttype::Vec3fTypes;
 using sofa::defaulttype::Rigid2dTypes;
 using sofa::defaulttype::Rigid3dTypes;
+#endif
+#ifndef SOFA_DOUBLE
+using sofa::defaulttype::Vec2fTypes;
+using sofa::defaulttype::Vec3fTypes;
 using sofa::defaulttype::Rigid2fTypes;
 using sofa::defaulttype::Rigid3fTypes;
+#endif
+
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_PERSISTENTCONTACTRIGIDMAPPING_CPP)
 #ifndef SOFA_FLOAT
