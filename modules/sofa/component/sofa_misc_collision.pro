@@ -36,12 +36,6 @@ HEADERS += collision/ParallelCollisionPipeline.h
 SOURCES += collision/ParallelCollisionPipeline.cpp
 }
 
-contains(DEFINES,SOFA_HAVE_BGL){
-HEADERS += collision/BglCollisionGroupManager.h
-
-SOURCES += collision/BglCollisionGroupManager.cpp
-}
-
 contains(DEFINES,SOFA_HAVE_EIGEN2){
 SOURCES += collision/TetrahedronBarycentricDistanceLMConstraintContact.cpp \
 		   collision/BarycentricDistanceLMConstraintContact_DistanceGrid.cpp

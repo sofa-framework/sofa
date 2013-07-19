@@ -58,6 +58,7 @@ public:
     /// Clear all the potentially colliding pairs detected in the previous simulation step
     virtual void beginNarrowPhase()
     {
+        _zeroCollision = true;
         for (DetectionOutputMap::iterator it = m_outputsMap.begin(); it != m_outputsMap.end(); it++)
         {
             DetectionOutputVector *do_vec = (it->second);
@@ -95,6 +96,7 @@ public:
             }
             else
             {
+                _zeroCollision = false;
                 ++it;
             }
         }
@@ -122,7 +124,14 @@ public:
         return it->second;
     }
 
+    //Returns true if the last narrow phase detected no collision, to use after endNarrowPhase.
+    inline bool zeroCollision()const{
+        return _zeroCollision;
+    }
+
 protected:
+    bool _zeroCollision;//true if the last narrow phase detected no collision, to use after endNarrowPhase
+
     virtual void changeInstanceNP(Instance inst)
     {
         m_storedOutputsMap[instance].swap(m_outputsMap);

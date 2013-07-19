@@ -124,6 +124,7 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params /* PARAM
     sofa::helper::AdvancedTimer::stepBegin("MechanicalVInitVisitor");
     simulation::MechanicalVInitVisitor< core::V_COORD >(params, core::VecCoordId::freePosition(), core::ConstVecCoordId::position(), true).execute(this->gnode);
     simulation::MechanicalVInitVisitor< core::V_DERIV >(params, core::VecDerivId::freeVelocity(), core::ConstVecDerivId::velocity(), true).execute(this->gnode);
+
     sofa::helper::AdvancedTimer::stepEnd("MechanicalVInitVisitor");
 
     BehaviorUpdatePositionVisitor beh(params , dt);
