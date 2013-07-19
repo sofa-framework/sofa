@@ -14,9 +14,6 @@
 #ifdef SOFA_HAVE_DAG
 #include <sofa/simulation/graph/DAGSimulation.h>
 #endif
-#ifdef SOFA_HAVE_BGL
-#include <sofa/simulation/bgl/BglSimulation.h>
-#endif
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/xml/initXml.h>
 
@@ -46,7 +43,7 @@
 #include <plugins/Flexible/deformationMapping/DistanceMapping.h>
 
 #include <sofa/simulation/common/Simulation.h>
-#include <sofa/component/collision/TreeCollisionGroupManager.h>
+#include <sofa/component/collision/DefaultCollisionGroupManager.h>
 #include <sofa/simulation/tree/GNode.h>
 
 #include <sofa/component/topology/MeshTopology.h>

@@ -42,7 +42,7 @@
 #include <plugins/Flexible/deformationMapping/DistanceMapping.h>
 
 #include <sofa/simulation/common/Simulation.h>
-#include <sofa/component/collision/TreeCollisionGroupManager.h>
+#include <sofa/component/collision/DefaultCollisionGroupManager.h>
 #include <sofa/simulation/tree/GNode.h>
 
 #include <sofa/component/topology/MeshTopology.h>

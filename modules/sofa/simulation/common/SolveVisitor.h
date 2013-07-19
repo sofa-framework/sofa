@@ -44,8 +44,23 @@ namespace simulation
 class SOFA_SIMULATION_COMMON_API SolveVisitor : public Visitor
 {
 public:
-    SolveVisitor(const sofa::core::ExecParams* params /* PARAMS FIRST */, double _dt) : Visitor(params), dt(_dt), freeMotion(false) {}
-    SolveVisitor(const sofa::core::ExecParams* params /* PARAMS FIRST */, double _dt, bool free) : Visitor(params), dt(_dt), freeMotion(free) {}
+    SolveVisitor(const sofa::core::ExecParams* params /* PARAMS FIRST */, double _dt) : Visitor(params), dt(_dt), x(core::VecCoordId::position()),
+        v(core::VecDerivId::velocity()) {}
+
+    SolveVisitor(const sofa::core::ExecParams* params /* PARAMS FIRST */, double _dt, bool free) : Visitor(params), dt(_dt){
+        if(free){
+            x = core::VecCoordId::freePosition();
+            v = core::VecDerivId::freeVelocity();
+        }
+        else{
+            x = core::VecCoordId::position();
+            v = core::VecDerivId::velocity();
+        }
+    }
+
+    SolveVisitor(const sofa::core::ExecParams* params /* PARAMS FIRST */, double _dt, sofa::core::MultiVecCoordId X,sofa::core::MultiVecDerivId V) : Visitor(params), dt(_dt),
+        x(X),v(V){}
+
     virtual void processSolver(simulation::Node* node, core::behavior::OdeSolver* b);
     virtual Result processNodeTopDown(simulation::Node* node);
 
@@ -61,7 +76,8 @@ public:
     double getDt() {return dt;}
 protected:
     double dt;
-    bool freeMotion;
+    sofa::core::MultiVecCoordId x;
+    sofa::core::MultiVecDerivId v;
 };
 
 } // namespace simulation

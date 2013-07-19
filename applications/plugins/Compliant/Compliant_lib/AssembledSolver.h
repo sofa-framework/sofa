@@ -6,6 +6,7 @@
 
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/MechanicalParams.h>
+#include <sofa/core/behavior/MultiVec.h>
 
 // TODO forward instead ?
 #include "KKTSolver.h"
@@ -38,7 +39,19 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
 	virtual void solve(const core::ExecParams* params, 
 	                   double dt, 
 	                   sofa::core::MultiVecCoordId xResult, 
-	                   sofa::core::MultiVecDerivId vResult);
+                       sofa::core::MultiVecDerivId vResult,bool isConstraint);
+
+    inline virtual void solve(const core::ExecParams* params,
+                       double dt,
+                       sofa::core::MultiVecCoordId xResult,
+                       sofa::core::MultiVecDerivId vResult){
+        solve(params,dt,xResult,vResult,false);
+    }
+
+    void solveConstraints(const core::ExecParams* params,
+                          double dt,
+                          sofa::core::MultiVecCoordId pos,
+                          sofa::core::MultiVecDerivId vel);
 
 	AssembledSolver();
 	~AssembledSolver();
@@ -54,7 +67,8 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
 	void send(simulation::Visitor& vis);
 				
 	// integrate positions
-	void integrate(const core::MechanicalParams* params);
+    void integrate(const core::MechanicalParams* params,sofa::core::MultiVecCoordId  pos,sofa::core::MultiVecDerivId vel);
+    void integrate(const core::MechanicalParams* params);//by default use core::VecCoordId::position() and core::VecCoordId::velocity() for integration
 				
 	// compute forces
 	void forces(const core::ExecParams& params);
@@ -73,7 +87,7 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
 
 	typedef linearsolver::AssembledSystem system_type;
 	// obtain linear system rhs from system 
-	virtual kkt_type::vec rhs(const system_type& sys) const;
+    virtual kkt_type::vec rhs(const system_type& sys,bool isConstraint = false) const;
 
 	// warm start solution
 	virtual kkt_type::vec warm(const system_type& sys) const;

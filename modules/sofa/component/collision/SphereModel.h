@@ -45,45 +45,6 @@ namespace collision
 
 using namespace sofa::defaulttype;
 
-template<class T>
-struct _SphereDataTypes{
-    typedef T DataTypes;
-    typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::Deriv Deriv;
-
-    static const Coord & position(const typename DataTypes::Coord & c){return c;}
-    static const Deriv & lvelocity(const typename DataTypes::Deriv & d){return d;}
-};
-
-template <class MyReal>
-struct _SphereDataTypes<StdRigidTypes<3,MyReal> >{
-    typedef defaulttype::StdRigidTypes<3,MyReal> DataTypes;
-    typedef typename StdRigidTypes<3,MyReal>::Coord::Pos Coord;
-
-    static const Coord & position(const typename DataTypes::Coord & c){return c.getCenter();}
-    static const Coord & lvelocity(const typename DataTypes::Deriv & d){return d.getLinear();}
-};
-
-//template <>
-//struct _SphereDataTypes<defaulttype::Vec3dTypes>{
-//    typedef defaulttype::Vec3dTypes DataTypes;
-//    typedef DataTypes::Coord Coord;
-//    typedef DataTypes::Deriv Deriv;
-
-//    static const Coord & position(const DataTypes::Coord & c){return c;}
-//    static const Deriv & lvelocity(const DataTypes::Deriv & d){return d;}
-//};
-
-//template <>
-//struct _SphereDataTypes<defaulttype::Vec3fTypes>{
-//    typedef defaulttype::Vec3fTypes DataTypes;
-//    typedef DataTypes::Coord Coord;
-//    typedef DataTypes::Deriv Deriv;
-
-//    static const Coord & position(const DataTypes::Coord & c){return c;}
-//    static const Deriv & lvelocity(const DataTypes::Deriv & d){return d;}
-//};
-
 
 template<class DataTypes>
 class TSphereModel;
@@ -97,7 +58,7 @@ class TSphere : public core::TCollisionElementIterator< TSphereModel<TDataTypes>
 public:
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::Real   Real;
-    typedef typename _SphereDataTypes<TDataTypes>::Coord Coord;
+    typedef typename TDataTypes::CPos Coord;
 
     typedef TSphereModel<DataTypes> ParentModel;
 
@@ -126,7 +87,7 @@ public:
     typedef TDataTypes DataTypes;
     typedef DataTypes InDataTypes;
 
-    typedef typename _SphereDataTypes<DataTypes>::Coord Coord;
+    typedef typename DataTypes::CPos Coord;
     //typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::VecReal VecReal;
@@ -346,22 +307,22 @@ inline TSphere<DataTypes>::TSphere(const core::CollisionElementIterator& i)
 }
 
 template<class DataTypes>
-inline const typename TSphere<DataTypes>::Coord& TSphere<DataTypes>::center() const { return _SphereDataTypes<DataTypes>::position((*this->model->mstate->getX())[this->index]); }
+inline const typename TSphere<DataTypes>::Coord& TSphere<DataTypes>::center() const { return DataTypes::getCPos((*this->model->mstate->getX())[this->index]); }
 
 template<class DataTypes>
 inline const typename DataTypes::Coord & TSphere<DataTypes>::rigidCenter() const { return (*this->model->mstate->getX())[this->index];}
 
 template<class DataTypes>
-inline const typename TSphere<DataTypes>::Coord& TSphere<DataTypes>::p() const { return _SphereDataTypes<DataTypes>::position((*this->model->mstate->getX())[this->index]); }
+inline const typename TSphere<DataTypes>::Coord& TSphere<DataTypes>::p() const { return DataTypes::getCPos((*this->model->mstate->getX())[this->index]);}
 
 template<class DataTypes>
 inline const typename TSphere<DataTypes>::Coord& TSphere<DataTypes>::pFree() const { return (*this->model->mstate->read(core::ConstVecCoordId::freePosition())).getValue()[this->index]; }
 
 template<class DataTypes>
-inline const typename TSphereModel<DataTypes>::Coord& TSphereModel<DataTypes>::velocity(int index) const { return _SphereDataTypes<DataTypes>::lvelocity((*mstate->getV())[index]);}
+inline const typename TSphereModel<DataTypes>::Coord& TSphereModel<DataTypes>::velocity(int index) const { return DataTypes::getDPos((*mstate->getV())[index]);}
 
 template<class DataTypes>
-inline const typename TSphere<DataTypes>::Coord& TSphere<DataTypes>::v() const { return _SphereDataTypes<DataTypes>::lvelocity((*this->model->mstate->getV())[this->index]); }
+inline const typename TSphere<DataTypes>::Coord& TSphere<DataTypes>::v() const { return DataTypes::getDPos((*this->model->mstate->getV())[this->index]); }
 
 template<class DataTypes>
 inline typename DataTypes::Real TSphere<DataTypes>::r() const { return (Real) this->model->getRadius((unsigned)this->index); }

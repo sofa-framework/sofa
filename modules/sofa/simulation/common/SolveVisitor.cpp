@@ -36,10 +36,8 @@ namespace simulation
 void SolveVisitor::processSolver(simulation::Node* node, core::behavior::OdeSolver* s)
 {
     sofa::helper::AdvancedTimer::stepBegin("Mechanical",node);
-    if (freeMotion)
-        s->solve(params /* PARAMS FIRST */, dt, core::VecCoordId::freePosition(), core::VecDerivId::freeVelocity());
-    else
-        s->solve(params /* PARAMS FIRST */, dt);
+    s->solve(params /* PARAMS FIRST */, dt, x, v);
+
     sofa::helper::AdvancedTimer::stepEnd("Mechanical",node);
 }
 
