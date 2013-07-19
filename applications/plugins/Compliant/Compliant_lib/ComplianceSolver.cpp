@@ -508,7 +508,7 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::doSystemAss
                 onCompliance(ffield, c_offset, offset - c_offset);
             }
 #ifndef NDEBUG
-            else std::cerr<<SOFA_CLASS_METHOD<<ffield->getName()<<" getComplianceMatrix not implemented"<<sendl;
+            else std::cerr<<SOFA_CLASS_METHOD<<ffield->getName()<<" getComplianceMatrix not implemented"<< std::endl;
 #endif
         }
         else // !ffield->isCompliance.getValue()
@@ -530,7 +530,7 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::doSystemAss
                 localK += getSMatrix(baseK);
             }
 #ifndef NDEBUG
-            else std::cerr<<SOFA_CLASS_METHOD<<ffield->getName()<<" getStiffnessMatrix not implemented"<<sendl;
+            else std::cerr<<SOFA_CLASS_METHOD<<ffield->getName()<<" getStiffnessMatrix not implemented"<< std::endl;
 #endif
         }
     }
