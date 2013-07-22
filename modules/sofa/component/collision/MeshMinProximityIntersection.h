@@ -167,8 +167,6 @@ int MeshMinProximityIntersection::computeIntersection(Triangle& e2, TSphere<T>& 
     sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
     detection->id = e1.getIndex();
-    detection->point[0]=Q;
-    detection->point[1]=P;
     detection->normal=QP;
     detection->value = detection->normal.norm();
     if(detection->value>1e-15)
@@ -181,6 +179,8 @@ int MeshMinProximityIntersection::computeIntersection(Triangle& e2, TSphere<T>& 
         detection->normal= Vector3(1,0,0);
     }
     detection->value -= contactDist;
+    detection->point[0]=Q;
+    detection->point[1]=e1.getContactPoint( detection->normal );
     return 1;
 }
 
@@ -253,8 +253,6 @@ int MeshMinProximityIntersection::computeIntersection(Line& e2, TSphere<T>& e1, 
     sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
     detection->id = e1.getIndex();
-    detection->point[0]=Q;
-    detection->point[1]=P;
     detection->normal=QP;
     detection->value = detection->normal.norm();
     if(detection->value>1e-15)
@@ -266,6 +264,8 @@ int MeshMinProximityIntersection::computeIntersection(Line& e2, TSphere<T>& e1, 
         intersection->serr<<"WARNING: null distance between contact detected"<<intersection->sendl;
         detection->normal= Vector3(1,0,0);
     }
+    detection->point[0]=Q;
+    detection->point[1]=e1.getContactPoint( detection->normal );
     detection->value -= contactDist;
     return 1;
 }
@@ -306,8 +306,6 @@ int MeshMinProximityIntersection::computeIntersection(TSphere<T>& e1, Point& e2,
     sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
     detection->id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
-    detection->point[0]=P;
-    detection->point[1]=Q;
     detection->normal=PQ;
     detection->value = detection->normal.norm();
     if(detection->value>1e-15)
@@ -320,6 +318,8 @@ int MeshMinProximityIntersection::computeIntersection(TSphere<T>& e1, Point& e2,
         detection->normal= Vector3(1,0,0);
     }
     detection->value -= contactDist;
+    detection->point[0]=e1.getContactPoint( detection->normal );
+    detection->point[1]=Q;
     return 1;
 }
 
