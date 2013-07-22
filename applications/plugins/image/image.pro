@@ -52,6 +52,7 @@ HEADERS += \
         BranchingImageConverter.h \
         BranchingCellIndicesFromPositions.h \
         BranchingCellVolumes.h \
+        MergeBranchingImages.h \
 
 SOURCES += \
 	initImage.cpp \
@@ -77,6 +78,7 @@ SOURCES += \
     BranchingImageConverter.cpp \
     BranchingCellIndicesFromPositions.cpp \
     BranchingCellVolumes.cpp \
+    MergeBranchingImages.cpp \
 
 README_FILE = image.txt
 	
