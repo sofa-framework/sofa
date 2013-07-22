@@ -22,32 +22,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_IMAGE_MERGEIMAGES_H
-#define SOFA_IMAGE_MERGEIMAGES_H
+#ifndef SOFA_IMAGE_MERGEBRANCHINGIMAGES_H
+#define SOFA_IMAGE_MERGEBRANCHINGIMAGES_H
 
 #include "initImage.h"
-#include "ImageTypes.h"
+#include "BranchingImage.h"
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/rmath.h>
-#include <sofa/helper/OptionsGroup.h>
-
 #include <sofa/component/component.h>
 
 #ifdef USING_OMP_PRAGMAS
-    #include <omp.h>
+#include <omp.h>
 #endif
-
-#define AVERAGE 0
-#define ORDER 1
-#define ALPHABLEND 2
-#define SEPARATE 3
-#define ADDITIVE 4
-
-#define INTERPOLATION_NEAREST 0
-#define INTERPOLATION_LINEAR 1
-#define INTERPOLATION_CUBIC 2
 
 namespace sofa
 {
@@ -66,16 +54,16 @@ using namespace cimg_library;
 using namespace helper;
 
 /**
- * This class merges images into one
+ * This class merges branching images into one
  */
 
 
 template <class _ImageTypes>
-class MergeImages : public core::DataEngine
+class MergeBranchingImages : public core::DataEngine
 {
 public:
     typedef core::DataEngine Inherited;
-    SOFA_CLASS(SOFA_TEMPLATE(MergeImages,_ImageTypes),Inherited);
+    SOFA_CLASS(SOFA_TEMPLATE(MergeBranchingImages,_ImageTypes),Inherited);
 
     typedef _ImageTypes ImageTypes;
     typedef typename ImageTypes::T T;
@@ -89,8 +77,6 @@ public:
     typedef helper::WriteAccessor<Data< TransformType > > waTransform;
     typedef helper::ReadAccessor<Data< TransformType > > raTransform;
 
-    Data<helper::OptionsGroup> overlap;
-    Data<helper::OptionsGroup> Interpolation;
     Data<unsigned int> nbImages;
 
     helper::vector<Data<ImageTypes>*> inputImages;
@@ -99,37 +85,27 @@ public:
     Data<ImageTypes> image;
     Data<TransformType> transform;
 
-    virtual std::string getTemplateName() const    { return templateName(this);    }
-    static std::string templateName(const MergeImages<ImageTypes>* = NULL) { return ImageTypes::Name(); }
+    Data<vector<T> > connectLabels;
 
-    MergeImages()    :   Inherited()
-        , overlap ( initData ( &overlap,"overlap","method for handling overlapping regions" ) )
-        , Interpolation( initData ( &Interpolation,"interpolation","Interpolation method." ) )
-        , nbImages ( initData ( &nbImages,(unsigned int)0,"nbImages","number of images to merge" ) )
-        , image(initData(&image,ImageTypes(),"image","Image"))
-        , transform(initData(&transform,TransformType(),"transform","Transform"))
+    virtual std::string getTemplateName() const    { return templateName(this);    }
+    static std::string templateName(const MergeBranchingImages<ImageTypes>* = NULL) { return ImageTypes::Name(); }
+
+    MergeBranchingImages()    :   Inherited()
+      , nbImages ( initData ( &nbImages,(unsigned int)0,"nbImages","number of images to merge" ) )
+      , image(initData(&image,ImageTypes(),"image","Image"))
+      , transform(initData(&transform,TransformType(),"transform","Transform"))
+      , connectLabels(initData(&connectLabels,"connectLabels","Pairs of label to be connected accross different input images"))
     {
         createInputImagesData();
         image.setReadOnly(true);
         transform.setReadOnly(true);
         this->addAlias(&image, "outputImage");
+        this->addAlias(&image, "branchingImage");
         this->addAlias(&transform, "outputTransform");
-
-        helper::OptionsGroup overlapOptions(5	,"0 - Average pixels"
-                ,"1 - Use image order as priority"
-                ,"2 - Alpha blending according to distance from border"
-                ,"3 - Take farthest pixel from border"
-                ,"4 - Add pixels of each images"
-                                           );
-        overlapOptions.setSelectedItem(ALPHABLEND);
-        overlap.setValue(overlapOptions);
-
-        helper::OptionsGroup InterpolationOptions(3,"Nearest", "Linear", "Cubic");
-        InterpolationOptions.setSelectedItem(INTERPOLATION_LINEAR);
-        Interpolation.setValue(InterpolationOptions);
+        this->addAlias(&transform, "branchingTransform");
     }
 
-    virtual ~MergeImages()
+    virtual ~MergeBranchingImages()
     {
         deleteInputDataVector(inputImages);
         deleteInputDataVector(inputTransforms);
@@ -223,13 +199,6 @@ protected:
             nbImages.setValue(n);
     }
 
-
-    struct pttype  // to handle overlaps, we need to record some values and positions for each image
-    {
-        vector<vector<double> > vals;
-        Coord u;
-    };
-
     virtual void update()
     {
         cleanDirty();
@@ -238,6 +207,7 @@ protected:
         unsigned int nb = nbImages.getValue();
         if(!nb) return;
 
+        // init BB
         Vec<2,Coord> BB = this->getBB(0);
         Coord minScale = this->getScale(0);
         for(unsigned int j=1; j<nb; j++)
@@ -253,111 +223,102 @@ protected:
                     minScale[k] = this->getScale(j)[k];
         }
 
+        // get input Data
+        vector<const ImageTypes*> in;
+        vector<const TransformType*> inT;
+        for(unsigned int j=0; j<nb; j++)
+        {
+            raImage inData(this->inputImages[j]);  in.push_back(&inData.ref());
+            if(in.back()->isEmpty())  { this->serr<<"Image "<<j<<" not found"<<this->sendl; return; }
+            raTransform inTData(this->inputTransforms[j]);   inT.push_back(&inTData.ref());
+        }
 
-        // transform = translated version of inputTransforms[0] with minimum voxel size
-        raTransform inT0(this->inputTransforms[0]);
+        // init transform = translated version of inputTransforms[0] with minimum voxel size
         waTransform outT(this->transform);
-        outT->operator=(inT0);
+        outT->operator=(*(inT[0]));
         outT->getTranslation()=BB[0];
         outT->getScale()=minScale;
 
-        // set image
-        raImage in0(this->inputImages[0]);
-        if(in0->isEmpty()) return;
-        imCoord dim=in0->getDimensions();
+        // init image
+        imCoord dim=in[0]->getDimensions();
         Coord MaxP=outT->toImage(BB[1]); // corner pixel = dim-1
         dim[ImageTypes::DIMENSION_X]=ceil(MaxP[0])+1;
         dim[ImageTypes::DIMENSION_Y]=ceil(MaxP[1])+1;
         dim[ImageTypes::DIMENSION_Z]=ceil(MaxP[2])+1;
 
-        waImage out(this->image);
-        out->clear();
-        out->setDimensions(dim);
+        waImage outData(this->image);  ImageTypes& img = outData.wref();
+        img.setDimensions(dim);
 
-        unsigned int overlp = this->overlap.getValue().getSelectedId();
+        // fill image
+        typedef typename ImageTypes::ConnectionVoxel ConnectionVoxel;
+        typedef typename ImageTypes::VoxelIndex VoxelIndex;
+        typedef typename ImageTypes::SuperimposedVoxels SuperimposedVoxels;
 
-        CImgList<T>& img = out->getCImgList();
+        vector<unsigned int> sizes(img.imageSize); // buffer to record neighbor offsets due to previously pasted images
 
+        for(unsigned int j=0; j<nb; j++)
+        {
+            const ImageTypes &inj=*(in[j]);
+
+            bimg_forT(inj,t)
+            {
+                for(unsigned int i=0;i<sizes.size();i++) sizes[i] = img.imgList[t][i].size();
 
 #ifdef USING_OMP_PRAGMAS
-        #pragma omp parallel for
+#pragma omp parallel for
 #endif
-        cimg_forXYZ(img(0),x,y,z) //space
-        {
-            for(unsigned int t=0; t<dim[4]; t++) for(unsigned int k=0; k<dim[3]; k++) img(t)(x,y,z,k) = (T)0;
-
-            Coord p=outT->fromImage(Coord(x,y,z));
-            vector<struct pttype> pts;
-            for(unsigned int j=0; j<nb; j++) // store values at p from input images
-            {
-                raImage in(this->inputImages[j]);
-                const CImgList<T>& inImg = in->getCImgList();
-                const imCoord indim=in->getDimensions();
-
-                raTransform inT(this->inputTransforms[j]);
-                Coord inp=inT->toImage(p);
-                if(inp[0]>=0 && inp[1]>=0 && inp[2]>=0 && inp[0]<=indim[0]-1 && inp[1]<=indim[1]-1 && inp[2]<=indim[2]-1)
+                bimg_foroff1D(inj,i1dj)
+                        if(inj.imgList[t][i1dj].size())
                 {
-                    struct pttype pt;
-                    if(Interpolation.getValue().getSelectedId()==INTERPOLATION_NEAREST)
-                        for(unsigned int t=0; t<indim[4] && t<dim[4]; t++) // time
+                    const SuperimposedVoxels &Vj=inj.imgList[t][i1dj];
+                    unsigned int Pj[3];     inj.index1Dto3D(i1dj,Pj[0],Pj[1],Pj[2]);
+                    Coord P=outT->toImageInt( inT[j]->fromImage( Coord(Pj[0],Pj[1],Pj[2]) ) );
+
+                    if(img.isInside((int)P[0],(int)P[1],(int)P[2]))
+                    {
+                        SuperimposedVoxels &V=img.imgList[t][ img.index3Dto1D(P[0],P[1],P[2]) ];
+                        for( unsigned v=0 ; v<Vj.size() ; ++v )
                         {
-                            pt.vals.push_back(vector<double>());
-                            for(unsigned int k=0; k<indim[3] && k<dim[3]; k++) // channels
-                                pt.vals[t].push_back((double)inImg(t).atXYZ(sofa::helper::round((double)inp[0]),sofa::helper::round((double)inp[1]),sofa::helper::round((double)inp[2]),k));
+                            V.push_back( Vj[v] , dim[ImageTypes::DIMENSION_S]);
+
+                            for( unsigned n=0 ; n<Vj[v].neighbours.size() ; ++n )
+                            {
+                                VoxelIndex N=Vj[v].neighbours[n];
+                                inj.index1Dto3D(N.index1d,Pj[0],Pj[1],Pj[2]);
+                                P=outT->toImageInt( inT[j]->fromImage( Coord(Pj[0],Pj[1],Pj[2]) ) );
+                                if(img.isInside((int)P[0],(int)P[1],(int)P[2]))
+                                {
+                                    N.index1d = img.index3Dto1D(P[0],P[1],P[2]);
+                                    N.offset += sizes[N.index1d];
+                                    V.last().neighbours[n] = N ;
+                                }
+                            }
                         }
-                    else if(Interpolation.getValue().getSelectedId()==INTERPOLATION_LINEAR)
-                        for(unsigned int t=0; t<indim[4] && t<dim[4]; t++) // time
-                        {
-                            pt.vals.push_back(vector<double>());
-                            for(unsigned int k=0; k<indim[3] && k<dim[3]; k++) // channels
-                                pt.vals[t].push_back((double)inImg(t).linear_atXYZ(inp[0],inp[1],inp[2],k));
-                        }
-                    else
-                        for(unsigned int t=0; t<indim[4] && t<dim[4]; t++) // time
-                        {
-                            pt.vals.push_back(vector<double>());
-                            for(unsigned int k=0; k<indim[3] && k<dim[3]; k++) // channels
-                                pt.vals[t].push_back((double)inImg(t).cubic_atXYZ(inp[0],inp[1],inp[2],k));
-                        }
-                    pt.u=Coord( ( inp[0]< indim[0]-inp[0]-1)? inp[0]: indim[0]-inp[0]-1 ,
-                            ( inp[1]< indim[1]-inp[1]-1)? inp[1]: indim[1]-inp[1]-1 ,
-                            ( inp[2]< indim[2]-inp[2]-1)? inp[2]: indim[2]-inp[2]-1 ); // distance from border
-                    pts.push_back(pt);
+                    }
                 }
             }
-            unsigned int nbp=pts.size();
-            if(nbp==0) continue;
-            else if(nbp==1) { for(unsigned int t=0; t<pts[0].vals.size(); t++) for(unsigned int k=0; k<pts[0].vals[t].size(); k++) if((T)pts[0].vals[t][k]!=(T)0) img(t)(x,y,z,k) = (T)pts[0].vals[t][k]; }
-            else if(nbp>1)
+        }
+
+
+        // connect labels based on intensities of first channel
+        helper::ReadAccessor<Data< vector<T> > > connectL(this->connectLabels);
+        for(unsigned int i=0;i<connectL.size()/2;i++)
+        {
+            const T a=connectL[2*i], b=connectL[2*i+1];
+
+            bimg_forT(img,t)
             {
-                unsigned int nbt=pts[0].vals.size();
-                unsigned int nbc=pts[0].vals[0].size();
-                if(overlp==AVERAGE)
+#ifdef USING_OMP_PRAGMAS
+#pragma omp parallel for
+#endif
+                bimg_foroff1D(img,off1D)
+                        for( unsigned va=0 ; va<img.imgList[t][off1D].size() ; ++va )
+                        if(img(off1D,va,0,t)==a)
+                        for( unsigned vb=0 ; vb<img.imgList[t][off1D].size() ; ++vb )
+                        if(img(off1D,vb,0,t)==b)
                 {
-                    for(unsigned int j=1; j<nbp; j++) for(unsigned int t=0; t<nbt; t++) for(unsigned int k=0; k<nbc; k++) pts[0].vals[t][k] += pts[j].vals[t][k];
-                    for(unsigned int t=0; t<nbt; t++) for(unsigned int k=0; k<nbc; k++) img(t)(x,y,z,k) = (T)(pts[0].vals[t][k]/(double)nbp);
-                }
-                else if(overlp==ORDER)
-                {
-                    for(int j=nbp-1; j>=0; j--) for(unsigned int t=0; t<nbt; t++) for(unsigned int k=0; k<nbc; k++) if((T)pts[j].vals[t][k]!=(T)0) img(t)(x,y,z,k) = (T)pts[j].vals[t][k];
-                }
-                else if(overlp==ALPHABLEND)
-                {
-                    unsigned int dir=0; if(pts[1].u[1]!=pts[0].u[1]) dir=1; if(pts[1].u[2]!=pts[0].u[2]) dir=2; // blending direction = direction where distance to border is different
-                    double count=pts[0].u[dir]; for(unsigned int t=0; t<nbt; t++) for(unsigned int k=0; k<nbc; k++) pts[0].vals[t][k]*=pts[0].u[dir];
-                    for(unsigned int j=1; j<nbp; j++) { count+=pts[j].u[dir]; for(unsigned int t=0; t<nbt; t++) for(unsigned int k=0; k<nbc; k++) pts[0].vals[t][k] += pts[j].vals[t][k]*pts[j].u[dir]; }
-                    for(unsigned int t=0; t<nbt; t++) for(unsigned int k=0; k<nbc; k++) img(t)(x,y,z,k) = (T)(pts[0].vals[t][k]/count);
-                }
-                else if(overlp==SEPARATE)
-                {
-                    for(unsigned int j=1; j<nbp; j++) if(pts[j].u[0]>pts[0].u[0] || pts[j].u[1]>pts[0].u[1] || pts[j].u[2]>pts[0].u[2]) { pts[0].u= pts[j].u; for(unsigned int t=0; t<nbt; t++) for(unsigned int k=0; k<nbc; k++) pts[0].vals[t][k] = pts[j].vals[t][k]; }
-                    for(unsigned int t=0; t<nbt; t++) for(unsigned int k=0; k<nbc; k++) img(t)(x,y,z,k) = (T)pts[0].vals[t][k];
-                }
-                else if(overlp==ADDITIVE)
-                {
-                    for(unsigned int j=1; j<nbp; j++) for(unsigned int t=0; t<nbt; t++) for(unsigned int k=0; k<nbc; k++) pts[0].vals[t][k] += pts[j].vals[t][k];
-                    for(unsigned int t=0; t<nbt; t++) for(unsigned int k=0; k<nbc; k++) img(t)(x,y,z,k) = (T)(pts[0].vals[t][k]);
+                    img.imgList[t][off1D][va].addNeighbour(VoxelIndex(off1D,vb));
+                    img.imgList[t][off1D][vb].addNeighbour(VoxelIndex(off1D,va));
                 }
             }
         }
@@ -397,12 +358,10 @@ protected:
         return BB;
     }
 
-    Coord getScale(unsigned int i)
+    const Coord getScale(unsigned int i) const
     {
-        Coord scale;
         raTransform rtransform(this->inputTransforms[i]);
-        scale=rtransform->getScale();
-        return scale;
+        return rtransform->getScale();
     }
 };
 
@@ -413,4 +372,4 @@ protected:
 
 } // namespace sofa
 
-#endif // SOFA_IMAGE_MergeImages_H
+#endif // SOFA_IMAGE_MergeBranchingImages_H

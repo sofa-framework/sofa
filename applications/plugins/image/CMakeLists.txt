@@ -35,6 +35,7 @@ set(SOURCE_FILES
     BranchingImageConverter.cpp 
     BranchingCellIndicesFromPositions.cpp
     BranchingCellVolumes.cpp
+    MergeBranchingImages.cpp
 	)
 
 if(SOFA_HAVE_LIBFREENECT)
@@ -83,6 +84,7 @@ list(APPEND HEADER_FILES
     BranchingImageConverter.h
     BranchingCellIndicesFromPositions.h
     BranchingCellVolumes.h
+    MergeBranchingImages.h
 	)
 
 # make mocced header / form files path from absolute to relative
