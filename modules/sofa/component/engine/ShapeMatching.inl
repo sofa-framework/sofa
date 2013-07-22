@@ -34,7 +34,10 @@
 #include <sofa/helper/decompose.h>
 #include <sofa/helper/gl/template.h>
 #include <iostream>
-//#include <omp.h>
+
+#ifdef USING_OMP_PRAGMAS
+    #include <omp.h>
+#endif
 
 using std::cerr;
 using std::endl;
@@ -182,8 +185,10 @@ void ShapeMatching<DataTypes>::update()
 
     for (unsigned int iter=0 ; iter<iterations.getValue()  ; ++iter)
     {
-        // this could be parallelize or speed up using fast summation technique
-//#pragma omp parallel for
+        // this could be speeded up using fast summation technique
+#ifdef USING_OMP_PRAGMAS
+        #pragma omp parallel for
+#endif
         for (unsigned int i=0 ; i<nbc ; ++i)
         {
             Xcm[i] = Coord();
