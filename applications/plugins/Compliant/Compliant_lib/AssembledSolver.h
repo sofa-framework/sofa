@@ -35,23 +35,26 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
 				
 	SOFA_CLASS(AssembledSolver, sofa::core::behavior::OdeSolver);
 				
-	virtual void init();
-	virtual void solve(const core::ExecParams* params, 
-	                   double dt, 
-	                   sofa::core::MultiVecCoordId xResult, 
-                       sofa::core::MultiVecDerivId vResult,bool isConstraint);
+    virtual void init();
 
-    inline virtual void solve(const core::ExecParams* params,
+    void solve(const core::ExecParams* params,
+	                   double dt, 
+                       core::MultiVecCoordId posId,
+                       core::MultiVecDerivId velId,
+                       bool computeForce, // should the right part of the implicit system be computed?
+                       bool integratePosition  // should the position be updated?
+                       );
+
+    // OdeSolver API
+    virtual void solve(const core::ExecParams* params,
                        double dt,
-                       sofa::core::MultiVecCoordId xResult,
-                       sofa::core::MultiVecDerivId vResult){
-        solve(params,dt,xResult,vResult,false);
+                       core::MultiVecCoordId posId,
+                       core::MultiVecDerivId velId
+                       )
+    {
+        solve( params, dt, posId, velId, true, true );
     }
 
-    void solveConstraints(const core::ExecParams* params,
-                          double dt,
-                          sofa::core::MultiVecCoordId pos,
-                          sofa::core::MultiVecDerivId vel);
 
 	AssembledSolver();
 	~AssembledSolver();
@@ -67,8 +70,7 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
 	void send(simulation::Visitor& vis);
 				
 	// integrate positions
-    void integrate(const core::MechanicalParams* params,sofa::core::MultiVecCoordId  pos,sofa::core::MultiVecDerivId vel);
-    void integrate(const core::MechanicalParams* params);//by default use core::VecCoordId::position() and core::VecCoordId::velocity() for integration
+    void integrate( const core::MechanicalParams* params, core::MultiVecCoordId posId, core::MultiVecDerivId velId );
 				
 	// compute forces
 	void forces(const core::ExecParams& params);
@@ -87,7 +89,7 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
 
 	typedef linearsolver::AssembledSystem system_type;
 	// obtain linear system rhs from system 
-    virtual kkt_type::vec rhs(const system_type& sys,bool isConstraint = false) const;
+    virtual kkt_type::vec rhs(const system_type& sys, bool computeForce = true) const;
 
 	// warm start solution
 	virtual kkt_type::vec warm(const system_type& sys) const;
