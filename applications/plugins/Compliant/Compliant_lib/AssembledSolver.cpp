@@ -56,30 +56,29 @@ void AssembledSolver::send(simulation::Visitor& vis) {
 }
 			
 		
-void AssembledSolver::integrate(const core::MechanicalParams* params,sofa::core::MultiVecCoordId  posid,sofa::core::MultiVecDerivId velid) {
+void AssembledSolver::integrate( const core::MechanicalParams* params,
+                                 core::MultiVecCoordId posId,
+                                 core::MultiVecDerivId velId ) {
 	scoped::timer step("position integration");
 	SReal dt = params->dt();
 				
 	// integrate positions
 	sofa::simulation::common::VectorOperations vop( params, this->getContext() );
-    MultiVecCoord pos(&vop, posid );
-    MultiVecDeriv vel(&vop, velid );
+//    MultiVecCoord pos( &vop, posId );
+//    MultiVecDeriv vel( &vop, velId );
 				
 	typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
 	VMultiOp multi;
 				
 	multi.resize(1);
 				
-	multi[0].first = pos.id();
-	multi[0].second.push_back( std::make_pair(pos.id(), 1.0) );
-	multi[0].second.push_back( std::make_pair(vel.id(), dt) );
+    multi[0].first = posId;
+    multi[0].second.push_back( std::make_pair(posId, 1.0) );
+    multi[0].second.push_back( std::make_pair(velId, dt) );
 				
 	vop.v_multiop( multi );
 }
 
-void AssembledSolver::integrate(const core::MechanicalParams* params) {
-    integrate(params,sofa::core::MultiVecCoordId(sofa::core::VecCoordId::position()),sofa::core::MultiVecDerivId(sofa::core::VecDerivId::velocity()));
-}
 
 void AssembledSolver::alloc(const core::ExecParams& params) {
 	scoped::timer step("lambdas alloc");
@@ -130,11 +129,11 @@ core::MechanicalParams AssembledSolver::mparams(const core::ExecParams& params,
 }
 			
 // implicit euler
-linearsolver::KKTSolver::vec AssembledSolver::rhs(const system_type& sys,bool isConstraint) const {
+linearsolver::KKTSolver::vec AssembledSolver::rhs(const system_type& sys, bool computeForce) const {
 
 	kkt_type::vec res = kkt_type::vec::Zero( sys.size() );
 
-    if(isConstraint){
+    if( !computeForce ){
         res.head(sys.m).setZero();
     }
     else if( use_velocity.getValue() ) {
@@ -283,19 +282,20 @@ struct propagate_visitor : simulation::MechanicalVisitor {
 
 void AssembledSolver::solve(const core::ExecParams* params,
                             double dt, 
-                            sofa::core::MultiVecCoordId pos,
-                            sofa::core::MultiVecDerivId vel, bool isConstraint) {
+                            sofa::core::MultiVecCoordId posId,
+                            sofa::core::MultiVecDerivId velId,
+                            bool computeForce,
+                            bool integratePosition ) {
 	assert(kkt && "i need a kkt solver lol");
 
 	// obtain mparams
 	core::MechanicalParams mparams = this->mparams(*params, dt);
 				
 	// compute forces
-    if(!isConstraint)
-        forces( mparams );
+    if( computeForce ) forces( mparams );
 				
 	// assembly visitor
-	simulation::AssemblyVisitor vis(&mparams);
+    simulation::AssemblyVisitor vis(&mparams, velId);
 	
 	// TODO do this inside visitor ctor instead
 	vis.lagrange = lagrange.id();
@@ -323,32 +323,28 @@ void AssembledSolver::solve(const core::ExecParams* params,
 
 	{
 		scoped::timer step("system solve");
-        system_type::vec b = rhs(sys,isConstraint);
+        system_type::vec b = rhs( sys, computeForce );
 
-        if(!isConstraint){
-            // stab mask
-            system_type::vec mask = stab_mask( sys );
+        // stab mask
+        system_type::vec mask = stab_mask( sys );
 
-            if( mask.size() ) {
-                scoped::timer step("stabilization");
-                assert( use_velocity.getValue() && "does not work on acceleration !");
+        if( mask.size() ) {
+            scoped::timer step("stabilization");
+            assert( use_velocity.getValue() && "does not work on acceleration !");
 
-                // stabilization
-                system_type::vec tmp_b = system_type::vec::Zero(sys.size());
-                tmp_b.tail( sys.n ) = b.tail(sys.n).array() * mask.array();
+            // stabilization
+            system_type::vec tmp_b = system_type::vec::Zero(sys.size());
+            tmp_b.tail( sys.n ) = b.tail(sys.n).array() * mask.array();
 
-                system_type::vec tmp_x = system_type::vec::Zero( sys.size() );
+            system_type::vec tmp_x = system_type::vec::Zero( sys.size() );
 
-                kkt->solve(tmp_x, sys, tmp_b);
+            kkt->solve(tmp_x, sys, tmp_b);
 
-                //vis.distribute_master( core::VecId::velocity(), velocity(sys, tmp_x) );
-                sofa::core::VecDerivId velid(vel.getDefaultId());
-                vis.distribute_master( velid, velocity(sys, tmp_x) );
-                integrate( &mparams,pos,vel );
+            vis.distribute_master( velId, velocity(sys, tmp_x) );
+            if( integratePosition ) integrate( &mparams, posId, velId );
 
-                // zero stabilized constraints
-                b.tail(sys.n).array() *= 1 - mask.array();
-            }
+            // zero stabilized constraints
+            b.tail(sys.n).array() *= 1 - mask.array();
         }
 
         kkt->solve(x, sys, b);
@@ -356,8 +352,7 @@ void AssembledSolver::solve(const core::ExecParams* params,
 	
 	
 	// distribute (projected) velocities
-    //vis.distribute_master( core::VecId::velocity(), velocity(sys, x) );
-    vis.distribute_master( vel.getDefaultId(), velocity(sys, x) );
+    vis.distribute_master( velId, velocity(sys, x) );
 	
 	if( sys.n ) {
 		vis.distribute_compliant( lagrange.id(), lambda(sys, x) );
@@ -372,8 +367,8 @@ void AssembledSolver::solve(const core::ExecParams* params,
 		}
 	}
 	
-	// update positions TODO use xResult/vResult
-    integrate( &mparams,pos,vel );
+    // update positions
+    if( integratePosition ) integrate( &mparams, posId, velId );
 }
 
 			

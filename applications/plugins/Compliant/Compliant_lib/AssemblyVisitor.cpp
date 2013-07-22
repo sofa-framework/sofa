@@ -63,10 +63,11 @@ static AssemblyVisitor::mat shift_right(unsigned off, unsigned size, unsigned to
 
 		
 		
-AssemblyVisitor::AssemblyVisitor(const core::MechanicalParams* mparams) 
+AssemblyVisitor::AssemblyVisitor(const core::MechanicalParams* mparams, MultiVecDerivId velId)
 	: base( mparams ),
 	  mparams( mparams ),
-	  start_node(0)
+      start_node(0),
+      _velId(velId)
 
 { }
 		
@@ -290,9 +291,9 @@ AssemblyVisitor::mat AssemblyVisitor::stiff(simulation::Node* node) {
         const BaseMatrix* k = ffield->getStiffnessMatrix(mparams);
 
         if( k ) add(res, convert( k ));
-#ifndef NDEBUG
-        else std::cerr<<SOFA_CLASS_METHOD<<ffield->getName()<<" getStiffnessMatrix not implemented"<< std::endl;
-#endif
+//#ifndef NDEBUG
+//        else std::cerr<<SOFA_CLASS_METHOD<<ffield->getName()<<" getStiffnessMatrix not implemented"<< std::endl;
+//#endif
 		
     }
 
@@ -310,7 +311,10 @@ AssemblyVisitor::vec AssemblyVisitor::force(simulation::Node* node) {
 // fetches velocity
 AssemblyVisitor::vec AssemblyVisitor::vel(simulation::Node* node) {
 	assert( node->mechanicalState );
-	return vector(node->mechanicalState, core::VecDerivId::velocity());	
+//	return vector(node->mechanicalState, core::VecDerivId::velocity());
+
+    return vector( node->mechanicalState, _velId.getId(node->mechanicalState) );
+
 }
 
 // fetches damping term
@@ -484,7 +488,7 @@ void AssemblyVisitor::debug() const {
 
 
 // TODO copypasta !!
-void AssemblyVisitor::distribute_master(core::VecId id, const vec& data) {
+void AssemblyVisitor::distribute_master( core::behavior::MultiVecDeriv::MyMultiVecId id, const vec& data) {
 	// scoped::timer step("solution distribution");
 			
 	unsigned off = 0;
@@ -493,7 +497,7 @@ void AssemblyVisitor::distribute_master(core::VecId id, const vec& data) {
 		const chunk* c = graph[prefix[i]].data; // find(chunks, prefix[i]);
 		
 		if( c->master() ) {
-			vector(graph[prefix[i]].dofs, id, data.segment(off, c->size) );
+            vector(graph[prefix[i]].dofs, id.getId( graph[prefix[i]].dofs), data.segment(off, c->size) );
 			off += c->size;
 		}
 		
@@ -502,24 +506,7 @@ void AssemblyVisitor::distribute_master(core::VecId id, const vec& data) {
 	assert( data.size() == off );
 }
 
-// TODO copypasta !!
-void AssemblyVisitor::distribute_compliant(core::VecId id, const vec& data) {
-	// scoped::timer step("solution distribution");
-			
-	unsigned off = 0;
-	for(unsigned i = 0, n = prefix.size(); i < n; ++i) {
-				
-		const chunk* c = graph[prefix[i]].data; // find(chunks, prefix[i]);
 
-		if( c->compliant() ) {
-			vector(graph[prefix[i]].dofs, id, data.segment(off, c->size) );
-			off += c->size;
-		}
-		
-	}
-	
-	assert( data.size() == off );
-}
 
 // TODO copypasta
 void AssemblyVisitor::distribute_compliant(core::behavior::MultiVecDeriv::MyMultiVecId id, const vec& data) {

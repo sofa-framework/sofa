@@ -46,7 +46,13 @@ public:
 	typedef rmat mat;
 	typedef Eigen::Matrix<real, Eigen::Dynamic, 1> vec;
 			
-	AssemblyVisitor(const core::MechanicalParams* mparams = 0);
+    AssemblyVisitor(const core::MechanicalParams* mparams = 0, MultiVecDerivId velId = MultiVecDerivId(core::VecDerivId::velocity()) );
+
+protected:
+
+    MultiVecDerivId _velId;
+
+public:
 			
 	// collect data chunks during visitor execution
 	virtual Visitor::Result processNodeTopDown(simulation::Node* node);
@@ -60,11 +66,10 @@ public:
 	system_type assemble() const;
 	
 	// distribute data over master dofs, in given vecid
-	void distribute_master(core::VecId id, const vec& data);
+    void distribute_master(core::behavior::MultiVecDeriv::MyMultiVecId id, const vec& data);
 
-	// distribute data over compliant dofs, in given vecid
-	void distribute_compliant(core::VecId id, const vec& data);
-	void distribute_compliant(core::behavior::MultiVecDeriv::MyMultiVecId id, const vec& data);
+    // distribute data over compliant dofs, in given vecid
+    void distribute_compliant(core::behavior::MultiVecDeriv::MyMultiVecId id, const vec& data);
 			
 	// outputs data to std::cout
 	void debug() const; 
