@@ -49,8 +49,8 @@ using namespace sofa::defaulttype;
 template<class DataTypes>
 class TSphereModel;
 
-template <class TDataTypes>
-class TSphere;
+//template <class TDataTypes>
+//class TSphere;
 
 template<class TDataTypes>
 class TSphere : public core::TCollisionElementIterator< TSphereModel<TDataTypes> >
@@ -76,7 +76,22 @@ public:
     bool hasFreePosition() const;
 
     Real r() const;
+
+    Vector3 getContactPoint( const Vector3& contactNormal )
+    {
+        return center() - contactNormal * r();
+    }
 };
+
+// Specializations
+#ifndef SOFA_FLOAT
+template <>
+Vector3 TSphere<defaulttype::Vec3dTypes >::getContactPoint( const Vector3& contactNormal );
+#endif
+#ifndef SOFA_DOUBLE
+template <>
+Vector3 TSphere<defaulttype::Vec3fTypes >::getContactPoint( const Vector3& contactNormal );
+#endif
 
 template< class TDataTypes>
 class TSphereModel : public core::CollisionModel
@@ -172,127 +187,6 @@ protected:
     core::behavior::MechanicalState<DataTypes>* mstate;
 };
 
-////////////////////////////////////////////////////////////////////////////
-//Specialisation for rigid spheres//////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////
-
-//template< class TReal>
-//class TSphere<StdRigidTypes<3,TReal> > : public core::TCollisionElementIterator< TSphereModel<StdRigidTypes<3,TReal> > >
-//{
-//public:
-//    typedef StdRigidTypes<3,TReal>  DataTypes;
-//    typedef typename DataTypes::Real   Real;
-//    typedef typename DataTypes::Coord::Pos Coord;
-
-//    typedef TSphereModel<DataTypes> ParentModel;
-
-//    TSphere(ParentModel* model, int index);
-
-//    explicit TSphere(const core::CollisionElementIterator& i);
-
-//    const Coord& center() const;
-//    const Coord& p() const;
-//    const Coord& pFree() const;
-//    const Coord& v() const;
-
-//    /// Return true if the element stores a free position vector
-//    bool hasFreePosition() const;
-
-//    Real r() const;
-//};
-
-
-//template< class TReal>
-//class TSphereModel<StdRigidTypes<3,TReal> > : public core::CollisionModel
-//{
-//public:
-//    SOFA_CLASS(SOFA_TEMPLATE(TSphereModel, SOFA_TEMPLATE2(StdRigidTypes,3,TReal) ), core::CollisionModel);
-
-//    typedef StdRigidTypes<3,TReal> DataTypes;
-//    typedef DataTypes InDataTypes;
-//    typedef typename DataTypes::Coord::Pos Coord;
-//    typedef TReal Real;
-//    typedef typename DataTypes::VecReal VecReal;
-//    typedef TSphere<DataTypes> Element;
-//    friend class TSphere<DataTypes>;
-//protected:
-//    TSphereModel();
-
-//    TSphereModel(core::behavior::MechanicalState<DataTypes>* _mstate );
-//public:
-//    virtual void init();
-
-//    // -- CollisionModel interface
-
-//    virtual void resize(int size);
-
-//    virtual void computeBoundingTree(int maxDepth=0);
-
-//    virtual void computeContinuousBoundingTree(double dt, int maxDepth=0);
-
-//    void draw(const core::visual::VisualParams*,int index);
-
-//    void draw(const core::visual::VisualParams* vparams);
-
-
-//    core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return mstate; }
-
-//    const VecReal& getR() const { return this->radius.getValue(); }
-
-//    Real getRadius(const int i) const;
-
-//    const Coord & velocity(int index)const;
-
-//    /// Pre-construction check method called by ObjectFactory.
-//    /// Check that DataTypes matches the MechanicalState.
-//    template<class T>
-//    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-//    {
-//        if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL && context->getMechanicalState() != NULL)
-//            return false;
-
-//        return BaseObject::canCreate(obj, context, arg);
-//    }
-
-//    template<class T>
-//    static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-//    {
-//        typename T::SPtr obj;
-//        core::behavior::MechanicalState<DataTypes>* _mstate = NULL;
-
-//        if( context)
-//        {
-//            _mstate = dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState());
-//            if (_mstate)
-//                obj = sofa::core::objectmodel::New<T>(_mstate);
-//            else
-//                obj = sofa::core::objectmodel::New<T>();
-
-//            context->addObject(obj);
-//        }
-
-//        if (arg) obj->parse(arg);
-
-//        return obj;
-//    }
-
-
-//    virtual std::string getTemplateName() const
-//    {
-//        return templateName(this);
-//    }
-
-//    static std::string templateName(const TSphereModel<DataTypes>* = NULL)
-//    {
-//        return DataTypes::Name();
-//    }
-
-//    Data< VecReal > radius;
-//    Data< SReal > defaultRadius;
-
-//protected:
-//    core::behavior::MechanicalState<DataTypes>* mstate;
-//};
 
 
 template<class DataTypes>

@@ -166,7 +166,9 @@ int CapsuleIntTool::computeIntersection(Capsule & e1,Capsule & e2,SReal alarmDis
     Q = C + CD * beta;
     PQ = Q-P;
 
-    if (PQ.norm2() >= contact_exists * contact_exists)
+    SReal norm2 = PQ.norm2();
+
+    if (norm2 > contact_exists * contact_exists)
         return 0;
 
     contacts->resize(contacts->size()+1);
@@ -176,12 +178,10 @@ int CapsuleIntTool::computeIntersection(Capsule & e1,Capsule & e2,SReal alarmDis
 
     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
     detection->id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
-    detection->normal = PQ;
-    detection->value = detection->normal.norm();
-    detection->point[0] = P + e1.radius() * PQ;
-    detection->point[1] = Q - e2.radius() * PQ;
-
-    detection->normal /= detection->value;
+    detection->value = helper::rsqrt( norm2 );
+    detection->normal = PQ / detection->value;
+    detection->point[0] = P + e1.radius() * detection->normal;
+    detection->point[1] = Q - e2.radius() * detection->normal;
 
     detection->value -= theory_contactDist;
     return 1;

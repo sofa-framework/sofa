@@ -92,14 +92,13 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
 
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
-
-    detection->point[0] = Vector3(p1) - grad * d;
-    detection->point[1] = Vector3(p2);
     detection->normal = (useXForm) ? r1 * grad : grad; // normal in global space from p1's surface
     detection->value = d - d0;
     detection->elem.first = e1;
     detection->elem.second = e2;
     detection->id = e2.getIndex();
+    detection->point[0] = Vector3(p1) - grad * d;
+    detection->point[1] = e2.getContactPoint( detection->normal );
     return 1;
 }
 
