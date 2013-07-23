@@ -107,6 +107,8 @@ struct ImageContainerSpecialization<defaulttype::IMAGELABEL_IMAGE>
         typename ImageContainer::waTransform wtransform(container->transform);
 
         // read image
+
+#ifdef SOFA_HAVE_ZLIB
         //Load .inr.gz using ZLib
         if(fname.size() >= 3 && (fname.substr(fname.size()-7)==".inr.gz" || fname.substr(fname.size()-4)==".inr") )
         {
@@ -135,7 +137,9 @@ struct ImageContainerSpecialization<defaulttype::IMAGELABEL_IMAGE>
 #endif
 
         }
-        else if(fname.find(".mhd")!=std::string::npos || fname.find(".MHD")!=std::string::npos || fname.find(".Mhd")!=std::string::npos
+        else
+#endif // SOFA_HAVE_ZLIB
+            if(fname.find(".mhd")!=std::string::npos || fname.find(".MHD")!=std::string::npos || fname.find(".Mhd")!=std::string::npos
                 || fname.find(".raw")!=std::string::npos || fname.find(".RAW")!=std::string::npos || fname.find(".Raw")!=std::string::npos)
         {
             if(fname.find(".raw")!=std::string::npos || fname.find(".RAW")!=std::string::npos || fname.find(".Raw")!=std::string::npos)      fname.replace(fname.find_last_of('.')+1,fname.size(),"mhd");
@@ -269,7 +273,7 @@ struct ImageContainerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
     template<class ImageContainer>
     static void init( ImageContainer* container )
     {
-        if( !container->image.getValue().dimension[ImageContainer::ImageTypes::DIMENSION_T] && !container->load() )
+        if( !container->image.getValue().getDimension()[ImageContainer::ImageTypes::DIMENSION_T] && !container->load() )
             container->serr << "no input image " << container->sendl;
     }
 

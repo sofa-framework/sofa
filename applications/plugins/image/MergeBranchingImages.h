@@ -254,7 +254,7 @@ protected:
         typedef typename ImageTypes::VoxelIndex VoxelIndex;
         typedef typename ImageTypes::SuperimposedVoxels SuperimposedVoxels;
 
-        vector<unsigned int> sizes(img.imageSize); // buffer to record neighbor offsets due to previously pasted images
+        vector<unsigned int> sizes(img.getImageSize()); // buffer to record neighbor offsets due to previously pasted images
 
         for(unsigned int j=0; j<nb; j++)
         {

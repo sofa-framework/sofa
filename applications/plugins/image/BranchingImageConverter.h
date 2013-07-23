@@ -406,7 +406,7 @@ protected:
                                                 neighbourCoarseOffset -= 1;
                                                 if( fz-1 < finez ) // both are not in the same coarse voxel
                                                 {
-                                                    const unsigned neighbourCoarseIndex = index1d-output.sliceSize;
+                                                    const unsigned neighbourCoarseIndex = index1d-output.getSliceSize();
                                                     // connect index grossier de vf et de n
                                                     output_t[index1d][coarseOffset].addNeighbour( typename BranchingImageTypes::VoxelIndex( neighbourCoarseIndex, neighbourCoarseOffset ), true );
                                                     output_t[neighbourCoarseIndex][neighbourCoarseOffset].addNeighbour( typename BranchingImageTypes::VoxelIndex( index1d, coarseOffset ), true );

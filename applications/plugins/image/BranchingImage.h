@@ -158,10 +158,6 @@ public:
     typedef BranchingImageNeighbourOffset NeighbourOffset;
 
 
-    /// predefined 6-connectivity neighbours
-//    static const NeighbourOffset LEFT, RIGHT, BOTTOM, TOP, BACK, FRONT;
-
-
     /// a list of neighbours is stored as a vector of VoxelIndex
     typedef NoPreallocationVector<VoxelIndex> Neighbours;
 
@@ -257,7 +253,8 @@ public:
         /// @returns true iff all channels are 0
         bool empty( unsigned spectrum ) const
         {
-            for( unsigned i=1 ; i<spectrum ; ++i ) if( value[i] ) return false;
+            if( !value ) return true;
+            for( unsigned i=0 ; i<spectrum ; ++i ) if( value[i] ) return false;
             return true;
         }
 
@@ -546,44 +543,91 @@ public:
 
 
 
+
+    /////////////////////////////////////////
+    ////// BRANCHING IMAGE
+    /////////////////////////////////////////
+
+
     /// the 5 dimension labels of an image ( x, y, z, spectrum=nb channels , time )
     typedef enum{ DIMENSION_X=0, DIMENSION_Y, DIMENSION_Z, DIMENSION_S /* spectrum = nb channels*/, DIMENSION_T /*4th dimension = time*/, NB_DimensionLabel } DimensionLabel;
     /// the 5 dimensions of an image ( x, y, z, spectrum=nb channels , time )
     typedef Vec<NB_DimensionLabel,unsigned int> Dimension; // [x,y,z,s,t]
     typedef Dimension imCoord; // to have a common api with Image
 
-    Dimension dimension; ///< the image dimensions [x,y,z,s,t] - @todo maybe this could be implicit?
-    unsigned sliceSize; ///< (x,y) slice size
-    unsigned imageSize; ///< (x,y,z) image size
+protected:
+
+    /// @todo maybe this could be implicit?
+    struct BranchingImageDimension
+    {
+        BranchingImageDimension() : dimension(), sliceSize(0), imageSize(0) {}
+        void set( const Dimension& d )
+        {
+            dimension = d;
+            sliceSize = dimension[DIMENSION_X] * dimension[DIMENSION_Y];
+            imageSize = sliceSize * dimension[DIMENSION_Z];
+        }
+        void clear() { dimension.clear(); sliceSize = 0; imageSize = 0; }
+        Dimension dimension; ///< the image dimensions [x,y,z,s,t]
+        unsigned sliceSize; ///< (x,y) slice size (stored only for performance)
+        unsigned imageSize; ///< (x,y,z) image size (stored only for performance)
+    };
+
+    BranchingImageDimension *_branchingImageDimension;
+
+public:
+
     BranchingImage3D* imgList; ///< array of BranchingImage over time t
+    bool managingMemory;
 
 
 
     static const char* Name();
 
     ///constructors/destructors
-    BranchingImage() : dimension(), imgList(0) {}
+    BranchingImage() : imgList(0), managingMemory(true)
+    {
+        _branchingImageDimension = new BranchingImageDimension();
+    }
+
     ~BranchingImage()
     {
-        if( imgList ) delete [] imgList;
+        if( managingMemory )
+        {
+            if( imgList ) delete [] imgList;
+            /*if( _branchingImageDimension )*/ delete _branchingImageDimension;
+        }
     }
 
 
     /// copy constructor
-    BranchingImage(const BranchingImage<T>& img) : dimension(), imgList(0)
+    /// @warning by default it uses shared memory (copy data iff !shared)
+    BranchingImage(const BranchingImage<T>& img, bool shared=true)
     {
-        *this = img;
+        if( shared )
+        {
+            _branchingImageDimension = img._branchingImageDimension;
+            imgList = img.imgList;
+            managingMemory = false;
+        }
+        else
+        {
+            _branchingImageDimension = new BranchingImageDimension();
+            imgList = 0;
+            managingMemory = true;
+            *this = img; // copy data
+        }
     }
 
-    /// clone
+    /// clone (data is copied)
     BranchingImage<T>& operator=(const BranchingImage<T>& im)
     {
         // allocate & copy everything
         setDimensions( im.getDimension() );
 
-        for( unsigned t=0 ; t<dimension[DIMENSION_T] ; ++t )
+        for( unsigned t=0 ; t<getDimension()[DIMENSION_T] ; ++t )
         {
-            imgList[t].clone( im.imgList[t], dimension[DIMENSION_S] );
+            imgList[t].clone( im.imgList[t], getDimension()[DIMENSION_S] );
         }
 
         return *this;
@@ -602,7 +646,7 @@ public:
     {
         setDimensions( im.getDimensions() );
 
-        for( unsigned t=0 ; t<dimension[DIMENSION_T] ; ++t )
+        for( unsigned t=0 ; t<getDimension()[DIMENSION_T] ; ++t )
         {
             BranchingImage3D& imt = imgList[t];
             const CImg<T2>& cimgt = im.getCImg(t);
@@ -614,12 +658,12 @@ public:
                 {
                     //                    assert( index1D == index3Dto1D(x,y,z) );
                     {
-                        ConnectionVoxel v( dimension[DIMENSION_S] );
-                        for( unsigned c = 0 ; c<dimension[DIMENSION_S] ; ++c )
+                        ConnectionVoxel v( getDimension()[DIMENSION_S] );
+                        for( unsigned c = 0 ; c<getDimension()[DIMENSION_S] ; ++c )
                             v[c] = cimgt(x,y,z,c);
                         //                        v.index = index1D;
                         v.neighbours.clear();
-                        imt[index1D].push_back( v, dimension[DIMENSION_S] );
+                        imt[index1D].push_back( v, getDimension()[DIMENSION_S] );
                     }
 
                     // neighbours
@@ -628,8 +672,8 @@ public:
                     {
                         // face
                         if( x>0 && !imt[index1D-1].empty() ) { imt[index1D][0].addNeighbour( VoxelIndex( index1D-1, 0 ), false ); imt[index1D-1][0].addNeighbour( VoxelIndex( index1D, 0 ), false ); }
-                        if( y>0 && !imt[index1D-dimension[DIMENSION_X]].empty() ) { imt[index1D][0].addNeighbour( VoxelIndex( index1D-dimension[DIMENSION_X], 0 ), false ); imt[index1D-dimension[DIMENSION_X]][0].addNeighbour( VoxelIndex( index1D, 0 ), false ); }
-                        if( z>0 && !imt[index1D-sliceSize].empty() ) { imt[index1D][0].addNeighbour( VoxelIndex( index1D-sliceSize, 0 ), false ); imt[index1D-sliceSize][0].addNeighbour( VoxelIndex( index1D, 0 ), false ); }
+                        if( y>0 && !imt[index1D-getDimension()[DIMENSION_X]].empty() ) { imt[index1D][0].addNeighbour( VoxelIndex( index1D-getDimension()[DIMENSION_X], 0 ), false ); imt[index1D-getDimension()[DIMENSION_X]][0].addNeighbour( VoxelIndex( index1D, 0 ), false ); }
+                        if( z>0 && !imt[index1D-getSliceSize()].empty() ) { imt[index1D][0].addNeighbour( VoxelIndex( index1D-getSliceSize(), 0 ), false ); imt[index1D-getSliceSize()][0].addNeighbour( VoxelIndex( index1D, 0 ), false ); }
                     }
                     else
                     {
@@ -637,13 +681,13 @@ public:
                         // TODO could be improved by testing only 3/8 face-, 9/12 edge- and 4/8 corner-neighbours (and so not testing unicity while adding the neighbour)
                         for( int gx = -1 ; gx <= 1 ; ++gx )
                         {
-                            if( x+gx<0 || x+gx>(int)dimension[DIMENSION_X]-1 ) continue;
+                            if( x+gx<0 || x+gx>(int)getDimension()[DIMENSION_X]-1 ) continue;
                             for( int gy = -1 ; gy <= 1 ; ++gy )
                             {
-                                if( y+gy<0 || y+gy>(int)dimension[DIMENSION_Y]-1 ) continue;
+                                if( y+gy<0 || y+gy>(int)getDimension()[DIMENSION_Y]-1 ) continue;
                                 for( int gz = -1 ; gz <= 1 ; ++gz )
                                 {
-                                    if( z+gz<0 || z+gz>(int)dimension[DIMENSION_Z]-1 ) continue;
+                                    if( z+gz<0 || z+gz>(int)getDimension()[DIMENSION_Z]-1 ) continue;
                                     if( !gx && !gy && !gz ) continue; // do not test with itself
 
                                     const NeighbourOffset no( gx, gy, gz );
@@ -672,9 +716,9 @@ public:
     void toImage( Image<T2>& img, unsigned conversionType ) const
     {
         img.clear();
-        typename Image<T2>::imCoord dim = dimension;
+        typename Image<T2>::imCoord dim = getDimension();
         img.setDimensions( dim );
-        for( unsigned t=0 ; t<dimension[DIMENSION_T] ; ++t )
+        for( unsigned t=0 ; t<getDimension()[DIMENSION_T] ; ++t )
         {
             const BranchingImage3D& bimt = imgList[t];
             CImg<T2>& cimgt = img.getCImg(t);
@@ -696,12 +740,20 @@ public:
     /// delete everything, free memory
     void clear()
     {
-        dimension.clear(); imageSize = sliceSize = 0;
-
-        if( imgList )
+        if( managingMemory )
         {
-            delete [] imgList;
+            if( imgList )
+            {
+                delete [] imgList;
+                imgList = 0;
+            }
+            _branchingImageDimension->clear();
+        }
+        else
+        {
             imgList = 0;
+            _branchingImageDimension = new BranchingImageDimension();
+            managingMemory = true;
         }
     }
 
@@ -714,34 +766,34 @@ public:
         if(x<0) return false;
         if(y<0) return false;
         if(z<0) return false;
-        if(x>=(t)dimension[DIMENSION_X]) return false;
-        if(y>=(t)dimension[DIMENSION_Y]) return false;
-        if(z>=(t)dimension[DIMENSION_Z]) return false;
+        if(x>=(t)getDimension()[DIMENSION_X]) return false;
+        if(y>=(t)getDimension()[DIMENSION_Y]) return false;
+        if(z>=(t)getDimension()[DIMENSION_Z]) return false;
         return true;
     }
 
     /// compute the map key in BranchingImage from the pixel position
     inline unsigned index3Dto1D( unsigned x, unsigned y, unsigned z ) const
     {
-        return ( z * dimension[DIMENSION_Y]  + y ) * dimension[DIMENSION_X] + x;
+        return ( z * getDimension()[DIMENSION_Y]  + y ) * getDimension()[DIMENSION_X] + x;
     }
 
     /// compute the pixel position from the map key in BranchingImage
     inline void index1Dto3D( unsigned key, unsigned& x, unsigned& y, unsigned& z ) const
     {
-        //        x = key % dimension[DIMENSION_X];
-        //        y = ( key / dimension[DIMENSION_X] ) % dimension[DIMENSION_Y];
+        //        x = key % getDimension()[DIMENSION_X];
+        //        y = ( key / getDimension()[DIMENSION_X] ) % getDimension()[DIMENSION_Y];
         //        z = key / sliceSize;
-        y = key / dimension[DIMENSION_X];
-        x = key - y * dimension[DIMENSION_X];
-        z = y / dimension[DIMENSION_Y];
-        y = y - z * dimension[DIMENSION_Y];
+        y = key / getDimension()[DIMENSION_X];
+        x = key - y * getDimension()[DIMENSION_X];
+        z = y / getDimension()[DIMENSION_Y];
+        y = y - z * getDimension()[DIMENSION_Y];
     }
 
     /// \returns the index of the neighbour given by its offset (index in the BranchingImage3D)
     inline unsigned getNeighbourIndex( const NeighbourOffset& d, unsigned index1D ) const
     {
-        return index1D+d[0]+d[1]*dimension[DIMENSION_X]+d[2]*sliceSize;
+        return index1D+d[0]+d[1]*getDimension()[DIMENSION_X]+d[2]*getSliceSize();
     }
 
 
@@ -793,10 +845,10 @@ public:
         unsigned X0,Y0,Z0;
         index1Dto3D( index1D, X0,Y0,Z0 );
 
-        for( int x=-1 ; x<=1 ; ++x ) if((int)X0+x>=0) if((int)X0+x<(int)dimension[DIMENSION_X])
-        for( int y=-1 ; y<=1 ; ++y ) if((int)Y0+y>=0) if((int)Y0+y<(int)dimension[DIMENSION_Y])
-        for( int z=-1 ; z<=1 ; ++z ) if((int)Z0+z>=0) if((int)Z0+z<(int)dimension[DIMENSION_Z])
-            if( neighbourIndex1D == index1D+x+y*dimension[DIMENSION_X]+z*sliceSize ) { return NeighbourOffset(x,y,z); } // connected neighbours
+        for( int x=-1 ; x<=1 ; ++x ) if((int)X0+x>=0) if((int)X0+x<(int)getDimension()[DIMENSION_X])
+        for( int y=-1 ; y<=1 ; ++y ) if((int)Y0+y>=0) if((int)Y0+y<(int)getDimension()[DIMENSION_Y])
+        for( int z=-1 ; z<=1 ; ++z ) if((int)Z0+z>=0) if((int)Z0+z<(int)getDimension()[DIMENSION_Z])
+            if( neighbourIndex1D == index1D+x+y*getDimension()[DIMENSION_X]+z*getSliceSize() ) { return NeighbourOffset(x,y,z); } // connected neighbours
 
         // not connected neighbours
         // TODO @todo important
@@ -806,13 +858,22 @@ public:
     bool isEmpty() const { if( imgList ) return false; else return true;}
 
     /// \returns the 5 image dimensions (x,y,z,s,t)
-    const Dimension& getDimension() const
+    inline const Dimension& getDimension() const
     {
-        return dimension;
+        return _branchingImageDimension->dimension;
     }
-    const Dimension& getDimensions() const
+    inline const Dimension& getDimensions() const
     {
-        return dimension;
+        return _branchingImageDimension->dimension;
+    }
+    inline unsigned getSliceSize() const
+    {
+        return _branchingImageDimension->sliceSize;
+    }
+
+    inline unsigned getImageSize() const
+    {
+        return _branchingImageDimension->imageSize;
     }
 
     /// resizing
@@ -821,22 +882,20 @@ public:
     {
         clear();
 
-        for( unsigned i=0 ; i<NB_DimensionLabel ; ++i ) if( !newDimension[i] ) { dimension.clear(); imageSize = sliceSize = 0; return; }
+        for( unsigned i=0 ; i<NB_DimensionLabel ; ++i ) if( !newDimension[i] ) { return; }
 
-        dimension = newDimension;
-        sliceSize = dimension[DIMENSION_X] * dimension[DIMENSION_Y];
-        imageSize = sliceSize * dimension[DIMENSION_Z];
-        imgList = new BranchingImage3D[dimension[DIMENSION_T]];
-        for( unsigned t=0 ; t<dimension[DIMENSION_T] ; ++t )
-            imgList[t].resize( imageSize );
+        _branchingImageDimension->set( newDimension );
+        imgList = new BranchingImage3D[getDimension()[DIMENSION_T]];
+        for( unsigned t=0 ; t<getDimension()[DIMENSION_T] ; ++t )
+            imgList[t].resize( getImageSize() );
     }
 
     /// copy only the topology and initialize values based on available DIMENSION_T and DIMENSION_S
     template<typename T2>
     void cloneTopology( const BranchingImage<T2>& other, const T defaultValue=(T)0)
     {
-        for( unsigned t=0 ; t<dimension[DIMENSION_T] ; ++t )
-            imgList[t].cloneTopology<T2>(other.imgList[t],dimension[DIMENSION_S],defaultValue);
+        for( unsigned t=0 ; t<getDimension()[DIMENSION_T] ; ++t )
+            imgList[t].cloneTopology<T2>(other.imgList[t],getDimension()[DIMENSION_S],defaultValue);
     }
 
     /// read dimensions
@@ -858,8 +917,8 @@ public:
     /// comparison
     bool operator==( const BranchingImage<T>& other ) const
     {
-        for( unsigned t=0 ; t<dimension[DIMENSION_T] ; ++t )
-            if( !imgList[t].isEqual( other.imgList[t], dimension[DIMENSION_S] ) ) return false;
+        for( unsigned t=0 ; t<getDimension()[DIMENSION_T] ; ++t )
+            if( !imgList[t].isEqual( other.imgList[t], getDimension()[DIMENSION_S] ) ) return false;
         return true;
     }
 
@@ -873,12 +932,12 @@ public:
     unsigned count() const
     {
         unsigned total = 0;
-        for( unsigned t=0 ; t<dimension[DIMENSION_T] ; ++t )
+        for( unsigned t=0 ; t<getDimension()[DIMENSION_T] ; ++t )
         {
             int index1d = 0;
-            for( unsigned z=0 ; z<dimension[DIMENSION_Z] ; ++z )
-                for( unsigned y=0 ; y<dimension[DIMENSION_Y] ; ++y )
-                    for( unsigned x=0 ; x<dimension[DIMENSION_X] ; ++x )
+            for( unsigned z=0 ; z<getDimension()[DIMENSION_Z] ; ++z )
+                for( unsigned y=0 ; y<getDimension()[DIMENSION_Y] ; ++y )
+                    for( unsigned x=0 ; x<getDimension()[DIMENSION_X] ; ++x )
                     {
                         total += imgList[t][index1d].size();
                         ++index1d;
@@ -892,15 +951,15 @@ public:
     T sum() const
     {
         T total = 0;
-        for( unsigned t=0 ; t<dimension[DIMENSION_T] ; ++t )
+        for( unsigned t=0 ; t<getDimension()[DIMENSION_T] ; ++t )
         {
             int index1d = 0;
-            for( unsigned z=0 ; z<dimension[DIMENSION_Z] ; ++z )
-                for( unsigned y=0 ; y<dimension[DIMENSION_Y] ; ++y )
-                    for( unsigned x=0 ; x<dimension[DIMENSION_X] ; ++x )
+            for( unsigned z=0 ; z<getDimension()[DIMENSION_Z] ; ++z )
+                for( unsigned y=0 ; y<getDimension()[DIMENSION_Y] ; ++y )
+                    for( unsigned x=0 ; x<getDimension()[DIMENSION_X] ; ++x )
                     {
                         for( unsigned v=0 ; v<imgList[t][index1d].size() ; ++v )
-                            for( unsigned s=0 ; s<dimension[DIMENSION_S] ; ++s )
+                            for( unsigned s=0 ; s<getDimension()[DIMENSION_S] ; ++s )
                                 total += imgList[t][index1d][v][s];
                         ++index1d;
                     }
@@ -911,16 +970,16 @@ public:
     /// \returns an approximative size in bytes, useful for debugging
     size_t approximativeSizeInBytes() const
     {
-        size_t total = dimension[DIMENSION_T]*(imageSize+1)*( sizeof(unsigned) + sizeof(void*) ); // superimposed voxel vectors + BranchingImage3D vector
+        size_t total = getDimension()[DIMENSION_T]*(getImageSize()+1)*( sizeof(unsigned) + sizeof(void*) ); // superimposed voxel vectors + BranchingImage3D vector
 
-        for( unsigned t=0 ; t<dimension[DIMENSION_T] ; ++t ) // per BranchingImage3D
+        for( unsigned t=0 ; t<getDimension()[DIMENSION_T] ; ++t ) // per BranchingImage3D
         {
             const BranchingImage3D& imt = imgList[t];
             for( unsigned int index=0 ; index<imt.size() ; ++index ) // per SumperimposedVoxels
             {
                 total += imt[index].size() * ( /*sizeof(unsigned)*/ /*index*/ +
                                                sizeof(void*) /* channel vector*/ +
-                                               dimension[DIMENSION_S]*sizeof(T) /*channel entries*/
+                                               getDimension()[DIMENSION_S]*sizeof(T) /*channel entries*/
                                                );
 
                 for( unsigned v=0 ; v<imt[index].size() ; ++v ) // per ConnnectedVoxel
@@ -935,15 +994,15 @@ public:
     /// check neighbourhood validity
     int isNeighbourhoodValid() const
     {
-        for( unsigned t=0 ; t<dimension[DIMENSION_T] ; ++t )
+        for( unsigned t=0 ; t<getDimension()[DIMENSION_T] ; ++t )
         {
             const BranchingImage3D& imt = imgList[t];
             unsigned index1d = 0;
-            for( unsigned z = 0 ; z < dimension[DIMENSION_Z] ; ++z )
+            for( unsigned z = 0 ; z < getDimension()[DIMENSION_Z] ; ++z )
             {
-                for( unsigned y = 0 ; y < dimension[DIMENSION_Y] ; ++y )
+                for( unsigned y = 0 ; y < getDimension()[DIMENSION_Y] ; ++y )
                 {
-                    for( unsigned x = 0 ; x < dimension[DIMENSION_X] ; ++x )
+                    for( unsigned x = 0 ; x < getDimension()[DIMENSION_X] ; ++x )
                     {
                         const SuperimposedVoxels& voxels = imt[index1d];
                         for( unsigned v = 0 ; v < voxels.size() ; ++v )
@@ -1003,22 +1062,22 @@ public:
                           // test neighbourhood connections
                           if( x>0 && ( ( cimgl.get_vector_at(x-1,y,z).magnitude(1)==0 ) == ( voxels[0].isNeighbour( VoxelIndex(index1d-1,0) ) ) ) ) return 4;
                           if( (unsigned)x<flatImg.getDimensions()[0]-1 && ( ( cimgl.get_vector_at(x+1,y,z).magnitude(1)==0 ) == ( voxels[0].isNeighbour( VoxelIndex(index1d+1,0) ) ) ) ) return 4;
-                          if( y>0 && ( ( cimgl.get_vector_at(x,y-1,z).magnitude(1)==0 ) == ( voxels[0].isNeighbour( VoxelIndex(index1d-dimension[DIMENSION_X],0) ) ) ) ) return 4;
-                          if( (unsigned)y<flatImg.getDimensions()[1]-1 && ( ( cimgl.get_vector_at(x,y+1,z).magnitude(1)==0 ) == ( voxels[0].isNeighbour( VoxelIndex(index1d+dimension[DIMENSION_X],0) ) ) ) ) return 4;
-                          if( z>0 && ( ( cimgl.get_vector_at(x,y,z-1).magnitude(1)==0 ) == ( voxels[0].isNeighbour( VoxelIndex(index1d-sliceSize,0) ) ) ) ) return 4;
-                          if( (unsigned)z<flatImg.getDimensions()[2]-1 && ( ( cimgl.get_vector_at(x,y,z+1).magnitude(1)==0 ) == ( voxels[0].isNeighbour( VoxelIndex(index1d+sliceSize,0) ) ) ) ) return 4;
+                          if( y>0 && ( ( cimgl.get_vector_at(x,y-1,z).magnitude(1)==0 ) == ( voxels[0].isNeighbour( VoxelIndex(index1d-getDimension()[DIMENSION_X],0) ) ) ) ) return 4;
+                          if( (unsigned)y<flatImg.getDimensions()[1]-1 && ( ( cimgl.get_vector_at(x,y+1,z).magnitude(1)==0 ) == ( voxels[0].isNeighbour( VoxelIndex(index1d+getDimension()[DIMENSION_X],0) ) ) ) ) return 4;
+                          if( z>0 && ( ( cimgl.get_vector_at(x,y,z-1).magnitude(1)==0 ) == ( voxels[0].isNeighbour( VoxelIndex(index1d-getSliceSize(),0) ) ) ) ) return 4;
+                          if( (unsigned)z<flatImg.getDimensions()[2]-1 && ( ( cimgl.get_vector_at(x,y,z+1).magnitude(1)==0 ) == ( voxels[0].isNeighbour( VoxelIndex(index1d+getSliceSize(),0) ) ) ) ) return 4;
                       }
                       else // CONNECTIVITY_26
                       {
                           for( int gx = -1 ; gx <= 1 ; ++gx )
                           {
-                              if( x+gx<0 || x+gx>(int)dimension[DIMENSION_X]-1 ) continue;
+                              if( x+gx<0 || x+gx>(int)getDimension()[DIMENSION_X]-1 ) continue;
                               for( int gy = -1 ; gy <= 1 ; ++gy )
                               {
-                                  if( y+gy<0 || y+gy>(int)dimension[DIMENSION_Y]-1 ) continue;
+                                  if( y+gy<0 || y+gy>(int)getDimension()[DIMENSION_Y]-1 ) continue;
                                   for( int gz = -1 ; gz <= 1 ; ++gz )
                                   {
-                                      if( z+gz<0 || z+gz>(int)dimension[DIMENSION_Z]-1 ) continue;
+                                      if( z+gz<0 || z+gz>(int)getDimension()[DIMENSION_Z]-1 ) continue;
                                       if( !gx && !gy && !gz ) continue; // do not test with itself
 
                                       const NeighbourOffset no( gx, gy, gz );
@@ -1042,20 +1101,20 @@ public:
     template<typename F>
     bool save( const char *const headerFilename, const F *const scale=0, const F *const translation=0, const F *const affine=0, const F *const offsetT=0, const F *const scaleT=0, const bool *const isPerspective=0 ) const
     {
-        if( !dimension[DIMENSION_T] ) return false;
+        if( !getDimension()[DIMENSION_T] ) return false;
 
         std::ofstream fileStream (headerFilename, std::ofstream::out);
         if (!fileStream.is_open())	{	std::cout << "Can not open " << headerFilename << std::endl;	return false; }
 
         fileStream << "ObjectType = BranchingImage" << std::endl;
 
-        unsigned int nbdims=(dimension[DIMENSION_Z]==1)?3:4; //  for 2-d, we still need z scale dimension
+        unsigned int nbdims=(getDimension()[DIMENSION_Z]==1)?3:4; //  for 2-d, we still need z scale dimension
 
         fileStream << "NDims = " << nbdims << std::endl;
 
-        fileStream << "ElementNumberOfChannels = " << dimension[DIMENSION_S] << std::endl;
+        fileStream << "ElementNumberOfChannels = " << getDimension()[DIMENSION_S] << std::endl;
 
-        fileStream << "DimSize = "; for(unsigned int i=0;i<nbdims;i++) fileStream << dimension[i] << " "; fileStream << std::endl;
+        fileStream << "DimSize = "; for(unsigned int i=0;i<nbdims;i++) fileStream << getDimension()[i] << " "; fileStream << std::endl;
 
         fileStream << "ElementType = ";
         if(!strcmp(cimg::type<T>::string(),"char")) fileStream << "MET_CHAR" << std::endl;
@@ -1092,16 +1151,16 @@ public:
         // the end of list is given by }
         // a superimposed has a double for each channels and a list of neighbours stored as 2 unsigned (index, offset)
 
-        for( unsigned t=0 ; t<dimension[DIMENSION_T] ; ++t )
+        for( unsigned t=0 ; t<getDimension()[DIMENSION_T] ; ++t )
         {
             unsigned index1d = 0;
-            for( unsigned x=0 ; x<dimension[DIMENSION_X] ; ++x )
-            for( unsigned y=0 ; y<dimension[DIMENSION_Y] ; ++y )
-            for( unsigned z=0 ; z<dimension[DIMENSION_Z] ; ++z )
+            for( unsigned x=0 ; x<getDimension()[DIMENSION_X] ; ++x )
+            for( unsigned y=0 ; y<getDimension()[DIMENSION_Y] ; ++y )
+            for( unsigned z=0 ; z<getDimension()[DIMENSION_Z] ; ++z )
             {
                 for( unsigned v=0 ; v<imgList[t][index1d].size() ; ++v )
                 {
-                    for( unsigned s=0 ; s<dimension[DIMENSION_S] ; ++s )
+                    for( unsigned s=0 ; s<getDimension()[DIMENSION_S] ; ++s )
                         fileStream << (double)imgList[t][index1d][v][s] << " ";
 
                     for( unsigned n=0 ; n<imgList[t][index1d][v].neighbours.size() ; ++n )
@@ -1233,12 +1292,12 @@ public:
 
         setDimensions( Dimension( dim[0], dim[1], dim[2], nbchannels, dim[3] ) );
 
-        for( unsigned t=0 ; t<dimension[DIMENSION_T] ; ++t )
+        for( unsigned t=0 ; t<getDimension()[DIMENSION_T] ; ++t )
         {
             unsigned index1d = 0;
-            for( unsigned x=0 ; x<dimension[DIMENSION_X] ; ++x )
-            for( unsigned y=0 ; y<dimension[DIMENSION_Y] ; ++y )
-            for( unsigned z=0 ; z<dimension[DIMENSION_Z] ; ++z )
+            for( unsigned x=0 ; x<getDimension()[DIMENSION_X] ; ++x )
+            for( unsigned y=0 ; y<getDimension()[DIMENSION_Y] ; ++y )
+            for( unsigned z=0 ; z<getDimension()[DIMENSION_Z] ; ++z )
             {
 
                 char symbol;
@@ -1247,9 +1306,9 @@ public:
                 {
                     fileStream.seekg( -1, std::ifstream::cur ); // unread symbol
 
-                    ConnectionVoxel cv( dimension[DIMENSION_S] );
+                    ConnectionVoxel cv( getDimension()[DIMENSION_S] );
 
-                    for( unsigned s=0 ; s<dimension[DIMENSION_S] ; ++s )
+                    for( unsigned s=0 ; s<getDimension()[DIMENSION_S] ; ++s )
                     {
                         double c;
                         fileStream >> c;
@@ -1273,7 +1332,7 @@ public:
                         fileStream >> symbol;
                     }
 
-                    imgList[t][index1d].push_back( cv, dimension[DIMENSION_S] );
+                    imgList[t][index1d].push_back( cv, getDimension()[DIMENSION_S] );
 
 //                    std::cerr<<"#";
                 }
@@ -1293,24 +1352,17 @@ public:
 };
 
 
-//template<class T> const typename BranchingImage<T>::NeighbourOffset BranchingImage<T>::LEFT   = BranchingImage<T>::NeighbourOffset(-1, 0, 0);
-//template<class T> const typename BranchingImage<T>::NeighbourOffset BranchingImage<T>::RIGHT  = BranchingImage<T>::NeighbourOffset( 1, 0, 0);
-//template<class T> const typename BranchingImage<T>::NeighbourOffset BranchingImage<T>::BOTTOM = BranchingImage<T>::NeighbourOffset( 0,-1, 0);
-//template<class T> const typename BranchingImage<T>::NeighbourOffset BranchingImage<T>::TOP    = BranchingImage<T>::NeighbourOffset( 0, 1, 0);
-//template<class T> const typename BranchingImage<T>::NeighbourOffset BranchingImage<T>::BACK   = BranchingImage<T>::NeighbourOffset( 0, 0,-1);
-//template<class T> const typename BranchingImage<T>::NeighbourOffset BranchingImage<T>::FRONT  = BranchingImage<T>::NeighbourOffset( 0, 0, 1);
-
 
 
 /// macros for image loops
 
 #define bimg_for1(bound,i) for (unsigned i = 0; i<bound; ++i)
-#define bimg_forC(img,c) bimg_for1(img.dimension[img.DIMENSION_S],c)
-#define bimg_forX(img,x) bimg_for1(img.dimension[img.DIMENSION_X],x)
-#define bimg_forY(img,y) bimg_for1(img.dimension[img.DIMENSION_Y],y)
-#define bimg_forZ(img,z) bimg_for1(img.dimension[img.DIMENSION_Z],z)
-#define bimg_forT(img,t) bimg_for1(img.dimension[img.DIMENSION_T],t)
-#define bimg_foroff1D(img,off1D)  bimg_for1(img.imageSize,off1D)
+#define bimg_forC(img,c) bimg_for1(img.getDimension()[img.DIMENSION_S],c)
+#define bimg_forX(img,x) bimg_for1(img.getDimension()[img.DIMENSION_X],x)
+#define bimg_forY(img,y) bimg_for1(img.getDimension()[img.DIMENSION_Y],y)
+#define bimg_forZ(img,z) bimg_for1(img.getDimension()[img.DIMENSION_Z],z)
+#define bimg_forT(img,t) bimg_for1(img.getDimension()[img.DIMENSION_T],t)
+#define bimg_foroff1D(img,off1D)  bimg_for1(img.getImageSize(),off1D)
 #define bimg_forXY(img,x,y) bimg_forY(img,y) bimg_forX(img,x)
 #define bimg_forXZ(img,x,z) bimg_forZ(img,z) bimg_forX(img,x)
 #define bimg_forYZ(img,y,z) bimg_forZ(img,z) bimg_forY(img,y)
