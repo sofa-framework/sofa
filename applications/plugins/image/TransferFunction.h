@@ -27,6 +27,7 @@
 
 #include "initImage.h"
 #include "ImageTypes.h"
+#include "BranchingImage.h"
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec.h>
@@ -53,10 +54,98 @@ using namespace cimg_library;
  * This class transforms pixel intensities
  */
 
+/// Default implementation does not compile
+template <int imageTypeLabel>
+struct TransferFunctionSpecialization
+{
+};
+
+
+/// Specialization for regular Image
+template <>
+struct TransferFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
+{
+
+    template<class TransferFunction>
+    static void update(TransferFunction& This)
+    {
+        typedef typename TransferFunction::Ti Ti;
+        typedef typename TransferFunction::To To;
+
+        typename TransferFunction::raParam p(This.param);
+        typename TransferFunction::raImagei in(This.inputImage);
+        if(in->isEmpty()) return;
+        const CImgList<Ti>& inimg = in->getCImgList();
+
+        typename TransferFunction::waImageo out(This.outputImage);
+        typename TransferFunction::imCoord dim=in->getDimensions();
+        out->setDimensions(dim);
+        CImgList<To>& img = out->getCImgList();
+
+        switch(This.filter.getValue().getSelectedId())
+        {
+        case LINEAR:
+        {
+            typename TransferFunction::iomap mp; for(unsigned int i=0; i<p.size(); i+=2) mp[(Ti)p[i]]=(To)p[i+1];
+            cimglist_for(inimg,l) cimg_forXYZC(inimg(l),x,y,z,c) img(l)(x,y,z,c)=This.Linear_TransferFunction(inimg(l)(x,y,z,c),mp);
+        }
+            break;
+
+        default:
+            img.assign(in->getCImgList());	// copy
+            break;
+        }
+    }
+
+};
+
+
+/// Specialization for branching Image
+template <>
+struct TransferFunctionSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
+{
+
+    template<class TransferFunction>
+    static void update(TransferFunction& This)
+    {
+        typedef typename TransferFunction::Ti Ti;
+        typedef typename TransferFunction::To To;
+
+        typename TransferFunction::raParam p(This.param);
+        typename TransferFunction::raImagei in(This.inputImage);
+        if(in->isEmpty()) return;
+        const typename TransferFunction::InImageTypes& inimg = in.ref();
+
+        typename TransferFunction::waImageo out(This.outputImage);
+        typename TransferFunction::imCoord dim=in->getDimensions();
+        typename TransferFunction::OutImageTypes& img = out.wref();
+        img.setDimensions(dim);
+        img.cloneTopology (inimg,0);
+
+        switch(This.filter.getValue().getSelectedId())
+        {
+        case LINEAR:
+        {
+            typename TransferFunction::iomap mp; for(unsigned int i=0; i<p.size(); i+=2) mp[(Ti)p[i]]=(To)p[i+1];
+            bimg_forCVoffT(inimg,c,v,off1D,t) img(off1D,v,c,t)=This.Linear_TransferFunction(inimg(off1D,v,c,t),mp);
+        }
+            break;
+
+        default:
+            bimg_forCVoffT(inimg,c,v,off1D,t) img(off1D,v,c,t)=(Ti)inimg(off1D,v,c,t); // copy
+            break;
+        }
+    }
+
+};
+
 
 template <class _InImageTypes,class _OutImageTypes>
 class TransferFunction : public core::DataEngine
 {
+    friend struct TransferFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>;
+    friend struct TransferFunctionSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>;
+
 public:
     typedef core::DataEngine Inherited;
     SOFA_CLASS(SOFA_TEMPLATE2(TransferFunction,_InImageTypes,_OutImageTypes),Inherited);
@@ -77,8 +166,8 @@ public:
 
 
     typedef vector<double> ParamTypes;
-	typedef helper::WriteAccessor<Data< ParamTypes > > waParam;
-	typedef helper::ReadAccessor<Data< ParamTypes > > raParam;
+    typedef helper::WriteAccessor<Data< ParamTypes > > waParam;
+    typedef helper::ReadAccessor<Data< ParamTypes > > raParam;
 
     Data<helper::OptionsGroup> filter;
     Data< ParamTypes > param;
@@ -91,15 +180,15 @@ public:
     static std::string templateName(const TransferFunction<InImageTypes,OutImageTypes>* = NULL) { return InImageTypes::Name()+std::string(",")+OutImageTypes::Name(); }
 
     TransferFunction()    :   Inherited()
-        , filter ( initData ( &filter,"filter","Filter" ) )
-        , param ( initData ( &param,"param","Parameters" ) )
-        , inputImage(initData(&inputImage,InImageTypes(),"inputImage",""))
-        , outputImage(initData(&outputImage,OutImageTypes(),"outputImage",""))
+      , filter ( initData ( &filter,"filter","Filter" ) )
+      , param ( initData ( &param,"param","Parameters" ) )
+      , inputImage(initData(&inputImage,InImageTypes(),"inputImage",""))
+      , outputImage(initData(&outputImage,OutImageTypes(),"outputImage",""))
     {
         inputImage.setReadOnly(true);
         outputImage.setReadOnly(true);
         helper::OptionsGroup filterOptions(1	,"0 - Piecewise Linear ( i1, o1, i2, o2 ...)"
-                                          );
+                                           );
         filterOptions.setSelectedItem(LINEAR);
         filter.setValue(filterOptions);
     }
@@ -120,31 +209,8 @@ protected:
     virtual void update()
     {
         cleanDirty();
-        raParam p(this->param);
-        raImagei in(this->inputImage);
-        if(in->isEmpty()) return;
-        const CImgList<Ti>& inimg = in->getCImgList();
 
-        waImageo out(this->outputImage);
-        imCoord dim=in->getDimensions();
-        out->setDimensions(dim);
-        CImgList<To>& img = out->getCImgList();
-
-        switch(this->filter.getValue().getSelectedId())
-        {
-        case LINEAR:
-        {
-            iomap mp; for(unsigned int i=0; i<p.size(); i+=2) mp[(Ti)p[i]]=(To)p[i+1];
-            cimglist_for(inimg,l) cimg_forXYZC(inimg(l),x,y,z,c) img(l)(x,y,z,c)=Linear_TransferFunction(inimg(l)(x,y,z,c),mp);
-        }
-        break;
-
-        default:
-            img.assign(in->getCImgList());	// copy
-
-            break;
-        }
-
+        TransferFunctionSpecialization<InImageTypes::label>::update( *this );
     }
 
 

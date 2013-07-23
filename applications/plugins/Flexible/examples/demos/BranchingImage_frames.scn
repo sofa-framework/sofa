@@ -19,6 +19,9 @@
   <ImageToBranchingImageConverter template="ImageUC,BranchingImageUC" name="coarsener" inputImage="@image.image" inputTransform="@image.transform" coarseningLevels="4" superimpositionType="1" printLog="true" createFineImage="true" connectivity="26"/>
   <ImageContainer template="BranchingImageUC" name="branchingImage" branchingImage="@coarsener.branchingImage" transform="@coarsener.transform" drawBB="true"/>
 
+<!--  Visualization of fine image containing offsets-->
+<!--<ImageViewer template="ImageUI" name="v" image="@coarsener.outputFineImage" transform="@image.transform" />-->
+
 <!--  Visualization of flatten branching image-->
 <!--   <BranchingImageToImageConverter template="BranchingImageUC,ImageUC" name="imageConverter" inputBranchingImage="@branchingImage.branchingImage" conversionType="0" printLog="true"/>  -->
 <!--   <ImageViewer template="ImageUC" name="viewer2" image="@imageConverter.image" transform="@branchingImage.transform"/> -->

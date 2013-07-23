@@ -753,27 +753,31 @@ public:
     }
 
     /// \returns the list of connected neighbours of a given voxel and the corresponding euclidean distances (image transform supposed to be linear)
-    // TO DO: bias the distance using image values (= multiply distance by 2/(v1+v2))
     // TO DO: bias the distance using a lut (= multiply distance by lut(v1,v2))
     template<typename real>
-    const Neighbours& getNeighboursAndDistances(std::vector< real > &dist, const VoxelIndex& index, const sofa::defaulttype::Vec<3,real>& voxelsize, const unsigned t=0) const
+    const Neighbours& getNeighboursAndDistances(std::vector< real > &dist, const VoxelIndex& index, const sofa::defaulttype::Vec<3,real>& voxelsize, const unsigned t=0, const bool bias = false) const
     {
-//        dist.clear();
-
         const ConnectionVoxel& voxel = this->imgList[t][index.index1d][index.offset];
         const Neighbours& neighbours = voxel.neighbours;
 
         dist.resize( neighbours.size() );
+        real b1 = bias? (real)operator()(index,0,t) : 1.0 ,b2;
+
         for( unsigned n = 0 ; n < neighbours.size() ; ++n )
         {
             NeighbourOffset dir = getDirection( index.index1d, neighbours[n].index1d );
+            b2 = bias? (real)operator()(neighbours[n],0,t): 1.0;
 
             Vec3d diff( abs(dir[0])*voxelsize[0], abs(dir[1])*voxelsize[1], abs(dir[2])*voxelsize[2] );
 
-            dist[n] = diff.norm();
+            dist[n] = diff.norm() * 2.0/(b1+b2);
         }
         return voxel.neighbours;
     }
+
+    /// \returns the number of superimposed voxels
+    /// @warning validity of indices and time not checked
+    unsigned int Nb_superimposed(const unsigned& off1D, const unsigned t=0) const { return this->imgList[t][off1D].size(); }
 
     /// \returns image value at a given voxel index, time and channel
     /// @warning validity of indices, channel and time not checked
