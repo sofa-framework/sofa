@@ -104,7 +104,7 @@ struct ImageExporterSpecialization<defaulttype::IMAGELABEL_IMAGE>
             double offsetT=(double)rtransform->getOffsetT();
             double scaleT=(double)rtransform->getScaleT();
             bool isPerspective=rtransform->isPerspective();
-            save_metaimage<T,double>(rimage->getCImgList(),fname.c_str(),scale,translation,affine,&offsetT,&scaleT,&isPerspective);
+            save_metaimage<T,double>(rimage->getCImgList(),fname.c_str(),scale,translation,affine,offsetT,scaleT,isPerspective);
         }
         else if(fname.find(".nfo")!=std::string::npos || fname.find(".NFO")!=std::string::npos || fname.find(".Nfo")!=std::string::npos)
         {
@@ -188,7 +188,7 @@ struct ImageExporterSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
             double scaleT=(double)rtransform->getScaleT();
             bool isPerspective=rtransform->isPerspective();
 
-            exporter.image.getValue().save( fname.c_str(), scale, translation, affine, &offsetT, &scaleT, &isPerspective );
+            exporter.image.getValue().save( fname.c_str(), scale, translation, affine, offsetT, scaleT, isPerspective );
 
             exporter.sout << "Saved image " << fname << exporter.sendl;
 

@@ -1099,7 +1099,7 @@ public:
 
 
     template<typename F>
-    bool save( const char *const headerFilename, const F *const scale=0, const F *const translation=0, const F *const affine=0, const F *const offsetT=0, const F *const scaleT=0, const bool *const isPerspective=0 ) const
+    bool save( const char *const headerFilename, const F *const scale=0, const F *const translation=0, const F *const affine=0, F offsetT=0, F scaleT=0, bool isPerspective=false ) const
     {
         if( !getDimension()[DIMENSION_T] ) return false;
 
@@ -1108,7 +1108,7 @@ public:
 
         fileStream << "ObjectType = BranchingImage" << std::endl;
 
-        unsigned int nbdims=(getDimension()[DIMENSION_Z]==1)?3:4; //  for 2-d, we still need z scale dimension
+        unsigned int nbdims=(getDimension()[DIMENSION_T]==1)?3:4; //  for 2-d, we still need z scale dimension
 
         fileStream << "NDims = " << nbdims << std::endl;
 
@@ -1136,7 +1136,7 @@ public:
 
         if(affine) { fileStream << "Orientation = "; for(unsigned int i=0;i<9;i++) fileStream << affine[i] << " "; fileStream << std::endl; }
 
-        if(isPerspective) { fileStream << "isPerpective = " << *isPerspective << std::endl; }
+        fileStream << "isPerpective = " << isPerspective << std::endl;
 
         std::string imageFilename(headerFilename); imageFilename.replace(imageFilename.find_last_of('.')+1,imageFilename.size(),"bia");
         fileStream << "ElementDataFile = " << imageFilename.c_str() << std::endl;
@@ -1304,7 +1304,7 @@ public:
                 fileStream >> symbol;
                 while( symbol != '}' ) // end of superimposed voxels
                 {
-                    fileStream.seekg( -1, std::ifstream::cur ); // unread symbol
+                    if( symbol != '#' ) fileStream.seekg( -1, std::ifstream::cur ); // unread symbol
 
                     ConnectionVoxel cv( getDimension()[DIMENSION_S] );
 
