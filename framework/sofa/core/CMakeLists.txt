@@ -74,6 +74,7 @@ set(HEADER_FILES
 	collision/NarrowPhaseDetection.h
 	collision/Pipeline.h
 	collision/IntersectorFactory.h
+	collision/ContactListener.h
 	topology/BaseMeshTopology.h
 	topology/BaseTopology.h
 	topology/BaseTopologyObject.h
@@ -182,6 +183,7 @@ set(SOURCE_FILES
 	collision/Contact.cpp
 	collision/Intersection.cpp
 	collision/Pipeline.cpp
+	collision/ContactListener.cpp
 	topology/BaseMeshTopology.cpp
 	topology/BaseTopology.cpp
 	topology/TopologyHandler.cpp

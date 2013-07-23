@@ -47,7 +47,7 @@
 
 
 //force feedback
-//#include <sofa/component/controller/ForceFeedback.h>
+#include <sofa/component/controller/ForceFeedback.h>
 #include <sofa/component/controller/MechanicalStateForceFeedback.h>
 #include <sofa/component/controller/LCPForceFeedback.h>
 #include <sofa/component/controller/NullForceFeedbackT.h>
@@ -57,6 +57,7 @@
 
 #include <sofa/component/visualmodel/OglModel.h>
 #include <sofa/simulation/tree/GNode.h>
+#include <sofa/component/topology/TopologyData.h>
 
 #include <math.h>
 
@@ -92,7 +93,8 @@ struct NewDeviceData
 
 struct NewOmniData
 {
-    LCPForceFeedback<Rigid3dTypes>::SPtr forceFeedback;
+//    LCPForceFeedback<Rigid3dTypes>::SPtr forceFeedback;
+    ForceFeedback::SPtr forceFeedback;
     simulation::Node::SPtr *context;
 
     sofa::defaulttype::SolidTypes<double>::Transform endOmni_H_virtualTool;
@@ -160,6 +162,7 @@ public:
     Data<bool> setRestShape;
     Data<bool> applyMappings;
 
+
     sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes> *DOFs;
 
     bool initVisu;
@@ -180,7 +183,8 @@ public:
     void cleanup();
     virtual void draw();
 
-    void setForceFeedback(LCPForceFeedback<Rigid3dTypes>* ff);
+//    void setForceFeedback(LCPForceFeedback<Rigid3dTypes>* ff);
+    void setForceFeedback(ForceFeedback* ff);
 
     void onKeyPressedEvent(core::objectmodel::KeypressedEvent *);
     void onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent *);

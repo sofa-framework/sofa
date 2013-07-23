@@ -6,7 +6,7 @@ set(HEADER_FILES
     ../controller/ForceFeedback.h 
     ../controller/NullForceFeedbackT.h 
     ../controller/NullForceFeedback.h 
-    ../controller/EnslavementForceFeedback.h 
+    #../controller/EnslavementForceFeedback.h 
     ../controller/LCPForceFeedback.h 
     ../controller/LCPForceFeedback.inl 
     ../controller/MechanicalStateForceFeedback.h
@@ -18,7 +18,7 @@ set(SOURCE_FILES
     ../initHaptics.cpp 
     ../controller/NullForceFeedback.cpp 
     ../controller/NullForceFeedbackT.cpp 
-    ../controller/EnslavementForceFeedback.cpp 
+    #../controller/EnslavementForceFeedback.cpp 
     ../controller/LCPForceFeedback.cpp
  
     )
