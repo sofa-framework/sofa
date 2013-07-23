@@ -51,6 +51,7 @@ HEADERS += \
         BranchingImage.h \
         BranchingImageConverter.h \
         BranchingCellIndicesFromPositions.h \
+	BranchingCellOffsetsFromPositions.h \
         BranchingCellVolumes.h \
         MergeBranchingImages.h \
 
@@ -77,6 +78,7 @@ SOURCES += \
     VectorVisualizationWidget.cpp \
     BranchingImageConverter.cpp \
     BranchingCellIndicesFromPositions.cpp \
+    BranchingCellOffsetsFromPositions.cpp \
     BranchingCellVolumes.cpp \
     MergeBranchingImages.cpp \
 

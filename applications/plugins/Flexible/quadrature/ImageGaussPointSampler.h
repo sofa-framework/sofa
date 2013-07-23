@@ -965,7 +965,9 @@ protected:
 
     virtual ~ImageGaussPointSampler()
     {
-
+        f_index.setReadOnly(true);
+        f_w.setReadOnly(true);
+        f_mask.setReadOnly(true);
     }
 
     /** @name  region types */

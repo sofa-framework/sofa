@@ -69,6 +69,37 @@ int TransferFunctionClass = core::RegisterObject("Transforms pixel intensities")
         .add<TransferFunction<ImageF ,ImageD     > >()
         .add<TransferFunction<ImageB ,ImageD     > >()
 #endif
+
+.add<TransferFunction<BranchingImageUC,BranchingImageUC    > >(true)
+.add<TransferFunction<BranchingImageD ,BranchingImageD     > >()
+.add<TransferFunction<BranchingImageUC,BranchingImageD    > >()
+.add<TransferFunction<BranchingImageD,BranchingImageUC    > >()
+.add<TransferFunction<BranchingImageUC,BranchingImageUI    > >()
+.add<TransferFunction<BranchingImageUC,BranchingImageUS    > >()
+.add<TransferFunction<BranchingImageUS,BranchingImageUC    > >()
+.add<TransferFunction<BranchingImageUC,BranchingImageB    > >()
+
+#ifdef BUILD_ALL_IMAGE_TYPES
+.add<TransferFunction<BranchingImageC ,BranchingImageC     > >()
+.add<TransferFunction<BranchingImageI ,BranchingImageI     > >()
+.add<TransferFunction<BranchingImageUI,BranchingImageUI    > >()
+.add<TransferFunction<BranchingImageS ,BranchingImageS     > >()
+.add<TransferFunction<BranchingImageUS,BranchingImageUS    > >()
+.add<TransferFunction<BranchingImageL ,BranchingImageL     > >()
+.add<TransferFunction<BranchingImageUL,BranchingImageUL    > >()
+.add<TransferFunction<BranchingImageF ,BranchingImageF     > >()
+.add<TransferFunction<BranchingImageB ,BranchingImageB     > >()
+
+.add<TransferFunction<BranchingImageC ,BranchingImageD     > >()
+.add<TransferFunction<BranchingImageI ,BranchingImageD     > >()
+.add<TransferFunction<BranchingImageUI,BranchingImageD    > >()
+.add<TransferFunction<BranchingImageS ,BranchingImageD     > >()
+.add<TransferFunction<BranchingImageUS,BranchingImageD    > >()
+.add<TransferFunction<BranchingImageL ,BranchingImageD     > >()
+.add<TransferFunction<BranchingImageUL,BranchingImageD    > >()
+.add<TransferFunction<BranchingImageF ,BranchingImageD     > >()
+.add<TransferFunction<BranchingImageB ,BranchingImageD     > >()
+#endif
         ;
 
 template class SOFA_IMAGE_API TransferFunction<ImageUC  ,ImageUC    >;
@@ -102,6 +133,41 @@ template class SOFA_IMAGE_API TransferFunction<ImageL   ,ImageD     >;
 template class SOFA_IMAGE_API TransferFunction<ImageUL  ,ImageD    >;
 template class SOFA_IMAGE_API TransferFunction<ImageF   ,ImageD     >;
 template class SOFA_IMAGE_API TransferFunction<ImageB   ,ImageD     >;
+
+#endif
+
+
+template class SOFA_IMAGE_API TransferFunction<BranchingImageUC  ,BranchingImageUC    >;
+template class SOFA_IMAGE_API TransferFunction<BranchingImageD   ,BranchingImageD     >;
+
+template class SOFA_IMAGE_API TransferFunction<BranchingImageUC  ,BranchingImageD    >;
+
+template class SOFA_IMAGE_API TransferFunction<BranchingImageD  ,BranchingImageUC    >;
+template class SOFA_IMAGE_API TransferFunction<BranchingImageUC   ,BranchingImageUI     >;
+template class SOFA_IMAGE_API TransferFunction<BranchingImageUC   ,BranchingImageUS     >;
+template class SOFA_IMAGE_API TransferFunction<BranchingImageUS   ,BranchingImageUC     >;
+template class SOFA_IMAGE_API TransferFunction<BranchingImageUC   ,BranchingImageB     >;
+
+#ifdef BUILD_ALL_IMAGE_TYPES
+template class SOFA_IMAGE_API TransferFunction<BranchingImageC   ,BranchingImageC     >;
+template class SOFA_IMAGE_API TransferFunction<BranchingImageI   ,BranchingImageI     >;
+template class SOFA_IMAGE_API TransferFunction<BranchingImageUI  ,BranchingImageUI    >;
+template class SOFA_IMAGE_API TransferFunction<BranchingImageS   ,BranchingImageS     >;
+template class SOFA_IMAGE_API TransferFunction<BranchingImageUS  ,BranchingImageUS    >;
+template class SOFA_IMAGE_API TransferFunction<BranchingImageL   ,BranchingImageL     >;
+template class SOFA_IMAGE_API TransferFunction<BranchingImageUL  ,BranchingImageUL    >;
+template class SOFA_IMAGE_API TransferFunction<BranchingImageF   ,BranchingImageF     >;
+template class SOFA_IMAGE_API TransferFunction<BranchingImageB   ,BranchingImageB     >;
+
+template class SOFA_IMAGE_API TransferFunction<BranchingImageC   ,BranchingImageD     >;
+template class SOFA_IMAGE_API TransferFunction<BranchingImageI   ,BranchingImageD     >;
+template class SOFA_IMAGE_API TransferFunction<BranchingImageUI  ,BranchingImageD    >;
+template class SOFA_IMAGE_API TransferFunction<BranchingImageS   ,BranchingImageD     >;
+template class SOFA_IMAGE_API TransferFunction<BranchingImageUS  ,BranchingImageD    >;
+template class SOFA_IMAGE_API TransferFunction<BranchingImageL   ,BranchingImageD     >;
+template class SOFA_IMAGE_API TransferFunction<BranchingImageUL  ,BranchingImageD    >;
+template class SOFA_IMAGE_API TransferFunction<BranchingImageF   ,BranchingImageD     >;
+template class SOFA_IMAGE_API TransferFunction<BranchingImageB   ,BranchingImageD     >;
 
 #endif
 

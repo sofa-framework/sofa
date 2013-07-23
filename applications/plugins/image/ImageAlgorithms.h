@@ -369,7 +369,7 @@ void dijkstra (std::set<std::pair<real,typename sofa::defaulttype::BranchingImag
         const unsigned int vor = voronoi(v);
 
         std::vector< real > nDist;
-        const typename sofa::defaulttype::BranchingImage<real>::Neighbours& nList = ( biasFactor ? biasFactor->getNeighboursAndDistances(nDist, top.second, voxelsize, 0) : voronoi.getNeighboursAndDistances(nDist, top.second, voxelsize, 0) );
+        const typename sofa::defaulttype::BranchingImage<real>::Neighbours& nList = ( biasFactor ? biasFactor->getNeighboursAndDistances(nDist, top.second, voxelsize, 0, true) : voronoi.getNeighboursAndDistances(nDist, top.second, voxelsize, 0, false) );
 
         for (unsigned int i=0; i<nList.size(); i++)
         {

@@ -34,6 +34,7 @@ set(SOURCE_FILES
     VectorVisualizationWidget.cpp 
     BranchingImageConverter.cpp 
     BranchingCellIndicesFromPositions.cpp
+    BranchingCellOffsetsFromPositions.cpp
     BranchingCellVolumes.cpp
     MergeBranchingImages.cpp
 	)
@@ -83,6 +84,7 @@ list(APPEND HEADER_FILES
     BranchingImage.h 
     BranchingImageConverter.h
     BranchingCellIndicesFromPositions.h
+    BranchingCellOffsetsFromPositions.h
     BranchingCellVolumes.h
     MergeBranchingImages.h
 	)
