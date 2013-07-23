@@ -169,7 +169,7 @@ struct ImageExporterSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
 
         typename ImageExporter::raImage rimage(exporter.image);
         typename ImageExporter::raTransform rtransform(exporter.transform);
-        if (!rimage->dimension[ImageTypes::DIMENSION_T]) { exporter.serr << "ImageExporter: no image "<<exporter.name<<exporter.sendl; return false; }
+        if (!rimage->getDimension()[ImageTypes::DIMENSION_T]) { exporter.serr << "ImageExporter: no image "<<exporter.name<<exporter.sendl; return false; }
 
         // .BIA is for BranchingImageAscii (maybe some day there will be a .BIB, BranchingImageBinary)
 
