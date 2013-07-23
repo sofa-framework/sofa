@@ -4,7 +4,7 @@
 
 #include "ImageDensityMass.h"
 
-#include <Flexible/shapeFunction/BaseShapeFunction.h>
+#include "../shapeFunction/BaseShapeFunction.h"
 
 #include <sofa/core/State.inl>
 #include <sofa/core/behavior/Mass.inl>
