@@ -48,7 +48,7 @@ inline CImg<unsigned char> convertToUC(const CImg<char> &Image) {	return convert
 
 
 template<typename T,typename F>
-bool save_metaimage(const CImgList<T>& img,const char *const headerFilename, const F *const scale=0, const F *const translation=0, const F *const affine=0, const F *const offsetT=0, const F *const scaleT=0, const bool *const isPerspective=0)
+bool save_metaimage(const CImgList<T>& img,const char *const headerFilename, const F *const scale=0, const F *const translation=0, const F *const affine=0, F offsetT=0, F scaleT=0, bool isPerspective=false)
 {
     if(!img.size()) return false;
 
@@ -87,7 +87,7 @@ bool save_metaimage(const CImgList<T>& img,const char *const headerFilename, con
 
     if(affine) { fileStream << "Orientation = "; for(unsigned int i=0;i<9;i++) fileStream << affine[i] << " "; fileStream << std::endl; }
 
-    if(isPerspective) { fileStream << "isPerpective = " << *isPerspective << std::endl; }
+    fileStream << "isPerpective = " << isPerspective << std::endl;
 
     std::string imageFilename(headerFilename); imageFilename.replace(imageFilename.find_last_of('.')+1,imageFilename.size(),"raw");
     fileStream << "ElementDataFile = " << imageFilename.c_str() << std::endl;
