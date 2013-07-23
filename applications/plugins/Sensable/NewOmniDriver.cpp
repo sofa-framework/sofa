@@ -174,6 +174,7 @@ HDCallbackCode HDCALLBACK stateCallback(void * userData)
         Vec3d pos(transform[12+0]*factor, transform[12+1]*factor, transform[12+2]*factor); // omni pos is in mm => sofa simulation are in meters by default
         autreOmniDriver[i]->data.servoDeviceData.pos=pos;
 
+        
         // verify that the quaternion does not flip:
         if ((rot[0]*autreOmniDriver[i]->data.servoDeviceData.quat[0]
                 +rot[1]*autreOmniDriver[i]->data.servoDeviceData.quat[1]
@@ -189,7 +190,7 @@ HDCallbackCode HDCALLBACK stateCallback(void * userData)
 
         SolidTypes<double>::Transform baseOmni_H_endOmni(pos* autreOmniDriver[i]->data.scale, rot);
         SolidTypes<double>::Transform world_H_virtualTool = autreOmniDriver[i]->data.world_H_baseOmni * baseOmni_H_endOmni * autreOmniDriver[i]->data.endOmni_H_virtualTool;
-
+   
 
 //partie pour ff simulatnnée
 #if 1
@@ -205,7 +206,12 @@ HDCallbackCode HDCALLBACK stateCallback(void * userData)
     }
 
     if(autreOmniDriver[0]->data.forceFeedback != NULL)
-        (autreOmniDriver[0]->data.forceFeedback)->computeForce(positionDevs,forceDevs);
+		for(unsigned int i=0; i< positionDevs.size(); i++)
+		{
+			SReal fx, fy, fz;
+			(autreOmniDriver[0]->data.forceFeedback)->computeForce(positionDevs[i].getCenter().x(),positionDevs[i].getCenter().y(), positionDevs[i].getCenter().z(), 0, 0, 0, 0, fx, fy, fz); 
+			forceDevs[i] = RigidTypes::Deriv(Vec3d(fx,fy,fz), Vec3d());
+		}
 
     for(unsigned int i=0; i<autreOmniDriver.size(); i++)
     {
@@ -368,10 +374,13 @@ int NewOmniDriver::initDevice()
             {
                 cout<<"[NewOmni] Failed to initialize the device "<<autreOmniDriver[i]->deviceName.getValue()<<endl;
             }
-            cout<<deviceName.getValue()<<"[NewOmni] Found device "<<autreOmniDriver[i]->deviceName.getValue()<<endl;
+            else
+            {
+                cout<<deviceName.getValue()<<"[NewOmni] Found device "<<autreOmniDriver[i]->deviceName.getValue()<<endl;
 
-            hdEnable(HD_FORCE_OUTPUT);
-            hdEnable(HD_MAX_FORCE_CLAMPING);
+                hdEnable(HD_FORCE_OUTPUT);
+                hdEnable(HD_MAX_FORCE_CLAMPING);
+            }
         }
     }
 
@@ -422,7 +431,6 @@ NewOmniDriver::NewOmniDriver()
     , useScheduler(initData(&useScheduler,false,"useScheduler","Enable use of OpenHaptics Scheduler methods to synchronize haptics thread"))
     , setRestShape(initData(&setRestShape, false, "setRestShape", "True to control the rest position instead of the current position directly"))
     , applyMappings(initData(&applyMappings, true, "applyMappings", "True to enable applying the mappings after setting the position"))
-
 {
     this->f_listening.setValue(true);
     data.forceFeedback = NULL;
@@ -448,7 +456,8 @@ void NewOmniDriver::cleanup()
 }
 
 //configure l'effort
-void NewOmniDriver::setForceFeedback(LCPForceFeedback<Rigid3dTypes>* ff)
+//void NewOmniDriver::setForceFeedback(LCPForceFeedback<Rigid3dTypes>* ff)
+void NewOmniDriver::setForceFeedback(ForceFeedback* ff)
 {
     // the forcefeedback is already set
     if(data.forceFeedback == ff)
@@ -615,9 +624,15 @@ void NewOmniDriver::bwdInit()
     sout<<"NewOmniDriver::bwdInit()"<<sendl;
 
     simulation::Node *context = dynamic_cast<simulation::Node *>(this->getContext()); // access to current node
-    LCPForceFeedback<Rigid3dTypes>* ff = context->getTreeObject< LCPForceFeedback<Rigid3dTypes> >();
+//    LCPForceFeedback<Rigid3dTypes>* ff = context->getTreeObject< LCPForceFeedback<Rigid3dTypes> >();
+//    LCPForceFeedback<Rigid3dTypes>* ff = context->get<LCPForceFeedback<Rigid3dTypes> > (this->getTags(), sofa::core::objectmodel::BaseContext::SearchRoot);
+	ForceFeedback* ff = context->get<ForceFeedback>(this->getTags(), sofa::core::objectmodel::BaseContext::SearchRoot);
     if(ff)
         this->setForceFeedback(ff);
+	else
+	{
+		std::cout<< "Warning(NewOmniDriver): No ForceFeedback found." << std::endl;
+	}
 
     setDataValue();
 
@@ -629,14 +644,15 @@ void NewOmniDriver::bwdInit()
 
     if(firstDevice)
     {
-        DOFs = context->get<sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes> > ();
+		DOFs = context->get<sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes> > (this->getTags(), sofa::core::objectmodel::BaseContext::SearchRoot);
 
-        if (DOFs==NULL)
+		if (DOFs==NULL)
         {
-            serr<<" no MechanicalObject found"<<sendl;
+            serr<<" no MechanicalObject with template = Rigid found"<<sendl;
         }
         else
         {
+            
             if (DOFs->getSize() < autreOmniDriver.size())
                 DOFs->resize(autreOmniDriver.size());
             for(unsigned int i=1; i<autreOmniDriver.size(); i++)
@@ -986,11 +1002,15 @@ void NewOmniDriver::onAnimateBeginEvent()
         if(DOFs!=NULL)
         {
             sofa::helper::WriteAccessor<sofa::core::objectmodel::Data<VecCoord> > x = *DOFs->write(this->setRestShape.getValue() ? sofa::core::VecCoordId::restPosition() : sofa::core::VecCoordId::position());
+//			sofa::helper::WriteAccessor<sofa::core::objectmodel::Data<VecCoord> > x(this->setRestShape.getValue() ? testrest : testx );
             sofa::helper::WriteAccessor<sofa::core::objectmodel::Data<VecCoord> > xfree = *DOFs->write(this->setRestShape.getValue() ? sofa::core::VecCoordId::restPosition() : sofa::core::VecCoordId::freePosition());
+//			sofa::helper::WriteAccessor<sofa::core::objectmodel::Data<VecCoord> > xfree(this->setRestShape.getValue() ? testrest : testfreex);
             unsigned int index = deviceIndex.getValue();
 
             x    [index].getCenter()=world_H_virtualTool.getOrigin();
+//            xtest    [index].getCenter()=world_H_virtualTool.getOrigin();
             xfree[index].getCenter()=world_H_virtualTool.getOrigin();
+//            xfreetest[index].getCenter()=world_H_virtualTool.getOrigin();
             x    [index].getOrientation()=world_H_virtualTool.getOrientation();
             xfree[index].getOrientation()=world_H_virtualTool.getOrientation();
         }

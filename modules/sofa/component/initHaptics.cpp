@@ -43,7 +43,6 @@ void initHaptics()
 }
 
 SOFA_LINK_CLASS(NullForceFeedback)
-SOFA_LINK_CLASS(EnslavementForceFeedback)
 SOFA_LINK_CLASS(LCPForceFeedback)
 
 } // namespace component
