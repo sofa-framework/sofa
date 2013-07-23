@@ -92,6 +92,14 @@ public:
         DEBUG_OUT_M(spaceDebug = 0);
     }
 
+    unsigned capacityX() const {
+        return allocSizeX;
+    }
+
+    unsigned capacityY() const {
+        return allocSizeY;
+    }
+
     void resize_allocated(size_type y,size_t x,size_t WARP_SIZE) {
         size_type d_x = x;
         size_type d_y = y;
