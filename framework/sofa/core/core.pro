@@ -197,7 +197,7 @@ SOURCES += \
 	collision/Contact.cpp \
 	collision/Intersection.cpp \
 	collision/Pipeline.cpp \
-	collision/ContactListener.cpp
+	collision/ContactListener.cpp \
 	topology/BaseMeshTopology.cpp \
 	topology/BaseTopology.cpp \
 	topology/TopologyHandler.cpp \
