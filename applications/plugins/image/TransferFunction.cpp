@@ -70,7 +70,7 @@ int TransferFunctionClass = core::RegisterObject("Transforms pixel intensities")
         .add<TransferFunction<ImageB ,ImageD     > >()
 #endif
 
-.add<TransferFunction<BranchingImageUC,BranchingImageUC    > >(true)
+.add<TransferFunction<BranchingImageUC,BranchingImageUC    > >()
 .add<TransferFunction<BranchingImageD ,BranchingImageD     > >()
 .add<TransferFunction<BranchingImageUC,BranchingImageD    > >()
 .add<TransferFunction<BranchingImageD,BranchingImageUC    > >()

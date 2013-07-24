@@ -511,8 +511,8 @@ struct VoronoiShapeFunctionSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE
             bimg_forCVoffT(voronoi,c,v,off1D,t) if(voronoi(off1D,v,c,t)==i+1) if(dmax<dist(off1D,v,c,t)) dmax=dist(off1D,v,c,t);
 
             // distances from voronoi border
-            DistTypes distB=dist;  bimg_forCVoffT(distB,c,v,off1D,t) if(distB(off1D,v,c,t)!=-1)  distB(off1D,v,c,t)=dmax;
-            IndTypes voronoiP=voronoi;
+            DistTypes distB(dist,false);  bimg_forCVoffT(distB,c,v,off1D,t) if(distB(off1D,v,c,t)!=-1)  distB(off1D,v,c,t)=dmax;
+            IndTypes voronoiP(voronoi,false);
             bimg_forCVoffT(voronoi,c,v,off1D,t) if(voronoi(off1D,v,c,t)==i+1)
             {
                 Neighbours neighbours = voronoi.getNeighbours(VoxelIndex(off1D,v));
@@ -529,7 +529,7 @@ struct VoronoiShapeFunctionSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE
 
             // extend voronoi to 2*dmax
             dmax*=(DistT)2.;
-            DistTypes distP=dist;  bimg_forCVoffT(distP,c,v,off1D,t) if(distP(off1D,v,c,t)!=-1)  distP(off1D,v,c,t)=dmax;
+            DistTypes distP(dist,false);  bimg_forCVoffT(distP,c,v,off1D,t) if(distP(off1D,v,c,t)!=-1)  distP(off1D,v,c,t)=dmax;
 
             AddSeedPoint<DistT>(trial,distP,voronoiP, parentiCoord[i],i+1);
             if(This->useDijkstra.getValue()) dijkstra<DistT,T>(trial,distP, voronoiP, inT->getScale() , biasFactor);            else fastMarching<DistT,T>(trial,distP, voronoiP, inT->getScale() ,biasFactor );
@@ -616,8 +616,8 @@ struct VoronoiShapeFunctionSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE
         Vec<3,Real> pixelsurf(voxelsize[1]*voxelsize[2],voxelsize[0]*voxelsize[2],voxelsize[0]*voxelsize[1]);
         unsigned int indexPt=This->f_position.getValue().size()+1; // voronoi index of points that will be added to compute NNI
 
-        IndTypes voronoiPt=voronoi;
-        DistTypes distPt=dist;
+        IndTypes voronoiPt(voronoi,false);
+        DistTypes distPt(dist,false);
 
         // compute weights voxel-by-voxel
         bimg_forCVoffT(voronoi,ci,vi,off1Di,ti) if(voronoi(off1Di,vi,ci,ti))

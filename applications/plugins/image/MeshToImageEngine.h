@@ -120,6 +120,8 @@ public:
 
     Data<unsigned int> f_nbMeshes;
 
+    Data<bool> gridSnap;
+
     virtual std::string getTemplateName() const    { return templateName(this);    }
     static std::string templateName(const MeshToImageEngine<ImageTypes>* = NULL) { return ImageTypes::Name();    }
 
@@ -135,6 +137,7 @@ public:
         , closingTriangles(initData(&closingTriangles,SeqTriangles(),"closingTriangles","ouput closing triangles"))
         , closingValue(initData(&closingValue,1.,"closingValue","pixel value at closings"))
         , f_nbMeshes( initData (&f_nbMeshes, (unsigned)1, "nbMeshes", "number of meshes to voxelize (Note that the last one write on the previous ones)") )
+        , gridSnap(initData(&gridSnap,true,"gridSnap","align voxel centers on voxelSize multiples for perfect image merging (nbVoxels and rotateImage should be off)"))
     {
         createInputMeshesData();
     }
@@ -202,6 +205,13 @@ protected:
 
             if( nbVoxels.getValue()[0]!=0 && nbVoxels.getValue()[1]!=0 && nbVoxels.getValue()[2]!=0 ) for(unsigned int j=0; j<3; j++) tr->getScale()[j] = (BB[j][1] - BB[j][0]) / nbVoxels.getValue()[j];
             else for(unsigned int j=0; j<3; j++) tr->getScale()[j] = this->voxelSize.getValue()[j];
+
+            if(this->gridSnap.getValue())
+                if( nbVoxels.getValue()[0]==0 || nbVoxels.getValue()[1]==0 || nbVoxels.getValue()[2]==0 )
+            {
+                   for(unsigned int j=0; j<3; j++) BB[j][0] = tr->getScale()[j]*floor(BB[j][0]/tr->getScale()[j]);
+                   for(unsigned int j=0; j<3; j++) BB[j][1] = tr->getScale()[j]*ceil(BB[j][1]/tr->getScale()[j]);
+            }
 
             for(unsigned int j=0; j<3; j++) tr->getTranslation()[j]=BB[j][0]-tr->getScale()[j]*this->padSize.getValue();
         }
@@ -279,7 +289,7 @@ protected:
         tr->update(); // update of internal data
         // update image extents
         unsigned int dim[3];
-        for(unsigned int j=0; j<3; j++) dim[j]=ceil(1+(BB[j][1]-BB[j][0])/tr->getScale()[j]+(Real)2.0*this->padSize.getValue()); // TODO Matt: why +1?
+        for(unsigned int j=0; j<3; j++) dim[j]=ceil(1+(BB[j][1]-BB[j][0])/tr->getScale()[j]+(Real)2.0*this->padSize.getValue());
         iml->getCImgList().assign(1,dim[0],dim[1],dim[2],1);
 
 
