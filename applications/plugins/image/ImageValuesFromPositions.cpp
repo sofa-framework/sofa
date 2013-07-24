@@ -54,7 +54,7 @@ int ImageValuesFromPositionsClass = core::RegisterObject("Get image intensities 
         .add<ImageValuesFromPositions<ImageF> >()
         .add<ImageValuesFromPositions<ImageB> >()
 #endif
-        .add<ImageValuesFromPositions<BranchingImageD> >(true)
+        .add<ImageValuesFromPositions<BranchingImageD> >()
         .add<ImageValuesFromPositions<BranchingImageUC> >()
 #ifdef BUILD_ALL_IMAGE_TYPES
         .add<ImageValuesFromPositions<BranchingImageC> >()
