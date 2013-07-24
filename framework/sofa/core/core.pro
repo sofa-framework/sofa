@@ -90,6 +90,7 @@ HEADERS += \
 	collision/NarrowPhaseDetection.h \
 	collision/Pipeline.h \
 	collision/IntersectorFactory.h \
+	collision/ContactListener.h \
 	topology/BaseMeshTopology.h \
 	topology/BaseTopology.h \
 	topology/BaseTopologyObject.h \
@@ -196,6 +197,7 @@ SOURCES += \
 	collision/Contact.cpp \
 	collision/Intersection.cpp \
 	collision/Pipeline.cpp \
+	collision/ContactListener.cpp
 	topology/BaseMeshTopology.cpp \
 	topology/BaseTopology.cpp \
 	topology/TopologyHandler.cpp \

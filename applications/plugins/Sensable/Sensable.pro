@@ -13,10 +13,12 @@ SOURCES = \
 initSensable.cpp \
 NewOmniDriver.cpp \
 OmniDriver.cpp \
+EnslavementForceFeedback.cpp
 
 HEADERS = \
 NewOmniDriver.h \
-OmniDriver.h
+OmniDriver.h \
+EnslavementForceFeedback.h
 
 README_FILE = PluginSensable.txt
 
