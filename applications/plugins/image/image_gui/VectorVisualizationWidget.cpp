@@ -18,7 +18,7 @@ using namespace defaulttype;
 
 SOFA_DECL_CLASS(VectorVisualizationDataWidget);
 
-template class SOFA_IMAGE_API TDataWidget<VectorVis>;
+template class SOFA_IMAGE_GUI_API TDataWidget<VectorVis>;
 
 /**
 * Defines that type of Data the VectorVisualizationWidget can communicate with

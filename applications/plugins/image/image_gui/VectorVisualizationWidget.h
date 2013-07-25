@@ -3,8 +3,8 @@
 
 #include <sofa/gui/qt/SimpleDataWidget.h>
 #include <sofa/gui/qt/DataWidget.h>
-#include "initImage.h"
-#include "VectorVis.h"
+#include "initImage_gui.h"
+#include "../VectorVis.h"
 
 #ifdef SOFA_QT4
 #include <QCheckBox>
@@ -29,7 +29,7 @@ namespace qt
 */
 class VectorVisSettings: public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
 
 public:
     virtual ~VectorVisSettings() {};
@@ -474,7 +474,7 @@ public:
 * Data Widget that allows for communication between the GUI and the corresponding Data
 */
 template<class T>
-class SOFA_IMAGE_API VectorVisualizationDataWidget : public SimpleDataWidget<T, vectorvis_data_widget_container< T > >
+class SOFA_IMAGE_GUI_API VectorVisualizationDataWidget : public SimpleDataWidget<T, vectorvis_data_widget_container< T > >
 {
 
 public:

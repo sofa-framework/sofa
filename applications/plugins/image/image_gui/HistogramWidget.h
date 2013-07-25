@@ -25,7 +25,7 @@
 #ifndef SOFA_IMAGE_HISTOGRAMWIDGET_H
 #define SOFA_IMAGE_HISTOGRAMWIDGET_H
 
-#include "initImage.h"
+#include "initImage_gui.h"
 #include <sofa/gui/qt/DataWidget.h>
 #include <sofa/gui/qt/SimpleDataWidget.h>
 
@@ -47,7 +47,7 @@
 #include <qtgui.h>
 #endif
 
-#include "ImageTypes.h"
+#include "../ImageTypes.h"
 #include <sofa/helper/vector.h>
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/core/objectmodel/Data.h>
@@ -373,7 +373,7 @@ public:
 
 
 template<class T>
-class SOFA_IMAGE_API HistogramDataWidget : public SimpleDataWidget<T, histogram_data_widget_container< T > >
+class SOFA_IMAGE_GUI_API HistogramDataWidget : public SimpleDataWidget<T, histogram_data_widget_container< T > >
 {
 public:
     typedef SimpleDataWidget<T, histogram_data_widget_container< T > > Inherit;

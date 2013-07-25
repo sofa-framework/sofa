@@ -40,32 +40,32 @@ namespace qt
 
 using namespace defaulttype;
 
-template class SOFA_IMAGE_API TDataWidget<ImageUC>;
-template class SOFA_IMAGE_API TDataWidget<ImageD>;
+template class SOFA_IMAGE_GUI_API TDataWidget<ImageUC>;
+template class SOFA_IMAGE_GUI_API TDataWidget<ImageD>;
 #ifdef BUILD_ALL_IMAGE_TYPES
-template class SOFA_IMAGE_API TDataWidget<ImageC>;
-template class SOFA_IMAGE_API TDataWidget<ImageI>;
-template class SOFA_IMAGE_API TDataWidget<ImageUI>;
-template class SOFA_IMAGE_API TDataWidget<ImageS>;
-template class SOFA_IMAGE_API TDataWidget<ImageUS>;
-template class SOFA_IMAGE_API TDataWidget<ImageL>;
-template class SOFA_IMAGE_API TDataWidget<ImageUL>;
-template class SOFA_IMAGE_API TDataWidget<ImageF>;
-template class SOFA_IMAGE_API TDataWidget<ImageB>;
+template class SOFA_IMAGE_GUI_API TDataWidget<ImageC>;
+template class SOFA_IMAGE_GUI_API TDataWidget<ImageI>;
+template class SOFA_IMAGE_GUI_API TDataWidget<ImageUI>;
+template class SOFA_IMAGE_GUI_API TDataWidget<ImageS>;
+template class SOFA_IMAGE_GUI_API TDataWidget<ImageUS>;
+template class SOFA_IMAGE_GUI_API TDataWidget<ImageL>;
+template class SOFA_IMAGE_GUI_API TDataWidget<ImageUL>;
+template class SOFA_IMAGE_GUI_API TDataWidget<ImageF>;
+template class SOFA_IMAGE_GUI_API TDataWidget<ImageB>;
 #endif
 
-template class SOFA_IMAGE_API TDataWidget<ImagePlane<unsigned char> >;
-template class SOFA_IMAGE_API TDataWidget<ImagePlane<double> >;
+template class SOFA_IMAGE_GUI_API TDataWidget<ImagePlane<unsigned char> >;
+template class SOFA_IMAGE_GUI_API TDataWidget<ImagePlane<double> >;
 #ifdef BUILD_ALL_IMAGE_TYPES
-template class SOFA_IMAGE_API TDataWidget<ImagePlane<char> >;
-template class SOFA_IMAGE_API TDataWidget<ImagePlane<int> >;
-template class SOFA_IMAGE_API TDataWidget<ImagePlane<unsigned int> >;
-template class SOFA_IMAGE_API TDataWidget<ImagePlane<short> >;
-template class SOFA_IMAGE_API TDataWidget<ImagePlane<unsigned short> >;
-template class SOFA_IMAGE_API TDataWidget<ImagePlane<long> >;
-template class SOFA_IMAGE_API TDataWidget<ImagePlane<unsigned long> >;
-template class SOFA_IMAGE_API TDataWidget<ImagePlane<float> >;
-template class SOFA_IMAGE_API TDataWidget<ImagePlane<bool> >;
+template class SOFA_IMAGE_GUI_API TDataWidget<ImagePlane<char> >;
+template class SOFA_IMAGE_GUI_API TDataWidget<ImagePlane<int> >;
+template class SOFA_IMAGE_GUI_API TDataWidget<ImagePlane<unsigned int> >;
+template class SOFA_IMAGE_GUI_API TDataWidget<ImagePlane<short> >;
+template class SOFA_IMAGE_GUI_API TDataWidget<ImagePlane<unsigned short> >;
+template class SOFA_IMAGE_GUI_API TDataWidget<ImagePlane<long> >;
+template class SOFA_IMAGE_GUI_API TDataWidget<ImagePlane<unsigned long> >;
+template class SOFA_IMAGE_GUI_API TDataWidget<ImagePlane<float> >;
+template class SOFA_IMAGE_GUI_API TDataWidget<ImagePlane<bool> >;
 #endif
 
 helper::Creator<DataWidgetFactory, ImagePlaneDataWidget< ImagePlane<unsigned char> > >	DWClass_imagepUC("imageplane",true);

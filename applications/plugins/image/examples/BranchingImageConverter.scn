@@ -6,7 +6,7 @@
   
   <MeshObjLoader name="mesh" filename="mesh/Armadillo_simplified.obj" triangulate="1"/>
   <OglModel name="meshvisu"  src="@mesh" color="0.5 0.5 1 .1"/> 
-  <MeshToImageEngine template="ImageUC"  name="rasterizer" position="@mesh.position" triangles="@mesh.triangles" value="1" voxelSize=".1" padSize="0" rotateImage="false" printLog="true"/>
+  <MeshToImageEngine template="ImageUC"  name="rasterizer" position="@mesh.position" triangles="@mesh.triangles" value="1" nbVoxels="300 300 300" padSize="0" rotateImage="false" printLog="true"/>
  
   <ImageContainer template="ImageUC" name="image" src="@rasterizer" drawBB="false"/>
 <!--   <ImageViewer template="ImageUC" name="viewer" src="@image" plane="10 10 10"/> -->
