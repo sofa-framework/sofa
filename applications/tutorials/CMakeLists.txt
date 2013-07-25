@@ -1,6 +1,3 @@
-set(SOLUTION_NAME "Tutorials")
-project(${SOLUTION_NAME})
-
 include(${SOFA_CMAKE_DIR}/preSolution.cmake)
 
 RegisterDependencies("ObjectCreator" PATH "${CMAKE_CURRENT_SOURCE_DIR}/objectCreator")

@@ -6,25 +6,6 @@ include(CMakeDependentOption)
 	
 set(compilerDefines)
 
-# plugins (auto-search)
-set(SOFA_PROJECT_FOLDER "SofaPlugin")
-RetrieveDependencies("${SOFA_APPLICATIONS_PLUGINS_DIR}" "SOFA-PLUGIN_" "Enable plugin" "SOFA_HAVE_PLUGIN_")
-
-# dev-plugins (auto-search)
-set(SOFA_PROJECT_FOLDER "SofaDevPlugin")
-RetrieveDependencies("${SOFA_APPLICATIONS_DEV_PLUGINS_DIR}" "SOFA-DEVPLUGIN_" "Enable dev plugin" "SOFA_HAVE_DEVPLUGIN_")
-
-# projects (auto-search)
-#set(SOFA_PROJECT_FOLDER "SofaApplication")
-#RetrieveDependencies("${SOFA_APPLICATIONS_PROJECTS_DIR}" "SOFA-APPLICATION_" "Enable application" "SOFA_HAVE_APPLICATION_")
-
-# dev-projects (auto-search)
-set(SOFA_PROJECT_FOLDER "SofaDevApplication")
-RetrieveDependencies("${SOFA_APPLICATIONS_DEV_PROJECTS_DIR}" "SOFA-DEVAPPLICATION_" "Enable dev application" "SOFA_HAVE_DEVAPPLICATION_")
-
-set(SOFA_PROJECT_FOLDER "")
-# configurable paths to use pre-compiled dependencies outside of the Sofa directory
-
 set (SOFA-EXTERNAL_INCLUDE_DIR ${SOFA-EXTERNAL_INCLUDE_DIR} CACHE PATH "Include path for pre-compiled dependencies outside of the Sofa directory")
 set (SOFA-EXTERNAL_LIBRARY_DIR ${SOFA-EXTERNAL_LIBRARY_DIR} CACHE PATH "Library path for pre-compiled dependencies outside of the Sofa directory")
 
@@ -111,17 +92,17 @@ else()
 endif()
 
 ## application
-option(SOFA-APPLICATION_GENERATE_DOC "Build GenerateCoc application " OFF)
-option(SOFA-APPLICATION_GENERATE_RIGID "Build GenerateRigid application " OFF)
-option(SOFA-APPLICATION_GENERATE_TYPEDEFS "Build GenerateTypedefs application " OFF)
-option(SOFA-APPLICATION_MESH_CONV "Build MeshConv application " OFF)
+option(SOFA-APPLICATION_GENERATEDOC "Build GenerateCoc application " OFF)
+option(SOFA-APPLICATION_GENERATERIGID "Build GenerateRigid application " OFF)
+option(SOFA-APPLICATION_GENERATETYPEDEFS "Build GenerateTypedefs application " OFF)
+option(SOFA-APPLICATION_MESHCONV "Build MeshConv application " OFF)
 if(PS3)
-option(SOFA-APPLICATION_RUN_SOFA "Build RunSofa application " OFF)
-option(SOFA-APPLICATION_SOFA_BATCH "Build SofaBatch application " OFF)
+option(SOFA-APPLICATION_RUNSOFA "Build RunSofa application " OFF)
+option(SOFA-APPLICATION_SOFABATCH "Build SofaBatch application " OFF)
 option(SOFA-APPLICATION_MODELER "Build Modeler application " OFF)
 else()
-option(SOFA-APPLICATION_RUN_SOFA "Build RunSofa application " ON)
-option(SOFA-APPLICATION_SOFA_BATCH "Build SofaBatch application " ON)
+option(SOFA-APPLICATION_RUNSOFA "Build RunSofa application " ON)
+option(SOFA-APPLICATION_SOFABATCH "Build SofaBatch application " ON)
 option(SOFA-APPLICATION_MODELER "Build Modeler application " ON)
 endif()
 
@@ -338,5 +319,24 @@ if(XBOX)
 		list(APPEND compilerDefines EIGEN_NO_CPUID)
 	endif()
 endif()
+
+# plugins (auto-search)
+set(SOFA_PROJECT_FOLDER "SofaPlugin")
+RetrieveDependencies("${SOFA_APPLICATIONS_PLUGINS_DIR}" "SOFA-PLUGIN_" "Enable plugin" "SOFA_HAVE_PLUGIN_" RECURSIVE)
+
+# dev-plugins (auto-search)
+set(SOFA_PROJECT_FOLDER "SofaDevPlugin")
+RetrieveDependencies("${SOFA_APPLICATIONS_DEV_PLUGINS_DIR}" "SOFA-DEVPLUGIN_" "Enable dev plugin" "SOFA_HAVE_DEVPLUGIN_" RECURSIVE)
+
+# projects (auto-search)
+set(SOFA_PROJECT_FOLDER "SofaApplication")
+RetrieveDependencies("${SOFA_APPLICATIONS_PROJECTS_DIR}" "SOFA-APPLICATION_" "Enable application" "SOFA_HAVE_APPLICATION_")
+
+# dev-projects (auto-search)
+set(SOFA_PROJECT_FOLDER "SofaDevApplication")
+RetrieveDependencies("${SOFA_APPLICATIONS_DEV_PROJECTS_DIR}" "SOFA-DEVAPPLICATION_" "Enable dev application" "SOFA_HAVE_DEVAPPLICATION_")
+
+set(SOFA_PROJECT_FOLDER "")
+# configurable paths to use pre-compiled dependencies outside of the Sofa directory
 
 set(GLOBAL_COMPILER_DEFINES ${GLOBAL_COMPILER_DEFINES} ${compilerDefines} CACHE INTERNAL "Global Compiler Defines" FORCE)
