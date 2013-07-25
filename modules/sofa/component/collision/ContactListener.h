@@ -51,7 +51,7 @@ namespace sofa
 			
 
 
-			class SOFA_CORE_API ContactListener : public virtual core::objectmodel::BaseObject
+			class ContactListener : public virtual core::objectmodel::BaseObject
 			{
 			public:
 

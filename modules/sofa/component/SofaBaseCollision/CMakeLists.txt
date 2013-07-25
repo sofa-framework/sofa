@@ -34,7 +34,7 @@ set(HEADER_FILES
     ../collision/IntrSphereOBB.inl 
     ../collision/Intersector.h
     ../collision/BaseIntTool.h
-    
+    ../collision/ContactListener.h
     )
     
 set(SOURCE_FILES
@@ -59,6 +59,7 @@ set(SOURCE_FILES
     ../collision/IntrCapsuleOBB.cpp 
     ../collision/IntrSphereOBB.cpp
     ../collision/BaseIntTool.cpp
+    ../collision/ContactListener.cpp
 
     )
 
