@@ -38,7 +38,7 @@
 <!--   <ImageViewer template="ImageUI" name="viewer2" image="@imageConverter.image" transform="@branchingImage.transform"/> -->
 
 	    <Node 	name="behavior"   >
-		<ImageGaussPointSampler name="sampler" template="BranchingImageD" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" targetNumber="1" />
+		<ImageGaussPointSampler name="sampler" template="BranchingImageD,BranchingImageUC" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" targetNumber="1" />
 		<MechanicalObject template="F332" />
 	    	<LinearMapping template="Mapping&lt;Affine,F332&gt;" />
 

@@ -67,7 +67,6 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
 {
     typedef unsigned int IndT;
     typedef defaulttype::Image<IndT> IndTypes;
-    typedef defaulttype::Image<bool> MaskTypes;
 
     template<class ImageGaussPointSampler>
     static void init(ImageGaussPointSampler* This)
@@ -239,6 +238,17 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
         }
     }
 
+    /// returns true if (x,y,z) in the region of interest
+    template<class ImageGaussPointSampler>
+    static bool isInMask(ImageGaussPointSampler* This,unsigned x,unsigned y, unsigned z)
+    {
+        typename ImageGaussPointSampler::raMask rmask(This->f_mask);
+        if(rmask->isEmpty()) return true;
+        typename ImageGaussPointSampler::raMaskLabels labels(This->f_maskLabels);
+        typename ImageGaussPointSampler::MaskT val = rmask->getCImg()(x,y,z);
+        for(unsigned int i=0;i<labels.size();i++) if(labels[i]==val) return true;
+        return false;
+    }
 
     /// Identify regions sharing similar parents
     /// returns a list of region containing the parents, the number of voxels and center; and fill the voronoi image
@@ -249,8 +259,6 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
         typedef typename ImageGaussPointSampler::IndTypes IndTypes;
         typedef typename ImageGaussPointSampler::raInd raInd;
         typedef typename ImageGaussPointSampler::waInd waInd;
-        typedef typename ImageGaussPointSampler::MaskTypes MaskTypes;
-        typedef typename ImageGaussPointSampler::raMask raMask;
         typedef typename ImageGaussPointSampler::indList indList;
         typedef typename ImageGaussPointSampler::raTransform raTransform;
         typedef typename ImageGaussPointSampler::Coord Coord;
@@ -259,7 +267,6 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
 
         // retrieve data
         raInd rindices(This->f_index);          if(rindices->isEmpty())  { This->serr<<"Indices not found"<<This->sendl; return; }        const typename IndTypes::CImgT& indices = rindices->getCImg();
-        raMask rmask(This->f_mask);        const typename MaskTypes::CImgT* mask = rmask->isEmpty()?NULL:&rmask->getCImg();
         waInd wreg(This->f_region);        typename IndTypes::CImgT& regimg = wreg->getCImg();
         raTransform transform(This->f_transform);
 
@@ -286,7 +293,7 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
         // traverse index image to identify regions with unique indices
         cimg_forXYZ(indices,x,y,z)
                 if(indices(x,y,z))
-                if(!mask || (*mask)(x,y,z))
+                if(isInMask(This,x,y,z))
         {
             indList l;
             cimg_forC(indices,v) if(indices(x,y,z,v)) l.insert(indices(x,y,z,v)-1);
@@ -455,7 +462,6 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMA
 {
     typedef unsigned int IndT;
     typedef defaulttype::BranchingImage<IndT> IndTypes;
-    typedef defaulttype::BranchingImage<bool> MaskTypes;
 
     template<class ImageGaussPointSampler>
     static void init(ImageGaussPointSampler* This)
@@ -642,6 +648,17 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMA
         }
     }
 
+    /// returns true if (x,y,z) in the region of interest
+    template<class ImageGaussPointSampler>
+    static bool isInMask(ImageGaussPointSampler* This,unsigned off1D,unsigned v)
+    {
+        typename ImageGaussPointSampler::raMask rmask(This->f_mask);
+        if(rmask->isEmpty()) return true;
+        typename ImageGaussPointSampler::raMaskLabels labels(This->f_maskLabels);
+        typename ImageGaussPointSampler::MaskT val = rmask.ref()(off1D,v);
+        for(unsigned int i=0;i<labels.size();i++) if(labels[i]==val) return true;
+        return false;
+    }
 
 
     /// Identify regions sharing similar parents
@@ -653,8 +670,6 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMA
         typedef typename ImageGaussPointSampler::IndTypes IndTypes;
         typedef typename ImageGaussPointSampler::raInd raInd;
         typedef typename ImageGaussPointSampler::waInd waInd;
-        typedef typename ImageGaussPointSampler::MaskTypes MaskTypes;
-        typedef typename ImageGaussPointSampler::raMask raMask;
         typedef typename ImageGaussPointSampler::indList indList;
         typedef typename ImageGaussPointSampler::raTransform raTransform;
         typedef typename ImageGaussPointSampler::Coord Coord;
@@ -665,7 +680,6 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMA
 
         // retrieve data
         raInd rindices(This->f_index);     if(rindices->isEmpty())  { This->serr<<"Indices not found"<<This->sendl; return; }        const IndTypes& indices = rindices.ref();
-        raMask rmask(This->f_mask);        const MaskTypes* mask = rmask->isEmpty()?NULL:&rmask.ref();
         waInd wreg(This->f_region);        IndTypes& regimg = wreg.wref();
         raTransform transform(This->f_transform);
 
@@ -693,7 +707,7 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMA
         // traverse index image to identify regions with unique indices
         bimg_forVoffT(indices,v,off1D,t)
                 if(indices(off1D,v))
-                if(!mask || (*mask)(off1D,v) )
+                if(isInMask(This,off1D,v))
         {
             indList l;
             bimg_forC(indices,c) if(indices(off1D,v,c)) l.insert(indices(off1D,v,c)-1);
@@ -866,7 +880,7 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMA
 
 
 
-template <class ImageTypes_>
+template <class ImageTypes_, class MaskTypes_>
 class ImageGaussPointSampler : public BaseGaussPointSampler
 {
     friend struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>;
@@ -875,7 +889,7 @@ class ImageGaussPointSampler : public BaseGaussPointSampler
 
 public:
     typedef BaseGaussPointSampler Inherit;
-    SOFA_CLASS(SOFA_TEMPLATE(ImageGaussPointSampler,ImageTypes_),Inherit);
+    SOFA_CLASS(SOFA_TEMPLATE2(ImageGaussPointSampler,ImageTypes_, MaskTypes_),Inherit);
 
     /** @name  GaussPointSampler types */
     //@{
@@ -901,9 +915,13 @@ public:
     typedef helper::WriteAccessor<Data< DistTypes > > waDist;
     Data< DistTypes > f_w;
 
-    typedef typename ImageGaussPointSamplerSpec::MaskTypes MaskTypes;
+    typedef MaskTypes_ MaskTypes;
+    typedef typename MaskTypes::T  MaskT;
     typedef helper::ReadAccessor<Data< MaskTypes > > raMask;
     Data< MaskTypes > f_mask;
+    typedef vector<MaskT> MaskLabelsType;
+    typedef helper::ReadAccessor<Data< MaskLabelsType > > raMaskLabels;
+    Data< MaskLabelsType > f_maskLabels;
 
     typedef defaulttype::ImageLPTransform<Real> TransformType;
     typedef helper::ReadAccessor<Data< TransformType > > raTransform;
@@ -925,7 +943,7 @@ public:
     //@}
 
     virtual std::string getTemplateName() const    { return templateName(this); }
-    static std::string templateName(const ImageGaussPointSampler<ImageTypes_>* = NULL) { return ImageTypes_::Name(); }
+    static std::string templateName(const ImageGaussPointSampler<ImageTypes_, MaskTypes_>* = NULL) { return ImageTypes_::Name()+std::string(",")+MaskTypes_::Name(); }
 
     virtual void init()
     {
@@ -935,6 +953,7 @@ public:
         addInput(&f_w);
         addInput(&f_transform);
         addInput(&f_mask);
+        addInput(&f_maskLabels);
         addOutput(&f_region);
         addOutput(&f_error);
         setDirtyValue();
@@ -952,6 +971,7 @@ protected:
       , f_index(initData(&f_index,IndTypes(),"indices","image of dof indices"))
       , f_w(initData(&f_w,DistTypes(),"weights","weight image"))
       , f_mask(initData(&f_mask,MaskTypes(),"mask","optional mask to restrict the sampling region"))
+      , f_maskLabels(initData(&f_maskLabels,"maskLabels","Mask labels where sampling is restricted"))
       , f_transform(initData(&f_transform,TransformType(),"transform",""))
       , f_region(initData(&f_region,IndTypes(),"region","sample region : labeled image with sample indices"))
       , f_error(initData(&f_error,DistTypes(),"error","weigth fitting error"))
@@ -1052,8 +1072,8 @@ protected:
             err+=this->Reg[i].getError();
             //if(this->f_printLog.getValue()) std::cout<<this->getName()<<"GaussPointSampler: weight fitting error on sample "<<i<<" = "<<this->Reg[i].getError()<< std::endl;
         }
-//        waDist werr(this->f_error);        typename DistTypes& errimg = werr.wref();
-//        cimg_forXYZ(errimg,x,y,z) if(errimg(x,y,z)==-1) errimg(x,y,z)=0; // clean error output image (used as a container for distances)
+        //        waDist werr(this->f_error);        typename DistTypes& errimg = werr.wref();
+        //        cimg_forXYZ(errimg,x,y,z) if(errimg(x,y,z)==-1) errimg(x,y,z)=0; // clean error output image (used as a container for distances)
         if(this->f_printLog.getValue()) std::cout<<this->getName()<<": total error = "<<err<<std::endl;
     }
 
