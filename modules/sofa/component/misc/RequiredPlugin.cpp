@@ -64,6 +64,14 @@ void RequiredPlugin::loadPlugin()
         sout << "Loaded " << pluginPath << sendl;
         sofa::helper::system::PluginManager::getInstance().init();
     }
+
+    // try to load the eventual plugin gui
+    pluginPath = pluginName.getValue() + "_gui";
+    if (sofa::helper::system::PluginManager::getInstance().loadPlugin(pluginPath))
+    {
+        sout << "Loaded " << pluginPath << sendl;
+        sofa::helper::system::PluginManager::getInstance().init();
+    }
 }
 
 }
