@@ -520,7 +520,7 @@ const sofa::defaulttype::BaseMatrix* FastTriangularBendingSprings<DataTypes>::ge
     for(unsigned i=0; i< springs.size() ; i++)
     {
         springs[i].getStiffness( K );
-        addToTriplets( tripletList, springs[i].vid, K );
+        this->addToTriplets( tripletList, springs[i].vid, K );
     }
 
     matS.compressedMatrix.setFromTriplets(tripletList.begin(), tripletList.end());
