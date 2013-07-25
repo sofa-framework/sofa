@@ -119,7 +119,8 @@ core::MechanicalParams AssembledSolver::mparams(const core::ExecParams& params,
 	core::MechanicalParams res( params );
 				
 	res.setMFactor( 1.0 );
-    res.setKFactor( 1.0 ); // not necessary but just in case it is used somewhere
+	res.setKFactor( 1.0 ); // not necessary but just in case it is used somewhere
+
 	res.setDt( dt );
 				
 	res.setImplicitVelocity( 1 );
@@ -133,14 +134,14 @@ linearsolver::KKTSolver::vec AssembledSolver::rhs(const system_type& sys, bool c
 
 	kkt_type::vec res = kkt_type::vec::Zero( sys.size() );
 
-    if( !computeForce ){
-        res.head(sys.m).setZero();
-    }
-    else if( use_velocity.getValue() ) {
+	if( !computeForce ){
+		res.head(sys.m).setZero();
+	}
+	else if( use_velocity.getValue() ) {
 		res.head( sys.m ) = sys.P * (sys.p  +  sys.dt * sys.f);
 	} else {
 		
-    // H = M - h^2 K
+		// H = M - h^2 K
 		// p = M v
 		// hence hKv = 1/h ( p - H v )
 		
@@ -167,14 +168,21 @@ linearsolver::KKTSolver::vec AssembledSolver::warm(const system_type& sys) const
 	
 	kkt_type::vec res = kkt_type::vec::Zero( sys.size() );
 
-	// warm starting is a bad idea anyways
 	if( warm_start.getValue() ) {
+		// note: warm starting velocities is somehow equivalent to zero
+		// acceleration start.
+
 		if( use_velocity.getValue() ) {
-			
+
+			// velocity
 			res.head( sys.m ) = sys.P * sys.v;
+
+			// lambdas
 			if( sys.n ) res.tail( sys.n ) = sys.dt * sys.lambda;
 			
 		} else {
+			// don't warm start acceleration, as it might/will result in
+			// unstable behavior
 			if( sys.n ) res.tail( sys.n ) = sys.lambda;
 		}
 	}
@@ -183,26 +191,6 @@ linearsolver::KKTSolver::vec AssembledSolver::warm(const system_type& sys) const
 }
 
 
-// AssembledSolver::system_type AssembledSolver::assemble(const simulation::AssemblyVisitor& vis) const {
-// 	system_type sys = vis.assemble();
-	
-// 	// TODO this should be done during system assembly
-
-// 	// fix compliance 
-// 	if( sys.n ) {
-// 		// std::cerr << "compliance" << std::endl;
-		
-// 		system_type::vec h = system_type::vec::Constant(sys.n, sys.dt);
-// 		system_type::vec fix; fix.resize(sys.n);
-
-// 		fix.array() = 1 / ( h.array() * (h.array() + sys.damping.array()) );
-		
-// 		sys.C = sys.C * fix.asDiagonal();
-// 	}
-
-// 	return sys;
-// }
-	
 AssembledSolver::kkt_type::vec AssembledSolver::velocity(const system_type& sys,
                                                          const kkt_type::vec& x) const {
 	if( use_velocity.getValue() ) return sys.P * x.head( sys.m );

@@ -792,8 +792,8 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const{
 						assert( c->M.cols() == int(c->size) ); 
 						assert( c->M.rows() == int(c->size) );
 
-						// momentum
-						res.p.noalias() += Jc.transpose() * (c->M * c->v);
+						// momentum TODO avoid alloc
+						res.p.noalias() = res.p + Jc.transpose() * (c->M * c->v);
 
 						H += c->M;
 					}
