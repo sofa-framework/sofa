@@ -86,6 +86,7 @@ public:
     Data<TransformType> transform;
 
     Data<vector<T> > connectLabels;
+    Data<unsigned> connectivity;
 
     virtual std::string getTemplateName() const    { return templateName(this);    }
     static std::string templateName(const MergeBranchingImages<ImageTypes>* = NULL) { return ImageTypes::Name(); }
@@ -95,6 +96,7 @@ public:
       , image(initData(&image,ImageTypes(),"image","Image"))
       , transform(initData(&transform,TransformType(),"transform","Transform"))
       , connectLabels(initData(&connectLabels,"connectLabels","Pairs of label to be connected accross different input images"))
+      , connectivity(initData(&connectivity,(unsigned)27,"connectivity","must be 1, 7 or 27 (27 by default or any incorrect value)"))
     {
         createInputImagesData();
         image.setReadOnly(true);
@@ -306,21 +308,94 @@ protected:
         {
             const T a=connectL[2*i], b=connectL[2*i+1];
 
-            bimg_forT(img,t)
+            if(connectivity.getValue()==1)
             {
+                bimg_forT(img,t)
+                {
 #ifdef USING_OMP_PRAGMAS
 #pragma omp parallel for
 #endif
-                bimg_foroff1D(img,off1D)
-                        for( unsigned va=0 ; va<img.imgList[t][off1D].size() ; ++va )
-                        if(img(off1D,va,0,t)==a)
-                        for( unsigned vb=0 ; vb<img.imgList[t][off1D].size() ; ++vb )
-                        if(img(off1D,vb,0,t)==b)
-                {
-                    img.imgList[t][off1D][va].addNeighbour(VoxelIndex(off1D,vb));
-                    img.imgList[t][off1D][vb].addNeighbour(VoxelIndex(off1D,va));
+                    bimg_foroff1D(img,off1D)
+                            for( unsigned va=0 ; va<img.imgList[t][off1D].size() ; ++va )
+                            if(img(off1D,va,0,t)==a)
+                            for( unsigned vb=0 ; vb<img.imgList[t][off1D].size() ; ++vb )
+                            if(img(off1D,vb,0,t)==b)
+                    {
+                        img.imgList[t][off1D][va].addNeighbour(VoxelIndex(off1D,vb));
+                        img.imgList[t][off1D][vb].addNeighbour(VoxelIndex(off1D,va));
+                    }
+
                 }
             }
+            else if(connectivity.getValue()==7)
+            {
+                bimg_forT(img,t)
+                {
+//#ifdef USING_OMP_PRAGMAS
+//#pragma omp parallel for
+//#endif
+                    bimg_foroff1D(img,off1D)
+                            for( unsigned va=0 ; va<img.imgList[t][off1D].size() ; ++va )
+                            if(img(off1D,va,0,t)==a)
+                    {
+                        // central voxel
+                        for( unsigned vb=0 ; vb<img.imgList[t][off1D].size() ; ++vb )
+                            if(img(off1D,vb,0,t)==b)
+                            {
+                                img.imgList[t][off1D][va].addNeighbour(VoxelIndex(off1D,vb));
+                                img.imgList[t][off1D][vb].addNeighbour(VoxelIndex(off1D,va));
+                            }
+                        // 6 neighbors
+                        unsigned x,y,z; img.index1Dto3D(off1D,x,y,z);
+                        for( int delta = -1 ; delta <= 1 ; delta+=2 )
+                            for( unsigned d = 0 ; d < 3 ; ++d )
+                            {
+                                int g[3]={0,0,0}; g[d]=delta;
+                                if(img.isInside((int)x+g[0],(int)y+g[1],(int)z+g[2]))
+                                {
+                                    unsigned n = img.index3Dto1D((int)x+g[0],(int)y+g[1],(int)z+g[2]);
+                                    for( unsigned vb=0 ; vb<img.imgList[t][n].size() ; ++vb )
+                                        if(img(n,vb,0,t)==b)
+                                        {
+                                            img.imgList[t][off1D][va].addNeighbour(VoxelIndex(n,vb));
+                                            img.imgList[t][n][vb].addNeighbour(VoxelIndex(off1D,va));
+                                        }
+                                }
+                            }
+                    }
+                }
+            }
+            else
+            {
+                bimg_forT(img,t)
+                {
+//#ifdef USING_OMP_PRAGMAS
+//#pragma omp parallel for
+//#endif
+                    bimg_foroff1D(img,off1D)
+                            for( unsigned va=0 ; va<img.imgList[t][off1D].size() ; ++va )
+                            if(img(off1D,va,0,t)==a)
+                    {
+                        unsigned x,y,z; img.index1Dto3D(off1D,x,y,z);
+                        for( int gx = -1 ; gx <= 1 ; ++gx )
+                            for( int gy = -1 ; gy <= 1 ; ++gy )
+                                for( int gz = -1 ; gz <= 1 ; ++gz )
+                                    if(img.isInside((int)x+gx,(int)y+gy,(int)z+gz))
+                                    {
+                                        unsigned n = img.index3Dto1D((int)x+gx,(int)y+gy,(int)z+gz);
+                                        for( unsigned vb=0 ; vb<img.imgList[t][n].size() ; ++vb )
+                                            if(img(n,vb,0,t)==b)
+                                            {
+                                                img.imgList[t][off1D][va].addNeighbour(VoxelIndex(n,vb));
+                                                img.imgList[t][n][vb].addNeighbour(VoxelIndex(off1D,va));
+                                            }
+                                    }
+                    }
+                }
+            }
+
+
+
         }
 
         sout << "Created merged image from " << nb << " input images." << sendl;
