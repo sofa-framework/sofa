@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
-<Node 	 name="Root"  printLog="1"  dt="0.04"  >
+<Node 	 name="Root"  printLog="1"  dt="0.01"  >
 	<VisualStyle name="visualStyle0"  displayFlags="showVisual showBehaviorModels hideForceFields hideInteractionForceFields showCollision hideMapping hideOptions" />
 	
 	<Node 	 name="scene"  printLog="1"  >
 		
-		<!-- euler implicit -->
-		<AssembledSolver />
+		<!-- euler implicit solver -->
+		<AssembledSolver stabilization="false" />
 		
 		<!-- numerical solver -->
 		<MinresSolver precision="0" relative="false" iterations="100" />
@@ -15,7 +15,7 @@
 		<!-- second is fixed -->
 		<FixedConstraint indices="1" />
 		
-		<!-- mass properties -->
+		<!-- mass properties (same for all the dofs as we don't care about the second one)-->
 		<RigidMass template="Rigid" 
 							 mass = "15.118914645401" 
 							 inertia = "0.0047246608266878 1.2622718841968 1.2622718841968" />
@@ -26,8 +26,6 @@
       <MeshTopology tetrahedra="@loader.tetras" name="topology" position="@loader.position" hexahedra="@loader.hexas" edges="@loader.edges" quads="@loader.quads" triangles="@loader.triangles" />
       <MechanicalObject template="Vec3d" position="@loader.position" />
       <TTriangleModel template="Vec3d" contactStiffness="10000" />
-      <TLineModel contactStiffness="10000" />
-      <TPointModel contactStiffness="10000" />
       <RigidMapping input="@../" template="Rigid,Vec3d" output="@./" />
     </Node>
 		
@@ -42,39 +40,38 @@
 																	source="0 0.5 0 0 0 0 0 1 
 																					1 0 0 0 0 0 0 1" 
 																	input="@../"  output="@./" />
-			
-			<Node name="joint_space" >
+
+			<!-- maps to the joint space. joints are defined by pairs of
+				   parent dofs. more precisely, this maps
+				   (relative_translation, log(relative_orientation) ) for
+				   each pair of indices -->
+
+			<Node name="joint_translation" >
 				<MechanicalObject template="Vec6d" name="log_relative1"  position="0 0 0 0 0 0"  />
-				
-				<!-- maps to the joint space. joints are defined by pairs of
-				     parent dofs. more precisely, this maps
-				     (relative_translation, log(relative_orientation) ) for
-				     each pair of indices -->
 				<RigidJointMapping template="Rigid,Vec6d" name="rigid_joint_map1"  
 													 pairs="0 1" 
+													 rotation="false"
 													 input="@../"  
 													 output="@./" 
-													 out_joint_angle="true"
 													 />
-
-				<!-- zero translational compliance, very large rotational
-				     compliance (1e-10 stiffness) -->
-				<DiagonalCompliance template="Vec6d" name="diagonalCompliance0"  
-														compliance="0 0 0 
-																				1e10 1e10 1e10" dampingRatio="0"/>
-
-				<!-- there is no easy way to place multiple compliances under
-				     a same node as of yet, so we add an extra mapping -->
-				<Node name="duplicate" >
-					<MechanicalObject template="Vec6d" name="log_relative2"  position="0 0 0 0 0 0"  />
-					<IdentityMapping template="Vec6d, Vec6d"/>
-
-					<!-- adds a force in: f = -\alpha v -->
-					<DampingCompliance template="Vec6d" damping="5" />
-				</Node>
-
+				<UniformCompliance template="Vec6d" compliance="0"  dampingRatio="0" />
+				<Stabilization />
 			</Node>
-	
+
+			<Node name="joint_rotation" >
+				<MechanicalObject template="Vec6d" name="log_relative1"  position="0 0 0 0 0 0"  />
+				
+				<RigidJointMapping template="Rigid,Vec6d" name="rigid_joint_map1"  
+													 pairs="0 1" 
+													 translation="false"
+													 input="@../"  
+													 output="@./" 
+													 />
+				
+				<!-- adds a force in: f = -\alpha v -->
+				<DampingCompliance template="Vec6d" damping="5" />
+				
+			</Node>
 		</Node>
 	</Node>
 </Node>
