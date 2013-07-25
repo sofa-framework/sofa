@@ -57,6 +57,20 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 using namespace helper;
 
+#ifndef SOFA_FLOAT
+template <>
+Vector3 TSphere<defaulttype::Vec3dTypes >::getContactPoint( const Vector3& /*contactNormal*/ )
+{
+    return center();
+}
+#endif
+#ifndef SOFA_DOUBLE
+template <>
+Vector3 TSphere<defaulttype::Vec3fTypes >::getContactPoint( const Vector3& /*contactNormal*/ )
+{
+    return center();
+}
+#endif
 
 template<class DataTypes>
 TSphereModel<DataTypes>::TSphereModel()
