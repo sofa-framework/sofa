@@ -40,8 +40,8 @@ namespace qt
 
 using namespace defaulttype;
 
-template class SOFA_IMAGE_API TDataWidget<ImageLPTransform<double> >;
-template class SOFA_IMAGE_API TDataWidget<ImageLPTransform<float> >;
+template class SOFA_IMAGE_GUI_API TDataWidget<ImageLPTransform<double> >;
+template class SOFA_IMAGE_GUI_API TDataWidget<ImageLPTransform<float> >;
 
 helper::Creator<DataWidgetFactory, ImageLPTransformWidget< ImageLPTransform<double> > > DWClass_imageTd("default",true);
 helper::Creator<DataWidgetFactory, ImageLPTransformWidget< ImageLPTransform<float> > > DWClass_imageTf("default",true);

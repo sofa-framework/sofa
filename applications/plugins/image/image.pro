@@ -4,7 +4,7 @@ defineAsPlugin(image)
 TEMPLATE = lib
 TARGET = sofaimage
 
-DEFINES += SOFA_BUILD_IMAGE
+DEFINES += SOFA_BUILD_IMAGE SOFA_BUILD_IMAGE_GUI
 
 # Make sure there are no cross-dependencies
 INCLUDEPATH -= $$SOFA_INSTALL_INC_DIR/applications
@@ -41,10 +41,9 @@ HEADERS += \
         ImageSampler.h \
         ImageExporter.h \
 	ImagePlaneWidget.h \
-	ImageTransformWidget.h \
-	HistogramWidget.h \
-#	QImageMouseButtonsWidget.h \
-	VectorVisualizationWidget.h \
+	image_gui/ImageTransformWidget.h \
+	image_gui/HistogramWidget.h \
+	image_gui/VectorVisualizationWidget.h \
         VectorVis.h \
         ImageAlgorithms.h \
         Containers.h \
@@ -71,10 +70,9 @@ SOURCES += \
         MarchingCubesEngine.cpp \
         ImageSampler.cpp \
         ImageExporter.cpp \
-	ImagePlaneWidget.cpp \
-    ImageTransformWidget.cpp \
-	HistogramWidget.cpp \
-#	QImageMouseButtonsWidget.cpp \
+	image_gui/ImagePlaneWidget.cpp \
+	image_gui/ImageTransformWidget.cpp \
+	image_gui/HistogramWidget.cpp \
     VectorVisualizationWidget.cpp \
     BranchingImageConverter.cpp \
     BranchingCellIndicesFromPositions.cpp \

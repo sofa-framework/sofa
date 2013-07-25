@@ -25,7 +25,7 @@
 #ifndef SOFA_IMAGE_IMAGETRANSFORMWIDGET_H
 #define SOFA_IMAGE_IMAGETRANSFORMWIDGET_H
 
-#include "initImage.h"
+#include "initImage_gui.h"
 #include <sofa/gui/qt/DataWidget.h>
 #include <sofa/gui/qt/SimpleDataWidget.h>
 #include <sofa/gui/qt/WDoubleLineEdit.h>
@@ -51,7 +51,7 @@ typedef QGroupBox Q3GroupBox;
 typedef QTextEdit   Q3TextEdit;
 #endif
 
-#include "ImageTypes.h"
+#include "../ImageTypes.h"
 #include <sofa/helper/vector.h>
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/core/objectmodel/Data.h>
@@ -69,7 +69,7 @@ namespace qt
 {
 
 template<class _TransformType>
-class SOFA_IMAGE_API ImageLPTransformWidget : public TDataWidget<_TransformType>
+class SOFA_IMAGE_GUI_API ImageLPTransformWidget : public TDataWidget<_TransformType>
 {
 
 public :

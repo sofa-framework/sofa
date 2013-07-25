@@ -25,7 +25,7 @@
 #ifndef SOFA_IMAGE_IMAGEPLANEWIDGET_H
 #define SOFA_IMAGE_IMAGEPLANEWIDGET_H
 
-#include "initImage.h"
+#include "initImage_gui.h"
 #include <sofa/gui/qt/DataWidget.h>
 #include <sofa/gui/qt/SimpleDataWidget.h>
 
@@ -54,8 +54,8 @@
 #include <qtgui.h>
 #endif
 
-#include "ImageTypes.h"
-#include "ImageViewer.h"
+#include "../ImageTypes.h"
+#include "../ImageViewer.h"
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/helper/rmath.h>
@@ -682,7 +682,7 @@ public:
 
 
 template<class T>
-class SOFA_IMAGE_API ImagePlaneDataWidget : public SimpleDataWidget<T, Timageplane_data_widget_container< T > >
+class SOFA_IMAGE_GUI_API ImagePlaneDataWidget : public SimpleDataWidget<T, Timageplane_data_widget_container< T > >
 {
     typedef SimpleDataWidget<T, Timageplane_data_widget_container< T > > Inherit;
     typedef sofa::core::objectmodel::Data<T> MyData;
