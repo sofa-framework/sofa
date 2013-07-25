@@ -84,19 +84,14 @@ public:
 };
 
 // Specializations
+// Specializations
 #ifndef SOFA_FLOAT
 template <>
-Vector3 TSphere<defaulttype::Vec3dTypes >::getContactPoint( const Vector3& /*contactNormal*/ )
-{
-    return center();
-}
+Vector3 TSphere<defaulttype::Vec3dTypes >::getContactPoint( const Vector3& contactNormal );
 #endif
 #ifndef SOFA_DOUBLE
 template <>
-Vector3 TSphere<defaulttype::Vec3fTypes >::getContactPoint( const Vector3& /*contactNormal*/ )
-{
-    return center();
-}
+Vector3 TSphere<defaulttype::Vec3fTypes >::getContactPoint( const Vector3& contactNormal );
 #endif
 
 template< class TDataTypes>
