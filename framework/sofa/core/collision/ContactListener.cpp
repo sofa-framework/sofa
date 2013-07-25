@@ -5,7 +5,6 @@
 
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/CollisionBeginEvent.h>
 #include <sofa/simulation/common/CollisionEndEvent.h>
 
