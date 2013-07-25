@@ -40,7 +40,8 @@ HEADERS += initBaseCollision.h \
     collision/DirectSAP.inl \
     collision/EndPoint.h \
     collision/CollisionPM.h \
-    collision/BaseIntTool.h
+    collision/BaseIntTool.h \
+    collision/ContactListener.h \
 
 
 SOURCES += initBaseCollision.cpp \
@@ -63,7 +64,8 @@ SOURCES += initBaseCollision.cpp \
     collision/IntrCapsuleOBB.cpp \
     collision/IntrSphereOBB.cpp \
     collision/DirectSAP.cpp \
-    collision/BaseIntTool.cpp
+    collision/BaseIntTool.cpp \
+    collision/ContactListener.cpp \
 
 
 
