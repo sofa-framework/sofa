@@ -41,8 +41,8 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
 	                   double dt, 
                        core::MultiVecCoordId posId,
                        core::MultiVecDerivId velId,
-                       bool computeForce, // should the right part of the implicit system be computed?
-                       bool integratePosition  // should the position be updated?
+                       bool computeForce = true, // should the right part of the implicit system be computed?
+                       bool integratePosition = true // should the position be updated?
                        );
 
     // OdeSolver API
