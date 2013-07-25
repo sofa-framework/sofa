@@ -25,7 +25,9 @@ set(SOFA_MODULES_DIR "${SOFA_SRC_DIR}/modules" CACHE INTERNAL "Path to the Sofa 
 set(SOFA_APPLICATIONS_DIR "${SOFA_SRC_DIR}/applications" CACHE INTERNAL "Path to the Sofa applications directory")
 set(SOFA_APPLICATIONS_DEV_DIR "${SOFA_SRC_DIR}/applications-dev" CACHE INTERNAL "Path to the Sofa applications-dev directory")
 set(SOFA_APPLICATIONS_PLUGINS_DIR "${SOFA_APPLICATIONS_DIR}/plugins" CACHE INTERNAL "Path to the Sofa applications plugins directory")
-set(SOFA_APPLICATIONS_DEV_PLUGINS_DIR "${SOFA_APPLICATIONS_DEV_DIR}/plugins" CACHE INTERNAL "Path to the Sofa applications-dev plugin directory")
+set(SOFA_APPLICATIONS_DEV_PLUGINS_DIR "${SOFA_APPLICATIONS_DEV_DIR}/plugins" CACHE INTERNAL "Path to the Sofa applications-dev plugins directory")
+set(SOFA_APPLICATIONS_PROJECTS_DIR "${SOFA_APPLICATIONS_DIR}/projects" CACHE INTERNAL "Path to the Sofa applications projects directory")
+set(SOFA_APPLICATIONS_DEV_PROJECTS_DIR "${SOFA_APPLICATIONS_DEV_DIR}/projects" CACHE INTERNAL "Path to the Sofa applications-dev projects directory")
 set(SOFA_TOOLS_DIR "${SOFA_SRC_DIR}/tools" CACHE INTERNAL "Path to the Sofa tools directory")
 set(SOFA_CUDA_DIR "${SOFA_APPLICATIONS_DIR}/plugins/SofaCUDA" CACHE INTERNAL "Path to the SofaCuda directory")
 

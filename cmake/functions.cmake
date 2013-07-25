@@ -301,6 +301,27 @@ function(RegisterProjectDependencies projectName)
 	set(GLOBAL_PROJECT_ENABLED_${projectName} 1 CACHE INTERNAL "${projectName} Enabled Status" FORCE)
 endfunction()
 
+# RetrieveDependencies()
+function(RetrieveDependencies projectsPath optionPrefix optionDescription definitionPrefix)
+	file(GLOB dependencyDirs "${projectsPath}/*")
+	foreach(dependencyDir ${dependencyDirs})
+		if(IS_DIRECTORY ${dependencyDir})
+			get_filename_component(dependencyName ${dependencyDir} NAME)
+			string(TOUPPER ${dependencyName} dependencyToUpperName)
+			file(GLOB_RECURSE dependencyPathes "${dependencyDir}/*CMakeLists.txt") # WARNING: this wildcard expression can catch "example/badCMakeLists.txt"
+			if(NOT dependencyPathes STREQUAL "")
+				option("${optionPrefix}${dependencyToUpperName}" "${optionDescription} ${dependencyName}" OFF)
+				foreach(dependencyPath ${dependencyPathes})
+					get_filename_component(dependencyFilename ${dependencyPath} NAME)
+					string(REPLACE "/${dependencyFilename}" "" dependencyFolder ${dependencyPath})
+					get_filename_component(dependencyProjectName ${dependencyFolder} NAME)
+					RegisterDependencies(${dependencyProjectName} OPTION "${optionPrefix}${dependencyToUpperName}" COMPILE_DEFINITIONS "${definitionPrefix}${dependencyToUpperName}" PATH "${dependencyFolder}")
+				endforeach()
+			endif()
+		endif()
+	endforeach()
+endfunction()
+
 # ComputeDependencies(<projectName>)
 # compute project dependencies to enable needed plugins / dependencies and to add theirs include directories
 # <projectName> the project to compute
