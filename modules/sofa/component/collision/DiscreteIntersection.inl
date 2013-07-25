@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_COLLISION_DISCRETEINTERSECTION_INL
 #include <sofa/helper/system/config.h>
 #include <sofa/component/collision/DiscreteIntersection.h>
-#include <sofa/component/collision/SphereModel.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/collision/Intersection.inl>

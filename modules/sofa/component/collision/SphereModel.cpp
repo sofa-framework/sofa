@@ -46,6 +46,22 @@ using namespace helper;
 
 
 
+#ifndef SOFA_FLOAT
+template <> SOFA_BASE_COLLISION_API
+Vector3 TSphere<defaulttype::Vec3dTypes >::getContactPoint( const Vector3& /*contactNormal*/ )
+{
+    return center();
+}
+#endif
+#ifndef SOFA_DOUBLE
+template <> SOFA_BASE_COLLISION_API
+Vector3 TSphere<defaulttype::Vec3fTypes >::getContactPoint( const Vector3& /*contactNormal*/ )
+{
+    return center();
+}
+#endif
+
+
 
 SOFA_DECL_CLASS(Sphere)
 
