@@ -18,7 +18,7 @@ endif()
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${RC_FILES})
 
-AddLinkerDependencies(Compliant_lib SofaComponentMain SofaSimulationGraph gtest gtest_main)
+AddLinkerDependencies(Compliant SofaComponentMain SofaSimulationGraph gtest gtest_main)
 
 if(WIN32)
 	AddCompilerFlags("/MT")
