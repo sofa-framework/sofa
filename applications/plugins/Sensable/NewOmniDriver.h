@@ -58,6 +58,7 @@
 #include <sofa/component/visualmodel/OglModel.h>
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/component/topology/TopologyData.h>
+#include <sofa/component/visualmodel/InteractiveCamera.h>
 
 #include <math.h>
 
@@ -161,9 +162,11 @@ public:
     Data<bool> useScheduler;
     Data<bool> setRestShape;
     Data<bool> applyMappings;
+    Data<bool> alignOmniWithCamera;
 
 
     sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes> *DOFs;
+    sofa::component::visualmodel::BaseCamera::SPtr camera;
 
     bool initVisu;
 

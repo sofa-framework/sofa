@@ -96,6 +96,8 @@ int compteur_debug = 0;
 
 static sofa::helper::system::atomic<int> doUpdate;
 
+
+
 //retour en cas d'erreur
 //TODO: rajouter le numero de l'interface qui pose pb
 void printError(const HDErrorInfo *error, const char *message)
@@ -169,7 +171,7 @@ HDCallbackCode HDCALLBACK stateCallback(void * userData)
 
         rot.fromMatrix(mrot);
         rot.normalize();
-
+              
         double factor = 0.001;
         Vec3d pos(transform[12+0]*factor, transform[12+1]*factor, transform[12+2]*factor); // omni pos is in mm => sofa simulation are in meters by default
         autreOmniDriver[i]->data.servoDeviceData.pos=pos;
@@ -187,7 +189,6 @@ HDCallbackCode HDCALLBACK stateCallback(void * userData)
             autreOmniDriver[i]->data.servoDeviceData.quat[u] = rot[u];
 
         //std::cout << pos << "    " << rot << std::endl;
-
         SolidTypes<double>::Transform baseOmni_H_endOmni(pos* autreOmniDriver[i]->data.scale, rot);
         SolidTypes<double>::Transform world_H_virtualTool = autreOmniDriver[i]->data.world_H_baseOmni * baseOmni_H_endOmni * autreOmniDriver[i]->data.endOmni_H_virtualTool;
    
@@ -219,7 +220,6 @@ HDCallbackCode HDCALLBACK stateCallback(void * userData)
 
         /// COMPUTATION OF THE vituralTool 6D POSITION IN THE World COORDINATES
         SolidTypes<double>::Transform baseOmni_H_endOmni((autreOmniDriver[i]->data.servoDeviceData.pos)* autreOmniDriver[i]->data.scale, autreOmniDriver[i]->data.servoDeviceData.quat);
-
 
         Vec3d world_pos_tool = positionDevs[i].getCenter();
         Quat world_quat_tool = positionDevs[i].getOrientation();
@@ -431,6 +431,7 @@ NewOmniDriver::NewOmniDriver()
     , useScheduler(initData(&useScheduler,false,"useScheduler","Enable use of OpenHaptics Scheduler methods to synchronize haptics thread"))
     , setRestShape(initData(&setRestShape, false, "setRestShape", "True to control the rest position instead of the current position directly"))
     , applyMappings(initData(&applyMappings, true, "applyMappings", "True to enable applying the mappings after setting the position"))
+    , alignOmniWithCamera(initData(&alignOmniWithCamera, true, "alignOmniWithCamera", "True to keep the Omni's movements in the same reference frame as the camera"))
 {
     this->f_listening.setValue(true);
     data.forceFeedback = NULL;
@@ -490,6 +491,27 @@ void NewOmniDriver::init()
     }
 
     sout << deviceName.getValue()+" init" << sendl;
+
+    if(alignOmniWithCamera.getValue())
+    {
+        camera = this->getContext()->get<component::visualmodel::InteractiveCamera>(this->getTags(), sofa::core::objectmodel::BaseContext::SearchRoot);
+        if(!camera)
+        {
+            camera = this->getContext()->get<component::visualmodel::InteractiveCamera>();
+        }
+        if (!camera)
+        {
+            sofa::simulation::Node::SPtr groot = dynamic_cast<simulation::Node*>(this->getContext());
+            camera = sofa::core::objectmodel::New<component::visualmodel::InteractiveCamera>();
+            camera->setName(core::objectmodel::Base::shortName(camera.get()));
+            groot->addObject(camera);
+            camera->bwdInit();
+        }
+        if(!camera)
+        {
+            serr << "Cannot find or create Camera." << sendl;
+        }
+    }
 
 
     modX=false;
@@ -631,7 +653,7 @@ void NewOmniDriver::bwdInit()
         this->setForceFeedback(ff);
 	else
 	{
-		std::cout<< "Warning(NewOmniDriver): No ForceFeedback found." << std::endl;
+		serr<< "Warning(NewOmniDriver): No ForceFeedback found." << sendl;
 	}
 
     setDataValue();
@@ -659,6 +681,7 @@ void NewOmniDriver::bwdInit()
                 autreOmniDriver[i]->DOFs=DOFs;
         }
     }
+
 }
 
 //configure data
@@ -666,6 +689,7 @@ void NewOmniDriver::setDataValue()
 {
     data.scale = scale.getValue();
     data.forceScale = forceScale.getValue();
+
     Quat q = orientationBase.getValue();
     q.normalize();
     orientationBase.setValue(q);
@@ -912,8 +936,14 @@ void NewOmniDriver::onAnimateBeginEvent()
         // COMPUTATION OF THE vituralTool 6D POSITION IN THE World COORDINATES
         SolidTypes<double>::Transform baseOmni_H_endOmni(data.deviceData.pos*data.scale, data.deviceData.quat);
 
+    
         Quat& orientB =(*orientationBase.beginEdit());
         Vec3d& posB =(*positionBase.beginEdit());
+        if(alignOmniWithCamera.getValue())
+        {
+            Quat cameraRotation = camera->getOrientation();
+            orientB = cameraRotation;
+        }
         orientB.normalize();
         data.world_H_baseOmni.set(posB,orientB);
         orientationBase.endEdit();
