@@ -29,7 +29,6 @@
 #include <sofa/core/collision/IntersectorFactory.h>
 #include <sofa/helper/FnDispatcher.h>
 #include <sofa/component/collision/SphereModel.h>
-#include <sofa/component/collision/SphereModel.inl>
 #include <sofa/component/collision/CubeModel.h>
 #include <sofa/component/collision/CapsuleModel.h>
 #include <sofa/component/collision/CapsuleIntTool.h>
