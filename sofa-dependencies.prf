@@ -445,7 +445,7 @@ contains(DEFINES, SOFA_HAVE_PLUGIN_Flexible)            {
 							  }
 							}
 contains(DEFINES, SOFA_HAVE_PLUGIN_Compliant) 		{
-							    declare(Compliant, applications/plugins/Compliant/Compliant_lib, Flexible sofaguiqt sofa_eigen2_solver  sofagraph )
+							    declare(Compliant, applications/plugins/Compliant, Flexible sofaguiqt sofa_eigen2_solver  sofagraph )
 							    declare(Compliant_run, applications/plugins/Compliant/Compliant_run,  Compliant  sofa_component sofaguimain sofaguiqt )
 							    enable(Compliant)
 							    enable(Compliant_run)

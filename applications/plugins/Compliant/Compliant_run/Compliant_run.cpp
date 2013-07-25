@@ -58,9 +58,9 @@
 #include <sofa/component/typedef/Sofa_typedef.h>
 #include "../../../applications/tutorials/objectCreator/ObjectCreator.h"
 
-#include <plugins/Compliant/Compliant_lib/ComplianceSolver.h>
-#include <plugins/Compliant/Compliant_lib/UniformCompliance.h>
-#include <plugins/Compliant/Compliant_lib/CompliantAttachButtonSetting.h>
+#include <plugins/Compliant/ComplianceSolver.h>
+#include <plugins/Compliant/UniformCompliance.h>
+#include <plugins/Compliant/CompliantAttachButtonSetting.h>
 using sofa::component::configurationsetting::CompliantAttachButtonSetting;
 #include <plugins/Flexible/deformationMapping/ExtensionMapping.h>
 #include <plugins/Flexible/deformationMapping/DistanceMapping.h>

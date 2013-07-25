@@ -41,8 +41,8 @@
 #include <sofa/component/topology/EdgeSetTopologyContainer.h>
 #include <sofa/component/projectiveconstraintset/FixedConstraint.h>
 
-#include <plugins/Compliant/Compliant_lib/ComplianceSolver.h>
-#include <plugins/Compliant/Compliant_lib/UniformCompliance.h>
+#include <plugins/Compliant/ComplianceSolver.h>
+#include <plugins/Compliant/UniformCompliance.h>
 #include <plugins/Flexible/deformationMapping/ExtensionMapping.h>
 #include <plugins/Flexible/deformationMapping/DistanceMapping.h>
 

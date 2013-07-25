@@ -34,7 +34,7 @@
 #ifdef SOFA_DEV
 #include <sofa/component/collision/AddFramePerformer.h>
 #if defined(WIN32) && defined(SOFA_HAVE_PLUGIN_Compliant)
-#include <plugins/Compliant/Compliant_lib/CompliantAttachPerformer.h>
+#include <plugins/Compliant/CompliantAttachPerformer.h>
 #endif
 #endif
 #include <sofa/component/collision/SuturePointPerformer.h>

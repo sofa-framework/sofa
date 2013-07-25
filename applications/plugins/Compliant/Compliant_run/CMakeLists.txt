@@ -11,7 +11,7 @@ endif()
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${RC_FILES})
 
-AddLinkerDependencies(Compliant_lib SofaComponentMain SofaGuiMain)
+AddLinkerDependencies(Compliant SofaComponentMain SofaGuiMain)
 
 if(UNIX)
     AddLinkerDependencies("dl")
