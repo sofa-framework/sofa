@@ -22,8 +22,36 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
+#ifndef LABELIMAGETOOLBOX_H
+#define LABELIMAGETOOLBOX_H 
+
+#include <QObject>
+
 #include "initImage.h"
+#include "ImageTypes.h"
+#include <sofa/core/DataEngine.h>
+#include <sofa/component/component.h>
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/visual/VisualParams.h>
+
+#include <sofa/core/objectmodel/Event.h>
+#include <sofa/simulation/common/AnimateEndEvent.h>
+
+
+//#include "labelimagetoolboxaction.h"
+
+
+
+namespace sofa
+{
+namespace gui
+{
+namespace qt
+{
+class LabelImageToolBoxAction;
+}
+}
+}
 
 namespace sofa
 {
@@ -31,67 +59,72 @@ namespace sofa
 namespace component
 {
 
-//Here are just several convenient functions to help user to know what contains the plugin
-
-extern "C" {
-    SOFA_IMAGE_API void initExternalModule();
-    SOFA_IMAGE_API const char* getModuleName();
-    SOFA_IMAGE_API const char* getModuleVersion();
-    SOFA_IMAGE_API const char* getModuleLicense();
-    SOFA_IMAGE_API const char* getModuleDescription();
-    SOFA_IMAGE_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
+namespace engine
 {
-    static bool first = true;
-    if (first)
+
+using helper::vector;
+using defaulttype::Vec;
+using defaulttype::Mat;
+using namespace cimg_library;
+
+/**
+ * This class coorespond to a label visualized by imagetoolbox
+ */
+
+class LabelImageToolBox : public core::DataEngine
+{
+public:
+    typedef core::DataEngine Inherited;
+    SOFA_CLASS(LabelImageToolBox,Inherited);
+    
+    
+    
+    
+    Data< bool > d_islinkedToToolBox;
+
+//    virtual std::string getTemplateName() const    { return templateName(this);    }
+//    static std::string templateName(const LabelImageToolBox* = NULL) { return ImageTypes::Name();    }
+
+    LabelImageToolBox();
+
+    virtual void init()
     {
-        first = false;
+        //addInput(&image);
+        //addOutput(&triangles);
+        setDirtyValue();
     }
-}
 
-const char* getModuleName()
-{
-    return "Image Plugin";
-}
+    virtual void reinit() { update(); }
 
-const char* getModuleVersion()
-{
-    return "0.1";
-}
+protected:
 
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
+    unsigned int time;
+
+    virtual void update()
+    {
+        cleanDirty();
+
+    }
+
+    void handleEvent(sofa::core::objectmodel::Event */*event*/)
+    {
+    }
+
+    virtual void draw(const core::visual::VisualParams* /*vparams*/)
+    {
+    }
+
+public:
+    
+    virtual sofa::gui::qt::LabelImageToolBoxAction* createTBAction(QObject*/*parent*/){return NULL;}
+};
 
 
-const char* getModuleDescription()
-{
-    return "Image support in SOFA";
-}
+} // namespace engine
 
-const char* getModuleComponentList()
-{
-    return "ImageContainer,ImageExporter,ImageViewer,ImageFilter,ImageToMeshEngine";
-}
-
-} // namespace image
+} // namespace component
 
 } // namespace sofa
 
-////////// BEGIN CLASS LIST //////////
-SOFA_LINK_CLASS(ImageContainer)
-//SOFA_LINK_CLASS(ImageExporter)
-SOFA_LINK_CLASS(ImageViewer)
-SOFA_LINK_CLASS(ImageFilter)
-SOFA_LINK_CLASS(MergeImages)
-SOFA_LINK_CLASS(DepthMapToMeshEngine)
-SOFA_LINK_CLASS(MeshToImageEngine)
-SOFA_LINK_CLASS(ImageAccumulator)
-SOFA_LINK_CLASS(ImageSampler)
-#ifdef SOFA_HAVE_LIBFREENECT
-SOFA_LINK_CLASS(Kinect)
-#endif
 
+#endif // LABELIMAGETOOLBOX_H
