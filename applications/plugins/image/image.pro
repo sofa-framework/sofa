@@ -23,6 +23,8 @@ contains(DEFINES, SOFA_HAVE_LIBFREENECT) {
         SOURCES += Kinect.cpp
         }
 
+
+
 HEADERS += \
 	initImage.h \
 	ImageTypes.h \
@@ -38,9 +40,9 @@ HEADERS += \
         DepthMapToMeshEngine.h \
         MeshToImageEngine.h \
         MarchingCubesEngine.h \
-        ImageSampler.h \
+        ImageSampler.h \  
         ImageExporter.h \
-	ImagePlaneWidget.h \
+	image_gui/ImagePlaneWidget.h \
 	image_gui/ImageTransformWidget.h \
 	image_gui/HistogramWidget.h \
 	image_gui/VectorVisualizationWidget.h \
@@ -73,12 +75,15 @@ SOURCES += \
 	image_gui/ImagePlaneWidget.cpp \
 	image_gui/ImageTransformWidget.cpp \
 	image_gui/HistogramWidget.cpp \
-    VectorVisualizationWidget.cpp \
+    image_gui/VectorVisualizationWidget.cpp \
     BranchingImageConverter.cpp \
     BranchingCellIndicesFromPositions.cpp \
     BranchingCellOffsetsFromPositions.cpp \
     BranchingCellVolumes.cpp \
     MergeBranchingImages.cpp \
+    
+    
+#include(imagetoolbox/imagetoolbox.pro)
 
 README_FILE = image.txt
 	

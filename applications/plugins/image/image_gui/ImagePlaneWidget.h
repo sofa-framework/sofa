@@ -145,6 +145,10 @@ public slots:
 
 signals:
     void wheelevent (int delta); // -> change index on slider
+    void mousepressevent();
+    void mousereleaseevent();
+    void mousedoubleclickevent();
+    
     void roiHorizontalChanged(const qreal left, const qreal width); // to synchronize different views (roi)
     void roiVerticalChanged(const qreal top,const qreal height);	// to synchronize different views (roi)
     void cursorChangedX(const qreal);		// to synchronize different views (cursor)
@@ -165,6 +169,8 @@ public:
     virtual void draw()=0;
 
     bool isRoiResized() {return RoiResized;}
+    
+    ImagePlaneGraphScene *graphscene(){return scene;}
 
 protected:
     void resizeEvent ( QResizeEvent* /*resizeevent*/)  { this->fitInView();	}
@@ -200,18 +206,24 @@ protected:
     {
         QGraphicsView::mousePressEvent(mouseEvent);
         if (mouseEvent->modifiers()==Qt::ControlModifier)	{	scene->P1=scene->P2=this->mapToScene(mouseEvent->pos());		scene->drawrectangle=true; }
+        
+        emit mousepressevent();
     }
 
     void mouseReleaseEvent(QMouseEvent *mouseEvent)
     {
         QGraphicsView::mouseReleaseEvent(mouseEvent);
         if (scene->drawrectangle) {  setRoi(QRectF(scene->P1,scene->P2)); emit roiResized(); scene->drawrectangle=false; }
+        
+        emit  mousereleaseevent();
     }
 
     void mouseDoubleClickEvent ( QMouseEvent *mouseEvent )
     {
         QGraphicsView::mouseDoubleClickEvent(mouseEvent);
         if (mouseEvent->modifiers()==Qt::ControlModifier)  {  setRoi(QRectF(0,0,image.width(),image.height()));  emit roiResized(); }
+        
+       emit mousedoubleclickevent();
     }
 
     void mouseMoveEvent(QMouseEvent *mouseEvent)
