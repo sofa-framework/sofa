@@ -26,6 +26,10 @@ ContourImageToolBoxAction::ContourImageToolBoxAction(sofa::component::engine::La
     section->setText("Section");
     connect(section,SIGNAL(triggered()),this,SLOT(sectionButtonClick()));
     
+    this->createPosition();
+    this->createRadius();
+    this->createThreshold();
+    
 }
 
 
@@ -55,9 +59,24 @@ void ContourImageToolBoxAction::selectionPointEvent(int /*mouseevent*/, const un
     lp->d_axis.setValue(axis);
     lp->d_value.setValue(value.toStdString());
     
+    vecX->setValue(round(imageposition.x()));
+    vecY->setValue(round(imageposition.y()));
+    vecZ->setValue(round(imageposition.z()));
+    
     lp->segmentation();
     
     updateGraphs();
+}
+
+void ContourImageToolBoxAction::setImageSize(int xsize,int ysize,int zsize)
+{
+    vecX->setMaximum(xsize);
+    vecY->setMaximum(ysize);
+    vecZ->setMaximum(zsize);
+    
+    vecX->setMinimum(0);
+    vecY->setMinimum(0);
+    vecZ->setMinimum(0);
 }
 
 
@@ -116,13 +135,11 @@ void ContourImageToolBoxAction::updateGraphs()
     lineV[0]->setVisible(true);
     lineV[0]->setLine(pos.x(),pos.y()-2,pos.x(),pos.y()+2);
     
-    
     lineH[1]->setVisible(true);
     lineH[1]->setLine(pos.x()-2,pos.z(),pos.x()+2,pos.z());
     
     lineV[1]->setVisible(true);
     lineV[1]->setLine(pos.x(),pos.z()-2,pos.x(),pos.z()+2);
-    
     
     lineH[2]->setVisible(true);
     lineH[2]->setLine(pos.z()-2,pos.y(),pos.z()+2,pos.y());
@@ -143,10 +160,88 @@ void ContourImageToolBoxAction::sectionButtonClick()
     emit sectionChangeGui(pos2);
 }
 
+void ContourImageToolBoxAction::createPosition()
+{
+    QVBoxLayout *layout2 = new QVBoxLayout();
+    QHBoxLayout *layout = new QHBoxLayout();
+    vecX = new QSpinBox(); layout->addWidget(vecX);
+    vecY = new QSpinBox(); layout->addWidget(vecY);
+    vecZ = new QSpinBox(); layout->addWidget(vecZ);
+    
+    posGroup = new QGroupBox();
+    posGroup->setToolTip("position");
+    
+    layout2->addWidget(new QLabel("position"));
+    layout2->addLayout(layout);
+    
+    posGroup->setLayout(layout2);
+    
+    this->l_widgets.append(posGroup);
+    
+    connect(vecX,SIGNAL(editingFinished()),this,SLOT(positionModified()));
+    connect(vecY,SIGNAL(editingFinished()),this,SLOT(positionModified()));
+    connect(vecZ,SIGNAL(editingFinished()),this,SLOT(positionModified()));
+}
+
+void ContourImageToolBoxAction::createRadius()
+{
+    QVBoxLayout *layout2 = new QVBoxLayout();
+     QHBoxLayout *layout = new QHBoxLayout();
+     radius= new QSpinBox(); layout->addWidget(radius);
+     
+     radiusGroup = new QGroupBox();
+
+     radiusGroup->setToolTip("radius");
+     
+     layout2->addWidget(new QLabel("radius"));
+     layout2->addLayout(layout);
+     
+     radiusGroup->setLayout(layout2);
+     this->l_widgets.append(radiusGroup);
+     
+     connect(radius,SIGNAL(editingFinished()),this,SLOT(radiusModified()));
+}
+
+void ContourImageToolBoxAction::createThreshold()
+{
+    QVBoxLayout *layout2 = new QVBoxLayout();
+     QHBoxLayout *layout = new QHBoxLayout();
+     threshold= new QDoubleSpinBox(); layout->addWidget(threshold);
+     
+     layout2->addWidget(new QLabel("threshold"));
+     layout2->addLayout(layout);
+     
+     thresholdGroup = new QGroupBox();
+     thresholdGroup->setLayout(layout2);
+     this->l_widgets.append(thresholdGroup);
+     
+     connect(threshold,SIGNAL(editingFinished()),this,SLOT(thresholdModified()));
+}
 
 
+void ContourImageToolBoxAction::positionModified()
+{
+    std::cout << "positionModified" << std::endl;
+    sofa::defaulttype::Vec3d v(vecX->value(),vecY->value(),vecZ->value());
+    
+    sofa::component::engine::ContourImageToolBoxNoTemplated* lp = CITB();
+    
+    lp->d_ip.setValue(v);
+    
+    lp->segmentation();
+    
+    updateGraphs();
+}
 
+void ContourImageToolBoxAction::radiusModified()
+{
+    std::cout << "radiusModified" << std::endl;
+}
 
+void ContourImageToolBoxAction::thresholdModified()
+{
+    std::cout << "thresholdModified" << std::endl;
+}
 
 
 
