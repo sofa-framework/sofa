@@ -40,6 +40,8 @@ public:
     
     sofa::component::engine::LabelPointImageToolBox* LPITB();
 
+private:
+
 public slots:
     virtual void addOnGraphs();
     virtual void updateGraphs();

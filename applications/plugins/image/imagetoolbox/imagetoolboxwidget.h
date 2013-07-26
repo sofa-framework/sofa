@@ -120,7 +120,7 @@ public:
         main->setCentralWidget(central);//central);
         
         main->addToolBar(Qt::TopToolBarArea,basicTB);
-        main->addToolBar(Qt::TopToolBarArea,labelTB);
+        main->addToolBar(Qt::RightToolBarArea,labelTB);
         
     /*
         setting = new Setting(parent);
