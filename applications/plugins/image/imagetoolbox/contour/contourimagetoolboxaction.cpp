@@ -1,4 +1,5 @@
 #include <QString>
+#include <QWidgetAction>
 
 #include "contourimagetoolboxaction.h"
 
@@ -184,7 +185,11 @@ void ContourImageToolBoxAction::createPosition()
     
     posGroup->setLayout(layout2);
     
-    this->l_widgets.append(posGroup);
+    QWidgetAction * ac = new QWidgetAction(this);
+    ac->setDefaultWidget(posGroup);
+    
+    //this->l_widgets.append(posGroup);
+    this->l_actions.append(ac);
     
     connect(vecX,SIGNAL(editingFinished()),this,SLOT(positionModified()));
     connect(vecY,SIGNAL(editingFinished()),this,SLOT(positionModified()));
@@ -205,7 +210,12 @@ void ContourImageToolBoxAction::createRadius()
      layout2->addLayout(layout);
      
      radiusGroup->setLayout(layout2);
-     this->l_widgets.append(radiusGroup);
+     
+     QWidgetAction * ac = new QWidgetAction(this);
+     ac->setDefaultWidget(radiusGroup);
+     
+     this->l_actions.append(ac);
+    
      
      connect(radius,SIGNAL(editingFinished()),this,SLOT(radiusModified()));
 }
@@ -221,7 +231,11 @@ void ContourImageToolBoxAction::createThreshold()
      
      thresholdGroup = new QGroupBox();
      thresholdGroup->setLayout(layout2);
-     this->l_widgets.append(thresholdGroup);
+     
+     QWidgetAction * ac = new QWidgetAction(this);
+     ac->setDefaultWidget(thresholdGroup);
+     
+     this->l_actions.append(ac);
      
      connect(threshold,SIGNAL(editingFinished()),this,SLOT(thresholdModified()));
 }

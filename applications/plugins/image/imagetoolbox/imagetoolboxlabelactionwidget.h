@@ -110,8 +110,8 @@ public:
             vecLabelAction.push_back(la);
             this->addActions(la->getActions());
             
-            for(int j=0;j<la->getWidgets().size();j++)
-                this->addWidget(la->getWidgets()[j]);
+            /*for(int j=0;j<la->getWidgets().size();j++)
+                this->addWidget(la->getWidgets()[j]);*/
             
             
             connect(this,SIGNAL(mouseevent(int,uint,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)),la,SIGNAL(clickImage(int,uint,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)));

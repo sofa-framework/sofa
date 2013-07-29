@@ -35,7 +35,6 @@ class LabelImageToolBoxAction : public QObject
     
 protected:
     QList<QAction*> l_actions;
-    QList<QWidget*> l_widgets;
     sofa::component::engine::LabelImageToolBox *p_label;
     
     sofa::defaulttype::Vec3i d_section;
@@ -50,7 +49,7 @@ public:
     explicit LabelImageToolBoxAction(sofa::component::engine::LabelImageToolBox* lba,QObject *parent = 0);
     
      QList<QAction*>& getActions(){return l_actions;}
-     QList<QWidget*>& getWidgets(){return l_widgets;}
+     //QList<QWidget*>& getWidgets(){return l_widgets;}
     
 private:
     
