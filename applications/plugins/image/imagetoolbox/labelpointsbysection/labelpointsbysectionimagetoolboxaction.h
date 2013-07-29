@@ -39,7 +39,10 @@ public:
     ~LabelPointsBySectionImageToolBoxAction();
     
     sofa::component::engine::LabelPointsBySectionImageToolBox* LPBSITB();
-
+    
+    
+    void createListPointWidget();
+    
 private:
 
 public slots:

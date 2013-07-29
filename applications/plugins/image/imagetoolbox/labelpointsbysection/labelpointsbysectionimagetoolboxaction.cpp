@@ -1,4 +1,5 @@
 #include <QString>
+#include <QtGui>
 
 #include "labelpointsbysectionimagetoolboxaction.h"
 
@@ -142,6 +143,41 @@ void LabelPointsBySectionImageToolBoxAction::sectionButtonClick()
     emit sectionChangeGui(pos2);
 }
 
+void LabelPointsBySectionImageToolBoxAction::createListPointWidget()
+{
+    QComboBox * listSection = new QComboBox();
+    QTableWidget * listPoints = new QTableWidget();
+    QPushButton * deteteSection  = new QPushButton("del section");
+    QPushButton * deletePoint = new QPushButton("del");
+    QPushButton * moveupPoint = new QPushButton("up");
+    QPushButton * movedownPoint = new QPushButton("down");
+    
+    QVBoxLayout *vlayout = new QVBoxLayout();
+    
+    vlayout->addWidget(new QLabel("section"));
+    QHBoxLayout *hlayout = new QHBoxLayout();
+    hlayout->addWidget(listSection);
+    hlayout->addWidget(deteteSection);
+    
+    vlayout->addLayout(hlayout);
+    vlayout->addWidget(listPoints);
+    
+    QHBoxLayout *hlayout2 = new QHBoxLayout();
+    hlayout2->addWidget(deletePoint);
+    hlayout2->addWidget(moveupPoint);
+    hlayout2->addWidget(movedownPoint);
+    
+    vlayout->addLayout(hlayout2);
+    
+    
+    QGroupBox *box = new QGroupBox();
+    box->setLayout(vlayout);
+    
+    QWidgetAction *wa = new QWidgetAction(this);
+    wa->setDefaultWidget(box);
+    
+    this->l_actions.append(wa);
+}
 
 
 
