@@ -13,6 +13,15 @@ set(HEADER_FILES
 	HistogramWidget.h 
 #	QImageMouseButtonsWidget.h 
 	VectorVisualizationWidget.h 
+
+    ../imagetoolbox/imagetoolboxbasicactionwidget.h
+    ../imagetoolbox/imagetoolboxcentralwidget.h
+    ../imagetoolbox/imagetoolboxlabelactionwidget.h
+    ../imagetoolbox/imagetoolboxwidget.h
+    ../imagetoolbox/labelimagetoolboxaction.h
+    ../imagetoolbox/labelpoint/labelpointimagetoolboxaction.h
+    ../imagetoolbox/contour/contourimagetoolboxaction.h
+    ../imagetoolbox/contour/contourimagetoolbox.h
 	)
 
 UseQt()
@@ -37,6 +46,18 @@ set(SOURCE_FILES
 	HistogramWidget.cpp 
 #	QImageMouseButtonsWidget.cpp 
     VectorVisualizationWidget.cpp 
+
+#    ../imagetoolbox/cursorinfoimagetoolbox.cpp
+    ../imagetoolbox/imagetoolbox.cpp
+    ../imagetoolbox/imagetoolboxwidget.cpp
+    ../imagetoolbox/labelimagetoolboxaction.cpp
+    ../imagetoolbox/labelimagetoolbox.cpp
+    ../imagetoolbox/contour/contourimagetoolboxaction.cpp
+    ../imagetoolbox/contour/contourimagetoolbox.cpp
+    ../imagetoolbox/labelpoint/labelpointimagetoolboxaction.cpp
+    ../imagetoolbox/labelpoint/labelpointimagetoolbox.cpp
+
+
 	)
 
 
@@ -44,6 +65,11 @@ list(APPEND HEADER_FILES
 
 	initImage_gui.h
 	ImageTransformWidget.h 
+
+#    ../imagetoolbox/cursorinfoimagetoolbox.h
+    ../imagetoolbox/imagetoolboxdata.h
+    ../imagetoolbox/labelimagetoolbox.h
+    ../imagetoolbox/labelpoint/labelpointimagetoolbox.h
 	)
 
 # make mocced header / form files path from absolute to relative
