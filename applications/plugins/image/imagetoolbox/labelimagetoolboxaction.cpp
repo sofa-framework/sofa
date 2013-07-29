@@ -23,10 +23,11 @@ void LabelImageToolBoxAction::setVisible(bool v)
         l_actions[i]->setVisible(v);
     }
     
-    for(int i=0;i<l_widgets.size();i++)
+    /*for(int i=0;i<l_widgets.size();i++)
     {
         l_widgets[i]->setEnabled(v);
-    }
+        l_widgets[i]->setVisible(false);
+    }*/
 }
 
 

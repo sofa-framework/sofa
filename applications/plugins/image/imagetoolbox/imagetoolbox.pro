@@ -13,6 +13,8 @@ HEADERS += \
     imagetoolbox/labelpoint/labelpointimagetoolbox.h \
     imagetoolbox/contour/contourimagetoolboxaction.h\
     imagetoolbox/contour/contourimagetoolbox.h \
+    imagetoolbox/labelpointsbysection/labelpointsbysectionimagetoolboxaction.h \
+    imagetoolbox/labelpointsbysection/labelpointsbysectionimagetoolbox.h 
     
     
 
@@ -25,5 +27,6 @@ SOURCES += \
     imagetoolbox/labelpoint/labelpointimagetoolbox.cpp \
     imagetoolbox/contour/contourimagetoolboxaction.cpp\
     imagetoolbox/contour/contourimagetoolbox.cpp \
-    
+    imagetoolbox/labelpointsbysection/labelpointsbysectionimagetoolboxaction.cpp \
+    imagetoolbox/labelpointsbysection/labelpointsbysectionimagetoolbox.cpp
     
