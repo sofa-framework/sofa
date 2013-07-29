@@ -45,11 +45,16 @@ private:
 public slots:
     virtual void addOnGraphs();
     virtual void updateGraphs();
+    virtual void updateColor();
     
 private slots:
     void selectionPointButtonClick(bool);
     void selectionPointEvent(int mouseevent, const unsigned int axis,const sofa::defaulttype::Vec3d& imageposition,const sofa::defaulttype::Vec3d& position3D,const QString& value);
     void sectionButtonClick();
+    
+    
+private:
+    QAction* select;
     
 };
 
