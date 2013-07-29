@@ -29,6 +29,8 @@
 
 #include "initImage.h"
 #include "ImageTypes.h"
+#include "sofa/defaulttype/defaulttype.h"
+#include "sofa/defaulttype/VecTypes.h"
 #include <sofa/core/DataEngine.h>
 #include <sofa/component/component.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -81,6 +83,7 @@ public:
     
     
     Data< bool > d_islinkedToToolBox;
+    Data< sofa::defaulttype::Vec4f > d_color;
 
 //    virtual std::string getTemplateName() const    { return templateName(this);    }
 //    static std::string templateName(const LabelImageToolBox* = NULL) { return ImageTypes::Name();    }

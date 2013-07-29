@@ -47,7 +47,7 @@ sofa::component::engine::ContourImageToolBoxNoTemplated* ContourImageToolBoxActi
 
 void ContourImageToolBoxAction::selectionPointEvent(int /*mouseevent*/, const unsigned int axis,const sofa::defaulttype::Vec3d& imageposition,const sofa::defaulttype::Vec3d& position3D,const QString& value)
 {
-    QAction* select = l_actions[0];
+    select = l_actions[1];
     
     select->setChecked(false);
     disconnect(this,SIGNAL(clickImage(int,uint,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)),this,SLOT(selectionPointEvent(int,uint,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)));
@@ -82,7 +82,7 @@ void ContourImageToolBoxAction::setImageSize(int xsize,int ysize,int zsize)
 
 void ContourImageToolBoxAction::selectionPointButtonClick(bool b)
 {
-    //QAction* select = l_actions[0];
+    //select = l_actions[0];
     
     if(b)
     {
@@ -113,11 +113,11 @@ void ContourImageToolBoxAction::addOnGraphs()
     
     for(int i=0;i<3;i++)
     {
-        lineH[i]->setPen(QPen(QColor(255,0,0)));
-        lineV[i]->setPen(QPen(QColor(255,0,0)));
         lineH[i]->setVisible(false);
         lineV[i]->setVisible(false);
     }
+    
+    updateColor();
 }
 
 
@@ -130,25 +130,33 @@ void ContourImageToolBoxAction::updateGraphs()
 //    std::cout << "updateOnGraphs"<<std::endl;
     
     lineH[0]->setVisible(true);
-    lineH[0]->setLine(pos.x()-2,pos.y(),pos.x()+2,pos.y());
+    lineH[0]->setLine(pos.x()-4,pos.y(),pos.x()+4,pos.y());
     
     lineV[0]->setVisible(true);
-    lineV[0]->setLine(pos.x(),pos.y()-2,pos.x(),pos.y()+2);
+    lineV[0]->setLine(pos.x(),pos.y()-4,pos.x(),pos.y()+4);
     
     lineH[1]->setVisible(true);
-    lineH[1]->setLine(pos.x()-2,pos.z(),pos.x()+2,pos.z());
+    lineH[1]->setLine(pos.x()-4,pos.z(),pos.x()+4,pos.z());
     
     lineV[1]->setVisible(true);
-    lineV[1]->setLine(pos.x(),pos.z()-2,pos.x(),pos.z()+2);
+    lineV[1]->setLine(pos.x(),pos.z()-4,pos.x(),pos.z()+4);
     
     lineH[2]->setVisible(true);
-    lineH[2]->setLine(pos.z()-2,pos.y(),pos.z()+2,pos.y());
+    lineH[2]->setLine(pos.z()-4,pos.y(),pos.z()+4,pos.y());
     
     lineV[2]->setVisible(true);
-    lineV[2]->setLine(pos.z(),pos.y()-2,pos.z(),pos.y()+2);
+    lineV[2]->setLine(pos.z(),pos.y()-4,pos.z(),pos.y()+4);
     
 }
 
+void ContourImageToolBoxAction::updateColor()
+{
+    for(int i=0;i<3;i++)
+    {
+        lineH[i]->setPen(QPen(this->color()));
+        lineV[i]->setPen(QPen(this->color()));
+    }
+}
 
 void ContourImageToolBoxAction::sectionButtonClick()
 {

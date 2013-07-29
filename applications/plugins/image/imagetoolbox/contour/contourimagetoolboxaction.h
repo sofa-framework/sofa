@@ -56,6 +56,7 @@ private:
 public slots:
     virtual void addOnGraphs();
     virtual void updateGraphs();
+    virtual void updateColor();
     
 private slots:
     void selectionPointButtonClick(bool);
@@ -65,6 +66,9 @@ private slots:
     void positionModified();
     void radiusModified();
     void thresholdModified();
+    
+private:
+    QAction* select;
     
 };
 

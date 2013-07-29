@@ -44,6 +44,8 @@ protected:
     QGraphicsScene *GraphXZ;
     QGraphicsScene *GraphZY;
     
+
+    
 public:
     explicit LabelImageToolBoxAction(sofa::component::engine::LabelImageToolBox* lba,QObject *parent = 0);
     
@@ -63,6 +65,8 @@ public slots:
     void setGraphScene(QGraphicsScene *XY,QGraphicsScene *XZ,QGraphicsScene *ZY);
     virtual void addOnGraphs()=0;
     virtual void updateGraphs()=0;
+    virtual void updateColor()=0;
+    QColor color();
     
     void guiChangeSection(defaulttype::Vec3i s)
     {
@@ -73,6 +77,15 @@ signals:
     void clickImage(int mouseevent, const unsigned int axis,const sofa::defaulttype::Vec3d& imageposition,const sofa::defaulttype::Vec3d& position3D,const QString& value);
     
     void sectionChangeGui(sofa::defaulttype::Vec3i);
+    
+    
+private:
+    QAction *a_color;
+    
+    void createColorAction();
+private slots:
+    void clickColor();
+    void selectColor(QColor c);
     
 };
 
