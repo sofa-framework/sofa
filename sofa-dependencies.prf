@@ -222,8 +222,9 @@ contains(DEFINES, SOFA_HAVE_EIGEN2)       { declare(eigen-unsupported) }
 !contains(DEFINES, SOFA_NO_OPENGL)        { enable(glut) }
 !contains(DEFINES, SOFA_NO_OPENGL)        { enable(glew) }
 contains(DEFINES, SOFA_XML_PARSER_LIBXML) { enable(libxml) }
-contains(DEFINES, SOFA_HAVE_CUDA)         {
+contains(DEFINES, SOFA_GPU_CUDA)         {
                                             enable(cuda)
+  contains(DEFINES, SOFA_GPU_CUDPP)       { enable(cudpp) }
   contains(DEFINES, SOFA_GPU_THRUST)      { enable(thrust) }
 }
 contains(DEFINES, SOFA_HAVE_OPENCL)       { enable(opencl) }
