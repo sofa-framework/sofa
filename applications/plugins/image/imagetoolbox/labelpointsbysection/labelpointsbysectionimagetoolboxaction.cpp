@@ -5,6 +5,8 @@
 
 #include "labelpointsbysectionimagetoolbox.h"
 
+
+
 namespace sofa
 {
 namespace gui
@@ -27,6 +29,10 @@ LabelPointsBySectionImageToolBoxAction::LabelPointsBySectionImageToolBoxAction(s
     section->setText("Section");
     connect(section,SIGNAL(triggered()),this,SLOT(sectionButtonClick()));
     
+    
+    createAxisSelection();
+    createListPointWidget();
+    
 }
 
 LabelPointsBySectionImageToolBoxAction::~LabelPointsBySectionImageToolBoxAction()
@@ -44,7 +50,7 @@ void LabelPointsBySectionImageToolBoxAction::selectionPointEvent(int /*mouseeven
 {
     
     select->setChecked(false);
-    disconnect(this,SIGNAL(clickImage(int,uint,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)),this,SLOT(selectionPointEvent(int,uint,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)));
+    disconnect(this,SIGNAL(clickImage(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)),this,SLOT(selectionPointEvent(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)));
     
     sofa::component::engine::LabelPointsBySectionImageToolBox* lp = LPBSITB();
     
@@ -62,12 +68,12 @@ void LabelPointsBySectionImageToolBoxAction::selectionPointButtonClick(bool b)
     if(b)
     {
         //select->setChecked(true);
-        connect(this,SIGNAL(clickImage(int,uint,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)),this,SLOT(selectionPointEvent(int,uint,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)));
+        connect(this,SIGNAL(clickImage(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)),this,SLOT(selectionPointEvent(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)));
     }
     else
     {
         //select->setChecked(false);
-        disconnect(this,SIGNAL(clickImage(int,uint,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)),this,SLOT(selectionPointEvent(int,uint,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)));
+        disconnect(this,SIGNAL(clickImage(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)),this,SLOT(selectionPointEvent(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)));
     }
     
 }
@@ -140,46 +146,145 @@ void LabelPointsBySectionImageToolBoxAction::sectionButtonClick()
     
     sofa::defaulttype::Vec3i pos2(round(pos.x()),round(pos.y()),round(pos.z()));
 
-    emit sectionChangeGui(pos2);
+    emit sectionChanged(pos2);
 }
 
 void LabelPointsBySectionImageToolBoxAction::createListPointWidget()
 {
-    QComboBox * listSection = new QComboBox();
-    QTableWidget * listPoints = new QTableWidget();
-    QPushButton * deteteSection  = new QPushButton("del section");
-    QPushButton * deletePoint = new QPushButton("del");
-    QPushButton * moveupPoint = new QPushButton("up");
-    QPushButton * movedownPoint = new QPushButton("down");
+
+
+    TableWidgetForLabelPointBySectionToolBoxAction * tablewidget = new TableWidgetForLabelPointBySectionToolBoxAction(this);
     
-    QVBoxLayout *vlayout = new QVBoxLayout();
+
     
-    vlayout->addWidget(new QLabel("section"));
-    QHBoxLayout *hlayout = new QHBoxLayout();
-    hlayout->addWidget(listSection);
-    hlayout->addWidget(deteteSection);
+    this->l_actions.append(tablewidget);
     
-    vlayout->addLayout(hlayout);
-    vlayout->addWidget(listPoints);
+
     
-    QHBoxLayout *hlayout2 = new QHBoxLayout();
-    hlayout2->addWidget(deletePoint);
-    hlayout2->addWidget(moveupPoint);
-    hlayout2->addWidget(movedownPoint);
+    connect(tablewidget,SIGNAL(changeSection(int)),this,SLOT(changeSection(int)));
     
-    vlayout->addLayout(hlayout2);
-    
-    
-    QGroupBox *box = new QGroupBox();
-    box->setLayout(vlayout);
-    
-    QWidgetAction *wa = new QWidgetAction(this);
-    wa->setDefaultWidget(box);
-    
-    this->l_actions.append(wa);
+
 }
 
+void LabelPointsBySectionImageToolBoxAction::createAxisSelection()
+{
+    xyAxis = new QPushButton("XY axis");
+    xzAxis = new QPushButton("XZ axis");
+    zyAxis = new QPushButton("ZY axis");
+    
+    QHBoxLayout * l = new QHBoxLayout();
+    
+    l->addWidget(xyAxis);
+    l->addWidget(xzAxis);
+    l->addWidget(zyAxis);
+    
+    xyAxis->setCheckable(true);
+    xzAxis->setCheckable(true);
+    zyAxis->setCheckable(true);
+    
+    xyAxis->setChecked(true);
+    xzAxis->setChecked(false);
+    zyAxis->setChecked(false);
+    
+    QVBoxLayout * l2=new QVBoxLayout();
+    l2->addWidget(new QLabel("select axis"));
+    l2->addLayout(l);
+    
+    QGroupBox *g= new QGroupBox();
+    g->setLayout(l2);
+    
+    QWidgetAction *wa = new QWidgetAction(this);
+    wa->setDefaultWidget(g);
+    
+    this->l_actions.append(wa);
+    
+    connect(xyAxis,SIGNAL(toggled(bool)),this,SLOT(axisChecked(bool)));
+    connect(zyAxis,SIGNAL(toggled(bool)),this,SLOT(axisChecked(bool)));
+    connect(xzAxis,SIGNAL(toggled(bool)),this,SLOT(axisChecked(bool)));
+}
 
+void LabelPointsBySectionImageToolBoxAction::axisChecked(bool b)
+{
+    QPushButton* button =  qobject_cast<QPushButton*>(sender());
+    
+    disconnect(xyAxis,SIGNAL(toggled(bool)),this,SLOT(axisChecked(bool)));
+    disconnect(zyAxis,SIGNAL(toggled(bool)),this,SLOT(axisChecked(bool)));
+    disconnect(xzAxis,SIGNAL(toggled(bool)),this,SLOT(axisChecked(bool)));
+    
+    if(button)
+    {
+        if(b==true)
+        {
+            // if (map !=0) 
+            {
+                b=false;
+                QMessageBox msgbox;
+                msgbox.setText("The list of point is not empty.");
+                msgbox.setInformativeText("this action will destruct all data.");
+                msgbox.setStandardButtons(QMessageBox::Cancel | QMessageBox::Ok);
+                msgbox.setDefaultButton(QMessageBox::Cancel);
+                msgbox.setIcon(QMessageBox::Warning);
+                int ret = msgbox.exec();
+                if(ret==QMessageBox::Ok)b=true;
+                else
+                {
+                    button->setChecked(false);
+                    connect(xyAxis,SIGNAL(toggled(bool)),this,SLOT(axisChecked(bool)));
+                    connect(zyAxis,SIGNAL(toggled(bool)),this,SLOT(axisChecked(bool)));
+                    connect(xzAxis,SIGNAL(toggled(bool)),this,SLOT(axisChecked(bool)));
+                    return;
+                }
+            }
+        
+        }
+        if(b==true)
+        {
+            xyAxis->setChecked(false);
+            xzAxis->setChecked(false);
+            zyAxis->setChecked(false);
+            button->setChecked(true);
+        }
+        else
+        {
+            xyAxis->setChecked(false);
+            xzAxis->setChecked(false);
+            zyAxis->setChecked(false);
+            button->setChecked(true);
+        }
+    }
+    connect(xyAxis,SIGNAL(toggled(bool)),this,SLOT(axisChecked(bool)));
+    connect(zyAxis,SIGNAL(toggled(bool)),this,SLOT(axisChecked(bool)));
+    connect(xzAxis,SIGNAL(toggled(bool)),this,SLOT(axisChecked(bool)));
+    
+}
+
+int LabelPointsBySectionImageToolBoxAction::currentAxis()
+{
+    if(xyAxis->isChecked())return 2;
+    if(xzAxis->isChecked())return 1;
+    if(zyAxis->isChecked())return 0;
+    return -1;
+}
+
+void LabelPointsBySectionImageToolBoxAction::changeSection(int i)
+{
+    sofa::defaulttype::Vec3i v;
+    switch(currentAxis())
+    {
+        case 0:
+            v.set(i,0,0);
+            break;
+        case 1:
+            v.set(0,i,0);
+            break;
+        case 2:
+            v.set(0,0,i);
+            break;
+        default:
+            v.set(0,0,0);
+    }
+    emit sectionChanged(v);
+}
 
 
 

@@ -75,8 +75,7 @@ public slots:
 signals:
     void clickImage(int mouseevent, const unsigned int axis,const sofa::defaulttype::Vec3d& imageposition,const sofa::defaulttype::Vec3d& position3D,const QString& value);
     
-    void sectionChangeGui(sofa::defaulttype::Vec3i);
-    
+    void sectionChanged(sofa::defaulttype::Vec3i);
     
 private:
     QAction *a_color;
