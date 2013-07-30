@@ -17,7 +17,7 @@ set(SOURCE_FILES
     MergeImages.cpp 
     ImageAccumulator.cpp 
     DepthMapToMeshEngine.cpp 
-    MeshToImageEngine.cpp 
+    MeshToImageEngine.cpp
     MarchingCubesEngine.cpp 
     ImageSampler.cpp 
     ImageExporter.cpp 
@@ -44,7 +44,7 @@ list(APPEND HEADER_FILES
     MergeImages.h 
     ImageAccumulator.h 
     DepthMapToMeshEngine.h 
-    MeshToImageEngine.h 
+    MeshToImageEngine.h
     MarchingCubesEngine.h 
     ImageSampler.h 
     ImageExporter.h
@@ -95,6 +95,8 @@ if(SOFA-EXTERNAL_HAVE_OPENCV)
     AddLinkerDependencies("cxcore")
 
 endif()
+
+AddLinkerDependencies(newmat)
 
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
