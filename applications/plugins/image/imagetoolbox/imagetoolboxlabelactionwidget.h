@@ -18,7 +18,7 @@ Q_OBJECT
 
     QComboBox *labelSelection;
     
-    uint currentAxis;
+    unsigned int currentAxis;
     Vec3f currentImagePosition;
     Vec3f current3DPosition;
     QString currentVal;
@@ -50,8 +50,8 @@ public:
     
     void connectCentralW(ImageToolBoxCentralWidget* cw)
     {
-        connect(cw,SIGNAL(onPlane(uint,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)),this,SIGNAL(onPlane(uint,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)));
-        connect(cw,SIGNAL(onPlane(uint,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)),this,SLOT(setValueOnPlane(uint,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)));
+        connect(cw,SIGNAL(onPlane(unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)),this,SIGNAL(onPlane(unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)));
+        connect(cw,SIGNAL(onPlane(unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)),this,SLOT(setValueOnPlane(unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)));
         
         connect(cw,SIGNAL(mousedoubleclickevent()),this,SLOT(graph_mousedoubleclickevent()));
         connect(cw,SIGNAL(mousepressevent()),this,SLOT(graph_mousepressevent()));
@@ -78,7 +78,7 @@ public:
             if(la)
             {
                 QList<QAction*> lista = la->getActions();
-                disconnect(this,SIGNAL(mouseevent(int,uint,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)),la,SIGNAL(clickImage(int,uint,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)));
+                disconnect(this,SIGNAL(mouseevent(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)),la,SIGNAL(clickImage(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)));
                 while(lista.size()>0)
                 {
                     this->removeAction(lista.first());
@@ -114,9 +114,9 @@ public:
                 this->addWidget(la->getWidgets()[j]);*/
             
             
-            connect(this,SIGNAL(mouseevent(int,uint,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)),la,SIGNAL(clickImage(int,uint,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)));
+            connect(this,SIGNAL(mouseevent(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)),la,SIGNAL(clickImage(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)));
             
-            connect(la,SIGNAL(sectionChangeGui(sofa::defaulttype::Vec3i)),this,SIGNAL(labelChangeGui(sofa::defaulttype::Vec3i)));
+            connect(la,SIGNAL(sectionChanged(sofa::defaulttype::Vec3i)),this,SIGNAL(labelChangeGui(sofa::defaulttype::Vec3i)));
             
             
             la->setGraphScene(GraphXY,GraphXZ,GraphZY);
@@ -127,7 +127,7 @@ public:
     }
     
 public slots:
-    void setValueOnPlane(uint axis,sofa::defaulttype::Vec3d ip,sofa::defaulttype::Vec3d p ,QString val)
+    void setValueOnPlane(unsigned int axis,sofa::defaulttype::Vec3d ip,sofa::defaulttype::Vec3d p ,QString val)
     {
         //std::cout << "testOnPlane: axis=" << axis << " ; ip=" << ip << " ; p="<<p<< " ; val="<<val.toStdString()<<std::endl; 
         

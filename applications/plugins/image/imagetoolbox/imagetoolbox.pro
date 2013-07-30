@@ -14,7 +14,8 @@ HEADERS += \
     imagetoolbox/contour/contourimagetoolboxaction.h\
     imagetoolbox/contour/contourimagetoolbox.h \
     imagetoolbox/labelpointsbysection/labelpointsbysectionimagetoolboxaction.h \
-    imagetoolbox/labelpointsbysection/labelpointsbysectionimagetoolbox.h 
+    imagetoolbox/labelpointsbysection/labelpointsbysectionimagetoolbox.h \ 
+    imagetoolbox/labelpointsbysection/tablewidget.h
     
     
 
