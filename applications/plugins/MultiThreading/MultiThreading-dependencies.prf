@@ -1,0 +1,9 @@
+includeOnce($$_FILE_) {
+
+contains(DEFINES,SOFA_HAVE_BOOST) {
+	declare(PluginMultiThreading, applications/plugins/MultiThreading/src/MultiThreading.pro, sofa_component sofa_misc_mapping boost)
+} 
+
+	enable(MultiThreading)
+
+}
