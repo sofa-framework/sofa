@@ -64,6 +64,7 @@ GenericConstraintSolver::GenericConstraintSolver()
 , graphErrors( initData(&graphErrors,"graphErrors","Sum of the constraints' errors at each iteration"))
 , graphConstraints( initData(&graphConstraints,"graphConstraints","Graph of each constraint's error at the end of the resolution"))
 , graphForces( initData(&graphForces,"graphForces","Graph of each constraint's force at each step of the resolution"))
+, graphViolations( initData(&graphViolations, "graphViolations", "Graph of each constraint's violation at each step of the resolution"))
 , current_cp(&cp1)
 , last_cp(NULL)
 {
@@ -77,6 +78,9 @@ GenericConstraintSolver::GenericConstraintSolver()
 
 	graphForces.setWidget("graph_linear");
 	graphForces.setGroup("Graph2");
+
+	graphViolations.setWidget("graph_linear");
+	graphViolations.setGroup("Graph2");
 }
 
 GenericConstraintSolver::~GenericConstraintSolver()
@@ -467,7 +471,7 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
 
 	bool showGraphs = false;
 	sofa::helper::vector<double>* graph_residuals = NULL;
-	std::map < std::string, sofa::helper::vector<double> >* graph_forces = NULL;
+	std::map < std::string, sofa::helper::vector<double> > *graph_forces = NULL, *graph_violations = NULL;
 	sofa::helper::vector<double> tabErrors;
 
 	if(solver)
@@ -478,6 +482,9 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
 		{
 			graph_forces = solver->graphForces.beginEdit();
 			graph_forces->clear();
+
+			graph_violations = solver->graphViolations.beginEdit();
+			graph_violations->clear();
 
 			graph_residuals = &(*solver->graphErrors.beginEdit())["Error"];
 			graph_residuals->clear();
@@ -582,6 +589,9 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
 
 				sofa::helper::vector<double>& graph_force = (*graph_forces)[oss.str()];
 				graph_force.push_back(force[j]);
+
+				sofa::helper::vector<double>& graph_violation = (*graph_violations)[oss.str()];
+				graph_violation.push_back(d[j]);
 			}
 		
 			graph_residuals->push_back(error);
@@ -678,7 +688,7 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
 	if(!dimension)
 		return;
 
-	double t0 = (double)CTime::getTime() ;
+	double t0 = (double)CTime::getTime();
 	double timeScale = 1.0 / (double)CTime::getTicksPerSec();
 
 	double *dfree = getDfree();
@@ -704,16 +714,21 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
 	{
 		for(i=0; i<dimension; )
 		{
+			if(!constraintsResolutions[i])
+			{
+				std::cerr << "Bad size of constraintsResolutions in GenericConstraintProblem" << std::endl;
+				dimension = i;
+				break;
+			}
 			constraintsResolutions[i]->init(i, w, force);
-			int nb = constraintsResolutions[i]->nbLines;
-			i += nb;
+			i += constraintsResolutions[i]->nbLines;
 		}
+		memset(force, 0, dimension * sizeof(double));	// Erase previous forces for the time being
 	}
-	memset(force, 0, dimension * sizeof(double));	// Erase previous forces for the time being
-
+	
 	bool showGraphs = false;
 	sofa::helper::vector<double>* graph_residuals = NULL;
-	std::map < std::string, sofa::helper::vector<double> >* graph_forces = NULL;
+	std::map < std::string, sofa::helper::vector<double> > *graph_forces = NULL, *graph_violations = NULL;
 	sofa::helper::vector<double> tabErrors;
 
 	if(solver)
@@ -724,6 +739,9 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
 		{
 			graph_forces = solver->graphForces.beginEdit();
 			graph_forces->clear();
+
+			graph_violations = solver->graphViolations.beginEdit();
+			graph_violations->clear();
 
 			graph_residuals = &(*solver->graphErrors.beginEdit())["Error"];
 			graph_residuals->clear();
@@ -838,6 +856,9 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
 
 				sofa::helper::vector<double>& graph_force = (*graph_forces)[oss.str()];
 				graph_force.push_back(force[j]);
+
+				sofa::helper::vector<double>& graph_violation = (*graph_violations)[oss.str()];
+				graph_violation.push_back(d[j]);
 			}
 
 			graph_residuals->push_back(error);

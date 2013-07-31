@@ -111,7 +111,7 @@ public:
 	Data<bool> scaleTolerance, allVerified, schemeCorrection;
 	Data<bool> unbuilt;
 	Data<bool> computeGraphs;
-	Data<std::map < std::string, sofa::helper::vector<double> > > graphErrors, graphConstraints, graphForces;
+	Data<std::map < std::string, sofa::helper::vector<double> > > graphErrors, graphConstraints, graphForces, graphViolations;
 
 	ConstraintProblem* getConstraintProblem();
 	void lockConstraintProblem(ConstraintProblem* p1, ConstraintProblem* p2=0);
