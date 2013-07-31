@@ -1,1 +1,1 @@
-project VC10_BS_CMAKE
+..\project VC10_BS_CMAKE
