@@ -80,6 +80,18 @@ qmake -recursive Sofa.pro QT_INSTALL_PREFIX="%QTDIR:\=/%"
 nmake
 goto common
 
+:vc10_bs_cmake
+REM set QMAKESPEC=win32-msvc2010
+@echo on
+@echo Making Visual project 10
+call "%VS100COMNTOOLS%..\..\VC\vcvarsall.bat" x86
+echo Copying external dlls.
+xcopy ..\bin\dll_x86\*.* ..\bin\ /y /q
+cmake ..
+cmake ..
+nmake
+goto common
+
 :vc9_x64
 set QMAKESPEC=win32-msvc2008
 set TARGET_MACHINE=x64
