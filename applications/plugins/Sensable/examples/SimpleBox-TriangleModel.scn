@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<Node 	name="root" gravity="0 -9.81 0" dt="0.005"   >
+  <VisualStyle displayFlags="showVisualModels showBehaviorModels showForceFields showInteractionForceFields" />
+  <Gravity name="G"  gravity="0 -9.8 0" />
+  <RequiredPlugin name="Sensable Plugin" pluginName="Sensable" />
+
+
+    <CollisionPipeline name="pipeline" depth="6" verbose="0"/>
+  <BruteForceDetection name="detection" />
+  <CollisionResponse name="response" response="default" />
+  <MinProximityIntersection name="proximity" alarmDistance="0.8" contactDistance="0.5" useSurfaceNormals="true"/>
+
+  <NewOmniDriver name="Omni Driver"  listening="true" tags="Omni" forceScale="0.5" scale="500"  permanent="true" />
+
+  <Node 	name="Instrument"  >
+    
+    <MechanicalObject template="Rigid" name="instrumentState" tags="Omni"  />
+    <UniformMass template="Rigid" name="mass"  totalmass="0.05" />
+    <Node 	name="VisualModel" >
+      <OglModel template="ExtVec3f" name="InstrumentVisualModel"  fileMesh="data/mesh/dental_instrument.obj" scale3d="10 10 10" translation="-2.12256 1.32361 35.5" rotation="180 0 150" material="Default Diffuse 1 1 0.2 0.2 1 Ambient 1 0.2 0.04 0.04 1 Specular 0 1 0.2 0.2 1 Emissive 0 1 0.2 0.2 1 Shininess 0 45" />
+      <RigidMapping template="Mapping&lt;Rigid,ExtVec3f&gt;" name="MM->VM mapping"  object1="instrumentState"  object2="InstrumentVisualModel" />
+    </Node>
+    <Node 	name="CollisionModel"  >
+
+      <MechanicalObject template="Vec3d" name="Particle"  position="0 0 0" />
+      <Point name="ParticleModel" contactStiffness="2" />
+      <RigidMapping template="MechanicalMapping&lt;Rigid,Vec3d&gt;" name="MM->CM mapping"  object1="instrumentState"  object2="Particle" />
+        <EnslavementForceFeedback name="forcefeedback" tags="Omni" collisionModel1="@ParticleModel" collisionModel2="" relativeStiffness="4" attractionDistance="0.3" normalsPointOut="false"/>
+
+    </Node>
+
+  </Node>
+  <Node 	name="Box"  >
+    <Node 	name="VisualModel"   >
+      <OglModel template="ExtVec3f" name="BoxVisualModel"  fileMesh="data/mesh/box_inside.obj" />
+    </Node>
+    <Node 	name="CollisionModel" >
+      
+      <MeshObjLoader name="loader"  filename="data/mesh/box_inside.obj" />
+      <MeshTopology src="@loader" name="BoxCollisionModel" />
+      <MechanicalObject src="@loader" template="Vec3d" name="boxState" />
+      <Triangle />
+
+    </Node>
+  </Node>
+</Node>
