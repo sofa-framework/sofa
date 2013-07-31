@@ -36,6 +36,7 @@
 #include <sofa/component/topology/SparseGridTopology.h>
 #include <sofa/component/collision/BarycentricContactMapper.h>
 
+
 namespace sofa
 {
 
@@ -120,6 +121,7 @@ protected:
     sofa::core::objectmodel::DataFileName fileRigidDistanceGrid;
     Data< double > scale;
     Data< Vector3 > translation;
+    Data< Vector3 > rotation;
     Data< double > sampling;
     Data< helper::fixed_array<DistanceGrid::Coord,2> > box;
     Data< int > nx;
@@ -167,6 +169,19 @@ public:
     const Vector3& getInitTranslation() const
     {
         return translation.getValue();
+    }
+
+    const Matrix3& getInitRotation() const
+    {
+        SReal x = rotation.getValue()[0] * M_PI / 180;
+        SReal y = rotation.getValue()[1] * M_PI / 180;
+        SReal z = rotation.getValue()[2] * M_PI / 180;
+
+        Matrix3 X(Vector3(1,0,0), Vector3(0, cos(x), -sin(x)), Vector3(0, sin(x), cos(x)));
+        Matrix3 Y(Vector3(cos(y), 0, sin(y)), Vector3(0, 1, 0), Vector3(-sin(y), 0, cos(y)));
+        Matrix3 Z(Vector3(cos(z), -sin(z), 0), Vector3(sin(z), cos(z), 0), Vector3(0, 0, 1));
+        
+        return X * Y * Z;
     }
 
     bool isFlipped() const
@@ -555,7 +570,7 @@ public:
 
     int addPoint(const Coord& P, int index, Real& r)
     {
-        Coord trans = this->model->getInitTranslation();
+        Coord trans = this->model->getInitRotation() * this->model->getInitTranslation();
         int i = Inherit::addPoint(P+trans, index, r);
         if (!this->mapping)
         {
