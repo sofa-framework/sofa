@@ -27,6 +27,7 @@ if "%1" == "VC8" goto vc8
 if "%1" == "VC9" goto vc9
 if "%1" == "VC10" goto vc10
 if "%1" == "VC10_BS" goto vc10_bs
+if "%1" == "VC10_BS_CMAKE" goto vc10_bs_cmake
 if "%1" == "VC9_X64" goto vc9_x64
 if "%1" == "VC10_X64" goto vc10_x64
 if "%1" == "clean" goto clean
@@ -83,11 +84,11 @@ goto common
 :vc10_bs_cmake
 REM set QMAKESPEC=win32-msvc2010
 @echo on
-@echo Making Visual project 10
+@echo Making Visual project 10 (cmake)
 call "%VS100COMNTOOLS%..\..\VC\vcvarsall.bat" x86
 echo Copying external dlls.
 xcopy ..\bin\dll_x86\*.* ..\bin\ /y /q
-cmake ..
+cmake -G"NMake Makefiles" ..
 cmake ..
 nmake
 goto common
