@@ -171,7 +171,7 @@ public:
         return translation.getValue();
     }
 
-    const Matrix3& getInitRotation() const
+    const Matrix3 getInitRotation() const
     {
         SReal x = rotation.getValue()[0] * M_PI / 180;
         SReal y = rotation.getValue()[1] * M_PI / 180;
