@@ -452,6 +452,17 @@ void DAGNode::executeVisitorTopDown(simulation::Visitor* action, NodeList& execu
         return; // skipped (already visited)
     }
 
+    if( !this->isActive() )
+    {
+        // do not execute the visitor on this node
+        statusMap[this] = PRUNED;
+
+        // in that cas we can considerer if some child are activated, the graph is not valid, so no need to continue the recursion
+
+        return;
+    }
+
+
 
     // pour chaque noeud "prune" on continue à parcourir quand même juste pour marquer le noeud comme parcouru
 
