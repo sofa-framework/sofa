@@ -50,9 +50,9 @@ int RelativeStrainMappingClass = core::RegisterObject("Map a total strain to an 
         .add< RelativeStrainMapping< E332Types > >()
         .add< RelativeStrainMapping< E333Types > >()
 
-        .add< RelativeStrainMapping< D331Types > >()
-        .add< RelativeStrainMapping< D321Types > >()
-        .add< RelativeStrainMapping< D332Types > >()
+//        .add< RelativeStrainMapping< D331Types > >()
+//        .add< RelativeStrainMapping< D321Types > >()
+//        .add< RelativeStrainMapping< D332Types > >()
         ;
 
 template class SOFA_Flexible_API RelativeStrainMapping< E331Types >;
@@ -60,9 +60,9 @@ template class SOFA_Flexible_API RelativeStrainMapping< E321Types >;
 template class SOFA_Flexible_API RelativeStrainMapping< E332Types >;
 template class SOFA_Flexible_API RelativeStrainMapping< E333Types >;
 
-template class SOFA_Flexible_API RelativeStrainMapping< D331Types >;
-template class SOFA_Flexible_API RelativeStrainMapping< D321Types >;
-template class SOFA_Flexible_API RelativeStrainMapping< D332Types >;
+//template class SOFA_Flexible_API RelativeStrainMapping< D331Types >;
+//template class SOFA_Flexible_API RelativeStrainMapping< D321Types >;
+//template class SOFA_Flexible_API RelativeStrainMapping< D332Types >;
 
 } // namespace mapping
 } // namespace component

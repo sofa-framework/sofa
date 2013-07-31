@@ -52,10 +52,10 @@ int StrainMechanicalObjectClass = core::RegisterObject ( "mechanical state vecto
         .add< MechanicalObject<E332Types> >()
         .add< MechanicalObject<E333Types> >()
 
-        .add< MechanicalObject<D331Types> >()
-        .add< MechanicalObject<D321Types> >()
-        .add< MechanicalObject<D332Types> >()
-        .add< MechanicalObject<D333Types> >()
+//        .add< MechanicalObject<D331Types> >()
+//        .add< MechanicalObject<D321Types> >()
+//        .add< MechanicalObject<D332Types> >()
+//        .add< MechanicalObject<D333Types> >()
 
         .add< MechanicalObject<I331Types> >()
 //.add< MechanicalObject<I332Types> >()
@@ -71,10 +71,10 @@ template class SOFA_Flexible_API MechanicalObject<E311Types>;
 template class SOFA_Flexible_API MechanicalObject<E332Types>;
 template class SOFA_Flexible_API MechanicalObject<E333Types>;
 
-template class SOFA_Flexible_API MechanicalObject<D331Types>;
-template class SOFA_Flexible_API MechanicalObject<D321Types>;
-template class SOFA_Flexible_API MechanicalObject<D332Types>;
-template class SOFA_Flexible_API MechanicalObject<D333Types>;
+//template class SOFA_Flexible_API MechanicalObject<D331Types>;
+//template class SOFA_Flexible_API MechanicalObject<D321Types>;
+//template class SOFA_Flexible_API MechanicalObject<D332Types>;
+//template class SOFA_Flexible_API MechanicalObject<D333Types>;
 
 template class SOFA_Flexible_API MechanicalObject<I331Types>;
 //template class SOFA_Flexible_API MechanicalObject<I332Types>;

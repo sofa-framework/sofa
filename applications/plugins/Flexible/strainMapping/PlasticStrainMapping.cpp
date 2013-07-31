@@ -50,9 +50,13 @@ int PlasticStrainMappingClass = core::RegisterObject("Map a total strain to an e
         .add< PlasticStrainMapping< E332Types > >()
         .add< PlasticStrainMapping< E333Types > >()
 
-        .add< PlasticStrainMapping< D331Types > >()
-        .add< PlasticStrainMapping< D321Types > >()
-        .add< PlasticStrainMapping< D332Types > >()
+//        .add< PlasticStrainMapping< U331Types > >()
+//        .add< PlasticStrainMapping< U321Types > >()
+
+//        .add< PlasticStrainMapping< D331Types > >()
+//        .add< PlasticStrainMapping< D321Types > >()
+//        .add< PlasticStrainMapping< D332Types > >()
+//        .add< PlasticStrainMapping< U331Types > >()
         ;
 
 template class SOFA_Flexible_API PlasticStrainMapping< E331Types >;
@@ -60,9 +64,13 @@ template class SOFA_Flexible_API PlasticStrainMapping< E321Types >;
 template class SOFA_Flexible_API PlasticStrainMapping< E332Types >;
 template class SOFA_Flexible_API PlasticStrainMapping< E333Types >;
 
-template class SOFA_Flexible_API PlasticStrainMapping< D331Types >;
-template class SOFA_Flexible_API PlasticStrainMapping< D321Types >;
-template class SOFA_Flexible_API PlasticStrainMapping< D332Types >;
+//template class SOFA_Flexible_API PlasticStrainMapping< U331Types >;
+//template class SOFA_Flexible_API PlasticStrainMapping< U321Types >;
+
+//template class SOFA_Flexible_API PlasticStrainMapping< D331Types >;
+//template class SOFA_Flexible_API PlasticStrainMapping< D321Types >;
+//template class SOFA_Flexible_API PlasticStrainMapping< D332Types >;
+//template class SOFA_Flexible_API PlasticStrainMapping< U331Types >;
 
 } // namespace mapping
 } // namespace component

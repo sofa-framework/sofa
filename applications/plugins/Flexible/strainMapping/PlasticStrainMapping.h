@@ -28,7 +28,7 @@
 #include "../initFlexible.h"
 #include "BaseStrainMapping.h"
 #include "PlasticStrainJacobianBlock.h"
-
+#include "../types/StrainTypes.h"
 #include <sofa/helper/OptionsGroup.h>
 
 
