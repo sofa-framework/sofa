@@ -75,6 +75,7 @@ RigidDistanceGridCollisionModel::RigidDistanceGridCollisionModel()
     , fileRigidDistanceGrid( initData( &fileRigidDistanceGrid, "fileRigidDistanceGrid", "load distance grid from specified file"))
     , scale( initData( &scale, 1.0, "scale", "scaling factor for input file"))
     , translation( initData( &translation, "translation", "translation to apply to input file"))
+    , rotation( initData( &rotation, "rotation", "rotation to apply to input file"))
     , sampling( initData( &sampling, 0.0, "sampling", "if not zero: sample the surface with points approximately separated by the given sampling distance (expressed in voxels if the value is negative)"))
     , box( initData( &box, "box", "Field bounding box defined by xmin,ymin,zmin, xmax,ymax,zmax") )
     , nx( initData( &nx, 64, "nx", "number of values on X axis") )
@@ -168,7 +169,10 @@ void RigidDistanceGridCollisionModel::setNewState(int index, double dt, Distance
 void RigidDistanceGridCollisionModel::updateState()
 {
     const Vector3& initTranslation = this->translation.getValue();
+    const Vector3& initRotation = this->rotation.getValue();
     bool useInitTranslation = (initTranslation != DistanceGrid::Coord());
+    bool useInitRotation = (initRotation != Vector3(0,0,0));
+
     for (int i=0; i<size; i++)
     {
         //static_cast<DistanceGridCollisionElement*>(elems[i])->recalcBBox();
@@ -178,15 +182,24 @@ void RigidDistanceGridCollisionModel::updateState()
             const RigidTypes::Coord& xform = (*rigid->getX())[i];
             elems[i].translation = xform.getCenter();
             xform.getOrientation().toMatrix(elems[i].rotation);
+            if (useInitRotation)
+                elems[i].rotation = getInitRotation();
             if (useInitTranslation)
                 elems[i].translation += elems[i].rotation * initTranslation;
             elems[i].isTransformed = true;
         }
-        else if (useInitTranslation)
+        else
         {
-            elems[i].translation = initTranslation;
-            elems[i].rotation.identity();
-            elems[i].isTransformed = true;
+            if(useInitRotation)
+            {
+                elems[i].rotation = getInitRotation();
+                elems[i].isTransformed = true;
+            }
+            if(useInitTranslation)
+            {
+                elems[i].translation = initTranslation;
+            }
+            
         }
     }
 }
