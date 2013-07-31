@@ -27,6 +27,7 @@
 
 #include <sofa/helper/helper.h>
 #include <math.h>
+#include <limits>
 
 namespace sofa
 {
@@ -215,6 +216,19 @@ T sign0( const T& v )
 {
     return v<0 ? (T)-1 : ( v>0 ? (T)1 : 0 );
 }
+
+
+// default implementation for integers
+template<class T>
+bool isEqual( T x, T y, T =std::numeric_limits<float>::epsilon() )
+{
+    assert( std::numeric_limits<T>::is_integer );
+    return x==y;
+}
+// specialization for floating points
+template<> bool isEqual( float x, float y, float threshold );
+template<> bool isEqual( double x, double y, double threshold );
+
 
 
 } // namespace helper
