@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<Node 	name="root" gravity="0 -9.81 0" dt="0.005"   >
+  <VisualStyle displayFlags="showVisualModels showBehaviorModels showForceFields showInteractionForceFields showCollisionModels" />
+  <Gravity name="G"  gravity="0 -9.8 0" />
+    <RequiredPlugin name="Sensable Plugin" pluginName="Sensable" />
+
+    <CollisionPipeline name="pipeline" depth="6" verbose="0"/>
+  <BruteForceDetection name="detection" />
+  <CollisionResponse name="response" response="default" />
+  <MinProximityIntersection name="proximity" alarmDistance="0.08" contactDistance="0.05" />
+
+  <NewOmniDriver name="Omni Driver"  listening="1" tags="Omni" forceScale="0.5" scale="50"  positionBase="0 1 -0.5"  permanent="1" />
+
+  <Node 	name="Instrument"  >
+
+    <MechanicalObject template="Rigid" name="instrumentState" tags="Omni"  />
+    <UniformMass template="Rigid" name="mass"  totalmass="0.05" />
+    <Node 	name="VisualModel" >
+      <OglModel template="ExtVec3f" name="InstrumentVisualModel"  fileMesh="data/mesh/dental_instrument.obj" translation="-0.212256 0.132361 3.55" rotation="180 0 150" material="Default Diffuse 1 1 0.2 0.2 1 Ambient 1 0.2 0.04 0.04 1 Specular 0 1 0.2 0.2 1 Emissive 0 1 0.2 0.2 1 Shininess 0 45" />
+      <RigidMapping template="Mapping&lt;Rigid,ExtVec3f&gt;" name="MM->VM mapping"  object1="instrumentState"  object2="InstrumentVisualModel" />
+    </Node>
+    <Node 	name="CollisionModel"  >
+
+      <MechanicalObject template="Vec3d" name="Particles" restScale="1" position="0 0 0 " />
+      <Point name="ParticleModel" contactStiffness="1" />
+      <RigidMapping template="MechanicalMapping&lt;Rigid,Vec3d&gt;" name="MM->CM mapping"  object1="instrumentState"  object2="Particles" />
+
+        <EnslavementForceFeedback name="forcefeedback" tags="Omni" collisionModel1="@ParticleModel" collisionModel2="" relativeStiffness="4" attractionDistance="0.03" normalsPointOut="true" contactScale="0.1" penetrationOffset="0.02"/>
+
+
+    </Node>
+
+  </Node>
+  <Node 	name="Tooth1"  >
+    <Node 	name="VisualModel"   >
+      <OglModel template="ExtVec3f" name="ToothVisualModel"  fileMesh="data/mesh/tooth.obj"  material="Default Diffuse 1 1 1 1 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 1 1 1 1 Shininess 0 45" />
+    </Node>
+    <Node 	name="CollisionModel" >
+      
+      <MeshObjLoader name="loader"  filename="data/mesh/tooth.obj" />
+      <MeshTopology src="@loader" name="ToothCollisionModel" />
+
+      <MechanicalObject src="@loader" template="Vec3d" name="toothState" />
+      
+      <DistanceGrid fileRigidDistanceGrid="data/mesh/tooth.obj" usePoints="0" proximity="0.3" contactStiffness="1"  />
+
+
+    </Node>
+  </Node>
+    <Node 	name="Tooth2"  >
+        <Node 	name="VisualModel"   >
+            <OglModel template="ExtVec3f" name="ToothVisualModel"  fileMesh="data/mesh/ToothTranslated.obj" material="Default Diffuse 1 1 1 1 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 1 1 1 1 Shininess 0 45" />
+        </Node>
+        <Node 	name="CollisionModel" >
+
+            <MeshObjLoader name="loader"  filename="data/mesh/ToothTranslated.obj" />
+            <MeshTopology src="@loader" name="ToothCollisionModel" />
+
+            <MechanicalObject src="@loader" template="Vec3d" name="toothState"/>
+   
+            <DistanceGrid fileRigidDistanceGrid="data/mesh/ToothTranslated.obj" usePoints="0" proximity="0.3" contactStiffness="1" />
+
+        </Node>
+    </Node>
+
+
+</Node>
