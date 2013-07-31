@@ -42,6 +42,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/CollisionModel.h>
+#include <sofa/helper/system/glu.h>
 
 namespace sofa
 {

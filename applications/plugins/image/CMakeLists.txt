@@ -84,7 +84,8 @@ endif()
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES} ${README_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_IMAGE")
-AddLinkerDependencies(SofaBaseVisual ${OPENGL_LIBRARIES})
+# AddLinkerDependencies(SofaBaseVisual ${OPENGL_LIBRARIES})
+AddLinkerDependencies(SofaBaseVisual)
 
 if(SOFA-EXTERNAL_HAVE_OPENCV)
 

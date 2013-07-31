@@ -28,7 +28,7 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/MatSym.h>
 #include <Eigen/Core>
-#include <Eigen/Dense>
+//#include <Eigen/Dense>
 
 namespace sofa
 {
