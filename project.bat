@@ -88,8 +88,8 @@ REM set QMAKESPEC=win32-msvc2010
 call "%VS100COMNTOOLS%..\..\VC\vcvarsall.bat" x86
 echo Copying external dlls.
 xcopy ..\bin\dll_x86\*.* ..\bin\ /y /q
-cmake -G"NMake Makefiles" ..
-cmake ..
+call cmake -G"NMake Makefiles" ..
+call cmake ..
 nmake
 goto common
 
