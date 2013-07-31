@@ -60,6 +60,7 @@ MinProximityIntersection::MinProximityIntersection()
     : BaseProximityIntersection()
     , useSphereTriangle(initData(&useSphereTriangle, true, "useSphereTriangle","activate Sphere-Triangle intersection tests"))
     , usePointPoint(initData(&usePointPoint, true, "usePointPoint","activate Point-Point intersection tests"))
+    , useSurfaceNormals(initData(&useSurfaceNormals, false, "useSurfaceNormals", "Compute the norms of the Detection Outputs by considering the normals of the surfaces involved."))
 {
 }
 
@@ -121,6 +122,9 @@ bool MinProximityIntersection::testIntersection(Capsule&, OBB&){
 
 
 
+bool MinProximityIntersection::getUseSurfaceNormals(){
+    return useSurfaceNormals.getValue();
+}
 
 
 

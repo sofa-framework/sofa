@@ -47,6 +47,7 @@ public:
     SOFA_CLASS(MinProximityIntersection,BaseProximityIntersection);
     Data<bool> useSphereTriangle;
     Data<bool> usePointPoint;
+    Data<bool> useSurfaceNormals;
 protected:
     MinProximityIntersection();
 public:
@@ -70,6 +71,7 @@ public:
     template <class DataTypes> int computeIntersection(TSphere<DataTypes>&,OBB&,OutputVector * contacts);
     int computeIntersection(Capsule&,OBB&,OutputVector * contacts);
 
+    bool getUseSurfaceNormals();
 
     void draw(const core::visual::VisualParams* vparams);
 
