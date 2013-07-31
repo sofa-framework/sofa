@@ -60,7 +60,7 @@ using namespace cimg_library;
 using namespace helper;
 
 /**
- * This class rasterizes a mesh into a boolean image (1: inside mesh, 0: outside) or a scalar image (val: inside mesh, 0: outside)
+ * This class rasterizes meshes into a boolean image (1: inside mesh, 0: outside) or a scalar image (val: inside mesh, 0: outside)
  */
 
 
@@ -114,13 +114,20 @@ public:
     typedef helper::WriteAccessor<Data< SeqEdges > > waEdges;
     helper::vector< Data< SeqEdges >*> vf_edges;
 
-//Data< double > value;
-    helper::vector< Data< double >*> vf_values;
+    typedef helper::vector<double> SeqValues;
+    typedef helper::ReadAccessor<Data< SeqValues > > raValues;
+    helper::vector< Data< SeqValues >*> vf_values;
+
+    helper::vector< Data< bool >*> vf_fillInside;
+
+
     Data< double > closingValue;
 
     Data<unsigned int> f_nbMeshes;
 
     Data<bool> gridSnap;
+
+
 
     virtual std::string getTemplateName() const    { return templateName(this);    }
     static std::string templateName(const MeshToImageEngine<ImageTypes>* = NULL) { return ImageTypes::Name();    }
@@ -148,6 +155,7 @@ public:
         deleteInputDataVector(vf_edges);
         deleteInputDataVector(vf_triangles);
         deleteInputDataVector(vf_values);
+        deleteInputDataVector(vf_fillInside);
     }
 
     virtual void init()
@@ -297,110 +305,206 @@ protected:
         CImg<T>& im=iml->getCImg();
         im.fill((T)0);
 
-        // the working image, where rasterize one mesh (with 4 values,  0=empty, 1=rasterized, 2=closing, 3=outside)
-        CImg<unsigned char> imCurrent;
-        imCurrent.assign( dim[0], dim[1], dim[2], 1 );
-
-
-
         for( unsigned meshId=0 ; meshId<f_nbMeshes.getValue() ; ++meshId )
         {
-            imCurrent.fill((unsigned char)0);
-
-            raPositions pos(*this->vf_positions[meshId]);       unsigned int nbp = pos.size();
-            raTriangles tri(*this->vf_triangles[meshId]);       unsigned int nbtri = tri.size();
-            raEdges edg(*this->vf_edges[meshId]);               unsigned int nbedg = edg.size();
-
-            if(!nbp || (!nbtri && !nbedg) ) continue;
-
-
-            //        bool isTransformSet=false;
-            //        if(this->transform.isSet()) { isTransformSet=true; if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: Voxelize using existing transform.."<<std::endl;}
-
-
-
-            // draw all rasterized object with color 1
-
-            // draw edges
-            if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: "<<this->getName()<<":  Voxelizing edges (mesh "<<meshId<<")..."<<std::endl;
-
-    #ifdef USING_OMP_PRAGMAS
-            #pragma omp parallel for
-    #endif
-            for(unsigned int i=0; i<nbedg; i++)
-            {
-                Coord pts[2];
-                for(unsigned int j=0; j<2; j++) pts[j] = (tr->toImage(Coord(pos[edg[i][j]])));
-                this->draw_line(imCurrent,pts[0],pts[1],(unsigned char)1,this->subdiv.getValue());
-            }
-
-//            // draw filled faces
-            if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: "<<this->getName()<<":  Voxelizing triangles (mesh "<<meshId<<")..."<<std::endl;
-
-    #ifdef USING_OMP_PRAGMAS
-            #pragma omp parallel for
-    #endif
-            for(unsigned int i=0; i<nbtri; i++)
-            {
-                Coord pts[3];
-                for(unsigned int j=0; j<3; j++) pts[j] = (tr->toImage(Coord(pos[tri[i][j]])));
-                this->draw_triangle(imCurrent,pts[0],pts[1],pts[2],(unsigned char)1,this->subdiv.getValue());
-                this->draw_triangle(imCurrent,pts[1],pts[2],pts[0],(unsigned char)1,this->subdiv.getValue());  // fill along two directions to be sure that there is no hole
-            }
-
-
-
-
-            // draw closing faces with color 2
-
-            raTriangles cltri(this->closingTriangles);
-            unsigned previousClosingTriSize = cltri.size();
-
-
-            this->closeMesh( meshId );
-
-            raPositions clpos(this->closingPosition);
-
-    #ifdef USING_OMP_PRAGMAS
-            #pragma omp parallel for
-    #endif
-            for(unsigned int i=previousClosingTriSize; i<cltri.size(); i++)
-            {
-                Coord pts[3];
-                for(unsigned int j=0; j<3; j++) pts[j] = (tr->toImage(Coord(clpos[cltri[i][j]])));
-                this->draw_triangle(imCurrent,pts[0],pts[1],pts[2],(unsigned char)2,this->subdiv.getValue());
-                this->draw_triangle(imCurrent,pts[1],pts[2],pts[0],(unsigned char)2,this->subdiv.getValue());  // fill along two directions to be sure that there is no hole
-            }
-
-
-
-
-            T color = (T)this->vf_values[meshId]->getValue();
-            T colorClosing;
-            if( this->closingValue.getValue()==0 ) colorClosing=color;
-            else colorClosing = (T)this->closingValue.getValue();
-
-
-            // flood fill from the exterior point (0,0,0) with the color 3 so every voxel==3 are outside
-            if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: "<<this->getName()<<":  Filling object (mesh "<<meshId<<")..."<<std::endl;
-
-            unsigned char fillColor = (unsigned char)3;
-            imCurrent.draw_fill(0,0,0,&fillColor);
-            cimg_foroff(imCurrent,off)
-            {
-                if( imCurrent[off]!=fillColor ) // not outside
-                {
-                    if( !imCurrent[off] || imCurrent[off]==(unsigned char)1 ) im[off]=color; // inside or rasterized
-                    else if( imCurrent[off]==(unsigned char)2 ) im[off]=colorClosing; // closing
-                }
-            }
+            if( !vf_fillInside[meshId]->getValue() || vf_values[meshId]->getValue().size() > 1 )
+                rasterizeSeveralValues( meshId, im, tr );
+            else
+                rasterizeUniqueValueAndFill( meshId, im, tr );
         }
 
         if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: "<<this->getName()<<": Voxelization done"<<std::endl;
 
-
         cleanDirty();
     }
+
+
+    // regular rasterization like first implementation, with inside filled by the unique value
+    void rasterizeUniqueValueAndFill( unsigned meshId, CImg<T>& im, const waTransform& tr )
+    {
+        raPositions pos(*this->vf_positions[meshId]);       unsigned int nbp = pos.size();
+        raTriangles tri(*this->vf_triangles[meshId]);       unsigned int nbtri = tri.size();
+        raEdges edg(*this->vf_edges[meshId]);               unsigned int nbedg = edg.size();
+
+        if(!nbp || (!nbtri && !nbedg) ) return;
+
+
+        CImg<unsigned char> imCurrent;
+        imCurrent.assign( im.width(), im.height(), im.depth(), 1 );
+        imCurrent.fill((unsigned char)0);
+
+
+        //        bool isTransformSet=false;
+        //        if(this->transform.isSet()) { isTransformSet=true; if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: Voxelize using existing transform.."<<std::endl;}
+
+
+
+        // draw all rasterized object with color 1
+
+        // draw edges
+        if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: "<<this->getName()<<":  Voxelizing edges (mesh "<<meshId<<")..."<<std::endl;
+
+
+#ifdef USING_OMP_PRAGMAS
+        #pragma omp parallel for
+#endif
+        for(unsigned int i=0; i<nbedg; i++)
+        {
+            Coord pts[2];
+            for(unsigned int j=0; j<2; j++) pts[j] = (tr->toImage(Coord(pos[edg[i][j]])));
+            draw_line(imCurrent,pts[0],pts[1],(unsigned char)1,this->subdiv.getValue());
+        }
+
+//            // draw filled faces
+        if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: "<<this->getName()<<":  Voxelizing triangles (mesh "<<meshId<<")..."<<std::endl;
+
+#ifdef USING_OMP_PRAGMAS
+        #pragma omp parallel for
+#endif
+        for(unsigned int i=0; i<nbtri; i++)
+        {
+            Coord pts[3];
+            for(unsigned int j=0; j<3; j++) pts[j] = (tr->toImage(Coord(pos[tri[i][j]])));
+            draw_triangle(imCurrent,pts[0],pts[1],pts[2],(unsigned char)1,this->subdiv.getValue());
+            draw_triangle(imCurrent,pts[1],pts[2],pts[0],(unsigned char)1,this->subdiv.getValue());  // fill along two directions to be sure that there is no hole
+        }
+
+
+
+
+        // draw closing faces with color 2
+
+        raTriangles cltri(this->closingTriangles);
+        unsigned previousClosingTriSize = cltri.size();
+
+
+        this->closeMesh( meshId );
+
+        raPositions clpos(this->closingPosition);
+
+#ifdef USING_OMP_PRAGMAS
+        #pragma omp parallel for
+#endif
+        for(unsigned int i=previousClosingTriSize; i<cltri.size(); i++)
+        {
+            Coord pts[3];
+            for(unsigned int j=0; j<3; j++) pts[j] = (tr->toImage(Coord(clpos[cltri[i][j]])));
+            draw_triangle(imCurrent,pts[0],pts[1],pts[2],(unsigned char)2,this->subdiv.getValue());
+            draw_triangle(imCurrent,pts[1],pts[2],pts[0],(unsigned char)2,this->subdiv.getValue());  // fill along two directions to be sure that there is no hole
+        }
+
+
+
+
+        T color = (T)this->vf_values[meshId]->getValue()[0];
+        T colorClosing;
+        if( this->closingValue.getValue()==0 ) colorClosing=color;
+        else colorClosing = (T)this->closingValue.getValue();
+
+
+        // flood fill from the exterior point (0,0,0) with the color 3 so every voxel==3 are outside
+        if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: "<<this->getName()<<":  Filling object (mesh "<<meshId<<")..."<<std::endl;
+
+        unsigned char fillColor = (unsigned char)3;
+        imCurrent.draw_fill(0,0,0,&fillColor);
+        cimg_foroff(imCurrent,off)
+        {
+            if( imCurrent[off]!=fillColor ) // not outside
+            {
+                if( !imCurrent[off] || imCurrent[off]==(unsigned char)1 ) im[off]=color; // inside or rasterized
+                else if( imCurrent[off]==(unsigned char)2 ) im[off]=colorClosing; // closing
+            }
+        }
+    }
+
+
+
+
+    // pure triangle/edge rasterization with interpolated values without inside filling
+    void rasterizeSeveralValues( unsigned meshId, CImg<T>& im, const waTransform& tr )
+    {
+        raPositions pos(*this->vf_positions[meshId]);       unsigned int nbp = pos.size();
+        raTriangles tri(*this->vf_triangles[meshId]);       unsigned int nbtri = tri.size();
+        raEdges edg(*this->vf_edges[meshId]);               unsigned int nbedg = edg.size();
+        raValues val(*this->vf_values[meshId]);				unsigned int nbval = val.size();
+
+        if(!nbp || (!nbtri && !nbedg) ) return;
+
+
+        //        bool isTransformSet=false;
+        //        if(this->transform.isSet()) { isTransformSet=true; if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: Voxelize using existing transform.."<<std::endl;}
+
+
+
+        // draw all rasterized object with color 1
+
+        // draw edges
+        if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: "<<this->getName()<<":  Voxelizing edges (mesh "<<meshId<<")..."<<std::endl;
+
+#ifdef USING_OMP_PRAGMAS
+        #pragma omp parallel for
+#endif
+        for(unsigned int i=0; i<nbedg; i++)
+        {
+            Coord pts[2];
+            T colors[2];
+            for(unsigned int j=0; j<2; j++)
+            {
+                pts[j] = (tr->toImage(Coord(pos[edg[i][j]])));
+
+                if( edg[i][j]<nbval ) colors[j] = (T)val[edg[i][j]];
+                else colors[j] = val[nbval-1];
+            }
+            draw_line(im,pts[0],pts[1],colors[0],colors[1],this->subdiv.getValue());
+        }
+
+//            // draw filled faces
+        if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: "<<this->getName()<<":  Voxelizing triangles (mesh "<<meshId<<")..."<<std::endl;
+
+#ifdef USING_OMP_PRAGMAS
+        #pragma omp parallel for
+#endif
+        for(unsigned int i=0; i<nbtri; i++)
+        {
+            Coord pts[3];
+            T colors[3];
+            for(unsigned int j=0; j<3; j++)
+            {
+                pts[j] = (tr->toImage(Coord(pos[tri[i][j]])));
+                if( tri[i][j]<nbval ) colors[j] = (T)val[tri[i][j]];
+                else colors[j] = val[nbval-1];
+            }
+            draw_triangle(im,pts[0],pts[1],pts[2],colors[0],colors[1],colors[2],this->subdiv.getValue());
+            draw_triangle(im,pts[1],pts[2],pts[0],colors[1],colors[2],colors[0],this->subdiv.getValue());  // fill along two directions to be sure that there is no hole
+        }
+
+
+
+
+        // draw closing faces with color 2
+
+        raTriangles cltri(this->closingTriangles);
+        unsigned previousClosingTriSize = cltri.size();
+
+
+        this->closeMesh( meshId );
+
+        raPositions clpos(this->closingPosition);
+
+        T colorClosing = (T)this->closingValue.getValue();
+
+#ifdef USING_OMP_PRAGMAS
+        #pragma omp parallel for
+#endif
+        for(unsigned int i=previousClosingTriSize; i<cltri.size(); i++)
+        {
+            Coord pts[3];
+            for(unsigned int j=0; j<3; j++) pts[j] = (tr->toImage(Coord(clpos[cltri[i][j]])));
+            this->draw_triangle(im,pts[0],pts[1],pts[2],colorClosing,this->subdiv.getValue());
+            this->draw_triangle(im,pts[1],pts[2],pts[0],colorClosing,this->subdiv.getValue());  // fill along two directions to be sure that there is no hole
+        }
+    }
+
 
 
     virtual void draw(const core::visual::VisualParams* vparams)
@@ -409,20 +513,13 @@ protected:
     }
 
 
+
+
     template<class PixelT>
     void draw_line(CImg<PixelT>& im,const Coord& p0,const Coord& p1,const PixelT& color,const unsigned int subdiv)
     // floating point bresenham
     {
-          Coord P0(p0),P1(p1);
-
-//        unsigned int dim[3]={im.width(),im.height(),im.depth()};
-//        for(unsigned int j=0;j<3;j++)
-//        {
-//            if(P0[j]>P1[j]) {Coord tmp(P0); P0=P1; P1=tmp;}
-//            if (P1[j]<0 || P0[j]>=dim[j]) return;
-//            if (P0[j]<0) { const Real D = (Real)1.0 + P1[j] - P0[j]; for(unsigned int k=0;k<3;k++) if(j!=k) P0[k]-=(int)(P0[j]*((Real)1.0 + P1[k] - P0[k])/D);  P0[j] = 0; }
-//            if (P1[j]>=dim[j]) { const Real d = P1[j] - (Real)dim[j], D = (Real)1.0 + P1[j] - P0[j]; for(unsigned int k=0;k<3;k++) if(j!=k) P1[k]+=(int)(d*((Real)1.0 + P0[k] - P1[k])/D);  P1[j] = (Real)dim[j] - (Real)1.0; }
-//        }
+        Coord P0(p0),P1(p1);
 
         Coord delta = P1 - P0;
         unsigned int dmax = cimg::max(cimg::abs(delta[0]),cimg::abs(delta[1]),cimg::abs(delta[2]));
@@ -437,20 +534,39 @@ protected:
     }
 
     template<class PixelT>
+    void draw_line(CImg<PixelT>& im,const Coord& p0,const Coord& p1,const Real& color0,const Real& color1,const unsigned int subdiv)
+    // floating point bresenham
+    {
+        Coord P0(p0),P1(p1);
+
+        Coord delta = P1 - P0;
+        unsigned int dmax = cimg::max(cimg::abs(delta[0]),cimg::abs(delta[1]),cimg::abs(delta[2]));
+        dmax*=subdiv; // divide step to avoid possible holes
+        Coord dP = delta/(Real)dmax;
+        Coord P (P0);
+        for (unsigned int t = 0; t<=dmax; ++t)
+        {
+            PixelT color;
+            if( dmax==0 )
+            {
+                color = 0.5*(color0+color1);
+            }
+            else
+            {
+                Real u = (Real)t / (Real)dmax;
+                color = (PixelT)(color0 * (1.0 - u) + color1 * u);
+            }
+
+            im((unsigned int)sofa::helper::round(P[0]),(unsigned int)sofa::helper::round(P[1]),(unsigned int)sofa::helper::round(P[2]))=color;
+            P+=dP;
+        }
+    }
+
+    template<class PixelT>
     void draw_triangle(CImg<PixelT>& im,const Coord& p0,const Coord& p1,const Coord& p2,const PixelT& color,const unsigned int subdiv)
     // double bresenham
     {
         Coord P0(p0),P1(p1);
-
-
-//        unsigned int dim[3]={im.width(),im.height(),im.depth()};
-//        for(unsigned int j=0;j<3;j++)
-//        {
-//            if(P0[j]>P1[j]) {Coord tmp(P0); P0=P1; P1=tmp;}
-//            if (P1[j]<0 || P0[j]>=dim[j]) return;
-//            if (P0[j]<0) { const Real D = (Real)1.0 + P1[j] - P0[j]; for(unsigned int k=0;k<3;k++) if(j!=k) P0[k]-=(int)(P0[j]*((Real)1.0 + P1[k] - P0[k])/D);  P0[j] = 0; }
-//            if (P1[j]>=dim[j]) { const Real d = P1[j] - (Real)dim[j], D = (Real)1.0 + P1[j] - P0[j]; for(unsigned int k=0;k<3;k++) if(j!=k) P1[k]+=(int)(d*((Real)1.0 + P0[k] - P1[k])/D);  P1[j] = (Real)dim[j] - (Real)1.0; }
-//        }
 
         Coord delta = P1 - P0;
         unsigned int dmax = cimg::max(cimg::abs(delta[0]),cimg::abs(delta[1]),cimg::abs(delta[2]));
@@ -460,6 +576,27 @@ protected:
         for (unsigned int t = 0; t<=dmax; ++t)
         {
             this->draw_line(im,P,p2,color,subdiv);
+            P+=dP;
+        }
+    }
+
+    template<class PixelT>
+    void draw_triangle(CImg<PixelT>& im,const Coord& p0,const Coord& p1,const Coord& p2,const Real& color0,const Real& color1,const Real& color2,const unsigned int subdiv)
+    // double bresenham
+    {
+        Coord P0(p0),P1(p1);
+
+        Coord delta = P1 - P0;
+        unsigned int dmax = cimg::max(cimg::abs(delta[0]),cimg::abs(delta[1]),cimg::abs(delta[2]));
+        dmax*=subdiv; // divide step to avoid possible holes
+        Coord dP = delta/(Real)dmax;
+        Coord P (P0);
+        for (unsigned int t = 0; t<=dmax; ++t)
+        {
+            Real u = (Real)t / (Real)dmax;
+            PixelT color = (PixelT)(color0 * (1.0 - u) + color1 * u);
+
+            this->draw_line(im,P,p2,color,color2,subdiv);
             P+=dP;
         }
     }
@@ -548,7 +685,13 @@ protected:
         createInputDataVector(n, vf_positions, "position", "input positions for mesh ", SeqPositions(), true);
         createInputDataVector(n, vf_edges, "edges", "input edges for mesh ", SeqEdges(), true);
         createInputDataVector(n, vf_triangles, "triangles", "input triangles for mesh ", SeqTriangles(), true);
-        createInputDataVector(n, vf_values, "value", "pixel value inside mesh ", 1., false);
+        createInputDataVector(n, vf_values, "value", "pixel value for mesh ", SeqValues(), false);
+        // vf_values default value
+        for (int i=0; i<nb; ++i)
+        {
+            vf_values[i]->beginEdit()->push_back(1.0);
+        }
+        createInputDataVector(n, vf_fillInside, "fillInside", "fill the inside? (only valable for unique value)", true, false);
         if (n != f_nbMeshes.getValue())
             f_nbMeshes.setValue(n);
     }

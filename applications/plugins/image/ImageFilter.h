@@ -58,6 +58,8 @@
 #define RESAMPLE 20
 #define SELECTCHANNEL 21
 #define SKELETON 22
+#define MEANDIFFUSION 23
+
 
 
 namespace sofa
@@ -131,7 +133,7 @@ public:
         inputTransform.setReadOnly(true);
         outputImage.setReadOnly(true);
         outputTransform.setReadOnly(true);
-        helper::OptionsGroup filterOptions(23	,"0 - None"
+        helper::OptionsGroup filterOptions(24	,"0 - None"
                                            ,"1 - Blur ( sigma )"
                                            ,"2 - Blur Median ( n )"
                                            ,"3 - Blur Bilateral ( sigma_s, sigma_r)"
@@ -154,6 +156,7 @@ public:
                                            ,"20 - Resample ( ox , oy , oz , dimx , dimy , dimz , dx , dy , dz  , nearest neighb.|linear|cubic)"
                                            ,"21 - SelectChannels ( c0, c1 )"
                                            ,"22 - Skeleton from distance map"
+                                           ,"23 - Mean Diffusion ( max iterations=0 (0->until convergence), fixed boundaries=1, exclude outside=1, threshold=eps )"
                                            );
         filterOptions.setSelectedItem(NONE);
         filter.setValue(filterOptions);
@@ -484,6 +487,87 @@ protected:
                     }
                     img(l) = inimg(l).get_skeleton(flux,inimg(l),curve,thresh);
                 }
+            }
+            break;
+
+        case MEANDIFFUSION:
+            if(updateImage)
+            {
+                typename InImageTypes::imCoord dim = in->getDimensions();
+
+                // a mask to know which pixel to compute
+                CImg<bool> mask;
+                mask.assign( dim[0], dim[1], dim[2], 1 );
+
+                unsigned int maxDiffusionIterations=0; if(p.size()) maxDiffusionIterations=(unsigned int)p[0];
+                bool fixedBoundaries=true; if(p.size()>1) fixedBoundaries=(p[1]!=0);
+                bool excludeOutside=true; if(p.size()>2) excludeOutside=(p[2]!=0);
+                To threshold=std::numeric_limits<To>::epsilon(); if(p.size()>3) threshold=(To)p[3];
+
+                CImg<To> imTmp;
+
+                cimglist_for(inimg,l)
+                {
+                    // fill mask
+                    if( fixedBoundaries )
+                    {
+                        mask.assign( img(l) ); // create boolean mask by copy and automatic cast
+
+                        if( excludeOutside )
+                        {
+                            bool fillColor = true;
+                            mask.draw_fill(0,0,0,&fillColor);
+                        }
+                    }
+
+                    imTmp.assign( img(l) ); // copy
+
+                    bool change = true;
+                    unsigned i;
+
+                    for ( i = 0 ; change && ( maxDiffusionIterations==0 || i < maxDiffusionIterations ) ; ++i )
+                    {
+                        change = false;
+
+                        cimg_forXYZ(mask,x,y,z)
+                        {
+                            if( mask(x,y,z) == false ) // to compute
+                            {
+                                SReal mean = (SReal)0.0;
+                                unsigned int nb = 0;
+                                for(int xx=x-1;xx<=x+1;++xx)
+                                    for(int yy=y-1;yy<=y+1;++yy)
+                                        for(int zz=z-1;zz<=z+1;++zz)
+                                        {
+                                            if( xx >= 0 && xx<mask.width() &&
+                                                yy >= 0 && yy<mask.height() &&
+                                                zz >= 0 && zz<mask.depth() )
+                                            {
+                                                ++nb;
+                                                mean+=(SReal)img(l)(xx,yy,zz);
+                                            }
+                                        }
+                                mean /= (SReal)nb;
+
+                                assert( nb!=0 );
+
+
+                                imTmp(x, y, z) = (To)mean;
+
+                                if( !helper::isEqual( (To)mean, img(l)(x, y, z), threshold ) )
+                                {
+                                    change = true;
+                                }
+                            }
+                        }
+
+                        if( change ) img(l).swap(imTmp);
+                    }
+
+                    if(this->f_printLog.getValue()) std::cout<<SOFA_CLASS_METHOD<<"MEANDIFFUSION ("<<this->getName()<<"): "<<i<<" diffusion iterations on "<<l<<"-th image"<<std::endl;
+
+                }
+
             }
             break;
 
