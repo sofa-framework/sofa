@@ -115,6 +115,7 @@ set(SOURCE_FILES
     MarchingCubeUtility.cpp
     decompose.cpp
     Quater.cpp
+    rmath.cpp
     RandomGenerator.cpp
     system/SetDirectory.cpp
     system/FileRepository.cpp
