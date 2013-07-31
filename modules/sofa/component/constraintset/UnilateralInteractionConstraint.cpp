@@ -102,10 +102,12 @@ void UnilateralConstraintResolutionWithFriction::resolution(int line, double** /
 
     normFt = sqrt(force[line+1]*force[line+1] + force[line+2]*force[line+2]);
 
-    if(normFt > _mu*force[line])
+	double fN = _mu*force[line];
+    if(normFt > fN)
     {
-        force[line+1] *= _mu*force[line]/normFt;
-        force[line+2] *= _mu*force[line]/normFt;
+		double factor = fN / normFt;
+        force[line+1] *= factor;
+        force[line+2] *= factor;
     }
 }
 
