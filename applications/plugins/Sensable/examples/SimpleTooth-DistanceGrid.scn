@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <Node 	name="root" gravity="0 -9.81 0" dt="0.005"   >
-  <VisualStyle displayFlags="showVisualModels showBehaviorModels showForceFields showInteractionForceFields" />
+  <VisualStyle displayFlags="showVisualModels showForceFields showInteractionForceFields" />
   <Gravity name="G"  gravity="0 -9.8 0" />
   <RequiredPlugin name="Sensable Plugin" pluginName="Sensable" />
 
@@ -37,7 +37,7 @@
     </Node>
     <Node 	name="CollisionModel" >
       
-      <MeshObjLoader name="loader"  filename="data/mesh/tooth_closed.obj" scale="10"/>
+      <MeshObjLoader name="loader"  filename="data/mesh/tooth_closed.obj"/>
       <MeshTopology src="@loader" name="ToothCollisionModel" />
 
       <MechanicalObject src="@loader" template="Vec3d" name="toothState" />
