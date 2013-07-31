@@ -333,6 +333,13 @@ int MeshMinProximityIntersection::computeIntersection(Triangle& e2, Point& e1, O
         detection->normal= Vector3(1,0,0);
     }
     detection->value -= contactDist;
+
+    if(intersection->getUseSurfaceNormals())
+    {
+        int normalIndex = e2.getIndex();
+        detection->normal = e2.model->getNormals()[normalIndex];
+    }
+
     return 1;
 }
 
@@ -437,6 +444,7 @@ int MeshMinProximityIntersection::computeIntersection(Line& e2, Point& e1, Outpu
         detection->normal= Vector3(1,0,0);
     }
     detection->value -= contactDist;
+
     return 1;
 }
 
