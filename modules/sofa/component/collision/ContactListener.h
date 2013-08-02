@@ -26,7 +26,7 @@
 #define SOFA_CONTACT_LISTENER_H
 
 #include <sofa/core/objectmodel/BaseObject.h>
-
+#include <sofa/component/component.h>
 #include <sofa/core/collision/Contact.h>
 //#include <sofa/core/collision/DetectionOutput.h>
 #include <sofa/helper/vector.h>
@@ -51,7 +51,7 @@ namespace sofa
 			
 
 
-			class ContactListener : public virtual core::objectmodel::BaseObject
+			class SOFA_BASE_COLLISION_API ContactListener : public virtual core::objectmodel::BaseObject
 			{
 			public:
 
