@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_CONTROLLER_ENSLAVEMENTFORCEFEEDBACK_H
 #define SOFA_COMPONENT_CONTROLLER_ENSLAVEMENTFORCEFEEDBACK_H
 
-#include <sofa/core/collision/ContactListener.h>
+#include <sofa/component/collision/ContactListener.h>
 #include <sofa/core/collision/DetectionOutput.h>
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/component/controller/ForceFeedback.h>
