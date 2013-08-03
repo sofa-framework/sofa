@@ -143,7 +143,7 @@ int TriangleOctree::nearestTriangle (int minIndex,
     //Triangle t1 (tm, minIndex);
     TriangleOctreeRoot::Tri t1 = (*tm->octreeTriangles)[minIndex];
     double minDist;
-    double t, u, v;
+    SReal t, u, v;
     //if (intersectionSolver.NewComputation (&t1, origin, direction, t, u, v))
     if (intersectionSolver.NewComputation (pos[t1[0]], pos[t1[1]], pos[t1[2]], origin, direction, t, u, v))
     {
@@ -507,7 +507,7 @@ void TriangleOctree::allTriangles (const Vector3 & origin,
     static RayTriangleIntersection intersectionSolver;
     Vector3 P;
     const TriangleOctreeRoot::VecCoord& pos = *tm->octreePos;
-    double t, u, v;
+    SReal t, u, v;
     for (unsigned int i = 0; i < objects.size (); i++)
     {
         TriangleOctreeRoot::Tri t2 = (*tm->octreeTriangles)[objects[i]];
