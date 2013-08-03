@@ -154,16 +154,16 @@ public:
     virtual bool useContinuous() const { return false; }
 
     /// Return the alarm distance (must return 0 if useProximity() is false)
-    virtual double getAlarmDistance() const { return 0.0; }
+    virtual SReal getAlarmDistance() const { return (SReal)0.0; }
 
     /// Return the contact distance (must return 0 if useProximity() is false)
-    virtual double getContactDistance() const { return 0.0; }
+    virtual SReal getContactDistance() const { return (SReal)0.0; }
 
     /// Set the alarm distance (must return 0 if useProximity() is false)
-    virtual void setAlarmDistance(double) { return; }
+    virtual void setAlarmDistance(SReal) { return; }
 
     /// Set the contact distance (must return 0 if useProximity() is false)
-    virtual void setContactDistance(double) { return; }
+    virtual void setContactDistance(SReal) { return; }
 
 
     /// Actions to accomplish when the broadPhase is started. By default do nothing.
