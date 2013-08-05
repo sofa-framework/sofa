@@ -98,6 +98,8 @@ public:
         //QObject::connect(this,SIGNAL(toggled(bool)),slider,SLOT(setVisible(bool)));
         //QObject::connect(this,SIGNAL(toggled(bool)),label,SLOT(setVisible(bool)));
 
+        QObject::connect(slider,SIGNAL(valueChanged(int)),this,SIGNAL(valueChanged()));
+
         QHBoxLayout *layout = new QHBoxLayout(this);
         layout->setMargin(0);
         layout->setSpacing(10);
@@ -111,8 +113,8 @@ public:
     //void setChecked(bool val) { toggle->setChecked(val);}
 
 signals:
-    void toggled(bool);
-
+    //void toggled(bool);
+    void valueChanged();
 public slots:
 
     void change(int i)
@@ -130,6 +132,8 @@ public slots:
 
     void changeSlider ( int delta ) { slider->setValue(slider->value() + delta ); }
     void setSlider ( int value ) { slider->setValue(value ); }
+
+    QSlider *getSlider(){return slider;}
 
 protected:
     //QCheckBox* toggle;
@@ -156,6 +160,7 @@ public slots:
     virtual void setVisibleZY(bool)=0;
     virtual void setVisualModel(bool)=0;
     virtual void setSliders(sofa::defaulttype::Vec3i v)=0;
+    virtual void changeSlider()=0;
     
 signals:
     void setCheckedXY(bool);
@@ -167,7 +172,7 @@ signals:
     void mousereleaseevent();
     
     
-    
+    void sliderChanged(sofa::defaulttype::Vec3i v);
     void onPlane(const unsigned in,const sofa::defaulttype::Vec3d&,const sofa::defaulttype::Vec3d&,const QString&);
 };
 
@@ -239,6 +244,9 @@ public:
             if(d.getDimensions()[2]>1)
             {
                 optionsXY = new Options(graphXY,parent,0,graphXY->getIndexMax(),graphXY->getIndex(),optionheight);
+
+                QObject::connect(optionsXY,SIGNAL(valueChanged()),this,SLOT(changeSlider()));
+
             //    QObject::connect(optionsXY,SIGNAL(toggled(bool)),graphXY,SLOT(setVisible(bool)));
                 QObject::connect(graphXY,SIGNAL(wheelevent(int)),optionsXY,SLOT(changeSlider(int)));
                 if(graphXY->getIndex()>graphXY->getIndexMax()) emit this->setCheckedXY(false);// optionsXY->setChecked(false);
@@ -256,6 +264,8 @@ public:
             if(d.getDimensions()[1]>1)
             {
                 optionsXZ = new Options(graphXZ,parent,0,graphXZ->getIndexMax(),graphXZ->getIndex(),optionheight);
+                QObject::connect(optionsXZ,SIGNAL(valueChanged()),this,SLOT(changeSlider()));
+
            //     QObject::connect(optionsXZ,SIGNAL(toggled(bool)),graphXZ,SLOT(setVisible(bool)));
                 QObject::connect(graphXZ,SIGNAL(wheelevent(int)),optionsXZ,SLOT(changeSlider(int)));
                 if(graphXZ->getIndex()>graphXZ->getIndexMax()) emit this->setCheckedXZ(false);//optionsXZ->setChecked(false);
@@ -273,7 +283,9 @@ public:
             if(d.getDimensions()[0]>1)
             {
                 optionsZY = new Options(graphZY,parent,0,graphZY->getIndexMax(),graphZY->getIndex(),optionheight);
-             //   QObject::connect(optionsZY,SIGNAL(toggled(bool)),graphZY,SLOT(setVisible(bool)));
+                QObject::connect(optionsZY,SIGNAL(valueChanged()),this,SLOT(changeSlider()));
+
+                //   QObject::connect(optionsZY,SIGNAL(toggled(bool)),graphZY,SLOT(setVisible(bool)));
                 QObject::connect(graphZY,SIGNAL(wheelevent(int)),optionsZY,SLOT(changeSlider(int)));
                 if(graphZY->getIndex()>graphZY->getIndexMax()) emit this->setCheckedZY(false);//optionsZY->setChecked(false);
             }
@@ -423,6 +435,15 @@ public:
         this->optionsXY->setSlider(v.z());
         this->optionsXZ->setSlider(v.y());
         this->optionsZY->setSlider(v.x());
+    }
+
+    void changeSlider()
+    {
+        sofa::defaulttype::Vec3i v;
+
+        v.set(this->optionsZY->getSlider()->value(),this->optionsXZ->getSlider()->value(),this->optionsXY->getSlider()->value());
+
+        emit sliderChanged(v);
     }
 };
 

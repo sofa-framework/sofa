@@ -32,14 +32,25 @@ namespace qt
 class SOFA_IMAGE_API LabelPointsBySectionImageToolBoxAction : public LabelImageToolBoxAction
 {
 Q_OBJECT
+public:
+    typedef TableWidgetForLabelPointBySectionToolBoxAction::Point Point;
+    typedef TableWidgetForLabelPointBySectionToolBoxAction::MapSection MapSection;
 
-    QGraphicsLineItem *lineH[3], *lineV[3];
+private:
+    //QGraphicsLineItem *lineH[3], *lineV[3];
+
+    QGraphicsPathItem* path[3],*oldpath[3];
+
     
     TableWidgetForLabelPointBySectionToolBoxAction * tablewidget;
     
-    
     QPushButton *xyAxis, *xzAxis, *zyAxis;
 
+    MapSection mapsection;
+
+    bool addPoints;
+    int currentSlide;
+    int oldSlide;
 public:
     LabelPointsBySectionImageToolBoxAction(sofa::component::engine::LabelImageToolBox* lba,QObject *parent);
     ~LabelPointsBySectionImageToolBoxAction();
@@ -48,8 +59,8 @@ public:
     
     
     void createListPointWidget();
-    void createAxisSelection();
-    
+    void createAxisSelection(); 
+
 private:
     int currentAxis();
 
@@ -57,15 +68,18 @@ public slots:
     virtual void addOnGraphs();
     virtual void updateGraphs();
     virtual void updateColor();
-    
+    virtual void optionChangeSection(sofa::defaulttype::Vec3i);
     void changeSection(int);
-    
+    //void changeSection2(int);
+    void mouseMove(const unsigned int axis,const sofa::defaulttype::Vec3d& imageposition,const sofa::defaulttype::Vec3d& position3D,const QString& value);
+    void addToPath(const unsigned int axis,const sofa::defaulttype::Vec3d& imageposition,const sofa::defaulttype::Vec3d& position3D);
+
 private slots:
     void selectionPointButtonClick(bool);
     void selectionPointEvent(int mouseevent, const unsigned int axis,const sofa::defaulttype::Vec3d& imageposition,const sofa::defaulttype::Vec3d& position3D,const QString& value);
     void sectionButtonClick();
     void axisChecked(bool b);
-    
+
     
 private:
     QAction* select;

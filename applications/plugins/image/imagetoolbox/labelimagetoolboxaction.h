@@ -67,16 +67,19 @@ public slots:
     virtual void updateColor()=0;
     QColor color();
     
-    void guiChangeSection(defaulttype::Vec3i s)
-    {
-        d_section = s;
-    }
+
+
+
+    virtual void mouseMove(const unsigned int /*axis*/,const sofa::defaulttype::Vec3d& /*imageposition*/,const sofa::defaulttype::Vec3d& /*position3D*/,const QString& /*value*/){}
+    virtual void optionChangeSection(sofa::defaulttype::Vec3i){}
     
 signals:
     void clickImage(int mouseevent, const unsigned int axis,const sofa::defaulttype::Vec3d& imageposition,const sofa::defaulttype::Vec3d& position3D,const QString& value);
-    
+
     void sectionChanged(sofa::defaulttype::Vec3i);
     
+    void guiChangeSection(defaulttype::Vec3i s);
+
 private:
     QAction *a_color;
     
@@ -84,6 +87,7 @@ private:
 private slots:
     void clickColor();
     void selectColor(QColor c);
+
     
 };
 

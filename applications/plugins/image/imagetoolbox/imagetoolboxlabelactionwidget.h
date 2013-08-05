@@ -58,6 +58,7 @@ public:
         connect(cw,SIGNAL(mousereleaseevent()),this,SLOT(graph_mousereleaseevent()));
         
         connect(this,SIGNAL(labelChangeGui(sofa::defaulttype::Vec3i)),cw,SLOT(setSliders(sofa::defaulttype::Vec3i)));
+        connect(cw,SIGNAL(sliderChanged(sofa::defaulttype::Vec3i)),this,SIGNAL(optionChangeSection(sofa::defaulttype::Vec3i)));
         
     }
     
@@ -115,9 +116,9 @@ public:
             
             
             connect(this,SIGNAL(mouseevent(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)),la,SIGNAL(clickImage(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)));
-            
+            connect(this,SIGNAL(onPlane(uint,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)),la,SLOT(mouseMove(uint,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)));
             connect(la,SIGNAL(sectionChanged(sofa::defaulttype::Vec3i)),this,SIGNAL(labelChangeGui(sofa::defaulttype::Vec3i)));
-            
+            connect(this,SIGNAL(optionChangeSection(sofa::defaulttype::Vec3i)),la,SLOT(optionChangeSection(sofa::defaulttype::Vec3i)));
             
             la->setGraphScene(GraphXY,GraphXZ,GraphZY);
         }
@@ -172,13 +173,12 @@ public slots:
 signals:
     void mouseevent(int event,const unsigned int axis,const sofa::defaulttype::Vec3d& ip,const sofa::defaulttype::Vec3d& p,const QString& val);
 
-    
     void onPlane(const unsigned int axis,const sofa::defaulttype::Vec3d& ip,const sofa::defaulttype::Vec3d& p,const QString& val);
     
     void clickOnButton();
 
-
     void labelChangeGui(sofa::defaulttype::Vec3i);
+    void optionChangeSection(sofa::defaulttype::Vec3i);
 };
 
 }

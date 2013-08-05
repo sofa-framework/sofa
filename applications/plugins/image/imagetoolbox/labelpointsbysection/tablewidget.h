@@ -5,6 +5,9 @@
 #include <QMap>
 
 #include <sofa/defaulttype/VecTypes.h>
+#include <iostream>
+
+
 
 class TableWidgetForLabelPointBySectionToolBoxAction: public QWidgetAction
 {
@@ -12,8 +15,17 @@ Q_OBJECT
 
 public:
     typedef sofa::defaulttype::Vec3f Vec3f;
-    typedef sofa::helper::vector<Vec3f> VecCoord;
+
+    struct Point
+    {
+        Vec3f ip;
+        Vec3f p;
+    };
+
+    typedef sofa::helper::vector<Point> VecCoord;
     typedef QMap<unsigned int, VecCoord > MapSection;
+
+
 private:
 
     QComboBox * listSection;
@@ -28,17 +40,17 @@ private:
     
 public:
     
-
-    
     TableWidgetForLabelPointBySectionToolBoxAction(QObject *parent): QWidgetAction(parent)
     {
         listSection = new QComboBox();
         listPoints = new QTableWidget();
         deteteSection  = new QPushButton("del section");
         deletePoint = new QPushButton("del");
+        deletePoint->setEnabled(false);
         moveupPoint = new QPushButton("up");
+        moveupPoint->setEnabled(false);
         movedownPoint = new QPushButton("down");
-        
+        movedownPoint->setEnabled(false);
     
         QVBoxLayout *vlayout = new QVBoxLayout();
     
@@ -57,8 +69,6 @@ public:
     
         vlayout->addLayout(hlayout2);
         
-    
-    
         QGroupBox *box = new QGroupBox();
         box->setLayout(vlayout);
     
@@ -75,45 +85,35 @@ public:
         listPoints->setEditTriggers(QAbstractItemView::NoEditTriggers);
         
         connect(listSection,SIGNAL(currentIndexChanged(int)),this,SLOT(comboBoxchangeSection(int)));
+
         
-        
-        createRandData();
-        
-        updateData();
+        //updateData();
     }
-    
-    void createRandData()
-    {
-        // data to test
-        currentSection = 50;
-        mapSection = new MapSection();
-        mapSection->clear();
-        
-        for(int j=0;j<100;j+=(rand()%20))
-        {
-            VecCoord vc;
-            for(int i=0;i<100;i+=(rand()%20))
-            {
-                Vec3f v;
-                v.set(i,i+1,i+2);
-                vc.push_back(v);
-            }
-            mapSection->insert(j,vc);
-            if(j==0) mapSection->insert(50,vc);
-        }
-    }
+
+    inline void setMapSection(MapSection *m){mapSection=m;updateData();}
     
     void updateData()
     {
+        if(!mapSection)
+        {
+            return;
+        }
         disconnect(listSection,SIGNAL(currentIndexChanged(int)),this,SLOT(comboBoxchangeSection(int)));
-        if(!mapSection)return;
+
         // lister les sections disponibles
         listSection->clear();
         QList<unsigned int> key = mapSection->keys();
         for(int i=0;i<key.size();i++)
         {
-            listSection->addItem(QString::number(key[i]));
-            if(currentSection==key[i])listSection->setCurrentIndex(i);
+            if(currentSection!=key[i] && (mapSection->value(key[i])).size()==0)
+            {
+                mapSection->remove(key[i]);
+            }
+            else
+            {
+                listSection->addItem(QString::number(key[i]));
+                if(currentSection==key[i])listSection->setCurrentIndex(i);
+            }
         }
         
         // lister les point de la section courante
@@ -122,25 +122,28 @@ public:
         while(listPoints->rowCount()!=0)
             listPoints->removeRow(0);
         
+
         for(unsigned int i=0;i<vector.size();i++)
         {
             listPoints->insertRow(i);
-            listPoints->setItem(i,0,new QTableWidgetItem(QString::number(vector[i].x())));
-            listPoints->setItem(i,1,new QTableWidgetItem(QString::number(vector[i].y())));
-            listPoints->setItem(i,2,new QTableWidgetItem(QString::number(vector[i].z())));
+            listPoints->setItem(i,0,new QTableWidgetItem(QString::number(vector[i].ip.x())));
+            listPoints->setItem(i,1,new QTableWidgetItem(QString::number(vector[i].ip.y())));
+            listPoints->setItem(i,2,new QTableWidgetItem(QString::number(vector[i].ip.z())));
             
         }
+
         listPoints->resizeColumnsToContents();
-        
         connect(listSection,SIGNAL(currentIndexChanged(int)),this,SLOT(comboBoxchangeSection(int)));
     }
+
+    void setSection(unsigned int cs){currentSection=cs;}
 
 private slots:
     void comboBoxchangeSection(int i)
     {
         currentSection = mapSection->keys()[i];
         updateData();
-        emit changeSection(i);
+        emit changeSection(currentSection);
     }
     
 signals:
