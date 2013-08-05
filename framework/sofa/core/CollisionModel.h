@@ -92,10 +92,10 @@ protected:
         , bMoving(initData(&bMoving, true, "moving", "flag indicating if this object is changing position between iterations"))
         , bSimulated(initData(&bSimulated, true, "simulated", "flag indicating if this object is controlled by a simulation"))
         , bSelfCollision(initData(&bSelfCollision, false, "selfCollision", "flag indication if the object can self collide"))
-        , proximity(initData(&proximity, 0.0, "proximity", "Distance to the actual (visual) surface"))
-        , contactStiffness(initData(&contactStiffness, 10.0, "contactStiffness", "Default contact stiffness"))
-        , contactFriction(initData(&contactFriction, 0.01, "contactFriction", "Default contact friction (damping) coefficient"))
-        , contactRestitution(initData(&contactRestitution, 0.0, "contactRestitution", "Default contact coefficient of restitution"))
+	  , proximity(initData(&proximity, (SReal)0.0, "proximity", "Distance to the actual (visual) surface"))
+	  , contactStiffness(initData(&contactStiffness, (SReal)10.0, "contactStiffness", "Default contact stiffness"))
+	  , contactFriction(initData(&contactFriction, (SReal)0.01, "contactFriction", "Default contact friction (damping) coefficient"))
+	  , contactRestitution(initData(&contactRestitution, (SReal)0.0, "contactRestitution", "Default contact coefficient of restitution"))
         , contactResponse(initData(&contactResponse, "contactResponse", "if set, indicate to the ContactManager that this model should use the given class of contacts.\nNote that this is only indicative, and in particular if both collision models specify a different class it is up to the manager to choose."))
         , group(initData(&group, 0, "group", "If not zero, ID of a group containing this model. No collision can occur between collision models of the same group (allowing the same object to have multiple collision models)"))
         , color(initData(&color, defaulttype::Vec4f(1,0,0,1), "color", "color used to display the collision model if requested"))
@@ -378,22 +378,22 @@ public:
     /// @{
 
     /// Get distance to the actual (visual) surface
-    double getProximity() { return proximity.getValue(); }
+    SReal getProximity() { return proximity.getValue(); }
 
     /// Get contact stiffness
-    double getContactStiffness(int /*index*/) { return contactStiffness.getValue(); }
+    SReal getContactStiffness(int /*index*/) { return contactStiffness.getValue(); }
     /// Set contact stiffness
-    void setContactStiffness(double stiffness) { contactStiffness.setValue(stiffness); }
+    void setContactStiffness(SReal stiffness) { contactStiffness.setValue(stiffness); }
 
     /// Get contact friction (damping) coefficient
-    double getContactFriction(int /*index*/) { return contactFriction.getValue(); }
+    SReal getContactFriction(int /*index*/) { return contactFriction.getValue(); }
     /// Set contact friction (damping) coefficient
-    void setContactFriction(double friction) { contactFriction.setValue(friction); }
+    void setContactFriction(SReal friction) { contactFriction.setValue(friction); }
 
     /// Get contact coefficient of restitution
-    double getContactRestitution(int /*index*/) { return contactRestitution.getValue(); }
+     SReal getContactRestitution(int /*index*/) { return contactRestitution.getValue(); }
     /// Set contact coefficient of restitution
-    void setContactRestitution(double restitution) { contactRestitution.setValue(restitution); }
+    void setContactRestitution(SReal restitution) { contactRestitution.setValue(restitution); }
 
     /// Contact response algorithm
     std::string getContactResponse() { return contactResponse.getValue(); }
@@ -420,7 +420,7 @@ public:
     void setColor4f(const float *c) {color.setValue(defaulttype::Vec4f(c[0],c[1],c[2],c[3]));};
 
     /// Set of differents parameters
-    void setProximity       (const double a)      { proximity.setValue(a)        ;} ;
+    void setProximity       (const SReal a)      { proximity.setValue(a)        ;} ;
     void setContactResponse (const std::string &a) { contactResponse.setValue(a)  ;} ;
 
     /// Returns an int corresponding to the type of this.
@@ -440,13 +440,13 @@ protected:
     /// flag indication if the object can self collide
     Data<bool> bSelfCollision;
     /// Distance to the actual (visual) surface
-    Data<double> proximity;
+    Data<SReal> proximity;
     /// Default contact stiffness
-    Data<double> contactStiffness;
+    Data<SReal> contactStiffness;
     /// Default contact friction (damping) coefficient
-    Data<double> contactFriction;
+    Data<SReal> contactFriction;
     /// Default contact coefficient of restitution
-    Data<double> contactRestitution;
+    Data<SReal> contactRestitution;
     /// contactResponse", "if set, indicate to the ContactManager that this model should use the
     /// given class of contacts.\nNote that this is only indicative, and in particular if both
     /// collision models specify a different class it is up to the manager to choose.
