@@ -49,7 +49,9 @@ public:
     
     virtual sofa::gui::qt::LabelImageToolBoxAction* createTBAction(QObject*parent)
     {
-        return new sofa::gui::qt::LabelPointsBySectionImageToolBoxAction(this,parent);
+        sofa::gui::qt::LabelPointsBySectionImageToolBoxAction * t = new sofa::gui::qt::LabelPointsBySectionImageToolBoxAction(this,parent);
+
+        return t;
     }
     
 public:

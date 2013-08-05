@@ -107,6 +107,8 @@ void LabelImageToolBoxAction::setGraphScene(QGraphicsScene *XY,QGraphicsScene *X
         return c;
     }
 
+
+
 }
 }
 }
