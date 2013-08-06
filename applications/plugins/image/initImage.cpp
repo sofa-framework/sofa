@@ -83,9 +83,9 @@ const char* getModuleComponentList()
 
 ////////// BEGIN CLASS LIST //////////
 SOFA_LINK_CLASS(ImageContainer)
-//SOFA_LINK_CLASS(ImageExporter)
+  SOFA_LINK_CLASS(ImageExporter)
 SOFA_LINK_CLASS(ImageViewer)
-//SOFA_LINK_CLASS(ImageFilter)
+  SOFA_LINK_CLASS(ImageFilter)
 SOFA_LINK_CLASS(MergeImages)
 SOFA_LINK_CLASS(DepthMapToMeshEngine)
 SOFA_LINK_CLASS(MeshToImageEngine)

@@ -58,6 +58,7 @@ public:
         QHBoxLayout *hlayout = new QHBoxLayout();
         hlayout->addWidget(listSection);
         hlayout->addWidget(deteteSection);
+        this->connect(deteteSection,SIGNAL(clicked()),this,SLOT(deleteSectionAction()));
     
         vlayout->addLayout(hlayout);
         vlayout->addWidget(listPoints);
@@ -102,17 +103,30 @@ public:
 
         // lister les sections disponibles
         listSection->clear();
+
+        mapSection[currentSection];
         QList<unsigned int> key = mapSection->keys();
+
+
+        int j=0;
         for(int i=0;i<key.size();i++)
         {
+
             if(currentSection!=key[i] && (mapSection->value(key[i])).size()==0)
             {
                 mapSection->remove(key[i]);
+
             }
             else
             {
+
                 listSection->addItem(QString::number(key[i]));
-                if(currentSection==key[i])listSection->setCurrentIndex(i);
+                if(currentSection==key[i])
+                {
+
+                    listSection->setCurrentIndex(j);
+                }
+                j++;
             }
         }
         
@@ -136,7 +150,17 @@ public:
         connect(listSection,SIGNAL(currentIndexChanged(int)),this,SLOT(comboBoxchangeSection(int)));
     }
 
-    void setSection(unsigned int cs){currentSection=cs;}
+    void setSection(unsigned int cs)
+    {
+        if(currentSection!=cs)
+        {
+
+                currentSection = cs;
+                updateData();
+        }
+
+
+    }
 
 private slots:
     void comboBoxchangeSection(int i)
@@ -145,9 +169,20 @@ private slots:
         updateData();
         emit changeSection(currentSection);
     }
+
+    void deleteSectionAction()
+    {
+        VecCoord &v = mapSection->operator [](currentSection);
+        v.clear();
+        updateData();
+    }
     
 signals:
     void changeSection(int);
+    void update();
+    void reload();
+    void saveFile();
+    void loadFile();
     
 };
 

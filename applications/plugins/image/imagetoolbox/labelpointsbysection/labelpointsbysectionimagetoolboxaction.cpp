@@ -7,7 +7,6 @@
 #include "labelpointsbysectionimagetoolbox.h"
 
 
-
 namespace sofa
 {
 namespace gui
@@ -18,26 +17,29 @@ namespace qt
 LabelPointsBySectionImageToolBoxAction::LabelPointsBySectionImageToolBoxAction(sofa::component::engine::LabelImageToolBox* lba,QObject *parent):
     LabelImageToolBoxAction(lba,parent),addPoints(false),tablewidget(NULL)
 {
+
+
     //button selection point
-    select = new QAction(this);
-    this->l_actions.append(select);
-    select->setText("Select Point");
-    select->setCheckable(true);
-    connect(select,SIGNAL(toggled(bool)),this,SLOT(selectionPointButtonClick(bool)));
-    
-    QAction* section = new QAction(this);
+
+    /*QAction* section = new QAction(this);
     this->l_actions.append(section);
     section->setText("Section");
-    connect(section,SIGNAL(triggered()),this,SLOT(sectionButtonClick()));
+    connect(section,SIGNAL(triggered()),this,SLOT(sectionButtonClick()));*/
+
+    /*QAction* section = new QAction(this);
+        this->l_actions.append(section);
+        section->setText("Section");
+        connect(section,SIGNAL(triggered()),this,SLOT(sectionButtonClick()));*/
     
     currentSlide = oldSlide = -1;
 
-
-    createAxisSelection();
+    createMainCommandWidget();
+    createAxisSelectionWidget();
     createListPointWidget();
 
     
 }
+
 
 LabelPointsBySectionImageToolBoxAction::~LabelPointsBySectionImageToolBoxAction()
 {
@@ -123,7 +125,7 @@ void LabelPointsBySectionImageToolBoxAction::updateColor()
     }
 }
 
-void LabelPointsBySectionImageToolBoxAction::sectionButtonClick()
+/*void LabelPointsBySectionImageToolBoxAction::sectionButtonClick()
 {
    // std::cout << "LabelPointsBySectionImageToolBoxAction::sectionButtonClick()"<<std::endl;
     sofa::defaulttype::Vec3d pos = LPBSITB()->d_ip.getValue();
@@ -131,7 +133,7 @@ void LabelPointsBySectionImageToolBoxAction::sectionButtonClick()
     sofa::defaulttype::Vec3i pos2(round(pos.x()),round(pos.y()),round(pos.z()));
 
     emit sectionChanged(pos2);
-}
+}*/
 
 void LabelPointsBySectionImageToolBoxAction::createListPointWidget()
 {
@@ -147,7 +149,7 @@ void LabelPointsBySectionImageToolBoxAction::createListPointWidget()
 
 }
 
-void LabelPointsBySectionImageToolBoxAction::createAxisSelection()
+void LabelPointsBySectionImageToolBoxAction::createAxisSelectionWidget()
 {
     xyAxis = new QPushButton("XY axis");
     xzAxis = new QPushButton("XZ axis");
@@ -168,7 +170,7 @@ void LabelPointsBySectionImageToolBoxAction::createAxisSelection()
     zyAxis->setChecked(false);
     
     QVBoxLayout * l2=new QVBoxLayout();
-    l2->addWidget(new QLabel("select axis"));
+    l2->addWidget(new QLabel("Axis selection"));
     l2->addLayout(l);
     
     QGroupBox *g= new QGroupBox();
@@ -182,6 +184,46 @@ void LabelPointsBySectionImageToolBoxAction::createAxisSelection()
     connect(xyAxis,SIGNAL(toggled(bool)),this,SLOT(axisChecked(bool)));
     connect(zyAxis,SIGNAL(toggled(bool)),this,SLOT(axisChecked(bool)));
     connect(xzAxis,SIGNAL(toggled(bool)),this,SLOT(axisChecked(bool)));
+}
+
+
+void LabelPointsBySectionImageToolBoxAction::createMainCommandWidget()
+{
+    QVBoxLayout *vb=new QVBoxLayout();
+
+    select = new QPushButton("Select Point");
+    select->setCheckable(true);
+    connect(select,SIGNAL(toggled(bool)),this,SLOT(selectionPointButtonClick(bool)));
+
+    vb->addWidget(new QLabel("Main Commands"));
+    vb->addWidget(select);
+
+    QHBoxLayout *hb=new QHBoxLayout();
+
+    QPushButton *updatePB = new QPushButton("update");
+    connect(updatePB,SIGNAL(clicked()),this,SLOT(updateData()));
+    QPushButton *reloadPB = new QPushButton("reload");
+    connect(reloadPB,SIGNAL(clicked()),this,SLOT(reloadData()));
+    QPushButton *loadfilePB = new QPushButton("load file");
+    connect(loadfilePB,SIGNAL(clicked()),this,SLOT(loadFileData()));
+    QPushButton *savefilePB = new QPushButton("save file");
+    connect(savefilePB,SIGNAL(clicked()),this,SLOT(saveFileData()));
+
+    hb->addWidget(updatePB);
+    hb->addWidget(reloadPB);
+    hb->addWidget(loadfilePB);
+    hb->addWidget(savefilePB);
+
+    vb->addLayout(hb);
+
+    QGroupBox *gb = new QGroupBox();
+
+    gb->setLayout(vb);
+
+    QWidgetAction *wa = new QWidgetAction(this);
+    wa->setDefaultWidget(gb);
+
+    this->l_actions.append(wa);
 }
 
 void LabelPointsBySectionImageToolBoxAction::axisChecked(bool b)
@@ -249,10 +291,23 @@ int LabelPointsBySectionImageToolBoxAction::currentAxis()
     return -1;
 }
 
+void LabelPointsBySectionImageToolBoxAction::setAxis(int axis)
+{
+    disconnect(xyAxis,SIGNAL(toggled(bool)),this,SLOT(axisChecked(bool)));
+    disconnect(zyAxis,SIGNAL(toggled(bool)),this,SLOT(axisChecked(bool)));
+    disconnect(xzAxis,SIGNAL(toggled(bool)),this,SLOT(axisChecked(bool)));
+
+    xyAxis->setChecked((axis==2));
+    xzAxis->setChecked((axis==1));
+    zyAxis->setChecked((axis==0));
+
+    connect(xyAxis,SIGNAL(toggled(bool)),this,SLOT(axisChecked(bool)));
+    connect(zyAxis,SIGNAL(toggled(bool)),this,SLOT(axisChecked(bool)));
+    connect(xzAxis,SIGNAL(toggled(bool)),this,SLOT(axisChecked(bool)));
+}
+
 void LabelPointsBySectionImageToolBoxAction::changeSection(int i)
 {
-
-    std::cout << "changesection"<<std::endl;
     sofa::defaulttype::Vec3i v;
 
     switch(currentAxis())
@@ -294,8 +349,6 @@ void LabelPointsBySectionImageToolBoxAction::changeSection(int i)
 /*
 void LabelPointsBySectionImageToolBoxAction::changeSection2(int i)
 {
-
-    std::cout << "changesection"<<std::endl;
     sofa::defaulttype::Vec3i v;
 
     switch(currentAxis())
@@ -319,7 +372,7 @@ void LabelPointsBySectionImageToolBoxAction::changeSection2(int i)
 void LabelPointsBySectionImageToolBoxAction::mouseMove(const unsigned int axis,const sofa::defaulttype::Vec3d& imageposition,const sofa::defaulttype::Vec3d& position3D,const QString& )
 {
     if(!addPoints)return;
-    if(axis!=this->currentAxis())return;
+    if((int)axis!=this->currentAxis())return;
 
     int current_slide = 0;
     switch(axis)
@@ -384,20 +437,106 @@ void LabelPointsBySectionImageToolBoxAction::addToPath(const unsigned int axis,c
 
 void LabelPointsBySectionImageToolBoxAction::optionChangeSection(sofa::defaulttype::Vec3i v)
 {
+
     switch (currentAxis())
     {
         case 0:
             this->changeSection(v.x());
+            tablewidget->setSection(round(v.x()));
             break;
         case 1:
             this->changeSection(v.y());
+            tablewidget->setSection(round(v.y()));
             break;
         case 2:
             this->changeSection(v.z());
+            tablewidget->setSection(round(v.z()));
             break;
         default:
             break;
     }
+}
+
+void LabelPointsBySectionImageToolBoxAction::updateData()
+{
+    sofa::component::engine::LabelPointsBySectionImageToolBox *l = LPBSITB();
+
+    int c =currentAxis();
+
+    l->d_axis.setValue(c);
+
+    helper::vector<sofa::defaulttype::Vec3d>& vip = *(l->d_ip.beginEdit());
+    helper::vector<sofa::defaulttype::Vec3d>& vp = *(l->d_p.beginEdit());
+
+    //QMapIterator<unsigned int,VecPointSection> i(mapsection);
+    QList<unsigned int> list_keys = mapsection.keys();
+
+
+    vip.clear();
+    vp.clear();
+
+    for(int i=0;i<list_keys.size();i++)
+    {
+        VecPointSection &v = mapsection[list_keys[i]];
+        for(unsigned int j=0;j<v.size();j++)
+        {
+            vip.push_back(v[j].ip);
+            vp.push_back(v[j].p);
+        }
+    }
+
+    l->d_ip.endEdit();
+    l->d_p.endEdit();
+}
+
+void LabelPointsBySectionImageToolBoxAction::reloadData()
+{
+    sofa::component::engine::LabelPointsBySectionImageToolBox *l = LPBSITB();
+    int axis = l->d_axis.getValue();
+    this->setAxis(axis);
+
+    helper::vector<sofa::defaulttype::Vec3d>& vip = *(l->d_ip.beginEdit());
+    helper::vector<sofa::defaulttype::Vec3d>& vp = *(l->d_p.beginEdit());
+
+    int size = vip.size();
+    if(vip.size() != vp.size())
+    {
+        std::cerr << "Warning: the imagepositions vector size is different of the 3Dpositions vector size.";
+        if(vip.size()>vp.size())size=vp.size();
+    }
+
+    mapsection.clear();
+
+    for(int i=0;i<size;i++)
+    {
+        Point p;
+        p.ip = vip[i];
+        p.p = vp[i];
+
+        mapsection[round(p.ip[axis])].push_back(p);
+    }
+
+    l->d_ip.endEdit();
+    l->d_p.endEdit();
+
+    tablewidget->updateData();
+}
+
+void LabelPointsBySectionImageToolBoxAction::loadFileData()
+{
+    sofa::component::engine::LabelPointsBySectionImageToolBox *l = LPBSITB();
+
+    l->loadFile();
+    this->setAxis(l->d_axis.getValue());
+    this->reloadData();
+}
+
+void LabelPointsBySectionImageToolBoxAction::saveFileData()
+{
+    sofa::component::engine::LabelPointsBySectionImageToolBox *l = LPBSITB();
+
+    this->updateData();
+    l->saveFile();
 }
 
 
