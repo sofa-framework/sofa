@@ -29,7 +29,8 @@ HEADERS += \
 	initImage.h \
 	ImageTypes.h \
 	ImageContainer.h \
-        ImageViewer.h \#	ImageFilter.h \
+        ImageViewer.h \
+       ImageFilter.h \
         ImageOperation.h \
         ImageTransform.h \
         TransferFunction.h \
@@ -39,7 +40,8 @@ HEADERS += \
         DepthMapToMeshEngine.h \
         MeshToImageEngine.h \
         MarchingCubesEngine.h \
-        ImageSampler.h \  #       ImageExporter.h \
+        ImageSampler.h \
+       ImageExporter.h \
 	image_gui/ImagePlaneWidget.h \
 	image_gui/ImageTransformWidget.h \
 	image_gui/HistogramWidget.h \
@@ -57,7 +59,8 @@ HEADERS += \
 SOURCES += \
 	initImage.cpp \
 	ImageContainer.cpp \
-        ImageViewer.cpp \#	ImageFilter.cpp \
+        ImageViewer.cpp \
+       ImageFilter.cpp \
         ImageOperation.cpp \
         ImageTransform.cpp \
         TransferFunction.cpp \
@@ -67,7 +70,8 @@ SOURCES += \
         DepthMapToMeshEngine.cpp \
         MeshToImageEngine.cpp \
         MarchingCubesEngine.cpp \
-        ImageSampler.cpp \    #        ImageExporter.cpp \
+        ImageSampler.cpp \
+       ImageExporter.cpp \
 	image_gui/ImagePlaneWidget.cpp \
 	image_gui/ImageTransformWidget.cpp \
 	image_gui/HistogramWidget.cpp \
@@ -79,7 +83,7 @@ SOURCES += \
     MergeBranchingImages.cpp \
     
     
-include(imagetoolbox/imagetoolbox.pro)
+#include(imagetoolbox/imagetoolbox.pro)
 
 README_FILE = image.txt
 	

@@ -9,6 +9,7 @@
 //#include "LabelPointsBySectionImageToolBox.h"
 
 
+
 #include "initImage.h"
 
 namespace sofa
@@ -34,6 +35,7 @@ class SOFA_IMAGE_API LabelPointsBySectionImageToolBoxAction : public LabelImageT
 Q_OBJECT
 public:
     typedef TableWidgetForLabelPointBySectionToolBoxAction::Point Point;
+    typedef TableWidgetForLabelPointBySectionToolBoxAction::VecCoord VecPointSection;
     typedef TableWidgetForLabelPointBySectionToolBoxAction::MapSection MapSection;
 
 private:
@@ -44,7 +46,7 @@ private:
     
     TableWidgetForLabelPointBySectionToolBoxAction * tablewidget;
     
-    QPushButton *xyAxis, *xzAxis, *zyAxis;
+    QPushButton *select, *xyAxis, *xzAxis, *zyAxis;
 
     MapSection mapsection;
 
@@ -57,12 +59,13 @@ public:
     
     sofa::component::engine::LabelPointsBySectionImageToolBox* LPBSITB();
     
-    
+    void createMainCommandWidget();
     void createListPointWidget();
-    void createAxisSelection(); 
+    void createAxisSelectionWidget();
 
 private:
     int currentAxis();
+    void setAxis(int);
 
 public slots:
     virtual void addOnGraphs();
@@ -77,12 +80,14 @@ public slots:
 private slots:
     void selectionPointButtonClick(bool);
     void selectionPointEvent(int mouseevent, const unsigned int axis,const sofa::defaulttype::Vec3d& imageposition,const sofa::defaulttype::Vec3d& position3D,const QString& value);
-    void sectionButtonClick();
+    //void sectionButtonClick();
     void axisChecked(bool b);
 
-    
+    void updateData();
+    void reloadData();
+    void loadFileData();
+    void saveFileData();
 private:
-    QAction* select;
     
 };
 
