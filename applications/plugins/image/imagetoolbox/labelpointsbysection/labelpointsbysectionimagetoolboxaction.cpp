@@ -64,6 +64,7 @@ void LabelPointsBySectionImageToolBoxAction::selectionPointEvent(int mouseevent,
         this->addPoints=false;
 
         this->tablewidget->updateData();
+        this->updateGraphs();
     }
 
     
@@ -308,6 +309,13 @@ void LabelPointsBySectionImageToolBoxAction::setAxis(int axis)
 
 void LabelPointsBySectionImageToolBoxAction::changeSection(int i)
 {
+    sofa::defaulttype::Vec3i v = changeSection2(i);
+
+    emit sectionChanged(v);
+}
+
+sofa::defaulttype::Vec3i LabelPointsBySectionImageToolBoxAction::changeSection2(int i)
+{
     sofa::defaulttype::Vec3i v;
 
     switch(currentAxis())
@@ -334,40 +342,37 @@ void LabelPointsBySectionImageToolBoxAction::changeSection(int i)
         }
 
 
-        path[currentAxis()]->setPath(QPainterPath());
+        path[0]->setPath(QPainterPath());
+        path[1]->setPath(QPainterPath());
+        path[2]->setPath(QPainterPath());
+
         for(unsigned int j=0;j<mapsection[i].size();j++)
         {
             Point &pt = mapsection[i][j];
-            addToPath(currentAxis(),pt.ip,pt.p);
+            addToPath(currentAxis(),pt.ip);
         }
+
+        QMapIterator<unsigned int, VecPointSection> j(mapsection);
+        while (j.hasNext())
+        {
+            j.next();
+
+            unsigned int jj = j.key();
+            for(unsigned int k=0;k<mapsection[jj].size();k++)
+            {
+
+                Point &pt = mapsection[jj][k];
+                addToPath((currentAxis()+1)%3,pt.ip,k==0);
+                addToPath((currentAxis()+2)%3,pt.ip,k==0);
+            }
+        }
+
 
         currentSlide = i;
     }
 
-    emit sectionChanged(v);
+    return v;
 }
-/*
-void LabelPointsBySectionImageToolBoxAction::changeSection2(int i)
-{
-    sofa::defaulttype::Vec3i v;
-
-    switch(currentAxis())
-    {
-        case 0:
-            v.set(i,0,0);
-            break;
-        case 1:
-            v.set(0,i,0);
-            break;
-        case 2:
-            v.set(0,0,i);
-            break;
-        default:
-            v.set(0,0,0);
-    }
-
-    emit sectionChanged(v);
-}*/
 
 void LabelPointsBySectionImageToolBoxAction::mouseMove(const unsigned int axis,const sofa::defaulttype::Vec3d& imageposition,const sofa::defaulttype::Vec3d& position3D,const QString& )
 {
@@ -398,14 +403,15 @@ void LabelPointsBySectionImageToolBoxAction::mouseMove(const unsigned int axis,c
     p.ip=imageposition;
     p.p=position3D;
 
-    addToPath(axis,imageposition,position3D);
+    addToPath(axis,imageposition);
+    addToPath((axis+1)%3,imageposition);
+    addToPath((axis+2)%3,imageposition);
 
     mapsection[current_slide].push_back(p);
     tablewidget->setSection(currentSlide);
-    tablewidget->updateData();
 }
 
-void LabelPointsBySectionImageToolBoxAction::addToPath(const unsigned int axis,const sofa::defaulttype::Vec3d& imageposition,const sofa::defaulttype::Vec3d& )
+void LabelPointsBySectionImageToolBoxAction::addToPath(const unsigned int axis,const sofa::defaulttype::Vec3d& imageposition, bool forceMoveTo)
 {
     QPainterPath poly;
     int ximage,yimage;
@@ -426,7 +432,7 @@ void LabelPointsBySectionImageToolBoxAction::addToPath(const unsigned int axis,c
     }
 
     poly = path[axis]->path();
-    if(poly.elementCount())
+    if(poly.elementCount() && !forceMoveTo)
         poly.lineTo(imageposition[ximage],imageposition[yimage]);
     else
         poly.moveTo(imageposition[ximage],imageposition[yimage]);
@@ -441,15 +447,15 @@ void LabelPointsBySectionImageToolBoxAction::optionChangeSection(sofa::defaultty
     switch (currentAxis())
     {
         case 0:
-            this->changeSection(v.x());
+            this->changeSection2(v.x());
             tablewidget->setSection(round(v.x()));
             break;
         case 1:
-            this->changeSection(v.y());
+            this->changeSection2(v.y());
             tablewidget->setSection(round(v.y()));
             break;
         case 2:
-            this->changeSection(v.z());
+            this->changeSection2(v.z());
             tablewidget->setSection(round(v.z()));
             break;
         default:

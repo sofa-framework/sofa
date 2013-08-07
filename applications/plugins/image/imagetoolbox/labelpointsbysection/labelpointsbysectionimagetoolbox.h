@@ -51,6 +51,8 @@ public:
         addOutput(&d_ip);
         addOutput(&d_p);
         addOutput(&d_axis);
+
+        loadFile();
         
     }
     

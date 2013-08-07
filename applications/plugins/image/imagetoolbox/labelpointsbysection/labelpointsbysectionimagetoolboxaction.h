@@ -73,9 +73,9 @@ public slots:
     virtual void updateColor();
     virtual void optionChangeSection(sofa::defaulttype::Vec3i);
     void changeSection(int);
-    //void changeSection2(int);
+    sofa::defaulttype::Vec3i changeSection2(int);
     void mouseMove(const unsigned int axis,const sofa::defaulttype::Vec3d& imageposition,const sofa::defaulttype::Vec3d& position3D,const QString& value);
-    void addToPath(const unsigned int axis,const sofa::defaulttype::Vec3d& imageposition,const sofa::defaulttype::Vec3d& position3D);
+    void addToPath(const unsigned int axis,const sofa::defaulttype::Vec3d& imageposition,bool forceMoveTo=false);
 
 private slots:
     void selectionPointButtonClick(bool);

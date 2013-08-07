@@ -49,12 +49,13 @@ public:
         addOutput(&d_p);
         addOutput(&d_ipbox);
         addOutput(&d_ipbox);
-        
+
+
+        loadFile();
     }
     
     virtual sofa::gui::qt::LabelImageToolBoxAction* createTBAction(QObject*parent)
     {
-        loadFile();
         return new sofa::gui::qt::LabelBoxImageToolBoxAction(this,parent);
     }
 
