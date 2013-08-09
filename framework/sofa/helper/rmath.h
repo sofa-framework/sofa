@@ -200,34 +200,47 @@ inline T rclamp(const T& value, const T& low, const T& high)
 }
 
 template<class T>
-bool isClamped(const T& value, const T& low, const T& high)
+inline bool isClamped(const T& value, const T& low, const T& high)
 {
   return value >= low && value <= high;
 }
 
 template<class T>
-T sign( const T& v )
+inline T sign( const T& v )
 {
     return v<0 ? (T)-1 : (T)1;
 }
 
 template<class T>
-T sign0( const T& v )
+inline T sign0( const T& v )
 {
     return v<0 ? (T)-1 : ( v>0 ? (T)1 : 0 );
 }
 
 
 // default implementation for integers
+// (FF) why do we need a comparison function for integers ? Why not operator == ?
 template<class T>
-bool isEqual( T x, T y, T =std::numeric_limits<float>::epsilon() )
+inline bool isEqual( T x, T y, T =std::numeric_limits<float>::epsilon() )
 {
     assert( std::numeric_limits<T>::is_integer );
     return x==y;
 }
 // specialization for floating points
-template<> bool isEqual( float x, float y, float threshold );
-template<> bool isEqual( double x, double y, double threshold );
+template<>
+inline bool isEqual( float x, float y, float threshold )
+{
+    return rabs(x-y) <= threshold;
+}
+
+template<>
+inline bool isEqual( double x, double y, double threshold )
+{
+    return rabs(x-y) <= threshold;
+}
+
+//template<> bool isEqual( float x, float y, float threshold );
+//template<> bool isEqual( double x, double y, double threshold );
 
 
 
