@@ -1,3 +1,5 @@
+
+
 #ifndef LABELPOINTSBYSECTIONIMAGETOOLBOX_H
 #define LABELPOINTSBYSECTIONIMAGETOOLBOX_H
 
@@ -56,7 +58,7 @@ public:
         
     }
     
-    virtual sofa::gui::qt::LabelImageToolBoxAction* createTBAction(QObject*parent)
+    virtual sofa::gui::qt::LabelImageToolBoxAction* createTBAction(QWidget*parent=NULL)
     {
         sofa::gui::qt::LabelPointsBySectionImageToolBoxAction * t = new sofa::gui::qt::LabelPointsBySectionImageToolBoxAction(this,parent);
 
@@ -234,3 +236,5 @@ public:
 }}}
 
 #endif // LabelPointsBySectionImageToolBox_H
+
+

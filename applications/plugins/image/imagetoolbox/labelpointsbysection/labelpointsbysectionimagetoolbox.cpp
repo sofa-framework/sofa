@@ -1,3 +1,5 @@
+
+
 #include "labelpointsbysectionimagetoolbox.h"
 
 #include <sofa/core/ObjectFactory.h>
@@ -19,3 +21,5 @@ int LabelPointsBySectionImageToolBox_Class = core::RegisterObject("LabelPointsBy
 .addAuthor("Vincent Majorczyk");
 
 }}}
+
+

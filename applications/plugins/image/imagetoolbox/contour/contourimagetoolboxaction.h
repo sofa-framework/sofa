@@ -34,13 +34,22 @@ class SOFA_IMAGE_API ContourImageToolBoxAction : public LabelImageToolBoxAction
 {
 Q_OBJECT
 
-    QGraphicsLineItem *lineH[3], *lineV[3];
+    //QGraphicsLineItem *lineH[3], *lineV[3];
+
+    QGraphicsPathItem *cursor[3];
+    QGraphicsPathItem *path[3];
     
+    QPushButton* select;
     QSpinBox *vecX, *vecY, *vecZ, *radius;
     QDoubleSpinBox *threshold;
     QGroupBox *posGroup, *radiusGroup, *thresholdGroup;
 
+    sofa::defaulttype::Vec3i sectionPosition;
+
 public:
+    typedef sofa::defaulttype::Vec<3,unsigned int> PixCoord;
+    typedef helper::vector<PixCoord> VecPixCoord;
+
     ContourImageToolBoxAction(sofa::component::engine::LabelImageToolBox* lba,QObject *parent);
     ~ContourImageToolBoxAction();
     
@@ -49,14 +58,21 @@ public:
     void setImageSize(int,int,int);
     
 private:
+    void createMainCommands();
     void createPosition();
     void createRadius();
     void createThreshold();
+
+    QPainterPath drawCursor(double x,double y);
+    QPainterPath drawSegment(VecPixCoord &v, unsigned int axis);
+    void drawSegment();
 
 public slots:
     virtual void addOnGraphs();
     virtual void updateGraphs();
     virtual void updateColor();
+    virtual void optionChangeSection(sofa::defaulttype::Vec3i);
+
     
 private slots:
     void selectionPointButtonClick(bool);
@@ -68,7 +84,6 @@ private slots:
     void thresholdModified();
     
 private:
-    QAction* select;
     
 };
 

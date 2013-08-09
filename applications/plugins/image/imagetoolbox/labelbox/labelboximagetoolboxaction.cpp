@@ -1,3 +1,5 @@
+
+
 #include <QString>
 
 #include "labelboximagetoolboxaction.h"
@@ -17,6 +19,8 @@ LabelBoxImageToolBoxAction::LabelBoxImageToolBoxAction(sofa::component::engine::
     LabelImageToolBoxAction(lba,parent)
 {
     createMainCommandWidget();
+
+    this->addStretch();
 }
 
 void LabelBoxImageToolBoxAction::createMainCommandWidget()
@@ -46,17 +50,13 @@ void LabelBoxImageToolBoxAction::createMainCommandWidget()
     hb2->addWidget(loadButton);
 
     QVBoxLayout *vb = new QVBoxLayout();
-    vb->addWidget(new QLabel("Main Command"));
     vb->addLayout(hb);
     vb->addLayout(hb2);
 
-    QGroupBox *g = new QGroupBox();
+    QGroupBox *g = new QGroupBox("Main Commands");
     g->setLayout(vb);
 
-    QWidgetAction *wa = new QWidgetAction(this);
-    wa->setDefaultWidget(g);
-
-    this->l_actions.append(wa);
+    this->addWidget(g);
 
 }
 
@@ -351,3 +351,5 @@ SOFA_DECL_CLASS(LabelBoxImageToolBoxAction)
 }
 }
 }
+
+

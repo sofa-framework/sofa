@@ -9,7 +9,7 @@
 
 
 
-class TableWidgetForLabelPointBySectionToolBoxAction: public QWidgetAction
+class TableWidgetForLabelPointBySectionToolBoxAction: public QGroupBox
 {
 Q_OBJECT
 
@@ -40,7 +40,7 @@ private:
     
 public:
     
-    TableWidgetForLabelPointBySectionToolBoxAction(QObject *parent): QWidgetAction(parent)
+    TableWidgetForLabelPointBySectionToolBoxAction(QWidget *parent=NULL): QGroupBox(parent)
     {
         listSection = new QComboBox();
         listPoints = new QTableWidget();
@@ -54,7 +54,6 @@ public:
     
         QVBoxLayout *vlayout = new QVBoxLayout();
     
-        vlayout->addWidget(new QLabel("section"));
         QHBoxLayout *hlayout = new QHBoxLayout();
         hlayout->addWidget(listSection);
         hlayout->addWidget(deteteSection);
@@ -70,10 +69,8 @@ public:
     
         vlayout->addLayout(hlayout2);
         
-        QGroupBox *box = new QGroupBox();
-        box->setLayout(vlayout);
-    
-        this->setDefaultWidget(box);
+        this->setTitle("Sections");
+        this->setLayout(vlayout);
         
         listPoints->insertColumn(0);
         listPoints->setHorizontalHeaderItem (0, new QTableWidgetItem("X") );

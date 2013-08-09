@@ -1,8 +1,7 @@
 #ifndef LABELPOINTIMAGETOOLBOXACTION_H
 #define LABELPOINTIMAGETOOLBOXACTION_H
 
-#include <QAction>
-#include <QGraphicsLineItem>
+#include <QtGui>
 
 
 #include "../labelimagetoolboxaction.h"
@@ -54,7 +53,7 @@ private slots:
     
     
 private:
-    QAction* select;
+    QPushButton* select;
     
 };
 
@@ -63,3 +62,6 @@ private:
 }
 
 #endif // LABELPOINTIMAGETOOLBOXACTION_H
+
+
+

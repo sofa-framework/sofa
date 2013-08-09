@@ -1,3 +1,5 @@
+
+
 #ifndef LABELBOXIMAGETOOLBOX_H
 #define LABELBOXIMAGETOOLBOX_H
 
@@ -54,7 +56,7 @@ public:
         loadFile();
     }
     
-    virtual sofa::gui::qt::LabelImageToolBoxAction* createTBAction(QObject*parent)
+    virtual sofa::gui::qt::LabelImageToolBoxAction* createTBAction(QWidget*parent=NULL)
     {
         return new sofa::gui::qt::LabelBoxImageToolBoxAction(this,parent);
     }
@@ -250,3 +252,4 @@ public:
 }}}
 
 #endif // LabelBoxIMAGETOOLBOX_H
+

@@ -12,11 +12,14 @@ namespace gui
 namespace qt
 {
 
-class ImageToolBoxLabelActionWidget: public QToolBar
+class ImageToolBoxLabelActionWidget: public QWidget
 {
 Q_OBJECT
 
+    QVBoxLayout *vlayout;
     QComboBox *labelSelection;
+    QPushButton *labelColor;
+    QStackedWidget *stack;
     
     unsigned int currentAxis;
     Vec3f currentImagePosition;
@@ -36,14 +39,33 @@ Q_OBJECT
     QGraphicsScene *GraphZY;
 
 public:
-    ImageToolBoxLabelActionWidget():QToolBar("LabelAction"),
+    ImageToolBoxLabelActionWidget():QWidget(),
         currentLabel(0),GraphXY(NULL),GraphXZ(NULL),GraphZY(NULL)
     {
         this->setToolTip("LabelAction");
-        
+
         labelSelection = new QComboBox();
-        
-        this->addWidget(labelSelection);
+        labelColor = new QPushButton();
+        labelColor->setMinimumSize(30,30);
+        labelColor->setMaximumSize(30,30);
+        labelColor->setIconSize(QSize(20,20));
+
+        connect(labelColor,SIGNAL(clicked()),this,SLOT(changeColor()));
+
+        QHBoxLayout *hb = new QHBoxLayout();
+
+        hb->addWidget(labelSelection);
+        hb->addWidget(labelColor);
+
+        stack = new QStackedWidget;
+        stack->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+        vlayout = new QVBoxLayout();
+        vlayout->addLayout(hb);
+        vlayout->addWidget(stack);
+        //vlayout->addWidget(new QPushButton("Debug"));
+
+        this->setLayout(vlayout);
         
         connect(labelSelection,SIGNAL(currentIndexChanged(int)),this,SLOT(changedLabelIndex(int)));
     }
@@ -59,6 +81,7 @@ public:
         
         connect(this,SIGNAL(labelChangeGui(sofa::defaulttype::Vec3i)),cw,SLOT(setSliders(sofa::defaulttype::Vec3i)));
         connect(cw,SIGNAL(sliderChanged(sofa::defaulttype::Vec3i)),this,SIGNAL(optionChangeSection(sofa::defaulttype::Vec3i)));
+
         
     }
     
@@ -71,24 +94,15 @@ public:
     
     void clearVecLabelAction()
     {
-        
+        while(stack->widget(0))
+            stack->removeWidget(stack->widget(0));
+
         while(vecLabelAction.size()>0)
         {
             LabelAction *la = vecLabelAction.back();
-            
-            if(la)
-            {
-                QList<QAction*> lista = la->getActions();
-                disconnect(this,SIGNAL(mouseevent(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)),la,SIGNAL(clickImage(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)));
-                while(lista.size()>0)
-                {
-                    this->removeAction(lista.first());
-                    lista.removeFirst();
-                }
-            }
+
             delete la;
             vecLabelAction.pop_back();
-            
         }
     }
     
@@ -97,33 +111,36 @@ public:
         VecLabel& vecLabel = const_cast<helper::vector< sofa::component::engine::LabelImageToolBox*>& >(vl);
         
         labelSelection->clear();
+
         clearVecLabelAction();
-        
-        
-        
+
         for(unsigned int i=0; i<vecLabel.size();i++)
         {
             Label *v = vecLabel[i];
             //std::cout << "class" <<v->getName()<<std::endl;
             labelSelection->addItem(QString::fromStdString(v->getName()));
-            
+
             LabelAction *la = v->createTBAction(this);
+
             vecLabelAction.push_back(la);
-            this->addActions(la->getActions());
-            
-            /*for(int j=0;j<la->getWidgets().size();j++)
-                this->addWidget(la->getWidgets()[j]);*/
-            
+
+            QWidget *w = new QWidget();
+            w->setLayout(la->layout());
+
+            stack->addWidget(w);
             
             connect(this,SIGNAL(mouseevent(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)),la,SIGNAL(clickImage(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)));
             connect(this,SIGNAL(onPlane(uint,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)),la,SLOT(mouseMove(uint,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)));
             connect(la,SIGNAL(sectionChanged(sofa::defaulttype::Vec3i)),this,SIGNAL(labelChangeGui(sofa::defaulttype::Vec3i)));
             connect(this,SIGNAL(optionChangeSection(sofa::defaulttype::Vec3i)),la,SLOT(optionChangeSection(sofa::defaulttype::Vec3i)));
-            
+            //connect(la,SIGNAL(updateImage()),this,SIGNAL(updateImage()));
+
             la->setGraphScene(GraphXY,GraphXZ,GraphZY);
         }
+
         
         changedLabelIndex(0);
+
         
     }
     
@@ -154,20 +171,58 @@ public slots:
         emit mouseevent(2,currentAxis,currentImagePosition,current3DPosition,currentVal);
     }
     
+    void changeColor()
+    {
+        int i=stack->currentIndex();
+        if(i!=-1)
+        {
+            connect(vecLabelAction[i],SIGNAL(colorChanged()),this,SLOT(colorIsChanged()));
+            vecLabelAction[i]->clickColor();
+        }
+    }
+
+    void colorIsChanged()
+    {
+        LabelImageToolBoxAction *b = qobject_cast<LabelImageToolBoxAction*>(sender());
+        if(b)
+        {
+            disconnect(b,SIGNAL(colorChanged()),this,SLOT(colorIsChanged()));
+
+            setColor();
+        }
+    }
+
     void changedLabelIndex(int i)
     {
-        for(int j=0;j<(int)vecLabelAction.size();j++)
+        stack->setCurrentIndex(i);
+
+        setColor();
+    }
+
+
+    void setColor()
+    {
+        int i=stack->currentIndex();
+        if(i!=-1)
         {
-            LabelAction *la = vecLabelAction[j];
-            if(j!=i)
-            {
-                la->setVisible(false);
-            }
-            else
-            {
-                la->setVisible(true);
-            }
+            QColor c = vecLabelAction[i]->color();
+
+            setColor(c);
         }
+        else
+        {
+            QColor c(0,0,0,0);
+
+            setColor(c);
+        }
+    }
+
+    void setColor(QColor c)
+    {
+        QPixmap pix(30,30);
+        pix.fill(c);
+        QIcon icon(pix);
+        labelColor->setIcon(icon);
     }
     
 signals:
@@ -179,6 +234,8 @@ signals:
 
     void labelChangeGui(sofa::defaulttype::Vec3i);
     void optionChangeSection(sofa::defaulttype::Vec3i);
+
+    //void updateImage();
 };
 
 }

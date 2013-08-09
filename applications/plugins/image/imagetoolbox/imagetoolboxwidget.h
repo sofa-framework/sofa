@@ -51,6 +51,11 @@ class imagetoolbox_data_widget_container: public QObject
 
 public slots:
     virtual void handleSliderPolicies()=0; // needed for synchronization of slider visiblity
+    //virtual void draw()=0;
+
+signals:
+    //void updateImage();
+
 };
 
 template<class T>
@@ -114,13 +119,20 @@ public:
         labelTB->connectCentralW(central);
         labelTB->setGraphScene(central->graphXY->graphscene(),central->graphXZ->graphscene(),central->graphZY->graphscene());
         labelTB->setLabels(d.getLabels());
-        
+        //connect(labelTB,SIGNAL(updateImage()),this,SIGNAL(updateImage()));
+        //connect(this,SIGNAL(updateImage()),this,SLOT(draw()));;
+        //connect(this,SIGNAL(updateImage()),central,SLOT(update()));
+        //connect(this,SIGNAL(updateImage()),this,SLOT(testsignal()));
+
         //std::cout << "c" << std::endl;
         
         main->setCentralWidget(central);//central);
         
         main->addToolBar(Qt::TopToolBarArea,basicTB);
-        main->addToolBar(Qt::RightToolBarArea,labelTB);
+
+        QDockWidget *dw = new QDockWidget("Label Tools");
+        dw->setWidget(labelTB);
+        main->addDockWidget(Qt::RightDockWidgetArea,dw);
         
     /*
         setting = new Setting(parent);
@@ -181,6 +193,14 @@ public:
         {
             central->handleSliderPolicies();
         }
+
+        /*virtual void draw()
+        {
+            std::cout << "draw" <<std::endl;
+            this->central->graphXY->draw();
+            this->central->graphZY->draw();
+            this->central->graphXZ->draw();
+        }*/
 };
 
 
@@ -202,7 +222,15 @@ public:
         
     //std::cout << "~ImageToolBoxWidget::createWidgets" << std::endl;
     
-        //HistogramSetting* s = dynamic_cast<HistogramSetting*>(this->container.setting);
+        imagetoolbox_data_widget_container* s = dynamic_cast<imagetoolbox_data_widget_container *>(&this->container);
+        //this->connect(s,SIGNAL(updateImage()),this,SLOT(setWidgetDirty()));
+
+        //this->connect(s,SIGNAL(updateImage()),this,SLOT(forceUpdateWidgetValue()));
+        //this->connect(s,SIGNAL(updateImage()),this,SLOT(updateDataValue()));
+
+
+
+
         //this->connect(s,SIGNAL(clampModified()), this, SLOT(setWidgetDirty()));
         return b;
     }
