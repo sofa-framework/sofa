@@ -1,3 +1,5 @@
+
+
 #include <QString>
 #include <QtGui>
 #include <QPointF>
@@ -37,7 +39,10 @@ LabelPointsBySectionImageToolBoxAction::LabelPointsBySectionImageToolBoxAction(s
     createAxisSelectionWidget();
     createListPointWidget();
 
-    
+    reloadData();
+    updateData();
+    this->tablewidget->updateData();
+
 }
 
 
@@ -108,11 +113,15 @@ void LabelPointsBySectionImageToolBoxAction::addOnGraphs()
     }
     
     updateColor();
+
+    if(currentSlide==-1)currentSlide=0;
+    changeSection2(currentSlide,true);
 }
 
 void LabelPointsBySectionImageToolBoxAction::updateGraphs()
 {
     //sofa::defaulttype::Vec3d pos = LPBSITB()->d_ip.getValue();
+    //this->updateData();
 }
 
 void LabelPointsBySectionImageToolBoxAction::updateColor()
@@ -138,12 +147,10 @@ void LabelPointsBySectionImageToolBoxAction::updateColor()
 
 void LabelPointsBySectionImageToolBoxAction::createListPointWidget()
 {
-    tablewidget = new TableWidgetForLabelPointBySectionToolBoxAction(this);
+    tablewidget = new TableWidgetForLabelPointBySectionToolBoxAction();
     tablewidget->setMapSection(&mapsection);
     
-    this->l_actions.append(tablewidget);
-    
-
+    this->addWidget(tablewidget);
     
     connect(tablewidget,SIGNAL(changeSection(int)),this,SLOT(changeSection(int)));
     
@@ -171,17 +178,13 @@ void LabelPointsBySectionImageToolBoxAction::createAxisSelectionWidget()
     zyAxis->setChecked(false);
     
     QVBoxLayout * l2=new QVBoxLayout();
-    l2->addWidget(new QLabel("Axis selection"));
     l2->addLayout(l);
     
-    QGroupBox *g= new QGroupBox();
+    QGroupBox *g= new QGroupBox("Axis selection");
     g->setLayout(l2);
     
-    QWidgetAction *wa = new QWidgetAction(this);
-    wa->setDefaultWidget(g);
-    
-    this->l_actions.append(wa);
-    
+    this->addWidget(g);
+
     connect(xyAxis,SIGNAL(toggled(bool)),this,SLOT(axisChecked(bool)));
     connect(zyAxis,SIGNAL(toggled(bool)),this,SLOT(axisChecked(bool)));
     connect(xzAxis,SIGNAL(toggled(bool)),this,SLOT(axisChecked(bool)));
@@ -196,7 +199,6 @@ void LabelPointsBySectionImageToolBoxAction::createMainCommandWidget()
     select->setCheckable(true);
     connect(select,SIGNAL(toggled(bool)),this,SLOT(selectionPointButtonClick(bool)));
 
-    vb->addWidget(new QLabel("Main Commands"));
     vb->addWidget(select);
 
     QHBoxLayout *hb=new QHBoxLayout();
@@ -217,14 +219,11 @@ void LabelPointsBySectionImageToolBoxAction::createMainCommandWidget()
 
     vb->addLayout(hb);
 
-    QGroupBox *gb = new QGroupBox();
+    QGroupBox *gb = new QGroupBox("Main Commands");
 
     gb->setLayout(vb);
 
-    QWidgetAction *wa = new QWidgetAction(this);
-    wa->setDefaultWidget(gb);
-
-    this->l_actions.append(wa);
+    this->addWidget(gb);
 }
 
 void LabelPointsBySectionImageToolBoxAction::axisChecked(bool b)
@@ -314,7 +313,7 @@ void LabelPointsBySectionImageToolBoxAction::changeSection(int i)
     emit sectionChanged(v);
 }
 
-sofa::defaulttype::Vec3i LabelPointsBySectionImageToolBoxAction::changeSection2(int i)
+sofa::defaulttype::Vec3i LabelPointsBySectionImageToolBoxAction::changeSection2(int i,bool force)
 {
     sofa::defaulttype::Vec3i v;
 
@@ -333,7 +332,7 @@ sofa::defaulttype::Vec3i LabelPointsBySectionImageToolBoxAction::changeSection2(
             v.set(0,0,0);
     }
 
-    if(i!=currentSlide)
+    if(i!=currentSlide || force)
     {
         if(mapsection[currentSlide].size()!=0)
         {
@@ -526,6 +525,7 @@ void LabelPointsBySectionImageToolBoxAction::reloadData()
     l->d_p.endEdit();
 
     tablewidget->updateData();
+
 }
 
 void LabelPointsBySectionImageToolBoxAction::loadFileData()
@@ -554,3 +554,5 @@ SOFA_DECL_CLASS(LabelPointsBySectionImageToolBoxAction)
 }
 }
 }
+
+

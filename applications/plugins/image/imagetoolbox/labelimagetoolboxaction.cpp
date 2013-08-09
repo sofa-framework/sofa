@@ -10,33 +10,23 @@ namespace gui
 namespace qt
 {
 
-LabelImageToolBoxAction::LabelImageToolBoxAction(sofa::component::engine::LabelImageToolBox* lba,QObject *parent) : QObject(parent),
-    p_label(lba)
+LabelImageToolBoxAction::LabelImageToolBoxAction(sofa::component::engine::LabelImageToolBox* lba,QObject *parent)
+    : QObject(parent)//QGroupBox(parent)//QWidget(parent)
+    ,p_label(lba)
 {
-    createColorAction();
-}
 
-void LabelImageToolBoxAction::setVisible(bool v)
-{
-    for(int i=0;i<l_actions.size();i++)
-    {
-        l_actions[i]->setVisible(v);
-    }
-    
-    /*for(int i=0;i<l_widgets.size();i++)
-    {
-        l_widgets[i]->setEnabled(v);
-        l_widgets[i]->setVisible(false);
-    }*/
-}
+    mainlayout = new Layout();
 
+    //createColorAction();
+
+}
 
 void LabelImageToolBoxAction::buttonSelectedOff()
 {
-    for(int i=0;i<l_actions.size();i++)
+    /*for(int i=0;i<l_actions.size();i++)
     {
         l_actions[i]->setChecked(false);
-    }
+    }*/
 }
 
 void LabelImageToolBoxAction::setGraphScene(QGraphicsScene *XY,QGraphicsScene *XZ,QGraphicsScene *ZY)
@@ -49,7 +39,7 @@ void LabelImageToolBoxAction::setGraphScene(QGraphicsScene *XY,QGraphicsScene *X
     updateGraphs();
 }
 
-
+    /*
     void LabelImageToolBoxAction::createColorAction()
     {
         QPixmap pix(20,20);
@@ -61,11 +51,11 @@ void LabelImageToolBoxAction::setGraphScene(QGraphicsScene *XY,QGraphicsScene *X
         pix.fill(c);
         QIcon icon(pix);
         QString text("color");
-        a_color = new QAction(icon,text,this);
-        l_actions.append(a_color);
+        a_color = new QPushButton(icon,text);
+        this->addWidget(a_color);
         
-        connect(a_color,SIGNAL(triggered()),this,SLOT(clickColor()));
-    }
+        connect(a_color,SIGNAL(clicked()),this,SLOT(clickColor()));
+    }*/
     
     void LabelImageToolBoxAction::clickColor()
     {
@@ -89,14 +79,15 @@ void LabelImageToolBoxAction::setGraphScene(QGraphicsScene *XY,QGraphicsScene *X
         sofa::defaulttype::Vec4f v(c.redF(),c.greenF(),c.blueF(),c.alphaF());
         p_label->d_color.setValue(v);
         
-        QPixmap pix(20,20);
+       /* QPixmap pix(20,20);
         pix.fill(c);
         QIcon icon(pix);
-        a_color->setIcon(icon);
+        a_color->setIcon(icon);*/
         
         
         diag->deleteLater();
         this->updateColor();
+        emit colorChanged();
     }
     
     QColor LabelImageToolBoxAction::color()

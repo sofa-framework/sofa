@@ -16,23 +16,34 @@ ContourImageToolBoxAction::ContourImageToolBoxAction(sofa::component::engine::La
     LabelImageToolBoxAction(lba,parent)
 {
     //button selection point
-    QAction* select = new QAction(this);
-    this->l_actions.append(select);
-    select->setText("Select Point");
-    select->setCheckable(true);
-    connect(select,SIGNAL(toggled(bool)),this,SLOT(selectionPointButtonClick(bool)));
-    
-    QAction* section = new QAction(this);
-    this->l_actions.append(section);
-    section->setText("Section");
-    connect(section,SIGNAL(triggered()),this,SLOT(sectionButtonClick()));
-    
+    this->createMainCommands();
+
     this->createPosition();
     this->createRadius();
     this->createThreshold();
+
+    this->addStretch();
     
 }
 
+void ContourImageToolBoxAction::createMainCommands()
+{
+    select = new QPushButton("Select Point");
+    select->setCheckable(true);
+    connect(select,SIGNAL(toggled(bool)),this,SLOT(selectionPointButtonClick(bool)));
+
+    QPushButton* section = new QPushButton("Go to");
+    connect(section,SIGNAL(clicked()),this,SLOT(sectionButtonClick()));
+
+    QHBoxLayout* hb = new QHBoxLayout();
+    hb->addWidget(select);
+    hb->addWidget(section);
+
+    QGroupBox * gb = new QGroupBox("Main Commands");
+    gb->setLayout(hb);
+
+    this->addWidget(gb);
+}
 
 ContourImageToolBoxAction::~ContourImageToolBoxAction()
 {
@@ -48,17 +59,19 @@ sofa::component::engine::ContourImageToolBoxNoTemplated* ContourImageToolBoxActi
 
 void ContourImageToolBoxAction::selectionPointEvent(int /*mouseevent*/, const unsigned int axis,const sofa::defaulttype::Vec3d& imageposition,const sofa::defaulttype::Vec3d& position3D,const QString& value)
 {
-    select = l_actions[1];
     
     select->setChecked(false);
     disconnect(this,SIGNAL(clickImage(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)),this,SLOT(selectionPointEvent(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)));
     
     sofa::component::engine::ContourImageToolBoxNoTemplated* lp = CITB();
-    
+
     lp->d_ip.setValue(imageposition);
     lp->d_p.setValue(position3D);
     lp->d_axis.setValue(axis);
     lp->d_value.setValue(value.toStdString());
+
+    lp->threshold.setValue(threshold->value());
+    lp->radius.setValue(radius->value());
     
     vecX->setValue(round(imageposition.x()));
     vecY->setValue(round(imageposition.y()));
@@ -67,6 +80,7 @@ void ContourImageToolBoxAction::selectionPointEvent(int /*mouseevent*/, const un
     lp->segmentation();
     
     updateGraphs();
+    emit updateImage();
 }
 
 void ContourImageToolBoxAction::setImageSize(int xsize,int ysize,int zsize)
@@ -104,21 +118,90 @@ void ContourImageToolBoxAction::addOnGraphs()
 
 //    std::cout << "addOnGraph"<<std::endl;
 
-    lineH[0] = GraphXY->addLine(0,0,0,0);
-    lineH[1] = GraphXZ->addLine(0,0,0,0);
-    lineH[2] = GraphZY->addLine(0,0,0,0);
+    cursor[0] = GraphXY->addPath(QPainterPath());
+    cursor[1] = GraphXZ->addPath(QPainterPath());
+    cursor[2] = GraphZY->addPath(QPainterPath());
     
-    lineV[0] = GraphXY->addLine(0,0,0,0);
-    lineV[1] = GraphXZ->addLine(0,0,0,0);
-    lineV[2] = GraphZY->addLine(0,0,0,0);
+    path[0] = GraphXY->addPath(QPainterPath());
+    path[1] = GraphXZ->addPath(QPainterPath());
+    path[2] = GraphZY->addPath(QPainterPath());
     
     for(int i=0;i<3;i++)
     {
-        lineH[i]->setVisible(false);
-        lineV[i]->setVisible(false);
+        path[i]->setVisible(true);
+        cursor[i]->setVisible(true);
     }
     
     updateColor();
+}
+
+QPainterPath ContourImageToolBoxAction::drawCursor(double x,double y)
+{
+    QPainterPath c;
+
+    c.moveTo(x-4,y);
+    c.lineTo(x+4,y);
+    c.moveTo(x,y-4);
+    c.lineTo(x,y+4);
+
+    return c;
+}
+
+QPainterPath ContourImageToolBoxAction::drawSegment(VecPixCoord &v, unsigned int axis)
+{
+    QPainterPath p;
+
+    int idX=0,idY=0;
+    switch(axis)
+    {
+        case 0:
+            idX=0;idY=1;
+        break;
+        case 1:
+            idX=0;idY=2;
+        break;
+        default:
+            idX=2;idY=1;
+        break;
+    }
+
+    for(unsigned int i=0;i<v.size();i++)
+    {
+        PixCoord &pos= v[i];
+
+        p.addRect(QRectF(pos[idX],pos[idY],1,1));
+    }
+    return p;
+}
+
+void ContourImageToolBoxAction::drawSegment()
+{
+    sofa::component::engine::ContourImageToolBoxNoTemplated* l = CITB();
+
+
+    VecPixCoord& vip = *(l->d_vecPixCoord.beginEdit());
+
+    sofa::defaulttype::Vec3i &pos = sectionPosition;
+
+
+    VecPixCoord v1,v2,v3;
+
+    for(unsigned int i=0;i<vip.size();i++)
+    {
+        PixCoord &ip = vip[i];
+
+        if(ip.z()==(unsigned int) pos.z())v1.push_back(ip);
+        if(ip.y()==(unsigned int) pos.y())v2.push_back(ip);
+        if(ip.x()==(unsigned int) pos.x())v3.push_back(ip);
+    }
+
+    path[0]->setPath(drawSegment(v1,0));
+    path[1]->setPath(drawSegment(v2,1));
+    path[2]->setPath(drawSegment(v3,2));
+
+    l->d_ip.endEdit();
+    l->d_p.endEdit();
+
 }
 
 
@@ -128,25 +211,19 @@ void ContourImageToolBoxAction::updateGraphs()
     
     //QRectF boundaryXY = GraphXY->itemsBoundingRect();
     
-//    std::cout << "updateOnGraphs"<<std::endl;
+    //std::cout << "updateOnGraphs"<<std::endl;
     
-    lineH[0]->setVisible(true);
-    lineH[0]->setLine(pos.x()-4,pos.y(),pos.x()+4,pos.y());
-    
-    lineV[0]->setVisible(true);
-    lineV[0]->setLine(pos.x(),pos.y()-4,pos.x(),pos.y()+4);
-    
-    lineH[1]->setVisible(true);
-    lineH[1]->setLine(pos.x()-4,pos.z(),pos.x()+4,pos.z());
-    
-    lineV[1]->setVisible(true);
-    lineV[1]->setLine(pos.x(),pos.z()-4,pos.x(),pos.z()+4);
-    
-    lineH[2]->setVisible(true);
-    lineH[2]->setLine(pos.z()-4,pos.y(),pos.z()+4,pos.y());
-    
-    lineV[2]->setVisible(true);
-    lineV[2]->setLine(pos.z(),pos.y()-4,pos.z(),pos.y()+4);
+    cursor[0]->setVisible(true);
+    cursor[0]->setPath(drawCursor(pos.x(),pos.y()));
+
+    cursor[1]->setVisible(true);
+    cursor[1]->setPath(drawCursor(pos.x(),pos.z()));
+
+    cursor[2]->setVisible(true);
+    cursor[2]->setPath(drawCursor(pos.z(),pos.y()));
+
+    drawSegment();
+
     
 }
 
@@ -154,8 +231,9 @@ void ContourImageToolBoxAction::updateColor()
 {
     for(int i=0;i<3;i++)
     {
-        lineH[i]->setPen(QPen(this->color()));
-        lineV[i]->setPen(QPen(this->color()));
+        path[i]->setPen(QPen(this->color()));
+        path[i]->setBrush(QBrush(this->color()));
+        cursor[i]->setPen(QPen(this->color()));
     }
 }
 
@@ -171,71 +249,79 @@ void ContourImageToolBoxAction::sectionButtonClick()
 
 void ContourImageToolBoxAction::createPosition()
 {
-    QVBoxLayout *layout2 = new QVBoxLayout();
+
+    sofa::component::engine::ContourImageToolBoxNoTemplated* lp = CITB();
+
     QHBoxLayout *layout = new QHBoxLayout();
-    vecX = new QSpinBox(); layout->addWidget(vecX);
-    vecY = new QSpinBox(); layout->addWidget(vecY);
-    vecZ = new QSpinBox(); layout->addWidget(vecZ);
+
+    vecX = new QSpinBox();
+    vecY = new QSpinBox();
+    vecZ = new QSpinBox();
+
+    unsigned int x, y, z;
+    lp->getImageSize(x, y, z);
+
+    setImageSize(x, y, z);
+
+
+    sofa::defaulttype::Vec3d pos = lp->d_ip.getValue();
+    vecX->setValue(round(pos.x()));
+    vecY->setValue(round(pos.y()));
+    vecZ->setValue(round(pos.z()));
+
+    layout->addWidget(vecX);
+    layout->addWidget(vecY);
+    layout->addWidget(vecZ);
+
+    posGroup = new QGroupBox("Position");
+    //posGroup->setToolTip("position");
+
+    posGroup->setLayout(layout);
     
-    posGroup = new QGroupBox();
-    posGroup->setToolTip("position");
-    
-    layout2->addWidget(new QLabel("position"));
-    layout2->addLayout(layout);
-    
-    posGroup->setLayout(layout2);
-    
-    QWidgetAction * ac = new QWidgetAction(this);
-    ac->setDefaultWidget(posGroup);
-    
+
     //this->l_widgets.append(posGroup);
-    this->l_actions.append(ac);
-    
+    this->addWidget(posGroup);
+
     connect(vecX,SIGNAL(editingFinished()),this,SLOT(positionModified()));
     connect(vecY,SIGNAL(editingFinished()),this,SLOT(positionModified()));
     connect(vecZ,SIGNAL(editingFinished()),this,SLOT(positionModified()));
+
 }
 
 void ContourImageToolBoxAction::createRadius()
 {
-    QVBoxLayout *layout2 = new QVBoxLayout();
+    sofa::component::engine::ContourImageToolBoxNoTemplated* lp = CITB();
      QHBoxLayout *layout = new QHBoxLayout();
      radius= new QSpinBox(); layout->addWidget(radius);
      
-     radiusGroup = new QGroupBox();
+     radiusGroup = new QGroupBox("Radius");
 
-     radiusGroup->setToolTip("radius");
+     //radiusGroup->setToolTip("radius");
      
-     layout2->addWidget(new QLabel("radius"));
-     layout2->addLayout(layout);
+     radiusGroup->setLayout(layout);
+
+     int rad = lp->radius.getValue();
+     radius->setValue(rad);
      
-     radiusGroup->setLayout(layout2);
-     
-     QWidgetAction * ac = new QWidgetAction(this);
-     ac->setDefaultWidget(radiusGroup);
-     
-     this->l_actions.append(ac);
+     this->addWidget(radiusGroup);
     
-     
      connect(radius,SIGNAL(editingFinished()),this,SLOT(radiusModified()));
 }
 
 void ContourImageToolBoxAction::createThreshold()
 {
-    QVBoxLayout *layout2 = new QVBoxLayout();
+    sofa::component::engine::ContourImageToolBoxNoTemplated* lp = CITB();
+   // QVBoxLayout *layout2 = new QVBoxLayout();
      QHBoxLayout *layout = new QHBoxLayout();
-     threshold= new QDoubleSpinBox(); layout->addWidget(threshold);
+     threshold= new QDoubleSpinBox(); threshold->setSingleStep(0.1); layout->addWidget(threshold);
      
-     layout2->addWidget(new QLabel("threshold"));
-     layout2->addLayout(layout);
+     thresholdGroup = new QGroupBox("Threshold");
+     thresholdGroup->setLayout(layout);
      
-     thresholdGroup = new QGroupBox();
-     thresholdGroup->setLayout(layout2);
-     
-     QWidgetAction * ac = new QWidgetAction(this);
-     ac->setDefaultWidget(thresholdGroup);
-     
-     this->l_actions.append(ac);
+     int th = lp->threshold.getValue();
+     threshold->setValue(th);
+
+     this->addWidget(thresholdGroup);
      
      connect(threshold,SIGNAL(editingFinished()),this,SLOT(thresholdModified()));
 }
@@ -243,7 +329,7 @@ void ContourImageToolBoxAction::createThreshold()
 
 void ContourImageToolBoxAction::positionModified()
 {
-    std::cout << "positionModified" << std::endl;
+    //std::cout << "positionModified" << std::endl;
     sofa::defaulttype::Vec3d v(vecX->value(),vecY->value(),vecZ->value());
     
     sofa::component::engine::ContourImageToolBoxNoTemplated* lp = CITB();
@@ -253,18 +339,43 @@ void ContourImageToolBoxAction::positionModified()
     lp->segmentation();
     
     updateGraphs();
+    //emit updateImage();
 }
 
 void ContourImageToolBoxAction::radiusModified()
 {
-    std::cout << "radiusModified" << std::endl;
+    //std::cout << "radiusModified" << std::endl;
+
+    sofa::component::engine::ContourImageToolBoxNoTemplated* lp = CITB();
+
+    lp->radius.setValue(radius->value());
+
+    lp->segmentation();
+
+    updateGraphs();
+    //emit updateImage();
 }
 
 void ContourImageToolBoxAction::thresholdModified()
 {
-    std::cout << "thresholdModified" << std::endl;
+    //std::cout << "thresholdModified" << std::endl;
+
+    sofa::component::engine::ContourImageToolBoxNoTemplated* lp = CITB();
+
+    lp->threshold.setValue(threshold->value());
+
+    lp->segmentation();
+
+    updateGraphs();
+    //emit updateImage();
 }
 
+void ContourImageToolBoxAction::optionChangeSection(sofa::defaulttype::Vec3i v)
+{
+    sectionPosition = v;
+
+    updateGraphs();
+}
 
 
 

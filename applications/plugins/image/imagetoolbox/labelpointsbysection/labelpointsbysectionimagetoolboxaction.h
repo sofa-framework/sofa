@@ -1,3 +1,5 @@
+
+
 #ifndef LABELPOINTSBYSECTIONIMAGETOOLBOXACTION_H
 #define LABELPOINTSBYSECTIONIMAGETOOLBOXACTION_H
 
@@ -73,7 +75,7 @@ public slots:
     virtual void updateColor();
     virtual void optionChangeSection(sofa::defaulttype::Vec3i);
     void changeSection(int);
-    sofa::defaulttype::Vec3i changeSection2(int);
+    sofa::defaulttype::Vec3i changeSection2(int,bool force=false);
     void mouseMove(const unsigned int axis,const sofa::defaulttype::Vec3d& imageposition,const sofa::defaulttype::Vec3d& position3D,const QString& value);
     void addToPath(const unsigned int axis,const sofa::defaulttype::Vec3d& imageposition,bool forceMoveTo=false);
 
@@ -96,3 +98,5 @@ private:
 }
 
 #endif // LABELPOINTSBYSECTIONIMAGETOOLBOXACTION_H
+
+

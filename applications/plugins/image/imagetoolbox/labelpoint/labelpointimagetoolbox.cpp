@@ -1,3 +1,5 @@
+
+
 #include "labelpointimagetoolbox.h"
 
 #include <sofa/core/ObjectFactory.h>
@@ -19,3 +21,6 @@ int LabelPointImageToolBox_Class = core::RegisterObject("LabelPointImageToolBox"
 .addAuthor("Vincent Majorczyk");
 
 }}}
+
+
+

@@ -120,7 +120,12 @@ protected:
 
 public:
     
-    virtual sofa::gui::qt::LabelImageToolBoxAction* createTBAction(QObject*/*parent*/){return NULL;}
+    virtual sofa::gui::qt::LabelImageToolBoxAction* createTBAction(QWidget* /*parent*/=NULL )=0;
+            /*
+    {
+        std::cout << "bug 1"<<std::endl;
+        return NULL;
+    }*/
 };
 
 

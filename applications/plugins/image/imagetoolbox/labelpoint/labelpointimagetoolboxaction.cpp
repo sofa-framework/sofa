@@ -14,18 +14,28 @@ namespace qt
 LabelPointImageToolBoxAction::LabelPointImageToolBoxAction(sofa::component::engine::LabelImageToolBox* lba,QObject *parent):
     LabelImageToolBoxAction(lba,parent)
 {
+    QGroupBox *gb = new QGroupBox();
+    gb->setTitle("Main Commands");
+
+    QHBoxLayout *hb = new QHBoxLayout();
+
+
     //button selection point
-    select = new QAction(this);
-    this->l_actions.append(select);
-    select->setText("Select Point");
+    select = new QPushButton("Select Point");
+    hb->addWidget(select);
+    //this->addWidget(select);
     select->setCheckable(true);
     connect(select,SIGNAL(toggled(bool)),this,SLOT(selectionPointButtonClick(bool)));
-    
-    QAction* section = new QAction(this);
-    this->l_actions.append(section);
-    section->setText("Section");
-    connect(section,SIGNAL(triggered()),this,SLOT(sectionButtonClick()));
-    
+
+    QPushButton* section = new QPushButton("Go to");
+    hb->addWidget(section);
+    //this->addWidget(section);
+    connect(section,SIGNAL(clicked()),this,SLOT(sectionButtonClick()));
+
+    gb->setLayout(hb);
+    this->addWidget(gb);
+
+    this->addStretch();
 }
 
 LabelPointImageToolBoxAction::~LabelPointImageToolBoxAction()

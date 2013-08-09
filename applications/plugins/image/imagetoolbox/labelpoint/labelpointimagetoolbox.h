@@ -47,7 +47,7 @@ public:
         
     }
     
-    virtual sofa::gui::qt::LabelImageToolBoxAction* createTBAction(QObject*parent)
+    virtual sofa::gui::qt::LabelImageToolBoxAction* createTBAction(QWidget*parent=NULL)
     {
         return new sofa::gui::qt::LabelPointImageToolBoxAction(this,parent);
     }
@@ -63,3 +63,5 @@ public:
 }}}
 
 #endif // LABELPOINTIMAGETOOLBOX_H
+
+

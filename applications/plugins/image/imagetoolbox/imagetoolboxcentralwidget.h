@@ -349,37 +349,24 @@ public:
 
     void insertWidgets()
     {
-        //std::cout << "TImageToolBoxCentralWidget::insertWidgets" << std::endl;
         this->setLayout(container_layout);
 
         QGridLayout* layout = new QGridLayout();
         if(graphXY) layout->addWidget(graphXY,0,0);
         if(optionsXY) layout->addWidget(optionsXY,1,0);
-        
-         //std::cout << "a" << std::endl;
 
         if(graphXZ) layout->addWidget(graphXZ,2,0);
         if(optionsXZ) layout->addWidget(optionsXZ,3,0);
-        
-         //std::cout << "b" << std::endl;
 
         if(graphZY) layout->addWidget(graphZY,0,1);
         if(optionsZY) layout->addWidget(optionsZY,1,1);
-        
-        // std::cout << "c" << std::endl;
-
         container_layout->addLayout(layout);
-        
-        // std::cout << "d" << std::endl;
-
        // container_layout->add(togglemodels);
-        
-         //std::cout << "e" << std::endl;
 
         //if(graphXY && graphXZ && graphZY) layout->addWidget(info,2,1);
         //else
         if(info)container_layout->add(info);
-        //std::cout << "~TImageToolBoxCentralWidget::insertWidgets" << std::endl;
+
     }
 
     void handleSliderPolicies()
@@ -430,8 +417,6 @@ public:
     
     void setSliders(sofa::defaulttype::Vec3i v)
     {
-       // std::cout << "void setSliders(sofa::defaulttype::Vec3i v)" << v << std::endl;
-    
         this->optionsXY->setSlider(v.z());
         this->optionsXZ->setSlider(v.y());
         this->optionsZY->setSlider(v.x());
