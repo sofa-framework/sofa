@@ -147,7 +147,7 @@ void LabelPointImageToolBoxAction::sectionButtonClick()
    // std::cout << "LabelPointImageToolBoxAction::sectionButtonClick()"<<std::endl;
     sofa::defaulttype::Vec3d pos = LPITB()->d_ip.getValue();
     
-    sofa::defaulttype::Vec3i pos2(round(pos.x()),round(pos.y()),round(pos.z()));
+    sofa::defaulttype::Vec3i pos2(sofa::helper::round(pos.x()),sofa::helper::round(pos.y()),sofa::helper::round(pos.z()));
 
     emit sectionChanged(pos2);
 }
