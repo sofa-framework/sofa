@@ -73,9 +73,9 @@ void ContourImageToolBoxAction::selectionPointEvent(int /*mouseevent*/, const un
     lp->threshold.setValue(threshold->value());
     lp->radius.setValue(radius->value());
     
-    vecX->setValue(round(imageposition.x()));
-    vecY->setValue(round(imageposition.y()));
-    vecZ->setValue(round(imageposition.z()));
+    vecX->setValue(sofa::helper::sofa::helper::round(imageposition.x()));
+    vecY->setValue(sofa::helper::sofa::helper::round(imageposition.y()));
+    vecZ->setValue(sofa::helper::sofa::helper::round(imageposition.z()));
     
     lp->segmentation();
     
@@ -242,7 +242,7 @@ void ContourImageToolBoxAction::sectionButtonClick()
     //std::cout << "ContourImageToolBoxAction::sectionButtonClick()"<<std::endl;
     sofa::defaulttype::Vec3d pos = CITB()->d_ip.getValue();
     
-    sofa::defaulttype::Vec3i pos2(round(pos.x()),round(pos.y()),round(pos.z()));
+    sofa::defaulttype::Vec3i pos2(sofa::helper::round(pos.x()),sofa::helper::round(pos.y()),sofa::helper::round(pos.z()));
 
     emit sectionChanged(pos2);
 }
@@ -265,9 +265,9 @@ void ContourImageToolBoxAction::createPosition()
 
 
     sofa::defaulttype::Vec3d pos = lp->d_ip.getValue();
-    vecX->setValue(round(pos.x()));
-    vecY->setValue(round(pos.y()));
-    vecZ->setValue(round(pos.z()));
+    vecX->setValue(sofa::helper::round(pos.x()));
+    vecY->setValue(sofa::helper::round(pos.y()));
+    vecZ->setValue(sofa::helper::round(pos.z()));
 
     layout->addWidget(vecX);
     layout->addWidget(vecY);

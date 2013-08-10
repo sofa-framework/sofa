@@ -35,6 +35,7 @@ if(SOFA-PLUGIN_IMAGE)
     
     include_directories("${SOFA_EXTLIBS_DIR}")
     include_directories("${SOFA_APPLICATIONS_PLUGINS_DIR}")
+	include_directories(${SOFA_APPLICATIONS_PLUGINS_DIR}/image)
 endif()
 
 set(README_FILES
