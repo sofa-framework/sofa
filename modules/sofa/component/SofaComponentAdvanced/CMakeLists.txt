@@ -18,7 +18,7 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_COMPONENT_ADVANCED")
 AddLinkerDependencies(SofaEulerianFluid SofaSphFluid SofaVolumetricData SofaNonUniformFem)
-if(SOFA-LIB_COMPONENT_EIGEN2_SOLVER)
+if(SOFA-EXTERNAL_HAVE_EIGEN2)
     AddLinkerDependencies(SofaEigen2Solver)
 endif()
 
