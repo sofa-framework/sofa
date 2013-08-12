@@ -63,6 +63,11 @@ public:
 
     typedef typename Coord::value_type Real;
 
+    typedef BeamLinearMapping<TIn, TOut> BeamLinearMappingInOut;
+    enum { N    = BeamLinearMappingInOut::N    };
+    enum { NIn  = BeamLinearMappingInOut::NIn  };
+    enum { NOut = BeamLinearMappingInOut::NOut };
+
     typedef defaulttype::Mat<N, N, Real> Mat;
     typedef defaulttype::Vec<N, Real> Vector;
     typedef defaulttype::Mat<NOut, NIn, Real> MBloc;

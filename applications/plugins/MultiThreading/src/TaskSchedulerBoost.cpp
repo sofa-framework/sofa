@@ -203,7 +203,7 @@ namespace sofa
 			//}
 		}		
 
-		bool WorkerThread::attachToThisThread(TaskScheduler* pScheduler)
+        bool WorkerThread::attachToThisThread(TaskScheduler* pScheduler)
 		{
 
 			mTaskCount		= 0;

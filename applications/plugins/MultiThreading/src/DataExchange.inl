@@ -16,14 +16,14 @@ namespace sofa
 
 		template <class DataTypes>
 		DataExchange<DataTypes>::DataExchange( const char* from, const char* to )
-			: BaseObject()
-			, fromPath(from)
-			, toPath(to)
+            : BaseObject()
 			, mSource(initData(&mSource,"from","source object to copy"))
-			, mDestination(initData(&mDestination,"to","destination object to copy"))
-			, mSizeInBytes(0)
+            , mDestination(initData(&mDestination,"to","destination object to copy"))
 			, mSourcePtr(NULL)
 			, mDestinationPtr(NULL)
+            , fromPath(from)
+            , toPath(to)
+            , mSizeInBytes(0)
 		{
 			//f_listening.setValue(true);
 		}

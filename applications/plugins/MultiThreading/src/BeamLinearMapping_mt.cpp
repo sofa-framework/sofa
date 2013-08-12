@@ -25,7 +25,7 @@
 #include "BeamLinearMapping_mt.inl"
 #include <sofa/core/ObjectFactory.h>
 //#include <sofa/core/behavior/MechanicalState.h>
-//#include <sofa/core/Mapping.inl>
+#include <sofa/core/Mapping.inl>
 
 namespace sofa
 {

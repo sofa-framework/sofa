@@ -68,8 +68,8 @@ namespace mapping
 				in0 = _in->size()-2;
 			inpos[0] -= in0;
 
-			const In::Coord _in0 = (*_in)[in0];
-			const In::Coord _in1 = (*_in)[in0+1];
+            const typename In::Coord _in0 = (*_in)[in0];
+            const typename In::Coord _in1 = (*_in)[in0+1];
 			Real beamLengh = _mapping->beamLength[in0];
 			Coord& rotatedPoint0 = _mapping->rotatedPoints0[i];
 			Coord& rotatedPoint1 = _mapping->rotatedPoints1[i];
@@ -115,7 +115,7 @@ namespace mapping
 			// J = [ I -OM^ ]
 			//out[i] =  v - cross(rotatedPoints[i],omega);
 
-			defaulttype::Vec<N, typename In::Real> inpos = _mapping->points[i];
+            defaulttype::Vec<N, typename In::Real> inpos = _mapping->points[i];
 			int in0 = helper::rfloor(inpos[0]);
 			if (in0<0) 
 				in0 = 0; 
@@ -123,8 +123,8 @@ namespace mapping
 				in0 = _in->size()-2;
 			inpos[0] -= in0;
 
-			const In::Deriv _in0 = (*_in)[in0];
-			const In::Deriv _in1 = (*_in)[in0+1];
+            const typename In::Deriv _in0 = (*_in)[in0];
+            const typename In::Deriv _in1 = (*_in)[in0+1];
 			Real beamLengh = _mapping->beamLength[in0];
 			Coord& rotatedPoint0 = _mapping->rotatedPoints0[i];
 			Coord& rotatedPoint1 = _mapping->rotatedPoints1[i];
@@ -182,8 +182,8 @@ namespace mapping
 				in0 = _out->size()-2;
 			inpos[0] -= in0;
 
-			In::Deriv& _out0 = (*_out)[in0];
-			In::Deriv& _out1 = (*_out)[in0+1];
+            typename In::Deriv& _out0 = (*_out)[in0];
+            typename In::Deriv& _out1 = (*_out)[in0+1];
 			const Coord& rotatedPoint0 = _mapping->rotatedPoints0[i];
 			const Coord& rotatedPoint1 = _mapping->rotatedPoints1[i];
 

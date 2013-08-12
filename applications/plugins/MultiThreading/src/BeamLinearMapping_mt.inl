@@ -72,13 +72,13 @@ namespace mapping
 
 
 	template <class TIn, class TOut>
-	void BeamLinearMapping_mt< TIn, TOut>::apply(const core::MechanicalParams* mparams /* PARAMS FIRST */, Data<VecCoord>& _out, const Data<InVecCoord>& _in)
+    void BeamLinearMapping_mt< TIn, TOut>::apply(const core::MechanicalParams* mparams /* PARAMS FIRST */, Data<VecCoord>& _out, const Data<typename In::VecCoord>& _in)
 	{
 
 		//Inherit::apply(mparams, dOut, dIn);
 		static boost::pool<> task_pool(sizeof(BeamLinearMapping_mt< TIn, TOut>::applyTask));
 
-		unsigned int numPoints = points.size();
+        unsigned int numPoints = this->points.size();
 
 		if ( numPoints >  2*mGrainSize.getValue()  )
 		{		
@@ -88,9 +88,9 @@ namespace mapping
 			//const InVecCoord& in= _in.getValue();
 			//VecCoord& out = *_out.beginEdit();
 
-			rotatedPoints0.resize(points.size());
-			rotatedPoints1.resize(points.size());
-			out.resize(points.size());
+            this->rotatedPoints0.resize(this->points.size());
+            this->rotatedPoints1.resize(this->points.size());
+            out.resize(this->points.size());
 
 
 			// create tasks
@@ -178,7 +178,7 @@ namespace mapping
 
 		static boost::pool<> task_pool(sizeof(BeamLinearMapping_mt< TIn, TOut>::applyJTask));
 
-		unsigned int numPoints = points.size();
+        unsigned int numPoints = this->points.size();
 
 		if ( numPoints >  2*mGrainSize.getValue()  )
 		{		
@@ -189,7 +189,7 @@ namespace mapping
 			//VecDeriv& out = *dOut.beginEdit();
 
 
-			out.resize(points.size());
+            out.resize(this->points.size());
 
 			simulation::Task::Status status;
 			simulation::WorkerThread* thread = simulation::WorkerThread::getCurrent();	
@@ -270,7 +270,7 @@ namespace mapping
 
 		static boost::pool<> task_pool(sizeof(BeamLinearMapping_mt< TIn, TOut>::applyJTmechTask));
 
-		unsigned int numPoints = points.size();
+        unsigned int numPoints = this->points.size();
 
 		if ( numPoints >  2*mGrainSize.getValue()  )
 		{		

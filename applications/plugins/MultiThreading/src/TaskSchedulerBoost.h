@@ -121,7 +121,7 @@ namespace sofa
 
 			boost::shared_ptr<boost::thread> create_and_attach( TaskScheduler* const& taskScheduler);
 			
-			bool WorkerThread::release();
+            bool release();
 
 			
 
