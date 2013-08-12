@@ -31,7 +31,7 @@
 #include <boost/pool/singleton_pool.hpp>
 
 #include <sofa/helper/system/atomic.h>
-
+#include <boost/thread/mutex.hpp>
 
 namespace sofa
 {
@@ -87,8 +87,8 @@ namespace sofa
 
 		private:
 
-			Task(const Task& task) {}
-			Task& operator= (const Task& task) {return *this;}
+            Task(const Task& /*task*/) {}
+            Task& operator= (const Task& /*task*/) {return *this;}
 
 
 		protected:
@@ -113,7 +113,7 @@ namespace sofa
 		public:
 
 			//InitPerThreadDataTask(volatile long* atomicCounter, boost::mutex* mutex, TaskStatus* pStatus );
-			ThreadSpecificTask(helper::system::atomic<int>* atomicCounter, boost::mutex* mutex, Task::Status* pStatus );
+            ThreadSpecificTask(helper::system::atomic<int>* atomicCounter, boost::mutex* mutex, Task::Status* pStatus );
 
 			virtual ~ThreadSpecificTask();
 
