@@ -73,9 +73,9 @@ void ContourImageToolBoxAction::selectionPointEvent(int /*mouseevent*/, const un
     lp->threshold.setValue(threshold->value());
     lp->radius.setValue(radius->value());
     
-    vecX->setValue(sofa::helper::sofa::helper::round(imageposition.x()));
-    vecY->setValue(sofa::helper::sofa::helper::round(imageposition.y()));
-    vecZ->setValue(sofa::helper::sofa::helper::round(imageposition.z()));
+    vecX->setValue(sofa::helper::round(imageposition.x()));
+    vecY->setValue(sofa::helper::round(imageposition.y()));
+    vecZ->setValue(sofa::helper::round(imageposition.z()));
     
     lp->segmentation();
     
