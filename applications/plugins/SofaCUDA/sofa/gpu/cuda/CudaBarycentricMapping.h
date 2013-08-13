@@ -228,6 +228,62 @@ public:
     }
 };
 
+
+/// Class allowing barycentric mapping computation on a TetrahedronSetTopology
+template<class VecIn, class VecOut>
+class BarycentricMapperTetrahedronSetTopology< gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> > : public TopologyBarycentricMapper< gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >
+{
+public:
+    typedef gpu::cuda::CudaVectorTypes<VecIn,VecIn,float> In;
+    typedef gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> Out;
+    typedef TopologyBarycentricMapper<In,Out> Inherit;
+
+    typedef typename Inherit::Real Real;
+    typedef typename In::VecCoord VecCoord;
+
+    BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> > internalMapper;
+
+public:
+    BarycentricMapperTetrahedronSetTopology(topology::TetrahedronSetTopologyContainer* fromTopology, topology::PointSetTopologyContainer* _toTopology,helper::ParticleMask *_maskFrom,helper::ParticleMask *_maskTo)
+        : Inherit(fromTopology, _toTopology),
+          internalMapper(fromTopology,_toTopology,_maskFrom,_maskTo)
+    {}
+
+    virtual ~BarycentricMapperTetrahedronSetTopology() {}
+
+    void clear(int reserve=0) {
+        internalMapper.clear(reserve);
+    }
+
+    int addPointInTetra(const int index, const SReal* baryCoords) {
+        return internalMapper.addPointInTetra(index,baryCoords);
+    }
+
+    void init(const typename Out::VecCoord& out, const typename In::VecCoord& in) {
+        internalMapper.init(out,in);
+    }
+
+    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in ) {
+        internalMapper.apply(out,in);
+    }
+
+    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in ) {
+        internalMapper.applyJ(out,in);
+    }
+
+    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in ) {
+        internalMapper.applyJT(out,in);
+    }
+
+    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in ) {
+        internalMapper.applyJT(out,in);
+    }
+
+    void draw(const core::visual::VisualParams* vp,const typename Out::VecCoord& out, const typename In::VecCoord& in) {
+        internalMapper.draw(vp,out,in);
+    }
+};
+
 } // namespace mapping
 
 } // namespace component
