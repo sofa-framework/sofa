@@ -17,7 +17,9 @@ HEADERS += \
     imagetoolbox/labelpointsbysection/labelpointsbysectionimagetoolbox.h \ 
     imagetoolbox/labelpointsbysection/tablewidget.h \
     imagetoolbox/labelbox/labelboximagetoolboxaction.h\
-    imagetoolbox/labelbox/labelboximagetoolbox.h
+    imagetoolbox/labelbox/labelboximagetoolbox.h\
+    imagetoolbox/labelgrid/labelgridimagetoolboxaction.h\
+    imagetoolbox/labelgrid/labelgridimagetoolbox.h
     
 
 SOURCES += \
@@ -32,4 +34,6 @@ SOURCES += \
     imagetoolbox/labelpointsbysection/labelpointsbysectionimagetoolboxaction.cpp \
     imagetoolbox/labelpointsbysection/labelpointsbysectionimagetoolbox.cpp\
     imagetoolbox/labelbox/labelboximagetoolboxaction.cpp\
-    imagetoolbox/labelbox/labelboximagetoolbox.cpp
+    imagetoolbox/labelbox/labelboximagetoolbox.cpp\
+    imagetoolbox/labelgrid/labelgridimagetoolboxaction.cpp\
+    imagetoolbox/labelgrid/labelgridimagetoolbox.cpp

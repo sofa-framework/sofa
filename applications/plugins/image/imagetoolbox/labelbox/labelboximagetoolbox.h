@@ -118,7 +118,7 @@ public:
         return fileWrite;
     }
 
-    bool writeData(std::ofstream &file, const char* filename)
+    bool writeData(std::ofstream &file, const char* /*filename*/)
     {
 
         const sofa::defaulttype::Vec6d &bip = d_ipbox.getValue();
@@ -155,10 +155,13 @@ public:
         return fileRead;
     }
 
-    bool readData(std::ifstream &file, const char* filename)
+    bool readData(std::ifstream &file, const char* /*filename*/)
     {
         helper::vector<sofa::defaulttype::Vec3d>& vip = *(d_ip.beginEdit());
         helper::vector<sofa::defaulttype::Vec3d>& vp = *(d_p.beginEdit());
+
+        vip.clear();
+        vp.clear();
 
         int numline=0;
         std::string line;
@@ -233,7 +236,6 @@ public:
             std::cerr << "Error: LabelPointsBySectionImageToolBox: Cannot read first line in file '"<<d_filename<<"'."<<std::endl;
             return false;
         }
-
 
         std::cout << "load from " <<filename << std::endl;
         file.close();
