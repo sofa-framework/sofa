@@ -84,7 +84,7 @@ public:
     
     
     Data< bool > d_islinkedToToolBox;
-    Data< sofa::defaulttype::Vec4f > d_color;
+    Data< sofa::defaulttype::Vec4d > d_color;
 
 //    virtual std::string getTemplateName() const    { return templateName(this);    }
 //    static std::string templateName(const LabelImageToolBox* = NULL) { return ImageTypes::Name();    }
@@ -121,11 +121,7 @@ protected:
 public:
     
     virtual sofa::gui::qt::LabelImageToolBoxAction* createTBAction(QWidget* /*parent*/=NULL )=0;
-            /*
-    {
-        std::cout << "bug 1"<<std::endl;
-        return NULL;
-    }*/
+
 };
 
 

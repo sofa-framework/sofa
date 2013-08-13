@@ -83,13 +83,10 @@ public:
         return fileWrite;
     }
 
-    bool writePointList(std::ofstream &file, const char* filename)
+    bool writePointList(std::ofstream &file, const char* /*filename*/)
     {
         helper::vector<sofa::defaulttype::Vec3d>& vip = *(d_ip.beginEdit());
         helper::vector<sofa::defaulttype::Vec3d>& vp = *(d_p.beginEdit());
-
-        bool firstline=true;
-        std::string line;
 
         int size = vip.size();
         if(vip.size() != vp.size())
@@ -143,7 +140,7 @@ public:
         return fileRead;
     }
 
-    bool readPointList(std::ifstream &file, const char* filename)
+    bool readPointList(std::ifstream &file, const char* /*filename*/)
     {
         helper::vector<sofa::defaulttype::Vec3d>& vip = *(d_ip.beginEdit());
         helper::vector<sofa::defaulttype::Vec3d>& vp = *(d_p.beginEdit());
