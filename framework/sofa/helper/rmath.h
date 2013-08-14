@@ -220,8 +220,9 @@ inline T sign0( const T& v )
 
 // default implementation for integers
 // (FF) why do we need a comparison function for integers ? Why not operator == ?
+// (MattN) to allow a common code templated for both integers and floating points
 template<class T>
-inline bool isEqual( T x, T y, T =std::numeric_limits<float>::epsilon() )
+inline bool isEqual( T x, T y, T =std::numeric_limits<T>::epsilon() )
 {
     assert( std::numeric_limits<T>::is_integer );
     return x==y;
@@ -232,16 +233,30 @@ inline bool isEqual( float x, float y, float threshold )
 {
     return rabs(x-y) <= threshold;
 }
-
 template<>
 inline bool isEqual( double x, double y, double threshold )
 {
     return rabs(x-y) <= threshold;
 }
 
-//template<> bool isEqual( float x, float y, float threshold );
-//template<> bool isEqual( double x, double y, double threshold );
-
+// default implementation for integers
+template<class T>
+inline bool isNull( T x, T =std::numeric_limits<T>::epsilon() )
+{
+    assert( std::numeric_limits<T>::is_integer );
+    return x==0;
+}
+// specialization for floating points
+template<>
+inline bool isNull( float x, float threshold )
+{
+    return rabs(x) <= threshold;
+}
+template<>
+inline bool isNull( double x, double threshold )
+{
+    return rabs(x) <= threshold;
+}
 
 
 } // namespace helper
