@@ -38,7 +38,10 @@
 
 #include <sofa/core/behavior/ForceField.inl>
 
+
+#ifdef SOFA_HAVE_IMAGE
 #include "../mass/ImageDensityMass.inl"
+#endif
 
 
 
@@ -783,6 +786,8 @@ double UniformMass<defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::TYPEABSTRA
             ;
 
 
+#ifdef SOFA_HAVE_IMAGE
+
     SOFA_DECL_CLASS ( EVALUATOR(TYPEABSTRACTNAME,ImageDensityMass) )
 
     int EVALUATOR(TYPEABSTRACTNAME,ImageDensityMassClass) = core::RegisterObject ( "Define a global mass matrix including non diagonal terms" )
@@ -795,14 +800,22 @@ double UniformMass<defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::TYPEABSTRA
             ;
 
 
-
 #ifndef SOFA_FLOAT
-    template class SOFA_Flexible_API UniformMass<TYPEABSTRACTNAME3dTypes,TYPEABSTRACTNAME3dMass>;
     template class SOFA_Flexible_API ImageDensityMass<TYPEABSTRACTNAME3dTypes,core::behavior::ShapeFunction3d,TYPEABSTRACTNAME3dMass>;
 #endif
 #ifndef SOFA_DOUBLE
-    template class SOFA_Flexible_API UniformMass<TYPEABSTRACTNAME3fTypes,TYPEABSTRACTNAME3fMass>;
     template class SOFA_Flexible_API ImageDensityMass<TYPEABSTRACTNAME3fTypes,core::behavior::ShapeFunction3f,TYPEABSTRACTNAME3fMass>;
+#endif
+
+
+#endif
+
+
+#ifndef SOFA_FLOAT
+    template class SOFA_Flexible_API UniformMass<TYPEABSTRACTNAME3dTypes,TYPEABSTRACTNAME3dMass>;
+#endif
+#ifndef SOFA_DOUBLE
+    template class SOFA_Flexible_API UniformMass<TYPEABSTRACTNAME3fTypes,TYPEABSTRACTNAME3fMass>;
 #endif
 
 

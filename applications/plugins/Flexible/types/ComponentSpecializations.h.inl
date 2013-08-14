@@ -13,7 +13,10 @@
 
 #include <sofa/core/behavior/ForceField.h>
 
+
+#ifdef SOFA_HAVE_IMAGE
 #include "../mass/ImageDensityMass.h"
+#endif
 
 #include "ComponentSpecializationsDefines.h"
 
@@ -102,6 +105,7 @@ double UniformMass<defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::TYPEABSTRA
 
 
 
+#ifdef SOFA_HAVE_IMAGE
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(FLEXIBLE_COMPILING_CPP)
 #ifndef SOFA_FLOAT
@@ -112,6 +116,8 @@ extern template class SOFA_Flexible_API UniformMass<defaulttype::TYPEABSTRACTNAM
 extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::TYPEABSTRACTNAME3fTypes,core::behavior::ShapeFunction3f,defaulttype::TYPEABSTRACTNAME3fMass>;
 extern template class SOFA_Flexible_API UniformMass<defaulttype::TYPEABSTRACTNAME3fTypes,defaulttype::TYPEABSTRACTNAME3fMass>;
 #endif
+#endif
+
 #endif
 
 
