@@ -47,10 +47,11 @@ namespace linearsolver
 template<class VecInt,class VecReal>
 class SpaseLDLImplInvertData : public MatrixInvertData {
 public :
-    int n, P_nnz, L_nnz;
+    int n, P_nnz, L_nnz, group;
     VecInt P_rowind,P_colptr,L_rowind,L_colptr,LT_rowind,LT_colptr;
     VecInt perm, invperm;
     VecReal P_values,L_values,LT_values,invD;
+    VecReal Bdiag;
     helper::vector<int> Parent;
 };
 
@@ -106,7 +107,7 @@ protected :
     }
 
     template<class VecInt,class VecReal>
-    void factorize(TMatrix & M,SpaseLDLImplInvertData<VecInt,VecReal> * data) {
+    void factorize(TMatrix & M,SpaseLDLImplInvertData<VecInt,VecReal> * data,int group = 1) {
         Mfiltered.copyNonZeros(M);
         Mfiltered.compress();
 
@@ -165,6 +166,36 @@ protected :
 
         //inverse the diagonal
         for (int i=0;i<data->n;i++) D[i] = 1.0/D[i];
+
+        // split the bloc diag in data->Bdiag
+
+        data->group=group;
+        if (group>1) {
+            data->Bdiag.clear();
+            data->Bdiag.resize(data->n * group);
+            Real * diag = &data->Bdiag[0];
+
+//            int ptr = 0;
+            int begin = colptr[0];
+
+            for (int j=0;j<data->n;j++) {
+                int bn = (j/group) * group;
+
+                for (int i=begin;i<colptr[j+1];i++) {
+                    if (rowind[i]-bn<group) {
+                        diag[j*group + rowind[i]-bn] = values[i];
+                        diag[rowind[i]*group + j-bn] = values[i];
+                    } else {
+//                        rowind[ptr] = rowind[i];
+//                        values[ptr] = values[i];
+//                        ptr++;
+                    }
+                }
+
+                begin = colptr[j+1];
+//                colptr[j+1] = ptr;
+            }
+        }
 
         if (new_factorization_needed) {
             //Compute transpose in tran_colptr, tran_rowind, tran_values, tran_D
