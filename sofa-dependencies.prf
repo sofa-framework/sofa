@@ -27,7 +27,7 @@ declare(ffmpeg, ffmpeg.prf)
 
 declare(newmat,     extlibs/newmat)
 declare(tinyxml,    extlibs/tinyxml)
-declare(eigen,      extlibs/eigen-3.1.1/eigen.pro)
+declare(eigen,      extlibs/eigen-3.2.0/eigen.pro)
 declare(qwt,        extlibs/qwt-6.0.1/src, qtgui rt)
 declare(QGLViewer,  extlibs/libQGLViewer-2.4.0/QGLViewer, qtgui)
 declare(miniFlowVR, extlibs/miniFlowVR, boost)
