@@ -130,7 +130,7 @@ public:
             stack->addWidget(w);
             
             connect(this,SIGNAL(mouseevent(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)),la,SIGNAL(clickImage(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)));
-            connect(this,SIGNAL(onPlane(uint,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)),la,SLOT(mouseMove(uint,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)));
+            connect(this,SIGNAL(onPlane(unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)),la,SLOT(mouseMove(unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)));
             connect(la,SIGNAL(sectionChanged(sofa::defaulttype::Vec3i)),this,SIGNAL(labelChangeGui(sofa::defaulttype::Vec3i)));
             connect(this,SIGNAL(optionChangeSection(sofa::defaulttype::Vec3i)),la,SLOT(optionChangeSection(sofa::defaulttype::Vec3i)));
             //connect(la,SIGNAL(updateImage()),this,SIGNAL(updateImage()));
