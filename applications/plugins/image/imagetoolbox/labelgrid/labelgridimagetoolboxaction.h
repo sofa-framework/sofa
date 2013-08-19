@@ -34,6 +34,9 @@ Q_OBJECT
     //QGraphicsLineItem *lineH[3], *lineV[3];
     QGraphicsPathItem *path[3];
 
+    QSpinBox * mainAxisSpin;
+    QSpinBox * secondAxisSpin;
+
 public:
     LabelGridImageToolBoxAction(sofa::component::engine::LabelImageToolBox* lba,QObject *parent);
     ~LabelGridImageToolBoxAction();

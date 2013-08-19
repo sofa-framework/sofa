@@ -468,7 +468,7 @@ public:
 
                 if(i==vecIn.size()-2 && v0 && !v1)
                 {
-                    vecOut.push_back(calculateIntersection(vecIn[i],vecIn[i+1],box,axis));
+                    vecOut.push_back(calculateIntersection(vecIn[i+1],vecIn[i],box,axis));
                 }
 
                 if(i==vecIn.size()-2 && v1)
@@ -638,6 +638,8 @@ public:
         const unsigned int &resox = reso.x()+1;
         const unsigned int &resoy = reso.y()+1;
 
+        outEdge.clear();
+        outQuad.clear();
         for(unsigned int i=0;i<resox;i++)
         {
             for(unsigned int j=0;j<resoy;j++)
@@ -671,6 +673,7 @@ public:
         //helper::vector<sofa::defaulttype::Vec3d>& out = *(d_outNormalImagePosition.beginEdit());
         helper::vector<sofa::defaulttype::Vec3d>& out2 = *(d_outNormalImagePositionBySection.beginEdit());
         helper::vector<sofa::defaulttype::Vec3d>& pos = *(d_outImagePosition.beginEdit());
+
 
         //helper::vector<sofa::defaulttype::Vec3d> out2tmp;
         //Quads& outQuad = *(d_outQuads.beginEdit());
@@ -768,6 +771,7 @@ public:
     {
         helper::vector<int> used;
 
+
         bool b1=selectionSection(used),b2=false,b3=false,b4=false;
         if(b1)
             b2 = copySection(used);
@@ -783,6 +787,8 @@ public:
 
             //calculate3DPositionOfGrid();
         }
+
+        clearTmpData();
 
         std::cout << "ouuu"<<std::endl;
     }

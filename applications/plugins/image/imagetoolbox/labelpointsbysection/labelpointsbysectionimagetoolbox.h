@@ -68,6 +68,7 @@ public:
 
     bool saveFile()
     {
+        std::cout << "save" << std::endl;
         const char* filename = d_filename.getFullPath().c_str();
         std::ofstream file(filename);
 

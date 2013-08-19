@@ -115,8 +115,8 @@ void LabelGridImageToolBoxAction::createGridCommands()
     QFormLayout *fl = new QFormLayout();
 
 
-    QSpinBox * mainAxisSpin = new QSpinBox();
-    QSpinBox * secondAxisSpin = new QSpinBox();
+    mainAxisSpin = new QSpinBox();
+    secondAxisSpin = new QSpinBox();
     mainAxisSpin->setValue(l->d_reso.getValue()[0]);
     secondAxisSpin->setValue(l->d_reso.getValue()[1]);
 
@@ -178,6 +178,13 @@ sofa::component::engine::LabelGridImageToolBoxNoTemplated* LabelGridImageToolBox
 void LabelGridImageToolBoxAction::executeButtonClick()
 {
     sofa::component::engine::LabelGridImageToolBoxNoTemplated *l = LGITB();
+
+    sofa::component::engine::LabelGridImageToolBoxNoTemplated::Vec2ui reso;
+    reso.x() = mainAxisSpin->value();
+    reso.y() = secondAxisSpin->value();
+
+    l->d_reso.setValue(reso);
+
     l->executeAction();
     updateGraphs();
 
