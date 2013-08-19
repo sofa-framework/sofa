@@ -206,17 +206,15 @@ HDCallbackCode HDCALLBACK stateCallback(void * userData)
 
     }
 
-    if(autreOmniDriver[0]->data.forceFeedback != NULL)
-		for(unsigned int i=0; i< positionDevs.size(); i++)
-		{
-			SReal fx, fy, fz;
-			(autreOmniDriver[0]->data.forceFeedback)->computeForce(positionDevs[i].getCenter().x(),positionDevs[i].getCenter().y(), positionDevs[i].getCenter().z(), 0, 0, 0, 0, fx, fy, fz); 
-			forceDevs[i] = RigidTypes::Deriv(Vec3d(fx,fy,fz), Vec3d());
-		}
-
     for(unsigned int i=0; i<autreOmniDriver.size(); i++)
     {
 
+		for(unsigned int j=0; j< positionDevs.size(); j++)
+		{
+			SReal fx, fy, fz;
+			(autreOmniDriver[i]->data.forceFeedback)->computeForce(positionDevs[j].getCenter().x(),positionDevs[j].getCenter().y(), positionDevs[j].getCenter().z(), 0, 0, 0, 0, fx, fy, fz); 
+			forceDevs[j] = RigidTypes::Deriv(Vec3d(fx,fy,fz), Vec3d());
+		}
 
         /// COMPUTATION OF THE vituralTool 6D POSITION IN THE World COORDINATES
         SolidTypes<double>::Transform baseOmni_H_endOmni((autreOmniDriver[i]->data.servoDeviceData.pos)* autreOmniDriver[i]->data.scale, autreOmniDriver[i]->data.servoDeviceData.quat);
@@ -322,7 +320,6 @@ HDCallbackCode HDCALLBACK copyDeviceDataCallback(void * /*pUserData*/)
     //vector<NewOmniDriver*> autreOmniDriver = static_cast<vector<NewOmniDriver*>>(pUserData);
     for(unsigned int i=0; i<autreOmniDriver.size(); i++)
     {
-        //std::cout << "COPY " << (int)autreOmniDriver[i]->data.deviceData.ready << " " << (int)autreOmniDriver[i]->data.servoDeviceData.ready << std::endl;
         memcpy(&autreOmniDriver[i]->data.deviceData, &autreOmniDriver[i]->data.servoDeviceData, sizeof(NewDeviceData));
         autreOmniDriver[i]->data.servoDeviceData.nupdates = 0;
         autreOmniDriver[i]->data.servoDeviceData.ready = true;
@@ -351,10 +348,6 @@ int NewOmniDriver::initDevice()
     HDErrorInfo error;
     for(unsigned int i=0; i<autreOmniDriver.size(); i++)
     {
-        //if(autreOmniDriver[i]->isInitialized)
-        //{
-        //	return 0;
-        //}
         while(autreOmniDriver[i]->isInitialized && i<autreOmniDriver.size())
         {
             i++;
@@ -646,8 +639,6 @@ void NewOmniDriver::bwdInit()
     sout<<"NewOmniDriver::bwdInit()"<<sendl;
 
     simulation::Node *context = dynamic_cast<simulation::Node *>(this->getContext()); // access to current node
-//    LCPForceFeedback<Rigid3dTypes>* ff = context->getTreeObject< LCPForceFeedback<Rigid3dTypes> >();
-//    LCPForceFeedback<Rigid3dTypes>* ff = context->get<LCPForceFeedback<Rigid3dTypes> > (this->getTags(), sofa::core::objectmodel::BaseContext::SearchRoot);
 	ForceFeedback* ff = context->get<ForceFeedback>(this->getTags(), sofa::core::objectmodel::BaseContext::SearchRoot);
     if(ff)
         this->setForceFeedback(ff);
@@ -664,8 +655,6 @@ void NewOmniDriver::bwdInit()
         serr<<"NO DEVICE"<<sendl;
     }
 
-    if(firstDevice)
-    {
 		DOFs = context->get<sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes> > (this->getTags(), sofa::core::objectmodel::BaseContext::SearchRoot);
 
 		if (DOFs==NULL)
@@ -674,14 +663,8 @@ void NewOmniDriver::bwdInit()
         }
         else
         {
-            
-            if (DOFs->getSize() < autreOmniDriver.size())
-                DOFs->resize(autreOmniDriver.size());
-            for(unsigned int i=1; i<autreOmniDriver.size(); i++)
-                autreOmniDriver[i]->DOFs=DOFs;
+            autreOmniDriver[this->deviceIndex.getValue()]->DOFs = DOFs;
         }
-    }
-
 }
 
 //configure data
@@ -723,8 +706,6 @@ void NewOmniDriver::reinit()
 // setup omni device visualization
 void NewOmniDriver::draw()
 {
-    //cout << "NewOmniDriver::draw is called" << endl;
-
     if(initVisu)
     {
         if(!visuActif && omniVisu.getValue())
@@ -912,23 +893,20 @@ void NewOmniDriver::onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent *kre)
 void NewOmniDriver::onAnimateBeginEvent()
 {
     // copy data->servoDeviceData to gDeviceData
-    if(firstDevice)
-    {
-        if (useScheduler.getValue())
-            hdScheduleSynchronous(copyDeviceDataCallback, (void*) &autreOmniDriver, HD_MAX_SCHEDULER_PRIORITY);
-        else
-        {
-            doUpdate.inc(); // set to 1
-            while(doUpdate)
-            {
+	if (useScheduler.getValue())
+		hdScheduleSynchronous(copyDeviceDataCallback, (void*) &autreOmniDriver, HD_MAX_SCHEDULER_PRIORITY);
+	else
+	{
+		doUpdate.inc(); // set to 1
+		while(doUpdate)
+		{
 #ifdef SOFA_HAVE_BOOST
-                boost::thread::yield();
+			boost::thread::yield();
 #else
-                sofa::helper::system::thread::CTime::sleep(0);
+			sofa::helper::system::thread::CTime::sleep(0);
 #endif
-            }
-        }
-    }
+		}
+	}
     if (data.deviceData.ready)
     {
         data.deviceData.quat.normalize();
@@ -1032,15 +1010,11 @@ void NewOmniDriver::onAnimateBeginEvent()
         if(DOFs!=NULL)
         {
             sofa::helper::WriteAccessor<sofa::core::objectmodel::Data<VecCoord> > x = *DOFs->write(this->setRestShape.getValue() ? sofa::core::VecCoordId::restPosition() : sofa::core::VecCoordId::position());
-//			sofa::helper::WriteAccessor<sofa::core::objectmodel::Data<VecCoord> > x(this->setRestShape.getValue() ? testrest : testx );
             sofa::helper::WriteAccessor<sofa::core::objectmodel::Data<VecCoord> > xfree = *DOFs->write(this->setRestShape.getValue() ? sofa::core::VecCoordId::restPosition() : sofa::core::VecCoordId::freePosition());
-//			sofa::helper::WriteAccessor<sofa::core::objectmodel::Data<VecCoord> > xfree(this->setRestShape.getValue() ? testrest : testfreex);
-            unsigned int index = deviceIndex.getValue();
+            unsigned int index = 0;
 
             x    [index].getCenter()=world_H_virtualTool.getOrigin();
-//            xtest    [index].getCenter()=world_H_virtualTool.getOrigin();
             xfree[index].getCenter()=world_H_virtualTool.getOrigin();
-//            xfreetest[index].getCenter()=world_H_virtualTool.getOrigin();
             x    [index].getOrientation()=world_H_virtualTool.getOrientation();
             xfree[index].getOrientation()=world_H_virtualTool.getOrientation();
         }
