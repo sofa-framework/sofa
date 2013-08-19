@@ -94,7 +94,6 @@ struct NewDeviceData
 
 struct NewOmniData
 {
-//    LCPForceFeedback<Rigid3dTypes>::SPtr forceFeedback;
     ForceFeedback::SPtr forceFeedback;
     simulation::Node::SPtr *context;
 
@@ -186,7 +185,6 @@ public:
     void cleanup();
     virtual void draw();
 
-//    void setForceFeedback(LCPForceFeedback<Rigid3dTypes>* ff);
     void setForceFeedback(ForceFeedback* ff);
 
     void onKeyPressedEvent(core::objectmodel::KeypressedEvent *);
