@@ -65,9 +65,9 @@ static AssemblyVisitor::mat shift_right(unsigned off, unsigned size, unsigned to
 		
 AssemblyVisitor::AssemblyVisitor(const core::MechanicalParams* mparams, MultiVecDerivId velId)
 	: base( mparams ),
-	  mparams( mparams ),
-      start_node(0),
-      _velId(velId)
+      mparams( mparams ),
+      _velId(velId),
+      start_node(0)
 
 { }
 		
@@ -752,8 +752,9 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const{
 
 			// mass matrix / momentum
 			if( !zero(c->M) ) {
-				H += c->M; 
-				res.p.segment(off_m, c->size).noalias() += c->M * c->v;
+                H += c->M;
+                vec::SegmentReturnType r = res.p.segment(off_m, c->size);
+                r.noalias() = r + c->M * c->v;
 			}
 			
 			// stiffness matrix

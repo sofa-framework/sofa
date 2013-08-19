@@ -745,7 +745,7 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( MultiVecId id, C
                 const MatrixEigen &wb=blocks.first;
 
                 //Compute Sigma
-                VectorEigen sigma = cb; sigma.noalias() -= (wb * Lambda);
+                VectorEigen sigma = cb; sigma.noalias() = sigma - (wb * Lambda);
 
                 VectorEigen newLambda; newLambda.noalias() = invWblock*sigma;
                 constraint->LagrangeMultiplierEvaluation(Wblock.data(),sigma.data(), newLambda.data(),
@@ -779,7 +779,7 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( MultiVecId id, C
                 graphKineticEnergy.endEdit();
             }
             VectorEigen LambdaSave=Lambda;
-            Lambda.noalias() -= LambdaPrevious;
+            Lambda.noalias() = Lambda - LambdaPrevious;
             computeKineticEnergy(id);
             Lambda = LambdaSave;
             LambdaPrevious=Lambda;

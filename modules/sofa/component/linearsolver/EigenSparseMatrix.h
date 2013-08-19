@@ -95,8 +95,8 @@ protected:
 		  typedef Eigen::Map< matrix_type > map_type;
 		  typedef Eigen::Map< const matrix_type > const_map_type;
 		  
-		  static map_type map(const real_type* data, unsigned k) {
-			  return map_type( const_cast<real_type*>(data), k * size );
+          static map_type map(real_type* data, unsigned k) {
+              return map_type( data, k * size );
 		  }
 		  
 		  static const_map_type const_map(const real_type* data, unsigned k) {
@@ -287,13 +287,13 @@ protected:
 		// use optimized product if possible
 		if(canCast(data)) {
 
-			if( alias(result, data) ) {
+            if( alias(result, data) ) {
 				this->map(result) = (this->compressedMatrix * 
 				                     this->map(data).template cast<Real>()).template cast<OutReal>();
-			} else {
-				this->map(result).noalias() = (this->compressedMatrix * 
-				                               this->map(data).template cast<Real>()).template cast<OutReal>();
-			}
+            } else {
+                this->map(result).noalias() = (this->compressedMatrix *
+                                               this->map(data).template cast<Real>()).template cast<OutReal>();
+            }
 			
 			return;
 		}
@@ -325,13 +325,12 @@ protected:
 
 			// TODO multiply only the smallest dimension by fact 
 
-			if( alias(result, data) ) {
-				map(result) += (this->compressedMatrix * 
-				                (map(data).template cast<Real>() * fact)).template cast<OutReal>();
-			} else {
-				map(result).noalias() += (this->compressedMatrix * 
-				                          (map(data).template cast<Real>() * fact)).template cast<OutReal>();
-			}
+            if( alias(result, data) ) {
+                map(result) += (this->compressedMatrix * (map(data).template cast<Real>() * fact)).template cast<OutReal>();
+            } else {
+                typename map_traits<OutType>::map_type r = map(result);
+                r.noalias() = r + (this->compressedMatrix * (map(data).template cast<Real>() * fact)).template cast<OutReal>();
+            }
 			
 			return;
 		}
@@ -361,13 +360,12 @@ protected:
 		// use optimized product if possible
 		if(canCast(result)) {
 
-			if( alias(result, data) ) {
-				map(result) += (this->compressedMatrix.transpose() * 
-				                map(data).template cast<Real>()).template cast<InReal>();
-			} else {
-				map(result).noalias() += (this->compressedMatrix.transpose() * 
-				                          map(data).template cast<Real>()).template cast<InReal>();
-			}
+            if( alias(result, data) ) {
+				map(result) += (this->compressedMatrix.transpose() * map(data).template cast<Real>()).template cast<InReal>();
+            } else {
+                typename map_traits<InType>::map_type r = map(result);
+                r.noalias() = r + (this->compressedMatrix.transpose() * map(data).template cast<Real>()).template cast<InReal>();
+            }
 			
 			return;
 		}
