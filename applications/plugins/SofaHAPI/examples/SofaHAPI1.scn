@@ -98,9 +98,9 @@
         <Node name="Surface">
 	      <TriangleSetTopologyContainer src="@../../InputMesh" />
           <MechanicalObject />
-          <TriangleModel name="CMT" simulated="0" moving="0" />
-          <LineModel name="CML"  simulated="0" moving="0" />
-          <PointModel name="CMP"  simulated="0" moving="0" />
+          <Triangle name="CMT" simulated="0" moving="0" />
+          <Line name="CML"  simulated="0" moving="0" />
+          <Point name="CMP"  simulated="0" moving="0" />
           <RigidMapping />
         </Node>
     </Node>
