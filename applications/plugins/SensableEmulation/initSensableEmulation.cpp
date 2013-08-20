@@ -57,6 +57,7 @@ extern "C" {
     SOFA_SENSABLEEMUPLUGIN_API void initExternalModule();
     SOFA_SENSABLEEMUPLUGIN_API const char* getModuleName();
     SOFA_SENSABLEEMUPLUGIN_API const char* getModuleVersion();
+    SOFA_SENSABLEEMUPLUGIN_API const char* getModuleLicense();
     SOFA_SENSABLEEMUPLUGIN_API const char* getModuleDescription();
     SOFA_SENSABLEEMUPLUGIN_API const char* getModuleComponentList();
 }
@@ -92,7 +93,7 @@ const char* getModuleDescription()
 
 const char* getModuleComponentList()
 {
-    return "ForceFeedback controllers ";
+    return "OmniDriverEmu";
 }
 
 
