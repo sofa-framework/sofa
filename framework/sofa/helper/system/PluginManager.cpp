@@ -147,7 +147,7 @@ bool PluginManager::loadPlugin(std::string& pluginPath, std::ostream* errlog)
     }
     if(m_pluginMap.find(pluginPath) != m_pluginMap.end() )
     {
-        (*errlog) << "Plugin " << pluginPath << " already in PluginManager" << std::endl;
+        if(errlog) (*errlog) << "Plugin " << pluginPath << " already in PluginManager" << std::endl;
         return false;
     }
     DynamicLibrary* d  = DynamicLibrary::load(pluginPath, errlog);
@@ -198,7 +198,7 @@ bool PluginManager::unloadPlugin(std::string &pluginPath, std::ostream *errlog)
     }
     if( iter == m_pluginMap.end() )
     {
-        (*errlog) << "Plugin " << pluginPath << "not in PluginManager" << std::endl;
+        if(errlog) (*errlog) << "Plugin " << pluginPath << "not in PluginManager" << std::endl;
         return false;
     }
     else
