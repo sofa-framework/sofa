@@ -178,6 +178,11 @@ public:
     {
     }
 
+    /// Give the new point and its ancestors at each topological change
+    virtual void updatePointAncestors(helper::vector< unsigned int >* /*vecPoint*/, helper::vector< helper::vector< unsigned int > >* /*vecAncestors*/)
+    {
+    }
+    
     /**
      *  \brief Append this mesh to an OBJ format stream.
      *

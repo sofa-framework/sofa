@@ -22,8 +22,22 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <sofa/component/initExporter.h>
+#ifndef SOFA_COMPONENT_VISUALMODEL_OGLMODELFROMABAQUS_H
+#define SOFA_COMPONENT_VISUALMODEL_OGLMODELFROMABAQUS_H
+
+#include <vector>
+#include <string>
+#include <fstream>
+#include <sofa/core/visual/VisualModel.h>
+#include <sofa/component/component.h>
+#include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/visual/VisualModel.h>
+#include <sofa/helper/system/FileRepository.h>
+#include <sofa/helper/system/SetDirectory.h>
+#include <sofa/helper/helper.h>
+#include <sofa/core/objectmodel/DataFileName.h>
+#include <sofa/core/behavior/BaseMechanicalState.h>
 
 
 namespace sofa
@@ -32,24 +46,56 @@ namespace sofa
 namespace component
 {
 
-
-void initExporter()
+namespace visualmodel
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
 
-SOFA_LINK_CLASS(WriteState)
-SOFA_LINK_CLASS(WriteTopology)
-SOFA_LINK_CLASS(VTKExporter)
-SOFA_LINK_CLASS(OBJExporter)
-SOFA_LINK_CLASS(INPExporter)
-SOFA_LINK_CLASS(INPExporterMaster)
-SOFA_LINK_CLASS(MeshExporter)
+class SOFA_OPENGL_VISUAL_API OglModelFromAbaqus : public core::visual::VisualModel
+{
+public:
+    SOFA_CLASS(OglModelFromAbaqus, VisualModel);
+
+protected:
+    sofa::core::objectmodel::BaseContext* context;
+    sofa::core::behavior::BaseMechanicalState* mstate;
+    
+    void draw(const core::visual::VisualParams* vparams);
+
+    virtual void updateDifference();
+    virtual void updateStressVector();
+    virtual void readRPTFile(const std::string filename);
+    
+    vector< std::pair< vector<defaulttype::Vec3f> /*Positions*/, double /*Time*/ > > m_vecFrame;
+    vector< std::pair< vector<defaulttype::Vec3f> /*Stress in x,y,z*/, double /*Time*/ > > m_vecStress;
+    unsigned int m_frameCount;
+    double m_timeNextFrame;
+    
+    OglModelFromAbaqus();
+
+    ~OglModelFromAbaqus();
+    
+public:
+    void init();
+    void cleanup();
+    void bwdInit();
+    
+    void handleEvent(sofa::core::objectmodel::Event *);
+    
+    sofa::core::objectmodel::DataFileName filePath;
+    Data< std::string > m_name;
+    Data<float> m_radius;
+    Data<double> m_currentTime;
+    Data< defaulttype::Vec3Types::VecCoord > m_position;
+    Data< vector<double> > m_difference;
+    Data< vector< defaulttype::Vec3f > > m_stress; // Stress vectors (x,y,z) at each vertex for the current simulation time
+    Data<bool> m_updateDifference;
+    Data<bool> m_updateStressVector;
+    
+};
+
+} // namespace visualmodel
 
 } // namespace component
 
 } // namespace sofa
+
+#endif

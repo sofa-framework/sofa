@@ -22,34 +22,50 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <sofa/component/initExporter.h>
+#ifndef SOFA_SIMULATION_TREE_EXPORTINPACTION_H
+#define SOFA_SIMULATION_TREE_EXPORTINPACTION_H
+
+#include <sofa/core/ExecParams.h>
+#include <sofa/simulation/common/Visitor.h>
+#include <sofa/simulation/common/Node.h>
+#include <sofa/component/misc/INPExporter.h>
+#include <string>
+#include <iostream>
 
 
 namespace sofa
 {
 
-namespace component
+namespace simulation
 {
 
-
-void initExporter()
+class SOFA_SIMULATION_COMMON_API ExportINPVisitor : public Visitor
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
+public:
+    vector< std::string >* nameT;
+    vector< defaulttype::Vec3Types::VecCoord >* positionT;
+    vector< double >* densiT;
+    vector< vector< sofa::component::topology::Tetrahedron > >* tetrahedraT;
+    vector< vector< sofa::component::topology::Hexahedron > >* hexahedraT;
+    vector< vector< unsigned int > >* fixedPointT;
+    vector< double >* youngModulusT;
+    vector< double >* poissonRatioT;
 
-SOFA_LINK_CLASS(WriteState)
-SOFA_LINK_CLASS(WriteTopology)
-SOFA_LINK_CLASS(VTKExporter)
-SOFA_LINK_CLASS(OBJExporter)
-SOFA_LINK_CLASS(INPExporter)
-SOFA_LINK_CLASS(INPExporterMaster)
-SOFA_LINK_CLASS(MeshExporter)
+    ExportINPVisitor(const core::ExecParams* params /* PARAMS FIRST */, vector< std::string >* nameT, vector< defaulttype::Vec3Types::VecCoord >* positionT, vector< double >* densiT, vector< vector< sofa::component::topology::Tetrahedron > >* tetrahedraT, vector< vector< sofa::component::topology::Hexahedron > >* hexahedraT, vector< vector< unsigned int > >* fixedPointT, vector< double >* youngModulusT, vector< double >* poissonRatioT);
+    ~ExportINPVisitor();
 
-} // namespace component
+    virtual void processINPExporter(Node* node, core::exporter::BaseExporter* be);
+
+    virtual Result processNodeTopDown(Node* node);
+    virtual void processNodeBottomUp(Node* node);
+    virtual const char* getClassName() const { return "ExportINPVisitor"; }
+
+protected:
+    int ID;
+};
+
+} // namespace simulation
 
 } // namespace sofa
+
+#endif // SOFA_SIMULATION_TREE_EXPORTINPACTION_H
