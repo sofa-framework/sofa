@@ -60,10 +60,9 @@ INPExporterMaster::INPExporterMaster()
     , dt( initData(&dt, "dt", "time step"))
     , time( initData(&time, "time", "current time"))
     , gravity( initData(&gravity, "gravity", "gravity"))
-    , exportEveryNbSteps( initData(&exportEveryNbSteps, (unsigned int)0, "exportEveryNumberOfSteps", "export file only at specified number of steps (0=disable)"))
-    , exportAtBegin( initData(&exportAtBegin, (bool)false, "exportAtBegin", "export file at the initialization"))
     , exportAtEnd( initData(&exportAtEnd, (bool)false, "exportAtEnd", "export file when the simulation is finished"))
 {
+    this->f_listening.setValue(true);
 }
 
 INPExporterMaster::~INPExporterMaster()
@@ -110,10 +109,6 @@ void INPExporterMaster::init()
         serr << "Error: no solver" << sendl;
         return;
     }
-    
-    // Activate the listening to the event in order to be able to export file at the nth-step
-    if(exportEveryNbSteps.getValue() != 0)
-        this->f_listening.setValue(true);
     
     nbFiles = 0;
 
@@ -455,18 +450,6 @@ void INPExporterMaster::handleEvent(sofa::core::objectmodel::Event *event)
             break;
         }
     }
-    
-    if ( /*simulation::AnimateEndEvent* ev =*/  dynamic_cast<simulation::AnimateEndEvent*>(event))
-    {
-        maxStep = exportEveryNbSteps.getValue();
-        if (maxStep == 0) return;
-
-        stepCounter++;
-        if(stepCounter % maxStep == 0)
-        {
-            writeINPMaster();
-        }
-    }
 }
 
 void INPExporterMaster::cleanup()
@@ -475,11 +458,6 @@ void INPExporterMaster::cleanup()
         writeINPMaster();
 }
 
-void INPExporterMaster::bwdInit()
-{
-    if (exportAtBegin.getValue())
-        writeINPMaster();
-}
 
 } // namespace misc
 

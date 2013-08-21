@@ -23,20 +23,16 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#ifndef INPEXPORTERMASTER_H_
-#define INPEXPORTERMASTER_H_
+#ifndef STEPEXPORTER_H_
+#define STEPEXPORTER_H_
 
-#include <sofa/helper/helper.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/component/component.h>
-#include <sofa/core/behavior/OdeSolver.h>
-#include <sofa/component/forcefield/HexahedronFEMForceField.h>
-#include <sofa/component/forcefield/TetrahedronFEMForceField.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
-#include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
+#include <sofa/component/visualmodel/VisualModelImpl.h>
 
 #include <fstream>
 
@@ -49,39 +45,45 @@ namespace component
 namespace misc
 {
 
-class SOFA_EXPORTER_API INPExporterMaster : public core::objectmodel::BaseObject
+class SOFA_EXPORTER_API STEPExporter : public core::objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS(INPExporterMaster,core::objectmodel::BaseObject);
+    SOFA_CLASS(STEPExporter,core::objectmodel::BaseObject);
 
 private:
-    sofa::core::objectmodel::BaseContext* context;
-    sofa::core::behavior::OdeSolver* solver;
+    sofa::core::topology::BaseMeshTopology* topology;
+    sofa::core::behavior::BaseMechanicalState* mstate;
+    sofa::core::visual::VisualModel* vmodel;
     
     unsigned int stepCounter;
     unsigned int maxStep;
 
     std::ofstream* outfile;
 
-    void writeINPMaster();
+    void writeSTEP();
+    void writeSTEPShort();
     
     int nbFiles;
 
 public:
-    sofa::core::objectmodel::DataFileName inpFilename;
-    Data<double> dt;
-    Data<double> time;
-    Data< defaulttype::Vec3d > gravity;
-    Data<double> m_alpha;
-    Data<double> m_beta;
+    sofa::core::objectmodel::DataFileName stepFilename;
+    Data<bool> m_fileFormat;      //0 for Ascii Formats, 1 for Binary File Format
+    Data< defaulttype::Vec3Types::VecCoord > m_position;
+    Data< vector< core::topology::Triangle > > m_triangle;
+    Data< vector< core::topology::Quad > > m_quad;
+    
+    Data<unsigned int> exportEveryNbSteps;
+    Data<bool> exportAtBegin;
     Data<bool> exportAtEnd;
 
 protected:
-    INPExporterMaster();
-    virtual ~INPExporterMaster();
+    STEPExporter();
+    virtual ~STEPExporter();
 public:
     void init();
     void cleanup();
+    void bwdInit();
+
     void handleEvent(sofa::core::objectmodel::Event *);
 };
 
@@ -91,4 +93,4 @@ public:
 
 }
 
-#endif /* INPEXPORTERMASTER_H_ */
+#endif /* STEPEXPORTER_H_ */
