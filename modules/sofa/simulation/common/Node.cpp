@@ -44,6 +44,7 @@
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/VisualVisitor.h>
 #include <sofa/simulation/common/UpdateMappingVisitor.h>
+#include <sofa/simulation/common/ExportINPVisitor.h>
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/Factory.inl>
@@ -101,9 +102,11 @@ Node::Node(const std::string& name)
 
     , collisionModel(initLink("collisionModel", "The CollisionModel(s) attached to this node"))
     , collisionPipeline(initLink("collisionPipeline", "The collision Pipeline attached to this node"))
-
+    
+    , exporter(initLink("exporter", "The exporter attached to this node"))
+    
     , unsorted(initLink("unsorted", "The remaining objects attached to this node"))
-
+    
     , actionScheduler(initLink("visitorScheduler", "The VisitorScheduler attached to this node (deprecated)"))
     , debug_(false)
     , initialized(false)
@@ -585,6 +588,7 @@ void Node::doAddObject(BaseObject::SPtr sobj)
     inserted+= configurationSetting.add(dynamic_cast< core::objectmodel::ConfigurationSetting* >(obj));
     inserted+= collisionPipeline.add(dynamic_cast< core::collision::Pipeline* >(obj));
     inserted+= actionScheduler.add(dynamic_cast< VisitorScheduler* >(obj));
+    inserted+= exporter.add(dynamic_cast< core::exporter::BaseExporter* >(obj));
 
     if ( inserted==0 )
     {
@@ -632,7 +636,9 @@ void Node::doRemoveObject(BaseObject::SPtr sobj)
     collisionPipeline.remove(dynamic_cast< core::collision::Pipeline* >(obj));
 
     actionScheduler.remove(dynamic_cast< VisitorScheduler* >(obj));
-
+    
+    exporter.remove(dynamic_cast< core::exporter::BaseExporter* >(obj));
+    
     unsorted.remove(obj);
 }
 
@@ -729,6 +735,14 @@ core::visual::VisualLoop* Node::getVisualLoop() const
         return visualLoop;
     else
         return get<core::visual::VisualLoop>(SearchParents);
+}
+
+core::exporter::BaseExporter* Node::getExporter() const
+{
+    if (exporter)
+        return exporter;
+    else
+        return get<core::exporter::BaseExporter>(SearchParents);
 }
 
 /// Find a child node given its name
@@ -961,7 +975,8 @@ void Node::printComponents()
     using core::CollisionModel;
     using core::objectmodel::ContextObject;
     using core::collision::Pipeline;
-
+    using core::exporter::BaseExporter;
+    
     serr<<"BaseAnimationLoop: ";
     for ( Single<BaseAnimationLoop>::iterator i=animationManager.begin(), iend=animationManager.end(); i!=iend; i++ )
         serr<<(*i)->getName()<<" ";
@@ -1027,6 +1042,9 @@ void Node::printComponents()
         serr<<(*i)->getName()<<" ";
     serr<<sendl<<"VisitorScheduler: ";
     for ( Single<VisitorScheduler>::iterator i=actionScheduler.begin(), iend=actionScheduler.end(); i!=iend; i++ )
+        serr<<(*i)->getName()<<" ";
+    serr<<sendl<<"Exporter: ";
+    for ( Single<BaseExporter>::iterator i=exporter.begin(), iend=exporter.end(); i!=iend; i++ )
         serr<<(*i)->getName()<<" ";
     serr<<sendl;
 }

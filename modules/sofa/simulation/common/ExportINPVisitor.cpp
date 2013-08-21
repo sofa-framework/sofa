@@ -22,34 +22,50 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/simulation/common/ExportINPVisitor.h>
 #include <sofa/helper/system/config.h>
-#include <sofa/component/initExporter.h>
-
-
+#include <sofa/helper/Factory.h>
+#include <sofa/simulation/common/Node.h>
+#include <sofa/core/objectmodel/BaseContext.h>
 namespace sofa
 {
 
-namespace component
+namespace simulation
 {
 
 
-void initExporter()
+    ExportINPVisitor::ExportINPVisitor(const core::ExecParams* params /* PARAMS FIRST */, vector< std::string >* nameT, vector< defaulttype::Vec3Types::VecCoord >* positionT, vector< double >* densiT, vector< vector< sofa::component::topology::Tetrahedron > >* tetrahedraT, vector< vector< sofa::component::topology::Hexahedron > >* hexahedraT, vector< vector< unsigned int > >* fixedPointT, vector< double >* youngModulusT, vector< double >* poissonRatioT)
+    : Visitor(params), nameT(nameT), positionT(positionT), densiT(densiT), tetrahedraT(tetrahedraT), hexahedraT(hexahedraT), fixedPointT(fixedPointT), youngModulusT(youngModulusT), poissonRatioT(poissonRatioT), ID(0)
 {
-    static bool first = true;
-    if (first)
+}
+
+ExportINPVisitor::~ExportINPVisitor()
+{
+}
+
+void ExportINPVisitor::processINPExporter(Node* /*node*/, core::exporter::BaseExporter* be)
+{
+    std::ostringstream oname;
+    oname << ++ID << "_" << be->getName() << std::endl;
+    if(!be->getINP(nameT, positionT, densiT, tetrahedraT, hexahedraT, fixedPointT, youngModulusT, poissonRatioT))
     {
-        first = false;
+        std::cout << "ExportINPVisitor: error, failed to get INPExporter component " << std::endl;
+        return;
     }
 }
 
-SOFA_LINK_CLASS(WriteState)
-SOFA_LINK_CLASS(WriteTopology)
-SOFA_LINK_CLASS(VTKExporter)
-SOFA_LINK_CLASS(OBJExporter)
-SOFA_LINK_CLASS(INPExporter)
-SOFA_LINK_CLASS(INPExporterMaster)
-SOFA_LINK_CLASS(MeshExporter)
+simulation::Visitor::Result ExportINPVisitor::processNodeTopDown(Node* node)
+{
+    for_each(this, node, node->exporter,&ExportINPVisitor::processINPExporter);
 
-} // namespace component
+    return RESULT_CONTINUE;
+}
+
+void ExportINPVisitor::processNodeBottomUp(Node* /*node*/)
+{
+}
+
+} // namespace simulation
 
 } // namespace sofa
+

@@ -145,7 +145,8 @@ HEADERS += \
 	visual/VisualManager.h \
 	visual/DrawTool.h \
 	visual/Shader.h \
-	ObjectFactory.h \
+        exporter/BaseExporter.h \
+        ObjectFactory.h \
 	SofaLibrary.h \
 	CategoryLibrary.h \
 	ComponentLibrary.h \

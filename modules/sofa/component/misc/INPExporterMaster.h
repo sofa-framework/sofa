@@ -22,9 +22,23 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <sofa/component/initExporter.h>
 
+#ifndef INPEXPORTERMASTER_H_
+#define INPEXPORTERMASTER_H_
+
+#include <sofa/helper/helper.h>
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/component/component.h>
+#include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/component/forcefield/HexahedronFEMForceField.h>
+#include <sofa/component/forcefield/TetrahedronFEMForceField.h>
+#include <sofa/core/objectmodel/DataFileName.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/behavior/BaseMechanicalState.h>
+#include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
+
+#include <fstream>
 
 namespace sofa
 {
@@ -32,24 +46,53 @@ namespace sofa
 namespace component
 {
 
-
-void initExporter()
+namespace misc
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
+
+class SOFA_EXPORTER_API INPExporterMaster : public core::objectmodel::BaseObject
+{
+public:
+    SOFA_CLASS(INPExporterMaster,core::objectmodel::BaseObject);
+
+private:
+    sofa::core::objectmodel::BaseContext* context;
+    sofa::core::behavior::OdeSolver* solver;
+    
+    unsigned int stepCounter;
+    unsigned int maxStep;
+
+    std::ofstream* outfile;
+
+    void writeINPMaster();
+    
+    int nbFiles;
+
+public:
+    sofa::core::objectmodel::DataFileName inpFilename;
+    Data<double> dt;
+    Data<double> time;
+    Data< defaulttype::Vec3d > gravity;
+    Data<double> m_alpha;
+    Data<double> m_beta;
+    Data<unsigned int> exportEveryNbSteps;
+    Data<bool> exportAtBegin;
+    Data<bool> exportAtEnd;
+
+protected:
+    INPExporterMaster();
+    virtual ~INPExporterMaster();
+public:
+    void init();
+    void cleanup();
+    void bwdInit();
+
+    void handleEvent(sofa::core::objectmodel::Event *);
+};
+
 }
 
-SOFA_LINK_CLASS(WriteState)
-SOFA_LINK_CLASS(WriteTopology)
-SOFA_LINK_CLASS(VTKExporter)
-SOFA_LINK_CLASS(OBJExporter)
-SOFA_LINK_CLASS(INPExporter)
-SOFA_LINK_CLASS(INPExporterMaster)
-SOFA_LINK_CLASS(MeshExporter)
+}
 
-} // namespace component
+}
 
-} // namespace sofa
+#endif /* INPEXPORTERMASTER_H_ */
