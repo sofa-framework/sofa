@@ -23,6 +23,7 @@ set(HEADER_FILES
 	DeleteVisitor.h
 	ExportGnuplotVisitor.h
 	ExportOBJVisitor.h
+	ExportINPVisitor.h
 	FindByTypeVisitor.h
 	GetVectorVisitor.cpp
 	GetAssembledSizeVisitor.cpp
@@ -32,7 +33,7 @@ set(HEADER_FILES
 	LocalStorage.h
 	MechanicalComputeEnergyVisitor.h
 	MechanicalMatrixVisitor.h
-	 MechanicalOperations.h
+	MechanicalOperations.h
 	MechanicalVPrintVisitor.h
 	MechanicalVisitor.h
 	MutationListener.h
@@ -96,6 +97,7 @@ set(SOURCE_FILES
 	DeleteVisitor.cpp
 	ExportGnuplotVisitor.cpp
 	ExportOBJVisitor.cpp
+	ExportINPVisitor.cpp
 	GetVectorVisitor.cpp
 	GetAssembledSizeVisitor.cpp
 	InitVisitor.cpp   
