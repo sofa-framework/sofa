@@ -1,5 +1,5 @@
 #include "AssembledSystem.h"
-#include <helper.h>
+#include <sofa/helper/rmath.h>
 
 #include <iostream>
 

@@ -7,6 +7,7 @@
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/core/behavior/MultiVec.h>
+#include <sofa/simulation/common/MechanicalVisitor.h>
 
 // TODO forward instead ?
 #include "KKTSolver.h"
@@ -37,12 +38,12 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
 				
     virtual void init();
 
-    void solve(const core::ExecParams* params,
+    virtual void solve(const core::ExecParams* params,
 	                   double dt, 
                        core::MultiVecCoordId posId,
                        core::MultiVecDerivId velId,
-                       bool computeForce = true, // should the right part of the implicit system be computed?
-                       bool integratePosition = true // should the position be updated?
+                       bool computeForce, // should the right part of the implicit system be computed?
+                       bool integratePosition // should the position be updated?
                        );
 
     // OdeSolver API
@@ -107,6 +108,25 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
 	core::behavior::MultiVecDeriv lagrange;
 
 	void alloc(const core::ExecParams& params);
+
+
+    struct propagate_visitor : simulation::MechanicalVisitor {
+
+        core::MultiVecDerivId out, in;
+
+        propagate_visitor(const sofa::core::MechanicalParams* mparams) : simulation::MechanicalVisitor(mparams) { }
+
+        Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) {
+            // clear dst
+            mm->resetForce(this->params /* PARAMS FIRST */, out.getId(mm));
+            return RESULT_CONTINUE;
+        }
+
+        void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) {
+            map->applyJT(mparams /* PARAMS FIRST */, out, in);
+        }
+
+    };
 };
 
 }
