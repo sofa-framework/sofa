@@ -249,23 +249,6 @@ AssembledSolver::kkt_type::vec AssembledSolver::stab_mask(const system_type& sys
 }
 
 
-struct propagate_visitor : simulation::MechanicalVisitor {
-
-	core::MultiVecDerivId out, in;
-	
-	propagate_visitor(const sofa::core::MechanicalParams* mparams) : simulation::MechanicalVisitor(mparams) { }
-	
-	Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) {
-		// clear dst
-		mm->resetForce(this->params /* PARAMS FIRST */, out.getId(mm));
-		return RESULT_CONTINUE;
-	}
-	
-	void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) {
-		map->applyJT(mparams /* PARAMS FIRST */, out, in);
-	}
-	
-};
 
 
 void AssembledSolver::solve(const core::ExecParams* params,
@@ -274,7 +257,7 @@ void AssembledSolver::solve(const core::ExecParams* params,
                             sofa::core::MultiVecDerivId velId,
                             bool computeForce,
                             bool integratePosition ) {
-	assert(kkt && "i need a kkt solver lol");
+    assert(kkt && "i need a kkt solver lol");
 
 	// obtain mparams
 	core::MechanicalParams mparams = this->mparams(*params, dt);
