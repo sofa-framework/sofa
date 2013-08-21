@@ -78,6 +78,8 @@ public:
             if(i<_poissonRatio.getValue().size()) poissonRatio=_poissonRatio.getValue()[i]; else if(_poissonRatio.getValue().size()) poissonRatio=_poissonRatio.getValue()[0];
             if(i<_viscosity.getValue().size())    viscosity=_viscosity.getValue()[i];       else if(_viscosity.getValue().size())    viscosity=_viscosity.getValue()[0];
 
+            assert( helper::isClamped( poissonRatio, -1+std::numeric_limits<Real>::epsilon(), 0.5-std::numeric_limits<Real>::epsilon() ) );
+
             std::vector<Real> params; params.push_back(youngModulus); params.push_back(poissonRatio);
             this->material[i].init( params, viscosity );
         }
@@ -104,7 +106,7 @@ protected:
     HookeForceField(core::behavior::MechanicalState<_DataTypes> *mm = NULL)
         : Inherit(mm)
         , _youngModulus(initData(&_youngModulus,vector<Real>((int)1,(Real)5000),"youngModulus","Young Modulus"))
-        , _poissonRatio(initData(&_poissonRatio,vector<Real>((int)1,(Real)0),"poissonRatio","Poisson Ratio"))
+        , _poissonRatio(initData(&_poissonRatio,vector<Real>((int)1,(Real)0),"poissonRatio","Poisson Ratio ]-1,0.5["))
         , _viscosity(initData(&_viscosity,vector<Real>((int)1,(Real)0),"viscosity","Viscosity (stress/strainRate)"))
     {
         // _poissonRatio.setWidget("poissonRatio");
@@ -165,6 +167,10 @@ public:
                 if(i<_shearModulusZX.getValue().size()) shearModulusZX=_shearModulusZX.getValue()[i]; else if(_shearModulusZX.getValue().size()) shearModulusZX=_shearModulusZX.getValue()[0];
                 if(i<_viscosity.getValue().size())    viscosity=_viscosity.getValue()[i];       else if(_viscosity.getValue().size())    viscosity=_viscosity.getValue()[0];
 
+                assert( helper::isClamped( poissonRatioXY, -1+std::numeric_limits<Real>::epsilon(), 0.5-std::numeric_limits<Real>::epsilon() ) );
+                assert( helper::isClamped( poissonRatioYZ, -1+std::numeric_limits<Real>::epsilon(), 0.5-std::numeric_limits<Real>::epsilon() ) );
+                assert( helper::isClamped( poissonRatioZX, -1+std::numeric_limits<Real>::epsilon(), 0.5-std::numeric_limits<Real>::epsilon() ) );
+
                 std::vector<Real> params;
                 params.push_back(youngModulusX); params.push_back(youngModulusY); params.push_back(youngModulusZ);
                 params.push_back(poissonRatioXY); params.push_back(poissonRatioYZ); params.push_back(poissonRatioZX);
@@ -223,9 +229,9 @@ protected:
         , _youngModulusX(initData(&_youngModulusX,vector<Real>((int)1,(Real)5000),"youngModulusX","Young Modulus along X"))
         , _youngModulusY(initData(&_youngModulusY,vector<Real>((int)1,(Real)5000),"youngModulusY","Young Modulus along Y"))
         , _youngModulusZ(initData(&_youngModulusZ,vector<Real>((int)1,(Real)5000),"youngModulusZ","Young Modulus along Z"))
-        , _poissonRatioXY(initData(&_poissonRatioXY,vector<Real>((int)1,(Real)0),"poissonRatioXY","Poisson Ratio about XY plane"))
-        , _poissonRatioYZ(initData(&_poissonRatioYZ,vector<Real>((int)1,(Real)0),"poissonRatioYZ","Poisson Ratio about YZ plane"))
-        , _poissonRatioZX(initData(&_poissonRatioZX,vector<Real>((int)1,(Real)0),"poissonRatioZX","Poisson Ratio about ZX plane"))
+        , _poissonRatioXY(initData(&_poissonRatioXY,vector<Real>((int)1,(Real)0),"poissonRatioXY","Poisson Ratio about XY plane ]-1,0.5["))
+        , _poissonRatioYZ(initData(&_poissonRatioYZ,vector<Real>((int)1,(Real)0),"poissonRatioYZ","Poisson Ratio about YZ plane ]-1,0.5["))
+        , _poissonRatioZX(initData(&_poissonRatioZX,vector<Real>((int)1,(Real)0),"poissonRatioZX","Poisson Ratio about ZX plane ]-1,0.5["))
         , _shearModulusXY(initData(&_shearModulusXY,vector<Real>((int)1,(Real)1500),"shearModulusXY","Shear Modulus about XY plane"))
         , _shearModulusYZ(initData(&_shearModulusYZ,vector<Real>((int)1,(Real)1500),"shearModulusYZ","Shear Modulus about YZ plane"))
         , _shearModulusZX(initData(&_shearModulusZX,vector<Real>((int)1,(Real)1500),"shearModulusZX","Shear Modulus about ZX plane"))
@@ -278,6 +284,9 @@ public:
                 if(i<_shearModulusXY.getValue().size()) shearModulusXY=_shearModulusXY.getValue()[i]; else if(_shearModulusXY.getValue().size()) shearModulusXY=_shearModulusXY.getValue()[0];
                 if(i<_viscosity.getValue().size())    viscosity=_viscosity.getValue()[i];       else if(_viscosity.getValue().size())    viscosity=_viscosity.getValue()[0];
 
+                assert( helper::isClamped( poissonRatioXY, -1+std::numeric_limits<Real>::epsilon(), 0.5-std::numeric_limits<Real>::epsilon() ) );
+                assert( helper::isClamped( poissonRatioYZ, -1+std::numeric_limits<Real>::epsilon(), 0.5-std::numeric_limits<Real>::epsilon() ) );
+
                 std::vector<Real> params;
                 params.push_back(youngModulusX); params.push_back(youngModulusY);
                 params.push_back(poissonRatioXY); params.push_back(poissonRatioYZ);
@@ -311,8 +320,8 @@ protected:
         : Inherit(mm)
         , _youngModulusX(initData(&_youngModulusX,vector<Real>((int)1,(Real)5000),"youngModulusX","Young Modulus along X"))
         , _youngModulusY(initData(&_youngModulusY,vector<Real>((int)1,(Real)5000),"youngModulusY","Young Modulus along Y"))
-        , _poissonRatioXY(initData(&_poissonRatioXY,vector<Real>((int)1,(Real)0),"poissonRatioXY","Poisson Ratio about XY plane"))
-        , _poissonRatioYZ(initData(&_poissonRatioYZ,vector<Real>((int)1,(Real)0),"poissonRatioYZ","Poisson Ratio about YZ plane"))
+        , _poissonRatioXY(initData(&_poissonRatioXY,vector<Real>((int)1,(Real)0),"poissonRatioXY","Poisson Ratio about XY plane ]-1,0.5["))
+        , _poissonRatioYZ(initData(&_poissonRatioYZ,vector<Real>((int)1,(Real)0),"poissonRatioYZ","Poisson Ratio about YZ plane ]-1,0.5["))
         , _shearModulusXY(initData(&_shearModulusXY,vector<Real>((int)1,(Real)1500),"shearModulusXY","Shear Modulus about XY plane"))
         , _viscosity(initData(&_viscosity,vector<Real>((int)1,(Real)0),"viscosity","Viscosity (stress/strainRate)"))
     {

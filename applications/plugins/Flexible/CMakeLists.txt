@@ -152,6 +152,8 @@ AddCompilerDefinitions("SOFA_BUILD_Flexible" )
 AddLinkerDependencies(SofaBaseVisual)
 
 if(SOFA-PLUGIN_IMAGE)
+    AddCompilerDefinitions("SOFA_HAVE_IMAGE" )
+
     if(SOFA-PLUGIN_OPENCV)
 	
 		include_directories("${SOFA_APPLICATIONS_PLUGINS_DIR}/opencv")

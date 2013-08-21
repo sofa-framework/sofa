@@ -71,6 +71,9 @@ public:
         {
             if(i<_youngModulus.getValue().size()) ym=_youngModulus.getValue()[i]; else if(_youngModulus.getValue().size()) ym=_youngModulus.getValue()[0];
             if(i<_poissonRatio.getValue().size()) pr=_poissonRatio.getValue()[i]; else if(_poissonRatio.getValue().size()) pr=_poissonRatio.getValue()[0];
+
+            assert( helper::isClamped( pr, -1+std::numeric_limits<Real>::epsilon(), 0.5-std::numeric_limits<Real>::epsilon() ) );
+
             this->material[i].init( ym, pr );
         }
         Inherit::reinit();
@@ -89,7 +92,7 @@ protected:
     StabilizedNeoHookeanForceField(core::behavior::MechanicalState<_DataTypes> *mm = NULL)
         : Inherit(mm)
         , _youngModulus(initData(&_youngModulus,vector<Real>((int)1,(Real)1000),"youngModulus","stiffness"))
-        , _poissonRatio(initData(&_poissonRatio,vector<Real>((int)1,(Real)0),"poissonRatio","incompressibility"))
+        , _poissonRatio(initData(&_poissonRatio,vector<Real>((int)1,(Real)0),"poissonRatio","incompressibility ]-1,0.5["))
 //        , _viscosity(initData(&_viscosity,(Real)0,"viscosity","Viscosity (stress/strainRate)"))
     {
         this->f_listening.setValue(true);
