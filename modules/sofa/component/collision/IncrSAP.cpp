@@ -90,19 +90,20 @@ using namespace sofa::defaulttype;
 using namespace sofa::helper;
 using namespace collision;
 
-SOFA_DECL_CLASS(IncrSap)
+SOFA_DECL_CLASS(TIncrSAP)
 
 int IncrSAPClassSofaVector = core::RegisterObject("Collision detection using incremental sweep and prune")
+        .addAlias( "IncrSAP" )
+        .addAlias( "IncrementalSAP" )
+        .addAlias( "IncrementalSweepAndPrune" )
+        .add< IncrSAP >( true )
         .add< TIncrSAP<helper::vector,helper::CPUMemoryManager> >()
-        ;
-
-int IncrSAPClassStdVector = core::RegisterObject("Collision detection using incremental sweep and prune")
-        .add< TIncrSAP<std::vector,std::allocator> >()
         ;
 
 
 template class SOFA_MESH_COLLISION_API TIncrSAP<helper::vector,helper::CPUMemoryManager>;
 template class SOFA_MESH_COLLISION_API TIncrSAP<std::vector,std::allocator>;
+
 } // namespace collision
 
 } // namespace component
