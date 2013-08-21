@@ -39,7 +39,8 @@ set(HEADER_FILES
     ../collision/IntrTriangleOBB.inl 
     ../collision/IntrMeshUtility.h 
     ../collision/IntrMeshUtility.inl
-
+    ../collision/IncrSAP.h
+    ../collision/IncrSAP.inl
     )
     
 set(SOURCE_FILES
@@ -66,7 +67,7 @@ set(SOURCE_FILES
     ../collision/RigidContactMapper.cpp 
     ../collision/IntrTriangleOBB.cpp 
     ../collision/IntrMeshUtility.cpp
-
+    ../collision/IncrSAP.cpp
     )
 
 set(GROUP_BASE_DIR "..")
