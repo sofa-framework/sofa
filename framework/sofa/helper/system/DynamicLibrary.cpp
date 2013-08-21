@@ -64,7 +64,7 @@ DynamicLibrary * DynamicLibrary::load(const std::string & name,
 {
     if (name.empty())
     {
-        (*errlog) <<  "Empty path." << std::endl;
+        if(errlog) (*errlog) <<  "Empty path." << std::endl;
         return NULL;
     }
 
@@ -75,8 +75,8 @@ DynamicLibrary * DynamicLibrary::load(const std::string & name,
     if (handle == NULL)
     {
         DWORD errorCode = ::GetLastError();
-        (*errlog) << "LoadLibrary("<<name<<") Failed. errorCode: "<<errorCode;
-        (*errlog) << std::endl;
+        if(errlog) (*errlog) << "LoadLibrary("<<name<<") Failed. errorCode: "<<errorCode;
+        if(errlog) (*errlog) << std::endl;
     }
 #elif defined(_XBOX) || defined(PS3)
 	return NULL; // not supported
@@ -88,10 +88,13 @@ DynamicLibrary * DynamicLibrary::load(const std::string & name,
         const char *zErrorString = ::dlerror();
         if (zErrorString)
             dlErrorString = zErrorString;
-        (*errlog) <<  "Failed to load \"" + name + '"';
-        if(dlErrorString.size())
-            (*errlog) << ": " + dlErrorString;
-        (*errlog) << std::endl;
+        if(errlog)
+        {
+            (*errlog) <<  "Failed to load \"" + name + '"';
+            if(dlErrorString.size())
+                (*errlog) << ": " + dlErrorString;
+            (*errlog) << std::endl;
+        }
         return NULL;
     }
 
@@ -112,7 +115,7 @@ void * DynamicLibrary::getSymbol(const std::string & symbol, std::ostream* errlo
 #else
     symbolAddress =  ::dlsym(m_handle, symbol.c_str());
 #endif
-    if( symbolAddress == NULL )
+    if( errlog && symbolAddress == NULL )
     {
         (*errlog) << m_name << " symbol: "<< symbol <<" not found" << std::endl;
     }
