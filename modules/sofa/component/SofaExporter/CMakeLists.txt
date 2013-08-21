@@ -9,6 +9,7 @@ set(HEADER_FILES
     ../misc/WriteTopology.inl 
     ../misc/VTKExporter.h 
     ../misc/OBJExporter.h 
+    ../misc/MDDExporter.h 
     ../misc/INPExporter.h 
     ../misc/INPExporterMaster.h 
     ../misc/STLExporter.h 
@@ -23,8 +24,9 @@ set(SOURCE_FILES
     ../misc/WriteTopology.cpp 
     ../misc/VTKExporter.cpp 
     ../misc/OBJExporter.cpp 
+    ../misc/MDDExporter.cpp 
     ../misc/INPExporter.cpp 
-    ../misc/INPExporterMaster.cpp
+    ../misc/INPExporterMaster.cpp 
     ../misc/STLExporter.cpp 
     ../misc/MeshExporter.cpp
  
