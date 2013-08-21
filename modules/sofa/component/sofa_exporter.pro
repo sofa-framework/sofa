@@ -12,6 +12,7 @@ HEADERS += initExporter.h \
            misc/WriteTopology.inl \
            misc/VTKExporter.h \
            misc/OBJExporter.h \
+           misc/STEPExporter.h \
            misc/MDDExporter.h \
            misc/INPExporter.h \
            misc/INPExporterMaster.h \
@@ -23,6 +24,7 @@ SOURCES += initExporter.cpp \
            misc/WriteTopology.cpp \
            misc/VTKExporter.cpp \
            misc/OBJExporter.cpp \
+           misc/STEPExporter.cpp \
            misc/MDDExporter.cpp \
            misc/INPExporter.cpp \
            misc/INPExporterMaster.cpp \
