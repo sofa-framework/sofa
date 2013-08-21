@@ -394,8 +394,6 @@ protected:
         }
 
 
-
-
         T color = (T)this->vf_values[meshId]->getValue()[0];
         T colorClosing;
         if( this->closingValue.getValue()==0 ) colorClosing=color;
@@ -678,22 +676,18 @@ protected:
 
 
 
-    void createInputMeshesData(int nb = -1)
+    void createInputMeshesData()
     {
-        unsigned int n = (nb < 0) ? f_nbMeshes.getValue() : (unsigned int)nb;
+        unsigned int n = f_nbMeshes.getValue();
 
         createInputDataVector(n, vf_positions, "position", "input positions for mesh ", SeqPositions(), true);
         createInputDataVector(n, vf_edges, "edges", "input edges for mesh ", SeqEdges(), true);
         createInputDataVector(n, vf_triangles, "triangles", "input triangles for mesh ", SeqTriangles(), true);
-        createInputDataVector(n, vf_values, "value", "pixel value for mesh ", SeqValues(), false);
-        // vf_values default value
-        for (int i=0; i<nb; ++i)
-        {
-            vf_values[i]->beginEdit()->push_back(1.0);
-        }
+
+        SeqValues defaultValues; defaultValues.push_back(1.0);
+        createInputDataVector(n, vf_values, "value", "pixel value for mesh ", defaultValues, false);
+
         createInputDataVector(n, vf_fillInside, "fillInside", "fill the inside? (only valable for unique value)", true, false);
-        if (n != f_nbMeshes.getValue())
-            f_nbMeshes.setValue(n);
     }
 
     template<class T>
