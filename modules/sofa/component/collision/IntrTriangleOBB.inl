@@ -61,7 +61,7 @@ bool TIntrTriangleOBB<TDataTypes,TDataTypes2>::Find (Real dmax,int tri_flg)
 //        {
 //            coplanar = i0;
 //        }        Real NdA = triNorm.Dot(axis);
-        Real sn = fabs((Real)1 -NdA);
+        Real sn = fabs((Real)1 -NdA*NdA);
         if (sn < IntrUtil<Real>::ZERO_TOLERANCE())
         {
             coplanar = i0;
@@ -170,7 +170,6 @@ bool TIntrTriangleOBB<TDataTypes,TDataTypes2>::Find (Real dmax,int tri_flg)
     FindContactSet<IntrTri,Box>(*_tri, *mBox, _sep_axis,side, triContact, boxContact,
          mContactTime, _pt_on_first,_pt_on_second);
 
-
     if((!(tri_flg&TriangleModel::FLAG_P1)) && IntrUtil<Real>::equal(_pt_on_first,_tri->p(0)))
         return false;
     else if((!(tri_flg&TriangleModel::FLAG_P2)) && IntrUtil<Real>::equal(_pt_on_first,_tri->p(1)))
@@ -180,6 +179,8 @@ bool TIntrTriangleOBB<TDataTypes,TDataTypes2>::Find (Real dmax,int tri_flg)
 
     if(side == IntrConfiguration<Real>::LEFT)
         _sep_axis *= -1.0;
+
+    assert(mBox->onSurface(_pt_on_second));
 
     return true;
 }

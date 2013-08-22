@@ -10,6 +10,6 @@
 	<CGLinearSolver template="GraphScattered" name="Conjugate Gradient" />
 	<Node 	 name="gNode4"  gravity="0 0 -9.81"  >
              <RequiredPlugin name="SofaPython"  printLog="1"  pluginName="SofaPython" />
-	         <PythonScriptController name="pythonScriptCapsule"  listening="1"  filename="GlobalCollision.py"  classname="GlobalCollision" />
+	         <PythonScriptController name="pythonModule"  listening="1"  filename="GlobalSaladCollision.py"  classname="GlobalCollision" />
 	</Node>
 </Node>

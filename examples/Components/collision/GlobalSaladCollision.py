@@ -57,6 +57,22 @@ class GlobalCollision(Sofa.PythonScriptController):
 		#floorNode.createObject('Line', name='Floor', simulated=0, moving=0)
 		floorNode.createObject('OglModel', name='FloorV', filename='mesh/SaladBowl.obj',texturename='textures/texture.bmp')#, texturename='textures/SaladBowl$.bmp')
 
+
+		space = 7
+
+		createCapsuleChain(self.rootNode,'capChain',10,-space,-space,space)
+		createCapsuleChain(self.rootNode,'capChain',10,-space/2,-space,space)
+		createCapsuleChain(self.rootNode,'capChain',10,-space/4,-space,space)
+		createCapsuleChain(self.rootNode,'capChain',10,-space,space,space)
+		createCapsuleChain(self.rootNode,'capChain',10,-space,space/2,space)
+		createCapsuleChain(self.rootNode,'capChain',10,-space,space/4,space)
+		createCapsuleChain(self.rootNode,'capChain',10,space,-space,space)
+		createCapsuleChain(self.rootNode,'capChain',10,space,-space/2,space)#
+		createCapsuleChain(self.rootNode,'capChain',10,space,-space/4,space)#
+		#createCapsuleChain(self.rootNode,'capChain',10,space,-space,space/2)
+		createCapsuleChain(self.rootNode,'capChain',10,space,space,space)
+		createCapsuleChain(self.rootNode,'capChain',10,space/2,space,space)
+		createCapsuleChain(self.rootNode,'capChain',10,space/4,space,space)
 		#self.generatePrimitives1(40)
 
 		return 0
@@ -68,14 +84,17 @@ class GlobalCollision(Sofa.PythonScriptController):
 		x=(10.0*(cos(t1) + cos(t2))/2.0).real
 		y=(10.0*(sin(t1) + sin(t2))/2.0).real
 
-		choice = random.randint(1,3)
+		choice = random.randint(1,7)
 
+		capsule_height = 1
 		if choice == 1:
 			createSphere(self.rootNode,str(self.nb_prim),x,y,self.current_height,1)
-		elif choice == 2:
-			createFlexCapsule(self.rootNode,str(self.nb_prim),x,y,self.current_height,1)
-		elif choice == 3:
+		elif choice == 2 or choice == 3 or choice == 4:
 			createOBB(self.rootNode,str(self.nb_prim),x,y,self.current_height,1,1,1)
+		elif choice == 5:
+			createRigidCapsule(self.rootNode,str(self.nb_prim),x,y,self.current_height,1)
+		elif choice == 6:
+			createRigidSphere(self.rootNode,str(self.nb_prim),x,y,self.current_height,1)
 
 		#createFlexCapsule(self.rootNode,str(self.nb_prim),x,y,self.current_height,2)
 			#createOBB(self.rootNode,str(self.nb_prim),x,y,self.current_height,1,1,1)
@@ -83,32 +102,6 @@ class GlobalCollision(Sofa.PythonScriptController):
 
 		self.nb_prim +=1
 		#self.current_height += 5
-
-
-	def generatePrimitives1(self,nb):
-		for i in range(0,40):
-			t1=random.uniform(0,6.28)
-			t2=random.uniform(0,6.28)
-			x=(10.0*(cos(t1) + cos(t2))/2.0).real
-			y=(10.0*(sin(t1) + sin(t2))/2.0).real
-
-			choice = random.randint(1,3)
-
-			# if choice == 1:
-			# 	createSphere(self.rootNode,str(self.nb_prim),x,y,self.current_height,1)
-			# elif choice == 2:
-			# 	createFlexCapsule(self.rootNode,str(self.nb_prim),x,y,self.current_height,2)
-			# elif choice == 3:
-			# 	createOBB(self.rootNode,str(self.nb_prim),x,y,self.current_height,1,1,1)
-
-			createFlexCapsule(self.rootNode,str(self.nb_prim),x,y,self.current_height,2)
-			#createOBB(self.rootNode,str(self.nb_prim),x,y,self.current_height,1,1,1)
-			#createCapsule(self.rootNode,str(self.nb_prim),x,y,self.current_height)
-
-			self.nb_prim +=1
-			self.current_height += 5
-
-		return 0
 
 
 	# called on each animation step
@@ -125,7 +118,7 @@ class GlobalCollision(Sofa.PythonScriptController):
 		return 0
 
 	def onEndAnimationStep(self,dt):
-		if self.total_steps%self.timestepgap==0 and self.total_time < self.max_nb_prim :
+		if self.total_time > 5.0 and self.total_steps%self.timestepgap==0 and self.total_time < self.max_nb_prim :
 			self.genRandPrim()
 		return 0
 
