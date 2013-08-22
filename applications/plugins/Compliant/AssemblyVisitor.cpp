@@ -1,5 +1,6 @@
 #include "AssemblyVisitor.h"
 
+
 #include <sofa/component/linearsolver/EigenVectorWrapper.h>
 #include <sofa/component/linearsolver/SingleMatrixAccessor.h>
 
@@ -7,6 +8,7 @@
 #include "./utils/find.h"
 #include "./utils/cast.h"
 #include "./utils/sparse.h"
+
 
 namespace sofa {
 namespace simulation {
@@ -16,60 +18,104 @@ using namespace core::behavior;
 
 typedef EigenVectorWrapper<SReal> wrap;
 
+
+
+
+
+
 // some helpers
 template<class Matrix>
 bool zero(const Matrix& m) {
-	return !m.nonZeros();
+    return !m.nonZeros();
 }
-		
+
 template<class Matrix>
 bool empty(const Matrix& m) {
-	return !m.rows();
+    return !m.rows();
 }
-		
+
 
 template<class LValue, class RValue>
 static void add(LValue& lval, const RValue& rval) {
-	if( empty(lval) ) {
-		lval = rval;
-	} else {
-		// paranoia, i has it
-		lval += rval;
-	}
+    if( empty(lval) ) {
+        lval = rval;
+    } else {
+        // paranoia, i has it
+        lval += rval;
+    }
 }
 
 
 static std::string pretty(AssemblyVisitor::dofs_type* dofs) {
-	return dofs->getContext()->getName() + " / " + dofs->getName();
+    return dofs->getContext()->getName() + " / " + dofs->getName();
 }
 
-		
+
 // right-shift matrix, size x (off + size) matrix: (0, id)
 static AssemblyVisitor::mat shift_right(unsigned off, unsigned size, unsigned total_cols, SReal value = 1.0 ) {
-	AssemblyVisitor::mat res( size, total_cols); 
-	assert( total_cols >= (off + size) );
-	
-	res.reserve( size );
-	
-	for(unsigned i = 0; i < size; ++i) {
-		res.startVec( i );
-		res.insertBack(i, off + i) = value;
-	}
-	res.finalize();
-	
-	return res;
+    AssemblyVisitor::mat res( size, total_cols);
+    assert( total_cols >= (off + size) );
+
+    res.reserve( size );
+
+    for(unsigned i = 0; i < size; ++i) {
+        res.startVec( i );
+        res.insertBack(i, off + i) = value;
+    }
+    res.finalize();
+
+    return res;
 }
 
 
+
+// convert a basematrix to a sparse matrix. TODO move this somewhere else ?
+AssemblyVisitor::mat convert( const defaulttype::BaseMatrix* m) {
+    assert( m );
+
+    typedef component::linearsolver::EigenBaseSparseMatrix<double> matrixd;
+
+    const matrixd* smd = dynamic_cast<const matrixd*> (m);
+    if ( smd ) return smd->compressedMatrix.cast<SReal>();
+
+    typedef component::linearsolver::EigenBaseSparseMatrix<float> matrixf;
+
+    const matrixf* smf = dynamic_cast<const matrixf*>(m);
+    if( smf ) return smf->compressedMatrix.cast<SReal>();
+
+
+    std::cerr << "warning: slow matrix conversion (AssemblyHelper)" << std::endl;
+
+    AssemblyVisitor::mat res(m->rowSize(), m->colSize());
+
+    res.reserve(res.rows() * res.cols());
+    for(unsigned i = 0, n = res.rows(); i < n; ++i) {
+        res.startVec( i );
+        for(unsigned j = 0, k = res.cols(); j < k; ++j) {
+            res.insertBack(i, j) = m->element(i, j);
+        }
+    }
+
+    return res;
+}
+
+
+
+
+
+
+
 		
-		
-AssemblyVisitor::AssemblyVisitor(const core::MechanicalParams* mparams, MultiVecDerivId velId)
+AssemblyVisitor::AssemblyVisitor(const core::MechanicalParams* mparams, MultiVecDerivId velId, MultiVecDerivId lagrangeId)
 	: base( mparams ),
       mparams( mparams ),
       _velId(velId),
+      lagrange(lagrangeId),
       start_node(0)
 
 { }
+
+
 		
 AssemblyVisitor::chunk::chunk() 
 	: offset(0), 
@@ -81,37 +127,6 @@ AssemblyVisitor::chunk::chunk()
 	
 }
 
-		
-// convert a basematrix to a sparse matrix. TODO move this somewhere else ?
-AssemblyVisitor::mat AssemblyVisitor::convert( const defaulttype::BaseMatrix* m) {
-	assert( m );
-			
-	typedef EigenBaseSparseMatrix<double> matrixd;
-	
-	const matrixd* smd = dynamic_cast<const matrixd*> (m);
-	if ( smd ) return smd->compressedMatrix.cast<SReal>();
-			
-	typedef EigenBaseSparseMatrix<float> matrixf;
-			
-	const matrixf* smf = dynamic_cast<const matrixf*>(m);
-	if( smf ) return smf->compressedMatrix.cast<SReal>();
-
-	
-	std::cerr << "warning: slow matrix conversion" << std::endl;
-			
-	mat res(m->rowSize(), m->colSize());
-	
-	res.reserve(res.rows() * res.cols());
-	for(unsigned i = 0, n = res.rows(); i < n; ++i) {
-		res.startVec( i );
-		for(unsigned j = 0, k = res.cols(); j < k; ++j) {
-			res.insertBack(i, j) = m->element(i, j);
-		}
-	}
-
-	return res;
-}
-		
 // this is not thread safe
 void AssemblyVisitor::vector(dofs_type* dofs, core::VecId id, const vec::ConstSegmentReturnType& data) {
     assert( dofs->getMatrixSize() == data.size() );
@@ -396,7 +411,7 @@ void AssemblyVisitor::fill_prefix(simulation::Node* node) {
 		// TODO this makes a lot of allocs :-/
 
 		c.v = vel( node );
-		c.f = force( node );
+//		c.f = force( node );
 		c.P = proj( node );
 		
 	} else {
@@ -661,18 +676,18 @@ struct AssemblyVisitor::prefix_helper {
 
 
 
-AssemblyVisitor::process_type AssemblyVisitor::process() const {
+AssemblyVisitor::process_type* AssemblyVisitor::process() const {
 	// scoped::timer step("mapping processing");
 	
-	process_type res;
+    process_type* res = new process_type();
 
-	unsigned& size_m = res.size_m;
-	unsigned& size_c = res.size_c;
+    unsigned& size_m = res->size_m;
+    unsigned& size_c = res->size_c;
 
-//	full_type& full = res.full;
+//	full_type& full = res->full;
 			
 	// independent dofs offsets (used for shifting parent)
-	offset_type& offsets = res.offset.master;
+    offset_type& offsets = res->offset.master;
 			
 	unsigned off_m = 0;
 	unsigned off_c = 0;
@@ -696,7 +711,7 @@ AssemblyVisitor::process_type AssemblyVisitor::process() const {
 	size_c = off_c;
 	
 	// prefix mapping concatenation and stuff 
-	std::for_each(prefix.begin(), prefix.end(), process_helper(res, graph) ); 	// TODO merge with offsets computation ?
+    std::for_each(prefix.begin(), prefix.end(), process_helper(*res, graph) ); 	// TODO merge with offsets computation ?
 
 	return res;
 }
@@ -712,14 +727,14 @@ static inline AssemblyVisitor::mat ltdl(const AssemblyVisitor::mat& l,
 		
 
 // produce actual system assembly
-AssemblyVisitor::system_type AssemblyVisitor::assemble() const{
+AssemblyVisitor::system_type AssemblyVisitor::assemble( process_type** pp ) const{
 	assert(!chunks.empty() && "need to send a visitor first");
 
 	// concatenate mappings and obtain sizes
-	process_type p = process();
-			
+    process_type* p = process();
+
 	// result system
-	system_type res(p.size_m, p.size_c);
+    system_type res(p->size_m, p->size_c);
 	
 	res.dt = mparams->dt();
 			
@@ -733,75 +748,75 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const{
 	for(unsigned i = 0, n = prefix.size(); i < n; ++i) {
 
 		// current chunk
-		const chunk* c = graph[ prefix[i] ].data;
-		assert( c->size );
+        const chunk& c = *graph[ prefix[i] ].data;
+        assert( c.size );
 
-		if( !c->mechanical ) continue;
+        if( !c.mechanical ) continue;
 		
 		// full mapping chunk
-		const mat& Jc = p.full[ graph[ prefix[i] ].dofs ];
+        const mat& Jc = p->full[ graph[ prefix[i] ].dofs ];
 		
 		// independent dofs: fill mass/stiffness
-		if( c->master() ) {
-			res.master.push_back( c->dofs );
+        if( c.master() ) {
+            res.master.push_back( c.dofs );
 
 			// scoped::timer step("independent dofs");
-			mat shift = shift_right(off_m, c->size, p.size_m);
+            mat shift = shift_right(off_m, c.size, p->size_m);
 			
-			mat H(c->size, c->size);
+            mat H(c.size, c.size);
 
 			// mass matrix / momentum
-			if( !zero(c->M) ) {
-                H += c->M;
-                vec::SegmentReturnType r = res.p.segment(off_m, c->size);
-                r.noalias() = r + c->M * c->v;
+            if( !zero(c.M) ) {
+                H += c.M;
+                vec::SegmentReturnType r = res.p.segment(off_m, c.size);
+                r.noalias() = r + c.M * c.v;
 			}
 			
 			// stiffness matrix
-			if( !zero(c->K) )  {
+            if( !zero(c.K) )  {
 				// res.K.middleRows(off_m, c.size) = Kc * shift;
-				H -= dt2 * c->K;
+                H -= dt2 * c.K;
 				
 				// res.H.middleRows(off_m, c.size) = res.H.middleRows(off_m, c.size) - dt2 * (Kc * shift);
 			}
 			
 			// TODO this is costly, find a faster way to do it
 			if( !zero(H) ) {
-				res.H.middleRows(off_m, c->size) = res.H.middleRows(off_m, c->size) + H * shift;
+                res.H.middleRows(off_m, c.size) = res.H.middleRows(off_m, c.size) + H * shift;
 			}
 			
 			// these should not be empty anyways
-			if( !zero(c->f) ) res.f.segment(off_m, c->size) = c->f;
-			if( !zero(c->v) ) res.v.segment(off_m, c->size) = c->v;
-			if( !zero(c->P) ) res.P.middleRows(off_m, c->size) = c->P * shift;
+            if( !zero(c.f) ) res.f.segment(off_m, c.size) = c.f;
+            if( !zero(c.v) ) res.v.segment(off_m, c.size) = c.v;
+            if( !zero(c.P) ) res.P.middleRows(off_m, c.size) = c.P * shift;
 			
-			off_m += c->size;
+            off_m += c.size;
 		} 
 				
 		// mapped dofs
 		else { 
 
 			if( !zero(Jc) ) {
-				assert( Jc.cols() == int(p.size_m) );
+                assert( Jc.cols() == int(p->size_m) );
 				
 				{
-					mat H(c->size, c->size);
+                    mat H(c.size, c.size);
 					
-					if( !zero(c->M) ) {
+                    if( !zero(c.M) ) {
 						// contribute mapped mass
-						assert( c->v.size() == int(c->size) );
-						assert( c->M.cols() == int(c->size) ); 
-						assert( c->M.rows() == int(c->size) );
+                        assert( c.v.size() == int(c.size) );
+                        assert( c.M.cols() == int(c.size) );
+                        assert( c.M.rows() == int(c.size) );
 
 						// momentum TODO avoid alloc
-						res.p.noalias() = res.p + Jc.transpose() * (c->M * c->v);
+                        res.p.noalias() = res.p + Jc.transpose() * (c.M * c.v);
 
-						H += c->M;
+                        H += c.M;
 					}
 					
 					// mapped stiffness
-					if( !zero(c->K) ) {
-						H -= dt2 * c->K;
+                    if( !zero(c.K) ) {
+                        H -= dt2 * c.K;
 					}
 					
 					// actual response matrix mapping
@@ -814,42 +829,45 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const{
 			}					
 					
 			// compliant dofs: fill compliance/phi/lambda
-			if( c->compliant() ) { 
-				res.compliant.push_back( c->dofs );
+            if( c.compliant() ) {
+                res.compliant.push_back( c.dofs );
 				// scoped::timer step("compliant dofs");
 				assert( !zero(Jc) );
 				
 				// mapping
-				res.J.middleRows(off_c, c->size) = Jc;
+                res.J.middleRows(off_c, c.size) = Jc;
 						
 				// compliance
-				if(!zero(c->C) ) {
+                if(!zero(c.C) ) {
 					
 					// you never know
 					assert( mparams->implicitVelocity() == 1 );
 					assert( mparams->implicitPosition() == 1 );
 					
-					SReal l = res.dt + c->damping;
+                    SReal l = res.dt + c.damping;
 
 					// zero damping => C / dt2
 
 					SReal factor = 1.0 / (res.dt * l );
-					res.C.middleRows(off_c, c->size) = 
-						c->C * shift_right(off_c, c->size, p.size_c, factor);
+                    res.C.middleRows(off_c, c.size) =
+                        c.C * shift_right(off_c, c.size, p->size_c, factor);
 				}
 			
 				// phi
-				res.phi.segment(off_c, c->size) = c->phi;
+                res.phi.segment(off_c, c.size) = c.phi;
 				
-				if( c->lambda.size() ) res.lambda.segment( off_c, c->size ) = c->lambda;
+                if( c.lambda.size() ) res.lambda.segment( off_c, c.size ) = c.lambda;
 				
-				off_c += c->size;
+                off_c += c.size;
 			}
 		}
 	}
 
-	assert( off_m == p.size_m );
-	assert( off_c == p.size_c );
+    assert( off_m == p->size_m );
+    assert( off_c == p->size_c );
+
+    if( pp ) *pp = p;
+    else delete p;
 
 	return res;
 }
@@ -921,6 +939,76 @@ void AssemblyVisitor::processNodeBottomUp(simulation::Node* node) {
 	}
 }
 		
+
+
+
+
+void AssemblyVisitor::updateConstraintAndMomentum( system_type& sys, process_type* p ) {
+    assert(!chunks.empty() && "need to send a visitor first");
+
+    // master/compliant offsets
+    unsigned off_m = 0;
+    unsigned off_c = 0;
+
+    sys.p.setZero();
+
+    // assemble system
+    for(unsigned i = 0, n = prefix.size(); i < n; ++i) {
+
+        // current chunk
+        chunk& c = *graph[ prefix[i] ].data;
+        assert( c.size );
+
+        if( !c.mechanical ) continue;
+
+        dofs_type* dofs = graph[ prefix[i] ].dofs;
+        const mat& Jc = p->full[ dofs ];
+
+        // to access new multivec data
+        Node* node = static_cast<Node*>(dofs->getContext());
+
+        // independent dofs: fill mass/stiffness
+        if( c.master() )
+        {
+            // mass matrix / momentum
+            if( !zero(c.M) ) {
+                vec::SegmentReturnType r = sys.p.segment(off_m, c.size);
+
+                r.noalias() = r + c.M * vel( node );
+            }
+
+            off_m += c.size;
+        }
+        else
+        {
+            if( !zero(Jc) ) {
+                assert( Jc.cols() == int(p->size_m) );
+
+                {
+                    if( !zero(c.M) ) {
+                        // contribute mapped mass
+                        assert( c.v.size() == int(c.size) );
+                        assert( c.M.cols() == int(c.size) );
+                        assert( c.M.rows() == int(c.size) );
+
+                        // momentum TODO avoid alloc
+                        sys.p.noalias() = sys.p + Jc.transpose() * (c.M * vel( node ));
+                    }
+                }
+
+            }
+
+            // compliant dofs: fill compliance/phi/lambda
+            if( c.compliant() ) {
+
+                // phi
+                sys.phi.segment(off_c, c.size) = phi( node );
+
+                off_c += c.size;
+            }
+        }
+    }
+}
 
 
 }

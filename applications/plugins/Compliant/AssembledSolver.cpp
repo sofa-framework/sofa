@@ -266,11 +266,8 @@ void AssembledSolver::solve(const core::ExecParams* params,
     if( computeForce ) forces( mparams );
 				
 	// assembly visitor
-    simulation::AssemblyVisitor vis(&mparams, velId);
-	
-	// TODO do this inside visitor ctor instead
-	vis.lagrange = lagrange.id();
-	
+    simulation::AssemblyVisitor vis(&mparams, velId, lagrange.id());
+
 	// fetch data
 	send( vis );
 	

@@ -32,8 +32,8 @@ namespace simulation {
 // TODO shift matrices may also be improved using eigen magic
 // instead of actual sparse matrices (causing allocs)
 class AssemblyVisitor : public simulation::MechanicalVisitor {
+protected:
 	typedef simulation::MechanicalVisitor base;
-			
 	const core::MechanicalParams* mparams;
 public:
 
@@ -46,11 +46,12 @@ public:
 	typedef rmat mat;
 	typedef Eigen::Matrix<real, Eigen::Dynamic, 1> vec;
 			
-    AssemblyVisitor(const core::MechanicalParams* mparams = 0, MultiVecDerivId velId = MultiVecDerivId(core::VecDerivId::velocity()) );
+    AssemblyVisitor(const core::MechanicalParams* mparams = 0, MultiVecDerivId velId = MultiVecDerivId(core::VecDerivId::velocity()), MultiVecDerivId lagrange = MultiVecDerivId() );
 
 protected:
 
     MultiVecDerivId _velId;
+    MultiVecDerivId lagrange;
 
 public:
 			
@@ -60,10 +61,6 @@ public:
 	
 	// reset state
 	void clear();
-
-	// build assembled system (needs to send visitor first)
-	typedef component::linearsolver::AssembledSystem system_type;
-	system_type assemble() const;
 	
 	// distribute data over master dofs, in given vecid
     void distribute_master(core::behavior::MultiVecDeriv::MyMultiVecId id, const vec& data);
@@ -73,10 +70,6 @@ public:
 			
 	// outputs data to std::cout
 	void debug() const; 
-
-	// TODO encapsulate this
-	typedef core::behavior::MultiVecDeriv::MyMultiVecId lagrange_type;
-	lagrange_type lagrange;
 	
 public:
 	
@@ -118,7 +111,6 @@ public:
 		void debug() const;
 	};
 
-	static mat convert( const defaulttype::BaseMatrix* m);
 	vec vector(dofs_type* dofs, core::ConstVecId id); // get
 
 	void vector(dofs_type*, core::VecId id, const vec::ConstSegmentReturnType& data); // set
@@ -142,8 +134,8 @@ public:
 	real damping(simulation::Node* node);
 
 	// fill data chunk for node
-	void fill_prefix(simulation::Node* node);
-	void fill_postfix(simulation::Node* node);
+    virtual void fill_prefix(simulation::Node* node);
+    void fill_postfix(simulation::Node* node);
 
 protected:
 
@@ -174,7 +166,7 @@ public:
 	};
 
 	// builds global mapping / full stiffness matrices + sizes
-	virtual process_type process() const;
+    virtual process_type* process() const;
 			
 	// helper functors
 	struct process_helper;
@@ -201,6 +193,17 @@ public:
 	
 	typedef utils::graph<vertex, edge, boost::bidirectionalS> graph_type;
 	graph_type graph;
+
+public:
+
+
+    // build assembled system (needs to send visitor first)
+    // if the pp pointer is given, the created process_type structure will be kept (won't be deleted)
+    typedef component::linearsolver::AssembledSystem system_type;
+    system_type assemble( process_type** p = NULL ) const;
+
+    // do not perform entire assembly, but only compute momentum sys.p and constraint value sys.phi. The process_type p must have been computed from a previous call to assemble
+    void updateConstraintAndMomentum( system_type& sys, process_type* p );
 	
 private:
 
