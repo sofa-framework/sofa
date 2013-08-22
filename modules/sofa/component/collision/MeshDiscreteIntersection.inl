@@ -148,7 +148,7 @@ int MeshDiscreteIntersection::computeIntersection( TSphere<T>& sph, Triangle& tr
         DetectionOutput *detection = &*(contacts->end()-1);
         detection->normal = -normal;
         detection->point[1] = projPoint;
-        detection->point[0] = sph.getContactPoint( detection->normal );
+        detection->point[0] = sph.getContactPointByNormal( detection->normal );
         detection->value = -distance;
         //detection->elem.first = triangle;
         //detection->elem.second = sph;

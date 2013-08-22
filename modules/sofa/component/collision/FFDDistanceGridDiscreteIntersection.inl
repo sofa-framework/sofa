@@ -111,7 +111,7 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
                     detection->elem.second = e2;
                     detection->id = e2.getIndex();
                     detection->point[0] = Vector3(pinit);
-                    detection->point[1] = e2.getContactPoint( detection->normal );
+                    detection->point[1] = e2.getContactPointWithSurfacePoint( pinit );
                     return 1;
                 }
             }

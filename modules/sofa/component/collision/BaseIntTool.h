@@ -51,8 +51,8 @@ public:
         DetectionOutput *detection = &*(contacts->end()-1);
         SReal distSph1Sph2 = helper::rsqrt(norm2);
         detection->normal = dist / distSph1Sph2;
-        detection->point[0] = sph1.getContactPoint( -detection->normal );
-        detection->point[1] = sph2.getContactPoint( detection->normal );
+        detection->point[0] = sph1.getContactPointByNormal( -detection->normal );
+        detection->point[1] = sph2.getContactPointByNormal( detection->normal );
 
         detection->value = distSph1Sph2 - r - contactDist;
         detection->elem.first = sph1;

@@ -98,7 +98,7 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
     detection->elem.second = e2;
     detection->id = e2.getIndex();
     detection->point[0] = Vector3(p1) - grad * d;
-    detection->point[1] = e2.getContactPoint( detection->normal );
+    detection->point[1] = e2.getContactPointByNormal( detection->normal );
     return 1;
 }
 

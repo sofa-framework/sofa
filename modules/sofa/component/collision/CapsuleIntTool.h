@@ -59,7 +59,7 @@ int CapsuleIntTool::computeIntersection(Capsule & cap, TSphere<DataTypes> & sph,
         detection->value = detection->normal.norm();
         detection->normal /= detection->value;
         detection->point[0] = cap_p1 + cap_rad * detection->normal;
-        detection->point[1] = sph.getContactPoint( detection->normal );
+        detection->point[1] = sph.getContactPointByNormal( detection->normal );
         detection->value -= theory_contactDist;
 
         return 1;
@@ -82,7 +82,7 @@ int CapsuleIntTool::computeIntersection(Capsule & cap, TSphere<DataTypes> & sph,
         detection->value = detection->normal.norm();
         detection->normal /= detection->value;
         detection->point[0] = cap_p2 + cap_rad * detection->normal;
-        detection->point[1] = sph.getContactPoint( detection->normal );
+        detection->point[1] = sph.getContactPointByNormal( detection->normal );
         detection->value -= theory_contactDist;
 
         return 1;
@@ -106,7 +106,7 @@ int CapsuleIntTool::computeIntersection(Capsule & cap, TSphere<DataTypes> & sph,
         detection->value = detection->normal.norm();
         detection->normal /= detection->value;
         detection->point[0] = P + cap_rad * detection->normal;
-        detection->point[1] = sph.getContactPoint( detection->normal );
+        detection->point[1] = sph.getContactPointByNormal( detection->normal );
         detection->value -= theory_contactDist;
 
         return 1;

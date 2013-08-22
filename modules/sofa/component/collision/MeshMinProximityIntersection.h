@@ -180,7 +180,7 @@ int MeshMinProximityIntersection::computeIntersection(Triangle& e2, TSphere<T>& 
     }
     detection->value -= contactDist;
     detection->point[0]=Q;
-    detection->point[1]=e1.getContactPoint( detection->normal );
+    detection->point[1]=e1.getContactPointByNormal( detection->normal );
     return 1;
 }
 
@@ -265,7 +265,7 @@ int MeshMinProximityIntersection::computeIntersection(Line& e2, TSphere<T>& e1, 
         detection->normal= Vector3(1,0,0);
     }
     detection->point[0]=Q;
-    detection->point[1]=e1.getContactPoint( detection->normal );
+    detection->point[1]=e1.getContactPointByNormal( detection->normal );
     detection->value -= contactDist;
     return 1;
 }
@@ -318,7 +318,7 @@ int MeshMinProximityIntersection::computeIntersection(TSphere<T>& e1, Point& e2,
         detection->normal= Vector3(1,0,0);
     }
     detection->value -= contactDist;
-    detection->point[0]=e1.getContactPoint( detection->normal );
+    detection->point[0]=e1.getContactPointByNormal( -detection->normal );
     detection->point[1]=Q;
     return 1;
 }
