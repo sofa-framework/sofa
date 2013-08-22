@@ -131,6 +131,8 @@ public:
       *
       */
     void vertices(std::vector<Coord> & vs)const;
+
+    bool onSurface(const Coord & p)const;
 };
 
 

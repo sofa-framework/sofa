@@ -225,6 +225,20 @@ inline typename TOBB<DataTypes>::Coord TOBB<DataTypes>::generalCoordinates(const
     return this->model->generalCoordinates(c,this->index);
 }
 
+template <class DataTypes>
+inline bool TOBB<DataTypes>::onSurface(const Coord &c)const{
+    Coord loc = this->localCoordinates(c);
+    std::cout<<"loc "<<loc<<std::endl;
+    for(int i = 0 ; i < 3 ; ++i){
+        std::cout<<"val on surface "<<fabs(this->extent(i) - fabs(loc[i]))<<std::endl;
+        if(loc[i] > extent(i) + 1e-6 || loc[i] < - extent(i) - 1e-6)
+            return false;
+        else if(fabs(this->extent(i) - fabs(loc[i])) < 1e-6)
+            return true;
+    }
+
+    return false;
+}
 
 template <class DataTypes>
 inline typename TOBBModel<DataTypes>::Coord TOBBModel<DataTypes>::generalCoordinates(const Coord &c,int index)const{

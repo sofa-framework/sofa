@@ -924,6 +924,11 @@ void IntrUtil<Real>::segNearestPoints(const Vec<3,Real> & p0,const Vec<3,Real> &
     else if (alpha > 1)
         alpha = 1;
 
+    assert(alpha >= 0);
+    assert(alpha <= 1);
+    assert(beta >= 0);
+    assert(beta <= 1);
+
     P = p0 + AB * alpha;
     Q = q0 + CD * beta;
 }
@@ -1485,6 +1490,10 @@ bool IntrUtil<Real>::inf(Real a,Real b){
 
 template <class TDataTypes>
 void IntrUtil<TOBB<TDataTypes> >::project(Vec<3,Real> & point,const Box & box){
+    int min_ind = -1;
+    bool neg = false;
+    bool is_in = true;
+    SReal diff = std::numeric_limits<SReal>::max();
     Vec<3,Real> centeredPt = point - box.center();
     point = box.center();
 
@@ -1493,13 +1502,33 @@ void IntrUtil<TOBB<TDataTypes> >::project(Vec<3,Real> & point,const Box & box){
         coord_i = box.axis(i) * centeredPt;
 
         if(coord_i < -box.extent(i) - IntrUtil<Real>::ZERO_TOLERANCE()){
+            is_in = false;
             coord_i = -box.extent(i);
         }
         else if(coord_i > box.extent(i) + IntrUtil<Real>::ZERO_TOLERANCE()){
+            is_in = false;
             coord_i = box.extent(i);
+        }
+        else{
+            SReal cur_diff = fabs(fabs(coord_i) - box.extent(i))/box.extent(i);
+            if(cur_diff < diff){
+                diff = cur_diff;
+                min_ind = i;
+                if(coord_i < 0.0)
+                    neg = true;
+            }
         }
 
         point += coord_i * box.axis(i);
+    }
+
+    if(is_in){
+        if(neg){
+            point[min_ind] = box.center()[min_ind] - box.extent(min_ind);
+        }
+        else{
+            point[min_ind] = box.center()[min_ind] + box.extent(min_ind);
+        }
     }
 }
 

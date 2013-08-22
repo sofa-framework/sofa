@@ -108,7 +108,7 @@ struct TestCapOBB  : public ::testing::Test{
 struct TestSphereOBB : public ::testing::Test{
     typedef sofa::defaulttype::Vec3d Vec3d;
 
-    static sofa::component::collision::SphereModel::SPtr makeSphere(const Vec3d & center,double radius,const Vec3d & v,
+    static sofa::component::collision::RigidSphereModel::SPtr makeSphere(const Vec3d & center,double radius,const Vec3d & v,
                                                                     sofa::simulation::Node::SPtr & father);
 
     bool vertex();
@@ -123,6 +123,8 @@ struct TestTriOBB : public ::testing::Test{
     static sofa::component::collision::TriangleModel::SPtr makeTri(const Vec3d & p0,const Vec3d & p1,const Vec3d & p2,const Vec3d &v, sofa::simulation::Node::SPtr &father);
 
     bool faceVertex();
+    bool faceVertex_out();
+    bool faceVertex_out2();
     bool vertexVertex();
     bool faceFace();
     bool faceEdge();
@@ -134,49 +136,49 @@ struct TestTriOBB : public ::testing::Test{
     bool vertexEdge();
 };
 
-sofa::component::collision::SphereModel::SPtr TestSphereOBB::makeSphere(const Vec3d & center,double radius,const Vec3d & v,
-                                                                   sofa::simulation::Node::SPtr & father){
-    //creating node containing OBBModel
-    sofa::simulation::Node::SPtr sph = father->createChild("cap");
+//sofa::component::collision::SphereModel::SPtr TestSphereOBB::makeSphere(const Vec3d & center,double radius,const Vec3d & v,
+//                                                                   sofa::simulation::Node::SPtr & father){
+//    //creating node containing OBBModel
+//    sofa::simulation::Node::SPtr sph = father->createChild("cap");
 
-    //creating a mechanical object which will be attached to the OBBModel
-    MechanicalObject3d::SPtr sphDOF = New<MechanicalObject3d>();
+//    //creating a mechanical object which will be attached to the OBBModel
+//    MechanicalObject3d::SPtr sphDOF = New<MechanicalObject3d>();
 
-    //editing DOF related to the OBBModel to be created, size is 1 because it contains just one OBB
-    sphDOF->resize(1);
-    Data<MechanicalObject3d::VecCoord> & dpositions = *sphDOF->write( sofa::core::VecId::position() );
-    MechanicalObject3d::VecCoord & positions = *dpositions.beginEdit();
+//    //editing DOF related to the OBBModel to be created, size is 1 because it contains just one OBB
+//    sphDOF->resize(1);
+//    Data<MechanicalObject3d::VecCoord> & dpositions = *sphDOF->write( sofa::core::VecId::position() );
+//    MechanicalObject3d::VecCoord & positions = *dpositions.beginEdit();
 
-    //we finnaly edit the positions by filling it with a RigidCoord made up from p and the rotated fram x,y,z
-    positions[0] = center;
+//    //we finnaly edit the positions by filling it with a RigidCoord made up from p and the rotated fram x,y,z
+//    positions[0] = center;
 
-    dpositions.endEdit();
+//    dpositions.endEdit();
 
-    //Editting the velocity of the OBB
-    Data<MechanicalObject3d::VecDeriv> & dvelocities = *sphDOF->write( sofa::core::VecId::velocity() );
+//    //Editting the velocity of the OBB
+//    Data<MechanicalObject3d::VecDeriv> & dvelocities = *sphDOF->write( sofa::core::VecId::velocity() );
 
-    MechanicalObject3d::VecDeriv & velocities = *dvelocities.beginEdit();
-    velocities[0] = v;
-    dvelocities.endEdit();
+//    MechanicalObject3d::VecDeriv & velocities = *dvelocities.beginEdit();
+//    velocities[0] = v;
+//    dvelocities.endEdit();
 
-    sph->addObject(sphDOF);
+//    sph->addObject(sphDOF);
 
-    //creating an OBBModel and attaching it to the same node than obbDOF
-    sofa::component::collision::SphereModel::SPtr sphCollisionModel = New<sofa::component::collision::SphereModel >();
-    sph->addObject(sphCollisionModel);
+//    //creating an OBBModel and attaching it to the same node than obbDOF
+//    sofa::component::collision::SphereModel::SPtr sphCollisionModel = New<sofa::component::collision::SphereModel >();
+//    sph->addObject(sphCollisionModel);
 
 
-    //editting the OBBModel
-    sphCollisionModel->init();
-    Data<sofa::component::collision::SphereModel::VecReal> & dVecReal = sphCollisionModel->radius;
-    sofa::component::collision::CapsuleModel::VecReal & vecReal = *(dVecReal.beginEdit());
+//    //editting the OBBModel
+//    sphCollisionModel->init();
+//    Data<sofa::component::collision::SphereModel::VecReal> & dVecReal = sphCollisionModel->radius;
+//    sofa::component::collision::CapsuleModel::VecReal & vecReal = *(dVecReal.beginEdit());
 
-    vecReal[0] = radius;
+//    vecReal[0] = radius;
 
-    dVecReal.endEdit();
+//    dVecReal.endEdit();
 
-    return sphCollisionModel;
-}
+//    return sphCollisionModel;
+//}
 
 sofa::component::collision::CapsuleModel::SPtr TestCapOBB::makeCap(const Vec3d & p0,const Vec3d & p1,double radius,const Vec3d & v,
                                                                    sofa::simulation::Node::SPtr & father){
@@ -390,6 +392,51 @@ sofa::component::collision::OBBModel::SPtr TestOBB::makeOBB(const Vec3d & p,cons
 
     return obbCollisionModel;
 }
+
+
+sofa::component::collision::RigidSphereModel::SPtr TestSphereOBB::makeSphere(const Vec3d & center,double radius,const Vec3d & v,
+                                                                   sofa::simulation::Node::SPtr & father){
+    //creating node containing SphereModel
+    sofa::simulation::Node::SPtr sph = father->createChild("cap");
+
+    //creating a mechanical object which will be attached to the SphereModel
+    MechanicalObjectRigid3::SPtr sphDOF = New<MechanicalObjectRigid3>();
+
+    //editing DOF related to the SphereModel to be created, size is 1 because it contains just one Sphere
+    sphDOF->resize(1);
+    Data<MechanicalObjectRigid3::VecCoord> & dpositions = *sphDOF->write( sofa::core::VecId::position() );
+    MechanicalObjectRigid3::VecCoord & positions = *dpositions.beginEdit();
+
+    positions[0] = Rigid3Types::Coord(center,Quaternion(0,0,0,1));
+
+    dpositions.endEdit();
+
+    //Editting the velocity of the Sphere
+    Data<MechanicalObjectRigid3::VecDeriv> & dvelocities = *sphDOF->write( sofa::core::VecId::velocity() );
+
+    MechanicalObjectRigid3::VecDeriv & velocities = *dvelocities.beginEdit();
+    velocities[0] = v;
+    dvelocities.endEdit();
+
+    sph->addObject(sphDOF);
+
+    //creating an OBBModel and attaching it to the same node than obbDOF
+    sofa::component::collision::RigidSphereModel::SPtr sphCollisionModel = New<sofa::component::collision::RigidSphereModel >();
+    sph->addObject(sphCollisionModel);
+
+
+    //editting the OBBModel
+    sphCollisionModel->init();
+    Data<sofa::component::collision::RigidSphereModel::VecReal> & dVecReal = sphCollisionModel->radius;
+    sofa::component::collision::RigidSphereModel::VecReal & vecReal = *(dVecReal.beginEdit());
+
+    vecReal[0] = radius;
+
+    dVecReal.endEdit();
+
+    return sphCollisionModel;
+}
+
 
 
 void TestOBB::rotx(double ax,Vec3d & x,Vec3d & y,Vec3d & z){
@@ -996,11 +1043,11 @@ bool TestSphereOBB::vertex(){
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling capsule
-    sofa::component::collision::SphereModel::SPtr sphmodel = makeSphere(Vec3d(0,0,1 + 0.01),1,Vec3d(0,0,-10),scn);
+    sofa::component::collision::RigidSphereModel::SPtr sphmodel = makeSphere(Vec3d(0,0,1 + 0.01),1,Vec3d(0,0,-10),scn);
 
     //we construct the OBB and the capsule from the OBBModel and the CapsuleModel
     sofa::component::collision::OBB obb(obbmodel.get(),0);
-    sofa::component::collision::Sphere sph(sphmodel.get(),0);
+    sofa::component::collision::RigidSphere sph(sphmodel.get(),0);
 
     //collision configuration is such that the face defined by 3,2,6,7 vertices of obb0 (not moving) is intersected
     //at its center by the vertex 0 of obb1 (moving)
@@ -1010,6 +1057,9 @@ bool TestSphereOBB::vertex(){
     //loooking for an intersection
     if(!sofa::component::collision::OBBIntTool::computeIntersection(sph,obb,1.0,1.0,&detectionOUTPUT))
         return false;
+
+    std::cout<<"detectionOUTPUT[0].point[0] "<<detectionOUTPUT[0].point[0]<<std::endl;
+    std::cout<<"detectionOUTPUT[0].point[1] "<<detectionOUTPUT[0].point[1]<<std::endl;
 
     //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
     if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0.01)).norm() > 1e-6)
@@ -1043,11 +1093,11 @@ bool TestSphereOBB::edge(){
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling capsule
-    sofa::component::collision::SphereModel::SPtr sphmodel = makeSphere(Vec3d(0,0,1 + 0.01),1,Vec3d(0,0,-10),scn);
+    sofa::component::collision::RigidSphereModel::SPtr sphmodel = makeSphere(Vec3d(0,0,1 + 0.01),1,Vec3d(0,0,-10),scn);
 
     //we construct the OBB and the capsule from the OBBModel and the CapsuleModel
     sofa::component::collision::OBB obb(obbmodel.get(),0);
-    sofa::component::collision::Sphere sph(sphmodel.get(),0);
+    sofa::component::collision::RigidSphere sph(sphmodel.get(),0);
 
     //collision configuration is such that the face defined by 3,2,6,7 vertices of obb0 (not moving) is intersected
     //at its center by the vertex 0 of obb1 (moving)
@@ -1084,11 +1134,11 @@ bool TestSphereOBB::face(){
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling capsule
-    sofa::component::collision::SphereModel::SPtr sphmodel = makeSphere(Vec3d(0,0,1 + 0.01),1,Vec3d(0,0,-10),scn);
+    sofa::component::collision::RigidSphereModel::SPtr sphmodel = makeSphere(Vec3d(0,0,1 + 0.01),1,Vec3d(0,0,-10),scn);
 
     //we construct the OBB and the capsule from the OBBModel and the CapsuleModel
     sofa::component::collision::OBB obb(obbmodel.get(),0);
-    sofa::component::collision::Sphere sph(sphmodel.get(),0);
+    sofa::component::collision::RigidSphere sph(sphmodel.get(),0);
 
     //collision configuration is such that the face defined by 3,2,6,7 vertices of obb0 (not moving) is intersected
     //at its center by the vertex 0 of obb1 (moving)
@@ -1135,6 +1185,76 @@ bool TestTriOBB::faceFace(){
         return false;
 
     if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0)).norm() > 1e-6)
+        return false;
+
+    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
+        return false;
+
+    return true;
+}
+
+
+bool TestTriOBB::faceVertex_out(){
+    double angles[3] = {0,0,0};
+    int order[3] = {0,1,2};
+    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+    sofa::component::collision::OBBModel::SPtr obbmodel = TestOBB::makeOBB(Vec3d(-1.01,0,1.01),angles,order,Vec3d(0,0,-10),Vec3d(1,1,1),scn);
+
+    int tri_flg = sofa::component::collision::TriangleModel::FLAG_POINTS | sofa::component::collision::TriangleModel::FLAG_EDGES;
+    sofa::component::collision::TriangleModel::SPtr trimodel = makeTri(Vec3d(0,0,0),Vec3d(2,2,0),Vec3d(2,-2,0),Vec3d(0,0,0),scn);
+
+    sofa::component::collision::OBB obb(obbmodel.get(),0);
+    sofa::component::collision::Triangle tri(trimodel.get(),0);
+
+    sofa::helper::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
+
+    if(!sofa::component::collision::MeshIntTool::computeIntersection(tri,tri_flg,obb,1.0,1.0,&detectionOUTPUT))
+        return false;
+
+    std::cout<<"detectionOUTPUT[0].point[0] "<<detectionOUTPUT[0].point[0]<<std::endl;
+    std::cout<<"detectionOUTPUT[0].point[1] "<<detectionOUTPUT[0].point[1]<<std::endl;
+
+    //triangle point
+    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0)).norm() > 1e-6)
+        return false;
+
+    //obb point
+    if((detectionOUTPUT[0].point[1] - Vec3d(-0.01,0,0.01)).norm() > 1e-6)
+        return false;
+
+    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
+        return false;
+
+    return true;
+}
+
+
+bool TestTriOBB::faceVertex_out2(){
+    double angles[3] = {0,0,0};
+    int order[3] = {0,1,2};
+    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+    sofa::component::collision::OBBModel::SPtr obbmodel = TestOBB::makeOBB(Vec3d(-1.01,0,-1.01),angles,order,Vec3d(0,0,10),Vec3d(1,1,1),scn);
+
+    int tri_flg = sofa::component::collision::TriangleModel::FLAG_POINTS | sofa::component::collision::TriangleModel::FLAG_EDGES;
+    sofa::component::collision::TriangleModel::SPtr trimodel = makeTri(Vec3d(0,0,0),Vec3d(2,2,0),Vec3d(2,-2,0),Vec3d(0,0,0),scn);
+
+    sofa::component::collision::OBB obb(obbmodel.get(),0);
+    sofa::component::collision::Triangle tri(trimodel.get(),0);
+
+    sofa::helper::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
+
+    if(!sofa::component::collision::MeshIntTool::computeIntersection(tri,tri_flg,obb,1.0,1.0,&detectionOUTPUT))
+        return false;
+
+    std::cout<<"detectionOUTPUT[0].point[0] "<<detectionOUTPUT[0].point[0]<<std::endl;
+    std::cout<<"detectionOUTPUT[0].point[1] "<<detectionOUTPUT[0].point[1]<<std::endl;
+
+    //triangle point
+    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0)).norm() > 1e-6)
+        return false;
+
+    //obb point
+    if((detectionOUTPUT[0].point[1] - Vec3d(-0.01,0,-0.01)).norm() > 1e-6)
         return false;
 
     if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
@@ -1424,6 +1544,7 @@ bool TestTriOBB::vertexEdge(){
     return true;
 }
 
+
 bool TestTriOBB::vertexVertex(){
     double angles[3];
     int order[3];
@@ -1488,6 +1609,9 @@ TEST_F(TestTriOBB, edge_vertex ) { ASSERT_TRUE( edgeVertex()); }
 TEST_F(TestTriOBB, vertex_face ) { ASSERT_TRUE( vertexFace()); }
 TEST_F(TestTriOBB, vertex_edge ) { ASSERT_TRUE( vertexEdge()); }
 TEST_F(TestTriOBB, vertex_vertex ) { ASSERT_TRUE( vertexVertex()); }
+TEST_F(TestTriOBB, face_vertex_out ) { ASSERT_TRUE( faceVertex_out()); }
+TEST_F(TestTriOBB, face_vertex_out2 ) { ASSERT_TRUE( faceVertex_out2()); }
+
 
 
 } // namespace sofa
