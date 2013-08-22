@@ -109,7 +109,7 @@ int MeshIntTool::computeIntersection(TSphere<DataTypes> & e1, Point& e2,double a
         //intersection->serr<<"WARNING: null distance between contact detected"<<intersection->sendl;
         detection->normal= Vector3(1,0,0);
     }
-    detection->point[0] = e1.getContactPoint( detection->normal );
+    detection->point[0] = e1.getContactPoint( -detection->normal );
 
     detection->value -= myContactDist;
     return 1;

@@ -33,7 +33,7 @@ int OBBIntTool::computeIntersection(TSphere<DataTypes> & sphere,OBB & box,SReal 
         DetectionOutput *detection = &*(contacts->end()-1);
 
         detection->normal = intr.separatingAxis();
-        detection->point[0] = sphere.getContactPoint( detection->normal );
+        detection->point[0] = sphere.getContactPoint( -detection->normal );
         detection->point[1] = intr.pointOnSecond();
 
         if(intr.colliding())
