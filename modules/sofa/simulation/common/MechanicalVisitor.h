@@ -1454,7 +1454,57 @@ public:
     }
 #endif
 };
+/** Propagate velocities to all the levels of the hierarchy.
+At each level, the mappings form the parent to the child is applied.
+After the execution of this action, all the (mapped) degrees of freedom are consistent with the independent degrees of freedom.
+*/
+class SOFA_SIMULATION_COMMON_API MechanicalPropagateVelocityVisitor : public MechanicalVisitor
+{
+public:
+    double currentTime;
+    MultiVecDerivId v;
 
+#ifdef SOFA_SUPPORT_MAPPED_MASS
+    // compute the acceleration created by the input velocity and the derivative of the mapping
+    MultiVecDerivId a;
+    MechanicalPropagateVelocityVisitor(
+        const sofa::core::MechanicalParams* mparams /* PARAMS FIRST  = sofa::core::MechanicalParams::defaultInstance()*/, double time=0,
+        MultiVecDerivId v = VecDerivId::velocity(),
+        MultiVecDerivId a = VecDerivId::dx() , bool m=true); //
+#else
+    MechanicalPropagateVelocityVisitor(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST  = sofa::core::MechanicalParams::defaultInstance()*/, double time=0, MultiVecDerivId v = VecId::velocity(),
+            bool m=true );
+#endif
+    bool ignoreMask;
+
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
+    virtual Result fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c);
+    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
+
+    // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
+    {
+        return false; // !map->isMechanical();
+    }
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalPropagateVelocityVisitor";}
+    virtual std::string getInfos() const { std::string name="v["+v.getName()+"]"; return name; }
+
+    /// Specify whether this action can be parallelized.
+    virtual bool isThreadSafe() const
+    {
+        return true;
+    }
+#ifdef SOFA_DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+        addReadWriteVector(v);
+    }
+#endif
+};
 
 /**
 * @brief Visitor class used to set positions and velocities of the top level MechanicalStates of the hierarchy.
