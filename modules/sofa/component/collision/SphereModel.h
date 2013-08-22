@@ -77,20 +77,30 @@ public:
 
     Real r() const;
 
-    Vector3 getContactPoint( const Vector3& contactNormal )
+    Vector3 getContactPointByNormal( const Vector3& contactNormal )
     {
         return center() - contactNormal * r();
     }
+
+    Vector3 getContactPointWithSurfacePoint( const Vector3& surfacePoint )
+    {
+        return surfacePoint;
+    }
+
 };
 
 // Specializations
 #ifndef SOFA_FLOAT
 template <>
-Vector3 TSphere<defaulttype::Vec3dTypes >::getContactPoint( const Vector3& /*contactNormal*/ );
+Vector3 TSphere<defaulttype::Vec3dTypes >::getContactPointByNormal( const Vector3& /*contactNormal*/ );
+template <>
+Vector3 TSphere<defaulttype::Vec3dTypes >::getContactPointWithSurfacePoint( const Vector3& );
 #endif
 #ifndef SOFA_DOUBLE
 template <>
-Vector3 TSphere<defaulttype::Vec3fTypes >::getContactPoint( const Vector3& /*contactNormal*/ );
+Vector3 TSphere<defaulttype::Vec3fTypes >::getContactPointByNormal( const Vector3& /*contactNormal*/ );
+template <>
+Vector3 TSphere<defaulttype::Vec3fTypes >::getContactPointWithSurfacePoint( const Vector3& );
 #endif
 
 template< class TDataTypes>

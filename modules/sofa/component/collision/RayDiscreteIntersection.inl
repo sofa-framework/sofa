@@ -92,7 +92,7 @@ int RayDiscreteIntersection::computeIntersection(Ray& ray1, TSphere<T>& sph2, Ou
     detection->point[0] = ray1Origin + ray1Direction*rayPosInside;
     detection->normal = sph2Pos - detection->point[0];
     detection->normal /= dist;
-    detection->point[1] = sph2.getContactPoint( detection->normal );;
+    detection->point[1] = sph2.getContactPointByNormal( detection->normal );;
     detection->value = dist - radius1;
     detection->elem.first = ray1;
     detection->elem.second = sph2;

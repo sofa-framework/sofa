@@ -109,7 +109,7 @@ int MeshIntTool::computeIntersection(TSphere<DataTypes> & e1, Point& e2,double a
         //intersection->serr<<"WARNING: null distance between contact detected"<<intersection->sendl;
         detection->normal= Vector3(1,0,0);
     }
-    detection->point[0] = e1.getContactPoint( -detection->normal );
+    detection->point[0] = e1.getContactPointByNormal( -detection->normal );
 
     detection->value -= myContactDist;
     return 1;
@@ -165,7 +165,7 @@ int MeshIntTool::computeIntersection(Line& e2, TSphere<DataTypes>& e1,double ala
         //intersection->serr<<"WARNING: null distance between contact detected"<<intersection->sendl;
         detection->normal= Vector3(1,0,0);
     }
-    detection->point[1]=e1.getContactPoint( detection->normal );
+    detection->point[1]=e1.getContactPointByNormal( detection->normal );
     detection->value -= myContactDist;
     return 1;
 }
@@ -192,7 +192,7 @@ int MeshIntTool::computeIntersection(Triangle& tri, TSphere<DataTypes>& sph,doub
         detection->normal = proj_p_sph_center;
         detection->value = detection->normal.norm();
         detection->normal /= detection->value;
-        detection->point[1] = sph.getContactPoint( detection->normal );
+        detection->point[1] = sph.getContactPointByNormal( detection->normal );
         detection->value -= (contactDist + sph.r());
     }
     else{
