@@ -79,6 +79,8 @@ set(HEADER_FILES
     sofa/gpu/cuda/CudaParticlesRepulsionForceField.inl
 	sofa/gpu/cuda/CudaTetrahedralTensorMassForceField.h
 	sofa/gpu/cuda/CudaTetrahedralTensorMassForceField.inl
+	sofa/gpu/cuda/CudaStandardTetrahedralFEMForceField.h
+	sofa/gpu/cuda/CudaStandardTetrahedralFEMForceField.inl
     )
 
 set(SOURCE_FILES
@@ -137,6 +139,7 @@ set(SOURCE_FILES
     sofa/gpu/cuda/CudaSPHFluidForceField.cpp
     sofa/gpu/cuda/CudaParticlesRepulsionForceField.cpp
 	sofa/gpu/cuda/CudaTetrahedralTensorMassForceField.cpp
+	sofa/gpu/cuda/CudaStandardTetrahedralFEMForceField.cpp
 
 	)
 
@@ -173,6 +176,7 @@ set(CUDA_SOURCES
     sofa/gpu/cuda/CudaSPHFluidForceField.cu
     sofa/gpu/cuda/CudaParticlesRepulsionForceField.cu
 	sofa/gpu/cuda/CudaTetrahedralTensorMassForceField.cu
+	sofa/gpu/cuda/CudaStandardTetrahedralFEMForceField.cu
     )
 
 if(CUDA_VERBOSE_PTXAS)
