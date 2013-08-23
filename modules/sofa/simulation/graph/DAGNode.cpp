@@ -427,20 +427,55 @@ void DAGNode::doExecuteVisitor(simulation::Visitor* action)
 
     // NE PAS stocker les infos de parcours dans le DAGNode, plusieurs visiteurs pouvant parcourir le graphe simultanément (ici dans une map par visiteur)
 
+    // ATTENTION l'ordre du bottom-up n'est PAS l'ordre inverse du parcours top-down total. Mais dès qu'une sous branche est finie, son bottom-up doit être executée.
+    // Cela change l'ordre des bottom-up pour les sous-branches indépendantes (qui deviennent mixés avec les top-down)
+    // Les bottom-up de la premiere branche indépendante seront appelés avant les top-down de la branche suivante, cet ordre est important pour les interactionsforcefield incluant un collision model non simulé.
+
     StatusMap statusMap;
     NodeList executedNodes;
 
     executeVisitorTopDown( action, executedNodes, statusMap, this );
 
-    while ( !executedNodes.empty() )
+    executeVisitorBottomUp( action, executedNodes, statusMap );
+
+    assert( executedNodes.empty() );
+}
+
+
+
+void DAGNode::executeVisitorBottomUp( simulation::Visitor* action, NodeList& executedNodes, StatusMap& statusMap )
+{
+    while( !executedNodes.empty() )
     {
         updateDescendancy();
         DAGNode* node = executedNodes.back();
-        if( this == node || _descendancy.find( node ) != _descendancy.end() ) // not removed during traversal
-            action->processNodeBottomUp( node );
         executedNodes.pop_back();
+        assert(statusMap[node] == FINISHED);
+        if( this == node )
+        {
+            action->processNodeBottomUp( node );
+            break;
+        }
+        else if( _descendancy.find( node ) != _descendancy.end() ) // not removed during traversal
+        {
+            action->processNodeBottomUp( node );
+        }
     }
+}
 
+
+
+bool DAGNode::isFinished( StatusMap& statusMap )
+{
+    if( statusMap[this]==FINISHED ) return true;
+    if( statusMap[this]==NOT_VISITED ) return false;
+
+    for(unsigned int i = 0; i<child.size(); ++i)
+        if( !static_cast<DAGNode*>(child[i].get())->isFinished(statusMap) )
+            return false;
+
+    statusMap[this]=FINISHED;
+    return true;
 }
 
 
@@ -448,7 +483,6 @@ void DAGNode::executeVisitorTopDown(simulation::Visitor* action, NodeList& execu
 {
     if ( statusMap[this] != NOT_VISITED )
     {
-//        std::cout << "...skipped (already visited)" << std::endl;
         return; // skipped (already visited)
     }
 
@@ -481,10 +515,11 @@ void DAGNode::executeVisitorTopDown(simulation::Visitor* action, NodeList& execu
         for ( unsigned int i = 0; i < parents.size() ; i++ )
         {
             // if the visitor is run from a sub-graph containing a multinode linked with a node outside of the subgraph, do not consider the outside node by looking on the sub-graph descendancy
-            if ( parents[i] && visitorRoot->_descendancy.find(parents[i])!=visitorRoot->_descendancy.end() )
+            if ( parents[i] && ( visitorRoot->_descendancy.find(parents[i])!=visitorRoot->_descendancy.end() || parents[i]==visitorRoot ) )
             {
                 // all parents must have been visited before
-                if ( statusMap[parents[i]] == NOT_VISITED ) return; // skipped for now... the other parent should come latter
+                if ( statusMap[parents[i]] == NOT_VISITED )
+                    return; // skipped for now... the other parent should come latter
 
                 allParentsPruned = allParentsPruned && ( statusMap[parents[i]] == PRUNED );
                 hasParent = true;
@@ -497,6 +532,7 @@ void DAGNode::executeVisitorTopDown(simulation::Visitor* action, NodeList& execu
     {
         // do not execute the visitor on this node
         statusMap[this] = PRUNED;
+
 //        std::cout << "...pruned (all parents pruned)" << std::endl;
         // ... but continue the recursion anyway!
         for(unsigned int i = 0; i<child.size(); ++i)
@@ -515,10 +551,10 @@ void DAGNode::executeVisitorTopDown(simulation::Visitor* action, NodeList& execu
         // ... and continue the recursion
         for(unsigned int i = 0; i<child.size(); ++i)
             static_cast<DAGNode*>(child[i].get())->executeVisitorTopDown(action,executedNodes,statusMap,visitorRoot);
+
+        // if all child are finished, it is time to run BottomUp action for this branch
+        if( isFinished( statusMap ) ) executeVisitorBottomUp( action, executedNodes, statusMap );
     }
-
-
-
 }
 
 
