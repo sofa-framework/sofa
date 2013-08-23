@@ -357,13 +357,12 @@ contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 # DEFINES += SOFA_HAVE_VOXELIZER                       # Note that you must define SOFA_GPU_CUDA to use this plugin.
 # DEFINES += SOFA_HAVE_PHYSICALFIELDMODELING           # (reaction-diffusion propagation).
 # DEFINES += SOFA_HAVE_LIBFREENECT
-   # SOFA_LIBFREENECT_PATH = /usr/include
+# SOFA_LIBFREENECT_PATH = /usr/include
 # DEFINES += SOFA_HAVE_REGISTRATION
 # DEFINES += SOFA_HAVE_STEPLOADER                      # Note that you must define SOFA_HAVE_OPENCASCADE to use this plugin.
 # DEFINES += SOFA_HAVE_PERSISTENTCONTACT
 # DEFINES += SOFA_HAVE_SOHUSIM
 # DEFINES += SOFA_HAVE_ASCLEPIOS
-# DEFINES += SOFA_HAVE_ELECTROPHYSIOLOGY
 # DEFINES += SOFA_HAVE_MANIFOLDTOPOLOGIES
 # Uncomment if you want to use Interventional Radiology module
 # DEFINES += SOFA_HAVE_SOFAEVE
@@ -374,6 +373,8 @@ contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 win32{
   # OGRE_HOME= E:\dev\ogre_src_v1-7-2\VCBuild\sdk
 }
+# DEFINES += SOFA_HAVE_ARPLUGIN
+# DEFINES += SOFA_HAVE_ELECTROPHYSIOLOGY
 # DEFINES += SOFA_HAVE_FRAME                           # Frame-based meshless simulation of deformable solids
 # DEFINES += SOFA_HAVE_IMAGE
 # DEFINES += SOFA_HAVE_PLUGIN_COLLADA
@@ -384,7 +385,7 @@ win32{
 # DEFINES += SOFA_HAVE_PLUGIN_CompliantDev  # Alternative formulation of the dynamics (private part). Requires the Compliant plugin.
 # DEFINES += SOFA_HAVE_PLUGIN_ModelHierarchies # Experiments on layered and adaptive models
 # DEFINES += SOFA_HAVE_PLUGIN_optixdetection
-# DEFINES += SOFA_HAVE_ARPLUGIN
+
 
 ########################################################################
 # Compiler options
