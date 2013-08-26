@@ -55,14 +55,12 @@ public:
     Data<unsigned> f_maxIter;
     Data<double> f_tolerance;
     Data<bool> f_verbose;
-    Data<unsigned> f_update_iteration;
     Data<unsigned> f_update_step;
     Data<bool> f_use_precond;
     Data<bool> f_build_precond;
-    Data<bool> f_use_first_precond;
-    Data< helper::vector< std::string > > f_preconditioners;
+    Data< std::string > f_preconditioners;
     Data<std::map < std::string, sofa::helper::vector<double> > > f_graph;
-    std::vector<sofa::core::behavior::LinearSolver*> preconditioners;
+
 protected:
     ShewchukPCGLinearSolver();
 public:
@@ -73,9 +71,8 @@ public:
     //void setSystemLHVector(VecId v);
 
 private :
-    unsigned next_refresh_iteration;
     unsigned next_refresh_step;
-
+    sofa::core::behavior::LinearSolver* preconditioners;
     bool first;
 
 protected:
