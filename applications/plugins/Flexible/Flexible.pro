@@ -120,7 +120,7 @@ HEADERS = initFlexible.h \
     material/OgdenMaterialBlock.h \
     material/VolumePreservationForceField.h \
     material/VolumePreservationMaterialBlock.h \
-    material/VolumePreservationMaterialBlock.inl \
+    material/VolumePreservationMaterialBlock.inl
     #forceField/FlexibleTetrahedronFEMForceField.h \
 
 

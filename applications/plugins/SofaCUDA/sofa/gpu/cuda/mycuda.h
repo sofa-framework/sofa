@@ -73,7 +73,7 @@ extern "C" {
 	/*CAUTION : DEPRECATED SINCE CUDA 4.0 */
     extern void SOFA_GPU_CUDA_API mycudaThreadSynchronize();
 
-#if CUDA_VERSION > 4010
+#if CUDA_VERSION >= 4000
 	extern void SOFA_GPU_CUDA_API mycudaDeviceSynchronize();
 #endif
 	
