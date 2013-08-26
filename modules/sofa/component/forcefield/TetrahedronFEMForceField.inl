@@ -1868,13 +1868,14 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
                     visualmodel::ColorMap::evaluator<Real> evalColor = _showStressColorMapReal->getEvaluator(minVM, maxVM);
                     Vec4f col = evalColor(vM[i]); //*vM[i]);
 
-                    col[3] = (vM[i]/maxVM); //*(vM[i]/maxVM);
+                    col[3] = 0.8;
+//                    col[3] = (vM[i]/maxVM); //*(vM[i]/maxVM);
 
-                    if (fabs(maxVM - minVM) < 1e-1)
-                        col[3]=0.01;
+//                    if (fabs(maxVM - minVM) < 1e-1)
+//                        col[3]=0.01;
 
-                    if (col[3] < 0.009)
-                        col[3] = 0.009;
+//                    if (col[3] < 0.009)
+//                        col[3] = 0.009;
 
                     vparams->drawTool()->drawTriangles(points[0],col);
                     vparams->drawTool()->drawTriangles(points[1],col);

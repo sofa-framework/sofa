@@ -47,7 +47,7 @@ void ConstraintSolver::solveConstraint(const ConstraintParams * cParams, MultiVe
     using sofa::helper::AdvancedTimer;
 
     std::string className = "SolveConstraints " + cParams->getName();
-    AdvancedTimer::stepBegin(className);
+    AdvancedTimer::stepBegin(className + "SolveConstraints ");
 
     bool continueSolving = true;
 
