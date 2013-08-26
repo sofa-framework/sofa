@@ -344,11 +344,11 @@ void mycudaThreadSynchronize()
     cudaThreadSynchronize();
 }
 
-#if CUDA_VERSION > 4000
+#if CUDA_VERSION >= 4000
 
 void mycudaDeviceSynchronize()
 {
-	if(!cudaInitCalled) return;
+	if (!cudaInitCalled) return;
 	
 	cudaDeviceSynchronize();
 }
