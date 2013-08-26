@@ -450,14 +450,15 @@ void DAGNode::executeVisitorBottomUp( simulation::Visitor* action, NodeList& exe
         updateDescendancy();
         DAGNode* node = executedNodes.back();
         executedNodes.pop_back();
-        assert(statusMap[node] == FINISHED);
         if( this == node )
         {
+            assert(statusMap[node] == FINISHED);
             action->processNodeBottomUp( node );
             break;
         }
         else if( _descendancy.find( node ) != _descendancy.end() ) // not removed during traversal
         {
+            assert(statusMap[node] == FINISHED);
             action->processNodeBottomUp( node );
         }
     }
@@ -467,7 +468,7 @@ void DAGNode::executeVisitorBottomUp( simulation::Visitor* action, NodeList& exe
 
 bool DAGNode::isFinished( StatusMap& statusMap )
 {
-    if( statusMap[this]==FINISHED ) return true;
+    if( !this->isActive() || statusMap[this]==FINISHED ) return true;
     if( statusMap[this]==NOT_VISITED ) return false;
 
     for(unsigned int i = 0; i<child.size(); ++i)
