@@ -9,6 +9,13 @@ set(HEADER_FILES
     ../forcefield/TetrahedralTensorMassForceField.inl 
 	../forcefield/StandardTetrahedralFEMForceField.h
 	../forcefield/StandardTetrahedralFEMForceField.inl
+	../fem/material/BoyceAndArruda.h
+	../fem/material/Costa.h
+	../fem/material/HyperelasticMaterial.h
+	../fem/material/MooneyRivlin.h
+	../fem/material/PlasticMaterial.h
+	../fem/material/STVenantKirchhoff.h
+	../fem/material/VerondaWestman.h
 
     )
     
@@ -18,6 +25,7 @@ set(SOURCE_FILES
     ../forcefield/FastTetrahedralCorotationalForceField.cpp 
     ../forcefield/TetrahedralTensorMassForceField.cpp 
  	../forcefield/StandardTetrahedralFEMForceField.cpp
+	../fem/material/PlasticMaterial.cpp
 
     )
 

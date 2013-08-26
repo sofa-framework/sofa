@@ -22,61 +22,77 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FEM_BASEMATERIAL_H
-#define SOFA_COMPONENT_FEM_BASEMATERIAL_H
+#ifndef SOFA_COMPONENT_FEM_MATERIAL_PLASTICMATERIAL_H
+#define SOFA_COMPONENT_FEM_MATERIAL_PLASTICMATERIAL_H
 
-#include <sofa/component/initMiscFEM.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
+#pragma once
+#endif
+
+//#define SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+#define SOFA_DOUBLE
+#endif
+
+#include <sofa/component/fem/material/BaseMaterial.h>
+#include <newmat/newmat.h>
+#include <newmat/newmatap.h>
 #include <sofa/defaulttype/Vec.h>
-
 
 namespace sofa
 {
+
 namespace component
 {
+
 namespace fem
 {
 
-using namespace sofa::defaulttype;
+namespace material
+{
 
 /**
- * Generic material class
+ * Plastic material (proof of principle)
  */
-class SOFA_MISC_FEM_API BaseMaterial : public virtual core::objectmodel::BaseObject
+class PlasticMaterial : public component::fem::BaseMaterial
 {
+
 public:
-    SOFA_CLASS(BaseMaterial,core::objectmodel::BaseObject);
+    SOFA_CLASS(PlasticMaterial, component::fem::BaseMaterial);
 
-    BaseMaterial() {}
-    virtual ~BaseMaterial() {}
+    typedef sofa::defaulttype::Vector3 Vector3;
+    typedef sofa::helper::vector<double> VecDouble;
+    typedef sofa::helper::vector<Vector3> VecStress;
 
-    virtual void init()
-    {
-        this->core::objectmodel::BaseObject::init();
-    }
+	// Material properties
+    Data<double> _poissonRatio;
+    Data<double> _youngModulus;
 
+    // Stress-strain curve description
+    VecDouble _E;
+    VecDouble _epsilon;
+    VecStress _sigma;
 
-    //virtual VecN computeStress (VecN & strain,int idElement,int id_QP){return stress in the i-th quadrature point}
-    //So here needed the shapefunctionvalue *  ,  quadratureformular*  (verifie if shapfunctionvalue compute with the local method)
-    // The same principe for computing the strain given the displacement
+    // Strain of the previous iteration
+    VecDouble _previousVonMisesStrain;
 
+    PlasticMaterial();
+    void computeStress (Vector3& stress, Vector3 strain, int elementIndex);
+    void computeDStress (Vector3& dstress, Vector3 dstrain);
 
-    virtual void computeStress (Vector3 & ,Vector3 &,unsigned int &) {}
-    virtual void computeDStress (Vector3 & ,Vector3 &) {}
+    double computeVonMisesStrain(Vector3 &strain);
+    void computeStressOnSection(Vector3& Stress, Vector3 Strain, int section);	// computes the stress on a given section of the piecewise function
 
-    virtual void computeStress (unsigned int /*iElement*/)=0;//to be pure virtual
-    virtual void handleTopologyChange()
-    {
-        serr<<"ERROR(BaseMaterial) this method handleTopologyChange() is not already implemented in base class"<<sendl;
-    }
+    virtual void computeStress (unsigned int /*iElement*/){}
+
 };
 
 
+} // namespace material
 
 } // namespace fem
 
 } // namespace component
 
 } // namespace sofa
-
-#endif // SOFA_COMPONENT_FEM_BASEMATERIAL_H
+#endif
