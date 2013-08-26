@@ -7,6 +7,8 @@ set(HEADER_FILES
     ../forcefield/FastTetrahedralCorotationalForceField.inl 
     ../forcefield/TetrahedralTensorMassForceField.h 
     ../forcefield/TetrahedralTensorMassForceField.inl 
+	../forcefield/StandardTetrahedralFEMForceField.h
+	../forcefield/StandardTetrahedralFEMForceField.inl
 
     )
     
@@ -15,7 +17,8 @@ set(SOURCE_FILES
     ../initMiscFEM.cpp 
     ../forcefield/FastTetrahedralCorotationalForceField.cpp 
     ../forcefield/TetrahedralTensorMassForceField.cpp 
- 
+ 	../forcefield/StandardTetrahedralFEMForceField.cpp
+
     )
 
 set(GROUP_BASE_DIR "..")
