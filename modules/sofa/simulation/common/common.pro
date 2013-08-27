@@ -37,7 +37,6 @@ HEADERS += common.h \
            DeleteVisitor.h \
            ExportGnuplotVisitor.h \
            ExportOBJVisitor.h \
-           ExportINPVisitor.h \
            FindByTypeVisitor.h \
            GetVectorVisitor.h \
            GetAssembledSizeVisitor.h \
@@ -47,7 +46,7 @@ HEADERS += common.h \
            LocalStorage.h \
            MechanicalComputeEnergyVisitor.h \
            MechanicalMatrixVisitor.h \
-           MechanicalOperations.h \
+	         MechanicalOperations.h \
            MechanicalVPrintVisitor.h \
            MechanicalVisitor.h \
            MutationListener.h \
@@ -65,14 +64,14 @@ HEADERS += common.h \
            TopologyChangeVisitor.h \
            TransformationVisitor.h \
            UpdateBoundingBoxVisitor.h \
-           UpdateContextVisitor.h \
-           UpdateLinksVisitor.h \
+		   UpdateContextVisitor.h \
+		   UpdateLinksVisitor.h \
            UpdateMappingEndEvent.h \
            UpdateMappingVisitor.h \
-           VectorOperations.h \
+		   VectorOperations.h \
            VelocityThresholdVisitor.h \
            Visitor.h \
-           VisitorExecuteFunc.h \
+		   VisitorExecuteFunc.h \
            VisitorScheduler.h \
            VisualVisitor.h \
            WriteStateVisitor.h \
@@ -84,7 +83,7 @@ HEADERS += common.h \
            xml/initXml.h \
            xml/NodeElement.h \
            xml/ObjectElement.h \
-           xml/BaseMultiMappingElement.h \
+		   xml/BaseMultiMappingElement.h \
            xml/AttributeElement.h \
            xml/DataElement.h \
            xml/XML.h \   
@@ -108,13 +107,12 @@ SOURCES += Node.cpp \
            DeleteVisitor.cpp \
            ExportGnuplotVisitor.cpp \
            ExportOBJVisitor.cpp \
-           ExportINPVisitor.cpp \
            GetVectorVisitor.cpp \
            GetAssembledSizeVisitor.cpp \
            InitVisitor.cpp \
            MechanicalComputeEnergyVisitor.cpp \
-           MechanicalOperations.cpp \
-           MechanicalMatrixVisitor.cpp \
+		   MechanicalOperations.cpp \
+	       MechanicalMatrixVisitor.cpp \
            MechanicalVPrintVisitor.cpp \
            MechanicalVisitor.cpp \   
            MutationListener.cpp \ 
@@ -132,11 +130,11 @@ SOURCES += Node.cpp \
            StateChangeVisitor.cpp \   
            TransformationVisitor.cpp \
            UpdateBoundingBoxVisitor.cpp \
-           UpdateContextVisitor.cpp \
-           UpdateLinksVisitor.cpp \
+		   UpdateContextVisitor.cpp \
+		   UpdateLinksVisitor.cpp \
            UpdateMappingEndEvent.cpp \
            UpdateMappingVisitor.cpp \
-           VectorOperations.cpp \
+		   VectorOperations.cpp \
            VelocityThresholdVisitor.cpp \
            Visitor.cpp \
            VisitorScheduler.cpp \
@@ -148,7 +146,7 @@ SOURCES += Node.cpp \
            xml/initXml.cpp \
            xml/NodeElement.cpp \
            xml/ObjectElement.cpp \
-           xml/BaseMultiMappingElement.cpp \
+		   xml/BaseMultiMappingElement.cpp \
            xml/AttributeElement.cpp \
            xml/DataElement.cpp \
            xml/XML.cpp \ 

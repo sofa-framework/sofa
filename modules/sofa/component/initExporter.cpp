@@ -46,8 +46,6 @@ SOFA_LINK_CLASS(WriteState)
 SOFA_LINK_CLASS(WriteTopology)
 SOFA_LINK_CLASS(VTKExporter)
 SOFA_LINK_CLASS(OBJExporter)
-SOFA_LINK_CLASS(INPExporter)
-SOFA_LINK_CLASS(INPExporterMaster)
 SOFA_LINK_CLASS(MeshExporter)
 
 } // namespace component

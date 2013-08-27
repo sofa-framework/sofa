@@ -7,7 +7,6 @@ DEFINES += SOFA_BUILD_OPENGL_VISUAL
 
 HEADERS += initOpenGLVisual.h \
            visualmodel/OglModel.h \
-           visualmodel/OglModelFromAbaqus.h \
            visualmodel/OglViewport.h \
            visualmodel/Light.h \
            visualmodel/LightManager.h \
@@ -20,7 +19,6 @@ HEADERS += initOpenGLVisual.h \
 
 SOURCES += initOpenGLVisual.cpp \
            visualmodel/OglModel.cpp \
-           visualmodel/OglModelFromAbaqus.cpp \
            visualmodel/OglViewport.cpp \
            visualmodel/Light.cpp \
            visualmodel/LightManager.cpp \
