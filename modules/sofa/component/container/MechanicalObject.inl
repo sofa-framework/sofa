@@ -2234,6 +2234,23 @@ double MechanicalObject<DataTypes>::vDot(const core::ExecParams* params /* PARAM
     return r;
 }
 
+
+template <class DataTypes>
+size_t MechanicalObject<DataTypes>::vSize(const core::ExecParams* params /* PARAMS FIRST */, ConstVecId v)
+{
+    if (v.type == sofa::core::V_COORD)
+    {
+        const VecCoord &vv = this->read(ConstVecCoordId(v))->getValue(params);
+        return vv.size() * Coord::total_size;
+    }
+    else if (v.type == sofa::core::V_DERIV)
+    {
+        const VecDeriv &vv = this->read(ConstVecDerivId(v))->getValue(params);
+        return vv.size() * Deriv::total_size;
+    }
+}
+
+
 #ifndef SOFA_SMP
 template <class DataTypes>
 void MechanicalObject<DataTypes>::printDOF( ConstVecId v, std::ostream& out, int firstIndex, int range) const

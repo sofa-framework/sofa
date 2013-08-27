@@ -601,17 +601,17 @@ public:
 
 
     DestMultiVecId *v;
-//    bool m_propagate;
+    bool m_propagate;
     bool m_interactionForceField;
 
     /// Default constructor
     /// \param _vDest output vector
     /// \param propagate sets to true propagates vector initialization to mapped mechanical states
     /// \param interactionForceField sets to true also initializes external mechanical states linked by an interaction force field
-    MechanicalVReallocVisitor(const core::ExecParams* params /* PARAMS FIRST =core::ExecParams::defaultInstance()*/, DestMultiVecId *v, /*bool propagate=false,*/ bool interactionForceField=false)
+    MechanicalVReallocVisitor(const core::ExecParams* params /* PARAMS FIRST =core::ExecParams::defaultInstance()*/, DestMultiVecId *v, bool interactionForceField=false, bool propagate=false)
         : BaseMechanicalVisitor(params)
         , v(v)
-//        , m_propagate(propagate)
+        , m_propagate(propagate)
         , m_interactionForceField(interactionForceField)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -626,7 +626,7 @@ public:
 
     virtual Result fwdMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm);
 
-//    virtual Result fwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm);
 
     virtual Result fwdInteractionForceField(simulation::Node* node, core::behavior::BaseInteractionForceField* ff);
 
@@ -667,16 +667,17 @@ public:
     typedef sofa::core::TMultiVecId<vtype,V_WRITE> MyMultiVecId;
     MyMultiVecId v;
     bool interactionForceField;
+    bool propagate;
 
-    MechanicalVFreeVisitor( const sofa::core::ExecParams* params /* PARAMS FIRST */, MyMultiVecId v, bool interactionForceField=false)
-        : BaseMechanicalVisitor(params) , v(v), interactionForceField(interactionForceField)
+    MechanicalVFreeVisitor( const sofa::core::ExecParams* params /* PARAMS FIRST */, MyMultiVecId v, bool interactionForceField=false, bool propagate=false)
+        : BaseMechanicalVisitor(params) , v(v), interactionForceField(interactionForceField), propagate(propagate)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-
+    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
     virtual Result fwdInteractionForceField(simulation::Node* node, core::behavior::BaseInteractionForceField* ff);
 
     /// Return a class name for this visitor
@@ -2264,11 +2265,58 @@ public:
     }
 #endif
 };
+
+
+
+/** Get vector size */
+class SOFA_SIMULATION_COMMON_API MechanicalVSizeVisitor : public BaseMechanicalVisitor
+{
+public:
+    ConstMultiVecId v;
+    size_t* result;
+
+    MechanicalVSizeVisitor(const sofa::core::ExecParams* params /* PARAMS FIRST */, size_t* result, ConstMultiVecId v)
+        : BaseMechanicalVisitor(params) , result(result), v(v)
+    {
+#ifdef SOFA_DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
+
+    virtual Result fwdMechanicalState(simulation::Node*, core::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMappedMechanicalState(simulation::Node*, core::behavior::BaseMechanicalState* mm);
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalVSizeVisitor";}
+    virtual std::string getInfos() const
+    {
+        std::string name = "[" + v.getName() + "]";
+        return name;
+    }
+    /// Specify whether this action can be parallelized.
+    virtual bool isThreadSafe() const
+    {
+        return false;
+    }
+
+#ifdef SOFA_DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+        addReadVector(v);
+    }
+#endif
+};
+
+
+
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_SIMULATION_COMMON)
 extern template class MechanicalVAvailVisitor<V_COORD>;
 extern template class MechanicalVAvailVisitor<V_DERIV>;
 extern template class MechanicalVAllocVisitor<V_COORD>;
 extern template class MechanicalVAllocVisitor<V_DERIV>;
+extern template class MechanicalVReallocVisitor<V_COORD>;
+extern template class MechanicalVReallocVisitor<V_DERIV>;
 extern template class MechanicalVFreeVisitor<V_COORD>;
 extern template class MechanicalVFreeVisitor<V_DERIV>;
 extern template class MechanicalVInitVisitor<V_COORD>;

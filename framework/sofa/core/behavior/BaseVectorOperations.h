@@ -59,11 +59,11 @@ public:
     virtual void v_alloc(sofa::core::MultiVecDerivId& id) = 0;
     /// Free a previously allocated temporary vector
     virtual void v_free(sofa::core::MultiVecCoordId& id) = 0;
-    virtual void v_free(sofa::core::MultiVecDerivId& id, bool interactionForceField=false) = 0;
+    virtual void v_free(sofa::core::MultiVecDerivId& id, bool interactionForceField=false, bool propagate=false) = 0;
 
     /// keep already allocated vectors and allocates others. If interactionForceField, also allocates mechanical states linked by an InteractionForceField
-    virtual void v_realloc(sofa::core::MultiVecCoordId& id, bool interactionForceField=false) = 0;
-    virtual void v_realloc(sofa::core::MultiVecDerivId& id, bool interactionForceField=false) = 0;
+    virtual void v_realloc(sofa::core::MultiVecCoordId& id, bool interactionForceField=false, bool propagate=false) = 0;
+    virtual void v_realloc(sofa::core::MultiVecDerivId& id, bool interactionForceField=false, bool propagate=false) = 0;
 
     virtual void v_clear(core::MultiVecId v) = 0; ///< v=0
     virtual void v_eq(core::MultiVecId v, core::MultiVecId a) = 0; ///< v=a
@@ -89,6 +89,8 @@ public:
     virtual double finish() = 0;
 
     virtual void print( core::MultiVecId v, std::ostream& out ) = 0;
+
+    virtual size_t v_size(core::MultiVecId v) = 0;
 
 };
 

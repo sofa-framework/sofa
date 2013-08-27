@@ -370,6 +370,8 @@ public:
 
     virtual double vDot(const core::ExecParams* params /* PARAMS FIRST */, core::ConstVecId a, core::ConstVecId b);
 
+    virtual size_t vSize( const core::ExecParams* params, core::ConstVecId v );
+
     virtual void resetForce(const core::ExecParams* params);
 
     virtual void resetAcc(const core::ExecParams* params);

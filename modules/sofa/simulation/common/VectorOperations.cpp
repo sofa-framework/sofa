@@ -78,12 +78,12 @@ void VectorOperations::v_free(sofa::core::MultiVecCoordId& id)
     if( !id.isNull() ) executeVisitor( MechanicalVFreeVisitor<V_COORD>( params /* PARAMS FIRST */, id) );
 }
 
-void VectorOperations::v_free(sofa::core::MultiVecDerivId& id, bool interactionForceField)
+void VectorOperations::v_free(sofa::core::MultiVecDerivId& id, bool interactionForceField, bool propagate)
 {
-    if( !id.isNull() ) executeVisitor( MechanicalVFreeVisitor<V_DERIV>(params /* PARAMS FIRST */, id, interactionForceField) );
+    if( !id.isNull() ) executeVisitor( MechanicalVFreeVisitor<V_DERIV>(params /* PARAMS FIRST */, id, interactionForceField, propagate) );
 }
 
-void VectorOperations::v_realloc(sofa::core::MultiVecCoordId& v, bool interactionForceField)
+void VectorOperations::v_realloc(sofa::core::MultiVecCoordId& v, bool interactionForceField, bool propagate)
 {
     if( v.isNull() )
     {
@@ -93,10 +93,10 @@ void VectorOperations::v_realloc(sofa::core::MultiVecCoordId& v, bool interactio
         //v.assign(id);
         v.setId(avail.states, id);
     }
-    executeVisitor( MechanicalVReallocVisitor<V_COORD>(params /* PARAMS FIRST */, &v, interactionForceField) );
+    executeVisitor( MechanicalVReallocVisitor<V_COORD>(params /* PARAMS FIRST */, &v, interactionForceField, propagate) );
 }
 
-void VectorOperations::v_realloc(sofa::core::MultiVecDerivId& v, bool interactionForceField)
+void VectorOperations::v_realloc(sofa::core::MultiVecDerivId& v, bool interactionForceField, bool propagate)
 {
     if( v.isNull() )
     {
@@ -106,7 +106,7 @@ void VectorOperations::v_realloc(sofa::core::MultiVecDerivId& v, bool interactio
         //v.assign(id);
         v.setId(avail.states, id);
     }
-    executeVisitor( MechanicalVReallocVisitor<V_DERIV>(params /* PARAMS FIRST */, &v, interactionForceField) );
+    executeVisitor( MechanicalVReallocVisitor<V_DERIV>(params /* PARAMS FIRST */, &v, interactionForceField, propagate) );
 }
 
 
@@ -190,6 +190,13 @@ void VectorOperations::v_threshold(sofa::core::MultiVecId a, double threshold)
 void VectorOperations::print(sofa::core::MultiVecId v, std::ostream &out)
 {
     executeVisitor( MechanicalVPrintVisitor( params /* PARAMS FIRST */, v, out ) );
+}
+
+size_t VectorOperations::v_size(core::MultiVecId v)
+{
+    size_t result = 0;
+    executeVisitor( MechanicalVSizeVisitor(params,&result,v) );
+    return result;
 }
 
 double VectorOperations::finish()
