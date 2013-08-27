@@ -83,7 +83,7 @@ void AssembledSolver::integrate( const core::MechanicalParams* params,
 void AssembledSolver::alloc(const core::ExecParams& params) {
 	scoped::timer step("lambdas alloc");
 	sofa::simulation::common::VectorOperations vop( &params, this->getContext() );
-    lagrange.realloc( &vop );
+    lagrange.realloc( &vop, false, true );
 }
 
 AssembledSolver::~AssembledSolver() {
@@ -91,7 +91,7 @@ AssembledSolver::~AssembledSolver() {
 
 void AssembledSolver::cleanup() {
 	sofa::simulation::common::VectorOperations vop( core::ExecParams::defaultInstance(), this->getContext() );
-	vop.v_free( lagrange.id(), false );
+    vop.v_free( lagrange.id(), false, true );
 }
 
 		

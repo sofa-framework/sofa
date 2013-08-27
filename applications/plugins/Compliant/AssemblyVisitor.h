@@ -127,7 +127,7 @@ public:
 			
 	vec force(simulation::Node* node);
 	
-	vec vel(simulation::Node* node);
+    vec vel(simulation::Node* node, MultiVecDerivId velId );
 	vec phi(simulation::Node* node);
 	vec lambda(simulation::Node* node);
 
@@ -203,7 +203,7 @@ public:
     system_type assemble( process_type** p = NULL ) const;
 
     // do not perform entire assembly, but only compute momentum sys.p and constraint value sys.phi. The process_type p must have been computed from a previous call to assemble
-    void updateConstraintAndMomentum( system_type& sys, process_type* p );
+    void updateConstraintAndMomentum( MultiVecDerivId velId, system_type& sys, process_type* p );
 	
 private:
 
