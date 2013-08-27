@@ -54,10 +54,10 @@ public:
     void v_alloc(sofa::core::MultiVecDerivId& v);
     /// Free a previously allocated temporary vector
     void v_free(sofa::core::MultiVecCoordId& id);
-    void v_free(sofa::core::MultiVecDerivId& id, bool interactionForceField=false);
+    void v_free(sofa::core::MultiVecDerivId& id, bool interactionForceField=false, bool propagate=false);
 
-    void v_realloc(sofa::core::MultiVecCoordId& id, bool interactionForceField=false);
-    void v_realloc(sofa::core::MultiVecDerivId& id, bool interactionForceField=false);
+    void v_realloc(sofa::core::MultiVecCoordId& id, bool interactionForceField=false, bool propagate=false);
+    void v_realloc(sofa::core::MultiVecDerivId& id, bool interactionForceField=false, bool propagate=false);
 
     void v_clear(core::MultiVecId v); ///< v=0
     void v_eq(core::MultiVecId v, core::MultiVecId a); ///< v=a
@@ -81,6 +81,9 @@ public:
 
     double finish();
     void print( core::MultiVecId v, std::ostream& out );
+
+    virtual size_t v_size(core::MultiVecId v);
+
 protected:
     VisitorExecuteFunc executeVisitor;
     /// Result of latest v_dot operation

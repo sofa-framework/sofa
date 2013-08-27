@@ -168,6 +168,9 @@ public:
     /// Compute the scalar products between two vectors.
     virtual double vDot(const ExecParams* params /* PARAMS FIRST  = ExecParams::defaultInstance()*/, ConstVecId a, ConstVecId b) = 0; //{ return 0; }
 
+    /// Get vector size
+    virtual size_t vSize( const ExecParams* params, ConstVecId v ) = 0;
+
     /// Apply a threshold to all entries
     virtual void vThreshold( VecId a, double threshold ) = 0;
 

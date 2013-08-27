@@ -583,16 +583,16 @@ Visitor::Result MechanicalVReallocVisitor<vtype>::fwdMechanicalState(simulation:
     return RESULT_CONTINUE;
 }
 
-//template< VecType vtype>
-//Visitor::Result MechanicalVReallocVisitor<vtype>::fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
-//{
-//    if (m_propagate)
-//    {
-//        mm->vRealloc(this->params /* PARAMS FIRST */, vDest.getId(mm), vSrc.getId(mm));
-//    }
+template< VecType vtype>
+Visitor::Result MechanicalVReallocVisitor<vtype>::fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
+{
+    if (m_propagate)
+    {
+        mm->vRealloc(this->params /* PARAMS FIRST */, this->getId(mm) );
+    }
 
-//    return RESULT_CONTINUE;
-//}
+    return RESULT_CONTINUE;
+}
 
 template< VecType vtype>
 Visitor::Result MechanicalVReallocVisitor<vtype>::fwdInteractionForceField(simulation::Node* /*node*/, core::behavior::BaseInteractionForceField* ff)
@@ -631,6 +631,13 @@ std::string  MechanicalVReallocVisitor<vtype>::getInfos() const
 
 template< VecType vtype>
 Visitor::Result MechanicalVFreeVisitor<vtype>::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
+{
+    mm->vFree( this->params /* PARAMS FIRST */, v.getId(mm) );
+    return RESULT_CONTINUE;
+}
+
+template< VecType vtype>
+Visitor::Result MechanicalVFreeVisitor<vtype>::fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
 {
     mm->vFree( this->params /* PARAMS FIRST */, v.getId(mm) );
     return RESULT_CONTINUE;
@@ -1652,6 +1659,27 @@ Visitor::Result MechanicalPickParticlesVisitor::fwdMechanicalMapping(simulation:
         return RESULT_PRUNE;
     return RESULT_CONTINUE;
 }
+
+
+
+
+
+Visitor::Result MechanicalVSizeVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
+{
+    ConstVecId id = v.getId(mm);
+    if( !id.isNull() )
+        *result += mm->vSize(this->params, id );
+    return RESULT_CONTINUE;
+}
+
+Visitor::Result MechanicalVSizeVisitor::fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
+{
+    ConstVecId id = v.getId(mm);
+    if( !id.isNull() )
+        *result += mm->vSize(this->params, id );
+    return RESULT_CONTINUE;
+}
+
 
 template class SOFA_SIMULATION_COMMON_API MechanicalVAvailVisitor<V_COORD>;
 template class SOFA_SIMULATION_COMMON_API MechanicalVAvailVisitor<V_DERIV>;

@@ -83,7 +83,7 @@ void EulerImplicitSolver::cleanup()
 {
     // free the locally created vector x (including eventual external mechanical states linked by an InteractionForceField)
     sofa::simulation::common::VectorOperations vop( core::ExecParams::defaultInstance(), this->getContext() );
-    vop.v_free( x.id(), true );
+    vop.v_free( x.id(), true, true );
 }
 
 void EulerImplicitSolver::solve(const core::ExecParams* params /* PARAMS FIRST */, double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
@@ -102,7 +102,7 @@ void EulerImplicitSolver::solve(const core::ExecParams* params /* PARAMS FIRST *
     MultiVecCoord newPos( &vop, xResult );
     MultiVecDeriv newVel( &vop, vResult );
 
-    x.realloc( &vop, true );
+    x.realloc( &vop, true, true );
 
     #ifdef SOFA_DUMP_VISITOR_INFO
         sofa::simulation::Visitor::printCloseNode("SolverVectorAllocation");

@@ -100,10 +100,10 @@ public:
 
     /// allocates vector for every newly appeared mechanical states (initializing them to 0 and does not modify already allocated mechanical states)
     /// \param interactionForceField set to true, also allocate external mechanical states linked by an InteractionForceField (TODO remove this option by seeing external mmstates as abstract null vectors)
-    void realloc( BaseVectorOperations* _vop, bool interactionForceField=false )
+    void realloc( BaseVectorOperations* _vop, bool interactionForceField=false, bool propagate=false )
     {
         vop = _vop;
-        vop->v_realloc(v, interactionForceField);
+        vop->v_realloc(v, interactionForceField, propagate);
     }
 
     /// v = 0
@@ -208,6 +208,11 @@ public:
     {
         mv.vop->print(mv.v,out);
         return out;
+    }
+
+    size_t size() const
+    {
+        return vop->v_size(v);
     }
 };
 
