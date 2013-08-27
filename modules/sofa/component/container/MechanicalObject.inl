@@ -2248,6 +2248,11 @@ size_t MechanicalObject<DataTypes>::vSize(const core::ExecParams* params /* PARA
         const VecDeriv &vv = this->read(ConstVecDerivId(v))->getValue(params);
         return vv.size() * Deriv::total_size;
     }
+    else
+    {
+        serr << "Invalid size operation ("<<v<<")" << sendl;
+        return 0;
+    }
 }
 
 
