@@ -368,6 +368,12 @@ typedef Image<float> ImageF;
 typedef Image<double> ImageD;
 typedef Image<bool> ImageB;
 
+#ifdef SOFA_FLOAT
+typedef ImageF ImageR;
+#else
+typedef ImageD ImageR;
+#endif
+
 template<> inline const char* ImageC::Name() { return "ImageC"; }
 template<> inline const char* ImageUC::Name() { return "ImageUC"; }
 template<> inline const char* ImageI::Name() { return "ImageI"; }
