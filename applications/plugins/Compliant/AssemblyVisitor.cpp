@@ -324,11 +324,11 @@ AssemblyVisitor::vec AssemblyVisitor::force(simulation::Node* node) {
 
 
 // fetches velocity
-AssemblyVisitor::vec AssemblyVisitor::vel(simulation::Node* node) {
+AssemblyVisitor::vec AssemblyVisitor::vel(simulation::Node* node, MultiVecDerivId velId ) {
 	assert( node->mechanicalState );
 //	return vector(node->mechanicalState, core::VecDerivId::velocity());
 
-    return vector( node->mechanicalState, _velId.getId(node->mechanicalState) );
+    return vector( node->mechanicalState, velId.getId(node->mechanicalState) );
 
 }
 
@@ -398,7 +398,7 @@ void AssemblyVisitor::fill_prefix(simulation::Node* node) {
 	
 	if( !zero(c.M) || !zero(c.K) ) {
 		c.mechanical = true;
-		c.v = vel( node );
+        c.v = vel( node, _velId );
 	}
 
 	c.map = mapping( node );
@@ -410,7 +410,7 @@ void AssemblyVisitor::fill_prefix(simulation::Node* node) {
 		// independent
 		// TODO this makes a lot of allocs :-/
 
-		c.v = vel( node );
+        c.v = vel( node, _velId );
 //		c.f = force( node );
 		c.P = proj( node );
 		
@@ -943,7 +943,7 @@ void AssemblyVisitor::processNodeBottomUp(simulation::Node* node) {
 
 
 
-void AssemblyVisitor::updateConstraintAndMomentum( system_type& sys, process_type* p ) {
+void AssemblyVisitor::updateConstraintAndMomentum( MultiVecDerivId velId, system_type& sys, process_type* p ) {
     assert(!chunks.empty() && "need to send a visitor first");
 
     // master/compliant offsets
@@ -974,7 +974,7 @@ void AssemblyVisitor::updateConstraintAndMomentum( system_type& sys, process_typ
             if( !zero(c.M) ) {
                 vec::SegmentReturnType r = sys.p.segment(off_m, c.size);
 
-                r.noalias() = r + c.M * vel( node );
+                r.noalias() = r + c.M * vel( node, velId );
             }
 
             off_m += c.size;
@@ -992,7 +992,7 @@ void AssemblyVisitor::updateConstraintAndMomentum( system_type& sys, process_typ
                         assert( c.M.rows() == int(c.size) );
 
                         // momentum TODO avoid alloc
-                        sys.p.noalias() = sys.p + Jc.transpose() * (c.M * vel( node ));
+                        sys.p.noalias() = sys.p + Jc.transpose() * (c.M * vel( node, velId ));
                     }
                 }
 
