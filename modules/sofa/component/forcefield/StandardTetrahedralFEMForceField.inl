@@ -530,6 +530,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::addDForce(const core::Mechanic
 template<class DataTypes>
 void StandardTetrahedralFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
 	//	unsigned int i;
 	if (!vparams->displayFlags().getShowForceFields()) return;
 	if (!this->mstate) return;
@@ -540,6 +541,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::draw(const core::visual::Visua
 	if (vparams->displayFlags().getShowWireFrame())
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
+#endif /* SOFA_NO_OPENGL */
 }
 
 
