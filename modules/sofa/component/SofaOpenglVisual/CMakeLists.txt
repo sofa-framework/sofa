@@ -4,7 +4,6 @@ set(HEADER_FILES
 
     ../initOpenGLVisual.h 
     ../visualmodel/OglModel.h 
-    ../visualmodel/OglModelFromAbaqus.h 
     ../visualmodel/OglViewport.h 
     ../visualmodel/Light.h 
     ../visualmodel/LightManager.h 
@@ -20,8 +19,7 @@ set(HEADER_FILES
 set(SOURCE_FILES
 
     ../initOpenGLVisual.cpp 
-    ../visualmodel/OglModel.cpp
-    ../visualmodel/OglModelFromAbaqus.cpp
+    ../visualmodel/OglModel.cpp 
     ../visualmodel/OglViewport.cpp 
     ../visualmodel/Light.cpp 
     ../visualmodel/LightManager.cpp 

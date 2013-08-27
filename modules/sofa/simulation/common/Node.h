@@ -65,7 +65,6 @@
 #include <sofa/core/collision/Pipeline.h>
 #include <sofa/core/loader/BaseLoader.h>
 #include <sofa/core/objectmodel/Event.h>
-#include <sofa/core/exporter/BaseExporter.h>
 
 #include <sofa/simulation/common/common.h>
 #include <sofa/simulation/common/MutationListener.h>
@@ -293,9 +292,7 @@ public:
 
     Sequence<core::CollisionModel> collisionModel;
     Single<core::collision::Pipeline> collisionPipeline;
-    
-    Single<core::exporter::BaseExporter> exporter;
-    
+
     Sequence<core::objectmodel::BaseObject> unsorted;
 
     /// @}
@@ -422,9 +419,7 @@ public:
     virtual core::behavior::OdeSolver* getOdeSolver() const;
     virtual core::collision::Pipeline* getCollisionPipeline() const;
     virtual core::visual::VisualLoop* getVisualLoop() const;
-    
-    virtual core::exporter::BaseExporter* getExporter() const;
-    
+
     /// @}
 
     /// Remove odesolvers and mastercontroler
