@@ -436,14 +436,22 @@ void DAGNode::doExecuteVisitor(simulation::Visitor* action)
 
     executeVisitorTopDown( action, executedNodes, statusMap, this );
 
-    executeVisitorBottomUp( action, executedNodes, statusMap );
+    executeVisitorBottomUp( action, executedNodes
+                    #ifndef NDEBUG
+                            , statusMap
+                    #endif
+                            );
 
     assert( executedNodes.empty() );
 }
 
 
 
-void DAGNode::executeVisitorBottomUp( simulation::Visitor* action, NodeList& executedNodes, StatusMap& statusMap )
+void DAGNode::executeVisitorBottomUp( simulation::Visitor* action, NodeList& executedNodes
+                            #ifndef NDEBUG
+                                      , StatusMap& statusMap
+                            #endif
+                                      )
 {
     while( !executedNodes.empty() )
     {
@@ -554,7 +562,11 @@ void DAGNode::executeVisitorTopDown(simulation::Visitor* action, NodeList& execu
             static_cast<DAGNode*>(child[i].get())->executeVisitorTopDown(action,executedNodes,statusMap,visitorRoot);
 
         // if all child are finished, it is time to run BottomUp action for this branch
-        if( isFinished( statusMap ) ) executeVisitorBottomUp( action, executedNodes, statusMap );
+        if( isFinished( statusMap ) ) executeVisitorBottomUp( action, executedNodes
+                                                           #ifndef NDEBUG
+                                                              , statusMap
+                                                           #endif
+                                                              );
     }
 }
 

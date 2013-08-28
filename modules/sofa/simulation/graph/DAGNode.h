@@ -222,7 +222,11 @@ protected:
     /// @statusMap the visitor's flag map
     /// @visitorRoot node from where the visitor has been run
     void executeVisitorTopDown(simulation::Visitor* action, NodeList& executedNodes, StatusMap& statusMap, DAGNode* visitorRoot );
-    void executeVisitorBottomUp(simulation::Visitor* action, NodeList& executedNodes, StatusMap& statusMap );
+    void executeVisitorBottomUp(simulation::Visitor* action, NodeList& executedNodes
+                            #ifndef NDEBUG
+                                , StatusMap& statusMap
+                            #endif
+                                );
     bool isFinished( StatusMap& statusMap );
     /// @}
 
