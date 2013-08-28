@@ -39,6 +39,7 @@ HEADERS = \
 		KKTSolver.h \
 		LDLTSolver.h \
 		MinresSolver.h \
+		AssemblyHelper.h \
 		AssemblyVisitor.h \
 		AssembledSystem.h \
 		AssembledSolver.h \

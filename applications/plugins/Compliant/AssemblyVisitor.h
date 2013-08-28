@@ -9,6 +9,8 @@
 #include "AssembledSystem.h"
 #include "utils/graph.h"
 
+#include "AssemblyHelper.h"
+
 namespace sofa {
 namespace simulation {
 
@@ -201,9 +203,6 @@ public:
     // if the pp pointer is given, the created process_type structure will be kept (won't be deleted)
     typedef component::linearsolver::AssembledSystem system_type;
     system_type assemble( process_type** p = NULL ) const;
-
-    // do not perform entire assembly, but only compute momentum sys.p and constraint value sys.phi. The process_type p must have been computed from a previous call to assemble
-    void updateConstraintAndMomentum( MultiVecDerivId velId, system_type& sys, process_type* p );
 	
 private:
 
@@ -218,6 +217,77 @@ private:
 	} tmp_p;
 
 	simulation::Node* start_node;
+
+public:
+
+    // do not perform entire assembly, but only compute momentum sys.p and constraint value sys.phi. The process_type p must have been computed from a previous call to assemble
+    template<class SystemType>
+    void updateConstraintAndMomentum( MultiVecDerivId velId, SystemType& sys, process_type* p ) {
+        assert(!chunks.empty() && "need to send a visitor first");
+
+        // master/compliant offsets
+        unsigned off_m = 0;
+        unsigned off_c = 0;
+
+        sys.p.setZero();
+
+        // assemble system
+        for(unsigned i = 0, n = prefix.size(); i < n; ++i) {
+
+            // current chunk
+            chunk& c = *graph[ prefix[i] ].data;
+            assert( c.size );
+
+            if( !c.mechanical ) continue;
+
+            dofs_type* dofs = graph[ prefix[i] ].dofs;
+            const mat& Jc = p->full[ dofs ];
+
+            // to access new multivec data
+            Node* node = static_cast<Node*>(dofs->getContext());
+
+            // independent dofs: fill mass/stiffness
+            if( c.master() )
+            {
+                // mass matrix / momentum
+                if( !zero(c.M) ) {
+                    vec::SegmentReturnType r = sys.p.segment(off_m, c.size);
+
+                    r.noalias() = r + c.M * vel( node, velId );
+                }
+
+                off_m += c.size;
+            }
+            else
+            {
+                if( !zero(Jc) ) {
+                    assert( Jc.cols() == int(p->size_m) );
+
+                    {
+                        if( !zero(c.M) ) {
+                            // contribute mapped mass
+                            assert( c.v.size() == int(c.size) );
+                            assert( c.M.cols() == int(c.size) );
+                            assert( c.M.rows() == int(c.size) );
+
+                            // momentum TODO avoid alloc
+                            sys.p.noalias() = sys.p + Jc.transpose() * (c.M * vel( node, velId ));
+                        }
+                    }
+
+                }
+
+                // compliant dofs: fill compliance/phi/lambda
+                if( c.compliant() ) {
+
+                    // phi
+                    sys.phi.segment(off_c, c.size) = phi( node );
+
+                    off_c += c.size;
+                }
+            }
+        }
+    }
 
 };
 		

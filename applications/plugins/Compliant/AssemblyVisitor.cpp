@@ -23,86 +23,6 @@ typedef EigenVectorWrapper<SReal> wrap;
 
 
 
-// some helpers
-template<class Matrix>
-bool zero(const Matrix& m) {
-    return !m.nonZeros();
-}
-
-template<class Matrix>
-bool empty(const Matrix& m) {
-    return !m.rows();
-}
-
-
-template<class LValue, class RValue>
-static void add(LValue& lval, const RValue& rval) {
-    if( empty(lval) ) {
-        lval = rval;
-    } else {
-        // paranoia, i has it
-        lval += rval;
-    }
-}
-
-
-static std::string pretty(AssemblyVisitor::dofs_type* dofs) {
-    return dofs->getContext()->getName() + " / " + dofs->getName();
-}
-
-
-// right-shift matrix, size x (off + size) matrix: (0, id)
-static AssemblyVisitor::mat shift_right(unsigned off, unsigned size, unsigned total_cols, SReal value = 1.0 ) {
-    AssemblyVisitor::mat res( size, total_cols);
-    assert( total_cols >= (off + size) );
-
-    res.reserve( size );
-
-    for(unsigned i = 0; i < size; ++i) {
-        res.startVec( i );
-        res.insertBack(i, off + i) = value;
-    }
-    res.finalize();
-
-    return res;
-}
-
-
-
-// convert a basematrix to a sparse matrix. TODO move this somewhere else ?
-AssemblyVisitor::mat convert( const defaulttype::BaseMatrix* m) {
-    assert( m );
-
-    typedef component::linearsolver::EigenBaseSparseMatrix<double> matrixd;
-
-    const matrixd* smd = dynamic_cast<const matrixd*> (m);
-    if ( smd ) return smd->compressedMatrix.cast<SReal>();
-
-    typedef component::linearsolver::EigenBaseSparseMatrix<float> matrixf;
-
-    const matrixf* smf = dynamic_cast<const matrixf*>(m);
-    if( smf ) return smf->compressedMatrix.cast<SReal>();
-
-
-    std::cerr << "warning: slow matrix conversion (AssemblyHelper)" << std::endl;
-
-    AssemblyVisitor::mat res(m->rowSize(), m->colSize());
-
-    res.reserve(res.rows() * res.cols());
-    for(unsigned i = 0, n = res.rows(); i < n; ++i) {
-        res.startVec( i );
-        for(unsigned j = 0, k = res.cols(); j < k; ++j) {
-            res.insertBack(i, j) = m->element(i, j);
-        }
-    }
-
-    return res;
-}
-
-
-
-
-
 
 
 		
@@ -203,7 +123,7 @@ AssemblyVisitor::chunk::map_type AssemblyVisitor::mapping(simulation::Node* node
 		// mapping wrt p
 		chunk::mapped& c = res[p];
 
-		if( js ) c.J = convert( (*js)[i] );
+        if( js ) c.J = convert<mat>( (*js)[i] );
 				
 		if( empty(c.J) ) {
 //			unsigned cols = p->getMatrixSize();
@@ -215,7 +135,7 @@ AssemblyVisitor::chunk::map_type AssemblyVisitor::mapping(simulation::Node* node
 		}
 				
 		if( ks ) {
-			c.K = convert( (*ks)[i] );
+            c.K = convert<mat>( (*ks)[i] );
 					
 			// sanity check
 			if( zero(c.K) ) {
@@ -261,7 +181,7 @@ AssemblyVisitor::mat AssemblyVisitor::proj(simulation::Node* node) {
 	unsigned size = node->mechanicalState->getMatrixSize();
 			
 	// identity matrix TODO alloc ?
-	tmp_p.compressedMatrix = shift_right(0, size, size);
+    tmp_p.compressedMatrix = shift_right<mat>(0, size, size);
 			
 	for(unsigned i=0; i<node->projectiveConstraintSet.size(); i++){
 		node->projectiveConstraintSet[i]->projectMatrix(&tmp_p, 0);
@@ -283,7 +203,7 @@ AssemblyVisitor::mat AssemblyVisitor::compliance(simulation::Node* node) {
 					
 		const BaseMatrix* c = ffield->getComplianceMatrix(mparams);
 				
-		if( c ) return convert( c );
+        if( c ) return convert<mat>( c );
 #ifndef NDEBUG
 		else std::cerr<<SOFA_CLASS_METHOD<<ffield->getName()<<" getComplianceMatrix not implemented"<< std::endl;
 #endif
@@ -305,7 +225,7 @@ AssemblyVisitor::mat AssemblyVisitor::stiff(simulation::Node* node) {
 				
         const BaseMatrix* k = ffield->getStiffnessMatrix(mparams);
 
-        if( k ) add(res, convert( k ));
+        if( k ) add(res, convert<mat>( k ));
 //#ifndef NDEBUG
 //        else std::cerr<<SOFA_CLASS_METHOD<<ffield->getName()<<" getStiffnessMatrix not implemented"<< std::endl;
 //#endif
@@ -618,7 +538,7 @@ struct AssemblyVisitor::process_helper {
 				// children will get the right place on multiplication
 				if( p->master() && empty(Jp) ) {
 					// scoped::timer step("shift matrix");
-					Jp = shift_right( find(offsets, vp.dofs), p->size, size_m);
+                    Jp = shift_right<mat>( find(offsets, vp.dofs), p->size, size_m);
 
 					// TODO optimize! 
 					// filter absolute mapping to get filtered mapped mass/stiffness.
@@ -761,7 +681,7 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble( process_type** pp ) cons
             res.master.push_back( c.dofs );
 
 			// scoped::timer step("independent dofs");
-            mat shift = shift_right(off_m, c.size, p->size_m);
+            mat shift = shift_right<mat>(off_m, c.size, p->size_m);
 			
             mat H(c.size, c.size);
 
@@ -850,7 +770,7 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble( process_type** pp ) cons
 
 					SReal factor = 1.0 / (res.dt * l );
                     res.C.middleRows(off_c, c.size) =
-                        c.C * shift_right(off_c, c.size, p->size_c, factor);
+                        c.C * shift_right<mat>(off_c, c.size, p->size_c, factor);
 				}
 			
 				// phi
@@ -943,72 +863,6 @@ void AssemblyVisitor::processNodeBottomUp(simulation::Node* node) {
 
 
 
-void AssemblyVisitor::updateConstraintAndMomentum( MultiVecDerivId velId, system_type& sys, process_type* p ) {
-    assert(!chunks.empty() && "need to send a visitor first");
-
-    // master/compliant offsets
-    unsigned off_m = 0;
-    unsigned off_c = 0;
-
-    sys.p.setZero();
-
-    // assemble system
-    for(unsigned i = 0, n = prefix.size(); i < n; ++i) {
-
-        // current chunk
-        chunk& c = *graph[ prefix[i] ].data;
-        assert( c.size );
-
-        if( !c.mechanical ) continue;
-
-        dofs_type* dofs = graph[ prefix[i] ].dofs;
-        const mat& Jc = p->full[ dofs ];
-
-        // to access new multivec data
-        Node* node = static_cast<Node*>(dofs->getContext());
-
-        // independent dofs: fill mass/stiffness
-        if( c.master() )
-        {
-            // mass matrix / momentum
-            if( !zero(c.M) ) {
-                vec::SegmentReturnType r = sys.p.segment(off_m, c.size);
-
-                r.noalias() = r + c.M * vel( node, velId );
-            }
-
-            off_m += c.size;
-        }
-        else
-        {
-            if( !zero(Jc) ) {
-                assert( Jc.cols() == int(p->size_m) );
-
-                {
-                    if( !zero(c.M) ) {
-                        // contribute mapped mass
-                        assert( c.v.size() == int(c.size) );
-                        assert( c.M.cols() == int(c.size) );
-                        assert( c.M.rows() == int(c.size) );
-
-                        // momentum TODO avoid alloc
-                        sys.p.noalias() = sys.p + Jc.transpose() * (c.M * vel( node, velId ));
-                    }
-                }
-
-            }
-
-            // compliant dofs: fill compliance/phi/lambda
-            if( c.compliant() ) {
-
-                // phi
-                sys.phi.segment(off_c, c.size) = phi( node );
-
-                off_c += c.size;
-            }
-        }
-    }
-}
 
 
 }
