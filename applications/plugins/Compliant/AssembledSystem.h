@@ -46,7 +46,8 @@ public:
 	// mass, stiffness, compliance, mapping and projection
 	// matrices
 	mat H, // M, K,
-		C, J, P;
+        C, J,
+        P;
 	
 	// force, velocity and deformation vectors
 	vec p, f, v, phi, lambda;
