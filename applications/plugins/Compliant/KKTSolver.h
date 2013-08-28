@@ -36,12 +36,6 @@ class SOFA_Compliant_API KKTSolver : public core::behavior::BaseLinearSolver {
 	                   const system_type& system,
                        const vec& rhs) const = 0;
 
-    // optional constraint filter
-    // TODO take into account this mask in every solver
-    // WARNING this active mask cannot be considered by every solvers (LDLT for instance)
-    mutable vec _constraintMask;
-
-
     // return true if the solver can only handle equality constraints (in opposition with LCP for instance)
     virtual bool isLinear() const { return true; }
 };
