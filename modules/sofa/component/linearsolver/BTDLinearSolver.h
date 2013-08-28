@@ -444,7 +444,7 @@ public:
         int Ncols() const { return BSIZE; }
         void resize(int, int)
         {
-            clear();
+            this->clear();
         }
         const T& element(int i, int j) const { return (*this)[i][j]; }
         void set(int i, int j, const T& v) { (*this)[i][j] = v; }

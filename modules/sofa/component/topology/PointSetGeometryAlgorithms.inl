@@ -47,7 +47,7 @@ using namespace sofa::defaulttype;
 template <class DataTypes>
 void PointSetGeometryAlgorithms< DataTypes >::init()
 {
-    object = this->getContext()->core::objectmodel::BaseContext::get< core::behavior::MechanicalState< DataTypes > >();
+    object = this->getContext()->core::objectmodel::BaseContext::template get< core::behavior::MechanicalState< DataTypes > >();
     core::topology::GeometryAlgorithms::init();
     this->m_topology = this->getContext()->getMeshTopology();
 }
