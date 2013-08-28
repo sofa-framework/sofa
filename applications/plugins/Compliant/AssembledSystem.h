@@ -60,6 +60,24 @@ public:
 
     // return true iff the magnitude of every diagonal entries are larger or equal than the sum of the magnitudes of all the non-diagonal entries in the same row
     bool isDiagonalDominant() const;
+
+    void operator=( const AssembledSystem& src )
+    {
+        m = src.m;
+        n = src.n;
+        dt = src.dt;
+        H = src.H;
+        C = src.C;
+        J = src.J;
+        P = src.P;
+        p = src.p;
+        f = src.f;
+        v = src.v;
+        phi = src.phi;
+        lambda = src.lambda;
+        master = src.master;
+        compliant = src.compliant;
+    }
 	
 };
 

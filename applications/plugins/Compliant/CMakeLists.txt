@@ -17,7 +17,8 @@ set(HEADER_FILES
 	KKTSolver.h
 	LDLTSolver.h
 	MinresSolver.h
-	AssemblyVisitor.h
+    AssemblyHelper.h
+    AssemblyVisitor.h
 	AssembledSystem.h
 	AssembledSolver.h
 	AssembledMapping.h
