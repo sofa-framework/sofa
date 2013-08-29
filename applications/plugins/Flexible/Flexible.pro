@@ -11,6 +11,7 @@ SOURCES = initFlexible.cpp \
     types/StrainTypes.cpp \
     types/AffineComponents.cpp \
     types/QuadraticComponents.cpp \
+    types/RigidConstraint.cpp \
     quadrature/BaseGaussPointSampler.cpp \
     quadrature/TopologyGaussPointSampler.cpp \
     shapeFunction/BaseShapeFunction.cpp \
@@ -60,6 +61,7 @@ HEADERS = initFlexible.h \
     types/ComponentSpecializations.cpp.inl \
     types/ComponentSpecializationsDefines.h \
     types/ComponentSpecializationsUndef.h \
+    types/RigidConstraint.h \
     quadrature/BaseGaussPointSampler.h \
     quadrature/TopologyGaussPointSampler.h \
     shapeFunction/BaseShapeFunction.h \

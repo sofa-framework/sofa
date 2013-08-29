@@ -30,6 +30,7 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/rmath.h>
+#include <sofa/helper/decompose.h>
 #ifdef SOFA_SMP
 #include <sofa/defaulttype/SharedTypes.h>
 #endif /* SOFA_SMP */
@@ -214,7 +215,7 @@ public:
         void setRigid()
         {
             Frame rotation;
-            polarDecomposition( getAffine(), rotation );
+            helper::Decompose<Real>::polarDecomposition( getAffine(), rotation );
             getAffine() = rotation;
         }
     };
