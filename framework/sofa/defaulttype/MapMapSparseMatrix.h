@@ -629,7 +629,7 @@ public:
             }
             else
             {
-                row.insert(std::make_pair< KeyT, T >(id, value));
+                row.insert(std::make_pair(id, value));
             }
         }
 
@@ -644,7 +644,7 @@ public:
             }
             else
             {
-                row.insert(std::make_pair< KeyT, T >(id, value));
+                row.insert(std::make_pair(id, value));
             }
         }
 
@@ -685,7 +685,7 @@ public:
         }
         else
         {
-            std::pair< typename SparseMatrix::iterator, bool > res = m_data.insert(std::make_pair< KeyType, RowType >(lIndex, RowType()));
+            std::pair< typename SparseMatrix::iterator, bool > res = m_data.insert(std::make_pair(lIndex, RowType()));
             return RowIterator(res.first);
         }
     }
@@ -704,8 +704,7 @@ public:
             m_data.erase(m_data.find(lIndex));
         }
 
-        std::pair< typename SparseMatrix::iterator, bool > res = m_data.insert(std::make_pair< KeyType, RowType >(lIndex, row));
-
+        std::pair< typename SparseMatrix::iterator, bool > res = m_data.insert(std::make_pair(lIndex, row));
         return std::make_pair(RowIterator(res.first), res.second);
     }
 
@@ -719,8 +718,7 @@ public:
 
         if (it == this->end())
         {
-            std::pair< typename SparseMatrix::iterator, bool > res = m_data.insert(std::make_pair< KeyType, RowType >(lIndex, row));
-
+            std::pair< typename SparseMatrix::iterator, bool > res = m_data.insert(std::make_pair(lIndex, row));
             return std::make_pair(RowIterator(res.first), res.second);
         }
         else
@@ -744,7 +742,7 @@ public:
     {
         KeyType newId = m_data.empty() ? 0 : (m_data.rbegin()->first + 1);
 
-        std::pair< typename SparseMatrix::iterator, bool > res = m_data.insert(std::make_pair< KeyType, RowType >(newId, RowType()));
+        std::pair< typename SparseMatrix::iterator, bool > res = m_data.insert(std::make_pair(newId, RowType()));
         return RowIterator(res.first);
     }
 };
