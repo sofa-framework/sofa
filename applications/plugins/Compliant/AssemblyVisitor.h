@@ -54,10 +54,10 @@ public:
 //protected:
 
     MultiVecDerivId _velId;
-    MultiVecDerivId lagrange;
 
 public:
-			
+    MultiVecDerivId lagrange;
+
 	// collect data chunks during visitor execution
 	virtual Visitor::Result processNodeTopDown(simulation::Node* node);
 	virtual void processNodeBottomUp(simulation::Node* node);
