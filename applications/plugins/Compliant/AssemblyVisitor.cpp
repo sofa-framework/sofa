@@ -31,10 +31,16 @@ AssemblyVisitor::AssemblyVisitor(const core::MechanicalParams* mparams, MultiVec
       mparams( mparams ),
       _velId(velId),
       lagrange(lagrangeId),
+      _processed(0),
       start_node(0)
 
 { }
 
+
+AssemblyVisitor::~AssemblyVisitor()
+{
+    if( _processed ) delete _processed;
+}
 
 		
 AssemblyVisitor::chunk::chunk() 
@@ -647,14 +653,16 @@ static inline AssemblyVisitor::mat ltdl(const AssemblyVisitor::mat& l,
 		
 
 // produce actual system assembly
-AssemblyVisitor::system_type AssemblyVisitor::assemble( process_type** pp ) const{
+AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
 	assert(!chunks.empty() && "need to send a visitor first");
 
+    assert( !_processed );
+
 	// concatenate mappings and obtain sizes
-    process_type* p = process();
+    _processed = process();
 
 	// result system
-    system_type res(p->size_m, p->size_c);
+    system_type res(_processed->size_m, _processed->size_c);
 	
 	res.dt = mparams->dt();
 			
@@ -674,14 +682,14 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble( process_type** pp ) cons
         if( !c.mechanical ) continue;
 		
 		// full mapping chunk
-        const mat& Jc = p->full[ graph[ prefix[i] ].dofs ];
+        const mat& Jc = _processed->full[ graph[ prefix[i] ].dofs ];
 		
 		// independent dofs: fill mass/stiffness
         if( c.master() ) {
             res.master.push_back( c.dofs );
 
 			// scoped::timer step("independent dofs");
-            mat shift = shift_right<mat>(off_m, c.size, p->size_m);
+            mat shift = shift_right<mat>(off_m, c.size, _processed->size_m);
 			
             mat H(c.size, c.size);
 
@@ -717,7 +725,7 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble( process_type** pp ) cons
 		else { 
 
 			if( !zero(Jc) ) {
-                assert( Jc.cols() == int(p->size_m) );
+                assert( Jc.cols() == int(_processed->size_m) );
 				
 				{
                     mat H(c.size, c.size);
@@ -770,7 +778,7 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble( process_type** pp ) cons
 
 					SReal factor = 1.0 / (res.dt * l );
                     res.C.middleRows(off_c, c.size) =
-                        c.C * shift_right<mat>(off_c, c.size, p->size_c, factor);
+                        c.C * shift_right<mat>(off_c, c.size, _processed->size_c, factor);
 				}
 			
 				// phi
@@ -783,11 +791,8 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble( process_type** pp ) cons
 		}
 	}
 
-    assert( off_m == p->size_m );
-    assert( off_c == p->size_c );
-
-    if( pp ) *pp = p;
-    else delete p;
+    assert( off_m == _processed->size_m );
+    assert( off_c == _processed->size_c );
 
 	return res;
 }

@@ -64,6 +64,12 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
 
     // solve velocity dynamics ?
 	Data<bool> use_velocity, warm_start, propagate_lambdas, stabilization, debug;
+
+
+
+    simulation::AssemblyVisitor* _assemblyVisitor;
+
+
 	
   protected:
 				
@@ -88,12 +94,15 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
 	typedef linearsolver::KKTSolver kkt_type;
 	kkt_type::SPtr kkt;
 
+public:
+
 	typedef linearsolver::AssembledSystem system_type;
 	// obtain linear system rhs from system 
     virtual kkt_type::vec rhs(const system_type& sys, bool computeForce = true) const;
 
 	// warm start solution
 	virtual kkt_type::vec warm(const system_type& sys) const;
+
 
 	// velocities from system solution 
 	virtual kkt_type::vec velocity(const system_type& sys, const kkt_type::vec& x) const;
@@ -106,6 +115,9 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
 
 	// this is for warm start and returning constraint forces
 	core::behavior::MultiVecDeriv lagrange;
+
+
+protected:
 
 	void alloc(const core::ExecParams& params);
 
