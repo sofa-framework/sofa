@@ -30,6 +30,7 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/rmath.h>
+#include <sofa/helper/decompose.h>
 #ifdef SOFA_SMP
 #include <sofa/defaulttype/SharedTypes.h>
 #endif /* SOFA_SMP */
@@ -275,7 +276,7 @@ public:
             Frame& q = getQuadratic();
             // first matrix is pure rotation
             Affine rotation;
-            polarDecomposition(getAffine(), rotation);
+            helper::Decompose<Real>::polarDecomposition(getAffine(), rotation);
             for(unsigned i=0; i<spatial_dimensions; i++)
                 for(unsigned j=0; j<spatial_dimensions; j++)
                     q[i][j] = rotation[i][j];

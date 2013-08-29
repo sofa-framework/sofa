@@ -17,7 +17,8 @@ set(HEADER_FILES
     types/ComponentSpecializationsDefines.h
     types/ComponentSpecializationsUndef.h
     types/DeformableFrameMass.h
-    quadrature/BaseGaussPointSampler.h 
+    types/RigidConstraint.h
+    quadrature/BaseGaussPointSampler.h
     quadrature/TopologyGaussPointSampler.h 
     shapeFunction/BaseShapeFunction.h 
     shapeFunction/ShepardShapeFunction.h 
@@ -89,7 +90,8 @@ set(SOURCE_FILES
     types/StrainTypes.cpp 
     types/AffineComponents.cpp 
     types/QuadraticComponents.cpp 
-    quadrature/BaseGaussPointSampler.cpp 
+    types/RigidConstraint.cpp
+    quadrature/BaseGaussPointSampler.cpp
     quadrature/TopologyGaussPointSampler.cpp 
     shapeFunction/BaseShapeFunction.cpp 
     shapeFunction/ShepardShapeFunction.cpp 
