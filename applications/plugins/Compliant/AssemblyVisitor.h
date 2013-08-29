@@ -49,8 +49,9 @@ public:
 	typedef Eigen::Matrix<real, Eigen::Dynamic, 1> vec;
 			
     AssemblyVisitor(const core::MechanicalParams* mparams = 0, MultiVecDerivId velId = MultiVecDerivId(core::VecDerivId::velocity()), MultiVecDerivId lagrange = MultiVecDerivId() );
+    virtual ~AssemblyVisitor();
 
-protected:
+//protected:
 
     MultiVecDerivId _velId;
     MultiVecDerivId lagrange;
@@ -167,6 +168,8 @@ public:
 				
 	};
 
+    mutable process_type *_processed;
+
 	// builds global mapping / full stiffness matrices + sizes
     virtual process_type* process() const;
 			
@@ -202,7 +205,7 @@ public:
     // build assembled system (needs to send visitor first)
     // if the pp pointer is given, the created process_type structure will be kept (won't be deleted)
     typedef component::linearsolver::AssembledSystem system_type;
-    system_type assemble( process_type** p = NULL ) const;
+    system_type assemble() const;
 	
 private:
 
@@ -222,8 +225,10 @@ public:
 
     // do not perform entire assembly, but only compute momentum sys.p and constraint value sys.phi. The process_type p must have been computed from a previous call to assemble
     template<class SystemType>
-    void updateConstraintAndMomentum( MultiVecDerivId velId, SystemType& sys, process_type* p ) {
+    void updateConstraintAndMomentum( MultiVecDerivId velId, SystemType& sys ) {
         assert(!chunks.empty() && "need to send a visitor first");
+
+        assert( _processed );
 
         // master/compliant offsets
         unsigned off_m = 0;
@@ -241,7 +246,7 @@ public:
             if( !c.mechanical ) continue;
 
             dofs_type* dofs = graph[ prefix[i] ].dofs;
-            const mat& Jc = p->full[ dofs ];
+            const mat& Jc = _processed->full[ dofs ];
 
             // to access new multivec data
             Node* node = static_cast<Node*>(dofs->getContext());
@@ -261,7 +266,7 @@ public:
             else
             {
                 if( !zero(Jc) ) {
-                    assert( Jc.cols() == int(p->size_m) );
+                    assert( Jc.cols() == int(_processed->size_m) );
 
                     {
                         if( !zero(c.M) ) {

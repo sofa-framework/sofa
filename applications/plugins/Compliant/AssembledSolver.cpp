@@ -265,16 +265,16 @@ void AssembledSolver::solve(const core::ExecParams* params,
 	// compute forces
     if( computeForce ) forces( mparams );
 				
-	// assembly visitor
-    simulation::AssemblyVisitor vis(&mparams, velId, lagrange.id());
+    // assembly visitor (keep an accessible pointer from another component all along the solving)
+    _assemblyVisitor = new simulation::AssemblyVisitor(&mparams, velId, lagrange.id());
 
 	// fetch data
-	send( vis );
+    send( *_assemblyVisitor );
 	
 	typedef linearsolver::AssembledSystem system_type;
 	
 	sofa::helper::AdvancedTimer::stepBegin( "assembly" );
-	system_type sys = vis.assemble();
+    system_type sys = _assemblyVisitor->assemble();
 	sofa::helper::AdvancedTimer::stepEnd( "assembly" );
 	
 	if( debug.getValue() ){
@@ -308,7 +308,7 @@ void AssembledSolver::solve(const core::ExecParams* params,
 
             kkt->solve(tmp_x, sys, tmp_b);
 
-            vis.distribute_master( velId, velocity(sys, tmp_x) );
+            _assemblyVisitor->distribute_master( velId, velocity(sys, tmp_x) );
             if( integratePosition ) integrate( &mparams, posId, velId );
 
             // zero stabilized constraints
@@ -320,10 +320,10 @@ void AssembledSolver::solve(const core::ExecParams* params,
 	
 	
 	// distribute (projected) velocities
-    vis.distribute_master( velId, velocity(sys, x) );
+    _assemblyVisitor->distribute_master( velId, velocity(sys, x) );
 	
 	if( sys.n ) {
-		vis.distribute_compliant( lagrange.id(), lambda(sys, x) );
+        _assemblyVisitor->distribute_compliant( lagrange.id(), lambda(sys, x) );
 
 		if( propagate_lambdas.getValue() ) {
 			scoped::timer step("lambdas propagation");
@@ -337,6 +337,8 @@ void AssembledSolver::solve(const core::ExecParams* params,
 	
     // update positions
     if( integratePosition ) integrate( &mparams, posId, velId );
+
+    delete _assemblyVisitor;
 }
 
 			
