@@ -244,12 +244,12 @@ void Mesh2PointTopologicalMapping::init()
 
                         Vec3d p0(fromModel->getPX(h[0]), fromModel->getPY(h[0]), fromModel->getPZ(h[0]));
                         Vec3d p1(fromModel->getPX(h[1]), fromModel->getPY(h[1]), fromModel->getPZ(h[1]));
-                        Vec3d p2(fromModel->getPX(h[2]), fromModel->getPY(h[2]), fromModel->getPZ(h[2]));
-                        Vec3d p3(fromModel->getPX(h[3]), fromModel->getPY(h[3]), fromModel->getPZ(h[3]));
+						Vec3d p2(fromModel->getPX(h[3]), fromModel->getPY(h[3]), fromModel->getPZ(h[3]));
+						Vec3d p3(fromModel->getPX(h[2]), fromModel->getPY(h[2]), fromModel->getPZ(h[2]));
                         Vec3d p4(fromModel->getPX(h[4]), fromModel->getPY(h[4]), fromModel->getPZ(h[4]));
                         Vec3d p5(fromModel->getPX(h[5]), fromModel->getPY(h[5]), fromModel->getPZ(h[5]));
-                        Vec3d p6(fromModel->getPX(h[6]), fromModel->getPY(h[6]), fromModel->getPZ(h[6]));
-                        Vec3d p7(fromModel->getPX(h[7]), fromModel->getPY(h[7]), fromModel->getPZ(h[7]));
+						Vec3d p6(fromModel->getPX(h[7]), fromModel->getPY(h[7]), fromModel->getPZ(h[7]));
+						Vec3d p7(fromModel->getPX(h[6]), fromModel->getPY(h[6]), fromModel->getPZ(h[6]));
 
                         double fx = hexaBaryCoords.getValue()[j][0];
                         double fy = hexaBaryCoords.getValue()[j][1];
@@ -261,8 +261,8 @@ void Mesh2PointTopologicalMapping::init()
                                 + p3 * ((  fx) * (  fy) * (1-fz))
                                 + p4 * ((1-fx) * (1-fy) * (  fz))
                                 + p5 * ((  fx) * (1-fy) * (  fz))
-                                + p6 * ((  fx) * (  fy) * (  fz))
-                                + p7 * ((1-fx) * (  fy) * (  fz));
+								+ p6 * ((1-fx) * (  fy) * (  fz))
+								+ p7 * ((  fx) * (  fy) * (  fz));
 
                         toModel->addPoint(result[0], result[1], result[2]);
 
