@@ -66,9 +66,9 @@ public:
 
     virtual void projectResponse(const core::MechanicalParams* /*mparams*/, DataVecDeriv& resData)
     {
-        helper::WriteAccessor<DataVecDeriv> res = resData;
-        const vector<unsigned> & indices = f_index.getValue();
-        for(unsigned i=0; i<indices.size(); i++) res[indices[i]].setRigid();
+//        helper::WriteAccessor<DataVecDeriv> res = resData;
+//        const vector<unsigned> & indices = f_index.getValue();
+//        for(unsigned i=0; i<indices.size(); i++) res[indices[i]].setRigid();
     }
 
     virtual void projectVelocity(const core::MechanicalParams* /*mparams*/, DataVecDeriv& vData)
