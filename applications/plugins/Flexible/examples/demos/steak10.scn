@@ -1,7 +1,9 @@
 <?xml version="1.0"?>
-<Node 	name="Root" gravity="0 0 0" dt="0.1"  >
+<Node 	name="Root" gravity="0 0 0" dt="0.2"  >
     <RequiredPlugin pluginName="image"/>
     <RequiredPlugin pluginName="Flexible"/>
+
+ <VisualStyle displayFlags="showVisual showBehaviorModels" />
 
     <DefaultAnimationLoop />
     <DefaultVisualManagerLoop />
@@ -16,7 +18,7 @@
 <!--  <ImageViewer template="ImageD" name="viewer" image="@youngM.outputImage" transform="@extruder.outputTransform" /> -->
 
   <EulerImplicitSolver rayleighStiffness="0.05"  rayleighMass="0.05" />
-  <CGLinearSolver template="GraphScattered" iterations="3"  threshold="1e-008" />
+  <CGLinearSolver template="GraphScattered" iterations="15"  threshold="1e-008" />
 
  <Node 	name="Flexible"   >
 		
@@ -48,6 +50,7 @@
 		
     </Node>
 		<Node name="Collision">
+			<VisualStyle displayFlags="hideBehaviorModels" />
 			<MeshObjLoader name="MeshLoader" filename="../data/mesh/steak.obj"/>
 			<Mesh src="@MeshLoader" /> 
 			<MechanicalObject  name="PointSet" useMask="0"/>

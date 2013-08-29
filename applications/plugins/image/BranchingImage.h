@@ -819,10 +819,9 @@ public:
         {
             NeighbourOffset dir = getDirection( index.index1d, neighbours[n].index1d );
             b2 = bias? (real)operator()(neighbours[n],0,t): 1.0;
-
-            Vec3d diff( abs(dir[0])*voxelsize[0], abs(dir[1])*voxelsize[1], abs(dir[2])*voxelsize[2] );
-
-            dist[n] = diff.norm() * 2.0/(b1+b2);
+            real d = Vec3d( abs(dir[0])*voxelsize[0], abs(dir[1])*voxelsize[1], abs(dir[2])*voxelsize[2] ).norm();
+            if(d==0) d= (voxelsize[0]+voxelsize[1]+voxelsize[2])/6.; // enforce a certain distance (half voxel size) for superimposed voxels
+            dist[n] = d * 1.0/sofa::helper::rmin(b1,b2);
         }
         return voxel.neighbours;
     }

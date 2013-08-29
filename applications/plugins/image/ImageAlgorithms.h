@@ -266,7 +266,7 @@ void fastMarching (std::set<std::pair<real,sofa::defaulttype::Vec<3,int> > > &tr
                         v3[j]-=2;
                     }
                     real b2; if(biasFactor) b2=(real)(*biasFactor)(v2[0],v2[1],v2[2]); else  b2=1.0;
-                    real newDist = Eikonal<real>(d,d2,voxelsize,(b1+b2)*0.5);
+                    real newDist = Eikonal<real>(d,d2,voxelsize,sofa::helper::rmin(b1,b2));
                     real oldDist = distances(v2[0],v2[1],v2[2]);
                     if(oldDist>newDist)
                     {
@@ -335,7 +335,7 @@ void dijkstra (std::set<std::pair<real,sofa::defaulttype::Vec<3,int> > > &trial,
                 //if(!alive(v2[0],v2[1],v2[2]))
             {
                 real b2; if(biasFactor) b2=(real)(*biasFactor)(v2[0],v2[1],v2[2]); else  b2=1.0;
-                real newDist = distances(v[0],v[1],v[2]) + lD[i]*2.0/(b1+b2);
+                real newDist = distances(v[0],v[1],v[2]) + lD[i]*1.0/sofa::helper::rmin(b1,b2);
                 real oldDist = distances(v2[0],v2[1],v2[2]);
                 if(oldDist>newDist)
                 {

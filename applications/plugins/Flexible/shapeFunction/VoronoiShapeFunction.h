@@ -201,31 +201,47 @@ struct VoronoiShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
         for(unsigned int i=0; i<parentiCoord.size(); i++)
         {
             std::set<DistanceToPoint> trial;                // list of seed points
-            DistT dmax=0;
-            cimg_forXYZ(voronoi,x,y,z) if(voronoi(x,y,z)==i+1) if(dmax<dist(x,y,z)) dmax=dist(x,y,z);
 
-            // distances from voronoi border
-            typename DistTypes::CImgT distB=dist;  cimg_foroff(distB,off) if(distB[off]!=-1) distB[off]=dmax;
-            typename IndTypes::CImgT voronoiP=voronoi;
+            // distance max to voronoi
+            DistT dmax=0;
             cimg_forXYZ(voronoi,x,y,z) if(voronoi(x,y,z)==i+1)
             {
-                bool border=false;  if(x!=0 && voronoi(x-1,y,z)!=i+1  && voronoi(x-1,y,z)!=0) border=true; else if(x!=voronoi.width()-1 && voronoi(x+1,y,z)!=i+1 && voronoi(x+1,y,z)!=0) border=true; else if(y!=0 && voronoi(x,y-1,z)!=i+1 && voronoi(x,y-1,z)!=0) border=true; else if(y!=voronoi.height()-1 && voronoi(x,y+1,z)!=i+1 && voronoi(x,y+1,z)!=0) border=true; else if(z!=0 && voronoi(x,y,z-1)!=i+1 && voronoi(x,y,z-1)!=0) border=true; else if(z!=voronoi.depth()-1 && voronoi(x,y,z+1)!=i+1 && voronoi(x,y,z+1)!=0) border=true;
-                if(border)
-                {
-                    distB(x,y,z)=0;
-                    trial.insert( DistanceToPoint(0.,iCoord(x,y,z)) );
-                }
+                if(dmax<dist(x,y,z)) dmax=dist(x,y,z);
+                // check neighbors to retrieve upper distance bound
+                if(x!=0                 && voronoi(x-1,y,z)!=i+1  && voronoi(x-1,y,z)!=0)   { if(dmax<dist(x-1,y,z)) dmax=dist(x-1,y,z); }
+                if(x!=voronoi.width()-1 && voronoi(x+1,y,z)!=i+1  && voronoi(x+1,y,z)!=0)   { if(dmax<dist(x+1,y,z)) dmax=dist(x+1,y,z); }
+                if(y!=0                 && voronoi(x,y-1,z)!=i+1  && voronoi(x,y-1,z)!=0)   { if(dmax<dist(x,y-1,z)) dmax=dist(x,y-1,z); }
+                if(y!=voronoi.height()-1 && voronoi(x,y+1,z)!=i+1 && voronoi(x,y+1,z)!=0)   { if(dmax<dist(x,y+1,z)) dmax=dist(x,y+1,z); }
+                if(z!=0                 && voronoi(x,y,z-1)!=i+1  && voronoi(x,y,z-1)!=0)   { if(dmax<dist(x,y,z-1)) dmax=dist(x,y,z-1); }
+                if(z!=voronoi.depth()-1 && voronoi(x,y,z+1)!=i+1  && voronoi(x,y,z+1)!=0)   { if(dmax<dist(x,y,z+1)) dmax=dist(x,y,z+1); }
             }
-            if(This->useDijkstra.getValue()) dijkstra<DistT,T>(trial,distB, voronoiP, inT->getScale() , biasFactor); else fastMarching<DistT,T>(trial,distB, voronoiP, inT->getScale() ,biasFactor );
 
             // extend voronoi to 2*dmax
-            dmax*=(DistT)2.;
-            typename DistTypes::CImgT distP=dist;  cimg_foroff(distP,off) if(distP[off]!=-1) distP[off]=dmax;
-
+            typename DistTypes::CImgT distP=dist;  cimg_foroff(distP,off) if(distP[off]!=-1) distP[off]=dmax*(DistT)2.;
+            typename IndTypes::CImgT voronoiP=voronoi;
             AddSeedPoint<DistT>(trial,distP,voronoiP, parentiCoord[i],i+1);
             if(This->useDijkstra.getValue()) dijkstra<DistT,T>(trial,distP, voronoiP, inT->getScale() , biasFactor); else fastMarching<DistT,T>(trial,distP, voronoiP, inT->getScale() ,biasFactor );
 
+            // distances from voronoi border
+            typename DistTypes::CImgT distB=dist;  cimg_foroff(distB,off) if(distB[off]!=-1) distB[off]=dmax;
+            typename IndTypes::CImgT voronoiB=voronoi;
+            cimg_forXYZ(voronoi,x,y,z) if(voronoi(x,y,z)==i+1)
+            {
+                bool border=false;
+                iCoord BP;
+                // subpixel voronoi frontier localization
+                BP.set(x-1,y,z); if(vorData->isInside((int)BP[0],(int)BP[1],(int)BP[2])) if(voronoi(BP[0],BP[1],BP[2])!=i+1  && voronoi(BP[0],BP[1],BP[2])!=0)                { border=true; distB(BP[0],BP[1],BP[2])= (DistT)0.5*( distP(BP[0],BP[1],BP[2]) - dist(BP[0],BP[1],BP[2]) );                    trial.insert( DistanceToPoint(distB(BP[0],BP[1],BP[2]),BP) ); DistT d = (DistT)0.5*(dist(BP[0],BP[1],BP[2]) + distP(BP[0],BP[1],BP[2])) - dist(x,y,z);    if(d<distB(x,y,z)) distB(x,y,z) = d; }
+                BP.set(x+1,y,z); if(vorData->isInside((int)BP[0],(int)BP[1],(int)BP[2])) if(voronoi(BP[0],BP[1],BP[2])!=i+1  && voronoi(BP[0],BP[1],BP[2])!=0)                { border=true; distB(BP[0],BP[1],BP[2])= (DistT)0.5*( distP(BP[0],BP[1],BP[2]) - dist(BP[0],BP[1],BP[2]) );                    trial.insert( DistanceToPoint(distB(BP[0],BP[1],BP[2]),BP) ); DistT d = (DistT)0.5*(dist(BP[0],BP[1],BP[2]) + distP(BP[0],BP[1],BP[2])) - dist(x,y,z);    if(d<distB(x,y,z)) distB(x,y,z) = d; }
+                BP.set(x,y-1,z); if(vorData->isInside((int)BP[0],(int)BP[1],(int)BP[2])) if(voronoi(BP[0],BP[1],BP[2])!=i+1  && voronoi(BP[0],BP[1],BP[2])!=0)                { border=true; distB(BP[0],BP[1],BP[2])= (DistT)0.5*( distP(BP[0],BP[1],BP[2]) - dist(BP[0],BP[1],BP[2]) );                    trial.insert( DistanceToPoint(distB(BP[0],BP[1],BP[2]),BP) ); DistT d = (DistT)0.5*(dist(BP[0],BP[1],BP[2]) + distP(BP[0],BP[1],BP[2])) - dist(x,y,z);    if(d<distB(x,y,z)) distB(x,y,z) = d; }
+                BP.set(x,y+1,z); if(vorData->isInside((int)BP[0],(int)BP[1],(int)BP[2])) if(voronoi(BP[0],BP[1],BP[2])!=i+1  && voronoi(BP[0],BP[1],BP[2])!=0)                { border=true; distB(BP[0],BP[1],BP[2])= (DistT)0.5*( distP(BP[0],BP[1],BP[2]) - dist(BP[0],BP[1],BP[2]) );                    trial.insert( DistanceToPoint(distB(BP[0],BP[1],BP[2]),BP) ); DistT d = (DistT)0.5*(dist(BP[0],BP[1],BP[2]) + distP(BP[0],BP[1],BP[2])) - dist(x,y,z);    if(d<distB(x,y,z)) distB(x,y,z) = d; }
+                BP.set(x,y,z-1); if(vorData->isInside((int)BP[0],(int)BP[1],(int)BP[2])) if(voronoi(BP[0],BP[1],BP[2])!=i+1  && voronoi(BP[0],BP[1],BP[2])!=0)                { border=true; distB(BP[0],BP[1],BP[2])= (DistT)0.5*( distP(BP[0],BP[1],BP[2]) - dist(BP[0],BP[1],BP[2]) );                    trial.insert( DistanceToPoint(distB(BP[0],BP[1],BP[2]),BP) ); DistT d = (DistT)0.5*(dist(BP[0],BP[1],BP[2]) + distP(BP[0],BP[1],BP[2])) - dist(x,y,z);    if(d<distB(x,y,z)) distB(x,y,z) = d; }
+                BP.set(x,y,z+1); if(vorData->isInside((int)BP[0],(int)BP[1],(int)BP[2])) if(voronoi(BP[0],BP[1],BP[2])!=i+1  && voronoi(BP[0],BP[1],BP[2])!=0)                { border=true; distB(BP[0],BP[1],BP[2])= (DistT)0.5*( distP(BP[0],BP[1],BP[2]) - dist(BP[0],BP[1],BP[2]) );                    trial.insert( DistanceToPoint(distB(BP[0],BP[1],BP[2]),BP) ); DistT d = (DistT)0.5*(dist(BP[0],BP[1],BP[2]) + distP(BP[0],BP[1],BP[2])) - dist(x,y,z);    if(d<distB(x,y,z)) distB(x,y,z) = d; }
+                if(border)  trial.insert( DistanceToPoint(distB(x,y,z),iCoord(x,y,z)) );
+            }
+            if(This->useDijkstra.getValue()) dijkstra<DistT,T>(trial,distB, voronoiB, inT->getScale() , biasFactor); else fastMarching<DistT,T>(trial,distB, voronoiB, inT->getScale() ,biasFactor );
+
             // compute weight as distance ratio
+            DistT TOL = 1E-4; // warning: hard coded tolerance on the weights (to maximize sparsity)
             cimg_forXYZ(voronoiP,x,y,z) if(voronoiP(x,y,z)==i+1)
             {
                 DistT w;
@@ -235,7 +251,7 @@ struct VoronoiShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
                 else if(voronoi(x,y,z)==i+1) w=(DistT)0.5*((DistT)1. + db/(dp+db)); // inside voronoi: dist(frame,closestVoronoiBorder)=d+disttovoronoi
                 else if(dp==db) w=(DistT)0.;
                 else w=(DistT)0.5*((DistT)1. - db/(dp-db)); // outside voronoi: dist(frame,closestVoronoiBorder)=d-disttovoronoi
-                if(w<0) w=0; else if(w>(DistT)1.) w=(DistT)1.;
+                if(w<TOL) w=0; else if(w>(DistT)1.) w=(DistT)1.;
 
                 // insert in weights
                 unsigned int j=0;
@@ -507,34 +523,47 @@ struct VoronoiShapeFunctionSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE
         for(unsigned int i=0; i<parentiCoord.size(); i++)
         {
             std::set<DistanceToPoint> trial;                // list of seed points
-            DistT dmax=0;
-            bimg_forCVoffT(voronoi,c,v,off1D,t) if(voronoi(off1D,v,c,t)==i+1) if(dmax<dist(off1D,v,c,t)) dmax=dist(off1D,v,c,t);
 
-            // distances from voronoi border
-            DistTypes distB(dist,false);  bimg_forCVoffT(distB,c,v,off1D,t) if(distB(off1D,v,c,t)!=-1)  distB(off1D,v,c,t)=dmax;
-            IndTypes voronoiP(voronoi,false);
+            // distance max to voronoi
+            DistT dmax=0;
             bimg_forCVoffT(voronoi,c,v,off1D,t) if(voronoi(off1D,v,c,t)==i+1)
             {
+                if(dmax<dist(off1D,v,c,t)) dmax=dist(off1D,v,c,t);
+                // check neighbors to retrieve upper distance bound
                 Neighbours neighbours = voronoi.getNeighbours(VoxelIndex(off1D,v));
-                bool border=false;   for (unsigned int n=0; n<neighbours.size(); n++)
-                    //if(voronoi.getDirection( off1D,neighbours[n].index1d ).connectionType()==NeighbourOffset::FACE)
-                    if(voronoi(neighbours[n],c,t)!=0)  border=true;
-                if(border)
-                {
-                    distB(off1D,v,c,t)=0;
-                    trial.insert( DistanceToPoint(0.,VoxelIndex(off1D,v) ) );
-                }
+                for (unsigned int n=0; n<neighbours.size(); n++)    if(voronoi(neighbours[n],c,t)!=i+1) if(voronoi(neighbours[n],c,t)!=0)  if(dmax<dist(neighbours[n],c,t)) dmax=dist(neighbours[n],c,t);
             }
-            if(This->useDijkstra.getValue()) dijkstra<DistT,T>(trial,distB, voronoiP, inT->getScale() , biasFactor);            else fastMarching<DistT,T>(trial,distB, voronoiP, inT->getScale() ,biasFactor );
 
             // extend voronoi to 2*dmax
-            dmax*=(DistT)2.;
-            DistTypes distP(dist,false);  bimg_forCVoffT(distP,c,v,off1D,t) if(distP(off1D,v,c,t)!=-1)  distP(off1D,v,c,t)=dmax;
-
+            DistTypes distP(dist,false);  bimg_forCVoffT(distP,c,v,off1D,t) if(distP(off1D,v,c,t)!=-1)  distP(off1D,v,c,t)=dmax*(DistT)2.;
+            IndTypes voronoiP(voronoi,false);
             AddSeedPoint<DistT>(trial,distP,voronoiP, parentiCoord[i],i+1);
             if(This->useDijkstra.getValue()) dijkstra<DistT,T>(trial,distP, voronoiP, inT->getScale() , biasFactor);            else fastMarching<DistT,T>(trial,distP, voronoiP, inT->getScale() ,biasFactor );
 
+            // distances from voronoi border
+            DistTypes distB(dist,false);  bimg_forCVoffT(distB,c,v,off1D,t) if(distB(off1D,v,c,t)!=-1)  distB(off1D,v,c,t)=dmax;
+            IndTypes voronoiB(voronoi,false);
+            bimg_forCVoffT(voronoi,c,v,off1D,t) if(voronoi(off1D,v,c,t)==i+1)
+            {
+                Neighbours neighbours = voronoi.getNeighbours(VoxelIndex(off1D,v));
+                bool border=false;
+                for (unsigned int n=0; n<neighbours.size(); n++)
+                    //if(voronoi.getDirection( off1D,neighbours[n].index1d ).connectionType()==NeighbourOffset::FACE)
+                    if(voronoi(neighbours[n],c,t)!=i+1) if(voronoi(neighbours[n],c,t)!=0)
+                    {
+                        border=true;
+                        // subpixel voronoi frontier localization
+                        distB(neighbours[n],c,t)= (DistT)0.5*( distP(neighbours[n],c,t) - dist(neighbours[n],c,t) );                         trial.insert( DistanceToPoint(distB(neighbours[n],c,t),neighbours[n] ) );
+                        DistT d = (DistT)0.5*(dist(neighbours[n],c,t) + distP(neighbours[n],c,t)) - dist(off1D,v,c,t);
+                        if(d<distB(off1D,v,c,t)) distB(off1D,v,c,t) = d;
+                    }
+                if(border) trial.insert( DistanceToPoint(distB(off1D,v,c,t),VoxelIndex(off1D,v) ) );
+            }
+            if(This->useDijkstra.getValue()) dijkstra<DistT,T>(trial,distB, voronoiB, inT->getScale() , biasFactor);            else fastMarching<DistT,T>(trial,distB, voronoiB, inT->getScale() ,biasFactor );
+
+
             // compute weight as distance ratio
+            DistT TOL = 1E-4; // warning: hard coded tolerance on the weights (to maximize sparsity)
             bimg_forCVoffT(voronoiP,c,v,off1D,t) if(voronoiP(off1D,v,c,t)==i+1)
             {
                 DistT w;
@@ -544,7 +573,7 @@ struct VoronoiShapeFunctionSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE
                 else if(voronoi(off1D,v,c,t)==i+1) w=(DistT)0.5*((DistT)1. + db/(dp+db)); // inside voronoi: dist(frame,closestVoronoiBorder)=d+disttovoronoi
                 else if(dp==db) w=(DistT)0.;
                 else w=(DistT)0.5*((DistT)1. - db/(dp-db)); // outside voronoi: dist(frame,closestVoronoiBorder)=d-disttovoronoi
-                if(w<0) w=0; else if(w>(DistT)1.) w=(DistT)1.;
+                if(w<TOL) w=0; else if(w>(DistT)1.) w=(DistT)1.;
 
                 // insert in weights
                 unsigned int j=0;
