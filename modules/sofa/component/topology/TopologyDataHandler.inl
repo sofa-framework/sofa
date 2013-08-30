@@ -122,19 +122,21 @@ void TopologyDataHandler <TopologyElementType, VecT>::move( const sofa::helper::
 template <typename TopologyElementType, typename VecT>
 void TopologyDataHandler <TopologyElementType, VecT>::remove( const sofa::helper::vector<unsigned int> &index )
 {
+		
+	container_type& data = *(m_topologyData->beginEdit());
+	if (data.size()>0) {
+		unsigned int last = data.size() -1;
 
-    container_type& data = *(m_topologyData->beginEdit());
-    unsigned int last = data.size() -1;
+		for (unsigned int i = 0; i < index.size(); ++i)
+		{
+			this->applyDestroyFunction( index[i], data[index[i]] );
+			this->swap( index[i], last );
+			--last;
+		}
 
-    for (unsigned int i = 0; i < index.size(); ++i)
-    {
-        this->applyDestroyFunction( index[i], data[index[i]] );
-        this->swap( index[i], last );
-        --last;
-    }
-
-    data.resize( data.size() - index.size() );
-    m_topologyData->endEdit();
+		data.resize( data.size() - index.size() );
+	}
+	m_topologyData->endEdit();
 }
 
 
