@@ -50,6 +50,22 @@ namespace helper
 namespace system
 {
 
+
+
+// replacing every occurences of "//"  by "/"
+std::string cleanPath( const std::string& path )
+{
+    std::string p = path;
+    size_t pos = p.find("//");
+    while( pos != std::string::npos )
+    {
+        p.replace(pos,2,"/");
+        pos = p.find("//");
+    }
+    return p;
+}
+
+
 #define ADD_SOFA_BUILD_DIR( x ) sofa_tostring(SOFA_BUILD_DIR)sofa_tostring(x)
 #define ADD_SOFA_SRC_BIN_DIR( x ) sofa_tostring(SOFA_SRC_BIN_DIR)sofa_tostring(x)
 
@@ -130,8 +146,11 @@ FileRepository::~FileRepository()
 {
 }
 
-void FileRepository::addFirstPath(const std::string& path)
+void FileRepository::addFirstPath(const std::string& p)
 {
+    // replacing every occurences of "//" by "/"
+    std::string path = cleanPath( p );
+
     std::vector<std::string> entries;
     size_t p0 = 0;
     size_t p1;
@@ -148,8 +167,11 @@ void FileRepository::addFirstPath(const std::string& path)
     vpath.insert(vpath.begin(), entries.begin(), entries.end());
 }
 
-void FileRepository::addLastPath(const std::string& path)
+void FileRepository::addLastPath(const std::string& p)
 {
+    // replacing every occurences of "//" by "/"
+    std::string path = cleanPath( p );
+
     std::vector<std::string> entries;
     size_t p0 = 0;
     size_t p1;
