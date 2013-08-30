@@ -22,78 +22,25 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "initCompliant.h"
-#include "CompliantSolverMerger.h"
-#include <sofa/gui/OperationFactory.h>
-#include <sofa/gui/MouseOperations.h>
+#ifndef INITCompliantGUI_H
+#define INITCompliantGUI_H
+
+
+#include <sofa/helper/system/config.h>
+#include <sofa/simulation/common/Node.h>
+
+#ifdef SOFA_BUILD_COMPLIANT_GUI
+#define SOFA_Compliant_gui_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#define SOFA_Compliant_gui_API  SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
 
 namespace sofa
 {
 
-
-//simulation::Node::SPtr compliantAttachNode( simulation::Node* pickedNode, simulation::Node* mouseNode ){
-
-//}
-
-
-
-namespace component
-{
-
-//Here are just several convenient functions to help user to know what contains the plugin
-
-extern "C" {
-    SOFA_Compliant_API void initExternalModule();
-    SOFA_Compliant_API const char* getModuleName();
-    SOFA_Compliant_API const char* getModuleVersion();
-    SOFA_Compliant_API const char* getModuleLicense();
-    SOFA_Compliant_API const char* getModuleDescription();
-    SOFA_Compliant_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-
-        component::collision::CompliantSolverMerger::add();
-    }
-}
-
-const char* getModuleName()
-{
-    return "Compliant";
-}
-
-const char* getModuleVersion()
-{
-    return "0.2";
-}
-
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-
-const char* getModuleDescription()
-{
-    return "Simulation of deformable object using a formulation similar to the KKT system for hard constraints, regularized using a compliance matrix";
-}
-
-const char* getModuleComponentList()
-{
-    return ""; /// @TODO
-}
-
-
+//simulation::Node::SPtr compliantAttachNode( simulation::Node* pickedNode, simulation::Node* mouseNode );
 
 }
 
-}
-
-
-//SOFA_LINK_CLASS(MyMappingPendulumInPlane)
-
+#endif // INITCompliantGUI_H

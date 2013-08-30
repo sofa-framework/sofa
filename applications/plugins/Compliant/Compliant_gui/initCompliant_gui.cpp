@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "initCompliant.h"
-#include "CompliantSolverMerger.h"
+#include "initCompliant_gui.h"
+#include "CompliantAttachPerformer.h"
 #include <sofa/gui/OperationFactory.h>
 #include <sofa/gui/MouseOperations.h>
 
@@ -43,12 +43,12 @@ namespace component
 //Here are just several convenient functions to help user to know what contains the plugin
 
 extern "C" {
-    SOFA_Compliant_API void initExternalModule();
-    SOFA_Compliant_API const char* getModuleName();
-    SOFA_Compliant_API const char* getModuleVersion();
-    SOFA_Compliant_API const char* getModuleLicense();
-    SOFA_Compliant_API const char* getModuleDescription();
-    SOFA_Compliant_API const char* getModuleComponentList();
+    SOFA_Compliant_gui_API void initExternalModule();
+    SOFA_Compliant_gui_API const char* getModuleName();
+    SOFA_Compliant_gui_API const char* getModuleVersion();
+    SOFA_Compliant_gui_API const char* getModuleLicense();
+    SOFA_Compliant_gui_API const char* getModuleDescription();
+    SOFA_Compliant_gui_API const char* getModuleComponentList();
 }
 
 void initExternalModule()
@@ -58,13 +58,13 @@ void initExternalModule()
     {
         first = false;
 
-        component::collision::CompliantSolverMerger::add();
+        gui::RegisterOperation("CompliantAttach").add< gui::CompliantAttachOperation >();
     }
 }
 
 const char* getModuleName()
 {
-    return "Compliant";
+    return "Compliant_gui";
 }
 
 const char* getModuleVersion()
@@ -80,7 +80,7 @@ const char* getModuleLicense()
 
 const char* getModuleDescription()
 {
-    return "Simulation of deformable object using a formulation similar to the KKT system for hard constraints, regularized using a compliance matrix";
+    return "Gui for Compliant plugin";
 }
 
 const char* getModuleComponentList()

@@ -4,8 +4,6 @@ set(HEADER_FILES
 
 	initCompliant.h
     CompliantAttachButtonSetting.h
-    CompliantAttachPerformer.h
-    CompliantAttachPerformer.inl
     UniformCompliance.h
     UniformCompliance.inl
     ComplianceSolver.h
@@ -43,7 +41,6 @@ set(SOURCE_FILES
 
 	initCompliant.cpp
     CompliantAttachButtonSetting.cpp
-    CompliantAttachPerformer.cpp
     UniformCompliance.cpp
     DiagonalCompliance.cpp
     ComplianceSolver.cpp
@@ -75,7 +72,7 @@ endif()
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_Compliant")
-AddLinkerDependencies(Flexible SofaEigen2Solver SofaGuiMain SofaSimulationGraph amd lapack blas camd colamd cholmod)
+AddLinkerDependencies(Flexible SofaEigen2Solver SofaSimulationGraph amd lapack blas camd colamd cholmod)
 
 # WIN32: copy the needed dlls from the lib dir to the Sofa bin dir
 if(WIN32)
