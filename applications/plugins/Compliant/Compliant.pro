@@ -8,7 +8,6 @@ DEFINES += SOFA_BUILD_Compliant
 SOURCES = \
     initCompliant.cpp \
     CompliantAttachButtonSetting.cpp \
-    CompliantAttachPerformer.cpp \
     UniformCompliance.cpp \
     DiagonalCompliance.cpp \
     ComplianceSolver.cpp \
@@ -27,8 +26,6 @@ SOURCES = \
 HEADERS = \
     initCompliant.h \
     CompliantAttachButtonSetting.h \
-    CompliantAttachPerformer.h \
-    CompliantAttachPerformer.inl \
     UniformCompliance.h \
     UniformCompliance.inl \
     ComplianceSolver.h \
