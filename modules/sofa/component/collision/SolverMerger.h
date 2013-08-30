@@ -26,7 +26,7 @@
 #ifndef SOFA_COMPONENT_COLLISION_SOLVERMERGER_H
 #define SOFA_COMPONENT_COLLISION_SOLVERMERGER_H
 
-
+#include "../component.h"
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/behavior/ConstraintSolver.h>
@@ -52,7 +52,7 @@ struct SolverSet
     core::behavior::ConstraintSolver::SPtr constraintSolver;
 };
 
-class SolverMerger
+class SOFA_MISC_COLLISION_API SolverMerger
 {
 public:
     static SolverSet merge(core::behavior::OdeSolver* solver1, core::behavior::OdeSolver* solver2);

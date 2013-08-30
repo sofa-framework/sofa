@@ -19,6 +19,13 @@ set(SOURCE_FILES
 	)
 
 
+if(WIN32)
+	include_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Include")
+	link_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Lib")
+else()
+	include_directories("/usr/include/suitesparse/")
+endif()
+
 	
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
