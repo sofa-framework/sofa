@@ -28,7 +28,7 @@
 #include "initCompliant_gui.h"
 #include <sofa/component/collision/InteractionPerformer.h>
 #include <sofa/component/collision/BaseContactMapper.h>
-#include <Flexible/deformationMapping/DistanceMapping.h>
+#include <deformationMapping/DistanceMapping.h>
 #include <sofa/component/container/MechanicalObject.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/simulation/common/Node.h>
