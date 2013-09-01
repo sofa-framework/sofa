@@ -19,7 +19,7 @@ set(SOURCE_FILES
 add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
 add_test(${PROJECT_NAME} COMMAND ${PROJECT_NAME})
 
-if(UNIT-TESTS_BUILD_GTEST OR WIN32)
+if(SOFA-MISC_BUILD_GTEST OR WIN32)
     include_directories("${SOFA_EXTLIBS_DIR}/gtest/include")
 endif()
 
