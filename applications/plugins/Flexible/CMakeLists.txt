@@ -150,7 +150,7 @@ endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-AddCompilerDefinitions("SOFA_BUILD_Flexible" )
+AddCompilerDefinitions("SOFA_BUILD_Flexible")
 AddLinkerDependencies(SofaBaseVisual)
 
 if(SOFA-PLUGIN_IMAGE)
@@ -170,7 +170,7 @@ if(SOFA-PLUGIN_IMAGE)
 endif()
 
 if(WIN32)
-	include_directories("${SOFA_APPLICATIONS_PLUGINS_DIR}/SuiteSparse/cholmod/Include")
+	include_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Include")
 
 	AddCompilerDefinitions("EIGEN_DONT_ALIGN")
 else()
