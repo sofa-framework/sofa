@@ -91,15 +91,15 @@ public:
 
 // Specializations
 #ifndef SOFA_FLOAT
-template <>
+template <> SOFA_BASE_COLLISION_API
 Vector3 TSphere<defaulttype::Vec3dTypes >::getContactPointByNormal( const Vector3& /*contactNormal*/ );
-template <>
+template <> SOFA_BASE_COLLISION_API
 Vector3 TSphere<defaulttype::Vec3dTypes >::getContactPointWithSurfacePoint( const Vector3& );
 #endif
 #ifndef SOFA_DOUBLE
-template <>
+template <> SOFA_BASE_COLLISION_API
 Vector3 TSphere<defaulttype::Vec3fTypes >::getContactPointByNormal( const Vector3& /*contactNormal*/ );
-template <>
+template <> SOFA_BASE_COLLISION_API
 Vector3 TSphere<defaulttype::Vec3fTypes >::getContactPointWithSurfacePoint( const Vector3& );
 #endif
 
