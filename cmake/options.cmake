@@ -68,9 +68,15 @@ option(SOFA-EXTERNAL_HAVE_GLEW "Use the GLEW library" ON)
 
 ## ffmpeg
 option(SOFA-EXTERNAL_HAVE_FFMPEG "Use the FFMPEG library" OFF) # SOFA_HAVE_FFMPEG
+if(SOFA-EXTERNAL_HAVE_FFMPEG)
+	list(APPEND compilerDefines SOFA_HAVE_FFMPEG)
+endif()
 
 ## METIS
 option(SOFA-EXTERNAL_HAVE_METIS "Use Metis" OFF) # SOFA_HAVE_METIS
+if(SOFA-EXTERNAL_HAVE_METIS)
+	list(APPEND compilerDefines SOFA_HAVE_METIS)
+endif()
 
 ## CSPARSE
 option(SOFA-EXTERNAL_HAVE_CSPARSE "Use CSparse" OFF)
@@ -90,6 +96,14 @@ if(SOFA-MISC_NO_OPENGL)
 else()
 	set(SOFA_VISUAL_LIB SofaOpenglVisual)
 endif()
+
+## SOFA_NO_UPDATE_BBOX
+option(SOFA-MISC_NO_UPDATE_BBOX "No BBOX update" OFF) # SOFA_NO_UPDATE_BBOX
+if(SOFA-MISC_NO_UPDATE_BBOX)
+	list(APPEND compilerDefines SOFA_NO_UPDATE_BBOX)
+endif()
+
+
 
 ## application
 option(SOFA-APPLICATION_GENERATEDOC "Build GenerateCoc application " OFF)
