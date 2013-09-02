@@ -53,39 +53,73 @@ class RigidConstraint : public core::behavior::ProjectiveConstraintSet<DataTypes
 public:
     SOFA_CLASS(SOFA_TEMPLATE(RigidConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, DataTypes));
 
+    typedef typename DataTypes::Real Real;
+    typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef Data<typename DataTypes::VecCoord> DataVecCoord;
+    typedef typename DataTypes::Deriv Deriv;
+    typedef typename DataTypes::VecDeriv VecDeriv;
     typedef Data<typename DataTypes::VecDeriv> DataVecDeriv;
     typedef Data<typename DataTypes::MatrixDeriv> DataMatrixDeriv;
+    typedef typename DataTypes::MatrixDeriv::RowIterator MatrixDerivRowIterator;
+    typedef typename DataTypes::MatrixDeriv::RowType MatrixDerivRowType;
 
     Data<vector<unsigned> > f_index;   ///< Indices of the constrained frames
     Data<double> _drawSize;
 
+    VecCoord oldPos;
+
     // -- Constraint interface
-    virtual void init() { Inherit1::init();    }
+    virtual void init()
+    {
+        Inherit1::init();
+        const vector<unsigned> & indices = f_index.getValue();
+        oldPos.resize(indices.size());
+        helper::ReadAccessor< Data< VecCoord > > pos(*this->getMState()->read(core::ConstVecCoordId::position()));
+        for(unsigned i=0; i<indices.size(); i++)       oldPos[i]=pos[indices[i]];
+    }
+
+
+    template <class VecDerivType>
+    void projectResponseT( VecDerivType& res)
+    {
+        const vector<unsigned> & indices = f_index.getValue();
+        for(unsigned i=0; i<indices.size(); i++)            res[indices[i]].setRigid( oldPos[i]);
+    }
 
     virtual void projectResponse(const core::MechanicalParams* /*mparams*/, DataVecDeriv& resData)
     {
-//        helper::WriteAccessor<DataVecDeriv> res = resData;
-//        const vector<unsigned> & indices = f_index.getValue();
-//        for(unsigned i=0; i<indices.size(); i++) res[indices[i]].setRigid();
+        helper::WriteAccessor<DataVecDeriv> res = resData;
+        projectResponseT<VecDeriv>( res.wref());
     }
 
-    virtual void projectVelocity(const core::MechanicalParams* /*mparams*/, DataVecDeriv& vData)
+    virtual void projectVelocity(const core::MechanicalParams* /*mparams*/, DataVecDeriv& resData)
     {
-        helper::WriteAccessor<DataVecDeriv> res = vData;
-        const vector<unsigned> & indices = f_index.getValue();
-        for(unsigned i=0; i<indices.size(); i++)            res[indices[i]].setRigid();
+        helper::WriteAccessor<DataVecDeriv> res = resData;
+        projectResponseT<VecDeriv>( res.wref());
     }
 
     virtual void projectPosition(const core::MechanicalParams* /*mparams*/, DataVecCoord& xData)
     {
         helper::WriteAccessor<DataVecCoord> res = xData;
         const vector<unsigned> & indices = f_index.getValue();
-        for(unsigned i=0; i<indices.size(); i++)            res[indices[i]].setRigid();
+        oldPos.resize(indices.size());
+        for(unsigned i=0; i<indices.size(); i++)      { oldPos[i]=res[indices[i]];  res[indices[i]].setRigid(); }
     }
 
-    virtual void projectJacobianMatrix(const core::MechanicalParams* /* PARAMS FIRST */, DataMatrixDeriv& ) {}
+    virtual void projectJacobianMatrix(const core::MechanicalParams* /*mparams*/, DataMatrixDeriv& cData)
+    {
+        helper::WriteAccessor<DataMatrixDeriv> c = cData;
+
+        MatrixDerivRowIterator rowIt = c->begin();
+        MatrixDerivRowIterator rowItEnd = c->end();
+
+        while (rowIt != rowItEnd)
+        {
+            projectResponseT<MatrixDerivRowType>(rowIt.row());
+            ++rowIt;
+        }
+    }
 
     virtual void applyConstraint(defaulttype::BaseMatrix *, unsigned int /*offset*/) {}
     virtual void applyConstraint(defaulttype::BaseVector *, unsigned int /*offset*/) {}
