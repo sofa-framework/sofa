@@ -73,92 +73,6 @@ public:
     typedef SpatialCoord CPos;
     typedef SpatialCoord DPos;
 
-    class Deriv : public Vec<VSize,Real>
-    {
-        typedef Vec<VSize,Real> MyVec;
-    public:
-        enum { spatial_dimensions = _spatial_dimensions }; // different from Vec::spatial_dimensions == 30
-
-        Deriv() { MyVec::clear(); }
-        Deriv( const Vec<VSize,Real>& d):MyVec(d) {}
-        Deriv( const SpatialCoord& c, const Frame& a) { getVCenter()=c; getVQuadratic()=a;}
-        Deriv ( const SpatialCoord &center, const Affine &affine, const Affine &square=Affine(), const CrossM &crossterms=CrossM())
-        {
-            getVCenter() = center;
-            for(unsigned int i=0; i<spatial_dimensions; ++i)
-            {
-                for(unsigned int j=0; j<spatial_dimensions; ++j)
-                {
-                    Frame& quadratic=getVQuadratic();
-                    quadratic[i][j]=affine[i][j];
-                    quadratic[i][j+spatial_dimensions]=square[i][j];
-                }
-            }
-            for(unsigned int i=0; i<spatial_dimensions; ++i)
-            {
-                for(unsigned int j=0; j<num_cross_terms; ++j)
-                {
-                    Frame& quadratic=getVQuadratic();
-                    quadratic[i][j+2*spatial_dimensions]=crossterms[i][j];
-                }
-            }
-        }
-
-        typedef Real value_type;
-
-        /// point
-        SpatialCoord& getVCenter() { return *reinterpret_cast<SpatialCoord*>(&this->elems[0]); }
-        const SpatialCoord& getVCenter() const { return *reinterpret_cast<const SpatialCoord*>(&this->elems[0]); }
-
-        /// local frame
-        Frame& getVQuadratic() { return *reinterpret_cast<Frame*>(&this->elems[spatial_dimensions]); }
-        const Frame& getVQuadratic() const { return *reinterpret_cast<const Frame*>(&this->elems[spatial_dimensions]); }
-
-
-        Affine getAffine() const
-        {
-            Affine m;
-            for (unsigned int i = 0; i < spatial_dimensions; ++i)
-                for (unsigned int j = 0; j < spatial_dimensions; ++j)
-                    m[i][j]=getVQuadratic()[i][j];
-            return  m;
-        }
-
-        /// project to a rigid motion
-        void setRigid()
-        {
-            Frame& q = getVQuadratic();
-            // first matrix is skew-symmetric
-            for(unsigned i=0; i<spatial_dimensions; i++) q[i][i] = 0.0;
-            for(unsigned i=0; i<spatial_dimensions; i++)
-                for(unsigned j=i+1; j<spatial_dimensions; j++)
-                {
-                    q[i][j] = (q[i][j] - q[j][i]) *(Real)0.5;
-                    q[j][i] = - q[i][j];
-                }
-
-            // the rest is null
-            for(unsigned i=0; i<spatial_dimensions; i++)
-                for(unsigned j=spatial_dimensions; j<num_quadratic_terms; j++)
-                    q[i][j] = 0.;
-        }
-
-        template< int N, class Real2 > // N <= VSize
-        void operator+=( const Vec<N,Real2>& p ) { for(int i=0;i<N;++i) this->elems[i] += (Real)p[i]; }
-        template< int N, class Real2 > // N <= VSize
-        void operator=( const Vec<N,Real2>& p ) { for(int i=0;i<N;++i) this->elems[i] = (Real)p[i]; }
-    };
-
-    typedef vector<Deriv> VecDeriv;
-    typedef MapMapSparseMatrix<Deriv> MatrixDeriv;
-
-    static Deriv interpolate ( const helper::vector< Deriv > & ancestors, const helper::vector< Real > & coefs )
-    {
-        assert ( ancestors.size() == coefs.size() );
-        Deriv c;
-        for ( unsigned int i = 0; i < ancestors.size(); i++ )     c += ancestors[i] * coefs[i];
-        return c;
-    }
 
 
     class Coord : public Vec<VSize,Real>
@@ -314,6 +228,130 @@ public:
         invertMatrix(m,c.getAffine());
 #endif
         return Coord( -(m*c.getCenter()),m );
+    }
+
+
+
+    class Deriv : public Vec<VSize,Real>
+    {
+        typedef Vec<VSize,Real> MyVec;
+    public:
+        enum { spatial_dimensions = _spatial_dimensions }; // different from Vec::spatial_dimensions == 30
+
+        Deriv() { MyVec::clear(); }
+        Deriv( const Vec<VSize,Real>& d):MyVec(d) {}
+        Deriv( const SpatialCoord& c, const Frame& a) { getVCenter()=c; getVQuadratic()=a;}
+        Deriv ( const SpatialCoord &center, const Affine &affine, const Affine &square=Affine(), const CrossM &crossterms=CrossM())
+        {
+            getVCenter() = center;
+            for(unsigned int i=0; i<spatial_dimensions; ++i)
+            {
+                for(unsigned int j=0; j<spatial_dimensions; ++j)
+                {
+                    Frame& quadratic=getVQuadratic();
+                    quadratic[i][j]=affine[i][j];
+                    quadratic[i][j+spatial_dimensions]=square[i][j];
+                }
+            }
+            for(unsigned int i=0; i<spatial_dimensions; ++i)
+            {
+                for(unsigned int j=0; j<num_cross_terms; ++j)
+                {
+                    Frame& quadratic=getVQuadratic();
+                    quadratic[i][j+2*spatial_dimensions]=crossterms[i][j];
+                }
+            }
+        }
+
+        typedef Real value_type;
+
+        /// point
+        SpatialCoord& getVCenter() { return *reinterpret_cast<SpatialCoord*>(&this->elems[0]); }
+        const SpatialCoord& getVCenter() const { return *reinterpret_cast<const SpatialCoord*>(&this->elems[0]); }
+
+        /// local frame
+        Frame& getVQuadratic() { return *reinterpret_cast<Frame*>(&this->elems[spatial_dimensions]); }
+        const Frame& getVQuadratic() const { return *reinterpret_cast<const Frame*>(&this->elems[spatial_dimensions]); }
+
+
+        Affine getAffine() const
+        {
+            Affine m;
+            for (unsigned int i = 0; i < spatial_dimensions; ++i)
+                for (unsigned int j = 0; j < spatial_dimensions; ++j)
+                    m[i][j]=getVQuadratic()[i][j];
+            return  m;
+        }
+
+        /// project to a rigid motion
+        void setRigid(const Coord& c)
+        {
+            // Compute velocity tensor W = Adot.Ainv
+            Affine Ainv;  invertMatrix(Ainv,c.getAffine());
+            Affine W = getAffine() * Ainv;
+
+            // make it skew-symmetric
+            for(unsigned i=0; i<spatial_dimensions; i++) W[i][i] = 0.0;
+            for(unsigned i=0; i<spatial_dimensions; i++)
+            {
+                for(unsigned j=i+1; j<spatial_dimensions; j++)
+                {
+                    W[i][j] = (W[i][j] - W[j][i]) *(Real)0.5;
+                    W[j][i] = - W[i][j];
+                }
+            }
+
+            // retrieve global velocity : Rdot = W.R
+            Affine R;
+            helper::Decompose<Real>::polarDecomposition( c.getAffine() , R );
+            Affine Rdot = W*R;
+
+            // assign rigid velocity
+            Frame& q = getVQuadratic();
+            for(unsigned i=0; i<spatial_dimensions; i++)
+                for(unsigned j=0; j<spatial_dimensions; j++)
+                    q[i][j] = Rdot[i][j];
+
+            // the rest is null
+            for(unsigned i=0; i<spatial_dimensions; i++)
+                for(unsigned j=spatial_dimensions; j<num_quadratic_terms; j++)
+                    q[i][j] = 0.;
+        }
+
+        /// project to a rigid motion
+        void setRigid()
+        {
+            Frame& q = getVQuadratic();
+            // first matrix is skew-symmetric
+            for(unsigned i=0; i<spatial_dimensions; i++) q[i][i] = 0.0;
+            for(unsigned i=0; i<spatial_dimensions; i++)
+                for(unsigned j=i+1; j<spatial_dimensions; j++)
+                {
+                    q[i][j] = (q[i][j] - q[j][i]) *(Real)0.5;
+                    q[j][i] = - q[i][j];
+                }
+
+            // the rest is null
+            for(unsigned i=0; i<spatial_dimensions; i++)
+                for(unsigned j=spatial_dimensions; j<num_quadratic_terms; j++)
+                    q[i][j] = 0.;
+        }
+
+        template< int N, class Real2 > // N <= VSize
+        void operator+=( const Vec<N,Real2>& p ) { for(int i=0;i<N;++i) this->elems[i] += (Real)p[i]; }
+        template< int N, class Real2 > // N <= VSize
+        void operator=( const Vec<N,Real2>& p ) { for(int i=0;i<N;++i) this->elems[i] = (Real)p[i]; }
+    };
+
+    typedef vector<Deriv> VecDeriv;
+    typedef MapMapSparseMatrix<Deriv> MatrixDeriv;
+
+    static Deriv interpolate ( const helper::vector< Deriv > & ancestors, const helper::vector< Real > & coefs )
+    {
+        assert ( ancestors.size() == coefs.size() );
+        Deriv c;
+        for ( unsigned int i = 0; i < ancestors.size(); i++ )     c += ancestors[i] * coefs[i];
+        return c;
     }
 
 
