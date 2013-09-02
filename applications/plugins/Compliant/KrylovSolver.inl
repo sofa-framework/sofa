@@ -1,21 +1,20 @@
-#include "MinresSolver.h"
+#ifndef MINRESSOLVER_INL
+#define MINRESSOLVER_INL
 
-#include <sofa/core/ObjectFactory.h>
+#include "KrylovSolver.h"
+
 
 #include "utils/scoped.h"
-#include "utils/minres.h"
 
 namespace sofa {
 namespace component {
 namespace linearsolver {
 
-SOFA_DECL_CLASS(MinresSolver);
-int MinresSolverClass = core::RegisterObject("Sparse Minres linear solver").add< MinresSolver >();
-			
 
-
-MinresSolver::MinresSolver() 
-	: precision(initData(&precision, 
+template<class NumericalSolver>
+KrylovSolver<NumericalSolver>::KrylovSolver()
+    : KKTSolver(),
+      precision(initData(&precision,
 	                     SReal(1e-3),
 	                     "precision",
 	                     "residual norm threshold")),
@@ -71,34 +70,35 @@ struct kkt {
 };
 }
 			
-			
-void MinresSolver::factor(const AssembledSystem& ) { }
+template<class NumericalSolver>
+void KrylovSolver<NumericalSolver>::factor(const AssembledSystem& ) { }
 
-void MinresSolver::solve(AssembledSystem::vec& x,
+template<class NumericalSolver>
+void KrylovSolver<NumericalSolver>::solve(AssembledSystem::vec& x,
                       const AssembledSystem& system,
                       const AssembledSystem::vec& b) const {
 	// TODO timer is not thread safe :-/
 	// scoped::timer step("system solve");
-				
-	typedef ::minres<SReal> solver_type;
-				
-	solver_type::params p;
+
+    typename NumericalSolver::params p;
 	p.iterations = iterations.getValue();
 	p.precision = precision.getValue();
 				
 	if( relative.getValue() ) p.precision *= b.norm();
 				
 	kkt A(system);
-	solver_type::solve(x, A, b, p);
+    NumericalSolver::solve(x, A, b, p);
 	
 	if( verbose.getValue() ) {
 		std::cerr << "minres: " << p.iterations << " iterations, absolute residual: " << (A(x) - b).norm() << std::endl;
 		
 	}
 }
+
 			
 }
 }
 }
 
 
+#endif // MINRESSOLVER_INL

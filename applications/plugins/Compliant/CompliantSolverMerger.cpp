@@ -7,7 +7,7 @@
 #include "AssembledSolver.h"
 #include "ComplianceSolver.h"
 
-#include "MinresSolver.h"
+#include "KrylovSolver.h"
 #include "LDLTSolver.h"
 
 namespace sofa
@@ -18,7 +18,14 @@ namespace collision
 {
 
 
-
+    core::behavior::BaseLinearSolver::SPtr createCgSolver(linearsolver::CgSolver& solver1, linearsolver::CgSolver& solver2)
+    {
+        linearsolver::CgSolver::SPtr lsolver = sofa::core::objectmodel::New<linearsolver::CgSolver>();
+        lsolver->precision.setValue( std::min(solver1.precision.getValue(),solver2.precision.getValue())  );
+        lsolver->relative.setValue( solver1.relative.getValue() || solver2.relative.getValue() );
+        lsolver->iterations.setValue( std::max(solver1.iterations.getValue(),solver2.iterations.getValue())  );
+        return lsolver;
+    }
 
     core::behavior::BaseLinearSolver::SPtr createMinresSolver(linearsolver::MinresSolver& solver1, linearsolver::MinresSolver& solver2)
     {
@@ -77,6 +84,7 @@ namespace collision
 
     CompliantSolverMerger::CompliantSolverMerger()
     {
+        _linearSolverDispatcher.add<linearsolver::CgSolver,linearsolver::CgSolver,createCgSolver,true>();
         _linearSolverDispatcher.add<linearsolver::MinresSolver,linearsolver::MinresSolver,createMinresSolver,true>();
         _linearSolverDispatcher.add<linearsolver::LDLTSolver,linearsolver::LDLTSolver,createLDLTSolver,true>();
     }
