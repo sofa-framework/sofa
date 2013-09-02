@@ -14,7 +14,8 @@ set(HEADER_FILES
 	AssembledRigidRigidMapping.h
 	KKTSolver.h
 	LDLTSolver.h
-	MinresSolver.h
+    KrylovSolver.h
+    KrylovSolver.inl
     AssemblyHelper.h
     AssemblyVisitor.h
 	AssembledSystem.h
@@ -49,7 +50,7 @@ set(SOURCE_FILES
 	RigidJointMapping.cpp
 	AssembledRigidRigidMapping.cpp
 	LDLTSolver.cpp
-	MinresSolver.cpp
+    KrylovSolver.cpp
 	AssemblyVisitor.cpp
 	AssembledSystem.cpp
 	AssembledSolver.cpp
@@ -72,7 +73,7 @@ endif()
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_Compliant")
-AddLinkerDependencies(Flexible SofaEigen2Solver SofaUserInteraction SofaComponentMisc SofaHelper SofaSimulationGraph amd lapack blas camd colamd cholmod)
+AddLinkerDependencies(SofaEigen2Solver SofaUserInteraction SofaComponentMisc SofaHelper SofaSimulationGraph amd lapack blas camd colamd cholmod)
 
 # WIN32: copy the needed dlls from the lib dir to the Sofa bin dir
 if(WIN32)
