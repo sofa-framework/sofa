@@ -388,10 +388,101 @@ public:
     }
 
 
-    // requires dJ/dp. Not Yet implemented..
-    KBlock getK(const OutDeriv& /*childForce*/)
+
+    /// @warning assembled geometric stiffness is only implemented for SVD method
+    // see the maple file doc/corotational_geometricStiffnessMatrix.mw
+    KBlock getK(const OutDeriv& childForce)
     {
-        return KBlock();
+        if( !_geometricStiffnessData.dROverdF() || _geometricStiffnessData.degenerated() ) return KBlock();
+
+        // todo could be improved by working directly on the vector version of childForce
+        Affine fc = StressVoigtToMat( childForce.getStrain() );
+        const Mat<frame_size,frame_size,Real> &dR = *_geometricStiffnessData.dROverdF();
+
+        KBlock K;
+        K[0][0] = dR[0][0] * fc[0][0] + dR[1][0] * fc[1][0] + dR[2][0] * fc[2][0];
+        K[0][1] = dR[0][0] * fc[0][1] + dR[1][0] * fc[1][1] + dR[2][0] * fc[2][1];
+        K[0][2] = dR[0][0] * fc[0][2] + dR[1][0] * fc[1][2] + dR[2][0] * fc[2][2];
+        K[0][3] = dR[3][0] * fc[0][0] + dR[4][0] * fc[1][0] + dR[5][0] * fc[2][0];
+        K[0][4] = dR[3][0] * fc[0][1] + dR[4][0] * fc[1][1] + dR[5][0] * fc[2][1];
+        K[0][5] = dR[3][0] * fc[0][2] + dR[4][0] * fc[1][2] + dR[5][0] * fc[2][2];
+        K[0][6] = dR[6][0] * fc[0][0] + dR[7][0] * fc[1][0] + dR[8][0] * fc[2][0];
+        K[0][7] = dR[6][0] * fc[0][1] + dR[7][0] * fc[1][1] + dR[8][0] * fc[2][1];
+        K[0][8] = dR[6][0] * fc[0][2] + dR[7][0] * fc[1][2] + dR[8][0] * fc[2][2];
+        K[1][0] = K[0][1];//dR[0][1] * fc[0][0] + dR[1][1] * fc[1][0] + dR[2][1] * fc[2][0];
+        K[1][1] = dR[0][1] * fc[0][1] + dR[1][1] * fc[1][1] + dR[2][1] * fc[2][1];
+        K[1][2] = dR[0][1] * fc[0][2] + dR[1][1] * fc[1][2] + dR[2][1] * fc[2][2];
+        K[1][3] = dR[3][1] * fc[0][0] + dR[4][1] * fc[1][0] + dR[5][1] * fc[2][0];
+        K[1][4] = dR[3][1] * fc[0][1] + dR[4][1] * fc[1][1] + dR[5][1] * fc[2][1];
+        K[1][5] = dR[3][1] * fc[0][2] + dR[4][1] * fc[1][2] + dR[5][1] * fc[2][2];
+        K[1][6] = dR[6][1] * fc[0][0] + dR[7][1] * fc[1][0] + dR[8][1] * fc[2][0];
+        K[1][7] = dR[6][1] * fc[0][1] + dR[7][1] * fc[1][1] + dR[8][1] * fc[2][1];
+        K[1][8] = dR[6][1] * fc[0][2] + dR[7][1] * fc[1][2] + dR[8][1] * fc[2][2];
+        K[2][0] = K[0][2];//dR[0][2] * fc[0][0] + dR[1][2] * fc[1][0] + dR[2][2] * fc[2][0];
+        K[2][1] = K[1][2];//dR[0][2] * fc[0][1] + dR[1][2] * fc[1][1] + dR[2][2] * fc[2][1];
+        K[2][2] = dR[0][2] * fc[0][2] + dR[1][2] * fc[1][2] + dR[2][2] * fc[2][2];
+        K[2][3] = dR[3][2] * fc[0][0] + dR[4][2] * fc[1][0] + dR[5][2] * fc[2][0];
+        K[2][4] = dR[3][2] * fc[0][1] + dR[4][2] * fc[1][1] + dR[5][2] * fc[2][1];
+        K[2][5] = dR[3][2] * fc[0][2] + dR[4][2] * fc[1][2] + dR[5][2] * fc[2][2];
+        K[2][6] = dR[6][2] * fc[0][0] + dR[7][2] * fc[1][0] + dR[8][2] * fc[2][0];
+        K[2][7] = dR[6][2] * fc[0][1] + dR[7][2] * fc[1][1] + dR[8][2] * fc[2][1];
+        K[2][8] = dR[6][2] * fc[0][2] + dR[7][2] * fc[1][2] + dR[8][2] * fc[2][2];
+        K[3][0] = K[0][3];//dR[0][3] * fc[0][0] + dR[1][3] * fc[1][0] + dR[2][3] * fc[2][0];
+        K[3][1] = K[1][3];//dR[0][3] * fc[0][1] + dR[1][3] * fc[1][1] + dR[2][3] * fc[2][1];
+        K[3][2] = K[2][3];//dR[0][3] * fc[0][2] + dR[1][3] * fc[1][2] + dR[2][3] * fc[2][2];
+        K[3][3] = dR[3][3] * fc[0][0] + dR[4][3] * fc[1][0] + dR[5][3] * fc[2][0];
+        K[3][4] = dR[3][3] * fc[0][1] + dR[4][3] * fc[1][1] + dR[5][3] * fc[2][1];
+        K[3][5] = dR[3][3] * fc[0][2] + dR[4][3] * fc[1][2] + dR[5][3] * fc[2][2];
+        K[3][6] = dR[6][3] * fc[0][0] + dR[7][3] * fc[1][0] + dR[8][3] * fc[2][0];
+        K[3][7] = dR[6][3] * fc[0][1] + dR[7][3] * fc[1][1] + dR[8][3] * fc[2][1];
+        K[3][8] = dR[6][3] * fc[0][2] + dR[7][3] * fc[1][2] + dR[8][3] * fc[2][2];
+        K[4][0] = K[0][4];//dR[0][4] * fc[0][0] + dR[1][4] * fc[1][0] + dR[2][4] * fc[2][0];
+        K[4][1] = K[1][4];//dR[0][4] * fc[0][1] + dR[1][4] * fc[1][1] + dR[2][4] * fc[2][1];
+        K[4][2] = K[2][4];//dR[0][4] * fc[0][2] + dR[1][4] * fc[1][2] + dR[2][4] * fc[2][2];
+        K[4][3] = K[3][4];//dR[3][4] * fc[0][0] + dR[4][4] * fc[1][0] + dR[5][4] * fc[2][0];
+        K[4][4] = dR[3][4] * fc[0][1] + dR[4][4] * fc[1][1] + dR[5][4] * fc[2][1];
+        K[4][5] = dR[3][4] * fc[0][2] + dR[4][4] * fc[1][2] + dR[5][4] * fc[2][2];
+        K[4][6] = dR[6][4] * fc[0][0] + dR[7][4] * fc[1][0] + dR[8][4] * fc[2][0];
+        K[4][7] = dR[6][4] * fc[0][1] + dR[7][4] * fc[1][1] + dR[8][4] * fc[2][1];
+        K[4][8] = dR[6][4] * fc[0][2] + dR[7][4] * fc[1][2] + dR[8][4] * fc[2][2];
+        K[5][0] = K[0][5];//dR[0][5] * fc[0][0] + dR[1][5] * fc[1][0] + dR[2][5] * fc[2][0];
+        K[5][1] = K[1][5];//dR[0][5] * fc[0][1] + dR[1][5] * fc[1][1] + dR[2][5] * fc[2][1];
+        K[5][2] = K[2][5];//dR[0][5] * fc[0][2] + dR[1][5] * fc[1][2] + dR[2][5] * fc[2][2];
+        K[5][3] = K[3][5];//dR[3][5] * fc[0][0] + dR[4][5] * fc[1][0] + dR[5][5] * fc[2][0];
+        K[5][4] = K[4][5];//dR[3][5] * fc[0][1] + dR[4][5] * fc[1][1] + dR[5][5] * fc[2][1];
+        K[5][5] = dR[3][5] * fc[0][2] + dR[4][5] * fc[1][2] + dR[5][5] * fc[2][2];
+        K[5][6] = dR[6][5] * fc[0][0] + dR[7][5] * fc[1][0] + dR[8][5] * fc[2][0];
+        K[5][7] = dR[6][5] * fc[0][1] + dR[7][5] * fc[1][1] + dR[8][5] * fc[2][1];
+        K[5][8] = dR[6][5] * fc[0][2] + dR[7][5] * fc[1][2] + dR[8][5] * fc[2][2];
+        K[6][0] = K[0][6];//dR[0][6] * fc[0][0] + dR[1][6] * fc[1][0] + dR[2][6] * fc[2][0];
+        K[6][1] = K[1][6];//dR[0][6] * fc[0][1] + dR[1][6] * fc[1][1] + dR[2][6] * fc[2][1];
+        K[6][2] = K[2][6];//dR[0][6] * fc[0][2] + dR[1][6] * fc[1][2] + dR[2][6] * fc[2][2];
+        K[6][3] = K[3][6];//dR[3][6] * fc[0][0] + dR[4][6] * fc[1][0] + dR[5][6] * fc[2][0];
+        K[6][4] = K[4][6];//dR[3][6] * fc[0][1] + dR[4][6] * fc[1][1] + dR[5][6] * fc[2][1];
+        K[6][5] = K[5][6];//dR[3][6] * fc[0][2] + dR[4][6] * fc[1][2] + dR[5][6] * fc[2][2];
+        K[6][6] = dR[6][6] * fc[0][0] + dR[7][6] * fc[1][0] + dR[8][6] * fc[2][0];
+        K[6][7] = dR[6][6] * fc[0][1] + dR[7][6] * fc[1][1] + dR[8][6] * fc[2][1];
+        K[6][8] = dR[6][6] * fc[0][2] + dR[7][6] * fc[1][2] + dR[8][6] * fc[2][2];
+        K[7][0] = K[0][7];//dR[0][7] * fc[0][0] + dR[1][7] * fc[1][0] + dR[2][7] * fc[2][0];
+        K[7][1] = K[1][7];//dR[0][7] * fc[0][1] + dR[1][7] * fc[1][1] + dR[2][7] * fc[2][1];
+        K[7][2] = K[2][7];//dR[0][7] * fc[0][2] + dR[1][7] * fc[1][2] + dR[2][7] * fc[2][2];
+        K[7][3] = K[3][7];//dR[3][7] * fc[0][0] + dR[4][7] * fc[1][0] + dR[5][7] * fc[2][0];
+        K[7][4] = K[4][7];//dR[3][7] * fc[0][1] + dR[4][7] * fc[1][1] + dR[5][7] * fc[2][1];
+        K[7][5] = K[5][7];//dR[3][7] * fc[0][2] + dR[4][7] * fc[1][2] + dR[5][7] * fc[2][2];
+        K[7][6] = K[6][7];//dR[6][7] * fc[0][0] + dR[7][7] * fc[1][0] + dR[8][7] * fc[2][0];
+        K[7][7] = dR[6][7] * fc[0][1] + dR[7][7] * fc[1][1] + dR[8][7] * fc[2][1];
+        K[7][8] = dR[6][7] * fc[0][2] + dR[7][7] * fc[1][2] + dR[8][7] * fc[2][2];
+        K[8][0] = K[0][8];//dR[0][8] * fc[0][0] + dR[1][8] * fc[1][0] + dR[2][8] * fc[2][0];
+        K[8][1] = K[1][8];//dR[0][8] * fc[0][1] + dR[1][8] * fc[1][1] + dR[2][8] * fc[2][1];
+        K[8][2] = K[2][8];//dR[0][8] * fc[0][2] + dR[1][8] * fc[1][2] + dR[2][8] * fc[2][2];
+        K[8][3] = K[3][8];//dR[3][8] * fc[0][0] + dR[4][8] * fc[1][0] + dR[5][8] * fc[2][0];
+        K[8][4] = K[4][8];//dR[3][8] * fc[0][1] + dR[4][8] * fc[1][1] + dR[5][8] * fc[2][1];
+        K[8][5] = K[5][8];//dR[3][8] * fc[0][2] + dR[4][8] * fc[1][2] + dR[5][8] * fc[2][2];
+        K[8][6] = K[6][8];//dR[6][8] * fc[0][0] + dR[7][8] * fc[1][0] + dR[8][8] * fc[2][0];
+        K[8][7] = K[7][8];//dR[6][8] * fc[0][1] + dR[7][8] * fc[1][1] + dR[8][8] * fc[2][1];
+        K[8][8] = dR[6][8] * fc[0][2] + dR[7][8] * fc[1][2] + dR[8][8] * fc[2][2];
+
+        return K;
     }
 
     void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/, const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
@@ -442,6 +533,9 @@ public:
     {
         if( _geometricStiffnessData.degenerated() ) return;  // inverted or too flat -> no geometric stiffness for robustness
 
+//        df.getVec() += getK( childForce ) * dx.getVec() * kfactor;
+//        return;
+
         Affine dR;
         //if( !helper::Decompose<Real>::polarDecomposition_stable_Gradient_dQ( *_dJ_Mat1, *_dJ_Vec, *_dJ_Mat2, dx.getF(), dR ) ) return;
 
@@ -456,19 +550,21 @@ public:
         // order 0
         df.getF() += dR * StressVoigtToMat( childForce.getStrain() ) * kfactor;
 
-        if( order > 0 )
-        {
-            // order 1
-            /*for( unsigned int g=0 ; g<spatial_dimensions ; g++ )
-            {
-                for( int k=0 ; k<spatial_dimensions ; ++k ) // line of df
-                for( int l=0 ; l<material_dimensions ; ++l ) // col of df
-                for( int j=0 ; j<material_dimensions ; ++j ) // col of dR
-                for( int i=0 ; i<spatial_dimensions ; ++i ) // line of dR
-                    dR[i][j] += dROverdF[i*material_dimensions+j][k*material_dimensions+l] * dx.getGradientF(g)[k][l];
-                df.getGradientF(g) += dR * StressVoigtToMat( childForce.getStrainGradient(g) ) * kfactor;
-            }*/
-        }
+
+
+//        if( order > 0 )
+//        {
+//            // order 1
+//            for( unsigned int g=0 ; g<spatial_dimensions ; g++ )
+//            {
+//                for( int k=0 ; k<spatial_dimensions ; ++k ) // line of df
+//                for( int l=0 ; l<material_dimensions ; ++l ) // col of df
+//                for( int j=0 ; j<material_dimensions ; ++j ) // col of dR
+//                for( int i=0 ; i<spatial_dimensions ; ++i ) // line of dR
+//                    dR[i][j] += dROverdF[i*material_dimensions+j][k*material_dimensions+l] * dx.getGradientF(g)[k][l];
+//                df.getGradientF(g) += dR * StressVoigtToMat( childForce.getStrainGradient(g) ) * kfactor;
+//            }
+//        }
     }
 };
 
@@ -610,10 +706,55 @@ public:
     }
 
 
-    // requires dJ/dp. Not Yet implemented..
-    KBlock getK(const OutDeriv& /*childForce*/)
+    /// @warning assembled geometric stiffness is only implemented for SVD method
+    // see the maple file doc/corotational_geometricStiffnessMatrix.mw
+    KBlock getK(const OutDeriv& childForce)
     {
-        return KBlock();
+        if( !_geometricStiffnessData.dROverdF() || _geometricStiffnessData.degenerated() ) return KBlock();
+
+        // todo could be improved by working directly on the vector version of childForce
+        Mat<material_dimensions,material_dimensions,Real> fc = StressVoigtToMat( childForce.getStrain() );
+        const Mat<frame_size,frame_size,Real> &dR = *_geometricStiffnessData.dROverdF();
+
+        KBlock K;
+        K[0][0] = dR[0][0] * fc[0][0] + dR[1][0] * fc[1][0];
+        K[0][1] = dR[0][0] * fc[0][1] + dR[1][0] * fc[1][1];
+        K[0][2] = dR[2][0] * fc[0][0] + dR[3][0] * fc[1][0];
+        K[0][3] = dR[2][0] * fc[0][1] + dR[3][0] * fc[1][1];
+        K[0][4] = dR[4][0] * fc[0][0] + dR[5][0] * fc[1][0];
+        K[0][5] = dR[4][0] * fc[0][1] + dR[5][0] * fc[1][1];
+        K[1][0] = K[0][1]; //dR[0][1] * fc[0][0] + dR[1][1] * fc[1][0];
+        K[1][1] = dR[0][1] * fc[0][1] + dR[1][1] * fc[1][1];
+        K[1][2] = dR[2][1] * fc[0][0] + dR[3][1] * fc[1][0];
+        K[1][3] = dR[2][1] * fc[0][1] + dR[3][1] * fc[1][1];
+        K[1][4] = dR[4][1] * fc[0][0] + dR[5][1] * fc[1][0];
+        K[1][5] = dR[4][1] * fc[0][1] + dR[5][1] * fc[1][1];
+        K[2][0] = K[0][2]; //dR[0][2] * fc[0][0] + dR[1][2] * fc[1][0];
+        K[2][1] = K[1][2]; //dR[0][2] * fc[0][1] + dR[1][2] * fc[1][1];
+        K[2][2] = dR[2][2] * fc[0][0] + dR[3][2] * fc[1][0];
+        K[2][3] = dR[2][2] * fc[0][1] + dR[3][2] * fc[1][1];
+        K[2][4] = dR[4][2] * fc[0][0] + dR[5][2] * fc[1][0];
+        K[2][5] = dR[4][2] * fc[0][1] + dR[5][2] * fc[1][1];
+        K[3][0] = K[0][3]; //dR[0][3] * fc[0][0] + dR[1][3] * fc[1][0];
+        K[3][1] = K[1][3]; //dR[0][3] * fc[0][1] + dR[1][3] * fc[1][1];
+        K[3][2] = K[2][3]; //dR[2][3] * fc[0][0] + dR[3][3] * fc[1][0];
+        K[3][3] = dR[2][3] * fc[0][1] + dR[3][3] * fc[1][1];
+        K[3][4] = dR[4][3] * fc[0][0] + dR[5][3] * fc[1][0];
+        K[3][5] = dR[4][3] * fc[0][1] + dR[5][3] * fc[1][1];
+        K[4][0] = K[0][4]; //dR[0][4] * fc[0][0] + dR[1][4] * fc[1][0];
+        K[4][1] = K[1][4]; //dR[0][4] * fc[0][1] + dR[1][4] * fc[1][1];
+        K[4][2] = K[2][4]; //dR[2][4] * fc[0][0] + dR[3][4] * fc[1][0];
+        K[4][3] = K[3][4]; //dR[2][4] * fc[0][1] + dR[3][4] * fc[1][1];
+        K[4][4] = dR[4][4] * fc[0][0] + dR[5][4] * fc[1][0];
+        K[4][5] = dR[4][4] * fc[0][1] + dR[5][4] * fc[1][1];
+        K[5][0] = K[0][5]; //dR[0][5] * fc[0][0] + dR[1][5] * fc[1][0];
+        K[5][1] = K[1][5]; //dR[0][5] * fc[0][1] + dR[1][5] * fc[1][1];
+        K[5][2] = K[2][5]; //dR[2][5] * fc[0][0] + dR[3][5] * fc[1][0];
+        K[5][3] = K[3][5]; //dR[2][5] * fc[0][1] + dR[3][5] * fc[1][1];
+        K[5][4] = K[4][5]; //dR[4][5] * fc[0][0] + dR[5][5] * fc[1][0];
+        K[5][5] = dR[4][5] * fc[0][1] + dR[5][5] * fc[1][1];
+
+        return K;
     }
     void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/, const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
     void addDForce_qr( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
