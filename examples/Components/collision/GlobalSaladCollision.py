@@ -2,35 +2,6 @@ import Sofa
 import random
 from PrimitiveCreation import *
 from cmath import *
-############################################################################################
-# this is a PythonScriptController example script
-############################################################################################
-
-
-
-############################################################################################
-# following defs are used later in the script
-############################################################################################
-
-
-# utility methods
-
-def randomColor():
-	colorRandom = random.randint(0,6)
-	col = 'white'
-	if colorRandom==1:
-		col = 'red'
-	if colorRandom==2:
-		col = 'green'
-	if colorRandom==3:
-		col = 'blue'
-	if colorRandom==4:
-		col = 'yellow'
-	if colorRandom==5:
-		col = 'cyan'
-	if colorRandom==6:
-		col = 'magenta'
-	return col
 
 ############################################################################################
 # following defs are optionnal entry points, called by the PythonScriptController component;
