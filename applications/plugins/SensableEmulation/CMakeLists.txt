@@ -1,14 +1,10 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
-##plugin external dependencies
-#find_package(SofaSensableEmulationLibs REQUIRED)
-#include_directories(${SOFASENSABLEEMULATION_INCLUDE_DIRS})
-
 set(HEADER_FILES
 
     #NewOmniDriverEmu.h 
     OmniDriverEmu.h
-
+	pthread/pthread.h
 	)
 
 set(SOURCE_FILES
@@ -24,9 +20,15 @@ set(README_FILES
 	PluginSensableEmulation.txt
 	)
 
+IF(WIN32)
+	set(THREADS_USE_PTHREADS_WIN32 true)
+ENDIF()
+find_package(Threads REQUIRED)
+include_directories(${THREADS_PTHREADS_INCLUDE_DIR})
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_SENSABLEEMULATIONPLUGIN")
-AddLinkerDependencies(SofaGuiQt SofaComponentGeneral SofaHaptics )
+AddLinkerDependencies(SofaGuiQt SofaComponentGeneral SofaHaptics ${CMAKE_THREAD_LIBS_INIT})
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
