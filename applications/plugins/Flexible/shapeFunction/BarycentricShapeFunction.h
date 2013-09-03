@@ -62,6 +62,7 @@ public:
     typedef typename Inherit::VGradient VGradient;
     typedef typename Inherit::VHessian VHessian;
     typedef typename Inherit::VRef VRef;
+	typedef typename Inherit::Cell Cell;
 
     typedef sofa::core::topology::BaseMeshTopology Topo;
     Topo* parentTopology;
@@ -80,7 +81,7 @@ public:
     Data< bool > f_useLocalOrientation;
     //@}
 
-    void computeShapeFunction(const Coord& childPosition, MaterialToSpatial& M, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL, const int cell=-1)
+	void computeShapeFunction(const Coord& childPosition, MaterialToSpatial& M, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL, const Cell cell=-1)
     {
         M=MaterialToSpatial();
         for ( unsigned int i = 0; i < material_dimensions; i++ ) M[i][i]=(Real)1.; //identity
