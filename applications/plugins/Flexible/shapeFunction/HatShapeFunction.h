@@ -63,7 +63,8 @@ public:
     typedef typename Inherit::VReal VReal;
     typedef typename Inherit::VGradient VGradient;
     typedef typename Inherit::VHessian VHessian;
-    typedef typename Inherit::VRef VRef;
+	typedef typename Inherit::VRef VRef;
+	typedef typename Inherit::Cell Cell;
     typedef typename Inherit::MaterialToSpatial MaterialToSpatial;
     typedef typename Inherit::VMaterialToSpatial VMaterialToSpatial;
     typedef typename Inherit::Hessian Hessian;
@@ -80,7 +81,7 @@ public:
     Data<helper::OptionsGroup> method;
     Data< ParamTypes > param;
 
-    virtual void computeShapeFunction(const Coord& childPosition, MaterialToSpatial& M, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL, const int /*cell*/=-1)
+	virtual void computeShapeFunction(const Coord& childPosition, MaterialToSpatial& M, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL, const Cell /*cell*/=-1)
     {
         helper::ReadAccessor<Data<VCoord > > parent(this->f_position);
         unsigned int nbp=parent.size(),nbRef=this->f_nbRef.getValue();
