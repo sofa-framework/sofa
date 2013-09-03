@@ -161,8 +161,8 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::apply(const core::MechanicalParams 
             double fz = topoMap->getHexaBaryCoords()[j][2];
             out[hexaMap[i][j]] = in[ hexahedra[i][0] ] * ((1-fx) * (1-fy) * (1-fz))
                     + in[ hexahedra[i][1] ] * ((  fx) * (1-fy) * (1-fz))
-                    + in[ hexahedra[i][2] ] * ((1-fx) * (  fy) * (1-fz))
-                    + in[ hexahedra[i][3] ] * ((  fx) * (  fy) * (1-fz))
+					+ in[ hexahedra[i][3] ] * ((1-fx) * (  fy) * (1-fz))
+					+ in[ hexahedra[i][2] ] * ((  fx) * (  fy) * (1-fz))
                     + in[ hexahedra[i][4] ] * ((1-fx) * (1-fy) * (  fz))
                     + in[ hexahedra[i][5] ] * ((  fx) * (1-fy) * (  fz))
                     + in[ hexahedra[i][6] ] * ((  fx) * (  fy) * (  fz))
@@ -267,8 +267,8 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJ(const core::MechanicalParams
             double fz = topoMap->getHexaBaryCoords()[j][2];
             out[hexaMap[i][j]] = in[ hexahedra[i][0] ] * ((1-fx) * (1-fy) * (1-fz))
                     + in[ hexahedra[i][1] ] * ((  fx) * (1-fy) * (1-fz))
-                    + in[ hexahedra[i][2] ] * ((1-fx) * (  fy) * (1-fz))
-                    + in[ hexahedra[i][3] ] * ((  fx) * (  fy) * (1-fz))
+					+ in[ hexahedra[i][3] ] * ((1-fx) * (  fy) * (1-fz))
+					+ in[ hexahedra[i][2] ] * ((  fx) * (  fy) * (1-fz))
                     + in[ hexahedra[i][4] ] * ((1-fx) * (1-fy) * (  fz))
                     + in[ hexahedra[i][5] ] * ((  fx) * (1-fy) * (  fz))
                     + in[ hexahedra[i][6] ] * ((  fx) * (  fy) * (  fz))
@@ -373,8 +373,8 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::MechanicalParam
             double fz = topoMap->getHexaBaryCoords()[j][2];
             out[ hexahedra[i][0] ] += in[hexaMap[i][j]] * ((1-fx) * (1-fy) * (1-fz));
             out[ hexahedra[i][1] ] += in[hexaMap[i][j]] * ((  fx) * (1-fy) * (1-fz));
-            out[ hexahedra[i][2] ] += in[hexaMap[i][j]] * ((1-fx) * (  fy) * (1-fz));
-            out[ hexahedra[i][3] ] += in[hexaMap[i][j]] * ((  fx) * (  fy) * (1-fz));
+			out[ hexahedra[i][3] ] += in[hexaMap[i][j]] * ((1-fx) * (  fy) * (1-fz));
+			out[ hexahedra[i][2] ] += in[hexaMap[i][j]] * ((  fx) * (  fy) * (1-fz));
             out[ hexahedra[i][4] ] += in[hexaMap[i][j]] * ((1-fx) * (1-fy) * (  fz));
             out[ hexahedra[i][5] ] += in[hexaMap[i][j]] * ((  fx) * (1-fy) * (  fz));
             out[ hexahedra[i][6] ] += in[hexaMap[i][j]] * ((  fx) * (  fy) * (  fz));
@@ -465,8 +465,8 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
 
                     o.addCol(q[0], f * ((1-fx) * (1-fy)));
                     o.addCol(q[1], f * (fx * (1-fy)));
-                    o.addCol(q[0], f * ((1-fx) * fy));
-                    o.addCol(q[1], f * (fx * fy));
+					o.addCol(q[2], f * ((1-fx) * fy));
+					o.addCol(q[3], f * (fx * fy));
 
                     break;
                 }
@@ -480,8 +480,8 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
 
                     o.addCol(t[0], f * (1-fx-fy-fz));
                     o.addCol(t[1], f * fx);
-                    o.addCol(t[0], f * fy);
-                    o.addCol(t[1], f * fz);
+					o.addCol(t[2], f * fy);
+					o.addCol(t[3], f * fz);
 
                     break;
                 }
@@ -498,12 +498,12 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
 
                     o.addCol(h[0] , f * oneMinFx * oneMinFy * oneMinFz);
                     o.addCol(h[1] , f * fx * oneMinFy * oneMinFz);
-                    o.addCol(h[0] , f * oneMinFx * fy * oneMinFz);
-                    o.addCol(h[1] , f * fx * fy * oneMinFz);
-                    o.addCol(h[0] , f * oneMinFx * oneMinFy * fz);
-                    o.addCol(h[1] , f * fx * oneMinFy * fz);
-                    o.addCol(h[0] , f * fx * fy * fz);
-                    o.addCol(h[1] , f * oneMinFx * fy * fz);
+					o.addCol(h[3] , f * oneMinFx * fy * oneMinFz);
+					o.addCol(h[2] , f * fx * fy * oneMinFz);
+					o.addCol(h[4] , f * oneMinFx * oneMinFy * fz);
+					o.addCol(h[5] , f * fx * oneMinFy * fz);
+					o.addCol(h[6] , f * fx * fy * fz);
+					o.addCol(h[7] , f * oneMinFx * fy * fz);
 
                     break;
                 }
