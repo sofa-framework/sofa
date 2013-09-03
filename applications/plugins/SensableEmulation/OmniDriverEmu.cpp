@@ -49,11 +49,15 @@
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
 //sensable namespace
-#include <pthread.h>
+
 
 
 #include <sofa/simulation/common/UpdateMappingVisitor.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
+
+#ifdef WIN32
+	#include <windows.h>
+#endif
 
 double prevTime;
 
@@ -125,7 +129,14 @@ void OmniDriverEmu::init()
         mState->resize(toolCount.getValue());
 }
 
-
+void sleep(int sleepus)
+{
+#ifdef WIN32
+	Sleep(sleepus/1000);
+#else
+	usleep(sleepus);
+#endif
+}
 /**
  function that is use to emulate a haptic device by interpolating the position of the tool between several points.
 */
@@ -168,7 +179,8 @@ void *hapticSimuExecute( void *ptr )
 
     helper::vector<unsigned int> stepNum;
     // Init the Step list
-    for (unsigned int i = 0; i < numPts+1; i++)
+	unsigned int num = (numPts+1)>numSegs ? numSegs : numPts+1;
+    for (unsigned int i = 0; i < num; i++)
     {
         stepNum.push_back(tmg[i]*omniDrv->simuFreq.getValue());
 
@@ -323,7 +335,7 @@ void *hapticSimuExecute( void *ptr )
             timeToSleep = int( (requiredTime - totalTime) - timeCorrection); //  [us]
             if (timeToSleep > 0)
             {
-                usleep(timeToSleep);
+                sleep(timeToSleep);
                 //std::cout << "Frequency OK, computation time: " << totalTime << std::endl;
             }
             else
@@ -335,12 +347,14 @@ void *hapticSimuExecute( void *ptr )
         else
         {
             //std::cout << "Running Asynchro without action" << std::endl;
-            usleep(10000);
+            sleep(10000);
         }
 
 
     }
 }
+
+
 
 void OmniDriverEmu::bwdInit()
 {
@@ -691,6 +705,7 @@ void OmniDriverEmu::handleEvent(core::objectmodel::Event *event)
         }
     }
 }
+
 
 int OmniDriverEmuClass = core::RegisterObject("Solver to test compliance computation for new articulated system objects")
         .add< OmniDriverEmu >();

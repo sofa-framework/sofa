@@ -39,6 +39,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 
 #include <sofa/helper/system/thread/CTime.h>
+#include <pthread.h>
 
 namespace sofa
 {
