@@ -6,8 +6,8 @@ include(CMakeDependentOption)
 	
 set(compilerDefines)
 
-set (SOFA-EXTERNAL_INCLUDE_DIR ${SOFA-EXTERNAL_INCLUDE_DIR} CACHE PATH "Include path for pre-compiled dependencies outside of the Sofa directory")
-set (SOFA-EXTERNAL_LIBRARY_DIR ${SOFA-EXTERNAL_LIBRARY_DIR} CACHE PATH "Library path for pre-compiled dependencies outside of the Sofa directory")
+set(SOFA-EXTERNAL_INCLUDE_DIR ${SOFA-EXTERNAL_INCLUDE_DIR} CACHE PATH "Include path for pre-compiled dependencies outside of the Sofa directory")
+set(SOFA-EXTERNAL_LIBRARY_DIR ${SOFA-EXTERNAL_LIBRARY_DIR} CACHE PATH "Library path for pre-compiled dependencies outside of the Sofa directory")
 
 # extlibs
 
@@ -85,6 +85,11 @@ option(SOFA-EXTERNAL_HAVE_EIGEN2 "Use Eigen" OFF)
 if(SOFA-EXTERNAL_HAVE_EIGEN2)
 	list(APPEND compilerDefines SOFA_HAVE_EIGEN2) # since we currently do not have non-linker dependencies, we have to do this
 endif()
+
+## OPENCASCADE
+set(SOFA-EXTERNAL_OPENCASCADE_PATH CACHE PATH "OpenCascade Path")
+file(TO_CMAKE_PATH "${SOFA-EXTERNAL_OPENCASCADE_PATH}" OPENCASCADE_PATH)
+set(SOFA-EXTERNAL_OPENCASCADE_PATH "${OPENCASCADE_PATH}")
 
 # Miscellaneous features
 
