@@ -4,7 +4,7 @@
 	<DefaultPipeline name="DefaultCollisionPipeline"  verbose="0"  draw="0"  depth="6" />
 	<BruteForceDetection name="Detection" />
 	<DefaultContactManager name="Response"  response="default" />
-	<TreeCollisionGroupManager name="Group" />
+	<CollisionGroupManager name="Group" />
 	<NewProximityIntersection name="newProximityIntersection0" />
 	<EulerImplicitSolver name="Implicit Euler Solver" />
 	<CGLinearSolver template="GraphScattered" name="Conjugate Gradient" />
