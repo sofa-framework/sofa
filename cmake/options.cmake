@@ -28,13 +28,15 @@ if(SOFA-EXTERNAL_PREFER_QT4)
 endif()
 
 ## boost
+option(SOFA-EXTERNAL_BOOST "Use the system / user compiled boost library instead of extlib/miniBoost" OFF)
 set(SOFA-EXTERNAL_BOOST_PATH "" CACHE PATH "Boost full version path (must contain the compiled libraries)")
-if(EXISTS ${SOFA-EXTERNAL_BOOST_PATH})
-	set(SOFA-EXTERNAL_HAVE_BOOST 1 CACHE INTERNAL "Use the system / user compiled boost library instead of extlib/miniBoost" FORCE)
+if(SOFA-EXTERNAL_BOOST)
+    set(SOFA-EXTERNAL_HAVE_BOOST 1 CACHE INTERNAL "Use the system / user compiled boost library instead of extlib/miniBoost" FORCE)
 	list(APPEND compilerDefines SOFA_HAVE_BOOST)
 else()
 	unset(SOFA-EXTERNAL_HAVE_BOOST CACHE)
 endif()
+
 
 ## geometric tools
 set(SOFA-EXTERNAL_GEOMETRIC_TOOLS_PATH "" CACHE PATH "Path to Geometric tools folder containing the cmake project")
