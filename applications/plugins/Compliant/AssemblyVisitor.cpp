@@ -140,15 +140,9 @@ AssemblyVisitor::chunk::map_type AssemblyVisitor::mapping(simulation::Node* node
 			throw std::logic_error(msg);
 		}
 				
-		if( ks ) {
-            c.K = convert<mat>( (*ks)[i] );
-					
-			// sanity check
-			if( zero(c.K) ) {
-				// TODO derp ?
-				// std::cerr << mapping_name(node) << " has no geometric stiffness" << std::endl;
-				// throw std::logic_error("empty geometric stiffness block for mapping " + mapping_name(node) );
-			}
+        if( ks && (*ks)[i] ) {
+
+            add(c.K, convert<mat>( (*ks)[i] ) );
 		} 
 				
 	}
@@ -321,13 +315,14 @@ void AssemblyVisitor::fill_prefix(simulation::Node* node) {
 	
 	c.M = mass( node );
 	add(c.K, stiff( node ));
+
+    c.map = mapping( node ); // a mapping can add geometric stiffness in c.K
 	
 	if( !zero(c.M) || !zero(c.K) ) {
 		c.mechanical = true;
         c.v = vel( node, _velId );
 	}
 
-	c.map = mapping( node );
 	c.f = force( node );
 	
 	c.vertex = boost::add_vertex(v, graph);
