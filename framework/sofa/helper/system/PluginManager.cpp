@@ -244,10 +244,19 @@ void PluginManager::init()
     }
 }
 
-}
+void PluginManager::init(const std::string& pluginName)
+{
+	PluginMap::iterator iter = m_pluginMap.find(pluginName);
+	if(m_pluginMap.end() != iter)
+	{
+        Plugin& plugin = iter->second;
+        plugin.initExternalModule();
+	}
 
 }
 
 }
 
+}
 
+}

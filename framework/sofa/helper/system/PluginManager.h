@@ -143,6 +143,7 @@ public:
 
     void initRecentlyOpened();
     void init();
+	void init(const std::string& pluginName);
 
     inline friend std::ostream& operator<< ( std::ostream& os, const PluginManager& pluginManager )
     {
