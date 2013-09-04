@@ -43,6 +43,7 @@
 
 #include <sofa/helper/vector.h>
 
+
 // forward declarations
 namespace sofa
 {
@@ -91,10 +92,13 @@ class HexahedronSetGeometryAlgorithms;
 
 namespace sofa
 {
+
 namespace component
 {
+
 namespace mapping
 {
+
 /// Base class for barycentric mapping topology-specific mappers
 using sofa::defaulttype::Matrix3;
 template<class In, class Out>
@@ -150,6 +154,7 @@ protected:
             out << "\n";
             return out;
         }
+
     };
 
 public:
@@ -183,12 +188,15 @@ public:
     {};
     //--
 
+
     virtual void clear( int reserve=0 ) =0;
 
     //Nothing to do
     inline friend std::istream& operator >> ( std::istream& in, BarycentricMapper< In, Out > & ) {return in;}
     inline friend std::ostream& operator << ( std::ostream& out, const BarycentricMapper< In, Out > &  ) { return out; }
 };
+
+
 
 /// Template class for barycentric mapping topology-specific mappers.
 template<class In, class Out>
@@ -236,6 +244,8 @@ protected:
     core::topology::BaseMeshTopology* fromTopology;
     topology::PointSetTopologyContainer* toTopology;
 };
+
+
 
 /// Class allowing barycentric mapping computation on a MeshTopology
 template<class In, class Out>
@@ -315,7 +325,7 @@ public:
     const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize);
     void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in);
 
-	sofa::helper::vector< MappingData3D >* getMap3d() { return &map3d; }
+	sofa::helper::vector< MappingData3D > const* getMap3d() const { return &map3d; }
 
     inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperMeshTopology<In, Out> &b )
     {
@@ -351,6 +361,7 @@ public:
 
     inline friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperMeshTopology<In, Out> & b )
     {
+
         out << b.map1d.size();
         out << " " ;
         out << b.map1d;
@@ -370,7 +381,10 @@ private:
     void clear1d(int reserve=0);
     void clear2d(int reserve=0);
     void clear3d(int reserve=0);
+
 };
+
+
 
 /// Class allowing barycentric mapping computation on a RegularGridTopology
 template<class In, class Out>
@@ -449,7 +463,10 @@ public:
         out << b.map;
         return out;
     }
+
 };
+
+
 
 /// Class allowing barycentric mapping computation on a SparseGridTopology
 template<class In, class Out>
@@ -525,6 +542,7 @@ public:
         out << b.map;
         return out;
     }
+
 };
 
 /// Class allowing barycentric mapping computation on a EdgeSetTopology
@@ -608,6 +626,7 @@ public:
 
     inline friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperEdgeSetTopology<In, Out> & b )
     {
+
         out << b.map.getValue().size();
         out << " " ;
         out << b.map;
@@ -615,6 +634,8 @@ public:
         return out;
     }
 };
+
+
 
 /// Class allowing barycentric mapping computation on a TriangleSetTopology
 template<class In, class Out>
@@ -696,6 +717,7 @@ public:
 
     inline friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperTriangleSetTopology<In, Out> & b )
     {
+
         out << b.map.getValue().size();
         out << " " ;
         out << b.map;
@@ -703,6 +725,8 @@ public:
         return out;
     }
 };
+
+
 
 /// Class allowing barycentric mapping computation on a QuadSetTopology
 template<class In, class Out>
@@ -783,12 +807,14 @@ public:
 
     inline friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperQuadSetTopology<In, Out> & b )
     {
+
         out << b.map.getValue().size();
         out << " " ;
         out << b.map;
 
         return out;
     }
+
 };
 
 /// Class allowing barycentric mapping computation on a TetrahedronSetTopology
@@ -854,7 +880,11 @@ public:
     virtual const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize);
 
     void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in);
+
+
 };
+
+
 
 /// Class allowing barycentric mapping computation on a HexahedronSetTopology
 template<class In, class Out>
@@ -956,13 +986,18 @@ public:
 
     inline friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperHexahedronSetTopology<In, Out> & b )
     {
+
         out << b.map.getValue().size();
         out << " " ;
         out << b.map;
 
         return out;
     }
+
+
 };
+
+
 
 template <class TIn, class TOut>
 class BarycentricMapping : public core::Mapping<TIn, TOut>
@@ -1028,6 +1063,7 @@ public:
 
     virtual const sofa::defaulttype::BaseMatrix* getJ();
 
+
 #ifdef SOFA_HAVE_EIGEN2
 public:
     virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs();
@@ -1049,6 +1085,8 @@ public:
     virtual void handleTopologyChange(core::topology::Topology* t);
 
     // interface for continuous friction contact
+
+
 
     TopologyBarycentricMapper<InDataTypes,OutDataTypes> *getMapper()
     {
@@ -1149,8 +1187,11 @@ extern template class SOFA_BASE_MECHANICS_API BarycentricMapperHexahedronSetTopo
 #endif
 #endif
 #endif
+
 } // namespace mapping
+
 } // namespace component
+
 } // namespace sofa
 
 #endif
