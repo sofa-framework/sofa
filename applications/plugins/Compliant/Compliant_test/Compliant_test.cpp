@@ -37,14 +37,14 @@
 #include <sofa/component/forcefield/ConstantForceField.h>
 #include <sofa/component/mapping/SubsetMultiMapping.h>
 #include <sofa/component/mapping/RigidMapping.h>
+#include <sofa/component/mapping/ExtensionMapping.h>
+#include <sofa/component/mapping/DistanceMapping.h>
 #include <sofa/component/container/MechanicalObject.h>
 #include <sofa/component/topology/EdgeSetTopologyContainer.h>
 #include <sofa/component/projectiveconstraintset/FixedConstraint.h>
 
 #include <plugins/Compliant/ComplianceSolver.h>
 #include <plugins/Compliant/UniformCompliance.h>
-#include <plugins/Flexible/deformationMapping/ExtensionMapping.h>
-#include <plugins/Flexible/deformationMapping/DistanceMapping.h>
 
 #include <sofa/helper/ArgumentParser.h>
 #include <sofa/simulation/common/xml/initXml.h>

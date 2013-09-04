@@ -24,8 +24,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_DistanceMapping_CPP
 
-#include "../initFlexible.h"
-#include "../deformationMapping/DistanceMapping.inl"
+#include "DistanceMapping.inl"
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
@@ -52,11 +51,11 @@ int DistanceMappingClass = core::RegisterObject("Compute edge extensions")
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_Flexible_API DistanceMapping< Vec3dTypes, Vec1dTypes >;
+template class SOFA_MISC_MAPPING_API DistanceMapping< Vec3dTypes, Vec1dTypes >;
 #endif
 
 #ifndef SOFA_DOUBLE
-template class SOFA_Flexible_API DistanceMapping< Vec3fTypes, Vec1fTypes >;
+template class SOFA_MISC_MAPPING_API DistanceMapping< Vec3fTypes, Vec1fTypes >;
 #endif
 
 

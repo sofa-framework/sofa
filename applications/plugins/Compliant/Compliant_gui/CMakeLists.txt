@@ -30,7 +30,7 @@ endif()
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_COMPLIANT_GUI")
-AddLinkerDependencies(SofaGuiMain Compliant Flexible)
+AddLinkerDependencies(SofaGuiMain Compliant)
 
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
