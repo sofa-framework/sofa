@@ -45,6 +45,8 @@
 
 #include <sofa/component/init.h>
 #include <sofa/component/mapping/SubsetMultiMapping.h>
+#include <sofa/component/mapping/ExtensionMapping.h>
+#include <sofa/component/mapping/DistanceMapping.h>
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/component/topology/EdgeSetTopologyContainer.h>
 #include <sofa/component/topology/RegularGridTopology.h>
@@ -62,8 +64,6 @@
 #include <plugins/Compliant/UniformCompliance.h>
 #include <plugins/Compliant/CompliantAttachButtonSetting.h>
 using sofa::component::configurationsetting::CompliantAttachButtonSetting;
-#include <plugins/Flexible/deformationMapping/ExtensionMapping.h>
-#include <plugins/Flexible/deformationMapping/DistanceMapping.h>
 
 #include <sofa/simulation/common/Simulation.h>
 #include <tutorials/objectCreator/ObjectCreator.h>
