@@ -145,7 +145,7 @@ endif()
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_Flexible")
-AddLinkerDependencies(SofaBaseVisual)
+AddLinkerDependencies(SofaEigen2Solver SofaBaseVisual)
 
 if(SOFA-PLUGIN_IMAGE)
     AddCompilerDefinitions("SOFA_HAVE_IMAGE" )
