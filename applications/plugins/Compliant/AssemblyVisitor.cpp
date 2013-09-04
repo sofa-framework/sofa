@@ -141,9 +141,8 @@ AssemblyVisitor::chunk::map_type AssemblyVisitor::mapping(simulation::Node* node
 		}
 				
         if( ks && (*ks)[i] ) {
-
-            add(c.K, convert<mat>( (*ks)[i] ) );
-		} 
+            c.K = convert<mat>( (*ks)[i] );
+        }
 				
 	}
 
@@ -303,7 +302,7 @@ AssemblyVisitor::vec AssemblyVisitor::lambda(simulation::Node* node) {
 // simply fetch infos for each dof.
 void AssemblyVisitor::fill_prefix(simulation::Node* node) {
 	assert( node->mechanicalState );
-	assert( chunks.find( node->mechanicalState ) == chunks.end() );
+    assert( chunks.find( node->mechanicalState ) == chunks.end() );
 	
 	// fill chunk for current dof
 	chunk& c = chunks[ node->mechanicalState ];
@@ -312,16 +311,16 @@ void AssemblyVisitor::fill_prefix(simulation::Node* node) {
 	c.dofs = node->mechanicalState;
 	
 	vertex v; v.dofs = c.dofs; v.data = &c;
-	
-	c.M = mass( node );
-	add(c.K, stiff( node ));
 
-    c.map = mapping( node ); // a mapping can add geometric stiffness in c.K
+	c.M = mass( node );
+    add(c.K, stiff( node ));
 	
 	if( !zero(c.M) || !zero(c.K) ) {
 		c.mechanical = true;
         c.v = vel( node, _velId );
 	}
+
+    c.map = mapping( node );
 
 	c.f = force( node );
 	
@@ -483,10 +482,10 @@ struct AssemblyVisitor::propagation_helper {
 		
 			for(graph_type::out_edge_range e = boost::out_edges(v, g); e.first != e.second; ++e.first) {
 				
-				chunk* p = g[ boost::target(*e.first, g) ].data; 
-				p->mechanical = true;
+                chunk* p = g[ boost::target(*e.first, g) ].data;
+                p->mechanical = true;
 				
-				if(!zero( g[*e.first].data->K)) { 
+                if(!zero( g[*e.first].data->K)) {
 					add(p->K, g[*e.first].data->K );
 				}
 			}
