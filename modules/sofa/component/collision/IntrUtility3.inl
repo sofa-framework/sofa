@@ -199,9 +199,9 @@ void IntrConfigManager<TOBB<TDataTypes> >::init (const Vec<3,Real> & axis,
 
     Real absAxes[3] =
     {
-        fabs(axes[0]),
-        fabs(axes[1]),
-        fabs(axes[2])
+        helper::rabs(axes[0]),
+        helper::rabs(axes[1]),
+        helper::rabs(axes[2])
     };
 
     Real maxProjectedExtent;

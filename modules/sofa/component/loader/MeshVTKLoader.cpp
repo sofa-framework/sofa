@@ -575,6 +575,7 @@ bool MeshVTKLoader::LegacyVTKReader::readFile(const char* filename)
 
 //XML VTK Loader
 #define checkError(A) if (!A) { return false; }
+#define checkErrorPtr(A) if (!A) { return NULL; }
 #define checkErrorMsg(A, B) if (!A) { serr << B << sendl ; return false; }
 
 bool MeshVTKLoader::XMLVTKReader::readFile(const char* filename)
@@ -665,7 +666,7 @@ MeshVTKLoader::BaseVTKReader::BaseVTKDataIO* MeshVTKLoader::XMLVTKReader::loadDa
     if (type.empty())
     {
         typeStrTemp = dataArrayElement->Attribute("type");
-        checkError(typeStrTemp);
+        checkErrorPtr(typeStrTemp);
     }
     else
         typeStrTemp = type.c_str();
@@ -673,7 +674,7 @@ MeshVTKLoader::BaseVTKReader::BaseVTKDataIO* MeshVTKLoader::XMLVTKReader::loadDa
     //Format
     const char* formatStrTemp = dataArrayElement->Attribute("format");
 
-    checkError(formatStrTemp);
+    checkErrorPtr(formatStrTemp);
 
     int binary = 0;
     if (std::string(formatStrTemp).compare("ascii") == 0)
@@ -704,7 +705,7 @@ MeshVTKLoader::BaseVTKReader::BaseVTKDataIO* MeshVTKLoader::XMLVTKReader::loadDa
         state = (d->read(std::string(listValuesStrTemp), numberOfComponents*size, binary));
     else
         state = (d->read(std::string(listValuesStrTemp), binary));
-    checkError(state);
+    checkErrorPtr(state);
 
     return d;
 }
