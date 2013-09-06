@@ -306,12 +306,16 @@ void Base::removeTag(Tag t)
 BaseData* Base::findData( const std::string &name ) const
 {
     //Search in the aliases
-    typedef MapData::const_iterator mapIterator;
-    std::pair< mapIterator, mapIterator> range = m_aliasData.equal_range(name);
-    if (range.first != range.second)
-        return range.first->second;
-    else
-        return NULL;
+	if(m_aliasData.size())
+	{
+		typedef MapData::const_iterator mapIterator;
+		std::pair< mapIterator, mapIterator> range = m_aliasData.equal_range(name);
+		if (range.first != range.second)
+			return range.first->second;
+		else
+			return NULL;
+	}
+	else return NULL;
 }
 
 /// Find fields given a name: several can be found as we look into the alias map
