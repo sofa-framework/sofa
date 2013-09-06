@@ -61,3 +61,7 @@ endforeach()
 unset(GLOBAL_DEPENDENCIES CACHE) # reset the dependency database (used to compute interdependencies)
 unset(GLOBAL_COMPILER_DEFINES CACHE)
 unset(GLOBAL_INCLUDE_DIRECTORIES CACHE)
+
+unset(GLOBAL_ERROR_MESSAGE CACHE)
+unset(GLOBAL_WARNING_MESSAGE CACHE)
+unset(GLOBAL_FORCE_RECONFIGURE CACHE)

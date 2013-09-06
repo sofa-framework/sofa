@@ -264,6 +264,34 @@ function(EnableProject projectName)
 	endif()
 endfunction()
 
+function(EnableDependencyOption projectName)
+	#enable the project option
+	if(GLOBAL_PROJECT_OPTION_${projectName})
+		if(NOT ${${GLOBAL_PROJECT_OPTION_${projectName}}})
+			set(WARNING_MESSAGE " - Adding needed project option : ${GLOBAL_PROJECT_OPTION_${projectName}}")
+			message(WARNING "\n${WARNING_MESSAGE}\n")
+			set(GLOBAL_WARNING_MESSAGE ${GLOBAL_WARNING_MESSAGE} ${WARNING_MESSAGE} CACHE INTERNAL "" FORCE)
+			set(GLOBAL_FORCE_RECONFIGURE 1 CACHE INTERNAL "You must configure the project again (new dependency has been discovered)" FORCE)
+			
+			get_property(variableDocumentation CACHE ${GLOBAL_PROJECT_OPTION_${projectName}} PROPERTY HELPSTRING)
+			set(${GLOBAL_PROJECT_OPTION_${projectName}} 1 CACHE BOOL "${variableDocumentation}" FORCE)
+		endif()
+	endif()
+	
+	# disable the project no option
+	if(GLOBAL_PROJECT_NO_OPTION_${projectName})
+		if(NOT ${${GLOBAL_PROJECT_NO_OPTION_${projectName}}})
+			get_property(variableDocumentation CACHE ${GLOBAL_PROJECT_NO_OPTION_${projectName}} PROPERTY HELPSTRING)
+			set(${GLOBAL_PROJECT_NO_OPTION_${projectName}} 0 CACHE BOOL "${variableDocumentation}" FORCE)
+			
+			set(WARNING_MESSAGE ${GLOBAL_WARNING_MESSAGE} " - Disabling option : ${GLOBAL_PROJECT_NO_OPTION_${projectName}}")
+			message(WARNING "${WARNING_MESSAGE}")
+			set(GLOBAL_WARNING_MESSAGE ${GLOBAL_WARNING_MESSAGE} ${WARNING_MESSAGE} CACHE INTERNAL "" FORCE)
+			set(GLOBAL_FORCE_RECONFIGURE 1 CACHE INTERNAL "You must configure the project again (dependency has been removed)" FORCE)
+		endif()
+	endif()
+endfunction()
+
 # RegisterProjectDependencies(<projectName>)
 # register a target and its dependencies
 function(RegisterProjectDependencies projectName)
@@ -280,22 +308,8 @@ function(RegisterProjectDependencies projectName)
 	get_target_property(compilerDefines ${projectName} COMPILE_DEFINITIONS)
 	set(GLOBAL_PROJECT_COMPILER_DEFINITIONS_${projectName} ${compilerDefines} CACHE INTERNAL "${projectName} compile definitions" FORCE)
 		
-	# if we manually added an optional project to be generated, we must set its option to ON
-	if(GLOBAL_PROJECT_OPTION_${projectName})
-		if(NOT ${${GLOBAL_PROJECT_OPTION_${projectName}}})
-			message(WARNING " - Adding needed project option : ${GLOBAL_PROJECT_OPTION_${projectName}}")
-			get_property(variableDocumentation CACHE ${GLOBAL_PROJECT_OPTION_${projectName}} PROPERTY HELPSTRING)
-			set(${GLOBAL_PROJECT_OPTION_${projectName}} 1 CACHE BOOL "${variableDocumentation}" FORCE)	
-		endif()
-	endif()
-	
-	# if we manually added an optional project to be generated, we must set its no option to OFF
-	if(GLOBAL_PROJECT_NO_OPTION_${projectName})
-		if(NOT ${${GLOBAL_PROJECT_NO_OPTION_${projectName}}})
-			get_property(variableDocumentation CACHE ${GLOBAL_PROJECT_NO_OPTION_${projectName}} PROPERTY HELPSTRING)
-			set(${GLOBAL_PROJECT_NO_OPTION_${projectName}} 0 CACHE BOOL "${variableDocumentation}" FORCE)	
-		endif()
-	endif()
+	# if we manually added an optional project to be generated, we must set its option to ON and its no option to OFF
+	EnableDependencyOption(${projectName})
 	
 	RegisterDependencies(${projectName})
 	
@@ -375,22 +389,7 @@ function(ComputeDependencies projectName forceEnable fromProject offset)
 		# process the project if it has not been processed yet
 		if(NOT GLOBAL_PROJECT_DEPENDENCIES_COMPLETE_${projectName})
 			# enable the needed disabled dependency
-			if(GLOBAL_PROJECT_OPTION_${projectName})
-				if(NOT ${${GLOBAL_PROJECT_OPTION_${projectName}}})
-					get_property(variableDocumentation CACHE ${GLOBAL_PROJECT_OPTION_${projectName}} PROPERTY HELPSTRING)
-					set(${GLOBAL_PROJECT_OPTION_${projectName}} 1 CACHE BOOL "${variableDocumentation}" FORCE)
-					message(WARNING " - Adding needed option : ${GLOBAL_PROJECT_OPTION_${projectName}}")
-				endif()
-			endif()
-			
-			# disable the no option
-			if(GLOBAL_PROJECT_NO_OPTION_${projectName})
-				if(NOT ${${GLOBAL_PROJECT_NO_OPTION_${projectName}}})
-					get_property(variableDocumentation CACHE ${GLOBAL_PROJECT_NO_OPTION_${projectName}} PROPERTY HELPSTRING)
-					set(${GLOBAL_PROJECT_NO_OPTION_${projectName}} 0 CACHE BOOL "${variableDocumentation}" FORCE)
-					message(WARNING " - Disabling option : ${GLOBAL_PROJECT_NO_OPTION_${projectName}}")
-				endif()
-			endif()
+			EnableDependencyOption(${projectName})
 			
 			# also register global compiler definitions - will be added to every projects at the end of the projects configuration
 			#if(GLOBAL_PROJECT_OPTION_COMPILER_DEFINITIONS_${projectName})
