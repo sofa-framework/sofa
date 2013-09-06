@@ -17,14 +17,9 @@ set(SOURCE_FILES
     )
 
 add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
-add_test(${PROJECT_NAME} COMMAND ${PROJECT_NAME})
-
-if(SOFA-MISC_BUILD_GTEST OR WIN32)
-    include_directories("${SOFA_EXTLIBS_DIR}/gtest/include")
-endif()
 
 AddCompilerDefinitions("SOFA_PROJECT_TEST")
-AddLinkerDependencies(ObjectCreator SofaEigen2Solver SofaComponentMain SofaBaseCollision SofaSimulationGraph SofaBoundaryCondition gtest gtest_main)
+AddLinkerDependencies(ObjectCreator SofaEigen2Solver SofaComponentMain SofaBaseCollision SofaSimulationGraph SofaBoundaryCondition)
 
 if(WIN32)
 	AddCompilerFlags("/MT")
