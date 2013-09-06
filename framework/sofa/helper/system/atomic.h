@@ -310,9 +310,9 @@ public:
     void inc() { cellAtomicIncr32(&val); }
     void dec() { cellAtomicDecr32(&val); }
     //bool sub_and_test_null(int i) { return __exchange_and_add(&val,-i)==i; }
-    bool dec_and_test_null() { return cellAtomicDecr32(&val)==0; }
+    bool dec_and_test_null() { cellAtomicDecr32(&val); return val==0; }
     //bool inc_and_test_null() { return __exchange_and_add(&val,1)==-1; }
-    bool add_and_test_neg(int i) { return cellAtomicAdd32(&val,(uint32_t)i) < (uint32_t)-i; }
+    bool add_and_test_neg(int i) { cellAtomicAdd32(&val,(uint32_t)i); return val <-i; }
     atomic& operator= (int i) { set(i); return *this; }
     /// Add a value to this atomic, without return value (use exchange_and_add if you need the result)
     void operator+=(int i) { add(i);  }
@@ -323,8 +323,8 @@ public:
     void operator--() { dec(); }
     void operator--(int) { dec(); }
 
-    int exchange_and_add(int i) { return cellAtomicAdd32(&val,i); }
-    int compare_and_swap(int cmp, int with) { return cellAtomicCompareAndSwap32(&val, with, cmp); }
+    int exchange_and_add(int i) { return cellAtomicAdd32(&val,i);}
+    int compare_and_swap(int cmp, int with) { return cellAtomicCompareAndSwap32(&val, with, cmp);}
 
 	int exchange(int i)
 	{
