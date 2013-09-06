@@ -40,15 +40,15 @@
 This plugin serves two purposes:
 \begin{itemize}
  \item to provide a new, more complete mechanisme for assembling the dynamical system matrices such as mass $\M$ and stiffness $\K$, as well as constraint Jacobians $\J$,
- \item and experiment a unified approach of soft and hard constraints, as presented in~\cite{servin2006interactive}.
+ \item and experiment a unified approach of soft and hard constraints, inspired from~\cite{servin2006interactive}.
 \end{itemize}
 Contrary with other implementations of matrix assembly available in SOFA, this one handles mappings, and even multimappings.
 
 Sections \ref{sec constraint forces} and \ref{sec:time integration} explain the unified constraint approach, while Section~\ref{sec matrix assembly} presents the matrix assembly process based on an example. An overview of the corresponding API is given in Section~\ref{sec implementation}. 
 
 \section{Constraint forces} \label{sec constraint forces}
-\subsection{Generalized constraints}
 This approach unifies soft and hard constraints, by providing constraints with compliance. 
+\subsection{Hard constraints}
 For a good introduction on hard constraints, see~\cite{witkinconstraints}.
 Hard constraints are usually implemented using Lagrange multipliers $\lambda$ in the following equation:
 \begin{equation} \label{eq acc hard}
@@ -69,7 +69,23 @@ $\lam$ and $\ddot \violation$ are vectors with as many entries as scalar constra
 \end{equation}
 and then the acceleration is computed as $\acc = \Minv( \forcext + \Jt \lam)$.
 
+\subsection{Projective constraints}
+When the constraints are simple enough, such as keeping points fixed or in some hyperplane, they are more easily handled by straightforwardly projecting forces and displacements.
+The previous equation becomes:
+\begin{equation} \label{eq acc hard projected}
+\left( \begin{array}{cc}
+\P\M & -\P\Jt \\
+ \J\P &  \end{array}\right)
+\left( \begin{array}{c}
+\acc \\ \lam
+\end{array}\right) = \left( \begin{array}{c}
+\P\forcext  \\
+-\ddot \violation
+\end{array}\right) 
+\end{equation}
+ where $\P$ is the orthogonal projection matrix corresponding to the constraint.
 
+\subsection{Generalized constraints}
 In the generalized approach, the constraint forces are considered directly proportional to the constraint violations $\violation$ and their first time derivative (error on velocity) $\dviolation$:
 \begin{equation}\label{eq generalized constraint}
 \lam = - \frac{1}{\cmp} \left( \violation + \dampingratio \dviolation \right)
@@ -157,11 +173,21 @@ The complete equation system is:
 \end{equation}
 where $ l=\alpha(h \beta + d) $
 The system is singular due to matrix $\P $, however we can use $ \P \Minv\P $ as inverse mass matrix to compute a Schur complement:
-\[ \begin{array}{ccc}
-\left( h\J\P\Minv\P\Jt + \frac{1}{l}\C \right) \avlam &=& -\frac{1}{l} \left(\violation + (\dampingratio+h\alpha)\dviolation \right) - h\J \Minv \forcext \\
-\dv &=& h\P\Minv(\forcext +\Jt \avlam ) \\
-\dx &=& h( \vel + \beta \dv )
-\end{array} \]
+% \[ \begin{array}{ccc}
+% \left( h\J\P\Minv\P\Jt + \frac{1}{l}\C \right) \avlam &=& -\frac{1}{l} \left(\violation + (\dampingratio+h\alpha)\dviolation \right) - h\J \Minv \forcext \\
+% \dv &=& h\P\Minv(\forcext +\Jt \avlam ) \\
+% \dx &=& h( \vel + \beta \dv )
+% \end{array} \]
+\begin{equation} \label{eq schur complement}
+ \left( h\J\P\Minv\P\Jt + \frac{1}{l}\C \right) \avlam = -\frac{1}{l} \left(\violation + (\dampingratio+h\alpha)\dviolation \right) - h\J \Minv \forcext
+\end{equation}
+
+Solving for $\avlam$ allows us to update the velocities and the positions:
+\begin{eqnarray}
+ \dv &=& h\P\Minv(\forcext +\Jt \avlam ) \label{eq update velocities}\\
+\dx &=& h( \vel + \beta \dv ) \label{eq update positions}
+\end{eqnarray}
+
 
 
 \section{Matrix assembly} \label{sec matrix assembly}
@@ -188,8 +214,9 @@ State $X_e$ is attached to $X_a$ and  $X_d$ at the same time, using a MultiMappi
 while a mass $M_{dd}$ is applied to $X_d$.
 \begin{figure}
 \centering
- \includegraphics[width=0.49\linewidth]{system-graph.png}
-\caption{A mechanical system. The $X$ represent mechanical states, while the arrows represent the kinematic hierarchy, and the plain lines represent components acting on the states.}
+%  \includegraphics[width=0.49\linewidth]{system-graph.png}
+\includegraphics[clip,trim= 0mm 255mm 145mm 0mm,width=0.49\linewidth]{system-graph.pdf}
+\caption{Example of mechanical system structure. The $X$ represent mechanical states, while the arrows represent the kinematic hierarchy, and the plain lines represent components acting on the states.}
 \label{fig system graph}
 \end{figure}
 
@@ -198,7 +225,7 @@ The corresponding equation system has the block structure shown in the right of 
 The main blocks of the equation system are highlighted in grey rectangles. The $J$ matrices are the mapping matrices. The bottom row has two mappings, since the state $X_e$ impacted by compliance $\beta$ depends on two parent states.
 \begin{figure}
 \centering
- \includegraphics[width=0.7\linewidth]{system-bigmatrix.png}
+ \includegraphics[clip,trim=5mm 185mm 40mm 0mm,width=0.7\linewidth]{system-bigmatrix.pdf}
 \caption{Block view of the equation~\ref{eq abstract system} applied to the system of Figure~\ref{fig system graph}, with non-null blocks highlighted in yellow.}
 \label{fig system matrix}
 \end{figure}
@@ -208,7 +235,8 @@ The assembly of local matrices and vectors to the global matrices and vectors wh
 Shift matrices $J_{*0}$, shown in the top of the figure, are composed of identity matrices (represented with a diagonal in a block) and null blocks. They can be used to implement the shifting of vector entry indices from local to global. 
 \begin{figure}
 \centering
- \includegraphics[width=0.69\linewidth]{system-shift.png}
+%  \includegraphics[width=0.69\linewidth]{system-shift.png}
+ \includegraphics[clip,trim=0mm 40mm 0mm 115mm,width=0.89\linewidth]{system-bigmatrix.pdf}
 \label{fig shifting}
 \caption{Shift matrices $J_{*0}$ are used to place blocks within global vectors and matrices. }
 \end{figure}
@@ -216,7 +244,8 @@ The assembly is thus easily expressed as a sum of product of matrices, as illust
 While shifting values in dense arrays using matrix products is not efficient (vector assembly is actually implemented using shifted copies), the sum of matrix products is a reasonable implementation of sparse matrix assembly.
 \begin{figure}
 \centering
- \includegraphics[width=0.6\linewidth]{system-assembly.png}
+%  \includegraphics[width=0.6\linewidth]{system-assembly.png}
+ \includegraphics[clip,trim=5mm 185mm 70mm 5mm,width=0.6\linewidth]{system-assembly.pdf}
 \caption{The assembly is performed by summing the global vectors and matrices obtained by shifting local vectors and matrices.}
 \label{fig assembly}
 \end{figure}
@@ -229,11 +258,13 @@ This plugin uses \texttt{Eigen} and \texttt{suitesparse}. Moreover, the test sui
 
 \subsection{Functions}
 
-The virtual functions used for setting up the equation system are declared in BaseForceField.h and BaseMapping.h, and documented in ``Experimental Compliance API'' documentation blocks.
+The virtual functions used for setting up the equation system are declared in BaseForceField.h, BaseMapping.h, BaseMass.h and BaseProjectiveConstraint.h.
+They and documented in ``Experimental Compliance API'' documentation blocks of these files.
 
-ForceFields may be handled as forces or as soft constraints, as explained in Section~\ref{sec force or constraint}. The default behavior is to handle them as forces, and in this case their force is accumulated using a classical \texttt{MechanicalOperations::computeForce} operation, while their stiffness matrix is accumulated using the \texttt{getStiffnessMatrix} briefly described below.
 
-The BaseForceField functions are:
+\subsection{BaseForceField functions}
+ForceFields may be handled as forces or as soft constraints, as explained in Section~\ref{sec force or constraint}. 
+The default behavior is to handle them as forces, and in this case their force is accumulated using a classical \texttt{MechanicalOperations::computeForce} operation, while their stiffness matrix is accumulated using the \texttt{getStiffnessMatrix} briefly described below.
 \begin{itemize}
  \item \texttt{getComplianceMatrix} returns NULL if the ForceField is to be handled as a traditional force function, while it returns a pointer to a compliance matrix if it is to be handled as a constraint.
  \item \texttt{addForc}e is used to accumulate the force in the right-hand term. This function is not specific to the \textit{Compliant} plugin. This should do nothing when the force must be handled as a constraint.
@@ -242,15 +273,20 @@ The BaseForceField functions are:
  \item \texttt{getDampingRatio} is used in the constraint case, and corresponds to parameter $ \dampingratio$ in Eq.\ref{eq generalized constraint}
 \end{itemize}
 
-The BaseMapping functions are:
+\subsubsection{BaseMapping functions}
 \begin{itemize}
  \item \texttt{getJs} returns a list of Jacobian matrices, one for each parent of the mapping. Typical mappings have only one parent, but MultiMappings have several ones.
  \item \texttt{getKs} returns a list of stiffness matrices, one for each parent. These correspond to geometric stiffness, i.e. change of forces due to mapping nonlinearity, like \texttt{addDJT} in the traditional API. \textbf{\begin{large}TODO:                                                                                                                                                                                                                                       \end{large}} refine this, to also return off-diagonal terms in MultiMappings. 
 \end{itemize}
 
-The BaseMass function used by the plugin is:
+\subsubsection{BaseMass functions}
 \begin{itemize}
  \item \texttt{addMToMatrix} to create the mass matrix. This function is not specific to the \textit{Compliant} plugin.
+\end{itemize}
+
+\subsection{BaseProjectiveConstraint functions}
+\begin{itemize}
+ \item \texttt{projectMatrix} replaces a matrix with one corresponding to the same linear operator, projected to cancel, out the forbidden directions. 
 \end{itemize}
 
 
