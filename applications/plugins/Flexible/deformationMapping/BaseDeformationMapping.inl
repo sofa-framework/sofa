@@ -29,6 +29,7 @@
 #include <sofa/component/visualmodel/VisualModelImpl.h>
 #include "../quadrature/BaseGaussPointSampler.h"
 #include <sofa/helper/gl/Color.h>
+#include <sofa/helper/system/glu.h>
 
 #ifdef USING_OMP_PRAGMAS
     #include <omp.h>
