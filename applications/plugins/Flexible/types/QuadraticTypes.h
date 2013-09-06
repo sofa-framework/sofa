@@ -283,8 +283,47 @@ public:
             return  m;
         }
 
+        /// get jacobian of the projection dQ/dM
+        void getJRigid(const Coord& c, Mat<VSize,VSize,Real>& J) const
+        {
+            Affine Q,S,invG;
+            helper::Decompose<Real>::polarDecomposition( c.getAffine(), Q, S );
+            helper::Decompose<Real>::polarDecompositionGradient_G(Q,S,invG);
+
+            static const unsigned MSize = spatial_dimensions * spatial_dimensions;
+            Mat<MSize,MSize,Real> dQOverdM;
+            helper::Decompose<Real>::polarDecompositionGradient_dQOverdM(Q,invG,dQOverdM);
+
+            // set all to 0 (quadratic terms are fully constrained)
+            J.clear();
+
+            // translation -> identity
+            for(unsigned int i=0; i<spatial_dimensions; ++i)
+                for(unsigned int j=0; j<spatial_dimensions; ++j)
+                    J(i,j)=(i==j)?1.:0;
+
+            // affine part
+            for(unsigned int i=0; i<MSize; ++i)
+                for(unsigned int j=0; j<MSize; ++j)
+                    J(i+spatial_dimensions,j+spatial_dimensions)=dQOverdM(i,j);
+        }
+
         /// project to a rigid motion
         void setRigid(const Coord& c)
+        {
+            Affine Q,S,invG,dQ;
+            helper::Decompose<Real>::polarDecomposition( c.getAffine(), Q, S );
+            helper::Decompose<Real>::polarDecompositionGradient_G(Q,S,invG);
+            helper::Decompose<Real>::polarDecompositionGradient_dQ(invG,Q,this->getAffine(),dQ);
+            this->getVQuadratic().clear();
+            this->getAffine() = dQ;
+        }
+
+
+        // good approximation of the solution with no inversion of a 6x6 matrix
+        // based on : dR ~ 0.5*(dA.A^-1 - A^-T dA^T) R
+        // the projection matrix is however non symmetric..
+        void setRigid_approx(const Coord& c)
         {
             // Compute velocity tensor W = Adot.Ainv
             Affine Ainv;  invertMatrix(Ainv,c.getAffine());
@@ -318,24 +357,6 @@ public:
                     q[i][j] = 0.;
         }
 
-        /// project to a rigid motion
-        void setRigid()
-        {
-            Frame& q = getVQuadratic();
-            // first matrix is skew-symmetric
-            for(unsigned i=0; i<spatial_dimensions; i++) q[i][i] = 0.0;
-            for(unsigned i=0; i<spatial_dimensions; i++)
-                for(unsigned j=i+1; j<spatial_dimensions; j++)
-                {
-                    q[i][j] = (q[i][j] - q[j][i]) *(Real)0.5;
-                    q[j][i] = - q[i][j];
-                }
-
-            // the rest is null
-            for(unsigned i=0; i<spatial_dimensions; i++)
-                for(unsigned j=spatial_dimensions; j<num_quadratic_terms; j++)
-                    q[i][j] = 0.;
-        }
 
         template< int N, class Real2 > // N <= VSize
         void operator+=( const Vec<N,Real2>& p ) { for(int i=0;i<N;++i) this->elems[i] += (Real)p[i]; }

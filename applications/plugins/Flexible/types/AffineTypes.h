@@ -210,8 +210,42 @@ public:
         Frame& getVAffine() { return *reinterpret_cast<Frame*>(&this->elems[spatial_dimensions]); }
         const Frame& getVAffine() const { return *reinterpret_cast<const Frame*>(&this->elems[spatial_dimensions]); }
 
+        /// get jacobian of the projection dQ/dM
+        void getJRigid(const Coord& c, Mat<VSize,VSize,Real>& J) const
+        {
+            Frame Q,S,invG;
+            helper::Decompose<Real>::polarDecomposition( c.getAffine(), Q, S );
+            helper::Decompose<Real>::polarDecompositionGradient_G(Q,S,invG);
+
+            static const unsigned MSize = spatial_dimensions * spatial_dimensions;
+            Mat<MSize,MSize,Real> dQOverdM;
+            helper::Decompose<Real>::polarDecompositionGradient_dQOverdM(Q,invG,dQOverdM);
+
+            // translation -> identity
+            for(unsigned int i=0; i<spatial_dimensions; ++i)
+                for(unsigned int j=0; j<spatial_dimensions; ++j)
+                    J(i,j)=(i==j)?1.:0;
+
+            // affine part
+            for(unsigned int i=0; i<MSize; ++i)
+                for(unsigned int j=0; j<MSize; ++j)
+                    J(i+spatial_dimensions,j+spatial_dimensions)=dQOverdM(i,j);
+        }
+
         /// project to a rigid motion
         void setRigid(const Coord& c)
+        {
+            Frame Q,S,invG,dQ;
+            helper::Decompose<Real>::polarDecomposition( c.getAffine(), Q, S );
+            helper::Decompose<Real>::polarDecompositionGradient_G(Q,S,invG);
+            helper::Decompose<Real>::polarDecompositionGradient_dQ(invG,Q,this->getVAffine(),dQ);
+            this->getVAffine() = dQ;
+        }
+
+        // good approximation of the solution with no inversion of a 6x6 matrix
+        // based on : dR ~ 0.5*(dA.A^-1 - A^-T dA^T) R
+        // the projection matrix is however non symmetric..
+        void setRigid_approx(const Coord& c)
         {
             // Compute velocity tensor W = Adot.Ainv
             Frame Ainv;  invertMatrix(Ainv,c.getAffine());

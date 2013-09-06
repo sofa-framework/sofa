@@ -131,11 +131,15 @@ public:
      *  First, invG needs to be computed with function polarDecompositionGradient_G
      */
     static void polarDecompositionGradient_dQ( const defaulttype::Mat<3,3,Real>& invG, const defaulttype::Mat<3,3,Real>& Q, const defaulttype::Mat<3,3,Real>& dM, defaulttype::Mat<3,3,Real>& dQ );
+    static void polarDecompositionGradient_dQOverdM(const defaulttype::Mat<3,3,Real> &Q, const defaulttype::Mat<3,3,Real> &invG,  defaulttype::Mat<9,9,Real>& J);
+    static void polarDecompositionGradient_dQOverdM(const defaulttype::Mat<3,3,Real> &Q, const defaulttype::Mat<3,3,Real> &Sinv, const defaulttype::Mat<9,9,Real>& dSOverdM, defaulttype::Mat<9,9,Real>& J);   // another method based on the relation : M=QS -> dQ = (dM - Q dS)S^-1  ->  dQ = (dM - dSOverdM.dM)S^-1  -> dQ = JdM
 
     /** Polar decomposition rotation gradient, computes the strain gradient dS of a given polar decomposition
      *  qQ needs to be computed with function polarDecompositionGradient_dQ
      */
     static void polarDecompositionGradient_dS( const defaulttype::Mat<3,3,Real>& Q, const defaulttype::Mat<3,3,Real>& S, const defaulttype::Mat<3,3,Real>& dQ, const defaulttype::Mat<3,3,Real>& dM, defaulttype::Mat<3,3,Real>& dS );
+    static void polarDecompositionGradient_dSOverdM(const defaulttype::Mat<3,3,Real> &Q, const defaulttype::Mat<3,3,Real> &M, const  defaulttype::Mat<3,3,Real>& invG,  defaulttype::Mat<9,9,Real>& J);
+    static void polarDecompositionGradient_dSOverdM(const defaulttype::Mat<3,3,Real> &M, const defaulttype::Mat<3,3,Real> &S,  defaulttype::Mat<9,9,Real>& J);     // another method based on the relation :  M^TM = S.S -> M^TdM +dM^TM = dS.S + S.dS  -> J1.dM = J2.dS  -> J.dM = dS;  Requires the inversion of a 6x6 matrix..
 
     /** Polar decomposition rotation gradient, computes the strain gradient dS of a given polar decomposition computed by a SVD such as M = U*Sdiag*V
       * Christopher Twigg, Zoran Kacic-Alesic, "Point Cloud Glue: Constraining simulations using the Procrustes transform", SCA'10

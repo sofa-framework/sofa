@@ -30,6 +30,7 @@
 #include "QuadraticTypes.h"
 
 #include <sofa/core/behavior/ProjectiveConstraintSet.inl>
+#include <sofa/component/linearsolver/EigenSparseMatrix.h>
 
 #include <sofa/core/visual/VisualParams.h>
 
@@ -64,27 +65,46 @@ public:
     typedef typename DataTypes::MatrixDeriv::RowIterator MatrixDerivRowIterator;
     typedef typename DataTypes::MatrixDeriv::RowType MatrixDerivRowType;
 
-    Data<vector<unsigned> > f_index;   ///< Indices of the constrained frames
+    typedef helper::vector<unsigned int> Indices;
+
+    typedef linearsolver::EigenBaseSparseMatrix<SReal> BaseSparseMatrix;
+    typedef linearsolver::EigenSparseMatrix<DataTypes,DataTypes> SparseMatrix;
+    typedef typename SparseMatrix::Block Block;                                       ///< projection matrix of a particle displacement to the plane
+    enum {bsize=SparseMatrix::Nin};                                                   ///< size of a block
+
+    Data<Indices> f_index;   ///< Indices of the constrained frames
     Data<double> _drawSize;
 
     VecCoord oldPos;
+    Block bIdentity; // precomputed identity block for unconstrained dofs
 
     // -- Constraint interface
     virtual void init()
     {
         Inherit1::init();
+        for(unsigned i=0; i<bsize; i++) for(unsigned j=0; j<bsize; j++) bIdentity[i][j]=(i==j)?1.:0;
+        reinit();
+    }
+
+    virtual void reinit()
+    {
+        // sort indices to fill the jacobian in ascending order
+        Indices tmp = f_index.getValue();
+        std::sort(tmp.begin(),tmp.end());
+        f_index.setValue(tmp);
+
+        // store positions to compute jacobian
         const vector<unsigned> & indices = f_index.getValue();
         oldPos.resize(indices.size());
         helper::ReadAccessor< Data< VecCoord > > pos(*this->getMState()->read(core::ConstVecCoordId::position()));
         for(unsigned i=0; i<indices.size(); i++)       oldPos[i]=pos[indices[i]];
     }
 
-
     template <class VecDerivType>
     void projectResponseT( VecDerivType& res)
     {
         const vector<unsigned> & indices = f_index.getValue();
-        for(unsigned i=0; i<indices.size(); i++)            res[indices[i]].setRigid( oldPos[i]);
+        for(unsigned ind=0; ind<indices.size(); ind++) res[indices[ind]].setRigid( oldPos[ind]);
     }
 
     virtual void projectResponse(const core::MechanicalParams* /*mparams*/, DataVecDeriv& resData)
@@ -124,15 +144,51 @@ public:
     virtual void applyConstraint(defaulttype::BaseMatrix *, unsigned int /*offset*/) {}
     virtual void applyConstraint(defaulttype::BaseVector *, unsigned int /*offset*/) {}
 
+    Block getBlock(unsigned int ind_index)
+    {
+        Block J;
+        helper::ReadAccessor< Data< VecDeriv > > vel(*this->getMState()->read(core::ConstVecDerivId::velocity()));
+        unsigned int i=f_index.getValue()[ind_index];
+        vel[i].getJRigid(oldPos[ind_index],J);
+        return J;
+    }
+
+    void projectMatrix( sofa::defaulttype::BaseMatrix* M, unsigned offset )
+    {
+        // resize the jacobian
+        SparseMatrix jacobian; ///< projection matrix
+        unsigned numBlocks = this->mstate->getSize();
+        unsigned blockSize = DataTypes::deriv_total_size;
+        jacobian.resize( numBlocks*blockSize,numBlocks*blockSize );
+
+        // fill jacobian
+        const vector<unsigned> & indices = f_index.getValue();
+        unsigned i = 0, j = 0;
+        while( i < numBlocks )
+        {
+            jacobian.beginBlockRow(i);
+            if( j!=indices.size() && i==indices[j] )  { jacobian.createBlock(i,getBlock(j)); j++; }  // constrained particle
+            else jacobian.createBlock(i,bIdentity);         // unconstrained particle: set diagonal to identity block
+            jacobian.endBlockRow();   // only one block to create
+            i++;
+        }
+        jacobian.compress();
+
+        SparseMatrix J;
+        J.copy(jacobian, M->colSize(), offset); // projection matrix for an assembled state
+        BaseSparseMatrix* E = dynamic_cast<BaseSparseMatrix*>(M);
+        assert(E);
+        E->compressedMatrix = J.compressedMatrix * E->compressedMatrix * J.compressedMatrix;
+    }
+
+
 protected:
     RigidConstraint()
         : core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
         , f_index( initData(&f_index,"indices","Indices of the constrained frames") )
         , _drawSize( initData(&_drawSize,0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
     {
-        // default to index 0
-        helper::WriteAccessor<Data<vector<unsigned> > > index( f_index);
-        index.push_back(0);
+
     }
 
     virtual ~RigidConstraint()  {    }
