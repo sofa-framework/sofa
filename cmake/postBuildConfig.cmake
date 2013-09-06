@@ -15,6 +15,17 @@ if(TARGET ${PROJECT_NAME})
 			endif()
 		endif()
 	endforeach()
+	
+	# if this project is a test, add the necessary include and lib
+	if(PROJECT_NAME MATCHES ".*_test.*")
+		if(SOFA-MISC_BUILD_GTEST OR WIN32)
+			include_directories("${SOFA_EXTLIBS_DIR}/gtest/include")
+		endif()
+		
+		link_directories("${SOFA_EXTLIBS_DIR}/gtest/lib")
+		
+		AddLinkerDependencies(gtest gtest_main)
+	endif()
 
 	# include directories
 	include_directories(${GLOBAL_INCLUDE_DIRECTORIES} ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
@@ -71,7 +82,7 @@ if(TARGET ${PROJECT_NAME})
 	
 	# if this project is a test, add it in the test group
 	if(PROJECT_NAME MATCHES ".*_test.*")
-		add_test(NAME "TEST: ${PROJECT_NAME}" WORKING_DIRECTORY ${SOFA_BIN_DIR} COMMAND ${PROJECT_NAME})
+		add_test(NAME "${PROJECT_NAME}" WORKING_DIRECTORY "${SOFA_BIN_DIR}" COMMAND ${PROJECT_NAME})
 	endif()
 	
 	# set IDE project filter
