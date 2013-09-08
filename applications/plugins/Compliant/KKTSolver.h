@@ -16,7 +16,7 @@ namespace linearsolver {
 
 
 
-
+#define GR_BENCHMARK
 
 			
 // TODO: base + derived classes (minres/cholesky/unilateral)
@@ -38,6 +38,13 @@ class SOFA_Compliant_API KKTSolver : public core::behavior::BaseLinearSolver {
 
     // return true if the solver can only handle equality constraints (in opposition with LCP for instance)
     virtual bool isLinear() const { return true; }
+
+
+
+#ifdef GR_BENCHMARK
+    mutable unsigned nbiterations;
+#endif
+
 };
 
 
