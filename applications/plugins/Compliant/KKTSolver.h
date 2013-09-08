@@ -16,7 +16,7 @@ namespace linearsolver {
 
 
 
-#define GR_BENCHMARK
+//#define GR_BENCHMARK
 
 			
 // TODO: base + derived classes (minres/cholesky/unilateral)
