@@ -341,6 +341,87 @@ if(XBOX)
 	endif()
 endif()
 
+
+
+
+
+##############
+#### CUDA ####
+##############
+option(SOFA-CUDA_VERBOSE_PTXAS "SOFA-CUDA_VERBOSE_PTXAS" OFF)	
+if(SOFA-CUDA_VERBOSE_PTXAS)
+	set(VERBOSE_PTXAS --ptxas-options=-v)
+endif()
+
+#Option to activate double-precision support in CUDA (requires GT200+ GPU and -arch sm_13 flag)
+option(SOFA-CUDA_DOUBLE "SOFA-CUDA_DOUBLE" OFF)
+if(SOFA-CUDA_DOUBLE)
+	add_definitions("-DSOFA_GPU_CUDA_DOUBLE")
+	AddCompilerDefinitions("SOFA_GPU_CUDA_DOUBLE")
+endif()
+
+#Option to use IEEE 754-compliant floating point operations
+option(SOFA-CUDA_PRECISE "SOFA-CUDA_PRECISE" OFF)
+if(SOFA-CUDA_PRECISE)
+	add_definitions("-DSOFA_GPU_CUDA_PRECISE")
+	AddCompilerDefinitions("SOFA_GPU_CUDA_PRECISE")
+endif()
+
+# Option to get double-precision for sqrt/div...
+# (requires compute capability >= 2 and CUDA_VERSION > 3.0)
+# (with SOFA_GPU_CUDA_PRECISE and SOFA_GPU_CUDA_DOUBLE you get IEEE 754-compliant floating point
+#  operations for addition and multiplication only)
+option(SOFA-CUDA_DOUBLE_PRECISE "SOFA-CUDA_DOUBLE_PRECISE" OFF)
+if(SOFA-CUDA_DOUBLE_PRECISE)
+	add_definitions("-DSOFA_GPU_CUDA_DOUBLE_PRECISE")
+	AddCompilerDefinitions("SOFA_GPU_CUDA_DOUBLE_PRECISE")
+endif()
+
+# Option to activate cublas support in CUDA (requires SOFA_GPU_CUDA_DOUBLE)
+option(SOFA-CUDA_CUBLAS "SOFA-CUDA_CUBLAS" OFF)
+if(SOFA-CUDA_CUBLAS)
+	add_definitions("-DSOFA_GPU_CUBLAS")
+	AddCompilerDefinitions("SOFA_GPU_CUBLAS")
+endif()
+
+# Option to activate CUDPP (for RadixSort)
+option(SOFA-CUDA_CUDPP "SOFA-CUDA_CUDPP" OFF)
+if(SOFA-CUDA_CUDPP)
+	add_definitions("-DSOFA_GPU_CUDPP")
+	AddCompilerDefinitions("SOFA_GPU_CUDPP")
+	if(SOFA-EXTERNAL_HAVE_CUDPP)
+		AddLinkerDependencies(cudpp)
+	endif()
+endif()
+
+# Option to activate THRUST (for RadixSort)
+# Note: THRUST is included in CUDA SDK 4.0+, it is recommended to use it if available
+option(SOFA-CUDA_THRUST "SOFA-CUDA_THRUST" OFF)
+if(SOFA-CUDA_THRUST)
+	add_definitions("-DSOFA_GPU_THRUST")
+	AddCompilerDefinitions("SOFA_GPU_THRUST")
+	if(SOFA-EXTERNAL_HAVE_THRUST)
+		AddLinkerDependencies(thrust)
+	endif()
+endif()
+
+#variable to choose to which architecture to compile
+set(SOFA-CUDA_SM "20" CACHE FILEPATH "Which architecture to compile")
+set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS};-arch sm_${SOFA-CUDA_SM} -Xcompiler -fPIC)
+
+# TODO   activate it automatically
+option(SOFA-CUDA_GREATER_THAN_GCC44 "SOFA-CUDA_GREATER_THAN_GCC44" OFF)
+if(SOFA-CUDA_GREATER_THAN_GCC44)
+      set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS};--compiler-options -fno-inline)
+endif()
+
+
+
+
+
+
+
+
 # plugins (auto-search)
 set(SOFA_PROJECT_FOLDER "SofaPlugin")
 RetrieveDependencies("${SOFA_APPLICATIONS_PLUGINS_DIR}" "SOFA-PLUGIN_" "Enable plugin" "SOFA_HAVE_PLUGIN_" RECURSIVE)
