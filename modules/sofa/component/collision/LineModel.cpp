@@ -48,6 +48,7 @@ int LineModelClass = core::RegisterObject("collision model using a linear mesh, 
         .addAlias("LineSetModel")
         .addAlias("LineMesh")
         .addAlias("LineSet")
+        .addAlias("LineModel")
         ;
 
 
