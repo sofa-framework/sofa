@@ -49,7 +49,7 @@ int PointModelClass = core::RegisterObject("Collision model which represents a s
         .add< TPointModel<defaulttype::Vec3fTypes> >()
 #endif
         .addAlias("Point")
-// .addAlias("PointModel")
+        .addAlias("PointModel")
         .addAlias("PointMesh")
         .addAlias("PointSet")
         ;
