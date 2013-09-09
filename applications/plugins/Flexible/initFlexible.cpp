@@ -110,8 +110,6 @@ SOFA_LINK_CLASS(OgdenForceField)
 SOFA_LINK_CLASS(VolumePreservationForceField)
 SOFA_LINK_CLASS(AffineMechanicalObject)
 SOFA_LINK_CLASS(QuadraticMechanicalObject)
-SOFA_LINK_CLASS(DistanceMapping)
-SOFA_LINK_CLASS(ExtensionMapping)
 SOFA_LINK_CLASS(AffineUniformMass)
 SOFA_LINK_CLASS(RigidConstraint)
 
