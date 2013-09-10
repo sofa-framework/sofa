@@ -4,7 +4,9 @@
 
 #include "utils/scoped.h"
 #include "utils/minres.h"
+
 #include "utils/kkt.h"
+#include "utils/schur.h"
 
 namespace sofa {
 namespace component {
@@ -92,11 +94,34 @@ MinresSolver::MinresSolver()
 // }
 			
 			
-void MinresSolver::factor(const AssembledSystem& ) { }
+void MinresSolver::factor(const AssembledSystem& sys) {
+
+	if( use_schur.getValue() ) {
+
+		// TODO is there a conversion between rmat and cmat ?
+		response.compute(sys.H);
+		
+	}
+
+}
 
 void MinresSolver::solve_schur(AssembledSystem::vec& x,
-                               const AssembledSystem& system,
+                               const AssembledSystem& sys,
                                const AssembledSystem::vec& b) const {
+	// unconstrained velocity
+	x.head( sys.m ) = response.solve(b.head(sys.m));
+	
+	if( sys.n ) {
+
+		schur<response_type> test(sys, response);
+		
+		vec rhs = -b.tail(sys.n) - sys.J * x.head(sys.m);
+		
+		
+	}
+
+
+	
 	throw std::logic_error("not implemented lol !");
 }
 
