@@ -84,3 +84,4 @@ if(WIN32)
 endif()
 	
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
+include(custom.cmake OPTIONAL)
