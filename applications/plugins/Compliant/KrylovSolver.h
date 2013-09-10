@@ -30,10 +30,11 @@ class SOFA_Compliant_API MinresSolver : public KKTSolver {
 
 	virtual void factor(const AssembledSystem& system);
 				
-  private:
+  protected:
 	virtual void solve_schur(vec& x,
 	                         const system_type& system,
 	                         const vec& rhs) const;
+	
 	virtual void solve_kkt(vec& x,
 	                       const system_type& system,
 	                       const vec& rhs) const;

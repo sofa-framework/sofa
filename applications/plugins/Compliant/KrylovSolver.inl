@@ -105,6 +105,10 @@ void MinresSolver::factor(const AssembledSystem& sys) {
 
 }
 
+static void report(const minres<SReal>::params& p) {
+	std::cerr << "minres: " << p.iterations << " iterations, absolute residual: " << p.precision << std::endl;
+}
+
 void MinresSolver::solve_schur(AssembledSystem::vec& x,
                                const AssembledSystem& sys,
                                const AssembledSystem::vec& b) const {
@@ -113,25 +117,33 @@ void MinresSolver::solve_schur(AssembledSystem::vec& x,
 	
 	if( sys.n ) {
 
-		schur<response_type> test(sys, response);
+		schur<response_type> A(sys, response);
 		
-		vec rhs = -b.tail(sys.n) - sys.J * x.head(sys.m);
+		vec rhs = b.tail(sys.n) - sys.J * x.head(sys.m);
 		
+		vec lambda = x.tail(sys.n);
+
+		typedef ::minres<SReal> solver_type;		
+		solver_type::params p;
+		p.iterations = iterations.getValue();
+		p.precision = precision.getValue();
 		
+		solver_type::solve(lambda, A, rhs, p);
+		
+		x.head( sys.m ) += response.solve( sys.J.transpose() * lambda );
+		x.tail( sys.n ) = lambda;
+		
+		if( verbose.getValue() ) report( p );
 	}
 
 
-	
-	throw std::logic_error("not implemented lol !");
 }
 
 
 void MinresSolver::solve_kkt(AssembledSystem::vec& x,
                              const AssembledSystem& system,
                              const AssembledSystem::vec& b) const {
-	// TODO timer is not thread safe :-/
-	// scoped::timer step("system solve");
-				
+			
 	typedef ::minres<SReal> solver_type;
 				
 	solver_type::params p;
@@ -146,21 +158,22 @@ void MinresSolver::solve_kkt(AssembledSystem::vec& x,
 	kkt A(system, parallel.getValue() );
 	solver_type::solve(x, A, rhs, p);
 	
-	if( verbose.getValue() ) {
-		std::cerr << "minres: " << p.iterations << " iterations, absolute residual: " << (A(x) - rhs).norm() << std::endl;
-		
-	}
+	if( verbose.getValue() ) report( p );
 }
 
 
 void MinresSolver::solve(AssembledSystem::vec& x,
                              const AssembledSystem& system,
                              const AssembledSystem::vec& b) const {
+	// TODO timer is not thread safe :-/
+	// scoped::timer step("system solve");
+	
 	if(use_schur.getValue() ) {
 		solve_schur(x, system, b);
 	} else {
 		solve_kkt(x, system, b);
 	}
+	
 }
 			
 }
