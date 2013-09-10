@@ -40,11 +40,13 @@ CMakeFiles/*
 CMakeCache.txt
 sofaDefines.cfg
 
-# let's use wildcards, shall we ?
+# misc compilation byproducts
 Makefile*
 *.o
 moc_*.cpp
 *~
+*.pyc
+
 /share/config/sofaplugins_release.ini
 /share/config/sofaplugins_debug.ini
 /share/config/lastUsedGUI.ini
