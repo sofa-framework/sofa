@@ -58,8 +58,8 @@ public:
 	
 	void debug(SReal threshold = 0) const;
 
-    // return true iff the magnitude of every diagonal entries are larger or equal than the sum of the magnitudes of all the non-diagonal entries in the same row
-    bool isDiagonalDominant() const;
+    // // return true iff the magnitude of every diagonal entries are larger or equal than the sum of the magnitudes of all the non-diagonal entries in the same row
+    // bool isDiagonalDominant() const;
 
 };
 

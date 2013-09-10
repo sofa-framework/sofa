@@ -42,8 +42,6 @@ class SOFA_Compliant_API MinresSolver : public KrylovSolver {
 	
 	Data<bool> parallel;
 	
-	Data<bool> verbose;
-
   protected:
 	
 	// typedef system_type::real real;

@@ -13,6 +13,8 @@ namespace sofa {
 namespace component {
 namespace linearsolver {
 
+
+// should be IterativeSolver -> KrylovSolver -> ...
 class SOFA_Compliant_API KrylovSolver : public KKTSolver {
   public:
 
