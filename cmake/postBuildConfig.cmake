@@ -30,9 +30,9 @@ if(TARGET ${PROJECT_NAME})
 	# include directories
 	include_directories(${GLOBAL_INCLUDE_DIRECTORIES} ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
-	get_directory_property(${PROJECT_NAME}_INCLUDE_DIR INCLUDE_DIRECTORIES)
+	get_directory_property(includeDirs INCLUDE_DIRECTORIES)
 	## put includes inside a CACHE variable for further uses
-	set(${PROJECT_NAME}_INCLUDE_DIR ${${PROJECT_NAME}_INCLUDE_DIR} CACHE INTERNAL "${PROJECT_NAME} include path" FORCE)
+	set(${PROJECT_NAME}_INCLUDE_DIR ${${PROJECT_NAME}_INCLUDE_DIR} ${includeDirs} CACHE INTERNAL "${PROJECT_NAME} include path" FORCE)
 
 	# compile definitions
 	set(ADDITIONAL_COMPILER_DEFINES ${ADDITIONAL_COMPILER_DEFINES} "SOFA_TARGET=${PROJECT_NAME}")
