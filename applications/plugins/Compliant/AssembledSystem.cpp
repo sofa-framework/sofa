@@ -68,53 +68,7 @@ void AssembledSystem::debug(SReal /*thres*/) const {
 }
 
 
-bool AssembledSystem::isDiagonalDominant() const
-{
-    typedef mat::Index Index;
-    
-    mat PH = P*H;
 
-    if( n )
-    {
-        mat PJt = P*J.transpose();
-
-        for( unsigned i=0 ; i<m ; ++i )
-        {
-            real d = helper::rabs(PH.coeff(i,i));
-
-            real o = -d;
-            for( Index j=0 ; j<PH.cols()  ; ++j ) o += helper::rabs(PH.coeff(i,j));
-            for( Index j=0 ; j<PJt.cols() ; ++j ) o += helper::rabs(PJt.coeff(i,j));
-
-            if( o > d ) return false;
-        }
-
-        for( unsigned i=0 ; i<n ; ++i )
-        {
-            real d = helper::rabs(C.coeff(i,i));
-
-            real o = -d;
-            for( Index j=0 ; j<C.cols() ; ++j ) o += helper::rabs(C.coeff(i,j));
-            for( Index j=0 ; j<J.cols() ; ++j ) o += helper::rabs(J.coeff(i,j));
-
-            if( o > d ) return false;
-        }
-    }
-    else
-    {
-        for( unsigned i=0 ; i<m ; ++i )
-        {
-            real d = helper::rabs(PH.coeff(i,i));
-
-            real o = -d;
-            for( Index j=0 ; j<PH.cols() ; ++j ) o += helper::rabs(PH.coeff(i,j));
-
-            if( o > d ) return false;
-        }
-    }
-
-    return true;
-}
 
 }
 }
