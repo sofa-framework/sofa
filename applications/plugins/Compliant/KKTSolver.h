@@ -28,8 +28,10 @@ class SOFA_Compliant_API KKTSolver : public core::behavior::BaseLinearSolver {
 	// (watch out for the compliance scaling)
 	
 	typedef AssembledSystem system_type;
+	
+	typedef system_type::real real;
 	typedef system_type::vec vec;
-
+	
 	virtual void factor(const system_type& system) = 0;
 	
 	virtual void solve(vec& x,
@@ -39,8 +41,7 @@ class SOFA_Compliant_API KKTSolver : public core::behavior::BaseLinearSolver {
     // return true if the solver can only handle equality constraints (in opposition with LCP for instance)
     virtual bool isLinear() const { return true; }
 
-
-
+    
 #ifdef GR_BENCHMARK
     mutable unsigned nbiterations;
 #endif

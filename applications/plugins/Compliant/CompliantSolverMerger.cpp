@@ -7,7 +7,9 @@
 #include "AssembledSolver.h"
 #include "ComplianceSolver.h"
 
-#include "KrylovSolver.h"
+#include "MinresSolver.h"
+#include "CgSolver.h"
+
 #include "LDLTSolver.h"
 
 namespace sofa

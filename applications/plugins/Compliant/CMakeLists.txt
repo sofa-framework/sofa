@@ -14,8 +14,9 @@ set(HEADER_FILES
 	AssembledRigidRigidMapping.h
 	KKTSolver.h
 	LDLTSolver.h
-    KrylovSolver.h
-    KrylovSolver.inl
+  MinresSolver.h
+	KrylovSolver.h
+	CgSolver.h
     AssemblyHelper.h
     AssemblyVisitor.h
 	AssembledSystem.h
@@ -50,7 +51,9 @@ set(SOURCE_FILES
 	RigidJointMapping.cpp
 	AssembledRigidRigidMapping.cpp
 	LDLTSolver.cpp
-    KrylovSolver.cpp
+    MinresSolver.cpp
+		KrylovSolver.cpp
+		CgSolver.cpp
 	AssemblyVisitor.cpp
 	AssembledSystem.cpp
 	AssembledSolver.cpp
