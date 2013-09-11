@@ -43,7 +43,8 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
                        core::MultiVecCoordId posId,
                        core::MultiVecDerivId velId,
                        bool computeForce, // should the right part of the implicit system be computed?
-                       bool integratePosition // should the position be updated?
+                       bool integratePosition, // should the position be updated?
+                       simulation::AssemblyVisitor *vis = 0x0
                        );
 
     // OdeSolver API
@@ -61,6 +62,10 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
 	~AssembledSolver();
 	
 	virtual void cleanup();
+
+    // mechanical params
+    virtual core::MechanicalParams mparams(const core::ExecParams& params,
+                                           double dt) const;
 
     // solve velocity dynamics ?
 	Data<bool> use_velocity, warm_start, propagate_lambdas, stabilization, debug;
@@ -83,11 +88,7 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
 	void forces(const core::ExecParams& params);
 
 	// propagate velocities
-	void propagate(const core::MechanicalParams* params);
-	
-	// mechanical params
-	virtual core::MechanicalParams mparams(const core::ExecParams& params, 
-	                                       double dt) const;
+	void propagate(const core::MechanicalParams* params);	
 				
 
 	// linear solver: TODO hide in pimpl ?

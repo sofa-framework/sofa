@@ -154,7 +154,7 @@ class ContactMapper<RigidSphereModel,TVec3Types > : public RigidContactMapper<Ri
             const typename TVec3Types::Coord & cP = P - rCenter.getCenter();
             const Quaternion & ori = rCenter.getOrientation();
 
-            r = e.r();
+            //r = e.r();
 
             return RigidContactMapper<RigidSphereModel,TVec3Types >::addPoint(ori.inverseRotate(cP),index,r);
         }

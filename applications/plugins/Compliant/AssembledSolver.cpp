@@ -131,7 +131,6 @@ core::MechanicalParams AssembledSolver::mparams(const core::ExecParams& params,
 			
 // implicit euler
 linearsolver::KKTSolver::vec AssembledSolver::rhs(const system_type& sys, bool computeForce) const {
-
 	kkt_type::vec res = kkt_type::vec::Zero( sys.size() );
 
 	if( !computeForce ){
@@ -249,14 +248,12 @@ AssembledSolver::kkt_type::vec AssembledSolver::stab_mask(const system_type& sys
 }
 
 
-
-
 void AssembledSolver::solve(const core::ExecParams* params,
                             double dt, 
                             sofa::core::MultiVecCoordId posId,
                             sofa::core::MultiVecDerivId velId,
                             bool computeForce,
-                            bool integratePosition ) {
+                            bool integratePosition,simulation::AssemblyVisitor * v) {
     assert(kkt && "i need a kkt solver lol");
 
 	// obtain mparams
@@ -264,9 +261,15 @@ void AssembledSolver::solve(const core::ExecParams* params,
 				
 	// compute forces
     if( computeForce ) forces( mparams );
-				
-    // assembly visitor (keep an accessible pointer from another component all along the solving)
-    _assemblyVisitor = new simulation::AssemblyVisitor(&mparams, velId, lagrange.id());
+
+    // assembly visitor
+    if(v == 0x0){
+        _assemblyVisitor = new simulation::AssemblyVisitor(&mparams, velId, lagrange.id());
+    }
+    else{
+        // assembly visitor (keep an accessible pointer from another component all along the solving)
+        _assemblyVisitor = v;
+    }
 
 	// fetch data
     send( *_assemblyVisitor );
@@ -309,6 +312,7 @@ void AssembledSolver::solve(const core::ExecParams* params,
             kkt->solve(tmp_x, sys, tmp_b);
 
             _assemblyVisitor->distribute_master( velId, velocity(sys, tmp_x) );
+
             if( integratePosition ) integrate( &mparams, posId, velId );
 
             // zero stabilized constraints
@@ -320,6 +324,7 @@ void AssembledSolver::solve(const core::ExecParams* params,
 	
 	
 	// distribute (projected) velocities
+
     _assemblyVisitor->distribute_master( velId, velocity(sys, x) );
 	
 	if( sys.n ) {
@@ -338,7 +343,8 @@ void AssembledSolver::solve(const core::ExecParams* params,
     // update positions
     if( integratePosition ) integrate( &mparams, posId, velId );
 
-    delete _assemblyVisitor;
+    if(v == 0x0)//it means that we created a new visitor in this method
+        delete _assemblyVisitor;
 }
 
 			
