@@ -66,6 +66,7 @@ AddSourceDependencies(eigen)
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_MISC_MAPPING" )
+AddSourceDependencies(eigen)
 AddLinkerDependencies(SofaSimpleFem SofaRigid)
 
     
