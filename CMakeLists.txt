@@ -5,7 +5,7 @@ project(${SOLUTION_NAME})
 
 # MSVC: Use solution folders.
 if(MSVC)
-        set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+	set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 endif()
 
 include(cmake/preMainSolution.cmake)
@@ -14,7 +14,7 @@ if(PRECONFIGURE_DONE)
 	
 	include(cmake/preSolution.cmake)
 
-	include(sofa-dependencies.cmake)
+	include(cmake/dependencies.cmake)
 	
 	include(cmake/postSolution.cmake)
 
