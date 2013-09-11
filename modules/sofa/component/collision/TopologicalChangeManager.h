@@ -53,9 +53,7 @@ namespace collision
 {
 
 #if 0
-#ifdef SOFA_DEV
 class TetrahedronModel;
-#endif // SOFA_DEV
 #endif
 
 using namespace sofa::defaulttype;
@@ -148,9 +146,7 @@ private:
     int removeItemsFromTriangleModel(sofa::component::collision::TriangleModel* model, const helper::vector<int>& indices) const;
 
 #if 0
-#ifdef SOFA_DEV
     int removeItemsFromTetrahedronModel(sofa::component::collision::TetrahedronModel* model, const helper::vector<int>& indices) const;
-#endif // SOFA_DEV
 #endif
     int removeItemsFromSphereModel(sofa::component::collision::SphereModel* model, const helper::vector<int>& indices) const;
 

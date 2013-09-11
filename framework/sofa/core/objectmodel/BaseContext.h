@@ -138,7 +138,6 @@ public:
     virtual Iterative::IterativePartition*  getPartition() const;
 #endif
 
-#ifdef SOFA_DEV
 #ifdef SOFA_SUPPORT_MULTIRESOLUTION
     /// Multiresolution support (UNSTABLE)
     virtual int getCurrentLevel() const;
@@ -152,7 +151,6 @@ public:
     /// Multiresolution support (UNSTABLE)
     //     virtual unsigned int nbLevels() const;
 #endif
-#endif // SOFA_DEV
 
     /// @}
 
@@ -381,7 +379,6 @@ public:
     virtual void setAnimate(bool /*val*/)
     { }
 
-#ifdef SOFA_DEV
 #ifdef SOFA_SUPPORT_MULTIRESOLUTION
     /// Multiresolution support (UNSTABLE) : Set the current level, return false if l >= coarsestLevel
     virtual bool setCurrentLevel(int )
@@ -395,7 +392,6 @@ public:
     /// Multiresolution support (UNSTABLE)
     virtual void setFinestLevel(int ) {}
 #endif
-#endif // SOFA_DEV
 
     /// @}
 
