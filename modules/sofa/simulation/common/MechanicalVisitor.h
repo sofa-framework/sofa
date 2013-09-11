@@ -41,10 +41,10 @@
 #include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
 #include <sofa/core/behavior/BaseInteractionProjectiveConstraintSet.h>
 #include <sofa/core/behavior/BaseConstraintSet.h>
-#ifdef SOFA_HAVE_EIGEN2
+//#ifdef SOFA_HAVE_EIGEN2
 //TO REMOVE ONCE THE CONVERGENCE IS DONE
 #include <sofa/core/behavior/BaseLMConstraint.h>
-#endif
+//#endif
 //#include <sofa/defaulttype/BaseMatrix.h>
 //#include <sofa/defaulttype/BaseVector.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -1796,7 +1796,7 @@ public:
 #endif
 };
 
-#ifdef SOFA_HAVE_EIGEN2
+//#ifdef SOFA_HAVE_EIGEN2
 
 //class SOFA_SIMULATION_COMMON_API MechanicalExpressJacobianVisitor: public MechanicalVisitor
 //{
@@ -1926,7 +1926,7 @@ protected:
 
 };
 
-#endif
+//#endif
 
 class SOFA_SIMULATION_COMMON_API MechanicalAccumulateConstraint : public BaseMechanicalVisitor
 {

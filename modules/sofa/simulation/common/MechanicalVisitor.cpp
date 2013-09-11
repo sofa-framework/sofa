@@ -480,14 +480,14 @@ Visitor::Result MechanicalIntegrationVisitor::fwdOdeSolver(simulation::Node* nod
     sofa::core::MechanicalParams mparams(*this->params);
     mparams.setDt(dt);
 
-#ifdef SOFA_HAVE_EIGEN2
+//#ifdef SOFA_HAVE_EIGEN2
     {
         unsigned int constraintId=0;
         core::ConstraintParams cparams;
         simulation::MechanicalAccumulateConstraint(&cparams /* PARAMS FIRST */, core::MatrixDerivId::holonomicC(), constraintId).execute(node);
 
     }
-#endif
+//#endif
     //cerr<<"MechanicalIntegrationVisitor::fwdOdeSolver start solve obj"<<endl;
     obj->solve(params /* PARAMS FIRST */, dt);
     //cerr<<"MechanicalIntegrationVisitor::fwdOdeSolver endVisitor ok"<<endl;
@@ -1476,7 +1476,7 @@ Visitor::Result MechanicalResetConstraintVisitor::fwdConstraintSet(simulation::N
 }
 
 
-#ifdef SOFA_HAVE_EIGEN2
+//#ifdef SOFA_HAVE_EIGEN2
 
 //MechanicalExpressJacobianVisitor::MechanicalExpressJacobianVisitor(simulation::Node* /*n*/)
 //{
@@ -1518,7 +1518,7 @@ Visitor::Result MechanicalWriteLMConstraint::fwdConstraintSet(simulation::Node* 
     return RESULT_CONTINUE;
 }
 
-#endif
+//#endif
 
 Visitor::Result MechanicalAccumulateConstraint::fwdConstraintSet(simulation::Node* /*node*/, core::behavior::BaseConstraintSet* c)
 {
