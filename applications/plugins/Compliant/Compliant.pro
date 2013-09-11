@@ -42,7 +42,8 @@ HEADERS = \
 		AssembledSolver.h \
 		Stabilization.h \
     CompliantSolverMerger.h \
-    utils/*.h
+    utils/*.h \
+    ConstraintSolver.h
 
 
 README_FILE = Compliant.txt

@@ -52,11 +52,11 @@ public:
     virtual ~AssemblyVisitor();
 
 //protected:
-
     MultiVecDerivId _velId;
 
 public:
     MultiVecDerivId lagrange;
+    simulation::Node* start_node;
 
 	// collect data chunks during visitor execution
 	virtual Visitor::Result processNodeTopDown(simulation::Node* node);
@@ -98,6 +98,8 @@ public:
 		vec f, v, phi, lambda;
 		real damping;
 
+        bool tagged;
+
 		// this is to remove f*cking mouse dofs
 		bool mechanical;
 		
@@ -138,6 +140,7 @@ public:
 
 	// fill data chunk for node
     virtual void fill_prefix(simulation::Node* node);
+
     void fill_postfix(simulation::Node* node);
 
 protected:
@@ -219,10 +222,9 @@ private:
 		tmp_p_type(const tmp_p_type&) : base() { }
 	} tmp_p;
 
-	simulation::Node* start_node;
+    //simulation::Node* start_node;
 
 public:
-
     // do not perform entire assembly, but only compute momentum sys.p and constraint value sys.phi. The process_type p must have been computed from a previous call to assemble
     template<class SystemType>
     void updateConstraintAndMomentum( MultiVecDerivId velId, SystemType& sys ) {

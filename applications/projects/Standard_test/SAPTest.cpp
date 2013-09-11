@@ -39,8 +39,8 @@
 #include <sofa/component/typedef/Sofa_typedef.h>
 #include "../../../applications/tutorials/objectCreator/ObjectCreator.h"
 
-#include <plugins/Flexible/deformationMapping/ExtensionMapping.h>
-#include <plugins/Flexible/deformationMapping/DistanceMapping.h>
+//#include <plugins/Flexible/deformationMapping/ExtensionMapping.h>
+//#include <plugins/Flexible/deformationMapping/DistanceMapping.h>
 
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/component/collision/DefaultCollisionGroupManager.h>
