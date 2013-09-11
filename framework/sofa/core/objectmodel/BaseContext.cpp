@@ -67,7 +67,6 @@ bool BaseContext::isActive() const { return true;};
 bool BaseContext::is_partition() const { return false;};
 #endif
 
-#ifdef SOFA_DEV
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
 /// Gravity in the local coordinate system
 BaseContext::Vec3 BaseContext::getLocalGravity() const
@@ -76,7 +75,6 @@ BaseContext::Vec3 BaseContext::getLocalGravity() const
     return G;
 }
 #endif
-#endif // SOFA_DEV
 
 /// Gravity in the world coordinate system
 const BaseContext::Vec3& BaseContext::getGravity() const
@@ -115,7 +113,6 @@ Iterative::IterativePartition* BaseContext::getPartition() const
 #endif
 
 
-#ifdef SOFA_DEV
 #ifdef SOFA_SUPPORT_MULTIRESOLUTION
 /// Multiresolution
 int BaseContext::getCurrentLevel() const
@@ -135,10 +132,8 @@ int BaseContext::getFinestLevel() const
 // 	return getCoarsestLevel() - getFinestLevel() + 1;
 // }
 #endif
-#endif // SOFA_DEV
 
 
-#ifdef SOFA_DEV
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
 //////////////////////////////
 // Local Coordinates System //
@@ -166,7 +161,6 @@ const BaseContext::Vec3& BaseContext::getVelocityBasedLinearAccelerationInWorld(
     return a;
 }
 #endif
-#endif // SOFA_DEV
 
 BaseContext* BaseContext::getRootContext() const
 {
@@ -270,15 +264,12 @@ void BaseContext::executeVisitor( simulation::Visitor* )
 }
 
 std::ostream& operator << (std::ostream& out, const BaseContext&
-#ifdef SOFA_DEV
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
         c
 #endif
-#endif // SOFA_DEV
                           )
 
 {
-#ifdef SOFA_DEV
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
     out<<std::endl<<"local gravity = "<<c.getLocalGravity();
     out<<std::endl<<"transform from local to world = "<<c.getPositionInWorld();
@@ -286,7 +277,6 @@ std::ostream& operator << (std::ostream& out, const BaseContext&
     out<<std::endl<<"spatial velocity = "<<c.getVelocityInWorld();
     out<<std::endl<<"acceleration of the origin = "<<c.getVelocityBasedLinearAccelerationInWorld();
 #endif
-#endif // SOFA_DEV
     return out;
 }
 

@@ -26,9 +26,7 @@
 
 #include <sofa/component/collision/TriangleModel.h>
 #if 0
-#ifdef SOFA_DEV
 #include <sofa/component/collision/TetrahedronModel.h>
-#endif // SOFA_DEV
 #endif
 #include <sofa/component/collision/SphereModel.h>
 
@@ -184,7 +182,6 @@ int TopologicalChangeManager::removeItemsFromTriangleModel(sofa::component::coll
 }
 
 #if 0
-#ifdef SOFA_DEV
 
 int TopologicalChangeManager::removeItemsFromTetrahedronModel(sofa::component::collision::TetrahedronModel* model, const helper::vector<int>& indices) const
 {
@@ -266,7 +263,6 @@ int TopologicalChangeManager::removeItemsFromTetrahedronModel(sofa::component::c
     return res;
 }
 
-#endif  // SOFA_DEV
 #endif	// if 0
 
 int TopologicalChangeManager::removeItemsFromSphereModel(sofa::component::collision::SphereModel* model, const helper::vector<int>& indices) const
@@ -372,12 +368,10 @@ int TopologicalChangeManager::removeItemsFromCollisionModel(sofa::core::Collisio
         return removeItemsFromTriangleModel(static_cast<TriangleModel*>(model), indices);
     }
 #if 0
-#ifdef SOFA_DEV
     else if(dynamic_cast<TetrahedronModel*>(model)!= NULL)
     {
         return removeItemsFromTetrahedronModel(static_cast<TetrahedronModel*>(model), indices);
     }
-#endif // SOFA_DEV
 #endif // if 0
     else if(dynamic_cast<SphereModel*>(model)!= NULL)
     {

@@ -41,13 +41,11 @@ Context::Context()
     , dt_(initData(&dt_,0.01,"dt","Time step"))
     , time_(initData(&time_,0.,"time","Current time"))
     , animate_(initData(&animate_,false,"animate","Animate the Simulation(applied at initialization only)"))
-#ifdef SOFA_DEV
 #ifdef SOFA_SUPPORT_MULTIRESOLUTION
     , currentLevel_(initData(&currentLevel_,0,"currentLevel","Current level of details"))
     , coarsestLevel_(initData(&coarsestLevel_,3,"coarsestLevel","Coarsest level of details"))
     , finestLevel_(initData(&finestLevel_,0,"finestLevel","Finest level of details"))
 #endif
-#endif // SOFA_DEV
 #ifdef SOFA_SMP
     ,  processor(initData(&processor,(int )-1,"processor","assigned processor"))
     ,  gpuPrioritary(initData(&gpuPrioritary,false,"gpuPrioritary","node should be executed on GPU")),
@@ -55,14 +53,12 @@ Context::Context()
     partition_(0)
 #endif
 {
-#ifdef SOFA_DEV
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
     setPositionInWorld(objectmodel::BaseContext::getPositionInWorld());
     setGravity(objectmodel::BaseContext::getLocalGravity());
     setVelocityInWorld(objectmodel::BaseContext::getVelocityInWorld());
     setVelocityBasedLinearAccelerationInWorld(objectmodel::BaseContext::getVelocityBasedLinearAccelerationInWorld());
 #endif
-#endif // SOFA_DEV
 
 #ifdef SOFA_SMP
     is_partition_.setValue(false);
@@ -78,7 +74,6 @@ void Context::setActive(bool val)
     is_activated.setValue(val);
 }
 
-#ifdef SOFA_DEV
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
 /// Projection from the local coordinate system to the world coordinate system.
 const Context::Frame& Context::getPositionInWorld() const
@@ -124,7 +119,6 @@ Context::Vec3 Context::getLocalGravity() const
     return getPositionInWorld().backProjectVector(worldGravity_.getValue());
 }
 #endif
-#endif // SOFA_DEV
 
 
 /// Simulation timestep
@@ -204,7 +198,6 @@ void Context::setAnimate(bool val)
 }
 
 
-#ifdef SOFA_DEV
 #ifdef SOFA_SUPPORT_MULTIRESOLUTION
 // Multiresolution
 
@@ -234,7 +227,6 @@ void Context::setFinestLevel(int l)
     finestLevel_.setValue( l );
 }
 #endif
-#endif // SOFA_DEV
 
 //======================
 
@@ -270,22 +262,18 @@ void Context::copySimulationContext(const Context& c)
         gpuPrioritary.setValue(true);
 #endif
 
-#ifdef SOFA_DEV
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
     setPositionInWorld( c.getPositionInWorld());
     spatialVelocityInWorld_ = c.spatialVelocityInWorld_;
     velocityBasedLinearAccelerationInWorld_ = c.velocityBasedLinearAccelerationInWorld_;
 #endif
-#endif // SOFA_DEV
 
-#ifdef SOFA_DEV
 #ifdef SOFA_SUPPORT_MULTIRESOLUTION
     // for multiresolution
 // 	finestLevel_ = c.finestLevel_;
 // 	coarsestLevel_ = c.coarsestLevel_;
 // 	currentLevel_ = c.currentLevel_;
 #endif
-#endif // SOFA_DEV
 
 #ifdef SOFA_SMP
     if(!partition_)

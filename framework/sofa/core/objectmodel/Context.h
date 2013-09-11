@@ -63,7 +63,6 @@ public:
     Data<double> dt_;
     Data<double> time_;
     Data<bool> animate_;
-#ifdef SOFA_DEV
 #ifdef SOFA_SUPPORT_MULTIRESOLUTION
     /// @name For multiresolution (UNSTABLE)
     /// @{
@@ -72,7 +71,6 @@ public:
     Data<int> finestLevel_;
     /// @}
 #endif
-#endif // SOFA_DEV
 
 #ifdef SOFA_SMP
     Data<int> processor;
@@ -109,7 +107,6 @@ public:
     /// Animation flag
     virtual bool getAnimate() const;
 
-#ifdef SOFA_DEV
 #ifdef SOFA_SUPPORT_MULTIRESOLUTION
     /// Multiresolution support (UNSTABLE)
     virtual int getCurrentLevel() const;
@@ -118,12 +115,10 @@ public:
     /// Multiresolution support (UNSTABLE)
     virtual int getFinestLevel() const;
 #endif
-#endif // SOFA_DEV
 
     /// @}
 
 
-#ifdef SOFA_DEV
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
     /// @name Local Coordinate System
     /// @{
@@ -156,7 +151,6 @@ public:
     //virtual void setGravity(const Vec3& );
     /// @}
 #endif
-#endif // SOFA_DEV
 
     /// @name Parameters Setters
     /// @{
@@ -173,7 +167,6 @@ public:
     /// Display flags: Gravity
     virtual void setDisplayWorldGravity(bool val) { worldGravity_.setDisplayed(val); }
 
-#ifdef SOFA_DEV
 #ifdef SOFA_SUPPORT_MULTIRESOLUTION
     /// Multiresolution support (UNSTABLE) : Set the current level, return false if l >= coarsestLevel
     virtual bool setCurrentLevel(int l);
@@ -182,7 +175,6 @@ public:
     /// Multiresolution support (UNSTABLE)
     virtual void setFinestLevel(int l);
 #endif
-#endif // SOFA_DEV
 
 #ifdef SOFA_SMP
     inline bool is_partition()const {return is_partition_.getValue();}
