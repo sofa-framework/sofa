@@ -167,11 +167,8 @@ set(SOURCE_FILES
 	)
 
 UseQt()
-if(SOFA-EXTERNAL_PREFER_QT4)	
-	SOFA_QT4_WRAP_CPP(MOC_FILES ${HEADER_FILES})
-else()	
-	SOFA_QT3_WRAP_CPP(MOC_FILES ${HEADER_FILES})
-endif()
+
+SOFA_QT4_WRAP_CPP(MOC_FILES ${HEADER_FILES})
 
 # make mocced header files path from absolute to relative
 ToRelativePath(MOC_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${MOC_FILES}")

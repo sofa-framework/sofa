@@ -68,6 +68,6 @@ set(GROUP_BASE_DIR "..")
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_BASE_COLLISION")
-AddLinkerDependencies(SofaBaseMechanics SofaRigid miniFlowVR SofaSphFluid)
+AddLinkerDependencies(SofaBaseMechanics SofaRigid FlowVR SofaSphFluid)
     
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

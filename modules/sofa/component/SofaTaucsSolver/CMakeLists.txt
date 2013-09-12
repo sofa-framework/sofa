@@ -14,7 +14,7 @@ set(SOURCE_FILES
     ../linearsolver/IncompleteTAUCSSolver.cpp 
     )
     
-if(SOFA-EXTERNAL_HAVE_TAUCS_MT)
+if(SOFA-EXTERNAL_TAUCS_MT)
 	list(APPEND HEADER_FILES "linearsolver/SparseTAUCSLLtSolver.h")
 
 	list(APPEND SOURCE_FILES "linearsolver/SparseTAUCSLLtSolver.cpp")
@@ -26,7 +26,7 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_TAUCS_SOLVER")
 
-if(WIN32 OR SOFA-EXTERNAL_HAVE_TAUCS_MT)
+if(WIN32 OR SOFA-EXTERNAL_TAUCS_MT)
 	AddLinkerDependencies(metis)
 endif()
 

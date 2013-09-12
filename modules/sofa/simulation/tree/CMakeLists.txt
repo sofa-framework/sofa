@@ -19,7 +19,7 @@ set(SOURCE_FILES
 	TreeSimulation.cpp
 	)
 
-if(SOFA-MISC_HAVE_SMP)
+if(SOFA-MISC_SMP)
 	list(APPEND HEADER_FILES "SMPSimulation.h")
 	list(APPEND SOURCE_FILES "SMPSimulation.cpp")
 endif()

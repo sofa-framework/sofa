@@ -127,25 +127,15 @@ if(SOFA-LIB_GUI_QGLVIEWER)
 endif()
 
 UseQt()
-if(SOFA-EXTERNAL_PREFER_QT4)
-	list(APPEND HEADER_FILES
-	
-		 QModelViewTableDataContainer.h
-		 QModelViewTableUpdater.h
-		 )		 
-	
-	SOFA_QT4_WRAP_CPP(MOC_FILES ${HEADER_FILES})
-	SOFA_QT4_WRAP_UI(FORM_FILES ${UI_FILES})
-else()
-	list(APPEND HEADER_FILES
-	
-		 QTableDataContainer.h
-		 QTableUpdater.h
-		 )
-	
-	SOFA_QT3_WRAP_CPP(MOC_FILES ${HEADER_FILES})
-	SOFA_QT3_WRAP_UI(FORM_FILES ${UI_FILES})
-endif()
+
+list(APPEND HEADER_FILES
+
+	 QModelViewTableDataContainer.h
+	 QModelViewTableUpdater.h
+	 )		 
+
+SOFA_QT4_WRAP_CPP(MOC_FILES ${HEADER_FILES})
+SOFA_QT4_WRAP_UI(FORM_FILES ${UI_FILES})
 
 # make mocced header / form files path from absolute to relative
 ToRelativePath(MOC_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${MOC_FILES}")

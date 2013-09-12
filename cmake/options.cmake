@@ -11,8 +11,15 @@ set(SOFA-EXTERNAL_LIBRARY_DIR ${SOFA-EXTERNAL_LIBRARY_DIR} CACHE PATH "Library p
 
 # extlibs
 
+## eigen
+set(SOFA-EXTERNAL_EIGEN_PATH "${SOFA_EXTLIBS_DIR}/eigen-3.2.0" CACHE PATH "Path to the eigen header-only library")
+
 ## qt
 set(QTDIR $ENV{QTDIR})
+if(WIN32 AND QTDIR STREQUAL "")
+	set(QTDIR "./tools/qt4win")
+endif()
+
 if(NOT QTDIR STREQUAL "")
 	if(WIN32)
 		file(TO_CMAKE_PATH "${QTDIR}" QTDIR) # GLOB will fail with pathes containing backslashes.
@@ -22,74 +29,96 @@ endif()
 
 ### the ENV{QTDIR} MUST BE DEFINED in order to find Qt (giving a path in find_package does not work)
 set(SOFA-EXTERNAL_QT_PATH "${QTDIR}" CACHE PATH "Qt dir path")
-option(SOFA-EXTERNAL_PREFER_QT4 "Prefer Qt4 instead of Qt3 if Qt is needed" ON)
-if(SOFA-EXTERNAL_PREFER_QT4)
-	list(APPEND compilerDefines SOFA_QT4)
-endif()
+list(APPEND compilerDefines SOFA_QT4)
 
 ## boost
-option(SOFA-EXTERNAL_BOOST "Use the system / user compiled boost library instead of extlib/miniBoost" OFF)
-set(SOFA-EXTERNAL_BOOST_PATH "" CACHE PATH "Boost full version path (must contain the compiled libraries)")
-if(SOFA-EXTERNAL_BOOST)
-    set(SOFA-EXTERNAL_HAVE_BOOST 1 CACHE INTERNAL "Use the system / user compiled boost library instead of extlib/miniBoost" FORCE)
-	list(APPEND compilerDefines SOFA_HAVE_BOOST)
+set(MINIBOOST_PATH "${SOFA_EXTLIBS_DIR}/miniBoost")
+set(SOFA-EXTERNAL_BOOST_PATH "${MINIBOOST_PATH}" CACHE PATH "Boost path, set to blank if you want to use the boost you built on your system or set a path if you want to use a compiled boost")
+if(SOFA-EXTERNAL_BOOST_PATH STREQUAL "${MINIBOOST_PATH}")
+    unset(SOFA-EXTERNAL_BOOST CACHE)
 else()
-	unset(SOFA-EXTERNAL_HAVE_BOOST CACHE)
+	set(SOFA-EXTERNAL_BOOST 1 CACHE INTERNAL "Use the system / user compiled boost library instead of miniBoost" FORCE)
+	list(APPEND compilerDefines SOFA_HAVE_BOOST)
 endif()
-
 
 ## geometric tools
 set(SOFA-EXTERNAL_GEOMETRIC_TOOLS_PATH "" CACHE PATH "Path to Geometric tools folder containing the cmake project")
-if(EXISTS ${SOFA-EXTERNAL_GEOMETRIC_TOOLS_PATH})
-	set(SOFA-EXTERNAL_HAVE_GEOMETRIC_TOOLS 1 CACHE INTERNAL "Build and use geometric tools" FORCE)
+if(SOFA-EXTERNAL_GEOMETRIC_TOOLS_PATH) # since the lib could be in the system path we cannot check the path with the EXISTS function
+	set(SOFA-EXTERNAL_GEOMETRIC_TOOLS 1 CACHE INTERNAL "Build and use geometric tools" FORCE)
 	# list(APPEND compilerDefines SOFA_HAVE_GEOMETRIC_TOOLS) # set this compiler defininition using RegisterProjectDependencies (to avoid the need of rebuilding everything if you change this option)
 else()
-	set(SOFA-EXTERNAL_HAVE_GEOMETRIC_TOOLS 0 CACHE INTERNAL "Build and use geometric tools" FORCE)
+	unset(SOFA-EXTERNAL_GEOMETRIC_TOOLS CACHE)
 endif()
 
 ## tinyxml
-option(SOFA-EXTERNAL_TINYXML_AVAILABLE "A pre-compiled tinyxml library is available" OFF)
-set(SOFA-EXTERNAL_TINYXML_INCLUDE_DIR "" CACHE PATH "For pre-compiled tinyxml: library where headers are available")
-set(SOFA-EXTERNAL_TINYXML_LIBRARY "" CACHE PATH "For pre-compiled tinyxml: release-mode library name")
-set(SOFA-EXTERNAL_TINYXML_DEBUG_LIBRARY "" CACHE PATH "For pre-compiled tinyxml: debug-mode library name")
-mark_as_advanced(SOFA-EXTERNAL_TINYXML_INCLUDE_DIR)
-mark_as_advanced(SOFA-EXTERNAL_TINYXML_LIBRARY)
-mark_as_advanced(SOFA-EXTERNAL_TINYXML_DEBUG_LIBRARY)
+set(TINYXML_PATH "${SOFA_EXTLIBS_DIR}/tinyxml")
+set(SOFA-EXTERNAL_TINYXML_PATH "${TINYXML_PATH}" CACHE PATH "")
+if(SOFA-EXTERNAL_TINYXML_PATH STREQUAL "${TINYXML_PATH}")
+    unset(SOFA-EXTERNAL_TINYXML CACHE)
+else()
+	set(SOFA-EXTERNAL_TINYXML 1 CACHE INTERNAL "Use the system / user compiled tinyxml library instead of miniBoost" FORCE)
+endif()
+
+#set(SOFA-EXTERNAL_TINYXML_INCLUDE_DIR "" CACHE PATH "For pre-compiled tinyxml: library where headers are available")
+#set(SOFA-EXTERNAL_TINYXML_LIBRARY "" CACHE PATH "For pre-compiled tinyxml: release-mode library name")
+#set(SOFA-EXTERNAL_TINYXML_DEBUG_LIBRARY "" CACHE PATH "For pre-compiled tinyxml: debug-mode library name")
+#mark_as_advanced(SOFA-EXTERNAL_TINYXML_INCLUDE_DIR)
+#mark_as_advanced(SOFA-EXTERNAL_TINYXML_LIBRARY)
+#mark_as_advanced(SOFA-EXTERNAL_TINYXML_DEBUG_LIBRARY)
 
 ## zlib
-option(SOFA-EXTERNAL_HAVE_ZLIB "Use the ZLib library" ON)
+option(SOFA-EXTERNAL_ZLIB "Use the ZLib library" ON)
 
 ## libpng
-option(SOFA-EXTERNAL_HAVE_PNG "Use the LibPNG library" ON)
+option(SOFA-EXTERNAL_PNG "Use the LibPNG library" ON)
 
 ## freeglut
-option(SOFA-EXTERNAL_HAVE_FREEGLUT "Use the FreeGLUT library (instead of regular GLUT)" OFF)
+option(SOFA-EXTERNAL_FREEGLUT "Use the FreeGLUT library (instead of regular GLUT)" OFF)
 
 ## glew
-option(SOFA-EXTERNAL_HAVE_GLEW "Use the GLEW library" ON)
+option(SOFA-EXTERNAL_GLEW "Use the GLEW library" ON)
 
 ## ffmpeg
-option(SOFA-EXTERNAL_HAVE_FFMPEG "Use the FFMPEG library" OFF) # SOFA_HAVE_FFMPEG
-if(SOFA-EXTERNAL_HAVE_FFMPEG)
+set(FFMPEG_PATH "")
+option(SOFA-EXTERNAL_FFMPEG "Use the FFMPEG library" OFF)
+set(SOFA-EXTERNAL_FFMPEG_PATH "${FFMPEG_PATH}" CACHE PATH "")
+if(SOFA-EXTERNAL_FFMPEG)
 	list(APPEND compilerDefines SOFA_HAVE_FFMPEG)
 endif()
 
 ## METIS
-option(SOFA-EXTERNAL_HAVE_METIS "Use Metis" OFF) # SOFA_HAVE_METIS
-if(SOFA-EXTERNAL_HAVE_METIS)
+set(METIS_PATH "")
+option(SOFA-EXTERNAL_METIS "Use Metis" OFF)
+set(SOFA-EXTERNAL_METIS_PATH "${METIS_PATH}" CACHE PATH "")
+if(SOFA-EXTERNAL_METIS)
 	list(APPEND compilerDefines SOFA_HAVE_METIS)
 endif()
 
 ## CSPARSE
-option(SOFA-EXTERNAL_HAVE_CSPARSE "Use CSparse" OFF)
-option(SOFA-EXTERNAL_HAVE_FLOWVR "Use FlowVR (otherwise miniFlowVR will be used from extlib)" OFF) #TODO port features/sofa/flowvr.prf
+set(CSPARSE_PATH "${SOFA_EXTLIBS_DIR}/csparse")
+option(SOFA-EXTERNAL_CSPARSE "Use CSparse" OFF)
+set(SOFA-EXTERNAL_CSPARSE_PATH "${CSPARSE_PATH}" CACHE PATH "")
+
+## FLOWVR
+set(FLOWVR_PATH "${SOFA_EXTLIBS_DIR}/miniFlowVR")
+set(SOFA-EXTERNAL_FLOWVR_PATH "${FLOWVR_PATH}" CACHE PATH "")
+if(NOT SOFA-EXTERNAL_FLOWVR_PATH STREQUAL ${FLOWVR_PATH})
+	set(SOFA-EXTERNAL_FLOWVR 1 CACHE INTERNAL "Use FlowVR" FORCE)
+else()
+	unset(SOFA-EXTERNAL_FLOWVR CACHE)
+endif()
 
 ## OPENCASCADE
-set(SOFA-EXTERNAL_OPENCASCADE_PATH CACHE PATH "OpenCascade Path")
+set(OPENCASCADE_PATH "")
+set(SOFA-EXTERNAL_OPENCASCADE_PATH "${OPENCASCADE_PATH}" CACHE PATH "OpenCascade Path")
 file(TO_CMAKE_PATH "${SOFA-EXTERNAL_OPENCASCADE_PATH}" OPENCASCADE_PATH)
-set(SOFA-EXTERNAL_OPENCASCADE_PATH "${OPENCASCADE_PATH}")
+set(SOFA-EXTERNAL_OPENCASCADE_PATH "${OPENCASCADE_PATH}" CACHE PATH "OpenCascade Path" FORCE)
 
 # Miscellaneous features
+
+option(SOFA-MISC_CMAKE_VERBOSE OFF)
+
+option(SOFA-MISC_SMP "Use SMP" OFF)
 
 ## no opengl
 option(SOFA-MISC_NO_OPENGL "Disable OpenGL" OFF)
@@ -300,12 +329,6 @@ if(SOFA-MISC_TESTS)
 	endif()
 endif()
 
-# miscellaneous
-option(SOFA-MISC_DEVELOPER_MODE "Use developer mode" OFF)
-if(SOFA-MISC_DEVELOPER_MODE)
-	list(APPEND compilerDefines SOFA_DEV)
-endif()
-
 # use external template
 option(SOFA-MISC_EXTERN_TEMPLATE "Use extern template" ON)
 if(NOT SOFA-MISC_EXTERN_TEMPLATE)
@@ -326,15 +349,14 @@ option(SOFA-MISC_OPENMP "Use OpenMP multithreading" OFF)
 
 # os-specific
 if(XBOX)
-	if(SOFA-EXTERNAL_HAVE_BOOST)
+	if(SOFA-EXTERNAL_BOOST)
 		# we use SOFA-EXTERNAL_BOOST_PATH but don't have the full boost and thus can't compile the code this normally enables.
-		unset(SOFA-EXTERNAL_HAVE_BOOST CACHE)
+		unset(SOFA-EXTERNAL_BOOST CACHE)
 		list(REMOVE_ITEM compilerDefines SOFA_HAVE_BOOST)
 	endif()
-	if (SOFA-EXTERNAL_HAVE_EIGEN2)
-		# cpuid identification code does not exist on the platform, it's cleaner to disable it here.
-		list(APPEND compilerDefines EIGEN_NO_CPUID)
-	endif()
+	
+	# eigen - cpuid identification code does not exist on the platform, it's cleaner to disable it here.
+	list(APPEND compilerDefines EIGEN_NO_CPUID)
 endif()
 
 
@@ -385,7 +407,7 @@ option(SOFA-CUDA_CUDPP "SOFA-CUDA_CUDPP" OFF)
 if(SOFA-CUDA_CUDPP)
 	add_definitions("-DSOFA_GPU_CUDPP")
 	AddCompilerDefinitions("SOFA_GPU_CUDPP")
-	if(SOFA-EXTERNAL_HAVE_CUDPP)
+	if(SOFA-EXTERNAL_CUDPP)
 		AddLinkerDependencies(cudpp)
 	endif()
 endif()
@@ -396,7 +418,7 @@ option(SOFA-CUDA_THRUST "SOFA-CUDA_THRUST" OFF)
 if(SOFA-CUDA_THRUST)
 	add_definitions("-DSOFA_GPU_THRUST")
 	AddCompilerDefinitions("SOFA_GPU_THRUST")
-	if(SOFA-EXTERNAL_HAVE_THRUST)
+	if(SOFA-EXTERNAL_THRUST)
 		AddLinkerDependencies(thrust)
 	endif()
 endif()

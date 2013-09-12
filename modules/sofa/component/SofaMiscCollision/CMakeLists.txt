@@ -33,7 +33,7 @@ set(SOURCE_FILES
  
     )
 
-if(SOFA-MISC_HAVE_SMP)
+if(SOFA-MISC_SMP)
 	list(APPEND HEADER_FILES "../collision/ParallelCollisionPipeline.h")
 	list(APPEND SOURCE_FILES "../collision/ParallelCollisionPipeline.cpp")
 endif()

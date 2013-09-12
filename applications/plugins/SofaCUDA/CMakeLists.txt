@@ -196,7 +196,7 @@ cuda_include_directories(${SOFA_INC_DIR})
 
 #Make these compiler definition available to nvcc
 add_definitions("-DSOFA_BUILD_GPU_CUDA")
-if(SOFA-EXTERNAL_HAVE_GLEW)
+if(SOFA-EXTERNAL_GLEW)
 	add_definitions("-DSOFA_HAVE_GLEW")
 endif()
 

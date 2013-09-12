@@ -217,13 +217,13 @@ if(NOT SOFA-MISC_NO_OPENGL)
 	list(APPEND SOURCE_FILES "visual/DrawToolGL.cpp")
 endif()  
   
-if(SOFA-EXTERNAL_HAVE_BOOST)
+if(SOFA-EXTERNAL_BOOST)
 	list(APPEND HEADER_FILES "objectmodel/AspectPool.h")
 	
 	list(APPEND SOURCE_FILES "objectmodel/AspectPool.cpp")
 endif()
 
-if(SOFA-MISC_HAVE_SMP)
+if(SOFA-MISC_SMP)
 	list(APPEND HEADER_FILES "CallContext.h")
 	list(APPEND HEADER_FILES "objectmodel/BaseObjectTasks.h")
 	list(APPEND HEADER_FILES "ParallelCollisionModel.h")

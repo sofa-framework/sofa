@@ -34,7 +34,7 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 AddCompilerDefinitions("SOFA_BUILD_PRECONDITIONER" )
 AddLinkerDependencies(SofaDenseSolver SofaImplicitOdeSolver SofaSimpleFem )
 
-if(SOFA-EXTERNAL_HAVE_CSPARSE)
+if(SOFA-EXTERNAL_CSPARSE)
     AddLinkerDependencies(SofaSparseSolver)
 endif()
     

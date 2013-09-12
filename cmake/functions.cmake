@@ -79,25 +79,6 @@ macro(SOFA_QT4_WRAP_CPP outfiles )
 	endforeach()
 endmacro()
 
-# generate mocced headers from Qt3 moccable headers
-macro(SOFA_QT3_WRAP_CPP outfiles )
-	# get include dirs
-	QT3_GET_MOC_FLAGS(moc_flags)
-	QT3_EXTRACT_OPTIONS(moc_files moc_options ${ARGN})
-
-	set(defines)
-	foreach(it ${GLOBAL_COMPILER_DEFINES})
-		list(APPEND defines "-D${it}")
-	endforeach()
-
-	foreach(it ${moc_files})
-	get_filename_component(it ${it} ABSOLUTE)
-	QT3_MAKE_OUTPUT_FILE(${it} moc_ cpp outfile)
-	QT3_CREATE_MOC_COMMAND(${it} ${outfile} "${moc_flags}" "${defines}" "${moc_options}")
-	set(${outfiles} ${${outfiles}} ${outfile})
-	endforeach()
-endmacro()
-
 # generate .h / .cpp from Qt3 .ui for Qt4
 macro(SOFA_QT4_WRAP_UI outfiles )
 	QT4_EXTRACT_OPTIONS(ui_files ui_options ${ARGN})
@@ -117,34 +98,10 @@ macro(SOFA_QT4_WRAP_UI outfiles )
 	endforeach()
 endmacro()
 
-# generate .h / .cpp from Qt3 .ui for Qt3
-macro(SOFA_QT3_WRAP_UI outfiles )
-	QT3_EXTRACT_OPTIONS(ui_files ui_options ${ARGN})
-
-	foreach(it ${ui_files})
-		get_filename_component(outfile ${it} NAME_WE)
-		get_filename_component(infile ${it} ABSOLUTE)
-		set(outHeaderFile "${CMAKE_CURRENT_BINARY_DIR}/${outfile}.h")
-		set(outSourceFile "${CMAKE_CURRENT_BINARY_DIR}/${outfile}.cpp")
-		add_custom_command(	OUTPUT ${outHeaderFile} ${outSourceFile}
-							COMMAND ${QT_UIC3_EXECUTABLE} ${ui_options} ${infile} -o ${outHeaderFile}
-							COMMAND ${QT_UIC3_EXECUTABLE} ${ui_options} "-impl" ${outHeaderFile} ${infile} -o ${outSourceFile}
-							MAIN_DEPENDENCY ${infile})
-							
-		SOFA_QT3_WRAP_CPP(outMocFile ${outHeaderFile})
-		set(${outfiles} ${${outfiles}} ${outHeaderFile} ${outSourceFile} ${outMocFile})
-	endforeach()
-endmacro()
-
 function(UseQt)
 	set(ENV{QTDIR} "${SOFA-EXTERNAL_QT_PATH}")
-	if(SOFA-EXTERNAL_PREFER_QT4)
-		set(ENV{CONFIG} "qt;uic;uic3")
-		find_package(Qt4 COMPONENTS qtcore qtgui qtopengl qt3support qtxml REQUIRED)
-	else()
-		set(ENV{CONFIG} "qt")
-		find_package(Qt3 COMPONENTS qtopengl REQUIRED)
-	endif()
+	set(ENV{CONFIG} "qt;uic;uic3")
+	find_package(Qt4 COMPONENTS qtcore qtgui qtopengl qt3support qtxml REQUIRED)
 	set(QT_QMAKE_EXECUTABLE ${QT_QMAKE_EXECUTABLE} CACHE INTERNAL "QMake executable path")
 	
 	include(${QT_USE_FILE})
@@ -166,7 +123,7 @@ endfunction()
 # register a dependency in the dependency tree, used to be retrieved at the end of the project configuration
 # to add include directories from dependencies and to enable dependencies / plugins
 # libN is a list of library using the same OPTION to be enabled (opengl/glu for instance)
-# optionName is the name of the OPTION used to enable / disable the module (for instance SOFA-EXTERNAL_HAVE_GLEW)
+# optionName is the name of the OPTION used to enable / disable the module (for instance SOFA-EXTERNAL_GLEW)
 # compiler definitions is the preprocessor macro that has to be globally setted if the project is enabled
 # path parameter is the path to the cmake project if any (may be needed to enable the project)
 function(RegisterDependencies)
@@ -226,7 +183,12 @@ function(RegisterDependencies)
 				message(SEND_ERROR "Including project ${dependency} from a *project_file*.cmake is not supported, you must use a CMakeLists.txt")
 			else()
 				set(GLOBAL_PROJECT_PATH_${dependency} ${projectPath} CACHE INTERNAL "${dependency} path" FORCE)
-				set(${dependency}_INCLUDE_DIR ${GLOBAL_PROJECT_PATH_${dependency}} CACHE INTERNAL "${PROJECT_NAME} include path" FORCE)
+				
+				set(includeDirs ${GLOBAL_PROJECT_PATH_${dependency}})
+				if(EXISTS "${GLOBAL_PROJECT_PATH_${dependency}}/include")
+					set(includeDirs ${includeDirs} "${GLOBAL_PROJECT_PATH_${dependency}}/include")
+				endif()
+				set(${dependency}_INCLUDE_DIR ${includeDirs} CACHE INTERNAL "${PROJECT_NAME} include path" FORCE)
 			endif()
 		endif()
 		if(NOT compilerDefinitions STREQUAL "")
@@ -427,6 +389,11 @@ function(ComputeDependencies projectName forceEnable fromProject offset)
 			if(TARGET ${projectName})
 				set(compilerDefines ${${projectName}_COMPILER_DEFINES} ${GLOBAL_PROJECT_REGISTERED_COMPILER_DEFINITIONS_${projectName}})
 				list(REMOVE_DUPLICATES compilerDefines)
+				if(SOFA-MISC_CMAKE_VERBOSE)
+					set(logCompilerDefines "")
+					string(REPLACE ";" ", " logCompilerDefines "${compilerDefines}")
+					set(GLOBAL_LOG_MESSAGE ${GLOBAL_LOG_MESSAGE} "${projectName}: ${logCompilerDefines}" CACHE INTERNAL "Log message" FORCE)
+				endif()
 				set_target_properties(${projectName} PROPERTIES COMPILE_DEFINITIONS "${compilerDefines}")
 			endif()
 			
@@ -445,6 +412,23 @@ function(ComputeDependencies projectName forceEnable fromProject offset)
 				set_target_properties(${projectName} PROPERTIES INCLUDE_DIRECTORIES "${${projectName}_INCLUDE_DIR}")
 			endif()
 		endif()
+	endif()
+endfunction()
+
+# log dependencies of a specific project
+function(LogDependencies projectName)
+	if(TARGET ${projectName})
+		# retrieve its dependencies
+		set(dependencies ${GLOBAL_PROJECT_DEPENDENCIES_${projectName}})
+
+		set(GLOBAL_LOG_MESSAGE ${GLOBAL_LOG_MESSAGE} "+ ${projectName}" CACHE INTERNAL "Log message" FORCE)
+		#message(STATUS "+ ${projectName}")
+		foreach(dependency ${dependencies})
+			#message(STATUS "  > ${dependency}")
+			set(GLOBAL_LOG_MESSAGE ${GLOBAL_LOG_MESSAGE} "  > ${dependency}" CACHE INTERNAL "Log message" FORCE)
+		endforeach()
+		#message(STATUS "- ${projectName}")
+		set(GLOBAL_LOG_MESSAGE ${GLOBAL_LOG_MESSAGE} "- ${projectName}" CACHE INTERNAL "Log message" FORCE)
 	endif()
 endfunction()
 
