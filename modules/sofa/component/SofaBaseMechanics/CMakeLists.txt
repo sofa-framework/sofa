@@ -43,6 +43,7 @@ set(GROUP_BASE_DIR "..")
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_BASE_MECHANICS")
+AddSourceDependencies(eigen)
 AddLinkerDependencies(SofaBaseTopology SofaBaseLinearSolver)
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

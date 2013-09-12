@@ -52,6 +52,7 @@ set(GROUP_BASE_DIR "..")
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_SIMPLE_FEM")
+AddSourceDependencies(eigen)
 AddLinkerDependencies(SofaBaseTopology ${SOFA_VISUAL_LIB} newmat)
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
