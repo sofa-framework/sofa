@@ -60,7 +60,7 @@ list(APPEND HEADER_FILES
 	)
 
 	
-if(SOFA_HAVE_LIBFREENECT)
+if(SOFA-EXTERNAL_LIBFREENECT)
 
     list(APPEND HEADER_FILES "Kinect.h")
     list(APPEND SOURCE_FILES "Kinect.cpp")
@@ -77,8 +77,8 @@ set(README_FILES
       )
 
 
-if(NOT SOFA-EXTERNAL_HAVE_ZLIB)
-	message(AUTHOR_WARNING "Image plugin should build without zlib  but it currently doesn't. Hence we advise you to enable zlib")
+if(NOT SOFA-EXTERNAL_ZLIB)
+	message(AUTHOR_WARNING "Image plugin should build without zlib but it currently doesn't. Hence we advise you to enable zlib")
 endif()
 	
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES} ${README_FILES})
@@ -87,7 +87,7 @@ AddCompilerDefinitions("SOFA_BUILD_IMAGE")
 # AddLinkerDependencies(SofaBaseVisual ${OPENGL_LIBRARIES})
 AddLinkerDependencies(SofaBaseVisual)
 
-if(SOFA-EXTERNAL_HAVE_OPENCV)
+if(SOFA-EXTERNAL_OPENCV)
 
     AddLinkerDependencies("ml")
     AddLinkerDependencies("cvaux")

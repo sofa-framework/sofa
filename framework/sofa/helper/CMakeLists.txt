@@ -136,7 +136,7 @@ set(SOURCE_FILES
     UnitTest.cpp
 	)
 
-if(SOFA-EXTERNAL_HAVE_BOOST)
+if(SOFA-EXTERNAL_BOOST)
 	list(APPEND HEADER_FILES "system/thread/TimeoutWatchdog.h")
 	
 	list(APPEND SOURCE_FILES "system/thread/TimeoutWatchdog.cpp")
@@ -173,7 +173,7 @@ if(NOT SOFA-MISC_NO_OPENGL)
     )
 endif()
 
-if(SOFA-EXTERNAL_HAVE_FFMPEG)
+if(SOFA-EXTERNAL_FFMPEG)
 	list(APPEND HEADER_FILES "gl/VideoRecorder.h")
 	
 	list(APPEND SOURCE_FILES "gl/VideoRecorder.cpp")
@@ -201,7 +201,7 @@ if(PS3)
 	AddLinkerDependencies("$(SCE_PS3_ROOT)/target/ppu/lib/libpthread.a")
 endif()
 
-if(SOFA-EXTERNAL_HAVE_BOOST)
+if(SOFA-EXTERNAL_BOOST)
     AddLinkerDependencies(${Boost_LIBRARIES})
 endif()
 

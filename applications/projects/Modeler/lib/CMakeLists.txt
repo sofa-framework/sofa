@@ -40,29 +40,17 @@ set(UI_FILES
 	)
 
 UseQt()
-if(SOFA-EXTERNAL_PREFER_QT4)
-    list(APPEND HEADER_FILES "QSofaTreeLibrary.h")
-    list(APPEND HEADER_FILES "QCategoryTreeLibrary.h")
-    list(APPEND HEADER_FILES "QComponentTreeLibrary.h")
 
-    list(APPEND SOURCE_FILES "QSofaTreeLibrary.cpp")
-    list(APPEND SOURCE_FILES "QCategoryTreeLibrary.cpp")
-    list(APPEND SOURCE_FILES "QComponentTreeLibrary.cpp")
-	
-	SOFA_QT4_WRAP_CPP(MOC_FILES ${HEADER_FILES})
-	SOFA_QT4_WRAP_UI(FORM_FILES ${UI_FILES})
-else()
-    list(APPEND HEADER_FILES "QSofaLibrary.h")
-    list(APPEND HEADER_FILES "QCategoryLibrary.h")
-    list(APPEND HEADER_FILES "QComponentLibrary.h")
+list(APPEND HEADER_FILES "QSofaTreeLibrary.h")
+list(APPEND HEADER_FILES "QCategoryTreeLibrary.h")
+list(APPEND HEADER_FILES "QComponentTreeLibrary.h")
 
-    list(APPEND SOURCE_FILES "QSofaLibrary.cpp")
-    list(APPEND SOURCE_FILES "QCategoryLibrary.cpp")
-    list(APPEND SOURCE_FILES "QComponentLibrary.cpp")
-	
-	SOFA_QT3_WRAP_CPP(MOC_FILES ${HEADER_FILES})
-	SOFA_QT3_WRAP_UI(FORM_FILES ${UI_FILES})
-endif()
+list(APPEND SOURCE_FILES "QSofaTreeLibrary.cpp")
+list(APPEND SOURCE_FILES "QCategoryTreeLibrary.cpp")
+list(APPEND SOURCE_FILES "QComponentTreeLibrary.cpp")
+
+SOFA_QT4_WRAP_CPP(MOC_FILES ${HEADER_FILES})
+SOFA_QT4_WRAP_UI(FORM_FILES ${UI_FILES})
 
 # make mocced header / form files path from absolute to relative
 ToRelativePath(MOC_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${MOC_FILES}")

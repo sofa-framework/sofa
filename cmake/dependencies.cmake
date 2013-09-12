@@ -2,28 +2,26 @@
 set(SOFA_PROJECT_FOLDER "SofaExternal")
 RegisterDependencies("ARTrackLib" PATH "${SOFA_EXTLIBS_DIR}/ARTrack")
 RegisterDependencies("newmat" PATH "${SOFA_EXTLIBS_DIR}/newmat")
-if(NOT SOFA-EXTERNAL_TINYXML_AVAILABLE)
-	RegisterDependencies("tinyxml" PATH "${SOFA_EXTLIBS_DIR}/tinyxml")
+if(NOT SOFA-EXTERNAL_TINYXML)
+	RegisterDependencies("tinyxml" PATH "${SOFA-EXTERNAL_TINYXML_PATH}")
 else()
 	# import a precompiled tinyxml library instead of the tinyxml project
 	add_library(tinyxml UNKNOWN IMPORTED)
-	set_property(TARGET tinyxml PROPERTY IMPORTED_LOCATION_RELEASE "${SOFA-EXTERNAL_TINYXML_LIBRARY}")
-	set_property(TARGET tinyxml PROPERTY IMPORTED_LOCATION_RELWITHDEBINFO "${SOFA-EXTERNAL_TINYXML_LIBRARY}")
-	set_property(TARGET tinyxml PROPERTY IMPORTED_LOCATION_MINSIZEREL "${SOFA-EXTERNAL_TINYXML_LIBRARY}")
-	set_property(TARGET tinyxml PROPERTY IMPORTED_LOCATION_DEBUG   "${SOFA-EXTERNAL_TINYXML_DEBUG_LIBRARY}")
+	set_property(TARGET tinyxml PROPERTY IMPORTED_LOCATION_RELEASE "${SOFA-EXTERNAL_TINYXML_PATH}")
+	set_property(TARGET tinyxml PROPERTY IMPORTED_LOCATION_RELWITHDEBINFO "${SOFA-EXTERNAL_TINYXML_PATH}")
+	set_property(TARGET tinyxml PROPERTY IMPORTED_LOCATION_MINSIZEREL "${SOFA-EXTERNAL_TINYXML_PATH}")
+	set_property(TARGET tinyxml PROPERTY IMPORTED_LOCATION_DEBUG   "${SOFA-EXTERNAL_TINYXML_PATH}")
 endif()
-RegisterDependencies("csparse" OPTION SOFA-EXTERNAL_HAVE_CSPARSE COMPILE_DEFINITIONS SOFA_HAVE_CSPARSE PATH "${SOFA_EXTLIBS_DIR}/csparse")
-RegisterDependencies("eigen" COMPILE_DEFINITIONS SOFA_HAVE_EIGEN2 PATH "${SOFA_EXTLIBS_DIR}/eigen-3.2.0")
+RegisterDependencies("csparse" OPTION SOFA-EXTERNAL_CSPARSE COMPILE_DEFINITIONS SOFA_HAVE_CSPARSE PATH "${SOFA-EXTERNAL_CSPARSE_PATH}")
+RegisterDependencies("eigen" COMPILE_DEFINITIONS SOFA_HAVE_EIGEN2 PATH "${SOFA-EXTERNAL_EIGEN_PATH}")
 
-if(NOT SOFA-EXTERNAL_HAVE_FLOWVR)
-	RegisterDependencies("miniFlowVR" COMPILE_DEFINITIONS MINI_FLOWVR PATH "${SOFA_EXTLIBS_DIR}/miniFlowVR")
-endif()
+RegisterDependencies("FlowVR" COMPILE_DEFINITIONS MINI_FLOWVR PATH "${SOFA-EXTERNAL_FLOWVR_PATH}")
 
 RegisterDependencies("QGLViewer" OPTION SOFA-LIB_GUI_QGLVIEWER COMPILE_DEFINITIONS SOFA_GUI_QGLVIEWER PATH "${SOFA_EXTLIBS_DIR}/libQGLViewer-2.4.0/QGLViewer")
 RegisterDependencies("Qwt" PATH "${SOFA_EXTLIBS_DIR}/qwt-6.0.1/src")
 
 ## geometric tools
-if(SOFA-EXTERNAL_HAVE_GEOMETRIC_TOOLS)
+if(SOFA-EXTERNAL_GEOMETRIC_TOOLS)
 	add_subdirectory("${SOFA_EXTERNAL_GEOMETRIC_TOOLS_PATH}")
 	# try to replace with : RegisterDependencies
 endif()
@@ -90,6 +88,10 @@ add_subdirectory("${SOFA_APPLICATIONS_DIR}/tutorials")
 
 set(SOFA_PROJECT_FOLDER "")
 
+if(SOFA-MISC_CMAKE_VERBOSE)
+	set(GLOBAL_LOG_MESSAGE ${GLOBAL_LOG_MESSAGE} " " "COMPILE DEFINITIONS:" " " CACHE INTERNAL "Log message" FORCE)
+endif()
+
 # retrieve dependencies and include directories (always do this after all your 'add_subdirectory')
 message(STATUS "> Computing Dependencies : In progress")
 message(STATUS "")
@@ -99,6 +101,18 @@ foreach(projectName ${projectNames})
 endforeach()
 message(STATUS "> Computing Dependencies : Done")
 message(STATUS "")
+
+if(SOFA-MISC_CMAKE_VERBOSE)
+	message(STATUS "> Logging dependency graph : In progress")
+	message(STATUS "")
+	set(GLOBAL_LOG_MESSAGE ${GLOBAL_LOG_MESSAGE} " " "DEPENDENCIES:" " " CACHE INTERNAL "Log message" FORCE)
+	set(projectNames ${GLOBAL_DEPENDENCIES})
+	foreach(projectName ${projectNames})
+		LogDependencies(${projectName})
+	endforeach()
+	message(STATUS "> Logging dependency graph : Done")
+	message(STATUS "")
+endif()
 
 # set the global compiler definitions to all projects now since some new dependencies might appear from ComputeDependencies adding their own compiler definitions in the global compiler definitions variable
 # for instance if you add a project using the image plugin we want every projects to be aware that the image plugin is available defining its own SOFA_HAVE_IMAGE preprocessor macro
@@ -132,18 +146,20 @@ if(WIN32)
 	endif()
 	
 	## boost dlls
-	if(SOFA-EXTERNAL_HAVE_BOOST)
-		file(GLOB sharedObjects "${Boost_LIBRARY_DIRS}/boost_graph*.dll")
+	if(SOFA-EXTERNAL_BOOST AND NOT SOFA-EXTERNAL_BOOST_PATH STREQUAL "")
+		set(BOOST_LIBDIR "${SOFA-EXTERNAL_BOOST_PATH}/lib")
+	
+		file(GLOB sharedObjects "${BOOST_LIBDIR}/boost_graph*.dll")
 		foreach(sharedObject ${sharedObjects})
 			file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
 		endforeach()
 		
-		file(GLOB sharedObjects "${Boost_LIBRARY_DIRS}/boost_thread*.dll")
+		file(GLOB sharedObjects "${BOOST_LIBDIR}/boost_thread*.dll")
 		foreach(sharedObject ${sharedObjects})
 			file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
 		endforeach()
 		
-		file(GLOB sharedObjects "${Boost_LIBRARY_DIRS}/boost_system*.dll")
+		file(GLOB sharedObjects "${BOOST_LIBDIR}/boost_system*.dll")
 		foreach(sharedObject ${sharedObjects})
 			file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
 		endforeach()

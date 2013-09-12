@@ -21,7 +21,7 @@ set(SOURCE_FILES
 
 	)
 
-if(SOFA-EXTERNAL_HAVE_BOOST)
+if(SOFA-EXTERNAL_BOOST)
 	list(APPEND HEADER_FILES "src/TaskSchedulerBoost.h")
 	list(APPEND SOURCE_FILES "src/TaskSchedulerBoost.cpp")
 	

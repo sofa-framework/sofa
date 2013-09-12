@@ -144,7 +144,7 @@ set(SOURCE_FILES
 	SceneLoaderPHP.cpp
 	)
 
-if(SOFA-MISC_HAVE_SMP)
+if(SOFA-MISC_SMP)
 	list(APPEND HEADER_FILES "ChangeListener.h")
 	list(APPEND HEADER_FILES "ParallelMechanicalVisitor.h")
 	list(APPEND SOURCE_FILES "ChangeListener.cpp")

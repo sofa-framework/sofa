@@ -28,7 +28,7 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 AddCompilerDefinitions("SOFA_BUILD_SPARSE_SOLVER" )
 AddLinkerDependencies(SofaBaseLinearSolver SofaImplicitOdeSolver csparse)
 
-if(SOFA-EXTERNAL_HAVE_METIS)
+if(SOFA-EXTERNAL_METIS)
 	AddLinkerDependencies(metis)
 endif()
     

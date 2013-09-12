@@ -47,24 +47,16 @@ set(SOURCE_FILES
 	VRender/VisibilityOptimizer.cpp
 	)
 
-if(SOFA-EXTERNAL_PREFER_QT4)
+set(UI_FILES
 
-	set(UI_FILES
-
-	  ImageInterface.ui
- 	  VRenderInterface.ui
+	ImageInterface.ui
+ 	VRenderInterface.ui
 	
 	)	
 	
-	SOFA_QT4_WRAP_CPP(MOC_FILES ${HEADER_FILES})
-	QT4_WRAP_UI(FORM_FILES ${UI_FILES})
-	SOFA_QT4_WRAP_CPP(MOC_UI_FILES ${FORM_FILES})
-else()
-
-	# problem regarding .ui filenames
-	message(FATAL_ERROR "QGLViewer project no yet converted to cmake build system with QT3!")
-	
-endif()
+SOFA_QT4_WRAP_CPP(MOC_FILES ${HEADER_FILES})
+QT4_WRAP_UI(FORM_FILES ${UI_FILES})
+SOFA_QT4_WRAP_CPP(MOC_UI_FILES ${FORM_FILES})
 
 # make mocced header / form files path from absolute to relative
 ToRelativePath(MOC_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${MOC_FILES}")

@@ -48,9 +48,9 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILE
 AddCompilerDefinitions("SOFA_BUILD_REGISTRATION")
 AddLinkerDependencies(SofaGuiQt )
 
-if(SOFA_HAVE_IMAGE)
+if(SOFA-PLUGIN_IMAGE)
 
-    if(SOFA_IMAGE_HAVE_OPENCV)
+    if(SOFA-PLUGIN_IMAGE_OPENCV)
     
         AddLinkerDependencies("ml")
         AddLinkerDependencies("cvaux")
