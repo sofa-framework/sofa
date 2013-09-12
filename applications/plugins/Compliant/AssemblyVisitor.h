@@ -11,6 +11,9 @@
 
 #include "AssemblyHelper.h"
 
+#include "./utils/find.h"
+
+
 namespace sofa {
 namespace simulation {
 
@@ -297,7 +300,91 @@ public:
     }
 
 };
-		
+
+
+// multiplies mapping matrices together for everyone in the graph
+struct AssemblyVisitor::process_helper {
+
+    process_type& res;
+    const graph_type& g;
+
+    process_helper(process_type& res, const graph_type& g)
+        : res(res), g(g)  {
+
+    }
+
+    void operator()(unsigned v) const {
+        dofs_type* curr = g[v].dofs;
+        chunk* c = g[v].data;
+
+        const unsigned& size_m = res.size_m;
+        full_type& full = res.full;
+        offset_type& offsets = res.offset.master;
+
+        if( !c->mechanical ) return;
+
+        mat& Jc = full[ curr ];
+        assert( empty(Jc) );
+
+        // TODO use graph and out_edges
+        for( graph_type::out_edge_range e = boost::out_edges(v, g); e.first != e.second; ++e.first) {
+
+            vertex vp = g[ boost::target(*e.first, g) ];
+
+            // parent data chunk/mapping matrix
+            const chunk* p = vp.data;
+            mat& Jp = full[ vp.dofs ];
+            {
+                // mapping blocks
+                const mat& jc = g[*e.first].data->J;
+
+                // parent is not mapped: we put a shift matrix with the
+                // correct offset as its full mapping matrix, so that its
+                // children will get the right place on multiplication
+                if( p->master() && empty(Jp) ) {
+                    // scoped::timer step("shift matrix");
+                    Jp = shift_right<mat>( find(offsets, vp.dofs), p->size, size_m);
+
+                    // TODO optimize!
+                    // filter absolute mapping to get filtered mapped mass/stiffness.
+                    if(! zero(p->P) ) Jp = p->P * Jp;
+                }
+
+                // Jp is empty for children of a non-master dof (e.g. mouse)
+                if(!empty(Jp) ){
+                    // scoped::timer step("mapping matrix product");
+
+                    // TODO optimize this, it is the most costly part
+                    add(Jc, jc * Jp );
+                } else {
+                    assert( false && "parent has empty J matrix :-/" );
+                }
+            }
+
+            if( ! (c->master() || !zero(Jc) )  )  {
+                using namespace std;
+
+                cerr << "houston we have a problem with " << c->dofs->getName()  << " under " << c->dofs->getContext()->getName() << endl
+                     << "master: " << c->master() << endl
+                     << "mapped: " << (c->map.empty() ? string("nope") : p->dofs->getName() )<< endl
+                     << "p mechanical ? " << p->mechanical << endl
+                     << "empty Jp " << empty(Jp) << endl
+                     << "empty Jc " << empty(Jc) << endl;
+
+                assert( false );
+            }
+
+
+
+        }
+
+
+
+    };
+
+
+};
+
 }
 }
 
