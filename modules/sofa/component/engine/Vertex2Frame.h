@@ -84,7 +84,8 @@ protected:
     Data< helper::vector<sofa::defaulttype::Vector3> > normals;
 
     Data<VecCoord> frames;
-    Data<bool> invertNormals;
+	Data<bool> useNormals;
+	Data<bool> invertNormals;
 
     Data<int> rotation;
     Data<double> rotationAngle;
