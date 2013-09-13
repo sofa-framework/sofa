@@ -83,8 +83,7 @@ const sofa::defaulttype::BaseMatrix* UniformCompliance<DataTypes>::getCompliance
 template<class DataTypes>
 const sofa::defaulttype::BaseMatrix* UniformCompliance<DataTypes>::getStiffnessMatrix(const core::MechanicalParams*)
 {
-    // todo diagonal inverse
-    return NULL;
+    return &matC;
 }
 
 template<class DataTypes>

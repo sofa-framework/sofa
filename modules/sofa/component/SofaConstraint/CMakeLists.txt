@@ -89,6 +89,7 @@ set(GROUP_BASE_DIR "..")
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_CONSTRAINT" )
+AddSourceDependencies(eigen)
 AddLinkerDependencies(SofaMeshCollision SofaSimpleFem SofaImplicitOdeSolver SofaUserInteraction )
 AddSourceDependencies(eigen)
 if(SOFA-LIB_COMPONENT_EIGEN2_SOLVER)
