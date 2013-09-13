@@ -50,6 +50,7 @@ Vertex2Frame<DataTypes>::Vertex2Frame():
     , texCoords(initData(&texCoords,"texCoords","TexCoords of the mesh loaded"))
     , normals(initData(&normals,"normals","Normals of the mesh loaded"))
     , frames( initData (&frames, "frames", "Frames at output") )
+	, useNormals( initData (&useNormals, true, "useNormals", "Use normals to compute the orientations; if disabled the direction of the x axisof a vertice is the one from this vertice to the next one") )
     , invertNormals( initData (&invertNormals, false, "invertNormals", "Swap normals") )
     , rotation( initData (&rotation, 0, "rotation", "Apply a local rotation on the frames. If 0 a x-axis rotation is applied. If 1 a y-axis rotation is applied, If 2 a z-axis rotation is applied.") )
     , rotationAngle( initData (&rotationAngle, 0.0, "rotationAngle", "Angle rotation") )
@@ -94,45 +95,94 @@ void Vertex2Frame<DataTypes>::update()
     VecCoord& fFrames = *(frames.beginEdit());
     fFrames.resize(nbVertices);
 
-    for (unsigned int i=0 ; i<nbVertices ; i++)
-    {
-        Quat q, q2;
-        Vector3 zAxis = (!invertNormals.getValue()) ? fNormals[i] : -fNormals[i];
-        zAxis.normalize();
-        Vector3 xAxis;
-        Vector3 yAxis(1.0, 0.0, 0.0);
-        if ( fabs(dot(yAxis, zAxis)) > 0.7)
-            yAxis = Vector3(0.0, 0.0, 1.0);
+	if(useNormals.getValue()) {
+		for (unsigned int i=0 ; i<nbVertices ; i++)
+		{
+			Quat q, q2;
+			Vector3 zAxis = (!invertNormals.getValue()) ? fNormals[i] : -fNormals[i];
+			zAxis.normalize();
+			Vector3 xAxis;
+			Vector3 yAxis(1.0, 0.0, 0.0);
+			//if ( fabs(dot(yAxis, zAxis)) > 0.7)
+			//	yAxis = Vector3(0.0, 0.0, 1.0);
 
-        xAxis = yAxis.cross(zAxis);
-        xAxis.normalize();
-        yAxis = zAxis.cross(xAxis);
-        yAxis.normalize();
+			xAxis = yAxis.cross(zAxis);
+			xAxis.normalize();
+			yAxis = zAxis.cross(xAxis);
+			yAxis.normalize();
 
-        // compute frame rotation
-        Vector3 rotationAxis;
-        switch(rotation.getValue())
-        {
-        case 0 :
-            rotationAxis = xAxis;
-            break;
-        case 1 :
-            rotationAxis = yAxis;
-            break;
-        case 2 :
-            rotationAxis = zAxis;
-            break;
-        default:
-            break;
-        }
-        q2 = q2.axisToQuat(rotationAxis, (rotationAngle.getValue()*M_PI)/180);
-        // frame rotation computed
+			// compute frame rotation
+			Vector3 rotationAxis;
+			switch(rotation.getValue())
+			{
+			case 0 :
+				rotationAxis = xAxis;
+				break;
+			case 1 :
+				rotationAxis = yAxis;
+				break;
+			case 2 :
+				rotationAxis = zAxis;
+				break;
+			default:
+				break;
+			}
+			q2 = q2.axisToQuat(rotationAxis, (rotationAngle.getValue()*M_PI)/180);
+			// frame rotation computed
 
-        fFrames[i].getOrientation() = q2*q.createQuaterFromFrame(xAxis, yAxis, zAxis);
-        fFrames[i].getCenter() = fVertices[i];
-    }
+			fFrames[i].getOrientation() = q2*q.createQuaterFromFrame(xAxis, yAxis, zAxis);
+			fFrames[i].getCenter() = fVertices[i];
+		}
+		frames.endEdit();
+	} 
+	else {
+		if (nbVertices <= 1)
+		{
+			serr << "Vertex2Frame : no enough vertices to compute the orientations..." << sendl;
+			return ;
+		}
 
-    frames.endEdit();
+		for (unsigned int i=0 ; i<(nbVertices-1) ; i++)
+		{
+			Quat q, q2;
+			Vector3 xAxis = fVertices[i+1] - fVertices[i];
+			xAxis.normalize();
+			Vector3 yAxis;
+			Vector3 zAxis(1.0, 0.0, 0.0);
+			//if ( fabs(dot(zAxis, xAxis)) > 0.707)
+			//	zAxis = Vector3(0.0, 0.0, 1.0);
+
+			yAxis = zAxis.cross(xAxis);
+			yAxis.normalize();
+			zAxis = xAxis.cross(yAxis);
+			zAxis.normalize();
+
+			// compute frame rotation
+			Vector3 rotationAxis;
+			switch(rotation.getValue())
+			{
+			case 0 :
+				rotationAxis = xAxis;
+				break;
+			case 1 :
+				rotationAxis = yAxis;
+				break;
+			case 2 :
+				rotationAxis = zAxis;
+				break;
+			default:
+				break;
+			}
+			q2 = q2.axisToQuat(rotationAxis, (rotationAngle.getValue()*M_PI)/180);
+			// frame rotation computed
+
+			fFrames[i].getOrientation() = q2*q.createQuaterFromFrame(xAxis, yAxis, zAxis);
+			fFrames[i].getCenter() = fVertices[i];
+		}
+		fFrames[nbVertices-1].getOrientation() = fFrames[nbVertices-2].getOrientation();
+		fFrames[nbVertices-1].getCenter() = fVertices[nbVertices-1];
+		frames.endEdit(); 
+	}
 }
 
 } // namespace engine
