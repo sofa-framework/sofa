@@ -31,11 +31,12 @@ struct schur {
 
 	mutable vec result, tmp1, tmp2;
 	
-	const vec& operator()(const vec& x) const {
-
+	template<class Vec>
+	const vec& operator()(const Vec& x) const {
+		
 		tmp1.noalias() = sys.J.transpose() * x;
 		tmp2.noalias() = sys.P * tmp1;
-		tmp1.noalias() = Minv.solve(tmp2);
+		Minv.solve(tmp1, tmp2);
 		tmp2.noalias() = sys.P * tmp1;
 		result.noalias() = sys.J * tmp2;
 		

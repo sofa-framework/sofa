@@ -2,6 +2,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 
+#include "utils/schur.h"
 #include "utils/kkt.h"
 #include "utils/cg.h"
 
@@ -17,21 +18,56 @@ CgSolver::CgSolver()
 	
 }
 
-			
-			
-void CgSolver::factor(const AssembledSystem& sys) {
+// TODO: copy pasta; put this in utils (see MinresSolver.cpp)
+template<class Params>
+static void report(const Params& p) {
+std::cerr << "cg: " << p.iterations << " iterations, absolute residual: " << p.precision << std::endl;
+}
+
+// delicious copypasta (see minres) TODO factor this in utils
+void CgSolver::solve_schur(AssembledSystem::vec& x,
+	                         const AssembledSystem& sys,
+	                         const AssembledSystem::vec& b) const {
+
+	// unconstrained velocity
+	vec tmp(sys.m);
+	response->solve(tmp, b.head(sys.m));
+	x.head( sys.m ) = tmp;
 	
+	if( sys.n ) {
+		
+		::schur<response_type> A(sys, *response);
+		
+		vec rhs = b.tail(sys.n) - sys.J * x.head(sys.m);
+		
+		vec lambda = x.tail(sys.n);
+
+		typedef ::cg<real> solver_type;		
+		
+		solver_type::params p = params(rhs);
+		solver_type::solve(lambda, A, rhs, p);
+		
+		// constraint velocity correction
+		response->solve(tmp, sys.J.transpose() * lambda );
+
+		x.head( sys.m ) += tmp;
+		x.tail( sys.n ) = lambda;
+		
+		if( verbose.getValue() ) report( p );
+	}
+
 }
 
 
-
-void CgSolver::solve(AssembledSystem::vec& x,
-                     const AssembledSystem& system,
-                     const AssembledSystem::vec& b) const {
-	if( system.n ) throw std::logic_error("error: CgSolver can't handle constrained/compliant systems (yet)");
-
+void CgSolver::solve_kkt(AssembledSystem::vec& x,
+                         const AssembledSystem& system,
+                         const AssembledSystem::vec& b) const {
+		if( system.n ) {
+			throw std::logic_error("CG can't solve KKT system with constraints. you need to turn on schur and add a response component for this");
+	}
+	
 	params_type p = params(b);
-	typedef cg<real> solver_type;
+	typedef ::cg<real> solver_type;
 
 	kkt::matrixQ A(system);
 

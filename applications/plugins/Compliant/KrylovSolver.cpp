@@ -16,9 +16,26 @@ KrylovSolver::KrylovSolver()
 	                      "iterations",
 	                      "iteration bound")),
 	  relative(initData(&relative, true, "relative", "use relative precision") ),
+	  schur(initData(&schur, false, "schur", "perform solving on the schur complement. you *must* have a response component nearby in the graph.")),
 	  verbose(initData(&verbose, false, "verbose", "print debug stuff on std::cerr") )
 {
 	
+}
+
+void KrylovSolver::init() {
+	
+	if( schur.getValue() ) {
+		response = this->getContext()->get<Response>();
+		
+		if(!response) throw std::logic_error("response component not found, you need one next to the KKTSolver");
+		
+	}
+	
+}
+
+
+void KrylovSolver::factor(const system_type& sys) {
+	if( response ) response->factor( sys.H );
 }
 
 
@@ -31,6 +48,19 @@ KrylovSolver::params_type KrylovSolver::params(const vec& rhs) const {
 	if( relative.getValue() ) res.precision *= rhs.norm();
 
 	return res;
+}
+
+
+void KrylovSolver::solve(vec& x,
+                         const system_type& system,
+                         const vec& rhs) const {
+	if( schur.getValue() ) {
+		assert( response );
+		solve_schur(x, system, rhs);
+	} else {
+		solve_kkt(x, system, rhs);
+	}
+
 }
 
 

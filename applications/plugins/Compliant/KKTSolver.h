@@ -36,9 +36,9 @@ class SOFA_Compliant_API KKTSolver : public core::behavior::BaseLinearSolver {
 	
 	virtual void solve(vec& x,
 	                   const system_type& system,
-                       const vec& rhs) const = 0;
+	                   const vec& rhs) const = 0;
 
-    // return true if the solver can only handle equality constraints (in opposition with LCP for instance)
+	// return true if the solver can only handle equality constraints (in opposition with LCP for instance)
     virtual bool isLinear() const { return true; }
 
     
