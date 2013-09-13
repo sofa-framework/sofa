@@ -25,11 +25,6 @@ MinresSolver::MinresSolver()
 }
 
 			
-			
-template<class Params>
-static void report(const Params& p) {
-	std::cerr << "minres: " << p.iterations << " iterations, absolute residual: " << p.precision << std::endl;
-}
 
 void MinresSolver::solve_schur(AssembledSystem::vec& x,
                                const AssembledSystem& sys,
@@ -58,7 +53,7 @@ void MinresSolver::solve_schur(AssembledSystem::vec& x,
 		x.head( sys.m ) += tmp;
 		x.tail( sys.n ) = lambda;
 		
-		if( verbose.getValue() ) report( p );
+		report("minres (schur)", p );
 	}
 
 
@@ -78,7 +73,7 @@ void MinresSolver::solve_kkt(AssembledSystem::vec& x,
 	typedef minres<real> solver_type;
 	solver_type::solve(x, A, rhs, p);
 	
-	if( verbose.getValue() ) report( p );
+	report("minres (kkt)", p );
 }
 
 
