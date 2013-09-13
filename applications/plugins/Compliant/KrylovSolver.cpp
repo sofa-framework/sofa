@@ -15,7 +15,7 @@ KrylovSolver::KrylovSolver()
 	                      unsigned(10),
 	                      "iterations",
 	                      "iteration bound")),
-	  relative(initData(&relative, true, "relative", "use relative precision") ),
+	  relative(initData(&relative, false, "relative", "use relative precision") ),
 	  schur(initData(&schur, false, "schur", "perform solving on the schur complement. you *must* have a response component nearby in the graph.")),
 	  verbose(initData(&verbose, false, "verbose", "print debug stuff on std::cerr") )
 {
