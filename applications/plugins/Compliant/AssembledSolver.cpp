@@ -254,7 +254,7 @@ void AssembledSolver::solve(const core::ExecParams* params,
                             sofa::core::MultiVecDerivId velId,
                             bool computeForce,
                             bool integratePosition,simulation::AssemblyVisitor * v) {
-    assert(kkt && "i need a kkt solver lol");
+    assert(kkt);
 
 	// obtain mparams
 	core::MechanicalParams mparams = this->mparams(*params, dt);
