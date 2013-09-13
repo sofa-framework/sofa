@@ -26,8 +26,13 @@ class AssembledSystem {
 public:
 	typedef SReal real;
 	typedef Eigen::Matrix<real, Eigen::Dynamic, 1> vec;
-	typedef Eigen::SparseMatrix<real, Eigen::RowMajor> mat;
-				
+	
+	typedef Eigen::SparseMatrix<real, Eigen::RowMajor> rmat;
+	typedef Eigen::SparseMatrix<real, Eigen::ColMajor> cmat;
+
+	// makes it easier to filter constraint rows
+	typedef rmat mat;
+	
 	// TODO protect m/n ?
 
 	// independent dofs

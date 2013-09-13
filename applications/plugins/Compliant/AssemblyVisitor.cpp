@@ -30,8 +30,8 @@ AssemblyVisitor::AssemblyVisitor(const core::MechanicalParams* mparams, MultiVec
       mparams( mparams ),
       _velId(velId),
       lagrange(lagrangeId),
-      _processed(0),
-      start_node(0)
+	  start_node(0),
+	  _processed(0)
 
 { }
 
@@ -52,7 +52,7 @@ AssemblyVisitor::chunk::chunk()
 
 }
 
-// this is not thread safe
+// this is not thread safe lol
 void AssemblyVisitor::vector(dofs_type* dofs, core::VecId id, const vec::ConstSegmentReturnType& data) {
     assert( dofs->getMatrixSize() == data.size() );
 
@@ -323,13 +323,14 @@ void AssemblyVisitor::fill_prefix(simulation::Node* node) {
 
 	c.f = force( node );
 
-	c.vertex = boost::add_vertex(v, graph);
-
+	c.vertex = boost::add_vertex(graph);
+	graph[c.vertex] = v;
+	
 	if( c.map.empty() ) {
 		// independent
 		// TODO this makes a lot of allocs :-/
 
-        c.v = vel( node, _velId );
+		c.v = vel( node, _velId );
 //		c.f = force( node );
 		c.P = proj( node );
 
@@ -376,7 +377,8 @@ void AssemblyVisitor::fill_postfix(simulation::Node* node) {
 		e.data = &it->second;
 
 		// the edge is child -> parent
-		boost::add_edge(c.vertex, p.vertex, e, graph);
+		graph_type::edge_descriptor ed = boost::add_edge(c.vertex, p.vertex, graph).first;
+		graph[ed] = e;
 	}
 
 }
