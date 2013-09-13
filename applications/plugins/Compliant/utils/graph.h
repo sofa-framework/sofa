@@ -10,15 +10,10 @@ namespace utils {
 template<class Vertex, class Edge, class Direction>
 struct graph_traits {
 	
-	typedef boost::property<boost::vertex_bundle_t, Vertex,
-	                        boost::property< boost::vertex_color_t, boost::default_color_type> > vertex_properties;
-    
-	typedef boost::property<boost::edge_bundle_t, Edge, 
-	                        boost::property< boost::edge_color_t, boost::default_color_type> > edge_properties;
-    
+	typedef boost::property<boost::vertex_color_t, boost::default_color_type, Vertex> vertex_properties;
+	typedef boost::property< boost::edge_color_t, boost::default_color_type, Edge > edge_properties;
+
 	typedef boost::adjacency_list<boost::vecS, boost::vecS, Direction, vertex_properties, edge_properties > graph_type;
-
-
 	
 }; 
 
