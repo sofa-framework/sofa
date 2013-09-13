@@ -63,6 +63,13 @@ void KrylovSolver::solve(vec& x,
 
 }
 
+void KrylovSolver::report(const std::string& what, const params_type& p) const {
+	if( verbose.getValue() ) {
+		std::cerr << what << "- iterations: " << p.iterations << ", (abs) residual: " << p.precision << std::endl;
+	}
+}
+
+
 
 }
 }

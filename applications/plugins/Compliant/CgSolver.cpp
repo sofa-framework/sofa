@@ -53,7 +53,7 @@ void CgSolver::solve_schur(AssembledSystem::vec& x,
 		x.head( sys.m ) += tmp;
 		x.tail( sys.n ) = lambda;
 		
-		if( verbose.getValue() ) report( p );
+		report("cg (schur)", p );
 	}
 
 }
@@ -72,6 +72,8 @@ void CgSolver::solve_kkt(AssembledSystem::vec& x,
 	kkt::matrixQ A(system);
 
 	solver_type::solve(x, A, b, p);
+	
+	report("cg (kkt)", p );
 }
 			
 }

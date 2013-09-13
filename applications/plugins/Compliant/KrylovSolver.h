@@ -50,7 +50,11 @@ class SOFA_Compliant_API KrylovSolver : public KKTSolver {
 	
 	typedef ::krylov<SReal>::params params_type;
 	
+	// convenience
 	virtual params_type params(const vec& rhs) const;
+
+	// again
+	virtual void report(const std::string& what, const params_type& p) const;
 
 	typedef Response response_type;
 	Response::SPtr response;
