@@ -26,51 +26,43 @@ MinresSolver::MinresSolver()
 
 			
 			
-void MinresSolver::factor(const AssembledSystem& sys) {
-
-	// if( use_schur.getValue() ) {
-
-	// 	// TODO is there a conversion between rmat and cmat ?
-	// 	response.compute(sys.H);
-		
-	// }
-
-}
-
 template<class Params>
 static void report(const Params& p) {
 	std::cerr << "minres: " << p.iterations << " iterations, absolute residual: " << p.precision << std::endl;
 }
 
-// void MinresSolver::solve_schur(AssembledSystem::vec& x,
-//                                const AssembledSystem& sys,
-//                                const AssembledSystem::vec& b) const {
-// 	// unconstrained velocity
-// 	x.head( sys.m ) = response.solve(b.head(sys.m));
+void MinresSolver::solve_schur(AssembledSystem::vec& x,
+                               const AssembledSystem& sys,
+                               const AssembledSystem::vec& b) const {
+	// unconstrained velocity
+	vec tmp(sys.m);
+	response->solve(tmp, b.head(sys.m));
+	x.head( sys.m ) = tmp;
 	
-// 	if( sys.n ) {
+	if( sys.n ) {
+		
+		::schur<response_type> A(sys, *response);
+		
+		vec rhs = b.tail(sys.n) - sys.J * x.head(sys.m);
+		
+		vec lambda = x.tail(sys.n);
 
-// 		schur<response_type> A(sys, response);
+		typedef ::minres<SReal> solver_type;		
 		
-// 		vec rhs = b.tail(sys.n) - sys.J * x.head(sys.m);
+		solver_type::params p = params(rhs);
+		solver_type::solve(lambda, A, rhs, p);
 		
-// 		vec lambda = x.tail(sys.n);
+		// constraint velocity correction
+		response->solve(tmp, sys.J.transpose() * lambda );
 
-// 		typedef ::minres<SReal> solver_type;		
-// 		solver_type::params p;
-// 		p.iterations = iterations.getValue();
-// 		p.precision = precision.getValue();
+		x.head( sys.m ) += tmp;
+		x.tail( sys.n ) = lambda;
 		
-// 		solver_type::solve(lambda, A, rhs, p);
-		
-// 		x.head( sys.m ) += response.solve( sys.J.transpose() * lambda );
-// 		x.tail( sys.n ) = lambda;
-		
-// 		if( verbose.getValue() ) report( p );
-// 	}
+		if( verbose.getValue() ) report( p );
+	}
 
 
-// }
+}
 
 
 void MinresSolver::solve_kkt(AssembledSystem::vec& x,
@@ -90,18 +82,7 @@ void MinresSolver::solve_kkt(AssembledSystem::vec& x,
 }
 
 
-void MinresSolver::solve(AssembledSystem::vec& x,
-                             const AssembledSystem& system,
-                             const AssembledSystem::vec& b) const {
-	solve_kkt(x, system, b);
 
-	// if(use_schur.getValue() ) {
-	// 	solve_schur(x, system, b);
-	// } else {
-	// 	solve_kkt(x, system, b);
-	// }
-	
-}
 			
 }
 }

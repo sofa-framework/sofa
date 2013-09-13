@@ -17,6 +17,9 @@ set(HEADER_FILES
   MinresSolver.h
 	KrylovSolver.h
 	CgSolver.h
+	Response.h
+	LDLTResponse.h
+	DiagonalResponse.h
     AssemblyHelper.h
     AssemblyVisitor.h
 	AssembledSystem.h
@@ -54,6 +57,8 @@ set(SOURCE_FILES
     MinresSolver.cpp
 		KrylovSolver.cpp
 		CgSolver.cpp
+		LDLTResponse.cpp
+		DiagonalResponse.cpp
 	AssemblyVisitor.cpp
 	AssembledSystem.cpp
 	AssembledSolver.cpp
