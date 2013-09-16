@@ -25,6 +25,10 @@ SOURCES += initSparseSolver.cpp \
 INCLUDEPATH -= $$SOFA_INSTALL_INC_DIR/applications
 DEPENDPATH -= $$SOFA_INSTALL_INC_DIR/applications
 
+contains(DEFINES, SOFA_HAVE_METIS) : !contains(DEFINES, SOFA_EXTLIBS_METIS) {
+LIBS += -lmetis
+}
+
 #exists(component-local.cfg): include(component-local.cfg)
 
 load(sofa/post)

@@ -36,7 +36,7 @@
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/component/linearsolver/MatrixLinearSolver.h>
-
+#include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/core/ObjectFactory.h>
 #include <iostream>
 
@@ -72,6 +72,8 @@ ShewchukPCGLinearSolver<TMatrix,TVector>::ShewchukPCGLinearSolver()
     f_graph.setWidget("graph");
 //    f_graph.setReadOnly(true);
     first = true;
+    newStep = true;
+    this->f_listening.setValue(true);
 }
 
 template<class TMatrix, class TVector>
@@ -135,14 +137,33 @@ inline void ShewchukPCGLinearSolver<component::linearsolver::GraphScatteredMatri
     x.peq(p,alpha);                 // x = x + alpha p
 }
 
+template<class Matrix, class Vector>
+void ShewchukPCGLinearSolver<Matrix,Vector>::handleEvent(sofa::core::objectmodel::Event* event) {
+    /// this event shoul be launch before the addKToMatrix
+    if (dynamic_cast<sofa::simulation::AnimateBeginEvent *>(event)) {
+        newStep = true;
+    }
+}
+
+
 template<class TMatrix, class TVector>
 void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
 {
     sofa::helper::AdvancedTimer::stepBegin("PCGLinearSolver::solve");
 
     std::map < std::string, sofa::helper::vector<double> >& graph = * f_graph.beginEdit();
-    sofa::helper::vector<double>& graph_error = graph["Error"];
-    graph_error.clear();
+//    sofa::helper::vector<double>& graph_error = graph["Error"];
+
+    if (newStep) {
+        graph.clear();
+        iter = 0;
+    }
+    newStep = false;
+    iter++;
+
+    char name[256];
+    sprintf(name,"Error %d",iter);
+    sofa::helper::vector<double>& graph_error = graph[std::string(name)];
 
     const core::ExecParams* params = core::ExecParams::defaultInstance();
     typename Inherit::TempVectorContainer vtmp(this, params, M, x, b);
