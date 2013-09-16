@@ -74,6 +74,8 @@ private :
     unsigned next_refresh_step;
     sofa::core::behavior::LinearSolver* preconditioners;
     bool first;
+    bool newStep;
+    int iter;
 
 protected:
     /// This method is separated from the rest to be able to use custom/optimized versions depending on the types of vectors.
@@ -82,6 +84,10 @@ protected:
     /// This method is separated from the rest to be able to use custom/optimized versions depending on the types of vectors.
     /// It computes: x += p*alpha, r -= q*alpha
     inline void cgstep_alpha(Vector& x,Vector& p,double alpha);
+
+    void handleEvent(sofa::core::objectmodel::Event* event);
+
+
 };
 
 template<class TMatrix, class TVector>
