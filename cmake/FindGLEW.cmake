@@ -11,7 +11,12 @@ endif(WIN32)
 
 if(UNIX)
         find_path(GLEW_INCLUDE_DIR GL/glew.h)
-        find_library(GLEW_LIBRARIES NAMES glew64 GLEW glew glew32)
+        # quick and dirty fix fore some macs using macports
+        find_library(GLEW_LIBRARIES NAMES glew64 GLEW glew glew32 PATHS "/opt/local/lib" NO_DEFAULT_PATH)
+	if(NOT EXISTS ${GLEW_LIBRARIES})  
+		find_library(GLEW_LIBRARIES NAMES glew64 GLEW glew glew32)
+	endif()
+	#message(STATUS "GLEW Lib found: GLEW_LIBRARIES=${GLEW_LIBRARIES} GLEW_INCLUDE_DIR=${GLEW_INCLUDE_DIR}")	
 
 	if(EXISTS "${GLEW_INCLUDE_DIR}/GL/glew.h" AND EXISTS ${GLEW_LIBRARIES})
 		if (NOT DEFINED GLEW_FOUND)
