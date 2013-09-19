@@ -74,8 +74,7 @@ private :
     unsigned next_refresh_step;
     sofa::core::behavior::LinearSolver* preconditioners;
     bool first;
-    bool newStep;
-    int iter;
+    int newton_iter;
 
 protected:
     /// This method is separated from the rest to be able to use custom/optimized versions depending on the types of vectors.
