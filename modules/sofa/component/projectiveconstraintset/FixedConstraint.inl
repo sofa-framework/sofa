@@ -176,10 +176,21 @@ void FixedConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseMatrix* M
 {
     unsigned blockSize = DataTypes::deriv_total_size;
 
-    // clears the rows and columns associated with fixed particles
-    for(SetIndexArray::const_iterator it= f_indices.getValue().begin(), iend=f_indices.getValue().end(); it!=iend; it++ )
+    if( f_fixAll.getValue()==true )
     {
-        M->clearRowsCols( offset + (*it) * blockSize, offset + (*it+1) * (blockSize) );
+        unsigned size = this->mstate->getSize();
+        for( unsigned i=0; i<size; i++ )
+        {
+            M->clearRowsCols( offset + i * blockSize, offset + (i+1) * (blockSize) );
+        }
+    }
+    else
+    {
+        // clears the rows and columns associated with fixed particles
+        for(SetIndexArray::const_iterator it= f_indices.getValue().begin(), iend=f_indices.getValue().end(); it!=iend; it++ )
+        {
+            M->clearRowsCols( offset + (*it) * blockSize, offset + (*it+1) * (blockSize) );
+        }
     }
 }
 
@@ -286,6 +297,9 @@ void FixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, u
     const unsigned int N = Deriv::size();
     const SetIndexArray & indices = f_indices.getValue();
 
+    //TODO take f_fixAll into account
+
+
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
     {
         // Reset Fixed Row and Col
@@ -303,6 +317,9 @@ void FixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, 
     //cerr<<"FixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset) is called "<<endl;
     //sout << "applyConstraint in Vector with offset = " << offset << sendl;
     const unsigned int N = Deriv::size();
+
+    //TODO take f_fixAll into account
+
 
     const SetIndexArray & indices = f_indices.getValue();
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
