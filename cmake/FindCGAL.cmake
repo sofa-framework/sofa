@@ -17,7 +17,6 @@ set(CGAL_DIR_MESSAGE     "CGAL not found.  Set the CGAL_DIR cmake variable or en
 set(CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS true)
  
 if ( NOT CGAL_DIR )
-  
   # Get the system search path as a list.
   if(UNIX)
     string(REGEX MATCHALL "[^:]+" CGAL_DIR_SEARCH1 "$ENV{PATH}")
@@ -79,6 +78,18 @@ if ( CGAL_DIR )
   endif()
 
 endif()
+
+if( NOT CGAL_FOUND)
+  # try to find the paths manually...
+  find_path(CGAL_DIR NAMES include/CGAL/Polyhedron_3.h)
+  find_library(CGAL_LIBRARIES NAMES CGAL)
+  if(EXISTS "${CGAL_DIR}/include/CGAL/Polyhedron_3.h" AND EXISTS ${CGAL_LIBRARIES})
+    set(CGAL_FOUND TRUE)
+    message(STATUS "CGAL found: ${CGAL_LIBRARIES} ${CGAL_DIR}")
+    mark_as_advanced(CGAL_DIR CGAL_LIBRARIES)
+
+  endif()
+endif()  
 
 if( NOT CGAL_FOUND)
   if(CGAL_FIND_REQUIRED)
