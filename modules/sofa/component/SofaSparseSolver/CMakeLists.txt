@@ -29,7 +29,8 @@ AddCompilerDefinitions("SOFA_BUILD_SPARSE_SOLVER" )
 AddLinkerDependencies(SofaBaseLinearSolver SofaImplicitOdeSolver csparse newmat)
 
 if(SOFA-EXTERNAL_METIS)
-	AddLinkerDependencies(metis)
+        AddLinkerDependencies(${METIS_LIBRARIES})
+        include_directories(${METIS_INCLUDE_DIR})
 endif()
     
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
