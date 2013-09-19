@@ -72,7 +72,6 @@ ShewchukPCGLinearSolver<TMatrix,TVector>::ShewchukPCGLinearSolver()
     f_graph.setWidget("graph");
 //    f_graph.setReadOnly(true);
     first = true;
-    newStep = true;
     this->f_listening.setValue(true);
 }
 
@@ -141,7 +140,9 @@ template<class Matrix, class Vector>
 void ShewchukPCGLinearSolver<Matrix,Vector>::handleEvent(sofa::core::objectmodel::Event* event) {
     /// this event shoul be launch before the addKToMatrix
     if (dynamic_cast<sofa::simulation::AnimateBeginEvent *>(event)) {
-        newStep = true;
+        newton_iter = 0;
+        std::map < std::string, sofa::helper::vector<double> >& graph = * f_graph.beginEdit();
+        graph.clear();
     }
 }
 
@@ -154,15 +155,9 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
     std::map < std::string, sofa::helper::vector<double> >& graph = * f_graph.beginEdit();
 //    sofa::helper::vector<double>& graph_error = graph["Error"];
 
-    if (newStep) {
-        graph.clear();
-        iter = 0;
-    }
-    newStep = false;
-    iter++;
-
+    newton_iter++;
     char name[256];
-    sprintf(name,"Error %d",iter);
+    sprintf(name,"Error %d",newton_iter);
     sofa::helper::vector<double>& graph_error = graph[std::string(name)];
 
     const core::ExecParams* params = core::ExecParams::defaultInstance();

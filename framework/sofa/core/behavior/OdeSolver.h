@@ -82,6 +82,10 @@ public:
     virtual void solve (const core::ExecParams* params /* PARAMS FIRST */, double dt) { solve(params /* PARAMS FIRST */, dt, VecCoordId::position(), VecDerivId::velocity()); }
 
 
+    /// Compute the residual of the newton iteration
+    ///
+    /// pos_t and vel_t are the position and velocities at the begining of the time step
+    virtual void computeResidual(const core::ExecParams* /*params*/ /* PARAMS FIRST */, double /*dt*/, sofa::core::MultiVecCoordId /*pos_t*/, sofa::core::MultiVecDerivId /*vel_t*/) { std::cerr << "ComputeResidual is not implemented in " << this->getName() << std::endl; }
 
 
     /// Given an input derivative order (0 for position, 1 for velocity, 2 for acceleration),
