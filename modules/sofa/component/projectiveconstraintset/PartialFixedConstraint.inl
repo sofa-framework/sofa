@@ -152,7 +152,6 @@ template <class DataTypes>
 template <class DataDeriv>
 void PartialFixedConstraint<DataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataDeriv& res)
 {
-    const SetIndexArray & indices = f_indices.getValue();
     const VecBool& blockedDirection = fixedDirections.getValue();
     //serr<<"PartialFixedConstraint<DataTypes>::projectResponse, res.size()="<<res.size()<<sendl;
     if (f_fixAll.getValue() == true)
@@ -171,6 +170,7 @@ void PartialFixedConstraint<DataTypes>::projectResponseT(const core::MechanicalP
     }
     else
     {
+        const SetIndexArray & indices = f_indices.getValue();
         unsigned i=0;
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end() && i<res.size(); ++it, ++i)
         {
@@ -202,7 +202,6 @@ void PartialFixedConstraint<DataTypes>::projectVelocity(const core::MechanicalPa
 {
 #if 0 /// @TODO ADD A FLAG FOR THIS
     helper::WriteAccessor<DataVecDeriv> res = vData;
-    const SetIndexArray & indices = f_indices.getValue();
     //serr<<"PartialFixedConstraint<DataTypes>::projectVelocity, res.size()="<<res.size()<<sendl;
     if( f_fixAll.getValue()==true )
     {
@@ -214,6 +213,7 @@ void PartialFixedConstraint<DataTypes>::projectVelocity(const core::MechanicalPa
     }
     else
     {
+        const SetIndexArray & indices = f_indices.getValue();
         unsigned i=0;
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end() && i<res.size(); ++it, ++i)
         {
@@ -252,6 +252,8 @@ void PartialFixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix 
     //sout << "applyConstraint in Matrix with offset = " << offset << sendl;
     //cerr<<" PartialFixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset) is called "<<endl;
 
+    //TODO take f_fixAll into account
+
     const unsigned int N = Deriv::size();
     const SetIndexArray & indices = f_indices.getValue();
 
@@ -276,6 +278,10 @@ void PartialFixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector 
 {
     //sout << "applyConstraint in Vector with offset = " << offset << sendl;
     //cerr<<"PartialFixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset) is called "<<endl;
+
+    //TODO take f_fixAll into account
+
+
     const unsigned int N = Deriv::size();
 
     const VecBool& blockedDirection = fixedDirections.getValue();
@@ -299,14 +305,32 @@ void PartialFixedConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseMa
     unsigned blockSize = DataTypes::deriv_total_size;
 
     const VecBool& blockedDirection = fixedDirections.getValue();
-    const SetIndexArray & indices = f_indices.getValue();
-    for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+
+    if( f_fixAll.getValue()==true )
     {
-        for (unsigned int c = 0; c < blockSize; ++c)
+        unsigned size = this->mstate->getSize();
+        for( unsigned i=0; i<size; i++ )
         {
-            if (blockedDirection[c])
+            for (unsigned int c = 0; c < blockSize; ++c)
             {
-                M->clearRowCol( offset + (*it) * blockSize );
+                if (blockedDirection[c])
+                {
+                    M->clearRowCol( offset + i * blockSize );
+                }
+            }
+        }
+    }
+    else
+    {
+        const SetIndexArray & indices = f_indices.getValue();
+        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        {
+            for (unsigned int c = 0; c < blockSize; ++c)
+            {
+                if (blockedDirection[c])
+                {
+                    M->clearRowCol( offset + (*it) * blockSize );
+                }
             }
         }
     }
