@@ -143,6 +143,13 @@ else()
 endif()
 RegisterDependencies(${PNG_LIBRARIES} OPTION SOFA-EXTERNAL_PNG COMPILE_DEFINITIONS SOFA_HAVE_PNG)
 
+## metis
+if(SOFA-EXTERNAL_METIS)
+        list(APPEND compilerDefines SOFA_HAVE_METIS)
+        find_package(METIS REQUIRED)
+endif()
+
+
 # enable unit tests
 if(SOFA-MISC_TESTS)
 	enable_testing()
