@@ -690,8 +690,8 @@ protected:
         createInputDataVector(n, vf_fillInside, "fillInside", "fill the inside? (only valable for unique value)", true, false);
     }
 
-    template<class T>
-    void createInputDataVector(unsigned int nb, helper::vector< Data<T>* >& vf, std::string name, std::string help, const T&defaultValue, bool readOnly=false)
+    template<class U>
+    void createInputDataVector(unsigned int nb, helper::vector< Data<U>* >& vf, std::string name, std::string help, const U&defaultValue, bool readOnly=false)
     {
         vf.reserve(nb);
         for (unsigned int i=vf.size(); i<nb; ++i)
@@ -708,7 +708,7 @@ protected:
 
             std::string name_i = oname.str();
             std::string help_i = ohelp.str();
-            Data<T>* d = new Data<T>(help_i.c_str(), true, false);
+            Data<U>* d = new Data<U>(help_i.c_str(), true, false);
             d->setName(name_i);
             d->setReadOnly(readOnly);
             d->setValue(defaultValue);
@@ -718,8 +718,8 @@ protected:
         }
     }
 
-    template<class T>
-    void deleteInputDataVector(helper::vector< Data<T>* >& vf)
+    template<class U>
+    void deleteInputDataVector(helper::vector< Data<U>* >& vf)
     {
         for (unsigned int i=0; i<vf.size(); ++i)
         {
