@@ -13,24 +13,24 @@ int DiagonalResponseClass = core::RegisterObject("A diagonal factorization of th
 
 void DiagonalResponse::factor(const mat& H ) {
 	
-	diagonal = H.diagonal().cwiseInverse();
+	diag = H.diagonal().cwiseInverse();
 	
-	assert( !has_nan(diagonal) );
+	assert( !has_nan(diag) );
 }
 
 void DiagonalResponse::solve(cmat& res, const cmat& M) const {
 	// TODO make sure this is optimal
-	assert( diagonal.size() == M.rows() );
+	assert( diag.size() == M.rows() );
 	assert( &res != &M );
-	res = (M.transpose() * diagonal.asDiagonal() ).transpose();
+	res = (M.transpose() * diag.asDiagonal() ).transpose();
 }
 
 
 void DiagonalResponse::solve(vec& res, const vec& x) const {
-	assert( diagonal.size() == x.size() );
+	assert( diag.size() == x.size() );
 	assert( &res != &x );
 	
-	res.noalias() = diagonal.cwiseProduct( x );
+	res.noalias() = diag.cwiseProduct( x );
 }
 
 }

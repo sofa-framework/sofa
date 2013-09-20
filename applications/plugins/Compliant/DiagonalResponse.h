@@ -14,10 +14,12 @@ public:
 	virtual void factor(const mat& sys);
 	virtual void solve(cmat& lval, const cmat& rval) const;
 	virtual void solve(vec& lval,  const vec& rval) const;
+
+	const vec& diagonal() const { return diag; }
 	
 protected:
 
-	vec diagonal;
+	vec diag;
 	
 };
 
