@@ -145,9 +145,9 @@ RegisterDependencies(${PNG_LIBRARIES} OPTION SOFA-EXTERNAL_PNG COMPILE_DEFINITIO
 
 ## metis
 if(SOFA-EXTERNAL_METIS)
-        list(APPEND compilerDefines SOFA_HAVE_METIS)
         find_package(METIS REQUIRED)
 endif()
+RegisterDependencies(${METIS_LIBRARIES} OPTION SOFA-EXTERNAL_METIS COMPILE_DEFINITIONS SOFA_HAVE_METIS)
 
 
 # enable unit tests
