@@ -105,8 +105,9 @@ struct cg
             // fail
             if( !pAp ) return false;
 
-            const real alpha = phi2 / pAp;
-
+            // const real alpha = phi2 / pAp;
+            const real alpha = r.dot(p) / pAp;
+            
             x += alpha * p;
             r -= alpha * Ap;
 
