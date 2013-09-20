@@ -318,8 +318,11 @@ void AssembledSolver::solve(const core::ExecParams* params,
             // zero stabilized constraints
             b.tail(sys.n).array() *= 1 - mask.array();
         }
-
-        kkt->solve(x, sys, b);
+        
+        {
+	        scoped::timer step("dynamics");
+	        kkt->solve(x, sys, b);
+        }
 	}
 	
 	
