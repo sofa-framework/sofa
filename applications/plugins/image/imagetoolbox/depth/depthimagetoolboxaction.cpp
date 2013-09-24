@@ -246,7 +246,7 @@ void DepthImageToolBoxAction::executeButtonClick()
 {
     sofa::component::engine::DepthImageToolBox *l = DITB();
     l->executeAction();
-    updateGraphs();
+    //updateGraphs();
 
     //std::cout << "exitButton"<<std::endl;
 }

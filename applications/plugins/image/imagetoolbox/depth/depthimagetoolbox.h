@@ -15,7 +15,7 @@
 #include "../labelgrid/labelgridimagetoolbox.h"
 #include "../depth/depthimagetoolbox.h"
 #include "ImageTypes.h"
-
+#include "meshData.h"
 
 #include "initImage.h"
 
@@ -175,8 +175,9 @@ public:
 
     Coord3 calculateQuadNormalVectorFromImage(const Quad &q,const VecCoord3 &p)
     {
-        Coord3 r = fromImage(p[q[0]])+fromImage(p[q[1]])+fromImage(p[q[2]])+fromImage(p[q[3]]);
+        Coord3 r = p[q[0]]+p[q[1]]+p[q[2]]+p[q[3]];
         r.normalize();
+        r = fromImage(r);
         return r;
     }
 
@@ -308,7 +309,7 @@ public:
         for(unsigned int i=0;i<quads.size();i++)
         {
             Coord3 normalVec = calculateQuadNormalVectorFromImage(quads[i],norm);
-
+            //std::cout << "vv"<<normalVec.norm()<< std::endl;
             v[i] *= normalVec.norm();
         }
     }
@@ -346,6 +347,62 @@ public:
         return true;
     }
 
+
+    bool createMeshFromLayer(LabelGridImageToolBoxNoTemplated *base, VecReal &v1,VecReal &v2,Vec2i reso,int numLayer)
+    {
+        std::cout << "createMeshFromLayer" << std::endl;
+
+
+        if( meshs.veclayer.size() <= numLayer )
+            meshs.veclayer.push_back(MeshDataImageToolBox::Layer());
+
+        MeshDataImageToolBox::VecCoord3 &position = meshs.positions;
+        MeshDataImageToolBox::Layer &layer = meshs.veclayer[numLayer];
+        layer.clear();
+
+        unsigned int k0=position.size();
+        unsigned int k=0;
+
+        unsigned int slides = 1;
+
+        helper::vector<sofa::defaulttype::Vec3d>& baseIP = *(base->d_outImagePosition.beginEdit());
+        helper::vector<sofa::defaulttype::Vec3d>& baseN = *(base->d_outNormalImagePositionBySection.beginEdit());
+
+        Quads& baseQuad = *(base->d_outQuads.beginEdit());
+
+        //create points
+        for(unsigned int i=0;i<reso.x()+1;i++)
+        for(unsigned int j=0;j<reso.y()+1;j++)
+        {
+            sofa::defaulttype::Vec3d baseIPk = fromImage(baseIP[k]);
+            sofa::defaulttype::Vec3d baseNk = fromImage(baseN[k]);
+            baseNk.normalize();
+
+            sofa::defaulttype::Vec3d min = baseIPk + baseNk*v1[k];
+            sofa::defaulttype::Vec3d max = baseIPk + baseNk*v2[k];
+
+            double dt = (double)1.0/(double)slides;
+
+            std::cout << "point " << k << "("<< baseIPk <<"//" << baseNk<< "//"<<min<<"//"<<max<< "//"<<v1[k] << " " << v2[k] <<" ) : ";
+            for(unsigned int h=0;h<slides+1;h++)
+            {
+                double dt_h = dt*h;
+
+                sofa::defaulttype::Vec3d point = min*dt_h+max*(1-dt_h);
+
+                std::cout <<point<< " ";
+
+                position.push_back(point);
+
+
+            }
+            k++;
+            std::cout <<std::endl;
+         }
+
+        return true;
+    }
+
     bool calculateDistanceMap(Layer&l,int numLayer)
     {
         std::cout << "calculateDistanceMap"<<l.layer1<<" "<<l.layer2<<" "<<l.base<<std::endl;
@@ -360,8 +417,22 @@ public:
         VecReal v1 = calculateSurfaceDistance(base,surf1);
         VecReal v2 = calculateSurfaceDistance(base,surf2);
 
+        VecReal v1b = v1;
+        VecReal v2b = v2;
+
+        std::cout << v1 << " ++ " << v2 << std::endl << std::endl;
+
         transfertDistanceFromImagePositionTo3DPosition(base,v1);
         transfertDistanceFromImagePositionTo3DPosition(base,v2);
+
+        std::cout << v1 << " ++ " << v2 << std::endl;
+
+        /*Coord3 v(1,1,1);
+        std::cout << toImage(v) << " ++ " << fromImage(v) << "++" <<toImage(fromImage(v))<< std::endl;
+        std::cout << d_transform.getValue()<<std::endl;
+*/
+
+
 
         switch(l.typeOffset1)
         {
@@ -388,9 +459,12 @@ public:
         }
 
         createLayerInImage(v1,v2,base->d_reso.getValue(),numLayer);
+        createMeshFromLayer(base,v1b,v2b,base->d_reso.getValue(),numLayer);
 
-        std::cout << toImage(1) << "/"<<fromImage(1)<<"/"<< toImage(Coord3(1.0,1.0,1.0)) << "/"<<fromImage(Coord3(435.934, 778.795, -70.2253)) <<std::endl;
-        std::cout << d_transform.getValue() << std::endl;
+  //      std::cout << toImage(1) << "/"<<fromImage(1)<<"/"<< toImage(Coord3(1.0,1.0,1.0)) << "/"<<fromImage(Coord3(435.934, 778.795, -70.2253)) <<std::endl;
+  //      std::cout << d_transform.getValue() << std::endl;
+
+         exit(0);
 
         return true;
     }
@@ -648,6 +722,8 @@ public:
     waImage wImage;
 
     VecLayer layers;
+
+    MeshDataImageToolBox meshs;
 };
 
 }}}
