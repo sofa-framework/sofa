@@ -21,8 +21,10 @@ HEADERS += \
     imagetoolbox/labelgrid/labelgridimagetoolboxaction.h \
     imagetoolbox/labelgrid/labelgridimagetoolbox.h \
     imagetoolbox/depth/depthimagetoolboxaction.h \
-    imagetoolbox/depth/depthimagetoolbox.h
-
+    imagetoolbox/depth/depthimagetoolbox.h \
+    imagetoolbox/meshgeneration/meshgenerationimagetoolboxaction.h \
+    imagetoolbox/meshgeneration/meshgenerationimagetoolbox.h \
+    imagetoolbox/depth/meshData.h
 
 
 SOURCES += \
@@ -41,6 +43,8 @@ SOURCES += \
     imagetoolbox/labelgrid/labelgridimagetoolboxaction.cpp \
     imagetoolbox/labelgrid/labelgridimagetoolbox.cpp \
     imagetoolbox/depth/depthimagetoolboxaction.cpp \
-    imagetoolbox/depth/depthimagetoolbox.cpp
+    imagetoolbox/depth/depthimagetoolbox.cpp \
+    imagetoolbox/meshgeneration/meshgenerationimagetoolboxaction.cpp \
+    imagetoolbox/meshgeneration/meshgenerationimagetoolbox.cpp
 
 
