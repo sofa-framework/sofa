@@ -31,6 +31,8 @@ set(SOURCE_FILES
     ../collision/TetrahedronFrictionContact.cpp 
     ../collision/BarycentricStickContact.cpp 
  
+	../collision/TetrahedronBarycentricDistanceLMConstraintContact.cpp # eigen2solver
+	../collision/BarycentricDistanceLMConstraintContact_DistanceGrid.cpp # eigen2solver
     )
 
 if(SOFA-MISC_SMP)
@@ -39,10 +41,10 @@ if(SOFA-MISC_SMP)
 endif()
     
 
-if(SOFA-LIB_COMPONENT_EIGEN2_SOLVER)
-	list(APPEND SOURCE_FILES "../collision/TetrahedronBarycentricDistanceLMConstraintContact.cpp")
-	list(APPEND SOURCE_FILES "../collision/BarycentricDistanceLMConstraintContact_DistanceGrid.cpp")
-endif()
+#if(SOFA-LIB_COMPONENT_EIGEN2_SOLVER)
+#	list(APPEND SOURCE_FILES "../collision/TetrahedronBarycentricDistanceLMConstraintContact.cpp")
+#	list(APPEND SOURCE_FILES "../collision/BarycentricDistanceLMConstraintContact_DistanceGrid.cpp")
+#endif()
 
 set(GROUP_BASE_DIR "..")
 
@@ -50,8 +52,7 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_MISC_COLLISION" )
 AddSourceDependencies(eigen)
-AddLinkerDependencies(SofaMeshCollision SofaConstraint SofaVolumetricData SofaExplicitOdeSolver SofaImplicitOdeSolver )
-
+AddLinkerDependencies(SofaMeshCollision SofaConstraint SofaVolumetricData SofaExplicitOdeSolver SofaImplicitOdeSolver SofaEigen2Solver)
 
 #if(SOFA-LIB_COMPONENT_EIGEN2_SOLVER)
 #    AddLinkerDependencies(SofaEigen2Solver)
