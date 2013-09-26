@@ -2,6 +2,9 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 find_package(CUDA REQUIRED)
 
+# quick and dirty fix for nvcc compatibility with -fno-partial-inlining flag
+set(CUDA_PROPAGATE_HOST_FLAGS OFF)
+
 set(HEADER_FILES
 
     sofa/gpu/cuda/mycuda.h 
