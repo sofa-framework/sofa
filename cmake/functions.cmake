@@ -119,14 +119,14 @@ function(UseQt)
 	set(ADDITIONAL_LINKER_DEPENDENCIES ${ADDITIONAL_LINKER_DEPENDENCIES} ${QT_LIBRARIES} PARENT_SCOPE)
 endfunction()
 
-# RegisterDependencies(<lib0> [lib1 [lib2 ...]] [OPTION <optionName>] [COMPILE_DEFINITIONS <compileDefinition0> [compileDefinition1 [compileDefinition2 ...]] [PATH <path>])
+# RegisterProjects(<lib0> [lib1 [lib2 ...]] [OPTION <optionName>] [COMPILE_DEFINITIONS <compileDefinition0> [compileDefinition1 [compileDefinition2 ...]] [PATH <path>])
 # register a dependency in the dependency tree, used to be retrieved at the end of the project configuration
 # to add include directories from dependencies and to enable dependencies / plugins
 # libN is a list of library using the same OPTION to be enabled (opengl/glu for instance)
 # optionName is the name of the OPTION used to enable / disable the module (for instance SOFA-EXTERNAL_GLEW)
 # compiler definitions is the preprocessor macro that has to be globally setted if the project is enabled
 # path parameter is the path to the cmake project if any (may be needed to enable the project)
-function(RegisterDependencies)
+function(RegisterProjects)
 	set(dependencies)
 	set(optionName "")
 	set(noOptionName "")
@@ -158,7 +158,7 @@ function(RegisterDependencies)
 				set(mode 5)
 				set(projectPath ${arg})
 			elseif(${mode} EQUAL 5) # too many arguments
-				message(SEND_ERROR "RegisterDependencies(${ARGV}) : too many arguments")
+                                message(SEND_ERROR "RegisterProjects(${ARGV}) : too many arguments")
 				break()
 			endif()
 		endif()
@@ -201,9 +201,9 @@ function(RegisterDependencies)
 	endforeach()
 endfunction()
 
-# AddCompilerDefinitionsFromDependency(<dependency>)
-# retrieve the compiler defines set when the dependency has been registered (using RegisterDependencies and not every compiler defines set when the dependency is being generated) and add it in the current compiler defines
-function(AddCompilerDefinitionsFromDependency)
+# AddCompilerDefinitionsFromProject(<dependency>)
+# retrieve the compiler defines set when the dependency has been registered (using RegisterProjects and not every compiler defines set when the dependency is being generated) and add it in the current compiler defines
+function(AddCompilerDefinitionsFromProject)
 	foreach(dependency ${ARGV})
 		set(COMPILER_DEFINES ${COMPILER_DEFINES} ${GLOBAL_PROJECT_OPTION_COMPILER_DEFINITIONS_${dependency}} PARENT_SCOPE)
 	endforeach()
@@ -274,7 +274,7 @@ function(RegisterProjectDependencies projectName)
 	# if we manually added an optional project to be generated, we must set its option to ON and its no option to OFF
 	EnableDependencyOption(${projectName})
 	
-	RegisterDependencies(${projectName})
+        RegisterProjects(${projectName})
 	
 	set(GLOBAL_PROJECT_ENABLED_${projectName} 1 CACHE INTERNAL "${projectName} Enabled Status" FORCE)
 endfunction()
@@ -297,7 +297,7 @@ function(RetrieveDependencies projectsPath optionPrefix optionDescription defini
 						string(REPLACE "/CMakeLists.txt" "" solutionFolder ${solutionPath})
 						option("${optionPrefix}${dependencyToUpperName}" "${optionDescription} ${dependencyName}" OFF)
 						get_filename_component(solutionName ${solutionFolder} NAME)
-						RegisterDependencies(${solutionName} OPTION "${optionPrefix}${dependencyToUpperName}" COMPILE_DEFINITIONS "${definitionPrefix}${dependencyToUpperName}" PATH "${solutionFolder}")
+                                                RegisterProjects(${solutionName} OPTION "${optionPrefix}${dependencyToUpperName}" COMPILE_DEFINITIONS "${definitionPrefix}${dependencyToUpperName}" PATH "${solutionFolder}")
 					endif()
 					unset(solutionPath)
 				else() # register every CMakeLists.txt
@@ -308,7 +308,7 @@ function(RetrieveDependencies projectsPath optionPrefix optionDescription defini
 							get_filename_component(dependencyFilename ${dependencyPath} NAME)
 							string(REPLACE "/${dependencyFilename}" "" dependencyFolder ${dependencyPath})
 							get_filename_component(dependencyProjectName ${dependencyFolder} NAME)
-							RegisterDependencies(${dependencyProjectName} OPTION "${optionPrefix}${dependencyToUpperName}" COMPILE_DEFINITIONS "${definitionPrefix}${dependencyToUpperName}" PATH "${dependencyFolder}")
+                                                        RegisterProjects(${dependencyProjectName} OPTION "${optionPrefix}${dependencyToUpperName}" COMPILE_DEFINITIONS "${definitionPrefix}${dependencyToUpperName}" PATH "${dependencyFolder}")
 						endforeach()
 					endif()
 				endif()
@@ -362,7 +362,7 @@ function(ComputeDependencies projectName forceEnable fromProject offset)
 			# add the current project
 			if(GLOBAL_PROJECT_PATH_${projectName}) # TODO: if there is no path try a find_package / find_library
 				if(NOT ${GLOBAL_PROJECT_PATH_${projectName}} STREQUAL "")
-					message(STATUS " - Adding dependency '${projectName}' for '${fromProject}' from : ${GLOBAL_PROJECT_PATH_${projectName}}")
+                                        message(STATUS " - Adding project '${projectName}' for '${fromProject}' from : ${GLOBAL_PROJECT_PATH_${projectName}}")
 					add_subdirectory("${GLOBAL_PROJECT_PATH_${projectName}}")
 				endif()
 			endif()
@@ -430,19 +430,6 @@ function(LogDependencies projectName)
 		#message(STATUS "- ${projectName}")
 		set(GLOBAL_LOG_MESSAGE ${GLOBAL_LOG_MESSAGE} "- ${projectName}" CACHE INTERNAL "Log message" FORCE)
 	endif()
-endfunction()
-
-# ApplyGlobalCompilerDefinitions(<projectName>)
-# set global compiler definitions to a specific project
-# <projectName> the project to compute
-function(ApplyGlobalCompilerDefinitions projectName)
-	# process the project
-	#if(TARGET ${projectName})
-	#	set(compilerDefines ${GLOBAL_COMPILER_DEFINES})
-	#	list(APPEND compilerDefines ${GLOBAL_PROJECT_COMPILER_DEFINITIONS_${projectName}})
-	#	list(REMOVE_DUPLICATES compilerDefines)
-	#	set_target_properties(${projectName} PROPERTIES COMPILE_DEFINITIONS "${compilerDefines}")
-	#endif()
 endfunction()
 
 # AddCompilerDefinitions(compiler_definition0 [compiler_definition1 [...]])
