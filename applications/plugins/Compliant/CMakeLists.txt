@@ -6,7 +6,6 @@ set(HEADER_FILES
     CompliantAttachButtonSetting.h
     UniformCompliance.h
     UniformCompliance.inl
-    ComplianceSolver.h
 	DampingCompliance.h
 	RigidMass.h
 #	UnilateralMask.h
@@ -14,7 +13,7 @@ set(HEADER_FILES
 	AssembledRigidRigidMapping.h
 	KKTSolver.h
 	LDLTSolver.h
-  MinresSolver.h
+    MinresSolver.h
 	KrylovSolver.h
 	CgSolver.h
 	Response.h
@@ -27,6 +26,11 @@ set(HEADER_FILES
 	AssembledMapping.h
 	Stabilization.h
     CompliantSolverMerger.h
+
+    UniformCompliance.h
+    UniformCompliance.inl
+    DiagonalCompliance.h
+    DiagonalCompliance.inl
 	
       utils/cast.h
       utils/cg.h
@@ -48,7 +52,6 @@ set(SOURCE_FILES
     CompliantAttachButtonSetting.cpp
     UniformCompliance.cpp
     DiagonalCompliance.cpp
-    ComplianceSolver.cpp
 	DampingCompliance.cpp
 	RigidMass.cpp
 	RigidJointMapping.cpp

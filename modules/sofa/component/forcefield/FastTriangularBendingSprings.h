@@ -111,14 +111,7 @@ public:
     virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset); // compute and add all the element stiffnesses to the global stiffness matrix
     virtual double getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& d_x) const;
 
-#ifdef SOFA_HAVE_EIGEN2
-    virtual const sofa::defaulttype::BaseMatrix* getStiffnessMatrix(const sofa::core::MechanicalParams* mparams);
-    linearsolver::EigenSparseMatrix<DataTypes,DataTypes> matS;
-#endif
-
-
     void draw(const core::visual::VisualParams* vparams);
-
 
 
 protected:

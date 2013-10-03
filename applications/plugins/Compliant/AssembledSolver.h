@@ -44,7 +44,15 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
                        core::MultiVecDerivId velId,
                        bool computeForce, // should the right part of the implicit system be computed?
                        bool integratePosition, // should the position be updated?
-                       simulation::AssemblyVisitor *vis = 0x0
+                       simulation::AssemblyVisitor *vis
+                       );
+
+    virtual void solve(const core::ExecParams* params,
+                       double dt,
+                       core::MultiVecCoordId posId,
+                       core::MultiVecDerivId velId,
+                       bool computeForce, // should the right part of the implicit system be computed?
+                       bool integratePosition // should the position be updated?
                        );
 
     // OdeSolver API
@@ -69,8 +77,7 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
 
     // solve velocity dynamics ?
 	Data<bool> use_velocity, warm_start, propagate_lambdas, stabilization, debug;
-
-
+//    Data<SReal> f_rayleighStiffness, f_rayleighMass;  ///< uniform Rayleigh damping ratio applied to the stiffness and mass matrices
 
     simulation::AssemblyVisitor* _assemblyVisitor;
 
@@ -140,6 +147,7 @@ protected:
         }
 
     };
+
 };
 
 }

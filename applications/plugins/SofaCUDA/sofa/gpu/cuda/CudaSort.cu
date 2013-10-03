@@ -130,7 +130,7 @@ bool CudaSortTHRUSTAvailable(unsigned int numElements, bool /*withData*/)
 //                thrustSortMaxElements = (1<<18);
         thrustSortMaxElements = ((thrustSortMaxElements + 255) & ~255);
 
-        mycudaPrintf("CudaSort: Using THRUST to sort up to %d elements.\n", thrustSortMaxElements);
+//        mycudaPrintf("CudaSort: Using THRUST to sort up to %d elements.\n", thrustSortMaxElements);
     }
     return true;
 }

@@ -194,17 +194,19 @@ public:
         return &C;
     }
 
-    virtual const sofa::defaulttype::BaseMatrix* getStiffnessMatrix(const core::MechanicalParams * /*mparams*/)
+    virtual void addKToMatrix( sofa::defaulttype::BaseMatrix * matrix, double kFact, unsigned int &offset )
     {
         if(!this->assemble.getValue() || !BlockType::constantK) updateK();
-//        cerr<<"BaseMaterialForceField::getStiffnessMatrix, K = " << K << endl;
-        return &K;
+
+        K.addToBaseMatrix( matrix, kFact, offset );
     }
 
-    const defaulttype::BaseMatrix* getB(const core::MechanicalParams * /*mparams*/)
+    virtual void addBToMatrix(sofa::defaulttype::BaseMatrix *matrix, SReal bFact, unsigned int &offset)
     {
+        assert(false && "bfactor !=0 not working now"); // not handled for now
         if(!this->assemble.getValue() || !BlockType::constantK) updateB();
-        return &B;
+
+        B.addToBaseMatrix( matrix, bFact, offset );
     }
 
     void draw(const core::visual::VisualParams* /*vparams*/)

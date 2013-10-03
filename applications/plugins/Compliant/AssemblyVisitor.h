@@ -13,7 +13,6 @@
 
 #include "./utils/find.h"
 
-
 namespace sofa {
 namespace simulation {
 
@@ -39,7 +38,7 @@ namespace simulation {
 class AssemblyVisitor : public simulation::MechanicalVisitor {
 protected:
 	typedef simulation::MechanicalVisitor base;
-	const core::MechanicalParams* mparams;
+    /*const*/ core::MechanicalParams* mparams;
 public:
 
 	typedef SReal real;
@@ -51,7 +50,7 @@ public:
 	typedef rmat mat;
 	typedef Eigen::Matrix<real, Eigen::Dynamic, 1> vec;
 			
-    AssemblyVisitor(const core::MechanicalParams* mparams = 0, MultiVecDerivId velId = MultiVecDerivId(core::VecDerivId::velocity()), MultiVecDerivId lagrange = MultiVecDerivId() );
+    AssemblyVisitor(/*const*/ core::MechanicalParams* mparams = 0, MultiVecDerivId velId = MultiVecDerivId(core::VecDerivId::velocity()), MultiVecDerivId lagrange = MultiVecDerivId()/*, SReal rayleighStiffness=0, SReal rayleighMass=0*/ );
     virtual ~AssemblyVisitor();
 
 //protected:
@@ -76,6 +75,9 @@ public:
 			
 	// outputs data to std::cout
 	void debug() const; 
+
+    // Rayleigh damping parameters
+//    SReal rayleighStiffness, rayleighMass;
 	
 public:
 	
@@ -126,7 +128,6 @@ public:
 public:
 	mat mass(simulation::Node* node);
 
-	
 	mat compliance(simulation::Node* node);
 	mat stiff(simulation::Node* node);
 	mat proj(simulation::Node* node);
@@ -314,6 +315,7 @@ struct AssemblyVisitor::process_helper {
     }
 
     void operator()(unsigned v) const {
+
         dofs_type* curr = g[v].dofs;
         chunk* c = g[v].data;
 
@@ -343,6 +345,7 @@ struct AssemblyVisitor::process_helper {
                 // children will get the right place on multiplication
                 if( p->master() && empty(Jp) ) {
                     // scoped::timer step("shift matrix");
+
                     Jp = shift_right<mat>( find(offsets, vp.dofs), p->size, size_m);
 
                     // TODO optimize!

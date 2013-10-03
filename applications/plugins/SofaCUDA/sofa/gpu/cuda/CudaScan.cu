@@ -352,7 +352,7 @@ bool CudaScanTHRUSTAvailable(unsigned int size, bool /*withData*/)
 //                thrustScanMaxElements = (1<<18);
         thrustScanMaxElements = ((thrustScanMaxElements + 255) & ~255);
 
-        mycudaPrintf("CudaScan: Using THRUST to scan up to %d elements.\n", thrustScanMaxElements);
+//        mycudaPrintf("CudaScan: Using THRUST to scan up to %d elements.\n", thrustScanMaxElements);
     }
     return true;
 }

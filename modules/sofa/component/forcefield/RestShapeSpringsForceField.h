@@ -115,9 +115,6 @@ public:
 
     virtual void draw(const core::visual::VisualParams* vparams);
 
-#ifdef SOFA_HAVE_EIGEN2
-    virtual const sofa::defaulttype::BaseMatrix* getStiffnessMatrix(const sofa::core::MechanicalParams* mparams);
-#endif
 
     const DataVecCoord* getExtPosition() const;
     const VecIndex& getIndices() const { return m_indices; }

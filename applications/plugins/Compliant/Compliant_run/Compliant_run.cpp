@@ -60,7 +60,9 @@
 #include <sofa/component/typedef/Sofa_typedef.h>
 #include "../../../applications/tutorials/objectCreator/ObjectCreator.h"
 
-#include <plugins/Compliant/ComplianceSolver.h>
+#include <plugins/Compliant/AssembledSolver.h>
+#include <plugins/Compliant/LDLTSolver.h>
+#include <plugins/Compliant/UniformCompliance.h>
 #include <plugins/Compliant/UniformCompliance.h>
 #include <plugins/Compliant/CompliantAttachButtonSetting.h>
 using sofa::component::configurationsetting::CompliantAttachButtonSetting;
@@ -86,7 +88,9 @@ typedef Vec<1,SReal> Vec1;
 typedef ExtensionMapping<MechanicalObject3::DataTypes, MechanicalObject1::DataTypes> ExtensionMapping31;
 typedef DistanceMapping<MechanicalObject3::DataTypes, MechanicalObject1::DataTypes> DistanceMapping31;
 typedef UniformCompliance<Vec1Types> UniformCompliance1;
-typedef component::odesolver::ComplianceSolver ComplianceSolver;
+
+typedef component::odesolver::AssembledSolver AssembledSolver;
+typedef component::linearsolver::LDLTSolver LDLTSolver;
 typedef component::odesolver::EulerImplicitSolver EulerImplicitSolver;
 typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
 
@@ -206,11 +210,13 @@ simulation::Node::SPtr createCompliantScene()
     Node::SPtr simulatedScene = root->createChild("simulatedScene");
 
 
-    ComplianceSolver::SPtr complianceSolver = New<ComplianceSolver>();
-    simulatedScene->addObject( complianceSolver );
-    complianceSolver->implicitVelocity.setValue(1.0);
-    complianceSolver->implicitPosition.setValue(1.0);
-    complianceSolver->verbose.setValue(verbose);
+    AssembledSolver::SPtr assembledSolver = New<AssembledSolver>();
+    simulatedScene->addObject( assembledSolver );
+//    assembledSolver->verbose.setValue(verbose);
+
+    LDLTSolver::SPtr lDLTSolver = New<LDLTSolver>();
+    simulatedScene->addObject( lDLTSolver );
+//    lDLTSolver->verbose.setValue(verbose);
 
 
     // ========  first string

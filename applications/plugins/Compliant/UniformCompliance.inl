@@ -80,10 +80,11 @@ const sofa::defaulttype::BaseMatrix* UniformCompliance<DataTypes>::getCompliance
     return &matC;
 }
 
+
 template<class DataTypes>
-const sofa::defaulttype::BaseMatrix* UniformCompliance<DataTypes>::getStiffnessMatrix(const core::MechanicalParams*)
+void UniformCompliance<DataTypes>::addKToMatrix( sofa::defaulttype::BaseMatrix * matrix, double kFact, unsigned int &offset )
 {
-    return &matC;
+    matC.addToBaseMatrix( matrix, kFact, offset );
 }
 
 template<class DataTypes>
