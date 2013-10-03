@@ -12,6 +12,13 @@
 #include "utils/minres.h"
 #include "utils/scoped.h"
 
+
+
+#ifdef GR_BENCHMARK
+    #include <sofa/helper/system/thread/CTime.h>
+#endif
+
+
 namespace sofa {
 namespace component {
 namespace odesolver {
@@ -45,6 +52,10 @@ AssembledSolver::AssembledSolver()
 	               false,
 	               "debug",
 	               "print debug stuff"))
+
+//    , f_rayleighStiffness( initData(&f_rayleighStiffness,(SReal)0,"rayleighStiffness","Rayleigh damping coefficient related to stiffness, >= 0") )
+//    , f_rayleighMass( initData(&f_rayleighMass,(SReal)0,"rayleighMass","Rayleigh damping coefficient related to mass, >= 0"))
+
 {
 	
 }
@@ -104,7 +115,7 @@ void AssembledSolver::forces(const core::ExecParams& params) {
 	MultiVecDeriv f  (&vop, core::VecDerivId::force() );
 				
     mop.computeForceNeglectingCompliance(f);
-	// mop.projectResponse(f); 
+//     mop.projectResponse(f);
 }
 
 
@@ -249,6 +260,22 @@ AssembledSolver::kkt_type::vec AssembledSolver::stab_mask(const system_type& sys
 
 
 void AssembledSolver::solve(const core::ExecParams* params,
+                   double dt,
+                   core::MultiVecCoordId posId,
+                   core::MultiVecDerivId velId,
+                   bool computeForce, // should the right part of the implicit system be computed?
+                   bool integratePosition // should the position be updated?
+                   )
+{
+    // assembly visitor
+    core::MechanicalParams mparams = this->mparams(*params, dt);
+    simulation::AssemblyVisitor* v = new simulation::AssemblyVisitor(&mparams, velId, lagrange.id()/*, f_rayleighStiffness.getValue(), f_rayleighMass.getValue()*/ );
+    solve( params, dt, posId, velId, computeForce, integratePosition, v );
+    delete v;
+}
+
+
+void AssembledSolver::solve(const core::ExecParams* params,
                             double dt, 
                             sofa::core::MultiVecCoordId posId,
                             sofa::core::MultiVecDerivId velId,
@@ -262,14 +289,8 @@ void AssembledSolver::solve(const core::ExecParams* params,
 	// compute forces
     if( computeForce ) forces( mparams );
 
-    // assembly visitor
-    if(v == 0x0){
-        _assemblyVisitor = new simulation::AssemblyVisitor(&mparams, velId, lagrange.id());
-    }
-    else{
-        // assembly visitor (keep an accessible pointer from another component all along the solving)
-        _assemblyVisitor = v;
-    }
+     // assembly visitor (keep an accessible pointer from another component all along the solving)
+     _assemblyVisitor = v;
 
 	// fetch data
     send( *_assemblyVisitor );
@@ -287,13 +308,25 @@ void AssembledSolver::solve(const core::ExecParams* params,
 	// solution vector
 	system_type::vec x = warm( sys );
 	
+
+#ifdef GR_BENCHMARK
+        helper::system::thread::ctime_t tfreq = helper::system::thread::CTime::getTicksPerSec();
+        helper::system::thread::ctime_t t = helper::system::thread::CTime::getFastTime();
+#endif
+
+
 	{
-		scoped::timer step("system factor");
+//		scoped::timer step("system factor");
 		kkt->factor( sys );
 	}
 
 	{
-		scoped::timer step("system solve");
+//		scoped::timer step("system solve");
+
+
+
+
+
         system_type::vec b = rhs( sys, computeForce );
 
         // stab mask
@@ -320,9 +353,15 @@ void AssembledSolver::solve(const core::ExecParams* params,
         }
         
         {
-	        scoped::timer step("dynamics");
+//	        scoped::timer step("dynamics");
 	        kkt->solve(x, sys, b);
         }
+
+
+#ifdef GR_BENCHMARK
+        t = sofa::helper::system::thread::CTime::getFastTime()-t;
+        std::cerr<<sys.n<<"\t"<<kkt->nbiterations+1<<"\t"<<((double)t)/((double)tfreq)<<std::endl;
+#endif
 	}
 	
 	
@@ -334,7 +373,7 @@ void AssembledSolver::solve(const core::ExecParams* params,
         _assemblyVisitor->distribute_compliant( lagrange.id(), lambda(sys, x) );
 
 		if( propagate_lambdas.getValue() ) {
-			scoped::timer step("lambdas propagation");
+//			scoped::timer step("lambdas propagation");
 			propagate_visitor prop( &mparams );
 			prop.out = core::VecId::force();
 			prop.in = lagrange.id();
@@ -342,12 +381,12 @@ void AssembledSolver::solve(const core::ExecParams* params,
 			send( prop );
 		}
 	}
-	
+
+
     // update positions
     if( integratePosition ) integrate( &mparams, posId, velId );
 
-    if(v == 0x0)//it means that we created a new visitor in this method
-        delete _assemblyVisitor;
+
 }
 
 			

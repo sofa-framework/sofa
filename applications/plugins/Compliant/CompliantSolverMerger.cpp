@@ -5,7 +5,6 @@
 #include <sofa/helper/FnDispatcher.inl>
 
 #include "AssembledSolver.h"
-#include "ComplianceSolver.h"
 
 #include "MinresSolver.h"
 #include "CgSolver.h"
@@ -52,14 +51,6 @@ namespace collision
 
 
 
-
-    SolverSet createComplianceSolver(odesolver::ComplianceSolver& solver1, odesolver::ComplianceSolver& solver2)
-    {
-        odesolver::ComplianceSolver::SPtr solver = sofa::core::objectmodel::New<odesolver::ComplianceSolver>();
-        solver->f_rayleighStiffness.setValue( std::max( solver1.f_rayleighStiffness.getValue(), solver2.f_rayleighStiffness.getValue() ) );
-        solver->f_rayleighStiffness.setValue( std::max( solver1.f_rayleighStiffness.getValue(), solver2.f_rayleighStiffness.getValue() ) );
-        return SolverSet(solver);
-    }
 
 
     SolverSet createAssembledSolver(odesolver::AssembledSolver& solver1, odesolver::AssembledSolver& solver2)
@@ -110,7 +101,6 @@ namespace collision
 
     void CompliantSolverMerger::add()
     {
-        SolverMerger::addDispatcher<odesolver::ComplianceSolver,odesolver::ComplianceSolver,createComplianceSolver,true>();
         SolverMerger::addDispatcher<odesolver::AssembledSolver,odesolver::AssembledSolver,createAssembledSolver,true>();
     }
 

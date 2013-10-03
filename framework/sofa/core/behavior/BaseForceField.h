@@ -185,9 +185,6 @@ public:
     /// Considered as compliance, else consider as stiffness
     Data< bool > isCompliance;
 
-    /// Return a pointer to the stiffness matrix
-    virtual const sofa::defaulttype::BaseMatrix* getStiffnessMatrix(const MechanicalParams*) { return NULL; }
-
     /// Return a pointer to the compliance matrix
     virtual const sofa::defaulttype::BaseMatrix* getComplianceMatrix(const MechanicalParams*) { return NULL; }
 

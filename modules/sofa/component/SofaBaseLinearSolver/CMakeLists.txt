@@ -19,6 +19,7 @@ set(HEADER_FILES
     ../linearsolver/GraphScatteredTypes.h 
     ../linearsolver/DefaultMultiMatrixAccessor.h 
     ../linearsolver/MatrixLinearSolver.h 
+    ../linearsolver/MatrixLinearSolver.inl
     ../linearsolver/MatrixExpr.h 
     ../linearsolver/matrix_bloc_traits.h 
     ../linearsolver/BlocMatrixWriter.h

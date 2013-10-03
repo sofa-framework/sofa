@@ -356,7 +356,15 @@ public:
     MatrixAccessor getAccessor() { return MatrixAccessor(this); }
 
 
-
+    /// add this EigenBaseSparseMatrix to a BaseMatrix at the offset and multiplied by factor
+    void addToBaseMatrix( BaseMatrix *matrix, SReal factor, unsigned int &offset )
+    {
+        for( int j=0 ; j<compressedMatrix.outerSize() ; ++j )
+            for( typename CompressedMatrix::InnerIterator it(compressedMatrix,j) ; it ; ++it )
+            {
+                matrix->add( offset+it.row(), offset+it.col(), factor*it.value() );
+            }
+    }
 
 };
 

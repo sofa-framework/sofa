@@ -25,14 +25,15 @@ typedef EigenVectorWrapper<SReal> wrap;
 
 
 
-AssemblyVisitor::AssemblyVisitor(const core::MechanicalParams* mparams, MultiVecDerivId velId, MultiVecDerivId lagrangeId)
+AssemblyVisitor::AssemblyVisitor(/*const*/ core::MechanicalParams* mparams, MultiVecDerivId velId, MultiVecDerivId lagrangeId/*, SReal rayleighStiffness, SReal rayleighMass*/)
 	: base( mparams ),
       mparams( mparams ),
       _velId(velId),
       lagrange(lagrangeId),
-	  start_node(0),
-	  _processed(0)
-
+      start_node(0),
+//      rayleighStiffness(rayleighStiffness),
+//      rayleighMass(rayleighMass),
+      _processed(0)
 { }
 
 
@@ -163,12 +164,12 @@ AssemblyVisitor::mat AssemblyVisitor::mass(simulation::Node* node) {
 
 	{
 		SingleMatrixAccessor accessor( &sqmat );
+        mparams->setMFactor( 1.0 );
 		node->mass->addMToMatrix( mparams, &accessor );
 	}
 
-	sqmat.compress();
-	res = sqmat.compressedMatrix.selfadjointView<Eigen::Upper>();
-	return res;
+    sqmat.compress();
+    return sqmat.compressedMatrix.selfadjointView<Eigen::Upper>();
 }
 
 
@@ -208,29 +209,35 @@ AssemblyVisitor::mat AssemblyVisitor::compliance(simulation::Node* node) {
 
 	}
 
-	return res;
+    return res;
 }
 
 
 // stiffness matrix
-AssemblyVisitor::mat AssemblyVisitor::stiff(simulation::Node* node) {
+AssemblyVisitor::mat AssemblyVisitor::stiff(simulation::Node* node)
+{
+    unsigned size = node->mechanicalState->getMatrixSize();
 
-	mat res;
-	for(unsigned i = 0; i < node->forceField.size(); ++i ) {
+    typedef EigenBaseSparseMatrix<SReal> Sqmat;
+    Sqmat sqmat( size, size );
+    mparams->setMFactor( 0.0 ); // not to add mass two times
+
+    for(unsigned i = 0; i < node->forceField.size(); ++i )
+    {
 		BaseForceField* ffield = node->forceField[i];
 
         if( ffield->isCompliance.getValue() ) continue;
 
-        const BaseMatrix* k = ffield->getStiffnessMatrix(mparams);
-
-        if( k ) add(res, convert<mat>( k ));
-//#ifndef NDEBUG
-//        else std::cerr<<SOFA_CLASS_METHOD<<ffield->getName()<<" getStiffnessMatrix not implemented"<< std::endl;
-//#endif
+        {
+            SingleMatrixAccessor accessor( &sqmat );
+            ffield->addMBKToMatrix( mparams, &accessor );
+        }
 
     }
 
-    return res;
+
+    sqmat.compress();
+    return sqmat.compressedMatrix.selfadjointView<Eigen::Upper>();
 }
 
 
@@ -565,11 +572,23 @@ static inline AssemblyVisitor::mat ltdl(const AssemblyVisitor::mat& l,
 }
 
 
+
+
 // produce actual system assembly
 AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
 	assert(!chunks.empty() && "need to send a visitor first");
 
 	// assert( !_processed );
+
+
+
+    // RAYLEIGH DAMPING
+    // H = (1+h*rm)M - h*B - h*(h+rs)K
+    // TODO  How to update the right part??? f = f0 + (h+rs) K v - rm M v
+    // Rayleigh mass factor rm is used with a negative sign because it
+    // is recorded as a positive real, while its force is opposed to the velocity
+
+
 
 	// concatenate mappings and obtain sizes
     _processed = process();
@@ -583,7 +602,7 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
 	unsigned off_m = 0;
 	unsigned off_c = 0;
 
-	SReal dt2 = res.dt * res.dt;
+    SReal dt2 = res.dt * res.dt;
 
 	// assemble system
 	for(unsigned i = 0, n = prefix.size(); i < n; ++i) {
@@ -604,11 +623,16 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
 			// scoped::timer step("independent dofs");
             mat shift = shift_right<mat>(off_m, c.size, _processed->size_m);
 
+            vec::SegmentReturnType f = res.f.segment(off_m, c.size);
+
             mat H(c.size, c.size);
 
 			// mass matrix / momentum
             if( !zero(c.M) ) {
                 H += c.M;
+//                H += ( 1.0 + rayleighMass * res.dt ) * c.M;
+
+                // momentum
                 vec::SegmentReturnType r = res.p.segment(off_m, c.size);
                 r.noalias() = r + c.M * c.v;
 			}
@@ -617,8 +641,8 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
             if( !zero(c.K) )  {
 				// res.K.middleRows(off_m, c.size) = Kc * shift;
                 H -= dt2 * c.K;
-
-				// res.H.middleRows(off_m, c.size) = res.H.middleRows(off_m, c.size) - dt2 * (Kc * shift);
+//                H -= res.dt * ( res.dt + rayleighStiffness ) * c.K;
+                // res.H.middleRows(off_m, c.size) = res.H.middleRows(off_m, c.size) - dt2 * (Kc * shift);
 			}
 
 			// TODO this is costly, find a faster way to do it
@@ -627,7 +651,7 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
 			}
 
 			// these should not be empty anyways
-            if( !zero(c.f) ) res.f.segment(off_m, c.size) = c.f;
+            if( !zero(c.f) ) f.noalias() = f + c.f;
             if( !zero(c.v) ) res.v.segment(off_m, c.size) = c.v;
             if( !zero(c.P) ) res.P.middleRows(off_m, c.size) = c.P * shift;
 
@@ -653,11 +677,13 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
                         res.p.noalias() = res.p + Jc.transpose() * (c.M * c.v);
 
                         H += c.M;
+//                        H += ( 1.0 + rayleighMass * res.dt ) * c.M;
 					}
 
 					// mapped stiffness
                     if( !zero(c.K) ) {
                         H -= dt2 * c.K;
+//                        H -= res.dt * ( res.dt + rayleighStiffness ) * c.K;
 					}
 
 					// actual response matrix mapping

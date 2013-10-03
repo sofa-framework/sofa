@@ -388,58 +388,6 @@ void RestShapeSpringsForceField<DataTypes>::addSubKToMatrix(const core::Mechanic
     }
 }
 
-#ifdef SOFA_HAVE_EIGEN2
-template<class DataTypes>
-const sofa::defaulttype::BaseMatrix* RestShapeSpringsForceField<DataTypes>::getStiffnessMatrix(const core::MechanicalParams* /*mparams*/) {
-    sout << this->getName() << ": getStiffnessMatrix " << sendl;
-
-    double actualTime = this->getContext()->getTime();
-
-    sout << "Actual Time: " << actualTime << " / " << lastUpdatedStep << sendl;
-
-    if (actualTime == lastUpdatedStep) {  //matrix already assembled in this time step
-        sout << this->getName() << "Matrix already assembled in step " << actualTime << sendl;
-        return &matS;
-    }
-
-    lastUpdatedStep = actualTime;
-    sout << this->getName() << "Assemble matrix in step " << actualTime << sendl;
-
-    unsigned int offset = 0;
-    const int N = Coord::total_size;
-
-    unsigned int curIndex = 0;
-
-    typedef Eigen::Triplet<double> Triplet;
-    std::vector<Triplet> tripletList;
-    matS.clear();
-
-    if (k.size()!= m_indices.size() )
-    {
-        const Real k0 = k[0];
-        for (unsigned int index = 0; index < m_indices.size(); index++)
-        {
-            curIndex = m_indices[index];    
-            for(int i = 0; i < N; i++)
-                tripletList.push_back(Triplet(offset + N * curIndex + i, offset + N * curIndex + i, k0));
-        }        
-    }
-    else
-    {        
-        for (unsigned int index = 0; index < m_indices.size(); index++)
-        {
-            curIndex = m_indices[index];
-
-            for(int i = 0; i < N; i++)
-                tripletList.push_back(Triplet(offset + N * curIndex + i, offset + N * curIndex + i, k[index]));
-        }
-    }        
-
-    matS.compressedMatrix.setFromTriplets(tripletList.begin(), tripletList.end());    
-
-    return &matS;
-}
-#endif
 
 } // namespace forcefield
 

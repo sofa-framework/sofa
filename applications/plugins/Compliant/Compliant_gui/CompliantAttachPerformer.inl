@@ -37,8 +37,6 @@ using std::endl;
 #include <sofa/component/topology/EdgeSetTopologyContainer.h>
 using sofa::component::topology::EdgeSetTopologyContainer;
 #include "UniformCompliance.h"
-#include "ComplianceSolver.h"
-using sofa::component::odesolver::ComplianceSolver;
 #include <sofa/simulation/common/InitVisitor.h>
 
 // max: hopefully fixes link errors
@@ -201,7 +199,6 @@ void CompliantAttachPerformer<DataTypes>::start()
     typedef forcefield::UniformCompliance<DataTypes1> UniformCompliance1;
     typename UniformCompliance1::SPtr compliance = New<UniformCompliance1>();
     interactionNode->addObject(compliance);
-    compliance->compliance.setValue(0.0);
     compliance->dampingRatio.setValue(0.0);
     compliance->setName("pickCompliance");
 

@@ -87,13 +87,6 @@ const sofa::defaulttype::BaseMatrix* DiagonalCompliance<DataTypes>::getComplianc
 }
 
 template<class DataTypes>
-const sofa::defaulttype::BaseMatrix* DiagonalCompliance<DataTypes>::getStiffnessMatrix(const core::MechanicalParams*)
-{
-    // todo diagonal inverse...
-    return NULL;
-}
-
-template<class DataTypes>
 void DiagonalCompliance<DataTypes>::addForce(const core::MechanicalParams *, DataVecDeriv& _f, const DataVecCoord& _x, const DataVecDeriv& _v)
 {
     helper::ReadAccessor< DataVecCoord >  x(_x);
