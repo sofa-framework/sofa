@@ -43,7 +43,7 @@ Multi2Mapping<In1,In2,Out>::Multi2Mapping()
 }
 
 template < class In1, class In2, class Out >
-void Multi2Mapping<In1,In2,Out>::addInputModel(State<In1>* from, const std::string& path)
+void Multi2Mapping<In1,In2,Out>::addInputModel1(State<In1>* from, const std::string& path)
 {
     if (from)
         this->fromModels1.add(from,path);
@@ -52,7 +52,7 @@ void Multi2Mapping<In1,In2,Out>::addInputModel(State<In1>* from, const std::stri
 }
 
 template < class In1, class In2, class Out >
-void Multi2Mapping<In1,In2,Out>::addInputModel(State<In2>* from, const std::string& path)
+void Multi2Mapping<In1,In2,Out>::addInputModel2(State<In2>* from, const std::string& path)
 {
     if (from)
         this->fromModels2.add(from,path);

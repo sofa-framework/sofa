@@ -97,8 +97,8 @@ protected:
     virtual ~Multi2Mapping() {};
 public:
 
-    virtual void addInputModel(State<In1>*, const std::string& path = "");
-    virtual void addInputModel(State<In2>*, const std::string& path = "");
+    virtual void addInputModel1(State<In1>*, const std::string& path = "");
+    virtual void addInputModel2(State<In2>*, const std::string& path = "");
     virtual void addOutputModel(State<Out>*, const std::string& path = "");
 
     /// Return the reference to fromModels (In1).
