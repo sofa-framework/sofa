@@ -38,7 +38,7 @@ namespace simulation {
 class AssemblyVisitor : public simulation::MechanicalVisitor {
 protected:
 	typedef simulation::MechanicalVisitor base;
-    /*const*/ core::MechanicalParams* mparams;
+    const core::MechanicalParams* mparams;
 public:
 
 	typedef SReal real;
@@ -50,7 +50,7 @@ public:
 	typedef rmat mat;
 	typedef Eigen::Matrix<real, Eigen::Dynamic, 1> vec;
 			
-    AssemblyVisitor(/*const*/ core::MechanicalParams* mparams = 0, MultiVecDerivId velId = MultiVecDerivId(core::VecDerivId::velocity()), MultiVecDerivId lagrange = MultiVecDerivId()/*, SReal rayleighStiffness=0, SReal rayleighMass=0*/ );
+    AssemblyVisitor(const core::MechanicalParams* mparams = 0, MultiVecDerivId velId = MultiVecDerivId(core::VecDerivId::velocity()), MultiVecDerivId lagrange = MultiVecDerivId() );
     virtual ~AssemblyVisitor();
 
 //protected:
@@ -75,9 +75,6 @@ public:
 			
 	// outputs data to std::cout
 	void debug() const; 
-
-    // Rayleigh damping parameters
-//    SReal rayleighStiffness, rayleighMass;
 	
 public:
 	
@@ -88,25 +85,28 @@ public:
 		chunk();
 				
 		unsigned offset, size;
-		mat M, K, C, P;
+
+        mat C; ///< Compliance matrix
+        mat P; ///< Projective constraint matrix
+        mat H; ///< linear combinaison of M,B,K (mass, damping, stiffness matrices)
 				
 		struct mapped {
-			mat J;
-			mat K;
+            mat J; ///< mapping jacobian
+            mat K; ///< geometric stiffness
 		};
-				
-		typedef std::map< dofs_type*, mapped> map_type;
-		map_type map;
-				
-		// TODO only expose sofa data through eigen maps ? but ... casts ?
 
-		vec f, v, phi, lambda;
-		real damping;
+        vec b; ///< ode system right-hand term (including force sum)
+        vec phi; ///< constraint values
+        vec v; ///< actual velocity
+        vec lambda; ///< Lagrange multipliers (previously computed)
+
+
+        real damping; ///< global constraint damping
 
         bool tagged;
 
 		// this is to remove f*cking mouse dofs
-		bool mechanical;
+        bool mechanical; ///< is it a mechanical dof i.e. influenced by a mass or stiffness or compliance
 		
 		bool master() const { return mechanical && map.empty(); }
 		bool compliant() const { return mechanical && phi.size(); }
@@ -114,6 +114,9 @@ public:
 		unsigned vertex;
 		
 		dofs_type* dofs;
+
+        typedef std::map< dofs_type*, mapped> map_type;
+        map_type map;
 		
 		// check consistency
 		bool check() const;
@@ -126,11 +129,10 @@ public:
 	void vector(dofs_type*, core::VecId id, const vec::ConstSegmentReturnType& data); // set
 			
 public:
-	mat mass(simulation::Node* node);
 
-	mat compliance(simulation::Node* node);
-	mat stiff(simulation::Node* node);
+    mat compliance(simulation::Node* node);
 	mat proj(simulation::Node* node);
+    mat odeMatrix(simulation::Node* node);
 			
 	chunk::map_type mapping(simulation::Node* node);
 			
@@ -231,7 +233,7 @@ private:
 public:
     // do not perform entire assembly, but only compute momentum sys.p and constraint value sys.phi. The process_type p must have been computed from a previous call to assemble
     template<class SystemType>
-    void updateConstraintAndMomentum( MultiVecDerivId velId, SystemType& sys ) {
+    void updateRightHand( SystemType& sys ) {
         assert(!chunks.empty() && "need to send a visitor first");
 
         assert( _processed );
@@ -239,8 +241,6 @@ public:
         // master/compliant offsets
         unsigned off_m = 0;
         unsigned off_c = 0;
-
-        sys.p.setZero();
 
         // assemble system
         for(unsigned i = 0, n = prefix.size(); i < n; ++i) {
@@ -252,52 +252,23 @@ public:
             if( !c.mechanical ) continue;
 
             dofs_type* dofs = graph[ prefix[i] ].dofs;
-            const mat& Jc = _processed->full[ dofs ];
 
             // to access new multivec data
             Node* node = static_cast<Node*>(dofs->getContext());
 
-            // independent dofs: fill mass/stiffness
             if( c.master() )
             {
-                // mass matrix / momentum
-                if( !zero(c.M) ) {
-                    vec::SegmentReturnType r = sys.p.segment(off_m, c.size);
-
-                    r.noalias() = r + c.M * vel( node, velId );
-                }
+                sys.b.segment(off_m, c.size) = force( node );
 
                 off_m += c.size;
             }
-            else
+            else if(  c.compliant() )  //compliant dofs: fill compliance/phi/lambda
             {
-                if( !zero(Jc) ) {
-                    assert( Jc.cols() == int(_processed->size_m) );
+                sys.phi.segment(off_c, c.size) = phi( node );
 
-                    {
-                        if( !zero(c.M) ) {
-                            // contribute mapped mass
-                            assert( c.v.size() == int(c.size) );
-                            assert( c.M.cols() == int(c.size) );
-                            assert( c.M.rows() == int(c.size) );
-
-                            // momentum TODO avoid alloc
-                            sys.p.noalias() = sys.p + Jc.transpose() * (c.M * vel( node, velId ));
-                        }
-                    }
-
-                }
-
-                // compliant dofs: fill compliance/phi/lambda
-                if( c.compliant() ) {
-
-                    // phi
-                    sys.phi.segment(off_c, c.size) = phi( node );
-
-                    off_c += c.size;
-                }
+                off_c += c.size;
             }
-        }
+       }
     }
 
 };
