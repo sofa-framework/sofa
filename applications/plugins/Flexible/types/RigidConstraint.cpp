@@ -55,11 +55,11 @@ int RigidConstraintClass = core::RegisterObject("Rigidify a deformable frame")
 
 #ifndef SOFA_FLOAT
 template class SOFA_Flexible_API RigidConstraint<Affine3dTypes>;
-template class SOFA_Flexible_API RigidConstraint<Affine3fTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-
 template class SOFA_Flexible_API RigidConstraint<Quadratic3dTypes>;
+#endif
+
+#ifndef SOFA_DOUBLE
+template class SOFA_Flexible_API RigidConstraint<Affine3fTypes>;
 template class SOFA_Flexible_API RigidConstraint<Quadratic3fTypes>;
 #endif
 
