@@ -84,7 +84,10 @@ endif()
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_Compliant")
-AddLinkerDependencies(SofaEigen2Solver SofaUserInteraction SofaComponentMisc SofaHelper SofaSimulationGraph amd lapack blas camd colamd cholmod)
+AddLinkerDependencies(SofaEigen2Solver SofaUserInteraction SofaComponentMisc SofaHelper SofaSimulationGraph)
+if(NOT APPLE)
+	AddLinkerDependencies(amd lapack blas camd colamd cholmod)
+endif()
 
 # WIN32: copy the needed dlls from the lib dir to the Sofa bin dir
 if(WIN32)
