@@ -284,7 +284,7 @@ void CatmullRomSplineMapping<TIn, TOut>::draw(const core::visual::VisualParams* 
     const typename Out::VecCoord& xto = *this->toModel->getX();
     const typename In::VecCoord& xfrom = *this->fromModel->getX();
 
-    glPushAttrib( GL_LIGHTING_BIT || GL_COLOR_BUFFER_BIT || GL_ENABLE_BIT);
+    glPushAttrib( GL_LIGHTING_BIT | GL_COLOR_BUFFER_BIT | GL_ENABLE_BIT);
     glDisable ( GL_LIGHTING );
 
     // Display mapping links between in and out elements

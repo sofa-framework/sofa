@@ -510,7 +510,7 @@ protected:
         if (!vparams->displayFlags().getShowVisualModels()) return;
         if (!drawBB.getValue() && !drawGravity.getValue()) return;
 
-        glPushAttrib( GL_LIGHTING_BIT || GL_ENABLE_BIT || GL_LINE_BIT );
+        glPushAttrib( GL_LIGHTING_BIT | GL_ENABLE_BIT | GL_LINE_BIT );
         glPushMatrix();
 
         if (drawBB.getValue())

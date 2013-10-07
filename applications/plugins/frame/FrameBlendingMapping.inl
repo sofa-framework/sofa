@@ -1065,7 +1065,7 @@ void FrameBlendingMapping<TIn, TOut>::draw(const core::visual::VisualParams* vpa
 
         if ( ! triangles.empty())
         {
-            glPushAttrib( GL_LIGHTING_BIT || GL_COLOR_BUFFER_BIT || GL_ENABLE_BIT);
+            glPushAttrib( GL_LIGHTING_BIT | GL_COLOR_BUFFER_BIT | GL_ENABLE_BIT);
             std::vector< defaulttype::Vector3 > points;
             std::vector< defaulttype::Vector3 > normals;
             std::vector< defaulttype::Vec<4,float> > colors;
@@ -1136,7 +1136,7 @@ void FrameBlendingMapping<TIn, TOut>::draw(const core::visual::VisualParams* vpa
         //}
         //               else
         {
-            glPushAttrib( GL_LIGHTING_BIT || GL_COLOR_BUFFER_BIT || GL_ENABLE_BIT);
+            glPushAttrib( GL_LIGHTING_BIT | GL_COLOR_BUFFER_BIT | GL_ENABLE_BIT);
             glDisable( GL_LIGHTING);
 
             typedef Vec<3,double> Vec3;
@@ -1268,7 +1268,7 @@ void FrameBlendingMapping<TIn, TOut>::draw(const core::visual::VisualParams* vpa
         }
         else
         {
-            glPushAttrib( GL_LIGHTING_BIT || GL_COLOR_BUFFER_BIT || GL_ENABLE_BIT);
+            glPushAttrib( GL_LIGHTING_BIT | GL_COLOR_BUFFER_BIT | GL_ENABLE_BIT);
             glDisable( GL_LIGHTING);
             typedef Vec<3,double> Vec3;
             if ( ! triangles.empty())

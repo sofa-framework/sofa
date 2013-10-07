@@ -348,7 +348,7 @@ public:
 			if(wplane->getDimensions()[3] == 6)
 				drawEllipsoid();
 		}
-        glPushAttrib( GL_LIGHTING_BIT || GL_ENABLE_BIT || GL_LINE_BIT || GL_CURRENT_BIT);
+        glPushAttrib( GL_LIGHTING_BIT | GL_ENABLE_BIT | GL_LINE_BIT | GL_CURRENT_BIT);
         drawCutplanes();
         glPopAttrib();
         
