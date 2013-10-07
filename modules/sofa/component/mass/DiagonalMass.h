@@ -260,14 +260,6 @@ public:
 
 // Specialization for rigids
 #ifndef SOFA_FLOAT
-/*template <>
-    inline void MassEdgeDestroyFunction<defaulttype::Rigid3dTypes, defaulttype::Rigid3dMass>(const sofa::helper::vector<unsigned int> &,
-    void* , vector<defaulttype::Rigid3dMass> &);
-
-template <>
-    inline void MassEdgeCreationFunction<defaulttype::Rigid3dTypes, defaulttype::Rigid3dMass>(const sofa::helper::vector<unsigned int> &,
-    void* , vector<defaulttype::Rigid3dMass> &);*/
-
 template <>
 double DiagonalMass<defaulttype::Rigid3dTypes, defaulttype::Rigid3dMass>::getPotentialEnergy( const core::MechanicalParams* mparams /* PARAMS FIRST */, const DataVecCoord& x) const;
 template <>
@@ -275,18 +267,42 @@ double DiagonalMass<defaulttype::Rigid2dTypes, defaulttype::Rigid2dMass>::getPot
 template <>
 void DiagonalMass<defaulttype::Rigid3dTypes, defaulttype::Rigid3dMass>::draw(const core::visual::VisualParams* vparams);
 template <>
+void DiagonalMass<defaulttype::Rigid3dTypes, defaulttype::Rigid3dMass>::reinit();
+template <>
+void DiagonalMass<defaulttype::Rigid2dTypes, defaulttype::Rigid2dMass>::reinit();
+template <>
+void DiagonalMass<defaulttype::Rigid3dTypes, defaulttype::Rigid3dMass>::init();
+template <>
+void DiagonalMass<defaulttype::Rigid2dTypes, defaulttype::Rigid2dMass>::init();
+template <>
 void DiagonalMass<defaulttype::Rigid2dTypes, defaulttype::Rigid2dMass>::draw(const core::visual::VisualParams* vparams);
+template <>
+defaulttype::Vec6d DiagonalMass<defaulttype::Vec3dTypes, double>::getMomentum ( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& vx, const DataVecDeriv& vv ) const;
+template <>
+defaulttype::Vec6d DiagonalMass<defaulttype::Rigid3dTypes,defaulttype::Rigid3dMass>::getMomentum ( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& vx, const DataVecDeriv& vv ) const;
 #endif
+
 #ifndef SOFA_DOUBLE
 template <>
 double DiagonalMass<defaulttype::Rigid3fTypes, defaulttype::Rigid3fMass>::getPotentialEnergy( const core::MechanicalParams* mparams /* PARAMS FIRST */, const DataVecCoord& x) const;
 template <>
 double DiagonalMass<defaulttype::Rigid2fTypes, defaulttype::Rigid2fMass>::getPotentialEnergy( const core::MechanicalParams* mparams /* PARAMS FIRST */, const DataVecCoord& x) const;
-
 template <>
 void DiagonalMass<defaulttype::Rigid3fTypes, defaulttype::Rigid3fMass>::draw(const core::visual::VisualParams* vparams);
 template <>
+void DiagonalMass<defaulttype::Rigid3fTypes, defaulttype::Rigid3fMass>::reinit();
+template <>
+void DiagonalMass<defaulttype::Rigid2fTypes, defaulttype::Rigid2fMass>::reinit();
+template <>
+void DiagonalMass<defaulttype::Rigid3fTypes, defaulttype::Rigid3fMass>::init();
+template <>
+void DiagonalMass<defaulttype::Rigid2fTypes, defaulttype::Rigid2fMass>::init();
+template <>
 void DiagonalMass<defaulttype::Rigid2fTypes, defaulttype::Rigid2fMass>::draw(const core::visual::VisualParams* vparams);
+template <>
+defaulttype::Vec6d DiagonalMass<defaulttype::Vec3fTypes, float>::getMomentum ( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& vx, const DataVecDeriv& vv ) const;
+template <>
+defaulttype::Vec6d DiagonalMass<defaulttype::Rigid3fTypes,defaulttype::Rigid3fMass>::getMomentum ( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& vx, const DataVecDeriv& vv ) const;
 #endif
 
 

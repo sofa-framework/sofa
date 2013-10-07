@@ -564,7 +564,7 @@ void SkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
     ReadAccessor<Data<vector<SVector<InReal> > > > m_weights  ( weight );
     ReadAccessor<Data<vector<SVector<unsigned int> > > > index ( f_index );
 
-    glPushAttrib( GL_LIGHTING_BIT || GL_COLOR_BUFFER_BIT || GL_ENABLE_BIT);
+    glPushAttrib( GL_LIGHTING_BIT | GL_COLOR_BUFFER_BIT | GL_ENABLE_BIT);
     glDisable ( GL_LIGHTING );
 
     if ( vparams->displayFlags().getShowMappings() )

@@ -249,7 +249,7 @@ protected:
         raImage in(this->image);
         raTexture inTex(this->texImage);
 
-        glPushAttrib( GL_LIGHTING_BIT || GL_ENABLE_BIT || GL_LINE_BIT || GL_CURRENT_BIT);
+        glPushAttrib( GL_LIGHTING_BIT | GL_ENABLE_BIT | GL_LINE_BIT | GL_CURRENT_BIT);
 
         float color[]= {0.5,0.5,0.5,0.}, specular[]= {0.,0.,0.,0.};
         glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,color);

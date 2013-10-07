@@ -567,7 +567,7 @@ protected:
         if (!vparams->displayFlags().getShowVisualModels()) return;
         if (!drawBB.getValue()) return;
 
-        glPushAttrib( GL_LIGHTING_BIT || GL_ENABLE_BIT || GL_LINE_BIT );
+        glPushAttrib( GL_LIGHTING_BIT | GL_ENABLE_BIT | GL_LINE_BIT );
         glPushMatrix();
 
         const float color[]={1.,0.5,0.5,0.}, specular[]={0.,0.,0.,0.};

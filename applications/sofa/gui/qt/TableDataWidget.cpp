@@ -102,7 +102,7 @@ Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<fixed_array<uns
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<fixed_array<int,8> > > > DWClass_vectorA8i("default",true);
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<fixed_array<unsigned int,8> > > > DWClass_vectorA8u("default",true);
 
-#ifndef WIN32
+#if !defined(_MSC_VER) && !defined(__clang__)
 Creator<DataWidgetFactory, TableDataWidget< std::vector<fixed_array<int,1> > > > DWClass_stdvectorA1i("default",true);
 Creator<DataWidgetFactory, TableDataWidget< std::vector<fixed_array<unsigned int,1> > > > DWClass_stdvectorA1u("default",true);
 Creator<DataWidgetFactory, TableDataWidget< std::vector<fixed_array<int,2> > > > DWClass_stdvectorA2i("default",true);

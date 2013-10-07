@@ -480,7 +480,7 @@ void ClosestPointRegistrationForceField<DataTypes>::draw(const core::visual::Vis
             }
         Real max=0; for (unsigned int i=0; i<dists.size(); i++) if(max<dists[i]) max=dists[i];
 
-        glPushAttrib( GL_LIGHTING_BIT || GL_COLOR_BUFFER_BIT || GL_ENABLE_BIT);
+        glPushAttrib( GL_LIGHTING_BIT | GL_COLOR_BUFFER_BIT | GL_ENABLE_BIT);
         glDisable( GL_LIGHTING);
 
         ReadAccessor< Data< helper::vector< tri > > > t(sourceTriangles);
