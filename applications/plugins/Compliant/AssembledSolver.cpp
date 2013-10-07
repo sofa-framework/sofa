@@ -53,8 +53,8 @@ AssembledSolver::AssembledSolver()
 	               "debug",
 	               "print debug stuff"))
 
-//    , f_rayleighStiffness( initData(&f_rayleighStiffness,(SReal)0,"rayleighStiffness","Rayleigh damping coefficient related to stiffness, >= 0") )
-//    , f_rayleighMass( initData(&f_rayleighMass,(SReal)0,"rayleighMass","Rayleigh damping coefficient related to mass, >= 0"))
+    , f_rayleighStiffness( initData(&f_rayleighStiffness,(SReal)0,"rayleighStiffness","Rayleigh damping coefficient related to stiffness, >= 0") )
+    , f_rayleighMass( initData(&f_rayleighMass,(SReal)0,"rayleighMass","Rayleigh damping coefficient related to mass, >= 0"))
 
 {
 	
@@ -106,7 +106,7 @@ void AssembledSolver::cleanup() {
 }
 
 		
-void AssembledSolver::forces(const core::ExecParams& params) {
+void AssembledSolver::forces(const core::MechanicalParams& params) {
 	scoped::timer step("forces computation");
 				
 	sofa::simulation::common::MechanicalOperations mop( &params, this->getContext() );
@@ -114,8 +114,17 @@ void AssembledSolver::forces(const core::ExecParams& params) {
 				
 	MultiVecDeriv f  (&vop, core::VecDerivId::force() );
 				
-    mop.computeForceNeglectingCompliance(f);
-//     mop.projectResponse(f);
+    mop.computeForceNeglectingCompliance(f); // f = f0
+
+    if( use_velocity.getValue() )
+    {
+        f *= params.dt();  // f = h f0
+        mop.addMBKv( f, 1, 0, 0 ); // f = Mv + h.f0 = p + h.f0
+    }
+    else  mop.addMBKv( f, -f_rayleighMass.getValue(), 0, params.dt()+f_rayleighStiffness.getValue() ); // f = f0 + (h+rs) K v - rm M v
+
+
+    //     mop.projectResponse(f); // not necessary, filtered by the projection matrix in rhs
 }
 
 
@@ -129,11 +138,18 @@ core::MechanicalParams AssembledSolver::mparams(const core::ExecParams& params,
                                                 double dt) const {
 	core::MechanicalParams res( params );
 				
-	res.setMFactor( 1.0 );
-	res.setKFactor( 1.0 ); // not necessary but just in case it is used somewhere
+    // H = (1+h*rm)M - h*B - h*(h+rs)K
+    // Rayleigh damping mass factor rm is used with a negative sign because it
+    // is recorded as a positive real, while its force is opposed to the velocity
+
+    res.setMFactor( 1.0 + f_rayleighMass.getValue() * dt );
+    res.setBFactor( -dt );
+    res.setKFactor( -dt * ( dt + f_rayleighStiffness.getValue() ) );
 
 	res.setDt( dt );
 				
+
+    // TODO add possibility to change these
 	res.setImplicitVelocity( 1 );
 	res.setImplicitPosition( 1 );
 
@@ -144,20 +160,8 @@ core::MechanicalParams AssembledSolver::mparams(const core::ExecParams& params,
 linearsolver::KKTSolver::vec AssembledSolver::rhs(const system_type& sys, bool computeForce) const {
 	kkt_type::vec res = kkt_type::vec::Zero( sys.size() );
 
-	if( !computeForce ){
-		res.head(sys.m).setZero();
-	}
-	else if( use_velocity.getValue() ) {
-		res.head( sys.m ) = sys.P * (sys.p  +  sys.dt * sys.f);
-	} else {
-		
-		// H = M - h^2 K
-		// p = M v
-		// hence hKv = 1/h ( p - H v )
-		
-		kkt_type::vec hKv = (sys.p - (sys.H * sys.v)) / sys.dt;
-		res.head( sys.m ) = sys.P * (sys.f + hKv);
-	}
+    if( !computeForce ) res.head(sys.m).setZero();
+    else res.head( sys.m ) = sys.P * sys.b;
 	
 	if( sys.n ) {
 

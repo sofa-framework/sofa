@@ -48,14 +48,14 @@ public:
 				
 	real dt;
 				
-	// mass, stiffness, compliance, mapping and projection
+    // ode matrix, compliance, mapping and projection
 	// matrices
-	mat H, // M, K,
+    mat H,
         C, J,
         P;
 	
-	// force, velocity and deformation vectors
-	vec p, f, v, phi, lambda;
+    // ode right-hand term, velocity and deformation vectors
+    vec b, v, phi, lambda;
 	
 	// master/compliant dofs, sorted consistently with the above
 	typedef core::behavior::BaseMechanicalState dofs_type;

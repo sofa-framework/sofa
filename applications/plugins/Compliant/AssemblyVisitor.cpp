@@ -25,14 +25,12 @@ typedef EigenVectorWrapper<SReal> wrap;
 
 
 
-AssemblyVisitor::AssemblyVisitor(/*const*/ core::MechanicalParams* mparams, MultiVecDerivId velId, MultiVecDerivId lagrangeId/*, SReal rayleighStiffness, SReal rayleighMass*/)
+AssemblyVisitor::AssemblyVisitor(const core::MechanicalParams* mparams, MultiVecDerivId velId, MultiVecDerivId lagrangeId)
 	: base( mparams ),
       mparams( mparams ),
       _velId(velId),
       lagrange(lagrangeId),
       start_node(0),
-//      rayleighStiffness(rayleighStiffness),
-//      rayleighMass(rayleighMass),
       _processed(0)
 { }
 
@@ -151,26 +149,7 @@ AssemblyVisitor::chunk::map_type AssemblyVisitor::mapping(simulation::Node* node
 
 
 
-// mass matrix
-AssemblyVisitor::mat AssemblyVisitor::mass(simulation::Node* node) {
-	unsigned size = node->mechanicalState->getMatrixSize();
 
-	mat res(size, size);
-
-	if( !node->mass ) return res;
-
-	typedef EigenBaseSparseMatrix<SReal> Sqmat;
-	Sqmat sqmat( size, size );
-
-	{
-		SingleMatrixAccessor accessor( &sqmat );
-        mparams->setMFactor( 1.0 );
-		node->mass->addMToMatrix( mparams, &accessor );
-	}
-
-    sqmat.compress();
-    return sqmat.compressedMatrix.selfadjointView<Eigen::Upper>();
-}
 
 
 // projection matrix
@@ -213,28 +192,26 @@ AssemblyVisitor::mat AssemblyVisitor::compliance(simulation::Node* node) {
 }
 
 
-// stiffness matrix
-AssemblyVisitor::mat AssemblyVisitor::stiff(simulation::Node* node)
+// ode matrix
+AssemblyVisitor::mat AssemblyVisitor::odeMatrix(simulation::Node* node)
 {
     unsigned size = node->mechanicalState->getMatrixSize();
 
     typedef EigenBaseSparseMatrix<SReal> Sqmat;
     Sqmat sqmat( size, size );
-    mparams->setMFactor( 0.0 ); // not to add mass two times
 
+    // note that mass are included in forcefield
     for(unsigned i = 0; i < node->forceField.size(); ++i )
     {
-		BaseForceField* ffield = node->forceField[i];
+        BaseForceField* ffield = node->forceField[i];
 
         if( ffield->isCompliance.getValue() ) continue;
-
         {
             SingleMatrixAccessor accessor( &sqmat );
             ffield->addMBKToMatrix( mparams, &accessor );
         }
 
     }
-
 
     sqmat.compress();
     return sqmat.compressedMatrix.selfadjointView<Eigen::Upper>();
@@ -318,17 +295,14 @@ void AssemblyVisitor::fill_prefix(simulation::Node* node) {
 
 	vertex v; v.dofs = c.dofs; v.data = &c;
 
-	c.M = mass( node );
-    add(c.K, stiff( node ));
+    c.H = odeMatrix( node );
 
-	if( !zero(c.M) || !zero(c.K) ) {
+    if( !zero(c.H) ) {
 		c.mechanical = true;
         c.v = vel( node, _velId );
 	}
 
     c.map = mapping( node );
-
-	c.f = force( node );
 
 	c.vertex = boost::add_vertex(graph);
 	graph[c.vertex] = v;
@@ -338,7 +312,7 @@ void AssemblyVisitor::fill_prefix(simulation::Node* node) {
 		// TODO this makes a lot of allocs :-/
 
 		c.v = vel( node, _velId );
-//		c.f = force( node );
+        c.b = force( node );
 		c.P = proj( node );
 
 	} else {
@@ -398,12 +372,11 @@ void AssemblyVisitor::chunk::debug() const {
 
 	cout << "chunk: " << dofs->getName() << endl
 	     << "offset:" << offset << endl
-	     << "size: " << size << endl
-	     << "M:" << endl << M << endl
-	     << "K:" << endl << K << endl
+         << "size: " << size << endl
+         << "H:" << endl << H << endl
 	     << "P:" << endl << P << endl
 	     << "C:" << endl << C << endl
-	     << "f:  " << f.transpose() << endl
+         << "b:  " << b.transpose() << endl
 	     << "v:  " << v.transpose() << endl
 	     << "phi: " << phi.transpose() << endl
 	     << "damping: " << damping << endl
@@ -477,9 +450,10 @@ void AssemblyVisitor::distribute_compliant(core::behavior::MultiVecDeriv::MyMult
 // in the graph order)
 struct AssemblyVisitor::propagation_helper {
 
+    const core::MechanicalParams* mparams;
     graph_type& g;
 
-    propagation_helper(graph_type& g) : g(g) {}
+    propagation_helper(const core::MechanicalParams* mparams, graph_type& g) : mparams(mparams), g(g) {}
 
     void operator()( unsigned v ) const {
 
@@ -494,7 +468,7 @@ struct AssemblyVisitor::propagation_helper {
                 p->mechanical = true;
 
                 if(!zero( g[*e.first].data->K)) {
-                    add(p->K, g[*e.first].data->K );
+                    add(p->H, mparams->kFactor() * g[*e.first].data->K );
                 }
             }
 
@@ -580,16 +554,6 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
 
 	// assert( !_processed );
 
-
-
-    // RAYLEIGH DAMPING
-    // H = (1+h*rm)M - h*B - h*(h+rs)K
-    // TODO  How to update the right part??? f = f0 + (h+rs) K v - rm M v
-    // Rayleigh mass factor rm is used with a negative sign because it
-    // is recorded as a positive real, while its force is opposed to the velocity
-
-
-
 	// concatenate mappings and obtain sizes
     _processed = process();
 
@@ -601,8 +565,6 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
 	// master/compliant offsets
 	unsigned off_m = 0;
 	unsigned off_c = 0;
-
-    SReal dt2 = res.dt * res.dt;
 
 	// assemble system
 	for(unsigned i = 0, n = prefix.size(); i < n; ++i) {
@@ -623,35 +585,13 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
 			// scoped::timer step("independent dofs");
             mat shift = shift_right<mat>(off_m, c.size, _processed->size_m);
 
-            vec::SegmentReturnType f = res.f.segment(off_m, c.size);
-
-            mat H(c.size, c.size);
-
-			// mass matrix / momentum
-            if( !zero(c.M) ) {
-                H += c.M;
-//                H += ( 1.0 + rayleighMass * res.dt ) * c.M;
-
-                // momentum
-                vec::SegmentReturnType r = res.p.segment(off_m, c.size);
-                r.noalias() = r + c.M * c.v;
-			}
-
-			// stiffness matrix
-            if( !zero(c.K) )  {
-				// res.K.middleRows(off_m, c.size) = Kc * shift;
-                H -= dt2 * c.K;
-//                H -= res.dt * ( res.dt + rayleighStiffness ) * c.K;
-                // res.H.middleRows(off_m, c.size) = res.H.middleRows(off_m, c.size) - dt2 * (Kc * shift);
-			}
-
 			// TODO this is costly, find a faster way to do it
-			if( !zero(H) ) {
-                res.H.middleRows(off_m, c.size) = res.H.middleRows(off_m, c.size) + H * shift;
+            if( !zero(c.H) ) {
+                res.H.middleRows(off_m, c.size) = res.H.middleRows(off_m, c.size) + c.H * shift;
 			}
 
 			// these should not be empty anyways
-            if( !zero(c.f) ) f.noalias() = f + c.f;
+            if( !zero(c.b) ) res.b.segment(off_m, c.size) = c.b;
             if( !zero(c.v) ) res.v.segment(off_m, c.size) = c.v;
             if( !zero(c.P) ) res.P.middleRows(off_m, c.size) = c.P * shift;
 
@@ -664,34 +604,10 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
 			if( !zero(Jc) ) {
                 assert( Jc.cols() == int(_processed->size_m) );
 
-				{
-                    mat H(c.size, c.size);
-
-                    if( !zero(c.M) ) {
-						// contribute mapped mass
-                        assert( c.v.size() == int(c.size) );
-                        assert( c.M.cols() == int(c.size) );
-                        assert( c.M.rows() == int(c.size) );
-
-						// momentum TODO avoid alloc
-                        res.p.noalias() = res.p + Jc.transpose() * (c.M * c.v);
-
-                        H += c.M;
-//                        H += ( 1.0 + rayleighMass * res.dt ) * c.M;
-					}
-
-					// mapped stiffness
-                    if( !zero(c.K) ) {
-                        H -= dt2 * c.K;
-//                        H -= res.dt * ( res.dt + rayleighStiffness ) * c.K;
-					}
-
-					// actual response matrix mapping
-					if( !zero(H) ) {
-						res.H += ltdl(Jc, H);
-					}
-
-				}
+                // actual response matrix mapping
+                if( !zero(c.H) ) {
+                    res.H += ltdl(Jc, c.H);
+                }
 
 			}
 
@@ -793,7 +709,7 @@ void AssemblyVisitor::processNodeBottomUp(simulation::Node* node) {
 		utils::dfs( graph, prefix_helper( prefix ) );
 
 		// postfix mechanical flags propagation (and geometric stiffness matrices)
-		std::for_each(prefix.rbegin(), prefix.rend(), propagation_helper(graph) );
+        std::for_each(prefix.rbegin(), prefix.rend(), propagation_helper(mparams, graph) );
 
 		// TODO at this point it could be a good thing to prune
 		// non-mechanical nodes in the graph, in order to avoid unneeded

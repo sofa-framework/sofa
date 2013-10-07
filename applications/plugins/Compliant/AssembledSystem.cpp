@@ -13,17 +13,13 @@ AssembledSystem::AssembledSystem(unsigned m, unsigned n)
 	  n(n),
 	  dt(0)
 {
-	if( !m ) return;
-				
-	// M.resize(m, m);
-	// K.resize(m, m);
+    if( !m ) return;
 
 	H.resize(m, m);
 	P.resize(m, m);
 			
-	f = vec::Zero( m );
-	v = vec::Zero( m );
-	p = vec::Zero( m );
+    b = vec::Zero( m );
+    v = vec::Zero( m );
 				
 	if( n ) {
 		J.resize(n, m);
@@ -41,12 +37,10 @@ unsigned AssembledSystem::size() const { return m + n; }
 
 void AssembledSystem::debug(SReal /*thres*/) const {
 
-	std::cerr << "f: " << std::endl
-	          << f.transpose() << std::endl
+    std::cerr << "b: " << std::endl
+              << b.transpose() << std::endl
 	          << "v: " << std::endl
-	          << v.transpose() << std::endl
-	          << "p:" << std::endl
-	          << p.transpose() << std::endl;
+              << v.transpose() << std::endl;
 	
 	std::cerr << "H:" << std::endl
 	          << H << std::endl

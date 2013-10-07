@@ -77,7 +77,7 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
 
     // solve velocity dynamics ?
 	Data<bool> use_velocity, warm_start, propagate_lambdas, stabilization, debug;
-//    Data<SReal> f_rayleighStiffness, f_rayleighMass;  ///< uniform Rayleigh damping ratio applied to the stiffness and mass matrices
+    Data<SReal> f_rayleighStiffness, f_rayleighMass;  ///< uniform Rayleigh damping ratio applied to the stiffness and mass matrices
 
     simulation::AssemblyVisitor* _assemblyVisitor;
 
@@ -90,9 +90,7 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
 				
 	// integrate positions
     void integrate( const core::MechanicalParams* params, core::MultiVecCoordId posId, core::MultiVecDerivId velId );
-				
-	// compute forces
-	void forces(const core::ExecParams& params);
+
 
 	// propagate velocities
 	void propagate(const core::MechanicalParams* params);	
@@ -103,6 +101,10 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
 	kkt_type::SPtr kkt;
 
 public:
+
+
+    // compute forces
+    void forces(const core::MechanicalParams& params);
 
 	typedef linearsolver::AssembledSystem system_type;
 	// obtain linear system rhs from system 
