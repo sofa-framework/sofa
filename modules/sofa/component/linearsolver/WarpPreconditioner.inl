@@ -197,6 +197,11 @@ bool WarpPreconditioner<TMatrix,TVector,ThreadManager >::addMInvJt(defaulttype::
     return realSolver->addMInvJt(result,&j_local,fact);
 }
 
+template<class TMatrix, class TVector,class ThreadManager>
+void WarpPreconditioner<TMatrix,TVector,ThreadManager >::computeResidual(const core::ExecParams* params, defaulttype::BaseVector* f) {
+    realSolver->computeResidual(params,f);
+}
+
 } // namespace linearsolver
 
 } // namespace component

@@ -75,6 +75,8 @@ public:
 
     virtual void resetContactForce();
 
+    virtual void computeResidual(const core::ExecParams* /*params*/ /* PARAMS FIRST */, BaseVector *lambda);
+
     Data< helper::vector< std::string > >  solverName;
 
     /// Pre-construction check method called by ObjectFactory.

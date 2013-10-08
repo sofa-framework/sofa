@@ -316,6 +316,14 @@ bool GenericConstraintSolver::solveSystem(const core::ConstraintParams * /*cPara
 	return true;
 }
 
+void GenericConstraintSolver::computeResidual(const core::ExecParams* eparam) {
+    for (unsigned int i=0; i<constraintCorrections.size(); i++) {
+        core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
+        cc->computeResidual(eparam,&current_cp->f);
+    }
+}
+
+
 bool GenericConstraintSolver::applyCorrection(const core::ConstraintParams *cParams, MultiVecId res1, MultiVecId res2)
 {
 	using sofa::helper::AdvancedTimer;

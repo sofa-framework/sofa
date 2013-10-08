@@ -104,6 +104,7 @@ public:
         void rebuildSystem(double massFactor, double forceFactor);
         bool solveSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null());
 	bool applyCorrection(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null());
+    void computeResidual(const core::ExecParams* /*params*/);
 
 	Data<bool> displayTime;
 	Data<int> maxIt;
