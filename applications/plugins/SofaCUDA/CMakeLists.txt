@@ -205,6 +205,12 @@ endif()
 
 #Get nvcc compiler to build the library
 cuda_add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${CUDA_SOURCES} ${README_FILES} OPTIONS ${VERBOSE_PTXAS})
+if(SOFA-CUDA_CUBLAS)
+    CUDA_ADD_CUBLAS_TO_TARGET(${PROJECT_NAME})
+    find_package(CUDASparse REQUIRED)
+    #message(STATUS CUDA_SPARSE_LIBRARY=${CUDA_SPARSE_LIBRARY})
+    target_link_libraries(${PROJECT_NAME} ${CUDA_SPARSE_LIBRARY})
+endif()
 
 AddCompilerDefinitions("SOFA_BUILD_GPU_CUDA")
 AddLinkerDependencies(SofaHelper SofaOpenglVisual SofaEngine SofaSphFluid SofaUserInteraction SofaVolumetricData)
