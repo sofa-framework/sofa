@@ -422,6 +422,19 @@ void MatrixLinearSolver<Matrix,Vector>::applyContactForce(const defaulttype::Bas
     executeVisitor(simulation::MechanicalIntegrateConstraintsVisitor(core::ExecParams::defaultInstance(),currentGroup->systemLHVector,positionFactor,velocityFactor,&(currentGroup->matrixAccessor)));
 }
 
+template<class Matrix, class Vector>
+void MatrixLinearSolver<Matrix,Vector>::computeResidual(const core::ExecParams* params,defaulttype::BaseVector* f) {
+    currentGroup->systemRHVector->clear();
+    currentGroup->systemRHVector->resize(currentGroup->systemMatrix->colSize());
+
+    internalData.projectForceInConstraintSpace(currentGroup->systemRHVector,f);
+
+    sofa::simulation::common::VectorOperations vop( params, this->getContext() );
+    MultiVecDeriv force(&vop, core::VecDerivId::force() );
+
+    executeVisitor( simulation::MechanicalMultiVectorPeqBaseVectorVisitor(core::ExecParams::defaultInstance(), force, currentGroup->systemRHVector, &(currentGroup->matrixAccessor)) );
+}
+
 
 
 } // namespace linearsolver

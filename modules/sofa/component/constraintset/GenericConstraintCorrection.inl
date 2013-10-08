@@ -133,6 +133,12 @@ void GenericConstraintCorrection::computeAndApplyMotionCorrection(const core::Co
     }
 }
 
+void GenericConstraintCorrection::computeResidual(const core::ExecParams* params, BaseVector *lambda) {
+    for (unsigned i = 0; i < linearsolvers.size(); i++) {
+        linearsolvers[i]->computeResidual(params,lambda);
+    }
+}
+
 void GenericConstraintCorrection::computeAndApplyPositionCorrection(const ConstraintParams */*cparams*/, MultiVecCoordId /*xId*/, MultiVecDerivId /*fId*/, const BaseVector *lambda) {
     if (!odesolver) return;
 

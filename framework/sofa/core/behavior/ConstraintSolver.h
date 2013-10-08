@@ -28,6 +28,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/BaseConstraintSet.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
+#include <sofa/core/MechanicalParams.h>
 
 namespace sofa
 {
@@ -85,6 +86,12 @@ public:
      * Correct the Mechanical State with the solution found
      */
     virtual bool applyCorrection(const ConstraintParams *, MultiVecId res1, MultiVecId res2=MultiVecId::null())=0;
+
+
+    /// Compute the residual in the newton iterations due to the constraints forces
+    /// i.e. compute Vecid::force() += J^t lambda
+    /// the result is accumulated in Vecid::force()
+    virtual void computeResidual(const core::ExecParams* /*params*/ /* PARAMS FIRST */) { std::cerr << "ComputeResidual is not implemented in " << this->getName() << std::endl; }
 
 
     /// @name Resolution DOFs vectors API

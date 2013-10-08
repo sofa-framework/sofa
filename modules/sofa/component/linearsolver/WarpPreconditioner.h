@@ -86,6 +86,8 @@ public:
 
     unsigned getSystemDimention(const sofa::core::MechanicalParams* mparams);
 
+    void computeResidual(const core::ExecParams* params, defaulttype::BaseVector* /*f*/);
+
 private :
 
     core::behavior::LinearSolver* realSolver;

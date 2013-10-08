@@ -142,6 +142,13 @@ public:
         serr << "Error applyContactForce has not been implemented" << sendl;
     }
 
+    /// Compute the residual in the newton iterations due to the constraints forces
+    /// i.e. compute mparams->dF() = J^t lambda
+    /// the result is written in mparams->dF()
+    virtual void computeResidual(const core::ExecParams* /*params*/, defaulttype::BaseVector* /*f*/) {
+        serr << "Error applyContactForce has not been implemented" << sendl;
+    }
+
 
     /// Multiply the inverse of the system matrix by the transpose of the given matrix, and multiply the result with the given matrix J
     ///

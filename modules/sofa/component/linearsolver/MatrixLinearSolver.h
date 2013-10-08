@@ -294,6 +294,8 @@ public:
 
     virtual void applyContactForce(const defaulttype::BaseVector* f,double positionFactor,double velocityFactor);
 
+    virtual void computeResidual(const core::ExecParams* params, defaulttype::BaseVector* f);
+
 public :
     bool isMultiGroup() const
     {
@@ -463,6 +465,9 @@ void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManage
 
 template<> SOFA_BASE_LINEAR_SOLVER_API
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::applyContactForce(const defaulttype::BaseVector* f,double positionFactor,double velocityFactor);
+
+template<> SOFA_BASE_LINEAR_SOLVER_API
+void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::computeResidual(const core::ExecParams* params,defaulttype::BaseVector* f);
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_BASE_LINEAR_SOLVER)
 extern template class SOFA_BASE_LINEAR_SOLVER_API MatrixLinearSolver< GraphScatteredMatrix, GraphScatteredVector, NoThreadManager >;
