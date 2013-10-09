@@ -19,9 +19,6 @@ namespace simulation {
 // a visitor for system assembly: sending the visitor will fetch
 // data, and actual system assembly is performed using
 // ::assemble(), yielding an AssembledSystem
-
-// TODO IMPORTANT: handle damping (including rayleigh) for material
-// simulated as compliant constraints
 		
 // TODO preallocate global vectors for all members to avoid multiple,
 // small allocs during visit (or tweak allocator ?)
@@ -41,9 +38,10 @@ namespace simulation {
 
 class AssemblyVisitor : public simulation::MechanicalVisitor {
 protected:
-	typedef simulation::MechanicalVisitor base;
-    const core::MechanicalParams* mparams;
+    typedef simulation::MechanicalVisitor base;
 public:
+
+    const core::MechanicalParams* mparams, *mparamsWithoutStiffness; // would it be better to dynamically modified mparams?
 
 	typedef SReal real;
 
@@ -54,7 +52,7 @@ public:
 	typedef rmat mat;
 	typedef Eigen::Matrix<real, Eigen::Dynamic, 1> vec;
 			
-    AssemblyVisitor(const core::MechanicalParams* mparams = 0, MultiVecDerivId velId = MultiVecDerivId(core::VecDerivId::velocity()), MultiVecDerivId lagrange = MultiVecDerivId() );
+    AssemblyVisitor(const core::MechanicalParams* mparams, const core::MechanicalParams* mparamsWithoutStiffness, MultiVecDerivId velId = MultiVecDerivId(core::VecDerivId::velocity()), MultiVecDerivId lagrange = MultiVecDerivId() );
     virtual ~AssemblyVisitor();
 
 //protected:

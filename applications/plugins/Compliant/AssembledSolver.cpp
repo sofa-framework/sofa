@@ -163,24 +163,33 @@ void AssembledSolver::propagate(const core::MechanicalParams* params) {
 }			
 
 
-core::MechanicalParams AssembledSolver::mparams(const core::ExecParams& params, 
-                                                double dt) const {
-	core::MechanicalParams res( params );
-				
+void AssembledSolver::buildMparams(core::MechanicalParams& mparams,
+                                   core::MechanicalParams& mparamsWithoutStiffness,
+                                   const core::ExecParams& params,
+                                   double dt) const
+{
     // H = (1+h*rm)M - h*B - h*(h+rs)K
     // Rayleigh damping mass factor rm is used with a negative sign because it
     // is recorded as a positive real, while its force is opposed to the velocity
 
-    res.setMFactor( 1.0 + f_rayleighMass.getValue() * dt );
-    res.setBFactor( -dt );
-    res.setKFactor( -dt * ( dt + f_rayleighStiffness.getValue() ) );
+    mparams.setExecParams( &params );
+    mparams.setMFactor( 1.0 + f_rayleighMass.getValue() * dt );
+    mparams.setBFactor( -dt );
+    mparams.setKFactor( -dt * ( dt + f_rayleighStiffness.getValue() ) );
+    mparams.setDt( dt );
+    mparams.setImplicitVelocity( implicitVelocity.getValue() );
+    mparams.setImplicitPosition( implicitPosition.getValue() );
 
-	res.setDt( dt );
-				
-    res.setImplicitVelocity( implicitVelocity.getValue() );
-    res.setImplicitPosition( implicitPosition.getValue() );
 
-	return res;
+    // to treat compliant components (ie stiffness components treated as compliance), Kfactor must only consider Rayleigh damping part
+    mparamsWithoutStiffness.setExecParams( &params );
+    mparamsWithoutStiffness.setMFactor( 1.0 + f_rayleighMass.getValue() * dt );
+    mparamsWithoutStiffness.setBFactor( -dt );
+    mparamsWithoutStiffness.setKFactor( -dt * f_rayleighStiffness.getValue() ); // only the factor relative to Rayleigh damping
+    mparamsWithoutStiffness.setDt( dt );
+    mparamsWithoutStiffness.setImplicitVelocity( implicitVelocity.getValue() );
+    mparamsWithoutStiffness.setImplicitPosition( implicitPosition.getValue() );
+
 }
 			
 // implicit euler
@@ -299,15 +308,16 @@ void AssembledSolver::solve(const core::ExecParams* params,
                    )
 {
     // assembly visitor
-    core::MechanicalParams mparams = this->mparams(*params, dt);
-    simulation::AssemblyVisitor* v = new simulation::AssemblyVisitor(&mparams, velId, lagrange.id()/*, f_rayleighStiffness.getValue(), f_rayleighMass.getValue()*/ );
+    core::MechanicalParams mparams, mparamsWithoutStiffness;
+    this->buildMparams( mparams, mparamsWithoutStiffness, *params, dt );
+    simulation::AssemblyVisitor* v = new simulation::AssemblyVisitor(&mparams, &mparamsWithoutStiffness, velId, lagrange.id()/*, f_rayleighStiffness.getValue(), f_rayleighMass.getValue()*/ );
     solve( params, dt, posId, velId, computeForce, integratePosition, v );
     delete v;
 }
 
 
 void AssembledSolver::solve(const core::ExecParams* params,
-                            double dt, 
+                            double /*dt*/,
                             sofa::core::MultiVecCoordId posId,
                             sofa::core::MultiVecDerivId velId,
                             bool computeForce,
@@ -315,10 +325,10 @@ void AssembledSolver::solve(const core::ExecParams* params,
     assert(kkt);
 
 	// obtain mparams
-	core::MechanicalParams mparams = this->mparams(*params, dt);
+    const core::MechanicalParams *mparams = v->mparams;
 				
 	// compute forces
-    if( computeForce ) forces( mparams );
+    if( computeForce ) forces( *mparams );
 
      // assembly visitor (keep an accessible pointer from another component all along the solving)
      _assemblyVisitor = v;
@@ -377,7 +387,7 @@ void AssembledSolver::solve(const core::ExecParams* params,
 
             _assemblyVisitor->distribute_master( velId, velocity(sys, tmp_x) );
 
-            if( integratePosition ) integrate( &mparams, posId, velId );
+            if( integratePosition ) integrate( mparams, posId, velId );
 
             // zero stabilized constraints
             b.tail(sys.n).array() *= 1 - mask.array();
@@ -402,7 +412,7 @@ void AssembledSolver::solve(const core::ExecParams* params,
 
 		if( propagate_lambdas.getValue() ) {
 //			scoped::timer step("lambdas propagation");
-			propagate_visitor prop( &mparams );
+            propagate_visitor prop( mparams );
 			prop.out = core::VecId::force();
 			prop.in = lagrange.id();
 			
@@ -415,7 +425,7 @@ void AssembledSolver::solve(const core::ExecParams* params,
         // distribute (projected) velocities
         _assemblyVisitor->distribute_master( velId, velocity(sys, x) );
         // update positions
-        if( integratePosition ) integrate( &mparams, posId, velId );
+        if( integratePosition ) integrate( mparams, posId, velId );
     }
     else // acceleration with implicitPosition!=1
     {
@@ -425,7 +435,7 @@ void AssembledSolver::solve(const core::ExecParams* params,
         // distribute dv
         _assemblyVisitor->distribute_master( dv.id(), sys.P * sys.dt * x.head( sys.m ) );
         // integrate positions and velocities (pos must be upated before vel and dv must be known)
-        if( integratePosition ) integrate( &mparams, posId, velId, dv.id() );
+        if( integratePosition ) integrate( mparams, posId, velId, dv.id() );
     }
 
 
