@@ -48,13 +48,15 @@ AssembledSolver::AssembledSolver()
 	                         false,
 	                         "stabilization",
 	                         "apply a stabilization pass on kinematic constraints requesting it")),
-	debug(initData(&debug, 
+      debug(initData(&debug,
 	               false,
 	               "debug",
 	               "print debug stuff"))
 
     , f_rayleighStiffness( initData(&f_rayleighStiffness,(SReal)0,"rayleighStiffness","Rayleigh damping coefficient related to stiffness, >= 0") )
     , f_rayleighMass( initData(&f_rayleighMass,(SReal)0,"rayleighMass","Rayleigh damping coefficient related to mass, >= 0"))
+    , implicitVelocity( initData(&implicitVelocity,(SReal)1.,"implicitVelocity","Weight of the next forces in the average forces used to update the velocities. 1 is implicit, 0 is explicit. (Warning: not relevant if use_velocity=1)"))
+    , implicitPosition( initData(&implicitPosition,(SReal)1.,"implicitPosition","Weight of the next velocities in the average velocities used to update the positions. 1 is implicit, 0 is explicit. (Warning: not relevant if use_velocity=1)"))
 
 {
 	
@@ -75,8 +77,6 @@ void AssembledSolver::integrate( const core::MechanicalParams* params,
 				
 	// integrate positions
 	sofa::simulation::common::VectorOperations vop( params, this->getContext() );
-//    MultiVecCoord pos( &vop, posId );
-//    MultiVecDeriv vel( &vop, velId );
 				
 	typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
 	VMultiOp multi;
@@ -86,8 +86,37 @@ void AssembledSolver::integrate( const core::MechanicalParams* params,
     multi[0].first = posId;
     multi[0].second.push_back( std::make_pair(posId, 1.0) );
     multi[0].second.push_back( std::make_pair(velId, dt) );
-				
+
 	vop.v_multiop( multi );
+}
+
+
+void AssembledSolver::integrate( const core::MechanicalParams* params,
+                                 core::MultiVecCoordId posId,
+                                 core::MultiVecDerivId velId,
+                                 core::MultiVecDerivId dvId ) {
+    scoped::timer step("position integration");
+    SReal dt = params->dt();
+
+    // integrate positions and velocities
+    sofa::simulation::common::VectorOperations vop( params, this->getContext() );
+
+    typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
+    VMultiOp multi;
+
+    multi.resize(2);
+
+    multi[0].first = posId;
+    multi[0].second.push_back( std::make_pair(posId, 1.0) );
+    multi[0].second.push_back( std::make_pair(velId, dt) );
+    multi[0].second.push_back( std::make_pair(dvId, dt*implicitPosition.getValue()) );
+
+
+    multi[1].first = velId;
+    multi[1].second.push_back( std::make_pair(velId, 1.0) );
+    multi[1].second.push_back( std::make_pair(dvId, 1.0) );
+
+    vop.v_multiop( multi );
 }
 
 
@@ -121,7 +150,7 @@ void AssembledSolver::forces(const core::MechanicalParams& params) {
         f *= params.dt();  // f = h f0
         mop.addMBKv( f, 1, 0, 0 ); // f = Mv + h.f0 = p + h.f0
     }
-    else  mop.addMBKv( f, -f_rayleighMass.getValue(), 0, params.dt()+f_rayleighStiffness.getValue() ); // f = f0 + (h+rs) K v - rm M v
+    else  mop.addMBKv( f, -f_rayleighMass.getValue(), 0, implicitVelocity.getValue() * ( params.dt()+f_rayleighStiffness.getValue() ) ); // f = f0 + (h+rs) K v - rm M v
 
 
     //     mop.projectResponse(f); // not necessary, filtered by the projection matrix in rhs
@@ -148,10 +177,8 @@ core::MechanicalParams AssembledSolver::mparams(const core::ExecParams& params,
 
 	res.setDt( dt );
 				
-
-    // TODO add possibility to change these
-	res.setImplicitVelocity( 1 );
-	res.setImplicitPosition( 1 );
+    res.setImplicitVelocity( implicitVelocity.getValue() );
+    res.setImplicitPosition( implicitPosition.getValue() );
 
 	return res;
 }
@@ -368,10 +395,7 @@ void AssembledSolver::solve(const core::ExecParams* params,
 #endif
 	}
 	
-	
-	// distribute (projected) velocities
 
-    _assemblyVisitor->distribute_master( velId, velocity(sys, x) );
 	
 	if( sys.n ) {
         _assemblyVisitor->distribute_compliant( lagrange.id(), lambda(sys, x) );
@@ -386,9 +410,23 @@ void AssembledSolver::solve(const core::ExecParams* params,
 		}
 	}
 
-
-    // update positions
-    if( integratePosition ) integrate( &mparams, posId, velId );
+    if( use_velocity.getValue() || implicitPosition.getValue()==1 )
+    {
+        // distribute (projected) velocities
+        _assemblyVisitor->distribute_master( velId, velocity(sys, x) );
+        // update positions
+        if( integratePosition ) integrate( &mparams, posId, velId );
+    }
+    else // acceleration with implicitPosition!=1
+    {
+        // allocate a MultiVec for dv
+        sofa::simulation::common::VectorOperations vop( params, this->getContext() );
+        MultiVecDeriv dv(&vop, core::VecDerivId::dx() );
+        // distribute dv
+        _assemblyVisitor->distribute_master( dv.id(), sys.P * sys.dt * x.head( sys.m ) );
+        // integrate positions and velocities (pos must be upated before vel and dv must be known)
+        if( integratePosition ) integrate( &mparams, posId, velId, dv.id() );
+    }
 
 
 }
@@ -402,6 +440,13 @@ void AssembledSolver::init() {
 				
 	// TODO less dramatic error
 	if( !kkt ) throw std::logic_error("AssembledSolver needs a KKTSolver lol");
+
+    if( use_velocity.getValue() && ( implicitVelocity.getValue()!=1 || implicitPosition.getValue() != 1 ) )
+    {
+        serr<<"Using use_velocity=1, implicitVelocity & implicitPosition forced to 1"<<sendl;
+        implicitVelocity.setValue(1);
+        implicitPosition.setValue(1);
+    }
 				
 }
 
