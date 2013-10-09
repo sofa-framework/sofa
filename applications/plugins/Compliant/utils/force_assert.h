@@ -5,6 +5,6 @@
 #undef NDEBUG
 #endif
 
-
+are you sure you wanna compile with this?
 
 #endif

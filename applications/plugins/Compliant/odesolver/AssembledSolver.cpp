@@ -6,8 +6,8 @@
 #include <sofa/simulation/common/MechanicalOperations.h>
 #include <sofa/simulation/common/VectorOperations.h>
 
-#include "AssemblyVisitor.h"
-#include "Stabilization.h"
+#include "assembly/AssemblyVisitor.h"
+#include "misc/Stabilization.h"
 
 #include "utils/minres.h"
 #include "utils/scoped.h"
