@@ -76,6 +76,32 @@ Visitor::Result MechanicalVPrintWithElapsedTimeVisitor::processNodeTopDown(simul
     return Visitor::RESULT_CONTINUE;
 }
 
+
+
+
+DofPrintVisitor::DofPrintVisitor(const core::ExecParams* params /* PARAMS FIRST */, ConstMultiVecId v, const std::string& dofname, std::ostream& out )
+    : Visitor(params)
+    , v_(v)
+    , out_(out)
+    , dofname_(dofname)
+{
+}
+
+Visitor::Result DofPrintVisitor::processNodeTopDown(simulation::Node* node)
+{
+    if( ! node->mechanicalState.empty() && node->mechanicalState->getName()==dofname_ )
+    {
+        ConstVecId id = v_.getId(node->mechanicalState);
+        if (!id.isNull())
+        {
+            (*node->mechanicalState).printDOF(id,out_);
+            out_<<" ";
+        }
+    }
+    return Visitor::RESULT_CONTINUE;
+}
+
+
 } // namespace simulation
 
 } // namespace sofa
