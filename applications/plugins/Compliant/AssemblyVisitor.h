@@ -19,14 +19,12 @@ namespace simulation {
 // a visitor for system assembly: sending the visitor will fetch
 // data, and actual system assembly is performed using
 // ::assemble(), yielding an AssembledSystem
+
+// TODO IMPORTANT: handle damping (including rayleigh) for material
+// simulated as compliant constraints
 		
 // TODO preallocate global vectors for all members to avoid multiple,
 // small allocs during visit (or tweak allocator ?)
-
-// TODO callgrind reports that some performance gains can be
-// obtained during the fetching of mass/projection matrices (but
-// mass, mainly), as the eigen/sofa matrix wrapper uses lots of
-// maps insertions internally. 
 
 // TODO a few map accesses may also be optimized here, e.g. using
 // preallocated std::unordered_map instead of std::map for
@@ -35,6 +33,12 @@ namespace simulation {
 
 // TODO shift matrices may also be improved using eigen magic
 // instead of actual sparse matrices (causing allocs)
+// USE_TRIPLETS_RATHER_THAN_SHIFT_MATRIX try another implementation
+// building assembled matrces from sequentialy generated triplets
+// but it is not proven that is more efficient
+
+
+
 class AssemblyVisitor : public simulation::MechanicalVisitor {
 protected:
 	typedef simulation::MechanicalVisitor base;

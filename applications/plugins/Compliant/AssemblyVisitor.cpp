@@ -546,7 +546,7 @@ static inline AssemblyVisitor::mat ltdl(const AssemblyVisitor::mat& l,
 }
 
 
-
+#define USE_TRIPLETS_RATHER_THAN_SHIFT_MATRIX 0
 
 // produce actual system assembly
 AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
@@ -566,6 +566,11 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
 	unsigned off_m = 0;
 	unsigned off_c = 0;
 
+#if USE_TRIPLETS_RATHER_THAN_SHIFT_MATRIX
+    typedef Eigen::Triplet<real> Triplet;
+    std::vector<Triplet> H_triplets, C_triplets, P_triplets;
+#endif
+
 	// assemble system
 	for(unsigned i = 0, n = prefix.size(); i < n; ++i) {
 
@@ -582,18 +587,19 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
         if( c.master() ) {
             res.master.push_back( c.dofs );
 
+#if USE_TRIPLETS_RATHER_THAN_SHIFT_MATRIX
+            if( !zero(c.H) ) add_shifted_right<Triplet,mat>( H_triplets, c.H, off_m );
+            if( !zero(c.P) ) add_shifted_right<Triplet,mat>( P_triplets, c.P, off_m );
+#else
 			// scoped::timer step("independent dofs");
             mat shift = shift_right<mat>(off_m, c.size, _processed->size_m);
-
-			// TODO this is costly, find a faster way to do it
-            if( !zero(c.H) ) {
-                res.H.middleRows(off_m, c.size) = res.H.middleRows(off_m, c.size) + c.H * shift;
-			}
+            if( !zero(c.H) ) res.H.middleRows(off_m, c.size) = res.H.middleRows(off_m, c.size) + c.H * shift;
+            if( !zero(c.P) ) res.P.middleRows(off_m, c.size) = c.P * shift;
+#endif
 
 			// these should not be empty anyways
             if( !zero(c.b) ) res.b.segment(off_m, c.size) = c.b;
             if( !zero(c.v) ) res.v.segment(off_m, c.size) = c.v;
-            if( !zero(c.P) ) res.P.middleRows(off_m, c.size) = c.P * shift;
 
             off_m += c.size;
 		}
@@ -606,7 +612,12 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
 
                 // actual response matrix mapping
                 if( !zero(c.H) ) {
+
+#if USE_TRIPLETS_RATHER_THAN_SHIFT_MATRIX
+                    add_shifted_right( H_triplets, ltdl(Jc, c.H), 0 );
+#else
                     res.H += ltdl(Jc, c.H);
+#endif
                 }
 
 			}
@@ -632,8 +643,13 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
 					// zero damping => C / dt2
 
 					SReal factor = 1.0 / (res.dt * l );
-                    res.C.middleRows(off_c, c.size) =
-                        c.C * shift_right<mat>(off_c, c.size, _processed->size_c, factor);
+
+
+#if USE_TRIPLETS_RATHER_THAN_SHIFT_MATRIX
+                    add_shifted_right( C_triplets, c.C, off_c, factor );
+#else
+                    res.C.middleRows(off_c, c.size) = c.C * shift_right<mat>(off_c, c.size, _processed->size_c, factor);
+#endif
 				}
 
 				// phi
@@ -645,6 +661,12 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
 			}
 		}
 	}
+
+#if USE_TRIPLETS_RATHER_THAN_SHIFT_MATRIX
+    res.H.setFromTriplets( H_triplets.begin(), H_triplets.end() );
+    res.P.setFromTriplets( P_triplets.begin(), P_triplets.end() );
+    res.C.setFromTriplets( C_triplets.begin(), C_triplets.end() );
+#endif
 
     assert( off_m == _processed->size_m );
     assert( off_c == _processed->size_c );
