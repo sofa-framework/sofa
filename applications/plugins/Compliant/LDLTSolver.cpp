@@ -35,26 +35,6 @@ LDLTSolver::~LDLTSolver() {
 }
 
 
-// right-shift, size x (total_cols) matrix: (0, id, 0)
-static AssembledSystem::mat shift_right(unsigned off, unsigned size, unsigned total_cols) {
-	AssembledSystem::mat res( size, total_cols); 
-	assert( total_cols >= (off + size) );
-	
-	// res.resize(size, total_cols );
-	// res.reserve(Eigen::VectorXi::Constant(size, 1));
-	res.reserve( size );
-	
-	for(unsigned i = 0; i < size; ++i) {
-		res.startVec( i );
-		res.insertBack(i, off + i) = 1.0;
-		// res.insert(i, off + i) = 1.0;
-	}
-	res.finalize();
-	
-	return res;
-}
-
-
 void LDLTSolver::factor(const AssembledSystem& sys) {
 	
 	pimpl->Hinv.compute( sys.H );
