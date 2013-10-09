@@ -34,6 +34,10 @@ if(WIN32)
 
 endif()
 
+#dependency to FULL boost libraries....
+if(NOT SOFA-EXTERNAL_BOOST)
+    message(FATAL_ERROR "CGALPlugin needs full boost. Please modify the SOFA-EXTERNAL_BOOST_PATH option to fix it...")
+endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
