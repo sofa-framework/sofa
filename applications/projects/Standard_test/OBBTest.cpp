@@ -49,34 +49,12 @@
 #include <sofa/component/collision/MeshIntTool.h>
 
 #include "Sofa_test.h"
-
+#include "PrimitiveCreation.h"
 
 namespace sofa {
 
 struct TestOBB : public Sofa_test<double>{
     typedef sofa::defaulttype::Vec3d Vec3d;
-
-    /**
-      *\brief Rotates around x axis vectors x,y and z which here is a frame.
-      */
-    static void rotx(double ax,Vec3d & x,Vec3d & y,Vec3d & z);
-    static void roty(double ay,Vec3d & x,Vec3d & y,Vec3d & z);
-    static void rotz(double ay,Vec3d & x,Vec3d & y,Vec3d & z);
-
-
-    /**
-      *\brief Makes up an OBBModel containing just one OBB. angles and order are the rotations used to make up this OBB.
-      *
-      *\param p the center of the OBB
-      *\param angles it is of size 3 and contains the rotations around axes, i.e., angles[0] contains rotation around x axis etc...
-      *\param order it is the order we rotate, i.e, if we want to rotate first around z axis, then x axis and then y axis order will be {2,0,1}
-      *\param v it is the velocity of the OBB
-      *\param extents it contains half-extents of the OBB
-      *\param father it is a node that will contain the returned OBBModel
-      */
-    static sofa::component::collision::OBBModel::SPtr makeOBB(const Vec3d & p,const double * angles,const int * order,const Vec3d & v,const Vec3d & extents,
-                                                                sofa::simulation::Node::SPtr & father);
-
 
     bool faceVertex();
     bool vertexVertex();
@@ -94,9 +72,6 @@ struct TestOBB : public Sofa_test<double>{
 struct TestCapOBB  : public ::testing::Test{
     typedef sofa::defaulttype::Vec3d Vec3d;
 
-    static sofa::component::collision::CapsuleModel::SPtr makeCap(const Vec3d & p0,const Vec3d & p1,double radius,const Vec3d & v,
-                                                                  sofa::simulation::Node::SPtr & father);
-
     bool faceVertex();
     bool faceEdge();
     bool edgeVertex();
@@ -108,8 +83,8 @@ struct TestCapOBB  : public ::testing::Test{
 struct TestSphereOBB : public ::testing::Test{
     typedef sofa::defaulttype::Vec3d Vec3d;
 
-    static sofa::component::collision::RigidSphereModel::SPtr makeSphere(const Vec3d & center,double radius,const Vec3d & v,
-                                                                    sofa::simulation::Node::SPtr & father);
+    sofa::component::collision::RigidSphereModel::SPtr makeMyRSphere(const Vec3d & center,double radius,const Vec3d & v,
+                                                                       sofa::simulation::Node::SPtr & father);
 
     bool vertex();
     bool edge();
@@ -119,8 +94,6 @@ struct TestSphereOBB : public ::testing::Test{
 
 struct TestTriOBB : public ::testing::Test{
     typedef sofa::defaulttype::Vec3d Vec3d;
-
-    static sofa::component::collision::TriangleModel::SPtr makeTri(const Vec3d & p0,const Vec3d & p1,const Vec3d & p2,const Vec3d &v, sofa::simulation::Node::SPtr &father);
 
     bool faceVertex();
     bool faceVertex_out();
@@ -136,265 +109,8 @@ struct TestTriOBB : public ::testing::Test{
     bool vertexEdge();
 };
 
-//sofa::component::collision::SphereModel::SPtr TestSphereOBB::makeSphere(const Vec3d & center,double radius,const Vec3d & v,
-//                                                                   sofa::simulation::Node::SPtr & father){
-//    //creating node containing OBBModel
-//    sofa::simulation::Node::SPtr sph = father->createChild("cap");
 
-//    //creating a mechanical object which will be attached to the OBBModel
-//    MechanicalObject3d::SPtr sphDOF = New<MechanicalObject3d>();
-
-//    //editing DOF related to the OBBModel to be created, size is 1 because it contains just one OBB
-//    sphDOF->resize(1);
-//    Data<MechanicalObject3d::VecCoord> & dpositions = *sphDOF->write( sofa::core::VecId::position() );
-//    MechanicalObject3d::VecCoord & positions = *dpositions.beginEdit();
-
-//    //we finnaly edit the positions by filling it with a RigidCoord made up from p and the rotated fram x,y,z
-//    positions[0] = center;
-
-//    dpositions.endEdit();
-
-//    //Editting the velocity of the OBB
-//    Data<MechanicalObject3d::VecDeriv> & dvelocities = *sphDOF->write( sofa::core::VecId::velocity() );
-
-//    MechanicalObject3d::VecDeriv & velocities = *dvelocities.beginEdit();
-//    velocities[0] = v;
-//    dvelocities.endEdit();
-
-//    sph->addObject(sphDOF);
-
-//    //creating an OBBModel and attaching it to the same node than obbDOF
-//    sofa::component::collision::SphereModel::SPtr sphCollisionModel = New<sofa::component::collision::SphereModel >();
-//    sph->addObject(sphCollisionModel);
-
-
-//    //editting the OBBModel
-//    sphCollisionModel->init();
-//    Data<sofa::component::collision::SphereModel::VecReal> & dVecReal = sphCollisionModel->radius;
-//    sofa::component::collision::CapsuleModel::VecReal & vecReal = *(dVecReal.beginEdit());
-
-//    vecReal[0] = radius;
-
-//    dVecReal.endEdit();
-
-//    return sphCollisionModel;
-//}
-
-sofa::component::collision::CapsuleModel::SPtr TestCapOBB::makeCap(const Vec3d & p0,const Vec3d & p1,double radius,const Vec3d & v,
-                                                                   sofa::simulation::Node::SPtr & father){
-    //creating node containing OBBModel
-    sofa::simulation::Node::SPtr cap = father->createChild("cap");
-
-    //creating a mechanical object which will be attached to the OBBModel
-    MechanicalObject3d::SPtr capDOF = New<MechanicalObject3d>();
-
-    //editing DOF related to the OBBModel to be created, size is 1 because it contains just one OBB
-    capDOF->resize(2);
-    Data<MechanicalObject3d::VecCoord> & dpositions = *capDOF->write( sofa::core::VecId::position() );
-    MechanicalObject3d::VecCoord & positions = *dpositions.beginEdit();
-
-    //we finnaly edit the positions by filling it with a RigidCoord made up from p and the rotated fram x,y,z
-    positions[0] = p0;
-    positions[1] = p1;
-
-    dpositions.endEdit();
-
-    //Editting the velocity of the OBB
-    Data<MechanicalObject3d::VecDeriv> & dvelocities = *capDOF->write( sofa::core::VecId::velocity() );
-
-    MechanicalObject3d::VecDeriv & velocities = *dvelocities.beginEdit();
-    velocities[0] = v;
-    velocities[1] = v;
-    dvelocities.endEdit();
-
-    cap->addObject(capDOF);
-
-    //creating a topology necessary for capsule
-    sofa::component::topology::MeshTopology::SPtr bmt = New<sofa::component::topology::MeshTopology>();
-    bmt->addEdge(0,1);
-    cap->addObject(bmt);
-
-    //creating an OBBModel and attaching it to the same node than obbDOF
-    sofa::component::collision::CapsuleModel::SPtr capCollisionModel = New<sofa::component::collision::CapsuleModel >();
-    cap->addObject(capCollisionModel);
-
-
-    //editting the OBBModel
-    capCollisionModel->init();
-    Data<sofa::component::collision::CapsuleModel::VecReal> & dVecReal = capCollisionModel->writeRadii();
-    sofa::component::collision::CapsuleModel::VecReal & vecReal = *(dVecReal.beginEdit());
-
-    vecReal[0] = radius;
-
-    dVecReal.endEdit();
-
-    return capCollisionModel;
-}
-
-
-sofa::component::collision::TriangleModel::SPtr TestTriOBB::makeTri(const Vec3d & p0,const Vec3d & p1,const Vec3d & p2,const Vec3d & v, sofa::simulation::Node::SPtr &father){
-    //creating node containing TriangleModel
-    sofa::simulation::Node::SPtr tri = father->createChild("tri");
-
-    //creating a mechanical object which will be attached to the OBBModel
-    MechanicalObject3d::SPtr triDOF = New<MechanicalObject3d>();
-
-    //editing DOF related to the TriangleModel to be created, size is 3 (3 points) because it contains just one Triangle
-    triDOF->resize(3);
-    Data<MechanicalObject3d::VecCoord> & dpositions = *triDOF->write( sofa::core::VecId::position() );
-    MechanicalObject3d::VecCoord & positions = *dpositions.beginEdit();
-
-    //we finnaly edit the positions by filling it with a RigidCoord made up from p and the rotated fram x,y,z
-    positions[0] = p0;
-    positions[1] = p1;
-    positions[2] = p2;
-
-    dpositions.endEdit();
-
-    //Editting the velocity of the OBB
-    Data<MechanicalObject3d::VecDeriv> & dvelocities = *triDOF->write( sofa::core::VecId::velocity() );
-
-    MechanicalObject3d::VecDeriv & velocities = *dvelocities.beginEdit();
-    velocities[0] = v;
-    velocities[1] = v;
-    velocities[2] = v;
-
-    dvelocities.endEdit();
-
-    tri->addObject(triDOF);
-
-    //creating a topology necessary for capsule
-    sofa::component::topology::MeshTopology::SPtr bmt = New<sofa::component::topology::MeshTopology>();
-    bmt->addTriangle(0,1,2);
-    tri->addObject(bmt);
-
-    //creating an OBBModel and attaching it to the same node than obbDOF
-    sofa::component::collision::TriangleModel::SPtr triCollisionModel = New<sofa::component::collision::TriangleModel >();
-    tri->addObject(triCollisionModel);
-
-
-    //editting the OBBModel
-    triCollisionModel->init();
-
-    return triCollisionModel;
-}
-
-//sofa::simulation::Node::SPtr TestOBB::createScene()
-//{
-//    sofa::simulation::Node::SPtr groot = New<sofa::simulation::tree::GNode>();
-////    // The graph root node
-////    std::cout<<"ici0"<<std::endl;
-////    sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
-////    std::cout<<"ici1"<<std::endl;
-////    sofa::simulation::Node::SPtr groot = sofa::simulation::getSimulation()->createNewGraph("root");
-////    std::cout<<"ici2"<<std::endl;
-////    groot->setGravity( Coord3(0,0,0) );
-////    std::cout<<"ici3"<<std::endl;
-
-////    // One solver for all the graph
-////    sofa::component::odesolver::EulerSolver::SPtr solver = sofa::core::objectmodel::New<sofa::component::odesolver::EulerSolver>();
-////    std::cout<<"ici4"<<std::endl;
-////    solver->setName("solver");
-////    solver->f_printLog.setValue(false);
-////    std::cout<<"ici5"<<std::endl;
-////    groot->addObject(solver);
-////    std::cout<<"ici6"<<std::endl;
-
-//    // One node to define the particle
-////    sofa::simulation::Node::SPtr particule_node = groot.get()->createChild("particle_node");
-////    // The particule, i.e, its degrees of freedom : a point with a velocity
-////    MechanicalObject3::SPtr particle = sofa::core::objectmodel::New<MechanicalObject3>();
-////    particle->setName("particle");
-////    particule_node->addObject(particle);
-////    particle->resize(1);
-////    // get write access the particle positions vector
-////    WriteAccessor< Data<MechanicalObject3::VecCoord> > positions = *particle->write( VecId::position() );
-////    positions[0] = Coord3(0,0,0);
-////    // get write access the particle velocities vector
-////    WriteAccessor< Data<MechanicalObject3::VecDeriv> > velocities = *particle->write( VecId::velocity() );
-////    velocities[0] = Deriv3(0,0,0);
-
-////    // Its properties, i.e, a simple mass node
-////    UniformMass3::SPtr mass = sofa::core::objectmodel::New<UniformMass3>();
-////    mass->setName("mass");
-////    particule_node->addObject(mass);
-////    mass->setMass( 1 );
-
-////    // Display Flags
-////    sofa::component::visualmodel::VisualStyle::SPtr style = sofa::core::objectmodel::New<sofa::component::visualmodel::VisualStyle>();
-////    groot->addObject(style);
-////    sofa::core::visual::DisplayFlags& flags = *style->displayFlags.beginEdit();
-////    flags.setShowBehaviorModels(true);
-////    style->displayFlags.endEdit();
-
-////    sofa::simulation::tree::getSimulation()->init(groot.get());
-////    groot->setAnimate(false);
-
-//    return groot;
-//}
-
-sofa::component::collision::OBBModel::SPtr TestOBB::makeOBB(const Vec3d & p,const double *angles,const int *order,const Vec3d &v,const Vec3d &extents, sofa::simulation::Node::SPtr &father){
-    //creating node containing OBBModel
-    sofa::simulation::Node::SPtr obb = father->createChild("obb");
-
-    //creating a mechanical object which will be attached to the OBBModel
-    MechanicalObjectRigid3::SPtr obbDOF = New<MechanicalObjectRigid3>();
-
-    //editing DOF related to the OBBModel to be created, size is 1 because it contains just one OBB
-    obbDOF->resize(1);
-    Data<MechanicalObjectRigid3::VecCoord> & dpositions = *obbDOF->write( sofa::core::VecId::position() );
-    MechanicalObjectRigid3::VecCoord & positions = *dpositions.beginEdit();
-
-    //we create a frame that we will rotate like it is specified by the parameters angles and order
-    Vec3d x(1,0,0);
-    Vec3d y(0,1,0);
-    Vec3d z(0,0,1);
-
-    //creating an array of functions which are the rotation so as to perform the rotations in a for loop
-    typedef void (*rot)(double,Vec3d&,Vec3d&,Vec3d&);
-    rot rotations[3];
-    rotations[0] = &rotx;
-    rotations[1] = &roty;
-    rotations[2] = &rotz;
-
-    //performing the rotations of the frame x,y,z
-    for(int i = 0 ; i < 3 ; ++i)
-        (*rotations[order[i]])(angles[order[i]],x,y,z);
-
-
-    //we finnaly edit the positions by filling it with a RigidCoord made up from p and the rotated fram x,y,z
-    positions[0] = Rigid3Types::Coord(p,Quaternion::createQuaterFromFrame(x,y,z));
-
-    dpositions.endEdit();
-
-    //Editting the velocity of the OBB
-    Data<MechanicalObjectRigid3::VecDeriv> & dvelocities = *obbDOF->write( sofa::core::VecId::velocity() );
-
-    MechanicalObjectRigid3::VecDeriv & velocities = *dvelocities.beginEdit();
-    velocities[0] = v;
-    dvelocities.endEdit();
-
-
-    obb->addObject(obbDOF);
-
-    //creating an OBBModel and attaching it to the same node than obbDOF
-    sofa::component::collision::OBBModel::SPtr obbCollisionModel = New<sofa::component::collision::OBBModel >();
-    obb->addObject(obbCollisionModel);
-
-    //editting the OBBModel
-    obbCollisionModel->init();
-    Data<sofa::component::collision::OBBModel::VecCoord> & dVecCoord = obbCollisionModel->writeExtents();
-    sofa::component::collision::OBBModel::VecCoord & vecCoord = *(dVecCoord.beginEdit());
-
-    vecCoord[0] = extents;
-
-    dVecCoord.endEdit();
-
-    return obbCollisionModel;
-}
-
-
-sofa::component::collision::RigidSphereModel::SPtr TestSphereOBB::makeSphere(const Vec3d & center,double radius,const Vec3d & v,
+sofa::component::collision::RigidSphereModel::SPtr TestSphereOBB::makeMyRSphere(const Vec3d & center,double radius,const Vec3d & v,
                                                                    sofa::simulation::Node::SPtr & father){
     //creating node containing SphereModel
     sofa::simulation::Node::SPtr sph = father->createChild("cap");
@@ -437,31 +153,6 @@ sofa::component::collision::RigidSphereModel::SPtr TestSphereOBB::makeSphere(con
     return sphCollisionModel;
 }
 
-
-
-void TestOBB::rotx(double ax,Vec3d & x,Vec3d & y,Vec3d & z){
-    Vec3d ix = Vec3d(1,0,0);
-
-    Quaternion rotx(ix,ax);
-
-    x = rotx.rotate(x);y = rotx.rotate(y);z = rotx.rotate(z);
-}
-
-void TestOBB::roty(double angle,Vec3d & x,Vec3d & y,Vec3d & z){
-    Vec3d iy = Vec3d(0,1,0);
-
-    Quaternion rot(iy,angle);
-
-    x = rot.rotate(x);y = rot.rotate(y);z = rot.rotate(z);
-}
-
-void TestOBB::rotz(double angle,Vec3d & x,Vec3d & y,Vec3d & z){
-    Vec3d iz = Vec3d(0,0,1);
-
-    Quaternion rot(iz,angle);
-
-    x = rot.rotate(x);y = rot.rotate(y);z = rot.rotate(z);
-}
 
 //vertex indexation of an OBB below :
 //
@@ -761,7 +452,7 @@ bool TestCapOBB::faceVertex(){
     int order[3] = {0,1,2};
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
     sofa::component::collision::OBBModel::SPtr obbmodel =
-            TestOBB::makeOBB(Vec3d(0,0,-1),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
+            makeOBB(Vec3d(0,0,-1),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling capsule
@@ -801,7 +492,7 @@ bool TestCapOBB::faceEdge(){
     int order[3] = {0,1,2};
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
     sofa::component::collision::OBBModel::SPtr obbmodel =
-            TestOBB::makeOBB(Vec3d(0,0,-1),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
+            makeOBB(Vec3d(0,0,-1),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling capsule
@@ -849,7 +540,7 @@ bool TestCapOBB::edgeVertex(){
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
     sofa::component::collision::OBBModel::SPtr obbmodel =
-            TestOBB::makeOBB(Vec3d(0,0,-sqrt(2.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
+            makeOBB(Vec3d(0,0,-sqrt(2.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling capsule
@@ -897,7 +588,7 @@ bool TestCapOBB::edgeEdge(){
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
     sofa::component::collision::OBBModel::SPtr obbmodel =
-            TestOBB::makeOBB(Vec3d(0,0,-sqrt(2.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
+            makeOBB(Vec3d(0,0,-sqrt(2.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling capsule
@@ -945,7 +636,7 @@ bool TestCapOBB::vertexEdge(){
     angles[2] = M_PI_4;
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
-    sofa::component::collision::OBBModel::SPtr obbmodel = TestOBB::makeOBB(Vec3d(0,0,-sqrt(3.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
+    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3d(0,0,-sqrt(3.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling capsule
@@ -993,7 +684,7 @@ bool TestCapOBB::vertexVertex(){
     angles[2] = M_PI_4;
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
-    sofa::component::collision::OBBModel::SPtr obbmodel = TestOBB::makeOBB(Vec3d(0,0,-sqrt(3.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
+    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3d(0,0,-sqrt(3.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling capsule
@@ -1039,11 +730,11 @@ bool TestSphereOBB::vertex(){
     angles[2] = M_PI_4;
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
-    sofa::component::collision::OBBModel::SPtr obbmodel = TestOBB::makeOBB(Vec3d(0,0,-sqrt(3.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
+    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3d(0,0,-sqrt(3.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling capsule
-    sofa::component::collision::RigidSphereModel::SPtr sphmodel = makeSphere(Vec3d(0,0,1 + 0.01),1,Vec3d(0,0,-10),scn);
+    sofa::component::collision::RigidSphereModel::SPtr sphmodel = makeMyRSphere(Vec3d(0,0,1 + 0.01),1,Vec3d(0,0,-10),scn);
 
     //we construct the OBB and the capsule from the OBBModel and the CapsuleModel
     sofa::component::collision::OBB obb(obbmodel.get(),0);
@@ -1089,11 +780,11 @@ bool TestSphereOBB::edge(){
     angles[2] = M_PI_4;
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
-    sofa::component::collision::OBBModel::SPtr obbmodel = TestOBB::makeOBB(Vec3d(0,0,-sqrt(2.0)),angles,order,Vec3d(0,0,-10),Vec3d(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
+    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3d(0,0,-sqrt(2.0)),angles,order,Vec3d(0,0,-10),Vec3d(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling capsule
-    sofa::component::collision::RigidSphereModel::SPtr sphmodel = makeSphere(Vec3d(0,0,1 + 0.01),1,Vec3d(0,0,-10),scn);
+    sofa::component::collision::RigidSphereModel::SPtr sphmodel = makeMyRSphere(Vec3d(0,0,1 + 0.01),1,Vec3d(0,0,-10),scn);
 
     //we construct the OBB and the capsule from the OBBModel and the CapsuleModel
     sofa::component::collision::OBB obb(obbmodel.get(),0);
@@ -1130,11 +821,11 @@ bool TestSphereOBB::face(){
     int order[3] = {0,1,2};
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
-    sofa::component::collision::OBBModel::SPtr obbmodel = TestOBB::makeOBB(Vec3d(0,0,-1),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
+    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3d(0,0,-1),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling capsule
-    sofa::component::collision::RigidSphereModel::SPtr sphmodel = makeSphere(Vec3d(0,0,1 + 0.01),1,Vec3d(0,0,-10),scn);
+    sofa::component::collision::RigidSphereModel::SPtr sphmodel = makeMyRSphere(Vec3d(0,0,1 + 0.01),1,Vec3d(0,0,-10),scn);
 
     //we construct the OBB and the capsule from the OBBModel and the CapsuleModel
     sofa::component::collision::OBB obb(obbmodel.get(),0);
@@ -1168,7 +859,7 @@ bool TestTriOBB::faceFace(){
     double angles[3] = {0,0,0};
     int order[3] = {0,1,2};
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
-    sofa::component::collision::OBBModel::SPtr obbmodel = TestOBB::makeOBB(Vec3d(0,0,-1),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
+    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3d(0,0,-1),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
 
     int tri_flg = sofa::component::collision::TriangleModel::FLAG_POINTS | sofa::component::collision::TriangleModel::FLAG_EDGES;
     sofa::component::collision::TriangleModel::SPtr trimodel = makeTri(Vec3d(-2,-2,0.01),Vec3d(-2,2,0.01),Vec3d(2,0,0.01),Vec3d(0,0,-10),scn);
@@ -1198,7 +889,7 @@ bool TestTriOBB::faceVertex_out(){
     double angles[3] = {0,0,0};
     int order[3] = {0,1,2};
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
-    sofa::component::collision::OBBModel::SPtr obbmodel = TestOBB::makeOBB(Vec3d(-1.01,0,1.01),angles,order,Vec3d(0,0,-10),Vec3d(1,1,1),scn);
+    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3d(-1.01,0,1.01),angles,order,Vec3d(0,0,-10),Vec3d(1,1,1),scn);
 
     int tri_flg = sofa::component::collision::TriangleModel::FLAG_POINTS | sofa::component::collision::TriangleModel::FLAG_EDGES;
     sofa::component::collision::TriangleModel::SPtr trimodel = makeTri(Vec3d(0,0,0),Vec3d(2,2,0),Vec3d(2,-2,0),Vec3d(0,0,0),scn);
@@ -1233,7 +924,7 @@ bool TestTriOBB::faceVertex_out2(){
     double angles[3] = {0,0,0};
     int order[3] = {0,1,2};
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
-    sofa::component::collision::OBBModel::SPtr obbmodel = TestOBB::makeOBB(Vec3d(-1.01,0,-1.01),angles,order,Vec3d(0,0,10),Vec3d(1,1,1),scn);
+    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3d(-1.01,0,-1.01),angles,order,Vec3d(0,0,10),Vec3d(1,1,1),scn);
 
     int tri_flg = sofa::component::collision::TriangleModel::FLAG_POINTS | sofa::component::collision::TriangleModel::FLAG_EDGES;
     sofa::component::collision::TriangleModel::SPtr trimodel = makeTri(Vec3d(0,0,0),Vec3d(2,2,0),Vec3d(2,-2,0),Vec3d(0,0,0),scn);
@@ -1268,7 +959,7 @@ bool TestTriOBB::faceEdge(){
     double angles[3] = {0,0,0};
     int order[3] = {0,1,2};
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
-    sofa::component::collision::OBBModel::SPtr obbmodel = TestOBB::makeOBB(Vec3d(0,0,-1),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
+    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3d(0,0,-1),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
 
     int tri_flg = sofa::component::collision::TriangleModel::FLAG_POINTS | sofa::component::collision::TriangleModel::FLAG_EDGES;
     sofa::component::collision::TriangleModel::SPtr trimodel = makeTri(Vec3d(0,-2,0.01),Vec3d(0,2,0.01),Vec3d(2,0,2),Vec3d(0,0,-10),scn);
@@ -1298,7 +989,7 @@ bool TestTriOBB::faceVertex(){
     double angles[3] = {0,0,0};
     int order[3] = {0,1,2};
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
-    sofa::component::collision::OBBModel::SPtr obbmodel = TestOBB::makeOBB(Vec3d(0,0,-1),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
+    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3d(0,0,-1),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
 
     int tri_flg = sofa::component::collision::TriangleModel::FLAG_POINTS | sofa::component::collision::TriangleModel::FLAG_EDGES;
     sofa::component::collision::TriangleModel::SPtr trimodel = makeTri(Vec3d(0,-2,2),Vec3d(0,2,2),Vec3d(0,0,0.01),Vec3d(0,0,-10),scn);
@@ -1335,7 +1026,7 @@ bool TestTriOBB::edgeFace(){
     angles[2] = M_PI_4;
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
-    sofa::component::collision::OBBModel::SPtr obbmodel = TestOBB::makeOBB(Vec3d(0,0,-sqrt(2.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
+    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3d(0,0,-sqrt(2.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
 
     int tri_flg = sofa::component::collision::TriangleModel::FLAG_POINTS | sofa::component::collision::TriangleModel::FLAG_EDGES;
     sofa::component::collision::TriangleModel::SPtr trimodel = makeTri(Vec3d(-2,-2,0.01),Vec3d(-2,2,0.01),Vec3d(2,0,0.01),Vec3d(0,0,-10),scn);
@@ -1372,7 +1063,7 @@ bool TestTriOBB::edgeEdge(){
     angles[2] = M_PI_4;
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
-    sofa::component::collision::OBBModel::SPtr obbmodel = TestOBB::makeOBB(Vec3d(0,0,-sqrt(2.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
+    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3d(0,0,-sqrt(2.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
 
     int tri_flg = sofa::component::collision::TriangleModel::FLAG_POINTS | sofa::component::collision::TriangleModel::FLAG_EDGES;
     sofa::component::collision::TriangleModel::SPtr trimodel = makeTri(Vec3d(0,-2,0.01),Vec3d(0,2,0.01),Vec3d(2,0,2),Vec3d(0,0,-10),scn);
@@ -1409,7 +1100,7 @@ bool TestTriOBB::edgeEdge2(){
     angles[2] = M_PI_4;
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
-    sofa::component::collision::OBBModel::SPtr obbmodel = TestOBB::makeOBB(Vec3d(0,0,-sqrt(2.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
+    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3d(0,0,-sqrt(2.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
 
     int tri_flg = sofa::component::collision::TriangleModel::FLAG_POINTS | sofa::component::collision::TriangleModel::FLAG_EDGES;
     sofa::component::collision::TriangleModel::SPtr trimodel = makeTri(Vec3d(-1,0,0.01),Vec3d(1,0,0.01),Vec3d(2,0,2),Vec3d(0,0,-10),scn);
@@ -1445,7 +1136,7 @@ bool TestTriOBB::edgeVertex(){
     angles[2] = M_PI_4;
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
-    sofa::component::collision::OBBModel::SPtr obbmodel = TestOBB::makeOBB(Vec3d(0,0,-sqrt(2.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
+    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3d(0,0,-sqrt(2.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
 
     int tri_flg = sofa::component::collision::TriangleModel::FLAG_POINTS | sofa::component::collision::TriangleModel::FLAG_EDGES;
     sofa::component::collision::TriangleModel::SPtr trimodel = makeTri(Vec3d(0,0,0.01),Vec3d(1,0,2),Vec3d(-1,0,2),Vec3d(0,0,-10),scn);
@@ -1482,7 +1173,7 @@ bool TestTriOBB::vertexFace(){
     angles[2] = M_PI_4;
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
-    sofa::component::collision::OBBModel::SPtr obbmodel = TestOBB::makeOBB(Vec3d(0,0,-sqrt(3.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
+    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3d(0,0,-sqrt(3.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
 
     int tri_flg = sofa::component::collision::TriangleModel::FLAG_POINTS | sofa::component::collision::TriangleModel::FLAG_EDGES;
     sofa::component::collision::TriangleModel::SPtr trimodel = makeTri(Vec3d(-2,-2,0.01),Vec3d(-2,2,0.01),Vec3d(2,0,0.01),Vec3d(0,0,-10),scn);
@@ -1519,7 +1210,7 @@ bool TestTriOBB::vertexEdge(){
     angles[2] = M_PI_4;
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
-    sofa::component::collision::OBBModel::SPtr obbmodel = TestOBB::makeOBB(Vec3d(0,0,-sqrt(3.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
+    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3d(0,0,-sqrt(3.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
 
     int tri_flg = sofa::component::collision::TriangleModel::FLAG_POINTS | sofa::component::collision::TriangleModel::FLAG_EDGES;
     sofa::component::collision::TriangleModel::SPtr trimodel = makeTri(Vec3d(-1,0,0.01),Vec3d(1,0,0.01),Vec3d(2,0,2),Vec3d(0,0,-10),scn);
@@ -1556,7 +1247,7 @@ bool TestTriOBB::vertexVertex(){
     angles[2] = M_PI_4;
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
-    sofa::component::collision::OBBModel::SPtr obbmodel = TestOBB::makeOBB(Vec3d(0,0,-sqrt(3.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
+    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3d(0,0,-sqrt(3.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
 
     int tri_flg = sofa::component::collision::TriangleModel::FLAG_POINTS | sofa::component::collision::TriangleModel::FLAG_EDGES;
     sofa::component::collision::TriangleModel::SPtr trimodel = makeTri(Vec3d(0,0,0.01),Vec3d(1,0,2),Vec3d(-1,0,2),Vec3d(0,0,-10),scn);

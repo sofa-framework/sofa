@@ -61,7 +61,10 @@ MeshMinProximityIntersection::MeshMinProximityIntersection(MinProximityIntersect
             intersection->intersectors.ignore<PointModel, PointModel>();
 
         intersection->intersectors.add<LineModel, LineModel, MeshMinProximityIntersection>(this);
+
         intersection->intersectors.add<LineModel, PointModel, MeshMinProximityIntersection>(this);
+        //intersection->intersectors.ignore<LineModel, PointModel>();
+
         intersection->intersectors.add<TriangleModel, PointModel, MeshMinProximityIntersection>(this);
         intersection->intersectors.ignore<TriangleModel, LineModel>();
         intersection->intersectors.ignore<TriangleModel, TriangleModel>();
@@ -71,14 +74,20 @@ MeshMinProximityIntersection::MeshMinProximityIntersection(MinProximityIntersect
         if (intersection->useSphereTriangle.getValue())
         {
             intersection->intersectors.add<SphereModel, PointModel, MeshMinProximityIntersection>(this);
+            intersection->intersectors.add<RigidSphereModel, PointModel, MeshMinProximityIntersection>(this);
             intersection->intersectors.add<TriangleModel, SphereModel, MeshMinProximityIntersection>(this);
+            intersection->intersectors.add<TriangleModel, RigidSphereModel, MeshMinProximityIntersection>(this);
             intersection->intersectors.add<LineModel, SphereModel, MeshMinProximityIntersection>(this);
+            intersection->intersectors.add<LineModel, RigidSphereModel, MeshMinProximityIntersection>(this);
         }
         else
         {
             intersection->intersectors.ignore<SphereModel, PointModel>();
+            intersection->intersectors.ignore<RigidSphereModel, PointModel>();
             intersection->intersectors.ignore<LineModel, SphereModel>();
+            intersection->intersectors.ignore<LineModel, RigidSphereModel>();
             intersection->intersectors.ignore<TriangleModel, SphereModel>();
+            intersection->intersectors.ignore<TriangleModel, RigidSphereModel>();
         }
 
 //    intersection->intersectors.ignore<RayModel, PointModel>();
@@ -197,6 +206,7 @@ int MeshMinProximityIntersection::computeIntersection(Line& e1, Line& e2, Output
         detection->normal= Vector3(1,0,0);
     }
     detection->value -= contactDist;
+
     return 1;
 }
 
@@ -338,7 +348,7 @@ int MeshMinProximityIntersection::computeIntersection(Triangle& e2, Point& e1, O
     {
         int normalIndex = e2.getIndex();
         detection->normal = e2.model->getNormals()[normalIndex];
-    }
+    }    
 
     return 1;
 }
@@ -506,6 +516,7 @@ int MeshMinProximityIntersection::computeIntersection(Point& e1, Point& e2, Outp
         detection->normal= Vector3(1,0,0);
     }
     detection->value -= contactDist;
+
     return 1;
 }
 

@@ -5,13 +5,15 @@ set(HEADER_FILES
     Sofa_test.h 
     Matrix_test.inl
     Mapping_test.h
+    PrimitiveCreation.h
     )
 
 set(SOURCE_FILES
-
+    PrimitiveCreation.cpp
     RigidMapping_test.cpp 
     Matrix_test.cpp 
-    OBBTest.cpp 
+    OBBTest.cpp
+    SphereTest.cpp
     ProjectToPlaneConstraint_test.cpp 
     ProjectToLineConstraint_test.cpp 
     )

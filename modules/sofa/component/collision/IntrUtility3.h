@@ -132,11 +132,16 @@ public:
 
     static void projectPointOnCapsuleAndFindCapNormal(const Vec<3,Real> & pt,const Vec<3,Real> segment[2],Real radius,CapIntrConfiguration<Real> & capCfg,Vec<3,Real> & pt_on_capsule);
 
+    static Real projectOnTriangle(Vec<3,Real> & pt,const Vec<3,Real> & t_p0,const Vec<3,Real> & t_p1,const Vec<3,Real> & t_p2,Real & s,Real & t);
+
     static Vec<3,Real> nearestPointOnSeg(const Vec<3,Real> & seg0,const Vec<3,Real> & seg1,const Vec<3,Real> & point);
 
     static void segNearestPoints(const Vec<3,Real> * p, const Vec<3,Real> * q,Vec<3,Real> & P,Vec<3,Real> & Q);
 
     static void segNearestPoints(const Vec<3,Real> & p0,const Vec<3,Real> & p1, const Vec<3,Real> & q0,const Vec<3,Real> & q1,Vec<3,Real> & P,Vec<3,Real> & Q);
+
+    static void segNearestPoints(const Vec<3,Real> & p0,const Vec<3,Real> & p1, const Vec<3,Real> & q0,const Vec<3,Real> & q1,Vec<3,Real> & P,Vec<3,Real> & Q,
+                                 SReal & alpha,SReal & beta);
 
     /**
       *Returns the squared distance between pt_on_face and pt_on_seg. Use only if the both faces lay on the same plane.

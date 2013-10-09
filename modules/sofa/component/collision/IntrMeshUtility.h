@@ -15,7 +15,7 @@ struct IntrUtil<TTriangle<DataType> >{
     /**
       *Returns the squared distance between old pt and projected pt.
       */
-    static SReal project(Vec<3,Real> & pt,const TTriangle<DataType> & tri);
+    static Real project(Vec<3,Real> & pt,const TTriangle<DataType> & tri);
 
     static SReal triSegNearestPoints(const IntrTri & tri,const Vec<3,Real> seg[2],Vec<3,Real> & pt_on_tri,Vec<3,Real> & pt_on_seg);
 

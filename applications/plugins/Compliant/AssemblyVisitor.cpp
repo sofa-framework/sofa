@@ -352,12 +352,12 @@ void AssemblyVisitor::fill_postfix(simulation::Node* node) {
 	for(chunk::map_type::const_iterator it = c.map.begin(), end = c.map.end();
 	    it != end; ++it) {
 
-		chunk& p = chunks[it->first];
+        chunk& p = chunks[it->first];
 
 		edge e;
 		e.data = &it->second;
 
-		// the edge is child -> parent
+        // the edge is child -> parent
 		graph_type::edge_descriptor ed = boost::add_edge(c.vertex, p.vertex, graph).first;
 		graph[ed] = e;
 	}
@@ -684,7 +684,7 @@ bool AssemblyVisitor::chunk::check() const {
 		assert( empty(C) );
 		assert( !empty(P) );
 
-		assert( f.size() == int(size) );
+//		assert( f.size() == int(size) );
 		assert( v.size() == int(size) );
 
 	} else {
@@ -697,8 +697,8 @@ bool AssemblyVisitor::chunk::check() const {
 	}
 
 	// should be outer size ?
-	assert( empty(K) || K.rows() == int(size) );
-	assert( empty(M) || M.rows() == int(size) );
+//	assert( empty(K) || K.rows() == int(size) );
+//	assert( empty(M) || M.rows() == int(size) );
 
 	return true;
 }
