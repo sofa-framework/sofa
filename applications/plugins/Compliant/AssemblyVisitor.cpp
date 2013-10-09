@@ -25,14 +25,16 @@ typedef EigenVectorWrapper<SReal> wrap;
 
 
 
-AssemblyVisitor::AssemblyVisitor(const core::MechanicalParams* mparams, MultiVecDerivId velId, MultiVecDerivId lagrangeId)
+AssemblyVisitor::AssemblyVisitor(const core::MechanicalParams* mparams, const core::MechanicalParams* mparamsWithoutStiffness, MultiVecDerivId velId, MultiVecDerivId lagrangeId)
 	: base( mparams ),
       mparams( mparams ),
+      mparamsWithoutStiffness( mparamsWithoutStiffness ),
       _velId(velId),
       lagrange(lagrangeId),
       start_node(0),
       _processed(0)
-{ }
+{
+}
 
 
 AssemblyVisitor::~AssemblyVisitor()
@@ -205,11 +207,10 @@ AssemblyVisitor::mat AssemblyVisitor::odeMatrix(simulation::Node* node)
     {
         BaseForceField* ffield = node->forceField[i];
 
-        if( ffield->isCompliance.getValue() ) continue;
-        {
-            SingleMatrixAccessor accessor( &sqmat );
-            ffield->addMBKToMatrix( mparams, &accessor );
-        }
+        SingleMatrixAccessor accessor( &sqmat );
+
+        // when it is a compliant, you need to add M if mass, B and part of K corresponding to rayleigh damping
+        ffield->addMBKToMatrix( ffield->isCompliance.getValue()?mparamsWithoutStiffness:mparams, &accessor );
 
     }
 

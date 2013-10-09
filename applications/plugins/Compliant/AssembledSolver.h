@@ -112,8 +112,10 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
 	virtual void cleanup();
 
     // mechanical params
-    virtual core::MechanicalParams mparams(const core::ExecParams& params,
-                                           double dt) const;
+    void buildMparams( core::MechanicalParams& mparams,
+                       core::MechanicalParams& mparamsWithoutStiffness,
+                       const core::ExecParams& params,
+                       double dt) const;
 
     // solve velocity dynamics ?
 	Data<bool> use_velocity, warm_start, propagate_lambdas, stabilization, debug;
