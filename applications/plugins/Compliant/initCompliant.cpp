@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "initCompliant.h"
-#include "CompliantSolverMerger.h"
+#include "misc/CompliantSolverMerger.h"
 #include <sofa/gui/OperationFactory.h>
 #include <sofa/gui/MouseOperations.h>
 

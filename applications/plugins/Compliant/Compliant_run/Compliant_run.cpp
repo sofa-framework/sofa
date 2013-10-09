@@ -60,11 +60,10 @@
 #include <sofa/component/typedef/Sofa_typedef.h>
 #include "../../../applications/tutorials/objectCreator/ObjectCreator.h"
 
-#include <plugins/Compliant/AssembledSolver.h>
-#include <plugins/Compliant/LDLTSolver.h>
-#include <plugins/Compliant/UniformCompliance.h>
-#include <plugins/Compliant/UniformCompliance.h>
-#include <plugins/Compliant/CompliantAttachButtonSetting.h>
+#include <plugins/Compliant/odesolver/AssembledSolver.h>
+#include <plugins/Compliant/numericalsolver/LDLTSolver.h>
+#include <plugins/Compliant/compliance/UniformCompliance.h>
+#include <plugins/Compliant/misc/CompliantAttachButtonSetting.h>
 using sofa::component::configurationsetting::CompliantAttachButtonSetting;
 
 #include <sofa/simulation/common/Simulation.h>

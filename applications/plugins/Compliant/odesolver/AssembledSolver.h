@@ -10,7 +10,7 @@
 #include <sofa/simulation/common/MechanicalVisitor.h>
 
 // TODO forward instead ?
-#include "KKTSolver.h"
+#include "numericalsolver/KKTSolver.h"
 
 namespace sofa {
 

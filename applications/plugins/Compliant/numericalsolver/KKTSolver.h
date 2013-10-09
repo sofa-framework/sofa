@@ -3,7 +3,7 @@
 
 #include "initCompliant.h"
 
-#include "AssembledSystem.h"
+#include "assembly/AssembledSystem.h"
 #include <sofa/core/behavior/LinearSolver.h>
 
 namespace sofa {

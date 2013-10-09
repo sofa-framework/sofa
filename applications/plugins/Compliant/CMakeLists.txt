@@ -3,70 +3,78 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 set(HEADER_FILES
 
 	initCompliant.h
-    CompliantAttachButtonSetting.h
-    UniformCompliance.h
-    UniformCompliance.inl
-	DampingCompliance.h
-	RigidMass.h
-#	UnilateralMask.h
-	RigidJointMapping.h
-	AssembledRigidRigidMapping.h
-	KKTSolver.h
-	LDLTSolver.h
-    MinresSolver.h
-	KrylovSolver.h
-	CgSolver.h
-	Response.h
-	LDLTResponse.h
-	DiagonalResponse.h
-    AssemblyHelper.h
-    AssemblyVisitor.h
-	AssembledSystem.h
-	AssembledSolver.h
-	AssembledMapping.h
-	Stabilization.h
-    CompliantSolverMerger.h
 
-    UniformCompliance.h
-    UniformCompliance.inl
-    DiagonalCompliance.h
-    DiagonalCompliance.inl
+    misc/CompliantAttachButtonSetting.h
+    misc/RigidMass.h
+    misc/Stabilization.h
+    misc/CompliantSolverMerger.h
+
+    mapping/RigidJointMapping.h
+    mapping/AssembledRigidRigidMapping.h
+    mapping/AssembledMapping.h
+
+    numericalsolver/KKTSolver.h
+    numericalsolver/LDLTSolver.h
+    numericalsolver/MinresSolver.h
+    numericalsolver/KrylovSolver.h
+    numericalsolver/CgSolver.h
+    numericalsolver/Response.h
+    numericalsolver/LDLTResponse.h
+    numericalsolver/DiagonalResponse.h
+
+    assembly/AssemblyHelper.h
+    assembly/AssemblyVisitor.h
+    assembly/AssembledSystem.h
+
+    odesolver/AssembledSolver.h
+
+    compliance/UniformCompliance.h
+    compliance/UniformCompliance.inl
+    compliance/DiagonalCompliance.h
+    compliance/DiagonalCompliance.inl
+    compliance/DampingCompliance.h
 	
-      utils/cast.h
-      utils/cg.h
-      utils/find.h
-      utils/force_assert.h
-      utils/graph.h
-      utils/krylov.h
-      utils/minres.h
-      utils/pair.h
-      utils/scoped.h
-      utils/se3.h
-      utils/sparse.h
-      utils/thread_local.h
+    utils/cast.h
+    utils/cg.h
+    utils/find.h
+    utils/force_assert.h
+    utils/graph.h
+    utils/krylov.h
+    utils/minres.h
+    utils/pair.h
+    utils/scoped.h
+    utils/se3.h
+    utils/sparse.h
+    utils/thread_local.h
 	)
 
 set(SOURCE_FILES
 
 	initCompliant.cpp
-    CompliantAttachButtonSetting.cpp
-    UniformCompliance.cpp
-    DiagonalCompliance.cpp
-	DampingCompliance.cpp
-	RigidMass.cpp
-	RigidJointMapping.cpp
-	AssembledRigidRigidMapping.cpp
-	LDLTSolver.cpp
-    MinresSolver.cpp
-		KrylovSolver.cpp
-		CgSolver.cpp
-		LDLTResponse.cpp
-		DiagonalResponse.cpp
-	AssemblyVisitor.cpp
-	AssembledSystem.cpp
-	AssembledSolver.cpp
-	Stabilization.cpp 
-    CompliantSolverMerger.cpp
+
+    misc/CompliantAttachButtonSetting.cpp
+    misc/Stabilization.cpp
+    misc/CompliantSolverMerger.cpp
+    misc/RigidMass.cpp
+
+    compliance/UniformCompliance.cpp
+    compliance/DiagonalCompliance.cpp
+    compliance/DampingCompliance.cpp
+
+    mapping/RigidJointMapping.cpp
+    mapping/AssembledRigidRigidMapping.cpp
+
+    numericalsolver/LDLTSolver.cpp
+    numericalsolver/MinresSolver.cpp
+    numericalsolver/KrylovSolver.cpp
+    numericalsolver/CgSolver.cpp
+    numericalsolver/LDLTResponse.cpp
+    numericalsolver/DiagonalResponse.cpp
+
+    assembly/AssemblyVisitor.cpp
+    assembly/AssembledSystem.cpp
+
+    odesolver/AssembledSolver.cpp
 	)
 
 set(README_FILES

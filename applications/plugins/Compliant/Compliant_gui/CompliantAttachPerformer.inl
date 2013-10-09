@@ -36,7 +36,7 @@ using std::endl;
 #include <sofa/component/mapping/SubsetMultiMapping.h>
 #include <sofa/component/topology/EdgeSetTopologyContainer.h>
 using sofa::component::topology::EdgeSetTopologyContainer;
-#include "UniformCompliance.h"
+#include "compliance/UniformCompliance.h"
 #include <sofa/simulation/common/InitVisitor.h>
 
 // max: hopefully fixes link errors

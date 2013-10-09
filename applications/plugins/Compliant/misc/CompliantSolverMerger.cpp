@@ -4,12 +4,11 @@
 #include <sofa/component/collision/SolverMerger.h>
 #include <sofa/helper/FnDispatcher.inl>
 
-#include "AssembledSolver.h"
+#include "odesolver/AssembledSolver.h"
 
-#include "MinresSolver.h"
-#include "CgSolver.h"
-
-#include "LDLTSolver.h"
+#include "numericalsolver/MinresSolver.h"
+#include "numericalsolver/CgSolver.h"
+#include "numericalsolver/LDLTSolver.h"
 
 namespace sofa
 {

@@ -1,12 +1,14 @@
 <?xml version="1.0"?>
 <Node name="" gravity="0 -10 0" dt="0.02">
     <RequiredPlugin name="Flexible" pluginName="Flexible" />
+      <RequiredPlugin pluginName="Compliant"/>
 
     <VisualStyle displayFlags="showBehavior showVisual hideMechanicalMappings" />
     <Node name="Cube grid" >
 <!--        <EulerImplicitSolver name="cg_odesolver" printLog="0" /> <CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25" tolerance="1e-6" />-->
-        <ComplianceSolver verbose="0" implicitVelocity="1" implicitPosition="1" />
-<!--        <ComplianceSolver verbose="0" implicitVelocity="1" implicitPosition="1"  />-->
+
+	<AssembledSolver/>
+	<LDLTSolver/>
 
         <!--Subdivided cube-->
         <RegularGridTopology name="grid" n="4 4 20" min="0 0 0" max="3 3 19"  />
