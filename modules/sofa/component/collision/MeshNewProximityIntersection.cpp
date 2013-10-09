@@ -96,6 +96,7 @@ int MeshNewProximityIntersection::computeIntersection(Point& e1, Point& e2, Outp
             detection->value -= contactDist;
         }
     }
+
     return n;
 }
 
@@ -232,6 +233,7 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Line& e2, Ou
             detection->value -= contactDist;
         }
     }
+
     return n;
 }
 
@@ -334,6 +336,7 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2
             (*contacts)[contacts->size()-n+i].value -= contactDist;
         }
     }
+
     return n;
 }
 

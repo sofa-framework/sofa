@@ -1,15 +1,15 @@
 <?xml version="1.0"?>
 <Node 	name="Root" gravity="0 0 0" dt="1"  >
-  
+
   <RequiredPlugin pluginName="Flexible"/>
   <RequiredPlugin pluginName="image"/>
-   
+
     <VisualStyle displayFlags="showVisual" />
-    
-    
+
+
     <DefaultAnimationLoop />
     <DefaultVisualManagerLoop />
-    
+
   <MeshObjLoader name="mesh" filename="mesh/Armadillo_simplified.obj" triangulate="1"/>
   <MeshToImageEngine  name="rasterizer" src="@mesh" voxelSize="0.8" padSize="1" rotateImage="true" />
   <ImageContainer template="ImageB" name="image" src="@rasterizer" drawBB="false"/>
@@ -36,7 +36,7 @@
     </Node>
 
     <MeshMatrixMass massDensity="0.001" lumping="false"/>
-    
+
   <Node name="Visual"  >
         <VisualModel  fileMesh="mesh/Armadillo_simplified.obj"   />
         <LinearMapping template="MechanicalMapping&lt;Vec3d,ExtVec3f&gt;"  />

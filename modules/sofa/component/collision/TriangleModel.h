@@ -82,6 +82,8 @@ public:
     const Deriv& v1() const;
     const Deriv& v2() const;
     const Deriv& v3() const;
+    const Deriv& v(int i) const;
+
 
     const Deriv& n() const;
     Deriv& n();
@@ -276,6 +278,8 @@ template<class DataTypes>
 inline const typename DataTypes::Deriv& TTriangle<DataTypes>::v2() const { return (*this->model->mstate->getV())[(*(this->model->triangles))[this->index][1]]; }
 template<class DataTypes>
 inline const typename DataTypes::Deriv& TTriangle<DataTypes>::v3() const { return (*this->model->mstate->getV())[(*(this->model->triangles))[this->index][2]]; }
+template<class DataTypes>
+inline const typename DataTypes::Deriv& TTriangle<DataTypes>::v(int i) const { return (*this->model->mstate->getV())[(*(this->model->triangles))[this->index][i]]; }
 
 template<class DataTypes>
 inline const typename DataTypes::Deriv& TTriangle<DataTypes>::n() const { return this->model->normals[this->index]; }

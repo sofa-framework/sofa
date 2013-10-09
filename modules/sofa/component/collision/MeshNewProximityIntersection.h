@@ -87,6 +87,8 @@ public:
 
     static inline int doIntersectionTrianglePoint(SReal dist2, int flags, const Vector3& p1, const Vector3& p2, const Vector3& p3, const Vector3& n, const Vector3& q, OutputVector* contacts, int id, bool swapElems = false);
 
+    static inline int doIntersectionTrianglePoint2(SReal dist2, int flags, const Vector3& p1, const Vector3& p2, const Vector3& p3, const Vector3& n, const Vector3& q, OutputVector* contacts, int id, bool swapElems = false);
+
 protected:
 
     NewProximityIntersection* intersection;
