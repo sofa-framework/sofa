@@ -532,6 +532,15 @@ public:
         void setCz(CudaVec3<real> v) { x.z = v.x; y.z = v.y; z.z = v.z; }
     */
 	
+    static __inline__ __device__ matrix3<real> make(const real& xx, const real& xy, const real& xz, const real& yx, const real& yy, const real& yz, const real& zx, const real& zy, const real& zz)
+    {
+        matrix3<real> M;
+        M.x = CudaVec3<real>::make(xx, xy, xz);
+        M.y = CudaVec3<real>::make(yx, yy, yz);
+        M.z = CudaVec3<real>::make(zx, zy, zz);
+        return M;
+    }
+
 	static __inline__ __device__ matrix3<real> make(const real& s = .0f)
 	{
 		matrix3<real> M;
@@ -560,35 +569,29 @@ public:
     }
     __device__ matrix3<real> operator*(matrix3<real> v)
     {
-        matrix3<real> r;
-        r.x.x = x.x * v.x.x + x.y * v.y.x + x.z * v.z.x;
-        r.x.y = x.x * v.x.y + x.y * v.y.y + x.z * v.z.y;
-        r.x.z = x.x * v.x.z + x.y * v.y.z + x.z * v.z.z;
+        return make( x.x * v.x.x + x.y * v.y.x + x.z * v.z.x,
+                     x.x * v.x.y + x.y * v.y.y + x.z * v.z.y,
+                     x.x * v.x.z + x.y * v.y.z + x.z * v.z.z,
 
-        r.y.x = y.x * v.x.x + y.y * v.y.x + y.z * v.z.x;
-        r.y.y = y.x * v.x.y + y.y * v.y.y + y.z * v.z.y;
-        r.y.z = y.x * v.x.z + y.y * v.y.z + y.z * v.z.z;
+                     y.x * v.x.x + y.y * v.y.x + y.z * v.z.x,
+                     y.x * v.x.y + y.y * v.y.y + y.z * v.z.y,
+                     y.x * v.x.z + y.y * v.y.z + y.z * v.z.z,
 
-        r.z.x = z.x * v.x.x + z.y * v.y.x + z.z * v.z.x;
-        r.z.y = z.x * v.x.y + z.y * v.y.y + z.z * v.z.y;
-        r.z.z = z.x * v.x.z + z.y * v.y.z + z.z * v.z.z;
-        return r;
+                     z.x * v.x.x + z.y * v.y.x + z.z * v.z.x,
+                     z.x * v.x.y + z.y * v.y.y + z.z * v.z.y,
+                     z.x * v.x.z + z.y * v.y.z + z.z * v.z.z );
     }
     __device__ matrix3<real> mulT(matrix3<real> v)
     {
-        matrix3<real> r;
-        r.x.x = x.x * v.x.x + y.x * v.y.x + z.x * v.z.x;
-        r.x.y = x.x * v.x.y + y.x * v.y.y + z.x * v.z.y;
-        r.x.z = x.x * v.x.z + y.x * v.y.z + z.x * v.z.z;
-
-        r.y.x = x.y * v.x.x + y.y * v.y.x + z.y * v.z.x;
-        r.y.y = x.y * v.x.y + y.y * v.y.y + z.y * v.z.y;
-        r.y.z = x.y * v.x.z + y.y * v.y.z + z.y * v.z.z;
-
-        r.z.x = x.z * v.x.x + y.z * v.y.x + z.z * v.z.x;
-        r.z.y = x.z * v.x.y + y.z * v.y.y + z.z * v.z.y;
-        r.z.z = x.z * v.x.z + y.z * v.y.z + z.z * v.z.z;
-        return r;
+        return make( x.x * v.x.x + y.x * v.y.x + z.x * v.z.x,
+                     x.x * v.x.y + y.x * v.y.y + z.x * v.z.y,
+                     x.x * v.x.z + y.x * v.y.z + z.x * v.z.z,
+                     x.y * v.x.x + y.y * v.y.x + z.y * v.z.x,
+                     x.y * v.x.y + y.y * v.y.y + z.y * v.z.y,
+                     x.y * v.x.z + y.y * v.y.z + z.y * v.z.z,
+                     x.z * v.x.x + y.z * v.y.x + z.z * v.z.x,
+                     x.z * v.x.y + y.z * v.y.y + z.z * v.z.y,
+                     x.z * v.x.z + y.z * v.y.z + z.z * v.z.z );
     }
     __device__ real determinant(matrix3<real> v)
     {
@@ -604,18 +607,16 @@ public:
     __device__ matrix3<real> invert(matrix3<real> v)
     {
         real det = determinant(v);
-        matrix3<real> r;
-        r.x.x = (v.y.y*v.z.z - v.z.y*v.y.z)/det;
-        r.y.x = (v.y.z*v.z.x - v.z.z*v.y.x)/det;
-        r.z.x = (v.y.x*v.z.y - v.z.x*v.y.y)/det;
-        r.x.y = (v.z.y*v.x.z - v.x.y*v.z.z)/det;
-        r.y.y = (v.z.z*v.x.x - v.x.z*v.z.x)/det;
-        r.z.y = (v.z.x*v.x.y - v.x.x*v.z.y)/det;
-        r.x.z = (v.x.y*v.y.z - v.y.y*v.x.z)/det;
-        r.y.z = (v.x.z*v.y.x - v.y.z*v.x.x)/det;
-        r.z.z = (v.x.x*v.y.y - v.y.x*v.x.y)/det;
 
-        return r;
+        return make( (v.y.y*v.z.z - v.z.y*v.y.z)/det,
+                     (v.z.y*v.x.z - v.x.y*v.z.z)/det,
+                     (v.x.y*v.y.z - v.y.y*v.x.z)/det,
+                     (v.y.z*v.z.x - v.z.z*v.y.x)/det,
+                     (v.z.z*v.x.x - v.x.z*v.z.x)/det,
+                     (v.x.z*v.y.x - v.y.z*v.x.x)/det,
+                     (v.y.x*v.z.y - v.z.x*v.y.y)/det,
+                     (v.z.x*v.x.y - v.x.x*v.z.y)/det,
+                     (v.x.x*v.y.y - v.y.x*v.x.y)/det );
     }
     __device__ real mulX(CudaVec3<real> v)
     {
