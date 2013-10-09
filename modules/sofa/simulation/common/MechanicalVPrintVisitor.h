@@ -71,6 +71,22 @@ public:
     virtual const char* getClassName() const { return "MechanicalVPrintWithElapsedTimeVisitor"; }
 };
 
+
+
+class SOFA_SIMULATION_COMMON_API DofPrintVisitor : public Visitor
+{
+public:
+    DofPrintVisitor(const core::ExecParams* params /* PARAMS FIRST  = core::ExecParams::defaultInstance()*/, ConstMultiVecId v, const std::string& dofname, std::ostream& =std::cerr );
+    virtual Result processNodeTopDown(simulation::Node* node);
+
+    virtual const char* getClassName() const { return "DofPrintVisitor"; }
+protected:
+    ConstMultiVecId v_;
+    std::ostream& out_;
+    const std::string& dofname_;
+};
+
+
 } // namespace simulation
 
 } // namespace sofa
