@@ -764,8 +764,8 @@ template <typename Real>
 Vec<3,Real> IntrUtil<Real>::nearestPointOnSeg(const Vec<3,Real> & seg0,const Vec<3,Real> & seg1,const Vec<3,Real> & point){
     const Vec<3,Real> AB = seg1-seg0;
     const Vec<3,Real> AQ = point -seg0;
-    SReal A;
-    SReal b;
+    Real A;
+    Real b;
     A = AB*AB;
     b = AQ*AB;
 

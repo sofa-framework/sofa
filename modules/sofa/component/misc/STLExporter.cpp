@@ -301,9 +301,9 @@ void STLExporter::writeSTLBinary()
         for (int j=0;j<3;j++)
         {
             /* vertices */
-            float iOne = positionIndices[ vecTri[i][j] ][0];
-            float iTwo = positionIndices[ vecTri[i][j] ][1];
-            float iThree = positionIndices[ vecTri[i][j] ][2];
+            float iOne = (float)positionIndices[ vecTri[i][j] ][0];
+            float iTwo = (float)positionIndices[ vecTri[i][j] ][1];
+            float iThree = (float)positionIndices[ vecTri[i][j] ][2];
             outfile->write( (char*)&iOne, 4);
             outfile->write( (char*)&iTwo, 4);
             outfile->write( (char*)&iThree, 4);

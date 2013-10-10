@@ -1050,7 +1050,7 @@ void MultithreadGUI::calcProjection()
 {
     int width = _W;
     int height = _H;
-    double xNear, yNear, xOrtho, yOrtho;
+    double xNear, yNear/*, xOrtho, yOrtho*/;
     double xFactor = 1.0, yFactor = 1.0;
     double offset;
     double xForeground, yForeground, zForeground, xBackground, yBackground,
@@ -1076,10 +1076,10 @@ void MultithreadGUI::calcProjection()
     yNear = 0.35 * vparams->zNear();
     offset = 0.001 * vparams->zNear(); // for foreground and background planes
 
-    xOrtho = fabs(vparams->sceneTransform().translation[2]) * xNear
-            / vparams->zNear();
-    yOrtho = fabs(vparams->sceneTransform().translation[2]) * yNear
-            / vparams->zNear();
+//    xOrtho = fabs(vparams->sceneTransform().translation[2]) * xNear
+//            / vparams->zNear();
+//    yOrtho = fabs(vparams->sceneTransform().translation[2]) * yNear
+//            / vparams->zNear();
 
     if ((height != 0) && (width != 0))
     {

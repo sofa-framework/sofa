@@ -89,18 +89,18 @@ void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
         m_translationTex = TexCoord((float)atof(arg->getAttribute("du","0.0")),(float)atof(arg->getAttribute("dv","0.0")));
 
     if (arg->getAttribute("rx")!=NULL || arg->getAttribute("ry")!=NULL || arg->getAttribute("rz")!=NULL)
-        m_rotation.setValue(Vector3((SReal)(atof(arg->getAttribute("rx","0.0"))),(SReal)(atof(arg->getAttribute("ry","0.0"))),(SReal)(atof(arg->getAttribute("rz","0.0")))));
+        m_rotation.setValue(Vec3Real((Real)(atof(arg->getAttribute("rx","0.0"))),(Real)(atof(arg->getAttribute("ry","0.0"))),(Real)(atof(arg->getAttribute("rz","0.0")))));
 
     if (arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
-        m_translation.setValue(Vector3((SReal)atof(arg->getAttribute("dx","0.0")), (SReal)atof(arg->getAttribute("dy","0.0")), (SReal)atof(arg->getAttribute("dz","0.0"))));
+        m_translation.setValue(Vec3Real((Real)atof(arg->getAttribute("dx","0.0")), (Real)atof(arg->getAttribute("dy","0.0")), (Real)atof(arg->getAttribute("dz","0.0"))));
 
     if (arg->getAttribute("scale")!=NULL)
     {
-        m_scale.setValue(Vector3((SReal)atof(arg->getAttribute("scale","1.0")), (SReal)atof(arg->getAttribute("scale","1.0")), (SReal)atof(arg->getAttribute("scale","1.0"))));
+        m_scale.setValue(Vec3Real((Real)atof(arg->getAttribute("scale","1.0")), (Real)atof(arg->getAttribute("scale","1.0")), (Real)atof(arg->getAttribute("scale","1.0"))));
     }
     else if (arg->getAttribute("sx")!=NULL || arg->getAttribute("sy")!=NULL || arg->getAttribute("sz")!=NULL)
     {
-        m_scale.setValue(Vector3((SReal)atof(arg->getAttribute("sx","1.0")), (SReal)atof(arg->getAttribute("sy","1.0")), (SReal)atof(arg->getAttribute("sz","1.0"))));
+        m_scale.setValue(Vec3Real((Real)atof(arg->getAttribute("sx","1.0")), (Real)atof(arg->getAttribute("sy","1.0")), (Real)atof(arg->getAttribute("sz","1.0"))));
     }
 }
 
@@ -131,9 +131,9 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
     , m_vertNormIdx		(initData   (&m_vertNormIdx, "vertNormIdx", "If vertices have multiple normals/texcoords stores vertices normal indices"))
     , fileMesh          (initData   (&fileMesh, "fileMesh"," Path to the model"))
     , texturename       (initData   (&texturename, "texturename", "Name of the Texture"))
-    , m_translation     (initData   (&m_translation, Vector3(), "translation", "Initial Translation of the object"))
-    , m_rotation        (initData   (&m_rotation, Vector3(), "rotation", "Initial Rotation of the object"))
-    , m_scale           (initData   (&m_scale, Vector3(1.0,1.0,1.0), "scale3d", "Initial Scale of the object"))
+    , m_translation     (initData   (&m_translation, Vec3Real(), "translation", "Initial Translation of the object"))
+    , m_rotation        (initData   (&m_rotation, Vec3Real(), "rotation", "Initial Rotation of the object"))
+    , m_scale           (initData   (&m_scale, Vec3Real(1.0,1.0,1.0), "scale3d", "Initial Scale of the object"))
     , m_scaleTex        (initData   (&m_scaleTex, TexCoord(1.0,1.0), "scaleTex", "Scale of the texture"))
     , m_translationTex  (initData   (&m_translationTex, TexCoord(1.0,1.0), "translationTex", "Translation of the texture"))
 #ifdef SOFA_SMP
@@ -730,9 +730,9 @@ void VisualModelImpl::init()
     applyTranslation(m_translation.getValue()[0], m_translation.getValue()[1], m_translation.getValue()[2]);
 
 
-    m_translation.setValue(Vector3());
-    m_rotation.setValue(Vector3());
-    m_scale.setValue(Vector3(1,1,1));
+    m_translation.setValue(Vec3Real());
+    m_rotation.setValue(Vec3Real());
+    m_scale.setValue(Vec3Real(1,1,1));
 
     VisualModel::init();
     updateVisual();
