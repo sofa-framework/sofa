@@ -122,7 +122,7 @@ void GenericConstraintCorrection::addComplianceInConstraintSpace(const Constrain
     }
 }
 
-void GenericConstraintCorrection::computeAndApplyMotionCorrection(const core::ConstraintParams */*cparams*/, core::MultiVecCoordId /*xId*/, core::MultiVecDerivId /*vId*/, core::MultiVecDerivId /*fId*/, const defaulttype::BaseVector *lambda) {
+void GenericConstraintCorrection::computeAndApplyMotionCorrection(const core::ConstraintParams * /*cparams*/, core::MultiVecCoordId /*xId*/, core::MultiVecDerivId /*vId*/, core::MultiVecDerivId /*fId*/, const defaulttype::BaseVector *lambda) {
     if (!odesolver) return;
 
     const double positionFactor = odesolver->getPositionIntegrationFactor();
@@ -133,13 +133,14 @@ void GenericConstraintCorrection::computeAndApplyMotionCorrection(const core::Co
     }
 }
 
+
 void GenericConstraintCorrection::computeResidual(const core::ExecParams* params, BaseVector *lambda) {
     for (unsigned i = 0; i < linearsolvers.size(); i++) {
         linearsolvers[i]->computeResidual(params,lambda);
     }
 }
 
-void GenericConstraintCorrection::computeAndApplyPositionCorrection(const ConstraintParams */*cparams*/, MultiVecCoordId /*xId*/, MultiVecDerivId /*fId*/, const BaseVector *lambda) {
+void GenericConstraintCorrection::computeAndApplyPositionCorrection(const ConstraintParams * /*cparams*/, MultiVecCoordId /*xId*/, MultiVecDerivId /*fId*/, const BaseVector *lambda) {
     if (!odesolver) return;
 
     const double positionFactor = odesolver->getPositionIntegrationFactor();
@@ -149,7 +150,7 @@ void GenericConstraintCorrection::computeAndApplyPositionCorrection(const Constr
     }
 }
 
-void GenericConstraintCorrection::computeAndApplyVelocityCorrection(const ConstraintParams */*cparams*/, MultiVecDerivId /*vId*/, MultiVecDerivId /*fId*/, const BaseVector *lambda) {
+void GenericConstraintCorrection::computeAndApplyVelocityCorrection(const ConstraintParams * /*cparams*/, MultiVecDerivId /*vId*/, MultiVecDerivId /*fId*/, const BaseVector *lambda) {
     if (!odesolver) return;
 
     const double velocityFactor = odesolver->getVelocityIntegrationFactor();
@@ -182,7 +183,7 @@ void GenericConstraintCorrection::getComplianceMatrix(defaulttype::BaseMatrix* M
     }
 }
 
-void GenericConstraintCorrection::applyPredictiveConstraintForce(const core::ConstraintParams */*cparams*/, core::MultiVecDerivId /*f*/, const defaulttype::BaseVector */*lambda*/) {
+void GenericConstraintCorrection::applyPredictiveConstraintForce(const core::ConstraintParams * /*cparams*/, core::MultiVecDerivId /*f*/, const defaulttype::BaseVector * /*lambda*/) {
 //    printf("GenericConstraintCorrection::applyPredictiveConstraintForce not implemented\n");
 //    if (mstate)
 //    {

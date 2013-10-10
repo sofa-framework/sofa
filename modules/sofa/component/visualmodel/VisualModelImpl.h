@@ -238,9 +238,10 @@ public:
 
     /// @name Initial transformation attributes
     /// @{
-    Data< Vector3 > m_translation;
-    Data< Vector3 > m_rotation;
-    Data< Vector3 > m_scale;
+    typedef Vec<3,Real> Vec3Real;
+    Data< Vec3Real > m_translation;
+    Data< Vec3Real > m_rotation;
+    Data< Vec3Real > m_scale;
 
     Data< TexCoord > m_scaleTex;
     Data< TexCoord > m_translationTex;
@@ -262,17 +263,17 @@ public:
 
     void setTranslation(SReal dx, SReal dy, SReal dz)
     {
-        m_translation.setValue(Vector3(dx,dy,dz));
+        m_translation.setValue(Vec3Real(dx,dy,dz));
     };
 
     void setRotation(SReal rx, SReal ry, SReal rz)
     {
-        m_rotation.setValue(Vector3(rx,ry,rz));
+        m_rotation.setValue(Vec3Real(rx,ry,rz));
     };
 
     void setScale(SReal sx, SReal sy, SReal sz)
     {
-        m_scale.setValue(Vector3(sx,sy,sz));
+        m_scale.setValue(Vec3Real(sx,sy,sz));
     };
     /// @}
 

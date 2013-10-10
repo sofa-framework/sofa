@@ -39,7 +39,7 @@ bool TIntrSphereOBB<TDataTypes,TDataTypes2>::Find(){
         int num_axis = 0;
         Real alpha = mBox->axis(0) * centeredPt/mBox->extent(0);
         for(int i = 1 ; i < 3 ; ++i){
-            SReal temp = mBox->axis(i) * centeredPt/mBox->extent(i);
+            Real temp = mBox->axis(i) * centeredPt/mBox->extent(i);
             if(fabs(temp) > fabs(alpha)){
                 alpha = temp;
                 num_axis = i;
