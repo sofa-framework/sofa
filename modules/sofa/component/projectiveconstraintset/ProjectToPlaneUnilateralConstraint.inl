@@ -281,7 +281,7 @@ void ProjectToPlaneUnilateralConstraint<DataTypes>::draw(const core::visual::Vis
         points.push_back( o+(-t1+t2)* f_drawPlane.getValue() );
         points.push_back( o+(-t1-t2)* f_drawPlane.getValue() );
         points.push_back( o+( t1-t2)* f_drawPlane.getValue() );
-        vparams->drawTool()->drawTriangleFan(points,normals, Vec<4,float>(0.4f,0.0f,0,1f));
+        vparams->drawTool()->drawTriangleFan(points,normals, Vec<4,float>(0.4f,0.0f,0.0f,1.0f));
     }
 #endif /* SOFA_NO_OPENGL */
 }
