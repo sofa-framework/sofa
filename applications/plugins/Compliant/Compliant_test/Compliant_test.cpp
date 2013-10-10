@@ -44,7 +44,6 @@
 #include <sofa/component/projectiveconstraintset/FixedConstraint.h>
 
 //#include <plugins/Compliant/ComplianceSolver.h>
-#include <plugins/Compliant/UniformCompliance.h>
 
 #include <sofa/helper/ArgumentParser.h>
 #include <sofa/simulation/common/xml/initXml.h>
