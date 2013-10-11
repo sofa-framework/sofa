@@ -62,8 +62,8 @@ using helper::vector;
 using defaulttype::Vec;
 using defaulttype::Vector3;
 using defaulttype::Mat;
-using namespace cimg_library;
-using namespace helper;
+using cimg_library::CImg;
+using cimg_library::CImgList;
 
 /**
  * This class merges images into one

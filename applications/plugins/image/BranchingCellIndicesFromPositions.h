@@ -43,8 +43,7 @@ namespace engine
 using helper::vector;
 using defaulttype::Vec;
 using defaulttype::Mat;
-using namespace helper;
-using namespace cimg_library;
+using cimg_library::CImg;
 
 /**
  * Returns global index of branching image voxels at sample locations, given a fine image of superimposed offsets

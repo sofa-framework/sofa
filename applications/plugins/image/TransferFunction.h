@@ -48,7 +48,8 @@ namespace engine
 {
 
 using helper::vector;
-using namespace cimg_library;
+using cimg_library::CImg;
+using cimg_library::CImgList;
 
 /**
  * This class transforms pixel intensities

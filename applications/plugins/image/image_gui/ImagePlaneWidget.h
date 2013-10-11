@@ -74,7 +74,7 @@ namespace gui
 namespace qt
 {
 
-using namespace helper;
+using cimg_library::CImg;
 
 //-----------------------------------------------------------------------------------------------//
 //	image widget -> draw image and handle mouse events

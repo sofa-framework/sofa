@@ -72,8 +72,8 @@ namespace engine
 {
 
 using helper::vector;
-using namespace helper;
-using namespace cimg_library;
+using cimg_library::CImg;
+using cimg_library::CImgList;
 
 /**
  * This class computes a filtered image
@@ -322,8 +322,8 @@ protected:
         case THRESHOLD:
             if(updateImage)
             {
-                Ti valuemin=cimg::type<Ti>::min(); if(p.size()) valuemin=(Ti)p[0];
-                Ti valuemax=cimg::type<Ti>::max(); if(p.size()>1) valuemax=(Ti)p[1];
+                Ti valuemin=cimg_library::cimg::type<Ti>::min(); if(p.size()) valuemin=(Ti)p[0];
+                Ti valuemax=cimg_library::cimg::type<Ti>::max(); if(p.size()>1) valuemax=(Ti)p[1];
 
                 cimglist_for(img,l)
                         cimg_forXYZ(img(l),x,y,z)
@@ -393,7 +393,7 @@ protected:
             {
                 char axis1='x';  if(p.size()) { if((int)p[0]==1) axis1='y'; else if((int)p[0]==2) axis1='z'; }
                 char axis2='x';  if(p.size()>1) { if((int)p[1]==1) axis2='y'; else if((int)p[1]==2) axis2='z'; }
-                if (axis1>axis2) cimg::swap(axis1,axis2);
+                if (axis1>axis2) cimg_library::cimg::swap(axis1,axis2);
                 CImg_3x3x3(I,To);
                 cimglist_for(img,l)
                 {
@@ -412,10 +412,10 @@ protected:
         case NORMALIZE:
             if(updateImage)
             {
-                To o1=cimg::type<To>::min();    if(p.size())   o1=(To)p[0];
-                To o2=cimg::type<To>::max();    if(p.size()>1) o2=(To)p[1];
-                Ti i1=cimg::type<Ti>::min();    if(p.size()>2) i1=(Ti)p[2];
-                Ti i2=cimg::type<Ti>::max();    if(p.size()>3) i2=(Ti)p[3];
+                To o1=cimg_library::cimg::type<To>::min();    if(p.size())   o1=(To)p[0];
+                To o2=cimg_library::cimg::type<To>::max();    if(p.size()>1) o2=(To)p[1];
+                Ti i1=cimg_library::cimg::type<Ti>::min();    if(p.size()>2) i1=(Ti)p[2];
+                Ti i2=cimg_library::cimg::type<Ti>::max();    if(p.size()>3) i2=(Ti)p[3];
                 cimglist_for(img,l) {img(l)=inimg(l).get_cut(i1 , i2).get_normalize( o1   , o2);  }
             }
             break;
@@ -453,7 +453,7 @@ protected:
                         {
                             if(interpolation==0) for(unsigned int k=0; k<nbc; k++) img(l)(x,y,z,k) = (To) inimg(l).atXYZ(sofa::helper::round((double)p[0]),sofa::helper::round((double)p[1]),sofa::helper::round((double)p[2]),k);
                             else if(interpolation==1) for(unsigned int k=0; k<nbc; k++) img(l)(x,y,z,k) = (To) inimg(l).linear_atXYZ(p[0],p[1],p[2],k,OutValue);
-                            else if(interpolation==2) for(unsigned int k=0; k<nbc; k++) img(l)(x,y,z,k) = (To) inimg(l).cubic_atXYZ(p[0],p[1],p[2],k,OutValue,cimg::type<Ti>::min(),cimg::type<Ti>::max());
+                            else if(interpolation==2) for(unsigned int k=0; k<nbc; k++) img(l)(x,y,z,k) = (To) inimg(l).cubic_atXYZ(p[0],p[1],p[2],k,OutValue,cimg_library::cimg::type<Ti>::min(),cimg_library::cimg::type<Ti>::max());
                         }
                     }
                 }

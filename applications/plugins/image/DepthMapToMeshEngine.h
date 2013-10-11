@@ -51,7 +51,7 @@ namespace engine
 using helper::vector;
 using helper::fixed_array;
 using defaulttype::Vec;
-using namespace cimg_library;
+using cimg_library::CImg;
 
 /**
  * This class computes a mesh from a depth map image

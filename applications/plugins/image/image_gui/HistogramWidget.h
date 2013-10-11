@@ -60,8 +60,7 @@ namespace gui
 namespace qt
 {
 
-using namespace helper;
-using namespace cimg_library;
+using cimg_library::CImg;
 using defaulttype::Vec;
 
 //-----------------------------------------------------------------------------------------------//
@@ -139,7 +138,7 @@ public:
         if(!clicked)	this->currentpos=pos;
         else
         {
-            if(cimg::abs(clamp[1]-pos)<cimg::abs(pos-clamp[0])) this->clamp[1]=pos;
+            if(cimg_library::cimg::abs(clamp[1]-pos)<cimg_library::cimg::abs(pos-clamp[0])) this->clamp[1]=pos;
             else this->clamp[0]=pos;
             emit clampModified();
         }

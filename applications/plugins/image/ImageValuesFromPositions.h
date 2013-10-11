@@ -48,8 +48,7 @@ namespace engine
 using helper::vector;
 using defaulttype::Vec;
 using defaulttype::Mat;
-using namespace helper;
-using namespace cimg_library;
+using cimg_library::CImg;
 
 /**
  * Get image intensities at sample locations
@@ -93,7 +92,7 @@ struct ImageValuesFromPositionsSpecialization<defaulttype::IMAGELABEL_IMAGE>
             {
                 Coord Tp = inT->toImage(pos[i]);
                 if(!in->isInside(Tp[0],Tp[1],Tp[2]))  val[i] = outval;
-                else val[i] = (Real)img.cubic_atXYZ(Tp[0],Tp[1],Tp[2],0,(T)outval,cimg::type<T>::min(),cimg::type<T>::max());
+                else val[i] = (Real)img.cubic_atXYZ(Tp[0],Tp[1],Tp[2],0,(T)outval,cimg_library::cimg::type<T>::min(),cimg_library::cimg::type<T>::max());
             }
         }
             break;
@@ -160,7 +159,7 @@ struct ImageValuesFromPositionsSpecialization<defaulttype::IMAGELABEL_BRANCHINGI
 //            {
 //                Coord Tp = inT->toImage(pos[i]);
 //                if(!in->isInside(Tp[0],Tp[1],Tp[2]))  val[i] = outval;
-//                else val[i] = (Real)img.cubic_atXYZ(Tp[0],Tp[1],Tp[2],0,(T)outval,cimg::type<T>::min(),cimg::type<T>::max());
+//                else val[i] = (Real)img.cubic_atXYZ(Tp[0],Tp[1],Tp[2],0,(T)outval,cimg_library::cimg::type<T>::min(),cimg_library::cimg::type<T>::max());
 //            }
 //        }
 //            break;

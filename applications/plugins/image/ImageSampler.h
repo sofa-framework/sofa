@@ -59,7 +59,6 @@ using helper::vector;
 using defaulttype::Vec;
 using defaulttype::Mat;
 using cimg_library::CImg;
-using namespace sofa::helper;
 
 
 
@@ -190,7 +189,7 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
         typename ImageSampler::waDist distData(sampler->distances);
         distData->setDimensions(dim);
         CImg<Real>& dist = distData->getCImg(); dist.fill(-1);
-        cimg_forXYZC(inimg,x,y,z,c) if(inimg(x,y,z,c)) dist(x,y,z)=cimg::type<Real>::max();
+        cimg_forXYZC(inimg,x,y,z,c) if(inimg(x,y,z,c)) dist(x,y,z)=cimg_library::cimg::type<Real>::max();
 
         // list of seed points
         std::set<std::pair<Real,sofa::defaulttype::Vec<3,int> > > trial;
@@ -238,7 +237,7 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
             if(Lloyd<Real>(pos_VoxelIndex,pos_voronoiIndex,voronoi)) // one lloyd iteration
             {
                 // recompute distance from scratch
-                cimg_foroff(dist,off) if(dist[off]!=-1) dist[off]=cimg::type<Real>::max();
+                cimg_foroff(dist,off) if(dist[off]!=-1) dist[off]=cimg_library::cimg::type<Real>::max();
                 for(unsigned int i=0; i<fpos_voronoiIndex.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, fpos_VoxelIndex[i], fpos_voronoiIndex[i]);
                 for(unsigned int i=0; i<pos_voronoiIndex.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, pos_VoxelIndex[i], pos_voronoiIndex[i]);
                 if(useDijkstra) dijkstra<Real,T>(trial,dist, voronoi,  sampler->transform.getValue().getScale(), biasFactor);
@@ -292,7 +291,7 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
         typename ImageSampler::waDist distData(sampler->distances);
         distData->setDimensions(dim);
         CImg<Real>& dist = distData->getCImg(); dist.fill(-1);
-        cimg_forXYZC(inimg,x,y,z,c) if(inimg(x,y,z,c)) dist(x,y,z)=cimg::type<Real>::max();
+        cimg_forXYZC(inimg,x,y,z,c) if(inimg(x,y,z,c)) dist(x,y,z)=cimg_library::cimg::type<Real>::max();
 
         // list of seed points
         std::set<std::pair<Real,sofa::defaulttype::Vec<3,int> > > trial;
@@ -347,7 +346,7 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
                 if(Lloyd<Real>(newpos_VoxelIndex,newpos_voronoiIndex,voronoi))
                 {
                     // recompute distance from scratch
-                    cimg_foroff(dist,off) if(dist[off]!=-1) dist[off]=cimg::type<Real>::max();
+                    cimg_foroff(dist,off) if(dist[off]!=-1) dist[off]=cimg_library::cimg::type<Real>::max();
                     for(unsigned int i=0; i<fpos_VoxelIndex.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, fpos_VoxelIndex[i], fpos_voronoiIndex[i]);
                     for(unsigned int i=0; i<pos_VoxelIndex.size(); i++)  AddSeedPoint<Real>(trial,dist,voronoi, pos_VoxelIndex[i], pos_voronoiIndex[i]);
                     for(unsigned int i=0; i<newpos_VoxelIndex.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, newpos_VoxelIndex[i], newpos_voronoiIndex[i]);
@@ -867,7 +866,7 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
         dist.setDimensions(dim);
         dist.imgList[0].cloneTopology<T> (inimg,1,-1.0);
 
-        bimg_forCVoffT(in.ref(),c,v,off1D,t) if(t==sampler->time) if(in.ref()(off1D,v,c,t)) dist(off1D,v,c,0)=cimg::type<Real>::max();
+        bimg_forCVoffT(in.ref(),c,v,off1D,t) if(t==sampler->time) if(in.ref()(off1D,v,c,t)) dist(off1D,v,c,0)=cimg_library::cimg::type<Real>::max();
 
         // list of seed points
         typedef typename ImageSampler::ImageTypes::VoxelIndex VoxelIndex;
@@ -917,7 +916,7 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
             if(Lloyd<Real>(pos_VoxelIndex,pos_voronoiIndex,voronoi)) // one lloyd iteration
             {
                 // recompute distance from scratch
-                bimg_forCVoffT(dist,c,v,off1D,t) if(dist(off1D,v,c,t)!=-1) dist(off1D,v,c,t)=cimg::type<Real>::max();
+                bimg_forCVoffT(dist,c,v,off1D,t) if(dist(off1D,v,c,t)!=-1) dist(off1D,v,c,t)=cimg_library::cimg::type<Real>::max();
                 for(unsigned int i=0; i<fpos_voronoiIndex.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, fpos_VoxelIndex[i], fpos_voronoiIndex[i]);
                 for(unsigned int i=0; i<pos_voronoiIndex.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, pos_VoxelIndex[i], pos_voronoiIndex[i]);
                 if(useDijkstra) dijkstra<Real,T>(trial,dist, voronoi,  sampler->transform.getValue().getScale(), biasFactor);

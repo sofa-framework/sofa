@@ -51,7 +51,8 @@ namespace engine
 using helper::vector;
 using defaulttype::Vec;
 using defaulttype::Mat;
-using namespace cimg_library;
+using cimg_library::CImg;
+using cimg_library::CImgList;
 
 /**
  * This class computes an isosurface from an image using marching cubes algorithm

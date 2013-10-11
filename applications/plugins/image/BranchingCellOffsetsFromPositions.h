@@ -43,8 +43,7 @@ namespace engine
 using helper::vector;
 using defaulttype::Vec;
 using defaulttype::Mat;
-using namespace helper;
-using namespace cimg_library;
+using cimg_library::CImg;
 
 /**
  * Returns offsets of superimposed voxels at positions corresponding to certains labels (image intensity values)
