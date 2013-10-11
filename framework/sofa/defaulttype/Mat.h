@@ -116,19 +116,19 @@ public:
     template<int L2, int C2, typename real2>
     Mat(const Mat<L2,C2,real2>& m)
     {
-        unsigned maxL = std::min( L, L2 );
-        unsigned maxC = std::min( C, C2 );
+        int maxL = std::min( L, L2 );
+        int maxC = std::min( C, C2 );
 
-        for( unsigned l=0 ; l<maxL ; ++l )
+        for( int l=0 ; l<maxL ; ++l )
         {
-            for( unsigned c=0 ; c<maxC ; ++c )
+            for( int c=0 ; c<maxC ; ++c )
                 this->elems[l][c] = m[l][c];
-            for( unsigned c=maxC ; c<C ; ++c )
+            for( int c=maxC ; c<C ; ++c )
                 this->elems[l][c] = 0;
         }
 
-        for( unsigned l=maxL ; l<L ; ++l )
-            for( unsigned c=0 ; c<C ; ++c )
+        for( int l=maxL ; l<L ; ++l )
+            for( int c=0 ; c<C ; ++c )
                 this->elems[l][c] = 0;
     }
 
