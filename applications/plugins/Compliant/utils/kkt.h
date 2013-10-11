@@ -177,6 +177,64 @@ public:
 	
 };
 
+struct kkt_opt {
+	typedef sofa::component::linearsolver::AssembledSystem sys_type;
+	
+	typedef sys_type::mat mat;
+	typedef sys_type::vec vec;
+	
+	const sys_type& sys;
+	mutable vec result, v, lambda, tmp, Pv, HPv, JTlambda, JPv, Clambda, zob;
+	
+	const unsigned m;
+	const unsigned n;
+	
+	const vec* scaling;
+
+	kkt_opt(const sys_type& sys) 
+		: sys(sys),
+		  m(sys.m),
+		  n(sys.n),
+		  scaling(0)
+		{ 
+		result.resize( m + n );
+		assert( n );
+		// std::cerr << sys.C << std::endl; 
+	}
+	
+
+	template<class Vec>
+	const vec& operator()(const Vec& x) const {
+		{
+			v = x.head( m );
+			lambda = x.tail( n );
+		}
+		
+		Pv.noalias() = sys.P * v;
+
+		// parallelizable 
+		{
+			HPv.noalias() = sys.H * Pv;
+			
+			if( scaling ) zob = scaling->cwiseProduct( lambda ) ;
+			else zob = lambda;
+			
+			JTlambda.noalias() = sys.J.transpose() * zob;
+			JPv.noalias() = sys.J * Pv;
+			if( scaling ) JPv = scaling->cwiseProduct(JPv);
+			
+			Clambda.noalias() = sys.C * lambda;
+		}
+		
+		tmp.noalias() = HPv - JTlambda;
+		
+		result.head(sys.m).noalias() = sys.P * tmp;
+		result.tail(sys.n).noalias() = -JPv - Clambda;
+
+		return result;
+	}
+};
+
 
 
 

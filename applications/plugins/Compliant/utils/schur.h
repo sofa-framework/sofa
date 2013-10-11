@@ -22,10 +22,12 @@ struct schur {
 	
 	const sys_type& sys;
 	const MatrixMinv& Minv;
-
+	const mat JP;
 	schur(const sys_type& sys, const MatrixMinv& Minv) 
 		: sys(sys),
-		  Minv(Minv) {
+		  Minv(Minv),
+		  JP(sys.J * sys.P)
+		{
 		assert( sys.n );
 	};
 
@@ -34,11 +36,11 @@ struct schur {
 	template<class Vec>
 	const vec& operator()(const Vec& x) const {
 		
-		tmp1.noalias() = sys.J.transpose() * x;
-		tmp2.noalias() = sys.P * tmp1;
+		tmp2.noalias() = JP.transpose() * x;
 		Minv.solve(tmp1, tmp2);
-		tmp2.noalias() = sys.P * tmp1;
-		result.noalias() = sys.J * tmp2;
+		tmp2.noalias() = sys.C * x;
+		tmp1 += tmp2;
+		result.noalias() = JP * tmp1;
 		
 		return result;
 	};
