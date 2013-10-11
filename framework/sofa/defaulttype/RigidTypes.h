@@ -961,6 +961,7 @@ template<> inline const char* Rigid3fTypes::Name() { return "Rigid3f"; }
 //#endif
 #endif
 
+
 #ifdef SOFA_FLOAT
 typedef Rigid3fTypes Rigid3Types;
 typedef Rigid3fMass Rigid3Mass;

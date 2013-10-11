@@ -48,6 +48,9 @@ public:
     Data<bool> useSphereTriangle;
     Data<bool> usePointPoint;
     Data<bool> useSurfaceNormals;
+    Data<bool> useLinePoint;
+    Data<bool> useTriangleLine;
+
 protected:
     MinProximityIntersection();
 public:
