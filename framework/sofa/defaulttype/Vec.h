@@ -246,10 +246,17 @@ public:
 
 
     /// Constructor from an N-1 elements vector and an additional value (added at the end).
-    Vec(const Vec<N-1,real>& v, real r1=0)
+    Vec(const Vec<N-1,real>& v, real r1)
     {
         BOOST_STATIC_ASSERT(N > 1);
         set( v, r1 );
+    }
+
+    template<int N2, typename real2>
+    Vec(const Vec<N2,real2>& v)
+    {
+        BOOST_STATIC_ASSERT(N > 1);
+        set( v, 0 );
     }
 
     template<typename real2>
