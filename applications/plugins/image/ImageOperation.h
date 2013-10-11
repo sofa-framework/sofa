@@ -51,8 +51,8 @@ namespace engine
 {
 
 using helper::vector;
-using namespace helper;
-using namespace cimg_library;
+using cimg_library::CImg;
+using cimg_library::CImgList;
 
 /**
  * This class computes an image as an operation between two images

@@ -53,7 +53,8 @@ namespace component
 namespace misc
 {
 
-using namespace cimg_library;
+using cimg_library::CImg;
+using cimg_library::CImgList;
 using defaulttype::Vec;
 using defaulttype::Vector3;
 

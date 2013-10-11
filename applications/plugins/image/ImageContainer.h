@@ -59,10 +59,7 @@ using helper::vector;
 using defaulttype::Vec;
 using defaulttype::Vector3;
 using defaulttype::Mat;
-using namespace cimg_library;
-
-
-
+using cimg_library::CImg;
 
 
 /// Default implementation does not compile
@@ -146,7 +143,7 @@ struct ImageContainerSpecialization<defaulttype::IMAGELABEL_IMAGE>
 
             double scale[3]={1.,1.,1.},translation[3]={0.,0.,0.},affine[9]={1.,0.,0.,0.,1.,0.,0.,0.,1.},offsetT=0.,scaleT=1.;
             bool isPerspective=false;
-            wimage->getCImgList().assign(load_metaimage<T,double>(fname.c_str(),scale,translation,affine,&offsetT,&scaleT,&isPerspective));
+            wimage->getCImgList().assign(cimg_library::load_metaimage<T,double>(fname.c_str(),scale,translation,affine,&offsetT,&scaleT,&isPerspective));
             for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)scale[i];
             for(unsigned int i=0;i<3;i++) wtransform->getTranslation()[i]=(Real)translation[i];
             Mat<3,3,Real> R; for(unsigned int i=0;i<3;i++) for(unsigned int j=0;j<3;j++) R[i][j]=(Real)affine[3*i+j];

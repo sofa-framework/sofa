@@ -56,8 +56,8 @@ namespace engine
 using helper::vector;
 using defaulttype::Vec;
 using defaulttype::Mat;
-using namespace cimg_library;
-using namespace helper;
+using cimg_library::CImg;
+using cimg_library::CImgList;
 
 /**
  * This class rasterizes meshes into a boolean image (1: inside mesh, 0: outside) or a scalar image (val: inside mesh, 0: outside)
@@ -520,7 +520,7 @@ protected:
         Coord P0(p0),P1(p1);
 
         Coord delta = P1 - P0;
-        unsigned int dmax = cimg::max(cimg::abs(delta[0]),cimg::abs(delta[1]),cimg::abs(delta[2]));
+        unsigned int dmax = cimg_library::cimg::max(cimg_library::cimg::abs(delta[0]),cimg_library::cimg::abs(delta[1]),cimg_library::cimg::abs(delta[2]));
         dmax*=subdiv; // divide step to avoid possible holes
         Coord dP = delta/(Real)dmax;
         Coord P (P0);
@@ -538,7 +538,7 @@ protected:
         Coord P0(p0),P1(p1);
 
         Coord delta = P1 - P0;
-        unsigned int dmax = cimg::max(cimg::abs(delta[0]),cimg::abs(delta[1]),cimg::abs(delta[2]));
+        unsigned int dmax = cimg_library::cimg::max(cimg_library::cimg::abs(delta[0]),cimg_library::cimg::abs(delta[1]),cimg_library::cimg::abs(delta[2]));
         dmax*=subdiv; // divide step to avoid possible holes
         Coord dP = delta/(Real)dmax;
         Coord P (P0);
@@ -567,7 +567,7 @@ protected:
         Coord P0(p0),P1(p1);
 
         Coord delta = P1 - P0;
-        unsigned int dmax = cimg::max(cimg::abs(delta[0]),cimg::abs(delta[1]),cimg::abs(delta[2]));
+        unsigned int dmax = cimg_library::cimg::max(cimg_library::cimg::abs(delta[0]),cimg_library::cimg::abs(delta[1]),cimg_library::cimg::abs(delta[2]));
         dmax*=subdiv; // divide step to avoid possible holes
         Coord dP = delta/(Real)dmax;
         Coord P (P0);
@@ -585,7 +585,7 @@ protected:
         Coord P0(p0),P1(p1);
 
         Coord delta = P1 - P0;
-        unsigned int dmax = cimg::max(cimg::abs(delta[0]),cimg::abs(delta[1]),cimg::abs(delta[2]));
+        unsigned int dmax = cimg_library::cimg::max(cimg_library::cimg::abs(delta[0]),cimg_library::cimg::abs(delta[1]),cimg_library::cimg::abs(delta[2]));
         dmax*=subdiv; // divide step to avoid possible holes
         Coord dP = delta/(Real)dmax;
         Coord P (P0);

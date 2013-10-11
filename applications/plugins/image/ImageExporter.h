@@ -53,7 +53,7 @@ namespace component
 namespace misc
 {
 
-using namespace cimg_library;
+using cimg_library::CImg;
 using defaulttype::Vec;
 using defaulttype::Mat;
 
@@ -104,7 +104,7 @@ struct ImageExporterSpecialization<defaulttype::IMAGELABEL_IMAGE>
             double offsetT=(double)rtransform->getOffsetT();
             double scaleT=(double)rtransform->getScaleT();
             bool isPerspective=rtransform->isPerspective();
-            save_metaimage<T,double>(rimage->getCImgList(),fname.c_str(),scale,translation,affine,offsetT,scaleT,isPerspective);
+            cimg_library::save_metaimage<T,double>(rimage->getCImgList(),fname.c_str(),scale,translation,affine,offsetT,scaleT,isPerspective);
         }
         else if(fname.find(".nfo")!=std::string::npos || fname.find(".NFO")!=std::string::npos || fname.find(".Nfo")!=std::string::npos)
         {

@@ -79,13 +79,13 @@ bool Lloyd (std::vector<sofa::defaulttype::Vec<3,real> >& pos,const std::vector<
 
         while(!valid)  // get closest unoccupied point in voronoi
         {
-            real dmin=cimg::type<real>::max();
+            real dmin=cimg_library::cimg::type<real>::max();
             cimg_forXYZ(voronoi,x,y,z) if (voronoi(x,y,z)==voronoiIndex[i])
             {
                 real d2=(C-Coord(x,y,z)).norm2();
                 if(dmin>d2) { dmin=d2; p=Coord(x,y,z); }
             }
-            if(dmin==cimg::type<real>::max()) goto stop;// no point found
+            if(dmin==cimg_library::cimg::type<real>::max()) goto stop;// no point found
             bool val2=true; for (unsigned int j=0; j<nbp; j++) if(i!=j) if(sofa::helper::round(pos[j][0])==p[0]) if(sofa::helper::round(pos[j][1])==p[1]) if(sofa::helper::round(pos[j][2])==p[2]) val2=false; // check occupancy
             if(val2) valid=true;
             else voronoi(p[0],p[1],p[2])=0;
@@ -141,14 +141,14 @@ bool Lloyd (std::vector<typename sofa::defaulttype::BranchingImage<real>::VoxelI
 
         while(!valid)  // get closest unoccupied point in voronoi
         {
-            real dmin=cimg::type<real>::max();
+            real dmin=cimg_library::cimg::type<real>::max();
             bimg_forCVoffT(voronoi,c,v,off1D,t) if(voronoi(off1D,v,c,t)==voronoiIndex[i])
             {
                 unsigned x,y,z; voronoi.index1Dto3D(off1D,x,y,z);
                 real d2=(C-Coord(x,y,z)).norm2();
                 if(dmin>d2) { dmin=d2; p=VoxelIndex(off1D,v); }
             }
-            if(dmin==cimg::type<real>::max()) goto stop;// no point found
+            if(dmin==cimg_library::cimg::type<real>::max()) goto stop;// no point found
             bool val2=true;  for (unsigned int j=0; j<nbp; j++) if(i!=j) if(pos[j].index1d==p.index1d && pos[j].offset==p.offset)  val2=false;  // check occupancy
             if(val2) valid=true;
             else voronoi(p.index1d,p.offset,0,0)=0;  // discard voxel if already occupied
