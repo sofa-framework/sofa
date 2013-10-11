@@ -20,7 +20,8 @@ set(HEADER_FILES
     types/RigidConstraint.h
     quadrature/BaseGaussPointSampler.h
     quadrature/TopologyGaussPointSampler.h 
-    shapeFunction/BaseShapeFunction.h 
+    quadrature/GaussPointContainer.h
+    shapeFunction/BaseShapeFunction.h
     shapeFunction/ShepardShapeFunction.h 
     shapeFunction/HatShapeFunction.h 
     shapeFunction/BarycentricShapeFunction.h 
@@ -90,7 +91,8 @@ set(SOURCE_FILES
     types/RigidConstraint.cpp
     quadrature/BaseGaussPointSampler.cpp
     quadrature/TopologyGaussPointSampler.cpp 
-    shapeFunction/BaseShapeFunction.cpp 
+    quadrature/GaussPointContainer.cpp
+    shapeFunction/BaseShapeFunction.cpp
     shapeFunction/ShepardShapeFunction.cpp 
     shapeFunction/HatShapeFunction.cpp 
     shapeFunction/BarycentricShapeFunction.cpp 
