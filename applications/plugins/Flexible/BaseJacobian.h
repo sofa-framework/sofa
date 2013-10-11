@@ -80,6 +80,7 @@ protected:
     ////  macros
     //////////////////////////////////////////////////////////////////////////////////
     #define V3(type) StdVectorTypes<Vec<3,type>,Vec<3,type>,type>
+    #define V2(type) StdVectorTypes<Vec<2,type>,Vec<2,type>,type>
     #define EV3(type) ExtVectorTypes<Vec<3,type>,Vec<3,type>,type>
 
     #define Rigid3(type)  StdRigidTypes<3,type>
@@ -89,11 +90,12 @@ protected:
     #define F331(type)  DefGradientTypes<3,3,0,type>
     #define F321(type)  DefGradientTypes<3,2,0,type>
     #define F311(type)  DefGradientTypes<3,1,0,type>
-
     #define F332(type)  DefGradientTypes<3,3,1,type>
+    #define F221(type)  DefGradientTypes<2,2,0,type>
 
     #define E321(type)  StrainTypes<3,2,0,type>
     #define E311(type)  StrainTypes<3,1,0,type>
+    #define E221(type)  StrainTypes<2,2,0,type>
 
     #define I331(type)  InvariantStrainTypes<3,3,0,type>
 

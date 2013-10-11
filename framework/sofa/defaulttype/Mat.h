@@ -112,6 +112,26 @@ public:
         std::copy(m.begin(), m.begin()+L, this->begin());
     }
 
+    /// Constructor from another matrix with different size (with null default entries and ignoring outside entries)
+    template<int L2, int C2, typename real2>
+    Mat(const Mat<L2,C2,real2>& m)
+    {
+        unsigned maxL = std::min( L, L2 );
+        unsigned maxC = std::min( C, C2 );
+
+        for( unsigned l=0 ; l<maxL ; ++l )
+        {
+            for( unsigned c=0 ; c<maxC ; ++c )
+                this->elems[l][c] = m[l][c];
+            for( unsigned c=maxC ; c<C ; ++c )
+                this->elems[l][c] = 0;
+        }
+
+        for( unsigned l=maxL ; l<L ; ++l )
+            for( unsigned c=0 ; c<C ; ++c )
+                this->elems[l][c] = 0;
+    }
+
     /// Constructor from an array of elements (stored per line).
     template<typename real2>
     explicit Mat(const real2* p)

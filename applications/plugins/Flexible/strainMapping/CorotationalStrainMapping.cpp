@@ -48,12 +48,14 @@ int CorotationalStrainMappingClass = core::RegisterObject("Map Deformation Gradi
         .add< CorotationalStrainMapping< F331Types, E331Types > >(true)
         .add< CorotationalStrainMapping< F321Types, E321Types > >()
         .add< CorotationalStrainMapping< F311Types, E311Types > >()
-        .add< CorotationalStrainMapping< F332Types, E332Types > >();
+        .add< CorotationalStrainMapping< F332Types, E332Types > >()
+        .add< CorotationalStrainMapping< F221Types, E221Types > >();
 
 template class SOFA_Flexible_API CorotationalStrainMapping< F331Types, E331Types >;
 template class SOFA_Flexible_API CorotationalStrainMapping< F321Types, E321Types >;
 template class SOFA_Flexible_API CorotationalStrainMapping< F311Types, E311Types >;
 template class SOFA_Flexible_API CorotationalStrainMapping< F332Types, E332Types >;
+template class SOFA_Flexible_API CorotationalStrainMapping< F221Types, E221Types >;
 
 } // namespace mapping
 } // namespace component

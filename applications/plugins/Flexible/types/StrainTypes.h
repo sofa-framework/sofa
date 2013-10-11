@@ -245,6 +245,8 @@ typedef StrainTypes<3, 3, 1, double> E332dTypes;
 typedef StrainTypes<3, 3, 1, float>  E332fTypes;
 typedef StrainTypes<3, 3, 2, double> E333dTypes;
 typedef StrainTypes<3, 3, 2, float>  E333fTypes;
+typedef StrainTypes<2, 2, 0, double> E221dTypes;
+typedef StrainTypes<2, 2, 0, float>  E221fTypes;
 
 #ifdef SOFA_FLOAT
 template<> inline const char* E331dTypes::Name() { return "E331d"; }
@@ -257,6 +259,8 @@ template<> inline const char* E332dTypes::Name() { return "E332d"; }
 template<> inline const char* E332fTypes::Name() { return "E332"; }
 template<> inline const char* E333dTypes::Name() { return "E333d"; }
 template<> inline const char* E333fTypes::Name() { return "E333"; }
+template<> inline const char* E221dTypes::Name() { return "E221d"; }
+template<> inline const char* E221fTypes::Name() { return "E221"; }
 #else
 template<> inline const char* E331dTypes::Name() { return "E331"; }
 template<> inline const char* E331fTypes::Name() { return "E331f"; }
@@ -268,6 +272,8 @@ template<> inline const char* E332dTypes::Name() { return "E332"; }
 template<> inline const char* E332fTypes::Name() { return "E332f"; }
 template<> inline const char* E333dTypes::Name() { return "E333"; }
 template<> inline const char* E333fTypes::Name() { return "E333f"; }
+template<> inline const char* E221dTypes::Name() { return "E221"; }
+template<> inline const char* E221fTypes::Name() { return "E221f"; }
 #endif
 
 #ifdef SOFA_FLOAT
@@ -276,12 +282,14 @@ typedef E321fTypes E321Types;
 typedef E311fTypes E311Types;
 typedef E332fTypes E332Types;
 typedef E333fTypes E333Types;
+typedef E221fTypes E221Types;
 #else
 typedef E331dTypes E331Types;
 typedef E321dTypes E321Types;
 typedef E311dTypes E311Types;
 typedef E332dTypes E332Types;
 typedef E333dTypes E333Types;
+typedef E221dTypes E221Types;
 #endif
 
 template<> struct DataTypeInfo< E331fTypes::Deriv > : public FixedArrayTypeInfo< E331fTypes::Deriv, E331fTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "E331<" << DataTypeName<float>::name() << ">"; return o.str(); } };
@@ -294,6 +302,8 @@ template<> struct DataTypeInfo< E332fTypes::Deriv > : public FixedArrayTypeInfo<
 template<> struct DataTypeInfo< E332dTypes::Deriv > : public FixedArrayTypeInfo< E332dTypes::Deriv, E332dTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "E332<" << DataTypeName<double>::name() << ">"; return o.str(); } };
 template<> struct DataTypeInfo< E333fTypes::Deriv > : public FixedArrayTypeInfo< E333fTypes::Deriv, E333fTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "E333<" << DataTypeName<float>::name() << ">"; return o.str(); } };
 template<> struct DataTypeInfo< E333dTypes::Deriv > : public FixedArrayTypeInfo< E333dTypes::Deriv, E333dTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "E333<" << DataTypeName<double>::name() << ">"; return o.str(); } };
+template<> struct DataTypeInfo< E221fTypes::Deriv > : public FixedArrayTypeInfo< E221fTypes::Deriv, E221fTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "E221<" << DataTypeName<float>::name() << ">"; return o.str(); } };
+template<> struct DataTypeInfo< E221dTypes::Deriv > : public FixedArrayTypeInfo< E221dTypes::Deriv, E221dTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "E221<" << DataTypeName<double>::name() << ">"; return o.str(); } };
 
 // The next line hides all those methods from the doxygen documentation
 /// \cond TEMPLATE_OVERRIDES
@@ -308,6 +318,8 @@ template<> struct DataTypeName< defaulttype::E332fTypes::Coord > { static const 
 template<> struct DataTypeName< defaulttype::E332dTypes::Coord > { static const char* name() { return "E332dTypes::CoordOrDeriv"; } };
 template<> struct DataTypeName< defaulttype::E333fTypes::Coord > { static const char* name() { return "E333fTypes::CoordOrDeriv"; } };
 template<> struct DataTypeName< defaulttype::E333dTypes::Coord > { static const char* name() { return "E333dTypes::CoordOrDeriv"; } };
+template<> struct DataTypeName< defaulttype::E221fTypes::Coord > { static const char* name() { return "E221fTypes::CoordOrDeriv"; } };
+template<> struct DataTypeName< defaulttype::E221dTypes::Coord > { static const char* name() { return "E221dTypes::CoordOrDeriv"; } };
 
 /// \endcond
 

@@ -247,12 +247,14 @@ int DefGradientMechanicalObjectClass = core::RegisterObject ( "mechanical state 
         .add< MechanicalObject<F331Types> >()
         .add< MechanicalObject<F321Types> >()
         .add< MechanicalObject<F311Types> >()
-        .add< MechanicalObject<F332Types> >();
+        .add< MechanicalObject<F332Types> >()
+        .add< MechanicalObject<F221Types> >();
 
 template class SOFA_Flexible_API MechanicalObject<F331Types>;
 template class SOFA_Flexible_API MechanicalObject<F321Types>;
 template class SOFA_Flexible_API MechanicalObject<F311Types>;
 template class SOFA_Flexible_API MechanicalObject<F332Types>;
+template class SOFA_Flexible_API MechanicalObject<F221Types>;
 
 } // namespace container
 } // namespace component

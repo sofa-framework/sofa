@@ -45,11 +45,13 @@ int BarycentricShapeFunctionClass = core::RegisterObject("Computes Barycentric s
         .add< BarycentricShapeFunction<ShapeFunction3d> >(true)
         .add< BarycentricShapeFunction<ShapeFunction2d> >()
         .add< BarycentricShapeFunction<ShapeFunction1d> >()
+        .add< BarycentricShapeFunction<ShapeFunction22d> >()
 #endif
 #ifndef SOFA_DOUBLE
         .add< BarycentricShapeFunction<ShapeFunction3f> >()
         .add< BarycentricShapeFunction<ShapeFunction2f> >()
         .add< BarycentricShapeFunction<ShapeFunction1f> >()
+        .add< BarycentricShapeFunction<ShapeFunction22f> >()
 #endif
         ;
 
@@ -57,11 +59,13 @@ int BarycentricShapeFunctionClass = core::RegisterObject("Computes Barycentric s
 template class SOFA_Flexible_API BarycentricShapeFunction<ShapeFunction3d>;
 template class SOFA_Flexible_API BarycentricShapeFunction<ShapeFunction2d>;
 template class SOFA_Flexible_API BarycentricShapeFunction<ShapeFunction1d>;
+template class SOFA_Flexible_API BarycentricShapeFunction<ShapeFunction22d>;
 #endif
 #ifndef SOFA_DOUBLE
 template class SOFA_Flexible_API BarycentricShapeFunction<ShapeFunction3f>;
 template class SOFA_Flexible_API BarycentricShapeFunction<ShapeFunction2f>;
 template class SOFA_Flexible_API BarycentricShapeFunction<ShapeFunction1f>;
+template class SOFA_Flexible_API BarycentricShapeFunction<ShapeFunction22f>;
 #endif
 
 }

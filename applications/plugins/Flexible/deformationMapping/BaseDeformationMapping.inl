@@ -729,14 +729,14 @@ void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::Visual
             else if(showDeformationGradientStyle.getValue().getSelectedId()==4) // strain
                 {
                     vparams->drawTool()->setMaterial(col);
-                    drawEllipsoid(F,p,0.5*scale);
+                    drawEllipsoid<material_dimensions,Real>(F,p,0.5*scale);
                 }
             else if(showDeformationGradientStyle.getValue().getSelectedId()==5) // stress
                 if(OutDataTypesInfo<Out>::FMapped)
                 {
                     F=OutDataTypesInfo<Out>::getF(outf[i]);
                     vparams->drawTool()->setMaterial(col);
-                    drawEllipsoid(F,p,0.5*scale);
+                    drawEllipsoid<material_dimensions,Real>(F,p,0.5*scale);
                 }
 
         }

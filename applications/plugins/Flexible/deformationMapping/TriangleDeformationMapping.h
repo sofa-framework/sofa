@@ -85,7 +85,7 @@ public:
     typedef defaulttype::Mat<Out::deriv_total_size, In::deriv_total_size,Real>  Block;
     typedef topology::TriangleSetTopologyContainer::SeqTriangles SeqTriangles;
 
-    typedef core::behavior::ShapeFunctionTypes<2,Real> ShapeFunctionType;             // 2d shape function
+    typedef core::behavior::ShapeFunctionTypes<3,2,Real> ShapeFunctionType;             // 2d shape function
     typedef core::behavior::BaseShapeFunction<ShapeFunctionType> ShapeFunction;
     typedef defaulttype::Vec<2,Real> MCoord;                                     ///< material coordinates
     typedef vector<MCoord> VMCoord;                                   ///< vector of material coordinates
