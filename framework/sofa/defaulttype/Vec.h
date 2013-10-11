@@ -642,6 +642,12 @@ public:
     /// @}
 };
 
+/// specialization to better debug instantiation of null size Vec
+template <typename real>
+class Vec<0,real>
+{};
+
+
 /// Same as Vec except the values are not initialized by default
 template <int N, typename real=float>
 class VecNoInit : public Vec<N,real>
