@@ -29,6 +29,7 @@
 #include <sofa/component/linearsolver/MatrixLinearSolver.h>
 
 #ifdef SOFA_HAVE_METIS
+#include <mpi/mpi.h>
 extern "C" {
 #include <metis/metis.h>
 }
@@ -257,8 +258,8 @@ protected :
             perm[i] = i;
             invperm[i] = i;
         }
-#endif
     }
+#endif
 
     void LDL_symbolic (int n,int * M_colptr,int * M_rowind,int * colptr,int * perm,int * invperm,int * Parent)
     {
