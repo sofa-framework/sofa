@@ -237,10 +237,10 @@ public:
     template<int N2, class real2>
     void set(const Vec<N2,real2>& v, real defaultvalue=0)
     {
-        unsigned maxN = std::min( N, N2 );
-        for(unsigned i=0; i<maxN; i++)
+        int maxN = std::min( N, N2 );
+        for(int i=0; i<maxN; i++)
             this->elems[i] = v[i];
-        for(unsigned i=maxN; i<N ; i++)
+        for(int i=maxN; i<N ; i++)
             this->elems[i] = defaultvalue;
     }
 
