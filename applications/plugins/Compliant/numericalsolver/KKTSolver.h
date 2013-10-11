@@ -1,5 +1,5 @@
-#ifndef KKTSOLVER_H
-#define KKTSOLVER_H
+#ifndef COMPLIANT_NUMSOLVER_KKTSOLVER_H
+#define COMPLIANT_NUMSOLVER_KKTSOLVER_H
 
 #include "initCompliant.h"
 

@@ -5,6 +5,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 
 #include "utils/se3.h"
+#include "utils/map.h"
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/Axis.h>
@@ -28,8 +29,8 @@ namespace mass
 
    Since SOFA uses absolute frame for rotational velocities
    (i.e. spatial velocities), the corresponding spatial inertia
-   tensors are I' = R.I.R^T, where I is the body-fixed inertia
-   tensor. It seems that I is used as a spatial inertia tensor, but I
+   tensors are Is = R.Ib.R^T, where Ib is the body-fixed inertia
+   tensor. It seems that Ib is used as a spatial inertia tensor, but I
    might be wrong.
 
    @author: maxime.tournier@inria.fr
@@ -144,7 +145,8 @@ public:
 	// cinétique d'un rigide, sauf si on considère les vitesses en
 	// coordonnées locales (ce que sofa ne fait pas). du coup on tape
 	// dans this->mstate->getX pour l'obtenir mais l'api devrait gérer ca
-	double getKineticEnergy( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecDeriv& _v  ) const {
+	double getKineticEnergy( const core::MechanicalParams* /* PARAMS FIRST */, 
+	                         const DataVecDeriv& _v  ) const {
 		helper::ReadAccessor< DataVecDeriv >  v(_v);
 		
 		double res = 0;
@@ -166,7 +168,8 @@ public:
 	}
 
 	// TODO maybe sign is wrong 
-	double getPotentialEnergy( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& _x  ) const {
+	double getPotentialEnergy( const core::MechanicalParams* /* PARAMS FIRST */, 
+	                           const DataVecCoord& _x  ) const {
 		helper::ReadAccessor< DataVecCoord >  x(_x);
 				
 		defaulttype::Vec3d g ( this->getContext()->getGravity() );
@@ -180,6 +183,27 @@ public:
 		}
 		
 		return res;
+	}
+
+
+	virtual void addMDx(const core::MechanicalParams*  /* PARAMS FIRST */, 
+	                    DataVecDeriv& _f, 
+	                    const DataVecDeriv& _dx, 
+	                    double factor) {
+		helper::WriteAccessor< DataVecDeriv >  f(_f);
+		helper::ReadAccessor< DataVecDeriv >  dx(_dx);
+
+		for(unsigned i = 0, n = this->mstate->getSize(); i < n; ++i) {
+			const unsigned index = clamp(i);
+			
+			map(f[i].getLinear()) += (factor * mass.getValue()[ index ]) * map(dx[i].getLinear());
+
+			typename se3::quat q = se3::rotation( (*this->mstate->getX())[i] );
+			map(f[i].getAngular()) += factor * 
+				( q * map(inertia.getValue()[ index ]).cwiseProduct( q.conjugate() * map(dx[i].getAngular() ) ));
+			
+		}
+		
 	}
 
 

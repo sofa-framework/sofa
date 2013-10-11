@@ -12,6 +12,8 @@ set(HEADER_FILES
     mapping/RigidJointMapping.h
     mapping/AssembledRigidRigidMapping.h
     mapping/AssembledMapping.h
+		mapping/AssembledMultiMapping.h
+
 
     numericalsolver/KKTSolver.h
     numericalsolver/LDLTSolver.h
