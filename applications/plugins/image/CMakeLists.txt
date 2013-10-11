@@ -26,7 +26,8 @@ set(SOURCE_FILES
     BranchingCellOffsetsFromPositions.cpp
     BranchingCellVolumes.cpp
     MergeBranchingImages.cpp
-	)
+    ImageDataDisplay.cpp
+        )
 
 
 
@@ -57,7 +58,8 @@ list(APPEND HEADER_FILES
     BranchingCellOffsetsFromPositions.h
     BranchingCellVolumes.h
     MergeBranchingImages.h
-	)
+    ImageDataDisplay.h
+        )
 
 	
 if(SOFA-EXTERNAL_LIBFREENECT)
