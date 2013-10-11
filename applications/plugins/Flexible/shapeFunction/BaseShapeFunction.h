@@ -195,21 +195,19 @@ protected:
 };
 
 
-template <int material_dimensions_, class Real_>
+template <int spatial_dimensions_, int material_dimensions_, class Real_>
 struct ShapeFunctionTypes
 {
-	static const unsigned int spatial_dimensions=3;
-
     typedef Real_ Real;
 	typedef vector<unsigned int> VRef;
 	typedef vector<Real> VReal;
-    typedef Vec<spatial_dimensions,Real> Coord;                          ///< Spatial coordinates in world space
+    typedef Vec<spatial_dimensions_,Real> Coord;                          ///< Spatial coordinates in world space
 	typedef vector<Coord> VCoord;
-    typedef Vec<spatial_dimensions,Real> Gradient;                       ///< Gradient of a scalar value in world space
+    typedef Vec<spatial_dimensions_,Real> Gradient;                       ///< Gradient of a scalar value in world space
 	typedef vector<Gradient> VGradient;
-    typedef Mat<spatial_dimensions,spatial_dimensions,Real> Hessian;    ///< Hessian (second derivative) of a scalar value in world space
+    typedef Mat<spatial_dimensions_,spatial_dimensions_,Real> Hessian;    ///< Hessian (second derivative) of a scalar value in world space
 	typedef vector<Hessian> VHessian;
-    typedef Mat<spatial_dimensions,material_dimensions_,Real> MaterialToSpatial;           ///< local transformation from material to spatial space ( linear for now). Used in mapping to convert gradients and hessians to material space
+    typedef Mat<spatial_dimensions_,material_dimensions_,Real> MaterialToSpatial;           ///< local transformation from material to spatial space ( linear for now). Used in mapping to convert gradients and hessians to material space
 	typedef vector<MaterialToSpatial> VMaterialToSpatial;
 	typedef int Cell;
 	typedef vector<Cell> VCell;
@@ -219,25 +217,30 @@ struct ShapeFunctionTypes
 	typedef vector<VGradient> VecVGradient;
 	typedef vector<VHessian> VecVHessian;
 
+    static const int spatial_dimensions=spatial_dimensions_ ;
     static const int material_dimensions=material_dimensions_ ;  ///< number of node dimensions (1 for a wire, 2 for a hull, 3 for a volumetric object)
     static const char* Name();
 };
 
-typedef ShapeFunctionTypes<1,float>  ShapeFunction1f;
-typedef ShapeFunctionTypes<1,double> ShapeFunction1d;
-typedef ShapeFunctionTypes<2,float>  ShapeFunction2f;
-typedef ShapeFunctionTypes<2,double> ShapeFunction2d;
-typedef ShapeFunctionTypes<3,float>  ShapeFunction3f;
-typedef ShapeFunctionTypes<3,double> ShapeFunction3d;
+typedef ShapeFunctionTypes<3,1,float>  ShapeFunction1f;
+typedef ShapeFunctionTypes<3,1,double> ShapeFunction1d;
+typedef ShapeFunctionTypes<3,2,float>  ShapeFunction2f;
+typedef ShapeFunctionTypes<3,2,double> ShapeFunction2d;
+typedef ShapeFunctionTypes<3,3,float>  ShapeFunction3f;
+typedef ShapeFunctionTypes<3,3,double> ShapeFunction3d;
+typedef ShapeFunctionTypes<2,2,float>  ShapeFunction22f;
+typedef ShapeFunctionTypes<2,2,double> ShapeFunction22d;
 
 #ifdef SOFA_FLOAT
 typedef ShapeFunction1f ShapeFunction1;
 typedef ShapeFunction2f ShapeFunction2;
 typedef ShapeFunction3f ShapeFunction3;
+typedef ShapeFunction22f ShapeFunction22;
 #else
 typedef ShapeFunction1d ShapeFunction1;
 typedef ShapeFunction2d ShapeFunction2;
 typedef ShapeFunction3d ShapeFunction3;
+typedef ShapeFunction22d ShapeFunction22;
 #endif
 
 template<> inline const char* ShapeFunction1d::Name() { return "ShapeFunction1d"; }
@@ -246,6 +249,8 @@ template<> inline const char* ShapeFunction2d::Name() { return "ShapeFunction2d"
 template<> inline const char* ShapeFunction2f::Name() { return "ShapeFunction2f"; }
 template<> inline const char* ShapeFunction3d::Name() { return "ShapeFunction3d"; }
 template<> inline const char* ShapeFunction3f::Name() { return "ShapeFunction3f"; }
+template<> inline const char* ShapeFunction22d::Name() { return "ShapeFunction22d"; }
+template<> inline const char* ShapeFunction22f::Name() { return "ShapeFunction22f"; }
 
 
 }

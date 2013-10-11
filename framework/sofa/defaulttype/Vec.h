@@ -129,8 +129,6 @@ public:
         set( r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12 );
     }
 
-
-
     /// Specific set for 1-element vectors.
     void set(real r1)
     {
@@ -235,14 +233,23 @@ public:
         this->elems[11]=r12;
     }
 
+    /// Specific set from a different size vector (given default value and ignored outside entries)
+    template<int N2, class real2>
+    void set(const Vec<N2,real2>& v, real defaultvalue=0)
+    {
+        unsigned maxN = std::min( N, N2 );
+        for(unsigned i=0; i<maxN; i++)
+            this->elems[i] = v[i];
+        for(unsigned i=maxN; i<N ; i++)
+            this->elems[i] = defaultvalue;
+    }
+
 
     /// Constructor from an N-1 elements vector and an additional value (added at the end).
-    Vec(const Vec<N-1,real>& v, real r1)
+    Vec(const Vec<N-1,real>& v, real r1=0)
     {
         BOOST_STATIC_ASSERT(N > 1);
-        for(int i=0; i<N-1; i++)
-            this->elems[i] = v[i];
-        this->elems[N-1]=r1;
+        set( v, r1 );
     }
 
     template<typename real2>

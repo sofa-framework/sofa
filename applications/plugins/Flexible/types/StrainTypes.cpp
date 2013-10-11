@@ -51,6 +51,7 @@ int StrainMechanicalObjectClass = core::RegisterObject ( "mechanical state vecto
         .add< MechanicalObject<E311Types> >()
         .add< MechanicalObject<E332Types> >()
         .add< MechanicalObject<E333Types> >()
+        .add< MechanicalObject<E221Types> >()
 
 //        .add< MechanicalObject<D331Types> >()
 //        .add< MechanicalObject<D321Types> >()
@@ -70,6 +71,7 @@ template class SOFA_Flexible_API MechanicalObject<E321Types>;
 template class SOFA_Flexible_API MechanicalObject<E311Types>;
 template class SOFA_Flexible_API MechanicalObject<E332Types>;
 template class SOFA_Flexible_API MechanicalObject<E333Types>;
+template class SOFA_Flexible_API MechanicalObject<E221Types>;
 
 //template class SOFA_Flexible_API MechanicalObject<D331Types>;
 //template class SOFA_Flexible_API MechanicalObject<D321Types>;

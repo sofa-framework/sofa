@@ -79,6 +79,14 @@ void Decompose<Real>::QRDecomposition( const defaulttype::Mat<3,2,Real> &M, defa
 }
 
 template<class Real>
+void Decompose<Real>::QRDecomposition( const defaulttype::Mat<2,2,Real> &M, defaulttype::Mat<2,2,Real> &r )
+{
+    Vec<2,Real> edgex( M[0][0], M[1][0] ); edgex.normalize();
+    r[0][0] = edgex[0];  r[1][0] = edgex[1];
+    r[0][1] = -edgex[1]; r[1][1] = edgex[0];
+}
+
+template<class Real>
 bool Decompose<Real>::QRDecomposition_stable( const defaulttype::Mat<3,3,Real> &M, defaulttype::Mat<3,3,Real> &R )
 {
     bool degenerated;
@@ -378,6 +386,50 @@ bool Decompose<Real>::QRDecomposition_stable( const defaulttype::Mat<3,2,Real> &
     r[0][0] = edgex[0]; r[0][1] = edgey[0];
     r[1][0] = edgex[1]; r[1][1] = edgey[1];
     r[2][0] = edgex[2]; r[2][1] = edgey[2];
+
+    return degenerated;
+}
+
+
+template<class Real>
+bool Decompose<Real>::QRDecomposition_stable( const defaulttype::Mat<2,2,Real> &M, defaulttype::Mat<2,2,Real> &r )
+{
+    bool degenerated;
+
+    Vec<2,Real> edge( M[0][0], M[1][0] );
+    Real n = edge.norm2();
+
+    if( n < zeroTolerance() )
+    {
+        edge.set( M[0][1], M[1][1] );
+        n = edge.norm2();
+        if( n < zeroTolerance() )
+        {
+            // colapsed to a point
+            r[0][0] = 1; r[1][0] = 0;
+            r[0][1] = 0; r[1][1] = 1;
+
+            degenerated = true;
+        }
+        else
+        {
+            // edgex collapsed but edgey not colapsed
+            edge /= helper::rsqrt(n);
+            r[0][0] = edge[1]; r[1][0] = -edge[0];
+            r[0][1] = edge[0]; r[1][1] =  edge[1];
+
+            degenerated = true;
+        }
+    }
+    else
+    {
+        // edgex not colapsed
+        edge /= helper::rsqrt(n);
+        r[0][0] =  edge[0]; r[1][0] = edge[1];
+        r[0][1] = -edge[1]; r[1][1] = edge[0];
+
+        degenerated = false; // todo test edgey?
+    }
 
     return degenerated;
 }
@@ -773,6 +825,28 @@ bool Decompose<Real>::polarDecomposition_stable( const defaulttype::Mat<3,3,Real
 {
     defaulttype::Mat<3,3,Real> U, V;
     defaulttype::Vec<3,Real> Sdiag;
+    bool degenerated = helper::Decompose<Real>::SVD_stable( M, U, Sdiag, V );
+
+    Q = U.multTransposed( V ); // Q = U * Vt
+
+    return degenerated;
+}
+
+template<class Real>
+bool Decompose<Real>::polarDecomposition_stable( const defaulttype::Mat<2,2,Real> &M, defaulttype::Mat<2,2,Real> &Q, defaulttype::Mat<2,2,Real> &S )
+{
+    bool degenerated = polarDecomposition_stable( M, Q );
+    S = Q.multTranspose( M ); // S = Qt * M
+    //S = V.multDiagonal( Sdiag ).multTransposed( V ); // S = V * Sdiag * Vt
+
+    return degenerated;
+}
+
+template<class Real>
+bool Decompose<Real>::polarDecomposition_stable( const defaulttype::Mat<2,2,Real> &M, defaulttype::Mat<2,2,Real> &Q )
+{
+    defaulttype::Mat<2,2,Real> U, V;
+    defaulttype::Vec<2,Real> Sdiag;
     bool degenerated = helper::Decompose<Real>::SVD_stable( M, U, Sdiag, V );
 
     Q = U.multTransposed( V ); // Q = U * Vt
@@ -1833,6 +1907,119 @@ bool Decompose<Real>::SVD_stable( const defaulttype::Mat<3,3,Real> &F, defaultty
         U[2][Sorder[0]] *= (Real)-1;
 
         S[Sorder[0]] *= (Real)-1;
+    }
+
+    return degenerated || inverted;
+}
+
+
+template<class Real>
+bool Decompose<Real>::SVD_stable( const defaulttype::Mat<2,2,Real> &F, defaulttype::Mat<2,2,Real> &U, defaulttype::Vec<2,Real> &S, defaulttype::Mat<2,2,Real> &V )
+{
+    defaulttype::Mat<2,2,Real> FtF = F.multTranspose( F ); // transformation from actual pos to rest pos
+
+    helper::Decompose<Real>::eigenDecomposition_iterative( FtF, V, S );
+
+    // if V is a reflexion -> made it a rotation by negating a column
+    if( determinant(V) < (Real)0 )
+        for( int i=0 ; i<2; ++i )
+            V[i][0] = -V[i][0];
+
+    // the numbers of strain values too close to 0 indicates the kind of degenerescence
+    int degenerated = 0;
+
+    // compute the diagonalized strain and take the inverse
+    defaulttype::Vec<2,Real> S_1;
+    for( int i = 0 ; i<2; ++i )
+    {
+        if( S[i] < zeroTolerance() ) // numerical issues
+        {
+            degenerated++;
+            S[i] = (Real)0;
+            S_1[i] = (Real)1;
+        }
+        else
+        {
+            S[i] = helper::rsqrt( S[i] );
+            S_1[i] = (Real)1.0 / S[i];
+        }
+    }
+
+    // TODO check for degenerate cases (collapsed to a point, to an edge)
+    // note that inversion is not defined for a 2d element in a 3d world
+    switch( degenerated )
+    {
+    case 0: // no null value -> eventually inverted but not degenerate
+        U = F * V.multDiagonal( S_1 );
+        break;
+    case 1: // 1 null value -> collapsed to an edge -> keeps the valid edge and build 2 orthogonal vectors
+    {
+        U = F * V.multDiagonal( S_1 );
+        int min, max; if( S[0] > S[1] ) { min=1; max=0; }
+        else { min=0; max=1; }   // eigen values order
+
+        Vec<3,Real> edge0, edge1( U[0][max], U[1][max], U[2][max] ), edge2;
+
+        // check the main direction of edge2 to try to take a not too close arbritary vector
+        Real abs0 = helper::rabs( edge1[0] );
+        Real abs1 = helper::rabs( edge1[1] );
+        Real abs2 = helper::rabs( edge1[2] );
+        if( abs0 > abs1 )
+        {
+            if( abs0 > abs2 )
+            {
+                edge0[0] = 0; edge0[1] = 1; edge0[2] = 0;
+            }
+            else
+            {
+                edge0[0] = 1; edge0[1] = 0; edge0[2] = 0;
+            }
+        }
+        else
+        {
+            if( abs1 > abs2 )
+            {
+                edge0[0] = 0; edge0[1] = 0; edge0[2] = 1;
+            }
+            else
+            {
+                edge0[0] = 1; edge0[1] = 0; edge0[2] = 0;
+            }
+        }
+
+        edge2 = cross( edge0, edge1 );
+        edge2.normalize();
+        edge0 = cross( edge1, edge2 );
+
+        U[0][min] = edge0[0];
+        U[1][min] = edge0[1];
+        U[2][min] = edge0[2];
+
+        break;
+    }
+    case 2: // 2 null values -> collapsed to a point -> build any orthogonal frame
+    {
+        int min, max; if( S[0] > S[1] ) { min=1; max=0; }
+        else { min=0; max=1; }   // eigen values order
+        U[0][min] = 1;
+        U[1][min] = 0;
+        U[0][max] = 0;
+        U[1][max] = 1;
+        break;
+    }
+    }
+
+    bool inverted = ( determinant(U) < (Real)0 );
+
+    // un-inverting the element -> made U a rotation by negating a column
+    if( inverted )
+    {
+        int min = S[0] > S[1] ? 1 : 0;   // min eigen value index
+
+        U[0][min] *= (Real)-1;
+        U[1][min] *= (Real)-1;
+
+        S[min] *= (Real)-1;
     }
 
     return degenerated || inverted;

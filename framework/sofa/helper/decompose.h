@@ -63,6 +63,7 @@ public:
       */
     static void QRDecomposition( const defaulttype::Mat<3,3,Real> &M, defaulttype::Mat<3,3,Real> &R );
     static void QRDecomposition( const defaulttype::Mat<3,2,Real> &M, defaulttype::Mat<3,2,Real> &R );
+    static void QRDecomposition( const defaulttype::Mat<2,2,Real> &M, defaulttype::Mat<2,2,Real> &R );
 
     /** QR decomposition stable to null columns.
       * Result is still undefined if two columns are parallel.
@@ -71,6 +72,7 @@ public:
       */
     static bool QRDecomposition_stable( const defaulttype::Mat<3,3,Real> &M, defaulttype::Mat<3,3,Real> &R );
     static bool QRDecomposition_stable( const defaulttype::Mat<3,2,Real> &M, defaulttype::Mat<3,2,Real> &R );
+    static bool QRDecomposition_stable( const defaulttype::Mat<2,2,Real> &M, defaulttype::Mat<2,2,Real> &R );
 
     /** QR decomposition (M=QR) rotation gradient dQ  (invR = R^-1)
       * Formula given in "Finite Random Matrix Theory, Jacobians of Matrix Transforms (without wedge products)", Alan Edelman, 2005, http://web.mit.edu/18.325/www/handouts/handout2.pdf
@@ -114,6 +116,8 @@ public:
      */
     static bool polarDecomposition_stable( const defaulttype::Mat<3,3,Real> &M, defaulttype::Mat<3,3,Real> &Q, defaulttype::Mat<3,3,Real> &S );
     static bool polarDecomposition_stable( const defaulttype::Mat<3,3,Real> &M, defaulttype::Mat<3,3,Real> &Q );
+    static bool polarDecomposition_stable( const defaulttype::Mat<2,2,Real> &M, defaulttype::Mat<2,2,Real> &Q, defaulttype::Mat<2,2,Real> &S );
+    static bool polarDecomposition_stable( const defaulttype::Mat<2,2,Real> &M, defaulttype::Mat<2,2,Real> &Q );
 
     /** Stable Polar Decomposition of 3x2 matrix based on a SVD using Q=UVt where M=UsV
      */
@@ -199,6 +203,7 @@ public:
       * Warning eigenvalues are not guaranteed to be positive, eigenvalues are not sorted
       */
     static bool SVD_stable( const defaulttype::Mat<3,3,Real> &F, defaulttype::Mat<3,3,Real> &U, defaulttype::Vec<3,Real> &S, defaulttype::Mat<3,3,Real> &V );
+    static bool SVD_stable( const defaulttype::Mat<2,2,Real> &F, defaulttype::Mat<2,2,Real> &U, defaulttype::Vec<2,Real> &S, defaulttype::Mat<2,2,Real> &V );
 
     /** SVD F = U*F_diagonal*V based on the Eigensystem decomposition of FtF
       * all eigenvalues are positive

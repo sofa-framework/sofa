@@ -66,7 +66,6 @@ template<typename Real>
 void computeQR( const Mat<3,2,Real> &f, Mat<3,2,Real> &r, Mat<2,2,Real> &s )
 {
     helper::Decompose<Real>::QRDecomposition_stable( f, r );
-
     Mat<2,2,Real> T = r.multTranspose( f ); // T = rt * f
     s = cauchyStrainTensor( T ); // s = ( T + Tt ) * 0.5
 }
@@ -81,6 +80,24 @@ void computeQR( const Mat<3,1,Real> &f, Mat<3,1,Real> &r, Mat<1,1,Real> &s )
     r(1,0)=f(1,0)/nrm;
     r(2,0)=f(2,0)/nrm;
     s(0,0) = nrm;
+}
+
+/// 2D->2D
+template<typename Real>
+void computeQR( const Mat<2,2,Real> &f, Mat<2,2,Real> &r, Mat<2,2,Real> &s )
+{
+    helper::Decompose<Real>::QRDecomposition_stable( f, r );
+    Mat<2,2,Real> T = r.multTranspose( f ); // T = rt * f
+    s = cauchyStrainTensor( T ); // s = ( T + Tt ) * 0.5
+}
+
+/// 2D->2D
+template<typename Real>
+void computePolar( const Mat<2,2,Real> &f, Mat<2,2,Real> &r, Mat<2,2,Real> &s )
+{
+    helper::Decompose<Real>::polarDecomposition( f, r );
+    Mat<2,2,Real> T = r.multTranspose( f ); // T = rt * f
+    s = cauchyStrainTensor( T ); // s = ( T + Tt ) * 0.5
 }
 
 /// 3D->3D
@@ -103,7 +120,6 @@ template<typename Real>
 void computeSVD( const Mat<3,2,Real> &F, Mat<3,2,Real> &r, Mat<2,2,Real> &s, Mat<3,2,Real> &U, Vec<2,Real>& F_diag, Mat<2,2,Real> &V )
 {
     helper::Decompose<Real>::SVD_stable( F, U, F_diag, V );
-
     r = U.multTransposed( V ); // r = U * Vt
     s = r.multTranspose( F ); // s = rt * F
 }
@@ -830,17 +846,15 @@ public:
     Affine _R;   ///< =  store unit vector to compute J
     Real nrm;   ///< =  store norm of deformation gradient to compute dJ
 
-    CorotationalStrainJacobianBlockGeometricStiffnessData<material_dimensions,frame_size,Real> _geometricStiffnessData; ///< store stuff dedicated to geometric stiffness
-
     CorotationalStrainJacobianBlock()
         : Inherit()
     {
     }
 
-    void init_small() { _geometricStiffnessData.init_small(); }
-    void init_qr( bool geometricStiffness ) { _geometricStiffnessData.init_qr( geometricStiffness ); }
-    void init_polar( bool geometricStiffness ) { _geometricStiffnessData.init_svd( geometricStiffness ); }
-    void init_svd( bool geometricStiffness ) { _geometricStiffnessData.init_svd( geometricStiffness ); }
+    void init_small() {}
+    void init_qr( bool ) { }
+    void init_polar( bool ) {}
+    void init_svd( bool ) {}
 
 
     void addapply( OutCoord& /*result*/, const InCoord& /*data*/ ) {}
@@ -916,6 +930,185 @@ public:
     void addDForce_svd( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
     {
         addDForce_qr( df, dx, childForce, kfactor );
+    }
+};
+
+
+
+////////////////////////////////////////////////////////////////////////////////////
+//////  F221 -> E221
+////////////////////////////////////////////////////////////////////////////////////
+
+template<class InReal,class OutReal>
+class CorotationalStrainJacobianBlock< F221(InReal) , E221(OutReal) > :
+    public  BaseJacobianBlock< F221(InReal) , E221(OutReal) >
+{
+public:
+    typedef F221(InReal) In;
+    typedef E221(OutReal) Out;
+
+    typedef BaseJacobianBlock<In,Out> Inherit;
+    typedef typename Inherit::InCoord InCoord;
+    typedef typename Inherit::InDeriv InDeriv;
+    typedef typename Inherit::OutCoord OutCoord;
+    typedef typename Inherit::OutDeriv OutDeriv;
+    typedef typename Inherit::MatBlock MatBlock;
+    typedef typename Inherit::KBlock KBlock;
+    typedef typename Inherit::Real Real;
+
+    typedef typename In::Frame Frame;  ///< Matrix representing a deformation gradient
+    typedef typename Out::StrainMat StrainMat;  ///< Matrix representing a strain
+    enum { material_dimensions = In::material_dimensions };
+    enum { spatial_dimensions = In::spatial_dimensions };
+    enum { strain_size = Out::strain_size };
+    enum { frame_size = spatial_dimensions*material_dimensions };
+//    enum { order = Out::order };
+
+    typedef Mat<spatial_dimensions,material_dimensions,Real> Affine;  ///< Matrix representing a linear spatial transformation
+
+    /**
+    Mapping:   \f$ E = [grad(R^T u)+grad(R^T u)^T ]/2 = [R^T F + F^T R ]/2 - I = D - I \f$
+    where:  _R/D are the rotational/skew symmetric parts of F=RD
+    Jacobian:    \f$  dE = [R^T dF + dF^T R ]/2 \f$
+    */
+
+    static const bool constant=false;
+
+    Affine _R;   ///< =  store rotational part of deformation gradient to compute J
+
+    CorotationalStrainJacobianBlock()
+        : Inherit()
+    {
+    }
+
+    void init_small() {}
+    void init_qr( bool ) {}
+    void init_polar( bool ) {}
+    void init_svd( bool ) {}
+
+
+    void addapply( OutCoord& /*result*/, const InCoord& /*data*/ ) {}
+
+    void addapply_small( OutCoord& result, const InCoord& data )
+    {
+        StrainMat strainmat = cauchyStrainTensor( data.getF() ); // strainmat = ( F + Ft ) * 0.5
+        _R.identity();
+        addapply_common( result, data, strainmat );
+    }
+
+    void addapply_qr( OutCoord& result, const InCoord& data )
+    {
+        StrainMat strainmat;
+        computeQR( data.getF(), _R, strainmat );
+        addapply_common( result, data, strainmat );
+    }
+
+    void addapply_polar( OutCoord& result, const InCoord& data )
+    {
+        StrainMat strainmat;
+        computePolar( data.getF(), _R, strainmat );
+        addapply_common( result, data, strainmat );
+    }
+
+
+    void addapply_svd( OutCoord& result, const InCoord& data )
+    {
+        StrainMat strainmat;
+        helper::Decompose<Real>::polarDecomposition_stable( data.getF(), _R, strainmat );
+        addapply_common( result, data, strainmat );
+    }
+
+    void addapply_common( OutCoord& result, const InCoord& /*data*/, StrainMat& strainmat )
+    {
+        // order 0
+        for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=(Real)1.;
+        result.getStrain() += StrainMatToVoigt( strainmat );
+
+//        if( order > 0 )
+//        {
+//            // order 1
+//            for(unsigned int k=0; k<spatial_dimensions; k++)
+//            {
+//                StrainMat T = _R.multTranspose( data.getGradientF( k ) ); // T = Rt * g
+//                result.getStrainGradient(k) += StrainMatToVoigt( cauchyStrainTensor( T ) ); // (T+Tt)*0.5
+//            }
+//        }
+    }
+
+    void addmult( OutDeriv& result,const InDeriv& data )
+    {
+        // order 0
+        result.getStrain() += StrainMatToVoigt( _R.multTranspose( data.getF() ) );
+
+//        if( order > 0 )
+//        {
+//            // order 1
+//            for(unsigned int k=0; k<spatial_dimensions; k++)
+//            {
+//                result.getStrainGradient(k) += StrainMatToVoigt( _R.multTranspose( data.getGradientF(k) ) );
+//            }
+//        }
+    }
+
+    void addMultTranspose( InDeriv& result, const OutDeriv& data )
+    {
+        // order 0
+        result.getF() += _R*StressVoigtToMat( data.getStrain() );
+
+//        if( order > 0 )
+//        {
+//            // order 1
+//            for(unsigned int k=0; k<spatial_dimensions; k++)
+//            {
+//                result.getGradientF(k) += _R*StressVoigtToMat( data.getStrainGradient(k) );
+//            }
+//        }
+    }
+
+    MatBlock getJ()
+    {
+        MatBlock B = MatBlock();
+        typedef Eigen::Map<Eigen::Matrix<Real,Out::deriv_total_size,In::deriv_total_size,Eigen::RowMajor> > EigenMap;
+        EigenMap eB(&B[0][0]);
+
+        // order 0
+        typedef Eigen::Matrix<Real,strain_size,frame_size,Eigen::RowMajor> JBlock;
+        JBlock J = this->assembleJ( _R );
+        eB.block(0,0,strain_size,frame_size) = J;
+
+//        if( order > 0 )
+//        {
+//            // order 1
+//            unsigned int offsetE=strain_size;
+//            for(unsigned int k=0; k<spatial_dimensions; k++)
+//            {
+//                eB.block(offsetE,(k+1)*frame_size,strain_size,frame_size) = J;
+//                offsetE+=strain_size;
+//            }
+//        }
+
+        return B;
+    }
+
+
+    KBlock getK(const OutDeriv& /*childForce*/)
+    {
+        KBlock K;
+        // TODO
+        return K;
+    }
+    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/, const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
+    void addDForce_qr( InDeriv& /*df*/, const InDeriv& /*dx*/, const OutDeriv& /*childForce*/, const double& /*kfactor*/ )
+    {
+        // TODO
+    }
+    void addDForce_polar( InDeriv& /*df*/, const InDeriv& /*dx*/, const OutDeriv& /*childForce*/, const double& /*kfactor*/ )
+    {
+        // TODO
+    }
+    void addDForce_svd( InDeriv& /*df*/, const InDeriv& /*dx*/, const OutDeriv& /*childForce*/, const double& /*kfactor*/ )
+    {
+        // TODO
     }
 };
 

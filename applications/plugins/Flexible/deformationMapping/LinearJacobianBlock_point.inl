@@ -542,6 +542,176 @@ public:
 
 
 
+
+
+
+/////////////////////////////////////////
+
+
+
+//////////////////////////////////////////////////////////////////////////////////
+////  Vec2 -> Vec2
+//////////////////////////////////////////////////////////////////////////////////
+
+template<class InReal,class OutReal>
+class LinearJacobianBlock< V2(InReal) , V2(OutReal) > :
+    public  BaseJacobianBlock< V2(InReal) , V2(OutReal) >
+{
+public:
+    typedef V2(InReal) In;
+    typedef V2(OutReal) Out;
+
+    typedef BaseJacobianBlock<In,Out> Inherit;
+    typedef typename Inherit::InCoord InCoord;
+    typedef typename Inherit::InDeriv InDeriv;
+    typedef typename Inherit::OutCoord OutCoord;
+    typedef typename Inherit::OutDeriv OutDeriv;
+    typedef typename Inherit::MatBlock MatBlock;
+    typedef typename Inherit::KBlock KBlock;
+    typedef typename Inherit::Real Real;
+
+    enum { dim = Out::spatial_dimensions };
+
+    typedef Vec<dim,Real> Gradient;
+    typedef Mat<dim,dim,Real> Hessian;
+    typedef Vec<dim, Real> SpatialCoord;
+    typedef Mat<dim,dim,Real> MaterialToSpatial;
+
+    /**
+    Mapping:   \f$ p = w.t + w.(p0-t0)  \f$
+    where :
+        - t0 is t in the reference configuration,
+        - p0 is the position of p in the reference configuration.
+
+    Jacobian:    \f$ dp = w.dt \f$
+      */
+
+    static const bool constant=true;
+
+    OutCoord C;   ///< =  w.(p0-t0)  =  constant term
+    Real Pt;      ///< =   w         =  dp/dt
+
+
+    void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& /*M*/, const Real& w, const Gradient& /*dw*/, const Hessian& /*ddw*/)
+    {
+        Pt=w;
+        C=(SPos-InPos)*Pt;
+    }
+
+    void addapply( OutCoord& result, const InCoord& data )
+    {
+        result +=  data * Pt + C;
+    }
+
+    void addmult( OutDeriv& result,const InDeriv& data )
+    {
+        result += data * Pt ;
+    }
+
+    void addMultTranspose( InDeriv& result, const OutDeriv& data )
+    {
+        result += data * Pt ;
+    }
+
+    MatBlock getJ()
+    {
+        MatBlock J = MatBlock();
+        for(unsigned int i=0; i<dim; i++) J(i,i)=Pt;
+        return J;
+    }
+
+    // no geometric striffness (constant J)
+    KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
+    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
+};
+
+
+//////////////////////////////////////////////////////////////////////////////////
+////  Vec2 -> F221
+//////////////////////////////////////////////////////////////////////////////////
+
+template<class InReal,class OutReal>
+class LinearJacobianBlock< V2(InReal) , F221(OutReal) > :
+    public  BaseJacobianBlock< V2(InReal) , F221(OutReal) >
+{
+public:
+    typedef V2(InReal) In;
+    typedef F221(OutReal) Out;
+
+    typedef BaseJacobianBlock<In,Out> Inherit;
+    typedef typename Inherit::InCoord InCoord;
+    typedef typename Inherit::InDeriv InDeriv;
+    typedef typename Inherit::OutCoord OutCoord;
+    typedef typename Inherit::OutDeriv OutDeriv;
+    typedef typename Inherit::MatBlock MatBlock;
+    typedef typename Inherit::KBlock KBlock;
+    typedef typename Inherit::Real Real;
+
+    enum { dim = Out::spatial_dimensions };
+    enum { mdim = Out::material_dimensions };
+
+    typedef Vec<dim,Real> Gradient;
+    typedef Mat<dim,dim,Real> Hessian;
+
+    typedef Vec<dim, Real> SpatialCoord;
+    typedef Mat<dim,mdim,Real> MaterialToSpatial;
+
+    typedef Vec<mdim,Real> mGradient;
+
+    /**
+    Mapping:
+        - \f$ F = grad p . M = (t+p0-t0).grad w.M + w.M  \f$
+    where :
+        - t0 is t in the reference configuration,
+        - p0 is the position of p in the reference configuration.
+        - grad denotes spatial derivatives
+    Jacobian:
+        - \f$ d F = dt.grad w.M \f$
+      */
+
+    static const bool constant=true;
+
+    OutCoord C;       ///< =  (p0-t0).grad w.M + w.M   =  constant term
+    mGradient Ft;  ///< =   grad w.M     =  d F/dt
+
+    void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& M, const Real& w, const Gradient& dw, const Hessian& /*ddw*/)
+    {
+        Ft=M.transposed()*dw;
+        C.getF()=covMN(SPos-InPos,Ft);
+        C.getF()+=M*w;
+    }
+
+    void addapply( OutCoord& result, const InCoord& data )
+    {
+        result.getF() +=  covMN(data,Ft) + C.getF();
+    }
+
+    void addmult( OutDeriv& result,const InDeriv& data )
+    {
+        result.getF() += covMN(data,Ft) ;
+    }
+
+    void addMultTranspose( InDeriv& result, const OutDeriv& data )
+    {
+        result += data.getF() * Ft ;
+    }
+
+    MatBlock getJ()
+    {
+        MatBlock J = MatBlock();
+        for(unsigned int i=0; i<dim; i++) for(unsigned int j=0; j<mdim; j++) J(j+i*mdim,i)=Ft[j];
+        return J;
+    }
+
+    // no geometric striffness (constant J)
+    KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
+    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
+};
+
+
+
+
+
 } // namespace defaulttype
 } // namespace sofa
 
