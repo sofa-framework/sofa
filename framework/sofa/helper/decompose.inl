@@ -1945,8 +1945,6 @@ bool Decompose<Real>::SVD_stable( const defaulttype::Mat<2,2,Real> &F, defaultty
         }
     }
 
-    // TODO check for degenerate cases (collapsed to a point, to an edge)
-    // note that inversion is not defined for a 2d element in a 3d world
     switch( degenerated )
     {
     case 0: // no null value -> eventually inverted but not degenerate
