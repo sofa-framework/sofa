@@ -54,8 +54,6 @@
 namespace sofa {
 
 struct TestOBB : public Sofa_test<double>{
-    typedef sofa::defaulttype::Vec3d Vec3d;
-
     bool faceVertex();
     bool vertexVertex();
     bool faceFace();
@@ -70,8 +68,6 @@ struct TestOBB : public Sofa_test<double>{
 
 
 struct TestCapOBB  : public ::testing::Test{
-    typedef sofa::defaulttype::Vec3d Vec3d;
-
     bool faceVertex();
     bool faceEdge();
     bool edgeVertex();
@@ -81,9 +77,7 @@ struct TestCapOBB  : public ::testing::Test{
 };
 
 struct TestSphereOBB : public ::testing::Test{
-    typedef sofa::defaulttype::Vec3d Vec3d;
-
-    sofa::component::collision::RigidSphereModel::SPtr makeMyRSphere(const Vec3d & center,double radius,const Vec3d & v,
+    sofa::component::collision::RigidSphereModel::SPtr makeMyRSphere(const Vec3 & center,double radius,const Vec3 & v,
                                                                        sofa::simulation::Node::SPtr & father);
 
     bool vertex();
@@ -93,8 +87,6 @@ struct TestSphereOBB : public ::testing::Test{
 
 
 struct TestTriOBB : public ::testing::Test{
-    typedef sofa::defaulttype::Vec3d Vec3d;
-
     bool faceVertex();
     bool faceVertex_out();
     bool faceVertex_out2();
@@ -110,7 +102,7 @@ struct TestTriOBB : public ::testing::Test{
 };
 
 
-sofa::component::collision::RigidSphereModel::SPtr TestSphereOBB::makeMyRSphere(const Vec3d & center,double radius,const Vec3d & v,
+sofa::component::collision::RigidSphereModel::SPtr TestSphereOBB::makeMyRSphere(const Vec3 & center,double radius,const Vec3 & v,
                                                                    sofa::simulation::Node::SPtr & father){
     //creating node containing SphereModel
     sofa::simulation::Node::SPtr sph = father->createChild("cap");
@@ -153,7 +145,6 @@ sofa::component::collision::RigidSphereModel::SPtr TestSphereOBB::makeMyRSphere(
     return sphCollisionModel;
 }
 
-
 //vertex indexation of an OBB below :
 //
 //                                         7--------6
@@ -169,7 +160,7 @@ bool TestOBB::faceVertex(){
     double angles[3] = {0,0,0};
     int order[3] = {0,1,2};
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
-    sofa::component::collision::OBBModel::SPtr obbmodel0 = makeOBB(Vec3d(0,0,-1),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
+    sofa::component::collision::OBBModel::SPtr obbmodel0 = makeOBB(Vec3(0,0,-1),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //the second OBB which is moving, one OBB must move, if not, there is no collision (OBB collision algorithm is like that)
@@ -179,7 +170,7 @@ bool TestOBB::faceVertex(){
     angles[0] = 0;
     angles[1] = acos(1/sqrt(3.0));
     angles[2] = M_PI_4;
-    sofa::component::collision::OBBModel::SPtr obbmodel1 = makeOBB(Vec3d(0,0,sqrt(3.0) + 0.01),angles,order,Vec3d(0,0,-10),Vec3d(1,1,1),scn);
+    sofa::component::collision::OBBModel::SPtr obbmodel1 = makeOBB(Vec3(0,0,sqrt(3.0) + 0.01),angles,order,Vec3(0,0,-10),Vec3(1,1,1),scn);
 
     //we construct OBBs from OBBModels
     sofa::component::collision::OBB obb0(obbmodel0.get(),0);
@@ -195,15 +186,15 @@ bool TestOBB::faceVertex(){
         return false;
 
     //the intersection point of obb0 (detectionOUTPUT[0].point[0]) should be (0,0,0)
-    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[0] - Vec3(0,0,0)).norm() > 1e-6)
         return false;
 
     //the intersection point of obb1 (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
-    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0.01)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[1] - Vec3(0,0,0.01)).norm() > 1e-6)
         return false;
 
     //the contact response direction (detectionOUTPUT[0].normal) should be (0,0,1)
-    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
+    if((detectionOUTPUT[0].normal.cross(Vec3(0,0,1))).norm() > 1e-6)
         return false;
 
     //in the other sens//////////////////////
@@ -214,15 +205,15 @@ bool TestOBB::faceVertex(){
         return false;
 
     //the intersection point of obb0 (detectionOUTPUT[0].point[0]) should be (0,0,0)
-    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[1] - Vec3(0,0,0)).norm() > 1e-6)
         return false;
 
     //the intersection point of obb1 (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
-    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0.01)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[0] - Vec3(0,0,0.01)).norm() > 1e-6)
         return false;
 
     //the contact response direction (detectionOUTPUT[0].normal) should be (0,0,1)
-    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
+    if((detectionOUTPUT[0].normal.cross(Vec3(0,0,1))).norm() > 1e-6)
         return false;
 
     return true;
@@ -240,8 +231,8 @@ bool TestOBB::vertexVertex(){
     angles[2] = M_PI_4;
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
-    sofa::component::collision::OBBModel::SPtr obbmodel0 = makeOBB(Vec3d(0,0,-sqrt(3.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
-    sofa::component::collision::OBBModel::SPtr obbmodel1 = makeOBB(Vec3d(0,0,sqrt(3.0) + 0.01),angles,order,Vec3d(0,0,-10),Vec3d(1,1,1),scn);
+    sofa::component::collision::OBBModel::SPtr obbmodel0 = makeOBB(Vec3(0,0,-sqrt(3.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
+    sofa::component::collision::OBBModel::SPtr obbmodel1 = makeOBB(Vec3(0,0,sqrt(3.0) + 0.01),angles,order,Vec3(0,0,-10),Vec3(1,1,1),scn);
 
     sofa::component::collision::OBB obb0(obbmodel0.get(),0);
     sofa::component::collision::OBB obb1(obbmodel1.get(),0);
@@ -252,10 +243,10 @@ bool TestOBB::vertexVertex(){
         return false;
     }
 
-    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[0] - Vec3(0,0,0)).norm() > 1e-6)
         return false;
 
-    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0.01)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[1] - Vec3(0,0,0.01)).norm() > 1e-6)
         return false;
 
     //in the other sens//////////////////////
@@ -265,10 +256,10 @@ bool TestOBB::vertexVertex(){
     if(!sofa::component::collision::OBBIntTool::computeIntersection(obb1,obb0,1.0,1.0,&detectionOUTPUT))
         return false;
 
-    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[1] - Vec3(0,0,0)).norm() > 1e-6)
         return false;
 
-    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0.01)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[0] - Vec3(0,0,0.01)).norm() > 1e-6)
         return false;
 
     return true;
@@ -279,8 +270,8 @@ bool TestOBB::faceFace(){
     double angles[3] = {0,0,0};
     int order[3] = {0,1,2};
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
-    sofa::component::collision::OBBModel::SPtr obbmodel0 = makeOBB(Vec3d(0,0,-1),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
-    sofa::component::collision::OBBModel::SPtr obbmodel1 = makeOBB(Vec3d(0,1,1.01),angles,order,Vec3d(0,0,-10),Vec3d(1,1,1),scn);
+    sofa::component::collision::OBBModel::SPtr obbmodel0 = makeOBB(Vec3(0,0,-1),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
+    sofa::component::collision::OBBModel::SPtr obbmodel1 = makeOBB(Vec3(0,1,1.01),angles,order,Vec3(0,0,-10),Vec3(1,1,1),scn);
 
     sofa::component::collision::OBB obb0(obbmodel0.get(),0);
     sofa::component::collision::OBB obb1(obbmodel1.get(),0);
@@ -290,13 +281,13 @@ bool TestOBB::faceFace(){
     if(!sofa::component::collision::OBBIntTool::computeIntersection(obb0,obb1,1.0,1.0,&detectionOUTPUT))
         return false;
 
-    if((detectionOUTPUT[0].point[0] - Vec3d(0,0.5,0)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[0] - Vec3(0,0.5,0)).norm() > 1e-6)
         return false;
 
-    if((detectionOUTPUT[0].point[1] - Vec3d(0,0.5,0.01)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[1] - Vec3(0,0.5,0.01)).norm() > 1e-6)
         return false;
 
-    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
+    if((detectionOUTPUT[0].normal.cross(Vec3(0,0,1))).norm() > 1e-6)
         return false;
 
     //in the other sens//////////////////////
@@ -307,15 +298,15 @@ bool TestOBB::faceFace(){
         return false;
 
     //the intersection point of obb0 (detectionOUTPUT[0].point[0]) should be (0,0,0)
-    if((detectionOUTPUT[0].point[1] - Vec3d(0,0.5,0)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[1] - Vec3(0,0.5,0)).norm() > 1e-6)
         return false;
 
     //the intersection point of obb1 (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
-    if((detectionOUTPUT[0].point[0] - Vec3d(0,0.5,0.01)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[0] - Vec3(0,0.5,0.01)).norm() > 1e-6)
         return false;
 
     //the contact response direction (detectionOUTPUT[0].normal) should be (0,0,1)
-    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
+    if((detectionOUTPUT[0].normal.cross(Vec3(0,0,1))).norm() > 1e-6)
         return false;
 
     return true;
@@ -326,7 +317,7 @@ bool TestOBB::faceEdge(){
     double angles[3] = {0,0,0};
     int order[3] = {0,1,2};
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
-    sofa::component::collision::OBBModel::SPtr obbmodel0 = makeOBB(Vec3d(0,0,-1),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
+    sofa::component::collision::OBBModel::SPtr obbmodel0 = makeOBB(Vec3(0,0,-1),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
 
     order[0] = 2;
     order[1] = 1;
@@ -334,7 +325,7 @@ bool TestOBB::faceEdge(){
     angles[0] = 0;
     angles[1] = M_PI_2;
     angles[2] = M_PI_4;
-    sofa::component::collision::OBBModel::SPtr obbmodel1 = makeOBB(Vec3d(0,0,sqrt(2.0) + 0.01),angles,order,Vec3d(0,0,-10),Vec3d(1,1,1),scn);
+    sofa::component::collision::OBBModel::SPtr obbmodel1 = makeOBB(Vec3(0,0,sqrt(2.0) + 0.01),angles,order,Vec3(0,0,-10),Vec3(1,1,1),scn);
 
     sofa::component::collision::OBB obb0(obbmodel0.get(),0);
     sofa::component::collision::OBB obb1(obbmodel1.get(),0);
@@ -344,13 +335,13 @@ bool TestOBB::faceEdge(){
     if(!sofa::component::collision::OBBIntTool::computeIntersection(obb0,obb1,1.0,1.0,&detectionOUTPUT))
         return false;
 
-    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[0] - Vec3(0,0,0)).norm() > 1e-6)
         return false;
 
-    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0.01)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[1] - Vec3(0,0,0.01)).norm() > 1e-6)
         return false;
 
-    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
+    if((detectionOUTPUT[0].normal.cross(Vec3(0,0,1))).norm() > 1e-6)
         return false;
 
     //in the other sens//////////////////////
@@ -361,15 +352,15 @@ bool TestOBB::faceEdge(){
         return false;
 
     //the intersection point of obb0 (detectionOUTPUT[0].point[0]) should be (0,0,0)
-    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[1] - Vec3(0,0,0)).norm() > 1e-6)
         return false;
 
     //the intersection point of obb1 (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
-    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0.01)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[0] - Vec3(0,0,0.01)).norm() > 1e-6)
         return false;
 
     //the contact response direction (detectionOUTPUT[0].normal) should be (0,0,1)
-    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
+    if((detectionOUTPUT[0].normal.cross(Vec3(0,0,1))).norm() > 1e-6)
         return false;
 
     return true;
@@ -387,8 +378,8 @@ bool TestOBB::edgeEdge(){
     angles[2] = M_PI_4;
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
-    sofa::component::collision::OBBModel::SPtr obbmodel0 = makeOBB(Vec3d(0,0,-sqrt(2.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
-    sofa::component::collision::OBBModel::SPtr obbmodel1 = makeOBB(Vec3d(0,0,sqrt(2.0) + 0.01),angles,order,Vec3d(0,0,-10),Vec3d(1,1,1),scn);
+    sofa::component::collision::OBBModel::SPtr obbmodel0 = makeOBB(Vec3(0,0,-sqrt(2.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
+    sofa::component::collision::OBBModel::SPtr obbmodel1 = makeOBB(Vec3(0,0,sqrt(2.0) + 0.01),angles,order,Vec3(0,0,-10),Vec3(1,1,1),scn);
 
     sofa::component::collision::OBB obb0(obbmodel0.get(),0);
     sofa::component::collision::OBB obb1(obbmodel1.get(),0);
@@ -398,10 +389,10 @@ bool TestOBB::edgeEdge(){
     if(!sofa::component::collision::OBBIntTool::computeIntersection(obb0,obb1,1.0,1.0,&detectionOUTPUT))
         return false;
 
-    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0)).norm() > 1e-6 && (detectionOUTPUT[0].point[0] - Vec3d(1,0,0)).norm() > 1e-6 && (detectionOUTPUT[0].point[0] - Vec3d(-1,0,0)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[0] - Vec3(0,0,0)).norm() > 1e-6 && (detectionOUTPUT[0].point[0] - Vec3(1,0,0)).norm() > 1e-6 && (detectionOUTPUT[0].point[0] - Vec3(-1,0,0)).norm() > 1e-6)
         return false;
 
-    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0.01)).norm() > 1e-6 && (detectionOUTPUT[0].point[1] - Vec3d(1,0,0.01)).norm() > 1e-6 && (detectionOUTPUT[0].point[1] - Vec3d(-1,0,0.01)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[1] - Vec3(0,0,0.01)).norm() > 1e-6 && (detectionOUTPUT[0].point[1] - Vec3(1,0,0.01)).norm() > 1e-6 && (detectionOUTPUT[0].point[1] - Vec3(-1,0,0.01)).norm() > 1e-6)
         return false;
 
     return true;
@@ -419,7 +410,7 @@ bool TestOBB::edgeVertex(){
     angles[2] = M_PI_4;
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
-    sofa::component::collision::OBBModel::SPtr obbmodel0 = makeOBB(Vec3d(0,0,-sqrt(2.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
+    sofa::component::collision::OBBModel::SPtr obbmodel0 = makeOBB(Vec3(0,0,-sqrt(2.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
 
     order[0] = 2;
     order[1] = 1;
@@ -427,7 +418,7 @@ bool TestOBB::edgeVertex(){
     angles[0] = 0;
     angles[1] = acos(1/sqrt(3.0));
     angles[2] = M_PI_4;
-    sofa::component::collision::OBBModel::SPtr obbmodel1 = makeOBB(Vec3d(0,0,sqrt(3.0) + 0.01),angles,order,Vec3d(0,0,-10),Vec3d(1,1,1),scn);
+    sofa::component::collision::OBBModel::SPtr obbmodel1 = makeOBB(Vec3(0,0,sqrt(3.0) + 0.01),angles,order,Vec3(0,0,-10),Vec3(1,1,1),scn);
 
     sofa::component::collision::OBB obb0(obbmodel0.get(),0);
     sofa::component::collision::OBB obb1(obbmodel1.get(),0);
@@ -437,10 +428,10 @@ bool TestOBB::edgeVertex(){
     if(!sofa::component::collision::OBBIntTool::computeIntersection(obb0,obb1,1.0,1.0,&detectionOUTPUT))
         return false;
 
-    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[0] - Vec3(0,0,0)).norm() > 1e-6)
         return false;
 
-    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0.01)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[1] - Vec3(0,0,0.01)).norm() > 1e-6)
         return false;
 
     return true;
@@ -452,11 +443,11 @@ bool TestCapOBB::faceVertex(){
     int order[3] = {0,1,2};
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
     sofa::component::collision::OBBModel::SPtr obbmodel =
-            makeOBB(Vec3d(0,0,-1),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
+            makeOBB(Vec3(0,0,-1),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling capsule
-    sofa::component::collision::CapsuleModel::SPtr capmodel = makeCap(Vec3d(0,0,1 + 0.01),Vec3d(0,0,2),1,Vec3d(0,0,-10),scn);
+    sofa::component::collision::CapsuleModel::SPtr capmodel = makeCap(Vec3(0,0,1 + 0.01),Vec3(0,0,2),1,Vec3(0,0,-10),scn);
 
     //we construct the OBB and the capsule from the OBBModel and the CapsuleModel
     sofa::component::collision::OBB obb(obbmodel.get(),0);
@@ -472,15 +463,15 @@ bool TestCapOBB::faceVertex(){
         return false;
 
     //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
-    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0.01)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[0] - Vec3(0,0,0.01)).norm() > 1e-6)
         return false;
 
     //the intersection point of obb (detectionOUTPUT[0].point[0]) should be (0,0,0)
-    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[1] - Vec3(0,0,0)).norm() > 1e-6)
         return false;
 
     //the contact response direction (detectionOUTPUT[0].normal) should be (0,0,1)
-    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
+    if((detectionOUTPUT[0].normal.cross(Vec3(0,0,1))).norm() > 1e-6)
         return false;
 
     return true;
@@ -492,11 +483,11 @@ bool TestCapOBB::faceEdge(){
     int order[3] = {0,1,2};
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
     sofa::component::collision::OBBModel::SPtr obbmodel =
-            makeOBB(Vec3d(0,0,-1),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
+            makeOBB(Vec3(0,0,-1),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling capsule
-    sofa::component::collision::CapsuleModel::SPtr capmodel = makeCap(Vec3d(-1,0,1 + 0.01),Vec3d(1,0,1 + 0.01),1,Vec3d(0,0,-10),scn);
+    sofa::component::collision::CapsuleModel::SPtr capmodel = makeCap(Vec3(-1,0,1 + 0.01),Vec3(1,0,1 + 0.01),1,Vec3(0,0,-10),scn);
 
     //we construct the OBB and the capsule from the OBBModel and the CapsuleModel
     sofa::component::collision::OBB obb(obbmodel.get(),0);
@@ -512,15 +503,15 @@ bool TestCapOBB::faceEdge(){
         return false;
 
     //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
-    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0.01)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[0] - Vec3(0,0,0.01)).norm() > 1e-6)
         return false;
 
     //the intersection point of obb (detectionOUTPUT[0].point[0]) should be (0,0,0)
-    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[1] - Vec3(0,0,0)).norm() > 1e-6)
         return false;
 
     //the contact response direction (detectionOUTPUT[0].normal) should be (0,0,1)
-    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
+    if((detectionOUTPUT[0].normal.cross(Vec3(0,0,1))).norm() > 1e-6)
         return false;
 
     return true;
@@ -540,11 +531,11 @@ bool TestCapOBB::edgeVertex(){
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
     sofa::component::collision::OBBModel::SPtr obbmodel =
-            makeOBB(Vec3d(0,0,-sqrt(2.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
+            makeOBB(Vec3(0,0,-sqrt(2.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling capsule
-    sofa::component::collision::CapsuleModel::SPtr capmodel = makeCap(Vec3d(0,0,1 + 0.01),Vec3d(0,0,2),1,Vec3d(0,0,-10),scn);
+    sofa::component::collision::CapsuleModel::SPtr capmodel = makeCap(Vec3(0,0,1 + 0.01),Vec3(0,0,2),1,Vec3(0,0,-10),scn);
 
     //we construct the OBB and the capsule from the OBBModel and the CapsuleModel
     sofa::component::collision::OBB obb(obbmodel.get(),0);
@@ -560,15 +551,15 @@ bool TestCapOBB::edgeVertex(){
         return false;
 
     //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
-    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0.01)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[0] - Vec3(0,0,0.01)).norm() > 1e-6)
         return false;
 
     //the intersection point of obb (detectionOUTPUT[0].point[0]) should be (0,0,0)
-    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[1] - Vec3(0,0,0)).norm() > 1e-6)
         return false;
 
     //the contact response direction (detectionOUTPUT[0].normal) should be (0,0,1)
-    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
+    if((detectionOUTPUT[0].normal.cross(Vec3(0,0,1))).norm() > 1e-6)
         return false;
 
     return true;
@@ -588,11 +579,11 @@ bool TestCapOBB::edgeEdge(){
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
     sofa::component::collision::OBBModel::SPtr obbmodel =
-            makeOBB(Vec3d(0,0,-sqrt(2.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
+            makeOBB(Vec3(0,0,-sqrt(2.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling capsule
-    sofa::component::collision::CapsuleModel::SPtr capmodel = makeCap(Vec3d(-0.5,0,1 + 0.01),Vec3d(0.5,0,1 + 0.01),1,Vec3d(0,0,-10),scn);
+    sofa::component::collision::CapsuleModel::SPtr capmodel = makeCap(Vec3(-0.5,0,1 + 0.01),Vec3(0.5,0,1 + 0.01),1,Vec3(0,0,-10),scn);
 
     //we construct the OBB and the capsule from the OBBModel and the CapsuleModel
     sofa::component::collision::OBB obb(obbmodel.get(),0);
@@ -608,15 +599,15 @@ bool TestCapOBB::edgeEdge(){
         return false;
 
     //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
-    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0.01)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[0] - Vec3(0,0,0.01)).norm() > 1e-6)
         return false;
 
     //the intersection point of obb (detectionOUTPUT[0].point[0]) should be (0,0,0)
-    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[1] - Vec3(0,0,0)).norm() > 1e-6)
         return false;
 
     //the contact response direction (detectionOUTPUT[0].normal) should be (0,0,1)
-    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
+    if((detectionOUTPUT[0].normal.cross(Vec3(0,0,1))).norm() > 1e-6)
         return false;
 
     return true;
@@ -636,11 +627,11 @@ bool TestCapOBB::vertexEdge(){
     angles[2] = M_PI_4;
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
-    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3d(0,0,-sqrt(3.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
+    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3(0,0,-sqrt(3.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling capsule
-    sofa::component::collision::CapsuleModel::SPtr capmodel = makeCap(Vec3d(-0.5,0,1 + 0.01),Vec3d(0.5,0,1 + 0.01),1,Vec3d(0,0,-10),scn);
+    sofa::component::collision::CapsuleModel::SPtr capmodel = makeCap(Vec3(-0.5,0,1 + 0.01),Vec3(0.5,0,1 + 0.01),1,Vec3(0,0,-10),scn);
 
     //we construct the OBB and the capsule from the OBBModel and the CapsuleModel
     sofa::component::collision::OBB obb(obbmodel.get(),0);
@@ -656,15 +647,15 @@ bool TestCapOBB::vertexEdge(){
         return false;
 
     //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
-    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0.01)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[0] - Vec3(0,0,0.01)).norm() > 1e-6)
         return false;
 
     //the intersection point of obb (detectionOUTPUT[0].point[0]) should be (0,0,0)
-    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[1] - Vec3(0,0,0)).norm() > 1e-6)
         return false;
 
     //the contact response direction (detectionOUTPUT[0].normal) should be (0,0,1)
-    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
+    if((detectionOUTPUT[0].normal.cross(Vec3(0,0,1))).norm() > 1e-6)
         return false;
 
     return true;
@@ -684,11 +675,11 @@ bool TestCapOBB::vertexVertex(){
     angles[2] = M_PI_4;
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
-    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3d(0,0,-sqrt(3.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
+    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3(0,0,-sqrt(3.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling capsule
-    sofa::component::collision::CapsuleModel::SPtr capmodel = makeCap(Vec3d(0,0,1 + 0.01),Vec3d(0,0,2),1,Vec3d(0,0,-10),scn);
+    sofa::component::collision::CapsuleModel::SPtr capmodel = makeCap(Vec3(0,0,1 + 0.01),Vec3(0,0,2),1,Vec3(0,0,-10),scn);
 
     //we construct the OBB and the capsule from the OBBModel and the CapsuleModel
     sofa::component::collision::OBB obb(obbmodel.get(),0);
@@ -704,15 +695,15 @@ bool TestCapOBB::vertexVertex(){
         return false;
 
     //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
-    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0.01)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[0] - Vec3(0,0,0.01)).norm() > 1e-6)
         return false;
 
     //the intersection point of obb (detectionOUTPUT[0].point[0]) should be (0,0,0)
-    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[1] - Vec3(0,0,0)).norm() > 1e-6)
         return false;
 
     //the contact response direction (detectionOUTPUT[0].normal) should be (0,0,1)
-    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
+    if((detectionOUTPUT[0].normal.cross(Vec3(0,0,1))).norm() > 1e-6)
         return false;
 
     return true;
@@ -730,11 +721,11 @@ bool TestSphereOBB::vertex(){
     angles[2] = M_PI_4;
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
-    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3d(0,0,-sqrt(3.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
+    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3(0,0,-sqrt(3.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling capsule
-    sofa::component::collision::RigidSphereModel::SPtr sphmodel = makeMyRSphere(Vec3d(0,0,1 + 0.01),1,Vec3d(0,0,-10),scn);
+    sofa::component::collision::RigidSphereModel::SPtr sphmodel = makeMyRSphere(Vec3(0,0,1 + 0.01),1,Vec3(0,0,-10),scn);
 
     //we construct the OBB and the capsule from the OBBModel and the CapsuleModel
     sofa::component::collision::OBB obb(obbmodel.get(),0);
@@ -753,15 +744,15 @@ bool TestSphereOBB::vertex(){
     std::cout<<"detectionOUTPUT[0].point[1] "<<detectionOUTPUT[0].point[1]<<std::endl;
 
     //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
-    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0.01)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[0] - Vec3(0,0,0.01)).norm() > 1e-6)
         return false;
 
     //the intersection point of obb (detectionOUTPUT[0].point[0]) should be (0,0,0)
-    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[1] - Vec3(0,0,0)).norm() > 1e-6)
         return false;
 
     //the contact response direction (detectionOUTPUT[0].normal) should be (0,0,1)
-    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
+    if((detectionOUTPUT[0].normal.cross(Vec3(0,0,1))).norm() > 1e-6)
         return false;
 
     return true;
@@ -780,11 +771,11 @@ bool TestSphereOBB::edge(){
     angles[2] = M_PI_4;
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
-    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3d(0,0,-sqrt(2.0)),angles,order,Vec3d(0,0,-10),Vec3d(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
+    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3(0,0,-sqrt(2.0)),angles,order,Vec3(0,0,-10),Vec3(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling capsule
-    sofa::component::collision::RigidSphereModel::SPtr sphmodel = makeMyRSphere(Vec3d(0,0,1 + 0.01),1,Vec3d(0,0,-10),scn);
+    sofa::component::collision::RigidSphereModel::SPtr sphmodel = makeMyRSphere(Vec3(0,0,1 + 0.01),1,Vec3(0,0,-10),scn);
 
     //we construct the OBB and the capsule from the OBBModel and the CapsuleModel
     sofa::component::collision::OBB obb(obbmodel.get(),0);
@@ -800,15 +791,15 @@ bool TestSphereOBB::edge(){
         return false;
 
     //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
-    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0.01)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[0] - Vec3(0,0,0.01)).norm() > 1e-6)
         return false;
 
     //the intersection point of obb (detectionOUTPUT[0].point[0]) should be (0,0,0)
-    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[1] - Vec3(0,0,0)).norm() > 1e-6)
         return false;
 
     //the contact response direction (detectionOUTPUT[0].normal) should be (0,0,1)
-    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
+    if((detectionOUTPUT[0].normal.cross(Vec3(0,0,1))).norm() > 1e-6)
         return false;
 
     return true;
@@ -821,11 +812,11 @@ bool TestSphereOBB::face(){
     int order[3] = {0,1,2};
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
-    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3d(0,0,-1),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
+    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3(0,0,-1),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling capsule
-    sofa::component::collision::RigidSphereModel::SPtr sphmodel = makeMyRSphere(Vec3d(0,0,1 + 0.01),1,Vec3d(0,0,-10),scn);
+    sofa::component::collision::RigidSphereModel::SPtr sphmodel = makeMyRSphere(Vec3(0,0,1 + 0.01),1,Vec3(0,0,-10),scn);
 
     //we construct the OBB and the capsule from the OBBModel and the CapsuleModel
     sofa::component::collision::OBB obb(obbmodel.get(),0);
@@ -841,15 +832,15 @@ bool TestSphereOBB::face(){
         return false;
 
     //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
-    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0.01)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[0] - Vec3(0,0,0.01)).norm() > 1e-6)
         return false;
 
     //the intersection point of obb (detectionOUTPUT[0].point[0]) should be (0,0,0)
-    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[1] - Vec3(0,0,0)).norm() > 1e-6)
         return false;
 
     //the contact response direction (detectionOUTPUT[0].normal) should be (0,0,1)
-    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
+    if((detectionOUTPUT[0].normal.cross(Vec3(0,0,1))).norm() > 1e-6)
         return false;
 
     return true;
@@ -859,10 +850,10 @@ bool TestTriOBB::faceFace(){
     double angles[3] = {0,0,0};
     int order[3] = {0,1,2};
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
-    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3d(0,0,-1),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
+    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3(0,0,-1),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
 
     int tri_flg = sofa::component::collision::TriangleModel::FLAG_POINTS | sofa::component::collision::TriangleModel::FLAG_EDGES;
-    sofa::component::collision::TriangleModel::SPtr trimodel = makeTri(Vec3d(-2,-2,0.01),Vec3d(-2,2,0.01),Vec3d(2,0,0.01),Vec3d(0,0,-10),scn);
+    sofa::component::collision::TriangleModel::SPtr trimodel = makeTri(Vec3(-2,-2,0.01),Vec3(-2,2,0.01),Vec3(2,0,0.01),Vec3(0,0,-10),scn);
 
     sofa::component::collision::OBB obb(obbmodel.get(),0);
     sofa::component::collision::Triangle tri(trimodel.get(),0);
@@ -872,13 +863,13 @@ bool TestTriOBB::faceFace(){
     if(!sofa::component::collision::MeshIntTool::computeIntersection(tri,tri_flg,obb,1.0,1.0,&detectionOUTPUT))
         return false;
 
-    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0.01)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[0] - Vec3(0,0,0.01)).norm() > 1e-6)
         return false;
 
-    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[1] - Vec3(0,0,0)).norm() > 1e-6)
         return false;
 
-    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
+    if((detectionOUTPUT[0].normal.cross(Vec3(0,0,1))).norm() > 1e-6)
         return false;
 
     return true;
@@ -889,10 +880,10 @@ bool TestTriOBB::faceVertex_out(){
     double angles[3] = {0,0,0};
     int order[3] = {0,1,2};
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
-    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3d(-1.01,0,1.01),angles,order,Vec3d(0,0,-10),Vec3d(1,1,1),scn);
+    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3(-1.01,0,1.01),angles,order,Vec3(0,0,-10),Vec3(1,1,1),scn);
 
     int tri_flg = sofa::component::collision::TriangleModel::FLAG_POINTS | sofa::component::collision::TriangleModel::FLAG_EDGES;
-    sofa::component::collision::TriangleModel::SPtr trimodel = makeTri(Vec3d(0,0,0),Vec3d(2,2,0),Vec3d(2,-2,0),Vec3d(0,0,0),scn);
+    sofa::component::collision::TriangleModel::SPtr trimodel = makeTri(Vec3(0,0,0),Vec3(2,2,0),Vec3(2,-2,0),Vec3(0,0,0),scn);
 
     sofa::component::collision::OBB obb(obbmodel.get(),0);
     sofa::component::collision::Triangle tri(trimodel.get(),0);
@@ -906,14 +897,14 @@ bool TestTriOBB::faceVertex_out(){
     std::cout<<"detectionOUTPUT[0].point[1] "<<detectionOUTPUT[0].point[1]<<std::endl;
 
     //triangle point
-    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[0] - Vec3(0,0,0)).norm() > 1e-6)
         return false;
 
     //obb point
-    if((detectionOUTPUT[0].point[1] - Vec3d(-0.01,0,0.01)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[1] - Vec3(-0.01,0,0.01)).norm() > 1e-6)
         return false;
 
-    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
+    if((detectionOUTPUT[0].normal.cross(Vec3(0,0,1))).norm() > 1e-6)
         return false;
 
     return true;
@@ -924,10 +915,10 @@ bool TestTriOBB::faceVertex_out2(){
     double angles[3] = {0,0,0};
     int order[3] = {0,1,2};
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
-    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3d(-1.01,0,-1.01),angles,order,Vec3d(0,0,10),Vec3d(1,1,1),scn);
+    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3(-1.01,0,-1.01),angles,order,Vec3(0,0,10),Vec3(1,1,1),scn);
 
     int tri_flg = sofa::component::collision::TriangleModel::FLAG_POINTS | sofa::component::collision::TriangleModel::FLAG_EDGES;
-    sofa::component::collision::TriangleModel::SPtr trimodel = makeTri(Vec3d(0,0,0),Vec3d(2,2,0),Vec3d(2,-2,0),Vec3d(0,0,0),scn);
+    sofa::component::collision::TriangleModel::SPtr trimodel = makeTri(Vec3(0,0,0),Vec3(2,2,0),Vec3(2,-2,0),Vec3(0,0,0),scn);
 
     sofa::component::collision::OBB obb(obbmodel.get(),0);
     sofa::component::collision::Triangle tri(trimodel.get(),0);
@@ -941,14 +932,14 @@ bool TestTriOBB::faceVertex_out2(){
     std::cout<<"detectionOUTPUT[0].point[1] "<<detectionOUTPUT[0].point[1]<<std::endl;
 
     //triangle point
-    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[0] - Vec3(0,0,0)).norm() > 1e-6)
         return false;
 
     //obb point
-    if((detectionOUTPUT[0].point[1] - Vec3d(-0.01,0,-0.01)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[1] - Vec3(-0.01,0,-0.01)).norm() > 1e-6)
         return false;
 
-    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
+    if((detectionOUTPUT[0].normal.cross(Vec3(0,0,1))).norm() > 1e-6)
         return false;
 
     return true;
@@ -959,10 +950,10 @@ bool TestTriOBB::faceEdge(){
     double angles[3] = {0,0,0};
     int order[3] = {0,1,2};
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
-    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3d(0,0,-1),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
+    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3(0,0,-1),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
 
     int tri_flg = sofa::component::collision::TriangleModel::FLAG_POINTS | sofa::component::collision::TriangleModel::FLAG_EDGES;
-    sofa::component::collision::TriangleModel::SPtr trimodel = makeTri(Vec3d(0,-2,0.01),Vec3d(0,2,0.01),Vec3d(2,0,2),Vec3d(0,0,-10),scn);
+    sofa::component::collision::TriangleModel::SPtr trimodel = makeTri(Vec3(0,-2,0.01),Vec3(0,2,0.01),Vec3(2,0,2),Vec3(0,0,-10),scn);
 
     sofa::component::collision::OBB obb(obbmodel.get(),0);
     sofa::component::collision::Triangle tri(trimodel.get(),0);
@@ -972,13 +963,13 @@ bool TestTriOBB::faceEdge(){
     if(!sofa::component::collision::MeshIntTool::computeIntersection(tri,tri_flg,obb,1.0,1.0,&detectionOUTPUT))
         return false;
 
-    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0.01)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[0] - Vec3(0,0,0.01)).norm() > 1e-6)
         return false;
 
-    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[1] - Vec3(0,0,0)).norm() > 1e-6)
         return false;
 
-    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
+    if((detectionOUTPUT[0].normal.cross(Vec3(0,0,1))).norm() > 1e-6)
         return false;
 
     return true;
@@ -989,10 +980,10 @@ bool TestTriOBB::faceVertex(){
     double angles[3] = {0,0,0};
     int order[3] = {0,1,2};
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
-    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3d(0,0,-1),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
+    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3(0,0,-1),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
 
     int tri_flg = sofa::component::collision::TriangleModel::FLAG_POINTS | sofa::component::collision::TriangleModel::FLAG_EDGES;
-    sofa::component::collision::TriangleModel::SPtr trimodel = makeTri(Vec3d(0,-2,2),Vec3d(0,2,2),Vec3d(0,0,0.01),Vec3d(0,0,-10),scn);
+    sofa::component::collision::TriangleModel::SPtr trimodel = makeTri(Vec3(0,-2,2),Vec3(0,2,2),Vec3(0,0,0.01),Vec3(0,0,-10),scn);
 
     sofa::component::collision::OBB obb(obbmodel.get(),0);
     sofa::component::collision::Triangle tri(trimodel.get(),0);
@@ -1002,13 +993,13 @@ bool TestTriOBB::faceVertex(){
     if(!sofa::component::collision::MeshIntTool::computeIntersection(tri,tri_flg,obb,1.0,1.0,&detectionOUTPUT))
         return false;
 
-    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0.01)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[0] - Vec3(0,0,0.01)).norm() > 1e-6)
         return false;
 
-    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[1] - Vec3(0,0,0)).norm() > 1e-6)
         return false;
 
-    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
+    if((detectionOUTPUT[0].normal.cross(Vec3(0,0,1))).norm() > 1e-6)
         return false;
 
     return true;
@@ -1026,10 +1017,10 @@ bool TestTriOBB::edgeFace(){
     angles[2] = M_PI_4;
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
-    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3d(0,0,-sqrt(2.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
+    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3(0,0,-sqrt(2.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
 
     int tri_flg = sofa::component::collision::TriangleModel::FLAG_POINTS | sofa::component::collision::TriangleModel::FLAG_EDGES;
-    sofa::component::collision::TriangleModel::SPtr trimodel = makeTri(Vec3d(-2,-2,0.01),Vec3d(-2,2,0.01),Vec3d(2,0,0.01),Vec3d(0,0,-10),scn);
+    sofa::component::collision::TriangleModel::SPtr trimodel = makeTri(Vec3(-2,-2,0.01),Vec3(-2,2,0.01),Vec3(2,0,0.01),Vec3(0,0,-10),scn);
 
     sofa::component::collision::OBB obb(obbmodel.get(),0);
     sofa::component::collision::Triangle tri(trimodel.get(),0);
@@ -1039,13 +1030,13 @@ bool TestTriOBB::edgeFace(){
     if(!sofa::component::collision::MeshIntTool::computeIntersection(tri,tri_flg,obb,1.0,1.0,&detectionOUTPUT))
         return false;
 
-    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0.01)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[0] - Vec3(0,0,0.01)).norm() > 1e-6)
         return false;
 
-    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[1] - Vec3(0,0,0)).norm() > 1e-6)
         return false;
 
-    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
+    if((detectionOUTPUT[0].normal.cross(Vec3(0,0,1))).norm() > 1e-6)
         return false;
 
     return true;
@@ -1063,10 +1054,10 @@ bool TestTriOBB::edgeEdge(){
     angles[2] = M_PI_4;
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
-    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3d(0,0,-sqrt(2.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
+    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3(0,0,-sqrt(2.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
 
     int tri_flg = sofa::component::collision::TriangleModel::FLAG_POINTS | sofa::component::collision::TriangleModel::FLAG_EDGES;
-    sofa::component::collision::TriangleModel::SPtr trimodel = makeTri(Vec3d(0,-2,0.01),Vec3d(0,2,0.01),Vec3d(2,0,2),Vec3d(0,0,-10),scn);
+    sofa::component::collision::TriangleModel::SPtr trimodel = makeTri(Vec3(0,-2,0.01),Vec3(0,2,0.01),Vec3(2,0,2),Vec3(0,0,-10),scn);
 
     sofa::component::collision::OBB obb(obbmodel.get(),0);
     sofa::component::collision::Triangle tri(trimodel.get(),0);
@@ -1076,13 +1067,13 @@ bool TestTriOBB::edgeEdge(){
     if(!sofa::component::collision::MeshIntTool::computeIntersection(tri,tri_flg,obb,1.0,1.0,&detectionOUTPUT))
         return false;
 
-    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0.01)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[0] - Vec3(0,0,0.01)).norm() > 1e-6)
         return false;
 
-    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[1] - Vec3(0,0,0)).norm() > 1e-6)
         return false;
 
-    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
+    if((detectionOUTPUT[0].normal.cross(Vec3(0,0,1))).norm() > 1e-6)
         return false;
 
     return true;
@@ -1100,10 +1091,10 @@ bool TestTriOBB::edgeEdge2(){
     angles[2] = M_PI_4;
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
-    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3d(0,0,-sqrt(2.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
+    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3(0,0,-sqrt(2.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
 
     int tri_flg = sofa::component::collision::TriangleModel::FLAG_POINTS | sofa::component::collision::TriangleModel::FLAG_EDGES;
-    sofa::component::collision::TriangleModel::SPtr trimodel = makeTri(Vec3d(-1,0,0.01),Vec3d(1,0,0.01),Vec3d(2,0,2),Vec3d(0,0,-10),scn);
+    sofa::component::collision::TriangleModel::SPtr trimodel = makeTri(Vec3(-1,0,0.01),Vec3(1,0,0.01),Vec3(2,0,2),Vec3(0,0,-10),scn);
 
     sofa::component::collision::OBB obb(obbmodel.get(),0);
     sofa::component::collision::Triangle tri(trimodel.get(),0);
@@ -1113,13 +1104,13 @@ bool TestTriOBB::edgeEdge2(){
     if(!sofa::component::collision::MeshIntTool::computeIntersection(tri,tri_flg,obb,1.0,1.0,&detectionOUTPUT))
         return false;
 
-    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0.01)).norm() > 1e-6 && (detectionOUTPUT[0].point[0] - Vec3d(1,0,0.01)).norm() > 1e-6 && (detectionOUTPUT[0].point[0] - Vec3d(-1,0,0.01)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[0] - Vec3(0,0,0.01)).norm() > 1e-6 && (detectionOUTPUT[0].point[0] - Vec3(1,0,0.01)).norm() > 1e-6 && (detectionOUTPUT[0].point[0] - Vec3(-1,0,0.01)).norm() > 1e-6)
         return false;
 
-    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0)).norm() > 1e-6 && (detectionOUTPUT[0].point[1] - Vec3d(1,0,0)).norm() > 1e-6 && (detectionOUTPUT[0].point[1] - Vec3d(-1,0,0)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[1] - Vec3(0,0,0)).norm() > 1e-6 && (detectionOUTPUT[0].point[1] - Vec3(1,0,0)).norm() > 1e-6 && (detectionOUTPUT[0].point[1] - Vec3(-1,0,0)).norm() > 1e-6)
         return false;
 
-//    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
+//    if((detectionOUTPUT[0].normal.cross(Vec3(0,0,1))).norm() > 1e-6)
 //        return false;
 
     return true;
@@ -1136,10 +1127,10 @@ bool TestTriOBB::edgeVertex(){
     angles[2] = M_PI_4;
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
-    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3d(0,0,-sqrt(2.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
+    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3(0,0,-sqrt(2.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
 
     int tri_flg = sofa::component::collision::TriangleModel::FLAG_POINTS | sofa::component::collision::TriangleModel::FLAG_EDGES;
-    sofa::component::collision::TriangleModel::SPtr trimodel = makeTri(Vec3d(0,0,0.01),Vec3d(1,0,2),Vec3d(-1,0,2),Vec3d(0,0,-10),scn);
+    sofa::component::collision::TriangleModel::SPtr trimodel = makeTri(Vec3(0,0,0.01),Vec3(1,0,2),Vec3(-1,0,2),Vec3(0,0,-10),scn);
 
     sofa::component::collision::OBB obb(obbmodel.get(),0);
     sofa::component::collision::Triangle tri(trimodel.get(),0);
@@ -1149,13 +1140,13 @@ bool TestTriOBB::edgeVertex(){
     if(!sofa::component::collision::MeshIntTool::computeIntersection(tri,tri_flg,obb,1.0,1.0,&detectionOUTPUT))
         return false;
 
-    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0.01)).norm() > 1e-6 && (detectionOUTPUT[0].point[0] - Vec3d(1,0,0.01)).norm() > 1e-6 && (detectionOUTPUT[0].point[0] - Vec3d(-1,0,0.01)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[0] - Vec3(0,0,0.01)).norm() > 1e-6 && (detectionOUTPUT[0].point[0] - Vec3(1,0,0.01)).norm() > 1e-6 && (detectionOUTPUT[0].point[0] - Vec3(-1,0,0.01)).norm() > 1e-6)
         return false;
 
-    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0)).norm() > 1e-6 && (detectionOUTPUT[0].point[1] - Vec3d(1,0,0)).norm() > 1e-6 && (detectionOUTPUT[0].point[1] - Vec3d(-1,0,0)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[1] - Vec3(0,0,0)).norm() > 1e-6 && (detectionOUTPUT[0].point[1] - Vec3(1,0,0)).norm() > 1e-6 && (detectionOUTPUT[0].point[1] - Vec3(-1,0,0)).norm() > 1e-6)
         return false;
 
-//    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
+//    if((detectionOUTPUT[0].normal.cross(Vec3(0,0,1))).norm() > 1e-6)
 //        return false;
 
     return true;
@@ -1173,10 +1164,10 @@ bool TestTriOBB::vertexFace(){
     angles[2] = M_PI_4;
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
-    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3d(0,0,-sqrt(3.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
+    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3(0,0,-sqrt(3.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
 
     int tri_flg = sofa::component::collision::TriangleModel::FLAG_POINTS | sofa::component::collision::TriangleModel::FLAG_EDGES;
-    sofa::component::collision::TriangleModel::SPtr trimodel = makeTri(Vec3d(-2,-2,0.01),Vec3d(-2,2,0.01),Vec3d(2,0,0.01),Vec3d(0,0,-10),scn);
+    sofa::component::collision::TriangleModel::SPtr trimodel = makeTri(Vec3(-2,-2,0.01),Vec3(-2,2,0.01),Vec3(2,0,0.01),Vec3(0,0,-10),scn);
 
     sofa::component::collision::OBB obb(obbmodel.get(),0);
     sofa::component::collision::Triangle tri(trimodel.get(),0);
@@ -1186,13 +1177,13 @@ bool TestTriOBB::vertexFace(){
     if(!sofa::component::collision::MeshIntTool::computeIntersection(tri,tri_flg,obb,1.0,1.0,&detectionOUTPUT))
         return false;
 
-    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0.01)).norm() > 1e-6 && (detectionOUTPUT[0].point[0] - Vec3d(1,0,0.01)).norm() > 1e-6 && (detectionOUTPUT[0].point[0] - Vec3d(-1,0,0.01)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[0] - Vec3(0,0,0.01)).norm() > 1e-6 && (detectionOUTPUT[0].point[0] - Vec3(1,0,0.01)).norm() > 1e-6 && (detectionOUTPUT[0].point[0] - Vec3(-1,0,0.01)).norm() > 1e-6)
         return false;
 
-    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0)).norm() > 1e-6 && (detectionOUTPUT[0].point[1] - Vec3d(1,0,0)).norm() > 1e-6 && (detectionOUTPUT[0].point[1] - Vec3d(-1,0,0)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[1] - Vec3(0,0,0)).norm() > 1e-6 && (detectionOUTPUT[0].point[1] - Vec3(1,0,0)).norm() > 1e-6 && (detectionOUTPUT[0].point[1] - Vec3(-1,0,0)).norm() > 1e-6)
         return false;
 
-//    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
+//    if((detectionOUTPUT[0].normal.cross(Vec3(0,0,1))).norm() > 1e-6)
 //        return false;
 
     return true;
@@ -1210,10 +1201,10 @@ bool TestTriOBB::vertexEdge(){
     angles[2] = M_PI_4;
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
-    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3d(0,0,-sqrt(3.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
+    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3(0,0,-sqrt(3.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
 
     int tri_flg = sofa::component::collision::TriangleModel::FLAG_POINTS | sofa::component::collision::TriangleModel::FLAG_EDGES;
-    sofa::component::collision::TriangleModel::SPtr trimodel = makeTri(Vec3d(-1,0,0.01),Vec3d(1,0,0.01),Vec3d(2,0,2),Vec3d(0,0,-10),scn);
+    sofa::component::collision::TriangleModel::SPtr trimodel = makeTri(Vec3(-1,0,0.01),Vec3(1,0,0.01),Vec3(2,0,2),Vec3(0,0,-10),scn);
 
     sofa::component::collision::OBB obb(obbmodel.get(),0);
     sofa::component::collision::Triangle tri(trimodel.get(),0);
@@ -1223,13 +1214,13 @@ bool TestTriOBB::vertexEdge(){
     if(!sofa::component::collision::MeshIntTool::computeIntersection(tri,tri_flg,obb,1.0,1.0,&detectionOUTPUT))
         return false;
 
-    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0.01)).norm() > 1e-6 && (detectionOUTPUT[0].point[0] - Vec3d(1,0,0.01)).norm() > 1e-6 && (detectionOUTPUT[0].point[0] - Vec3d(-1,0,0.01)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[0] - Vec3(0,0,0.01)).norm() > 1e-6 && (detectionOUTPUT[0].point[0] - Vec3(1,0,0.01)).norm() > 1e-6 && (detectionOUTPUT[0].point[0] - Vec3(-1,0,0.01)).norm() > 1e-6)
         return false;
 
-    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0)).norm() > 1e-6 && (detectionOUTPUT[0].point[1] - Vec3d(1,0,0)).norm() > 1e-6 && (detectionOUTPUT[0].point[1] - Vec3d(-1,0,0)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[1] - Vec3(0,0,0)).norm() > 1e-6 && (detectionOUTPUT[0].point[1] - Vec3(1,0,0)).norm() > 1e-6 && (detectionOUTPUT[0].point[1] - Vec3(-1,0,0)).norm() > 1e-6)
         return false;
 
-//    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
+//    if((detectionOUTPUT[0].normal.cross(Vec3(0,0,1))).norm() > 1e-6)
 //        return false;
 
     return true;
@@ -1247,10 +1238,10 @@ bool TestTriOBB::vertexVertex(){
     angles[2] = M_PI_4;
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
-    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3d(0,0,-sqrt(3.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
+    sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3(0,0,-sqrt(3.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
 
     int tri_flg = sofa::component::collision::TriangleModel::FLAG_POINTS | sofa::component::collision::TriangleModel::FLAG_EDGES;
-    sofa::component::collision::TriangleModel::SPtr trimodel = makeTri(Vec3d(0,0,0.01),Vec3d(1,0,2),Vec3d(-1,0,2),Vec3d(0,0,-10),scn);
+    sofa::component::collision::TriangleModel::SPtr trimodel = makeTri(Vec3(0,0,0.01),Vec3(1,0,2),Vec3(-1,0,2),Vec3(0,0,-10),scn);
 
     sofa::component::collision::OBB obb(obbmodel.get(),0);
     sofa::component::collision::Triangle tri(trimodel.get(),0);
@@ -1260,13 +1251,13 @@ bool TestTriOBB::vertexVertex(){
     if(!sofa::component::collision::MeshIntTool::computeIntersection(tri,tri_flg,obb,1.0,1.0,&detectionOUTPUT))
         return false;
 
-    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0.01)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[0] - Vec3(0,0,0.01)).norm() > 1e-6)
         return false;
 
-    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[1] - Vec3(0,0,0)).norm() > 1e-6)
         return false;
 
-//    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
+//    if((detectionOUTPUT[0].normal.cross(Vec3(0,0,1))).norm() > 1e-6)
 //        return false;
 
     return true;

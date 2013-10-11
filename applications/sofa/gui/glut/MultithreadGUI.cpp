@@ -686,7 +686,8 @@ void MultithreadGUI::DrawAxis(double xpos, double ypos, double zpos,
 // ---
 // ---
 // ---------------------------------------------------
-void MultithreadGUI::DrawBox(double* minBBox, double* maxBBox, double r)
+//void MultithreadGUI::DrawBox(double* minBBox, double* maxBBox, double r)
+void MultithreadGUI::DrawBox(SReal* minBBox, SReal* maxBBox, SReal r)//Moreno modif
 {
     //std::cout << "box = < " << minBBox[0] << ' ' << minBBox[1] << ' ' << minBBox[2] << " >-< " << maxBBox[0] << ' ' << maxBBox[1] << ' ' << maxBBox[2] << " >"<< std::endl;
     if (r==0.0)

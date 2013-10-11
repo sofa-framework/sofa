@@ -2,7 +2,7 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
 
-    Sofa_test.h 
+    Sofa_test.h
     Matrix_test.inl
     Mapping_test.h
     PrimitiveCreation.h
@@ -10,12 +10,12 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
     PrimitiveCreation.cpp
-    RigidMapping_test.cpp 
-    Matrix_test.cpp 
+    RigidMapping_test.cpp
+    Matrix_test.cpp
     OBBTest.cpp
     SphereTest.cpp
-    ProjectToPlaneConstraint_test.cpp 
-    ProjectToLineConstraint_test.cpp 
+    ProjectToPlaneConstraint_test.cpp
+    ProjectToLineConstraint_test.cpp
     )
 
 add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})

@@ -52,6 +52,8 @@
 
 namespace sofa{
 
+typedef Vector3 Vec3;
+
 /**
   *\brief Makes up an OBBModel containing just one OBB. angles and order are the rotations used to make up this OBB.
   *
@@ -62,15 +64,15 @@ namespace sofa{
   *\param extents it contains half-extents of the OBB
   *\param father it is a node that will contain the returned OBBModel
   */
-sofa::component::collision::OBBModel::SPtr makeOBB(const Vec3d & p,const double *angles,const int *order,const Vec3d &v,const Vec3d &extents, sofa::simulation::Node::SPtr &father);
+sofa::component::collision::OBBModel::SPtr makeOBB(const Vec3 & p,const double *angles,const int *order,const Vec3 &v,const Vec3 &extents, sofa::simulation::Node::SPtr &father);
 
-sofa::component::collision::TriangleModel::SPtr makeTri(const Vec3d & p0,const Vec3d & p1,const Vec3d & p2,const Vec3d & v, sofa::simulation::Node::SPtr &father);
+sofa::component::collision::TriangleModel::SPtr makeTri(const Vec3 & p0,const Vec3 & p1,const Vec3 & p2,const Vec3 & v, sofa::simulation::Node::SPtr &father);
 
-sofa::component::collision::CapsuleModel::SPtr makeCap(const Vec3d & p0,const Vec3d & p1,double radius,const Vec3d & v,
+sofa::component::collision::CapsuleModel::SPtr makeCap(const Vec3 & p0,const Vec3 & p1,double radius,const Vec3 & v,
                                                                    sofa::simulation::Node::SPtr & father);
 
-sofa::component::collision::RigidSphereModel::SPtr makeRigidSphere(const Vec3d & p,SReal radius,const Vec3d &v,const double *angles,const int *order,
+sofa::component::collision::RigidSphereModel::SPtr makeRigidSphere(const Vec3 & p,SReal radius,const Vec3 &v,const double *angles,const int *order,
                                                                             sofa::simulation::Node::SPtr & father);
 
-sofa::component::collision::SphereModel::SPtr makeSphere(const Vec3d & p,SReal radius,const Vec3d & v,sofa::simulation::Node::SPtr & father);
+sofa::component::collision::SphereModel::SPtr makeSphere(const Vec3 & p,SReal radius,const Vec3 & v,sofa::simulation::Node::SPtr & father);
 }
