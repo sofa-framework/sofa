@@ -237,7 +237,7 @@ protected:
                     for ( unsigned int c = 0; c < quads.size(); c++ )
                     {
                         BasesType m,mt;
-                        getBasisFrom2DElements( m, parent[quads[c][0]], parent[quads[c][1]], parent[quads[c][2]] );
+                        getBasisFrom2DElements( m, parent[quads[c][0]], parent[quads[c][1]], parent[quads[c][3]] );
                         mt.transpose ( m );
                         B->bases[c0+c].invert ( mt );
                     }
