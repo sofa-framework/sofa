@@ -730,7 +730,7 @@ protected:
     // user provided orientation
     BasesType getUserOrientation(const unsigned int index) const
     {
-    Coord orient; if(this->f_orientation.getValue().size()) orient=(this->f_orientation.getValue().size()>index)?this->f_orientation.getValue()[index]:this->f_orientation.getValue()[0];
+    defaulttype::Vec<3,Real> orient; if(this->f_orientation.getValue().size()) orient=(this->f_orientation.getValue().size()>index)?this->f_orientation.getValue()[index]:this->f_orientation.getValue()[0];
     helper::Quater<Real> q = helper::Quater< Real >::createQuaterFromEuler(orient * (Real)M_PI / (Real)180.0);
     BasesType R; q.toMatrix(R);
     return R;

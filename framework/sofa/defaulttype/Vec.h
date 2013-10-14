@@ -239,7 +239,7 @@ public:
     {
         int maxN = std::min( N, N2 );
         for(int i=0; i<maxN; i++)
-            this->elems[i] = v[i];
+            this->elems[i] = (real)v[i];
         for(int i=maxN; i<N ; i++)
             this->elems[i] = defaultvalue;
     }
@@ -252,10 +252,10 @@ public:
         set( v, r1 );
     }
 
+    /// Constructor from a different size vector (null default value and ignoring outside entries)
     template<int N2, typename real2>
-    Vec(const Vec<N2,real2>& v)
+    explicit Vec(const Vec<N2,real2>& v)
     {
-        BOOST_STATIC_ASSERT(N > 1);
         set( v, 0 );
     }
 
@@ -645,7 +645,8 @@ public:
 /// specialization to better debug instantiation of null size Vec
 template <typename real>
 class Vec<0,real>
-{};
+{
+};
 
 
 /// Same as Vec except the values are not initialized by default

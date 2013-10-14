@@ -114,7 +114,7 @@ public:
 
     /// Constructor from another matrix with different size (with null default entries and ignoring outside entries)
     template<int L2, int C2, typename real2>
-    Mat(const Mat<L2,C2,real2>& m)
+    explicit Mat(const Mat<L2,C2,real2>& m)
     {
         int maxL = std::min( L, L2 );
         int maxC = std::min( C, C2 );
@@ -122,7 +122,7 @@ public:
         for( int l=0 ; l<maxL ; ++l )
         {
             for( int c=0 ; c<maxC ; ++c )
-                this->elems[l][c] = m[l][c];
+                this->elems[l][c] = (real)m[l][c];
             for( int c=maxC ; c<C ; ++c )
                 this->elems[l][c] = 0;
         }

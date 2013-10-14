@@ -698,45 +698,45 @@ void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::Visual
         //                glDisable ( GL_LIGHTING );
         float scale=showDeformationGradientScale.getValue();
         Vec<4,float> col( 0.5, 0.5, 0.0, 1.0 );
-        MaterialToSpatial F;
-        Coord p;
+        Mat<3,3,float> F;
+        Vec<3,float> p;
         for(unsigned i=0; i<out.size(); i++ )
         {
-            if(OutDataTypesInfo<Out>::FMapped) F=OutDataTypesInfo<Out>::getF(out[i]); else F=f_F[i];
+            if(OutDataTypesInfo<Out>::FMapped) F=(Mat<3,3,float>)OutDataTypesInfo<Out>::getF(out[i]); else F=(Mat<3,3,float>)f_F[i];
             if(OutDataTypesInfo<Out>::positionMapped) Out::get(p[0],p[1],p[2],out[i]); else p=f_pos[i];
 
             if(showDeformationGradientStyle.getValue().getSelectedId()==0)
             for(int j=0; j<material_dimensions; j++)
             {
-                Coord u=F.transposed()(j)*0.5*scale;
+                Vec<3,float> u=F.transposed()(j)*0.5*scale;
                 vparams->drawTool()->drawCylinder(p-u,p+u,0.05*scale,col,3);
             }
             else if(showDeformationGradientStyle.getValue().getSelectedId()==1)
                 {
-                    Coord u=F.transposed()(0)*0.5*scale;
+                    Vec<3,float> u=F.transposed()(0)*0.5*scale;
                     vparams->drawTool()->drawCylinder(p-u,p+u,0.05*scale,col,3);
                 }
             else if(showDeformationGradientStyle.getValue().getSelectedId()==2)
                 {
-                    Coord u=F.transposed()(1)*0.5*scale;
+                    Vec<3,float> u=F.transposed()(1)*0.5*scale;
                     vparams->drawTool()->drawCylinder(p-u,p+u,0.05*scale,col,3);
                 }
             else if(showDeformationGradientStyle.getValue().getSelectedId()==3)
                 {
-                    Coord u=F.transposed()(2)*0.5*scale;
+                    Vec<3,float> u=F.transposed()(2)*0.5*scale;
                     vparams->drawTool()->drawCylinder(p-u,p+u,0.05*scale,col,3);
                 }
             else if(showDeformationGradientStyle.getValue().getSelectedId()==4) // strain
                 {
                     vparams->drawTool()->setMaterial(col);
-                    drawEllipsoid<material_dimensions,Real>(F,p,0.5*scale);
+                    drawEllipsoid(F,p,0.5*scale);
                 }
             else if(showDeformationGradientStyle.getValue().getSelectedId()==5) // stress
                 if(OutDataTypesInfo<Out>::FMapped)
                 {
-                    F=OutDataTypesInfo<Out>::getF(outf[i]);
+                    F=(Mat<3,3,float>)OutDataTypesInfo<Out>::getF(outf[i]);
                     vparams->drawTool()->setMaterial(col);
-                    drawEllipsoid<material_dimensions,Real>(F,p,0.5*scale);
+                    drawEllipsoid(F,p,0.5*scale);
                 }
 
         }
