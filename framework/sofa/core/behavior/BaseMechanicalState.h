@@ -327,6 +327,14 @@ public:
     /// @param offset the offset in the BaseVector where the scalar values will be used. It will be updated to the first scalar value after the ones used by this operation when this method returns
     virtual void copyFromBaseVector(VecId dest, const defaulttype::BaseVector* src, unsigned int &offset) = 0;
 
+    /// Copy data to an external, user-allocated buffer. *Exact*
+    /// element count must be provided for consistency checks.
+    virtual void copyToBuffer(SReal* dst, ConstVecId src, unsigned int n) const = 0;
+
+    /// Copy data from an external, user-allocated buffer. *Exact*
+    /// element count must be provided for consistency checks.
+    virtual void copyFromBuffer(VecId dst, SReal* src, unsigned int n) const = 0;
+    
     /// Add data to a global BaseVector from the state stored in a local vector
     /// @param offset the offset in the BaseVector where the scalar values will be used. It will be updated to the first scalar value after the ones used by this operation when this method returns
     virtual void addToBaseVector(defaulttype::BaseVector* dest, ConstVecId src, unsigned int &offset) = 0;

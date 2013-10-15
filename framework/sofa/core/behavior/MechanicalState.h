@@ -173,6 +173,79 @@ public:
         sofa::helper::replaceAll(name, "mechanical", "m");
         return name;
     }
+
+	virtual void copyToBuffer(SReal* dst, ConstVecId src, unsigned n) const {
+		const unsigned size = this->getSize();
+		
+		switch(src.type) {
+		case V_COORD: {
+			helper::ReadAccessor< Data<VecCoord> > vec = this->read(ConstVecCoordId(src));
+			const unsigned dim = defaulttype::DataTypeInfo<Coord>::size();
+			assert( n == dim * size );
+			
+			for(unsigned i = 0; i < size; ++i) {
+				for(unsigned j = 0; j < dim; ++j) {
+					defaulttype::DataTypeInfo<Coord>::getValue(vec[i], j, *(dst++));
+				}
+			}
+			
+		}; break;
+		case V_DERIV: {
+			helper::ReadAccessor< Data<VecDeriv> > vec = this->read(ConstVecDerivId(src));
+			const unsigned dim = defaulttype::DataTypeInfo<Deriv>::size();
+			assert( n == dim * size );
+			
+			for(unsigned i = 0; i < size; ++i) {
+				for(unsigned j = 0; j < dim; ++j) {
+					defaulttype::	DataTypeInfo<Deriv>::getValue(vec[i], j, *(dst++));
+				}
+			}
+			
+		}; break;
+		default: 
+			assert( false );
+		}
+		
+		// get rid of unused parameter warnings in release build
+		(void) n;
+	}
+
+	virtual void copyFromBuffer(VecId dst, SReal* src, unsigned n) const {
+		const unsigned size = this->getSize();
+		
+		switch(dst.type) {
+		case V_COORD: {
+			helper::WriteAccessor< Data<VecCoord> > vec = this->read(VecCoordId(dst));
+			const unsigned dim = defaulttype::DataTypeInfo<Coord>::size();
+			assert( n == dim * size );
+			
+			for(unsigned i = 0; i < size; ++i) {
+				for(unsigned j = 0; j < dim; ++j) {
+					defaulttype::DataTypeInfo<Coord>::setValue(vec[i], j, *(src++));
+				}
+			}
+			
+		}; break;
+		case V_DERIV: {
+			helper::WriteAccessor< Data<VecDeriv> > vec = this->read(VecDerivId(dst));
+			const unsigned dim = defaulttype::DataTypeInfo<Deriv>::size();
+			assert( n == dim * size );
+			
+			for(unsigned i = 0; i < size; ++i) {
+				for(unsigned j = 0; j < dim; ++j) {
+					defaulttype::	DataTypeInfo<Deriv>::setValue(vec[i], j, *(src++));
+				}
+			}
+			
+		}; break;
+		default: 
+			assert( false );
+		}
+		
+		// get rid of unused parameter warnings in release build
+		(void) n;
+	}
+
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_CORE)
