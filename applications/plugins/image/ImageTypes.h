@@ -732,7 +732,7 @@ public:
         if(this->time>=this->img->getDimensions()[4]) return CImg<T>();
         for(unsigned int i=0; i<3; i++) if(p[i]<0 || p[i]>this->img->getDimensions()[i]-1) return CImg<T>();
         CImg<T> ret(1,1,1,this->img->getDimensions()[3]);
-        cimg_forC(ret,c) ret(0,0,0,c)=this->img->getCImg(this->time).atXYZC((unsigned int)round(p[0]),(unsigned int)round(p[1]),(unsigned int)round(p[2]),c);
+        cimg_forC(ret,c) ret(0,0,0,c)=this->img->getCImg(this->time).atXYZC((unsigned int)helper::round(p[0]),(unsigned int)helper::round(p[1]),(unsigned int)helper::round(p[2]),c);
         return ret;
     }
     // returns slice image
@@ -773,7 +773,7 @@ public:
                 tposition[i]=transform->toImage(Coord((Real)visualModels[m]->getVertices()[i][0],(Real)visualModels[m]->getVertices()[i][1],(Real)visualModels[m]->getVertices()[i][2]));
 
             helper::ReadAccessor<Data< core::loader::Material > > mat(visualModels[m]->material);
-            const unsigned char color[3]= {(unsigned char)round(mat->diffuse[0]*255.),(unsigned char)round(mat->diffuse[1]*255.),(unsigned char)round(mat->diffuse[2]*255.)};
+            const unsigned char color[3]= {(unsigned char)helper::round(mat->diffuse[0]*255.),(unsigned char)helper::round(mat->diffuse[1]*255.),(unsigned char)helper::round(mat->diffuse[2]*255.)};
 
             CImg<bool> tmp = this->img->get_slicedModels(index,axis,roi,tposition,visualModels[m]->getTriangles(),visualModels[m]->getQuads());
             cimg_foroff(tmp,off)

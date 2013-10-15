@@ -118,7 +118,7 @@ private:
         }
         else
         {
-            QRectF r(round(P1.x()),round(P1.y()),1,1);
+			QRectF r(sofa::helper::round(P1.x()),sofa::helper::round(P1.y()),1,1);
             painter->setPen ( Qt::NoPen);
             painter->setBrush(Qt::SolidPattern);
             painter->setBrush(Qt::green);
