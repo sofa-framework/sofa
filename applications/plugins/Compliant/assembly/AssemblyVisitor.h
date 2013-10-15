@@ -13,6 +13,16 @@
 
 #include "./utils/find.h"
 
+
+
+// select the way to perform shifting of local matrix in a larger matrix, default = build a shift matrix and be multiplied with
+#define USE_TRIPLETS_RATHER_THAN_SHIFT_MATRIX 0 // more memory and not better
+#define USE_SPARSECOEFREF_RATHER_THAN_SHIFT_MATRIX 0 // bof
+#define USE_DENSEMATRIX_RATHER_THAN_SHIFT_MATRIX 0 // very slow
+#define SHIFTING_MATRIX_WITHOUT_MULTIPLICATION 1 // seems a bit faster
+
+
+
 namespace sofa {
 namespace simulation {
 
@@ -46,7 +56,7 @@ public:
 	typedef SReal real;
 
 	typedef Eigen::SparseMatrix<real, Eigen::ColMajor> cmat;
-	typedef Eigen::SparseMatrix<real, Eigen::RowMajor> rmat;
+    typedef Eigen::SparseMatrix<real, Eigen::RowMajor> rmat;
 
 	// default: row-major
 	typedef rmat mat;
@@ -319,11 +329,14 @@ struct AssemblyVisitor::process_helper {
                 if( p->master() && empty(Jp) ) {
                     // scoped::timer step("shift matrix");
 
+#if SHIFTING_MATRIX_WITHOUT_MULTIPLICATION
+                    if(! zero(p->P) ) Jp = shifted_matrix( p->P, find(offsets, vp.dofs), size_m );
+#else
                     Jp = shift_right<mat>( find(offsets, vp.dofs), p->size, size_m);
-
                     // TODO optimize!
                     // filter absolute mapping to get filtered mapped mass/stiffness.
                     if(! zero(p->P) ) Jp = p->P * Jp;
+#endif
                 }
 
                 // Jp is empty for children of a non-master dof (e.g. mouse)

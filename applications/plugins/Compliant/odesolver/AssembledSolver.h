@@ -66,8 +66,6 @@ namespace odesolver {
                                  \Delta x  &=&  h( v + \beta \Delta v )
   \end{array} \f]
 
-\sa \ref sofa::core::behavior::BaseCompliance
-
 */
 
 
