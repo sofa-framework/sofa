@@ -64,6 +64,7 @@ set(SOURCE_FILES
     compliance/DampingCompliance.cpp
 
     mapping/RigidJointMapping.cpp
+    mapping/RigidJointMultiMapping.cpp
     mapping/AssembledRigidRigidMapping.cpp
 
     numericalsolver/LDLTSolver.cpp

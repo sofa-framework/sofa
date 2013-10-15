@@ -55,6 +55,8 @@ namespace mapping
 
    obseletes Flexible/deformationMapping/JointRigidMapping.h
 
+   TODO .inl
+
    @author maxime.tournier@inria.fr
    
 */
