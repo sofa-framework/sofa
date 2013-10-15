@@ -210,12 +210,12 @@ public:
 		(void) n;
 	}
 
-	virtual void copyFromBuffer(VecId dst, SReal* src, unsigned n) const {
+	virtual void copyFromBuffer(VecId dst, const SReal* src, unsigned n) const {
 		const unsigned size = this->getSize();
 		
 		switch(dst.type) {
 		case V_COORD: {
-			helper::WriteAccessor< Data<VecCoord> > vec = this->read(VecCoordId(dst));
+			helper::WriteAccessor< Data<VecCoord> > vec = this->write(VecCoordId(dst));
 			const unsigned dim = defaulttype::DataTypeInfo<Coord>::size();
 			assert( n == dim * size );
 			
@@ -227,7 +227,7 @@ public:
 			
 		}; break;
 		case V_DERIV: {
-			helper::WriteAccessor< Data<VecDeriv> > vec = this->read(VecDerivId(dst));
+			helper::WriteAccessor< Data<VecDeriv> > vec = this->write(VecDerivId(dst));
 			const unsigned dim = defaulttype::DataTypeInfo<Deriv>::size();
 			assert( n == dim * size );
 			

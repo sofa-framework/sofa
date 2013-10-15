@@ -333,7 +333,7 @@ public:
 
     /// Copy data from an external, user-allocated buffer. *Exact*
     /// element count must be provided for consistency checks.
-    virtual void copyFromBuffer(VecId dst, SReal* src, unsigned int n) const = 0;
+    virtual void copyFromBuffer(VecId dst, const SReal* src, unsigned int n) const = 0;
     
     /// Add data to a global BaseVector from the state stored in a local vector
     /// @param offset the offset in the BaseVector where the scalar values will be used. It will be updated to the first scalar value after the ones used by this operation when this method returns
