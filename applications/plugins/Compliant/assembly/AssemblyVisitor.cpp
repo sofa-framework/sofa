@@ -55,42 +55,34 @@ AssemblyVisitor::chunk::chunk()
 
 // this is not thread safe lol
 void AssemblyVisitor::vector(dofs_type* dofs, core::VecId id, const vec::ConstSegmentReturnType& data) {
-    assert( dofs->getMatrixSize() == data.size() );
+	assert( id.type == sofa::core::V_DERIV );
 
-	// realloc
+	unsigned size = dofs->getMatrixSize();
+
+	assert( size == data.size() );
+	
+    // realloc if needed
 	if( data.size() > tmp.size() ) tmp.resize(data.size() );
 	tmp.head(data.size()) = data;
 
 	unsigned off = 0;
-	wrap w(tmp);
-	dofs->copyFromBaseVector(id, &w, off);
-	assert( off == data.size() );
+	
+	dofs->copyFromBuffer(id, tmp.data(), size);
 }
 
 
 AssemblyVisitor::vec AssemblyVisitor::vector(dofs_type* dofs, core::ConstVecId id) {
+	assert( id.type == sofa::core::V_DERIV );
+
 	unsigned size = dofs->getMatrixSize();
-
-	const bool fast = false;
-
-	if( fast ) {
-		// map data
-		const void* data = dofs->baseRead(id)->getValueVoidPtr();
-
-		// TODO need to know if we're dealing with double or floats
-		return Eigen::Map<const vec>( reinterpret_cast<const double*>(data), size);
-	} else {
-
-		// realloc
-		if( size > tmp.size() ) tmp.resize(size);
-
-		unsigned off = 0;
-		wrap w(tmp);
-
-		dofs->copyToBaseVector(&w , id, off);
-
-		return tmp.head(size);
-	}
+	
+	// realloc if needed
+	if( size > tmp.size() ) tmp.resize(size);
+	
+	unsigned off = 0;
+	dofs->copyToBuffer( tmp.data(), id, size );
+	
+	return tmp.head(size);
 }
 
 
@@ -116,7 +108,7 @@ AssemblyVisitor::chunk::map_type AssemblyVisitor::mapping(simulation::Node* node
 	vector<core::BaseState*> from = node->mechanicalMapping->getFrom();
 
 //	dofs_type* to = safe_cast<dofs_type>(node->mechanicalMapping->getTo()[0]);
-//	unsigned rows = to->getMatrixSize();
+//	unsigned rows = to->
 
 	for( unsigned i = 0, n = from.size(); i < n; ++i ) {
 
