@@ -586,7 +586,7 @@ void QwtPlotSpectrogram::drawContourLines( QPainter *painter,
     if ( d_data->data == NULL )
         return;
 
-    const QwtInterval intensityRange = d_data->data->interval( Qt::ZAxis );
+    /* const QwtInterval intensityRange = */ d_data->data->interval( Qt::ZAxis );
 
     const int numLevels = d_data->contourLevels.size();
     for ( int l = 0; l < numLevels; l++ )
