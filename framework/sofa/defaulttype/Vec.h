@@ -45,6 +45,9 @@ enum NoInit { NOINIT }; ///< use when calling Vec or Mat constructor to skip ini
 template <int N, typename real=float>
 class Vec : public helper::fixed_array<real,N>
 {
+
+    BOOST_STATIC_ASSERT( N > 0 );
+
 public:
     /// Compile-time constant specifying the number of scalars within this vector (equivalent to static_size and size() method)
     enum { total_size = N };
@@ -640,12 +643,6 @@ public:
     }
 
     /// @}
-};
-
-/// specialization to better debug instantiation of null size Vec
-template <typename real>
-class Vec<0,real>
-{
 };
 
 
