@@ -63,6 +63,73 @@ static void add_shifted_right( std::vector<Triplet>& res, const mat& m, unsigned
         }
 }
 
+template<class mat>
+static void add_shifted_right( mat& res, const mat& m, unsigned off, SReal factor = 1.0 )
+{
+    for( int k=0 ; k<m.outerSize() ; ++k )
+        for( typename mat::InnerIterator it(m,k) ; it ; ++it )
+        {
+            res.coeffRef(off+it.row(), off+it.col()) += it.value()*factor;
+        }
+}
+
+template<class densemat, class mat>
+static void add_shifted_right( densemat& res, const mat& m, unsigned off, SReal factor = 1.0 )
+{
+    for( int k=0 ; k<m.outerSize() ; ++k )
+        for( typename mat::InnerIterator it(m,k) ; it ; ++it )
+        {
+            res(off+it.row(), off+it.col()) += it.value()*factor;
+        }
+}
+
+
+template<class real>
+static Eigen::SparseMatrix<real, Eigen::RowMajor> shifted_matrix( const Eigen::SparseMatrix<real, Eigen::RowMajor>& m, unsigned off, unsigned total_cols, real factor = 1.0 )
+{
+    // let's play with eigen black magic
+
+#if 0
+
+    Eigen::SparseMatrix<real, Eigen::RowMajor> res = m * factor; // weighted by factor
+    res.conservativeResize( m.rows(), total_cols );
+    for( unsigned i=0 ; i<res.data().size() ; ++i )
+    {
+        res.innerIndexPtr()[i] += off; // where the shifting occurs
+    }
+
+#else
+
+    const_cast<Eigen::SparseMatrix<real, Eigen::RowMajor>&>(m).makeCompressed();
+    Eigen::SparseMatrix<real, Eigen::RowMajor> res( m.rows(), total_cols );
+
+    res.data() = m.data();
+    for( unsigned i=0 ; i<res.data().size() ; ++i )
+    {
+        res.valuePtr()[i] *= factor; // weighted by factor
+        res.innerIndexPtr()[i] += off; // where the shifting occurs
+    }
+
+    memcpy(res.outerIndexPtr(), m.outerIndexPtr(), (m.outerSize()+1)*sizeof(typename Eigen::SparseMatrix<real, Eigen::RowMajor>::Index));
+
+    assert( !res.innerNonZeroPtr() ); // should be NULL because compressed // *res.innerNonZeroPtr() = *m.innerNonZeroPtr();
+
+#endif
+
+    return res;
+}
+
+template<class densemat, class mat>
+static void convertDenseToSparse( mat& res, const densemat& m )
+{
+    for( int i=0 ; i<m.rows() ; ++i )
+    {
+        res.startVec( i );
+        for( int j=0 ; j<m.cols() ; ++j )
+            if( m(i,j) ) res.insertBack(i, j) = m(i,j);
+    }
+    res.finalize();
+}
 
 // convert a basematrix to a sparse matrix. TODO move this somewhere else ?
 template<class mat>

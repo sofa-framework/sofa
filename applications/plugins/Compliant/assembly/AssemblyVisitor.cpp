@@ -65,7 +65,7 @@ void AssemblyVisitor::vector(dofs_type* dofs, core::VecId id, const vec::ConstSe
 	if( data.size() > tmp.size() ) tmp.resize(data.size() );
 	tmp.head(data.size()) = data;
 
-	unsigned off = 0;
+//	unsigned off = 0;
 	
 	dofs->copyFromBuffer(id, tmp.data(), size);
 }
@@ -79,7 +79,7 @@ AssemblyVisitor::vec AssemblyVisitor::vector(dofs_type* dofs, core::ConstVecId i
 	// realloc if needed
 	if( size > tmp.size() ) tmp.resize(size);
 	
-	unsigned off = 0;
+//	unsigned off = 0;
 	dofs->copyToBuffer( tmp.data(), id, size );
 	
 	return tmp.head(size);
@@ -539,7 +539,7 @@ static inline AssemblyVisitor::mat ltdl(const AssemblyVisitor::mat& l,
 }
 
 
-#define USE_TRIPLETS_RATHER_THAN_SHIFT_MATRIX 0
+
 
 // produce actual system assembly
 AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
@@ -562,6 +562,9 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
 #if USE_TRIPLETS_RATHER_THAN_SHIFT_MATRIX
     typedef Eigen::Triplet<real> Triplet;
     std::vector<Triplet> H_triplets, C_triplets, P_triplets;
+#elif USE_DENSEMATRIX_RATHER_THAN_SHIFT_MATRIX
+    typedef Eigen::Matrix<real, Eigen::Dynamic, Eigen::Dynamic> DenseMat;
+    DenseMat H(_processed->size_m,_processed->size_m), C(_processed->size_c, _processed->size_c), P(_processed->size_m,_processed->size_m);
 #endif
 
 	// assemble system
@@ -580,14 +583,25 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
         if( c.master() ) {
             res.master.push_back( c.dofs );
 
+
+            // scoped::timer step("independent dofs");
 #if USE_TRIPLETS_RATHER_THAN_SHIFT_MATRIX
             if( !zero(c.H) ) add_shifted_right<Triplet,mat>( H_triplets, c.H, off_m );
             if( !zero(c.P) ) add_shifted_right<Triplet,mat>( P_triplets, c.P, off_m );
+#elif USE_SPARSECOEFREF_RATHER_THAN_SHIFT_MATRIX
+            if( !zero(c.H) ) add_shifted_right<mat>( res.H, c.H, off_m );
+            if( !zero(c.P) ) add_shifted_right<mat>( res.P, c.P, off_m );
+#elif USE_DENSEMATRIX_RATHER_THAN_SHIFT_MATRIX
+            if( !zero(c.H) ) add_shifted_right<DenseMat,mat>( H, c.H, off_m );
+            if( !zero(c.P) ) add_shifted_right<DenseMat,mat>( P, c.P, off_m );
+#elif SHIFTING_MATRIX_WITHOUT_MULTIPLICATION
+            if( !zero(c.H) ) res.H.middleRows(off_m, c.size) = res.H.middleRows(off_m, c.size) + shifted_matrix( c.H, off_m, _processed->size_m );
+            if( !zero(c.P) ) res.P.middleRows(off_m, c.size) = shifted_matrix( c.P, off_m, _processed->size_m );
 #else
-			// scoped::timer step("independent dofs");
             mat shift = shift_right<mat>(off_m, c.size, _processed->size_m);
             if( !zero(c.H) ) res.H.middleRows(off_m, c.size) = res.H.middleRows(off_m, c.size) + c.H * shift;
             if( !zero(c.P) ) res.P.middleRows(off_m, c.size) = c.P * shift;
+
 #endif
 
 			// these should not be empty anyways
@@ -595,6 +609,7 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
             if( !zero(c.v) ) res.v.segment(off_m, c.size) = c.v;
 
             off_m += c.size;
+
 		}
 
 		// mapped dofs
@@ -608,6 +623,8 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
 
 #if USE_TRIPLETS_RATHER_THAN_SHIFT_MATRIX
                     add_shifted_right( H_triplets, ltdl(Jc, c.H), 0 );
+#elif USE_DENSEMATRIX_RATHER_THAN_SHIFT_MATRIX
+                    add_shifted_right( H, ltdl(Jc, c.H), 0 );
 #else
                     res.H += ltdl(Jc, c.H);
 #endif
@@ -640,6 +657,12 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
 
 #if USE_TRIPLETS_RATHER_THAN_SHIFT_MATRIX
                     add_shifted_right( C_triplets, c.C, off_c, factor );
+#elif USE_SPARSECOEFREF_RATHER_THAN_SHIFT_MATRIX
+                    add_shifted_right( res.C, c.C, off_c, factor );
+#elif USE_DENSEMATRIX_RATHER_THAN_SHIFT_MATRIX
+                    add_shifted_right( C, c.C, off_c, factor );
+#elif SHIFTING_MATRIX_WITHOUT_MULTIPLICATION
+                    res.C.middleRows(off_c, c.size) = shifted_matrix( c.C, off_c, _processed->size_c, factor );
 #else
                     res.C.middleRows(off_c, c.size) = c.C * shift_right<mat>(off_c, c.size, _processed->size_c, factor);
 #endif
@@ -659,6 +682,10 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
     res.H.setFromTriplets( H_triplets.begin(), H_triplets.end() );
     res.P.setFromTriplets( P_triplets.begin(), P_triplets.end() );
     res.C.setFromTriplets( C_triplets.begin(), C_triplets.end() );
+#elif USE_DENSEMATRIX_RATHER_THAN_SHIFT_MATRIX
+    convertDenseToSparse( res.H, H );
+    convertDenseToSparse( res.C, C );
+    convertDenseToSparse( res.P, P );
 #endif
 
     assert( off_m == _processed->size_m );
