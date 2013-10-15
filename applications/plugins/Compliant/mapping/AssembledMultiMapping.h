@@ -19,7 +19,7 @@
 
 #include "initCompliant.h"
 
-#include "debug.h"
+// #include "debug.h"
 
 namespace sofa
 {
@@ -77,7 +77,6 @@ class SOFA_Compliant_API AssembledMultiMapping : public core::MultiMapping<TIn, 
 		assert( (this->getTo().size() == 1) && 
 		        "sorry, multi mapping to multiple output dofs unimplemented" );
 		
-		alloc();
 		
 		typedef core::MultiMapping<TIn, TOut> base; // fixes g++-4.4
 		base::init();
@@ -87,7 +86,8 @@ class SOFA_Compliant_API AssembledMultiMapping : public core::MultiMapping<TIn, 
 	virtual void apply(const core::MechanicalParams*  /* PARAMS FIRST */, 
 	                   const helper::vector<OutDataVecCoord*>& dataVecOutPos,
 	                   const helper::vector<const InDataVecCoord*>& dataVecInPos) {
-		
+		alloc();
+	
 		unsigned n = this->getFrom().size();
 
 		// working around non-copyable accessors yo
@@ -100,6 +100,9 @@ class SOFA_Compliant_API AssembledMultiMapping : public core::MultiMapping<TIn, 
 		for( unsigned i = 0; i < n; ++i ) {
 			void* addr = (void*)(&in_vec[i]);
 			in_pos_type* bob = new(addr) in_pos_type(dataVecInPos[i]);
+
+			// disable unused variable warning
+			(void) bob;
 		}
 		
 		out_pos_type out(dataVecOutPos[0]);
@@ -181,15 +184,16 @@ class SOFA_Compliant_API AssembledMultiMapping : public core::MultiMapping<TIn, 
 	virtual void alloc() {
 		
 		const unsigned n = this->getFrom().size();
-		assert( n );
-
-		// alloc
-		if( js.size() != n ) {
-			js.resize( n );
+		if( n != js.size() ) {
+			release();
 			
-			for( unsigned i = 0; i < n; ++i ) js[i] = new SparseMatrixEigen;
+			// alloc
+			if( js.size() != n ) {
+				js.resize( n );
+				
+				for( unsigned i = 0; i < n; ++i ) js[i] = new SparseMatrixEigen;
+			}
 		}
-		
 	}
 
 	// delete jacobians
