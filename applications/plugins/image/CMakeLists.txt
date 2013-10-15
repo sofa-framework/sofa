@@ -86,11 +86,12 @@ endif()
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES} ${README_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_IMAGE")
-# AddLinkerDependencies(SofaBaseVisual ${OPENGL_LIBRARIES})
+AddLinkerDependencies(SofaBaseVisual)
+# AddLinkerDependencies(${OPENGL_LIBRARIES})
 
 if(APPLE)
     find_library(X11_LIBRARIES NAMES X11)
-    AddLinkerDependencies(SofaBaseVisual ${X11_LIBRARIES})
+    AddLinkerDependencies(${X11_LIBRARIES})
 endif()
 
 if(SOFA-EXTERNAL_OPENCV)
