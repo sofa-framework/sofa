@@ -210,7 +210,7 @@ public:
 		(void) n;
 	}
 
-	virtual void copyFromBuffer(VecId dst, const SReal* src, unsigned n) const {
+	virtual void copyFromBuffer(VecId dst, const SReal* src, unsigned n) {
 		const unsigned size = this->getSize();
 		
 		switch(dst.type) {
