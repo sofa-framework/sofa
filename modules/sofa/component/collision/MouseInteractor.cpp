@@ -41,9 +41,11 @@ SOFA_DECL_CLASS(MouseInteractor)
 
 int MouseInteractorClass = core::RegisterObject("Perform tasks related to the interaction with the mouse")
 #ifndef SOFA_DOUBLE
+        .add< MouseInteractor<defaulttype::Vec2fTypes> >()
         .add< MouseInteractor<defaulttype::Vec3fTypes> >()
 #endif
 #ifndef SOFA_FLOAT
+        .add< MouseInteractor<defaulttype::Vec2dTypes> >()
         .add< MouseInteractor<defaulttype::Vec3dTypes> >()
 #endif
         ;
@@ -57,11 +59,13 @@ int MouseInteractorRigidClass = core::RegisterObject("Perform tasks related to t
         ;
 
 #ifndef SOFA_DOUBLE
+template class SOFA_USER_INTERACTION_API MouseInteractor<defaulttype::Vec2fTypes>;
 template class SOFA_USER_INTERACTION_API MouseInteractor<defaulttype::Vec3fTypes>;
 template class SOFA_USER_INTERACTION_API MouseInteractor<defaulttype::Rigid3fTypes>;
 
 #endif
 #ifndef SOFA_FLOAT
+template class SOFA_USER_INTERACTION_API MouseInteractor<defaulttype::Vec2dTypes>;
 template class SOFA_USER_INTERACTION_API MouseInteractor<defaulttype::Vec3dTypes>;
 template class SOFA_USER_INTERACTION_API MouseInteractor<defaulttype::Rigid3dTypes>;
 #endif

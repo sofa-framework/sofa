@@ -45,16 +45,19 @@ namespace collision
 {
 
 #ifndef SOFA_DOUBLE
+template class SOFA_USER_INTERACTION_API  AttachBodyPerformer<defaulttype::Vec2fTypes>;
 template class SOFA_USER_INTERACTION_API  AttachBodyPerformer<defaulttype::Vec3fTypes>;
 template class SOFA_USER_INTERACTION_API  AttachBodyPerformer<defaulttype::Rigid3fTypes>;
 #endif
 #ifndef SOFA_FLOAT
+template class SOFA_USER_INTERACTION_API  AttachBodyPerformer<defaulttype::Vec2dTypes>;
 template class SOFA_USER_INTERACTION_API  AttachBodyPerformer<defaulttype::Vec3dTypes>;
 template class SOFA_USER_INTERACTION_API  AttachBodyPerformer<defaulttype::Rigid3dTypes>;
 #endif
 
 
 #ifndef SOFA_DOUBLE
+helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer<defaulttype::Vec2fTypes> >  AttachBodyPerformerVec2fClass("AttachBody",true);
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer<defaulttype::Vec3fTypes> >  AttachBodyPerformerVec3fClass("AttachBody",true);
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer<defaulttype::Rigid3fTypes> >  AttachBodyPerformerRigid3fClass("AttachBody",true);
 template <>
@@ -87,6 +90,7 @@ bool AttachBodyPerformer<defaulttype::Rigid3fTypes>::start_partial(const BodyPic
 
 #endif
 #ifndef SOFA_FLOAT
+helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer<defaulttype::Vec2dTypes> >  AttachBodyPerformerVec2dClass("AttachBody",true);
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer<defaulttype::Vec3dTypes> >  AttachBodyPerformerVec3dClass("AttachBody",true);
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer<defaulttype::Rigid3dTypes> >  AttachBodyPerformerRigid3dClass("AttachBody",true);
 

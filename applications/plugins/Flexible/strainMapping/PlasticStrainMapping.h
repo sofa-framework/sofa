@@ -56,7 +56,7 @@ public:
 
     /// @name  Different ways to decompose the strain
     //@{
-    enum PlasticMethod { ADDITION=0, MULTIPLICATION, NB_PlasticMethod }; ///< ADDITION -> Müller method (faster), MULTIPLICATION -> Fedkiw method
+    enum PlasticMethod { ADDITION=0, MULTIPLICATION, NB_PlasticMethod }; ///< ADDITION -> Müller method (faster), MULTIPLICATION -> Fedkiw method [Irving04]
     Data<helper::OptionsGroup> f_method;
     //@}
 
