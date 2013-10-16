@@ -405,7 +405,7 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
 template <>
 struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
 {
-    typedef defaulttype::BranchingImageD DistTypes;
+    typedef defaulttype::BranchingImage<SReal> DistTypes;
 
     template<class ImageSampler>
     static void init( ImageSampler* sampler )
