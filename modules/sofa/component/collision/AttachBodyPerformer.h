@@ -106,11 +106,13 @@ bool AttachBodyPerformer<defaulttype::Rigid3fTypes>::start_partial(const BodyPic
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_ATTACHBODYPERFORMER_CPP)
 #ifndef SOFA_DOUBLE
+extern template class SOFA_USER_INTERACTION_API  AttachBodyPerformer<defaulttype::Vec2fTypes>;
 extern template class SOFA_USER_INTERACTION_API  AttachBodyPerformer<defaulttype::Vec3fTypes>;
 extern template class SOFA_USER_INTERACTION_API  AttachBodyPerformer<defaulttype::Rigid3fTypes>;
 
 #endif
 #ifndef SOFA_FLOAT
+extern template class SOFA_USER_INTERACTION_API  AttachBodyPerformer<defaulttype::Vec2dTypes>;
 extern template class SOFA_USER_INTERACTION_API  AttachBodyPerformer<defaulttype::Vec3dTypes>;
 extern template class SOFA_USER_INTERACTION_API  AttachBodyPerformer<defaulttype::Rigid3dTypes>;
 #endif

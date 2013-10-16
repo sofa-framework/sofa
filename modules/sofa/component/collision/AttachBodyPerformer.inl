@@ -144,7 +144,7 @@ bool AttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& picked)
         mstateCollision = mapper->createMapping(name.c_str());
         mapper->resize(1);
 
-        const typename DataTypes::Coord pointPicked=picked.point;
+        const typename DataTypes::Coord pointPicked=(typename DataTypes::Coord)picked.point;
         const int idx=picked.indexCollisionElement;
         typename DataTypes::Real r=0.0;
 
