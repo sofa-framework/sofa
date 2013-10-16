@@ -8,7 +8,6 @@ set(SOURCE_FILES
 
 	initImage.cpp 
 	ImageContainer.cpp 
-	ImageViewer.cpp 
 	ImageFilter.cpp 
 	ImageOperation.cpp 
     ImageTransform.cpp
@@ -36,7 +35,6 @@ list(APPEND HEADER_FILES
 	initImage.h 
 	ImageTypes.h 
 	ImageContainer.h 
-   	ImageViewer.h 
 	ImageFilter.h 
 	ImageOperation.h 
     ImageTransform.h
@@ -61,7 +59,11 @@ list(APPEND HEADER_FILES
     ImageDataDisplay.h
         )
 
-	
+if (NOT SOFA-MISC_NO_OPENGL)
+    list(APPEND HEADER_FILES "ImageViewer.h")
+    list(APPEND SOURCE_FILES "ImageViewer.cpp")
+endif()
+
 if(SOFA-EXTERNAL_LIBFREENECT)
 
     list(APPEND HEADER_FILES "Kinect.h")

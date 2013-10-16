@@ -181,6 +181,7 @@ protected:
 
     virtual void draw(const core::visual::VisualParams* vparams)
     {
+#ifndef SOFA_NO_OPENGL
         if (!vparams->displayFlags().getShowVisualModels()) return;
         if (!this->showMesh.getValue()) return;
 
@@ -220,6 +221,7 @@ protected:
         if(!wireframe) glEnd();
 
         glPopAttrib();
+#endif /* SOFA_NO_OPENGL */
     }
 };
 

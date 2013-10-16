@@ -119,7 +119,9 @@ public:
         , texOffset(initData(&texOffset,TexCoord(0.0,0.0),"texOffset","texture offsets (in [0,1])"))
         , triangles(initData(&triangles,SeqTriangles(),"triangles","output triangles"))
         , time((unsigned int)0)
+#ifndef SOFA_NO_OPENGL
         , texture(NULL)
+#endif /* SOFA_NO_OPENGL */
     {
         image.setReadOnly(true);
         transform.setReadOnly(true);
@@ -128,7 +130,9 @@ public:
 
     virtual ~DepthMapToMeshEngine()
     {
+#ifndef SOFA_NO_OPENGL
         if(texture) delete texture;
+#endif /* SOFA_NO_OPENGL */
     }
 
     virtual void init()
@@ -140,9 +144,11 @@ public:
         addOutput(&triangles);
         setDirtyValue();
 
+#ifndef SOFA_NO_OPENGL
         texture = new helper::gl::Texture(new helper::io::Image,false);
         texture->getImage()->init(texture_res,texture_res,32);
         texture->init();
+#endif /* SOFA_NO_OPENGL */
     }
 
     virtual void reinit() { update(); }
@@ -150,8 +156,10 @@ public:
 protected:
 
     unsigned int time;
+#ifndef SOFA_NO_OPENGL
     helper::gl::Texture* texture;
     static const unsigned texture_res=256;
+#endif /* SOFA_NO_OPENGL */
 
     virtual void update()
     {
@@ -170,6 +178,7 @@ protected:
         const CImg<T>& img = in->getCImg(this->time);
         Real f = this->depthFactor.getValue();
 
+#ifndef SOFA_NO_OPENGL
         // update texture
         if(!inTex->isEmpty())
         {
@@ -184,6 +193,7 @@ protected:
             }
             texture->update();
         }
+#endif /* SOFA_NO_OPENGL */
 
         // update points
         unsigned int count=0,p1,p2,p3;
@@ -241,6 +251,7 @@ protected:
 
     virtual void draw(const core::visual::VisualParams* vparams)
     {
+#ifndef SOFA_NO_OPENGL
         if (!vparams->displayFlags().getShowVisualModels()) return;
 
         raPositions pos(this->position);
@@ -279,6 +290,7 @@ protected:
         if(!inTex->isEmpty()) { texture->unbind(); 	glDisable( GL_TEXTURE_2D ); }
 
         glPopAttrib();
+#endif /* SOFA_NO_OPENGL */
     }
 };
 
