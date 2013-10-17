@@ -573,13 +573,12 @@ public:
     typedef T container_type;
 
 protected:
-    const data_container_type& data;
+    const data_container_type* data;
 public:
-    ReadAccessor(const data_container_type& d) : Inherit(d.getValue()), data(d) {}
-    ReadAccessor(const data_container_type* d) : Inherit(d->getValue()), data(*d) {}
-    ReadAccessor(const core::ExecParams* params, const data_container_type& d) : Inherit(d.getValue(params)), data(d) {}
-    ReadAccessor(const core::ExecParams* params, const data_container_type* d) : Inherit(d->getValue(params)), data(*d) {}
-    ~ReadAccessor() {}
+    ReadAccessor(const data_container_type& d) : Inherit(d.getValue()), data(&d) {}
+    ReadAccessor(const data_container_type* d) : Inherit(d->getValue()), data(d) {}
+    ReadAccessor(const core::ExecParams* params, const data_container_type& d) : Inherit(d.getValue(params)), data(&d) {}
+    ReadAccessor(const core::ExecParams* params, const data_container_type* d) : Inherit(d->getValue(params)), data(d) {}
 };
 
 template<class T>
@@ -589,6 +588,12 @@ public:
     typedef WriteAccessor<T> Inherit;
     typedef core::objectmodel::Data<T> data_container_type;
     typedef T container_type;
+
+	// these are forbidden (until c++11 move semantics) as they break
+	// RAII encapsulation. the reference member 'data' prevents them
+	// anyways, but the intent is more obvious like this.
+	WriteAccessor(const WriteAccessor& );
+	WriteAccessor& operator=(const WriteAccessor& );
 
 protected:
     data_container_type& data;
