@@ -543,6 +543,7 @@ static inline AssemblyVisitor::mat ltdl(const AssemblyVisitor::mat& l,
 
 // produce actual system assembly
 AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
+	scoped::timer step("assembly");
 	assert(!chunks.empty() && "need to send a visitor first");
 
 	// assert( !_processed );

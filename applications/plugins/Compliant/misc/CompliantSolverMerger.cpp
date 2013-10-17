@@ -56,7 +56,6 @@ namespace collision
     {
         odesolver::AssembledSolver::SPtr solver = sofa::core::objectmodel::New<odesolver::AssembledSolver>();
 
-        solver->use_velocity.setValue( solver1.use_velocity.getValue() || solver2.use_velocity.getValue() );
         solver->warm_start.setValue( solver1.warm_start.getValue() && solver2.warm_start.getValue() );
         solver->propagate_lambdas.setValue( solver1.propagate_lambdas.getValue() && solver2.propagate_lambdas.getValue() );
         solver->stabilization.setValue( solver1.stabilization.getValue() || solver2.stabilization.getValue() );

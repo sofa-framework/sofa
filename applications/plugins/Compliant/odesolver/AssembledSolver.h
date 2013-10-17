@@ -115,8 +115,7 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
                        const core::ExecParams& params,
                        double dt) const;
 
-    // solve velocity dynamics ?
-	Data<bool> use_velocity, warm_start, propagate_lambdas, stabilization, debug;
+    Data<bool> warm_start, propagate_lambdas, stabilization, debug;
     Data<SReal> f_rayleighStiffness, f_rayleighMass;  ///< uniform Rayleigh damping ratio applied to the stiffness and mass matrices
     Data<SReal> implicitVelocity, implicitPosition;     ///< the \f$ \alpha \f$ and \f$ \beta  \f$ parameters of the integration scheme
 
