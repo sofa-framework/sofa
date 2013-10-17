@@ -1758,6 +1758,35 @@ public:
 #endif
 };
 
+
+/** Accumulate the product of the system matrix by a given vector.
+Typically used in implicit integration solved by a Conjugate Gradient algorithm.
+The current value of the dx vector is used.
+This action is typically called after a MechanicalPropagateDxAndResetForceVisitor.
+This action is neglecting the force fields treated as compliance
+*/
+class SOFA_SIMULATION_COMMON_API MechanicalAddMBKdxNeglectingComplianceVisitor : public MechanicalAddMBKdxVisitor
+{
+public:
+
+    MechanicalAddMBKdxNeglectingComplianceVisitor(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId res)
+        : MechanicalAddMBKdxVisitor(mparams,res)
+    {}
+
+    MechanicalAddMBKdxNeglectingComplianceVisitor(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId res, bool accumulate)
+        : MechanicalAddMBKdxVisitor(mparams,res,accumulate)
+    {}
+
+
+    virtual Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff);
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalAddMBKdxNeglectingComplianceVisitor"; }
+
+
+};
+
 class SOFA_SIMULATION_COMMON_API MechanicalResetConstraintVisitor : public BaseMechanicalVisitor
 {
 public:

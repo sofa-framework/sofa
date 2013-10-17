@@ -89,6 +89,8 @@ public:
     void addMBKdx(core::MultiVecDerivId df, double m, double b, double k, bool clear = true, bool accumulate = true);
     /// accumulate $ df += (m M + b B + k K) velocity $
     void addMBKv(core::MultiVecDerivId df, double m, double b, double k, bool clear = true, bool accumulate = true);
+    /// accumulate $ df += (m M + b B + k K) velocity $ neglecting compliance
+    void addMBKvNeglectingCompliance(core::MultiVecDerivId df, double m, double b, double k, bool clear = true, bool accumulate = true);
     /// Add dt*Gravity to the velocity
     void addSeparateGravity(double dt, core::MultiVecDerivId result = core::VecDerivId::velocity() );
 
