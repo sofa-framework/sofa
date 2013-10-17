@@ -111,8 +111,13 @@ Finally, we use the following position time-stepping scheme:
 %
 where $\beta \in [0, 1]$ is again a blending parameter.
 %
-Letting the stiffness matrix be $K = \nabla_q^2 V_k$ (watch out) and
-$d_k = -D v_k$ be the damping forces, we put everything together as:
+Letting the stiffness matrix be $K = \nabla_q^2 V_k$ %
+\footnote{
+%
+  This is the opposite of the stiffness matrix as defined in SOFA,
+  \emph{i.e.} $\nabla f(q) = -\nabla_q^2 V$. I find it easier to work with
+  PSD matrices.} and $d_k = -D v_k$ be the damping forces, we put
+everything together as:
 %
 \begin{equation}
   \label{eq:time-stepping}
@@ -306,6 +311,10 @@ c_k = p_k + h (1 - \alpha) d_k
   b_k = \frac{g_k}{h \alpha \beta} + \frac{( 1 - \beta)}{\beta} J_k v_k
 \end{equation}
 %
+TODO pourquoi c'est cool: transition seamless entre contraintes et
+elasticite, traitement unifié contraintes/elasticité, conditionnement
+pour les sytemes très raides. par contre ca fait des systèmes plus gros.
+%
 \section{KKT Systems, Compliance and Relaxation}
 %
 At this point, it is probably a good idea to introduce a few notions
@@ -372,7 +381,7 @@ typically, holonomic constraints minimize the total kinetic energy. If
 we now consider systems with compliance, such as:
 %
 \begin{equation}
-  \label{eq:kkt-system}
+  \label{eq:compliant-kkt-system}
   \mat{Q & -A^T \\-A & -D} \mat{x\\\lambda} = \mat{c\\b}
 \end{equation}
 %
@@ -383,7 +392,8 @@ we see that they correspond to the following Lagrangian:
   \quad \block{A x + b}^T \lambda \quad - \quad \half \lambda^T D \lambda
 \end{equation}
 %
-The Schur complement becomes $S + D$ and corresponds to:
+One can check that the Schur complement becomes $S + D$, and
+corresponds to:
 %
 \begin{equation}
   \argmin{\lambda}\quad \half \lambda^T S \lambda - s^T \lambda \quad + 
@@ -392,43 +402,50 @@ The Schur complement becomes $S + D$ and corresponds to:
 %
 We see that $D$ acts as a form of numerical damping on the resolution
 of constraints, by biasing the solution of the constrained system
-towards zero. It is a form of \emph{constraint relaxation}. Under
-their most general form, KKT systems include unilateral and
-complementarity constraints. We will develop these in more details in
-section \ref{sec:unilateral-constraints}.
-%
-\section{KKT Systems, Optimization and Relaxation}
-\label{sec:optimization}
-%
-We have seen that KKT systems correspond to Quadratic Programs:
-%
-\begin{equation}
-   \mat{Q & -A^T \\ -A & 0} \mat{x \\ \lambda} = \mat{c \\ b}
-\end{equation}
-%
-corresponds to the following convex QP:
-%
-\begin{equation}
-  \argmin{Ax = b}\quad \half x^T Q x - c^T x
-\end{equation}
-
-%
-The compliant KKT system obtained in section \ref{sec:compliance} is
-of the form:
-%
-\begin{equation}
-  \mat{Q & -A^T \\ -A & -D} \mat{x \\ \lambda} = \mat{c \\ b}
-\end{equation}
-%
-where both $Q$ and $C$ are PSD. 
-
- TODO: effect of $C$ on the schur complement, lagrangian
-relaxation
+towards zero. It is a form of \emph{constraint
+  relaxation}. Physically, elastic forces minimize a mix between the
+kinetic energy of the system and the $D$-norm of the forces
+$\lambda$. Under their most general form, KKT systems include
+unilateral and complementarity constraints. We will develop these in
+more details in section \ref{sec:unilateral-constraints}.
 %
 \section{Geometric Stiffness}
 %
-TODO: what is left when we approximate $g$ as an affine function, how
-to recover it
+For both constraint and elastic forces, we happily neglected
+second-order derivatives of the deformation mapping $g$. In the case
+of elastic forces, this resulted in a nice stiffness matrix of the
+form:
+%
+\begin{equation}
+  \nabla_q^2 V(q) \approx J^T N J = K
+\end{equation}
+%
+which enabled us to treat elastic forces as a compliant kinematic
+constraints. But what about the second order terms $\tilde{K}=(\dd
+J)^T N g(q)$ ? First of all, when the configuration space is a vector
+space $Q$ and $g$ is $\mathcal{C}^2$-continuous, the Schwarz' theorem
+ensures that $\nabla_q^2 V$ is symmetric, hence so is $\tilde{K}$. We
+call $\tilde{K}$ the \emph{geometric stiffness}, as it is induced by
+the variation of the deformation mapping $g$. We do not know whether
+in the general case, it is possible to factor \emph{both} $K$ and
+$\tilde{K}$ as:
+%
+\begin{equation}
+  \nabla_q^2 V(q) = K + \tilde{K} \overset{?}{=} J^T\block{N + \tilde{N}}J
+\end{equation}
+%
+even though some specific examples exist (\emph{e.g.} mass spring
+systems). Of course, it is always possible to apply a Cholesky
+factorization directly on $\nabla_q^2 V(q)$ as:
+%
+\begin{equation}
+  \nabla_q^2 V(q) = LDL^T
+\end{equation}
+%
+and get back on our feet, but this would be highly inefficient in
+practice. Therefore, unless an ad-hoc derivation provides the needed
+factorization, we are left with only one alternative: treat the
+geometric stiffness as a regular stiffness instead of compliance.
 %
 \section{Unilateral Constraints}
 \label{sec:unilateral-constraints}
