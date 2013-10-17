@@ -167,6 +167,14 @@ extern "C" PyObject * Sofa_sendGUIMessage(PyObject * /*self*/, PyObject * args)
 }
 
 
+extern "C" PyObject* Sofa_build_dir(PyObject * /*self*/, PyObject * /*args*/ ) {
+	return Py_BuildValue("s", sofa_tostring(SOFA_BUILD_DIR));
+}
+
+extern "C" PyObject* Sofa_src_dir(PyObject * /*self*/, PyObject * /*args*/ ) {
+	return Py_BuildValue("s", sofa_tostring(SOFA_SRC_DIR));
+}
+
 
 
 // Méthodes du module
@@ -175,6 +183,8 @@ SP_MODULE_METHOD_KW(Sofa,createObject)
 SP_MODULE_METHOD(Sofa,getObject)        // deprecated on date 2012/07/18
 SP_MODULE_METHOD(Sofa,getChildNode)     // deprecated on date 2012/07/18
 SP_MODULE_METHOD(Sofa,sendGUIMessage)
+SP_MODULE_METHOD(Sofa,build_dir)
+SP_MODULE_METHOD(Sofa,src_dir)
 SP_MODULE_METHODS_END
 
 
