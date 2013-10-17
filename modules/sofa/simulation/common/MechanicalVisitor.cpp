@@ -1447,6 +1447,13 @@ void MechanicalAddMBKdxVisitor::bwdMechanicalMapping(simulation::Node* /*node*/,
 }
 
 
+Visitor::Result MechanicalAddMBKdxNeglectingComplianceVisitor::fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff)
+{
+    if( !ff->isCompliance.getValue() ) ff->addMBKdx(this->mparams /* PARAMS FIRST */, res);
+    return RESULT_CONTINUE;
+}
+
+
 void MechanicalAddMBKdxVisitor::bwdMechanicalState(simulation::Node* , core::behavior::BaseMechanicalState* mm)
 {
     mm->forceMask.activate(false);

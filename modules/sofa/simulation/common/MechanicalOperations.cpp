@@ -274,6 +274,28 @@ void MechanicalOperations::addMBKv(core::MultiVecDerivId df, double m, double b,
     mparams.setDx(dx);
 }
 
+
+/// accumulate $ df += (m M + b B + k K) velocity $ neglecting compliance
+void MechanicalOperations::addMBKvNeglectingCompliance(core::MultiVecDerivId df, double m, double b, double k, bool clear, bool accumulate)
+{
+    core::ConstMultiVecDerivId dx = mparams.dx();
+    mparams.setDx(mparams.v());
+    setDf(df);
+    if (clear)
+    {
+        executeVisitor( MechanicalResetForceVisitor(&mparams /* PARAMS FIRST */, df, true) );
+        //finish();
+    }
+    mparams.setBFactor(b);
+    mparams.setKFactor(k);
+    mparams.setMFactor(m);
+    /* useV = true */
+    executeVisitor( MechanicalAddMBKdxNeglectingComplianceVisitor(&mparams /* PARAMS FIRST */, df, accumulate) );
+    mparams.setDx(dx);
+}
+
+
+
 /// Add dt*Gravity to the velocity
 void MechanicalOperations::addSeparateGravity(double dt, core::MultiVecDerivId result)
 {
