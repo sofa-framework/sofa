@@ -1,12 +1,10 @@
 import Sofa
 
-# This example should be started from current dir, otherwise you need
-# to adapt the following path to Compliant/python
-
-# TODO fix this :)
+# TODO handle this more cleanly, i.e. standardize plugins python
+# directory, then use something like Sofa.add_plugin_path('Compliant')
 
 import sys
-sys.path.append('../python')
+sys.path.append( Sofa.src_dir() + '/applications/plugins/Compliant/python' )
 
 from Compliant import Rigid
 
@@ -38,7 +36,10 @@ def createScene(root):
         o.name = 'link-' + str(i)
         o.dofs.translation = [0, length * i, 0]
         obj.append( o )
-        node.append( o.insert(scene) )
+        # insert the object into the scene node, saves the created
+        # node
+        n = o.insert(scene)
+        node.append( n )
     
     # joints creation
     for i in xrange(n-1):
