@@ -32,11 +32,7 @@ using namespace core::behavior;
 
 
 AssembledSolver::AssembledSolver()
-	: use_velocity(initData(&use_velocity, 
-	                        true,
-	                        "use_velocity",
-	                        "solve velocity dynamics (otherwise acceleration). this might cause damping when used with iterative solver unless warm_start is on.")),
-	  warm_start(initData(&warm_start, 
+	: warm_start(initData(&warm_start, 
 	                      true,
 	                      "warm_start",
 	                      "warm start iterative solvers: avoids biasing solution towards zero (and speeds-up resolution)")),
@@ -48,16 +44,26 @@ AssembledSolver::AssembledSolver()
 	                         false,
 	                         "stabilization",
 	                         "apply a stabilization pass on kinematic constraints requesting it")),
-      debug(initData(&debug,
-	               false,
-	               "debug",
-	               "print debug stuff"))
-
-    , f_rayleighStiffness( initData(&f_rayleighStiffness,(SReal)0,"rayleighStiffness","Rayleigh damping coefficient related to stiffness, >= 0") )
-    , f_rayleighMass( initData(&f_rayleighMass,(SReal)0,"rayleighMass","Rayleigh damping coefficient related to mass, >= 0"))
-    , implicitVelocity( initData(&implicitVelocity,(SReal)1.,"implicitVelocity","Weight of the next forces in the average forces used to update the velocities. 1 is implicit, 0 is explicit. (Warning: not relevant if use_velocity=1)"))
-    , implicitPosition( initData(&implicitPosition,(SReal)1.,"implicitPosition","Weight of the next velocities in the average velocities used to update the positions. 1 is implicit, 0 is explicit. (Warning: not relevant if use_velocity=1)"))
-
+	  debug(initData(&debug,
+	                 false,
+	                 "debug",
+	                 "print debug stuff")),
+// god dammit i said no rayleigh mass/stiffness crap !!11
+	f_rayleighStiffness( initData(&f_rayleighStiffness,
+	                              SReal(0),
+	                                "rayleighStiffness",
+	                                "Rayleigh damping coefficient related to stiffness, >= 0") ),
+	f_rayleighMass( initData(&f_rayleighMass,
+	                         SReal(0),
+	                         "rayleighMass",
+	                         "Rayleigh damping coefficient related to mass, >= 0")),
+	implicitVelocity( initData(&implicitVelocity,SReal(1),
+	                           "implicitVelocity",
+	                           "Weight of the next forces in the average forces used to update the velocities. 1 is implicit, 0 is explicit.")),
+	implicitPosition( initData(&implicitPosition,SReal(1),
+	                           "implicitPosition",
+	                           "Weight of the next velocities in the average velocities used to update the positions. 1 is implicit, 0 is explicit."))
+	
 {
 	
 }
@@ -145,15 +151,9 @@ void AssembledSolver::forces(const core::MechanicalParams& params) {
 				
     mop.computeForceNeglectingCompliance(f); // f = f0
 
-    if( use_velocity.getValue() )
-    {
-        f *= params.dt();  // f = h f0
-        mop.addMBKv( f, 1, 0, 0 ); // f = Mv + h.f0 = p + h.f0
-    }
-    else  mop.addMBKv( f, -f_rayleighMass.getValue(), 0, implicitVelocity.getValue() * ( params.dt()+f_rayleighStiffness.getValue() ) ); // f = f0 + (h+rs) K v - rm M v
+    f *= params.dt();  // f = h f0
+    mop.addMBKv( f, 1, 0, 0 ); // f = Mv + h.f0 = p + h.f0
 
-
-    //     mop.projectResponse(f); // not necessary, filtered by the projection matrix in rhs
 }
 
 
@@ -201,13 +201,9 @@ linearsolver::KKTSolver::vec AssembledSolver::rhs(const system_type& sys, bool c
 	
 	if( sys.n ) {
 
-		if( use_velocity.getValue() ) { 
-			// remove velocity part from rhs as it's handled implicitly here
-			// (this is due to weird Compliance API, TODO fix this)
-			res.tail( sys.n ) =  sys.phi + sys.J * sys.v;
-		} else {
-			res.tail( sys.n ) =  sys.phi / sys.dt;
-		}
+		// remove velocity part from rhs as it's handled implicitly here
+		// (this is due to weird Compliance API, TODO fix this)
+		res.tail( sys.n ) =  sys.phi + sys.J * sys.v;
 		
 	}
 
@@ -222,37 +218,27 @@ linearsolver::KKTSolver::vec AssembledSolver::warm(const system_type& sys) const
 		// note: warm starting velocities is somehow equivalent to zero
 		// acceleration start.
 
-		if( use_velocity.getValue() ) {
-
-			// velocity
-			res.head( sys.m ) = sys.P * sys.v;
-
-			// lambdas
-			if( sys.n ) res.tail( sys.n ) = sys.dt * sys.lambda;
-			
-		} else {
-			// don't warm start acceleration, as it might/will result in
-			// unstable behavior
-			if( sys.n ) res.tail( sys.n ) = sys.lambda;
-		}
+		// velocity
+		res.head( sys.m ) = sys.P * sys.v;
+		
+		// lambdas
+		if( sys.n ) res.tail( sys.n ) = sys.dt * sys.lambda;
 	}
 
 	return res;	
 }
 
 
+// TODO remove (useless now that use_velocity is gone)
 AssembledSolver::kkt_type::vec AssembledSolver::velocity(const system_type& sys,
                                                          const kkt_type::vec& x) const {
-	if( use_velocity.getValue() ) return sys.P * x.head( sys.m );
-	else return sys.P * (sys.v + sys.dt * x.head( sys.m ));
+	return sys.P * x.head( sys.m );
 }
 
-// this is a force
+// this is a *force* TODO remove ?
 AssembledSolver::kkt_type::vec AssembledSolver::lambda(const system_type& sys,
                                                        const kkt_type::vec& x) const {
-	if( use_velocity.getValue() ) return x.tail( sys.n ) / sys.dt;
-	else return x.tail( sys.n );
-
+	return x.tail( sys.n ) / sys.dt;
 }
 
 
@@ -338,9 +324,7 @@ void AssembledSolver::solve(const core::ExecParams* params,
 	
 	typedef linearsolver::AssembledSystem system_type;
 	
-	sofa::helper::AdvancedTimer::stepBegin( "assembly" );
-    system_type sys = _assemblyVisitor->assemble();
-	sofa::helper::AdvancedTimer::stepEnd( "assembly" );
+	system_type sys = _assemblyVisitor->assemble();
 	
 	if( debug.getValue() ){
 		sys.debug();
@@ -348,13 +332,6 @@ void AssembledSolver::solve(const core::ExecParams* params,
 	
 	// solution vector
 	system_type::vec x = warm( sys );
-	
-
-#ifdef GR_BENCHMARK
-        helper::system::thread::ctime_t tfreq = helper::system::thread::CTime::getTicksPerSec();
-        helper::system::thread::ctime_t t = helper::system::thread::CTime::getFastTime();
-#endif
-
 
 	{
 //		scoped::timer step("system factor");
@@ -375,7 +352,6 @@ void AssembledSolver::solve(const core::ExecParams* params,
 
         if( mask.size() ) {
             scoped::timer step("stabilization");
-            assert( use_velocity.getValue() && "does not work on acceleration !");
 
             // stabilization
             system_type::vec tmp_b = system_type::vec::Zero(sys.size());
@@ -420,44 +396,26 @@ void AssembledSolver::solve(const core::ExecParams* params,
 		}
 	}
 
-    if( use_velocity.getValue() || implicitPosition.getValue()==1 )
-    {
-        // distribute (projected) velocities
-        _assemblyVisitor->distribute_master( velId, velocity(sys, x) );
-        // update positions
-        if( integratePosition ) integrate( mparams, posId, velId );
-    }
-    else // acceleration with implicitPosition!=1
-    {
-        // allocate a MultiVec for dv
-        sofa::simulation::common::VectorOperations vop( params, this->getContext() );
-        MultiVecDeriv dv(&vop, core::VecDerivId::dx() );
-        // distribute dv
-        _assemblyVisitor->distribute_master( dv.id(), sys.P * sys.dt * x.head( sys.m ) );
-        // integrate positions and velocities (pos must be upated before vel and dv must be known)
-        if( integratePosition ) integrate( mparams, posId, velId, dv.id() );
-    }
+	// distribute (projected) velocities
+	_assemblyVisitor->distribute_master( velId, velocity(sys, x) );
 
+	// TODO expose logical parts of solving as prepare, dynamics/correction, integrate
+	// then remove integratePosition flag
 
+	// update positions 
+	if( integratePosition ) integrate( mparams, posId, velId );
 }
 
 			
 			
 void AssembledSolver::init() {
 				
-	// let's find a KKTSolver 
+	// do want KKTSolver !
 	kkt = this->getContext()->get<kkt_type>();
-				
-	// TODO less dramatic error
+	
+	// TODO slightly less dramatic error
 	if( !kkt ) throw std::logic_error("AssembledSolver needs a KKTSolver lol");
 
-    if( use_velocity.getValue() && ( implicitVelocity.getValue()!=1 || implicitPosition.getValue() != 1 ) )
-    {
-        serr<<"Using use_velocity=1, implicitVelocity & implicitPosition forced to 1"<<sendl;
-        implicitVelocity.setValue(1);
-        implicitPosition.setValue(1);
-    }
-				
 }
 
 
