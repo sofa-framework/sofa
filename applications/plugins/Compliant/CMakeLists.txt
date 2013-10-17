@@ -13,7 +13,7 @@ set(HEADER_FILES
     mapping/RigidJointMapping.h
     mapping/AssembledRigidRigidMapping.h
     mapping/AssembledMapping.h
-		mapping/AssembledMultiMapping.h
+    mapping/AssembledMultiMapping.h
 
 
     numericalsolver/KKTSolver.h
@@ -36,6 +36,10 @@ set(HEADER_FILES
     compliance/DiagonalCompliance.h
     compliance/DiagonalCompliance.inl
     compliance/DampingCompliance.h
+
+    constraint/Constraint.h
+    constraint/CoulombConstraint.h
+    constraint/UnilateralConstraint.h
 	
     utils/cast.h
     utils/cg.h
@@ -80,6 +84,9 @@ set(SOURCE_FILES
     assembly/AssembledSystem.cpp
 
     odesolver/AssembledSolver.cpp
+
+    constraint/CoulombConstraint.cpp
+    constraint/UnilateralConstraint.cpp
 	)
 
 set(README_FILES
