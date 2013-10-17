@@ -24,14 +24,19 @@ class Frame:
                 num = map(float, str.split())
                 self.translation = num[:3]
                 self.rotation = num[3:]
+
+def mesh_offset( mesh, path = "" ):
+        str = subprocess.Popen("GenerateRigid " + mesh ).stdout.read()
+        
+
         
 # TODO provide synchronized members with sofa states
 class Body:
         
         def __init__(self):
                 self.name = "unnamed"
-                self.collision = "" # collision mesh
-                self.visual = ""    # visual mesh
+                self.collision = None # collision mesh
+                self.visual = None    # visual mesh
                 self.dofs = Frame()
                 self.mass = 1
                 self.inertia = [1, 1, 1] 
@@ -39,6 +44,7 @@ class Body:
                 self.color = [1, 1, 1]
                 # TODO more if needed (scale, color)
                 
+
         def insert(self, node):
                 res = node.createChild( self.name )
 
@@ -49,32 +55,32 @@ class Body:
                                         name = 'mass', 
                                         mass = self.mass, 
                                         inertia = concat(self.inertia))
+
                 
+
                 # visual
-                visual_template = 'ExtVec3f'
+                if self.visual != None:
+                        visual_template = 'ExtVec3f'
+                        
+                        visual = res.createChild( 'visual' )
+                        ogl = visual.createObject('OglModel', 
+                                                  template = visual_template, 
+                                                  name='mesh', 
+                                                  fileMesh = self.visual, 
+                                                  color = concat(self.color), 
+                                                  scale3d='1 1 1')
+                        
+                        visual_map = visual.createObject('RigidMapping', 
+                                                         template = self.template + ', ' + visual_template, 
+                                                         input = '@../')
                 
-                visual = res.createChild( 'visual' )
-                ogl = visual.createObject('OglModel', 
-                                          template = visual_template, 
-                                          name='mesh', 
-                                          fileMesh = self.visual, 
-                                          color = concat(self.color), 
-                                          scale3d='1 1 1')
+                if self.collision != None:
+                        # collision
+                        collision = res.createChild('collision')
                 
-                visual_map = visual.createObject('RigidMapping', 
-                                                 template = self.template + ', ' + visual_template, 
-                                                 input = '@../')
-                
-                # collision
-                collision = res.createChild('collision')
-                
-                # TODO lol
+                        # TODO lol
                 
                 return res
-
-
-
-
 
 
 class Joint:
@@ -83,6 +89,7 @@ class Joint:
                 self.dofs = [1, 1, 1, 1, 1, 1]
                 self.body = []
                 self.offset = []
+                self.damping = 0
                 self.name = 'joint'
                 
         def append(self, node, offset = None):
@@ -117,6 +124,7 @@ class Joint:
                                          name = 'dofs', 
                                          position = '0 0 0 0 0 0' )
                 
+                # TODO handle damping
                 mask = [ 1 - d for d in self.dofs ]
                 
                 map = node.createObject('RigidJointMultiMapping',
@@ -132,6 +140,7 @@ class Joint:
                                           compliance = '0')
                 
                 stab = node.createObject('Stabilization')
+                return node
 
 class SphericalJoint(Joint):
 
