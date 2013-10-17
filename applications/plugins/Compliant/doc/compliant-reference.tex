@@ -1,0 +1,387 @@
+\documentclass{article}
+
+\usepackage{palatino}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage[colorlinks=true]{hyperref}
+
+% macros
+\newcommand{\LL}{\mathcal{L}}
+\newcommand{\half}{\frac{1}{2}}
+\newcommand{\norm}[1]{\left|\left|#1\right|\right|}
+\newcommand{\dd}{d}
+\newcommand{\ddd}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\block}[1]{\left(#1\right)}
+\newcommand{\mat}[1]{ \begin{pmatrix} #1 \end{pmatrix} }
+\newcommand{\inv}[1]{#1^{-1}}
+
+\begin{document}
+\title{Compliant Reference}
+\author{Maxime Tournier}
+\date{\today}
+\maketitle
+%
+\begin{abstract}
+  Quick notes about the mathematical framework used in Compliant. We
+  review the time-stepping scheme, kinematic constraint handling,
+  potential forces as compliant constraints, and KKT systems.
+\end{abstract}
+%
+\section*{TODO}
+\begin{itemize}
+\item finish sections :-)
+\item references
+\item wikipedia links
+\item introduction ?
+\end{itemize}
+\section{Lagrangian Dynamics}
+Given an $n$-dimensional state space $Q$, we consider a Lagrangian
+$\LL$ defined as usual:
+%
+\begin{equation}
+\LL(q, v) = \half v^TMv - V(q)
+\end{equation}
+%
+where $V(q)$ is the potential energy of the form:
+%
+\begin{equation}
+V(q) = \half \norm{g(q)}_N^2
+\end{equation}
+%
+for a matrix norm $N$ in the suitable deformation space $Im(g)$. To be
+fully general, we include a Rayleigh dissipation function $\half
+v^TDv$, where $D$ is PSD. The Euler-Lagrange equations of motions are
+then:
+%
+\begin{equation}
+ \frac{d}{dt}\ddd{\LL}{v} = \ddd{\LL}{q} - \ddd{D}{v} 
+\end{equation}
+%
+For simplicity, we restrict to the case where $M$ is constant, which
+yields:
+%
+\begin{equation}
+  \label{eq:dynamics}
+  M \dot{v} = -\nabla_q V - D v
+\end{equation}
+%
+\section{Time Stepping}
+%
+We now discretize time using a fixed time step $h$. We use forward
+differences for $\dot{v}$ as follows:
+%
+\begin{equation}
+  h\ \dot{v}_{k+1} \approx v_{k+1} - v_k
+\end{equation}
+%
+Equation \eqref{eq:dynamics} becomes: 
+%
+\begin{equation}
+  M v_{k+1} = M v_k - h \block{\nabla_q V_{k+1} + D v_{k+1}}
+\end{equation}
+%
+Or, calling $p_k = M v_k$ the momentum of the system and $f_k =
+-\nabla_q V_k$ the potential forces:
+%
+\begin{equation}
+  \block{M + h\ D} v_{k+1} = p_k + h f_{k+1}
+\end{equation}
+%
+In order to control how implicit our integrator is on forces, we
+introduced a blending parameter $\alpha \in [0, 1]$ as follows:
+%
+\begin{equation}
+  \block{M + h \alpha D} v_{k+1} = p_k - h(1 - \alpha) D v_k + h \block{(1 - \alpha) f_k + \alpha f_{k+1}}
+\end{equation}
+%
+We linearize the above using the Hessian of the potential energy
+(\emph{i.e.} stiffness matrix):
+%
+\begin{equation}
+\nabla_q V_{k+1} \approx \nabla_q V_k + \nabla_q^2 V_k \block{q_{k+1} - q_k}
+\end{equation}
+%
+Finally, we use the following position time-stepping scheme:
+%
+\begin{equation}
+  q_{k+1} = q_k + h \block{ (1-\beta) v_k + \beta v_{k+1}}
+\end{equation}
+%
+where $\beta \in [0, 1]$ is again a blending parameter.
+%
+Letting the stiffness matrix be $K = \nabla_q^2 V_k$ (watch out) and
+$d_k = -D v_k$ be the damping forces, we put everything together as:
+%
+\begin{equation}
+  \label{eq:time-stepping}
+  \block{M + h\alpha D + h^2 \alpha \beta K} v_{k+1} = 
+  p_k + h \block{ f_k + (1 - \alpha) d_k} - \alpha ( 1 - \beta) h^2 K v_k 
+\end{equation}
+%
+(and yes, this is very ugly). Fortunately, in a sane world everyone
+would use the much friendlier, fully implicit scheme $\alpha = \beta =
+1$ as follows:
+%
+\begin{equation}
+   \block{M + hD + h^2K} v_{k+1} = p_k + h f_k
+\end{equation}
+%
+\section{Response Matrix, Net Momentum}
+%
+From now on, we will refer to the \emph{response matrix} defined as
+follows:
+%
+\begin{equation}
+  \label{eq:response-matrix}
+  W = \block{M + h\alpha D + h^2 \alpha \beta K}
+\end{equation}
+%
+We will also refer to the \emph{net momentum} of the system at time
+step $k$:
+%
+\begin{equation}
+  \label{eq:net-momentum}
+  c_k = p_k + h \block{ f_k + (1 - \alpha) d_k} - \alpha ( 1 - \beta) h^2 K v_k
+\end{equation}
+%
+The time-stepping scheme \eqref{eq:time-stepping} thus involves solving
+the following linear system:
+%
+\begin{equation}
+  W v_{k+1} = c_k
+\end{equation}
+%
+The numerical solvers for time-stepping will be described in section
+\ref{sec:solvers}.
+%
+\section{Constraints}
+\label{sec:constraints}
+%
+We now introduce holonomic constraints of the form:
+%
+\begin{equation}
+  g(q) = 0
+\end{equation}
+%
+where $g$ again maps kinematic DOFs to a suitable deformation space
+$Im(g)$. Such constraints are satisfied by introducing constraint
+forces $J^T\lambda$, where $J = \dd g$ is the constraint Jacobian
+matrix, and $\lambda$ are the \emph{Lagrange multipliers}:
+%
+\begin{align}
+  \label{eq:constrained-dynamics}
+  M \dot{v} &= -\nabla_q V - D v + J^T \lambda\\
+  g(q) &= 0
+\end{align}
+%
+Again, we discretize time and $\dot{v}$ as follows:
+%
+\begin{align}
+  M v_{k+1} &= p_k + h \block{f_{k+1} + d_{k+1} + J_{k+1}^T\lambda_{k+1}} \\
+  g\block{q_{k+1}} &= 0 
+\end{align}
+%
+And again:
+\begin{equation}
+g( q_{k+1}) = g_k + h J_k \block{ (1 - \beta) v_k + \beta v_{k+1}}  
+\end{equation}
+%
+At this point we become lazy and approximate constraints as
+\emph{affine} functions, meaning that $J_{k+1} \approx J_k$, otherwise
+computing the constraint Hessian $\dd^2 g$ would be too costly, and
+would result in a non-linear system to solve anyways (\emph{i.e.}
+with terms involving $v_{k+1}^T\dd^2g_k \lambda_{k+1}$). As we will
+see later, such approximation is consistent with our treatment of
+potential forces as compliant constraints. The time-discrete system is
+then:
+%
+\begin{align}
+  M v_{k+1} &= p_k + h \block{f_{k+1} + d_{k+1} + J_k^T\lambda_{k+1}} \\
+  J_k v_{k+1} &= -\frac{g_k}{\beta h} - \frac{1 - \beta}{\beta} J_k v_k
+\end{align}
+% 
+At this point, we \emph{could} introduce an implicit blending between
+$\lambda_k$ and $\lambda_{k+1}$, but this would result in unneeded
+complication as $\lambda_{k+1}$ would need to be computed anyways. The
+blended force would then be:
+\[ J_k^T\block{ (1-\alpha) \lambda_k + \alpha \lambda_{k+1} } \] which
+simply offsets $\lambda_{k+1}$ with respect to $\lambda_k$. We will
+thus happily ignore such blending. The final linear system to solve
+(for $v_{k+1}$ and $\lambda_{k+1}$) becomes:
+%
+\begin{align}
+\label{eq:constrained-integrator}
+  W v_{k+1} - J_k^T \lambda_{k+1} &= c_k  \\
+  J_k v_{k+1} &= -b_k
+\end{align}
+where $b_k = \frac{g_k}{\beta h} + \frac{1 - \beta}{\beta} J_k
+v_k$. Before leaving, note the sneaky accounting of $h$ inside
+$\lambda_{k+1}$.
+%
+\section{KKT Systems and Schur Complement}
+%
+At this point, it is probably a good idea to introduce a few notions
+on saddle-point (or KKT) systems. Such systems are (for now, linear)
+systems of the form:
+\begin{equation}
+ \label{eq:kkt-system}
+ \mat{Q & -A^T \\-A & 0} \mat{x\\\lambda} = \mat{c\\b}
+\end{equation}
+KKT systems typically arise from the Karush-Kuhn-Tucker (hence the
+name) optimality conditions of constrained optimization problems. For
+instance, the KKT system \eqref{eq:kkt-system} corresponds to the
+following Quadratic Program (QP):
+%
+\begin{equation}
+  \underset{Ax + b = 0}{\textrm{argmin}} \quad \half x^T Q x - c^T x
+\end{equation}
+%
+The alternate name \emph{saddle-point} comes from the fact that the
+system matrix is symmetric \emph{indefinite}, and the system solution
+corresponds to a saddle point of the corresponding quadratic form.
+%
+As one can see, the constrained integrator
+\eqref{eq:constrained-integrator} is an example of a KKT system:
+\begin{equation}
+  \mat{W & -J\\-J & 0} \mat{v \\ \lambda} = \mat{c_k \\ b_k}
+\end{equation}
+%
+where we dropped subscripts for readability. 
+%
+As symmetric indefinite systems, they tend to be more difficult to
+solve than SPD ones: CG and Cholesky $LDL^T$ factorizations may
+breakdown on such systems. However, when the $(1, 1)$ block (here:
+matrix $Q$) is invertible, one can use \emph{pivoting} to obtain the
+following smaller system:
+%
+\begin{align}
+  x &= \inv{Q}\block{c - A^T \lambda} \\
+  -A x &= A\inv{Q}A^T \lambda - A\inv{Q} c = b \\
+  \label{eq:schur-complement}
+  A\inv{Q}A^T\lambda &= b - A \inv{Q} c
+\end{align}
+%
+This smaller system \eqref{eq:schur-complement} is known as the
+\emph{Schur} complement of the KKT system. It is always PSD as long as
+$A^T$ is full column-rank, but requires to invert $Q$ which might be
+costly in practice. The Schur form also corresponds to an
+(unconstrained) optimization problem, which can provide insight for
+compliant systems as we will see later.
+%
+Under the most general form, KKT systems include
+unilateral and complementarity constraints. We will develop these in
+more details in section \ref{sec:unilateral-constraints}.
+%
+\section{Compliance}
+%
+We will now establish a connection between elastic forces and
+constraint forces through a compliance matrix. Remember that we
+defined potential energy as:
+%
+\begin{equation}
+  V(q) = \half \norm{g(q)}_N^2
+\end{equation}
+%
+where $g$ maps kinematic DOFs to an appropriate deformation space
+$Im(g)$. This means the potential forces are:
+%
+\begin{equation}
+  f = - \nabla_q V = J^T N g(q)
+\end{equation}
+%
+Now, the Hessian or stiffness matrix is :
+%
+\begin{equation}
+  K = \nabla^2_q V = \dd J^T N g(q) + J^T N J
+\end{equation}
+%
+As in section \ref{sec:constraints}, we are too lazy for computing
+second derivatives and approximate deformation mappings as affine
+maps, meaning that $\dd J \approx 0$. We are left with the following
+response matrix \eqref{eq:response-matrix}:
+%
+\begin{equation}
+  W = \block{M + h\alpha D + h^2 \alpha \beta J_k^T N J_k}
+\end{equation}
+%
+The net momentum \eqref{eq:net-momentum} becomes:
+%
+\begin{equation}
+  c_k = p_k + h (1 - \alpha) d_k - h J_k^TN \block{ g_k + h \alpha ( 1 - \beta) J_k v_k}
+\end{equation}
+%
+If we write the potential force as $J_k^T \lambda_{k+1}$, we have: 
+\begin{equation}
+  \lambda_{k+1} = -N\block{h^2 \alpha \beta J_k v_{k+1} + h g_k + h^2 \alpha (1 - \beta) J_k v_k}
+\end{equation}
+It turns out that this system can be rewritten as a KKT system:
+%
+\begin{equation}
+  \mat{M + h \alpha D & -J_k \\
+    J_k & \frac{\inv{N}}{h^2 \alpha \beta} } \mat{v_{k+1} \\ \lambda_{k+1}} = \mat{p_k + h (1 - \alpha) d_k \\ -\frac{g_k}{h \alpha \beta} - \frac{( 1 - \beta)}{\beta} J_k v_k }
+\end{equation}
+%
+(pffew !) One can notice that this system is \emph{almost} exactly the
+one we obtained with kinematic constraints in
+\eqref{eq:constrained-integrator}, with $\alpha = 1$, with the
+exception of the $\inv{N}$ term in the $(2, 2)$ block. We call matrix
+$C = \inv{N}$ the \emph{compliance} matrix. We see that kinematic
+constraints simply correspond to a zero compliance matrix, \emph{i.e.}
+infinite stiffness, as one would intuitively expect. It can be checked
+that taking $\alpha$ into account for constraint forces produces the
+same system with $C = 0$. (TODO) We now recall the main results for
+the unified elastic/constraint treatment:
+%
+\subsection*{KKT system}
+\begin{equation}
+  \mat{ W & -J \\
+    -J & -\frac{C}{h^2 \alpha \beta} } \mat{v \\ \lambda} = \mat{c_k \\ b_k}
+\end{equation}
+%
+\subsection*{Response Matrix}
+%
+\begin{equation}
+  W = M + h\alpha D
+\end{equation}
+%
+\subsection*{Net Momentum}
+%
+\begin{equation}
+c_k = p_k + h (1 - \alpha) d_k  
+\end{equation}
+%
+\subsection*{Constraint Value}
+%
+\begin{equation}
+  b_k = \frac{g_k}{h \alpha \beta} + \frac{( 1 - \beta)}{\beta} J_k v_k
+\end{equation}
+%
+\section{Damped KKT Systems}
+%
+TODO: effect of $C$ on the schur complement, lagrangian relaxation
+%
+\section{Geometric Stiffness}
+%
+TODO: what is left when we approximate $g$ as an affine function, how
+to recover it
+%
+\section{Unilateral Constraints}
+\label{sec:unilateral-constraints}
+%
+TODO: general KKT systems
+\section{Stabilization}
+%
+TODO
+\section{Restitution}
+%
+TODO: velocity constraints for contact with restitution (rigid),
+mention Generalized Reflections
+%
+\section{Numerical Solvers}
+\label{sec:solvers}
+%
+TODO: CG, Cholesky, Minres, GS, PGS, Sequential Impulses
+
+\end{document}
+
