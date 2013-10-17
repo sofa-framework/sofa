@@ -15,6 +15,7 @@
 \newcommand{\block}[1]{\left(#1\right)}
 \newcommand{\mat}[1]{ \begin{pmatrix} #1 \end{pmatrix} }
 \newcommand{\inv}[1]{#1^{-1}}
+\newcommand{\argmin}[1]{\underset{#1}{\textrm{argmin}}}
 
 \begin{document}
 \title{Compliant Reference}
@@ -219,61 +220,8 @@ where $b_k = \frac{g_k}{\beta h} + \frac{1 - \beta}{\beta} J_k
 v_k$. Before leaving, note the sneaky accounting of $h$ inside
 $\lambda_{k+1}$.
 %
-\section{KKT Systems and Schur Complement}
-%
-At this point, it is probably a good idea to introduce a few notions
-on saddle-point (or KKT) systems. Such systems are (for now, linear)
-systems of the form:
-\begin{equation}
- \label{eq:kkt-system}
- \mat{Q & -A^T \\-A & 0} \mat{x\\\lambda} = \mat{c\\b}
-\end{equation}
-KKT systems typically arise from the Karush-Kuhn-Tucker (hence the
-name) optimality conditions of constrained optimization problems. For
-instance, the KKT system \eqref{eq:kkt-system} corresponds to the
-following Quadratic Program (QP):
-%
-\begin{equation}
-  \underset{Ax + b = 0}{\textrm{argmin}} \quad \half x^T Q x - c^T x
-\end{equation}
-%
-The alternate name \emph{saddle-point} comes from the fact that the
-system matrix is symmetric \emph{indefinite}, and the system solution
-corresponds to a saddle point of the corresponding quadratic form.
-%
-As one can see, the constrained integrator
-\eqref{eq:constrained-integrator} is an example of a KKT system:
-\begin{equation}
-  \mat{W & -J\\-J & 0} \mat{v \\ \lambda} = \mat{c_k \\ b_k}
-\end{equation}
-%
-where we dropped subscripts for readability. 
-%
-As symmetric indefinite systems, they tend to be more difficult to
-solve than SPD ones: CG and Cholesky $LDL^T$ factorizations may
-breakdown on such systems. However, when the $(1, 1)$ block (here:
-matrix $Q$) is invertible, one can use \emph{pivoting} to obtain the
-following smaller system:
-%
-\begin{align}
-  x &= \inv{Q}\block{c - A^T \lambda} \\
-  -A x &= A\inv{Q}A^T \lambda - A\inv{Q} c = b \\
-  \label{eq:schur-complement}
-  A\inv{Q}A^T\lambda &= b - A \inv{Q} c
-\end{align}
-%
-This smaller system \eqref{eq:schur-complement} is known as the
-\emph{Schur} complement of the KKT system. It is always PSD as long as
-$A^T$ is full column-rank, but requires to invert $Q$ which might be
-costly in practice. The Schur form also corresponds to an
-(unconstrained) optimization problem, which can provide insight for
-compliant systems as we will see later.
-%
-Under the most general form, KKT systems include
-unilateral and complementarity constraints. We will develop these in
-more details in section \ref{sec:unilateral-constraints}.
-%
 \section{Compliance}
+\label{sec:compliance}
 %
 We will now establish a connection between elastic forces and
 constraint forces through a compliance matrix. Remember that we
@@ -315,7 +263,7 @@ If we write the potential force as $J_k^T \lambda_{k+1}$, we have:
 \begin{equation}
   \lambda_{k+1} = -N\block{h^2 \alpha \beta J_k v_{k+1} + h g_k + h^2 \alpha (1 - \beta) J_k v_k}
 \end{equation}
-It turns out that this system can be rewritten as a KKT system:
+It turns out that this system can be rewritten as a \emph{larger} system:
 %
 \begin{equation}
   \mat{M + h \alpha D & -J_k \\
@@ -333,8 +281,9 @@ that taking $\alpha$ into account for constraint forces produces the
 same system with $C = 0$. (TODO) We now recall the main results for
 the unified elastic/constraint treatment:
 %
-\subsection*{KKT system}
+\subsection*{Linear System}
 \begin{equation}
+  \label{eq:time-stepping-kkt}
   \mat{ W & -J \\
     -J & -\frac{C}{h^2 \alpha \beta} } \mat{v \\ \lambda} = \mat{c_k \\ b_k}
 \end{equation}
@@ -357,9 +306,124 @@ c_k = p_k + h (1 - \alpha) d_k
   b_k = \frac{g_k}{h \alpha \beta} + \frac{( 1 - \beta)}{\beta} J_k v_k
 \end{equation}
 %
-\section{Damped KKT Systems}
+\section{KKT Systems, Compliance and Relaxation}
 %
-TODO: effect of $C$ on the schur complement, lagrangian relaxation
+At this point, it is probably a good idea to introduce a few notions
+on saddle-point (or KKT) systems. Such systems are (for now, linear)
+systems of the form:
+%
+\begin{equation}
+ \label{eq:kkt-system}
+ \mat{Q & -A^T \\-A & 0} \mat{x\\\lambda} = \mat{c\\b}
+\end{equation}
+%
+KKT systems typically arise from the Karush-Kuhn-Tucker (hence the
+name) optimality conditions of constrained optimization problems. For
+instance, the KKT system \eqref{eq:kkt-system} corresponds to the
+following equality-constrained Quadratic Program (QP):
+%
+\begin{equation}
+  \label{eq:constrained-optimization}
+  \underset{Ax + b = 0}{\textrm{argmin}} \quad \half x^T Q x - c^T x
+\end{equation}
+%
+The KKT system summarizes the optimality conditions for the following
+unconstrained function (also called the \emph{Lagrangian}, this time in the
+context of optimization):
+%
+\begin{equation}
+  \LL(x, \lambda) \quad = \quad \half x^T Q x - c^T x \quad - \quad \block{A x + b}^T \lambda
+\end{equation}
+%
+and whose critical points (in fact, saddle-points) solve the
+constrained problem \eqref{eq:constrained-optimization}. As one can
+see, the constrained integrator \eqref{eq:constrained-integrator} is
+an example of such KKT systems:
+\begin{equation}
+  \mat{W & -J\\-J & 0} \mat{v \\ \lambda} = \mat{c_k \\ b_k}
+\end{equation}
+%
+As symmetric \emph{indefinite} systems, they tend to be more difficult
+to solve than positive definite ones: CG and Cholesky $LDL^T$
+factorizations may breakdown on such systems. However, when the $(1,
+1)$ block (here, matrix $Q$) is invertible, one can use
+\emph{pivoting} to obtain the following smaller system:
+%
+\begin{align}
+  x &= \inv{Q}\block{c - A^T \lambda} \\
+  -A x &= A\inv{Q}A^T \lambda - A\inv{Q} c = b \\
+  \label{eq:schur-complement}
+  A\inv{Q}A^T\lambda &= b - A \inv{Q} c
+\end{align}
+%
+This smaller system \eqref{eq:schur-complement} is known as the
+\emph{Schur} complement of the KKT system. It is always SPD as long as
+$A^T$ is full column-rank, but requires to invert $Q$ which might be
+costly in practice. The Schur complement system also corresponds to an
+(unconstrained) optimization problem:
+%
+\begin{equation}
+  \argmin{\lambda}\quad \half \lambda^T S \lambda - s^T \lambda
+\end{equation}
+%
+where $S = A \inv {Q} A^T$ is the Schur complement, and $s = b +
+A\inv{Q}c$. The minimized quantity has a physical interpretation:
+typically, holonomic constraints minimize the total kinetic energy. If
+we now consider systems with compliance, such as:
+%
+\begin{equation}
+  \label{eq:kkt-system}
+  \mat{Q & -A^T \\-A & -D} \mat{x\\\lambda} = \mat{c\\b}
+\end{equation}
+%
+we see that they correspond to the following Lagrangian:
+%
+\begin{equation}
+  \LL(x, \lambda) \quad = \quad \half x^T Q x - c^T x \quad - 
+  \quad \block{A x + b}^T \lambda \quad - \quad \half \lambda^T D \lambda
+\end{equation}
+%
+The Schur complement becomes $S + D$ and corresponds to:
+%
+\begin{equation}
+  \argmin{\lambda}\quad \half \lambda^T S \lambda - s^T \lambda \quad + 
+  \quad \half \lambda^T D \lambda
+\end{equation}
+%
+We see that $D$ acts as a form of numerical damping on the resolution
+of constraints, by biasing the solution of the constrained system
+towards zero. It is a form of \emph{constraint relaxation}. Under
+their most general form, KKT systems include unilateral and
+complementarity constraints. We will develop these in more details in
+section \ref{sec:unilateral-constraints}.
+%
+\section{KKT Systems, Optimization and Relaxation}
+\label{sec:optimization}
+%
+We have seen that KKT systems correspond to Quadratic Programs:
+%
+\begin{equation}
+   \mat{Q & -A^T \\ -A & 0} \mat{x \\ \lambda} = \mat{c \\ b}
+\end{equation}
+%
+corresponds to the following convex QP:
+%
+\begin{equation}
+  \argmin{Ax = b}\quad \half x^T Q x - c^T x
+\end{equation}
+
+%
+The compliant KKT system obtained in section \ref{sec:compliance} is
+of the form:
+%
+\begin{equation}
+  \mat{Q & -A^T \\ -A & -D} \mat{x \\ \lambda} = \mat{c \\ b}
+\end{equation}
+%
+where both $Q$ and $C$ are PSD. 
+
+ TODO: effect of $C$ on the schur complement, lagrangian
+relaxation
 %
 \section{Geometric Stiffness}
 %
