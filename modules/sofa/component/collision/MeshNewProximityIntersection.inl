@@ -478,10 +478,20 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, TSphere<T>& 
     //const SReal contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
-    //detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+    detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
     detection->id = e2.getIndex();
     detection->value = helper::rsqrt(norm2) ;
-    detection->normal = pq / detection->value;
+
+    if(detection->value>1e-15)
+    {
+        detection->normal = pq / detection->value;
+    }
+    else
+    {
+        intersection->serr<<"WARNING: null distance between contact detected"<<intersection->sendl;
+        detection->normal= Vector3(1,0,0);
+    }
+
     detection->value -= (intersection->getContactDistance() + e1.getProximity() + e2.getProximity() + e2.r());
     detection->point[0]=p;
     detection->point[1]= e2.getContactPointByNormal(detection->normal);
