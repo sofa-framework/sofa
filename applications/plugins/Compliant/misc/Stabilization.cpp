@@ -11,7 +11,7 @@ SOFA_DECL_CLASS(Stabilization);
 int StabilizationClass = core::RegisterObject("Kinematic constraint stabilization").add< Stabilization >();
 
 
-void ConstraintValue::correction(SReal* dst, unsigned n) const {
+void Stabilization::correction(SReal* dst, unsigned n) const {
 	assert( mstate );
 	mstate->copyToBuffer(dst, core::VecCoordId::position(), n);
 
@@ -24,7 +24,7 @@ void ConstraintValue::correction(SReal* dst, unsigned n) const {
 }
 
 
-void ConstraintValue::dynamics(SReal* dst, unsigned n) const {
+void Stabilization::dynamics(SReal* dst, unsigned n) const {
 	assert( mstate );
 	mstate->copyToBuffer(dst, core::VecCoordId::position(), n);
 
