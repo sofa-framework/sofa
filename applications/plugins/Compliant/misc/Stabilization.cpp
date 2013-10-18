@@ -12,6 +12,11 @@ SOFA_DECL_CLASS(Stabilization);
 int StabilizationClass = core::RegisterObject("Kinematic constraint stabilization").add< Stabilization >();
 
 
+Stabilization::Stabilization()
+	: mask(initData(&mask, "mask", "dofs to be stabilized")) {
+	
+}
+
 void Stabilization::correction(SReal* dst, unsigned n) const {
 	assert( mstate );
 	mstate->copyToBuffer(dst, core::VecCoordId::position(), n);
@@ -19,6 +24,8 @@ void Stabilization::correction(SReal* dst, unsigned n) const {
 	// TODO needed ?
 	map(dst, n) = -map(dst, n) / this->getContext()->getDt();
 
+	const mask_type& mask = this->mask.getValue();
+	
 	// non-zero for stabilized
 	unsigned i = 0;
 	for(SReal* last = dst + n; dst < last; ++dst, ++i) {
@@ -33,6 +40,7 @@ void Stabilization::dynamics(SReal* dst, unsigned n) const {
 	mstate->copyToBuffer(dst, core::VecCoordId::position(), n);
 	map(dst, n) = -map(dst, n) / this->getContext()->getDt();
 	
+	const mask_type& mask = this->mask.getValue();
 	// zero for stabilized
 	unsigned i = 0;
 	for(SReal* last = dst + n; dst < last; ++dst, ++i) {

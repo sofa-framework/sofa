@@ -13,8 +13,11 @@ class SOFA_Compliant_API Stabilization : public ConstraintValue {
 
 	SOFA_CLASS(Stabilization, ConstraintValue);
 
+	Stabilization();
+
 	/// flagging which constraint lines must be stabilized (if empty, all constraints are stabilized)
-	std::vector<bool> mask;
+	typedef vector<bool> mask_type;
+	Data<mask_type> mask;
 	
 	// value for stabilization
 	virtual void correction(SReal* dst, unsigned n) const;
