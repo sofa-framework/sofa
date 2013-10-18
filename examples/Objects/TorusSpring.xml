@@ -15,8 +15,6 @@
 		<Mesh src="@meshLoader"/>
 		<MechanicalObject  dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0" />
 		<Triangle />
-		<Line />
-		<Point />
 		<BarycentricMapping />
 	</Node>
 </Node>
