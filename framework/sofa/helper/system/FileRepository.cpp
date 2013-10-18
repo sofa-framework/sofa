@@ -98,8 +98,8 @@ static FileRepository createSofaDataPath()
     repository.addLastPath( ADD_SOFA_BUILD_DIR( / ) );
     repository.addLastPath( ADD_SOFA_SRC_DIR( /share ) );
     repository.addLastPath( ADD_SOFA_SRC_DIR( /examples ) );
-    repository.addLastPath( ADD_SOFA_SRC_DIR( /../Verification/data ) );
-    repository.addLastPath( ADD_SOFA_SRC_DIR( /../Verification/simulation ) );
+    repository.addLastPath( ADD_SOFA_SRC_DIR( /bin/../../Verification/data ) );
+    repository.addLastPath( ADD_SOFA_SRC_DIR( /bin/../../Verification/simulation ) );
 #endif
 
     return repository;
