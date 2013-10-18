@@ -102,22 +102,22 @@ bool PipeProcess::executeProcess(const std::string &command,  const std::vector<
     cargs[args.size() + 1] = NULL;
 
     fd_t fdin;
-    fd_t fdout;
-    fd_t fderr;
+//    fd_t fdout;
+//    fd_t fderr;
 
 #ifdef WIN32
     fdin = GetStdHandle(STD_INPUT_HANDLE);
 
-    fdout = GetStdHandle(STD_OUTPUT_HANDLE);
-    fderr = GetStdHandle(STD_ERROR_HANDLE);
+//    fdout = GetStdHandle(STD_OUTPUT_HANDLE);
+//    fderr = GetStdHandle(STD_ERROR_HANDLE);
 
     for (unsigned int i=0 ; i< args.size() ; i++)
         newCommand += " " + args[i];
 
 #else
     fdin = 0;
-    fdout = 1;
-    fderr = 2;
+//    fdout = 1;
+//    fderr = 2;
 #endif
 
     outString = "";
@@ -354,8 +354,8 @@ bool PipeProcess::executeProcess(const std::string &command,  const std::vector<
         int status=0;
         waitpid(pid,&status,0);
 
-        if (fdout != 1)
-            close(fdout);
+//        if (fdout != 1)
+//            close(fdout);
         close(filefd);
 #endif
 

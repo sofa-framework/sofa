@@ -165,7 +165,7 @@ void CompliantAttachPerformer<DataTypes>::start()
     //-------- Mouse manipulator
     mouseMapping = this->interactor->BaseObject::searchUp<sofa::core::BaseMapping>();
     this->mouseState = dynamic_cast<Point3dState*>(this->interactor->getMouseContainer());
-    typename Point3dState::ReadVecCoord xmouse = mouseState->readPositions();
+//    typename Point3dState::ReadVecCoord xmouse = mouseState->readPositions();
     // set target point to closest point on the ray
     double distanceFromMouse=picked.rayLength;
     this->interactor->setDistanceFromMouse(distanceFromMouse);
