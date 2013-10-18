@@ -14,6 +14,7 @@ int ConstaintValueClass = core::RegisterObject("Constraint value abstraction").a
 
 void ConstraintValue::init() {
 	mstate = this->getContext()->get<mstate_type>(core::objectmodel::BaseContext::Local);
+	assert( mstate );
 }
 
 void ConstraintValue::correction(SReal* dst, unsigned n) const {
