@@ -67,7 +67,7 @@ std::string cleanPath( const std::string& path )
 
 
 #define ADD_SOFA_BUILD_DIR( x ) sofa_tostring(SOFA_BUILD_DIR)sofa_tostring(x)
-#define ADD_SOFA_SRC_BIN_DIR( x ) sofa_tostring(SOFA_SRC_BIN_DIR)sofa_tostring(x)
+#define ADD_SOFA_SRC_DIR( x ) sofa_tostring(SOFA_SRC_DIR)sofa_tostring(x)
 
 #if defined (WIN32) || defined (_XBOX)
 #define SOFA_PLUGIN_SUBDIR /bin
@@ -84,22 +84,22 @@ static FileRepository createSofaDataPath()
     FileRepository repository("SOFA_DATA_PATH");
 #if defined (WIN32) || defined (_XBOX) || defined(PS3)
     repository.addLastPath( ADD_SOFA_BUILD_DIR( / ) );
-    repository.addLastPath( ADD_SOFA_SRC_BIN_DIR( /../share ) );
-    repository.addLastPath( ADD_SOFA_SRC_BIN_DIR( /../examples ) );
+    repository.addLastPath( ADD_SOFA_SRC_DIR( /share ) );
+    repository.addLastPath( ADD_SOFA_SRC_DIR( /examples ) );
 #elif defined (__APPLE__)
     repository.addLastPath( ADD_SOFA_BUILD_DIR( / ) );
-    repository.addLastPath( ADD_SOFA_SRC_BIN_DIR( /../share ) );
-    repository.addLastPath( ADD_SOFA_SRC_BIN_DIR( /../examples ) );
-    repository.addLastPath( ADD_SOFA_SRC_BIN_DIR( /../Resources/examples ) );
-    repository.addLastPath( ADD_SOFA_SRC_BIN_DIR( /../Resources ) );
-    repository.addLastPath( ADD_SOFA_SRC_BIN_DIR( /../../../../examples ) );
-    repository.addLastPath( ADD_SOFA_SRC_BIN_DIR( /../../../../share ) );
+    repository.addLastPath( ADD_SOFA_SRC_DIR( /share ) );
+    repository.addLastPath( ADD_SOFA_SRC_DIR( /examples ) );
+    repository.addLastPath( ADD_SOFA_SRC_DIR( /Resources/examples ) );
+    repository.addLastPath( ADD_SOFA_SRC_DIR( /Resources ) );
+    repository.addLastPath( ADD_SOFA_SRC_DIR( /../../../examples ) );
+    repository.addLastPath( ADD_SOFA_SRC_DIR( /../../../share ) );
 #else // LINUX
     repository.addLastPath( ADD_SOFA_BUILD_DIR( / ) );
-    repository.addLastPath( ADD_SOFA_SRC_BIN_DIR( /../share ) );
-    repository.addLastPath( ADD_SOFA_SRC_BIN_DIR( /../examples ) );
-    repository.addLastPath( ADD_SOFA_SRC_BIN_DIR( /../../Verification/data ) );
-    repository.addLastPath( ADD_SOFA_SRC_BIN_DIR( /../../Verification/simulation ) );
+    repository.addLastPath( ADD_SOFA_SRC_DIR( /share ) );
+    repository.addLastPath( ADD_SOFA_SRC_DIR( /examples ) );
+    repository.addLastPath( ADD_SOFA_SRC_DIR( /../Verification/data ) );
+    repository.addLastPath( ADD_SOFA_SRC_DIR( /../Verification/simulation ) );
 #endif
 
     return repository;
@@ -108,7 +108,7 @@ static FileRepository createSofaDataPath()
 FileRepository DataRepository = createSofaDataPath();
 
 #undef ADD_SOFA_BUILD_DIR
-#undef ADD_SOFA_SRC_BIN_DIR
+#undef ADD_SOFA_SRC_DIR
 
 #if defined (_XBOX) || defined(PS3)
 char* getenv(const char* varname) { return NULL; } // NOT IMPLEMENTED
