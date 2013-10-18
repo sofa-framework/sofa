@@ -52,7 +52,7 @@
 #include <sofa/simulation/common/xml/NodeElement.h>
 
 #include <sofa/helper/system/SetDirectory.h>
-#include <sofa/helper/system/PipeProcess.h>
+//#include <sofa/helper/system/PipeProcess.h>
 #include <sofa/helper/AdvancedTimer.h>
 
 #include <sofa/core/visual/VisualParams.h>

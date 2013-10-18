@@ -414,8 +414,8 @@ void MeshROI<DataTypes>::update()
         helper::ReadAccessor< Data<helper::vector<Edge> > > edges = f_edges;
         helper::ReadAccessor< Data<helper::vector<Triangle> > > triangles = f_triangles;
         helper::ReadAccessor< Data<helper::vector<Tetra> > > tetrahedra = f_tetrahedra;
-        helper::ReadAccessor< Data<helper::vector<Edge> > > edges_i = f_edges_i;
-        helper::ReadAccessor< Data<helper::vector<Triangle> > > triangles_i = f_triangles_i;
+//        helper::ReadAccessor< Data<helper::vector<Edge> > > edges_i = f_edges_i;
+//        helper::ReadAccessor< Data<helper::vector<Triangle> > > triangles_i = f_triangles_i;
 
         // Write accessor for topological element indices in MESH
         SetIndex& indices = *f_indices.beginEdit();
