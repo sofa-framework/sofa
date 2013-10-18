@@ -15,7 +15,7 @@
 
 
 #ifdef GR_BENCHMARK
-    #include <sofa/helper/system/thread/CTime.h>
+#include <sofa/helper/system/thread/CTime.h>
 #endif
 
 
@@ -48,21 +48,12 @@ AssembledSolver::AssembledSolver()
 	                 false,
 	                 "debug",
 	                 "print debug stuff")),
-// god dammit i said no rayleigh mass/stiffness crap !!11
-	f_rayleighStiffness( initData(&f_rayleighStiffness,
-	                              SReal(0),
-	                                "rayleighStiffness",
-	                                "Rayleigh damping coefficient related to stiffness, >= 0") ),
-	f_rayleighMass( initData(&f_rayleighMass,
-	                         SReal(0),
-	                         "rayleighMass",
-	                         "Rayleigh damping coefficient related to mass, >= 0")),
 	alpha( initData(&alpha,SReal(1),
-	                           "implicitVelocity",
-	                           "Weight of the next forces in the average forces used to update the velocities. 1 is implicit, 0 is explicit.")),
+	                "implicitVelocity",
+	                "Weight of the next forces in the average forces used to update the velocities. 1 is implicit, 0 is explicit.")),
 	beta( initData(&beta,SReal(1),
-	                           "implicitPosition",
-	                           "Weight of the next velocities in the average velocities used to update the positions. 1 is implicit, 0 is explicit."))
+	               "implicitPosition",
+	               "Weight of the next velocities in the average velocities used to update the positions. 1 is implicit, 0 is explicit."))
 	
 {
 	
@@ -88,48 +79,21 @@ void AssembledSolver::integrate( const core::MechanicalParams* params,
 	VMultiOp multi;
 				
 	multi.resize(1);
-				
-    multi[0].first = posId;
-    multi[0].second.push_back( std::make_pair(posId, 1.0) );
-    multi[0].second.push_back( std::make_pair(velId, dt) );
+	
+	multi[0].first = posId;
+	multi[0].second.push_back( std::make_pair(posId, 1.0) );
+	multi[0].second.push_back( std::make_pair(velId, beta.getValue() * dt) );
 
 	vop.v_multiop( multi );
 }
 
 
-void AssembledSolver::integrate( const core::MechanicalParams* params,
-                                 core::MultiVecCoordId posId,
-                                 core::MultiVecDerivId velId,
-                                 core::MultiVecDerivId dvId ) {
-    scoped::timer step("position integration");
-    SReal dt = params->dt();
-
-    // integrate positions and velocities
-    sofa::simulation::common::VectorOperations vop( params, this->getContext() );
-
-    typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
-    VMultiOp multi;
-
-    multi.resize(2);
-
-    multi[0].first = posId;
-    multi[0].second.push_back( std::make_pair(posId, 1.0) );
-    multi[0].second.push_back( std::make_pair(velId, dt) );
-    multi[0].second.push_back( std::make_pair(dvId, dt*beta.getValue()) );
-
-
-    multi[1].first = velId;
-    multi[1].second.push_back( std::make_pair(velId, 1.0) );
-    multi[1].second.push_back( std::make_pair(dvId, 1.0) );
-
-    vop.v_multiop( multi );
-}
 
 
 void AssembledSolver::alloc(const core::ExecParams& params) {
 	scoped::timer step("lambdas alloc");
 	sofa::simulation::common::VectorOperations vop( &params, this->getContext() );
-    lagrange.realloc( &vop, false, true );
+	lagrange.realloc( &vop, false, true );
 }
 
 AssembledSolver::~AssembledSolver() {
@@ -137,23 +101,41 @@ AssembledSolver::~AssembledSolver() {
 
 void AssembledSolver::cleanup() {
 	sofa::simulation::common::VectorOperations vop( core::ExecParams::defaultInstance(), this->getContext() );
-    vop.v_free( lagrange.id(), false, true );
+	vop.v_free( lagrange.id(), false, true );
 }
 
-		
-void AssembledSolver::forces(const core::MechanicalParams& params) {
+
+// this is c_k computation (see compliant-theory.pdf, section 3)
+void AssembledSolver::compute_forces(const core::MechanicalParams& params) {
 	scoped::timer step("forces computation");
 				
 	sofa::simulation::common::MechanicalOperations mop( &params, this->getContext() );
 	sofa::simulation::common::VectorOperations vop( &params, this->getContext() );
 				
-	MultiVecDeriv f  (&vop, core::VecDerivId::force() );
-				
-    mop.computeForceNeglectingCompliance(f); // f = f0
+	MultiVecDeriv c(&vop, core::VecDerivId::force() );
+	
+	SReal h = params.dt();
+			
+	// note: only for stiffness dofs
+	mop.computeForceNeglectingCompliance(c); // c = f
+	
+	// c = h f
+	c *= h;
+	
+	// h (1-alpha) B v_k
+	SReal bfactor = h * (1 - alpha.getValue());
 
-    f *= params.dt();  // f = h f0
-    mop.addMBKv( f, 1, 0, 0 ); // f = Mv + h.f0 = p + h.f0
-
+	// h^2 alpha (1 - beta ) K v_k
+	SReal kfactor = h * h * alpha.getValue() * (1 - beta.getValue());
+	
+	// note: K v_k factor only for stiffness dofs
+	mop.addMBKvNeglectingCompliance( c, 
+	                                 1, // M v_k
+	                                 bfactor, 
+	                                 kfactor);
+	
+	// TODO project response ?
+	
 }
 
 
@@ -163,245 +145,289 @@ void AssembledSolver::propagate(const core::MechanicalParams* params) {
 }			
 
 
+
+void AssembledSolver::rhs_dynamics(vec& res, const system_type& sys, const vec& v) const {
+	assert( res.size() == sys.size() );
+	
+	unsigned off = 0;
+	
+	// master dofs
+	for(unsigned i = 0, end = sys.master.size(); i < end; ++i) {
+		system_type::dofs_type* dofs = sys.master[i];
+	
+		unsigned dim = dofs->getMatrixSize();
+		
+		dofs->copyToBuffer(&res(off), core::VecDerivId::force(), dim);
+		off += dim;
+	}
+	
+
+	// compliant dofs
+	ConstraintValue std;
+	ConstraintValue::SPtr value;
+	
+	for(unsigned i = 0, end = sys.compliant.size(); i < end; ++i) {
+		system_type::dofs_type* dofs = sys.compliant[i];
+		
+		unsigned dim = dofs->getMatrixSize();
+
+		// fetch constraint value if any
+		value = dofs->getContext()->get<ConstraintValue>( core::objectmodel::BaseContext::Local );
+
+		// fallback
+		if(! value ) {
+			value = &std;
+			value->mstate = dofs;
+		}
+		
+		value->dynamics(&res(off), dim);
+		
+		off += dim;
+	}
+
+	// adjust compliant value based on alpha/beta
+	if( sys.n ) {
+
+		if(alpha.getValue() != 1 ) res.tail( sys.n ) /= alpha.getValue();
+		
+		if( beta.getValue() != 1 ) {
+			res.tail( sys.n ).noalias() = res.tail( sys.n ) - (1 - beta.getValue()) * (sys.J * v);
+			res.tail( sys.n ) /= beta.getValue();
+		}
+		
+	}
+	
+}
+
+void AssembledSolver::rhs_correction(vec& res, const system_type& sys) const {
+	assert( res.size() == sys.size() );
+	
+	// master dofs
+	res.head( sys.m ).setZero();
+	unsigned off = sys.m;
+	
+	// compliant dofs
+	ConstraintValue std;
+	ConstraintValue::SPtr value;
+	
+	for(unsigned i = 0, end = sys.compliant.size(); i < end; ++i) {
+		system_type::dofs_type* dofs = sys.compliant[i];
+		
+		unsigned dim = dofs->getMatrixSize();
+	
+		// fetch constraint value if any
+		value = dofs->getContext()->get<ConstraintValue>( core::objectmodel::BaseContext::Local );
+
+		// fallback
+		if(! value ) {
+			value = &std;
+			value->mstate = dofs;
+		}
+		
+		value->correction(&res(off), dim);
+		
+		off += dim;
+	}
+	
+}
+
+
 void AssembledSolver::buildMparams(core::MechanicalParams& mparams,
                                    core::MechanicalParams& mparamsWithoutStiffness,
                                    const core::ExecParams& params,
                                    double dt) const
 {
-    // H = (1+h*rm)M - h*B - h*(h+rs)K
-    // Rayleigh damping mass factor rm is used with a negative sign because it
-    // is recorded as a positive real, while its force is opposed to the velocity
 
-    mparams.setExecParams( &params );
-    mparams.setMFactor( 1.0 + f_rayleighMass.getValue() * dt );
-    mparams.setBFactor( -dt );
-    mparams.setKFactor( -dt * ( dt + f_rayleighStiffness.getValue() ) );
-    mparams.setDt( dt );
-    mparams.setImplicitVelocity( alpha.getValue() );
-    mparams.setImplicitPosition( beta.getValue() );
+	mparams.setExecParams( &params );
+	mparams.setMFactor( 1.0  );
+	mparams.setBFactor( -dt * alpha.getValue() );
+	mparams.setKFactor( -dt * dt * alpha.getValue() * beta.getValue() );
+	mparams.setDt( dt );
+    
+	mparams.setImplicitVelocity( alpha.getValue() );
+	mparams.setImplicitPosition( beta.getValue() );
 
+	// to treat compliant components (ie stiffness components treated
+	// as compliance)
+    
+	mparamsWithoutStiffness.setExecParams( &params );
+	mparamsWithoutStiffness.setMFactor( 1.0 );
+	mparamsWithoutStiffness.setBFactor( -dt * alpha.getValue() );
+	mparamsWithoutStiffness.setKFactor( 0 ); 
+	mparamsWithoutStiffness.setDt( dt );
 
-    // to treat compliant components (ie stiffness components treated
-    // as compliance), Kfactor must only consider Rayleigh damping
-    // part
-    mparamsWithoutStiffness.setExecParams( &params );
-    mparamsWithoutStiffness.setMFactor( 1.0 + f_rayleighMass.getValue() * dt );
-    mparamsWithoutStiffness.setBFactor( -dt );
-    mparamsWithoutStiffness.setKFactor( -dt * f_rayleighStiffness.getValue() ); // only the factor relative to Rayleigh damping
-    mparamsWithoutStiffness.setDt( dt );
-    mparamsWithoutStiffness.setImplicitVelocity( alpha.getValue() );
-    mparamsWithoutStiffness.setImplicitPosition( beta.getValue() );
-
+	mparamsWithoutStiffness.setImplicitVelocity( alpha.getValue() );
+	mparamsWithoutStiffness.setImplicitPosition( beta.getValue() );
 }
 			
-// implicit euler
-linearsolver::KKTSolver::vec AssembledSolver::rhs(const system_type& sys, bool computeForce) const {
-	kkt_type::vec res = kkt_type::vec::Zero( sys.size() );
 
-    if( !computeForce ) res.head(sys.m).setZero();
-    else res.head( sys.m ) = sys.P * sys.p;
+
+void AssembledSolver::get_state(vec& res, const system_type& sys) const {
 	
-	if( sys.n ) {
-
-		// remove velocity part from rhs as it's handled implicitly here
-		// (this is due to weird Compliance API, TODO fix this)
-		res.tail( sys.n ) =  sys.phi + sys.J * sys.v;
-		
-	}
-
-	return res;
-}
-
-linearsolver::KKTSolver::vec AssembledSolver::warm(const system_type& sys) const {
-	
-	kkt_type::vec res = kkt_type::vec::Zero( sys.size() );
-
-	if( warm_start.getValue() ) {
-		// note: warm starting velocities is somehow equivalent to zero
-		// acceleration start.
-
-		// velocity
-		res.head( sys.m ) = sys.P * sys.v;
-		
-		// lambdas
-		if( sys.n ) res.tail( sys.n ) = sys.dt * sys.lambda;
-	}
-
-	return res;	
-}
-
-
-// TODO remove (useless now that use_velocity is gone)
-AssembledSolver::kkt_type::vec AssembledSolver::velocity(const system_type& sys,
-                                                         const kkt_type::vec& x) const {
-	return sys.P * x.head( sys.m );
-}
-
-// this is a *force* TODO remove ?
-AssembledSolver::kkt_type::vec AssembledSolver::lambda(const system_type& sys,
-                                                       const kkt_type::vec& x) const {
-	return x.tail( sys.n ) / sys.dt;
-}
-
-
-AssembledSolver::kkt_type::vec AssembledSolver::stab_mask(const system_type& sys) const {
-	kkt_type::vec res;
-
-	if( !sys.n ) return res;
-	if( !stabilization.getValue() ) return res;
-
-	res = kkt_type::vec::Zero( sys.n );
+	assert( res.size() == sys.size() );
 	
 	unsigned off = 0;
-
-	bool none = true;
 	
-	for(unsigned i = 0, n = sys.compliant.size(); i < n; ++i) {
-		
-		system_type::dofs_type* const dofs = sys.compliant[i];
+	for(unsigned i = 0, end = sys.master.size(); i < end; ++i) {
+		system_type::dofs_type* dofs = sys.master[i];
+	
 		unsigned dim = dofs->getMatrixSize();
-
-		Stabilization* post = dofs->getContext()->get<Stabilization>(core::objectmodel::BaseContext::Local);
-				
-		if( post ) {
-
-            if( post->mask.size() == dim )
-            {
-                for( unsigned j=0 ; j<dim ; ++j )
-                    res[off+j] = post->mask[j] ? (SReal)1.0 : (SReal)0.0;
-            }
-            else
-            {
-                res.segment( off, dim ).setOnes();
-            }
-			none = false;
-		}
 		
+		dofs->copyToBuffer(&res(off), core::VecDerivId::velocity(), dim);
+		off += dim;
+	}
+
+	// TODO project v ?
+	
+	for(unsigned i = 0, end = sys.compliant.size(); i < end; ++i) {
+		system_type::dofs_type* dofs = sys.compliant[i];
+		
+		unsigned dim = dofs->getMatrixSize();
+		
+		dofs->copyToBuffer(&res(off), lagrange.id().getId( dofs ), dim);
 		off += dim;
 	}
 	
-	// empty vec
-	if( none ) res.resize( 0 );
+	// TODO multiply lambda by dt ?
 	
-	return res;
 }
 
 
-void AssembledSolver::solve(const core::ExecParams* params,
-                   double dt,
-                   core::MultiVecCoordId posId,
-                   core::MultiVecDerivId velId,
-                   bool computeForce, // should the right part of the implicit system be computed?
-                   bool integratePosition // should the position be updated?
-                   )
-{
-    // assembly visitor
-    core::MechanicalParams mparams, mparamsWithoutStiffness;
-    this->buildMparams( mparams, mparamsWithoutStiffness, *params, dt );
+void AssembledSolver::set_state(const system_type& sys, const vec& data) const {
+	
+	assert( data.size() == sys.size() );
+	
+	unsigned off = 0;
+	
+	// TODO project v ?
+	for(unsigned i = 0, end = sys.master.size(); i < end; ++i) {
+		system_type::dofs_type* dofs = sys.master[i];
+	
+		unsigned dim = dofs->getMatrixSize();
+		
+		dofs->copyFromBuffer(core::VecDerivId::velocity(), &data(off), dim);
+		off += dim;
+	}
 
-    scoped::ptr<simulation::AssemblyVisitor> v( new simulation::AssemblyVisitor(&mparams, 
-	          &mparamsWithoutStiffness, velId, lagrange.id() ));
-    
-    solve( params, dt, posId, velId, computeForce, integratePosition, v.get() );
+	
+	// TODO divide lambda by dt ?
+	for(unsigned i = 0, end = sys.compliant.size(); i < end; ++i) {
+		system_type::dofs_type* dofs = sys.compliant[i];
+		
+		unsigned dim = dofs->getMatrixSize();
+		
+		dofs->copyFromBuffer(lagrange.id().getId( dofs ), &data(off) , dim);
+		off += dim;
+	}
+	
+	
 }
 
+void AssembledSolver::solve(const core::ExecParams* params,
+                                    double dt, 
+                                    core::MultiVecCoordId posId,
+                                    core::MultiVecDerivId velId,
+                                    bool computeForce, // should the right part of the implicit system be computed?
+                                    bool integratePosition, // should the position be updated?
+                                    simulation::AssemblyVisitor *vis) {
+
+	throw std::logic_error("broken lol ! subclass AssembledSolver if you need customization");
+
+} 
 
 void AssembledSolver::solve(const core::ExecParams* params,
-                            double /*dt*/,
-                            sofa::core::MultiVecCoordId posId,
-                            sofa::core::MultiVecDerivId velId,
-                            bool computeForce,
-                            bool integratePosition,simulation::AssemblyVisitor * v) {
+                                    double dt,
+                                    core::MultiVecCoordId posId,
+                                    core::MultiVecDerivId velId,
+                                    bool computeForce, // should the right part of the implicit system be computed?
+                                    bool integratePosition // should the position be updated?
+	) {
+
+	throw std::logic_error("broken lol ! subclass AssembledSolver if you need customization");
+	
+}
+
+void AssembledSolver::solve(const core::ExecParams* params,
+                            double dt,
+                            core::MultiVecCoordId posId,
+                            core::MultiVecDerivId velId) {
 	assert(kkt);
+	
+	// mechanical parameters
+	core::MechanicalParams mparams_stiffness, mparams_compliance;
+	this->buildMparams( mparams_stiffness, mparams_compliance, *params, dt );
 
-	// obtain mparams
-	const core::MechanicalParams *mparams = v->mparams;
-				
-	// compute forces
-	if( computeForce ) forces( *mparams );
-
-	// assembly visitor (keep an accessible pointer from another
-	// component all along the solving)
-
-	// TODO max: this looks highly fishy to me.
-	_assemblyVisitor = v;
-
+	compute_forces( mparams_stiffness );
+	
+	// assembly visitor 
+	simulation::AssemblyVisitor vis(&mparams_stiffness,
+	                                &mparams_compliance);
 	// fetch data
-	send( *_assemblyVisitor );
+	send( vis );
 	
 	// assemble system
-	system_type sys = _assemblyVisitor->assemble();
-
-	// 
+	system_type sys = vis.assemble();
+	
+	// debugging
 	if( debug.getValue() ) sys.debug();
 	
-	// initial solution guess
-	system_type::vec x = warm( sys );
-
+	// system factor
 	{
 		scoped::timer step("system factor");
 		kkt->factor( sys );
 	}
 
+	// backup current state as correction might erase it, if any
+	system_type::vec current( sys.size() );
+	get_state( current, sys );
+
+	// system solution / rhs 
+	system_type::vec x(sys.size());
+	system_type::vec rhs(sys.size());
+	
+	// ready to solve yo
 	{
-//		scoped::timer step("system solve");
-
-
-        system_type::vec b = rhs( sys, computeForce );
-
-        // stab mask
-        system_type::vec mask = stab_mask( sys );
-
-        if( mask.size() ) {
-            scoped::timer step("stabilization");
-
-            // stabilization
-            system_type::vec tmp_b = system_type::vec::Zero(sys.size());
-            tmp_b.tail( sys.n ) = b.tail(sys.n).array() * mask.array();
-
-            system_type::vec tmp_x = system_type::vec::Zero( sys.size() );
-
-            kkt->solve(tmp_x, sys, tmp_b);
-
-            _assemblyVisitor->distribute_master( velId, velocity(sys, tmp_x) );
-
-            if( integratePosition ) integrate( mparams, posId, velId );
-
-            // zero stabilized constraints
-            b.tail(sys.n).array() *= 1 - mask.array();
-        }
-        
-        {
-//	        scoped::timer step("dynamics");
-	        kkt->solve(x, sys, b);
-        }
-
-
-	}
-	
-
-	
-	if( sys.n ) {
-        _assemblyVisitor->distribute_compliant( lagrange.id(), lambda(sys, x) );
-
-		if( propagate_lambdas.getValue() ) {
-//			scoped::timer step("lambdas propagation");
-            propagate_visitor prop( mparams );
-			prop.out = core::VecId::force();
-			prop.in = lagrange.id();
+		scoped::timer step("system solve");
+		
+		// constraint stabilization
+		if( stabilization.getValue() ) {
+			scoped::timer step("correction");
 			
-			send( prop );
+			x = system_type::vec::Zero( sys.size() );
+			rhs_correction(rhs, sys);
+
+			kkt->solve(x, sys, rhs);
+
+			set_state(sys, x);
+			integrate( &mparams_stiffness, posId, velId );
 		}
+
+		// actual dynamics
+		{
+			scoped::timer step("dynamics");
+			x = system_type::vec::Zero( sys.size() );
+			
+			if( warm_start.getValue() ) x = current;
+			rhs_dynamics(rhs, sys, current.head(sys.m) );
+			
+			kkt->solve(x, sys, rhs);
+			set_state(sys, x);
+			
+			integrate( &mparams_stiffness, posId, velId );
+		}
+		
+	}
+	
+	// propagate lambdas if asked to
+	if( propagate_lambdas.getValue() ) {
+		scoped::timer step("lambda propagation");
+		propagate_visitor prop( &mparams_stiffness );
+		prop.out = core::VecId::force();
+		prop.in = lagrange.id();
+			
+		send( prop );
 	}
 
-	// distribute (projected) velocities
-	_assemblyVisitor->distribute_master( velId, velocity(sys, x) );
-
-	// TODO expose logical parts of solving as prepare, dynamics/correction, integrate
-	// then remove integratePosition flag
-
-	// update positions 
-	if( integratePosition ) integrate( mparams, posId, velId );
 }
 
 			
@@ -409,9 +435,9 @@ void AssembledSolver::solve(const core::ExecParams* params,
 void AssembledSolver::init() {
 				
 	// do want KKTSolver !
-	kkt = this->getContext()->get<kkt_type>();
+	kkt = this->getContext()->get<kkt_type>(core::objectmodel::BaseContext::Local);
 	
-	// TODO slightly less dramatic error
+	// TODO slightly less dramatic error, maybe ?
 	if( !kkt ) throw std::logic_error("AssembledSolver needs a KKTSolver lol");
 
 }

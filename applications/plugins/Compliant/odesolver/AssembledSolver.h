@@ -97,11 +97,7 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
     virtual void solve(const core::ExecParams* params,
                        double dt,
                        core::MultiVecCoordId posId,
-                       core::MultiVecDerivId velId
-                       )
-    {
-        solve( params, dt, posId, velId, true, true );
-    }
+                       core::MultiVecDerivId velId);
 
 
 	AssembledSolver();
@@ -116,13 +112,10 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
                        double dt) const;
 
     Data<bool> warm_start, propagate_lambdas, stabilization, debug;
-    Data<SReal> f_rayleighStiffness, f_rayleighMass;  ///< uniform Rayleigh damping ratio applied to the stiffness and mass matrices
-    Data<SReal> alpha, beta;     ///< the \f$ \alpha \f$ and \f$ \beta  \f$ parameters of the integration scheme
+    Data<SReal> alpha, beta;     ///< the \alpha and \beta parameters of the integration scheme
 
     simulation::AssemblyVisitor* _assemblyVisitor;
 
-
-	
   protected:
 				
 	// send a visitor 
@@ -143,28 +136,23 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
 	kkt_type::SPtr kkt;
 
 public:
-
-
-    // compute forces
-    void forces(const core::MechanicalParams& params);
-
 	typedef linearsolver::AssembledSystem system_type;
-	// obtain linear system rhs from system 
-    virtual kkt_type::vec rhs(const system_type& sys, bool computeForce = true) const;
+	typedef system_type::vec vec;
 
-	// warm start solution
-	virtual kkt_type::vec warm(const system_type& sys) const;
+	// compute forces
+	virtual void compute_forces(const core::MechanicalParams& params);
+	
+	virtual void rhs_dynamics(vec& res, const system_type& sys, const vec& v) const;
+	virtual void rhs_correction(vec& res, const system_type& sys) const;
+	
+	// current v, lambda
+	virtual void get_state(vec& res, const system_type& sys) const;
+
+	// set v, lambda
+	virtual void set_state(const system_type& sys, const vec& data) const;
 
 
-	// velocities from system solution 
-	virtual kkt_type::vec velocity(const system_type& sys, const kkt_type::vec& x) const;
-
-	// constraint forces from system solution
-	virtual kkt_type::vec lambda(const system_type& sys, const kkt_type::vec& x) const;
-
-	// mask for constraints to be stabilized
-	kkt_type::vec stab_mask(const system_type& sys) const;
-
+	// TODO does this work yo ?
 	// this is for warm start and returning constraint forces
 	core::behavior::MultiVecDeriv lagrange;
 

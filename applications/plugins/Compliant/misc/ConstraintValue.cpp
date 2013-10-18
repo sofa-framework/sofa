@@ -1,6 +1,7 @@
 #include "ConstraintValue.h"
 
 #include <sofa/core/ObjectFactory.h>
+#include "../utils/map.h"
 
 namespace sofa {
 namespace component {
@@ -28,6 +29,9 @@ void ConstraintValue::dynamics(SReal* dst, unsigned n) const {
 	assert( mstate );
 	
 	mstate->copyToBuffer(dst, core::VecCoordId::position(), n);
+	
+	map(dst, n) = -map(dst, n) / this->getContext()->getDt();
+	
 }
 
 
