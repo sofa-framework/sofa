@@ -99,7 +99,7 @@ struct SE3 {
 	static mat66 body(const coord_type& at) {
 		mat66 res;
 
-		mat33 R = rotation(at).toRotationMatrix();
+		mat33 R = rotation(at).normalized().toRotationMatrix();
 
 		res <<
 			R.transpose(), mat33::Zero(),
@@ -181,7 +181,7 @@ struct SE3 {
 	// SE(3) adjoint map
 	static twist Ad(const coord_type& at, const twist& v) {
 
-		quat q = rotation(at);
+		quat q = rotation(at).normalized();
 		vec3 t = translation(at);
 
 		twist res;
@@ -201,7 +201,7 @@ struct SE3 {
 	// SE(3) adjoint, matrix version
 	static mat66 Ad(const coord_type& at) {
 
-		mat33 R = rotation(at).toRotationMatrix();
+		mat33 R = rotation(at).normalized().toRotationMatrix();
 		mat33 T = hat( translation(at) );
 
 		mat66 res;
@@ -238,21 +238,17 @@ struct SE3 {
 		q.normalize();
 		
 		// flip if needed
-		// if( q.w() < 0 ) q.coeffs() = -q.coeffs();
-
+		if( q.w() < 0 ) q.coeffs() = -q.coeffs();
+		
 		// (half) rotation angle
-		real theta = std::asin( q.vec().norm() );
-
-		// real w = std::min<real>(1.0, q.w());
-		// real theta = std::acos( w );
-        
-		// real theta = 2 * half_theta;
-        
+		real half_theta = std::acos( q.w() );
+		real theta = 2 * half_theta;
+		
 		if( std::abs(theta) < epsilon() ) {
 			return q.vec();
 		} else {
 			// TODO q.vec() / sinc(theta) instead ?
-			return (2 * theta) * q.vec().normalized();
+			return theta * q.vec().normalized();
 		}
 
 	}
@@ -307,7 +303,7 @@ struct SE3 {
 		real theta2 = x.squaredNorm();
 
 		if( theta2 > epsilon() ) {
-            res.noalias() = res + (R.transpose() - mat33::Identity() + xhat) * xhat / theta2;
+			res.noalias() = res + (R.transpose() - mat33::Identity() + xhat) * xhat / theta2;
 		}
 		
 		return res;

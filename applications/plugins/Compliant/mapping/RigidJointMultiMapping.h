@@ -75,9 +75,12 @@ protected:
 		assert(out.size() == p.size());
 
 		for( unsigned i = 0, n = p.size(); i < n; ++i) {
-			coord_type delta = se3::prod( se3::inv(in[0][ p[i](0) ] ),
-			                              in[1][p[i](1)] );
-			
+
+			coord_type parent = in[0][ p[i](0) ];
+			coord_type child = in[1][ p[i](1) ];
+		
+			coord_type delta = se3::prod( se3::inv(parent), child);
+
 			unsigned index = std::min<int>(i, d.size() - 1);
 			typename se3::deriv_type value = se3::product_log( delta );
 
@@ -125,16 +128,28 @@ protected:
 
 				typename self::jacobian_type::CompressedMatrix& J = this->jacobian(j).compressedMatrix;
 				
-				mat66 dlog = mat66::Identity();
-				dlog.template topLeftCorner<3, 3>() = se3::dlog( se3::rotation( delta ) );
+				mat33 Rp = se3::rotation(parent).toRotationMatrix();
+				mat33 Rc = se3::rotation(child).toRotationMatrix();
+				mat33 Rdelta = se3::rotation(delta).toRotationMatrix();
+				mat33 dlog = se3::dlog( se3::rotation(delta) );
 				
 				mat66 ddelta; 
-				if( j ) ddelta = se3::body(child);
-				else ddelta = -se3::Ad( se3::inv(delta) ) * se3::body(parent);
+
+				if( j ) {
+					// child
+					ddelta << 
+						Rp.transpose(), mat33::Zero(),
+						mat33::Zero(), dlog * Rc.transpose();
+				} else {
+					// parent
+						ddelta << 
+						-Rp.transpose(), mat33::Zero(),
+							mat33::Zero(), -dlog * Rc.transpose();
+				}
 				
 				unsigned index = std::min<int>(i, d.size() - 1);
 
-				mat66 block = map(d[index]).asDiagonal() * (dlog * ddelta);
+				mat66 block = map(d[index]).asDiagonal() * ddelta;
 				
 				// each row
 				for( unsigned u = 0; u < 6; ++u) {
