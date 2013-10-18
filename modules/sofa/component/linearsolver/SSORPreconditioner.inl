@@ -29,7 +29,6 @@
 #define SOFA_COMPONENT_LINEARSOLVER_SSORPRECONDITIONER_INL
 #include <sofa/component/linearsolver/SSORPreconditioner.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/linearsolver/NewMatMatrix.h>
 #include <sofa/component/linearsolver/FullMatrix.h>
 #include <sofa/component/linearsolver/SparseMatrix.h>
 #include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
