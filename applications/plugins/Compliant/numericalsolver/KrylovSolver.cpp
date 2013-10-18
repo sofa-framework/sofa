@@ -25,7 +25,7 @@ KrylovSolver::KrylovSolver()
 void KrylovSolver::init() {
 	
 	if( schur.getValue() ) {
-		response = this->getContext()->get<Response>();
+		response = this->getContext()->get<Response>(core::objectmodel::BaseContext::Local);
 		
 		if(!response) throw std::logic_error("response component not found, you need one next to the KKTSolver");
 		

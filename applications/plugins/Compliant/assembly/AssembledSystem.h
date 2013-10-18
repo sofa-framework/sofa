@@ -54,9 +54,6 @@ public:
         C, J,
         P;
 	
-    // ode right-hand term, velocity and deformation vectors
-    vec b, v, phi, lambda;
-	
 	// master/compliant dofs, sorted consistently with the above
 	typedef core::behavior::BaseMechanicalState dofs_type;
 	std::vector< dofs_type* > master, compliant;

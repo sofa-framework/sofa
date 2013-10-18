@@ -51,7 +51,8 @@ protected:
     typedef simulation::MechanicalVisitor base;
 public:
 
-    const core::MechanicalParams* mparams, *mparamsWithoutStiffness; // would it be better to dynamically modified mparams?
+	// would it be better to dynamically modified mparams ?
+	const core::MechanicalParams* mparams, *mparamsWithoutStiffness; 
 
 	typedef SReal real;
 
@@ -62,15 +63,15 @@ public:
 	typedef rmat mat;
 	typedef Eigen::Matrix<real, Eigen::Dynamic, 1> vec;
 			
-    AssemblyVisitor(const core::MechanicalParams* mparams, const core::MechanicalParams* mparamsWithoutStiffness, MultiVecDerivId velId = MultiVecDerivId(core::VecDerivId::velocity()), MultiVecDerivId lagrange = MultiVecDerivId() );
+    AssemblyVisitor(const core::MechanicalParams* mparams, 
+                    const core::MechanicalParams* mparamsWithoutStiffness);
     virtual ~AssemblyVisitor();
 
 //protected:
     MultiVecDerivId _velId;
 
 public:
-    MultiVecDerivId lagrange;
-    simulation::Node* start_node;
+	simulation::Node* start_node;
 
 	// collect data chunks during visitor execution
 	virtual Visitor::Result processNodeTopDown(simulation::Node* node);
@@ -79,12 +80,6 @@ public:
 	// reset state
 	void clear();
 	
-	// distribute data over master dofs, in given vecid
-    void distribute_master(core::behavior::MultiVecDeriv::MyMultiVecId id, const vec& data);
-
-    // distribute data over compliant dofs, in given vecid
-    void distribute_compliant(core::behavior::MultiVecDeriv::MyMultiVecId id, const vec& data);
-			
 	// outputs data to std::cout
 	void debug() const; 
 	
@@ -98,37 +93,28 @@ public:
 				
 		unsigned offset, size;
 
-        mat C; ///< Compliance matrix
-        mat P; ///< Projective constraint matrix
-        mat H; ///< linear combinaison of M,B,K (mass, damping, stiffness matrices)
+		mat C; ///< Compliance matrix
+		mat P; ///< Projective constraint matrix
+		mat H; ///< linear combinaison of M,B,K (mass, damping, stiffness matrices)
 				
 		struct mapped {
-            mat J; ///< mapping jacobian
-            mat K; ///< geometric stiffness
+			mat J; ///< mapping jacobian
+			mat K; ///< geometric stiffness
 		};
 
-        vec b; ///< ode system right-hand term (including force sum)
-        vec phi; ///< constraint values
-        vec v; ///< actual velocity
-        vec lambda; ///< Lagrange multipliers (previously computed)
-
-
-        real damping; ///< global constraint damping
-
-        bool tagged;
-
 		// this is to remove f*cking mouse dofs
-        bool mechanical; ///< is it a mechanical dof i.e. influenced by a mass or stiffness or compliance
+		bool mechanical; ///< is it a mechanical dof i.e. influenced by a mass or stiffness or compliance
 		
 		bool master() const { return mechanical && map.empty(); }
-		bool compliant() const { return mechanical && phi.size(); }
+		bool compliant() const { return mechanical && C.size(); }
 		
 		unsigned vertex;
 		
+		// TODO SPtr here ?
 		dofs_type* dofs;
 
-        typedef std::map< dofs_type*, mapped> map_type;
-        map_type map;
+		typedef std::map< dofs_type*, mapped> map_type;
+		map_type map;
 		
 		// check consistency
 		bool check() const;
@@ -136,30 +122,18 @@ public:
 		void debug() const;
 	};
 
-	vec vector(dofs_type* dofs, core::ConstVecId id); // get
-
-	void vector(dofs_type*, core::VecId id, const vec::ConstSegmentReturnType& data); // set
-			
 public:
 
-    mat compliance(simulation::Node* node);
+	mat compliance(simulation::Node* node);
 	mat proj(simulation::Node* node);
-    mat odeMatrix(simulation::Node* node);
+	mat odeMatrix(simulation::Node* node);
 			
 	chunk::map_type mapping(simulation::Node* node);
 			
-	vec force(simulation::Node* node);
-	
-    vec vel(simulation::Node* node, MultiVecDerivId velId );
-	vec phi(simulation::Node* node);
-	vec lambda(simulation::Node* node);
-
-	real damping(simulation::Node* node);
-
 	// fill data chunk for node
-    virtual void fill_prefix(simulation::Node* node);
-
-    void fill_postfix(simulation::Node* node);
+	virtual void fill_prefix(simulation::Node* node);
+	
+	void fill_postfix(simulation::Node* node);
 
 protected:
 
@@ -189,7 +163,8 @@ public:
 				
 	};
 
-    mutable process_type *_processed;
+	// max: wtf is this ?
+	mutable process_type *_processed;
 
 	// builds global mapping / full stiffness matrices + sizes
     virtual process_type* process() const;
@@ -223,10 +198,10 @@ public:
 public:
 
 
-    // build assembled system (needs to send visitor first)
-    // if the pp pointer is given, the created process_type structure will be kept (won't be deleted)
-    typedef component::linearsolver::AssembledSystem system_type;
-    system_type assemble() const;
+	// build assembled system (needs to send visitor first)
+	// if the pp pointer is given, the created process_type structure will be kept (won't be deleted)
+	typedef component::linearsolver::AssembledSystem system_type;
+	system_type assemble() const;
 	
 private:
 
@@ -242,50 +217,10 @@ private:
 
     //simulation::Node* start_node;
 
-public:
-    // do not perform entire assembly, but only compute momentum sys.p and constraint value sys.phi. The process_type p must have been computed from a previous call to assemble
-    template<class SystemType>
-    void updateRightHand( SystemType& sys ) {
-        assert(!chunks.empty() && "need to send a visitor first");
-
-        assert( _processed );
-
-        // master/compliant offsets
-        unsigned off_m = 0;
-        unsigned off_c = 0;
-
-        // assemble system
-        for(unsigned i = 0, n = prefix.size(); i < n; ++i) {
-
-            // current chunk
-            chunk& c = *graph[ prefix[i] ].data;
-            assert( c.size );
-
-            if( !c.mechanical ) continue;
-
-            dofs_type* dofs = graph[ prefix[i] ].dofs;
-
-            // to access new multivec data
-            Node* node = static_cast<Node*>(dofs->getContext());
-
-            if( c.master() )
-            {
-                sys.b.segment(off_m, c.size) = force( node );
-
-                off_m += c.size;
-            }
-            else if(  c.compliant() )  //compliant dofs: fill compliance/phi/lambda
-            {
-                sys.phi.segment(off_c, c.size) = phi( node );
-
-                off_c += c.size;
-            }
-       }
-    }
 
 };
 
-
+// TODO why is this here ?
 // multiplies mapping matrices together for everyone in the graph
 struct AssemblyVisitor::process_helper {
 
