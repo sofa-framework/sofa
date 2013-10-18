@@ -4,6 +4,7 @@
 
 \usepackage{amsmath}
 \usepackage{amsfonts}
+\usepackage[utf8]{inputenc}
 \usepackage[colorlinks=true]{hyperref}
 
 % macros
@@ -349,14 +350,15 @@ constrained problem \eqref{eq:constrained-optimization}. As one can
 see, the constrained integrator \eqref{eq:constrained-integrator} is
 an example of such KKT systems:
 \begin{equation}
-  \mat{W & -J\\-J & 0} \mat{v \\ \lambda} = \mat{c_k \\ b_k}
+  \mat{W & -J\\-J & 0} \mat{v \\ \lambda} = \mat{c \\ b}
 \end{equation}
 %
-As symmetric \emph{indefinite} systems, they tend to be more difficult
-to solve than positive definite ones: CG and Cholesky $LDL^T$
-factorizations may breakdown on such systems. However, when the $(1,
-1)$ block (here, matrix $Q$) is invertible, one can use
-\emph{pivoting} to obtain the following smaller system:
+where we dropped subscripts for the sake of readability. As symmetric
+\emph{indefinite} systems, they tend to be more difficult to solve
+than positive definite ones: CG and Cholesky $LDL^T$ factorizations
+may breakdown on such systems. However, when the $(1, 1)$ block (here,
+matrix $Q$) is invertible, one can use \emph{pivoting} to obtain the
+following smaller system:
 %
 \begin{align}
   x &= \inv{Q}\block{c - A^T \lambda} \\
@@ -450,7 +452,76 @@ geometric stiffness as a regular stiffness instead of compliance.
 \section{Unilateral Constraints}
 \label{sec:unilateral-constraints}
 %
-TODO: general KKT systems
+We now consider \emph{unilateral constraints} (inequality) instead of
+bilateral ones:
+%
+\begin{equation}
+  \label{eq:unilateral-constraint}
+  g(q) \geq 0
+\end{equation}
+%
+Examples of such constraints include non-penetration constraints, or
+angular limits for an articulated rigid body. Just like in the
+bilateral case, the constraints are enforced by the addition of
+constraint forces $J^T \lambda$, satisfying velocity constraints of
+the form:
+%
+\begin{equation}
+  J v_{k+1} \geq -b_k
+\end{equation}
+%
+obtained by differentiation of \eqref{eq:unilateral-constraint},
+according to the time-stepping scheme. Furthermore, reaction forces
+must satisfy additional requirements known as the Signorini
+conditions:
+%
+\begin{itemize}
+\item constraint forces must be repulsive: $\lambda_{k+1} \geq 0$
+\item constraint forces don't act when the constraint is inactive, and
+  conversely:
+  \[ J_k v_{k+1} > -b_k \Rightarrow \lambda_{k+1} = 0, \quad \lambda_{k+1} > 0 \Rightarrow J_k v_{k+1} = -b_k \]
+\end{itemize}
+%
+Intuitively, a non-penetration contact force is not allowed to push
+bodies further apart when they are already separating. The
+requirements on constraint forces are summarized by the following
+\emph{complementarity} constraint:
+%
+\begin{equation}
+  \label{eq:complementarity-constraint}
+  0 \leq J_k v_{k+1} + b_k \ \bot \ \lambda_{k+1} \geq 0 
+\end{equation}
+%
+The time-stepping scheme with constraint forces is, as before:
+%
+\begin{equation}
+  \label{eq:time-stepping-unilateral}
+  W v_{k+1} -J_k^T \lambda_{k+1} = c_k
+\end{equation}
+%
+It turns out that the complementarity constraints
+\eqref{eq:complementarity-constraint} together with time-stepping
+equation \eqref{eq:time-stepping-unilateral} form the KKT conditions
+of the following \emph{inequality-constrained} Quadratic Program:
+%
+\begin{equation}
+  v_{k+1} = \argmin{J_kv + b_k\  \geq\  0} \quad \half v^TWv - c_k^T v
+\end{equation}
+%
+Therefore, time-stepping in the presence of unilateral constraints can
+be readily solved by a general QP solver. As in the bilateral case,
+when $W$ is easily invertible, it is possible to compute the Schur
+complement in order to obtain an equivalent, but smaller problem:
+%
+\begin{equation}
+  \label{eq:lcp}
+  0 \leq J\inv{W}J^T \lambda_{k+1} + b_k - A\inv{W} c_k\ \bot \ \lambda_{k+1} \geq 0 
+\end{equation}
+%
+(TODO: check formula) Such problem is known as a \emph{Linear
+  Complementarity Problem} (LCP) and can be solved by various
+algorithms, some of which will be presented in section
+\ref{sec:solvers}.
 \section{Stabilization}
 %
 TODO
