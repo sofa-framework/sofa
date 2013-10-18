@@ -79,17 +79,15 @@ void LDLTSolver::solve(AssembledSystem::vec& res,
 	assert( rhs.size() == sys.size() );
 	
 
-	SReal alpha = 1.0 / ( 1.0 + damping.getValue() * pimpl->dt );
-	
-	vec tmp = alpha * (sys.P * rhs.head(sys.m));
+	vec Pv = (sys.P * rhs.head(sys.m));
 	
 	// in place solve
-	tmp = pimpl->Hinv.solve(tmp);
+	Pv = pimpl->Hinv.solve( Pv );
 	
-	res.head( sys.m ) = sys.P * tmp;
+	res.head( sys.m ) = sys.P * Pv;
 
 	if( sys.n ) {
-		vec tmp = rhs.tail( sys.n ) - sys.P * (pimpl->HinvPJT.transpose() * rhs.head( sys.m ));
+		vec tmp = rhs.tail( sys.n ) - pimpl->HinvPJT.transpose() * rhs.head( sys.m );
 
 		// lambdas
 		res.tail( sys.n ) = pimpl->schur.solve( tmp );
