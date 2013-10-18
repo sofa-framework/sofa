@@ -12,8 +12,6 @@
 		<Mesh src="@meshLoader" />
 		<MechanicalObject scale="1.0" />
 		<Triangle />
-		<Line />
-		<Point />
 		<RigidMapping />
 	</Node>
 </Node>
