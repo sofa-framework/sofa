@@ -189,7 +189,10 @@ set(README_FILES
 	)
 
 	
-
+if(SOFA-EXTERNAL_HAVE_THRUST)
+	AddCompilerDefinitions("SOFA_GPU_THRUST")
+	AddLinkerDependencies(thrusT)
+endif()
 
 #Give current directory to nvcc compiler
 cuda_include_directories(${CMAKE_CURRENT_SOURCE_DIR})

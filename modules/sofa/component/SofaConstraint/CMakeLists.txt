@@ -19,6 +19,8 @@ set(HEADER_FILES
     ../constraintset/PrecomputedConstraintCorrection.inl 
     ../constraintset/LinearSolverConstraintCorrection.h 
     ../constraintset/LinearSolverConstraintCorrection.inl 
+    ../constraintset/GenericConstraintCorrection.h
+    ../constraintset/GenericConstraintCorrection.inl 
     ../constraintset/LCPConstraintSolver.h 
     ../constraintset/ConstraintSolverImpl.h 
     ../animationloop/FreeMotionAnimationLoop.h 
@@ -56,6 +58,7 @@ set(SOURCE_FILES
     ../constraintset/StopperConstraint.cpp 
     ../constraintset/SlidingConstraint.cpp 
     ../collision/ConstraintAttachBodyPerformer.cpp
+    ../constraintset/GenericConstraintCorrection.cpp 
 
     )
     
