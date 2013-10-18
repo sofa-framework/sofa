@@ -15,11 +15,10 @@ set(SOFA-EXTERNAL_LIBRARY_DIR ${SOFA-EXTERNAL_LIBRARY_DIR} CACHE PATH "Library p
 set(SOFA-EXTERNAL_EIGEN_PATH "${SOFA_EXTLIBS_DIR}/eigen-3.2.0" CACHE PATH "Path to the eigen header-only library")
 
 ## qt
-set(QTDIR $ENV{QTDIR})
+set(QTDIR "$ENV{QTDIR}")
 if(WIN32 AND QTDIR STREQUAL "")
-	set(QTDIR "./tools/qt4win")
+	set(QTDIR "${SOFA_TOOLS_DIR}/qt4win")
 endif()
-
 if(NOT QTDIR STREQUAL "")
 	if(WIN32)
 		file(TO_CMAKE_PATH "${QTDIR}" QTDIR) # GLOB will fail with pathes containing backslashes.
