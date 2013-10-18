@@ -190,7 +190,7 @@ AddCompilerDefinitions("SOFA_BUILD_HELPER")
 AddLinkerDependencies(${GLEW_LIBRARIES} ${GLUT_LIBRARIES} ${OPENGL_LIBRARIES} ${PNG_LIBRARIES})
 
 # required to define base search path for resource / config
-AddCompilerDefinitions("SOFA_SRC_BIN_DIR=${SOFA_SRC_DIR}/bin/")
+AddCompilerDefinitions("SOFA_SRC_DIR=${SOFA_SRC_DIR}/")
 AddCompilerDefinitions("SOFA_BUILD_DIR=${SOFA_BUILD_DIR}/")
 
 if(PS3)
