@@ -29,7 +29,6 @@
 #define SOFA_COMPONENT_COLLISION_PRECOMPUTEDLINEARSOLVER_INL
 
 #include "PrecomputedLinearSolver.h"
-#include <sofa/component/linearsolver/NewMatMatrix.h>
 #include <sofa/component/linearsolver/FullMatrix.h>
 #include <sofa/component/linearsolver/SparseMatrix.h>
 #include <sofa/core/ObjectFactory.h>
@@ -124,7 +123,7 @@ void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrix(TMatrix& M)
 template<class TMatrix,class TVector>
 void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrixWithCSparse(TMatrix& M)
 {
-    cout << "Compute the initial invert matrix with CS_PARSE" << endl;
+    std::cout << "Compute the initial invert matrix with CS_PARSE" << std::endl;
 
     CompressedRowSparseMatrix<double> matSolv;
     FullVector<double> r;
