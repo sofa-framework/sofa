@@ -117,7 +117,7 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
 
     Data<bool> warm_start, propagate_lambdas, stabilization, debug;
     Data<SReal> f_rayleighStiffness, f_rayleighMass;  ///< uniform Rayleigh damping ratio applied to the stiffness and mass matrices
-    Data<SReal> implicitVelocity, implicitPosition;     ///< the \f$ \alpha \f$ and \f$ \beta  \f$ parameters of the integration scheme
+    Data<SReal> alpha, beta;     ///< the \f$ \alpha \f$ and \f$ \beta  \f$ parameters of the integration scheme
 
     simulation::AssemblyVisitor* _assemblyVisitor;
 
@@ -174,6 +174,7 @@ protected:
 	void alloc(const core::ExecParams& params);
 
 
+	// TODO why is this here ?
     struct propagate_visitor : simulation::MechanicalVisitor {
 
         core::MultiVecDerivId out, in;
