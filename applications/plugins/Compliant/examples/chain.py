@@ -13,14 +13,14 @@ def createScene(root):
     root.createObject('RequiredPlugin', name = 'Compliant')
     root.createObject('VisualStyle', displayFlags="showBehavior" )
     
-    root.dt = 0.01
+    root.dt = 0.001
     root.gravity = [0, -9.8, 0]
     
     ode = root.createObject('AssembledSolver')
     ode.stabilization = True
     
     num = root.createObject('MinresSolver')
-    num.iterations = 100
+    num.iterations = 500
     
     scene = root.createChild('scene')
     
@@ -38,8 +38,8 @@ def createScene(root):
         obj.append( o )
         # insert the object into the scene node, saves the created
         # node
-        n = o.insert(scene)
-        node.append( n )
+        body_node = o.insert(scene)
+        node.append( body_node )
     
     # joints creation
     for i in xrange(n-1):

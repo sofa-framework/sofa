@@ -33,8 +33,8 @@ def mesh_offset( mesh, path = "" ):
 # TODO provide synchronized members with sofa states
 class Body:
         
-        def __init__(self):
-                self.name = "unnamed"
+        def __init__(self, name = "unnamed"):
+                self.name = name
                 self.collision = None # collision mesh
                 self.visual = None    # visual mesh
                 self.dofs = Frame()
@@ -85,19 +85,22 @@ class Body:
 
 class Joint:
 
-        def __init__(self):
-                self.dofs = [1, 1, 1, 1, 1, 1]
+        def __init__(self, name = 'joint'):
+                self.dofs = [0, 0, 0, 0, 0, 0]
                 self.body = []
                 self.offset = []
                 self.damping = 0
-                self.name = 'joint'
+                self.name = name
                 
         def append(self, node, offset = None):
                 self.body.append(node)
                 self.offset.append(offset)
                 self.name = self.name + '-' + node.name
         
-        def insert(self, parent):
+        class Node:
+                pass
+        
+        def insert(self, parent, add_compliance = True):
                 # build input data for multimapping
                 input = []
                 for b, o in zip(self.body, self.offset):
@@ -125,7 +128,7 @@ class Joint:
                                          position = '0 0 0 0 0 0' )
                 
                 # TODO handle damping
-                mask = [ 1 - d for d in self.dofs ]
+                mask = [ (1 - d) for d in self.dofs ]
                 
                 map = node.createObject('RigidJointMultiMapping',
                                         name = 'mapping', 
@@ -135,12 +138,21 @@ class Joint:
                                         dofs = concat(mask),
                                         pairs = "0 0")
                 
-                compl = node.createObject('UniformCompliance',
-                                          template = 'Vec6d',
-                                          compliance = '0')
+                if add_compliance:
+                        compliance = node.createObject('UniformCompliance',
+                                                       name = 'compliance',
+                                                       template = 'Vec6d',
+                                                       compliance = '0')
+                        stab = node.createObject('Stabilization')
+
+                # for some reason return node is unable to lookup for
+                # children using getChild() so in the meantime...
+                res = Joint.Node()
                 
-                stab = node.createObject('Stabilization')
-                return node
+                res.node = node
+                # res.compliance = compliance
+                
+                return res
 
 class SphericalJoint(Joint):
 
