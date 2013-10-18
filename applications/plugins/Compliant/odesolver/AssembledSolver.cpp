@@ -57,10 +57,10 @@ AssembledSolver::AssembledSolver()
 	                         SReal(0),
 	                         "rayleighMass",
 	                         "Rayleigh damping coefficient related to mass, >= 0")),
-	implicitVelocity( initData(&implicitVelocity,SReal(1),
+	alpha( initData(&alpha,SReal(1),
 	                           "implicitVelocity",
 	                           "Weight of the next forces in the average forces used to update the velocities. 1 is implicit, 0 is explicit.")),
-	implicitPosition( initData(&implicitPosition,SReal(1),
+	beta( initData(&beta,SReal(1),
 	                           "implicitPosition",
 	                           "Weight of the next velocities in the average velocities used to update the positions. 1 is implicit, 0 is explicit."))
 	
@@ -115,7 +115,7 @@ void AssembledSolver::integrate( const core::MechanicalParams* params,
     multi[0].first = posId;
     multi[0].second.push_back( std::make_pair(posId, 1.0) );
     multi[0].second.push_back( std::make_pair(velId, dt) );
-    multi[0].second.push_back( std::make_pair(dvId, dt*implicitPosition.getValue()) );
+    multi[0].second.push_back( std::make_pair(dvId, dt*beta.getValue()) );
 
 
     multi[1].first = velId;
@@ -177,18 +177,20 @@ void AssembledSolver::buildMparams(core::MechanicalParams& mparams,
     mparams.setBFactor( -dt );
     mparams.setKFactor( -dt * ( dt + f_rayleighStiffness.getValue() ) );
     mparams.setDt( dt );
-    mparams.setImplicitVelocity( implicitVelocity.getValue() );
-    mparams.setImplicitPosition( implicitPosition.getValue() );
+    mparams.setImplicitVelocity( alpha.getValue() );
+    mparams.setImplicitPosition( beta.getValue() );
 
 
-    // to treat compliant components (ie stiffness components treated as compliance), Kfactor must only consider Rayleigh damping part
+    // to treat compliant components (ie stiffness components treated
+    // as compliance), Kfactor must only consider Rayleigh damping
+    // part
     mparamsWithoutStiffness.setExecParams( &params );
     mparamsWithoutStiffness.setMFactor( 1.0 + f_rayleighMass.getValue() * dt );
     mparamsWithoutStiffness.setBFactor( -dt );
     mparamsWithoutStiffness.setKFactor( -dt * f_rayleighStiffness.getValue() ); // only the factor relative to Rayleigh damping
     mparamsWithoutStiffness.setDt( dt );
-    mparamsWithoutStiffness.setImplicitVelocity( implicitVelocity.getValue() );
-    mparamsWithoutStiffness.setImplicitPosition( implicitPosition.getValue() );
+    mparamsWithoutStiffness.setImplicitVelocity( alpha.getValue() );
+    mparamsWithoutStiffness.setImplicitPosition( beta.getValue() );
 
 }
 			
@@ -197,7 +199,7 @@ linearsolver::KKTSolver::vec AssembledSolver::rhs(const system_type& sys, bool c
 	kkt_type::vec res = kkt_type::vec::Zero( sys.size() );
 
     if( !computeForce ) res.head(sys.m).setZero();
-    else res.head( sys.m ) = sys.P * sys.b;
+    else res.head( sys.m ) = sys.P * sys.p;
 	
 	if( sys.n ) {
 
@@ -296,9 +298,11 @@ void AssembledSolver::solve(const core::ExecParams* params,
     // assembly visitor
     core::MechanicalParams mparams, mparamsWithoutStiffness;
     this->buildMparams( mparams, mparamsWithoutStiffness, *params, dt );
-    simulation::AssemblyVisitor* v = new simulation::AssemblyVisitor(&mparams, &mparamsWithoutStiffness, velId, lagrange.id()/*, f_rayleighStiffness.getValue(), f_rayleighMass.getValue()*/ );
-    solve( params, dt, posId, velId, computeForce, integratePosition, v );
-    delete v;
+
+    scoped::ptr<simulation::AssemblyVisitor> v( new simulation::AssemblyVisitor(&mparams, 
+	          &mparamsWithoutStiffness, velId, lagrange.id() ));
+    
+    solve( params, dt, posId, velId, computeForce, integratePosition, v.get() );
 }
 
 
@@ -308,41 +312,39 @@ void AssembledSolver::solve(const core::ExecParams* params,
                             sofa::core::MultiVecDerivId velId,
                             bool computeForce,
                             bool integratePosition,simulation::AssemblyVisitor * v) {
-    assert(kkt);
+	assert(kkt);
 
 	// obtain mparams
-    const core::MechanicalParams *mparams = v->mparams;
+	const core::MechanicalParams *mparams = v->mparams;
 				
 	// compute forces
-    if( computeForce ) forces( *mparams );
+	if( computeForce ) forces( *mparams );
 
-     // assembly visitor (keep an accessible pointer from another component all along the solving)
-     _assemblyVisitor = v;
+	// assembly visitor (keep an accessible pointer from another
+	// component all along the solving)
+
+	// TODO max: this looks highly fishy to me.
+	_assemblyVisitor = v;
 
 	// fetch data
-    send( *_assemblyVisitor );
+	send( *_assemblyVisitor );
 	
-	typedef linearsolver::AssembledSystem system_type;
-	
+	// assemble system
 	system_type sys = _assemblyVisitor->assemble();
+
+	// 
+	if( debug.getValue() ) sys.debug();
 	
-	if( debug.getValue() ){
-		sys.debug();
-	}
-	
-	// solution vector
+	// initial solution guess
 	system_type::vec x = warm( sys );
 
 	{
-//		scoped::timer step("system factor");
+		scoped::timer step("system factor");
 		kkt->factor( sys );
 	}
 
 	{
 //		scoped::timer step("system solve");
-
-
-
 
 
         system_type::vec b = rhs( sys, computeForce );
@@ -375,10 +377,6 @@ void AssembledSolver::solve(const core::ExecParams* params,
         }
 
 
-#ifdef GR_BENCHMARK
-        t = sofa::helper::system::thread::CTime::getFastTime()-t;
-        std::cerr<<sys.n<<"\t"<<kkt->nbiterations+1<<"\t"<<((double)t)/((double)tfreq)<<std::endl;
-#endif
 	}
 	
 
