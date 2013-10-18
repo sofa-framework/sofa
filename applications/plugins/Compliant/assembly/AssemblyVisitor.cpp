@@ -522,7 +522,6 @@ bool AssemblyVisitor::chunk::check() const {
 
 		if(!empty(C)) {
 			assert( C.rows() == int(size) );
-			assert( damping >= 0 );
 		}
 
 	}

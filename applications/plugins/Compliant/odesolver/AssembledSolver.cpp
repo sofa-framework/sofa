@@ -161,10 +161,12 @@ void AssembledSolver::rhs_dynamics(vec& res, const system_type& sys, const vec& 
 		off += dim;
 	}
 	
-
+	// TODO in compute_forces instead ?
+	res.head( sys.m ) = sys.P * res.head( sys.m );
+	
 	// compliant dofs
 	ConstraintValue std;
-	ConstraintValue::SPtr value;
+	ConstraintValue* value;
 	
 	for(unsigned i = 0, end = sys.compliant.size(); i < end; ++i) {
 		system_type::dofs_type* dofs = sys.compliant[i];
@@ -208,7 +210,7 @@ void AssembledSolver::rhs_correction(vec& res, const system_type& sys) const {
 	
 	// compliant dofs
 	ConstraintValue std;
-	ConstraintValue::SPtr value;
+	ConstraintValue* value;
 	
 	for(unsigned i = 0, end = sys.compliant.size(); i < end; ++i) {
 		system_type::dofs_type* dofs = sys.compliant[i];
@@ -277,8 +279,6 @@ void AssembledSolver::get_state(vec& res, const system_type& sys) const {
 		off += dim;
 	}
 
-	// TODO project v ?
-	
 	for(unsigned i = 0, end = sys.compliant.size(); i < end; ++i) {
 		system_type::dofs_type* dofs = sys.compliant[i];
 		
@@ -378,12 +378,12 @@ void AssembledSolver::solve(const core::ExecParams* params,
 	}
 
 	// backup current state as correction might erase it, if any
-	system_type::vec current( sys.size() );
+	vec current( sys.size() );
 	get_state( current, sys );
 
 	// system solution / rhs 
-	system_type::vec x(sys.size());
-	system_type::vec rhs(sys.size());
+	vec x(sys.size());
+	vec rhs(sys.size());
 	
 	// ready to solve yo
 	{
@@ -393,10 +393,17 @@ void AssembledSolver::solve(const core::ExecParams* params,
 		if( stabilization.getValue() ) {
 			scoped::timer step("correction");
 			
-			x = system_type::vec::Zero( sys.size() );
+			x = vec::Zero( sys.size() );
 			rhs_correction(rhs, sys);
 
 			kkt->solve(x, sys, rhs);
+
+			if( debug.getValue() ) {
+				std::cerr << "correction rhs:" << std::endl 
+				          << rhs.transpose() << std::endl
+				          << "solution:" << std::endl
+				          << x.transpose() << std::endl;
+			}
 
 			set_state(sys, x);
 			integrate( &mparams_stiffness, posId, velId );
@@ -405,14 +412,21 @@ void AssembledSolver::solve(const core::ExecParams* params,
 		// actual dynamics
 		{
 			scoped::timer step("dynamics");
-			x = system_type::vec::Zero( sys.size() );
+			x = vec::Zero( sys.size() );
 			
 			if( warm_start.getValue() ) x = current;
 			rhs_dynamics(rhs, sys, current.head(sys.m) );
 			
 			kkt->solve(x, sys, rhs);
+
+			if( debug.getValue() ) {
+				std::cerr << "dynamics rhs:" << std::endl 
+				          << rhs.transpose() << std::endl
+				          << "solution:" << std::endl
+				          << x.transpose() << std::endl;
+			}
+
 			set_state(sys, x);
-			
 			integrate( &mparams_stiffness, posId, velId );
 		}
 		
