@@ -64,26 +64,25 @@ endmacro()
 macro(SOFA_QT4_WRAP_CPP outfiles )
 	# get include dirs
 	QT4_GET_MOC_FLAGS(moc_flags)
-	QT4_EXTRACT_OPTIONS(moc_files moc_options ${ARGN})
+	#QT4_EXTRACT_OPTIONS(moc_files moc_options ${ARGN})
 
 	set(defines)
 	foreach(it ${GLOBAL_COMPILER_DEFINES})
 		list(APPEND defines "-D${it}")	
 	endforeach()
 
-	foreach(it ${moc_files})
-	get_filename_component(it ${it} ABSOLUTE)
-	QT4_MAKE_OUTPUT_FILE(${it} moc_ cpp outfile)
-	QT4_CREATE_MOC_COMMAND(${it} ${outfile} "${moc_flags}" "${defines}" "${moc_options}")
-	set(${outfiles} ${${outfiles}} ${outfile})
+	foreach(it ${ARGN})
+		get_filename_component(it ${it} ABSOLUTE)
+		QT4_MAKE_OUTPUT_FILE(${it} moc_ cpp outfile)
+		QT4_CREATE_MOC_COMMAND(${it} ${outfile} "${moc_flags}" "${defines}" "${moc_options}")
+		set(${outfiles} ${${outfiles}} ${outfile})
 	endforeach()
 endmacro()
 
 # generate .h / .cpp from Qt3 .ui for Qt4
 macro(SOFA_QT4_WRAP_UI outfiles )
-	QT4_EXTRACT_OPTIONS(ui_files ui_options ${ARGN})
 
-	foreach(it ${ui_files})
+	foreach(it ${ARGN})
 		get_filename_component(outfile ${it} NAME_WE)
 		get_filename_component(infile ${it} ABSOLUTE)
 		set(outHeaderFile "${CMAKE_CURRENT_BINARY_DIR}/${outfile}.h")
