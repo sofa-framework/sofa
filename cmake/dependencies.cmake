@@ -148,6 +148,11 @@ if(WIN32)
 			file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
 		endforeach()
 		
+		file(GLOB sharedObjects "${BOOST_LIBDIR}/boost_chrono*.dll")
+		foreach(sharedObject ${sharedObjects})
+			file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
+		endforeach()
+		
 		file(GLOB sharedObjects "${BOOST_LIBDIR}/boost_system*.dll")
 		foreach(sharedObject ${sharedObjects})
 			file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
