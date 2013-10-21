@@ -160,6 +160,9 @@ if(WIN32)
 	endif()
 endif()
 
+# creating examples/Object folder
+file(MAKE_DIRECTORY "${SOFA_BUILD_DIR}/examples/Object")
+
 # copying default config files
 if(NOT CONFIG_FILES_ALREADY_COPIED)
 	file(GLOB configFiles "${SOFA_SRC_DIR}/share/config/default/*.*")
