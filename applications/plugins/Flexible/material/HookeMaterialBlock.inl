@@ -747,7 +747,6 @@ public:
 
     MatBlock getC() const
     {
-        // TO DO: check why C need to be multiplied by -1
         MatBlock C ;
         if( order > 0 ) C.invert(-getK());
         else
