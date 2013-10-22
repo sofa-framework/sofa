@@ -203,7 +203,6 @@ public:
 
     virtual void addBToMatrix(sofa::defaulttype::BaseMatrix *matrix, SReal bFact, unsigned int &offset)
     {
-        assert(false && "bfactor !=0 not working now"); // not handled for now
         if(!this->assemble.getValue() || !BlockType::constantK) updateB();
 
         B.addToBaseMatrix( matrix, bFact, offset );
@@ -213,21 +212,6 @@ public:
     {
     }
     //@}
-
-    /// Set the constraint value
-    virtual void writeConstraintValue(const core::MechanicalParams* params, core::MultiVecDerivId constraintId )
-    {
-        helper::ReadAccessor< typename Inherit::DataVecCoord > x = params->readX(this->mstate);
-        helper::ReadAccessor< typename Inherit::DataVecDeriv > v = params->readV(this->mstate);
-        helper::WriteAccessor<typename Inherit::DataVecDeriv > c = *constraintId[this->mstate.get(params)].write();
-        Real alpha = params->implicitVelocity();
-        Real beta  = params->implicitPosition();
-        Real h     = params->dt();
-        Real d     = this->getDampingRatio();
-
-        for(unsigned i=0; i<c.size(); i++)
-            c[i] = -( x[i] + v[i] * (d + alpha*h) ) * (1./ (alpha * (h*beta +d)));
-    }
 
 
     virtual double getPotentialEnergy( const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecCoord& x ) const

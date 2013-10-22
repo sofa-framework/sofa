@@ -37,20 +37,6 @@ public:
 
     DampingCompliance() : damping(initData(&damping, real(0.0), "damping", "damping value")) { this->isCompliance.setValue(true); }
 
-	/// Set the constraint value
-	virtual void writeConstraintValue(const core::MechanicalParams* params, 
-	                                  core::MultiVecDerivId fId ) {
-		// helper::ReadAccessor< DataVecCoord > x = params->readX(this->mstate);
-		helper::ReadAccessor< DataVecDeriv > v = params->readV(this->mstate);
-		helper::WriteAccessor< DataVecDeriv > f = *fId[this->mstate.get(params)].write();
-		// Real alpha = params->implicitVelocity();
-		// Real beta  = params->implicitPosition();
-		// Real h     = params->dt();
-		
-		for(unsigned i=0; i<f.size(); i++)
-			f[i] = - v[i];       
-	}
-
     /// Return a pointer to the compliance matrix
 	virtual const sofa::defaulttype::BaseMatrix* getComplianceMatrix(const core::MechanicalParams* params) {
 		if( !damping.getValue() ) return 0;

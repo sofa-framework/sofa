@@ -47,9 +47,6 @@ public:
     /// Compute the compliance matrix
     virtual void reinit();
 
-    /// Set the constraint value
-    virtual void writeConstraintValue(const core::MechanicalParams* mparams, core::MultiVecDerivId fId );
-
     /// Return a pointer to the compliance matrix
     virtual const sofa::defaulttype::BaseMatrix* getComplianceMatrix(const core::MechanicalParams*);
 

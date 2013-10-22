@@ -178,7 +178,6 @@ public:
      * If isCompliance==false then the ForceField is handled as a traditional force function.
      * In this case, the stiffness matrix is used to set up the implicit equation matrix, while addForce is used to set up the right-hand term as usual.
      * If isCompliance==true, the ForceField is handled as a compliance and getComplianceMatrix must return a non-null pointer.
-     * In this case, writeConstraintValue and getDampingRatio are used to set up the constraint equation.
      */
     /// @{
 
@@ -187,9 +186,6 @@ public:
 
     /// Return a pointer to the compliance matrix
     virtual const sofa::defaulttype::BaseMatrix* getComplianceMatrix(const MechanicalParams*) { return NULL; }
-
-    /// Set the constraint value to a weighted sum of violation and violation rate, based on damping ratio and parameters defined in cparams.
-    virtual void writeConstraintValue(const MechanicalParams*, MultiVecDerivId ) { serr<<"BaseForceField::writeConstraintValue not implemented"<<sendl;}
 
     /// Uniform damping ratio applied to all the constrained values. The damping coefficient is the product of the stiffness with this ratio.
     virtual SReal getDampingRatio() { return 0; }
