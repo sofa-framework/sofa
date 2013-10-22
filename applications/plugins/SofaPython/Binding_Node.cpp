@@ -258,9 +258,9 @@ extern "C" PyObject * Node_sendScriptEvent(PyObject *self, PyObject * args)
     }
     PythonScriptEvent event(node,eventName,pyUserData);
     // Entering c++ code that can re-enter Python code, need to release GIL
-    Py_BEGIN_ALLOW_THREADS
+//    Py_BEGIN_ALLOW_THREADS
     dynamic_cast<Node*>(node->getRoot())->propagateEvent(sofa::core::ExecParams::defaultInstance(), &event);
-    Py_END_ALLOW_THREADS
+//    Py_END_ALLOW_THREADS
     Py_RETURN_NONE;
 }
 
