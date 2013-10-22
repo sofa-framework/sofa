@@ -1449,7 +1449,7 @@ void MechanicalAddMBKdxVisitor::bwdMechanicalMapping(simulation::Node* /*node*/,
 
 Visitor::Result MechanicalAddMBKdxNeglectingComplianceVisitor::fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff)
 {
-    if( !ff->isCompliance.getValue() ) ff->addMBKdx(this->mparams /* PARAMS FIRST */, res);
+    ff->addMBKdx( ff->isCompliance.getValue()?mparamsWithoutStiffness:this->mparams, res);
     return RESULT_CONTINUE;
 }
 

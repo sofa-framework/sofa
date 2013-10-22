@@ -64,22 +64,6 @@ void DiagonalCompliance<DataTypes>::reinit()
 //    compliance.setValue(C);
 //}
 
-
-template<class DataTypes>
-void DiagonalCompliance<DataTypes>::writeConstraintValue(const core::MechanicalParams* params, core::MultiVecDerivId fId )
-{
-    helper::ReadAccessor< DataVecCoord > x = params->readX(this->mstate);
-    helper::ReadAccessor< DataVecDeriv > v = params->readV(this->mstate);
-    helper::WriteAccessor< DataVecDeriv > f = *fId[this->mstate.get(params)].write();
-    Real alpha = params->implicitVelocity();
-    Real beta  = params->implicitPosition();
-    Real h     = params->dt();
-    Real d     = this->dampingRatio.getValue();
-
-    for(unsigned i=0; i<f.size(); i++)
-        f[i] = -( x[i] + v[i] * (d + alpha*h) ) / (alpha * (h*beta +d));
-}
-
 template<class DataTypes>
 const sofa::defaulttype::BaseMatrix* DiagonalCompliance<DataTypes>::getComplianceMatrix(const core::MechanicalParams*)
 {

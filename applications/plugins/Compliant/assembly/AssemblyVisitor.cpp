@@ -153,10 +153,8 @@ AssemblyVisitor::mat AssemblyVisitor::odeMatrix(simulation::Node* node)
 
         SingleMatrixAccessor accessor( &sqmat );
 
-        // when it is a compliant, you need to add M if mass, B and
-        // part of K corresponding to rayleigh damping
-        ffield->addMBKToMatrix( ffield->isCompliance.getValue() ? 
-                                mparamsWithoutStiffness : mparams, 
+        // when it is a compliant, you need to add M if mass, B but not K
+        ffield->addMBKToMatrix( ffield->isCompliance.getValue() ? mparamsWithoutStiffness : mparams, 
                                 &accessor );
 
     }
@@ -469,7 +467,7 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
 				// compliance
 				if(!zero(c.C) ) {
 
-					SReal factor = 1.0 / 
+                    SReal factor = 1.0 /
 						( res.dt * res.dt * mparams->implicitVelocity() * mparams->implicitPosition() );
 					
 #if USE_TRIPLETS_RATHER_THAN_SHIFT_MATRIX

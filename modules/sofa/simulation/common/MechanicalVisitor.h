@@ -1767,14 +1767,18 @@ This action is neglecting the force fields treated as compliance
 */
 class SOFA_SIMULATION_COMMON_API MechanicalAddMBKdxNeglectingComplianceVisitor : public MechanicalAddMBKdxVisitor
 {
+    const sofa::core::MechanicalParams* mparamsWithoutStiffness;
+
 public:
 
-    MechanicalAddMBKdxNeglectingComplianceVisitor(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId res)
+    MechanicalAddMBKdxNeglectingComplianceVisitor(const sofa::core::MechanicalParams* mparams, const sofa::core::MechanicalParams* mparamsWithoutStiffness, MultiVecDerivId res)
         : MechanicalAddMBKdxVisitor(mparams,res)
+        , mparamsWithoutStiffness( mparamsWithoutStiffness )
     {}
 
-    MechanicalAddMBKdxNeglectingComplianceVisitor(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId res, bool accumulate)
+    MechanicalAddMBKdxNeglectingComplianceVisitor(const sofa::core::MechanicalParams* mparams, const sofa::core::MechanicalParams* mparamsWithoutStiffness, MultiVecDerivId res, bool accumulate)
         : MechanicalAddMBKdxVisitor(mparams,res,accumulate)
+        , mparamsWithoutStiffness( mparamsWithoutStiffness )
     {}
 
 
