@@ -45,7 +45,7 @@ $\LL$ defined as usual:
 \LL(q, v) = \half v^TMv - V(q)
 \end{equation}
 %
-where $V(q)$ is the potential energy of the form:
+where $V(q)$ a the potential energy of the form:
 %
 \begin{equation}
 V(q) = \half \norm{g(q)}_N^2
@@ -53,8 +53,8 @@ V(q) = \half \norm{g(q)}_N^2
 %
 for a matrix norm $N$ in the suitable deformation space $Im(g)$. To be
 fully general, we include a Rayleigh dissipation function $\half
-v^TDv$, where $D$ is PSD. The Euler-Lagrange equations of motions are
-then:
+v^TDv$, where $D$ is PSD. The Euler-Lagrange equations of motions are,
+in this case:
 %
 \begin{equation}
  \frac{d}{dt}\ddd{\LL}{v} = \ddd{\LL}{q} - \ddd{D}{v} 
@@ -97,11 +97,16 @@ introduced a blending parameter $\alpha \in [0, 1]$ as follows:
   \block{M + h \alpha D} v_{k+1} = p_k - h(1 - \alpha) D v_k + h \block{(1 - \alpha) f_k + \alpha f_{k+1}}
 \end{equation}
 %
-We linearize the above using the Hessian of the potential energy
-(\emph{i.e.} stiffness matrix):
+We linearize the above using the Hessian of the potential energy:
 %
 \begin{equation}
 \nabla_q V_{k+1} \approx \nabla_q V_k + \nabla_q^2 V_k \block{q_{k+1} - q_k}
+\end{equation}
+%
+so that:
+%
+\begin{equation}
+  (1 - \alpha) f_k + \alpha f_{k+1} = f_k - \alpha \nabla_q^2 V_k \block{q_{k+1} - q_k}
 \end{equation}
 %
 Finally, we use the following position time-stepping scheme:
@@ -126,9 +131,8 @@ everything together as:
   p_k + h \block{ f_k + (1 - \alpha) d_k} - \alpha ( 1 - \beta) h^2 K v_k 
 \end{equation}
 %
-(and yes, this is very ugly). Fortunately, in a sane world everyone
-would use the much friendlier, fully implicit scheme $\alpha = \beta =
-1$ as follows:
+(and yes, this is very ugly). Fortunately, everyone would use the much
+friendlier, fully implicit scheme $\alpha = \beta = 1$ as follows:
 %
 \begin{equation}
    \block{M + hD + h^2K} v_{k+1} = p_k + h f_k
@@ -194,7 +198,7 @@ And again:
 g( q_{k+1}) = g_k + h J_k \block{ (1 - \beta) v_k + \beta v_{k+1}}  
 \end{equation}
 %
-At this point we become lazy and approximate constraints as
+At this point we become lazy so we approximate constraints as
 \emph{affine} functions, meaning that $J_{k+1} \approx J_k$, otherwise
 computing the constraint Hessian $\dd^2 g$ would be too costly, and
 would result in a non-linear system to solve anyways (\emph{i.e.}
@@ -251,7 +255,7 @@ Now, the Hessian or stiffness matrix is :
 \end{equation}
 %
 As in section \ref{sec:constraints}, we are too lazy for computing
-second derivatives and approximate deformation mappings as affine
+second derivatives so we approximate deformation mappings as affine
 maps, meaning that $\dd J \approx 0$. We are left with the following
 response matrix \eqref{eq:response-matrix}:
 %

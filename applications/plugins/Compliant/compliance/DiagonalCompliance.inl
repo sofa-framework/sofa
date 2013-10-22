@@ -13,10 +13,16 @@ namespace forcefield
 template<class DataTypes>
 DiagonalCompliance<DataTypes>::DiagonalCompliance( core::behavior::MechanicalState<DataTypes> *mm )
     : Inherit(mm)
-    , diagonal( initData(&diagonal, "compliance", "Compliance value diagonally applied to all the DOF."))
-    , dampingRatio( initData(&dampingRatio, (Real)0.1, "dampingRatio", "weight of the velocity in the constraint violation"))
+    , diagonal( initData(&diagonal, 
+                         "compliance", 
+                         "Compliance value diagonally applied to all the DOF."))
+      
+    , dampingRatio( initData(&dampingRatio, 
+                             Real(0.0), 
+                             "dampingRatio", 
+                             "weight of the velocity in the constraint violation"))
 {
-    this->isCompliance.setValue(true);
+	this->isCompliance.setValue(true);
 }
 
 template<class DataTypes>

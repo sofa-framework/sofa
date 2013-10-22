@@ -48,10 +48,12 @@ AssembledSolver::AssembledSolver()
 	                 false,
 	                 "debug",
 	                 "print debug stuff")),
-	alpha( initData(&alpha,SReal(1),
+	alpha( initData(&alpha, 
+	                SReal(1),
 	                "implicitVelocity",
 	                "Weight of the next forces in the average forces used to update the velocities. 1 is implicit, 0 is explicit.")),
-	beta( initData(&beta,SReal(1),
+	beta( initData(&beta,
+	               SReal(1),
 	               "implicitPosition",
 	               "Weight of the next velocities in the average velocities used to update the positions. 1 is implicit, 0 is explicit."))
 	
@@ -122,6 +124,9 @@ void AssembledSolver::compute_forces(const core::MechanicalParams& params) {
 	// c = h f
 	c *= h;
 	
+	// M v_k
+	SReal mfactor = 1;
+
 	// h (1-alpha) B v_k
 	SReal bfactor = h * (1 - alpha.getValue());
 
@@ -130,7 +135,7 @@ void AssembledSolver::compute_forces(const core::MechanicalParams& params) {
 	
 	// note: K v_k factor only for stiffness dofs
 	mop.addMBKvNeglectingCompliance( c, 
-	                                 1, // M v_k
+	                                 mfactor,
 	                                 bfactor, 
 	                                 kfactor);
 	
@@ -165,28 +170,27 @@ void AssembledSolver::rhs_dynamics(vec& res, const system_type& sys, const vec& 
 	res.head( sys.m ) = sys.P * res.head( sys.m );
 	
 	// compliant dofs
-	ConstraintValue std;
-	ConstraintValue* value;
-	
 	for(unsigned i = 0, end = sys.compliant.size(); i < end; ++i) {
 		system_type::dofs_type* dofs = sys.compliant[i];
 		
 		unsigned dim = dofs->getMatrixSize();
 
 		// fetch constraint value if any
-		value = dofs->getContext()->get<ConstraintValue>( core::objectmodel::BaseContext::Local );
-
-		// fallback
-		if(! value ) {
-			value = &std;
-			value->mstate = dofs;
+		ConstraintValue::SPtr value = 
+			dofs->getContext()->get<ConstraintValue>( core::objectmodel::BaseContext::Local );
+		
+		// fallback TODO optimize ?
+		if(!value ) {
+			value = new ConstraintValue;
+			dofs->getContext()->addObject( value );
+			value->init();
 		}
 		
 		value->dynamics(&res(off), dim);
-		
 		off += dim;
 	}
-
+	assert( off == sys.size() );
+	
 	// adjust compliant value based on alpha/beta
 	if( sys.n ) {
 
@@ -209,8 +213,6 @@ void AssembledSolver::rhs_correction(vec& res, const system_type& sys) const {
 	unsigned off = sys.m;
 	
 	// compliant dofs
-	ConstraintValue std;
-	ConstraintValue* value;
 	
 	for(unsigned i = 0, end = sys.compliant.size(); i < end; ++i) {
 		system_type::dofs_type* dofs = sys.compliant[i];
@@ -218,12 +220,14 @@ void AssembledSolver::rhs_correction(vec& res, const system_type& sys) const {
 		unsigned dim = dofs->getMatrixSize();
 	
 		// fetch constraint value if any
-		value = dofs->getContext()->get<ConstraintValue>( core::objectmodel::BaseContext::Local );
-
-		// fallback
-		if(! value ) {
-			value = &std;
-			value->mstate = dofs;
+		ConstraintValue::SPtr value = 
+			dofs->getContext()->get<ConstraintValue>( core::objectmodel::BaseContext::Local );
+	
+		// fallback TODO optimize ?
+		if(!value ) {
+			value = new ConstraintValue;
+			dofs->getContext()->addObject( value );
+			value->init();
 		}
 		
 		value->correction(&res(off), dim);
@@ -240,10 +244,15 @@ void AssembledSolver::buildMparams(core::MechanicalParams& mparams,
                                    double dt) const
 {
 
+	SReal mfactor = 1.0;
+	SReal bfactor = -dt * alpha.getValue();
+	SReal kfactor = -dt * dt * alpha.getValue() * beta.getValue();
+
+
 	mparams.setExecParams( &params );
-	mparams.setMFactor( 1.0  );
-	mparams.setBFactor( -dt * alpha.getValue() );
-	mparams.setKFactor( -dt * dt * alpha.getValue() * beta.getValue() );
+	mparams.setMFactor( mfactor );
+	mparams.setBFactor( bfactor );
+	mparams.setKFactor( kfactor );
 	mparams.setDt( dt );
     
 	mparams.setImplicitVelocity( alpha.getValue() );
@@ -253,8 +262,8 @@ void AssembledSolver::buildMparams(core::MechanicalParams& mparams,
 	// as compliance)
     
 	mparamsWithoutStiffness.setExecParams( &params );
-	mparamsWithoutStiffness.setMFactor( 1.0 );
-	mparamsWithoutStiffness.setBFactor( -dt * alpha.getValue() );
+	mparamsWithoutStiffness.setMFactor( mfactor );
+	mparamsWithoutStiffness.setBFactor( bfactor );
 	mparamsWithoutStiffness.setKFactor( 0 ); 
 	mparamsWithoutStiffness.setDt( dt );
 
@@ -288,6 +297,7 @@ void AssembledSolver::get_state(vec& res, const system_type& sys) const {
 		off += dim;
 	}
 	
+	assert( off == sys.size() );
 	// TODO multiply lambda by dt ?
 	
 }
@@ -406,7 +416,7 @@ void AssembledSolver::solve(const core::ExecParams* params,
 			}
 
 			set_state(sys, x);
-			integrate( &mparams_stiffness, posId, velId );
+			integrate( &mparams_compliance, posId, velId );
 		}
 
 		// actual dynamics

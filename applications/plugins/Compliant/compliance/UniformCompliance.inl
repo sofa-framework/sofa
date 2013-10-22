@@ -14,7 +14,7 @@ template<class DataTypes>
 UniformCompliance<DataTypes>::UniformCompliance( core::behavior::MechanicalState<DataTypes> *mm )
     : Inherit(mm)
     , compliance( initData(&compliance, (Real)0, "compliance", "Compliance value uniformly applied to all the DOF."))
-    , dampingRatio( initData(&dampingRatio, (Real)0.1, "dampingRatio", "weight of the velocity in the constraint violation"))
+    , dampingRatio( initData(&dampingRatio, (Real)0.0, "dampingRatio", "weight of the velocity in the constraint violation"))
 {
     this->isCompliance.setValue(true);
 }
