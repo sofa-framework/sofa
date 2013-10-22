@@ -38,16 +38,16 @@ order=-1
 
 [item:principes.tex]
 archive=true
-column=18
+column=48
 encoding=ISO-8859-15
 highlight=LaTeX
-line=66
+line=463
 mode=LaTeX
 open=true
 order=0
 
 [view-settings,view=0,item:principes.tex]
-CursorColumn=18
-CursorLine=66
+CursorColumn=48
+CursorLine=463
 JumpList=
 ViMarks=

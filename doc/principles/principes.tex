@@ -64,7 +64,7 @@
 \author{François Faure, INRIA}
 % \institute{ LJK, Grenoble }
 % \date{September, 2006}
-\date{October 2012}
+% \date{October 2012}
 
 \AtBeginSection[]{
 \begin{frame}
@@ -79,7 +79,6 @@
   \maketitle
 %\vspace{-28mm}
 \begin{center}
- %\includegraphics[width=\linewidth]{logos.png}
 \newcommand{\logoheight}{10mm}
  \includegraphics[height=\logoheight]{inria-logo.png} \\ \vspace{10mm}~ \\
  \includegraphics[height=\logoheight]{alcove-logo.jpg}
@@ -111,9 +110,17 @@ Material, internal forces, contraints, contact detection and modeling, ODE solut
 
 %----------------------------------------------------
 \begin{frame}
-\frametitle{Simulation platforms}
+\frametitle{Open-Source Simulation Software}
+\newcommand{\himg}{0.25\linewidth}
+\begin{tabular}{ccc}
+ \includegraphics[height=\himg]{physx-Alice-EyepotParticlesFluid.png} & 
+ \includegraphics[height=\himg]{ode-humanoid2.jpg} & 
+ \includegraphics[height=\himg]{bulletphysics-hqdefault.jpg} \\
+ PhysX & ODE & Bullet
+\end{tabular}
+
 \begin{itemize}
-\item Current platforms (ODE, Havok, PhysX, etc.) provide:
+\item Open-source libraries (ODE, Bullet, PhysX, etc.) provide:
 \begin{itemize}
 \item limited number of material types
 \item limited number of geometry types
@@ -205,9 +212,28 @@ A specialized program:
 \end{columns}
 \end{frame}
 
+
 %-----------------------------------------
 \begin{frame}
-\frametitle{Operations}
+\frametitle{Multiple objects with their own solvers}
+Each object can be simulated using its own solver
+
+\includegraphics[page=1,width=0.9\linewidth]{solvers.pdf}
+\end{frame}
+
+%-----------------------------------------
+\begin{frame}
+\frametitle{Multiple objects with the same solver}
+A solver can drive an arbitrary number of objects of arbitrary types
+
+\includegraphics[page=2,width=0.9\linewidth]{solvers.pdf}
+\end{frame}
+
+
+
+%-----------------------------------------
+\begin{frame}
+\frametitle{Processing multiple objects using visitors}
 
 \begin{itemize}
  \item The ODE solver sends visitors to apply operations
@@ -261,7 +287,7 @@ A specialized program:
 
 \begin{frame}
 \frametitle{Layered object }
-Object embedded in a deformable grid
+Detailed geometry embedded in a coarse deformable grid
 \begin{columns}
 \column[c]{0.5\linewidth}
 \begin{itemize}
@@ -332,10 +358,10 @@ Object embedded in a deformable grid
 \frametitle{More on mappings}
 \begin{itemize}
  \item Map a set of degrees of freedom (the parent) to another (the child).
- \item Typically used to attach a geometry to control points.
+ \item Typically used to attach a geometry to control points (but see Flexible and Compliant plugins).
  \item Child degrees of freedom (DOF) are not independent: their positions are totally defined by their parent's.
  \item Displacements are propagated top-down (parent to child): $v_{child} = Jv_{parent}$
- \item Forces are propagated bottom-up
+ \item Forces are accumulated bottom-up: $f_{parent} += J^T f_{child}$
 %  \item A necessary condition for physical consistency is to induce no energy. This is true iff: $v_{child} = Jv_{parent} \Rightarrow f_{parent} += J^T f_{child}$
 %  \item Other physical constraints are not automatically satisfied, e.g. incompressibility of the child
 \end{itemize}
@@ -351,10 +377,11 @@ Example: line mapping
 % 	\includegraphics[width=O.3\linewidth]{lineMapping-v.png}
 % 	\includegraphics[width=O.3\linewidth]{lineMapping-f.png}
 % 	\end{center}
-
+\begin{columns}
+\column{0.5\linewidth}
 $$
 \begin{array}{rcl}
-v = \left(
+v_c = \left(
 \begin{array}{cc}
 a & b
 \end{array}
@@ -377,10 +404,13 @@ a \\
 b
 \end{array}
 \right)
-f
-&=& J^T f
+f_c
+&=& J^T f_c
 \end{array}
 $$
+\column{0.5\linewidth}
+\includegraphics[width=\linewidth]{mapping-force.png}
+\end{columns}
 \end{frame}
 
 
@@ -434,11 +464,11 @@ $$
 
 
 %%%===================================================================
-\section{Interacting bodies}
+\section{Interacting objects}
 %%%===================================================================
 
 \begin{frame}
-\frametitle{Two bodies in contact}
+\frametitle{Two objects in contact}
 Example: 2-layer liver against 3-layer liver using a contact force.\\
 Use extended trees (Directed Acyclic Graphs) to model trees with loops.
 \begin{columns}
@@ -452,13 +482,13 @@ Use extended trees (Directed Acyclic Graphs) to model trees with loops.
 
 %-----------------------------------------------
 \begin{frame}
-\frametitle{ODE solution of interacting bodies}
+\frametitle{ODE solution of interacting objects}
  \only<1>{\includegraphics[width=0.9\linewidth]{livers-contact-tree-independent.png}}
  \only<2->{\includegraphics[width=0.9\linewidth]{livers-contact-tree-common.png}}
 \begin{itemize}
 \item<1-> Soft interactions: independent processing, no synchronization required\\
-\item<2-> Stiff interactions: unified implicit solution with Conjugate Gradient, synchronized objects\\
-\item<3-> Hard interaction constraints: work in progress 
+\item<2-> Stiff interactions: unified implicit solution with linear solver, synchronized objects\\
+\item<3-> Hard interaction constraints using Lagrange multipliers 
 \end{itemize}
 \end{frame}
 
@@ -466,12 +496,12 @@ Use extended trees (Directed Acyclic Graphs) to model trees with loops.
 
 
 %%%===================================================================
-\section{Data processing}
+\section{Implementation}
 %%%===================================================================
 
 
 \begin{frame} 
-\frametitle{Actions}
+\frametitle{Actions implemented by Visitors}
 \begin{center}
  \includegraphics[width=0.7\linewidth]{livers-contact-tree-common.png}
 \end{center}
@@ -603,7 +633,7 @@ Use extended trees (Directed Acyclic Graphs) to model trees with loops.
  \item vector operations
  \item dot product (only global value directly accessed by the solver)
 \end{itemize}
-Ongoing work: building global vectors and matrices also
+System assembly in the Compliant plugin
 \end{frame}
 
 
@@ -657,10 +687,11 @@ Recent work uses the GPU
 %%%===================================================================
 \begin{frame}
  \frametitle{Parallelism in time integration}
-Two levels of parallelism:
+ Different levels of parallelism:
 \begin{itemize}
  \item Low level: GPU implementations of components 
  \item High level: task-based using data dependencies
+ \item Thread-based using the Multithread plugin
 \end{itemize}
 
 We can combine them !
@@ -680,36 +711,37 @@ We can combine them !
 \end{itemize}
 \end{frame}
 
-%---------------------------------------------------------------
-\begin{frame}
- \frametitle{High-level Parallelism}
-Everton Hermann's Ph.D. thesis (2007-2010):
-\begin{itemize}
- \item<1-> analyses solver operations
- \item<2-> exploits scene graph branches
- \item<3-> removes spurious synchronizations using data dependency analysis [Athapascan]
- \item<3-> efficiency ranges for 50\% to 90\%
-\end{itemize}
-\begin{center}
-\only<1>{\includegraphics[height=0.4\linewidth]{interactionSequential.png}}
-\only<2>{\includegraphics[height=0.4\linewidth]{interactionParallel1.png}}
-\only<3>{\includegraphics[height=0.4\linewidth]{interactionParallel2.png}}
-\only<4>{\includegraphics[height=0.4\linewidth]{interactionParallel3.png}}
-\end{center}
-\end{frame}
 
-%---------------------------------------------------------------
-\begin{frame}
- \frametitle{Hybrid Parallelism}
-Work in progress
-\begin{itemize}
- \item Use high level and low level simultaneously 
- \item Dynamically balance between multiple CPUs and GPUs 
-\end{itemize}
-\begin{center}
-\includegraphics[height=0.4\linewidth]{MultiGPUCPUResults.png}
-\end{center}
-\end{frame}
+%%---------------------------------------------------------------
+% \begin{frame}
+%  \frametitle{High-level Parallelism}
+% Everton Hermann's Ph.D. thesis (2007-2010):
+% \begin{itemize}
+%  \item<1-> analyses solver operations
+%  \item<2-> exploits scene graph branches
+%  \item<3-> removes spurious synchronizations using data dependency analysis [Athapascan]
+%  \item<3-> efficiency ranges for 50\% to 90\%
+% \end{itemize}
+% \begin{center}
+% \only<1>{\includegraphics[height=0.4\linewidth]{interactionSequential.png}}
+% \only<2>{\includegraphics[height=0.4\linewidth]{interactionParallel1.png}}
+% \only<3>{\includegraphics[height=0.4\linewidth]{interactionParallel2.png}}
+% \only<4>{\includegraphics[height=0.4\linewidth]{interactionParallel3.png}}
+% \end{center}
+% \end{frame}
+% 
+%% ---------------------------------------------------------------
+% \begin{frame}
+%  \frametitle{Hybrid Parallelism}
+% Work in progress
+% \begin{itemize}
+%  \item Use high level and low level simultaneously 
+%  \item Dynamically balance between multiple CPUs and GPUs 
+% \end{itemize}
+% \begin{center}
+% \includegraphics[height=0.4\linewidth]{MultiGPUCPUResults.png}
+% \end{center}
+% \end{frame}
 
 
 %%%===================================================================
@@ -732,7 +764,7 @@ Efficiency:
 \end{itemize}
 Implementation:
 \begin{itemize}
- \item currently $450,000$ C++ lines
+ \item currently $>750,000$ C++ lines
  \item Linux, MacOs, Windows
 \end{itemize}
 
@@ -748,7 +780,7 @@ Implementation:
 \item asynchronous simulation/rendering/haptic feedback 
 \item multiphysics (electrical/mechanical)
 \item parallelism for everyone
-\item more documentation (release 1.0 this year ?)
+\item more documentation 
 \end{itemize}
 % \end{frame}
 % 
