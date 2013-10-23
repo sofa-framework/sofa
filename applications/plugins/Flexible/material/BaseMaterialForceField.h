@@ -174,13 +174,13 @@ public:
         if(this->assemble.getValue())
         {
             B.addMult(df,dx,mparams->bFactor());
-            K.addMult(df,dx,mparams->kFactor());
+            K.addMult(df,dx,mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue()));
         }
         else
         {
             for(unsigned int i=0; i<material.size(); i++)
             {
-                material[i].addDForce(df[i],dx[i],mparams->kFactor(),mparams->bFactor());
+                material[i].addDForce(df[i],dx[i],mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue()),mparams->bFactor());
             }
         }
 

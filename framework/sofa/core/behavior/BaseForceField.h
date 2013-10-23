@@ -192,6 +192,17 @@ public:
 
     /// @}
 
+
+
+    /** @name Rayleigh Damping (stiffness contribution)
+     */
+    /// @{
+
+    /// Rayleigh Damping stiffness matrix coefficient
+    Data< SReal > rayleighStiffness;
+
+    /// @}
+
 };
 
 } // namespace behavior
