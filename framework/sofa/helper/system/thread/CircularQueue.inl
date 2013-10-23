@@ -42,30 +42,30 @@ namespace system
 namespace thread
 {
 
-template<class T, template<class T> class StoragePolicy, class ThreadAccessPolicy>
+template<class T, template<class U> class StoragePolicy, class ThreadAccessPolicy>
 CircularQueue<T, StoragePolicy, ThreadAccessPolicy>::CircularQueue()
 {
     ThreadAccessPolicy::init(this->getQueue(), this->maxCapacity());
 }
 
-template<class T, template<class T> class StoragePolicy, class ThreadAccessPolicy>
+template<class T, template<class U> class StoragePolicy, class ThreadAccessPolicy>
 CircularQueue<T, StoragePolicy, ThreadAccessPolicy>::~CircularQueue()
 {
 }
 
-template<class T, template<class T> class StoragePolicy, class ThreadAccessPolicy>
+template<class T, template<class U> class StoragePolicy, class ThreadAccessPolicy>
 bool CircularQueue<T, StoragePolicy, ThreadAccessPolicy>::isFull() const
 {
     return ThreadAccessPolicy::isFull(this->maxSize());
 }
 
-template<class T, template<class T> class StoragePolicy, class ThreadAccessPolicy>
+template<class T, template<class U> class StoragePolicy, class ThreadAccessPolicy>
 bool CircularQueue<T, StoragePolicy, ThreadAccessPolicy>::pop(T& item)
 {
     return ThreadAccessPolicy::pop(this->getQueue(), this->maxSize(), this->maxCapacity(), item);
 }
 
-template<class T, template<class T> class StoragePolicy, class ThreadAccessPolicy>
+template<class T, template<class U> class StoragePolicy, class ThreadAccessPolicy>
 bool CircularQueue<T, StoragePolicy, ThreadAccessPolicy>::push(const T& item)
 {
     return ThreadAccessPolicy::push(this->getQueue(), this->maxSize(), this->maxCapacity(), item);
