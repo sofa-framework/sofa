@@ -1,0 +1,25 @@
+<!-- 
+Step 2:
+Instrument Visual & Collision Models setup
+-->
+<Node name="root" dt="0.05">
+
+    <BackgroundSetting color="0.5 0.5 0.5" />
+
+    <VisualStyle displayFlags="showVisualModels showCollisionModels" /> 
+
+    <Node name="Instrument">
+        <MechanicalObject name="instrumentState" template="Rigid" position="0.05 0.5 -7.65  0 0 0 1" />
+        <Node name="VisualModel">
+            <OglModel name="InstrumentVisualModel" fileMesh="data/mesh/dental_instrument.obj" color="0.8 0.8 0.8 1.0" />
+        </Node>
+        <Node name="CollisionModel">
+            <MeshObjLoader filename="data/mesh/dental_instrument_centerline.obj" name="loader" />
+            <Mesh src="@loader" name="InstrumentCollisionModel" />
+            <MechanicalObject src="@loader" name="instrumentCollisionState" translation="0 -2 0" />
+            <Line name="instrument" contactStiffness="10" />
+            <Point name="instrument" contactStiffness="10" />
+        </Node>
+
+    </Node>
+</Node>

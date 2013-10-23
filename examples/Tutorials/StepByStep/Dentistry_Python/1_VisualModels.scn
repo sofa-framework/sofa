@@ -1,0 +1,29 @@
+<!-- 
+Step 1:
+Visual Anatomy
+-->
+<Node name="root" dt="0.05">
+
+    <BackgroundSetting color="0.5 0.5 0.5" />
+    <VisualStyle displayFlags="showVisualModels hideForceFields" /> 
+
+    <Node name="Head">
+
+	<Node name="Head Visual Model" >
+	    <VisualStyle displayFlags="showVisualModels " /> 
+ 	    <OglModel name="HeadVisualModel" fileMesh="data/mesh/head.obj" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/head_baseTexBaked.png" />
+	</Node>
+
+        <Node name="Tongue" activated="true">
+            <Node name="TongueVisualModel">
+                <OglModel name="TongueVisualModel" fileMesh="data/mesh/tongue.obj" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/tongue_color.png" />
+            </Node>
+        </Node>
+
+        <Node name="Teeth" >
+            <Node name="VisualModel">
+                <OglModel name="TeethVisualModel" fileMesh="data/mesh/teeth.obj" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/teeth_color.png" />
+            </Node>
+        </Node>
+    </Node>
+s</Node>
