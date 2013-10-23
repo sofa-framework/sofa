@@ -53,7 +53,7 @@ RegisterProjects("SofaSparseSolver" OPTION "SOFA-LIB_COMPONENT_SPARSE_SOLVER" PA
 
 RegisterProjects("SofaPreconditioner" OPTION "SOFA-LIB_COMPONENT_PRECONDITIONER" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaPreconditioner")
 RegisterProjects("SofaSphFluid" OPTION "SOFA-LIB_COMPONENT_SPH_FLUID" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaSphFluid")
-#RegisterProjects("SofaTaucsSolver" OPTION "SOFA-LIB_COMPONENT_TAUCS_SOLVER" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaTaucsSolver") #missing LIBS *= -lblas_win32_MT, etc..
+RegisterProjects("SofaTaucsSolver" OPTION "SOFA-LIB_COMPONENT_TAUCS_SOLVER" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaTaucsSolver") #missing LIBS *= -lblas_win32_MT, etc..
 RegisterProjects("SofaTopologyMapping" OPTION "SOFA-LIB_COMPONENT_TOPOLOGY_MAPPING" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaTopologyMapping")
 RegisterProjects("SofaUserInteraction" OPTION "SOFA-LIB_COMPONENT_USER_INTERACTION" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaUserInteraction")
 RegisterProjects("SofaValidation" OPTION "SOFA-LIB_COMPONENT_VALIDATION" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaValidation")
