@@ -43,19 +43,19 @@ public:
     /// @{
 
     /// Time step
-    double dt() const { return m_dt; }
+    SReal dt() const { return m_dt; }
 
     /// Is the time integration scheme implicit ?
     bool implicit() const { return m_implicit; }
 
     /// Mass matrix contributions factor (for implicit schemes)
-    double mFactor() const { return m_mFactor; }
+    SReal mFactor() const { return m_mFactor; }
 
     /// Damping matrix contributions factor (for implicit schemes)
-    double bFactor() const { return m_bFactor; }
+    SReal bFactor() const { return m_bFactor; }
 
     /// Stiffness matrix contributions factor (for implicit schemes)
-    double kFactor() const { setKFactorUsed(true); return m_kFactor; }
+    SReal kFactor() const { setKFactorUsed(true); return m_kFactor; }
 
     /// Symmetric matrix flag, for solvers specialized on symmetric matrices
     bool symmetricMatrix() const { return m_symmetricMatrix; }
@@ -132,19 +132,19 @@ public:
     /// @{
 
     /// Set time step
-    MechanicalParams& setDt(double v) { m_dt = v; return *this; }
+    MechanicalParams& setDt(SReal v) { m_dt = v; return *this; }
 
     /// Specify if the time integration scheme is implicit
     MechanicalParams& setImplicit(bool v) { m_implicit = v; return *this; }
 
     /// Set Mass matrix contributions factor (for implicit schemes)
-    MechanicalParams& setMFactor(double v) { m_mFactor = v; return *this; }
+    MechanicalParams& setMFactor(SReal v) { m_mFactor = v; return *this; }
 
     /// Set Damping matrix contributions factor (for implicit schemes)
-    MechanicalParams& setBFactor(double v) { m_bFactor = v; return *this; }
+    MechanicalParams& setBFactor(SReal v) { m_bFactor = v; return *this; }
 
     /// Set Stiffness matrix contributions factor (for implicit schemes)
-    MechanicalParams& setKFactor(double v) { m_kFactor = v; return *this; }
+    MechanicalParams& setKFactor(SReal v) { m_kFactor = v; return *this; }
 
     /// Set the symmetric matrix flag (for implicit schemes), for solvers specialized on symmetric matrices
     MechanicalParams& setSymmetricMatrix(bool b) { m_symmetricMatrix = b; return *this; }
@@ -206,13 +206,13 @@ public:
     /// @name Experimental compliance API
     /// @{
 protected:
-    double m_implicitVelocity;  ///< ratio of future and current force used for velocity update    (1 is fully implicit, 0 is fully explicit)
-    double m_implicitPosition;  ///< ratio of future and current velocity used for position update (1 is fully implicit, 0 is fully explicit)
+    SReal m_implicitVelocity;  ///< ratio of future and current force used for velocity update    (1 is fully implicit, 0 is fully explicit)
+    SReal m_implicitPosition;  ///< ratio of future and current velocity used for position update (1 is fully implicit, 0 is fully explicit)
 public:
-    void setImplicitVelocity( double i ) { m_implicitVelocity = i; }
-    const double& implicitVelocity() const { return m_implicitVelocity; }
-    void setImplicitPosition( double i ) { m_implicitPosition = i; }
-    const double& implicitPosition() const { return m_implicitPosition; }
+    void setImplicitVelocity( SReal i ) { m_implicitVelocity = i; }
+    const SReal& implicitVelocity() const { return m_implicitVelocity; }
+    void setImplicitPosition( SReal i ) { m_implicitPosition = i; }
+    const SReal& implicitPosition() const { return m_implicitPosition; }
     /// @}
 
 
@@ -245,10 +245,23 @@ public:
         return this;
     }
 
+
+    /** @name Rayleigh Damping D = rayleighStiffness*K + rayleighMass*M
+     */
+    /// @{
+
+    /// \returns kfactor +  bfactor*rayleighStiffness
+    SReal kFactorIncludingRayleighDamping( SReal rayleighStiffness ) const { return kFactor() + bFactor()*rayleighStiffness; }
+    /// \returns mfactor +  bfactor*rayleighMass
+    SReal mFactorIncludingRayleighDamping( SReal rayleighMass ) const { return mFactor() + bFactor()*rayleighMass; }
+
+
+    /// @}
+
 protected:
 
     /// Time step
-    double m_dt;
+    SReal m_dt;
 
     /// Is the time integration scheme implicit ?
     bool m_implicit;
@@ -272,19 +285,21 @@ protected:
     ConstMultiVecDerivId m_df;
 
     /// Mass matrix contributions factor (for implicit schemes)
-    double m_mFactor;
+    SReal m_mFactor;
 
     /// Damping matrix contributions factor (for implicit schemes)
-    double m_bFactor;
+    SReal m_bFactor;
 
     /// Stiffness matrix contributions factor (for implicit schemes)
-    double m_kFactor;
+    SReal m_kFactor;
 
     /// Checks if the stiffness matrix contributions factor has been accessed
     mutable bool m_kFactorUsed;
 
     /// True if a symmetric matrix is assumed in the left-hand term of the dynamics equations, for solvers specialized on symmetric matrices
     bool m_symmetricMatrix;
+
+
 };
 
 } // namespace core

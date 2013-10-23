@@ -197,6 +197,8 @@ void AssembledSolver::rhs_dynamics(vec& res, const system_type& sys, const vec& 
 		if(alpha.getValue() != 1 ) res.tail( sys.n ) /= alpha.getValue();
 		
 		if( beta.getValue() != 1 ) {
+            // TODO dofs->copyToBuffer(v_compliant, core::VecDerivId::vel(), dim); rather than sys.J * v, v_compliant is already mapped
+            // TODO use v_compliant to implement constraint damping
 			res.tail( sys.n ).noalias() = res.tail( sys.n ) - (1 - beta.getValue()) * (sys.J * v);
 			res.tail( sys.n ) /= beta.getValue();
 		}
