@@ -45,7 +45,7 @@ namespace thread
  * The template parameter ThreadAccessPolicy allows to customize access to the
  * array according to thread-safety requirements.
  */
-template<class T, template<class T> class StoragePolicy, class ThreadAccessPolicy>
+template<class T, template<class U> class StoragePolicy, class ThreadAccessPolicy>
 class CircularQueue : public StoragePolicy<T>, public ThreadAccessPolicy
 {
 public:
