@@ -125,7 +125,7 @@ void LennardJonesForceField<DataTypes>::addDForce(const core::MechanicalParams* 
 {
     VecDeriv& df1 = *d_df.beginEdit();
     const VecDeriv& dx1 = d_dx.getValue();
-    double kFactor = mparams->kFactor();
+    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
     const VecCoord& p1 = *this->mstate->getX();
     df1.resize(dx1.size());

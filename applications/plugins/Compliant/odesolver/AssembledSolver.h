@@ -66,6 +66,11 @@ namespace odesolver {
                                  \Delta x  &=&  h( v + \beta \Delta v )
   \end{array} \f]
 
+
+  A word on Rayleigh damping:
+  It is not handle at the solver level (contrarly to ImplicitEulerSolver) no to pollutate. It can be added directly from the ForceFields and Masses components.
+  Note that in that case, the Rayleigh damping does NOT consider the geometric stiffnesses.
+  It could be possible to bias the child force used to compute the geometric stiffness but it would imposed to each forcefield to compute a weighted "rayleigh force" in addition to the regular force. It is neglicted for now.
 */
 
 

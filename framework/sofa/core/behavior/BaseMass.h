@@ -58,6 +58,7 @@ public:
 protected:
     BaseMass()
         : m_separateGravity (initData(&m_separateGravity , false, "separateGravity", "add separately gravity to velocity computation"))
+        , rayleighMass (initData(&rayleighMass , SReal(0), "rayleighMass", "Rayleigh damping - mass matrix coefficient"))
     {
     }
 

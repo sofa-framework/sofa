@@ -71,7 +71,7 @@ void GraphScatteredMatrix::apply(GraphScatteredVector& res, GraphScatteredVector
     }
     // q = (m M + k K) p
 
-    /// @TODO: non-rayleigh damping (i.e. the B factor)
+    /// @TODO: any damping (i.e. the B factor & rayleigh)
 #endif
 
     // filter the product to take the constraints into account
@@ -108,7 +108,7 @@ void GraphScatteredMatrix::apply(ParallelGraphScatteredVector& res, ParallelGrap
     }
     // q = (m M + k K) p
 
-    /// @TODO: non-rayleigh damping (i.e. the B factor)
+    /// @TODO: any damping (i.e. the B factor & rayleigh)
 #endif
 
     // filter the product to take the constraints into account

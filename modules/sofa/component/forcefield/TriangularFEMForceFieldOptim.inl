@@ -328,7 +328,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::addDForce(const core::MechanicalPa
     const VecElement& triangles = _topology->getTriangles();
     const Real gamma = this->gamma;
     const Real mu = this->mu;
-    const Real kFactor = (Real)mparams->kFactor();
+    const Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
     df.resize(dx.size());
 
@@ -387,7 +387,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::addKToMatrixT(const core::Mechanic
 {
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecTriangleState > > triState = triangleState;
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecTriangleInfo > > triInfo = triangleInfo;
-    const Real kFactor = (Real)mparams->kFactor();
+    const Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
     const unsigned int nbTriangles = _topology->getNbTriangles();
     const VecElement& triangles = _topology->getTriangles();
     const Real gamma = this->gamma;

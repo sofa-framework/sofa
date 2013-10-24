@@ -130,7 +130,7 @@ protected:
 				
 				mat33 Rp = se3::rotation(parent).toRotationMatrix();
 				mat33 Rc = se3::rotation(child).toRotationMatrix();
-				mat33 Rdelta = se3::rotation(delta).toRotationMatrix();
+//				mat33 Rdelta = se3::rotation(delta).toRotationMatrix();
 				mat33 dlog = se3::dlog( se3::rotation(delta) );
 				
 				mat66 ddelta; 

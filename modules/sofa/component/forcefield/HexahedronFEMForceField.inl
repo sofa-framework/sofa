@@ -229,7 +229,7 @@ void HexahedronFEMForceField<DataTypes>::addDForce (const core::MechanicalParams
 {
     WDataRefVecDeriv _df = v;
     RDataRefVecCoord _dx = x;
-    Real kFactor = (Real)mparams->kFactor();
+    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
     if (_df.size() != _dx.size())
         _df.resize(_dx.size());
@@ -1112,7 +1112,7 @@ void HexahedronFEMForceField<DataTypes>::addKToMatrix(const core::MechanicalPara
 //         const Transformation& Rt = _rotations[e];
 //         Transformation R; R.transpose(Rt);
 
-        Real kFactor = (Real)mparams->kFactor();
+        Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
         // find index of node 1
         for (n1=0; n1<8; n1++)
         {

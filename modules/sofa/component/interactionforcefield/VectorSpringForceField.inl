@@ -352,7 +352,7 @@ void VectorSpringForceField<DataTypes>::addDForce(const core::MechanicalParams* 
     VecDeriv&        df2 = *data_df2.beginEdit();
     const VecDeriv&  dx1 =  data_dx1.getValue();
     const VecDeriv&  dx2 =  data_dx2.getValue();
-    double kFactor       =  mparams->kFactor();
+    Real kFactor       =  (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
     Deriv dforce,d;
 

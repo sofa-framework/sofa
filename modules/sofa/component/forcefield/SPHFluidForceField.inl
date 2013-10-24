@@ -522,7 +522,7 @@ void SPHFluidForceField<DataTypes>::addDForce(const core::MechanicalParams* mpar
 {
     VecDeriv& f1 = *d_df.beginEdit();
     const VecDeriv& dx1 = d_dx.getValue();
-    double kFactor = mparams->kFactor();
+    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
     const VecCoord& p1 = *this->mstate->getX();
     f1.resize(dx1.size());

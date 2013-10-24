@@ -156,20 +156,27 @@ void Mass<DataTypes>::accFromF(VecDeriv& /*a*/, const VecDeriv& /*f*/)
 }
 
 template<class DataTypes>
-void Mass<DataTypes>::addDForce(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv & /*df*/, const DataVecDeriv & /*dx*/)
+void Mass<DataTypes>::addDForce(const MechanicalParams*
+                                #ifndef NDEBUG
+                                mparams
+                                #endif
+                                ,
+                                DataVecDeriv & /*df*/, const DataVecDeriv & /*dx*/)
 {
+#ifndef NDEBUG
     // @TODO Remove
     // Hack to disable warning message
-    mparams->kFactor();
+    mparams->kFactorIncludingRayleighDamping(rayleighStiffness.getValue());
+#endif
 }
 
 template<class DataTypes>
 void Mass<DataTypes>::addMBKdx(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId dfId)
 {
     this->ForceField<DataTypes>::addMBKdx(mparams /* PARAMS FIRST */, dfId);
-    if (mparams->mFactor() != 0.0)
+    if (mparams->mFactorIncludingRayleighDamping(rayleighMass.getValue()) != 0.0)
     {
-        addMDx(mparams /* PARAMS FIRST */, *dfId[this->mstate.get(mparams)].write(), *mparams->readDx(this->mstate), mparams->mFactor());
+        addMDx(mparams /* PARAMS FIRST */, *dfId[this->mstate.get(mparams)].write(), *mparams->readDx(this->mstate), mparams->mFactorIncludingRayleighDamping(rayleighMass.getValue()));
     }
 }
 
@@ -251,7 +258,7 @@ void Mass<DataTypes>::addMToMatrix(const MechanicalParams* mparams /* PARAMS FIR
 {
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
     if (r)
-        addMToMatrix(r.matrix, mparams->mFactor(), r.offset);
+        addMToMatrix(r.matrix, mparams->mFactorIncludingRayleighDamping(rayleighMass.getValue()), r.offset);
 }
 
 template<class DataTypes>
@@ -264,7 +271,7 @@ template<class DataTypes>
 void Mass<DataTypes>::addMBKToMatrix(const MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     this->ForceField<DataTypes>::addMBKToMatrix(mparams /* PARAMS FIRST */, matrix);
-    if (mparams->mFactor() != 0.0)
+    if (mparams->mFactorIncludingRayleighDamping(rayleighMass.getValue()) != 0.0)
         addMToMatrix(mparams /* PARAMS FIRST */, matrix);
 }
 

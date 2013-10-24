@@ -139,7 +139,7 @@ void ConicalForceField<DataTypes>::addDForce(const sofa::core::MechanicalParams*
     VecDeriv& df1 = *(datadF.beginEdit());
     const VecCoord& dx1=datadX.getValue();
 
-    const Real kFact = (Real) mparams->kFactor();
+    const Real kFact = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
     df1.resize(dx1.size());
     for (unsigned int i=0; i<this->contacts.getValue().size(); i++)

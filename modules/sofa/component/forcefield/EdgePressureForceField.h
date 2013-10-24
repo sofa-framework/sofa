@@ -128,7 +128,7 @@ public:
     virtual void addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& /* d_df */, const DataVecDeriv& /* d_dx */)
     {
         //TODO: remove this line (avoid warning message) ...
-        mparams->kFactor();
+        mparams->setKFactorUsed(true);
     };
 
 

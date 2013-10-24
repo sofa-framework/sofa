@@ -121,14 +121,14 @@ void VaccumSphereForceField<DataTypes>::addForce(const core::MechanicalParams* /
 template<class DataTypes>
 void VaccumSphereForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
-    mparams->kFactor();
+    mparams->setKFactorUsed(true);
     if (!active.getValue()) return;
 
     VecDeriv& df1 = *d_df.beginEdit();
     const VecDeriv& dx1 = d_dx.getValue();
 
     df1.resize(dx1.size());
-    double kFactor = mparams->kFactor();
+    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
     const Real fact = (Real)(-this->stiffness.getValue()*kFactor);
     for (unsigned int i=0; i<this->contacts.getValue().size(); i++)
     {

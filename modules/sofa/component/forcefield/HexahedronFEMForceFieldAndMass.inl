@@ -300,7 +300,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addMToMatrix(const core::Mechani
     {
         const ElementMass &Me = _elementMasses.getValue()[e];
 
-        Real mFactor = (Real)mparams->mFactor();
+        Real mFactor = (Real)mparams->mFactorIncludingRayleighDamping(this->rayleighMass.getValue());
         // find index of node 1
         for (n1=0; n1<8; n1++)
         {
@@ -402,7 +402,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addDForce(const core::Mechanical
     //	DataVecDeriv kdx;// = dx * kFactor;
     //	helper::WriteAccessor< DataVecDeriv > _kdx = kdx;
     //	_kdx.resize(_dx.size());
-    //	Real kFactor = (Real)mparams->kFactor();
+    //	Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
     //	for(unsigned i=0;i<_dx.size();++i)
     //		_kdx[i]=_dx[i]*kFactor;
     //	HexahedronFEMForceFieldT::addDForce(mparams /* PARAMS FIRST */, df,kdx);

@@ -317,7 +317,7 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::addDForce(
     const DataVecDeriv1& datadx1, const DataVecDeriv2& datadx2)
 
 {
-    const double kFactor     = mparams->kFactor();
+    const SReal kFactor = mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
     helper::WriteAccessor< DataVecDeriv1 > df1 = datadf1;
     Deriv2 df2;
     helper::ReadAccessor< DataVecDeriv1 >  dx1 = datadx1;

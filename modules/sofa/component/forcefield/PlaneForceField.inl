@@ -116,7 +116,7 @@ void PlaneForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecDeriv > > dx1 = dx;
 
     df1.resize(dx1.size());
-    const Real fact = (Real)(-this->stiffness.getValue() * mparams->kFactor());
+    const Real fact = (Real)(-this->stiffness.getValue() * mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue()));
 	DPos planeN = planeNormal.getValue();
 
     for (unsigned int i=0; i<this->contacts.size(); i++)
@@ -130,7 +130,7 @@ void PlaneForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams
 template<class DataTypes>
 void PlaneForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix )
 {
-    const Real fact = (Real)(-this->stiffness.getValue()*mparams->kFactor());
+    const Real fact = (Real)(-this->stiffness.getValue()*mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue()));
     Deriv normal;
 	DataTypes::setDPos(normal, planeNormal.getValue());
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);

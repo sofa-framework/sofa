@@ -123,7 +123,7 @@ void SPHFluidForceField<gpu::cuda::CudaVec3fTypes>::addForce(const core::Mechani
 template <>
 void SPHFluidForceField<gpu::cuda::CudaVec3fTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& /*d_df*/, const DataVecDeriv& /*d_dx*/)
 {
-    mparams->kFactor();
+    mparams->setKFactorUsed(true);
 #if 0
     if (grid == NULL) return;
 
@@ -212,7 +212,7 @@ void SPHFluidForceField<gpu::cuda::CudaVec3dTypes>::addForce(const core::Mechani
 template <>
 void SPHFluidForceField<gpu::cuda::CudaVec3dTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& /*d_df*/, const DataVecDeriv& /*d_dx*/)
 {
-    mparams->kFactor();
+    mparams->setKFactorUsed(true);
 #if 0
     if (grid == NULL) return;
 

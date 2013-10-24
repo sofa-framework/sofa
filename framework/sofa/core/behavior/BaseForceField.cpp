@@ -42,7 +42,7 @@ BaseForceField::BaseForceField()
 
 void BaseForceField::addMBKdx(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId dfId)
 {
-    if (mparams->kFactor() != 0.0 || mparams->bFactor() != 0.0)
+    if (mparams->kFactorIncludingRayleighDamping(rayleighStiffness.getValue()) != 0.0 || mparams->bFactor() != 0.0)
         addDForce(mparams /* PARAMS FIRST */, dfId);
 }
 
@@ -52,7 +52,7 @@ void BaseForceField::addBToMatrix(const MechanicalParams* /*mparams*/ /* PARAMS 
 
 void BaseForceField::addMBKToMatrix(const MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
-    if (mparams->kFactor() != 0.0 || ( rayleighStiffness.getValue() != 0.0 && mparams->bFactor() != 0.0 ) )
+    if (mparams->kFactorIncludingRayleighDamping(rayleighStiffness.getValue()) != 0.0 )
         addKToMatrix(mparams /* PARAMS FIRST */, matrix);
     if (mparams->bFactor() != 0.0)
         addBToMatrix(mparams /* PARAMS FIRST */, matrix);
@@ -60,7 +60,7 @@ void BaseForceField::addMBKToMatrix(const MechanicalParams* mparams /* PARAMS FI
 
 void BaseForceField::addSubMBKToMatrix(const MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<unsigned> subMatrixIndex)
 {
-    if (mparams->kFactor() != 0.0 || ( rayleighStiffness.getValue() != 0.0 && mparams->bFactor() != 0.0 ) )
+    if (mparams->kFactorIncludingRayleighDamping(rayleighStiffness.getValue()) != 0.0 )
         addSubKToMatrix(mparams /* PARAMS FIRST */, matrix,subMatrixIndex);
     if (mparams->bFactor() != 0.0)
         addSubBToMatrix(mparams /* PARAMS FIRST */, matrix,subMatrixIndex);

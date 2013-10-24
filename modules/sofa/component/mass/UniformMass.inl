@@ -406,7 +406,7 @@ void UniformMass<DataTypes, MassType>::addMToMatrix (const core::MechanicalParam
     const unsigned int size = this->mstate->getSize();
     AddMToMatrixFunctor<Deriv,MassType> calc;
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
-    Real mFactor = (Real)mparams->mFactor();
+    Real mFactor = (Real)mparams->mFactorIncludingRayleighDamping(this->rayleighMass.getValue());
     for ( unsigned int i=0; i<size; i++ )
         calc ( r.matrix, m, r.offset + N*i, mFactor);
 }
