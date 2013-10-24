@@ -24,6 +24,7 @@ class Frame:
                 num = map(float, str.split())
                 self.translation = num[:3]
                 self.rotation = num[3:]
+                return self
 
 def mesh_offset( mesh, path = "" ):
         str = subprocess.Popen("GenerateRigid " + mesh ).stdout.read()
@@ -91,6 +92,7 @@ class Joint:
                 self.offset = []
                 self.damping = 0
                 self.name = name
+                self.compliance = 0
                 
         def append(self, node, offset = None):
                 self.body.append(node)
@@ -142,7 +144,7 @@ class Joint:
                         compliance = node.createObject('UniformCompliance',
                                                        name = 'compliance',
                                                        template = 'Vec6d',
-                                                       compliance = '0')
+                                                       compliance = self.compliance)
                         stab = node.createObject('Stabilization')
 
                 # for some reason return node is unable to lookup for
