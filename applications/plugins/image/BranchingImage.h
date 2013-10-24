@@ -374,7 +374,7 @@ public:
         /// @warning about voxel connectivity
         void clone( const SuperimposedVoxels& other, unsigned spectrum )
         {
-            if( other.empty() ) clear();
+            if( other.empty() ) Inherited::clear();
             else
             {
                 Inherited::resize( other._size );
@@ -389,13 +389,13 @@ public:
         template<typename T2>
         void cloneTopology( const typename BranchingImage<T2>::SuperimposedVoxels& other, unsigned spectrum , const T defaultValue=(T)0 )
         {
-            if( other.empty() ) clear();
+            if( other.empty() ) Inherited::clear();
             else
             {
                 Inherited::resize( other.size());
                 for( unsigned i=0 ; i<this->_size ; ++i )
                 {
-                    this->_array[i].cloneTopology<T2>( other[i], spectrum, defaultValue );
+                    this->_array[i].template cloneTopology<T2>( other[i], spectrum, defaultValue );
                 }
             }
         }
@@ -507,7 +507,7 @@ public:
             this->resize( other.size() );
             for( unsigned i=0 ; i<this->_size ; ++i )
             {
-                this->_array[i].cloneTopology<T2>( other[i], spectrum, defaultValue );
+                this->_array[i].template cloneTopology<T2>( other[i], spectrum, defaultValue );
             }
         }
 
@@ -894,7 +894,7 @@ public:
     void cloneTopology( const BranchingImage<T2>& other, const T defaultValue=(T)0)
     {
         for( unsigned t=0 ; t<getDimension()[DIMENSION_T] ; ++t )
-            imgList[t].cloneTopology<T2>(other.imgList[t],getDimension()[DIMENSION_S],defaultValue);
+            imgList[t].template cloneTopology<T2>(other.imgList[t],getDimension()[DIMENSION_S],defaultValue);
     }
 
     /// read dimensions
