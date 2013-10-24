@@ -210,6 +210,7 @@ private slots:
     
     void executeButtonClick();
     void saveButtonClick();
+    void saveSceneButtonClick();
     void loaduttonClick();
 
     void createNewRow();

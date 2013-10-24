@@ -67,16 +67,21 @@ void DepthImageToolBoxAction::createMainCommands()
 
     QPushButton *saveParamButton = new QPushButton("Save params");
     QPushButton *loadParamButton = new QPushButton("Load params");
+    QPushButton *saveSceneButton = new QPushButton("Save SCN");
 
     connect(saveParamButton,SIGNAL(clicked()),this,SLOT(saveButtonClick()));
     connect(loadParamButton,SIGNAL(clicked()),this,SLOT(loadButtonClick()));
+    connect(saveSceneButton,SIGNAL(clicked()),this,SLOT(saveSceneButtonClick()));
 
     hb2->addWidget(saveParamButton);
     hb2->addWidget(loadParamButton);
+    QHBoxLayout *hb3 = new QHBoxLayout();
+    hb3->addWidget(saveSceneButton);
 
     QVBoxLayout *vb =new QVBoxLayout();
     vb->addLayout(hb);
     vb->addLayout(hb2);
+    vb->addLayout(hb3);
 
     gb->setLayout(vb);
 
@@ -268,6 +273,12 @@ void DepthImageToolBoxAction::loaduttonClick()
     updateGraphs();
 
     //std::cout << "exitButton"<<std::endl;
+}
+
+void DepthImageToolBoxAction::saveSceneButtonClick()
+{
+    sofa::component::engine::DepthImageToolBox *l = DITB();
+    l->saveSCN();
 }
 
 void DepthImageToolBoxAction::selectionPointEvent(int /*mouseevent*/, const unsigned int /*axis*/,const sofa::defaulttype::Vec3d& /*imageposition*/,const sofa::defaulttype::Vec3d& /*position3D*/,const QString& /*value*/)
