@@ -127,7 +127,7 @@ void SphereForceField<DataTypes>::addDForce(const core::MechanicalParams* mparam
 {
     VecDeriv& df1 = *d_df.beginEdit();
     const VecDeriv& dx1 = d_dx.getValue();
-    double kFactor = mparams->kFactor();
+    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
     df1.resize(dx1.size());
     const Real fact = (Real)(-this->stiffness.getValue()*kFactor);

@@ -399,7 +399,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addDForce(const sofa::cor
 {
     VecDeriv& df       = *(datadF.beginEdit());
     const VecCoord& dx =   datadX.getValue()  ;
-    double kFactor = mparams->kFactor();
+    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
     unsigned int j;
     int i;

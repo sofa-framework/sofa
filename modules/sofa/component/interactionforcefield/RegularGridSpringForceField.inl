@@ -255,8 +255,8 @@ void RegularGridSpringForceField<DataTypes>::addDForce(const core::MechanicalPar
     VecDeriv&        df2 = *data_df2.beginEdit();
     const VecDeriv&  dx1 =  data_dx1.getValue();
     const VecDeriv&  dx2 =  data_dx2.getValue();
-    double kFactor       =  mparams->kFactor();
-    double bFactor       =  mparams->bFactor();
+    Real kFactor       =  (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    Real bFactor       =  (Real)mparams->bFactor();
 
     const helper::vector<Spring>& springs = this->springs.getValue();
     if (this->mstate1==this->mstate2)

@@ -263,7 +263,7 @@ void TaitSurfacePressureForceField<DataTypes>::addDForce(const core::MechanicalP
     helper::ReadAccessor< Data< SeqTriangles > > pressureTriangles = m_pressureTriangles;
     helper::ReadAccessor<VecDeriv> gradV = this->gradV;
 
-    const Real kFactor = (Real)mparams->kFactor();
+    const Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
     //const Real currentVolume = m_currentVolume.getValue();
     const Real currentPressure = m_currentPressure.getValue();
     const Real currentStiffness = m_currentStiffness.getValue();
@@ -320,7 +320,7 @@ void TaitSurfacePressureForceField<DataTypes>::addKToMatrixT(const core::Mechani
     //helper::ReadAccessor<DataVecCoord> x0 = this->mstate->read(core::ConstVecCoordId::restPosition());
     helper::ReadAccessor< Data< SeqTriangles > > pressureTriangles = m_pressureTriangles;
 
-    const Real kFactor = (Real)mparams->kFactor();
+    const Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
     //const Real currentVolume = m_currentVolume.getValue();
     const Real currentPressure = m_currentPressure.getValue();
     const Real currentStiffness = m_currentStiffness.getValue();

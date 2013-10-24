@@ -290,11 +290,8 @@ void MechanicalOperations::addMBKvNeglectingCompliance(core::MultiVecDerivId df,
     mparams.setKFactor(k);
     mparams.setMFactor(m);
 
-    core::MechanicalParams mparamsWithoutStiffness( mparams );
-    mparams.setKFactor(0);
-
     /* useV = true */
-    executeVisitor( MechanicalAddMBKdxNeglectingComplianceVisitor(&mparams, &mparamsWithoutStiffness, df, accumulate) );
+    executeVisitor( MechanicalAddMBKdxNeglectingComplianceVisitor(&mparams, df, accumulate) );
     mparams.setDx(dx);
 }
 

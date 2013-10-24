@@ -307,7 +307,7 @@ void DistanceGridForceField<DataTypes>::addDForce(const sofa::core::MechanicalPa
 {
     VecDeriv& df1      = *(datadF.beginEdit());
     const VecCoord& dx1=   datadX.getValue()  ;
-    double kFactor     =   mparams->kFactor() ;
+    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
     //(VecDeriv& df1, const VecDeriv& dx1, double kFactor, double /*bFactor*/)
     if (!grid)
@@ -386,7 +386,7 @@ template<class DataTypes>
 void DistanceGridForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
-    double kFactor = mparams->kFactor();
+    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
     unsigned int &offset = r.offset;
     sofa::defaulttype::BaseMatrix* mat = r.matrix;
 

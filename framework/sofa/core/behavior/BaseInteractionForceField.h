@@ -65,8 +65,8 @@ public:
     {
         sofa::core::behavior::MultiMatrixAccessor::MatrixRef r1 = matrix->getMatrix(getMechModel1());
         sofa::core::behavior::MultiMatrixAccessor::MatrixRef r2 = matrix->getMatrix(getMechModel2());
-        if (r1) addKToMatrix(r1.matrix, mparams->kFactor(), r1.offset);
-        if (r2) addKToMatrix(r2.matrix,  mparams->kFactor(), r2.offset);
+        if (r1) addKToMatrix(r1.matrix, mparams->kFactorIncludingRayleighDamping(rayleighStiffness.getValue()), r1.offset);
+        if (r2) addKToMatrix(r2.matrix, mparams->kFactorIncludingRayleighDamping(rayleighStiffness.getValue()), r2.offset);
     }
 
     /// @deprecated

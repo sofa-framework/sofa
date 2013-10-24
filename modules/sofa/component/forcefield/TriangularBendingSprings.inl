@@ -638,7 +638,7 @@ void TriangularBendingSprings<DataTypes>::addDForce(const core::MechanicalParams
 {
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
-    double kFactor = mparams->kFactor();
+    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
     int nbEdges=_topology->getNbEdges();
     const EdgeInformation *einfo;

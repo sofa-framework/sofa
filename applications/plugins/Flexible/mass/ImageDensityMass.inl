@@ -426,7 +426,7 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::addMToMatrix(c
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
     BaseMatrix* m = r.matrix;
 
-    Real mFactor = (Real)mparams->mFactor();
+    Real mFactor = (Real)mparams->mFactorIncludingRayleighDamping(this->rayleighMass.getValue());
 
     for (unsigned int xi = 0; xi < m_massMatrix.getRowIndex().size(); ++xi)
     {

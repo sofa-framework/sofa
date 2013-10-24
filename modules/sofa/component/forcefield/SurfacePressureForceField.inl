@@ -247,7 +247,7 @@ void SurfacePressureForceField<DataTypes>::addDForce(const core::MechanicalParam
 {
 
 
-    double kFactor     =   mparams->kFactor() ;
+    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
     VecDeriv& df       = *(d_df.beginEdit());
     const VecDeriv& dx =   d_dx.getValue()  ;
 
@@ -304,7 +304,7 @@ void SurfacePressureForceField<DataTypes>::addKToMatrix(const core::MechanicalPa
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
     sofa::defaulttype::BaseMatrix* mat = mref.matrix;
     unsigned int offset = mref.offset;
-    double kFact = mparams->kFactor();
+    Real kFact = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
     return;
 
     const int N = Coord::total_size;

@@ -207,11 +207,13 @@ public:
 	}
 
 
-	virtual void addMToMatrix(const core::MechanicalParams*  /* PARAMS FIRST */, 
+    virtual void addMToMatrix(const core::MechanicalParams* mparams,
 	                          const sofa::core::behavior::MultiMatrixAccessor* matrix) {
 		
 		sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix( this->mstate );
 		const unsigned size = defaulttype::DataTypeInfo<typename DataTypes::Deriv>::size();
+
+        real mFactor = (real)mparams->mFactorIncludingRayleighDamping(this->rayleighMass.getValue());
 		
 		for(unsigned i = 0, n = this->mstate->getSize(); i < n; ++i) {
 
@@ -221,7 +223,7 @@ public:
 			for(unsigned j = 0; j < 3; ++j) {
 				r.matrix->add(r.offset + size * i + j,
 				              r.offset + size * i + j,
-				              mass.getValue()[ index ] );
+                              mass.getValue()[ index ] * mFactor );
 			}			              
 			
 			typename se3::mat33 R = se3::rotation( (*this->mstate->getX())[i] ).toRotationMatrix();
@@ -234,7 +236,7 @@ public:
 					
 					r.matrix->add(r.offset + size * i + 3 + j,
 					              r.offset + size * i + 3 + k,
-					              chunk(j, k) );
+                                  chunk(j, k) * mFactor );
 				}
 			}			              
 			

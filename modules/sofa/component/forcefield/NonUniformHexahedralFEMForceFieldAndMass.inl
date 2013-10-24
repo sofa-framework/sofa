@@ -1021,8 +1021,8 @@ typename NonUniformHexahedralFEMForceFieldAndMass<T>::Vec3i NonUniformHexahedral
 template <class DataTypes>
 void NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::addMBKdx(const core::MechanicalParams* mparams /* PARAMS FIRST */, core::MultiVecDerivId dfId)
 {
-    Real mFactor=(Real)mparams->mFactor();
-    Real kFactor=(Real)mparams->kFactor();
+    Real mFactor=(Real)mparams->mFactorIncludingRayleighDamping(this->rayleighMass.getValue());
+    Real kFactor=(Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
     helper::ReadAccessor < DataVecDeriv > dx = *mparams->readDx(this->mstate);
     helper::WriteAccessor< DataVecDeriv > df = *dfId[this->mstate.get(mparams)].write();
     const VecElement& hexahedra = this->_topology->getHexahedra();

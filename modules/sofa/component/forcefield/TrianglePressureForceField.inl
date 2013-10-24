@@ -109,7 +109,7 @@ void TrianglePressureForceField<DataTypes>::addDForce(const core::MechanicalPara
     //Todo
 
     //Remove warning
-    double kFactor = mparams->kFactor();
+    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
     (void)kFactor;
 
     return;

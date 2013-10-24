@@ -147,7 +147,7 @@ class SOFA_Compliant_API AssembledMultiMapping : public core::MultiMapping<TIn, 
 		assert( !js.empty() );
 		
 		return &js;
-	}
+    }
  
     
   protected:
@@ -162,16 +162,16 @@ class SOFA_Compliant_API AssembledMultiMapping : public core::MultiMapping<TIn, 
 		return *static_cast<jacobian_type*>(js[i]);
 	}
 
-	
+
 	enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
 
-	
-	typedef helper::ReadAccessor< Data< typename self::InVecCoord > > in_pos_type;
-	typedef helper::WriteAccessor< Data< typename self::OutVecCoord > > out_pos_type;
+
+    typedef helper::ReadAccessor< Data< typename self::InVecCoord > > in_pos_type;
+    typedef helper::WriteAccessor< Data< typename self::OutVecCoord > > out_pos_type;
 
 	// TODO pass out value as well ?
 	virtual void assemble( const vector<in_pos_type>& in ) = 0;
-	virtual void apply(out_pos_type& out, const vector<in_pos_type>& in ) = 0;
+    virtual void apply(out_pos_type& out, const vector<in_pos_type>& in ) = 0;
 
   private:
 

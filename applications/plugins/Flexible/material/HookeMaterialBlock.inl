@@ -48,6 +48,9 @@ class HookeLaw
 public:
     typedef _Real Real;
 
+    static const unsigned int material_dimensions = dim;
+    static const unsigned int strain_size = size;
+
     std::vector<Real> Kparams;  /** Constants for the stiffness matrix (e.g. Lamé coeffs) */
     std::vector<Real> Cparams;  /** Constants for the compliance matrix (e.g. Young modulus, poisson, shear modulus)*/
 
@@ -127,6 +130,7 @@ public:
 
     virtual Eigen::Matrix<Real,size,size,Eigen::RowMajor> assembleK(const Real &vol) const
     {
+        BOOST_STATIC_ASSERT( dim<=size );
         typedef Eigen::Matrix<Real,size,size,Eigen::RowMajor> block;
         block K=block::Zero();
         if(!vol) return K;
@@ -699,7 +703,8 @@ public:
     MatBlock getK() const
     {
         MatBlock K = MatBlock();
-        EigenMap eK(&K[0][0]);
+        EigenMap eK(&K[0][0],MatBlock::nbLines,MatBlock::nbCols);
+
         // order 0
         eK.block(0,0,strain_size,strain_size) = hooke.assembleK(factors.vol());
 
@@ -742,6 +747,8 @@ public:
                     }
             }
         }
+
+
         return K;
     }
 

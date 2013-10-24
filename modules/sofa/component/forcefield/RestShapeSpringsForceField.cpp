@@ -132,7 +132,7 @@ void RestShapeSpringsForceField<Rigid3dTypes>::addDForce(const core::MechanicalP
 
     const VecReal& k = stiffness.getValue();
     const VecReal& k_a = angularStiffness.getValue();
-    double kFactor = mparams->kFactor();
+    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
     unsigned int curIndex = 0;
 
@@ -154,7 +154,7 @@ void RestShapeSpringsForceField<Rigid3dTypes>::addKToMatrix(const core::Mechanic
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
     sofa::defaulttype::BaseMatrix* mat = mref.matrix;
     unsigned int offset = mref.offset;
-    double kFact = mparams->kFactor();
+    Real kFact = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
     unsigned int curIndex = 0;
 
@@ -325,7 +325,7 @@ void RestShapeSpringsForceField<Rigid3fTypes>::addDForce(const core::MechanicalP
 {
     sofa::helper::WriteAccessor< DataVecDeriv > df1 = df;
     sofa::helper::ReadAccessor< DataVecDeriv > dx1 = dx;
-    double kFactor = mparams->kFactor();
+    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
     const VecReal& k = stiffness.getValue();
     const VecReal& k_a = angularStiffness.getValue();
@@ -352,7 +352,7 @@ void RestShapeSpringsForceField<Rigid3fTypes>::addKToMatrix(const core::Mechanic
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
     sofa::defaulttype::BaseMatrix* mat = mref.matrix;
     unsigned int offset = mref.offset;
-    double kFact = mparams->kFactor();
+    Real kFact = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
     unsigned int curIndex = 0;
 

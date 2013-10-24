@@ -126,7 +126,7 @@ void EllipsoidForceField<DataTypes>::addForce(const sofa::core::MechanicalParams
 template<class DataTypes>
 void EllipsoidForceField<DataTypes>::addDForce(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv&   datadF , const DataVecDeriv&   datadX )
 {
-    double kFactor     =   mparams->kFactor() ;
+    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
     VecDeriv& df1       = *(datadF.beginEdit());
     const VecCoord& dx1 =   datadX.getValue()  ;
 

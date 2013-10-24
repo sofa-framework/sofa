@@ -96,7 +96,7 @@ void TriangularFEMForceFieldOptim<gpu::cuda::CudaVec3fTypes>::addDForce(const co
 {
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
-    const Real kFactor = (Real)mparams->kFactor();
+    const Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
     const VecTriangleState& triState = triangleState.getValue();
     const VecTriangleInfo& triInfo = triangleInfo.getValue();

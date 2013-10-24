@@ -359,7 +359,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addDForce(const core::Me
 {
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
-    double kFactor = mparams->kFactor();
+    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
     unsigned int i,j,k;
     int nbTriangles=_topology->getNbTriangles();

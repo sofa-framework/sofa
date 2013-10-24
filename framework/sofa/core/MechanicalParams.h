@@ -28,11 +28,13 @@
 #include <sofa/core/ExecParams.h>
 #include <sofa/core/MultiVecId.h>
 
+
 namespace sofa
 {
 
 namespace core
 {
+
 
 /// Class gathering parameters use by mechanical components methods, and transmitted by mechanical visitors
 class SOFA_CORE_API MechanicalParams : public sofa::core::ExecParams
@@ -48,6 +50,8 @@ public:
     /// Is the time integration scheme implicit ?
     bool implicit() const { return m_implicit; }
 
+
+
     /// Mass matrix contributions factor (for implicit schemes)
     SReal mFactor() const { return m_mFactor; }
 
@@ -56,6 +60,19 @@ public:
 
     /// Stiffness matrix contributions factor (for implicit schemes)
     SReal kFactor() const { setKFactorUsed(true); return m_kFactor; }
+
+
+    /** @name Rayleigh Damping D = rayleighStiffness*K - rayleighMass*M
+     */
+    /// @{
+
+    /// \returns kfactor +  bfactor*rayleighStiffness
+    SReal kFactorIncludingRayleighDamping( SReal rayleighStiffness ) const { return kFactor() + bFactor()*rayleighStiffness; }
+    /// \returns mfactor +  bfactor*rayleighMass
+    SReal mFactorIncludingRayleighDamping( SReal rayleighMass ) const { return mFactor() - bFactor()*rayleighMass; }
+
+    /// @}
+
 
     /// Symmetric matrix flag, for solvers specialized on symmetric matrices
     bool symmetricMatrix() const { return m_symmetricMatrix; }
@@ -149,9 +166,17 @@ public:
     /// Set the symmetric matrix flag (for implicit schemes), for solvers specialized on symmetric matrices
     MechanicalParams& setSymmetricMatrix(bool b) { m_symmetricMatrix = b; return *this; }
 
+#ifndef NDEBUG
     /// Checks wether or nor kFactor is used in ForceFields. Temporary here for compatiblity reasons
     void setKFactorUsed(bool b) const { m_kFactorUsed = b; }
     bool getKFactorUsed() const { return m_kFactorUsed; }
+protected:
+    /// Checks if the stiffness matrix contributions factor has been accessed
+    mutable bool m_kFactorUsed;
+public:
+#else
+    void setKFactorUsed(bool) const {}
+#endif
 
     /// Specify if the potential and kinematic energies should be computed ?
     MechanicalParams& setEnergy(bool v) { m_energy = v; return *this; }
@@ -219,8 +244,8 @@ public:
     /// Constructor, initializing all VecIds to default values, implicit and energy flags to false
     MechanicalParams(const sofa::core::ExecParams& p = sofa::core::ExecParams() )
         : sofa::core::ExecParams(p)
-        , m_implicitVelocity(0.5)
-        , m_implicitPosition(0.5)
+        , m_implicitVelocity(1)
+        , m_implicitPosition(1)
         , m_dt(0.0)
         , m_implicit(false)
         , m_energy(false)
@@ -245,18 +270,26 @@ public:
         return this;
     }
 
+    MechanicalParams* operator= ( const MechanicalParams& mparams )
+    {
+        sofa::core::ExecParams::operator=(mparams);
+        m_implicitVelocity = mparams.m_implicitVelocity;
+        m_implicitPosition = mparams.m_implicitPosition;
+        m_dt = mparams.m_dt;
+        m_implicit = mparams.m_implicit;
+        m_energy = mparams.m_energy;
+        m_x = mparams.m_x;
+        m_v = mparams.m_v;
+        m_f = mparams.m_f;
+        m_dx = mparams.m_dx;
+        m_df = mparams.m_df;
+        m_mFactor = mparams.m_mFactor;
+        m_bFactor = mparams.m_bFactor;
+        m_kFactor = mparams.m_kFactor;
+        m_symmetricMatrix = mparams.m_symmetricMatrix;
+        return this;
+    }
 
-    /** @name Rayleigh Damping D = rayleighStiffness*K + rayleighMass*M
-     */
-    /// @{
-
-    /// \returns kfactor +  bfactor*rayleighStiffness
-    SReal kFactorIncludingRayleighDamping( SReal rayleighStiffness ) const { return kFactor() + bFactor()*rayleighStiffness; }
-    /// \returns mfactor +  bfactor*rayleighMass
-    SReal mFactorIncludingRayleighDamping( SReal rayleighMass ) const { return mFactor() + bFactor()*rayleighMass; }
-
-
-    /// @}
 
 protected:
 
@@ -292,9 +325,6 @@ protected:
 
     /// Stiffness matrix contributions factor (for implicit schemes)
     SReal m_kFactor;
-
-    /// Checks if the stiffness matrix contributions factor has been accessed
-    mutable bool m_kFactorUsed;
 
     /// True if a symmetric matrix is assumed in the left-hand term of the dynamics equations, for solvers specialized on symmetric matrices
     bool m_symmetricMatrix;

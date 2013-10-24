@@ -163,8 +163,8 @@ void StiffSpringForceField<DataTypes>::addDForce(const core::MechanicalParams* m
     VecDeriv&        df2 = *data_df2.beginEdit();
     const VecDeriv&  dx1 =  data_dx1.getValue();
     const VecDeriv&  dx2 =  data_dx2.getValue();
-    double kFactor       =  mparams->kFactor();
-    double bFactor       =  mparams->bFactor();
+    Real kFactor       =  (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    Real bFactor       =  (Real)mparams->bFactor();
 
     const helper::vector<Spring>& springs = this->springs.getValue();
     df1.resize(dx1.size());
@@ -189,7 +189,7 @@ template<class DataTypes>
 void StiffSpringForceField<DataTypes>::addKToMatrix(const MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
 
-    double kFact = mparams->kFactor();
+    Real kFact = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
     if (this->mstate1 == this->mstate2)
     {
         sofa::core::behavior::MultiMatrixAccessor::MatrixRef mat = matrix->getMatrix(this->mstate1);

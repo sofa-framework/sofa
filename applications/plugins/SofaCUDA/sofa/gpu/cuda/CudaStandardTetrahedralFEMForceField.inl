@@ -108,7 +108,7 @@ void StandardTetrahedralFEMForceField<gpu::cuda::CudaVec3fTypes>::addDForce(cons
 
     VecDeriv& df = *d_df.beginEdit();
 	const VecDeriv& dx = d_dx.getValue();
-	double kFactor = mparams->kFactor();
+	Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
 	unsigned int nbEdges=_topology->getNbEdges();
 	const vector< Edge> &edgeArray=_topology->getEdges() ;
@@ -281,7 +281,7 @@ void StandardTetrahedralFEMForceField<gpu::cuda::CudaVec3dTypes>::addDForce(cons
 {
 	VecDeriv& df = *d_df.beginEdit();
 	const VecDeriv& dx = d_dx.getValue();
-	double kFactor = mparams->kFactor();
+	Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
 	unsigned int nbEdges=_topology->getNbEdges();
 	const vector< Edge> &edgeArray=_topology->getEdges() ;

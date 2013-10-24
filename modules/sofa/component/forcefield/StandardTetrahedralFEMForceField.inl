@@ -421,7 +421,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::addDForce(const core::Mechanic
 
     VecDeriv& df = *d_df.beginEdit();
 	const VecDeriv& dx = d_dx.getValue();
-	double kFactor = mparams->kFactor();
+	Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
 	unsigned int i=0,j=0,k=0,l=0;
 	unsigned int nbEdges=_topology->getNbEdges();

@@ -372,7 +372,7 @@ void JointSpringForceField<DataTypes>::addDForce(const core::MechanicalParams *m
     df1.resize(dx1.size());
     df2.resize(dx2.size());
 
-    Real kFactor = (Real)mparams->kFactor();
+    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
     helper::vector<Spring>& springs = *this->springs.beginEdit();
     for (unsigned int i=0; i<springs.size(); i++)

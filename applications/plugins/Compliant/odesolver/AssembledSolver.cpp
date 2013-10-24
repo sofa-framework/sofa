@@ -335,24 +335,24 @@ void AssembledSolver::set_state(const system_type& sys, const vec& data) const {
 	
 }
 
-void AssembledSolver::solve(const core::ExecParams* params,
-                                    double dt, 
-                                    core::MultiVecCoordId posId,
-                                    core::MultiVecDerivId velId,
-                                    bool computeForce, // should the right part of the implicit system be computed?
-                                    bool integratePosition, // should the position be updated?
-                                    simulation::AssemblyVisitor *vis) {
+void AssembledSolver::solve(const core::ExecParams* /*params*/,
+                                    double /*dt*/,
+                                    core::MultiVecCoordId /*posId*/,
+                                    core::MultiVecDerivId /*velId*/,
+                                    bool /*computeForce*/, // should the right part of the implicit system be computed?
+                                    bool /*integratePosition*/, // should the position be updated?
+                                    simulation::AssemblyVisitor */*vis*/) {
 
 	throw std::logic_error("broken lol ! subclass AssembledSolver if you need customization");
 
 } 
 
-void AssembledSolver::solve(const core::ExecParams* params,
-                                    double dt,
-                                    core::MultiVecCoordId posId,
-                                    core::MultiVecDerivId velId,
-                                    bool computeForce, // should the right part of the implicit system be computed?
-                                    bool integratePosition // should the position be updated?
+void AssembledSolver::solve(const core::ExecParams* /*params*/,
+                                    double /*dt*/,
+                                    core::MultiVecCoordId /*posId*/,
+                                    core::MultiVecDerivId /*velId*/,
+                                    bool /*computeForce*/, // should the right part of the implicit system be computed?
+                                    bool /*integratePosition*/ // should the position be updated?
 	) {
 
 	throw std::logic_error("broken lol ! subclass AssembledSolver if you need customization");

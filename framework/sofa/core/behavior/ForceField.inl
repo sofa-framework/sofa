@@ -130,12 +130,16 @@ void ForceField<DataTypes>::addDForce(const MechanicalParams* mparams /* PARAMS 
         else
 #endif /* SOFA_SMP */
 
+#ifndef NDEBUG
             mparams->setKFactorUsed(false);
+#endif
 
         addDForce(mparams /* PARAMS FIRST */, *dfId[mstate.get(mparams)].write(), *mparams->readDx(mstate.get(mparams)));
 
+#ifndef NDEBUG
         if (!mparams->getKFactorUsed())
             serr << "WARNING " << getClassName() << " (in ForceField<DataTypes>::addDForce): please use mparams->kFactor() in addDForce" << sendl;
+#endif
     }
 }
 
