@@ -228,9 +228,6 @@ protected :
 #ifdef SOFA_HAVE_METIS
     void LDL_ordering(int n,int * M_colptr,int * M_rowind,int * perm,int * invperm)
     {
-        int  num_flag     = 0;
-        int  options_flag = 0;
-
         xadj.resize(n+1);
         adj.resize(M_colptr[n]-n);
 
@@ -247,7 +244,7 @@ protected :
         }
         xadj[n] = M_colptr[n] - n;
 
-        METIS_NodeND(&n, &xadj[0],&adj[0], &num_flag, &options_flag, perm,invperm);
+        METIS_NodeND(&n, &xadj[0],&adj[0], NULL, NULL, perm,invperm);
     }
 #else
     void LDL_ordering(int n,int * /*M_colptr*/,int * /*M_rowind*/,int * perm,int * invperm)
