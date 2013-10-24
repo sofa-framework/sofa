@@ -61,7 +61,7 @@ template<class TMatrix, class TVector, class TThreadManager>
 bool SparseLDLSolver<TMatrix,TVector,TThreadManager>::addJMInvJtLocal(TMatrix * M, ResMatrixType * result,const JMatrixType * J, double fact) {
     if (J->rowSize()==0) return true;
 
-    InvertData * data = (InvertData *) getMatrixInvertData(M);
+    InvertData * data = (InvertData *) this->getMatrixInvertData(M);
 
     Jdense.clear();
     Jdense.resize(J->rowSize(),data->n);
