@@ -176,8 +176,18 @@ public:
     Coord3 calculateQuadNormalVectorFromImage(const Quad &q,const VecCoord3 &p)
     {
         Coord3 r = p[q[0]]+p[q[1]]+p[q[2]]+p[q[3]];
+        Coord3 g(0,0,0);
+
         r.normalize();
-        r = fromImage(r);
+
+        std::cout << r << ","<< r.norm() <<"--*--";
+
+        r = fromImage(r);//r.normalize();
+        g = fromImage(g);
+
+        r -=g;
+
+        std::cout << r << ","<< r.norm()<< std::endl;
         return r;
     }
 
@@ -197,6 +207,8 @@ public:
         double distance = -1;
         double minDistanceProjPos = -1;
         Coord3 def;
+
+
 
         for(unsigned int i=0;i<quads.size();i++)
         {
@@ -226,15 +238,17 @@ public:
                 }
                 else if(distance==-1)
                 {
+
+
                     if(minDistanceProjPos==-1)
                     {
-                        minDistanceProjPos = (projection-line[0]).norm();
+                        minDistanceProjPos = (projection-c[0]).norm();
                         def=projection;
                     }
 
-                    for(int i=0;i<3;i++)
+                    for(unsigned int i=0;i<3;i++)
                     {
-                        double d = (projection-line[0]).norm();
+                        double d = (projection-c[i]).norm();
                         if(d<minDistanceProjPos)
                         {
                             minDistanceProjPos = d;
@@ -246,8 +260,9 @@ public:
         }
 
         if(distance==-1)
+        {
             out = def;
-
+        }
 
         return true;
 
@@ -255,7 +270,7 @@ public:
 
     VecReal calculateSurfaceDistance(LabelGridImageToolBoxNoTemplated *b,LabelGridImageToolBoxNoTemplated *s)
     {
-        //std::cout << "calculateSurfaceDistance"<<b<<std::endl;
+//        std::cout << "calculateSurfaceDistance"<<b<<std::endl;
 
         const Quads &quads = b->d_outQuads.getValue();
 
@@ -281,7 +296,7 @@ public:
 
             lout[i]=(out-line[0]).norm();
 
-            //std::cout << "ccc"<<out<< "/"<<line[0] << "/"<<lout[i]<<std::endl;
+ //           std::cout << "ccc"<<out<< "/"<<line[0] << "/"<<lout[i]<<std::endl;
             //exit(0);
            /* if(i==0)
             {
@@ -294,7 +309,7 @@ public:
                 sum += lout[i];
             }*/
         }
-        //std::cout << "mma " << min << " " << max << " " << sum/(double)quads.size()<<std::endl;
+//        std::cout << "mma " << min << " " << max << " " << sum/(double)quads.size()<<std::endl;
 
 
         return lout;
@@ -317,7 +332,13 @@ public:
     void addConstantOffsetToDistance(VecReal &v,double offset)
     {
         for(unsigned int i=0;i<v.size();i++)
+        {
+            std::cout << "v1offset "<< v[i]<< " "<< offset<<std::endl;
             v[i]+=offset;
+
+
+        }
+
     }
 
     void addPercentOffsetToDistance(VecReal &v1,VecReal &v2,double offset)
@@ -347,8 +368,7 @@ public:
         return true;
     }
 
-
-    bool createMeshFromLayer(LabelGridImageToolBoxNoTemplated *base, VecReal &v1,VecReal &v2,Vec2i reso,int numLayer)
+    bool createMeshFromLayer(LabelGridImageToolBoxNoTemplated *base, VecReal &v1,VecReal &v2,Vec2i reso,unsigned int numLayer)
     {
         std::cout << "createMeshFromLayer" << std::endl;
 
@@ -361,7 +381,7 @@ public:
         layer.clear();
 
         unsigned int k0=position.size();
-        unsigned int k=0;
+        //unsigned int k=0;
 
         unsigned int slides = 1;
 
@@ -370,35 +390,241 @@ public:
 
         Quads& baseQuad = *(base->d_outQuads.beginEdit());
 
-        //create points
-        for(unsigned int i=0;i<reso.x()+1;i++)
-        for(unsigned int j=0;j<reso.y()+1;j++)
-        {
-            sofa::defaulttype::Vec3d baseIPk = fromImage(baseIP[k]);
-            sofa::defaulttype::Vec3d baseNk = fromImage(baseN[k]);
-            baseNk.normalize();
+        //modify position vector
+        unsigned int nbposition = (reso.x()+1)*(reso.y()+1)*(slides+1);
+        for(unsigned int i=0;i<nbposition;i++)position.push_back(Coord3(0,0,0));
 
-            sofa::defaulttype::Vec3d min = baseIPk + baseNk*v1[k];
-            sofa::defaulttype::Vec3d max = baseIPk + baseNk*v2[k];
+        VecReal sumByMesh;
+        for(unsigned int i=0;i<nbposition;i++)sumByMesh.push_back(0);
+
+        //create points
+        //for(unsigned int i=0;i<reso.x()+1;i++)
+        //for(unsigned int j=0;j<reso.y()+1;j++)
+
+        for(unsigned int k=0;k<baseQuad.size();k++)
+        {
+            Quad &quad = baseQuad[k];
+
 
             double dt = (double)1.0/(double)slides;
 
-            std::cout << "point " << k << "("<< baseIPk <<"//" << baseNk<< "//"<<min<<"//"<<max<< "//"<<v1[k] << " " << v2[k] <<" ) : ";
+            //std::cout << "quad " << k << "("<< baseIPk <<"//" << baseNk<< "//"<<min<<"//"<<max<< "//"<<v1[k] << " " << v2[k] <<" ) : ";
             for(unsigned int h=0;h<slides+1;h++)
             {
                 double dt_h = dt*h;
 
-                sofa::defaulttype::Vec3d point = min*dt_h+max*(1-dt_h);
+                //std::cout <<point<< " , ";
 
-                std::cout <<point<< " ";
+                std::cout <<"distance " << v1[k] << " " <<v2[k] << std::endl;
 
-                position.push_back(point);
+                for(unsigned int q=0;q<4;q++)
+                {
+                    sofa::defaulttype::Vec3d baseIPk = fromImage(baseIP[quad[q]]);
+                    sofa::defaulttype::Vec3d baseNk = fromImage(baseN[quad[q]]) - fromImage(sofa::defaulttype::Vec3d(0,0,0));
+                    baseNk.normalize();
 
+                    sofa::defaulttype::Vec3d min = baseIPk + baseNk*v1[k];
+                    sofa::defaulttype::Vec3d max = baseIPk + baseNk*v2[k];
 
+                    sofa::defaulttype::Vec3d point = min*dt_h+max*(1-dt_h);
+
+                    unsigned int index =  (quad[q]*(slides+1)) + h;
+                    position[k0 +index] += (/*fromImage(*/point/*)*/);
+                    sumByMesh[index] += 1;
+                }
             }
-            k++;
-            std::cout <<std::endl;
-         }
+            //std::cout <<std::endl;
+        }
+
+        for(unsigned int i=k0;i<position.size();i++)
+        {
+            if(sumByMesh[i-k0]!=0)
+                position[i]/=sumByMesh[i-k0];
+
+
+            std::cout << "point[" << i << "] = " << position[i] << " -> " << sumByMesh[i] << std::endl;
+        }
+
+        MeshDataImageToolBox::VecIndex4& outG1 = layer.grid1;
+        MeshDataImageToolBox::VecIndex4& outG2 = layer.grid2;
+
+        //create grids
+        //unsigned int k=0;
+        for(unsigned int j=0;j<reso.y();j++)
+        for(unsigned int i=0;i<reso.x();i++)
+        {
+            unsigned int p1 = j*(reso.x()+1)+i;
+            unsigned int p2 = j*(reso.x()+1)+i+1;
+            unsigned int p3 = (j+1)*(reso.x()+1)+i;
+            unsigned int p4 = (j+1)*(reso.x()+1)+i+1;
+
+            p1*=(slides+1);
+            p2*=(slides+1);
+            p3*=(slides+1);
+            p4*=(slides+1);
+
+            MeshDataImageToolBox::Index4 q1(p1+k0,p2+k0,p4+k0,p3+k0);
+            //std::cout << "e"<<std::endl;
+            outG1.push_back(q1);
+            //std::cout << "f"<<std::endl;
+
+            p1+=slides;
+            p2+=slides;
+            p3+=slides;
+            p4+=slides;
+
+            MeshDataImageToolBox::Index4 q2(p1+k0,p2+k0,p4+k0,p3+k0);
+
+            //std::cout << "g"<<std::endl;
+            outG2.push_back(q2);
+            //std::cout << "h"<<std::endl;
+
+            //std::cout << "grid1 "<<q1<<std::endl;
+            //std::cout << "grid2 "<<q2<<std::endl;
+
+            //k++;
+        }
+
+std::cout << "quit "<<std::endl;
+
+        //create extern mesh
+        MeshDataImageToolBox::VecIndex3 outM = layer.triangles;
+
+        for(unsigned int i=0;i<layer.grid1.size();i++)
+        {
+            MeshDataImageToolBox::Index4 &q = layer.grid1[i];
+
+            MeshDataImageToolBox::Index3 v1(q[0],q[1],q[2]);
+            MeshDataImageToolBox::Index3  v2(q[0],q[2],q[3]);
+
+            outM.push_back(v1);
+            outM.push_back(v2);
+
+            std::cout << "tri "<<v1 << std::endl;
+            std::cout << "tri "<<v2 << std::endl;
+        }
+
+        for(unsigned int i=0;i<layer.grid2.size();i++)
+        {
+            MeshDataImageToolBox::Index4  &q = layer.grid2[i];
+
+            MeshDataImageToolBox::Index3  v1(q[0],q[1],q[2]);
+            MeshDataImageToolBox::Index3  v2(q[0],q[2],q[3]);
+
+            outM.push_back(v1);
+            outM.push_back(v2);
+
+            std::cout << "tri "<<v1 << std::endl;
+            std::cout << "tri "<<v2 << std::endl;
+        }
+
+        for(unsigned int j=0;j<reso.y();j++)
+        {
+            unsigned int p1 = j*(reso.x()+1);
+            unsigned int p2 = (j+1)*(reso.x()+1);
+
+            unsigned int p3 = p1+reso.x();
+            unsigned int p4 = p2+reso.x();
+
+            p1*=(slides+1);
+            p2*=(slides+1);
+            p3*=(slides+1);
+            p4*=(slides+1);
+
+            for(unsigned int s=0;s<slides;s++)
+            {
+                MeshDataImageToolBox::Index3  v1(p1+k0,p2+k0,p2+1+k0);
+                MeshDataImageToolBox::Index3  v2(p1+k0,p2+1+k0,p1+1+k0);
+                MeshDataImageToolBox::Index3  v3(p4+1+k0,p4+k0,p3+k0);
+                MeshDataImageToolBox::Index3  v4(p3+1+k0,p4+1+k0,p3+k0);
+
+                outM.push_back(v1);
+                outM.push_back(v2);
+                outM.push_back(v3);
+                outM.push_back(v4);
+                p1++;p2++;p3++;p4++;
+
+                std::cout << "tri "<<v1 << std::endl;
+                std::cout << "tri "<<v2 << std::endl;
+                std::cout << "tri "<<v3 << std::endl;
+                std::cout << "tri "<<v4 << std::endl;
+            }
+        }
+
+        for(unsigned int i=0;i<reso.x();i++)
+        {
+            unsigned int p1 = i;
+            unsigned int p2 = p1+1;
+
+            unsigned int p3 = reso.y()*(reso.x()+1)+i;
+            unsigned int p4 = p3+1;
+
+            p1*=(slides+1);
+            p2*=(slides+1);
+            p3*=(slides+1);
+            p4*=(slides+1);
+
+            for(unsigned int s=0;s<slides;s++)
+            {
+                MeshDataImageToolBox::Index3  v1(p2+1+k0,p2+k0,p1+k0);
+                MeshDataImageToolBox::Index3  v2(p1+1+k0,p2+1+k0,p1+k0);
+                MeshDataImageToolBox::Index3  v3(p3+k0,p4+k0,p4+1+k0);
+                MeshDataImageToolBox::Index3  v4(p3+k0,p4+1+k0,p3+1+k0);
+
+                outM.push_back(v1);
+                outM.push_back(v2);
+                outM.push_back(v3);
+                outM.push_back(v4);
+                p1++;p2++;p3++;p4++;
+                std::cout << "tri "<<v1 << std::endl;
+                std::cout << "tri "<<v2 << std::endl;
+                std::cout << "tri "<<v3 << std::endl;
+                std::cout << "tri "<<v4 << std::endl;
+            }
+        }
+
+        //create Hexa
+        MeshDataImageToolBox::VecIndex8 outH = layer.hexas;
+
+        for(unsigned int i=0;i<layer.grid2.size();i++)
+        {
+            MeshDataImageToolBox::Index4  &q = layer.grid1[i];
+
+            for(unsigned int j=0;j<slides;j++)
+            {
+                MeshDataImageToolBox::Index8  v1(q[0]+j,q[1]+j,q[2]+j,q[3]+j,q[0]+j+1,q[1]+j+1,q[2]+j+1,q[3]+j+1);
+
+                outH.push_back(v1);
+
+                std::cout << "hexa "<<v1 << std::endl;
+            }
+        }
+
+        //create Tetra
+        MeshDataImageToolBox::VecIndex4 outT = layer.tetras;
+
+        for(unsigned int i=0;i<layer.hexas.size();i++)
+        {
+            MeshDataImageToolBox::Index8  &q = layer.hexas[i];
+
+            MeshDataImageToolBox::Index4 v1(q[0],q[1],q[3],q[4]);
+            MeshDataImageToolBox::Index4 v2(q[3],q[1],q[4],q[6]);
+            MeshDataImageToolBox::Index4 v3(q[4],q[5],q[6],q[1]);
+            MeshDataImageToolBox::Index4 v4(q[3],q[1],q[2],q[6]);
+            MeshDataImageToolBox::Index4 v5(q[7],q[3],q[6],q[4]);
+
+            outT.push_back(v1);
+            outT.push_back(v2);
+            outT.push_back(v3);
+            outT.push_back(v4);
+            outT.push_back(v5);
+
+            std::cout << "tet " << v1 << std::endl;
+            std::cout << "tet " << v2 << std::endl;
+            std::cout << "tet " << v3 << std::endl;
+            std::cout << "tet " << v4 << std::endl;
+            std::cout << "tet " << v5 << std::endl;
+        }
 
         return true;
     }
@@ -417,15 +643,15 @@ public:
         VecReal v1 = calculateSurfaceDistance(base,surf1);
         VecReal v2 = calculateSurfaceDistance(base,surf2);
 
-        VecReal v1b = v1;
-        VecReal v2b = v2;
+        //VecReal v1b = v1;
+        //VecReal v2b = v2;
 
-        std::cout << v1 << " ++ " << v2 << std::endl << std::endl;
+        std::cout << v1 << " +vf+ " << v2 << std::endl << std::endl;
 
         transfertDistanceFromImagePositionTo3DPosition(base,v1);
         transfertDistanceFromImagePositionTo3DPosition(base,v2);
 
-        std::cout << v1 << " ++ " << v2 << std::endl;
+        std::cout << v1 << " +vl+ " << v2 << std::endl;
 
         /*Coord3 v(1,1,1);
         std::cout << toImage(v) << " ++ " << fromImage(v) << "++" <<toImage(fromImage(v))<< std::endl;
@@ -459,12 +685,12 @@ public:
         }
 
         createLayerInImage(v1,v2,base->d_reso.getValue(),numLayer);
-        createMeshFromLayer(base,v1b,v2b,base->d_reso.getValue(),numLayer);
+        createMeshFromLayer(base,v1,v2,base->d_reso.getValue(),numLayer);
 
   //      std::cout << toImage(1) << "/"<<fromImage(1)<<"/"<< toImage(Coord3(1.0,1.0,1.0)) << "/"<<fromImage(Coord3(435.934, 778.795, -70.2253)) <<std::endl;
   //      std::cout << d_transform.getValue() << std::endl;
 
-         exit(0);
+         //exit(0);
 
         return true;
     }
@@ -703,9 +929,67 @@ public:
             return false;
         }
 
-
         std::cout << "load from " <<filename << std::endl;
         file.close();
+        return true;
+    }
+
+    bool saveSCN()
+    {
+        QFile file("depthimagetoolbox.scn");
+
+        if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+                 return false;
+
+        QTextStream out(&file);
+        //out << "The magic number is: " << 49 << "\n" <<
+
+        //MeshDataImageToolBox &m = meshs;
+
+
+        out << "<?xml version=\"1.0\"?>" << "\n" <<
+                "<Node name=\"Scene\" gravity=\"0 0 0\" dt=\"1\"  >" << "\n" <<
+                "  <VisualStyle displayFlags=\"hideForceFields showVisual\" />" << "\n" <<
+                "  <RequiredPlugin pluginName=\"image\"/>" << "\n" <<
+                "  <Node name=\"Visu\">" << "\n";
+
+        for(unsigned int i=0;i<meshs.veclayer.size();i++)
+        {
+            out << "    <VisualModel name=\"grid1_"<< i <<"\" position=\"";
+
+            for(unsigned int j=0;j<meshs.positions.size();j++ )
+            {
+                out << meshs.positions[j].x() << " "  << meshs.positions[j].y() << " " << meshs.positions[j].z() << " ";
+            }
+
+            out << "\" quads=\"";
+            for(unsigned int j=0;j<meshs.veclayer[i].grid1.size();j++ )
+            {
+                out << meshs.veclayer[i].grid1[j].x() << " " << meshs.veclayer[i].grid1[j].y() << " " << meshs.veclayer[i].grid1[j].z() << " " << meshs.veclayer[i].grid1[j].w() << " ";
+            }
+
+            out << "\" useNormals=\"f\" color=\"1 0 0 1\"/>" << "\n";
+
+            out << "    <VisualModel name=\"grid2_"<< i <<"\" position=\"";
+
+            for(unsigned int j=0;j<meshs.positions.size();j++ )
+            {
+                out << meshs.positions[j].x() << " "  << meshs.positions[j].y() << " " << meshs.positions[j].z() << " ";
+            }
+
+            out << "\" quads=\"";
+            for(unsigned int j=0;j<meshs.veclayer[i].grid2.size();j++ )
+            {
+                out << meshs.veclayer[i].grid2[j].x() << " " << meshs.veclayer[i].grid2[j].y() << " " << meshs.veclayer[i].grid2[j].z() << " " << meshs.veclayer[i].grid2[j].w() << " ";
+            }
+
+            out << "\" useNormals=\"f\" color=\"1 0 0 1\"/>" << "\n";
+
+        }
+        out << "  </Node> " << "\n" "</Node>" << "\n";
+
+        file.close();
+
         return true;
     }
 

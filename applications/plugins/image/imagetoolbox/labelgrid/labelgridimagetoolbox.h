@@ -431,6 +431,13 @@ public:
         return pIsOut + (pIsIn-pIsOut)*ratio;
     }
 
+    /**
+     * @brief cutSection
+     * @return
+     *
+     * @todo fix error when the vector is composed of 2 points (out of the box, the lines pass throuth the box )
+     */
+
     bool cutSection()
     {
         if(!labelbox)return true;
@@ -446,13 +453,16 @@ public:
             VecCoord3 &vecIn = it->second;
             VecCoord3 vecOut;
 
+
+
             std::cout << "box " << box << std::endl;
             std::cout << "oldcurrentMap["<<it->first<<"] = | ";
+
             for(unsigned int i=0;i<vecIn.size()-1;i++)
             {
                 bool v0 = isInBox(vecIn[i],box,axis);
                 bool v1 = isInBox(vecIn[i+1],box,axis);
-                std::cout << vecIn[i] << " | ";
+                std::cout << vecIn[i] <<"#"<< v0<<"#"<<v1<<" | ";
                 if( v0 )
                 {
                     vecOut.push_back(vecIn[i]);
@@ -583,12 +593,19 @@ public:
             VecCoord3 vecOut;
             VecReal vecDistance; vecDistance.assign(resolution,0);
 
+            std::cout << resolution << "###"<< vecIn.size() << std::endl;
+
 
             //calculate distance total;
             double distance = calculateDistance(vecIn);
             VecReal vecDistError; vecDistError.assign(resolution,distance/(double)resolution);
 
+            std::cout << resolution << "##"<< vecIn.size() << std::endl;
+
+
             calculateVecReso(vecIn,vecOut,vecDistError);
+
+            std::cout << resolution << "##"<< vecIn.size() << std::endl;
 
             if(vecOut.size() != (resolution+1) )
                 std::cerr << "BUG: "<<__FILE__ <<":l" <<__LINE__<< " ->  resolution problem (" << vecOut.size() << "instead of" << resolution+1 << ")" << std::endl;
@@ -771,19 +788,27 @@ public:
     {
         helper::vector<int> used;
 
+        std::cout << "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1"<<std::endl;
 
         bool b1=selectionSection(used),b2=false,b3=false,b4=false;
+        std::cout << "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa2"<<std::endl;
         if(b1)
             b2 = copySection(used);
+        std::cout << "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa3"<<std::endl;
         if(b2)
             b3 = cutSection();
+        std::cout << "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa4"<<std::endl;
         if(b3)
             b4 = changeResolutionSection();
+        std::cout << "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa5"<<std::endl;
         if(b4)
         {   
             createGrid();
+            std::cout << "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa6"<<std::endl;
             calculateMesh();
+            std::cout << "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa7"<<std::endl;
             calculateNormals();
+            std::cout << "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa8"<<std::endl;
 
             //calculate3DPositionOfGrid();
         }

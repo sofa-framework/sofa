@@ -53,6 +53,11 @@ public:
     VecCoord3 positions;
     VecLayer veclayer;
 
+    void generateFile()
+    {
+
+    }
+
 
 };
 
