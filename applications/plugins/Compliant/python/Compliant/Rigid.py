@@ -162,18 +162,26 @@ class SphericalJoint(Joint):
                 self.name = 'spherical-joint'
                 
 
-# along x axis
+
+
 class RevoluteJoint(Joint):
 
-        def __init__(self):
+        def __init__(self, axis):
                 Joint.__init__(self)
-                self.dofs = [0, 0, 0, 1, 0, 0]
+                self.dofs[3 + axis] = 1
                 self.name = 'revolute-joint'
 
-# along x axis
 class CylindricalJoint(Joint):
 
-        def __init__(self):
+        def __init__(self, axis ):
                 Joint.__init__(self)
-                self.dofs = [1, 0, 0, 1, 0, 0]
+                self.dofs[0 + axis] = 1
+                self.dofs[3 + axis] = 1
                 self.name = 'cylindrical-joint'
+
+class PrismaticJoint(Joint):
+
+        def __init__(self, axis):
+                Joint.__init__(self)
+                self.dofs[0 + axis] = 1
+                self.name = 'prismatic-joint'
