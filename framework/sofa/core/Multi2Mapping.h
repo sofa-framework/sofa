@@ -331,7 +331,8 @@ public:
             const helper::vector< In2MatrixDeriv*>& /*outConstraint2*/ ,
             const helper::vector<const OutMatrixDeriv*>& /*inConstraint*/ )
     {
-        serr << "This mapping does not support constraints since Multi2Mapping::applyJT(const helper::vector< In1MatrixDeriv*>&, const helper::vector< In2MatrixDeriv*>&,helper::vector<const OutMatrixDeriv*>&) is not overloaded" << sendl;
+		if(this->f_printLog.getValue())
+			serr << "This mapping does not support constraints since Multi2Mapping::applyJT(const helper::vector< In1MatrixDeriv*>&, const helper::vector< In2MatrixDeriv*>&,helper::vector<const OutMatrixDeriv*>&) is not overloaded" << sendl;
     }
 #endif //SOFA_DEPRECATE_OLD_API
 
