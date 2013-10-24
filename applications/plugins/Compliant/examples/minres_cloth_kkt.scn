@@ -10,7 +10,7 @@
 	<AssembledSolver />
 	<MinresSolver verbose="0" iterations="20" precision="1e-3" relative="false" />
 
-    <GridMeshCreator name="loader" filename="nofile" resolution="10 10" trianglePattern="0" rotation="90 0 0 " scale="1 1 0" />
+    <GridMeshCreator name="loader" filename="nofile" resolution="20 20" trianglePattern="0" rotation="90 0 0 " scale="1 1 0" />
     <MeshTopology name="mesh" src="@loader" />
     <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" />
     <BoxConstraint box="-0.005 -0.005 -0.005    1.005 0.005 0.005  " />
@@ -19,7 +19,8 @@
         <MechanicalObject template="Vec1d"  name="extensionsDOF" />
         <EdgeSetTopologyContainer edges="@../mesh.edges" />
         <ExtensionMapping  />
-        <UniformCompliance name="ucomp" template="Vec1d" compliance="1.0e-3" dampingRatio="0.0"  isCompliance="1" />
+        <UniformCompliance name="ucomp" template="Vec1d" compliance="0" dampingRatio="0.0"  isCompliance="1" />
+				
     </Node>
 </Node>
 </Node>
