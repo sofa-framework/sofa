@@ -26,7 +26,6 @@
 #include <sofa/core/Multi2Mapping.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <plugins/Flexible/types/AffineTypes.h>
 
 namespace sofa
 {
@@ -69,7 +68,6 @@ template class Multi2Mapping< Vec1dTypes, Rigid3dTypes, Rigid3dTypes >;
 template class Multi2Mapping< Vec3dTypes, Rigid3dTypes, Vec3dTypes >;
 template class Multi2Mapping< Vec3dTypes, Rigid3dTypes, Rigid3dTypes >;
 template class Multi2Mapping< Vec3dTypes, Vec3dTypes, Vec3dTypes >;
-template class Multi2Mapping< Vec3dTypes, Affine3dTypes, Vec3dTypes >;
 #endif
 
 #ifndef SOFA_DOUBLE
@@ -77,7 +75,6 @@ template class Multi2Mapping< Vec3fTypes, Rigid3fTypes, Rigid3fTypes >;
 template class Multi2Mapping< Vec3fTypes, Rigid3fTypes, Vec3fTypes >;
 template class Multi2Mapping< Vec1fTypes, Rigid3fTypes, Rigid3fTypes >;
 template class Multi2Mapping< Vec3fTypes, Vec3fTypes, Vec3fTypes >;
-template class Multi2Mapping< Vec3fTypes, Affine3fTypes, Vec3fTypes >;
 #endif
 
 }
