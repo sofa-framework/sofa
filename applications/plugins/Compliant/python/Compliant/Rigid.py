@@ -1,5 +1,8 @@
 import Sofa
 
+from subprocess import Popen, PIPE
+
+
 # small helper
 def concat(x):
         return ' '.join(map(str, x))
@@ -30,7 +33,38 @@ def mesh_offset( mesh, path = "" ):
         str = subprocess.Popen("GenerateRigid " + mesh ).stdout.read()
         
 
+class MassInfo:
+        pass
+
+# density is kg/m^3
+def generate_rigid(filename, density = 1000.0):
+        cmd = Sofa.build_dir() + '/bin/GenerateRigid'
+        args = filename
+        output = Popen([cmd, args], stdout=PIPE)
+        line = output.stdout.read().split('\n')
+        start = 2
         
+        # print line 
+        
+        mass = float( line[start].split(' ')[1] )
+        volm = float( line[start + 1].split(' ')[1] )
+        inrt = map(float, line[start + 2].split(' ')[1:] )
+        com = map(float, line[start + 2].split(' ')[1:] )
+        
+        # TODO extract principal axes basis if needed
+        # or at least say that we scred up
+        
+        res = MassInfo()
+
+        # by default, GenerateRigid assumes 1000 kg/m^3 already
+        res.mass = (density / 1000.0) * mass
+        
+        res.inertia = [inrt[0], inrt[3 + 1], inrt[6 + 2] ]
+        res.inertia = [(density / 1000.0) * x for x in res.inertia]
+        res.com = com
+
+        return res
+
 # TODO provide synchronized members with sofa states
 class Body:
         
@@ -45,6 +79,12 @@ class Body:
                 self.color = [1, 1, 1]
                 # TODO more if needed (scale, color)
                 
+        def mass_from_mesh(self, name, density = 1000.0):
+                info = generate_rigid(name, density)
+                self.mass = info.mass
+                self.inertia = info.inertia
+                
+                # TODO handle com/principal basis
 
         def insert(self, node):
                 res = node.createChild( self.name )
@@ -58,7 +98,6 @@ class Body:
                                         inertia = concat(self.inertia))
 
                 
-
                 # visual
                 if self.visual != None:
                         visual_template = 'ExtVec3f'
