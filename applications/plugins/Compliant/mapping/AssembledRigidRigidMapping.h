@@ -29,7 +29,7 @@
 #include "initCompliant.h"
 
 #include "utils/se3.h" 
-#include "utils/pair.h" 
+#include "utils/pair.h"
 
 #include <sofa/core/ObjectFactory.h>
 
@@ -78,8 +78,8 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
   protected:
 	typedef SE3< typename TIn::Real > se3;
 	
-	typedef std::pair<unsigned, typename TIn::Coord> source_type;
-	Data< vector< source_type > > source;
+    typedef defaulttype::SerializablePair<unsigned, typename TIn::Coord> source_type;
+    Data< vector< source_type > > source;
  
 	typedef AssembledRigidRigidMapping self;
 	
@@ -88,16 +88,16 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
 		typename self::jacobian_type::CompressedMatrix& J = this->jacobian.compressedMatrix;
 
 		assert( in_pos.size() );
-		assert( source.getValue().size() );
+        assert( source.getValue().size() );
 		
-		J.resize(6 * source.getValue().size(),
+        J.resize(6 * source.getValue().size(),
 		         6 * in_pos.size() );
 		J.setZero();
 		
-		for(unsigned i = 0, n = source.getValue().size(); i < n; ++i) {
-			const source_type& s = source.getValue()[i];
+        for(unsigned i = 0, n = source.getValue().size(); i < n; ++i) {
+            const source_type& s = source.getValue()[i];
 			
-			typename se3::mat66 block = se3::dR(s.second, in_pos[ s.first ] );
+            typename se3::mat66 block = se3::dR(s.second(), in_pos[ s.first() ] );
 			
 			for(unsigned j = 0; j < 6; ++j) {
 				unsigned row = 6 * i + j;
@@ -105,7 +105,7 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
 				J.startVec( row );
 				
 				for(unsigned k = 0; k < 6; ++k) {
-					unsigned col = 6 * s.first + k;
+                    unsigned col = 6 * s.first() + k;
 					J.insertBack(row, col) = block(j, k);
 				}
 			}			
@@ -118,14 +118,15 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
 	
 	virtual void apply(typename self::out_pos_type& out,
 	                   const typename self::in_pos_type& in ) {
-		assert( out.size() == source.getValue().size() );
+        assert( out.size() == source.getValue().size() );
 		
-		for(unsigned i = 0, n = source.getValue().size(); i < n; ++i) {
-			const source_type& s = source.getValue()[i];
-			out[ i ] = se3::prod( in[ s.first ], s.second );
+        for(unsigned i = 0, n = source.getValue().size(); i < n; ++i) {
+            const source_type& s = source.getValue()[i];
+            out[ i ] = se3::prod( in[ s.first() ], s.second() );
 		}
 		
 	}
+
 };
 
 
