@@ -133,7 +133,7 @@ public:
     SortingPair(int id, double d) {i=id; distance=d;}
     double distance;
     unsigned int i;
-    bool operator<(const SortingPair& p)
+    bool operator<(const SortingPair& p) const
     {
         return distance<p.distance;
     }

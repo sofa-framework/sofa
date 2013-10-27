@@ -91,7 +91,12 @@ AddCompilerDefinitions("SOFA_BUILD_FRAME")
 AddLinkerDependencies(SofaGuiQt SofaSparseSolver SofaEigen2Solver)
 
 if(UNIX)
-    AddLinkerDependencies("X11")
+    find_package(X11)
+    if(NOT X11_FOUND)
+        message(FATAL_ERROR "Failed to find X11 which is required to build frame plugin")
+    endif(NOT X11_FOUND)
+    AddLinkerDependencies(${X11_X11_LIB})
+    include_directories(${X11_X11_INCLUDE_PATH})
 endif()
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

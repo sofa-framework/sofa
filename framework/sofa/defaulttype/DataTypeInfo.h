@@ -311,10 +311,10 @@ struct BoolTypeInfo
     }
 
     template<typename T>
-    static void setValue(std::vector<DataType>::reference type, unsigned int index, const T& value )
+    static void setValue(std::vector<DataType>::reference type, unsigned int index, const T& v )
     {
         if (index != 0) return;
-        type = (value != 0);
+        type = (v != 0);
     }
 
     static void getValueString(const DataType &type, unsigned int index, std::string& value)
