@@ -122,11 +122,11 @@ void HookeMaterial3<MaterialTypes>::computeStress  ( VecStrain1& stresses, VecSt
 {
     for(unsigned int i=0; i<stresses.size(); i++)
     {
-        stresses[i][0] = hookeStress(strains[i][0], stressDiagonal, stressOffDiagonal,  shear);
+        stresses[i][0] = this->hookeStress(strains[i][0], stressDiagonal, stressOffDiagonal,  shear);
 
         if( stressStrainMatrices != NULL )
         {
-            fillHookeMatrix( (*stressStrainMatrices)[i], stressDiagonal, stressOffDiagonal,  shear );
+            this->fillHookeMatrix( (*stressStrainMatrices)[i], stressDiagonal, stressOffDiagonal,  shear );
         }
     }
 }
@@ -140,12 +140,12 @@ void HookeMaterial3<MaterialTypes>::computeStress  ( VecStrain4& stresses, VecSt
     {
         for(unsigned int j=0; j<4; j++)
         {
-            stresses[i][j] = hookeStress(strains[i][j], stressDiagonal, stressOffDiagonal,  shear);
+            stresses[i][j] = this->hookeStress(strains[i][j], stressDiagonal, stressOffDiagonal,  shear);
         }
 
         if( stressStrainMatrices != NULL )
         {
-            fillHookeMatrix( (*stressStrainMatrices)[i], stressDiagonal, stressOffDiagonal,  shear );
+            this->fillHookeMatrix( (*stressStrainMatrices)[i], stressDiagonal, stressOffDiagonal,  shear );
         }
     }
 }
@@ -158,12 +158,12 @@ void HookeMaterial3<MaterialTypes>::computeStress  ( VecStrain10& stresses, VecS
     {
         for(unsigned int j=0; j<10; j++)
         {
-            stresses[i][j] = hookeStress(strains[i][j], stressDiagonal, stressOffDiagonal,  shear);
+            stresses[i][j] = this->hookeStress(strains[i][j], stressDiagonal, stressOffDiagonal,  shear);
         }
 
         if( stressStrainMatrices != NULL )
         {
-            fillHookeMatrix( (*stressStrainMatrices)[i], stressDiagonal, stressOffDiagonal,  shear );
+            this->fillHookeMatrix( (*stressStrainMatrices)[i], stressDiagonal, stressOffDiagonal,  shear );
         }
     }
 }
@@ -174,7 +174,7 @@ void HookeMaterial3<MaterialTypes>::computeStressChange  ( VecStrain1& stressCha
 {
     for(unsigned int i=0; i<stressChanges.size(); i++)
     {
-        stressChanges[i][0] = hookeStress(strainChanges[i][0], stressDiagonal, stressOffDiagonal,  shear);
+        stressChanges[i][0] = this->hookeStress(strainChanges[i][0], stressDiagonal, stressOffDiagonal,  shear);
     }
 }
 // WARNING : The strain is defined as exx, eyy, ezz, exy, eyz, ezx
@@ -185,7 +185,7 @@ void HookeMaterial3<MaterialTypes>::computeStressChange  ( VecStrain4& stressCha
     {
         for(unsigned int j=0; j<4; j++)
         {
-            stressChanges[i][j] = hookeStress(strainChanges[i][j], stressDiagonal, stressOffDiagonal,  shear);
+            stressChanges[i][j] = this->hookeStress(strainChanges[i][j], stressDiagonal, stressOffDiagonal,  shear);
         }
     }
 }
@@ -197,7 +197,7 @@ void HookeMaterial3<MaterialTypes>::computeStressChange  ( VecStrain10& stressCh
     {
         for(unsigned int j=0; j<10; j++)
         {
-            stressChanges[i][j] = hookeStress(strainChanges[i][j], stressDiagonal, stressOffDiagonal,  shear);
+            stressChanges[i][j] = this->hookeStress(strainChanges[i][j], stressDiagonal, stressOffDiagonal,  shear);
         }
     }
 }

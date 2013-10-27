@@ -144,6 +144,18 @@ if(SOFA-PLUGIN_IMAGE)
     
 	include_directories("${SOFA_EXTLIBS_DIR}")
 	include_directories("${SOFA_APPLICATIONS_PLUGINS_DIR}")
+
+
+if(APPLE)
+#    find_library(X11_LIBRARIES NAMES X11)
+    find_package(X11)
+    if(NOT X11_FOUND)
+        message(FATAL_ERROR "Failed to find X11 which is required to build image plugin")
+    endif(NOT X11_FOUND)
+    AddLinkerDependencies(${X11_X11_LIB})
+    include_directories(${X11_X11_INCLUDE_PATH})
+endif()
+
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})

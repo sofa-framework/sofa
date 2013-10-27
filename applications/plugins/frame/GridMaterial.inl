@@ -196,11 +196,11 @@ void GridMaterial< MaterialTypes>::computeStress  ( VecStrain1& stresses, VecStr
         Str& stress = stresses[i][0];
         const Str& strain = strains[i][0];
 
-        stress = hookeStress( strain, stressDiagonal, stressOffDiagonal, shear );
+        stress = this->hookeStress( strain, stressDiagonal, stressOffDiagonal, shear );
 
         if( stressStrainMatrices != NULL )
         {
-            fillHookeMatrix( (*stressStrainMatrices)[i], stressDiagonal, stressOffDiagonal,  shear );
+            this->fillHookeMatrix( (*stressStrainMatrices)[i], stressDiagonal, stressOffDiagonal,  shear );
         }
     }
 }
@@ -227,11 +227,11 @@ void GridMaterial< MaterialTypes>::computeStress  ( VecStrain4& stresses, VecStr
             Str& stress = stresses[i][j];
             const Str& strain = strains[i][j];
 
-            stress = hookeStress( strain, stressDiagonal, stressOffDiagonal, shear );
+            stress = this->hookeStress( strain, stressDiagonal, stressOffDiagonal, shear );
 
             if( stressStrainMatrices != NULL )
             {
-                fillHookeMatrix( (*stressStrainMatrices)[i], stressDiagonal, stressOffDiagonal,  shear );
+                this->fillHookeMatrix( (*stressStrainMatrices)[i], stressDiagonal, stressOffDiagonal,  shear );
             }
         }
     }
@@ -258,11 +258,11 @@ void GridMaterial< MaterialTypes>::computeStress  ( VecStrain10& stresses, VecSt
             Str& stress = stresses[i][j];
             const Str& strain = strains[i][j];
 
-            stress = hookeStress( strain, stressDiagonal, stressOffDiagonal, shear );
+            stress = this->hookeStress( strain, stressDiagonal, stressOffDiagonal, shear );
 
             if( stressStrainMatrices != NULL )
             {
-                fillHookeMatrix( (*stressStrainMatrices)[i], stressDiagonal, stressOffDiagonal,  shear );
+                this->fillHookeMatrix( (*stressStrainMatrices)[i], stressDiagonal, stressOffDiagonal,  shear );
             }
         }
     }
@@ -287,7 +287,7 @@ void GridMaterial< MaterialTypes>::computeStressChange  ( VecStrain1& stresses, 
         for(unsigned int j=0; j<1; j++ )
         {
 
-            stresses[i][j] = hookeStress( strains[i][j], stressDiagonal, stressOffDiagonal, shear );
+            stresses[i][j] = this->hookeStress( strains[i][j], stressDiagonal, stressOffDiagonal, shear );
         }
     }
 }
@@ -311,7 +311,7 @@ void GridMaterial< MaterialTypes>::computeStressChange  ( VecStrain4& stresses, 
         for(unsigned int j=0; j<4; j++ )
         {
 
-            stresses[i][j] = hookeStress( strains[i][j], stressDiagonal, stressOffDiagonal, shear );
+            stresses[i][j] = this->hookeStress( strains[i][j], stressDiagonal, stressOffDiagonal, shear );
         }
     }
 }
@@ -335,7 +335,7 @@ void GridMaterial< MaterialTypes>::computeStressChange  ( VecStrain10& stresses,
         for(unsigned int j=0; j<10; j++ )
         {
 
-            stresses[i][j] = hookeStress( strains[i][j], stressDiagonal, stressOffDiagonal, shear );
+            stresses[i][j] = this->hookeStress( strains[i][j], stressDiagonal, stressOffDiagonal, shear );
         }
     }
 }

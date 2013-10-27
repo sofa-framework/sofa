@@ -125,6 +125,7 @@ template<bool IsPhysical>
 class BaseFrameBlendingMapping : public virtual core::objectmodel::BaseObject
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(BaseFrameBlendingMapping,IsPhysical),core::objectmodel::BaseObject);
     typedef Vec<3,double> Vec3d;
 
     static const bool isPhysical = IsPhysical;
@@ -150,6 +151,7 @@ template<class TIn, bool IsPhysical>
 class FrameData : public virtual BaseFrameBlendingMapping<IsPhysical>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE2(FrameData,TIn,IsPhysical),SOFA_TEMPLATE(BaseFrameBlendingMapping,IsPhysical));
     // Input types
     typedef TIn In;
     typedef typename In::Real InReal;
@@ -172,6 +174,7 @@ template<class TOut, bool IsPhysical>
 class SampleData : public virtual BaseFrameBlendingMapping<IsPhysical>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE2(SampleData,TOut,IsPhysical),SOFA_TEMPLATE(BaseFrameBlendingMapping,IsPhysical));
     // Output types
     typedef TOut Out;
     typedef typename OutDataTypesInfo<Out>::MaterialCoord MaterialCoord;

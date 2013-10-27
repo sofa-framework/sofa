@@ -32,9 +32,9 @@
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/component/projectiveconstraintset/SkeletalMotionConstraint.h>
 
-#include <assimp/assimp.hpp>
-#include <assimp/aiScene.h>
-#include <assimp/aiPostProcess.h>
+#include <assimp/Importer.hpp>      // C++ importer interface
+#include <assimp/scene.h>           // Output data structure
+#include <assimp/postprocess.h>     // Post processing flags
 
 namespace sofa
 {
