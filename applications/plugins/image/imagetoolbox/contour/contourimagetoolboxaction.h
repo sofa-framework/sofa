@@ -6,7 +6,7 @@
 #include <QGraphicsLineItem>
 
 
-
+#include <sofa/defaulttype/VecTypes.h>
 #include "../labelimagetoolboxaction.h"
 //#include "contourimagetoolbox.h"
 
