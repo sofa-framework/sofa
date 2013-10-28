@@ -70,7 +70,7 @@ public:
     SOFA_ABSTRACT_CLASS(CollisionModel, objectmodel::BaseObject);
 
     enum{
-        AABB_TYPE,
+        AABB_TYPE = 0,
         OBB_TYPE,
         CAPSULE_TYPE,
         SPHERE_TYPE,
@@ -79,7 +79,8 @@ public:
         POINT_TYPE,
         TETRAHEDRON_TYPE,
         RDISTANCE_GRIDE_TYPE,
-        FFDDISTANCE_GRIDE_TYPE
+        FFDDISTANCE_GRIDE_TYPE,
+        ENUM_TYPE_SIZE
     };
 
     typedef CollisionElementIterator Iterator;

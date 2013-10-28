@@ -28,6 +28,9 @@
 #include <sofa/component/collision/PointModel.h>
 #include <sofa/component/collision/LineModel.h>
 #include <sofa/component/collision/TriangleModel.h>
+#include <sofa/component/collision/OBBModel.h>
+#include <sofa/component/collision/CapsuleModel.h>
+
 
 
 namespace sofa
@@ -55,6 +58,18 @@ Creator<Contact::Factory, DisabledContact<TriangleModel, PointModel> > TriangleP
 Creator<Contact::Factory, DisabledContact<TriangleModel, LineModel> > TriangleLineDisabledContactClass("disabled",true);
 Creator<Contact::Factory, DisabledContact<TriangleModel, TriangleModel> > TriangleTriangleDisabledContactClass("disabled",true);
 
+
+Creator<Contact::Factory, DisabledContact<TriangleModel, RigidSphereModel> > TriangleRigidSphereDisabledContactClass("disabled",true);
+Creator<Contact::Factory, DisabledContact<CapsuleModel, TriangleModel> > CapsuleTriangleDisabledContactClass("disabled",true);
+Creator<Contact::Factory, DisabledContact<CapsuleModel, LineModel> > CapsuleLineDisabledContactClass("disabled",true);
+Creator<Contact::Factory, DisabledContact<CapsuleModel, CapsuleModel> > CapsuleCapsuleDisabledContactClass("disabled",true);
+Creator<Contact::Factory, DisabledContact<CapsuleModel, SphereModel> > CapsuleSphereDisabledContactClass("disabled",true);
+Creator<Contact::Factory, DisabledContact<CapsuleModel, RigidSphereModel> > CapsuleRigidSphereDisabledContactClass("disabled",true);
+Creator<Contact::Factory, DisabledContact<OBBModel, OBBModel> > OBBOBBDisabledContactClass("disabled",true);
+Creator<Contact::Factory, DisabledContact<CapsuleModel, OBBModel> > CapsuleOBBDisabledContactClass("disabled",true);
+Creator<Contact::Factory, DisabledContact<SphereModel, OBBModel> > SphereOBBDisabledContactClass("disabled",true);
+Creator<Contact::Factory, DisabledContact<RigidSphereModel, OBBModel> > RigidSphereOBBDisabledContactClass("disabled",true);
+Creator<Contact::Factory, DisabledContact<TriangleModel, OBBModel> > TriangleOBBDisabledContactClass("disabled",true);
 
 } // namespace collision
 

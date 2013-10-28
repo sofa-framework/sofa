@@ -24,6 +24,8 @@
 ******************************************************************************/
 #include <sofa/component/collision/StickContactConstraint.inl>
 #include <sofa/component/collision/BarycentricContactMapper.h>
+#include <sofa/component/collision/RigidContactMapper.h>
+
 
 namespace sofa
 {
@@ -51,6 +53,21 @@ Creator<Contact::Factory, StickContactConstraint<TriangleModel, TriangleModel> >
 Creator<Contact::Factory, StickContactConstraint<SphereModel, SphereModel> > SphereSphereStickContactConstraintClass("StickContactConstraint",true);
 Creator<Contact::Factory, StickContactConstraint<SphereModel, PointModel> > SpherePointStickContactConstraintClass("StickContactConstraint",true);
 
+
+//Creator<Contact::Factory, StickContactConstraint<TriangleModel, RigidSphereModel> > TriangleRigidSphereContactConstraintClass("StickContactConstraint",true);
+//Creator<Contact::Factory, StickContactConstraint<TriangleModel, PointModel> > TrianglePointContactConstraintClass("StickContactConstraint",true);
+//Creator<Contact::Factory, StickContactConstraint<TriangleModel, LineModel> > TriangleLineContactConstraintClass("StickContactConstraint",true);
+//Creator<Contact::Factory, StickContactConstraint<TriangleModel, TriangleModel> > TriangleTriangleContactConstraintClass("StickContactConstraint",true);
+//Creator<Contact::Factory, StickContactConstraint<CapsuleModel, TriangleModel> > CapsuleTriangleContactConstraintClass("StickContactConstraint",true);
+//Creator<Contact::Factory, StickContactConstraint<CapsuleModel, LineModel> > CapsuleLineContactConstraintClass("StickContactConstraint",true);
+//Creator<Contact::Factory, StickContactConstraint<CapsuleModel, CapsuleModel> > CapsuleCapsuleContactConstraintClass("StickContactConstraint",true);
+//Creator<Contact::Factory, StickContactConstraint<CapsuleModel, SphereModel> > CapsuleSphereContactConstraintClass("StickContactConstraint",true);
+//Creator<Contact::Factory, StickContactConstraint<CapsuleModel, RigidSphereModel> > CapsuleRigidSphereContactConstraintClass("StickContactConstraint",true);
+//Creator<Contact::Factory, StickContactConstraint<OBBModel, OBBModel> > OBBOBBContactConstraintClass("StickContactConstraint",true);
+//Creator<Contact::Factory, StickContactConstraint<CapsuleModel, OBBModel> > CapsuleOBBContactConstraintClass("StickContactConstraint",true);
+//Creator<Contact::Factory, StickContactConstraint<SphereModel, OBBModel> > SphereOBBContactConstraintClass("StickContactConstraint",true);
+//Creator<Contact::Factory, StickContactConstraint<RigidSphereModel, OBBModel> > RigidSphereOBBContactConstraintClass("StickContactConstraint",true);
+//Creator<Contact::Factory, StickContactConstraint<TriangleModel, OBBModel> > TriangleOBBContactConstraintClass("StickContactConstraint",true);
 } // namespace collision
 
 } // namespace component
