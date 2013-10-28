@@ -2,12 +2,12 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
 
-    ../SparsePARDISOSolver.h
+    ../linearsolver/SparsePARDISOSolver.h
 
     )
 set(SOURCE_FILES
 
-    ../SparsePARDISOSolver.cpp
+    ../linearsolver/SparsePARDISOSolver.cpp
 
     )
 
