@@ -25,7 +25,7 @@
 #ifndef SOFA_GPU_OPENCLMEMORYMANAGER_H
 #define SOFA_GPU_OPENCLMEMORYMANAGER_H
 
-#include <gl/glew.h>
+#include <GL/glew.h>
 #include "myopencl.h"
 #include <sofa/helper/MemoryManager.h>
 #include <sofa/core/objectmodel/BaseClass.h>
