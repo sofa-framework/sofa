@@ -24,7 +24,9 @@ HEADERS += \
     imagetoolbox/depth/depthimagetoolbox.h \
     imagetoolbox/meshgeneration/meshgenerationimagetoolboxaction.h \
     imagetoolbox/meshgeneration/meshgenerationimagetoolbox.h \
-    imagetoolbox/depth/meshData.h
+    imagetoolbox/depth/meshData.h \
+    imagetoolbox/zonegenerator/zonegeneratorimagetoolbox.h \
+    imagetoolbox/zonegenerator/zonegeneratorimagetoolboxaction.h
 
 
 SOURCES += \
@@ -45,6 +47,8 @@ SOURCES += \
     imagetoolbox/depth/depthimagetoolboxaction.cpp \
     imagetoolbox/depth/depthimagetoolbox.cpp \
     imagetoolbox/meshgeneration/meshgenerationimagetoolboxaction.cpp \
-    imagetoolbox/meshgeneration/meshgenerationimagetoolbox.cpp
+    imagetoolbox/meshgeneration/meshgenerationimagetoolbox.cpp \
+    imagetoolbox/zonegenerator/zonegeneratorimagetoolbox.cpp \
+    imagetoolbox/zonegenerator/zonegeneratorimagetoolboxaction.cpp
 
 
