@@ -40,30 +40,15 @@ def createScene(root):
     moving_offset = Rigid.Frame()
     moving_offset.translation = [0, -1, 0]
     
-    joint = Rigid.Joint()
+    joint = Rigid.SphericalJoint()
     
     # only rotation dofs
     joint.append(base_node, base_offset)
     joint.append(moving_node, moving_offset)
     
-    dofs = [0, 0, 0, 1, 1, 1]
+    joint.stiffness = 5e3
 
-    stiffness = 5e3
-    value = Rigid.concat( [x / stiffness for x in dofs ] )
-    
-    add_compliance = False
-    info = joint.insert(scene, add_compliance)
-    
-    # Node.removeChild does not work :-/
-    
-    compliance = info.node.createObject('DiagonalCompliance',
-                                        name = 'compliance',
-                                        template = 'Vec6d',
-                                        compliance = value)
-    
-    # don't stabilize rotational compliance
-    stab = info.node.createObject('Stabilization', mask = '1 1 1 0 0 0' )
-    
+    info = joint.insert(scene)
 
     
   
