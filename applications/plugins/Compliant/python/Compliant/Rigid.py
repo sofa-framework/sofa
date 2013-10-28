@@ -77,6 +77,7 @@ class Body:
                 self.inertia = [1, 1, 1] 
                 self.template = 'Rigid'
                 self.color = [1, 1, 1]
+
                 # TODO more if needed (scale, color)
                 
         def mass_from_mesh(self, name, density = 1000.0):
@@ -131,7 +132,14 @@ class Joint:
                 self.offset = []
                 self.damping = 0
                 self.name = name
+
+                # hard constraints compliance
                 self.compliance = 0
+                
+                # free dof stiffness/damping
+                self.stiffness = 0
+                self.damping = 0
+
                 
         def append(self, node, offset = None):
                 self.body.append(node)
@@ -141,7 +149,7 @@ class Joint:
         class Node:
                 pass
         
-        def insert(self, parent, add_compliance = True):
+        def insert(self, parent):
                 # build input data for multimapping
                 input = []
                 for b, o in zip(self.body, self.offset):
@@ -168,8 +176,19 @@ class Joint:
                                          name = 'dofs', 
                                          position = '0 0 0 0 0 0' )
                 
+                constrained_dofs = [ (1 - d) for d in self.dofs ]
+
                 # TODO handle damping
-                mask = [ (1 - d) for d in self.dofs ]
+                if self.stiffness > 0:
+                        # stiffness: we map all dofs
+                        mask = [1, 1, 1, 1, 1, 1]
+                else:
+                        # only constrained dofs are needed
+                        mask = constrained_dofs
+                
+                value = [ ( 1 - x) * self.compliance + # no dof: compliance
+                          x * ( 1 / self.stiffness if self.stiffness > 0 else 0 ) # dof: 1 / stiffness or zero
+                          for x in self.dofs ]
                 
                 map = node.createObject('RigidJointMultiMapping',
                                         name = 'mapping', 
@@ -179,13 +198,14 @@ class Joint:
                                         dofs = concat(mask),
                                         pairs = "0 0")
                 
-                if add_compliance:
-                        compliance = node.createObject('UniformCompliance',
-                                                       name = 'compliance',
-                                                       template = 'Vec6d',
-                                                       compliance = self.compliance)
-                        stab = node.createObject('Stabilization')
-
+                compliance = node.createObject('DiagonalCompliance',
+                                               name = 'compliance',
+                                               template = 'Vec6d',
+                                               compliance = concat(value))
+                
+                # only stabilize constraint dofs
+                stab = node.createObject('Stabilization', mask = concat( constrained_dofs ) )
+                
                 # for some reason return node is unable to lookup for
                 # children using getChild() so in the meantime...
                 res = Joint.Node()
