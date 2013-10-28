@@ -13,7 +13,7 @@ class Frame:
                 self.translation = [0, 0, 0]
                 self.rotation = [0, 0, 0, 1]
                 
-        def mstate(self, parent, **args):
+        def insert(self, parent, **args):
                 return parent.createObject('MechanicalObject', 
                                            template = 'Rigid',
                                            translation = concat(self.translation),
@@ -49,7 +49,7 @@ def generate_rigid(filename, density = 1000.0):
         mass = float( line[start].split(' ')[1] )
         volm = float( line[start + 1].split(' ')[1] )
         inrt = map(float, line[start + 2].split(' ')[1:] )
-        com = map(float, line[start + 2].split(' ')[1:] )
+        com = map(float, line[start + 3].split(' ')[1:] )
         
         # TODO extract principal axes basis if needed
         # or at least say that we scred up
@@ -59,8 +59,7 @@ def generate_rigid(filename, density = 1000.0):
         # by default, GenerateRigid assumes 1000 kg/m^3 already
         res.mass = (density / 1000.0) * mass
         
-        res.inertia = [inrt[0], inrt[3 + 1], inrt[6 + 2] ]
-        res.inertia = [(density / 1000.0) * x for x in res.inertia]
+        res.inertia = [(density / 1000.0) * x for x in inrt]
         res.com = com
 
         return res
@@ -77,27 +76,44 @@ class Body:
                 self.inertia = [1, 1, 1] 
                 self.template = 'Rigid'
                 self.color = [1, 1, 1]
+                self.offset = None
 
                 # TODO more if needed (scale, color)
                 
         def mass_from_mesh(self, name, density = 1000.0):
                 info = generate_rigid(name, density)
-                self.mass = info.mass
-                self.inertia = info.inertia
-                
-                # TODO handle com/principal basis
 
+                self.mass = info.mass
+                
+                # TODO svd inertia tensor, extract rotation quaternion
+                
+                self.inertia = [info.inertia[0], 
+                                info.inertia[3 + 1],
+                                info.inertia[6 + 2]]
+                
+                self.offset = Frame()
+                self.offset.translation = info.com
+                
+                # TODO handle principal axes
+                
         def insert(self, node):
                 res = node.createChild( self.name )
 
-                dofs = self.dofs.mstate(res, name = 'dofs' )
+                dofs = self.dofs.insert(res, name = 'dofs' )
                 
-                mass = res.createObject('RigidMass', 
-                                        template = self.template, 
-                                        name = 'mass', 
-                                        mass = self.mass, 
-                                        inertia = concat(self.inertia))
-
+                mass_node = res
+                
+                if self.offset != None:
+                        mass_node = res.createChild('mapped mass')
+                        self.offset.insert(mass_node, name = 'dofs')
+                        mapping = mass_node.createObject('AssembledRigidRigidMapping',
+                                                         template = 'Rigid',
+                                                         source = '0 ' + str( self.offset) )
+                mass = mass_node.createObject('RigidMass', 
+                                              template = self.template, 
+                                              name = 'mass', 
+                                              mass = self.mass, 
+                                              inertia = concat(self.inertia))
                 
                 # visual
                 if self.visual != None:
