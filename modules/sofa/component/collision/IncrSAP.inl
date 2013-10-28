@@ -213,6 +213,15 @@ void TIncrSAP<List,Allocator>::init()
     reinit();
 }
 
+//template <template<class T,class Allocator> class List,template <class T> class Allocator>
+//void TIncrSAP<List,Allocator>::initIntersectors(){
+//    for(typename std::set<CollModID>::const_iterator it = collisionModels.begin() ; it != collisionModels.end() ; ++it){
+//        for(std::set<CollModID>::const_iterator it2 = it ; it2 != collisionModels.end() ; ++it2){
+
+//        }
+//    }
+//}
+
 template <template<class T,class Allocator> class List,template <class T> class Allocator>
 void TIncrSAP<List,Allocator>::reinit()
 { 
@@ -247,6 +256,7 @@ template <template<class T,class Allocator> class List,template <class T> class 
 inline void TIncrSAP<List,Allocator>::addCollisionModel(core::CollisionModel *cm)
 {
     if(add(cm)){
+        collisionModelTypes.insert(CollModID(cm->getEnumType(),cm));
         _nothing_added = false;
 
         CubeModel * cube_model = dynamic_cast<CubeModel *>(cm->getLast()->getPrevious());

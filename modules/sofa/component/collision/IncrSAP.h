@@ -44,6 +44,7 @@
 #include <sofa/component/collision/SphereModel.h>
 #include <sofa/component/collision/CollisionPM.h>
 #include <sofa/helper/AdvancedTimer.h>
+#include <vector>
 
 namespace sofa
 {
@@ -212,6 +213,12 @@ private:
     void reinitDetection();
 
     /**
+      *Inits the field intersectors used to find the right intersector between the two collision models with better speed compared to
+      *find intersector.
+      */
+    void initIntersectors();
+
+    /**
       *Used in initialisatio of IncrSAP. It clears all the IncrSAP fields.
       */
     void purge();
@@ -250,6 +257,22 @@ private:
 
 
     std::set<core::CollisionModel*> collisionModels;
+
+    struct CollModID{
+        int enum_type;
+        core::CollisionModel* sample;//just one collision model used to find the intersector further
+
+        CollModID(){}
+        CollModID(int id,core::CollisionModel* cm) : enum_type(id),sample(cm){}
+
+        bool operator<(const CollModID & other)const{
+            return this->enum_type < other.enum_type;
+        }
+    };
+
+
+    std::set<CollModID> collisionModelTypes;
+    core::collision::ElementIntersector* intersectors[core::CollisionModel::ENUM_TYPE_SIZE][core::CollisionModel::ENUM_TYPE_SIZE];
 protected:
     TIncrSAP();
 
