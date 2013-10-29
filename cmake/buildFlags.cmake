@@ -47,7 +47,9 @@ if(WIN32)
 endif()
 
 # NDEBUG preprocessor macro
-if(NOT CMAKE_BUILD_TYPE MATCHES "Debug")
+if (WIN32 OR APPLE)
+	# NDEBUG and _DEBUG are automatically set in the default c/cxx flags of the right configurations 
+elseif(NOT CMAKE_BUILD_TYPE MATCHES "Debug")
     list(APPEND compilerDefines "NDEBUG")
 endif()
 
@@ -57,7 +59,12 @@ if(PS3)
 endif() 
  	
 # SOFA_DEBUG preprocessor macro
-if(CMAKE_BUILD_TYPE MATCHES "Debug")
+if (WIN32 OR APPLE)
+	# Reminder: multi-configuration generators like Visual Studio and XCode do not use CMAKE_BUILD_TYPE,
+	# as they generate all configurations in the project, not just one at a time!
+	set (CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DSOFA_DEBUG")
+	set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DSOFA_DEBUG")
+elseif(CMAKE_BUILD_TYPE MATCHES "Debug")
     list(APPEND compilerDefines "SOFA_DEBUG")
 endif()
 
