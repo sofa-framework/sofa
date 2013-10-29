@@ -217,9 +217,9 @@ protected:
             }
             case QR:
             {
-//#ifdef USING_OMP_PRAGMAS
-//        #pragma omp parallel for
-//#endif
+#ifdef USING_OMP_PRAGMAS
+        #pragma omp parallel for
+#endif
                 for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
                 {
                     this->jacobian[i].addDForce_qr( parentForce[i], parentDisplacement[i], childForce[i], mparams->kFactor() );
@@ -228,9 +228,9 @@ protected:
             }
             case POLAR:
             {
-//#ifdef USING_OMP_PRAGMAS
-//        #pragma omp parallel for
-//#endif
+#ifdef USING_OMP_PRAGMAS
+        #pragma omp parallel for
+#endif
                 for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
                 {
                     this->jacobian[i].addDForce_polar( parentForce[i], parentDisplacement[i], childForce[i], mparams->kFactor() );
@@ -239,9 +239,9 @@ protected:
             }
             case SVD:
             {
-//#ifdef USING_OMP_PRAGMAS
-//        #pragma omp parallel for
-//#endif
+#ifdef USING_OMP_PRAGMAS
+        #pragma omp parallel for
+#endif
                 for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
                 {
                     this->jacobian[i].addDForce_svd( parentForce[i], parentDisplacement[i], childForce[i], mparams->kFactor() );

@@ -209,9 +209,9 @@ public:
             InVecDeriv&  in = *dIn.beginEdit();
             const OutVecDeriv&  out = dOut.getValue();
 
-//#ifdef USING_OMP_PRAGMAS
-//        #pragma omp parallel for
-//#endif
+#ifdef USING_OMP_PRAGMAS
+        #pragma omp parallel for
+#endif
             for(unsigned int i=0; i<jacobian.size(); i++)
             {
                 jacobian[i].addMultTranspose(in[i],out[i]);
@@ -248,10 +248,9 @@ public:
         }
         else
         {
-//#ifdef USING_OMP_PRAGMAS
-//        #pragma omp parallel for
-//#endif
-
+#ifdef USING_OMP_PRAGMAS
+        #pragma omp parallel for
+#endif
             for(unsigned int i=0; i<jacobian.size(); i++)
             {
                 jacobian[i].addDForce( parentForce[i], parentDisplacement[i], childForce[i], mparams->kFactor() );

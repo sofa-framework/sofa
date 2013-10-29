@@ -264,6 +264,7 @@ public:
 
     BaseShapeFunction* _shapeFunction;        ///< where the weights are computed
     Data<vector<VRef> > f_index;            ///< The numChildren * numRefs column indices. index[i][j] is the index of the j-th parent influencing child i.
+    vector<VRef> f_index_parentToChild;            ///< Constructed at init from f_index to parallelize applyJT. index_parentToChild[i][j] is the index of the j-th children influenced by parent i.
     Data<vector<VReal> >       f_w;
     Data<vector<VGradient> >   f_dw;
     Data<vector<VHessian> >    f_ddw;
