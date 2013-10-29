@@ -30,6 +30,9 @@
 
 #ifdef SOFA_HAVE_METIS
 extern "C" {
+// METIS uses MPI, which usually defaults to OpenMPI in GNU/Linux systems. The following macro
+// prevents OpenMPI from including its C++ bindings, which would cause errors in an 'extern "C"' context.
+#define OMPI_SKIP_MPICXX
 #include <metis.h>
 }
 #endif
