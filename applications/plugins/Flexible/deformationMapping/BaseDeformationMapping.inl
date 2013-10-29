@@ -380,15 +380,22 @@ void BaseDeformationMappingT<JacobianBlockType>::applyJT(const core::MechanicalP
 
         if((!this->maskTo)||(this->maskTo&& !(this->maskTo->isInUse())) )
         {
-//#ifdef USING_OMP_PRAGMAS
-//        #pragma omp parallel for
-//#endif
-            for(unsigned int i=0; i<jacobian.size(); i++)
+            // update index_parentToChild
+            if( this->f_index_parentToChild.size()!=in.size())
             {
-                for(unsigned int j=0; j<jacobian[i].size(); j++)
+                this->f_index_parentToChild.resize(in.size());
+                for(unsigned int i=0; i< this->f_index.getValue().size(); i++ ) for(unsigned int j=0; j< this->f_index.getValue()[i].size(); j++ ) { this->f_index_parentToChild[this->f_index.getValue()[i][j]].push_back(i); this->f_index_parentToChild[this->f_index.getValue()[i][j]].push_back(j); }
+            }
+
+#ifdef USING_OMP_PRAGMAS
+#pragma omp parallel for
+#endif
+            for(unsigned int i=0; i<this->f_index_parentToChild.size(); i++)
+            {
+                for(unsigned int j=0; j<this->f_index_parentToChild[i].size(); j+=2)
                 {
-                    unsigned int index=this->f_index.getValue()[i][j];
-                    jacobian[i][j].addMultTranspose(in[index],out[i]);
+                    unsigned int indexc=this->f_index_parentToChild[i][j];
+                    jacobian[indexc][this->f_index_parentToChild[i][j+1]].addMultTranspose(in[i],out[indexc]);
                 }
             }
         }
@@ -433,15 +440,15 @@ void BaseDeformationMappingT<JacobianBlockType>::applyDJT(const core::Mechanical
     {
         if((!this->maskTo)||(this->maskTo&& !(this->maskTo->isInUse())) )
         {
-//#ifdef USING_OMP_PRAGMAS
-//        #pragma omp parallel for
-//#endif
-            for(unsigned int i=0; i<jacobian.size(); i++)
+#ifdef USING_OMP_PRAGMAS
+#pragma omp parallel for
+#endif
+            for(unsigned int i=0; i<this->f_index_parentToChild.size(); i++)
             {
-                for(unsigned int j=0; j<jacobian[i].size(); j++)
+                for(unsigned int j=0; j<this->f_index_parentToChild[i].size(); j+=2)
                 {
-                    unsigned int index=this->f_index.getValue()[i][j];
-                    jacobian[i][j].addDForce( parentForce[index], parentDisplacement[index], childForce[i], mparams->kFactor() );
+                    unsigned int indexc=this->f_index_parentToChild[i][j];
+                    jacobian[indexc][this->f_index_parentToChild[i][j+1]].addDForce(parentForce[i],parentDisplacement[i],childForce[indexc], mparams->kFactor());
                 }
             }
         }

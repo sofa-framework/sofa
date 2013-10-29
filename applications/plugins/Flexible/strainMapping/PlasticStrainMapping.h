@@ -121,9 +121,9 @@ protected:
         {
         case MULTIPLICATION:
         {
-//#ifdef USING_OMP_PRAGMAS
-//        #pragma omp parallel for
-//#endif
+#ifdef USING_OMP_PRAGMAS
+        #pragma omp parallel for
+#endif
             for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
             {
                 out[i] = typename Inherit::OutCoord();
@@ -135,9 +135,9 @@ protected:
         }
         case ADDITION:
         {
-//#ifdef USING_OMP_PRAGMAS
-//        #pragma omp parallel for
-//#endif
+#ifdef USING_OMP_PRAGMAS
+        #pragma omp parallel for
+#endif
             for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
             {
                 out[i] = typename Inherit::OutCoord();
