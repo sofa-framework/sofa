@@ -256,6 +256,32 @@ A solver can drive an arbitrary number of objects of arbitrary types
 
 \end{frame}
 
+
+
+%-----------------------------------------
+\begin{frame}
+\frametitle{Scene data structure}
+
+Scene hierarchy:
+\begin{enumerate}
+ \item the scene is composed of \textit{nodes} organized in a Directed Acyclic Graph (DAG, i.e. generalized hierarchy)
+ \item nodes contain \textit{components} (mass, forces, etc.)  and a list of child nodes
+ \item components contain \textit{attributes} (density, stiffness, etc.)
+\end{enumerate}
+
+Data graph:
+\begin{itemize}
+ \item attributes can be connected together for automatic copies
+ \item attributes can be connected by \textit{engines}, which update their output based on the values of their input
+ \item the attributes and engine compose a DAG
+\end{itemize}
+
+
+\end{frame}
+
+
+
+
 % %-----------------------------------------------
 % \begin{frame}[fragile]
 % \frametitle{Object-oriented hierarchical structure}

@@ -19,6 +19,8 @@ QuickBuild=
 [document-settings,item:sofadocumentation.tex]
 Bookmarks=
 Encoding=ISO-8859-1
+FoldedColumns=
+FoldedLines=
 Highlighting=LaTeX
 Indentation Mode=
 Mode=LaTeX
@@ -47,3 +49,5 @@ order=0
 [view-settings,view=0,item:sofadocumentation.tex]
 CursorColumn=0
 CursorLine=61
+JumpList=
+ViMarks=
