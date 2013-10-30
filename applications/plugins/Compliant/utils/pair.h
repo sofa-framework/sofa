@@ -11,6 +11,10 @@ namespace sofa
 namespace defaulttype
 {
 
+// TODO: why ?!
+
+// and why does this not derive from pair ?!
+
     template<class First, class Second>
     struct SerializablePair
     {

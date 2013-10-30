@@ -52,32 +52,32 @@ def generate_rigid(filename, density = 1000.0):
         com = map(float, line[start + 3].split(' ')[1:] )
         
         # TODO extract principal axes basis if needed
-        # or at least say that we scred up
+        # or at least say that we screwd up
         
         res = MassInfo()
 
         # by default, GenerateRigid assumes 1000 kg/m^3 already
         res.mass = (density / 1000.0) * mass
-        
-        res.inertia = [(density / 1000.0) * x for x in inrt]
+
+        res.inertia = [mass * x for x in inrt]
         res.com = com
 
         return res
 
-# TODO provide synchronized members with sofa states
+# TODO provide synchronized members with sofa states ?
 class Body:
         
         def __init__(self, name = "unnamed"):
-                self.name = name
+                self.name = name         # node name
                 self.collision = None # collision mesh
                 self.visual = None    # visual mesh
-                self.dofs = Frame()
-                self.mass = 1
-                self.inertia = [1, 1, 1] 
-                self.template = 'Rigid'
-                self.color = [1, 1, 1]
-                self.offset = None
-
+                self.dofs = Frame()   # initial dofs
+                self.mass = 1         # mass 
+                self.inertia = [1, 1, 1] # inertia tensor
+                self.color = [1, 1, 1]   # not sure this is used 
+                self.offset = None       # rigid offset for com/inertia axes
+                self.inertia_forces = 'false' # compute inertia forces flag
+                
                 # TODO more if needed (scale, color)
                 
         def mass_from_mesh(self, name, density = 1000.0):
@@ -109,13 +109,15 @@ class Body:
                         mapping = mass_node.createObject('AssembledRigidRigidMapping',
                                                          template = 'Rigid',
                                                          source = '0 ' + str( self.offset) )
+                # mass
                 mass = mass_node.createObject('RigidMass', 
-                                              template = self.template, 
+                                              template = 'Rigid',
                                               name = 'mass', 
                                               mass = self.mass, 
-                                              inertia = concat(self.inertia))
+                                              inertia = concat(self.inertia),
+                                              inertia_forces = self.inertia_forces )
                 
-                # visual
+                # visual model
                 if self.visual != None:
                         visual_template = 'ExtVec3f'
                         
@@ -128,13 +130,26 @@ class Body:
                                                   scale3d='1 1 1')
                         
                         visual_map = visual.createObject('RigidMapping', 
-                                                         template = self.template + ', ' + visual_template, 
+                                                         template = 'Rigid' + ', ' + visual_template, 
                                                          input = '@../')
-                
+                # collision model
                 if self.collision != None:
-                        # collision
                         collision = res.createChild('collision')
                 
+                        collision.createObject("MeshObjLoader", name = 'loader', filename = self.collision )
+                        collision.createObject('MeshTopology', 
+                                               name = 'topology',
+                                               triangles = '@loader.triangles')
+                        collision.createObject('MechanicalObject',
+                                               name = 'dofs',
+                                               position = '@loader.position')
+                        collision.createObject('TriangleModel', 
+                                               template = 'Vec3' )
+                        collision.createObject('RigidMapping',
+                                               template = 'Rigid,Vec3',
+                                               input = '@../',
+                                               output = '@./')
+
                         # TODO lol
                 
                 return res
@@ -236,7 +251,7 @@ class SphericalJoint(Joint):
         def __init__(self):
                 Joint.__init__(self)
                 self.dofs = [0, 0, 0, 1, 1, 1]
-                self.name = 'spherical-joint'
+                self.name = 'spherical-'
                 
 
 
@@ -246,7 +261,7 @@ class RevoluteJoint(Joint):
         def __init__(self, axis):
                 Joint.__init__(self)
                 self.dofs[3 + axis] = 1
-                self.name = 'revolute-joint'
+                self.name = 'revolute-'
 
 class CylindricalJoint(Joint):
 
@@ -254,11 +269,21 @@ class CylindricalJoint(Joint):
                 Joint.__init__(self)
                 self.dofs[0 + axis] = 1
                 self.dofs[3 + axis] = 1
-                self.name = 'cylindrical-joint'
+                self.name = 'cylindrical-'
 
 class PrismaticJoint(Joint):
 
         def __init__(self, axis):
                 Joint.__init__(self)
                 self.dofs[0 + axis] = 1
-                self.name = 'prismatic-joint'
+                self.name = 'prismatic-'
+
+class PlanarJoint(Joint):
+
+        def __init__(self, normal):
+                Joint.__init__(self)
+                self.dofs = [ 
+                        int( (i != normal) if i < 3 else (i - 3 == normal) )
+                        for i in xrange(6)
+                ]
+                self.name = 'planar-'
