@@ -166,7 +166,7 @@ void Mass<DataTypes>::addDForce(const MechanicalParams*
 #ifndef NDEBUG
     // @TODO Remove
     // Hack to disable warning message
-    mparams->kFactorIncludingRayleighDamping(rayleighStiffness.getValue());
+    mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 #endif
 }
 

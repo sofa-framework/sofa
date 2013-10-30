@@ -131,7 +131,7 @@ void randMoving(sofa::core::CollisionModel* cm,const Vector3 & min_vect,const Ve
     for(int i = 0 ; i < dof->getSize() ; ++i){
         if(rand() < RAND_MAX/2.0){//make it move !
             velocities[i] = Vector3(1,1,1);//velocity is used only to know if a primitive moves, its direction is not important
-            positions[i] = Rigid3dTypes::Coord(randVect(min_vect,max_vect),Quaternion(0,0,0,1));
+            positions[i] = Rigid3Types::Coord(randVect(min_vect,max_vect),Quaternion(0,0,0,1));
         }
     }
 
@@ -540,6 +540,7 @@ TEST_F(DirectSAPTest, test_1 ) { ASSERT_TRUE( test1()); }
 TEST_F(DirectSAPTest, test_2 ) { ASSERT_TRUE( test2()); }
 TEST_F(DirectSAPTest, rand_dense_test ) { ASSERT_TRUE( randDense()); }
 TEST_F(DirectSAPTest, rand_sparse_test ) { ASSERT_TRUE( randSparse()); }
-TEST_F(IncrSAPTest, rand_dense_test ) { ASSERT_TRUE( randDense()); }
 TEST_F(IncrSAPTest, rand_sparse_test ) { ASSERT_TRUE( randSparse()); }
+TEST_F(IncrSAPTest, rand_dense_test ) { ASSERT_TRUE( randDense()); }
+
 

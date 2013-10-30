@@ -256,7 +256,7 @@ template <template<class T,class Allocator> class List,template <class T> class 
 inline void TIncrSAP<List,Allocator>::addCollisionModel(core::CollisionModel *cm)
 {
     if(add(cm)){
-        collisionModelTypes.insert(CollModID(cm->getEnumType(),cm));
+        _colliding_elems.add(cm->getLast(),intersectionMethod);
         _nothing_added = false;
 
         CubeModel * cube_model = dynamic_cast<CubeModel *>(cm->getLast()->getPrevious());
@@ -361,33 +361,7 @@ void TIncrSAP<List,Allocator>::addIfCollide(int boxID1,int boxID2){
     if((finalcm1->isSimulated() || finalcm2->isSimulated()) &&
             (((finalcm1->getContext() != finalcm2->getContext()) || finalcm1->canCollideWith(finalcm2)) && box0.overlaps(box1,_alarmDist))){//intersection on all axes
 
-        //sout << "Final phase "<<gettypename(typeid(*finalcm1))<<" - "<<gettypename(typeid(*finalcm2))<<sendl;
-    //                    //std::cout<<"finalcm1 finalcm2 "<<finalcm1<<" "<<finalcm2<<std::endl;
-    //                    //std::cout<<"intersectionMethod "<<intersectionMethod->getClass()->className<<std::endl;
-        //std::cout<<"Final phase "<<finalcm1->getClass()->className<<" - "<<finalcm2->getClass()->className<<std::endl;
-
-        //std::cout<<"A TRUE COLLISION !!"<<std::endl;
-        bool swapModels = false;
-        core::collision::ElementIntersector* finalintersector = intersectionMethod->findIntersector(finalcm1, finalcm2, swapModels);//find the method for the finnest CollisionModels
-
-        assert(box0.cube.getExternalChildren().first.getIndex() == box0.cube.getIndex());
-        assert(box1.cube.getExternalChildren().first.getIndex() == box1.cube.getIndex());
-
-        if((!swapModels) && finalcm1->getClass() == finalcm2->getClass() && finalcm1 > finalcm2)//we do that to have only pair (p1,p2) without having (p2,p1)
-            swapModels = true;
-
-        if(finalintersector != 0x0){
-            if(swapModels){
-                _colliding_elems.add(boxID1,boxID2,box1.finalElement(),box0.finalElement(),finalintersector);
-            }
-            else{
-                _colliding_elems.add(boxID1,boxID2,box0.finalElement(),box1.finalElement(),finalintersector);
-            }
-        }
-        else{
-//                std::cout<<"Final phase "<<finalcm1->getClass()->className<<" - "<<finalcm2->getClass()->className<<std::endl;
-//                std::cout<<"not found with intersectionMethod : "<<intersectionMethod->getClass()->className<<std::endl;
-        }
+         _colliding_elems.add(boxID1,boxID2,box0.finalElement(),box1.finalElement());
     }
 }
 
@@ -408,33 +382,7 @@ void TIncrSAP<List,Allocator>::addIfCollide(int boxID1,int boxID2,int axis1,int 
     if((finalcm1->isSimulated() || finalcm2->isSimulated()) &&
             (((finalcm1->getContext() != finalcm2->getContext()) || finalcm1->canCollideWith(finalcm2)) && box0.endPointsOverlap(box1,axis1) && box0.endPointsOverlap(box1,axis2))){//intersection on all axes
 
-        //sout << "Final phase "<<gettypename(typeid(*finalcm1))<<" - "<<gettypename(typeid(*finalcm2))<<sendl;
-    //                    //std::cout<<"finalcm1 finalcm2 "<<finalcm1<<" "<<finalcm2<<std::endl;
-    //                    //std::cout<<"intersectionMethod "<<intersectionMethod->getClass()->className<<std::endl;
-        //std::cout<<"Final phase "<<finalcm1->getClass()->className<<" - "<<finalcm2->getClass()->className<<std::endl;
-
-        //std::cout<<"A TRUE COLLISION !!"<<std::endl;
-        bool swapModels = false;
-        core::collision::ElementIntersector* finalintersector = intersectionMethod->findIntersector(finalcm1, finalcm2, swapModels);//find the method for the finnest CollisionModels
-
-        assert(box0.cube.getExternalChildren().first.getIndex() == box0.cube.getIndex());
-        assert(box1.cube.getExternalChildren().first.getIndex() == box1.cube.getIndex());
-
-        if((!swapModels) && finalcm1->getClass() == finalcm2->getClass() && finalcm1 > finalcm2)//we do that to have only pair (p1,p2) without having (p2,p1)
-            swapModels = true;
-
-        if(finalintersector != 0x0){
-            if(swapModels){
-                _colliding_elems.add(boxID1,boxID2,box1.finalElement(),box0.finalElement(),finalintersector);
-            }
-            else{
-                _colliding_elems.add(boxID1,boxID2,box0.finalElement(),box1.finalElement(),finalintersector);
-            }
-        }
-        else{
-//                std::cout<<"Final phase "<<finalcm1->getClass()->className<<" - "<<finalcm2->getClass()->className<<std::endl;
-//                std::cout<<"not found with intersectionMethod : "<<intersectionMethod->getClass()->className<<std::endl;
-        }
+                _colliding_elems.add(boxID1,boxID2,box0.finalElement(),box1.finalElement());
     }
 }
 
@@ -486,7 +434,7 @@ void TIncrSAP<List,Allocator>::removeCollision(int a,int b){
     if((!(_boxes[a].overlaps(_boxes[b],_alarmDist))) && //check if it really doesn't overlap
             (finalcm1->isSimulated() || finalcm2->isSimulated()) &&//check if the two boxes could be in collision, if it is not the case they are not added to _colliding_elems
             (((finalcm1->getContext() != finalcm2->getContext()) || finalcm1->canCollideWith(finalcm2))) && (intersectionMethod->findIntersector(finalcm1,finalcm2,swap) != 0x0)){
-        _colliding_elems.remove(a,b);
+        _colliding_elems.remove(a,b,_boxes[a].finalElement(),_boxes[b].finalElement());
     }
 }
 

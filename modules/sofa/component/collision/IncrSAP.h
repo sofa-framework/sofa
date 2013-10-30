@@ -257,22 +257,6 @@ private:
 
 
     std::set<core::CollisionModel*> collisionModels;
-
-    struct CollModID{
-        int enum_type;
-        core::CollisionModel* sample;//just one collision model used to find the intersector further
-
-        CollModID(){}
-        CollModID(int id,core::CollisionModel* cm) : enum_type(id),sample(cm){}
-
-        bool operator<(const CollModID & other)const{
-            return this->enum_type < other.enum_type;
-        }
-    };
-
-
-    std::set<CollModID> collisionModelTypes;
-    core::collision::ElementIntersector* intersectors[core::CollisionModel::ENUM_TYPE_SIZE][core::CollisionModel::ENUM_TYPE_SIZE];
 protected:
     TIncrSAP();
 
