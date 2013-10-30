@@ -23,10 +23,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-
-#include <gtest/gtest.h>
-#include "../Standard_test/Sofa_test.h"
 #include "../Standard_test/Mapping_test.h"
+#include <gtest/gtest.h>
+//#include "../Standard_test/Sofa_test.h"
 #include <sofa/component/init.h>
 #include "../../tutorials/objectCreator/ObjectCreator.h"
 #include <sofa/simulation/graph/DAGSimulation.h>
