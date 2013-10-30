@@ -125,7 +125,7 @@ namespace collision
                     _intersectors[cm->getEnumType()][cm->getEnumType()] = ei;
                 }
 
-                for(typename std::set<CollModID>::iterator it = _addedCM.begin() ; it != _addedCM.end() ; ++it){
+                for(std::set<CollModID>::iterator it = _addedCM.begin() ; it != _addedCM.end() ; ++it){
                     if(it->sample->getEnumType() == cm->getEnumType())
                         continue;
 
