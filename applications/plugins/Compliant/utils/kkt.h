@@ -15,7 +15,8 @@ struct AssembledSystem;
 struct kkt {
 				
 	typedef sofa::component::linearsolver::AssembledSystem sys_type;
-	
+
+	typedef sys_type::real real;
 	typedef sys_type::mat mat;
 	typedef sys_type::vec vec;
 
@@ -128,7 +129,8 @@ public:
 	}
 
 private:
-	const vec& call(const vec& x) const {
+	template<class Vec>
+	const vec& call(const Vec& x) const {
 		
 		storage.head(m) = Q(x.head(m));
 
@@ -140,7 +142,8 @@ private:
 		return storage;
 	}
 
-	const vec& omp_call(const vec& x) const {
+	template<class Vec> 
+	const vec& omp_call(const Vec& x) const {
 		
 		if( n ) {
 #pragma omp parallel sections
@@ -171,7 +174,8 @@ private:
 	 }
 
 public:
-	const vec& operator()(const vec& x) const {
+	template<class Vec>
+	const vec& operator()(const Vec& x) const {
 		return parallel ? omp_call(x) : call(x);
 	}
 	
@@ -184,18 +188,15 @@ struct kkt_opt {
 	typedef sys_type::vec vec;
 	
 	const sys_type& sys;
-	mutable vec result, v, lambda, tmp, Pv, HPv, JTlambda, JPv, Clambda, zob;
+	mutable vec result, tmp, Pv, HPv, JTlambda, JPv, Clambda ;
 	
 	const unsigned m;
 	const unsigned n;
 	
-	const vec* scaling;
-
 	kkt_opt(const sys_type& sys) 
 		: sys(sys),
 		  m(sys.m),
-		  n(sys.n),
-		  scaling(0)
+		  n(sys.n)
 		{ 
 		result.resize( m + n );
 		assert( n );
@@ -205,32 +206,22 @@ struct kkt_opt {
 
 	template<class Vec>
 	const vec& operator()(const Vec& x) const {
-		{
-			v = x.head( m );
-			lambda = x.tail( n );
-		}
+		Pv.noalias() = sys.P * x.head(m);
 		
-		Pv.noalias() = sys.P * v;
-
 		// parallelizable 
 		{
 			HPv.noalias() = sys.H * Pv;
 			
-			if( scaling ) zob = scaling->cwiseProduct( lambda ) ;
-			else zob = lambda;
-			
-			JTlambda.noalias() = sys.J.transpose() * zob;
+			JTlambda.noalias() = sys.J.transpose() * x.tail(n);
 			JPv.noalias() = sys.J * Pv;
-			if( scaling ) JPv = scaling->cwiseProduct(JPv);
-			
-			Clambda.noalias() = sys.C * lambda;
+			Clambda.noalias() = sys.C * x.tail(n);
 		}
 		
 		tmp.noalias() = HPv - JTlambda;
 		
 		result.head(sys.m).noalias() = sys.P * tmp;
 		result.tail(sys.n).noalias() = -JPv - Clambda;
-
+		
 		return result;
 	}
 };
