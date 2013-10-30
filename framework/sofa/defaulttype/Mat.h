@@ -758,7 +758,7 @@ template<size_t S, class real>
 bool invertMatrix(Mat<S,S,real>& dest, const Mat<S,S,real>& from)
 {
     size_t i, j, k;
-    Vec<S,int> r, c, row, col;
+    Vec<S,size_t> r, c, row, col;
 
     Mat<S,S,real> m1 = from;
     Mat<S,S,real> m2;
@@ -780,8 +780,8 @@ bool invertMatrix(Mat<S,S,real>& dest, const Mat<S,S,real>& from)
                 if ( t > pivot)
                 {
                     pivot = t;
-                    r[k] = static_cast<int>(i);
-                    c[k] = static_cast<int>(j);
+                    r[k] = i;
+                    c[k] = j;
                 }
             }
         }
