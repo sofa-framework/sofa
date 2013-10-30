@@ -57,7 +57,7 @@ bool Lloyd (std::vector<sofa::defaulttype::Vec<3,real> >& pos,const std::vector<
 #ifdef USING_OMP_PRAGMAS
 #pragma omp parallel for
 #endif
-    for (unsigned int i=0; i<nbp; i++)
+    for (int i=0; i<nbp; i++)
     {
         // compute centroid
         Coord C,p;
@@ -115,7 +115,7 @@ bool Lloyd (std::vector<typename sofa::defaulttype::BranchingImage<real>::VoxelI
 #ifdef USING_OMP_PRAGMAS
 #pragma omp parallel for
 #endif
-    for (unsigned int i=0; i<nbp; i++)
+    for (int i=0; i<nbp; i++)
     {
         // compute centroid
         Coord C;

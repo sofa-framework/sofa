@@ -62,7 +62,7 @@ void MeshOBJ::readOBJ (std::ifstream &file, const std::string &filename)
     Vec3d result;
     Vec3d texCoord;
     Vec3d normal;
-    int nbf = facets.size();
+    size_t nbf = facets.size();
 
     std::string line;
 
@@ -127,7 +127,7 @@ void MeshOBJ::readOBJ (std::ifstream &file, const std::string &filename)
                         (*it).activated = true;
                         if (!material.activated)
                             material = *it;
-                        curGroup.materialId = it - materials.begin();
+                        curGroup.materialId = static_cast<int>(it - materials.begin());
                         break;
                     }
                 }

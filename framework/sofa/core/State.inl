@@ -63,7 +63,7 @@ template<class DataTypes>
 void State<DataTypes>::computeBBox(const core::ExecParams* params)
 {
     const VecCoord& x = read(ConstVecCoordId::position())->getValue(params);
-    const unsigned int xSize = x.size();
+    const size_t xSize = x.size();
 
     if (xSize <= 0)
         return;
@@ -73,7 +73,7 @@ void State<DataTypes>::computeBBox(const core::ExecParams* params)
     Real maxBBox[3] = {-max_real,-max_real,-max_real};
     Real minBBox[3] = {max_real,max_real,max_real};
 
-    for (unsigned int i = 0; i < xSize; i++)
+    for (size_t i = 0; i < xSize; i++)
     {
         DataTypes::get(p[0], p[1], p[2], x[i]);
         for (int c = 0; c < 3; c++)

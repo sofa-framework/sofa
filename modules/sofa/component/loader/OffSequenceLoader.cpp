@@ -85,7 +85,7 @@ void OffSequenceLoader::init()
     //parse the file name to get the index part
     std::string file = this->m_filename.getFullPath();
     m_filenameAndNb = file.substr(0, file.find("."));
-    int indCar = m_filenameAndNb.size();
+    size_t indCar = m_filenameAndNb.size();
     std::string fileNb;
 
     while ( m_filenameAndNb[--indCar] >= '0' && m_filenameAndNb[indCar] <= '9')

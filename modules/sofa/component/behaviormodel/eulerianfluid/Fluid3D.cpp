@@ -215,9 +215,9 @@ void Fluid3D::draw(const core::visual::VisualParams* vparams)
         glMaterialf (GL_FRONT_AND_BACK, GL_SHININESS, 20);
 
         glBegin(GL_TRIANGLES);
-        for (unsigned int i=0; i<facets.size(); i++)
+        for (size_t i=0; i<facets.size(); i++)
         {
-            for (int j=0; j<3; j++)
+            for (size_t j=0; j<3; j++)
             {
                 int idx = facets[i].p[j];
                 glNormal3fv(points[idx].n.ptr());
@@ -240,18 +240,18 @@ void Fluid3D::exportOBJ(std::string name, std::ostream* out, std::ostream* /*mtl
 
     *out << "g "<<name<<"\n";
 
-    for(unsigned i=0; i<points.size(); ++i)
+    for(size_t i=0; i<points.size(); ++i)
     {
         vec3 p = points[i].p*f_cellwidth.getValue() + corner;
         *out << "v "<< std::fixed << p[0]<<' '<< std::fixed <<p[1]<<' '<< std::fixed <<p[2]<<'\n';
     }
 
 
-    for(unsigned i=0; i<points.size(); ++i)
+    for(size_t i=0; i<points.size(); ++i)
         *out << "vn "<< std::fixed << points[i].n[0]<<' '<< std::fixed <<points[i].n[1]<<' '<< std::fixed <<points[i].n[2]<<'\n';
 
 
-    for (unsigned int i = 0; i < facets.size() ; i++)
+    for (size_t i = 0; i < facets.size() ; i++)
         *out << "f "<<facets[i].p[0]+vindex+1<<"//"<<facets[i].p[0]+nindex+1<<' '<< facets[i].p[1]+vindex+1<<"//"<<facets[i].p[1]+nindex+1<<' '<< facets[i].p[2]+vindex+1<<"//"<<facets[i].p[2]+nindex+1<<'\n';
 
 

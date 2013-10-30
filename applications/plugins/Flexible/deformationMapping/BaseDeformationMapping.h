@@ -118,7 +118,7 @@ public:
     typedef Vec<spatial_dimensions,Real> Coord ; ///< spatial coordinates
 
     virtual void ForwardMapping(Coord& p,const Coord& p0)=0;      ///< returns spatial coord p in deformed configuration corresponding to the rest coord p0
-    virtual void BackwardMapping(Coord& p0,const Coord& p,const Real Thresh=1e-5, const unsigned int NbMaxIt=10)=0;     ///< iteratively approximate spatial coord p0 in rest configuration corresponding to the deformed coord p (warning! p0 need to be initialized in the object first, for instance using closest point matching)
+    virtual void BackwardMapping(Coord& p0,const Coord& p,const Real Thresh=1e-5, const size_t NbMaxIt=10)=0;     ///< iteratively approximate spatial coord p0 in rest configuration corresponding to the deformed coord p (warning! p0 need to be initialized in the object first, for instance using closest point matching)
     virtual unsigned int getClosestMappedPoint(const Coord& p, Coord& x0,Coord& x, bool useKdTree=false)=0; ///< returns closest mapped point x from input point p, its rest pos x0, and its index
 
     virtual void resizeOut(const vector<Coord>& position0, vector<vector<unsigned int> > index,vector<vector<Real> > w, vector<vector<Vec<spatial_dimensions,Real> > > dw, vector<vector<Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, vector<Mat<spatial_dimensions,spatial_dimensions,Real> > F0)=0; /// resizing given custom positions and weights
@@ -249,7 +249,7 @@ public:
     /** @name PointMapper functions */
     //@{
     virtual void ForwardMapping(Coord& p,const Coord& p0);
-    virtual void BackwardMapping(Coord& p0,const Coord& p,const Real Thresh=1e-5, const unsigned int NbMaxIt=10);
+    virtual void BackwardMapping(Coord& p0,const Coord& p,const Real Thresh=1e-5, const size_t NbMaxIt=10);
     virtual unsigned int getClosestMappedPoint(const Coord& p, Coord& x0,Coord& x, bool useKdTree=false);
 
     virtual void mapPosition(Coord& p,const Coord &p0, const VRef& ref, const VReal& w)=0;
@@ -284,7 +284,7 @@ protected:
     void mapPositions() ///< map initial spatial positions stored in f_pos0 to f_pos (used for visualization)
     {
         this->f_pos.resize(this->f_pos0.getValue().size());
-        for(unsigned int i=0; i<this->f_pos.size(); i++ ) mapPosition(f_pos[i],this->f_pos0.getValue()[i],this->f_index.getValue()[i],this->f_w.getValue()[i]);
+        for(size_t i=0; i<this->f_pos.size(); i++ ) mapPosition(f_pos[i],this->f_pos0.getValue()[i],this->f_index.getValue()[i],this->f_w.getValue()[i]);
     }
     KDT f_KdTree;
 
@@ -292,7 +292,7 @@ protected:
     void mapDeformationGradients() ///< map initial deform  gradients stored in f_F0 to f_F      (used for visualization)
     {
         this->f_F.resize(this->f_pos0.getValue().size());
-        for(unsigned int i=0; i<this->f_F.size(); i++ ) mapDeformationGradient(f_F[i],this->f_pos0.getValue()[i],this->f_F0.getValue()[i],this->f_index.getValue()[i],this->f_w.getValue()[i],this->f_dw.getValue()[i]);
+        for(size_t i=0; i<this->f_F.size(); i++ ) mapDeformationGradient(f_F[i],this->f_pos0.getValue()[i],this->f_F0.getValue()[i],this->f_index.getValue()[i],this->f_w.getValue()[i],this->f_dw.getValue()[i]);
     }
 
     bool missingInformationDirty;  ///< tells if pos or F need to be updated (to speed up visualization)

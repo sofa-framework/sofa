@@ -170,7 +170,7 @@ public:
 #ifdef USING_OMP_PRAGMAS
         #pragma omp parallel for
 #endif
-        for(unsigned int i=0; i<jacobian.size(); i++)
+        for(int i=0; i < static_cast<int>(jacobian.size()); i++)
         {
             out[i]=OutCoord();
             jacobian[i].addapply(out[i],in[i]);
@@ -191,7 +191,7 @@ public:
 #ifdef USING_OMP_PRAGMAS
         #pragma omp parallel for
 #endif
-            for(unsigned int i=0; i<jacobian.size(); i++)
+            for(int i=0; i < static_cast<int>(jacobian.size()); i++)
             {
                 out[i]=OutDeriv();
                 jacobian[i].addmult(out[i],in[i]);
@@ -212,7 +212,7 @@ public:
 #ifdef USING_OMP_PRAGMAS
         #pragma omp parallel for
 #endif
-            for(unsigned int i=0; i<jacobian.size(); i++)
+            for(int i=0; i < static_cast<int>(jacobian.size()); i++)
             {
                 jacobian[i].addMultTranspose(in[i],out[i]);
             }
@@ -249,9 +249,9 @@ public:
         else
         {
 #ifdef USING_OMP_PRAGMAS
-        #pragma omp parallel for
+			#pragma omp parallel for
 #endif
-            for(unsigned int i=0; i<jacobian.size(); i++)
+            for(int i=0; i < static_cast<int>(jacobian.size()); i++)
             {
                 jacobian[i].addDForce( parentForce[i], parentDisplacement[i], childForce[i], mparams->kFactor() );
             }
@@ -308,7 +308,7 @@ protected:
         helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
         helper::ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
         eigenJacobian.resizeBlocks(out.size(),in.size());
-        for(unsigned int i=0; i<jacobian.size(); i++)
+        for(size_t i=0; i<jacobian.size(); i++)
         {
 //            vector<MatBlock> blocks;
 //            vector<unsigned> columns;
@@ -329,7 +329,7 @@ protected:
     {
         helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
         K.resizeBlocks(in.size(),in.size());
-        for(unsigned int i=0; i<jacobian.size(); i++)
+        for(size_t i=0; i<jacobian.size(); i++)
         {
 //            vector<KBlock> blocks;
 //            vector<unsigned> columns;

@@ -104,10 +104,7 @@ void PositionBasedDynamicsConstraint<Rigid3dTypes>::projectPosition(const core::
     Vec<3,Real> a; Real phi;
 
     Real s = stiffness.getValue();
-#ifdef USING_OMP_PRAGMAS
-	#pragma omp parallel for
-#endif
-	for( int i=0; i < static_cast<int>(res.size()); ++i )
+    for( unsigned i=0; i<res.size(); i++ )
     {
         res[i].getCenter() += ( tpos[i].getCenter() - res[i].getCenter()) * s;
 
@@ -142,10 +139,7 @@ void PositionBasedDynamicsConstraint<Rigid3fTypes>::projectPosition(const core::
     Vec<3,Real> a; Real phi;
 
     Real s = stiffness.getValue();
-#ifdef USING_OMP_PRAGMAS
-	#pragma omp parallel for
-#endif
-    for( int i=0; i < static_cast<int>(res.size()); ++i )
+    for( unsigned i=0; i<res.size(); i++ )
     {
         res[i].getCenter() += ( tpos[i].getCenter() - res[i].getCenter()) * s;
 

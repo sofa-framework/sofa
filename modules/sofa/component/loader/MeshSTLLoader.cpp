@@ -107,13 +107,13 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
     dataFile.read(buffer, _headerSize.getValue());
     sout << "Header binary file: "<< buffer << sendl;
 
-    unsigned long int nbrFacet;
+    uint32_t nbrFacet;
     dataFile.read((char*)&nbrFacet, 4);
 
     std::streampos position = 0;
     // Parsing facets
     std::cout << "Reading file...";
-    for (unsigned int i = 0; i<nbrFacet; ++i)
+    for (uint32_t i = 0; i<nbrFacet; ++i)
     {
         Triangle the_tri;
         sofa::defaulttype::Vec3f vertex, normals;
@@ -125,18 +125,18 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
         my_normals.push_back(normals);
 
         // Vertices:
-        for (unsigned int j = 0; j<3; ++j)
+        for (size_t j = 0; j<3; ++j)
         {
             dataFile.read((char*)&vertex[0], 4);
             dataFile.read((char*)&vertex[1], 4);
             dataFile.read((char*)&vertex[2], 4);
 
             bool find = false;
-            for (unsigned int k=0; k<my_positions.size(); ++k)
+            for (size_t k=0; k<my_positions.size(); ++k)
                 if ( (vertex[0] == my_positions[k][0]) && (vertex[1] == my_positions[k][1])  && (vertex[2] == my_positions[k][2]))
                 {
                     find = true;
-                    the_tri[j] = k;
+                    the_tri[j] = static_cast<core::topology::Topology::PointID>(k);
                     break;
                 }
 
@@ -151,7 +151,7 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
         my_triangles.push_back(the_tri);
 
         // Atribute byte count
-        unsigned int count;
+        uint16_t count;
         dataFile.read((char*)&count, 2);
 
         // Security:
@@ -192,7 +192,7 @@ bool MeshSTLLoader::readSTL(const char *filename)
     dataFile >> buffer >> name;
 
     Triangle the_tri;
-    unsigned int cpt = 0;
+    size_t cpt = 0;
     std::streampos position = 0;
 
     // Parsing facets
@@ -217,18 +217,18 @@ bool MeshSTLLoader::readSTL(const char *filename)
             line >> vertex[0] >> vertex[1] >> vertex[2];
 
             bool find = false;
-            for (unsigned int i=0; i<my_positions.size(); ++i)
+            for (size_t i=0; i<my_positions.size(); ++i)
                 if ( (vertex[0] == my_positions[i][0]) && (vertex[1] == my_positions[i][1])  && (vertex[2] == my_positions[i][2]))
                 {
                     find = true;
-                    the_tri[cpt] = i;
+                    the_tri[cpt] = static_cast<core::topology::Topology::PointID>(i);
                     break;
                 }
 
             if (!find)
             {
                 my_positions.push_back(vertex);
-                the_tri[cpt] = my_positions.size()-1;
+                the_tri[cpt] = static_cast<core::topology::Topology::PointID>(my_positions.size()-1);
             }
             cpt++;
         }

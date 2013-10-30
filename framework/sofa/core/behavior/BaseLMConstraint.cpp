@@ -60,10 +60,10 @@ BaseLMConstraint::BaseLMConstraint()
 
 unsigned int BaseLMConstraint::getNumConstraint(ConstraintParams::ConstOrder Order)
 {
-    unsigned int result=0;
+    size_t result=0;
     const helper::vector< ConstraintGroup* > &vec = constraintOrder[Order];
-    for (unsigned int i=0; i<vec.size(); ++i) result+=vec[i]->getNumConstraint();
-    return result;
+    for (size_t i=0; i<vec.size(); ++i) result+=vec[i]->getNumConstraint();
+    return static_cast<unsigned int>(result);
 }
 
 ConstraintGroup* BaseLMConstraint::addGroupConstraint(ConstraintParams::ConstOrder id)
@@ -81,7 +81,7 @@ void BaseLMConstraint::getConstraintViolation(const core::ConstraintParams* cpar
 void BaseLMConstraint::getConstraintViolation(defaulttype::BaseVector * v, const sofa::core::ConstraintParams::ConstOrder Order)
 {
     const helper::vector< ConstraintGroup* > &constraints = constraintOrder[Order];
-    for (unsigned int idxGroupConstraint=0; idxGroupConstraint<constraints.size(); ++idxGroupConstraint)
+    for (size_t idxGroupConstraint=0; idxGroupConstraint<constraints.size(); ++idxGroupConstraint)
     {
         ConstraintGroup *group=constraints[idxGroupConstraint];
         std::pair< ConstraintGroup::EquationIterator, ConstraintGroup::EquationIterator > range=group->data();
@@ -100,7 +100,7 @@ void BaseLMConstraint::resetConstraint()
     for (it=constraintOrder.begin(); it!=constraintOrder.end(); it++)
     {
         helper::vector< ConstraintGroup* > &v=it->second;
-        for (unsigned int i=0; i<v.size(); ++i)
+        for (size_t i=0; i<v.size(); ++i)
         {
             delete v[i];
         }

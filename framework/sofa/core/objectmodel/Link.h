@@ -255,21 +255,21 @@ public:
     }
     static unsigned int add(T& c, TDestPtr v)
     {
-        unsigned int index = c.size();
+        unsigned int index = static_cast<unsigned int>(c.size());
         c.push_back(TValueType(v));
         return index;
     }
     static unsigned int find(const T& c, TDestPtr v)
     {
-        unsigned int s = c.size();
-        for (unsigned int i=0; i<s; ++i)
-            if (c[i] == v) return i;
-        return s;
+        size_t s = c.size();
+        for (size_t i=0; i<s; ++i)
+            if (c[i] == v) return static_cast<unsigned int>(i);
+        return static_cast<unsigned int>(s);
     }
     static void remove(T& c, unsigned index)
     {
-        unsigned int s = c.size();
-        for (unsigned int i=index+1; i < s; ++i)
+        size_t s = c.size();
+        for (size_t i=index+1; i < s; ++i)
             c[i-1] = c[i];
         c.resize(s-1);
     }

@@ -75,7 +75,7 @@ public:
     // really need to be a Data??
     Data <sofa::helper::list<const TopologyChange *> >m_changeList;
 
-    unsigned int getNumberOfTopologicalChanges() {return (m_changeList.getValue()).size();}
+    size_t getNumberOfTopologicalChanges() {return (m_changeList.getValue()).size();}
 
     //virtual void registerTopologicalData(t_topologicalData* topologicalData) {m_topologicalData = topologicalData;}
     /*

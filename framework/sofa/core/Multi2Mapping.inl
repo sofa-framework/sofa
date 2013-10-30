@@ -109,11 +109,11 @@ helper::vector<BaseState*> Multi2Mapping<In1,In2,Out>::getFrom()
 {
     const VecFromModels1& models1 = getFromModels1();
     const VecFromModels2& models2 = getFromModels2();
-    unsigned int size1 = models1.size();
-    unsigned int size2 = models2.size();
+    size_t size1 = models1.size();
+    size_t size2 = models2.size();
     helper::vector<BaseState*> baseModels(size1+size2);
-    for (unsigned int i=0; i<size1; ++i) baseModels[      i] = models1[i].ptr.get();
-    for (unsigned int i=0; i<size2; ++i) baseModels[size1+i] = models2[i].ptr.get();
+    for (size_t i=0; i<size1; ++i) baseModels[      i] = models1[i].ptr.get();
+    for (size_t i=0; i<size2; ++i) baseModels[size1+i] = models2[i].ptr.get();
     return baseModels;
 }
 
@@ -121,9 +121,9 @@ template< class In1, class In2, class Out >
 helper::vector<BaseState* > Multi2Mapping<In1,In2,Out>::getTo()
 {
     const VecToModels& models = getToModels();
-    unsigned int size = models.size();
+    size_t size = models.size();
     helper::vector<BaseState*> baseModels(size);
-    for (unsigned int i=0; i<size; ++i) baseModels[i] = models[i].ptr.get();
+    for (size_t i=0; i<size; ++i) baseModels[i] = models[i].ptr.get();
     return baseModels;
 }
 
@@ -131,13 +131,13 @@ template < class In1, class In2,class Out>
 helper::vector<behavior::BaseMechanicalState*> Multi2Mapping<In1,In2,Out>::getMechFrom()
 {
     helper::vector<behavior::BaseMechanicalState*> mechFromVec;
-    for (unsigned int i=0 ; i<this->fromModels1.size() ; i++)
+    for (size_t i=0 ; i<this->fromModels1.size() ; i++)
     {
         behavior::BaseMechanicalState* meshFrom = dynamic_cast<behavior::BaseMechanicalState*> (this->fromModels1.get(i));
         if(meshFrom)
             mechFromVec.push_back(meshFrom);
     }
-    for (unsigned int i=0 ; i<this->fromModels2.size() ; i++)
+    for (size_t i=0 ; i<this->fromModels2.size() ; i++)
     {
         behavior::BaseMechanicalState* meshFrom = dynamic_cast<behavior::BaseMechanicalState*> (this->fromModels2.get(i));
         if(meshFrom)
@@ -150,7 +150,7 @@ template < class In1, class In2,class Out>
 helper::vector<behavior::BaseMechanicalState*> Multi2Mapping<In1,In2,Out>::getMechTo()
 {
     helper::vector<behavior::BaseMechanicalState*> mechToVec;
-    for (unsigned int i=0 ; i<this->toModels.size() ; i++)
+    for (size_t i=0 ; i<this->toModels.size() ; i++)
     {
         behavior::BaseMechanicalState* meshTo = dynamic_cast<behavior::BaseMechanicalState*> (this->toModels.get(i));
         if(meshTo)

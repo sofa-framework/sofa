@@ -175,16 +175,16 @@ public:
     }
 
 	virtual void copyToBuffer(SReal* dst, ConstVecId src, unsigned n) const {
-		const unsigned size = this->getSize();
+		const size_t size = this->getSize();
 		
 		switch(src.type) {
 		case V_COORD: {
 			helper::ReadAccessor< Data<VecCoord> > vec = this->read(ConstVecCoordId(src));
-			const unsigned dim = defaulttype::DataTypeInfo<Coord>::size();
+			const size_t dim = defaulttype::DataTypeInfo<Coord>::size();
 			assert( n == dim * size );
 			
-			for(unsigned i = 0; i < size; ++i) {
-				for(unsigned j = 0; j < dim; ++j) {
+			for(size_t i = 0; i < size; ++i) {
+				for(size_t j = 0; j < dim; ++j) {
 					defaulttype::DataTypeInfo<Coord>::getValue(vec[i], j, *(dst++));
 				}
 			}
@@ -192,11 +192,11 @@ public:
 		}; break;
 		case V_DERIV: {
 			helper::ReadAccessor< Data<VecDeriv> > vec = this->read(ConstVecDerivId(src));
-			const unsigned dim = defaulttype::DataTypeInfo<Deriv>::size();
+			const size_t dim = defaulttype::DataTypeInfo<Deriv>::size();
 			assert( n == dim * size );
 			
-			for(unsigned i = 0; i < size; ++i) {
-				for(unsigned j = 0; j < dim; ++j) {
+			for(size_t i = 0; i < size; ++i) {
+				for(size_t j = 0; j < dim; ++j) {
 					defaulttype::	DataTypeInfo<Deriv>::getValue(vec[i], j, *(dst++));
 				}
 			}
@@ -211,16 +211,16 @@ public:
 	}
 
 	virtual void copyFromBuffer(VecId dst, const SReal* src, unsigned n) {
-		const unsigned size = this->getSize();
+		const size_t size = this->getSize();
 		
 		switch(dst.type) {
 		case V_COORD: {
 			helper::WriteAccessor< Data<VecCoord> > vec = this->write(VecCoordId(dst));
-			const unsigned dim = defaulttype::DataTypeInfo<Coord>::size();
+			const size_t dim = defaulttype::DataTypeInfo<Coord>::size();
 			assert( n == dim * size );
 			
-			for(unsigned i = 0; i < size; ++i) {
-				for(unsigned j = 0; j < dim; ++j) {
+			for(size_t i = 0; i < size; ++i) {
+				for(size_t j = 0; j < dim; ++j) {
 					defaulttype::DataTypeInfo<Coord>::setValue(vec[i], j, *(src++));
 				}
 			}
@@ -228,11 +228,11 @@ public:
 		}; break;
 		case V_DERIV: {
 			helper::WriteAccessor< Data<VecDeriv> > vec = this->write(VecDerivId(dst));
-			const unsigned dim = defaulttype::DataTypeInfo<Deriv>::size();
+			const size_t dim = defaulttype::DataTypeInfo<Deriv>::size();
 			assert( n == dim * size );
 			
-			for(unsigned i = 0; i < size; ++i) {
-				for(unsigned j = 0; j < dim; ++j) {
+			for(size_t i = 0; i < size; ++i) {
+				for(size_t j = 0; j < dim; ++j) {
 					defaulttype::	DataTypeInfo<Deriv>::setValue(vec[i], j, *(src++));
 				}
 			}

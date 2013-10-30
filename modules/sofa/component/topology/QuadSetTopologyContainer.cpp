@@ -93,10 +93,10 @@ void QuadSetTopologyContainer::createQuadsAroundVertexArray()
     m_quadsAroundVertex.resize( getNbPoints() );
     helper::ReadAccessor< Data< sofa::helper::vector<Quad> > > m_quad = d_quad;
 
-    for (unsigned int i=0; i<m_quad.size(); ++i)
+    for (size_t i=0; i<m_quad.size(); ++i)
     {
         // adding quad i in the quad shell of all points
-        for (unsigned int j=0; j<4; ++j)
+        for (size_t j=0; j<4; ++j)
         {
             m_quadsAroundVertex[ m_quad[i][j] ].push_back( i );
         }
@@ -124,8 +124,8 @@ void QuadSetTopologyContainer::createQuadsAroundEdgeArray()
     if(!hasEdgesInQuad())
         createEdgesInQuadArray();
 
-    const unsigned int numQuads = getNumberOfQuads();
-    const unsigned int numEdges = getNumberOfEdges();
+    const size_t numQuads = getNumberOfQuads();
+    const size_t numEdges = getNumberOfEdges();
 
     if(hasQuadsAroundEdge())
     {
@@ -134,10 +134,10 @@ void QuadSetTopologyContainer::createQuadsAroundEdgeArray()
 
     m_quadsAroundEdge.resize(numEdges);
 
-    for (unsigned int i=0; i<numQuads; ++i)
+    for (size_t i=0; i<numQuads; ++i)
     {
         // adding quad i in the quad shell of all edges
-        for (unsigned int j=0; j<4; ++j)
+        for (size_t j=0; j<4; ++j)
         {
             m_quadsAroundEdge[ m_edgesInQuad[i][j] ].push_back( i );
         }
@@ -175,10 +175,10 @@ void QuadSetTopologyContainer::createEdgeSetArray()
     helper::WriteAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
     helper::ReadAccessor< Data< sofa::helper::vector<Quad> > > m_quad = d_quad;
 
-    for (unsigned int i=0; i<m_quad.size(); ++i)
+    for (size_t i=0; i<m_quad.size(); ++i)
     {
         const Quad &t = m_quad[i];
-        for(unsigned int j=0; j<4; ++j)
+        for(size_t j=0; j<4; ++j)
         {
             const unsigned int v1 = t[(j+1)%4];
             const unsigned int v2 = t[(j+2)%4];
@@ -218,16 +218,16 @@ void QuadSetTopologyContainer::createEdgesInQuadArray()
     if(hasEdgesInQuad())
         clearEdgesInQuad();
 
-    const unsigned int numQuads = getNumberOfQuads();
+    const size_t numQuads = getNumberOfQuads();
 
     m_edgesInQuad.resize( numQuads );
     helper::ReadAccessor< Data< sofa::helper::vector<Quad> > > m_quad = d_quad;
 
-    for(unsigned int i=0; i<numQuads; ++i)
+    for(size_t i=0; i<numQuads; ++i)
     {
         const Quad &t = m_quad[i];
         // adding edge i in the edge shell of both points
-        for (unsigned int j=0; j<4; ++j)
+        for (size_t j=0; j<4; ++j)
         {
             const int edgeIndex = getEdgeIndex(t[(j+1)%4],t[(j+2)%4]);
             m_edgesInQuad[i][j]=edgeIndex;
@@ -481,10 +481,10 @@ bool QuadSetTopologyContainer::checkTopology() const
 
     if(hasQuadsAroundVertex())
     {
-        for (unsigned int i=0; i<m_quadsAroundVertex.size(); ++i)
+        for (size_t i=0; i<m_quadsAroundVertex.size(); ++i)
         {
             const sofa::helper::vector<unsigned int> &tvs = m_quadsAroundVertex[i];
-            for (unsigned int j=0; j<tvs.size(); ++j)
+            for (size_t j=0; j<tvs.size(); ++j)
             {
                 if((m_quad[tvs[j]][0]!=i)
                    && (m_quad[tvs[j]][1]!=i)
@@ -500,10 +500,10 @@ bool QuadSetTopologyContainer::checkTopology() const
 
     if(hasQuadsAroundEdge())
     {
-        for (unsigned int i=0; i<m_quadsAroundEdge.size(); ++i)
+        for (size_t i=0; i<m_quadsAroundEdge.size(); ++i)
         {
             const sofa::helper::vector<unsigned int> &tes = m_quadsAroundEdge[i];
-            for (unsigned int j=0; j<tes.size(); ++j)
+            for (size_t j=0; j<tes.size(); ++j)
             {
                 if((m_edgesInQuad[tes[j]][0]!=i)
                    && (m_edgesInQuad[tes[j]][1]!=i)
@@ -531,7 +531,7 @@ bool QuadSetTopologyContainer::checkTopology() const
 bool QuadSetTopologyContainer::checkConnexity()
 {
 
-    unsigned int nbr = this->getNbQuads();
+    size_t nbr = this->getNbQuads();
 
     if (nbr == 0)
     {
@@ -555,7 +555,7 @@ bool QuadSetTopologyContainer::checkConnexity()
 
 unsigned int QuadSetTopologyContainer::getNumberOfConnectedComponent()
 {
-    unsigned int nbr = this->getNbQuads();
+    size_t nbr = this->getNbQuads();
 
     if (nbr == 0)
     {
@@ -566,14 +566,14 @@ unsigned int QuadSetTopologyContainer::getNumberOfConnectedComponent()
     }
 
     VecQuadID elemAll = this->getConnectedElement(0);
-    unsigned int cpt = 1;
+    size_t cpt = 1;
 
     while (elemAll.size() < nbr)
     {
         std::sort(elemAll.begin(), elemAll.end());
-        unsigned int other_QuadID = elemAll.size();
+        size_t other_QuadID = elemAll.size();
 
-        for (unsigned int i = 0; i<elemAll.size(); ++i)
+        for (size_t i = 0; i<elemAll.size(); ++i)
             if (elemAll[i] != i)
             {
                 other_QuadID = i;
@@ -603,8 +603,8 @@ const VecQuadID QuadSetTopologyContainer::getConnectedElement(QuadID elem)
     VecQuadID elemAll;
     VecQuadID elemOnFront, elemPreviousFront, elemNextFront;
     bool end = false;
-    unsigned int cpt = 0;
-    unsigned int nbr = this->getNbQuads();
+    size_t cpt = 0;
+    size_t nbr = this->getNbQuads();
 
     // init algo
     elemAll.push_back(elem);
@@ -618,12 +618,12 @@ const VecQuadID QuadSetTopologyContainer::getConnectedElement(QuadID elem)
         elemNextFront = this->getElementAroundElements(elemOnFront); // for each QuadID on the propagation front
 
         // Second Step - Avoid backward direction
-        for (unsigned int i = 0; i<elemNextFront.size(); ++i)
+        for (size_t i = 0; i<elemNextFront.size(); ++i)
         {
             bool find = false;
             QuadID id = elemNextFront[i];
 
-            for (unsigned int j = 0; j<elemAll.size(); ++j)
+            for (size_t j = 0; j<elemAll.size(); ++j)
                 if (id == elemAll[j])
                 {
                     find = true;
@@ -671,11 +671,11 @@ const VecQuadID QuadSetTopologyContainer::getElementAroundElement(QuadID elem)
 
     Quad the_quad = this->getQuad(elem);
 
-    for(unsigned int i = 0; i<4; ++i) // for each node of the Quad
+    for(size_t i = 0; i<4; ++i) // for each node of the Quad
     {
         QuadsAroundVertex quadAV = this->getQuadsAroundVertex(the_quad[i]);
 
-        for (unsigned int j = 0; j<quadAV.size(); ++j) // for each Quad around the node
+        for (size_t j = 0; j<quadAV.size(); ++j) // for each Quad around the node
         {
             bool find = false;
             QuadID id = quadAV[j];
@@ -683,7 +683,7 @@ const VecQuadID QuadSetTopologyContainer::getElementAroundElement(QuadID elem)
             if (id == elem)
                 continue;
 
-            for (unsigned int k = 0; k<elems.size(); ++k) // check no redundancy
+            for (size_t k = 0; k<elems.size(); ++k) // check no redundancy
                 if (id == elems[k])
                 {
                     find = true;
@@ -712,19 +712,19 @@ const VecQuadID QuadSetTopologyContainer::getElementAroundElements(VecQuadID ele
         createQuadsAroundVertexArray();
     }
 
-    for (unsigned int i = 0; i <elems.size(); ++i) // for each QuadId of input vector
+    for (size_t i = 0; i <elems.size(); ++i) // for each QuadId of input vector
     {
         VecQuadID elemTmp2 = this->getElementAroundElement(elems[i]);
 
         elemTmp.insert(elemTmp.end(), elemTmp2.begin(), elemTmp2.end());
     }
 
-    for (unsigned int i = 0; i<elemTmp.size(); ++i) // for each Quad Id found
+    for (size_t i = 0; i<elemTmp.size(); ++i) // for each Quad Id found
     {
         bool find = false;
         QuadID id = elemTmp[i];
 
-        for (unsigned int j = 0; j<elems.size(); ++j) // check no redundancy with input vector
+        for (size_t j = 0; j<elems.size(); ++j) // check no redundancy with input vector
             if (id == elems[j])
             {
                 find = true;
@@ -733,7 +733,7 @@ const VecQuadID QuadSetTopologyContainer::getElementAroundElements(VecQuadID ele
 
         if (!find)
         {
-            for (unsigned int j = 0; j<elemAll.size(); ++j) // check no redundancy in output vector
+            for (size_t j = 0; j<elemAll.size(); ++j) // check no redundancy in output vector
                 if (id == elemAll[j])
                 {
                     find = true;
@@ -777,7 +777,7 @@ bool QuadSetTopologyContainer::hasQuadsAroundEdge() const
 
 void QuadSetTopologyContainer::clearQuadsAroundVertex()
 {
-    for(unsigned int i=0; i<m_quadsAroundVertex.size(); ++i)
+    for(size_t i=0; i<m_quadsAroundVertex.size(); ++i)
         m_quadsAroundVertex[i].clear();
 
     m_quadsAroundVertex.clear();
@@ -785,7 +785,7 @@ void QuadSetTopologyContainer::clearQuadsAroundVertex()
 
 void QuadSetTopologyContainer::clearQuadsAroundEdge()
 {
-    for(unsigned int i=0; i<m_quadsAroundEdge.size(); ++i)
+    for(size_t i=0; i<m_quadsAroundEdge.size(); ++i)
         m_quadsAroundEdge[i].clear();
 
     m_quadsAroundEdge.clear();

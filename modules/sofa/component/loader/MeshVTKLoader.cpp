@@ -291,7 +291,7 @@ bool MeshVTKLoader::setInputsMesh()
         }
 
         if (numSubPolyLines.size() > 0) {
-            unsigned int sz = reader->inputCellDataVector.size();
+            size_t sz = reader->inputCellDataVector.size();
             reader->inputCellDataVector.resize(sz+1);
             reader->inputCellDataVector[sz] = reader->newVTKDataIO("int");
 
@@ -328,7 +328,7 @@ bool MeshVTKLoader::setInputsData()
     //std::cout << "Number of Fields before :" << f.size() << std::endl;
 
     ///Point Data
-    for (unsigned int i=0 ; i<reader->inputPointDataVector.size() ; i++)
+    for (size_t i=0 ; i<reader->inputPointDataVector.size() ; i++)
     {
         const char* dataname = reader->inputPointDataVector[i]->name.c_str();
 
@@ -337,7 +337,7 @@ bool MeshVTKLoader::setInputsData()
     }
 
     ///Cell Data
-    for (unsigned int i=0 ; i<reader->inputCellDataVector.size() ; i++)
+    for (size_t i=0 ; i<reader->inputCellDataVector.size() ; i++)
     {
         const char* dataname = reader->inputCellDataVector[i]->name.c_str();
 
@@ -495,7 +495,7 @@ bool MeshVTKLoader::LegacyVTKReader::readFile(const char* filename)
             std::cout << "Data structure: " << dataStructure << std::endl;
 
             if (dataStructure == "SCALARS") {
-                unsigned int sz = inputCellDataVector.size();
+                size_t sz = inputCellDataVector.size();
 
                 inputCellDataVector.resize(sz+1);
                 lnData >> dataName;
@@ -523,7 +523,7 @@ bool MeshVTKLoader::LegacyVTKReader::readFile(const char* filename)
                     lnData >> perCell >> cells;
                     std::cout << "Reading topology for lines: "<< perCell << " " << cells << std::endl;
 
-                    unsigned int sz = inputCellDataVector.size();
+                    size_t sz = inputCellDataVector.size();
 
                     inputCellDataVector.resize(sz+1);
                     inputCellDataVector[sz] = newVTKDataIO("int");
