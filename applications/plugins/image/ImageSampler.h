@@ -876,7 +876,7 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
         vector<unsigned int> fpos_voronoiIndex;
         vector<VoxelIndex> fpos_VoxelIndex;
 
-        for(unsigned int i=0; i<fpos.size(); i++)
+        for(size_t i=0; i<fpos.size(); i++)
         {
             fpos_voronoiIndex.push_back(i+1);
             Coord p = inT->toImageInt(fpos[i]);
@@ -928,7 +928,7 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
 
         // add 3D points
         std::vector<Vec<3,Real> >& pos = *sampler->position.beginEdit();    pos.clear();
-        for(unsigned int i=0; i<pos_VoxelIndex.size(); i++)
+        for(size_t i=0; i<pos_VoxelIndex.size(); i++)
         {
             unsigned x,y,z; dist.index1Dto3D(pos_VoxelIndex[i].index1d,x,y,z);
             pos.push_back(inT->fromImage(Coord(x,y,z)));

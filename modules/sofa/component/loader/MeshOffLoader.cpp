@@ -87,8 +87,8 @@ bool MeshOffLoader::readOFF (std::ifstream &file, const char* /* filename */ )
     helper::vector<Triangle>& my_triangles = *(triangles.beginEdit());
     helper::vector<Quad>& my_quads = *(quads.beginEdit());
 
-    unsigned int numberOfVertices = 0, numberOfFaces = 0, numberOfEdges = 0;
-    unsigned int currentNumberOfVertices = 0, currentNumberOfFaces = 0;
+    size_t numberOfVertices = 0, numberOfFaces = 0, numberOfEdges = 0;
+    size_t currentNumberOfVertices = 0, currentNumberOfFaces = 0;
     Vec3d vertex;
     Triangle triangle;
     Quad quad;
@@ -139,7 +139,7 @@ bool MeshOffLoader::readOFF (std::ifstream &file, const char* /* filename */ )
         if (line[0] == '#') continue;
 
         std::istringstream values(line);
-        unsigned int numberOfVerticesPerFace = 0;
+        size_t numberOfVerticesPerFace = 0;
 
         values >> numberOfVerticesPerFace;
         if (numberOfVerticesPerFace < 3 || numberOfVerticesPerFace > 4)

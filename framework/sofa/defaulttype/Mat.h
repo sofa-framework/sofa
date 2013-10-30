@@ -36,7 +36,7 @@ namespace sofa
 namespace defaulttype
 {
 
-template <int L, int C, class real=float>
+template <size_t L, size_t C, class real=float>
 class Mat : public helper::fixed_array<VecNoInit<C,real>,L>
     //class Mat : public Vec<L,Vec<C,real> >
 {
@@ -49,8 +49,8 @@ public:
     typedef VecNoInit<C,real> LineNoInit;
     typedef Vec<L,real> Col;
 
-    static const int nbLines = L;
-    static const int nbCols  = C;
+    static const size_t nbLines = L;
+    static const size_t nbCols  = C;
 
     Mat()
     {
@@ -100,8 +100,8 @@ public:
     /// Constructor from an element
     explicit Mat(const real& v)
     {
-        for( int i=0; i<L; i++ )
-            for( int j=0; j<C; j++ )
+        for( size_t i=0; i<L; i++ )
+            for( size_t j=0; j<C; j++ )
                 this->elems[i][j] = v;
     }
 
@@ -113,22 +113,22 @@ public:
     }
 
     /// Constructor from another matrix with different size (with null default entries and ignoring outside entries)
-    template<int L2, int C2, typename real2>
+    template<size_t L2, size_t C2, typename real2>
     explicit Mat(const Mat<L2,C2,real2>& m)
     {
-        int maxL = std::min( L, L2 );
-        int maxC = std::min( C, C2 );
+        size_t maxL = std::min( L, L2 );
+        size_t maxC = std::min( C, C2 );
 
-        for( int l=0 ; l<maxL ; ++l )
+        for( size_t l=0 ; l<maxL ; ++l )
         {
-            for( int c=0 ; c<maxC ; ++c )
+            for( size_t c=0 ; c<maxC ; ++c )
                 this->elems[l][c] = (real)m[l][c];
-            for( int c=maxC ; c<C ; ++c )
+            for( size_t c=maxC ; c<C ; ++c )
                 this->elems[l][c] = 0;
         }
 
-        for( int l=maxL ; l<L ; ++l )
-            for( int c=0 ; c<C ; ++c )
+        for( size_t l=maxL ; l<L ; ++l )
+            for( size_t c=0 ; c<C ; ++c )
                 this->elems[l][c] = 0;
     }
 
@@ -140,13 +140,13 @@ public:
     }
 
     /// number of lines
-    int getNbLines() const
+    size_t getNbLines() const
     {
         return L;
     }
 
     /// number of colums
-    int getNbCols() const
+    size_t getNbCols() const
     {
         return C;
     }
@@ -165,86 +165,86 @@ public:
     }
 
     /// Assignment from a matrix of different size.
-    template<int L2, int C2> void operator=(const Mat<L2,C2,real>& m)
+    template<size_t L2, size_t C2> void operator=(const Mat<L2,C2,real>& m)
     {
         std::copy(m.begin(), m.begin()+(L>L2?L2:L), this->begin());
     }
 
-    template<int L2, int C2> void getsub(int L0, int C0, Mat<L2,C2,real>& m) const
+    template<size_t L2, size_t C2> void getsub(size_t L0, size_t C0, Mat<L2,C2,real>& m) const
     {
-        for (int i=0; i<L2; i++)
-            for (int j=0; j<C2; j++)
+        for (size_t i=0; i<L2; i++)
+            for (size_t j=0; j<C2; j++)
                 m[i][j] = this->elems[i+L0][j+C0];
     }
 
-    template<int L2, int C2> void setsub(int L0, int C0, const Mat<L2,C2,real>& m)
+    template<size_t L2, size_t C2> void setsub(size_t L0, size_t C0, const Mat<L2,C2,real>& m)
     {
-        for (int i=0; i<L2; i++)
-            for (int j=0; j<C2; j++)
+        for (size_t i=0; i<L2; i++)
+            for (size_t j=0; j<C2; j++)
                 this->elems[i+L0][j+C0] = m[i][j];
     }
 
     /// Sets each element to 0.
     void clear()
     {
-        for (int i=0; i<L; i++)
+        for (size_t i=0; i<L; i++)
             this->elems[i].clear();
     }
 
     /// Sets each element to r.
     void fill(real r)
     {
-        for (int i=0; i<L; i++)
+        for (size_t i=0; i<L; i++)
             this->elems[i].fill(r);
     }
 
     /// Read-only access to line i.
-    const Line& line(int i) const
+    const Line& line(size_t i) const
     {
         return this->elems[i];
     }
 
     /// Copy of column j.
-    Col col(int j) const
+    Col col(size_t j) const
     {
         Col c;
-        for (int i=0; i<L; i++)
+        for (size_t i=0; i<L; i++)
             c[i]=this->elems[i][j];
         return c;
     }
 
     /// Write acess to line i.
-    LineNoInit& operator[](int i)
+    LineNoInit& operator[](size_t i)
     {
         return this->elems[i];
     }
 
     /// Read-only access to line i.
-    const LineNoInit& operator[](int i) const
+    const LineNoInit& operator[](size_t i) const
     {
         return this->elems[i];
     }
 
     /// Write acess to line i.
-    LineNoInit& operator()(int i)
+    LineNoInit& operator()(size_t i)
     {
         return this->elems[i];
     }
 
     /// Read-only access to line i.
-    const LineNoInit& operator()(int i) const
+    const LineNoInit& operator()(size_t i) const
     {
         return this->elems[i];
     }
 
     /// Write access to element (i,j).
-    real& operator()(int i, int j)
+    real& operator()(size_t i, size_t j)
     {
         return this->elems[i][j];
     }
 
     /// Read-only access to element (i,j).
-    const real& operator()(int i, int j) const
+    const real& operator()(size_t i, size_t j) const
     {
         return this->elems[i][j];
     }
@@ -296,7 +296,7 @@ public:
     {
         BOOST_STATIC_ASSERT(L == C);
         clear();
-        for (int i=0; i<L; i++)
+        for (size_t i=0; i<L; i++)
             this->elems[i][i]=1;
     }
 
@@ -305,7 +305,7 @@ public:
     {
         BOOST_STATIC_ASSERT(L == C);
         Mat<L,L,real> id;
-        for (int i=0; i<L; i++)
+        for (size_t i=0; i<L; i++)
             id[i][i]=1;
         return id;
     }
@@ -313,8 +313,8 @@ public:
     /// Set matrix as the transpose of m.
     void transpose(const Mat<C,L,real> &m)
     {
-        for (int i=0; i<L; i++)
-            for (int j=0; j<C; j++)
+        for (size_t i=0; i<L; i++)
+            for (size_t j=0; j<C; j++)
                 this->elems[i][j]=m[j][i];
     }
 
@@ -322,8 +322,8 @@ public:
     Mat<C,L,real> transposed() const
     {
         Mat<C,L,real> m(NOINIT);
-        for (int i=0; i<L; i++)
-            for (int j=0; j<C; j++)
+        for (size_t i=0; i<L; i++)
+            for (size_t j=0; j<C; j++)
                 m[j][i]=this->elems[i][j];
         return m;
     }
@@ -332,8 +332,8 @@ public:
     void transpose()
     {
         BOOST_STATIC_ASSERT(L == C);
-        for (int i=0; i<L; i++)
-            for (int j=i+1; j<C; j++)
+        for (size_t i=0; i<L; i++)
+            for (size_t j=i+1; j<C; j++)
             {
                 real t = this->elems[i][j];
                 this->elems[i][j] = this->elems[j][i];
@@ -346,14 +346,14 @@ public:
 
     bool operator==(const Mat<L,C,real>& b) const
     {
-        for (int i=0; i<L; i++)
+        for (size_t i=0; i<L; i++)
             if (!(this->elems[i]==b[i])) return false;
         return true;
     }
 
     bool operator!=(const Mat<L,C,real>& b) const
     {
-        for (int i=0; i<L; i++)
+        for (size_t i=0; i<L; i++)
             if (this->elems[i]!=b[i]) return true;
         return false;
     }
@@ -361,19 +361,19 @@ public:
 
     bool isSymmetric() const
     {
-        for (int i=0; i<L; i++)
-            for (int j=i+1; j<C; j++)
+        for (size_t i=0; i<L; i++)
+            for (size_t j=i+1; j<C; j++)
                 if( fabs( this->elems[i][j] - this->elems[j][i] ) > EQUALITY_THRESHOLD ) return false;
         return true;
     }
 
     bool isDiagonal() const
     {
-        for (int i=0; i<L; i++)
+        for (size_t i=0; i<L; i++)
         {
-            for (int j=0; j<i-1; j++)
+            for (size_t j=0; j<i-1; j++)
                 if( helper::rabs( this->elems[i][j] ) > EQUALITY_THRESHOLD ) return false;
-            for (int j=i+1; j<C; j++)
+            for (size_t j=i+1; j<C; j++)
                 if( helper::rabs( this->elems[i][j] ) > EQUALITY_THRESHOLD ) return false;
         }
         return true;
@@ -385,15 +385,15 @@ public:
     // LINEAR ALGEBRA
 
     /// Matrix multiplication operator.
-    template <int P>
+    template <size_t P>
     Mat<L,P,real> operator*(const Mat<C,P,real>& m) const
     {
         Mat<L,P,real> r(NOINIT);
-        for(int i=0; i<L; i++)
-            for(int j=0; j<P; j++)
+        for(size_t i=0; i<L; i++)
+            for(size_t j=0; j<P; j++)
             {
                 r[i][j]=(*this)[i][0] * m[0][j];
-                for(int k=1; k<C; k++)
+                for(size_t k=1; k<C; k++)
                     r[i][j] += (*this)[i][k] * m[k][j];
             }
         return r;
@@ -403,7 +403,7 @@ public:
     Mat<L,C,real> operator+(const Mat<L,C,real>& m) const
     {
         Mat<L,C,real> r(NOINIT);
-        for(int i = 0; i < L; i++)
+        for(size_t i = 0; i < L; i++)
             r[i] = (*this)[i] + m[i];
         return r;
     }
@@ -412,7 +412,7 @@ public:
     Mat<L,C,real> operator-(const Mat<L,C,real>& m) const
     {
         Mat<L,C,real> r(NOINIT);
-        for(int i = 0; i < L; i++)
+        for(size_t i = 0; i < L; i++)
             r[i] = (*this)[i] - m[i];
         return r;
     }
@@ -421,7 +421,7 @@ public:
     Mat<L,C,real> operator-() const
     {
         Mat<L,C,real> r(NOINIT);
-        for(int i = 0; i < L; i++)
+        for(size_t i = 0; i < L; i++)
             r[i] = -(*this)[i];
         return r;
     }
@@ -430,10 +430,10 @@ public:
     Col operator*(const Line& v) const
     {
         Col r(NOINIT);
-        for(int i=0; i<L; i++)
+        for(size_t i=0; i<L; i++)
         {
             r[i]=(*this)[i][0] * v[0];
-            for(int j=1; j<C; j++)
+            for(size_t j=1; j<C; j++)
                 r[i] += (*this)[i][j] * v[j];
         }
         return r;
@@ -444,8 +444,8 @@ public:
     Mat<L,C,real> multDiagonal(const Line& d) const
     {
         Mat<L,C,real> r(NOINIT);
-        for(int i=0; i<L; i++)
-            for(int j=0; j<C; j++)
+        for(size_t i=0; i<L; i++)
+            for(size_t j=0; j<C; j++)
                 r[i][j]=(*this)[i][j] * d[j];
         return r;
     }
@@ -454,10 +454,10 @@ public:
     Line multTranspose(const Col& v) const
     {
         Line r(NOINIT);
-        for(int i=0; i<C; i++)
+        for(size_t i=0; i<C; i++)
         {
             r[i]=(*this)[0][i] * v[0];
-            for(int j=1; j<L; j++)
+            for(size_t j=1; j<L; j++)
                 r[i] += (*this)[j][i] * v[j];
         }
         return r;
@@ -465,30 +465,30 @@ public:
 
 
     /// Transposed Matrix multiplication operator.
-    template <int P>
+    template <size_t P>
     Mat<C,P,real> multTranspose(const Mat<L,P,real>& m) const
     {
         Mat<C,P,real> r(NOINIT);
-        for(int i=0; i<C; i++)
-            for(int j=0; j<P; j++)
+        for(size_t i=0; i<C; i++)
+            for(size_t j=0; j<P; j++)
             {
                 r[i][j]=(*this)[0][i] * m[0][j];
-                for(int k=1; k<L; k++)
+                for(size_t k=1; k<L; k++)
                     r[i][j] += (*this)[k][i] * m[k][j];
             }
         return r;
     }
 
     /// Multiplication with the transposed of the given matrix operator \returns this * mt
-    template <int P>
+    template <size_t P>
     Mat<L,P,real> multTransposed(const Mat<P,C,real>& m) const
     {
         Mat<L,P,real> r(NOINIT);
-        for(int i=0; i<L; i++)
-            for(int j=0; j<P; j++)
+        for(size_t i=0; i<L; i++)
+            for(size_t j=0; j<P; j++)
             {
                 r[i][j]=(*this)[i][0] * m[j][0];
-                for(int k=1; k<C; k++)
+                for(size_t k=1; k<C; k++)
                     r[i][j] += (*this)[i][k] * m[j][k];
             }
         return r;
@@ -498,8 +498,8 @@ public:
     Mat<L,C,real> plusTransposed(const Mat<C,L,real>& m) const
     {
         Mat<L,C,real> r(NOINIT);
-        for(int i=0; i<L; i++)
-            for(int j=0; j<C; j++)
+        for(size_t i=0; i<L; i++)
+            for(size_t j=0; j<C; j++)
                 r[i][j] = (*this)[i][j] + m[j][i];
         return r;
     }
@@ -508,8 +508,8 @@ public:
     Mat<L,C,real>minusTransposed(const Mat<C,L,real>& m) const
     {
         Mat<L,C,real> r(NOINIT);
-        for(int i=0; i<L; i++)
-            for(int j=0; j<C; j++)
+        for(size_t i=0; i<L; i++)
+            for(size_t j=0; j<C; j++)
                 r[i][j] = (*this)[i][j] - m[j][i];
         return r;
     }
@@ -519,8 +519,8 @@ public:
     Mat<L,C,real> operator*(real f) const
     {
         Mat<L,C,real> r(NOINIT);
-        for(int i=0; i<L; i++)
-            for(int j=0; j<C; j++)
+        for(size_t i=0; i<L; i++)
+            for(size_t j=0; j<C; j++)
                 r[i][j] = (*this)[i][j] * f;
         return r;
     }
@@ -535,8 +535,8 @@ public:
     Mat<L,C,real> operator/(real f) const
     {
         Mat<L,C,real> r(NOINIT);
-        for(int i=0; i<L; i++)
-            for(int j=0; j<C; j++)
+        for(size_t i=0; i<L; i++)
+            for(size_t j=0; j<C; j++)
                 r[i][j] = (*this)[i][j] / f;
         return r;
     }
@@ -544,44 +544,44 @@ public:
     /// Scalar multiplication assignment operator.
     void operator *=(real r)
     {
-        for(int i=0; i<L; i++)
+        for(size_t i=0; i<L; i++)
             this->elems[i]*=r;
     }
 
     /// Scalar division assignment operator.
     void operator /=(real r)
     {
-        for(int i=0; i<L; i++)
+        for(size_t i=0; i<L; i++)
             this->elems[i]/=r;
     }
 
     /// Addition assignment operator.
     void operator +=(const Mat<L,C,real>& m)
     {
-        for(int i=0; i<L; i++)
+        for(size_t i=0; i<L; i++)
             this->elems[i]+=m[i];
     }
 
     /// Addition of the transposed of m
     void addTransposed(const Mat<C,L,real>& m)
     {
-        for(int i=0; i<L; i++)
-            for(int j=0; j<C; j++)
+        for(size_t i=0; i<L; i++)
+            for(size_t j=0; j<C; j++)
                 (*this)[i][j] += m[j][i];
     }
 
     /// Substraction of the transposed of m
     void subTransposed(const Mat<C,L,real>& m)
     {
-        for(int i=0; i<L; i++)
-            for(int j=0; j<C; j++)
+        for(size_t i=0; i<L; i++)
+            for(size_t j=0; j<C; j++)
                 (*this)[i][j] -= m[j][i];
     }
 
     /// Substraction assignment operator.
     void operator -=(const Mat<L,C,real>& m)
     {
-        for(int i=0; i<L; i++)
+        for(size_t i=0; i<L; i++)
             this->elems[i]-=m[i];
     }
 
@@ -595,7 +595,7 @@ public:
     {
         Mat<L,C,real> m;
         m.identity();
-        for (int i=0; i<C-1; ++i)
+        for (size_t i=0; i<C-1; ++i)
             m.elems[i][C-1] = t[i];
         return m;
     }
@@ -604,7 +604,7 @@ public:
     {
         Mat<L,C,real> m;
         m.identity();
-        for (int i=0; i<C-1; ++i)
+        for (size_t i=0; i<C-1; ++i)
             m.elems[i][i] = s;
         return m;
     }
@@ -613,7 +613,7 @@ public:
     {
         Mat<L,C,real> m;
         m.identity();
-        for (int i=0; i<C-1; ++i)
+        for (size_t i=0; i<C-1; ++i)
             m.elems[i][i] = s[i];
         return m;
     }
@@ -631,10 +631,10 @@ public:
     Vec<C-1,real> transform(const Vec<C-1,real>& v) const
     {
         Vec<C-1,real> r(NOINIT);
-        for(int i=0; i<C-1; i++)
+        for(size_t i=0; i<C-1; i++)
         {
             r[i]=(*this)[i][0] * v[0];
-            for(int j=1; j<C-1; j++)
+            for(size_t j=1; j<C-1; j++)
                 r[i] += (*this)[i][j] * v[j];
             r[i] += (*this)[i][C-1];
         }
@@ -647,7 +647,7 @@ public:
 };
 
 /// Same as Mat except the values are not initialized by default
-template <int L, int C, typename real=float>
+template <size_t L, size_t C, typename real=float>
 class MatNoInit : public Mat<L,C,real>
 {
 public:
@@ -663,7 +663,7 @@ public:
     }
 
     /// Assignment from another matrix
-    template<int L2, int C2, typename real2> void operator=(const Mat<L2,C2,real2>& m)
+    template<size_t L2, size_t C2, typename real2> void operator=(const Mat<L2,C2,real2>& m)
     {
         this->Mat<L,C,real>::operator=(m);
     }
@@ -710,7 +710,7 @@ template<class real>
 inline real oneNorm(const Mat<3,3,real>& A)
 {
     real norm = 0.0;
-    for (int i=0; i<3; i++)
+    for (size_t i=0; i<3; i++)
     {
         real columnAbsSum = helper::rabs(A(0,i)) + helper::rabs(A(1,i)) + helper::rabs(A(2,i));
         if (columnAbsSum > norm)
@@ -724,7 +724,7 @@ template<class real>
 inline real infNorm(const Mat<3,3,real>& A)
 {
     real norm = 0.0;
-    for (int i=0; i<3; i++)
+    for (size_t i=0; i<3; i++)
     {
         real rowSum = helper::rabs(A(i,0)) + helper::rabs(A(i,1)) + helper::rabs(A(i,2));
         if (rowSum > norm)
@@ -734,30 +734,30 @@ inline real infNorm(const Mat<3,3,real>& A)
 }
 
 /// trace of a square matrix
-template<int N, class real>
+template<size_t N, class real>
 inline real trace(const Mat<N,N,real>& m)
 {
     real t = m[0][0];
-    for( int i=1 ; i<N ; ++i ) t += m[i][i];
+    for( size_t i=1 ; i<N ; ++i ) t += m[i][i];
     return t;
 }
 
 /// diagonal of a square matrix
-template<int N, class real>
+template<size_t N, class real>
 inline Vec<N,real> diagonal(const Mat<N,N,real>& m)
 {
     Vec<N,real> v;
-    for( int i=0 ; i<N ; ++i ) v[i] = m[i][i];
+    for( size_t i=0 ; i<N ; ++i ) v[i] = m[i][i];
     return v;
 }
 
 #define MIN_DETERMINANT  1.0e-100
 
 /// Matrix inversion (general case).
-template<int S, class real>
+template<size_t S, class real>
 bool invertMatrix(Mat<S,S,real>& dest, const Mat<S,S,real>& from)
 {
-    int i, j, k;
+    size_t i, j, k;
     Vec<S,int> r, c, row, col;
 
     Mat<S,S,real> m1 = from;
@@ -780,8 +780,8 @@ bool invertMatrix(Mat<S,S,real>& dest, const Mat<S,S,real>& from)
                 if ( t > pivot)
                 {
                     pivot = t;
-                    r[k] = i;
-                    c[k] = j;
+                    r[k] = static_cast<int>(i);
+                    c[k] = static_cast<int>(j);
                 }
             }
         }
@@ -894,17 +894,17 @@ typedef Mat4x4d Matrix4;
 #endif
 
 
-template <int L, int C, typename real>
+template <size_t L, size_t C, typename real>
 std::ostream& operator<<(std::ostream& o, const Mat<L,C,real>& m)
 {
     o << '[' << m[0];
-    for (int i=1; i<L; i++)
+    for (size_t i=1; i<L; i++)
         o << ',' << m[i];
     o << ']';
     return o;
 }
 
-template <int L, int C, typename real>
+template <size_t L, size_t C, typename real>
 std::istream& operator>>(std::istream& in, sofa::defaulttype::Mat<L,C,real>& m)
 {
     int c;
@@ -915,7 +915,7 @@ std::istream& operator>>(std::istream& in, sofa::defaulttype::Mat<L,C,real>& m)
         c = in.peek();
     }
     in >> m[0];
-    for (int i=1; i<L; i++)
+    for (size_t i=1; i<L; i++)
     {
         c = in.peek();
         while (c==' ' || c==',')
@@ -939,13 +939,13 @@ std::istream& operator>>(std::istream& in, sofa::defaulttype::Mat<L,C,real>& m)
 
 /// printing in other software formats
 
-template <int L, int C, typename real>
+template <size_t L, size_t C, typename real>
 void printMatlab(std::ostream& o, const Mat<L,C,real>& m)
 {
     o<<"[";
-    for(int l=0; l<L; ++l)
+    for(size_t l=0; l<L; ++l)
     {
-        for(int c=0; c<C; ++c)
+        for(size_t c=0; c<C; ++c)
         {
             o<<m[l][c];
             if( c!=C-1 ) o<<",\t";
@@ -956,13 +956,13 @@ void printMatlab(std::ostream& o, const Mat<L,C,real>& m)
 }
 
 
-template <int L, int C, typename real>
+template <size_t L, size_t C, typename real>
 void printMaple(std::ostream& o, const Mat<L,C,real>& m)
 {
     o<<"matrix("<<L<<","<<C<<", [";
-    for(int l=0; l<L; ++l)
+    for(size_t l=0; l<L; ++l)
     {
-        for(int c=0; c<C; ++c)
+        for(size_t c=0; c<C; ++c)
         {
             o<<m[l][c];
             o<<",\t";
@@ -975,23 +975,23 @@ void printMaple(std::ostream& o, const Mat<L,C,real>& m)
 
 
 /// Create a matrix as \f$ u v^T \f$
-template <int L, int C, typename T>
+template <size_t L, size_t C, typename T>
 inline Mat<L,C,T> dyad( const Vec<L,T>& u, const Vec<C,T>& v )
 {
     Mat<L,C,T> res(NOINIT);
-    for( int i=0; i<L; i++ )
-        for( int j=0; j<C; j++ )
+    for( size_t i=0; i<L; i++ )
+        for( size_t j=0; j<C; j++ )
             res[i][j] = u[i]*v[j];
     return res;
 }
 
 /// Compute the scalar product of two matrix (sum of product of all terms)
-template <int L, int C, typename real>
+template <size_t L, size_t C, typename real>
 inline real scalarProduct(const Mat<L,C,real>& left,const Mat<L,C,real>& right)
 {
     real product(0.);
-    for(int i=0; i<L; i++)
-        for(int j=0; j<C; j++)
+    for(size_t i=0; i<L; i++)
+        for(size_t j=0; j<C; j++)
             product += left(i,j) * right(i,j);
     return product;
 }
@@ -1008,7 +1008,7 @@ namespace sofa
 namespace defaulttype
 {
 
-template<int L, int C, typename real>
+template <size_t L, size_t C, typename real>
 struct DataTypeInfo< sofa::defaulttype::Mat<L,C,real> > : public FixedArrayTypeInfo<sofa::defaulttype::Mat<L,C,real> >
 {
     static std::string name() { std::ostringstream o; o << "Mat<" << L << "," << C << "," << DataTypeName<real>::name() << ">"; return o.str(); }

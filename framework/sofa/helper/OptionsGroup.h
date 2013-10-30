@@ -102,7 +102,7 @@ public :
     unsigned int       getSelectedId()                      const;
     const std::string& getSelectedItem()                    const;
     const std::string& operator[](const unsigned int i)     const {return textItems[i];}
-    unsigned int       size()                               const {return textItems.size();}
+    size_t             size()                               const {return textItems.size();}
     void               writeToStream(std::ostream& stream)  const;
     OptionsGroup&      operator=(const OptionsGroup& m_radiotrick);
     /// @}

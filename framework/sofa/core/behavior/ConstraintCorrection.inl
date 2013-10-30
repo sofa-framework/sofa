@@ -129,11 +129,11 @@ void ConstraintCorrection< DataTypes >::setConstraintForceInMotionSpace(Data< Ve
 {
     VecDeriv& force = *f.beginEdit();
 
-    const unsigned int numDOFs = mstate->getSize();
+    const size_t numDOFs = mstate->getSize();
 
     force.clear();
     force.resize(numDOFs);
-    for (unsigned int i = 0; i < numDOFs; i++)
+    for (size_t i = 0; i < numDOFs; i++)
         force[i] = Deriv();
 
     f.endEdit();
@@ -162,13 +162,13 @@ void ConstraintCorrection< DataTypes >::addConstraintForceInMotionSpace(Data< Ve
 {
     VecDeriv& force = *f.beginEdit();
 
-    const unsigned int numDOFs = mstate->getSize();
-    const unsigned int fPrevSize = force.size();
+    const size_t numDOFs = mstate->getSize();
+    const size_t fPrevSize = force.size();
 
     if (numDOFs > fPrevSize)
     {
         force.resize(numDOFs);
-        for (unsigned int i = fPrevSize; i < numDOFs; i++)
+        for (size_t i = fPrevSize; i < numDOFs; i++)
             force[i] = Deriv();
     }
 
@@ -215,11 +215,11 @@ void ConstraintCorrection< DataTypes >::setConstraintForceInMotionSpace(Data< Ve
 {
     VecDeriv& force = *f.beginEdit();
 
-    const unsigned int numDOFs = mstate->getSize();
+    const size_t numDOFs = mstate->getSize();
 
     force.clear();
     force.resize(numDOFs);
-    for (unsigned int i = 0; i < numDOFs; i++)
+    for (size_t i = 0; i < numDOFs; i++)
         force[i] = Deriv();
 
     f.endEdit();
@@ -248,13 +248,13 @@ void ConstraintCorrection< DataTypes >::addConstraintForceInMotionSpace(Data< Ve
 {
     VecDeriv& force = *f.beginEdit();
 
-    const unsigned int numDOFs = mstate->getSize();
-    const unsigned int fPrevSize = force.size();
+    const size_t numDOFs = mstate->getSize();
+    const size_t fPrevSize = force.size();
 
     if (numDOFs > fPrevSize)
     {
         force.resize(numDOFs);
-        for (unsigned int i = fPrevSize; i < numDOFs; i++)
+        for (size_t i = fPrevSize; i < numDOFs; i++)
             force[i] = Deriv();
     }
 

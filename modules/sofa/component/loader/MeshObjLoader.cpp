@@ -334,7 +334,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
             }
             else // Triangulate
             {
-                for (unsigned int j=2; j<nodes.size(); j++)
+                for (size_t j=2; j<nodes.size(); j++)
                     addTriangle(&my_triangles, Triangle(nodes[0], nodes[j-1], nodes[j]));
                 ++nbFaces[MeshObjLoader::TRIANGLE];
                 faceType = MeshObjLoader::TRIANGLE;
@@ -348,7 +348,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
     }
 
     // end of current group
-    for (int ft = 0; ft < NBFACETYPE; ++ft)
+    for (size_t ft = 0; ft < NBFACETYPE; ++ft)
         if (nbFaces[ft] > groupF0[ft])
         {
             my_faceGroups[ft].push_back(PrimitiveGroup(groupF0[ft], nbFaces[ft]-groupF0[ft], curMaterialName, curGroupName, curMaterialId));
@@ -359,7 +359,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
     helper::vector<sofa::defaulttype::Vector2>& vTexCoords = *texCoords.beginEdit();
     helper::vector<sofa::defaulttype::Vector3>& vNormals   = *normals.beginEdit();
     //helper::vector<sofa::defaulttype::Vector3>& vVertices  = *vertices.beginEdit();
-    unsigned int vertexCount = my_positions.size();
+    size_t vertexCount = my_positions.size();
     if( my_texCoords.size() > 0 )
     {
         vTexCoords.resize(vertexCount);
@@ -376,13 +376,13 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
     {
         vNormals.resize(0);
     }
-    for (unsigned int fi=0; fi<my_faceList.size(); ++fi)
+    for (size_t fi=0; fi<my_faceList.size(); ++fi)
     {
         const helper::SVector<int>& nodes = my_faceList[fi];
         const helper::SVector<int>& nIndices = my_normalsList[fi];
         const helper::SVector<int>& tIndices = my_texturesList[fi];
 
-        for (unsigned int i = 0; i < nodes.size(); ++i)
+        for (size_t i = 0; i < nodes.size(); ++i)
         {
             unsigned int pi = nodes[i];
             unsigned int ni = nIndices[i];
@@ -395,7 +395,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
                 vNormals[pi] += my_normals[ni];
         }
     }
-    for (unsigned int i=0; i<vNormals.size(); ++i)
+    for (size_t i=0; i<vNormals.size(); ++i)
     {
         vNormals[i].normalize();
     }
@@ -405,7 +405,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
     std::map< std::string, helper::vector<unsigned int> > materialFaces[NBFACETYPE];
     for (int ft = 0; ft < NBFACETYPE; ++ft)
     {
-        for (unsigned int gi=0; gi<my_faceGroups[ft].size(); ++gi)
+        for (size_t gi=0; gi<my_faceGroups[ft].size(); ++gi)
         {
             PrimitiveGroup g = my_faceGroups[ft][gi];
             helper::vector<unsigned int>& out = materialFaces[ft][g.materialName];

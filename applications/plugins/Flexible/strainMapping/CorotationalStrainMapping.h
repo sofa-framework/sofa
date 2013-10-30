@@ -69,7 +69,7 @@ public:
         {
         case SMALL:
         {
-            for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
+            for( size_t i=0 ; i<this->jacobian.size() ; i++ )
             {
                 this->jacobian[i].init_small();
             }
@@ -77,7 +77,7 @@ public:
         }
         case QR:
         {
-            for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
+            for( size_t i=0 ; i<this->jacobian.size() ; i++ )
             {
                 this->jacobian[i].init_qr( f_geometricStiffness.getValue() );
             }
@@ -85,7 +85,7 @@ public:
         }
         case POLAR:
         {
-            for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
+            for( size_t i=0 ; i<this->jacobian.size() ; i++ )
             {
                 this->jacobian[i].init_polar( f_geometricStiffness.getValue() );
             }
@@ -93,7 +93,7 @@ public:
         }
         case SVD:
         {
-            for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
+            for( size_t i=0 ; i<this->jacobian.size() ; i++ )
             {
                 this->jacobian[i].init_svd( f_geometricStiffness.getValue() );
             }
@@ -139,7 +139,7 @@ protected:
 #ifdef USING_OMP_PRAGMAS
         #pragma omp parallel for
 #endif
-            for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
+            for( int i=0 ; i < static_cast<int>(this->jacobian.size()) ; i++ )
             {
                 out[i] = typename Inherit::OutCoord();
                 this->jacobian[i].addapply_small( out[i], in[i] );
@@ -151,7 +151,7 @@ protected:
 #ifdef USING_OMP_PRAGMAS
         #pragma omp parallel for
 #endif
-            for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
+            for( int i=0 ; i < static_cast<int>(this->jacobian.size()) ; i++ )
             {
                 out[i] = typename Inherit::OutCoord();
                 this->jacobian[i].addapply_qr( out[i], in[i] );
@@ -163,7 +163,7 @@ protected:
 #ifdef USING_OMP_PRAGMAS
         #pragma omp parallel for
 #endif
-            for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
+            for( int i=0 ; i < static_cast<int>(this->jacobian.size()) ; i++ )
             {
                 out[i] = typename Inherit::OutCoord();
                 this->jacobian[i].addapply_polar( out[i], in[i] );
@@ -175,7 +175,7 @@ protected:
 #ifdef USING_OMP_PRAGMAS
         #pragma omp parallel for
 #endif
-            for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
+            for( int i=0 ; i < static_cast<int>(this->jacobian.size()) ; i++ )
             {
                 out[i] = typename Inherit::OutCoord();
                 this->jacobian[i].addapply_svd( out[i], in[i] );
@@ -220,7 +220,7 @@ protected:
 #ifdef USING_OMP_PRAGMAS
         #pragma omp parallel for
 #endif
-                for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
+                for( int i=0 ; i < static_cast<int>(this->jacobian.size()) ; i++ )
                 {
                     this->jacobian[i].addDForce_qr( parentForce[i], parentDisplacement[i], childForce[i], mparams->kFactor() );
                 }
@@ -231,7 +231,7 @@ protected:
 #ifdef USING_OMP_PRAGMAS
         #pragma omp parallel for
 #endif
-                for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
+                for( int i=0 ; i < static_cast<int>(this->jacobian.size()) ; i++ )
                 {
                     this->jacobian[i].addDForce_polar( parentForce[i], parentDisplacement[i], childForce[i], mparams->kFactor() );
                 }
@@ -242,7 +242,7 @@ protected:
 #ifdef USING_OMP_PRAGMAS
         #pragma omp parallel for
 #endif
-                for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
+                for( int i=0 ; i < static_cast<int>(this->jacobian.size()) ; i++ )
                 {
                     this->jacobian[i].addDForce_svd( parentForce[i], parentDisplacement[i], childForce[i], mparams->kFactor() );
                 }

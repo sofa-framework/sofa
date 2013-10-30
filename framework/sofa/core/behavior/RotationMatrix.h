@@ -101,7 +101,7 @@ public:
     virtual void opMulV(defaulttype::BaseVector* result, const defaulttype::BaseVector* v) const
     {
         //Solve lv = R * lvR
-        unsigned int k = 0,l = 0;
+        size_t k = 0,l = 0;
         while (k < data.size())
         {
             result->set(l+0,data[k + 0] * v->element(l+0) + data[k + 1] * v->element(l+1) + data[k + 2] * v->element(l+2));
@@ -114,7 +114,7 @@ public:
 
     virtual void opMulTV(defaulttype::BaseVector* result, const defaulttype::BaseVector* v) const
     {
-        unsigned int k = 0,l = 0;
+        size_t k = 0,l = 0;
         while (k < data.size())
         {
             result->set(l+0,data[k + 0] * v->element(l+0) + data[k + 3] * v->element(l+1) + data[k + 6] * v->element(l+2));
@@ -136,7 +136,7 @@ public:
                 unsigned datSz = data.size() < m->data.size() ? data.size() : m->data.size();
                 unsigned minSz = datSz < result->data.size() ? datSz : result->data.size();
 
-                for (unsigned i=0; i<minSz; i+=9)
+                for (size_t i=0; i<minSz; i+=9)
                 {
                     tmp[0] = data[i+0] * m->data[i+0] + data[i+1] * m->data[i+1] + data[i+2] * m->data[i+2];
                     tmp[1] = data[i+0] * m->data[i+3] + data[i+1] * m->data[i+4] + data[i+2] * m->data[i+5];
@@ -159,7 +159,7 @@ public:
                 {
                     if (datSz<data.size())
                     {
-                        for (unsigned i=minSz; i<data.size(); i+=9)
+                        for (size_t i=minSz; i<data.size(); i+=9)
                         {
                             result->data[i+0] = data[i+0]; result->data[i+1] = data[i+1]; result->data[i+2] = data[i+2];
                             result->data[i+3] = data[i+3]; result->data[i+4] = data[i+4]; result->data[i+5] = data[i+5];
@@ -169,7 +169,7 @@ public:
                     }
                     else if (datSz<m->data.size())
                     {
-                        for (unsigned i=datSz; i<m->data.size(); i+=9)
+                        for (size_t i=datSz; i<m->data.size(); i+=9)
                         {
                             result->data[i+0] = m->data[i+0]; result->data[i+1] = m->data[i+1]; result->data[i+2] = m->data[i+2];
                             result->data[i+3] = m->data[i+3]; result->data[i+4] = m->data[i+4]; result->data[i+5] = m->data[i+5];
@@ -181,7 +181,7 @@ public:
 
                 if (minSz < result->data.size())
                 {
-                    for (unsigned i=datSz; i<result->data.size(); i+=9)
+                    for (size_t i=datSz; i<result->data.size(); i+=9)
                     {
                         result->data[i+0] = 1; result->data[i+1] = 0; result->data[i+2] = 0;
                         result->data[i+3] = 0; result->data[i+4] = 1; result->data[i+5] = 0;

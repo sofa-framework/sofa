@@ -164,7 +164,7 @@ public:
         createInputMeshesData();
 
         // HACK to enforce copying linked data so the first read is not done in update(). Because the first read enforces the copy, then tag the data as modified and all update() again.
-        for( unsigned meshId=0; meshId<f_nbMeshes.getValue() ; ++meshId )
+        for( size_t meshId=0; meshId<f_nbMeshes.getValue() ; ++meshId )
         {
             this->vf_positions[meshId]->getValue();
             this->vf_edges[meshId]->getValue();
@@ -202,26 +202,26 @@ protected:
 
         if(!this->rotateImage.getValue()) // use Axis Aligned Bounding Box
         {
-            for(unsigned int j=0; j<3; j++) tr->getRotation()[j]=(Real)0 ;
+            for(size_t j=0; j<3; j++) tr->getRotation()[j]=(Real)0 ;
 
             for( unsigned meshId=0; meshId<f_nbMeshes.getValue() ; ++meshId )
             {
                 raPositions pos(*this->vf_positions[meshId]);       unsigned int nbp = pos.size();
 
-                for(unsigned int i=0; i<nbp; i++) for(unsigned int j=0; j<3; j++) { if(BB[j][0]>pos[i][j]) BB[j][0]=pos[i][j]; if(BB[j][1]<pos[i][j]) BB[j][1]=pos[i][j]; }
+                for(size_t i=0; i<nbp; i++) for(size_t j=0; j<3; j++) { if(BB[j][0]>pos[i][j]) BB[j][0]=pos[i][j]; if(BB[j][1]<pos[i][j]) BB[j][1]=pos[i][j]; }
             }
 
-            if( nbVoxels.getValue()[0]!=0 && nbVoxels.getValue()[1]!=0 && nbVoxels.getValue()[2]!=0 ) for(unsigned int j=0; j<3; j++) tr->getScale()[j] = (BB[j][1] - BB[j][0]) / nbVoxels.getValue()[j];
-            else for(unsigned int j=0; j<3; j++) tr->getScale()[j] = this->voxelSize.getValue()[j];
+            if( nbVoxels.getValue()[0]!=0 && nbVoxels.getValue()[1]!=0 && nbVoxels.getValue()[2]!=0 ) for(size_t j=0; j<3; j++) tr->getScale()[j] = (BB[j][1] - BB[j][0]) / nbVoxels.getValue()[j];
+            else for(size_t j=0; j<3; j++) tr->getScale()[j] = this->voxelSize.getValue()[j];
 
             if(this->gridSnap.getValue())
                 if( nbVoxels.getValue()[0]==0 || nbVoxels.getValue()[1]==0 || nbVoxels.getValue()[2]==0 )
             {
-                   for(unsigned int j=0; j<3; j++) BB[j][0] = tr->getScale()[j]*floor(BB[j][0]/tr->getScale()[j]);
-                   for(unsigned int j=0; j<3; j++) BB[j][1] = tr->getScale()[j]*ceil(BB[j][1]/tr->getScale()[j]);
+                   for(size_t j=0; j<3; j++) BB[j][0] = tr->getScale()[j]*floor(BB[j][0]/tr->getScale()[j]);
+                   for(size_t j=0; j<3; j++) BB[j][1] = tr->getScale()[j]*ceil(BB[j][1]/tr->getScale()[j]);
             }
 
-            for(unsigned int j=0; j<3; j++) tr->getTranslation()[j]=BB[j][0]-tr->getScale()[j]*this->padSize.getValue();
+            for(size_t j=0; j<3; j++) tr->getTranslation()[j]=BB[j][0]-tr->getScale()[j]*this->padSize.getValue();
         }
         else  // use Oriented Bounding Box
         {
@@ -232,7 +232,7 @@ protected:
             for( unsigned meshId=0; meshId<f_nbMeshes.getValue() ; ++meshId )
             {
                 raPositions pos(*this->vf_positions[meshId]);       unsigned int nbp = pos.size();
-                for(unsigned int i=0; i<nbp; i++) mean+=pos[i];
+                for(size_t i=0; i<nbp; i++) mean+=pos[i];
                 nbpTotal += nbp;
             }
             mean/=(Real)nbpTotal;
@@ -243,18 +243,18 @@ protected:
             for( unsigned meshId=0; meshId<f_nbMeshes.getValue() ; ++meshId )
             {
                 raPositions pos(*this->vf_positions[meshId]);       unsigned int nbp = pos.size();
-                for(unsigned int i=0; i<nbp; i++)  for(unsigned int j=0; j<3; j++)  for(unsigned int k=j; k<3; k++)  M[j][k] += (pos[i][j] - mean[j]) * (pos[i][k] - mean[k]);
+                for(size_t i=0; i<nbp; i++)  for(size_t j=0; j<3; j++)  for(size_t k=j; k<3; k++)  M[j][k] += (pos[i][j] - mean[j]) * (pos[i][k] - mean[k]);
             }
             M/=(Real)nbpTotal;
 
 
             // get eigen vectors of the covariance matrix
             NEWMAT::SymmetricMatrix e(3); e = 0.0;
-            for(unsigned int j=0; j<3; j++) { for(unsigned int k=j; k<3; k++)  e(j+1,k+1) = M[j][k]; for(unsigned int k=0; k<j; k++)  e(k+1,j+1) = e(j+1,k+1); }
+            for(size_t j=0; j<3; j++) { for(size_t k=j; k<3; k++)  e(j+1,k+1) = M[j][k]; for(size_t k=0; k<j; k++)  e(k+1,j+1) = e(j+1,k+1); }
             NEWMAT::DiagonalMatrix D(3); D = 0.0;
             NEWMAT::Matrix V(3,3); V = 0.0;
             NEWMAT::Jacobi(e, D, V);
-            for(unsigned int j=0; j<3; j++) for(unsigned int k=0; k<3; k++) M[j][k]=V(j+1,k+1);
+            for(size_t j=0; j<3; j++) for(size_t k=0; k<3; k++) M[j][k]=V(j+1,k+1);
             if(determinant(M)<0) M*=(Real)-1.0;
             Mat<3,3,Real> MT=M.transposed();
 
@@ -279,11 +279,11 @@ protected:
             for( unsigned meshId=0; meshId<f_nbMeshes.getValue() ; ++meshId )
             {
                 raPositions pos(*this->vf_positions[meshId]);       unsigned int nbp = pos.size();
-                for(unsigned int i=0; i<nbp; i++) { P=MT*(pos[i]);  for(unsigned int j=0; j<3; j++) { if(BB[j][0]>P[j]) BB[j][0]=P[j]; if(BB[j][1]<P[j]) BB[j][1]=P[j]; } }
+                for(size_t i=0; i<nbp; i++) { P=MT*(pos[i]);  for(size_t j=0; j<3; j++) { if(BB[j][0]>P[j]) BB[j][0]=P[j]; if(BB[j][1]<P[j]) BB[j][1]=P[j]; } }
             }
 
-            if( nbVoxels.getValue()[0]!=0 && nbVoxels.getValue()[1]!=0 && nbVoxels.getValue()[2]!=0 ) for(unsigned int j=0; j<3; j++) tr->getScale()[j] = (BB[j][1] - BB[j][0]) / nbVoxels.getValue()[j];
-            else for(unsigned int j=0; j<3; j++) tr->getScale()[j] = this->voxelSize.getValue()[j];
+            if( nbVoxels.getValue()[0]!=0 && nbVoxels.getValue()[1]!=0 && nbVoxels.getValue()[2]!=0 ) for(size_t j=0; j<3; j++) tr->getScale()[j] = (BB[j][1] - BB[j][0]) / nbVoxels.getValue()[j];
+            else for(size_t j=0; j<3; j++) tr->getScale()[j] = this->voxelSize.getValue()[j];
 
             P=Coord(BB[0][0],BB[1][0],BB[2][0]) - tr->getScale()*this->padSize.getValue();
             tr->getTranslation()=M*(P);
@@ -297,7 +297,7 @@ protected:
         tr->update(); // update of internal data
         // update image extents
         unsigned int dim[3];
-        for(unsigned int j=0; j<3; j++) dim[j]=ceil(1+(BB[j][1]-BB[j][0])/tr->getScale()[j]+(Real)2.0*this->padSize.getValue());
+        for(size_t j=0; j<3; j++) dim[j]=ceil(1+(BB[j][1]-BB[j][0])/tr->getScale()[j]+(Real)2.0*this->padSize.getValue());
         iml->getCImgList().assign(1,dim[0],dim[1],dim[2],1);
 
 
@@ -305,7 +305,7 @@ protected:
         CImg<T>& im=iml->getCImg();
         im.fill((T)0);
 
-        for( unsigned meshId=0 ; meshId<f_nbMeshes.getValue() ; ++meshId )
+        for( size_t meshId=0 ; meshId<f_nbMeshes.getValue() ; ++meshId )
         {
             if( !vf_fillInside[meshId]->getValue() || vf_values[meshId]->getValue().size() > 1 )
                 rasterizeSeveralValues( meshId, im, tr );
@@ -348,10 +348,10 @@ protected:
 #ifdef USING_OMP_PRAGMAS
         #pragma omp parallel for
 #endif
-        for(unsigned int i=0; i<nbedg; i++)
+        for(int i=0; i<nbedg; i++)
         {
             Coord pts[2];
-            for(unsigned int j=0; j<2; j++) pts[j] = (tr->toImage(Coord(pos[edg[i][j]])));
+            for(size_t j=0; j<2; j++) pts[j] = (tr->toImage(Coord(pos[edg[i][j]])));
             draw_line(imCurrent,pts[0],pts[1],(unsigned char)1,this->subdiv.getValue());
         }
 
@@ -361,10 +361,10 @@ protected:
 #ifdef USING_OMP_PRAGMAS
         #pragma omp parallel for
 #endif
-        for(unsigned int i=0; i<nbtri; i++)
+        for(int i=0; i<nbtri; i++)
         {
             Coord pts[3];
-            for(unsigned int j=0; j<3; j++) pts[j] = (tr->toImage(Coord(pos[tri[i][j]])));
+            for(size_t j=0; j<3; j++) pts[j] = (tr->toImage(Coord(pos[tri[i][j]])));
             draw_triangle(imCurrent,pts[0],pts[1],pts[2],(unsigned char)1,this->subdiv.getValue());
             draw_triangle(imCurrent,pts[1],pts[2],pts[0],(unsigned char)1,this->subdiv.getValue());  // fill along two directions to be sure that there is no hole
         }
@@ -385,10 +385,10 @@ protected:
 #ifdef USING_OMP_PRAGMAS
         #pragma omp parallel for
 #endif
-        for(unsigned int i=previousClosingTriSize; i<cltri.size(); i++)
+        for(int i=previousClosingTriSize; i<cltri.size(); i++)
         {
             Coord pts[3];
-            for(unsigned int j=0; j<3; j++) pts[j] = (tr->toImage(Coord(clpos[cltri[i][j]])));
+            for(size_t j=0; j<3; j++) pts[j] = (tr->toImage(Coord(clpos[cltri[i][j]])));
             draw_triangle(imCurrent,pts[0],pts[1],pts[2],(unsigned char)2,this->subdiv.getValue());
             draw_triangle(imCurrent,pts[1],pts[2],pts[0],(unsigned char)2,this->subdiv.getValue());  // fill along two directions to be sure that there is no hole
         }
@@ -442,11 +442,11 @@ protected:
 #ifdef USING_OMP_PRAGMAS
         #pragma omp parallel for
 #endif
-        for(unsigned int i=0; i<nbedg; i++)
+        for(int i=0; i<nbedg; i++)
         {
             Coord pts[2];
             T colors[2];
-            for(unsigned int j=0; j<2; j++)
+            for(size_t j=0; j<2; j++)
             {
                 pts[j] = (tr->toImage(Coord(pos[edg[i][j]])));
 
@@ -462,11 +462,11 @@ protected:
 #ifdef USING_OMP_PRAGMAS
         #pragma omp parallel for
 #endif
-        for(unsigned int i=0; i<nbtri; i++)
+        for(int i=0; i<nbtri; i++)
         {
             Coord pts[3];
             T colors[3];
-            for(unsigned int j=0; j<3; j++)
+            for(size_t j=0; j<3; j++)
             {
                 pts[j] = (tr->toImage(Coord(pos[tri[i][j]])));
                 if( tri[i][j]<nbval ) colors[j] = (T)val[tri[i][j]];
@@ -494,10 +494,10 @@ protected:
 #ifdef USING_OMP_PRAGMAS
         #pragma omp parallel for
 #endif
-        for(unsigned int i=previousClosingTriSize; i<cltri.size(); i++)
+        for(int i=previousClosingTriSize; i<cltri.size(); i++)
         {
             Coord pts[3];
-            for(unsigned int j=0; j<3; j++) pts[j] = (tr->toImage(Coord(clpos[cltri[i][j]])));
+            for(size_t j=0; j<3; j++) pts[j] = (tr->toImage(Coord(clpos[cltri[i][j]])));
             this->draw_triangle(im,pts[0],pts[1],pts[2],colorClosing,this->subdiv.getValue());
             this->draw_triangle(im,pts[1],pts[2],pts[0],colorClosing,this->subdiv.getValue());  // fill along two directions to be sure that there is no hole
         }
@@ -614,8 +614,8 @@ protected:
 
         // get list of border edges
         edgeset edges;
-        for(unsigned int i=0; i<tri.size(); i++)
-            for(unsigned int j=0; j<3; j++)
+        for(size_t i=0; i<tri.size(); i++)
+            for(size_t j=0; j<3; j++)
             {
                 unsigned int p1=tri[i][(j==0)?2:j-1],p2=tri[i][j];
                 edgesetit it=edges.find(edge(p2,p1));
@@ -650,15 +650,15 @@ protected:
             }
         }
         if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: found "<< loops.size()<<" loops"<<std::endl;
-        //for(unsigned int i=0;i<loops.size();i++) for(unsigned int j=0;j<loops[i].size();j++) std::cout<<"loop "<<i<<","<<j<<":"<<loops[i][j]<<std::endl;
+        //for(size_t i=0;i<loops.size();i++) for(size_t j=0;j<loops[i].size();j++) std::cout<<"loop "<<i<<","<<j<<":"<<loops[i][j]<<std::endl;
 
         // insert points at loop centroids and triangles connecting loop edges and centroids
-        for(unsigned int i=0; i<loops.size(); i++)
+        for(size_t i=0; i<loops.size(); i++)
             if(loops[i].size()>2)
             {
                 Coord centroid;
-                unsigned int indexCentroid=clpos.size()+loops[i].size()-1;
-                for(unsigned int j=0; j<loops[i].size()-1; j++)
+                size_t indexCentroid=clpos.size()+loops[i].size()-1;
+                for(size_t j=0; j<loops[i].size()-1; j++)
                 {
                     clpos.push_back(pos[loops[i][j]]);
                     centroid+=pos[loops[i][j]];

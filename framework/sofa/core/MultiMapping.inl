@@ -79,9 +79,9 @@ template< class In, class Out >
 helper::vector<BaseState*> MultiMapping<In,Out>::getFrom()
 {
     const VecFromModels& models = getFromModels();
-    unsigned int size = models.size();
+    size_t size = models.size();
     helper::vector<BaseState*> baseModels(size);
-    for (unsigned int i=0; i<size; ++i) baseModels[i] = models[i].ptr.get();
+    for (size_t i=0; i<size; ++i) baseModels[i] = models[i].ptr.get();
     return baseModels;
 }
 
@@ -89,9 +89,9 @@ template< class In, class Out >
 helper::vector<BaseState* > MultiMapping<In,Out>::getTo()
 {
     const VecToModels& models = getToModels();
-    unsigned int size = models.size();
+    size_t size = models.size();
     helper::vector<BaseState*> baseModels(size);
-    for (unsigned int i=0; i<size; ++i) baseModels[i] = models[i].ptr.get();
+    for (size_t i=0; i<size; ++i) baseModels[i] = models[i].ptr.get();
     return baseModels;
 }
 
@@ -99,7 +99,7 @@ template <class In, class Out>
 helper::vector<behavior::BaseMechanicalState*> MultiMapping<In,Out>::getMechFrom()
 {
     helper::vector<behavior::BaseMechanicalState*> mechFromVec;
-    for (unsigned int i=0 ; i<this->fromModels.size() ; i++)
+    for (size_t i=0 ; i<this->fromModels.size() ; i++)
     {
         behavior::BaseMechanicalState* meshFrom = dynamic_cast<behavior::BaseMechanicalState*> (this->fromModels.get(i));
         if(meshFrom)
@@ -112,7 +112,7 @@ template <class In, class Out>
 helper::vector<behavior::BaseMechanicalState*> MultiMapping<In,Out>::getMechTo()
 {
     helper::vector<behavior::BaseMechanicalState*> mechToVec;
-    for (unsigned int i=0 ; i<this->toModels.size() ; i++)
+    for (size_t i=0 ; i<this->toModels.size() ; i++)
     {
         behavior::BaseMechanicalState* meshTo = dynamic_cast<behavior::BaseMechanicalState*> (this->toModels.get(i));
         if(meshTo)

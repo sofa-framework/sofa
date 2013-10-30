@@ -135,10 +135,7 @@ void PositionBasedDynamicsConstraint<DataTypes>::projectPosition(const core::Mec
 
     if(old_position.size() != res.size()) old_position.assign(res.begin(),res.end());
 
-#ifdef USING_OMP_PRAGMAS
-	#pragma omp parallel for
-#endif
-    for( int i=0; i< static_cast<int>(res.size()); i++ )
+    for( unsigned i=0; i<res.size(); i++ )
     {
         res[i] += ( tpos[i] - res[i]) * stiffness.getValue();
         velocity[i] = (res[i] - old_position[i]) * invdt;

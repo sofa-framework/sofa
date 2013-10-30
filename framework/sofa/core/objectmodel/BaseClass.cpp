@@ -78,13 +78,13 @@ std::string BaseClass::decodeTypeName(const std::type_info& t)
 {
     std::string name;
     std::string realname = BaseClass::decodeFullName(t);
-    int len = realname.length();
+    size_t len = realname.length();
     name.resize(len+1);
-    int start = 0;
-    int dest = 0;
+    size_t start = 0;
+    size_t dest = 0;
     //char cprev = '\0';
     //sout << "name = "<<realname<<sendl;
-    for (int i=0; i<len; i++)
+    for (size_t i=0; i<len; i++)
     {
         char c = realname[i];
         if (c == ':') // && cprev == ':')
@@ -142,11 +142,11 @@ std::string BaseClass::decodeClassName(const std::type_info& t)
 {
     std::string name;
     std::string realname = BaseClass::decodeFullName(t);
-    int len = realname.length();
+    size_t len = realname.length();
     name.resize(len+1);
-    int start = 0;
-    int dest = 0;
-    int i;
+    size_t start = 0;
+    size_t dest = 0;
+    size_t i;
     //char cprev = '\0';
     //sout << "name = "<<realname<<sendl;
     for (i=0; i<len; i++)
@@ -200,10 +200,10 @@ std::string BaseClass::decodeNamespaceName(const std::type_info& t)
 {
     std::string name;
     std::string realname = BaseClass::decodeFullName(t);
-    int len = realname.length();
-    int start = 0;
-    int last = len-1;
-    int i;
+    size_t len = realname.length();
+    size_t start = 0;
+    size_t last = len-1;
+    size_t i;
     for (i=0; i<len; i++)
     {
         char c = realname[i];
@@ -230,11 +230,11 @@ std::string BaseClass::decodeTemplateName(const std::type_info& t)
 {
     std::string name;
     std::string realname = BaseClass::decodeFullName(t);
-    int len = realname.length();
+    size_t len = realname.length();
     name.resize(len+1);
-    int start = 0;
-    int dest = 0;
-    int i = 0;
+    size_t start = 0;
+    size_t dest = 0;
+    size_t i = 0;
     //char cprev = '\0';
     while (i < len && realname[i]!='<')
         ++i;

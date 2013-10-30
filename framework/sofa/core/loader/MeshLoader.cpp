@@ -139,10 +139,10 @@ template<class Vec>
 static inline Vec uniqueOrder(Vec v)
 {
     // simple insertion sort
-    for (unsigned int j = 1; j < v.size(); ++j)
+    for (size_t j = 1; j < v.size(); ++j)
     {
         typename Vec::value_type key = v[j];
-        unsigned int i = j;
+        size_t i = j;
         while (i>0 && v[i-1] > key)
         {
             v[i] = v[i-1];
@@ -160,7 +160,7 @@ void MeshLoader::updateElements()
         helper::WriteAccessor<Data<helper::vector< Quad > > > waQuads = quads;
         helper::WriteAccessor<Data<helper::vector< Triangle > > > waTriangles = triangles;
 
-        for (unsigned int i = 0; i < waQuads.size() ; i++)
+        for (size_t i = 0; i < waQuads.size() ; i++)
         {
             const Quad& q = waQuads[i];
             addTriangle(&waTriangles.wref(), q[0], q[1], q[2]);
@@ -174,10 +174,10 @@ void MeshLoader::updateElements()
         helper::ReadAccessor<Data<helper::vector< Hexahedron > > > hexahedra = this->hexahedra;
         helper::WriteAccessor<Data<helper::vector< Quad > > > quads = this->quads;
         std::set<Quad > eSet;
-        for (unsigned int i = 0; i < quads.size(); ++i)
+        for (size_t i = 0; i < quads.size(); ++i)
             eSet.insert(uniqueOrder(quads[i]));
         int nbnew = 0;
-        for (unsigned int i = 0; i < hexahedra.size(); ++i)
+        for (size_t i = 0; i < hexahedra.size(); ++i)
         {
             Hexahedron h = hexahedra[i];
             helper::fixed_array< Quad, 6 > e;
@@ -187,7 +187,7 @@ void MeshLoader::updateElements()
             e[3] = Quad(h[1],h[2],h[6],h[5]);
             e[4] = Quad(h[2],h[3],h[7],h[6]);
             e[5] = Quad(h[3],h[0],h[4],h[7]);
-            for (unsigned int j = 0; j < e.size(); ++j)
+            for (size_t j = 0; j < e.size(); ++j)
             {
                 if (eSet.insert(uniqueOrder(e[j])).second) // the element was inserted
                 {
@@ -204,13 +204,13 @@ void MeshLoader::updateElements()
         helper::ReadAccessor<Data<helper::vector< Tetrahedron > > > tetrahedra = this->tetrahedra;
         helper::WriteAccessor<Data<helper::vector< Triangle > > > triangles = this->triangles;
         std::set<Triangle > eSet;
-        for (unsigned int i = 0; i < triangles.size(); ++i)
+        for (size_t i = 0; i < triangles.size(); ++i)
             eSet.insert(uniqueOrder(triangles[i]));
         int nbnew = 0;
-        for (unsigned int i = 0; i < tetrahedra.size(); ++i)
+        for (size_t i = 0; i < tetrahedra.size(); ++i)
         {
             Tetrahedron t = tetrahedra[i];
-            for (unsigned int j = 0; j < t.size(); ++j)
+            for (size_t j = 0; j < t.size(); ++j)
             {
                 Triangle e(t[(j+1)%t.size()],t[(j+2)%t.size()],t[(j+3)%t.size()]);
                 if (eSet.insert(uniqueOrder(e)).second) // the element was inserted
@@ -228,13 +228,13 @@ void MeshLoader::updateElements()
         helper::ReadAccessor<Data<helper::vector< Quad > > > quads = this->quads;
         helper::WriteAccessor<Data<helper::vector< Edge > > > edges = this->edges;
         std::set<Edge > eSet;
-        for (unsigned int i = 0; i < edges.size(); ++i)
+        for (size_t i = 0; i < edges.size(); ++i)
             eSet.insert(uniqueOrder(edges[i]));
         int nbnew = 0;
-        for (unsigned int i = 0; i < quads.size(); ++i)
+        for (size_t i = 0; i < quads.size(); ++i)
         {
             Quad t = quads[i];
-            for (unsigned int j = 0; j < t.size(); ++j)
+            for (size_t j = 0; j < t.size(); ++j)
             {
                 Edge e(t[(j+1)%t.size()],t[(j+2)%t.size()]);
                 if (eSet.insert(uniqueOrder(e)).second) // the element was inserted
@@ -252,13 +252,13 @@ void MeshLoader::updateElements()
         helper::ReadAccessor<Data<helper::vector< Triangle > > > triangles = this->triangles;
         helper::WriteAccessor<Data<helper::vector< Edge > > > edges = this->edges;
         std::set<Edge > eSet;
-        for (unsigned int i = 0; i < edges.size(); ++i)
+        for (size_t i = 0; i < edges.size(); ++i)
             eSet.insert(uniqueOrder(edges[i]));
         int nbnew = 0;
-        for (unsigned int i = 0; i < triangles.size(); ++i)
+        for (size_t i = 0; i < triangles.size(); ++i)
         {
             Triangle t = triangles[i];
-            for (unsigned int j = 0; j < t.size(); ++j)
+            for (size_t j = 0; j < t.size(); ++j)
             {
                 Edge e(t[(j+1)%t.size()],t[(j+2)%t.size()]);
                 if (eSet.insert(uniqueOrder(e)).second) // the element was inserted
@@ -280,35 +280,35 @@ void MeshLoader::updatePoints()
         std::set<unsigned int> attachedPoints;
         {
             helper::ReadAccessor<Data< helper::vector< Edge > > > elems = edges;
-            for (unsigned int i=0; i<elems.size(); ++i)
-                for (unsigned int j=0; j<elems[i].size(); ++j)
+            for (size_t i=0; i<elems.size(); ++i)
+                for (size_t j=0; j<elems[i].size(); ++j)
                     attachedPoints.insert(elems[i][j]);
         }
         {
             helper::ReadAccessor<Data< helper::vector< Triangle > > > elems = triangles;
-            for (unsigned int i=0; i<elems.size(); ++i)
-                for (unsigned int j=0; j<elems[i].size(); ++j)
+            for (size_t i=0; i<elems.size(); ++i)
+                for (size_t j=0; j<elems[i].size(); ++j)
                     attachedPoints.insert(elems[i][j]);
         }
         {
             helper::ReadAccessor<Data< helper::vector< Quad > > > elems = quads;
-            for (unsigned int i=0; i<elems.size(); ++i)
-                for (unsigned int j=0; j<elems[i].size(); ++j)
+            for (size_t i=0; i<elems.size(); ++i)
+                for (size_t j=0; j<elems[i].size(); ++j)
                     attachedPoints.insert(elems[i][j]);
         }
         {
             helper::ReadAccessor<Data< helper::vector< Tetrahedron > > > elems = tetrahedra;
-            for (unsigned int i=0; i<elems.size(); ++i)
-                for (unsigned int j=0; j<elems[i].size(); ++j)
+            for (size_t i=0; i<elems.size(); ++i)
+                for (size_t j=0; j<elems[i].size(); ++j)
                     attachedPoints.insert(elems[i][j]);
         }
         {
             helper::ReadAccessor<Data< helper::vector< Hexahedron > > > elems = hexahedra;
-            for (unsigned int i=0; i<elems.size(); ++i)
-                for (unsigned int j=0; j<elems[i].size(); ++j)
+            for (size_t i=0; i<elems.size(); ++i)
+                for (size_t j=0; j<elems[i].size(); ++j)
                     attachedPoints.insert(elems[i][j]);
         }
-        const unsigned int newsize = attachedPoints.size();
+        const size_t newsize = attachedPoints.size();
         if (newsize == positions.getValue().size()) return; // all points are attached
         helper::WriteAccessor<Data<helper::vector<sofa::defaulttype::Vec<3,SReal> > > > waPositions = positions;
         helper::vector<unsigned int> old2new;
@@ -324,32 +324,32 @@ void MeshLoader::updatePoints()
         waPositions.resize(newsize);
         {
             helper::WriteAccessor<Data< helper::vector< Edge > > > elems = edges;
-            for (unsigned int i=0; i<elems.size(); ++i)
-                for (unsigned int j=0; j<elems[i].size(); ++j)
+            for (size_t i=0; i<elems.size(); ++i)
+                for (size_t j=0; j<elems[i].size(); ++j)
                     elems[i][j] = old2new[elems[i][j]];
         }
         {
             helper::WriteAccessor<Data< helper::vector< Triangle > > > elems = triangles;
-            for (unsigned int i=0; i<elems.size(); ++i)
-                for (unsigned int j=0; j<elems[i].size(); ++j)
+            for (size_t i=0; i<elems.size(); ++i)
+                for (size_t j=0; j<elems[i].size(); ++j)
                     elems[i][j] = old2new[elems[i][j]];
         }
         {
             helper::WriteAccessor<Data< helper::vector< Quad > > > elems = quads;
-            for (unsigned int i=0; i<elems.size(); ++i)
-                for (unsigned int j=0; j<elems[i].size(); ++j)
+            for (size_t i=0; i<elems.size(); ++i)
+                for (size_t j=0; j<elems[i].size(); ++j)
                     elems[i][j] = old2new[elems[i][j]];
         }
         {
             helper::WriteAccessor<Data< helper::vector< Tetrahedron > > > elems = tetrahedra;
-            for (unsigned int i=0; i<elems.size(); ++i)
-                for (unsigned int j=0; j<elems[i].size(); ++j)
+            for (size_t i=0; i<elems.size(); ++i)
+                for (size_t j=0; j<elems[i].size(); ++j)
                     elems[i][j] = old2new[elems[i][j]];
         }
         {
             helper::WriteAccessor<Data< helper::vector< Hexahedron > > > elems = hexahedra;
-            for (unsigned int i=0; i<elems.size(); ++i)
-                for (unsigned int j=0; j<elems[i].size(); ++j)
+            for (size_t i=0; i<elems.size(); ++i)
+                for (size_t j=0; j<elems[i].size(); ++j)
                     elems[i][j] = old2new[elems[i][j]];
         }
     }
@@ -369,7 +369,7 @@ void MeshLoader::updateNormals()
 
     waNormals.resize(raPositions.size());
 
-    for (unsigned int i = 0; i < raTriangles.size() ; i++)
+    for (size_t i = 0; i < raTriangles.size() ; i++)
     {
         const sofa::defaulttype::Vec<3,SReal>  v1 = raPositions[raTriangles[i][0]];
         const sofa::defaulttype::Vec<3,SReal>  v2 = raPositions[raTriangles[i][1]];
@@ -382,7 +382,7 @@ void MeshLoader::updateNormals()
         waNormals[raTriangles[i][2]] += n;
 
     }
-    for (unsigned int i = 0; i < raQuads.size() ; i++)
+    for (size_t i = 0; i < raQuads.size() ; i++)
     {
         const sofa::defaulttype::Vec<3,SReal> & v1 = raPositions[raQuads[i][0]];
         const sofa::defaulttype::Vec<3,SReal> & v2 = raPositions[raQuads[i][1]];
@@ -399,7 +399,7 @@ void MeshLoader::updateNormals()
         waNormals[raQuads[i][3]] += n4;
     }
 
-    for (unsigned int i = 0; i < waNormals.size(); i++)
+    for (size_t i = 0; i < waNormals.size(); i++)
     {
         waNormals[i].normalize();
     }
@@ -409,7 +409,7 @@ void MeshLoader::updateNormals()
 void MeshLoader::applyTranslation(const SReal dx, const SReal dy, const SReal dz)
 {
     sofa::helper::WriteAccessor <Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > > my_positions = positions;
-    for (unsigned int i = 0; i < my_positions.size(); i++)
+    for (size_t i = 0; i < my_positions.size(); i++)
         my_positions[i] += Vector3(dx,dy,dz);
 }
 
@@ -424,7 +424,7 @@ void MeshLoader::applyRotation(const SReal rx, const SReal ry, const SReal rz)
 void MeshLoader::applyRotation(const defaulttype::Quat q)
 {
     sofa::helper::WriteAccessor <Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > > my_positions = positions;
-    for (unsigned int i = 0; i < my_positions.size(); i++)
+    for (size_t i = 0; i < my_positions.size(); i++)
     {
         Vec<3,SReal> newposition = q.rotate(my_positions[i]);
         my_positions[i] = newposition;
@@ -435,7 +435,7 @@ void MeshLoader::applyRotation(const defaulttype::Quat q)
 void MeshLoader::applyScale(const SReal sx, const SReal sy, const SReal sz)
 {
     sofa::helper::WriteAccessor <Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > > my_positions = positions;
-    for (unsigned int i = 0; i < my_positions.size(); i++)
+    for (size_t i = 0; i < my_positions.size(); i++)
     {
         my_positions[i][0] *= sx;
         my_positions[i][1] *= sy;

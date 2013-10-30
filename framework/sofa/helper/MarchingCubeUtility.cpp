@@ -543,7 +543,7 @@ int MarchingCubeUtility::polygonise ( const GridCell &grid, int& cubeConf, float
             else
             {
                 //Add new Vertex in map
-                current_ID = map_indices.size() + verticesIndexOffset;
+                current_ID = static_cast<PointID>(map_indices.size()) + verticesIndexOffset;
                 map_indices.push_back ( current_P );
                 map_vertices.insert ( std::make_pair ( current_P, current_ID ) );
             }
@@ -635,7 +635,7 @@ void MarchingCubeUtility::run ( unsigned char *_data, const sofa::helper::vector
 //    Vec3i gridSize = Vec3i ( dataResolution[0]/cubeStep, dataResolution[1]/cubeStep, dataResolution[2]/cubeStep );
     sofa::helper::set<Vec3i> generatedCubes;
 
-    unsigned int datasize = dataResolution[0]*dataResolution[1]*dataResolution[2];
+    size_t datasize = dataResolution[0]*dataResolution[1]*dataResolution[2];
     if ( datasize == 0 )
         return;
 
@@ -668,7 +668,7 @@ void MarchingCubeUtility::run ( unsigned char *_data, const sofa::helper::vector
         bool propagate ) const
 {
     std::map< Vector3, PointID> map_vertices;
-    for ( unsigned int i = map_vertices.size(); i < vertices.size(); i++ )
+    for ( size_t i = map_vertices.size(); i < vertices.size(); i++ )
         map_vertices.insert ( std::make_pair ( vertices[i], i ) );
 
     run( _data, seeds, isolevel, mesh, vertices, map_vertices, triangleIndexInRegularGrid, propagate);
@@ -681,7 +681,7 @@ void MarchingCubeUtility::run ( unsigned char *_data, const float isolevel,
         sofa::helper::vector< Vector3 >& vertices,
         helper::vector< helper::vector<unsigned int> >* triangleIndexInRegularGrid ) const
 {
-    unsigned int datasize = dataResolution[0]*dataResolution[1]*dataResolution[2];
+    size_t datasize = dataResolution[0]*dataResolution[1]*dataResolution[2];
 
     if ( datasize == 0 )
         return;
@@ -701,7 +701,7 @@ void MarchingCubeUtility::run ( unsigned char *_data, const float isolevel,
     }
 
     std::map< Vector3, PointID> map_vertices;
-    for ( unsigned int i = 0; i < vertices.size(); i++ )
+    for ( size_t i = 0; i < vertices.size(); i++ )
         map_vertices.insert ( std::make_pair ( vertices[i], i ) );
 
     Vec3i bboxMin = Vec3i ( bbox.min / cubeStep );
@@ -747,9 +747,9 @@ void MarchingCubeUtility::run ( unsigned char *data, const float isolevel,
     //Do the Marching Cube
     run ( data, isolevel, triangles, vertices );
 
-    const unsigned int numTriangles = triangles.size() /3;
+    const size_t numTriangles = triangles.size() /3;
     facets.resize ( numTriangles, vector< vector < int > > ( 3, vector<int> ( 3, 0 ) ) );
-    for ( unsigned int i=0; i<triangles.size(); /*i+=3*/ )
+    for ( size_t i=0; i<triangles.size(); /*i+=3*/ )
     {
         vector< vector< int > > &vertNormTexIndices = facets[i/3];
         vector<int> &vIndices = vertNormTexIndices[0];
@@ -768,15 +768,15 @@ void MarchingCubeUtility::findSeeds ( vector<Vec3i>& seeds, const float isoValue
     std::cout << "MarchingCubeUtility::findSeeds(). Begining." << std::endl;
     //vector< unsigned char > data ( dataResolution[0]*dataResolution[1]*dataResolution[2] );
     sofa::helper::set<unsigned int> parsedVoxels;
-    unsigned int datasize = dataResolution[0]*dataResolution[1]*dataResolution[2];
+    size_t datasize = dataResolution[0]*dataResolution[1]*dataResolution[2];
     if ( datasize == 0 )
         return;
-    unsigned char* data;
+    uint8_t* data;
     bool smooth = false;
     if ( convolutionSize != 0 )
     {
-        data = new unsigned char[datasize];
-        memcpy(data, _data, datasize*sizeof(unsigned char));
+        data = new uint8_t[datasize];
+        memcpy(data, _data, datasize*sizeof(uint8_t));
         smoothData ( data );
         smooth = true;
     }
@@ -791,10 +791,10 @@ void MarchingCubeUtility::findSeeds ( vector<Vec3i>& seeds, const float isoValue
     Vec3i bboxMax = Vec3i ( bbox.max / cubeStep );
     Vec3i gridSize = Vec3i ( dataResolution /cubeStep );
 
-    unsigned int index;
-    for ( int k=bboxMin[2]; k<bboxMax[2]-1; k++ )
-        for ( int j=bboxMin[1]; j<bboxMax[1]-1; j++ )
-            for ( int i=bboxMin[0]; i<bboxMax[0]-1; i++ )
+    size_t index;
+    for ( size_t k=bboxMin[2]; k<bboxMax[2]-1; k++ )
+        for ( size_t j=bboxMin[1]; j<bboxMax[1]-1; j++ )
+            for ( size_t i=bboxMin[0]; i<bboxMax[0]-1; i++ )
             {
                 index = i + j*gridSize[0] + k*gridSize[0]*gridSize[1];
 
@@ -862,7 +862,7 @@ void MarchingCubeUtility::updateTriangleInRegularGridVector ( helper::vector< he
     if ( cell.val[7] ) voxels.push_back ( ( coord[0]+0 ) + ( coord[1]+1 ) *dataResolution[0] + ( coord[2]+1 ) *dataResolution[0]*dataResolution[1] ); //les voxels occupes ds ce cube
     if ( cell.val[6] ) voxels.push_back ( ( coord[0]+1 ) + ( coord[1]+1 ) *dataResolution[0] + ( coord[2]+1 ) *dataResolution[0]*dataResolution[1] ); //les voxels occupes ds ce cube
 
-    for ( unsigned int i = 0; i < nbTriangles; i++ )
+    for ( size_t i = 0; i < nbTriangles; i++ )
     {
         triangleIndexInRegularGrid.push_back ( voxels );
     }
@@ -889,7 +889,7 @@ void MarchingCubeUtility::findConnectedVoxels ( sofa::helper::set<unsigned int>&
         Vec3i coord = voxelsToTest.top();
         voxelsToTest.pop();
 
-        unsigned int index = coord[0] + coord[1]*dataResolution[0] + coord[2]*dataResolution[0]*dataResolution[1];
+        size_t index = coord[0] + coord[1]*dataResolution[0] + coord[2]*dataResolution[0]*dataResolution[1];
 
         if ( connectedVoxels.find ( index ) != connectedVoxels.end() ) continue;
 
@@ -942,12 +942,12 @@ void  MarchingCubeUtility::applyConvolution ( const float* convolutionKernel,
         const unsigned char* input_data,
         unsigned char* output_data ) const
 {
-    const unsigned int index = x + dataResolution[0] * ( y + dataResolution[1] * z );
+    const size_t index = x + dataResolution[0] * ( y + dataResolution[1] * z );
     output_data[index] = 0;
-    unsigned int idx=0;
-    for ( unsigned int k=0; k<convolutionSize; ++k )
-        for ( unsigned int j=0; j<convolutionSize; ++j )
-            for ( unsigned int i=0; i<convolutionSize; ++i )
+    size_t idx=0;
+    for ( size_t k=0; k<convolutionSize; ++k )
+        for ( size_t j=0; j<convolutionSize; ++j )
+            for ( size_t i=0; i<convolutionSize; ++i )
             {
                 output_data[index] += (unsigned char)(convolutionKernel[idx++]
                         * input_data[ ( x+i ) + ( dataResolution[0]+convolutionSize ) * ( ( y+j ) + ( z+k ) * ( dataResolution[1]+convolutionSize ) ) ]);
@@ -969,10 +969,10 @@ void MarchingCubeUtility::createGaussianConvolutionKernel ( vector< float >  &co
     const float step = 4.0f / ( float ) ( convolutionSize-1 );
 
     float total = 0.0;
-    unsigned int idx=0;
-    for ( unsigned int k=0; k<convolutionSize; ++k )
-        for ( unsigned int j=0; j<convolutionSize; ++j )
-            for ( unsigned int i=0; i<convolutionSize; ++i )
+    size_t idx=0;
+    for ( size_t k=0; k<convolutionSize; ++k )
+        for ( size_t j=0; j<convolutionSize; ++j )
+            for ( size_t i=0; i<convolutionSize; ++i )
             {
                 const float x = -2.0f + i * step;
                 const float y = -2.0f + j * step;
@@ -982,7 +982,7 @@ void MarchingCubeUtility::createGaussianConvolutionKernel ( vector< float >  &co
             }
 
     total = 1.0f/total;
-    for ( unsigned int i=0; i<convolutionKernel.size(); ++i )
+    for ( size_t i=0; i<convolutionKernel.size(); ++i )
         convolutionKernel[i] *= total;
 }
 

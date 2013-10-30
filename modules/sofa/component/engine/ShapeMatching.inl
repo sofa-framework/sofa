@@ -136,7 +136,7 @@ void ShapeMatching<DataTypes>::update()
     //this->mstate->resize(restPositions.size());
 
     VI::const_iterator it, itEnd;
-    unsigned int nbp = restPositions.size() , nbf = fixedPositions0.size() , nbc = clust.size();
+    size_t nbp = restPositions.size() , nbf = fixedPositions0.size() , nbc = clust.size();
 
     if (this->f_printLog.getValue())
     {
@@ -159,7 +159,7 @@ void ShapeMatching<DataTypes>::update()
         Xcm0.resize(nbc);
         W.resize(nbc);
         nbClust.resize(nbp); nbClust.fill(0);
-        for (unsigned int i=0 ; i<nbc ; ++i)
+        for (size_t i=0 ; i<nbc ; ++i)
         {
             W[i] = 0;
             Xcm0[i] = Coord();
@@ -181,7 +181,7 @@ void ShapeMatching<DataTypes>::update()
         oldfixedweight = this->fixedweight.getValue();
     }
 
-    targetPos.resize(nbp); 	for (unsigned int i=0 ; i<nbp ; ++i) targetPos[i]=currentPositions[i];
+    targetPos.resize(nbp); 	for (size_t i=0 ; i<nbp ; ++i) targetPos[i]=currentPositions[i];
 
     for (unsigned int iter=0 ; iter<iterations.getValue()  ; ++iter)
     {
@@ -189,7 +189,7 @@ void ShapeMatching<DataTypes>::update()
 #ifdef USING_OMP_PRAGMAS
         #pragma omp parallel for
 #endif
-        for (unsigned int i=0 ; i<nbc ; ++i)
+        for (int i=0 ; i<nbc ; ++i)
         {
             Xcm[i] = Coord();
             T[i].fill(0);
@@ -215,14 +215,14 @@ void ShapeMatching<DataTypes>::update()
             else T[i] = R;
         }
 
-        for (unsigned int i=0; i<nbp; ++i) targetPos[i]=Coord();
+        for (size_t i=0; i<nbp; ++i) targetPos[i]=Coord();
 
-        for (unsigned int i=0; i<nbc; ++i)
+        for (size_t i=0; i<nbc; ++i)
             for (VI::const_iterator it = clust[i].begin() ; it != clust[i].end() ; ++it)
                 if(*it<nbp)
                     targetPos[*it] += Xcm[i] + T[i] *(restPositions[*it] - Xcm0[i]);
 
-        for (unsigned int i=0; i<nbp; ++i)
+        for (size_t i=0; i<nbp; ++i)
             if(nbClust[i])
                 targetPos[i] /= (Real)nbClust[i];
             else targetPos[i]=currentPositions[i];

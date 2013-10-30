@@ -57,7 +57,7 @@ bool MeshTopologyLoader::loadObj(const char *filename)
         return false;
 
     setNbPoints(mesh->getVertices().size());
-    for (unsigned int i=0; i<mesh->getVertices().size(); i++)
+    for (size_t i=0; i<mesh->getVertices().size(); i++)
     {
         addPoint((double)mesh->getVertices()[i][0],
                 (double)mesh->getVertices()[i][1],
@@ -66,7 +66,7 @@ bool MeshTopologyLoader::loadObj(const char *filename)
 
     const vector< vector < vector <int> > > & facets = mesh->getFacets();
     std::set< std::pair<int,int> > edges;
-    for (unsigned int i=0; i<facets.size(); i++)
+    for (size_t i=0; i<facets.size(); i++)
     {
         const vector<int>& facet = facets[i][0];
         if (facet.size()==2)
@@ -85,14 +85,14 @@ bool MeshTopologyLoader::loadObj(const char *filename)
         else
         {
             // Triangularize
-            for (unsigned int j=2; j<facet.size(); j++)
+            for (size_t j=2; j<facet.size(); j++)
                 addTriangle(facet[0],facet[j-1],facet[j]);
         }
 #if 0
         // Add edges
         if (facet.size()>2)
         {
-            for (unsigned int j=0; j<facet.size(); j++)
+            for (size_t j=0; j<facet.size(); j++)
             {
                 int i1 = facet[j];
                 int i2 = facet[(j+1)%facet.size()];
@@ -133,16 +133,16 @@ bool MeshTopologyLoader::loadStl(const char *filename)
     setNbPoints(mesh->getVertices().size());
     const vector< vector < vector <int> > > & facets = mesh->getFacets();
     
-    for (unsigned int i=0; i<mesh->getVertices().size(); i++)
+    for (size_t i=0; i<mesh->getVertices().size(); i++)
     {
         addPoint((double)mesh->getVertices()[i][0],
                 (double)mesh->getVertices()[i][1],
                 (double)mesh->getVertices()[i][2]);
     }
-    for (unsigned int i=0; i<facets.size(); i++)
+    for (size_t i=0; i<facets.size(); i++)
     {
         const vector<int>& facet = facets[i][0];
-        for (unsigned int j=2; j<facet.size(); j++)
+        for (size_t j=2; j<facet.size(); j++)
             addTriangle(facet[0],facet[j-1],facet[j]);
     }
     return true;
@@ -843,7 +843,7 @@ public:
                         char b[sizeof(T)];
                     } tmp,rev;
                     tmp.t = data[i];
-                    for (unsigned int c=0; c<sizeof(T); ++c)
+                    for (size_t c=0; c<sizeof(T); ++c)
                         rev.b[c] = tmp.b[sizeof(T)-1-c];
                     data[i] = rev.t;
                 }

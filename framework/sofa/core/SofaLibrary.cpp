@@ -48,7 +48,7 @@ void SofaLibrary::build( const std::vector< std::string >& examples)
     //Data containing all the entries for a given category
     std::multimap< std::string, ClassEntry* > inventory;
 
-    for (unsigned int i=0; i<entries.size(); ++i)
+    for (size_t i=0; i<entries.size(); ++i)
     {
 #ifdef      TEST_CREATION_COMPONENT
         {
@@ -98,7 +98,7 @@ void SofaLibrary::build( const std::vector< std::string >& examples)
 
         std::pair< IteratorInventory,IteratorInventory > rangeCategory;
         rangeCategory = inventory.equal_range(categoryName);
-        const unsigned int numComponentInCategory = inventory.count(categoryName);
+        const size_t numComponentInCategory = inventory.count(categoryName);
 
 
 
@@ -145,7 +145,7 @@ void SofaLibrary::build( const std::vector< std::string >& examples)
 void SofaLibrary::computeNumComponents()
 {
     numComponents=0;
-    for (unsigned int cat=0; cat<categories.size(); ++cat)
+    for (size_t cat=0; cat<categories.size(); ++cat)
     {
         numComponents += categories[cat]->getNumComponents();
     }
@@ -178,11 +178,11 @@ const CategoryLibrary *SofaLibrary::getCategory( const std::string &categoryName
 const ComponentLibrary *SofaLibrary::getComponent( const std::string &componentName ) const
 {
     //Look into all the categories
-    for (unsigned int cat=0; cat<categories.size(); ++cat)
+    for (size_t cat=0; cat<categories.size(); ++cat)
     {
         //For each category, look at all the components if one has the name wanted
         const std::vector< ComponentLibrary* > &components = categories[cat]->getComponents();
-        for (unsigned int comp=0; comp<components.size(); ++comp)
+        for (size_t comp=0; comp<components.size(); ++comp)
         {
             if (componentName == components[comp]->getName()) return components[comp];
         }
@@ -192,7 +192,7 @@ const ComponentLibrary *SofaLibrary::getComponent( const std::string &componentN
 
 void SofaLibrary::clear()
 {
-    for (unsigned int i=0; i<categories.size(); ++i)
+    for (size_t i=0; i<categories.size(); ++i)
     {
         delete categories[i];
     }

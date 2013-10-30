@@ -64,16 +64,16 @@ struct DataTypeInfo
     enum { CopyOnWrite     = 0 }; ///< 1 if this type uses copy-on-write
 
     enum { Size = 1 }; ///< largest known fixed size for this type, as returned by size()
-    static unsigned int size() { return 1; }
+    static size_t size() { return 1; }
 
-    static unsigned int size(const DataType& /*type*/) { return 1; }
+    static size_t size(const DataType& /*type*/) { return 1; }
 
     template <typename T>
     static void getValue(const DataType& /*type*/, unsigned int /*index*/, T& /*value*/)
     {
     }
 
-    static void setSize(DataType& /*type*/, unsigned int /*size*/) {  }
+    static void setSize(DataType& /*type*/, size_t /*size*/) {  }
 
     template<typename T>
     static void setValue(DataType& /*type*/, unsigned int /*index*/, const T& /*value*/)
@@ -237,11 +237,11 @@ struct IntegerTypeInfo
     enum { CopyOnWrite     = 0 }; ///< 1 if this type uses copy-on-write
 
     enum { Size = 1 }; ///< largest known fixed size for this type, as returned by size()
-    static unsigned int size() { return 1; }
+    static size_t size() { return 1; }
 
-    static unsigned int size(const DataType& /*type*/) { return 1; }
+    static size_t size(const DataType& /*type*/) { return 1; }
 
-    static void setSize(DataType& /*type*/, unsigned int /*size*/) {  }
+    static void setSize(DataType& /*type*/, size_t /*size*/) {  }
 
     template <typename T>
     static void getValue(const DataType &type, unsigned int index, T& value)
@@ -290,11 +290,11 @@ struct BoolTypeInfo
     enum { CopyOnWrite     = 0 }; ///< 1 if this type uses copy-on-write
 
     enum { Size = 1 }; ///< largest known fixed size for this type, as returned by size()
-    static unsigned int size() { return 1; }
+    static size_t size() { return 1; }
 
-    static unsigned int size(const DataType& /*type*/) { return 1; }
+    static size_t size(const DataType& /*type*/) { return 1; }
 
-    static void setSize(DataType& /*type*/, unsigned int /*size*/) {  }
+    static void setSize(DataType& /*type*/, size_t /*size*/) {  }
 
     template <typename T>
     static void getValue(const DataType &type, unsigned int index, T& value)
@@ -359,11 +359,11 @@ struct ScalarTypeInfo
     enum { CopyOnWrite     = 0 }; ///< 1 if this type uses copy-on-write
 
     enum { Size = 1 }; ///< largest known fixed size for this type, as returned by size()
-    static unsigned int size() { return 1; }
+    static size_t size() { return 1; }
 
-    static unsigned int size(const DataType& /*type*/) { return 1; }
+    static size_t size(const DataType& /*type*/) { return 1; }
 
-    static void setSize(DataType& /*type*/, unsigned int /*size*/) {  }
+    static void setSize(DataType& /*type*/, size_t /*size*/) {  }
 
     template <typename T>
     static void getValue(const DataType &type, unsigned int index, T& value)
@@ -413,11 +413,11 @@ struct TextTypeInfo
     enum { CopyOnWrite     = 1 }; ///< 1 if this type uses copy-on-write
 
     enum { Size = 1 }; ///< largest known fixed size for this type, as returned by size()
-    static unsigned int size() { return 1; }
+    static size_t size() { return 1; }
 
-    static unsigned int size(const DataType& /*type*/) { return 1; }
+    static size_t size(const DataType& /*type*/) { return 1; }
 
-    static void setSize(DataType& /*type*/, unsigned int /*size*/) {  }
+    static void setSize(DataType& /*type*/, size_t /*size*/) {  }
 
     template <typename T>
     static void getValue(const DataType &type, unsigned int index, T& value)
@@ -466,30 +466,30 @@ struct FixedArrayTypeInfo
     enum { CopyOnWrite     = 1                             }; ///< 1 if this type uses copy-on-write
 
     enum { Size = static_size * BaseTypeInfo::Size }; ///< largest known fixed size for this type, as returned by size()
-    static unsigned int size()
+    static size_t size()
     {
         return DataType::size() * BaseTypeInfo::size();
     }
 
-    static unsigned int size(const DataType& type)
+    static size_t size(const DataType& type)
     {
         if (FixedSize)
             return size();
         else
         {
-            unsigned int s = 0;
-            for (unsigned int i=0; i<DataType::size(); ++i)
+            size_t s = 0;
+            for (size_t i=0; i<DataType::size(); ++i)
                 s+= BaseTypeInfo::size(type[i]);
             return s;
         }
     }
 
-    static void setSize(DataType& type, unsigned int size)
+    static void setSize(DataType& type, size_t size)
     {
         if (!FixedSize)
         {
             size /= DataType::size();
-            for (unsigned int i=0; i<DataType::size(); ++i)
+            for (size_t i=0; i<DataType::size(); ++i)
                 BaseTypeInfo::setSize(type[i], size);
         }
     }
@@ -507,10 +507,10 @@ struct FixedArrayTypeInfo
         }
         else
         {
-            unsigned int s = 0;
-            for (unsigned int i=0; i<DataType::size(); ++i)
+            size_t s = 0;
+            for (size_t i=0; i<DataType::size(); ++i)
             {
-                unsigned int n = BaseTypeInfo::size(type[i]);
+                size_t n = BaseTypeInfo::size(type[i]);
                 if (index < s+n)
                 {
                     BaseTypeInfo::getValue(type[i], index-s, value);
@@ -534,10 +534,10 @@ struct FixedArrayTypeInfo
         }
         else
         {
-            unsigned int s = 0;
-            for (unsigned int i=0; i<DataType::size(); ++i)
+            size_t s = 0;
+            for (size_t i=0; i<DataType::size(); ++i)
             {
-                unsigned int n = BaseTypeInfo::size(type[i]);
+                size_t n = BaseTypeInfo::size(type[i]);
                 if (index < s+n)
                 {
                     BaseTypeInfo::setValue(type[i], index-s, value);
@@ -560,10 +560,10 @@ struct FixedArrayTypeInfo
         }
         else
         {
-            unsigned int s = 0;
-            for (unsigned int i=0; i<DataType::size(); ++i)
+            size_t s = 0;
+            for (size_t i=0; i<DataType::size(); ++i)
             {
-                unsigned int n = BaseTypeInfo::size(type[i]);
+                size_t n = BaseTypeInfo::size(type[i]);
                 if (index < s+n)
                 {
                     BaseTypeInfo::getValueString(type[i], index-s, value);
@@ -586,10 +586,10 @@ struct FixedArrayTypeInfo
         }
         else
         {
-            unsigned int s = 0;
-            for (unsigned int i=0; i<DataType::size(); ++i)
+            size_t s = 0;
+            for (size_t i=0; i<DataType::size(); ++i)
             {
-                unsigned int n = BaseTypeInfo::size(type[i]);
+                size_t n = BaseTypeInfo::size(type[i]);
                 if (index < s+n)
                 {
                     BaseTypeInfo::setValueString(type[i], index-s, value);
@@ -621,26 +621,26 @@ struct VectorTypeInfo
     enum { CopyOnWrite     = 1                             }; ///< 1 if this type uses copy-on-write
 
     enum { Size = BaseTypeInfo::Size }; ///< largest known fixed size for this type, as returned by size()
-    static unsigned int size()
+    static size_t size()
     {
         return BaseTypeInfo::size();
     }
 
-    static unsigned int size(const DataType& type)
+    static size_t size(const DataType& type)
     {
         if (BaseTypeInfo::FixedSize)
             return type.size()*BaseTypeInfo::size();
         else
         {
-            unsigned int n = type.size();
-            unsigned int s = 0;
-            for (unsigned int i=0; i<n; ++i)
+            size_t n = type.size();
+            size_t s = 0;
+            for (size_t i=0; i<n; ++i)
                 s+= BaseTypeInfo::size(type[i]);
             return s;
         }
     }
 
-    static void setSize(DataType& type, unsigned int size)
+    static void setSize(DataType& type, size_t size)
     {
         if (BaseTypeInfo::FixedSize)
             type.resize(size/BaseTypeInfo::size());
@@ -659,13 +659,13 @@ struct VectorTypeInfo
         }
         else
         {
-            unsigned int s = 0;
-            for (unsigned int i=0; i<type.size(); ++i)
+            size_t s = 0;
+            for (size_t i=0; i<type.size(); ++i)
             {
-                unsigned int n = BaseTypeInfo::size(type[i]);
+                size_t n = BaseTypeInfo::size(type[i]);
                 if (index < s+n)
                 {
-                    BaseTypeInfo::getValue(type[i], index-s, value);
+                    BaseTypeInfo::getValue(type[i], index-static_cast<unsigned int>(s), value);
                     break;
                 }
                 s += n;
@@ -686,13 +686,13 @@ struct VectorTypeInfo
         }
         else
         {
-            unsigned int s = 0;
-            for (unsigned int i=0; i<type.size(); ++i)
+            size_t s = 0;
+            for (size_t i=0; i<type.size(); ++i)
             {
-                unsigned int n = BaseTypeInfo::size(type[i]);
+                size_t n = BaseTypeInfo::size(type[i]);
                 if (index < s+n)
                 {
-                    BaseTypeInfo::setValue(type[i], index-s, value);
+                    BaseTypeInfo::setValue(type[i], index-static_cast<unsigned int>(s), value);
                     break;
                 }
                 s += n;
@@ -712,10 +712,10 @@ struct VectorTypeInfo
         }
         else
         {
-            unsigned int s = 0;
-            for (unsigned int i=0; i<type.size(); ++i)
+            size_t s = 0;
+            for (size_t i=0; i<type.size(); ++i)
             {
-                unsigned int n = BaseTypeInfo::size(type[i]);
+                size_t n = BaseTypeInfo::size(type[i]);
                 if (index < s+n)
                 {
                     BaseTypeInfo::getValueString(type[i], index-s, value);
@@ -738,10 +738,10 @@ struct VectorTypeInfo
         }
         else
         {
-            unsigned int s = 0;
-            for (unsigned int i=0; i<type.size(); ++i)
+            size_t s = 0;
+            for (size_t i=0; i<type.size(); ++i)
             {
-                unsigned int n = BaseTypeInfo::size(type[i]);
+                size_t n = BaseTypeInfo::size(type[i]);
                 if (index < s+n)
                 {
                     BaseTypeInfo::setValueString(type[i], index-s, value);
@@ -774,25 +774,25 @@ struct SetTypeInfo
     enum { CopyOnWrite     = 1                             }; ///< 1 if this type uses copy-on-write
 
     enum { Size = BaseTypeInfo::Size }; ///< largest known fixed size for this type, as returned by size()
-    static unsigned int size()
+    static size_t size()
     {
         return BaseTypeInfo::size();
     }
 
-    static unsigned int size(const DataType& type)
+    static size_t size(const DataType& type)
     {
         if (BaseTypeInfo::FixedSize)
             return type.size()*BaseTypeInfo::size();
         else
         {
-            unsigned int s = 0;
+            size_t s = 0;
             for (typename DataType::const_iterator it = type.begin(), end=type.end(); it!=end; ++it)
                 s+= BaseTypeInfo::size(*it);
             return s;
         }
     }
 
-    static void setSize(DataType& type, unsigned int /*size*/)
+    static void setSize(DataType& type, size_t /*size*/)
     {
         type.clear(); // we can't "resize" a set, so the only meaningfull operation is to clear it, as values will be added dynamically in setValue
     }
@@ -803,15 +803,15 @@ struct SetTypeInfo
         if (BaseTypeInfo::FixedSize)
         {
             typename DataType::const_iterator it = type.begin();
-            for (unsigned int i=0; i<index/BaseTypeInfo::size(); ++i) ++it;
+            for (size_t i=0; i<index/BaseTypeInfo::size(); ++i) ++it;
             BaseTypeInfo::getValue(*it, index%BaseTypeInfo::size(), value);
         }
         else
         {
-            unsigned int s = 0;
+            size_t s = 0;
             for (typename DataType::const_iterator it = type.begin(), end=type.end(); it!=end; ++it)
             {
-                unsigned int n = BaseTypeInfo::size(*it);
+                size_t n = BaseTypeInfo::size(*it);
                 if (index < s+n)
                 {
                     BaseTypeInfo::getValue(*it, index-s, value);
@@ -842,15 +842,15 @@ struct SetTypeInfo
         if (BaseTypeInfo::FixedSize)
         {
             typename DataType::const_iterator it = type.begin();
-            for (unsigned int i=0; i<index/BaseTypeInfo::size(); ++i) ++it;
+            for (size_t i=0; i<index/BaseTypeInfo::size(); ++i) ++it;
             BaseTypeInfo::getValueString(*it, index%BaseTypeInfo::size(), value);
         }
         else
         {
-            unsigned int s = 0;
+            size_t s = 0;
             for (typename DataType::const_iterator it = type.begin(), end=type.end(); it!=end; ++it)
             {
-                unsigned int n = BaseTypeInfo::size(*it);
+                size_t n = BaseTypeInfo::size(*it);
                 if (index < s+n)
                 {
                     BaseTypeInfo::getValueString(*it, index-s, value);
