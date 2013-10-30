@@ -42,7 +42,7 @@ namespace defaulttype
 
 enum NoInit { NOINIT }; ///< use when calling Vec or Mat constructor to skip initialization of values to 0
 
-template <size_t N, typename real=float>
+template <int N, typename real=float>
 class Vec : public helper::fixed_array<real,N>
 {
 
@@ -237,13 +237,13 @@ public:
     }
 
     /// Specific set from a different size vector (given default value and ignored outside entries)
-    template<size_t N2, class real2>
+    template<int N2, class real2>
     void set(const Vec<N2,real2>& v, real defaultvalue=0)
     {
-        size_t maxN = std::min( N, N2 );
-        for(size_t i=0; i<maxN; i++)
+        int maxN = std::min( N, N2 );
+        for(int i=0; i<maxN; i++)
             this->elems[i] = (real)v[i];
-        for(size_t i=maxN; i<N ; i++)
+        for(int i=maxN; i<N ; i++)
             this->elems[i] = defaultvalue;
     }
 
@@ -256,7 +256,7 @@ public:
     }
 
     /// Constructor from a different size vector (null default value and ignoring outside entries)
-    template<size_t N2, typename real2>
+    template<int N2, typename real2>
     explicit Vec(const Vec<N2,real2>& v)
     {
         set( v, 0 );
@@ -266,7 +266,7 @@ public:
     Vec(const Vec<N, real2>& p)
     {
         //std::copy(p.begin(), p.end(), this->begin());
-        for(size_t i=0; i<N; i++)
+        for(int i=0; i<N; i++)
             this->elems[i] = (real)p(i);
     }
 
@@ -275,7 +275,7 @@ public:
     explicit Vec(const real2* p)
     {
         //std::copy(p, p+N, this->begin());
-        for(size_t i=0; i<N; i++)
+        for(int i=0; i<N; i++)
             this->elems[i] = (real)p[i];
     }
 
@@ -334,16 +334,16 @@ public:
     void operator=(const real2* p)
     {
         //std::copy(p, p+N, this->begin());
-        for(size_t i=0; i<N; i++)
+        for(int i=0; i<N; i++)
             this->elems[i] = (real)p[i];
     }
 
     /// Assignment from a vector with different dimensions.
-    template<size_t M, typename real2>
+    template<int M, typename real2>
     void operator=(const Vec<M,real2>& v)
     {
         //std::copy(v.begin(), v.begin()+(N>M?M:N), this->begin());
-        for(size_t i=0; i<(N>M?M:N); i++)
+        for(int i=0; i<(N>M?M:N); i++)
             this->elems[i] = (real)v(i);
     }
 
@@ -361,7 +361,7 @@ public:
 
     // Access to i-th element.
     // Already in fixed_array
-    //real& operator[](size_t i)
+    //real& operator[](int i)
     //{
     //    return this->elems[i];
     //}
@@ -369,19 +369,19 @@ public:
     // Access to i-th element.
     // Already in fixed_array
     /// Const access to i-th element.
-    //const real& operator[](size_t i) const
+    //const real& operator[](int i) const
     //{
     //    return this->elems[i];
     //}
 
     /// Access to i-th element.
-    real& operator()(size_t i)
+    real& operator()(int i)
     {
         return this->elems[i];
     }
 
     /// Const access to i-th element.
-    const real& operator()(size_t i) const
+    const real& operator()(int i) const
     {
         return this->elems[i];
     }
@@ -425,7 +425,7 @@ public:
     {
         BOOST_STATIC_ASSERT(DataTypeInfo<real2>::ValidInfo && DataTypeInfo<real2>::Size==1);
         Vec<N,real> r(NOINIT);
-        for (size_t i=0; i<N; i++)
+        for (int i=0; i<N; i++)
             r[i] = this->elems[i]*(real)f;
         return r;
     }
@@ -444,7 +444,7 @@ public:
     void eqmulscalar(real2 f)
     {
         BOOST_STATIC_ASSERT(DataTypeInfo<real2>::ValidInfo && DataTypeInfo<real2>::Size==1);
-        for (size_t i=0; i<N; i++)
+        for (int i=0; i<N; i++)
             this->elems[i]*=(real)f;
     }
 
@@ -463,7 +463,7 @@ public:
     {
         BOOST_STATIC_ASSERT(DataTypeInfo<real2>::ValidInfo && DataTypeInfo<real2>::Size==1);
         Vec<N,real> r(NOINIT);
-        for (size_t i=0; i<N; i++)
+        for (int i=0; i<N; i++)
             r[i] = this->elems[i]/(real)f;
         return r;
     }
@@ -482,7 +482,7 @@ public:
     void eqdivscalar(real2 f)
     {
         BOOST_STATIC_ASSERT(DataTypeInfo<real2>::ValidInfo && DataTypeInfo<real2>::Size==1);
-        for (size_t i=0; i<N; i++)
+        for (int i=0; i<N; i++)
             this->elems[i]/=(real)f;
     }
 
@@ -500,7 +500,7 @@ public:
     real operator*(const Vec<N,real2>& v) const
     {
         real r = (real)(this->elems[0]*v[0]);
-        for (size_t i=1; i<N; i++)
+        for (int i=1; i<N; i++)
             r += (real)(this->elems[i]*v[i]);
         return r;
     }
@@ -510,7 +510,7 @@ public:
     Vec<N,real> linearProduct(const Vec<N,real2>& v) const
     {
         Vec<N,real> r(NOINIT);
-        for (size_t i=0; i<N; i++)
+        for (int i=0; i<N; i++)
             r[i]=this->elems[i]*(real)v[i];
         return r;
     }
@@ -521,7 +521,7 @@ public:
     Vec<N,real> linearDivision(const Vec<N,real2>& v) const
     {
         Vec<N,real> r(NOINIT);
-        for (size_t i=0; i<N; i++)
+        for (int i=0; i<N; i++)
             r[i]=this->elems[i]/(real)v[i];
         return r;
     }
@@ -531,7 +531,7 @@ public:
     Vec<N,real> operator+(const Vec<N,real2>& v) const
     {
         Vec<N,real> r(NOINIT);
-        for (size_t i=0; i<N; i++)
+        for (int i=0; i<N; i++)
             r[i]=this->elems[i]+(real)v[i];
         return r;
     }
@@ -540,7 +540,7 @@ public:
     template<class real2>
     void operator+=(const Vec<N,real2>& v)
     {
-        for (size_t i=0; i<N; i++)
+        for (int i=0; i<N; i++)
             this->elems[i]+=(real)v[i];
     }
 
@@ -549,7 +549,7 @@ public:
     Vec<N,real> operator-(const Vec<N,real2>& v) const
     {
         Vec<N,real> r(NOINIT);
-        for (size_t i=0; i<N; i++)
+        for (int i=0; i<N; i++)
             r[i]=this->elems[i]-(real)v[i];
         return r;
     }
@@ -558,7 +558,7 @@ public:
     template<class real2>
     void operator-=(const Vec<N,real2>& v)
     {
-        for (size_t i=0; i<N; i++)
+        for (int i=0; i<N; i++)
             this->elems[i]-=(real)v[i];
     }
 
@@ -566,7 +566,7 @@ public:
     Vec<N,real> operator-() const
     {
         Vec<N,real> r(NOINIT);
-        for (size_t i=0; i<N; i++)
+        for (int i=0; i<N; i++)
             r[i]=-this->elems[i];
         return r;
     }
@@ -575,7 +575,7 @@ public:
     real norm2() const
     {
         real r = this->elems[0]*this->elems[0];
-        for (size_t i=1; i<N; i++)
+        for (int i=1; i<N; i++)
             r += this->elems[i]*this->elems[i];
         return r;
     }
@@ -590,7 +590,7 @@ public:
     void normalizeWithNorm(real norm, real threshold=std::numeric_limits<real>::epsilon())
     {
         if (norm>threshold)
-            for (size_t i=0; i<N; i++)
+            for (int i=0; i<N; i++)
                 this->elems[i]/=norm;
     }
 
@@ -619,7 +619,7 @@ public:
     real sum() const
     {
         real sum = 0.0;
-        for (size_t i=0; i<N; i++)
+        for (int i=0; i<N; i++)
             sum += this->elems[i];
         return sum;
     }
@@ -630,14 +630,14 @@ public:
 
     bool operator==(const Vec& b) const
     {
-        for (size_t i=0; i<N; i++)
+        for (int i=0; i<N; i++)
             if ( fabs( (float)(this->elems[i] - b[i]) ) > EQUALITY_THRESHOLD ) return false;
         return true;
     }
 
     bool operator!=(const Vec& b) const
     {
-        for (size_t i=0; i<N; i++)
+        for (int i=0; i<N; i++)
             if ( fabs( (float)(this->elems[i] - b[i]) ) > EQUALITY_THRESHOLD ) return true;
         return false;
     }
@@ -647,7 +647,7 @@ public:
 
 
 /// Same as Vec except the values are not initialized by default
-template <size_t N, typename real=float>
+template <int N, typename real=float>
 class VecNoInit : public Vec<N,real>
 {
 public:
@@ -664,7 +664,7 @@ public:
     }
 
     /// Assignment from a vector with different dimensions.
-    template<size_t M, typename real2>
+    template<int M, typename real2>
     void operator=(const Vec<M,real2>& v)
     {
         this->Vec<N,real>::operator=(v);
@@ -678,19 +678,19 @@ public:
 };
 
 /// Read from an input stream
-template<size_t N,typename Real>
+template<int N,typename Real>
 std::istream& operator >> ( std::istream& in, Vec<N,Real>& v )
 {
-    for( size_t i=0; i<N; ++i )
+    for( int i=0; i<N; ++i )
         in>>v[i];
     return in;
 }
 
 /// Write to an output stream
-template<size_t N,typename Real>
+template<int N,typename Real>
 std::ostream& operator << ( std::ostream& out, const Vec<N,Real>& v )
 {
-    for( size_t i=0; i<N-1; ++i )
+    for( int i=0; i<N-1; ++i )
         out<<v[i]<<" ";
     out<<v[N-1];
     return out;
@@ -713,14 +713,14 @@ real1 cross(const defaulttype::Vec<2,real1>& a, const defaulttype::Vec<2,real2>&
 }
 
 /// Dot product (alias for operator*)
-template<size_t N,typename real>
+template<int N,typename real>
 inline real dot(const Vec<N,real>& a, const Vec<N,real>& b)
 {
     return a*b;
 }
 
 /// multiplication with a scalar \returns a*V
-template <size_t N, typename real>
+template <int N, typename real>
 Vec<N,real> operator*(const real& a, const Vec<N,real>& V)
 {
     return V * a;
@@ -782,13 +782,13 @@ namespace sofa
 namespace defaulttype
 {
 
-template<size_t N, typename real>
+template<int N, typename real>
 struct DataTypeInfo< sofa::defaulttype::Vec<N,real> > : public FixedArrayTypeInfo<sofa::defaulttype::Vec<N,real> >
 {
     static std::string name() { std::ostringstream o; o << "Vec<" << N << "," << DataTypeName<real>::name() << ">"; return o.str(); }
 };
 
-template<size_t N, typename real>
+template<int N, typename real>
 struct DataTypeInfo< sofa::defaulttype::VecNoInit<N,real> > : public FixedArrayTypeInfo<sofa::defaulttype::VecNoInit<N,real> >
 {
     static std::string name() { std::ostringstream o; o << "VecNoInit<" << N << "," << DataTypeName<real>::name() << ">"; return o.str(); }
@@ -819,7 +819,7 @@ namespace std
 {
 
 // template <>
-template<size_t N, class T>
+template<int N, class T>
 struct less< sofa::defaulttype::Vec<N,T> > : public binary_function< sofa::defaulttype::Vec<N,T>,  sofa::defaulttype::Vec<N,T>, bool>
 {
     bool operator()(const  sofa::defaulttype::Vec<N,T>& x, const  sofa::defaulttype::Vec<N,T>& y) const
