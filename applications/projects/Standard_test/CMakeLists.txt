@@ -10,7 +10,7 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
     PrimitiveCreation.cpp
-    RigidMapping_test.cpp
+    #RigidMapping_test.cpp
     SAPTest.cpp
     Matrix_test.cpp
     OBBTest.cpp
