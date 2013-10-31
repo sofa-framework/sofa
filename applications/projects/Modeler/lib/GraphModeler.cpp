@@ -74,7 +74,7 @@ int numComponent= 0;
 typedef QPopupMenu Q3PopupMenu;
 #endif
 
-GraphModeler::GraphModeler( QWidget* parent, const char* name, Qt::WFlags f): Q3ListView(parent, name, f), graphListener(NULL)
+GraphModeler::GraphModeler( QWidget* parent, const char* name, Qt::WFlags f): Q3ListView(parent, name, f), graphListener(NULL), propertyWidget(NULL)
 {
     graphListener = new GraphListenerQListView(this);
     addColumn("Graph");
@@ -432,7 +432,7 @@ void GraphModeler::openModifyObject(Q3ListViewItem *item)
         dialogModify->createDialog(object);
     }
 
-    if(object)
+    if(object && propertyWidget)
         propertyWidget->addComponent(object->getName().c_str(), object, item);
 
     map_modifyObjectWindow.insert( std::make_pair(current_Id_modifyDialog, dialogModify));
@@ -466,7 +466,8 @@ void GraphModeler::addInPropertyWidget(Q3ListViewItem *item, bool clear)
     if(object == NULL)
         return;
 
-    propertyWidget->addComponent(object->getName().c_str(), object, item, clear);
+	if(propertyWidget)
+		propertyWidget->addComponent(object->getName().c_str(), object, item, clear);
 }
 
 void GraphModeler::doubleClick(Q3ListViewItem *item)
