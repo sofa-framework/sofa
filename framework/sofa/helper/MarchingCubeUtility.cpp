@@ -791,10 +791,10 @@ void MarchingCubeUtility::findSeeds ( vector<Vec3i>& seeds, const float isoValue
     Vec3i bboxMax = Vec3i ( bbox.max / cubeStep );
     Vec3i gridSize = Vec3i ( dataResolution /cubeStep );
 
-    size_t index;
-    for ( size_t k=bboxMin[2]; k<bboxMax[2]-1; k++ )
-        for ( size_t j=bboxMin[1]; j<bboxMax[1]-1; j++ )
-            for ( size_t i=bboxMin[0]; i<bboxMax[0]-1; i++ )
+    int index;
+    for ( int k=bboxMin[2]; k<bboxMax[2]-1; k++ )
+        for ( int j=bboxMin[1]; j<bboxMax[1]-1; j++ )
+            for ( int i=bboxMin[0]; i<bboxMax[0]-1; i++ )
             {
                 index = i + j*gridSize[0] + k*gridSize[0]*gridSize[1];
 
@@ -889,7 +889,7 @@ void MarchingCubeUtility::findConnectedVoxels ( sofa::helper::set<unsigned int>&
         Vec3i coord = voxelsToTest.top();
         voxelsToTest.pop();
 
-        size_t index = coord[0] + coord[1]*dataResolution[0] + coord[2]*dataResolution[0]*dataResolution[1];
+        int index = coord[0] + coord[1]*dataResolution[0] + coord[2]*dataResolution[0]*dataResolution[1];
 
         if ( connectedVoxels.find ( index ) != connectedVoxels.end() ) continue;
 
@@ -945,9 +945,9 @@ void  MarchingCubeUtility::applyConvolution ( const float* convolutionKernel,
     const size_t index = x + dataResolution[0] * ( y + dataResolution[1] * z );
     output_data[index] = 0;
     size_t idx=0;
-    for ( size_t k=0; k<convolutionSize; ++k )
-        for ( size_t j=0; j<convolutionSize; ++j )
-            for ( size_t i=0; i<convolutionSize; ++i )
+    for ( unsigned int k=0; k<convolutionSize; ++k )
+        for ( unsigned int j=0; j<convolutionSize; ++j )
+            for ( unsigned int i=0; i<convolutionSize; ++i )
             {
                 output_data[index] += (unsigned char)(convolutionKernel[idx++]
                         * input_data[ ( x+i ) + ( dataResolution[0]+convolutionSize ) * ( ( y+j ) + ( z+k ) * ( dataResolution[1]+convolutionSize ) ) ]);
@@ -970,9 +970,9 @@ void MarchingCubeUtility::createGaussianConvolutionKernel ( vector< float >  &co
 
     float total = 0.0;
     size_t idx=0;
-    for ( size_t k=0; k<convolutionSize; ++k )
-        for ( size_t j=0; j<convolutionSize; ++j )
-            for ( size_t i=0; i<convolutionSize; ++i )
+    for ( unsigned int k=0; k<convolutionSize; ++k )
+        for ( unsigned int j=0; j<convolutionSize; ++j )
+            for ( unsigned int i=0; i<convolutionSize; ++i )
             {
                 const float x = -2.0f + i * step;
                 const float y = -2.0f + j * step;
