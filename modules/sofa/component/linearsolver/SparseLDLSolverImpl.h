@@ -246,8 +246,8 @@ protected :
             }
         }
         xadj[n] = M_colptr[n] - n;
-
-        METIS_NodeND(&n, &xadj[0],&adj[0], NULL, NULL, perm,invperm);
+        int numflag = 0, options = 0;
+        METIS_NodeND(&n, &xadj[0],&adj[0], &numflag, &options, perm,invperm);
     }
 #else
     void LDL_ordering(int n,int * /*M_colptr*/,int * /*M_rowind*/,int * perm,int * invperm)
