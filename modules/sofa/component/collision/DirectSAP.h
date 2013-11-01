@@ -92,7 +92,7 @@ using namespace sofa::defaulttype;
   *saving it. But the memory used to save these primitives is created just once, the first time we add CollisionModels.
   */
 template <template<class T,class Allocator> class List,template <class T> class Allocator = std::allocator>
-class SOFA_BASE_COLLISION_API TDirectSAP :
+class TDirectSAP :
     public core::collision::BroadPhaseDetection,
     public core::collision::NarrowPhaseDetection
 {
