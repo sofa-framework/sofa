@@ -1636,7 +1636,7 @@ void RealGUI::initViewer(BaseViewer* _viewer)
 
 #ifdef SOFA_QT4
         // rescale factor for the space occuped by the widget index
-        splitter_ptr->setStretchFactor( 0, 0); // OptionTab
+        splitter_ptr->setStretchFactor( 0, 2); // OptionTab
         splitter_ptr->setStretchFactor( 1, 10); // Viewer -> you won't an embedded viewer : set to (1,0)
         QList<int> list;
 #else
