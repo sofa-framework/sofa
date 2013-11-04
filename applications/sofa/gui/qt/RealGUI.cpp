@@ -44,6 +44,7 @@
 #endif
 
 #include "QSofaListView.h"
+#include "QDisplayPropertyWidget.h"
 #include "FileManagement.h"
 #include "DisplayFlagsDataWidget.h"
 #include "SofaPluginManager.h"
@@ -297,6 +298,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
     m_displayComputationTime(false),
     m_fullScreen(false),
     mViewer(NULL),
+	propertyWidget(NULL),
     currentTab ( NULL ),
     statWidget(NULL),
     timerStep(NULL),
@@ -356,7 +358,11 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
     statWidget = new QSofaStatWidget(TabStats);
     TabStats->layout()->add(statWidget);
 
+	graphSplitProperty = new QSplitter(Qt::Orientation::Vertical);
+	((QVBoxLayout*)TabGraph->layout())->addWidget(graphSplitProperty);
+
     createSimulationGraph();
+	createPropertyWidget();
 
     //viewer
     informationOnPickCallBack = InformationOnPickCallBack(this);
@@ -1737,7 +1743,8 @@ void RealGUI::createBackgroundGUIInfos()
 void RealGUI::createSimulationGraph()
 {
     simulationGraph = new QSofaListView(SIMULATION,TabGraph,"SimuGraph");
-    ((QVBoxLayout*)TabGraph->layout())->addWidget(simulationGraph);
+    graphSplitProperty->addWidget(simulationGraph);
+
     connect ( ExportGraphButton, SIGNAL ( clicked() ), simulationGraph, SLOT ( Export() ) );
     connect(simulationGraph, SIGNAL( RootNodeChanged(sofa::simulation::Node*, const char*) ), this, SLOT ( NewRootNode(sofa::simulation::Node* , const char*) ) );
     connect(simulationGraph, SIGNAL( NodeRemoved() ), this, SLOT( Update() ) );
@@ -1749,6 +1756,16 @@ void RealGUI::createSimulationGraph()
     connect(simulationGraph, SIGNAL( NodeAdded() ), this, SLOT( Update() ) );
     connect(this, SIGNAL( newScene() ), simulationGraph, SLOT( CloseAllDialogs() ) );
     connect(this, SIGNAL( newStep() ), simulationGraph, SLOT( UpdateOpenedDialogs() ) );
+}
+
+void RealGUI::createPropertyWidget()
+{
+    propertyWidget = new QDisplayPropertyWidget();
+	graphSplitProperty->addWidget(propertyWidget);
+    
+	simulationGraph->setPropertyWidget(propertyWidget);
+
+	propertyWidget->hide();
 }
 
 //------------------------------------

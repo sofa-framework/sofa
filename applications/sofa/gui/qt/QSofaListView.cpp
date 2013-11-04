@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "QSofaListView.h"
+#include "QDisplayPropertyWidget.h"
 #include "GraphListenerQListView.h"
 #include "AddObject.h"
 #include "ModifyObject.h"
@@ -243,12 +244,30 @@ void QSofaListView::updateMatchingObjectmodel(Q3ListViewItem* item)
         }
     }
 
+	addInPropertyWidget(item, true);
 }
 
 void QSofaListView::updateMatchingObjectmodel()
 {
     updateMatchingObjectmodel(currentItem());
 }
+
+void QSofaListView::addInPropertyWidget(Q3ListViewItem *item, bool clear)
+{
+    if(!item)
+        return;
+
+    Base* object = graphListener_->findObject(item);
+    if(object == NULL)
+        return;
+
+	if(propertyWidget)
+	{
+		propertyWidget->addComponent(object->getName().c_str(), object, item, clear);
+		propertyWidget->show();
+	}
+}
+
 void QSofaListView::Freeze()
 {
     Node* groot = dynamic_cast<Node*>( graphListener_->findObject(firstChild()) );

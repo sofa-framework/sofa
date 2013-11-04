@@ -119,8 +119,12 @@ void QDisplayPropertyWidget::updateDirtyWidget()
 const QString QDisplayPropertyWidget::defaultGroup("Property");
 
 QDisplayPropertyWidget::QDisplayPropertyWidget(QWidget* parent) : QTreeWidget(parent)
-    , pinIcon(QIcon((sofa::helper::system::DataRepository.getFirstPath() + "/textures/pin.png").c_str()))
+    , pinIcon()
 {
+	std::string filename = "textures/pin.png";
+	sofa::helper::system::DataRepository.findFile(filename);
+	pinIcon = QIcon(filename.c_str());
+
     setColumnCount(2);
     //setIndentation(10);
 

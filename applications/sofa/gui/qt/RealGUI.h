@@ -88,6 +88,7 @@ class QSofaRecorder;
 enum SCRIPT_TYPE { PHP, PERL };
 
 class QSofaListView;
+class QDisplayPropertyWidget;
 class QSofaStatWidget;
 class GraphListenerQListView;
 class DisplayFlagsDataWidget;
@@ -223,6 +224,11 @@ protected:
     bool m_displayComputationTime;
     bool m_fullScreen;
     BaseViewer* mViewer;
+
+	// Component Properties
+    QDisplayPropertyWidget* propertyWidget;
+
+	QSplitter* graphSplitProperty;
 
     /// list of all viewer key name (for creation) mapped to its QAction in the GUI
     std::map< helper::SofaViewerFactory::Key, QAction* > viewerMap;
@@ -369,6 +375,7 @@ private:
 
     void createBackgroundGUIInfos();
     void createSimulationGraph();
+	void createPropertyWidget();
     void createWindowVisitor();
     void createSceneDescription();
 //----------------- METHODS------------------------}

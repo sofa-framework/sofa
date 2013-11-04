@@ -125,7 +125,11 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
 
     if(flags.PROPERTY_WIDGET_FLAG)
     {
-        QPushButton *refresh = new QPushButton(QIcon((sofa::helper::system::DataRepository.getFirstPath() + "/textures/refresh.png").c_str()), "", this);
+		std::string filename = "textures/refresh.png";
+		sofa::helper::system::DataRepository.findFile(filename);
+		QIcon pinIcon(filename.c_str());
+
+        QPushButton *refresh = new QPushButton(pinIcon, "", this);
         refresh->setHidden(true);
         refresh->setFixedSize(QSize(16, 16));
 
