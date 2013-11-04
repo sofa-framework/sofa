@@ -160,8 +160,9 @@ if(WIN32)
 	endif()
 endif()
 
-# creating examples/Object folder
+# creating examples/Object and examples/Objects folder
 file(MAKE_DIRECTORY "${SOFA_BUILD_DIR}/examples/Object")
+file(MAKE_DIRECTORY "${SOFA_BUILD_DIR}/examples/Objects")
 
 # copying default config files
 if(NOT CONFIG_FILES_ALREADY_COPIED)

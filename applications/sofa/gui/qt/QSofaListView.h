@@ -60,7 +60,7 @@ namespace qt
 
 class AddObject;
 class GraphListenerQListView;
-
+class QDisplayPropertyWidget;
 
 enum ObjectModelType { typeNode, typeObject, typeData };
 typedef union ObjectModelPtr
@@ -98,6 +98,10 @@ public:
     ~QSofaListView();
 
     GraphListenerQListView* getListener() const { return  graphListener_; };
+
+	void setPropertyWidget(QDisplayPropertyWidget* propertyWid) {propertyWidget = propertyWid;}
+	void addInPropertyWidget(Q3ListViewItem *item, bool clear);
+
     void Clear(sofa::simulation::Node* rootNode);
     void Freeze();
     void Unfreeze();
@@ -159,6 +163,7 @@ protected:
     AddObject* AddObjectDialog_;
     ObjectModel object_;
     SofaListViewAttribute attribute_;
+	QDisplayPropertyWidget* propertyWidget;
 
 };
 

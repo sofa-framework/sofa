@@ -198,10 +198,14 @@ SofaModeler::SofaModeler():recentlyOpenedFilesManager("share/config/Modeler.ini"
 
     QHBoxLayout *mainLayout = new QHBoxLayout(this->centralWidget());
 
+	// Splitter between the graph and the properties
+	QSplitter* graphSplitProperty = new QSplitter(Qt::Orientation::Horizontal);
+	mainLayout->addWidget(graphSplitProperty);
+
     //----------------------------------------------------------------------
     //Create the scene graph visualization
     sceneTab = new QTabWidget(this->centralWidget());
-    mainLayout->addWidget(sceneTab);
+    graphSplitProperty->addWidget(sceneTab);
 
 #ifdef SOFA_QT4
     //option available only since Qt 4.5
@@ -216,7 +220,12 @@ SofaModeler::SofaModeler():recentlyOpenedFilesManager("share/config/Modeler.ini"
     //----------------------------------------------------------------------
     //Create the properties visualization
     propertyWidget = new QDisplayPropertyWidget(this->centralWidget());
-    mainLayout->addWidget(propertyWidget);
+    graphSplitProperty->addWidget(propertyWidget);
+
+	QList<int> sizes;
+	sizes.push_back(200);
+	sizes.push_back(200);
+	graphSplitProperty->setSizes(sizes);
 
     //----------------------------------------------------------------------
     //Add plugin manager window. ->load external libs
