@@ -79,27 +79,22 @@ macro(SOFA_QT4_WRAP_CPP outfiles )
 	endforeach()
 endmacro()
 
-# generate .h / .cpp from Qt3 .ui for Qt4
-macro(SOFA_QT4_WRAP_UI outfiles )
-
-	foreach(it ${ARGN})
-		get_filename_component(outfile ${it} NAME_WE)
-		get_filename_component(infile ${it} ABSOLUTE)
+# generate .h files from .ui files
+macro(SOFA_QT4_WRAP_UI outfiles)
+	foreach(it ${ARGN})     # it = foo.ui
+		get_filename_component(outfile ${it} NAME_WE) # outfile = foo
+		get_filename_component(infile ${it} ABSOLUTE) # infile = /absolute/path/to/foo.ui
 		set(outHeaderFile "${CMAKE_CURRENT_BINARY_DIR}/${outfile}.h")
-		set(outSourceFile "${CMAKE_CURRENT_BINARY_DIR}/${outfile}.cpp")
-		add_custom_command(	OUTPUT ${outHeaderFile} ${outSourceFile}
-							COMMAND ${QT_UIC3_EXECUTABLE} ${ui_options} ${infile} -o ${outHeaderFile}
-							COMMAND ${QT_UIC3_EXECUTABLE} ${ui_options} "-impl" ${outHeaderFile} ${infile} -o ${outSourceFile}
-							MAIN_DEPENDENCY ${infile})
-		
-		SOFA_QT4_WRAP_CPP(outMocFile ${outHeaderFile})
-		set(${outfiles} ${${outfiles}} ${outHeaderFile} ${outSourceFile} ${outMocFile})
+		add_custom_command(OUTPUT ${outHeaderFile}
+		                   COMMAND uic ${infile} -o ${outHeaderFile}
+		                   MAIN_DEPENDENCY ${infile})
+		set(${outfiles} ${${outfiles}} ${outHeaderFile})
 	endforeach()
 endmacro()
 
 function(UseQt)
 	set(ENV{QTDIR} "${SOFA-EXTERNAL_QT_PATH}")
-	set(ENV{CONFIG} "qt;uic;uic3")
+	set(ENV{CONFIG} "qt;uic")
 	find_package(Qt4 COMPONENTS qtcore qtgui qtopengl qt3support qtxml REQUIRED)
 	set(QT_QMAKE_EXECUTABLE ${QT_QMAKE_EXECUTABLE} CACHE INTERNAL "QMake executable path")
 	

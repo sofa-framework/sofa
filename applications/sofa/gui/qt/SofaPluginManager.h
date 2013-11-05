@@ -46,7 +46,7 @@ namespace qt
 typedef QListViewItem Q3ListViewItem;
 #endif
 
-class SofaPluginManager: public PluginManager
+class SofaPluginManager: public QDialog, public Ui_PluginManager
 {
     Q_OBJECT
 public:

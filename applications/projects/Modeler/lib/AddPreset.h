@@ -38,7 +38,7 @@ namespace qt
 {
 using sofa::simulation::Node;
 
-class AddPreset : public DialogAddPreset
+class AddPreset: public QDialog, public Ui_DialogAddPreset
 {
     Q_OBJECT
 public:

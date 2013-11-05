@@ -84,7 +84,7 @@ public:
     std::vector< Codec > listCodecs;
 };
 
-class SofaVideoRecorderManager: public VideoRecorderManager
+class SofaVideoRecorderManager: public QDialog, public Ui_VideoRecorderManager
 {
     Q_OBJECT
 public:
