@@ -111,6 +111,7 @@ MovieOptionsWidget::MovieOptionsWidget( QWidget * parent)
 
 SofaVideoRecorderManager::SofaVideoRecorderManager()
 {
+    setupUi(this);
     captureOptionsWidget = new CaptureOptionsWidget(this);
     movieOptionsWidget = new MovieOptionsWidget(this);
 

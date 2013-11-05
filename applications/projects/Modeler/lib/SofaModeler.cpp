@@ -85,6 +85,7 @@ using namespace sofa::helper::system;
 SofaModeler::SofaModeler():recentlyOpenedFilesManager("share/config/Modeler.ini")
     ,runSofaGUI(NULL)
 {
+    setupUi(this);
     //index to add in temporary scenes created by the Modeler
     count='0';
     int menuIndex=4;
@@ -199,7 +200,7 @@ SofaModeler::SofaModeler():recentlyOpenedFilesManager("share/config/Modeler.ini"
     QHBoxLayout *mainLayout = new QHBoxLayout(this->centralWidget());
 
 	// Splitter between the graph and the properties
-	QSplitter* graphSplitProperty = new QSplitter(Qt::Orientation::Horizontal);
+	QSplitter* graphSplitProperty = new QSplitter(Qt::Horizontal);
 	mainLayout->addWidget(graphSplitProperty);
 
     //----------------------------------------------------------------------

@@ -104,7 +104,7 @@ class SofaViewer;
 }
 
 
-class SOFA_SOFAGUIQT_API RealGUI : public ::GUI, public sofa::gui::BaseGUI
+class SOFA_SOFAGUIQT_API RealGUI : public Q3MainWindow, public Ui::GUI, public sofa::gui::BaseGUI
 {
     Q_OBJECT
 
@@ -269,27 +269,14 @@ public:
     virtual int closeGUI();
     virtual sofa::simulation::Node* currentSimulation();
     virtual void fileOpen(std::string filename, bool temporaryFile=false);
-    virtual void fileOpen();
+    // virtual void fileOpen();
     virtual void fileOpenSimu(std::string filename);
     virtual void setScene(Node::SPtr groot, const char* filename=NULL, bool temporaryFile=false);
     virtual void unloadScene(bool _withViewer = true);
 
     virtual void setTitle( std::string windowTitle );
-    virtual void fileNew();
-    virtual void fileSave();
-    virtual void fileSaveAs()
-    {
-        fileSaveAs((Node *)NULL);
-    }
     virtual void fileSaveAs(Node* node,const char* filename);
-    virtual void fileReload();
-    virtual void fileExit();
     virtual void saveXML();
-    virtual void editRecordDirectory();
-    virtual void editGnuplotDirectory();
-    virtual void showPluginManager();
-    virtual void showMouseManager();
-    virtual void showVideoRecorderManager();
 
     virtual void setViewerResolution(int w, int h);
     virtual void setFullScreen(bool enable = true);
@@ -416,6 +403,24 @@ public slots:
     virtual void setExportGnuplot(bool);
     virtual void setExportVisitor(bool);
     virtual void currentTabChanged(QWidget*);
+
+    virtual void fileNew();
+    virtual void fileOpen();
+    virtual void fileReload();
+    virtual void fileSave();
+    virtual void fileExit();
+    virtual void fileSaveAs() {
+        fileSaveAs((Node *)NULL);
+    }
+    virtual void helpIndex() { /* TODO */ }
+    virtual void helpContents() { /* TODO */ }
+    virtual void helpAbout() { /* TODO */ }
+    virtual void editRecordDirectory();
+    virtual void editGnuplotDirectory();
+    virtual void showPluginManager();
+    virtual void showMouseManager();
+    virtual void showVideoRecorderManager();
+
 
 protected slots:
     /// Allow to dynamicly change viewer. Called when click on another viewer in GUI Qt viewer list (see viewerMap).

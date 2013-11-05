@@ -66,8 +66,9 @@ typedef QButtonGroup Q3ButtonGroup;
 #endif
 
 
-AddPreset::AddPreset(  QWidget* parent , const char* name,bool , Qt::WFlags ):	DialogAddPreset(parent, name)
+AddPreset::AddPreset(  QWidget* parent , const char* name,bool , Qt::WFlags ):	Ui_DialogAddPreset()
 {
+    setupUi(this);
     this->setCaption(QString(sofa::helper::system::SetDirectory::GetFileName(name).c_str()));
     clear();
 

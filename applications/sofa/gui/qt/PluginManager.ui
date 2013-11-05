@@ -1,260 +1,247 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
-<class>PluginManager</class>
-<widget class="QDialog">
-    <property name="name">
-        <cstring>PluginManager</cstring>
-    </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>800</width>
-            <height>400</height>
-        </rect>
-    </property>
-    <property name="caption">
-        <string>Plugin Manager</string>
-    </property>
-    <property name="sizeGripEnabled">
-        <bool>false</bool>
-    </property>
-    <grid>
-        <property name="name">
-            <cstring>unnamed</cstring>
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>PluginManager</class>
+ <widget class="QDialog" name="PluginManager">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>400</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Plugin Manager</string>
+  </property>
+  <property name="sizeGripEnabled">
+   <bool>false</bool>
+  </property>
+  <layout class="QGridLayout">
+   <item row="0" column="0">
+    <layout class="QVBoxLayout">
+     <item>
+      <widget class="QSplitter" name="unnamed">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <widget class="Q3ListView" name="listPlugins">
+        <property name="minimumSize">
+         <size>
+          <width>416</width>
+          <height>0</height>
+         </size>
         </property>
-        <widget class="QLayoutWidget" row="0" column="0">
-            <property name="name">
-                <cstring>layout25</cstring>
+        <property name="midLineWidth">
+         <number>1</number>
+        </property>
+        <property name="allColumnsShowFocus">
+         <bool>true</bool>
+        </property>
+        <property name="showSortIndicator">
+         <bool>true</bool>
+        </property>
+        <property name="itemMargin">
+         <number>4</number>
+        </property>
+        <column>
+         <property name="text">
+          <string>Name</string>
+         </property>
+         <property name="clickable">
+          <bool>true</bool>
+         </property>
+         <property name="resizable">
+          <bool>true</bool>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>License</string>
+         </property>
+         <property name="clickable">
+          <bool>true</bool>
+         </property>
+         <property name="resizable">
+          <bool>true</bool>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Version</string>
+         </property>
+         <property name="clickable">
+          <bool>true</bool>
+         </property>
+         <property name="resizable">
+          <bool>true</bool>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Location</string>
+         </property>
+         <property name="clickable">
+          <bool>true</bool>
+         </property>
+         <property name="resizable">
+          <bool>true</bool>
+         </property>
+        </column>
+       </widget>
+       <widget class="QWidget" name="layout24">
+        <layout class="QHBoxLayout">
+         <item>
+          <layout class="QVBoxLayout">
+           <item>
+            <widget class="QLabel" name="description_label">
+             <property name="text">
+              <string>Description</string>
+             </property>
+             <property name="wordWrap">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="Q3TextEdit" name="description">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+             <property name="undoRedoEnabled">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="Q3ListView" name="listComponents">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <column>
+            <property name="text">
+             <string>Component list</string>
             </property>
-            <property name="minimumSize">
-                <size>
-                    <width>400</width>
-                    <height>0</height>
-                </size>
+            <property name="clickable">
+             <bool>true</bool>
             </property>
-            <vbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QSplitter" row="0" column="0">
-                    <property name="name">
-                        <cstring>unnamed</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Vertical</enum>
-                    </property>
-                    <widget class="QListView">
-                        <column>
-                            <property name="text">
-                                <string>Name</string>
-                            </property>
-                            <property name="clickable">
-                                <bool>true</bool>
-                            </property>
-                            <property name="resizable">
-                                <bool>true</bool>
-                            </property>
-                        </column>
-                        <column>
-                          <property name="text">
-                            <string>License</string>
-                          </property>
-                          <property name="clickable">
-                            <bool>true</bool>
-                          </property>
-                          <property name="resizable">
-                            <bool>true</bool>
-                          </property>
-                        </column>
-                        <column>
-                          <property name="text">
-                            <string>Version</string>
-                          </property>
-                          <property name="clickable">
-                            <bool>true</bool>
-                          </property>
-                          <property name="resizable">
-                            <bool>true</bool>
-                          </property>
-                        </column>
-                        <column>
-                            <property name="text">
-                                <string>Location</string>
-                            </property>
-                            <property name="clickable">
-                                <bool>true</bool>
-                            </property>
-                            <property name="resizable">
-                                <bool>true</bool>
-                            </property>
-                        </column>
-                        <property name="name">
-                            <cstring>listPlugins</cstring>
-                        </property>
-                        <property name="minimumSize">
-                            <size>
-                                <width>416</width>
-                                <height>0</height>
-                            </size>
-                        </property>
-                        <property name="midLineWidth">
-                            <number>1</number>
-                        </property>
-                        <property name="allColumnsShowFocus">
-                            <bool>true</bool>
-                        </property>
-                        <property name="showSortIndicator">
-                            <bool>true</bool>
-                        </property>
-                        <property name="itemMargin">
-                            <number>4</number>
-                        </property>
-                    </widget>
-                    <widget class="QLayoutWidget">
-                        <property name="name">
-                            <cstring>layout24</cstring>
-                        </property>
-                        <hbox>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                          <widget class="QLayoutWidget">
-                            <property name="name">
-                              <cstring>DescriptionLayout</cstring>
-                            </property>
-                            <vbox>
-                            <widget class="QLabel">
-                              <property name="name">
-                                <cstring>description_label</cstring>
-                              </property>
-                              <property name="text">
-                                <string>Description</string>
-                              </property>
-                            </widget>
-                            <widget class="QTextEdit">
-                                <property name="name">
-                                    <cstring>description</cstring>
-                                </property>
-                                <property name="enabled">
-                                    <bool>true</bool>
-                                </property>
-                                <property name="readOnly">
-                                    <bool>true</bool>
-                                </property>
-                                <property name="undoRedoEnabled">
-                                    <bool>false</bool>
-                                </property>
-                            </widget>
-                            </vbox>
-                          </widget>
-                            <widget class="QListView">
-                                <property name="name">
-                                    <cstring>listComponents</cstring>
-                                </property>
-                                <column>
-                                  <property name="text">
-                                    <string>Component list</string>
-                                  </property>
-                                  <property name="clickable">
-                                    <bool>true</bool>
-                                  </property>
-                                  <property name="resizable">
-                                    <bool>true</bool>
-                                  </property>  
-                                </column>
-                                <property name="enabled">
-                                    <bool>true</bool>
-                                </property>
-                            </widget>
-                        </hbox>
-                    </widget>
-                </widget>
-            </vbox>
-        </widget>
-        <widget class="QLayoutWidget" row="1" column="0">
-            <property name="name">
-                <cstring>layout21</cstring>
+            <property name="resizable">
+             <bool>true</bool>
             </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>buttonAdd</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Add...</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+A</string>
-                    </property>
-                    <property name="autoDefault">
-                        <bool>true</bool>
-                    </property>
-                    <property name="default">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>buttonRemove</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Remove</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+R</string>
-                    </property>
-                    <property name="autoDefault">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <spacer>
-                    <property name="name">
-                        <cstring>Horizontal Spacing2</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>237</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>buttonClose</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Close</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+C</string>
-                    </property>
-                    <property name="autoDefault">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-    </grid>
-</widget>
-<connections>
-    <connection>
-        <sender>buttonClose</sender>
-        <signal>clicked()</signal>
-        <receiver>PluginManager</receiver>
-        <slot>close()</slot>
-    </connection>
-</connections>
-<includes>
-    <include location="local" impldecl="in implementation">PluginManager.ui.h</include>
-</includes>
-<layoutdefaults spacing="6" margin="11"/>
-</UI>
+           </column>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0">
+    <layout class="QHBoxLayout">
+     <item>
+      <widget class="QPushButton" name="buttonAdd">
+       <property name="text">
+        <string>&amp;Add...</string>
+       </property>
+       <property name="shortcut">
+        <string>Alt+A</string>
+       </property>
+       <property name="autoDefault">
+        <bool>true</bool>
+       </property>
+       <property name="default">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="buttonRemove">
+       <property name="text">
+        <string>&amp;Remove</string>
+       </property>
+       <property name="shortcut">
+        <string>Alt+R</string>
+       </property>
+       <property name="autoDefault">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="Horizontal Spacing2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Expanding</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>237</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="buttonClose">
+       <property name="text">
+        <string>&amp;Close</string>
+       </property>
+       <property name="shortcut">
+        <string>Alt+C</string>
+       </property>
+       <property name="autoDefault">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>Q3Frame</class>
+   <extends>QFrame</extends>
+   <header>Qt3Support/Q3Frame</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Q3ListView</class>
+   <extends>Q3Frame</extends>
+   <header>q3listview.h</header>
+  </customwidget>
+  <customwidget>
+   <class>Q3TextEdit</class>
+   <extends>Q3Frame</extends>
+   <header>q3textedit.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonClose</sender>
+   <signal>clicked()</signal>
+   <receiver>PluginManager</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

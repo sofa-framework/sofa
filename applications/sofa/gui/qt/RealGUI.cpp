@@ -313,6 +313,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
     animationState(false),
     frameCounter(0)
 {
+    setupUi(this),
     parseOptions(options);
 
     createPluginManager();
@@ -358,8 +359,8 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
     statWidget = new QSofaStatWidget(TabStats);
     TabStats->layout()->add(statWidget);
 
-	graphSplitProperty = new QSplitter(Qt::Orientation::Vertical);
-	((QVBoxLayout*)TabGraph->layout())->addWidget(graphSplitProperty);
+    graphSplitProperty = new QSplitter(Qt::Vertical);
+    ((QVBoxLayout*)TabGraph->layout())->addWidget(graphSplitProperty);
 
     createSimulationGraph();
 	createPropertyWidget();

@@ -89,7 +89,7 @@ using sofa::simulation::Node;
 
 
 
-class SofaModeler : public ::Modeler
+class SofaModeler: public Q3MainWindow, public Ui_Modeler
 {
 
     Q_OBJECT

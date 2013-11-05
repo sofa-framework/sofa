@@ -49,7 +49,7 @@ namespace gui
 namespace qt
 {
 
-class GenGraphForm : public BaseGenGraphForm
+class GenGraphForm : public QDialog, public Ui_BaseGenGraphForm
 {
     Q_OBJECT
 public:

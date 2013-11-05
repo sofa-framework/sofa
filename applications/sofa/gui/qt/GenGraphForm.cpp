@@ -62,6 +62,7 @@ typedef QFileDialog Q3FileDialog;
 GenGraphForm::GenGraphForm()
     : currentTask(NULL), settingFilter(false)
 {
+    setupUi(this);
     // signals and slots connections
     connect(browseButton, SIGNAL(clicked()), this, SLOT(doBrowse()));
     connect(exportButton, SIGNAL(clicked()), this, SLOT(doExport()));
