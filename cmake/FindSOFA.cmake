@@ -436,20 +436,6 @@ foreach(index RANGE 0 ${count} 1)
 #    if(SOFA_USE_${CMAKE_SOFA_LIB_NAME})
     
         ## Use the MACRO defined above to find the library with it full path
-        FIND_LIB(${CMAKE_SOFA_LIB_NAME} "${REAL_SOFA_LIB_NAME}_1_0"
-                PATHSLIST_DEBUG
-                    ${SEARCH_LIB_PATHS}
-                    ${SOFA_DIR}/lib/Debug
-                    ${SOFA_DIR}/lib64/Debug
-                PATHSLIST_RELEASE
-                    ${SEARCH_LIB_PATHS}
-                    ${SOFA_DIR}/lib/Release
-                    ${SOFA_DIR}/lib64/Release
-                VERBOSE         ${VERBOSE_SOFA}
-                FORCE_DEBUG     true
-                FORCE_RELEASE   true
-                NO_DEFAULT_PATH # SOFA provide all extlib it need
-        )
         FIND_LIB(${CMAKE_SOFA_LIB_NAME} ${REAL_SOFA_LIB_NAME}
                 PATHSLIST_DEBUG
                     ${SEARCH_LIB_PATHS}
