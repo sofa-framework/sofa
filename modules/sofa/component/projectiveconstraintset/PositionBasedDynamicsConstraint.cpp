@@ -92,30 +92,35 @@ void PositionBasedDynamicsConstraint<Rigid3dTypes>::projectPosition(const core::
 {
     helper::WriteAccessor<DataVecCoord> res ( mparams, xData );
     helper::ReadAccessor<DataVecCoord> tpos = position ;
+	helper::WriteAccessor<DataVecDeriv> vel ( mparams, velocity );
+	helper::WriteAccessor<DataVecCoord> old_pos ( mparams, old_position );
     if (tpos.size() != res.size()) 	{ serr << "Invalid target position vector size." << sendl;		return; }
 
     Real dt =  (Real)this->getContext()->getDt();
     if(!dt) return;
 
-    velocity.resize(res.size());
+    vel.resize(res.size());
 
-    if(old_position.size() != res.size()) 	old_position.assign(res.begin(),res.end());
+	if(old_pos.size() != res.size()) {
+		old_pos.resize(res.size());
+		std::copy(res.begin(),res.end(),old_pos.begin());
+	}
 
     Vec<3,Real> a; Real phi;
 
     Real s = stiffness.getValue();
-    for( unsigned i=0; i<res.size(); i++ )
+    for( size_t i=0; i<res.size(); i++ )
     {
         res[i].getCenter() += ( tpos[i].getCenter() - res[i].getCenter()) * s;
 
         if(s==(Real)1.) res[i].getOrientation() = tpos[i].getOrientation();
         else 	res[i].getOrientation().slerp(res[i].getOrientation(),tpos[i].getOrientation(),(float)s,false);
 
-        getLinear(velocity[i]) = (res[i].getCenter() - old_position[i].getCenter())/dt;
-        ( res[i].getOrientation() * old_position[i].getOrientation().inverse() ).quatToAxis(a , phi) ;
-        getAngular(velocity[i]) = a * phi / dt;
+        getLinear(vel[i]) = (res[i].getCenter() - old_pos[i].getCenter())/dt;
+        ( res[i].getOrientation() * old_pos[i].getOrientation().inverse() ).quatToAxis(a , phi) ;
+        getAngular(vel[i]) = a * phi / dt;
 
-        old_position[i] = res[i];
+        old_pos[i] = res[i];
     }
 }
 
@@ -127,30 +132,35 @@ void PositionBasedDynamicsConstraint<Rigid3fTypes>::projectPosition(const core::
 {
     helper::WriteAccessor<DataVecCoord> res ( mparams, xData );
     helper::ReadAccessor<DataVecCoord> tpos = position ;
+	helper::WriteAccessor<DataVecDeriv> vel ( mparams, velocity );
+	helper::WriteAccessor<DataVecCoord> old_pos ( mparams, old_position );
     if (tpos.size() != res.size()) 	{ serr << "Invalid target position vector size." << sendl;		return; }
 
     Real dt =  (Real)this->getContext()->getDt();
     if(!dt) return;
 
-    velocity.resize(res.size());
+    vel.resize(res.size());
 
-    if(old_position.size() != res.size()) 	old_position.assign(res.begin(),res.end());
+	if(old_pos.size() != res.size()) {
+		old_pos.resize(res.size());
+		std::copy(res.begin(),res.end(),old_pos.begin());
+	}
 
     Vec<3,Real> a; Real phi;
 
     Real s = stiffness.getValue();
-    for( unsigned i=0; i<res.size(); i++ )
+    for( size_t i=0; i<res.size(); i++ )
     {
         res[i].getCenter() += ( tpos[i].getCenter() - res[i].getCenter()) * s;
 
         if(s==(Real)1.) res[i].getOrientation() = tpos[i].getOrientation();
         else 	res[i].getOrientation().slerp(res[i].getOrientation(),tpos[i].getOrientation(),(float)s,false);
 
-        getLinear(velocity[i]) = (res[i].getCenter() - old_position[i].getCenter())/dt;
-        ( res[i].getOrientation() * old_position[i].getOrientation().inverse() ).quatToAxis(a , phi) ;
-        getAngular(velocity[i]) = a * phi / dt;
+        getLinear(vel[i]) = (res[i].getCenter() - old_pos[i].getCenter())/dt;
+        ( res[i].getOrientation() * old_pos[i].getOrientation().inverse() ).quatToAxis(a , phi) ;
+        getAngular(vel[i]) = a * phi / dt;
 
-        old_position[i] = res[i];
+        old_pos[i] = res[i];
     }
 }
 

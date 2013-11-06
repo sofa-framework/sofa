@@ -89,8 +89,8 @@ public:
     Data< Real > stiffness;
     Data< VecCoord > position;
 
-    VecDeriv velocity;
-    VecCoord old_position;
+    Data < VecDeriv > velocity;
+    Data < VecCoord > old_position;
 
     PositionBasedDynamicsConstraint();
 
