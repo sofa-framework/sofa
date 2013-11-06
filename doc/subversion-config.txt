@@ -64,3 +64,4 @@ enable-auto-props = yes
 *.pdf = svn:mime-type=application/pdf
 *.eps = svn:mime-type=application/postscript
 Makefile = svn:mime-type=text/x-makefile;svn:eol-style=native
+*.cmake = svn:mime-type=text/plain;svn:eol-style=native
