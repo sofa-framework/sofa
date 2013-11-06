@@ -95,7 +95,7 @@ void PositionBasedDynamicsConstraint<DataTypes>::reset()
 	helper::WriteAccessor<DataVecCoord> old_pos ( old_position );
     const VecCoord& x = *this->mstate->getX();
 	old_pos.resize(x.size());
-	std::copy(x.cbegin(),x.cend(),old_pos.begin());
+	std::copy(x.begin(),x.end(),old_pos.begin());
 }
 
 
