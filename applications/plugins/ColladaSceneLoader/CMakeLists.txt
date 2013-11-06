@@ -17,8 +17,9 @@ set(README_FILES
 	ColladaSceneLoader.txt
 	)
 
+include_directories("assimp/include")
+
 if(WIN32)
-	include_directories("assimp/include")
 	if(CMAKE_CL_64)
 		link_directories("assimp/lib/x64")
 	else()
@@ -34,8 +35,6 @@ if(WIN32)
 	foreach(sharedObject ${sharedObjects})
 		file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
 	endforeach()
-else()
-	include_directories("assimp")
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
