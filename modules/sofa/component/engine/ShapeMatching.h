@@ -113,19 +113,6 @@ private:
 
     helper::vector<Mat3x3> Qxinv; // Qx = sum(X0-Xcm0)(X0-Xcm0)^T
     helper::vector<Mat3x3> T;
-
-    template<class Real, int Dim>
-    inline defaulttype::Mat<Dim, Dim, Real> covNN(const defaulttype::Vec<Dim,Real>& v1, const defaulttype::Vec<Dim,Real>& v2)
-    {
-        defaulttype::Mat<Dim, Dim, Real> res;
-        for ( unsigned int i = 0; i < Dim; ++i)
-            for ( unsigned int j = 0; j < Dim; ++j)
-            {
-                res[i][j] = v1[i] * v2[j];
-            }
-        return res;
-    }
-
 };
 
 
