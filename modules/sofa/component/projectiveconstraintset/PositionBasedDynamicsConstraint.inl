@@ -54,6 +54,8 @@ PositionBasedDynamicsConstraint<DataTypes>::PositionBasedDynamicsConstraint()
     : core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
     , stiffness(initData(&stiffness,(Real)1.0,"stiffness","Blending between current pos and target pos."))
     , position(initData(&position,"position","Target positions."))
+    , velocity(initData(&velocity,"velocity","Velocities."))
+    , old_position(initData(&old_position,"old_position","Old positions."))
 {
     // stiffness.setWidget("0to1RatioWidget");
 }
@@ -85,9 +87,15 @@ void PositionBasedDynamicsConstraint<DataTypes>::init()
 template <class DataTypes>
 void PositionBasedDynamicsConstraint<DataTypes>::reset()
 {
-    this->core::behavior::ProjectiveConstraintSet<DataTypes>::reset();
-    const VecCoord& x = *this->mstate->getX();	old_position.assign(x.begin(),x.end());
-    for( unsigned i=0; i<velocity.size(); i++ ) velocity[i]=Deriv();
+	this->core::behavior::ProjectiveConstraintSet<DataTypes>::reset();
+
+	helper::WriteAccessor<DataVecDeriv> vel ( velocity );
+	std::fill(vel.begin(),vel.end(),Deriv());
+
+	helper::WriteAccessor<DataVecCoord> old_pos ( old_position );
+    const VecCoord& x = *this->mstate->getX();
+	old_pos.resize(x.size());
+	std::copy(x.cbegin(),x.cend(),old_pos.begin());
 }
 
 
@@ -115,15 +123,18 @@ template <class DataTypes>
 void PositionBasedDynamicsConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& vData)
 {
     helper::WriteAccessor<DataVecDeriv> res ( mparams, vData );
+	helper::ReadAccessor<DataVecDeriv> vel ( mparams, velocity );
 
-    if (velocity.size() != res.size()) 	{ serr << "Invalid target position vector size." << sendl;		return; }
-    for( unsigned i=0; i<res.size(); i++ )	res[i] = velocity[i];
+    if (vel.size() != res.size()) 	{ serr << "Invalid target position vector size." << sendl;		return; }
+    std::copy(vel.begin(),vel.end(),res.begin());
 }
 
 template <class DataTypes>
 void PositionBasedDynamicsConstraint<DataTypes>::projectPosition(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecCoord& xData)
 {
     helper::WriteAccessor<DataVecCoord> res ( mparams, xData );
+	helper::WriteAccessor<DataVecDeriv> vel ( mparams, velocity );
+	helper::WriteAccessor<DataVecCoord> old_pos ( mparams, old_position );
     helper::ReadAccessor<DataVecCoord> tpos = position ;
     if (tpos.size() != res.size()) 	{ serr << "Invalid target position vector size." << sendl;		return; }
 
@@ -131,15 +142,18 @@ void PositionBasedDynamicsConstraint<DataTypes>::projectPosition(const core::Mec
     if(!dt) return;
     Real invdt=(Real)(1./dt);
 
-    velocity.resize(res.size());
+    vel.resize(res.size());
 
-    if(old_position.size() != res.size()) old_position.assign(res.begin(),res.end());
+	if(old_pos.size() != res.size()) {
+		old_pos.resize(res.size());
+		std::copy(res.begin(),res.end(),old_pos.begin());
+	}
 
-    for( unsigned i=0; i<res.size(); i++ )
+    for( size_t i=0; i<res.size(); i++ )
     {
         res[i] += ( tpos[i] - res[i]) * stiffness.getValue();
-        velocity[i] = (res[i] - old_position[i]) * invdt;
-        old_position[i] = res[i];
+        vel[i] = (res[i] - old_pos[i]) * invdt;
+        old_pos[i] = res[i];
     }
 }
 
