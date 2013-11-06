@@ -169,12 +169,12 @@ void ShapeMatching<DataTypes>::update()
                 Coord p0 = (*it<nbp)?restPositions[*it]:fixedPositions0[*it-nbp];
                 Real w = (*it<nbp)?(Real)1.0:this->fixedweight.getValue();
                 Xcm0[i] += p0*w;
-                Qxinv[i] += covNN(p0,p0)*w;
+                Qxinv[i] += dyad(p0,p0)*w;
                 W[i] += w;
                 if(*it<nbp) nbClust[*it]++;
             }
             Xcm0[i] /= W[i];
-            Qxinv[i] -= covNN(Xcm0[i],Xcm0[i])*W[i]; // sum wi.(X0-Xcm0)(X0-Xcm0)^T = sum wi.X0.X0^T - W.sum(X0).Xcm0^T
+            Qxinv[i] -= dyad(Xcm0[i],Xcm0[i])*W[i]; // sum wi.(X0-Xcm0)(X0-Xcm0)^T = sum wi.X0.X0^T - W.sum(X0).Xcm0^T
             Mat3x3 inv; inv.invert(Qxinv[i]);  Qxinv[i]=inv;
         }
         oldRestPositionSize = nbp+nbf;
@@ -199,10 +199,10 @@ void ShapeMatching<DataTypes>::update()
                 Coord p = (*it<nbp)?targetPos[*it]:fixedPositions[*it-nbp];
                 Real w = (*it<nbp)?(Real)1.0:this->fixedweight.getValue();
                 Xcm[i] += p*w;
-                T[i] += covNN(p,p0)*w;
+                T[i] += dyad(p,p0)*w;
             }
 
-            T[i] -= covNN(Xcm[i],Xcm0[i]); // sum wi.(X-Xcm)(X0-Xcm0)^T = sum wi.X.X0^T - sum(wi.X).Xcm0^T
+            T[i] -= dyad(Xcm[i],Xcm0[i]); // sum wi.(X-Xcm)(X0-Xcm0)^T = sum wi.X.X0^T - sum(wi.X).Xcm0^T
             Xcm[i] /= W[i];
             Mat3x3 R;
             if(affineRatio.getValue()!=(Real)1.0)
