@@ -88,6 +88,24 @@ enum TopologyChangeType
 };
 
 
+/// Topology change informations related to the ancestor topology element
+struct AncestorElem
+{
+    typedef defaulttype::Vec<3, double> LocalCoords;
+
+    AncestorElem(){}
+
+    AncestorElem(TopologyObjectType _type, unsigned int _index, const LocalCoords& _localCoords)
+        : type(_type)
+        , index(_index)
+        , localCoords(_localCoords)
+    {}
+    
+    TopologyObjectType type;
+    unsigned int index;
+    LocalCoords localCoords;
+};
+
 
 /** \brief Base class to indicate a topology change occurred.
 *
@@ -186,6 +204,32 @@ public:
         , nVertices(nV), pointIndexArray(indices), ancestorsList(ancestors), coefs(baryCoefs)
     { }
 
+    PointsAdded(const unsigned int nV,
+            const sofa::helper::vector< core::topology::TopologyObjectType > &elemTypes,
+            const sofa::helper::vector< unsigned int > &elemIndices,
+            const sofa::helper::vector< AncestorElem::LocalCoords > &localCoords,
+            const sofa::helper::vector< unsigned int >& indices,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
+            const sofa::helper::vector< sofa::helper::vector< double       > >& baryCoefs)
+        : core::topology::TopologyChange(core::topology::POINTSADDED)
+        , nVertices(nV)
+        , pointIndexArray(indices)
+        , ancestorsList(ancestors)
+        , coefs(baryCoefs)
+    {
+        assert(elemTypes.size() == elemIndices.size() == localCoords.size());
+
+        ancestorElems.resize(elemTypes.size());
+
+        for (unsigned int i=0; i < elemTypes.size(); i++)
+        {
+            ancestorElems[i].type           = elemTypes[i];
+            ancestorElems[i].index          = elemIndices[i];
+            ancestorElems[i].localCoords    = localCoords[i];
+        }
+    }
+           
+
     unsigned int getNbAddedVertices() const {return nVertices;}
 
 public:
@@ -193,6 +237,7 @@ public:
     sofa::helper::vector< unsigned int > pointIndexArray;
     sofa::helper::vector< sofa::helper::vector< unsigned int > > ancestorsList;
     sofa::helper::vector< sofa::helper::vector< double       > > coefs;
+    sofa::helper::vector< AncestorElem > ancestorElems;
 };
 
 
