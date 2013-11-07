@@ -189,7 +189,7 @@ void ShapeMatching<DataTypes>::update()
 #ifdef USING_OMP_PRAGMAS
         #pragma omp parallel for
 #endif
-        for (int i=0 ; i<nbc ; ++i)
+        for (unsigned int i=0 ; i<nbc ; ++i)
         {
             Xcm[i] = Coord();
             T[i].fill(0);
