@@ -1,18 +1,18 @@
 
 ************************************
-*         EmptyPlugin.txt        *
+*         SofaPython.txt        *
 ************************************
 
 
 
 AUTHOR :
- - Michael Adam
+ - Bruno Carrez
 
 
 
 
 LICENCE :
- - None
+ - LGPL
 
 
 
