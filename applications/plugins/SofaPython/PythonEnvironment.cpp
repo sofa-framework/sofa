@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "PythonEnvironment.h"
-#include "Binding.h"
+
 
 #include <sofa/simulation/common/Node.h>
 #include <sofa/helper/system/SetDirectory.h>
