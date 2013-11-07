@@ -78,6 +78,16 @@ public:
             const sofa::helper::vector< sofa::helper::vector< double       > >& coefs,
             const bool addDOF = true);
 
+    /** \brief Sends a message to warn that some points were added in this topology.
+    *
+    * \sa addPointsProcess
+    */
+    void addPointsWarning(const unsigned int nPoints,
+            const sofa::helper::vector< core::topology::TopologyObjectType >& types,
+            const sofa::helper::vector< unsigned int >& indices,
+            const sofa::helper::vector< core::topology::AncestorElem::LocalCoords >& localCoords,
+            const bool addDOF = true);
+
 
     /** \brief Extend the point container storage by nPoints.
     *
@@ -99,6 +109,16 @@ public:
                            const sofa::helper::vector< sofa::helper::vector< unsigned int> >& ancestors,
                            const sofa::helper::vector< sofa::helper::vector< double      > >& coefs,
                            const bool addDOF = true);
+
+    /** \brief Add a set of points according to their ancestors topology elements
+     *
+     * \sa addPoints
+     */
+    void addPoints( const unsigned int nPoints,
+                    const sofa::helper::vector< core::topology::TopologyObjectType >& types,
+                    const sofa::helper::vector< unsigned int >& indices,
+                    const sofa::helper::vector< core::topology::AncestorElem::LocalCoords >& localCoords,
+                    const bool addDOF = true);
 
 
     /** \brief Sends a message to warn that some points are about to be deleted.
