@@ -86,7 +86,7 @@ macro(SOFA_QT4_WRAP_UI outfiles)
 		get_filename_component(infile ${it} ABSOLUTE) # infile = /absolute/path/to/foo.ui
 		set(outHeaderFile "${CMAKE_CURRENT_BINARY_DIR}/${outfile}.h")
 		add_custom_command(OUTPUT ${outHeaderFile}
-		                   COMMAND uic ${infile} -o ${outHeaderFile}
+		                   COMMAND ${QT_UIC_EXECUTABLE} ${infile} -o ${outHeaderFile}
 		                   MAIN_DEPENDENCY ${infile})
 		set(${outfiles} ${${outfiles}} ${outHeaderFile})
 	endforeach()
