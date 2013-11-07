@@ -1,4 +1,4 @@
-# all lignes begining with '#' are comments.
+# Lines that begin with '#' are comments.
 
 # Ignore foo.txt file
 #foo.txt
@@ -14,217 +14,74 @@
 
 
 ########## GITIGNORE SOFA-DEV ##############
-# ignore vim journal files
+# vim journal files
 .*.swp
 .*.swo
 
-# Ignore all sofa user specific config files
+# Sofa user-specific files
+share/config/sofaplugins_release.ini
+share/config/sofaplugins_debug.ini
+share/config/lastUsedGUI.ini
+share/config/Modeler.ini
+share/config/Sofa.ini
 share/config/plugins.cfg
-sofa-local.cfg
-sofa-local.prf
+share/config/Ogre.log
 
-# Ignore all git diff temp files
+# git diff temporary files
 *.orig
 
-# Ignore all edition temp files
+# Backup files
 *~
 
-# Ignore all files and dirs
-bin/
-lib/
-doc/doxygen.git/
-share/screenshots/
-
-# Related to cmake
-CMakeFiles/*
-CMakeCache.txt
-sofaDefines.cfg
-
-# misc compilation byproducts
-Makefile*
-*.o
-moc_*.cpp
-*~
+# 'Compiled' Python files
 *.pyc
 
-/share/config/sofaplugins_release.ini
-/share/config/sofaplugins_debug.ini
-/share/config/lastUsedGUI.ini
-
+# Misc
+doc/doxygen.git/
+share/screenshots/
 /applications/plugins/EmptyPlugin/
 /applications-dev/
 
-# anything user-specific (as opposed to repository-specific) should go
-# to .git/info/exclude instead of .gitignore. Also, .gitignore files
-# can be placed in sub-directories to avoid polluting the root one.
+# Files related to cmake builds (when in-source)
+CMakeFiles/*
+CMakeCache.txt
 
-# the following needs to be cleaned up:
-
-applications/plugins/PluginExample/Makefile
-applications/plugins/PluginExample/OBJ/
-applications/plugins/PluginExample/moc_CustomDataUnsignedWidget.cpp
-applications/plugins/PluginExample/moc_MyDataWidgetUnsigned.cpp
-applications/plugins/QtOgreViewer/QtOgreViewer.pro.orig
-#applications/projects/GenerateRigid/Makefile
-applications/projects/GenerateRigid/OBJ/
-applications/projects/Makefile
-#applications/projects/Modeler/Makefile
-#applications/projects/Modeler/exec/Makefile
-applications/projects/Modeler/exec/OBJ/
+# Files related to qmake builds, soon to be removed
+sofaDefines.cfg
+sofa-local.cfg
+sofa-local.prf
+bin/
+lib/
+Makefile*
+moc_*.cpp
+OBJ/
+*.o
 applications/projects/Modeler/lib/DialogAddPreset.cpp
 applications/projects/Modeler/lib/DialogAddPreset.h
-#applications/projects/Modeler/lib/Makefile
 applications/projects/Modeler/lib/Modeler.cpp
 applications/projects/Modeler/lib/Modeler.h
-applications/projects/Modeler/lib/OBJ/
 applications/projects/Modeler/lib/PluginManager.cpp
 applications/projects/Modeler/lib/PluginManager.h
-applications/projects/Modeler/lib/moc_*
-applications/projects/generateDoc/Makefile
-applications/projects/generateDoc/OBJ/
-applications/projects/generateTypedefs/Makefile
-applications/projects/generateTypedefs/OBJ/
-applications/projects/meshconv/Makefile
-applications/projects/meshconv/OBJ/
-applications/projects/runSofa/Makefile
-applications/projects/runSofa/OBJ/
-applications/projects/sofaBatch/OBJ/
-applications/projects/sofaConfiguration/Makefile
-applications/projects/sofaConfiguration/exec/Makefile
-applications/projects/sofaConfiguration/exec/OBJ/
-applications/projects/sofaConfiguration/exec/moc_SofaConfiguration.cpp
-applications/projects/sofaConfiguration/execLocal/Makefile
-applications/projects/sofaConfiguration/execLocal/OBJ/
-applications/projects/sofaConfiguration/execLocal/moc_SofaConfiguration.cpp
-applications/projects/sofaInfo/OBJ/
-applications/projects/sofaInitTimer/Makefile
-applications/projects/sofaInitTimer/OBJ/
-applications/projects/sofaVerification/Makefile
-applications/projects/sofaVerification/OBJ/
-applications/sofa/Makefile
-applications/sofa/gui/Makefile
-applications/sofa/gui/glut/Makefile
-applications/sofa/gui/glut/OBJ/
-applications/sofa/gui/libgui/Makefile
-applications/sofa/gui/libgui/OBJ/
-applications/sofa/gui/libguimain/Makefile
-applications/sofa/gui/libguimain/OBJ/
-applications/sofa/gui/Makefile.libgui
-applications/sofa/gui/Makefile.libguimain
-applications/sofa/gui/OBJ/
-applications/sofa/gui/qt/UI/
-applications/sofa/gui/qt/moc_*
 applications/sofa/gui/qt/BaseGenGraphForm.cpp
 applications/sofa/gui/qt/BaseGenGraphForm.h
 applications/sofa/gui/qt/DialogAddObject.cpp
 applications/sofa/gui/qt/DialogAddObject.h
 applications/sofa/gui/qt/GUI.cpp
 applications/sofa/gui/qt/GUI.h
-applications/sofa/gui/qt/Makefile
 applications/sofa/gui/qt/MouseManager.cpp
 applications/sofa/gui/qt/MouseManager.h
-applications/sofa/gui/qt/OBJ/
 applications/sofa/gui/qt/PluginManager.cpp
 applications/sofa/gui/qt/PluginManager.h
-applications/sofa/gui/qt/SofaPluginManager.cpp.orig
 applications/sofa/gui/qt/VideoRecorderManager.cpp
 applications/sofa/gui/qt/VideoRecorderManager.h
 applications/sofa/gui/qt/VisitorGUI.cpp
 applications/sofa/gui/qt/VisitorGUI.h
-applications/sofa/gui/qt/moc_*
-applications/sofa/gui/qt/viewer/VisualModelPolicy.h.orig
-applications/plugins/QtOgreViewer/OBJ/
-applications/plugins/QtOgreViewer/moc_QOgreLightWidget.cpp
-applications/plugins/QtOgreViewer/moc_QtOgreViewer.cpp
-examples/Tutorials/Mappings/temp3.scn.view
-examples/SandBox/preconditioners/bench_precond2/LDL_*
-extlibs/eigen-3.0.1/Makefile.eigen
-extlibs/eigen-3.0.3/Makefile.eigen
-extlibs/libQGLViewer-2.3.3/QGLViewer/.moc/
-extlibs/libQGLViewer-2.3.3/QGLViewer/Makefile
-extlibs/libQGLViewer-2.3.3/QGLViewer/OBJ/
-extlibs/libQGLViewer-2.3.3/QGLViewer/ui_ImageInterface.Qt4.h
-extlibs/libQGLViewer-2.3.3/QGLViewer/ui_VRenderInterface.Qt4.h
-extlibs/libQGLViewer-2.3.3/QGLViewer/UI/
-extlibs/libQGLViewer-2.3.3/QGLViewer/moc_*
-extlibs/miniFlowVR/Makefile
-extlibs/miniFlowVR/OBJ/
-extlibs/newmat/Makefile
-extlibs/newmat/OBJ/
-extlibs/qwt-5.2.0/src/Makefile
-extlibs/qwt-5.2.0/src/OBJ/
-extlibs/qwt-5.2.0/src/moc/
-extlibs/qwt-5.2.0/src/moc_*
+extlibs/libQGLViewer-2.4.0/QGLViewer/ui_ImageInterface.h
+extlibs/libQGLViewer-2.4.0/QGLViewer/ui_VRenderInterface.h
 extlibs/qwt-6.0.1/src/obj/
-extlibs/qwt-6.0.1/src/moc_*
-extlibs/tinyxml/Makefile
-extlibs/tinyxml/OBJ/
-framework/Makefile
-framework/sofa/Makefile
-framework/sofa/core/Makefile
-framework/sofa/core/OBJ/
-framework/sofa/defaulttype/Makefile
-framework/sofa/defaulttype/OBJ/
-framework/sofa/helper/Makefile
-framework/sofa/helper/OBJ/
-modules/Makefile
-modules/sofa/Makefile
-modules/sofa/component/animationloop/OBJ/
-modules/sofa/component/Makefile
-modules/sofa/component/Makefile.libbase
-modules/sofa/component/Makefile.libcomponent
-modules/sofa/component/OBJ/
-modules/sofa/component/behaviormodel/Makefile
-modules/sofa/component/behaviormodel/OBJ/
-modules/sofa/component/collision/Makefile
-modules/sofa/component/collision/OBJ/
-modules/sofa/component/configurationsetting/Makefile
-modules/sofa/component/configurationsetting/OBJ/
-modules/sofa/component/constraintset/Makefile
-modules/sofa/component/constraintset/OBJ/
-modules/sofa/component/contextobject/Makefile
-modules/sofa/component/contextobject/OBJ/
-modules/sofa/component/controller/Makefile
-modules/sofa/component/controller/OBJ/
-modules/sofa/component/engine/Makefile
-modules/sofa/component/engine/OBJ/
-modules/sofa/component/fem/Makefile
-modules/sofa/component/fem/OBJ/
-modules/sofa/component/forcefield/Makefile
-modules/sofa/component/forcefield/OBJ/
-modules/sofa/component/interactionforcefield/Makefile
-modules/sofa/component/interactionforcefield/OBJ/
-modules/sofa/component/linearsolver/Makefile
-modules/sofa/component/linearsolver/OBJ/
-modules/sofa/component/loader/Makefile
-modules/sofa/component/loader/OBJ/
-modules/sofa/component/mapping/Makefile
-modules/sofa/component/mapping/OBJ/
-modules/sofa/component/mass/Makefile
-modules/sofa/component/mass/OBJ/
-modules/sofa/component/mastersolver/Makefile
-modules/sofa/component/mastersolver/OBJ/
-modules/sofa/component/misc/Makefile
-modules/sofa/component/misc/OBJ/
-modules/sofa/component/odesolver/Makefile
-modules/sofa/component/odesolver/OBJ/
-modules/sofa/component/projectiveconstraintset/Makefile
-modules/sofa/component/projectiveconstraintset/OBJ/
-modules/sofa/component/visualmodel/Makefile
-modules/sofa/component/visualmodel/OBJ/
-modules/sofa/component/Makefile.*
-modules/sofa/filemanager/Makefile
-modules/sofa/gpu/Makefile
-modules/sofa/simulation/Makefile
-modules/sofa/simulation/bgl/Makefile
-modules/sofa/simulation/bgl/OBJ/
-modules/sofa/simulation/common/Makefile
-modules/sofa/simulation/common/OBJ/
-modules/sofa/simulation/tree/Makefile
-modules/sofa/simulation/tree/OBJ/
-share/config/Modeler.ini
-share/config/Sofa.ini
-share/config/Ogre.log
-share/config/plugins.cfg
 Sofa.pro.user
 
+
+# anything user-specific (as opposed to repository-specific) should go
+# to .git/info/exclude instead of .gitignore. Also, .gitignore files
+# can be placed in sub-directories to avoid polluting the root one.
