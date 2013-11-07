@@ -307,7 +307,7 @@ void BaseDeformationMappingT<JacobianBlockType>::apply(const core::MechanicalPar
 #ifdef USING_OMP_PRAGMAS
         #pragma omp parallel for
 #endif
-    for(int i=0; i<jacobian.size(); i++)
+    for(unsigned int i=0; i<jacobian.size(); i++)
     {
         out[i]=OutCoord();
         for(size_t j=0; j<jacobian[i].size(); j++)
@@ -339,7 +339,7 @@ void BaseDeformationMappingT<JacobianBlockType>::applyJ(const core::MechanicalPa
 #ifdef USING_OMP_PRAGMAS
         #pragma omp parallel for
 #endif
-            for(int i=0; i<jacobian.size(); i++)
+            for(unsigned int i=0; i<jacobian.size(); i++)
             {
                 out[i]=OutDeriv();
                 for(size_t j=0; j<jacobian[i].size(); j++)
@@ -390,7 +390,7 @@ void BaseDeformationMappingT<JacobianBlockType>::applyJT(const core::MechanicalP
 #ifdef USING_OMP_PRAGMAS
 			#pragma omp parallel for
 #endif
-            for(int i=0; i<this->f_index_parentToChild.size(); i++)
+            for(unsigned int i=0; i<this->f_index_parentToChild.size(); i++)
             {
                 for(size_t j=0; j<this->f_index_parentToChild[i].size(); j+=2)
                 {
@@ -443,7 +443,7 @@ void BaseDeformationMappingT<JacobianBlockType>::applyDJT(const core::Mechanical
 #ifdef USING_OMP_PRAGMAS
 		#pragma omp parallel for
 #endif
-            for(int i=0; i<this->f_index_parentToChild.size(); i++)
+            for(unsigned int i=0; i<this->f_index_parentToChild.size(); i++)
             {
                 for(size_t j=0; j<this->f_index_parentToChild[i].size(); j+=2)
                 {
