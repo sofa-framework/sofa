@@ -94,11 +94,15 @@ extern "C" PyObject * PythonScriptController_initGraph(PyObject * /*self*/, PyOb
 
 extern "C" PyObject * PythonScriptController_onBeginAnimationStep(PyObject * /*self*/, PyObject * args)
 {
-    int dt;
+    double dt;
     if (!PyArg_ParseTuple(args, "d",&dt))
     {
         PyErr_BadArgument();
         Py_RETURN_NONE;
+    }
+    else
+    {
+      dt = 1;
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
@@ -111,7 +115,7 @@ extern "C" PyObject * PythonScriptController_onBeginAnimationStep(PyObject * /*s
 
 extern "C" PyObject * PythonScriptController_onEndAnimationStep(PyObject * /*self*/, PyObject * args)
 {
-    int dt;
+    double dt;
     if (!PyArg_ParseTuple(args, "d",&dt))
     {
         PyErr_BadArgument();
