@@ -27,7 +27,7 @@
 
 
 //#include <sofa/simulation/tree/GNode.h>
-
+#include "Binding.h"
 #if defined(_MSC_VER)
 // undefine _DEBUG since we want to always link to the release version of
 // python and pyconfig.h automatically links debug version if _DEBUG is
