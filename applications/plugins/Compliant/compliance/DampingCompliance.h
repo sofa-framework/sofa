@@ -60,7 +60,6 @@ public:
 		return &matrix;
 	}
 
-	virtual SReal getDampingRatio() { return 0; }
 
 	/// this does nothing as we are a compliance
 	virtual void addForce(const core::MechanicalParams *, DataVecDeriv &, const DataVecCoord &, const DataVecDeriv &)  { }

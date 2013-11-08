@@ -64,6 +64,7 @@
 #include <plugins/Compliant/numericalsolver/LDLTSolver.h>
 #include <plugins/Compliant/compliance/UniformCompliance.h>
 #include <plugins/Compliant/misc/CompliantAttachButtonSetting.h>
+#include <plugins/Compliant/misc/ConstraintValue.h>
 using sofa::component::configurationsetting::CompliantAttachButtonSetting;
 
 #include <sofa/simulation/common/Simulation.h>
@@ -144,7 +145,13 @@ simulation::Node::SPtr createCompliantString(simulation::Node::SPtr parent, Vec3
     extension_node->addObject(compliance);
     compliance->setName(oss.str()+"_compliance");
     compliance->compliance.setValue(complianceValue);
-    compliance->dampingRatio.setValue(dampingRatio);
+
+    if( dampingRatio )
+    {
+        component::odesolver::ConstraintValue::SPtr constraintValue = New<component::odesolver::ConstraintValue>();
+        constraintValue->dampingRatio.setValue(dampingRatio);
+        extension_node->addObject(constraintValue);
+    }
 
 
     //--------
@@ -269,7 +276,13 @@ simulation::Node::SPtr createCompliantScene()
     extension_node->addObject(compliance);
     compliance->compliance.setName("connectionCompliance");
     compliance->compliance.setValue(complianceValue);
-    compliance->dampingRatio.setValue(dampingRatio);
+
+    if( dampingRatio )
+    {
+        component::odesolver::ConstraintValue::SPtr constraintValue = New<component::odesolver::ConstraintValue>();
+        constraintValue->dampingRatio.setValue(dampingRatio);
+        extension_node->addObject(constraintValue);
+    }
 
     return root;
 }

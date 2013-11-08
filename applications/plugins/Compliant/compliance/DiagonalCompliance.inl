@@ -16,11 +16,6 @@ DiagonalCompliance<DataTypes>::DiagonalCompliance( core::behavior::MechanicalSta
     , diagonal( initData(&diagonal, 
                          "compliance", 
                          "Compliance value diagonally applied to all the DOF."))
-      
-    , dampingRatio( initData(&dampingRatio, 
-                             Real(0.0), 
-                             "dampingRatio", 
-                             "weight of the velocity in the constraint violation"))
 {
 	this->isCompliance.setValue(true);
 }
@@ -85,7 +80,7 @@ void DiagonalCompliance<DataTypes>::addForce(const core::MechanicalParams *, Dat
 
     for(unsigned i=0; i<f.size(); i++)
     {
-        f[i] += ( x[i] + v[i] * dampingRatio.getValue() ).linearDivision( -diagonal.getValue()[i] );
+        f[i] += x[i].linearDivision( -diagonal.getValue()[i] );
     }
 
 }

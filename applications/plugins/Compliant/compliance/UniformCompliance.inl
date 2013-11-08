@@ -14,7 +14,6 @@ template<class DataTypes>
 UniformCompliance<DataTypes>::UniformCompliance( core::behavior::MechanicalState<DataTypes> *mm )
     : Inherit(mm)
     , compliance( initData(&compliance, (Real)0, "compliance", "Compliance value uniformly applied to all the DOF."))
-    , dampingRatio( initData(&dampingRatio, (Real)0.0, "dampingRatio", "weight of the velocity in the constraint violation"))
 {
     this->isCompliance.setValue(true);
 }
@@ -83,7 +82,7 @@ void UniformCompliance<DataTypes>::addForce(const core::MechanicalParams *, Data
 
 //    cerr<<"UniformCompliance<DataTypes>::addForce, f before = " << f << endl;
     for(unsigned i=0; i<f.size(); i++)
-        f[i] += ( x[i] + v[i] * dampingRatio.getValue() ) * stiffness;
+        f[i] += x[i] * stiffness;
 //    cerr<<"UniformCompliance<DataTypes>::addForce, f after = " << f << endl;
 
 }

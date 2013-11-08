@@ -37,10 +37,6 @@ public:
     enum { N=DataTypes::deriv_total_size };
 
     Data< VecDeriv > diagonal; /// diagonal values
-    Data< Real > dampingRatio;  ///< Same damping ratio applied to all the DOFs
-
-
-    virtual SReal getDampingRatio() { return dampingRatio.getValue(); }
 
 
     virtual void init();
