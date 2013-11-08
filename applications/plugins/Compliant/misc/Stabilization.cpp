@@ -37,6 +37,7 @@ void Stabilization::correction(SReal* dst, unsigned n) const {
 
 void Stabilization::dynamics(SReal* dst, unsigned n) const {
 	assert( mstate );
+
 	mstate->copyToBuffer(dst, core::VecCoordId::position(), n);
 	map(dst, n) = -map(dst, n) / this->getContext()->getDt();
 	

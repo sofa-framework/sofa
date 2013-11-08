@@ -199,7 +199,6 @@ void CompliantAttachPerformer<DataTypes>::start()
     typedef forcefield::UniformCompliance<DataTypes1> UniformCompliance1;
     typename UniformCompliance1::SPtr compliance = New<UniformCompliance1>();
     interactionNode->addObject(compliance);
-    compliance->dampingRatio.setValue(0.0);
     compliance->setName("pickCompliance");
 
     interactionNode->execute<simulation::InitVisitor>(sofa::core::ExecParams::defaultInstance());

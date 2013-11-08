@@ -173,7 +173,7 @@ public:
     virtual bool useMask() const { return false; }
 
 
-    /** @name Experimental API used in the Compliant solver to perform global matrix assembly (François Faure, 2012)
+    /** @name API used in the Compliant solver to perform global matrix assembly
      * Each ForceField may be processed either as a traditional force function, or a as a compliance (provided that its stiffness matrix is invertible).
      * If isCompliance==false then the ForceField is handled as a traditional force function.
      * In this case, the stiffness matrix is used to set up the implicit equation matrix, while addForce is used to set up the right-hand term as usual.
@@ -186,9 +186,6 @@ public:
 
     /// Return a pointer to the compliance matrix
     virtual const sofa::defaulttype::BaseMatrix* getComplianceMatrix(const MechanicalParams*) { return NULL; }
-
-    /// Uniform damping ratio applied to all the constrained values. The damping coefficient is the product of the stiffness with this ratio.
-    virtual SReal getDampingRatio() { return 0; }
 
     /// @}
 

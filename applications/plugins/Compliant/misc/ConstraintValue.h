@@ -26,6 +26,8 @@ class SOFA_Compliant_API ConstraintValue : public core::objectmodel::BaseObject 
 	SOFA_CLASS(ConstraintValue, core::objectmodel::BaseObject);
 	
 	mstate_type::SPtr mstate;
+
+    ConstraintValue();
 	
 	virtual void init();
 	
@@ -34,6 +36,9 @@ class SOFA_Compliant_API ConstraintValue : public core::objectmodel::BaseObject 
 	
 	// value for dynamics
 	virtual void dynamics(SReal* dst, unsigned n) const;	
+
+
+    Data< SReal > dampingRatio;  ///< Same damping ratio applied to all the constraints
 	
 };
 

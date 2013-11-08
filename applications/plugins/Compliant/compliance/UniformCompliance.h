@@ -34,13 +34,9 @@ public:
 //    typedef defaulttype::Mat<N,N,Real> Block;
 
     Data< Real > compliance;    ///< Same compliance applied to all the DOFs
-    Data< Real > dampingRatio;  ///< Same damping ratio applied to all the DOFs
 
 //    /// Set a uniform, diagonal compliance. c must be a positive real. If this is a stiffness (flag isCompliance set to false) then c must be non-zero.
 //    void setCompliance( Real c );
-
-    virtual SReal getDampingRatio() { return dampingRatio.getValue(); }
-
 
     virtual void init();
 

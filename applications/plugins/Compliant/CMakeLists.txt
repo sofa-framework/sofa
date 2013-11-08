@@ -6,9 +6,11 @@ set(HEADER_FILES
 
     misc/CompliantAttachButtonSetting.h
     misc/RigidMass.h
-    misc/Stabilization.h
-		misc/ConstraintValue.h
     misc/CompliantSolverMerger.h
+
+    misc/Stabilization.h
+    misc/ConstraintValue.h
+    misc/Restitution.h
 
     mapping/RigidJointMapping.h
     mapping/AssembledRigidRigidMapping.h
@@ -60,10 +62,12 @@ set(SOURCE_FILES
 	initCompliant.cpp
 
     misc/CompliantAttachButtonSetting.cpp
-		misc/ConstraintValue.cpp
-    misc/Stabilization.cpp
-		misc/CompliantSolverMerger.cpp
+    misc/CompliantSolverMerger.cpp
     misc/RigidMass.cpp
+
+    misc/ConstraintValue.cpp
+    misc/Stabilization.cpp
+    misc/Restitution.cpp
 
     compliance/UniformCompliance.cpp
     compliance/DiagonalCompliance.cpp
