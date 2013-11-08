@@ -13,7 +13,8 @@ class SOFA_Compliant_API Restitution : public ConstraintValue {
 
     SOFA_CLASS(Restitution, ConstraintValue);
 
-    Restitution();
+    Restitution() {}
+    Restitution( mstate_type* mstate );
 
     // value for dynamics
     virtual void dynamics(SReal* dst, unsigned n) const;
