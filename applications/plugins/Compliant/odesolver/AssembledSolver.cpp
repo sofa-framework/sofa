@@ -7,7 +7,7 @@
 #include <sofa/simulation/common/VectorOperations.h>
 
 #include "assembly/AssemblyVisitor.h"
-#include "misc/Stabilization.h"
+#include "misc/ConstraintValue.h"
 
 #include "utils/minres.h"
 #include "utils/scoped.h"
@@ -176,12 +176,12 @@ void AssembledSolver::rhs_dynamics(vec& res, const system_type& sys, const vec& 
 		unsigned dim = dofs->getMatrixSize();
 
 		// fetch constraint value if any
-		ConstraintValue::SPtr value = 
-			dofs->getContext()->get<ConstraintValue>( core::objectmodel::BaseContext::Local );
+        BaseConstraintValue::SPtr value =
+            dofs->getContext()->get<BaseConstraintValue>( core::objectmodel::BaseContext::Local );
 		
 		// fallback TODO optimize ?
 		if(!value ) {
-			value = new ConstraintValue;
+            value = new ConstraintValue( dofs );
 			dofs->getContext()->addObject( value );
 			value->init();
 		}
@@ -196,13 +196,12 @@ void AssembledSolver::rhs_dynamics(vec& res, const system_type& sys, const vec& 
 
 		if(alpha.getValue() != 1 ) res.tail( sys.n ) /= alpha.getValue();
 		
-		if( beta.getValue() != 1 ) {
+        if( beta.getValue() != 1 ) {
             // TODO dofs->copyToBuffer(v_compliant, core::VecDerivId::vel(), dim); rather than sys.J * v, v_compliant is already mapped
             // TODO use v_compliant to implement constraint damping
 			res.tail( sys.n ).noalias() = res.tail( sys.n ) - (1 - beta.getValue()) * (sys.J * v);
 			res.tail( sys.n ) /= beta.getValue();
-		}
-		
+        }
 	}
 	
 }
@@ -222,12 +221,12 @@ void AssembledSolver::rhs_correction(vec& res, const system_type& sys) const {
 		unsigned dim = dofs->getMatrixSize();
 	
 		// fetch constraint value if any
-		ConstraintValue::SPtr value = 
-			dofs->getContext()->get<ConstraintValue>( core::objectmodel::BaseContext::Local );
+        BaseConstraintValue::SPtr value =
+            dofs->getContext()->get<BaseConstraintValue>( core::objectmodel::BaseContext::Local );
 	
 		// fallback TODO optimize ?
 		if(!value ) {
-			value = new ConstraintValue;
+            value = new ConstraintValue( dofs );
 			dofs->getContext()->addObject( value );
 			value->init();
 		}

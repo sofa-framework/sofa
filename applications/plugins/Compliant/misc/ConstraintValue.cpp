@@ -12,14 +12,10 @@ SOFA_DECL_CLASS(ConstraintValue);
 int ConstaintValueClass = core::RegisterObject("Constraint value abstraction").add< ConstraintValue >();
 
 
-ConstraintValue::ConstraintValue()
-    : dampingRatio( initData(&dampingRatio, SReal(0.0), "dampingRatio", "Weight of the velocity in the constraint violation"))
+ConstraintValue::ConstraintValue( mstate_type* mstate )
+    : BaseConstraintValue( mstate )
+    , dampingRatio( initData(&dampingRatio, SReal(0.0), "dampingRatio", "Weight of the velocity in the constraint violation"))
 {
-}
-
-void ConstraintValue::init() {
-	mstate = this->getContext()->get<mstate_type>(core::objectmodel::BaseContext::Local);
-	assert( mstate );
 }
 
 void ConstraintValue::correction(SReal* dst, unsigned n) const {
@@ -37,6 +33,8 @@ void ConstraintValue::dynamics(SReal* dst, unsigned n) const {
 	mstate->copyToBuffer(dst, core::VecCoordId::position(), n);
 	
 	map(dst, n) = -map(dst, n) / this->getContext()->getDt();
+
+    // TODO damping
 	
 }
 

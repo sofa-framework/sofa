@@ -12,8 +12,9 @@ SOFA_DECL_CLASS(Stabilization);
 int StabilizationClass = core::RegisterObject("Kinematic constraint stabilization").add< Stabilization >();
 
 
-Stabilization::Stabilization()
-	: mask(initData(&mask, "mask", "dofs to be stabilized")) {
+Stabilization::Stabilization( mstate_type* mstate )
+    : BaseConstraintValue( mstate )
+    , mask(initData(&mask, "mask", "dofs to be stabilized")) {
 	
 }
 

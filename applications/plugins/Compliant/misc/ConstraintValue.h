@@ -1,7 +1,7 @@
 #ifndef CONSTRAINTVALUE_H
 #define CONSTRAINTVALUE_H
 
-#include <sofa/core/objectmodel/BaseObject.h>
+#include "BaseConstraintValue.h"
 #include "../initCompliant.h"
 
 namespace sofa {
@@ -10,27 +10,18 @@ namespace odesolver {
 
 /**
 
-   ConstraintValue is in charge of producing right-hand side term for
-   constraints (the \phi vector in the doc), depending on cases:
-   elasticity, hard-stabilized constraints, restitution constraints.
-
-   It exposes values to be mixed by the ODE solver based on
-   integration scheme.
+   Default ConstraintValue for damped elasticity
 
 */
 
-class SOFA_Compliant_API ConstraintValue : public core::objectmodel::BaseObject {
-	typedef core::behavior::BaseMechanicalState mstate_type;
+class SOFA_Compliant_API ConstraintValue : public BaseConstraintValue {
   public:
 
-	SOFA_CLASS(ConstraintValue, core::objectmodel::BaseObject);
-	
-	mstate_type::SPtr mstate;
+    SOFA_CLASS(ConstraintValue, BaseConstraintValue);
 
-    ConstraintValue();
-	
-	virtual void init();
-	
+    ConstraintValue() {}
+    ConstraintValue( mstate_type* mstate );
+
 	// value for stabilization
 	virtual void correction(SReal* dst, unsigned n) const;
 	

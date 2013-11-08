@@ -8,6 +8,7 @@ set(HEADER_FILES
     misc/RigidMass.h
     misc/CompliantSolverMerger.h
 
+    misc/BaseConstraintValue.h
     misc/Stabilization.h
     misc/ConstraintValue.h
     misc/Restitution.h

@@ -148,7 +148,7 @@ simulation::Node::SPtr createCompliantString(simulation::Node::SPtr parent, Vec3
 
     if( dampingRatio )
     {
-        component::odesolver::ConstraintValue::SPtr constraintValue = New<component::odesolver::ConstraintValue>();
+        component::odesolver::ConstraintValue::SPtr constraintValue = New<component::odesolver::ConstraintValue>( extensions.get() );
         constraintValue->dampingRatio.setValue(dampingRatio);
         extension_node->addObject(constraintValue);
     }
@@ -279,7 +279,7 @@ simulation::Node::SPtr createCompliantScene()
 
     if( dampingRatio )
     {
-        component::odesolver::ConstraintValue::SPtr constraintValue = New<component::odesolver::ConstraintValue>();
+        component::odesolver::ConstraintValue::SPtr constraintValue = New<component::odesolver::ConstraintValue>( extensions.get() );
         constraintValue->dampingRatio.setValue(dampingRatio);
         extension_node->addObject(constraintValue);
     }
