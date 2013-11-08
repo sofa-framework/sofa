@@ -371,7 +371,7 @@ sofa::component::collision::OBBModel::SPtr makeOBBModel(const std::vector<Vector
     obb->addObject(obbCollisionModel);
 
     //editting the OBBModel
-    typename OBBModel::Real & def_ext = *(obbCollisionModel->default_ext.beginEdit());
+    OBBModel::Real & def_ext = *(obbCollisionModel->default_ext.beginEdit());
     def_ext = default_extent;
 
     obbCollisionModel->default_ext.endEdit();
