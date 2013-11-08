@@ -283,7 +283,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
 
         // propagate small displacement
-        WriteInVecDeriv pin = inDofs->writePositions();
+        WriteInVecCoord pin (inDofs->writePositions());
         copyToData( pin, xp1 );
 //        cout<<"new parent positions xp1 = " << xp1 << endl;
         mapping->apply ( &mparams, core::VecCoordId::position(), core::VecCoordId::position() );
