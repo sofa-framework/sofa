@@ -348,6 +348,7 @@ public:
         for(unsigned int i=0;i<sizemax;i++)test[i]=0;
         //while(listPosition.size())
 
+
         while(kk>0)
         {
             /*

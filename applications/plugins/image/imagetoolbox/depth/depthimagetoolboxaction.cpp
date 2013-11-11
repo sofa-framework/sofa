@@ -159,7 +159,7 @@ void DepthImageToolBoxAction::createNewRow()
 
     sofa::component::engine::DepthImageToolBox *l = DITB();
     
-    DepthRowImageToolBoxAction *row = new DepthRowImageToolBoxAction();
+    DepthRowImageToolBoxAction *row = new DepthRowImageToolBoxAction(listRows.size());
     row->setParameters(l->labelsOfGrid);
 
     row->toTableWidgetRow(listLayers);

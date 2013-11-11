@@ -41,7 +41,7 @@ class SOFA_IMAGE_API DepthRowImageToolBoxAction:public QObject
     static int numindex;
 
 public:
-    DepthRowImageToolBoxAction():QObject(),index(0)
+    DepthRowImageToolBoxAction(int _index):QObject(),index(_index)
     {
         gridchoice1 = new QComboBox();
         offset1 = new QLineEdit();
@@ -59,7 +59,7 @@ public:
 
         basechoice = new QComboBox();
 
-        name = new QTableWidgetItem(QString("layer") + QString::number(numindex));
+        name = new QTableWidgetItem(QString("layer") + QString::number(index));
 
         connectChange();
     }

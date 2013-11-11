@@ -98,7 +98,7 @@ public:
         }
         disconnect(listSection,SIGNAL(currentIndexChanged(int)),this,SLOT(comboBoxchangeSection(int)));
 
-        // lister les sections disponibles
+        // list the available slides
         listSection->clear();
 
         mapSection[currentSection];
@@ -127,7 +127,7 @@ public:
             }
         }
         
-        // lister les point de la section courante
+        // list points of the current section
         VecCoord &vector = mapSection->operator [](currentSection);
         
         while(listPoints->rowCount()!=0)
