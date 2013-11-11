@@ -10,7 +10,7 @@
 #include <sofa/helper/vector.h>
 
 
-
+#include <string>
 
 struct MeshDataImageToolBox
 {
@@ -36,6 +36,8 @@ public:
         VecIndex3 triangles;
         VecIndex4 tetras;
         VecIndex8 hexas;
+
+        std::string name;
 
         void clear()
         {

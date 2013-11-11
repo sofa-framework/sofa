@@ -22,9 +22,8 @@ HEADERS += \
     imagetoolbox/labelgrid/labelgridimagetoolbox.h \
     imagetoolbox/depth/depthimagetoolboxaction.h \
     imagetoolbox/depth/depthimagetoolbox.h \
-    imagetoolbox/meshgeneration/meshgenerationimagetoolboxaction.h \
-    imagetoolbox/meshgeneration/meshgenerationimagetoolbox.h \
     imagetoolbox/depth/meshData.h \
+    imagetoolbox/depth/catchallvector.h \
     imagetoolbox/zonegenerator/zonegeneratorimagetoolbox.h \
     imagetoolbox/zonegenerator/zonegeneratorimagetoolboxaction.h
 
@@ -46,8 +45,7 @@ SOURCES += \
     imagetoolbox/labelgrid/labelgridimagetoolbox.cpp \
     imagetoolbox/depth/depthimagetoolboxaction.cpp \
     imagetoolbox/depth/depthimagetoolbox.cpp \
-    imagetoolbox/meshgeneration/meshgenerationimagetoolboxaction.cpp \
-    imagetoolbox/meshgeneration/meshgenerationimagetoolbox.cpp \
+    imagetoolbox/depth/catchallvector.cpp \
     imagetoolbox/zonegenerator/zonegeneratorimagetoolbox.cpp \
     imagetoolbox/zonegenerator/zonegeneratorimagetoolboxaction.cpp
 

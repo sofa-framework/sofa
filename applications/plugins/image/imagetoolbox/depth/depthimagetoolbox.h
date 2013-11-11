@@ -82,6 +82,7 @@ public:
     
     DepthImageToolBox():LabelImageToolBox()
         , d_filename(initData(&d_filename,"filename",""))
+        , d_scnfilename(initData(&d_scnfilename,"scnfilename",""))
         , d_transform(initData(&d_transform,TransformType(),"transform","Transform"))
         , d_tagFilter(initData(&d_tagFilter,"tagfilter",""))
         , d_image(initData(&d_image,ImageD(),"image",""))
@@ -401,6 +402,7 @@ public:
         //for(unsigned int i=0;i<reso.x()+1;i++)
         //for(unsigned int j=0;j<reso.y()+1;j++)
 
+
         for(unsigned int k=0;k<baseQuad.size();k++)
         {
             Quad &quad = baseQuad[k];
@@ -488,7 +490,7 @@ public:
 std::cout << "quit "<<std::endl;
 
         //create extern mesh
-        MeshDataImageToolBox::VecIndex3 outM = layer.triangles;
+        MeshDataImageToolBox::VecIndex3 &outM = layer.triangles;
 
         for(unsigned int i=0;i<layer.grid1.size();i++)
         {
@@ -500,8 +502,8 @@ std::cout << "quit "<<std::endl;
             outM.push_back(v1);
             outM.push_back(v2);
 
-            std::cout << "tri "<<v1 << std::endl;
-            std::cout << "tri "<<v2 << std::endl;
+//            std::cout << "tri "<<v1 << std::endl;
+//            std::cout << "tri "<<v2 << std::endl;
         }
 
         for(unsigned int i=0;i<layer.grid2.size();i++)
@@ -514,8 +516,8 @@ std::cout << "quit "<<std::endl;
             outM.push_back(v1);
             outM.push_back(v2);
 
-            std::cout << "tri "<<v1 << std::endl;
-            std::cout << "tri "<<v2 << std::endl;
+//            std::cout << "tri "<<v1 << std::endl;
+//            std::cout << "tri "<<v2 << std::endl;
         }
 
         for(unsigned int j=0;j<reso.y();j++)
@@ -544,10 +546,10 @@ std::cout << "quit "<<std::endl;
                 outM.push_back(v4);
                 p1++;p2++;p3++;p4++;
 
-                std::cout << "tri "<<v1 << std::endl;
-                std::cout << "tri "<<v2 << std::endl;
-                std::cout << "tri "<<v3 << std::endl;
-                std::cout << "tri "<<v4 << std::endl;
+//                std::cout << "tri "<<v1 << std::endl;
+//                std::cout << "tri "<<v2 << std::endl;
+//                std::cout << "tri "<<v3 << std::endl;
+//                std::cout << "tri "<<v4 << std::endl;
             }
         }
 
@@ -583,8 +585,10 @@ std::cout << "quit "<<std::endl;
             }
         }
 
+        std::cout << "outM.size() "<<outM.size()<<std::endl;
+
         //create Hexa
-        MeshDataImageToolBox::VecIndex8 outH = layer.hexas;
+        MeshDataImageToolBox::VecIndex8 &outH = layer.hexas;
 
         for(unsigned int i=0;i<layer.grid2.size();i++)
         {
@@ -596,12 +600,12 @@ std::cout << "quit "<<std::endl;
 
                 outH.push_back(v1);
 
-                std::cout << "hexa "<<v1 << std::endl;
+                std::cout << "hexahedra "<<v1 << std::endl;
             }
         }
 
         //create Tetra
-        MeshDataImageToolBox::VecIndex4 outT = layer.tetras;
+        MeshDataImageToolBox::VecIndex4 &outT = layer.tetras;
 
         for(unsigned int i=0;i<layer.hexas.size();i++)
         {
@@ -629,7 +633,7 @@ std::cout << "quit "<<std::endl;
         return true;
     }
 
-    bool calculateDistanceMap(Layer&l,int numLayer)
+    bool calculateDistanceMap(Layer&l,unsigned int numLayer)
     {
         std::cout << "calculateDistanceMap"<<l.layer1<<" "<<l.layer2<<" "<<l.base<<std::endl;
         if(l.layer1>=labelsOfGrid.size() || l.layer2>=labelsOfGrid.size()  || l.base>=labelsOfGrid.size())return false;
@@ -687,6 +691,8 @@ std::cout << "quit "<<std::endl;
         createLayerInImage(v1,v2,base->d_reso.getValue(),numLayer);
         createMeshFromLayer(base,v1,v2,base->d_reso.getValue(),numLayer);
 
+        meshs.veclayer[numLayer].name=l.name;
+
   //      std::cout << toImage(1) << "/"<<fromImage(1)<<"/"<< toImage(Coord3(1.0,1.0,1.0)) << "/"<<fromImage(Coord3(435.934, 778.795, -70.2253)) <<std::endl;
   //      std::cout << d_transform.getValue() << std::endl;
 
@@ -704,9 +710,14 @@ std::cout << "quit "<<std::endl;
 
         for(unsigned int i=0;i<layers.size();i++)
         {
+            std::cout << "+"<<i<<" " << labelsOfGrid.size() << " " << layers[i].base <<std::endl;
+
+
             LabelGridImageToolBoxNoTemplated *base = labelsOfGrid[layers[i].base];
 
             Vec2i current = base->d_reso.getValue();
+
+            std::cout << "   " << current<<std::endl;
 
             std::cout << current << std::endl;
 
@@ -807,6 +818,7 @@ std::cout << "quit "<<std::endl;
             writeOffset(values,l.offset2,l.typeOffset2);
             file << values.str() << "\n";
         }
+        return true;
     }
 
     void readOffset(std::string &in,double &offset ,int &typeLayer)
@@ -936,7 +948,7 @@ std::cout << "quit "<<std::endl;
 
     bool saveSCN()
     {
-        QFile file("depthimagetoolbox.scn");
+        QFile file(QString::fromStdString(d_scnfilename.getValue()));
 
         if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
                  return false;
@@ -947,14 +959,10 @@ std::cout << "quit "<<std::endl;
         //MeshDataImageToolBox &m = meshs;
 
 
-        out << "<?xml version=\"1.0\"?>" << "\n" <<
-                "<Node name=\"Scene\" gravity=\"0 0 0\" dt=\"1\"  >" << "\n" <<
-                "  <VisualStyle displayFlags=\"hideForceFields showVisual\" />" << "\n" <<
-                "  <RequiredPlugin pluginName=\"image\"/>" << "\n" <<
-                "  <Node name=\"Visu\">" << "\n";
+        out << "  <Node name=\"MeshModel\">" << "\n";
 
         for(unsigned int i=0;i<meshs.veclayer.size();i++)
-        {
+        {/*
             out << "    <VisualModel name=\"grid1_"<< i <<"\" position=\"";
 
             for(unsigned int j=0;j<meshs.positions.size();j++ )
@@ -983,18 +991,298 @@ std::cout << "quit "<<std::endl;
                 out << meshs.veclayer[i].grid2[j].x() << " " << meshs.veclayer[i].grid2[j].y() << " " << meshs.veclayer[i].grid2[j].z() << " " << meshs.veclayer[i].grid2[j].w() << " ";
             }
 
-            out << "\" useNormals=\"f\" color=\"1 0 0 1\"/>" << "\n";
+            out << "\" useNormals=\"f\" color=\"1 0 0 1\"/>" << "\n";*/
 
+            QString name =QString::fromStdString(meshs.veclayer[i].name);
+            out << "<Node name=\"" << name << "\">\n";
+
+            saveSCN_layer(out, i);
+            saveSCN_grid1(out, i);
+            saveSCN_grid2(out, i);
+            saveSCN_indexLayer(out,i);
+            saveSCN_indexGrid1(out,i);
+            saveSCN_indexGrid2(out,i);
+
+            out << "</Node>\n";
         }
-        out << "  </Node> " << "\n" "</Node>" << "\n";
+
+        saveSCN_mergedLayer(out);
+
+        out << "  </Node> " << "\n";
+
+
+
+
+
+        //<nVisualModel name="grid1_0" position="@Grid1.position" quads="@Grid1.quads" useNormals="f" color="1 0 0 1"/>
+        //<nVisualModel name="grid2_0" position="@Grid2.position" quads="@Grid2.quads" useNormals="f" color="1 1 0 1"/>
+        //<VisualModel name="layer_0" position="@Layer.position" quads="@Layer.quads" useNormals="f" color="1 0 1 1"/>
 
         file.close();
 
         return true;
     }
 
+    void saveSCN_layer(QTextStream &out, int index)
+    {
+        QString name="Layer";
+
+        std::cout << "Layer :";
+        out << " <Mesh name=\"" << name << "\"";
+        saveSCN_position(out);
+        saveSCN_indexTriangle(out, meshs.veclayer[index].triangles);
+        saveSCN_indexTetra(out, meshs.veclayer[index].tetras);
+        saveSCN_indexHexa(out, meshs.veclayer[index].hexas);
+        out << "/>\n";
+        std::cout << std::endl;
+    }
+
+    void saveSCN_indexLayer(QTextStream &out, int index)
+    {
+        std::cout << "saveSCN_indexLayer "<< index << std::endl;
+
+        out << " <CatchAllVector name=\"TrianglesIndex\" data=\"";
+        unsigned int offset1 = 0;
+        for(unsigned int i=0;i<index;i++)
+        {
+            offset1 += meshs.veclayer[i].triangles.size();
+        }
+        std::cout << offset1<<std::endl;
+
+        for(unsigned int i=0;i<meshs.veclayer[index].triangles.size();i++)
+        {
+            out << i+offset1 << " ";
+        }
+
+        out << "\" />\n";
+
+       // std::cout << "saveSCN_indexLayer"<<std::endl;
+
+        out << " <CatchAllVector name=\"TetraIndex\" data=\"";
+        unsigned int offset2 = 0;
+        for(unsigned int i=0;i<index;i++)
+        {
+            offset2 += meshs.veclayer[i].tetras.size();
+        }
+
+        for(unsigned int i=0;i<meshs.veclayer[index].tetras.size();i++)
+        {
+            out << i+offset2 << " ";
+        }
+
+        out << "\" />\n";
+
+        //std::cout << "saveSCN_indexLayer3"<<std::endl;
+
+        out << " <CatchAllVector name=\"HexaIndex\" data=\"";
+        unsigned int offset3 = 0;
+        for(unsigned int i=0;i<index;i++)
+        {
+            offset3 += meshs.veclayer[i].hexas.size();
+        }
+
+        for(unsigned int i=0;i<meshs.veclayer[index].hexas.size();i++)
+        {
+            out << i+offset3 << " ";
+        }
+
+        out << "\" />\n";
+
+        //std::cout << "saveSCN_indexLayer4"<<std::endl;
+    }
+
+
+
+    void saveSCN_indexGrid1(QTextStream &out, int index)
+    {
+        out << " <CatchAllVector name=\"Grid1Index\" data=\"";
+        saveSCN_indexGrid(out,meshs.veclayer[index].grid1);
+        out << "\" />\n";
+    }
+
+    void saveSCN_indexGrid2(QTextStream &out, int index)
+    {
+        out << " <CatchAllVector name=\"Grid2Index\" data=\"";
+        saveSCN_indexGrid(out,meshs.veclayer[index].grid2);
+        out << "\" />\n";
+    }
+
+    void saveSCN_indexGrid(QTextStream &out,MeshDataImageToolBox::VecIndex4 &grid)
+    {
+        //std::cout << "saveSCN_indexGrid" << grid.size() << std::endl;
+
+        std::list<unsigned int> vec;
+
+        for(unsigned int i=0;i<grid.size();i++)
+        {
+            //std::cout << "+ " << i << std::endl;
+            MeshDataImageToolBox::Index4 & q = grid[i];
+            for(int j=0;j<4;j++)
+            {
+                //std::cout << "++ " << j << std::endl;
+                vec.push_back(q[j]);
+            }
+        }
+
+        //std::cout << "hh"<<std::endl;
+
+        vec.unique();
+        vec.sort();
+
+        //std::cout << "hh"<<std::endl;
+
+        while(!vec.empty())
+        {
+            out << vec.front() << " ";
+            vec.pop_front();
+        }
+
+        //std::cout << "hh"<<std::endl;
+    }
+
+    void saveSCN_mergedLayer(QTextStream &out)
+    {
+        out << "<Node name=\"Merged\">\n";
+
+        out << " <Mesh name=\"Merged\" ";
+        saveSCN_position(out);
+        saveSCN_indexTriangle(out);
+        saveSCN_indexTetra(out);
+        saveSCN_indexHexa(out);
+        out << "/>\n";
+
+
+        out << "</Node>\n";
+    }
+
+
+    void saveSCN_grid1(QTextStream &out, int index)
+    {
+        QString name="Grid1";
+        saveSCN_grid(out, meshs.veclayer[index].grid1,name);
+    }
+
+    void saveSCN_grid2(QTextStream &out, int index)
+    {
+        QString name="Grid2";
+        saveSCN_grid(out, meshs.veclayer[index].grid2,name);
+    }
+
+    void saveSCN_grid(QTextStream &out, MeshDataImageToolBox::VecIndex4 &grid, QString &name)
+    {
+        std::cout << "Grid :";
+        out << " <Mesh name=\"" << name << "\"";
+        saveSCN_position(out);
+        saveSCN_indexQuad(out,grid);
+        out << "/> \n";
+        std::cout << std::endl;
+    }
+
+    void saveSCN_position(QTextStream &out)
+    {
+        out << " position=\"";
+        for(unsigned int j=0;j<meshs.positions.size();j++ )
+        {
+            out << meshs.positions[j].x() << " "  << meshs.positions[j].y() << " " << meshs.positions[j].z() << " ";
+        }
+        out << "\"";
+    }
+
+    void saveSCN_indexQuad(QTextStream &out,MeshDataImageToolBox::VecIndex4 &grid)
+    {
+        std::cout << " quad=" <<grid.size();
+        out << " quads=\"";
+        saveSCN_index4(out,grid);
+        out << "\"";
+    }
+
+    void saveSCN_indexTetra(QTextStream &out,MeshDataImageToolBox::VecIndex4 &tetra)
+    {
+        std::cout << " tetrahedra=" <<tetra.size();
+        if(tetra.size()==0)return;
+        out << " tetrahedra=\"";
+        saveSCN_index4(out,tetra);
+        out << "\"";
+    }
+
+    void saveSCN_indexTetra(QTextStream &out)
+    {
+        out << " tetrahedra=\"";
+        for(unsigned int j=0;j<meshs.veclayer.size();j++ )
+        {
+            saveSCN_index4(out,meshs.veclayer[j].tetras);
+        }
+        out << "\"";
+    }
+
+
+
+    void saveSCN_indexHexa(QTextStream &out,MeshDataImageToolBox::VecIndex8 &hexa)
+    {
+        std::cout << " hexahedra=" <<hexa.size();
+        if(hexa.size()==0)return;
+        out << " hexahedra=\"";
+        saveSCN_index8(out,hexa);
+        out << "\"";
+    }
+
+    void saveSCN_indexHexa(QTextStream &out)
+    {
+        out << " hexahedra=\"";
+        for(unsigned int j=0;j<meshs.veclayer.size();j++ )
+        {
+            saveSCN_index8(out,meshs.veclayer[j].hexas);
+        }
+        out << "\"";
+    }
+
+    void saveSCN_indexTriangle(QTextStream &out,MeshDataImageToolBox::VecIndex3 &triangles)
+    {
+        std::cout << " triangles=" <<triangles.size();
+        if(triangles.size()==0)return;
+        out << " triangles=\"";
+        saveSCN_index3(out,triangles);
+        out << "\"";
+    }
+
+    void saveSCN_indexTriangle(QTextStream &out)
+    {
+        out << " triangles=\"";
+        for(unsigned int j=0;j<meshs.veclayer.size();j++ )
+        {
+            saveSCN_index3(out,meshs.veclayer[j].triangles);
+        }
+        out << "\"";
+    }
+
+    void saveSCN_index4(QTextStream &out,MeshDataImageToolBox::VecIndex4 &index4)
+    {
+        for(unsigned int j=0;j<index4.size();j++ )
+        {
+            out << index4[j].x() << " " << index4[j].y() << " " << index4[j].z() << " " << index4[j].w() << " ";
+        }
+    }
+
+    void saveSCN_index3(QTextStream &out,MeshDataImageToolBox::VecIndex3 &index3)
+    {
+        for(unsigned int j=0;j<index3.size();j++ )
+        {
+            out << index3[j].x() << " " << index3[j].y() << " " << index3[j].z() << " ";
+        }
+    }
+
+    void saveSCN_index8(QTextStream &out,MeshDataImageToolBox::VecIndex8 &index8)
+    {
+        for(unsigned int j=0;j<index8.size();j++ )
+        {
+            out << index8[j][0] << " "<< index8[j][1] << " "<<index8[j][2] << " "<<index8[j][3] << " "<<index8[j][4] << " "<<index8[j][5] << " "<<index8[j][6] << " "<<index8[j][7] << " ";
+        }
+    }
+
 public:
     DataFileName d_filename;
+    DataFileName d_scnfilename;
+
     Data< TransformType> d_transform;
 
     Data< VecDouble > d_outImagePosition;
