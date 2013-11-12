@@ -8,15 +8,12 @@ set(HEADER_FILES
     misc/RigidMass.h
     misc/CompliantSolverMerger.h
 
-    misc/BaseConstraintValue.h
-    misc/Stabilization.h
-    misc/ConstraintValue.h
-    misc/Restitution.h
-
     mapping/RigidJointMapping.h
     mapping/AssembledRigidRigidMapping.h
     mapping/AssembledMapping.h
     mapping/AssembledMultiMapping.h
+    mapping/DifferenceMapping.h
+    mapping/ContactMapping.h
 
 
     numericalsolver/KKTSolver.h
@@ -27,6 +24,7 @@ set(HEADER_FILES
     numericalsolver/Response.h
     numericalsolver/LDLTResponse.h
     numericalsolver/DiagonalResponse.h
+    numericalsolver/SequentialSolver.h
 
     assembly/AssemblyHelper.h
     assembly/AssemblyVisitor.h
@@ -43,9 +41,22 @@ set(HEADER_FILES
     constraint/Constraint.h
     constraint/CoulombConstraint.h
     constraint/UnilateralConstraint.h
+
+    constraint/BaseConstraintValue.h
+    constraint/Stabilization.h
+    constraint/ConstraintValue.h
+    constraint/Restitution.h
+
+    contact/CompliantContact.h
+    contact/FrictionCompliantContact.h
+    contact/BaseContact.h
 	
+    utils/basis.h
+    utils/bench.h
     utils/cast.h
     utils/cg.h
+    utils/cone.h
+    utils/edit.h
     utils/find.h
     utils/force_assert.h
     utils/graph.h
@@ -66,10 +77,6 @@ set(SOURCE_FILES
     misc/CompliantSolverMerger.cpp
     misc/RigidMass.cpp
 
-    misc/ConstraintValue.cpp
-    misc/Stabilization.cpp
-    misc/Restitution.cpp
-
     compliance/UniformCompliance.cpp
     compliance/DiagonalCompliance.cpp
     compliance/DampingCompliance.cpp
@@ -77,6 +84,8 @@ set(SOURCE_FILES
     mapping/RigidJointMapping.cpp
     mapping/RigidJointMultiMapping.cpp
     mapping/AssembledRigidRigidMapping.cpp
+    mapping/DifferenceMapping.cpp
+    mapping/ContactMapping.cpp
 
     numericalsolver/LDLTSolver.cpp
     numericalsolver/MinresSolver.cpp
@@ -84,6 +93,7 @@ set(SOURCE_FILES
     numericalsolver/CgSolver.cpp
     numericalsolver/LDLTResponse.cpp
     numericalsolver/DiagonalResponse.cpp
+    numericalsolver/SequentialSolver.cpp
 
     assembly/AssemblyVisitor.cpp
     assembly/AssembledSystem.cpp
@@ -92,6 +102,13 @@ set(SOURCE_FILES
 
     constraint/CoulombConstraint.cpp
     constraint/UnilateralConstraint.cpp
+
+    constraint/ConstraintValue.cpp
+    constraint/Stabilization.cpp
+    constraint/Restitution.cpp
+
+    contact/CompliantContact.cpp
+    contact/FrictionCompliantContact.cpp
 	)
 
 set(README_FILES

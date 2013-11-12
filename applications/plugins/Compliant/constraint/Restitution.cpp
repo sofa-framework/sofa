@@ -18,6 +18,11 @@ Restitution::Restitution( mstate_type* mstate )
     , restitution(initData(&restitution, SReal(0), "restitution", "restitution coefficient"))
 {}
 
+
+// WARNING can have interpenetration pbs if the violation veolcity is too small
+// in that case we should switch to damped (or stabilized is no damping) constraints.
+
+
 void Restitution::dynamics(SReal* dst, unsigned n) const
 {
     assert( mstate );

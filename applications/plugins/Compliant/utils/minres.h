@@ -1,5 +1,5 @@
-#ifndef COMPLIANTDEV_UTILS_MINRES_H
-#define COMPLIANTDEV_UTILS_MINRES_H
+#ifndef COMPLIANT_UTILS_MINRES_H
+#define COMPLIANT_UTILS_MINRES_H
 
 #include <cassert>
 #include "krylov.h"

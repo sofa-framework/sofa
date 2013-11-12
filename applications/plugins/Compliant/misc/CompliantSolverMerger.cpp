@@ -9,6 +9,7 @@
 #include "numericalsolver/MinresSolver.h"
 #include "numericalsolver/CgSolver.h"
 #include "numericalsolver/LDLTSolver.h"
+#include "numericalsolver/SequentialSolver.h"
 
 namespace sofa
 {
@@ -40,6 +41,16 @@ namespace collision
     {
         linearsolver::LDLTSolver::SPtr lsolver = sofa::core::objectmodel::New<linearsolver::LDLTSolver>();
         lsolver->damping.setValue( std::max(solver1.damping.getValue(),solver2.damping.getValue())  );
+        return lsolver;
+    }
+
+    core::behavior::BaseLinearSolver::SPtr createSequentialSolver(linearsolver::SequentialSolver& solver1, linearsolver::SequentialSolver& solver2)
+    {
+        linearsolver::SequentialSolver::SPtr lsolver = sofa::core::objectmodel::New<linearsolver::SequentialSolver>();
+        lsolver->precision.setValue( std::min(solver1.precision.getValue(),solver2.precision.getValue())  );
+        lsolver->relative.setValue( solver1.relative.getValue() || solver2.relative.getValue() );
+        lsolver->iterations.setValue( std::max(solver1.iterations.getValue(),solver2.iterations.getValue())  );
+        lsolver->omega.setValue( std::min(solver1.omega.getValue(),solver2.omega.getValue())  );
         return lsolver;
     }
 
@@ -78,6 +89,7 @@ namespace collision
         _linearSolverDispatcher.add<linearsolver::CgSolver,linearsolver::CgSolver,createCgSolver,true>();
         _linearSolverDispatcher.add<linearsolver::MinresSolver,linearsolver::MinresSolver,createMinresSolver,true>();
         _linearSolverDispatcher.add<linearsolver::LDLTSolver,linearsolver::LDLTSolver,createLDLTSolver,true>();
+        _linearSolverDispatcher.add<linearsolver::SequentialSolver,linearsolver::SequentialSolver,createSequentialSolver,true>();
     }
 
     CompliantSolverMerger* CompliantSolverMerger::getInstance()

@@ -7,7 +7,7 @@
 #include <sofa/simulation/common/VectorOperations.h>
 
 #include "assembly/AssemblyVisitor.h"
-#include "misc/ConstraintValue.h"
+#include "constraint/ConstraintValue.h"
 
 #include "utils/minres.h"
 #include "utils/scoped.h"

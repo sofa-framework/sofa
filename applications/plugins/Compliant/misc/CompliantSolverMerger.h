@@ -3,7 +3,6 @@
 
 #include <sofa/core/behavior/LinearSolver.h>
 
-
 namespace sofa
 {
 
