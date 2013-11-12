@@ -64,7 +64,7 @@
 #include <plugins/Compliant/numericalsolver/LDLTSolver.h>
 #include <plugins/Compliant/compliance/UniformCompliance.h>
 #include <plugins/Compliant/misc/CompliantAttachButtonSetting.h>
-#include <plugins/Compliant/misc/ConstraintValue.h>
+#include <plugins/Compliant/constraint/ConstraintValue.h>
 using sofa::component::configurationsetting::CompliantAttachButtonSetting;
 
 #include <sofa/simulation/common/Simulation.h>

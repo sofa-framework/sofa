@@ -1,6 +1,6 @@
 
-#ifndef COMPLIANTDEV_ASSEMBLEDMAPPING_H
-#define COMPLIANTDEV_ASSEMBLEDMAPPING_H
+#ifndef COMPLIANT_ASSEMBLEDMAPPING_H
+#define COMPLIANT_ASSEMBLEDMAPPING_H
 
 #include <sofa/core/Mapping.h>
 #include <sofa/component/linearsolver/EigenSparseMatrix.h>

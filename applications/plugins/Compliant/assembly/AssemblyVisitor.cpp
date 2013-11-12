@@ -287,7 +287,7 @@ struct AssemblyVisitor::propagation_helper {
 				p->mechanical = true;
 
 				if(!zero( g[*e.first].data->K)) {
-					add(p->H, mparams->kFactor() * g[*e.first].data->K );
+                    add(p->H, mparams->kFactor() * g[*e.first].data->K ); // todo how to include rayleigh damping for geometric stiffness?
 				}
 			}
 
