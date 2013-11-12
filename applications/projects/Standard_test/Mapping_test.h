@@ -115,12 +115,12 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
         /// Parent node
         root = simulation->createNewGraph("root");
-        inDofs = addNew<InDOFs>(root);
+        inDofs = sofa::addNew<InDOFs>(root);
 
         /// Child node
         simulation::Node::SPtr childNode = root->createChild("childNode");
-        outDofs = addNew<OutDOFs>(childNode);
-        mapping = addNew<Mapping>(root).get();
+        outDofs = sofa::addNew<OutDOFs>(childNode);
+        mapping = sofa::addNew<Mapping>(root).get();
         mapping->setModels(inDofs.get(),outDofs.get());
     }
 
