@@ -60,9 +60,12 @@ set(HEADER_FILES
     utils/find.h
     utils/force_assert.h
     utils/graph.h
+    utils/kkt.h
     utils/krylov.h
+    utils/map.h
     utils/minres.h
     utils/pair.h
+    utils/schur.h
     utils/scoped.h
     utils/se3.h
     utils/sparse.h
