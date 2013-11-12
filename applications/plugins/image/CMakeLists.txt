@@ -81,8 +81,8 @@ set(README_FILES
       )
 
 
-if(NOT SOFA-EXTERNAL_ZLIB)
-	message(AUTHOR_WARNING "Image plugin should build without zlib but it currently doesn't. Hence we advise you to enable zlib")
+if(SOFA-EXTERNAL_ZLIB)
+	AddLinkerDependencies(${ZLIB_LIBRARIES})
 endif()
 	
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES} ${README_FILES})
