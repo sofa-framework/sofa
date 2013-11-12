@@ -24,6 +24,11 @@ if(TARGET ${PROJECT_NAME})
 		
 		link_directories("${SOFA_EXTLIBS_DIR}/gtest/lib")
 		
+		if(WIN32)
+			# MSVC2012 has some troubles with the way gtest use the STL, this preprocessor macro fix this issue
+			AddCompilerDefinitions("_VARIADIC_MAX=10")
+		endif()
+		
 		AddLinkerDependencies(gtest gtest_main)
 	endif()
 
