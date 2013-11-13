@@ -2123,6 +2123,22 @@ bool is_point_in_halfplane(const sofa::defaulttype::Vec<3,Real>& p, unsigned int
 }
 
 
+template<class DataTypes>
+void TriangleSetGeometryAlgorithms<DataTypes>::initPointAdded(unsigned int indice, const core::topology::AncestorElem &ancestorElem
+        , const helper::vector< VecCoord* >& coordVecs, const helper::vector< VecDeriv* >& derivVecs)
+{
+    using namespace sofa::core::topology;
+
+    if (ancestorElem.type != TRIANGLE)
+    {
+        EdgeSetGeometryAlgorithms< DataTypes >::initPointAdded(indice, ancestorElem, coordVecs, derivVecs);
+    }
+    else
+    {
+
+    }
+}
+
 
 template<class DataTypes>
 void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams* vparams)
