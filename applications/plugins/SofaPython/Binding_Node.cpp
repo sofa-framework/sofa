@@ -259,10 +259,7 @@ extern "C" PyObject * Node_sendScriptEvent(PyObject *self, PyObject * args)
         Py_RETURN_NONE;
     }
     PythonScriptEvent event(node,eventName,pyUserData);
-    // Entering c++ code that can re-enter Python code, need to release GIL
-//    Py_BEGIN_ALLOW_THREADS
     dynamic_cast<Node*>(node->getRoot())->propagateEvent(sofa::core::ExecParams::defaultInstance(), &event);
-//    Py_END_ALLOW_THREADS
     Py_RETURN_NONE;
 }
 
@@ -276,11 +273,7 @@ extern "C" PyObject * Node_sendKeypressedEvent(PyObject *self, PyObject * args)
         Py_RETURN_NONE;
     }
     sofa::core::objectmodel::KeypressedEvent event(eventName ? eventName[0] : '\0');
-    // Entering c++ code that can re-enter Python code, need to release GIL
-    Py_BEGIN_ALLOW_THREADS
-        std::cout << "PYTHON sends key " << event.getKey() << std::endl;
     dynamic_cast<Node*>(node->getRoot())->propagateEvent(sofa::core::ExecParams::defaultInstance(), &event);
-    Py_END_ALLOW_THREADS
     Py_RETURN_NONE;
 }
 
@@ -294,10 +287,7 @@ extern "C" PyObject * Node_sendKeyreleasedEvent(PyObject *self, PyObject * args)
         Py_RETURN_NONE;
     }
     sofa::core::objectmodel::KeyreleasedEvent event(eventName ? eventName[0] : '\0');
-    // Entering c++ code that can re-enter Python code, need to release GIL
-    Py_BEGIN_ALLOW_THREADS
     dynamic_cast<Node*>(node->getRoot())->propagateEvent(sofa::core::ExecParams::defaultInstance(), &event);
-    Py_END_ALLOW_THREADS
     Py_RETURN_NONE;
 }
 
