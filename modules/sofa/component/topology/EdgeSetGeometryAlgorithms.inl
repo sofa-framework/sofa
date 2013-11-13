@@ -739,18 +739,29 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( vecto
 
 
 template<class DataTypes>
-void EdgeSetGeometryAlgorithms<DataTypes>::initPointAdded(unsigned int indice, const core::topology::AncestorElem &ancestorElem
+void EdgeSetGeometryAlgorithms<DataTypes>::initPointAdded(unsigned int index, const core::topology::AncestorElem &ancestorElem
         , const helper::vector< VecCoord* >& coordVecs, const helper::vector< VecDeriv* >& derivVecs)
 {
     using namespace sofa::core::topology;
 
     if (ancestorElem.type != EDGE)
     {
-        PointSetGeometryAlgorithms< DataTypes >::initPointAdded(indice, ancestorElem, coordVecs, derivVecs);
+        PointSetGeometryAlgorithms< DataTypes >::initPointAdded(index, ancestorElem, coordVecs, derivVecs);
     }
     else
     {
+        const Edge &e = this->m_topology->getEdge(ancestorElem.index);
 
+        for (unsigned int i = 0; i < coordVecs.size(); i++)
+        {
+            VecCoord &curVecCoord = *coordVecs[i];
+            Coord& curCoord = curVecCoord[index];
+
+            const Coord &c0 = curVecCoord[e[0]];
+            const Coord &c1 = curVecCoord[e[1]];
+
+            curCoord = c0 + (c1-c0) * ancestorElem.localCoords[0];
+        }
     }
 }
 

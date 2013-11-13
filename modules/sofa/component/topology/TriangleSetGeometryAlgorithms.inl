@@ -2124,18 +2124,55 @@ bool is_point_in_halfplane(const sofa::defaulttype::Vec<3,Real>& p, unsigned int
 
 
 template<class DataTypes>
-void TriangleSetGeometryAlgorithms<DataTypes>::initPointAdded(unsigned int indice, const core::topology::AncestorElem &ancestorElem
+void TriangleSetGeometryAlgorithms<DataTypes>::initPointAdded(unsigned int index, const core::topology::AncestorElem &ancestorElem
         , const helper::vector< VecCoord* >& coordVecs, const helper::vector< VecDeriv* >& derivVecs)
 {
     using namespace sofa::core::topology;
 
     if (ancestorElem.type != TRIANGLE)
     {
-        EdgeSetGeometryAlgorithms< DataTypes >::initPointAdded(indice, ancestorElem, coordVecs, derivVecs);
+        EdgeSetGeometryAlgorithms< DataTypes >::initPointAdded(index, ancestorElem, coordVecs, derivVecs);
     }
     else
     {
+        const Triangle &t = this->m_topology->getTriangle(ancestorElem.index);
 
+        for (unsigned int i = 0; i < coordVecs.size(); i++)
+        {
+            VecCoord &curVecCoord = *coordVecs[i];
+            Coord& curCoord = curVecCoord[index];
+
+            const Coord &c0 = curVecCoord[t[0]];
+            const Coord &c1 = curVecCoord[t[1]];
+            const Coord &c2 = curVecCoord[t[2]];
+
+            // Compute normal (ugly but doesn't require template specialization...)
+            defaulttype::Vec<3,Real> p0;
+            p0[0] = (Real) (c0[0]);
+            p0[1] = (Real) (c0[1]);
+            p0[2] = (Real) (c0[2]);
+            defaulttype::Vec<3,Real> p1;
+            p1[0] = (Real) (c1[0]);
+            p1[1] = (Real) (c1[1]);
+            p1[2] = (Real) (c1[2]);
+            defaulttype::Vec<3,Real> p2;
+            p2[0] = (Real) (c2[0]);
+            p2[1] = (Real) (c2[1]);
+            p2[2] = (Real) (c2[2]);
+
+            defaulttype::Vec<3,Real> p0p1 = p1 - p0;
+            defaulttype::Vec<3,Real> p0p2 = p2 - p0;
+            p0p1.normalize();
+            p0p2.normalize();
+
+            defaulttype::Vec<3,Real> n = p0p1.cross(p0p2);
+            n.normalize();
+
+            defaulttype::Vec<3,Real> newCurCoord = p0 + p0p1 * ancestorElem.localCoords[0] + p0p2 * ancestorElem.localCoords[1] + n * ancestorElem.localCoords[2];
+            curCoord = Coord();
+     
+            DataTypes::add(curCoord, newCurCoord[0], newCurCoord[1], newCurCoord[2]);
+        }
     }
 }
 
