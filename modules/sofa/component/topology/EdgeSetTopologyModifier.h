@@ -78,6 +78,15 @@ public:
     virtual void addEdges( const sofa::helper::vector< Edge >& edges,
             const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs) ;
+    
+    /** \brief add a set of edges
+    @param edges an array of pair of vertex indices describing the edge to be created
+    @param ancestors for each edge to be created provides an array of edge ancestors (optional)
+    @param baryCoefs for each edge provides the barycentric coordinates (sum to 1) associated with each ancestor (optional)
+    *
+    */
+    virtual void addEdges( const sofa::helper::vector< Edge >& edges,
+        const sofa::helper::vector< core::topology::EdgeAncestorElem >& ancestorElems);
 
     /** \brief Sends a message to warn that some edges were added in this topology.
     *
@@ -111,6 +120,15 @@ public:
             const sofa::helper::vector< unsigned int >& edgesIndexList,
             const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs);
+    
+    /** \brief Sends a message to warn that some edges were added in this topology.
+    *
+    * \sa addEdgesProcess
+    */
+    virtual void addEdgesWarning(const unsigned int nEdges,
+            const sofa::helper::vector< Edge >& edgesList,
+            const sofa::helper::vector< unsigned int >& edgesIndexList,
+            const sofa::helper::vector< core::topology::EdgeAncestorElem >& ancestorElems);
 
     /** \brief Effectively Add an edge.
     */

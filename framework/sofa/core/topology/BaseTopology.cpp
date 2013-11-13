@@ -38,8 +38,8 @@ void GeometryAlgorithms::init()
 {
 }
 
-void GeometryAlgorithms::initPointsAdded(const helper::vector< unsigned int > &indices, const helper::vector< AncestorElem > &ancestorElems
-    , const helper::vector< core::VecCoordId >& coordVecs, const helper::vector< core::VecDerivId >& derivVecs )
+void GeometryAlgorithms::initPointsAdded(const helper::vector< unsigned int >& /*indices*/, const helper::vector< PointAncestorElem >& /*ancestorElems*/
+    , const helper::vector< core::VecCoordId >& /*coordVecs*/, const helper::vector< core::VecDerivId >& /*derivVecs */)
 {
 }
 

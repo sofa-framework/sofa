@@ -198,6 +198,7 @@ SOURCES += \
 	collision/Pipeline.cpp \
 	topology/BaseMeshTopology.cpp \
 	topology/BaseTopology.cpp \
+	topology/TopologyChange.cpp \
 	topology/TopologyHandler.cpp \
 	topology/TopologyElementHandler.cpp \
 	behavior/BaseConstraint.cpp \

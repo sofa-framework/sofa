@@ -50,53 +50,38 @@ void TopologyDataHandler <TopologyElementType, VecT>::swap( unsigned int i1, uns
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologyDataHandler <TopologyElementType, VecT>::add(unsigned int nbElements,
-        const sofa::helper::vector<sofa::helper::vector<unsigned int> > &ancestors,
-        const sofa::helper::vector<sofa::helper::vector<double> > &coefs)
-{
-    // Using default values
-    container_type& data = *(m_topologyData->beginEdit());
-    unsigned int i0 = data.size();
-    data.resize(i0+nbElements);
-
-    for (unsigned int i = 0; i < nbElements; ++i)
-    {
-        value_type& t = data[i0+i];
-        if (ancestors.empty() || coefs.empty())
-        {
-            const sofa::helper::vector< unsigned int > empty_vecint;
-            const sofa::helper::vector< double > empty_vecdouble;
-            this->applyCreateFunction( i0+i, t, empty_vecint, empty_vecdouble);
-        }
-        else
-            this->applyCreateFunction( i0+i, t, ancestors[i], coefs[i] );
-    }
-    m_topologyData->endEdit();
-}
-
-
-template <typename TopologyElementType, typename VecT>
-void TopologyDataHandler <TopologyElementType, VecT>::add(unsigned int nbElements,
+void TopologyDataHandler <TopologyElementType, VecT>::add(const sofa::helper::vector<unsigned int> & index,
         const sofa::helper::vector< TopologyElementType >& elems,
         const sofa::helper::vector<sofa::helper::vector<unsigned int> > &ancestors,
-        const sofa::helper::vector<sofa::helper::vector<double> > &coefs)
+        const sofa::helper::vector<sofa::helper::vector<double> > &coefs,
+        const sofa::helper::vector< AncestorElem >& ancestorElems)
 {
+    unsigned int nbElements = index.size();
+    if (nbElements == 0) return;
     // Using default values
     container_type& data = *(m_topologyData->beginEdit());
     unsigned int i0 = data.size();
+    if (i0 != index[0])
+    {
+        this->m_topologyData->getOwner()->serr << "TopologyDataHandler SIZE MISMATCH in Data "
+            << this->m_topologyData->getName() << ": " << nbElements << " "
+            << core::topology::TopologyElementInfo<TopologyElementType>::name()
+            << " ADDED starting from index " << index[0]
+            << " while vector size is " << i0 << this->m_topologyData->getOwner()->sendl;
+        i0 = index[0];
+    }
     data.resize(i0+nbElements);
+
+    const sofa::helper::vector< unsigned int > empty_vecint;
+    const sofa::helper::vector< double > empty_vecdouble;
 
     for (unsigned int i = 0; i < nbElements; ++i)
     {
         value_type& t = data[i0+i];
-        if (ancestors.empty() || coefs.empty())
-        {
-            const sofa::helper::vector< unsigned int > empty_vecint;
-            const sofa::helper::vector< double > empty_vecdouble;
-            this->applyCreateFunction( i0+i, t, elems[i], empty_vecint, empty_vecdouble);
-        }
-        else
-            this->applyCreateFunction( i0+i, t, elems[i], ancestors[i], coefs[i] );
+        this->applyCreateFunction(i0+i, t, elems[i],
+            (ancestors.empty() || coefs.empty()) ? empty_vecint : ancestors[i],
+            (ancestors.empty() || coefs.empty()) ? empty_vecdouble : coefs[i],
+            (ancestorElems.empty()             ) ? NULL : &ancestorElems[i]);
     }
     m_topologyData->endEdit();
 }

@@ -54,277 +54,54 @@ void TopologyHandler::ApplyTopologyChanges(const std::list<const core::topology:
 
         switch( changeType )
         {
-            ///////////////////////// Events on Points //////////////////////////////////////
-        case core::topology::POINTSINDICESSWAP:
-        {
-            unsigned int i1 = ( static_cast< const PointsIndicesSwap* >( *changeIt ) )->index[0];
-            unsigned int i2 = ( static_cast< const PointsIndicesSwap* >( *changeIt ) )->index[1];
+#define SOFA_CASE_EVENT(name,type) \
+        case core::topology::name: \
+            this->ApplyTopologyChange(static_cast< const type* >( *changeIt ) ); \
+            break
 
-            this->applyPointIndicesSwap(i1, i2);
-            break;
-        }
-        case core::topology::POINTSADDED:
-        {
-            const sofa::helper::vector< unsigned int >& indexList = ( static_cast< const PointsAdded * >( *changeIt ) )->pointIndexArray;
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors = ( static_cast< const PointsAdded * >( *changeIt ) )->ancestorsList;
-            const sofa::helper::vector< sofa::helper::vector< double       > >& coefs     = ( static_cast< const PointsAdded * >( *changeIt ) )->coefs;
+        SOFA_CASE_EVENT(ENDING_EVENT,EndingEvent);
 
-            this->applyPointCreation(indexList, indexList, ancestors, coefs);
-            break;
-        }
-        case core::topology::POINTSREMOVED:
-        {
-            const sofa::helper::vector<unsigned int>& tab = ( static_cast< const PointsRemoved * >( *changeIt ) )->getArray();
+        SOFA_CASE_EVENT(POINTSINDICESSWAP,PointsIndicesSwap);
+        SOFA_CASE_EVENT(POINTSADDED,PointsAdded);
+        SOFA_CASE_EVENT(POINTSREMOVED,PointsRemoved);
+        SOFA_CASE_EVENT(POINTSMOVED,PointsMoved);
+        SOFA_CASE_EVENT(POINTSRENUMBERING,PointsRenumbering);
 
-            this->applyPointDestruction( tab );
-            break;
-        }
-        case core::topology::POINTSRENUMBERING:
-        {
-            const sofa::helper::vector<unsigned int>& tab = ( static_cast< const PointsRenumbering * >( *changeIt ) )->getIndexArray();
+        SOFA_CASE_EVENT(EDGESINDICESSWAP,EdgesIndicesSwap);
+        SOFA_CASE_EVENT(EDGESADDED,EdgesAdded);
+        SOFA_CASE_EVENT(EDGESREMOVED,EdgesRemoved);
+        SOFA_CASE_EVENT(EDGESMOVED_REMOVING,EdgesMoved_Removing);
+        SOFA_CASE_EVENT(EDGESMOVED_ADDING,EdgesMoved_Adding);
+        SOFA_CASE_EVENT(EDGESRENUMBERING,EdgesRenumbering);
 
-            this->applyPointRenumbering(tab);
-            break;
-        }
-        case core::topology::POINTSMOVED:
-        {
-            const sofa::helper::vector< unsigned int >& indexList = ( static_cast< const PointsMoved * >( *changeIt ) )->indicesList;
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors = ( static_cast< const PointsMoved * >( *changeIt ) )->ancestorsList;
-            const sofa::helper::vector< sofa::helper::vector< double > >& coefs = ( static_cast< const PointsMoved * >( *changeIt ) )->baryCoefsList;
+        SOFA_CASE_EVENT(TRIANGLESINDICESSWAP,TrianglesIndicesSwap);
+        SOFA_CASE_EVENT(TRIANGLESADDED,TrianglesAdded);
+        SOFA_CASE_EVENT(TRIANGLESREMOVED,TrianglesRemoved);
+        SOFA_CASE_EVENT(TRIANGLESMOVED_REMOVING,TrianglesMoved_Removing);
+        SOFA_CASE_EVENT(TRIANGLESMOVED_ADDING,TrianglesMoved_Adding);
+        SOFA_CASE_EVENT(TRIANGLESRENUMBERING,TrianglesRenumbering);
 
-            this->applyPointMove( indexList, ancestors, coefs);
-            break;
-        }
+        SOFA_CASE_EVENT(TETRAHEDRAINDICESSWAP,TetrahedraIndicesSwap);
+        SOFA_CASE_EVENT(TETRAHEDRAADDED,TetrahedraAdded);
+        SOFA_CASE_EVENT(TETRAHEDRAREMOVED,TetrahedraRemoved);
+        SOFA_CASE_EVENT(TETRAHEDRAMOVED_REMOVING,TetrahedraMoved_Removing);
+        SOFA_CASE_EVENT(TETRAHEDRAMOVED_ADDING,TetrahedraMoved_Adding);
+        SOFA_CASE_EVENT(TETRAHEDRARENUMBERING,TetrahedraRenumbering);
 
-        ///////////////////////// Events on Edges //////////////////////////////////////
-        case core::topology::EDGESINDICESSWAP:
-        {
-            unsigned int i1 = ( static_cast< const EdgesIndicesSwap * >( *changeIt ) )->index[0];
-            unsigned int i2 = ( static_cast< const EdgesIndicesSwap* >( *changeIt ) )->index[1];
+        SOFA_CASE_EVENT(QUADSINDICESSWAP,QuadsIndicesSwap);
+        SOFA_CASE_EVENT(QUADSADDED,QuadsAdded);
+        SOFA_CASE_EVENT(QUADSREMOVED,QuadsRemoved);
+        SOFA_CASE_EVENT(QUADSMOVED_REMOVING,QuadsMoved_Removing);
+        SOFA_CASE_EVENT(QUADSMOVED_ADDING,QuadsMoved_Adding);
+        SOFA_CASE_EVENT(QUADSRENUMBERING,QuadsRenumbering);
 
-            this->applyEdgeIndicesSwap( i1, i2 );
-            break;
-        }
-        case core::topology::EDGESADDED:
-        {
-            const EdgesAdded *ea=static_cast< const EdgesAdded * >( *changeIt );
-
-            this->applyEdgeCreation( ea->edgeIndexArray, ea->edgeArray, ea->ancestorsList, ea->coefs );
-            break;
-        }
-        case core::topology::EDGESREMOVED:
-        {
-            const sofa::helper::vector<unsigned int> &tab = ( static_cast< const EdgesRemoved *>( *changeIt ) )->getArray();
-
-            this->applyEdgeDestruction( tab );
-            break;
-        }
-        case core::topology::EDGESMOVED_REMOVING:
-        {
-            const sofa::helper::vector< unsigned int >& edgeList = ( static_cast< const EdgesMoved_Removing *>( *changeIt ) )->edgesAroundVertexMoved;
-
-            this->applyEdgeMovedDestruction(edgeList);
-            break;
-        }
-        case core::topology::EDGESMOVED_ADDING:
-        {
-            const sofa::helper::vector< unsigned int >& edgeList = ( static_cast< const EdgesMoved_Adding *>( *changeIt ) )->edgesAroundVertexMoved;
-            const sofa::helper::vector< Edge >& edgeArray = ( static_cast< const EdgesMoved_Adding *>( *changeIt ) )->edgeArray2Moved;
-
-            this->applyEdgeMovedCreation(edgeList, edgeArray);
-            break;
-        }
-        case core::topology::EDGESRENUMBERING:
-        {
-            const sofa::helper::vector<unsigned int>& tab = ( static_cast< const EdgesRenumbering * >( *changeIt ) )->getIndexArray();
-
-            this->renumber( tab );
-            break;
-        }
-
-        ///////////////////////// Events on Triangles //////////////////////////////////////
-        case core::topology::TRIANGLESINDICESSWAP:
-        {
-            unsigned int i1 = ( static_cast< const TrianglesIndicesSwap * >( *changeIt ) )->index[0];
-            unsigned int i2 = ( static_cast< const TrianglesIndicesSwap* >( *changeIt ) )->index[1];
-
-            this->swap( i1, i2 );
-            break;
-        }
-        case core::topology::TRIANGLESADDED:
-        {
-            const TrianglesAdded *ea=static_cast< const TrianglesAdded * >( *changeIt );
-
-            this->applyTriangleCreation( ea->triangleIndexArray, ea->triangleArray, ea->ancestorsList, ea->coefs );
-            break;
-        }
-        case core::topology::TRIANGLESREMOVED:
-        {
-            const sofa::helper::vector<unsigned int> &tab = ( static_cast< const TrianglesRemoved *>( *changeIt ) )->getArray();
-
-            this->applyTriangleDestruction( tab );
-            break;
-        }
-        case core::topology::TRIANGLESMOVED_REMOVING:
-        {
-            const sofa::helper::vector< unsigned int >& triangleList = ( static_cast< const TrianglesMoved_Removing *>( *changeIt ) )->trianglesAroundVertexMoved;
-
-            this->applyTriangleMovedDestruction(triangleList);
-            break;
-        }
-        case core::topology::TRIANGLESMOVED_ADDING:
-        {
-            const sofa::helper::vector< unsigned int >& triangleList = ( static_cast< const TrianglesMoved_Adding *>( *changeIt ) )->trianglesAroundVertexMoved;
-            const sofa::helper::vector< Triangle >& triangleArray = ( static_cast< const TrianglesMoved_Adding *>( *changeIt ) )->triangleArray2Moved;
-
-            this->applyTriangleMovedCreation(triangleList, triangleArray);
-            break;
-        }
-        case core::topology::TRIANGLESRENUMBERING:
-        {
-            const sofa::helper::vector<unsigned int>& tab = ( static_cast< const TrianglesRenumbering * >( *changeIt ) )->getIndexArray();
-
-            this->renumber( tab );
-            break;
-        }
-
-        ///////////////////////// Events on Quads //////////////////////////////////////
-        case core::topology::QUADSINDICESSWAP:
-        {
-            unsigned int i1 = ( static_cast< const QuadsIndicesSwap * >( *changeIt ) )->index[0];
-            unsigned int i2 = ( static_cast< const QuadsIndicesSwap* >( *changeIt ) )->index[1];
-
-            this->swap( i1, i2 );
-            break;
-        }
-        case core::topology::QUADSADDED:
-        {
-            const QuadsAdded *ea=static_cast< const QuadsAdded * >( *changeIt );
-
-            this->applyQuadCreation( ea->quadIndexArray, ea->quadArray, ea->ancestorsList, ea->coefs );
-            break;
-        }
-        case core::topology::QUADSREMOVED:
-        {
-            const sofa::helper::vector<unsigned int> &tab = ( static_cast< const QuadsRemoved *>( *changeIt ) )->getArray();
-
-            this->applyQuadDestruction( tab );
-            break;
-        }
-        case core::topology::QUADSMOVED_REMOVING:
-        {
-            const sofa::helper::vector< unsigned int >& quadList = ( static_cast< const QuadsMoved_Removing *>( *changeIt ) )->quadsAroundVertexMoved;
-
-            this->applyQuadMovedDestruction(quadList);
-            break;
-        }
-        case core::topology::QUADSMOVED_ADDING:
-        {
-            const sofa::helper::vector< unsigned int >& quadList = ( static_cast< const QuadsMoved_Adding *>( *changeIt ) )->quadsAroundVertexMoved;
-            const sofa::helper::vector< Quad >& quadArray = ( static_cast< const QuadsMoved_Adding *>( *changeIt ) )->quadArray2Moved;
-
-            this->applyQuadMovedCreation(quadList, quadArray);
-            break;
-        }
-        case core::topology::QUADSRENUMBERING:
-        {
-            const sofa::helper::vector<unsigned int>& tab = ( static_cast< const QuadsRenumbering * >( *changeIt ) )->getIndexArray();
-
-            this->renumber( tab );
-            break;
-        }
-
-        ///////////////////////// Events on Tetrahedra //////////////////////////////////////
-        case core::topology::TETRAHEDRAINDICESSWAP:
-        {
-            unsigned int i1 = ( static_cast< const TetrahedraIndicesSwap * >( *changeIt ) )->index[0];
-            unsigned int i2 = ( static_cast< const TetrahedraIndicesSwap* >( *changeIt ) )->index[1];
-
-            this->swap( i1, i2 );
-            break;
-        }
-        case core::topology::TETRAHEDRAADDED:
-        {
-            const TetrahedraAdded *ea=static_cast< const TetrahedraAdded * >( *changeIt );
-
-            this->applyTetrahedronCreation( ea->tetrahedronIndexArray, ea->tetrahedronArray, ea->ancestorsList, ea->coefs );
-            break;
-        }
-        case core::topology::TETRAHEDRAREMOVED:
-        {
-            const sofa::helper::vector<unsigned int> &tab = ( static_cast< const TetrahedraRemoved *>( *changeIt ) )->getArray();
-
-            this->applyTetrahedronDestruction( tab );
-            break;
-        }
-        case core::topology::TETRAHEDRAMOVED_REMOVING:
-        {
-            const sofa::helper::vector< unsigned int >& tetrahedronList = ( static_cast< const TetrahedraMoved_Removing *>( *changeIt ) )->tetrahedraAroundVertexMoved;
-
-            this->applyTetrahedronMovedDestruction(tetrahedronList);
-            break;
-        }
-        case core::topology::TETRAHEDRAMOVED_ADDING:
-        {
-            const sofa::helper::vector< unsigned int >& tetrahedronList = ( static_cast< const TetrahedraMoved_Adding *>( *changeIt ) )->tetrahedraAroundVertexMoved;
-            const sofa::helper::vector< Tetrahedron >& tetrahedronArray = ( static_cast< const TetrahedraMoved_Adding *>( *changeIt ) )->tetrahedronArray2Moved;
-
-            this->applyTetrahedronMovedCreation(tetrahedronList, tetrahedronArray);
-            break;
-        }
-        case core::topology::TETRAHEDRARENUMBERING:
-        {
-            const sofa::helper::vector<unsigned int>& tab = ( static_cast< const TetrahedraRenumbering * >( *changeIt ) )->getIndexArray();
-
-            this->renumber( tab );
-            break;
-        }
-
-        ///////////////////////// Events on Hexahedra //////////////////////////////////////
-        case core::topology::HEXAHEDRAINDICESSWAP:
-        {
-            unsigned int i1 = ( static_cast< const HexahedraIndicesSwap * >( *changeIt ) )->index[0];
-            unsigned int i2 = ( static_cast< const HexahedraIndicesSwap* >( *changeIt ) )->index[1];
-
-            this->swap( i1, i2 );
-            break;
-        }
-        case core::topology::HEXAHEDRAADDED:
-        {
-            const HexahedraAdded *ea=static_cast< const HexahedraAdded * >( *changeIt );
-
-            this->applyHexahedronCreation( ea->hexahedronIndexArray, ea->hexahedronArray, ea->ancestorsList, ea->coefs );
-            break;
-        }
-        case core::topology::HEXAHEDRAREMOVED:
-        {
-            const sofa::helper::vector<unsigned int> &tab = ( static_cast< const HexahedraRemoved *>( *changeIt ) )->getArray();
-
-            this->applyHexahedronDestruction( tab );
-            break;
-        }
-        case core::topology::HEXAHEDRAMOVED_REMOVING:
-        {
-            const sofa::helper::vector< unsigned int >& hexahedronList = ( static_cast< const HexahedraMoved_Removing *>( *changeIt ) )->hexahedraAroundVertexMoved;
-
-            this->applyHexahedronMovedDestruction(hexahedronList);
-            break;
-        }
-        case core::topology::HEXAHEDRAMOVED_ADDING:
-        {
-            const sofa::helper::vector< unsigned int >& hexahedronList = ( static_cast< const HexahedraMoved_Adding *>( *changeIt ) )->hexahedraAroundVertexMoved;
-            const sofa::helper::vector< Hexahedron >& hexahedronArray = ( static_cast< const HexahedraMoved_Adding *>( *changeIt ) )->hexahedronArray2Moved;
-
-            this->applyHexahedronMovedCreation(hexahedronList, hexahedronArray);
-            break;
-        }
-        case core::topology::HEXAHEDRARENUMBERING:
-        {
-            const sofa::helper::vector<unsigned int>& tab = ( static_cast< const HexahedraRenumbering * >( *changeIt ) )->getIndexArray();
-
-            this->renumber( tab );
-            break;
-        }
+        SOFA_CASE_EVENT(HEXAHEDRAINDICESSWAP,HexahedraIndicesSwap);
+        SOFA_CASE_EVENT(HEXAHEDRAADDED,HexahedraAdded);
+        SOFA_CASE_EVENT(HEXAHEDRAREMOVED,HexahedraRemoved);
+        SOFA_CASE_EVENT(HEXAHEDRAMOVED_REMOVING,HexahedraMoved_Removing);
+        SOFA_CASE_EVENT(HEXAHEDRAMOVED_ADDING,HexahedraMoved_Adding);
+        SOFA_CASE_EVENT(HEXAHEDRARENUMBERING,HexahedraRenumbering);
+#undef SOFA_CASE_EVENT
         default:
             break;
         }; // switch( changeType )

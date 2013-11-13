@@ -56,7 +56,8 @@ enum TopologyObjectType
     HEXAHEDRON
 };
 
-
+SOFA_CORE_API TopologyObjectType parseTopologyObjectTypeFromString(const std::string& s);
+SOFA_CORE_API std::string parseTopologyObjectTypeToString(TopologyObjectType t);
 
 class SOFA_CORE_API Topology : public virtual core::objectmodel::BaseObject
 {

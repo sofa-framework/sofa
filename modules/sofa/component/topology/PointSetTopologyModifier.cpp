@@ -114,14 +114,12 @@ void PointSetTopologyModifier::addPointsWarning(const unsigned int nPoints,
 
 
 void PointSetTopologyModifier::addPointsWarning(const unsigned int nPoints,
-        const helper::vector< core::topology::TopologyObjectType >& elemTypes,
-        const helper::vector< unsigned int >& elemIndices,
-        const helper::vector< core::topology::AncestorElem::LocalCoords >& localCoords,
+        const sofa::helper::vector< core::topology::PointAncestorElem >& ancestorElems,
         const bool addDOF)
 {
     using namespace sofa::core::topology;
 
-    assert((elemTypes.size() == elemIndices.size()) && (elemTypes.size() == localCoords.size()));
+    assert(ancestorElems.size() == nPoints);
 
     m_container->setPointTopologyToDirty();
 
@@ -141,73 +139,104 @@ void PointSetTopologyModifier::addPointsWarning(const unsigned int nPoints,
     for(unsigned int i = 0; i < nPoints; ++i)
     {
         newPointIndices[i] = startIndex + i;
-        
-        switch (elemTypes[i])
+        unsigned int ancestorIndex = ancestorElems[i].index;
+        core::topology::PointAncestorElem::LocalCoords localCoords = ancestorElems[i].localCoords;
+        switch (ancestorElems[i].type)
         {
             case POINT :
+            {
                 ancestorPointIndices[i].resize(1);
-                ancestorPointIndices[i][0] = elemIndices[i];
+                ancestorPointIndices[i][0] = ancestorIndex;
 
                 baryCoefs[i].resize(1);
                 baryCoefs[i][0] = 1;
                 break;
-
+            }
             case EDGE :
+            {
+                const core::topology::Topology::Edge& e = m_container->getEdge(ancestorIndex);
                 ancestorPointIndices[i].resize(2);
-                {
-                    const core::topology::Topology::Edge& e = m_container->getEdge(elemIndices[i]);
-                    ancestorPointIndices[i][0] = e[0];
-                    ancestorPointIndices[i][1] = e[1];
-                }
+                ancestorPointIndices[i][0] = e[0];
+                ancestorPointIndices[i][1] = e[1];
 
                 baryCoefs[i].resize(2);
-                baryCoefs[i][0] = 1 - localCoords[i][0];
-                baryCoefs[i][1] = localCoords[i][0];
-
+                baryCoefs[i][0] = 1 - localCoords[0];
+                baryCoefs[i][1] = localCoords[0];
                 break;
-
+            }
             case TRIANGLE :
+            {
+                const core::topology::Topology::Triangle& t = m_container->getTriangle(ancestorIndex);
                 ancestorPointIndices[i].resize(3);
-                {
-                    const core::topology::Topology::Triangle& t = m_container->getTriangle(elemIndices[i]);
-                    ancestorPointIndices[i][0] = t[0];
-                    ancestorPointIndices[i][1] = t[1];
-                    ancestorPointIndices[i][2] = t[2];
-                }
+                ancestorPointIndices[i][0] = t[0];
+                ancestorPointIndices[i][1] = t[1];
+                ancestorPointIndices[i][2] = t[2];
 
                 baryCoefs[i].resize(3);
-                baryCoefs[i][0] = 1 - localCoords[i][0] - localCoords[i][1];
-                baryCoefs[i][1] = localCoords[i][0];
-                baryCoefs[i][2] = localCoords[i][1];
-
+                baryCoefs[i][0] = 1 - localCoords[0] - localCoords[1];
+                baryCoefs[i][1] = localCoords[0];
+                baryCoefs[i][2] = localCoords[1];
                 break;
-
+            }
             case TETRAHEDRON :
+            {
+                const core::topology::Topology::Tetrahedron& t = m_container->getTetrahedron(ancestorIndex);
                 ancestorPointIndices[i].resize(4);
-                {
-                    const core::topology::Topology::Tetrahedron& t = m_container->getTetrahedron(elemIndices[i]);
-                    ancestorPointIndices[i][0] = t[0];
-                    ancestorPointIndices[i][1] = t[1];
-                    ancestorPointIndices[i][2] = t[2];
-                    ancestorPointIndices[i][3] = t[3];
-                }
+                ancestorPointIndices[i][0] = t[0];
+                ancestorPointIndices[i][1] = t[1];
+                ancestorPointIndices[i][2] = t[2];
+                ancestorPointIndices[i][3] = t[3];
 
                 baryCoefs[i].resize(4);
-                baryCoefs[i][0] = 1 - localCoords[i][0] - localCoords[i][1] - localCoords[i][2];
-                baryCoefs[i][1] = localCoords[i][0];
-                baryCoefs[i][2] = localCoords[i][1];
-                baryCoefs[i][3] = localCoords[i][2];
+                baryCoefs[i][0] = 1 - localCoords[0] - localCoords[1] - localCoords[2];
+                baryCoefs[i][1] = localCoords[0];
+                baryCoefs[i][2] = localCoords[1];
+                baryCoefs[i][3] = localCoords[2];
 
                 break;
-
+            }
             case QUAD :
-                /// @TODO
-                break;
+            {
+                const core::topology::Topology::Quad& q = m_container->getQuad(ancestorIndex);
+                ancestorPointIndices[i].resize(4);
+                ancestorPointIndices[i][0] = q[0];
+                ancestorPointIndices[i][1] = q[1];
+                ancestorPointIndices[i][2] = q[2];
+                ancestorPointIndices[i][3] = q[3];
 
+                baryCoefs[i].resize(4);
+                baryCoefs[i][0] = (1 - localCoords[0])*(1 - localCoords[1]);
+                baryCoefs[i][1] = (    localCoords[0])*(1 - localCoords[1]);
+                baryCoefs[i][2] = (    localCoords[0])*(    localCoords[1]);
+                baryCoefs[i][3] = (1 - localCoords[0])*(    localCoords[1]);
+
+                break;
+            }
             case HEXAHEDRON :
-                /// @TODO
-                break;
+            {
+                const core::topology::Topology::Hexahedron& h = m_container->getHexahedron(ancestorIndex);
+                ancestorPointIndices[i].resize(8);
+                ancestorPointIndices[i][0] = h[0];
+                ancestorPointIndices[i][1] = h[1];
+                ancestorPointIndices[i][2] = h[2];
+                ancestorPointIndices[i][3] = h[3];
+                ancestorPointIndices[i][4] = h[4];
+                ancestorPointIndices[i][5] = h[5];
+                ancestorPointIndices[i][6] = h[6];
+                ancestorPointIndices[i][7] = h[7];
 
+                baryCoefs[i].resize(8);
+                baryCoefs[i][0] = (1 - localCoords[0])*(1 - localCoords[1])*(1 - localCoords[2]);
+                baryCoefs[i][1] = (    localCoords[0])*(1 - localCoords[1])*(1 - localCoords[2]);
+                baryCoefs[i][2] = (    localCoords[0])*(    localCoords[1])*(1 - localCoords[2]);
+                baryCoefs[i][3] = (1 - localCoords[0])*(    localCoords[1])*(1 - localCoords[2]);
+                baryCoefs[i][4] = (1 - localCoords[0])*(1 - localCoords[1])*(    localCoords[2]);
+                baryCoefs[i][5] = (    localCoords[0])*(1 - localCoords[1])*(    localCoords[2]);
+                baryCoefs[i][6] = (    localCoords[0])*(    localCoords[1])*(    localCoords[2]);
+                baryCoefs[i][7] = (1 - localCoords[0])*(    localCoords[1])*(    localCoords[2]);
+
+                break;
+            }
             default :
                 serr << "ERROR in PointSetTopologyModifier : Unsupported ancestor primitive type in addPointsWarning" << sendl;
                 break;
@@ -216,13 +245,15 @@ void PointSetTopologyModifier::addPointsWarning(const unsigned int nPoints,
 
     if(addDOF)
     {
-        PointsAdded *e2 = new PointsAdded(nPoints, elemTypes, elemIndices, localCoords, newPointIndices, ancestorPointIndices, baryCoefs);
+        PointsAdded *e2 = new PointsAdded(nPoints, newPointIndices, ancestorElems,
+            ancestorPointIndices, baryCoefs);
         addStateChange(e2);
         propagateStateChanges();
     }
 
     // Warning that vertices just got created
-    PointsAdded *e = new PointsAdded(nPoints, elemTypes, elemIndices, localCoords, newPointIndices, ancestorPointIndices, baryCoefs);
+    PointsAdded *e = new PointsAdded(nPoints, newPointIndices, ancestorElems,
+        ancestorPointIndices, baryCoefs);
     this->addTopologyChange(e);
 }
 
@@ -246,13 +277,11 @@ void PointSetTopologyModifier::addPoints(const unsigned int nPoints,
 }
 
 void PointSetTopologyModifier::addPoints(const unsigned int nPoints,
-     const sofa::helper::vector< core::topology::TopologyObjectType >& elemTypes,
-     const sofa::helper::vector< unsigned int >& elemIndices,
-     const sofa::helper::vector< core::topology::AncestorElem::LocalCoords >& localCoords,
+     const sofa::helper::vector< core::topology::PointAncestorElem >& srcElems,
      const bool addDOF)
 {
     addPointsProcess(nPoints);
-    addPointsWarning(nPoints, elemTypes, elemIndices, localCoords, addDOF);
+    addPointsWarning(nPoints, srcElems, addDOF);
     propagateTopologicalChanges();
 }
 
