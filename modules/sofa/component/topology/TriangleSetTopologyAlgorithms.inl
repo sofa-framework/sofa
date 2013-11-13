@@ -907,7 +907,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
 
             srcTypes.push_back(core::topology::EDGE);
             srcIndices.push_back(indices_list[i]);
-            srcLocalCoords.push_back(core::topology::AncestorElem::LocalCoords(1.0 - coords_list[i][0], 0, 0));
+            srcLocalCoords.push_back(core::topology::AncestorElem::LocalCoords(coords_list[i][0], 0, 0));
 
             new_edge_points.push_back(next_point);
             ++next_point;
