@@ -78,8 +78,7 @@ void BaseObject::changeContextLink(BaseContext* before, BaseContext*& after)
     if (before == after) return;
     for (unsigned int i = 0; i < l_slaves.size(); ++i) l_slaves.get(i)->l_context.set(after);
     // update links
-    for(VecLink::const_iterator iLink = m_vecLink.begin(); iLink != m_vecLink.end(); ++iLink)
-        (*iLink)->updateLinks();
+    updateLinks(false);
 }
 
 /// This method insures that slaves objects have master and context links set correctly

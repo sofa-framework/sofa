@@ -45,7 +45,7 @@ Visitor::Result UpdateLinksVisitor::processNodeTopDown(simulation::Node* node)
         this->processObject(it->get());
     }
 
-    node->clearWarnings(); node->clearOutputs();
+    //node->clearWarnings(); node->clearOutputs();
     return RESULT_CONTINUE;
 }
 

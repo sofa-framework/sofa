@@ -171,7 +171,7 @@ public:
     std::vector< BaseLink* > findLinks( const std::string &name ) const;
 
     /// Update pointers in case the pointed-to objects have appeared
-    virtual void updateLinks();
+    virtual void updateLinks(bool logErrors = true);
 
     /// Helper method used to initialize a data field containing a value of type T
     template<class T>
