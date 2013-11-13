@@ -38,11 +38,6 @@ void GeometryAlgorithms::init()
 {
 }
 
-void GeometryAlgorithms::initPointsAdded(const helper::vector< unsigned int > &indices, const helper::vector< AncestorElem > &ancestorElems
-    , const helper::vector< core::VecCoordId >& coordVecs, const helper::vector< core::VecDerivId >& derivVecs )
-{
-}
-
 // TopologyAlgorithms implementation
 
 void TopologyAlgorithms::init()

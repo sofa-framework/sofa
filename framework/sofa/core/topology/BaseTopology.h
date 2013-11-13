@@ -27,7 +27,6 @@
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/topology/BaseTopologyObject.h>
-#include <sofa/core/VecId.h>
 
 #include <sofa/helper/list.h>
 
@@ -112,14 +111,6 @@ protected:
     {}
 public:
     virtual void init();
-
-    /** \brief Called by the MechanicalObject state change callback to initialize added
-    * points according to the topology (topology element & local coordinates)
-    *
-    * \param ancestorElems are the ancestors topology info used in the points modifications
-    */
-    virtual void initPointsAdded(const helper::vector< unsigned int > &indices, const helper::vector< AncestorElem > &ancestorElems
-        , const helper::vector< core::VecCoordId >& coordVecs, const helper::vector< core::VecDerivId >& derivVecs );
 };
 
 /** A class that contains a set of low-level methods that perform topological changes */

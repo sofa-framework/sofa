@@ -178,63 +178,6 @@ PointSetGeometryAlgorithms<DataTypes>::computeAngle(PointID ind_p0, PointID ind_
 
 
 template<class DataTypes>
-void PointSetGeometryAlgorithms<DataTypes>::initPointsAdded(const helper::vector< unsigned int > &indices, const helper::vector< core::topology::AncestorElem > &ancestorElems
-    , const helper::vector< core::VecCoordId >& coordVecs, const helper::vector< core::VecDerivId >& derivVecs )
-{
-    using namespace sofa::core::topology;
-
-    helper::vector< VecCoord* > pointsAddedVecCoords;
-    helper::vector< VecDeriv* > pointsAddedVecDerivs;
-
-    const unsigned int nbPointCoords = coordVecs.size();
-    const unsigned int nbPointDerivs = derivVecs.size();
-
-    for (unsigned int i=0; i < nbPointCoords; i++)
-    {
-        pointsAddedVecCoords.push_back(this->object->write(coordVecs[i])->beginEdit());
-    }
-
-    for (unsigned int i=0; i < nbPointDerivs; i++)
-    {
-        pointsAddedVecDerivs.push_back(this->object->write(derivVecs[i])->beginEdit());
-    }
-
-    for (unsigned int i=0; i < indices.size(); i++)
-    {
-        if (ancestorElems[i].index != BaseMeshTopology::InvalidID)
-        {
-            initPointAdded(indices[i], ancestorElems[i], pointsAddedVecCoords, pointsAddedVecDerivs);
-        }
-    }
-
-    for (unsigned int i=0; i < nbPointCoords; i++)
-    {
-        this->object->write(coordVecs[i])->endEdit();
-    }
-
-    for (unsigned int i=0; i < nbPointDerivs; i++)
-    {
-        this->object->write(derivVecs[i])->endEdit();
-    }
-}
-
-
-template<class DataTypes>
-void PointSetGeometryAlgorithms<DataTypes>::initPointAdded(unsigned int index, const core::topology::AncestorElem &ancestorElem
-    , const helper::vector< VecCoord* >& coordVecs, const helper::vector< VecDeriv* >& derivVecs)
-
-{
-    using namespace sofa::core::topology;
-
-    for (unsigned int i = 0; i < coordVecs.size(); i++)
-    {
-        (*coordVecs[i])[index] = (*coordVecs[i])[ancestorElem.index];
-        DataTypes::add((*coordVecs[i])[index], ancestorElem.localCoords[0], ancestorElem.localCoords[1], ancestorElem.localCoords[2]);
-    }
-}
-
-
-template<class DataTypes>
 void PointSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams* )
 {
 #ifndef SOFA_NO_OPENGL
