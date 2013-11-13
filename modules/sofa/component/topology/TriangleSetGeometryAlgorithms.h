@@ -59,6 +59,7 @@ public:
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::Deriv Deriv;
 protected:
     TriangleSetGeometryAlgorithms()
         : EdgeSetGeometryAlgorithms<DataTypes>()
