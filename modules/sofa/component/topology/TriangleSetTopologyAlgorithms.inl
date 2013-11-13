@@ -824,6 +824,11 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
     sofa::helper::vector< sofa::helper::vector< TriangleID > >  triangles_ancestors;
     sofa::helper::vector< sofa::helper::vector< double > >  triangles_barycoefs;
 
+    
+    helper::vector< core::topology::TopologyObjectType > srcTypes;
+    helper::vector< PointID > srcIndices;
+    helper::vector< core::topology::AncestorElem::LocalCoords > srcLocalCoords;
+
     //////// STEP 1 : Create points
 
     for (unsigned int i = 0; i < nb_points; i++)
@@ -900,6 +905,10 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
             baryCoefs.push_back(1.0 - coords_list[i][0]);
             baryCoefs.push_back(coords_list[i][0]);
 
+            srcTypes.push_back(core::topology::EDGE);
+            srcIndices.push_back(indices_list[i]);
+            srcLocalCoords.push_back(core::topology::AncestorElem::LocalCoords(1.0 - coords_list[i][0], 0, 0));
+
             new_edge_points.push_back(next_point);
             ++next_point;
             break;
@@ -917,6 +926,10 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
             baryCoefs.push_back(coords_list[i][0]);
             baryCoefs.push_back(coords_list[i][1]);
             baryCoefs.push_back(coords_list[i][2]);
+
+            srcTypes.push_back(core::topology::TRIANGLE);
+            srcIndices.push_back(indices_list[i]);
+            srcLocalCoords.push_back(core::topology::AncestorElem::LocalCoords(coords_list[i][1], coords_list[i][2], 0));
 
             new_edge_points.push_back(next_point);// hum...? pour les edges to split
             ++next_point;
@@ -1574,13 +1587,15 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
 
     // Create all the points registered to be created
     //std::cout << "passe la: addPointsProcess" << std::endl;
-    m_modifier->addPointsProcess(p_ancestors.size());
+    // m_modifier->addPointsProcess(p_ancestors.size());
 
     // Warn for the creation of all the points registered to be created
     //std::cout << "passe la: addPointsWarning" << std::endl;
-    m_modifier->addPointsWarning(p_ancestors.size(), p_ancestors, p_baryCoefs);
+    //m_modifier->addPointsWarning(p_ancestors.size(), p_ancestors, p_baryCoefs);
 
-    m_modifier->propagateTopologicalChanges();
+    m_modifier->addPoints(srcTypes.size(), srcTypes, srcIndices, srcLocalCoords);
+
+    // m_modifier->propagateTopologicalChanges();
 
     //Add and remove triangles lists
     //std::cout << "passe la: addRemoveTriangles" << std::endl;
