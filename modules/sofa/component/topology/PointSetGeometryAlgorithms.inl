@@ -221,7 +221,7 @@ void PointSetGeometryAlgorithms<DataTypes>::initPointsAdded(const helper::vector
 
 template<class DataTypes>
 void PointSetGeometryAlgorithms<DataTypes>::initPointAdded(unsigned int index, const core::topology::AncestorElem &ancestorElem
-    , const helper::vector< VecCoord* >& coordVecs, const helper::vector< VecDeriv* >& derivVecs)
+    , const helper::vector< VecCoord* >& coordVecs, const helper::vector< VecDeriv* >& /*derivVecs*/)
 
 {
     using namespace sofa::core::topology;
