@@ -738,6 +738,21 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( vecto
 }
 
 
+template<class DataTypes>
+void EdgeSetGeometryAlgorithms<DataTypes>::initPointAdded(unsigned int indice, const core::topology::AncestorElem &ancestorElem
+        , const helper::vector< VecCoord* >& coordVecs, const helper::vector< VecDeriv* >& derivVecs)
+{
+    using namespace sofa::core::topology;
+
+    if (ancestorElem.type != EDGE)
+    {
+        PointSetGeometryAlgorithms< DataTypes >::initPointAdded(indice, ancestorElem, coordVecs, derivVecs);
+    }
+    else
+    {
+
+    }
+}
 
 
 } // namespace topology
