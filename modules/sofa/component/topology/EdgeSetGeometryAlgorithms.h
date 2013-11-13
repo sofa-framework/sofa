@@ -27,6 +27,7 @@
 
 #include <sofa/component/topology/PointSetGeometryAlgorithms.h>
 #include <sofa/component/topology/CommonAlgorithms.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
 {
@@ -65,6 +66,7 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE(EdgeSetGeometryAlgorithms,DataTypes),SOFA_TEMPLATE(PointSetGeometryAlgorithms,DataTypes));
 
     typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::CPos CPos;
@@ -149,8 +151,10 @@ public:
       */
     void computeLocalFrameEdgeWeights( vector<unsigned>& numEdges, vector<Edge>& edges, vector<Vec3d>& weights ) const;
 
-
-
+    /** \brief Process the added point initialization according to the topology and local coordinates.
+    */
+    virtual void initPointAdded(unsigned int indice, const core::topology::AncestorElem &ancestorElem
+        , const helper::vector< VecCoord* >& coordVecs, const helper::vector< VecDeriv* >& derivVecs);
 
 protected:
     Data<bool> showEdgeIndices;

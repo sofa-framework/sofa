@@ -57,6 +57,8 @@ public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::Deriv Deriv;
+    typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::CPos CPos;
     enum { NC = CPos::static_size };
 
@@ -120,6 +122,16 @@ public:
     {
         return DataTypes::Name();
     }
+
+    /** \brief Called by the MechanicalObject state change callback to initialize added
+     * points according to the topology (topology element & local coordinates) 
+     */
+    void initPointsAdded(const helper::vector< unsigned int > &indices, const helper::vector< core::topology::AncestorElem > &ancestorElems
+        , const helper::vector< core::VecCoordId >& coordVecs, const helper::vector< core::VecDerivId >& derivVecs );
+
+    /** \brief Process the added point initialization according to the topology and local coordinates.
+    */
+    virtual void initPointAdded(unsigned int indice, const core::topology::AncestorElem &ancestorElem, const helper::vector< VecCoord* >& coordVecs, const helper::vector< VecDeriv* >& derivVecs);
 
 protected:
     /** the object where the mechanical DOFs are stored */

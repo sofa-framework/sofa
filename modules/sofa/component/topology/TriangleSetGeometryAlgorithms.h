@@ -56,6 +56,7 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE(TriangleSetGeometryAlgorithms,DataTypes), SOFA_TEMPLATE(EdgeSetGeometryAlgorithms,DataTypes));
 
     typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
 protected:
@@ -263,6 +264,11 @@ public:
       First triangle index is used as ground truth. Use option flipNormals if first triangle direction is wrong.
       */
     void reorderTrianglesOrientationFromNormals();
+
+    /** \brief Process the added point initialization according to the topology and local coordinates.
+    */
+    virtual void initPointAdded(unsigned int indice, const core::topology::AncestorElem &ancestorElem
+        , const helper::vector< VecCoord* >& coordVecs, const helper::vector< VecDeriv* >& derivVecs);
 
 protected:
     Data<bool> showTriangleIndices;
