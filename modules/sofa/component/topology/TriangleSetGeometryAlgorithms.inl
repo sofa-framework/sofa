@@ -2148,30 +2148,20 @@ void TriangleSetGeometryAlgorithms<DataTypes>::initPointAdded(unsigned int index
 
             // Compute normal (ugly but doesn't require template specialization...)
             defaulttype::Vec<3,Real> p0;
-            p0[0] = (Real) (c0[0]);
-            p0[1] = (Real) (c0[1]);
-            p0[2] = (Real) (c0[2]);
+            DataTypes::get(p0[0], p0[1], p0[2], c0);
             defaulttype::Vec<3,Real> p1;
-            p1[0] = (Real) (c1[0]);
-            p1[1] = (Real) (c1[1]);
-            p1[2] = (Real) (c1[2]);
+            DataTypes::get(p1[0], p1[1], p1[2], c1);
             defaulttype::Vec<3,Real> p2;
-            p2[0] = (Real) (c2[0]);
-            p2[1] = (Real) (c2[1]);
-            p2[2] = (Real) (c2[2]);
+            DataTypes::get(p2[0], p2[1], p2[2], c2);
 
             defaulttype::Vec<3,Real> p0p1 = p1 - p0;
             defaulttype::Vec<3,Real> p0p2 = p2 - p0;
-            p0p1.normalize();
-            p0p2.normalize();
 
             defaulttype::Vec<3,Real> n = p0p1.cross(p0p2);
             n.normalize();
 
             defaulttype::Vec<3,Real> newCurCoord = p0 + p0p1 * ancestorElem.localCoords[0] + p0p2 * ancestorElem.localCoords[1] + n * ancestorElem.localCoords[2];
-            curCoord = Coord();
-     
-            DataTypes::add(curCoord, newCurCoord[0], newCurCoord[1], newCurCoord[2]);
+            DataTypes::set(curCoord, newCurCoord[0], newCurCoord[1], newCurCoord[2]);
         }
     }
 }

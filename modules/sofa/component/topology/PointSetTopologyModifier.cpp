@@ -121,7 +121,7 @@ void PointSetTopologyModifier::addPointsWarning(const unsigned int nPoints,
 {
     using namespace sofa::core::topology;
 
-    assert(elemTypes.size() == elemIndices.size() == localCoords.size());
+    assert((elemTypes.size() == elemIndices.size()) && (elemTypes.size() == localCoords.size()));
 
     m_container->setPointTopologyToDirty();
 
@@ -161,8 +161,8 @@ void PointSetTopologyModifier::addPointsWarning(const unsigned int nPoints,
                 }
 
                 baryCoefs[i].resize(2);
-                baryCoefs[i][0] = localCoords[i][0];
-                baryCoefs[i][1] = 1 - localCoords[i][0];
+                baryCoefs[i][0] = 1 - localCoords[i][0];
+                baryCoefs[i][1] = localCoords[i][0];
 
                 break;
 
@@ -192,10 +192,11 @@ void PointSetTopologyModifier::addPointsWarning(const unsigned int nPoints,
                     ancestorPointIndices[i][3] = t[3];
                 }
 
-                baryCoefs[i].resize(3);
-                baryCoefs[i][0] = localCoords[i][0];
-                baryCoefs[i][1] = localCoords[i][1];
-                baryCoefs[i][2] = localCoords[i][2];
+                baryCoefs[i].resize(4);
+                baryCoefs[i][0] = 1 - localCoords[i][0] - localCoords[i][1] - localCoords[i][2];
+                baryCoefs[i][1] = localCoords[i][0];
+                baryCoefs[i][2] = localCoords[i][1];
+                baryCoefs[i][3] = localCoords[i][2];
 
                 break;
 
