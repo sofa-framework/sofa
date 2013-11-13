@@ -24,6 +24,8 @@
 ******************************************************************************/
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/Simulation.h>
+#include <sofa/core/objectmodel/KeypressedEvent.h>
+#include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include "ScriptEnvironment.h"
 using namespace sofa::simulation;
 #include <sofa/core/ExecParams.h>
@@ -264,6 +266,41 @@ extern "C" PyObject * Node_sendScriptEvent(PyObject *self, PyObject * args)
     Py_RETURN_NONE;
 }
 
+extern "C" PyObject * Node_sendKeypressedEvent(PyObject *self, PyObject * args)
+{
+    Node* node=dynamic_cast<Node*>(((PySPtr<Base>*)self)->object.get());
+    char* eventName;
+    if (!PyArg_ParseTuple(args, "s",&eventName))
+    {
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+    sofa::core::objectmodel::KeypressedEvent event(eventName ? eventName[0] : '\0');
+    // Entering c++ code that can re-enter Python code, need to release GIL
+    Py_BEGIN_ALLOW_THREADS
+        std::cout << "PYTHON sends key " << event.getKey() << std::endl;
+    dynamic_cast<Node*>(node->getRoot())->propagateEvent(sofa::core::ExecParams::defaultInstance(), &event);
+    Py_END_ALLOW_THREADS
+    Py_RETURN_NONE;
+}
+
+extern "C" PyObject * Node_sendKeyreleasedEvent(PyObject *self, PyObject * args)
+{
+    Node* node=dynamic_cast<Node*>(((PySPtr<Base>*)self)->object.get());
+    char* eventName;
+    if (!PyArg_ParseTuple(args, "s",&eventName))
+    {
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+    sofa::core::objectmodel::KeyreleasedEvent event(eventName ? eventName[0] : '\0');
+    // Entering c++ code that can re-enter Python code, need to release GIL
+    Py_BEGIN_ALLOW_THREADS
+    dynamic_cast<Node*>(node->getRoot())->propagateEvent(sofa::core::ExecParams::defaultInstance(), &event);
+    Py_END_ALLOW_THREADS
+    Py_RETURN_NONE;
+}
+
 SP_CLASS_METHODS_BEGIN(Node)
 SP_CLASS_METHOD(Node,executeVisitor)
 SP_CLASS_METHOD(Node,getRoot)
@@ -279,6 +316,8 @@ SP_CLASS_METHOD(Node,removeChild)
 SP_CLASS_METHOD(Node,moveChild)
 SP_CLASS_METHOD(Node,detachFromGraph)
 SP_CLASS_METHOD(Node,sendScriptEvent)
+SP_CLASS_METHOD(Node,sendKeypressedEvent)
+SP_CLASS_METHOD(Node,sendKeyreleasedEvent)
 SP_CLASS_METHODS_END
 
 SP_CLASS_TYPE_SPTR(Node,Node,Context)
