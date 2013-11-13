@@ -508,7 +508,9 @@ public:
 
             if (m_owner && !TraitsFindDest::findLinkDest(m_owner, ptr, str, this))
             {
-                ok = false;
+                // This is not an error, as the destination can be added later in the graph
+                // instead, we will check for failed links after init is completed
+                //ok = false;
             }
             else if (str[0] != '@')
             {
@@ -527,7 +529,9 @@ public:
                 DestType* ptr = NULL;
                 if (m_owner && !TraitsFindDest::findLinkDest(m_owner, ptr, path, this))
                 {
-                    ok = false;
+                    // This is not an error, as the destination can be added later in the graph
+                    // instead, we will check for failed links after init is completed
+                    //ok = false;
                 }
                 else if (path[0] != '@')
                 {
@@ -660,9 +664,11 @@ public:
     }
 
     /// Update pointers in case the pointed-to objects have appeared
-    virtual void updateLinks()
+    /// @return false if there are broken links
+    virtual bool updateLinks()
     {
-        if (!this->m_owner) return;
+        if (!this->m_owner) return false;
+        bool ok = true;
         const int aspect = core::ExecParams::currentAspect();
         unsigned int n = this->size();
         for (unsigned int i=0; i<n; ++i)
@@ -682,9 +688,14 @@ public:
                         this->updateCounter(aspect);
                         this->added(v, i);
                     }
+                    else
+                    {
+                        ok = false;
+                    }
                 }
             }
         }
+        return ok;
     }
 
     DestType* get(unsigned int index, const core::ExecParams* params = 0) const
@@ -816,9 +827,11 @@ public:
     }
 
     /// Update pointers in case the pointed-to objects have appeared
-    virtual void updateLinks()
+    /// @return false if there are broken links
+    virtual bool updateLinks()
     {
-        if (!this->m_owner) return;
+        if (!this->m_owner) return false;
+        bool ok = true;
         const int aspect = core::ExecParams::currentAspect();
         ValueType& value = this->m_value[aspect].get();
         std::string path;
@@ -829,9 +842,16 @@ public:
             {
                 TraitsFindDest::findLinkDest(this->m_owner, ptr, path, this);
                 if (ptr)
+                {
                     set(ptr, path);
+                }
+                else
+                {
+                    ok = false;
+                }
             }
         }
+        return ok;
     }
 
 #ifndef SOFA_DEPRECATE_OLD_API

@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_UPDATELINKSACTION_H
-#define SOFA_SIMULATION_UPDATELINKSACTION_H
+#ifndef SOFA_SIMULATION_UPDATELINKSVISITOR_H
+#define SOFA_SIMULATION_UPDATELINKSVISITOR_H
 
 #include <sofa/simulation/common/Visitor.h>
 #include <sofa/core/objectmodel/BaseObject.h>

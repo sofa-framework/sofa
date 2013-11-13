@@ -496,15 +496,21 @@ void  Base::parse ( BaseObjectDescription* arg )
         std::string valueString(val);
         parseField(attributeList[i], valueString);
     }
-    updateLinks();
+    updateLinks(false);
 }
 
 /// Update pointers in case the pointed-to objects have appeared
-void Base::updateLinks()
+void Base::updateLinks(bool logErrors)
 {
     // update links
     for(VecLink::const_iterator iLink = m_vecLink.begin(); iLink != m_vecLink.end(); ++iLink)
-        (*iLink)->updateLinks();
+    {
+        bool ok = (*iLink)->updateLinks();
+        if (!ok && (*iLink)->storePath() && logErrors)
+        {
+            serr << "Link update failed for " << (*iLink)->getName() << " = " << (*iLink)->getValueString() << sendl;
+        }
+    }
 }
 
 void  Base::writeDatas ( std::map<std::string,std::string*>& args )
