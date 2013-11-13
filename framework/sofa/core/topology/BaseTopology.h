@@ -118,7 +118,7 @@ public:
     *
     * \param ancestorElems are the ancestors topology info used in the points modifications
     */
-    virtual void initPointsAdded(const helper::vector< unsigned int > &indices, const helper::vector< AncestorElem > &ancestorElems
+    virtual void initPointsAdded(const helper::vector< unsigned int > &indices, const helper::vector< PointAncestorElem > &ancestorElems
         , const helper::vector< core::VecCoordId >& coordVecs, const helper::vector< core::VecDerivId >& derivVecs );
 };
 

@@ -83,9 +83,7 @@ public:
     * \sa addPointsProcess
     */
     void addPointsWarning(const unsigned int nPoints,
-            const sofa::helper::vector< core::topology::TopologyObjectType >& types,
-            const sofa::helper::vector< unsigned int >& indices,
-            const sofa::helper::vector< core::topology::AncestorElem::LocalCoords >& localCoords,
+            const sofa::helper::vector< core::topology::PointAncestorElem >& ancestorElems,
             const bool addDOF = true);
 
 
@@ -115,9 +113,7 @@ public:
      * \sa addPoints
      */
     void addPoints( const unsigned int nPoints,
-                    const sofa::helper::vector< core::topology::TopologyObjectType >& types,
-                    const sofa::helper::vector< unsigned int >& indices,
-                    const sofa::helper::vector< core::topology::AncestorElem::LocalCoords >& localCoords,
+                    const sofa::helper::vector< core::topology::PointAncestorElem >& ancestorElems,
                     const bool addDOF = true);
 
 

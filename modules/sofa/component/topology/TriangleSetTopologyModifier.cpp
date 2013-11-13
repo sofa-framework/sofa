@@ -168,7 +168,7 @@ void TriangleSetTopologyModifier::addTrianglesProcess(const sofa::helper::vector
 void TriangleSetTopologyModifier::addTriangleProcess(Triangle t)
 {
 
-#ifndef NDEBUG
+#ifndef NDEBUG2
     // check if the 3 vertices are different
     if((t[0]==t[1]) || (t[0]==t[2]) || (t[1]==t[2]) )
     {
@@ -356,7 +356,7 @@ void TriangleSetTopologyModifier::removeTrianglesProcess(const sofa::helper::vec
 
     if(!m_container->hasTriangles()) // this method should only be called when triangles exist
     {
-#ifndef NDEBUG
+#ifndef NDEBUG2
         sout << "Error. [TriangleSetTopologyModifier::removeTrianglesProcess] triangle array is empty." << sendl;
 #endif
         return;

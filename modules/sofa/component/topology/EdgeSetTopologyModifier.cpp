@@ -70,7 +70,7 @@ void EdgeSetTopologyModifier::init()
 
 void EdgeSetTopologyModifier::addEdgeProcess(Edge e)
 {
-#ifndef NDEBUG
+#ifndef NDEBUG2
     // check if the 2 vertices are different
     if(e[0] == e[1])
     {
@@ -162,6 +162,37 @@ void EdgeSetTopologyModifier::addEdgesWarning(const unsigned int nEdges,
 
     // Warning that edges just got created
     EdgesAdded *e = new EdgesAdded(nEdges, edgesList, edgesIndexList, ancestors, baryCoefs);
+    addTopologyChange(e);
+}
+
+void EdgeSetTopologyModifier::addEdgesWarning(const unsigned int nEdges,
+        const sofa::helper::vector< Edge >& edgesList,
+        const sofa::helper::vector< unsigned int >& edgesIndexList,
+        const sofa::helper::vector< core::topology::EdgeAncestorElem >& ancestorElems)
+{
+    m_container->setEdgeTopologyToDirty();
+    
+    sofa::helper::vector< sofa::helper::vector< unsigned int > > ancestors;
+    sofa::helper::vector< sofa::helper::vector< double > > baryCoefs;
+    ancestors.resize(nEdges);
+    baryCoefs.resize(nEdges);
+
+    for (unsigned int i=0; i<nEdges; ++i)
+    {
+        for (unsigned int j=0; j<ancestorElems[i].srcElems.size(); ++j)
+        {
+            sofa::core::topology::TopologyElemID src = ancestorElems[i].srcElems[j];
+            if (src.type == sofa::core::topology::EDGE && src.index != sofa::core::topology::Topology::InvalidID)
+                ancestors[i].push_back(src.index);
+        }
+        if (!ancestors[i].empty())
+        {
+            baryCoefs[i].insert(baryCoefs[i].begin(), ancestors[i].size(), 1.0/ancestors[i].size());
+        }
+    }
+
+    // Warning that edges just got created
+    EdgesAdded *e = new EdgesAdded(nEdges, edgesList, edgesIndexList, ancestorElems, ancestors, baryCoefs);
     addTopologyChange(e);
 }
 
@@ -666,6 +697,30 @@ void EdgeSetTopologyModifier::addEdges(const sofa::helper::vector< Edge >& edges
 
     // add topology event in the stack of topological events
     addEdgesWarning( edges.size(), edges, edgesIndex, ancestors, baryCoefs);
+
+    // inform other objects that the edges are already added
+    propagateTopologicalChanges();
+}
+
+void EdgeSetTopologyModifier::addEdges(const sofa::helper::vector< Edge >& edges,
+        const sofa::helper::vector< core::topology::EdgeAncestorElem >& ancestorElems)
+{
+    unsigned int nEdges = m_container->getNumberOfEdges();
+
+    assert(ancestorElems.size() == edges.size());
+
+    /// actually add edges in the topology container
+    addEdgesProcess(edges);
+
+    sofa::helper::vector<unsigned int> edgesIndex;
+    edgesIndex.resize(edges.size());
+    for (unsigned int i=0; i<edges.size(); ++i)
+    {
+        edgesIndex[i] = nEdges+i;
+    }
+
+    // add topology event in the stack of topological events
+    addEdgesWarning( edges.size(), edges, edgesIndex, ancestorElems);
 
     // inform other objects that the edges are already added
     propagateTopologicalChanges();

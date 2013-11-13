@@ -56,127 +56,90 @@ public:
     virtual ~TopologyHandler() {}
 
     virtual void ApplyTopologyChanges(const std::list< const core::topology::TopologyChange *>& _topologyChangeEvents, const unsigned int _dataSize);
-    /// Handle EdgeSetTopology related events, ignore others. DEPRECATED
-    /*virtual void handleTopologyEvents( std::list< const core::topology::TopologyChange *>::const_iterator changeIt,
-                                       std::list< const core::topology::TopologyChange *>::const_iterator &end,
-                                       const unsigned int totalPointSetArraySize = 0){}
-    */
-    /// Apply adding points elements.
-    virtual void applyPointCreation(const sofa::helper::vector< unsigned int >& /*indices*/,
-            const sofa::helper::vector< Point >& /*elems*/,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& /*ancestors*/,
-            const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/) {}
-    /// Apply removing points elements.
-    virtual void applyPointDestruction(const sofa::helper::vector<unsigned int>& /*indices*/) {}
+
+    virtual void ApplyTopologyChange(const core::topology::EndingEvent* /*event*/) {}
+
+    ///////////////////////// Functions on Points //////////////////////////////////////
     /// Apply swap between point indicPointes elements.
-    virtual void applyPointIndicesSwap(unsigned int /*i1*/, unsigned int /*i2*/ ) {}
+    virtual void ApplyTopologyChange(const core::topology::PointsIndicesSwap* /*event*/) {}
+    /// Apply adding points elements.
+    virtual void ApplyTopologyChange(const core::topology::PointsAdded* /*event*/) {}
+    /// Apply removing points elements.
+    virtual void ApplyTopologyChange(const core::topology::PointsRemoved* /*event*/) {}
     /// Apply renumbering on points elements.
-    virtual void applyPointRenumbering(const sofa::helper::vector<unsigned int>& /*indices*/) {}
+    virtual void ApplyTopologyChange(const core::topology::PointsRenumbering* /*event*/) {}
     /// Apply moving points elements.
-    virtual void applyPointMove(const sofa::helper::vector<unsigned int>& /*indexList*/,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& /*ancestors*/,
-            const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/) {}
-
-
+    virtual void ApplyTopologyChange(const core::topology::PointsMoved* /*event*/) {}
 
     ///////////////////////// Functions on Edges //////////////////////////////////////
-    /// Apply adding edges elements.
-    virtual void applyEdgeCreation(const sofa::helper::vector< unsigned int >& /*indices*/,
-            const sofa::helper::vector< Edge >& /*elems*/,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& /*ancestors*/,
-            const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/) {}
-    /// Apply removing edges elements.
-    virtual void applyEdgeDestruction(const sofa::helper::vector<unsigned int> & /*indices*/) {}
     /// Apply swap between edges indices elements.
-    virtual void applyEdgeIndicesSwap(unsigned int /*i1*/, unsigned int /*i2*/ ) {}
-    /// Apply renumbering on edges elements.
-    virtual void applyEdgeRenumbering(const sofa::helper::vector<unsigned int>& /*indices*/) {}
-    /// Apply adding function on moved edges elements.
-    virtual void applyEdgeMovedCreation(const sofa::helper::vector<unsigned int>& /*indexList*/,
-            const sofa::helper::vector< Edge >& /*elems*/) {}
+    virtual void ApplyTopologyChange(const core::topology::EdgesIndicesSwap* /*event*/) {}
+    /// Apply adding edges elements.
+    virtual void ApplyTopologyChange(const core::topology::EdgesAdded* /*event*/) {}
+    /// Apply removing edges elements.
+    virtual void ApplyTopologyChange(const core::topology::EdgesRemoved* /*event*/) {}
     /// Apply removing function on moved edges elements.
-    virtual void applyEdgeMovedDestruction(const sofa::helper::vector<unsigned int> & /*indices*/) {}
-
-
+    virtual void ApplyTopologyChange(const core::topology::EdgesMoved_Removing* /*event*/) {}
+    /// Apply adding function on moved edges elements.
+    virtual void ApplyTopologyChange(const core::topology::EdgesMoved_Adding* /*event*/) {}
+    /// Apply renumbering on edges elements.
+    virtual void ApplyTopologyChange(const core::topology::EdgesRenumbering* /*event*/) {}
 
     ///////////////////////// Functions on Triangles //////////////////////////////////////
-    /// Apply adding triangles elements.
-    virtual void applyTriangleCreation(const sofa::helper::vector< unsigned int >& /*indices*/,
-            const sofa::helper::vector< Triangle >& /*elems*/,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& /*ancestors*/,
-            const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/) {}
-    /// Apply removing triangles elements.
-    virtual void applyTriangleDestruction(const sofa::helper::vector<unsigned int> & /*indices*/) {}
     /// Apply swap between triangles indices elements.
-    virtual void applyTriangleIndicesSwap(unsigned int /*i1*/, unsigned int /*i2*/ ) {}
-    /// Apply renumbering on triangles elements.
-    virtual void applyTriangleRenumbering(const sofa::helper::vector<unsigned int>& /*indices*/) {}
-    /// Apply adding function on moved triangles elements.
-    virtual void applyTriangleMovedCreation(const sofa::helper::vector<unsigned int>& /*indexList*/,
-            const sofa::helper::vector< Triangle >& /*elems*/) {}
+    virtual void ApplyTopologyChange(const core::topology::TrianglesIndicesSwap* /*event*/) {}
+    /// Apply adding triangles elements.
+    virtual void ApplyTopologyChange(const core::topology::TrianglesAdded* /*event*/) {}
+    /// Apply removing triangles elements.
+    virtual void ApplyTopologyChange(const core::topology::TrianglesRemoved* /*event*/) {}
     /// Apply removing function on moved triangles elements.
-    virtual void applyTriangleMovedDestruction(const sofa::helper::vector<unsigned int> & /*indices*/) {}
-
-
+    virtual void ApplyTopologyChange(const core::topology::TrianglesMoved_Removing* /*event*/) {}
+    /// Apply adding function on moved triangles elements.
+    virtual void ApplyTopologyChange(const core::topology::TrianglesMoved_Adding* /*event*/) {}
+    /// Apply renumbering on triangles elements.
+    virtual void ApplyTopologyChange(const core::topology::TrianglesRenumbering* /*event*/) {}
 
     ///////////////////////// Functions on Quads //////////////////////////////////////
-    /// Apply adding quads elements.
-    virtual void applyQuadCreation(const sofa::helper::vector< unsigned int >& /*indices*/,
-            const sofa::helper::vector< Quad >& /*elems*/,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& /*ancestors*/,
-            const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/) {}
-    /// Apply removing quads elements.
-    virtual void applyQuadDestruction(const sofa::helper::vector<unsigned int> & /*indices*/) {}
     /// Apply swap between quads indices elements.
-    virtual void applyQuadIndicesSwap(unsigned int /*i1*/, unsigned int /*i2*/ ) {}
-    /// Apply renumbering on quads elements.
-    virtual void applyQuadRenumbering(const sofa::helper::vector<unsigned int>& /*indices*/) {}
-    /// Apply adding function on moved quads elements.
-    virtual void applyQuadMovedCreation(const sofa::helper::vector<unsigned int>& /*indexList*/,
-            const sofa::helper::vector< Quad >& /*elems*/) {}
+    virtual void ApplyTopologyChange(const core::topology::QuadsIndicesSwap* /*event*/) {}
+    /// Apply adding quads elements.
+    virtual void ApplyTopologyChange(const core::topology::QuadsAdded* /*event*/) {}
+    /// Apply removing quads elements.
+    virtual void ApplyTopologyChange(const core::topology::QuadsRemoved* /*event*/) {}
     /// Apply removing function on moved quads elements.
-    virtual void applyQuadMovedDestruction(const sofa::helper::vector<unsigned int> & /*indices*/) {}
-
-
+    virtual void ApplyTopologyChange(const core::topology::QuadsMoved_Removing* /*event*/) {}
+    /// Apply adding function on moved quads elements.
+    virtual void ApplyTopologyChange(const core::topology::QuadsMoved_Adding* /*event*/) {}
+    /// Apply renumbering on quads elements.
+    virtual void ApplyTopologyChange(const core::topology::QuadsRenumbering* /*event*/) {}
 
     ///////////////////////// Functions on Tetrahedron //////////////////////////////////////
-    /// Apply adding tetrahedron elements.
-    virtual void applyTetrahedronCreation(const sofa::helper::vector< unsigned int >& /*indices*/,
-            const sofa::helper::vector< Tetrahedron >& /*elems*/,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& /*ancestors*/,
-            const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/) {}
-    /// Apply removing tetrahedron elements.
-    virtual void applyTetrahedronDestruction(const sofa::helper::vector<unsigned int> & /*indices*/) {}
     /// Apply swap between tetrahedron indices elements.
-    virtual void applyTetrahedronIndicesSwap(unsigned int /*i1*/, unsigned int /*i2*/ ) {}
-    /// Apply renumbering on tetrahedron elements.
-    virtual void applyTetrahedronRenumbering(const sofa::helper::vector<unsigned int>& /*indices*/) {}
-    /// Apply adding function on moved tetrahedron elements.
-    virtual void applyTetrahedronMovedCreation(const sofa::helper::vector<unsigned int>& /*indexList*/,
-            const sofa::helper::vector< Tetrahedron >& /*elems*/) {}
+    virtual void ApplyTopologyChange(const core::topology::TetrahedraIndicesSwap* /*event*/) {}
+    /// Apply adding tetrahedron elements.
+    virtual void ApplyTopologyChange(const core::topology::TetrahedraAdded* /*event*/) {}
+    /// Apply removing tetrahedron elements.
+    virtual void ApplyTopologyChange(const core::topology::TetrahedraRemoved* /*event*/) {}
     /// Apply removing function on moved tetrahedron elements.
-    virtual void applyTetrahedronMovedDestruction(const sofa::helper::vector<unsigned int> & /*indices*/) {}
-
-
+    virtual void ApplyTopologyChange(const core::topology::TetrahedraMoved_Removing* /*event*/) {}
+    /// Apply adding function on moved tetrahedron elements.
+    virtual void ApplyTopologyChange(const core::topology::TetrahedraMoved_Adding* /*event*/) {}
+    /// Apply renumbering on tetrahedron elements.
+    virtual void ApplyTopologyChange(const core::topology::TetrahedraRenumbering* /*event*/) {}
 
     ///////////////////////// Functions on Hexahedron //////////////////////////////////////
-    /// Apply adding hexahedron elements.
-    virtual void applyHexahedronCreation(const sofa::helper::vector< unsigned int >& /*indices*/,
-            const sofa::helper::vector< Hexahedron >& /*elems*/,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& /*ancestors*/,
-            const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/) {}
-    /// Apply removing hexahedron elements.
-    virtual void applyHexahedronDestruction(const sofa::helper::vector<unsigned int> & /*indices*/) {}
     /// Apply swap between hexahedron indices elements.
-    virtual void applyHexahedronIndicesSwap(unsigned int /*i1*/, unsigned int /*i2*/ ) {}
-    /// Apply renumbering on hexahedron elements.
-    virtual void applyHexahedronRenumbering(const sofa::helper::vector<unsigned int>& /*indices*/) {}
-    /// Apply adding function on moved hexahedron elements.
-    virtual void applyHexahedronMovedCreation(const sofa::helper::vector<unsigned int>& /*indexList*/,
-            const sofa::helper::vector< Hexahedron >& /*elems*/) {}
+    virtual void ApplyTopologyChange(const core::topology::HexahedraIndicesSwap* /*event*/) {}
+    /// Apply adding hexahedron elements.
+    virtual void ApplyTopologyChange(const core::topology::HexahedraAdded* /*event*/) {}
+    /// Apply removing hexahedron elements.
+    virtual void ApplyTopologyChange(const core::topology::HexahedraRemoved* /*event*/) {}
     /// Apply removing function on moved hexahedron elements.
-    virtual void applyHexahedronMovedDestruction(const sofa::helper::vector<unsigned int> & /*indices*/) {}
-
+    virtual void ApplyTopologyChange(const core::topology::HexahedraMoved_Removing* /*event*/) {}
+    /// Apply adding function on moved hexahedron elements.
+    virtual void ApplyTopologyChange(const core::topology::HexahedraMoved_Adding* /*event*/) {}
+    /// Apply renumbering on hexahedron elements.
+    virtual void ApplyTopologyChange(const core::topology::HexahedraRenumbering* /*event*/) {}
 
 
     virtual bool isTopologyDataRegistered() {return false;}

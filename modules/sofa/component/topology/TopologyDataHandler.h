@@ -66,7 +66,8 @@ public:
     /// const iterator
     typedef typename container_type::const_iterator const_iterator;
 
-
+    typedef sofa::core::topology::TopologyElementHandler< TopologyElementType > Inherit;
+    typedef typename Inherit::AncestorElem AncestorElem;
 
 public:
     // constructor
@@ -82,6 +83,7 @@ public:
     /** Public fonction to apply creation and destruction functions */
     /// Apply removing current elementType elements
     virtual void applyDestroyFunction(unsigned int, value_type& ) {}
+
     /// Apply adding current elementType elements
     virtual void applyCreateFunction(unsigned int, value_type& t,
             const sofa::helper::vector< unsigned int > &,
@@ -89,9 +91,20 @@ public:
 
     /// WARNING NEEED TO UNIFY THIS
     /// Apply adding current elementType elements
-    virtual void applyCreateFunction(unsigned int, value_type&t , const TopologyElementType& ,
-            const sofa::helper::vector< unsigned int > &,
-            const sofa::helper::vector< double > &) {t = value_type();}
+    virtual void applyCreateFunction(unsigned int i, value_type&t , const TopologyElementType& ,
+            const sofa::helper::vector< unsigned int > &ancestors,
+            const sofa::helper::vector< double > &coefs)
+    {
+        applyCreateFunction(i, t, ancestors, coefs);
+    }
+
+    virtual void applyCreateFunction(unsigned int i, value_type&t , const TopologyElementType& e,
+            const sofa::helper::vector< unsigned int > &ancestors,
+            const sofa::helper::vector< double > &coefs,
+            const AncestorElem* /*ancestorElem*/)
+    {
+        applyCreateFunction(i, t, e, ancestors, coefs);
+    }
 
 
 //    protected:
@@ -99,14 +112,12 @@ public:
     virtual void swap( unsigned int i1, unsigned int i2 );
 
     /// Add some values. Values are added at the end of the vector.
-    virtual void add( unsigned int nbElements,
+    /// This (new) version gives more information for element indices and ancestry
+    virtual void add( const sofa::helper::vector<unsigned int> & index,
             const sofa::helper::vector< TopologyElementType >& elems,
             const sofa::helper::vector< sofa::helper::vector< unsigned int > > &ancestors,
-            const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
-
-    virtual void add( unsigned int nbElements,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > > &ancestors,
-            const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
+            const sofa::helper::vector< sofa::helper::vector< double > >& coefs,
+            const sofa::helper::vector< AncestorElem >& ancestorElems);
 
     /// Remove the values corresponding to the Edges removed.
     virtual void remove( const sofa::helper::vector<unsigned int> &index );

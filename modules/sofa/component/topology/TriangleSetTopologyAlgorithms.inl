@@ -825,9 +825,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
     sofa::helper::vector< sofa::helper::vector< double > >  triangles_barycoefs;
 
     
-    helper::vector< core::topology::TopologyObjectType > srcTypes;
-    helper::vector< PointID > srcIndices;
-    helper::vector< core::topology::AncestorElem::LocalCoords > srcLocalCoords;
+    helper::vector< core::topology::PointAncestorElem > srcElems;
 
     //////// STEP 1 : Create points
 
@@ -905,9 +903,8 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
             baryCoefs.push_back(1.0 - coords_list[i][0]);
             baryCoefs.push_back(coords_list[i][0]);
 
-            srcTypes.push_back(core::topology::EDGE);
-            srcIndices.push_back(indices_list[i]);
-            srcLocalCoords.push_back(core::topology::AncestorElem::LocalCoords(coords_list[i][0], 0, 0));
+            srcElems.push_back(core::topology::PointAncestorElem(core::topology::EDGE, indices_list[i],
+                core::topology::PointAncestorElem::LocalCoords(coords_list[i][0], 0, 0)));
 
             new_edge_points.push_back(next_point);
             ++next_point;
@@ -927,9 +924,8 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
             baryCoefs.push_back(coords_list[i][1]);
             baryCoefs.push_back(coords_list[i][2]);
 
-            srcTypes.push_back(core::topology::TRIANGLE);
-            srcIndices.push_back(indices_list[i]);
-            srcLocalCoords.push_back(core::topology::AncestorElem::LocalCoords(coords_list[i][1], coords_list[i][2], 0));
+            srcElems.push_back(core::topology::PointAncestorElem(core::topology::TRIANGLE, indices_list[i],
+                core::topology::PointAncestorElem::LocalCoords(coords_list[i][1], coords_list[i][2], 0)));
 
             new_edge_points.push_back(next_point);// hum...? pour les edges to split
             ++next_point;
@@ -1592,14 +1588,83 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
     // Warn for the creation of all the points registered to be created
     //std::cout << "passe la: addPointsWarning" << std::endl;
     //m_modifier->addPointsWarning(p_ancestors.size(), p_ancestors, p_baryCoefs);
-
-    m_modifier->addPoints(srcTypes.size(), srcTypes, srcIndices, srcLocalCoords);
+    unsigned int newP0 = next_point - srcElems.size();
+    m_modifier->addPoints(srcElems.size(), srcElems);
 
     // m_modifier->propagateTopologicalChanges();
+
+    // Create new edges with full ancestry information
+    std::set<Edge> edges_processed;
+    sofa::helper::vector<Edge> edges_added;
+    sofa::helper::vector<core::topology::EdgeAncestorElem> edges_src;
+    for (unsigned int ti = 0; ti < new_triangles.size(); ++ti)
+    {
+        Triangle t = new_triangles[ti];
+        for (int tpi = 0; tpi < 3; ++tpi)
+        {
+            Edge e(t[tpi],t[(tpi+1)%3]);
+            if (e[0] > e[1]) { unsigned int tmp = e[0]; e[0] = e[1]; e[1] = tmp; }
+            if (e[0] < newP0 && e[1] < newP0 && m_container->getEdgeIndex(e[0], e[1]) != -1)
+                continue; // existing edge
+            if (!edges_processed.insert(e).second)
+                continue; // this edge was already processed
+            core::topology::EdgeAncestorElem src;
+            for (unsigned int k = 0; k < 2; ++k)
+            {
+                if (e[k] < newP0)
+                { // previous point
+                    src.pointSrcElems[k].type = core::topology::POINT;
+                    src.pointSrcElems[k].index = e[k];
+                }
+                else
+                {
+                    src.pointSrcElems[k] = srcElems[e[k]-newP0];
+                }
+            }
+            // Source element could be an edge if both points are from it or from its endpoints
+            if (src.pointSrcElems[0].type != core::topology::TRIANGLE
+                && src.pointSrcElems[1].type != core::topology::TRIANGLE
+                && (src.pointSrcElems[0].type == core::topology::EDGE
+                    || src.pointSrcElems[1].type == core::topology::EDGE)
+                && (src.pointSrcElems[0].type == core::topology::POINT
+                    || src.pointSrcElems[1].type == core::topology::POINT
+                    || src.pointSrcElems[0].index == src.pointSrcElems[1].index))
+            {
+                unsigned int src_eid = (src.pointSrcElems[0].type == core::topology::EDGE)
+                    ? src.pointSrcElems[0].index : src.pointSrcElems[1].index;
+                Edge src_e = m_container->getEdge(src_eid);
+                if ((src.pointSrcElems[0].type != core::topology::POINT
+                    || src.pointSrcElems[0].index == src_e[0]
+                    || src.pointSrcElems[0].index == src_e[1])
+                    && (src.pointSrcElems[1].type != core::topology::POINT
+                    || src.pointSrcElems[1].index == src_e[0]
+                    || src.pointSrcElems[1].index == src_e[1]))
+                {
+                    src.srcElems.push_back(core::topology::TopologyElemID(core::topology::EDGE,
+                        src_eid));
+                }
+            }
+            if (src.srcElems.empty()) // within the initial triangle by default
+                src.srcElems.push_back(core::topology::TopologyElemID(core::topology::TRIANGLE,
+                    triangles_ancestors[ti][0]));
+            edges_added.push_back(e);
+            edges_src.push_back(src);
+        }
+    }
+    m_modifier->addEdges(edges_added, edges_src);
+
+    unsigned int nbEdges = m_container->getNbEdges();
 
     //Add and remove triangles lists
     //std::cout << "passe la: addRemoveTriangles" << std::endl;
     m_modifier->addRemoveTriangles (new_triangles.size(), new_triangles, new_triangles_id, triangles_ancestors, triangles_barycoefs, removed_triangles);
+    
+    unsigned int nbEdges2 = m_container->getNbEdges();
+
+    if (nbEdges2 > nbEdges)
+    {
+        serr << "SplitAlongPath: auto created edges up to " << nbEdges << ", while ended up with " << nbEdges2 << sendl;
+    }
 
     //WARNING can produce error TODO: check it
     if ( !points2Snap.empty())
