@@ -188,7 +188,7 @@ void LabelGridImageToolBoxAction::executeButtonClick()
     l->executeAction();
     updateGraphs();
 
-    std::cout << "exitButton"<<std::endl;
+    //std::cout << "exitButton"<<std::endl;
 }
 
 void LabelGridImageToolBoxAction::selectionPointEvent(int /*mouseevent*/, const unsigned int /*axis*/,const sofa::defaulttype::Vec3d& /*imageposition*/,const sofa::defaulttype::Vec3d& /*position3D*/,const QString& /*value*/)

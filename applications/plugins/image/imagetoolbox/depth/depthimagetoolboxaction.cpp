@@ -155,7 +155,7 @@ void DepthImageToolBoxAction::createNewRow(int layer)
 
 void DepthImageToolBoxAction::createNewRow()
 {
-    std::cout << "createNewRow"<<std::endl;
+    //std::cout << "createNewRow"<<std::endl;
 
     sofa::component::engine::DepthImageToolBox *l = DITB();
     
@@ -166,7 +166,7 @@ void DepthImageToolBoxAction::createNewRow()
     listLayers->update();
 
     l->createLayer();
-    std::cout << l->layers.size()<<std::endl;
+    //std::cout << l->layers.size()<<std::endl;
 
     this->connect(row,SIGNAL(valueChanged(int,QString,int,QString,int,QString,int)),this,SLOT(changeRow(int,QString,int,QString,int,QString,int)));
     row->change();
@@ -218,7 +218,7 @@ void DepthImageToolBoxAction::textToOffset(QString text, double &outValue, int &
 
 void DepthImageToolBoxAction::changeRow(int index,QString name,int layer1,QString offset1,int layer2,QString offset2,int base)
 {
-    std::cout << "DepthImageToolBoxAction::changeRow " << index << " "<< name.toStdString() << " "<<layer1<<" "<<offset1.toStdString()<<" "<<layer2<<" "<<offset2.toStdString()<<std::endl;
+    //std::cout << "DepthImageToolBoxAction::changeRow " << index << " "<< name.toStdString() << " "<<layer1<<" "<<offset1.toStdString()<<" "<<layer2<<" "<<offset2.toStdString()<<std::endl;
 
     sofa::component::engine::DepthImageToolBox *l = DITB();
 
@@ -234,7 +234,7 @@ void DepthImageToolBoxAction::changeRow(int index,QString name,int layer1,QStrin
     textToOffset(offset1,layer.offset1,layer.typeOffset1);
     textToOffset(offset2,layer.offset2,layer.typeOffset2);
 
-    std::cout << layer.name << " " << layer.offset1 << " " << layer.typeOffset1 <<layer.offset2 << " " << layer.typeOffset2 <<std::endl;
+    //std::cout << layer.name << " " << layer.offset1 << " " << layer.typeOffset1 <<layer.offset2 << " " << layer.typeOffset2 <<std::endl;
 }
 
 DepthImageToolBoxAction::~DepthImageToolBoxAction()
@@ -258,7 +258,7 @@ void DepthImageToolBoxAction::executeButtonClick()
 
 void DepthImageToolBoxAction::saveButtonClick()
 {
-    std::cout << "saveButtonClick"<<std::endl;
+    //std::cout << "saveButtonClick"<<std::endl;
     sofa::component::engine::DepthImageToolBox *l = DITB();
     l->saveFile();
     //updateGraphs();

@@ -24,8 +24,11 @@ HEADERS += \
     imagetoolbox/depth/depthimagetoolbox.h \
     imagetoolbox/depth/meshData.h \
     imagetoolbox/depth/catchallvector.h \
+    imagetoolbox/depth/mergedcatchallvector.h \
     imagetoolbox/zonegenerator/zonegeneratorimagetoolbox.h \
-    imagetoolbox/zonegenerator/zonegeneratorimagetoolboxaction.h
+    imagetoolbox/zonegenerator/zonegeneratorimagetoolboxaction.h \
+    imagetoolbox/zonegenerator/distancezoneimagetoolbox.h \
+    imagetoolbox/zonegenerator/distancezoneimagetoolboxaction.h
 
 
 SOURCES += \
@@ -46,7 +49,10 @@ SOURCES += \
     imagetoolbox/depth/depthimagetoolboxaction.cpp \
     imagetoolbox/depth/depthimagetoolbox.cpp \
     imagetoolbox/depth/catchallvector.cpp \
+    imagetoolbox/depth/mergedcatchallvector.cpp \
     imagetoolbox/zonegenerator/zonegeneratorimagetoolbox.cpp \
-    imagetoolbox/zonegenerator/zonegeneratorimagetoolboxaction.cpp
+    imagetoolbox/zonegenerator/zonegeneratorimagetoolboxaction.cpp \
+    imagetoolbox/zonegenerator/distancezoneimagetoolbox.cpp \
+    imagetoolbox/zonegenerator/distancezoneimagetoolboxaction.cpp
 
 
