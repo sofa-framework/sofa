@@ -118,6 +118,7 @@ int ColorMapClass = core::RegisterObject("Provides color palette and support for
 ColorMap::ColorMap()
 : f_paletteSize(initData(&f_paletteSize, (unsigned int)256, "paletteSize", "How many colors to use"))
 , f_colorScheme(initData(&f_colorScheme, "colorScheme", "Color scheme to use"))
+, f_showLegend(initData(&f_showLegend, false, "showLegend", "Activate rendering of color scale legend on the side"))
 {
     f_colorScheme.beginEdit()->setNames(6,
         "Red to Blue",  // HSV space
@@ -306,7 +307,7 @@ void ColorMap::prepareLegend()
 
 void ColorMap::drawVisual(const core::visual::VisualParams* vparams)
 {
-    if (!vparams->displayFlags().getShowVisualModels()) return;
+    if (!f_showLegend.getValue()) return;
 
     //
     // Draw legend
