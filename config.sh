@@ -14,9 +14,11 @@ SCRIPT_PATH=`pwd`;
 popd  > /dev/null
 ####
 
-
 export SRC_DIR=$SCRIPT_PATH
-export BUILD_DIR=$PWD
+# Add the first param (if it exist) to SCRIPT_PATH
+# In general $1 is the cmake build directory
+# readlink Remove unnecessary slashes (if $1 is empty)
+export BUILD_DIR=$(readlink -m $PWD"/"$1"/")
 
 PLATFORM=$(uname)
 if [ "$PLATFORM" = "Darwin" ]; then
