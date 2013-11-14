@@ -25,7 +25,7 @@
 #ifndef SOFA_WINDOWVISITOR_H
 #define SOFA_WINDOWVISITOR_H
 
-#include "VisitorGUI.h"
+#include "ui_VisitorGUI.h"
 #include "PieWidget.h"
 #include "QVisitorControlPanel.h"
 
@@ -60,7 +60,7 @@ typedef QListView Q3ListView;
 typedef QListViewItem Q3ListViewItem;
 #endif
 
-class WindowVisitor: public VisitorGUI
+class WindowVisitor: public QWidget, public Ui_VisitorGUI
 {
     Q_OBJECT
 public:

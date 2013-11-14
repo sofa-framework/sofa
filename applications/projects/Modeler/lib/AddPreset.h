@@ -25,7 +25,7 @@
 #ifndef ADDPRESET_H
 #define ADDPRESET_H
 
-#include "DialogAddPreset.h"
+#include "ui_DialogAddPreset.h"
 #include <sofa/simulation/common/Node.h>
 
 namespace sofa

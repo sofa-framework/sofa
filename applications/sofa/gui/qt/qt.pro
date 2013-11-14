@@ -14,17 +14,17 @@ win32 {
 }
 
 contains(DEFINES, SOFA_QT4) {	
-	CONFIG += qt uic uic3
+	CONFIG += qt uic
 	QT += opengl qt3support xml
 
-	FORMS3 += GUI.ui
-	FORMS3 += BaseGenGraphForm.ui
-	FORMS3 += DialogAddObject.ui
-	FORMS3 += PluginManager.ui
-	FORMS3 += MouseManager.ui
-	FORMS3 += VideoRecorderManager.ui
+	FORMS += GUI.ui
+	FORMS += BaseGenGraphForm.ui
+	FORMS += DialogAddObject.ui
+	FORMS += PluginManager.ui
+	FORMS += MouseManager.ui
+	FORMS += VideoRecorderManager.ui
 	contains(DEFINES, SOFA_DUMP_VISITOR_INFO) {
-		FORMS3 += VisitorGUI.ui
+		FORMS += VisitorGUI.ui
 	}
 }
 else {

@@ -27,7 +27,7 @@
 #define SOFA_MODELER_H
 
 
-#include "Modeler.h"
+#include "ui_Modeler.h"
 #include "GraphModeler.h"
 #include "FilterLibrary.h"
 #include "SofaTutorialManager.h"
