@@ -246,8 +246,13 @@ protected :
             }
         }
         xadj[n] = M_colptr[n] - n;
-        int numflag = 0, options = 0;
-        METIS_NodeND(&n, &xadj[0],&adj[0], &numflag, &options, perm,invperm);
+
+        //int numflag = 0, options = 0;
+        // The new API of metis requires pointers on numflag and "options" which are "structure" to parametrize the factorization
+        // We give NULL and NULL to use the default option (see doc of metis for details) !
+        // If you have the error "SparseLDLSolver failure to factorize, D(k,k) is zero" that probably means that you use the previsou version of metis.
+        // In this case you have to download and install the last version from : www.cs.umn.edu/~metis‎
+        METIS_NodeND(&n, &xadj[0],&adj[0], NULL, NULL, perm,invperm);
     }
 #else
     void LDL_ordering(int n,int * /*M_colptr*/,int * /*M_rowind*/,int * perm,int * invperm)
