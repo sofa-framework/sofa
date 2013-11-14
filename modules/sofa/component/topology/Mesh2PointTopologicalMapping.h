@@ -154,6 +154,8 @@ protected:
 
     void swapOutputPoints(int i1, int i2, bool removeLast = false);
     void removeOutputPoints( const sofa::helper::vector<unsigned int>& tab );
+
+        bool initDone;
 };
 
 } // namespace topology
