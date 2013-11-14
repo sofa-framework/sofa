@@ -138,9 +138,9 @@ void TriangularFEMForceFieldOptim<DataTypes>::init()
     vertexInfo.createTopologicalEngine(_topology);
     vertexInfo.registerTopologicalData();
 
-    if (_topology->getNbTriangles()==0)
+    if (_topology->getNbTriangles()==0 && _topology->getNbQuads()!=0 )
     {
-        serr << "Topology is empty of not triangular."<<sendl;
+        serr << "The topology only contains quads while this forcefield only supports triangles."<<sendl;
     }
 
     reinit();
@@ -162,8 +162,13 @@ inline void TriangularFEMForceFieldOptim<DataTypes>::computeTriangleRotation(Tra
 }
 
 template <class DataTypes>
-void TriangularFEMForceFieldOptim<DataTypes>::initTriangleInfo(unsigned int /*i*/, TriangleInfo& ti, const Triangle t, const VecCoord& x0)
+void TriangularFEMForceFieldOptim<DataTypes>::initTriangleInfo(unsigned int i, TriangleInfo& ti, const Triangle t, const VecCoord& x0)
 {
+    if (t[0] >= x0.size() || t[1] >= x0.size() || t[2] >= x0.size())
+    {
+        serr << "INVALID point index >= " << x0.size() << " in triangle " << i << " : " << t << sendl;
+        return;
+    }
     Coord a  = x0[t[0]];
     Coord ab = x0[t[1]]-a;
     Coord ac = x0[t[2]]-a;
@@ -182,8 +187,13 @@ void TriangularFEMForceFieldOptim<DataTypes>::initTriangleInfo(unsigned int /*i*
 }
 
 template <class DataTypes>
-void TriangularFEMForceFieldOptim<DataTypes>::initTriangleState(unsigned int /*i*/, TriangleState& ti, const Triangle t, const VecCoord& x)
+void TriangularFEMForceFieldOptim<DataTypes>::initTriangleState(unsigned int i, TriangleState& ti, const Triangle t, const VecCoord& x)
 {
+    if (t[0] >= x.size() || t[1] >= x.size() || t[2] >= x.size())
+    {
+        serr << "INVALID point index >= " << x.size() << " in triangle " << i << " : " << t << sendl;
+        return;
+    }
     Coord a  = x[t[0]];
     Coord ab = x[t[1]]-a;
     Coord ac = x[t[2]]-a;
@@ -237,7 +247,12 @@ void TriangularFEMForceFieldOptim<DataTypes>::reinit()
 
 #ifndef SOFA_NO_OPENGL
     // TODO: This is deprecated. Use ColorMap as a component.
-    showStressColorMapReal->initOld(showStressColorMap.getValue());
+     visualmodel::ColorMap* colorMap = NULL;
+    this->getContext()->get(colorMap,sofa::core::objectmodel::BaseContext::Local);
+    if (colorMap)
+        showStressColorMapReal = colorMap;
+    else
+        showStressColorMapReal->initOld(showStressColorMap.getValue());
 #endif
 
     data.reinit(this);

@@ -51,6 +51,9 @@
 #ifdef SOFA_SMP
 #include <athapascan-1>
 #endif /* SOFA_SMP */
+#ifdef WIN32
+#include <windows.h>
+#endif
 using std::cerr;
 using std::endl;
 
@@ -86,6 +89,27 @@ int main(int argc, char** argv)
     sofa::helper::BackTrace::autodump();
 
     sofa::core::ExecParams::defaultInstance()->setAspectID(0);
+
+#ifdef WIN32
+    {
+        HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
+        COORD s;
+        s.X = 160; s.Y = 10000;
+        SetConsoleScreenBufferSize(hStdout, s);
+        CONSOLE_SCREEN_BUFFER_INFO csbi;
+        if (GetConsoleScreenBufferInfo(hStdout, &csbi))
+        {
+            SMALL_RECT winfo;
+            winfo = csbi.srWindow;
+            //winfo.Top = 0;
+            winfo.Left = 0;
+            //winfo.Bottom = csbi.dwSize.Y-1;
+            winfo.Right = csbi.dwMaximumWindowSize.X-1;
+            SetConsoleWindowInfo(hStdout, TRUE, &winfo);
+        }
+
+    }
+#endif
 
     sofa::gui::initMain();
 

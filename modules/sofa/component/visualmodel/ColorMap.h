@@ -91,6 +91,8 @@ public:
     Data<unsigned int> f_paletteSize;
     Data<sofa::helper::OptionsGroup> f_colorScheme;
 
+    Data<bool> f_showLegend;
+
     VecColor entries;
     GLuint texture;
     double min, max;

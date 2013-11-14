@@ -99,7 +99,7 @@ protected:
         contact_node->addObject( projector.get() );
         
         // constraint value
-        addConstraintValue( contact_node.get(), contact_dofs.get(), damping_ratio.getValue(), restitution_coef.getValue() );
+        this->addConstraintValue( contact_node.get(), contact_dofs.get(), damping_ratio.getValue(), restitution_coef.getValue() );
 
         return delta.node;
     }
