@@ -138,7 +138,7 @@ protected:
     Data< bool > copyEdges; ///< Activate mapping of input edges into the output topology (requires at least one item in pointBaryCoords)
     Data< bool > copyTriangles; ///< Activate mapping of input triangles into the output topology (requires at least one item in pointBaryCoords)
 
-    vector< vector<int> > pointsMappedFrom[NB_ELEMENTS]; ///< Points mapped from the differents elements (see the enum Element declared before)
+    helper::fixed_array< vector< vector<int> >, NB_ELEMENTS > pointsMappedFrom; ///< Points mapped from the differents elements (see the enum Element declared before)
 
     vector< std::pair<Element,int> > pointSource; ///< Correspondance between the points mapped and the elements from which are mapped
 
@@ -155,7 +155,16 @@ protected:
     void swapOutputPoints(int i1, int i2, bool removeLast = false);
     void removeOutputPoints( const sofa::helper::vector<unsigned int>& tab );
 
-        bool initDone;
+protected:
+    bool internalCheck(const char* step, const helper::fixed_array <int, NB_ELEMENTS >& nbInputRemoved);
+    
+    bool internalCheck(const char* step)
+    {
+        helper::fixed_array <int, NB_ELEMENTS > nbInputRemoved;
+        nbInputRemoved.assign(0);
+        return internalCheck(step, nbInputRemoved);
+    }
+    bool initDone;
 };
 
 } // namespace topology

@@ -168,24 +168,25 @@ void TriangleSetTopologyModifier::addTrianglesProcess(const sofa::helper::vector
 void TriangleSetTopologyModifier::addTriangleProcess(Triangle t)
 {
 
-#ifndef NDEBUG2
+#ifndef NDEBUG
     // check if the 3 vertices are different
     if((t[0]==t[1]) || (t[0]==t[2]) || (t[1]==t[2]) )
     {
-        sout << "Error: [TriangleSetTopologyModifier::addTriangle] : invalid quad: "
-                << t[0] << ", " << t[1] << ", " << t[2] <<  endl;
-        return;
+        serr << "Error: [TriangleSetTopologyModifier::addTriangle] : invalid triangle: "
+                << t[0] << ", " << t[1] << ", " << t[2] <<  sendl;
+        //return;
     }
 
     // check if there already exists a triangle with the same indices
     // Important: getEdgeIndex creates the quad vertex shell array
     if(m_container->hasTrianglesAroundVertex())
     {
-        if(m_container->getTriangleIndex(t[0],t[1],t[2]) != -1)
+        int previd = m_container->getTriangleIndex(t[0],t[1],t[2]);
+        if( previd != -1)
         {
-            sout << "Error: [TriangleSetTopologyModifier::addTriangle] : Triangle "
-                    << t[0] << ", " << t[1] << ", " << t[2] << " already exists." << endl;
-            return;
+            serr << "Error: [TriangleSetTopologyModifier::addTriangle] : Triangle "
+                    << t[0] << ", " << t[1] << ", " << t[2] << " already exists with index " << previd << "." << sendl;
+            //return;
         }
     }
 #endif
@@ -356,8 +357,8 @@ void TriangleSetTopologyModifier::removeTrianglesProcess(const sofa::helper::vec
 
     if(!m_container->hasTriangles()) // this method should only be called when triangles exist
     {
-#ifndef NDEBUG2
-        sout << "Error. [TriangleSetTopologyModifier::removeTrianglesProcess] triangle array is empty." << sendl;
+#ifndef NDEBUG
+        serr << "Error. [TriangleSetTopologyModifier::removeTrianglesProcess] triangle array is empty." << sendl;
 #endif
         return;
     }

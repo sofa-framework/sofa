@@ -1723,7 +1723,8 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
     }
 
 
-
+    m_modifier->notifyEndingEvent();
+    m_modifier->propagateTopologicalChanges();
 
 
 

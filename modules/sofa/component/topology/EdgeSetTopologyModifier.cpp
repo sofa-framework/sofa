@@ -70,11 +70,11 @@ void EdgeSetTopologyModifier::init()
 
 void EdgeSetTopologyModifier::addEdgeProcess(Edge e)
 {
-#ifndef NDEBUG2
+#ifndef NDEBUG
     // check if the 2 vertices are different
     if(e[0] == e[1])
     {
-        sout << "Error: [EdgeSetTopologyModifier::addEdge] : invalid edge: "
+        serr << "Error: [EdgeSetTopologyModifier::addEdge] : invalid edge: "
                 << e[0] << ", " << e[1] << sendl;
 
         return;
@@ -86,7 +86,7 @@ void EdgeSetTopologyModifier::addEdgeProcess(Edge e)
     {
         if(m_container->getEdgeIndex(e[0],e[1]) != -1)
         {
-            sout << "Error: [EdgeSetTopologyModifier::addEdgesProcess] : Edge "
+            serr << "Error: [EdgeSetTopologyModifier::addEdgesProcess] : Edge "
                     << e[0] << ", " << e[1] << " already exists." << sendl;
             return;
         }
