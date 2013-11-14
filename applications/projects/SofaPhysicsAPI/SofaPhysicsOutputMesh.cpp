@@ -42,6 +42,28 @@ int SofaPhysicsOutputMesh::getVerticesRevision()    ///< changes each time verti
     return impl->getVerticesRevision();
 }
 
+
+unsigned int SofaPhysicsOutputMesh::getNbVAttributes()                    ///< number of vertices attributes
+{
+    return impl->getNbVAttributes();
+}
+const char*  SofaPhysicsOutputMesh::getVAttributeName(int index)          ///< vertices attribute name
+{
+    return impl->getVAttributeName(index);
+}
+int          SofaPhysicsOutputMesh::getVAttributeSizePerVertex(int index) ///< vertices attribute #
+{
+    return impl->getVAttributeSizePerVertex(index);
+}
+const Real*  SofaPhysicsOutputMesh::getVAttributeValue(int index)         ///< vertices attribute (Vec#)
+{
+    return impl->getVAttributeValue(index);
+}
+int          SofaPhysicsOutputMesh::getVAttributeRevision(int index)      ///< changes each time vertices attribute is updated
+{
+    return impl->getVAttributeRevision(index);
+}
+
 unsigned int SofaPhysicsOutputMesh::getNbLines() ///< number of lines
 {
     return impl->getNbLines();
@@ -97,6 +119,23 @@ SofaPhysicsOutputMesh::Impl::~Impl()
 {
 }
 
+void SofaPhysicsOutputMesh::Impl::setObject(SofaOutputMesh* o)
+{
+    sObj = o;
+    sVA.clear();
+    sofa::core::objectmodel::BaseContext* context = sObj->getContext();
+    sofa::helper::vector<SofaVAttribute::SPtr> vSE;
+    context->get<SofaVAttribute>(&vSE,sofa::core::objectmodel::BaseContext::Local);
+    for (unsigned int i = 0; i < vSE.size(); ++i)
+    {
+        SofaVAttribute::SPtr se = vSE[i];
+        if (se->getSEType() == sofa::core::visual::ShaderElement::SE_ATTRIBUTE)
+        {
+            sVA.push_back(se);
+        }
+    }
+}
+
 const char* SofaPhysicsOutputMesh::Impl::getName() ///< (non-unique) name of this object
 {
     if (!sObj) return "";
@@ -143,6 +182,45 @@ int SofaPhysicsOutputMesh::Impl::getVerticesRevision()    ///< changes each time
         &(sObj->m_vertices2) : &(sObj->m_positions);
     return data->getCounter();
 }
+
+
+unsigned int SofaPhysicsOutputMesh::Impl::getNbVAttributes()                    ///< number of vertices attributes
+{
+    return sVA.size();
+}
+
+const char*  SofaPhysicsOutputMesh::Impl::getVAttributeName(int index)          ///< vertices attribute name
+{
+    if ((unsigned)index >= sVA.size())
+        return "";
+    else
+        return sVA[index]->getSEID().c_str();
+}
+
+int          SofaPhysicsOutputMesh::Impl::getVAttributeSizePerVertex(int index) ///< vertices attribute #
+{
+    if ((unsigned)index >= sVA.size())
+        return 0;
+    else
+        return sVA[index]->getSESizePerVertex();
+}
+
+const Real*  SofaPhysicsOutputMesh::Impl::getVAttributeValue(int index)         ///< vertices attribute (Vec#)
+{
+    if ((unsigned)index >= sVA.size())
+        return NULL;
+    else
+        return (Real*)sVA[index]->getSEValue()->getValueVoidPtr();
+}
+
+int          SofaPhysicsOutputMesh::Impl::getVAttributeRevision(int index)      ///< changes each time vertices attribute is updated
+{
+    if ((unsigned)index >= sVA.size())
+        return 0;
+    else
+        return sVA[index]->getSEValue()->getCounter();
+}
+
 
 unsigned int SofaPhysicsOutputMesh::Impl::getNbLines() ///< number of lines
 {

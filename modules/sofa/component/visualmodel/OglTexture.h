@@ -100,6 +100,13 @@ public:
 
     ///Utility function to set current active texture
     static void setActiveTexture(unsigned short unit);
+
+    /// Returns the type of shader element (texture, macro, variable, or attribute)
+    virtual ShaderElementType getSEType() const { return core::visual::ShaderElement::SE_TEXTURE; }
+    // Returns the value of the shader element
+    virtual const core::objectmodel::BaseData* getSEValue() const { return &textureFilename; }
+    // Returns the value of the shader element
+    virtual core::objectmodel::BaseData* getSEValue() { return &textureFilename; }
 };
 
 class SOFA_OPENGL_VISUAL_API OglTexture2D : public OglTexture

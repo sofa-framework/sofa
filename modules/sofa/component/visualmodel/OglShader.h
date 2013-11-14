@@ -207,6 +207,9 @@ public:
     void setID( std::string str ) { *(id.beginEdit()) = str; id.endEdit();};
     void setIndexShader( unsigned int index) { *(indexShader.beginEdit()) = index; indexShader.endEdit();};
 
+    // Returns the ID of the shader element
+    std::string getSEID() const { return id.getValue(); }
+
     //virtual void setInShader(OglShader& s) = 0;
 };
 

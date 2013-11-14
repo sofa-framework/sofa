@@ -61,15 +61,26 @@ public:
 
 /**
  *  \brief A basic interface to define an element to be used with a Shader.
- *
- *
- *
  */
 class SOFA_CORE_API ShaderElement: public virtual objectmodel::BaseObject
 {
+public:
+    SOFA_ABSTRACT_CLASS(ShaderElement, objectmodel::BaseObject);
+    enum ShaderElementType { SE_NONE = 0, SE_TEXTURE, SE_MACRO, SE_VARIABLE, SE_ATTRIBUTE };
 protected:
     /// Destructor
     virtual ~ShaderElement() { }
+public:
+    /// Returns the type of shader element (texture, macro, variable, or attribute)
+    virtual ShaderElementType getSEType() const = 0;
+    // Returns the ID of the shader element
+    virtual std::string getSEID() const = 0;
+    // Returns the value of the shader element
+    virtual const core::objectmodel::BaseData* getSEValue() const = 0;
+    // Returns the value of the shader element
+    virtual core::objectmodel::BaseData* getSEValue() = 0;
+    // For attributes : return the number of values per vertex
+    virtual int getSESizePerVertex() { return 0; }
 };
 
 } // namespace visual

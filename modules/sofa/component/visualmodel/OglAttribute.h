@@ -73,6 +73,15 @@ public:
     // handle topological changes
     virtual void handleTopologyChange();
 
+    /// Returns the type of shader element (texture, macro, variable, or attribute)
+    virtual ShaderElementType getSEType() const { return core::visual::ShaderElement::SE_ATTRIBUTE; }
+    // Returns the value of the shader element
+    virtual const core::objectmodel::BaseData* getSEValue() const { return &value; }
+    // Returns the value of the shader element
+    virtual core::objectmodel::BaseData* getSEValue() { return &value; }
+    // For attributes : return the number of values per vertex
+    virtual int getSESizePerVertex() { return size; }
+
 protected:
     // attribute buffer object identity
     // to send data to the graphics card faster
