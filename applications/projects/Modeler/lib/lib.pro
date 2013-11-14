@@ -41,11 +41,11 @@ contains (DEFINES, SOFA_QT4) {
 	           QCategoryTreeLibrary.cpp \ 
 	           QComponentTreeLibrary.cpp
                      
-	CONFIG += qt uic uic3
+	CONFIG += qt uic
 	QT += qt3support xml
-	FORMS3 += Modeler.ui 
-	FORMS3 += DialogAddPreset.ui
-	FORMS3 += ../../../sofa/gui/qt/PluginManager.ui
+	FORMS += Modeler.ui 
+	FORMS += DialogAddPreset.ui
+	FORMS += ../../../sofa/gui/qt/PluginManager.ui
 }
 else {
 

@@ -57,7 +57,7 @@ QPixmap *WindowVisitor::icons[WindowVisitor::OTHER+1];
 
 WindowVisitor::WindowVisitor()
 {
-
+    setupUi(this);
 #ifdef SOFA_QT4
     connect(graphView, SIGNAL(rightButtonClicked ( Q3ListViewItem *, const QPoint &, int )),  this, SLOT( rightClick(Q3ListViewItem *, const QPoint &, int )));
 #else

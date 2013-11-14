@@ -82,9 +82,9 @@ endmacro()
 # generate .h files from .ui files
 macro(SOFA_QT4_WRAP_UI outfiles)
 	foreach(it ${ARGN})     # it = foo.ui
-		get_filename_component(outfile ${it} NAME_WE) # outfile = foo
+		get_filename_component(basename ${it} NAME_WE) # basename = foo
 		get_filename_component(infile ${it} ABSOLUTE) # infile = /absolute/path/to/foo.ui
-		set(outHeaderFile "${CMAKE_CURRENT_BINARY_DIR}/${outfile}.h")
+		set(outHeaderFile "${CMAKE_CURRENT_BINARY_DIR}/ui_${basename}.h")
 		add_custom_command(OUTPUT ${outHeaderFile}
 		                   COMMAND ${QT_UIC_EXECUTABLE} ${infile} -o ${outHeaderFile}
 		                   MAIN_DEPENDENCY ${infile})
