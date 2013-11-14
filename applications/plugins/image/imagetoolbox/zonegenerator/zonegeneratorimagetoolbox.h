@@ -128,6 +128,7 @@ public:
     {
         return index;
     }
+
     
     ZoneGeneratorImageToolBox():ZoneGeneratorImageToolBoxNoTemplated(),
       d_image(initData(&d_image, "imageIn", "Input image")),
@@ -165,7 +166,7 @@ public:
     virtual void generate()
     {
 
-        std::cout << "generate"<<std::endl;
+        //std::cout << "generate"<<std::endl;
         raImage im_in(this->d_image);
         waImage im_out(this->d_imageOut);
 
@@ -201,13 +202,13 @@ public:
         VecVec2d BG;
         BG.resize(resoBG.x()*resoBG.y());
 
-        std::cout << "Step 1" << std::endl;
+        /*std::cout << "Step 1" << std::endl;
         std::cout << "radius " << radius <<std::endl;
         std::cout << "k " << k <<std::endl;
         std::cout << "size " << size <<std::endl;
         std::cout << "reso BG Grid " << resoBG <<std::endl;
         std::cout << "size cell BG Grid " << sizeCellBG <<std::endl << std::endl;
-
+*/
         // Step 2
         srand(d_seed.getValue());
 
@@ -215,18 +216,18 @@ public:
         Vec2i position(samples.x()/sizeCellBG.x(),samples.y()/sizeCellBG.y());
         unsigned int index(position.x()+position.y()*resoBG.x());
         VecIndex vecId;
-
+/*
         std::cout << "Step 2" <<std::endl;
         std::cout << "samples " << samples << std::endl;
         std::cout << "position " << position << std::endl;
         std::cout << "index " << index << std::endl << std::endl;
-
+*/
         BG[index]=samples;
         vecId.push_back(index);
 
         // Step3
 
-        std::cout << "Step 3" << std::endl;
+ //       std::cout << "Step 3" << std::endl;
 //        unsigned int count=1;
         while(vecId.size())
         {
@@ -370,7 +371,7 @@ public:
                 Vec2i v = p.last.front();
                 p.last.pop_front();
 
-                std::cout <<v.x()<<std::endl;
+   //             std::cout <<v.x()<<std::endl;
 
                 uint random = rand()%16;
 
@@ -447,7 +448,7 @@ public:
             }
         }
 
-
+/*
         unsigned int max = 1 + (unsigned int)(sqrt((double)(dimX*dimX+dimY*dimY)));
 
         for(int i=0;i<dimX;i++)
@@ -478,7 +479,7 @@ public:
 
             im_out->getCImg().draw_point(i , j, 1, pColor);
 
-        }
+        }*/
 
         //for(unsigned int i=0;i<sizemax;i++)std::cout << "test " << i << " :" << test[i]<<std::endl;
 
@@ -501,7 +502,7 @@ public:
 
 
 
-        std::cout << "generate"<<std::endl;
+     //   std::cout << "generate"<<std::endl;
     }
 
 /*
