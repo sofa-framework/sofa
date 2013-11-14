@@ -185,6 +185,7 @@ struct ImageContainerSpecialization<defaulttype::IMAGELABEL_IMAGE>
             wimage->getCImgList().push_back(CImg<T>().load_analyze(fname.c_str(),voxsize));
             if (!container->transform.isSet())
                 for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)voxsize[i];
+            readNiftiHeader(container, fname);
         }
         else if (fname.find(".inr")!=std::string::npos)
         {
@@ -253,6 +254,57 @@ struct ImageContainerSpecialization<defaulttype::IMAGELABEL_IMAGE>
 #endif
     }
 
+    /* Read the header of a nifti file.
+     * CImg only allows to get the voxel size of a nifti image, whereas this function
+     * gives access to the whole structure of the header to get rotation and translation.
+     */
+    template<class ImageContainer>
+    static void readNiftiHeader(ImageContainer* container, std::string fname)
+    {
+        typedef typename ImageContainer::Real Real;
+        typename ImageContainer::waTransform wtransform(container->transform);
+
+        struct transformData{
+            float b;
+            float c;
+            float d;
+
+            float x;
+            float y;
+            float z;
+        };
+
+        transformData data;
+
+        FILE* file = fopen(fname.c_str(), "rb");
+        fseek(file, 4*sizeof(int) + 18*sizeof(float) + 136*sizeof(char) + 16*sizeof(short), SEEK_SET);
+
+        size_t result = fread(&data, 1, sizeof(transformData), file);
+        if (result!=sizeof(transformData))
+            std::cerr << "Error reading header of " << fname << std::endl;
+        else
+        {
+            wtransform->getTranslation()[0] = (Real) data.x;
+            wtransform->getTranslation()[1] = (Real) data.y;
+            wtransform->getTranslation()[2] = (Real) data.z;
+
+            Real b = (Real)data.b;
+            Real c = (Real)data.c;
+            Real d = (Real)data.d;
+            Real a = sqrt(1.0 - (b*b+c*c+d*d));
+            helper::Quater<Real> q(a,b,c,d);
+//            wtransform->getRotation()=q.toEulerVector() * (Real)180.0 / (Real)M_PI ; //  this does not convert quaternion to euler angles
+            if(q[0]*q[0]+q[1]*q[1]==0.5 || q[1]*q[1]+q[2]*q[2]==0.5) {q[3]+=10-3; q.normalize();} // hack to avoid singularities
+            if (!container->transform.isSet())
+            {
+                wtransform->getRotation()[0]=atan2(2*(q[3]*q[0]+q[1]*q[2]),1-2*(q[0]*q[0]+q[1]*q[1])) * (Real)180.0 / (Real)M_PI;
+                wtransform->getRotation()[1]=asin(2*(q[3]*q[1]-q[2]*q[0])) * (Real)180.0 / (Real)M_PI;
+                wtransform->getRotation()[2]=atan2(2*(q[3]*q[2]+q[0]*q[1]),1-2*(q[1]*q[1]+q[2]*q[2])) * (Real)180.0 / (Real)M_PI;
+            }
+        }
+
+        fclose(file);
+    }
 };
 
 
