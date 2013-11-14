@@ -112,6 +112,12 @@ public:
     const Real* getVTexCoords();  ///< vertices UVs       (Vec2)
     int getVerticesRevision();    ///< changes each time vertices data are updated
 
+    unsigned int getNbVAttributes();                    ///< number of vertices attributes
+    const char*  getVAttributeName(int index);          ///< vertices attribute name
+    int          getVAttributeSizePerVertex(int index); ///< vertices attribute #
+    const Real*  getVAttributeValue(int index);         ///< vertices attribute (Vec#)
+    int          getVAttributeRevision(int index);      ///< changes each time vertices attribute is updated
+
     unsigned int getNbLines(); ///< number of lines
     const Index* getLines();   ///< lines topology (2 indices / line)
     int getLinesRevision();    ///< changes each time lines data is updated

@@ -4,6 +4,7 @@
 #include "SofaPhysicsAPI.h"
 
 #include <sofa/component/visualmodel/VisualModelImpl.h>
+#include <sofa/core/visual/Shader.h>
 
 class SofaPhysicsOutputMesh::Impl
 {
@@ -20,6 +21,12 @@ public:
     const Real* getVNormals();    ///< vertices normals   (Vec3)
     const Real* getVTexCoords();  ///< vertices UVs       (Vec2)
     int getVerticesRevision();    ///< changes each time vertices data are updated
+    
+    unsigned int getNbVAttributes();                    ///< number of vertices attributes
+    const char*  getVAttributeName(int index);          ///< vertices attribute name
+    int          getVAttributeSizePerVertex(int index); ///< vertices attribute #
+    const Real*  getVAttributeValue(int index);         ///< vertices attribute (Vec#)
+    int          getVAttributeRevision(int index);      ///< changes each time vertices attribute is updated
 
     unsigned int getNbLines(); ///< number of lines
     const Index* getLines();   ///< lines topology (2 indices / line)
@@ -40,13 +47,15 @@ public:
     typedef SofaOutputMesh::TexCoord TexCoord;
     typedef SofaOutputMesh::Triangle Triangle;
     typedef SofaOutputMesh::Quad Quad;
+    typedef sofa::core::visual::ShaderElement SofaVAttribute;
 
 protected:
     SofaOutputMesh::SPtr sObj;
+    sofa::helper::vector<SofaVAttribute::SPtr> sVA;
 
 public:
     SofaOutputMesh* getObject() { return sObj.get(); }
-    void setObject(SofaOutputMesh* o) { sObj = o; }
+    void setObject(SofaOutputMesh* o);
 };
 
 #endif // SOFAPHYSICSOUTPUTMESH_IMPL_H

@@ -56,6 +56,12 @@ protected:
 public:
     virtual void init();
 
+    /// Returns the type of shader element (texture, macro, variable, or attribute)
+    virtual ShaderElementType getSEType() const { return core::visual::ShaderElement::SE_MACRO; }
+    // Returns the value of the shader element
+    virtual const core::objectmodel::BaseData* getSEValue() const { return NULL; }
+    // Returns the value of the shader element
+    virtual core::objectmodel::BaseData* getSEValue() { return NULL; }
 };
 
 
@@ -69,6 +75,10 @@ public:
     OglShaderDefineMacro();
     virtual ~OglShaderDefineMacro();
     virtual void init();
+    // Returns the value of the shader element
+    virtual const core::objectmodel::BaseData* getSEValue() const { return &value; }
+    // Returns the value of the shader element
+    virtual core::objectmodel::BaseData* getSEValue() { return &value; }
 };
 
 }
