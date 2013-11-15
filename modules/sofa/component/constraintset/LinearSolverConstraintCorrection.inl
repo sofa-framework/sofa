@@ -51,9 +51,6 @@ LinearSolverConstraintCorrection<DataTypes>::LinearSolverConstraintCorrection(be
 : Inherit(mm)
 , wire_optimization(initData(&wire_optimization, false, "wire_optimization", "constraints are reordered along a wire-like topology (from tip to base)"))
 , solverName( initData(&solverName, "solverName", "name of the constraint solver") )
-, f_draw_scale( initData(&f_draw_scale, (Real) 0.0, "draw_scale", "Display scale of the contact force (0 = not active)") )
-, f_drawColor( initData(&f_drawColor, Vector4(1,0,0,1), "drawColor", "Color of the arrow when Display scale is active") )
-, contactForce(initData(&contactForce,"contactForce","Copy of contact force"))
 , odesolver(NULL)
 {
 }
@@ -298,14 +295,6 @@ void LinearSolverConstraintCorrection< DataTypes >::computeDx(MultiVecDerivId fI
         linearsolvers[0]->solveSystem();
 
         dx_d.endEdit();
-
-        if (f_draw_scale.getValue()!=0.0) {
-            helper::ReadAccessor<Data<VecDeriv> > f = *this->mstate->read(fId.getId(this->mstate));
-            VecDeriv * x = this->contactForce.beginEdit();
-            x->resize(f.size());
-            for (unsigned i=0;i<f.size();i++) (*x)[i] = f[i];
-            this->contactForce.endEdit();
-        }
     }
 }
 
@@ -520,14 +509,6 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const defaul
     dataForce.endEdit();
     xData.endEdit();
     vData.endEdit();
-
-    if (f_draw_scale.getValue()!=0.0) {
-        helper::ReadAccessor<Data<VecDeriv> > f = *this->mstate->read(forceID);
-        VecDeriv * x = this->contactForce.beginEdit();
-        x->resize(f.size());
-        for (unsigned i=0;i<f.size();i++) (*x)[i] = f[i];
-        this->contactForce.endEdit();
-    }
 
     /// @TODO: freeing forceID here is incorrect as it was not allocated
     /// Maybe the call to vAlloc at the beginning of this method should be enabled...
@@ -919,29 +900,6 @@ void LinearSolverConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(def
 
     //std::cout<<" end "<<std::endl;
 
-}
-
-
-template<class DataTypes>
-void LinearSolverConstraintCorrection<DataTypes>::draw(const core::visual::VisualParams* vparams)
-{
-    if (f_draw_scale.getValue()!=0.0) {
-        helper::ReadAccessor<Data<VecCoord> > x = *this->mstate->read(VecId::position());
-        const VecDeriv & f = this->contactForce.getValue();
-
-        float scale = (float)f_draw_scale.getValue();
-		Vector4 color = f_drawColor.getValue();
-
-        for (unsigned i=0;i<f.size();i++) {
-            if (f[i][0]+f[i][1]+f[i][2]!=0.0) {
-
-                Vector3 pos(x[i][0],x[i][1],x[i][2]);
-                Vector3 force(f[i][0],f[i][1],f[i][2]);
-
-                vparams->drawTool()->drawArrow(pos, pos+force*scale, scale/10.0f, color);
-            }
-        }
-    }
 }
 
 } // namespace constraintset

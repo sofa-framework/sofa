@@ -120,10 +120,6 @@ public:
     Data< bool > wire_optimization;
     Data< helper::vector< std::string > >  solverName;
 
-    Data< Real > f_draw_scale;
-    Data< Vector4 > f_drawColor;
-    Data< VecDeriv > contactForce;
-
     void verify_constraints();
 
     virtual bool hasConstraintNumber(int index) ;  // virtual ???
@@ -135,11 +131,6 @@ public:
     virtual void setConstraintDForce(double *df, int begin, int end, bool update) ;
 
     virtual void getBlockDiagonalCompliance(defaulttype::BaseMatrix* W, int begin, int end) ;
-
-    virtual void draw(const core::visual::VisualParams* vparams);
-
-    /// @}
-
 
     /// Pre-construction check method called by ObjectFactory.
     template<class T>
