@@ -434,7 +434,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
 //					std::cout << " - meshName: " << xmeshName << std::endl;
 //					std::cout << std::endl;
 
-					UniformMass<defaulttype::Vec3dTypes, double>::SPtr currentUniformMass = sofa::core::objectmodel::New<UniformMass<defaulttype::Vec3dTypes, double>>();
+					UniformMass<defaulttype::Vec3dTypes, double>::SPtr currentUniformMass = sofa::core::objectmodel::New<UniformMass<defaulttype::Vec3dTypes, double> >();
 					{
 						// adding the generated UniformMass to its parent GNode
 						collisionGNode->addObject(currentUniformMass);
@@ -447,7 +447,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
 						currentUniformMass->setTotalMass(10.0);
 					}
 
-					TTriangleModel<defaulttype::Vec3dTypes>::SPtr currentTTriangleModel = sofa::core::objectmodel::New<TTriangleModel<defaulttype::Vec3dTypes>>();
+					TTriangleModel<defaulttype::Vec3dTypes>::SPtr currentTTriangleModel = sofa::core::objectmodel::New<TTriangleModel<defaulttype::Vec3dTypes> >();
 					{
 						// adding the generated TTriangleModel to its parent GNode
 						collisionGNode->addObject(currentTTriangleModel);
@@ -458,7 +458,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
 						currentTTriangleModel->setName(nameStream.str());
 					}
 
-					TLineModel<defaulttype::Vec3dTypes>::SPtr currentTLineModel = sofa::core::objectmodel::New<TLineModel<defaulttype::Vec3dTypes>>();
+					TLineModel<defaulttype::Vec3dTypes>::SPtr currentTLineModel = sofa::core::objectmodel::New<TLineModel<defaulttype::Vec3dTypes> >();
 					{
 						// adding the generated TLineModel to its parent GNode
 						collisionGNode->addObject(currentTLineModel);
@@ -469,7 +469,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
 						currentTLineModel->setName(nameStream.str());
 					}
 
-					TPointModel<defaulttype::Vec3dTypes>::SPtr currentTPointModel = sofa::core::objectmodel::New<TPointModel<defaulttype::Vec3dTypes>>();
+					TPointModel<defaulttype::Vec3dTypes>::SPtr currentTPointModel = sofa::core::objectmodel::New<TPointModel<defaulttype::Vec3dTypes> >();
 					{
 						// adding the generated TPointModel to its parent GNode
 						collisionGNode->addObject(currentTPointModel);
