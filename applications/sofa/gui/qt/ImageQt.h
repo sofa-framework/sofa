@@ -25,6 +25,7 @@
 #ifndef SOFA_GUI_QT_IMAGEQT_H
 #define SOFA_GUI_QT_IMAGEQT_H
 
+#include "SofaGUIQt.h"
 #include <sofa/helper/io/Image.h>
 
 #include <iostream>
@@ -38,7 +39,7 @@ namespace gui
 namespace qt
 {
 
-class ImageQt : public sofa::helper::io::Image
+class SOFA_SOFAGUIQT_API ImageQt : public sofa::helper::io::Image
 {
 public:
     ImageQt() {}
