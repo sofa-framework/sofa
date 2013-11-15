@@ -132,6 +132,9 @@ public:
         return BaseLoader::canCreate (obj, context, arg);
     }
 
+	float getAnimationSpeed() const			{return animationSpeed.getValue();}
+	void setAnimationSpeed(float speed)		{animationSpeed.setValue(speed);}
+
 protected:
 
     bool readDAE (std::ifstream &file, const char* filename);
@@ -139,7 +142,7 @@ protected:
 private:
 
     // build the joints and bones array used in the SkeletalMotionConstraint
-    bool fillSkeletalInfo(const aiScene* scene, aiNode* meshParentNode, aiNode* meshNode, aiMatrix4x4 meshTransformation, aiMesh* mesh, helper::vector<SkeletonJoint<Rigid3fTypes> >& skeletonJoints, helper::vector<SkeletonBone>& skeletonBones) const;
+    bool fillSkeletalInfo(const aiScene* scene, aiNode* meshParentNode, aiNode* meshNode, aiMatrix4x4 meshTransformation, aiMesh* mesh, helper::vector<SkeletonJoint<Rigid3dTypes> >& skeletonJoints, helper::vector<SkeletonBone>& skeletonBones) const;
 
     // clean the scene graph of its empty and useless intermediary nodes
     void removeEmptyNodes();
@@ -152,6 +155,8 @@ private:
     GNode::SPtr subSceneRoot;		// the GNode containing the whole Collada loaded scene
 
     Assimp::Importer importer;		// the Assimp importer used to easily load the Collada scene
+
+	Data<float> animationSpeed;
 
 };
 

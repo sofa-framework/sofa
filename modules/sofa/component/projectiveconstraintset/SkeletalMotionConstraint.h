@@ -97,6 +97,9 @@ public:
 
     void setSkeletalMotion(const helper::vector<SkeletonJoint<DataTypes> >& skeletonJoints, const helper::vector<SkeletonBone>& skeletonBones);
 
+	float getAnimationSpeed() const			{return animationSpeed.getValue();}
+	void setAnimationSpeed(float speed)		{animationSpeed.setValue(speed);}
+
 protected:
     template <class DataDeriv>
     void projectResponseT(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataDeriv& dx);
@@ -110,6 +113,9 @@ private:
 
     // mesh skeleton bones which need to be updated according to the animated nodes, we use them to fill the mechanical object
     Data<helper::SVector<SkeletonBone> >				skeletonBones;
+
+	// accelerate / deccelerate the animation speed
+	Data<float>											animationSpeed;
 
     /// the key times surrounding the current simulation time (for interpolation)
     Real												prevT, nextT;

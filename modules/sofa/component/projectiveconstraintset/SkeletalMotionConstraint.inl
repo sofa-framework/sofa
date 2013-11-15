@@ -55,6 +55,7 @@ template <class DataTypes>
 SkeletalMotionConstraint<DataTypes>::SkeletalMotionConstraint() : ProjectiveConstraintSet<DataTypes>()
     , skeletonJoints(initData(&skeletonJoints, "joints", "skeleton joints"))
     , skeletonBones(initData(&skeletonBones, "bones", "skeleton bones"))
+	, animationSpeed(initData(&animationSpeed, 1.0f, "animationSpeed", "animation speed"))
 {
 
 }
@@ -92,7 +93,7 @@ void SkeletalMotionConstraint<DataTypes>::findKeyTimes()
 
         for(unsigned int j = 0; j < skeletonJoint.mTimes.size(); ++j)
         {
-            Real keyTime = (Real) skeletonJoint.mTimes[j];
+            Real keyTime = (Real) skeletonJoint.mTimes[j] * (1.0 / animationSpeed.getValue());
             if(keyTime <= cT)
             {
                 prevT = keyTime;
