@@ -87,7 +87,7 @@ void TopologyElementHandler<TopologyElementType>::ApplyTopologyChange(const EMov
 
 /// Apply adding function on moved point.
 template<>
-void TopologyElementHandler<Point>::ApplyTopologyChange(const EMoved_Adding* event)
+void TopologyElementHandler<Point>::ApplyTopologyChange(const EMoved_Adding* /* event */)
 {
     std::cerr << "ERROR: MOVED_ADDING topology event not handled on " << ElementInfo::name()
         << " (it should not even exist!)" << std::endl;
@@ -102,7 +102,7 @@ void TopologyElementHandler<TopologyElementType>::ApplyTopologyChange(const EMov
 
 /// Apply removing function on moved elements.
 template<>
-void TopologyElementHandler<Point>::ApplyTopologyChange(const EMoved_Removing* event)
+void TopologyElementHandler<Point>::ApplyTopologyChange(const EMoved_Removing* /* event */)
 {
     std::cerr << "ERROR: MOVED_REMOVING topology event not handled on " << ElementInfo::name()
         << " (it should not even exist!)" << std::endl;

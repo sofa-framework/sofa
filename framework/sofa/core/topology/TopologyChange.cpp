@@ -206,7 +206,7 @@ SOFA_CORE_API std::ostream& operator << (std::ostream& out, const TopologyElemID
     return out;
 }
 
-SOFA_CORE_API std::istream& operator >> (std::istream& in, TopologyElemID& d)
+SOFA_CORE_API std::istream& operator >> (std::istream& in, TopologyElemID& /* d */)
 {/*
     std::string tstr;
     in >> tstr;
@@ -221,7 +221,7 @@ SOFA_CORE_API std::ostream& operator << (std::ostream& out, const PointAncestorE
     return out;
 }
 
-SOFA_CORE_API std::istream& operator >> (std::istream& in, PointAncestorElem& d)
+SOFA_CORE_API std::istream& operator >> (std::istream& in, PointAncestorElem& /* d */)
 {/*
     std::string tstr;
     in >> tstr;
@@ -269,7 +269,7 @@ bool TopologyChange::write(std::ostream& out) const
     out << parseTopologyChangeTypeToString(getChangeType());
     return true;
 }
-bool TopologyChange::read(std::istream& in)
+bool TopologyChange::read(std::istream& /* in */)
 {
     return false;
 }
