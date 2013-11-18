@@ -24,6 +24,7 @@
 ******************************************************************************/
 #include <sofa/helper/vector.h>
 #include <sofa/helper/vector_device.h>
+#include <sofa/helper/integer_id.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/BackTrace.h>
 #include <cassert>
@@ -42,6 +43,13 @@ int cptid = 0;
 void SOFA_HELPER_API vector_access_failure(const void* vec, unsigned size, unsigned i, const std::type_info& type)
 {
     std::cerr << "ERROR in vector<"<<gettypename(type)<<"> " << std::hex << (long)vec << std::dec << " size " << size << " : invalid index " << (int)i << std::endl;
+    BackTrace::dump();
+    assert(i < size);
+}
+
+void SOFA_HELPER_API vector_access_failure(const void* vec, unsigned size, unsigned i, const std::type_info& type, const char* tindex)
+{
+    std::cerr << "ERROR in vector<"<<gettypename(type)<<", integer_id<"<<tindex<<"> > " << std::hex << (long)vec << std::dec << " size " << size << " : invalid index " << (int)i << std::endl;
     BackTrace::dump();
     assert(i < size);
 }

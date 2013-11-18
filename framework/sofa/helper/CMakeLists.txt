@@ -15,6 +15,7 @@ set(HEADER_FILES
     FnDispatcher.inl
     gl/Trackball.h
     gl/Transformation.h
+	integer_id.h
     io/Image.h
     io/ImageBMP.h
     io/ImagePNG.h
