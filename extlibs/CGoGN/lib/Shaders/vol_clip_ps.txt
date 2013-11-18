@@ -1,0 +1,37 @@
+//Pixel_Shader for flat rendering
+
+varying vec3 normalFS, lightDirFS, eyeVecFS;
+
+varying vec2 texCoordFS;
+uniform sampler2D textureColor;
+uniform sampler2D textureCenters;
+
+
+varying vec4 toto;
+
+
+void main (void)
+{
+	vec4 volColor;
+	volColor.rgb = texture2D(textureColor, texCoordFS.xy).rgb;
+	volColor.a = 1.0;
+
+	vec4 final_color = 
+	(gl_FrontLightModelProduct.sceneColor * gl_FrontMaterial.ambient) + 
+	(gl_LightSource[0].ambient * gl_FrontMaterial.ambient);
+							
+	vec3 N = normalize(normalFS);
+	vec3 L = normalize(lightDirFS);
+	
+	float lambertTerm = dot(N,L);
+	
+	if(lambertTerm > 0.0)
+	{
+		final_color += gl_LightSource[0].diffuse * 
+					   volColor * 
+					   lambertTerm;	
+	}
+
+	gl_FragColor = final_color;
+
+ }

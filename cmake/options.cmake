@@ -10,6 +10,9 @@ set(SOFA-EXTERNAL_INCLUDE_DIR ${SOFA-EXTERNAL_INCLUDE_DIR} CACHE PATH "Include p
 set(SOFA-EXTERNAL_LIBRARY_DIR ${SOFA-EXTERNAL_LIBRARY_DIR} CACHE PATH "Library path for pre-compiled dependencies outside of the Sofa directory")
 
 # extlibs
+##CGoGN
+set(SOFA-EXTERNAL_CGOGN_PATH "${SOFA_EXTLIBS_DIR}/CGoGN" CACHE PATH "Path to the CGoGN library")
+
 
 ## eigen
 set(SOFA-EXTERNAL_EIGEN_PATH "${SOFA_EXTLIBS_DIR}/eigen-3.2.0" CACHE PATH "Path to the eigen header-only library")
@@ -64,6 +67,9 @@ endif()
 #mark_as_advanced(SOFA-EXTERNAL_TINYXML_INCLUDE_DIR)
 #mark_as_advanced(SOFA-EXTERNAL_TINYXML_LIBRARY)
 #mark_as_advanced(SOFA-EXTERNAL_TINYXML_DEBUG_LIBRARY)
+
+## CGoGN
+option(SOFA-LIB_CGOGN "Use the CGoGN library" OFF)
 
 ## zlib
 option(SOFA-EXTERNAL_ZLIB "Use the ZLib library" ON)

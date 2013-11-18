@@ -1,0 +1,34 @@
+//geometry shader for flat rendering
+
+#extension GL_EXT_geometry_shader4 : enable
+
+
+uniform float explode;
+varying out vec3 normalFS, lightDirFS, eyeVecFS;
+
+void main(void)
+{
+ 	vec3 v1 = gl_PositionIn[1].xyz - gl_PositionIn[0].xyz;
+ 	vec3 v2 = gl_PositionIn[2].xyz - gl_PositionIn[0].xyz;
+ 	
+	vec3 centroid = gl_PositionIn[0].xyz + gl_PositionIn[1].xyz + gl_PositionIn[2].xyz;
+	centroid /= 3.0;
+ 
+	vec4 newPos =  gl_ModelViewMatrix * gl_PositionIn[0];
+	vec4 lightPos =  gl_LightSource[0].position * gl_ModelViewMatrix;
+	lightDirFS =  lightPos.xyz - newPos.xyz;
+
+	normalFS  =  cross(v1,v2);
+
+	int i;
+	for(i=0; i< gl_VerticesIn; i++)
+	{
+		vec3 displ = centroid - gl_PositionIn[i].xyz;
+		displ *= explode ;
+		gl_Position = gl_PositionIn[i] + vec4(displ.xyz,0.0);
+		gl_Position = gl_ModelViewProjectionMatrix *  gl_Position;
+		EmitVertex();
+	}
+
+	EndPrimitive();
+}
