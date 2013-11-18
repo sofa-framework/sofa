@@ -57,8 +57,8 @@ RazerHydraDriver::RazerHydraDriver()
 	, positionBase(initData(&positionBase, Vec3d(0,0,0), "positionBase","Position of the interface base in the scene world coordinates"))
     , orientationBase(initData(&orientationBase, Quat(0,0,0,1), "orientationBase","Orientation of the interface base in the scene world coordinates"))
     , positionFirstTool(initData(&positionFirstTool, Vec3d(0,0,0), "positionFirstTool","Position of the first tool"))
-    , orientationFirstTool(initData(&orientationFirstTool, Quat(0,0,0,1), "orientationFirstTool","Orientation of the first tool"))
 	, positionSecondTool(initData(&positionSecondTool, Vec3d(0,0,0), "positionSecondTool","Position of the second tool"))
+    , orientationFirstTool(initData(&orientationFirstTool, Quat(0,0,0,1), "orientationFirstTool","Orientation of the first tool"))
     , orientationSecondTool(initData(&orientationSecondTool, Quat(0,0,0,1), "orientationSecondTool","Orientation of the second tool"))
 	, triggerJustPressedFirstTool(initData(&triggerJustPressedFirstTool, false, "triggerJustPressedFirstTool","Boolean passing to true when the trigger of the first tool is pressed"))
 	, triggerJustPressedSecondTool(initData(&triggerJustPressedSecondTool, false, "triggerJustPressedSecondTool","Boolean passing to true when the trigger of the second tool is pressed"))
@@ -80,7 +80,7 @@ void RazerHydraDriver::cleanup() {
 }
 
 
-void controller_manager_setup_callback( sixenseUtils::ControllerManager::setup_step step ) {
+void controller_manager_setup_callback( sixenseUtils::ControllerManager::setup_step /*step*/ ) {
 	if( sixenseUtils::getTheControllerManager()->isMenuVisible() ) {
 		controller_manager_screen_visible = true;
 		controller_manager_text_string = sixenseUtils::getTheControllerManager()->getStepString();
@@ -92,7 +92,7 @@ void controller_manager_setup_callback( sixenseUtils::ControllerManager::setup_s
 
 sixenseUtils::IControllerManager::setup_callback(controller_manager_setup_callback_ONE_CONTROLLER )(sixenseUtils::IControllerManager::setup_step step) {
 	//std::cout << " --> step: " << sixenseUtils::getTheControllerManager()->getCurrentStep();
-	if(step == sixenseUtils::IControllerManager::setup_step::P1C2_AIM_P1L) {
+	if(step == sixenseUtils::IControllerManager::P1C2_AIM_P1L) {
 		std::cout << sixenseUtils::getTheControllerManager()->getCurrentStep() << std::endl;
 	}
 	return 0;
