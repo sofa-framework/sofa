@@ -23,6 +23,8 @@ set(HEADER_FILES
     ../engine/GenerateRigidMass.inl 
     ../engine/GroupFilterYoungModulus.h 
     ../engine/GroupFilterYoungModulus.inl 
+    ../engine/MathOp.h 
+    ../engine/MathOp.inl 
     ../engine/MergeMeshes.h 
     ../engine/MergeMeshes.inl 
     ../engine/MergePoints.h 
@@ -89,6 +91,7 @@ set(SOURCE_FILES
     ../engine/ExtrudeEdgesAndGenerateQuads.cpp 
     ../engine/GenerateRigidMass.cpp 
     ../engine/GroupFilterYoungModulus.cpp 
+    ../engine/MathOp.cpp 
     ../engine/MergeMeshes.cpp 
     ../engine/MergePoints.cpp 
     ../engine/MergeSets.cpp 
