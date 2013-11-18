@@ -110,6 +110,7 @@ public:
     const Real* getVPositions();  ///< vertices positions (Vec3)
     const Real* getVNormals();    ///< vertices normals   (Vec3)
     const Real* getVTexCoords();  ///< vertices UVs       (Vec2)
+    int getTexCoordRevision();    ///< changes each time texture coord data are updated
     int getVerticesRevision();    ///< changes each time vertices data are updated
 
     unsigned int getNbVAttributes();                    ///< number of vertices attributes
