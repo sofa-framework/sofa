@@ -37,6 +37,10 @@ const Real* SofaPhysicsOutputMesh::getVTexCoords()  ///< vertices UVs       (Vec
 {
     return impl->getVTexCoords();
 }
+int SofaPhysicsOutputMesh::getTexCoordRevision()    ///< changes each time tex coord data are updated
+{
+    return impl->getTexCoordRevision();
+}
 int SofaPhysicsOutputMesh::getVerticesRevision()    ///< changes each time vertices data are updated
 {
     return impl->getVerticesRevision();
@@ -175,6 +179,12 @@ const Real* SofaPhysicsOutputMesh::Impl::getVTexCoords()  ///< vertices UVs     
     return (const Real*) data->getValue().getData();
 }
 
+int SofaPhysicsOutputMesh::Impl::getTexCoordRevision()    ///< changes each time tex coord data are updated
+{
+    Data<ResizableExtVector<TexCoord> > * data = &(sObj->m_vtexcoords);
+    return data->getCounter();
+}
+
 int SofaPhysicsOutputMesh::Impl::getVerticesRevision()    ///< changes each time vertices data are updated
 {
     Data<ResizableExtVector<Coord> > * data =
@@ -191,10 +201,16 @@ unsigned int SofaPhysicsOutputMesh::Impl::getNbVAttributes()                    
 
 const char*  SofaPhysicsOutputMesh::Impl::getVAttributeName(int index)          ///< vertices attribute name
 {
+    // Quick fix: buffer to use for return value
+    // May remove if getSEID() is made to return a non-temp std::string
+    static std::string buffer;
+  
     if ((unsigned)index >= sVA.size())
         return "";
-    else
-        return sVA[index]->getSEID().c_str();
+    else {
+        buffer= sVA[index]->getSEID();
+        return buffer.c_str();
+    }
 }
 
 int          SofaPhysicsOutputMesh::Impl::getVAttributeSizePerVertex(int index) ///< vertices attribute #
@@ -210,7 +226,7 @@ const Real*  SofaPhysicsOutputMesh::Impl::getVAttributeValue(int index)         
     if ((unsigned)index >= sVA.size())
         return NULL;
     else
-        return (Real*)sVA[index]->getSEValue()->getValueVoidPtr();
+        return (Real*)((ResizableExtVector<Real>*)sVA[index]->getSEValue()->getValueVoidPtr())->getData();
 }
 
 int          SofaPhysicsOutputMesh::Impl::getVAttributeRevision(int index)      ///< changes each time vertices attribute is updated
