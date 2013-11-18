@@ -351,7 +351,7 @@ public:
     const_iterator begin() const { return vref.begin(); }
     const_iterator end() const { return vref.end(); }
 
-    inline friend std::ostream& operator<< ( std::ostream& os, const ReadAccessorVector<T>& vec )
+    inline friend std::ostream& operator<< ( std::ostream& os, const ReadAccessorVectorId<T>& vec )
     {
         return os << vec.vref;
     }
@@ -400,12 +400,12 @@ public:
     void reserve(size_type s) { vref.reserve(s); }
     void push_back(const_reference v) { vref.push_back(v); }
 
-    inline friend std::ostream& operator<< ( std::ostream& os, const WriteAccessorVector<T>& vec )
+    inline friend std::ostream& operator<< ( std::ostream& os, const WriteAccessorVectorId<T>& vec )
     {
         return os << vec.vref;
     }
 
-    inline friend std::istream& operator>> ( std::istream& in, WriteAccessorVector<T>& vec )
+    inline friend std::istream& operator>> ( std::istream& in, WriteAccessorVectorId<T>& vec )
     {
         return in >> vec.vref;
     }
