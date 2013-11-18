@@ -303,6 +303,12 @@ public:
         return at(n);
     }
 
+    index_type push_back(const_reference v)
+    {
+        index_type i(this->size());
+        Inherit::push_back(v);
+        return i;
+    }
 protected:
     
     /// Read/write random access with regular index type, protected to force use of explicit index_type
@@ -398,7 +404,7 @@ public:
     void clear() { vref.clear(); }
     void resize(size_type s, bool /*init*/ = true) { vref.resize(s); }
     void reserve(size_type s) { vref.reserve(s); }
-    void push_back(const_reference v) { vref.push_back(v); }
+    index_type push_back(const_reference v) { return vref.push_back(v); }
 
     inline friend std::ostream& operator<< ( std::ostream& os, const WriteAccessorVectorId<T>& vec )
     {
