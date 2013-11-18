@@ -28,7 +28,8 @@ if len(sys.argv) == 3:
                     if childNode.nodeName=='author':
                         author=str(childNode.firstChild.nodeValue)
                     if childNode.nodeName=='date':
-                        date=str(childNode.firstChild.nodeValue)[:10]
+                        date=str(childNode.firstChild.nodeValue)[:16].replace('T',' ')
+                        
 
             #print 'revision='+revision
             #print 'author='+author
