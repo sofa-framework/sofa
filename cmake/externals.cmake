@@ -156,14 +156,6 @@ else()
 endif()
 RegisterProjects(${PNG_LIBRARIES} OPTION SOFA-EXTERNAL_PNG COMPILE_DEFINITIONS SOFA_HAVE_PNG)
 
-## metis
-if(SOFA-EXTERNAL_METIS)
-        find_package(METIS REQUIRED)
-        find_package(MPI REQUIRED)
-endif()
-RegisterProjects(${METIS_LIBRARIES} OPTION SOFA-EXTERNAL_METIS COMPILE_DEFINITIONS SOFA_HAVE_METIS)
-
-
 # enable unit tests
 if(SOFA-MISC_TESTS)
 	enable_testing()

@@ -17,6 +17,9 @@ set(SOFA-EXTERNAL_CGOGN_PATH "${SOFA_EXTLIBS_DIR}/CGoGN" CACHE PATH "Path to the
 ## eigen
 set(SOFA-EXTERNAL_EIGEN_PATH "${SOFA_EXTLIBS_DIR}/eigen-3.2.0" CACHE PATH "Path to the eigen header-only library")
 
+## metis
+set(SOFA-EXTERNAL_METIS_PATH "${SOFA_EXTLIBS_DIR}/metis-5.1.0" CACHE PATH "Path to the metis library sources")
+
 ## qt
 set(QTDIR "$ENV{QTDIR}")
 if(WIN32 AND QTDIR STREQUAL "")

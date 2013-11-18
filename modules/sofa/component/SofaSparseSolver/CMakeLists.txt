@@ -29,11 +29,7 @@ AddCompilerDefinitions("SOFA_BUILD_SPARSE_SOLVER" )
 AddLinkerDependencies(SofaBaseLinearSolver SofaImplicitOdeSolver csparse)
 
 if(SOFA-EXTERNAL_METIS)
-        AddLinkerDependencies(${METIS_LIBRARIES})
-        include_directories(${METIS_INCLUDE_DIR})
-        include_directories(${MPI_INCLUDE_DIR})
-        AddLinkerDependencies(${MPI_LIBRARY})
-#         AddLinkerDependencies(${MPI_CXX_LIBRARY})
+        AddLinkerDependencies(metis)
 endif()
     
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

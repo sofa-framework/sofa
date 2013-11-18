@@ -2,6 +2,8 @@
 set(SOFA_PROJECT_FOLDER "SofaExternal")
 RegisterProjects("ARTrackLib" PATH "${SOFA_EXTLIBS_DIR}/ARTrack")
 RegisterProjects("newmat" PATH "${SOFA_EXTLIBS_DIR}/newmat")
+RegisterProjects("metis" PATH "${SOFA-EXTERNAL_METIS_PATH}" OPTION SOFA-EXTERNAL_METIS COMPILE_DEFINITIONS SOFA_HAVE_METIS)
+
 if(NOT SOFA-EXTERNAL_TINYXML)
         RegisterProjects("tinyxml" PATH "${SOFA-EXTERNAL_TINYXML_PATH}")
 else()
