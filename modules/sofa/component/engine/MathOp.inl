@@ -259,10 +259,10 @@ class MathOpTraits< defaulttype::Vec<N,Real> > : public MathOpTraitsVecReal< def
 template<typename T>
 struct MathOpTraitsBool
 {
-    typedef std::pair<std::pair<
+    typedef std::pair<MathOpNot<T>, std::pair<std::pair<
         std::pair< MathOpOr  <T>, MathOpNOr <T> > ,
         std::pair< MathOpAnd <T>, MathOpNAnd<T> > > ,
-        std::pair< MathOpXor <T>, MathOpXNor<T> >   >
+        std::pair< MathOpXor <T>, MathOpXNor<T> > > >
         Ops;
 };
 
