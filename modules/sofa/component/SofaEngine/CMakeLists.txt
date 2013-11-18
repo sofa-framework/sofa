@@ -31,6 +31,8 @@ set(HEADER_FILES
     ../engine/MergePoints.inl 
     ../engine/MergeSets.h 
     ../engine/MergeSets.inl 
+    ../engine/MergeVectors.h 
+    ../engine/MergeVectors.inl 
     ../engine/MeshBarycentricMapperEngine.h 
     ../engine/MeshBarycentricMapperEngine.inl 
     ../engine/MeshROI.h 
@@ -95,6 +97,7 @@ set(SOURCE_FILES
     ../engine/MergeMeshes.cpp 
     ../engine/MergePoints.cpp 
     ../engine/MergeSets.cpp 
+    ../engine/MergeVectors.cpp
     ../engine/MeshBarycentricMapperEngine.cpp 
     ../engine/MeshROI.cpp 
     ../engine/TransformPosition.cpp 
