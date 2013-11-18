@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "initSixenseHydra.h"
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
@@ -57,7 +58,7 @@ const char* getModuleName()
 
 const char* getModuleVersion()
 {
-    return "0.2";
+    return "1.0";
 }
 
 const char* getModuleLicense()
@@ -73,7 +74,9 @@ const char* getModuleDescription()
 
 const char* getModuleComponentList()
 {
-    return "SixenseHydra";
+    /// string containing the names of the classes provided by the plugin
+    static std::string classes = sofa::core::ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
+    return classes.c_str();
 }
 
 
