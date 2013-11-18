@@ -13,6 +13,8 @@ set(SIXENSE_POSSIBLE_PATHS
 	$ENV{SIXENSE_ROOT}
 	"C:/Program Files/Steam/steamapps/common/sixense sdk/SixenseSDK"
 	"C:/Program Files (x86)/Steam/steamapps/common/sixense sdk/SixenseSDK"
+	"C:/Program Files/SixenseSDK"
+	"C:/Program Files (x86)/SixenseSDK"
 	~/Library/Frameworks
 	/Library/Frameworks
 	/usr/local/

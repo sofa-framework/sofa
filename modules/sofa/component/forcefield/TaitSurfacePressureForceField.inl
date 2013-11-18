@@ -213,12 +213,12 @@ void TaitSurfacePressureForceField<DataTypes>::addForce(const core::MechanicalPa
     m_currentVolume.endEdit();
     m_currentSurfaceArea.endEdit();
     const Real currentVolume = m_currentVolume.getValue();
-    computeStatistics(x);
     Real currentStiffness = 0;
     Real currentPressure = 0;
     computePressureAndStiffness(currentPressure, currentStiffness, currentVolume, m_v0.getValue());
     m_currentPressure.setValue(currentPressure);
     m_currentStiffness.setValue(currentStiffness);
+    computeStatistics(x);
 
     // first compute gradV
     helper::WriteAccessor<VecDeriv> gradV = this->gradV;
