@@ -59,6 +59,9 @@ Contact::SPtr Contact::Create(const std::string& type, core::CollisionModel* mod
 			std::cout << model1->getName() << "-" << model2->getName() << " " << otype << " :";
 
         Contact::SPtr c = Factory::CreateObject(otype,std::make_pair(std::make_pair(model1,model2),intersectionMethod));
+
+        if( c == NULL ) return c;
+
         while (args != std::string::npos)
         {
             std::string::size_type next = type.find_first_of("&?",args+1);
