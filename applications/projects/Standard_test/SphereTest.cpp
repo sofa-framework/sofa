@@ -48,7 +48,7 @@
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/component/collision/MeshIntTool.h>
 #include <sofa/component/collision/MeshMinProximityIntersection.h>
-#include <sofa/component/collision/MeshNewProximityIntersection.h>
+#include <sofa/component/collision/MeshNewProximityIntersection.inl>
 
 #include <PrimitiveCreation.h>
 #include "Sofa_test.h"

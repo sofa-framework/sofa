@@ -64,7 +64,7 @@ class EndPointID;
   *The between end poinsts (_min, _max) and the field cube is that cube is always updated whereas
   *_min and _max are stored values of the cube end points at previous time step.
   */
-class ISAPBox{
+class SOFA_MESH_COLLISION_API ISAPBox{
 public:
     ISAPBox(){}
 

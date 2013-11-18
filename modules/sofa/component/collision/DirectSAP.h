@@ -57,7 +57,7 @@ class EndPoint;
   *min and max are updated with the method update(int i), so min and max have
   *min/max values on the i-th axis after the method update(int i).
   */
-class DSAPBox{
+class SOFA_MESH_COLLISION_API DSAPBox{
 public:
     DSAPBox(Cube c,EndPoint * mi = 0x0,EndPoint * ma = 0x0) : cube(c),min(mi),max(ma){}
 
