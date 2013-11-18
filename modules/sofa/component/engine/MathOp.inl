@@ -303,22 +303,22 @@ struct MathOpApply
         {
             TOps op;
             helper::WriteAccessor<Data<VecValue> > out = *d_out;
-            helper::vector<helper::ReadAccessor<Data<VecValue> > > in;
+            helper::vector<const VecValue*> in;
             unsigned int nbin = d_in.size();
             in.reserve(nbin);
             for (unsigned int idin = 0; idin < nbin; ++idin)
             {
-                in.push_back(helper::ReadAccessor<Data<VecValue> >(*d_in[idin]));
+                in.push_back(&(d_in[idin]->getValue()));
             }
             unsigned int size = 0;
             if (nbin > 0)
             {
-                size = in[0].size();
+                size = in[0]->size();
                 for (unsigned int idin = 1; idin < nbin; ++idin)
                 {
-                    if (in[idin].size() < size)
+                    if (in[idin]->size() < size)
                     {
-                        size = in[idin].size();
+                        size = in[idin]->size();
                     }
                 }
             }
@@ -329,7 +329,7 @@ struct MathOpApply
             {
                 for (unsigned int idin = 0; idin < nbin; ++idin)
                 {
-                    values[idin] = in[idin][idv];
+                    values[idin] = (*in[idin])[idv];
                 }
                 Value o;
                 op(&o, values);
