@@ -49,6 +49,7 @@ if(SOFA-EXTERNAL_GLEW)
 	list(APPEND HEADER_FILES "../visualmodel/VisualManagerPass.h")
 	list(APPEND HEADER_FILES "../visualmodel/VisualManagerSecondaryPass.h")
 
+	list(APPEND SOURCE_FILES "../visualmodel/OglAttribute.cpp")
 	list(APPEND SOURCE_FILES "../visualmodel/OglShader.cpp")
 	list(APPEND SOURCE_FILES "../visualmodel/OglShaderMacro.cpp")
 	list(APPEND SOURCE_FILES "../visualmodel/OglShaderVisualModel.cpp")

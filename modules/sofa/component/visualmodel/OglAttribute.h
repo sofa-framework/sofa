@@ -88,12 +88,14 @@ protected:
     GLuint _abo;
     unsigned int _aboSize;
     bool _needUpdate;
+    int _lastUpdateDataCounter;
     // memory index of the attribute into the graphics memory
     GLuint _index;
 
     unsigned int _usage;
 
     Data<ResizableExtVector<DataTypes> > value;
+    Data<bool> handleDynamicTopology;
 
     sofa::core::topology::BaseMeshTopology* _topology;
 };
