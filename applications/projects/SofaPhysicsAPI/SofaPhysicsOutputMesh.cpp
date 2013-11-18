@@ -182,6 +182,7 @@ const Real* SofaPhysicsOutputMesh::Impl::getVTexCoords()  ///< vertices UVs     
 int SofaPhysicsOutputMesh::Impl::getTexCoordRevision()    ///< changes each time tex coord data are updated
 {
     Data<ResizableExtVector<TexCoord> > * data = &(sObj->m_vtexcoords);
+    data->getValue(); // make sure the data is updated
     return data->getCounter();
 }
 
@@ -190,6 +191,7 @@ int SofaPhysicsOutputMesh::Impl::getVerticesRevision()    ///< changes each time
     Data<ResizableExtVector<Coord> > * data =
         (!sObj->m_vertPosIdx.getValue().empty()) ?
         &(sObj->m_vertices2) : &(sObj->m_positions);
+    data->getValue(); // make sure the data is updated
     return data->getCounter();
 }
 
@@ -234,7 +236,10 @@ int          SofaPhysicsOutputMesh::Impl::getVAttributeRevision(int index)      
     if ((unsigned)index >= sVA.size())
         return 0;
     else
+    {
+        sVA[index]->getSEValue()->getValueVoidPtr(); // make sure the data is updated
         return sVA[index]->getSEValue()->getCounter();
+    }
 }
 
 
@@ -264,6 +269,7 @@ const Index* SofaPhysicsOutputMesh::Impl::getTriangles()   ///< triangles topolo
 int SofaPhysicsOutputMesh::Impl::getTrianglesRevision()    ///< changes each time triangles data is updated
 {
     Data<ResizableExtVector<Triangle> > * data = &(sObj->m_triangles);
+    data->getValue(); // make sure the data is updated
     return data->getCounter();
 }
 
@@ -280,5 +286,6 @@ const Index* SofaPhysicsOutputMesh::Impl::getQuads()   ///< quads topology (4 in
 int SofaPhysicsOutputMesh::Impl::getQuadsRevision()    ///< changes each time quads data is updated
 {
     Data<ResizableExtVector<Quad> > * data = &(sObj->m_quads);
+    data->getValue(); // make sure the data is updated
     return data->getCounter();
 }
