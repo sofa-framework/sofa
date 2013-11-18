@@ -131,7 +131,7 @@ protected:
     virtual void updateFromTopology();
     virtual void computePressureTriangles();
 
-    void computeMeshVolumeAndArea(Real& volume, Real& area, const helper::ReadAccessor<DataVecCoord>& x);
+    virtual void computeMeshVolumeAndArea(Real& volume, Real& area, const helper::ReadAccessor<DataVecCoord>& x);
     void computePressureAndStiffness(Real& pressure, Real& stiffness, Real currentVolume, Real v0);
     virtual void computeStatistics(const helper::ReadAccessor<DataVecCoord>& x);
 };
