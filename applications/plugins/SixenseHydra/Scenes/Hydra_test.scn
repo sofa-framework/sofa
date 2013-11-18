@@ -1,0 +1,40 @@
+<Node 	name="Root" dt="0.02"  >
+	<VisualStyle displayFlags="showVisualModels hideBehaviorModels showCollisionModels hideMappings hideForceFields" />
+
+	<EulerImplicitSolver name="eulerImplicitSolver2"  rayleighStiffness="0.01"  rayleighMass="0.1" />
+	<CGLinearSolver template="GraphScattered" name="linear solver"  iterations="40"  tolerance="1e-009"  threshold="1e-015" />
+	
+	<RazerHydraDriver name="RHdriver1"  listening="true" useBothTools="false" displayTools="true" scale="0.004" />
+	<!-- <RazerHydraDriver name="RHdriver2"  listening="true" useBothTools="true" displayTools="true" scale="0.004" /> -->
+	
+	<Node name="controller1">
+        <Gravity name="Gravity" gravity="0 0 0" />
+		<QuatToRigidEngine name="controllerRigid" template="Vec3d" positions="@../RHdriver1.positionFirstTool" orientations="@../RHdriver1.orientationFirstTool" />
+		<MechanicalObject name="controller1State" template="Rigid" position="@./controllerRigid.rigids" showObject="true" showObjectScale="0.15" />
+		<UniformMass name="uniformMass" template="Rigid"  totalmass="0.1" />
+		<Node name="Collision_Model" >
+			<MergePoints name="controller2DOFS" template="Rigid" position1="@../controllerRigid.rigids" position2="0 0 -0.5  0 0 0 1" />
+			<MechanicalObject name="collisDOFs" template="Vec3d" position="@./controller2DOFS.points" />
+			<EdgeSetTopologyContainer nbPoints="2" edges="0 1" />
+			<Line name="colliLine" group="1" />
+			<Sphere name="colliSphere" contactStiffness="100" group="1" radius="0.07"/>
+			<RigidMapping/>
+		</Node>
+	</Node>
+	
+	<Node name="controller2">
+		<Gravity name="Gravity" gravity="0 0 0" />
+		<QuatToRigidEngine name="controllerRigid" template="Vec3d" positions="@../RHdriver1.positionSecondTool" orientations="@../RHdriver1.orientationSecondTool" />
+		<MechanicalObject name="controller1State" template="Rigid" position="@./controllerRigid.rigids" showObject="true" showObjectScale="0.15"  />
+		<UniformMass name="uniformMass" template="Rigid"  totalmass="0.1" />
+		<Node name="Collision_Model" >
+			<MergePoints name="controller2DOFS" template="Rigid" position1="@../controllerRigid.rigids" position2="0 0 -0.5  0 0 0 1" />
+			<MechanicalObject name="collisDOFs" template="Vec3d" position="@./controller2DOFS.points" />
+			<EdgeSetTopologyContainer nbPoints="2" edges="0 1" />
+			<Line name="colliLine" group="1" />
+			<Sphere name="colliSphere" contactStiffness="100" group="1" radius="0.07"/>
+			<RigidMapping/>
+		</Node>
+	</Node>
+	
+</Node>
