@@ -316,7 +316,7 @@ struct MathOpApply
                 size = in[0].size();
                 for (unsigned int idin = 1; idin < nbin; ++idin)
                 {
-                    if (in[idin].size() > size)
+                    if (in[idin].size() < size)
                     {
                         size = in[idin].size();
                     }
@@ -327,7 +327,7 @@ struct MathOpApply
             values.resize(nbin);
             for (unsigned int idv = 0; idv < size; ++idv)
             {
-                for (unsigned int idin = 1; idin < nbin; ++idin)
+                for (unsigned int idin = 0; idin < nbin; ++idin)
                 {
                     values[idin] = in[idin][idv];
                 }
