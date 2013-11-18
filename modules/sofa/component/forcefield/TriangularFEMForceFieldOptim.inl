@@ -167,6 +167,10 @@ void TriangularFEMForceFieldOptim<DataTypes>::initTriangleInfo(unsigned int i, T
     if (t[0] >= x0.size() || t[1] >= x0.size() || t[2] >= x0.size())
     {
         serr << "INVALID point index >= " << x0.size() << " in triangle " << i << " : " << t << sendl;
+        serr << this->getContext()->getMeshTopology()->getNbPoints() << "/"
+             << this->mstate->getContext()->getMeshTopology()->getNbPoints() << " points,"
+             << this->getContext()->getMeshTopology()->getNbTriangles() << "/"
+             << this->mstate->getContext()->getMeshTopology()->getNbTriangles() << " triangles." << sendl;
         return;
     }
     Coord a  = x0[t[0]];
@@ -192,6 +196,10 @@ void TriangularFEMForceFieldOptim<DataTypes>::initTriangleState(unsigned int i, 
     if (t[0] >= x.size() || t[1] >= x.size() || t[2] >= x.size())
     {
         serr << "INVALID point index >= " << x.size() << " in triangle " << i << " : " << t << sendl;
+        serr << this->getContext()->getMeshTopology()->getNbPoints() << "/"
+             << this->mstate->getContext()->getMeshTopology()->getNbPoints() << " points,"
+             << this->getContext()->getMeshTopology()->getNbTriangles() << "/"
+             << this->mstate->getContext()->getMeshTopology()->getNbTriangles() << " triangles." << sendl;
         return;
     }
     Coord a  = x[t[0]];
