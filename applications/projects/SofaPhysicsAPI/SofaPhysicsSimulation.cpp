@@ -20,7 +20,7 @@
 #include <sofa/gui/Main.h>
 #include <sofa/helper/system/glut.h>
 
-#include <sofa/gui/qt/RealGUI.h>
+#include <sofa/gui/BaseGUI.h>
 
 #include "fakegui.h"
 
@@ -376,7 +376,7 @@ void SofaPhysicsSimulation::Impl::step()
     getSimulation()->animate(groot);
     getSimulation()->updateVisual(groot);
     if ( useGUI ) {
-      sofa::gui::qt::RealGUI* gui= static_cast<sofa::gui::qt::RealGUI*>(sofa::gui::GUIManager::getGUI());
+      sofa::gui::BaseGUI* gui = sofa::gui::GUIManager::getGUI();
       gui->stepMainLoop();
       if (GUIFramerate)
       {
@@ -419,7 +419,7 @@ void SofaPhysicsSimulation::Impl::updateCurrentFPS()
             currentFPS = ((double)timeTicks / (curtime - stepTime[i]))*(frameCounter<100?frameCounter:100);
             stepTime[i] = curtime;
             if ( useGUI ) {
-                sofa::gui::qt::RealGUI* gui= static_cast<sofa::gui::qt::RealGUI*>(sofa::gui::GUIManager::getGUI());
+                sofa::gui::BaseGUI* gui = sofa::gui::GUIManager::getGUI();
                 gui->showFPS(currentFPS);
             }
         }

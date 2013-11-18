@@ -90,7 +90,12 @@ public:
 
     /// @name methods to communicate with the GUI
     /// @{
+    /// Do one step of the GUI loop
+    virtual void stepMainLoop() {}
+    /// Send a (script) message
     virtual void sendMessage(const std::string & /*msgType*/,const std::string & /*msgValue*/) {}
+    /// Force the displayed FPS value (if any)
+    virtual void showFPS(double /*fps*/) {}
     /// @}
 
     void exportGnuplot(sofa::simulation::Node* node, std::string gnuplot_directory="");
