@@ -897,6 +897,8 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
 			break;
 		}
 	}
+    
+	sofa::helper::AdvancedTimer::valSet("GS iterations", i+1);
 
 	if(solver)
 	{
@@ -913,8 +915,6 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
 		for(i=0; i<dimension; i += constraintsResolutions[i]->nbLines)
 			constraintsResolutions[i]->store(i, force, convergence);
 	}
-
-	sofa::helper::AdvancedTimer::valSet("GS iterations", i+1);
 
 	if(showGraphs)
 	{
