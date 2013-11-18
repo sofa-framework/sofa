@@ -92,7 +92,7 @@ protected:
 
 extern template class SOFA_ENGINE_API MergeVectors< helper::vector<int> >;
 extern template class SOFA_ENGINE_API MergeVectors< helper::vector<bool> >;
-extern template class SOFA_ENGINE_API MergeVectors< helper::vector<std::string> >;
+//extern template class SOFA_ENGINE_API MergeVectors< helper::vector<std::string> >;
 #ifndef SOFA_FLOAT
 extern template class SOFA_ENGINE_API MergeVectors< helper::vector<double> >;
 extern template class SOFA_ENGINE_API MergeVectors< helper::vector<defaulttype::Vec2d> >;
