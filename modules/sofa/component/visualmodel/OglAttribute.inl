@@ -44,9 +44,11 @@ using namespace sofa::core::topology;
 template < int size, unsigned int type, class DataTypes>
 OglAttribute< size, type, DataTypes>::OglAttribute() :
     OglShaderElement()
-    , _abo ( GLuint(-1) ), _aboSize(0), _needUpdate(false)
+    , _abo ( GLuint(-1) ), _aboSize(0), _needUpdate(false), _lastUpdateDataCounter(-1)
     , _usage( GL_STATIC_DRAW)
-    ,value( initData(&value, "value", "internal Data"))
+    , value( initData(&value, "value", "internal Data"))
+    , handleDynamicTopology( initData(&handleDynamicTopology, true, "handleDynamicTopology",
+        "Activate handling of topological changes on the values of this attribute (resizes only)"))
 {
     _topology = NULL;
 }
@@ -83,20 +85,32 @@ void OglAttribute< size, type, DataTypes>::initVisual ()
             totalSize,
             data.getData() );
     _needUpdate = false;
+    _lastUpdateDataCounter = value.getCounter();
     /*todo jeremy: add multi shaders management...temp solution for tonight...*/
     _index =  (*shaders.begin())->getAttribute ( indexShader.getValue(), id.getValue().c_str() ); //shader->getAttribute ( indexShader.getValue(), id.getValue().c_str() );
-
-    enable();
+    if (_index == GLuint(-1) )
+    {
+        serr << "Variable \""<<id.getValue()<<"\" NOT FOUND in shader \"" << (*shaders.begin())->vertFilename.getValue() << "\""<< sendl;
+    }
+    else
+    {
+        sout << "Variable \""<<id.getValue()<<"\" in shader \"" << (*shaders.begin())->vertFilename.getValue() << "\" with index: " << _index << sendl;
+    }
+    //enable();
     glBindBufferARB(GL_ARRAY_BUFFER,0);
 }
 
 template < int size, unsigned int type, class DataTypes>
 void OglAttribute< size, type, DataTypes>::updateVisual()
 {
-    if (!_needUpdate) return;
-
+     if ( _abo == GLuint(-1) )
+         return; // initVisual not yet called
     const ResizableExtVector<DataTypes>& data = value.getValue();
     unsigned int totalSize = data.size() *sizeof ( data[0] );
+    int dataCounter = value.getCounter();
+    if (!_needUpdate && totalSize == _aboSize && dataCounter == _lastUpdateDataCounter)
+        return;
+
     glBindBufferARB ( GL_ARRAY_BUFFER, _abo );
     if (totalSize != _aboSize)
     {
@@ -112,7 +126,8 @@ void OglAttribute< size, type, DataTypes>::updateVisual()
             totalSize,
             (char*)data.getData() );
     _needUpdate = false;
-    enable();
+    _lastUpdateDataCounter = dataCounter;
+    //enable();
     glBindBufferARB(GL_ARRAY_BUFFER,0);
 }
 
@@ -155,7 +170,7 @@ void OglAttribute< size, type, DataTypes>::enable()
     glEnableVertexAttribArrayARB ( _index );
     glVertexAttribPointerARB ( _index, size, type, GL_FALSE, 0, ( char* ) NULL + 0);
 #endif
-    //glBindBufferARB(GL_ARRAY_BUFFER, 0);
+    glBindBufferARB(GL_ARRAY_BUFFER, 0);
 }
 
 
@@ -190,7 +205,7 @@ void OglAttribute< size, type, DataTypes>::reinit()
 template < int size, unsigned int type, class DataTypes>
 void OglAttribute< size, type, DataTypes>::handleTopologyChange()
 {
-    if( _topology)
+    if( _topology && handleDynamicTopology.getValue())
     {
         std::list<const TopologyChange *>::const_iterator itBegin=_topology->beginChange();
         std::list<const TopologyChange *>::const_iterator itEnd=_topology->endChange();
