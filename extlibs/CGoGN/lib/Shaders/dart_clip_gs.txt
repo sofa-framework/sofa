@@ -1,0 +1,29 @@
+//geometry shader for flat rendering
+
+#extension GL_EXT_geometry_shader4 : enable
+
+varying in vec3 texCoord[];
+
+uniform vec4 Plane;
+
+void main(void)
+{
+	// get center of volume 
+	vec3 center = texCoord[0].xyz;
+
+	// compute if volume is clipped by plane
+	float planeSide = dot(center,Plane.xyz) + Plane.w;
+
+	// clipping test
+	if (planeSide >= 0.0)
+	{
+	//	emit the line
+		gl_Position = gl_ModelViewProjectionMatrix *  gl_PositionIn[0];
+		gl_FrontColor = gl_FrontColorIn[0];
+		EmitVertex();
+		gl_Position = gl_ModelViewProjectionMatrix *  gl_PositionIn[1];
+		gl_FrontColor = gl_FrontColorIn[1];
+		EmitVertex();
+	}
+	EndPrimitive();
+}

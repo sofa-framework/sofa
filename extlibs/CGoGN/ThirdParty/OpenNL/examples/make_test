@@ -1,0 +1,161 @@
+#!/bin/bash
+
+function TEST_MODE() {
+   local execu="$1"
+   local data="$2" 
+   local mode="$3"
+   local max_iter="$4"
+   local prec_exp="$5"
+   local out="$6"
+   local erreur
+   local erreur_bc
+   local error_msg
+   if [ "$prec_exp" -eq 0 ]; then
+         prec= 
+   else 
+         prec=1e-$prec_exp 
+   fi
+   if [ "$max_iter" -eq 0 ]; then
+         max_iter= 
+   fi
+   $execu $mode $max_iter $prec $data $out >tmp_$mode
+   error_msg=`grep '^ERROR' tmp_$mode`
+   if [ ! -z "$error_msg" ]; then
+       echo "test $mode $error_msg"
+       return
+   fi
+   erreur=`grep "in OpenNL : ||Ax-b||" tmp_$mode | cut -f2 -d'=' -`
+   solveur_time=`grep "Solver time: " tmp_$mode | cut -f2 -d':' -`
+   #echo $solveur_time 
+   its=`grep "Used iterations: " tmp_$mode | cut -f3 -d' ' -`
+   #gflops=`grep "Nathan Bell GFLOPs " tmp_$mode | cut -f4 -d' ' -`
+   rm tmp_$mode
+   # parceque bc ne gere pas la notation scientifique
+   erreur_bc=`echo "$erreur" |sed 's/e+*\(.*\)/*10^(\1)/' `
+   #echo " $erreur_bc < 10^(-$prec)" | bc -l   
+   if [ $(echo " $erreur_bc < 10^(-$prec_exp)" | bc -l) -eq 1 ]; then 
+        #echo  "test $mode PASSED : err = $erreur  time = $solveur_time its = $its GfLops =$gflops" 
+        echo  "test $mode PASSED : err = $erreur  time = $solveur_time its = $its " 
+   else
+        #echo  "test $mode FAILED : err = $erreur  time = $solveur_time its = $its Gflops =$gflops" 
+        echo  "test $mode FAILED : err = $erreur  time = $solveur_time its = $its " 
+   fi	
+}   
+
+function TEST_MMTX(){
+   local comma="../build/Linux-Release/binaries/bin/mmtx"
+   local data="$1"
+   local if_float="$2" 
+   local if_double="$3" 
+   local max_iter=100000
+   echo "processing $comma on file $data"
+   if [ "$if_float" -eq 1 ]; then
+   TEST_MODE $comma $data "FLOAT_CRS   " $max_iter 6
+   TEST_MODE $comma $data "FLOAT_BCRS2 " $max_iter 6
+   TEST_MODE $comma $data "FLOAT_ELL   " $max_iter 6
+   TEST_MODE $comma $data "FLOAT_HYB   " $max_iter 6
+   fi
+   if [ "$if_double" -eq 1 ]; then
+   TEST_MODE $comma $data "DOUBLE_CRS  " $max_iter 10 
+   TEST_MODE $comma $data "DOUBLE_BCRS2" $max_iter 10 
+   TEST_MODE $comma $data "DOUBLE_ELL  " $max_iter 10
+   TEST_MODE $comma $data "DOUBLE_HYB  " $max_iter 10 
+   fi
+   TEST_MODE $comma $data "CG          " $max_iter 10
+   #TEST_MODE $comma $data "BICGSTAB    " $max_iter 10
+   #TEST_MODE $comma $data "GMRES       " $max_iter 10
+}
+
+function TEST_PARAMETRIZE(){
+   local comma="../build/Linux-Release/binaries/bin/parameterize"
+   local data="$1"
+   local if_float="$2" 
+   local if_double="$3" 
+   echo "processing $comma on file $data"
+   if [ "$if_float" -eq 1 ]; then
+   TEST_MODE $comma $data "FLOAT_CRS   " 0 0 out.obj 
+   TEST_MODE $comma $data "FLOAT_BCRS2 " 0 0 out.obj 
+   TEST_MODE $comma $data "FLOAT_ELL   " 0 0 out.obj 
+   TEST_MODE $comma $data "FLOAT_HYB   " 0 0 out.obj 
+   fi
+   if [ "$if_double" -eq 1 ]; then
+   TEST_MODE $comma $data "DOUBLE_CRS  " 0 0 out.obj 
+   TEST_MODE $comma $data "DOUBLE_BCRS2" 0 0 out.obj  
+   TEST_MODE $comma $data "DOUBLE_ELL  " 0 0 out.obj  
+   TEST_MODE $comma $data "DOUBLE_HYB  " 0 0 out.obj  
+   fi
+   TEST_MODE $comma $data "CG          " 0 0 out.obj
+   rm out.obj
+}
+
+# choice variables
+very_serious=0
+serious=0
+with_double=0
+with_float=0
+input_file=
+while getopts dsSfhi: option
+do
+case $option in
+  h)echo $0 -s -d -S -f [-i file]
+    echo "-f for using single floating point precision"
+    echo "-d for using double floating point precision"
+    echo "-s for doing serious tests"
+    echo "-S for doing very serious tests"
+    echo "-i for doing the tests only on a given file"
+    exit 0
+    ;;
+  f) 
+    with_float=1  
+   ;;
+  d) 
+    with_double=1  
+   ;;
+  s)
+    serious=1
+   ;;
+  S)
+    very_serious=1
+   ;; 
+  i)
+    input_file=$OPTARG
+   ;;
+  esac
+done
+if [ -f "$input_file" ]; then
+   if [[ "$input_file" =~ ".mtx" ]]; then
+      TEST_MMTX        "$input_file" $with_float $with_double
+   else
+      TEST_PARAMETRIZE "$input_file" $with_float $with_double
+   fi
+   exit 0
+fi
+if [ "$serious" -eq 0 ] && [ "$very_serious" -eq 0 ]; then
+   TEST_PARAMETRIZE "DATA/girl_face.obj" $with_float $with_double 
+   TEST_MMTX        "DATA/5pt_10x10.mtx" $with_float $with_double 
+   TEST_MMTX        "DATA/test_10x10.mtx"     $with_float $with_double 
+   TEST_MMTX        "DATA/rand.mtx"     $with_float $with_double 
+fi
+if [ "$serious" -eq 1 ]; then
+   TEST_PARAMETRIZE "DATA/girl_face_hires3.obj" $with_float $with_double 
+   if [ -f "DATA/cfd1.mtx" ]; then
+       TEST_MMTX        "DATA/cfd1.mtx"     $with_float $with_double 
+   fi
+fi
+if [ "$very_serious" -eq 1 ]; then
+   if [ -f "DATA/pdb1HYS.mtx" ]; then
+   	TEST_MMTX "DATA/pdb1HYS.mtx" $with_float $with_double 
+   fi
+   if [ -f "DATA/consph.mtx" ]; then
+         TEST_MMTX "DATA/consph.mtx" $with_float $with_double 
+   fi
+   if [ -f "DATA/girl_face_hires4.obj" ]; then
+   	TEST_PARAMETRIZE "DATA/girl_face_hires4.obj" $with_float $with_double 
+   fi
+   if [ -f "DATA/girl_face_hires5.obj" ]; then
+   	TEST_PARAMETRIZE "DATA/girl_face_hires5.obj" $with_float $with_double 
+   fi
+   if [ -f "DATA/nd24k.mtx" ]; then
+         TEST_MMTX "DATA/nd24k.mtx" $with_float $with_double 
+   fi
+fi
