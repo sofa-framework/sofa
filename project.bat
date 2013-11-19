@@ -93,6 +93,18 @@ call cmake ..
 nmake
 goto common
 
+:vc11_x64_bs_cmake
+set TARGET_MACHINE=x64
+@echo on
+@echo Making Visual project 11 (cmake)
+call "%VS110COMNTOOLS%..\..\VC\vcvarsall.bat" amd64
+echo Copying external dlls.
+xcopy ..\bin\dll_x64\*.* ..\bin\ /y /q
+call cmake -G"NMake Makefiles" -DCMAKE_BUILD_TYPE=Release ..
+call cmake ..
+call nmake
+goto common
+
 :vc9_x64
 set QMAKESPEC=win32-msvc2008
 set TARGET_MACHINE=x64
