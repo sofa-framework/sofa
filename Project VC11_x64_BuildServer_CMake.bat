@@ -1,1 +1,1 @@
-..\project VC11_x64_BS_CMAKE
+..\project VC11_X64_BS_CMAKE
