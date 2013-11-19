@@ -215,7 +215,9 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
 		for (unsigned int i=0; i<constraintCorrections.size(); i++)
 		{
 			core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
+			sofa::helper::AdvancedTimer::stepBegin("Object name: " + cc->getName());
 			cc->addComplianceInConstraintSpace(cParams, &current_cp->W);
+			sofa::helper::AdvancedTimer::stepEnd("Object name: " + cc->getName());
 		}
 
 		sofa::helper::AdvancedTimer::stepEnd  ("Get Compliance");
