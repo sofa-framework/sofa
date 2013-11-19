@@ -22,17 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//
-// C++ Implementation: KeyreleasedEvent
-//
-// Description:
-//
-//
+
 // Author: Juan Pablo de la Plata, INRIA Futurs, (C) 2006
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
 
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 

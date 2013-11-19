@@ -22,17 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//
-// C++ Interface: JoystickEvent
-//
-// Description:
-//
-//
+
 // Author: Pierre-Jean Bensoussan, Digital Trainers (2008)
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
+
 // This file is a work based on the open source release of VGSDK.
 //
 // VGSDK - Copyright (C) 2008, Nicolas Papier.
@@ -40,7 +32,6 @@
 // as published by the Free Software Foundation.
 // Author Nicolas Papier
 // Author Guillaume Brocker
-//
 
 #ifndef SOFA_CORE_OBJECTMODEL_JOYSTICKEVENT_H
 #define SOFA_CORE_OBJECTMODEL_JOYSTICKEVENT_H

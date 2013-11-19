@@ -22,17 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//
-// C++ Interface: DevBaseMonitor
-//
-// Description:
-//
-//
-// Author: The SOFA team </www.sofa-framework.org>, (C) 2007
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
+
 #ifndef SOFA_CORE_DEVBASEMONITOR_H
 #define SOFA_CORE_DEVBASEMONITOR_H
 

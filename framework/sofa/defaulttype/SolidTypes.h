@@ -22,16 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-// C++ Interface: SolidTypes
-//
-// Description: Base types for coordinate systems and articulated bodies
-//
-//
+
 // Author: Francois Faure, INRIA-UJF, (C) 2006
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
+
 #ifndef SOFA_DEFAULTTYPE_SOLIDTYPES_H
 #define SOFA_DEFAULTTYPE_SOLIDTYPES_H
 
