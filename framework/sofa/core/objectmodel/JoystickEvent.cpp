@@ -22,17 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//
-// C++ Implementation: JoystickEvent
-//
-// Description:
-//
-//
+
 // Author: Pierre-Jean Bensoussan, Digtal Trainers, (C) 2008
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
+
 #include <sofa/core/objectmodel/JoystickEvent.h>
 #include <assert.h>
 #include <cstring> // for NULL

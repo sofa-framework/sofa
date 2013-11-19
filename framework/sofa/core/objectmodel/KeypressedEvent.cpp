@@ -22,17 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//
-// C++ Implementation: KeypressedEvent
-//
-// Description:
-//
-//
+
 // Author: Francois Faure, UJF-Grenoble/INRIA, (C) 2006
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
+
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 
 namespace sofa

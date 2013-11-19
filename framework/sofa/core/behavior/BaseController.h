@@ -22,17 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//
-// C++ Interface: Controller
-//
-// Description:
-//
-//
+
 // Author: Pierre-Jean Bensoussan, Digital Trainers (2008)
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
 
 #ifndef SOFA_CORE_BEHAVIOR_BASECONTROLLER_H
 #define SOFA_CORE_BEHAVIOR_BASECONTROLLER_H
