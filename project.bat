@@ -111,11 +111,16 @@ set TARGET_MACHINE=x64
 @echo on
 @echo Making Visual project 11 (cmake)
 call "%VS110COMNTOOLS%..\..\VC\vcvarsall.bat" amd64
+@if ERRORLEVEL goto end
 echo Copying external dlls.
 xcopy ..\bin\dll_x64\*.* ..\bin\ /y /q
-call cmake -G"NMake Makefiles" -DCMAKE_BUILD_TYPE=Release ..
-call cmake ..
-call nmake
+@if ERRORLEVEL goto end
+cmake -G"NMake Makefiles" -DCMAKE_BUILD_TYPE=Release ..
+@if ERRORLEVEL goto end
+cmake ..
+@if ERRORLEVEL goto end
+nmake
+@if ERRORLEVEL goto end
 goto common
 
 :vc9_x64
