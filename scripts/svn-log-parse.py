@@ -24,12 +24,12 @@ if len(sys.argv) == 3:
             for childNode in node.childNodes:
                 if childNode.nodeType==minidom.Node.ELEMENT_NODE:
                     if childNode.nodeName=='msg':
-                        msg=str(childNode.firstChild.nodeValue)
+                        msg=str(childNode.firstChild.nodeValue)[:200]
                     if childNode.nodeName=='author':
                         author=str(childNode.firstChild.nodeValue)
                     if childNode.nodeName=='date':
                         date=str(childNode.firstChild.nodeValue)[:16].replace('T',' ')
-                        
+
 
             #print 'revision='+revision
             #print 'author='+author
