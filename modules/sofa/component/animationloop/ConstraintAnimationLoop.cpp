@@ -523,7 +523,7 @@ void ConstraintAnimationLoop::correctiveMotion(const core::ExecParams* params /*
 
     simulation::common::MechanicalOperations mop(params, this->getContext());
 
-    mop.propagateV(core::VecDerivId::velocity());
+    mop.propagateV(core::VecDerivId::velocity(), false); // ignore projective constraints (?)
 
     mop.propagateDx(core::VecDerivId::dx(), true);
 

@@ -997,52 +997,6 @@ public:
 #endif
 };
 
-/** V is propagated to all the layers through the mappings.
-*/
-class SOFA_SIMULATION_COMMON_API MechanicalPropagateVVisitor : public MechanicalVisitor
-{
-public:
-    MultiVecDerivId v;
-    bool ignoreMask;
-
-    MechanicalPropagateVVisitor(const sofa::core::MechanicalParams* mparams , MultiVecDerivId _v, bool m)
-        : MechanicalVisitor(mparams) , v(_v), ignoreMask(m)
-    {
-#ifdef SOFA_DUMP_VISITOR_INFO
-        setReadWriteVectors();
-#endif
-    }
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
-    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-
-    // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
-    {
-        return false; // !map->isMechanical();
-    }
-
-    /// Return a class name for this visitor
-    /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalPropagateVVisitor"; }
-    virtual std::string getInfos() const
-    {
-        std::string name="["+v.getName()+"]"; return name;
-    }
-    /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const
-    {
-        return true;
-    }
-#ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
-    {
-        addReadWriteVector(v);
-    }
-#endif
-};
-
-
 /** Same as MechanicalPropagateDxVisitor followed by MechanicalResetForceVisitor
 */
 class SOFA_SIMULATION_COMMON_API MechanicalPropagateDxAndResetForceVisitor : public MechanicalVisitor
@@ -1082,66 +1036,28 @@ public:
 #endif
 };
 
-
-class SOFA_SIMULATION_COMMON_API MechanicalPropagateXVisitor : public MechanicalVisitor
-{
-public:
-    MultiVecCoordId x;
-    bool ignoreMask;
-
-    MechanicalPropagateXVisitor( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST  = sofa::core::MechanicalParams::defaultInstance()*/, MultiVecCoordId x, bool m )
-        : MechanicalVisitor(mparams) , x(x), ignoreMask(m)
-    {}
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
-    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-
-    // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
-    {
-        return false; // !map->isMechanical();
-    }
-
-    /// Return a class name for this visitor
-    /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalPropagateXVisitor"; }
-    virtual std::string getInfos() const { std::string name= "X["+x.getName()+"]"; return name;}
-
-
-    /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const
-    {
-        return true;
-    }
-#ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
-    {
-        addReadWriteVector(x);
-    }
-#endif
-};
-
-
-/** Same as MechanicalPropagateXVisitor followed by MechanicalResetForceVisitor
+/** Same as MechanicalPropagatePositionVisitor followed by MechanicalResetForceVisitor
 */
-class SOFA_SIMULATION_COMMON_API MechanicalPropagateXAndResetForceVisitor : public MechanicalVisitor
+class SOFA_SIMULATION_COMMON_API MechanicalPropagatePositionAndResetForceVisitor : public MechanicalVisitor
 {
 public:
     MultiVecCoordId x;
     MultiVecDerivId f;
     bool ignoreMask;
+    bool applyProjections;
 
-    MechanicalPropagateXAndResetForceVisitor(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST  = sofa::core::MechanicalParams::defaultInstance()*/, MultiVecCoordId x, MultiVecDerivId f, bool m)
-        : MechanicalVisitor(mparams) , x(x), f(f), ignoreMask(m)
+    MechanicalPropagatePositionAndResetForceVisitor(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST  = sofa::core::MechanicalParams::defaultInstance()*/, MultiVecCoordId x, MultiVecDerivId f, bool m)
+        : MechanicalVisitor(mparams) , x(x), f(f), ignoreMask(m), applyProjections(true)
     {}
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
     virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
+    virtual Result fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c);
     virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalPropagateXAndResetForceVisitor"; }
+    virtual const char* getClassName() const { return "MechanicalPropagatePositionAndResetForceVisitor"; }
 
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
@@ -1364,6 +1280,7 @@ public:
     double t;
     MultiVecCoordId x;
     bool ignoreMask;
+    bool applyProjections;
 
     MechanicalPropagatePositionVisitor( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST  = sofa::core::MechanicalParams::defaultInstance()*/, double time=0, MultiVecCoordId x = VecCoordId::position(), bool m=true);
 
@@ -1412,6 +1329,8 @@ public:
     double currentTime;
     MultiVecCoordId x;
     MultiVecDerivId v;
+    bool ignoreMask;
+    bool applyProjections;
 
 #ifdef SOFA_SUPPORT_MAPPED_MASS
     // compute the acceleration created by the input velocity and the derivative of the mapping
@@ -1424,7 +1343,7 @@ public:
     MechanicalPropagatePositionAndVelocityVisitor(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST  = sofa::core::MechanicalParams::defaultInstance()*/, double time=0, MultiVecCoordId x = VecId::position(), MultiVecDerivId v = VecId::velocity(),
             bool m=true );
 #endif
-    bool ignoreMask;
+  
 
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
     virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
@@ -1464,19 +1383,20 @@ class SOFA_SIMULATION_COMMON_API MechanicalPropagateVelocityVisitor : public Mec
 public:
     double currentTime;
     MultiVecDerivId v;
-
+    bool ignoreMask;    
+    bool applyProjections;
+    
 #ifdef SOFA_SUPPORT_MAPPED_MASS
     // compute the acceleration created by the input velocity and the derivative of the mapping
     MultiVecDerivId a;
     MechanicalPropagateVelocityVisitor(
         const sofa::core::MechanicalParams* mparams /* PARAMS FIRST  = sofa::core::MechanicalParams::defaultInstance()*/, double time=0,
         MultiVecDerivId v = VecDerivId::velocity(),
-        MultiVecDerivId a = VecDerivId::dx() , bool m=true); //
+        MultiVecDerivId a = VecDerivId::dx() , bool m=true); 
 #else
     MechanicalPropagateVelocityVisitor(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST  = sofa::core::MechanicalParams::defaultInstance()*/, double time=0, MultiVecDerivId v = VecId::velocity(),
-            bool m=true );
+            bool m=true);
 #endif
-    bool ignoreMask;
 
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
     virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);

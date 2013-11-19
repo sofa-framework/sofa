@@ -41,31 +41,6 @@ void UpdateMappingVisitor::processMapping(simulation::Node* /*n*/, core::BaseMap
 void UpdateMappingVisitor::processMechanicalMapping(simulation::Node* /*n*/, core::BaseMapping* /*obj*/)
 {
     // mechanical mappings with isMechanical flag not set are now processed by the MechanicalPropagatePositionVisitor visitor
-    /*
-        if (!obj->isMechanical())
-        {
-          simulation::Visitor::ctime_t t0=begin(n, obj);
-
-    #ifdef SOFA_DUMP_VISITOR_INFO
-      if (printActivated)      printNode("propagateX");
-    #endif
-            obj->propagateX();
-    #ifdef SOFA_DUMP_VISITOR_INFO
-      if (printActivated)      printCloseNode("propagateX");
-    #endif
-
-
-    #ifdef SOFA_DUMP_VISITOR_INFO
-      if (printActivated)      printNode("propagateV");
-    #endif
-            obj->propagateV();
-    #ifdef SOFA_DUMP_VISITOR_INFO
-      if (printActivated)      printCloseNode("propagateV");
-    #endif
-
-          end(n, obj, t0);
-        }
-    */
 }
 
 Visitor::Result UpdateMappingVisitor::processNodeTopDown(simulation::Node* node)

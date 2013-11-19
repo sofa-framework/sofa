@@ -182,12 +182,7 @@ public:
             return vect[outputDerivative];
     }
 
-
-protected:
-
-    /// the solution vector is stored for warm-start
-    core::behavior::MultiVecDeriv x;
-
+    sofa::core::MultiVecDerivId xID;
 
 };
 

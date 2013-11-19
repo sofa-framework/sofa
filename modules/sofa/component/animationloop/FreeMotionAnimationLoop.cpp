@@ -166,7 +166,7 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params /* PARAM
     this->gnode->execute(&freeMotion);
     AdvancedTimer::stepEnd("FreeMotion");
 
-    mop.propagateXAndV(freePos, freeVel);
+    mop.propagateXAndV(freePos, freeVel, true); // apply projective constraints
 
     if (f_printLog.getValue())
         serr << " SolveVisitor for freeMotion performed" << sendl;
@@ -184,7 +184,7 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params /* PARAM
     computeCollision(params);
     AdvancedTimer::stepEnd  ("Collision");
 
-    mop.propagateX(pos);
+    mop.propagateX(pos, false); // Why is this done at that point ???
 
     if (displayTime.getValue())
     {
@@ -212,15 +212,14 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params /* PARAM
 
             // xfree += dv * dt
             freePos.eq(freePos, dv, dt);
-            mop.propagateX(freePos);
+            mop.propagateX(freePos, false); // ignore projective constraints
 
             cparams.setOrder(core::ConstraintParams::POS);
             constraintSolver->solveConstraint(&cparams, pos);
 
             MultiVecDeriv dx(&vop, constraintSolver->getDx());
 
-            mop.projectResponse(vel);
-            mop.propagateV(vel);
+            mop.propagateV(vel, true); // apply projective constraints
             mop.projectResponse(dx);
             mop.propagateDx(dx, true);
 
@@ -234,8 +233,7 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params /* PARAM
             cparams.setV(freeVel);
 
             constraintSolver->solveConstraint(&cparams, pos, vel);
-            mop.projectResponse(vel);
-            mop.propagateV(vel);
+            mop.propagateV(vel, true); // apply projective constraints
 
             MultiVecDeriv dx(&vop, constraintSolver->getDx());
             mop.projectResponse(dx);
