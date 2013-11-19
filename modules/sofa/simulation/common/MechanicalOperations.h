@@ -64,13 +64,17 @@ public:
     /// Propagate the given displacement through all mappings and reset the current force delta
     void propagateDxAndResetDf(core::MultiVecDerivId dx, core::MultiVecDerivId df);
     /// Propagate the given position through all mappings
-    void propagateX(core::MultiVecCoordId x);
+    void propagateX(core::MultiVecCoordId x, bool applyProjections);
     /// Propagate the given velocity through all mappings
-    void propagateV(core::MultiVecDerivId v);
+    void propagateV(core::MultiVecDerivId v, bool applyProjections);
     /// Propagate the given position and velocity through all mappings
-    void propagateXAndV(core::MultiVecCoordId x, core::MultiVecDerivId v);
+    void propagateXAndV(core::MultiVecCoordId x, core::MultiVecDerivId v, bool applyProjections);
     /// Propagate the given position through all mappings and reset the current force delta
-    void propagateXAndResetF(core::MultiVecCoordId x, core::MultiVecDerivId f);
+    void propagateXAndResetF(core::MultiVecCoordId x, core::MultiVecDerivId f, bool applyProjections);
+    /// Apply projective constraints to the given position vector
+    void projectPosition(core::MultiVecCoordId x, double time = 0.0);
+    /// Apply projective constraints to the given velocity vector
+    void projectVelocity(core::MultiVecDerivId v, double time = 0.0);
     /// Apply projective constraints to the given vector
     void projectResponse(core::MultiVecDerivId dx, double **W=NULL);
     void addMdx(core::MultiVecDerivId res, core::MultiVecDerivId dx, double factor = 1.0); ///< res += factor M.dx
