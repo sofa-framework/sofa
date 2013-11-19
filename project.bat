@@ -28,6 +28,8 @@ if "%1" == "VC9" goto vc9
 if "%1" == "VC10" goto vc10
 if "%1" == "VC10_BS" goto vc10_bs
 if "%1" == "VC10_BS_CMAKE" goto vc10_bs_cmake
+if "%1" == "VC11_BS_CMAKE" goto vc11_bs_cmake
+if "%1" == "VC11_X64_BS_CMAKE" goto vc11_x64_bs_cmake
 if "%1" == "VC9_X64" goto vc9_x64
 if "%1" == "VC10_X64" goto vc10_x64
 if "%1" == "clean" goto clean
@@ -91,6 +93,17 @@ xcopy ..\bin\dll_x86\*.* ..\bin\ /y /q
 call cmake -G"NMake Makefiles" -DCMAKE_BUILD_TYPE=Release ..
 call cmake ..
 nmake
+goto common
+
+:vc11_bs_cmake
+@echo on
+@echo Making Visual project 11 (cmake)
+call "%VS110COMNTOOLS%..\..\VC\vcvarsall.bat" x86
+echo Copying external dlls.
+xcopy ..\bin\dll_x86\*.* ..\bin\ /y /q
+call cmake -G"NMake Makefiles" -DCMAKE_BUILD_TYPE=Release ..
+call cmake ..
+call nmake
 goto common
 
 :vc11_x64_bs_cmake
