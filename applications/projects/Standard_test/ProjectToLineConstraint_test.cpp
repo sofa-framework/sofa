@@ -127,7 +127,7 @@ struct ProjectToLineConstraint_test : public Sofa_test<typename _DataTypes::Real
     void init_allParticlesConstrained()
     {
         indices.clear();
-        for(unsigned i; i<numNodes; i++)
+        for(unsigned i = 0; i<numNodes; i++)
             indices.push_back(i);
          projection->f_indices.setValue(indices);
 
