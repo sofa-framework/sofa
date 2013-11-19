@@ -26,10 +26,6 @@ set PATH=%QMAKEPATH%\bin;%PATH%
 if "%1" == "VC8" goto vc8
 if "%1" == "VC9" goto vc9
 if "%1" == "VC10" goto vc10
-if "%1" == "VC10_BS" goto vc10_bs
-if "%1" == "VC10_BS_CMAKE" goto vc10_bs_cmake
-if "%1" == "VC11_BS_CMAKE" goto vc11_bs_cmake
-if "%1" == "VC11_X64_BS_CMAKE" goto vc11_x64_bs_cmake
 if "%1" == "VC9_X64" goto vc9_x64
 if "%1" == "VC10_X64" goto vc10_x64
 if "%1" == "clean" goto clean
@@ -70,57 +66,6 @@ call "%VS100COMNTOOLS%..\..\VC\vcvarsall.bat" x86
 qmake -tp vc -recursive -o Sofa.sln Sofa.pro QT_INSTALL_PREFIX="%QTDIR:\=/%"
 echo Copying external dlls.
 xcopy .\bin\dll_x86\*.* .\bin\ /y /q
-goto common
-
-:vc10_bs
-set QMAKESPEC=win32-msvc2010
-@echo on
-@echo Making Visual project 10
-call "%VS100COMNTOOLS%..\..\VC\vcvarsall.bat" x86
-echo Copying external dlls.
-xcopy .\bin\dll_x86\*.* .\bin\ /y /q
-qmake -recursive Sofa.pro QT_INSTALL_PREFIX="%QTDIR:\=/%"
-nmake
-goto common
-
-:vc10_bs_cmake
-REM set QMAKESPEC=win32-msvc2010
-@echo on
-@echo Making Visual project 10 (cmake)
-call "%VS100COMNTOOLS%..\..\VC\vcvarsall.bat" x86
-echo Copying external dlls.
-xcopy ..\bin\dll_x86\*.* ..\bin\ /y /q
-call cmake -G"NMake Makefiles" -DCMAKE_BUILD_TYPE=Release ..
-call cmake ..
-nmake
-goto common
-
-:vc11_bs_cmake
-@echo on
-@echo Making Visual project 11 (cmake)
-call "%VS110COMNTOOLS%..\..\VC\vcvarsall.bat" x86
-echo Copying external dlls.
-xcopy ..\bin\dll_x86\*.* ..\bin\ /y /q
-call cmake -G"NMake Makefiles" -DCMAKE_BUILD_TYPE=Release ..
-call cmake ..
-call nmake
-goto common
-
-:vc11_x64_bs_cmake
-set TARGET_MACHINE=x64
-@echo on
-@echo Making Visual project 11 (cmake)
-call "%VS110COMNTOOLS%..\..\VC\vcvarsall.bat" amd64
-@if ERRORLEVEL goto end
-echo Copying external dlls.
-xcopy ..\bin\dll_x64\*.* ..\bin\ /y /q
-@if ERRORLEVEL goto end
-cmake -G"NMake Makefiles" -DCMAKE_BUILD_TYPE=Release ..
-@if ERRORLEVEL goto end
-cmake ..
-@if ERRORLEVEL goto end
-nmake
-@if ERRORLEVEL goto end
 goto common
 
 :vc9_x64
