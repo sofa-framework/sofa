@@ -105,7 +105,7 @@ OglModel::OglModel()
     destFactor.endEdit();
 
     sofa::helper::OptionsGroup* primitiveTypeOptions = primitiveType.beginEdit();
-    primitiveTypeOptions->setNames(3, "DEFAULT", "LINES_ADJACENCY", "PATCHES");
+    primitiveTypeOptions->setNames(4, "DEFAULT", "LINES_ADJACENCY", "PATCHES", "POINTS");
     primitiveTypeOptions->setSelectedItem(0);
     primitiveType.endEdit();
 }
@@ -259,8 +259,12 @@ void OglModel::drawGroup(int ig, bool transparent)
     glMaterialfv (GL_FRONT_AND_BACK, GL_EMISSION, emissive.ptr());
     glMaterialf (GL_FRONT_AND_BACK, GL_SHININESS, shininess);
     const bool useBufferObjects = (VBOGenDone && useVBO.getValue());
-
-    if (g.nbt > 0)
+    const bool drawPoints = (primitiveType.getValue().getSelectedId() == 3);
+    if (drawPoints)
+    {
+        glDrawArrays(GL_POINTS, 0, vertices.size());
+    }
+    if (g.nbt > 0 && !drawPoints)
     {
         const Triangle* indices = NULL;
 #ifdef SOFA_HAVE_GLEW
@@ -296,7 +300,7 @@ void OglModel::drawGroup(int ig, bool transparent)
             glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
 #endif
     }
-    if (g.nbq > 0)
+    if (g.nbq > 0 && !drawPoints)
     {
         const Quad* indices = NULL;
 #ifdef SOFA_HAVE_GLEW
