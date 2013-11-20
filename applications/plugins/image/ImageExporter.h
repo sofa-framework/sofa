@@ -133,8 +133,10 @@ struct ImageExporterSpecialization<defaulttype::IMAGELABEL_IMAGE>
         else if (fname.find(".inr")!=std::string::npos)
         {
             float voxsize[3];
+            float translation[3];
             for(unsigned int i=0; i<3; i++) voxsize[i]=(float)rtransform->getScale()[i];
-            rimage->getCImg(exporter.time).save_inr(fname.c_str(),voxsize);
+            for(unsigned int i=0; i<3; i++) translation[i]=(float)rtransform->getTranslation()[i];
+            save_inr(rimage->getCImg(exporter.time),NULL,fname.c_str(),voxsize,translation);
         }
         else rimage->getCImg(exporter.time).save(fname.c_str());
 

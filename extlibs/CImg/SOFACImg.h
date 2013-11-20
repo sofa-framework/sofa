@@ -34,9 +34,9 @@
 #include <stdio.h>
 #include <sstream>
 #include <string>
-#ifdef SOFA_HAVE_ZLIB
+//#ifdef SOFA_HAVE_ZLIB
 #include <zlib.h>
-#endif
+//#endif
 
 
 namespace cimg_library
@@ -457,8 +457,41 @@ void copySubImage( CImg<T>& largeImage, const CImg<T>& subImage, unsigned posX, 
     }
 }
 
+//! Save image as an INRIMAGE-4 file \overloading.
+template<typename T>
+const CImg<T>& save_inr(const CImg<T>& cimg, std::FILE *const file, const char *const filename, const float *const voxel_size, const float *const translation) {
+      if (!file && !filename)
+        throw CImgArgumentException("save_inr(): Specified filename is (null).");
+      if (cimg.is_empty())
+        throw CImgInstanceException("save_inr(): Empty instance, for file '%s'.",
+                                    filename?filename:"(FILE*)");
 
+	int inrpixsize=-1;
+	const char *inrtype = "unsigned fixed\nPIXSIZE=8 bits\nSCALE=2**0";
+	if (!cimg::strcasecmp(cimg.pixel_type(),"unsigned char"))  { inrtype = "unsigned fixed\nPIXSIZE=8 bits\nSCALE=2**0"; inrpixsize = 1; }
+	if (!cimg::strcasecmp(cimg.pixel_type(),"char"))           { inrtype = "fixed\nPIXSIZE=8 bits\nSCALE=2**0"; inrpixsize = 1; }
+	if (!cimg::strcasecmp(cimg.pixel_type(),"unsigned short")) { inrtype = "unsigned fixed\nPIXSIZE=16 bits\nSCALE=2**0";inrpixsize = 2; }
+	if (!cimg::strcasecmp(cimg.pixel_type(),"short"))          { inrtype = "fixed\nPIXSIZE=16 bits\nSCALE=2**0"; inrpixsize = 2; }
+	if (!cimg::strcasecmp(cimg.pixel_type(),"unsigned int"))   { inrtype = "unsigned fixed\nPIXSIZE=32 bits\nSCALE=2**0";inrpixsize = 4; }
+	if (!cimg::strcasecmp(cimg.pixel_type(),"int"))            { inrtype = "fixed\nPIXSIZE=32 bits\nSCALE=2**0"; inrpixsize = 4; }
+	if (!cimg::strcasecmp(cimg.pixel_type(),"float"))          { inrtype = "float\nPIXSIZE=32 bits"; inrpixsize = 4; }
+	if (!cimg::strcasecmp(cimg.pixel_type(),"double"))         { inrtype = "float\nPIXSIZE=64 bits"; inrpixsize = 8; }
+	if (inrpixsize<=0)
+        throw CImgIOException("save_inr(): Unsupported pixel type '%s' for file '%s'",
+                              cimg.pixel_type(),filename?filename:"(FILE*)");
 
-
+	std::FILE *const nfile = cimg::fopen(filename,"wb");
+	char header[257] = { 0 };
+	int err = cimg_snprintf(header,sizeof(header),"#INRIMAGE-4#{\nXDIM=%u\nYDIM=%u\nZDIM=%u\nVDIM=%u\n",cimg._width,cimg._height,cimg._depth,cimg._spectrum);
+	if (voxel_size) err+=std::sprintf(header + err,"VX=%g\nVY=%g\nVZ=%g\n",voxel_size[0],voxel_size[1],voxel_size[2]);
+	err+=std::sprintf(header + err,"TYPE=%s\nCPU=%s\n",inrtype,cimg::endianness()?"sun":"decm");
+	err+=std::sprintf(header + err,"TX=%g\nTY=%g\nTZ=%g\n",translation[0],translation[1],translation[2]);
+	std::memset(header + err,'\n',252 - err);
+	std::memcpy(header + 252,"##}\n",4);
+	cimg::fwrite(header,256,nfile);
+	cimg_forXYZ(cimg,x,y,z) cimg_forC(cimg,c) cimg::fwrite(&(cimg(x,y,z,c)),1,nfile);
+    if (!file) cimg::fclose(nfile);
+	return cimg;
+}
 
 }
