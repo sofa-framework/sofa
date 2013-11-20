@@ -3,6 +3,7 @@
 
 class SofaPhysicsSimulation;
 class SofaPhysicsOutputMesh;
+class SofaPhysicsOutputMeshTetrahedron;
 class SofaPhysicsDataMonitor;
 class SofaPhysicsDataController;
 
@@ -47,8 +48,13 @@ public:
     /// Return the number of currently active output meshes
     unsigned int            getNbOutputMeshes();
 
+    /// Return the number of currently active output Tetrahedron meshes
+    unsigned int getNbOutputMeshTetrahedrons();
+
     /// Return an array of pointers to active output meshes
     SofaPhysicsOutputMesh** getOutputMeshes();
+
+    SofaPhysicsOutputMeshTetrahedron** getOutputMeshTetrahedrons();
 
     /// Return true if the simulation is running
     /// Note that currently you must call the step() method
@@ -137,12 +143,12 @@ public:
     Impl* impl;
 };
 
-class SofaPhysicsOutputMeshTetrahedral 
+class SofaPhysicsOutputMeshTetrahedron 
 {
 public:
 
-  SofaPhysicsOutputMeshTetrahedral();
-  ~SofaPhysicsOutputMeshTetrahedral();
+  SofaPhysicsOutputMeshTetrahedron();
+  ~SofaPhysicsOutputMeshTetrahedron();
 
   const char* getName(); ///< (non-unique) name of this object
   ID          getID();   ///< unique ID of this object
@@ -171,6 +177,10 @@ public:
   unsigned int getNbQuads(); ///< number of quads
   const Index* getQuads();   ///< quads topology (4 indices / quad)
   int getQuadsRevision();    ///< changes each time quads data is updated
+
+  unsigned int getNbTetrahedrons(); ///< number of Tetrahedrons
+  const Index* getTetrahedrons();   ///< Tetrahedrons topology (4 indices / Tetrahedron)
+  int getTetrahedronsRevision();    ///< changes each time Tetrahedrons data is updated
 
   /// Internal implementation sub-class
   class Impl;

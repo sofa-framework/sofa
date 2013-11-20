@@ -3,7 +3,7 @@
 
 #include "SofaPhysicsAPI.h"
 #include "SofaPhysicsOutputMesh_impl.h"
-#include "SofaPhysicsOutputMesh_Tetrahedral_impl.h"
+#include "SofaPhysicsOutputMesh_Tetrahedron_impl.h"
 #include "SofaPhysicsDataMonitor_impl.h"
 #include "SofaPhysicsDataController_impl.h"
 
@@ -31,8 +31,9 @@ public:
     void drawGL();
 
     unsigned int getNbOutputMeshes();
+    unsigned int getNbOutputMeshTetrahedrons();
     SofaPhysicsOutputMesh** getOutputMeshes();
-    SofaPhysicsOutputMeshTetrahedral** getOutputMeshTetrahedrals();
+    SofaPhysicsOutputMeshTetrahedron** getOutputMeshTetrahedrons();
 
     bool isAnimated() const;
     void setAnimated(bool val);
@@ -52,7 +53,7 @@ public:
     typedef SofaPhysicsDataMonitor::Impl::SofaDataMonitor SofaDataMonitor;
     typedef SofaPhysicsDataController::Impl::SofaDataController SofaDataController;
     typedef SofaPhysicsOutputMesh::Impl::SofaVisualOutputMesh SofaVisualOutputMesh;
-    typedef SofaPhysicsOutputMeshTetrahedral::Impl::SofaOutputMeshTetrahedral SofaOutputMeshTetrahedral;
+    typedef SofaPhysicsOutputMeshTetrahedron::Impl::SofaOutputMeshTetrahedron SofaOutputMeshTetrahedron;
     //typedef SofaPhysicsOutputMesh::Impl::SofaOutputMeshTetra SofaOutputMeshTetra;
 
 protected:
@@ -63,11 +64,11 @@ protected:
     sofa::component::visualmodel::BaseCamera::SPtr currentCamera;
 
     std::map<SofaOutputMesh*, SofaPhysicsOutputMesh*> outputMeshMap;
-    std::map<SofaOutputMeshTetrahedral*, SofaPhysicsOutputMeshTetrahedral*> outputMeshMapTetrahedral;
+    std::map<SofaOutputMeshTetrahedron*, SofaPhysicsOutputMeshTetrahedron*> outputMeshMapTetrahedron;
     std::vector<SofaOutputMesh*> sofaOutputMeshes;
-    std::vector<SofaOutputMeshTetrahedral*> sofaOutputMeshTetrahedrals;
+    std::vector<SofaOutputMeshTetrahedron*> sofaOutputMeshTetrahedrons;
     std::vector<SofaPhysicsOutputMesh*> outputMeshes;
-    std::vector<SofaPhysicsOutputMeshTetrahedral*> outputMeshTetrahedrals;
+    std::vector<SofaPhysicsOutputMeshTetrahedron*> outputMeshTetrahedrons;
 
     std::vector<SofaDataMonitor*> sofaDataMonitors;
     std::vector<SofaPhysicsDataMonitor*> dataMonitors;

@@ -8,7 +8,7 @@
 #include <sofa/core/visual/Shader.h>
 #include <sofa/defaulttype/Vec.h>
 
-class SofaPhysicsOutputMeshTetrahedral::Impl
+class SofaPhysicsOutputMeshTetrahedron::Impl
 {
 public:
 
@@ -35,6 +35,10 @@ public:
     const Index* getLines();   ///< lines topology (2 indices / line)
     int getLinesRevision();    ///< changes each time lines data is updated
 
+    unsigned int getNbTetrahedrons(); /// number of Tetrahedrons
+    const Index* getTetrahedrons();   /// Tetrahedrons topology (4 indices / Tetrahedrons)
+    int getTetrahedronsRevision();    /// changes each time Tetrahedrons data is updated
+
     unsigned int getNbTriangles(); ///< number of triangles
     const Index* getTriangles();   ///< triangles topology (3 indices / triangle)
     int getTrianglesRevision();    ///< changes each time triangles data is updated
@@ -44,26 +48,28 @@ public:
     int getQuadsRevision();    ///< changes each time quads data is updated
 
     //typedef sofa::component::visualmodel::VisualModelImpl SofaOutputMesh;
-    //typedef SofaOutputMeshTetrahedral::DataTypes DataTypes;
+    //typedef SofaOutputMeshTetrahedron::DataTypes DataTypes;
     
     typedef sofa::defaulttype::Vec3fTypes Vec3f;
 
-    typedef sofa::component::visualmodel::OglTetrahedralModel<Vec3f> SofaOutputMeshTetrahedral;
+    typedef sofa::component::visualmodel::OglTetrahedralModel<Vec3f> SofaOutputMeshTetrahedron;
 
-    typedef SofaOutputMeshTetrahedral::Coord Coord;
+    typedef SofaOutputMeshTetrahedron::Coord Coord;
+
+    typedef SofaOutputMeshTetrahedron::Tetrahedron Tetrahedron;
 
     
 
 
 
 protected:
-    SofaOutputMeshTetrahedral::SPtr sObj;
+    SofaOutputMeshTetrahedron::SPtr sObj;
     //SofaOutputMesh::SPtr sObj;
     //sofa::helper::vector<SofaVAttribute::SPtr> sVA;
 
 public:
-    SofaOutputMeshTetrahedral* getObject(){return sObj.get();}
-    void setObject(SofaOutputMeshTetrahedral* o);
+    SofaOutputMeshTetrahedron* getObject(){return sObj.get();}
+    void setObject(SofaOutputMeshTetrahedron* o);
 };
 
 #endif // SOFAPHYSICSOUTPUTMESH_TETRAHEDRAL_IMPL_H
