@@ -249,7 +249,7 @@ void MeshGenerationFromImage<DataTypes>::update()
             if (newPoints.empty())
                 bbmin = bbmax = p;
             else
-                for (int c=0; c<p.size(); c++)
+                for (unsigned int c=0; c<p.size(); c++)
                             if (p[c] < bbmin[c]) bbmin[c] = p[c]; else if (p[c] > bbmax[c]) bbmax[c] = p[c];
 			defaulttype::Vector3 translation = defaulttype::Vector3(image.image()->tx, image.image()->ty, image.image()->tz);
 			newPoints.push_back(p+translation);
@@ -299,7 +299,7 @@ void MeshGenerationFromImage<DataTypes>::update()
         for (int e=0; e<nbe; ++e)
         {
             int p = tetrahedra[e][0];
-            for (int i=0; i<4; i++)
+            for (unsigned int i=0; i<4; i++)
                 if (tetrahedra[e][i] < p) p = tetrahedra[e][i];
             sortArray2.push_back(std::make_pair(p,e));
         }
