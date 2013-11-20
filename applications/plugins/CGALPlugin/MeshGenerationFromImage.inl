@@ -251,7 +251,7 @@ void MeshGenerationFromImage<DataTypes>::update()
             else
                 for (int c=0; c<p.size(); c++)
                             if (p[c] < bbmin[c]) bbmin[c] = p[c]; else if (p[c] > bbmax[c]) bbmax[c] = p[c];
-			Vector3 translation = Vector3(image.image()->tx, image.image()->ty, image.image()->tz);
+			defaulttype::Vector3 translation = defaulttype::Vector3(image.image()->tx, image.image()->ty, image.image()->tz);
 			newPoints.push_back(p+translation);
         }
     }
