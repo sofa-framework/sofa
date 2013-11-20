@@ -107,6 +107,7 @@ SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types
 }
 
 
+#ifndef NEW_VERSION
 template<>
 SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::addComplianceInConstraintSpace(const ConstraintParams * /*cparams*/, defaulttype::BaseMatrix *W)
 {
@@ -189,6 +190,81 @@ SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types
     // std::cout << "Wnew = " << Wnew << std::endl;
 #endif
 }
+
+#else
+
+template<>
+SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::addComplianceInConstraintSpace(const ConstraintParams * /*cparams*/, defaulttype::BaseMatrix *W)
+{
+    const MatrixDeriv& constraints = *this->mstate->getC();
+    const VecReal& usedComp = compliance.getValue();
+
+    Deriv weightedNormal;
+    Deriv comp_wN;
+
+    typedef std::list< std::pair< int, Deriv > > CIndicesAndValues;
+
+    helper::vector< CIndicesAndValues > dofsIndexedConstraints;
+    const unsigned int numDOFs = this->mstate->getSize();
+    dofsIndexedConstraints.resize(numDOFs);
+
+    for (MatrixDerivRowConstIterator rowIt = constraints.begin(), rowItEnd = constraints.end(); rowIt != rowItEnd; ++rowIt)
+    {
+        int indexCurRowConst = rowIt.index();
+
+        for (MatrixDerivColConstIterator colIt = rowIt.begin(), colItEnd = rowIt.end(); colIt != colItEnd; ++colIt)
+        {
+            dofsIndexedConstraints[colIt.index()].push_back(std::make_pair(indexCurRowConst, colIt.val()));
+        }
+    }
+
+    for (MatrixDerivRowConstIterator rowIt = constraints.begin(), rowItEnd = constraints.end(); rowIt != rowItEnd; ++rowIt)
+    {
+        const unsigned int indexCurRowConst = rowIt.index();
+
+        for (MatrixDerivColConstIterator colIt = rowIt.begin(), colItEnd = rowIt.end(); colIt != colItEnd; ++colIt)
+        {
+            unsigned int dof = colIt.index();
+
+            CIndicesAndValues &dofsConstraint = dofsIndexedConstraints[dof];
+
+            if (!dofsConstraint.empty())
+            {
+                Deriv n = colIt.val();
+
+                getVCenter(weightedNormal) = getVCenter(n);
+                getVOrientation(weightedNormal) = getVOrientation(n);
+
+                getVCenter(comp_wN) = getVCenter(weightedNormal) * usedComp[0];
+
+                const double wn3 = weightedNormal[3];
+                const double wn4 = weightedNormal[4];
+                const double wn5 = weightedNormal[5];
+
+                comp_wN[3] =  usedComp[1] * wn3 +  usedComp[2] * wn4 +  usedComp[3] * wn5;
+                comp_wN[4] =  usedComp[2] * wn3 +  usedComp[4] * wn4 +  usedComp[5] * wn5;
+                comp_wN[5] =  usedComp[3] * wn3 +  usedComp[5] * wn4 +  usedComp[6] * wn5;
+
+                double w = dofsConstraint.front().second * comp_wN;
+                W->add(indexCurRowConst, indexCurRowConst, w);
+                dofsConstraint.pop_front();
+
+                for (CIndicesAndValues::const_iterator it = dofsConstraint.begin(), itEnd = dofsConstraint.end(); it != itEnd; ++it)
+                {
+                    w = it->second * comp_wN;
+                    W->add(indexCurRowConst, it->first, w);
+                    W->add(it->first, indexCurRowConst, w);
+                }
+            }
+        }
+    }
+
+#ifdef DEBUG
+    // std::cout << "Wnew = " << Wnew << std::endl;
+#endif
+}
+
+#endif
 
 template<>
 SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::getComplianceMatrix(defaulttype::BaseMatrix *m) const

@@ -241,7 +241,9 @@ void UncoupledConstraintCorrection<DataTypes>::getComplianceWithConstraintMerge(
     }
 }
 
+//#define NEW_VERSION
 
+#ifndef NEW_VERSION
 template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(const ConstraintParams * /*cparams*/, defaulttype::BaseMatrix *W)
 {
@@ -249,18 +251,14 @@ void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(co
     const VecReal& comp = compliance.getValue();
     const Real comp0 = defaultCompliance.getValue();
 
-    MatrixDerivRowConstIterator rowItEnd = constraints.end();
-
-    for (MatrixDerivRowConstIterator rowIt = constraints.begin(); rowIt != rowItEnd; ++rowIt)
+    for (MatrixDerivRowConstIterator rowIt = constraints.begin(), rowItEnd = constraints.end(); rowIt != rowItEnd; ++rowIt)
     {
         int indexCurRowConst = rowIt.index();
 
         if (f_verbose.getValue())
             sout << "C[" << indexCurRowConst << "]";
 
-        MatrixDerivColConstIterator colItEnd = rowIt.end();
-
-        for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
+        for (MatrixDerivColConstIterator colIt = rowIt.begin(), colItEnd = rowIt.end(); colIt != colItEnd; ++colIt)
         {
             unsigned int dof = colIt.index();
             Deriv n = colIt.val();
@@ -277,9 +275,7 @@ void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(co
             {
                 indexCurColConst = rowIt2.index();
 
-                MatrixDerivColConstIterator colIt2End = rowIt2.end();
-
-                for (MatrixDerivColConstIterator colIt2 = rowIt2.begin(); colIt2 != colIt2End; ++colIt2)
+                for (MatrixDerivColConstIterator colIt2 = rowIt2.begin(), colIt2End = rowIt2.end(); colIt2 != colIt2End; ++colIt2)
                 {
                     if (dof == colIt2.index())
                     {
@@ -319,6 +315,62 @@ void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(co
     }*/
 }
 
+#else
+
+template<class DataTypes>
+void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(const ConstraintParams * /*cparams*/, defaulttype::BaseMatrix *W)
+{
+    const MatrixDeriv& constraints = *this->mstate->getC();
+    const VecReal& comp = compliance.getValue();
+    const Real comp0 = defaultCompliance.getValue();
+
+    typedef std::list< std::pair< int, Deriv > > CIndicesAndValues;
+
+    helper::vector< CIndicesAndValues > dofsIndexedConstraints;
+    const unsigned int numDOFs = this->mstate->getSize();
+    dofsIndexedConstraints.resize(numDOFs);
+
+    for (MatrixDerivRowConstIterator rowIt = constraints.begin(), rowItEnd = constraints.end(); rowIt != rowItEnd; ++rowIt)
+    {
+        int indexCurRowConst = rowIt.index();
+
+        for (MatrixDerivColConstIterator colIt = rowIt.begin(), colItEnd = rowIt.end(); colIt != colItEnd; ++colIt)
+        {
+            dofsIndexedConstraints[colIt.index()].push_back(std::make_pair(indexCurRowConst, colIt.val()));
+        }
+    }
+
+    for (MatrixDerivRowConstIterator rowIt = constraints.begin(), rowItEnd = constraints.end(); rowIt != rowItEnd; ++rowIt)
+    {
+        int indexCurRowConst = rowIt.index();
+
+        for (MatrixDerivColConstIterator colIt = rowIt.begin(), colItEnd = rowIt.end(); colIt != colItEnd; ++colIt)
+        {
+            unsigned int dof = colIt.index();
+
+            CIndicesAndValues &dofsConstraint = dofsIndexedConstraints[dof];
+
+            if (!dofsConstraint.empty())
+            {
+                Deriv n = colIt.val();
+                const Real dofComp = dof < comp.size() ? comp[dof] : comp0;
+
+                double w = n * dofsConstraint.front().second * dofComp;
+                W->add(indexCurRowConst, indexCurRowConst, w);
+                dofsConstraint.pop_front();
+
+                for (CIndicesAndValues::const_iterator it = dofsConstraint.begin(), itEnd = dofsConstraint.end(); it != itEnd; ++it)
+                {
+                    w = n * it->second * dofComp;
+                    W->add(indexCurRowConst, it->first, w);
+                    W->add(it->first, indexCurRowConst, w);
+                }
+            }
+        }
+    }
+}
+
+#endif
 
 template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::getComplianceMatrix(defaulttype::BaseMatrix *m) const
