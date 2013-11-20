@@ -69,12 +69,15 @@ public:
     /// iterator
     typedef typename container_type::iterator iterator;
 
+protected:
+    BaseTopologyData <VecT>* m_topologyData;
+	value_type m_defaultValue; // default value when adding an element (by set as value_type() by default)
 
 
 public:
     // constructor
-    TopologySubsetDataHandler(BaseTopologyData <VecT>* _topologyData): sofa::core::topology::TopologyElementHandler < TopologyElementType >()
-        , m_topologyData(_topologyData) {}
+    TopologySubsetDataHandler(BaseTopologyData <VecT>* _topologyData,value_type defaultValue=value_type()): sofa::core::topology::TopologyElementHandler < TopologyElementType >()
+        , m_topologyData(_topologyData), m_defaultValue(defaultValue) {}
 
     bool isTopologyDataRegistered() {return m_topologyData != 0;}
 
@@ -120,8 +123,7 @@ protected:
     virtual void removeOnMovedPosition(const sofa::helper::vector<unsigned int> &indices);
 
 
-protected:
-    BaseTopologyData <VecT>* m_topologyData;
+
 
 };
 
