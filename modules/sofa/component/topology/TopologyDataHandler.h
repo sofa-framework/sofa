@@ -69,10 +69,14 @@ public:
     typedef sofa::core::topology::TopologyElementHandler< TopologyElementType > Inherit;
     typedef typename Inherit::AncestorElem AncestorElem;
 
+protected:
+    BaseTopologyData <VecT>* m_topologyData;
+	value_type m_defaultValue; // default value when adding an element (by set as value_type() by default)
+
 public:
     // constructor
-    TopologyDataHandler(BaseTopologyData <VecT>* _topologyData): sofa::core::topology::TopologyElementHandler < TopologyElementType >()
-        , m_topologyData(_topologyData) {}
+    TopologyDataHandler(BaseTopologyData <VecT>* _topologyData, value_type defaultValue=value_type()): sofa::core::topology::TopologyElementHandler < TopologyElementType >()
+        , m_topologyData(_topologyData), m_defaultValue(defaultValue) {}
 
     bool isTopologyDataRegistered()
     {
@@ -87,7 +91,7 @@ public:
     /// Apply adding current elementType elements
     virtual void applyCreateFunction(unsigned int, value_type& t,
             const sofa::helper::vector< unsigned int > &,
-            const sofa::helper::vector< double > &) {t = value_type();}
+            const sofa::helper::vector< double > &) {t = m_defaultValue;}
 
     /// WARNING NEEED TO UNIFY THIS
     /// Apply adding current elementType elements
@@ -105,9 +109,12 @@ public:
     {
         applyCreateFunction(i, t, e, ancestors, coefs);
     }
+	// update the default value used during creation
+	void setDefaultValue(const value_type &v) {
+		m_defaultValue=v;
+	}
 
-
-//    protected:
+protected:
     /// Swaps values at indices i1 and i2.
     virtual void swap( unsigned int i1, unsigned int i2 );
 
@@ -137,8 +144,7 @@ public:
     /// Remove Element after a displacement of vertices, ie. add element based on previous position topology revision.
     virtual void removeOnMovedPosition(const sofa::helper::vector<unsigned int> &indices);
 
-protected:
-    BaseTopologyData <VecT>* m_topologyData;
+
 };
 
 

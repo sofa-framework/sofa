@@ -68,29 +68,49 @@ public:
     typedef typename container_type::const_iterator const_iterator;
     /// iterator
     typedef typename container_type::iterator iterator;
+	
+    typedef sofa::core::topology::TopologyElementHandler< TopologyElementType > Inherit;
+    typedef typename Inherit::AncestorElem AncestorElem;
 
-
+protected:
+    BaseTopologyData <VecT>* m_topologyData;
+	value_type m_defaultValue; // default value when adding an element (by set as value_type() by default)
 
 public:
     // constructor
-    TopologySparseDataHandler(BaseTopologyData <VecT>* _topologyData): sofa::core::topology::TopologyElementHandler < TopologyElementType >()
-        , m_topologyData(_topologyData) {}
+    TopologySparseDataHandler(BaseTopologyData <VecT>* _topologyData,value_type defaultValue=value_type()): sofa::core::topology::TopologyElementHandler < TopologyElementType >()
+        , m_topologyData(_topologyData), m_defaultValue(defaultValue) {}
 
     bool isTopologyDataRegistered() {return m_topologyData != 0;}
 
     /** Public fonction to apply creation and destruction functions */
     /// Apply removing current elementType elements
     virtual void applyDestroyFunction(unsigned int, value_type& ) {}
-    /// Apply adding current elementType elements
+	    /// Apply adding current elementType elements
     virtual void applyCreateFunction(unsigned int, value_type& t,
             const sofa::helper::vector< unsigned int > &,
-            const sofa::helper::vector< double > &) {t = value_type();}
+            const sofa::helper::vector< double > &) {t = m_defaultValue;}
 
     /// WARNING NEEED TO UNIFY THIS
     /// Apply adding current elementType elements
-    virtual void applyCreateFunction(unsigned int, value_type&t , const TopologyElementType& ,
-            const sofa::helper::vector< unsigned int > &,
-            const sofa::helper::vector< double > &) {t = value_type();}
+    virtual void applyCreateFunction(unsigned int i, value_type&t , const TopologyElementType& ,
+            const sofa::helper::vector< unsigned int > &ancestors,
+            const sofa::helper::vector< double > &coefs)
+    {
+        applyCreateFunction(i, t, ancestors, coefs);
+    }
+
+    virtual void applyCreateFunction(unsigned int i, value_type&t , const TopologyElementType& e,
+            const sofa::helper::vector< unsigned int > &ancestors,
+            const sofa::helper::vector< double > &coefs,
+            const AncestorElem* /*ancestorElem*/)
+    {
+        applyCreateFunction(i, t, e, ancestors, coefs);
+    }
+	// update the default value used during creation
+	void setDefaultValue(const value_type &v) {
+		m_defaultValue=v;
+	}
 
 
 protected:
@@ -126,8 +146,7 @@ protected:
     virtual void removeOnMovedPosition(const sofa::helper::vector<unsigned int> &indices);
 
 
-protected:
-    BaseTopologyData <VecT>* m_topologyData;
+
 
 };
 
