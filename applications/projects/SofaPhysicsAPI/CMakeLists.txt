@@ -7,6 +7,7 @@ set(HEADER_FILES
     SofaPhysicsOutputMesh_impl.h 
     SofaPhysicsDataMonitor_impl.h 
     SofaPhysicsDataController_impl.h 
+    SofaPhysicsOutputMesh_Tetrahedral_impl.h
     fakegui.h
     
     )
@@ -18,6 +19,7 @@ set(SOURCE_FILES
     SofaPhysicsOutputMesh.cpp 
     SofaPhysicsDataMonitor.cpp 
     SofaPhysicsDataController.cpp 
+    SofaPhysicsOutputMesh_Tetrahedral.cpp
     fakegui.cpp
 
 	)

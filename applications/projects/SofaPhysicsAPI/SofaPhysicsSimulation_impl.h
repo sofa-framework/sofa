@@ -3,6 +3,7 @@
 
 #include "SofaPhysicsAPI.h"
 #include "SofaPhysicsOutputMesh_impl.h"
+#include "SofaPhysicsOutputMesh_Tetrahedral_impl.h"
 #include "SofaPhysicsDataMonitor_impl.h"
 #include "SofaPhysicsDataController_impl.h"
 
@@ -31,6 +32,7 @@ public:
 
     unsigned int getNbOutputMeshes();
     SofaPhysicsOutputMesh** getOutputMeshes();
+    SofaPhysicsOutputMeshTetrahedral** getOutputMeshTetrahedrals();
 
     bool isAnimated() const;
     void setAnimated(bool val);
@@ -49,6 +51,9 @@ public:
     typedef SofaPhysicsOutputMesh::Impl::SofaOutputMesh SofaOutputMesh;
     typedef SofaPhysicsDataMonitor::Impl::SofaDataMonitor SofaDataMonitor;
     typedef SofaPhysicsDataController::Impl::SofaDataController SofaDataController;
+    typedef SofaPhysicsOutputMesh::Impl::SofaVisualOutputMesh SofaVisualOutputMesh;
+    typedef SofaPhysicsOutputMeshTetrahedral::Impl::SofaOutputMeshTetrahedral SofaOutputMeshTetrahedral;
+    //typedef SofaPhysicsOutputMesh::Impl::SofaOutputMeshTetra SofaOutputMeshTetra;
 
 protected:
 
@@ -58,8 +63,11 @@ protected:
     sofa::component::visualmodel::BaseCamera::SPtr currentCamera;
 
     std::map<SofaOutputMesh*, SofaPhysicsOutputMesh*> outputMeshMap;
+    std::map<SofaOutputMeshTetrahedral*, SofaPhysicsOutputMeshTetrahedral*> outputMeshMapTetrahedral;
     std::vector<SofaOutputMesh*> sofaOutputMeshes;
+    std::vector<SofaOutputMeshTetrahedral*> sofaOutputMeshTetrahedrals;
     std::vector<SofaPhysicsOutputMesh*> outputMeshes;
+    std::vector<SofaPhysicsOutputMeshTetrahedral*> outputMeshTetrahedrals;
 
     std::vector<SofaDataMonitor*> sofaDataMonitors;
     std::vector<SofaPhysicsDataMonitor*> dataMonitors;

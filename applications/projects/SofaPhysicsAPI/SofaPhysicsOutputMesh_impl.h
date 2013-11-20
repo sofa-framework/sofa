@@ -4,6 +4,8 @@
 #include "SofaPhysicsAPI.h"
 
 #include <sofa/component/visualmodel/VisualModelImpl.h>
+#include <sofa/component/visualmodel/OglTetrahedralModel.h>
+#include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/visual/Shader.h>
 
 class SofaPhysicsOutputMesh::Impl
@@ -41,6 +43,9 @@ public:
     const Index* getQuads();   ///< quads topology (4 indices / quad)
     int getQuadsRevision();    ///< changes each time quads data is updated
 
+    typedef sofa::core::visual::VisualModel SofaVisualOutputMesh;
+    
+    //typedef sofa::defaulttype::ExtVec3dTypes Vec3d
     typedef sofa::component::visualmodel::VisualModelImpl SofaOutputMesh;
     typedef SofaOutputMesh::DataTypes DataTypes;
     typedef SofaOutputMesh::Coord Coord;

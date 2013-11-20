@@ -434,11 +434,19 @@ void SofaPhysicsSimulation::Impl::updateOutputMeshes()
     {
         sofaOutputMeshes.clear();
         outputMeshes.clear();
+        outputMeshTetrahedrals.clear();
         return;
     }
     sofaOutputMeshes.clear();
+    sofaOutputMeshTetrahedrals.clear();
+
     groot->get<SofaOutputMesh>(&sofaOutputMeshes, BaseContext::SearchDown);
+    groot->get<SofaOutputMeshTetrahedral>(&sofaOutputMeshTetrahedrals, BaseContext::SearchDown);
+   
+    
     outputMeshes.resize(sofaOutputMeshes.size());
+    outputMeshTetrahedrals.resize(sofaOutputMeshTetrahedrals.size());
+    
     for (unsigned int i=0; i<sofaOutputMeshes.size(); ++i)
     {
         SofaOutputMesh* sMesh = sofaOutputMeshes[i];
@@ -449,6 +457,15 @@ void SofaPhysicsSimulation::Impl::updateOutputMeshes()
             oMesh->impl->setObject(sMesh);
         }
         outputMeshes[i] = oMesh;
+    }
+    for( unsigned int i = 0; i<sofaOutputMeshTetrahedrals.size();++i ) {
+        SofaOutputMeshTetrahedral* sMeshTetra = sofaOutputMeshTetrahedrals.at(i);
+        SofaPhysicsOutputMeshTetrahedral*& oMeshTetra = outputMeshMapTetrahedral[sMeshTetra];
+        if( oMeshTetra == NULL ) {
+            oMeshTetra = new SofaPhysicsOutputMeshTetrahedral;
+            oMeshTetra->impl->setObject(sMeshTetra);
+        }
+        outputMeshTetrahedrals[i] = oMeshTetra;
     }
 }
 
@@ -463,6 +480,14 @@ SofaPhysicsOutputMesh** SofaPhysicsSimulation::Impl::getOutputMeshes()
         return NULL;
     else
         return &(outputMeshes[0]);
+}
+
+SofaPhysicsOutputMeshTetrahedral** SofaPhysicsSimulation::Impl::getOutputMeshTetrahedrals()
+{
+    if( outputMeshTetrahedrals.empty() ) 
+        return NULL;
+    else
+        return &(outputMeshTetrahedrals[0]);
 }
 
 unsigned int SofaPhysicsSimulation::Impl::getNbDataMonitors()
