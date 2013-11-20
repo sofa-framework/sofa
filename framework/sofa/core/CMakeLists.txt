@@ -97,6 +97,7 @@ set(HEADER_FILES
 	MultiMapping.inl
 	Multi2Mapping.h
 	Multi2Mapping.inl
+	objectmodel/AspectPool.h
 	objectmodel/SPtr.h
 	objectmodel/Base.h
 	objectmodel/BaseClass.h
@@ -137,7 +138,7 @@ set(HEADER_FILES
 	)
 
 set(SOURCE_FILES
-
+	objectmodel/AspectPool.cpp
 	objectmodel/Base.cpp
 	objectmodel/BaseClass.cpp
 	objectmodel/BaseData.cpp
