@@ -29,7 +29,9 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/component/component.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/component/topology/TopologyData.inl>
 
 namespace sofa
 {
@@ -37,7 +39,7 @@ namespace component
 {
 namespace visualmodel
 {
-
+using namespace sofa::defaulttype;
 /**
  *  \brief Render 3D models with tetrahedra.
  *
@@ -54,13 +56,23 @@ class OglTetrahedralModel : public core::visual::VisualModel
 {
 public:
     SOFA_CLASS(OglTetrahedralModel, core::visual::VisualModel);
-
+    //typedef ExtVec3fTypes DataTypes;
     typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::Real Real;
+    typedef sofa::core::topology::Tetrahedron Tetrahedron;
+    typedef sofa::core::topology::BaseMeshTopology::SeqTetrahedra SeqTetrahedra;
+    core::topology::BaseMeshTopology* m_topology;
+
+    topology::PointData< ResizableExtVector<Coord> > m_positions;
+    Data< ResizableExtVector<Tetrahedron> > m_tetrahedrons;
+    bool modified;
+    int lastMeshRev;
+    bool useTopology;
+
+
 
 private:
-    core::behavior::MechanicalState<DataTypes>* nodes;
-    core::topology::BaseMeshTopology* topo;
+    
 
     Data<bool> depthTest;
     Data<bool> blending;
@@ -73,10 +85,12 @@ public:
     void drawTransparent(const core::visual::VisualParams* vparams);
     void computeBBox(const core::ExecParams *);
 
-    virtual std::string getTemplateName() const
-    {
-        return templateName(this);
-    }
+    virtual void updateVisual();
+    virtual void computeMesh();
+    //virtual std::string getTemplateName() const
+    //{
+    //    return templateName(this);
+    //}
 
     static std::string templateName(const OglTetrahedralModel<DataTypes>* = NULL)
     {

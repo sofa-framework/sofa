@@ -30,6 +30,7 @@
 #include <sofa/helper/gl/GLSLShader.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/BoundingBox.h>
+#include <sofa/component/topology/TetrahedronSetTopologyContainer.h>
 #include <limits>
 
 namespace sofa
@@ -43,10 +44,13 @@ using namespace sofa::defaulttype;
 
 template<class DataTypes>
 OglTetrahedralModel<DataTypes>::OglTetrahedralModel()
-    : nodes(NULL), topo(NULL)
+    : m_topology(NULL)
     , depthTest(initData(&depthTest, (bool) true, "depthTest", "Set Depth Test"))
     , blending(initData(&blending, (bool) true, "blending", "Set Blending"))
-
+    , m_positions(initData(&m_positions, "position", "Vertices coordinates"))
+    , modified(false)
+    , lastMeshRev(-1)
+    , useTopology(false)
 {
 }
 
@@ -59,25 +63,101 @@ template<class DataTypes>
 void OglTetrahedralModel<DataTypes>::init()
 {
     sofa::core::objectmodel::BaseContext* context = this->getContext();
-    context->get(topo);
-    context->get(nodes);
+    m_topology = context->getMeshTopology();
+    
 
-    if (!nodes)
-    {
-        serr << "OglTetrahedralModel : Error : no MechanicalState found." << sendl;
-        return;
-    }
-
-    if (!topo)
-    {
+    if (!m_topology)
+    {// currently OglTetrahedralMedal has to use topology to initialize data
         serr << "OglTetrahedralModel : Error : no BaseMeshTopology found." << sendl;
         return;
+    }
+    // for now, no mesh file will be loaded directly from OglTetrahedralModel component
+    // so force useTopology and modified to be true to enable the first time data loading from topology
+    useTopology = true;
+    modified = true;
+    VisualModel::init();
+    updateVisual();
+}
+
+template<class DataTypes>
+void OglTetrahedralModel<DataTypes>::updateVisual()
+{
+    
+    if( modified && !m_positions.getValue().empty()||useTopology ) 
+    {
+        // update mesh either when data comes from useTopology initially or vertices
+        // get modified
+        if( useTopology ) 
+        {
+            sofa::core::topology::TopologyModifier* topoMod;
+            getContext()->get(topoMod);
+        
+            if( topoMod ) 
+            {// topology will be handled by handleTopologyChange() with topologyModifier
+                useTopology = false;
+                computeMesh();
+            }
+            else if( topoMod==NULL&& m_topology->getRevision()!=lastMeshRev ) 
+            {
+                computeMesh();
+            }
+        }
+        modified = false;
+    }
+    m_tetrahedrons.updateIfDirty();
+    m_positions.updateIfDirty();
+}
+
+template<class DataTypes>
+void OglTetrahedralModel<DataTypes>::computeMesh()
+{
+    using sofa::core::behavior::BaseMechanicalState;
+    // update m_positions
+    if( m_topology->hasPos() ) 
+    {
+        if( this->f_printLog.getValue() ) 
+            sout<< "OglTetrahedralModel: copying "<< m_topology->getNbPoints() << "points from topology." <<sendl;
+        helper::WriteAccessor<  Data<ResizableExtVector<Coord> > > position = m_positions;
+        position.resize(m_topology->getNbPoints());
+        for( unsigned int i = 0; i<position.size(); i++ ) {
+            position[i][0] = (Real)m_topology->getPX(i);
+            position[i][1] = (Real)m_topology->getPY(i);
+            position[i][2] = (Real)m_topology->getPZ(i);
+        }
+    }
+    else if( BaseMechanicalState* mstate = dynamic_cast< BaseMechanicalState* >(m_topology->getContext()->getMechanicalState()) ) 
+    {
+        if( this->f_printLog.getValue() ) 
+            sout<<"OglTetrahedralModel: copying "<< mstate->getSize()<< " points from mechanical state." <<sendl;
+        helper::WriteAccessor< Data<ResizableExtVector<Coord> > > position = m_positions;
+        position.resize(mstate->getSize());
+        for( unsigned int i = 0; i<position.size(); i++ ) 
+        {
+            position[i][0] = (Real)mstate->getPX(i);
+            position[i][1] = (Real)mstate->getPY(i);
+            position[i][2] = (Real)mstate->getPZ(i);
+        }
+    }
+    else
+    {
+        serr<<"OglTetrahedralModel: can not update vertices!"<< sendl;
+    }
+    lastMeshRev = m_topology->getRevision();
+    // update m_tetrahedrons
+    const topology::BaseMeshTopology::SeqTetrahedra& inputTetrahedrons = m_topology->getTetrahedra();
+    if( this->f_printLog.getValue() ) 
+        sout<<"OglTetrahedralModel: copying "<< inputTetrahedrons.size() << " tetrahedrons from topology." <<sendl;
+    helper::WriteAccessor< Data< ResizableExtVector<Tetrahedron> > > tetrahedrons = m_tetrahedrons; 
+    tetrahedrons.resize(inputTetrahedrons.size());
+    for( unsigned int i = 0; i<inputTetrahedrons.size(); i++ ) {
+        tetrahedrons[i] = inputTetrahedrons[i];
     }
 }
 
 template<class DataTypes>
 void OglTetrahedralModel<DataTypes>::drawTransparent(const core::visual::VisualParams* vparams)
 {
+  using sofa::component::topology::TetrahedronSetTopologyContainer;
     if (!vparams->displayFlags().getShowVisualModels()) return;
 
     if(blending.getValue())
@@ -91,20 +171,39 @@ void OglTetrahedralModel<DataTypes>::drawTransparent(const core::visual::VisualP
 
 #ifdef GL_LINES_ADJACENCY_EXT
 
-    const core::topology::BaseMeshTopology::SeqTetrahedra& vec = topo->getTetrahedra();
+    const core::topology::BaseMeshTopology::SeqTetrahedra& vec = m_topology->getTetrahedra();
 
-    const VecCoord& x = *nodes->getX();
+
+    //const VecCoord& x = *nodes->getX();
     Coord v;
 
     glBegin(GL_LINES_ADJACENCY_EXT);
-    for(it = vec.begin() ; it != vec.end() ; it++)
-    {
-        for (unsigned int i=0 ; i< 4 ; i++)
-        {
-            v = x[(*it)[i]];
-            glVertex3f((GLfloat)v[0], (GLfloat)v[1], (GLfloat)v[2]);
+
+    const ResizableExtVector<Coord> position = m_positions.getValue();
+    for( it = vec.begin(); it!=vec.end(); it++ ) {
+        // for every tetrahedron, get its four vertices
+        for( unsigned int i = 0; i<4; i++ ) {
+          /*topo->getPointsOnBorder()*/
+          //int vertex_index = t->getVertexIndexInTetrahedron((*it), i);
+          double x1 =  m_topology->getPX((*it)[i]);
+          double y1 = m_topology->getPY((*it)[i]);
+          double z1 = m_topology->getPZ((*it)[i]);
+          v = position[(*it)[i]];
+          glVertex3f((GLfloat)v[0], (GLfloat)v[1], (GLfloat)v[2]);
         }
     }
+
+    ////sout<<"the number of tetras is:"<<nr_of_tetras<<sendl;
+    //for(it = vec.begin() ; it != vec.end() ; it++)
+    ////for( int i = 0; i<nr_of_tetras; i++  )
+    //{
+    //    
+    //    for (unsigned int i=0 ; i< 4 ; i++)
+    //    {
+    //        v = x[(*it)[i]];
+    //        glVertex3f((GLfloat)v[0], (GLfloat)v[1], (GLfloat)v[2]);
+    //    }
+    //}
     glEnd();
     /*
     	const core::topology::BaseMeshTopology::SeqHexahedra& vec = topo->getHexahedra();
@@ -147,13 +246,12 @@ void OglTetrahedralModel<DataTypes>::drawTransparent(const core::visual::VisualP
 template<class DataTypes>
 void OglTetrahedralModel<DataTypes>::computeBBox(const core::ExecParams * params)
 {
-    if (nodes && topo)
+    if ( m_topology)
     {
-        const core::topology::BaseMeshTopology::SeqTetrahedra& vec = topo->getTetrahedra();
+        const core::topology::BaseMeshTopology::SeqTetrahedra& vec = m_topology->getTetrahedra();
         core::topology::BaseMeshTopology::SeqTetrahedra::const_iterator it;
-        const VecCoord& x = *nodes->getX();
         Coord v;
-
+        const ResizableExtVector<Coord>& position = m_positions.getValue();
         const SReal max_real = std::numeric_limits<SReal>::max();
         const SReal min_real = std::numeric_limits<SReal>::min();
 
@@ -164,7 +262,8 @@ void OglTetrahedralModel<DataTypes>::computeBBox(const core::ExecParams * params
         {
             for (unsigned int i=0 ; i< 4 ; i++)
             {
-                v = x[(*it)[i]];
+                v = position[(*it)[i]];
+                //v = x[(*it)[i]];
 
                 if (minBBox[0] > v[0]) minBBox[0] = v[0];
                 if (minBBox[1] > v[1]) minBBox[1] = v[1];
