@@ -3,6 +3,8 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 set(HEADER_FILES
 
     initCGALPlugin.h
+	MeshGenerationFromImage.h
+    MeshGenerationFromImage.inl
 	MeshGenerationFromPolyhedron.h
     MeshGenerationFromPolyhedron.inl
     TriangularConvexHull3D.h
@@ -14,6 +16,7 @@ set(HEADER_FILES
 set(SOURCE_FILES
 
     initCGALPlugin.cpp
+    MeshGenerationFromImage.cpp
     MeshGenerationFromPolyhedron.cpp
     TriangularConvexHull3D.cpp
     DecimateMesh.cpp
