@@ -44,22 +44,35 @@
 #include <CGAL/make_mesh_3.h>
 #include <CGAL/refine_mesh_3.h>
 
+#include <sofa/defaulttype/Mat.h>
+#include <sofa/defaulttype/Quat.h>
+#include <sofa/helper/rmath.h>
+#include <ImageTypes.h>
+
 //CGAL
 typedef CGAL::Exact_predicates_inexact_constructions_kernel K;
 
 namespace cgal
 {
 
-template <class DataTypes>
+using sofa::helper::vector;
+using cimg_library::CImg;
+
+template <class DataTypes, class _ImageTypes>
 class MeshGenerationFromImage : public sofa::core::DataEngine
 {
-public:
-    SOFA_CLASS(SOFA_TEMPLATE(MeshGenerationFromImage,DataTypes),sofa::core::DataEngine);
 
-    typedef typename DataTypes::Real Real;
-    typedef typename DataTypes::Coord Point;
-    typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::VecCoord VecCoord;
+public:
+    typedef sofa::core::DataEngine Inherited;
+    SOFA_CLASS(SOFA_TEMPLATE2(MeshGenerationFromImage,DataTypes,_ImageTypes),Inherited);
+
+    //SOFA_CLASS(SOFA_TEMPLATE(MeshGenerationFromImage,DataTypes),sofa::core::DataEngine);
+
+    typedef typename sofa::defaulttype::Vec3dTypes::Real Real;
+    typedef typename sofa::defaulttype::Vec3dTypes::Coord Point;
+    typedef typename sofa::defaulttype::Vec3dTypes::Coord Coord;
+    typedef typename sofa::defaulttype::Vec3dTypes::VecCoord VecCoord;
+    typedef sofa::defaulttype::Vector3 Vector3;
 
     typedef sofa::core::topology::BaseMeshTopology::Tetra Tetra;
     typedef sofa::core::topology::BaseMeshTopology::SeqTetrahedra SeqTetrahedra;
@@ -86,6 +99,19 @@ public:
 	typedef CGAL::Mesh_constant_domain_field_3<Mesh_domain::R,
                                            Mesh_domain::Index> Sizing_field;
 
+    // image data
+    typedef _ImageTypes ImageTypes;
+    typedef typename ImageTypes::T T;
+    typedef typename ImageTypes::imCoord imCoord;
+    typedef sofa::helper::WriteAccessor<Data< ImageTypes > > waImage;
+    typedef sofa::helper::ReadAccessor<Data< ImageTypes > > raImage;
+
+    // transform data
+    typedef SReal t_Real;
+    typedef sofa::defaulttype::ImageLPTransform<t_Real> TransformType;
+    typedef sofa::helper::WriteAccessor<Data< TransformType > > waTransform;
+    typedef sofa::helper::ReadAccessor<Data< TransformType > > raTransform;
+
 
 public:
     MeshGenerationFromImage();
@@ -103,17 +129,21 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const MeshGenerationFromImage<DataTypes>* = NULL)
+    static std::string templateName(const MeshGenerationFromImage<DataTypes, _ImageTypes>* = NULL)
     {
         return DataTypes::Name();
     }
 
     //Inputs
+    Data< ImageTypes > image;
+    Data< TransformType > transform;
     sofa::core::objectmodel::DataFileName m_filename;
 
     //Outputs
     Data<VecCoord> f_newX0;
     Data<SeqTetrahedra> f_tetrahedra;
+    Data<vector<int> > f_tetraDomain;
+    vector<int> tetraDomainLabels;
 
     Data<bool> frozen;
 
@@ -131,6 +161,7 @@ public:
     // Display
     Data<bool> drawTetras;
     Data<bool> drawSurface;
+
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(CGALPLUGIN_MESHGENERATIONFROMIMAGE_CPP)

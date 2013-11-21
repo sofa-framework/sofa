@@ -35,11 +35,12 @@ using namespace CGAL::parameters;
 namespace cgal
 {
 
-template <class DataTypes>
-MeshGenerationFromImage<DataTypes>::MeshGenerationFromImage()
+template <class DataTypes, class _ImageTypes>
+MeshGenerationFromImage<DataTypes, _ImageTypes>::MeshGenerationFromImage()
 	: m_filename(initData(&m_filename,"filename","Image file"))
     , f_newX0( initData (&f_newX0, "outputPoints", "New Rest position coordinates from the tetrahedral generation"))
     , f_tetrahedra(initData(&f_tetrahedra, "outputTetras", "List of tetrahedra"))
+    , f_tetraDomain(initData(&f_tetraDomain, "outputTetrasDomains", "domain of each tetrahedron"))
     , frozen(initData(&frozen, false, "frozen", "true to prohibit recomputations of the mesh"))
     , facetAngle(initData(&facetAngle, 25.0, "facetAngle", "Lower bound for the angle in degrees of the surface mesh facets"))
     , facetSize(initData(&facetSize, 0.15, "facetSize", "Uniform upper bound for the radius of the surface Delaunay balls"))
@@ -59,6 +60,8 @@ MeshGenerationFromImage<DataTypes>::MeshGenerationFromImage()
     , ordering(initData(&ordering, 0, "ordering", "Output points and elements ordering (0 = none, 1 = longest bbox axis)"))
     , drawTetras(initData(&drawTetras, false, "drawTetras", "display generated tetra mesh"))
     , drawSurface(initData(&drawSurface, false, "drawSurface", "display input surface mesh"))
+    , image(initData(&image,ImageTypes(),"image","image input"))
+    , transform(initData(&transform, "transform" , "12-param vector for trans, rot, scale, ..."))
 {
 }
 
@@ -67,11 +70,12 @@ template<class T1, class T2> bool compare_pair_first(const std::pair<T1,T2>& e1,
     return e1.first < e2.first;
 }
 
-template <class DataTypes>
-void MeshGenerationFromImage<DataTypes>::init()
+template <class DataTypes, class _ImageTypes>
+void MeshGenerationFromImage<DataTypes, _ImageTypes>::init()
 {
     addOutput(&f_newX0);
     addOutput(&f_tetrahedra);
+    addOutput(&f_tetraDomain);
     addInput(&frozen);
     addInput(&facetAngle);
     addInput(&facetSize);
@@ -89,12 +93,14 @@ void MeshGenerationFromImage<DataTypes>::init()
     addInput(&perturb_max_time);
     addInput(&exude_max_time);
     addInput(&ordering);
+    addInput(&image);
+    addInput(&transform);
 
     setDirtyValue();
 }
 
-template <class DataTypes>
-void MeshGenerationFromImage<DataTypes>::reinit()
+template <class DataTypes, class _ImageTypes>
+void MeshGenerationFromImage<DataTypes, _ImageTypes>::reinit()
 {
     sofa::core::DataEngine::reinit();
     update();
@@ -123,29 +129,74 @@ void printStats(C3t3& c3t3, Obj* obj, const char* step = "")
     obj->sout << step << ":  well-centered tetra = " << ((double)nb_in/(double)c3t3.number_of_cells())*100 << "%" << obj->sendl;
 }
 
-template <class DataTypes>
-void MeshGenerationFromImage<DataTypes>::update()
+template <class DataTypes, class _ImageTypes>
+void MeshGenerationFromImage<DataTypes, _ImageTypes>::update()
 {
     helper::WriteAccessor< Data<VecCoord> > newPoints = f_newX0;
     helper::WriteAccessor< Data<SeqTetrahedra> > tetrahedra = f_tetrahedra;
+    helper::WriteAccessor<Data< vector<int> > > tetraDomain(this->f_tetraDomain);
+
 
     if (frozen.getValue()) return;
     newPoints.clear();
     tetrahedra.clear();
+    tetraDomain.clear();
 
     // Create domain
     sout << "Create domain" << sendl;
-	CGAL::Image_3 image;
+    CGAL::Image_3 image3;
 
-	if (this->m_filename.getFullPath().empty())
-	{
-		serr << "ERROR : image filename is empty" << sendl;
-		return;
-	}
+    if (this->m_filename.getFullPath().empty()) {
+        if(image.isSet()) {
+            raImage in(this->image);
+            raTransform inT(this->transform);
+            unsigned int i,j,k;
+            uint8_t *volumearray =new uint8_t[in->getDimensions()[2]*in->getDimensions()[1]*in->getDimensions()[0]];
+            uint8_t *vptr= volumearray;
+            for(k=0;k<in->getDimensions()[2];k++){
+                for(j=0;j<in->getDimensions()[1];j++){
+                    for(i=0;i<in->getDimensions()[0];i++){
+                        vptr[k*in->getDimensions()[0]*in->getDimensions()[1]+j*in->getDimensions()[0]+i] =
+                                in->getCImg()[k*in->getDimensions()[0]*in->getDimensions()[1]+j*in->getDimensions()[0]+i]; //get_vector_at(x,y,z)
+                    }
+                }
+            }
+            _image* vrnimage = _initImage();
+            vrnimage->vectMode = VM_SCALAR;
+            //image dimension
+            vrnimage->xdim = in->getDimensions()[0]; //columns
+            vrnimage->ydim = in->getDimensions()[1]; //rows
+            vrnimage->zdim = in->getDimensions()[2]; //planes
+            vrnimage->vdim = 1; //vectorial dimension
+            //voxel size
+            vrnimage->vx = inT->getScale()[0];
+            vrnimage->vy = inT->getScale()[1];
+            vrnimage->vz = inT->getScale()[2];
+            //image translation
+            vrnimage->tx = inT->getTranslation()[0];
+            vrnimage->ty = inT->getTranslation()[1];
+            vrnimage->tz = inT->getTranslation()[2];
+            //image rotation
+            vrnimage->rx = inT->getRotation()[0];
+            vrnimage->ry = inT->getRotation()[1];
+            vrnimage->rz = inT->getRotation()[2];
+            vrnimage->endianness = END_LITTLE;
+            vrnimage->wdim = 1;
+            vrnimage->wordKind = WK_FIXED;
+            vrnimage->sign = SGN_UNSIGNED;
+            vrnimage->data = ImageIO_alloc(in->getDimensions()[2]*in->getDimensions()[1]*in->getDimensions()[0]);
+            memcpy(vrnimage->data,(void*)volumearray,in->getDimensions()[2]*in->getDimensions()[1]*in->getDimensions()[0]);
+            image3 = CGAL::Image_3(vrnimage);
+        }
+        else {
+        serr << "ERROR : image filename is empty" << sendl;
+        return;
+        }
+    } else {
+        image3.read(this->m_filename.getFullPath().c_str());
+    }
 
-	image.read(this->m_filename.getFullPath().c_str());
-
-    Mesh_domain domain(image);
+    Mesh_domain domain(image3);
 
     int volume_dimension = 3;
     Sizing_field size(cellSize.getValue());
@@ -251,19 +302,26 @@ void MeshGenerationFromImage<DataTypes>::update()
             else
                 for (unsigned int c=0; c<p.size(); c++)
                             if (p[c] < bbmin[c]) bbmin[c] = p[c]; else if (p[c] > bbmax[c]) bbmax[c] = p[c];
-			defaulttype::Vector3 translation = defaulttype::Vector3(image.image()->tx, image.image()->ty, image.image()->tz);
+            Vector3 translation = Vector3(image3.image()->tx, image3.image()->ty, image3.image()->tz);
 			newPoints.push_back(p+translation);
         }
     }
     if (notconnected > 0) serr << notconnected << " points are not connected to the mesh."<<sendl;
 
     tetrahedra.clear();
+    tetraDomain.clear();
+    tetraDomainLabels.clear();
     for( Cell_iterator cit = c3t3.cells_begin() ; cit != c3t3.cells_end() ; ++cit )
     {
         Tetra tetra;
+
         for (int i=0; i<4; i++)
             tetra[i] = V[cit->vertex(i)];
         tetrahedra.push_back(tetra);
+        if( std::find(tetraDomainLabels.begin(),tetraDomainLabels.end(),c3t3.subdomain_index(cit)) == tetraDomainLabels.end()) {
+            tetraDomainLabels.push_back(c3t3.subdomain_index(cit));
+        }
+        tetraDomain.push_back(c3t3.subdomain_index(cit));
     }
 
     int nbp = newPoints.size();
@@ -298,16 +356,18 @@ void MeshGenerationFromImage<DataTypes>::update()
         helper::vector< std::pair<int,int> > sortArray2;
         for (int e=0; e<nbe; ++e)
         {
-            int p = tetrahedra[e][0];
-            for (unsigned int i=0; i<4; i++)
+            unsigned int p = tetrahedra[e][0];
+            for (int i=0; i<4; i++)
                 if (tetrahedra[e][i] < p) p = tetrahedra[e][i];
             sortArray2.push_back(std::make_pair(p,e));
         }
         std::sort(sortArray2.begin(), sortArray2.end(), compare_pair_first<int,int>);
         SeqTetrahedra oldTetrahedra = tetrahedra.ref();
+        vector<int> oldTetraDomains = tetraDomain.ref();
         for (int i=0; i<nbe; ++i)
         {
             tetrahedra[i] = oldTetrahedra[sortArray2[i].second];
+            tetraDomain[i] = oldTetraDomains[sortArray2[i].second];
         }
         break;
     }
@@ -319,18 +379,23 @@ void MeshGenerationFromImage<DataTypes>::update()
     frozen.setValue(true);
 }
 
-template <class DataTypes>
-void MeshGenerationFromImage<DataTypes>::draw(const sofa::core::visual::VisualParams* vparams)
+template <class DataTypes, class _ImageTypes>
+void MeshGenerationFromImage<DataTypes, _ImageTypes>::draw(const sofa::core::visual::VisualParams* vparams)
 {
     if (drawTetras.getValue())
     {
         helper::ReadAccessor< Data<VecCoord> > x = f_newX0;
         helper::ReadAccessor< Data<SeqTetrahedra> > tetrahedra = f_tetrahedra;
+        helper::ReadAccessor< Data< vector<int> > > tetraDomain = f_tetraDomain;
 
         vparams->drawTool()->setLightingEnabled(false);
-        std::vector< defaulttype::Vector3 > points[4];
+        std::vector< std::vector<defaulttype::Vector3> > pointsDomains;
+        pointsDomains.resize(tetraDomainLabels.size());
+        int domainLabel = 0;
         for(unsigned int i=0; i<tetrahedra.size(); ++i)
-        {
+        {            
+            domainLabel =  std::find(tetraDomainLabels.begin(), tetraDomainLabels.end(),tetraDomain[i]) - tetraDomainLabels.begin();
+
             int a = tetrahedra[i][0];
             int b = tetrahedra[i][1];
             int c = tetrahedra[i][2];
@@ -341,27 +406,26 @@ void MeshGenerationFromImage<DataTypes>::draw(const sofa::core::visual::VisualPa
             Coord pc = (x[c]+center)*(Real)0.666667;
             Coord pd = (x[d]+center)*(Real)0.666667;
 
-            points[0].push_back(pa);
-            points[0].push_back(pb);
-            points[0].push_back(pc);
+            pointsDomains[domainLabel].push_back(pa);
+            pointsDomains[domainLabel].push_back(pb);
+            pointsDomains[domainLabel].push_back(pc);
 
-            points[1].push_back(pb);
-            points[1].push_back(pc);
-            points[1].push_back(pd);
+            pointsDomains[domainLabel].push_back(pb);
+            pointsDomains[domainLabel].push_back(pc);
+            pointsDomains[domainLabel].push_back(pd);
 
-            points[2].push_back(pc);
-            points[2].push_back(pd);
-            points[2].push_back(pa);
+            pointsDomains[domainLabel].push_back(pc);
+            pointsDomains[domainLabel].push_back(pd);
+            pointsDomains[domainLabel].push_back(pa);
 
-            points[3].push_back(pd);
-            points[3].push_back(pa);
-            points[3].push_back(pb);
+            pointsDomains[domainLabel].push_back(pd);
+            pointsDomains[domainLabel].push_back(pa);
+            pointsDomains[domainLabel].push_back(pb);
         }
 
-        vparams->drawTool()->drawTriangles(points[0], defaulttype::Vec<4,float>(0.0,0.0,1.0,1.0));
-        vparams->drawTool()->drawTriangles(points[1], defaulttype::Vec<4,float>(0.0,0.5,1.0,1.0));
-        vparams->drawTool()->drawTriangles(points[2], defaulttype::Vec<4,float>(0.0,1.0,1.0,1.0));
-        vparams->drawTool()->drawTriangles(points[3], defaulttype::Vec<4,float>(0.5,1.0,1.0,1.0));
+        for(size_t i=0; i<tetraDomainLabels.size(); i++) {
+            vparams->drawTool()->drawTriangles(pointsDomains[i], defaulttype::Vec<4,float>(fmod(i*0.5,1.5), fmod(0.5-fmod(i*0.5,1.5),1.5), 1.0-fmod(i*0.5,1.5), 0.8));
+        }
     }
 }
 
