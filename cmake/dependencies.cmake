@@ -34,7 +34,15 @@ endif()
 if(SOFA-MISC_BUILD_GTEST)
 	add_subdirectory("${SOFA_EXTLIBS_DIR}/gtest")
 	# try to replace with :
-        # RegisterProjects("gtest" "gtest_main" PATH "${SOFA_EXTLIBS_DIR}/gtest")
+	# RegisterProjects("gtest" "gtest_main" PATH "${SOFA_EXTLIBS_DIR}/gtest")
+	
+	if(MSVC)
+		get_target_property(gtestCompilerDefines gtest COMPILE_DEFINITIONS)
+		set_target_properties(gtest PROPERTIES COMPILE_DEFINITIONS "${gtestCompilerDefines};_VARIADIC_MAX=10")
+		
+		get_target_property(gtestMainCompilerDefines gtest_main COMPILE_DEFINITIONS)
+		set_target_properties(gtest_main PROPERTIES COMPILE_DEFINITIONS "${gtestMainCompilerDefines};_VARIADIC_MAX=10")
+	endif()	
 endif()
 
 # framework
