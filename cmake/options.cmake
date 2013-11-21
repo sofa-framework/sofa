@@ -327,9 +327,7 @@ option(SOFA-LIB_GUI_INTERACTION "Enable interaction mode" OFF)
 # unit tests
 option(SOFA-MISC_TESTS "Build and use unit tests" OFF)
 if(SOFA-MISC_TESTS)
-	if(NOT WIN32)
-		option(SOFA-MISC_BUILD_GTEST "Build google test framework" ON)
-	endif()
+	option(SOFA-MISC_BUILD_GTEST "Build google test framework" ON)
 endif()
 
 # use external template
