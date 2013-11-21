@@ -39,16 +39,16 @@ using namespace cgal;
 
 int MeshGenerationFromImageClass = sofa::core::RegisterObject("Generate tetrahedral mesh from image")
 #ifndef SOFA_FLOAT
-        .add< MeshGenerationFromImage<Vec3dTypes> >()
+        .add< MeshGenerationFromImage<Vec3dTypes,ImageUC> >()
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-//.add< MeshGenerationFromImage<Vec3fTypes> >()
+        .add< MeshGenerationFromImage<Vec3fTypes, ImageUC> >()
 #endif //SOFA_DOUBLE
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_CGALPLUGIN_API MeshGenerationFromImage<Vec3dTypes>;
+template class SOFA_CGALPLUGIN_API MeshGenerationFromImage<Vec3dTypes, ImageUC>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-//template class SOFA_CGALPLUGIN_API MeshGenerationFromImage<Vec3fTypes>;
+ template class SOFA_CGALPLUGIN_API MeshGenerationFromImage<Vec3fTypes, ImageUC>;
 #endif //SOFA_DOUBLE

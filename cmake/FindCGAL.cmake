@@ -83,6 +83,7 @@ if( NOT CGAL_FOUND)
   # try to find the paths manually...
   find_path(CGAL_DIR NAMES include/CGAL/Polyhedron_3.h)
   find_library(CGAL_LIBRARY NAMES CGAL)
+  find_library(CGAL_ImageIO_LIBRARY NAMES CGAL_ImageIO)  
   if(EXISTS "${CGAL_DIR}/include/CGAL/Polyhedron_3.h" AND EXISTS ${CGAL_LIBRARY})
     set(CGAL_FOUND TRUE)
     message(STATUS "CGAL found: ${CGAL_LIBRARY} ${CGAL_DIR}")

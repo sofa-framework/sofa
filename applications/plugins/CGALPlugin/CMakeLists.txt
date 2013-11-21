@@ -55,4 +55,20 @@ find_package(MPFR REQUIRED)
 AddCompilerDefinitions("SOFA_BUILD_CGALPLUGIN")
 AddLinkerDependencies(SofaGuiQt ${Boost_LIBRARIES} ${GMP_LIBRARIES} ${MPFR_LIBRARIES} ${CGAL_LIBRARY})
 
+if(SOFA-PLUGIN_IMAGE)
+
+    set(HEADER_FILES
+	MeshGenerationFromImage.h
+        MeshGenerationFromImage.inl
+    )
+
+    set(SOURCE_FILES
+        MeshGenerationFromImage.cpp
+    )
+    
+    AddLinkerDependencies(${CGAL_ImageIO_LIBRARY} image)
+
+endif()
+
+
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
