@@ -159,6 +159,8 @@ protected :
     vector<unsigned int>  cnt;
     double m_potentialEnergy;
 
+    Real min,max;
+
     /// Accumulate the spring force and compute and store its stiffness
     virtual void addSpringForce(double& potentialEnergy, VecDeriv& f,const  VecCoord& p,const VecDeriv& v, int i, const Spring& spring);
     /// Apply the stiffness, i.e. accumulate df given dx
