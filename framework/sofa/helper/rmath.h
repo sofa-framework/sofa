@@ -258,6 +258,33 @@ inline bool isNull( double x, double threshold )
     return rabs(x) <= threshold;
 }
 
+inline double rcos(double x){
+	return cos(x);
+}
+
+inline float rcos(float x){
+	return cosf(x);
+}
+
+inline double rsin(double x){
+	return sin(x);
+}
+
+inline float rsin(float x){
+	return sinf(x);
+}
+
+template<class T>
+inline T rcos(const T& a)
+{
+    return (T)cos((double)a);
+}
+
+template<class T>
+inline T rsin(const T& a)
+{
+    return (T)sin((double)a);
+}
 
 } // namespace helper
 
