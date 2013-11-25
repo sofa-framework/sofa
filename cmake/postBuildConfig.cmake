@@ -27,6 +27,9 @@ if(TARGET ${PROJECT_NAME})
 		if(WIN32)
 			# MSVC2012 has some troubles with the way gtest use the STL, this preprocessor macro fix this issue
 			AddCompilerDefinitions("_VARIADIC_MAX=10")
+			
+			# by default, gtest is built with /MT hence our unit test must use this option too
+			AddCompilerFlags("/MT")
 		endif()
 		
 		AddLinkerDependencies(gtest gtest_main)

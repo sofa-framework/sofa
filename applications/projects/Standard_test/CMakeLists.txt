@@ -24,9 +24,5 @@ add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
 AddCompilerDefinitions("SOFA_PROJECT_TEST")
 AddLinkerDependencies(ObjectCreator SofaEigen2Solver SofaComponentMain SofaBaseCollision SofaSimulationGraph SofaBoundaryCondition)
 
-if(WIN32)
-	AddCompilerFlags("/MT")
-endif()
-
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
 

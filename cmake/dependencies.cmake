@@ -91,7 +91,7 @@ set(SOFA_PROJECT_FOLDER "SofaApplication")
 #add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/xmlconvert-displayflags")  #not actually declared in sofa-dependencies.prf
 
 ## test
-RegisterProjects("Standard_test" OPTION SOFA-MISC_TESTS PATH "${SOFA_APPLICATIONS_DIR}/projects/Standard_test")
+#RegisterProjects("Standard_test" OPTION SOFA-MISC_TESTS PATH "${SOFA_APPLICATIONS_DIR}/projects/Standard_test")
 
 
 ## tutorials
