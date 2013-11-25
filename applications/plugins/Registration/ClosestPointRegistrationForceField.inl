@@ -83,6 +83,7 @@ ClosestPointRegistrationForceField<DataTypes>::ClosestPointRegistrationForceFiel
     , showArrowSize(initData(&showArrowSize,0.01f,"showArrowSize","size of the axis."))
     , drawMode(initData(&drawMode,0,"drawMode","The way springs will be drawn:\n- 0: Line\n- 1:Cylinder\n- 2: Arrow."))
     , drawColorMap(initData(&drawColorMap,false,"drawColorMap","Hue mapping of distances to closest point"))
+    , theCloserTheStiffer(initData(&theCloserTheStiffer,false,"theCloserTheStiffer","Modify stiffness according to distance"))
 {
 }
 
@@ -292,14 +293,17 @@ void ClosestPointRegistrationForceField<DataTypes>::addForce(const core::Mechani
 
         // count number of attractors
         cnt.resize(s.size()); cnt.fill(0);  if(attrF>0) for (unsigned int i=0; i<tp.size(); i++) if(!targetIgnored[i]) cnt[closestTarget[i].begin()->second]++;
-   
-	// find the min and the max distance value from source point to target point
-        min=0;
-        max=0;
-        for (unsigned int i=0; i<x.size(); i++)
+
+        if(theCloserTheStiffer.getValue())
         {
-            if(min==0 || min>closestSource[i].begin()->first) min=closestSource[i].begin()->first;
-            if(max==0 || max<closestSource[i].begin()->first) max=closestSource[i].begin()->first;
+            // find the min and the max distance value from source point to target point
+            min=0;
+            max=0;
+            for (unsigned int i=0; i<x.size(); i++)
+            {
+                if(min==0 || min>closestSource[i].begin()->first) min=closestSource[i].begin()->first;
+                if(max==0 || max<closestSource[i].begin()->first) max=closestSource[i].begin()->first;
+            }
         }
 
         // compute targetpos = projF*closestto + attrF* sum closestfrom / count
@@ -357,12 +361,15 @@ void ClosestPointRegistrationForceField<DataTypes>::addSpringForce(double& poten
         serr<<"addSpringForce, new potential energy = "<<potentialEnergy<<sendl;*/
         Deriv relativeVelocity = -v[a];
         Real elongationVelocity = dot(u,relativeVelocity);
-        Real ks_max=spring.ks;
- 	Real ks_min=spring.ks/10;
- 	Real ks_mod = ks_min*(max-elongation)/(max-min)+ks_max*(elongation-min)/(max-min);
- 	Real forceIntensity = (Real)(ks_mod*elongation+spring.kd*elongationVelocity);
-
-        //Real forceIntensity = (Real)(spring.ks*elongation+spring.kd*elongationVelocity);
+        Real forceIntensity;
+        if(theCloserTheStiffer.getValue())
+        {
+            Real ks_max=spring.ks;
+            Real ks_min=spring.ks/10;
+            Real ks_mod = ks_min*(max-elongation)/(max-min)+ks_max*(elongation-min)/(max-min);
+            forceIntensity = (Real)(ks_mod*elongation+spring.kd*elongationVelocity);
+        }
+        else forceIntensity = (Real)(spring.ks*elongation+spring.kd*elongationVelocity);
         Deriv force = u*forceIntensity;
         f[a]+=force;
         Mat& m = this->dfdx[i];
