@@ -14,17 +14,22 @@ SCRIPT_PATH=`pwd`;
 popd  > /dev/null
 ####
 
-export SRC_DIR=$SCRIPT_PATH
-# Add the first param (if it exist) to SCRIPT_PATH
-# In general $1 is the cmake build directory
-# readlink Remove unnecessary slashes (if $1 is empty)
-export BUILD_DIR=$(readlink -m $PWD"/"$1"/")
-
 PLATFORM=$(uname)
 if [ "$PLATFORM" = "Darwin" ]; then
 PLATFORM=macx
 else
 PLATFORM=linux
+fi
+
+export SRC_DIR=$SCRIPT_PATH
+# Add the first param (if it exist) to SCRIPT_PATH
+# In general $1 is the cmake build directory
+# readlink Remove unnecessary slashes (if $1 is empty)
+if [ "$PLATFORM" = "macx" ]; then
+  # quick-and-dirty fix, since readlink -m is not available on MacOS
+  export BUILD_DIR=$PWD
+else
+  export BUILD_DIR=$(readlink -m $PWD"/"$1"/")
 fi
 
 export PATH=$BUILD_DIR/bin:$PATH
