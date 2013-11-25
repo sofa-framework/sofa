@@ -1,8 +1,8 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
-file(GLOB HEADER_FILES *.h)
+file(GLOB HEADER_FILES qwt_*.h)
 
-file(GLOB SOURCE_FILES *.cpp)
+file(GLOB SOURCE_FILES qwt_*.cpp)
 
 # Header files containing Q_OBJECT declarations
 set(Q_OBJECT_HEADER_FILES

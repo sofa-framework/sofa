@@ -79,7 +79,7 @@ QWT_CONFIG     += QwtWidgets
 # export a plot to a SVG document
 ######################################################################
 
-QWT_CONFIG     += QwtSvg
+# QWT_CONFIG     += QwtSvg
 
 ######################################################################
 # You can use the MathML renderer of the Qt solutions package to 
