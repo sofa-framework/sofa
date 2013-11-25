@@ -144,7 +144,7 @@ bool PluginManager::loadPlugin(std::string& pluginPath, std::ostream* errlog)
 
     if( !PluginRepository.findFile(pluginPath,"",errlog) )
     {
-        (*errlog) << "Plugin " << pluginPath << " NOT FOUND in: " << PluginRepository << std::endl;
+        if (errlog) (*errlog) << "Plugin " << pluginPath << " NOT FOUND in: " << PluginRepository << std::endl;
         return false;
     }
     if(m_pluginMap.find(pluginPath) != m_pluginMap.end() )
@@ -156,14 +156,14 @@ bool PluginManager::loadPlugin(std::string& pluginPath, std::ostream* errlog)
     Plugin p;
     if( d == NULL )
     {
-        (*errlog) << "Plugin " << pluginPath << " loading FAILED" << std::endl;
+        if (errlog) (*errlog) << "Plugin " << pluginPath << " loading FAILED" << std::endl;
         return false;
     }
     else
     {
         if(! getPluginEntry(p.initExternalModule,d,errlog) )
         {
-            (*errlog) << "Plugin " << pluginPath << " method initExternalModule() NOT FOUND" << std::endl;
+            if (errlog) (*errlog) << "Plugin " << pluginPath << " method initExternalModule() NOT FOUND" << std::endl;
             return false;
         }
         getPluginEntry(p.getModuleName,d,errlog);
