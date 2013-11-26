@@ -17,7 +17,11 @@ set(README_FILES
 	ColladaSceneLoader.txt
 	)
 
-include_directories("assimp/include")
+
+# find assimp library & include directories...
+find_path(ASSIMP_INCLUDE_DIR NAMES assimp/Importer.hpp)
+
+include_directories(ASSIMP_INCLUDE_DIR)
 
 if(WIN32)
 	if(CMAKE_CL_64)
@@ -35,11 +39,17 @@ if(WIN32)
 	foreach(sharedObject ${sharedObjects})
 		file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
 	endforeach()
+else()
+
 endif()
+
+find_library(ASSIMP_LIBRARY NAMES assimp)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
+
+
 AddCompilerDefinitions("SOFA_BUILD_COLLADASCENELOADER")
-AddLinkerDependencies(SofaLoader SofaSimulationCommon SofaBaseMechanics SofaRigid SofaBoundaryCondition SofaBaseTopology SofaBaseVisual SofaOpenglVisual SofaDeformable SofaMeshCollision assimp)
+AddLinkerDependencies(SofaLoader SofaSimulationCommon SofaBaseMechanics SofaRigid SofaBoundaryCondition SofaBaseTopology SofaBaseVisual SofaOpenglVisual SofaDeformable SofaMeshCollision ${ASSIMP_LIBRARY})
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

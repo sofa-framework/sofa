@@ -36,7 +36,7 @@
 #include <sofa/component/mapping/BarycentricMapping.h>
 #include <sofa/component/mapping/IdentityMapping.h>
 #include <sofa/component/projectiveconstraintset/SkeletalMotionConstraint.inl>
-#include <sofa/component/typedef/Particles_float.h>
+//#include <sofa/component/typedef/Particles_float.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/SetDirectory.h>
 
