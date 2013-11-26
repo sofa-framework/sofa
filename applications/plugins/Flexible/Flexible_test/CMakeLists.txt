@@ -15,10 +15,6 @@ add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${RC_FILES})
 
 AddLinkerDependencies(Flexible SofaComponentMain SofaSimulationGraph)
 
-if(WIN32)
-	AddCompilerFlags("/MT")
-endif()
-
 if(UNIX)
     AddLinkerDependencies("dl")
 endif()
