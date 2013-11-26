@@ -1,5 +1,0 @@
-# project(Tools)
-set(CMAKE_CURRENT_BINARY_DIR ${SOFA_BIN_DIR})
-add_executable(shader_to_h ${CMAKE_CURRENT_SOURCE_DIR}/shader_to_h.cpp )
-message("test ${CMAKE_CURRENT_BINARY_DIR}")
-message("huhu ${SOFA_BIN_DIR}")
