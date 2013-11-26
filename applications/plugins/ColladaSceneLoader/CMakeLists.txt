@@ -19,9 +19,12 @@ set(README_FILES
 
 
 # find assimp library & include directories...
+if(APPLE)
 find_path(ASSIMP_INCLUDE_DIR NAMES assimp/Importer.hpp)
-
 include_directories(ASSIMP_INCLUDE_DIR)
+else()
+include_directories("assimp/include")
+endif()
 
 if(WIN32)
 	if(CMAKE_CL_64)
