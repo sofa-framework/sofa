@@ -157,7 +157,7 @@ struct ProjectToLineConstraint_test : public Sofa_test<typename _DataTypes::Real
               CPos crossprod = (x[i]-origin).cross(direction); // should be parallel
               Real scal = crossprod*crossprod; // null if x is on the line
 //              cerr<<"scal = "<< scal << endl;
-              if( !isSmall(scal,100) ){
+              if( !Sofa_test<typename _DataTypes::Real>::isSmall(scal,100) ){
                   succeed = false;
                   ADD_FAILURE() << "Position of constrained particle " << i << " is wrong: " << x[i] ;
               }
@@ -168,7 +168,7 @@ struct ProjectToLineConstraint_test : public Sofa_test<typename _DataTypes::Real
               CPos dx = x[i]-xprev[i];
               Real scal = dx*dx;
 //              cerr<<"scal gap = "<< scal << endl;
-              if( !isSmall(scal,100) ){
+              if( !Sofa_test<typename _DataTypes::Real>::isSmall(scal,100) ){
                   succeed = false;
                   ADD_FAILURE() << "Position of unconstrained particle " << i << " is wrong: " << x[i] ;
               }
@@ -198,7 +198,7 @@ struct ProjectToLineConstraint_test : public Sofa_test<typename _DataTypes::Real
               CPos crossprod = v[i].cross(direction); // should be parallel
               Real scal = crossprod.norm(); // null if v is ok
 //              cerr<<"scal = "<< scal << endl;
-              if( !isSmall(scal,100) ){
+              if( !Sofa_test<typename _DataTypes::Real>::isSmall(scal,100) ){
                   succeed = false;
                   ADD_FAILURE() << "Velocity of constrained particle " << i << " is wrong: " << v[i] ;
               }
@@ -209,7 +209,7 @@ struct ProjectToLineConstraint_test : public Sofa_test<typename _DataTypes::Real
               CPos dv = v[i]-vprev[i];
               Real scal = dv*dv;
 //              cerr<<"scal gap = "<< scal << endl;
-              if( !isSmall(scal,100) ){
+              if( !Sofa_test<typename _DataTypes::Real>::isSmall(scal,100) ){
                   succeed = false;
                   ADD_FAILURE() << "Velocity of unconstrained particle " << i << " is wrong: " << v[i] ;
               }

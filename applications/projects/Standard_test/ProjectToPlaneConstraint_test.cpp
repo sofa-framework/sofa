@@ -154,7 +154,7 @@ struct ProjectToPlaneConstraint_test : public Sofa_test<typename _DataTypes::Rea
            {
               Real scal = (x[i]-origin)*normal; // null if x is in the plane
 //              cerr<<"scal = "<< scal << endl;
-              if( !isSmall(scal,100) ){
+              if( !Sofa_test<typename _DataTypes::Real>::isSmall(scal,100) ){
                   succeed = false;
                   ADD_FAILURE() << "Position of constrained particle " << i << " is wrong: " << x[i] ;
               }
@@ -165,7 +165,7 @@ struct ProjectToPlaneConstraint_test : public Sofa_test<typename _DataTypes::Rea
               CPos dx = x[i]-xprev[i];
               Real scal = dx*dx;
 //              cerr<<"scal gap = "<< scal << endl;
-              if( !isSmall(scal,100) ){
+              if( !Sofa_test<typename _DataTypes::Real>::isSmall(scal,100) ){
                   succeed = false;
                   ADD_FAILURE() << "Position of unconstrained particle " << i << " is wrong: " << x[i] ;
               }
@@ -194,7 +194,7 @@ struct ProjectToPlaneConstraint_test : public Sofa_test<typename _DataTypes::Rea
            {
               Real scal = v[i]*normal; // null if v is in the plane
 //              cerr<<"scal = "<< scal << endl;
-              if( !isSmall(scal,100) ){
+              if( !Sofa_test<typename _DataTypes::Real>::isSmall(scal,100) ){
                   succeed = false;
                   ADD_FAILURE() << "Velocity of constrained particle " << i << " is wrong: " << v[i] ;
               }
@@ -205,7 +205,7 @@ struct ProjectToPlaneConstraint_test : public Sofa_test<typename _DataTypes::Rea
               CPos dv = v[i]-vprev[i];
               Real scal = dv*dv;
 //              cerr<<"scal gap = "<< scal << endl;
-              if( !isSmall(scal,100) ){
+              if( !Sofa_test<typename _DataTypes::Real>::isSmall(scal,100) ){
                   succeed = false;
                   ADD_FAILURE() << "Velocity of unconstrained particle " << i << " is wrong: " << v[i] ;
               }
