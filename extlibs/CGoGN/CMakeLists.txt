@@ -139,25 +139,7 @@ ENDIF(WIN32)
 # 	INSTALL (DIRECTORY ThirdParty/Assimp/include  DESTINATION .)
 # ENDIF (WITH_ASSIMP)
 
-IF (WITH_ZINRI)
-	add_definitions(-DWITH_ZINRI)
-	SET (CGoGN_EXT_LIBS ${CGoGN_EXT_LIBS} Zinri)
-	# INSTALL (DIRECTORY ThirdParty/Zinri/ DESTINATION include FILES_MATCHING PATTERN "*.h")
-ENDIF (WITH_ZINRI)
 
-IF (WITH_QT)
-	add_definitions(-DWITH_QT)
-	find_package(Qt REQUIRED)
-	SET(QT_USE_QTCORE TRUE)
-	SET(QT_USE_QTOPENGL TRUE)
-	SET(QT_USE_QTSVG TRUE)
-	SET(QT_USE_QTXML TRUE )
-	INCLUDE(${QT_USE_FILE})
-	ADD_DEFINITIONS(${QT_DEFINITIONS})
-	find_package(QGLViewer REQUIRED)
-	SET (CGoGN_EXT_INCLUDES ${CGoGN_EXT_INCLUDES} ${QT_INCLUDE_DIR} ${QGLVIEWER_INCLUDE_DIR} )
-	SET (CGoGN_EXT_LIBS ${CGoGN_EXT_LIBS} ${QT_LIBRARIES} ${QGLVIEWER_LIBRARIES} )
-ENDIF (WITH_QT)
 
 IF (WITH_GLEWMX)
 	ADD_DEFINITIONS(-DGLEW_MX)
@@ -173,7 +155,19 @@ IF(APPLE)
 	SET (CGoGN_EXT_LIBS ${CGoGN_EXT_LIBS} "-framework Foundation -framework cocoa" )
 ENDIF(APPLE)
 
-add_subdirectory(ThirdParty)
+add_subdirectory(ThirdParty/OpenNL)
+file(GLOB NL_H ThirdParty/OpenNL/src/NL/*.h)
+file(COPY ${NL_H}
+	 DESTINATION ${CGoGN_ROOT_DIR}/ThirdParty/include/NL)
+
+IF (WITH_ZINRI)
+	add_definitions(-DWITH_ZINRI)
+	SET (CGoGN_EXT_LIBS ${CGoGN_EXT_LIBS} Zinri)
+	add_subdirectory(ThirdParty/Zinri)
+	file(GLOB ZINRI_H ThirdParty/Zinri/*.h)
+	file(COPY ${ZINRI_H}
+		 DESTINATION ${CGoGN_ROOT_DIR}/ThirdParty/include/Zinri)
+ENDIF(WITH_ZINRI)
 
 
 IF(WIN32)
