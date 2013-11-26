@@ -157,7 +157,6 @@ bool importOVM(typename PFP::MAP& the_map, const std::string& filename, std::vec
 } // namespace CGoGN
 
 #include "Algo/Import/importMesh.hpp"
-//#include "Algo/Import/importObjTex.hpp"
 #include "Algo/Import/importObjEle.hpp"
 #include "Algo/Import/importTet.hpp"
 #include "Algo/Import/importMoka.hpp"
