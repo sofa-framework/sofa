@@ -334,7 +334,7 @@ protected:
     template<class contact_dofs_type>
     void addConstraintValue( node_type* node, contact_dofs_type* dofs, real damping, real restitution=0 )
     {
-        assert( restitution_coef.getValue()>=0 && restitution_coef.getValue() <= 1 );
+        //assert( restitution_coef.getValue()>=0 && restitution_coef.getValue() <= 1 ); // commented out by FF because restitution_coef is not declared
 
         if( restitution ) // elastic contact
         {
