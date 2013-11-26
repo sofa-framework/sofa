@@ -2,15 +2,6 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 find_package(CUDA REQUIRED)
 
-# With some versions of CMake, CUDA_HOST_COMPILER defaults to CMAKE_C_COMPILER,
-# but few host compilers are actually supported. Here are the workarounds.
-# (TODO: more checks, e.g. for Clang. Also, maybe put this in a custom FindCUDA.cmake.)
-
-if (${CUDA_HOST_COMPILER} MATCHES "ccache$")
-  set(CUDA_HOST_COMPILER "gcc" CACHE STRING "Host side compiler used by NVCC" FORCE)
-endif()
-
-
 # quick and dirty fix for nvcc compatibility with -fno-partial-inlining flag
 set(CUDA_PROPAGATE_HOST_FLAGS OFF)
 

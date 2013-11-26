@@ -424,9 +424,10 @@ if(SOFA-CUDA_THRUST)
 	endif()
 endif()
 
-#variable to choose to which architecture to compile
-set(SOFA-CUDA_SM "20" CACHE FILEPATH "Which architecture to compile")
-set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS};-arch sm_${SOFA-CUDA_SM} -Xcompiler -fPIC)
+# Cache variable: GPU architecture for which CUDA code will be compiled.
+set(SOFA-CUDA_SM "20" CACHE STRING "GPU architecture; it will translate to the following option for nvcc: -arch sm_<value>")
+
+set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS};-arch sm_${SOFA-CUDA_SM} -Xcompiler -fPIC -O2 -DNDEBUG)
 
 # TODO   activate it automatically
 option(SOFA-CUDA_GREATER_THAN_GCC44 "SOFA-CUDA_GREATER_THAN_GCC44" OFF)
@@ -434,10 +435,12 @@ if(SOFA-CUDA_GREATER_THAN_GCC44)
       set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS};--compiler-options -fno-inline)
 endif()
 
-
-
-
-
+# nvcc uses a "host code compiler" to compile CPU code, specified by CUDA_HOST_COMPILER.
+# With some versions of CMake, CUDA_HOST_COMPILER defaults to CMAKE_C_COMPILER,
+# but few host compilers are actually supported. Workarounds should go here.
+if (${CUDA_HOST_COMPILER} MATCHES "ccache$")
+  set(CUDA_HOST_COMPILER "gcc" CACHE STRING "Host side compiler used by NVCC" FORCE)
+endif()
 
 
 
