@@ -1,6 +1,7 @@
 #ifndef __COMPLIANT_COMPLIANTSOLVERMERGER_H__
 #define __COMPLIANT_COMPLIANTSOLVERMERGER_H__
 
+#include "initCompliant.h"
 #include <sofa/core/behavior/LinearSolver.h>
 
 namespace sofa
@@ -20,7 +21,7 @@ namespace collision
 {
 
 
-    class CompliantSolverMerger
+    class SOFA_Compliant_API CompliantSolverMerger
     {
     public:
 
