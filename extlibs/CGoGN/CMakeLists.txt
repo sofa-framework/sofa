@@ -7,7 +7,8 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 SET(CGoGN_ROOT_DIR ${SOFA_EXTLIBS_DIR}/CGoGN )
 
-SET(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH} ${CGoGN_ROOT_DIR}/cmake_modules/" )
+SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} 
+				 	  ${CGoGN_ROOT_DIR}/cmake_modules/ )
 
 # for shared or not shared
 # SET ( BUILD_SHARED_LIBS OFF CACHE BOOL "if used all library are build as shared type (.so/.dylib/.dll)" )
@@ -86,12 +87,12 @@ SET (CGoGN_EXT_INCLUDES
 )
 
 include_directories(
-	${CGoGN_ROOT_DIR}/ThirdParty/include
-	${ZLIB_INCLUDE_DIRS}
-	${LIBXML2_INCLUDE_DIR}
-	${Boost_INCLUDE_DIRS}
-	${SOFA-EXTERNAL_EIGEN_PATH}
+	${CGoGN_ROOT_DIR}/include
+	${CMAKE_CURRENT_BINARY_DIR}
+	${CGoGN_EXT_INCLUDES}
 )
+
+
 
 
 
@@ -141,9 +142,53 @@ IF (WITH_ZINRI)
 ENDIF(WITH_ZINRI)
 
 
+file(
+	GLOB_RECURSE
+	files_topology
+	${CGoGN_ROOT_DIR}/src/Topology/*.cpp
+	${CGoGN_ROOT_DIR}/include/Topology/*.hpp
+	${CGoGN_ROOT_DIR}/include/Topology/*.h
+)
+
+file(
+	GLOB_RECURSE
+	files_container
+	${CGoGN_ROOT_DIR}/src/Container/*.cpp
+	${CGoGN_ROOT_DIR}/include/Container/*.hpp
+	${CGoGN_ROOT_DIR}/include/Container/*.h
+)
+
+file(
+	GLOB_RECURSE
+	files_algo
+	${CGoGN_ROOT_DIR}/src/Algo/*.cpp
+	${CGoGN_ROOT_DIR}/src/Algo/*.c
+	${CGoGN_ROOT_DIR}/include/Algo/*.hpp
+	${CGoGN_ROOT_DIR}/include/Algo/*.h
+)
+
+
+file(
+	GLOB		# WARNING NO MORE RECURSE TO AVOID TAKING QT FILES
+	files_utils
+	${CGoGN_ROOT_DIR}/src/Utils/*.cpp
+	${CGoGN_ROOT_DIR}/include/Utils/*.hpp
+	${CGoGN_ROOT_DIR}/include/Utils/*.h
+
+	${CGoGN_ROOT_DIR}/src/Utils/Shaders/*.cpp
+	${CGoGN_ROOT_DIR}/include/Utils/Shaders/*.hpp
+	${CGoGN_ROOT_DIR}/include/Utils/Shaders/*.h
+)
+
+
+file(	GLOB_RECURSE
+		files_geometry
+		${CGoGN_ROOT_DIR}/include/Geometry/*.h
+		${CGoGN_ROOT_DIR}/include/Geometry/*.hpp
+)
+
 IF(WIN32)
-	add_subdirectory(Release)
-	# add_subdirectory(${CGoGN_ROOT_DIR}/Apps Apps)
+	add_library(${PROJECT_NAME} ${files_topology} ${files_container} ${files_algo} ${files_utils} )
 	set(CMAKE_CONFIGURATION_TYPES Release Debug)
 	set(CMAKE_CONFIGURATION_TYPES "${CMAKE_CONFIGURATION_TYPES}" CACHE STRING "Only Release or Debug" FORCE)
 #	set(CMAKE_CONFIGURATION_TYPES "Release Debug" CACHE STRING "Only Release or Debug" FORCE)
@@ -151,11 +196,7 @@ ELSE(WIN32)
 	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -fPIC")
 #	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wclobbered -Wempty-body -Wignored-qualifiers -Wmissing-field-initializers -Wsign-compare -Wtype-limits -Wuninitialized -fPIC")
 	SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Woverride-init -fPIC")
-	if(CMAKE_BUILD_TYPE STREQUAL Release)
-		add_subdirectory(Release)
-	else()
-		add_subdirectory(Debug)
-	endif()
+	add_library(${PROJECT_NAME} ${files_topology} ${files_container} ${files_algo} ${files_utils} )
 ENDIF(WIN32)
 
 
