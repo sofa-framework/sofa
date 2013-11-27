@@ -1,8 +1,0 @@
-//Pixel_Shader for flat rendering
-
-varying vec4 color;
-
-void main (void)
-{
-	gl_FragColor = gl_Color;
-}

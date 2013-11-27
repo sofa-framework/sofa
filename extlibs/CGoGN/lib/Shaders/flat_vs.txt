@@ -1,6 +1,0 @@
-//Vertex_Shader for flat rendering
-
-void main()
-{	
-	gl_Position = gl_Vertex;
-}
