@@ -1,13 +1,14 @@
 #ifndef COMPLIANT_DIAGONALRESPONSE_H
 #define COMPLIANT_DIAGONALRESPONSE_H
 
+#include "initCompliant.h"
 #include "Response.h"
 
 namespace sofa {
 namespace component {
 namespace linearsolver {
 
-class DiagonalResponse : public Response {
+class SOFA_Compliant_API DiagonalResponse : public Response {
 public:
 	SOFA_CLASS(DiagonalResponse, Response);
 	
