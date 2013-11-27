@@ -1,14 +1,4 @@
 
-# project(CGoGNRelease)
-
-# SET(CMAKE_BUILD_TYPE Release)
-
-# IF(WIN32)
-# 	SET(LIBRARY_OUTPUT_PATH ${CGoGN_ROOT_DIR}/lib)
-# ELSE(WIN32)
-# 	SET(LIBRARY_OUTPUT_PATH ${CGoGN_ROOT_DIR}/lib/Release)
-# 	ADD_DEFINITIONS(-DNOTOPOWARNING)
-# ENDIF(WIN32)
 
 include_directories(
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -42,18 +32,6 @@ file(
 )
 
 
-
-# IF(WIN32)
-# 	add_custom_target(shader_target shader_to_h ${shaders_src}
-# 	WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-# 	SOURCES ${shaders_src} )
-# ELSE(WIN32)
-# 	add_custom_target(shader_target shader_to_h ${shaders_src}
-# 	WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-# 	SOURCES ${shaders_src} )
-# ENDIF(WIN32)
-
-
 file(
 	GLOB		# WARNING NO MORE RECURSE TO AVOID TAKING QT FILES
 	files_utils
@@ -81,29 +59,7 @@ file(	GLOB_RECURSE
 )
 
 
-# IF (ONELIB)
-
-	add_library(cgogn ${files_topology} ${files_container} ${files_algo} ${files_utils} )
-
-	# add_dependencies(cgogn shader_target )
 
 
-# 	get_property(dirs TARGET cgogn PROPERTY INCLUDE_DIRECTORIES)
-# foreach(dir ${dirs})
-#   message(STATUS "dir='${dir}'")
-# endforeach()
+add_library(cgogn ${files_topology} ${files_container} ${files_algo} ${files_utils} )
 
-
-# ELSE (ONELIB)
-# 	add_library( container	${files_container})
-# 	add_library( topology	${files_topology})
-# 	add_library( algo		${files_algo})
-# 	IF(WITH_QT)
-# 		add_library( utils ${files_utils_withQt} )
-# 	ELSE(WITH_QT)
-# 		add_library( utils ${files_utils} )
-# 	ENDIF (WITH_QT)
-# 	add_custom_target( Geometry 	SOURCES ${files_geometry} )
-# 	add_custom_target( ThirdParty 	SOURCES ${files_thirdParty} )
-# 	add_dependencies( utils shader_target )
-# ENDIF (ONELIB)
