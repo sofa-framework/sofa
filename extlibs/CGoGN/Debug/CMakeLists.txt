@@ -46,7 +46,6 @@ file(
 
 
 
-
-	add_library( cgognd ${files_topology} ${files_container} ${files_algo} ${files_utils} )
+add_library( cgognd ${files_topology} ${files_container} ${files_algo} ${files_utils} )
 
 

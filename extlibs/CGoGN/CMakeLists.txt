@@ -40,7 +40,6 @@ IF(WIN32)
 	SET ( CMAKE_PREFIX_PATH ${CGoGN_ROOT_DIR}/windows_dependencies CACHE STRING "path to dependencies" )
 ENDIF(WIN32)
 
-find_package(OpenGL REQUIRED)
 
 if(NOT (SOFA-EXTERNAL_BOOST_PATH STREQUAL ""))
 	message(FATAL_ERROR "CGoGN needs the full boost version. You need to set SOFA-EXTERNAL_BOOST_PATH to \"\"")
@@ -49,7 +48,7 @@ find_package(Boost COMPONENTS regex thread system REQUIRED)
 
 find_package(ZLIB REQUIRED)
 find_package(LibXml2 REQUIRED)
-find_package(GLEW REQUIRED)
+
 
 
 
@@ -74,20 +73,12 @@ ELSE (ONELIB)
 	file(WRITE ${CGoGN_ROOT_DIR}/include/cgogn_onelib.h "0" )
 ENDIF (ONELIB)
 
-IF (WITH_GLEWMX)
-	file(WRITE ${CGoGN_ROOT_DIR}/include/cgogn_gmx.h "1" )
-ELSE (WITH_GLEWMX)
-	file(WRITE ${CGoGN_ROOT_DIR}/include/cgogn_gmx.h "0" )
-ENDIF (WITH_GLEWMX)
 
 
-add_definitions(-DSHADERPATH="${CGoGN_ROOT_DIR}/lib/Shaders/")
 
 # define includes of external libs 
 SET (CGoGN_EXT_INCLUDES
 	${CGoGN_ROOT_DIR}/ThirdParty/include
-	${OPENGL_INCLUDE_DIR}
-	${GLEW_INCLUDE_DIRS}
 	${ZLIB_INCLUDE_DIRS}
 	${LIBXML2_INCLUDE_DIR}
 	${Boost_INCLUDE_DIRS}
@@ -96,8 +87,6 @@ SET (CGoGN_EXT_INCLUDES
 
 include_directories(
 	${CGoGN_ROOT_DIR}/ThirdParty/include
-	${OPENGL_INCLUDE_DIR}
-	${GLEW_INCLUDE_DIRS}
 	${ZLIB_INCLUDE_DIRS}
 	${LIBXML2_INCLUDE_DIR}
 	${Boost_INCLUDE_DIRS}
@@ -109,8 +98,6 @@ include_directories(
 # define libs for external libs
 SET (CGoGN_EXT_LIBS
     nl
-	${OPENGL_LIBRARY}
-	${GLEW_LIBRARIES}
 	${ZLIB_LIBRARIES}
 	${LIBXML2_LIBRARIES}
 	${Boost_SYSTEM_LIBRARY}
@@ -119,31 +106,15 @@ SET (CGoGN_EXT_LIBS
 )
 
 IF(WIN32)
-	SET (CGoGN_EXT_INCLUDES ${CGoGN_EXT_INCLUDES} ${CGoGN_ROOT_DIR}/windows_dependencies/include/suitesparse)
+	SET (CGoGN_EXT_INCLUDES ${CGoGN_EXT_INCLUDES} ${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Include)
+	file(GLOB WIN32SUITESPARSELIBS "${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Lib/*.dll")
 	SET (CGoGN_EXT_LIBS ${CGoGN_EXT_LIBS} 
-		${CGoGN_ROOT_DIR}/windows_dependencies/lib/suitesparse.lib
-		${CGoGN_ROOT_DIR}/windows_dependencies/lib/metis.lib
-		${CGoGN_ROOT_DIR}/windows_dependencies/lib/liblapack.lib
-		${CGoGN_ROOT_DIR}/windows_dependencies/lib/libblas.lib		)
+						${WIN32SUITESPARSELIBS})
 ELSE(WIN32)
 	find_package(SuiteSparse REQUIRED)
 	SET (CGoGN_EXT_INCLUDES ${CGoGN_EXT_INCLUDES} ${SUITESPARSE_INCLUDE_DIRS})
 	SET (CGoGN_EXT_LIBS ${CGoGN_EXT_LIBS} ${SUITESPARSE_LIBRARIES})
 ENDIF(WIN32)
-
-
-#optionnal libs
-# IF (WITH_ASSIMP)
-# 	add_definitions(-DWITH_ASSIMP)	
-# 	SET (CGoGN_EXT_LIBS ${CGoGN_EXT_LIBS} assimp)
-# 	INSTALL (DIRECTORY ThirdParty/Assimp/include  DESTINATION .)
-# ENDIF (WITH_ASSIMP)
-
-
-
-IF (WITH_GLEWMX)
-	ADD_DEFINITIONS(-DGLEW_MX)
-ENDIF (WITH_GLEWMX)
 
 
 IF(APPLE)
