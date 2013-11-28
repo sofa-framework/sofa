@@ -200,4 +200,7 @@ ELSE(WIN32)
 ENDIF(WIN32)
 
 
+AddLinkerDependencies(${CGoGN_EXT_LIBS})
+
+
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
