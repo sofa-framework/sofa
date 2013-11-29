@@ -1923,6 +1923,9 @@ void RealGUI::fileRecentlyOpened(int id)
 void RealGUI::playpauseGUI ( bool value )
 {
     startButton->setOn ( value );
+    Node* root = currentSimulation();
+    if(root->getDt() == 0)
+        root->getContext()->setDt(-1);
     if ( currentSimulation() )
         currentSimulation()->getContext()->setAnimate ( value );
     if(value)
@@ -2026,7 +2029,7 @@ void RealGUI::step()
 void RealGUI::setDt ( double value )
 {
     Node* root = currentSimulation();
-    if ( value > 0.0 && root)
+    if ( value >= 0.0 && root)
         root->getContext()->setDt ( value );
 }
 
@@ -2053,6 +2056,8 @@ void RealGUI::resetScene()
     }
     getViewer()->getPickHandler()->reset();
     stopDumpVisitor();
+    if(root->getDt() == 0)
+        root->getContext()->setDt(-1);
 }
 
 //------------------------------------

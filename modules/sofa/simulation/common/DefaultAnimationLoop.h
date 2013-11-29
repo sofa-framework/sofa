@@ -81,7 +81,9 @@ public:
 private :
 
     simulation::Node* gnode;  ///< the node controlled by the loop
-
+    bool firstIteration;
+    double dtValue;
+    clock_t m_previousTime;
 };
 
 } // namespace simulation
