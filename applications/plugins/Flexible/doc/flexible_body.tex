@@ -71,16 +71,16 @@
 \newcommand{\MappingArrows}{\ensuremath{\left. \begin{array}{c} \stackrel{\JNL}{\longrightarrow} \\ \stackrel{\J}{\longrightarrow} \\ \stackrel{\Jt}{\longleftarrow} \end{array}\right.} }
 
 \begin{abstract}
-This plugin provides a unified approach to the simulation of deformable solids using a three-level kinematic structure: control nodes, deformation gradients, strains, and new mappings between these.
+This plugin provides a unified approach to the simulation of deformable solids using a multi-layer kinematic structure: control nodes, deformation gradients, strains, and new mappings between these.
 This approach maximizes the modularity of the implementation.
 FEM and meshless models use different position-deformation mappings. The remaining components (strain measures, constitutive laws) are common to the two approaches.
 \end{abstract}
 
 \section{Introduction Example}
 
-In this plugin, our goal is to separate each stage of the simulation into individual components to improve the modularity of the simulator.
+The goal of this plugin is to improve the modularity of deformable solid simulation.
 Figure~\ref{fig modularity mass-spring} shows an example of the increased modularity.
-In \sofa{}, mass-spring systems are traditionally modeled using three components for  state, mass and penalty force. 
+In \sofa{}, mass-spring systems are traditionally modeled using three components for  state, mass and penalty force respectively. 
 The force component $F_s$ in fig.\ref{fig mass-spring-traditional} is in charge of computing the distance and its gradient between the two particles, as well as to apply a constitutive law (typically linear viscoelastic).
 In this plugin, we provide new components to split these computations and make the framework more modular.
 In the example shown in fig.\ref{fig mass-spring-flexible}, a mapping represented by an arrow is used to compute spring extensions $X_e$ based on particle positions $X_p$. 
@@ -108,8 +108,8 @@ More generally, complex components are decomposed in simple and re-usable compon
 
 
 
-\section{Three-level Continuum Mechanics}
-The Flexible plugin provides components to model Lagrangian deformable solids using three levels, as illustrated in fig.\ref{fig tree levels}.
+\section{Three-layer Continuum Mechanics}
+The Flexible plugin provides components to model Lagrangian deformable solids using three layers, as illustrated in fig.\ref{fig tree levels}.
 We present an overview of these and refer to subsequent sections for more detail.
 \begin{figure}
  \centering

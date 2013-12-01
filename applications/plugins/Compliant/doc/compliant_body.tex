@@ -123,8 +123,8 @@ Note that geometric stiffness is not handled in the compliance view, which may r
 \section{Time integration} \label{sec:time integration}
 Our integration scheme is:
 \begin{eqnarray}
- \vnext &=& \vcur + h \Minv \left(\alpha \fnext + (1-\alpha) \fcur\right) \\
-  \xnext &=& \xcur + h \left( \beta \vnext + (1-\beta) \vcur \right)
+ \vnext &=& \vcur + h \Minv \left(\alpha \fnext + (1-\alpha) \fcur\right) \label{eq ode velocity} \\
+  \xnext &=& \xcur + h \left( \beta \vnext + (1-\beta) \vcur \right) \label{eq ode position}
 \end{eqnarray}
 where index $n$ denotes current values while index $n+1$ denotes next values, $\alpha$ is the implicit velocity factor, and $\beta$ is the implicit position factor. Let
 \begin{eqnarray}
@@ -258,7 +258,7 @@ This plugin uses \texttt{Eigen} and \texttt{suitesparse}. Moreover, the test sui
 
 \subsection{Functions}
 
-The virtual functions used for setting up the equation system are declared in BaseForceField.h, BaseMapping.h, BaseMass.h and BaseProjectiveConstraint.h.
+The virtual functions used for setting up the equation system are declared in BaseForceField.h, BaseMapping.h, BaseMass.h, BaseProjectiveConstraint.h, MechanicalParams.h.
 They and documented in ``Experimental Compliance API'' documentation blocks of these files.
 
 
@@ -287,6 +287,12 @@ The default behavior is to handle them as forces, and in this case their force i
 \subsection{BaseProjectiveConstraint functions}
 \begin{itemize}
  \item \texttt{projectMatrix} replaces a matrix with one corresponding to the same linear operator, projected to cancel, out the forbidden directions. 
+\end{itemize}
+
+\subsection{MechanicalParams functions}
+\begin{itemize}
+ \item \texttt{implicitVelocity} is the $\alpha$ parameter in the implicit velocity integration of Eq.\ref{eq ode velocity}.
+ \item \texttt{implicitPosition} is the $\beta$ parameter in the implicit position integration of Eq.\ref{eq ode position}.
 \end{itemize}
 
 

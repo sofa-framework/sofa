@@ -354,6 +354,21 @@ void MechanicalOperations::computeAcc(double t, core::MultiVecDerivId a, core::M
     projectResponse(a);
 }
 
+void MechanicalOperations::computeForce(double t, core::MultiVecDerivId f, core::MultiVecCoordId x, core::MultiVecDerivId v)
+{
+    setF(f);
+    setX(x);
+    setV(v);
+    executeVisitor( MechanicalPropagatePositionAndVelocityVisitor(&mparams /* PARAMS FIRST */, t,x,v,
+#ifdef SOFA_SUPPORT_MAPPED_MASS
+            a,
+#endif
+            true) );
+    computeForceNeglectingCompliance(f);
+
+    projectResponse(f);
+}
+
 void MechanicalOperations::computeContactAcc(double t, core::MultiVecDerivId a, core::MultiVecCoordId x, core::MultiVecDerivId v)
 {
     MultiVecDerivId f( VecDerivId::force() );

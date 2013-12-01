@@ -107,7 +107,7 @@ void AssembledSolver::cleanup() {
 }
 
 
-// this is c_k computation (see compliant-theory.pdf, section 3)
+// this is c_k computation (see compliant-reference.pdf, section 3)
 void AssembledSolver::compute_forces(const core::MechanicalParams& params) {
 	scoped::timer step("forces computation");
 				
@@ -144,10 +144,11 @@ void AssembledSolver::compute_forces(const core::MechanicalParams& params) {
 }
 
 
-void AssembledSolver::propagate(const core::MechanicalParams* params) {
+void AssembledSolver::propagate(const core::MechanicalParams* params)
+{
 	simulation::MechanicalPropagatePositionAndVelocityVisitor bob( params );
 	send( bob );
-}			
+}
 
 
 
