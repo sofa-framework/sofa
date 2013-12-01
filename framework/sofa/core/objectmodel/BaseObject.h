@@ -67,7 +67,7 @@ class Event;
 class BaseNode;
 
 /**
- *  \brief Base class for simulation objects.
+ *  \brief Base class for simulation components.
  *
  *  An object defines a part of the functionnality in the simulation
  *  (stores state data, specify topology, compute forces, etc).

@@ -103,6 +103,7 @@ public:
 
 
     void computeAcc(double t, core::MultiVecDerivId a, core::MultiVecCoordId x, core::MultiVecDerivId v);
+    void computeForce(double t, core::MultiVecDerivId f, core::MultiVecCoordId x, core::MultiVecDerivId v);  ///< Compute f(x,v) at time t.
     void computeContactAcc(double t, core::MultiVecDerivId a, core::MultiVecCoordId x, core::MultiVecDerivId v);
 
     /// @}

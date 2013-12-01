@@ -208,10 +208,10 @@ void  ProjectDirectionConstraint<DataTypes>::reinit()
     // fill the jacobian in ascending order
     Indices::const_iterator it = tmp.begin();
     unsigned i = 0;
-    while( i < numBlocks && it != tmp.end())
+    while( i < numBlocks )
     {
         jacobian.beginBlockRow(i);
-        if( i==*it )  // constrained particle: set diagonal to projection block, and  the cursor to the next constraint
+        if( it != tmp.end() && i==*it )  // constrained particle: set diagonal to projection block, and  the cursor to the next constraint
         {
             jacobian.createBlock(i,bProjection);
             it++;

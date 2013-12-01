@@ -4,6 +4,7 @@
 #include <Eigen/SparseCore>
 #include <Eigen/Core>
 #include <sofa/helper/system/config.h>
+#include <sofa/simulation/common/VectorOperations.h>
 
 namespace sofa {
 namespace core {
@@ -62,6 +63,18 @@ public:
 
     // // return true iff the magnitude of every diagonal entries are larger or equal than the sum of the magnitudes of all the non-diagonal entries in the same row
     // bool isDiagonalDominant() const;
+
+//    /// Copy a state vector from the scene graph to this system. Only the independent DOFs are copied.
+//    void copyFromMultiVec( vec& target, core::ConstVecDerivId sourceId );
+
+    /// Copy a state vector from the scene graph to this system. Only the independent DOFs are copied.
+    void copyFromMultiVec( vec& target, core::MultiVecDerivId sourceId );
+
+//    /// Copy a state vector from this system to the scene graph. Only the independent DOFs are copied.
+//    void copyToMultiVec( core::VecDerivId targetId, const vec& source );
+
+    /// Copy a state vector from this system to the scene graph. Only the independent DOFs are copied.
+    void copyToMultiVec( core::MultiVecDerivId targetId, const vec& source );
 
 };
 

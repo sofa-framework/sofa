@@ -6,7 +6,7 @@
 
 
 AUTHOR :
- - Michael Adam
+ - Maxime Tournier, Matthieu Nesme, Francois Faure
 
 
 
