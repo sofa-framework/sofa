@@ -46,6 +46,7 @@ set(HEADER_FILES
     constraint/Stabilization.h
     constraint/ConstraintValue.h
     constraint/Restitution.h
+    constraint/DampingValue.h
 
     contact/CompliantContact.h
     contact/FrictionCompliantContact.h
@@ -109,6 +110,7 @@ set(SOURCE_FILES
     constraint/ConstraintValue.cpp
     constraint/Stabilization.cpp
     constraint/Restitution.cpp
+    constraint/DampingValue.cpp
 
     contact/CompliantContact.cpp
     contact/FrictionCompliantContact.cpp

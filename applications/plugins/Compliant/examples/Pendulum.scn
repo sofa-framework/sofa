@@ -57,7 +57,7 @@
 													 input="@../"  
 													 output="@./" 
 													 />
-				<UniformCompliance template="Vec6d" compliance="0"  dampingRatio="0" />
+				<UniformCompliance template="Vec6d" compliance="0" />
 				<Stabilization />
 			</Node>
 
@@ -73,6 +73,7 @@
 				
 				<!-- adds a force in: f = -\alpha v -->
 				<DampingCompliance template="Vec6d" damping="5" />
+				<DampingValue />
 				
 			</Node>
 		</Node>
