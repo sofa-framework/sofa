@@ -45,12 +45,12 @@ using namespace sofa::defaulttype;
 template<class DataTypes>
 OglTetrahedralModel<DataTypes>::OglTetrahedralModel()
     : m_topology(NULL)
-    , depthTest(initData(&depthTest, (bool) true, "depthTest", "Set Depth Test"))
-    , blending(initData(&blending, (bool) true, "blending", "Set Blending"))
     , m_positions(initData(&m_positions, "position", "Vertices coordinates"))
     , modified(false)
     , lastMeshRev(-1)
     , useTopology(false)
+    , depthTest(initData(&depthTest, (bool) true, "depthTest", "Set Depth Test"))
+    , blending(initData(&blending, (bool) true, "blending", "Set Blending"))
 {
 }
 
@@ -83,7 +83,8 @@ template<class DataTypes>
 void OglTetrahedralModel<DataTypes>::updateVisual()
 {
     
-    if( modified && !m_positions.getValue().empty()||useTopology ) 
+    if((modified && !m_positions.getValue().empty())
+       || useTopology)
     {
         // update mesh either when data comes from useTopology initially or vertices
         // get modified
@@ -185,9 +186,9 @@ void OglTetrahedralModel<DataTypes>::drawTransparent(const core::visual::VisualP
         for( unsigned int i = 0; i<4; i++ ) {
           /*topo->getPointsOnBorder()*/
           //int vertex_index = t->getVertexIndexInTetrahedron((*it), i);
-          double x1 =  m_topology->getPX((*it)[i]);
-          double y1 = m_topology->getPY((*it)[i]);
-          double z1 = m_topology->getPZ((*it)[i]);
+          // double x1 =  m_topology->getPX((*it)[i]);
+          // double y1 = m_topology->getPY((*it)[i]);
+          // double z1 = m_topology->getPZ((*it)[i]);
           v = position[(*it)[i]];
           glVertex3f((GLfloat)v[0], (GLfloat)v[1], (GLfloat)v[2]);
         }
