@@ -144,9 +144,9 @@ class Body:
                                                name = 'dofs',
                                                position = '@loader.position')
                         collision.createObject('TriangleModel', 
-                                               template = 'Vec3' )
+                                               template = 'Vec3d' )
                         collision.createObject('RigidMapping',
-                                               template = 'Rigid,Vec3',
+                                               template = 'Rigid,Vec3d',
                                                input = '@../',
                                                output = '@./')
 

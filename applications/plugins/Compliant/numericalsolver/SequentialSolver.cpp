@@ -207,7 +207,7 @@ void SequentialSolver::init() {
 
 	// fallback in case we missed
 	if( !response ) {
-        response = new LDLTResponse(); // TODO: where is the delete?
+        response = new LDLTResponse();
 	}
 
 #ifndef NDEBUG
@@ -258,7 +258,7 @@ SReal SequentialSolver::step(vec& lambda,
 		
 		// project if needed
 		if( b.projector ) {
-			b.projector->project( lambda_chunk.data(), lambda_chunk.size() );
+            b.projector->project( lambda_chunk.data(), lambda_chunk.size() );
 			assert( !has_nan(lambda_chunk.eval()) );
 		}
 			
@@ -269,7 +269,7 @@ SReal SequentialSolver::step(vec& lambda,
 		net.noalias() += mapping_response.middleCols(b.offset, b.size) * delta_chunk;
 		
 		// fix net to avoid error accumulations ?
-		// net = mapping_response * lambda;
+        // net = mapping_response * lambda;
 	}
 
 	// TODO flag to return real residual estimate !! otherwise
