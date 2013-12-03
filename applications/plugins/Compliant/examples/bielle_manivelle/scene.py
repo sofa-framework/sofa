@@ -90,6 +90,7 @@ def createScene(node):
     for i in links:
         j = i[2]
         j.compliance = 0
+        j.damping = 5
         
         p = offset[i[0]][0]
         off_p = offset[i[0]][1]
