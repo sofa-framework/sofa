@@ -161,7 +161,6 @@ class Joint:
                 self.dofs = [0, 0, 0, 0, 0, 0]
                 self.body = []
                 self.offset = []
-                self.damping = 0
                 self.name = name
 
                 # hard constraints compliance
@@ -209,7 +208,6 @@ class Joint:
                 
                 constrained_dofs = [ (1 - d) for d in self.dofs ]
 
-                # TODO handle damping
                 if self.stiffness > 0:
                         # stiffness: we map all dofs
                         mask = [1, 1, 1, 1, 1, 1]
@@ -237,12 +235,40 @@ class Joint:
                 # only stabilize constraint dofs
                 stab = node.createObject('Stabilization', mask = concat( constrained_dofs ) )
                 
+                
+                if self.damping != 0:
+			# damping sub-graph
+			
+			dampingNode = parent.createChild(self.name + " Damping")
+			
+			dampingNode.createObject('MechanicalObject', 
+						template = 'Vec6d', 
+						name = 'dofs', 
+						position = '0 0 0 0 0 0' )
+						
+			dampingNode.createObject('RigidJointMultiMapping',
+						name = 'mapping', 
+						template = 'Rigid,Vec6d', 
+						input = concat(input),
+						output = '@dofs',
+						pairs = "0 0")
+			
+			dampingNode.createObject('DampingCompliance',
+						      name = 'dampingCompliance',
+						      template = 'Vec6d',
+						      damping = self.damping)  
+						      
+			dampingNode.createObject('DampingValue',
+						      name = 'dampingValue')  
+                
+                
                 # for some reason return node is unable to lookup for
                 # children using getChild() so in the meantime...
                 res = Joint.Node()
                 
                 res.node = node
                 # res.compliance = compliance
+                
                 
                 return res
 
