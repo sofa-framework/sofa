@@ -77,6 +77,14 @@ void ScriptController::init()
 //    ScriptEnvironment::initScriptNodes();
 }
 
+void ScriptController::bwdInit()
+{
+    Controller::bwdInit();
+    // init the script
+    script_bwdInitGraph( dynamic_cast<simulation::Node*>(getContext()) );
+//    ScriptEnvironment::initScriptNodes();
+}
+
 void ScriptController::storeResetState()
 {
     Controller::storeResetState();

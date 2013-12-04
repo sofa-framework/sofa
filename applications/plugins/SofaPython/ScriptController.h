@@ -61,7 +61,7 @@ public:
     virtual void init();
 
     /// Initialization method called at graph creation and modification, during bottom-up traversal.
-//    virtual void bwdInit();
+    virtual void bwdInit();
 
     /// Update method called when variables used in precomputation are modified.
 //    virtual void reinit();
@@ -131,6 +131,7 @@ protected:
     virtual void script_onLoaded(sofa::simulation::Node* node) = 0;   // called once, immediately after the script is loaded
     virtual void script_createGraph(sofa::simulation::Node* node) = 0;       // called when the script must create its graph
     virtual void script_initGraph(sofa::simulation::Node* node) = 0;         // called when the script must init its graph, once all the graph has been create
+    virtual void script_bwdInitGraph(sofa::simulation::Node* node) = 0;         // called when the script must init its graph, once all the graph has been create
 
     virtual void script_storeResetState() = 0;
     virtual void script_reset() = 0;

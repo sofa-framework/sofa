@@ -37,11 +37,11 @@
 #undef _DEBUG
 #endif
 #endif
-#if defined(__APPLE__) && defined(__MACH__)
-#include <Python/Python.h>
-#else
+//#if defined(__APPLE__) && defined(__MACH__)
+//#include <Python/Python.h>
+//#else
 #include <Python.h>
-#endif
+//#endif
 #if defined(_MSC_VER)
 // redefine _DEBUG if it was undefed
 #ifdef _DEBUG_UNDEFED

@@ -196,6 +196,12 @@ void PythonScriptController::script_initGraph(sofa::simulation::Node *node)
     SP_CALL_OBJECTFUNC(const_cast<char*>("initGraph"),const_cast<char*>("(O)"),SP_BUILD_PYSPTR(node))
 }
 
+void PythonScriptController::script_bwdInitGraph(sofa::simulation::Node *node)
+{
+//    SP_CALL_MODULEFUNC(m_Func_initGraph, "(O)", SP_BUILD_PYSPTR(node))
+    SP_CALL_OBJECTFUNC(const_cast<char*>("bwdInitGraph"),const_cast<char*>("(O)"),SP_BUILD_PYSPTR(node))
+}
+
 void PythonScriptController::script_onKeyPressed(const char c)
 {
 //    SP_CALL_MODULEFUNC(m_Func_onKeyPressed, "(c)", c)

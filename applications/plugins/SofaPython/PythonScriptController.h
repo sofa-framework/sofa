@@ -58,6 +58,7 @@ protected:
     virtual void script_onLoaded(sofa::simulation::Node* node);   // called once, immediately after the script is loaded
     virtual void script_createGraph(sofa::simulation::Node* node);       // called when the script must create its graph
     virtual void script_initGraph(sofa::simulation::Node* node);         // called when the script must init its graph, once all the graph has been create
+    virtual void script_bwdInitGraph(sofa::simulation::Node* node);         // called when the script must init its graph, once all the graph has been create
 
     virtual void script_storeResetState();
     virtual void script_reset();

@@ -70,6 +70,10 @@ class ExampleController(Sofa.PythonScriptController):
 		print 'initGraph called (python side)'
 		return 0
 
+	def bwdInitGraph(self,node):
+		print 'bwdInitGraph called (python side)'
+		return 0
+
 
 
 	# called on each animation step
