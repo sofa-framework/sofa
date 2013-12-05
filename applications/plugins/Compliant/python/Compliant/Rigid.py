@@ -29,10 +29,10 @@ class Frame:
                 self.rotation = num[3:]
                 return self
 
+# TODO remove ?
 def mesh_offset( mesh, path = "" ):
-        str = subprocess.Popen("GenerateRigid " + mesh ).stdout.read()
+	str = subprocess.Popen("GenerateRigid " + mesh ).stdout.read()
         
-
 class MassInfo:
         pass
 
@@ -40,8 +40,13 @@ class MassInfo:
 def generate_rigid(filename, density = 1000.0):
         cmd = Sofa.build_dir() + '/bin/GenerateRigid'
         args = filename
-        output = Popen([cmd, args], stdout=PIPE)
-        line = output.stdout.read().split('\n')
+	try:
+		output = Popen([cmd, args], stdout=PIPE)
+		line = output.stdout.read().split('\n')
+	except OSError:
+		print 'error when calling GenerateRigid, do you have GenerateRigid built in SOFA ?'
+		raise
+
         start = 2
         
         # print line 
