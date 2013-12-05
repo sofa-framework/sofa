@@ -112,6 +112,7 @@ void SkeletalMotionConstraint<DataTypes>::findKeyTimes()
                 break;
             }
         }
+		skeletonJoints.endEdit();
     }
 }
 
@@ -219,7 +220,7 @@ void SkeletalMotionConstraint<DataTypes>::interpolatePosition(Real cT, typename 
             skeletonJoint.mLocalRigid.getCenter() = skeletonJoint.mPreviousMotion.getCenter() + (skeletonJoint.mNextMotion.getCenter() - skeletonJoint.mPreviousMotion.getCenter()) * dt;
             skeletonJoint.mLocalRigid.getOrientation().slerp(skeletonJoint.mPreviousMotion.getOrientation(), skeletonJoint.mNextMotion.getOrientation(), (float) dt, true);
 
-			//skeletonJoints.endEdit();
+			skeletonJoints.endEdit();
         }
     }
     else
@@ -235,6 +236,8 @@ void SkeletalMotionConstraint<DataTypes>::interpolatePosition(Real cT, typename 
 
             skeletonJoint.mLocalRigid.getCenter() = skeletonJoint.mNextMotion.getCenter();
             skeletonJoint.mLocalRigid.getOrientation() = skeletonJoint.mNextMotion.getOrientation();
+
+			skeletonJoints.endEdit();
         }
     }
 
@@ -275,6 +278,7 @@ void SkeletalMotionConstraint<DataTypes>::localToGlobal(typename boost::enable_i
         }
 
         skeletonJoint.mWorldRigid = worldRigid;
+		skeletonJoints.endEdit();
     }
 
     for(unsigned int i = 0; i < skeletonBones.getValue().size(); ++i)
