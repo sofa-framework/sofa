@@ -55,7 +55,6 @@ template <class DataTypes>
 SkeletalMotionConstraint<DataTypes>::SkeletalMotionConstraint() : ProjectiveConstraintSet<DataTypes>()
     , skeletonJoints(initData(&skeletonJoints, "joints", "skeleton joints"))
     , skeletonBones(initData(&skeletonBones, "bones", "skeleton bones"))
-	, animationSpeed(initData(&animationSpeed, 1.0f, "animationSpeed", "animation speed"))
 {
 
 }
@@ -93,7 +92,7 @@ void SkeletalMotionConstraint<DataTypes>::findKeyTimes()
 
         for(unsigned int j = 0; j < skeletonJoint.mTimes.size(); ++j)
         {
-            Real keyTime = (Real) skeletonJoint.mTimes[j] * (1.0 / animationSpeed.getValue());
+            Real keyTime = (Real) skeletonJoint.mTimes[j];
             if(keyTime <= cT)
             {
                 prevT = keyTime;
@@ -219,9 +218,9 @@ void SkeletalMotionConstraint<DataTypes>::interpolatePosition(Real cT, typename 
 
             skeletonJoint.mLocalRigid.getCenter() = skeletonJoint.mPreviousMotion.getCenter() + (skeletonJoint.mNextMotion.getCenter() - skeletonJoint.mPreviousMotion.getCenter()) * dt;
             skeletonJoint.mLocalRigid.getOrientation().slerp(skeletonJoint.mPreviousMotion.getOrientation(), skeletonJoint.mNextMotion.getOrientation(), (float) dt, true);
-
+        
 			skeletonJoints.endEdit();
-        }
+		}
     }
     else
     {
@@ -278,6 +277,7 @@ void SkeletalMotionConstraint<DataTypes>::localToGlobal(typename boost::enable_i
         }
 
         skeletonJoint.mWorldRigid = worldRigid;
+
 		skeletonJoints.endEdit();
     }
 

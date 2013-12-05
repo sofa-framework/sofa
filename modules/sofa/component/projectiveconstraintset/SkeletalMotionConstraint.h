@@ -97,7 +97,7 @@ public:
 
     void setSkeletalMotion(const helper::vector<SkeletonJoint<DataTypes> >& skeletonJoints, const helper::vector<SkeletonBone>& skeletonBones);
 
-	void addChannel(unsigned int jointIndex , Coord channel, double time);
+	void addChannel(unsigned int index , Coord channel, double time);
 
 protected:
     template <class DataDeriv>
