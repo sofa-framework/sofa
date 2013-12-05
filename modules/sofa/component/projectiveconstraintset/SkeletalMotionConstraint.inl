@@ -218,6 +218,8 @@ void SkeletalMotionConstraint<DataTypes>::interpolatePosition(Real cT, typename 
 
             skeletonJoint.mLocalRigid.getCenter() = skeletonJoint.mPreviousMotion.getCenter() + (skeletonJoint.mNextMotion.getCenter() - skeletonJoint.mPreviousMotion.getCenter()) * dt;
             skeletonJoint.mLocalRigid.getOrientation().slerp(skeletonJoint.mPreviousMotion.getOrientation(), skeletonJoint.mNextMotion.getOrientation(), (float) dt, true);
+
+			//skeletonJoints.endEdit();
         }
     }
     else
@@ -284,6 +286,13 @@ void SkeletalMotionConstraint<DataTypes>::setSkeletalMotion(const helper::vector
 {
     this->skeletonJoints.setValue(skeletonJoints);
     this->skeletonBones.setValue(skeletonBones);
+}
+
+template <class DataTypes>
+void SkeletalMotionConstraint<DataTypes>::addChannel(unsigned int jointIndex , Coord channel, double time)
+{
+	(*skeletonJoints.beginEdit())[jointIndex].addChannel(channel, time);
+	skeletonJoints.endEdit();
 }
 
 // Matrix Integration interface
