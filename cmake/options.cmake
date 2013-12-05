@@ -17,8 +17,12 @@ set(SOFA-EXTERNAL_CGOGN_PATH "${SOFA_EXTLIBS_DIR}/CGoGN" CACHE PATH "Path to the
 ## eigen
 set(SOFA-EXTERNAL_EIGEN_PATH "${SOFA_EXTLIBS_DIR}/eigen-3.2.0" CACHE PATH "Path to the eigen header-only library")
 
+## lua
+set(SOFA-EXTERNAL_LUA_PATH "${SOFA_EXTLIBS_DIR}/lua" CACHE PATH "Path to the Lua library sources")
+
 ## metis
 set(SOFA-EXTERNAL_METIS_PATH "${SOFA_EXTLIBS_DIR}/metis-5.1.0" CACHE PATH "Path to the metis library sources")
+
 
 ## verdandi
 set(SOFA-EXTERNAL_VERDANDI_PATH "${SOFA_EXTLIBS_DIR}/verdandi-1.5" CACHE PATH "Path to the Verdandi library sources")
@@ -102,6 +106,9 @@ option(SOFA-EXTERNAL_METIS "Use Metis" OFF)
 
 ## VERDANDI
 option(SOFA-EXTERNAL_VERDANDI "Use Verdandi" OFF)
+
+## LUA
+option(SOFA-EXTERNAL_LUA "Use Lua" OFF)
 
 ## CSPARSE
 set(CSPARSE_PATH "${SOFA_EXTLIBS_DIR}/csparse")
