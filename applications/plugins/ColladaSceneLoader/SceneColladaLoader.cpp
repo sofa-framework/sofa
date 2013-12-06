@@ -300,7 +300,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
                                 nameStream << componentIndex++;
                             currentSkeletalMotionConstraint->setName(nameStream.str());
 
-							currentSkeletalMotionConstraint->setAnimationSpeed(animationSpeed.getValue());
+//							currentSkeletalMotionConstraint->setAnimationSpeed(animationSpeed.getValue());
 
                             aiNode* parentAiNode = NULL;
                             if(parentNode)
