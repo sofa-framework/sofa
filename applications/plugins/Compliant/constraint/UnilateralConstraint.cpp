@@ -17,7 +17,7 @@ void UnilateralConstraint::project(SReal* out, unsigned n) const {
 
 	// std::cerr << "before: " << view.transpose() << std::endl;
 	for(unsigned i = 0; i < n; ++i) { 
-        out[i] = std::max(0.0, out[i]);
+        out[i] = std::max( (SReal)0.0, out[i]);
 	}
 	// std::cerr << "after: " << view.transpose() << std::endl;
 	

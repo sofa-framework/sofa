@@ -86,7 +86,7 @@ void coneProjection( Real* f, Real mu )
     // tangential force is very small, let's consider it as an unilateral contact
     if( normT < std::numeric_limits<Real>::epsilon() )
     {
-        f[0] = std::max( 0.0, f[0] );
+        f[0] = std::max( (Real)0.0, f[0] );
         f[1] = 0.0;
         f[2] = 0.0;
         return;

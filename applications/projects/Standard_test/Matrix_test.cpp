@@ -304,7 +304,7 @@ struct TestSparseMatrices : public Sofa_test<_Real>
     }
 };
 
-
+#ifndef SOFA_FLOAT
 ///////////////////
 // double precision
 ///////////////////
@@ -336,9 +336,9 @@ typedef TestSparseMatrices<double,4,8,2,2> Ts4822;
 //#define TestMatrix Ts4823
 //#include "Matrix_test.inl"
 //#undef TestMatrix
+#endif
 
-
-
+#ifndef SOFA_DOUBLE
 ///////////////////
 // simple precision
 ///////////////////
@@ -364,6 +364,8 @@ typedef TestSparseMatrices<float,4,8,2,2> Ts4822f;
 #define TestMatrix Ts4822f
 #include "Matrix_test.inl"
 #undef TestMatrix
+
+#endif
 
 
 }// namespace sofa

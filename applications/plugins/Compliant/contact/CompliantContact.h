@@ -51,8 +51,8 @@ protected:
     CompliantContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)
         : Inherit(model1, model2, intersectionMethod)
         , damping_ratio( initData(&damping_ratio, 0.0, "damping", "contact damping (use for stabilization)") )
-        , compliance_value( initData(&compliance_value, 0.0, "compliance", "contact compliance: use model contact stiffnesses when < 0, use given value otherwise"))
-        , restitution_coef( initData(&restitution_coef, 0.0, "restitution", "global restitution coef") )
+        , compliance_value( initData(&compliance_value, (SReal)0.0, "compliance", "contact compliance: use model contact stiffnesses when < 0, use given value otherwise"))
+        , restitution_coef( initData(&restitution_coef, (SReal)0.0, "restitution", "global restitution coef") )
     {}
 
     typename node_type::SPtr create_node()
