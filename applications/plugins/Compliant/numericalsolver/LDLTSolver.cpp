@@ -24,7 +24,7 @@ typedef AssembledSystem::vec vec;
 
 
 LDLTSolver::LDLTSolver() 
-    : damping( initData(&damping, 0.0, "damping", "damping lol") )
+    : damping( initData(&damping, (SReal)0.0, "damping", "damping lol") )
     , pimpl()
 {
 	

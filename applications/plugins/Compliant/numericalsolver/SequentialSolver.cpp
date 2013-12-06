@@ -20,9 +20,9 @@ int SequentialSolverClass = core::RegisterObject("Sequential Impulses solver").a
 
 SequentialSolver::SequentialSolver() 
 	: iterations(initData(&iterations, unsigned(10), "iterations", "iteration count")),
-	  precision(initData(&precision, 1e-5, "precision", "numerical precision")),
+      precision(initData(&precision, (SReal)1e-5, "precision", "numerical precision")),
 	  relative(initData(&relative, false, "relative", "relative numerical precision ?")),
-	  omega(initData(&omega, 1.0, "omega", "SOR parameter:  omega < 1 : better, slower convergence, omega = 1 : vanilla gauss-seidel, 2 > omega > 1 : faster convergence, ok for SPD systems, omega > 2 : will probably explode" )),
+      omega(initData(&omega, (SReal)1.0, "omega", "SOR parameter:  omega < 1 : better, slower convergence, omega = 1 : vanilla gauss-seidel, 2 > omega > 1 : faster convergence, ok for SPD systems, omega > 2 : will probably explode" )),
 	  bench(initData(&bench, "bench", "filename for convergence benchmark output"))
 {
 	
