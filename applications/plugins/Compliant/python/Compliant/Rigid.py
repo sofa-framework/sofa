@@ -258,39 +258,28 @@ class Joint:
                 if self.damping != 0:
 			# damping sub-graph
 			
-			dampingNode = parent.createChild(self.name + " Damping")
+			dampingNode = node.createChild(self.name + " Damping")
 			
 			dampingNode.createObject('MechanicalObject', 
 						template = 'Vec6d', 
 						name = 'dofs', 
 						position = '0 0 0 0 0 0' )
 						
-			dampingNode.createObject('RigidJointMultiMapping',
+			dampingNode.createObject('IdentityMapping',
 						name = 'mapping', 
-						template = 'Rigid,Vec6d', 
-						input = concat(input),
-						output = '@dofs',
-						pairs = "0 0")
+						template = 'Vec6d,Vec6d', 
+						input = '@../',
+						output = '@dofs')
 			
 			dampingNode.createObject('DampingCompliance',
 						 name = 'dampingCompliance',
 						 template = 'Vec6d',
 						 damping = self.damping)  
-			
+			# what's this ?
 			dampingNode.createObject('DampingValue',
 						 name = 'dampingValue')  
                 
-                
-                # for some reason return node is unable to lookup for
-                # children using getChild() so in the meantime...
-                res = Joint.Node()
-                
-                res.node = node
-		res.dofs = dofs
-                # res.compliance = compliance
-                
-                
-                return res
+		return node
 
 class SphericalJoint(Joint):
 
@@ -324,6 +313,7 @@ class PrismaticJoint(Joint):
                 self.dofs[0 + axis] = 1
                 self.name = 'prismatic-'
 
+# this one seems broken, don't use for now
 class PlanarJoint(Joint):
 
         def __init__(self, normal):
