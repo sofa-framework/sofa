@@ -70,7 +70,10 @@ public:
 	void init() {
 		this->core::behavior::Mass<DataTypes>::init();
 		
-		if( mass.getValue().size() != inertia.getValue().size() ) throw std::logic_error("mass and inertia must have the same size");
+		if( mass.getValue().size() != inertia.getValue().size() ) {
+			throw std::logic_error("mass and inertia arrays must have the same size");
+		}
+		
 		if( !mass.getValue().size() ) throw std::logic_error("empty mass field");
 		if( !this->mstate )  throw std::logic_error("no mstate");
 
@@ -84,7 +87,7 @@ public:
 	typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
 	void draw(const core::visual::VisualParams* vparams) {
-
+		
 		if ( !vparams->displayFlags().getShowBehaviorModels() )
 			return;
 		helper::ReadAccessor<VecCoord> x = *this->mstate->getX();
@@ -107,13 +110,13 @@ public:
 		
 	}
 
-	void addForce(const core::MechanicalParams*  /* PARAMS FIRST */, 
+	void addForce(const core::MechanicalParams* , 
 	              DataVecDeriv& _f, 
 	              const DataVecCoord& _x, const DataVecDeriv& _v) {
 
 		helper::WriteAccessor< DataVecDeriv > f(_f);
 		helper::ReadAccessor< DataVecCoord >  x(_x);
-    helper::ReadAccessor< DataVecDeriv >  v(_v);
+		helper::ReadAccessor< DataVecDeriv >  v(_v);
 
 		typename se3::vec3 g = SE3<SReal>::map(this->getContext()->getGravity()).template cast<real>();
 
@@ -122,18 +125,22 @@ public:
 		
 			se3::map( f[i].getVCenter() ).template head<3>() += mass.getValue()[index] * g;
 			
-			// explicit inertia
 			if( inertia_forces.getValue() ) {
+				// explicit inertia, based on usual formula
+				// see http://en.wikipedia.org/wiki/Newton-Euler_equations
 				typename se3::mat33 R = se3::rotation( x[i] ).toRotationMatrix();
 
 				// spatial velocity
-				typename se3::vec3 omega = se3::map( v[i].getVOrientation() );
+				typename se3::vec3 omega = se3::map( v[i].getAngular() );
 
 				// body inertia tensor
-				typename se3::vec3 I = se3::map(inertia.getValue()[ index ]);
-				
-				se3::map( f[i].getVCenter() ).template head<3>() -= omega.cross( R * I.cwiseProduct( R.transpose() * omega) );
-				
+				typename se3::vec3 I = se3::map( inertia.getValue()[ index ]);
+					
+				// mass
+				// SReal m = mass.getValue()[ index ];
+					
+				se3::map( f[i].getAngular() ) -= omega.cross( R * I.cwiseProduct( R.transpose() * omega) );
+				// se3::map( f[i].getLinear() ) -= m * omega.cross( se3::map(v[i].getLinear()) );
 			}
 
 		}
