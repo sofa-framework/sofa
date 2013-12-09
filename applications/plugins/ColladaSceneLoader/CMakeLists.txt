@@ -20,10 +20,10 @@ set(README_FILES
 
 # find assimp library & include directories...
 if(APPLE)
-find_path(ASSIMP_INCLUDE_DIR NAMES assimp/Importer.hpp)
-include_directories(ASSIMP_INCLUDE_DIR)
+	find_path(ASSIMP_INCLUDE_DIR NAMES assimp/Importer.hpp)
+	include_directories(ASSIMP_INCLUDE_DIR)
 else()
-include_directories("assimp/include")
+	include_directories("assimp/include")
 endif()
 
 if(WIN32)
@@ -32,6 +32,8 @@ if(WIN32)
 	else()
 		link_directories("assimp/lib/x86")
 	endif()
+	
+	set(ASSIMP_LIBRARY assimp)
 	
 	## assimp dll
 	if(CMAKE_CL_64)
@@ -43,14 +45,10 @@ if(WIN32)
 		file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
 	endforeach()
 else()
-
+	find_library(ASSIMP_LIBRARY NAMES assimp)
 endif()
 
-find_library(ASSIMP_LIBRARY NAMES assimp)
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
-
-
 
 AddCompilerDefinitions("SOFA_BUILD_COLLADASCENELOADER")
 AddLinkerDependencies(SofaLoader SofaSimulationCommon SofaBaseMechanics SofaRigid SofaBoundaryCondition SofaBaseTopology SofaBaseVisual SofaOpenglVisual SofaDeformable SofaMeshCollision ${ASSIMP_LIBRARY})

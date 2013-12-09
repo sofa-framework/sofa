@@ -7,16 +7,5 @@
 	<DefaultContactManager name="Response"  response="default" />
 	<EulerImplicitSolver name="cg_odesolver"  printLog="0" />
 	<CGLinearSolver template="GraphScattered" name="linear solver"  iterations="40"  tolerance="1e-009"  threshold="1e-009" />
-	<SceneColladaLoader name="character"  filename="character.dae" animationSpeed="0.14" />
-	<Node 	 name="Cloth Static Mesh"  >
-		<MeshObjLoader name="loader"  filename="poncho.obj" />
-		<MechanicalObject template="Vec3d" name="DOFs"  position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  translation="0 0 0"  rotation="0 0 0"  scale3d="1 1 1" />
-		<UniformMass template="Vec3d" name="Mass" mass="0.1" />
-		<MeshTopology name="Static Mesh"  position="@loader.position"  edges="@loader.edges"  triangles="@loader.triangles"  quads="@loader.quads"  tetrahedra="@loader.tetras"  hexahedra="@loader.hexas" />
-		<TriangularBendingSprings template="Vec3d" name="Springs"  stiffness="50"  damping="1" />
-		<TriangularFEMForceField template="Vec3d" name="FEM"  method="large"  poissonRatio="0.3"  youngModulus="600" />
-		<TTriangleModel template="Vec3d" name="models" />
-		<OglModel template="ExtVec3f" name="Visual"  material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45 "  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
-		<IdentityMapping template="Vec3d,ExtVec3f" name="Mapping"  input="@./"  output="@Visual" />
-	</Node>
+	<SceneColladaLoader name="character"  filename="scene.dae.human" animationSpeed="1.0" generateCollisionModels="0" />
 </Node>

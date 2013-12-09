@@ -71,6 +71,7 @@ SceneColladaLoader::SceneColladaLoader() : SceneLoader()
     , subSceneRoot()
 	, importer()
 	, animationSpeed(initData(&animationSpeed, 1.0f, "animationSpeed", "animation speed"))
+	, generateCollisionModels(initData(&generateCollisionModels, true, "generateCollisionModels", "generate point/line/triangle collision models for imported meshes"))
 {
 	
 }
@@ -434,50 +435,53 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
 //					std::cout << " - meshName: " << xmeshName << std::endl;
 //					std::cout << std::endl;
 
-					UniformMass<defaulttype::Vec3dTypes, double>::SPtr currentUniformMass = sofa::core::objectmodel::New<UniformMass<defaulttype::Vec3dTypes, double> >();
+					if(generateCollisionModels.getValue())
 					{
-						// adding the generated UniformMass to its parent GNode
-						collisionGNode->addObject(currentUniformMass);
+						UniformMass<defaulttype::Vec3dTypes, double>::SPtr currentUniformMass = sofa::core::objectmodel::New<UniformMass<defaulttype::Vec3dTypes, double> >();
+						{
+							// adding the generated UniformMass to its parent GNode
+							collisionGNode->addObject(currentUniformMass);
 
-						std::stringstream nameStream(meshName);
-						if(meshName.empty())
-							nameStream << componentIndex++;
-						currentUniformMass->setName(nameStream.str());
+							std::stringstream nameStream(meshName);
+							if(meshName.empty())
+								nameStream << componentIndex++;
+							currentUniformMass->setName(nameStream.str());
 
-						currentUniformMass->setTotalMass(10.0);
-					}
+							currentUniformMass->setTotalMass(10.0);
+						}
 
-					TTriangleModel<defaulttype::Vec3dTypes>::SPtr currentTTriangleModel = sofa::core::objectmodel::New<TTriangleModel<defaulttype::Vec3dTypes> >();
-					{
-						// adding the generated TTriangleModel to its parent GNode
-						collisionGNode->addObject(currentTTriangleModel);
+						TTriangleModel<defaulttype::Vec3dTypes>::SPtr currentTTriangleModel = sofa::core::objectmodel::New<TTriangleModel<defaulttype::Vec3dTypes> >();
+						{
+							// adding the generated TTriangleModel to its parent GNode
+							collisionGNode->addObject(currentTTriangleModel);
 
-						std::stringstream nameStream(meshName);
-						if(meshName.empty())
-							nameStream << componentIndex++;
-						currentTTriangleModel->setName(nameStream.str());
-					}
+							std::stringstream nameStream(meshName);
+							if(meshName.empty())
+								nameStream << componentIndex++;
+							currentTTriangleModel->setName(nameStream.str());
+						}
 
-					TLineModel<defaulttype::Vec3dTypes>::SPtr currentTLineModel = sofa::core::objectmodel::New<TLineModel<defaulttype::Vec3dTypes> >();
-					{
-						// adding the generated TLineModel to its parent GNode
-						collisionGNode->addObject(currentTLineModel);
+						TLineModel<defaulttype::Vec3dTypes>::SPtr currentTLineModel = sofa::core::objectmodel::New<TLineModel<defaulttype::Vec3dTypes> >();
+						{
+							// adding the generated TLineModel to its parent GNode
+							collisionGNode->addObject(currentTLineModel);
 
-						std::stringstream nameStream(meshName);
-						if(meshName.empty())
-							nameStream << componentIndex++;
-						currentTLineModel->setName(nameStream.str());
-					}
+							std::stringstream nameStream(meshName);
+							if(meshName.empty())
+								nameStream << componentIndex++;
+							currentTLineModel->setName(nameStream.str());
+						}
 
-					TPointModel<defaulttype::Vec3dTypes>::SPtr currentTPointModel = sofa::core::objectmodel::New<TPointModel<defaulttype::Vec3dTypes> >();
-					{
-						// adding the generated TPointModel to its parent GNode
-						collisionGNode->addObject(currentTPointModel);
+						TPointModel<defaulttype::Vec3dTypes>::SPtr currentTPointModel = sofa::core::objectmodel::New<TPointModel<defaulttype::Vec3dTypes> >();
+						{
+							// adding the generated TPointModel to its parent GNode
+							collisionGNode->addObject(currentTPointModel);
 
-						std::stringstream nameStream(meshName);
-						if(meshName.empty())
-							nameStream << componentIndex++;
-						currentTPointModel->setName(nameStream.str());
+							std::stringstream nameStream(meshName);
+							if(meshName.empty())
+								nameStream << componentIndex++;
+							currentTPointModel->setName(nameStream.str());
+						}
 					}
 
 					if(currentAiMesh->HasBones())
