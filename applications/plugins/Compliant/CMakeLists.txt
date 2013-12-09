@@ -14,6 +14,7 @@ set(HEADER_FILES
     mapping/AssembledMultiMapping.h
     mapping/DifferenceMapping.h
     mapping/ContactMapping.h
+    mapping/MaskMapping.h
 
 
     numericalsolver/KKTSolver.h
@@ -75,7 +76,7 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
 
-	initCompliant.cpp
+  initCompliant.cpp
 
     misc/CompliantAttachButtonSetting.cpp
     misc/CompliantSolverMerger.cpp
@@ -90,6 +91,7 @@ set(SOURCE_FILES
     mapping/AssembledRigidRigidMapping.cpp
     mapping/DifferenceMapping.cpp
     mapping/ContactMapping.cpp
+    mapping/MaskMapping.cpp 
 
     numericalsolver/LDLTSolver.cpp
     numericalsolver/MinresSolver.cpp

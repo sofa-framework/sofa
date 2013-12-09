@@ -162,7 +162,8 @@ public:
 			const unsigned index = clamp(i);
 			
 			// body-fixed velocity
-			typename se3::vec3 omega_body = se3::rotation( (*this->mstate->getX())[i] ).inverse() * se3::map(v[i].getVOrientation());
+			typename se3::vec3 omega_body = se3::rotation( (*this->mstate->getX())[i] ).inverse() * 
+				se3::map(v[i].getVOrientation());
 			
 			res += 
 				mass.getValue()[index] * v[i].getVCenter().norm2() +
