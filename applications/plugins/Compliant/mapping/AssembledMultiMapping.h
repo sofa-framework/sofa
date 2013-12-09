@@ -139,8 +139,6 @@ class SOFA_Compliant_API AssembledMultiMapping : public core::MultiMapping<TIn, 
 	virtual void applyJT(const core::MechanicalParams*,
 						 const helper::vector< InDataVecDeriv*>& outDeriv, 
 	                     const helper::vector<const OutDataVecDeriv*>& inDeriv) {
-		// debug();	
-		
 		for( unsigned i = 0, n = js.size(); i < n; ++i) {
 			if( jacobian(i).rowSize() > 0 ) {
 				jacobian(i).addMultTranspose(*outDeriv[i], *inDeriv[0]);
@@ -151,6 +149,12 @@ class SOFA_Compliant_API AssembledMultiMapping : public core::MultiMapping<TIn, 
 	virtual void applyDJT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, 
 	                      core::MultiVecDerivId /*inForce*/, 
 	                      core::ConstMultiVecDerivId /*outForce*/){}
+
+	virtual void applyJT( const core::ConstraintParams*  /* PARAMS FIRST */, 
+						  const helper::vector< typename self::InDataMatrixDeriv* >& , 
+						  const helper::vector< const typename self::OutDataMatrixDeriv* >&  ) {
+		// throw std::logic_error("not implemented");
+	}
 
 	
 	virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs() {
