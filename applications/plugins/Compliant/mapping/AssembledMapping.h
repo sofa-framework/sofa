@@ -55,18 +55,28 @@ namespace sofa {
 					if( jacobian.rowSize() > 0 ) jacobian.mult(out, in);
 				}
 
+				void debug() {
+					std::cerr << this->getClassName() << std::endl;
+					std::cerr << "from: " <<  this->getFromModel()->getContext()->getName() 
+							  << "/" << this->getFromModel()->getName() << std::endl;
+					std::cerr << "to: " <<  this->getToModel()->getContext()->getName() 
+							  << "/" << this->getToModel()->getName() << std::endl;
+					std::cerr << std::endl;
+				}
+
 				virtual void applyJT(const core::MechanicalParams*,			     
 				                     Data<typename self::InVecDeriv>& in, 
 				                     const Data<typename self::OutVecDeriv>& out) {
+					// debug();
 					if( jacobian.rowSize() > 0 ) jacobian.addMultTranspose(in, out);
 				}
 
-				virtual void applyJT(const core::ConstraintParams*,
-				                     Data< typename self::InMatrixDeriv>& , 
-				                     const Data<typename self::OutMatrixDeriv>& ) {
-					// throw std::logic_error("not implemented");
-					// if( jacobian.rowSize() > 0 ) jacobian.addMultTranspose(in, out);
-				}
+				// virtual void applyJT(const core::ConstraintParams*,
+				//                      Data< typename self::InMatrixDeriv>& , 
+				//                      const Data<typename self::OutMatrixDeriv>& ) {
+				// 	// throw std::logic_error("not implemented");
+				// 	// if( jacobian.rowSize() > 0 ) jacobian.addMultTranspose(in, out);
+				// }
 
 
 			protected:
