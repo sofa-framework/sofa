@@ -7,6 +7,7 @@ set(HEADER_FILES
     misc/CompliantAttachButtonSetting.h
     misc/RigidMass.h
     misc/CompliantSolverMerger.h
+    misc/FailNode.h
 
     mapping/RigidJointMapping.h
     mapping/AssembledRigidRigidMapping.h
@@ -81,6 +82,7 @@ set(SOURCE_FILES
     misc/CompliantAttachButtonSetting.cpp
     misc/CompliantSolverMerger.cpp
     misc/RigidMass.cpp
+    misc/FailNode.cpp
 
     compliance/UniformCompliance.cpp
     compliance/DiagonalCompliance.cpp
