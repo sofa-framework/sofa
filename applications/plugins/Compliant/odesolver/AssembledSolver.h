@@ -81,6 +81,7 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
 				
     virtual void init();
 
+	// broken
     virtual void solve(const core::ExecParams* params,
 	                   double dt, 
                        core::MultiVecCoordId posId,
@@ -90,6 +91,7 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
                        simulation::AssemblyVisitor *vis
                        );
 
+	// broken
     virtual void solve(const core::ExecParams* params,
                        double dt,
                        core::MultiVecCoordId posId,
@@ -119,7 +121,7 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
     Data<bool> warm_start, propagate_lambdas, stabilization, debug;
     Data<SReal> alpha, beta;     ///< the \alpha and \beta parameters of the integration scheme
 
-    simulation::AssemblyVisitor* _assemblyVisitor;
+    // simulation::AssemblyVisitor* _assemblyVisitor;
 
   protected:
 				
@@ -127,9 +129,16 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
 	void send(simulation::Visitor& vis);
 				
 	// integrate positions
-    void integrate( const core::MechanicalParams* params, core::MultiVecCoordId posId, core::MultiVecDerivId velId );
+    void integrate( const core::MechanicalParams* params, 
+					core::MultiVecCoordId posId, 
+					core::MultiVecDerivId velId );
+	
+	// TODO: unneeded ?
     // integrate positions and velocities
-    void integrate( const core::MechanicalParams* params, core::MultiVecCoordId posId, core::MultiVecDerivId velId, core::MultiVecDerivId dvId );
+    void integrate( const core::MechanicalParams* params, 
+					core::MultiVecCoordId posId, 
+					core::MultiVecDerivId velId, 
+					core::MultiVecDerivId dvId );
 
 
 	// propagate velocities
@@ -140,12 +149,14 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
 	typedef linearsolver::KKTSolver kkt_type;
 	kkt_type::SPtr kkt;
 
+	// TODO: hide 
 public:
 	typedef linearsolver::AssembledSystem system_type;
 	typedef system_type::vec vec;
 
 	// compute forces
-	virtual void compute_forces(const core::MechanicalParams& params);
+	virtual void compute_forces(const core::MechanicalParams& params,
+								const simulation::AssemblyVisitor& vis);
 	
 	virtual void rhs_dynamics(vec& res, const system_type& sys, const vec& v) const;
 	virtual void rhs_correction(vec& res, const system_type& sys) const;

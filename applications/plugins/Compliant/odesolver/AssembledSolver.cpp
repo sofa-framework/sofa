@@ -12,7 +12,7 @@
 #include "utils/minres.h"
 #include "utils/scoped.h"
 
-
+#include "misc/FailNode.h"
 
 #ifdef GR_BENCHMARK
 #include <sofa/helper/system/thread/CTime.h>
@@ -106,14 +106,38 @@ void AssembledSolver::cleanup() {
 	vop.v_free( lagrange.id(), false, true );
 }
 
+// to the person who will encounter this ugly hack and ask herself 'oh
+// god why': go try to fix DAGNode.cpp, then come back here to see
+// which is simpler/faster
+
+struct FakeNode : simulation::FailNode {
+
+	const simulation::AssemblyVisitor& vis;
+
+	FakeNode(const simulation::AssemblyVisitor& vis) : vis(vis) { }
+
+	void doExecuteVisitor(simulation::Visitor* action) {
+		// std::cerr << "i are fake lol !" << std::endl;
+		vis.top_down( action );
+		vis.bottom_up( action );
+	}
+
+};
+
 
 // this is c_k computation (see compliant-reference.pdf, section 3)
-void AssembledSolver::compute_forces(const core::MechanicalParams& params) {
+void AssembledSolver::compute_forces(const core::MechanicalParams& params,
+									 const simulation::AssemblyVisitor& vis) {
 	scoped::timer step("forces computation");
 				
-	sofa::simulation::common::MechanicalOperations mop( &params, this->getContext() );
-	sofa::simulation::common::VectorOperations vop( &params, this->getContext() );
-				
+	// sofa::simulation::common::MechanicalOperations mop( &params, this->getContext() );
+	// sofa::simulation::common::VectorOperations vop( &params, this->getContext() );
+
+	FakeNode fake(vis);
+	sofa::simulation::common::MechanicalOperations mop( &params, &fake );
+	sofa::simulation::common::VectorOperations vop( &params, &fake );
+			
+
 	MultiVecDeriv c(&vop, core::VecDerivId::force() );
 	
 	SReal h = params.dt();
@@ -369,14 +393,15 @@ void AssembledSolver::solve(const core::ExecParams* params,
 	core::MechanicalParams mparams_stiffness, mparams_compliance;
 	this->buildMparams( mparams_stiffness, mparams_compliance, *params, dt );
 
-	compute_forces( mparams_stiffness );
-	
 	// assembly visitor 
 	simulation::AssemblyVisitor vis(&mparams_stiffness,
 	                                &mparams_compliance);
-	// fetch data
+	// fetch nodes/data
 	send( vis );
 	
+	// compute forces using traversal order defined by vis
+	compute_forces( mparams_stiffness, vis );
+
 	// assemble system
 	system_type sys = vis.assemble();
 	
