@@ -259,12 +259,12 @@ class Joint:
 						pairs = "0 0")
 			
 			dampingNode.createObject('DampingCompliance',
-						      name = 'dampingCompliance',
-						      template = 'Vec6d',
-						      damping = self.damping)  
-						      
+						 name = 'dampingCompliance',
+						 template = 'Vec6d',
+						 damping = self.damping)  
+			
 			dampingNode.createObject('DampingValue',
-						      name = 'dampingValue')  
+						 name = 'dampingValue')  
                 
                 
                 # for some reason return node is unable to lookup for
@@ -272,6 +272,7 @@ class Joint:
                 res = Joint.Node()
                 
                 res.node = node
+		res.dofs = dofs
                 # res.compliance = compliance
                 
                 
