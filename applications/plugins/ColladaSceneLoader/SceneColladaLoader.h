@@ -157,6 +157,7 @@ private:
     Assimp::Importer importer;		// the Assimp importer used to easily load the Collada scene
 
 	Data<float> animationSpeed;
+	Data<bool> generateCollisionModels;
 
 };
 
