@@ -126,12 +126,25 @@ class SOFA_Compliant_API AssembledMultiMapping : public core::MultiMapping<TIn, 
 		}
 	}
 
-	
-
-	virtual void applyJT(const helper::vector< InVecDeriv*>& outDeriv, 
-	                     const helper::vector<const OutVecDeriv*>& inDeriv) {
+	void debug() {
+		std::cerr << this->getClassName() << std::endl;
 		for( unsigned i = 0, n = js.size(); i < n; ++i) {
-			if( jacobian(i).rowSize() > 0 ) jacobian(i).addMultTranspose(*outDeriv[i], *inDeriv[0]);
+			std::cerr << "from: " <<  this->getFrom()[i]->getContext()->getName() 
+					  << "/" << this->getFrom()[i]->getName() << std::endl;
+		}
+		std::cerr << "to: " << this->getTo()[0]->getContext()->getName() << "/" << this->getTo()[0]->getName() << std::endl;
+		std::cerr << std::endl;
+	}
+
+	virtual void applyJT(const core::MechanicalParams*,
+						 const helper::vector< InDataVecDeriv*>& outDeriv, 
+	                     const helper::vector<const OutDataVecDeriv*>& inDeriv) {
+		// debug();	
+		
+		for( unsigned i = 0, n = js.size(); i < n; ++i) {
+			if( jacobian(i).rowSize() > 0 ) {
+				jacobian(i).addMultTranspose(*outDeriv[i], *inDeriv[0]);
+			}
 		}
 	}
 
@@ -165,9 +178,16 @@ class SOFA_Compliant_API AssembledMultiMapping : public core::MultiMapping<TIn, 
 
 	enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
 
-
+	// TODO rename in_coord_type/out_coord_type
     typedef helper::ReadAccessor< Data< typename self::InVecCoord > > in_pos_type;
     typedef helper::WriteAccessor< Data< typename self::OutVecCoord > > out_pos_type;
+
+    typedef helper::ReadAccessor< Data< typename self::InVecDeriv > > in_vel_type;
+    typedef helper::WriteAccessor< Data< typename self::OutVecDeriv > > out_vel_type;
+
+    typedef helper::ReadAccessor< Data< typename self::OutVecDeriv > > in_force_type;
+    typedef helper::WriteAccessor< Data< typename self::InVecDeriv > > out_force_type;
+	
 
 	// TODO pass out value as well ?
 	virtual void assemble( const vector<in_pos_type>& in ) = 0;
