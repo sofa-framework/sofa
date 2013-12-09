@@ -71,12 +71,12 @@ namespace sofa {
 					if( jacobian.rowSize() > 0 ) jacobian.addMultTranspose(in, out);
 				}
 
-				// virtual void applyJT(const core::ConstraintParams*,
-				//                      Data< typename self::InMatrixDeriv>& , 
-				//                      const Data<typename self::OutMatrixDeriv>& ) {
-				// 	// throw std::logic_error("not implemented");
-				// 	// if( jacobian.rowSize() > 0 ) jacobian.addMultTranspose(in, out);
-				// }
+				virtual void applyJT(const core::ConstraintParams*,
+				                     Data< typename self::InMatrixDeriv>& , 
+				                     const Data<typename self::OutMatrixDeriv>& ) {
+					// throw std::logic_error("not implemented");
+					// if( jacobian.rowSize() > 0 ) jacobian.addMultTranspose(in, out);
+				}
 
 
 			protected:
