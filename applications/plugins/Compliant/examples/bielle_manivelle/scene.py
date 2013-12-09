@@ -45,7 +45,7 @@ links = [
     [4, 5, Rigid.RevoluteJoint(2)], # came-piston
 
     # sliding joint around x
-    [6, 7, Rigid.PlanarJoint(1)]
+    [6, 7, Rigid.PrismaticJoint(0)]
 ]
     
 
@@ -80,6 +80,7 @@ def createScene(node):
         r.dofs.read( p[3] )
         r.visual = mesh_path + '/' + p[15]
         r.collision = r.visual
+        r.inertia_forces = "false"
         
         density = float(p[7])
         r.mass_from_mesh( r.visual, density )

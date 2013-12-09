@@ -3,12 +3,12 @@ import math
 
 # TODO ease this nonsense, upstream in SofaPython
 compliant_path = Sofa.src_dir() + '/applications/plugins/Compliant'
-
 import sys
 sys.path.append(compliant_path + '/python')
 
 from Compliant import Rigid
 
+# global structure for passing data to controller
 class ControlData:
      pass
 
@@ -68,16 +68,16 @@ def createScene(node):
      joint1 = Rigid.RevoluteJoint(2)
      joint1.append(base.node, Rigid.Frame().read('0 0 0 0 0 0 1') )
      joint1.append(link1.node, Rigid.Frame().read('0 0 0 0 0 0 1') )
-     joint1.node = joint1.insert(scene).node
-
-     control.joint1 = ControlledJoint( joint1.node.getObject('dofs') )
+     joint1.node = joint1.insert(scene)
 
      joint2 = Rigid.RevoluteJoint(2)
      joint2.append(link1.node, Rigid.Frame().read('0 10 0 0 0 0 1') )
      joint2.append(link2.node, Rigid.Frame().read('0 0 0 0 0 0 1') )
+     joint2.node = joint2.insert(scene)
 
-     data = joint2.insert(scene)
-     joint2.node = data.node
+     # control
+     control.joint1 = ControlledJoint( joint1.node.getObject('dofs') )
+
      control.joint2 = ControlledJoint( joint2.node.getObject('dofs') )
 
      # pid controller reference pos for joint2
@@ -123,9 +123,6 @@ class ControlledJoint:
 class Controller(Sofa.PythonScriptController):
      
      def onLoaded(self,node):
-          
-        
-
           return 0
           
      def onBeginAnimationStep(self, dt):
