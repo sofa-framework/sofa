@@ -211,8 +211,22 @@ class Joint:
                                          name = 'dofs', 
                                          position = '0 0 0 0 0 0' )
                 
-                constrained_dofs = [ (1 - d) for d in self.dofs ]
-
+                map = node.createObject('RigidJointMultiMapping',
+                                        name = 'mapping', 
+                                        template = 'Rigid,Vec6d', 
+                                        input = concat(input),
+                                        output = '@dofs',
+                                        pairs = "0 0")
+                
+		sub = node.createChild("constrained dofs")
+		sub.createObject('MechanicalObject', 
+				 template = 'Vec6d', 
+				 name = 'dofs',
+				 position = '0 0 0 0 0 0')
+		
+		# mask computation
+		constrained_dofs = [ (1 - d) for d in self.dofs ]
+		
                 if self.stiffness > 0:
                         # stiffness: we map all dofs
                         mask = [1, 1, 1, 1, 1, 1]
@@ -220,27 +234,27 @@ class Joint:
                         # only constrained dofs are needed
                         mask = constrained_dofs
                 
-                value = [ ( 1 - x) * self.compliance + # no dof: compliance
-                          x * ( 1 / self.stiffness if self.stiffness > 0 else 0 ) # dof: 1 / stiffness or zero
+		sub_map = sub.createObject('MaskMapping', 
+				       name = 'mapping',
+				       template = 'Vec6d,Vec6d',
+				       input = '@../',
+				       output = '@dofs',
+				       dofs = concat(mask) )
+		
+		# compliance 
+		value = [ ( 1 - x) * self.compliance + # no dof: compliance
+			  x * ( 1 / self.stiffness if self.stiffness > 0 else 0 ) # dof: 1 / stiffness or zero
                           for x in self.dofs ]
-                
-                map = node.createObject('RigidJointMultiMapping',
-                                        name = 'mapping', 
-                                        template = 'Rigid,Vec6d', 
-                                        input = concat(input),
-                                        output = '@dofs',
-                                        dofs = concat(mask),
-                                        pairs = "0 0")
-                
-                compliance = node.createObject('DiagonalCompliance',
-                                               name = 'compliance',
-                                               template = 'Vec6d',
-                                               compliance = concat(value))
+		
+                compliance = sub.createObject('DiagonalCompliance',
+					      name = 'compliance',
+					      template = 'Vec6d',
+					      compliance = concat(value))
                 
                 # only stabilize constraint dofs
-                stab = node.createObject('Stabilization', mask = concat( constrained_dofs ) )
+                stab = sub.createObject('Stabilization', mask = concat( constrained_dofs ) )
                 
-                
+                # TODO REDO
                 if self.damping != 0:
 			# damping sub-graph
 			

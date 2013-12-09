@@ -34,8 +34,9 @@ namespace mapping {
 template <class TIn, class TOut >
 class RigidJointMultiMapping : public AssembledMultiMapping<TIn, TOut> {
 public:
-	SOFA_CLASS(SOFA_TEMPLATE2(RigidJointMultiMapping,TIn,TOut), SOFA_TEMPLATE2(AssembledMultiMapping,TIn,TOut));
-
+	SOFA_CLASS(SOFA_TEMPLATE2(RigidJointMultiMapping,TIn,TOut), 
+			   SOFA_TEMPLATE2(AssembledMultiMapping,TIn,TOut));
+	
 	typedef defaulttype::Vec<2, unsigned> index_pair;
 
 	typedef vector< index_pair > pairs_type;
@@ -44,10 +45,6 @@ public:
 	typedef typename TIn::Real in_real;
 	typedef typename TOut::Real out_real;
 	
-	typedef defaulttype::Vec<6, out_real> vec6;
-	typedef vector<vec6> dofs_type;
-	Data< dofs_type > dofs;
-
 	typedef AssembledMultiMapping<TIn, TOut> base;
 	typedef RigidJointMultiMapping self;
 
@@ -57,20 +54,16 @@ protected:
 	
 
 	RigidJointMultiMapping()
-		: pairs(initData(&pairs, "pairs", "index pairs for each joint")),
-		  dofs(initData(&dofs, "dofs", "dof mask for each joint (default: all, last value extended if needed)") ) {
-		edit(dofs)->push_back( vec6(1, 1, 1, 1, 1, 1) );
+		: pairs(initData(&pairs, "pairs", "index pairs for each joint"))
+		{
+			
 	}
 	
-	void init() { }
-
-
 	void apply(typename self::out_pos_type& out,
 	           const vector< typename self::in_pos_type >& in ) {
 		assert( this->getFrom().size() == 2 );
 
 		const pairs_type& p = pairs.getValue();
-		const dofs_type& d = dofs.getValue();
 		
 		assert(out.size() == p.size());
 
@@ -81,18 +74,11 @@ protected:
 		
 			coord_type delta = se3::prod( se3::inv(parent), child);
 
-			unsigned index = std::min<int>(i, d.size() - 1);
 			typename se3::deriv_type value = se3::product_log( delta );
 
-			// TODO leave out zero dofs ! minres will be fine, but direct
-			// solvers ?
+			map(out[i]).template head<3>() =  map(value.getLinear()).template cast<out_real>();
+			map(out[i]).template tail<3>() =  map(value.getAngular()).template cast<out_real>();
 			
-			map(out[i]).template head<3>() = map(d[index]).template head<3>()
-				.cwiseProduct( map(value.getLinear()).template cast<out_real>() );
-			
-			map(out[i]).template tail<3>() = map(d[index]).template tail<3>()
-				.cwiseProduct( map(value.getAngular()).template cast<out_real>() );
-
 		}
 		
 	}
@@ -102,7 +88,6 @@ protected:
 		assert(this->getFrom()[0] != this->getFrom()[1]);
 
 		const pairs_type& p = pairs.getValue();
-		const dofs_type& d = dofs.getValue();
 		
 		typedef typename se3::mat66 mat66;
 		typedef typename se3::mat33 mat33;
@@ -147,9 +132,8 @@ protected:
 							mat33::Zero(), -dlog * Rc.transpose();
 				}
 				
-				unsigned index = std::min<int>(i, d.size() - 1);
 
-				mat66 block = map(d[index]).asDiagonal() * ddelta;
+				mat66 block = ddelta;
 				
 				// each row
 				for( unsigned u = 0; u < 6; ++u) {
