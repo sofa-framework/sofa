@@ -164,6 +164,29 @@ AssemblyVisitor::mat AssemblyVisitor::odeMatrix(simulation::Node* node)
 }
 
 
+void AssemblyVisitor::top_down(simulation::Visitor* vis) const {
+	assert( !prefix.empty() );
+
+	for(unsigned i = 0, n = prefix.size(); i < n; ++i) {
+		simulation::Node* node = down_cast<simulation::Node>(graph[ prefix[i] ].dofs->getContext());
+		vis->processNodeTopDown( node );
+	}
+
+}
+
+void AssemblyVisitor::bottom_up(simulation::Visitor* vis) const {
+	assert( !prefix.empty() );
+
+	for(unsigned i = 0, n = prefix.size(); i < n; ++i) {
+		simulation::Node* node = down_cast<simulation::Node>(graph[ prefix[ n - 1 - i] ].dofs->getContext());
+		vis->processNodeBottomUp( node );
+	}
+	
+}
+
+
+
+
 
 // this is called on the *top-down* traversal, once for each node. we
 // simply fetch infos for each dof.
