@@ -70,6 +70,13 @@ public:
 //protected:
     MultiVecDerivId _velId;
 
+	// applies another visitor topDown/bottomUp based on internal
+	// graph. this is to work around bogus graph traversal in case of
+	// multi mappings
+
+	void top_down(simulation::Visitor* vis) const;
+	void bottom_up(simulation::Visitor* vis) const;
+
 public:
 	simulation::Node* start_node;
 
