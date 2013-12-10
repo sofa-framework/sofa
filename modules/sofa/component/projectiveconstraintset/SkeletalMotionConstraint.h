@@ -106,13 +106,13 @@ protected:
     template<class MyCoord>
     void interpolatePosition(Real cT, typename boost::enable_if<boost::is_same<MyCoord, RigidCoord<3, Real> >, VecCoord>::type& x);
 
-private:
-    // every nodes needed in the animation chain
+protected:
+	// every nodes needed in the animation chain
     Data<helper::SVector<SkeletonJoint<TDataTypes> > >	skeletonJoints;
-
     // mesh skeleton bones which need to be updated according to the animated nodes, we use them to fill the mechanical object
     Data<helper::SVector<SkeletonBone> >				skeletonBones;
 
+private:
     /// the key times surrounding the current simulation time (for interpolation)
     Real												prevT, nextT;
 
