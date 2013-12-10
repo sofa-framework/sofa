@@ -58,7 +58,7 @@ AssembledSolver::AssembledSolver()
 	               "Weight of the next velocities in the average velocities used to update the positions. 1 is implicit, 0 is explicit."))
 	
 {
-	
+    storeDSol = false;
 }
 
 void AssembledSolver::send(simulation::Visitor& vis) {
@@ -66,6 +66,8 @@ void AssembledSolver::send(simulation::Visitor& vis) {
 				
 	this->getContext()->executeVisitor( &vis );
 }
+
+void AssembledSolver::storeDynamicsSolution(bool b) { storeDSol = b; }
 			
 		
 void AssembledSolver::integrate( const core::MechanicalParams* params,
@@ -425,7 +427,7 @@ void AssembledSolver::solve(const core::ExecParams* params,
 	compute_forces( mparams_stiffness, vis );
 
 	// assemble system
-	system_type sys = vis.assemble();
+    sys = vis.assemble();
 	
 	// debugging
 	if( debug.getValue() ) sys.debug();
@@ -484,6 +486,10 @@ void AssembledSolver::solve(const core::ExecParams* params,
 				          << "solution:" << std::endl
 				          << x.transpose() << std::endl;
 			}
+            if( storeDSol ) {
+                dynamics_rhs = rhs;
+                dynamics_solution = x;
+            }
 
 			set_state(sys, x);
 			integrate( &mparams_stiffness, posId, velId );

@@ -82,7 +82,7 @@ protected:
 	virtual void apply(typename self::out_pos_type& out, 
 					   const typename self::in_pos_type& in ) {
 		assert(in.size() == out.size());
-		assert(d.size());
+//		assert(d.size());
 		
 		const dofs_type& d = dofs.getValue();
 	

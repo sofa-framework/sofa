@@ -6,6 +6,8 @@
 
 namespace {
 
+/** Utilities to map arrays to Eigen matrices. This is done in-place. */
+
 template<int M, class U>
 static inline Eigen::Map< Eigen::Matrix<U, M, 1> > map(sofa::defaulttype::Vec<M, U>& v) {
 	return Eigen::Map< Eigen::Matrix<U, M, 1> >(&v[0]);

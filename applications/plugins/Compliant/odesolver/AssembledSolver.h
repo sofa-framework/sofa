@@ -160,6 +160,7 @@ public:
 	typedef linearsolver::AssembledSystem system_type;
 	typedef system_type::vec vec;
 
+
 	// compute forces
 	virtual void compute_forces(const core::MechanicalParams& params,
 								const simulation::AssemblyVisitor& vis);
@@ -185,8 +186,29 @@ public:
 	// this is for warm start and returning constraint forces
 	core::behavior::MultiVecDeriv lagrange;
 
+    /** @group Debug and unit testing */
+    //@{
+    // toggle the recording of the dynamics vectors
+    void storeDynamicsSolution(bool); ///< if true, store the dv and lambda at each dynamics solution
+    // right-hand side (f,phi) and unknow (dv,lambda) of the dynamics system:
+    system_type::vec getLambda() const { assert(storeDSol); return dynamics_solution.tail(sys.n); }
+    system_type::vec getDv() const { assert(storeDSol); return dynamics_solution.head(sys.m); }
+    system_type::vec getPhi() const { assert(storeDSol); return dynamics_rhs.tail(sys.n); }
+    system_type::vec getF() const { assert(storeDSol); return dynamics_rhs.head(sys.m); }
+    // assembled matrices
+    const system_type::rmat& M() const {return sys.H;}
+    const system_type::rmat& P() const {return sys.P;}
+    const system_type::rmat& J() const {return sys.J;}
+    const system_type::rmat& C() const {return sys.C;}
+
+    //@}
 
 protected:
+
+    system_type sys; ///< assembled equation system
+    bool storeDSol;
+    vec dynamics_solution;       ///< to store dv and lambda
+    vec dynamics_rhs;            ///< to store f and phi, the right-hand side
 
 	void alloc(const core::ExecParams& params);
 

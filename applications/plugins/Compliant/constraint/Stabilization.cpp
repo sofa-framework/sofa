@@ -43,7 +43,7 @@ void Stabilization::dynamics(SReal* dst, unsigned n) const {
 	map(dst, n) = -map(dst, n) / this->getContext()->getDt();
 	
 	const mask_type& mask = this->mask.getValue();
-	// zero for stabilized
+    // zero for stabilized, since the position error will be handled by the correction
 	unsigned i = 0;
 	for(SReal* last = dst + n; dst < last; ++dst, ++i) {
 		if( mask.empty() || mask[i] ) *dst = 0;
