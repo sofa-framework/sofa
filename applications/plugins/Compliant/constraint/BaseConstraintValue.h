@@ -11,11 +11,14 @@ namespace odesolver {
 /**
 
    BaseConstraintValue is in charge of producing right-hand side term for
-   constraints (the \phi vector in the doc), depending on cases:
-   elasticity, hard-stabilized constraints, restitution constraints.
+   constraints (the \phi vector in the doc).
+    Function dynamics(SReal* dst, unsigned n) produces the right-hand term for ODE solution, while function correction(SReal* dst, unsigned n) produces the right-hand term for velocity correction.
 
-   It exposes values to be mixed by the ODE solver based on
-   integration scheme.
+
+    These will have different implementations depending on cases: elasticity, hard-stabilized constraints, restitution constraints.
+
+
+    @author Maxime Tournier and Matthieu Nesme, 2013
 
 */
 
@@ -44,10 +47,10 @@ class SOFA_Compliant_API BaseConstraintValue : public core::objectmodel::BaseObj
         }
     }
 
-	// value for stabilization
+    /// Value for stabilization: right-hand term for velocity correction
     virtual void correction(SReal* dst, unsigned n) const = 0;
 	
-	// value for dynamics
+    /// Value for dynamics: right-hand term for time integration.
     virtual void dynamics(SReal* dst, unsigned n) const = 0;
 
 };
