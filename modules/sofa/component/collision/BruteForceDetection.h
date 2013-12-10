@@ -53,6 +53,7 @@ public:
     SOFA_CLASS2(BruteForceDetection, core::collision::BroadPhaseDetection, core::collision::NarrowPhaseDetection);
 
 private:
+    bool _is_initialized;
     sofa::helper::vector<core::CollisionModel*> collisionModels;
     Data<bool> bDraw;
 

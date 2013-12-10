@@ -43,7 +43,9 @@ int OBBIntTool::computeIntersection(TSphere<DataTypes> & sphere,OBB & box,SReal 
 
         detection->elem.first = sphere;
         detection->elem.second = box;
-        detection->id = (box.getCollisionModel()->getSize() > sphere.getCollisionModel()->getSize()) ? box.getIndex() : sphere.getIndex();
+        //detection->id = (box.getCollisionModel()->getSize() > sphere.getCollisionModel()->getSize()) ? box.getIndex() : sphere.getIndex();
+        detection->id = sphere.getIndex();
+
 
         return 1;
     }

@@ -25,6 +25,7 @@ Node* FailNode::findCommonParent( simulation::Node* node2 ) {fail();}
 void* FailNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, 
 				const std::string& path) const {
 	fail();
+    return 0x0;
 }
 
 void FailNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, 

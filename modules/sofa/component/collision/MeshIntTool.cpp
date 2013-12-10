@@ -79,7 +79,8 @@ int MeshIntTool::computeIntersection(Capsule & cap, Line & lin,double alarmDist,
 
     if(doCapLineInt(p1,p2,cap_rad,q1,q2,alarmDist,contactDist,contacts)){
         OutputVector::iterator detection = contacts->end()-1;
-        detection->id = cap.getCollisionModel()->getSize() > lin.getCollisionModel()->getSize() ? cap.getIndex() : lin.getIndex();
+        //detection->id = cap.getCollisionModel()->getSize() > lin.getCollisionModel()->getSize() ? cap.getIndex() : lin.getIndex();
+        detection->id = cap.getIndex();
         detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, lin);
         return 1;
     }
@@ -448,7 +449,8 @@ int MeshIntTool::computeIntersection(Triangle& tri,int flags,OBB & obb,double al
 
         detection->elem.first = tri;
         detection->elem.second = obb;
-        detection->id = (tri.getCollisionModel()->getSize() > obb.getCollisionModel()->getSize()) ? tri.getIndex() : obb.getIndex();
+        //detection->id = (tri.getCollisionModel()->getSize() > obb.getCollisionModel()->getSize()) ? tri.getIndex() : obb.getIndex();
+        detection->id = tri.getIndex();
 
         return 1;
     }
