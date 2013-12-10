@@ -29,6 +29,7 @@
 #include <iostream>
 #include <vector>
 
+#include <sofa/component/configurationsetting/AddRecordedCameraButtonSetting.h>
 #include <sofa/component/configurationsetting/AttachBodyButtonSetting.h>
 #include <sofa/component/configurationsetting/FixPickedParticleButtonSetting.h>
 #include <sofa/gui/SofaGUI.h>
@@ -158,6 +159,30 @@ public:
 protected:
     virtual std::string defaultPerformerType();
     virtual void configurePerformer(sofa::component::collision::InteractionPerformer* p);
+};
+
+class SOFA_SOFAGUI_API AddRecordedCameraOperation : public Operation
+{
+public:
+	AddRecordedCameraOperation() : setting(sofa::core::objectmodel::New<sofa::component::configurationsetting::AddRecordedCameraButtonSetting>())
+	{}
+	static std::string getDescription() {return "Save camera's view points for navigation ";}
+protected:
+	virtual std::string defaultPerformerType();
+	virtual void configurePerformer(sofa::component::collision::InteractionPerformer* p);
+	sofa::component::configurationsetting::AddRecordedCameraButtonSetting::SPtr setting;
+};
+
+class SOFA_SOFAGUI_API StartNavigationOperation : public Operation
+{
+public:
+	StartNavigationOperation() : setting(sofa::core::objectmodel::New<sofa::component::configurationsetting::StartNavigationButtonSetting>())
+	{}
+	static std::string getDescription() {return "Start navigation if camera's view points have been saved";}
+protected:
+	virtual std::string defaultPerformerType();
+	virtual void configurePerformer(sofa::component::collision::InteractionPerformer* p);
+	sofa::component::configurationsetting::StartNavigationButtonSetting::SPtr setting;
 };
 
 class SOFA_SOFAGUI_API InciseOperation : public Operation

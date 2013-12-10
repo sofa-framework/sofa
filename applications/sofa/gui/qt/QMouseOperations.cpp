@@ -27,6 +27,7 @@
 #include "QDisplayDataWidget.h"
 #include "DataWidget.h"
 #include <sofa/component/configurationsetting/AttachBodyButtonSetting.h>
+#include <sofa/component/configurationsetting/AddRecordedCameraButtonSetting.h>
 
 #ifdef SOFA_QT4
 #include <QVBoxLayout>
@@ -117,6 +118,38 @@ void QAttachOperation::configure(PickHandler *picker, sofa::component::configura
     }
     else AttachOperation::configure(picker,GetMouseId(button->button.getValue().getSelectedId()));
 }
+//*******************************************************************************************
+
+
+//*******************************************************************************************
+QAddRecordedCameraOperation::QAddRecordedCameraOperation()
+{}
+
+void QAddRecordedCameraOperation::configure(PickHandler *picker, sofa::component::configurationsetting::MouseButtonSetting* button)
+{
+    if (sofa::component::configurationsetting::AddRecordedCameraButtonSetting* cameraSetting=dynamic_cast<sofa::component::configurationsetting::AddRecordedCameraButtonSetting*>(button))
+    {
+        AddRecordedCameraOperation::configure(picker,GetMouseId(button->button.getValue().getSelectedId()));
+    }
+    else AddRecordedCameraOperation::configure(picker,GetMouseId(button->button.getValue().getSelectedId()));
+}
+
+//*******************************************************************************************
+
+
+//*******************************************************************************************
+QStartNavigationOperation::QStartNavigationOperation()
+{}
+
+void QStartNavigationOperation::configure(PickHandler *picker, sofa::component::configurationsetting::MouseButtonSetting* button)
+{
+    if (sofa::component::configurationsetting::StartNavigationButtonSetting* cameraSetting=dynamic_cast<sofa::component::configurationsetting::StartNavigationButtonSetting*>(button))
+    {
+        StartNavigationOperation::configure(picker,GetMouseId(button->button.getValue().getSelectedId()));
+    }
+    else StartNavigationOperation::configure(picker,GetMouseId(button->button.getValue().getSelectedId()));
+}
+
 //*******************************************************************************************
 
 

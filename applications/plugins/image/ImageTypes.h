@@ -657,10 +657,12 @@ protected:
     VecVisualModel visualModels;		// input models to draw on images
     const TransformTypes* transform;	// input transform
 
+    Coord point;				// Point double-clicked on slice 3D for navigation
     pCoord plane;				// input [x,y,z] coord of a selected planes. >=dimensions means no selection
     unsigned int time;			// input selected time
     Vec<2,T> clamp;				// input clamp values
 
+    bool newPointClicked;		// True when a point is double-clicked on an image plane
     bool imagePlaneDirty;			// Dirty when output plane images should be updated
     bool mergeChannels;		// multichannel image or norm ?
 
@@ -668,7 +670,7 @@ public:
     static const char* Name() { return "ImagePlane"; }
 
     ImagePlane()
-        :img(NULL), plane(pCoord(0,0,0)), time(0), clamp(Vec<2,T>(cimg::type<T>::min(),cimg::type<T>::max())) , imagePlaneDirty(true), mergeChannels(false) // set by user or other objects
+        :img(NULL), plane(pCoord(0,0,0)), time(0), clamp(Vec<2,T>(cimg::type<T>::min(),cimg::type<T>::max())) , newPointClicked(false), imagePlaneDirty(true), mergeChannels(false)//, point(0,0,0) // set by user or other objects
     {
     }
 
@@ -686,11 +688,23 @@ public:
     const Vec<2,T>& getClamp() const {return clamp;}
     imCoord getDimensions() const {  if(!this->img)  { imCoord c; c.fill(0); return c;} else return img->getDimensions(); }
     const bool& isImagePlaneDirty() const {return this->imagePlaneDirty;}
+    const bool& isnewPointClicked() const {return this->newPointClicked;}
 
     const bool& getMergeChannels() const {return this->mergeChannels;}
     void setMergeChannels(const bool _mergeChannels)  {   this->mergeChannels=_mergeChannels;    }
 
-    void setPlane(const pCoord& p)
+    void setNewPoint(const Coord& newPoint) 
+    {
+        point = newPoint;
+        this->newPointClicked=true;
+    }
+
+    const Coord& getNewPoint() const
+    {
+        return this->point;
+    }
+
+    void setPlane(const Coord& p)
     {
         bool different=false;
         for(unsigned int i=0; i<3; i++) if(plane[i]!=p[i]) { plane[i]=p[i]; different=true; }
@@ -724,6 +738,7 @@ public:
 
     void setImagePlaneDirty(const bool val) { imagePlaneDirty=val; }
 
+    void setNewPointClicked(const bool val) { newPointClicked = val;}
     // returns value at point (for the widget)
     CImg<T> get_point(const Coord& p) const
     {

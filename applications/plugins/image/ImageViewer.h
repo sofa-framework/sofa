@@ -36,13 +36,16 @@
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/component/visualmodel/VisualModelImpl.h>
+#include <sofa/component/visualmodel/RecordedCamera.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/simulation/common/AnimateBeginEvent.h>
+#include <sofa/simulation/common/Node.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/CollisionModel.h>
 #include <sofa/helper/system/glu.h>
+#include <sofa/helper/vector.h>
 
 namespace sofa
 {
@@ -124,6 +127,13 @@ public:
     typedef helper::WriteAccessor<Data< ImagePlaneType > > waPlane;
     Data< ImagePlaneType > plane;
     /**@}*/
+
+    // @name Vector of 3D points for navigation
+    /**@{*/
+    typedef helper::ReadAccessor <core::objectmodel::Data<helper::vector<Coord> > >raPoints;
+    typedef helper::WriteAccessor<core::objectmodel::Data<helper::vector<Coord> > >waPoints;
+    Data< helper::vector<Coord> > points;
+    /**@}*/
     
     // @name Vector visualization
     /**@{*/
@@ -135,7 +145,7 @@ public:
     Data <int> scroll;
 
     typedef component::visualmodel::VisualModelImpl VisuModelType;
-        
+    
     std::string getTemplateName() const  {	return templateName(this);	}
     static std::string templateName(const ImageViewer<ImageTypes>* = NULL)	{ return ImageTypes::Name(); }
     
@@ -144,6 +154,7 @@ public:
       , histo(initData(&histo, HistogramType(256,256,false),"histo",""))
       , transform(initData(&transform, TransformType(), "transform" , ""))
       , plane ( initData ( &plane, ImagePlaneType(), "plane" , "" ) )
+      , points ( initData ( &points, helper::vector<Coord> (), "points" , "" ) )
       , vectorVisualization ( initData (&vectorVisualization, defaulttype::VectorVis(), "vectorvis", ""))
       , scroll( initData (&scroll, int(0), "scrollDirection", "0 if no scrolling, 1 for up, 2 for down, 3 left, and 4 for right"))
     {
@@ -216,6 +227,7 @@ public:
         
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
     }
     
     
@@ -228,6 +240,7 @@ public:
         whisto->setMergeChannels(!rvis->getRgb());
         wplane->setMergeChannels(!rvis->getRgb());
         wplane->setClamp(whisto->getClamp());
+
     }
     
     virtual void handleEvent( sofa::core::objectmodel::Event* event)
@@ -321,6 +334,7 @@ public:
     {
         if (!vparams->displayFlags().getShowVisualModels()) return;
         
+        waPoints wpoints(this->points);
         waPlane wplane(this->plane);
         wplane->setTime( this->getContext()->getTime() );
         
@@ -342,6 +356,24 @@ public:
             updateTextures();
         }
         
+        if (wplane->isnewPointClicked())
+        {
+            raPlane rplane(this->plane);
+            Coord point = rplane->getNewPoint();
+            wpoints.push_back(point);
+            wplane->setNewPointClicked(false);
+
+            sofa::simulation::Node* root = dynamic_cast<simulation::Node*>(this->getContext());
+            if(root)
+            {
+                sofa::component::visualmodel::RecordedCamera* currentCamera = root->getNodeObject<sofa::component::visualmodel::RecordedCamera>();
+                if(currentCamera)
+                {	
+                    currentCamera->m_translationPositions.setValue(this->points.getValue());
+                }
+            }
+        }
+
         if(vectorVisualization.getValue().getShape())
 		{
             if(wplane->getDimensions()[3] == 3)

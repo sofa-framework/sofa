@@ -31,6 +31,8 @@
 #include <sofa/component/collision/FixParticlePerformer.h>
 #include <sofa/component/collision/RemovePrimitivePerformer.h>
 #include <sofa/component/collision/InciseAlongPathPerformer.h>
+#include <sofa/component/collision/AddRecordedCameraPerformer.h>
+#include <sofa/component/collision/StartNavigationPerformer.h>
 #ifdef SOFA_DEV
 #include <sofa/component/collision/AddFramePerformer.h>
 #if defined(WIN32) && defined(SOFA_HAVE_PLUGIN_Compliant)
@@ -73,6 +75,8 @@ helper::Creator<InteractionPerformer::InteractionPerformerFactory, RemovePrimiti
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, SuturePointPerformer<defaulttype::Vec3dTypes> >  SuturePointPerformerVec3dClass("SuturePoints",true);
 #endif
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, InciseAlongPathPerformer>  InciseAlongPathPerformerClass("InciseAlongPath");
+helper::Creator<InteractionPerformer::InteractionPerformerFactory, AddRecordedCameraPerformer> AddRecordedCameraPerformerClass("AddRecordedCamera");
+helper::Creator<InteractionPerformer::InteractionPerformerFactory, StartNavigationPerformer> StartNavigationPerformerClass("StartNavigation");
 #endif
 
 namespace gui
@@ -319,7 +323,24 @@ void AddFrameOperation::configurePerformer(sofa::component::collision::Interacti
     Operation::configurePerformer(p);
 }
 
+
 //*******************************************************************************************
+std::string AddRecordedCameraOperation::defaultPerformerType() { return "AddRecordedCamera"; }
+
+void AddRecordedCameraOperation::configurePerformer(sofa::component::collision::InteractionPerformer* p)
+{
+    Operation::configurePerformer(p);
+}
+
+
+//*******************************************************************************************
+std::string StartNavigationOperation::defaultPerformerType() { return "StartNavigation"; }
+
+void StartNavigationOperation::configurePerformer(sofa::component::collision::InteractionPerformer* p)
+{
+    Operation::configurePerformer(p);
+}
+
 
 //*******************************************************************************************
 std::string AddSutureOperation::defaultPerformerType() { return "SuturePoints"; }

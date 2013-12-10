@@ -157,6 +157,7 @@ signals:
     void roiResized();		// to synchronize different views (scrollBars on/off)
 
     void sliceModified();	// when the slice index is modified using slider or wheel -> set widget dirty
+    void onMouseDoubleClicked(const sofa::defaulttype::Vec3d&);
     void onPlane(const unsigned int,const sofa::defaulttype::Vec3d&,const sofa::defaulttype::Vec3d&,const QString&);  // when the mouse is on image -> update info
 
 public:
@@ -223,7 +224,11 @@ protected:
         QGraphicsView::mouseDoubleClickEvent(mouseEvent);
         if (mouseEvent->modifiers()==Qt::ControlModifier)  {  setRoi(QRectF(0,0,image.width(),image.height()));  emit roiResized(); }
         
-       emit mousedoubleclickevent();
+        QPointF pt(this->mapToScene(mouseEvent->pos()));
+        pt.setX(pt.x()-0.5); pt.setY(pt.y()-0.5);
+        this->fromGraph(pt,true); // update info
+
+        emit mousedoubleclickevent();
     }
 
     void mouseMoveEvent(QMouseEvent *mouseEvent)
@@ -263,6 +268,10 @@ class TImagePlaneGraphWidget: public ImagePlaneGraphWidget
     typedef typename ImagePlanetype::Coord Coord;
 
 protected:
+    Coord point;
+    // Points 2D to display double clicked points on slices
+    helper::vector<Coord> tab2DPoint; 
+    bool newPointClicked;
     const ImagePlanetype* imageplane;
     unsigned int backupindex;
     unsigned int indexmax;
@@ -270,7 +279,7 @@ protected:
 
 public:
     TImagePlaneGraphWidget(QWidget * parent,unsigned int _axis,const ImagePlanetype& d0)
-        :ImagePlaneGraphWidget(parent),imageplane(NULL),indexmax(0)
+        :ImagePlaneGraphWidget(parent),imageplane(NULL),indexmax(0), newPointClicked (false)
     {
         this->axis=_axis; 		if(this->axis>2) this->axis=2;
         this->index=0;
@@ -312,9 +321,15 @@ public:
         pCoord plane=d.getPlane();
         plane[this->axis]=this->index;
         d.setPlane(plane);
+
+        if (newPointClicked)
+        {
+            d.setNewPoint(point);
+            newPointClicked = false;
+        }
     }
 
-    void fromGraph(const QPointF &pt,const bool /*clicked*/)
+    void fromGraph(const QPointF &pt,const bool isMouseClicked)
     {
         if(!this->imageplane) return;
         Coord P;
@@ -336,6 +351,17 @@ public:
         }
 
         emit onPlane(this->axis,P,p,tval);
+
+        if (isMouseClicked)
+        {
+            newPointClicked = true;
+            point = p;
+           
+            CImg<unsigned char> plane = convertToUC( this->imageplane->get_slice(this->index, this->axis).cut(imageplane->getClamp()[0],imageplane->getClamp()[1]) );
+            this->tab2DPoint.push_back(P);
+            this->image.setPixel( pt.x(),pt.y() ,qRgb(255,0 ,0));
+            emit onMouseDoubleClicked(p);
+        }
     }
 
     void fromOption(const unsigned int i)
@@ -370,6 +396,21 @@ public:
                 for( int x=0; x<this->image.width(); x++)
                     if(slicedModels(x,y,0,0) || slicedModels(x,y,0,1) || slicedModels(x,y,0,2))
                         this->image.setPixel ( x, y,  qRgb(slicedModels(x,y,0,0),slicedModels(x,y,0,1) ,slicedModels(x,y,0,2)));
+
+        // Display selected pixel on the image plane
+        for (int i=0; i <tab2DPoint.size(); ++i)
+        {
+            Coord P = tab2DPoint[i];
+            if( this->axis==0 && this->index == P.x())
+            this->image.setPixel(QPoint(P.z(),P.y()),qRgb(255,0 ,0));
+
+            else if(this->axis==1 && this->index == P.y())
+            this->image.setPixel(QPoint(P.x(),P.z()),qRgb(255,0 ,0));
+
+            else if (this->axis==2 && this->index == P.z()) 
+            this->image.setPixel(QPoint(P.x(),P.y()),qRgb(255,0 ,0));
+
+        }
 
         Render();
     }
@@ -491,10 +532,45 @@ public slots:
 protected:
     QLabel *label1;
     QLabel *label2;
-    QLabel *label3;
+    QLabel *label3;	
 };
 
+//-----------------------------------------------------------------------------------------------//
+//  show the list of double-clicked points used for navigation
+//-----------------------------------------------------------------------------------------------//
 
+class ImagePlaneListPointWidget: public QWidget
+{
+    Q_OBJECT
+
+public:
+
+    ImagePlaneListPointWidget(QWidget *parent)
+        : QWidget(parent)
+    {
+        textEdit = new QTextEdit (this);
+        indexPoint = 1;
+
+        QHBoxLayout *layout = new QHBoxLayout(this);
+        layout->add(textEdit);
+    }
+
+    public slots:
+
+        void onMouseDoubleClicked(const sofa::defaulttype::Vec3d& p)
+        {
+            QString newText ("\n Point " + QString().setNum((int)(indexPoint)) + " [ " + QString().setNum((float)p[0]) + "," + QString().setNum((float)p[1]) + "," +QString().setNum((float)p[2]) + " ]" );
+            QString textToWrite = textEdit->toPlainText() + newText;
+            textEdit->clear();
+            textEdit->setText(textToWrite);
+            indexPoint ++;
+        }
+
+protected:
+    QTextEdit *textEdit;
+
+    int indexPoint;
+};
 
 
 //-----------------------------------------------------------------------------------------------//
@@ -534,14 +610,16 @@ public:
 
     ImagePlaneInfoWidget* info;
 
+    ImagePlaneListPointWidget* pointList;
+
     QCheckBox* togglemodels;
 
 
     Timageplane_data_widget_container()
         : optionsXY(NULL), graphXY(NULL),
           optionsXZ(NULL), graphXZ(NULL),
-          optionsZY(NULL), graphZY(NULL),
-          container_layout(NULL), info(NULL)
+          optionsZY(NULL), graphZY(NULL), 
+          container_layout(NULL), info(NULL), pointList(NULL)
     {}
 
     bool createLayout( DataWidget* parent )
@@ -561,6 +639,7 @@ public:
     bool createWidgets(DataWidget* parent, const ImagePlanetype& d, bool /*readOnly*/)
     {
         info = new ImagePlaneInfoWidget(parent);
+        pointList = new ImagePlaneListPointWidget(parent);
 
         togglemodels = new QCheckBox(QString("Visual Models"),parent); togglemodels->setChecked(true);
 
@@ -569,6 +648,7 @@ public:
             graphXY = new Graph(parent,2,d);
             QObject::connect(togglemodels, SIGNAL( stateChanged(int) ), graphXY, SLOT( togglemodels(int) ) );
             QObject::connect(graphXY,SIGNAL(onPlane(const unsigned int,const sofa::defaulttype::Vec3d&,const sofa::defaulttype::Vec3d&,const QString&)),info,SLOT(onPlane(const unsigned int,const sofa::defaulttype::Vec3d&,const sofa::defaulttype::Vec3d&,const QString&)));
+            QObject::connect(graphXY,SIGNAL(onMouseDoubleClicked(const sofa::defaulttype::Vec3d&)),pointList,SLOT(onMouseDoubleClicked(const sofa::defaulttype::Vec3d&)));
             if(d.getDimensions()[2]>1)
             {
                 optionsXY = new Options(graphXY,parent,0,graphXY->getIndexMax(),graphXY->getIndex(),optionheight);
@@ -583,6 +663,7 @@ public:
             graphXZ = new Graph(parent,1,d);
             QObject::connect(togglemodels, SIGNAL( stateChanged(int) ), graphXZ, SLOT( togglemodels(int) ) );
             QObject::connect(graphXZ,SIGNAL(onPlane(const unsigned int,const sofa::defaulttype::Vec3d&,const sofa::defaulttype::Vec3d&,const QString&)),info,SLOT(onPlane(const unsigned int,const sofa::defaulttype::Vec3d&,const sofa::defaulttype::Vec3d&,const QString&)));
+            QObject::connect(graphXZ,SIGNAL(onMouseDoubleClicked(const sofa::defaulttype::Vec3d&)),pointList,SLOT(onMouseDoubleClicked(const sofa::defaulttype::Vec3d&)));
             if(d.getDimensions()[1]>1)
             {
                 optionsXZ = new Options(graphXZ,parent,0,graphXZ->getIndexMax(),graphXZ->getIndex(),optionheight);
@@ -597,6 +678,7 @@ public:
             graphZY = new Graph(parent,0,d);
             QObject::connect(togglemodels, SIGNAL( stateChanged(int) ), graphZY, SLOT( togglemodels(int) ) );
             QObject::connect(graphZY,SIGNAL(onPlane(const unsigned int,const sofa::defaulttype::Vec3d&,const sofa::defaulttype::Vec3d&,const QString&)),info,SLOT(onPlane(const unsigned int,const sofa::defaulttype::Vec3d&,const sofa::defaulttype::Vec3d&,const QString&)));
+            QObject::connect(graphZY,SIGNAL(onMouseDoubleClicked(const sofa::defaulttype::Vec3d&)),pointList,SLOT(onMouseDoubleClicked(const sofa::defaulttype::Vec3d&)));
             if(d.getDimensions()[0]>1)
             {
                 optionsZY = new Options(graphZY,parent,0,graphZY->getIndexMax(),graphZY->getIndex(),optionheight);
@@ -661,6 +743,7 @@ public:
         if(graphZY) layout->addWidget(graphZY,0,1);
         if(optionsZY) layout->addWidget(optionsZY,1,1);
 
+        layout->addWidget(pointList,2,1);
         container_layout->addLayout(layout);
 
         container_layout->add(togglemodels);
@@ -715,6 +798,10 @@ public:
         if(sXY) QObject::connect(sXY,SIGNAL(sliceModified()), this, SLOT(setWidgetDirty()));
         if(sXZ) QObject::connect(sXZ,SIGNAL(sliceModified()), this, SLOT(setWidgetDirty()));
         if(sZY) QObject::connect(sZY,SIGNAL(sliceModified()), this, SLOT(setWidgetDirty()));
+
+        if(sXY) QObject::connect(sXY,SIGNAL(mousedoubleclickevent()), this, SLOT(setWidgetDirty()));
+        if(sXZ) QObject::connect(sXZ,SIGNAL(mousedoubleclickevent()), this, SLOT(setWidgetDirty()));
+        if(sZY) QObject::connect(sZY,SIGNAL(mousedoubleclickevent()), this, SLOT(setWidgetDirty()));
 
         return b;
     }

@@ -37,6 +37,8 @@ set(HEADER_FILES
     ../collision/CuttingPoint.h 
     ../collision/AddFramePerformer.h 
     ../collision/AddFramePerformer.inl 
+    ../collision/AddRecordedCameraPerformer.h 
+    ../collision/StartNavigationPerformer.h
     ../controller/MechanicalStateControllerOmni.h 
 	../controller/MechanicalStateControllerOmni.inl 
     ../controller/NodeToggleController.h 
@@ -69,6 +71,8 @@ set(SOURCE_FILES
     ../collision/TopologicalChangeManager.cpp 
     ../collision/CuttingPoint.cpp 
     ../collision/AddFramePerformer.cpp 
+    ../collision/AddRecordedCameraPerformer.cpp
+    ../collision/StartNavigationPerformer.cpp
     ../controller/MechanicalStateControllerOmni.cpp 
     ../controller/NodeToggleController.cpp 
 

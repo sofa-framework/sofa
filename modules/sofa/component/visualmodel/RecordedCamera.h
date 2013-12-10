@@ -73,6 +73,8 @@ private:
     helper::gl::Trackball currentTrackball;
 
     void moveCamera_rotation();
+    void moveCamera_translation();
+    void moveCamera_navigation();
 
     // Kepp functions for mouse interaction (TODO: removed them and allow interactive and recorded camera in same scene)
     void moveCamera_mouse(int x, int y);
@@ -80,6 +82,9 @@ private:
     void processMouseEvent(core::objectmodel::MouseEvent* me);
 
     void configureRotation();
+    void configureTranslation();
+    void configureNavigation();
+    void initializeViewUp();
     void drawRotation();
 
 public:
@@ -87,6 +92,8 @@ public:
     Data<SReal> m_endTime;
 
     Data <bool> m_rotationMode;
+    Data <bool> m_translationMode;
+    Data <bool> m_navigationMode;
     Data <SReal> m_rotationSpeed;
     Data <Vec3> m_rotationCenter;
     Data <Vec3> m_rotationStartPoint;
@@ -95,18 +102,20 @@ public:
     Data <Vec3> m_cameraUp;
 
     Data <bool> p_drawRotation;
+    Data <bool> p_drawTranslation;
 
-    //Data <SReal> m_translationSpeed;
-    //Data <sofa::helper::vector<Vec3> > m_translationPositions;
-    //Data <sofa::helper::vector<Vec3> > m_translationOrientations;
+    Data <sofa::helper::vector<Vec3> > m_translationPositions;
+    Data <sofa::helper::vector<Quat> > m_translationOrientations;
 
 protected:
     double m_nextStep;
     double m_angleStep;
     //double m_initAngle;
     //double m_radius;
-    bool firstIteration;
-
+    bool firstIterationforRotation;
+    bool firstIterationforTranslation;
+    bool firstIterationforNavigation;
+  
     sofa::helper::vector <Vec3> m_rotationPoints;
 };
 
