@@ -209,7 +209,8 @@ int CapsuleIntTool::computeIntersection(Capsule& cap, OBB& obb,SReal alarmDist,S
 
         detection->elem.first = cap;
         detection->elem.second = obb;
-        detection->id = (cap.getCollisionModel()->getSize() > obb.getCollisionModel()->getSize()) ? cap.getIndex() : obb.getIndex();
+        //detection->id = (cap.getCollisionModel()->getSize() > obb.getCollisionModel()->getSize()) ? cap.getIndex() : obb.getIndex();
+        detection->id = cap.getIndex();
 
         return 1;
     }

@@ -31,6 +31,8 @@
 #include <sofa/simulation/common/CollisionEndEvent.h>
 #include <sofa/simulation/common/IntegrateBeginEvent.h>
 #include <sofa/simulation/common/IntegrateEndEvent.h>
+#include <sofa/simulation/common/PropagateEventVisitor.h>
+
 
 #include <sofa/helper/AdvancedTimer.h>
 
@@ -84,9 +86,27 @@ void AnimateVisitor::fwdInteractionForceField(simulation::Node*, core::behavior:
 
 void AnimateVisitor::processCollisionPipeline(simulation::Node* node, core::collision::Pipeline* obj)
 {
-    sofa::helper::AdvancedTimer::stepBegin("Collision",obj);
+     sofa::helper::AdvancedTimer::stepBegin("Collision",obj);
+
+    sofa::helper::AdvancedTimer::stepBegin("begin collision",obj);
+    {
+        CollisionBeginEvent evBegin;
+        PropagateEventVisitor eventPropagation( params /* PARAMS FIRST */, &evBegin);
+        eventPropagation.execute(node->getContext());
+    }
+    sofa::helper::AdvancedTimer::stepEnd("begin collision",obj);
+
     CollisionVisitor act(this->params);
-    node->execute(&act);
+    node->execute(&act);    
+
+    sofa::helper::AdvancedTimer::stepBegin("end collision",obj);
+    {
+        CollisionEndEvent evEnd;
+        PropagateEventVisitor eventPropagation( params /* PARAMS FIRST */, &evEnd);
+        eventPropagation.execute(node->getContext());
+    }
+    sofa::helper::AdvancedTimer::stepEnd("end collision",obj);
+
     sofa::helper::AdvancedTimer::stepEnd("Collision",obj);
 }
 

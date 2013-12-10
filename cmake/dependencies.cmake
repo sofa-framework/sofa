@@ -32,6 +32,13 @@ if(SOFA-EXTERNAL_GEOMETRIC_TOOLS)
         # try to replace with : RegisterProjects
 endif()
 
+#Bullet
+# if(SOFA-EXTERNAL_BULLET)
+# 	add_subdirectory("${SOFA_EXTERNAL_BULLET_PATH}")
+#         # try to replace with : RegisterProjects
+# endif()
+#RegisterProjects("LinearMath" "BulletCollisions" "BulletDynamics" PATH "${SOFA_EXTERNAL_BULLET_PATH}")
+
 ## google test
 if(SOFA-MISC_BUILD_GTEST)
 	add_subdirectory("${SOFA_EXTLIBS_DIR}/gtest")
@@ -139,7 +146,7 @@ if(WIN32)
 	foreach(sharedObject ${sharedObjects})
 		file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
 	endforeach()
-	
+
 	## qt dlls
 	if(NOT SOFA-EXTERNAL_QT_PATH STREQUAL "")
 		file(GLOB sharedObjects "${SOFA-EXTERNAL_QT_PATH}/bin/*.dll")
@@ -147,26 +154,26 @@ if(WIN32)
 			file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
 		endforeach()
 	endif()
-	
+
 	## boost dlls
 	if(SOFA-EXTERNAL_BOOST AND NOT SOFA-EXTERNAL_BOOST_PATH STREQUAL "")
 		set(BOOST_LIBDIR "${SOFA-EXTERNAL_BOOST_PATH}/lib")
-	
+
 		file(GLOB sharedObjects "${BOOST_LIBDIR}/boost_graph*.dll")
 		foreach(sharedObject ${sharedObjects})
 			file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
 		endforeach()
-		
+
 		file(GLOB sharedObjects "${BOOST_LIBDIR}/boost_thread*.dll")
 		foreach(sharedObject ${sharedObjects})
 			file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
 		endforeach()
-		
+
 		file(GLOB sharedObjects "${BOOST_LIBDIR}/boost_chrono*.dll")
 		foreach(sharedObject ${sharedObjects})
 			file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
 		endforeach()
-		
+
 		file(GLOB sharedObjects "${BOOST_LIBDIR}/boost_system*.dll")
 		foreach(sharedObject ${sharedObjects})
 			file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
@@ -184,6 +191,6 @@ if(NOT CONFIG_FILES_ALREADY_COPIED)
 	foreach(configFile ${configFiles})
 		file(COPY ${configFile} DESTINATION "${SOFA_BUILD_DIR}/share/config")
 	endforeach()
-	
+
 	set(CONFIG_FILES_ALREADY_COPIED 1 CACHE INTERNAL "Config files copied" FORCE)
 endif()

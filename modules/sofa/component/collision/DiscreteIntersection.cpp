@@ -68,7 +68,7 @@ DiscreteIntersection::DiscreteIntersection()
     intersectors.add<CapsuleModel,RigidSphereModel,DiscreteIntersection>(this);
     intersectors.add<RigidSphereModel,OBBModel,DiscreteIntersection>(this);
 
-    IntersectorFactory::getInstance()->addIntersectors(this);
+    //IntersectorFactory::getInstance()->addIntersectors(this);
 }
 
 /// Return the intersector class handling the given pair of collision models, or NULL if not supported.

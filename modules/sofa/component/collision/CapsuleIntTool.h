@@ -53,7 +53,8 @@ int CapsuleIntTool::computeIntersection(Capsule & cap, TSphere<DataTypes> & sph,
         sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
 
         detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, sph);
-        detection->id = (cap.getCollisionModel()->getSize() > sph.getCollisionModel()->getSize()) ? cap.getIndex() : sph.getIndex();
+        //detection->id = (cap.getCollisionModel()->getSize() > sph.getCollisionModel()->getSize()) ? cap.getIndex() : sph.getIndex();
+        detection->id = cap.getIndex();
 
         detection->normal = PQ;
         detection->value = detection->normal.norm();
@@ -76,7 +77,8 @@ int CapsuleIntTool::computeIntersection(Capsule & cap, TSphere<DataTypes> & sph,
         sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
 
         detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, sph);
-        detection->id = (cap.getCollisionModel()->getSize() > sph.getCollisionModel()->getSize()) ? cap.getIndex() : sph.getIndex();
+        //detection->id = (cap.getCollisionModel()->getSize() > sph.getCollisionModel()->getSize()) ? cap.getIndex() : sph.getIndex();
+        detection->id = cap.getIndex();
 
         detection->normal = PQ;
         detection->value = detection->normal.norm();
@@ -100,7 +102,8 @@ int CapsuleIntTool::computeIntersection(Capsule & cap, TSphere<DataTypes> & sph,
         sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
 
         detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, sph);
-        detection->id = (cap.getCollisionModel()->getSize() > sph.getCollisionModel()->getSize()) ? cap.getIndex() : sph.getIndex();
+        //detection->id = (cap.getCollisionModel()->getSize() > sph.getCollisionModel()->getSize()) ? cap.getIndex() : sph.getIndex();
+        detection->id = cap.getIndex();
 
         detection->normal = PQ;
         detection->value = detection->normal.norm();

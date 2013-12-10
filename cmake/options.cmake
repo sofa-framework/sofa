@@ -3,7 +3,7 @@ include(CMakeDependentOption)
 # hide unused default cmake variables
 # CHG: disable as this breaks build of external applications
 # set(CMAKE_INSTALL_PREFIX "${SOFA_BUILD_DIR}" CACHE INTERNAL "Sofa install path (not used yet)")
-	
+
 set(compilerDefines)
 
 set(SOFA-EXTERNAL_INCLUDE_DIR ${SOFA-EXTERNAL_INCLUDE_DIR} CACHE PATH "Include path for pre-compiled dependencies outside of the Sofa directory")
@@ -70,6 +70,10 @@ if(SOFA-EXTERNAL_TINYXML_PATH STREQUAL "${TINYXML_PATH}")
 else()
 	set(SOFA-EXTERNAL_TINYXML 1 CACHE INTERNAL "Use the system / user compiled tinyxml library instead of miniBoost" FORCE)
 endif()
+
+## bullet
+#set(BULLET_PATH "${SOFA_EXTLIBS_DIR}/bullet-2.82-r2704")
+#set(SOFA-EXTERNAL_BULLET_PATH "${BULLET_PATH}" CACHE PATH "Bullet path, set to blank if you want to use the bullet you built on your system or set a path if you want to use a compiled bullet")
 
 #set(SOFA-EXTERNAL_TINYXML_INCLUDE_DIR "" CACHE PATH "For pre-compiled tinyxml: library where headers are available")
 #set(SOFA-EXTERNAL_TINYXML_LIBRARY "" CACHE PATH "For pre-compiled tinyxml: release-mode library name")
@@ -178,16 +182,16 @@ option(SOFA-APPLICATION_SOFA_TYPEDEFS "Build SofaTypedefs application " OFF)
 option(SOFA-APPLICATION_SOFA_VERIFICATION "Build SofaVerification application " OFF)
 
 ## tutorial
-if(PS3) 
-     option(SOFA-TUTORIAL_CHAIN_HYBRID "Build Chain hybrid tutorial" OFF) 
-     option(SOFA-TUTORIAL_COMPOSITE_OBJECT "Build Composite object tutorial" OFF) 
-     option(SOFA-TUTORIAL_HOUSE_OF_CARDS "Build House of cards tutorial" OFF) 
-     option(SOFA-TUTORIAL_MIXED_PENDULUM "Build Mixed Pendulum tutorial" OFF) 
-     option(SOFA-TUTORIAL_ONE_PARTICLE "Build One particle tutorial" OFF) 
-     #option(SOFA-TUTORIAL_ONE_PARTICLE_WITH_SOFA_TYPEDEFS "Build One particle with sofa typedefs tutorial" OFF) 
-     option(SOFA-TUTORIAL_ONE_TETRAHEDRON "Build One tetrahedron tutorial" OFF) 
-     #option(SOFA-TUTORIAL_ANATOMY_MODELLING "Build Anatomy modelling tutorial" OFF) 
-else() 
+if(PS3)
+     option(SOFA-TUTORIAL_CHAIN_HYBRID "Build Chain hybrid tutorial" OFF)
+     option(SOFA-TUTORIAL_COMPOSITE_OBJECT "Build Composite object tutorial" OFF)
+     option(SOFA-TUTORIAL_HOUSE_OF_CARDS "Build House of cards tutorial" OFF)
+     option(SOFA-TUTORIAL_MIXED_PENDULUM "Build Mixed Pendulum tutorial" OFF)
+     option(SOFA-TUTORIAL_ONE_PARTICLE "Build One particle tutorial" OFF)
+     #option(SOFA-TUTORIAL_ONE_PARTICLE_WITH_SOFA_TYPEDEFS "Build One particle with sofa typedefs tutorial" OFF)
+     option(SOFA-TUTORIAL_ONE_TETRAHEDRON "Build One tetrahedron tutorial" OFF)
+     #option(SOFA-TUTORIAL_ANATOMY_MODELLING "Build Anatomy modelling tutorial" OFF)
+else()
 	option(SOFA-TUTORIAL_CHAIN_HYBRID "Build Chain hybrid tutorial" ON)
 	option(SOFA-TUTORIAL_COMPOSITE_OBJECT "Build Composite object tutorial" ON)
 	option(SOFA-TUTORIAL_HOUSE_OF_CARDS "Build House of cards tutorial" OFF)
@@ -259,7 +263,7 @@ option(SOFA-LIB_COMPONENT_VOLUMETRIC_DATA "" ON)
 
 option(SOFA-LIB_COMPONENT_SOFA_PML "" OFF)
 
-option(SOFA-LIB_COMPONENT_GPU_OPENCL "" OFF)	
+option(SOFA-LIB_COMPONENT_GPU_OPENCL "" OFF)
 
 # i don't know if we mark default components as advanced or not
 # it would enhance readability but thinking to look for
@@ -368,7 +372,7 @@ if(XBOX)
 		unset(SOFA-EXTERNAL_BOOST CACHE)
 		list(REMOVE_ITEM compilerDefines SOFA_HAVE_BOOST)
 	endif()
-	
+
 	# eigen - cpuid identification code does not exist on the platform, it's cleaner to disable it here.
 	list(APPEND compilerDefines EIGEN_NO_CPUID)
 endif()
@@ -380,7 +384,7 @@ endif()
 ##############
 #### CUDA ####
 ##############
-option(SOFA-CUDA_VERBOSE_PTXAS "SOFA-CUDA_VERBOSE_PTXAS" OFF)	
+option(SOFA-CUDA_VERBOSE_PTXAS "SOFA-CUDA_VERBOSE_PTXAS" OFF)
 if(SOFA-CUDA_VERBOSE_PTXAS)
 	set(VERBOSE_PTXAS --ptxas-options=-v)
 endif()

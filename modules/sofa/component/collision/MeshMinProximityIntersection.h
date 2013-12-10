@@ -305,7 +305,8 @@ int MeshMinProximityIntersection::computeIntersection(TSphere<T>& e1, Point& e2,
     contacts->resize(contacts->size()+1);
     sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
-    detection->id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
+    //detection->id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
+    detection->id = e1.getIndex();
     detection->normal=PQ;
     detection->value = detection->normal.norm();
     if(detection->value>1e-15)
