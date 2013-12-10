@@ -16,6 +16,12 @@ namespace sofa {
 
 namespace simulation {
 struct AssemblyVisitor;
+
+namespace common {
+class MechanicalOperations;
+class VectorOperations;
+}
+
 }
 
 namespace component {
@@ -68,7 +74,7 @@ namespace odesolver {
 
 
   A word on Rayleigh damping:
-  It is not handle at the solver level (contrarly to ImplicitEulerSolver) no to pollutate. It can be added directly from the ForceFields and Masses components.
+  It is not handled at the solver level (contrarly to ImplicitEulerSolver) in order not to pollutate. It can be added directly from the ForceFields and Masses components.
   Note that in that case, the Rayleigh damping does NOT consider the geometric stiffnesses.
   It could be possible to bias the child force used to compute the geometric stiffness but it would imposed to each forcefield to compute a weighted "rayleigh force" in addition to the regular force. It is neglicted for now.
 */
@@ -81,7 +87,7 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
 				
     virtual void init();
 
-	// broken
+	// broken, will go soon
     virtual void solve(const core::ExecParams* params,
 	                   double dt, 
                        core::MultiVecCoordId posId,
@@ -91,7 +97,7 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
                        simulation::AssemblyVisitor *vis
                        );
 
-	// broken
+	// broken, will go soon
     virtual void solve(const core::ExecParams* params,
                        double dt,
                        core::MultiVecCoordId posId,
@@ -157,7 +163,14 @@ public:
 	// compute forces
 	virtual void compute_forces(const core::MechanicalParams& params,
 								const simulation::AssemblyVisitor& vis);
-	
+
+	// compute forces, legacy version. WARNING: does not seem to work
+	// with forcefields under multimappings ! this is a DAGNode issue,
+	// unresolved as of now.
+	virtual void compute_forces(const core::MechanicalParams& params);
+
+
+	// linear rhs for dynamics/correction steps
 	virtual void rhs_dynamics(vec& res, const system_type& sys, const vec& v) const;
 	virtual void rhs_correction(vec& res, const system_type& sys) const;
 	
