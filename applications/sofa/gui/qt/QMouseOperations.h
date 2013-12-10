@@ -82,6 +82,21 @@ protected:
     DataWidget *showSizeFactorWidget;
 };
 
+class QAddRecordedCameraOperation : public QMouseOperation, public AddRecordedCameraOperation
+{
+    Q_OBJECT
+public:
+    QAddRecordedCameraOperation();
+    void configure(PickHandler *picker, sofa::component::configurationsetting::MouseButtonSetting* button);
+};
+
+class QStartNavigationOperation : public QMouseOperation, public StartNavigationOperation  
+{
+    Q_OBJECT
+public:
+    QStartNavigationOperation();
+    void configure(PickHandler *picker, sofa::component::configurationsetting::MouseButtonSetting* button);
+};
 
 class QFixOperation : public QMouseOperation, public FixOperation
 {

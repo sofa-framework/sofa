@@ -4,6 +4,7 @@ set(HEADER_FILES
 
     ../initGraphComponent.h 
     ../configurationsetting/AddFrameButtonSetting.h 
+    ../configurationsetting/AddRecordedCameraButtonSetting.h 
     ../configurationsetting/AttachBodyButtonSetting.h 
     ../configurationsetting/BackgroundSetting.h 
     ../configurationsetting/FixPickedParticleButtonSetting.h 
@@ -23,6 +24,7 @@ set(SOURCE_FILES
 
     ../initGraphComponent.cpp 
     ../configurationsetting/AddFrameButtonSetting.cpp 
+    ../configurationsetting/AddRecordedCameraButtonSetting.cpp 
     ../configurationsetting/AttachBodyButtonSetting.cpp 
     ../configurationsetting/BackgroundSetting.cpp 
     ../configurationsetting/FixPickedParticleButtonSetting.cpp 

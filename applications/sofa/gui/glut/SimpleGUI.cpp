@@ -381,6 +381,8 @@ SimpleGUI::SimpleGUI()
 
     //Register the different Operations possible
     RegisterOperation("Attach").add< AttachOperation >();
+	RegisterOperation("Add recorded camera").add< AddRecordedCameraOperation >();
+	RegisterOperation("Start navigation").add< StartNavigationOperation >();
     RegisterOperation("Fix").add< FixOperation >();
     RegisterOperation("Incise").add< InciseOperation >();
     RegisterOperation("Remove").add< TopologyOperation >();

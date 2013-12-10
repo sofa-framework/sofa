@@ -55,7 +55,7 @@ RecordedCamera::RecordedCamera()
     , isMoving(false)
     , m_startTime(initData(&m_startTime, (SReal) 0.0 , "startTime", "Time when the camera moves will start"))
     , m_endTime(initData(&m_endTime, (SReal)200 , "endTime", "Time when the camera moves will end (or loop)"))
-    , m_rotationMode(initData(&m_rotationMode, (bool)true , "rotationMode", "If true, rotation will be performed"))
+    , m_rotationMode(initData(&m_rotationMode, (bool)false , "rotationMode", "If true, rotation will be performed"))
     , m_rotationSpeed(initData(&m_rotationSpeed, (SReal)0.1 , "rotationSpeed", "rotation Speed"))
     , m_rotationCenter(initData(&m_rotationCenter, "rotationCenter", "Rotation center coordinates"))
     , m_rotationStartPoint(initData(&m_rotationStartPoint, "rotationStartPoint", "Rotation start position coordinates"))
@@ -63,13 +63,17 @@ RecordedCamera::RecordedCamera()
     , m_rotationAxis(initData(&m_rotationAxis, Vec3(0,1,0), "rotationAxis", "Rotation axis"))
     , m_cameraUp(initData(&m_cameraUp, Vec3(0,0,0), "cameraUp", "Camera Up axis"))
     , p_drawRotation(initData(&p_drawRotation, (bool)false , "drawRotation", "If true, will draw the rotation path"))
-    //, m_translationSpeed(initData(&m_translationSpeed, (SReal)0.1 , "translationSpeed", "Pan Speed"))
-    //, m_translationPositions(initData(&m_translationPositions, "translationPositions", "Pan Speed"))
-    //, m_translationOrientations(initData(&m_translationOrientations, "translationOrientations", "Pan Speed"))
+    , p_drawTranslation(initData(&p_drawTranslation, (bool)false , "drawTranslation", "If true, will draw the translation path"))
+    , m_translationMode(initData(&m_translationMode, (bool)false , "translationMode", "If true, translation will be performed"))
+    , m_navigationMode(initData(&m_navigationMode, (bool)false , "navigationMode", "If true, navigation will be performed"))
+    , m_translationPositions(initData(&m_translationPositions, "cameraPositions", "Intermediate camera's positions"))
+    , m_translationOrientations(initData(&m_translationOrientations, "cameraOrientations", "Intermediate camera's orientations"))
     , m_nextStep(0.0)
     , m_angleStep(0.0)
     //, m_initAngle(0.0)
-    ,firstIteration(true)
+    ,firstIterationforRotation(true)
+    ,firstIterationforTranslation(true)
+    ,firstIterationforNavigation(true)
 {
     this->f_listening.setValue(true);
 }
@@ -88,6 +92,7 @@ void RecordedCamera::init()
 
     if (p_drawRotation.getValue())
         this->drawRotation();
+
 }
 
 
@@ -105,7 +110,62 @@ void RecordedCamera::reset()
     m_nextStep = m_startTime.getValue();
     if(m_rotationMode.getValue())
         this->configureRotation();
+
+    if(m_translationMode.getValue())
+        this->configureTranslation();
+
+    if(m_navigationMode.getValue())
+        this->configureNavigation();
 }
+
+void RecordedCamera::moveCamera_navigation()
+{
+    double simuTime = this->getContext()->getTime();
+    SReal totalTime = this->m_endTime.getValue();
+    simuTime -= m_startTime.getValue();
+    totalTime -= m_startTime.getValue();
+
+    if (totalTime == 0.0)
+        totalTime = 200.0;
+
+    if(m_translationPositions.getValue().size() > 1 &&  m_translationOrientations.getValue().size() == m_translationPositions.getValue().size())
+    {
+        Quat firstQuater, nextQuater, interpolateQuater;
+
+        int nbrPoints = m_translationPositions.getValue().size();
+        // Time for each segment
+        double timeBySegment = totalTime/(nbrPoints - 1);
+        // the animation is the same modulo totalTime
+        double simuTimeModTotalTime = std::fmod(simuTime,totalTime);
+        int currentIndexPoint = std::floor((simuTimeModTotalTime/timeBySegment));
+        double ratio = std::fmod(simuTimeModTotalTime,timeBySegment)/timeBySegment;
+
+        if(currentIndexPoint < nbrPoints - 1)
+        {
+            Vec3 _pos = m_translationPositions.getValue()[currentIndexPoint];
+            Vec3 cameraFocal = m_translationPositions.getValue()[currentIndexPoint + 1] - _pos;
+
+            // Set camera's position: linear interpolation 
+            p_position.setValue( m_translationPositions.getValue()[currentIndexPoint] + cameraFocal * ratio);
+
+            // Set camera's orientation: slerp quaternion interpolation
+            firstQuater = m_translationOrientations.getValue()[currentIndexPoint];
+            nextQuater =  m_translationOrientations.getValue()[currentIndexPoint + 1];
+            interpolateQuater.slerp(firstQuater,nextQuater,ratio);
+            this->p_orientation.setValue(interpolateQuater);
+
+            p_lookAt.setValue(getLookAtFromOrientation(_pos, p_distance.getValue(), p_orientation.getValue()));
+
+        }
+
+        else if (currentIndexPoint == nbrPoints - 1 )
+        {
+            p_position.setValue(m_translationPositions.getValue()[currentIndexPoint]);
+            p_orientation.setValue(m_translationOrientations.getValue()[currentIndexPoint]);
+        }
+    }
+}
+
 
 void RecordedCamera::moveCamera_rotation()
 {
@@ -178,6 +238,67 @@ void RecordedCamera::moveCamera_rotation()
 }
 
 
+void RecordedCamera::moveCamera_translation()
+{
+    double simuTime = this->getContext()->getTime();
+    SReal totalTime = this->m_endTime.getValue();
+    simuTime -= m_startTime.getValue();
+    totalTime -= m_startTime.getValue();
+
+    if (totalTime == 0.0)
+        totalTime = 200.0;
+
+    if(m_translationPositions.isSet() && m_translationPositions.getValue().size() > 0)
+    {
+        int nbrPoints = m_translationPositions.getValue().size();
+        double timeBySegment = totalTime/(nbrPoints - 1);
+        double simuTimeModTotalTime = std::fmod(simuTime,totalTime);
+        int currentIndexPoint = std::floor((simuTimeModTotalTime/timeBySegment));
+        double ratio = std::fmod(simuTimeModTotalTime,timeBySegment)/timeBySegment;
+
+        // if the view up vector was not initialized
+        if (m_cameraUp.getValue().norm() < 1e-6)
+        this->initializeViewUp();
+
+        if(currentIndexPoint < nbrPoints - 1)
+        {
+            Vec3 _pos = m_translationPositions.getValue()[currentIndexPoint];
+            p_lookAt.setValue(m_translationPositions.getValue()[currentIndexPoint + 1]);
+            Vec3 cameraFocal = p_lookAt.getValue() - _pos;
+
+            // Set camera's position: linear interpolation
+            p_position.setValue( m_translationPositions.getValue()[currentIndexPoint] + cameraFocal * ratio);
+
+            // Set camera's orientation
+            Vec3 zAxis = - (p_lookAt.getValue() - _pos);
+            Vec3 xAxis = m_cameraUp.getValue().cross(zAxis);
+            Vec3 yAxis = zAxis.cross(xAxis);    
+            xAxis.normalize();
+            yAxis.normalize();
+            zAxis.normalize();
+           
+#ifdef my_debug
+    std::cout << "xAxis: " << xAxis << std::endl;
+    std::cout << "yAxis: " << yAxis << std::endl;
+    std::cout << "zAxis: " << zAxis << std::endl;
+#endif
+         
+            m_cameraUp.setValue(yAxis);
+            Quat orientation  = Quat::createQuaterFromFrame(xAxis, yAxis, zAxis);
+            orientation.normalize();
+            p_orientation.setValue(orientation);
+        }
+
+        else if (currentIndexPoint == nbrPoints - 1 )
+        {
+            p_position.setValue(m_translationPositions.getValue()[currentIndexPoint]);
+            p_lookAt.setValue(m_translationPositions.getValue()[currentIndexPoint]);
+        }
+    }
+
+    return;
+}
+
 
 void RecordedCamera::handleEvent(sofa::core::objectmodel::Event *event)
 {
@@ -193,11 +314,23 @@ void RecordedCamera::handleEvent(sofa::core::objectmodel::Event *event)
         m_nextStep += simuDT;
 
         // init when start animation
-        if(firstIteration & m_rotationMode.getValue())
+       if(firstIterationforRotation & m_rotationMode.getValue())
             this->configureRotation();
 
+        if(m_rotationMode.getValue())  
+            this->moveCamera_rotation();
 
-        this->moveCamera_rotation();
+        if (firstIterationforTranslation & m_translationMode.getValue())
+            this->configureTranslation();
+
+        if(m_translationMode.getValue())
+            this->moveCamera_translation();
+
+        if(firstIterationforNavigation & m_navigationMode.getValue())
+            this->configureNavigation();
+
+        if(m_navigationMode.getValue())
+            this->moveCamera_navigation();	
     }
 }
 
@@ -209,7 +342,6 @@ void RecordedCamera::configureRotation()
     p_position.setValue(_pos);
     p_lookAt.setValue(m_rotationLookAt.getValue());
     p_distance.setValue((p_lookAt.getValue() - p_position.getValue()).norm());
-
 
     // dV to compute circle tangente
     Vec3 _poskk;
@@ -266,11 +398,74 @@ void RecordedCamera::configureRotation()
     //std::cout << "m_initAngle: " << m_initAngle << std::endl;
 #endif
 
-    firstIteration = false;
+    firstIterationforRotation = false;
 
     return;
 }
 
+void RecordedCamera::configureTranslation()
+{
+    if(m_translationPositions.isSet() && m_translationPositions.getValue().size() > 1)
+    {
+        std::cout << "set translation positions" << std::endl;
+        // Set camera's position
+        p_position.setValue(m_translationPositions.getValue()[0]);
+        p_lookAt.setValue(m_translationPositions.getValue()[1]);
+
+        // Set camera's orientation
+        this->initializeViewUp();
+        Vec3 zAxis = - m_translationPositions.getValue()[1] +  m_translationPositions.getValue()[0];
+        Vec3 yAxis = m_cameraUp.getValue();
+        Vec3 xAxis = zAxis.cross(xAxis);
+        xAxis.normalize();
+        yAxis.normalize();
+        zAxis.normalize();
+        Quat orientation  = Quat::createQuaterFromFrame(xAxis, yAxis, zAxis);
+        orientation.normalize();
+        p_orientation.setValue(orientation);
+
+        firstIterationforTranslation = false;
+    }
+    return;
+}
+
+void RecordedCamera:: configureNavigation()
+{
+    if(m_translationPositions.getValue().size() > 1 &&  m_translationOrientations.getValue().size() == m_translationPositions.getValue().size())
+    {
+        // Set camera's position
+        p_position.setValue(m_translationPositions.getValue()[0]);
+
+        // Set camera's orientation
+        p_orientation.setValue(m_translationOrientations.getValue()[0]);
+
+        firstIterationforNavigation = false;
+    }
+    return;
+}
+
+void RecordedCamera::initializeViewUp()
+{
+    if(m_translationPositions.isSet() && m_translationPositions.getValue().size() > 1)
+    {
+        Vec3 zAxis = m_translationPositions.getValue()[1] -  m_translationPositions.getValue()[0];
+        zAxis.normalize();
+        Vec3 xRef(1,0,0); 
+        // Initialize the view-up vector with the reference vector the "most perpendicular" to zAxis.
+         m_cameraUp.setValue(xRef);
+        double normCrossProduct = cross(zAxis,xRef).norm();
+        for(int i = 1; i<3; ++ i)
+        {
+            Vec3 vecRef(0,0,0);
+            vecRef[i] = 1;
+            if(cross(zAxis,vecRef).norm() >= normCrossProduct )
+            {
+                normCrossProduct = cross(zAxis,vecRef).norm();
+                m_cameraUp.setValue(vecRef);
+            }
+        }
+    }
+}
 
 void RecordedCamera::manageEvent(core::objectmodel::Event* e)
 {
@@ -463,10 +658,10 @@ void RecordedCamera::drawRotation()
     return;
 }
 
-
-void RecordedCamera::draw(const core::visual::VisualParams* )
+void RecordedCamera::draw(const core::visual::VisualParams* vparams)
 {
 #ifndef SOFA_NO_OPENGL
+    // Draw rotation path
     if(p_drawRotation.getValue())
     {
         if (m_rotationPoints.empty())
@@ -497,9 +692,29 @@ void RecordedCamera::draw(const core::visual::VisualParams* )
         }
         glEnd();
     }
+
+    // Draw translation path
+    if(p_drawTranslation.getValue())
+    {
+        if (m_translationPositions.getValue().size() < 2)
+            return;
+
+        glDisable(GL_LIGHTING);
+        glColor3f(0,1,0.5);
+
+        // Camera positions
+        glBegin(GL_LINES);
+        vector <Vec3> _positions = m_translationPositions.getValue();
+        for (unsigned int i=0; i < _positions.size()-1; ++i)
+        {
+            glVertex3f((float)_positions[i  ][0], (float)_positions[i  ][1], (float)_positions[i  ][2]);
+            glVertex3f((float)_positions[i+1][0], (float)_positions[i+1][1], (float)_positions[i+1][2]);
+        }
+
+        glEnd ();
+    }
 #endif /* SOFA_NO_OPENGL */
 }
-
 
 } // namespace visualmodel
 
