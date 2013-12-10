@@ -124,24 +124,14 @@ struct FakeNode : simulation::FailNode {
 
 };
 
-
-// this is c_k computation (see compliant-reference.pdf, section 3)
-void AssembledSolver::compute_forces(const core::MechanicalParams& params,
-									 const simulation::AssemblyVisitor& vis) {
-	scoped::timer step("forces computation");
-				
-	// sofa::simulation::common::MechanicalOperations mop( &params, this->getContext() );
-	// sofa::simulation::common::VectorOperations vop( &params, this->getContext() );
-
-	FakeNode fake(vis);
-	sofa::simulation::common::MechanicalOperations mop( &params, &fake );
-	sofa::simulation::common::VectorOperations vop( &params, &fake );
-			
-
+static void compute_forces_impl(simulation::common::MechanicalOperations& mop,
+								simulation::common::VectorOperations& vop,
+								SReal alpha,
+								SReal beta,
+								SReal h) {
+	
 	MultiVecDeriv c(&vop, core::VecDerivId::force() );
 	
-	SReal h = params.dt();
-			
 	// note: only for stiffness dofs
 	mop.computeForceNeglectingCompliance(c); // c = f
 	
@@ -152,18 +142,50 @@ void AssembledSolver::compute_forces(const core::MechanicalParams& params,
 	SReal mfactor = 1;
 
 	// h (1-alpha) B v_k
-	SReal bfactor = h * (1 - alpha.getValue());
+	SReal bfactor = h * (1 - alpha);
 
 	// h^2 alpha (1 - beta ) K v_k
-	SReal kfactor = h * h * alpha.getValue() * (1 - beta.getValue());
+	SReal kfactor = h * h * alpha * (1 - beta);
 	
 	// note: K v_k factor only for stiffness dofs
 	mop.addMBKvNeglectingCompliance( c, 
 	                                 mfactor,
 	                                 bfactor, 
 	                                 kfactor);
+}
+
+// this is c_k computation (see compliant-reference.pdf, section 3)
+void AssembledSolver::compute_forces(const core::MechanicalParams& params,
+									 const simulation::AssemblyVisitor& vis) {
+	scoped::timer step("forces computation");
 	
-	// TODO project response ?
+	// this one seems correct
+
+	// this machinery is to compute forces in the order defined by the
+	// assembly visitor. this is due to a bug in DAGNode. 
+	
+	FakeNode fake(vis);
+	sofa::simulation::common::MechanicalOperations mop( &params, &fake );
+	sofa::simulation::common::VectorOperations vop( &params, &fake );
+	
+	compute_forces_impl(mop, vop, alpha.getValue(), beta.getValue(), params.dt());
+
+}
+
+
+
+
+
+// this is c_k computation (see compliant-reference.pdf, section 3)
+void AssembledSolver::compute_forces(const core::MechanicalParams& params) {
+	scoped::timer step("forces computation");
+				
+	std::cerr << "warning: using compute_forces without assembly visitor might result in incorrect forces when using multi-mappings. see AssembledSolver code for details" << std::endl;
+	
+	sofa::simulation::common::MechanicalOperations mop( &params, this->getContext() );
+	sofa::simulation::common::VectorOperations vop( &params, this->getContext() );
+
+	compute_forces_impl(mop, vop, alpha.getValue(), beta.getValue(), params.dt());
 	
 }
 

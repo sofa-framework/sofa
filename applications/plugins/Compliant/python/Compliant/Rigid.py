@@ -29,6 +29,9 @@ class Frame:
                 self.rotation = num[3:]
                 return self
 
+	# TODO multiplication/inversion ?
+ 
+
 # TODO remove ?
 def mesh_offset( mesh, path = "" ):
 	str = subprocess.Popen("GenerateRigid " + mesh ).stdout.read()
@@ -141,22 +144,25 @@ class Body:
                 if self.collision != None:
                         collision = res.createChild('collision')
                 
-                        collision.createObject("MeshObjLoader", name = 'loader', filename = self.collision )
+                        collision.createObject("MeshObjLoader", 
+					       name = 'loader', 
+					       filename = self.collision )
+			
                         collision.createObject('MeshTopology', 
                                                name = 'topology',
                                                triangles = '@loader.triangles')
-                        collision.createObject('MechanicalObject',
+                        
+			collision.createObject('MechanicalObject',
                                                name = 'dofs',
                                                position = '@loader.position')
-                        collision.createObject('TriangleModel', 
+                        
+			collision.createObject('TriangleModel', 
                                                template = 'Vec3d' )
-                        collision.createObject('RigidMapping',
+                        
+			collision.createObject('RigidMapping',
                                                template = 'Rigid,Vec3d',
                                                input = '@../',
                                                output = '@./')
-
-                        # TODO lol
-                
                 return res
 
 
