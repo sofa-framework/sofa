@@ -136,9 +136,9 @@ void RecordedCamera::moveCamera_navigation()
         // Time for each segment
         double timeBySegment = totalTime/(nbrPoints - 1);
         // the animation is the same modulo totalTime
-        double simuTimeModTotalTime = std::fmod(simuTime,totalTime);
-        int currentIndexPoint = std::floor((simuTimeModTotalTime/timeBySegment));
-        double ratio = std::fmod(simuTimeModTotalTime,timeBySegment)/timeBySegment;
+        double simuTimeModTotalTime = fmod(simuTime,totalTime);
+        int currentIndexPoint = floor((simuTimeModTotalTime/timeBySegment));
+        double ratio = fmod(simuTimeModTotalTime,timeBySegment)/timeBySegment;
 
         if(currentIndexPoint < nbrPoints - 1)
         {
@@ -252,9 +252,9 @@ void RecordedCamera::moveCamera_translation()
     {
         int nbrPoints = m_translationPositions.getValue().size();
         double timeBySegment = totalTime/(nbrPoints - 1);
-        double simuTimeModTotalTime = std::fmod(simuTime,totalTime);
-        int currentIndexPoint = std::floor((simuTimeModTotalTime/timeBySegment));
-        double ratio = std::fmod(simuTimeModTotalTime,timeBySegment)/timeBySegment;
+        double simuTimeModTotalTime = fmod(simuTime,totalTime);
+        int currentIndexPoint = floor((simuTimeModTotalTime/timeBySegment));
+        double ratio = fmod(simuTimeModTotalTime,timeBySegment)/timeBySegment;
 
         // if the view up vector was not initialized
         if (m_cameraUp.getValue().norm() < 1e-6)
@@ -407,7 +407,6 @@ void RecordedCamera::configureTranslation()
 {
     if(m_translationPositions.isSet() && m_translationPositions.getValue().size() > 1)
     {
-        std::cout << "set translation positions" << std::endl;
         // Set camera's position
         p_position.setValue(m_translationPositions.getValue()[0]);
         p_lookAt.setValue(m_translationPositions.getValue()[1]);
