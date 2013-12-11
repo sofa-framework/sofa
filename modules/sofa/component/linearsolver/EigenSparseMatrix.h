@@ -355,16 +355,18 @@ protected:
 	}
 
 	template<class InType, class OutType>
-	void addMultTranspose_impl( InType& result, const OutType& data ) const {
+    void addMultTranspose_impl( InType& result, const OutType& data, Real fact) const {
 
 		// use optimized product if possible
 		if(canCast(result)) {
 
+            // TODO multiply only the smallest dimension by fact
+
             if( alias(result, data) ) {
-				map(result) += (this->compressedMatrix.transpose() * map(data).template cast<Real>()).template cast<InReal>();
+                map(result) += (this->compressedMatrix.transpose() * (map(data).template cast<Real>() * fact)).template cast<InReal>();
             } else {
                 typename map_traits<InType>::map_type r = map(result);
-                r.noalias() = r + (this->compressedMatrix.transpose() * map(data).template cast<Real>()).template cast<InReal>();
+                r.noalias() = r + (this->compressedMatrix.transpose() * (map(data).template cast<Real>() * fact)).template cast<InReal>();
             }
 			
 			return;
@@ -385,7 +387,7 @@ protected:
 		// convert the result back to the Sofa type
 		for(unsigned i = 0, n = result.size(); i < n; ++i) {
 			for(unsigned j = 0; j < Nin; ++j) {
-				result[i][j] += aux2[Nin * i + j];
+                result[i][j] += aux2[Nin * i + j] * fact;
 			}
 		}
 	}
@@ -412,7 +414,7 @@ public:
 	    addMult_impl(result, data, 1.0);
     }
       
-    /// compute result += A * data
+    /// compute result += A * data * fact
     void addMult( OutVecDeriv& result, const InVecDeriv& data, const OutReal fact ) const {
         addMult_impl(result, data, fact);
     }
@@ -438,17 +440,29 @@ public:
 
     /// compute result += A^T * data
     void addMultTranspose( InVecDeriv& result, const OutVecDeriv& data ) const {
-	    addMultTranspose_impl(result, data);
+        addMultTranspose_impl(result, data, 1.0);
     }
-     
+
+    /// compute result += A^T * data * fact
+    void addMultTranspose( InVecDeriv& result, const OutVecDeriv& data, const OutReal fact ) const {
+        addMultTranspose_impl(result, data, fact);
+    }
+
     /// compute result += A^T * data
     void addMultTranspose( Data<InVecDeriv>& result, const Data<OutVecDeriv>& data ) const {
         helper::WriteAccessor<Data<InVecDeriv> > res (result);
         helper::ReadAccessor<Data<OutVecDeriv> > dat (data);
 
-        addMultTranspose_impl(res, dat);
+        addMultTranspose_impl(res, dat, 1.0);
     }
 
+    /// compute result += A^T * data * fact
+    void addMultTranspose( Data<InVecDeriv>& result, const Data<OutVecDeriv>& data, const OutReal fact ) const {
+        helper::WriteAccessor<Data<InVecDeriv> > res (result);
+        helper::ReadAccessor<Data<OutVecDeriv> > dat (data);
+
+        addMultTranspose_impl(res, dat, fact);
+    }
 
     static const char* Name();
 
