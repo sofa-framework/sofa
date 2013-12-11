@@ -193,8 +193,7 @@ protected:
     {
         NOT_VISITED=0,
         VISITED,
-        PRUNED,
-        FINISHED
+        PRUNED
     } VisitedStatus;
 
 
@@ -222,12 +221,7 @@ protected:
     /// @statusMap the visitor's flag map
     /// @visitorRoot node from where the visitor has been run
     void executeVisitorTopDown(simulation::Visitor* action, NodeList& executedNodes, StatusMap& statusMap, DAGNode* visitorRoot );
-    void executeVisitorBottomUp(simulation::Visitor* action, NodeList& executedNodes
-                            #ifndef NDEBUG
-                                , StatusMap& statusMap
-                            #endif
-                                );
-    bool isFinished( StatusMap& statusMap );
+    void executeVisitorBottomUp(simulation::Visitor* action, NodeList& executedNodes );
     /// @}
 
 
