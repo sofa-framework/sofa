@@ -104,7 +104,7 @@
 
 
 
-	<Node name="compliant-compliant (blue)" activated="1">
+	<Node name="compliant-compliant (blue)" activated="0">
 
 		<AssembledSolver warm_start="true" />
 
@@ -366,7 +366,7 @@
 	
 	
 	
-	<Node name="not-assembled-stiffness - no rayleigh (magenta)">
+	<Node name="not-assembled-stiffness - no rayleigh (magenta)" activated="0">
 
 		
 

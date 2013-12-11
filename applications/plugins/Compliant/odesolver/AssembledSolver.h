@@ -120,7 +120,6 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
 
     // mechanical params
     void buildMparams( core::MechanicalParams& mparams,
-                       core::MechanicalParams& mparamsWithoutStiffness,
                        const core::ExecParams& params,
                        double dt) const;
 

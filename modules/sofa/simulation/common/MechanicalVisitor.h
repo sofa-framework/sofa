@@ -1562,19 +1562,6 @@ public:
 };
 
 
-/** Accumulate the forces (internal and interactions) neglecting compliance.
-This action is typically called after a MechanicalResetForceVisitor.
-*/
-class SOFA_SIMULATION_COMMON_API MechanicalComputeForceNeglectingComplianceVisitor : public MechanicalComputeForceVisitor
-{
-public:
-    MechanicalComputeForceNeglectingComplianceVisitor(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST  = sofa::core::MechanicalParams::defaultInstance()*/, MultiVecDerivId res, bool accumulate = true )
-        : MechanicalComputeForceVisitor(mparams,res,accumulate)
-    {}
-
-    virtual Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff);
-};
-
 /** Compute the variation of force corresponding to a variation of position.
 This action is typically called after a MechanicalPropagateDxVisitor.
 */
@@ -1635,6 +1622,7 @@ This action is typically called after a MechanicalPropagateDxAndResetForceVisito
 */
 class SOFA_SIMULATION_COMMON_API MechanicalAddMBKdxVisitor : public MechanicalVisitor
 {
+    sofa::core::MechanicalParams mparamsWithoutStiffness;
 public:
     MultiVecDerivId res;
     bool accumulate; ///< Accumulate everything back to the DOFs through the mappings
@@ -1645,6 +1633,8 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
+        mparamsWithoutStiffness = *mparams;
+        mparamsWithoutStiffness.setKFactor(0);
     }
 
     MechanicalAddMBKdxVisitor(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId res, bool accumulate)
@@ -1653,6 +1643,8 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
+        mparamsWithoutStiffness = *mparams;
+        mparamsWithoutStiffness.setKFactor(0);
     }
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
@@ -1679,41 +1671,6 @@ public:
 };
 
 
-/** Accumulate the product of the system matrix by a given vector.
-Typically used in implicit integration solved by a Conjugate Gradient algorithm.
-The current value of the dx vector is used.
-This action is typically called after a MechanicalPropagateDxAndResetForceVisitor.
-This action is neglecting the force fields treated as compliance
-*/
-class SOFA_SIMULATION_COMMON_API MechanicalAddMBKdxNeglectingComplianceVisitor : public MechanicalAddMBKdxVisitor
-{
-    sofa::core::MechanicalParams mparamsWithoutStiffness;
-
-public:
-
-    MechanicalAddMBKdxNeglectingComplianceVisitor(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId res)
-        : MechanicalAddMBKdxVisitor(mparams,res)
-    {
-        mparamsWithoutStiffness = *mparams;
-        mparamsWithoutStiffness.setKFactor(0);
-    }
-
-    MechanicalAddMBKdxNeglectingComplianceVisitor(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId res, bool accumulate)
-        : MechanicalAddMBKdxVisitor(mparams,res,accumulate)
-    {
-        mparamsWithoutStiffness = *mparams;
-        mparamsWithoutStiffness.setKFactor(0);
-    }
-
-
-    virtual Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff);
-
-    /// Return a class name for this visitor
-    /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalAddMBKdxNeglectingComplianceVisitor"; }
-
-
-};
 
 class SOFA_SIMULATION_COMMON_API MechanicalResetConstraintVisitor : public BaseMechanicalVisitor
 {

@@ -83,8 +83,6 @@ public:
 
     /// Compute the current force (given the latest propagated position and velocity)
     void computeForce(core::MultiVecDerivId result, bool clear = true, bool accumulate = true);
-    /// Compute the current force (given the latest propagated position and velocity) neglecting compliance
-    void computeForceNeglectingCompliance(core::MultiVecDerivId result, bool clear = true, bool accumulate = true);
     /// Compute the current force delta (given the latest propagated displacement)
     void computeDf(core::MultiVecDerivId df, bool clear = true, bool accumulate = true);
     /// Compute the current force delta (given the latest propagated velocity)
@@ -93,8 +91,6 @@ public:
     void addMBKdx(core::MultiVecDerivId df, double m, double b, double k, bool clear = true, bool accumulate = true);
     /// accumulate $ df += (m M + b B + k K) velocity $
     void addMBKv(core::MultiVecDerivId df, double m, double b, double k, bool clear = true, bool accumulate = true);
-    /// accumulate $ df += (m M + b B + k K) velocity $ neglecting compliance
-    void addMBKvNeglectingCompliance(core::MultiVecDerivId df, double m, double b, double k, bool clear = true, bool accumulate = true);
     /// Add dt*Gravity to the velocity
     void addSeparateGravity(double dt, core::MultiVecDerivId result = core::VecDerivId::velocity() );
 
