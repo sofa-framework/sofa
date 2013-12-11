@@ -135,7 +135,7 @@ static void compute_forces_impl(simulation::common::MechanicalOperations& mop,
 	MultiVecDeriv c(&vop, core::VecDerivId::force() );
 	
 	// note: only for stiffness dofs
-	mop.computeForceNeglectingCompliance(c); // c = f
+    mop.computeForce(c); // c = f
 	
 	// c = h f
 	c *= h;
@@ -150,10 +150,10 @@ static void compute_forces_impl(simulation::common::MechanicalOperations& mop,
 	SReal kfactor = h * h * alpha * (1 - beta);
 	
 	// note: K v_k factor only for stiffness dofs
-	mop.addMBKvNeglectingCompliance( c, 
-	                                 mfactor,
-	                                 bfactor, 
-	                                 kfactor);
+    mop.addMBKv( c,
+                 mfactor,
+                 bfactor,
+                 kfactor);
 }
 
 // this is c_k computation (see compliant-reference.pdf, section 3)
@@ -289,7 +289,6 @@ void AssembledSolver::rhs_correction(vec& res, const system_type& sys) const {
 
 
 void AssembledSolver::buildMparams(core::MechanicalParams& mparams,
-                                   core::MechanicalParams& mparamsWithoutStiffness,
                                    const core::ExecParams& params,
                                    double dt) const
 {
@@ -306,19 +305,7 @@ void AssembledSolver::buildMparams(core::MechanicalParams& mparams,
 	mparams.setDt( dt );
     
 	mparams.setImplicitVelocity( alpha.getValue() );
-	mparams.setImplicitPosition( beta.getValue() );
-
-	// to treat compliant components (ie stiffness components treated
-	// as compliance)
-    
-	mparamsWithoutStiffness.setExecParams( &params );
-	mparamsWithoutStiffness.setMFactor( mfactor );
-	mparamsWithoutStiffness.setBFactor( bfactor );
-	mparamsWithoutStiffness.setKFactor( 0 ); 
-	mparamsWithoutStiffness.setDt( dt );
-
-	mparamsWithoutStiffness.setImplicitVelocity( alpha.getValue() );
-	mparamsWithoutStiffness.setImplicitPosition( beta.getValue() );
+    mparams.setImplicitPosition( beta.getValue() );
 }
 			
 
@@ -414,17 +401,16 @@ void AssembledSolver::solve(const core::ExecParams* params,
 	assert(kkt);
 	
 	// mechanical parameters
-	core::MechanicalParams mparams_stiffness, mparams_compliance;
-	this->buildMparams( mparams_stiffness, mparams_compliance, *params, dt );
+    core::MechanicalParams mparams;
+    this->buildMparams( mparams, *params, dt );
 
 	// assembly visitor 
-	simulation::AssemblyVisitor vis(&mparams_stiffness,
-	                                &mparams_compliance);
+    simulation::AssemblyVisitor vis(&mparams);
 	// fetch nodes/data
 	send( vis );
 	
 	// compute forces using traversal order defined by vis
-	compute_forces( mparams_stiffness, vis );
+    compute_forces( mparams, vis );
 
 	// assemble system
     sys = vis.assemble();
@@ -467,7 +453,7 @@ void AssembledSolver::solve(const core::ExecParams* params,
 			}
 
 			set_state(sys, x);
-			integrate( &mparams_compliance, posId, velId );
+            integrate( &mparams, posId, velId );
 		}
 
 		// actual dynamics
@@ -492,7 +478,7 @@ void AssembledSolver::solve(const core::ExecParams* params,
             }
 
 			set_state(sys, x);
-			integrate( &mparams_stiffness, posId, velId );
+            integrate( &mparams, posId, velId );
 		}
 		
 	}
@@ -500,7 +486,7 @@ void AssembledSolver::solve(const core::ExecParams* params,
 	// propagate lambdas if asked to
 	if( propagate_lambdas.getValue() ) {
 		scoped::timer step("lambda propagation");
-		propagate_visitor prop( &mparams_stiffness );
+        propagate_visitor prop( &mparams );
 		prop.out = core::VecId::force();
 		prop.in = lagrange.id();
 			

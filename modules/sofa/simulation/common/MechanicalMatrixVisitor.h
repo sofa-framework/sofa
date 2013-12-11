@@ -205,6 +205,7 @@ public:
     {
         if (matrix != NULL)
         {
+            assert( !ff->isCompliance ); // if one day this visitor has to be used with compliance, K from compliance should not be added (by tweaking mparams with kfactor=0)
             ff->addMBKToMatrix(this->mparams /* PARAMS FIRST */, matrix);
         }
 
@@ -250,6 +251,7 @@ public:
     {
         if (matrix != NULL)
         {
+            assert( !ff->isCompliance ); // if one day this visitor has to be used with compliance, K from compliance should not be added (by tweaking mparams with kfactor=0)
             ff->addSubMBKToMatrix(this->mparams /* PARAMS FIRST */, matrix, subMatrixIndex);
         }
 

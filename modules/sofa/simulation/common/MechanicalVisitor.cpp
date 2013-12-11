@@ -1276,7 +1276,7 @@ Visitor::Result MechanicalComputeForceVisitor::fwdMappedMechanicalState(simulati
 Visitor::Result MechanicalComputeForceVisitor::fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff)
 {
     //cerr<<"MechanicalComputeForceVisitor::fwdForceField "<<ff->getName()<<endl;
-    ff->addForce(this->mparams /* PARAMS FIRST */, res);
+    if( !ff->isCompliance.getValue() ) ff->addForce(this->mparams /* PARAMS FIRST */, res);
     return RESULT_CONTINUE;
 }
 
@@ -1302,13 +1302,6 @@ void MechanicalComputeForceVisitor::bwdMechanicalState(simulation::Node* , core:
     mm->forceMask.activate(false);
 }
 
-Visitor::Result MechanicalComputeForceNeglectingComplianceVisitor::fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff)
-{
-    //cerr<<"MechanicalComputeForceVisitor::fwdForceField "<<ff->getName()<<endl;
-    if( !ff->isCompliance.getValue() ) ff->addForce(this->mparams /* PARAMS FIRST */, res);
-    return RESULT_CONTINUE;
-}
-
 
 Visitor::Result MechanicalComputeDfVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /* mm */)
 {
@@ -1328,7 +1321,7 @@ Visitor::Result MechanicalComputeDfVisitor::fwdMappedMechanicalState(simulation:
 
 Visitor::Result MechanicalComputeDfVisitor::fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff)
 {
-    ff->addDForce(this->mparams /* PARAMS FIRST */, res);
+    if( !ff->isCompliance.getValue() ) ff->addDForce(this->mparams /* PARAMS FIRST */, res);
     return RESULT_CONTINUE;
 }
 
@@ -1371,7 +1364,7 @@ Visitor::Result MechanicalAddMBKdxVisitor::fwdMappedMechanicalState(simulation::
 
 Visitor::Result MechanicalAddMBKdxVisitor::fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff)
 {
-    ff->addMBKdx(this->mparams /* PARAMS FIRST */, res);
+    ff->addMBKdx( ff->isCompliance.getValue()?&mparamsWithoutStiffness:this->mparams, res);
     return RESULT_CONTINUE;
 }
 
@@ -1388,13 +1381,6 @@ void MechanicalAddMBKdxVisitor::bwdMechanicalMapping(simulation::Node* /*node*/,
         map->applyDJT(mparams /* PARAMS FIRST */, res, res);
         ForceMaskDeactivate( map->getMechTo() );
     }
-}
-
-
-Visitor::Result MechanicalAddMBKdxNeglectingComplianceVisitor::fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff)
-{
-    ff->addMBKdx( ff->isCompliance.getValue()?&mparamsWithoutStiffness:this->mparams, res);
-    return RESULT_CONTINUE;
 }
 
 

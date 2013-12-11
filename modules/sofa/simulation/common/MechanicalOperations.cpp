@@ -217,17 +217,6 @@ void MechanicalOperations::computeForce(core::MultiVecDerivId result, bool clear
     executeVisitor( MechanicalComputeForceVisitor(&mparams /* PARAMS FIRST */, result, accumulate) );
 }
 
-/// Compute the current force (given the latest propagated position and velocity) neglecting compliance
-void MechanicalOperations::computeForceNeglectingCompliance(core::MultiVecDerivId result, bool clear, bool accumulate)
-{
-    setF(result);
-    if (clear)
-    {
-        executeVisitor( MechanicalResetForceVisitor(&mparams /* PARAMS FIRST */, result, false) );
-        //finish();
-    }
-    executeVisitor( MechanicalComputeForceNeglectingComplianceVisitor(&mparams /* PARAMS FIRST */, result, accumulate) );
-}
 
 /// Compute the current force delta (given the latest propagated displacement)
 void MechanicalOperations::computeDf(core::MultiVecDerivId df, bool clear, bool accumulate)
@@ -291,27 +280,6 @@ void MechanicalOperations::addMBKv(core::MultiVecDerivId df, double m, double b,
 }
 
 
-/// accumulate $ df += (m M + b B + k K) velocity $ neglecting compliance
-void MechanicalOperations::addMBKvNeglectingCompliance(core::MultiVecDerivId df, double m, double b, double k, bool clear, bool accumulate)
-{
-    core::ConstMultiVecDerivId dx = mparams.dx();
-    mparams.setDx(mparams.v());
-    setDf(df);
-    if (clear)
-    {
-        executeVisitor( MechanicalResetForceVisitor(&mparams /* PARAMS FIRST */, df, true) );
-        //finish();
-    }
-    mparams.setBFactor(b);
-    mparams.setKFactor(k);
-    mparams.setMFactor(m);
-
-    /* useV = true */
-    executeVisitor( MechanicalAddMBKdxNeglectingComplianceVisitor(&mparams, df, accumulate) );
-    mparams.setDx(dx);
-}
-
-
 
 /// Add dt*Gravity to the velocity
 void MechanicalOperations::addSeparateGravity(double dt, core::MultiVecDerivId result)
@@ -364,7 +332,7 @@ void MechanicalOperations::computeForce(double t, core::MultiVecDerivId f, core:
             a,
 #endif
             true) );
-    computeForceNeglectingCompliance(f);
+    computeForce(f);
 
     projectResponse(f);
 }

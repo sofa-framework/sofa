@@ -52,7 +52,8 @@ protected:
 public:
 
 	// would it be better to dynamically modified mparams ?
-	const core::MechanicalParams* mparams, *mparamsWithoutStiffness; 
+    const core::MechanicalParams* mparams;
+    core::MechanicalParams mparamsWithoutStiffness;
 
 	typedef SReal real;
 
@@ -63,12 +64,11 @@ public:
 	typedef rmat mat;
 	typedef Eigen::Matrix<real, Eigen::Dynamic, 1> vec;
 			
-    AssemblyVisitor(const core::MechanicalParams* mparams, 
-                    const core::MechanicalParams* mparamsWithoutStiffness);
+    AssemblyVisitor(const core::MechanicalParams* mparams);
     virtual ~AssemblyVisitor();
 
 //protected:
-    MultiVecDerivId _velId;
+//    MultiVecDerivId _velId;
 
 	// applies another visitor topDown/bottomUp based on internal
 	// graph. this is to work around bogus graph traversal in case of

@@ -16,14 +16,14 @@ using namespace component::linearsolver;
 using namespace core::behavior;
 
 
-AssemblyVisitor::AssemblyVisitor(const core::MechanicalParams* mparams, 
-                                 const core::MechanicalParams* mparamsWithoutStiffness)
+AssemblyVisitor::AssemblyVisitor(const core::MechanicalParams* mparams)
 	: base( mparams ),
-	  mparams( mparams ),
-	  mparamsWithoutStiffness( mparamsWithoutStiffness ),
+      mparams( mparams ),
 	  start_node(0),
 	  _processed(0)
 {
+    mparamsWithoutStiffness = *mparams;
+    mparamsWithoutStiffness.setKFactor(0);
 }
 
 
@@ -154,7 +154,7 @@ AssemblyVisitor::mat AssemblyVisitor::odeMatrix(simulation::Node* node)
         SingleMatrixAccessor accessor( &sqmat );
 
         // when it is a compliant, you need to add M if mass, B but not K
-        ffield->addMBKToMatrix( ffield->isCompliance.getValue() ? mparamsWithoutStiffness : mparams, 
+        ffield->addMBKToMatrix( ffield->isCompliance.getValue() ? &mparamsWithoutStiffness : mparams,
                                 &accessor );
 
     }
