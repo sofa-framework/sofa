@@ -57,13 +57,18 @@ std::string cleanPath( const std::string& path )
 {
     std::string p = path;
     size_t pos = p.find("//");
+	size_t len = p.length();
     while( pos != std::string::npos )
     {
-        p.replace(pos,2,"/");
+		if ( pos == (len-1))
+			p.replace( pos, 2, "");
+		else
+			p.replace(pos,2,"/");
         pos = p.find("//");
     }
     return p;
 }
+
 
 
 #define ADD_SOFA_BUILD_DIR( x ) sofa_tostring(SOFA_BUILD_DIR)sofa_tostring(x)
@@ -144,6 +149,22 @@ FileRepository::FileRepository(const char* envVar, const char* relativePath)
 
 FileRepository::~FileRepository()
 {
+}
+
+std::string FileRepository::cleanPath( const std::string& path )
+{
+	std::string p = path;
+	size_t pos = p.find("//");
+	size_t len = p.length();
+	while( pos != std::string::npos )
+	{
+		if ( pos == (len-2))
+			p.replace( pos, 2, "");
+		else
+			p.replace(pos,2,"/");
+		pos = p.find("//");
+	}
+	return p;
 }
 
 void FileRepository::addFirstPath(const std::string& p)
