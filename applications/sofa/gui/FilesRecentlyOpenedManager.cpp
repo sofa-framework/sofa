@@ -49,6 +49,9 @@ void FilesRecentlyOpenedManager::setPath(const std::string &configFile)
     {
         path = sofa::helper::system::DataRepository.getFirstPath() + "/" + configFile;
 
+		// replacing every occurences of "//" by "/"
+	//	std::string path = sofa::helper::system::DataRepository.cleanPath( path );
+
         std::ofstream ofile(path.c_str());
         ofile << "";
         ofile.close();
