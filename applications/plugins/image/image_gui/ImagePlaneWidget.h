@@ -279,7 +279,7 @@ protected:
 
 public:
     TImagePlaneGraphWidget(QWidget * parent,unsigned int _axis,const ImagePlanetype& d0)
-        :ImagePlaneGraphWidget(parent),imageplane(NULL),indexmax(0), newPointClicked (false)
+        :ImagePlaneGraphWidget(parent),newPointClicked(false),imageplane(NULL),indexmax(0)
     {
         this->axis=_axis; 		if(this->axis>2) this->axis=2;
         this->index=0;
@@ -398,7 +398,7 @@ public:
                         this->image.setPixel ( x, y,  qRgb(slicedModels(x,y,0,0),slicedModels(x,y,0,1) ,slicedModels(x,y,0,2)));
 
         // Display selected pixel on the image plane
-        for (int i=0; i <tab2DPoint.size(); ++i)
+        for (unsigned int i=0; i <tab2DPoint.size(); ++i)
         {
             Coord P = tab2DPoint[i];
             if( this->axis==0 && this->index == P.x())
