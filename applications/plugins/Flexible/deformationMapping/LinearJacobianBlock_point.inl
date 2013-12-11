@@ -30,6 +30,7 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include "../types/DeformationGradientTypes.h"
+#include "../types/AffineTypes.h"
 
 namespace sofa
 {
@@ -435,6 +436,99 @@ public:
     KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
     void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
 };
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////////
+////  Vec3 -> Affine3 = point + F331
+//////////////////////////////////////////////////////////////////////////////////
+
+template<class InReal,class OutReal>
+class LinearJacobianBlock< V3(InReal) , Affine3(OutReal) > :
+    public  BaseJacobianBlock< V3(InReal) , Affine3(OutReal) >
+{
+public:
+    typedef V3(InReal) In;
+    typedef Affine3(OutReal) Out;
+
+    typedef BaseJacobianBlock<In,Out> Inherit;
+    typedef typename Inherit::InCoord InCoord;
+    typedef typename Inherit::InDeriv InDeriv;
+    typedef typename Inherit::OutCoord OutCoord;
+    typedef typename Inherit::OutDeriv OutDeriv;
+    typedef typename Inherit::MatBlock MatBlock;
+    typedef typename Inherit::KBlock KBlock;
+    typedef typename Inherit::Real Real;
+
+    enum { dim = Out::spatial_dimensions };
+
+    typedef Vec<dim,Real> Gradient;
+    typedef Mat<dim,dim,Real> Hessian;
+
+    typedef Vec<dim, Real> SpatialCoord;
+    typedef Mat<dim,dim,Real> MaterialToSpatial;
+
+    /**
+    Mapping:
+        - \f$ p = w.t + w.(p0-t0)  \f$
+        - \f$ F = grad p . F0 = (t+p0-t0).grad w.F0 + w.F0  \f$
+    where :
+        - t0 is t in the reference configuration,
+        - p0,F0 is the position of p,F in the reference configuration.
+        - grad denotes spatial derivatives
+    Jacobian:
+        - \f$ dp = w.dt \f$
+        - \f$ d F = dt.grad w.F0 \f$
+      */
+
+    static const bool constant=true;
+
+    Real Pt;      ///< =   w         =  dp/dt
+    Gradient Ft;  ///< =   grad w.F0     =  d F/dt
+    OutCoord C;       ///< =   w.(p0-t0), (p0-t0).grad w.F0 + w.F0   =  constant terms
+
+    void init( const InCoord& InPos, const OutCoord& OutPos, const SpatialCoord& /*SPos*/, const MaterialToSpatial& M, const Real& w, const Gradient& dw, const Hessian& /*ddw*/)
+    {
+        Pt=w;
+        Ft=OutPos.getAffine().transposed()*dw;
+        C.getCenter()=(OutPos.getCenter()-InPos)*Pt;
+        C.getAffine()=covMN(OutPos.getCenter()-InPos,Ft);
+        C.getAffine()+=OutPos.getAffine()*w;
+    }
+
+    void addapply( OutCoord& result, const InCoord& data )
+    {
+        result.getCenter() +=  data*Pt + C.getCenter();;
+        result.getAffine() +=  covMN(data,Ft) + C.getAffine();
+    }
+
+    void addmult( OutDeriv& result,const InDeriv& data )
+    {
+        result.getVCenter() += data * Pt ;
+        result.getVAffine() += covMN(data,Ft) ;
+    }
+
+    void addMultTranspose( InDeriv& result, const OutDeriv& data )
+    {
+        result += data.getVCenter() * Pt ;
+        result += data.getVAffine() * Ft ;
+    }
+
+    MatBlock getJ()
+    {
+        MatBlock J = MatBlock();
+        for(unsigned int i=0; i<dim; i++) J(i,i)=Pt;
+        for(unsigned int i=0; i<dim; i++) for(unsigned int j=0; j<dim; j++) J(j+i*dim+dim,i)=Ft[j];
+        return J;
+    }
+
+    // no geometric striffness (constant J)
+    KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
+    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
+};
+
+
 
 
 //////////////////////////////////////////////////////////////////////////////////
