@@ -425,66 +425,20 @@ void DAGNode::doExecuteVisitor(simulation::Visitor* action)
     // un enfant n'est pruné que si tous ses parents le sont
     // pour chaque noeud "prune" on continue à parcourir quand même juste pour marquer le noeud comme parcouru (mais on n'execute rien)
 
-    // NE PAS stocker les infos de parcours dans le DAGNode, plusieurs visiteurs pouvant parcourir le graphe simultanément (ici dans une map par visiteur)
+    // NE PAS stocker les infos de parcours dans le DAGNode, plusieurs visiteurs pouvant parcourir le graphe simultanément (ici dans une map StatusMap par visiteur)
 
-    // ATTENTION l'ordre du bottom-up n'est PAS l'ordre inverse du parcours top-down total. Mais dès qu'une sous branche est finie, son bottom-up doit être executée.
-    // Cela change l'ordre des bottom-up pour les sous-branches indépendantes (qui deviennent mixés avec les top-down)
-    // Les bottom-up de la premiere branche indépendante seront appelés avant les top-down de la branche suivante, cet ordre est important pour les interactionsforcefield incluant un collision model non simulé.
+    // Tous les noeuds executés à la descente sont stockés dans executedNodes dont l'ordre inverse est utilisé pour la remontée
 
-    StatusMap statusMap;
+
     NodeList executedNodes;
 
-    executeVisitorTopDown( action, executedNodes, statusMap, this );
-
-    executeVisitorBottomUp( action, executedNodes
-                    #ifndef NDEBUG
-                            , statusMap
-                    #endif
-                            );
-
-    assert( executedNodes.empty() );
-}
-
-
-
-void DAGNode::executeVisitorBottomUp( simulation::Visitor* action, NodeList& executedNodes
-                            #ifndef NDEBUG
-                                      , StatusMap& statusMap
-                            #endif
-                                      )
-{
-    while( !executedNodes.empty() )
     {
-        updateDescendancy();
-        DAGNode* node = executedNodes.back();
-        executedNodes.pop_back();
-        if( this == node )
-        {
-            assert(statusMap[node] == FINISHED);
-            action->processNodeBottomUp( node );
-            break;
-        }
-        else if( _descendancy.find( node ) != _descendancy.end() ) // not removed during traversal
-        {
-            assert(statusMap[node] == FINISHED);
-            action->processNodeBottomUp( node );
-        }
+        StatusMap statusMap;
+        executeVisitorTopDown( action, executedNodes, statusMap, this );
     }
-}
 
+    executeVisitorBottomUp( action, executedNodes );
 
-
-bool DAGNode::isFinished( StatusMap& statusMap )
-{
-    if( !this->isActive() || statusMap[this]==FINISHED ) return true;
-    if( statusMap[this]==NOT_VISITED ) return false;
-
-    for(unsigned int i = 0; i<child.size(); ++i)
-        if( !static_cast<DAGNode*>(child[i].get())->isFinished(statusMap) )
-            return false;
-
-    statusMap[this]=FINISHED;
-    return true;
 }
 
 
@@ -500,8 +454,7 @@ void DAGNode::executeVisitorTopDown(simulation::Visitor* action, NodeList& execu
         // do not execute the visitor on this node
         statusMap[this] = PRUNED;
 
-        // in that cas we can considerer if some child are activated, the graph is not valid, so no need to continue the recursion
-
+        // in that case we can considerer if some child are activated, the graph is not valid, so no need to continue the recursion
         return;
     }
 
@@ -561,12 +514,19 @@ void DAGNode::executeVisitorTopDown(simulation::Visitor* action, NodeList& execu
         for(unsigned int i = 0; i<child.size(); ++i)
             static_cast<DAGNode*>(child[i].get())->executeVisitorTopDown(action,executedNodes,statusMap,visitorRoot);
 
-        // if all child are finished, it is time to run BottomUp action for this branch
-        if( isFinished( statusMap ) ) executeVisitorBottomUp( action, executedNodes
-                                                           #ifndef NDEBUG
-                                                              , statusMap
-                                                           #endif
-                                                              );
+    }
+}
+
+
+// warning nodes that are dynamically created during the traversal, but that have not been traversed during the top-down, won't be traversed during the bottom-up
+// TODO is it what we want?
+// otherwise it is possible to restart from top, go to leaves and running bottom-up action while going up
+void DAGNode::executeVisitorBottomUp( simulation::Visitor* action, NodeList& executedNodes )
+{
+    for( NodeList::reverse_iterator it = executedNodes.rbegin(), itend = executedNodes.rend() ; it != itend ; ++it )
+    {
+        (*it)->updateDescendancy();
+        action->processNodeBottomUp( *it );
     }
 }
 
