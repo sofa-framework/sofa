@@ -167,9 +167,9 @@ public:
                 if(i<_shearModulusZX.getValue().size()) shearModulusZX=_shearModulusZX.getValue()[i]; else if(_shearModulusZX.getValue().size()) shearModulusZX=_shearModulusZX.getValue()[0];
                 if(i<_viscosity.getValue().size())    viscosity=_viscosity.getValue()[i];       else if(_viscosity.getValue().size())    viscosity=_viscosity.getValue()[0];
 
-                assert( helper::isClamped( poissonRatioXY, -1+std::numeric_limits<Real>::epsilon(), (Real)0.5-std::numeric_limits<Real>::epsilon() ) );
-                assert( helper::isClamped( poissonRatioYZ, -1+std::numeric_limits<Real>::epsilon(), (Real)0.5-std::numeric_limits<Real>::epsilon() ) );
-                assert( helper::isClamped( poissonRatioZX, -1+std::numeric_limits<Real>::epsilon(), (Real)0.5-std::numeric_limits<Real>::epsilon() ) );
+                assert( helper::isClamped<Real>( poissonRatioXY, -1+std::numeric_limits<Real>::epsilon(), 0.5-std::numeric_limits<Real>::epsilon() ) );
+                assert( helper::isClamped<Real>( poissonRatioYZ, -1+std::numeric_limits<Real>::epsilon(), 0.5-std::numeric_limits<Real>::epsilon() ) );
+                assert( helper::isClamped<Real>( poissonRatioZX, -1+std::numeric_limits<Real>::epsilon(), 0.5-std::numeric_limits<Real>::epsilon() ) );
 
                 std::vector<Real> params;
                 params.push_back(youngModulusX); params.push_back(youngModulusY); params.push_back(youngModulusZ);
@@ -284,8 +284,8 @@ public:
                 if(i<_shearModulusXY.getValue().size()) shearModulusXY=_shearModulusXY.getValue()[i]; else if(_shearModulusXY.getValue().size()) shearModulusXY=_shearModulusXY.getValue()[0];
                 if(i<_viscosity.getValue().size())    viscosity=_viscosity.getValue()[i];       else if(_viscosity.getValue().size())    viscosity=_viscosity.getValue()[0];
 
-                assert( helper::isClamped( poissonRatioXY, -1+std::numeric_limits<Real>::epsilon(), (Real)0.5-std::numeric_limits<Real>::epsilon() ) );
-                assert( helper::isClamped( poissonRatioYZ, -1+std::numeric_limits<Real>::epsilon(), (Real)0.5-std::numeric_limits<Real>::epsilon() ) );
+                assert( helper::isClamped<Real>( poissonRatioXY, -1+std::numeric_limits<Real>::epsilon(), 0.5-std::numeric_limits<Real>::epsilon() ) );
+                assert( helper::isClamped<Real>( poissonRatioYZ, -1+std::numeric_limits<Real>::epsilon(), 0.5-std::numeric_limits<Real>::epsilon() ) );
 
                 std::vector<Real> params;
                 params.push_back(youngModulusX); params.push_back(youngModulusY);
