@@ -81,7 +81,7 @@ void EulerImplicitSolver::cleanup()
 {
     // free the locally created vector x (including eventual external mechanical states linked by an InteractionForceField)
     sofa::simulation::common::VectorOperations vop( core::ExecParams::defaultInstance(), this->getContext() );
-    vop.v_free( xID, true, true );
+    vop.v_free( x.id(), true, true );
 }
 
 void EulerImplicitSolver::solve(const core::ExecParams* params /* PARAMS FIRST */, double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
@@ -98,11 +98,7 @@ void EulerImplicitSolver::solve(const core::ExecParams* params /* PARAMS FIRST *
     MultiVecCoord newPos(&vop, xResult );
     MultiVecDeriv newVel(&vop, vResult );
 
-    if (this->getContext()->getTime()==0.0) {
-        vop.v_alloc(xID);
-    }
-
-    MultiVecDeriv x(&vop,xID);
+    x.realloc( &vop, true, true );
 
 
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -168,10 +164,10 @@ void EulerImplicitSolver::solve(const core::ExecParams* params /* PARAMS FIRST *
             serr<<"EulerImplicitSolver, f = "<< f <<sendl;
 
         // add the change of force due to stiffness + Rayleigh damping
-        mop.addMBKv(b, -f_rayleighMass.getValue(), 0, h+f_rayleighStiffness.getValue()); // b =  f0 + (h+rs) K v - rm M v
+        mop.addMBKv(b, -f_rayleighMass.getValue(), 1, h+f_rayleighStiffness.getValue()); // b =  f0 + ( rm M + B + (h+rs) K ) v
 
         // integration over a time step
-        b.teq(h);                                                                        // b = h(f0 + (h+rs) K v - rm M v )
+        b.teq(h);                                                                        // b = h(f0 + ( rm M + B + (h+rs) K ) v )
 #endif
     }
 
