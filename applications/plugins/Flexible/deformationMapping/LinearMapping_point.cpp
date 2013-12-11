@@ -30,6 +30,7 @@
 
 #include <sofa/defaulttype/VecTypes.h>
 #include "../types/DeformationGradientTypes.h"
+#include "../types/AffineTypes.h"
 
 namespace sofa
 {
@@ -53,6 +54,7 @@ int LinearMappingClass_point = core::RegisterObject("Map child positions as a li
         .add< LinearMapping< Vec3Types, F311Types > >()
         .add< LinearMapping< Vec2Types, Vec2Types > >()
         .add< LinearMapping< Vec2Types, F221Types > >()
+        .add< LinearMapping< Vec3Types, Affine3Types > >()
         ;
 
 template class SOFA_Flexible_API LinearMapping< Vec3Types, Vec3Types >;
@@ -63,6 +65,7 @@ template class SOFA_Flexible_API LinearMapping< Vec3Types, F321Types >;
 template class SOFA_Flexible_API LinearMapping< Vec3Types, F311Types >;
 template class SOFA_Flexible_API LinearMapping< Vec2Types, Vec2Types >;
 template class SOFA_Flexible_API LinearMapping< Vec2Types, F221Types >;
+template class SOFA_Flexible_API LinearMapping< Vec3Types, Affine3Types >;
 
 } // namespace mapping
 } // namespace component
