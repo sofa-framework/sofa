@@ -136,9 +136,9 @@ void RecordedCamera::moveCamera_navigation()
         // Time for each segment
         double timeBySegment = totalTime/(nbrPoints - 1);
         // the animation is the same modulo totalTime
-        double simuTimeModTotalTime = fmod(simuTime,totalTime);
-        int currentIndexPoint = floor((simuTimeModTotalTime/timeBySegment));
-        double ratio = fmod(simuTimeModTotalTime,timeBySegment)/timeBySegment;
+        double simuTimeModTotalTime = fmod((SReal) simuTime,(SReal) totalTime);
+        int currentIndexPoint = floor(((SReal)simuTimeModTotalTime/(SReal)timeBySegment));
+        double ratio =  fmod((SReal)simuTimeModTotalTime,(SReal)timeBySegment)/(SReal)timeBySegment;
 
         if(currentIndexPoint < nbrPoints - 1)
         {
@@ -252,7 +252,7 @@ void RecordedCamera::moveCamera_translation()
     {
         int nbrPoints = m_translationPositions.getValue().size();
         double timeBySegment = totalTime/(nbrPoints - 1);
-        double simuTimeModTotalTime = fmod(simuTime,totalTime);
+        double simuTimeModTotalTime = fmod((SReal)simuTime,(SReal)totalTime);
         int currentIndexPoint = floor((simuTimeModTotalTime/timeBySegment));
         double ratio = fmod(simuTimeModTotalTime,timeBySegment)/timeBySegment;
 
