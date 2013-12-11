@@ -72,7 +72,7 @@ public:
             if(i<_youngModulus.getValue().size()) ym=_youngModulus.getValue()[i]; else if(_youngModulus.getValue().size()) ym=_youngModulus.getValue()[0];
             if(i<_poissonRatio.getValue().size()) pr=_poissonRatio.getValue()[i]; else if(_poissonRatio.getValue().size()) pr=_poissonRatio.getValue()[0];
 
-            assert( helper::isClamped( pr, -1+std::numeric_limits<Real>::epsilon(), (Real)0.5-std::numeric_limits<Real>::epsilon() ) );
+            assert( helper::isClamped<Real>( pr, -1+std::numeric_limits<Real>::epsilon(), 0.5-std::numeric_limits<Real>::epsilon() ) );
 
             this->material[i].init( ym, pr );
         }

@@ -511,7 +511,7 @@ public:
         helper::Decompose<Real>::QRDecompositionGradient_dQ( _R, *_geometricStiffnessData.invT(), dx.getF(), dR );
 
         // order 0
-        df.getF() += dR * StressVoigtToMat( childForce.getStrain() ) * kfactor;
+        df.getF() += dR * StressVoigtToMat( childForce.getStrain() ) * (Real)kfactor;
 
         if( order > 0 )
         {
@@ -532,7 +532,7 @@ public:
         helper::Decompose<Real>::polarDecompositionGradient_dQ( *_geometricStiffnessData.invG(), _R, dx.getF(), dR );
 
         // order 0
-        df.getF() += dR * StressVoigtToMat( childForce.getStrain() ) * kfactor;
+        df.getF() += dR * StressVoigtToMat( childForce.getStrain() ) * (Real)kfactor;
 
         if( order > 0 )
         {
@@ -564,7 +564,7 @@ public:
 
 
         // order 0
-        df.getF() += dR * StressVoigtToMat( childForce.getStrain() ) * kfactor;
+        df.getF() += dR * StressVoigtToMat( childForce.getStrain() ) * (Real)kfactor;
 
 
 
@@ -779,7 +779,7 @@ public:
 
         Affine dR;
         helper::Decompose<Real>::QRDecompositionGradient_dQ( _R, *_geometricStiffnessData.invT(), dx.getF(), dR );
-        df.getF() += dR * StressVoigtToMat( childForce.getStrain() ) * kfactor;
+        df.getF() += dR * StressVoigtToMat( childForce.getStrain() ) * (Real)kfactor;
     }
     void addDForce_polar( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
     {
@@ -799,7 +799,7 @@ public:
                     for( int i=0 ; i<spatial_dimensions ; ++i ) // line of dR
                         dR[i][j] += dROverdF[i*material_dimensions+j][k*material_dimensions+l] * dx.getF()[k][l];
 
-        df.getF() += dR * StressVoigtToMat( childForce.getStrain() ) * kfactor;
+        df.getF() += dR * StressVoigtToMat( childForce.getStrain() ) * (Real)kfactor;
     }
 };
 
@@ -920,7 +920,7 @@ public:
     void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/, const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
     void addDForce_qr( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
     {
-        df.getF()+=(dx.getF() - _R*_R.transposed()*dx.getF()) *kfactor*childForce.getStrain()[0]/this->nrm;
+        df.getF()+=(dx.getF() - _R*_R.transposed()*dx.getF()) * (Real)kfactor * childForce.getStrain()[0]/this->nrm;
     }
 
     void addDForce_polar( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )

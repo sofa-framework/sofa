@@ -269,7 +269,8 @@ public:
     typedef vector< StrainJacobianBlock >  StrainJacobianBlocks;
     StrainJacobianBlocks _strainJacobianBlocks;
 
-    typedef defaulttype::HookeMaterialBlock< defaulttype::E331Types > MaterialBlock;
+	typedef defaulttype::IsotropicHookeLaw<typename defaulttype::E331Types::Real, defaulttype::E331Types::material_dimensions, defaulttype::E331Types::strain_size> LawType;
+    typedef defaulttype::HookeMaterialBlock< defaulttype::E331Types, LawType > MaterialBlock;
     typedef vector< MaterialBlock >  MaterialBlocks;
     MaterialBlocks _materialBlocks;
 

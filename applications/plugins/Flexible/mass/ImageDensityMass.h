@@ -83,7 +83,11 @@ public:
 
     /** @name Image map stuff */
     //@{
+#ifndef SOFA_FLOAT
     Data< defaulttype::ImageD > f_densityImage; ///< the density map
+#else
+	Data< defaulttype::ImageF > f_densityImage;
+#endif 
 
     typedef defaulttype::ImageLPTransform<Real> TransformType;
     Data< TransformType > f_transform;   ///< transform of the density map
