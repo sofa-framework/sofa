@@ -56,6 +56,8 @@ RecordedCamera::RecordedCamera()
     , m_startTime(initData(&m_startTime, (SReal) 0.0 , "startTime", "Time when the camera moves will start"))
     , m_endTime(initData(&m_endTime, (SReal)200 , "endTime", "Time when the camera moves will end (or loop)"))
     , m_rotationMode(initData(&m_rotationMode, (bool)false , "rotationMode", "If true, rotation will be performed"))
+    , m_translationMode(initData(&m_translationMode, (bool)false , "translationMode", "If true, translation will be performed"))
+    , m_navigationMode(initData(&m_navigationMode, (bool)false , "navigationMode", "If true, navigation will be performed"))
     , m_rotationSpeed(initData(&m_rotationSpeed, (SReal)0.1 , "rotationSpeed", "rotation Speed"))
     , m_rotationCenter(initData(&m_rotationCenter, "rotationCenter", "Rotation center coordinates"))
     , m_rotationStartPoint(initData(&m_rotationStartPoint, "rotationStartPoint", "Rotation start position coordinates"))
@@ -64,8 +66,6 @@ RecordedCamera::RecordedCamera()
     , m_cameraUp(initData(&m_cameraUp, Vec3(0,0,0), "cameraUp", "Camera Up axis"))
     , p_drawRotation(initData(&p_drawRotation, (bool)false , "drawRotation", "If true, will draw the rotation path"))
     , p_drawTranslation(initData(&p_drawTranslation, (bool)false , "drawTranslation", "If true, will draw the translation path"))
-    , m_translationMode(initData(&m_translationMode, (bool)false , "translationMode", "If true, translation will be performed"))
-    , m_navigationMode(initData(&m_navigationMode, (bool)false , "navigationMode", "If true, navigation will be performed"))
     , m_translationPositions(initData(&m_translationPositions, "cameraPositions", "Intermediate camera's positions"))
     , m_translationOrientations(initData(&m_translationOrientations, "cameraOrientations", "Intermediate camera's orientations"))
     , m_nextStep(0.0)
@@ -657,7 +657,7 @@ void RecordedCamera::drawRotation()
     return;
 }
 
-void RecordedCamera::draw(const core::visual::VisualParams* vparams)
+void RecordedCamera::draw(const core::visual::VisualParams* /*vparams*/)
 {
 #ifndef SOFA_NO_OPENGL
     // Draw rotation path

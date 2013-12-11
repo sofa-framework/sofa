@@ -488,7 +488,7 @@ public:
     Gradient Ft;  ///< =   grad w.F0     =  d F/dt
     OutCoord C;       ///< =   w.(p0-t0), (p0-t0).grad w.F0 + w.F0   =  constant terms
 
-    void init( const InCoord& InPos, const OutCoord& OutPos, const SpatialCoord& /*SPos*/, const MaterialToSpatial& M, const Real& w, const Gradient& dw, const Hessian& /*ddw*/)
+    void init( const InCoord& InPos, const OutCoord& OutPos, const SpatialCoord& /*SPos*/, const MaterialToSpatial& /*M*/, const Real& w, const Gradient& dw, const Hessian& /*ddw*/)
     {
         Pt=w;
         Ft=OutPos.getAffine().transposed()*dw;

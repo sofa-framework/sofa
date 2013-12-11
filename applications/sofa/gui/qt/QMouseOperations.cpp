@@ -127,7 +127,7 @@ QAddRecordedCameraOperation::QAddRecordedCameraOperation()
 
 void QAddRecordedCameraOperation::configure(PickHandler *picker, sofa::component::configurationsetting::MouseButtonSetting* button)
 {
-    if (sofa::component::configurationsetting::AddRecordedCameraButtonSetting* cameraSetting=dynamic_cast<sofa::component::configurationsetting::AddRecordedCameraButtonSetting*>(button))
+    if (/*sofa::component::configurationsetting::AddRecordedCameraButtonSetting* cameraSetting=*/dynamic_cast<sofa::component::configurationsetting::AddRecordedCameraButtonSetting*>(button))
     {
         AddRecordedCameraOperation::configure(picker,GetMouseId(button->button.getValue().getSelectedId()));
     }
@@ -143,7 +143,7 @@ QStartNavigationOperation::QStartNavigationOperation()
 
 void QStartNavigationOperation::configure(PickHandler *picker, sofa::component::configurationsetting::MouseButtonSetting* button)
 {
-    if (sofa::component::configurationsetting::StartNavigationButtonSetting* cameraSetting=dynamic_cast<sofa::component::configurationsetting::StartNavigationButtonSetting*>(button))
+    if (/*sofa::component::configurationsetting::StartNavigationButtonSetting* cameraSetting=*/dynamic_cast<sofa::component::configurationsetting::StartNavigationButtonSetting*>(button))
     {
         StartNavigationOperation::configure(picker,GetMouseId(button->button.getValue().getSelectedId()));
     }
