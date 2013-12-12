@@ -28,7 +28,7 @@ add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${RC_FILES})
 AddCompilerDefinitions("SOFA_PROJECT_TEST")
 
 AddLinkerDependencies(
-    TestPlugin
+    SofaTest
     SofaComponentMain
     SofaSimulationGraph
     gtest gtest_main
