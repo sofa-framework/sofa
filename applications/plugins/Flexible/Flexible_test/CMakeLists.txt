@@ -13,7 +13,7 @@ include_directories("${SOFA_APPLICATIONS_PROJECTS_DIR}/Standard_test")
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${RC_FILES})
 
-AddLinkerDependencies(Flexible SofaComponentMain SofaSimulationGraph)
+AddLinkerDependencies(Flexible SofaTest)
 
 if(UNIX)
     AddLinkerDependencies("dl")

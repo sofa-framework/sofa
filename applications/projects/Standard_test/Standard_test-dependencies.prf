@@ -1,4 +1,0 @@
-includeOnce($$_FILE_) {
-        declare(Standard_test, applications/projects/Standard_test, sofaobjectcreator sofa_eigen2_solver sofa_component sofa_base_collision sofagraph)
-	enable(Standard_test)
-}
