@@ -1,5 +1,0 @@
-includeOnce($$_FILE_) {
-        declare(ExternalBehaviorModel, applications/plugins/ExternalBehaviorModel, sofaguiqt )
-	
-	enable(ExternalBehaviorModel)
-}

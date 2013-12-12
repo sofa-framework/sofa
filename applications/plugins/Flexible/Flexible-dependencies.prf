@@ -1,5 +1,0 @@
-includeOnce($$_FILE_) {
-        declare(Flexible, applications/plugins/Flexible, sofaguiqt )
-	
-	enable(Flexible)
-}

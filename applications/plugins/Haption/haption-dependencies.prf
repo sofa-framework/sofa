@@ -1,5 +1,0 @@
-includeOnce($$_FILE_) {
-	declare(HaptionPlugin, applications/plugins/Haption, sofacomponent)
-
-	enable(HaptionPlugin)
-}

@@ -1,6 +1,0 @@
-contains(DEFINES, SOFA_QT4) {
-	QT *= qt3support xml
-}
-QT *= opengl
-
-export(QT)

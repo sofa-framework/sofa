@@ -1,4 +1,0 @@
-includeOnce($$_FILE_) {
-	declare(SixenseHydra, applications/plugins/SixenseHydra, sofaguiqt)
-	enable(SixenseHydra)
-}

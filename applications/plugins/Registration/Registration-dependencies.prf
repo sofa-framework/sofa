@@ -1,5 +1,0 @@
-includeOnce($$_FILE_) {
-	declare(sofaRegistration, applications/plugins/Registration, sofaguiqt, image)
-
-	enable(sofaRegistration)
-}

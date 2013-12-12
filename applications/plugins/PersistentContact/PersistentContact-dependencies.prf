@@ -1,5 +1,0 @@
-includeOnce($$_FILE_) {
-	declare(PersistentContact, applications/plugins/PersistentContact, sofahelper sofa_mesh_collision sofa_constraint)
-	
-	enable(PersistentContact)
-}

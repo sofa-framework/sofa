@@ -1,9 +1,0 @@
-includeOnce($$_FILE_) {
-	!equals(ROOT_SRC_DIR, $$PWD){
-		prefix=$$PLUGINS_PATH/Xitact
-	}
-	#declare(XiRobot, applications/plugins/Xitact)
-	#declare(XitactPlugin, applications/plugins/Xitact, sofacore sofacomponentcontroller sofaguimain XiRobot sofaguiqt)
-	declare(XitactPlugin, applications/plugins/Xitact, sofa_component sofagui sofaguiqt)
-	enable(XitactPlugin)
-}

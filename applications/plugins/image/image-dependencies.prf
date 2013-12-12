@@ -1,5 +1,0 @@
-includeOnce($$_FILE_) {
-	declare(sofaimage, applications/plugins/image, sofaguiqt)
-
-	enable(sofaimage)
-}

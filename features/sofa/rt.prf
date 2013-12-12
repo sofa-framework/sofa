@@ -1,3 +1,0 @@
-unix {
-	!macx: LIBS *= -lrt
-}
