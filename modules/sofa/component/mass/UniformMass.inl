@@ -180,8 +180,10 @@ void UniformMass<DataTypes, MassType>::addMDx ( const core::MechanicalParams* /*
 
     for ( unsigned int i=ibegin; i<iend; i++ )
     {
+//        cerr<<"UniformMass<DataTypes, MassType>::addMDx, df[i] = "<<res[i]<< endl;
         res[i] += dx[i] * m;
-        //serr<<"dx[i] = "<<dx[i]<<", m = "<<m<<", dx[i] * m = "<<dx[i] * m<<sendl;
+//        cerr<<"UniformMass<DataTypes, MassType>::addMDx, dx[i] = "<<dx[i]<<", m = "<<m<<", dx[i] * m = "<<dx[i] * m<< endl;
+//        cerr<<"UniformMass<DataTypes, MassType>::addMDx, df[i] = "<<res[i]<< endl;
     }
 }
 

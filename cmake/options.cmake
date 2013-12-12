@@ -342,7 +342,7 @@ option(SOFA-LIB_GUI_INTERACTION "Enable interaction mode" OFF)
 
 
 # unit tests
-option(SOFA-MISC_TESTS "Build and use unit tests" OFF)
+option(SOFA-MISC_TESTS "Build and use all the unit tests, including the tests of the activated plugins" OFF)
 if(SOFA-MISC_TESTS)
 	option(SOFA-MISC_BUILD_GTEST "Build google test framework" ON)
 endif()
