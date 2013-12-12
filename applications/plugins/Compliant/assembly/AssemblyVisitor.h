@@ -271,14 +271,10 @@ struct AssemblyVisitor::process_helper {
                 if( p->master() && empty(Jp) ) {
                     // scoped::timer step("shift matrix");
 
-#if SHIFTING_MATRIX_WITHOUT_MULTIPLICATION
-                    if(! zero(p->P) ) Jp = shifted_matrix( p->P, find(offsets, vp.dofs), size_m );
-#else
-                    Jp = shift_right<mat>( find(offsets, vp.dofs), p->size, size_m);
-                    // TODO optimize!
-                    // filter absolute mapping to get filtered mapped mass/stiffness.
-                    if(! zero(p->P) ) Jp = p->P * Jp;
-#endif
+					// note: we *DONT* filter mass/stiffness at this
+					// stage since this would break direct solvers
+					// (non-invertible H matrix)
+					Jp = shift_right<mat>( find(offsets, vp.dofs), p->size, size_m);
                 }
 
                 // Jp is empty for children of a non-master dof (e.g. mouse)
