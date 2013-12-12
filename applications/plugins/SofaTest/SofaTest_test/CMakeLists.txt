@@ -6,6 +6,7 @@ set(SOURCE_FILES
     RigidMapping_test.cpp
     EulerImplicit_test.cpp
     SAPTest.cpp
+    Matrix_test.inl
     Matrix_test.cpp
     OBBTest.cpp
     SphereTest.cpp

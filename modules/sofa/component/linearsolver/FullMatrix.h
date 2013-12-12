@@ -170,6 +170,7 @@ public:
         clear();
     }
 
+
     unsigned int rowSize(void) const
     {
         return nRow;

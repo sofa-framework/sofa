@@ -26,7 +26,12 @@
 #include "Binding_SubsetMultiMapping.h"
 #include "Binding_BaseMapping.h"
 
+#ifndef SOFA_FLOAT
 #include <sofa/component/typedef/Mapping_double.h>
+#endif
+#ifndef SOFA_DOUBLE
+#include <sofa/component/typedef/Mapping_float.h>
+#endif
 #include <sofa/core/BaseState.h>
 using namespace sofa::component::mapping;
 
@@ -51,6 +56,11 @@ SP_CLASS_METHOD(SubsetMultiMapping3_to_3,addPoint)
 SP_CLASS_METHODS_END
 
 
+#ifndef SOFA_FLOAT
 SP_CLASS_TYPE_SPTR(SubsetMultiMapping3_to_3,SubsetMultiMapping3d_to_3d,BaseMapping) // temp: MultiMapping3_to_3
+#endif
+#ifndef SOFA_DOUBLE
+SP_CLASS_TYPE_SPTR(SubsetMultiMapping3_to_3,SubsetMultiMapping3f_to_3f,BaseMapping) // temp: MultiMapping3_to_3
+#endif
 
 
