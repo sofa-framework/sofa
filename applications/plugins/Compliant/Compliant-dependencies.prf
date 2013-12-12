@@ -1,4 +1,0 @@
-#includeOnce($$_FILE_) {
-#    declare(Compliant, applications/plugins/Compliant/Compliant, sofaguiqt sofa_eigen2_solver Flexible )
-#	enable(Compliant)
-#}

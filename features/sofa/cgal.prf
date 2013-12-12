@@ -1,6 +1,0 @@
-contains(DEFINES, SOFA_HAVE_CGAL) {
-	QMAKE_CXXFLAGS += -frounding-math
-	export(QMAKE_CXXFLAGS)
-	INCLUDEPATH *= $$SOFA_INSTALL_INC_DIR/extlibs/CGAL/include
-	LIBS *= -lCGAL -lCGAL_ImageIO -lgmp -lmpfr -lboost_thread-mt
-}

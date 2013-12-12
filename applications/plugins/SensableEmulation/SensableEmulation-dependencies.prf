@@ -1,7 +1,0 @@
-includeOnce($$_FILE_) {
-	declare(SensableEmulationPlugin, applications/plugins/SensableEmulation, sofaguiqt sofa_component_general sofa_haptics)
-
-	enable(SensableEmulationPlugin)
-}
-
-

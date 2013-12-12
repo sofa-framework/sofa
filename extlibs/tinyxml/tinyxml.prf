@@ -1,2 +1,0 @@
-DEFINES *= TIXML_USE_STL
-export(DEFINES)

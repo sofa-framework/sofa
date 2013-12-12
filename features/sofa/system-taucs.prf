@@ -1,3 +1,0 @@
-contains(DEFINES, SOFA_HAVE_TAUCS) : !contains(DEFINES, SOFA_EXTLIBS_TAUCS) {
-	LIBS *= -ltaucs
-}

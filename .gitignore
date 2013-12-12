@@ -46,42 +46,6 @@ share/screenshots/
 CMakeFiles/*
 CMakeCache.txt
 
-# Files related to qmake builds, soon to be removed
-sofaDefines.cfg
-sofa-local.cfg
-sofa-local.prf
-bin/
-lib/
-Makefile*
-moc_*.cpp
-OBJ/
-*.o
-applications/projects/Modeler/lib/DialogAddPreset.cpp
-applications/projects/Modeler/lib/DialogAddPreset.h
-applications/projects/Modeler/lib/Modeler.cpp
-applications/projects/Modeler/lib/Modeler.h
-applications/projects/Modeler/lib/PluginManager.cpp
-applications/projects/Modeler/lib/PluginManager.h
-applications/sofa/gui/qt/BaseGenGraphForm.cpp
-applications/sofa/gui/qt/BaseGenGraphForm.h
-applications/sofa/gui/qt/DialogAddObject.cpp
-applications/sofa/gui/qt/DialogAddObject.h
-applications/sofa/gui/qt/GUI.cpp
-applications/sofa/gui/qt/GUI.h
-applications/sofa/gui/qt/MouseManager.cpp
-applications/sofa/gui/qt/MouseManager.h
-applications/sofa/gui/qt/PluginManager.cpp
-applications/sofa/gui/qt/PluginManager.h
-applications/sofa/gui/qt/VideoRecorderManager.cpp
-applications/sofa/gui/qt/VideoRecorderManager.h
-applications/sofa/gui/qt/VisitorGUI.cpp
-applications/sofa/gui/qt/VisitorGUI.h
-extlibs/libQGLViewer-2.4.0/QGLViewer/ui_ImageInterface.h
-extlibs/libQGLViewer-2.4.0/QGLViewer/ui_VRenderInterface.h
-extlibs/qwt-6.0.1/src/obj/
-Sofa.pro.user
-
-
 # anything user-specific (as opposed to repository-specific) should go
 # to .git/info/exclude instead of .gitignore. Also, .gitignore files
 # can be placed in sub-directories to avoid polluting the root one.

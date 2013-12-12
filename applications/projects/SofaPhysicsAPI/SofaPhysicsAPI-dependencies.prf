@@ -1,5 +1,0 @@
-includeOnce($$_FILE_) {
-        declare(SofaPhysicsAPI, applications/projects/SofaPhysicsAPI, sofa_component sofagui glut sofaguimain qtgui)
-
-	enable(SofaPhysicsAPI)
-}
