@@ -60,16 +60,17 @@ protected:
 		typename self::jacobian_type::CompressedMatrix& J = this->jacobian.compressedMatrix;
 		J.resize( base::Nout * in.size(), 
 				  base::Nin * in.size() );
+		
 		J.setZero();
 
 		for( unsigned i = 0, n = in.size(); i < n; ++i) {
 			unsigned index = std::min<int>(d.size() - 1, i);
 			
 			for( unsigned u = 0; u < base::Nin; ++u) {
-				unsigned row = base::Nin * i + u;
-
+				unsigned row = base::Nout * i + u;
+				J.startVec( row );
+				
 				if( d[index][u] ) {
-					J.startVec( row );
 					J.insertBack(row, row) = d[index][u];
 				}
 			}
