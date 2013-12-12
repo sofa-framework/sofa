@@ -76,7 +76,7 @@ struct Sofa_test : public ::testing::Test
         return result;
     }
 
-    /// return the maximum difference between corresponding entries, or the infinity if the matrices have different sizes
+    /// Return the maximum difference between corresponding entries, or the infinity if the matrices have different sizes
     template<int M, int N, typename Real, typename Matrix2>
     static Real matrixCompare( const sofa::defaulttype::Mat<M,N,Real>& m1, const Matrix2& m2 )
     {
