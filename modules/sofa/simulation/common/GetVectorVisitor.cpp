@@ -34,6 +34,9 @@
 //
 #include <sofa/simulation/common/GetVectorVisitor.h>
 #include <sofa/defaulttype/Vec.h>
+#include <iostream>
+using std::cerr;
+using std::endl;
 
 namespace sofa
 {
@@ -51,8 +54,10 @@ GetVectorVisitor::~GetVectorVisitor()
 
 Visitor::Result GetVectorVisitor::processNodeTopDown( simulation::Node* gnode )
 {
+//    cerr << "GetVectorVisitor::processNodeTopDown, node "<< gnode->getName() << endl;
     if (gnode->mechanicalState != NULL) // independent DOFs
     {
+//        cerr << "GetVectorVisitor::processNodeTopDown, node has mechanical state "<< endl;
         gnode->mechanicalState->copyToBaseVector(vec,src,offset);
     }
     return Visitor::RESULT_CONTINUE;
