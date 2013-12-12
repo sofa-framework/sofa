@@ -347,20 +347,25 @@ struct SE3 {
 
 	// L_h(g) = h.g
 	// R_h(g) = g.h
-
-	// TODO optimize !
-
+	
 	// dL_h(g) in sofa coordinates
-	static mat66 dL(const coord_type& h, const coord_type& g) {
-
-		// TODO optimize
-		return sofa(prod(h, g)) * body(g);
+	static mat66 dL(const coord_type& h, const coord_type& ) {
+		// dL_h(g) = sofa(hg) * body(g) = sofa(hg) * sofa(g-1) = sofa(h)
+		return sofa(h);
 	}
 
 
 	// dR_h(g) in sofa coordinates
 	static mat66 dR(const coord_type& h, const coord_type& g) {
-		return sofa( prod(g, h) ) * Ad( inv(h) ) * body(g);
+		mat66 res; 
+
+		res <<
+			mat33::Identity(), - hat( rotation(g) * translation(h) ),
+			mat33::Zero(), mat33::Identity();
+
+		return res;
+
+		// return sofa( prod(g, h) ) * Ad( inv(h) ) * body(g);
 	}
 
 
