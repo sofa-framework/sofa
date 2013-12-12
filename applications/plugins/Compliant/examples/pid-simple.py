@@ -18,6 +18,8 @@ control = ControlData
 
 
 def createScene(node):
+     root.createObject('RequiredPlugin', pluginName = 'Compliant')
+
      node.animate = 'true'
 
      node.createObject('VisualStyle', displayFlags='hideBehaviorModels hideCollisionModels hideMappings hideForceFields')

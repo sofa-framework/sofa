@@ -52,6 +52,8 @@ links = [
 
 
 def createScene(node):
+    node.createObject('RequiredPlugin', pluginName = 'Compliant' )
+
     node.createObject('VisualStyle', displayFlags='hideBehaviorModels hideCollisionModels hideMappings hideForceFields')
     node.createObject('Stabilization', name='Group')
     node.findData('dt').value=0.01
