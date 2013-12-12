@@ -54,13 +54,29 @@ public:
     typedef enum
     {
         Move=0,
-        LeftPressed,
+        // The standard mouse button (on a three mouse button)
+		LeftPressed,
         LeftReleased,
         RightPressed,
         RightReleased,
         MiddlePressed,
         MiddleReleased,
-        Wheel,
+
+		// In case the mouse has more than three button
+		// the extra button will send this event. Unless the 
+		// ExtraButton0Pressed lines is properly implemented throughou Sofa. 
+		AnyExtraButtonPressed,   
+		AnyExtraButtonReleased,
+
+		// Some mice has extra mouse buttons, 
+		// TODO: replace the AnyExtraButton events by Button0, Button1 events.
+		// and implement the correct processing throughouh Sofa.
+		// ExtraButton0Pressed,
+		// ExtraButton0Released,
+        // ExtraButton1Pressed,
+		// ExtraButton1Released,
+		
+		Wheel,
         Reset
     } State;
 
