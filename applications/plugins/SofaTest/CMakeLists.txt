@@ -18,6 +18,7 @@ set(SOURCE_FILES
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
+AddLinkerDependencies(SofaSimulationGraph)
 AddLinkerDependencies(
     SceneCreator
 )

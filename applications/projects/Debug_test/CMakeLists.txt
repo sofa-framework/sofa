@@ -12,11 +12,7 @@ set(SOURCE_FILES
 add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
 
 AddCompilerDefinitions("SOFA_PROJECT_TEST")
-AddLinkerDependencies(SofaGuiMain SofaComponentMain)
-
-if(SOFA-LIB_SIMULATION_GRAPH_DAG)
-    AddLinkerDependencies(SofaSimulationGraph)
-endif()
+AddLinkerDependencies(SofaTest)
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
 

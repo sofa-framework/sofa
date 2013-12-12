@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include "../Standard_test/Mapping_test.h"
+#include <plugins/SofaTest/Mapping_test.h>
 #include <gtest/gtest.h>
 //#include "../Standard_test/Sofa_test.h"
 #include <sofa/component/init.h>
