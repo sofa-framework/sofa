@@ -25,7 +25,7 @@
 /** \file Compliant test suite main file */
 // Francois Faure,
 
-#include <plugins/TestPlugin/Solver_test.h>
+#include <plugins/SofaTest/Solver_test.h>
 
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
