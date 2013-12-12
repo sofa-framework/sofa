@@ -58,8 +58,7 @@ SP_CLASS_METHODS_END
 
 #ifndef SOFA_FLOAT
 SP_CLASS_TYPE_SPTR(SubsetMultiMapping3_to_3,SubsetMultiMapping3d_to_3d,BaseMapping) // temp: MultiMapping3_to_3
-#endif
-#ifndef SOFA_DOUBLE
+#else
 SP_CLASS_TYPE_SPTR(SubsetMultiMapping3_to_3,SubsetMultiMapping3f_to_3f,BaseMapping) // temp: MultiMapping3_to_3
 #endif
 
