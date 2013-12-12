@@ -45,7 +45,7 @@ namespace sofa {
 
         bool runTest( defaulttype::Mat<3,3,Real>& rotation, defaulttype::Mat<In::material_dimensions,In::material_dimensions,Real>& strain, const OutVecCoord& expectedChildCoords)
         {
-            this->deltaMax = 100;
+            this->deltaMax = 100;  // OUUUUUUUU la triche ! Du coup on ne teste pas les J
             this->errorMax = 1000;
 
             InVecCoord xin(1);
@@ -98,26 +98,26 @@ namespace sofa {
           static_cast<_Mapping*>(this->mapping)->f_method.beginEdit()->setSelectedItem( method );
 
           defaulttype::Mat<3,3,Real> rotation;
-          defaulttype::Mat<In::material_dimensions,In::material_dimensions,Real> strain; // stretch + shear
+          defaulttype::Mat<In::material_dimensions,In::material_dimensions,Real> symGradDef; // local frame with onlu stretch and shear and no rotation
 
+          // create a symmetric deformation gradient, encoding a pure deformation.
           for( unsigned int i=0 ; i<In::material_dimensions ; ++i )
           for( unsigned int j=i ; j<In::material_dimensions ; ++j )
           {
-              strain[i][j] = (i+1)*2+j*0.3; // todo randomize it being careful not to create a rotation
-              if( i!=j ) strain[j][i] = strain[i][j];
+              symGradDef[i][j] = (i+1)*2+j*0.3; // todo randomize it being careful not to create a rotation
+              if( i!=j ) symGradDef[j][i] = symGradDef[i][j];
           }
-
-          helper::Quater<Real>::fromEuler( 0.1, -.2, .3 ).toMatrix(rotation);
-
 
           // expected mapped values
           OutVecCoord expectedChildCoords(1);
-          defaulttype::Mat<In::material_dimensions,In::material_dimensions,Real> defo( strain );
+          defaulttype::Mat<In::material_dimensions,In::material_dimensions,Real> defo( symGradDef );
           for( unsigned int i=0 ; i<In::material_dimensions ; ++i )
               defo[i][i] -= 1.0;
           expectedChildCoords[0].getVec() = defaulttype::StrainMatToVoigt( defo );
 
-          return Inherited::runTest( rotation, strain, expectedChildCoords );
+          helper::Quater<Real>::fromEuler( 0.1, -.2, .3 ).toMatrix(rotation); // random rotation to combine to strain
+
+          return Inherited::runTest( rotation, symGradDef, expectedChildCoords );
 
       }
 

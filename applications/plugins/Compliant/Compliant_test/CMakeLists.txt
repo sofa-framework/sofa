@@ -21,7 +21,7 @@ endif()
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${RC_FILES})
 
-AddLinkerDependencies(Compliant SofaComponentMain SofaSimulationGraph)
+AddLinkerDependencies(Compliant TestPlugin SofaComponentMain SofaSimulationGraph)
 
 if(UNIX)
     AddLinkerDependencies("dl")
