@@ -187,7 +187,7 @@ class Body:
 class Joint:
 
         def __init__(self, name = 'joint'):
-                self.dofs = [0, 0, 0, 0, 0, 0]
+                self.dofs = [0] * 6
                 self.body = []
                 self.offset = []
                 self.name = name
@@ -253,7 +253,7 @@ class Joint:
 		
                 if self.stiffness > 0:
                         # stiffness: we map all dofs
-                        mask = [1, 1, 1, 1, 1, 1]
+                        mask = [1] * 6;
                 else:
                         # only constrained dofs are needed
                         mask = constrained_dofs
@@ -337,7 +337,6 @@ class PrismaticJoint(Joint):
                 self.dofs[0 + axis] = 1
                 self.name = 'prismatic-'
 
-# this one seems broken, don't use for now
 class PlanarJoint(Joint):
 
         def __init__(self, normal):

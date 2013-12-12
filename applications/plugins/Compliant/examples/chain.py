@@ -11,7 +11,7 @@ from Compliant import Rigid
 def createScene(root):
     
     # root node setup
-    root.createObject('RequiredPlugin', name = 'Compliant')
+    root.createObject('RequiredPlugin', pluginName = 'Compliant')
     root.createObject('VisualStyle', displayFlags="showBehavior" )
     
     # simuation parameters
