@@ -92,6 +92,24 @@ extern "C" PyObject * PythonScriptController_initGraph(PyObject * /*self*/, PyOb
     Py_RETURN_NONE;
 }
 
+extern "C" PyObject * PythonScriptController_bwdInitGraph(PyObject * /*self*/, PyObject * args)
+{
+    PyObject *pyNode;
+    if (!PyArg_ParseTuple(args, "O",&pyNode))
+    {
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+
+#ifdef LOG_UNIMPLEMENTED_METHODS
+    PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
+    Node* node=dynamic_cast<Node*>(((PySPtr<Base>*)pyNode)->object.get());
+    std::cerr << obj->m_classname.getValueString() << ".bwdInitGraph not implemented in " << obj->name.getValueString() << std::endl;
+#endif
+
+    Py_RETURN_NONE;
+}
+
 extern "C" PyObject * PythonScriptController_onBeginAnimationStep(PyObject * /*self*/, PyObject * args)
 {
     double dt;
@@ -321,6 +339,7 @@ SP_CLASS_METHODS_BEGIN(PythonScriptController)
 SP_CLASS_METHOD(PythonScriptController,onLoaded)
 SP_CLASS_METHOD(PythonScriptController,createGraph)
 SP_CLASS_METHOD(PythonScriptController,initGraph)
+SP_CLASS_METHOD(PythonScriptController,bwdInitGraph)
 SP_CLASS_METHOD(PythonScriptController,onKeyPressed)
 SP_CLASS_METHOD(PythonScriptController,onKeyReleased)
 SP_CLASS_METHOD(PythonScriptController,onMouseButtonLeft)
