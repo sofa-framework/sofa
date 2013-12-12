@@ -2,6 +2,8 @@ import Sofa
 
 from subprocess import Popen, PIPE
 
+import Quaternion as quat
+import Vec as vec
 
 # small helper
 def concat(x):
@@ -30,7 +32,23 @@ class Frame:
                 return self
 
 	# TODO multiplication/inversion ?
- 
+	def __mul__(self, other):
+		res = Frame()
+		res.translation = vec.sum(self.translation,
+					  quat.rotate(self.rotation,
+						      other.translation))
+		res.rotation = quat.prod( self.rotation,
+					  other.rotation)
+
+		return res
+
+	def inv(self):
+		res = Frame()
+		res.rotation = quat.conj( self.rotation )
+		res.translation = vec.minus( quat.rotate(res.rotation,
+							 self.translation) )
+		return res
+					  
 
 # TODO remove ?
 def mesh_offset( mesh, path = "" ):
