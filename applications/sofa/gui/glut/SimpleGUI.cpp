@@ -1686,6 +1686,10 @@ void SimpleGUI::mouseEvent ( int type, int eventX, int eventY, int button )
                 mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::RightPressed, eventX, eventY);
             else if (button == GLUT_MIDDLE_BUTTON)
                 mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::MiddlePressed, eventX, eventY);
+			else{
+				// A fallback event to rules them all... 
+				mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::AnyExtraButtonPressed, eventX, eventY);
+			}
             currentCamera->manageEvent(mEvent);
             _moving = true;
             _spinning = false;
@@ -1711,6 +1715,10 @@ void SimpleGUI::mouseEvent ( int type, int eventX, int eventY, int button )
                 mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::RightReleased, eventX, eventY);
             else if (button == GLUT_MIDDLE_BUTTON)
                 mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::MiddleReleased, eventX, eventY);
+			else{
+				// A fallback event to rules them all... 
+				mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::AnyExtraButtonReleased, eventX, eventY);
+			}
             currentCamera->manageEvent(mEvent);
             _moving = false;
             _spinning = false;

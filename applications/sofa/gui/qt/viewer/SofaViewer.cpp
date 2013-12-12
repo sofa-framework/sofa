@@ -297,6 +297,10 @@ void SofaViewer::mousePressEvent ( QMouseEvent * e)
         mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::RightPressed, e->x(), e->y());
     else if (e->button() == Qt::MidButton)
         mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::MiddlePressed, e->x(), e->y());
+	else{
+		// A fallback event to rules them all... 
+	    mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::AnyExtraButtonPressed, e->x(), e->y());
+	}
     currentCamera->manageEvent(mEvent);
 
     getQWidget()->update();
@@ -316,6 +320,11 @@ void SofaViewer::mouseReleaseEvent ( QMouseEvent * e)
         mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::RightReleased, e->x(), e->y());
     else if (e->button() == Qt::MidButton)
         mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::MiddleReleased, e->x(), e->y());
+	else{
+		// A fallback event to rules them all... 
+	    mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::AnyExtraButtonReleased, e->x(), e->y());
+	}
+
     currentCamera->manageEvent(mEvent);
 
     getQWidget()->update();
