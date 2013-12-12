@@ -1,9 +1,18 @@
 #include "Compliant_test.h"
 
-
+namespace sofa {
 
 struct AssembledTestFixture : public CompliantTestFixture
 {
+
+
+    /** Expected results of the different tests. */
+    struct
+    {
+        DenseMatrix M,C,J,P;
+        Vector f,phi,dv,lambda;
+    } expected;
+
 
     /** @defgroup ComplianceSolver_Unit_Tests ComplianceSolver Assembly Tests
      These methods create a scene, run a short simulation, and save the expected matrix and vector values in the  expected member struct.
@@ -791,6 +800,7 @@ TEST_F( AssembledTestFixture, test_CompliantSolver_assembly )
 }
 
 
+} // sofa
 
 
 

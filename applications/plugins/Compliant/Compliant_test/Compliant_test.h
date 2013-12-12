@@ -25,7 +25,7 @@
 /** \file Compliant test suite main file */
 // Francois Faure,
 
-#include <gtest/gtest.h>
+#include <plugins/TestPlugin/Solver_test.h>
 
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -43,7 +43,6 @@
 #include <sofa/component/topology/EdgeSetTopologyContainer.h>
 #include <sofa/component/projectiveconstraintset/FixedConstraint.h>
 
-//#include <plugins/Compliant/ComplianceSolver.h>
 #include "../odesolver/AssembledSolver.h"
 #include "../numericalsolver/LDLTSolver.h"
 #include "../compliance/UniformCompliance.h"
@@ -78,14 +77,17 @@ using sofa::helper::vector;
 /** Test suite for matrix assembly of class sofa::component::odesolver::ComplianceSolver.
 The unit tests are defined in group  \ref ComplianceSolver_Unit_Tests
  */
-class CompliantTestFixture : public ::testing::Test
+class CompliantTestFixture : public Solver_test
 {
 protected:
     typedef SReal Real;
+    typedef linearsolver::AssembledSystem::rmat SMatrix;
     typedef odesolver::AssembledSolver OdeSolver;
     typedef linearsolver::LDLTSolver LinearSolver;
-    typedef OdeSolver::system_type::rmat SMatrix;
-    typedef topology::EdgeSetTopologyContainer EdgeSetTopologyContainer;
+    OdeSolver::SPtr complianceSolver; ///< Solver used to perform the test simulation, and which contains the actual results, to be compared with the expected ones.
+    LinearSolver::SPtr linearSolver; ///< Auxiliary linear equation solver used by the ode solver
+
+    typedef component::topology::EdgeSetTopologyContainer EdgeSetTopologyContainer;
     typedef simulation::Node Node;
     typedef simulation::Simulation Simulation;
     typedef Eigen::MatrixXd DenseMatrix;
@@ -193,12 +195,90 @@ protected:
 
     }
 
+    /** Helper to create strings used in various tests.
+      A struct with a constructor is more convenient than a method, because it allows us to subsequently access the nodes and components.
+      */
+    struct ParticleString
+    {
+        simulation::Node::SPtr  string_node; ///< root
+        MechanicalObject3::SPtr DOF; ///< particle states
+        UniformMass3::SPtr mass;
+
+        simulation::Node::SPtr extension_node;
+        MechanicalObject1::SPtr extensions;
+        EdgeSetTopologyContainer::SPtr edgeSet;
+        ExtensionMapping31::SPtr extensionMapping;
+        UniformCompliance1::SPtr compliance;
+
+        ParticleString(simulation::Node::SPtr parent, Vec3 startPoint, Vec3 endPoint, unsigned numParticles, double totalMass )
+        {
+        static unsigned numObject = 1;
+        std::ostringstream oss;
+        oss << "string_" << numObject++;
+        SReal totalLength = (endPoint-startPoint).norm();
+
+        //--------
+        string_node = parent->createChild(oss.str());
+        cerr<<"Particle string added as child of " << parent->getName() << endl;
+
+        DOF = New<MechanicalObject3>();
+        string_node->addObject(DOF);
+        DOF->setName(oss.str()+"_DOF");
+
+        mass = New<UniformMass3>();
+        string_node->addObject(mass);
+        mass->setName(oss.str()+"_mass");
+        mass->mass.setValue( totalMass/numParticles );
+
+
+        //--------
+        extension_node = string_node->createChild( oss.str()+"_ExtensionNode");
+
+        extensions = New<MechanicalObject1>();
+        extension_node->addObject(extensions);
+        extensions->setName(oss.str()+"_extensionsDOF");
+
+        edgeSet = New<EdgeSetTopologyContainer>();
+        extension_node->addObject(edgeSet);
+
+        extensionMapping = New<ExtensionMapping31>();
+        extensionMapping->setName(oss.str()+"_extensionsMapping");
+        extensionMapping->setModels( DOF.get(), extensions.get() );
+        extension_node->addObject( extensionMapping );
+
+        compliance = New<UniformCompliance1>();
+        extension_node->addObject(compliance);
+        compliance->setName(oss.str()+"_extensionsCompliance");
+
+
+        //--------
+        // create the particles
+        DOF->resize(numParticles);
+        MechanicalObject3::WriteVecCoord x = DOF->writePositions();
+        helper::vector<SReal> restLengths;
+        for( unsigned i=0; i<numParticles; i++ )
+        {
+            double alpha = (double)i/(numParticles-1);
+            x[i] = startPoint * (1-alpha)  +  endPoint * alpha;
+            if(i>0)
+            {
+                edgeSet->addEdge(i-1,i);
+                restLengths.push_back( totalLength/(numParticles-1) );
+            }
+        }
+        extensionMapping->f_restLengths.setValue( restLengths );
+
+
+        }
+
+    };
+
     /// remove all children nodes
     void clear()
     {
         if( root )
-            simulation->unload( root );
-        root = simulation->createNewGraph("");
+            Simulation::theSimulation->unload( root );
+        root = Simulation::theSimulation->createNewGraph("");
     }
 
     /// Return an identity matrix, or if not square, a matrix with 1 on each entry of the main diagonal
@@ -294,51 +374,18 @@ protected:
     ///@}
 
 
-    /** Expected results of the different tests. */
-    struct
-    {
-        DenseMatrix M,C,J,P;
-        Vector f,phi,dv,lambda;
-    } expected;
-
-    OdeSolver::SPtr complianceSolver; ///< Solver used to perform the test simulation, and which contains the actual results, to be compared with the expected ones.
-    LinearSolver::SPtr linearSolver; ///< Auxiliary linear equation solver used by the ode solver
-
-    Node::SPtr root;                 ///< Root of the scene graph, created by the constructor an re-used in the tests
-    Simulation* simulation;          ///< created by the constructor an re-used in the tests
+//    Node::SPtr root;                 ///< Root of the scene graph, created by the constructor an re-used in the tests
+//    Simulation* simulation;          ///< created by the constructor an re-used in the tests
 
 
     // ========================================
 public:
     CompliantTestFixture()
     {
-        //        sofa::helper::BackTrace::autodump();
-        //        sofa::core::ExecParams::defaultInstance()->setAspectID(0);
-
-        sofa::component::init();
-        //        sofa::simulation::xml::initXml();
-
-        //        std::vector<std::string> plugins;
-        //        plugins.push_back(std::string("Flexible"));
-        //        for (unsigned int i=0;i<plugins.size();i++)
-        //            sofa::helper::system::PluginManager::getInstance().loadPlugin(plugins[i]);
-
-        //        sofa::helper::system::PluginManager::getInstance().init();
-
-
-        //        sofa::gui::initMain();
-        //        if (int err = sofa::gui::GUIManager::Init("argv[0]","batch") )
-        //                cerr<<"sofa::gui::GUIManager::Init failed " << endl;
-
-        //        if (int err=sofa::gui::GUIManager::createGUI(NULL))
-        //            cerr<<"sofa::gui::GUIManager::createGUI failed " << endl;
-
-        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
-        //        sofa::simulation::setSimulation(simulation = new sofa::simulation::bgl::BglSimulation());
-        root = simulation->createNewGraph("root");
-        root->setName("Scene root");
-        //cerr<<"CompliantTestFixture created" << endl;
-
+//        sofa::component::init();
+//        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
+//        root = simulation->createNewGraph("root");
+//        root->setName("Scene root");
     }
 
     ~CompliantTestFixture()
