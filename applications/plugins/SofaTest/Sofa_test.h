@@ -40,7 +40,7 @@ namespace sofa {
 
 /** Base class for all Sofa test fixtures, to provide helper functions to compare vectors, matrices, etc.
   */
-template <typename _Real=double>
+template <typename _Real>
 struct Sofa_test : public ::testing::Test
 {
     typedef _Real Real; ///< Scalar type
@@ -99,15 +99,18 @@ struct Sofa_test : public ::testing::Test
     static bool matricesAreEqual( const Matrix1& m1, const Matrix2& m2, double tolerance=std::numeric_limits<Real>::epsilon()*100)
     {
         bool result = true;
-        if(m1.rowSize()!=m2.rowSize() || m2.colSize()!=m1.colSize()) result = false;
-        for(unsigned i=0; i<m1.rowSize(); i++)
-            for(unsigned j=0; j<m1.colSize(); j++)
-                if(abs(m1.element(i,j)-m2.element(i,j))>tolerance) result = false;
+        if(m1.rows()!=m2.rows() || m2.cols()!=m1.cols()) result = false;
+        for(unsigned i=0; i<m1.rows(); i++)
+            for(unsigned j=0; j<m1.cols(); j++)
+                if(abs(m1(i,j)-m2(i,j))>tolerance) {
+                    cout<<"SofaTest::matricesAreEqual1 is false, difference = "<< abs(m1.element(i,j)-m2.element(i,j)) << " is larger than " << tolerance << endl;
+                    result = false;
+                }
 
-//        if( result == false ){
-//            cout<<"matricesAreEqual is false, matrix 1 = "<< m1 <<endl;
-//            cout<<"matricesAreEqual is false, matrix 2 = "<< m2 <<endl;
-//        }
+        if( result == false ){
+            cout<<"SofaTest::matricesAreEqual1 is false, matrix 1 = "<< m1 <<endl;
+            cout<<"SofaTest::matricesAreEqual1, matrix 2 = "<< m2 <<endl;
+        }
         return result;
     }
 
@@ -116,18 +119,18 @@ struct Sofa_test : public ::testing::Test
     static bool matricesAreEqual( const sofa::defaulttype::Mat<M,N,Real>& m1, const Matrix2& m2, double tolerance=std::numeric_limits<Real>::epsilon()*100 )
     {
         bool result = true;
-        if(M!=m2.rowSize() || N!=m2.colSize()) result= false;
+        if(M!=m2.rows() || N!=m2.cols()) result= false;
         for( unsigned i=0; i<M; i++ )
             for( unsigned j=0; j<N; j++ )
-                if( fabs(m1(i,j)-m2.element(i,j))>tolerance  ) {
-//                    cout<<"matricesAreEqual is false, difference = "<< fabs(m1(i,j)-m2.element(i,j)) << " is larger than " << tolerance << endl;
+                if( fabs(m1(i,j)-m2(i,j))>tolerance  ) {
+                    cout<<"SofaTest::matricesAreEqual2 is false, difference = "<< fabs(m1(i,j)-m2(i,j)) << " is larger than " << tolerance << endl;
                     result= false;
                 }
 
-//        if( result == false ){
-//            cout<<"matricesAreEqual is false, matrix 1 = "<< m1 <<endl;
-//            cout<<"matricesAreEqual is false, matrix 2 = "<< m2 <<endl;
-//        }
+        if( result == false ){
+            cout<<"SofaTest::matricesAreEqual2 is false, matrix 1 = "<< m1 <<endl;
+            cout<<"SofaTest::matricesAreEqual2 is false, matrix 2 = "<< m2 <<endl;
+        }
         return result;
     }
 

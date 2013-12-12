@@ -77,7 +77,7 @@ using sofa::helper::vector;
 /** Test suite for matrix assembly of class sofa::component::odesolver::ComplianceSolver.
 The unit tests are defined in group  \ref ComplianceSolver_Unit_Tests
  */
-class CompliantTestFixture : public Solver_test
+class CompliantSolver_test : public Solver_test
 {
 protected:
     typedef SReal Real;
@@ -90,8 +90,8 @@ protected:
     typedef component::topology::EdgeSetTopologyContainer EdgeSetTopologyContainer;
     typedef simulation::Node Node;
     typedef simulation::Simulation Simulation;
-    typedef Eigen::MatrixXd DenseMatrix;
-    typedef Eigen::VectorXd Vector;
+    typedef Eigen::Matrix<SReal, Eigen::Dynamic,Eigen::Dynamic> DenseMatrix;
+    typedef Eigen::Matrix<SReal, Eigen::Dynamic,1> Vector;
 
     // Vec3
     typedef defaulttype::Vec<3,SReal> Vec3;
@@ -308,8 +308,8 @@ protected:
         return m;
     }
 
-    /// return true if the matrices have same size and all their entries are equal within the given tolerance
-    static bool matricesAreEqual( const DenseMatrix m1, const SMatrix& sm2, double tolerance=100*std::numeric_limits<double>::epsilon() )
+    /// Return true if the matrices have same size and all their entries are equal within the given tolerance. Specialization on Eigen matrices.
+    static bool matricesAreEqual( const DenseMatrix m1, const SMatrix& sm2, SReal tolerance=100*std::numeric_limits<SReal>::epsilon() )
     {
         DenseMatrix m2 = sm2;
         if( m1.rows()!=m2.rows() || m1.cols()!=m2.cols() ) return false;
@@ -318,14 +318,14 @@ protected:
         bool areEqual = abs(diff.maxCoeff()<tolerance && abs(diff.minCoeff()<tolerance));
         if( !areEqual )
         {
-            cerr<<"matricesAreEqual, tolerance = "<< tolerance << ", difference = " << endl << diff << endl;
+            cerr<<"CompliantSolver_test::matricesAreEqual1, tolerance = "<< tolerance << ", difference = " << endl << diff << endl;
         }
         return areEqual;
 
     }
 
-    /// return true if the matrices have same size and all their entries are equal within the given tolerance
-    static bool matricesAreEqual( const SMatrix m1, const SMatrix& m2, double tolerance=100*std::numeric_limits<double>::epsilon() )
+    /// Return true if the matrices have same size and all their entries are equal within the given tolerance. Specialization on Eigen matrices.
+    static bool matricesAreEqual( const SMatrix m1, const SMatrix& m2, SReal tolerance=100*std::numeric_limits<SReal>::epsilon() )
     {
         if( m1.rows()!=m2.rows() || m1.cols()!=m2.cols() ) return false;
 
@@ -335,6 +335,7 @@ protected:
             {
                 if( fabs(it.value()) >tolerance )
                 {
+                    cerr<<"CompliantSolver_test::matricesAreEqual2, tolerance = "<< tolerance << ", difference = " << endl << it.value() << endl;
                     return false;
                 }
 
@@ -344,11 +345,11 @@ protected:
     }
 
     /// return true if the matrices have same size and all their entries are equal within the given tolerance
-    static bool vectorsAreEqual( const Vector& m1, const Vector& m2, double tolerance=100*std::numeric_limits<double>::epsilon() )
+    static bool vectorsAreEqual( const Vector& m1, const Vector& m2, SReal tolerance=100*std::numeric_limits<SReal>::epsilon() )
     {
         if( m1.size()!=m2.size() )
         {
-            cerr<<"vectorsAreEqual: sizes " << m1.size() << " != " << m2.size() << endl;
+            cerr<<"CompliantSolver_test::vectorsAreEqual: sizes " << m1.size() << " != " << m2.size() << endl;
             return false;
         }
 
@@ -356,7 +357,7 @@ protected:
         bool areEqual = abs(diff.maxCoeff()<tolerance && abs(diff.minCoeff()<tolerance));
         if( !areEqual )
         {
-            cerr<<"matricesAreEqual, tolerance = "<< tolerance << ", difference = " << endl << diff << endl;
+            cerr<<"CompliantSolver_test::vectorsAreEqual, tolerance = "<< tolerance << ", difference = " << endl << diff << endl;
         }
         return areEqual;
     }
@@ -380,7 +381,7 @@ protected:
 
     // ========================================
 public:
-    CompliantTestFixture()
+    CompliantSolver_test()
     {
 //        sofa::component::init();
 //        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
@@ -388,7 +389,7 @@ public:
 //        root->setName("Scene root");
     }
 
-    ~CompliantTestFixture()
+    ~CompliantSolver_test()
     {
         clear();
     }

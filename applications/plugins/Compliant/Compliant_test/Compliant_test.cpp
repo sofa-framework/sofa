@@ -2,7 +2,7 @@
 
 namespace sofa {
 
-struct AssembledTestFixture : public CompliantTestFixture
+struct AssembledTestFixture : public CompliantSolver_test
 {
 
 
