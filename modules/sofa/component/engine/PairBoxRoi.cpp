@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_PAIRBOXROI_CPP
-#include <sofa/component/engine/PairBoxROI.inl>
+#include <sofa/component/engine/PairBoxRoi.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
 
