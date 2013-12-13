@@ -144,6 +144,8 @@ protected:
     template <class DataDeriv>
     void projectResponseT(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataDeriv& dx);
 
+    bool isClose( Real a, Real b, Real eps ) const;
+
 private:
 
     /// Handler for subset Data
