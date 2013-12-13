@@ -79,6 +79,8 @@ set(HEADER_FILES
     ../engine/ShapeMatching.inl  
     ../engine/ProximityROI.h 
     ../engine/ProximityROI.inl
+    ../engine/HausdorffDistance.h
+    ../engine/HausdorffDistance.inl
 
     )
     
@@ -123,6 +125,7 @@ set(SOURCE_FILES
     ../engine/ClusteringEngine.cpp 
     ../engine/ShapeMatching.cpp 
     ../engine/ProximityROI.cpp
+    ../engine/HausdorffDistance.cpp
 
     )
 
