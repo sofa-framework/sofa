@@ -44,7 +44,7 @@ namespace qt
 QTabulationModifyObject::QTabulationModifyObject(QWidget* parent,
         core::objectmodel::Base *o, Q3ListViewItem* i,
         unsigned int idx):
-    QWidget(parent), object(o), item(i), index(idx), size(0), maxSize(8), dirty(false)
+    QWidget(parent), object(o), item(i), index(idx), size(0), maxSize(24), dirty(false)
 {
     new QVBoxLayout( this, 0, 1, "tabVisualizationLayout");
 }

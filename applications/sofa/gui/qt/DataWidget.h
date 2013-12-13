@@ -31,7 +31,7 @@
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/helper/Factory.h>
-
+#include <sofa/helper/system/FileRepository.h>
 
 #ifdef SOFA_QT4
 #include <QDialog>
@@ -303,6 +303,20 @@ public Q_SLOTS:
     void linkModification();
     void linkEdited();
     unsigned int getNumLines() const { return numLines_;}
+
+protected:
+	static QIcon& LinkIcon()
+	{
+		static QIcon icon;
+		if(icon.isNull())
+		{
+			std::string filename = "textures/link.png";
+			sofa::helper::system::DataRepository.findFile(filename);
+			icon = QIcon(filename.c_str());
+		}
+		return icon;
+	}
+
 protected:
     void formatHelperString(const std::string& helper, std::string& final_text);
     static unsigned int numLines(const std::string& str);

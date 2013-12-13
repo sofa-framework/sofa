@@ -64,9 +64,12 @@ QDisplayLinkInfoWidget::QDisplayLinkInfoWidget(QWidget* parent, const std::strin
 #endif
     std::string final_str;
     formatHelperString(helper,final_str);
-    const core::objectmodel::BaseClass* ownerClass=link->getOwnerClass();
-    std::string ownerClassName; if (ownerClass) ownerClassName = ownerClass->className;
-
+    
+	const core::objectmodel::BaseClass* ownerClass=link->getOwnerClass();
+    std::string ownerClassName;
+	if (ownerClass) ownerClassName = ownerClass->className;
+	
+	/*
 #ifndef SOFA_GUI_QT_NO_DATA_HELP
     QLabel* helper_label = new QLabel(this);
     helper_label->setText(QString(final_str.c_str()));
@@ -83,6 +86,7 @@ QDisplayLinkInfoWidget::QDisplayLinkInfoWidget(QWidget* parent, const std::strin
         QToolTip::add(parent, final_str.c_str());
     }
 #endif
+	*/
 }
 
 void QDisplayLinkInfoWidget::formatHelperString(const std::string& helper, std::string& final_text)

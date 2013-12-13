@@ -183,6 +183,7 @@ bool RadioDataWidget::createWidgets()
     else
     {
         comboList=new QComboBox(this);
+		comboList->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         sofa::helper::OptionsGroup m_radiotrick = getData()->virtualGetValue();
         QStringList list;

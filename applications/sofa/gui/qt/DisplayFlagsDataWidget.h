@@ -115,7 +115,7 @@ protected:
 
     virtual void readFromData();
     virtual void writeToData();
-    virtual unsigned int sizeWidget() {return 3;}
+    virtual unsigned int sizeWidget() {return 8;}
     virtual unsigned int numColumnWidget() {return 1;}
 
     DisplayFlagWidget* flags;

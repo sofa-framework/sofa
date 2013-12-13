@@ -85,6 +85,7 @@ using namespace sofa::helper::system;
 SofaModeler::SofaModeler():recentlyOpenedFilesManager("share/config/Modeler.ini")
     ,runSofaGUI(NULL)
 {
+	Q_INIT_RESOURCE(icons);
     setupUi(this);
     //index to add in temporary scenes created by the Modeler
     count='0';
@@ -220,7 +221,10 @@ SofaModeler::SofaModeler():recentlyOpenedFilesManager("share/config/Modeler.ini"
 
     //----------------------------------------------------------------------
     //Create the properties visualization
-    propertyWidget = new QDisplayPropertyWidget(this->centralWidget());
+	ModifyObjectFlags modifyObjectFlags = ModifyObjectFlags();
+    modifyObjectFlags.setFlagsForModeler();
+
+    propertyWidget = new QDisplayPropertyWidget(modifyObjectFlags, this->centralWidget());
     graphSplitProperty->addWidget(propertyWidget);
 
 	QList<int> sizes;

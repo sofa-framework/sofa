@@ -27,6 +27,7 @@
 #include "ModifyObject.h"
 #include "DataWidget.h"
 #include "QDisplayDataWidget.h"
+#include "QDisplayLinkWidget.h"
 #include "QDataDescriptionWidget.h"
 #include "QTabulationModifyObject.h"
 
@@ -81,46 +82,13 @@ void QDisplayTreeItemWidget::updateDirtyWidget()
     treeWidgetItem->setHidden(false);
 }
 
-void QDisplayPropertyWidget::updateListViewItem()
-{
-    std::map<QTreeWidgetItem*, std::pair<core::objectmodel::Base*, Q3ListViewItem*> >::iterator objectIterator;
-    for(objectIterator = objects.begin(); objectIterator != objects.end(); ++objectIterator)
-    {
-        core::objectmodel::Base* object = objectIterator->second.first;
-        Q3ListViewItem* item = objectIterator->second.second;
-
-        if (/*simulation::Node *node=*/dynamic_cast< simulation::Node *>(object))
-        {
-            item->setText(0,object->getName().c_str());
-            //emit nodeNameModification(node);
-        }
-        else
-        {
-            QString currentName = item->text(0);
-
-            std::string name=item->text(0).ascii();
-            std::string::size_type pos = name.find(' ');
-            if(pos != std::string::npos)
-                name = name.substr(0,pos);
-            name += "  ";
-            name += object->getName();
-            QString newName(name.c_str());
-            if(newName != currentName)
-                item->setText(0,newName);
-        }
-    }
-}
-
-void QDisplayPropertyWidget::updateDirtyWidget()
-{
-
-}
-
-const QString QDisplayPropertyWidget::defaultGroup("Property");
-
-QDisplayPropertyWidget::QDisplayPropertyWidget(QWidget* parent) : QTreeWidget(parent)
+QDisplayPropertyWidget::QDisplayPropertyWidget(const ModifyObjectFlags& modifyFlags, QWidget* parent) : QTreeWidget(parent)
+	, objects()
     , pinIcon()
+	, modifyObjectFlags(modifyFlags)
 {
+	modifyObjectFlags.PROPERTY_WIDGET_FLAG = true;
+
 	std::string filename = "textures/pin.png";
 	sofa::helper::system::DataRepository.findFile(filename);
 	pinIcon = QIcon(filename.c_str());
@@ -185,6 +153,7 @@ void QDisplayPropertyWidget::addComponent(const QString& component, core::object
 
     objects[componentItem] = std::pair<core::objectmodel::Base*, Q3ListViewItem*>(base, listItem);
 
+	// add data
     for(sofa::core::objectmodel::Base::VecData::const_iterator it = fields.begin(); it != fields.end(); ++it)
     {
         core::objectmodel::BaseData *data = *it;
@@ -198,11 +167,56 @@ void QDisplayPropertyWidget::addComponent(const QString& component, core::object
 
         // use the default group if data does not belong to any group
         if(group.isEmpty())
-            group = defaultGroup;
+            group = DefaultDataGroup();
 
         // finally, add the data
         addData(component, group, data);
     }
+
+	bool notImplementedYet = true;
+	if(!notImplementedYet)
+	{
+		// add links
+		const sofa::core::objectmodel::Base::VecLink& links = base->getLinks();
+		for(sofa::core::objectmodel::Base::VecLink::const_iterator it = links.begin(); it != links.end(); ++it)
+		{
+			core::objectmodel::BaseLink *link = *it;
+
+			// ignore unnamed link
+			if(link->getName().empty())
+				continue;
+
+			if(!link->storePath() && 0 == link->getSize())
+				continue;
+
+			// use the default link group
+			QString group = DefaultLinkGroup();
+
+			// finally, add the data
+			addLink(component, group, link);
+		}
+
+		// add info
+		{
+			// use the default info group
+			QString group = DefaultInfoGroup();
+
+			setDescription(component, group, base);
+		}
+
+		// add console
+		/*{
+			updateConsole();
+			if (outputTab)
+			{
+				dialogTab->addTab(outputTab,  QString("Logs"));
+			}
+			if (warningTab)
+			{
+				dialogTab->addTab(warningTab, QString("Warnings"));
+			}
+		}*/
+	}
 }
 
 void QDisplayPropertyWidget::addGroup(const QString& component, const QString& group)
@@ -222,7 +236,7 @@ void QDisplayPropertyWidget::addGroup(const QString& component, const QString& g
     // assign the default label if group is an empty string
     QString groupLabel = group;
     if(group.isEmpty())
-        groupLabel = defaultGroup;
+        groupLabel = DefaultDataGroup();
 
     // finally, add the group
     groupItem = new QTreeWidgetItem(componentItem);
@@ -238,7 +252,7 @@ void QDisplayPropertyWidget::addGroup(const QString& component, const QString& g
     groupItem->setBackground(1, *backgroundBrush);
     groupItem->setForeground(1, *foregroundBrush);
 
-    /*if(groupLabel == defaultGroup)
+    /*if(groupLabel == DefaultDataGroup())
     {
     	//groupItem->setChildIndicatorPolicy(QTreeWidgetItem::DontShowIndicator);
     	//groupItem->setExpanded(true);
@@ -273,24 +287,100 @@ void QDisplayPropertyWidget::addData(const QString& component, const QString& gr
     QDisplayTreeItemWidget *widget = new QDisplayTreeItemWidget(this, dataItem);
     QHBoxLayout *layout = new QHBoxLayout(widget);
 
-    QString name = data->getName().c_str();
-    dataItem->setText(0, name);
-    ModifyObjectFlags modifyObjectFlags = ModifyObjectFlags();
-    modifyObjectFlags.setFlagsForModeler();
-    modifyObjectFlags.PROPERTY_WIDGET_FLAG = true;
+    dataItem->setText(0, data->getName().c_str());
+	dataItem->setToolTip(0, data->getHelp());
     QDisplayDataWidget *displayDataWidget = new QDisplayDataWidget(widget, data, modifyObjectFlags);
     layout->addWidget(displayDataWidget);
 
     connect(displayDataWidget, SIGNAL(DataOwnerDirty(bool)), this, SLOT( updateListViewItem() ) );
     connect(displayDataWidget, SIGNAL(WidgetDirty(bool)), widget, SLOT(updateDirtyWidget()));
-    connect(displayDataWidget, SIGNAL(WidgetDirty(bool)), this, SLOT(updateDirtyWidget()));
 
     widget->setContentsMargins(0, 0, 0, 0);
-    widget->layout()->setContentsMargins(0, 0, 0, 0);
-    widget->layout()->setSpacing(0);
+	if(widget->layout())
+	{
+		widget->layout()->setContentsMargins(0, 0, 0, 0);
+		widget->layout()->setSpacing(0);
+	}
     setItemWidget(dataItem, 1, widget);
+	dataItem->setToolTip(1, data->getHelp());
 
     dataItem->setExpanded(true);
+}
+
+void QDisplayPropertyWidget::addLink(const QString& component, const QString& group, sofa::core::objectmodel::BaseLink *link)
+{
+    if(!link)
+        return;
+
+    addGroup(component, group);
+    QTreeWidgetItem *groupItem = NULL;
+    groupItem = findGroup(component, group);
+
+    if(!groupItem)
+        return;
+
+    QTreeWidgetItem *linkItem = new QTreeWidgetItem(groupItem);
+    QBrush *brush = NULL;
+    if(groupItem->childCount() % 2 == 0)
+        brush = new QBrush(QColor(255, 255, 191));
+    else
+        brush = new QBrush(QColor(255, 255, 222));
+    linkItem->setBackground(0, *brush);
+    linkItem->setBackground(1, *brush);
+
+    QDisplayTreeItemWidget *widget = new QDisplayTreeItemWidget(this, linkItem);
+    QHBoxLayout *layout = new QHBoxLayout(widget);
+
+    linkItem->setText(0, link->getName().c_str());
+	linkItem->setToolTip(0, link->getHelp());
+    QDisplayLinkWidget *displayLinkWidget = new QDisplayLinkWidget(widget, link, modifyObjectFlags);
+    layout->addWidget(displayLinkWidget);
+
+    connect(displayLinkWidget, SIGNAL(LinkOwnerDirty(bool)), this, SLOT( updateListViewItem() ) );
+    connect(displayLinkWidget, SIGNAL(WidgetDirty(bool)), widget, SLOT(updateDirtyWidget()));
+
+    widget->setContentsMargins(0, 0, 0, 0);
+	if(widget->layout())
+	{
+		widget->layout()->setContentsMargins(0, 0, 0, 0);
+		widget->layout()->setSpacing(0);
+	}
+    setItemWidget(linkItem, 1, widget);
+	linkItem->setToolTip(1, link->getHelp());
+
+    linkItem->setExpanded(true);
+}
+
+void QDisplayPropertyWidget::setDescription(const QString& component, const QString& group, sofa::core::objectmodel::Base *base)
+{
+	if(!base)
+        return;
+
+    addGroup(component, group);
+    QTreeWidgetItem *groupItem = NULL;
+    groupItem = findGroup(component, group);
+
+    if(!groupItem)
+        return;
+
+    QTreeWidgetItem *descriptionItem = new QTreeWidgetItem(groupItem);
+    QBrush *brush = NULL;
+    if(groupItem->childCount() % 2 == 0)
+        brush = new QBrush(QColor(255, 255, 191));
+    else
+        brush = new QBrush(QColor(255, 255, 222));
+    descriptionItem->setBackground(0, *brush);
+    descriptionItem->setBackground(1, *brush);
+
+	QDataDescriptionWidget* description=new QDataDescriptionWidget(this, base);
+	if(description->layout())
+	{
+		description->layout()->setContentsMargins(0, 0, 0, 0);
+		description->layout()->setSpacing(0);
+	}
+	setItemWidget(descriptionItem, 1, description);
+
+	descriptionItem->setExpanded(true);
 }
 
 void QDisplayPropertyWidget::clear()
@@ -313,6 +403,36 @@ void QDisplayPropertyWidget::clear()
 void QDisplayPropertyWidget::clearAll()
 {
     QTreeWidget::clear();
+}
+
+void QDisplayPropertyWidget::updateListViewItem()
+{
+    std::map<QTreeWidgetItem*, std::pair<core::objectmodel::Base*, Q3ListViewItem*> >::iterator objectIterator;
+    for(objectIterator = objects.begin(); objectIterator != objects.end(); ++objectIterator)
+    {
+        core::objectmodel::Base* object = objectIterator->second.first;
+        Q3ListViewItem* item = objectIterator->second.second;
+
+        if (/*simulation::Node *node=*/dynamic_cast< simulation::Node *>(object))
+        {
+            item->setText(0,object->getName().c_str());
+            //emit nodeNameModification(node);
+        }
+        else
+        {
+            QString currentName = item->text(0);
+
+            std::string name=item->text(0).ascii();
+            std::string::size_type pos = name.find(' ');
+            if(pos != std::string::npos)
+                name = name.substr(0,pos);
+            name += "  ";
+            name += object->getName();
+            QString newName(name.c_str());
+            if(newName != currentName)
+                item->setText(0,newName);
+        }
+    }
 }
 
 QTreeWidgetItem* QDisplayPropertyWidget::findComponent(const QString& component) const

@@ -184,6 +184,7 @@ public:
 
         container.createLayout(this);
         container.insertWidgets();
+
         return true;
     }
     virtual void readFromData()
@@ -218,6 +219,7 @@ public:
     static Widget* create(QWidget* parent, const data_type& /*d*/)
     {
         Widget* w = new Widget(parent);
+		w->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
         return w;
     }
     static void readFromData(Widget* w, const data_type& d)
@@ -278,6 +280,7 @@ public:
     static Widget* create(QWidget* parent, const data_type& /*d*/)
     {
         Widget* w = new Widget(parent, "real");
+		w->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
         w->setMinValue( (data_type)-INFINITY );
         w->setMaxValue( (data_type)INFINITY );
         w->setMinimumWidth(20);
@@ -319,6 +322,7 @@ public:
     static Widget* create(QWidget* parent, const data_type& /*d*/)
     {
         Widget* w = new Widget(vmin, vmax, 1, parent);
+		w->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
         return w;
     }
     static void readFromData(Widget* w, const data_type& d)

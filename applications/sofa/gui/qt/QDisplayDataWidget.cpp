@@ -52,6 +52,7 @@ namespace gui
 {
 namespace qt
 {
+
 QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
         BaseData* data,
         const ModifyObjectFlags& flags):Q3GroupBox(parent),
@@ -67,24 +68,18 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
     if(data_ == NULL)
         return;
 
-    if(!flags.PROPERTY_WIDGET_FLAG)
-    {
-        setTitle(data_->getName().c_str());
-        setInsideMargin(4);
-        setInsideSpacing(2);
-    }
-
-    const std::string label_text = data_->getHelp();
+	const std::string label_text = data_->getHelp();
 
     if (label_text != "TODO")
     {
         datainfowidget_ = new QDisplayDataInfoWidget(this,label_text,data_,flags.LINKPATH_MODIFIABLE_FLAG);
-        numWidgets_ += datainfowidget_->getNumLines()/3;
+		datainfowidget_->setContentsMargins(0, 0, 0, 0);
+		datainfowidget_->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+
+        numWidgets_ += 1;
     }
 
-    const std::string valuetype = data_->getValueTypeString();
-    if (!valuetype.empty())
-        setToolTip(valuetype.c_str());
+	setToolTip(data_->getHelp());
 
     DataWidget::CreatorArgument dwarg;
     dwarg.name =  data_->getName();
@@ -104,8 +99,8 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
         }
     }
 
-    datawidget_= DataWidget::CreateDataWidget(dwarg);
-
+	datawidget_= DataWidget::CreateDataWidget(dwarg);
+	
     if (datawidget_ == 0)
     {
         datawidget_ = new QDataSimpleEdit(this,dwarg.data->getName().c_str(), dwarg.data);
@@ -114,7 +109,18 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
         assert(datawidget_ != NULL);
     }
 
-    datawidget_->setContentsMargins(0, 0, 0, 0);
+	if(datawidget_->layout())
+	{
+		datawidget_->layout()->setAlignment(Qt::AlignCenter);
+		datawidget_->layout()->setContentsMargins(2, 2, 2, 2);
+	}
+
+	datawidget_->setContentsMargins(0, 0, 0, 0);
+	datawidget_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+	
+	const std::string valuetype = data_->getValueTypeString();
+	if (!valuetype.empty())
+		datawidget_->setToolTip(valuetype.c_str());
 
     //std::cout << "WIDGET created for data " << dwarg.data << " : " << dwarg.name << " : " << dwarg.data->getValueTypeString() << std::endl;
     numWidgets_ += datawidget_->sizeWidget();
@@ -125,13 +131,12 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
 
     if(flags.PROPERTY_WIDGET_FLAG)
     {
-		std::string filename = "textures/refresh.png";
-		sofa::helper::system::DataRepository.findFile(filename);
-		QIcon pinIcon(filename.c_str());
-
-        QPushButton *refresh = new QPushButton(pinIcon, "", this);
+		QWidget* refreshWidget = new QWidget(this);
+		refreshWidget->setFixedSize(QSize(16, 16));
+        QPushButton *refresh = new QPushButton(RefreshIcon(), "", refreshWidget);
         refresh->setHidden(true);
         refresh->setFixedSize(QSize(16, 16));
+		refresh->setContentsMargins(0, 0, 0, 0);
 
         ++numWidgets_;
 
@@ -139,18 +144,20 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
         connect(refresh, SIGNAL(clicked()), this, SLOT(UpdateData()));
         connect(refresh, SIGNAL(clicked(bool)), refresh, SLOT(setVisible(bool)));
 
-        setStyleSheet("QGroupBox{border:0;}");
-        setInsideMargin(0);
+		setStyleSheet("QGroupBox{border:0;}");
+        setContentsMargins(0, 0, 0, 0);
+		setInsideMargin(0);
         setInsideSpacing(0);
-        /*setMargin(0);
-        setLineWidth(0);
-        setMidLineWidth(0);*/
 
-        setColumns(numWidgets_ + 1);
+        setColumns(numWidgets_);
     }
     else
     {
-        setColumns(datawidget_->numColumnWidget());
+		setTitle(data_->getName().c_str());
+        setInsideMargin(4);
+        setInsideSpacing(2);
+
+        setColumns(numWidgets_); //datawidget_->numColumnWidget());
     }
 }
 

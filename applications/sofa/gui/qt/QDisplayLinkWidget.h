@@ -26,6 +26,8 @@
 #define SOFA_GUI_QT_DISPLAYLINKWIDGET_H
 
 #include "LinkWidget.h"
+#include "ModifyObject.h"
+
 #ifdef SOFA_QT4
 #include <QWidget>
 #include <QLineEdit>
@@ -75,6 +77,20 @@ signals:
     void WidgetUpdate();
     void LinkUpdate();
     void LinkOwnerDirty(bool);
+
+protected:
+	static QIcon& RefreshIcon()
+	{
+		static QIcon icon;
+		if(icon.isNull())
+		{
+			std::string filename = "textures/refresh.png";
+			sofa::helper::system::DataRepository.findFile(filename);
+			icon = QIcon(filename.c_str());
+		}
+		return icon;
+	}
+
 protected:
     core::objectmodel::BaseLink* link_;
     QDisplayLinkInfoWidget*  linkinfowidget_;
