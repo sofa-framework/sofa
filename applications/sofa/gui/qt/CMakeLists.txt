@@ -2,8 +2,6 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
 
-	viewer/VisualModelPolicy.h
-	GraphListenerQListView.h
 	GenGraphForm.h
 	AddObject.h
 	RealGUI.h
@@ -14,16 +12,11 @@ set(HEADER_FILES
 	GraphDataWidget.h
 	MaterialDataWidget.h
 	ModifyObject.h
-	SimpleDataWidget.h
-	SofaGUIQt.h
-	StructDataWidget.h
-	TableDataWidget.h
-	WDoubleLineEdit.h 
-	FileManagement.h
+        SimpleDataWidget.h
+        WDoubleLineEdit.h
 	SofaPluginManager.h
 	SofaMouseManager.h
-	SofaVideoRecorderManager.h	
-	PickHandlerCallBacks.h
+        SofaVideoRecorderManager.h
 	QDataDescriptionWidget.h
 	QDisplayPropertyWidget.h
 	QDisplayLinkWidget.h     
@@ -36,9 +29,8 @@ set(HEADER_FILES
 	QMouseOperations.h
 	QSofaListView.h
 	QSofaRecorder.h
-	QSofaStatWidget.h
-	QMenuFilesRecentlyOpened.h
-	ImageQt.h 
+        QSofaStatWidget.h
+        QModelViewTableUpdater.h
 	)
 
 set(SOURCE_FILES
@@ -128,11 +120,6 @@ endif()
 
 UseQt()
 
-list(APPEND HEADER_FILES
-
-	 QModelViewTableDataContainer.h
-	 QModelViewTableUpdater.h
-	 )		 
 
 SOFA_QT4_WRAP_CPP(MOC_FILES ${HEADER_FILES})
 SOFA_QT4_WRAP_UI(FORM_FILES ${UI_FILES})
@@ -144,7 +131,17 @@ ToRelativePath(FORM_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${FORM_FILES}")
 # these header files do not need MOCcing
 list(APPEND HEADER_FILES
 
+        viewer/VisualModelPolicy.h
 	viewer/SofaViewer.h
+        GraphListenerQListView.h
+        SofaGUIQt.h
+        StructDataWidget.h
+        TableDataWidget.h
+        FileManagement.h
+        PickHandlerCallBacks.h
+        QMenuFilesRecentlyOpened.h
+        ImageQt.h
+        QModelViewTableDataContainer.h
 	)
 
 set(MOC_FILES_GROUP "Generated")

@@ -146,23 +146,39 @@ private:
 	const vec& omp_call(const Vec& x) const {
 		
 		if( n ) {
+#ifdef USING_OMP_PRAGMAS
 #pragma omp parallel sections
+#endif
 			{
+#ifdef USING_OMP_PRAGMAS
 #pragma omp section
+#endif
 				Q( x.head(m) );
+#ifdef USING_OMP_PRAGMAS
 #pragma omp section
+#endif
 				AT( x.tail(n) );
+#ifdef USING_OMP_PRAGMAS
 #pragma omp section
+#endif
 				A( x.head(m) );
+#ifdef USING_OMP_PRAGMAS
 #pragma omp section
+#endif
 				C( x.tail(n) );
 			}
-			
+
+#ifdef USING_OMP_PRAGMAS
 #pragma omp parallel sections
+#endif
 			{
+#ifdef USING_OMP_PRAGMAS
 #pragma omp section
+#endif
 				storage.head(m) = Q.result - AT.result;
+#ifdef USING_OMP_PRAGMAS
 #pragma omp section
+#endif
 				storage.tail(n) = -A.result - C.result;
 			}
 			
