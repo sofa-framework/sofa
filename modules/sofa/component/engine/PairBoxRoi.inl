@@ -29,7 +29,7 @@
 #pragma once
 #endif
 
-#include <sofa/component/engine/PairBoxROI.h>
+#include <sofa/component/engine/PairBoxRoi.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/BasicShapes.h>
 #include <sofa/core/visual/VisualParams.h>
