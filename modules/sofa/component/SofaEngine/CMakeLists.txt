@@ -7,8 +7,8 @@ set(HEADER_FILES
     ../engine/AverageCoord.inl 
     ../engine/BoxROI.h 
     ../engine/BoxROI.inl 
-    ../engine/PairBoxROI.h 
-    ../engine/PairBoxROI.inl
+    ../engine/PairBoxRoi.h 
+    ../engine/PairBoxRoi.inl
     ../engine/PlaneROI.h 
     ../engine/PlaneROI.inl 
     ../engine/SphereROI.h 
@@ -87,7 +87,7 @@ set(SOURCE_FILES
     ../initEngine.cpp 
     ../engine/AverageCoord.cpp 
     ../engine/BoxROI.cpp 
-    ../engine/PairBoxROI.cpp 
+    ../engine/PairBoxRoi.cpp 
     ../engine/PlaneROI.cpp 
     ../engine/SphereROI.cpp 
     ../engine/DilateEngine.cpp 
