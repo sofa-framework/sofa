@@ -85,7 +85,6 @@ using namespace sofa::helper::system;
 SofaModeler::SofaModeler():recentlyOpenedFilesManager("share/config/Modeler.ini")
     ,runSofaGUI(NULL)
 {
-	Q_INIT_RESOURCE(icons);
     setupUi(this);
     //index to add in temporary scenes created by the Modeler
     count='0';

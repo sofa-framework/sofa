@@ -51,6 +51,7 @@ int main(int argc, char** argv)
 
     sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
 
+	Q_INIT_RESOURCE(icons);
     sofa::gui::qt::SofaModeler* sofaModeler = new sofa::gui::qt::SofaModeler();
 
 
