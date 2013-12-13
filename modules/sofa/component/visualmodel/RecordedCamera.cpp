@@ -27,9 +27,13 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
+#include <sofa/core/objectmodel/KeypressedEvent.h>
 
 #include <sofa/helper/system/glut.h>
 #include <math.h>
+#include <iostream>
+using std::cerr;
+using std::endl;
 
 namespace sofa
 {
@@ -332,6 +336,11 @@ void RecordedCamera::handleEvent(sofa::core::objectmodel::Event *event)
         if(m_navigationMode.getValue())
             this->moveCamera_navigation();	
     }
+    if (core::objectmodel::KeypressedEvent* ke = dynamic_cast<core::objectmodel::KeypressedEvent* >(event))
+    {
+        cerr<<"RecordedCamera::handleEvent gets character " << ke->getKey() << endl;
+    }
+
 }
 
 
