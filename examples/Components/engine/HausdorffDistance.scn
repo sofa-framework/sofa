@@ -1,0 +1,66 @@
+<Node name="Scene" gravity="0 0 0" dt="0.1" >
+    <VisualStyle displayFlags="showBehavior" />
+    <BackgroundSetting color="1 1 1"/>
+
+    <Node name="case1">
+        <Node name="mesh1">
+            <MeshObjLoader name="meshloader1" filename="mesh/cube.obj"/>          
+            <OglModel name="visu1" src="@meshloader1" color="0.8 0.2 0.2 0.5"/>
+
+        </Node>
+
+        <Node name="mesh2">
+            <MeshObjLoader name="meshloader2" filename="mesh/cube.obj" />
+            <OglModel name="visu1" src="@meshloader2" color="0.2 0.2 0.8 0.5"/>
+        </Node>
+
+        <HausdorffDistance points1="@mesh1/meshloader1.position" points2="@mesh2/meshloader2.position"/>
+    </Node>
+
+    <Node name="case2">
+        <Node name="mesh1">
+            <MeshObjLoader name="meshloader1" filename="mesh/cube.obj" translation="5 0 0"/>          
+            <OglModel name="visu1" src="@meshloader1" color="0.8 0.2 0.2 0.5"/>
+
+        </Node>
+
+        <Node name="mesh2">
+            <MeshObjLoader name="meshloader2" filename="mesh/cube.obj" translation="6 0 0"/>
+            <OglModel name="visu1" src="@meshloader2" color="0.2 0.2 0.8 0.5"/>
+        </Node>
+
+        <HausdorffDistance points1="@mesh1/meshloader1.position" points2="@mesh2/meshloader2.position"/>
+    </Node>
+
+    <Node name="case3">
+        <Node name="mesh1">
+            <MeshObjLoader name="meshloader1" filename="mesh/cube.obj" translation="10 0 0"/>          
+            <OglModel name="visu1" src="@meshloader1" color="0.8 0.2 0.2 0.5"/>
+
+        </Node>
+
+        <Node name="mesh2">
+            <MeshObjLoader name="meshloader2" filename="mesh/sphere.obj" translation="10 0 0"/>
+            <OglModel name="visu1" src="@meshloader2" color="0.2 0.2 0.8 0.5"/>
+        </Node>
+
+        <HausdorffDistance points1="@mesh1/meshloader1.position" points2="@mesh2/meshloader2.position"/>
+    </Node>
+
+    <Node name="case4">
+        <MeshObjLoader name="meshloader1" filename="mesh/sphere.obj" translation="10 0 0"/>
+        <HausdorffDistance points1="@meshloader1.position" points2="0 0 0"/>
+    </Node>
+
+    <Node name="case5">
+        <HausdorffDistance points1="10 0 0" points2="0 0 0"/>
+    </Node>
+
+    <Node name="case6">
+        <HausdorffDistance template="Vec2f" points1="10 0" points2="0 0"/>
+    </Node>
+
+    <Node name="case7">
+        <HausdorffDistance template="Vec1d" points1="10" points2="0"/>
+    </Node>
+</Node>
