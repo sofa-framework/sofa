@@ -438,7 +438,7 @@ public:
     typedef sofa::core::objectmodel::Data<T> MyData;
 public:
     GraphDataWidget(QWidget* parent,const char* name, MyData* d) : Inherit(parent,name,d) {}
-    virtual unsigned int sizeWidget() {return 3;}
+    virtual unsigned int sizeWidget() {return 8;}
     virtual unsigned int numColumnWidget() {return 1;}
 };
 

@@ -785,7 +785,7 @@ class SOFA_IMAGE_GUI_API ImagePlaneDataWidget : public SimpleDataWidget<T, Timag
 
 public:
     ImagePlaneDataWidget(QWidget* parent,const char* name, MyData* d) : Inherit(parent,name,d) {}
-    virtual unsigned int sizeWidget() {return 3;}
+    virtual unsigned int sizeWidget() {return 8;}
     virtual unsigned int numColumnWidget() {return 1;}
     virtual bool createWidgets()
     {

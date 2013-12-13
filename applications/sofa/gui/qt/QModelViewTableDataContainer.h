@@ -388,7 +388,10 @@ public:
         int dataRows = rhelper::size(d);
 
         wSize = new QSpinBox(0, INT_MAX, 1, parent);
+		wSize->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+
         wDisplay = new QPushButtonUpdater( QString("Display the values"), parent);
+		wDisplay->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         if (dataRows > 0)
             cols = vhelper::size(*rhelper::get(d,0));

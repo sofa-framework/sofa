@@ -60,15 +60,18 @@ QDisplayDataInfoWidget::QDisplayDataInfoWidget(QWidget* parent, const std::strin
     std::string ownerClass=data->getOwnerClass();
     if (modifiable)
     {
-        QPushButton *helper_button = new QPushButton(QString(final_str.c_str()),this);
-        // helper_button ->setFlat(true);
-        helper_button ->setAutoDefault(false);
-        layout->addWidget(helper_button);
+        QPushButton *helper_button = new QPushButton(this);
+		helper_button->setIcon(LinkIcon());
+		helper_button->setFixedSize(QSize(16, 16));
+		helper_button->setToolTip(QString(final_str.c_str()));
+        helper_button->setAutoDefault(false);
+        layout->addWidget(helper_button, 0, Qt::AlignLeft);
         connect(helper_button, SIGNAL( clicked() ), this, SLOT( linkModification()));
         if (!ownerClass.empty()) QToolTip::add(helper_button, ("Data from "+ownerClass).c_str());
     }
     else
     {
+		/*
 #ifndef SOFA_GUI_QT_NO_DATA_HELP
         QLabel* helper_label = new QLabel(this);
         helper_label->setText(QString(final_str.c_str()));
@@ -85,6 +88,7 @@ QDisplayDataInfoWidget::QDisplayDataInfoWidget(QWidget* parent, const std::strin
             QToolTip::add(parent, final_str.c_str());
         }
 #endif
+		*/
     }
     if(modifiable || !data->getLinkPath().empty())
     {

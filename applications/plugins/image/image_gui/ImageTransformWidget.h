@@ -85,7 +85,7 @@ public :
 
     virtual bool createWidgets();
 
-    virtual unsigned int sizeWidget() {return 6;}
+    virtual unsigned int sizeWidget() {return 12;}
     virtual unsigned int numColumnWidget() {return 3;}
 
 protected:

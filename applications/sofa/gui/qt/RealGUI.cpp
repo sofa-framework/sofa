@@ -1762,7 +1762,10 @@ void RealGUI::createSimulationGraph()
 
 void RealGUI::createPropertyWidget()
 {
-    propertyWidget = new QDisplayPropertyWidget();
+	ModifyObjectFlags modifyObjectFlags = ModifyObjectFlags();
+    modifyObjectFlags.setFlagsForSofa();
+
+    propertyWidget = new QDisplayPropertyWidget(modifyObjectFlags);
 	graphSplitProperty->addWidget(propertyWidget);
     
 	simulationGraph->setPropertyWidget(propertyWidget);

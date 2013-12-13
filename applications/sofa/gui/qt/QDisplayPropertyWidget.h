@@ -26,6 +26,7 @@
 #define SOFA_GUI_QT_QDISPLAYPROPERTYWIDGET_H
 
 #include <sofa/gui/qt/SofaGUIQt.h>
+#include <sofa/gui/qt/ModifyObject.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 
 #include <sofa/defaulttype/Vec.h>
@@ -93,7 +94,6 @@ class SOFA_SOFAGUIQT_API QDisplayTreeItemWidget : public QWidget
     Q_OBJECT
 
 public:
-
     // constructor / destructor
     QDisplayTreeItemWidget(QWidget* parent=0, QTreeWidgetItem* item=0);
     ~QDisplayTreeItemWidget();
@@ -108,33 +108,45 @@ private:
 
 class SOFA_SOFAGUIQT_API QDisplayPropertyWidget : public QTreeWidget
 {
+	Q_OBJECT
+
     friend class GraphHistoryManager;
     friend class LinkComponent;
-    Q_OBJECT
 
 public:
     // constructor / destructor
-    QDisplayPropertyWidget(QWidget* parent=0);
+    QDisplayPropertyWidget(const ModifyObjectFlags& modifyFlags, QWidget* parent=0);
     ~QDisplayPropertyWidget();
 
     // add a component in the tree in order to show / change its data and compare them with other component data
     void addComponent(const QString& component, core::objectmodel::Base* base, Q3ListViewItem* listItem, bool clear = true);
 
-    // add a data group
+    // add a data / link group
     void addGroup(const QString& component, const QString& group);
 
     // add a component data to show / change its value
     void addData(const QString& component, const QString& group, sofa::core::objectmodel::BaseData *data);
 
-    // clear unattached components, theirs groups and data
+	// add a component link to show / change its value
+    void addLink(const QString& component, const QString& group, sofa::core::objectmodel::BaseLink *link);
+
+	// set a component description
+    void setDescription(const QString& component, const QString& group, sofa::core::objectmodel::Base *base);
+
+    // clear non-pinned components, theirs groups, data and links
     void clear();
 
-    // clear everything
+    // clear everything, even pinned components
     void clearAll();
 
+	// name of the default property group
+	static QString DefaultDataGroup()				{return "Property";}
+	static QString DefaultLinkGroup()				{return "Links";}
+	static QString DefaultInfoGroup()				{return "Info";}
+
 protected slots:
+	// call this slot when you rename a component of the scene graph to rename its corresponding list view item
     void updateListViewItem();
-    void updateDirtyWidget();
 
 protected:
     // find a component by name
@@ -153,9 +165,8 @@ private:
 
     // remember the Base Object and its item in the scene graph list view for each component registered in this property view
     std::map<QTreeWidgetItem*, std::pair<core::objectmodel::Base*, Q3ListViewItem*> >		objects;
-
-    static const QString																	defaultGroup;
     QIcon																					pinIcon;
+	ModifyObjectFlags																		modifyObjectFlags;
 
 };
 
