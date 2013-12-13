@@ -3,9 +3,7 @@
 
 <Node animate="0" name="Root" dt="0.005" >
   
-  <RequiredPlugin name="Compliant" pluginName="Compliant" />
-  <RequiredPlugin name="CompliantDev" pluginName="CompliantDev" />
-  
+  <RequiredPlugin name="Compliant" pluginName="Compliant" />  
   
   <VisualStyle displayFlags="showCollisionModels showMappings hideVisual" />
   <DefaultPipeline depth="6" />
