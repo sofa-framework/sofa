@@ -39,7 +39,9 @@ set(HEADER_FILES
     ../projectiveconstraintset/FixedTranslationConstraint.inl 
     ../projectiveconstraintset/HermiteSplineConstraint.h 
     ../projectiveconstraintset/HermiteSplineConstraint.inl 
-    ../projectiveconstraintset/LinearMovementConstraint.h 
+     ../projectiveconstraintset/LinearMovementConstraint.h 
+    ../projectiveconstraintset/BilinearMovementConstraint.inl 
+    ../projectiveconstraintset/BilinearMovementConstraint.h 
     ../projectiveconstraintset/LinearMovementConstraint.inl 
     ../projectiveconstraintset/LinearVelocityConstraint.h 
     ../projectiveconstraintset/LinearVelocityConstraint.inl 
@@ -80,6 +82,7 @@ set(SOURCE_FILES
     ../projectiveconstraintset/FixedRotationConstraint.cpp 
     ../projectiveconstraintset/FixedTranslationConstraint.cpp 
     ../projectiveconstraintset/HermiteSplineConstraint.cpp 
+    ../projectiveconstraintset/BilinearMovementConstraint.cpp 
     ../projectiveconstraintset/LinearMovementConstraint.cpp 
     ../projectiveconstraintset/LinearVelocityConstraint.cpp 
     ../projectiveconstraintset/OscillatorConstraint.cpp 
