@@ -314,22 +314,22 @@ typedef struct {
 
 TypeToString names[] =
 { 
-  { Delete, "Delete" },
-  { Null, "Null" },
-  { Enum, "Enum" },
-  { ID, "ID" },
-  { Bool, "Bool" },
-  { Byte, "Byte" },
-  { Short, "Short" },
-  { Int, "Int" },
-  { Long, "Long" },
-  { QWord, "QWord" },
-  { Half, "Half" },
-  { Float, "Float" },
-  { Double, "Double" },
-  { LongDouble, "LongDouble" },
-  { String0, "String" },
-  { Null, NULL }
+  { (int)Delete, "Delete" },
+  { (int)Null, "Null" },
+  { (int)Enum, "Enum" },
+  { (int)ID, "ID" },
+  { (int)Bool, "Bool" },
+  { (int)Byte, "Byte" },
+  { (int)Short, "Short" },
+  { (int)Int, "Int" },
+  { (int)Long, "Long" },
+  { (int)QWord, "QWord" },
+  { (int)Half, "Half" },
+  { (int)Float, "Float" },
+  { (int)Double, "Double" },
+  { (int)LongDouble, "LongDouble" },
+  { (int)String0, "String" },
+  { (int)Null, NULL }
 };
 
 std::string name(int t)
