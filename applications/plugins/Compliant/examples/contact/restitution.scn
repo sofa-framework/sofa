@@ -4,20 +4,20 @@
 <Node animate="0" name="Root" dt="0.005">
   
   <RequiredPlugin name="Compliant" pluginName="Compliant" />
-  <RequiredPlugin name="CompliantDev" pluginName="CompliantDev" />
   
   <VisualStyle displayFlags="showCollisionModels showMappings hideVisual" />
   <DefaultPipeline depth="6" />
   <BruteForceDetection />
-  <NewProximityIntersection alarmDistance="0.2" contactDistance="0.2" />
+  
+  <!-- WARNING alarmDistance must be equal to contactDistance when restitution!=0 (for now) -->
+  <NewProximityIntersection alarmDistance=".2" contactDistance=".2" />
 
 	<!-- e = 0.5, the box should bounce to e^2 = 0.25 of the previous height -->
   <DefaultContactManager responseParams="damping=0&amp;compliance=0&amp;restitution=0.5" response="CompliantContact" />
 	
   <AssembledSolver />
 	
-  <QPSolver precision="1e-08" relative="false" iterations="100" />
-  <!-- <SequentialSolver precision="1e-08" relative="false" iterations="50" /> -->
+  <SequentialSolver precision="1e-08" relative="false" iterations="50" />
 	
  <Node name="Ball">
     <MechanicalObject name="dofs" template="Rigid" position="0 8 17 0 0 0 1" velocity="0 0 0 0 0 0" />
