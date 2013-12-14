@@ -198,7 +198,7 @@ using namespace gpu::cuda;
 
 		unsigned int edgeID;
 
-		for (int i=0;i<_topology->getNbPoints();++i)
+        for (int i=0;i<_topology->getNbPoints();++i)
 		{
 			for(int j=0;j<TetrahedralTensorMassForceField_nbMaxEdgesPerNode;++j)
 			{
@@ -207,7 +207,7 @@ using namespace gpu::cuda;
 				else
 				{
 					edgeID = _topology->getEdgesAroundVertex(i)[j];
-					if(i == _topology->getEdge(edgeID)[0])
+                    if((unsigned) i == _topology->getEdge(edgeID)[0])
 						TetrahedralTensorMassForceField_neighbourhoodPoints[i*TetrahedralTensorMassForceField_nbMaxEdgesPerNode+j] = 2*edgeID;   //v0
 					else
 						TetrahedralTensorMassForceField_neighbourhoodPoints[i*TetrahedralTensorMassForceField_nbMaxEdgesPerNode+j] = 2*edgeID+1; //v1

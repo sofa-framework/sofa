@@ -58,13 +58,14 @@ PairBoxROI<DataTypes>::PairBoxROI()
     : inclusiveBox( initData(&inclusiveBox, "inclusiveBox", "Inclusive box defined by xmin,ymin,zmin, xmax,ymax,zmax") )
     , includedBox( initData(&includedBox, "includedBox", "Included box defined by xmin,ymin,zmin, xmax,ymax,zmax") )
     , f_X0( initData (&f_X0, "position", "Rest position coordinates of the degrees of freedom") )
+    , positions(initData(&positions,"meshPosition","Vertices of the mesh loaded"))
     , f_indices( initData(&f_indices,"indices","Indices of the points contained in the ROI") )
     , f_pointsInROI( initData(&f_pointsInROI,"pointsInROI","Points contained in the ROI") )
+    , p_cornerPoints(initData(&p_cornerPoints,"cornerPoints","Corner positions for bilinear constraint"))
     , p_drawInclusiveBox( initData(&p_drawInclusiveBox,false,"drawInclusiveBox","Draw Inclusive Box") )
     , p_drawIncludedBox( initData(&p_drawIncludedBox,false,"drawInclusdedBx","Draw Included Box") )
     , p_drawPoints( initData(&p_drawPoints,false,"drawPoints","Draw Points") )
-    , positions(initData(&positions,"meshPosition","Vertices of the mesh loaded"))
-    ,p_cornerPoints(initData(&p_cornerPoints,"cornerPoints","Corner positions for bilinear constraint"))
+    , _drawSize( initData(&_drawSize,"drawSize","Draw Size") )
 {
     //Adding alias to handle old PairBoxROI input/output
     addAlias(&f_pointsInROI,"pointsInBox");
@@ -273,7 +274,7 @@ void PairBoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     if (!vparams->displayFlags().getShowBehaviorModels() && !this->_drawSize.getValue())
         return;
 
-    const VecCoord* x0 = &f_X0.getValue();
+//    const VecCoord* x0 = &f_X0.getValue();
     sofa::defaulttype::Vec4f color = sofa::defaulttype::Vec4f(1.0f, 0.4f, 0.4f, 1.0f);
 
 
