@@ -702,9 +702,9 @@ public:
     {   MechanicalObjectCudaVec3d1_vDot(size, res, a, b, tmp, cputmp); }
     static void vMultiOpA1B3(unsigned int /*size*/, void* /*res1*/, const void* /*a1*/, void* /*res2*/, const void* /*a21*/, double /*f21*/, const void* /*a22*/, double /*f22*/, const void* /*a23*/, double /*f23*/)
     {  /* MechanicalObjectCudaVec3d1_vMultiOpA1B3(size, res1, a1, res2, a21, f21, a22, f22, a23, f23);*/ }
-    static void vOp4(unsigned int size, void* res1, const void* a11, double f11, const void* a12, double f12, const void* a13, double f13, const void* a14, double f14)
+    static void vOp4(unsigned int /*size*/, void* /*res1*/, const void* /*a11*/, double /*f11*/, const void* /*a12*/, double /*f12*/, const void* /*a13*/, double /*f13*/, const void* /*a14*/, double /*f14*/)
     {  /* MechanicalObjectCudaVec3d1_vOp4(size, res1, a11, f11, a12, f12, a13, f13, a14, f14);*/ }
-    static void vOpMCNAB(unsigned int size, void* res1, const void* a11, const void* a12, double f12, void* res2, const void* a21, void* res3, const void* a31)
+    static void vOpMCNAB(unsigned int /*size*/, void* /*res1*/, const void* /*a11*/, const void* /*a12*/, double /*f12*/, void* /*res2*/, const void* /*a21*/, void* /*res3*/, const void* /*a31*/)
     {  /* MechanicalObjectCudaVec3d1_vOpMCNAB(size, res1, a11, a12, f12, res2, a21, res3, a31);*/ }
 };
 
@@ -746,9 +746,9 @@ public:
     {   MechanicalObjectCudaVec6d_vDot(size, res, a, b, tmp, cputmp); }
     static void vMultiOpA1B3(unsigned int /*size*/, void* /*res1*/, const void* /*a1*/, void* /*res2*/, const void* /*a21*/, double /*f21*/, const void* /*a22*/, double /*f22*/, const void* /*a23*/, double /*f23*/)
     {  /* MechanicalObjectCudaVec6d_vMultiOpA1B3(size, res1, a1, res2, a21, f21, a22, f22, a23, f23);*/ }
-    static void vOp4(unsigned int size, void* res1, const void* a11, double f11, const void* a12, double f12, const void* a13, double f13, const void* a14, double f14)
+    static void vOp4(unsigned int /*size*/, void* /*res1*/, const void* /*a11*/, double /*f11*/, const void* /*a12*/, double /*f12*/, const void* /*a13*/, double /*f13*/, const void* /*a14*/, double /*f14*/)
     {  /* MechanicalObjectCudaVec6d_vOp4(size, res1, a11, f11, a12, f12, a13, f13, a14, f14);*/ }
-    static void vOpMCNAB(unsigned int size, void* res1, const void* a11, const void* a12, double f12, void* res2, const void* a21, void* res3, const void* a31)
+    static void vOpMCNAB(unsigned int /*size*/, void* /*res1*/, const void* /*a11*/, const void* /*a12*/, double /*f12*/, void* /*res2*/, const void* /*a21*/, void* /*res3*/, const void* /*a31*/)
     {  /* MechanicalObjectCudaVec6d_vOpMCNAB(size, res1, a11, a12, f12, res2, a21, res3, a31);*/ }
 };
 
@@ -814,9 +814,9 @@ public:
     {   MechanicalObjectCudaRigid3d_vDot(size, res, a, b, tmp, cputmp); }
     static void vMultiOpA1B3(unsigned int /*size*/, void* /*res1*/, const void* /*a1*/, void* /*res2*/, const void* /*a21*/, double /*f21*/, const void* /*a22*/, double /*f22*/, const void* /*a23*/, double /*f23*/)
     {  /* MechanicalObjectCudaRigid3d_vMultiOpA1B3(size, res1, a1, res2, a21, f21, a22, f22, a23, f23);*/ }
-    static void vOp4(unsigned int size, void* res1, const void* a11, double f11, const void* a12, double f12, const void* a13, double f13, const void* a14, double f14)
+    static void vOp4(unsigned int /*size*/, void* /*res1*/, const void* /*a11*/, double /*f11*/, const void* /*a12*/, double /*f12*/, const void* /*a13*/, double /*f13*/, const void* /*a14*/, double /*f14*/)
     {  /* MechanicalObjectCudaRigid3d_vOp4(size, res1, a11, f11, a12, f12, a13, f13, a14, f14);*/ }
-    static void vOpMCNAB(unsigned int size, void* res1, const void* a11, const void* a12, double f12, void* res2, const void* a21, void* res3, const void* a31)
+    static void vOpMCNAB(unsigned int /*size*/, void* /*res1*/, const void* /*a11*/, const void* /*a12*/, double /*f12*/, void* /*res2*/, const void* /*a21*/, void* /*res3*/, const void* /*a31*/)
     {  /* MechanicalObjectCudaRigid3d_vOpMCNAB(size, res1, a11, a12, f12, res2, a21, res3, a31);*/ }
 };
 #endif // SOFA_GPU_CUDA_DOUBLE

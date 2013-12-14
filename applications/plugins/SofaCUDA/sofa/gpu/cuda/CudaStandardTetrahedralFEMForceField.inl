@@ -359,11 +359,11 @@ void StandardTetrahedralFEMForceField<CudaVec3dTypes>::initNeighbourhoodPoints()
             {
                 unsigned int tetraID;
                 tetraID = _topology->getTetrahedraAroundVertex(i)[j];
-                if( i == _topology->getTetra(tetraID)[0])
+                if( (unsigned) i == _topology->getTetra(tetraID)[0])
                     StandardTetrahedralFEMForceField_neighbourhoodPoints[i*StandardTetrahedralFEMForceField_nbMaxTetraPerNode + j] = 4*tetraID;
-                else if ( i == _topology->getTetra(tetraID)[1])
+                else if ( (unsigned) i == _topology->getTetra(tetraID)[1])
                     StandardTetrahedralFEMForceField_neighbourhoodPoints[i*StandardTetrahedralFEMForceField_nbMaxTetraPerNode + j] = 4*tetraID+1;
-                else if ( i == _topology->getTetra(tetraID)[2])
+                else if ( (unsigned) i == _topology->getTetra(tetraID)[2])
                     StandardTetrahedralFEMForceField_neighbourhoodPoints[i*StandardTetrahedralFEMForceField_nbMaxTetraPerNode + j] = 4*tetraID+2;
                 else
                     StandardTetrahedralFEMForceField_neighbourhoodPoints[i*StandardTetrahedralFEMForceField_nbMaxTetraPerNode + j] = 4*tetraID+3;
@@ -396,17 +396,17 @@ void StandardTetrahedralFEMForceField<CudaVec3dTypes>::initNeighbourhoodEdges()
                 unsigned int tetraID;
                 tetraID = _topology->getTetrahedraAroundEdge(i)[j];
         		BaseMeshTopology::EdgesInTetrahedron te=_topology->getEdgesInTetrahedron(tetraID);
-                if( i == te[0])
+                if( (unsigned) i == te[0])
                     StandardTetrahedralFEMForceField_neighbourhoodEdges[i*StandardTetrahedralFEMForceField_nbMaxTetraPerEdge + j] = tetraID*6 + 0;
-                else if( i == te[1])
+                else if( (unsigned) i == te[1])
                     StandardTetrahedralFEMForceField_neighbourhoodEdges[i*StandardTetrahedralFEMForceField_nbMaxTetraPerEdge + j] = tetraID*6 + 1;
-                else if( i == te[2])
+                else if( (unsigned) i == te[2])
                     StandardTetrahedralFEMForceField_neighbourhoodEdges[i*StandardTetrahedralFEMForceField_nbMaxTetraPerEdge + j] = tetraID*6 + 2;
-                else if( i == te[3])
+                else if( (unsigned) i == te[3])
                     StandardTetrahedralFEMForceField_neighbourhoodEdges[i*StandardTetrahedralFEMForceField_nbMaxTetraPerEdge + j] = tetraID*6 + 3;
-                else if( i == te[4])
+                else if( (unsigned) i == te[4])
                     StandardTetrahedralFEMForceField_neighbourhoodEdges[i*StandardTetrahedralFEMForceField_nbMaxTetraPerEdge + j] = tetraID*6 + 4;
-                else if( i == te[5])
+                else if( (unsigned) i == te[5])
                     StandardTetrahedralFEMForceField_neighbourhoodEdges[i*StandardTetrahedralFEMForceField_nbMaxTetraPerEdge + j] = tetraID*6 + 5;
             }
         }
