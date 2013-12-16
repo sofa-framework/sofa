@@ -33,6 +33,8 @@
 #include <math.h>
 #include <iostream>
 #include <sofa/helper/AdvancedTimer.h>
+using std::cerr;
+using std::endl;
 
 //#define SOFA_NO_VMULTIOP
 
@@ -113,6 +115,10 @@ void EulerSolver::solve(const core::ExecParams* params /* PARAMS FIRST */, doubl
     }
 #else // single-operation optimization
     {
+//        cerr<<"EulerSolver::solve, x = " << pos << endl;
+//        cerr<<"EulerSolver::solve, v = " << vel << endl;
+//        cerr<<"EulerSolver::solve, a = " << acc << endl;
+
         typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
         VMultiOp ops;
         ops.resize(2);
@@ -130,6 +136,9 @@ void EulerSolver::solve(const core::ExecParams* params /* PARAMS FIRST */, doubl
 
         mop.solveConstraint(vel2,core::ConstraintParams::VEL);
         mop.solveConstraint(pos2,core::ConstraintParams::POS);
+
+//        cerr<<"EulerSolver::solve, new x = " << pos << endl;
+//        cerr<<"EulerSolver::solve, new v = " << vel << endl;
     }
 #endif
 }

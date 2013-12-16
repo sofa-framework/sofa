@@ -30,6 +30,7 @@ public:
 	
 	typedef Eigen::SparseMatrix<real, Eigen::RowMajor> rmat;
 	typedef Eigen::SparseMatrix<real, Eigen::ColMajor> cmat;
+    typedef Eigen::Matrix<real, Eigen::Dynamic, Eigen::Dynamic> dmat; ///< dense matrix
 
 	// makes it easier to filter constraint rows
 	typedef rmat mat;

@@ -2,8 +2,12 @@
 
 namespace sofa {
 
-struct AssembledTestFixture : public CompliantSolver_test
+struct Assembly_test : public CompliantSolver_test
 {
+    typedef odesolver::AssembledSolver OdeSolver;
+    typedef linearsolver::LDLTSolver LinearSolver;
+    OdeSolver::SPtr complianceSolver; ///< Solver used to perform the test simulation, and which contains the actual results, to be compared with the expected ones.
+    LinearSolver::SPtr linearSolver; ///< Auxiliary linear equation solver used by the ode solver
 
 
     /** Expected results of the different tests. */
@@ -729,7 +733,7 @@ struct AssembledTestFixture : public CompliantSolver_test
 
   */
 
-TEST_F( AssembledTestFixture, test_CompliantSolver_assembly )
+TEST_F( Assembly_test, test_CompliantSolver_assembly )
 {
     unsigned numParticles=3;
     ::testing::Message() << "CompliantTestFixture: hard string of " << numParticles << " particles";
