@@ -25,20 +25,24 @@ Restitution::Restitution( mstate_type* mstate )
 
 void Restitution::dynamics(SReal* dst, unsigned n) const
 {
-    assert( mstate );
+    // by default a regular position constraint (will be used for non-violated constraints, under alarm distance)
+    ConstraintValue::dynamics(dst,n);
 
-    // we sneakily fake constraint error with reflected-adjusted relative velocity
-    mstate->copyToBuffer(dst, core::VecDerivId::velocity(), n);
-    map(dst, n) = -map(dst, n) * restitution.getValue();
-
-    // TODO damping
-
-    // zero for non violated
     const mask_type& mask = this->mask.getValue();
+
+    // access contact velocity
+    SReal* v = new SReal[n];
+    mstate->copyToBuffer(v, core::VecDerivId::velocity(), n); // todo improve by accessing directly the i-th entrie without copy the entire array
+
+    // create restitution for violated constraints (under contact distance)
     unsigned i = 0;
     for(SReal* last = dst + n; dst < last; ++dst, ++i) {
-        if( !mask[i] ) *dst = 0;
+        if( mask[i] /*&& v[i] < epsilon*/ ) // TODO handle too small velocity
+            *dst = -v[i] * restitution.getValue(); // we sneakily fake constraint error with reflected-adjusted relative velocity
     }
+
+    delete [] v;
+
 }
 
 
