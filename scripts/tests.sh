@@ -3,9 +3,11 @@
 # This script in used on the continuous integration platform to execute the tests
 # and extract some information about the results
 #
-# Usage: ./tests.sh [--run|--get-test-count|--get-failure-count]
+# Usage: ./tests.sh --run|
+#                   --get-test-count|--get-failure-count|--get-disabled-count|--get-error-count|
+#                   --get-test-executable-count|--get-test-report-count
 #
-# It runs each file which matches bin/*_test (assumed to be executable), and outputs
+# With --run, it runs each file which matches "bin/*_test", and outputs
 # the results in a JUnit XML file stored in $PWD/test-reports/
 #
 # E.g. bin/foo_test will produce test-reports/foo_test.xml
@@ -20,15 +22,28 @@ run-tests ()
 {
     if [ -d test-reports ]; then
         echo "Deleting content of test-reports/"
-        rm test-reports/*.xml
+        rm -f test-reports/*
     else
         mkdir test-reports
     fi
 
     for test in bin/*_test; do
-        "$test" --gtest_output=xml:test-reports/`basename "$test"`.xml
+        filename=test-reports/`basename "$test"`.xml
+        "$test" --gtest_output=xml:"$filename"
+        exit_code="$?"
+        # Check the test executable didn't crash
+        if [ -e "$filename" ]; then
+            # Little fix: Googletest marks skipped tests with a 'status="notrun"' attribute,
+            # but the JUnit XML understood by Jenkins requires a '<skipped/>' element instead.
+            # source: http://stackoverflow.com/a/14074664
+            sed -i 's:\(<testcase [^>]*status="notrun".*\)/>:\1><skipped/></testcase>:' "$filename"
+        else
+            echo "Error: $filename was not created"
+            echo "$test ended with code $exit_code"
+        fi
     done
 }
+
 
 # Fetch the <testsuites> XML elements in test-reports/*.xml,
 # extract and sum the attribute given in argument
@@ -61,6 +76,18 @@ case "$1" in
         ;;
     --get-failure-count )
         sum-attribute-from-testsuites failures
+        ;;
+    --get-disabled-count )
+        sum-attribute-from-testsuites disabled
+        ;;
+    --get-error-count )
+        sum-attribute-from-testsuites errors
+        ;;
+    --get-test-executable-count )
+        ls bin/*_test 2> /dev/null | wc -l
+        ;;
+    --get-test-report-count )
+        ls test-reports/*.xml 2> /dev/null | wc -l
         ;;
     * )
         echo "$0: unexpected argument: $1"
