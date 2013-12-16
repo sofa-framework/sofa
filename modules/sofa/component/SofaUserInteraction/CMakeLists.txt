@@ -83,6 +83,6 @@ set(GROUP_BASE_DIR "..")
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_USER_INTERACTION" )
-AddLinkerDependencies(SofaMeshCollision SofaTopologyMapping SofaDeformable SofaBoundaryCondition SofaGraphComponent )
+AddLinkerDependencies(SofaMeshCollision SofaTopologyMapping SofaDeformable SofaBoundaryCondition SofaGraphComponent SofaBaseVisual )
     
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
