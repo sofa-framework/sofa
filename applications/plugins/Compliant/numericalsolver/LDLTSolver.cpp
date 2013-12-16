@@ -8,6 +8,8 @@
 #include <Eigen/LU>
 #include <Eigen/Cholesky>
 #include <Eigen/SVD>
+using std::cerr;
+using std::endl;
 
 namespace sofa {
 namespace component {
@@ -80,10 +82,16 @@ void LDLTSolver::solve(AssembledSystem::vec& res,
 	
 
 	vec Pv = (sys.P * rhs.head(sys.m));
-	
+
+    cerr<<"LDLTSolver::solve, Pv = " << Pv.transpose() << endl;
+    typedef AssembledSystem::dmat dmat;
+    cerr<<"LDLTSolver::solve, H = " << endl << dmat(sys.H) << endl;
+
 	// in place solve
 	Pv = pimpl->Hinv.solve( Pv );
-	
+    cerr<<"LDLTSolver::solve, solution = " << Pv.transpose() << endl;
+    cerr<<"LDLTSolver::solve, verification = " << (sys.H * Pv).transpose() << endl;
+
 	res.head( sys.m ) = sys.P * Pv;
 
 	if( sys.n ) {

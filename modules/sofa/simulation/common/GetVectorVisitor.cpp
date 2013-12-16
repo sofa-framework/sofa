@@ -45,7 +45,7 @@ namespace simulation
 {
 
 
-GetVectorVisitor::GetVectorVisitor( const sofa::core::ExecParams* params, defaulttype::BaseVector* vec, core::ConstVecId src )
+GetVectorVisitor::GetVectorVisitor( const sofa::core::ExecParams* params, Vector* vec, core::ConstVecId src )
     : Visitor(params), vec(vec), src(src), offset(0)
 {}
 

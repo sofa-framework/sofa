@@ -52,6 +52,9 @@ typedef component::linearsolver::FullVector<SReal> FullVector;
 /** Helpers for testing Solvers */
 struct Solver_test : public Sofa_test<SReal>
 {
+    typedef Eigen::VectorXd VectorEigen;
+
+
     Solver_test(){ initSofa(); }
 
     /** Initialize the sofa library and create the root of the scene graph
@@ -114,6 +117,27 @@ struct Solver_test : public Sofa_test<SReal>
         GetVectorVisitor getVec( core::MechanicalParams::defaultInstance(), v, core::VecDerivId::velocity());
         getRoot()->execute(getVec);
     }
+
+    VectorEigen assembled( core::ConstVecId id )
+    {
+        GetAssembledSizeVisitor getSizeVisitor;
+        root->execute(getSizeVisitor);
+        unsigned size;
+        if (id.type == sofa::core::V_COORD)
+            size =  getSizeVisitor.positionSize();
+        else
+            size = getSizeVisitor.velocitySize();
+        FullVector v(size);
+        GetVectorVisitor getVec( core::MechanicalParams::defaultInstance(), &v, id);
+        getRoot()->execute(getVec);
+
+        VectorEigen ve(size);
+        for(size_t i=0; i<size; i++)
+            ve(i)=v[i];
+        return ve;
+    }
+
+
 
     /** Get the root of the scene graph
       @pre The scene must be initialized

@@ -43,6 +43,7 @@
 #include <sofa/simulation/common/Visitor.h>
 #include <sofa/core/MultiVecId.h>
 #include <sofa/defaulttype/BaseVector.h>
+#include <Eigen/Dense>
 
 
 namespace sofa
@@ -58,14 +59,16 @@ namespace simulation
 class SOFA_SIMULATION_COMMON_API GetVectorVisitor: public Visitor
 {
 public:
-    GetVectorVisitor( const sofa::core::ExecParams* params /* PARAMS FIRST */, defaulttype::BaseVector* vec, core::ConstVecId src );
+//    typedef Eigen::Matrix<SReal, Eigen::Dynamic, 1> Vector;
+    typedef defaulttype::BaseVector Vector;
+    GetVectorVisitor( const sofa::core::ExecParams* params /* PARAMS FIRST */, Vector* vec, core::ConstVecId src );
     virtual ~GetVectorVisitor();
 
     virtual Result processNodeTopDown( simulation::Node*  );
     virtual const char* getClassName() const { return "GetVectorVisitor"; }
 
 protected:
-    defaulttype::BaseVector* vec;
+    Vector* vec;
     core::ConstVecId src;
     unsigned offset;
 };

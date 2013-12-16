@@ -82,10 +82,6 @@ class CompliantSolver_test : public Solver_test
 protected:
     typedef SReal Real;
     typedef linearsolver::AssembledSystem::rmat SMatrix;
-    typedef odesolver::AssembledSolver OdeSolver;
-    typedef linearsolver::LDLTSolver LinearSolver;
-    OdeSolver::SPtr complianceSolver; ///< Solver used to perform the test simulation, and which contains the actual results, to be compared with the expected ones.
-    LinearSolver::SPtr linearSolver; ///< Auxiliary linear equation solver used by the ode solver
 
     typedef component::topology::EdgeSetTopologyContainer EdgeSetTopologyContainer;
     typedef simulation::Node Node;
@@ -219,7 +215,7 @@ protected:
 
         //--------
         string_node = parent->createChild(oss.str());
-        cerr<<"Particle string added as child of " << parent->getName() << endl;
+//        cerr<<"Particle string added as child of " << parent->getName() << endl;
 
         DOF = New<MechanicalObject3>();
         string_node->addObject(DOF);
