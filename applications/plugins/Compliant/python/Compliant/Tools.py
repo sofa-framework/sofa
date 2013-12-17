@@ -32,7 +32,7 @@ def scene(node):
     
     style = node.createObject('VisualStyle', 
                               name = 'style',
-                              displayFlags='hideBehaviorModels showCollisionModels hideMappings hideForceFields')
+                              displayFlags='hideBehaviorModels hideCollisionModels hideMappings hideForceFields')
 
     ode = node.createObject('AssembledSolver',
                             name='ode' )
