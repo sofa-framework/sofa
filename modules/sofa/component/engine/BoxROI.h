@@ -150,6 +150,8 @@ public:
     Data<helper::vector<Triangle> > f_trianglesInROI;
     Data<helper::vector<Tetra> > f_tetrahedraInROI;
 
+	Data< unsigned int > f_nbIndices;
+
     //Parameter
     Data<bool> p_drawBoxes;
     Data<bool> p_drawPoints;

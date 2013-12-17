@@ -92,7 +92,7 @@ void MergePoints<DataTypes>::update()
         indices1.push_back(i);
     }
 
-    unsigned int index = indices1.size()-1;
+    unsigned int index = indices1.size();
 
     for( unsigned i=0; i<x2.size(); ++i )
     {
