@@ -71,6 +71,7 @@ BoxROI<DataTypes>::BoxROI()
     , f_edgesInROI( initData(&f_edgesInROI,"edgesInROI","Edges contained in the ROI") )
     , f_trianglesInROI( initData(&f_trianglesInROI,"trianglesInROI","Triangles contained in the ROI") )
     , f_tetrahedraInROI( initData(&f_tetrahedraInROI,"tetrahedraInROI","Tetrahedra contained in the ROI") )
+	, f_nbIndices( initData(&f_nbIndices,"nbIndices", "Number of selected indices") )
     , p_drawBoxes( initData(&p_drawBoxes,false,"drawBoxes","Draw Box(es)") )
     , p_drawPoints( initData(&p_drawPoints,false,"drawPoints","Draw Points") )
     , p_drawEdges( initData(&p_drawEdges,false,"drawEdges","Draw Edges") )
@@ -186,6 +187,7 @@ void BoxROI<DataTypes>::init()
     addOutput(&f_edgesInROI);
     addOutput(&f_trianglesInROI);
     addOutput(&f_tetrahedraInROI);
+	addOutput(&f_nbIndices);
     setDirtyValue();
 
     //cerr<<"BoxROI<DataTypes>::init() -> f_X0 = "<<f_X0<<endl;
@@ -302,7 +304,6 @@ void BoxROI<DataTypes>::update()
     trianglesInROI.clear();
     tetrahedraInROI.clear();
 
-
     const VecCoord* x0 = &f_X0.getValue();
 
     //Points
@@ -314,7 +315,7 @@ void BoxROI<DataTypes>::update()
             {
                 indices.push_back(i);
                 pointsInROI.push_back((*x0)[i]);
-                //                sout<<"\nBoxROI<DataTypes>::update, add index "<< i << sendl;
+                                sout<<"\nBoxROI<DataTypes>::update, add index "<< i << sendl;
                 break;
             }
         }
@@ -373,6 +374,8 @@ void BoxROI<DataTypes>::update()
             }
         }
     }
+
+	f_nbIndices.setValue(indices.size());
 
     f_indices.endEdit();
     f_edgeIndices.endEdit();

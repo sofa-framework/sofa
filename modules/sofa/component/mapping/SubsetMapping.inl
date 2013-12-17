@@ -44,6 +44,7 @@ template <class TIn, class TOut>
 SubsetMapping<TIn, TOut>::SubsetMapping()
     : Inherit()
     , f_indices( initData(&f_indices, "indices", "list of input indices"))
+	, f_definedSubsetSize( initData(&f_definedSubsetSize, -1, "definedSubsetSize", "Size of the wanted subset"))
     , f_first( initData(&f_first, -1, "first", "first index (use if indices are sequential)"))
     , f_last( initData(&f_last, -1, "last", "last index (use if indices are sequential)"))
     , f_radius( initData(&f_radius, (Real)1.0e-5, "radius", "search radius to find corresponding points in case no indices are given"))
@@ -118,7 +119,13 @@ void SubsetMapping<TIn, TOut>::init()
         const InVecCoord& in   = *this->fromModel->getX();
         const OutVecCoord& out = *this->toModel->getX();
         IndexArray& indices = *f_indices.beginEdit();
-        indices.resize(out.size());
+
+		int defSize = f_definedSubsetSize.getValue();
+		unsigned int unfound_card=0;
+		if(defSize!=-1)
+			indices.resize(defSize);
+		else
+			indices.resize(out.size());
 
         // searching for the first corresponding point in the 'from' model (there might be several ones).
         for (unsigned int i = 0; i < out.size(); ++i)
@@ -130,16 +137,22 @@ void SubsetMapping<TIn, TOut>::init()
                 Real r = (Real)((out[i] - in[j]).norm());
                 if ( r < rmax )
                 {
-                    indices[i] = j;
+                    indices[i-unfound_card] = j;
                     found = true;
                     rmax = r;
                 }
             }
-            if (!found)
-            {
-                sout<<"ERROR(SubsetMapping): point "<<i<<"="<<out[i]<<" not found in input model within a radius of "<<rmax<<"."<<sendl;
-                indices[i] = 0;
-            }
+			
+			if(!found)
+			{
+				if(defSize==-1)
+				{
+					sout<<"ERROR(SubsetMapping): point "<<i<<"="<<out[i]<<" not found in input model within a radius of "<<rmax<<"."<<sendl;
+					indices[i] = -1;
+				}
+				else
+					++unfound_card;
+			}
         }
         f_indices.endEdit();
     }
@@ -184,7 +197,8 @@ void SubsetMapping<TIn, TOut>::apply ( const core::MechanicalParams* /*mparams*/
     out.resize(indices.size());
     for(unsigned int i = 0; i < out.size(); ++i)
     {
-        out[i] = in[ indices[i] ];
+		if(indices[i]>=0)
+			out[i] = in[ indices[i] ];
     }
 
     dOut.endEdit();
@@ -201,7 +215,8 @@ void SubsetMapping<TIn, TOut>::applyJ( const core::MechanicalParams* /*mparams*/
     out.resize(indices.size());
     for(unsigned int i = 0; i < out.size(); ++i)
     {
-        out[i] = in[ indices[i] ];
+		if(indices[i]>=0)
+			out[i] = in[ indices[i] ];
     }
 
     dOut.endEdit();
@@ -225,7 +240,8 @@ void SubsetMapping<TIn, TOut>::applyJT ( const core::MechanicalParams* /*mparams
 
     for(unsigned int i = 0; i < in.size(); ++i)
     {
-        out[indices[i]] += in[ i ];
+		if(indices[i]>=0)
+			out[indices[i]] += in[ i ];
     }
 
     dOut.endEdit();
@@ -253,7 +269,8 @@ void SubsetMapping<TIn, TOut>::applyJT ( const core::ConstraintParams * /*cparam
 
             while (colIt != colItEnd)
             {
-                o.addCol(indices[colIt.index()], colIt.val());
+				if(indices[colIt.index()]>=0)
+					o.addCol(indices[colIt.index()], colIt.val());
                 ++colIt;
             }
         }
@@ -300,8 +317,11 @@ const sofa::defaulttype::BaseMatrix* SubsetMapping<TIn, TOut>::getJ()
         }
         for (unsigned i = 0; i < indices.size(); ++i)
         {
-            MBloc& block = *matrixJ->wbloc(i, indices[i], true);
-            block.identity();
+			if(indices[i]>=0)
+			{
+				MBloc& block = *matrixJ->wbloc(i, indices[i], true);
+				block.identity();
+			}
         }
     }
     return matrixJ.get();

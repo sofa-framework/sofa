@@ -95,6 +95,7 @@ public:
     typedef sofa::component::topology::PointSubsetData< IndexArray > SetIndex;
     SetIndex f_indices;
 
+	Data < int > f_definedSubsetSize;
     Data < int > f_first;
     Data < int > f_last;
     Data < Real > f_radius;
