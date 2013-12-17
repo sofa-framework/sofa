@@ -23,6 +23,9 @@ def minus(x):
 def sum(x, y):
     return [xi + yi for xi, yi in zip(x, y) ]
 
+def diff(x, y):
+    return [xi - yi for xi, yi in zip(x, y) ]
+
 # TODO assert dimension is 3
 def cross(x, y):
     return [ x[1] * y[2] - x[2] * y[1],
