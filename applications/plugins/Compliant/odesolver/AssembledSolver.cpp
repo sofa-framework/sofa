@@ -55,7 +55,11 @@ AssembledSolver::AssembledSolver()
 	beta( initData(&beta,
 	               SReal(1),
 	               "implicitPosition",
-	               "Weight of the next velocities in the average velocities used to update the positions. 1 is implicit, 0 is explicit."))
+	               "Weight of the next velocities in the average velocities used to update the positions. 1 is implicit, 0 is explicit.")),
+	assembly_traversal( initData(&assembly_traversal,
+								 true,
+								 "assembly_traversal",
+								 "use internal traversal order for visitors (compute forces, propagate velocities). DEBUG" ))
 	
 {
     storeDSol = false;
@@ -196,6 +200,14 @@ void AssembledSolver::propagate(const core::MechanicalParams* params)
 {
 	simulation::MechanicalPropagatePositionAndVelocityVisitor bob( params );
 	send( bob );
+}
+
+void AssembledSolver::propagate(const core::MechanicalParams* params, const simulation::AssemblyVisitor& vis)
+{
+	FakeNode fake(vis);
+
+	simulation::MechanicalPropagatePositionAndVelocityVisitor bob( params );
+	fake.executeVisitor( &bob );
 }
 
 
@@ -409,9 +421,10 @@ void AssembledSolver::solve(const core::ExecParams* params,
 	// fetch nodes/data
 	send( vis );
 	
-	// compute forces using traversal order defined by vis
-    compute_forces( mparams, vis );
-
+	// compute forces 
+	if( assembly_traversal.getValue() ) compute_forces( mparams, vis );
+	else compute_forces( mparams );
+	
 	// assemble system
     sys = vis.assemble();
 	
@@ -479,6 +492,10 @@ void AssembledSolver::solve(const core::ExecParams* params,
 
 			set_state(sys, x);
             integrate( &mparams, posId, velId );
+
+			// TODO is this even needed at this point ?
+			if( assembly_traversal.getValue() ) propagate( &mparams, vis );
+			else propagate( &mparams );
 		}
 		
 	}

@@ -126,6 +126,9 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
     Data<bool> warm_start, propagate_lambdas, stabilization, debug;
     Data<SReal> alpha, beta;     ///< the \alpha and \beta parameters of the integration scheme
 
+	
+	Data<bool> assembly_traversal;
+
     // simulation::AssemblyVisitor* _assemblyVisitor;
 
   protected:
@@ -149,7 +152,9 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
 	// propagate velocities
 	void propagate(const core::MechanicalParams* params);	
 				
-
+	void propagate(const core::MechanicalParams* params,
+				   const simulation::AssemblyVisitor& vis);
+	
 	// linear solver: TODO hide in pimpl ?
 	typedef linearsolver::KKTSolver kkt_type;
 	kkt_type::SPtr kkt;
