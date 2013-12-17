@@ -106,6 +106,7 @@ private:
     QTreeWidgetItem* treeWidgetItem;
 };
 
+// QDisplayPropertyWidget describe a widget where you can view and edit every properties of Sofa components
 class SOFA_SOFAGUIQT_API QDisplayPropertyWidget : public QTreeWidget
 {
 	Q_OBJECT
@@ -133,6 +134,14 @@ public:
 	// set a component description
     void setDescription(const QString& component, const QString& group, sofa::core::objectmodel::Base *base);
 
+	// set a component console output
+    void setConsoleOutput(const QString& component, const QString& group, sofa::core::objectmodel::Base *base);
+
+protected:
+	// add a description item
+	void addDescriptionItem(QTreeWidgetItem *groupItem, const QString& name, const QString& description);
+
+public:
     // clear non-pinned components, theirs groups, data and links
     void clear();
 
@@ -141,8 +150,9 @@ public:
 
 	// name of the default property group
 	static QString DefaultDataGroup()				{return "Property";}
-	static QString DefaultLinkGroup()				{return "Links";}
+	static QString DefaultLinkGroup()				{return "Link";}
 	static QString DefaultInfoGroup()				{return "Info";}
+	static QString DefaultLogGroup()				{return "Log";}
 
 protected slots:
 	// call this slot when you rename a component of the scene graph to rename its corresponding list view item

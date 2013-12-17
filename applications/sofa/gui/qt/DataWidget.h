@@ -28,6 +28,7 @@
 
 
 #include "SofaGUIQt.h"
+#include "ModifyObject.h"
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/helper/Factory.h>
@@ -298,11 +299,14 @@ class QDisplayDataInfoWidget: public QWidget
 {
     Q_OBJECT
 public:
-    QDisplayDataInfoWidget(QWidget* parent, const std::string& helper, core::objectmodel::BaseData* d, bool modifiable);
+    QDisplayDataInfoWidget(QWidget* parent, const std::string& helper, core::objectmodel::BaseData* d, bool modifiable, const ModifyObjectFlags& modifyObjectFlags);
 public Q_SLOTS:
     void linkModification();
     void linkEdited();
     unsigned int getNumLines() const { return numLines_;}
+
+signals:
+	void WidgetDirty();
 
 protected:
 	static QIcon& LinkIcon()

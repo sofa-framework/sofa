@@ -30,6 +30,7 @@
 #include "QDisplayLinkWidget.h"
 #include "QDataDescriptionWidget.h"
 #include "QTabulationModifyObject.h"
+#include <sofa/core/ObjectFactory.h>
 
 // uncomment to show traces of GUI operations in this file
 //#define DEBUG_GUI
@@ -173,49 +174,43 @@ void QDisplayPropertyWidget::addComponent(const QString& component, core::object
         addData(component, group, data);
     }
 
+
+	// add links
+	const sofa::core::objectmodel::Base::VecLink& links = base->getLinks();
+	for(sofa::core::objectmodel::Base::VecLink::const_iterator it = links.begin(); it != links.end(); ++it)
+	{
+		core::objectmodel::BaseLink *link = *it;
+
+		// ignore unnamed link
+		if(link->getName().empty())
+			continue;
+
+		if(!link->storePath() && 0 == link->getSize())
+			continue;
+
+		// use the default link group
+		QString group = DefaultLinkGroup();
+
+		// finally, add the data
+		addLink(component, group, link);
+	}
+
+	// add info
+	{
+		// use the default info group
+		QString group = DefaultInfoGroup();
+
+		setDescription(component, group, base);
+	}
+
 	bool notImplementedYet = true;
 	if(!notImplementedYet)
+	// add console
 	{
-		// add links
-		const sofa::core::objectmodel::Base::VecLink& links = base->getLinks();
-		for(sofa::core::objectmodel::Base::VecLink::const_iterator it = links.begin(); it != links.end(); ++it)
-		{
-			core::objectmodel::BaseLink *link = *it;
+		// use the default info group
+		QString group = DefaultLogGroup();
 
-			// ignore unnamed link
-			if(link->getName().empty())
-				continue;
-
-			if(!link->storePath() && 0 == link->getSize())
-				continue;
-
-			// use the default link group
-			QString group = DefaultLinkGroup();
-
-			// finally, add the data
-			addLink(component, group, link);
-		}
-
-		// add info
-		{
-			// use the default info group
-			QString group = DefaultInfoGroup();
-
-			setDescription(component, group, base);
-		}
-
-		// add console
-		/*{
-			updateConsole();
-			if (outputTab)
-			{
-				dialogTab->addTab(outputTab,  QString("Logs"));
-			}
-			if (warningTab)
-			{
-				dialogTab->addTab(warningTab, QString("Warnings"));
-			}
-		}*/
+		setConsoleOutput(component, group, base);
 	}
 }
 
@@ -251,14 +246,6 @@ void QDisplayPropertyWidget::addGroup(const QString& component, const QString& g
     groupItem->setForeground(0, *foregroundBrush);
     groupItem->setBackground(1, *backgroundBrush);
     groupItem->setForeground(1, *foregroundBrush);
-
-    /*if(groupLabel == DefaultDataGroup())
-    {
-    	//groupItem->setChildIndicatorPolicy(QTreeWidgetItem::DontShowIndicator);
-    	//groupItem->setExpanded(true);
-    	groupItem->setSizeHint(0, QSize(0,0));
-    	groupItem->setSizeHint(1, QSize(0,0));
-    }*/
 }
 
 void QDisplayPropertyWidget::addData(const QString& component, const QString& group, sofa::core::objectmodel::BaseData *data)
@@ -292,7 +279,7 @@ void QDisplayPropertyWidget::addData(const QString& component, const QString& gr
     QDisplayDataWidget *displayDataWidget = new QDisplayDataWidget(widget, data, modifyObjectFlags);
     layout->addWidget(displayDataWidget);
 
-    connect(displayDataWidget, SIGNAL(DataOwnerDirty(bool)), this, SLOT( updateListViewItem() ) );
+    connect(displayDataWidget, SIGNAL(DataOwnerDirty(bool)), this, SLOT(updateListViewItem()));
     connect(displayDataWidget, SIGNAL(WidgetDirty(bool)), widget, SLOT(updateDirtyWidget()));
 
     widget->setContentsMargins(0, 0, 0, 0);
@@ -303,8 +290,6 @@ void QDisplayPropertyWidget::addData(const QString& component, const QString& gr
 	}
     setItemWidget(dataItem, 1, widget);
 	dataItem->setToolTip(1, data->getHelp());
-
-    dataItem->setExpanded(true);
 }
 
 void QDisplayPropertyWidget::addLink(const QString& component, const QString& group, sofa::core::objectmodel::BaseLink *link)
@@ -331,12 +316,15 @@ void QDisplayPropertyWidget::addLink(const QString& component, const QString& gr
     QDisplayTreeItemWidget *widget = new QDisplayTreeItemWidget(this, linkItem);
     QHBoxLayout *layout = new QHBoxLayout(widget);
 
+	ModifyObjectFlags linkFlags = modifyObjectFlags;
+	linkFlags.READONLY_FLAG = true;
+
     linkItem->setText(0, link->getName().c_str());
 	linkItem->setToolTip(0, link->getHelp());
-    QDisplayLinkWidget *displayLinkWidget = new QDisplayLinkWidget(widget, link, modifyObjectFlags);
+    QDisplayLinkWidget *displayLinkWidget = new QDisplayLinkWidget(widget, link, linkFlags);
     layout->addWidget(displayLinkWidget);
 
-    connect(displayLinkWidget, SIGNAL(LinkOwnerDirty(bool)), this, SLOT( updateListViewItem() ) );
+    connect(displayLinkWidget, SIGNAL(LinkOwnerDirty(bool)), this, SLOT(updateListViewItem()));
     connect(displayLinkWidget, SIGNAL(WidgetDirty(bool)), widget, SLOT(updateDirtyWidget()));
 
     widget->setContentsMargins(0, 0, 0, 0);
@@ -347,8 +335,6 @@ void QDisplayPropertyWidget::addLink(const QString& component, const QString& gr
 	}
     setItemWidget(linkItem, 1, widget);
 	linkItem->setToolTip(1, link->getHelp());
-
-    linkItem->setExpanded(true);
 }
 
 void QDisplayPropertyWidget::setDescription(const QString& component, const QString& group, sofa::core::objectmodel::Base *base)
@@ -363,24 +349,128 @@ void QDisplayPropertyWidget::setDescription(const QString& component, const QStr
     if(!groupItem)
         return;
 
-    QTreeWidgetItem *descriptionItem = new QTreeWidgetItem(groupItem);
+	QBrush *brush = NULL;
+	QFont categoryFont;
+	categoryFont.setBold(true);
+
+	// Instance
+    QTreeWidgetItem *instanceItem = new QTreeWidgetItem(groupItem);
+    if(groupItem->childCount() % 2 == 0)
+        brush = new QBrush(QColor(255, 255, 191));
+    else
+        brush = new QBrush(QColor(255, 255, 222));
+
+    instanceItem->setBackground(0, *brush);
+    instanceItem->setBackground(1, *brush);
+
+	instanceItem->setText(0, "Instance");
+	instanceItem->setFont(0, categoryFont);
+
+	{
+        addDescriptionItem(groupItem, "Name", QString(base->getName().c_str()));
+
+		addDescriptionItem(groupItem, "Class", QString(base->getClassName().c_str()));
+
+		std::string namespacename = core::objectmodel::BaseClass::decodeNamespaceName(typeid(*base));
+		if (!namespacename.empty())
+			addDescriptionItem(groupItem, "Namespace", QString(namespacename.c_str()));
+
+		if (!base->getTemplateName().empty())
+			addDescriptionItem(groupItem, "Template", QString(base->getTemplateName().c_str()));
+    }
+
+	// Class
+	core::ObjectFactory::ClassEntry* entry = core::ObjectFactory::getInstance()->getEntry(base->getClassName());
+    if(0 != entry && !entry->creatorList.empty())
+    {
+		QTreeWidgetItem *classItem = new QTreeWidgetItem(groupItem);
+		if(groupItem->childCount() % 2 == 0)
+			brush = new QBrush(QColor(255, 255, 191));
+		else
+			brush = new QBrush(QColor(255, 255, 222));
+
+		classItem->setBackground(0, *brush);
+		classItem->setBackground(1, *brush);
+
+		classItem->setText(0, "Class");
+		classItem->setFont(0, categoryFont);
+
+        if(!entry->description.empty() && std::string("TODO") != entry->description)
+			addDescriptionItem(groupItem, "Description", QString(entry->description.c_str()));
+
+        core::ObjectFactory::CreatorMap::iterator it = entry->creatorMap.find(base->getTemplateName());
+        if(entry->creatorMap.end() != it && *it->second->getTarget())
+			addDescriptionItem(groupItem, "Provided by", QString(it->second->getTarget()));
+
+        if(!entry->authors.empty() && std::string("TODO") != entry->authors)
+			addDescriptionItem(groupItem, "Authors", QString(entry->authors.c_str()));
+
+        if(!entry->license.empty() && std::string("TODO") != entry->license)
+			addDescriptionItem(groupItem, "License", QString(entry->license.c_str()));
+    }
+}
+
+void QDisplayPropertyWidget::addDescriptionItem(QTreeWidgetItem *groupItem, const QString& name, const QString& description)
+{
+	QTreeWidgetItem *descriptionItem = new QTreeWidgetItem(groupItem);
+
+	QBrush *brush = NULL;
+    if(groupItem->childCount() % 2 == 0)
+        brush = new QBrush(QColor(255, 255, 191));
+    else
+        brush = new QBrush(QColor(255, 255, 222));
+
+    descriptionItem->setBackground(0, *brush);
+    descriptionItem->setBackground(1, *brush);
+
+	descriptionItem->setText(0, name);
+	
+	QDisplayTreeItemWidget *widget = new QDisplayTreeItemWidget(this, descriptionItem);
+	QLabel* label = new QLabel(description, widget);
+	setItemWidget(descriptionItem, 1, widget);
+}
+
+void QDisplayPropertyWidget::setConsoleOutput(const QString& component, const QString& group, sofa::core::objectmodel::Base *base)
+{
+	if(!base)
+        return;
+
+    addGroup(component, group);
+    QTreeWidgetItem *groupItem = NULL;
+    groupItem = findGroup(component, group);
+
+    if(!groupItem)
+        return;
+
+    QTreeWidgetItem *consoleItem = new QTreeWidgetItem(groupItem);
     QBrush *brush = NULL;
     if(groupItem->childCount() % 2 == 0)
         brush = new QBrush(QColor(255, 255, 191));
     else
         brush = new QBrush(QColor(255, 255, 222));
-    descriptionItem->setBackground(0, *brush);
-    descriptionItem->setBackground(1, *brush);
+    consoleItem->setBackground(0, *brush);
+    consoleItem->setBackground(1, *brush);
 
-	QDataDescriptionWidget* description=new QDataDescriptionWidget(this, base);
-	if(description->layout())
+    QDisplayTreeItemWidget *widget = new QDisplayTreeItemWidget(this, consoleItem);
+    QHBoxLayout *layout = new QHBoxLayout(widget);
+
+	QWidget* consoleWidget = new QWidget(widget);
+	QVBoxLayout *consoleLayout = new QVBoxLayout(consoleWidget);
+
+	QPushButton* clearButton = new QPushButton("Clear", consoleWidget);
+	clearButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+	QTextEdit* textEdit = new QTextEdit(consoleWidget);
+	textEdit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+	textEdit->setFixedHeight(120);
+
+	widget->setContentsMargins(0, 0, 0, 0);
+	if(widget->layout())
 	{
-		description->layout()->setContentsMargins(0, 0, 0, 0);
-		description->layout()->setSpacing(0);
+		widget->layout()->setContentsMargins(0, 0, 0, 0);
+		widget->layout()->setSpacing(0);
 	}
-	setItemWidget(descriptionItem, 1, description);
-
-	descriptionItem->setExpanded(true);
+    setItemWidget(consoleItem, 1, widget);
 }
 
 void QDisplayPropertyWidget::clear()

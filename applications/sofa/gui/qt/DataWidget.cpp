@@ -49,12 +49,14 @@ namespace qt
 /*QDisplayDataInfoWidget definitions */
 
 QDisplayDataInfoWidget::QDisplayDataInfoWidget(QWidget* parent, const std::string& helper,
-        core::objectmodel::BaseData* d, bool modifiable):QWidget(parent), data(d), numLines_(1)
+        core::objectmodel::BaseData* d, bool modifiable, const ModifyObjectFlags& modifyObjectFlags):QWidget(parent), data(d), numLines_(1)
 {
+	setMinimumHeight(25);
+
     QHBoxLayout* layout = new QHBoxLayout(this);
-#ifdef SOFA_QT4
     layout->setContentsMargins(0,0,0,0);
-#endif
+	layout->setSpacing(0);
+
     std::string final_str;
     formatHelperString(helper,final_str);
     std::string ownerClass=data->getOwnerClass();
@@ -93,11 +95,15 @@ QDisplayDataInfoWidget::QDisplayDataInfoWidget(QWidget* parent, const std::strin
     if(modifiable || !data->getLinkPath().empty())
     {
         linkpath_edit = new QLineEdit(this);
+		linkpath_edit->setContentsMargins(2, 0, 0, 0);
         linkpath_edit->setText(QString(data->getLinkPath().c_str()));
         linkpath_edit->setEnabled(modifiable);
         layout->addWidget(linkpath_edit);
         linkpath_edit->setShown(!data->getLinkPath().empty());
-        connect(linkpath_edit, SIGNAL( lostFocus()), this, SLOT( linkEdited()));
+		if(modifyObjectFlags.PROPERTY_WIDGET_FLAG)
+			connect(linkpath_edit, SIGNAL( textChanged(const QString&)), this, SIGNAL( WidgetDirty()));
+		else
+			connect(linkpath_edit, SIGNAL( lostFocus()), this, SLOT( linkEdited()));
     }
     else
     {
