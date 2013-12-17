@@ -8,9 +8,13 @@ import Vec as vec
 from Tools import cat as concat
 
 class Frame:
-        def __init__(self):
-                self.translation = [0, 0, 0]
-                self.rotation = [0, 0, 0, 1]
+        def __init__(self, value = None):
+                if value != None:
+                        self.translation = value[:3]
+                        self.rotation = value[3:]
+                else:
+                        self.translation = [0, 0, 0]
+                        self.rotation = [0, 0, 0, 1]
                 
         def insert(self, parent, **args):
                 return parent.createObject('MechanicalObject', 
