@@ -382,7 +382,11 @@ function(ComputeDependencies projectName forceEnable fromProject offset)
 			# add the current project
 			if(GLOBAL_PROJECT_PATH_${projectName}) # TODO: if there is no path try a find_package / find_library
 				if(NOT ${GLOBAL_PROJECT_PATH_${projectName}} STREQUAL "")
-                    message(STATUS " - Adding project '${projectName}' for '${fromProject}' from : ${GLOBAL_PROJECT_PATH_${projectName}}")
+					if(SOFA-MISC_CMAKE_VERBOSE)
+						message(STATUS "Adding project '${projectName}' for '${fromProject}' from : ${GLOBAL_PROJECT_PATH_${projectName}}")
+					else()
+						message(STATUS "Adding project '${projectName}'")
+					endif()
 					add_subdirectory("${GLOBAL_PROJECT_PATH_${projectName}}")
 				endif()
 			endif()
