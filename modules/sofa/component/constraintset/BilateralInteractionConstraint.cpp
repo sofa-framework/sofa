@@ -66,19 +66,22 @@ template <>
 void BilateralInteractionConstraint<Rigid3dTypes>::buildConstraintMatrix(const core::ConstraintParams* /*cParams*/ /* PARAMS FIRST */, DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &constraintId
         , const DataVecCoord &/*x1*/, const DataVecCoord &/*x2*/)
 {
-    unsigned minp = std::min(m1.getValue().size(),m2.getValue().size());
+    const helper::vector<int> &m1Indices = m1.getValue();
+    const helper::vector<int> &m2Indices = m2.getValue();
+
+    unsigned minp = std::min(m1Indices.size(),m2Indices.size());
     cid.resize(minp);
+
+    MatrixDeriv &c1 = *c1_d.beginEdit();
+    MatrixDeriv &c2 = *c2_d.beginEdit();
+
+    const Vec<3, Real> cx(1,0,0), cy(0,1,0), cz(0,0,1);
+    const Vec<3, Real> vZero(0,0,0);
+
     for (unsigned pid=0; pid<minp; pid++)
     {
-        int tm1 = m1.getValue()[pid];
-        int tm2 = m2.getValue()[pid];
-
-        MatrixDeriv &c1 = *c1_d.beginEdit();
-        MatrixDeriv &c2 = *c2_d.beginEdit();
-
-        const Vec<3, Real> cx(1,0,0), cy(0,1,0), cz(0,0,1);
-        //	const Vec<3, Real> qId = q.toEulerVector();
-        const Vec<3, Real> vZero(0,0,0);
+        int tm1 = m1Indices[pid];
+        int tm2 = m2Indices[pid];
 
         cid[pid] = constraintId;
         constraintId += 6;
@@ -120,24 +123,32 @@ void BilateralInteractionConstraint<Rigid3dTypes>::buildConstraintMatrix(const c
 
         c2_it = c2.writeLine(cid[pid] + 5);
         c2_it.setCol(tm2, Deriv(vZero, cz));
-
-        c1_d.endEdit();
-        c2_d.endEdit();
     }
+
+    c1_d.endEdit();
+    c2_d.endEdit();
 }
 
 
 template <>
-void BilateralInteractionConstraint<Rigid3dTypes>::getConstraintViolation(const core::ConstraintParams* /*cParams*/ /* PARAMS FIRST */, defaulttype::BaseVector *v, const DataVecCoord &x1, const DataVecCoord &x2
+void BilateralInteractionConstraint<Rigid3dTypes>::getConstraintViolation(const core::ConstraintParams* /*cParams*/ /* PARAMS FIRST */, defaulttype::BaseVector *v, const DataVecCoord &d_x1, const DataVecCoord &d_x2
         , const DataVecDeriv &/*v1*/, const DataVecDeriv &/*v2*/)
 {
-    unsigned minp = std::min(m1.getValue().size(),m2.getValue().size());
+    const helper::vector<int> &m1Indices = m1.getValue();
+    const helper::vector<int> &m2Indices = m2.getValue();
+
+    unsigned minp = std::min(m1Indices.size(),m2Indices.size());
+
     const VecDeriv& restVector = this->restVector.getValue();
     dfree.resize(minp);
+
+    const VecCoord &x1 = d_x1.getValue();
+    const VecCoord &x2 = d_x2.getValue();
+
     for (unsigned pid=0; pid<minp; pid++)
     {
-        const Coord dof1 = x1.getValue()[m1.getValue()[pid]];
-        const Coord dof2 = x2.getValue()[m2.getValue()[pid]];
+        const Coord dof1 = x1[m1Indices[pid]];
+        const Coord dof2 = x2[m2Indices[pid]];
 
         getVCenter(dfree[pid]) = dof2.getCenter() - dof1.getCenter();
         getVOrientation(dfree[pid]) =  dof1.rotate(q.angularDisplacement(dof2.getOrientation() , dof1.getOrientation())) ;
@@ -178,19 +189,22 @@ template <>
 void BilateralInteractionConstraint<Rigid3fTypes>::buildConstraintMatrix(const core::ConstraintParams* /*cParams*/ /* PARAMS FIRST */, DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &constraintId
         , const DataVecCoord &/*x1*/, const DataVecCoord &/*x2*/)
 {
-    unsigned minp = std::min(m1.getValue().size(),m2.getValue().size());
+    const helper::vector<int> &m1Indices = m1.getValue();
+    const helper::vector<int> &m2Indices = m2.getValue();
+
+    unsigned minp = std::min(m1Indices.size(), m2Indices.size());
     cid.resize(minp);
+
+    MatrixDeriv &c1 = *c1_d.beginEdit();
+    MatrixDeriv &c2 = *c2_d.beginEdit();
+
+    const Vec<3, Real> cx(1,0,0), cy(0,1,0), cz(0,0,1);
+    const Vec<3, Real> vZero(0,0,0);
+
     for (unsigned pid=0; pid<minp; pid++)
     {
-        int tm1 = m1.getValue()[pid];
-        int tm2 = m2.getValue()[pid];
-
-        MatrixDeriv &c1 = *c1_d.beginEdit();
-        MatrixDeriv &c2 = *c2_d.beginEdit();
-
-        const Vec<3, Real> cx(1,0,0), cy(0,1,0), cz(0,0,1);
-        //	const Vec<3, Real> qId = q.toEulerVector();
-        const Vec<3, Real> vZero(0,0,0);
+        int tm1 = m1Indices[pid];
+        int tm2 = m2Indices[pid];
 
         cid[pid] = constraintId;
         constraintId += 6;
@@ -232,24 +246,31 @@ void BilateralInteractionConstraint<Rigid3fTypes>::buildConstraintMatrix(const c
 
         c2_it = c2.writeLine(cid[pid] + 5);
         c2_it.setCol(tm2, Deriv(vZero, cz));
-
-        c1_d.endEdit();
-        c2_d.endEdit();
     }
+
+    c1_d.endEdit();
+    c2_d.endEdit();
 }
 
 
 template <>
-void BilateralInteractionConstraint<Rigid3fTypes>::getConstraintViolation(const core::ConstraintParams* /*cParams*/ /* PARAMS FIRST */, defaulttype::BaseVector *v, const DataVecCoord &x1, const DataVecCoord &x2
+void BilateralInteractionConstraint<Rigid3fTypes>::getConstraintViolation(const core::ConstraintParams* /*cParams*/ /* PARAMS FIRST */, defaulttype::BaseVector *v, const DataVecCoord &d_x1, const DataVecCoord &d_x2
         , const DataVecDeriv &/*v1*/, const DataVecDeriv &/*v2*/)
 {
-    unsigned min = std::min(m1.getValue().size(),m2.getValue().size());
+    const helper::vector<int> &m1Indices = m1.getValue();
+    const helper::vector<int> &m2Indices = m2.getValue();
+
+    unsigned min = std::min(m1Indices.size(), m2Indices.size());
     const VecDeriv& restVector = this->restVector.getValue();
     dfree.resize(min);
+
+    const VecCoord &x1 = d_x1.getValue();
+    const VecCoord &x2 = d_x2.getValue();
+
     for (unsigned pid=0; pid<min; pid++)
     {
-        Coord dof1 = x1.getValue()[m1.getValue()[pid]];
-        Coord dof2 = x2.getValue()[m1.getValue()[pid]];
+        Coord dof1 = x1[m1Indices[pid]];
+        Coord dof2 = x2[m2Indices[pid]];
 
         getVCenter(dfree[pid]) = dof2.getCenter() - dof1.getCenter();
         getVOrientation(dfree[pid]) =  dof1.rotate(q.angularDisplacement(dof2.getOrientation() , dof1.getOrientation()));
