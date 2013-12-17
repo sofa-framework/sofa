@@ -3,7 +3,7 @@ import Plugin
 
 import math
 
-from Compliant import Rigid, Vec, Quaternion, Tools
+from Compliant import Rigid, Vec, Quaternion, Tools, Control
 
 class Shared:
     pass
@@ -80,16 +80,21 @@ def createScene(node):
     box.mass_from_mesh( box.visual, 50 )
     box.node = box.insert( scene )
 
-    # constant force field
-    ff = joint.node.createObject('ConstantForceField')
-    ff.forces = '0 0 0 0 0 -3e5'
-
     shared.plane = plane.node.getObject('dofs')
     shared.box = box.node.getObject('dofs')
     shared.joint = joint.node.getObject('dofs')
 
-    shared.first = None
-   
+    # pid
+    shared.pid = Control.PID(shared.joint)
+    shared.pid.ref_pos = -math.atan( shared.mu ) # target should trigger slide
+
+    shared.pid.basis = [0, 0, 0, 0, 0, 1]
+
+    scale = 1e6
+
+    shared.pid.kp = - 1 * scale
+    shared.pid.kd =  - 5 * scale
+    shared.pid.ki = - 0.05 * scale
 
 # scene controller
 class Controller(Sofa.PythonScriptController):
@@ -98,11 +103,15 @@ class Controller(Sofa.PythonScriptController):
         return 0
           
     def reset(self):
-        # shared.first = None
+        shared.pid.reset()
         return 0
           
     def onBeginAnimationStep(self, dt):
 
+        # pid update
+        shared.pid.update( dt )
+
+        # info display
         relative = Rigid.Frame( shared.plane.position[0] ).inv() * Rigid.Frame( shared.box.position[0] )
         tangent = [relative.translation[0], relative.translation[2]]
 
@@ -120,11 +129,10 @@ class Controller(Sofa.PythonScriptController):
         print 'plane/ground angle:', alpha , 'mu = ', mu
         
         if mu > shared.mu:
-            print '(should move)'
+            print '(should be moving)'
  
         print
-            
-    
+        
         return 0
           
     def bwdInitGraph(self,node):
