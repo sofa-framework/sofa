@@ -62,7 +62,7 @@ public:
     typedef typename Inherit::VGradient VGradient;
     typedef typename Inherit::VHessian VHessian;
     typedef typename Inherit::VRef VRef;
-	typedef typename Inherit::Cell Cell;
+    typedef typename Inherit::Cell Cell;
 
     typedef sofa::core::topology::BaseMeshTopology Topo;
     Topo* parentTopology;
@@ -308,11 +308,11 @@ protected:
                     //no 3D elements, nor 2D elements -> map on 1D elements
                     for ( unsigned int i = 0; i < edges.size(); i++ )
                         if(cell==-1 || cell==(int)i)
-                    {
-                        Coord v = B->bases[i] * ( childPosition - parent[edges[i][0]] );
-                        double d = std::max ( -v[0], v[0]-(Real)1. );
-                        if ( d<=distance ) { coefs = v; distance = d; index = i; }
-                    }
+                        {
+                            Coord v = B->bases[i] * ( childPosition - parent[edges[i][0]] );
+                            double d = std::max ( -v[0], v[0]-(Real)1. );
+                            if ( d<=distance ) { coefs = v; distance = d; index = i; }
+                        }
                     if ( index!=-1 ) // addPointInLine
                     {
                         ref[0]=edges[index][0]; ref[1]=edges[index][1];
@@ -330,19 +330,19 @@ protected:
                     // no 3D elements -> map on 2D elements
                     for ( unsigned int i = 0; i < triangles.size(); i++ )
                         if(cell==-1 || cell==(int)i)
-                    {
-                        Coord v = B->bases[i] * ( childPosition - parent[triangles[i][0]] );
-                        double d = getDistanceTriangle( v );
-                        if ( d<=distance ) { coefs = v; distance = d; index = i; }
-                    }
+                        {
+                            Coord v = B->bases[i] * ( childPosition - parent[triangles[i][0]] );
+                            double d = getDistanceTriangle( v );
+                            if ( d<=distance ) { coefs = v; distance = d; index = i; }
+                        }
                     int c0 = triangles.size();
                     for ( unsigned int i = 0; i < quads.size(); i++ )
                         if(cell==-1 || cell==(int)(i+c0))
-                    {
-                        Coord v = B->bases[c0+i] * ( childPosition - parent[quads[i][0]] );
-                        double d = getDistanceQuad( v );
-                        if ( d<=distance ) { coefs = v; distance = d; index = c0+i; }
-                    }
+                        {
+                            Coord v = B->bases[c0+i] * ( childPosition - parent[quads[i][0]] );
+                            double d = getDistanceQuad( v );
+                            if ( d<=distance ) { coefs = v; distance = d; index = c0+i; }
+                        }
                     if ( index!=-1 && index<c0 ) // addPointInTriangle
                     {
                         ref[0]=triangles[index][0];                          ref[1]=triangles[index][1];  ref[2]=triangles[index][2];
@@ -393,20 +393,20 @@ protected:
                 // map on 3D elements
                 for ( unsigned int i = 0; i < tetrahedra.size(); i++ )
                     if(cell==-1 || cell==(int)i)
-                {
-                    Coord v = B->bases[i] * ( childPosition - parent[tetrahedra[i][0]] );
-                    double d = getDistanceTetra( v );
-                    if ( d<=distance ) { coefs = v; distance = d; index = i; }
-                }
+                    {
+                        Coord v = B->bases[i] * ( childPosition - parent[tetrahedra[i][0]] );
+                        double d = getDistanceTetra( v );
+                        if ( d<=distance ) { coefs = v; distance = d; index = i; }
+                    }
                 int c0 = tetrahedra.size();
                 for ( unsigned int i = 0; i < cubes.size(); i++ )
                     if(cell==-1 || cell==(int)(i+c0))
-                {
-                    //Coord v = bases[c0+i] * ( childPosition - parent[cubes[i][0]] );  // for cuboid hexahedra
-                    Coord v; Coord ph[8];  for ( unsigned int j = 0; j < 8; j++ ) ph[j]=parent[cubes[i][j]]; computeHexaTrilinearWeights(v,ph,childPosition,1E-10); // for arbitrary hexahedra
-                    double d = getDistanceHexa( v );
-                    if ( d<=distance ) { coefs = v; distance = d; index = c0+i; }
-                }
+                    {
+                        //Coord v = bases[c0+i] * ( childPosition - parent[cubes[i][0]] );  // for cuboid hexahedra
+                        Coord v; Coord ph[8];  for ( unsigned int j = 0; j < 8; j++ ) ph[j]=parent[cubes[i][j]]; computeHexaTrilinearWeights(v,ph,childPosition,1E-10); // for arbitrary hexahedra
+                        double d = getDistanceHexa( v );
+                        if ( d<=distance ) { coefs = v; distance = d; index = c0+i; }
+                    }
                 if ( index!=-1 && index<c0 ) // addPointInTet
                 {
                     ref[0]=tetrahedra[index][0];                                         ref[1]=tetrahedra[index][1];  ref[2]=tetrahedra[index][2];    ref[3]=tetrahedra[index][3];
@@ -469,7 +469,13 @@ protected:
 
             }
 
-            //   if ( distance>0 ) sout<<"point "<<childPosition<<" outside"<<sendl;
+            if ( index==-1 )
+            {
+                B->sout<<"point "<<childPosition<<" outside"<<B->sendl;
+                ref.resize(0);  w.resize(0);
+                if(dw) dw->resize(0);
+                if(ddw) ddw->resize(0);
+            }
         }
     };
 
@@ -501,7 +507,7 @@ protected:
 
 
 
-//        // align user provided global orientation to 2D manifold (to required for 1D cells)
+        //        // align user provided global orientation to 2D manifold (to required for 1D cells)
         static BasesType reorientGlobalOrientation( const BasesType& /*Global*/, const BasesType& Local )
         {
             // TODO WARNING I am really not sure of this!!
@@ -598,11 +604,11 @@ protected:
                 //no 2D elements -> map on 1D elements
                 for ( unsigned int i = 0; i < edges.size(); i++ )
                     if(cell==-1 || cell==(int)i)
-                {
-                    Coord v = B->bases[i] * ( childPosition - parent[edges[i][0]] );
-                    double d = std::max ( -v[0], v[0]-(Real)1. );
-                    if ( d<=distance ) { coefs = v; distance = d; index = i; }
-                }
+                    {
+                        Coord v = B->bases[i] * ( childPosition - parent[edges[i][0]] );
+                        double d = std::max ( -v[0], v[0]-(Real)1. );
+                        if ( d<=distance ) { coefs = v; distance = d; index = i; }
+                    }
                 if ( index!=-1 ) // addPointInLine
                 {
                     ref[0]=edges[index][0]; ref[1]=edges[index][1];
@@ -620,19 +626,19 @@ protected:
                 // map on 2D elements
                 for ( unsigned int i = 0; i < triangles.size(); i++ )
                     if(cell==-1 || cell==(int)i)
-                {
-                    Coord v = B->bases[i] * ( childPosition - parent[triangles[i][0]] );
-                    double d = getDistanceTriangle( v );
-                    if ( d<=distance ) { coefs = v; distance = d; index = i; }
-                }
+                    {
+                        Coord v = B->bases[i] * ( childPosition - parent[triangles[i][0]] );
+                        double d = getDistanceTriangle( v );
+                        if ( d<=distance ) { coefs = v; distance = d; index = i; }
+                    }
                 int c0 = triangles.size();
                 for ( unsigned int i = 0; i < quads.size(); i++ )
                     if(cell==-1 || cell==(int)(i+c0))
-                {
-                    Coord v = B->bases[c0+i] * ( childPosition - parent[quads[i][0]] );
-                    double d = getDistanceQuad( v );
-                    if ( d<=distance ) { coefs = v; distance = d; index = c0+i; }
-                }
+                    {
+                        Coord v = B->bases[c0+i] * ( childPosition - parent[quads[i][0]] );
+                        double d = getDistanceQuad( v );
+                        if ( d<=distance ) { coefs = v; distance = d; index = c0+i; }
+                    }
                 if ( index!=-1 && index<c0 ) // addPointInTriangle
                 {
                     ref[0]=triangles[index][0];                          ref[1]=triangles[index][1];  ref[2]=triangles[index][2];
@@ -676,6 +682,14 @@ protected:
                         (*ddw)[3]=B->covs(dgx,dfy);
                     }
                 }
+            }
+
+            if ( index==-1 )
+            {
+                B->sout<<"point "<<childPosition<<" outside"<<B->sendl;
+                ref.resize(0);  w.resize(0);
+                if(dw) dw->resize(0);
+                if(ddw) ddw->resize(0);
             }
         }
 
@@ -730,10 +744,10 @@ protected:
     // user provided orientation
     BasesType getUserOrientation(const unsigned int index) const
     {
-    defaulttype::Vec<3,Real> orient; if(this->f_orientation.getValue().size()) orient=(this->f_orientation.getValue().size()>index)?this->f_orientation.getValue()[index]:this->f_orientation.getValue()[0];
-    helper::Quater<Real> q = helper::Quater< Real >::createQuaterFromEuler(orient * (Real)M_PI / (Real)180.0);
-    BasesType R; q.toMatrix(R);
-    return R;
+        defaulttype::Vec<3,Real> orient; if(this->f_orientation.getValue().size()) orient=(this->f_orientation.getValue().size()>index)?this->f_orientation.getValue()[index]:this->f_orientation.getValue()[0];
+        helper::Quater<Real> q = helper::Quater< Real >::createQuaterFromEuler(orient * (Real)M_PI / (Real)180.0);
+        BasesType R; q.toMatrix(R);
+        return R;
     }
 
 
