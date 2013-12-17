@@ -5,10 +5,7 @@ from subprocess import Popen, PIPE
 import Quaternion as quat
 import Vec as vec
 
-# small helper
-def concat(x):
-        return ' '.join(map(str, x))
-
+from Tools import cat as concat
 
 class Frame:
         def __init__(self):
@@ -18,8 +15,7 @@ class Frame:
         def insert(self, parent, **args):
                 return parent.createObject('MechanicalObject', 
                                            template = 'Rigid',
-                                           translation = concat(self.translation),
-                                           rotation = concat(self.rotation),
+                                           position = str(self),
                                            **args)
                 
         def __str__(self):
@@ -205,6 +201,15 @@ class Joint:
                 self.offset.append(offset)
                 self.name = self.name + '-' + node.name
         
+        # convenience: define joint using absolute frame and vararg nodes
+        def absolute(self, frame, *nodes):
+                for n in nodes:
+                        pos = n.getObject('dofs').position
+                        s = concat(pos[0])
+                        local = Frame().read( s )
+                        self.append(n, local.inv() * frame)
+        
+
         class Node:
                 pass
         
