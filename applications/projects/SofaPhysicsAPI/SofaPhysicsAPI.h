@@ -120,6 +120,7 @@ public:
     int getVerticesRevision();    ///< changes each time vertices data are updated
 
     unsigned int getNbVAttributes();                    ///< number of vertices attributes
+    unsigned int getNbAttributes(int index);            ///< number of the attributes in specified vertex attribute 
     const char*  getVAttributeName(int index);          ///< vertices attribute name
     int          getVAttributeSizePerVertex(int index); ///< vertices attribute #
     const Real*  getVAttributeValue(int index);         ///< vertices attribute (Vec#)
@@ -161,6 +162,7 @@ public:
   int getVerticesRevision();    ///< changes each time vertices data are updated
 
   unsigned int getNbVAttributes();                    ///< number of vertices attributes
+  unsigned int getNbAttributes(int index);            ///< number of the attributes in specified vertex attribute 
   const char*  getVAttributeName(int index);          ///< vertices attribute name
   int          getVAttributeSizePerVertex(int index); ///< vertices attribute #
   const Real*  getVAttributeValue(int index);         ///< vertices attribute (Vec#)

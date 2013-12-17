@@ -26,6 +26,7 @@ public:
     int getVerticesRevision();    ///< changes each time vertices data are updated
     
     unsigned int getNbVAttributes();                    ///< number of vertices attributes
+    unsigned int getNbAttributes(int index);            ///< number of the attributes in specified vertex attribute 
     const char*  getVAttributeName(int index);          ///< vertices attribute name
     int          getVAttributeSizePerVertex(int index); ///< vertices attribute #
     const Real*  getVAttributeValue(int index);         ///< vertices attribute (Vec#)
@@ -57,6 +58,7 @@ public:
     typedef SofaOutputMeshTetrahedron::Coord Coord;
 
     typedef SofaOutputMeshTetrahedron::Tetrahedron Tetrahedron;
+    typedef sofa::core::visual::ShaderElement SofaVAttribute;
 
     
 
@@ -64,8 +66,7 @@ public:
 
 protected:
     SofaOutputMeshTetrahedron::SPtr sObj;
-    //SofaOutputMesh::SPtr sObj;
-    //sofa::helper::vector<SofaVAttribute::SPtr> sVA;
+    sofa::helper::vector<SofaVAttribute::SPtr> sVA;
 
 public:
     SofaOutputMeshTetrahedron* getObject(){return sObj.get();}

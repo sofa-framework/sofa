@@ -51,6 +51,10 @@ unsigned int SofaPhysicsOutputMeshTetrahedron::getNbVAttributes()               
 {
     return impl->getNbVAttributes();
 }
+unsigned int SofaPhysicsOutputMeshTetrahedron::getNbAttributes(int index)            ///< number of attributes in specified vertex attribute
+{
+    return impl->getNbAttributes(index);
+}
 const char*  SofaPhysicsOutputMeshTetrahedron::getVAttributeName(int index)          ///< vertices attribute name
 {
     return impl->getVAttributeName(index);
@@ -138,19 +142,19 @@ SofaPhysicsOutputMeshTetrahedron::Impl::~Impl()
 void SofaPhysicsOutputMeshTetrahedron::Impl::setObject(SofaOutputMeshTetrahedron* o)
 {
     sObj = o;
-    //sVA.clear();
+    sVA.clear();
     sofa::core::objectmodel::BaseContext* context = sObj->getContext();
-    // SofaVAttribute is not supported yet
-    //sofa::helper::vector<SofaVAttribute::SPtr> vSE;
-    //context->get<SofaVAttribute>(&vSE,sofa::core::objectmodel::BaseContext::Local);
-    //for (unsigned int i = 0; i < vSE.size(); ++i)
-    //{
-    //    SofaVAttribute::SPtr se = vSE[i];
-    //    if (se->getSEType() == sofa::core::visual::ShaderElement::SE_ATTRIBUTE)
-    //    {
-    //        sVA.push_back(se);
-    //    }
-    //}
+
+    sofa::helper::vector<SofaVAttribute::SPtr> vSE;
+    context->get<SofaVAttribute>(&vSE,sofa::core::objectmodel::BaseContext::Local);
+    for (unsigned int i = 0; i < vSE.size(); ++i)
+    {
+        SofaVAttribute::SPtr se = vSE[i];
+        if (se->getSEType() == sofa::core::visual::ShaderElement::SE_ATTRIBUTE)
+        {
+            sVA.push_back(se);
+        }
+    }
 }
 
 const char* SofaPhysicsOutputMeshTetrahedron::Impl::getName() ///< (non-unique) name of this object
@@ -216,58 +220,56 @@ int SofaPhysicsOutputMeshTetrahedron::Impl::getVerticesRevision()    ///< change
 
 unsigned int SofaPhysicsOutputMeshTetrahedron::Impl::getNbVAttributes()                    ///< number of vertices attributes
 {
-    // no vertex attribute is supported yet
-    return 0;
-    /*return sVA.size();*/
+    return sVA.size();
+}
+
+unsigned int SofaPhysicsOutputMeshTetrahedron::Impl::getNbAttributes(int index)            ///< number of attributes in specified vertex attribute
+{
+    if ((unsigned)index >= sVA.size())
+      return 0;
+    else 
+      return dynamic_cast< Data<ResizableExtVector<Real> >* >(sVA[index]->getSEValue())->getValue().size();
 }
 
 const char*  SofaPhysicsOutputMeshTetrahedron::Impl::getVAttributeName(int index)          ///< vertices attribute name
 {
-    // no vertex attribute is supported yet
-    return "";
-    //// Quick fix: buffer to use for return value
-    //// May remove if getSEID() is made to return a non-temp std::string
-    //static std::string buffer;
+    // Quick fix: buffer to use for return value
+    // May remove if getSEID() is made to return a non-temp std::string
+    static std::string buffer;
   
-    //if ((unsigned)index >= sVA.size())
-    //    return "";
-    //else {
-    //    buffer= sVA[index]->getSEID();
-    //    return buffer.c_str();
-    //}
+    if ((unsigned)index >= sVA.size())
+        return "";
+    else {
+        buffer= sVA[index]->getSEID();
+        return buffer.c_str();
+    }
 }
 
 int SofaPhysicsOutputMeshTetrahedron::Impl::getVAttributeSizePerVertex(int index) ///< vertices attribute #
 {
-    // no vertex attribute is supported yet
-    return 0;
-    //if ((unsigned)index >= sVA.size())
-    //    return 0;
-    //else
-    //    return sVA[index]->getSESizePerVertex();
+    if ((unsigned)index >= sVA.size())
+        return 0;
+    else
+        return sVA[index]->getSESizePerVertex();
 }
 
 const Real*  SofaPhysicsOutputMeshTetrahedron::Impl::getVAttributeValue(int index)         ///< vertices attribute (Vec#)
 {
-    // no vertex attribute is supported yet
-    return 0;
-    /*if ((unsigned)index >= sVA.size())
+    if ((unsigned)index >= sVA.size())
         return NULL;
     else
-        return (Real*)((ResizableExtVector<Real>*)sVA[index]->getSEValue()->getValueVoidPtr())->getData();*/
+        return (Real*)((ResizableExtVector<Real>*)sVA[index]->getSEValue()->getValueVoidPtr())->getData();
 }
 
 int SofaPhysicsOutputMeshTetrahedron::Impl::getVAttributeRevision(int index)      ///< changes each time vertices attribute is updated
 {
-    // no vertex attribute is supported yet
-    return 0;
-    //if ((unsigned)index >= sVA.size())
-    //    return 0;
-    //else
-    //{
-    //    sVA[index]->getSEValue()->getValueVoidPtr(); // make sure the data is updated
-    //    return sVA[index]->getSEValue()->getCounter();
-    //}
+    if ((unsigned)index >= sVA.size())
+        return 0;
+    else
+    {
+        sVA[index]->getSEValue()->getValueVoidPtr(); // make sure the data is updated
+        return sVA[index]->getSEValue()->getCounter();
+    }
 }
 
 
