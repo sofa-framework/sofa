@@ -54,6 +54,14 @@ OglAttribute< size, type, DataTypes>::OglAttribute() :
 }
 
 template < int size, unsigned int type, class DataTypes>
+int OglAttribute< size, type, DataTypes >::getSETotolSize()
+{
+    const ResizableExtVector<DataTypes>& data = value.getValue();
+    unsigned int totalSize = data.size() *sizeof ( data[0] );
+    return totalSize;
+}
+
+template < int size, unsigned int type, class DataTypes>
 OglAttribute< size, type, DataTypes>::~OglAttribute()
 {
     if (_abo != GLuint(-1) )
