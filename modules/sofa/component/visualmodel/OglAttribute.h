@@ -81,6 +81,8 @@ public:
     virtual core::objectmodel::BaseData* getSEValue() { return &value; }
     // For attributes : return the number of values per vertex
     virtual int getSESizePerVertex() { return size; }
+    // Returns the total size of the values
+    virtual int getSETotolSize();
 
 protected:
     // attribute buffer object identity
