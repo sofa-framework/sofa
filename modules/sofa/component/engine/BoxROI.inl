@@ -315,7 +315,7 @@ void BoxROI<DataTypes>::update()
             {
                 indices.push_back(i);
                 pointsInROI.push_back((*x0)[i]);
-                                sout<<"\nBoxROI<DataTypes>::update, add index "<< i << sendl;
+                //sout<<"\nBoxROI<DataTypes>::update, add index "<< i << sendl;
                 break;
             }
         }
