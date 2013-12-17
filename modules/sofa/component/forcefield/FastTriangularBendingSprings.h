@@ -99,6 +99,7 @@ public:
 
 
     Data<double> f_bendingStiffness;  ///< Material parameter
+	Data<double> d_minDistValidity; ///< Minimal distance to consider a spring valid
 
 
     /// Searches triangle topology and creates the bending springs
