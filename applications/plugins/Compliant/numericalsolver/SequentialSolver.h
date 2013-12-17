@@ -90,12 +90,8 @@ class SOFA_Compliant_API SequentialSolver : public KKTSolver {
 	typedef Eigen::Map< vec > chunk_type;
 	void solve_block(chunk_type result, const inverse_type& inv, chunk_type rhs) const;
 	
-	// debug
-	mutable boost::function< real (const vec& x) > cb;
-	mutable std::string str;
-	
   protected:
-	void setup_bench(const system_type& sys, const vec& v, const vec& b) const;
+
 
 };
 
