@@ -465,7 +465,14 @@ public:
     {
         const Data<T>* d = dynamic_cast< const Data<T>* >(&bd);
         if (d)
-            this->m_values[DDGNode::currentAspect()] = d->m_values[DDGNode::currentAspect()]; // is this ok for multi-values ?
+        {
+            size_t aspect = DDGNode::currentAspect();
+            this->m_values[aspect] = d->m_values[aspect];
+            //FIX: update counter
+            ++this->m_counters[aspect];
+            this->m_isSets[aspect] = true;
+            BaseData::setDirtyOutputs();
+        }
     }
 
     virtual T* virtualBeginEdit() { return beginEdit(); }
