@@ -188,14 +188,11 @@ void SequentialSolver::solve_block(chunk_type result, const inverse_type& inv, c
 	assert( !has_nan(rhs.eval()) );
 	result = rhs;
 
-#ifndef NDEBUG
     bool ret = inv.solveInPlace(result);
     assert( !has_nan(result.eval()) );
     assert( ret );
-#else
-    inv.solveInPlace(result);
-#endif
 
+	(void) ret;
 }
 
 
@@ -208,12 +205,9 @@ void SequentialSolver::init() {
 	// fallback in case we missed
 	if( !response ) {
         response = new LDLTResponse();
+		std::cout << "SequentialSolver: using fallback response class: " << response->getClassName() << std::endl;
 	}
 
-#ifndef NDEBUG
-	std::cerr << "using response: " << response->getClassName() << std::endl;
-#endif
-	
 }
 
 
@@ -254,7 +248,7 @@ SReal SequentialSolver::step(vec& lambda,
 		error_chunk = lambda_chunk;
 
 		// update lambdas
-		lambda_chunk += omega.getValue() * delta_chunk;
+		lambda_chunk = lambda_chunk + omega.getValue() * delta_chunk;
 		
 		// project if needed
 		if( b.projector ) {
@@ -266,7 +260,7 @@ SReal SequentialSolver::step(vec& lambda,
 		delta_chunk = lambda_chunk - error_chunk;
 
 		// incrementally update net forces
-		net.noalias() += mapping_response.middleCols(b.offset, b.size) * delta_chunk;
+		net.noalias() = net + mapping_response.middleCols(b.offset, b.size) * delta_chunk;
 		
 		// fix net to avoid error accumulations ?
         // net = mapping_response * lambda;
@@ -277,49 +271,28 @@ SReal SequentialSolver::step(vec& lambda,
 	return estimate;
 }
 
-void SequentialSolver::setup_bench(const system_type& sys, const vec& v, const vec& b) const {
-	
-	if( !bench.getValue().empty() ) {
-		std::stringstream stream;
-		stream << bench.getValue() << "-"
-		       << this->getContext()->getTime();
-		
-		str = stream.str();
-		
-		cb = lcp_bench(str, sys, *response, v, b);
-	} else {
-		cb = 0;
-	}
-}
 
 void SequentialSolver::solve(vec& res,
                              const system_type& sys,
                              const vec& rhs) const {
-
-#ifdef GR_BENCHMARK
-    nbiterations = 0;
-#endif
+	assert( response );
 
 	// free velocity
 	vec tmp( sys.m );
 	
-	assert( response );
 	response->solve(tmp, sys.P.selfadjointView<Eigen::Upper>() * rhs.head( sys.m ) );
 	res.head(sys.m).noalias() = sys.P.selfadjointView<Eigen::Upper>() * tmp;
 	
 	// we're done lol
 	if( !sys.n ) return;
 
-	// derp
-	setup_bench(sys, res.head(sys.m), rhs.tail(sys.n));
-	
 	// net constraint velocity correction
 	vec net = vec::Zero( sys.m );
 	
 	// lagrange multipliers TODO reuse res.tail( sys.n ) ?
 	vec lambda = res.tail(sys.n); 
 	
-	// lambda change
+	// lambda change work vector
 	vec delta = vec::Zero( sys.n );
 	
 	// lcp rhs 
@@ -328,32 +301,28 @@ void SequentialSolver::solve(vec& res,
 	// lcp error
 	vec error = vec::Zero( sys.n );
 	
-	const real epsilon = relative.getValue() ? constant.norm() * precision.getValue() : precision.getValue();
-//	const real epsilon2 = epsilon * epsilon;
-	
+	const real epsilon = relative.getValue() ? 
+		constant.norm() * precision.getValue() : precision.getValue();
+
+	real epsilon2 = epsilon * epsilon;
+
 	vec primal;
 	
 	// outer loop
 	unsigned k = 0, max = iterations.getValue();
 	for(k = 0; k < max; ++k) {
 
-        /*real estimate = */step( lambda, net, sys, constant, error, delta );
+        real estimate = step( lambda, net, sys, constant, error, delta );
 
-		net = mapping_response * lambda;		
-		primal = sys.J * net - constant;
-
-
-		if( cb && cb( lambda ) < epsilon ) break;
-		if( bench::lcp(primal, lambda) < epsilon ) break;
-		// if( estimate <= epsilon2 ) break;
+		// net = mapping_response * lambda;		
+		// primal = sys.J * net - constant;
+		
+		if( estimate <= epsilon2 ) break;
 	}
 	
 	res.head( sys.m ) += net;
 	res.tail( sys.n ) = lambda;
 	
-#ifdef GR_BENCHMARK
-	nbiterations = k+1;
-#endif
 }
 
 }
