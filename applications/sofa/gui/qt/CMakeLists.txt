@@ -12,11 +12,11 @@ set(HEADER_FILES
 	GraphDataWidget.h
 	MaterialDataWidget.h
 	ModifyObject.h
-        SimpleDataWidget.h
-        WDoubleLineEdit.h
+	SimpleDataWidget.h
+	WDoubleLineEdit.h
 	SofaPluginManager.h
 	SofaMouseManager.h
-        SofaVideoRecorderManager.h
+	SofaVideoRecorderManager.h
 	QDataDescriptionWidget.h
 	QDisplayPropertyWidget.h
 	QDisplayLinkWidget.h     
@@ -29,8 +29,8 @@ set(HEADER_FILES
 	QMouseOperations.h
 	QSofaListView.h
 	QSofaRecorder.h
-        QSofaStatWidget.h
-        QModelViewTableUpdater.h
+	QSofaStatWidget.h
+	QModelViewTableUpdater.h
 	)
 
 set(SOURCE_FILES
@@ -131,17 +131,17 @@ ToRelativePath(FORM_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${FORM_FILES}")
 # these header files do not need MOCcing
 list(APPEND HEADER_FILES
 
-        viewer/VisualModelPolicy.h
+	viewer/VisualModelPolicy.h
 	viewer/SofaViewer.h
-        GraphListenerQListView.h
-        SofaGUIQt.h
-        StructDataWidget.h
-        TableDataWidget.h
-        FileManagement.h
-        PickHandlerCallBacks.h
-        QMenuFilesRecentlyOpened.h
-        ImageQt.h
-        QModelViewTableDataContainer.h
+	GraphListenerQListView.h
+	SofaGUIQt.h
+	StructDataWidget.h
+	TableDataWidget.h
+	FileManagement.h
+	PickHandlerCallBacks.h
+	QMenuFilesRecentlyOpened.h
+	ImageQt.h
+	QModelViewTableDataContainer.h
 	)
 
 set(MOC_FILES_GROUP "Generated")

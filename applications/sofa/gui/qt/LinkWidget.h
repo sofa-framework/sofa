@@ -124,7 +124,12 @@ public slots:
     }
     /// You call this slot anytime you want to specify that the widget
     /// value is out of sync with the underlying link value.
-    void setWidgetDirty(bool b=true)
+	void setWidgetDirty()
+	{
+		setWidgetDirty(true);
+	}
+
+    void setWidgetDirty(bool b)
     {
         dirty = b;
         emit WidgetDirty(b);
@@ -137,6 +142,8 @@ signals:
     /// Currently this signal is used to reflect the changes of the
     /// component name in the sofaListview.
     void LinkOwnerDirty(bool );
+
+	void LinkBeingChanged();
 public:
     typedef core::objectmodel::BaseLink MyLink;
 

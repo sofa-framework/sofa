@@ -72,7 +72,7 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
 
     if (label_text != "TODO")
     {
-        datainfowidget_ = new QDisplayDataInfoWidget(this,label_text,data_,flags.LINKPATH_MODIFIABLE_FLAG);
+        datainfowidget_ = new QDisplayDataInfoWidget(this,label_text,data_,flags.LINKPATH_MODIFIABLE_FLAG, flags_);
 		datainfowidget_->setContentsMargins(0, 0, 0, 0);
 		datainfowidget_->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 
@@ -141,7 +141,14 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
         ++numWidgets_;
 
         connect(datawidget_,SIGNAL(WidgetDirty(bool)), refresh, SLOT ( setVisible(bool) ) );
-        connect(refresh, SIGNAL(clicked()), this, SLOT(UpdateData()));
+
+		if(datainfowidget_)
+		{
+			connect(datainfowidget_,SIGNAL(WidgetDirty()), refresh, SLOT ( show() ) );
+			connect(refresh, SIGNAL(clicked()), datainfowidget_, SLOT(linkEdited()));
+		}
+
+		connect(refresh, SIGNAL(clicked()), this, SLOT(UpdateData()));
         connect(refresh, SIGNAL(clicked(bool)), refresh, SLOT(setVisible(bool)));
 
 		setStyleSheet("QGroupBox{border:0;}");
