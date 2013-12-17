@@ -25,6 +25,7 @@
 #ifndef SOFA_COMPONENT_CONSTRAINTSET_UNCOUPLEDCONSTRAINTCORRECTION_INL
 #define SOFA_COMPONENT_CONSTRAINTSET_UNCOUPLEDCONSTRAINTCORRECTION_INL
 //#define DEBUG
+//#define NEW_VERSION
 
 #include "UncoupledConstraintCorrection.h"
 
@@ -241,7 +242,6 @@ void UncoupledConstraintCorrection<DataTypes>::getComplianceWithConstraintMerge(
     }
 }
 
-//#define NEW_VERSION
 
 #ifndef NEW_VERSION
 template<class DataTypes>
