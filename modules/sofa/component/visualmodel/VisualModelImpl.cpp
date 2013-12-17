@@ -135,7 +135,7 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
     , m_rotation        (initData   (&m_rotation, Vec3Real(), "rotation", "Initial Rotation of the object"))
     , m_scale           (initData   (&m_scale, Vec3Real(1.0,1.0,1.0), "scale3d", "Initial Scale of the object"))
     , m_scaleTex        (initData   (&m_scaleTex, TexCoord(1.0,1.0), "scaleTex", "Scale of the texture"))
-    , m_translationTex  (initData   (&m_translationTex, TexCoord(1.0,1.0), "translationTex", "Translation of the texture"))
+    , m_translationTex  (initData   (&m_translationTex, TexCoord(0.0,0.0), "translationTex", "Translation of the texture"))
 #ifdef SOFA_SMP
     , previousProcessorColor(false)
 #endif
