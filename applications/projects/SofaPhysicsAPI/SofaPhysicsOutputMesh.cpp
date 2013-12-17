@@ -51,6 +51,12 @@ unsigned int SofaPhysicsOutputMesh::getNbVAttributes()                    ///< n
 {
     return impl->getNbVAttributes();
 }
+
+unsigned int SofaPhysicsOutputMesh::getNbAttributes(int index)            ///< number of attributes in specified vertex attribute
+{
+    return impl->getNbAttributes(index);
+}
+
 const char*  SofaPhysicsOutputMesh::getVAttributeName(int index)          ///< vertices attribute name
 {
     return impl->getVAttributeName(index);
@@ -199,6 +205,14 @@ int SofaPhysicsOutputMesh::Impl::getVerticesRevision()    ///< changes each time
 unsigned int SofaPhysicsOutputMesh::Impl::getNbVAttributes()                    ///< number of vertices attributes
 {
     return sVA.size();
+}
+
+unsigned int SofaPhysicsOutputMesh::Impl::getNbAttributes(int index)            ///< number of attributes in specified vertex attribute
+{
+  if ((unsigned)index >= sVA.size())
+    return 0;
+  else 
+    return dynamic_cast< Data<ResizableExtVector<Real> >* >(sVA[index]->getSEValue())->getValue().size();
 }
 
 const char*  SofaPhysicsOutputMesh::Impl::getVAttributeName(int index)          ///< vertices attribute name
