@@ -118,6 +118,15 @@ public:
             map->applyJ(core::MechanicalParams::defaultInstance(), core::VecDerivId::freeVelocity(), core::ConstVecDerivId::freeVelocity());
         }
     }
+
+    void updateX0()
+    {
+        if (mapping!=NULL)
+        {
+            core::BaseMapping* map = mapping.get();
+            map->apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::restPosition(), core::ConstVecCoordId::restPosition());
+        }
+    }
 };
 
 /// Mapper for LineModel
@@ -130,6 +139,10 @@ public:
     int addPoint(const Coord& P, int index, Real&)
     {
         return this->mapper->createPointInLine(P, this->model->getElemEdgeIndex(index), this->model->getMechanicalState()->getX());
+    }
+    int addPointB(const Coord& /*P*/, int index, Real& /*r*/, const Vector3& baryP)
+    {
+        return this->mapper->addPointInLine(this->model->getElemEdgeIndex(index), baryP.ptr());
     }
 
 };
@@ -160,6 +173,28 @@ public:
             }
         }
     }
+    int addPointB(const Coord& P, int index, Real& /*r*/, const Vector3& baryP)
+    {
+
+        int nbt = this->model->getMeshTopology()->getNbTriangles();
+        if (index < nbt)
+            return this->mapper->addPointInTriangle(index, baryP.ptr());
+        else
+        {
+            // TODO: barycentric coordinates usage for quads
+            int qindex = (index - nbt)/2;
+            int nbq = this->model->getMeshTopology()->getNbQuads();
+            if (qindex < nbq)
+                return this->mapper->createPointInQuad(P, qindex, this->model->getMechanicalState()->getX());
+            else
+            {
+                std::cerr << "ContactMapper<TriangleMeshModel>: ERROR invalid contact element index "<<index<<" on a topology with "<<nbt<<" triangles and "<<nbq<<" quads."<<std::endl;
+                std::cerr << "model="<<this->model->getName()<<" size="<<this->model->getSize()<<std::endl;
+                return -1;
+            }
+        }
+    }
+
 };
 
 
