@@ -47,7 +47,7 @@ def createScene(node):
 
     # plane
     plane = Rigid.Body('plane')
-    plane.visual = dir + '/ground.obj'
+    plane.visual = dir + '/mesh/ground.obj'
     plane.collision = plane.visual
     plane.mass_from_mesh( plane.visual, 10 )
     plane.node = plane.insert( scene )
@@ -74,7 +74,7 @@ def createScene(node):
     
     # box
     box = Rigid.Body('box')
-    box.visual = dir + '/cube.obj'
+    box.visual = dir + '/mesh/cube.obj'
     box.collision = box.visual
     box.dofs.translation = [0, 3, 0]
     box.mass_from_mesh( box.visual, 50 )
