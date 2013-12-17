@@ -208,10 +208,12 @@ void OglViewport::renderToViewport(core::visual::VisualParams* vp)
 //    double vp_zNear = vp->zNear();
 //    double vp_zFar = vp->zFar();
 
-    const Viewport& viewport = vp->viewport();
+    const Viewport viewport = vp->viewport();
     //Launch FBO process
     const Vec<2, int> screenPosition = p_screenPosition.getValue();
     const Vec<2, unsigned int> screenSize = p_screenSize.getValue();
+    int x0 = (screenPosition[0]>=0 ? screenPosition[0] : viewport[2]+screenPosition[0]);
+    int y0 = (screenPosition[1]>=0 ? screenPosition[1] : viewport[3]+screenPosition[1]);
     if (p_useFBO.getValue())
     {
         fbo.init(screenSize[0],screenSize[1]);
@@ -220,8 +222,6 @@ void OglViewport::renderToViewport(core::visual::VisualParams* vp)
     }
     else
     {
-        int x0 = (screenPosition[0]>=0 ? screenPosition[0] : viewport[2]+screenPosition[0]);
-        int y0 = (screenPosition[1]>=0 ? screenPosition[1] : viewport[3]+screenPosition[1]);
         glViewport(x0,y0,screenSize[0],screenSize[1]);
         glScissor(x0,y0,screenSize[0],screenSize[1]);
         glEnable(GL_SCISSOR_TEST);
@@ -333,7 +333,7 @@ void OglViewport::renderToViewport(core::visual::VisualParams* vp)
 
         //gluLookAt(cameraPosition[0], cameraPosition[1], cameraPosition[2],0 ,0 ,0, cameraDirection[0], cameraDirection[1], cameraDirection[2]);
     }
-
+    vp->viewport() = Viewport(x0,y0,screenSize[0],screenSize[1]);
     vp->pass() = core::visual::VisualParams::Std;
     simulation::VisualDrawVisitor vdv( vp );
     vdv.execute ( getContext() );
@@ -354,7 +354,7 @@ void OglViewport::renderToViewport(core::visual::VisualParams* vp)
     {
         glDisable(GL_SCISSOR_TEST);
     }
-
+    vp->viewport() = viewport;
     glViewport(viewport[0],viewport[1],viewport[2],viewport[3]);
 }
 

@@ -133,6 +133,7 @@ void TSphereModel<DataTypes>::draw(const core::visual::VisualParams* ,int index)
 template<class DataTypes>
 void TSphereModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+    if (!this->isActive()) return;
     //if (!vparams->isSupported(core::visual::API_OpenGL)) return;
     if (vparams->displayFlags().getShowCollisionModels())
     {
