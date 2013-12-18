@@ -179,6 +179,7 @@ bool QLinkSimpleEdit::createWidgets()
 		innerWidget_.widget.textEdit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 		innerWidget_.widget.textEdit->setContentsMargins(0, 0, 0, 0);
 		innerWidget_.widget.textEdit->setText(str);
+		innerWidget_.widget.textEdit->setFixedHeight(60);
 		connect(innerWidget_.widget.textEdit , SIGNAL( textChanged() ), this, SIGNAL(LinkBeingChanged()));
 		connect(innerWidget_.widget.textEdit , SIGNAL( textChanged() ), this, SLOT(update()));
         layout->add(innerWidget_.widget.textEdit);
