@@ -1214,8 +1214,8 @@ MechanicalSetPositionAndVelocityVisitor::MechanicalSetPositionAndVelocityVisitor
 }
 #else
 MechanicalSetPositionAndVelocityVisitor::MechanicalSetPositionAndVelocityVisitor(const sofa::core::MechanicalParams* mparams ,
-        double /*time*/, MultiVecCoordId x, MultiVecDerivId v)
-    : MechanicalVisitor(mparams) , t(t), x(x), v(v)
+        double time, MultiVecCoordId x, MultiVecDerivId v)
+    : MechanicalVisitor(mparams) , t(time), x(x), v(v)
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
     setReadWriteVectors();
