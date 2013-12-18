@@ -132,7 +132,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
         std::map< std::string, std::vector<QTabulationModifyObject* > > groupTabulation;
 
         //If we operate on a Node, we have to ...
-        if(isNode)
+        /*if(isNode)
         {
             if (dialogFlags_.REINIT_FLAG)
             {
@@ -148,7 +148,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
                 connect( transformation, SIGNAL(TransformationDirty(bool)), buttonUpdate, SLOT( setEnabled(bool) ) );
                 connect( transformation, SIGNAL(TransformationDirty(bool)), this, SIGNAL( componentDirty(bool) ) );
             }
-        }
+        }*/
 
         std::vector<std::string> tabNames;
         //Put first the Property Tab

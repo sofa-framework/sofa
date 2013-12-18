@@ -203,7 +203,7 @@ void QDisplayPropertyWidget::addComponent(const QString& component, core::object
 		setDescription(component, group, base);
 	}
 
-	bool notImplementedYet = true;
+	bool notImplementedYet = false;
 	if(!notImplementedYet)
 	// add console
 	{
@@ -432,7 +432,7 @@ void QDisplayPropertyWidget::addDescriptionItem(QTreeWidgetItem *groupItem, cons
 
 void QDisplayPropertyWidget::setConsoleOutput(const QString& component, const QString& group, sofa::core::objectmodel::Base *base)
 {
-	if(!base)
+	if(!base || (base->getOutputs().empty() && base->getWarnings().empty()))
         return;
 
     addGroup(component, group);
@@ -442,35 +442,99 @@ void QDisplayPropertyWidget::setConsoleOutput(const QString& component, const QS
     if(!groupItem)
         return;
 
-    QTreeWidgetItem *consoleItem = new QTreeWidgetItem(groupItem);
-    QBrush *brush = NULL;
-    if(groupItem->childCount() % 2 == 0)
-        brush = new QBrush(QColor(255, 255, 191));
-    else
-        brush = new QBrush(QColor(255, 255, 222));
-    consoleItem->setBackground(0, *brush);
-    consoleItem->setBackground(1, *brush);
-
-    QDisplayTreeItemWidget *widget = new QDisplayTreeItemWidget(this, consoleItem);
-    QHBoxLayout *layout = new QHBoxLayout(widget);
-
-	QWidget* consoleWidget = new QWidget(widget);
-	QVBoxLayout *consoleLayout = new QVBoxLayout(consoleWidget);
-
-	QPushButton* clearButton = new QPushButton("Clear", consoleWidget);
-	clearButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-	QTextEdit* textEdit = new QTextEdit(consoleWidget);
-	textEdit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
-	textEdit->setFixedHeight(120);
-
-	widget->setContentsMargins(0, 0, 0, 0);
-	if(widget->layout())
+	// log outputs
+	if(!base->getOutputs().empty())
 	{
-		widget->layout()->setContentsMargins(0, 0, 0, 0);
-		widget->layout()->setSpacing(0);
+		QTreeWidgetItem *consoleItem = new QTreeWidgetItem(groupItem);
+		QBrush *brush = NULL;
+		if(groupItem->childCount() % 2 == 0)
+			brush = new QBrush(QColor(255, 255, 191));
+		else
+			brush = new QBrush(QColor(255, 255, 222));
+		consoleItem->setBackground(0, *brush);
+		consoleItem->setBackground(1, *brush);
+
+		QDisplayTreeItemWidget *clearWidget = new QDisplayTreeItemWidget(this, consoleItem);
+		QVBoxLayout *clearLayout = new QVBoxLayout(clearWidget);
+
+		QPushButton* clearButton = new QPushButton("Clear output", clearWidget);
+		clearButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+		clearButton->setFixedHeight(200);
+		clearButton->setProperty("base", qVariantFromValue((void*) base));
+		clearLayout->addWidget(clearButton);
+
+		clearWidget->setContentsMargins(0, 0, 0, 0);
+		clearLayout->setContentsMargins(0, 0, 0, 0);
+		clearLayout->setSpacing(0);
+
+		QDisplayTreeItemWidget *logWidget = new QDisplayTreeItemWidget(this, consoleItem);
+		QVBoxLayout *logLayout = new QVBoxLayout(logWidget);
+
+		QTextEdit* textEdit = new QTextEdit(base->getOutputs().c_str(), logWidget);
+		textEdit->setText(base->getOutputs().c_str());
+		textEdit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+		textEdit->setFixedHeight(200);
+		textEdit->moveCursor(QTextEdit::MoveEnd, false);
+		textEdit->ensureCursorVisible();
+		logLayout->addWidget(textEdit);
+
+		logWidget->setContentsMargins(0, 0, 0, 0);
+		logLayout->setContentsMargins(0, 0, 0, 0);
+		logLayout->setSpacing(0);
+
+		connect(clearButton, SIGNAL(clicked()), textEdit, SLOT(clear()));
+		connect(clearButton, SIGNAL(clicked()), this, SLOT(clearComponentOutput()));
+
+		setItemWidget(consoleItem, 0, clearWidget);
+		setItemWidget(consoleItem, 1, logWidget);
 	}
-    setItemWidget(consoleItem, 1, widget);
+
+	// warnings output
+	if(!base->getWarnings().empty())
+	{
+		QTreeWidgetItem *consoleItem = new QTreeWidgetItem(groupItem);
+		QBrush *brush = NULL;
+		if(groupItem->childCount() % 2 == 0)
+			brush = new QBrush(QColor(255, 255, 191));
+		else
+			brush = new QBrush(QColor(255, 255, 222));
+		consoleItem->setBackground(0, *brush);
+		consoleItem->setBackground(1, *brush);
+
+		QDisplayTreeItemWidget *clearWidget = new QDisplayTreeItemWidget(this, consoleItem);
+		QVBoxLayout *clearLayout = new QVBoxLayout(clearWidget);
+
+		QPushButton* clearButton = new QPushButton("Clear warning", clearWidget);
+		clearButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+		clearButton->setFixedHeight(200);
+		clearButton->setProperty("base", qVariantFromValue((void*) base));
+		clearLayout->addWidget(clearButton);
+
+		clearWidget->setContentsMargins(0, 0, 0, 0);
+		clearLayout->setContentsMargins(0, 0, 0, 0);
+		clearLayout->setSpacing(0);
+
+		QDisplayTreeItemWidget *logWidget = new QDisplayTreeItemWidget(this, consoleItem);
+		QVBoxLayout *logLayout = new QVBoxLayout(logWidget);
+
+		QTextEdit* textEdit = new QTextEdit(logWidget);
+		textEdit->setText(base->getWarnings().c_str());
+		textEdit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+		textEdit->setFixedHeight(200);
+		textEdit->moveCursor(QTextEdit::MoveEnd, false);
+		textEdit->ensureCursorVisible();
+		logLayout->addWidget(textEdit);
+
+		logWidget->setContentsMargins(0, 0, 0, 0);
+		logLayout->setContentsMargins(0, 0, 0, 0);
+		logLayout->setSpacing(0);
+
+		connect(clearButton, SIGNAL(clicked()), textEdit, SLOT(clear()));
+		connect(clearButton, SIGNAL(clicked()), this, SLOT(clearComponentWarning()));
+
+		setItemWidget(consoleItem, 0, clearWidget);
+		setItemWidget(consoleItem, 1, logWidget);
+	}
 }
 
 void QDisplayPropertyWidget::clear()
@@ -523,6 +587,30 @@ void QDisplayPropertyWidget::updateListViewItem()
                 item->setText(0,newName);
         }
     }
+}
+
+void QDisplayPropertyWidget::clearComponentOutput()
+{
+	QObject* signalEmitter = sender();
+	if(0 == signalEmitter)
+		return;
+
+	QVariant variant = signalEmitter->property("base");
+	sofa::core::objectmodel::Base* base = static_cast<sofa::core::objectmodel::Base*>(variant.value<void*>());
+	if(base)
+		base->clearOutputs();
+}
+
+void QDisplayPropertyWidget::clearComponentWarning()
+{
+	QObject* signalEmitter = sender();
+	if(0 == signalEmitter)
+		return;
+
+	QVariant variant = signalEmitter->property("base");
+	sofa::core::objectmodel::Base* base = static_cast<sofa::core::objectmodel::Base*>(variant.value<void*>());
+	if(base)
+		base->clearWarnings();
 }
 
 QTreeWidgetItem* QDisplayPropertyWidget::findComponent(const QString& component) const

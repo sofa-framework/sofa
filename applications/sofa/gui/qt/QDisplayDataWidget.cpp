@@ -140,16 +140,19 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
 
         ++numWidgets_;
 
-        connect(datawidget_,SIGNAL(WidgetDirty(bool)), refresh, SLOT ( setVisible(bool) ) );
-
-		if(datainfowidget_)
+		if(flags.MODELER_FLAG)
 		{
-			connect(datainfowidget_,SIGNAL(WidgetDirty()), refresh, SLOT ( show() ) );
-			connect(refresh, SIGNAL(clicked()), datainfowidget_, SLOT(linkEdited()));
-		}
+			connect(datawidget_,SIGNAL(WidgetDirty(bool)), refresh, SLOT ( setVisible(bool) ) );
 
-		connect(refresh, SIGNAL(clicked()), this, SLOT(UpdateData()));
-        connect(refresh, SIGNAL(clicked(bool)), refresh, SLOT(setVisible(bool)));
+			if(datainfowidget_)
+			{
+				connect(datainfowidget_,SIGNAL(WidgetDirty()), refresh, SLOT ( show() ) );
+				connect(refresh, SIGNAL(clicked()), datainfowidget_, SLOT(linkEdited()));
+			}
+
+			connect(refresh, SIGNAL(clicked()), this, SLOT(UpdateData()));
+			connect(refresh, SIGNAL(clicked(bool)), refresh, SLOT(setVisible(bool)));
+		}
 
 		setStyleSheet("QGroupBox{border:0;}");
         setContentsMargins(0, 0, 0, 0);
