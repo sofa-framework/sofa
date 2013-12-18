@@ -53,7 +53,7 @@ using namespace core::behavior;
 using namespace core::objectmodel;
 
 /**
- * This class find all the points located between two boxes. It works for 2D grid contained in the (x,y) plane.
+ * This class find all the points located between two boxes. The difference between the inclusive box (surrounding the mesh) and the included box (inside the mesh) gives the border points of the mesh.
  */
 template <class DataTypes>
 class PairBoxROI : public core::DataEngine
@@ -122,16 +122,19 @@ protected:
 
 public:
     //Input
-    Data<Vec6> inclusiveBox; ///< each box is defined using xmin, ymin, zmin, xmax, ymax, zmax
-    Data<Vec6> includedBox;
+    /// A box is defined using xmin, ymin, zmin, xmax, ymax, zmax
+    //Box surrounding the mesh
+    Data<Vec6> inclusiveBox; 
+    //Box inside the mesh 
+    Data<Vec6> includedBox; 
     Data<VecCoord> f_X0;
-    Data <VecCoord> positions; // Point coordinates of the mesh in 3D in double.
+    // Point coordinates of the mesh in 3D in double.
+    Data <VecCoord> positions; 
    
 
     //Output
     Data<SetIndex> f_indices;
     Data<VecCoord > f_pointsInROI;
-    Data <VecCoord> p_cornerPoints; 
 
     //Parameter
     Data<bool> p_drawInclusiveBox;

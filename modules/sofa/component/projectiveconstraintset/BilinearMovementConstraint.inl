@@ -52,7 +52,7 @@ using namespace sofa::defaulttype;
 using namespace sofa::helper;
 using namespace sofa::core::behavior;
 
-// Define TestNewPointFunction
+// Define TestFunction
 template< class DataTypes>
 bool BilinearMovementConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(unsigned int, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
 {
@@ -75,12 +75,21 @@ template <class DataTypes>
 BilinearMovementConstraint<DataTypes>::BilinearMovementConstraint()
     : core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
     , data(new BilinearMovementConstraintInternalData<DataTypes>)
+    , m_beginConstraintTime( initData(&m_beginConstraintTime,"beginConstraintTime","Begin time of the bilinear constraint") )
+    , m_endConstraintTime( initData(&m_endConstraintTime,"endConstraintTime","End time of the bilinear constraint") )
     , m_indices( initData(&m_indices,"indices","Indices of the constrained points") )
     , m_constrainedPoints( initData(&m_constrainedPoints,"constrainedPoints","Coordinates of the constrained points") )
-    , m_cornerMovements(  initData(&m_cornerMovements,"movements","movements corresponding to the key times") )
+    , m_cornerMovements(  initData(&m_cornerMovements,"cornerMovements","movements of the corners of the grid") )
     , m_cornerPoints(  initData(&m_cornerPoints,"cornerPoints","corner points for computing constraint") )
+    ,m_drawConstrainedPoints(  initData(&m_drawConstrainedPoints,"drawConstrainedPoints","draw constrained points") )
 {
     pointHandler = new FCPointHandler(this, &m_indices);
+
+    if(!m_beginConstraintTime.isSet())
+     m_beginConstraintTime = 0; 
+    if(!m_endConstraintTime.isSet())
+        m_endConstraintTime = 200;
+
 }
 
 
@@ -140,6 +149,97 @@ void BilinearMovementConstraint<DataTypes>::init()
         }
     }
 
+     // Find the 4 corners of the grid topology
+    this->findCornerPoints();
+    
+    // Set the constraint parameters
+    this->setConstraintParameters();
+}
+
+template <class DataTypes>
+void BilinearMovementConstraint<DataTypes>::findCornerPoints()
+{
+    Coord corner0, corner1, corner2, corner3;
+    // Write accessor 
+    helper::WriteAccessor< Data<VecCoord > > cornerPositions = m_cornerPoints;
+    helper::WriteAccessor< Data<VecCoord > > constrainedPoints = m_constrainedPoints;
+    if(constrainedPoints.size() > 0)
+    {
+        corner0 = constrainedPoints[0];
+        corner1 = constrainedPoints[0];
+        corner2 = constrainedPoints[0];
+        corner3 = constrainedPoints[0];
+        for (size_t i = 0; i < constrainedPoints.size() ; i++)
+        {
+            if(constrainedPoints[i][0] < corner0[0] || constrainedPoints[i][1] < corner0[1] || constrainedPoints[i][2] < corner0[2])
+            {
+                corner0 = constrainedPoints[i];
+            }
+
+            if(constrainedPoints[i][0] > corner2[0] || constrainedPoints[i][1] > corner2[1] || constrainedPoints[i][2] > corner2[2])
+            {   
+                 corner2 = constrainedPoints[i];
+            }
+
+            if(constrainedPoints[i][1] < corner1[1] || constrainedPoints[i][0] > corner1[0] )
+            {   
+                 corner1 = constrainedPoints[i];
+            }
+
+            else if(constrainedPoints[i][0] < corner3[0] || constrainedPoints[i][1] > corner3[1])
+            {   
+                 corner3 = constrainedPoints[i];
+            }
+         }
+          
+        cornerPositions.push_back(corner0);
+        cornerPositions.push_back(corner1);
+        cornerPositions.push_back(corner2);
+        cornerPositions.push_back(corner3);
+    }
+}
+
+template <class DataTypes>
+void BilinearMovementConstraint<DataTypes>::setConstraintParameters()
+{
+      Real alpha = 1;
+    helper::WriteAccessor< Data<VecCoord > > cornerPoints = m_cornerPoints;
+    helper::WriteAccessor< Data<VecCoord > > constrainedPoints = m_constrainedPoints;
+    m_contraintParametersVector.resize(constrainedPoints.size());
+
+
+    for (size_t i = 0; i< constrainedPoints.size(); ++i)
+    {
+        const Coord& p = constrainedPoints[i];
+           
+        // Edge 0 beteen P0 and P1
+        if( isClose(p[1] , cornerPoints[0][1], 1.0e-4) )
+        {
+            alpha=(p-cornerPoints[0]).norm()/(cornerPoints[1]-cornerPoints[0]).norm();
+            m_contraintParametersVector[i] = Vec<3,Real> (0,1,alpha);
+               
+        }
+        // Edge 1 beteen P1 and P2
+        else if( isClose(p[0] ,cornerPoints[1][0], 1.0e-4 ) )
+        {
+            alpha = (p-cornerPoints[1]).norm()/(cornerPoints[2]-cornerPoints[1]).norm();
+             m_contraintParametersVector[i] = Vec<3,Real> (1,2,alpha);
+               
+        }
+        // Edge 2 beteen P2 and P3
+        else if( isClose(p[1] , cornerPoints[2][1], 1.0e-4) )
+        {
+            alpha = (p-cornerPoints[2]).norm()/(cornerPoints[2]-cornerPoints[3]).norm();
+            m_contraintParametersVector[i] = Vec<3,Real> (2,3,alpha);
+              
+        }
+        // Edge 3 beteen P3 and P0
+        else if(  isClose(p[0], cornerPoints[3][0], 1.0e-4) )
+        {
+            alpha = (p-cornerPoints[3]).norm()/(cornerPoints[3]-cornerPoints[0]).norm();
+            m_contraintParametersVector[i] = Vec<3,Real> (3,0,alpha);  
+        }
+    }
 }
 
 template <class DataTypes>
@@ -149,7 +249,7 @@ void BilinearMovementConstraint<DataTypes>::projectResponseT(const core::Mechani
     const SetIndexArray & indices = m_indices.getValue();
     for (size_t i = 0; i< indices.size(); ++i)
     {
-        dx[i]=Deriv();
+        dx[indices[i]]=Deriv();
     }
 
 }
@@ -171,7 +271,7 @@ void BilinearMovementConstraint<DataTypes>::projectVelocity(const core::Mechanic
 }
 
 template <class DataTypes>
-bool BilinearMovementConstraint<DataTypes>::isClose( Real a, Real b, Real eps ) const
+bool BilinearMovementConstraint<DataTypes>::isClose( double a, double b, double eps ) const
 {
     return fabs(a-b)< eps;
 }
@@ -181,62 +281,79 @@ void BilinearMovementConstraint<DataTypes>::projectPosition(const core::Mechanic
 {
     sofa::simulation::Node::SPtr root =sofa::simulation::getSimulation()->GetRoot();
 
-    // Apply movements only when animate is activated
-//    if(root->getAnimate())
-    {
-        
-        helper::WriteAccessor<DataVecCoord> x = xData;
-        Real alpha = 1;
-        Deriv displacement;
-        const SetIndexArray & indices = m_indices.getValue();
-        const VecDeriv& cornerMovements = m_cornerMovements.getValue();
-        const VecCoord& constrainedPoints = m_constrainedPoints.getValue();
-        const VecCoord& cornerPoints = m_cornerPoints.getValue();
-        
-        // Compute displacements of the edge points with displacements of the corner points
-        for (size_t i = 0; i< constrainedPoints.size(); ++i)
-        {
-            const Coord& p = constrainedPoints[i];
-           
-            // Edge 0 beteen P0 and P1
-            if( isClose(p[1] , cornerPoints[0][1], 1.0e-4) )
-            {
-                alpha=(p-cornerPoints[0]).norm()/(cornerPoints[1]-cornerPoints[0]).norm();
-                displacement = cornerMovements[0]*(1-alpha) + cornerMovements[1]*alpha;  
-                x[indices[i]] = x[indices[i]]  + displacement;
+    helper::WriteAccessor<DataVecCoord> x = xData;
+    Deriv displacement;
+    const SetIndexArray & indices = m_indices.getValue();
+    const VecDeriv& cornerMovements = m_cornerMovements.getValue();
 
-            }
-            // Edge 1 beteen P1 and P2
-            else if( isClose(p[0] ,cornerPoints[1][0], 1.0e-4 ) )
-            {
-                alpha = (p-cornerPoints[1]).norm()/(cornerPoints[2]-cornerPoints[1]).norm();
-                displacement = cornerMovements[1]*(1-alpha) + cornerMovements[2]*alpha;
-                x[indices[i]] = x[indices[i]]  + displacement;
-            }
-            // Edge 2 beteen P2 and P3
-            else if( isClose(p[1] , cornerPoints[2][1], 1.0e-4) )
-            {
-                alpha = (p-cornerPoints[2]).norm()/(cornerPoints[2]-cornerPoints[3]).norm();
-                displacement = cornerMovements[2]*(1-alpha) + cornerMovements[3]*alpha;
-                x[indices[i]] = x[indices[i]]  + displacement;
-            }
-            // Edge 3 beteen P3 and P0
-            else if(  isClose(p[0], cornerPoints[3][0], 1.0e-4) )
-            {
-                alpha = (p-cornerPoints[3]).norm()/(cornerPoints[3]-cornerPoints[0]).norm();
-                displacement = cornerMovements[3]*(1-alpha) + cornerMovements[0]*alpha;
-                x[indices[i]] = x[indices[i]]  + displacement;
-            }
-       }
-    
+    double beginTime = m_beginConstraintTime.getValue();
+    double endTime = m_endConstraintTime.getValue();
+    double totalTime = endTime - beginTime;
+   
+     //initialize initial Dofs positions, if it's not done
+    if (x0.size() == 0)
+    {
+        const SetIndexArray & indices = m_indices.getValue();
+        x0.resize(x.size());
+        for (size_t i=0; i < indices.size() ; ++i)
+        {
+             x0[indices[i]] = x[indices[i]];
+        }
     }
- 
+     //initialize final Dofs positions, if it's not done
+    if (xf.size() == 0)
+    {
+        const SetIndexArray & indices = m_indices.getValue();
+        xf.resize(x.size());
+        for (size_t i=0; i < indices.size() ; ++i)
+        {
+             Vec<3,Real> constraintParameters = m_contraintParametersVector[i];
+            // Compute displacements of the edge points with displacements of the corner points
+            unsigned int indexPoint1 = (unsigned int)constraintParameters[0];
+            unsigned int indexPoint2 = (unsigned int)constraintParameters[1];
+            Real alpha = constraintParameters[2];
+            displacement = cornerMovements[indexPoint1]*(1-alpha) + cornerMovements[indexPoint2]*alpha;  
+            xf[indices[i]] = x0[indices[i]] + displacement ;
+        }
+    }
+
+    // Apply the intermediate Dofs positions computed by linear interpolation
+   double time = root->getTime();
+   if( time > beginTime && time <= endTime && totalTime > 0)
+    { 
+        for (size_t i = 0; i< m_contraintParametersVector.size(); ++i)
+        { 
+            x[indices[i]] = ((xf[indices[i]]-x0[indices[i]])*time + (x0[indices[i]]*endTime - xf[indices[i]]*beginTime))/totalTime;
+        }
+    }
+   else if (time > endTime)
+   {
+        for (size_t i = 0; i< m_contraintParametersVector.size(); ++i)
+        { 
+             x[indices[i]] = xf[indices[i]];
+        }
+   }  
 }
 
-//display the path the constrained dofs will go through
+//display the constrained dofs 
 template <class DataTypes>
-void BilinearMovementConstraint<DataTypes>::draw(const core::visual::VisualParams* /*vparams*/)
-{}
+void BilinearMovementConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
+{
+    const SetIndexArray & indices = m_indices.getValue();
+    std::vector< Vector3 > points;
+    const VecCoord& x = *this->mstate->getX();
+    Vector3 point;
+
+    if(m_drawConstrainedPoints.getValue())
+    {
+        for (SetIndexArray::const_iterator it = indices.begin();it != indices.end();++it)
+        {
+            point = DataTypes::getCPos(x[*it]);
+            points.push_back(point);
+        }
+        vparams->drawTool()->drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
+    }  
+}
 
 
 } // namespace constraint
