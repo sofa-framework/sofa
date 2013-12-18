@@ -424,7 +424,7 @@ void RecordedCamera::configureTranslation()
         this->initializeViewUp();
         Vec3 zAxis = - m_translationPositions.getValue()[1] +  m_translationPositions.getValue()[0];
         Vec3 yAxis = m_cameraUp.getValue();
-        Vec3 xAxis = zAxis.cross(xAxis);
+        Vec3 xAxis = yAxis.cross(zAxis);
         xAxis.normalize();
         yAxis.normalize();
         zAxis.normalize();
