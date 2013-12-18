@@ -59,7 +59,7 @@ class BilinearMovementConstraintInternalData
 };
 
 /** 
-    Impose a motion to all the boundary points of a 2D mesh. The motion of the 4 corners are given in the data m_cornerMovements. 
+    Impose a motion to all the boundary points of a 2D mesh. The motion of the 4 corners are given in the data m_cornerMovements and the movements of the edge points are computed by linear interpolation. 
 */
 template <class TDataTypes>
 class BilinearMovementConstraint : public core::behavior::ProjectiveConstraintSet<TDataTypes>
@@ -90,17 +90,28 @@ protected:
 public :
      /// indices of the DOFs the constraint is applied to
     SetIndex m_indices;
+    /// data begin time when the constraint is applied
+    Data <double> m_beginConstraintTime;
+    /// data end time when the constraint is applied
+    Data <double> m_endConstraintTime;
     /// coordinates of the DOFs the constraint is applied to
     Data<VecCoord> m_constrainedPoints;
-    /// the motions corresponding to the key frames
+    /// the movements of the corner points (this is the difference between initial and final positions of the 4 corners)
     Data<VecDeriv> m_cornerMovements;
-    /// the motions corresponding to the key frames
+    /// the coordinates of the corner points
     Data<VecCoord> m_cornerPoints;
-
+    /// Draw constrained points
+    Data <bool> m_drawConstrainedPoints;
+    /// initial constrained DOFs position
+    VecCoord x0;
+    /// final constrained DOFs position
+    VecCoord xf;
+ 
 protected:
     BilinearMovementConstraint();
 
     virtual ~BilinearMovementConstraint();
+
 public:
     //Add or clear constraints
     void clearConstraints();
@@ -110,10 +121,14 @@ public:
     /// -- Constraint interface
     void init();
 
+    /// Cancel the possible forces
     void projectResponse(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& resData);
+    /// Cancel the possible velocities
     void projectVelocity(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& vData);
+    /// Apply the computed movements to the border mesh points between beginConstraintTime and endConstraintTime
     void projectPosition(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecCoord& xData);
 
+    /// Draw the constrained points (= border mesh points)
      virtual void draw(const core::visual::VisualParams* vparams);
 
     class FCPointHandler : public TopologySubsetDataHandler<Point, SetIndexArray >
@@ -125,9 +140,7 @@ public:
             : sofa::component::topology::TopologySubsetDataHandler<Point, SetIndexArray >(_data), fc(_fc) {}
 
 
-
         void applyDestroyFunction(unsigned int /*index*/, value_type& /*T*/);
-
 
         bool applyTestCreateFunction(unsigned int /*index*/,
                 const sofa::helper::vector< unsigned int > & /*ancestors*/,
@@ -144,12 +157,26 @@ protected:
     template <class DataDeriv>
     void projectResponseT(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataDeriv& dx);
 
-    bool isClose( Real a, Real b, Real eps ) const;
+    bool isClose( double a, double b, double eps ) const;
 
 private:
 
     /// Handler for subset Data
     FCPointHandler* pointHandler;
+
+     // Vector with index = indice of the constrained points and value is a Vec<3,Real> with the index of the two neighboor corner points (see schema bellow) and the barycentryc coefficient alpha
+    // 0------1
+    // |      |
+    // |      |
+    // 3------2      
+    sofa::helper::vector < Vec<3,Real> > m_contraintParametersVector;
+
+    /// Find the 4 corners of the 2D grid
+    void findCornerPoints();
+    
+    /// For each border point find its corresponding edge (cf:schema above) and the barycentric coefficient alpha
+    /// <=> Fill the vector m_contraintParametersVector
+    void setConstraintParameters();
 };
 
 

@@ -61,7 +61,6 @@ PairBoxROI<DataTypes>::PairBoxROI()
     , positions(initData(&positions,"meshPosition","Vertices of the mesh loaded"))
     , f_indices( initData(&f_indices,"indices","Indices of the points contained in the ROI") )
     , f_pointsInROI( initData(&f_pointsInROI,"pointsInROI","Points contained in the ROI") )
-    , p_cornerPoints(initData(&p_cornerPoints,"cornerPoints","Corner positions for bilinear constraint"))
     , p_drawInclusiveBox( initData(&p_drawInclusiveBox,false,"drawInclusiveBox","Draw Inclusive Box") )
     , p_drawIncludedBox( initData(&p_drawIncludedBox,false,"drawInclusdedBx","Draw Included Box") )
     , p_drawPoints( initData(&p_drawPoints,false,"drawPoints","Draw Points") )
@@ -71,14 +70,6 @@ PairBoxROI<DataTypes>::PairBoxROI()
     addAlias(&f_pointsInROI,"pointsInBox");
     addAlias(&f_X0,"rest_position");
 
-    inclusiveBox.beginEdit();
-    inclusiveBox=Vec6(0,0,0,1,1,1);
-    inclusiveBox.endEdit();
-
-    includedBox.beginEdit();
-    includedBox=Vec6(0.2,0.2,0.2,0.8,0.8,0.8);
-    includedBox.endEdit();
-  
 }
 
 template <class DataTypes>
@@ -122,72 +113,11 @@ void PairBoxROI<DataTypes>::init()
         }
     }
 
-    // Find the 4 corners of the grid topology
-    Coord corner0, corner1, corner2, corner3;
-    helper::ReadAccessor<Data<VecCoord> > raPositions = positions;
-    std::cout << "raPositions.size() = " << raPositions.size() << std::endl;
-    if(raPositions.size() > 0)
-    {
-        corner0 = raPositions[0];
-        corner1 = raPositions[0];
-        corner2 = raPositions[0];
-        corner3 = raPositions[0];
-        for (size_t i = 0; i < raPositions.size() ; i++)
-        {
-            if(raPositions[i][0] < corner0[0] || raPositions[i][1] < corner0[1] || raPositions[i][2] < corner0[2])
-            {
-                corner0 = raPositions[i];
-            }
-
-            if(raPositions[i][0] > corner2[0] || raPositions[i][1] > corner2[1] || raPositions[i][2] > corner2[2])
-            {   
-                 corner2 = raPositions[i];
-            }
-
-            if(raPositions[i][1] < corner1[1] || raPositions[i][0] > corner1[0] )
-            {   
-                 corner1 = raPositions[i];
-            }
-
-            else if(raPositions[i][0] < corner3[0] || raPositions[i][1] > corner3[1])
-            {   
-                 corner3 = raPositions[i];
-            }
-         }
-
-        // epsilon should be a data 
-        Vec<3,SReal> epsilon(0.1,0.1,0.1);
-        for(int i = 0; i<3 ; ++i)
-        {
-            if(corner0[i] == corner2[i])
-                epsilon[i] = 0;
-        }
-
-        // Define the inclusive and included box
-        inclusiveBox.beginEdit();
-        inclusiveBox=Vec6(corner0[0]-epsilon[0],corner0[1]-epsilon[1],corner0[2]-epsilon[2],corner2[0] + epsilon[0],corner2[1] + epsilon[1],corner2[2] +epsilon[2]);
-        inclusiveBox.endEdit();
-
-        includedBox.beginEdit();
-        includedBox=Vec6(corner0[0]+epsilon[0],corner0[1]+epsilon[1],corner0[2]+epsilon[2],corner2[0]-epsilon[0],corner2[1]-epsilon[1],corner2[2]-epsilon[2]);
-        includedBox.endEdit();
-
-        // set corner positions
-        // Write accessor 
-        helper::WriteAccessor< Data<VecCoord > > cornerPositions = p_cornerPoints;
-
-        cornerPositions.push_back(corner0);
-        cornerPositions.push_back(corner1);
-        cornerPositions.push_back(corner2);
-        cornerPositions.push_back(corner3);
-    }
-
- 
     addInput(&f_X0);
 
     addOutput(&f_indices);
     addOutput(&f_pointsInROI);
-    addOutput(&p_cornerPoints);
+
     setDirtyValue();
 
 }
