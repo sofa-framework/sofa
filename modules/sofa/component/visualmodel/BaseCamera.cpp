@@ -434,6 +434,11 @@ void BaseCamera::setDefaultView(const Vec3 & gravity)
     //Orientation
     Vec3 xAxis (1.0, 0.0, 0.0);
     Vec3 yAxis = -gravity;
+    // If no gravity defined set the yAxis as 0 1 0;
+    if(gravity==Vec3(0.0, 0.0, 0.0))
+    {
+        yAxis = Vec3(0.0,1.0,0.0);
+    }
     yAxis.normalize();
 
     if( 1.0 - fabs(dot(xAxis, yAxis)) < 0.001)
