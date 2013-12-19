@@ -51,9 +51,6 @@
 #include <sofa/simulation/common/xml/initXml.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/helper/system/PluginManager.h>
-#ifdef SOFA_HAVE_DAG
-#include <sofa/simulation/graph/DAGSimulation.h>
-#endif
 #include <sofa/component/misc/ReadState.h>
 #include <sofa/component/misc/CompareState.h>
 #include <sofa/helper/Factory.h>

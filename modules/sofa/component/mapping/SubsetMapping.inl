@@ -197,7 +197,7 @@ void SubsetMapping<TIn, TOut>::apply ( const core::MechanicalParams* /*mparams*/
     out.resize(indices.size());
     for(unsigned int i = 0; i < out.size(); ++i)
     {
-		if(indices[i]>=0)
+//		if(indices[i]>=0) // Always true for unsigned
 			out[i] = in[ indices[i] ];
     }
 
@@ -215,7 +215,7 @@ void SubsetMapping<TIn, TOut>::applyJ( const core::MechanicalParams* /*mparams*/
     out.resize(indices.size());
     for(unsigned int i = 0; i < out.size(); ++i)
     {
-		if(indices[i]>=0)
+//		if(indices[i]>=0) // Always true for unsigned
 			out[i] = in[ indices[i] ];
     }
 
@@ -240,7 +240,7 @@ void SubsetMapping<TIn, TOut>::applyJT ( const core::MechanicalParams* /*mparams
 
     for(unsigned int i = 0; i < in.size(); ++i)
     {
-		if(indices[i]>=0)
+//		if(indices[i]>=0) // Always true for unsigned
 			out[indices[i]] += in[ i ];
     }
 
@@ -269,7 +269,7 @@ void SubsetMapping<TIn, TOut>::applyJT ( const core::ConstraintParams * /*cparam
 
             while (colIt != colItEnd)
             {
-				if(indices[colIt.index()]>=0)
+//				if(indices[colIt.index()]>=0) // Always true for unsigned
 					o.addCol(indices[colIt.index()], colIt.val());
                 ++colIt;
             }
@@ -317,7 +317,7 @@ const sofa::defaulttype::BaseMatrix* SubsetMapping<TIn, TOut>::getJ()
         }
         for (unsigned i = 0; i < indices.size(); ++i)
         {
-			if(indices[i]>=0)
+//			if(indices[i]>=0) // Always true for unsigned
 			{
 				MBloc& block = *matrixJ->wbloc(i, indices[i], true);
 				block.identity();

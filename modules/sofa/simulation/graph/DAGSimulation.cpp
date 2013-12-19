@@ -55,7 +55,7 @@ DAGSimulation::DAGSimulation()// : visualNode(NULL)
     // I have no idea what this 'DuplicateEntry()' call is for, but it causes an error when we
     // create several DAGSimulation, so I added the preceding 'if' (Marc Legendre, nov. 2013)
     if (! sofa::simulation::xml::BaseElement::NodeFactory::HasKey("MultiMappingObject") )
-        sofa::simulation::xml::BaseElement::NodeFactory::DuplicateEntry("GNodeMultiMapping","MultiMappingObject");
+        sofa::simulation::xml::BaseElement::NodeFactory::DuplicateEntry("DAGNodeMultiMapping","MultiMappingObject");
 }
 
 DAGSimulation::~DAGSimulation()
