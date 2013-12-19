@@ -767,15 +767,15 @@ TEST_F( Assembly_test, test_CompliantSolver_assembly )
     ASSERT_TRUE(vectorsAreEqual( expected.lambda, complianceSolver->getLambda() ));
     //    cout<<"testConstrainedHardString results compared"<< endl;
 
-//    numParticles=2;
-//    ::testing::Message() << "CompliantTestFixture: hard string of " << numParticles << " particles attached using a constraint with an out-of-scope particle";
-//    testExternallyConstrainedHardString(numParticles);
-//    ASSERT_TRUE(matricesAreEqual( expected.M, complianceSolver->M() ));
-//    ASSERT_TRUE(matricesAreEqual( expected.P, complianceSolver->P() ));
-//    ASSERT_TRUE(matricesAreEqual( expected.J, complianceSolver->J() ));
-//    ASSERT_TRUE(matricesAreEqual( expected.C, complianceSolver->C() ));
-//    ASSERT_TRUE(vectorsAreEqual( expected.dv, complianceSolver->getDv() ));
-//    ASSERT_TRUE(vectorsAreEqual( expected.lambda, complianceSolver->getLambda() ));
+    numParticles=2;
+    ::testing::Message() << "CompliantTestFixture: hard string of " << numParticles << " particles attached using a constraint with an out-of-scope particle";
+    testExternallyConstrainedHardString(numParticles);
+    ASSERT_TRUE(matricesAreEqual( expected.M, complianceSolver->M() ));
+    ASSERT_TRUE(matricesAreEqual( expected.P, complianceSolver->P() ));
+    ASSERT_TRUE(matricesAreEqual( expected.J, complianceSolver->J() ));
+    ASSERT_TRUE(matricesAreEqual( expected.C, complianceSolver->C() ));
+    ASSERT_TRUE(vectorsAreEqual( expected.dv, complianceSolver->getDv() ));
+    ASSERT_TRUE(vectorsAreEqual( expected.lambda, complianceSolver->getLambda() ));
 //    //    cout<<"testExternallyConstrainedHardString results compared"<< endl;
 
         numParticles=2;

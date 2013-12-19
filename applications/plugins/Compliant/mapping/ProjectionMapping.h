@@ -42,7 +42,7 @@ public:
 		: set(initData(&set, "set", 
 						"(index, coord) vector describing projection space"))  {
 		assert( base::Nout == 1 );
-		assert( TIn::deriv_total_size == TIn::coord_total_size && "not vector input dofs !" );
+        assert( (unsigned)TIn::deriv_total_size == (unsigned)TIn::coord_total_size && "not vector input dofs !" );
 	}
 	
 protected:

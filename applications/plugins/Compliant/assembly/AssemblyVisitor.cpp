@@ -240,7 +240,8 @@ void AssemblyVisitor::fill_postfix(simulation::Node* node) {
 	for(chunk::map_type::const_iterator it = c.map.begin(), end = c.map.end();
 	    it != end; ++it) {
 
-		chunk& p = chunks[it->first];
+        if( chunks.find(it->first) == chunks.end() ) continue; // this mechanical object is out of scope (ie not in the sub-graph controled by this solver)
+        chunk& p = chunks[it->first];
 
 		edge e;
 		e.data = &it->second;
