@@ -26,6 +26,7 @@
 #ifndef SOFA_SIMPLEOBJECTCREATOR_H
 #define SOFA_SIMPLEOBJECTCREATOR_H
 
+#include "initSceneCreator.h"
 #include <string>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/component/loader/MeshObjLoader.h>
@@ -90,10 +91,10 @@ namespace modeling {
 using namespace simulation;
 
 /** Create a simulation graph root */
-Node::SPtr newRoot();
+SOFA_SceneCreator_API Node::SPtr newRoot();
 
 /** Create a string composed of particles (at least 2) and springs */
-Node::SPtr massSpringString
+SOFA_SceneCreator_API Node::SPtr massSpringString
 (
         simulation::Node::SPtr parent,
         double x0, double y0, double z0, // start point,

@@ -14,6 +14,7 @@ set(SOURCE_FILES
 
 	)
 
+AddCompilerDefinitions("SOFA_BUILD_SCENECREATOR")
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 AddLinkerDependencies(SofaSimulationTree SofaComponentMain)
 

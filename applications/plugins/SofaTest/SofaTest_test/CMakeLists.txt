@@ -18,9 +18,6 @@ if(APPLE)
     set(RC_FILES "runSOFA.icns")
 endif()
 
-include_directories("${SOFA_EXTLIBS_DIR}/gtest/include")
-link_directories("${SOFA_EXTLIBS_DIR}/gtest/lib")
-
 if(WIN32)
 	link_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Lib")
 endif()
@@ -32,7 +29,6 @@ AddLinkerDependencies(
     SofaTest
     SofaComponentMain
     SofaSimulationGraph
-    gtest gtest_main
     SceneCreator
     SofaEigen2Solver
     SofaComponentMain
@@ -40,13 +36,5 @@ AddLinkerDependencies(
     SofaSimulationGraph
     SofaBoundaryCondition
 )
-
-if(WIN32)
-	AddCompilerFlags("/MT")
-endif()
-
-if(UNIX)
-    AddLinkerDependencies("dl")
-endif()
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

@@ -28,7 +28,7 @@
 
 #include <sofa/helper/system/config.h>
 
-#ifdef SOFA_BUILD_PLUGINEXAMPLE
+#ifdef SOFA_BUILD_SCENECREATOR
 #define SOFA_SceneCreator_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
 #define SOFA_SceneCreator_API  SOFA_IMPORT_DYNAMIC_LIBRARY
