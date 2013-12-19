@@ -75,13 +75,13 @@ template <class DataTypes>
 BilinearMovementConstraint<DataTypes>::BilinearMovementConstraint()
     : core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
     , data(new BilinearMovementConstraintInternalData<DataTypes>)
+    , m_indices( initData(&m_indices,"indices","Indices of the constrained points") )
     , m_beginConstraintTime( initData(&m_beginConstraintTime,"beginConstraintTime","Begin time of the bilinear constraint") )
     , m_endConstraintTime( initData(&m_endConstraintTime,"endConstraintTime","End time of the bilinear constraint") )
-    , m_indices( initData(&m_indices,"indices","Indices of the constrained points") )
     , m_constrainedPoints( initData(&m_constrainedPoints,"constrainedPoints","Coordinates of the constrained points") )
     , m_cornerMovements(  initData(&m_cornerMovements,"cornerMovements","movements of the corners of the grid") )
     , m_cornerPoints(  initData(&m_cornerPoints,"cornerPoints","corner points for computing constraint") )
-    ,m_drawConstrainedPoints(  initData(&m_drawConstrainedPoints,"drawConstrainedPoints","draw constrained points") )
+    , m_drawConstrainedPoints(  initData(&m_drawConstrainedPoints,"drawConstrainedPoints","draw constrained points") )
 {
     pointHandler = new FCPointHandler(this, &m_indices);
 

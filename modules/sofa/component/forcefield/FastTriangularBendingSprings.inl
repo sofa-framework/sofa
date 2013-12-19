@@ -354,9 +354,9 @@ void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyPoin
 template<class DataTypes>
 FastTriangularBendingSprings<DataTypes>::FastTriangularBendingSprings(/*double _ks, double _kd*/)
     : f_bendingStiffness(initData(&f_bendingStiffness,(double) 1.0,"bendingStiffness","bending stiffness of the material"))
+    , d_minDistValidity(initData(&d_minDistValidity,(double) 0.000001,"minDistValidity","Distance under which a spring is not valid"))
     , edgeSprings(initData(&edgeSprings, "edgeInfo", "Internal edge data"))
     , edgeHandler(NULL)
-	, d_minDistValidity(initData(&d_minDistValidity,(double) 0.000001,"minDistValidity","Distance under which a spring is not valid"))
 {
     // Create specific handler for EdgeData
     edgeHandler = new TriangularBSEdgeHandler(this, &edgeSprings);

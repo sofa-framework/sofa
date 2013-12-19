@@ -47,15 +47,15 @@ SOFA_DECL_CLASS(BilinearMovementConstraint)
 int BilinearMovementConstraintClass = core::RegisterObject("bilinear constraint")
 #ifndef SOFA_FLOAT
         .add< BilinearMovementConstraint<Vec3dTypes> >()
-        .add< BilinearMovementConstraint<Vec2dTypes> >()
-        .add< BilinearMovementConstraint<Vec1dTypes> >()
+//        .add< BilinearMovementConstraint<Vec2dTypes> >()
+//        .add< BilinearMovementConstraint<Vec1dTypes> >()
         .add< BilinearMovementConstraint<Vec6dTypes> >()
         .add< BilinearMovementConstraint<Rigid3dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
         .add< BilinearMovementConstraint<Vec3fTypes> >()
-        .add< BilinearMovementConstraint<Vec2fTypes> >()
-        .add< BilinearMovementConstraint<Vec1fTypes> >()
+//        .add< BilinearMovementConstraint<Vec2fTypes> >()
+//        .add< BilinearMovementConstraint<Vec1fTypes> >()
         .add< BilinearMovementConstraint<Vec6fTypes> >()
         .add< BilinearMovementConstraint<Rigid3fTypes> >()
 #endif
@@ -63,15 +63,15 @@ int BilinearMovementConstraintClass = core::RegisterObject("bilinear constraint"
 
 #ifndef SOFA_FLOAT
 template class SOFA_BOUNDARY_CONDITION_API BilinearMovementConstraint<Vec3dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API BilinearMovementConstraint<Vec2dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API BilinearMovementConstraint<Vec1dTypes>;
+//template class SOFA_BOUNDARY_CONDITION_API BilinearMovementConstraint<Vec2dTypes>;
+//template class SOFA_BOUNDARY_CONDITION_API BilinearMovementConstraint<Vec1dTypes>;
 template class SOFA_BOUNDARY_CONDITION_API BilinearMovementConstraint<Vec6dTypes>;
 template class SOFA_BOUNDARY_CONDITION_API BilinearMovementConstraint<Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
 template class SOFA_BOUNDARY_CONDITION_API BilinearMovementConstraint<Vec3fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API BilinearMovementConstraint<Vec2fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API BilinearMovementConstraint<Vec1fTypes>;
+//template class SOFA_BOUNDARY_CONDITION_API BilinearMovementConstraint<Vec2fTypes>;
+//template class SOFA_BOUNDARY_CONDITION_API BilinearMovementConstraint<Vec1fTypes>;
 template class SOFA_BOUNDARY_CONDITION_API BilinearMovementConstraint<Vec6fTypes>;
 template class SOFA_BOUNDARY_CONDITION_API BilinearMovementConstraint<Rigid3fTypes>;
 #endif
