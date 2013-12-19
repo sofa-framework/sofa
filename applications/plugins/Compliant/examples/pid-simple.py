@@ -18,7 +18,7 @@ control = ControlData
 
 
 def createScene(node):
-     root.createObject('RequiredPlugin', pluginName = 'Compliant')
+     node.createObject('RequiredPlugin', pluginName = 'Compliant')
 
      node.animate = 'true'
 
