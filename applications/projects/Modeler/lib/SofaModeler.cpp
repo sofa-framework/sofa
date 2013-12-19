@@ -99,7 +99,7 @@ SofaModeler::SofaModeler():recentlyOpenedFilesManager("share/config/Modeler.ini"
     //Get the different path needed
     examplePath = sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str()) + std::string( "/examples/" );
     openPath = examplePath;
-    binPath = sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str()) + std::string( "/bin/" );
+    binPath = sofa::helper::system::DataRepository.getFirstPath().c_str() + std::string( "/bin/" );
     presetPath = examplePath + std::string("Objects/");
     std::string presetFile = std::string("share/config/preset.ini" );
     presetFile = sofa::helper::system::DataRepository.getFile ( presetFile );
