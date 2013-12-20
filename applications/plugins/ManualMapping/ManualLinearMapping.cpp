@@ -46,15 +46,15 @@ SOFA_DECL_CLASS(ManualLinearMapping)
 // Register in the Factory
 int ManualLinearMappingClass = core::RegisterObject("Maps displacement from subspace with basis given by J")
 #ifndef SOFA_FLOAT
-        .add< ManualLinearMapping< Vec1dTypes, Vec3dTypes > >()
+        .add< ManualLinearMapping< Vec3dTypes, Vec3dTypes > >()
 #endif
 #ifndef SOFA_DOUBLE
-        .add< ManualLinearMapping< Vec1fTypes, Vec3fTypes > >()
+        .add< ManualLinearMapping< Vec3fTypes, Vec3fTypes > >()
 #endif
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-//        .add< ManualLinearMapping< Vec1fTypes, Vec3dTypes > >()
-//        .add< ManualLinearMapping< Vec1dTypes, Vec3fTypes > >()
+        .add< ManualLinearMapping< Vec3fTypes, Vec3dTypes > >()
+        .add< ManualLinearMapping< Vec3dTypes, Vec3fTypes > >()
 #endif
 #endif
 ;
@@ -65,13 +65,13 @@ int ManualLinearMappingClass = core::RegisterObject("Maps displacement from subs
 template class SOFA_ManualMapping_API ManualLinearMapping< Vec1dTypes, Vec3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_ManualMapping_API ManualLinearMapping< Vec1fTypes, Vec3fTypes >;
+template class SOFA_ManualMapping_API ManualLinearMapping< Vec3fTypes, Vec3fTypes >;
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-//template class SOFA_ManualMapping_API ManualLinearMapping< Vec1dTypes, Vec3fTypes >;
-//template class SOFA_ManualMapping_API ManualLinearMapping< Vec1fTypes, Vec3dTypes >;
+template class SOFA_ManualMapping_API ManualLinearMapping< Vec3dTypes, Vec3fTypes >;
+template class SOFA_ManualMapping_API ManualLinearMapping< Vec3fTypes, Vec3dTypes >;
 #endif
 #endif
 

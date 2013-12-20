@@ -124,15 +124,15 @@ public:
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_MANUALLINEARMAPPING_CPP)
 
 #ifndef SOFA_FLOAT
-extern template class SOFA_ManualMapping_API ManualLinearMapping< defaulttype::Vec1dTypes, defaulttype::Vec3dTypes >;
+extern template class SOFA_ManualMapping_API ManualLinearMapping< defaulttype::Vec3dTypes, defaulttype::Vec3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_ManualMapping_API ManualLinearMapping< defaulttype::Vec1fTypes, defaulttype::Vec3fTypes >;
+extern template class SOFA_ManualMapping_API ManualLinearMapping< defaulttype::Vec3fTypes, defaulttype::Vec3fTypes >;
 #endif
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-//extern template class SOFA_ManualMapping_API ManualLinearMapping< defaulttype::Vec1dTypes, defaulttype::Vec3fTypes >;
-//extern template class SOFA_ManualMapping_API ManualLinearMapping< defaulttype::Vec1fTypes, defaulttype::Vec3dTypes >;
+extern template class SOFA_ManualMapping_API ManualLinearMapping< defaulttype::Vec3dTypes, defaulttype::Vec3fTypes >;
+extern template class SOFA_ManualMapping_API ManualLinearMapping< defaulttype::Vec3fTypes, defaulttype::Vec3dTypes >;
 #endif
 #endif
 
