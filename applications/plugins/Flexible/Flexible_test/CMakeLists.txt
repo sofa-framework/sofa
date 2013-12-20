@@ -6,7 +6,7 @@ set(SOURCE_FILES
         )
 
 if(APPLE)
-    set(RC_FILES "runSOFA.icns")
+#    set(RC_FILES "runSOFA.icns")
 endif()
 
 include_directories("${SOFA_APPLICATIONS_PROJECTS_DIR}/Standard_test")
