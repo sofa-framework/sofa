@@ -15,7 +15,7 @@ set(SOURCE_FILES
         )
 
 if(APPLE)
-    set(RC_FILES "runSOFA.icns")
+#    set(RC_FILES "runSOFA.icns")
 endif()
 
 if(WIN32)
