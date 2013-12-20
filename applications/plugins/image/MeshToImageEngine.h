@@ -211,6 +211,14 @@ protected:
                 for(size_t i=0; i<nbp; i++) for(size_t j=0; j<3; j++) { if(BB[j][0]>pos[i][j]) BB[j][0]=pos[i][j]; if(BB[j][1]<pos[i][j]) BB[j][1]=pos[i][j]; }
             }
 
+            // enlarge a bit the bb to prevent from numerical precision issues in rasterization
+            for(size_t j=0; j<3; j++)
+            {
+                Real EPSILON = (BB[j][1]-BB[j][0])*1E-10;
+                BB[j][1] += EPSILON;
+                BB[j][0] -= EPSILON;
+            }
+
             if( nbVoxels.getValue()[0]!=0 && nbVoxels.getValue()[1]!=0 && nbVoxels.getValue()[2]!=0 ) for(size_t j=0; j<3; j++) tr->getScale()[j] = (BB[j][1] - BB[j][0]) / nbVoxels.getValue()[j];
             else for(size_t j=0; j<3; j++) tr->getScale()[j] = this->voxelSize.getValue()[j];
 
@@ -221,7 +229,7 @@ protected:
                    for(size_t j=0; j<3; j++) BB[j][1] = tr->getScale()[j]*ceil(BB[j][1]/tr->getScale()[j]);
             }
 
-            for(size_t j=0; j<3; j++) tr->getTranslation()[j]=BB[j][0]-tr->getScale()[j]*this->padSize.getValue();
+            for(size_t j=0; j<3; j++) tr->getTranslation()[j]=BB[j][0]+tr->getScale()[j]*0.5-tr->getScale()[j]*this->padSize.getValue();
         }
         else  // use Oriented Bounding Box
         {
@@ -282,10 +290,18 @@ protected:
                 for(size_t i=0; i<nbp; i++) { P=MT*(pos[i]);  for(size_t j=0; j<3; j++) { if(BB[j][0]>P[j]) BB[j][0]=P[j]; if(BB[j][1]<P[j]) BB[j][1]=P[j]; } }
             }
 
+            // enlarge a bit the bb to prevent from numerical precision issues in rasterization
+            for(size_t j=0; j<3; j++)
+            {
+                Real EPSILON = (BB[j][1]-BB[j][0])*1E-10;
+                BB[j][1] += EPSILON;
+                BB[j][0] -= EPSILON;
+            }
+
             if( nbVoxels.getValue()[0]!=0 && nbVoxels.getValue()[1]!=0 && nbVoxels.getValue()[2]!=0 ) for(size_t j=0; j<3; j++) tr->getScale()[j] = (BB[j][1] - BB[j][0]) / nbVoxels.getValue()[j];
             else for(size_t j=0; j<3; j++) tr->getScale()[j] = this->voxelSize.getValue()[j];
 
-            P=Coord(BB[0][0],BB[1][0],BB[2][0]) - tr->getScale()*this->padSize.getValue();
+            P=Coord(BB[0][0],BB[1][0],BB[2][0]) + tr->getScale()*0.5 - tr->getScale()*this->padSize.getValue();
             tr->getTranslation()=M*(P);
         }
 
@@ -297,7 +313,7 @@ protected:
         tr->update(); // update of internal data
         // update image extents
         unsigned int dim[3];
-        for(size_t j=0; j<3; j++) dim[j]=ceil(1+(BB[j][1]-BB[j][0])/tr->getScale()[j]+(Real)2.0*this->padSize.getValue());
+        for(size_t j=0; j<3; j++) dim[j]=ceil((BB[j][1]-BB[j][0])/tr->getScale()[j]+(Real)2.0*this->padSize.getValue());
         iml->getCImgList().assign(1,dim[0],dim[1],dim[2],1);
 
 
