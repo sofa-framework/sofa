@@ -13,6 +13,9 @@ int DiagonalResponseClass = core::RegisterObject("A diagonal factorization of th
 
 void DiagonalResponse::factor(const mat& H ) {
 	
+    if( _constant.getValue() && !_firstFactorization ) return;
+    _firstFactorization = false;
+
 	diag = H.diagonal().cwiseInverse();
 	
 	assert( !has_nan(diag) );
