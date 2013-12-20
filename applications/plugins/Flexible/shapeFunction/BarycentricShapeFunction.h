@@ -79,6 +79,7 @@ public:
     //@{
     Data< VCoord > f_orientation; // = rest deformation gradient orientation in each cell (Euler angles)
     Data< bool > f_useLocalOrientation;
+    Data< Real > f_tolerance;
     //@}
 
 
@@ -297,7 +298,7 @@ protected:
 
             // compute barycentric weights by projection in cell basis
             int index = -1;
-            double distance = 1;
+            double distance = -B->f_tolerance.getValue();
             Coord coefs;
 
             if ( tetrahedra.empty() && cubes.empty() )
@@ -402,7 +403,7 @@ protected:
                 for ( unsigned int i = 0; i < cubes.size(); i++ )
                     if(cell==-1 || cell==(int)(i+c0))
                     {
-                        //Coord v = bases[c0+i] * ( childPosition - parent[cubes[i][0]] );  // for cuboid hexahedra
+                        //Coord v = B->bases[c0+i] * ( childPosition - parent[cubes[i][0]] );  // for cuboid hexahedra
                         Coord v; Coord ph[8];  for ( unsigned int j = 0; j < 8; j++ ) ph[j]=parent[cubes[i][j]]; computeHexaTrilinearWeights(v,ph,childPosition,1E-10); // for arbitrary hexahedra
                         double d = getDistanceHexa( v );
                         if ( d<=distance ) { coefs = v; distance = d; index = c0+i; }
@@ -595,7 +596,7 @@ protected:
 
             // compute barycentric weights by projection in cell basis
             int index = -1;
-            double distance = 1;
+            double distance = -B->f_tolerance.getValue();
             Coord coefs;
 
             if ( triangles.empty() && quads.empty() )
@@ -731,6 +732,7 @@ protected:
         , parentTopology( NULL )
         , f_orientation(initData(&f_orientation,"orientation","input orientation (Euler angles) inside each cell"))
         , f_useLocalOrientation(initData(&f_useLocalOrientation,false,"useLocalOrientation","tells if orientations are defined in the local basis on each cell"))
+        , f_tolerance(initData(&f_tolerance,(Real)-1.0,"tolerance","minimum weight (allows for mapping outside elements)"))
     {
     }
 
