@@ -11,6 +11,10 @@ int LDLTResponseClass = core::RegisterObject("A sparse Cholesky factorization of
 
 
 void LDLTResponse::factor(const mat& H ) {
+
+    if( _constant.getValue() && !_firstFactorization ) return;
+    _firstFactorization = false;
+
 	// TODO make sure no temporary is used ?
 	response.compute( H.transpose().selfadjointView<Eigen::Upper>() );
 	
