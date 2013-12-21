@@ -122,7 +122,7 @@ protected:
     ///@{
 
     /// Helper method to create strings used in various tests.
-    Node::SPtr createCompliantString(simulation::Node::SPtr parent, Vec3 startPoint, Vec3 endPoint, unsigned numParticles, double totalMass, double complianceValue=0, double dampingRatio=0 )
+    Node::SPtr createCompliantString(simulation::Node::SPtr parent, Vec3 startPoint, Vec3 endPoint, unsigned numParticles, double totalMass, double complianceValue=0/*, double dampingRatio=0*/ )
     {
         static unsigned numObject = 1;
         std::ostringstream oss;

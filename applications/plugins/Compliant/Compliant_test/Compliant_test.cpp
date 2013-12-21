@@ -70,7 +70,7 @@ struct Assembly_test : public CompliantSolver_test
         complianceSolver->beta.setValue(1.0);
 
         // The string
-        simulation::Node::SPtr  string1 = createCompliantString( root, Vec3(0,0,0), Vec3(1,0,0), n, 1.0*n, 0., 0. );
+        simulation::Node::SPtr  string1 = createCompliantString( root, Vec3(0,0,0), Vec3(1,0,0), n, 1.0*n, 0. );
 
         // Opposite forces applied to the ends
         ConstantForceField3::SPtr ff = New<ConstantForceField3>();
@@ -157,7 +157,7 @@ struct Assembly_test : public CompliantSolver_test
         complianceSolver->beta.setValue(1.0);
 
         // The string
-        simulation::Node::SPtr  string1 = createCompliantString( root, Vec3(0,0,0), Vec3(1,0,0), n, 1.0*n, 0., 0. );
+        simulation::Node::SPtr  string1 = createCompliantString( root, Vec3(0,0,0), Vec3(1,0,0), n, 1.0*n, 0. );
 
         // attached
         FixedConstraint3::SPtr fixed1 = New<FixedConstraint3>();
@@ -233,7 +233,7 @@ struct Assembly_test : public CompliantSolver_test
 
         // The string
         Vec3 startPoint(0,0,0);
-        simulation::Node::SPtr  string1 = createCompliantString( root, startPoint, Vec3(1,0,0), n, 1.0*n, 0., 0. );
+        simulation::Node::SPtr  string1 = createCompliantString( root, startPoint, Vec3(1,0,0), n, 1.0*n, 0. );
 
         //-------- fix a particle using a constraint: map the distance of the particle to its initial position, and constrain this to 0
         std::string nodeName = "fixDistance_";
@@ -351,7 +351,7 @@ struct Assembly_test : public CompliantSolver_test
 
 
         // ========  string
-        Node::SPtr  string1 = createCompliantString( solverObject, Vec3(0,0,0), Vec3(1,0,0), n, 1.0*n, 0,0 );
+        Node::SPtr  string1 = createCompliantString( solverObject, Vec3(0,0,0), Vec3(1,0,0), n, 1.0*n, 0 );
 
 
         // .=======  Node with multiple parents to create an interaction using a MultiMapping
@@ -480,8 +480,8 @@ struct Assembly_test : public CompliantSolver_test
         complianceSolver->beta.setValue(1.0);
 
         // ========  strings
-        Node::SPtr  string1 = createCompliantString( root, Vec3(0,0,0), Vec3(1,0,0), n, 1.0*n, 0,0 );
-        Node::SPtr  string2 = createCompliantString( root, Vec3(2,0,0), Vec3(3,0,0), n, 1.0*n, 0,0 );
+        Node::SPtr  string1 = createCompliantString( root, Vec3(0,0,0), Vec3(1,0,0), n, 1.0*n, 0 );
+        Node::SPtr  string2 = createCompliantString( root, Vec3(2,0,0), Vec3(3,0,0), n, 1.0*n, 0 );
 
         // string1 is attached
         FixedConstraint3::SPtr fixed1 = New<FixedConstraint3>();
@@ -638,7 +638,7 @@ struct Assembly_test : public CompliantSolver_test
         particleOnRigidMapping->setModels(rigidDOF.get(),particleOnRigidDOF.get());
 
         // ========= The string
-        simulation::Node::SPtr  string1 = createCompliantString( root, Vec3(0,0,0), Vec3(1,0,0), n, 1.0*n, 0., 0. );
+        simulation::Node::SPtr  string1 = createCompliantString( root, Vec3(0,0,0), Vec3(1,0,0), n, 1.0*n, 0. );
 
         // Fix the first particle of the string
         FixedConstraint3::SPtr fixed1 = New<FixedConstraint3>();
