@@ -214,7 +214,7 @@ struct Sofa_test : public ::testing::Test
             return this->infinity();
         }
 
-        Real maxdiff = 0;
+        Real maxdiff = 0.;
         for(unsigned i=0; i<c1.size(); i++ ){
 //            cout<< c2[i]-c1[i] << " ";
             Real n = (c1[i]-c2[i]).norm();
@@ -222,21 +222,6 @@ struct Sofa_test : public ::testing::Test
                 maxdiff = n;
         }
         return maxdiff;
-    }
-
-    /// Resize the Vector and copy it from the Data
-    template<class Vector, class ReadData>
-    void copyFromData( Vector& v, const ReadData& d){
-        v.resize(d.size());
-        for( unsigned i=0; i<v.size(); i++)
-            v[i] = d[i];
-    }
-
-    /// Copy the Vector to the Data. They must have the same size.
-    template<class WriteData, class Vector>
-    void copyToData( WriteData& d, const Vector& v){
-        for( unsigned i=0; i<d.size(); i++)
-            d[i] = v[i];
     }
 
 
@@ -251,6 +236,21 @@ typename Component::SPtr addNew( sofa::simulation::Node::SPtr parentNode, const 
     parentNode->addObject(component);
     component->setName(parentNode->getName()+"_"+std::string(name));
     return component;
+}
+
+/// Resize the Vector and copy it from the Data
+template<class Vector, class ReadData>
+void copyFromData( Vector& v, const ReadData& d){
+    v.resize(d.size());
+    for( unsigned i=0; i<v.size(); i++)
+        v[i] = d[i];
+}
+
+/// Copy the Vector to the Data. They must have the same size.
+template<class WriteData, class Vector>
+void copyToData( WriteData& d, const Vector& v){
+    for( unsigned i=0; i<d.size(); i++)
+        d[i] = v[i];
 }
 
 

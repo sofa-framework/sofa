@@ -166,17 +166,17 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
         inDofs->resize(parentInit.size());
         WriteInVecCoord xin = inDofs->writePositions();
-        this->copyToData(xin,parentInit); // xin = parentInit
+        copyToData(xin,parentInit); // xin = parentInit
 
         outDofs->resize(childInit.size());
         WriteOutVecCoord xout = outDofs->writePositions();
-        this->copyToData(xout,childInit);
+        copyToData(xout,childInit);
 
         /// Init based on parentInit
         sofa::simulation::getSimulation()->init(root.get());
 
         /// Updated to parentNew
-        this->copyToData(xin,parentNew);
+        copyToData(xin,parentNew);
         mapping->apply(&mparams, core::VecCoordId::position(), core::VecCoordId::position());
         mapping->applyJ(&mparams, core::VecDerivId::velocity(), core::VecDerivId::velocity());
 
@@ -186,7 +186,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         bool succeed=true;
         for( unsigned i=0; i<xout.size(); i++ )
         {
-            if( !isSmall( difference(xout[i],expectedChildNew[i]).norm(), errorMax ) ) {
+            if( !this->isSmall( difference(xout[i],expectedChildNew[i]).norm(), errorMax ) ) {
                 ADD_FAILURE() << "Position of mapped particle " << i << " is wrong: " << xout[i] <<", expected: " << expectedChildNew[i];
                 succeed = false;
             }
