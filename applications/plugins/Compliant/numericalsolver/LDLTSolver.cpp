@@ -83,15 +83,19 @@ void LDLTSolver::solve(AssembledSystem::vec& res,
 
 	vec Pv = (sys.P * rhs.head(sys.m));
 
-    cerr<<"LDLTSolver::solve, Pv = " << Pv.transpose() << endl;
     typedef AssembledSystem::dmat dmat;
-    cerr<<"LDLTSolver::solve, H = " << endl << dmat(sys.H) << endl;
+
+    if( debug.getValue() ){
+        cerr<<"LDLTSolver::solve, Pv = " << Pv.transpose() << endl;
+        cerr<<"LDLTSolver::solve, H = " << endl << dmat(sys.H) << endl;
+    }
 
 	// in place solve
 	Pv = pimpl->Hinv.solve( Pv );
-    cerr<<"LDLTSolver::solve, solution = " << Pv.transpose() << endl;
-    cerr<<"LDLTSolver::solve, verification = " << (sys.H * Pv).transpose() << endl;
-
+    if( debug.getValue() ){
+        cerr<<"LDLTSolver::solve, free motion = " << Pv.transpose() << endl;
+//        cerr<<"LDLTSolver::solve, verification = " << (sys.H * Pv).transpose() << endl;
+    }
 	res.head( sys.m ) = sys.P * Pv;
 
 	if( sys.n ) {
@@ -102,7 +106,12 @@ void LDLTSolver::solve(AssembledSystem::vec& res,
 		
 		// constraint forces
 		res.head( sys.m ) += sys.P * (pimpl->HinvPJT * res.tail( sys.n));
-	} 
+        if( debug.getValue() ){
+            cerr<<"LDLTSolver::solve, free motion constraint error= " << -tmp.transpose() << endl;
+            cerr<<"LDLTSolver::solve, lambda = " << res.tail(sys.n).transpose() << endl;
+            cerr<<"LDLTSolver::solve, constraint forces = " << (sys.P * (pimpl->HinvPJT * res.tail( sys.n))).transpose() << endl;
+        }
+    }
 	
 } 
 

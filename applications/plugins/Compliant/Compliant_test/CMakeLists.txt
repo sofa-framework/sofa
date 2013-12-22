@@ -3,6 +3,7 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 set(HEADER_FILES
 
     Compliant_test.h
+    Assembly_test.h
 
         )
 
