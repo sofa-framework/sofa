@@ -31,6 +31,12 @@ class SOFA_Compliant_API KKTSolver : public core::behavior::BaseLinearSolver {
 	
 	typedef system_type::real real;
 	typedef system_type::vec vec;
+
+    Data<bool> debug; ///< print debug info
+
+    KKTSolver():
+        debug(initData(&debug,false,"debug","print debug info"))
+    {}
 	
 	virtual void factor(const system_type& system) = 0;
 	
