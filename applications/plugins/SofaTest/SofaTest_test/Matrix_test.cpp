@@ -42,6 +42,17 @@
 
 #include <ctime>
 
+#define BENCHMARK_MATRIX_MULTIPLICATION 1
+
+#if BENCHMARK_MATRIX_MULTIPLICATION
+#include <sys/time.h>
+double get_time() {
+  struct timeval tv;
+  gettimeofday(&tv, NULL);
+  return (double) tv.tv_sec + tv.tv_usec*1e-6;
+}
+#endif
+
 
 namespace sofa {
 using std::cout;
@@ -59,9 +70,6 @@ using std::endl;
 template <typename _Real, unsigned NumRows, unsigned NumCols, unsigned BlockRows, unsigned BlockCols>
 struct TestSparseMatrices : public Sofa_test<_Real>
 {
-    sofa::helper::RandomGenerator randomGenerator;
-
-
     // Scalar type and dimensions of the matrices to test
     typedef _Real Real;
     static const unsigned NROWS=NumRows;   // matrix size
@@ -120,6 +128,8 @@ struct TestSparseMatrices : public Sofa_test<_Real>
     MatNM matMultiplier;
     MatMM matMultiplication;
     MatNN matTransposeMultiplication;
+    EigenBaseMatrix eiBaseMultiplier;
+    EigenBaseMatrix eiBaseMultiplication;
 
 
     // The vectors used in the tests
@@ -129,44 +139,57 @@ struct TestSparseMatrices : public Sofa_test<_Real>
     VecN vecN;
 
 
+    /// generating a random Mat
+    /// if sparse=0 a lot a null entries will be created
+    template<int nbrows,int nbcols>
+    static void generateRandomMat( defaulttype::Mat<nbrows,nbcols,Real>& mat, bool sparse=false )
+    {
+        sofa::helper::RandomGenerator randomGenerator;
+        randomGenerator.initSeed( (long)time(0) );
+
+        for( int j=0; j<mat.nbCols; j++)
+        {
+            for( int i=0; i<mat.nbLines; i++)
+            {
+                Real random = randomGenerator.random<Real>( (Real) -1, (Real) 1 );
+                if( sparse && random > -0.5 && random < 0.5 ) random = 0;
+                mat(i,j)=random;
+            }
+        }
+    }
+
+    /// filling a BaseMatrix from a given Mat
+    template<int nbrows,int nbcols>
+    static void copyFromMat( defaulttype::BaseMatrix& baseMat, const defaulttype::Mat<nbrows,nbcols,Real>& mat )
+    {
+        baseMat.resize(mat.nbLines,mat.nbCols);
+
+        for( int j=0; j<mat.nbCols; j++)
+        {
+            for( int i=0; i<mat.nbLines; i++)
+            {
+                if( !baseMat.isSparse() || mat(i,j)!=0 ) baseMat.add( i, j, mat(i,j) );
+            }
+        }
+
+        baseMat.compress();
+    }
+
     /// Create the context for the matrix tests.
     TestSparseMatrices()
     {
         //std::cout<<"Matrix_test "<<NumRows<<" "<<NumCols<<" "<<BlockRows<<" "<<BlockCols<<std::endl;
 
-        // seed the random generator
-        randomGenerator.initSeed( (long)time(0) );
-
         // resize and fill the matrices
-        crs1.resize(NROWS,NCOLS);
-        crs2.resize(NROWS,NCOLS);
-        fullMat.resize(NROWS,NCOLS);
-        mapMat.resize(NROWS,NCOLS);
-        eiBlock1.resize(NROWS,NCOLS);
-        eiBlock2.resize(NROWS,NCOLS);
-        eiBlock3.resize(NROWS,NCOLS);
-        eiBase.resize(NROWS,NCOLS);
-
-        for( unsigned j=0; j<NCOLS; j++)
-        {
-            for( unsigned i=0; i<NROWS; i++)
-            {
-                double valij = i*NCOLS+j;
-                crs1.set(i,j,valij);
-                BlockMN* b = crs2.wbloc(i/BROWS,j/BCOLS,true);
-                assert(b && "a matrix BlockMN exists");
-                (*b)[i%BROWS][j%BCOLS] = valij;
-                fullMat.set(i,j,valij);
-                mapMat.set(i,j,valij);
-                eiBlock1.add(i,j,valij);
-                eiBase.add(i,j,valij);
-                eiBlock2.add(i,j,valij);
-//                BlockMN& bb = eiBlock2.wBlock(i/BROWS,j/BCOLS);
-//                bb[i%BROWS][j%BCOLS] = valij;
-                mat(i,j) = valij;
-            }
-        }
-        crs1.compress(); crs2.compress(); eiBlock1.compress(); eiBlock2.compress(); eiBase.compress();
+        generateRandomMat( mat, true );
+        copyFromMat( crs1, mat );
+        copyFromMat( crs2, mat );
+        copyFromMat( fullMat, mat );
+        copyFromMat( mapMat, mat );
+        copyFromMat( eiBlock1, mat );
+        copyFromMat( eiBlock2, mat );
+//        copyFromMat( eiBlock3, mat );
+        copyFromMat( eiBase, mat );
         eiBlock3.copyFrom(crs1);
 
 
@@ -188,38 +211,24 @@ struct TestSparseMatrices : public Sofa_test<_Real>
 
 
 
-
-
         // matrix multiplication
 
-        fullMultiplier.resize(NCOLS,NROWS);
-        crsMultiplier.resize(NCOLS,NROWS);
+        generateRandomMat( matMultiplier, true );
+        copyFromMat( crsMultiplier, matMultiplier );
+        copyFromMat( fullMultiplier, matMultiplier );
+        copyFromMat( eiBaseMultiplier, matMultiplier );
 
-        for( unsigned j=0; j<NROWS; j++)
-        {
-            for( unsigned i=0; i<NCOLS; i++)
-            {
-                Real random = randomGenerator.random<Real>( (Real) -1, (Real) 1 );
-                crsMultiplier.set( i, j, random );
-                fullMultiplier.set( i, j, random );
-                matMultiplier(i,j) = random;
-            }
-        }
-        crsMultiplier.compress();
 
         matMultiplication = mat * matMultiplier;
         crs1.mul( crsMultiplication, crsMultiplier );
         fullMat.mul( fullMultiplication, fullMultiplier );
-//        if( !matricesAreEqual(matMultiplication,fullMultiplication) ) throw "not matricesAreEqual(matMultiplication,fullMultiplication)";
+        eiBase.mul_MT( eiBaseMultiplication, eiBaseMultiplier );
 
         matTransposeMultiplication = mat.multTranspose( mat );
         crs1.mulTranspose( crsTransposeMultiplication, crs1 );
         fullMat.mulT( fullTransposeMultiplication, fullMat );
 
     }
-
-
-
 
 
     /** Check that EigenMatrix update works as well as direct init. Return true if the test succeeds.*/
@@ -336,6 +345,49 @@ typedef TestSparseMatrices<double,4,8,2,2> Ts4822;
 //#define TestMatrix Ts4823
 //#include "Matrix_test.inl"
 //#undef TestMatrix
+
+
+#if BENCHMARK_MATRIX_MULTIPLICATION
+///// multiplication timing
+typedef TestSparseMatrices<double,360,900,3,3> TsMultiplicationTimings;
+TEST_F(TsMultiplicationTimings, benchmark )
+{
+    matMultiplication.clear();
+    double start = get_time();
+    matMultiplication = mat * matMultiplier;
+    double stop = get_time();
+    std::cerr<<"Mat:\t\t"<<stop-start<<" (ms)"<<std::endl;
+
+    fullMultiplication.clear();
+    start = get_time();
+    fullMat.mul( fullMultiplication, fullMultiplier );
+    stop = get_time();
+    std::cerr<<"Full:\t\t"<<stop-start<<" (ms)"<<std::endl;
+
+    crsMultiplication.clear();
+    start = get_time();
+    crs1.mul( crsMultiplication, crsMultiplier );
+    stop = get_time();
+    std::cerr<<"CRS:\t\t"<<stop-start<<" (ms)"<<std::endl;
+
+    eiBaseMultiplication.clear();
+    start = get_time();
+    eiBase.mul( eiBaseMultiplication, eiBaseMultiplier );
+    stop = get_time();
+    std::cerr<<"Eigen Base ST:\t\t"<<stop-start<<" (ms)"<<std::endl;
+
+#ifdef USING_OMP_PRAGMAS
+    eiBaseMultiplication.clear();
+    start = get_time();
+    eiBase.mul_MT( eiBaseMultiplication, eiBaseMultiplier );
+    stop = get_time();
+    std::cerr<<"Eigen Base MT:\t\t"<<stop-start<<" (ms)"<<std::endl;
+#endif
+
+    ASSERT_TRUE( true );
+}
+
+#endif
 
 #endif
 
