@@ -32,6 +32,13 @@
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <map>
 #include <Eigen/Sparse>
+
+#ifdef USING_OMP_PRAGMAS
+#include "EigenBaseSparseMatrix_MT.h"
+#endif
+
+
+
 using std::cerr;
 using std::endl;
 
@@ -47,6 +54,10 @@ using helper::vector;
 
 //#define EigenBaseSparseMatrix_CHECK
 //#define EigenBaseSparseMatrix_VERBOSE
+
+
+
+
 
 
 /** Sparse matrix based on the Eigen library.
@@ -364,6 +375,33 @@ public:
             {
                 matrix->add( offset+it.row(), offset+it.col(), factor*it.value() );
             }
+    }
+
+
+public:
+
+    /// EigenBaseSparseMatrix multiplication
+    /// res can be the same variable as this or rhs
+    void mul(EigenBaseSparseMatrix<Real>& res, const EigenBaseSparseMatrix<Real>& rhs) const
+    {
+      ((EigenBaseSparseMatrix<Real>*)this)->compress();  /// \warning this violates the const-ness of the method
+      ((EigenBaseSparseMatrix<Real>*)&rhs)->compress();  /// \warning this violates the const-ness of the parameter
+      res.compressedMatrix = compressedMatrix * rhs.compressedMatrix;
+    }
+
+    /// EigenBaseSparseMatrix multiplication (openmp multithreaded version)
+    /// @warning res MUST NOT be the same variable as this or rhs
+    void mul_MT(EigenBaseSparseMatrix<Real>& res, const EigenBaseSparseMatrix<Real>& rhs) const
+    {
+    #ifdef USING_OMP_PRAGMAS
+        assert( &res != this );
+        assert( &res != &rhs );
+        ((EigenBaseSparseMatrix<Real>*)this)->compress();  /// \warning this violates the const-ness of the method
+        ((EigenBaseSparseMatrix<Real>*)&rhs)->compress();  /// \warning this violates the const-ness of the parameter
+        conservative_sparse_sparse_product_selector_MT<CompressedMatrix,CompressedMatrix,CompressedMatrix>::run(compressedMatrix, rhs.compressedMatrix, res.compressedMatrix);
+    #else
+        mul( res, rhs );
+    #endif
     }
 
 };

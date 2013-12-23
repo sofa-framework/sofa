@@ -5,6 +5,7 @@ set(HEADER_FILES
 	../initEigen2Solver.h 
 	../linearsolver/EigenMatrixManipulator.h 
 	../linearsolver/EigenBaseSparseMatrix.h 
+        ../linearsolver/EigenBaseSparseMatrix_MT.h
 	../linearsolver/EigenSparseMatrix.h 
 #    ../linearsolver/EigenSparseSquareMatrix.h 
 	../linearsolver/EigenVector.h 

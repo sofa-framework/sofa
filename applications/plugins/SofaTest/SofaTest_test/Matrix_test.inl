@@ -55,6 +55,7 @@ TEST_F(TestMatrix, crs1_vector_product )
 // Matrix product tests
 TEST_F(TestMatrix, full_matrix_product ) { ASSERT_TRUE( matricesAreEqual(matMultiplication,fullMultiplication));  }
 TEST_F(TestMatrix, crs_matrix_product ) { ASSERT_TRUE( matricesAreEqual(fullMultiplication,crsMultiplication)); }
+TEST_F(TestMatrix, EigenBase_matrix_product ) { ASSERT_TRUE( matricesAreEqual(fullMultiplication,eiBaseMultiplication)); }
 TEST_F(TestMatrix, full_matrix_transposeproduct ) { ASSERT_TRUE( matricesAreEqual(matTransposeMultiplication,fullTransposeMultiplication)); }
 TEST_F(TestMatrix, crs_matrix_transposeproduct ) { ASSERT_TRUE( matricesAreEqual(fullTransposeMultiplication,crsTransposeMultiplication)); }
 
