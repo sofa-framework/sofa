@@ -12,6 +12,7 @@ set(SOURCE_FILES
     SphereTest.cpp
     ProjectToPlaneConstraint_test.cpp
     ProjectToLineConstraint_test.cpp
+    BaryMapperTest.cpp
         )
 
 if(APPLE)

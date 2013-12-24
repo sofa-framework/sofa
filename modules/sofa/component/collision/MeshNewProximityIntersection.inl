@@ -165,7 +165,7 @@ inline int MeshNewProximityIntersection::doIntersectionTrianglePoint2(SReal dist
             {
                 // barycentric coordinate on BC
                 // BQ*BC / BC*BC = (AQ-AB)*(AC-AB) / (AC-AB)*(AC-AB) = (AQ*AC-AQ*AB + AB*AB-AB*AC) / (AB*AB+AC*AC-2AB*AC)
-                SReal pBC = (b[1] - b[0] + A[0][0] - A[1][1]) / (A[0][0] + A[1][1] - 2*A[0][1]); // BQ*BC / BC*BC
+                SReal pBC = (b[1] - b[0] + A[0][0] - A[0][1]) / (A[0][0] + A[1][1] - 2*A[0][1]); // BQ*BC / BC*BC
                 if (pBC < 0.000001)
                 {
                     // closest point is B
@@ -285,7 +285,7 @@ inline int MeshNewProximityIntersection::doIntersectionTrianglePoint(SReal dist2
             {
                 // barycentric coordinate on BC
                 // BQ*BC / BC*BC = (AQ-AB)*(AC-AB) / (AC-AB)*(AC-AB) = (AQ*AC-AQ*AB + AB*AB-AB*AC) / (AB*AB+AC*AC-2AB*AC)
-                SReal pBC = (b[1] - b[0] + A[0][0] - A[1][1]) / (A[0][0] + A[1][1] - 2*A[0][1]); // BQ*BC / BC*BC
+                SReal pBC = (b[1] - b[0] + A[0][0] - A[0][1]) / (A[0][0] + A[1][1] - 2*A[0][1]); // BQ*BC / BC*BC
                 if (pBC < 0.000001)
                 {
                     // closest point is B
@@ -442,7 +442,7 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, TSphere<T>& 
             {
                 // barycentric coordinate on BC
                 // BQ*BC / BC*BC = (AQ-AB)*(AC-AB) / (AC-AB)*(AC-AB) = (AQ*AC-AQ*AB + AB*AB-AB*AC) / (AB*AB+AC*AC-2AB*AC)
-                SReal pBC = (b[1] - b[0] + A[0][0] - A[1][1]) / (A[0][0] + A[1][1] - 2*A[0][1]); // BQ*BC / BC*BC
+                SReal pBC = (b[1] - b[0] + A[0][0] - A[0][1]) / (A[0][0] + A[1][1] - 2*A[0][1]); // BQ*BC / BC*BC
                 if (pBC < 0.000001)
                 {
                     // closest point is B
