@@ -376,13 +376,21 @@ int BarycentricMapperMeshTopology<In,Out>::createPointInTriangle ( const typenam
         }
     }
 
-//    typename In::Coord pos = Out::getCPos(p) - p0;
+//    const sofa::core::topology::BaseMeshTopology::Triangle& elem = this->fromTopology->getTriangle ( triangleIndex );
+//    const typename In::Coord p0 = ( *points ) [elem[0]];
+//    const typename In::Coord pA = ( *points ) [elem[1]] - p0;
+//    const typename In::Coord pB = ( *points ) [elem[2]] - p0;
 //    // First project to plane
 //    typename In::Coord normal = cross ( pA, pB );
 //    Real norm2 = normal.norm2();
+//    typename In::Coord pos = Out::getCPos(p) - p0;
 //    pos -= normal* ( ( pos*normal ) /norm2 );
 //    baryCoords[0] = ( Real ) sqrt ( cross ( pB, pos ).norm2() / norm2 );
 //    baryCoords[1] = ( Real ) sqrt ( cross ( pA, pos ).norm2() / norm2 );
+
+//    typename In::Coord result = p0 * (1-baryCoords[0]-baryCoords[1]) + ( *points ) [elem[1]] * (baryCoords[0]) + ( *points ) [elem[2]] * (baryCoords[1]);
+//    std::cout<<"Result "<<result<<std::endl;
+
     return this->addPointInTriangle ( triangleIndex, baryCoords );
 }
 

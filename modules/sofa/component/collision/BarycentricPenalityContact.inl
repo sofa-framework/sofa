@@ -185,18 +185,28 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
         int index2 = elem2.getIndex();
         typename DataTypes1::Real r1 = 0.0;
         typename DataTypes2::Real r2 = 0.0;
+
+        // Just make it work, some changes have been done in rev 10382 so that BarycentricPenaltyContact doesn't
+        // map well the contact points because o->baryCoords is used ant not initialized. It means that
+        // the mapped contact point is random ! So I replaced addPointB by addPoint to make it work.
         // Create mapping for first point
-        index1 = mapper1.addPointB(o->point[0], index1, r1
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                , o->baryCoords[0]
-#endif
-                                  );
+//        index1 = mapper1.addPointB(o->point[0], index1, r1
+//#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
+//                , o->baryCoords[0]
+//#endif
+//                                  );
+
+        index1 = mapper1.addPoint(o->point[0], index1, r1);
+
         // Create mapping for second point
-        index2 = mapper2.addPointB(o->point[1], index2, r2
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                , o->baryCoords[1]
-#endif
-                                  );
+//        index2 = mapper2.addPointB(o->point[1], index2, r2
+//#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
+//                , o->baryCoords[1]
+//#endif
+//                                  );
+
+        index2 = mapper2.addPoint(o->point[1], index2, r2);
+
 
         double distance = d0 + r1 + r2;
         double stiffness = (elem1.getContactStiffness() * elem2.getContactStiffness());
