@@ -1,7 +1,14 @@
+# simple, 1D PID control on 6D joints.
+#
+# author: maxime.tournier@inria.fr
+#
+#
+
 import Vec, Rigid, Tools
 
 # 1-dimensional PID, for a Rigid joint
 class PID:
+    
     def __init__(self, dofs):
         self.dofs = dofs
 
@@ -21,6 +28,7 @@ class PID:
     def reset(self):
         self.integral = 0
 
+    # applies a 1D torque to the joint, through the wrench basis
     def apply(self, tau): 
         self.dofs.externalForce = Tools.cat( [tau * ei for ei in self.basis] )
 
@@ -31,7 +39,8 @@ class PID:
 
         return p, i, d
 
-    # you probably want to call this during onBeginAnimationStep
+    # you probably want to call this during onBeginAnimationStep from
+    # a PythonController (see SofaPython doc)
     def update(self, dt):
         e, e_sum, e_dot = self.pid(dt)
         
@@ -39,3 +48,6 @@ class PID:
     
         self.integral = e_sum
         self.apply( tau )
+
+
+# TODO some other controllers ?

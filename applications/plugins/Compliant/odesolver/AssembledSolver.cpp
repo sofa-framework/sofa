@@ -65,6 +65,27 @@ AssembledSolver::AssembledSolver()
     storeDSol = false;
 }
 
+
+// to the person who will encounter this ugly hack and ask herself 'oh
+// god why': go try to fix DAGNode.cpp, then come back here to see
+// which is simpler/faster
+
+struct FakeNode : simulation::FailNode {
+
+	const simulation::AssemblyVisitor& vis;
+
+	FakeNode(const simulation::AssemblyVisitor& vis) : vis(vis) { }
+
+	void doExecuteVisitor(simulation::Visitor* action) {
+		// std::cerr << "i are fake lol !" << std::endl;
+		vis.top_down( action );
+		vis.bottom_up( action );
+	}
+
+};
+
+
+
 void AssembledSolver::send(simulation::Visitor& vis) {
 	scoped::timer step("visitor execution");
 				
@@ -118,23 +139,6 @@ void AssembledSolver::cleanup() {
 	vop.v_free( lagrange.id(), false, true );
 }
 
-// to the person who will encounter this ugly hack and ask herself 'oh
-// god why': go try to fix DAGNode.cpp, then come back here to see
-// which is simpler/faster
-
-struct FakeNode : simulation::FailNode {
-
-	const simulation::AssemblyVisitor& vis;
-
-	FakeNode(const simulation::AssemblyVisitor& vis) : vis(vis) { }
-
-	void doExecuteVisitor(simulation::Visitor* action) {
-		// std::cerr << "i are fake lol !" << std::endl;
-		vis.top_down( action );
-		vis.bottom_up( action );
-	}
-
-};
 
 static void compute_forces_impl(simulation::common::MechanicalOperations& mop,
 								simulation::common::VectorOperations& vop,

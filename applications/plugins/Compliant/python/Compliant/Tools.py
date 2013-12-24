@@ -1,3 +1,9 @@
+# mostly helper functions
+#
+# author: maxime.tournier@inria.fr
+#
+#
+
 import os
 
 # concatenate lists for use with data
@@ -6,7 +12,6 @@ def cat(x):
 
 
 # absolute path from filename
-
 def path( name ):
     return os.path.dirname( os.path.abspath( name ) )
 

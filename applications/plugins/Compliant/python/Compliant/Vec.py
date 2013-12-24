@@ -1,3 +1,8 @@
+# basic euclidean space operations on float lists.
+# 
+# author: maxime.tournier@inria.fr
+
+
 import math
 
 import __builtin__ as base

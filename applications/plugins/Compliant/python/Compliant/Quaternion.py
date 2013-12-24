@@ -1,3 +1,6 @@
+# helper functions for treating float lists as quaternions
+# author: maxime.tournier@inria.fr
+
 import Vec
 
 def id():
