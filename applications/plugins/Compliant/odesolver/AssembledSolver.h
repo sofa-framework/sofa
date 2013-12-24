@@ -137,7 +137,7 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
 	void send(simulation::Visitor& vis);
 
 	void send(simulation::Visitor& vis,
-			  void send(simulation::Visitor& vis);
+			  const simulation::AssemblyVisitor& );
 			  
 	// integrate positions
     void integrate( const core::MechanicalParams* params, 

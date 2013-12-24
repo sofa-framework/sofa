@@ -1,3 +1,13 @@
+# Rigid bodies and joints, Compliant-style.
+# 
+# Authors: maxime.tournier@inria.fr, ... ?
+#
+# The basic philosophy is that python provides nice data structures to
+# define scene component *semantically*. Once this is done, the actual
+# scene graph must be generated through the 'insert' methods. Please
+# refer to the python examples in Compliant for more information.
+#
+
 import Sofa
 
 from subprocess import Popen, PIPE
@@ -7,7 +17,10 @@ import Vec as vec
 
 from Tools import cat as concat
 
+
 class Frame:
+        # a rigid frame, group operations are available.
+
         def __init__(self, value = None):
                 if value != None:
                         self.translation = value[:3]
@@ -31,7 +44,6 @@ class Frame:
                 self.rotation = num[3:]
                 return self
 
-	# TODO multiplication/inversion ?
 	def __mul__(self, other):
 		res = Frame()
 		res.translation = vec.sum(self.translation,
@@ -49,6 +61,8 @@ class Frame:
 							 self.translation) )
 		return res
 					  
+        # TODO more: apply( vec3 ), wrench/twist frame change.
+
 
 # TODO remove ?
 def mesh_offset( mesh, path = "" ):
@@ -57,7 +71,7 @@ def mesh_offset( mesh, path = "" ):
 class MassInfo:
         pass
 
-# density is kg/m^3
+# front-end to sofa GenerateRigid tool. density unit is kg/m^3
 def generate_rigid(filename, density = 1000.0):
         cmd = Sofa.build_dir() + '/bin/GenerateRigid'
         args = filename
@@ -90,8 +104,10 @@ def generate_rigid(filename, density = 1000.0):
 
         return res
 
-# TODO provide synchronized members with sofa states ?
+
+
 class Body:
+        # generic rigid body
         
         def __init__(self, name = "unnamed"):
                 self.name = name         # node name
@@ -189,6 +205,7 @@ class Body:
 
 
 class Joint:
+        # generic rigid joint
 
         def __init__(self, name = 'joint'):
                 self.dofs = [0] * 6
@@ -318,6 +335,9 @@ class Joint:
                 
 		return node
 
+
+# and now for more specific joints:
+
 class SphericalJoint(Joint):
 
         def __init__(self):
@@ -327,7 +347,7 @@ class SphericalJoint(Joint):
                 
 
 
-
+# this one has limits \o/
 class RevoluteJoint(Joint):
 
         # TODO make this 'x', 'y', 'z' instead
@@ -348,6 +368,7 @@ class RevoluteJoint(Joint):
 
                 dofs = limit.createObject('MechanicalObject', template = 'Vec1d')
                 map = limit.createObject('ProjectionMapping', template = 'Vec6d, Vec1d' )
+
                 limit.createObject('UniformCompliance', template = 'Vec1d', compliance = '0' )
                 limit.createObject('UnilateralConstraint');
                 limit.createObject('Stabilization');
@@ -357,18 +378,18 @@ class RevoluteJoint(Joint):
                 offset = []
 
                 if self.lower_limit != None:
-                        set = set + self.dofs
+                        set = set + [0] + self.dofs
                         position.append(0)
                         offset.append(self.lower_limit)
 
                 if self.upper_limit != None:
-                        set = set + Vec.minus(self.dofs)
+                        set = set + [0] + vec.minus(self.dofs)
                         position.append(0)
                         offset.append(- self.upper_limit)
                 
-                map.set = Tools.cat(set)
-                map.offset = Tools.offset(offset)
-                dofs.position = Tools.cat(position)
+                map.set = concat(set)
+                map.offset = concat(offset)
+                dofs.position = concat(position)
 
                 return res
 
