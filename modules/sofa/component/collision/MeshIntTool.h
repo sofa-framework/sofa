@@ -74,6 +74,9 @@ public:
     //flags are the flags of the Triangle and p1 p2 p3 its vertices, to_be_projected is the point to be projected on the triangle, i.e.
     //after this method, it will probably be different
     static int projectPointOnTriangle(int flags, const Vector3& p1, const Vector3& p2, const Vector3& p3,Vector3& to_be_projected);
+
+    //returns barycentric coords in alpha and beta so that to_be_projected = (1 - alpha - beta) * p1 + alpha * p2 + beta * p3
+    static void triangleBaryCoords(const Vector3& to_be_projected,const Vector3& p1, const Vector3& p2, const Vector3& p3,double & alpha,double & beta);
 };
 
 inline int MeshIntTool::computeIntersection(Triangle& tri,OBB & obb,double alarmDist,double contactDist,OutputVector* contacts){

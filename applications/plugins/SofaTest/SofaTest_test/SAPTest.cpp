@@ -538,9 +538,9 @@ bool DirectSAPTest::randSparse(){
 
 TEST_F(DirectSAPTest, test_1 ) { ASSERT_TRUE( test1()); }
 TEST_F(DirectSAPTest, test_2 ) { ASSERT_TRUE( test2()); }
-TEST_F(DirectSAPTest, rand_dense_test ) { ASSERT_TRUE( randDense()); }
+//TEST_F(DirectSAPTest, rand_dense_test ) { ASSERT_TRUE( randDense()); }
 TEST_F(DirectSAPTest, rand_sparse_test ) { ASSERT_TRUE( randSparse()); }
 TEST_F(IncrSAPTest, rand_sparse_test ) { ASSERT_TRUE( randSparse()); }
-TEST_F(IncrSAPTest, rand_dense_test ) { ASSERT_TRUE( randDense()); }
+//TEST_F(IncrSAPTest, rand_dense_test ) { ASSERT_TRUE( randDense()); }
 
 

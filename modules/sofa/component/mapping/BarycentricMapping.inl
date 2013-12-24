@@ -55,6 +55,8 @@
 #include <algorithm>
 #include <iostream>
 
+#include <sofa/component/collision/MeshIntTool.h>
+
 
 namespace sofa
 {
@@ -297,6 +299,7 @@ int BarycentricMapperMeshTopology<In,Out>::createPointInLine ( const typename Ou
     return this->addPointInLine ( lineIndex, baryCoords );
 }
 
+
 template <class In, class Out>
 int BarycentricMapperMeshTopology<In,Out>::createPointInTriangle ( const typename Out::Coord& p, int triangleIndex, const typename In::VecCoord* points )
 {
@@ -305,13 +308,15 @@ int BarycentricMapperMeshTopology<In,Out>::createPointInTriangle ( const typenam
     const typename In::Coord p0 = ( *points ) [elem[0]];
     const typename In::Coord pA = ( *points ) [elem[1]] - p0;
     const typename In::Coord pB = ( *points ) [elem[2]] - p0;
-    typename In::Coord pos = Out::getCPos(p) - p0;
-    // First project to plane
-    typename In::Coord normal = cross ( pA, pB );
-    Real norm2 = normal.norm2();
-    pos -= normal* ( ( pos*normal ) /norm2 );
-    baryCoords[0] = ( Real ) sqrt ( cross ( pB, pos ).norm2() / norm2 );
-    baryCoords[1] = ( Real ) sqrt ( cross ( pA, pos ).norm2() / norm2 );
+
+    sofa::component::collision::MeshIntTool::triangleBaryCoords(Out::getCPos(p),( *points ) [elem[0]],( *points ) [elem[1]],( *points ) [elem[2]],baryCoords[0],baryCoords[1]);
+//    typename In::Coord pos = Out::getCPos(p) - p0;
+//    // First project to plane
+//    typename In::Coord normal = cross ( pA, pB );
+//    Real norm2 = normal.norm2();
+//    pos -= normal* ( ( pos*normal ) /norm2 );
+//    baryCoords[0] = ( Real ) sqrt ( cross ( pB, pos ).norm2() / norm2 );
+//    baryCoords[1] = ( Real ) sqrt ( cross ( pA, pos ).norm2() / norm2 );
     return this->addPointInTriangle ( triangleIndex, baryCoords );
 }
 
