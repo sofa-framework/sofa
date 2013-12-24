@@ -76,6 +76,7 @@ def createScene(node):
     projection.set = '0   0 0 0 0 0 -1'
     limit.createObject('UniformCompliance', template = 'Vec1d', compliance = '0' )
     limit.createObject('UnilateralConstraint');
+    limit.createObject('Stabilization');
     
     # box
     box = Rigid.Body('box')
