@@ -35,12 +35,16 @@ public:
 	typedef defaulttype::SerializablePair<unsigned, typename TIn::Coord> set_type;
     Data< vector< set_type > > set;
 	
+	Data< vector<SReal> > offset;
+
 	typedef AssembledMapping<TIn, TOut> base;
 	typedef ProjectionMapping self;
 
 	ProjectionMapping()
 		: set(initData(&set, "set", 
-						"(index, coord) vector describing projection space"))  {
+					   "(index, coord) vector describing projection space")),
+		  offset(initData(&offset, "offset", 
+						"scalar offset for each projection (if empty: 0, otherwise last value is repeated as needed)")){
 		assert( base::Nout == 1 );
         assert( (unsigned)TIn::deriv_total_size == (unsigned)TIn::coord_total_size && "not vector input dofs !" );
 	}
@@ -78,10 +82,15 @@ protected:
 	virtual void apply(typename self::out_pos_type& out, 
 					   const typename self::in_pos_type& in ) {
 		const vector<set_type>& s = set.getValue();
+		const vector<SReal>& off = offset.getValue();
+		
 		assert(s.size() == out.size());	
 
 		for( unsigned i = 0, n = s.size(); i < n; ++i) {
-			map(out[i])(0) = map(in[s[i].pair.first]).dot( map(s[i].pair.second ) );
+			
+			SReal delta = off.empty() ? 0 : std::min<int>(off.size() - 1, i);
+
+			map(out[i])(0) = map(in[s[i].pair.first]).dot( map(s[i].pair.second ) ) - delta;
 		}
 		
 	}

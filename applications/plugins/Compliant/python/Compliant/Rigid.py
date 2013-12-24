@@ -327,10 +327,48 @@ class SphericalJoint(Joint):
 
 class RevoluteJoint(Joint):
 
+        # TODO make this 'x', 'y', 'z' instead
         def __init__(self, axis):
                 Joint.__init__(self)
                 self.dofs[3 + axis] = 1
                 self.name = 'revolute-'
+                self.lower_limit = None
+                self.upper_limit = None
+
+        def insert(self, parent):
+                res = Joint.insert(self, parent)
+
+                if self.lower_limit == None and self.upper_limit == None:
+                        return res
+                
+                limit = res.createChild('limit')
+
+                dofs = limit.createObject('MechanicalObject', template = 'Vec1d')
+                map = limit.createObject('ProjectionMapping', template = 'Vec6d, Vec1d' )
+                limit.createObject('UniformCompliance', template = 'Vec1d', compliance = '0' )
+                limit.createObject('UnilateralConstraint');
+                limit.createObject('Stabilization');
+
+                set = []
+                position = []
+                offset = []
+
+                if self.lower_limit != None:
+                        set = set + self.dofs
+                        position.append(0)
+                        offset.append(self.lower_limit)
+
+                if self.upper_limit != None:
+                        set = set + Vec.minus(self.dofs)
+                        position.append(0)
+                        offset.append(- self.upper_limit)
+                
+                map.set = Tools.cat(set)
+                map.offset = Tools.offset(offset)
+                dofs.position = Tools.cat(position)
+
+                return res
+
 
 class CylindricalJoint(Joint):
 
