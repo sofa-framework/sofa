@@ -102,8 +102,9 @@ class Body:
                 self.inertia = [1, 1, 1] # inertia tensor
                 self.color = [1, 1, 1]   # not sure this is used 
                 self.offset = None       # rigid offset for com/inertia axes
-                self.inertia_forces = 'false' # compute inertia forces flag
-                
+                self.inertia_forces = False # compute inertia forces flag
+                self.group = None
+
                 # TODO more if needed (scale, color)
                 
         def mass_from_mesh(self, name, density = 1000.0):
@@ -174,9 +175,11 @@ class Body:
                                                name = 'dofs',
                                                position = '@loader.position')
                         
-			collision.createObject('TriangleModel', 
+			model = collision.createObject('TriangleModel', 
                                                name = 'model',
                                                template = 'Vec3d' )
+                        if self.group != None:
+                                model.group = self.group                        
                         
 			collision.createObject('RigidMapping',
                                                template = 'Rigid,Vec3d',
