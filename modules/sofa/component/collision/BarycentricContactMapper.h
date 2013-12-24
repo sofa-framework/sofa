@@ -203,6 +203,7 @@ class ContactMapper<CapsuleModel, DataTypes> : public BarycentricContactMapper<C
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
 
+public:
     int addPoint(const Coord& P, int index, Real& r){
         r = this->model->radius(index);
 
