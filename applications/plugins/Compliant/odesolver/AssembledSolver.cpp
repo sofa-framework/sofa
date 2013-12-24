@@ -71,6 +71,12 @@ void AssembledSolver::send(simulation::Visitor& vis) {
 	this->getContext()->executeVisitor( &vis );
 }
 
+void AssembledSolver::send(simulation::Visitor& vis, const simulation::AssemblyVisitor& assembly) {
+	scoped::timer step("visitor execution");
+	FakeNode fake(assembly);
+	fake.executeVisitor( &vis );
+}
+
 void AssembledSolver::storeDynamicsSolution(bool b) { storeDSol = b; }
 			
 		
@@ -507,7 +513,8 @@ void AssembledSolver::solve(const core::ExecParams* params,
 		prop.out = core::VecId::force();
 		prop.in = lagrange.id();
 			
-		send( prop );
+		if( assembly_traversal.getValue() ) send(prop, vis);
+		else send( prop );
 	}
 
 }
