@@ -33,12 +33,12 @@ void CoulombConstraint::project( SReal* out, unsigned n) const
    // Coulomb Friction
 
    // max: this one is broken !
-   coneProjection<SReal>( out, mu );
+   // coneProjection<SReal>( out, mu );
 
    // reverting to slow-but-working code ;)
-   // vec3 normal = vec3::UnitX(); 
-   // view = cone<SReal>(view, normal, mu);
-
+   vec3 normal = vec3::UnitX(); 
+   view = cone<SReal>(view, normal, mu);
+   
    // std::cout << "after: " << view.transpose() << " , norm = " <<  view.norm() << std::endl;
 
 }

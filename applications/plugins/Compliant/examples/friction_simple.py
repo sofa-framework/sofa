@@ -14,14 +14,14 @@ def createScene(node):
     style.findData('displayFlags').showMappings = True
 
     manager = node.getObject('manager')
-    manager.response = 'CompliantContact'
-    # manager.responseParams = 'mu=0.5' 
+    manager.response = 'FrictionCompliantContact'
+    manager.responseParams = 'mu=0.5' 
 
     ode = node.getObject('ode')
-    ode.stabilization = False
-    ode.debug = True
+    ode.stabilization = True
+    ode.debug = False
 
-    num = node.createObject('QPSolver',
+    num = node.createObject('SequentialSolver',
                             name = 'num',
                             iterations = 100,
                             precision = 1e-14)
