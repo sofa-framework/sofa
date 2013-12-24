@@ -86,8 +86,7 @@ protected:
 
         this->copyNormals( contact_map->normal );
         this->copyPenetrations( contact_map->penetrations );
-
-
+		
         contact_map->init();
 
         // TODO diagonal compliance, soft  and compliance_value for normal
@@ -124,7 +123,8 @@ protected:
         contact_node->addObject( proj.get() );
         
         // constraint value
-        this->addConstraintValue( contact_node.get(), contact_dofs.get(), damping_ratio.getValue(), restitution_coef.getValue() );
+        this->addConstraintValue( contact_node.get(), contact_dofs.get(), 
+								  damping_ratio.getValue(), restitution_coef.getValue(), 3);
 
         return delta.node;
     }

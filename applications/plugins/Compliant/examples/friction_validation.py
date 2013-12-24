@@ -19,18 +19,23 @@ def createScene(node):
                       filename = __file__,
                       classname = 'Controller' )
 
+    node.dt = 0.005
+
     # friction coefficient
     shared.mu = 0.5
 
     scene = Tools.scene( node )
+
+    style = node.getObject('style')
+    style.findData('displayFlags').showMappings = True
 
     manager = node.getObject('manager')
     manager.response = 'FrictionCompliantContact'
     manager.responseParams = 'mu=' + str(shared.mu)
 
     ode = node.getObject('ode')
-    ode.stabilization = 'false'
-
+    ode.stabilization = True
+    
     num = node.createObject('SequentialSolver',
                             name = 'num',
                             iterations = 100,

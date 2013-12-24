@@ -20,6 +20,8 @@ Stabilization::Stabilization( mstate_type* mstate )
 
 void Stabilization::correction(SReal* dst, unsigned n) const {
 	assert( mstate );
+	assert( mask.empty() || mask.size() == n );
+	
 	mstate->copyToBuffer(dst, core::VecCoordId::position(), n);
 	
 	// TODO needed ?
@@ -38,7 +40,8 @@ void Stabilization::correction(SReal* dst, unsigned n) const {
 
 void Stabilization::dynamics(SReal* dst, unsigned n) const {
 	assert( mstate );
-
+	assert( mask.empty() || mask.size() == n );
+	
 	mstate->copyToBuffer(dst, core::VecCoordId::position(), n);
 	map(dst, n) = -map(dst, n) / this->getContext()->getDt();
 	
