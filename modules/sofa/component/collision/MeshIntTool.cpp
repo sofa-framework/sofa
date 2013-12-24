@@ -9,7 +9,7 @@ namespace collision
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 
-int MeshIntTool::computeIntersection(Capsule & cap, Point & pnt,double alarmDist,double contactDist,OutputVector* contacts){
+int MeshIntTool::computeIntersection(Capsule & cap, Point & pnt,SReal alarmDist,SReal contactDist,OutputVector* contacts){
     if(doCapPointInt(cap,pnt.p(),alarmDist,contactDist,contacts)){
         DetectionOutput *detection = &*(contacts->end()-1);
 
@@ -22,18 +22,18 @@ int MeshIntTool::computeIntersection(Capsule & cap, Point & pnt,double alarmDist
 }
 
 
-int MeshIntTool::doCapPointInt(Capsule& cap, const Vector3& q,double alarmDist,double contactDist,OutputVector* contacts){
+int MeshIntTool::doCapPointInt(Capsule& cap, const Vector3& q,SReal alarmDist,SReal contactDist,OutputVector* contacts){
     const Vector3 p1 = cap.point1();
     const Vector3 p2 = cap.point2();
     const Vector3 AB = p2-p1;
     const Vector3 AQ = q -p1;
-    double A;
-    double b;
+    SReal A;
+    SReal b;
     A = AB*AB;
     b = AQ*AB;
-    double cap_rad = cap.radius();
+    SReal cap_rad = cap.radius();
 
-    double alpha = 0.5;
+    SReal alpha = 0.5;
 
     //if (A < -0.000001 || A > 0.000001)
     {
@@ -48,11 +48,11 @@ int MeshIntTool::doCapPointInt(Capsule& cap, const Vector3& q,double alarmDist,d
     p = p1 + AB * alpha;
     pq = q-p;
 
-    double enough_to_touch = alarmDist + cap_rad;
+    SReal enough_to_touch = alarmDist + cap_rad;
     if (pq.norm2() >= enough_to_touch * enough_to_touch)
         return 0;
 
-    //const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
+    //const SReal contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
 
@@ -69,9 +69,9 @@ int MeshIntTool::doCapPointInt(Capsule& cap, const Vector3& q,double alarmDist,d
 }
 
 
-int MeshIntTool::computeIntersection(Capsule & cap, Line & lin,double alarmDist,double contactDist,OutputVector* contacts)
+int MeshIntTool::computeIntersection(Capsule & cap, Line & lin,SReal alarmDist,SReal contactDist,OutputVector* contacts)
 {
-    double cap_rad = cap.radius();
+    SReal cap_rad = cap.radius();
     const Vector3 p1 = cap.point1();
     const Vector3 p2 = cap.point2();
     const Vector3 q1 = lin.p1();
@@ -89,8 +89,8 @@ int MeshIntTool::computeIntersection(Capsule & cap, Line & lin,double alarmDist,
 }
 
 
-int MeshIntTool::doCapLineInt(const Vector3 & p1,const Vector3 & p2,double cap_rad,
-                         const Vector3 & q1, const Vector3 & q2,double alarmDist,double contactDist,OutputVector *contacts, bool ignore_p1, bool ignore_p2){
+int MeshIntTool::doCapLineInt(const Vector3 & p1,const Vector3 & p2,SReal cap_rad,
+                         const Vector3 & q1, const Vector3 & q2,SReal alarmDist,SReal contactDist,OutputVector *contacts, bool ignore_p1, bool ignore_p2){
     const Vector3 AB = p2-p1;//capsule segment
     const Vector3 CD = q2-q1;//line segment
     const Vector3 AC = q1-p1;
@@ -101,10 +101,10 @@ int MeshIntTool::doCapLineInt(const Vector3 & p1,const Vector3 & p2,double cap_r
     A[0][1] = A[1][0] = -CD*AB;
     b[0] = AB*AC;
     b[1] = -CD*AC;
-    const double det = determinant(A);
+    const SReal det = determinant(A);
 
-    double alpha = 0.5;
-    double beta = 0.5;
+    SReal alpha = 0.5;
+    SReal beta = 0.5;
 
     if (det < -0.000000000001 || det > 0.000000000001)//AB and CD are not on the same plane
     {
@@ -136,12 +136,12 @@ int MeshIntTool::doCapLineInt(const Vector3 & p1,const Vector3 & p2,double cap_r
         Vector3 AD = q2 - p1;
         Vector3 CB = p2 - q1;
 
-        double AB_norm2 = AB.norm2();
-        double CD_norm2 = CD.norm2();
-        double c_proj= b[0]/AB_norm2;//alpha = (AB * AC)/AB_norm2
-        double d_proj = (AB * AD)/AB_norm2;
-        double a_proj = b[1];//beta = (-CD*AC)/CD_norm2
-        double b_proj= (CD*CB)/CD_norm2;
+        SReal AB_norm2 = AB.norm2();
+        SReal CD_norm2 = CD.norm2();
+        SReal c_proj= b[0]/AB_norm2;//alpha = (AB * AC)/AB_norm2
+        SReal d_proj = (AB * AD)/AB_norm2;
+        SReal a_proj = b[1];//beta = (-CD*AC)/CD_norm2
+        SReal b_proj= (CD*CB)/CD_norm2;
 
         if(c_proj >= 0 && c_proj <= 1){//projection of C on AB is lying on AB
             if(d_proj > 1){//case :
@@ -213,7 +213,7 @@ int MeshIntTool::doCapLineInt(const Vector3 & p1,const Vector3 & p2,double cap_r
     if(ignore_p2 && beta == 1)
         return 0;
 
-    double enough_to_touch = alarmDist + cap_rad;
+    SReal enough_to_touch = alarmDist + cap_rad;
     Vector3 p,q,pq;
     p = p1 + AB * alpha;
     q = q1 + CD * beta;
@@ -221,7 +221,7 @@ int MeshIntTool::doCapLineInt(const Vector3 & p1,const Vector3 & p2,double cap_r
     if (pq.norm2() >= enough_to_touch*enough_to_touch)
         return 0;
 
-    //const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
+    //const SReal contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
     //detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
@@ -238,9 +238,9 @@ int MeshIntTool::doCapLineInt(const Vector3 & p1,const Vector3 & p2,double cap_r
     return 1;
 }
 
-int MeshIntTool::doCapLineInt(Capsule & cap,const Vector3 & q1,const Vector3 & q2 ,double alarmDist,double contactDist,OutputVector* contacts, bool ignore_p1, bool ignore_p2)
+int MeshIntTool::doCapLineInt(Capsule & cap,const Vector3 & q1,const Vector3 & q2 ,SReal alarmDist,SReal contactDist,OutputVector* contacts, bool ignore_p1, bool ignore_p2)
 {
-    double cap_rad = cap.radius();
+    SReal cap_rad = cap.radius();
     const Vector3 p1 = cap.point1();
     const Vector3 p2 = cap.point2();
 
@@ -248,7 +248,7 @@ int MeshIntTool::doCapLineInt(Capsule & cap,const Vector3 & q1,const Vector3 & q
 }
 
 
-int MeshIntTool::doIntersectionTrianglePoint(double dist2, int flags, const Vector3& p1, const Vector3& p2, const Vector3& p3,const Vector3& q, OutputVector* contacts,bool swapElems)
+int MeshIntTool::doIntersectionTrianglePoint(SReal dist2, int flags, const Vector3& p1, const Vector3& p2, const Vector3& p3,const Vector3& q, OutputVector* contacts,bool swapElems)
 {
     const Vector3 AB = p2-p1;
     const Vector3 AC = p3-p1;
@@ -260,10 +260,10 @@ int MeshIntTool::doIntersectionTrianglePoint(double dist2, int flags, const Vect
     A[0][1] = A[1][0] = AB*AC;
     b[0] = AQ*AB;
     b[1] = AQ*AC;
-    const double det = determinant(A);
+    const SReal det = determinant(A);
 
-    double alpha = 0.5;
-    double beta = 0.5;
+    SReal alpha = 0.5;
+    SReal beta = 0.5;
 
     //if (det < -0.000000000001 || det > 0.000000000001)
     {
@@ -277,9 +277,9 @@ int MeshIntTool::doIntersectionTrianglePoint(double dist2, int flags, const Vect
         {
             // nearest point is on an edge or corner
             // barycentric coordinate on AB
-            double pAB = b[0] / A[0][0]; // AQ*AB / AB*AB
+            SReal pAB = b[0] / A[0][0]; // AQ*AB / AB*AB
             // barycentric coordinate on AC
-            double pAC = b[1] / A[1][1]; // AQ*AB / AB*AB
+            SReal pAC = b[1] / A[1][1]; // AQ*AB / AB*AB
             if (pAB < 0.000001 && pAC < 0.0000001)
             {
                 // closest point is A
@@ -305,7 +305,7 @@ int MeshIntTool::doIntersectionTrianglePoint(double dist2, int flags, const Vect
             {
                 // barycentric coordinate on BC
                 // BQ*BC / BC*BC = (AQ-AB)*(AC-AB) / (AC-AB)*(AC-AB) = (AQ*AC-AQ*AB + AB*AB-AB*AC) / (AB*AB+AC*AC-2AB*AC)
-                double pBC = (b[1] - b[0] + A[0][0] - A[0][1]) / (A[0][0] + A[1][1] - 2*A[0][1]); // BQ*BC / BC*BC
+                SReal pBC = (b[1] - b[0] + A[0][0] - A[0][1]) / (A[0][0] + A[1][1] - 2*A[0][1]); // BQ*BC / BC*BC
                 if (pBC < 0.000001)
                 {
                     // closest point is B
@@ -360,7 +360,7 @@ int MeshIntTool::doIntersectionTrianglePoint(double dist2, int flags, const Vect
 }
 
 
-int MeshIntTool::computeIntersection(Capsule& cap, Triangle& tri,double alarmDist,double contactDist,OutputVector* contacts){
+int MeshIntTool::computeIntersection(Capsule& cap, Triangle& tri,SReal alarmDist,SReal contactDist,OutputVector* contacts){
     const int tri_flg = tri.flags();
 
     int id = cap.getIndex();
@@ -368,14 +368,14 @@ int MeshIntTool::computeIntersection(Capsule& cap, Triangle& tri,double alarmDis
 
     const Vector3 cap_p1 = cap.point1();
     const Vector3 cap_p2 = cap.point2();
-    double cap_rad = cap.radius();
-    double dist2 = (alarmDist + cap_rad) * (alarmDist + cap_rad);
+    SReal cap_rad = cap.radius();
+    SReal dist2 = (alarmDist + cap_rad) * (alarmDist + cap_rad);
 
     const Vector3 tri_p1 = tri.p1();
     const Vector3 tri_p2 = tri.p2();
     const Vector3 tri_p3 = tri.p3();
 
-    double substract_dist = contactDist + cap_rad;
+    SReal substract_dist = contactDist + cap_rad;
     n += doIntersectionTrianglePoint(dist2,tri_flg,tri_p1,tri_p2,tri_p3,cap_p1,contacts,true);
     n += doIntersectionTrianglePoint(dist2,tri_flg,tri_p1,tri_p2,tri_p3,cap_p2,contacts,true);
 
@@ -428,7 +428,7 @@ int MeshIntTool::computeIntersection(Capsule& cap, Triangle& tri,double alarmDis
 }
 
 
-int MeshIntTool::computeIntersection(Triangle& tri,int flags,OBB & obb,double alarmDist,double contactDist,OutputVector* contacts){
+int MeshIntTool::computeIntersection(Triangle& tri,int flags,OBB & obb,SReal alarmDist,SReal contactDist,OutputVector* contacts){
     IntrTriangleOBB intr(tri,obb);
     if(intr.Find(alarmDist,flags)){
         OBB::Real dist2 = (intr.pointOnFirst() - intr.pointOnSecond()).norm2();
@@ -470,10 +470,10 @@ int MeshIntTool::projectPointOnTriangle(int flags, const Vector3& p1, const Vect
     A[0][1] = A[1][0] = AB*AC;
     b[0] = AQ*AB;
     b[1] = AQ*AC;
-    const double det = determinant(A);
+    const SReal det = determinant(A);
 
-    double alpha = 0.5;
-    double beta = 0.5;
+    SReal alpha = 0.5;
+    SReal beta = 0.5;
 
     //if (det < -0.000000000001 || det > 0.000000000001)
     {
@@ -487,9 +487,9 @@ int MeshIntTool::projectPointOnTriangle(int flags, const Vector3& p1, const Vect
         {
             // nearest point is on an edge or corner
             // barycentric coordinate on AB
-            double pAB = b[0] / A[0][0]; // AQ*AB / AB*AB
+            SReal pAB = b[0] / A[0][0]; // AQ*AB / AB*AB
             // barycentric coordinate on AC
-            double pAC = b[1] / A[1][1]; // AQ*AB / AB*AB
+            SReal pAC = b[1] / A[1][1]; // AQ*AB / AB*AB
             if (pAB < 0.000001 && pAC < 0.0000001)
             {
                 // closest point is A
@@ -515,7 +515,7 @@ int MeshIntTool::projectPointOnTriangle(int flags, const Vector3& p1, const Vect
             {
                 // barycentric coordinate on BC
                 // BQ*BC / BC*BC = (AQ-AB)*(AC-AB) / (AC-AB)*(AC-AB) = (AQ*AC-AQ*AB + AB*AB-AB*AC) / (AB*AB+AC*AC-2AB*AC)
-                double pBC = (b[1] - b[0] + A[0][0] - A[0][1]) / (A[0][0] + A[1][1] - 2*A[0][1]); // BQ*BC / BC*BC
+                SReal pBC = (b[1] - b[0] + A[0][0] - A[0][1]) / (A[0][0] + A[1][1] - 2*A[0][1]); // BQ*BC / BC*BC
                 if (pBC < 0.000001)
                 {
                     // closest point is B
@@ -546,7 +546,7 @@ int MeshIntTool::projectPointOnTriangle(int flags, const Vector3& p1, const Vect
     return 1;
 }
 
-void MeshIntTool::triangleBaryCoords(const Vector3& to_be_projected,const Vector3& p1, const Vector3& p2, const Vector3& p3,double & alpha,double & beta){
+void MeshIntTool::triangleBaryCoords(const Vector3& to_be_projected,const Vector3& p1, const Vector3& p2, const Vector3& p3,SReal & alpha,SReal & beta){
     const Vector3 AB = p2-p1;
     const Vector3 AC = p3-p1;
     const Vector3 AQ = to_be_projected -p1;
@@ -557,7 +557,7 @@ void MeshIntTool::triangleBaryCoords(const Vector3& to_be_projected,const Vector
     A[0][1] = A[1][0] = AB*AC;
     b[0] = AQ*AB;
     b[1] = AQ*AC;
-    const double det = determinant(A);
+    const SReal det = determinant(A);
 
     alpha = 0.5;
     beta = 0.5;
@@ -574,9 +574,9 @@ void MeshIntTool::triangleBaryCoords(const Vector3& to_be_projected,const Vector
         {
             // nearest point is on an edge or corner
             // barycentric coordinate on AB
-            double pAB = b[0] / A[0][0]; // AQ*AB / AB*AB
+            SReal pAB = b[0] / A[0][0]; // AQ*AB / AB*AB
             // barycentric coordinate on AC
-            double pAC = b[1] / A[1][1]; // AQ*AC / AB*AB
+            SReal pAC = b[1] / A[1][1]; // AQ*AC / AB*AB
             if (pAB < 0 && pAC < 0)
             {
                 // closest point is A
@@ -599,7 +599,7 @@ void MeshIntTool::triangleBaryCoords(const Vector3& to_be_projected,const Vector
             {
                 // barycentric coordinate on BC
                 // BQ*BC / BC*BC = (AQ-AB)*(AC-AB) / (AC-AB)*(AC-AB) = (AQ*AC-AQ*AB + AB*AB-AB*AC) / (AB*AB+AC*AC-2AB*AC)
-                double pBC = (b[1] - b[0] + A[0][0] - A[0][1]) / (A[0][0] + A[1][1] - 2*A[0][1]); // BQ*BC / BC*BC
+                SReal pBC = (b[1] - b[0] + A[0][0] - A[0][1]) / (A[0][0] + A[1][1] - 2*A[0][1]); // BQ*BC / BC*BC
                 if (pBC < 0)
                 {
                     // closest point is B
