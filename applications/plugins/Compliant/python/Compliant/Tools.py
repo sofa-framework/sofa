@@ -36,6 +36,9 @@ def scene(node):
 
     ode = node.createObject('AssembledSolver',
                             name='ode' )
-    
+
+    # TODO is this needed ?
+    group = node.createObject('CollisionGroup', name = 'group' )
+
     return node.createChild('scene') 
 

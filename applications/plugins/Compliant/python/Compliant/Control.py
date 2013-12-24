@@ -24,7 +24,7 @@ class PID:
     def apply(self, tau): 
         self.dofs.externalForce = Tools.cat( [tau * ei for ei in self.basis] )
 
-    def pid(self):
+    def pid(self, dt):
         p = Vec.dot(self.basis, self.dofs.position[0]) - self.ref_pos
         d = Vec.dot(self.basis, self.dofs.velocity[0]) - self.ref_vel
         i = self.integral + dt * p
@@ -33,7 +33,7 @@ class PID:
 
     # you probably want to call this during onBeginAnimationStep
     def update(self, dt):
-        e, e_sum, e_dot = self.pid()
+        e, e_sum, e_dot = self.pid(dt)
         
         tau = self.kp * e + self.ki * e_sum + self.kd * e_dot
     
