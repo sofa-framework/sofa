@@ -55,7 +55,7 @@
 #include <algorithm>
 #include <iostream>
 
-#include <sofa/component/collision/MeshIntTool.h>
+//#include <sofa/component/collision/MeshIntTool.h>
 
 
 namespace sofa
@@ -299,14 +299,83 @@ int BarycentricMapperMeshTopology<In,Out>::createPointInLine ( const typename Ou
     return this->addPointInLine ( lineIndex, baryCoords );
 }
 
-
 template <class In, class Out>
 int BarycentricMapperMeshTopology<In,Out>::createPointInTriangle ( const typename Out::Coord& p, int triangleIndex, const typename In::VecCoord* points )
 {
     SReal baryCoords[2];
     const sofa::core::topology::BaseMeshTopology::Triangle& elem = this->fromTopology->getTriangle ( triangleIndex );
 
-    sofa::component::collision::MeshIntTool::triangleBaryCoords(Out::getCPos(p),( *points ) [elem[0]],( *points ) [elem[1]],( *points ) [elem[2]],baryCoords[0],baryCoords[1]);
+    const typename In::Coord & p1 = ( *points ) [elem[0]];
+    const typename In::Coord & p2 = ( *points ) [elem[1]];
+    const typename In::Coord & p3 = ( *points ) [elem[2]];
+    const typename In::Coord & to_be_projected = Out::getCPos(p);
+
+    const typename In::Coord AB = p2-p1;
+    const typename In::Coord AC = p3-p1;
+    const typename In::Coord AQ = to_be_projected -p1;
+    Mat<2,2,typename In::Real> A;
+    Vec<2,typename In::Real> b;
+    A[0][0] = AB*AB;
+    A[1][1] = AC*AC;
+    A[0][1] = A[1][0] = AB*AC;
+    b[0] = AQ*AB;
+    b[1] = AQ*AC;
+    const typename In::Real det = determinant(A);
+
+    baryCoords[0] = (b[0]*A[1][1] - b[1]*A[0][1])/det;
+    baryCoords[1]  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
+
+    if (baryCoords[0] < 0 || baryCoords[1] < 0 || baryCoords[0] + baryCoords[1] > 1)
+    {
+        // nearest point is on an edge or corner
+        // barycentric coordinate on AB
+        SReal pAB = b[0] / A[0][0]; // AQ*AB / AB*AB
+        // barycentric coordinate on AC
+        SReal pAC = b[1] / A[1][1]; // AQ*AC / AB*AB
+        if (pAB < 0 && pAC < 0)
+        {
+            // closest point is A
+            baryCoords[0] = 0.0;
+            baryCoords[1] = 0.0;
+        }
+        else if (pAB < 1 && baryCoords[1] < 0)
+        {
+            // closest point is on AB
+            baryCoords[0] = pAB;
+            baryCoords[1] = 0.0;
+        }
+        else if (pAC < 1 && baryCoords[0] < 0)
+        {
+            // closest point is on AC
+            baryCoords[0] = 0.0;
+            baryCoords[1] = pAC;
+        }
+        else
+        {
+            // barycentric coordinate on BC
+            // BQ*BC / BC*BC = (AQ-AB)*(AC-AB) / (AC-AB)*(AC-AB) = (AQ*AC-AQ*AB + AB*AB-AB*AC) / (AB*AB+AC*AC-2AB*AC)
+            SReal pBC = (b[1] - b[0] + A[0][0] - A[0][1]) / (A[0][0] + A[1][1] - 2*A[0][1]); // BQ*BC / BC*BC
+            if (pBC < 0)
+            {
+                // closest point is B
+                baryCoords[0] = 1.0;
+                baryCoords[1] = 0.0;
+            }
+            else if (pBC > 1)
+            {
+                // closest point is C
+                baryCoords[0] = 0.0;
+                baryCoords[1] = 1.0;
+            }
+            else
+            {
+                // closest point is on BC
+                baryCoords[0] = 1.0-pBC;
+                baryCoords[1] = pBC;
+            }
+        }
+    }
+
 //    typename In::Coord pos = Out::getCPos(p) - p0;
 //    // First project to plane
 //    typename In::Coord normal = cross ( pA, pB );
