@@ -320,7 +320,7 @@ protected:
 
     /// insert a ConstraintValue component in the given graph depending on restitution/damping values
     template<class contact_dofs_type>
-    void addConstraintValue( node_type* node, contact_dofs_type* dofs, real damping, real restitution=0 )
+    void addConstraintValue( node_type* node, contact_dofs_type* dofs, real damping, real restitution=0, unsigned size = 1)
     {
         //assert( restitution_coef.getValue()>=0 && restitution_coef.getValue() <= 1 ); // commented out by FF because restitution_coef is not declared
 
@@ -332,9 +332,16 @@ protected:
             constraintValue->restitution.setValue( restitution );
 
             // don't activate non-penetrating contacts
-            edit(constraintValue->mask)->resize( this->mappedContacts.size() );
+            edit(constraintValue->mask)->resize( size * this->mappedContacts.size() );
             for(unsigned i = 0; i < this->mappedContacts.size(); ++i) {
-                (*edit(constraintValue->mask))[i] = ( (*this->contacts)[i].value <= 0 );
+				// (max) watch out: editor is destroyed just after
+				// operator* is called, thus endEdit is called at this
+				// time !
+                (*edit(constraintValue->mask))[size * i] = ( (*this->contacts)[i].value <= 0 );
+
+				for(unsigned j = 1; j < size; ++j) {
+					(*edit(constraintValue->mask))[size * i + j] = false;
+				}
             }
 
             constraintValue->init();
@@ -353,10 +360,14 @@ protected:
             stab_type::SPtr stab = sofa::core::objectmodel::New<stab_type>( dofs );
             node->addObject( stab.get() );
 
-            // don't stabilize non-penetrating contacts
-            edit(stab->mask)->resize( this->mappedContacts.size() );
+            // don't stabilize non-penetrating contacts (normal component only)
+            edit(stab->mask)->resize( size * this->mappedContacts.size() );
             for(unsigned i = 0; i < this->mappedContacts.size(); ++i) {
-                (*edit(stab->mask))[i] = ( (*this->contacts)[i].value <= 0 );
+                (*edit(stab->mask))[size * i] = ( (*this->contacts)[i].value <= 0 );
+
+				for(unsigned j = 1; j < size; ++j) {
+					(*edit(stab->mask))[size * i + j] = false;
+				}
             }
 
             stab->init();
