@@ -175,6 +175,7 @@ class Body:
                                                position = '@loader.position')
                         
 			collision.createObject('TriangleModel', 
+                                               name = 'model',
                                                template = 'Vec3d' )
                         
 			collision.createObject('RigidMapping',
