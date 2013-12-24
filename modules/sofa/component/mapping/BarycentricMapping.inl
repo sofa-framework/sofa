@@ -305,9 +305,6 @@ int BarycentricMapperMeshTopology<In,Out>::createPointInTriangle ( const typenam
 {
     SReal baryCoords[2];
     const sofa::core::topology::BaseMeshTopology::Triangle& elem = this->fromTopology->getTriangle ( triangleIndex );
-    const typename In::Coord p0 = ( *points ) [elem[0]];
-    const typename In::Coord pA = ( *points ) [elem[1]] - p0;
-    const typename In::Coord pB = ( *points ) [elem[2]] - p0;
 
     sofa::component::collision::MeshIntTool::triangleBaryCoords(Out::getCPos(p),( *points ) [elem[0]],( *points ) [elem[1]],( *points ) [elem[2]],baryCoords[0],baryCoords[1]);
 //    typename In::Coord pos = Out::getCPos(p) - p0;
