@@ -159,24 +159,12 @@ public:
             typename DataTypes2::Real r2 = 0.0;
 
             // Create mapping for first point
-            mappedContacts[i].index1 = mapper1.addPointB(o.point[0], index1, r1
-                                             #ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                                                         , o.baryCoords[0]
-                                             #endif
-                                                         );
+            mappedContacts[i].index1 = mapper1.addPointB(o.point[0], index1, r1, o.baryCoords[0]);
 
             // Create mapping for second point
             mappedContacts[i].index2 = this->selfCollision ?
-                        mapper1.addPointB(o.point[1], index2, r2
-                              #ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                                          , o.baryCoords[1]
-                              #endif
-                                          ) :
-                        mapper2.addPointB(o.point[1], index2, r2
-                              #ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                                          , o.baryCoords[1]
-                              #endif
-                                          );
+                        mapper1.addPointB(o.point[1], index2, r2, o.baryCoords[1]) :
+                        mapper2.addPointB(o.point[1], index2, r2, o.baryCoords[1]);
 
 //            mappedContacts[i].distance = d0 + r1 + r2;
 
