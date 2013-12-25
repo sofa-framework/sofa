@@ -17,6 +17,7 @@ set(HEADER_FILES
     mapping/ContactMapping.h
     mapping/MaskMapping.h
     mapping/ProjectionMapping.h
+    mapping/RigidComMultiMapping.h
 
     numericalsolver/KKTSolver.h
     numericalsolver/LDLTSolver.h
@@ -95,6 +96,7 @@ set(SOURCE_FILES
     mapping/ContactMapping.cpp
     mapping/MaskMapping.cpp 
     mapping/ProjectionMapping.cpp
+    mapping/RigidComMultiMapping.cpp
 
     numericalsolver/LDLTSolver.cpp
     numericalsolver/MinresSolver.cpp

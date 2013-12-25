@@ -47,3 +47,16 @@ def scene(node):
 
     return node.createChild('scene') 
 
+
+# recursive find (nodes only, depth-first)
+def find(root, name):
+    
+    if root.name == name:
+        return root
+        
+    for c in root.getChildren():
+        res = find(c, name)
+        if res != None: 
+            return res
+
+    return None
