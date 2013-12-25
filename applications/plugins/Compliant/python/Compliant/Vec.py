@@ -37,4 +37,30 @@ def cross(x, y):
              x[2] * y[0] - x[0] * y[2],
              x[0] * y[1] - x[1] * y[0] ]
 
+# eases long operations
+class Proxy:
+    def __init__(self, data):
+        self.data = data
+
+    def __add__(self, other):
+        return Proxy( sum(self.data, other.data) )
+
+    def __sub__(self, other):
+        return Proxy( diff(self.data, other.data) )
+
+    def __rmul__(self, scalar):
+        return Proxy( scal(scalar, self.data) )
+
+    def norm2(self): 
+        return norm2(self.data)
+
+    def norm(self): 
+        return norm(self.data)
+
+    def dot(self, other): 
+        return dot(self.data, other.data)
+
+
+    
+
 
