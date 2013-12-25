@@ -147,7 +147,7 @@ class Body:
                 mass_node = res
                 
                 if self.offset != None:
-                        mass_node = res.createChild('mapped mass')
+                        mass_node = res.createChild('mapped_mass')
                         self.offset.insert(mass_node, name = 'dofs')
                         mapping = mass_node.createObject('AssembledRigidRigidMapping',
                                                          template = 'Rigid',
@@ -371,7 +371,10 @@ class RevoluteJoint(Joint):
 
                 limit.createObject('UniformCompliance', template = 'Vec1d', compliance = '0' )
                 limit.createObject('UnilateralConstraint');
-                limit.createObject('Stabilization');
+
+                # don't stabilize as we need to detect violated
+                # constraints first
+                # limit.createObject('Stabilization');
 
                 set = []
                 position = []

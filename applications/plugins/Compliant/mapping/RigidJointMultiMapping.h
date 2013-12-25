@@ -8,8 +8,6 @@
 #include "utils/map.h"
 #include "utils/edit.h"
 
-#include <sofa/core/ObjectFactory.h>
-
 namespace sofa {
 
 namespace component {

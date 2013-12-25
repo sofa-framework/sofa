@@ -3,6 +3,8 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/MultiMapping.inl>
 
+#include <sofa/core/ObjectFactory.h>
+
 namespace sofa
 {
 
