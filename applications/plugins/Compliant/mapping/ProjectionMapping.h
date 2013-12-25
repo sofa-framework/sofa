@@ -88,8 +88,8 @@ protected:
 
 		for( unsigned i = 0, n = s.size(); i < n; ++i) {
 			
-			SReal delta = off.empty() ? 0 : std::min<int>(off.size() - 1, i);
-
+			SReal delta = off.empty() ? 0 : off[ std::min<int>(off.size() - 1, i) ];
+			
 			map(out[i])(0) = map(in[s[i].pair.first]).dot( map(s[i].pair.second ) ) - delta;
 		}
 		
