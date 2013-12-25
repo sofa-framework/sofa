@@ -30,8 +30,17 @@ class PID:
 
     # applies a 1D torque to the joint, through the wrench basis
     def apply(self, tau): 
-        self.dofs.externalForce = Tools.cat( [tau * ei for ei in self.basis] )
 
+        current = self.dofs.externalForce
+        value = [tau * ei for ei in self.basis]
+        
+        # TODO optimize ? setting the list directly does not work
+        # across time steps :-/
+        if len(current) == 0:
+            self.dofs.externalForce = Tools.cat(value)
+        else:
+            self.dofs.externalForce = Tools.cat( Vec.sum(current[0], value) )
+        
     def pid(self, dt):
         p = Vec.dot(self.basis, self.dofs.position[0]) - self.ref_pos
         d = Vec.dot(self.basis, self.dofs.velocity[0]) - self.ref_vel
