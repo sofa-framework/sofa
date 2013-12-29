@@ -27,47 +27,19 @@
 #include "Sofa_test.h"
 #include <sofa/component/init.h>
 #include <plugins/SceneCreator/SceneCreator.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
-
-#include <sofa/component/odesolver/EulerImplicitSolver.h>
-#include <sofa/component/linearsolver/CGLinearSolver.h>
-#include <sofa/component/linearsolver/FullVector.h>
-#include <sofa/simulation/common/MechanicalVisitor.h>
-#include <plugins/SceneCreator/GetVectorVisitor.h>
-#include <plugins/SceneCreator/GetAssembledSizeVisitor.h>
-
-using std::cout;
-using std::cerr;
-using std::endl;
-
 
 namespace sofa
 {
-//using namespace simulation;
-//using namespace modeling;
-//using namespace component;
-//typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
-//typedef component::linearsolver::FullVector<SReal> FullVector;
+
+using namespace modeling;
 
 /** Helpers for testing Solvers */
 struct Solver_test : public Sofa_test<SReal>
 {
-    typedef Eigen::VectorXd VectorEigen;
-
 
     Solver_test(){ modeling::initSofa(); }
+    ~Solver_test(){ clearScene(); }
 
-
-
-//    /** Get the root of the scene graph
-//      @pre The scene must be initialized
-//      @sa initScene()
-//      */
-//    Node::SPtr getRoot(){ return root; }
-
-
-//protected:
-//    Node::SPtr root;
 
 };
 

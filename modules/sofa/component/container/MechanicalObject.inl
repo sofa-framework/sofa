@@ -206,8 +206,8 @@ MechanicalObject<DataTypes>::~MechanicalObject()
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
 template <class DataTypes>
 void MechanicalObject<DataTypes>::MOPointHandler::applyCreateFunction(unsigned int /*pointIndex*/, Coord& /*dest*/,
-        const sofa::helper::vector< unsigned int > &ancestors,
-        const sofa::helper::vector< double > &coefs)
+                                                                      const sofa::helper::vector< unsigned int > &ancestors,
+                                                                      const sofa::helper::vector< double > &coefs)
 {
     if (!obj)
         return;
@@ -399,7 +399,7 @@ void MechanicalObject<DataTypes>::handleStateChange()
             if (pointsAdded.pointIndexArray.size() != nbPoints)
             {
                 serr << "TOPO STATE EVENT POINTSADDED SIZE MISMATCH: "
-                    << nbPoints << " != " << pointsAdded.pointIndexArray.size() << sendl;
+                     << nbPoints << " != " << pointsAdded.pointIndexArray.size() << sendl;
             }
             for (unsigned int i=0; i<pointsAdded.pointIndexArray.size(); ++i)
             {
@@ -408,7 +408,7 @@ void MechanicalObject<DataTypes>::handleStateChange()
                 if (p1 != p2)
                 {
                     serr << "TOPO STATE EVENT POINTSADDED INDEX " << i << " MISMATCH: "
-                        << p1 << " != " << p2 << sendl;
+                         << p1 << " != " << p2 << sendl;
                 }
             }
 
@@ -468,7 +468,7 @@ void MechanicalObject<DataTypes>::handleStateChange()
 
                         if (vecDeriv.size() != 0)
                         {
-                           derivVecs.push_back(k);
+                            derivVecs.push_back(k);
                         }
                     }
                 }
@@ -1357,10 +1357,10 @@ void MechanicalObject<DataTypes>::beginIntegration(Real /*dt*/)
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::endIntegration(const core::ExecParams*
-#ifdef SOFA_SMP
-        params
-#endif
-        /* PARAMS FIRST */, Real /*dt*/    )
+                                                 #ifdef SOFA_SMP
+                                                 params
+                                                 #endif
+                                                 /* PARAMS FIRST */, Real /*dt*/    )
 {
     this->forceMask.clear();
     //By default the mask is disabled, the user has to enable it to benefit from the speedup
@@ -1370,7 +1370,7 @@ void MechanicalObject<DataTypes>::endIntegration(const core::ExecParams*
     if (params->execMode() == core::ExecParams::EXEC_KAAPI)
     {
         BaseObject::Task<vClear<VecDeriv,Deriv> >
-        (this,**defaulttype::getShared(*this->write(VecDerivId::externalForce())),0);
+                (this,**defaulttype::getShared(*this->write(VecDerivId::externalForce())),0);
     }
     else
 #endif /* SOFA_SMP */
@@ -1387,8 +1387,8 @@ void MechanicalObject<DataTypes>::accumulateForce(const core::ExecParams* params
     if (params->execMode() == core::ExecParams::EXEC_KAAPI)
     {
         BaseObject::Task < vPEq2 <  VecDeriv, VecDeriv > >
-        (this, **defaulttype::getShared(*this->write(VecDerivId::force())),
-         **defaulttype::getShared(*this->read(ConstVecDerivId::externalForce())));
+                (this, **defaulttype::getShared(*this->write(VecDerivId::force())),
+                 **defaulttype::getShared(*this->read(ConstVecDerivId::externalForce())));
     }
     else
 #endif /* SOFA_SMP */
@@ -2135,14 +2135,14 @@ void MechanicalObject<DataTypes>::vMultiOp(const core::ExecParams* params /* PAR
 {
     // optimize common integration case: v += a*dt, x += v*dt
     if (ops.size() == 2
-        && ops[0].second.size() == 2
-        && ops[0].first.getId(this) == ops[0].second[0].first.getId(this)
-        && ops[0].first.getId(this).type == sofa::core::V_DERIV
-        && ops[0].second[1].first.getId(this).type == sofa::core::V_DERIV
-        && ops[1].second.size() == 2
-        && ops[1].first.getId(this) == ops[1].second[0].first.getId(this)
-        && ops[0].first.getId(this) == ops[1].second[1].first.getId(this)
-        && ops[1].first.getId(this).type == sofa::core::V_COORD)
+            && ops[0].second.size() == 2
+            && ops[0].first.getId(this) == ops[0].second[0].first.getId(this)
+            && ops[0].first.getId(this).type == sofa::core::V_DERIV
+            && ops[0].second[1].first.getId(this).type == sofa::core::V_DERIV
+            && ops[1].second.size() == 2
+            && ops[1].first.getId(this) == ops[1].second[0].first.getId(this)
+            && ops[0].first.getId(this) == ops[1].second[1].first.getId(this)
+            && ops[1].first.getId(this).type == sofa::core::V_COORD)
     {
         helper::ReadAccessor< Data<VecDeriv> > va( params, *this->read(ConstVecDerivId(ops[0].second[1].first.getId(this))) );
         helper::WriteAccessor< Data<VecDeriv> > vv( params, *this->write(VecDerivId(ops[0].first.getId(this))) );
@@ -2197,7 +2197,7 @@ void MechanicalObject<DataTypes>::vMultiOp(const core::ExecParams* params /* PAR
             && ops[0].second.size()==1
             && ops[0].second[0].second == 1.0
             && ops[1].second.size()==3
-           )
+            )
     {
         helper::ReadAccessor< Data<VecCoord> > v11( params, *this->read(ConstVecCoordId(ops[0].second[0].first.getId(this))) );
         helper::ReadAccessor< Data<VecCoord> > v21( params, *this->read(ConstVecCoordId(ops[1].second[0].first.getId(this))) );
@@ -2286,6 +2286,67 @@ double MechanicalObject<DataTypes>::vDot(const core::ExecParams* params /* PARAM
     else
     {
         serr << "Invalid dot operation ("<<a<<','<<b<<")" << sendl;
+    }
+
+    return r;
+}
+
+typedef std::size_t nat;
+
+template <class DataTypes>
+double MechanicalObject<DataTypes>::vSum(const core::ExecParams* params, ConstVecId a, unsigned l)
+{
+    Real r = 0.0;
+
+    if (a.type == sofa::core::V_COORD )
+    {
+        serr << "Invalid vSum operation: can not compute the sum of V_Coord terms in vector "<< a << sendl;
+    }
+    else if (a.type == sofa::core::V_DERIV)
+    {
+        const VecDeriv &va = this->read(ConstVecDerivId(a))->getValue(params);
+
+        if( l==0 ) for (nat i=0; i<va.size(); i++)
+        {
+            for(unsigned j=0; j<DataTypes::deriv_total_size; j++)
+                if ( fabs(va[i][j])>r) r=fabs(va[i][j]);
+        }
+        else for (unsigned int i=0; i<va.size(); i++)
+        {
+            for(unsigned j=0; j<DataTypes::deriv_total_size; j++)
+                r += (Real) exp(va[i][j]/l);
+        }
+    }
+    else
+    {
+        serr << "Invalid vSum operation ("<<a<<")" << sendl;
+    }
+
+    return r;
+}
+
+template <class DataTypes>
+double MechanicalObject<DataTypes>::vMax(const core::ExecParams* params, ConstVecId a )
+{
+    Real r = 0.0;
+
+    if (a.type == sofa::core::V_COORD )
+    {
+        serr << "Invalid vMax operation: can not compute the max of V_Coord terms in vector "<< a << sendl;
+    }
+    else if (a.type == sofa::core::V_DERIV)
+    {
+        const VecDeriv &va = this->read(ConstVecDerivId(a))->getValue(params);
+
+        for (nat i=0; i<va.size(); i++)
+        {
+            for(unsigned j=0; j<DataTypes::deriv_total_size; j++)
+                if (fabs(va[i][j])>r) r=fabs(va[i][j]);
+        }
+    }
+    else
+    {
+        serr << "Invalid vMax operation ("<<a<<")" << sendl;
     }
 
     return r;
@@ -2711,21 +2772,21 @@ void MechanicalObject < DataTypes >::vOpMEq (const core::ExecParams* /* params *
         if (b.type == sofa::core::V_COORD)
         {
             BaseObject::Task < vOpMinusEqualMult < DataTypes, VecCoord, VecCoord > >
-            (this, **defaulttype::getShared(*this->write(VecCoordId(v))),
-             **defaulttype::getShared(*this->read(ConstVecCoordId(b))), *f);
+                    (this, **defaulttype::getShared(*this->write(VecCoordId(v))),
+                     **defaulttype::getShared(*this->read(ConstVecCoordId(b))), *f);
         }
         else
         {
             BaseObject::Task < vOpMinusEqualMult < DataTypes, VecCoord, VecDeriv > >
-            (this, **defaulttype::getShared(*this->write(VecCoordId(v))),
-             **defaulttype::getShared(*this->read(ConstVecDerivId(b))), *f);
+                    (this, **defaulttype::getShared(*this->write(VecCoordId(v))),
+                     **defaulttype::getShared(*this->read(ConstVecDerivId(b))), *f);
         }
     }
     else if (b.type == sofa::core::V_DERIV)
     {
         BaseObject::Task < vOpMinusEqualMult < DataTypes, VecDeriv, VecDeriv > >
-        (this, **defaulttype::getShared(*this->write(VecDerivId(v))),
-         **defaulttype::getShared(*this->read(ConstVecDerivId(b))), *f);
+                (this, **defaulttype::getShared(*this->write(VecDerivId(v))),
+                 **defaulttype::getShared(*this->read(ConstVecDerivId(b))), *f);
         // helper::ReadAccessor< Data<VecCoord> > vSrc = *this->read(ConstVecCoordId(src));
         // helper::ReadAccessor< Data<VecCoord> > x_rA = *this->read(ConstVecCoordId::position());
     }
@@ -2757,7 +2818,7 @@ void MechanicalObject < DataTypes >::vOp (const core::ExecParams* params /* PARA
         {
             // ERROR
             serr << "Invalid vOp operation (" << v << ',' << a << ','
-                    << b << ',' << f << ")" << sendl;
+                 << b << ',' << f << ")" << sendl;
             return;
         }
         if (a.isNull ())
@@ -2768,8 +2829,8 @@ void MechanicalObject < DataTypes >::vOp (const core::ExecParams* params /* PARA
                 if (v.type == sofa::core::V_COORD)
                 {
                     BaseObject::Task < vClear < VecCoord,Coord > >
-                    (this,**defaulttype::getShared(*this->write(VecCoordId(v))),
-                     (unsigned) (this->vsize));
+                            (this,**defaulttype::getShared(*this->write(VecCoordId(v))),
+                             (unsigned) (this->vsize));
 
                     /*unsigned int vt=ExecutionGraph::add_operation("v=0");
                      ExecutionGraph::read_var(vt,vv);
@@ -2778,8 +2839,8 @@ void MechanicalObject < DataTypes >::vOp (const core::ExecParams* params /* PARA
                 else
                 {
                     BaseObject::Task < vClear < VecDeriv,Deriv > >
-                    (this,**defaulttype::getShared(*this->write(VecDerivId(v))),
-                     (unsigned) (this->vsize));
+                            (this,**defaulttype::getShared(*this->write(VecDerivId(v))),
+                             (unsigned) (this->vsize));
                     /*unsigned int vt=ExecutionGraph::add_operation("v=0");
                      ExecutionGraph::read_var(vt,vv);
                      ExecutionGraph::write_var(vt,vv);
@@ -2806,7 +2867,7 @@ void MechanicalObject < DataTypes >::vOp (const core::ExecParams* params /* PARA
                          ExecutionGraph::read_var(vt,vv);
                          ExecutionGraph::write_var(vt,vv); */
                         BaseObject::Task < vTEq < VecCoord, Real > >
-                        (this,**defaulttype::getShared(*this->write(VecCoordId(v))), f);
+                                (this,**defaulttype::getShared(*this->write(VecCoordId(v))), f);
                     }
                     else
                     {
@@ -2816,7 +2877,7 @@ void MechanicalObject < DataTypes >::vOp (const core::ExecParams* params /* PARA
                          ExecutionGraph::write_var(vt,vv);
                          */
                         BaseObject::Task < vTEq < VecDeriv, Real > >
-                        (this,**defaulttype::getShared(*this->write(VecDerivId(v))), f);
+                                (this,**defaulttype::getShared(*this->write(VecDerivId(v))), f);
                     }
                 }
                 else
@@ -2825,16 +2886,16 @@ void MechanicalObject < DataTypes >::vOp (const core::ExecParams* params /* PARA
                     if (v.type == sofa::core::V_COORD)
                     {
                         BaseObject::Task < vEqBF < VecCoord,Real > >
-                        (this,**defaulttype::getShared(*this->write(VecCoordId(v))),
-                         **defaulttype::getShared(*this->read(ConstVecCoordId(b))), f);
+                                (this,**defaulttype::getShared(*this->write(VecCoordId(v))),
+                                 **defaulttype::getShared(*this->read(ConstVecCoordId(b))), f);
                         // >(this,**getVecCoord (b.index), TODO : check order
                         // **getVecCoord (v.index), f);
                     }
                     else
                     {
                         BaseObject::Task < vEqBF < VecDeriv,Real > >
-                        (this,**defaulttype::getShared(*this->write(VecDerivId(v))),
-                         **defaulttype::getShared(*this->read(ConstVecDerivId(b))), f);
+                                (this,**defaulttype::getShared(*this->write(VecDerivId(v))),
+                                 **defaulttype::getShared(*this->read(ConstVecDerivId(b))), f);
                         // *getVecDeriv (b.index), TODO : check order
                         // **getVecDeriv (v.index), f);
                     }
@@ -2856,14 +2917,14 @@ void MechanicalObject < DataTypes >::vOp (const core::ExecParams* params /* PARA
                 if (v.type == sofa::core::V_COORD)
                 {
                     BaseObject::Task < vAssign < VecCoord > >
-                    (this,**defaulttype::getShared(*this->write(VecCoordId(v))),
-                     **defaulttype::getShared(*this->read(ConstVecCoordId(a))));
+                            (this,**defaulttype::getShared(*this->write(VecCoordId(v))),
+                             **defaulttype::getShared(*this->read(ConstVecCoordId(a))));
                 }
                 else
                 {
                     BaseObject::Task < vAssign < VecDeriv > >
-                    (this,**defaulttype::getShared(*this->write(VecDerivId(v))),
-                     **defaulttype::getShared(*this->read(ConstVecDerivId(a))));
+                            (this,**defaulttype::getShared(*this->write(VecDerivId(v))),
+                             **defaulttype::getShared(*this->read(ConstVecDerivId(a))));
                 }
             }
             else
@@ -2879,22 +2940,22 @@ void MechanicalObject < DataTypes >::vOp (const core::ExecParams* params /* PARA
                             if (b.type == sofa::core::V_COORD)
                             {
                                 BaseObject::Task < vPEq < VecCoord, VecCoord > >
-                                (this,**defaulttype::getShared(*this->write(VecCoordId(v))),
-                                 **defaulttype::getShared(*this->read(ConstVecCoordId(v))));
+                                        (this,**defaulttype::getShared(*this->write(VecCoordId(v))),
+                                         **defaulttype::getShared(*this->read(ConstVecCoordId(v))));
                             }
                             else
                             {
                                 BaseObject::Task < vPEq < VecCoord, VecDeriv > >
-                                (this,**defaulttype::getShared(*this->write(VecCoordId(v))),
-                                 **defaulttype::getShared(*this->read(ConstVecDerivId(v))));
+                                        (this,**defaulttype::getShared(*this->write(VecCoordId(v))),
+                                         **defaulttype::getShared(*this->read(ConstVecDerivId(v))));
                             }
                         }
                         else if (b.type == sofa::core::V_DERIV)
                         {
 
                             BaseObject::Task < vPEq <  VecDeriv, VecDeriv > >
-                            (this,**defaulttype::getShared(*this->write(VecDerivId(v))),
-                             **defaulttype::getShared(*this->read(ConstVecDerivId(v))));
+                                    (this,**defaulttype::getShared(*this->write(VecDerivId(v))),
+                                     **defaulttype::getShared(*this->read(ConstVecDerivId(v))));
                         }
                         else
                         {
@@ -2914,14 +2975,14 @@ void MechanicalObject < DataTypes >::vOp (const core::ExecParams* params /* PARA
                                 if (fSh)
                                 {
                                     BaseObject::Task < vPEqBF < DataTypes, VecCoord, VecCoord > >
-                                    (this,**defaulttype::getShared(*this->write(VecCoordId(v))),
-                                     **defaulttype::getShared(*this->read(ConstVecCoordId(b))), *fSh, f);
+                                            (this,**defaulttype::getShared(*this->write(VecCoordId(v))),
+                                             **defaulttype::getShared(*this->read(ConstVecCoordId(b))), *fSh, f);
                                 }
                                 else
                                 {
                                     BaseObject::Task < vPEqBF < DataTypes, VecCoord, VecCoord > >
-                                    (this,**defaulttype::getShared(*this->write(VecCoordId(v))),
-                                     **defaulttype::getShared(*this->read(ConstVecCoordId(b))), f);
+                                            (this,**defaulttype::getShared(*this->write(VecCoordId(v))),
+                                             **defaulttype::getShared(*this->read(ConstVecCoordId(b))), f);
                                 }
                             }
                             else
@@ -2929,14 +2990,14 @@ void MechanicalObject < DataTypes >::vOp (const core::ExecParams* params /* PARA
                                 if (fSh)
                                 {
                                     BaseObject::Task < vPEqBF < DataTypes, VecCoord, VecDeriv > >
-                                    (this,**defaulttype::getShared(*this->write(VecCoordId(v))),
-                                     **defaulttype::getShared(*this->read(ConstVecDerivId(b))),*fSh, f);
+                                            (this,**defaulttype::getShared(*this->write(VecCoordId(v))),
+                                             **defaulttype::getShared(*this->read(ConstVecDerivId(b))),*fSh, f);
                                 }
                                 else
                                 {
                                     BaseObject::Task < vPEqBF < DataTypes, VecCoord, VecDeriv > >
-                                    (this,**defaulttype::getShared(*this->write(VecCoordId(v))),
-                                     **defaulttype::getShared(*this->read(ConstVecDerivId(b))), f);
+                                            (this,**defaulttype::getShared(*this->write(VecCoordId(v))),
+                                             **defaulttype::getShared(*this->read(ConstVecDerivId(b))), f);
                                 }
                             }
                         }// v.type == sofa::core::V_COORD
@@ -2945,14 +3006,14 @@ void MechanicalObject < DataTypes >::vOp (const core::ExecParams* params /* PARA
                             if (fSh)
                             {
                                 BaseObject::Task < vPEqBF < DataTypes, VecDeriv, VecDeriv > >
-                                (this,**defaulttype::getShared(*this->write(VecDerivId(v))),
-                                 **defaulttype::getShared(*this->read(ConstVecDerivId(b))),*fSh, f);
+                                        (this,**defaulttype::getShared(*this->write(VecDerivId(v))),
+                                         **defaulttype::getShared(*this->read(ConstVecDerivId(b))),*fSh, f);
                             }
                             else
                             {
                                 BaseObject::Task < vPEqBF < DataTypes, VecDeriv, VecDeriv > >
-                                (this,**defaulttype::getShared(*this->write(VecDerivId(v))),
-                                 **defaulttype::getShared(*this->read(ConstVecDerivId(b))), f);
+                                        (this,**defaulttype::getShared(*this->write(VecDerivId(v))),
+                                         **defaulttype::getShared(*this->read(ConstVecDerivId(b))), f);
                             }
                         }
                         else
@@ -2975,21 +3036,21 @@ void MechanicalObject < DataTypes >::vOp (const core::ExecParams* params /* PARA
                             if (a.type == sofa::core::V_COORD)
                             {
                                 BaseObject::Task < vPEq < VecCoord, VecCoord > >
-                                (this,**defaulttype::getShared(*this->write(VecCoordId(v))),
-                                 **defaulttype::getShared(*this->read(ConstVecCoordId(a))));
+                                        (this,**defaulttype::getShared(*this->write(VecCoordId(v))),
+                                         **defaulttype::getShared(*this->read(ConstVecCoordId(a))));
                             }
                             else
                             {
                                 BaseObject::Task < vPEq < VecCoord, VecDeriv > >
-                                (this,**defaulttype::getShared(*this->write(VecCoordId(v))),
-                                 **defaulttype::getShared(*this->read(ConstVecDerivId(a))));
+                                        (this,**defaulttype::getShared(*this->write(VecCoordId(v))),
+                                         **defaulttype::getShared(*this->read(ConstVecDerivId(a))));
                             }
                         }
                         else if (a.type == sofa::core::V_DERIV)
                         {
                             BaseObject::Task< vPEq <VecDeriv, VecDeriv > >
-                            (this, **defaulttype::getShared(*this->write(VecDerivId(v))),
-                             **defaulttype::getShared(*this->read(ConstVecDerivId(a))));
+                                    (this, **defaulttype::getShared(*this->write(VecDerivId(v))),
+                                     **defaulttype::getShared(*this->read(ConstVecDerivId(a))));
                             // BaseObject::Task<vPEq <VecCoord,VecDeriv> >  TODO CHECK
                             //      (this,**getVecDeriv(v.index),**getVecDeriv(a.index));
                         }
@@ -3008,14 +3069,14 @@ void MechanicalObject < DataTypes >::vOp (const core::ExecParams* params /* PARA
                             if (fSh)
                             {
                                 BaseObject::Task < vOpSumMult < DataTypes, VecCoord, VecCoord > >
-                                (this, **defaulttype::getShared(*this->write(VecCoordId(v))),
-                                 **defaulttype::getShared(*this->read(ConstVecCoordId(a))), *fSh, (Real) f);
+                                        (this, **defaulttype::getShared(*this->write(VecCoordId(v))),
+                                         **defaulttype::getShared(*this->read(ConstVecCoordId(a))), *fSh, (Real) f);
                             }
                             else
                             {
                                 BaseObject::Task < vOpSumMult < DataTypes, VecCoord, VecCoord > >
-                                (this, **defaulttype::getShared(*this->write(VecCoordId(v))),
-                                 **defaulttype::getShared(*this->read(ConstVecCoordId(a))), (Real) f);
+                                        (this, **defaulttype::getShared(*this->write(VecCoordId(v))),
+                                         **defaulttype::getShared(*this->read(ConstVecCoordId(a))), (Real) f);
                             }
                         }
                         else
@@ -3023,14 +3084,14 @@ void MechanicalObject < DataTypes >::vOp (const core::ExecParams* params /* PARA
                             if (fSh)
                             {
                                 BaseObject::Task < vOpSumMult < DataTypes, VecDeriv, VecDeriv > >
-                                (this, **defaulttype::getShared(*this->write(VecDerivId(v))),
-                                 **defaulttype::getShared(*this->read(ConstVecDerivId(a))), *fSh, (Real) f);
+                                        (this, **defaulttype::getShared(*this->write(VecDerivId(v))),
+                                         **defaulttype::getShared(*this->read(ConstVecDerivId(a))), *fSh, (Real) f);
                             }
                             else
                             {
                                 BaseObject::Task < vOpSumMult < DataTypes, VecDeriv, VecDeriv > >
-                                (this, **defaulttype::getShared(*this->write(VecDerivId(v))),
-                                 **defaulttype::getShared(*this->read(ConstVecDerivId(a))), (Real) f);
+                                        (this, **defaulttype::getShared(*this->write(VecDerivId(v))),
+                                         **defaulttype::getShared(*this->read(ConstVecDerivId(a))), (Real) f);
                             }
                         }
                     }
@@ -3045,24 +3106,24 @@ void MechanicalObject < DataTypes >::vOp (const core::ExecParams* params /* PARA
                             if (b.type == sofa::core::V_COORD)
                             {
                                 BaseObject::Task < vAdd < VecCoord, VecCoord, VecCoord > >
-                                (this, **defaulttype::getShared(*this->write(VecCoordId(v))),
-                                 **defaulttype::getShared(*this->read(ConstVecCoordId(a))),
-                                 **defaulttype::getShared(*this->read(ConstVecCoordId(b))));
+                                        (this, **defaulttype::getShared(*this->write(VecCoordId(v))),
+                                         **defaulttype::getShared(*this->read(ConstVecCoordId(a))),
+                                         **defaulttype::getShared(*this->read(ConstVecCoordId(b))));
                             }
                             else
                             {
                                 BaseObject::Task < vAdd < VecCoord, VecCoord, VecDeriv > >
-                                (this, **defaulttype::getShared(*this->write(VecCoordId(v))),
-                                 **defaulttype::getShared(*this->read(ConstVecCoordId(a))),
-                                 **defaulttype::getShared(*this->read(ConstVecDerivId(b))));
+                                        (this, **defaulttype::getShared(*this->write(VecCoordId(v))),
+                                         **defaulttype::getShared(*this->read(ConstVecCoordId(a))),
+                                         **defaulttype::getShared(*this->read(ConstVecDerivId(b))));
                             }
                         }
                         else if (b.type == sofa::core::V_DERIV)
                         {
                             BaseObject::Task < vAdd < VecDeriv, VecDeriv, VecDeriv > >
-                            (this, **defaulttype::getShared(*this->write(VecDerivId(v))),
-                             **defaulttype::getShared(*this->read(ConstVecDerivId(a))),
-                             **defaulttype::getShared(*this->read(ConstVecDerivId(b))));
+                                    (this, **defaulttype::getShared(*this->write(VecDerivId(v))),
+                                     **defaulttype::getShared(*this->read(ConstVecDerivId(a))),
+                                     **defaulttype::getShared(*this->read(ConstVecDerivId(b))));
                         }
                         else
                         {
@@ -3079,24 +3140,24 @@ void MechanicalObject < DataTypes >::vOp (const core::ExecParams* params /* PARA
                             if (b.type == sofa::core::V_COORD)
                             {
                                 BaseObject::Task < vOpVeqAplusBmultF < DataTypes, VecCoord, VecCoord > >
-                                (this, **defaulttype::getShared(*this->write(VecCoordId(v))),
-                                 **defaulttype::getShared(*this->read(ConstVecCoordId(a))),
-                                 **defaulttype::getShared(*this->read(ConstVecCoordId(b))), (Real) f);
+                                        (this, **defaulttype::getShared(*this->write(VecCoordId(v))),
+                                         **defaulttype::getShared(*this->read(ConstVecCoordId(a))),
+                                         **defaulttype::getShared(*this->read(ConstVecCoordId(b))), (Real) f);
                             }
                             else
                             {
                                 BaseObject::Task < vOpVeqAplusBmultF < DataTypes, VecCoord, VecDeriv > >
-                                (this, **defaulttype::getShared(*this->write(VecCoordId(v))),
-                                 **defaulttype::getShared(*this->read(ConstVecCoordId(a))),
-                                 **defaulttype::getShared(*this->read(ConstVecDerivId(b))), (Real) f);
+                                        (this, **defaulttype::getShared(*this->write(VecCoordId(v))),
+                                         **defaulttype::getShared(*this->read(ConstVecCoordId(a))),
+                                         **defaulttype::getShared(*this->read(ConstVecDerivId(b))), (Real) f);
                             }
                         }
                         else if (b.type == sofa::core::V_DERIV)
                         {
                             BaseObject::Task < vOpVeqAplusBmultF < DataTypes, VecDeriv, VecDeriv > >
-                            (this, **defaulttype::getShared(*this->write(VecDerivId(v))),
-                             **defaulttype::getShared(*this->read(ConstVecDerivId(a))),
-                             **defaulttype::getShared(*this->read(ConstVecDerivId(b))), (Real) f);
+                                    (this, **defaulttype::getShared(*this->write(VecDerivId(v))),
+                                     **defaulttype::getShared(*this->read(ConstVecDerivId(a))),
+                                     **defaulttype::getShared(*this->read(ConstVecDerivId(b))), (Real) f);
                         }
                         else
                         {
@@ -3120,13 +3181,13 @@ void MechanicalObject < DataTypes >::vDot ( const core::ExecParams* /* params */
         if (a.index == b.index)
         {
             BaseObject::Task < vDotOp < DataTypes, VecCoord > >
-            (this, **defaulttype::getShared(*this->read(ConstVecCoordId(a))), *res);
+                    (this, **defaulttype::getShared(*this->read(ConstVecCoordId(a))), *res);
         }
         else
         {
             BaseObject::Task < vDotOp < DataTypes, VecCoord > >
-            (this, **defaulttype::getShared(*this->read(ConstVecCoordId(a))),
-             **defaulttype::getShared(*this->read(ConstVecCoordId(b))), *res);
+                    (this, **defaulttype::getShared(*this->read(ConstVecCoordId(a))),
+                     **defaulttype::getShared(*this->read(ConstVecCoordId(b))), *res);
         }
     }
     else if (a.type == sofa::core::V_DERIV && b.type == sofa::core::V_DERIV)
@@ -3134,13 +3195,13 @@ void MechanicalObject < DataTypes >::vDot ( const core::ExecParams* /* params */
         if (a.index == b.index)
         {
             BaseObject::Task < vDotOp < DataTypes, VecDeriv > >
-            (this, **defaulttype::getShared(*this->read(ConstVecDerivId(a))), *res);
+                    (this, **defaulttype::getShared(*this->read(ConstVecDerivId(a))), *res);
         }
         else
         {
             BaseObject::Task < vDotOp < DataTypes, VecDeriv > >
-            (this, **defaulttype::getShared(*this->read(ConstVecDerivId(a))),
-             **defaulttype::getShared(*this->read(ConstVecDerivId(b))), *res);
+                    (this, **defaulttype::getShared(*this->read(ConstVecDerivId(a))),
+                     **defaulttype::getShared(*this->read(ConstVecDerivId(b))), *res);
         }
     }
     else
@@ -3276,25 +3337,25 @@ void MechanicalObject < DataTypes >::printDOF (core::ConstVecId /*v*/, std::ostr
 /// Returns false if this object does not support picking
 template <class DataTypes>
 bool MechanicalObject<DataTypes>::pickParticles(const core::ExecParams* /* params */ /* PARAMS FIRST */, double rayOx, double rayOy, double rayOz, double rayDx, double rayDy, double rayDz, double radius0, double dRadius,
-        std::multimap< double, std::pair<sofa::core::behavior::BaseMechanicalState*, int> >& particles)
+                                                std::multimap< double, std::pair<sofa::core::behavior::BaseMechanicalState*, int> >& particles)
 {
     if (DataTypeInfo<Coord>::size() == 2 || DataTypeInfo<Coord>::size() == 3
-        || (DataTypeInfo<Coord>::size() == 7 && DataTypeInfo<Deriv>::size() == 6))
+            || (DataTypeInfo<Coord>::size() == 7 && DataTypeInfo<Deriv>::size() == 6))
     {
         // seems to be valid DOFs
         const VecCoord& x = *this->getX();
         Vec<3,Real> origin((Real)rayOx, (Real)rayOy, (Real)rayOz);
         Vec<3,Real> direction((Real)rayDx, (Real)rayDy, (Real)rayDz);
-//                    cerr<<"MechanicalObject<DataTypes>::pickParticles, ray point = " << rayOx << ", " << rayOy << ", " << rayOz << endl;
-//                    cerr<<"MechanicalObject<DataTypes>::pickParticles, ray dir = " << rayDx << ", " << rayDy << ", " << rayDz << endl;
-//                    cerr<<"MechanicalObject<DataTypes>::pickParticles, radius0 = " << radius0 << endl;
-//                    cerr<<"MechanicalObject<DataTypes>::pickParticles, dRadius = " << dRadius << endl;
+        //                    cerr<<"MechanicalObject<DataTypes>::pickParticles, ray point = " << rayOx << ", " << rayOy << ", " << rayOz << endl;
+        //                    cerr<<"MechanicalObject<DataTypes>::pickParticles, ray dir = " << rayDx << ", " << rayDy << ", " << rayDz << endl;
+        //                    cerr<<"MechanicalObject<DataTypes>::pickParticles, radius0 = " << radius0 << endl;
+        //                    cerr<<"MechanicalObject<DataTypes>::pickParticles, dRadius = " << dRadius << endl;
         for (int i=0; i< vsize; ++i)
         {
             Vec<3,Real> pos;
             DataTypes::get(pos[0],pos[1],pos[2],x[i]);
 
-//                        cerr<<"MechanicalObject<DataTypes>::pickParticles, point " << i << " = " << pos << endl;
+            //                        cerr<<"MechanicalObject<DataTypes>::pickParticles, point " << i << " = " << pos << endl;
             if (pos == origin) continue;
             double dist = (pos-origin)*direction;
             if (dist < 0) continue; // discard particles behind the camera, such as mouse position
@@ -3302,14 +3363,14 @@ bool MechanicalObject<DataTypes>::pickParticles(const core::ExecParams* /* param
             Vec<3,Real> vecPoint = (pos-origin) - direction*dist;
             double distToRay = vecPoint.norm2();
             double maxr = radius0 + dRadius*dist;
-//                        cerr<<"MechanicalObject<DataTypes>::pickParticles, point " << i << ", maxR = " << maxr << endl;
+            //                        cerr<<"MechanicalObject<DataTypes>::pickParticles, point " << i << ", maxR = " << maxr << endl;
             double r2 = (pos-origin-direction*dist).norm2();
             if (r2 <= maxr*maxr)
             {
                 particles.insert(std::make_pair(distToRay,std::make_pair(this,i)));
-//                            cerr<<"MechanicalObject<DataTypes>::pickParticles, point " << i << ", distance = " << r2 << " inserted " << endl;
+                //                            cerr<<"MechanicalObject<DataTypes>::pickParticles, point " << i << ", distance = " << r2 << " inserted " << endl;
             }
-//                        cerr<<"MechanicalObject<DataTypes>::pickParticles, point " << i << ", distance = " << r2 << " not inserted " << endl;
+            //                        cerr<<"MechanicalObject<DataTypes>::pickParticles, point " << i << ", distance = " << r2 << " not inserted " << endl;
         }
         return true;
     }

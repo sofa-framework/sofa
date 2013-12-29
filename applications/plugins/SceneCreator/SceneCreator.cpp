@@ -597,10 +597,18 @@ void initScene()
 
 }
 
+simulation::Node::SPtr clearScene()
+{
+    if( getRoot() )
+        Simulation::theSimulation->unload( getRoot() );
+    Simulation::theSimulation->createNewGraph("");
+    return getRoot();
+}
+
 
 Node::SPtr getRoot() { return simulation::getSimulation()->GetRoot(); }
 
-Vector assembled( core::ConstVecId id, bool indep )
+Vector getVector( core::ConstVecId id, bool indep )
 {
     GetAssembledSizeVisitor getSizeVisitor;
     getSizeVisitor.setIndependentOnly(indep);

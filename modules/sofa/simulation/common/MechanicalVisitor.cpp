@@ -721,6 +721,23 @@ Visitor::Result MechanicalVDotVisitor::fwdMechanicalState(VisitorContext* ctx, c
     return RESULT_CONTINUE;
 }
 
+Visitor::Result MechanicalVNormVisitor::fwdMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm)
+{
+    if( l>0 ) accum += mm->vSum(this->params, a.getId(mm), l );
+    else {
+        SReal mmax = mm->vMax(this->params, a.getId(mm) );
+        if( mmax>accum ) accum=mmax;
+    }
+    return RESULT_CONTINUE;
+}
+
+SReal MechanicalVNormVisitor::getResult() const
+{
+    if( l>1 )
+        return exp( log(accum) / l);
+    else return accum;
+}
+
 #if 0
 /// Parallel code
 Visitor::Result MechanicalVDotVisitor::processNodeTopDown(simulation::Node* /*node*/, LocalStorage* stack)

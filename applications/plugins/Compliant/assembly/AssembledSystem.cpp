@@ -63,6 +63,7 @@ void AssembledSystem::debug(SReal /*thres*/) const {
 
 void AssembledSystem::copyFromMultiVec(vec &target, core::MultiVecDerivId derivId)
 {
+    target.resize(size());
     unsigned off = 0;
     // master dofs
     for(unsigned i = 0, end = master.size(); i < end; ++i)

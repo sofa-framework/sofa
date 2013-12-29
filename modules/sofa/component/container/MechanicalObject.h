@@ -370,6 +370,12 @@ public:
 
     virtual double vDot(const core::ExecParams* params /* PARAMS FIRST */, core::ConstVecId a, core::ConstVecId b);
 
+    /// Sum of the entries of state vector a at the power of l>0. This is used to compute the l-norm of the vector.
+    virtual double vSum(const core::ExecParams* params, core::ConstVecId a, unsigned l);
+
+    /// Maximum of the absolute values of the entries of state vector a. This is used to compute the infinite-norm of the vector.
+    virtual double vMax(const core::ExecParams* params, core::ConstVecId a);
+
     virtual size_t vSize( const core::ExecParams* params, core::ConstVecId v );
 
     virtual void resetForce(const core::ExecParams* params);

@@ -162,6 +162,16 @@ public:
         return sqrt( vop->finish() );
     }
 
+    /** Compute the norm of a vector.
+     * The type of norm is set by parameter l. Use 0 for the infinite norm.
+     * Note that the 2-norm is more efficiently computed using the square root of the dot product.
+     */
+    SReal norm(unsigned l)
+    {
+        vop->v_norm(v, l);
+        return vop->finish();
+    }
+
     /// v = a
     void operator=(MyMultiVecId a)
     {
