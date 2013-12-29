@@ -1,6 +1,8 @@
 #include "Compliant_test.h"
 
-namespace sofa {
+namespace sofa
+{
+using namespace modeling;
 
 struct Assembly_test : public CompliantSolver_test
 {
@@ -58,14 +60,15 @@ struct Assembly_test : public CompliantSolver_test
     void testHardString( unsigned n )
     {
         clear();
-        root->setGravity( Vec3(0,0,0) );
+        Node::SPtr root = getRoot();
+        getRoot()->setGravity( Vec3(0,0,0) );
 
         // The solver
-        complianceSolver = New<OdeSolver>();
-        root->addObject( complianceSolver );
+        complianceSolver = addNew<OdeSolver>(getRoot());
+//        root->addObject( complianceSolver );
         complianceSolver->storeDynamicsSolution(true);
-        linearSolver = New<LinearSolver>();
-        root->addObject( linearSolver);
+        linearSolver = addNew<LinearSolver>(getRoot());
+//        root->addObject( linearSolver);
         complianceSolver->alpha.setValue(1.0);
         complianceSolver->beta.setValue(1.0);
 
@@ -145,23 +148,23 @@ struct Assembly_test : public CompliantSolver_test
     {
         clear();
         SReal g=10;
+        Node::SPtr root = getRoot();
         root->setGravity( Vec3(g,0,0) );
 
         // The solver
-        complianceSolver = addObject<OdeSolver>("complianceSolver",root);
+        complianceSolver = addNew<OdeSolver>(root);
         complianceSolver->storeDynamicsSolution(true);
         complianceSolver->alpha.setValue(1.0);
         complianceSolver->beta.setValue(1.0);
         //        complianceSolver->debug.setValue(true);
-        linearSolver = addObject<LinearSolver>("linearSolver",root);
+        linearSolver = addNew<LinearSolver>(root);
         //        linearSolver->debug.setValue(true);
 
         // The string
         simulation::Node::SPtr  string1 = createCompliantString( root, Vec3(0,0,0), Vec3(1,0,0), n, 1.0*n, 0. );
 
         // attached
-        FixedConstraint3::SPtr fixed1 = New<FixedConstraint3>();
-        string1->addObject( fixed1 );
+        FixedConstraint3::SPtr fixed1 = addNew<FixedConstraint3>(root);
 
 
 
@@ -222,16 +225,16 @@ struct Assembly_test : public CompliantSolver_test
     {
         clear();
         SReal g=10;
+        Node::SPtr root = getRoot();
         root->setGravity( Vec3(g,0,0) );
 
         // The solver
-        complianceSolver = New<OdeSolver>();
-        root->addObject( complianceSolver );
+        complianceSolver = addNew<OdeSolver>(root);
         complianceSolver->storeDynamicsSolution(true);
-        linearSolver = New<LinearSolver>();
-        root->addObject( linearSolver);
         complianceSolver->alpha.setValue(1.0);
         complianceSolver->beta.setValue(1.0);
+
+        linearSolver = addNew<LinearSolver>(root);
 
         // The string
         Vec3 startPoint(0,0,0);
@@ -328,13 +331,13 @@ struct Assembly_test : public CompliantSolver_test
       */
     void testExternallyConstrainedHardString( unsigned n )
     {
-        clear();
+        Node::SPtr root = clear();
         SReal g=10;
         root->setGravity( Vec3(g,0,0) );
 
         // ======== object out of scope
         Node::SPtr  outOfScope = root->createChild("outOfScope");
-        MechanicalObject3::SPtr outOfScopeDOF = addObject<MechanicalObject3>("outOfScopeDOF",outOfScope);
+        MechanicalObject3::SPtr outOfScopeDOF = addNew<MechanicalObject3>(outOfScope,"outOfScopeDOF");
         outOfScopeDOF->resize(1);
         MechanicalObject3::WriteVecCoord x = outOfScopeDOF->writePositions();
         x[0] = Vec3(0,0,0);
@@ -344,10 +347,9 @@ struct Assembly_test : public CompliantSolver_test
         Node::SPtr  solverObject = root->createChild("solverObject");
 
         // The solver
-        complianceSolver = addObject<OdeSolver>("complianceSolver",solverObject);
+        complianceSolver = addNew<OdeSolver>(solverObject);
         complianceSolver->storeDynamicsSolution(true);
-        linearSolver = New<LinearSolver>();
-        solverObject->addObject( linearSolver);
+        linearSolver = addNew<LinearSolver>(solverObject);
         complianceSolver->alpha.setValue(1.0);
         complianceSolver->beta.setValue(1.0);
 
@@ -360,7 +362,7 @@ struct Assembly_test : public CompliantSolver_test
         Node::SPtr commonChild = string1->createChild("commonChild");
         outOfScope->addChild(commonChild);
 
-        MechanicalObject3::SPtr mappedDOF = addObject<MechanicalObject3>("multiMappedDOF",commonChild); // to contain particles from the two strings
+        MechanicalObject3::SPtr mappedDOF = addNew<MechanicalObject3>(commonChild); // to contain particles from the two strings
 
         SubsetMultiMapping3_to_3::SPtr multimapping = New<SubsetMultiMapping3_to_3>();
         multimapping->setName("ConnectionMultiMapping");
@@ -468,7 +470,7 @@ struct Assembly_test : public CompliantSolver_test
       */
     void testAttachedConnectedHardStrings( unsigned n )
     {
-        clear();
+        Node::SPtr root = clear();
         SReal g=10;
         root->setGravity( Vec3(g,0,0) );
 
@@ -613,7 +615,7 @@ struct Assembly_test : public CompliantSolver_test
     */
     void testRigidConnectedToString( unsigned n )
     {
-        clear();
+        Node::SPtr root = clear();
         SReal g=10;
         root->setGravity( Vec3(g,0,0) );
 
@@ -628,17 +630,17 @@ struct Assembly_test : public CompliantSolver_test
 
         // ========= The rigid object
         simulation::Node::SPtr rigid = root->createChild("rigid");
-        MechanicalObjectRigid::SPtr rigidDOF = addObject<MechanicalObjectRigid>("rigidDOF",rigid);
+        MechanicalObjectRigid::SPtr rigidDOF = addNew<MechanicalObjectRigid>(rigid);
         rigidDOF->resize(1);
         MechanicalObjectRigid::WriteVecCoord x = rigidDOF->writePositions();
         x[0].getCenter() = Vec3(n,0,0);
-        UniformMassRigid::SPtr rigidMass = addObject<UniformMassRigid>("rigidMass",rigid);
+        UniformMassRigid::SPtr rigidMass = addNew<UniformMassRigid>(rigid);
 
         // .========= Particle attached to the rigid object
         simulation::Node::SPtr particleOnRigid = rigid->createChild("particleOnRigid");
-        MechanicalObject3::SPtr particleOnRigidDOF = addObject<MechanicalObject3>("particleOnRigidDOF",particleOnRigid);
+        MechanicalObject3::SPtr particleOnRigidDOF = addNew<MechanicalObject3>(particleOnRigid);
         particleOnRigidDOF->resize(1);
-        RigidMapping33::SPtr particleOnRigidMapping = addObject<RigidMapping33>("particleOnRigidMapping",particleOnRigid);
+        RigidMapping33::SPtr particleOnRigidMapping = addNew<RigidMapping33>(particleOnRigid);
         particleOnRigidMapping->setModels(rigidDOF.get(),particleOnRigidDOF.get());
 
         // ========= The string
@@ -652,8 +654,8 @@ struct Assembly_test : public CompliantSolver_test
         simulation::Node::SPtr pointPair = particleOnRigid->createChild("pointPair");
         string1->addChild(pointPair); // two parents: particleOnRigid and string1
 
-        MechanicalObject3::SPtr pointPairDOF = addObject<MechanicalObject3>("pointPairDOF",pointPair);
-        SubsetMultiMapping3_to_3::SPtr pointPairMapping = addObject<SubsetMultiMapping3_to_3>("pointPairMapping",pointPair);
+        MechanicalObject3::SPtr pointPairDOF = addNew<MechanicalObject3>(pointPair);
+        SubsetMultiMapping3_to_3::SPtr pointPairMapping = addNew<SubsetMultiMapping3_to_3>(pointPair);
         pointPairMapping->addInputModel(string1->mechanicalState);
         pointPairMapping->addInputModel(particleOnRigid->mechanicalState);
         pointPairMapping->addOutputModel(pointPair->mechanicalState);
@@ -663,18 +665,18 @@ struct Assembly_test : public CompliantSolver_test
         //  ...========  Distance between the particles in pointPair
         Node::SPtr extension = pointPair->createChild("extension");
 
-        MechanicalObject1::SPtr extensionDOF = addObject<MechanicalObject1>("extensionDOF",extension);
+        MechanicalObject1::SPtr extensionDOF = addNew<MechanicalObject1>(extension);
 
-        EdgeSetTopologyContainer::SPtr extensionEdgeSet = addObject<EdgeSetTopologyContainer>("extensionEdgeSet",extension);
+        EdgeSetTopologyContainer::SPtr extensionEdgeSet = addNew<EdgeSetTopologyContainer>(extension);
         extensionEdgeSet->addEdge(0,1);
 
-        ExtensionMapping31::SPtr extensionMapping = addObject<ExtensionMapping31>("extensionMapping",extension);
+        ExtensionMapping31::SPtr extensionMapping = addNew<ExtensionMapping31>(extension);
         extensionMapping->setModels(pointPairDOF.get(),extensionDOF.get());
         //        helper::WriteAccessor< Data< vector< Real > > > restLengths( extensionMapping->f_restLengths );
         //        restLengths.resize(1);
         //        restLengths[0] = 1.0;
 
-        UniformCompliance1::SPtr extensionCompliance = addObject<UniformCompliance1>("extensionCompliance",extension);
+        UniformCompliance1::SPtr extensionCompliance = addNew<UniformCompliance1>(extension);
         extensionCompliance->compliance.setValue(0);
 
 

@@ -25,17 +25,16 @@
 
 #include <plugins/SofaTest/Mapping_test.h>
 #include <gtest/gtest.h>
-//#include "../Standard_test/Sofa_test.h"
 #include <sofa/component/init.h>
-#include "../../tutorials/objectCreator/ObjectCreator.h"
+#include <plugins/SceneCreator/SceneCreator.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 
 #include <sofa/component/odesolver/EulerImplicitSolver.h>
 #include <sofa/component/linearsolver/CGLinearSolver.h>
 #include <sofa/component/linearsolver/FullVector.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
-#include <sofa/simulation/common/GetVectorVisitor.h>
-#include <sofa/simulation/common/GetAssembledSizeVisitor.h>
+#include <plugins/SceneCreator/GetVectorVisitor.h>
+#include <plugins/SceneCreator/GetAssembledSizeVisitor.h>
 
 using std::cout;
 using std::cerr;

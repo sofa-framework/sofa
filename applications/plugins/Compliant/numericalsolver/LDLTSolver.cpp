@@ -59,16 +59,26 @@ void LDLTSolver::factor(const AssembledSystem& sys) {
 	pimpl->m = sys.m;
 	pimpl->n = sys.n;
 
+    if( debug.getValue() ){
+        cerr<< "LDLTSolver::factor, H = " << sys.H << endl;
+    }
+
 	if( sys.n ) {
 		pimpl_type::cmat schur(sys.n, sys.n);
-//        pimpl_type::cmat PJT = sys.P.transpose() * sys.J.transpose();
-        const pimpl_type::cmat& PJT = sys.J.transpose(); // H is already multiplied by P
+        pimpl_type::cmat PJT = sys.P.transpose() * sys.J.transpose(); //yes, we have to filter J, although H is filtered already. Otherwise Hinv*JT has large (if not infinite) values on filtered DOFs
 
 		pimpl->HinvPJT.resize(sys.m, sys.n);
 		pimpl->HinvPJT = pimpl->Hinv.solve( PJT );
 
 		schur = (sys.C.transpose() + (PJT.transpose() * pimpl->HinvPJT )).selfadjointView<Eigen::Upper>();
-		
+        if( debug.getValue() ){
+//            cerr<< "LDLTSolver::factor, PJT = " << PJT << endl;
+//            cerr<< "LDLTSolver::factor, HinvPJT = " << pimpl->HinvPJT << endl;
+//            cerr<< "LDLTSolver::factor, PJT.transpose() = " << PJT.transpose() << endl;
+//            cerr<< "LDLTSolver::factor, C = " << sys.C << endl;
+            cerr<< "LDLTSolver::factor, schur = " << schur << endl;
+        }
+
 		pimpl->schur.compute( schur );
 		
 		if( pimpl->schur.info() == Eigen::NumericalIssue ) {
@@ -78,6 +88,7 @@ void LDLTSolver::factor(const AssembledSystem& sys) {
 	} else {
 		// nothing lol
 	}
+
 
 }
 

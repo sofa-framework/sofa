@@ -33,6 +33,7 @@
 #include <sofa/component/linearsolver/EigenSparseMatrix.h>
 #include <sofa/component/container/MechanicalObject.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
+#include <plugins/SceneCreator/SceneCreator.h>
 
 namespace sofa {
 
@@ -40,6 +41,7 @@ using std::cout;
 using std::cout;
 using std::endl;
 using namespace core;
+using namespace modeling;
 
 
 /** Base class for the Mapping tests.
@@ -115,12 +117,12 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
         /// Parent node
         root = simulation->createNewGraph("root");
-        inDofs = sofa::addNew<InDOFs>(root);
+        inDofs = addNew<InDOFs>(root);
 
         /// Child node
         simulation::Node::SPtr childNode = root->createChild("childNode");
-        outDofs = sofa::addNew<OutDOFs>(childNode);
-        mapping = sofa::addNew<Mapping>(root).get();
+        outDofs = addNew<OutDOFs>(childNode);
+        mapping = addNew<Mapping>(root).get();
         mapping->setModels(inDofs.get(),outDofs.get());
     }
 

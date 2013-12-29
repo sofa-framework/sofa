@@ -29,14 +29,23 @@
 
 #include <sofa/helper/system/SetDirectory.h>
 
+#include <sofa/component/init.h>
+
+
 //Including Simulation
 #include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/simulation/common/MechanicalVisitor.h>
+#include "GetVectorVisitor.h"
+#include "GetAssembledSizeVisitor.h"
 
 
-//Including Solvers
+//Including Solvers and linear algebra
 #include <sofa/component/odesolver/EulerSolver.h>
 #include <sofa/component/odesolver/EulerImplicitSolver.h>
 #include <sofa/component/linearsolver/CGLinearSolver.h>
+#include <sofa/component/linearsolver/FullVector.h>
+
 
 //Including components for collision detection
 #include <sofa/component/collision/DefaultPipeline.h>
@@ -511,10 +520,10 @@ simulation::Node::SPtr SimpleSceneCreator::createGridScene(Vec3 startPoint, Vec3
 
 namespace modeling {
 
-simulation::Node::SPtr newRoot()
-{
-    return simulation::getSimulation()->createNewGraph("root");
-}
+//simulation::Node::SPtr newRoot()
+//{
+//    return simulation::getSimulation()->createNewGraph("root");
+//}
 
 
 /// Create a stiff string
@@ -571,6 +580,47 @@ simulation::Node::SPtr massSpringString
     return string_node;
 
 }
+
+Node::SPtr initSofa()
+{
+    setSimulation(new simulation::graph::DAGSimulation());
+    sofa::component::init();
+    return simulation::getSimulation()->createNewGraph("root");
+//    root = modeling::newRoot();
+//    root->setName("Solver_test_scene_root");
+}
+
+
+void initScene()
+{
+    sofa::simulation::getSimulation()->init(getRoot().get());
+
+}
+
+
+Node::SPtr getRoot() { return simulation::getSimulation()->GetRoot(); }
+
+Vector assembled( core::ConstVecId id, bool indep )
+{
+    GetAssembledSizeVisitor getSizeVisitor;
+    getSizeVisitor.setIndependentOnly(indep);
+    getRoot()->execute(getSizeVisitor);
+    unsigned size;
+    if (id.type == sofa::core::V_COORD)
+        size =  getSizeVisitor.positionSize();
+    else
+        size = getSizeVisitor.velocitySize();
+    FullVector v(size);
+    GetVectorVisitor getVec( core::MechanicalParams::defaultInstance(), &v, id);
+    getVec.setIndependentOnly(indep);
+    getRoot()->execute(getVec);
+
+    Vector ve(size);
+    for(size_t i=0; i<size; i++)
+        ve(i)=v[i];
+    return ve;
+}
+
 
 }
 

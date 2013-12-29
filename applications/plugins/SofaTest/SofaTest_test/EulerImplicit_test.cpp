@@ -25,8 +25,15 @@
 
 
 #include "Solver_test.h"
+//#include <sofa/component/odesolver/EulerImplicitSolver.h>
+//#include <sofa/component/linearsolver/CGLinearSolver.h>
 
 namespace sofa {
+
+using namespace modeling;
+typedef component::odesolver::EulerImplicitSolver EulerImplicitSolver;
+typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
+
 
 /** Test convergence to a static solution.
  * Mass-spring string composed of two particles in gravity, one is fixed.
@@ -41,8 +48,8 @@ struct EulerImplicit_test_2_particles_to_equilibrium : public Solver_test
         //*******
         // begin create scene under the root node
 
-        modeling::addNew<odesolver::EulerImplicitSolver> (getRoot(),"odesolver" );
-        modeling::addNew<CGLinearSolver>                 (getRoot(),"linearsolver");
+        EulerImplicitSolver::SPtr eulerSolver = addNew<EulerImplicitSolver> (getRoot() );
+        CGLinearSolver::SPtr linearSolver = addNew<CGLinearSolver>   (getRoot() );
 
         Node::SPtr string = massSpringString(
                     getRoot(), // attached to root node
@@ -64,9 +71,9 @@ struct EulerImplicit_test_2_particles_to_equilibrium : public Solver_test
         //*********
         // run simulation
 
-        FullVector x0, x1, v0, v1;
-        getAssembledPositionVector(&x0); // cerr<<"My_test, initial positions : " << x0 << endl;
-        getAssembledVelocityVector(&v0); // cerr<<"My_test, initial velocities: " << v0 << endl;
+        Vector x0, x1, v0, v1;
+        x0 = assembled( core::VecId::position() ); cerr<<"EulerImplicit_test, new positions : " << x0.transpose() << endl;
+        v0 = assembled( core::VecId::velocity() );
 
         Real dx, dv;
         unsigned n=0;
@@ -75,11 +82,11 @@ struct EulerImplicit_test_2_particles_to_equilibrium : public Solver_test
         do {
             sofa::simulation::getSimulation()->animate(getRoot().get(),1.0);
 
-            getAssembledPositionVector(&x1); // cerr<<"My_test, new positions : " << x1 << endl;
-            getAssembledVelocityVector(&v1); // cerr<<"My_test, new velocities: " << v1 << endl;
+            x1 = assembled( core::VecId::position() ); cerr<<"EulerImplicit_test, new positions : " << x1.transpose() << endl;
+            v1 = assembled( core::VecId::velocity() );
 
-            dx = this->vectorCompare(x0,x1);
-            dv = this->vectorCompare(v0,v1);
+            dx = (x0-x1).lpNorm<Eigen::Infinity>();
+            dv = (v0-v1).lpNorm<Eigen::Infinity>();
             x0 = x1;
             v0 = v1;
             n++;
@@ -92,10 +99,10 @@ struct EulerImplicit_test_2_particles_to_equilibrium : public Solver_test
         // test convergence
         if( n==nMax )
             ADD_FAILURE() << "Solver test has not converged in " << nMax << " iterations, precision = " << precision << endl
-                          <<" previous x = " << x0 << endl
-                          <<" current x  = " << x1 << endl
-                          <<" previous v = " << v0 << endl
-                          <<" current v  = " << v1 << endl;
+                          <<" previous x = " << x0.transpose() << endl
+                          <<" current x  = " << x1.transpose() << endl
+                          <<" previous v = " << v0.transpose() << endl
+                          <<" current v  = " << v1.transpose() << endl;
 
         // test position of the second particle
         Vec3d actual( x0[3],x0[4],x0[5]); // position of second particle after relaxation

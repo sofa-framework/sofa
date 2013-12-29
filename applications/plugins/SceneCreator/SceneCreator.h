@@ -90,12 +90,16 @@ namespace modeling {
 
 using namespace simulation;
 
-/** Create a simulation graph root */
-SOFA_SceneCreator_API Node::SPtr newRoot();
+/// Dense state vector, used externally
+typedef Eigen::VectorXd Vector;
+
+/// Dense state vector deriving from BaseVector, used to access data in the scene graph
+typedef component::linearsolver::FullVector<SReal> FullVector;
+
+
 
 /** Create a string composed of particles (at least 2) and springs */
-SOFA_SceneCreator_API Node::SPtr massSpringString
-(
+SOFA_SceneCreator_API Node::SPtr massSpringString(
         simulation::Node::SPtr parent,
         double x0, double y0, double z0, // start point,
         double x1, double y1, double z1, // end point
@@ -106,15 +110,7 @@ SOFA_SceneCreator_API Node::SPtr massSpringString
         );
 
 
-/// helper for more compact component creation
-//template<class Component>
-//typename Component::SPtr addNew( Node::SPtr parentNode, std::string name="" )
-//{
-//    typename Component::SPtr component = core::objectmodel::New<Component>();
-//    parentNode->addObject(component);
-//    component->setName(parentNode->getName()+"_"+name);
-//    return component;
-//}
+/** Helper class to create a component and add it as a child of a given Node */
 template<class T>
 class addNew : public objectmodel::New<T>
 {
@@ -127,6 +123,21 @@ public:
     }
 
 };
+
+
+SOFA_SceneCreator_API Node::SPtr getRoot();
+
+/// Get a state vector from the scene graph. Includes only the independent state values, or also the mapped ones, depending on the flag.
+Vector assembled( core::ConstVecId id, bool independentOnly=true );
+
+/** Initialize the sofa library and create the root of the scene graph
+  */
+SOFA_SceneCreator_API Node::SPtr initSofa();
+
+/** Initialize the scene graph
+  */
+SOFA_SceneCreator_API void initScene();
+
 
 
 

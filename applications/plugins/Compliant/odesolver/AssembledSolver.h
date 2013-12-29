@@ -179,7 +179,7 @@ public:
 
 
 	// linear rhs for dynamics/correction steps
-	virtual void rhs_dynamics(vec& res, const system_type& sys, const vec& v) const;
+    virtual void rhs_dynamics(vec& res, const system_type& sys, const vec& v ) const;
 	virtual void rhs_correction(vec& res, const system_type& sys) const;
 	
 	// current v, lambda

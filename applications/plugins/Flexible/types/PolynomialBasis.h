@@ -268,7 +268,7 @@ inline void getCompleteBasisIntegralInCube(vector<real>& basis, const Vec<3,real
 template<typename real>
 Eigen::Matrix<real,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor> getCompleteBasis_TranslationMatrix(const Vec<3,real>& t,const unsigned int order)
 {
-    typedef Vec<3,real> Coord;
+//    typedef Vec<3,real> Coord;
 
     unsigned int j,dim=(order+1)*(order+2)*(order+3)/6;
     Eigen::Matrix<real,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor> A(dim,dim);

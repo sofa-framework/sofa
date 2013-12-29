@@ -23,28 +23,17 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 //
-// C++ Interface: GetVectorVisitor
+// C++ Implementation: GetAssembledSizeVisitor
 //
 // Description:
 //
 //
-// Author: Francois Faure, (C) 2006
 //
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#ifndef SOFA_SIMULATION_GetVectorVisitor_H
-#define SOFA_SIMULATION_GetVectorVisitor_H
-
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
-#include <sofa/simulation/common/Visitor.h>
-#include <sofa/core/MultiVecId.h>
-#include <sofa/defaulttype/BaseVector.h>
-#include <Eigen/Dense>
-
+#include "GetAssembledSizeVisitor.h"
+#include <sofa/defaulttype/Vec.h>
 
 namespace sofa
 {
@@ -52,28 +41,30 @@ namespace sofa
 namespace simulation
 {
 
-/** Copy a given MultiVector (generally spread across the MechanicalStates) to a BaseVector
-    Only the independent DOFs are used.
-    Francois Faure, 2013
-*/
-class SOFA_SIMULATION_COMMON_API GetVectorVisitor: public Visitor
+
+GetAssembledSizeVisitor::GetAssembledSizeVisitor( const sofa::core::ExecParams* params )
+    : Visitor(params)
+    , xsize(0)
+    , vsize(0)
+    , independentOnly(false)
+{}
+
+GetAssembledSizeVisitor::~GetAssembledSizeVisitor()
+{}
+
+void GetAssembledSizeVisitor::setIndependentOnly(bool b){ independentOnly=b; }
+
+Visitor::Result GetAssembledSizeVisitor::processNodeTopDown( simulation::Node* gnode )
 {
-public:
-//    typedef Eigen::Matrix<SReal, Eigen::Dynamic, 1> Vector;
-    typedef defaulttype::BaseVector Vector;
-    GetVectorVisitor( const sofa::core::ExecParams* params /* PARAMS FIRST */, Vector* vec, core::ConstVecId src );
-    virtual ~GetVectorVisitor();
-
-    virtual Result processNodeTopDown( simulation::Node*  );
-    virtual const char* getClassName() const { return "GetVectorVisitor"; }
-
-protected:
-    Vector* vec;
-    core::ConstVecId src;
-    unsigned offset;
-};
+    if (gnode->mechanicalState != NULL && ( gnode->mechanicalMapping ==NULL || independentOnly==false) )
+    {
+        xsize += gnode->mechanicalState->getSize() * gnode->mechanicalState->getCoordDimension();
+        vsize += gnode->mechanicalState->getMatrixSize();
+    }
+    return Visitor::RESULT_CONTINUE;
+}
 
 } // namespace simulation
+
 } // namespace sofa
 
-#endif

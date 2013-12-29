@@ -235,7 +235,7 @@ void AssembledSolver::rhs_dynamics(vec& res, const system_type& sys, const vec& 
 	
 		unsigned dim = dofs->getMatrixSize();
 		
-		dofs->copyToBuffer(&res(off), core::VecDerivId::force(), dim);
+        dofs->copyToBuffer(&res(off), core::VecDerivId::force(), dim);
 		off += dim;
 	}
 	

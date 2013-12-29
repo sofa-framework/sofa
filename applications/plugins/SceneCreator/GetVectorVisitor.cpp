@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 //
-// C++ Implementation: GetAssembledSizeVisitor
+// C++ Implementation: GetVectorVisitor
 //
 // Description:
 //
@@ -32,8 +32,11 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#include <sofa/simulation/common/GetAssembledSizeVisitor.h>
+#include "GetVectorVisitor.h"
 #include <sofa/defaulttype/Vec.h>
+#include <iostream>
+using std::cerr;
+using std::endl;
 
 namespace sofa
 {
@@ -42,21 +45,24 @@ namespace simulation
 {
 
 
-GetAssembledSizeVisitor::GetAssembledSizeVisitor( const sofa::core::ExecParams* params )
-    : Visitor(params)
-    , xsize(0)
-    , vsize(0)
+GetVectorVisitor::GetVectorVisitor( const sofa::core::ExecParams* params, Vector* vec, core::ConstVecId src )
+    : Visitor(params), vec(vec), src(src), offset(0)
+    , independentOnly(false)
 {}
 
-GetAssembledSizeVisitor::~GetAssembledSizeVisitor()
+GetVectorVisitor::~GetVectorVisitor()
 {}
 
-Visitor::Result GetAssembledSizeVisitor::processNodeTopDown( simulation::Node* gnode )
+void GetVectorVisitor::setIndependentOnly(bool b){ independentOnly=b; }
+
+
+Visitor::Result GetVectorVisitor::processNodeTopDown( simulation::Node* gnode )
 {
-    if (gnode->mechanicalState != NULL) // independent DOFs
+//    cerr << "GetVectorVisitor::processNodeTopDown, node "<< gnode->getName() << endl;
+    if (gnode->mechanicalState != NULL && ( gnode->mechanicalMapping ==NULL || independentOnly==false) )
     {
-        xsize += gnode->mechanicalState->getSize() * gnode->mechanicalState->getCoordDimension();
-        vsize += gnode->mechanicalState->getMatrixSize();
+//        cerr << "GetVectorVisitor::processNodeTopDown, node has mechanical state "<< endl;
+        gnode->mechanicalState->copyToBaseVector(vec,src,offset);
     }
     return Visitor::RESULT_CONTINUE;
 }

@@ -228,24 +228,9 @@ public:
 
     /// @}
 
-    /// @name Experimental compliance API
-    /// @{
-protected:
-    SReal m_implicitVelocity;  ///< ratio of future and current force used for velocity update    (1 is fully implicit, 0 is fully explicit)
-    SReal m_implicitPosition;  ///< ratio of future and current velocity used for position update (1 is fully implicit, 0 is fully explicit)
-public:
-    void setImplicitVelocity( SReal i ) { m_implicitVelocity = i; }
-    const SReal& implicitVelocity() const { return m_implicitVelocity; }
-    void setImplicitPosition( SReal i ) { m_implicitPosition = i; }
-    const SReal& implicitPosition() const { return m_implicitPosition; }
-    /// @}
-
-
     /// Constructor, initializing all VecIds to default values, implicit and energy flags to false
     MechanicalParams(const sofa::core::ExecParams& p = sofa::core::ExecParams() )
         : sofa::core::ExecParams(p)
-        , m_implicitVelocity(1)
-        , m_implicitPosition(1)
         , m_dt(0.0)
         , m_implicit(false)
         , m_energy(false)
@@ -258,6 +243,9 @@ public:
         , m_bFactor(0)
         , m_kFactor(0)
         , m_symmetricMatrix(true)
+        , m_implicitVelocity(1)
+        , m_implicitPosition(1)
+        , m_accumulateComplianceForces(false)
     {
     }
 
@@ -273,8 +261,6 @@ public:
     MechanicalParams* operator= ( const MechanicalParams& mparams )
     {
         sofa::core::ExecParams::operator=(mparams);
-        m_implicitVelocity = mparams.m_implicitVelocity;
-        m_implicitPosition = mparams.m_implicitPosition;
         m_dt = mparams.m_dt;
         m_implicit = mparams.m_implicit;
         m_energy = mparams.m_energy;
@@ -287,6 +273,9 @@ public:
         m_bFactor = mparams.m_bFactor;
         m_kFactor = mparams.m_kFactor;
         m_symmetricMatrix = mparams.m_symmetricMatrix;
+        m_implicitVelocity = mparams.m_implicitVelocity;
+        m_implicitPosition = mparams.m_implicitPosition;
+        m_accumulateComplianceForces = mparams.m_accumulateComplianceForces;
         return this;
     }
 
@@ -328,6 +317,24 @@ protected:
 
     /// True if a symmetric matrix is assumed in the left-hand term of the dynamics equations, for solvers specialized on symmetric matrices
     bool m_symmetricMatrix;
+
+    /// @name Experimental compliance API
+    /// @{
+protected:
+    SReal m_implicitVelocity;  ///< ratio of future and current force used for velocity update    (1 is fully implicit, 0 is fully explicit)
+    SReal m_implicitPosition;  ///< ratio of future and current velocity used for position update (1 is fully implicit, 0 is fully explicit)
+    bool m_accumulateComplianceForces;     ///< If true, the compliance forces must be accumulated as standard forces. If false, they are ignored.
+
+public:
+    void setImplicitVelocity( SReal i ) { m_implicitVelocity = i; }
+    const SReal& implicitVelocity() const { return m_implicitVelocity; }
+    void setImplicitPosition( SReal i ) { m_implicitPosition = i; }
+    const SReal& implicitPosition() const { return m_implicitPosition; }
+    void setAccumulateComplianceForces( bool b ) { m_accumulateComplianceForces = b; }
+    bool accumulateComplianceForces() const { return m_accumulateComplianceForces; }
+    /// @}
+
+
 
 
 };

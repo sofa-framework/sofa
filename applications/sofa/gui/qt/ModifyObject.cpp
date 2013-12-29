@@ -112,7 +112,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
 
 
 
-    bool isNode = (dynamic_cast< simulation::Node *>(node) != NULL);
+//    bool isNode = (dynamic_cast< simulation::Node *>(node) != NULL);
 
     buttonUpdate = new QPushButton( this, "buttonUpdate" );
     buttonUpdate->setText("&Update");

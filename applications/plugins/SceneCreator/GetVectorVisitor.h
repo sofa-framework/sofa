@@ -23,20 +23,28 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 //
-// C++ Implementation: GetVectorVisitor
+// C++ Interface: GetVectorVisitor
 //
 // Description:
 //
 //
+// Author: Francois Faure, (C) 2006
 //
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#include <sofa/simulation/common/GetVectorVisitor.h>
-#include <sofa/defaulttype/Vec.h>
-#include <iostream>
-using std::cerr;
-using std::endl;
+#ifndef SOFA_SIMULATION_GetVectorVisitor_H
+#define SOFA_SIMULATION_GetVectorVisitor_H
+
+#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
+#pragma once
+#endif
+
+#include <sofa/simulation/common/Visitor.h>
+#include <sofa/core/MultiVecId.h>
+#include <sofa/defaulttype/BaseVector.h>
+#include <Eigen/Dense>
+
 
 namespace sofa
 {
@@ -44,26 +52,33 @@ namespace sofa
 namespace simulation
 {
 
-
-GetVectorVisitor::GetVectorVisitor( const sofa::core::ExecParams* params, Vector* vec, core::ConstVecId src )
-    : Visitor(params), vec(vec), src(src), offset(0)
-{}
-
-GetVectorVisitor::~GetVectorVisitor()
-{}
-
-Visitor::Result GetVectorVisitor::processNodeTopDown( simulation::Node* gnode )
+/** Copy a given MultiVector (generally spread across the MechanicalStates) to a BaseVector
+    Only the independent DOFs are used.
+    Francois Faure, 2013
+*/
+class SOFA_SIMULATION_COMMON_API GetVectorVisitor: public Visitor
 {
-//    cerr << "GetVectorVisitor::processNodeTopDown, node "<< gnode->getName() << endl;
-    if (gnode->mechanicalState != NULL) // independent DOFs
-    {
-//        cerr << "GetVectorVisitor::processNodeTopDown, node has mechanical state "<< endl;
-        gnode->mechanicalState->copyToBaseVector(vec,src,offset);
-    }
-    return Visitor::RESULT_CONTINUE;
-}
+public:
+//    typedef Eigen::Matrix<SReal, Eigen::Dynamic, 1> Vector;
+    typedef defaulttype::BaseVector Vector;
+    GetVectorVisitor( const sofa::core::ExecParams* params /* PARAMS FIRST */, Vector* vec, core::ConstVecId src );
+    virtual ~GetVectorVisitor();
+
+    virtual Result processNodeTopDown( simulation::Node*  );
+    virtual const char* getClassName() const { return "GetVectorVisitor"; }
+
+    /// If true, process the independent nodes only
+    void setIndependentOnly( bool );
+
+protected:
+    Vector* vec;
+    core::ConstVecId src;
+    unsigned offset;
+    bool independentOnly;
+
+};
 
 } // namespace simulation
-
 } // namespace sofa
 
+#endif
