@@ -69,6 +69,7 @@ using std::cout;
 
 using namespace sofa;
 using namespace sofa::component;
+using namespace modeling;
 using sofa::helper::vector;
 
 /** Test suite for matrix assembly of class sofa::component::odesolver::ComplianceSolver.
@@ -267,11 +268,12 @@ protected:
     };
 
     /// remove all children nodes
-    void clear()
+    Node::SPtr clear()
     {
-        if( root )
-            Simulation::theSimulation->unload( root );
-        root = Simulation::theSimulation->createNewGraph("");
+        if( getRoot() )
+            Simulation::theSimulation->unload( getRoot() );
+        Simulation::theSimulation->createNewGraph("");
+        return getRoot();
     }
 
     /// Return an identity matrix, or if not square, a matrix with 1 on each entry of the main diagonal
@@ -355,15 +357,15 @@ protected:
         return areEqual;
     }
 
-    /// create a new component with the given name, and attach it to the given node
-    template<class Component>
-    static typename Component::SPtr addObject( std::string name, simulation::Node::SPtr parent )
-    {
-        typename Component::SPtr c = New<Component>();
-        parent->addObject(c);
-        c->setName(name);
-        return c;
-    }
+//    /// create a new component with the given name, and attach it to the given node
+//    template<class Component>
+//    static typename Component::SPtr addObject( std::string name, simulation::Node::SPtr parent )
+//    {
+//        typename Component::SPtr c = New<Component>();
+//        parent->addObject(c);
+//        c->setName(name);
+//        return c;
+//    }
 
     ///@}
 

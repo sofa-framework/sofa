@@ -56,7 +56,7 @@ namespace simulation
   The two values may be different, such as for rigid objects.
     Francois Faure, 2013
 */
-class SOFA_SIMULATION_COMMON_API GetAssembledSizeVisitor: public Visitor
+ class SOFA_SIMULATION_COMMON_API GetAssembledSizeVisitor: public Visitor
 {
 public:
     GetAssembledSizeVisitor( const sofa::core::ExecParams* params /* PARAMS FIRST */=core::MechanicalParams::defaultInstance() );
@@ -67,10 +67,12 @@ public:
 
     unsigned positionSize() const { return xsize; }
     unsigned velocitySize() const { return vsize; }
+    void setIndependentOnly( bool );
 
 protected:
-    unsigned xsize;
-    unsigned vsize;
+    std::size_t xsize;
+    std::size_t vsize;
+    bool independentOnly;
 };
 
 } // namespace simulation

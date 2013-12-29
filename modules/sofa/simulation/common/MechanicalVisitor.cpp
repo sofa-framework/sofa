@@ -1276,7 +1276,7 @@ Visitor::Result MechanicalComputeForceVisitor::fwdMappedMechanicalState(simulati
 Visitor::Result MechanicalComputeForceVisitor::fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff)
 {
     //cerr<<"MechanicalComputeForceVisitor::fwdForceField "<<ff->getName()<<endl;
-    if( !ff->isCompliance.getValue() ) ff->addForce(this->mparams /* PARAMS FIRST */, res);
+    if( !ff->isCompliance.getValue() || this->mparams->accumulateComplianceForces() ) ff->addForce(this->mparams /* PARAMS FIRST */, res);
     return RESULT_CONTINUE;
 }
 
@@ -1321,7 +1321,7 @@ Visitor::Result MechanicalComputeDfVisitor::fwdMappedMechanicalState(simulation:
 
 Visitor::Result MechanicalComputeDfVisitor::fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff)
 {
-    if( !ff->isCompliance.getValue() ) ff->addDForce(this->mparams /* PARAMS FIRST */, res);
+    if( !ff->isCompliance.getValue() || this->mparams->accumulateComplianceForces() ) ff->addDForce(this->mparams /* PARAMS FIRST */, res);
     return RESULT_CONTINUE;
 }
 
@@ -1364,7 +1364,10 @@ Visitor::Result MechanicalAddMBKdxVisitor::fwdMappedMechanicalState(simulation::
 
 Visitor::Result MechanicalAddMBKdxVisitor::fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff)
 {
-    ff->addMBKdx( ff->isCompliance.getValue()?&mparamsWithoutStiffness:this->mparams, res);
+    if( !ff->isCompliance.getValue() || mparams->accumulateComplianceForces() )
+        ff->addMBKdx( this->mparams, res);
+    else
+        ff->addMBKdx( &mparamsWithoutStiffness, res);
     return RESULT_CONTINUE;
 }
 
