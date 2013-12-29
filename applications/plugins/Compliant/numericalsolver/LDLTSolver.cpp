@@ -110,7 +110,7 @@ void LDLTSolver::solve(AssembledSystem::vec& res,
     if( debug.getValue() ){
         cerr<<"LDLTSolver::solve, rhs = " << rhs.transpose() << endl;
         cerr<<"LDLTSolver::solve, Pv = " << Pv.transpose() << endl;
-//        cerr<<"LDLTSolver::solve, H = " << endl << dmat(sys.H) << endl;
+        cerr<<"LDLTSolver::solve, H = " << endl << dmat(sys.H) << endl;
     }
 
 	// in place solve
