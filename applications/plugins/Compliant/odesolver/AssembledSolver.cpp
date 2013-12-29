@@ -18,6 +18,8 @@
 #include <sofa/helper/system/thread/CTime.h>
 #endif
 
+using std::cerr;
+using std::endl;
 
 namespace sofa {
 namespace component {
@@ -45,7 +47,7 @@ AssembledSolver::AssembledSolver()
 	                         "stabilization",
 	                         "apply a stabilization pass on kinematic constraints requesting it")),
 	  debug(initData(&debug,
-	                 false,
+                     false,
 	                 "debug",
 	                 "print debug stuff")),
 	alpha( initData(&alpha, 
@@ -55,12 +57,12 @@ AssembledSolver::AssembledSolver()
 	beta( initData(&beta,
 	               SReal(1),
 	               "implicitPosition",
-	               "Weight of the next velocities in the average velocities used to update the positions. 1 is implicit, 0 is explicit.")),
-	assembly_traversal( initData(&assembly_traversal,
-								 true,
-								 "assembly_traversal",
-								 "use internal traversal order for visitors (compute forces, propagate velocities). DEBUG" ))
-	
+                   "Weight of the next velocities in the average velocities used to update the positions. 1 is implicit, 0 is explicit."))
+  ,assembly_traversal( initData(&assembly_traversal,
+                               true,
+                               "assembly_traversal",
+                               "use internal traversal order for visitors (compute forces, propagate velocities). DEBUG" ))
+
 {
     storeDSol = false;
 }
