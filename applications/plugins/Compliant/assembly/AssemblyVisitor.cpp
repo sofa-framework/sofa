@@ -8,6 +8,9 @@
 #include "./utils/cast.h"
 #include "./utils/sparse.h"
 
+using std::cerr;
+using std::endl;
+
 
 namespace sofa {
 namespace simulation {
@@ -203,6 +206,7 @@ void AssemblyVisitor::fill_prefix(simulation::Node* node) {
 	vertex v; v.dofs = c.dofs; v.data = &c;
 
 	c.H = odeMatrix( node );
+//    cerr << "AssemblyVisitor::fill_prefix, c.H = " << endl << c.H << endl;
 
 	if( !zero(c.H) ) {
 		c.mechanical = true;
@@ -216,7 +220,6 @@ void AssemblyVisitor::fill_prefix(simulation::Node* node) {
 	// independent dofs
 	if( c.map.empty() ) {
 		c.P = proj( node );
-
 	} else {
 		// mapped dofs
 		c.C = compliance( node );
@@ -313,7 +316,8 @@ struct AssemblyVisitor::propagation_helper {
 				if(!zero( g[*e.first].data->K)) {
                     add(p->H, mparams->kFactor() * g[*e.first].data->K ); // todo how to include rayleigh damping for geometric stiffness?
 				}
-			}
+//                p->H = p->P.transpose() * p->H * p->P;   /// \warning project the ODE matrix
+            }
 
 		}
 	}
@@ -524,6 +528,9 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
 
     assert( off_m == _processed->size_m );
     assert( off_c == _processed->size_c );
+
+    /// \warning project the ODE matrices
+    res.H = res.P.transpose() * res.H * res.P;
 
 	return res;
 }

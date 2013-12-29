@@ -34,7 +34,8 @@ class SOFA_Compliant_API LDLTSolver : public KKTSolver {
 	~LDLTSolver();
 
 
-    Data<SReal> damping;
+//    Data<SReal> damping;
+    Data<SReal> regularize; ///< add identity*regularize to matrix H to make it definite.
 	
   private:
 	

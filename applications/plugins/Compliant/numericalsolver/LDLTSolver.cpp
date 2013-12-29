@@ -26,7 +26,8 @@ typedef AssembledSystem::vec vec;
 
 
 LDLTSolver::LDLTSolver() 
-    : damping( initData(&damping, (SReal)0.0, "damping", "damping lol") )
+//    : damping( initData(&damping, (SReal)0.0, "damping", "damping lol") )
+    : regularize( initData(&regularize, std::numeric_limits<real>::epsilon(), "regularize", "add identity*regularize to matrix H to make it definite."))
     , pimpl()
 {
 	
@@ -39,10 +40,17 @@ LDLTSolver::~LDLTSolver() {
 
 void LDLTSolver::factor(const AssembledSystem& sys) {
 	
-	pimpl->Hinv.compute( sys.H );
+    if( regularize.getValue() != (SReal)0.0 )
+    {
+        mat identity(sys.m,sys.m);
+        identity.setIdentity();
+        pimpl->Hinv.compute( sys.H + identity * regularize.getValue() );
+    }
+    else
+        pimpl->Hinv.compute( sys.H );
 	
 	if( pimpl->Hinv.info() == Eigen::NumericalIssue ) {
-		std::cerr << "H is not psd :-/" << std::endl;
+        std::cerr << "LDLTSolver::factor: H is not psd. System solution will be wrong." << std::endl;
 		
 		std::cerr << pimpl->H << std::endl;
 	}
@@ -53,8 +61,9 @@ void LDLTSolver::factor(const AssembledSystem& sys) {
 
 	if( sys.n ) {
 		pimpl_type::cmat schur(sys.n, sys.n);
-		pimpl_type::cmat PJT = sys.P.transpose() * sys.J.transpose(); 
-		
+//        pimpl_type::cmat PJT = sys.P.transpose() * sys.J.transpose();
+        const pimpl_type::cmat& PJT = sys.J.transpose(); // H is already multiplied by P
+
 		pimpl->HinvPJT.resize(sys.m, sys.n);
 		pimpl->HinvPJT = pimpl->Hinv.solve( PJT );
 
@@ -63,7 +72,7 @@ void LDLTSolver::factor(const AssembledSystem& sys) {
 		pimpl->schur.compute( schur );
 		
 		if( pimpl->schur.info() == Eigen::NumericalIssue ) {
-			std::cerr << "schur is not psd :-/" << std::endl;
+            std::cerr << "LDLTSolver::factor: schur is not psd. System solution will be wrong." << std::endl;
 			std::cerr << schur << std::endl;
 		}
 	} else {
@@ -93,8 +102,8 @@ void LDLTSolver::solve(AssembledSystem::vec& res,
 	// in place solve
 	Pv = pimpl->Hinv.solve( Pv );
     if( debug.getValue() ){
-        cerr<<"LDLTSolver::solve, free motion = " << Pv.transpose() << endl;
-//        cerr<<"LDLTSolver::solve, verification = " << (sys.H * Pv).transpose() << endl;
+        cerr<<"LDLTSolver::solve, solution = " << Pv.transpose() << endl;
+        cerr<<"LDLTSolver::solve, verification = " << (sys.H * Pv).transpose() << endl;
     }
 	res.head( sys.m ) = sys.P * Pv;
 

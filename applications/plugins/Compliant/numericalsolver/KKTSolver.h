@@ -30,7 +30,8 @@ class SOFA_Compliant_API KKTSolver : public core::behavior::BaseLinearSolver {
 	typedef AssembledSystem system_type;
 	
 	typedef system_type::real real;
-	typedef system_type::vec vec;
+    typedef system_type::vec vec;
+    typedef system_type::mat mat;
 
     Data<bool> debug; ///< print debug info
 

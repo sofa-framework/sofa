@@ -71,6 +71,8 @@ TEST_F( Assembly_test, test_assembly )
     numParticles=2;
     ::testing::Message() << "Assembly_test: hard string of " << numParticles << " particles connected to a rigid";
     testRigidConnectedToString(numParticles);
+//    cerr<<"expected.M = " << endl << expected.M << endl;
+//    cerr<<"complianceSolver->M() = " << endl << complianceSolver->M() << endl;
     ASSERT_TRUE(matricesAreEqual( expected.M, complianceSolver->M() ));
     ASSERT_TRUE(matricesAreEqual( expected.P, complianceSolver->P() ));
     ASSERT_TRUE(matricesAreEqual( expected.J, complianceSolver->J() ));
