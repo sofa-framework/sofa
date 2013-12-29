@@ -20,6 +20,7 @@
 \newcommand{\fnext}{\vect f_{n+1}}
 \newcommand{\M}{\mat M}
 \newcommand{\Minv}{\mat M^{-1}}
+\newcommand{\Mbinv}{\bar{\mat M}^{-1}}
 \renewcommand{\P}{\mat P}
 \newcommand{\I}{\mat I}
 \newcommand{\J}{\mat J}
@@ -63,6 +64,7 @@ Hard constraints are usually implemented using Lagrange multipliers $\lambda$ in
 \end{array}\right) 
 \end{equation}
 where $\M$ is the mass matrix (or, more generally, a dynamics matrix such as $\M-h²\K$ used in implicit time integration), $\J$ is the Jacobian matrix of the constraint(s), $\acc$ is the acceleration, $\forcext$ is the net external force applied to the system, $\lam$ is the constraint force $\violation$ is the constraint violation and $\ddot \violation$ is the second time derivative of the violation (i.e. the error on accelerations).
+This form of equation system is typically called \textit{Karush-Kuhn-Tucker (KKT)}.
 $\lam$ and $\ddot \violation$ are vectors with as many entries as scalar constraints. The equation system is typically solved using a Schur complement to compute the constraint forces:
 \begin{equation}\label{eq schur rigid}
 \J \Minv \Jt \lam = -\ddot \violation - \J \Minv \forcext
@@ -111,13 +113,15 @@ Combined with a time discretization scheme, this leads to an equation system sim
 % contrary to the standard implicit integration approach, where the indefinite stiffness matrix grows to infinity for hard constraints.
 
 \subsection{Force or constraint ?} \label{sec force or constraint}
-ForceFields generally contribute the the top line of Equation~\ref{eq acc hard}, by accumulating force in the right-hand term. In implicit integration, their stiffness matrix is also accumulated to the left-hand side.
-When a ForceField has an invertible stiffness matrix, it can be handled as a constraint with non-null compliance, rather than a standard force. In this case, it contributes to the bottom of Equation~\ref{eq acc hard} rather than to the top.
+ForceFields usually contribute the the top line of Equation~\ref{eq acc hard}, by accumulating force in the right-hand term. In implicit integration, their stiffness matrix is also accumulated to the left-hand side.
+When a ForceField has an invertible stiffness matrix, it can alternatively be handled as a constraint with non-null compliance, rather than a standard force. In this case, it contributes to the bottom of Equation~\ref{eq acc hard} rather than to the top.
 
-Due to matrix conditioning issues, and depending on which linear solver is used, it may be a good idea to process very stiff forces as low compliances rather than large stiffnesses. Note, however, that each force handled as a constraint increases the size of the equation system, since it adds lines to the bottom (and columns to the right) of the equation system.
-Conversely, it may be more efficient to handle soft forces as stiffnesses, since the size of the stiffness matrix depends on the number of independent DOFs, which does not increase along with the number of forces.
+Due to matrix conditioning issues, and depending on which linear solver is used, it may be a good idea to process very stiff forces as low compliances rather than large stiffnesses. 
+In this case, we call them \textit{compliant} or \textit{compliance forces}. Here the term compliant does not convey information on the magnitude of the stiffness (or compliance) but only on the way it is processed by the solver, namely in the bottom row of the KKT equation system.
+Note, however, that each force handled as a constraint increases the size of the equation system, since it adds lines to the bottom (and columns to the right) of the equation system.
+Conversely, it may be more efficient to handle soft forces as stiffnesses, since the size of the stiffness matrix depends on the number of independent DOFs, which does not increase along with the number of forces. We call such forces \textit{stiff} or \textit{stiffness forces}, though here again, the term does not convey information on the magnitude of the stiffness but only on the way it is handled by the solver, namely in the first row of the KKT equation system.
 
-Note that geometric stiffness is not handled in the compliance view, which may result in instabilities in case of large displacements.
+Note that geometric stiffness is not (yet) handled in the compliance view, which may result in instabilities in case of large displacements.
 
 
 \section{Time integration} \label{sec:time integration}
@@ -159,7 +163,7 @@ We can rewrite the previous equation as:
  \J \dv + \frac{1}{\alpha(h\beta+d)}\C\avlam = - \frac{1}{\alpha(h\beta+d)} (\violation + (d+\alpha h)\dviolation)
 \end{equation}
 where values without indices denote current values.
-The complete equation system is:
+The complete equation system has the following generalized KKT form:
 \begin{equation}
  \left( \begin{array}{cc}
 \frac{1}{h}\P\M & -\P\Jt \\
@@ -172,19 +176,28 @@ The complete equation system is:
 \end{array}\right) 
 \end{equation}
 where $ l=\alpha(h \beta + d) $
-The system is singular due to matrix $\P $, however we can use $ \P \Minv\P $ as inverse mass matrix to compute a Schur complement:
+The system is singular due to matrix $\P $, which removes independent degrees of freedom without reducing the size of the mass matrix accordingly.
+To remedy this, we replace it with 
+\begin{equation} \label{eq mbar}
+\bar\M = \P \M \P^T + diag(\epsilon),
+\end{equation}
+ where $\epsilon$ is a very small number. 
+This makes the matrix PSD, and does not significantly change the value of the equation solution thanks to the small magnitude of the perturbation.
+
 % \[ \begin{array}{ccc}
 % \left( h\J\P\Minv\P\Jt + \frac{1}{l}\C \right) \avlam &=& -\frac{1}{l} \left(\violation + (\dampingratio+h\alpha)\dviolation \right) - h\J \Minv \forcext \\
 % \dv &=& h\P\Minv(\forcext +\Jt \avlam ) \\
 % \dx &=& h( \vel + \beta \dv )
 % \end{array} \]
-\begin{equation} \label{eq schur complement}
- \left( h\J\P\Minv\P\Jt + \frac{1}{l}\C \right) \avlam = -\frac{1}{l} \left(\violation + (\dampingratio+h\alpha)\dviolation \right) - h\J \Minv \forcext
-\end{equation}
 
+By inverting $\bar\M$, we can insert the first line of the equation system and get:
+\begin{equation} \label{eq schur complement}
+ \left( h\J\Mbinv\Jt + \frac{1}{l}\C \right) \avlam = -\frac{1}{l} \left(\violation + (\dampingratio+h\alpha)\dviolation \right) - h\J \Mbinv \forcext
+\end{equation}
+where matrix $ h\J\Mbinv\Jt + \frac{1}{l}\C $ is called the Schur complement of the KKT equation system.
 Solving for $\avlam$ allows us to update the velocities and the positions:
 \begin{eqnarray}
- \dv &=& h\P\Minv(\forcext +\Jt \avlam ) \label{eq update velocities}\\
+ \dv &=& h\P\Mbinv(\forcext +\Jt \avlam ) \label{eq update velocities}\\
 \dx &=& h( \vel + \beta \dv ) \label{eq update positions}
 \end{eqnarray}
 

@@ -3,7 +3,7 @@ def_graphic_ext=png
 img_extIsRegExp=false
 img_extensions=.eps .jpg .jpeg .png .pdf .ps .fig .gif
 kileprversion=2
-kileversion=2.1.0
+kileversion=2.1.3
 lastDocument=compliant_body.tex
 masterDocument=
 name=compliant
@@ -27,7 +27,7 @@ Mode=LaTeX
 ReadWrite=true
 
 [document-settings,item:compliant_body.tex]
-Bookmarks=155
+Bookmarks=159
 Encoding=UTF-8
 FoldedColumns=
 FoldedLines=
@@ -68,10 +68,10 @@ order=0
 
 [item:compliant_body.tex]
 archive=true
-column=123
+column=1
 encoding=UTF-8
 highlight=LaTeX
-line=294
+line=167
 mode=LaTeX
 open=true
 order=1
@@ -83,7 +83,7 @@ JumpList=
 ViMarks=
 
 [view-settings,view=0,item:compliant_body.tex]
-CursorColumn=123
-CursorLine=294
+CursorColumn=1
+CursorLine=167
 JumpList=
-ViMarks=a,155,0
+ViMarks=.,165,66,[,165,47,],165,66,a,159,0
