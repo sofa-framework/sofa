@@ -206,7 +206,7 @@ void AssemblyVisitor::fill_prefix(simulation::Node* node) {
 	vertex v; v.dofs = c.dofs; v.data = &c;
 
 	c.H = odeMatrix( node );
-//    cerr << "AssemblyVisitor::fill_prefix, c.H = " << endl << c.H << endl;
+//    cerr << "AssemblyVisitor::fill_prefix, c.H = " << endl << dmat(c.H) << endl;
 
 	if( !zero(c.H) ) {
 		c.mechanical = true;

@@ -59,7 +59,7 @@ struct Assembly_test : public CompliantSolver_test
       */
     void testHardString( unsigned n )
     {
-        clear();
+        clearScene();
         Node::SPtr root = getRoot();
         getRoot()->setGravity( Vec3(0,0,0) );
 
@@ -146,7 +146,7 @@ struct Assembly_test : public CompliantSolver_test
       */
     void testAttachedHardString( unsigned n )
     {
-        clear();
+        clearScene();
         SReal g=10;
         Node::SPtr root = getRoot();
         root->setGravity( Vec3(g,0,0) );
@@ -223,7 +223,7 @@ struct Assembly_test : public CompliantSolver_test
       */
     void testConstrainedHardString( unsigned n )
     {
-        clear();
+        clearScene();
         SReal g=10;
         Node::SPtr root = getRoot();
         root->setGravity( Vec3(g,0,0) );
@@ -331,7 +331,7 @@ struct Assembly_test : public CompliantSolver_test
       */
     void testExternallyConstrainedHardString( unsigned n )
     {
-        Node::SPtr root = clear();
+        Node::SPtr root = clearScene();
         SReal g=10;
         root->setGravity( Vec3(g,0,0) );
 
@@ -470,7 +470,7 @@ struct Assembly_test : public CompliantSolver_test
       */
     void testAttachedConnectedHardStrings( unsigned n )
     {
-        Node::SPtr root = clear();
+        Node::SPtr root = clearScene();
         SReal g=10;
         root->setGravity( Vec3(g,0,0) );
 
@@ -615,7 +615,7 @@ struct Assembly_test : public CompliantSolver_test
     */
     void testRigidConnectedToString( unsigned n )
     {
-        Node::SPtr root = clear();
+        Node::SPtr root = clearScene();
         SReal g=10;
         root->setGravity( Vec3(g,0,0) );
 
@@ -630,17 +630,17 @@ struct Assembly_test : public CompliantSolver_test
 
         // ========= The rigid object
         simulation::Node::SPtr rigid = root->createChild("rigid");
-        MechanicalObjectRigid::SPtr rigidDOF = addNew<MechanicalObjectRigid>(rigid);
+        MechanicalObjectRigid3::SPtr rigidDOF = addNew<MechanicalObjectRigid3>(rigid);
         rigidDOF->resize(1);
-        MechanicalObjectRigid::WriteVecCoord x = rigidDOF->writePositions();
+        MechanicalObjectRigid3::WriteVecCoord x = rigidDOF->writePositions();
         x[0].getCenter() = Vec3(n,0,0);
-        UniformMassRigid::SPtr rigidMass = addNew<UniformMassRigid>(rigid);
+        UniformMassRigid3::SPtr rigidMass = addNew<UniformMassRigid3>(rigid);
 
         // .========= Particle attached to the rigid object
         simulation::Node::SPtr particleOnRigid = rigid->createChild("particleOnRigid");
         MechanicalObject3::SPtr particleOnRigidDOF = addNew<MechanicalObject3>(particleOnRigid);
         particleOnRigidDOF->resize(1);
-        RigidMapping33::SPtr particleOnRigidMapping = addNew<RigidMapping33>(particleOnRigid);
+        RigidMappingRigid3d_to_3d::SPtr particleOnRigidMapping = addNew<RigidMappingRigid3d_to_3d>(particleOnRigid);
         particleOnRigidMapping->setModels(rigidDOF.get(),particleOnRigidDOF.get());
 
         // ========= The string

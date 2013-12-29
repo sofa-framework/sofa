@@ -90,8 +90,10 @@ namespace modeling {
 
 using namespace simulation;
 
-/// Dense state vector, used externally
+
 typedef Eigen::VectorXd Vector;
+typedef Eigen::Matrix<SReal, Eigen::Dynamic,Eigen::Dynamic> DenseMatrix;
+
 
 /// Dense state vector deriving from BaseVector, used to access data in the scene graph
 typedef component::linearsolver::FullVector<SReal> FullVector;
@@ -128,7 +130,7 @@ public:
 SOFA_SceneCreator_API Node::SPtr getRoot();
 
 /// Get a state vector from the scene graph. Includes only the independent state values, or also the mapped ones, depending on the flag.
-Vector assembled( core::ConstVecId id, bool independentOnly=true );
+Vector getVector( core::ConstVecId id, bool independentOnly=true );
 
 /** Initialize the sofa library and create the root of the scene graph
   */
@@ -138,6 +140,8 @@ SOFA_SceneCreator_API Node::SPtr initSofa();
   */
 SOFA_SceneCreator_API void initScene();
 
+/// Clear the scene graph and return a pointer to the new root
+SOFA_SceneCreator_API simulation::Node::SPtr clearScene();
 
 
 

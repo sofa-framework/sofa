@@ -115,33 +115,33 @@ void VectorOperations::v_clear(sofa::core::MultiVecId v) //v=0
     executeVisitor( MechanicalVOpVisitor(params /* PARAMS FIRST */, v, ConstMultiVecId::null(), ConstMultiVecId::null(), 1.0) );
 }
 
-void VectorOperations::v_eq(sofa::core::MultiVecId v, sofa::core::MultiVecId a) // v=a
+void VectorOperations::v_eq(sofa::core::MultiVecId v, sofa::core::ConstMultiVecId a) // v=a
 {
     executeVisitor( MechanicalVOpVisitor(params /* PARAMS FIRST */, v, a, ConstMultiVecId::null(), 1.0) );
 }
 
-void VectorOperations::v_eq(sofa::core::MultiVecId v, sofa::core::MultiVecId a, double f) // v=f*a
+void VectorOperations::v_eq(sofa::core::MultiVecId v, sofa::core::ConstMultiVecId a, double f) // v=f*a
 {
     executeVisitor( MechanicalVOpVisitor(params /* PARAMS FIRST */, v, ConstMultiVecId::null(), a, f) );
 }
 
 #ifndef SOFA_SMP
-void VectorOperations::v_peq(sofa::core::MultiVecId v, sofa::core::MultiVecId a, double f)
+void VectorOperations::v_peq(sofa::core::MultiVecId v, sofa::core::ConstMultiVecId a, double f)
 {
     executeVisitor( MechanicalVOpVisitor(params /* PARAMS FIRST */, v, v, a, f) );
 }
 #else
-void VectorOperations::v_peq(sofa::core::MultiVecId v, sofa::core::MultiVecId a, Shared<double> &fSh,double f)
+void VectorOperations::v_peq(sofa::core::MultiVecId v, sofa::core::ConstMultiVecId a, Shared<double> &fSh,double f)
 {
     ParallelMechanicalVOpVisitor(params /* PARAMS FIRST */, v, v, a, f, &fSh).execute( ctx );
 }
 
-void VectorOperations::v_peq(sofa::core::MultiVecId v, sofa::core::MultiVecId a, double f)
+void VectorOperations::v_peq(sofa::core::MultiVecId v, sofa::core::ConstMultiVecId a, double f)
 {
     // ParallelMechanicalVOpVisitor(params /* PARAMS FIRST */, v, v, a, f).execute( ctx );
 }
 
-void VectorOperations::v_meq(sofa::core::MultiVecId v, sofa::core::MultiVecId a, Shared<double> &fSh)
+void VectorOperations::v_meq(sofa::core::MultiVecId v, sofa::core::ConstMultiVecId a, Shared<double> &fSh)
 {
     ParallelMechanicalVOpMecVisitor(params /* PARAMS FIRST */, v, a, &fSh).execute( ctx );
 }
@@ -175,6 +175,13 @@ void VectorOperations::v_dot( sofa::core::ConstMultiVecId a, sofa::core::ConstMu
     MechanicalVDotVisitor(params /* PARAMS FIRST */, a,b,&result).setTags(ctx->getTags()).execute( ctx );
 }
 
+void VectorOperations::v_norm( sofa::core::ConstMultiVecId a, unsigned l)
+{
+    MechanicalVNormVisitor vis(params, a,l);
+    vis.setTags(ctx->getTags()).execute( ctx );
+    result = vis.getResult();
+}
+
 #ifdef SOFA_SMP
 void VectorOperations::v_dot( Shared<double> &result, core::MultiVecId a, core::MultiVecId b)
 {
@@ -187,7 +194,7 @@ void VectorOperations::v_threshold(sofa::core::MultiVecId a, double threshold)
     executeVisitor( VelocityThresholdVisitor(params /* PARAMS FIRST */, a,threshold) );
 }
 
-void VectorOperations::print(sofa::core::MultiVecId v, std::ostream &out)
+void VectorOperations::print(sofa::core::ConstMultiVecId v, std::ostream &out)
 {
     executeVisitor( MechanicalVPrintVisitor( params /* PARAMS FIRST */, v, out ) );
 }

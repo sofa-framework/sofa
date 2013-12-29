@@ -59,6 +59,7 @@ public:
 
 	typedef Eigen::SparseMatrix<real, Eigen::ColMajor> cmat;
     typedef Eigen::SparseMatrix<real, Eigen::RowMajor> rmat;
+    typedef Eigen::Matrix<real, Eigen::Dynamic, Eigen::Dynamic> dmat;
 
 	// default: row-major
 	typedef rmat mat;

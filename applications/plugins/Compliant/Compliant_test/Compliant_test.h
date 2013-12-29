@@ -78,44 +78,15 @@ The unit tests are defined in group  \ref ComplianceSolver_Unit_Tests
 class CompliantSolver_test : public Solver_test
 {
 protected:
-    typedef SReal Real;
     typedef linearsolver::AssembledSystem::rmat SMatrix;
 
     typedef component::topology::EdgeSetTopologyContainer EdgeSetTopologyContainer;
-    typedef simulation::Node Node;
-    typedef simulation::Simulation Simulation;
-    typedef Eigen::Matrix<SReal, Eigen::Dynamic,Eigen::Dynamic> DenseMatrix;
-    typedef Eigen::Matrix<SReal, Eigen::Dynamic,1> Vector;
-
-    // Vec3
     typedef defaulttype::Vec<3,SReal> Vec3;
-    typedef defaulttype::StdVectorTypes<Vec3,Vec3> Vec3Types;
-    typedef container::MechanicalObject<Vec3Types> MechanicalObject3;
-    typedef mass::UniformMass<Vec3Types,Real> UniformMass3;
-    typedef forcefield::ConstantForceField<Vec3Types> ConstantForceField3;
-    typedef projectiveconstraintset::FixedConstraint<Vec3Types> FixedConstraint3;
-    typedef mapping::SubsetMultiMapping<Vec3Types,Vec3Types> SubsetMultiMapping3_to_3;
-
-    // Vec1
-    typedef defaulttype::Vec<1,SReal> Vec1;
-    typedef defaulttype::StdVectorTypes<Vec1,Vec1> Vec1Types;
-    typedef container::MechanicalObject<Vec1Types> MechanicalObject1;
     typedef forcefield::UniformCompliance<Vec1Types> UniformCompliance1;
 
     // Vec3-Vec1
     typedef mapping::ExtensionMapping<MechanicalObject3::DataTypes, MechanicalObject1::DataTypes> ExtensionMapping31;
     typedef mapping::DistanceMapping<MechanicalObject3::DataTypes, MechanicalObject1::DataTypes> DistanceMapping31;
-
-    // Rigid3
-    typedef defaulttype::StdRigidTypes<3,Real> Rigid3Types;
-    typedef Rigid3Types::Coord Rigid3Coord;
-    typedef Rigid3Types::Deriv Rigid3Deriv;
-    typedef container::MechanicalObject<Rigid3Types> MechanicalObjectRigid;
-    typedef defaulttype::RigidMass<3,Real> Rigid3Mass;
-    typedef mass::UniformMass<Rigid3Types,Rigid3Mass> UniformMassRigid;
-
-    // Rigid3-Vec3
-    typedef mapping::RigidMapping<Rigid3Types,Vec3Types> RigidMapping33;
 
 
 protected:
@@ -267,14 +238,6 @@ protected:
 
     };
 
-    /// remove all children nodes
-    Node::SPtr clear()
-    {
-        if( getRoot() )
-            Simulation::theSimulation->unload( getRoot() );
-        Simulation::theSimulation->createNewGraph("");
-        return getRoot();
-    }
 
     /// Return an identity matrix, or if not square, a matrix with 1 on each entry of the main diagonal
     static SMatrix makeSparseIdentity( unsigned rows, unsigned cols )
@@ -357,37 +320,11 @@ protected:
         return areEqual;
     }
 
-//    /// create a new component with the given name, and attach it to the given node
-//    template<class Component>
-//    static typename Component::SPtr addObject( std::string name, simulation::Node::SPtr parent )
-//    {
-//        typename Component::SPtr c = New<Component>();
-//        parent->addObject(c);
-//        c->setName(name);
-//        return c;
-//    }
 
     ///@}
 
 
-//    Node::SPtr root;                 ///< Root of the scene graph, created by the constructor an re-used in the tests
-//    Simulation* simulation;          ///< created by the constructor an re-used in the tests
 
-
-    // ========================================
-public:
-    CompliantSolver_test()
-    {
-//        sofa::component::init();
-//        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
-//        root = simulation->createNewGraph("root");
-//        root->setName("Scene root");
-    }
-
-    ~CompliantSolver_test()
-    {
-        clear();
-    }
 
 };
 

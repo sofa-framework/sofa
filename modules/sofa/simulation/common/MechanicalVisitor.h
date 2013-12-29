@@ -945,6 +945,55 @@ public:
 #endif
 };
 
+/** Compute the norm of a vector.
+ * The type of norm is set by parameter @l. Use 0 for the infinite norm.
+ * Note that the 2-norm is more efficiently computed using the square root of the dot product.
+ * @author Francois Faure, 2013
+ */
+class SOFA_SIMULATION_COMMON_API MechanicalVNormVisitor : public BaseMechanicalVisitor
+{
+    SReal accum; ///< accumulate value before computing its root
+public:
+    ConstMultiVecId a;
+    unsigned l; ///< Type of norm:  for l>0, \f$ \|v\|_l = ( \sum_{i<dim(v)} \|v[i]\|^{l} )^{1/l} \f$, while we use l=0 for the infinite norm: \f$ \|v\|_\infinite = \max_{i<dim(v)} \|v[i]\| \f$
+    MechanicalVNormVisitor(const sofa::core::ExecParams* params, ConstMultiVecId a, unsigned l)
+        : BaseMechanicalVisitor(params) , a(a), l(l)
+    {
+#ifdef SOFA_DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
+    SReal getResult() const;
+
+    virtual Result fwdMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm);
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalVNormVisitor";}
+    virtual std::string getInfos() const
+    {
+        std::string name("v= norm(a) with a[");
+        name += a.getName() + "]";
+        return name;
+    }
+    /// Specify whether this action can be parallelized.
+    virtual bool isThreadSafe() const
+    {
+        return true;
+    }
+    virtual bool writeNodeData() const
+    {
+        return true;
+    }
+
+#ifdef SOFA_DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+        addReadVector(a);
+    }
+#endif
+};
+
 /** Apply a hypothetical displacement.
 This action does not modify the state (i.e. positions and velocities) of the objects.
 It is typically applied before a MechanicalComputeDfVisitor, in order to compute the df corresponding to a given dx (i.e. apply stiffness).

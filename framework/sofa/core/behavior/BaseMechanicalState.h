@@ -163,10 +163,16 @@ public:
     /// This is used to compute in on steps operations such as $v = v + a*dt, x = x + v*dt$.
     /// Note that if the result vector appears inside the expression, it must be the first operand.
     /// By default this method decompose the computation into multiple vOp calls.
-    virtual void vMultiOp(const ExecParams* params /* PARAMS FIRST  = ExecParams::defaultInstance()*/, const VMultiOp& ops);
+    virtual void vMultiOp(const ExecParams* params, const VMultiOp& ops);
 
     /// Compute the scalar products between two vectors.
-    virtual double vDot(const ExecParams* params /* PARAMS FIRST  = ExecParams::defaultInstance()*/, ConstVecId a, ConstVecId b) = 0; //{ return 0; }
+    virtual double vDot(const ExecParams* params, ConstVecId a, ConstVecId b) = 0;
+
+    /// Sum of the entries of state vector a at the power of l>0. This is used to compute the l-norm of the vector.
+    virtual double vSum(const ExecParams* params, ConstVecId a, unsigned l) = 0;
+
+    /// Maximum of the absolute values of the entries of state vector a. This is used to compute the infinite-norm of the vector.
+    virtual double vMax(const ExecParams* params, ConstVecId a) = 0;
 
     /// Get vector size
     virtual size_t vSize( const ExecParams* params, ConstVecId v ) = 0;

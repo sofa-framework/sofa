@@ -40,6 +40,8 @@ LDLTSolver::~LDLTSolver() {
 
 void LDLTSolver::factor(const AssembledSystem& sys) {
 	
+    typedef AssembledSystem::dmat dmat;
+
     if( regularize.getValue() != (SReal)0.0 )
     {
         mat identity(sys.m,sys.m);
@@ -59,9 +61,9 @@ void LDLTSolver::factor(const AssembledSystem& sys) {
 	pimpl->m = sys.m;
 	pimpl->n = sys.n;
 
-    if( debug.getValue() ){
-        cerr<< "LDLTSolver::factor, H = " << sys.H << endl;
-    }
+//    if( debug.getValue() ){
+//        cerr<< "LDLTSolver::factor, H = " << sys.H << endl;
+//    }
 
 	if( sys.n ) {
 		pimpl_type::cmat schur(sys.n, sys.n);
@@ -72,11 +74,11 @@ void LDLTSolver::factor(const AssembledSystem& sys) {
 
 		schur = (sys.C.transpose() + (PJT.transpose() * pimpl->HinvPJT )).selfadjointView<Eigen::Upper>();
         if( debug.getValue() ){
-//            cerr<< "LDLTSolver::factor, PJT = " << PJT << endl;
-//            cerr<< "LDLTSolver::factor, HinvPJT = " << pimpl->HinvPJT << endl;
-//            cerr<< "LDLTSolver::factor, PJT.transpose() = " << PJT.transpose() << endl;
-//            cerr<< "LDLTSolver::factor, C = " << sys.C << endl;
-            cerr<< "LDLTSolver::factor, schur = " << schur << endl;
+            cerr<< "LDLTSolver::factor, PJT = " << endl << dmat(PJT) << endl;
+            cerr<< "LDLTSolver::factor, HinvPJT = " << endl << dmat(pimpl->HinvPJT) << endl;
+            cerr<< "LDLTSolver::factor, PJT.transpose() = " << endl << dmat(PJT.transpose()) << endl;
+            cerr<< "LDLTSolver::factor, C = " << endl << dmat(sys.C) << endl;
+            cerr<< "LDLTSolver::factor, schur = " << endl << dmat(schur) << endl;
         }
 
 		pimpl->schur.compute( schur );
@@ -106,8 +108,9 @@ void LDLTSolver::solve(AssembledSystem::vec& res,
     typedef AssembledSystem::dmat dmat;
 
     if( debug.getValue() ){
+        cerr<<"LDLTSolver::solve, rhs = " << rhs.transpose() << endl;
         cerr<<"LDLTSolver::solve, Pv = " << Pv.transpose() << endl;
-        cerr<<"LDLTSolver::solve, H = " << endl << dmat(sys.H) << endl;
+//        cerr<<"LDLTSolver::solve, H = " << endl << dmat(sys.H) << endl;
     }
 
 	// in place solve

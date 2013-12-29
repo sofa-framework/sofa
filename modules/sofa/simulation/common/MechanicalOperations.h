@@ -98,9 +98,9 @@ public:
     void computeContactDf(core::MultiVecDerivId df);
 
 
-    void computeAcc(double t, core::MultiVecDerivId a, core::MultiVecCoordId x, core::MultiVecDerivId v);
-    void computeForce(double t, core::MultiVecDerivId f, core::MultiVecCoordId x, core::MultiVecDerivId v);  ///< Compute f(x,v) at time t.
-    void computeContactAcc(double t, core::MultiVecDerivId a, core::MultiVecCoordId x, core::MultiVecDerivId v);
+    void computeAcc(double t, core::MultiVecDerivId a, core::MultiVecCoordId x, core::MultiVecDerivId v); ///< Compute a(x,v) at time t. Parameters x and v not const due to propagation through mappings.
+    void computeForce(double t, core::MultiVecDerivId f, core::MultiVecCoordId x, core::MultiVecDerivId v);  ///< Compute f(x,v) at time t. Parameters x and v not const due to propagation through mappings.
+    void computeContactAcc(double t, core::MultiVecDerivId a, core::MultiVecCoordId x, core::MultiVecDerivId v); // Parameters x and v not const due to propagation through mappings.
 
     /// @}
 

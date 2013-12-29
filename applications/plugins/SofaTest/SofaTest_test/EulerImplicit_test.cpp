@@ -25,8 +25,9 @@
 
 
 #include "Solver_test.h"
-//#include <sofa/component/odesolver/EulerImplicitSolver.h>
-//#include <sofa/component/linearsolver/CGLinearSolver.h>
+#include <sofa/component/odesolver/EulerImplicitSolver.h>
+#include <sofa/component/linearsolver/CGLinearSolver.h>
+#include <sofa/simulation/common/Simulation.h>
 
 namespace sofa {
 
@@ -72,8 +73,8 @@ struct EulerImplicit_test_2_particles_to_equilibrium : public Solver_test
         // run simulation
 
         Vector x0, x1, v0, v1;
-        x0 = assembled( core::VecId::position() ); cerr<<"EulerImplicit_test, new positions : " << x0.transpose() << endl;
-        v0 = assembled( core::VecId::velocity() );
+        x0 = getVector( core::VecId::position() ); cerr<<"EulerImplicit_test, new positions : " << x0.transpose() << endl;
+        v0 = getVector( core::VecId::velocity() );
 
         Real dx, dv;
         unsigned n=0;
@@ -82,8 +83,8 @@ struct EulerImplicit_test_2_particles_to_equilibrium : public Solver_test
         do {
             sofa::simulation::getSimulation()->animate(getRoot().get(),1.0);
 
-            x1 = assembled( core::VecId::position() ); cerr<<"EulerImplicit_test, new positions : " << x1.transpose() << endl;
-            v1 = assembled( core::VecId::velocity() );
+            x1 = getVector( core::VecId::position() ); cerr<<"EulerImplicit_test, new positions : " << x1.transpose() << endl;
+            v1 = getVector( core::VecId::velocity() );
 
             dx = (x0-x1).lpNorm<Eigen::Infinity>();
             dv = (v0-v1).lpNorm<Eigen::Infinity>();
