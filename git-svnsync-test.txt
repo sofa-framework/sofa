@@ -1,3 +1,0 @@
-this is a test...
-
-this line was added from a pure git checkout (using the git repository)
