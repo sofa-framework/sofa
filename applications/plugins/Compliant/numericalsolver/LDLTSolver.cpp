@@ -116,13 +116,16 @@ void LDLTSolver::solve(AssembledSystem::vec& res,
 	// in place solve
 	Pv = pimpl->Hinv.solve( Pv );
     if( debug.getValue() ){
-        cerr<<"LDLTSolver::solve, solution = " << Pv.transpose() << endl;
+        cerr<<"LDLTSolver::solve, free motion solution = " << Pv.transpose() << endl;
         cerr<<"LDLTSolver::solve, verification = " << (sys.H * Pv).transpose() << endl;
+        cerr<<"LDLTSolver::solve, sys.m = " << sys.m << ", sys.n = " << sys.n << ", rhs.size = " << rhs.size() << endl;
+
     }
 	res.head( sys.m ) = sys.P * Pv;
 
 	if( sys.n ) {
-		vec tmp = rhs.tail( sys.n ) - pimpl->HinvPJT.transpose() * rhs.head( sys.m );
+        vec tmp = rhs.tail( sys.n ) - pimpl->HinvPJT.transpose() * rhs.head( sys.m );
+
 
 		// lambdas
 		res.tail( sys.n ) = pimpl->schur.solve( tmp );

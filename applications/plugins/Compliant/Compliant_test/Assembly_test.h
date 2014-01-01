@@ -164,7 +164,7 @@ struct Assembly_test : public CompliantSolver_test
         simulation::Node::SPtr  string1 = createCompliantString( root, Vec3(0,0,0), Vec3(1,0,0), n, 1.0*n, 0. );
 
         // attached
-        FixedConstraint3::SPtr fixed1 = addNew<FixedConstraint3>(root);
+        FixedConstraint3::SPtr fixed1 = addNew<FixedConstraint3>(string1);
 
 
 

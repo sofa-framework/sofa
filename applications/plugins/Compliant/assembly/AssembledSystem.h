@@ -69,7 +69,7 @@ public:
 //    void copyFromMultiVec( vec& target, core::ConstVecDerivId sourceId );
 
     /// Copy a state vector from the scene graph to this system. Only the independent DOFs are copied.
-    void copyFromMultiVec( vec& target, core::MultiVecDerivId sourceId );
+    void copyFromMultiVec(vec& target, core::ConstMultiVecDerivId sourceId );
 
 //    /// Copy a state vector from this system to the scene graph. Only the independent DOFs are copied.
 //    void copyToMultiVec( core::VecDerivId targetId, const vec& source );
