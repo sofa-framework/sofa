@@ -182,17 +182,19 @@ int main(int argc, char** argv)
     if(gui!="batch") glutInit(&argc,argv);
 #endif
 
-#ifdef SOFA_HAVE_DAG
-    if (simulationType == "dag")
-        sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
-    else
-#endif
 #ifdef SOFA_SMP
         if (simulationType == "smp")
             sofa::simulation::setSimulation(new sofa::simulation::tree::SMPSimulation());
         else
 #endif
-            sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
+#ifdef SOFA_HAVE_DAG
+    if (simulationType == "tree")
+        sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
+    else
+        sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
+#else //SOFA_HAVE_DAG
+    sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
+#endif
 
     sofa::component::init();
     sofa::simulation::xml::initXml();
