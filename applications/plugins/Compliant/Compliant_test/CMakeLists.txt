@@ -10,6 +10,7 @@ set(HEADER_FILES
 set(SOURCE_FILES
 
     Compliant_test.cpp
+    AssembledSolver_test.cpp
 	)
 
 if(APPLE)

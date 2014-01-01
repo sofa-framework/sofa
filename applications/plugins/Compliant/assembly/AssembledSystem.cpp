@@ -44,26 +44,11 @@ void AssembledSystem::debug(SReal /*thres*/) const {
 
 }
 
-//void AssembledSystem::copyFromMultiVec(vec &target, core::ConstVecDerivId derivId)
-//{
-//    unsigned off = 0;
-//    // master dofs
-//    for(unsigned i = 0, end = master.size(); i < end; ++i)
-//    {
-//        dofs_type* dofs = master[i];
-
-//        unsigned dim = dofs->getMatrixSize();
-
-//        dofs->copyToBuffer(&target(off), derivId, dim);
-//        off += dim;
-//    }
-
-//}
 
 
-void AssembledSystem::copyFromMultiVec(vec &target, core::MultiVecDerivId derivId)
+void AssembledSystem::copyFromMultiVec(vec &target, core::ConstMultiVecDerivId derivId)
 {
-    target.resize(size());
+    assert(target.size() >= m);
     unsigned off = 0;
     // master dofs
     for(unsigned i = 0, end = master.size(); i < end; ++i)
@@ -78,22 +63,6 @@ void AssembledSystem::copyFromMultiVec(vec &target, core::MultiVecDerivId derivI
 
 }
 
-
-//void AssembledSystem::copyToMultiVec( core::VecDerivId targetId, const vec& source)
-//{
-//    unsigned off = 0;
-//    // master dofs
-//    for(unsigned i = 0, end = master.size(); i < end; ++i)
-//    {
-//        dofs_type* dofs = master[i];
-
-//        unsigned dim = dofs->getMatrixSize();
-
-//        dofs->copyFromBuffer(targetId, &source(off), dim);
-//        off += dim;
-//    }
-
-//}
 
 void AssembledSystem::copyToMultiVec( core::MultiVecDerivId targetId, const vec& source)
 {
