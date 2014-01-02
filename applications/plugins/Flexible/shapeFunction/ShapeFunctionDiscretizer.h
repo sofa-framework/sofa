@@ -166,7 +166,7 @@ protected:
                         Coord p=inT->fromImage(Coord(x,y,z));
                         VReal w; VRef ref; MaterialToSpatial M;
                         _shapeFunction->computeShapeFunction(p,M,ref,w);
-                        for(unsigned int i=0;i<nbref;i++)
+                        for(unsigned int i=0;i<ref.size();i++)
                         {
                             indices(x,y,z,i)=ref[i]+1;
                             weights(x,y,z,i)=w[i];

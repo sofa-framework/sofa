@@ -27,7 +27,8 @@ set(HEADER_FILES
     shapeFunction/BarycentricShapeFunction.h 
     deformationMapping/BaseDeformationMapping.h 
     deformationMapping/BaseDeformationMapping.inl 
-    deformationMapping/LinearMapping.h 
+    deformationMapping/CustomJacobianBlock.h
+    deformationMapping/LinearMapping.h
     deformationMapping/LinearJacobianBlock.h 
     deformationMapping/LinearJacobianBlock_point.inl 
     deformationMapping/LinearJacobianBlock_affine.inl 
