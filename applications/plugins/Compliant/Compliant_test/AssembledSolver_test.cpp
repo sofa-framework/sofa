@@ -22,22 +22,23 @@ struct AssembledSolver_test : public CompliantSolver_test
       Integrate using backward Euler (alpha=1, beta=1).
       Post-condition: an explicit Euler step with step -dt brings the system back to the original state.
       */
-    void testLinearOneFixedOneStiffnessSpringV100()
+    void testLinearOneFixedOneStiffnessSpringV100(bool debug)
     {
-        clearScene();
-        Node::SPtr root = getRoot();
-        getRoot()->setGravity( Vec3(0,0,0) );
+        SReal dt=0.1;
+        Node::SPtr root = clearScene();
+        root->setGravity( Vec3(0,0,0) );
+        root->setDt(dt);
 
         // The solver
         using odesolver::AssembledSolver;
         AssembledSolver::SPtr complianceSolver = addNew<AssembledSolver>(getRoot());
-//        complianceSolver->debug.setValue(1);
+        complianceSolver->debug.setValue(debug);
         complianceSolver->alpha.setValue(1.0);
         complianceSolver->beta.setValue(1.0);
         SReal precision = 1.0e-6;
 
         linearsolver::LDLTSolver::SPtr linearSolver = addNew<linearsolver::LDLTSolver>(getRoot());
-//        linearSolver->debug.setValue(true);
+        linearSolver->debug.setValue(debug);
 
         // The string
         ParticleString  string1( root, Vec3(0,0,0), Vec3(1,0,0), 2, 1.0*2 ); // two particles
@@ -63,7 +64,6 @@ struct AssembledSolver_test : public CompliantSolver_test
         Vector v0 = getVector( core::VecId::velocity() );
 
         //**************************************************
-        SReal dt=0.1;
         sofa::simulation::getSimulation()->animate(root.get(),dt);
         //**************************************************
 
@@ -93,22 +93,23 @@ struct AssembledSolver_test : public CompliantSolver_test
     }
 
     /// Same as @testLinearOneFixedOneStiffnessSpringV100, with a compliant spring instead of a stiff spring
-    void testLinearOneFixedOneComplianceSpringV100()
+    void testLinearOneFixedOneComplianceSpringV100( bool debug )
     {
-        clearScene();
-        Node::SPtr root = getRoot();
-        getRoot()->setGravity( Vec3(0,0,0) );
+        SReal dt=0.1;
+        Node::SPtr root = clearScene();
+        root->setGravity( Vec3(0,0,0) );
+        root->setDt(dt);
 
         // The solver
         using odesolver::AssembledSolver;
         AssembledSolver::SPtr complianceSolver = addNew<AssembledSolver>(root);
-//        complianceSolver->debug.setValue(1);
+        complianceSolver->debug.setValue(debug);
         complianceSolver->alpha.setValue(1.0);
         complianceSolver->beta.setValue(1.0);
         SReal precision = 1.0e-6;
 
         linearsolver::LDLTSolver::SPtr linearSolver = addNew<linearsolver::LDLTSolver>(root);
-//        linearSolver->debug.setValue(true);
+        linearSolver->debug.setValue(debug);
 
         // The string
         ParticleString  string1( root, Vec3(0,0,0), Vec3(1,0,0), 2, 1.0*2 ); // two particles
@@ -134,7 +135,6 @@ struct AssembledSolver_test : public CompliantSolver_test
         Vector v0 = modeling::getVector( core::VecId::velocity() );
 
         //**************************************************
-        SReal dt=0.1;
         sofa::simulation::getSimulation()->animate(root.get(),dt);
         //**************************************************
 
@@ -167,9 +167,10 @@ struct AssembledSolver_test : public CompliantSolver_test
     /// One stiffness spring, initially extendes
     void testLinearOneFixedOneStiffnessSpringX200( bool debug )
     {
-        clearScene();
-        Node::SPtr root = getRoot();
-        getRoot()->setGravity( Vec3(0,0,0) );
+        SReal dt=0.1;
+        Node::SPtr root = clearScene();
+        root->setGravity( Vec3(0,0,0) );
+        root->setDt(dt);
 
         // The solver
         typedef odesolver::AssembledSolver OdeSolver;
@@ -205,7 +206,6 @@ struct AssembledSolver_test : public CompliantSolver_test
         Vector v0 = modeling::getVector( core::VecId::velocity() );
 
         //**************************************************
-        SReal dt=0.1;
         sofa::simulation::getSimulation()->animate(root.get(),dt);
         //**************************************************
 
@@ -245,9 +245,10 @@ struct AssembledSolver_test : public CompliantSolver_test
     /// One compliant spring, initially extendes
     void testLinearOneFixedOneComplianceSpringX200( bool debug )
     {
-        clearScene();
-        Node::SPtr root = getRoot();
-        getRoot()->setGravity( Vec3(0,0,0) );
+        SReal dt=0.1;
+        Node::SPtr root = clearScene();
+        root->setGravity( Vec3(0,0,0) );
+        root->setDt(dt);
 
         // The solver
         typedef odesolver::AssembledSolver OdeSolver;
@@ -283,7 +284,6 @@ struct AssembledSolver_test : public CompliantSolver_test
         Vector v0 = modeling::getVector( core::VecId::velocity() );
 
         //**************************************************
-        SReal dt=0.1;
         sofa::simulation::getSimulation()->animate(root.get(),dt);
         //**************************************************
 
@@ -301,13 +301,13 @@ struct AssembledSolver_test : public CompliantSolver_test
         Vector v2 = v1 - f1 * dt;
         Vector x2 = x1 - v1 * dt;
 
-        cerr<<"AssembledSolver_test, initial positions : " << x0.transpose() << endl;
-        cerr<<"AssembledSolver_test, initial velocities: " << v0.transpose() << endl;
-        cerr<<"AssembledSolver_test, new positions     : " << x1.transpose() << endl;
-        cerr<<"AssembledSolver_test, new velocities    : " << v1.transpose() << endl;
-        cerr<<"AssembledSolver_test, new forces        : " << f1.transpose() << endl;
-        cerr<<"AssembledSolver_test, new positions  after backward integration: " << x2.transpose() << endl;
-        cerr<<"AssembledSolver_test, new velocities after backward integration: " << v2.transpose() << endl;
+//        cerr<<"AssembledSolver_test, initial positions : " << x0.transpose() << endl;
+//        cerr<<"AssembledSolver_test, initial velocities: " << v0.transpose() << endl;
+//        cerr<<"AssembledSolver_test, new positions     : " << x1.transpose() << endl;
+//        cerr<<"AssembledSolver_test, new velocities    : " << v1.transpose() << endl;
+//        cerr<<"AssembledSolver_test, new forces        : " << f1.transpose() << endl;
+//        cerr<<"AssembledSolver_test, new positions  after backward integration: " << x2.transpose() << endl;
+//        cerr<<"AssembledSolver_test, new velocities after backward integration: " << v2.transpose() << endl;
 
         // check that the implicit integration satisfies the implicit integration equation
         ASSERT_TRUE( (x2-x0).lpNorm<Eigen::Infinity>() < precision );
@@ -326,10 +326,10 @@ struct AssembledSolver_test : public CompliantSolver_test
 // do run the tests
 //=================
 // simple linear cases
-TEST_F(AssembledSolver_test, OneFixedOneComplianceSpringV100 ){    testLinearOneFixedOneComplianceSpringV100();  }
-TEST_F(AssembledSolver_test, OneFixedOneStiffnessSpringV100 ){     testLinearOneFixedOneStiffnessSpringV100();  }
+TEST_F(AssembledSolver_test, OneFixedOneComplianceSpringV100 ){    testLinearOneFixedOneComplianceSpringV100(false);  }
+TEST_F(AssembledSolver_test, OneFixedOneStiffnessSpringV100 ){     testLinearOneFixedOneStiffnessSpringV100(false);  }
 TEST_F(AssembledSolver_test, OneFixedOneStiffnessSpringX200 ){     testLinearOneFixedOneStiffnessSpringX200(false);  }
-TEST_F(AssembledSolver_test, OneFixedOneComplianceSpringX200 ){    testLinearOneFixedOneComplianceSpringX200(true);  }
+TEST_F(AssembledSolver_test, OneFixedOneComplianceSpringX200 ){    testLinearOneFixedOneComplianceSpringX200(false);  }
 
 
 
