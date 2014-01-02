@@ -796,6 +796,8 @@ public:
             waDist dist(this->f_distances); dist->clear();
             waInd vor(this->f_voronoi); vor->clear();
         }
+
+        if(this->f_printLog.getValue())  std::cout<<this->getName()<<" shape function initialized"<<std::endl;
     }
 
 
