@@ -24,7 +24,7 @@ struct AssembledSolver_test : public CompliantSolver_test
       */
     void testLinearOneFixedOneStiffnessSpringV100(bool debug)
     {
-        SReal dt=0.1;
+        SReal dt=0.1; // currently, this must be set in the root node AND passed to the animate function
         Node::SPtr root = clearScene();
         root->setGravity( Vec3(0,0,0) );
         root->setDt(dt);
@@ -95,7 +95,7 @@ struct AssembledSolver_test : public CompliantSolver_test
     /// Same as @testLinearOneFixedOneStiffnessSpringV100, with a compliant spring instead of a stiff spring
     void testLinearOneFixedOneComplianceSpringV100( bool debug )
     {
-        SReal dt=0.1;
+        SReal dt=0.1; // currently, this must be set in the root node AND passed to the animate function
         Node::SPtr root = clearScene();
         root->setGravity( Vec3(0,0,0) );
         root->setDt(dt);
@@ -103,7 +103,7 @@ struct AssembledSolver_test : public CompliantSolver_test
         // The solver
         using odesolver::AssembledSolver;
         AssembledSolver::SPtr complianceSolver = addNew<AssembledSolver>(root);
-        complianceSolver->debug.setValue(debug);
+        complianceSolver->debug.setValue( debug );
         complianceSolver->alpha.setValue(1.0);
         complianceSolver->beta.setValue(1.0);
         SReal precision = 1.0e-6;
@@ -167,7 +167,7 @@ struct AssembledSolver_test : public CompliantSolver_test
     /// One stiffness spring, initially extendes
     void testLinearOneFixedOneStiffnessSpringX200( bool debug )
     {
-        SReal dt=0.1;
+        SReal dt=0.1;   // currently, this must be set in the root node AND passed to the animate function
         Node::SPtr root = clearScene();
         root->setGravity( Vec3(0,0,0) );
         root->setDt(dt);
@@ -245,7 +245,7 @@ struct AssembledSolver_test : public CompliantSolver_test
     /// One compliant spring, initially extendes
     void testLinearOneFixedOneComplianceSpringX200( bool debug )
     {
-        SReal dt=0.1;
+        SReal dt=1;
         Node::SPtr root = clearScene();
         root->setGravity( Vec3(0,0,0) );
         root->setDt(dt);

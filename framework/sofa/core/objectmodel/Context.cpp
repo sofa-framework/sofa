@@ -24,7 +24,8 @@
 ******************************************************************************/
 #include <sofa/core/objectmodel/Context.h>
 // #include <sofa/simulation/common/Visitor.h>
-
+using std::cerr;
+using std::endl;
 
 namespace sofa
 {
@@ -124,6 +125,7 @@ Context::Vec3 Context::getLocalGravity() const
 /// Simulation timestep
 double Context::getDt() const
 {
+//    cerr << "Context::getDt() is " << dt_.getValue() << endl;
     return dt_.getValue();
 }
 
@@ -170,6 +172,7 @@ int Context::getFinestLevel() const
 /// Simulation timestep
 void Context::setDt(double val)
 {
+//    cerr << "Context::setDt("<< val <<")" << endl;
     dt_.setValue(val);
 }
 
