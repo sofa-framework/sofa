@@ -949,11 +949,13 @@ public:
     {
         Inherit::init();
 
-        addInput(&f_index);
-        addInput(&f_w);
-        addInput(&f_transform);
-        addInput(&f_mask);
-        addInput(&f_maskLabels);
+// somehow, setting inputs now leads to several parallel initializations and a seg-fault
+// TODO: fix this (related to data flow issues?)
+//        addInput(&f_index);
+//        addInput(&f_w);
+//        addInput(&f_transform);
+//        addInput(&f_mask);
+//        addInput(&f_maskLabels);
         addOutput(&f_region);
         addOutput(&f_error);
         setDirtyValue();
