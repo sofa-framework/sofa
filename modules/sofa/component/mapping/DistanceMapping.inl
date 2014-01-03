@@ -49,6 +49,8 @@ DistanceMapping<TIn, TOut>::DistanceMapping()
     , f_indices(initData(&f_indices, "indices", "Indices of the parent points"))
     , f_targetPositions(initData(&f_targetPositions, "targetPositions", "Positions to compute the distances from"))
     , f_restDistances(initData(&f_restDistances, "restLengths", "Rest lengths of the connections."))
+    , _arrowSize(0)
+    , _color( 1,0,0,1 )
 {
 }
 
@@ -121,6 +123,9 @@ void DistanceMapping<TIn, TOut>::init()
     baseMatrices.resize( 1 );
     baseMatrices[0] = &jacobian;
 
+    stiffnessBaseMatrices.resize(1);
+    stiffnessBaseMatrices[0] = &K;
+
     this->Inherit::init();  // applies the mapping, so after the Data init
 }
 
@@ -136,20 +141,25 @@ void DistanceMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*
     helper::ReadAccessor< Data<InVecCoord > > targetPositions(f_targetPositions);
 
     jacobian.resizeBlocks(out.size(),in.size());
+    directions.resize(out.size());
+    invlengths.resize(out.size());
 
     for(unsigned i=0; i<indices.size(); i++ )
     {
-        InDeriv gap = in[indices[i]] - targetPositions[i];
+        InDeriv& gap = directions[i];
+        gap = in[indices[i]] - targetPositions[i];
         Real gapNorm = gap.norm();
 //        cerr<<"DistanceMapping<TIn, TOut>::apply, gap = " << gap <<", norm = " << gapNorm << endl;
         out[i] = gapNorm - restDistances[i];  // output
 
         if( gapNorm>1.e-10 )
         {
-            gap *= 1/gapNorm;
+            invlengths[i] = 1/gapNorm;
+            gap *= invlengths[i];
         }
         else
         {
+            invlengths[i] = 0;
             gap = InDeriv();
             gap[0]=1.0;  // arbitrary unit vector
         }
@@ -196,6 +206,39 @@ void DistanceMapping<TIn, TOut>::applyJT(const core::ConstraintParams*, Data<InM
 
 
 template <class TIn, class TOut>
+void DistanceMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId )
+{
+    helper::WriteAccessor<Data<InVecDeriv> > parentForce (*parentDfId[this->fromModel.get(mparams)].write());
+    helper::ReadAccessor<Data<InVecDeriv> > parentDisplacement (*mparams->readDx(this->fromModel));  // parent displacement
+    Real kfactor = mparams->kFactor();
+    helper::ReadAccessor<Data<OutVecDeriv> > childForce (*mparams->readF(this->toModel));
+    helper::ReadAccessor< Data<vector<unsigned> > > indices(f_indices);
+
+    for(unsigned i=0; i<indices.size(); i++ )
+    {
+        Mat<Nin,Nin,Real> b;  // = (I - uu^T)
+        for(unsigned j=0; j<Nin; j++)
+        {
+            for(unsigned k=0; k<Nin; k++)
+            {
+                if( j==k )
+                    b[j][k] = 1. - directions[i][j]*directions[i][k];
+                else
+                    b[j][k] =    - directions[i][j]*directions[i][k];
+            }
+        }
+        b *= childForce[i][0] * invlengths[i] * kfactor;  // (I - uu^T)*f/l*kfactor     do not forget kfactor !
+        // note that computing a block is not efficient here, but it would makes sense for storing a stiffness matrix
+
+        InDeriv dx = parentDisplacement[indices[i]];
+        InDeriv df = b*dx;
+        parentForce[indices[i]] += df;
+//        cerr<<"DistanceMapping<TIn, TOut>::applyDJT, df = " << df << endl;
+    }
+}
+
+
+template <class TIn, class TOut>
 const sofa::defaulttype::BaseMatrix* DistanceMapping<TIn, TOut>::getJ()
 {
     return &jacobian;
@@ -205,6 +248,43 @@ template <class TIn, class TOut>
 const vector<sofa::defaulttype::BaseMatrix*>* DistanceMapping<TIn, TOut>::getJs()
 {
     return &baseMatrices;
+}
+
+template <class TIn, class TOut>
+const vector<defaulttype::BaseMatrix*>* DistanceMapping<TIn, TOut>::getKs()
+{
+//    helper::ReadAccessor<Data<OutVecDeriv> > childForce (*this->toModel->read(core::ConstVecDerivId::force()));
+    const OutVecDeriv& childForce = this->toModel->readForces().ref();
+    helper::ReadAccessor< Data<vector<unsigned> > > indices(f_indices);
+    helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
+
+    K.resizeBlocks(in.size(),in.size());
+    for(size_t i=0; i<indices.size(); i++)
+    {
+        K.beginBlockRow(i);
+
+        Mat<Nin,Nin,Real> b;  // = (I - uu^T)
+        for(unsigned j=0; j<Nin; j++)
+        {
+            for(unsigned k=0; k<Nin; k++)
+            {
+                if( j==k )
+                    b[j][k] = 1. - directions[i][j]*directions[i][k];
+                else
+                    b[j][k] =    - directions[i][j]*directions[i][k];
+            }
+        }
+        b *= childForce[i][0] * invlengths[i];  // (I - uu^T)*f/l
+
+//        std::cerr<<SOFA_CLASS_METHOD<<childForce[i][0]<<std::endl;
+
+        K.createBlock(i,b);
+
+        K.endBlockRow();
+    }
+    K.compress();
+
+    return &stiffnessBaseMatrices;
 }
 
 template <class TIn, class TOut>
@@ -221,8 +301,15 @@ void DistanceMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
         points.push_back(targetPositions[i]);
         points.push_back(pos[indices[i]]);
     }
-    vparams->drawTool()->drawLines ( points, 1, Vec<4,float> ( 1,0,0,1 ) );
+
+    if( !_arrowSize )
+        vparams->drawTool()->drawLines ( points, 1, _color );
+    else
+        for (unsigned int i=0; i<points.size()/2; ++i)
+            vparams->drawTool()->drawArrow( points[2*i+1], points[2*i], _arrowSize, _color );
+
 }
+
 
 
 } // namespace mapping

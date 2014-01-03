@@ -82,6 +82,7 @@ public:
     typedef typename In::VecCoord InVecCoord;
     typedef typename In::VecDeriv InVecDeriv;
     typedef linearsolver::EigenSparseMatrix<TIn,TOut>    SparseMatrixEigen;
+    typedef linearsolver::EigenSparseMatrix<In,In>    SparseKMatrixEigen;
     enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
 
     Data< vector<unsigned> > f_indices;         ///< indices of the parent points
@@ -107,12 +108,16 @@ public:
 
     virtual void applyJT(const core::ConstraintParams *cparams /* PARAMS FIRST */, Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in);
 
-//    virtual void applyDJT(const core::MechanicalParams* mparams /* PARAMS FIRST  = core::MechanicalParams::defaultInstance()*/, core::MultiVecDerivId parentForce, core::ConstMultiVecDerivId  childForce );
+    virtual void applyDJT(const core::MechanicalParams* mparams /* PARAMS FIRST  = core::MechanicalParams::defaultInstance()*/, core::MultiVecDerivId parentForce, core::ConstMultiVecDerivId  childForce );
+
+    virtual const vector<defaulttype::BaseMatrix*>* getKs();
 
     virtual const sofa::defaulttype::BaseMatrix* getJ();
     virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs();
 
     virtual void draw(const core::visual::VisualParams* vparams);
+    SReal _arrowSize;
+    defaulttype::Vec<4,SReal> _color;
 
 protected:
     DistanceMapping();
@@ -120,16 +125,20 @@ protected:
 
     SparseMatrixEigen jacobian;                      ///< Jacobian of the mapping
     vector<defaulttype::BaseMatrix*> baseMatrices;   ///< Jacobian of the mapping, in a vector
+    SparseKMatrixEigen K;  ///< Assembled geometric stiffness matrix
+    vector<defaulttype::BaseMatrix*> stiffnessBaseMatrices;      ///< Vector of geometric stiffness matrices, for the Compliant plugin API
+    vector<InDeriv> directions;                         ///< Unit vectors in the directions of the lines
+    vector< Real > invlengths;                          ///< inverse of current distances. Null represents the infinity (null distance)
 
 };
 
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_DistanceMapping_CPP)
 #ifndef SOFA_FLOAT
-//extern template class SOFA_MISC_MAPPING_API DistanceMapping< Rigid3dTypes, Vec3dTypes >;
+extern template class SOFA_MISC_MAPPING_API DistanceMapping< defaulttype::Vec3dTypes, defaulttype::Vec1dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-//extern template class SOFA_MISC_MAPPING_API DistanceMapping< Rigid3fTypes, Vec3fTypes >;
+extern template class SOFA_MISC_MAPPING_API DistanceMapping< defaulttype::Vec3fTypes, defaulttype::Vec1fTypes >;
 #endif
 
 #endif
