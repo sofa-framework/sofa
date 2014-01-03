@@ -325,7 +325,7 @@ double Mass<DataTypes>::getElementMass(unsigned int ) const
 template <class DataTypes>
 void Mass<DataTypes>::getElementMass(unsigned int , defaulttype::BaseMatrix *m) const
 {
-    static unsigned int dimension = defaulttype::DataTypeInfo<Coord>::size();
+    static unsigned int dimension = (unsigned int) defaulttype::DataTypeInfo<Coord>::size();
     if (m->rowSize() != dimension || m->colSize() != dimension) m->resize(dimension,dimension);
 
     m->clear();

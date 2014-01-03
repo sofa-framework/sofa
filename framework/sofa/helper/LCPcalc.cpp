@@ -1699,7 +1699,7 @@ int nlcp_multiGrid_2levels(int dim, double *dfree, double**W, double *f, double 
 int nlcp_multiGrid_Nlevels(int dim, double *dfree, double**W, double *f, double mu, double tol, int numItMax, bool useInitialF, std::vector< std::vector< int> > &contact_group_hierarchy, std::vector<unsigned int> Tab_num_group, std::vector< std::vector< int> > &constraint_group_hierarchy, std::vector< std::vector< double> > &constraint_group_fact_hierarchy, bool verbose, std::vector<double> *residualsN, std::vector<double> *residualLevels, std::vector<double> *violations)
 {
     if (dim == 0) return 1; // nothing to do
-    unsigned int num_hierarchies = Tab_num_group.size();
+    size_t num_hierarchies = Tab_num_group.size();
     if (num_hierarchies != contact_group_hierarchy.size())
     {
         std::cerr<<" ERRROR in nlcp_multiGrid_Nlevels size of Tab_num_group must be equal to size of contact_group_hierarchy"<<std::endl;
@@ -1733,7 +1733,7 @@ int nlcp_multiGrid_Nlevels(int dim, double *dfree, double**W, double *f, double 
     contact_is_projected.resize(num_hierarchies+1);
 
     bool convergenceTest= false;
-    for(unsigned int h = 0; h<num_hierarchies; h++)
+    for(size_t h = 0; h<num_hierarchies; h++)
     {
         // iterations at the fine Level (no test of convergence)
 
@@ -1774,9 +1774,9 @@ int nlcp_multiGrid_Nlevels(int dim, double *dfree, double**W, double *f, double 
         afficheResult(  hierarchicalLevels[num_hierarchies]->getF(), hierarchicalLevels[num_hierarchies]->getDim());
     }
 
-    for( int h = num_hierarchies-1; h>=0; h--)
+    for(size_t idx = 1 ; idx<=num_hierarchies; idx++)
     {
-
+        size_t h = num_hierarchies-idx;
         // prolongation (interpolation) at the fine level
         prolongation((*hierarchicalLevels[h]), (*hierarchicalLevels[h+1]), contact_group_hierarchy[h], constraint_group_hierarchy[h], constraint_group_fact_hierarchy[h], contact_is_projected[h], verbose);
 
