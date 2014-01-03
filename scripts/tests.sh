@@ -14,32 +14,37 @@
 
 
 if [ $# -ne 1 ]; then
-    echo "$0: one argument expected, $# provided"
+    echo "$0: one argument expected, $# provided" >&2
     exit 1
 fi
 
 run-tests ()
 {
+    # Create or empty out the output directory
     if [ -d test-reports ]; then
-        echo "Deleting content of test-reports/"
+        echo "$0: deleting content of test-reports/"
         rm -f test-reports/*
     else
         mkdir test-reports
     fi
-
+    # Check the existence of test programs
+    if ! ls bin/*_test &> /dev/null; then
+        echo "$0: no test executable found"
+        exit 0
+    fi
+    # Run each test
     for test in bin/*_test; do
-        filename=test-reports/`basename "$test"`.xml
-        "$test" --gtest_output=xml:"$filename"
+        output_file=test-reports/`basename "$test"`.xml
+        "$test" --gtest_output=xml:"$output_file"
         exit_code="$?"
         # Check the test executable didn't crash
-        if [ -e "$filename" ]; then
+        if [ -e "$output_file" ]; then
             # Little fix: Googletest marks skipped tests with a 'status="notrun"' attribute,
             # but the JUnit XML understood by Jenkins requires a '<skipped/>' element instead.
             # source: http://stackoverflow.com/a/14074664
-            sed -i 's:\(<testcase [^>]*status="notrun".*\)/>:\1><skipped/></testcase>:' "$filename"
+            sed -i 's:\(<testcase [^>]*status="notrun".*\)/>:\1><skipped/></testcase>:' "$output_file"
         else
-            echo "Error: $filename was not created"
-            echo "$test ended with code $exit_code"
+            echo "$0: $output_file was not created; $test ended with code $exit_code" >&2
         fi
     done
 }
@@ -51,10 +56,11 @@ run-tests ()
 # E.g. <testsuites tests="212" failures="4" disabled="0" errors="0" ...
 sum-attribute-from-testsuites ()
 {
-    # test the existence of report files
+    # Check the existence of report files
     if ! ls test-reports/*.xml &> /dev/null; then
-        echo "$0: no test report found"
-        exit 2
+        echo "$0: no test report found" >&2
+        echo 0
+        return
     fi
     attribute="$1"
     # grep the lines containing '<testsuites'; for each one, match the 'attribute="..."' pattern, and collect the "..." part
