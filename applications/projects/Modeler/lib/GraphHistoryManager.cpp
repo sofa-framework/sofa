@@ -241,8 +241,10 @@ void GraphHistoryManager::graphClean()
 
 void GraphHistoryManager::clearHistory()
 {
-    for ( int i=historyOperation.size()-1; i>=0; --i)
+    const size_t size = historyOperation.size();
+    for(size_t idx = 1 ; idx <= size ; idx++)
     {
+        size_t i = size - idx;
         if (historyOperation[i].ID == Operation::DELETE_OBJECT)
             historyOperation[i].sofaComponent.reset();
         else if (historyOperation[i].ID == Operation::DELETE_Node)
@@ -258,8 +260,10 @@ void GraphHistoryManager::clearHistory()
 
 void GraphHistoryManager::clearHistoryUndo()
 {
-    for ( int i=historyUndoOperation.size()-1; i>=0; --i)
+    const size_t size = historyUndoOperation.size();
+    for (size_t idx=1; idx<=size; idx++)
     {
+        size_t i = size - idx;
         if (historyUndoOperation[i].ID == Operation::DELETE_OBJECT)
             historyUndoOperation[i].sofaComponent.reset();
         else if (historyUndoOperation[i].ID == Operation::DELETE_Node)

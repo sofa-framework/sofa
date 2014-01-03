@@ -775,10 +775,10 @@ public:
     }
     static void readFromData(Widget* w, const data_type& d)
     {
-        unsigned int m_length=d.getString().length();
+        int length = (int) d.getString().length();
         if (w->text().ascii() != d.getString())
         {
-            w->setMaxLength(m_length+2); w->setReadOnly(true);
+            w->setMaxLength(length+2); w->setReadOnly(true);
             w->setText(QString(d.getString().c_str()));
         }
     }

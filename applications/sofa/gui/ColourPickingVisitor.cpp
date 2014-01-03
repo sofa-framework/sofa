@@ -54,7 +54,7 @@ void decodeCollisionElement(const sofa::defaulttype::Vec4f colour,  sofa::compon
         helper::vector<core::CollisionModel*> listCollisionModel;
         //sofa::simulation::getSimulation()->getContext()->get<core::CollisionModel>(&listCollisionModel,BaseContext::SearchRoot);
         if (body.body) body.body->getContext()->get<core::CollisionModel>(&listCollisionModel,BaseContext::SearchRoot);
-        const int totalCollisionModel = listCollisionModel.size();
+        const size_t totalCollisionModel = listCollisionModel.size();
         const int indexListCollisionModel = (int) ( colour[0] * (float)totalCollisionModel + 0.5) - 1;
         if(indexListCollisionModel >= 0 && indexListCollisionModel < (int)listCollisionModel.size())
         {
@@ -139,7 +139,7 @@ void ColourPickingVisitor::processTriangleModel(simulation::Node * node, sofa::c
 
     node->get< sofa::core::CollisionModel >( &listCollisionModel, BaseContext::SearchRoot);
     iter = std::find(listCollisionModel.begin(), listCollisionModel.end(), tmodel);
-    const int totalCollisionModel = listCollisionModel.size();
+    const size_t totalCollisionModel = listCollisionModel.size();
     const int indexCollisionModel = std::distance(listCollisionModel.begin(),iter ) + 1 ;
 
     switch( method )
@@ -188,7 +188,7 @@ void ColourPickingVisitor::processSphereModel(simulation::Node * node, sofa::com
     helper::vector<core::CollisionModel*> listCollisionModel;
 
     node->get< sofa::core::CollisionModel >( &listCollisionModel, BaseContext::SearchRoot);
-    const int totalCollisionModel = listCollisionModel.size();
+    const size_t totalCollisionModel = listCollisionModel.size();
     helper::vector<core::CollisionModel*>::iterator iter = std::find(listCollisionModel.begin(), listCollisionModel.end(), smodel);
     const int indexCollisionModel = std::distance(listCollisionModel.begin(),iter ) + 1 ;
     float red = (float)indexCollisionModel / (float)totalCollisionModel;
