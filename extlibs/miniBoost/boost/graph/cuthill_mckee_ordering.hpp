@@ -36,7 +36,7 @@ namespace boost {
       template <class Vertex, class Graph>
       void examine_vertex(Vertex u, Graph&) {
         *(*permutation)++ = u;
-        index_begin = Qptr->size();
+        index_begin = (int)Qptr->size();
       }
       template <class Vertex, class Graph>
       void finish_vertex(Vertex, Graph&) {

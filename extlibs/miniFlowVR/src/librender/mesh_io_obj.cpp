@@ -182,7 +182,7 @@ public:
       if (line[0] == '#') continue;
       // remove EOL
       {
-	int i = strlen(line)-1;
+        int i = (int)strlen(line)-1;
 	while (i>=0 && (line[i] == '\n' || line[i] == '\r' || line[i] == ' ' || line[i] == '\t'))
 	{
 	  line[i] = '\0';
@@ -310,7 +310,7 @@ public:
     //Vec3f v_p;
     //Vec2f v_t;
     //Vec3f v_n;
-    int iv = strtol(skip(*c),(char**)c,10); if (iv<0) iv += t_v.size(); else iv+=v0;
+    int iv = strtol(skip(*c),(char**)c,10); if (iv<0) iv += (int)t_v.size(); else iv+=v0;
     int it = 0;
     int in = 0;
     if ((unsigned)iv>=t_v.size())
@@ -321,7 +321,7 @@ public:
     if (**c=='/')
     {
       ++(*c);
-      it = strtol(*c,(char**)c,10); if (it<0) it += t_vt.size();
+      it = strtol(*c,(char**)c,10); if (it<0) it += (int)t_vt.size();
       if (simple) it = 0;
       else if ((unsigned)it>=t_vt.size())
       {
@@ -332,7 +332,7 @@ public:
     if (**c=='/')
     {
       ++(*c);
-      in = strtol(*c,(char**)c,10); if (in<0) in += t_vn.size();
+      in = strtol(*c,(char**)c,10); if (in<0) in += (int)t_vn.size();
       if (simple) in = 0;
       else if ((unsigned)in>=t_vn.size())
       {
@@ -431,7 +431,7 @@ public:
     {
       // remove EOL
       {
-	int i = strlen(line)-1;
+        int i = (int)strlen(line)-1;
 	while (i>=0 && (line[i] == '\n' || line[i] == '\r' || line[i] == ' ' || line[i] == '\t'))
 	{
 	  line[i] = '\0';
@@ -579,7 +579,7 @@ public:
     // First we compute for each point how many pair of normal/texcoord indices are used
     // The map store the final index of each combinaison
     std::cout << "Init vertex map"<<std::endl;
-    int inputnbp = t_v.size();
+    int inputnbp = (int)t_v.size();
     std::vector< std::map< std::pair<int,int>, int > > vertNormTexMap;
     vertNormTexMap.resize(inputnbp);
     for (unsigned int i = 0; i < t_fp.size(); i++)
@@ -599,7 +599,7 @@ public:
     int nbg = 0;
     for (int i = 0; i < inputnbp; i++)
     {
-      int s = vertNormTexMap[i].size();
+        int s = (int)vertNormTexMap[i].size();
       if (s>0)
       {
 	nbp += s;
@@ -632,7 +632,7 @@ public:
       Vec3f p = t_v[i];
 
       int last_n = -1;
-      int pg0 = mesh->groups_p0.size();
+      int pg0 = (int)mesh->groups_p0.size();
 
       //std::map<int, int> normTexMap;
       for (std::map<std::pair<int, int>, int>::iterator it = vertNormTexMap[i].begin();

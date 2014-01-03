@@ -141,7 +141,7 @@ namespace boost {
       if (get(color, *ui) != Color::red()) put(color, *ui, Color::white());
     breadth_first_visit(G, u, buffer(Q).color_map(color));
 
-    ecc = Q.eccentricity(); 
+    ecc = (int)Q.eccentricity(); 
     return Q.spouse();
   }
 

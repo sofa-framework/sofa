@@ -380,7 +380,7 @@ bool assignString(Vec<N,real>& dest, const std::string& data)
       do
 	++src;
       while (src < end && *src != ' ' && *src != ',');
-      int s = src-s0;
+      int s = (int)(src-s0);
       if (src==end && src[-1]=='}') --s;
       if (s>0)
       {

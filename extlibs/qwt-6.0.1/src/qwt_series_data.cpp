@@ -72,7 +72,7 @@ QRectF qwtBoundingRectT(
         from = 0;
 
     if ( to < 0 )
-        to = series.size() - 1;
+        to = (int)series.size() - 1;
 
     if ( to < from )
         return boundingRect;
@@ -322,10 +322,10 @@ QwtPointArrayData::QwtPointArrayData(
 QwtPointArrayData::QwtPointArrayData( const double *x,
         const double *y, size_t size )
 {
-    d_x.resize( size );
+    d_x.resize( (int)size );
     qMemCopy( d_x.data(), x, size * sizeof( double ) );
 
-    d_y.resize( size );
+    d_y.resize( (int)size );
     qMemCopy( d_y.data(), y, size * sizeof( double ) );
 }
 
@@ -558,7 +558,7 @@ QPointF QwtSyntheticPointData::sample( size_t index ) const
     if ( index >= d_size )
         return QPointF( 0, 0 );
 
-    const double xValue = x( index );
+    const double xValue = x( (uint)index );
     const double yValue = y( xValue );
 
     return QPointF( xValue, yValue );

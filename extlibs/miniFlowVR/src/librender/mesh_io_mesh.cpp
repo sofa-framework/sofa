@@ -78,7 +78,7 @@ static bool swapread(std::vector<T>& dest, FILE* fp)
 template<class T>
 static bool swapwrite(const std::vector<T>& src, FILE* fp)
 {
-  int size=src.size()*sizeof(T);
+  int size=(int)src.size()*sizeof(T);
   if (fwrite(&size,sizeof(int),1,fp)<=0) return false;
   if (fwrite(&(src[0]),size,1,fp)<=0) return false;
   return true;

@@ -257,7 +257,7 @@ size_t QwtArraySeriesData<T>::size() const
 template <typename T>
 T QwtArraySeriesData<T>::sample( size_t i ) const
 {
-    return d_samples[i];
+    return (T)d_samples[i];
 }
 
 //! Interface for iterating over an array of points

@@ -408,7 +408,7 @@ void Mesh::closeLoop(const std::vector<int>& loop, float dist)
   {
     v+=getP(loop[j]);
   }
-  v.mean(loop.size());
+  v.mean((int)loop.size());
   int p = addP(v);
 
   float maxdist = 0.0f;
@@ -817,7 +817,7 @@ void Mesh::writeParams(ChunkRenderWriter* scene, ID idP, ID idIB, ID idVB) const
 /// Optimize mesh by merging identical groups and reordering faces
 void Mesh::optimize()
 {
-    int ng = mat_groups.size();
+    int ng = (int)mat_groups.size();
     if (ng <= 1) return; // no need for optimizations
 
     // create a material -> group map
@@ -826,7 +826,7 @@ void Mesh::optimize()
     for (unsigned int i=0;i<mat_groups.size();i++)
 	matmap[mat_groups[i].mat].push_back(i);
 
-    int newsize = matmap.size();
+    int newsize = (int)matmap.size();
     if (newsize == ng) return; // no need for optimizations
     std::cout << "Optimizing mesh: merging "<<ng<<" groups to "<<newsize<<" groups."<<std::endl;
 
@@ -839,7 +839,7 @@ void Mesh::optimize()
     for (std::map<Material*,std::vector<int> >::iterator it = matmap.begin(); it!=matmap.end(); ++it)
     {
 	MaterialGroup m;
-	m.f0 = new_faces_p.size();
+	m.f0 = (int)new_faces_p.size();
 	m.mat = it->first;
 	if (m.mat)
 	    m.matname = m.mat->matname;
@@ -851,7 +851,7 @@ void Mesh::optimize()
 	    gnames.insert(src.gname);
 	    new_faces_p.insert(new_faces_p.end(), faces_p.begin()+src.f0, faces_p.begin()+src.f0+src.nbf);
 	}
-	m.nbf = new_faces_p.size() - m.f0;
+	m.nbf = (int)new_faces_p.size() - m.f0;
 	for (std::set<std::string>::iterator it = gnames.begin(); it != gnames.end(); ++it)
 	{
 	    if (!m.gname.empty()) m.gname += ' ';

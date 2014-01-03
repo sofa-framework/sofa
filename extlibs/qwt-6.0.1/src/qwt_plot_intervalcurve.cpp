@@ -281,7 +281,7 @@ void QwtPlotIntervalCurve::drawSeries( QPainter *painter,
     const QRectF &canvasRect, int from, int to ) const
 {
     if ( to < 0 )
-        to = dataSize() - 1;
+        to = (int)dataSize() - 1;
 
     if ( from < 0 )
         from = 0;
@@ -334,7 +334,7 @@ void QwtPlotIntervalCurve::drawTube( QPainter *painter,
     painter->save();
 
     const size_t size = to - from + 1;
-    QPolygonF polygon( 2 * size );
+    QPolygonF polygon( 2 * (int)size );
     QPointF *points = polygon.data();
 
     for ( uint i = 0; i < size; i++ )
@@ -410,20 +410,20 @@ void QwtPlotIntervalCurve::drawTube( QPainter *painter,
 
             QPolygonF p;
 
-            p.resize( size );
+            p.resize( (int)size );
             qMemCopy( p.data(), points, size * sizeof( QPointF ) );
             p = QwtClipper::clipPolygonF( canvasRect, p );
             QwtPainter::drawPolyline( painter, p );
 
-            p.resize( size );
+            p.resize( (int)size );
             qMemCopy( p.data(), points + size, size * sizeof( QPointF ) );
             p = QwtClipper::clipPolygonF( canvasRect, p );
             QwtPainter::drawPolyline( painter, p );
         }
         else
         {
-            QwtPainter::drawPolyline( painter, points, size );
-            QwtPainter::drawPolyline( painter, points + size, size );
+            QwtPainter::drawPolyline( painter, points, (int)size );
+            QwtPainter::drawPolyline( painter, points + size, (int)size );
         }
     }
 

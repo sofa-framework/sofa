@@ -141,7 +141,7 @@ CmdLine::CmdLine(const char* _description)
 bool CmdLine::parse(int argc, char** argv, bool* error)
 {
   // First create the list of options
-  int nopts = opts().size();
+  int nopts = (int)opts().size();
   struct option* options = new struct option[nopts+1];
   std::string shortoptions;
   for (int i=0;i<nopts;i++)
