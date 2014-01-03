@@ -218,7 +218,7 @@ simulation::Node::SPtr createGridScene(Vec3 startPoint, Vec3 endPoint, unsigned 
     for( unsigned b=0; b<numRigid; b++ )
     {
         const vector<unsigned>& ind = indices[b];
-        pointsPerFrame->push_back(ind.size()); // Tell the mapping the number of points associated with this frame. One box per frame
+        pointsPerFrame->push_back((unsigned)ind.size()); // Tell the mapping the number of points associated with this frame. One box per frame
         for(unsigned i=0; i<ind.size(); i++)
         {
             parentParticles[ind[i]]=make_pair(mappedParticles_dof.get(),mappedIndex);
