@@ -27,20 +27,16 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/BaseMapping.h>
 #include <sofa/component/collision/MouseInteractor.h>
-#include <sofa/component/mapping/SkinningMapping.inl>
-#include <sofa/helper/Quater.h>
+#include <sofa/simulation/common/Simulation.h>
 #include <iostream>
 using std::cerr;
 using std::endl;
 
-#include <sofa/component/mapping/SubsetMultiMapping.h>
-#include <sofa/component/topology/EdgeSetTopologyContainer.h>
-using sofa::component::topology::EdgeSetTopologyContainer;
 #include "compliance/UniformCompliance.h"
 #include <sofa/simulation/common/InitVisitor.h>
 
-// max: hopefully fixes link errors
-#include<sofa/component/mapping/DistanceMapping.inl>
+#include <sofa/component/mapping/DistanceMapping.inl>
+
 
 namespace sofa
 {
@@ -59,6 +55,8 @@ CompliantAttachPerformer<DataTypes>::CompliantAttachPerformer(BaseMouseInteracto
 {
     //    cerr<<"CompliantAttachPerformer<DataTypes>::CompliantAttachPerformer()" << endl;
     this->interactor->setMouseAttached(false);
+    _compliance = 1e-3;
+    _isCompliance = true;
 }
 
 
@@ -114,6 +112,8 @@ void CompliantAttachPerformer<DataTypes>::start()
     core::behavior::MechanicalState<DataTypes>* mstateCollision=NULL;
     if (picked.body)  // picked a collision element: create a MechanicalState mapped under the collision model, to store the picked point - NOT TESTED YET !!!!
     {
+//        std::cerr<<"mapped\n";
+
         mapper = MouseContactMapper::Create(picked.body);
         if (!mapper)
         {
@@ -150,6 +150,8 @@ void CompliantAttachPerformer<DataTypes>::start()
     }
     else // picked an existing particle
     {
+//        std::cerr<<"Already\n";
+
         mstateCollision = dynamic_cast< core::behavior::MechanicalState<DataTypes>*  >(picked.mstate);
         pickedParticleIndex = picked.indexCollisionElement;
         //        cerr<<"CompliantAttachPerformer<DataTypes>::attach, pickedParticleIndex = " << pickedParticleIndex << endl;
@@ -163,23 +165,25 @@ void CompliantAttachPerformer<DataTypes>::start()
 
 
     //-------- Mouse manipulator
-    mouseMapping = this->interactor->BaseObject::template searchUp<sofa::core::BaseMapping>();
+    mouseMapping = this->interactor->core::objectmodel::BaseObject::template searchUp<sofa::core::BaseMapping>();
     this->mouseState = dynamic_cast<Point3dState*>(this->interactor->getMouseContainer());
 //    typename Point3dState::ReadVecCoord xmouse = mouseState->readPositions();
+//    typename Point3dState::Coord pointOnRay = mouseState->readPositions()[0];
+
     // set target point to closest point on the ray
     double distanceFromMouse=picked.rayLength;
-    this->interactor->setDistanceFromMouse(distanceFromMouse);
     Ray ray = this->interactor->getMouseRayModel()->getRay(0);
     defaulttype::Vector3 pointOnRay = ray.origin() + ray.direction()*distanceFromMouse;
-    ray.setOrigin(pointOnRay);
+//    ray.setOrigin(pointOnRay);
     this->interactor->setMouseAttached(true);
+    this->interactor->setDistanceFromMouse(distanceFromMouse);
 
-
+    mouseState->writePositions()[0] = pointOnRay;
 
     //---------- Set up the interaction
 
     // look for existing interactions
-    std::string distanceMappingName="InteractionDistanceMapping_createdByCompliantAttachPerformer";
+    static const std::string distanceMappingName="InteractionDistanceMapping_createdByCompliantAttachPerformer";
 
     interactionNode = pickedNode->createChild("InteractionDistanceNode");
 
@@ -192,14 +196,19 @@ void CompliantAttachPerformer<DataTypes>::start()
     distanceMapping->setModels(mstateCollision,extensions.get());
     interactionNode->addObject( distanceMapping );
     distanceMapping->setName(distanceMappingName.c_str());
-    distanceMapping->createTarget(picked.indexCollisionElement, pointOnRay, (picked.point-pointOnRay).norm() );
+    distanceMapping->createTarget(/*picked.indexCollisionElement*/ pickedParticleIndex, pointOnRay, /*(picked.point-pointOnRay).norm()*/ 0);
+    distanceMapping->_arrowSize = _arrowSize;
+    distanceMapping->_color = _color;
 
     //       cerr<<"CompliantAttachPerformer<DataTypes>::start(), create target of " << picked.indexCollisionElement << " at " <<  (*mstateCollision->getX())[picked.indexCollisionElement] << " to " << pointOnRay << ", distance = " << (picked.point-pointOnRay).norm() << endl;
 
     typedef forcefield::UniformCompliance<DataTypes1> UniformCompliance1;
     typename UniformCompliance1::SPtr compliance = New<UniformCompliance1>();
-    interactionNode->addObject(compliance);
     compliance->setName("pickCompliance");
+    compliance->compliance.setValue(_compliance);
+    compliance->isCompliance.setValue(_isCompliance);
+    interactionNode->addObject(compliance);
+    compliance->rayleighStiffness.setValue(0.1);
 
     interactionNode->execute<simulation::InitVisitor>(sofa::core::ExecParams::defaultInstance());
 
@@ -209,19 +218,32 @@ void CompliantAttachPerformer<DataTypes>::start()
 template <class DataTypes>
 void CompliantAttachPerformer<DataTypes>::execute()
 {
-    // update target position
-    mouseMapping->apply(core::MechanicalParams::defaultInstance());
-    mouseMapping->applyJ(core::MechanicalParams::defaultInstance());
-    this->interactor->setMouseAttached(true);
-    typename Point3dState::ReadVecCoord xmouse = mouseState->readPositions();
-
     // update the distance mapping using the target position
+    typename Point3dState::ReadVecCoord xmouse = mouseState->readPositions();
     distanceMapping->updateTarget(pickedParticleIndex,xmouse[0]);
 
-    //    cerr<<"CompliantAttachPerformer<DataTypes>::execute(), mouse position = " << xmouse[0] << endl;
+    mouseMapping->apply(core::MechanicalParams::defaultInstance());
+    mouseMapping->applyJ(core::MechanicalParams::defaultInstance());
+
+    this->interactor->setMouseAttached(true);
+
+        cerr<<"CompliantAttachPerformer<DataTypes>::execute(), mouse position = " << xmouse[0] << endl;
 }
 
 
+template <class DataTypes>
+void CompliantAttachPerformer<DataTypes>::configure(configurationsetting::MouseButtonSetting* setting)
+{
+    //Get back parameters from the MouseButtonSetting Component
+    configurationsetting::CompliantAttachButtonSetting* s = dynamic_cast<configurationsetting::CompliantAttachButtonSetting*>(setting);
+    if (s)
+    {
+        _compliance = s->compliance.getValue();
+        _isCompliance = s->isCompliance.getValue();
+        _arrowSize = s->arrowSize.getValue();
+        _color = s->color.getValue();
+    }
+}
 
 
 }

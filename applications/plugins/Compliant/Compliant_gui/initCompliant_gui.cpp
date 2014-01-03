@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "initCompliant_gui.h"
-#include "CompliantAttachPerformer.h"
+#include "QCompliantMouseOperations.h"
 #include <sofa/gui/OperationFactory.h>
 #include <sofa/gui/MouseOperations.h>
 
@@ -58,7 +58,7 @@ void initExternalModule()
     {
         first = false;
 
-        gui::RegisterOperation("CompliantAttach").add< gui::CompliantAttachOperation >();
+        gui::RegisterOperation("CompliantAttach").add< gui::qt::QCompliantAttachOperation >();
     }
 }
 

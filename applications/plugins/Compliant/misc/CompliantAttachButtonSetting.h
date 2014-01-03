@@ -48,6 +48,9 @@ protected:
 public:
     std::string getOperationType() {return  "CompliantAttach";}
     Data<SReal> compliance;
+    Data<bool> isCompliance;
+    Data<SReal> arrowSize;
+    Data<defaulttype::Vec<4,SReal> > color;
 };
 
 }
