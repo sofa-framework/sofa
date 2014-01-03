@@ -51,30 +51,37 @@ helper::Creator<InteractionPerformer::InteractionPerformerFactory, CompliantAtta
 namespace gui
 {
 //*******************************************************************************************
-void CompliantAttachOperation::start()
-{
-    //Creation
-    performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("CompliantAttach", pickHandle->getInteraction()->mouseInteractor.get());
-    pickHandle->getInteraction()->mouseInteractor->addInteractionPerformer(performer);
-    //Start
-    performer->start();
-}
+//void CompliantAttachOperation::start()
+//{
+//    //Creation
+//    performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("CompliantAttach", pickHandle->getInteraction()->mouseInteractor.get());
+//    pickHandle->getInteraction()->mouseInteractor->addInteractionPerformer(performer);
+//    configurePerformer(performer);
+//    //Start
+//    performer->start();
+//}
 
-void CompliantAttachOperation::execution()
-{
-    //do nothing
-}
+//void CompliantAttachOperation::execution()
+//{
+//    //do nothing
+//}
 
-void CompliantAttachOperation::end()
-{
-    pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
-    delete performer; performer=0;
-}
+//void CompliantAttachOperation::end()
+//{
+//    pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
+//    delete performer; performer=0;
+//}
 
-void CompliantAttachOperation::endOperation()
-{
-    pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
-}
+//void CompliantAttachOperation::endOperation()
+//{
+//    pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
+//}
+
+
+//void CompliantAttachOperation::configurePerformer(sofa::component::collision::InteractionPerformer* p)
+//{
+//    Operation::configurePerformer(p);
+//}
 
 
 }// gui

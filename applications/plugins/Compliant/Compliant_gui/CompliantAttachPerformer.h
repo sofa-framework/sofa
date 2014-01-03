@@ -35,6 +35,9 @@
 #include <sofa/gui/MouseOperations.h>
 
 
+#include "../misc/CompliantAttachButtonSetting.h"
+
+
 namespace sofa
 {
 using defaulttype::Vec;
@@ -44,11 +47,16 @@ namespace gui
 class SOFA_Compliant_gui_API CompliantAttachOperation : public Operation
 {
 public:
-    virtual void start() ;
-    virtual void execution() ;
-    virtual void end() ;
-    virtual void endOperation() ;
+    CompliantAttachOperation(sofa::component::configurationsetting::CompliantAttachButtonSetting::SPtr s = sofa::core::objectmodel::New<sofa::component::configurationsetting::CompliantAttachButtonSetting>()) : Operation(s), setting(s){}
+//    virtual void start() ;
+//    virtual void execution() ;
+//    virtual void end() ;
+//    virtual void endOperation() ;
     static std::string getDescription() {return "CompliantAttach";}
+    virtual std::string defaultPerformerType() { return "CompliantAttach"; }
+
+    virtual void setSetting(sofa::component::configurationsetting::MouseButtonSetting* s) { Operation::setSetting(s); setting = dynamic_cast<sofa::component::configurationsetting::CompliantAttachButtonSetting*>(s); }
+    sofa::component::configurationsetting::CompliantAttachButtonSetting::SPtr setting;
 };
 }
 
@@ -81,9 +89,17 @@ class SOFA_Compliant_gui_API CompliantAttachPerformer: public TInteractionPerfor
 
     void clear();                             ///< release the current interaction
 
+    SReal _compliance;
+    bool _isCompliance;
+    SReal _arrowSize;
+    defaulttype::Vec<4,SReal> _color;
+
+
 public:
     CompliantAttachPerformer(BaseMouseInteractor *i);
     ~CompliantAttachPerformer();
+    virtual void configure(configurationsetting::MouseButtonSetting* setting);
+
 
     void start();
     void execute();
