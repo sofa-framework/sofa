@@ -14,7 +14,6 @@
 #include "./utils/find.h"
 
 
-
 // select the way to perform shifting of local matrix in a larger matrix, default = build a shift matrix and be multiplied with
 #define USE_TRIPLETS_RATHER_THAN_SHIFT_MATRIX 0 // more memory and not better
 #define USE_SPARSECOEFREF_RATHER_THAN_SHIFT_MATRIX 0 // bof
@@ -43,6 +42,29 @@ namespace simulation {
 // USE_TRIPLETS_RATHER_THAN_SHIFT_MATRIX try another implementation
 // building assembled matrces from sequentialy generated triplets
 // but it is not proven that is more efficient
+
+
+class MechanicalComputeComplianceForceVisitor : public MechanicalComputeForceVisitor
+{
+public:
+    MechanicalComputeComplianceForceVisitor(const sofa::core::MechanicalParams* mparams, MultiVecDerivId res )
+        : MechanicalComputeForceVisitor(mparams,res,true)
+    {
+    }
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/) { return RESULT_CONTINUE; }
+    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
+    {
+        mm->resetForce(this->params /* PARAMS FIRST */, res.getId(mm));
+        return RESULT_CONTINUE;
+    }
+    virtual Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff)
+    {
+        if( ff->isCompliance.getValue() ) ff->addForce(this->mparams, res);
+        return RESULT_CONTINUE;
+    }
+
+};
+
 
 
 

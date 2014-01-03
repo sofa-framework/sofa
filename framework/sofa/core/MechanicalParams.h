@@ -245,7 +245,6 @@ public:
         , m_symmetricMatrix(true)
         , m_implicitVelocity(1)
         , m_implicitPosition(1)
-        , m_accumulateComplianceForces(false)
     {
     }
 
@@ -275,7 +274,6 @@ public:
         m_symmetricMatrix = mparams.m_symmetricMatrix;
         m_implicitVelocity = mparams.m_implicitVelocity;
         m_implicitPosition = mparams.m_implicitPosition;
-        m_accumulateComplianceForces = mparams.m_accumulateComplianceForces;
         return this;
     }
 
@@ -323,15 +321,12 @@ protected:
 protected:
     SReal m_implicitVelocity;  ///< ratio of future and current force used for velocity update    (1 is fully implicit, 0 is fully explicit)
     SReal m_implicitPosition;  ///< ratio of future and current velocity used for position update (1 is fully implicit, 0 is fully explicit)
-    bool m_accumulateComplianceForces;     ///< If true, the compliance forces must be accumulated as standard forces. If false, they are ignored.
 
 public:
     void setImplicitVelocity( SReal i ) { m_implicitVelocity = i; }
     const SReal& implicitVelocity() const { return m_implicitVelocity; }
     void setImplicitPosition( SReal i ) { m_implicitPosition = i; }
     const SReal& implicitPosition() const { return m_implicitPosition; }
-    void setAccumulateComplianceForces( bool b ) { m_accumulateComplianceForces = b; }
-    bool accumulateComplianceForces() const { return m_accumulateComplianceForces; }
     /// @}
 
 

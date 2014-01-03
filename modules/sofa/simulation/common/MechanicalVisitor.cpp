@@ -721,7 +721,7 @@ Visitor::Result MechanicalVDotVisitor::fwdMechanicalState(VisitorContext* ctx, c
     return RESULT_CONTINUE;
 }
 
-Visitor::Result MechanicalVNormVisitor::fwdMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm)
+Visitor::Result MechanicalVNormVisitor::fwdMechanicalState(VisitorContext* /*ctx*/, core::behavior::BaseMechanicalState* mm)
 {
     if( l>0 ) accum += mm->vSum(this->params, a.getId(mm), l );
     else {
@@ -1293,7 +1293,7 @@ Visitor::Result MechanicalComputeForceVisitor::fwdMappedMechanicalState(simulati
 Visitor::Result MechanicalComputeForceVisitor::fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff)
 {
     //cerr<<"MechanicalComputeForceVisitor::fwdForceField "<<ff->getName()<<endl;
-    if( !ff->isCompliance.getValue() || this->mparams->accumulateComplianceForces() ) ff->addForce(this->mparams /* PARAMS FIRST */, res);
+    if( !neglectingCompliance || !ff->isCompliance.getValue() ) ff->addForce(this->mparams /* PARAMS FIRST */, res);
     return RESULT_CONTINUE;
 }
 
@@ -1307,7 +1307,7 @@ void MechanicalComputeForceVisitor::bwdMechanicalMapping(simulation::Node* /*nod
 
         //map->accumulateForce();
         map->applyJT(mparams /* PARAMS FIRST */, res, res);
-        map->computeGeometricStiffness(mparams);
+//        map->computeGeometricStiffness(mparams);
 
         ForceMaskDeactivate( map->getMechTo() );
     }
@@ -1338,7 +1338,7 @@ Visitor::Result MechanicalComputeDfVisitor::fwdMappedMechanicalState(simulation:
 
 Visitor::Result MechanicalComputeDfVisitor::fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff)
 {
-    if( !ff->isCompliance.getValue() || this->mparams->accumulateComplianceForces() ) ff->addDForce(this->mparams /* PARAMS FIRST */, res);
+    if( !ff->isCompliance.getValue() ) ff->addDForce(this->mparams /* PARAMS FIRST */, res);
     return RESULT_CONTINUE;
 }
 
@@ -1381,7 +1381,7 @@ Visitor::Result MechanicalAddMBKdxVisitor::fwdMappedMechanicalState(simulation::
 
 Visitor::Result MechanicalAddMBKdxVisitor::fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff)
 {
-    if( !ff->isCompliance.getValue() || mparams->accumulateComplianceForces() )
+    if( !ff->isCompliance.getValue() )
         ff->addMBKdx( this->mparams, res);
     else
         ff->addMBKdx( &mparamsWithoutStiffness, res);

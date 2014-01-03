@@ -89,7 +89,7 @@ public:
     /// Accumulate a change of parent force due to the change of the mapping, for a constant child force. Null for linear mappings.
     virtual void applyDJT(const MechanicalParams* mparams, MultiVecDerivId inForce, ConstMultiVecDerivId outForce) = 0;
     /// Store data used to apply geometric stiffness. The child force can be read using mparams->readF(this->toModel). Default implementation does nothing, corresponding to a linear mapping.
-    virtual void computeGeometricStiffness(const MechanicalParams* /*mparams*/) {}
+//    virtual void computeGeometricStiffness(const MechanicalParams* /*mparams*/) {}
     /// Propagate constraint Jacobians upward
     virtual void applyJT(const ConstraintParams* mparams, MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst) = 0;
     virtual void computeAccFromMapping(const MechanicalParams* mparams, MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc) = 0;

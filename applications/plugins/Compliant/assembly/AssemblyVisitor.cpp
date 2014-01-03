@@ -149,6 +149,9 @@ AssemblyVisitor::mat AssemblyVisitor::odeMatrix(simulation::Node* node)
     typedef EigenBaseSparseMatrix<SReal> Sqmat;
     Sqmat sqmat( size, size );
 
+    if( node->interactionForceField.size() )
+        std::cerr<<SOFA_CLASS_METHOD<<"WARNING: interactionForceFields are not handled by Compliant assembly and will be treated as explicit, external forces (the same scene can be modelised by using MultiMappings)"<<std::endl;
+
     // note that mass are included in forcefield
     for(unsigned i = 0; i < node->forceField.size(); ++i )
     {
@@ -212,7 +215,7 @@ void AssemblyVisitor::fill_prefix(simulation::Node* node) {
 		c.mechanical = true;
 	}
 
-	c.map = mapping( node );
+    c.map = mapping( node );
 	
 	c.vertex = boost::add_vertex(graph);
 	graph[c.vertex] = v;
@@ -301,19 +304,19 @@ struct AssemblyVisitor::propagation_helper {
 
 	propagation_helper(const core::MechanicalParams* mparams, graph_type& g) : mparams(mparams), g(g) {}
 
-	void operator()( unsigned v ) const {
+    void operator()( unsigned v ) const {
 
 //		dofs_type* dofs = g[v].dofs;
 		chunk* c = g[v].data;
 
-		if( c->mechanical ) {
+        if( c->mechanical ) {
 
 			for(graph_type::out_edge_range e = boost::out_edges(v, g); e.first != e.second; ++e.first) {
 
 				chunk* p = g[ boost::target(*e.first, g) ].data;
 				p->mechanical = true;
 
-				if(!zero( g[*e.first].data->K)) {
+                if(!zero( g[*e.first].data->K)) {
                     add(p->H, mparams->kFactor() * g[*e.first].data->K ); // todo how to include rayleigh damping for geometric stiffness?
 				}
 //                p->H = p->P.transpose() * p->H * p->P;   /// \warning project the ODE matrix

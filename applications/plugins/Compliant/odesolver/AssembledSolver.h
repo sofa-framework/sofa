@@ -126,12 +126,15 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
     Data<bool> warm_start, propagate_lambdas, stabilization, debug;
     Data<SReal> alpha, beta;     ///< the \alpha and \beta parameters of the integration scheme
 
-	
-	Data<bool> assembly_traversal;
+    Data<bool> constant;
 
-    // simulation::AssemblyVisitor* _assemblyVisitor;
 
   protected:
+
+    // is it the first time it is assembling?
+    bool firstAssembly;
+    // keep a pointer on the visitor used to assemble
+    simulation::AssemblyVisitor *assemblyVisitor;
 				
 	// send a visitor 
 	void send(simulation::Visitor& vis);
@@ -168,18 +171,16 @@ public:
 	typedef system_type::vec vec;
 
 
-	// compute forces
-	virtual void compute_forces(const core::MechanicalParams& params,
-								const simulation::AssemblyVisitor& vis);
-
-	// compute forces, legacy version. WARNING: does not seem to work
-	// with forcefields under multimappings ! this is a DAGNode issue,
-	// unresolved as of now.
-	virtual void compute_forces(const core::MechanicalParams& params);
-
+    // compute the forces f (summing stiffness and compliance)
+    // compute the right part of the implicit system b (c_k in compliant-reference.pdf, section 3)
+    virtual void compute_forces(const core::MechanicalParams& params,
+                               simulation::common::MechanicalOperations& mop,
+                               simulation::common::VectorOperations& vop,
+                               core::behavior::MultiVecDeriv& f,
+                               core::behavior::MultiVecDeriv& b );
 
 	// linear rhs for dynamics/correction steps
-    virtual void rhs_dynamics(vec& res, const system_type& sys, const vec& v ) const;
+    virtual void rhs_dynamics(vec& res, const system_type& sys, const vec& v, const core::behavior::MultiVecDeriv& b ) const;
 	virtual void rhs_correction(vec& res, const system_type& sys) const;
 	
 	// current v, lambda
