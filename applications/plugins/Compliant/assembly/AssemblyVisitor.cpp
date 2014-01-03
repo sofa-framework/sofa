@@ -215,7 +215,8 @@ void AssemblyVisitor::fill_prefix(simulation::Node* node) {
 		c.mechanical = true;
 	}
 
-    c.map = mapping( node );
+    // if the visitor is excecuted from a mapped node, do not look at its mapping
+    if( node != start_node ) c.map = mapping( node );
 	
 	c.vertex = boost::add_vertex(graph);
 	graph[c.vertex] = v;
