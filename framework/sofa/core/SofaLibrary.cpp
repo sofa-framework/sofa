@@ -98,11 +98,10 @@ void SofaLibrary::build( const std::vector< std::string >& examples)
 
         std::pair< IteratorInventory,IteratorInventory > rangeCategory;
         rangeCategory = inventory.equal_range(categoryName);
-        const size_t numComponentInCategory = inventory.count(categoryName);
 
 
 
-        CategoryLibrary *category = createCategory(categoryName,numComponentInCategory);
+        CategoryLibrary *category = createCategory(categoryName);
 
         //Process all the component of the current category, and add them to the group
         for (itComponent=rangeCategory.first; itComponent != rangeCategory.second; ++itComponent)
@@ -147,7 +146,7 @@ void SofaLibrary::computeNumComponents()
     numComponents=0;
     for (size_t cat=0; cat<categories.size(); ++cat)
     {
-        numComponents += categories[cat]->getNumComponents();
+        numComponents += (unsigned int) categories[cat]->getNumComponents();
     }
 
 }

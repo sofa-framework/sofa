@@ -45,13 +45,13 @@ public:
 
     virtual unsigned int rowSize(void) const
     {
-        return data.size()/3;
+        return (unsigned int) data.size()/3;
     }
 
     /// Number of columns
     virtual unsigned int colSize(void) const
     {
-        return data.size()/3;
+        return (unsigned int) data.size()/3;
     }
 
     /// Read the value of the element at row i, column j (using 0-based indices)
@@ -101,7 +101,8 @@ public:
     virtual void opMulV(defaulttype::BaseVector* result, const defaulttype::BaseVector* v) const
     {
         //Solve lv = R * lvR
-        size_t k = 0,l = 0;
+        size_t k = 0;
+        unsigned int l = 0;
         while (k < data.size())
         {
             result->set(l+0,data[k + 0] * v->element(l+0) + data[k + 1] * v->element(l+1) + data[k + 2] * v->element(l+2));
@@ -114,7 +115,8 @@ public:
 
     virtual void opMulTV(defaulttype::BaseVector* result, const defaulttype::BaseVector* v) const
     {
-        size_t k = 0,l = 0;
+        size_t k = 0;
+        unsigned int l = 0;
         while (k < data.size())
         {
             result->set(l+0,data[k + 0] * v->element(l+0) + data[k + 3] * v->element(l+1) + data[k + 6] * v->element(l+2));
@@ -133,8 +135,8 @@ public:
             if (RotationMatrix<Real> * result = dynamic_cast<RotationMatrix<Real> * >(bresult))
             {
                 Real tmp[9];
-                unsigned datSz = data.size() < m->data.size() ? data.size() : m->data.size();
-                unsigned minSz = datSz < result->data.size() ? datSz : result->data.size();
+                size_t datSz = data.size() < m->data.size() ? data.size() : m->data.size();
+                size_t minSz = datSz < result->data.size() ? datSz : result->data.size();
 
                 for (size_t i=0; i<minSz; i+=9)
                 {

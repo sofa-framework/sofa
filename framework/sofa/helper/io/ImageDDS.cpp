@@ -324,8 +324,8 @@ bool ImageDDS::load(const std::string &filename)
 
     // Load the content of the file.
     init(header.dwWidth, header.dwHeight, depth, mipmaps, type, channels);
-    int size = getImageSize();
-    int read = fread(getPixels(), 1, size, file);
+    size_t size = getImageSize();
+    size_t read = fread(getPixels(), 1, size, file);
     fclose(file);
     if (read != size)
     {

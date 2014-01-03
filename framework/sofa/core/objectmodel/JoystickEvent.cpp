@@ -168,7 +168,7 @@ const std::vector<JoystickEvent::AxisEvent*> &JoystickEvent::getAxisEvents(void)
 
 unsigned int JoystickEvent::getAxisEventsSize(void) const
 {
-    return axisEvents.size();
+    return (unsigned int) axisEvents.size();
 }
 
 
@@ -228,7 +228,7 @@ const std::vector<JoystickEvent::HatEvent *> &JoystickEvent::getHatEvents(void) 
 
 unsigned int JoystickEvent::getHatEventsSize(void) const
 {
-    return hatEvents.size();
+    return (unsigned int) hatEvents.size();
 }
 
 

@@ -63,7 +63,7 @@ public:
     }
 
     /// @return the number of rows
-    unsigned int size() const
+    size_t size() const
     {
         return m_data.size();
     }
