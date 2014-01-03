@@ -32,7 +32,7 @@ void UniformCompliance<DataTypes>::reinit()
     core::behavior::BaseMechanicalState* state = this->getContext()->getMechanicalState();
     assert(state);
 
-    Real c = this->isCompliance.getValue() ?  compliance.getValue() : -1/compliance.getValue();  // the stiffness df/dx is the opposite of the inverse compliance
+    Real c = this->isCompliance.getValue() ?  compliance.getValue() : ( helper::rabs(compliance.getValue())>std::numeric_limits<Real>::epsilon() ? -1/compliance.getValue() : -std::numeric_limits<Real>::max() );  // the stiffness df/dx is the opposite of the inverse compliance
 
     matC.resize(state->getMatrixSize(),state->getMatrixSize());
     for(unsigned i=0; i<state->getMatrixSize(); i++)
@@ -72,13 +72,14 @@ void UniformCompliance<DataTypes>::addKToMatrix( sofa::defaulttype::BaseMatrix *
 }
 
 template<class DataTypes>
-void UniformCompliance<DataTypes>::addForce(const core::MechanicalParams *, DataVecDeriv& _f, const DataVecCoord& _x, const DataVecDeriv& _v)
+void UniformCompliance<DataTypes>::addForce(const core::MechanicalParams *, DataVecDeriv& _f, const DataVecCoord& _x, const DataVecDeriv& /*_v*/)
 {
     helper::ReadAccessor< DataVecCoord >  x(_x);
-    helper::ReadAccessor< DataVecDeriv >  v(_v);
+//    helper::ReadAccessor< DataVecDeriv >  v(_v);
     helper::WriteAccessor< DataVecDeriv > f(_f);
 
-    Real stiffness = -1/compliance.getValue();
+    Real stiffness = helper::rabs(compliance.getValue())>std::numeric_limits<Real>::epsilon() ? -1/compliance.getValue() : -std::numeric_limits<Real>::max();
+
 
 //    cerr<<"UniformCompliance<DataTypes>::addForce, f before = " << f << endl;
     for(unsigned i=0; i<f.size(); i++)
@@ -95,7 +96,7 @@ void UniformCompliance<DataTypes>::addDForce(const core::MechanicalParams *mpara
     helper::ReadAccessor< DataVecDeriv >  dx(_dx);
     helper::WriteAccessor< DataVecDeriv > df(_df);
 
-    Real stiffness = -kfactor/compliance.getValue();
+    Real stiffness = helper::rabs(compliance.getValue())>std::numeric_limits<Real>::epsilon() ? -kfactor/compliance.getValue() : -kfactor*std::numeric_limits<Real>::max();
 
     for(unsigned i=0; i<df.size(); i++)
         df[i] += dx[i] * stiffness;

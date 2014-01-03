@@ -16,7 +16,7 @@ int ConstaintValueClass = core::RegisterObject("Constraint value abstraction").a
 
 ConstraintValue::ConstraintValue( mstate_type* mstate )
     : BaseConstraintValue( mstate )
-    , dampingRatio( initData(&dampingRatio, SReal(0.0), "dampingRatio", "Weight of the velocity in the constraint violation"))
+//    , dampingRatio( initData(&dampingRatio, SReal(0.0), "dampingRatio", "Weight of the velocity in the constraint violation"))
 {
 }
 

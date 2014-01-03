@@ -48,7 +48,7 @@
       <MeshObjLoader filename="mesh/cube.obj" name="loader" scale3d="20 2 20" />
       <MeshTopology tetrahedra="@loader.tetras" name="topology" position="@loader.position" hexahedra="@loader.hexas" edges="@loader.edges" quads="@loader.quads" triangles="@loader.triangles" />
       <MechanicalObject name="vertices" template="Vec3d" position="@loader.position" />
-      <TTriangleModel template="Vec3d" />
+      <TTriangleModel template="Vec3d" simulated="0" moving="0" />
       <RigidMapping input="@../" template="Rigid,Vec3d" output="@./" />
     </Node>
     <FixedConstraint indices="0" />

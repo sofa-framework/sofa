@@ -337,7 +337,7 @@ protected:
         {
             odesolver::Restitution::SPtr constraintValue = sofa::core::objectmodel::New<odesolver::Restitution>( dofs );
             node->addObject( constraintValue.get() );
-            constraintValue->dampingRatio.setValue( damping );
+//            constraintValue->dampingRatio.setValue( damping );
             constraintValue->restitution.setValue( restitution );
 
             // don't activate non-penetrating contacts
@@ -355,13 +355,13 @@ protected:
 
             constraintValue->init();
         }
-        else if( damping ) // damped constraint
-        {
-            odesolver::ConstraintValue::SPtr constraintValue = sofa::core::objectmodel::New<odesolver::ConstraintValue>( dofs );
-            node->addObject( constraintValue.get() );
-            constraintValue->dampingRatio.setValue( damping );
-            constraintValue->init();
-        }
+//        else if( damping ) // damped constraint
+//        {
+//            odesolver::ConstraintValue::SPtr constraintValue = sofa::core::objectmodel::New<odesolver::ConstraintValue>( dofs );
+//            node->addObject( constraintValue.get() );
+////            constraintValue->dampingRatio.setValue( damping );
+//            constraintValue->init();
+//        }
         else // stabilized constraint
         {
             // stabilizer

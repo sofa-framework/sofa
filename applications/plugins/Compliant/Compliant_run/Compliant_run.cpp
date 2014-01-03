@@ -104,7 +104,7 @@ Vec3 gravity(0,-1,0);
 SReal dt = 0.01;
 
 /// Create a compliant string
-simulation::Node::SPtr createCompliantString(simulation::Node::SPtr parent, Vec3 startPoint, Vec3 endPoint, unsigned numParticles, double totalMass, double complianceValue=0, double dampingRatio=0 )
+simulation::Node::SPtr createCompliantString(simulation::Node::SPtr parent, Vec3 startPoint, Vec3 endPoint, unsigned numParticles, double totalMass, double complianceValue=0, double /*dampingRatio*/=0 )
 {
     static unsigned numObject = 1;
     std::ostringstream oss;
@@ -146,12 +146,12 @@ simulation::Node::SPtr createCompliantString(simulation::Node::SPtr parent, Vec3
     compliance->setName(oss.str()+"_compliance");
     compliance->compliance.setValue(complianceValue);
 
-    if( dampingRatio )
-    {
-        component::odesolver::ConstraintValue::SPtr constraintValue = New<component::odesolver::ConstraintValue>( extensions.get() );
-        constraintValue->dampingRatio.setValue(dampingRatio);
-        extension_node->addObject(constraintValue);
-    }
+//    if( dampingRatio )
+//    {
+//        component::odesolver::ConstraintValue::SPtr constraintValue = New<component::odesolver::ConstraintValue>( extensions.get() );
+//        constraintValue->dampingRatio.setValue(dampingRatio);
+//        extension_node->addObject(constraintValue);
+//    }
 
 
     //--------
@@ -277,12 +277,12 @@ simulation::Node::SPtr createCompliantScene()
     compliance->compliance.setName("connectionCompliance");
     compliance->compliance.setValue(complianceValue);
 
-    if( dampingRatio )
-    {
-        component::odesolver::ConstraintValue::SPtr constraintValue = New<component::odesolver::ConstraintValue>( extensions.get() );
-        constraintValue->dampingRatio.setValue(dampingRatio);
-        extension_node->addObject(constraintValue);
-    }
+//    if( dampingRatio )
+//    {
+//        component::odesolver::ConstraintValue::SPtr constraintValue = New<component::odesolver::ConstraintValue>( extensions.get() );
+//        constraintValue->dampingRatio.setValue(dampingRatio);
+//        extension_node->addObject(constraintValue);
+//    }
 
     return root;
 }
