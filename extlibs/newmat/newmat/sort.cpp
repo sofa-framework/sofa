@@ -98,7 +98,7 @@ static void MyQuickSortDescending(Real* first, Real* last, int depth)
    REPORT
    for (;;)
    {
-      const int length = last - first + 1;
+       const int length = (int)(last - first + 1);
       if (length < DoSimpleSort) { REPORT return; }
       if (depth++ > MaxDepth)
          Throw(ConvergenceException("QuickSortDescending fails: "));
@@ -159,7 +159,7 @@ static void MyQuickSortAscending(Real* first, Real* last, int depth)
    REPORT
    for (;;)
    {
-      const int length = last - first + 1;
+       const int length = (int)(last - first + 1);
       if (length < DoSimpleSort) { REPORT return; }
       if (depth++ > MaxDepth)
          Throw(ConvergenceException("QuickSortAscending fails: "));

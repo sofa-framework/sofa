@@ -238,10 +238,10 @@ double QwtMatrixRasterData::value( double x, double y ) const
             // from the last row/col
 
             if ( row >= d_data->numRows )
-                row = d_data->numRows - 1;
+                row = (uint)(d_data->numRows - 1);
 
             if ( col >= d_data->numColumns )
-                col = d_data->numColumns - 1;
+                col = (uint)(d_data->numColumns - 1);
 
             value = d_data->value( row, col );
         }

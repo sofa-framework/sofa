@@ -264,7 +264,7 @@ template<> inline Type get(const long long&) { return QWord; }
 template<> inline Type get(const unsigned long long&) { return QWord; }
 template<> inline Type get(const float&) { return Float; }
 template<> inline Type get(const double&) { return Double; }
-template<> inline Type get(const std::string& s) { return (Type)buildString(s.length()); }
+template<> inline Type get(const std::string& s) { return (Type)buildString((int)s.length()); }
 
 std::string name(int t);
 int fromName(const std::string& name);

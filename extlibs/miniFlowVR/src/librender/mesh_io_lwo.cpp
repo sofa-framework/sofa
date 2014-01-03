@@ -146,7 +146,7 @@ public:
         {
             std::cerr << "LWO: closeChunk(" << id2str(id) << ") while current chunk is " << id2str(chunk.id) << std::endl;
         }
-        unsigned int length = data.size() - (chunk.lengthPos + chunk.lengthSize);
+        unsigned int length = (unsigned int)data.size() - (chunk.lengthPos + chunk.lengthSize);
         switch(chunk.lengthSize)
         {
         case 2: writeU2((unsigned short)length, chunk.lengthPos); break;

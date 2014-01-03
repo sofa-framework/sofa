@@ -292,11 +292,11 @@ public:
 
   BBox bb;
 
-  int nbp() const { return points_p.size(); }
-  int nbf() const { return faces_p.size(); }
-  int nbg() const { return groups_p0.size(); }
+  int nbp() const { return (int)points_p.size(); }
+  int nbf() const { return (int)faces_p.size(); }
+  int nbg() const { return (int)groups_p0.size(); }
 
-  int nbmatg() const { return mat_groups.size(); }
+  int nbmatg() const { return (int)mat_groups.size(); }
 
   Mesh();
 

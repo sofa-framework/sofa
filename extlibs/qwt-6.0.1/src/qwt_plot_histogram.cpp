@@ -301,7 +301,7 @@ void QwtPlotHistogram::drawSeries( QPainter *painter,
         return;
 
     if ( to < 0 )
-        to = dataSize() - 1;
+        to = (int)dataSize() - 1;
 
     switch ( d_data->style )
     {
