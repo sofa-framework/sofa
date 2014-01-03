@@ -129,7 +129,7 @@ class ExtVectorAllocator
 {
 public:
     typedef T              value_type;
-    typedef unsigned int   size_type;
+    typedef size_t   size_type;
     virtual ~ExtVectorAllocator() {}
     virtual void resize(value_type*& data, size_type size, size_type& maxsize, size_type& cursize)=0;
     virtual void close(value_type*& data)=0;
@@ -144,7 +144,7 @@ class ExtVector
 {
 public:
     typedef T				value_type;
-    typedef unsigned int	size_type;
+    typedef size_t	size_type;
     typedef T&				reference;
     typedef const T&		const_reference;
     typedef T*				iterator;
