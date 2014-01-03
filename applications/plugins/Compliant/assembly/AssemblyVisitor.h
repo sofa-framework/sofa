@@ -44,6 +44,7 @@ namespace simulation {
 // but it is not proven that is more efficient
 
 
+/// compute forces only for compliant forcefields (after reseting the mapped dof forces and accumulate them toward the independant dofs)
 class MechanicalComputeComplianceForceVisitor : public MechanicalComputeForceVisitor
 {
 public:
