@@ -143,9 +143,8 @@ struct AssembledSolver_test : public CompliantSolver_test
 
         // We check the explicit step backward without a solver, because it would not accumulate compliance forces
         core::MechanicalParams mparams;
-        mparams.setAccumulateComplianceForces(true);
         simulation::common::MechanicalOperations mop (&mparams,getRoot()->getContext());
-        mop.computeForce( 0+dt, core::VecId::force(), core::VecId::position(), core::VecId::velocity() );
+        mop.computeForce( 0+dt, core::VecId::force(), core::VecId::position(), core::VecId::velocity(), false );
         Vector f1 = modeling::getVector( core::VecId::force() );
 //        cerr<<"test, f1 = " << f1.transpose() << endl;
 
@@ -214,9 +213,8 @@ struct AssembledSolver_test : public CompliantSolver_test
 
         // We check the explicit step backward without a solver, because it would not accumulate compliance forces
         core::MechanicalParams mparams;
-        mparams.setAccumulateComplianceForces(true);
         simulation::common::MechanicalOperations mop (&mparams,getRoot()->getContext());
-        mop.computeForce( 0+dt, core::VecId::force(), core::VecId::position(), core::VecId::velocity() );
+        mop.computeForce( 0+dt, core::VecId::force(), core::VecId::position(), core::VecId::velocity(), false );
         Vector f1 = modeling::getVector( core::VecId::force() );
 
         // backward step
@@ -292,9 +290,8 @@ struct AssembledSolver_test : public CompliantSolver_test
 
         // We check the explicit step backward without a solver, because it would not accumulate compliance forces
         core::MechanicalParams mparams;
-        mparams.setAccumulateComplianceForces(true);
         simulation::common::MechanicalOperations mop (&mparams,getRoot()->getContext());
-        mop.computeForce( 0+dt, core::VecId::force(), core::VecId::position(), core::VecId::velocity() );
+        mop.computeForce( 0+dt, core::VecId::force(), core::VecId::position(), core::VecId::velocity(), false );
         Vector f1 = modeling::getVector( core::VecId::force() );
 
         // backward step

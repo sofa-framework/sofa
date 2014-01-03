@@ -1571,9 +1571,10 @@ class SOFA_SIMULATION_COMMON_API MechanicalComputeForceVisitor : public Mechanic
 public:
     MultiVecDerivId res;
     bool accumulate; ///< Accumulate everything back to the DOFs through the mappings
+    bool neglectingCompliance; /// neglect Compliance?
 
-    MechanicalComputeForceVisitor(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST  = sofa::core::MechanicalParams::defaultInstance()*/, MultiVecDerivId res, bool accumulate = true )
-        : MechanicalVisitor(mparams) , res(res), accumulate(accumulate)
+    MechanicalComputeForceVisitor(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST  = sofa::core::MechanicalParams::defaultInstance()*/, MultiVecDerivId res, bool accumulate = true,  bool neglectingCompliance = true )
+        : MechanicalVisitor(mparams) , res(res), accumulate(accumulate), neglectingCompliance(neglectingCompliance)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();

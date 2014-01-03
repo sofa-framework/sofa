@@ -12,7 +12,6 @@
 #include "utils/minres.h"
 #include "utils/scoped.h"
 
-#include "misc/FailNode.h"
 
 #ifdef GR_BENCHMARK
 #include <sofa/helper/system/thread/CTime.h>
@@ -57,34 +56,17 @@ AssembledSolver::AssembledSolver()
 	beta( initData(&beta,
 	               SReal(1),
 	               "implicitPosition",
-                   "Weight of the next velocities in the average velocities used to update the positions. 1 is implicit, 0 is explicit."))
-  ,assembly_traversal( initData(&assembly_traversal,
-                               true,
-                               "assembly_traversal",
-                               "use internal traversal order for visitors (compute forces, propagate velocities). DEBUG" ))
-
+                   "Weight of the next velocities in the average velocities used to update the positions. 1 is implicit, 0 is explicit.")),
+    constant( initData(&constant,
+      false,
+      "constant",
+      "is the system constant? (allowing to assemble only once). Warning only external force can interact with a pre-assembled system." ))
 {
     storeDSol = false;
+    firstAssembly = true;
+    assemblyVisitor = NULL;
 }
 
-
-// to the person who will encounter this ugly hack and ask herself 'oh
-// god why': go try to fix DAGNode.cpp, then come back here to see
-// which is simpler/faster
-
-struct FakeNode : simulation::FailNode {
-
-	const simulation::AssemblyVisitor& vis;
-
-	FakeNode(const simulation::AssemblyVisitor& vis) : vis(vis) { }
-
-	void doExecuteVisitor(simulation::Visitor* action) {
-		// std::cerr << "i are fake lol !" << std::endl;
-		vis.top_down( action );
-		vis.bottom_up( action );
-	}
-
-};
 
 
 
@@ -94,11 +76,6 @@ void AssembledSolver::send(simulation::Visitor& vis) {
 	this->getContext()->executeVisitor( &vis );
 }
 
-void AssembledSolver::send(simulation::Visitor& vis, const simulation::AssemblyVisitor& assembly) {
-	scoped::timer step("visitor execution");
-	FakeNode fake(assembly);
-	fake.executeVisitor( &vis );
-}
 
 void AssembledSolver::storeDynamicsSolution(bool b) { storeDSol = b; }
 			
@@ -134,6 +111,7 @@ void AssembledSolver::alloc(const core::ExecParams& params) {
 }
 
 AssembledSolver::~AssembledSolver() {
+    if( assemblyVisitor ) delete assemblyVisitor;
 }
 
 void AssembledSolver::cleanup() {
@@ -142,70 +120,70 @@ void AssembledSolver::cleanup() {
 }
 
 
-static void compute_forces_impl(simulation::common::MechanicalOperations& mop,
-								simulation::common::VectorOperations& vop,
-								SReal alpha,
-								SReal beta,
-								SReal h) {
-	
-	MultiVecDeriv c(&vop, core::VecDerivId::force() );
-	
-	// note: only for stiffness dofs
-    mop.computeForce(c); // c = f
-	
-	// c = h f
-	c *= h;
-	
-	// M v_k
-	SReal mfactor = 1;
 
-	// h (1-alpha) B v_k
-	SReal bfactor = h * (1 - alpha);
-
-	// h^2 alpha (1 - beta ) K v_k
-	SReal kfactor = h * h * alpha * (1 - beta);
-	
-	// note: K v_k factor only for stiffness dofs
-    mop.addMBKv( c,
-                 mfactor,
-                 bfactor,
-                 kfactor);
-}
 
 // this is c_k computation (see compliant-reference.pdf, section 3)
 void AssembledSolver::compute_forces(const core::MechanicalParams& params,
-									 const simulation::AssemblyVisitor& vis) {
-	scoped::timer step("forces computation");
-	
-	// this one seems correct
+                           simulation::common::MechanicalOperations& mop,
+                           simulation::common::VectorOperations& vop,
+                           core::behavior::MultiVecDeriv& f,
+                           core::behavior::MultiVecDeriv& b )
+{
+    scoped::timer step("forces computation");
 
-	// this machinery is to compute forces in the order defined by the
-	// assembly visitor. this is due to a bug in DAGNode. 
-	
-	FakeNode fake(vis);
-	sofa::simulation::common::MechanicalOperations mop( &params, &fake );
-	sofa::simulation::common::VectorOperations vop( &params, &fake );
-	
-	compute_forces_impl(mop, vop, alpha.getValue(), beta.getValue(), params.dt());
+    MultiVecDeriv fk( &vop ); fk.realloc( &vop, false, true ); // only stiffness force (neglecting compliance)
 
+    mop.computeForce(fk); // computing only stiffness force (neglecting compliance)
+
+    // f = fk including mapped dofs
+    {
+    simulation::MechanicalVOpVisitor eqvis( &params, f, fk, core::ConstMultiVecId::null(), 1.0);
+    eqvis.setMapped( true );
+    send( eqvis );
+    }
+
+    SReal h = params.dt();
+
+    // b = h fk
+    b.eq( fk, h ); // copying only independant dofs
+
+    // M v_k
+    SReal mfactor = 1;
+
+    // h (1-alpha) B v_k
+    SReal bfactor = h * (1 - alpha.getValue());
+
+    // h^2 alpha (1 - beta ) K v_k
+    SReal kfactor = h * h * alpha.getValue() * (1 - beta.getValue());
+
+    // note: K v_k factor only for stiffness dofs
+    mop.addMBKv( b,
+                 mfactor,
+                 bfactor,
+                 kfactor,
+                 false // not necessary to clear mapped dofs, they are already null since only independant dofs have been copied
+                );
+
+    vop.v_free( fk.id(), false, true );
+
+    // computing fc (neglecting stiffness)
+    MultiVecDeriv fc( &vop ); // only compliance force (neglecting stiffness)
+    fc.realloc( &vop, false, true );
+    {
+        // adding compliance force to f
+        simulation::MechanicalComputeComplianceForceVisitor mccfv( &params, fc );
+        send( mccfv );
+    }
+
+    // f += fc including mapped dofs
+    {
+    simulation::MechanicalVOpVisitor peqvis(&params, f, f, fc, 1.0);
+    peqvis.setMapped( true );
+    send( peqvis );
+    }
+    vop.v_free( fc.id(), false, true );
 }
 
-
-
-
-
-// this is c_k computation (see compliant-reference.pdf, section 3)
-void AssembledSolver::compute_forces(const core::MechanicalParams& params) {
-	scoped::timer step("forces computation");
-				
-	std::cerr << "warning: using compute_forces without assembly visitor might result in incorrect forces when using multi-mappings. see AssembledSolver code for details" << std::endl;
-	
-	sofa::simulation::common::MechanicalOperations mop( &params, this->getContext() );
-	sofa::simulation::common::VectorOperations vop( &params, this->getContext() );
-
-	compute_forces_impl(mop, vop, alpha.getValue(), beta.getValue(), params.dt());
-	
-}
 
 
 void AssembledSolver::propagate(const core::MechanicalParams* params)
@@ -214,17 +192,9 @@ void AssembledSolver::propagate(const core::MechanicalParams* params)
 	send( bob );
 }
 
-void AssembledSolver::propagate(const core::MechanicalParams* params, const simulation::AssemblyVisitor& vis)
-{
-	FakeNode fake(vis);
-
-	simulation::MechanicalPropagatePositionAndVelocityVisitor bob( params );
-	fake.executeVisitor( &bob );
-}
 
 
-
-void AssembledSolver::rhs_dynamics(vec& res, const system_type& sys, const vec& v) const {
+void AssembledSolver::rhs_dynamics(vec& res, const system_type& sys, const vec& v, const MultiVecDeriv& b) const {
 	assert( res.size() == sys.size() );
 	
 	unsigned off = 0;
@@ -235,9 +205,11 @@ void AssembledSolver::rhs_dynamics(vec& res, const system_type& sys, const vec& 
 	
 		unsigned dim = dofs->getMatrixSize();
 		
-        dofs->copyToBuffer(&res(off), core::VecDerivId::force(), dim);
+        dofs->copyToBuffer(&res(off), b.id().getId(dofs), dim);
+
 		off += dim;
 	}
+
 	
 	// TODO in compute_forces instead ?
 	res.head( sys.m ) = sys.P * res.head( sys.m );
@@ -258,7 +230,7 @@ void AssembledSolver::rhs_dynamics(vec& res, const system_type& sys, const vec& 
 			dofs->getContext()->addObject( value );
 			value->init();
 		}
-		
+
 		value->dynamics(&res(off), dim);
 		off += dim;
 	}
@@ -418,6 +390,7 @@ void AssembledSolver::solve(const core::ExecParams* /*params*/,
 	
 }
 
+
 void AssembledSolver::solve(const core::ExecParams* params,
                             double dt,
                             core::MultiVecCoordId posId,
@@ -428,18 +401,32 @@ void AssembledSolver::solve(const core::ExecParams* params,
     core::MechanicalParams mparams;
     this->buildMparams( mparams, *params, dt );
 
-	// assembly visitor 
-    simulation::AssemblyVisitor vis(&mparams);
-	// fetch nodes/data
-	send( vis );
-	
-	// compute forces 
-	if( assembly_traversal.getValue() ) compute_forces( mparams, vis );
-	else compute_forces( mparams );
-	
+    simulation::common::MechanicalOperations mop( params, this->getContext() );
+    simulation::common::VectorOperations vop( params, this->getContext() );
+    MultiVecDeriv f( &vop, core::VecDerivId::force() ); // total force (stiffness + compliance) (f_k term)
+    MultiVecDeriv b( &vop ); b.realloc( &vop, false, true ); // the right part of the implicit system (c_k term)
+
+    // compute forces and implicit right part
+    // warning: must be call before assemblyVisitor since the mapping's geometric stiffness depends on its child force
+    compute_forces( mparams, mop, vop, f, b );
+
+    if( !constant.getValue() || firstAssembly )
+    {
+        firstAssembly = false;
+
+        // assembly visitor
+        if( assemblyVisitor ) delete assemblyVisitor;
+        assemblyVisitor = new simulation::AssemblyVisitor(&mparams);
+
+        // fetch nodes/data
+        send( *assemblyVisitor );
+    }
+    simulation::AssemblyVisitor& vis = *assemblyVisitor;
+
+
 	// assemble system
     sys = vis.assemble();
-	
+
 	// debugging
 	if( debug.getValue() ) sys.debug();
 	
@@ -487,7 +474,8 @@ void AssembledSolver::solve(const core::ExecParams* params,
 			x = vec::Zero( sys.size() );
 			
 			if( warm_start.getValue() ) x = current;
-			rhs_dynamics(rhs, sys, current.head(sys.m) );
+            rhs_dynamics(rhs, sys, current.head(sys.m), b );
+            vop.v_free( b.id(), false, true );
 			
 			kkt->solve(x, sys, rhs);
 
@@ -506,8 +494,7 @@ void AssembledSolver::solve(const core::ExecParams* params,
             integrate( &mparams, posId, velId );
 
 			// TODO is this even needed at this point ?
-			if( assembly_traversal.getValue() ) propagate( &mparams, vis );
-			else propagate( &mparams );
+            propagate( &mparams );
 		}
 		
 	}
@@ -519,9 +506,9 @@ void AssembledSolver::solve(const core::ExecParams* params,
 		prop.out = core::VecId::force();
 		prop.in = lagrange.id();
 			
-		if( assembly_traversal.getValue() ) send(prop, vis);
-		else send( prop );
+        send( prop );
 	}
+
 
 }
 

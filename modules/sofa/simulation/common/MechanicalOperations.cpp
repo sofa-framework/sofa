@@ -206,7 +206,7 @@ void MechanicalOperations::accFromF(core::MultiVecDerivId a, core::ConstMultiVec
 }
 
 /// Compute the current force (given the latest propagated position and velocity)
-void MechanicalOperations::computeForce(core::MultiVecDerivId result, bool clear, bool accumulate)
+void MechanicalOperations::computeForce(core::MultiVecDerivId result, bool clear, bool accumulate, bool neglectingCompliance)
 {
     setF(result);
     if (clear)
@@ -214,7 +214,7 @@ void MechanicalOperations::computeForce(core::MultiVecDerivId result, bool clear
         executeVisitor( MechanicalResetForceVisitor(&mparams /* PARAMS FIRST */, result, false) );
         //finish();
     }
-    executeVisitor( MechanicalComputeForceVisitor(&mparams /* PARAMS FIRST */, result, accumulate) );
+    executeVisitor( MechanicalComputeForceVisitor(&mparams /* PARAMS FIRST */, result, accumulate, neglectingCompliance) );
 }
 
 
@@ -322,7 +322,7 @@ void MechanicalOperations::computeAcc(double t, core::MultiVecDerivId a, core::M
     projectResponse(a);
 }
 
-void MechanicalOperations::computeForce(double t, core::MultiVecDerivId f, core::MultiVecCoordId x, core::MultiVecDerivId v)
+void MechanicalOperations::computeForce(double t, core::MultiVecDerivId f, core::MultiVecCoordId x, core::MultiVecDerivId v, bool neglectingCompliance)
 {
     setF(f);
     setX(x);
@@ -332,7 +332,7 @@ void MechanicalOperations::computeForce(double t, core::MultiVecDerivId f, core:
             a,
 #endif
             true) );
-    computeForce(f);
+    computeForce(f,true,true,neglectingCompliance);
 
     projectResponse(f);
 }

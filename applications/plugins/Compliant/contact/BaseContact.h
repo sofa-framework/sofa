@@ -329,7 +329,7 @@ protected:
 
     /// insert a ConstraintValue component in the given graph depending on restitution/damping values
     template<class contact_dofs_type>
-    void addConstraintValue( node_type* node, contact_dofs_type* dofs, real damping, real restitution=0, unsigned size = 1)
+    void addConstraintValue( node_type* node, contact_dofs_type* dofs, real /*damping*/, real restitution=0, unsigned size = 1)
     {
         //assert( restitution_coef.getValue()>=0 && restitution_coef.getValue() <= 1 ); // commented out by FF because restitution_coef is not declared
 

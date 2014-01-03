@@ -2,7 +2,7 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
 
-	initCompliant.h
+    initCompliant.h
 
     misc/CompliantAttachButtonSetting.h
     misc/RigidMass.h
@@ -78,7 +78,7 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
 
-  initCompliant.cpp
+    initCompliant.cpp
 
     misc/CompliantAttachButtonSetting.cpp
     misc/CompliantSolverMerger.cpp
