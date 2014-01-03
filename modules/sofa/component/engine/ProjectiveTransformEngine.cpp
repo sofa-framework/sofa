@@ -50,12 +50,12 @@ namespace engine
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_ENGINE_API ProjectiveTransformEngine<defaulttype::Vec3dTypes>;
+template class SOFA_MISC_ENGINE_API ProjectiveTransformEngine<defaulttype::Vec3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_ENGINE_API ProjectiveTransformEngine<defaulttype::Vec3fTypes>;
+template class SOFA_MISC_ENGINE_API ProjectiveTransformEngine<defaulttype::Vec3fTypes>;
 #endif //SOFA_DOUBLE
-template class SOFA_ENGINE_API ProjectiveTransformEngine<defaulttype::ExtVec3fTypes>;
+template class SOFA_MISC_ENGINE_API ProjectiveTransformEngine<defaulttype::ExtVec3fTypes>;
 
 
 } // namespace constraint
