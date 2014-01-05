@@ -46,7 +46,7 @@ void AssembledSystem::debug(SReal /*thres*/) const {
 
 
 
-void AssembledSystem::copyFromMultiVec(vec &target, core::ConstMultiVecDerivId derivId)
+void AssembledSystem::copyFromMultiVec(vec &target, core::ConstMultiVecId derivId)
 {
     assert(target.size() >= m);
     unsigned off = 0;
@@ -64,7 +64,7 @@ void AssembledSystem::copyFromMultiVec(vec &target, core::ConstMultiVecDerivId d
 }
 
 
-void AssembledSystem::copyToMultiVec( core::MultiVecDerivId targetId, const vec& source)
+void AssembledSystem::copyToMultiVec( core::MultiVecId targetId, const vec& source)
 {
     unsigned off = 0;
     // master dofs

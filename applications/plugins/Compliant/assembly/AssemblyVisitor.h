@@ -7,11 +7,11 @@
 #include <map>
 
 #include "AssembledSystem.h"
-#include "utils/graph.h"
+#include "../utils/graph.h"
 
 #include "AssemblyHelper.h"
 
-#include "./utils/find.h"
+#include "../utils/find.h"
 
 
 // select the way to perform shifting of local matrix in a larger matrix, default = build a shift matrix and be multiplied with
