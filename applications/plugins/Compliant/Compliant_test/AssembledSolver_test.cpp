@@ -152,12 +152,15 @@ struct AssembledSolver_test : public CompliantSolver_test
         Vector v2 = v1 - f1 * dt;
         Vector x2 = x1 - v1 * dt;
 
-//        cerr<<"AssembledSolver_test, initial positions : " << x0.transpose() << endl;
-//        cerr<<"AssembledSolver_test, initial velocities: " << v0.transpose() << endl;
-//        cerr<<"AssembledSolver_test, new positions : " << x1.transpose() << endl;
-//        cerr<<"AssembledSolver_test, new velocities: " << v1.transpose() << endl;
-//        cerr<<"AssembledSolver_test, new positions  after backward integration: " << x2.transpose() << endl;
-//        cerr<<"AssembledSolver_test, new velocities after backward integration: " << v2.transpose() << endl;
+        if( debug ){
+        cerr<<"AssembledSolver_test, initial positions : " << x0.transpose() << endl;
+        cerr<<"AssembledSolver_test, initial velocities: " << v0.transpose() << endl;
+        cerr<<"AssembledSolver_test, new positions : " << x1.transpose() << endl;
+        cerr<<"AssembledSolver_test, new velocities: " << v1.transpose() << endl;
+        cerr<<"AssembledSolver_test, new forces: " << f1.transpose() << endl;
+        cerr<<"AssembledSolver_test, new positions  after backward integration: " << x2.transpose() << endl;
+        cerr<<"AssembledSolver_test, new velocities after backward integration: " << v2.transpose() << endl;
+        }
 
         ASSERT_TRUE( (x2-x0).lpNorm<Eigen::Infinity>() < precision );
         ASSERT_TRUE( (v2-v0).lpNorm<Eigen::Infinity>() < precision );
@@ -323,7 +326,7 @@ struct AssembledSolver_test : public CompliantSolver_test
 // do run the tests
 //=================
 // simple linear cases
-TEST_F(AssembledSolver_test, OneFixedOneComplianceSpringV100 ){    testLinearOneFixedOneComplianceSpringV100(false);  }
+TEST_F(AssembledSolver_test, OneFixedOneComplianceSpringV100 ){    testLinearOneFixedOneComplianceSpringV100(true);  }
 TEST_F(AssembledSolver_test, OneFixedOneStiffnessSpringV100 ){     testLinearOneFixedOneStiffnessSpringV100(false);  }
 TEST_F(AssembledSolver_test, OneFixedOneStiffnessSpringX200 ){     testLinearOneFixedOneStiffnessSpringX200(false);  }
 TEST_F(AssembledSolver_test, OneFixedOneComplianceSpringX200 ){    testLinearOneFixedOneComplianceSpringX200(false);  }

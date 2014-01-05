@@ -202,7 +202,7 @@ public:
     system_type::vec getLambda() const { assert(storeDSol); return dynamics_solution.tail(sys.n); }
     system_type::vec getDv() const { assert(storeDSol); return dynamics_solution.head(sys.m); }
     system_type::vec getPhi() const { assert(storeDSol); return dynamics_rhs.tail(sys.n); }
-    system_type::vec getF() const { assert(storeDSol); return dynamics_rhs.head(sys.m); }
+//    system_type::vec getF() const { assert(storeDSol); return dynamics_rhs.head(sys.m); }  FF: I suspect this one is wrong, because rhs does not contain forces but momenta, does it ?
     // assembled matrices
     const system_type::rmat& M() const {return sys.H;}
     const system_type::rmat& P() const {return sys.P;}
