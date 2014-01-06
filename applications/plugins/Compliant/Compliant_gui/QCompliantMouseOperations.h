@@ -64,7 +64,7 @@ class DataWidget;
 
 
 
-class QCompliantAttachOperation : public QMouseOperation, public CompliantAttachOperation
+class SOFA_Compliant_gui_API QCompliantAttachOperation : public QMouseOperation, public CompliantAttachOperation
 {
     Q_OBJECT
 public:
