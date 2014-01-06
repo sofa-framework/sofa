@@ -44,7 +44,8 @@ def scene(node):
                             name='ode' )
 
     # TODO is this needed ?
-    group = node.createObject('CollisionGroup', name = 'group' )
+    group = node.createObject('CollisionGroup', 
+                              name = 'group' )
 
     return node.createChild('scene') 
 
