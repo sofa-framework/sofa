@@ -18,6 +18,10 @@ void LDLTResponse::factor(const mat& H ) {
 	// TODO make sure no temporary is used ?
 	response.compute( H.transpose().selfadjointView<Eigen::Upper>() );
 	
+	if( response.info() != Eigen::Success ) {
+		std::cerr << "warning: non invertible response" << std::endl;
+	}
+
 	assert( response.info() == Eigen::Success );
 }
 

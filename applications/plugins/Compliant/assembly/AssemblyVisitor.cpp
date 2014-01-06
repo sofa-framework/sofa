@@ -320,7 +320,10 @@ struct AssemblyVisitor::propagation_helper {
                 if(!zero( g[*e.first].data->K)) {
                     add(p->H, mparams->kFactor() * g[*e.first].data->K ); // todo how to include rayleigh damping for geometric stiffness?
 				}
+
+				// max: no we don't
 //                p->H = p->P.transpose() * p->H * p->P;   /// \warning project the ODE matrix
+
             }
 
 		}
@@ -534,7 +537,8 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
     assert( off_c == _processed->size_c );
 
     /// \warning project the ODE matrices
-    res.H = res.P.transpose() * res.H * res.P;
+	// max: no we don't
+    // res.H = res.P.transpose() * res.H * res.P;
 
 	return res;
 }
