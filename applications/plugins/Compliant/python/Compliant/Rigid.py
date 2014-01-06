@@ -343,7 +343,7 @@ class SphericalJoint(Joint):
         def __init__(self):
                 Joint.__init__(self)
                 self.dofs = [0, 0, 0, 1, 1, 1]
-                self.name = 'spherical-'
+                self.name = 'spherical'
                 
 
 
@@ -351,12 +351,16 @@ class SphericalJoint(Joint):
 class RevoluteJoint(Joint):
 
         # TODO make this 'x', 'y', 'z' instead
-        def __init__(self, axis):
+        def __init__(self, axis, **args):
                 Joint.__init__(self)
                 self.dofs[3 + axis] = 1
-                self.name = 'revolute-'
+                self.name = 'revolute'
                 self.lower_limit = None
                 self.upper_limit = None
+
+                for k in args:
+                        setattr(self, k, args[k])
+
 
         def insert(self, parent):
                 res = Joint.insert(self, parent)
@@ -403,14 +407,14 @@ class CylindricalJoint(Joint):
                 Joint.__init__(self)
                 self.dofs[0 + axis] = 1
                 self.dofs[3 + axis] = 1
-                self.name = 'cylindrical-'
+                self.name = 'cylindrical'
 
 class PrismaticJoint(Joint):
 
         def __init__(self, axis):
                 Joint.__init__(self)
                 self.dofs[0 + axis] = 1
-                self.name = 'prismatic-'
+                self.name = 'prismatic'
 
 class PlanarJoint(Joint):
 
@@ -420,4 +424,4 @@ class PlanarJoint(Joint):
                         int( (i != normal) if i < 3 else (i - 3 == normal) )
                         for i in xrange(6)
                 ]
-                self.name = 'planar-'
+                self.name = 'planar'

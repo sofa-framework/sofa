@@ -6,7 +6,8 @@
 
 import os
 
-# concatenate lists for use with data
+# concatenate lists for use with data. TODO: consider using
+# Vec.Proxy.__str__ instead as it's much more powerful
 def cat(x):
     return ' '.join(map(str, x))
 

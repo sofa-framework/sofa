@@ -37,7 +37,13 @@ def cross(x, y):
              x[2] * y[0] - x[0] * y[2],
              x[0] * y[1] - x[1] * y[0] ]
 
-# eases long operations
+# eases vector operations. you might want to use it as follows:
+#
+# from Vec import Proxy as vec
+# 
+# v = vec( [2, 4, 2] )
+#
+ 
 class Proxy:
     def __init__(self, data):
         self.data = data
@@ -60,7 +66,11 @@ class Proxy:
     def dot(self, other): 
         return dot(self.data, other.data)
 
+    def __getitem__(self, index):
+        return self.data[index]
 
+    def __setitem__(self, index, value):
+        self.data[index] = value
     
-
-
+    def __str__(self):
+        return ' '.join(map(str, self.data))
