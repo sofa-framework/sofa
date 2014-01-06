@@ -56,14 +56,9 @@ AssembledSolver::AssembledSolver()
 	beta( initData(&beta,
 	               SReal(1),
 	               "implicitPosition",
-                   "Weight of the next velocities in the average velocities used to update the positions. 1 is implicit, 0 is explicit.")),
-    constant( initData(&constant,
-      false,
-      "constant",
-      "is the system constant? (allowing to assemble only once). Warning only external force can interact with a pre-assembled system." ))
+                   "Weight of the next velocities in the average velocities used to update the positions. 1 is implicit, 0 is explicit."))
 {
     storeDSol = false;
-    firstAssembly = true;
     assemblyVisitor = NULL;
 }
 
@@ -392,6 +387,19 @@ void AssembledSolver::solve(const core::ExecParams* /*params*/,
 }
 
 
+
+void AssembledSolver::perform_assembly( const core::MechanicalParams *mparams, system_type& sys )
+{
+    if( assemblyVisitor ) delete assemblyVisitor;
+    assemblyVisitor = new simulation::AssemblyVisitor(mparams);
+
+    // fetch nodes/data
+    send( *assemblyVisitor );
+
+    // assemble system
+    sys = assemblyVisitor->assemble();
+}
+
 void AssembledSolver::solve(const core::ExecParams* params,
                             double dt,
                             core::MultiVecCoordId posId,
@@ -411,22 +419,8 @@ void AssembledSolver::solve(const core::ExecParams* params,
     // warning: must be call before assemblyVisitor since the mapping's geometric stiffness depends on its child force
     compute_forces( mparams, mop, vop, f, b );
 
-    if( !constant.getValue() || firstAssembly )
-    {
-        firstAssembly = false;
-
-        // assembly visitor
-        if( assemblyVisitor ) delete assemblyVisitor;
-        assemblyVisitor = new simulation::AssemblyVisitor(&mparams);
-
-        // fetch nodes/data
-        send( *assemblyVisitor );
-    }
-    simulation::AssemblyVisitor& vis = *assemblyVisitor;
-
-
-	// assemble system
-    sys = vis.assemble();
+    // assemble system
+    perform_assembly( &mparams, sys );
 
 	// debugging
 	if( debug.getValue() ) sys.debug();

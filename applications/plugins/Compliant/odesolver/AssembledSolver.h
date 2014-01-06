@@ -84,6 +84,9 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
   public:
 				
 	SOFA_CLASS(AssembledSolver, sofa::core::behavior::OdeSolver);
+
+
+    typedef linearsolver::AssembledSystem system_type;
 				
     virtual void init();
 
@@ -126,40 +129,25 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
     Data<bool> warm_start, propagate_lambdas, stabilization, debug;
     Data<SReal> alpha, beta;     ///< the \alpha and \beta parameters of the integration scheme
 
-    Data<bool> constant;
-
 
   protected:
 
-    // is it the first time it is assembling?
-    bool firstAssembly;
     // keep a pointer on the visitor used to assemble
     simulation::AssemblyVisitor *assemblyVisitor;
+
+    /// a derivable function creating and calling the assembly visitor to create an AssembledSystem
+    virtual void perform_assembly( const core::MechanicalParams *mparams, system_type& sys );
 				
 	// send a visitor 
-	void send(simulation::Visitor& vis);
-
-	void send(simulation::Visitor& vis,
-			  const simulation::AssemblyVisitor& );
+    void send(simulation::Visitor& vis);
 			  
 	// integrate positions
     void integrate( const core::MechanicalParams* params, 
 					core::MultiVecCoordId posId, 
 					core::MultiVecDerivId velId );
-	
-	// TODO: unneeded ?
-    // integrate positions and velocities
-    void integrate( const core::MechanicalParams* params, 
-					core::MultiVecCoordId posId, 
-					core::MultiVecDerivId velId, 
-					core::MultiVecDerivId dvId );
-
 
 	// propagate velocities
-	void propagate(const core::MechanicalParams* params);	
-				
-	void propagate(const core::MechanicalParams* params,
-				   const simulation::AssemblyVisitor& vis);
+    void propagate(const core::MechanicalParams* params);
 	
 	// linear solver: TODO hide in pimpl ?
 	typedef linearsolver::KKTSolver kkt_type;
@@ -167,7 +155,6 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
 
 	// TODO: hide 
 public:
-	typedef linearsolver::AssembledSystem system_type;
 	typedef system_type::vec vec;
 
 
