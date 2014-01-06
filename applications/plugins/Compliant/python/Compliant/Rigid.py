@@ -213,13 +213,11 @@ class Joint:
                 self.offset = []
                 self.name = name
 
-                # hard constraints compliance
+                # link constraints compliance
                 self.compliance = 0
                 
-                # free dof stiffness/damping
-                self.stiffness = 0
-                self.damping = 0
-
+                # TODO if you're looking for damping/stiffness, you
+                # now should do it yourself, directly on joint dofs
                 
         def append(self, node, offset = None):
                 self.body.append(node)
@@ -234,7 +232,6 @@ class Joint:
                         local = Frame().read( s )
                         self.append(n, local.inv() * frame)
         
-
         class Node:
                 pass
         
@@ -273,65 +270,26 @@ class Joint:
                                         pairs = "0 0")
                 
 		sub = node.createChild("constrained dofs")
+
 		sub.createObject('MechanicalObject', 
-				 template = 'Vec6d', 
-				 name = 'dofs',
-				 position = '0 0 0 0 0 0')
+				 template = 'Vec1d', 
+				 name = 'dofs')
 		
-		# mask computation
-		constrained_dofs = [ (1 - d) for d in self.dofs ]
+		mask = [ (1 - d) for d in self.dofs ]
 		
-                if self.stiffness > 0:
-                        # stiffness: we map all dofs
-                        mask = [1] * 6;
-                else:
-                        # only constrained dofs are needed
-                        mask = constrained_dofs
-                
-		sub_map = sub.createObject('MaskMapping', 
+		map = sub.createObject('MaskMapping', 
 				       name = 'mapping',
-				       template = 'Vec6d,Vec6d',
+				       template = 'Vec6d,Vec1d',
 				       input = '@../',
 				       output = '@dofs',
 				       dofs = concat(mask) )
 		
-		# compliance 
-		value = [ ( 1 - x) * self.compliance + # no dof: compliance
-			  x * ( 1 / self.stiffness if self.stiffness > 0 else 0 ) # dof: 1 / stiffness or zero
-                          for x in self.dofs ]
-		
-                compliance = sub.createObject('DiagonalCompliance',
+                compliance = sub.createObject('UniformCompliance',
 					      name = 'compliance',
-					      template = 'Vec6d',
-					      compliance = concat(value))
-                
-                # only stabilize constraint dofs
-                stab = sub.createObject('Stabilization', mask = concat( constrained_dofs ) )
-                
-                # TODO REDO
-                if self.damping != 0:
-			# damping sub-graph
-			
-			dampingNode = node.createChild(self.name + " Damping")
-			
-			dampingNode.createObject('MechanicalObject', 
-						template = 'Vec6d', 
-						name = 'dofs', 
-						position = '0 0 0 0 0 0' )
-						
-			dampingNode.createObject('IdentityMapping',
-						name = 'mapping', 
-						template = 'Vec6d,Vec6d', 
-						input = '@../',
-						output = '@dofs')
-			
-			dampingNode.createObject('DampingCompliance',
-						 name = 'dampingCompliance',
-						 template = 'Vec6d',
-						 damping = self.damping)  
-			# what's this ?
-			dampingNode.createObject('DampingValue',
-						 name = 'dampingValue')  
+					      template = 'Vec1d',
+					      compliance = self.compliance)
+
+                stab = sub.createObject('Stabilization')
                 
 		return node
 

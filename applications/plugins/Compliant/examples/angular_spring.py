@@ -27,6 +27,8 @@ def createScene(root):
     base = Rigid.Body('base')
     moving = Rigid.Body('moving')
 
+    moving.inertia_forces = True
+
     moving.dofs.translation = [0, 2, 0]
 
     base_node = base.insert( scene );
@@ -45,11 +47,11 @@ def createScene(root):
     # only rotation dofs
     joint.append(base_node, base_offset)
     joint.append(moving_node, moving_offset)
-    
-    joint.stiffness = 5e3
 
-    info = joint.insert(scene)
-
+    node = joint.insert(scene)
     
-  
+    node.createObject('UniformCompliance',
+                      template = 'Vec6d',
+                      compliance = 1e-3 )
+      
     

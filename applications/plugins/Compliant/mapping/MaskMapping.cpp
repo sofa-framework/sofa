@@ -17,22 +17,22 @@ SOFA_DECL_CLASS(MaskMapping)
 using namespace defaulttype;
 
 // Register in the Factory
-int MaskMappingClass = core::RegisterObject("Filters out dofs by term-wise multiplication")
+int MaskMappingClass = core::RegisterObject("Filters out dofs. You need to map to 1d dofs.")
 
 #ifndef SOFA_FLOAT
-	.add< MaskMapping< Vec6dTypes, Vec6dTypes > >()
+	.add< MaskMapping< Vec6dTypes, Vec1dTypes > >()
 #endif
 #ifndef SOFA_DOUBLE
-.add< MaskMapping< Vec6fTypes, Vec6fTypes > >()
+.add< MaskMapping< Vec6fTypes, Vec1fTypes > >()
 #endif
 ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_Compliant_API MaskMapping<  Vec6dTypes, Vec6dTypes >;
+template class SOFA_Compliant_API MaskMapping<  Vec6dTypes, Vec1dTypes >;
 #endif
 
 #ifndef SOFA_DOUBLE
-template class SOFA_Compliant_API MaskMapping< Vec6fTypes, Vec6fTypes >;
+template class SOFA_Compliant_API MaskMapping< Vec6fTypes, Vec1fTypes >;
 
 #endif
 
