@@ -39,7 +39,6 @@
 #include <sofa/gui/qt/WDoubleLineEdit.h>
 
 #include <QTreeWidget>
-#ifdef SOFA_QT4
 #include <QDialog>
 #include <QWidget>
 #include <Q3ListViewItem>
@@ -56,29 +55,6 @@
 #include <QSpinBox>
 #include <Q3CheckListItem>
 #include <QVBoxLayout>
-#else
-#include <qdialog.h>
-#include <qwidget.h>
-#include <qlistview.h>
-#include <qtable.h>
-#include <qgroupbox.h>
-#include <qgrid.h>
-#include <qtextedit.h>
-#include <qtabwidget.h>
-#include <qpushbutton.h>
-#include <qlabel.h>
-#include <qlineedit.h>
-#include <qcheckbox.h>
-#include <qspinbox.h>
-#include <qlayout.h>
-#endif
-
-#ifndef SOFA_QT4
-typedef QGroupBox Q3GroupBox;
-typedef QTextEdit   Q3TextEdit;
-typedef QListView   Q3ListView;
-typedef QListViewItem Q3ListViewItem;
-#endif
 
 namespace sofa
 {
