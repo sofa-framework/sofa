@@ -46,6 +46,9 @@ share/screenshots/
 CMakeFiles/*
 CMakeCache.txt
 
+# Files related to QtCreator (shadow-build)
+CMakeLists.txt.user
+
 # anything user-specific (as opposed to repository-specific) should go
 # to .git/info/exclude instead of .gitignore. Also, .gitignore files
 # can be placed in sub-directories to avoid polluting the root one.
