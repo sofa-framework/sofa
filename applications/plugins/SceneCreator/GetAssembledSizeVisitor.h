@@ -40,6 +40,7 @@
 #pragma once
 #endif
 
+#include "initSceneCreator.h"
 #include <sofa/simulation/common/Visitor.h>
 #include <sofa/core/MultiVecId.h>
 #include <sofa/defaulttype/BaseVector.h>
@@ -56,7 +57,7 @@ namespace simulation
   The two values may be different, such as for rigid objects.
     Francois Faure, 2013
 */
- class SOFA_SIMULATION_COMMON_API GetAssembledSizeVisitor: public Visitor
+ class SOFA_SceneCreator_API GetAssembledSizeVisitor: public Visitor
 {
 public:
     GetAssembledSizeVisitor( const sofa::core::ExecParams* params /* PARAMS FIRST */=core::MechanicalParams::defaultInstance() );
