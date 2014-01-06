@@ -46,11 +46,15 @@ public:
 	Data< bool > rotation, translation;
 	Data< bool > out_joint_angle;
 	
+	Data< bool > exact_dlog;
+
 	RigidJointMapping() 
 		: pairs(initData(&pairs, "pairs", "pairs of rigid frames defining joint in source dofs" )),
 		  rotation(initData(&rotation, true, "rotation", "compute relative rotation" )),
 		  translation(initData(&translation, true, "translation", "compute relative translation" )),
-		  out_joint_angle(initData(&out_joint_angle, false, "out_joint_angle", "output joint angle to std::cerr(unsigned rad)"))
+		  out_joint_angle(initData(&out_joint_angle, false, "out_joint_angle", "output joint angle to std::cerr(unsigned rad)")),
+		  exact_dlog(initData(&exact_dlog, false, "exact_dlog",
+							  "compute exact rotation dlog. more precise if you know what you're doing, but gets unstable past half turn. for 1d and isotropic 3d springs, you don't need this"))
 		{
 			
 		}
@@ -100,7 +104,11 @@ protected:
 
 			typename se3::coord_type diff = delta(in_pos[ p[i][0] ],
 			                                      in_pos[ p[i][1] ] );
-			mat33 dlog = se3::dlog( se3::rotation(diff) );
+		
+			mat33 dlog = mat33::Identity();
+			if( exact_dlog.getValue() ) {
+				dlog = se3::dlog( se3::rotation(diff) );
+			}
 				
 			if( rotation.getValue() ) {
 //				mat33 Rp = se3::Ad(in_pos[ p[i][0]].getOrientation());

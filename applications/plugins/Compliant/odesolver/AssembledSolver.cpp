@@ -199,7 +199,7 @@ void AssembledSolver::rhs_dynamics(vec& res, const system_type& sys, const vec& 
 	
 	unsigned off = 0;
 	
-	// master dofs
+	// master dofs: fetch what has been computed during compute_forces
 	for(unsigned i = 0, end = sys.master.size(); i < end; ++i) {
 		system_type::dofs_type* dofs = sys.master[i];
 	
@@ -225,10 +225,11 @@ void AssembledSolver::rhs_dynamics(vec& res, const system_type& sys, const vec& 
             dofs->getContext()->get<BaseConstraintValue>( core::objectmodel::BaseContext::Local );
 		
 		// fallback TODO optimize ?
-		if(!value ) {
+		if( !value ) {
             value = new ConstraintValue( dofs );
 			dofs->getContext()->addObject( value );
 			value->init();
+			
 		}
 
 		value->dynamics(&res(off), dim);
