@@ -28,15 +28,17 @@ class SOFA_Compliant_API BaseConstraintValue : public core::objectmodel::BaseObj
   protected:
 
     typedef core::behavior::BaseMechanicalState mstate_type;
-    mstate_type* mstate;
-
+	mstate_type::SPtr mstate;
+	
   public:
 
     SOFA_ABSTRACT_CLASS(BaseConstraintValue, core::objectmodel::BaseObject);
 
 
-    BaseConstraintValue() : mstate(NULL) {}
-    BaseConstraintValue( mstate_type* mstate ) : mstate(mstate) { assert( mstate ); }
+    BaseConstraintValue( mstate_type* mstate = 0 ) 
+		: mstate(mstate) { 
+		
+	}
 
     void init()
     {
