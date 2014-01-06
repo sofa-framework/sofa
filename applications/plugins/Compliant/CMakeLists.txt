@@ -34,6 +34,7 @@ set(HEADER_FILES
     assembly/AssembledSystem.h
 
     odesolver/AssembledSolver.h
+    odesolver/ConstantAssembledSolver.h
 
     compliance/UniformCompliance.h
     compliance/UniformCompliance.inl
@@ -110,6 +111,7 @@ set(SOURCE_FILES
     assembly/AssembledSystem.cpp
 
     odesolver/AssembledSolver.cpp
+    odesolver/ConstantAssembledSolver.cpp
 
     constraint/CoulombConstraint.cpp
     constraint/UnilateralConstraint.cpp
