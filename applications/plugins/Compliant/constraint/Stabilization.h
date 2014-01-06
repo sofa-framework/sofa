@@ -13,8 +13,7 @@ class SOFA_Compliant_API Stabilization : public BaseConstraintValue {
 
     SOFA_CLASS(Stabilization, BaseConstraintValue);
 
-    Stabilization() {}
-    Stabilization( mstate_type* mstate );
+	Stabilization( mstate_type* mstate = 0);
 
 	/// flagging which constraint lines must be stabilized (if empty, all constraints are stabilized)
 	typedef vector<bool> mask_type;
