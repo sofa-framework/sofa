@@ -161,7 +161,9 @@ void SequentialSolver::factor(const system_type& system) {
 		schur_type schur(storage.data(), b.size, b.size);
 		
 		// temporary sparse mat, difficult to remove :-/
-		cmat tmp = PJT.middleCols(b.offset, b.size).transpose() * mapping_response.middleCols(b.offset, b.size);
+		cmat tmp = PJT.middleCols(b.offset, b.size).transpose() * 
+			mapping_response.middleCols(b.offset, b.size);
+		
 		schur = tmp;
 		
 		// real symmetry = (schur - schur.transpose()).squaredNorm() / schur.size();
