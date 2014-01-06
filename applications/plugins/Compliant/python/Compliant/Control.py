@@ -6,7 +6,9 @@
 
 import Vec, Rigid, Tools
 
-# 1-dimensional PID, for a Rigid joint
+from Vec import Proxy as vec
+
+# 1-dimensional PID, for a Rigid joint. *EXPLICIT* pid
 class PID:
     
     def __init__(self, dofs):
@@ -60,3 +62,69 @@ class PID:
 
 
 # TODO some other controllers ?
+
+
+
+# this is for large gains + zero target velocity
+class ImplicitPID:
+    
+    def __init__(self, dofs):
+        self.dofs = dofs
+
+        # gains
+        self.kp = -1
+        self.kd = -0
+        self.ki = -0
+          
+        self.ref = 0
+        
+        # actuation basis
+        # self.basis = vec( [0, 0, 0, 0, 0, 0] )
+        
+        self.reset()
+        
+        self.name = 'pid'
+
+
+    def insert( self ):
+        node = self.dofs.getContext().createChild( self.name )
+
+        self.dofs = node.createObject('MechanicalObject', 
+                                      template = 'Vec1d',
+                                      position = '0')
+        
+        self.map = node.createObject('ProjectionMapping',
+                                     set = '0 ' + Tools.cat(self.basis) )
+        
+        self.ff = node.createObject('UniformCompliance',
+                                    template = 'Vec1d',
+                                    compliance = '1e8' )
+        
+        self.node = node
+
+    def reset(self):
+        self.integral = 0
+
+    # you need to call this during onBeginAnimationStep from
+    # a PythonController (see SofaPython doc)
+    def pre_step(self, dt):
+
+        self.map.offset = str(-self.ref)
+
+        stiff = - self.kp - dt * self.ki
+        damping = - self.kd / dt
+        
+        self.ff.compliance = 1.0 / stiff
+        # self.ff.rayleighStiffness = damping/stiff
+
+        # trigger compliance matrix recomputation
+        self.ff.init()
+
+        # integral part
+        # self.dofs.externalForce = str( self.ki * self.integral )
+        
+    # call this during onEndAnimationStep
+    def post_step(self, dt):
+        # update integral with error on time step start
+        self.integral = self.integral - dt * self.dofs.position
+        

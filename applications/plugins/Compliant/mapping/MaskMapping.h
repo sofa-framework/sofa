@@ -32,7 +32,7 @@ public:
 	typedef typename TOut::Real out_real;
 
 	// should only be used with vector dofs
-	typedef vector< typename TOut::Coord > dofs_type;
+	typedef vector< typename TIn::Coord > dofs_type;
 	Data< dofs_type > dofs;
 
 	typedef AssembledMapping<TIn, TOut> base;
@@ -40,59 +40,63 @@ public:
 
 	MaskMapping()
 		: dofs(initData(&dofs, "dofs", 
-						"mask for each input dof (default: all. last value extended if needed)"))  {
-		typename TOut::Coord coord;
-		for(unsigned i = 0; i < base::Nout; ++i) {
-			coord[i] = 1;
-		}
+						"mask for each input dof"))  {
+
+		assert( base::Nout == 1 );
 		
-		edit(dofs)->push_back( coord );
 	}
 	
 protected:
 	
+	std::vector< std::pair<unsigned, unsigned> > index;
+	
 	virtual void assemble( const typename self::in_pos_type& in) {
-		assert( base::Nin == base::Nout );
+		// note: index is filled in @apply
 		
 		const dofs_type& d = dofs.getValue();
 		
 		// resize/clear jacobian
 		typename self::jacobian_type::CompressedMatrix& J = this->jacobian.compressedMatrix;
-		J.resize( base::Nout * in.size(), 
+		J.resize( base::Nout * index.size(),
 				  base::Nin * in.size() );
 		
 		J.setZero();
 
-		for( unsigned i = 0, n = in.size(); i < n; ++i) {
-			unsigned index = std::min<int>(d.size() - 1, i);
-			
-			for( unsigned u = 0; u < base::Nin; ++u) {
-				unsigned row = base::Nout * i + u;
-				J.startVec( row );
-				
-				if( d[index][u] ) {
-					J.insertBack(row, row) = d[index][u];
-				}
-			}
+		for( unsigned i = 0, n = index.size(); i < n; ++i) {
+			unsigned row = i;
+			J.startVec(row);
+
+			unsigned col = base::Nin * index[i].first + index[i].second;
+
+			J.insertBack(row, col) = 1;
 		}
-		
+
 		J.finalize();
-		
 	}
 	
 	virtual void apply(typename self::out_pos_type& out, 
 					   const typename self::in_pos_type& in ) {
-		assert(in.size() == out.size());
-//		assert(d.size());
-		
 		const dofs_type& d = dofs.getValue();
-	
-		for( unsigned i = 0, n = in.size(); i < n; ++i) {
-			unsigned index = std::min<int>(d.size() - 1, i);
+		assert(in.size() == out.size());
 
-			map(out[i]) = map(in[i]).template cast<out_real>().cwiseProduct( map(d[index]) );
+		// build array of (dof index, coeff index)
+		index.clear();
+
+		for(unsigned i = 0, n = d.size(); i < n; ++i) {
+			for( unsigned j = 0; j < self::Nin; ++j) {
+				if( d[i][j] ) {
+					index.push_back( std::make_pair(i, j) );
+				}
+			}
 		}
 		
+		// automatic output resize yo !
+		this->getToModel()->resize( index.size() );
+		
+		for(unsigned i = 0, n = index.size(); i < n; ++i) {
+			map(out[i])(0) = map(in[ index[i].first ])(index[i].second);
+		}
+	
 	}
 	
 };
