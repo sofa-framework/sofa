@@ -40,6 +40,7 @@
 #pragma once
 #endif
 
+#include "initSceneCreator.h"
 #include <sofa/simulation/common/Visitor.h>
 #include <sofa/core/MultiVecId.h>
 #include <sofa/defaulttype/BaseVector.h>
@@ -56,7 +57,7 @@ namespace simulation
     Only the independent DOFs are used.
     Francois Faure, 2013
 */
-class SOFA_SIMULATION_COMMON_API GetVectorVisitor: public Visitor
+class SOFA_SceneCreator_API GetVectorVisitor: public Visitor
 {
 public:
 //    typedef Eigen::Matrix<SReal, Eigen::Dynamic, 1> Vector;

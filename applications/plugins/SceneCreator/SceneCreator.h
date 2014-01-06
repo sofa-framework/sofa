@@ -34,19 +34,13 @@
 //Using double by default, if you have SOFA_FLOAT in use in you sofa-default.cfg, then it will be FLOAT.
 #include <sofa/component/typedef/Sofa_typedef.h>
 
-#ifdef SOFA_BUILD_OBJECTCREATOR
-#	define SOFA_OBJECTCREATOR_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#	define SOFA_OBJECTCREATOR_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
 namespace sofa
 {
 
 /// BUGFIX: this SceneCreator class was renamed to SimpleSceneCreator,
 /// in order to remove ambiguity with sofa::core::SceneCreator
 
-class SOFA_OBJECTCREATOR_API SimpleSceneCreator
+class SOFA_SceneCreator_API SimpleSceneCreator
 {
 public:
 
