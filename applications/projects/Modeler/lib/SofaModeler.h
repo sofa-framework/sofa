@@ -110,6 +110,9 @@ public :
 
     void changeTabName(GraphModeler *graph, const QString &name, const QString &suffix=QString());
     void setDebugBinary(bool b) {debug=b;};
+
+	void resizeEvent(QResizeEvent * event);
+
 signals:
     void loadPresetGraph(std::string);
 
@@ -284,6 +287,7 @@ protected:
 protected slots:
     void editTutorial(const std::string& );
 
+	void propertyDockMoved(Q3DockWindow::Place p);
 
 private:
     std::string sofaBinary;

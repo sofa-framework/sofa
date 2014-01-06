@@ -37,8 +37,6 @@
 
 #define MAX_RECENTLY_OPENED 10
 
-
-#ifdef SOFA_QT4
 #include <QToolBox>
 #include <QApplication>
 #include <QMenuBar>
@@ -51,19 +49,6 @@
 #include <QVBoxLayout>
 #include <QDesktopServices>
 #include <QSettings>
-#else
-#include <qtoolbox.h>
-#include <qlayout.h>
-#include <qtextbrowser.h>
-#include <qapplication.h>
-#include <qmenubar.h>
-#include <qmessagebox.h>
-#include <qdir.h>
-#include <qstatusbar.h>
-#include <qdockwindow.h>
-#include <qdockarea.h>
-#include <qsettings.h>
-#endif
 
 namespace sofa
 {
@@ -197,16 +182,14 @@ SofaModeler::SofaModeler():recentlyOpenedFilesManager("share/config/Modeler.ini"
     // Create the Right part of the GUI
     //----------------------------------------------------------------------
 
-    QHBoxLayout *mainLayout = new QHBoxLayout(this->centralWidget());
+	setRightJustification(true);
 
-	// Splitter between the graph and the properties
-	QSplitter* graphSplitProperty = new QSplitter(Qt::Horizontal);
-	mainLayout->addWidget(graphSplitProperty);
+    QHBoxLayout *mainLayout = new QHBoxLayout(this->centralWidget());
 
     //----------------------------------------------------------------------
     //Create the scene graph visualization
     sceneTab = new QTabWidget(this->centralWidget());
-    graphSplitProperty->addWidget(sceneTab);
+    mainLayout->addWidget(sceneTab);
 
 #ifdef SOFA_QT4
     //option available only since Qt 4.5
@@ -223,13 +206,15 @@ SofaModeler::SofaModeler():recentlyOpenedFilesManager("share/config/Modeler.ini"
 	ModifyObjectFlags modifyObjectFlags = ModifyObjectFlags();
     modifyObjectFlags.setFlagsForModeler();
 
-    propertyWidget = new QDisplayPropertyWidget(modifyObjectFlags, this->centralWidget());
-    graphSplitProperty->addWidget(propertyWidget);
+	Q3DockWindow* dockProperty = new Q3DockWindow(this);
+	dockProperty->setResizeEnabled(true);
+	dockProperty->setHorizontallyStretchable(true);
+	this->moveDockWindow( dockProperty, Qt::DockRight);
 
-	QList<int> sizes;
-	sizes.push_back(200);
-	sizes.push_back(200);
-	graphSplitProperty->setSizes(sizes);
+	connect(dockProperty, SIGNAL(placeChanged(Q3DockWindow::Place)), this, SLOT(propertyDockMoved(Q3DockWindow::Place)));
+	
+    propertyWidget = new QDisplayPropertyWidget(modifyObjectFlags, dockProperty);
+	dockProperty->setWidget(propertyWidget);
 
     //----------------------------------------------------------------------
     //Add plugin manager window. ->load external libs
@@ -700,6 +685,29 @@ void SofaModeler::changeTabName(GraphModeler *graph, const QString &name, const 
     }
 }
 
+void SofaModeler::resizeEvent(QResizeEvent * event)
+{
+	Q3DockArea* dockArea = rightDock();
+	if(dockArea)
+	{
+		QList<Q3DockWindow*> dockWindowList = dockArea->dockWindowList();
+
+		int width = event->size().width();
+		if(width < 1200)
+			width /= 4;
+		else
+			width /= 3;
+
+		while(!dockWindowList.isEmpty())
+		{
+			Q3DockWindow* dockWindow = dockWindowList.takeFirst();
+			dockWindow->setFixedExtentWidth(width);
+		}
+
+		update();
+	}
+}
+
 void SofaModeler::graphModifiedNotification(bool modified)
 {
     GraphModeler *graph = (GraphModeler*) sender();
@@ -822,6 +830,16 @@ void SofaModeler::editTutorial(const std::string& filename)
     std::string tutorialFilename(filename);
     fileOpen(tutorialFilename);
     //this->setActiveWindow();
+}
+
+void SofaModeler::propertyDockMoved(Q3DockWindow::Place p)
+{
+	Q3DockWindow* dockWindow = qobject_cast<Q3DockWindow*>(sender());
+	if(!dockWindow)
+		return;
+
+	if(Q3DockWindow::OutsideDock == p)
+		dockWindow->resize(500, 700);
 }
 
 void SofaModeler::openTutorial()
