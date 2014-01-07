@@ -44,7 +44,7 @@ void LDLTSolver::factor(const AssembledSystem& sys) {
     typedef AssembledSystem::dmat dmat;
 
     if(projectH.getValue()){
-        if( regularize.getValue() != (SReal)0.0 )
+        if( regularize.getValue() != (SReal)0.0 ) // add a tiny diagonal matrix to make H psd.
         {
             system_type::cmat identity(sys.m,sys.m);
             identity.setIdentity();
@@ -53,7 +53,16 @@ void LDLTSolver::factor(const AssembledSystem& sys) {
         else
             pimpl->Hinv.compute( sys.P.transpose() * sys.H * sys.P );
     }
-    else pimpl->Hinv.compute( sys.H );
+    else {
+        if( regularize.getValue() != (SReal)0.0 ) // add a tiny diagonal matrix to make H psd.
+        {
+            system_type::rmat identity(sys.m,sys.m);
+            identity.setIdentity();
+            pimpl->Hinv.compute( sys.H + identity * regularize.getValue() );
+        }
+        else
+            pimpl->Hinv.compute( sys.H );
+    }
 
     if( pimpl->Hinv.info() == Eigen::NumericalIssue ) {
         std::cerr << "LDLTSolver::factor: H is not psd. System solution will be wrong." << std::endl;
