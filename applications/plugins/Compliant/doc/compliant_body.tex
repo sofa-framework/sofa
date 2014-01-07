@@ -177,7 +177,7 @@ The complete equation system has the following generalized KKT form:
 \end{equation}
 where $ l=\alpha(h \beta + d) $
 The system is singular due to matrix $\P $, which removes independent degrees of freedom without reducing the size of the mass matrix accordingly.
-To remedy this, we replace it with 
+To remedy this, we set an option to replace it with 
 \begin{equation} \label{eq mbar}
 \bar\M = \P \M \P^T + diag(\epsilon),
 \end{equation}
@@ -192,7 +192,7 @@ This makes the matrix PSD, and does not significantly change the value of the eq
 
 By inverting $\bar\M$, we can insert the first line of the equation system and get:
 \begin{equation} \label{eq schur complement}
- \left( h\J\Mbinv\Jt + \frac{1}{l}\C \right) \avlam = -\frac{1}{l} \left(\violation + (\dampingratio+h\alpha)\dviolation \right) - h\J \Mbinv \forcext
+ \left( h\J\Mbinv\Jt + \frac{1}{l}\C \right) \avlam = -\frac{1}{l} \left(\violation + (\dampingratio+h\alpha)\dviolation \right) - h\J \P^T \Mbinv \forcext
 \end{equation}
 where matrix $ h\J\Mbinv\Jt + \frac{1}{l}\C $ is called the Schur complement of the KKT equation system.
 Solving for $\avlam$ allows us to update the velocities and the positions:
