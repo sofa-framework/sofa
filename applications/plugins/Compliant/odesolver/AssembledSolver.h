@@ -158,13 +158,13 @@ public:
 	typedef system_type::vec vec;
 
 
-    // compute the forces f (summing stiffness and compliance)
-    // compute the right part of the implicit system b (c_k in compliant-reference.pdf, section 3)
+    /** Compute the forces f (summing stiffness and compliance) and the right part of the implicit system c (c_k in compliant-reference.pdf, section 3)
+      */
     virtual void compute_forces(const core::MechanicalParams& params,
                                simulation::common::MechanicalOperations& mop,
                                simulation::common::VectorOperations& vop,
                                core::behavior::MultiVecDeriv& f,
-                               core::behavior::MultiVecDeriv& b );
+                               core::behavior::MultiVecDeriv& c );
 
 	// linear rhs for dynamics/correction steps
     virtual void rhs_dynamics(vec& res, const system_type& sys, const vec& v, const core::behavior::MultiVecDeriv& b ) const;

@@ -23,7 +23,7 @@ endif()
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${RC_FILES})
 
-AddLinkerDependencies(Compliant SofaTest SofaComponentMain SofaSimulationGraph)
+AddLinkerDependencies(Compliant SofaTest)
 
 if(UNIX)
     AddLinkerDependencies("dl")

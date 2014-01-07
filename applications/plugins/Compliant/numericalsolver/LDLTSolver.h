@@ -34,9 +34,9 @@ class SOFA_Compliant_API LDLTSolver : public KKTSolver {
 	~LDLTSolver();
 
 
-//    Data<SReal> damping;
-    Data<SReal> regularize; ///< add identity*regularize to matrix H to make it definite.
-	
+    Data<bool> projectH;    ///< Replace H with P^T.H.P to account for projective constraints
+    Data<SReal> regularize; ///< Add identity*regularize to matrix H to make it definite. This is useful when H is projected (see @projectH).
+
   private:
 	
 	struct pimpl_type {

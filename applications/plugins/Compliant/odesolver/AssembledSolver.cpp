@@ -122,7 +122,7 @@ void AssembledSolver::compute_forces(const core::MechanicalParams& params,
                            simulation::common::MechanicalOperations& mop,
                            simulation::common::VectorOperations& vop,
                            core::behavior::MultiVecDeriv& f,
-                           core::behavior::MultiVecDeriv& b )
+                           core::behavior::MultiVecDeriv& c )
 {
     scoped::timer step("forces computation");
 
@@ -140,7 +140,7 @@ void AssembledSolver::compute_forces(const core::MechanicalParams& params,
     SReal h = params.dt();
 
     // b = h fk
-    b.eq( fk, h ); // copying only independant dofs
+    c.eq( fk, h ); // copying only independant dofs
 
     // M v_k
     SReal mfactor = 1;
@@ -152,7 +152,7 @@ void AssembledSolver::compute_forces(const core::MechanicalParams& params,
     SReal kfactor = h * h * alpha.getValue() * (1 - beta.getValue());
 
     // note: K v_k factor only for stiffness dofs
-    mop.addMBKv( b,
+    mop.addMBKv( c,
                  mfactor,
                  bfactor,
                  kfactor,
