@@ -35,8 +35,8 @@ set(HEADER_FILES
     ../collision/InciseAlongPathPerformer.h 
     ../collision/TopologicalChangeManager.h 
     ../collision/CuttingPoint.h 
-    ../collision/AddFramePerformer.h 
-    ../collision/AddFramePerformer.inl 
+#    ../collision/AddFramePerformer.h
+#    ../collision/AddFramePerformer.inl
     ../collision/AddRecordedCameraPerformer.h 
     ../collision/StartNavigationPerformer.h
     ../controller/MechanicalStateControllerOmni.h 
@@ -70,7 +70,7 @@ set(SOURCE_FILES
     ../collision/InciseAlongPathPerformer.cpp 
     ../collision/TopologicalChangeManager.cpp 
     ../collision/CuttingPoint.cpp 
-    ../collision/AddFramePerformer.cpp 
+#    ../collision/AddFramePerformer.cpp
     ../collision/AddRecordedCameraPerformer.cpp
     ../collision/StartNavigationPerformer.cpp
     ../controller/MechanicalStateControllerOmni.cpp 
