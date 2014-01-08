@@ -58,7 +58,7 @@
 
 // Including engine
 #include <sofa/component/engine/BoxROI.h>
-#include <sofa/component/engine/PairBoxROI.h>
+#include <sofa/component/engine/PairBoxRoi.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 
