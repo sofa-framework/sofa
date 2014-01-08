@@ -88,6 +88,8 @@ protected:
     friend class BilinearMovementConstraintInternalData<DataTypes>;
 
 public :
+    /// indices of the DOFs of the mesh
+    SetIndex m_meshIndices;
      /// indices of the DOFs the constraint is applied to
     SetIndex m_indices;
     /// data begin time when the constraint is applied
@@ -106,6 +108,10 @@ public :
     VecCoord x0;
     /// final constrained DOFs position
     VecCoord xf;
+    /// initial mesh DOFs position
+    VecCoord meshPointsX0;
+    /// final mesh DOFs position
+    VecCoord meshPointsXf;
  
 protected:
     BilinearMovementConstraint();
@@ -128,6 +134,9 @@ public:
     /// Apply the computed movements to the border mesh points between beginConstraintTime and endConstraintTime
     void projectPosition(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecCoord& xData);
 
+    /// Compute the theoretical final positions
+    void getFinalPositions (VecCoord& finalPos, DataVecCoord& xData); 
+
     /// Draw the constrained points (= border mesh points)
      virtual void draw(const core::visual::VisualParams* vparams);
 
@@ -138,7 +147,6 @@ public:
 
         FCPointHandler(BilinearMovementConstraint<DataTypes>* _fc, PointSubsetData<SetIndexArray>* _data)
             : sofa::component::topology::TopologySubsetDataHandler<Point, SetIndexArray >(_data), fc(_fc) {}
-
 
         void applyDestroyFunction(unsigned int /*index*/, value_type& /*T*/);
 
@@ -157,14 +165,12 @@ protected:
     template <class DataDeriv>
     void projectResponseT(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataDeriv& dx);
 
-    bool isClose( double a, double b, double eps ) const;
-
 private:
 
     /// Handler for subset Data
     FCPointHandler* pointHandler;
 
-     // Vector with index = indice of the constrained points and value is a Vec<3,Real> with the index of the two neighboor corner points (see schema bellow) and the barycentryc coefficient alpha
+    // Vector with index = indice of the constrained points and value is a Vec<3,Real> with the index of the two neighboor corner points (see schema bellow) and the barycentryc coefficient alpha
     // 0------1
     // |      |
     // |      |
@@ -174,23 +180,28 @@ private:
     /// Find the 4 corners of the 2D grid
     void findCornerPoints();
     
-    /// For each border point find its corresponding edge (cf:schema above) and the barycentric coefficient alpha
-    /// <=> Fill the vector m_contraintParametersVector
-    void setConstraintParameters();
+    /// Compute the displacement of each mesh point by linear interpolation with the displacement of corner points
+    void computeInterpolatedDisplacement (int pointIndice,const DataVecCoord& xData, Deriv& displacement);
+
+    /// Initialize initial positions
+    void initializeInitialPositions (const SetIndexArray & indices, DataVecCoord& xData, VecCoord& x0);
+
+     /// Initialize final positions
+    void initializeFinalPositions (const SetIndexArray & indices, DataVecCoord& xData, VecCoord& x0 , VecCoord& xf);
 };
 
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_BILINEARMOVEMENTCONSTRAINT_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_BOUNDARY_CONDITION_API BilinearMovementConstraint<defaulttype::Vec3dTypes>;
-//extern template class SOFA_BOUNDARY_CONDITION_API BilinearMovementConstraint<defaulttype::Vec2dTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API BilinearMovementConstraint<defaulttype::Vec2dTypes>;
 //extern template class SOFA_BOUNDARY_CONDITION_API BilinearMovementConstraint<defaulttype::Vec1dTypes>;
 //extern template class SOFA_BOUNDARY_CONDITION_API BilinearMovementConstraint<defaulttype::Vec6dTypes>;
 extern template class SOFA_BOUNDARY_CONDITION_API BilinearMovementConstraint<defaulttype::Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
 extern template class SOFA_BOUNDARY_CONDITION_API BilinearMovementConstraint<defaulttype::Vec3fTypes>;
-//extern template class SOFA_BOUNDARY_CONDITION_API BilinearMovementConstraint<defaulttype::Vec2fTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API BilinearMovementConstraint<defaulttype::Vec2fTypes>;
 //extern template class SOFA_BOUNDARY_CONDITION_API BilinearMovementConstraint<defaulttype::Vec1fTypes>;
 //extern template class SOFA_BOUNDARY_CONDITION_API BilinearMovementConstraint<defaulttype::Vec6fTypes>;
 extern template class SOFA_BOUNDARY_CONDITION_API BilinearMovementConstraint<defaulttype::Rigid3fTypes>;
