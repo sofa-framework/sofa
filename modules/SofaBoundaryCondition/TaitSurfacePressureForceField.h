@@ -103,6 +103,9 @@ public:
     Data< Real > m_drawForceScale;  ///< DEBUG: scale used to render force vectors
     Data< defaulttype::Vec4f > m_drawForceColor;  ///< DEBUG: color used to render force vectors
 
+    Data< Real > m_volumeAfterTC;  ///< OUT: Volume after a topology change
+    Data< Real > m_surfaceAreaAfterTC;  ///< OUT: Surface area after a topology change
+
     virtual void init();
     virtual void storeResetState();
     virtual void reset();
