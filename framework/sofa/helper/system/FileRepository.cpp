@@ -87,25 +87,23 @@ FileRepository PluginRepository("SOFA_PLUGIN_PATH", ADD_SOFA_BUILD_DIR(SOFA_PLUG
 static FileRepository createSofaDataPath()
 {
     FileRepository repository("SOFA_DATA_PATH");
+
+    repository.addLastPath( ADD_SOFA_BUILD_DIR( / ) );
+    repository.addLastPath( ADD_SOFA_SRC_DIR( /share ) );
+    repository.addLastPath( ADD_SOFA_SRC_DIR( /examples ) );
+
 #if defined (WIN32) || defined (_XBOX) || defined(PS3)
-    repository.addLastPath( ADD_SOFA_BUILD_DIR( / ) );
-    repository.addLastPath( ADD_SOFA_SRC_DIR( /share ) );
-    repository.addLastPath( ADD_SOFA_SRC_DIR( /examples ) );
 #elif defined (__APPLE__)
-    repository.addLastPath( ADD_SOFA_BUILD_DIR( / ) );
-    repository.addLastPath( ADD_SOFA_SRC_DIR( /share ) );
-    repository.addLastPath( ADD_SOFA_SRC_DIR( /examples ) );
     repository.addLastPath( ADD_SOFA_SRC_DIR( /Resources/examples ) );
     repository.addLastPath( ADD_SOFA_SRC_DIR( /Resources ) );
     repository.addLastPath( ADD_SOFA_SRC_DIR( /../../../examples ) );
     repository.addLastPath( ADD_SOFA_SRC_DIR( /../../../share ) );
 #else // LINUX
-    repository.addLastPath( ADD_SOFA_BUILD_DIR( / ) );
-    repository.addLastPath( ADD_SOFA_SRC_DIR( /share ) );
-    repository.addLastPath( ADD_SOFA_SRC_DIR( /examples ) );
     repository.addLastPath( ADD_SOFA_SRC_DIR( /../Verification/data ) );
     repository.addLastPath( ADD_SOFA_SRC_DIR( /../Verification/simulation ) );
 #endif
+
+    repository.addLastPath( ADD_SOFA_SRC_DIR() );
 
     return repository;
 }
