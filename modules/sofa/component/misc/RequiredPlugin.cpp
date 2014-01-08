@@ -43,7 +43,7 @@ int RequiredPluginClass = core::RegisterObject("Load required plugin")
         .add< RequiredPlugin >();
 
 RequiredPlugin::RequiredPlugin()
-    : pluginName( initData(&pluginName, "pluginName", "plugin name"))
+    : pluginName( initData(&pluginName, "pluginName", "Name of the plugin to loaded. If this is empty, the name of this component is used as plugin name."))
 {
     this->f_printLog.setValue(true); // print log by default, to identify which pluging is responsible in case of a crash during loading
 }
@@ -51,13 +51,15 @@ RequiredPlugin::RequiredPlugin()
 void RequiredPlugin::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
 {
     Inherit1::parse(arg);
-    if (!pluginName.getValue().empty())
+    if (!pluginName.getValue().empty() || !name.getValue().empty())
         loadPlugin();
 }
 
 void RequiredPlugin::loadPlugin()
 {
     std::string pluginPath = pluginName.getValue();
+    if(pluginPath.empty()) pluginPath = name.getValue();
+
     sout << "Loading " << pluginPath << sendl;
     if (sofa::helper::system::PluginManager::getInstance().loadPlugin(pluginPath))
     {
@@ -66,7 +68,7 @@ void RequiredPlugin::loadPlugin()
     }
 
     // try to load the eventual plugin gui
-    pluginPath = pluginName.getValue() + "_gui";
+    pluginPath = pluginPath + "_gui";
     if (sofa::helper::system::PluginManager::getInstance().loadPlugin(pluginPath,NULL))
     {
         sout << "Loaded " << pluginPath << sendl;
