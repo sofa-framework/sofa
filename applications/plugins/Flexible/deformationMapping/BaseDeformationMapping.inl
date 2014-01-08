@@ -668,6 +668,9 @@ void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::Visual
 #ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowMechanicalMappings() && !showDeformationGradientScale.getValue() && showColorOnTopology.getValue().getSelectedId()==0) return;
 
+
+    glPushAttrib ( GL_LIGHTING_BIT );
+
     helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
     helper::ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
     helper::ReadAccessor<Data<OutVecDeriv> > outf (*this->toModel->read(core::ConstVecDerivId::force()));
@@ -701,12 +704,14 @@ void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::Visual
     }
     if (showDeformationGradientScale.getValue())
     {
-        //                glPushAttrib ( GL_LIGHTING_BIT );
-        //                glDisable ( GL_LIGHTING );
+        glEnable ( GL_LIGHTING );
         float scale=showDeformationGradientScale.getValue();
         Vec<4,float> col( 0.5, 0.5, 0.0, 1.0 );
         Mat<3,3,float> F;
         Vec<3,float> p;
+
+        static const int subdiv = 8;
+
         for(size_t i=0; i<out.size(); i++ )
         {
             if(OutDataTypesInfo<Out>::FMapped) F=(Mat<3,3,float>)OutDataTypesInfo<Out>::getF(out[i]); else F=(Mat<3,3,float>)f_F[i];
@@ -716,22 +721,22 @@ void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::Visual
             for(int j=0; j<material_dimensions; j++)
             {
                 Vec<3,float> u=F.transposed()(j)*0.5*scale;
-                vparams->drawTool()->drawCylinder(p-u,p+u,0.05*scale,col,3);
+                vparams->drawTool()->drawCylinder(p-u,p+u,0.05*scale,col,subdiv);
             }
             else if(showDeformationGradientStyle.getValue().getSelectedId()==1)
                 {
                     Vec<3,float> u=F.transposed()(0)*0.5*scale;
-                    vparams->drawTool()->drawCylinder(p-u,p+u,0.05*scale,col,3);
+                    vparams->drawTool()->drawCylinder(p-u,p+u,0.05*scale,col,subdiv);
                 }
             else if(showDeformationGradientStyle.getValue().getSelectedId()==2)
                 {
                     Vec<3,float> u=F.transposed()(1)*0.5*scale;
-                    vparams->drawTool()->drawCylinder(p-u,p+u,0.05*scale,col,3);
+                    vparams->drawTool()->drawCylinder(p-u,p+u,0.05*scale,col,subdiv);
                 }
             else if(showDeformationGradientStyle.getValue().getSelectedId()==3)
                 {
                     Vec<3,float> u=F.transposed()(2)*0.5*scale;
-                    vparams->drawTool()->drawCylinder(p-u,p+u,0.05*scale,col,3);
+                    vparams->drawTool()->drawCylinder(p-u,p+u,0.05*scale,col,subdiv);
                 }
             else if(showDeformationGradientStyle.getValue().getSelectedId()==4) // strain
                 {
@@ -747,7 +752,6 @@ void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::Visual
                 }
 
         }
-        //                glPopAttrib();
     }
 
     if(showColorOnTopology.getValue().getSelectedId() && (this->extTriangles || this->triangles))
@@ -795,11 +799,11 @@ void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::Visual
                     sofa::helper::gl::Color::getHSVA(&colors[count][0],val[index],1.,.8,1.);
                     count++;
                 }
-        glPushAttrib( GL_LIGHTING_BIT );
+
         glDisable( GL_LIGHTING);
         vparams->drawTool()->drawTriangles(points, normals, colors);
-        glPopAttrib();
     }
+    glPopAttrib();
 #endif /* SOFA_NO_OPENGL */
 }
 
