@@ -4,6 +4,7 @@
 #include "initCompliant.h"
 
 #include "assembly/AssembledSystem.h"
+#include "preconditioner/BasePreconditioner.h"
 #include <sofa/core/behavior/LinearSolver.h>
 
 namespace sofa {
@@ -35,9 +36,16 @@ class SOFA_Compliant_API KKTSolver : public core::behavior::BaseLinearSolver {
 
     Data<bool> debug; ///< print debug info
 
-    KKTSolver():
-        debug(initData(&debug,false,"debug","print debug info"))
+    KKTSolver()
+       : debug(initData(&debug,false,"debug","print debug info"))
+       , _preconditioner( NULL )
     {}
+
+    virtual void init()
+    {
+        // look for an optional preconditioner
+        _preconditioner = this->getContext()->get<preconditioner_type>(core::objectmodel::BaseContext::Local);
+    }
 	
 	virtual void factor(const system_type& system) = 0;
 	
@@ -45,13 +53,27 @@ class SOFA_Compliant_API KKTSolver : public core::behavior::BaseLinearSolver {
 	                   const system_type& system,
 	                   const vec& rhs) const = 0;
 
-	// return true if the solver can only handle equality constraints (in opposition with LCP for instance)
+
+    virtual void solveWithPreconditioner(vec& x,
+                       const system_type& system,
+                       const vec& rhs) const
+    {
+        if( _preconditioner ) serr<<"The preconditioner won't be used by this numerical solver\n";
+        solve( x, system, rhs );
+    }
+
+    // return true if the solver can only handle equality constraints (in opposition with LCP for instance)
     virtual bool isLinear() const { return true; }
 
     
 #ifdef GR_BENCHMARK
     mutable unsigned nbiterations;
 #endif
+
+protected:
+
+    typedef linearsolver::BasePreconditioner preconditioner_type;
+    preconditioner_type* _preconditioner;
 
 };
 

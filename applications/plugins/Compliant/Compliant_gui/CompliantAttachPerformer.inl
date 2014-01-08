@@ -227,7 +227,7 @@ void CompliantAttachPerformer<DataTypes>::execute()
 
     this->interactor->setMouseAttached(true);
 
-        cerr<<"CompliantAttachPerformer<DataTypes>::execute(), mouse position = " << xmouse[0] << endl;
+//        cerr<<"CompliantAttachPerformer<DataTypes>::execute(), mouse position = " << xmouse[0] << endl;
 }
 
 

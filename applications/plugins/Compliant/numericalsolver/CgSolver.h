@@ -25,6 +25,11 @@ class SOFA_Compliant_API CgSolver : public KrylovSolver {
 	                       const system_type& system,
 	                       const vec& rhs) const;
 
+    virtual void solve_kkt_with_preconditioner(vec& x,
+                           const system_type& system,
+                           const vec& rhs) const;
+
+
 };
 
 
