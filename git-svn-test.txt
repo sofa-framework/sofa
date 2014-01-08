@@ -1,4 +1,0 @@
-test...
-test2(svn->git)
-test3(git->svn)
-test4(git new location -> svn)
