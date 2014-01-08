@@ -106,7 +106,7 @@ MechanicalObject<DataTypes>::MechanicalObject()
     , showIndicesScale(initData(&showIndicesScale, (float) 0.0001, "showIndicesScale", "Scale for indices display"))
     , showVectors(initData(&showVectors, (bool) false, "showVectors", "Show velocity"))
     , showVectorsScale(initData(&showVectorsScale, (float) 0.0001, "showVectorsScale", "Scale for vectors display"))
-    , drawMode(initData(&drawMode,0,"drawMode","The way vectors will be drawn:\n- 0: Line\n- 1:Cylinder\n- 2: Arrow."))
+    , drawMode(initData(&drawMode,0,"drawMode","The way vectors will be drawn:\n- 0: Line\n- 1:Cylinder\n- 2: Arrow.\n\nThe DOFS will be drawn:\n- 0: point\n- >1: sphere"))
     , translation(initData(&translation, Vector3(), "translation", "Translation of the DOFs"))
     , rotation(initData(&rotation, Vector3(), "rotation", "Rotation of the DOFs"))
     , scale(initData(&scale, Vector3(1.0,1.0,1.0), "scale3d", "Scale of the DOFs in 3 dimensions"))
@@ -2757,7 +2757,32 @@ inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* 
         vector<Vector3> positions(vsize);
         for (int i = 0; i < vsize; ++i)
             positions[i] = Vector3(getPX(i), getPY(i), getPZ(i));
-        vparams->drawTool()->drawPoints(positions,scale,Vec<4,float>(1.0,1.0,1.0,1.0));
+
+        switch (drawMode.getValue())
+        {
+        case 0:
+            vparams->drawTool()->drawPoints(positions,scale,Vec<4,float>(1.0,1.0,1.0,1.0));
+            break;
+        case 1:
+            glEnable(GL_LIGHTING);
+            vparams->drawTool()->drawSpheres(positions,scale,Vec<4,float>(1.0,1.0,1.0,1.0));
+            break;
+        case 2:
+            glEnable(GL_LIGHTING);
+            vparams->drawTool()->drawSpheres(positions,scale,Vec<4,float>(1.0,0.0,0.0,1.0));
+            break;
+        case 3:
+            glEnable(GL_LIGHTING);
+            vparams->drawTool()->drawSpheres(positions,scale,Vec<4,float>(0.0,1.0,0.0,1.0));
+            break;
+        case 4:
+            glEnable(GL_LIGHTING);
+            vparams->drawTool()->drawSpheres(positions,scale,Vec<4,float>(0.0,0.0,1.0,1.0));
+            break;
+        default:
+            serr << "No proper drawing mode found!" << sendl;
+            break;
+        }
     }
     glPopAttrib();
 #endif /* SOFA_NO_OPENGL */
