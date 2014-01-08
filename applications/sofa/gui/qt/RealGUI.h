@@ -228,8 +228,6 @@ protected:
 	// Component Properties
     QDisplayPropertyWidget* propertyWidget;
 
-	QSplitter* graphSplitProperty;
-
     /// list of all viewer key name (for creation) mapped to its QAction in the GUI
     std::map< helper::SofaViewerFactory::Key, QAction* > viewerMap;
     InformationOnPickCallBack informationOnPickCallBack;
@@ -430,6 +428,9 @@ protected slots:
     /// Update the viewerMap and create viewer if we haven't yet one (the first of the list)
     /// TODO: find a better way to propagate the argument when we construct the viewer
     virtual void updateViewerList();
+
+	void toolsDockMoved(Q3DockWindow::Place p);
+	void propertyDockMoved(Q3DockWindow::Place p);
 
 signals:
     void reload();
