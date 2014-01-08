@@ -136,12 +136,12 @@ void RecordedCamera::moveCamera_navigation()
     {
         Quat firstQuater, nextQuater, interpolateQuater;
 
-        int nbrPoints = m_translationPositions.getValue().size();
+        unsigned int nbrPoints = (unsigned int)m_translationPositions.getValue().size();
         // Time for each segment
         double timeBySegment = totalTime/(nbrPoints - 1);
         // the animation is the same modulo totalTime
         double simuTimeModTotalTime = fmod((SReal) simuTime,(SReal) totalTime);
-        int currentIndexPoint = floor(((SReal)simuTimeModTotalTime/(SReal)timeBySegment));
+        unsigned int currentIndexPoint = (unsigned int)floor(((SReal)simuTimeModTotalTime/(SReal)timeBySegment));
         double ratio =  fmod((SReal)simuTimeModTotalTime,(SReal)timeBySegment)/(SReal)timeBySegment;
 
         if(currentIndexPoint < nbrPoints - 1)
@@ -254,10 +254,10 @@ void RecordedCamera::moveCamera_translation()
 
     if(m_translationPositions.isSet() && m_translationPositions.getValue().size() > 0)
     {
-        int nbrPoints = m_translationPositions.getValue().size();
+        unsigned int nbrPoints = (unsigned int)m_translationPositions.getValue().size();
         double timeBySegment = totalTime/(nbrPoints - 1);
         double simuTimeModTotalTime = fmod((SReal)simuTime,(SReal)totalTime);
-        int currentIndexPoint = floor((simuTimeModTotalTime/timeBySegment));
+        unsigned int currentIndexPoint = (unsigned int)floor((simuTimeModTotalTime/timeBySegment));
         double ratio = fmod(simuTimeModTotalTime,timeBySegment)/timeBySegment;
 
         // if the view up vector was not initialized
@@ -691,7 +691,7 @@ void RecordedCamera::draw(const core::visual::VisualParams* /*vparams*/)
 
         Vec3 _lookAt = m_rotationLookAt.getValue();
         unsigned int dx = 4;
-        unsigned int ratio = m_rotationPoints.size()/dx;
+        size_t ratio = m_rotationPoints.size()/dx;
         glBegin(GL_LINES);
         for (unsigned int i=0; i<dx; ++i)
         {

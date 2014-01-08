@@ -390,7 +390,7 @@ void SlicedVolumetricModel::findAndDrawTriangles()
 
 
 
-            nbintersections += intersections.size();
+            nbintersections += (int)intersections.size();
 
 
 
@@ -479,7 +479,7 @@ void SlicedVolumetricModel::findAndDrawTriangles()
 
             tripoints.push_back(1);
 
-            for( int i=neg.size()-1; i>=0; --i)
+            for(int i=(int)neg.size()-1; i>=0; --i)
             {
                 tripoints.push_back(neg[i].second);
             }
