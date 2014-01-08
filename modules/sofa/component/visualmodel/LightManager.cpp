@@ -91,7 +91,7 @@ void LightManager::init()
 
     for(unsigned int i=0 ; i<shadowShaders.size() ; i++)
     {
-        shadowShaders[i]->initShaders(lights.size(), softShadowsEnabled.getValue());
+        shadowShaders[i]->initShaders((unsigned int)lights.size(), softShadowsEnabled.getValue());
         shadowShaders[i]->setCurrentIndex(shadowsEnabled.getValue() ? 1 : 0);
     }
 #endif
@@ -121,7 +121,7 @@ void LightManager::putLight(Light* light)
         return ;
     }
 
-    light->setID(lights.size());
+    light->setID((GLint)lights.size());
     lights.push_back(light) ;
 }
 
@@ -260,7 +260,7 @@ void LightManager::fwdDraw(core::visual::VisualParams* vp)
                 makeShadowMatrix(i);
             }
 
-            for (unsigned int i = lights.size() ; i< MAX_NUMBER_OF_LIGHTS ; i++)
+            for (unsigned int i = (unsigned int)lights.size() ; i< MAX_NUMBER_OF_LIGHTS ; i++)
             {
                 lightFlag[i] = 0;
                 shadowTextureID[i] = 0;

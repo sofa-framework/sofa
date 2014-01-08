@@ -176,7 +176,7 @@ void OglShader::initVisual()
         serr << "OglShader : InitGLSL failed" << sendl;
         return;
     }
-    unsigned int nshaders = shaderVector.size();
+    unsigned int nshaders = (unsigned int)shaderVector.size();
 #ifdef GL_GEOMETRY_SHADER_EXT
     if (!geoFilename.getValue().empty())
     {
@@ -260,7 +260,7 @@ void OglShader::updateVisual()
 
 unsigned int OglShader::getNumberOfShaders()
 {
-    return shaderVector.size();
+    return (unsigned int)shaderVector.size();
 }
 
 unsigned int OglShader::getCurrentIndex()

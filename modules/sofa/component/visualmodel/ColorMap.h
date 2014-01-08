@@ -112,7 +112,7 @@ public:
     void prepareLegend();
 
 
-    unsigned int getNbColors() { return entries.size(); }
+    unsigned int getNbColors() { return (unsigned int) entries.size(); }
     Color getColor(unsigned int i) {
         if (i < entries.size()) return entries[i];
         return Color(0.0, 0.0, 0.0, 0.0);
