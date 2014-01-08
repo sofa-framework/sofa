@@ -101,7 +101,8 @@ void SofaLibrary::build( const std::vector< std::string >& examples)
 
 
 
-        CategoryLibrary *category = createCategory(categoryName);
+        const unsigned int numComponentInCategory = (unsigned int)inventory.count(categoryName);
+        CategoryLibrary *category = createCategory(categoryName,numComponentInCategory);
 
         //Process all the component of the current category, and add them to the group
         for (itComponent=rangeCategory.first; itComponent != rangeCategory.second; ++itComponent)

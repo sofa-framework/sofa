@@ -63,7 +63,10 @@ public:
     unsigned int getNumComponents() const {return numComponents;}
 
 protected:
-    virtual CategoryLibrary *createCategory(const std::string &category) {return new CategoryLibrary(category);};
+    virtual CategoryLibrary *createCategory(const std::string &category,
+                                            unsigned int /* numCategory */) {
+        return new CategoryLibrary(category);
+    }
     virtual void addCategory(CategoryLibrary *);
     void computeNumComponents();
 
