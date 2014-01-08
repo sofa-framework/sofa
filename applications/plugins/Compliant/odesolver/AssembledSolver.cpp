@@ -243,8 +243,7 @@ void AssembledSolver::rhs_dynamics(vec& res, const system_type& sys, const vec& 
 			res.tail( sys.n ).noalias() = res.tail( sys.n ) - (1 - beta.getValue()) * (sys.J * v);
 			res.tail( sys.n ) /= beta.getValue();
         }
-	}
-	
+    }
 }
 
 void AssembledSolver::rhs_correction(vec& res, const system_type& sys) const {
@@ -276,7 +275,7 @@ void AssembledSolver::rhs_correction(vec& res, const system_type& sys) const {
 		
 		off += dim;
 	}
-	
+
 }
 
 
@@ -444,11 +443,11 @@ void AssembledSolver::solve(const core::ExecParams* params,
 		scoped::timer step("system solve");
 		
 		// constraint stabilization
-		if( stabilization.getValue() ) {
+        if( sys.n && stabilization.getValue() ) {
 			scoped::timer step("correction");
 			
 			x = vec::Zero( sys.size() );
-			rhs_correction(rhs, sys);
+            rhs_correction(rhs, sys);
 
 			kkt->solve(x, sys, rhs);
 
@@ -471,8 +470,8 @@ void AssembledSolver::solve(const core::ExecParams* params,
 			if( warm_start.getValue() ) x = current;
             rhs_dynamics(rhs, sys, current.head(sys.m), b );
             vop.v_free( b.id(), false, true );
-			
-			kkt->solve(x, sys, rhs);
+
+            kkt->solveWithPreconditioner(x, sys, rhs);
 
 			if( debug.getValue() ) {
 				std::cerr << "dynamics rhs:" << std::endl 
@@ -518,7 +517,6 @@ void AssembledSolver::init() {
 	
 	// TODO slightly less dramatic error, maybe ?
 	if( !kkt ) throw std::logic_error("AssembledSolver needs a KKTSolver lol");
-
 }
 
 

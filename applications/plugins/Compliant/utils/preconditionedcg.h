@@ -1,26 +1,12 @@
-#ifndef COMPLIANT_UTILS_CG_H
-#define COMPLIANT_UTILS_CG_H
+#ifndef COMPLIANT_UTILS_PRECONDITIONEDCG_H
+#define COMPLIANT_UTILS_PRECONDITIONEDCG_H
 
 #include <cassert>
 #include "krylov.h"
 
-// License: LGPL 2.1
-// Author: Maxime Tournier
-
-// conjugate gradient solver
-
-// example use:
-
-// typedef cg<double> solver;
-// solver::params p;
-// p.iterations = 100;
-// p.precision = 1e-16;
-
-// solver::vec x, b;
-// solver::solve(x, A, b);
 
 template<class U>
-struct cg
+struct preconditionedcg
 {
 
     typedef ::krylov<U> krylov;
@@ -30,10 +16,10 @@ struct cg
     typedef typename krylov::natural natural;
     typedef typename krylov::params params;
 
-    // solves Ax = b using cg.
-    // @A is a function object vec -> vec implementing matrix multiplication
-    template<class Matrix>
-    static void solve(vec& x, const Matrix& A, const vec& b, params& p)
+    // solves Ax = b using a preconditioned conjugate gradient.
+    // @A is a function object vec -> vec implementing matrix multiplication and approximated inverse multiplication (preconditioner)
+    template<class Matrix, class Preconditioner>
+    static void solve(vec& x, const Matrix& A, const Preconditioner& P, const vec& b, params& p)
     {
 
         vec residual = b;
@@ -50,12 +36,13 @@ struct cg
         }
 
         // easy peasy
-        data d( residual );
+        action d( residual );
+        d.init( P );
 
         natural i;
-        for( i = 0; i < p.iterations && d.phi > p.precision; ++i)
+        for( i = 0; i < p.iterations && d.phi > p.precision; ++i )
         {
-            d.step(x, A);
+            d.step(x, A, P);
         }
         p.iterations = i;
 
@@ -63,13 +50,12 @@ struct cg
 
 
     // contains all the data needed for minres iterations
-    struct data
+    struct action
     {
-
-//        natural n;			// dimension
 
         vec p;			// descent direction
         vec& r;			// residual
+        vec z;			// preconditioned residual
         vec Ap;			// A(p)
 
         real phi2;		// residual squared norm
@@ -77,10 +63,15 @@ struct cg
 
         natural k;		// iteration
 
-        data( vec&r ) : r(r)
+        action( vec& r ) : r(r) {}
+
+        // initializes minres given initial residual @r
+        template<class Preconditioner>
+        void init(const Preconditioner& P)
         {
+            z = P(r);
             p = r;
-            phi2 = r.squaredNorm();
+            phi2 = r.dot(z);
             phi = std::sqrt( phi2 );
             k = 1;
         }
@@ -88,13 +79,9 @@ struct cg
 
         // performs one cg step. returns false on singularity, true
         // otherwise. @A is a function object vec -> vec
-        template<class Matrix>
-        bool step(vec& x, const Matrix& A)
+        template<class Matrix, class Preconditioner>
+        bool step(vec& x, const Matrix& A, const Preconditioner& P)
         {
-
-            // solution already found lol !
-            if( !phi ) return true;
-
             Ap = A(p);
             const real pAp = p.dot(Ap);
 
@@ -102,18 +89,19 @@ struct cg
             if( !pAp ) return false;
 
             // const real alpha = phi2 / pAp;
-            const real alpha = r.dot(p) / pAp;
+            const real alpha = r.dot(z) / pAp;
             
             x += alpha * p;
             r -= alpha * Ap;
+            z = P(r);
 
             const real old = phi2;
 
-            phi2 = r.squaredNorm();
+            phi2 = r.dot(z);
             phi = std::sqrt( phi2 );
             const real mu = phi2 / old;
 
-            p = r + mu * p;
+            p = z + mu * p;
             ++k;
 
             return true;

@@ -24,13 +24,15 @@ KrylovSolver::KrylovSolver()
 
 void KrylovSolver::init() {
 	
+    KKTSolver::init();
+
 	if( schur.getValue() ) {
 		response = this->getContext()->get<Response>(core::objectmodel::BaseContext::Local);
 		
 		if(!response) throw std::logic_error("response component not found, you need one next to the KKTSolver");
 		
 	}
-	
+
 }
 
 
@@ -60,8 +62,22 @@ void KrylovSolver::solve(vec& x,
 	} else {
 		solve_kkt(x, system, rhs);
 	}
-
 }
+
+void KrylovSolver::solveWithPreconditioner(vec& x,
+                         const system_type& system,
+                         const vec& rhs) const {
+    if( schur.getValue() ) {
+        assert( response );
+        solve_schur(x, system, rhs);
+    } else {
+        if( _preconditioner )
+            solve_kkt_with_preconditioner(x, system, rhs);
+        else
+            solve_kkt(x, system, rhs);
+    }
+}
+
 
 void KrylovSolver::report(const char* what, const params_type& p) const {
 	if( verbose.getValue() ) {

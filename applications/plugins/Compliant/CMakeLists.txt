@@ -29,6 +29,10 @@ set(HEADER_FILES
     numericalsolver/DiagonalResponse.h
     numericalsolver/SequentialSolver.h
 
+    preconditioner/BasePreconditioner.h
+    preconditioner/LDLTPreconditioner.h
+    #preconditioner/IncompleteCholeskyPreconditioner.h
+
     assembly/AssemblyHelper.h
     assembly/AssemblyVisitor.h
     assembly/AssembledSystem.h
@@ -70,6 +74,7 @@ set(HEADER_FILES
     utils/map.h
     utils/minres.h
     utils/pair.h
+    utils/preconditionedcg.h
     utils/schur.h
     utils/scoped.h
     utils/se3.h
@@ -106,6 +111,9 @@ set(SOURCE_FILES
     numericalsolver/LDLTResponse.cpp
     numericalsolver/DiagonalResponse.cpp
     numericalsolver/SequentialSolver.cpp
+
+    preconditioner/LDLTPreconditioner.cpp
+    #preconditioner/IncompleteCholeskyPreconditioner.cpp
 
     assembly/AssemblyVisitor.cpp
     assembly/AssembledSystem.cpp

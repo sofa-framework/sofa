@@ -8,13 +8,16 @@ namespace sofa {
 namespace component {
 namespace linearsolver {
 struct AssembledSystem;
+class BasePreconditioner;
 }
 }
 }
 
 struct kkt {
 				
+    // Should not these types be templates? to let utils/ktt.h outside of sofa
 	typedef sofa::component::linearsolver::AssembledSystem sys_type;
+    typedef sofa::component::linearsolver::BasePreconditioner preconditioner_type;
 
 	typedef sys_type::real real;
 	typedef sys_type::mat mat;
@@ -99,12 +102,34 @@ struct kkt {
 		
 	};
 
+    struct Preconditioner {
+        preconditioner_type* preconditioner;const sys_type& sys;
+
+        Preconditioner(const sys_type& sys, preconditioner_type* p)
+            : preconditioner(p)
+            , sys(sys)
+        {
+            p->compute(sys.H);
+        }
+
+        mutable vec result;
+
+        template<class Vec>
+        const vec& operator()(const Vec& x) const {
+                preconditioner->apply( result, x );
+                result = sys.P.selfadjointView<Eigen::Upper>() * result;
+                return result;
+        }
+
+    };
+
 
 private:
 	matrixQ Q;
 	matrixA A;
 	matrixAT AT;
 	matrixC C;
+//    Preconditioner preconditioner;
 
 	unsigned m, n;
 	
@@ -114,19 +139,19 @@ private:
 	
 public:
 	
-	kkt( const sys_type& sys, bool parallel = false )
+    kkt( const sys_type& sys, bool parallel = false )
 		: Q(sys),
 		  A(sys),
 		  AT(sys),
-		  C(sys),
+          C(sys),
 		  m( sys.m ),
-		  n( sys.n ),
-		  
+          n( sys.n ),
 		  parallel(parallel) {
 
 		storage.resize( m + n );
 		
 	}
+
 
 private:
 	template<class Vec>

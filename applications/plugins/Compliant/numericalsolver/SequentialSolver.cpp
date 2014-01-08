@@ -201,6 +201,8 @@ void SequentialSolver::solve_block(chunk_type result, const inverse_type& inv, c
 
 void SequentialSolver::init() {
 	
+    KKTSolver::init();
+
 	// let's find a response 
 	response = this->getContext()->get<Response>( core::objectmodel::BaseContext::Local );
 
