@@ -63,14 +63,14 @@ int BilinearMovementConstraintClass = core::RegisterObject("bilinear constraint"
 
 #ifndef SOFA_FLOAT
 template class SOFA_BOUNDARY_CONDITION_API BilinearMovementConstraint<Vec3dTypes>;
-//template class SOFA_BOUNDARY_CONDITION_API BilinearMovementConstraint<Vec2dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API BilinearMovementConstraint<Vec2dTypes>;
 //template class SOFA_BOUNDARY_CONDITION_API BilinearMovementConstraint<Vec1dTypes>;
 template class SOFA_BOUNDARY_CONDITION_API BilinearMovementConstraint<Vec6dTypes>;
 template class SOFA_BOUNDARY_CONDITION_API BilinearMovementConstraint<Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
 template class SOFA_BOUNDARY_CONDITION_API BilinearMovementConstraint<Vec3fTypes>;
-//template class SOFA_BOUNDARY_CONDITION_API BilinearMovementConstraint<Vec2fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API BilinearMovementConstraint<Vec2fTypes>;
 //template class SOFA_BOUNDARY_CONDITION_API BilinearMovementConstraint<Vec1fTypes>;
 template class SOFA_BOUNDARY_CONDITION_API BilinearMovementConstraint<Vec6fTypes>;
 template class SOFA_BOUNDARY_CONDITION_API BilinearMovementConstraint<Rigid3fTypes>;
