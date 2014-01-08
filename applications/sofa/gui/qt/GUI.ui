@@ -33,9 +33,9 @@
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>25</y>
+     <y>22</y>
      <width>800</width>
-     <height>575</height>
+     <height>578</height>
     </rect>
    </property>
    <layout class="QVBoxLayout">
@@ -44,13 +44,7 @@
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
-      <widget class="QWidget" name="optionTabs">
-       <property name="minimumSize">
-        <size>
-         <width>200</width>
-         <height>400</height>
-        </size>
-       </property>
+      <widget class="QWidget" name="optionTabs" native="true">
        <layout class="QVBoxLayout">
         <item>
          <layout class="QGridLayout">
@@ -482,7 +476,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="fileMenu">

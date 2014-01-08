@@ -264,6 +264,7 @@ void QSofaListView::addInPropertyWidget(Q3ListViewItem *item, bool clear)
 	if(propertyWidget)
 	{
 		propertyWidget->addComponent(object->getName().c_str(), object, item, clear);
+		
 		propertyWidget->show();
 	}
 }

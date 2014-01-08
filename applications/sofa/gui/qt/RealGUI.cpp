@@ -332,6 +332,21 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
     connect ( exportGnuplotFilesCheckbox, SIGNAL ( toggled ( bool ) ), this, SLOT ( setExportGnuplot ( bool ) ) );
     connect ( tabs, SIGNAL ( currentChanged ( QWidget* ) ), this, SLOT ( currentTabChanged ( QWidget* ) ) );
 
+	QDockWindow *dockTools=new QDockWindow(this);
+	dockTools->setResizeEnabled(true);
+	dockTools->setFixedExtentWidth(300);
+	this->moveDockWindow( dockTools, Qt::DockLeft);
+	this->topDock() ->setAcceptDockWindow(dockTools,false);
+	this->bottomDock()->setAcceptDockWindow(dockTools,false);
+
+	dockTools->setWidget(optionTabs);
+
+	connect(dockTools, SIGNAL(placeChanged(Q3DockWindow::Place)), this, SLOT(toolsDockMoved(Q3DockWindow::Place)));
+
+	/*moveDockWindow(dockWidget, Qt::DockLeft);
+	dockWidget->setFixedExtentWidth(400);
+	dockWidget->setFixedExtentHeight(600);*/
+
     // create a Dock Window to receive the Sofa Recorder
 #ifndef SOFA_GUI_QT_NO_RECORDER
     QDockWindow *dockRecorder=new QDockWindow(this);
@@ -359,11 +374,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
     statWidget = new QSofaStatWidget(TabStats);
     TabStats->layout()->add(statWidget);
 
-
-	graphSplitProperty = new QSplitter(Qt::Vertical);
-	((QVBoxLayout*)TabGraph->layout())->addWidget(graphSplitProperty);
-
-    createSimulationGraph();
+	createSimulationGraph();
 	createPropertyWidget();
 
     //viewer
@@ -386,7 +397,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
 
     //Center the application
     const QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->primaryScreen());
-    this->move(  ( screen.width()- this->width()  ) / 2,  ( screen.height() - this->height()) / 2  );
+    this->move(  ( screen.width()- this->width()  ) / 2 - 200,  ( screen.height() - this->height()) / 2 - 50  );
 
 #ifdef SOFA_QT4
     tabs->removeTab(tabs->indexOf(TabVisualGraph));
@@ -1745,7 +1756,7 @@ void RealGUI::createBackgroundGUIInfos()
 void RealGUI::createSimulationGraph()
 {
     simulationGraph = new QSofaListView(SIMULATION,TabGraph,"SimuGraph");
-    graphSplitProperty->addWidget(simulationGraph);
+	TabGraph->layout()->addWidget(simulationGraph);
 
     connect ( ExportGraphButton, SIGNAL ( clicked() ), simulationGraph, SLOT ( Export() ) );
     connect(simulationGraph, SIGNAL( RootNodeChanged(sofa::simulation::Node*, const char*) ), this, SLOT ( NewRootNode(sofa::simulation::Node* , const char*) ) );
@@ -1766,11 +1777,20 @@ void RealGUI::createPropertyWidget()
     modifyObjectFlags.setFlagsForSofa();
 
     propertyWidget = new QDisplayPropertyWidget(modifyObjectFlags);
-	graphSplitProperty->addWidget(propertyWidget);
+	
+	QDockWindow *dockProperty=new QDockWindow(this);
+	dockProperty->setResizeEnabled(true);
+	dockProperty->setFixedExtentWidth(300);
+	dockProperty->setFixedExtentHeight(300);
+	this->moveDockWindow( dockProperty, Qt::DockLeft);
+	this->topDock()->setAcceptDockWindow(dockProperty, false);
+	this->bottomDock()->setAcceptDockWindow(dockProperty, false);
+
+	dockProperty->setWidget(propertyWidget);
+
+	connect(dockProperty, SIGNAL(placeChanged(Q3DockWindow::Place)), this, SLOT(propertyDockMoved(Q3DockWindow::Place)));
     
 	simulationGraph->setPropertyWidget(propertyWidget);
-
-	propertyWidget->hide();
 }
 
 //------------------------------------
@@ -2369,6 +2389,27 @@ void RealGUI::updateViewerList()
         viewerMap.begin()->second->setOn(true);
     }
 }
+
+void RealGUI::toolsDockMoved(Q3DockWindow::Place p)
+{
+	Q3DockWindow* dockWindow = qobject_cast<Q3DockWindow*>(sender());
+	if(!dockWindow)
+		return;
+
+	if(Q3DockWindow::OutsideDock == p)
+		dockWindow->resize(500, 700);
+}
+
+void RealGUI::propertyDockMoved(Q3DockWindow::Place p)
+{
+	Q3DockWindow* dockWindow = qobject_cast<Q3DockWindow*>(sender());
+	if(!dockWindow)
+		return;
+
+	if(Q3DockWindow::OutsideDock == p)
+		dockWindow->resize(500, 700);
+}
+
 //======================= SIGNALS-SLOTS ========================= }
 
 } // namespace qt

@@ -209,6 +209,9 @@ SofaModeler::SofaModeler():recentlyOpenedFilesManager("share/config/Modeler.ini"
 	Q3DockWindow* dockProperty = new Q3DockWindow(this);
 	dockProperty->setResizeEnabled(true);
 	dockProperty->setHorizontallyStretchable(true);
+	topDock()->setAcceptDockWindow(dockProperty, false);
+	bottomDock()->setAcceptDockWindow(dockProperty, false);
+
 	this->moveDockWindow( dockProperty, Qt::DockRight);
 
 	connect(dockProperty, SIGNAL(placeChanged(Q3DockWindow::Place)), this, SLOT(propertyDockMoved(Q3DockWindow::Place)));
