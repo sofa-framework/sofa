@@ -56,11 +56,11 @@ set(UI_FILES
 	
 SOFA_QT4_WRAP_CPP(MOC_FILES ${HEADER_FILES})
 QT4_WRAP_UI(FORM_FILES ${UI_FILES})
-SOFA_QT4_WRAP_CPP(MOC_UI_FILES ${FORM_FILES})
+#SOFA_QT4_WRAP_CPP(MOC_UI_FILES ${FORM_FILES})
 
 # make mocced header / form files path from absolute to relative
 ToRelativePath(MOC_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${MOC_FILES}")
-ToRelativePath(MOC_UI_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${MOC_UI_FILES}")
+#ToRelativePath(MOC_UI_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${MOC_UI_FILES}")
 ToRelativePath(FORM_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${FORM_FILES}")
 
 # these header files do not need MOCcing
