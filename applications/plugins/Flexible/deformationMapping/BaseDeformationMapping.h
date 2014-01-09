@@ -262,6 +262,7 @@ public:
         return jacobian;
     }
 
+    Data<std::string> f_shapeFunction_name; ///< name of the shape function component (optional: if not specified, will searchup)
     BaseShapeFunction* _shapeFunction;        ///< where the weights are computed
     Data<vector<VRef> > f_index;            ///< The numChildren * numRefs column indices. index[i][j] is the index of the j-th parent influencing child i.
     vector<VRef> f_index_parentToChild;            ///< Constructed at init from f_index to parallelize applyJT. index_parentToChild[i][j] is the index of the j-th children influenced by parent i.

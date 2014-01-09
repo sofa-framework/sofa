@@ -55,6 +55,7 @@ namespace mapping
 template <class JacobianBlockType>
 BaseDeformationMappingT<JacobianBlockType>::BaseDeformationMappingT (core::State<In>* from , core::State<Out>* to)
     : Inherit ( from, to )
+    , f_shapeFunction_name(initData(&f_shapeFunction_name,"shapeFunction","name of shape function (optional)"))
     , _shapeFunction(NULL)
     , f_index ( initData ( &f_index,"indices","parent indices for each child" ) )
     , f_w ( initData ( &f_w,"weights","influence weights of the Dofs" ) )
@@ -126,10 +127,18 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
     }
 
     // init shape function
-    if( !_shapeFunction ) this->getContext()->get(_shapeFunction,core::objectmodel::BaseContext::SearchUp);
+    sofa::core::objectmodel::BaseContext* context = this->getContext();
+    std::vector<BaseShapeFunction*> sf; context->get<BaseShapeFunction>(&sf,core::objectmodel::BaseContext::SearchUp);
+    for(unsigned int i=0;i<sf.size();i++)
+    {
+        if(this->f_shapeFunction_name.isSet()) {if(this->f_shapeFunction_name.getValue().compare(sf[i]->getName()) == 0) _shapeFunction=sf[i];}
+        else if((int)sf[i]->f_position.getValue().size() == this->fromModel->getSize()) _shapeFunction=sf[i];
+    }
+
     if ( !_shapeFunction ) serr << "ShapeFunction<"<<ShapeFunctionType::Name()<<"> component not found" << sendl;
     else
     {
+        if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : found shape function "<<_shapeFunction->getName()<<std::endl;
         vector<mCoord> mpos0;
         mpos0.resize(pos0.size());
         for(size_t i=0; i<pos0.size(); ++i)  StdVectorTypes<mCoord,mCoord>::set( mpos0[i], pos0[i][0] , pos0[i][1] , pos0[i][2]);

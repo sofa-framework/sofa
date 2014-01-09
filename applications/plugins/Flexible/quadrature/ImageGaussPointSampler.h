@@ -940,6 +940,7 @@ public:
     Data<unsigned int> targetNumber;
     Data<bool> useDijkstra;
     Data<unsigned int> iterations;
+    Data<bool> evaluateShapeFunction;
     //@}
 
     virtual std::string getTemplateName() const    { return templateName(this); }
@@ -981,6 +982,7 @@ protected:
       , targetNumber(initData(&targetNumber,(unsigned int)0,"targetNumber","target number of samples"))
       , useDijkstra(initData(&useDijkstra,true,"useDijkstra","Use Dijkstra for geodesic distance computation (use fastmarching otherwise)"))
       , iterations(initData(&iterations,(unsigned int)100,"iterations","maximum number of Lloyd iterations"))
+      , evaluateShapeFunction(initData(&evaluateShapeFunction,true,"evaluateShapeFunction","evaluate shape functions over integration regions for the mapping? (otherwise they will be interpolated at sample locations)"))
       , deformationMapping(NULL)
     {
     }
@@ -1083,8 +1085,6 @@ protected:
     /// typically done in bkwinit (to overwrite weights computed in the mapping using shape function interpolation)
     virtual void updateMapping()
     {
-        if(!deformationMapping) {serr<<"deformationMapping not found -> cannot map Gauss points"<<sendl; return;}
-
         unsigned int nb = Reg.size();
 
         waPositions pos(this->f_position);
@@ -1119,8 +1119,12 @@ protected:
             if(sumdw.norm()>1E-2 || fabs(sumw-1)>1E-2) std::cout<<"error on "<<i<<" : "<<sumw<<","<<sumdw<<std::endl;
         }*/
 
-        if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : "<< nb <<" gauss points exported"<<std::endl;
-        deformationMapping->resizeOut(pos.ref(),index,w,dw,ddw,F0);
+        if(evaluateShapeFunction.getValue())
+        {
+            if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : "<< nb <<" gauss points exported"<<std::endl;
+            if(!deformationMapping) {serr<<"deformationMapping not found -> cannot map Gauss points"<<sendl; return;}
+            else deformationMapping->resizeOut(pos.ref(),index,w,dw,ddw,F0);
+        }
     }
 
 
