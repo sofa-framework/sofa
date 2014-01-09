@@ -4,6 +4,7 @@ set(HEADER_FILES
 
     Compliant_test.h
     Assembly_test.h
+	Python_test.h
 
         )
 
@@ -11,6 +12,9 @@ set(SOURCE_FILES
 
     Compliant_test.cpp
     AssembledSolver_test.cpp
+	Python_test.cpp
+	python_test_list.cpp
+
 	)
 
 if(APPLE)
@@ -24,6 +28,11 @@ endif()
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${RC_FILES})
 
 AddLinkerDependencies(Compliant SofaTest)
+
+
+# needed by python tests
+AddCompilerDefinitions("SOFA_SRC_DIR=${SOFA_SRC_DIR}")
+AddLinkerDependencies(SofaPython)
 
 if(UNIX)
     AddLinkerDependencies("dl")
