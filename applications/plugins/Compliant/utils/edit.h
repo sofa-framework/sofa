@@ -21,6 +21,11 @@ public:
 	T& operator*() const { return *get(); }
 	T* get() const { return ptr; }
 	T* operator->() const { return get(); }
+
+	void operator=(const T& other) const { 
+		*ptr = other;
+	}
+	
 };
 
 template<class T>
