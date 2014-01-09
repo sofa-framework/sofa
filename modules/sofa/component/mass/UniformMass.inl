@@ -487,7 +487,7 @@ void UniformMass<DataTypes, MassType>::draw(const core::visual::VisualParams* vp
         color = colorTab[proc%12];
     }
 #endif
-    vparams->drawTool()->drawPoints ( points, 2, color);
+//    vparams->drawTool()->drawPoints ( points, 2, color);
 
     if ( showCenterOfGravity.getValue() )
     {

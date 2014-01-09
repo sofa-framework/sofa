@@ -283,7 +283,22 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::draw(const core::visual::Visua
             x[i].writeOpenGlMatrix ( glTransform );
             vparams->drawTool()->multMatrix( glTransform );
             vparams->drawTool()->scale ( scale );
-            vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ) );
+
+            switch( drawMode.getValue() )
+            {
+                case 1:
+                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,1,0,1) );
+                    break;
+                case 2:
+                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(1,0,0,1) );
+                    break;
+                case 3:
+                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
+                    break;
+                default:
+                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ) );
+            }
+
             vparams->drawTool()->popMatrix();
         }
     }
@@ -487,7 +502,22 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::draw(const core::visual::Visua
             x[i].writeOpenGlMatrix ( glTransform );
             vparams->drawTool()->multMatrix( glTransform );
             vparams->drawTool()->scale ( scale );
-            vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ) );
+
+            switch( drawMode.getValue() )
+            {
+                case 1:
+                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,1,0,1) );
+                    break;
+                case 2:
+                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(1,0,0,1) );
+                    break;
+                case 3:
+                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
+                    break;
+                default:
+                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ) );
+            }
+
             vparams->drawTool()->popMatrix();
         }
     }
@@ -555,7 +585,22 @@ void MechanicalObject<defaulttype::LaparoscopicRigid3Types>::draw(const core::vi
             vparams->drawTool()->pushMatrix();
             glTranslatef((float)getPX(i), (float)getPY(i), (float)getPZ(i));
             vparams->drawTool()->scale ( scale );
-            vparams->drawTool()->drawFrame(Vector3(), x[i].getOrientation(), Vector3(1.0,1.0,1.0));
+
+            switch( drawMode.getValue() )
+            {
+                case 1:
+                    vparams->drawTool()->drawFrame ( Vector3(), x[i].getOrientation(), Vector3 ( 1,1,1 ), Vec4f(0,1,0,1) );
+                    break;
+                case 2:
+                    vparams->drawTool()->drawFrame ( Vector3(), x[i].getOrientation(), Vector3 ( 1,1,1 ), Vec4f(1,0,0,1) );
+                    break;
+                case 3:
+                    vparams->drawTool()->drawFrame ( Vector3(), x[i].getOrientation(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
+                    break;
+                default:
+                    vparams->drawTool()->drawFrame ( Vector3(), x[i].getOrientation(), Vector3 ( 1,1,1 ) );
+            }
+
             vparams->drawTool()->popMatrix();
         }
     }

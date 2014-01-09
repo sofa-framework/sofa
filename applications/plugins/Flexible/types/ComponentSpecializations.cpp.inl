@@ -464,6 +464,7 @@ template <> SOFA_Flexible_API
 void MechanicalObject<TYPEABSTRACTNAME3dTypes>::draw(const core::visual::VisualParams* vparams)
 {
 #ifndef SOFA_NO_OPENGL
+
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
 
     if ( showIndices.getValue() )
@@ -552,6 +553,7 @@ template <> SOFA_Flexible_API
 void MechanicalObject<TYPEABSTRACTNAME3fTypes>::draw(const core::visual::VisualParams* vparams)
 {
 #ifndef SOFA_NO_OPENGL
+
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
 
     if ( showIndices.getValue() )
@@ -621,6 +623,9 @@ void MechanicalObject<TYPEABSTRACTNAME3fTypes>::draw(const core::visual::VisualP
                     break;
                 case 2:
                     vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(1,0,0,1) );
+                    break;
+                case 3:
+                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
                     break;
                 default:
                     vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ) );
