@@ -6,7 +6,9 @@
 // in the meantime, this:
 
 const char* test_files[] = {
-	"Example.py"
+
+	"Example.py",
+	"LambdaPropagation.py"
 	
 	// add yours here
 };

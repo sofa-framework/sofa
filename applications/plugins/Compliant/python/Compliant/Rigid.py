@@ -21,6 +21,7 @@ from Tools import cat as concat
 class Frame:
         # a rigid frame, group operations are available.
 
+        # TODO kwargs
         def __init__(self, value = None):
                 if value != None:
                         self.translation = value[:3]
@@ -273,7 +274,7 @@ class Joint:
                                         output = '@dofs',
                                         pairs = "0 0")
                 
-		sub = node.createChild("constrained dofs")
+		sub = node.createChild("constraints")
 
 		sub.createObject('MechanicalObject', 
 				 template = 'Vec1d', 
