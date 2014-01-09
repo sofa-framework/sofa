@@ -208,7 +208,21 @@ protected:
 	void alloc(const core::ExecParams& params);
 
 
-	struct propagate_visitor;
+    struct propagate_visitor : simulation::MechanicalVisitor {
+
+        core::MultiVecDerivId out, in;
+
+        propagate_visitor(const sofa::core::MechanicalParams* mparams);
+
+        Result fwdMappedMechanicalState(simulation::Node* node,
+                                        core::behavior::BaseMechanicalState* state);
+
+        Result fwdMechanicalState(simulation::Node* node,
+                                core::behavior::BaseMechanicalState* state);
+
+        void bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map);
+
+    };
 
 };
 
