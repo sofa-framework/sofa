@@ -75,10 +75,10 @@ template <class DataTypes>
 BilinearMovementConstraint<DataTypes>::BilinearMovementConstraint()
     : core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
     , data(new BilinearMovementConstraintInternalData<DataTypes>)
+    , m_meshIndices( initData(&m_meshIndices,"meshIndices","Indices of the mesh") )
     , m_indices( initData(&m_indices,"indices","Indices of the constrained points") )
     , m_beginConstraintTime( initData(&m_beginConstraintTime,"beginConstraintTime","Begin time of the bilinear constraint") )
     , m_endConstraintTime( initData(&m_endConstraintTime,"endConstraintTime","End time of the bilinear constraint") )
-    , m_meshIndices( initData(&m_meshIndices,"meshIndices","Indices of the mesh") )
     , m_constrainedPoints( initData(&m_constrainedPoints,"constrainedPoints","Coordinates of the constrained points") )
     , m_cornerMovements(  initData(&m_cornerMovements,"cornerMovements","movements of the corners of the grid") )
     , m_cornerPoints(  initData(&m_cornerPoints,"cornerPoints","corner points for computing constraint") )
@@ -170,12 +170,12 @@ void BilinearMovementConstraint<DataTypes>::findCornerPoints()
         corner3 = constrainedPoints[0];
         for (size_t i = 0; i < constrainedPoints.size() ; i++)
         {
-            if(constrainedPoints[i][0] < corner0[0] || constrainedPoints[i][1] < corner0[1] || constrainedPoints[i][2] < corner0[2])
+            if(constrainedPoints[i][0] < corner0[0] || constrainedPoints[i][1] < corner0[1] || ( CoordSize>2 && constrainedPoints[i][2] < corner0[2] ) )
             {
                 corner0 = constrainedPoints[i];
             }
 
-            if(constrainedPoints[i][0] > corner2[0] || constrainedPoints[i][1] > corner2[1] || constrainedPoints[i][2] > corner2[2])
+            if(constrainedPoints[i][0] > corner2[0] || constrainedPoints[i][1] > corner2[1] || ( CoordSize>2 && constrainedPoints[i][2] > corner2[2] ) )
             {   
                  corner2 = constrainedPoints[i];
             }
@@ -337,7 +337,7 @@ void BilinearMovementConstraint<DataTypes>::computeInterpolatedDisplacement(int 
         this->findCornerPoints();
     Coord corner0 = cornerPoints[0];
     Coord corner1 = cornerPoints[1];
-    Coord corner2 = cornerPoints[2];
+//    Coord corner2 = cornerPoints[2];
     Coord corner3 = cornerPoints[3];
 
     // Coord of the point

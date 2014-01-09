@@ -83,6 +83,8 @@ public:
     typedef helper::vector<unsigned int> SetIndexArray;
     typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
 
+    static const unsigned int CoordSize = Coord::total_size;
+
 protected:
     BilinearMovementConstraintInternalData<DataTypes> *data;
     friend class BilinearMovementConstraintInternalData<DataTypes>;
