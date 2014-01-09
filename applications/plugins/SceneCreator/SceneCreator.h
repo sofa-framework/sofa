@@ -124,7 +124,7 @@ public:
 SOFA_SceneCreator_API Node::SPtr getRoot();
 
 /// Get a state vector from the scene graph. Includes only the independent state values, or also the mapped ones, depending on the flag.
-Vector getVector( core::ConstVecId id, bool independentOnly=true );
+SOFA_SceneCreator_API Vector getVector( core::ConstVecId id, bool independentOnly=true );
 
 /** Initialize the sofa library and create the root of the scene graph
   */
