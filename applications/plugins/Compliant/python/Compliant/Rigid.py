@@ -253,7 +253,11 @@ class Joint:
                                                    source = '0 ' + str( o ) )
                                 
                                 input.append( '@' + b.name + '/' + joint.name + '/dofs' )
-                                
+                             
+                if len(input) == 0:
+                        print 'warning: empty joint'
+                        return None
+   
                 # now for the joint dofs
                 node = parent.createChild(self.name)
                 

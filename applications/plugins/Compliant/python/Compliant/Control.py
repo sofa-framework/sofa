@@ -19,8 +19,8 @@ class PID:
         self.kd = -0
         self.ki = -0
           
-        self.ref_pos = 0
-        self.ref_vel = 0
+        self.pos = 0
+        self.vel = 0
         
         # actuation basis
         self.basis = [0, 0, 0, 0, 0, 0]
@@ -44,8 +44,8 @@ class PID:
             self.dofs.externalForce = Tools.cat( Vec.sum(current[0], value) )
         
     def pid(self, dt):
-        p = Vec.dot(self.basis, self.dofs.position[0]) - self.ref_pos
-        d = Vec.dot(self.basis, self.dofs.velocity[0]) - self.ref_vel
+        p = Vec.dot(self.basis, self.dofs.position[0]) - self.pos
+        d = Vec.dot(self.basis, self.dofs.velocity[0]) - self.vel
         i = self.integral + dt * p
 
         return p, i, d
@@ -60,6 +60,12 @@ class PID:
         self.integral = e_sum
         self.apply( tau )
 
+    # hop
+    def pre_step(self, dt):
+        self.update(dt)
+
+    def post_step(self, dt):
+        pass
 
 # TODO some other controllers ?
 
@@ -76,7 +82,7 @@ class ImplicitPID:
         self.kd = -0
         self.ki = -0
           
-        self.ref = 0
+        self.pos = 0
         
         # actuation basis
         # self.basis = vec( [0, 0, 0, 0, 0, 0] )
@@ -98,7 +104,7 @@ class ImplicitPID:
         
         self.ff = node.createObject('UniformCompliance',
                                     template = 'Vec1d',
-                                    compliance = '1e8' )
+                                    compliance = '1e-4' )
         
         self.node = node
 
@@ -109,7 +115,7 @@ class ImplicitPID:
     # a PythonController (see SofaPython doc)
     def pre_step(self, dt):
 
-        self.map.offset = str(-self.ref)
+        self.map.offset = str(self.pos)
 
         stiff = - self.kp - dt * self.ki
         damping = - self.kd / dt
@@ -118,7 +124,7 @@ class ImplicitPID:
         # self.ff.rayleighStiffness = damping/stiff
 
         # trigger compliance matrix recomputation
-        self.ff.init()
+        # self.ff.init()
 
         # integral part
         # self.dofs.externalForce = str( self.ki * self.integral )

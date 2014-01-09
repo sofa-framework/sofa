@@ -92,7 +92,7 @@ def createScene(node):
 
     # pid
     shared.pid = Control.PID(shared.joint)
-    shared.pid.ref_pos = -math.atan( shared.mu ) # target should trigger slide
+    shared.pid.pos = -math.atan( shared.mu ) # target should trigger slide
 
     shared.pid.basis = [0, 0, 0, 0, 0, 1]
 
