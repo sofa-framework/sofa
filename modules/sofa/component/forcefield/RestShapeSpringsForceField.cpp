@@ -379,7 +379,7 @@ template<>
 void RestShapeSpringsForceField<Rigid3fTypes>::draw(const core::visual::VisualParams* vparams)
 {
 #ifndef SOFA_NO_OPENGL
-    if (!vparams->displayFlags().getShowForceFields())
+    if (!vparams->displayFlags().getShowForceFields() || !drawSpring.getValue())
         return;  /// \todo put this in the parent class
 
     const VecIndex& indices = points.getValue();
@@ -451,7 +451,7 @@ template<>
 void RestShapeSpringsForceField<Vec3dTypes>::draw(const core::visual::VisualParams* vparams)
 {
 #ifndef SOFA_NO_OPENGL
-    if (!vparams->displayFlags().getShowForceFields())
+    if (!vparams->displayFlags().getShowForceFields() || !drawSpring.getValue())
         return;  /// \todo put this in the parent class
 
     sofa::helper::ReadAccessor< DataVecCoord > p0 = *getExtPosition();

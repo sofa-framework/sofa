@@ -90,7 +90,8 @@ public:
 
     /** @name visu data */
     //@{
-    Data< bool > showSamples;
+    Data< float > showSamplesScale;
+    Data< int > drawMode;
     //@}
 
     virtual std::string getTemplateName() const    { return templateName(this);    }
@@ -101,7 +102,8 @@ public:
         , f_position(initData(&f_position,SeqPositions(),"position","output sample positions"))
         , f_order(initData(&f_order,(unsigned int)1,"order","order of quadrature method"))
         , f_volume(initData(&f_volume,vector<volumeIntegralType>(),"volume","output weighted volume"))
-        , showSamples(initData(&showSamples,false,"showSamples","show samples"))
+        , showSamplesScale(initData(&showSamplesScale,0.0f,"showSamplesScale","show samples"))
+        , drawMode(initData(&drawMode,0,"drawMode",""))
     {
         helper::OptionsGroup methodOptions(3,"0 - Gauss-Legendre"
                 ,"1 - Newton-Cotes"
@@ -129,7 +131,20 @@ protected:
     {
         if (!vparams->displayFlags().getShowVisualModels()) return;
         raPositions pos(this->f_position);
-        if (this->showSamples.getValue()) vparams->drawTool()->drawPoints(this->f_position.getValue(),5.0f,Vec<4,float>(0.2f, 1.0f, 0.2f, 1.0f));
+        if (this->showSamplesScale.getValue())
+        {
+            switch( drawMode.getValue() )
+            {
+            case 1:
+                glPushAttrib(GL_LIGHTING_BIT);
+                glEnable(GL_LIGHTING);
+                vparams->drawTool()->drawSpheres(this->f_position.getValue(),showSamplesScale.getValue(),Vec<4,float>(0.1f, 0.7f, 0.1f, 1.0f));
+                glPopAttrib();
+            default:
+                vparams->drawTool()->drawPoints(this->f_position.getValue(),showSamplesScale.getValue(),Vec<4,float>(0.2f, 1.0f, 0.2f, 1.0f));
+            }
+        }
+
     }
 
 

@@ -1035,7 +1035,8 @@ public:
     //@name visu data
     /**@{*/
     Data<bool> f_clearData;
-    Data< bool > showSamples;
+    Data< float > showSamplesScale;
+    Data< int > drawMode;
     Data< bool > showEdges;
     Data< bool > showGraph;
     /**@}*/
@@ -1055,7 +1056,8 @@ public:
         , hexahedra(initData(&hexahedra,SeqHexahedra(),"hexahedra","output hexahedra"))
         , distances(initData(&distances,DistTypes(),"distances",""))
         , f_clearData(initData(&f_clearData,true,"clearData","clear distance image after computation"))
-        , showSamples(initData(&showSamples,false,"showSamples","show samples"))
+        , showSamplesScale(initData(&showSamplesScale,0.0f,"showSamplesScale","show samples"))
+        , drawMode(initData(&drawMode,0,"drawMode",""))
         , showEdges(initData(&showEdges,false,"showEdges","show edges"))
         , showGraph(initData(&showGraph,false,"showGraph","show graph"))
         , time((unsigned int)0)
@@ -1163,8 +1165,24 @@ protected:
         raEdges e(this->edges);
         raEdges g(this->graphEdges);
 
-        if (this->showSamples.getValue()) vparams->drawTool()->drawPoints(this->position.getValue(),5.0,defaulttype::Vec4f(0.2,1,0.2,1));
-        if (this->showSamples.getValue()) vparams->drawTool()->drawPoints(this->fixedPosition.getValue(),7.0,defaulttype::Vec4f(1,0.2,0.2,1));
+
+        if (this->showSamplesScale.getValue())
+        {
+            switch( drawMode.getValue() )
+            {
+            case 1:
+                glPushAttrib(GL_LIGHTING_BIT);
+                glEnable(GL_LIGHTING);
+                vparams->drawTool()->drawSpheres(this->position.getValue(),showSamplesScale.getValue(),defaulttype::Vec4f(0.1,0.7,0.1,1));
+                vparams->drawTool()->drawSpheres(this->fixedPosition.getValue(),showSamplesScale.getValue(),defaulttype::Vec4f(0.1,0.7,0.1,1));
+                glPopAttrib();
+            default:
+                vparams->drawTool()->drawPoints(this->position.getValue(),showSamplesScale.getValue(),defaulttype::Vec4f(0.2,1,0.2,1));
+                vparams->drawTool()->drawPoints(this->fixedPosition.getValue(),showSamplesScale.getValue(),defaulttype::Vec4f(1,0.2,0.2,1));
+            }
+        }
+
+
         if (this->showEdges.getValue())
         {
             std::vector<defaulttype::Vector3> points;
