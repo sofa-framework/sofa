@@ -3,8 +3,6 @@
 #include "../initFlexible.h"
 
 
-
-
 #include <sofa/component/container/MechanicalObject.h>
 
 
@@ -17,6 +15,7 @@
 #ifdef SOFA_HAVE_IMAGE
 #include "../mass/ImageDensityMass.h"
 #endif
+
 
 #include "ComponentSpecializationsDefines.h"
 
@@ -124,6 +123,8 @@ extern template class SOFA_Flexible_API UniformMass<defaulttype::TYPEABSTRACTNAM
 
 } // namespace mass
 
+
+
 } // namespace component
 
 
@@ -142,6 +143,7 @@ extern template class SOFA_Flexible_API ForceField<defaulttype::TYPEABSTRACTNAME
 extern template class SOFA_Flexible_API ForceField<defaulttype::TYPEABSTRACTNAME3fTypes>;
 #endif
 #endif
+
 
 } // namespace behavior
 

@@ -6,7 +6,7 @@
 #include "ComponentSpecializationsDefines.h"
 
 #ifdef Success
-#undef Success // before include eigen stuff http://eigen.tuxfamily.org/bz/show_bug.cgi?id=253
+#undef Success // before including eigen stuff http://eigen.tuxfamily.org/bz/show_bug.cgi?id=253
 #endif
 #include <sofa/component/projectiveconstraintset/ProjectToPointConstraint.inl>
 #include <sofa/component/projectiveconstraintset/ProjectToLineConstraint.inl>
@@ -37,6 +37,7 @@
 #include <sofa/component/mapping/SubsetMultiMapping.inl>
 
 #include <sofa/core/behavior/ForceField.inl>
+#include <sofa/component/forcefield/RestShapeSpringsForceField.inl>
 
 
 #ifdef SOFA_HAVE_IMAGE
@@ -48,6 +49,28 @@
 
 namespace sofa
 {
+
+namespace core
+{
+
+namespace behavior
+{
+
+
+#ifndef SOFA_FLOAT
+    template class SOFA_Flexible_API ForceField< defaulttype::TYPEABSTRACTNAME3dTypes >;
+#endif
+#ifndef SOFA_DOUBLE
+    template class SOFA_Flexible_API ForceField< defaulttype::TYPEABSTRACTNAME3fTypes >;
+#endif
+
+
+} // namespace behavior
+
+} // namespace core
+
+
+
 namespace component
 {
 namespace projectiveconstraintset
@@ -1068,28 +1091,33 @@ namespace engine
 
 } // namespace engine
 
+namespace forcefield
+{
+
+    SOFA_DECL_CLASS(EVALUATOR(TYPEABSTRACTNAME,RestShapeSpringsForceField))
+
+    // Register in the Factory
+    int EVALUATOR(TYPEABSTRACTNAME,RestShapeSpringsForceFieldClass) = core::RegisterObject("Spring attached to rest position")
+    #ifndef SOFA_FLOAT
+            .add< RestShapeSpringsForceField< defaulttype::TYPEABSTRACTNAME3dTypes > >()
+    #endif
+    #ifndef SOFA_DOUBLE
+            .add< RestShapeSpringsForceField< defaulttype::TYPEABSTRACTNAME3fTypes > >()
+    #endif
+    ;
+
+    #ifndef SOFA_FLOAT
+        template class SOFA_Flexible_API RestShapeSpringsForceField< defaulttype::TYPEABSTRACTNAME3dTypes >;
+    #endif
+    #ifndef SOFA_DOUBLE
+        template class SOFA_Flexible_API RestShapeSpringsForceField< defaulttype::TYPEABSTRACTNAME3fTypes >;
+    #endif
+
+} // namespace forcefield
+
 } // namespace component
 
 
-
-namespace core
-{
-
-namespace behavior
-{
-
-
-#ifndef SOFA_FLOAT
-    template class SOFA_Flexible_API ForceField< defaulttype::TYPEABSTRACTNAME3dTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-    template class SOFA_Flexible_API ForceField< defaulttype::TYPEABSTRACTNAME3fTypes >;
-#endif
-
-
-} // namespace behavior
-
-} // namespace core
 
 } // namespace sofa
 
