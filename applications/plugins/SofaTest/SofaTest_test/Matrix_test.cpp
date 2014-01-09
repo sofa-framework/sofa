@@ -45,11 +45,10 @@
 #define BENCHMARK_MATRIX_MULTIPLICATION 1
 
 #if BENCHMARK_MATRIX_MULTIPLICATION
-#include <sys/time.h>
+using sofa::helper::system::thread::CTime;
 double get_time() {
-  struct timeval tv;
-  gettimeofday(&tv, NULL);
-  return (double) tv.tv_sec + tv.tv_usec*1e-6;
+    CTime * timer;
+    return (double) timer->getTime();
 }
 #endif
 
