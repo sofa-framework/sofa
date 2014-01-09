@@ -115,6 +115,7 @@ QDisplayLinkWidget::QDisplayLinkWidget(QWidget* parent,
 	numWidgets_ += linkwidget_->sizeWidget();
 	connect(linkwidget_,SIGNAL(WidgetDirty(bool)), this, SIGNAL ( WidgetDirty(bool) ) );
 	connect(this, SIGNAL( WidgetUpdate() ), linkwidget_, SLOT( updateWidgetValue() ) );
+	connect(this, SIGNAL( LinkUpdate() ), linkwidget_, SLOT(setWidgetDirty() ) );
 	connect(this, SIGNAL( LinkUpdate() ), linkwidget_, SLOT(updateLinkValue() ) );
 	connect(linkwidget_,SIGNAL(LinkOwnerDirty(bool)),this,SIGNAL(LinkOwnerDirty(bool)) );
 
