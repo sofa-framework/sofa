@@ -32,6 +32,52 @@ using namespace sofa::helper;
 using namespace core::behavior;
 
 
+
+struct AssembledSolver::propagate_visitor : simulation::MechanicalVisitor {
+
+	core::MultiVecDerivId out, in;
+
+	propagate_visitor(const sofa::core::MechanicalParams* mparams) 
+		: simulation::MechanicalVisitor(mparams)
+		{
+			
+		}
+
+	Result fwdMappedMechanicalState(simulation::Node* node, 
+									core::behavior::BaseMechanicalState* state) {
+		
+		if( !node->forceField.empty() && node->forceField[0]->isCompliance.getValue() ) {
+			// dont erase if compliance is present, cause set_state
+			// already wrote data. compliance should be alone in the
+			// node anyways
+		} else {
+			state->resetForce(mparams, out.getId(state));
+		}
+		
+		// sadly this is not working :-/
+		// state->vInit(mparams, out.getId(state), in.getId(state));
+		
+		return RESULT_CONTINUE;
+	}
+
+	Result fwdMechanicalState(simulation::Node* node, 
+							core::behavior::BaseMechanicalState* state) {
+		state->resetForce(mparams, out.getId(state));
+		// not working :-/
+		// state->vInit(mparams, out.getId(state), in.getId(state));
+		return RESULT_CONTINUE;
+	}
+
+	void bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map) {
+		map->applyJT(mparams /* PARAMS FIRST */, out, out);
+	}
+
+};
+
+
+
+
+
 AssembledSolver::AssembledSolver()
 	: warm_start(initData(&warm_start, 
 	                      true,
@@ -67,8 +113,9 @@ AssembledSolver::AssembledSolver()
 
 void AssembledSolver::send(simulation::Visitor& vis) {
 	scoped::timer step("visitor execution");
-				
+		
 	this->getContext()->executeVisitor( &vis );
+
 }
 
 
@@ -316,17 +363,24 @@ void AssembledSolver::get_state(vec& res, const system_type& sys) const {
 		off += dim;
 	}
 
+	// 
+	vec buffer;
 	for(unsigned i = 0, end = sys.compliant.size(); i < end; ++i) {
 		system_type::dofs_type* dofs = sys.compliant[i];
 		
 		unsigned dim = dofs->getMatrixSize();
 		
-		dofs->copyToBuffer(&res(off), lagrange.id().getId( dofs ), dim);
+		// resize as needed
+		buffer.resize( std::max<unsigned>(buffer.size(), dim));
+		dofs->copyToBuffer(buffer.data(), lagrange.id().getId( dofs ), dim);
+
+		// momentum from force
+		res.segment(off, dim) = buffer.head(dim) * sys.dt;
+
 		off += dim;
 	}
 	
 	assert( off == sys.size() );
-	// TODO multiply lambda by dt ?
 	
 }
 
@@ -348,13 +402,24 @@ void AssembledSolver::set_state(const system_type& sys, const vec& data) const {
 	}
 
 	
-	// TODO divide lambda by dt ?
+	// we store constraint *force* (lambda / dt)
+	vec buffer;
+	
+	const bool copy = propagate_lambdas.getValue();
+	
 	for(unsigned i = 0, end = sys.compliant.size(); i < end; ++i) {
 		system_type::dofs_type* dofs = sys.compliant[i];
 		
 		unsigned dim = dofs->getMatrixSize();
+	
+		// resize as needed
+		buffer.resize( std::max<unsigned>(buffer.size(), dim) );
+		buffer.head(dim) = data.segment(off, dim) / sys.dt;
 		
-		dofs->copyFromBuffer(lagrange.id().getId( dofs ), &data(off) , dim);
+		dofs->copyFromBuffer(lagrange.id().getId( dofs ), buffer.data(), dim);
+
+		if( copy ) dofs->copyFromBuffer(core::VecDerivId::force(), buffer.data(), dim);
+				
 		off += dim;
 	}
 	
@@ -389,6 +454,7 @@ void AssembledSolver::solve(const core::ExecParams* /*params*/,
 
 void AssembledSolver::perform_assembly( const core::MechanicalParams *mparams, system_type& sys )
 {
+	// max: il ya des auto_ptr pour ca.
     if( assemblyVisitor ) delete assemblyVisitor;
     assemblyVisitor = new simulation::AssemblyVisitor(mparams);
 
@@ -497,15 +563,15 @@ void AssembledSolver::solve(const core::ExecParams* params,
 	if( propagate_lambdas.getValue() ) {
 		scoped::timer step("lambda propagation");
         propagate_visitor prop( &mparams );
+
 		prop.out = core::VecId::force();
 		prop.in = lagrange.id();
-			
+		
         send( prop );
 	}
 
 
 }
-
 
 
 			

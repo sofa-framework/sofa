@@ -208,24 +208,7 @@ protected:
 	void alloc(const core::ExecParams& params);
 
 
-	// TODO why is this here ?
-    struct propagate_visitor : simulation::MechanicalVisitor {
-
-        core::MultiVecDerivId out, in;
-
-        propagate_visitor(const sofa::core::MechanicalParams* mparams) : simulation::MechanicalVisitor(mparams) { }
-
-        Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) {
-            // clear dst
-            mm->resetForce(this->params /* PARAMS FIRST */, out.getId(mm));
-            return RESULT_CONTINUE;
-        }
-
-        void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) {
-            map->applyJT(mparams /* PARAMS FIRST */, out, in);
-        }
-
-    };
+	struct propagate_visitor;
 
 };
 

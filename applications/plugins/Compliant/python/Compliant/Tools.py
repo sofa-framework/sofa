@@ -21,7 +21,6 @@ def path( name ):
 def scene(node):
     
     node.createObject('RequiredPlugin', pluginName = "Compliant" )
-    node.createObject('RequiredPlugin', pluginName = "CompliantDev" )
 
     node.dt = 0.01
     node.gravity = '0 -9.81 0'
