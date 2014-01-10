@@ -8,7 +8,8 @@
 const char* test_files[] = {
 
 	"Example.py",
-	"LambdaPropagation.py"
+	"LambdaPropagation.py",
+	"UniformCompliance.py"
 	
 	// add yours here
 };
