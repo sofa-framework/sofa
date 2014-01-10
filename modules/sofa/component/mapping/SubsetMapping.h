@@ -36,6 +36,10 @@
 
 #include <memory>
 
+#ifdef SOFA_HAVE_EIGEN2
+#include <sofa/component/linearsolver/EigenSparseMatrix.h>
+#endif
+
 namespace sofa
 {
 
@@ -125,6 +129,18 @@ public:
     virtual void applyJT ( const core::ConstraintParams* /*cparams*/ /* PARAMS FIRST */, InDataMatrixDeriv& dOut, const OutDataMatrixDeriv& dIn);
 
     const sofa::defaulttype::BaseMatrix* getJ();
+
+#ifdef SOFA_HAVE_EIGEN2
+public:
+    virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs();
+
+protected:
+    typedef linearsolver::EigenSparseMatrix<In, Out> eigen_type;
+    eigen_type eigen;
+    typedef vector< defaulttype::BaseMatrix* > js_type;
+    js_type js;
+public:
+#endif
 
 protected:
     std::auto_ptr<MatrixType> matrixJ;

@@ -327,6 +327,40 @@ const sofa::defaulttype::BaseMatrix* SubsetMapping<TIn, TOut>::getJ()
     return matrixJ.get();
 }
 
+
+
+#ifdef SOFA_HAVE_EIGEN2
+
+template <class TIn, class TOut>
+const typename SubsetMapping<TIn, TOut>::js_type* SubsetMapping<TIn, TOut>::getJs()
+{
+    if( !eigen.compressedMatrix.nonZeros() || updateJ ) {
+        updateJ = false;
+
+        const IndexArray& indices = f_indices.getValue();
+        const unsigned rowsBlock = indices.size();
+        const unsigned colsBlock = this->fromModel->getSize();
+
+        const unsigned rows = rowsBlock * NOut;
+        const unsigned cols = colsBlock * NIn;
+
+        eigen.resize( rows, cols );
+
+        for (unsigned i = 0; i < indices.size(); ++i) {
+            for( unsigned j = 0; j < NOut; ++j) {
+                eigen.insertBack( i*NOut+j, indices[i]*NIn+j ,(SReal)1. );
+            }
+        }
+        eigen.compress();
+    }
+
+    js.resize( 1 );
+    js[0] = &eigen;
+    return &js;
+}
+
+#endif
+
 } // namespace mapping
 
 } // namespace component
