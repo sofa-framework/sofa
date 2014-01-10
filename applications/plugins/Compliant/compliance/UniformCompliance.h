@@ -35,6 +35,8 @@ public:
 
     Data< Real > compliance;    ///< Same compliance applied to all the DOFs
 
+	Data< Real > damping;
+
 //    /// Set a uniform, diagonal compliance. c must be a positive real. If this is a stiffness (flag isCompliance set to false) then c must be non-zero.
 //    void setCompliance( Real c );
 
@@ -48,6 +50,8 @@ public:
 
     virtual void addKToMatrix( sofa::defaulttype::BaseMatrix * matrix, double kFact, unsigned int &offset );
 
+	virtual void addBToMatrix( sofa::defaulttype::BaseMatrix * matrix, double bFact, unsigned int &offset );
+
     /// addForce does nothing when this component is processed like a compliance.
     virtual void addForce(const core::MechanicalParams *, DataVecDeriv &, const DataVecCoord &, const DataVecDeriv &);
 
@@ -57,7 +61,10 @@ public:
 protected:
     UniformCompliance( core::behavior::MechanicalState<DataTypes> *mm = NULL);
 
-    linearsolver::EigenBaseSparseMatrix<typename DataTypes::Real> matC; ///< compliance matrix
+	typedef linearsolver::EigenBaseSparseMatrix<typename DataTypes::Real> matrix_type;
+	matrix_type matC; ///< compliance matrix
+
+	matrix_type matB; /// damping matrix (Negative S.D.)
 };
 
 }
