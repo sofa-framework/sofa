@@ -77,7 +77,6 @@ protected:
 	virtual void apply(typename self::out_pos_type& out, 
 					   const typename self::in_pos_type& in ) {
 		const dofs_type& d = dofs.getValue();
-		assert(in.size() == out.size());
 
 		// build array of (dof index, coeff index)
 		index.clear();
