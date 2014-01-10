@@ -13,7 +13,9 @@ namespace forcefield
 template<class DataTypes>
 UniformCompliance<DataTypes>::UniformCompliance( core::behavior::MechanicalState<DataTypes> *mm )
     : Inherit(mm)
-    , compliance( initData(&compliance, (Real)0, "compliance", "Compliance value uniformly applied to all the DOF."))
+    , compliance( initData(&compliance, (Real)0, "compliance", "Compliance value uniformly applied to all the DOF.")),
+	  damping( initData(&damping, Real(0), "damping", "uniform viscous damping."))
+	  
 {
     this->isCompliance.setValue(true);
 }
@@ -32,16 +34,35 @@ void UniformCompliance<DataTypes>::reinit()
     core::behavior::BaseMechanicalState* state = this->getContext()->getMechanicalState();
     assert(state);
 
-    Real c = this->isCompliance.getValue() ?  compliance.getValue() : ( helper::rabs(compliance.getValue())>std::numeric_limits<Real>::epsilon() ? -1/compliance.getValue() : -std::numeric_limits<Real>::max() );  // the stiffness df/dx is the opposite of the inverse compliance
+	// the stiffness df/dx is the opposite of the inverse compliance
+    Real c = this->isCompliance.getValue() ?  
+		compliance.getValue() : 
+		( helper::rabs(compliance.getValue()) >std::numeric_limits<Real>::epsilon() ? 
+		  -1 / compliance.getValue() : 
+		  -std::numeric_limits<Real>::max() ); 
 
-    matC.resize(state->getMatrixSize(),state->getMatrixSize());
-    for(unsigned i=0; i<state->getMatrixSize(); i++)
-    {
-//        matC.beginRow(i);
-//        matC.insertBack(i,i,c);
-        matC.add(i,i,c);
+    matC.resize(state->getMatrixSize(), state->getMatrixSize());
+	
+    for(unsigned i=0, n = state->getMatrixSize(); i < n; i++) {
+		matC.compressedMatrix.startVec(i);
+		matC.compressedMatrix.insertBack(i, i) = c;
     }
-    matC.compress();
+    
+	matC.compressedMatrix.finalize();
+
+	if( damping.getValue() > 0 ) {
+		SReal d = damping.getValue();
+		
+		matB.resize(state->getMatrixSize(), state->getMatrixSize());
+		
+		for(unsigned i=0, n = state->getMatrixSize(); i < n; i++) {
+			matB.compressedMatrix.startVec(i);
+			matB.compressedMatrix.insertBack(i, i) = -d;
+		}
+
+		matB.compressedMatrix.finalize();
+	}
+	
 }
 
 //template<class DataTypes>
@@ -68,7 +89,22 @@ const sofa::defaulttype::BaseMatrix* UniformCompliance<DataTypes>::getCompliance
 template<class DataTypes>
 void UniformCompliance<DataTypes>::addKToMatrix( sofa::defaulttype::BaseMatrix * matrix, double kFact, unsigned int &offset )
 {
-    matC.addToBaseMatrix( matrix, kFact, offset );
+	if( this->isCompliance.getValue() ) {
+		// max: this might happen if you try to use rayleighStiffness
+		// while in compliance mode. you shouldn't, use damping instead.
+		std::cerr << "UniformCompliance warning: adding compliance where stiffness is expected !" 
+				  << std::endl;
+	} else {
+		matC.addToBaseMatrix( matrix, kFact, offset );
+	}
+}
+
+template<class DataTypes>
+void UniformCompliance<DataTypes>::addBToMatrix( sofa::defaulttype::BaseMatrix * matrix, double bFact, unsigned int &offset )
+{
+	if( damping.getValue() > 0 ) {
+		matB.addToBaseMatrix( matrix, bFact, offset );
+	}
 }
 
 template<class DataTypes>

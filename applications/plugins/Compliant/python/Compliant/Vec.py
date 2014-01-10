@@ -57,6 +57,9 @@ class Proxy:
     def __rmul__(self, scalar):
         return Proxy( scal(scalar, self.data) )
 
+    def __div__(self, scalar):
+        return Proxy( scal(1 / scalar, self.data) )
+
     def norm2(self): 
         return norm2(self.data)
 

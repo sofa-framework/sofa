@@ -97,8 +97,10 @@ protected:
 			}
 			
 			off += in[i].size();
-		}
 
+			J.finalize();
+		}
+		
 	}
 
 
