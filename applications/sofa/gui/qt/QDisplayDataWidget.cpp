@@ -140,11 +140,10 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
 
         ++numWidgets_;
 
-		if(flags.MODELER_FLAG)
 		{
 			connect(datawidget_,SIGNAL(WidgetDirty(bool)), refresh, SLOT ( setVisible(bool) ) );
 
-			if(datainfowidget_)
+			if(datainfowidget_ && flags.LINKPATH_MODIFIABLE_FLAG)
 			{
 				connect(datainfowidget_,SIGNAL(WidgetDirty()), refresh, SLOT ( show() ) );
 				connect(refresh, SIGNAL(clicked()), datainfowidget_, SLOT(linkEdited()));
