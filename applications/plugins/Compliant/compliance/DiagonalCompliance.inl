@@ -34,22 +34,44 @@ void DiagonalCompliance<DataTypes>::reinit()
     core::behavior::BaseMechanicalState* state = this->getContext()->getMechanicalState();
     assert(state);
 
-    matC.resize(state->getMatrixSize(), state->getMatrixSize());
 
     unsigned int m = state->getMatrixBlockSize(), n = state->getSize();
 
-    unsigned int row = 0;
-    for(unsigned i = 0; i < n; ++i)
+    if( this->isCompliance.getValue() )
     {
-        for(unsigned int j = 0; j < m; ++j)
+        matC.resize(state->getMatrixSize(), state->getMatrixSize());
+
+        unsigned int row = 0;
+        for(unsigned i = 0; i < n; ++i)
         {
-//            matC.beginRow(row);
-            matC.insertBack(row, row, diagonal.getValue()[i][j]);
-//            matC.add(row, row, diagonal.getValue()[i][j]);
-            ++row;
+            for(unsigned int j = 0; j < m; ++j)
+            {
+    //            matC.beginRow(row);
+                matC.insertBack(row, row, diagonal.getValue()[i][j]);
+    //            matC.add(row, row, diagonal.getValue()[i][j]);
+                ++row;
+            }
         }
+        matC.compress();
     }
-    matC.compress();
+
+    if( !this->isCompliance.getValue() || this->rayleighStiffness.getValue() )
+    {
+        matK.resize(state->getMatrixSize(), state->getMatrixSize());
+
+        unsigned int row = 0;
+        for(unsigned i = 0; i < n; ++i)
+        {
+            for(unsigned int j = 0; j < m; ++j)
+            {
+    //            matC.beginRow(row);
+                matK.insertBack(row, row, 1.0/diagonal.getValue()[i][j]);
+    //            matC.add(row, row, diagonal.getValue()[i][j]);
+                ++row;
+            }
+        }
+        matK.compress();
+    }
 }
 
 //template<class DataTypes>
@@ -72,17 +94,26 @@ const sofa::defaulttype::BaseMatrix* DiagonalCompliance<DataTypes>::getComplianc
 }
 
 template<class DataTypes>
-void DiagonalCompliance<DataTypes>::addForce(const core::MechanicalParams *, DataVecDeriv& _f, const DataVecCoord& _x, const DataVecDeriv& _v)
+void DiagonalCompliance<DataTypes>::addKToMatrix( sofa::defaulttype::BaseMatrix * matrix, double kFact, unsigned int &offset )
 {
-    helper::ReadAccessor< DataVecCoord >  x(_x);
-    helper::ReadAccessor< DataVecDeriv >  v(_v);
-    helper::WriteAccessor< DataVecDeriv > f(_f);
+    matK.addToBaseMatrix( matrix, kFact, offset );
+}
 
-    for(unsigned i=0; i<f.size(); i++)
-    {
-        f[i] += x[i].linearDivision( -diagonal.getValue()[i] );
-    }
 
+template<class DataTypes>
+void DiagonalCompliance<DataTypes>::addForce(const core::MechanicalParams *, DataVecDeriv& _f, const DataVecCoord& _x, const DataVecDeriv& /*_v*/)
+{
+    matK.addMult( _f, _x  );
+
+//    cerr<<"UniformCompliance<DataTypes>::addForce, f after = " << f << endl;
+}
+
+template<class DataTypes>
+void DiagonalCompliance<DataTypes>::addDForce(const core::MechanicalParams *mparams, DataVecDeriv& _df,  const DataVecDeriv& _dx)
+{
+    Real kfactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+
+    matK.addMult( _df, _dx, kfactor );
 }
 
 
