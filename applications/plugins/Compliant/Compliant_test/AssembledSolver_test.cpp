@@ -143,6 +143,7 @@ struct AssembledSolver_test : public CompliantSolver_test
         Vector v1 = modeling::getVector( core::VecId::velocity() );
 
         // We check the explicit step backward without a solver, because it would not accumulate compliance forces
+        string1.compliance->isCompliance.setValue(false); string1.compliance->reinit(); // switch the spring as stiffness
         core::MechanicalParams mparams;
         simulation::common::MechanicalOperations mop (&mparams,getRoot()->getContext());
         mop.computeForce( 0+dt, core::VecId::force(), core::VecId::position(), core::VecId::velocity(), false );
@@ -294,6 +295,7 @@ struct AssembledSolver_test : public CompliantSolver_test
         Vector v1 = modeling::getVector( core::VecId::velocity() );
 
         // We check the explicit step backward without a solver, because it would not accumulate compliance forces
+        string1.compliance->isCompliance.setValue(false); string1.compliance->reinit(); // switch the spring as stiffness
         core::MechanicalParams mparams;
         simulation::common::MechanicalOperations mop (&mparams,getRoot()->getContext());
         mop.computeForce( 0+dt, core::VecId::force(), core::VecId::position(), core::VecId::velocity(), false );

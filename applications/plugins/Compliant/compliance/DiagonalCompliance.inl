@@ -65,7 +65,7 @@ void DiagonalCompliance<DataTypes>::reinit()
             for(unsigned int j = 0; j < m; ++j)
             {
     //            matC.beginRow(row);
-                matK.insertBack(row, row, 1.0/diagonal.getValue()[i][j]);
+                matK.insertBack(row, row, -1.0/diagonal.getValue()[i][j]);
     //            matC.add(row, row, diagonal.getValue()[i][j]);
                 ++row;
             }
