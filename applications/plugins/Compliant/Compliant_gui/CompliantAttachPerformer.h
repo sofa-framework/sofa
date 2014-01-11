@@ -53,6 +53,8 @@ public:
 //    virtual void end() ;
 //    virtual void endOperation() ;
     static std::string getDescription() {return "CompliantAttach";}
+
+protected:
     virtual std::string defaultPerformerType() { return "CompliantAttach"; }
 
     virtual void setSetting(sofa::component::configurationsetting::MouseButtonSetting* s) { Operation::setSetting(s); setting = dynamic_cast<sofa::component::configurationsetting::CompliantAttachButtonSetting*>(s); }

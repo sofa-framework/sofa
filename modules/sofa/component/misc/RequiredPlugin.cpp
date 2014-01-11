@@ -60,10 +60,12 @@ void RequiredPlugin::loadPlugin()
     std::string pluginPath = pluginName.getValue();
     if(pluginPath.empty()) pluginPath = name.getValue();
 
+    std::string mainPluginPath = pluginPath;
+
     sout << "Loading " << pluginPath << sendl;
-    if (sofa::helper::system::PluginManager::getInstance().loadPlugin(pluginPath))
+    if (sofa::helper::system::PluginManager::getInstance().loadPlugin(mainPluginPath)) // mainPluginPath is modified here...
     {
-        sout << "Loaded " << pluginPath << sendl;
+        sout << "Loaded " << mainPluginPath << sendl;
         sofa::helper::system::PluginManager::getInstance().init();
     }
 
