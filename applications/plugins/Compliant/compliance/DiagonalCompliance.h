@@ -47,13 +47,19 @@ public:
     /// Return a pointer to the compliance matrix
     virtual const sofa::defaulttype::BaseMatrix* getComplianceMatrix(const core::MechanicalParams*);
 
+    virtual void addKToMatrix( sofa::defaulttype::BaseMatrix * matrix, double kFact, unsigned int &offset );
+
     /// addForce does nothing when this component is processed like a compliance.
     virtual void addForce(const core::MechanicalParams *, DataVecDeriv &, const DataVecCoord &, const DataVecDeriv &);
+
+    /// addDForce does nothing when this component is processed like a compliance.
+    virtual void addDForce(const core::MechanicalParams *, DataVecDeriv &, const DataVecDeriv &);
 
 protected:
     DiagonalCompliance( core::behavior::MechanicalState<DataTypes> *mm = NULL);
 
     linearsolver::EigenBaseSparseMatrix<typename DataTypes::Real> matC; ///< compliance matrix
+    linearsolver::EigenSparseMatrix<TDataTypes,TDataTypes> matK; ///< stiffness matrix
 };
 
 }

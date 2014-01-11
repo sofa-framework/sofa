@@ -90,7 +90,7 @@ protected:
     Data<Real> focal_distance; // focal distance i.e. distance between the optical center and the image plane
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_MISC_ENGINE)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_PROJECTIVETRANSFORMENGINE_CPP)
 
 #ifndef SOFA_FLOAT
 extern template class SOFA_MISC_ENGINE_API ProjectiveTransformEngine<defaulttype::Vec3dTypes>;
@@ -99,6 +99,7 @@ extern template class SOFA_MISC_ENGINE_API ProjectiveTransformEngine<defaulttype
 extern template class SOFA_MISC_ENGINE_API ProjectiveTransformEngine<defaulttype::Vec3fTypes>;
 #endif //SOFA_DOUBLE
 extern template class SOFA_MISC_ENGINE_API ProjectiveTransformEngine<defaulttype::ExtVec3fTypes>;
+
 #endif
 
 } // namespace engine

@@ -34,21 +34,35 @@ void UniformCompliance<DataTypes>::reinit()
     core::behavior::BaseMechanicalState* state = this->getContext()->getMechanicalState();
     assert(state);
 
-	// the stiffness df/dx is the opposite of the inverse compliance
-    Real c = this->isCompliance.getValue() ?  
-		compliance.getValue() : 
-		( helper::rabs(compliance.getValue()) >std::numeric_limits<Real>::epsilon() ? 
-		  -1 / compliance.getValue() : 
-		  -std::numeric_limits<Real>::max() ); 
+    if( this->isCompliance.getValue() )
+    {
+        matC.resize(state->getMatrixSize(), state->getMatrixSize());
 
-    matC.resize(state->getMatrixSize(), state->getMatrixSize());
-	
-    for(unsigned i=0, n = state->getMatrixSize(); i < n; i++) {
-		matC.compressedMatrix.startVec(i);
-		matC.compressedMatrix.insertBack(i, i) = c;
+        for(unsigned i=0, n = state->getMatrixSize(); i < n; i++) {
+            matC.compressedMatrix.startVec(i);
+            matC.compressedMatrix.insertBack(i, i) = compliance.getValue();
+        }
+
+        matC.compressedMatrix.finalize();
     }
-    
-	matC.compressedMatrix.finalize();
+
+    if( !this->isCompliance.getValue() || this->rayleighStiffness.getValue() )
+    {
+        // the stiffness df/dx is the opposite of the inverse compliance
+        Real k = helper::rabs(compliance.getValue()) >std::numeric_limits<Real>::epsilon() ?
+                -1 / compliance.getValue() :
+                -std::numeric_limits<Real>::max();
+
+        matK.resize(state->getMatrixSize(), state->getMatrixSize());
+
+        for(unsigned i=0, n = state->getMatrixSize(); i < n; i++) {
+            matK.compressedMatrix.startVec(i);
+            matK.compressedMatrix.insertBack(i, i) = k;
+        }
+
+        matK.compressedMatrix.finalize();
+    }
+
 
 	if( damping.getValue() > 0 ) {
 		SReal d = damping.getValue();
@@ -89,14 +103,7 @@ const sofa::defaulttype::BaseMatrix* UniformCompliance<DataTypes>::getCompliance
 template<class DataTypes>
 void UniformCompliance<DataTypes>::addKToMatrix( sofa::defaulttype::BaseMatrix * matrix, double kFact, unsigned int &offset )
 {
-	if( this->isCompliance.getValue() ) {
-		// max: this might happen if you try to use rayleighStiffness
-		// while in compliance mode. you shouldn't, use damping instead.
-		std::cerr << "UniformCompliance warning: adding compliance where stiffness is expected !" 
-				  << std::endl;
-	} else {
-		matC.addToBaseMatrix( matrix, kFact, offset );
-	}
+    matK.addToBaseMatrix( matrix, kFact, offset );
 }
 
 template<class DataTypes>
@@ -110,18 +117,9 @@ void UniformCompliance<DataTypes>::addBToMatrix( sofa::defaulttype::BaseMatrix *
 template<class DataTypes>
 void UniformCompliance<DataTypes>::addForce(const core::MechanicalParams *, DataVecDeriv& _f, const DataVecCoord& _x, const DataVecDeriv& /*_v*/)
 {
-    helper::ReadAccessor< DataVecCoord >  x(_x);
-//    helper::ReadAccessor< DataVecDeriv >  v(_v);
-    helper::WriteAccessor< DataVecDeriv > f(_f);
+    matK.addMult( _f, _x  );
 
-    Real stiffness = helper::rabs(compliance.getValue())>std::numeric_limits<Real>::epsilon() ? -1/compliance.getValue() : -std::numeric_limits<Real>::max();
-
-
-//    cerr<<"UniformCompliance<DataTypes>::addForce, f before = " << f << endl;
-    for(unsigned i=0; i<f.size(); i++)
-        f[i] += x[i] * stiffness;
 //    cerr<<"UniformCompliance<DataTypes>::addForce, f after = " << f << endl;
-
 }
 
 template<class DataTypes>
@@ -129,14 +127,7 @@ void UniformCompliance<DataTypes>::addDForce(const core::MechanicalParams *mpara
 {
     Real kfactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
-    helper::ReadAccessor< DataVecDeriv >  dx(_dx);
-    helper::WriteAccessor< DataVecDeriv > df(_df);
-
-    Real stiffness = helper::rabs(compliance.getValue())>std::numeric_limits<Real>::epsilon() ? -kfactor/compliance.getValue() : -kfactor*std::numeric_limits<Real>::max();
-
-    for(unsigned i=0; i<df.size(); i++)
-        df[i] += dx[i] * stiffness;
-
+    matK.addMult( _df, _dx, kfactor );
 }
 
 

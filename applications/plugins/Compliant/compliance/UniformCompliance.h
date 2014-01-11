@@ -63,7 +63,7 @@ protected:
 
 	typedef linearsolver::EigenBaseSparseMatrix<typename DataTypes::Real> matrix_type;
 	matrix_type matC; ///< compliance matrix
-
+    linearsolver::EigenSparseMatrix<TDataTypes,TDataTypes> matK; ///< stiffness matrix
 	matrix_type matB; /// damping matrix (Negative S.D.)
 };
 
