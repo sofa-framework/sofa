@@ -57,20 +57,19 @@ void RequiredPlugin::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
 
 void RequiredPlugin::loadPlugin()
 {
-    std::string pluginPath = pluginName.getValue();
-    if(pluginPath.empty()) pluginPath = name.getValue();
+    if(pluginName.getValue().empty()) pluginName.setValue( name.getValue() );
 
-    std::string mainPluginPath = pluginPath;
+    std::string pluginPath = pluginName.getValue();
 
     sout << "Loading " << pluginPath << sendl;
-    if (sofa::helper::system::PluginManager::getInstance().loadPlugin(mainPluginPath)) // mainPluginPath is modified here...
+    if (sofa::helper::system::PluginManager::getInstance().loadPlugin(pluginPath)) // pluginPath is modified here
     {
-        sout << "Loaded " << mainPluginPath << sendl;
+        sout << "Loaded " << pluginPath << sendl;
         sofa::helper::system::PluginManager::getInstance().init();
     }
 
     // try to load the eventual plugin gui
-    pluginPath = pluginPath + "_gui";
+    pluginPath = pluginName.getValue() + "_gui";
     if (sofa::helper::system::PluginManager::getInstance().loadPlugin(pluginPath,NULL))
     {
         sout << "Loaded " << pluginPath << sendl;
