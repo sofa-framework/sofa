@@ -13,8 +13,8 @@ namespace forcefield
 template<class DataTypes>
 UniformCompliance<DataTypes>::UniformCompliance( core::behavior::MechanicalState<DataTypes> *mm )
     : Inherit(mm)
-    , compliance( initData(&compliance, (Real)0, "compliance", "Compliance value uniformly applied to all the DOF.")),
-	  damping( initData(&damping, Real(0), "damping", "uniform viscous damping."))
+    , compliance( initData(&compliance, (Real)0, "compliance", "Compliance value uniformly applied to all the DOF."))
+    , damping( initData(&damping, Real(0), "damping", "uniform viscous damping."))
 	  
 {
     this->isCompliance.setValue(true);
@@ -45,6 +45,7 @@ void UniformCompliance<DataTypes>::reinit()
 
         matC.compressedMatrix.finalize();
     }
+    else matC.compressedMatrix.resize(0,0);
 
     if( !this->isCompliance.getValue() || this->rayleighStiffness.getValue() )
     {
@@ -62,6 +63,11 @@ void UniformCompliance<DataTypes>::reinit()
 
         matK.compressedMatrix.finalize();
     }
+    else matK.compressedMatrix.resize(0,0);
+
+
+    // TODO if(this->isCompliance.getValue() && this->rayleighStiffness.getValue()) mettre rayleigh dans B mais attention à kfactor avec/sans rayleigh factor
+    // if compliance = 0 -> msg erreur, rayleigh pas possible
 
 
 	if( damping.getValue() > 0 ) {
@@ -76,6 +82,7 @@ void UniformCompliance<DataTypes>::reinit()
 
 		matB.compressedMatrix.finalize();
 	}
+    else matB.compressedMatrix.resize(0,0);
 	
 }
 
@@ -109,7 +116,8 @@ void UniformCompliance<DataTypes>::addKToMatrix( sofa::defaulttype::BaseMatrix *
 template<class DataTypes>
 void UniformCompliance<DataTypes>::addBToMatrix( sofa::defaulttype::BaseMatrix * matrix, double bFact, unsigned int &offset )
 {
-	if( damping.getValue() > 0 ) {
+//	if( damping.getValue() > 0 ) // B is empty in that case
+    {
 		matB.addToBaseMatrix( matrix, bFact, offset );
 	}
 }
@@ -126,8 +134,10 @@ template<class DataTypes>
 void UniformCompliance<DataTypes>::addDForce(const core::MechanicalParams *mparams, DataVecDeriv& _df,  const DataVecDeriv& _dx)
 {
     Real kfactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    Real bfactor = (Real)mparams->bFactor();
 
     matK.addMult( _df, _dx, kfactor );
+    matB.addMult( _df, _dx, bfactor );
 }
 
 
