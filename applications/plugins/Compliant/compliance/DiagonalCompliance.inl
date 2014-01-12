@@ -54,6 +54,7 @@ void DiagonalCompliance<DataTypes>::reinit()
         }
         matC.compress();
     }
+    else matC.compressedMatrix.resize(0,0);
 
     if( !this->isCompliance.getValue() || this->rayleighStiffness.getValue() )
     {
@@ -72,6 +73,7 @@ void DiagonalCompliance<DataTypes>::reinit()
         }
         matK.compress();
     }
+    else matK.compressedMatrix.resize(0,0);
 }
 
 //template<class DataTypes>
