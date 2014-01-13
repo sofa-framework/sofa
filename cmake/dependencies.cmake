@@ -7,14 +7,14 @@ RegisterProjects("Lua" PATH "${SOFA-EXTERNAL_LUA_PATH}" OPTION SOFA-EXTERNAL_LUA
 RegisterProjects("Verdandi" PATH "${SOFA-EXTERNAL_VERDANDI_PATH}" OPTION SOFA-EXTERNAL_VERDANDI COMPILE_DEFINITIONS SOFA_HAVE_VERDANDI)
 
 if(NOT SOFA-EXTERNAL_TINYXML)
-        RegisterProjects("tinyxml" PATH "${SOFA-EXTERNAL_TINYXML_PATH}")
+    RegisterProjects("tinyxml" PATH "${SOFA-EXTERNAL_TINYXML_PATH}")
 else()
-	# import a precompiled tinyxml library instead of the tinyxml project
-	add_library(tinyxml UNKNOWN IMPORTED)
-	set_property(TARGET tinyxml PROPERTY IMPORTED_LOCATION_RELEASE "${SOFA-EXTERNAL_TINYXML_PATH}")
-	set_property(TARGET tinyxml PROPERTY IMPORTED_LOCATION_RELWITHDEBINFO "${SOFA-EXTERNAL_TINYXML_PATH}")
-	set_property(TARGET tinyxml PROPERTY IMPORTED_LOCATION_MINSIZEREL "${SOFA-EXTERNAL_TINYXML_PATH}")
-	set_property(TARGET tinyxml PROPERTY IMPORTED_LOCATION_DEBUG   "${SOFA-EXTERNAL_TINYXML_PATH}")
+    # import a precompiled tinyxml library instead of the tinyxml project
+    add_library(tinyxml UNKNOWN IMPORTED)
+    set_property(TARGET tinyxml PROPERTY IMPORTED_LOCATION_RELEASE "${SOFA-EXTERNAL_TINYXML_PATH}")
+    set_property(TARGET tinyxml PROPERTY IMPORTED_LOCATION_RELWITHDEBINFO "${SOFA-EXTERNAL_TINYXML_PATH}")
+    set_property(TARGET tinyxml PROPERTY IMPORTED_LOCATION_MINSIZEREL "${SOFA-EXTERNAL_TINYXML_PATH}")
+    set_property(TARGET tinyxml PROPERTY IMPORTED_LOCATION_DEBUG   "${SOFA-EXTERNAL_TINYXML_PATH}")
 endif()
 RegisterProjects("csparse" OPTION SOFA-EXTERNAL_CSPARSE COMPILE_DEFINITIONS SOFA_HAVE_CSPARSE PATH "${SOFA-EXTERNAL_CSPARSE_PATH}")
 RegisterProjects("eigen" PATH "${SOFA-EXTERNAL_EIGEN_PATH}" COMPILE_DEFINITIONS SOFA_HAVE_EIGEN2)
@@ -28,30 +28,30 @@ RegisterProjects("Qwt" PATH "${SOFA_EXTLIBS_DIR}/qwt-6.0.1/src")
 
 ## geometric tools
 if(SOFA-EXTERNAL_GEOMETRIC_TOOLS)
-	add_subdirectory("${SOFA_EXTERNAL_GEOMETRIC_TOOLS_PATH}")
-        # try to replace with : RegisterProjects
+    add_subdirectory("${SOFA_EXTERNAL_GEOMETRIC_TOOLS_PATH}")
+    # try to replace with : RegisterProjects
 endif()
 
 #Bullet
 # if(SOFA-EXTERNAL_BULLET)
-# 	add_subdirectory("${SOFA_EXTERNAL_BULLET_PATH}")
+# add_subdirectory("${SOFA_EXTERNAL_BULLET_PATH}")
 #         # try to replace with : RegisterProjects
 # endif()
 #RegisterProjects("LinearMath" "BulletCollisions" "BulletDynamics" PATH "${SOFA_EXTERNAL_BULLET_PATH}")
 
 ## google test
 if(SOFA-MISC_BUILD_GTEST)
-	add_subdirectory("${SOFA_EXTLIBS_DIR}/gtest")
-	# try to replace with :
-	# RegisterProjects("gtest" "gtest_main" PATH "${SOFA_EXTLIBS_DIR}/gtest")
-	
-	if(MSVC)
-		get_target_property(gtestCompilerDefines gtest COMPILE_DEFINITIONS)
-		set_target_properties(gtest PROPERTIES COMPILE_DEFINITIONS "${gtestCompilerDefines};_VARIADIC_MAX=10")
-		
-		get_target_property(gtestMainCompilerDefines gtest_main COMPILE_DEFINITIONS)
-		set_target_properties(gtest_main PROPERTIES COMPILE_DEFINITIONS "${gtestMainCompilerDefines};_VARIADIC_MAX=10")
-	endif()	
+    add_subdirectory("${SOFA_EXTLIBS_DIR}/gtest")
+    # try to replace with :
+    # RegisterProjects("gtest" "gtest_main" PATH "${SOFA_EXTLIBS_DIR}/gtest")
+
+    if(MSVC)
+        get_target_property(gtestCompilerDefines gtest COMPILE_DEFINITIONS)
+        set_target_properties(gtest PROPERTIES COMPILE_DEFINITIONS "${gtestCompilerDefines};_VARIADIC_MAX=10")
+
+        get_target_property(gtestMainCompilerDefines gtest_main COMPILE_DEFINITIONS)
+        set_target_properties(gtest_main PROPERTIES COMPILE_DEFINITIONS "${gtestMainCompilerDefines};_VARIADIC_MAX=10")
+    endif()
 endif()
 
 # framework
@@ -110,73 +110,73 @@ add_subdirectory("${SOFA_APPLICATIONS_DIR}/tutorials")
 set(SOFA_PROJECT_FOLDER "")
 
 if(SOFA-MISC_CMAKE_VERBOSE)
-	set(GLOBAL_LOG_MESSAGE ${GLOBAL_LOG_MESSAGE} " " "COMPILE DEFINITIONS:" " " CACHE INTERNAL "Log message" FORCE)
+    set(GLOBAL_LOG_MESSAGE ${GLOBAL_LOG_MESSAGE} " " "COMPILE DEFINITIONS:" " " CACHE INTERNAL "Log message" FORCE)
 endif()
 
 # retrieve dependencies and include directories (always do this after all your 'add_subdirectory')
 message(STATUS "Dependency resolution in progress:")
 set(projectNames ${GLOBAL_DEPENDENCIES})
 foreach(projectName ${projectNames})
-	ComputeDependencies(${projectName} false "${PROJECT_NAME}" "")
+    ComputeDependencies(${projectName} false "${PROJECT_NAME}" "")
 endforeach()
 message(STATUS "Dependency resolution done.")
 
 if(SOFA-MISC_CMAKE_VERBOSE)
-	message(STATUS "> Logging dependency graph : In progress")
-	message(STATUS "")
-	set(GLOBAL_LOG_MESSAGE ${GLOBAL_LOG_MESSAGE} " " "DEPENDENCIES:" " " CACHE INTERNAL "Log message" FORCE)
-	set(projectNames ${GLOBAL_DEPENDENCIES})
-	foreach(projectName ${projectNames})
-		LogDependencies(${projectName})
-	endforeach()
-	message(STATUS "> Logging dependency graph : Done")
-	message(STATUS "")
+    message(STATUS "> Logging dependency graph : In progress")
+    message(STATUS "")
+    set(GLOBAL_LOG_MESSAGE ${GLOBAL_LOG_MESSAGE} " " "DEPENDENCIES:" " " CACHE INTERNAL "Log message" FORCE)
+    set(projectNames ${GLOBAL_DEPENDENCIES})
+    foreach(projectName ${projectNames})
+        LogDependencies(${projectName})
+    endforeach()
+    message(STATUS "> Logging dependency graph : Done")
+    message(STATUS "")
 endif()
 
 # copy external shared objects (.dll) to the Sofa bin directory (Windows only)
 if(WIN32)
-	## common external dlls
-	if(CMAKE_CL_64)
-		file(GLOB sharedObjects "${SOFA_SRC_DIR}/lib/win64/*.dll")
-	else()
-		file(GLOB sharedObjects "${SOFA_SRC_DIR}/lib/win32/*.dll")
-	endif()
-	foreach(sharedObject ${sharedObjects})
-		file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
-	endforeach()
+    ## common external dlls
+    if(CMAKE_CL_64)
+        file(GLOB sharedObjects "${SOFA_SRC_DIR}/lib/win64/*.dll")
+    else()
+        file(GLOB sharedObjects "${SOFA_SRC_DIR}/lib/win32/*.dll")
+    endif()
+    foreach(sharedObject ${sharedObjects})
+        file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
+    endforeach()
 
-	## qt dlls
-	if(NOT SOFA-EXTERNAL_QT_PATH STREQUAL "")
-		file(GLOB sharedObjects "${SOFA-EXTERNAL_QT_PATH}/bin/*.dll")
-		foreach(sharedObject ${sharedObjects})
-			file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
-		endforeach()
-	endif()
+    ## qt dlls
+    if(NOT SOFA-EXTERNAL_QT_PATH STREQUAL "")
+        file(GLOB sharedObjects "${SOFA-EXTERNAL_QT_PATH}/bin/*.dll")
+        foreach(sharedObject ${sharedObjects})
+            file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
+        endforeach()
+    endif()
 
-	## boost dlls
-	if(SOFA-EXTERNAL_BOOST AND NOT SOFA-EXTERNAL_BOOST_PATH STREQUAL "")
-		set(BOOST_LIBDIR "${SOFA-EXTERNAL_BOOST_PATH}/lib")
+    ## boost dlls
+    if(SOFA-EXTERNAL_BOOST AND NOT SOFA-EXTERNAL_BOOST_PATH STREQUAL "")
+        set(BOOST_LIBDIR "${SOFA-EXTERNAL_BOOST_PATH}/lib")
 
-		file(GLOB sharedObjects "${BOOST_LIBDIR}/boost_graph*.dll")
-		foreach(sharedObject ${sharedObjects})
-			file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
-		endforeach()
+        file(GLOB sharedObjects "${BOOST_LIBDIR}/boost_graph*.dll")
+        foreach(sharedObject ${sharedObjects})
+            file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
+        endforeach()
 
-		file(GLOB sharedObjects "${BOOST_LIBDIR}/boost_thread*.dll")
-		foreach(sharedObject ${sharedObjects})
-			file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
-		endforeach()
+        file(GLOB sharedObjects "${BOOST_LIBDIR}/boost_thread*.dll")
+        foreach(sharedObject ${sharedObjects})
+            file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
+        endforeach()
 
-		file(GLOB sharedObjects "${BOOST_LIBDIR}/boost_chrono*.dll")
-		foreach(sharedObject ${sharedObjects})
-			file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
-		endforeach()
+        file(GLOB sharedObjects "${BOOST_LIBDIR}/boost_chrono*.dll")
+        foreach(sharedObject ${sharedObjects})
+            file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
+        endforeach()
 
-		file(GLOB sharedObjects "${BOOST_LIBDIR}/boost_system*.dll")
-		foreach(sharedObject ${sharedObjects})
-			file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
-		endforeach()
-	endif()
+        file(GLOB sharedObjects "${BOOST_LIBDIR}/boost_system*.dll")
+        foreach(sharedObject ${sharedObjects})
+            file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
+        endforeach()
+    endif()
 endif()
 
 # creating examples/Object and examples/Objects folder
@@ -185,10 +185,10 @@ file(MAKE_DIRECTORY "${SOFA_BUILD_DIR}/examples/Objects")
 
 # copying default config files
 if(NOT CONFIG_FILES_ALREADY_COPIED)
-	file(GLOB configFiles "${SOFA_SRC_DIR}/share/config/default/*.*")
-	foreach(configFile ${configFiles})
-		file(COPY ${configFile} DESTINATION "${SOFA_BUILD_DIR}/share/config")
-	endforeach()
+    file(GLOB configFiles "${SOFA_SRC_DIR}/share/config/default/*.*")
+    foreach(configFile ${configFiles})
+        file(COPY ${configFile} DESTINATION "${SOFA_BUILD_DIR}/share/config")
+    endforeach()
 
-	set(CONFIG_FILES_ALREADY_COPIED 1 CACHE INTERNAL "Config files copied" FORCE)
+    set(CONFIG_FILES_ALREADY_COPIED 1 CACHE INTERNAL "Config files copied" FORCE)
 endif()
