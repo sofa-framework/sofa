@@ -11,13 +11,13 @@
 ## \\li Get sofa defines variables from sofaDefines.cfg to add cmake definitions.
 ## \\li Restore the original Sofa.pro from Sofa-temp.pro.
 ## \\li Delete the unnecessary Sofa-temp.pro and sofaDefines.cfg files.
-## 
+##
 ## CMAKE_DOCUMENTATION_END
 ## ###########################################################################################
 
 ## DEPRECATED!
 if(_FIND_SOFA_DEFINES_INCLUDED_)
-  return()
+    return()
 endif()
 set(_FIND_SOFA_DEFINES_INCLUDED_ true)
 
@@ -76,7 +76,7 @@ function(FindSofaDefines VERBOSE_SOFA)
         add_definitions(${SOFA_DEFINES})
 
         if(VERBOSE_SOFA)
-        message(STATUS "Add SOFA definition into CMake project : ")
+            message(STATUS "Add SOFA definition into CMake project : ")
             foreach( define ${SOFA_DEFINES})
                 message(STATUS "add DEFINITION : ${define}")
             endforeach( define ${SOFA_DEFINES})

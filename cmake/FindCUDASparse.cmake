@@ -3,7 +3,7 @@
 #
 ##############################################################################
 # Cutil library: CUDA_SPARSE_LIBRARY
- ##############################################################################
+##############################################################################
 #
 #
 # CUDA_TOOLKIT_ROOT_DIR -- Path to the CUDA toolkit. As the sparse library is
@@ -27,7 +27,7 @@ find_library(CUDA_SPARSE_LIBRARY
     PATH_SUFFIXES "/lib64" "/lib" "/lib/x86_64-linux-gnu" "lib/x64" "lib/Win32"
     DOC "Location of sparse library"
     NO_DEFAULT_PATH
-)
+    )
 
 mark_as_advanced(CUDA_SPARSE_LIBRARY)
 
