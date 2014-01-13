@@ -150,7 +150,25 @@ AssemblyVisitor::mat AssemblyVisitor::odeMatrix(simulation::Node* node)
     Sqmat sqmat( size, size );
 
     if( node->interactionForceField.size() )
-        std::cerr<<SOFA_CLASS_METHOD<<"WARNING: interactionForceFields are not handled by Compliant assembly and will be treated as explicit, external forces (the same scene can be modelised by using MultiMappings)"<<std::endl;
+    {
+        for(unsigned i = 0; i < node->interactionForceField.size(); ++i )
+        {
+            BaseInteractionForceField* ffield = node->interactionForceField[i];
+
+            if( ffield->getMechModel1() != ffield->getMechModel2() )
+            {
+                std::cerr<<SOFA_CLASS_METHOD<<"WARNING: interactionForceField "<<ffield->getName()<<" will be treated as explicit, external forces (interactionForceFields are not handled by Compliant assembly, the same scene should be modelised with MultiMappings)"<<std::endl;
+            }
+            else
+            {
+                // interactionForceField that work on a unique set of dof are OK
+                SingleMatrixAccessor accessor( &sqmat );
+
+                // when it is a compliant, you need to add M if mass, B but not K
+                ffield->addMBKToMatrix( ffield->isCompliance.getValue() ? &mparamsWithoutStiffness : mparams, &accessor );
+            }
+        }
+    }
 
     // note that mass are included in forcefield
     for(unsigned i = 0; i < node->forceField.size(); ++i )
@@ -160,9 +178,7 @@ AssemblyVisitor::mat AssemblyVisitor::odeMatrix(simulation::Node* node)
         SingleMatrixAccessor accessor( &sqmat );
 
         // when it is a compliant, you need to add M if mass, B but not K
-        ffield->addMBKToMatrix( ffield->isCompliance.getValue() ? &mparamsWithoutStiffness : mparams,
-                                &accessor );
-
+        ffield->addMBKToMatrix( ffield->isCompliance.getValue() ? &mparamsWithoutStiffness : mparams, &accessor );
     }
 
     sqmat.compress();
