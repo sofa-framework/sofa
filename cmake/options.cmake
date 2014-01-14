@@ -444,7 +444,10 @@ endif()
 # Cache variable: GPU architecture for which CUDA code will be compiled.
 set(SOFA-CUDA_SM "20" CACHE STRING "GPU architecture; it will translate to the following option for nvcc: -arch sm_<value>")
 
-set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS};-arch sm_${SOFA-CUDA_SM} -Xcompiler -fPIC -O2 -DNDEBUG)
+set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} -arch sm_${SOFA-CUDA_SM} -Xcompiler -O2 -DNDEBUG)
+if(NOT WIN32)
+	set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} -fPIC)
+endif()
 
 # TODO   activate it automatically
 option(SOFA-CUDA_GREATER_THAN_GCC44 "SOFA-CUDA_GREATER_THAN_GCC44" OFF)

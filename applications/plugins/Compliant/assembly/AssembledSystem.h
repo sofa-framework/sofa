@@ -1,6 +1,7 @@
 #ifndef ASSEMBLED_SYSTEM_H
 #define ASSEMBLED_SYSTEM_H
 
+#include "initCompliant.h"
 #include <Eigen/SparseCore>
 #include <Eigen/Core>
 #include <sofa/helper/system/config.h>
@@ -23,7 +24,7 @@ namespace linearsolver {
 // especially store JT as a column-major matrix, as we sometimes have
 // to compute Hinv * JT which requires converting back and forth.
 
-class AssembledSystem {
+class SOFA_Compliant_API AssembledSystem {
 public:
 	typedef SReal real;
 	typedef Eigen::Matrix<real, Eigen::Dynamic, 1> vec;

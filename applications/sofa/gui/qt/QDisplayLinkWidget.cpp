@@ -228,6 +228,7 @@ void QLinkSimpleEdit::writeToLink()
         {
             value = innerWidget_.widget.lineEdit->text().ascii();
         }
+		getBaseLink()->clear();
         getBaseLink()->read(value);
     }
 }

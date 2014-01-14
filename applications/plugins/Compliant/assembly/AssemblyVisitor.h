@@ -1,6 +1,7 @@
 #ifndef ASSEMBLYVISITOR_H
 #define ASSEMBLYVISITOR_H
 
+#include "initCompliant.h"
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/component/linearsolver/EigenSparseMatrix.h>
 #include <sofa/component/linearsolver/EigenVector.h>
@@ -69,7 +70,7 @@ public:
 
 
 
-class AssemblyVisitor : public simulation::MechanicalVisitor {
+class SOFA_Compliant_API AssemblyVisitor : public simulation::MechanicalVisitor {
 protected:
     typedef simulation::MechanicalVisitor base;
 public:

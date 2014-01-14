@@ -425,6 +425,12 @@ public:
         return true;
     }
 
+	void clear()
+	{
+		const int aspect = core::ExecParams::currentAspect();
+		TraitsContainer::clear(m_value[aspect]);
+	}
+
     bool removePath(const std::string& path)
     {
         if (path.empty()) return false;
