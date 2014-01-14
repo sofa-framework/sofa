@@ -25,6 +25,7 @@
 #ifndef SOFA_GUI_QT_QMOUSEOPERATIONS_H
 #define SOFA_GUI_QT_QMOUSEOPERATIONS_H
 
+#include "SofaGUIQt.h"
 #include <sofa/gui/MouseOperations.h>
 #include "SofaMouseManager.h"
 
@@ -59,7 +60,7 @@ namespace qt
 {
 class DataWidget;
 
-class QMouseOperation : public QWidget
+class SOFA_SOFAGUIQT_API QMouseOperation : public QWidget
 {
     Q_OBJECT
 public:
