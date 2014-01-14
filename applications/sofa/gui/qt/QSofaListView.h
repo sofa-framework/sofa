@@ -106,6 +106,8 @@ public:
     void Freeze();
     void Unfreeze();
     SofaListViewAttribute getAttribute() const { return attribute_; };
+
+	void contextMenuEvent(QContextMenuEvent *event);
 public Q_SLOTS:
     void Export();
     void CloseAllDialogs();
