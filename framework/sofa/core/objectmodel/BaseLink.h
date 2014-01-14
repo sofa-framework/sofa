@@ -138,6 +138,9 @@ public:
     /// Read the command line
     virtual bool read( const std::string& str ) = 0;
 
+	/// Clear link
+	virtual void clear() = 0;
+
     /// Update pointers in case the pointed-to objects have appeared
     /// @return false if there are broken links
     virtual bool updateLinks() = 0;

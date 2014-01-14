@@ -362,11 +362,11 @@ void QSofaListView::RunSofaRightClicked( Q3ListViewItem *item,
     {
         if(item->childCount() > 0)
         {
-            contextMenu->insertItem("Hide Datas",this, SLOT ( HideDatas() ) );
+            contextMenu->insertItem("Hide Data",this, SLOT ( HideDatas() ) );
         }
         else
         {
-            contextMenu->insertItem("Show Datas", this, SLOT ( ShowDatas() ) );
+            contextMenu->insertItem("Show Data", this, SLOT ( ShowDatas() ) );
         }
     }
     contextMenu->popup ( point, index );

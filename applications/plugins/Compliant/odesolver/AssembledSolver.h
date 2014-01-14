@@ -79,6 +79,22 @@ namespace odesolver {
   It could be possible to bias the child force used to compute the geometric stiffness but it would imposed to each forcefield to compute a weighted "rayleigh force" in addition to the regular force. It is neglicted for now.
 */
 
+// this class must be outside AssembledSolver in order to be dll exported on Windows
+struct SOFA_Compliant_API propagate_visitor : simulation::MechanicalVisitor {
+
+    core::MultiVecDerivId out, in;
+
+    propagate_visitor(const sofa::core::MechanicalParams* mparams);
+
+    Result fwdMappedMechanicalState(simulation::Node* node,
+                                    core::behavior::BaseMechanicalState* state);
+
+    Result fwdMechanicalState(simulation::Node* node,
+                            core::behavior::BaseMechanicalState* state);
+
+    void bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map);
+
+};
 
 class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolver {
   public:
@@ -206,23 +222,6 @@ protected:
     vec dynamics_rhs;            ///< to store f and phi, the right-hand side
 
 	void alloc(const core::ExecParams& params);
-
-
-    struct propagate_visitor : simulation::MechanicalVisitor {
-
-        core::MultiVecDerivId out, in;
-
-        propagate_visitor(const sofa::core::MechanicalParams* mparams);
-
-        Result fwdMappedMechanicalState(simulation::Node* node,
-                                        core::behavior::BaseMechanicalState* state);
-
-        Result fwdMechanicalState(simulation::Node* node,
-                                core::behavior::BaseMechanicalState* state);
-
-        void bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map);
-
-    };
 
 };
 

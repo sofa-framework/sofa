@@ -34,14 +34,14 @@ using namespace core::behavior;
 
 
 
-    AssembledSolver::propagate_visitor::propagate_visitor(const sofa::core::MechanicalParams* mparams)
+    propagate_visitor::propagate_visitor(const sofa::core::MechanicalParams* mparams)
         : simulation::MechanicalVisitor(mparams)
     {
 
     }
 
-    AssembledSolver::propagate_visitor::Result AssembledSolver::propagate_visitor::fwdMappedMechanicalState(simulation::Node* node,
-                                                                                                            core::behavior::BaseMechanicalState* state) {
+    propagate_visitor::Result propagate_visitor::fwdMappedMechanicalState(simulation::Node* node,
+                                                                          core::behavior::BaseMechanicalState* state) {
 
         if( !node->forceField.empty() && node->forceField[0]->isCompliance.getValue() ) {
             // dont erase if compliance is present, cause set_state
@@ -57,15 +57,15 @@ using namespace core::behavior;
         return RESULT_CONTINUE;
     }
 
-    AssembledSolver::propagate_visitor::Result AssembledSolver::propagate_visitor::fwdMechanicalState(simulation::Node* node,
-                                                                                                      core::behavior::BaseMechanicalState* state) {
+    propagate_visitor::Result propagate_visitor::fwdMechanicalState(simulation::Node* node,
+                                                                    core::behavior::BaseMechanicalState* state) {
         state->resetForce(mparams, out.getId(state));
         // not working :-/
         // state->vInit(mparams, out.getId(state), in.getId(state));
         return RESULT_CONTINUE;
     }
 
-    void AssembledSolver::propagate_visitor::bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map) {
+    void propagate_visitor::bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map) {
         map->applyJT(mparams /* PARAMS FIRST */, out, out);
     }
 
