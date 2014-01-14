@@ -284,6 +284,11 @@ void QSofaListView::Unfreeze()
     graphListener_->unfreeze(groot);
 }
 
+void QSofaListView::contextMenuEvent(QContextMenuEvent *event)
+{
+	event->accept();
+}
+
 void QSofaListView::focusObject()
 {
     if( object_.isObject())
