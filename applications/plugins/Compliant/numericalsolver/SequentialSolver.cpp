@@ -209,7 +209,8 @@ void SequentialSolver::init() {
 	// fallback in case we missed
 	if( !response ) {
         response = new LDLTResponse();
-		std::cout << "SequentialSolver: using fallback response class: " << response->getClassName() << std::endl;
+		std::cout << "SequentialSolver: using fallback response class: " 
+				  << response->getClassName() << std::endl;
 	}
 
 }
@@ -263,12 +264,16 @@ SReal SequentialSolver::step(vec& lambda,
 		// correct lambda differences
 		delta_chunk = lambda_chunk - error_chunk;
 
-		// incrementally update net forces
+		// incrementally update net forces, we only do fresh
+		// computation after the loop to keep perfs decent
 		net.noalias() = net + mapping_response.middleCols(b.offset, b.size) * delta_chunk;
 		
 		// fix net to avoid error accumulations ?
-        // net = mapping_response * lambda;
 	}
+	
+	// TODO this is needed to avoid error accumulation
+	net = mapping_response * lambda;
+
 
 	// TODO flag to return real residual estimate !! otherwise
 	// convergence plots are not fair.
@@ -318,7 +323,6 @@ void SequentialSolver::solve(vec& res,
 
         real estimate = step( lambda, net, sys, constant, error, delta );
 
-		// net = mapping_response * lambda;		
 		// primal = sys.J * net - constant;
 		
 		if( estimate <= epsilon2 ) break;
