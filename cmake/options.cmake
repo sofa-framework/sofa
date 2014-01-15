@@ -446,7 +446,7 @@ set(SOFA-CUDA_SM "20" CACHE STRING "GPU architecture; it will translate to the f
 
 set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} -arch sm_${SOFA-CUDA_SM} -Xcompiler -O2 -DNDEBUG)
 if(NOT WIN32)
-	set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} -fPIC)
+	set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} -Xcompiler -fPIC)
 endif()
 
 # TODO   activate it automatically
