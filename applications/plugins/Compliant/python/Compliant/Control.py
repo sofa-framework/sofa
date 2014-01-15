@@ -54,7 +54,7 @@ class PID:
     # a PythonController (see SofaPython doc)
     def update(self, dt):
         e, e_sum, e_dot = self.pid(dt)
-        
+
         tau = self.kp * e + self.ki * e_sum + self.kd * e_dot
     
         self.integral = e_sum
@@ -75,8 +75,6 @@ class PID:
 class ImplicitPID:
     
     def __init__(self, dofs):
-        self.dofs = dofs
-
         # gains
         self.kp = -1
         self.kd = -0
@@ -85,15 +83,13 @@ class ImplicitPID:
         self.pos = 0
         
         # actuation basis
-        # self.basis = vec( [0, 0, 0, 0, 0, 0] )
+        self.basis = [0, 0, 0, 0, 0, 0]
         
         self.reset()
         
         self.name = 'pid'
 
-
-    def insert( self ):
-        node = self.dofs.getContext().createChild( self.name )
+        node = dofs.getContext().createChild( self.name )
 
         self.dofs = node.createObject('MechanicalObject', 
                                       template = 'Vec1d',
@@ -104,9 +100,11 @@ class ImplicitPID:
         
         self.ff = node.createObject('UniformCompliance',
                                     template = 'Vec1d',
-                                    compliance = '1e-4' )
+                                    compliance = '0' )
         
         self.node = node
+        
+
 
     def reset(self):
         self.integral = 0
@@ -115,22 +113,50 @@ class ImplicitPID:
     # a PythonController (see SofaPython doc)
     def pre_step(self, dt):
 
+        # update mapping just in case
+        self.map.set = Tools.cat([0] + self.basis)
         self.map.offset = str(self.pos)
+        self.map.init()
 
         stiff = - self.kp - dt * self.ki
         damping = - self.kd / dt
         
         self.ff.compliance = 1.0 / stiff
-        # self.ff.rayleighStiffness = damping/stiff
+        self.ff.damping = damping
 
         # trigger compliance matrix recomputation
-        # self.ff.init()
+        self.ff.init()
 
-        # integral part
-        # self.dofs.externalForce = str( self.ki * self.integral )
+        # net explicit force
+        self.explicit = 0
         
+        # explicit integral part
+        self.apply( self.ki * self.integral )
+
+    # apply an explicit force
+    def apply(self, f):
+        self.explicit += f
+        self.dofs.externalForce = str( f )
+
+
+    # force applied at the end of time step
+    def post_force(self):
+        return self.dofs.force + self.kd * self.dofs.velocity + self.explicit
+
     # call this during onEndAnimationStep
     def post_step(self, dt):
+
         # update integral with error on time step start
-        self.integral = self.integral - dt * self.dofs.position
+        self.integral = self.integral + dt * self.dofs.position
         
+        # sanity check
+        # check = self.kp * self.dofs.position + self.kd * self.dofs.velocity + self.ki * self.integral
+        
+        # force = self.post_force()
+
+        # print 'post-step force:', force
+        # print 'should be:', check
+
+        
+
+
