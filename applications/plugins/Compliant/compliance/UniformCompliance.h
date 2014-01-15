@@ -37,9 +37,6 @@ public:
 
 	Data< Real > damping;
 
-//    /// Set a uniform, diagonal compliance. c must be a positive real. If this is a stiffness (flag isCompliance set to false) then c must be non-zero.
-//    void setCompliance( Real c );
-
     virtual void init();
 
     /// Compute the compliance matrix

@@ -9,7 +9,7 @@
 	<Node 	 name="complianceSolverScene"  >
 		<AssembledSolver />
 		<LDLTSolver/>
-                <GridMeshCreator name="loader"  filename="nofile"  rotation="90 0 0"  scale3d="1 1 1"  resolution="2 2"  trianglePattern="0" />
+                <GridMeshCreator name="loader"  filename="nofile"  rotation="90 0 0"  scale3d="1 1 1"  resolution="5 5"  trianglePattern="0" />
 		<MeshTopology name="mesh"  position="@loader.position"  edges="@loader.edges"  triangles="@loader.triangles"  quads="@loader.quads"  tetrahedra="@loader.tetras"  hexahedra="@loader.hexas" />
 		<MechanicalObject template="Vec3d" name="defoDOF"  position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1" />
 		<BoxROI template="Vec3d" name="box_roi"  box="-0.005 -0.005 -0.005 1.005 0.005 0.005"  indices="0"  drawBoxes="0" />
