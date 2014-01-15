@@ -261,7 +261,7 @@ const vector<defaulttype::BaseMatrix*>* DistanceMapping<TIn, TOut>::getKs()
     K.resizeBlocks(in.size(),in.size());
     for(size_t i=0; i<indices.size(); i++)
     {
-        K.beginBlockRow(i);
+        size_t idx = indices[i];
 
         Mat<Nin,Nin,Real> b;  // = (I - uu^T)
         for(unsigned j=0; j<Nin; j++)
@@ -278,8 +278,8 @@ const vector<defaulttype::BaseMatrix*>* DistanceMapping<TIn, TOut>::getKs()
 
 //        std::cerr<<SOFA_CLASS_METHOD<<childForce[i][0]<<std::endl;
 
-        K.createBlock(i,b);
-
+        K.beginBlockRow(idx);
+        K.createBlock(idx,b);
         K.endBlockRow();
     }
     K.compress();

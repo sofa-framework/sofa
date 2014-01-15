@@ -84,6 +84,9 @@ void ExtensionMapping<TIn, TOut>::init()
     baseMatrices.resize( 1 );
     baseMatrices[0] = &jacobian;
 
+    stiffnessBaseMatrices.resize(1);
+    stiffnessBaseMatrices[0] = &K;
+
     this->Inherit::init();  // applies the mapping, so after the Data init
 }
 
@@ -236,6 +239,45 @@ template <class TIn, class TOut>
 const vector<sofa::defaulttype::BaseMatrix*>* ExtensionMapping<TIn, TOut>::getJs()
 {
     return &baseMatrices;
+}
+
+template <class TIn, class TOut>
+const vector<defaulttype::BaseMatrix*>* ExtensionMapping<TIn, TOut>::getKs()
+{
+//    helper::ReadAccessor<Data<OutVecDeriv> > childForce (*this->toModel->read(core::ConstVecDerivId::force()));
+    const OutVecDeriv& childForce = this->toModel->readForces().ref();
+    helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
+    SeqEdges links = edgeContainer->getEdges();
+
+    K.resizeBlocks(in.size(),in.size());
+    for(size_t i=0; i<links.size(); i++)
+    {
+
+        Mat<Nin,Nin,Real> b;  // = (I - uu^T)
+        for(unsigned j=0; j<Nin; j++)
+        {
+            for(unsigned k=0; k<Nin; k++)
+            {
+                if( j==k )
+                    b[j][k] = 1. - directions[i][j]*directions[i][k];
+                else
+                    b[j][k] =    - directions[i][j]*directions[i][k];
+            }
+        }
+        b *= childForce[i][0] * invlengths[i];  // (I - uu^T)*f/l
+
+        K.beginBlockRow(links[i][0]);
+        K.createBlock(links[i][0],b);
+        K.createBlock(links[i][1],-b);
+        K.endBlockRow();
+        K.beginBlockRow(links[i][1]);
+        K.createBlock(links[i][0],-b);
+        K.createBlock(links[i][1],b);
+        K.endBlockRow();
+    }
+    K.compress();
+
+    return &stiffnessBaseMatrices;
 }
 
 template <class TIn, class TOut>

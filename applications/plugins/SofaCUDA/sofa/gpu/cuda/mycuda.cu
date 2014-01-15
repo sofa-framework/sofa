@@ -209,17 +209,21 @@ int mycudaInit(int device)
         //dev.major=0;
         //dev.minor=0;
         cudaCheck(cudaGetDeviceProperties(&dev,i),"cudaGetDeviceProperties");
+
+        size_t free, total;
+        cudaMemGetInfo(&free,&total);
+
 #if CUDA_VERSION >= 2010
-        mycudaPrintf("CUDA:  %d : \"%s\", %d MB, %d cores at %.3f GHz, revision %d.%d",i,dev.name, dev.totalGlobalMem/(1024*1024), dev.multiProcessorCount*8, dev.clockRate * 1e-6f, dev.major, dev.minor);
+        mycudaPrintf("CUDA:  %d : \"%s\", %d/%d MB, %d cores at %.3f GHz, revision %d.%d",i,dev.name, free/(1024*1024), dev.totalGlobalMem/(1024*1024), dev.multiProcessorCount*8, dev.clockRate * 1e-6f, dev.major, dev.minor);
         if (dev.kernelExecTimeoutEnabled)
             mycudaPrintf(", timeout enabled", dev.kernelExecTimeoutEnabled);
         mycudaPrintf("\n");
 #elif CUDA_VERSION >= 2000
-        mycudaPrintf("CUDA:  %d : \"%s\", %d MB, %d cores at %.3f GHz, revision %d.%d\n",i,dev.name, dev.totalGlobalMem/(1024*1024), dev.multiProcessorCount*8, dev.clockRate * 1e-6f, dev.major, dev.minor);
+        mycudaPrintf("CUDA:  %d : \"%s\", %d/%d MB, %d cores at %.3f GHz, revision %d.%d\n",i,dev.name, free/(1024*1024), dev.totalGlobalMem/(1024*1024), dev.multiProcessorCount*8, dev.clockRate * 1e-6f, dev.major, dev.minor);
 #else //if CUDA_VERSION >= 1000
-        mycudaPrintf("CUDA:  %d : \"%s\", %d MB, cores at %.3f GHz, revision %d.%d\n",i,dev.name, dev.totalGlobalMem/(1024*1024), dev.clockRate * 1e-6f, dev.major, dev.minor);
+        mycudaPrintf("CUDA:  %d : \"%s\", %d/%d MB, cores at %.3f GHz, revision %d.%d\n",i,dev.name, free/(1024*1024), dev.totalGlobalMem/(1024*1024), dev.clockRate * 1e-6f, dev.major, dev.minor);
 //#else
-//		mycudaPrintf("CUDA:  %d : \"%s\", %d MB, revision %d.%d\n",i,(dev.name==NULL?"":dev.name), dev.bytes/(1024*1024), dev.major, dev.minor);
+//		mycudaPrintf("CUDA:  %d : \"%s\", %d/%d MB, revision %d.%d\n",i,(dev.name==NULL?"":dev.name), free/(1024*1024), dev.bytes/(1024*1024), dev.major, dev.minor);
 #endif
     }
     if (device==-1)
@@ -239,8 +243,8 @@ int mycudaInit(int device)
         mycudaPrintf("CUDA: Using device %d : \"%s\"\n",device,dev.name);
         cudaCheck(cudaSetDevice(device));
         mycudaPrivateInit(device);
-
     }
+
 
 #ifdef SOFA_GPU_CUBLAS
     cublasInit();
