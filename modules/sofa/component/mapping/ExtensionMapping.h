@@ -75,7 +75,8 @@ public:
     typedef typename In::Coord InCoord;
     typedef typename In::VecCoord InVecCoord;
     typedef typename In::VecDeriv InVecDeriv;
-    typedef linearsolver::EigenSparseMatrix<TIn,TOut>    SparseMatrixEigen;
+    typedef linearsolver::EigenSparseMatrix<TIn,TOut>   SparseMatrixEigen;
+    typedef linearsolver::EigenSparseMatrix<TIn,TIn>    SparseKMatrixEigen;
     enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
     typedef defaulttype::Mat<Out::deriv_total_size, In::deriv_total_size,Real>  Block;
     typedef topology::EdgeSetTopologyContainer::SeqEdges SeqEdges;
@@ -100,6 +101,7 @@ public:
 
     virtual const sofa::defaulttype::BaseMatrix* getJ();
     virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs();
+    virtual const vector<defaulttype::BaseMatrix*>* getKs();
 
     virtual void draw(const core::visual::VisualParams* vparams);
 
@@ -111,6 +113,8 @@ protected:
     SparseMatrixEigen jacobian;                         ///< Jacobian of the mapping
     SparseMatrixEigen geometricStiffness;               ///< Stiffness due to the non-linearity of the mapping
     vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
+    SparseKMatrixEigen K;                               ///< Assembled geometric stiffness matrix
+    vector<defaulttype::BaseMatrix*> stiffnessBaseMatrices;      ///< Vector of geometric stiffness matrices, for the Compliant plugin API
     vector<InDeriv> directions;                         ///< Unit vectors in the directions of the lines
     vector< Real > invlengths;                          ///< inverse of current distances. Null represents the infinity (null distance)
 };
