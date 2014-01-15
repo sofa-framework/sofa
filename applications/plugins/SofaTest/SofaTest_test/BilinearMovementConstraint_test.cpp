@@ -105,7 +105,7 @@ struct BilinearMovementConstraint_test : public Sofa_test<typename _DataTypes::R
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
         // Create the scene from the xml file
-        std::string fileName = "C:/project/Sofa/examples/Components/constraint/BilinearConstraint.scn";
+        std::string fileName = "examples/Components/constraint/BilinearConstraint.scn";
         fileName = sofa::helper::system::DataRepository.getFile(fileName);
         root = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()));
         
