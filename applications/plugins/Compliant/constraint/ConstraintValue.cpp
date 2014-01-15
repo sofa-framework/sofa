@@ -34,7 +34,7 @@ void ConstraintValue::dynamics(SReal* dst, unsigned n) const {
 
 	mstate->copyToBuffer(dst, core::VecCoordId::position(), n);
 
-	map(dst, n) = -map(dst, n) / this->getContext()->getDt();
+    mapToEigen(dst, n) = -mapToEigen(dst, n) / this->getContext()->getDt();
 
     // TODO damping
 	

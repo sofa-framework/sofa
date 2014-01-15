@@ -36,8 +36,9 @@ public:
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
     enum { N=DataTypes::deriv_total_size };
 
-    Data< VecDeriv > diagonal; /// diagonal values
+    Data< VecDeriv > diagonal; ///< diagonal values
 
+    Data< Real > damping; ///< a unique damping value (could be diagonal to...)
 
     virtual void init();
 
@@ -49,6 +50,8 @@ public:
 
     virtual void addKToMatrix( sofa::defaulttype::BaseMatrix * matrix, double kFact, unsigned int &offset );
 
+    virtual void addBToMatrix( sofa::defaulttype::BaseMatrix * matrix, double bFact, unsigned int &offset );
+
     /// addForce does nothing when this component is processed like a compliance.
     virtual void addForce(const core::MechanicalParams *, DataVecDeriv &, const DataVecCoord &, const DataVecDeriv &);
 
@@ -58,8 +61,12 @@ public:
 protected:
     DiagonalCompliance( core::behavior::MechanicalState<DataTypes> *mm = NULL);
 
-    linearsolver::EigenBaseSparseMatrix<typename DataTypes::Real> matC; ///< compliance matrix
-    linearsolver::EigenSparseMatrix<TDataTypes,TDataTypes> matK; ///< stiffness matrix
+    typedef linearsolver::EigenBaseSparseMatrix<typename DataTypes::Real> matrix_type;
+    matrix_type matC; ///< compliance matrix
+
+    typedef linearsolver::EigenSparseMatrix<TDataTypes,TDataTypes> block_matrix_type;
+    block_matrix_type matK; ///< stiffness matrix (Negative S.D.)
+    block_matrix_type matB; /// damping matrix (Negative S.D.)
 };
 
 }

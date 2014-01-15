@@ -44,13 +44,19 @@ void UniformCompliance<DataTypes>::reinit()
         }
 
         matC.compressedMatrix.finalize();
+
+        if( helper::rabs(compliance.getValue()) <= std::numeric_limits<Real>::epsilon() && this->rayleighStiffness.getValue() )
+        {
+            serr<<"Warning: a null compliance can not generate rayleighDamping, forced to 0"<<sendl;
+            this->rayleighStiffness.setValue(0);
+        }
     }
     else matC.compressedMatrix.resize(0,0);
 
     if( !this->isCompliance.getValue() || this->rayleighStiffness.getValue() )
     {
         // the stiffness df/dx is the opposite of the inverse compliance
-        Real k = helper::rabs(compliance.getValue()) >std::numeric_limits<Real>::epsilon() ?
+        Real k = helper::rabs(compliance.getValue()) > std::numeric_limits<Real>::epsilon() ?
                 -1 / compliance.getValue() :
                 -std::numeric_limits<Real>::max();
 
@@ -67,7 +73,6 @@ void UniformCompliance<DataTypes>::reinit()
 
 
     // TODO if(this->isCompliance.getValue() && this->rayleighStiffness.getValue()) mettre rayleigh dans B mais attention à kfactor avec/sans rayleigh factor
-    // if compliance = 0 -> msg erreur, rayleigh pas possible
 
 
 	if( damping.getValue() > 0 ) {
@@ -85,19 +90,6 @@ void UniformCompliance<DataTypes>::reinit()
     else matB.compressedMatrix.resize(0,0);
 	
 }
-
-//template<class DataTypes>
-//void UniformCompliance<DataTypes>::setCompliance( Real c )
-//{
-//    if(isCompliance.getValue() )
-//        compliance.setValue(c);
-//    else {
-//        assert( c!= (Real)0 );
-//        for(unsigned i=0; i<C.size(); i++ )
-//            C[i][i] = 1/c;
-//    }
-//    compliance.setValue(C);
-//}
 
 
 template<class DataTypes>
@@ -134,10 +126,17 @@ template<class DataTypes>
 void UniformCompliance<DataTypes>::addDForce(const core::MechanicalParams *mparams, DataVecDeriv& _df,  const DataVecDeriv& _dx)
 {
     Real kfactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
-    Real bfactor = (Real)mparams->bFactor();
 
-    matK.addMult( _df, _dx, kfactor );
-    matB.addMult( _df, _dx, bfactor );
+    if( kfactor )
+    {
+        matK.addMult( _df, _dx, kfactor );
+    }
+
+    if( damping.getValue() > 0 )
+    {
+        Real bfactor = (Real)mparams->bFactor();
+        matB.addMult( _df, _dx, bfactor );
+    }
 }
 
 

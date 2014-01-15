@@ -23,7 +23,7 @@ void DampingValue::dynamics(SReal* dst, unsigned n) const
 
     // we sneakily fake constraint error with reflected-adjusted relative velocity
     mstate->copyToBuffer(dst, core::VecDerivId::velocity(), n);
-    map(dst, n) = -map(dst, n);
+    mapToEigen(dst, n) = -mapToEigen(dst, n);
 }
 
 

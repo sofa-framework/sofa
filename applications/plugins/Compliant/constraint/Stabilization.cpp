@@ -25,7 +25,7 @@ void Stabilization::correction(SReal* dst, unsigned n) const {
 	mstate->copyToBuffer(dst, core::VecCoordId::position(), n);
 	
 	// TODO needed ?
-	map(dst, n) = -map(dst, n) / this->getContext()->getDt();
+    mapToEigen(dst, n) = -mapToEigen(dst, n) / this->getContext()->getDt();
 
 	const mask_type& mask = this->mask.getValue();
 	
@@ -43,7 +43,7 @@ void Stabilization::dynamics(SReal* dst, unsigned n) const {
     assert( mask.getValue().empty() || mask.getValue().size() == n );
 	
 	mstate->copyToBuffer(dst, core::VecCoordId::position(), n);
-	map(dst, n) = -map(dst, n) / this->getContext()->getDt();
+    mapToEigen(dst, n) = -mapToEigen(dst, n) / this->getContext()->getDt();
 	
 	const mask_type& mask = this->mask.getValue();
     // zero for stabilized, since the position error will be handled by the correction

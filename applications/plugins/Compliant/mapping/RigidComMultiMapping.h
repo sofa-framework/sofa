@@ -50,7 +50,7 @@ protected:
 					   const vector<typename self::in_pos_type>& in ) {
 		const mass_type& m = mass.getValue();
 
-		map(out[0]).setZero();
+        mapToEigen(out[0]).setZero();
 		
 		unsigned off = 0;
 		total = 0;
@@ -59,13 +59,13 @@ protected:
 			
 			for(unsigned j = 0, jend = in[i].size(); j < jend; ++j) {
 				assert( off < m.size() );
-				map(out[0]) += m[off] * map(in[i][j].getCenter());
+                mapToEigen(out[0]) += m[off] * mapToEigen(in[i][j].getCenter());
 				total += m[off];
 				++off;
 			}
 		}
 
-		map(out[0]) /= total;
+        mapToEigen(out[0]) /= total;
 		
 		assert( off == m.size() );
 	}

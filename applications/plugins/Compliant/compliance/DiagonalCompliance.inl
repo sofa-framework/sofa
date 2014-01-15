@@ -16,6 +16,7 @@ DiagonalCompliance<DataTypes>::DiagonalCompliance( core::behavior::MechanicalSta
     , diagonal( initData(&diagonal, 
                          "compliance", 
                          "Compliance value diagonally applied to all the DOF."))
+    , damping( initData(&damping, Real(0), "damping", "uniform viscous damping."))
 {
 	this->isCompliance.setValue(true);
 }
@@ -74,6 +75,20 @@ void DiagonalCompliance<DataTypes>::reinit()
         matK.compress();
     }
     else matK.compressedMatrix.resize(0,0);
+
+    if( damping.getValue() > 0 ) {
+        SReal d = damping.getValue();
+
+        matB.resize(state->getMatrixSize(), state->getMatrixSize());
+
+        for(unsigned i=0, n = state->getMatrixSize(); i < n; i++) {
+            matB.compressedMatrix.startVec(i);
+            matB.compressedMatrix.insertBack(i, i) = -d;
+        }
+
+        matB.compressedMatrix.finalize();
+    }
+    else matB.compressedMatrix.resize(0,0);
 }
 
 //template<class DataTypes>
@@ -101,11 +116,17 @@ void DiagonalCompliance<DataTypes>::addKToMatrix( sofa::defaulttype::BaseMatrix 
     matK.addToBaseMatrix( matrix, kFact, offset );
 }
 
+template<class DataTypes>
+void DiagonalCompliance<DataTypes>::addBToMatrix( sofa::defaulttype::BaseMatrix * matrix, double bFact, unsigned int &offset )
+{
+    matB.addToBaseMatrix( matrix, bFact, offset );
+}
+
 
 template<class DataTypes>
 void DiagonalCompliance<DataTypes>::addForce(const core::MechanicalParams *, DataVecDeriv& _f, const DataVecCoord& _x, const DataVecDeriv& /*_v*/)
 {
-    matK.addMult( _f, _x  );
+    matK.addMult( _f, _x );
 
 //    cerr<<"UniformCompliance<DataTypes>::addForce, f after = " << f << endl;
 }
@@ -115,7 +136,16 @@ void DiagonalCompliance<DataTypes>::addDForce(const core::MechanicalParams *mpar
 {
     Real kfactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
-    matK.addMult( _df, _dx, kfactor );
+    if( kfactor )
+    {
+        matK.addMult( _df, _dx, kfactor );
+    }
+
+    if( damping.getValue() > 0 )
+    {
+        Real bfactor = (Real)mparams->bFactor();
+        matB.addMult( _df, _dx, bfactor );
+    }
 }
 
 

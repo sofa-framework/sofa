@@ -161,7 +161,7 @@ AssemblyVisitor::mat AssemblyVisitor::odeMatrix(simulation::Node* node)
             }
             else
             {
-                // interactionForceField that work on a unique set of dof are OK
+                // interactionForceFields that work on a unique set of dofs are OK
                 SingleMatrixAccessor accessor( &sqmat );
 
                 // when it is a compliant, you need to add M if mass, B but not K
