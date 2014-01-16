@@ -22,7 +22,7 @@
 #include "../deformationMapping/LinearJacobianBlock_affine.inl"
 #include "../deformationMapping/LinearJacobianBlock_quadratic.inl"
 
-#include <image/ImageTypes.h>
+#include <plugins/image/ImageTypes.h>
 
 
 
