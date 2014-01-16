@@ -132,12 +132,12 @@ public:
 
 #ifdef SOFA_HAVE_EIGEN2
 public:
-    virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs();
+    typedef vector< defaulttype::BaseMatrix* > js_type;
+    virtual const js_type* getJs();
 
 protected:
     typedef linearsolver::EigenSparseMatrix<In, Out> eigen_type;
     eigen_type eigen;
-    typedef vector< defaulttype::BaseMatrix* > js_type;
     js_type js;
 public:
 #endif
