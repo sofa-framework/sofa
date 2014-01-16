@@ -135,7 +135,7 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
         // rigid regions (one parent) are kept in the list of region (and dist remains=-1 so they will not be sampled)
         for(unsigned int i=0; i<This->Reg.size();i++)
         {
-            if(This->Reg[i].parentsToNodeIndex.size()>1)
+            if(This->Reg[i].parentsToNodeIndex.size()>1 || This->sampleRigidParts.getValue())
             {
                 cimg_forXYZ(regimg,x,y,z) if(regimg(x,y,z)==*(This->Reg[i].voronoiIndices.begin()) )
                 {
@@ -534,7 +534,7 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMA
         // rigid regions (one parent) are kept in the list of region (and dist remains=-1 so they will not be sampled)
         for(unsigned int i=0; i<This->Reg.size();i++)
         {
-            if(This->Reg[i].parentsToNodeIndex.size()>1)
+            if(This->Reg[i].parentsToNodeIndex.size()>1 || This->sampleRigidParts.getValue())
             {
                 bimg_forCVoffT(regimg,c,v,off1D,t) if(regimg(off1D,v,c,t)==*(This->Reg[i].voronoiIndices.begin()) )
                 {
@@ -941,6 +941,7 @@ public:
     Data<bool> useDijkstra;
     Data<unsigned int> iterations;
     Data<bool> evaluateShapeFunction;
+    Data<bool> sampleRigidParts;
     //@}
 
     virtual std::string getTemplateName() const    { return templateName(this); }
@@ -983,6 +984,7 @@ protected:
       , useDijkstra(initData(&useDijkstra,true,"useDijkstra","Use Dijkstra for geodesic distance computation (use fastmarching otherwise)"))
       , iterations(initData(&iterations,(unsigned int)100,"iterations","maximum number of Lloyd iterations"))
       , evaluateShapeFunction(initData(&evaluateShapeFunction,true,"evaluateShapeFunction","evaluate shape functions over integration regions for the mapping? (otherwise they will be interpolated at sample locations)"))
+      , sampleRigidParts(initData(&sampleRigidParts,false,"sampleRigidParts","sample parts influenced only by one dofs? (otherwise put only one Gauss point)"))
       , deformationMapping(NULL)
     {
     }
