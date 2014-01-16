@@ -39,7 +39,6 @@
 #include <iostream>
 #include <fstream>
 #include <algorithm>
-#include <boost/algorithm/string.hpp>
 
 namespace sofa
 {
@@ -137,7 +136,7 @@ void TransformPosition<DataTypes>::selectTransformationMethod()
                 getTransfoFromTrm();
             else if (fname.size()>=4 && (fname.substr(fname.size()-4)==".txt" || fname.substr(fname.size()-4)==".xfm"))
                 getTransfoFromTxt();
-            if (fname.size()>=4 && fname.substr(fname.size()-4)==".tfm")
+            else if (fname.size()>=4 && fname.substr(fname.size()-4)==".tfm")
                 getTransfoFromTfm();
             else
                 serr << "Unknown extension. Will use affine instead." << sendl;
@@ -202,7 +201,12 @@ void TransformPosition<DataTypes>::getTransfoFromTfm()
 
                 typedef std::vector<std::string> vecString;
                 vecString vLine;
-                boost::split(vLine, line, boost::is_any_of(" "), boost::token_compress_on);
+
+                char l[line.size()];
+                strcpy(l, line.c_str());
+                char* p;
+                for (p = strtok(l, " "); p; p = strtok(NULL, " "))
+                    vLine.push_back(std::string(p));
 
                 std::vector<Real> values;
                 for (vecString::iterator it = vLine.begin(); it < vLine.end(); it++)
@@ -267,7 +271,12 @@ void TransformPosition<DataTypes>::getTransfoFromTrm()
             }
 
             std::vector<std::string> vLine;
-            boost::split(vLine, line, boost::is_any_of(" "), boost::token_compress_on);
+
+            char l[line.size()];
+            strcpy(l, line.c_str());
+            char* p;
+            for (p = strtok(l, " "); p; p = strtok(NULL, " "))
+                vLine.push_back(std::string(p));
 
             if (vLine.size()>3 )
             {
@@ -339,7 +348,12 @@ void TransformPosition<DataTypes>::getTransfoFromTxt()
             }
 
             std::vector<std::string> vLine;
-            boost::split(vLine, line, boost::is_any_of(" "), boost::token_compress_on);
+
+            char l[line.size()];
+            strcpy(l, line.c_str());
+            char* p;
+            for (p = strtok(l, " "); p; p = strtok(NULL, " "))
+                vLine.push_back(std::string(p));
 
             if (vLine.size()>4 )
             {
@@ -417,7 +431,7 @@ void TransformPosition<DataTypes>::update()
     case SCALE :
         for (i=0; i< in.size(); ++i)
         {
-            out[i] = origin.ref() + in[i].linearProduct(scale.ref());
+            out[i] = origin.ref() + (in[i]-origin.ref()).linearProduct(scale.ref());
         }
         break;
     case SCALE_TRANSLATION :
