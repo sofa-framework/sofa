@@ -7,6 +7,7 @@ set(HEADER_FILES
     ../loader/StringMeshCreator.h 
     ../loader/MeshGmshLoader.h 
     ../loader/MeshObjLoader.h 
+	../loader/GIDMeshLoader.h
     ../loader/MeshOffLoader.h 
     ../loader/MeshTrianLoader.h 
     ../loader/MeshVTKLoader.h 
@@ -28,7 +29,8 @@ set(SOURCE_FILES
     ../loader/GridMeshCreator.cpp 
     ../loader/StringMeshCreator.cpp 
     ../loader/MeshGmshLoader.cpp 
-    ../loader/MeshObjLoader.cpp 
+	../loader/MeshObjLoader.cpp
+	../loader/GIDMeshLoader.cpp
     ../loader/MeshOffLoader.cpp 
     ../loader/MeshTrianLoader.cpp 
     ../loader/MeshVTKLoader.cpp 
