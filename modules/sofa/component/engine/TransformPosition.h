@@ -110,7 +110,7 @@ public:
 
     void update();
 
-    void draw();
+    void draw(const core::visual::VisualParams* vparams);
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
@@ -155,6 +155,9 @@ protected:
     Data<Real> f_maxRandomDisplacement; // the maximum displacement for the random generator
     Data<SetIndex> f_fixedIndices; // the indices of the elements that are not transformed
     DataFileName f_filename; //filename of an affine matrix
+    Data<bool> f_drawInput;
+    Data<bool> f_drawOutput;
+    Data<Real> f_pointSize;
     MechanicalState<DataTypes>* mstate;
     const VecCoord* x0;
 
