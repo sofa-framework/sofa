@@ -69,22 +69,22 @@ struct DataTypeInfo
     static size_t size(const DataType& /*type*/) { return 1; }
 
     template <typename T>
-    static void getValue(const DataType& /*type*/, unsigned int /*index*/, T& /*value*/)
+    static void getValue(const DataType& /*type*/, size_t /*index*/, T& /*value*/)
     {
     }
 
     static void setSize(DataType& /*type*/, size_t /*size*/) {  }
 
     template<typename T>
-    static void setValue(DataType& /*type*/, unsigned int /*index*/, const T& /*value*/)
+    static void setValue(DataType& /*type*/, size_t /*index*/, const T& /*value*/)
     {
     }
 
-    static void getValueString(const DataType& /*type*/, unsigned int /*index*/, std::string& /*value*/)
+    static void getValueString(const DataType& /*type*/, size_t /*index*/, std::string& /*value*/)
     {
     }
 
-    static void setValueString(DataType& /*type*/, unsigned int /*index*/, const std::string& /*value*/)
+    static void setValueString(DataType& /*type*/, size_t /*index*/, const std::string& /*value*/)
     {
     }
 
@@ -117,17 +117,17 @@ public:
     virtual bool Text() const = 0;
     virtual bool CopyOnWrite() const = 0;
 
-    virtual unsigned int size() const = 0;
-    virtual unsigned int size(const void* type) const = 0;
-    virtual void setSize(void* type, unsigned int size) const = 0;
+    virtual size_t size() const = 0;
+    virtual size_t size(const void* type) const = 0;
+    virtual void setSize(void* type, size_t size) const = 0;
 
-    virtual long long   getIntegerValue(const void* type, unsigned int index) const = 0;
-    virtual double      getScalarValue (const void* type, unsigned int index) const = 0;
-    virtual std::string getTextValue   (const void* type, unsigned int index) const = 0;
+    virtual long long   getIntegerValue(const void* type, size_t index) const = 0;
+    virtual double      getScalarValue (const void* type, size_t index) const = 0;
+    virtual std::string getTextValue   (const void* type, size_t index) const = 0;
 
-    virtual void setIntegerValue(void* type, unsigned int index, long long value) const = 0;
-    virtual void setScalarValue (void* type, unsigned int index, double value) const = 0;
-    virtual void setTextValue(void* type, unsigned int index, const std::string& value) const = 0;
+    virtual void setIntegerValue(void* type, size_t index, long long value) const = 0;
+    virtual void setScalarValue (void* type, size_t index, double value) const = 0;
+    virtual void setTextValue(void* type, size_t index, const std::string& value) const = 0;
 
 protected: // only derived types can instantiate this class
     AbstractTypeInfo() {}
@@ -163,51 +163,51 @@ public:
     virtual bool Text() const            { return Info::Text; }
     virtual bool CopyOnWrite() const     { return Info::CopyOnWrite; }
 
-    virtual unsigned int size() const
+    virtual size_t size() const
     {
         return Info::size();
     }
-    virtual unsigned int size(const void* type) const
+    virtual size_t size(const void* type) const
     {
         return Info::size(*(const DataType*)type);
     }
-    virtual void setSize(void* type, unsigned int size) const
+    virtual void setSize(void* type, size_t size) const
     {
         Info::setSize(*(DataType*)type, size);
     }
 
-    virtual long long getIntegerValue(const void* type, unsigned int index) const
+    virtual long long getIntegerValue(const void* type, size_t index) const
     {
         long long v = 0;
         Info::getValue(*(const DataType*)type, index, v);
         return v;
     }
 
-    virtual double    getScalarValue (const void* type, unsigned int index) const
+    virtual double    getScalarValue (const void* type, size_t index) const
     {
         double v = 0;
         Info::getValue(*(const DataType*)type, index, v);
         return v;
     }
 
-    virtual std::string getTextValue   (const void* type, unsigned int index) const
+    virtual std::string getTextValue   (const void* type, size_t index) const
     {
         std::string v;
         Info::getValueString(*(const DataType*)type, index, v);
         return v;
     }
 
-    virtual void setIntegerValue(void* type, unsigned int index, long long value) const
+    virtual void setIntegerValue(void* type, size_t index, long long value) const
     {
         Info::setValue(*(DataType*)type, index, value);
     }
 
-    virtual void setScalarValue (void* type, unsigned int index, double value) const
+    virtual void setScalarValue (void* type, size_t index, double value) const
     {
         Info::setValue(*(DataType*)type, index, value);
     }
 
-    virtual void setTextValue(void* type, unsigned int index, const std::string& value) const
+    virtual void setTextValue(void* type, size_t index, const std::string& value) const
     {
         Info::setValueString(*(DataType*)type, index, value);
     }
@@ -244,26 +244,26 @@ struct IntegerTypeInfo
     static void setSize(DataType& /*type*/, size_t /*size*/) {  }
 
     template <typename T>
-    static void getValue(const DataType &type, unsigned int index, T& value)
+    static void getValue(const DataType &type, size_t index, T& value)
     {
         if (index != 0) return;
         value = static_cast<T>(type);
     }
 
     template<typename T>
-    static void setValue(DataType &type, unsigned int index, const T& value )
+    static void setValue(DataType &type, size_t index, const T& value )
     {
         if (index != 0) return;
         type = static_cast<DataType>(value);
     }
 
-    static void getValueString(const DataType &type, unsigned int index, std::string& value)
+    static void getValueString(const DataType &type, size_t index, std::string& value)
     {
         if (index != 0) return;
         std::ostringstream o; o << type; value = o.str();
     }
 
-    static void setValueString(DataType &type, unsigned int index, const std::string& value )
+    static void setValueString(DataType &type, size_t index, const std::string& value )
     {
         if (index != 0) return;
         std::istringstream i(value); i >> type;
@@ -297,39 +297,39 @@ struct BoolTypeInfo
     static void setSize(DataType& /*type*/, size_t /*size*/) {  }
 
     template <typename T>
-    static void getValue(const DataType &type, unsigned int index, T& value)
+    static void getValue(const DataType &type, size_t index, T& value)
     {
         if (index != 0) return;
         value = static_cast<T>(type);
     }
 
     template<typename T>
-    static void setValue(DataType &type, unsigned int index, const T& value )
+    static void setValue(DataType &type, size_t index, const T& value )
     {
         if (index != 0) return;
         type = (value != 0);
     }
 
     template<typename T>
-    static void setValue(std::vector<DataType>::reference type, unsigned int index, const T& v )
+    static void setValue(std::vector<DataType>::reference type, size_t index, const T& v )
     {
         if (index != 0) return;
         type = (v != 0);
     }
 
-    static void getValueString(const DataType &type, unsigned int index, std::string& value)
+    static void getValueString(const DataType &type, size_t index, std::string& value)
     {
         if (index != 0) return;
         std::ostringstream o; o << type; value = o.str();
     }
 
-    static void setValueString(DataType &type, unsigned int index, const std::string& value )
+    static void setValueString(DataType &type, size_t index, const std::string& value )
     {
         if (index != 0) return;
         std::istringstream i(value); i >> type;
     }
 
-    static void setValueString(std::vector<DataType>::reference type, unsigned int index, const std::string& value )
+    static void setValueString(std::vector<DataType>::reference type, size_t index, const std::string& value )
     {
         if (index != 0) return;
         bool b = type;
@@ -366,26 +366,26 @@ struct ScalarTypeInfo
     static void setSize(DataType& /*type*/, size_t /*size*/) {  }
 
     template <typename T>
-    static void getValue(const DataType &type, unsigned int index, T& value)
+    static void getValue(const DataType &type, size_t index, T& value)
     {
         if (index != 0) return;
         value = static_cast<T>(type);
     }
 
     template<typename T>
-    static void setValue(DataType &type, unsigned int index, const T& value )
+    static void setValue(DataType &type, size_t index, const T& value )
     {
         if (index != 0) return;
         type = static_cast<DataType>(value);
     }
 
-    static void getValueString(const DataType &type, unsigned int index, std::string& value)
+    static void getValueString(const DataType &type, size_t index, std::string& value)
     {
         if (index != 0) return;
         std::ostringstream o; o << type; value = o.str();
     }
 
-    static void setValueString(DataType &type, unsigned int index, const std::string& value )
+    static void setValueString(DataType &type, size_t index, const std::string& value )
     {
         if (index != 0) return;
         std::istringstream i(value); i >> type;
@@ -420,26 +420,26 @@ struct TextTypeInfo
     static void setSize(DataType& /*type*/, size_t /*size*/) {  }
 
     template <typename T>
-    static void getValue(const DataType &type, unsigned int index, T& value)
+    static void getValue(const DataType &type, size_t index, T& value)
     {
         if (index != 0) return;
         std::istringstream i(type); i >> value;
     }
 
     template<typename T>
-    static void setValue(DataType &type, unsigned int index, const T& value )
+    static void setValue(DataType &type, size_t index, const T& value )
     {
         if (index != 0) return;
         std::ostringstream o; o << value; type = o.str();
     }
 
-    static void getValueString(const DataType &type, unsigned int index, std::string& value)
+    static void getValueString(const DataType &type, size_t index, std::string& value)
     {
         if (index != 0) return;
         value = type;
     }
 
-    static void setValueString(DataType &type, unsigned int index, const std::string& value )
+    static void setValueString(DataType &type, size_t index, const std::string& value )
     {
         if (index != 0) return;
         type = value;
@@ -495,7 +495,7 @@ struct FixedArrayTypeInfo
     }
 
     template <typename T>
-    static void getValue(const DataType &type, unsigned int index, T& value)
+    static void getValue(const DataType &type, size_t index, T& value)
     {
         if (BaseTypeInfo::FixedSize && BaseTypeInfo::size() == 1)
         {
@@ -522,7 +522,7 @@ struct FixedArrayTypeInfo
     }
 
     template<typename T>
-    static void setValue(DataType &type, unsigned int index, const T& value )
+    static void setValue(DataType &type, size_t index, const T& value )
     {
         if (BaseTypeInfo::FixedSize && BaseTypeInfo::size() == 1)
         {
@@ -548,7 +548,7 @@ struct FixedArrayTypeInfo
         }
     }
 
-    static void getValueString(const DataType &type, unsigned int index, std::string& value)
+    static void getValueString(const DataType &type, size_t index, std::string& value)
     {
         if (BaseTypeInfo::FixedSize && BaseTypeInfo::size() == 1)
         {
@@ -574,7 +574,7 @@ struct FixedArrayTypeInfo
         }
     }
 
-    static void setValueString(DataType &type, unsigned int index, const std::string& value )
+    static void setValueString(DataType &type, size_t index, const std::string& value )
     {
         if (BaseTypeInfo::FixedSize && BaseTypeInfo::size() == 1)
         {
@@ -647,7 +647,7 @@ struct VectorTypeInfo
     }
 
     template <typename T>
-    static void getValue(const DataType &type, unsigned int index, T& value)
+    static void getValue(const DataType &type, size_t index, T& value)
     {
         if (BaseTypeInfo::FixedSize && BaseTypeInfo::size() == 1)
         {
@@ -665,7 +665,7 @@ struct VectorTypeInfo
                 size_t n = BaseTypeInfo::size(type[i]);
                 if (index < s+n)
                 {
-                    BaseTypeInfo::getValue(type[i], index-static_cast<unsigned int>(s), value);
+                    BaseTypeInfo::getValue(type[i], index-s, value);
                     break;
                 }
                 s += n;
@@ -674,7 +674,7 @@ struct VectorTypeInfo
     }
 
     template<typename T>
-    static void setValue(DataType &type, unsigned int index, const T& value )
+    static void setValue(DataType &type, size_t index, const T& value )
     {
         if (BaseTypeInfo::FixedSize && BaseTypeInfo::size() == 1)
         {
@@ -692,7 +692,7 @@ struct VectorTypeInfo
                 size_t n = BaseTypeInfo::size(type[i]);
                 if (index < s+n)
                 {
-                    BaseTypeInfo::setValue(type[i], index-static_cast<unsigned int>(s), value);
+                    BaseTypeInfo::setValue(type[i], index-s, value);
                     break;
                 }
                 s += n;
@@ -700,7 +700,7 @@ struct VectorTypeInfo
         }
     }
 
-    static void getValueString(const DataType &type, unsigned int index, std::string& value)
+    static void getValueString(const DataType &type, size_t index, std::string& value)
     {
         if (BaseTypeInfo::FixedSize && BaseTypeInfo::size() == 1)
         {
@@ -726,7 +726,7 @@ struct VectorTypeInfo
         }
     }
 
-    static void setValueString(DataType &type, unsigned int index, const std::string& value )
+    static void setValueString(DataType &type, size_t index, const std::string& value )
     {
         if (BaseTypeInfo::FixedSize && BaseTypeInfo::size() == 1)
         {
@@ -798,7 +798,7 @@ struct SetTypeInfo
     }
 
     template <typename T>
-    static void getValue(const DataType &type, unsigned int index, T& value)
+    static void getValue(const DataType &type, size_t index, T& value)
     {
         if (BaseTypeInfo::FixedSize)
         {
@@ -823,7 +823,7 @@ struct SetTypeInfo
     }
 
     template<typename T>
-    static void setValue(DataType &type, unsigned int /*index*/, const T& value )
+    static void setValue(DataType &type, size_t /*index*/, const T& value )
     {
         if (BaseTypeInfo::FixedSize && BaseTypeInfo::size() == 1)
         {
@@ -837,7 +837,7 @@ struct SetTypeInfo
         }
     }
 
-    static void getValueString(const DataType &type, unsigned int index, std::string& value)
+    static void getValueString(const DataType &type, size_t index, std::string& value)
     {
         if (BaseTypeInfo::FixedSize)
         {
@@ -861,7 +861,7 @@ struct SetTypeInfo
         }
     }
 
-    static void setValueString(DataType &type, unsigned int /*index*/, const std::string& value )
+    static void setValueString(DataType &type, size_t /*index*/, const std::string& value )
     {
         if (BaseTypeInfo::FixedSize && BaseTypeInfo::size() == 1)
         {
