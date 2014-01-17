@@ -54,7 +54,7 @@ MatrixLinearSolver<Matrix,Vector>::~MatrixLinearSolver()
 }
 
 template<class Matrix, class Vector>
-MatrixInvertData * MatrixLinearSolver<Matrix,Vector>::getMatrixInvertData(Matrix * /*m*/)
+MatrixInvertData * MatrixLinearSolver<Matrix,Vector>::getMatrixInvertData(defaulttype::BaseMatrix * /*m*/)
 {
     if (invertData==NULL) invertData=createInvertData();
     return invertData;
