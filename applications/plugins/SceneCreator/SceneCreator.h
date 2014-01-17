@@ -32,6 +32,9 @@
 #include <sofa/component/loader/MeshObjLoader.h>
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/component/projectiveconstraintset/BilinearMovementConstraint.h>
+#include <sofa/component/odesolver/EulerImplicitSolver.h>
+#include <sofa/component/linearsolver/CGLinearSolver.h>
+#include <sofa/component/projectiveconstraintset/BilinearMovementConstraint.h>
 
 //Using double by default, if you have SOFA_FLOAT in use in you sofa-default.cfg, then it will be FLOAT.
 #include <sofa/component/typedef/Sofa_typedef.h>
@@ -157,12 +160,12 @@ template<class T> PatchTestStruct<T> createRegularGridScene(simulation::Node::SP
 {
     // Definitions
     PatchTestStruct<T> patchStruct;
-    typedef container::MechanicalObject<T> MechanicalObject;
+    typedef typename component::container::MechanicalObject<T> MechanicalObject;
     typedef typename sofa::component::mass::UniformMass <T, SReal> UniformMass;
     typedef component::topology::RegularGridTopology RegularGridTopology;
     typedef typename component::engine::BoxROI<T> BoxRoi;
     typedef typename component::engine::PairBoxROI<T> PairBoxRoi;
-    typedef projectiveconstraintset::BilinearMovementConstraint<T> BilinearMovementConstraint;
+    typedef typename component::projectiveconstraintset::BilinearMovementConstraint<T> BilinearMovementConstraint;
   
     // Root node
     root->setGravity( Coord3(0,0,0) );
@@ -171,7 +174,7 @@ template<class T> PatchTestStruct<T> createRegularGridScene(simulation::Node::SP
 
     // Node square
     simulation::Node::SPtr SquareNode = root->createChild("Square");
-
+    
     // Euler implicit solver and cglinear solver
     component::odesolver::EulerImplicitSolver::SPtr solver = addNew<component::odesolver::EulerImplicitSolver>(SquareNode,"EulerImplicitSolver");
     solver->f_rayleighStiffness.setValue(0.5);
@@ -179,7 +182,7 @@ template<class T> PatchTestStruct<T> createRegularGridScene(simulation::Node::SP
     CGLinearSolver::SPtr cgLinearSolver = addNew< CGLinearSolver >(SquareNode,"linearSolver");
 
     // Mass
-    UniformMass::SPtr mass = addNew<UniformMass>(SquareNode,"mass");
+    typename UniformMass::SPtr mass = addNew<UniformMass>(SquareNode,"mass");
 
     // Regular grid topology
     RegularGridTopology::SPtr gridMesh = addNew<RegularGridTopology>(SquareNode,"loader");
@@ -192,11 +195,11 @@ template<class T> PatchTestStruct<T> createRegularGridScene(simulation::Node::SP
     patchStruct.dofs->setSrc("@"+gridMesh->getName(), gridMesh.get());
 
     //BoxRoi to find all mesh points
-    BoxRoi::SPtr boxRoi = addNew<BoxRoi>(SquareNode,"boxRoi");
+    typename BoxRoi::SPtr boxRoi = addNew<BoxRoi>(SquareNode,"boxRoi");
     boxRoi->boxes.setValue(vecBoxRoi);
 
     //PairBoxRoi to define the constrained points = points of the border
-    PairBoxRoi::SPtr pairBoxRoi = addNew<PairBoxRoi>(SquareNode,"pairBoxRoi");
+    typename PairBoxRoi::SPtr pairBoxRoi = addNew<PairBoxRoi>(SquareNode,"pairBoxRoi");
     pairBoxRoi->inclusiveBox.setValue(inclusiveBox);
     pairBoxRoi->includedBox.setValue(includedBox);
       

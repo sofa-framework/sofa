@@ -10,7 +10,7 @@ set(SOURCE_FILES
     Matrix_test.cpp
     OBBTest.cpp
     SphereTest.cpp
-    BilinearMovementConstraint_test.cpp
+    Patch_test.cpp
     ProjectToPlaneConstraint_test.cpp
     ProjectToLineConstraint_test.cpp
     BaryMapperTest.cpp
