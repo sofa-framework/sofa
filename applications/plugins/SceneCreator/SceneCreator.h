@@ -30,10 +30,18 @@
 #include <string>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/component/loader/MeshObjLoader.h>
+#include <sofa/component/mass/UniformMass.h>
 #include <sofa/core/objectmodel/BaseData.h>
-#include <sofa/component/projectiveconstraintset/BilinearMovementConstraint.h>
+
+// Solvers
 #include <sofa/component/odesolver/EulerImplicitSolver.h>
 #include <sofa/component/linearsolver/CGLinearSolver.h>
+
+// Box roi
+#include <sofa/component/engine/PairBoxRoi.h>
+#include <sofa/component/engine/BoxROI.h>
+
+// Constraint
 #include <sofa/component/projectiveconstraintset/BilinearMovementConstraint.h>
 
 //Using double by default, if you have SOFA_FLOAT in use in you sofa-default.cfg, then it will be FLOAT.
@@ -164,9 +172,10 @@ template<class T> PatchTestStruct<T> createRegularGridScene(simulation::Node::SP
     typedef typename sofa::component::mass::UniformMass <T, SReal> UniformMass;
     typedef component::topology::RegularGridTopology RegularGridTopology;
     typedef typename component::engine::BoxROI<T> BoxRoi;
-    typedef typename component::engine::PairBoxROI<T> PairBoxRoi;
+    typedef typename sofa::component::engine::PairBoxROI<T> PairBoxRoi;
     typedef typename component::projectiveconstraintset::BilinearMovementConstraint<T> BilinearMovementConstraint;
-  
+    typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
+
     // Root node
     root->setGravity( Coord3(0,0,0) );
     root->setAnimate(false);
