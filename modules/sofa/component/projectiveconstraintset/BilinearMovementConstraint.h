@@ -121,6 +121,9 @@ protected:
     virtual ~BilinearMovementConstraint();
 
 public:
+    // Set the corner movements
+    void setCornerMovements(VecDeriv cornerMovements); 
+
     //Add or clear constraints
     void clearConstraints();
     void addConstraint(unsigned int index);

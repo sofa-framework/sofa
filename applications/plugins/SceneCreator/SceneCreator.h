@@ -30,6 +30,8 @@
 #include <string>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/component/loader/MeshObjLoader.h>
+#include <sofa/core/objectmodel/BaseData.h>
+#include <sofa/component/projectiveconstraintset/BilinearMovementConstraint.h>
 
 //Using double by default, if you have SOFA_FLOAT in use in you sofa-default.cfg, then it will be FLOAT.
 #include <sofa/component/typedef/Sofa_typedef.h>
@@ -112,7 +114,7 @@ class addNew : public objectmodel::New<T>
 {
     typedef typename T::SPtr SPtr;
 public:
-    addNew( Node::SPtr parent, const char* name="")
+ addNew( Node::SPtr parent, const char* name="")
     {
         parent->addObject(*this);
         (*this)->setName(name);
@@ -137,7 +139,77 @@ SOFA_SceneCreator_API void initScene();
 /// Clear the scene graph and return a pointer to the new root
 SOFA_SceneCreator_API simulation::Node::SPtr clearScene();
 
+/// Create a link from source to target.  
+SOFA_SceneCreator_API void setDataLink(core::objectmodel::BaseData* source, core::objectmodel::BaseData* target);
 
+/// Structure which contains the nodes and the pointers useful for the patch test
+template<class T>
+struct PatchTestStruct
+{
+   simulation::Node::SPtr SquareNode;
+   typename component::projectiveconstraintset::BilinearMovementConstraint<T>::SPtr bilinearConstraint;
+   typename component::container::MechanicalObject<T>::SPtr dofs;
+};
+
+/// Create a scene with a regular grid and a bilinear constraint for patch test
+template<class T> SOFA_SceneCreator_API PatchTestStruct<T> createRegularGridScene(simulation::Node::SPtr root ,Vec<3,SReal> startPoint, Vec<3,SReal> endPoint, unsigned numX, unsigned numY, unsigned numZ, helper::vector< Vec<6,SReal> > vecBoxRoi, Vec<6,SReal> inclusiveBox, Vec<6,SReal> includedBox);
+template<class T> PatchTestStruct<T> createRegularGridScene(simulation::Node::SPtr root, Vec<3,SReal> startPoint, Vec<3,SReal> endPoint, unsigned numX, unsigned numY, unsigned numZ, helper::vector< Vec<6,SReal> > vecBoxRoi, Vec<6,SReal> inclusiveBox, Vec<6,SReal> includedBox)
+{
+    // Definitions
+    PatchTestStruct<T> patchStruct;
+    typedef container::MechanicalObject<T> MechanicalObject;
+    typedef typename sofa::component::mass::UniformMass <T, SReal> UniformMass;
+    typedef component::topology::RegularGridTopology RegularGridTopology;
+    typedef typename component::engine::BoxROI<T> BoxRoi;
+    typedef typename component::engine::PairBoxROI<T> PairBoxRoi;
+    typedef projectiveconstraintset::BilinearMovementConstraint<T> BilinearMovementConstraint;
+  
+    // Root node
+    root->setGravity( Coord3(0,0,0) );
+    root->setAnimate(false);
+    root->setDt(0.05);
+
+    // Node square
+    simulation::Node::SPtr SquareNode = root->createChild("Square");
+
+    // Euler implicit solver and cglinear solver
+    component::odesolver::EulerImplicitSolver::SPtr solver = addNew<component::odesolver::EulerImplicitSolver>(SquareNode,"EulerImplicitSolver");
+    solver->f_rayleighStiffness.setValue(0.5);
+    solver->f_rayleighMass.setValue(0.5);
+    CGLinearSolver::SPtr cgLinearSolver = addNew< CGLinearSolver >(SquareNode,"linearSolver");
+
+    // Mass
+    UniformMass::SPtr mass = addNew<UniformMass>(SquareNode,"mass");
+
+    // Regular grid topology
+    RegularGridTopology::SPtr gridMesh = addNew<RegularGridTopology>(SquareNode,"loader");
+    gridMesh->setNumVertices(numX,numY,numZ);
+    gridMesh->setPos(startPoint[0],endPoint[0],startPoint[1],endPoint[1],startPoint[2],endPoint[2]);
+
+    //Mechanical object
+    patchStruct.dofs = addNew<MechanicalObject>(SquareNode,"mechanicalObject");
+    patchStruct.dofs->setName("mechanicalObject");
+    patchStruct.dofs->setSrc("@"+gridMesh->getName(), gridMesh.get());
+
+    //BoxRoi to find all mesh points
+    BoxRoi::SPtr boxRoi = addNew<BoxRoi>(SquareNode,"boxRoi");
+    boxRoi->boxes.setValue(vecBoxRoi);
+
+    //PairBoxRoi to define the constrained points = points of the border
+    PairBoxRoi::SPtr pairBoxRoi = addNew<PairBoxRoi>(SquareNode,"pairBoxRoi");
+    pairBoxRoi->inclusiveBox.setValue(inclusiveBox);
+    pairBoxRoi->includedBox.setValue(includedBox);
+      
+    //Bilinear constraint 
+    patchStruct.bilinearConstraint  = addNew<BilinearMovementConstraint>(SquareNode,"bilinearConstraint");
+    setDataLink(&boxRoi->f_indices,&patchStruct.bilinearConstraint->m_meshIndices);
+    setDataLink(&pairBoxRoi->f_indices,& patchStruct.bilinearConstraint->m_indices);
+    setDataLink(&pairBoxRoi->f_pointsInROI,& patchStruct.bilinearConstraint->m_constrainedPoints);
+
+    patchStruct.SquareNode = SquareNode;
+    return patchStruct;
+}
+ 
 
 }// modeling
 

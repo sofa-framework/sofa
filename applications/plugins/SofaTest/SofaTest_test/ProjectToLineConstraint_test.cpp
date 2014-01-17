@@ -60,7 +60,7 @@ struct ProjectToLineConstraint_test : public Sofa_test<typename _DataTypes::Real
     typedef typename Coord::value_type Real;
     typedef projectiveconstraintset::ProjectToLineConstraint<DataTypes> ProjectToLineConstraint;
     typedef typename ProjectToLineConstraint::Indices Indices;
-    typedef topology::PointSetTopologyContainer PointSetTopologyContainer;
+    typedef component::topology::PointSetTopologyContainer PointSetTopologyContainer;
     typedef container::MechanicalObject<DataTypes> MechanicalObject;
 
     simulation::Node::SPtr root;                 ///< Root of the scene graph, created by the constructor an re-used in the tests

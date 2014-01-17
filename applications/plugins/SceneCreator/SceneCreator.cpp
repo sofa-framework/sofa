@@ -39,7 +39,6 @@
 #include "GetVectorVisitor.h"
 #include "GetAssembledSizeVisitor.h"
 
-
 //Including Solvers and linear algebra
 #include <sofa/component/odesolver/EulerSolver.h>
 #include <sofa/component/odesolver/EulerImplicitSolver.h>
@@ -629,7 +628,11 @@ Vector getVector( core::ConstVecId id, bool indep )
     return ve;
 }
 
-
+void setDataLink(core::objectmodel::BaseData* source, core::objectmodel::BaseData* target)
+{
+    target->setParent(source);
 }
 
-}
+} // modeling
+
+} // sofa
