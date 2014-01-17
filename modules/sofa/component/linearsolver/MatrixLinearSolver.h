@@ -327,7 +327,7 @@ public :
 
 public:
 
-    MatrixInvertData * getMatrixInvertData(Matrix * m);
+    MatrixInvertData * getMatrixInvertData(defaulttype::BaseMatrix * m);
 
 protected:
 
