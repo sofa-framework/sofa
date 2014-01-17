@@ -91,8 +91,8 @@ struct Patch_test : public Sofa_test<typename _DataTypes::Real>
     void createScene2DRegularGrid()
     { 
         // Initialization
-        Vec<6,Real> box (-0.1,-0.1,0,1.1,1.1,0);
-        helper::vector< Vec<6,Real> > vecBox;
+        Vec<6,SReal> box (-0.1,-0.1,0,1.1,1.1,0);
+        helper::vector< Vec<6,SReal> > vecBox;
         vecBox.push_back(box);
 
         // Create a scene with a regular grid
@@ -102,13 +102,13 @@ struct Patch_test : public Sofa_test<typename _DataTypes::Real>
                         Vec<3,SReal>(1,1,0), // End point of regular grid
                         5,5,1,  // Resolution of the regular grid
                         vecBox, // BoxRoi to find all mesh points
-                        Vec<6,Real>(-0.1,-0.1,0,1.1,1.1,0), // inclusive box of pair box roi
-                        Vec<6,Real>(0.1,0.1,0,0.9,0.9,0)); // included box of pair box roi
+                        Vec<6,SReal>(-0.1,-0.1,0,1.1,1.1,0), // inclusive box of pair box roi
+                        Vec<6,SReal>(0.1,0.1,0,0.9,0.9,0)); // included box of pair box roi
 
         simulation::Node::SPtr SquareNode = patchStruct.SquareNode;
      
         //Force field for 2D Grid
-        MeshSpringForceField::SPtr meshSpringForceField = addNew<MeshSpringForceField> (SquareNode,"forceField");
+        typename MeshSpringForceField::SPtr meshSpringForceField = addNew<MeshSpringForceField> (SquareNode,"forceField");
         meshSpringForceField->setStiffness(10);
 
         // Set the corner movements of the bilinear constraint
@@ -125,8 +125,8 @@ struct Patch_test : public Sofa_test<typename _DataTypes::Real>
     void createScene3DRegularGrid()
     {
         // Initialization
-        Vec<6,Real> box (-0.1,-0.1,-0.1,1.1,1.1,1.1);
-        helper::vector< Vec<6,Real> > vecBox;
+        Vec<6,SReal> box (-0.1,-0.1,-0.1,1.1,1.1,1.1);
+        helper::vector< Vec<6,SReal> > vecBox;
         vecBox.push_back(box);
 
         // Create a scene with a regular grid
@@ -136,13 +136,13 @@ struct Patch_test : public Sofa_test<typename _DataTypes::Real>
                         Vec<3,SReal>(1,1,1), // End point of regular grid
                         5,5,5,  // Resolution of the regular grid
                         vecBox, // BoxRoi to find all mesh points
-                        Vec<6,Real>(-0.1,-0.1,-0.1,1.1,1.1,1.1), // inclusive box of pair box roi
-                        Vec<6,Real>(0.1,0.1,0.1,0.9,0.9,0.9)); // included box of pair box roi
+                        Vec<6,SReal>(-0.1,-0.1,-0.1,1.1,1.1,1.1), // inclusive box of pair box roi
+                        Vec<6,SReal>(0.1,0.1,0.1,0.9,0.9,0.9)); // included box of pair box roi
        
         simulation::Node::SPtr SquareNode = patchStruct.SquareNode;
   
         // Force field for 3D Grid
-        TetraForceField::SPtr tetraFEM = addNew<TetraForceField>(SquareNode,"forceField");
+        typename TetraForceField::SPtr tetraFEM = addNew<TetraForceField>(SquareNode,"forceField");
         tetraFEM->setMethod("polar");
         tetraFEM->setYoungModulus(20);
         tetraFEM->setPoissonRatio(0.4);
