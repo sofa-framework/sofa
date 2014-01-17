@@ -89,7 +89,7 @@ BilinearMovementConstraint<DataTypes>::BilinearMovementConstraint()
     if(!m_beginConstraintTime.isSet())
      m_beginConstraintTime = 0; 
     if(!m_endConstraintTime.isSet())
-        m_endConstraintTime = 200;
+        m_endConstraintTime = 20;
 
 }
 
@@ -102,6 +102,12 @@ BilinearMovementConstraint<DataTypes>::~BilinearMovementConstraint()
         delete pointHandler;
 }
 
+template <class DataTypes>
+void BilinearMovementConstraint<DataTypes>::setCornerMovements(VecDeriv cornerMovements)
+{
+     m_cornerMovements.setValue(cornerMovements);
+}
+ 
 template <class DataTypes>
 void BilinearMovementConstraint<DataTypes>::clearConstraints()
 {
@@ -152,22 +158,39 @@ void BilinearMovementConstraint<DataTypes>::init()
 
      // Find the 4 corners of the grid topology
     this->findCornerPoints();
-
 }
 
 template <class DataTypes>
 void BilinearMovementConstraint<DataTypes>::findCornerPoints()
 {
-    Coord corner0, corner1, corner2, corner3;
+    Coord corner0, corner1, corner2, corner3,corner4,corner5,corner6,corner7, point;
     // Write accessor 
     helper::WriteAccessor< Data<VecCoord > > cornerPositions = m_cornerPoints;
     helper::WriteAccessor< Data<VecCoord > > constrainedPoints = m_constrainedPoints;
+    bool isMeshin3D = false;
+    point = constrainedPoints[0];
+
+    // Search if the constrained points are in the same plane
+    for(size_t i = 0; i < constrainedPoints.size() ; i++)
+    {
+        if(CoordSize > 2 && constrainedPoints[i][2]!=point[2])
+        {
+            isMeshin3D = true;
+        }
+    }
+    std::cout << "isMesh in 3D " << isMeshin3D << std::endl;
+    
     if(constrainedPoints.size() > 0)
     {
         corner0 = constrainedPoints[0];
         corner1 = constrainedPoints[0];
         corner2 = constrainedPoints[0];
         corner3 = constrainedPoints[0];
+        corner4 = constrainedPoints[0];
+        corner5 = constrainedPoints[0];
+        corner6 = constrainedPoints[0];
+        corner7 = constrainedPoints[0];
+
         for (size_t i = 0; i < constrainedPoints.size() ; i++)
         {
             if(constrainedPoints[i][0] < corner0[0] || constrainedPoints[i][1] < corner0[1] || ( CoordSize>2 && constrainedPoints[i][2] < corner0[2] ) )
@@ -175,19 +198,39 @@ void BilinearMovementConstraint<DataTypes>::findCornerPoints()
                 corner0 = constrainedPoints[i];
             }
 
-            if(constrainedPoints[i][0] > corner2[0] || constrainedPoints[i][1] > corner2[1] || ( CoordSize>2 && constrainedPoints[i][2] > corner2[2] ) )
+            if(constrainedPoints[i][0] > corner2[0] || constrainedPoints[i][1] > corner2[1] || ( CoordSize>2 && constrainedPoints[i][2] < corner2[2] ) )
             {   
                  corner2 = constrainedPoints[i];
             }
 
-            if(constrainedPoints[i][1] < corner1[1] || constrainedPoints[i][0] > corner1[0] )
+            if(constrainedPoints[i][1] < corner1[1] || constrainedPoints[i][0] > corner1[0] || ( CoordSize>2 && constrainedPoints[i][2] < corner1[2] ))
             {   
                  corner1 = constrainedPoints[i];
             }
 
-            else if(constrainedPoints[i][0] < corner3[0] || constrainedPoints[i][1] > corner3[1])
+            if(constrainedPoints[i][0] < corner3[0] || constrainedPoints[i][1] > corner3[1] || ( CoordSize>2 && constrainedPoints[i][2] < corner3[2] ))
             {   
                  corner3 = constrainedPoints[i];
+            }
+
+            if(isMeshin3D && (constrainedPoints[i][0] < corner4[0] || constrainedPoints[i][1] < corner4[1] || (CoordSize>2 && constrainedPoints[i][2] > corner0[2] )) )
+            {
+                corner4 = constrainedPoints[i];
+            }
+
+            if(isMeshin3D && (constrainedPoints[i][0] > corner6[0] || constrainedPoints[i][1] > corner6[1] || (CoordSize>2 && constrainedPoints[i][2] > corner2[2] )) )
+            {   
+                corner6 = constrainedPoints[i];
+            }
+
+            if(isMeshin3D && (constrainedPoints[i][1] < corner5[1] || constrainedPoints[i][0] > corner5[0] || (CoordSize>2 && constrainedPoints[i][2] > corner5[2] )) )
+            {   
+                corner5 = constrainedPoints[i];
+            }
+
+            else if(isMeshin3D && (constrainedPoints[i][0] < corner7[0] || constrainedPoints[i][1] > corner7[1] || (CoordSize>2 && constrainedPoints[i][2] > corner7[2] )) )
+            {   
+                corner7 = constrainedPoints[i];
             }
          }
           
@@ -195,6 +238,15 @@ void BilinearMovementConstraint<DataTypes>::findCornerPoints()
         cornerPositions.push_back(corner1);
         cornerPositions.push_back(corner2);
         cornerPositions.push_back(corner3);
+        
+        // 3D
+        if(isMeshin3D)
+        {
+            cornerPositions.push_back(corner4);
+            cornerPositions.push_back(corner5);
+            cornerPositions.push_back(corner6);
+            cornerPositions.push_back(corner7);
+        }
     }
 }
 
@@ -244,7 +296,7 @@ void BilinearMovementConstraint<DataTypes>::projectPosition(const core::Mechanic
     //initialize final mesh Dofs positions, if it's not done
     if(meshPointsXf.size()==0)
        this->initializeFinalPositions(m_meshIndices.getValue(),xData, meshPointsX0, meshPointsXf);
-
+  
     //initialize initial constrained Dofs positions, if it's not done
     if(x0.size() == 0)
         this->initializeInitialPositions(indices,xData,x0);
@@ -276,17 +328,16 @@ void BilinearMovementConstraint<DataTypes>::getFinalPositions( VecCoord& finalPo
 {
     // Indices of mesh points
     const SetIndexArray & meshIndices = m_meshIndices.getValue();
-
+  
     // Initialize final positions
     if(meshPointsXf.size()==0)
     {this->initializeFinalPositions(meshIndices,xData,meshPointsX0,meshPointsXf);}
-    
+   
     // Set final positions
-    finalPos.resize(meshPointsXf.size());
-    for (size_t i=0; i < meshPointsXf.size() ; ++i)
+    finalPos.resize(meshIndices.size());
+    for (size_t i=0; i < meshIndices.size() ; ++i)
     {
         finalPos[meshIndices[i]] = meshPointsXf[meshIndices[i]];
-        //std::cout << "theoretical final positions of indice" <<meshIndices[i] << " = " << meshPointsXf[meshIndices[i]][0] << " , " <<meshPointsXf[meshIndices[i]][1] << " , " << meshPointsXf[meshIndices[i]][2] << std::endl;
     }
 }
 
@@ -328,33 +379,69 @@ void BilinearMovementConstraint<DataTypes>::computeInterpolatedDisplacement(int 
 {
     // For each mesh point compute the associated displacement
 
-    // The 2 barycentric coefficients for x and y
-    Real alpha, beta;
+    // The 3 barycentric coefficients along x, y and z axis
+    Real alpha, beta, gamma;
 
     // Corner points
     const VecCoord& cornerPoints = m_cornerPoints.getValue();
     if(cornerPoints.size()==0)
         this->findCornerPoints();
-    Coord corner0 = cornerPoints[0];
-    Coord corner1 = cornerPoints[1];
-//    Coord corner2 = cornerPoints[2];
-    Coord corner3 = cornerPoints[3];
-
-    // Coord of the point
-     helper::ReadAccessor<DataVecCoord> x = xData;
-     Coord point = x[pointIndice];
    
-     // Compute alpha = barycentric coefficient along the x axis
-     alpha = fabs(point[0]-corner0[0])/fabs(corner1[0]-corner0[0]);
-     
-     // Compute beta = barycentric coefficient along the y axis
-     beta = fabs(point[1]-corner0[1])/fabs(corner3[1]-corner0[1]);
+    if(cornerPoints.size() == 4)
+    {
+        Coord corner0 = cornerPoints[0];
+        Coord corner1 = cornerPoints[1];
+        Coord corner3 = cornerPoints[3];
 
-     // cornerMovements
-     const VecDeriv& cornerMovements = m_cornerMovements.getValue();
+        // Coord of the point
+         helper::ReadAccessor<DataVecCoord> x = xData;
+         Coord point = x[pointIndice];
+   
+         // Compute alpha = barycentric coefficient along the x axis
+         alpha = fabs(point[0]-corner0[0])/fabs(corner1[0]-corner0[0]);
+      
+         // Compute beta = barycentric coefficient along the y axis
+         beta = fabs(point[1]-corner0[1])/fabs(corner3[1]-corner0[1]);
+ 
+         // cornerMovements
+         const VecDeriv& cornerMovements = m_cornerMovements.getValue();
 
-     // Compute displacement by linear interpolation
-     displacement = cornerMovements[0]*(1-alpha)*(1-beta) + cornerMovements[1]*alpha*(1-beta)+ cornerMovements[2]*alpha*beta+cornerMovements[3]*(1-alpha)*beta;
+         // Compute displacement by linear interpolation
+         displacement = cornerMovements[0]*(1-alpha)*(1-beta) + cornerMovements[1]*alpha*(1-beta)+ cornerMovements[2]*alpha*beta+cornerMovements[3]*(1-alpha)*beta;
+    }
+
+    else if(cornerPoints.size() == 8)
+    {
+        Coord corner0 = cornerPoints[0];
+        Coord corner1 = cornerPoints[1];
+        Coord corner3 = cornerPoints[3];
+        Coord corner4 = cornerPoints[4];
+
+        // Coord of the point
+        helper::ReadAccessor<DataVecCoord> x = xData;
+        Coord point = x[pointIndice];
+
+        // Compute alpha = barycentric coefficient along the x axis
+        alpha = fabs(point[0]-corner0[0])/fabs(corner1[0]-corner0[0]);
+
+        // Compute beta = barycentric coefficient along the y axis
+        beta = fabs(point[1]-corner0[1])/fabs(corner3[1]-corner0[1]);
+
+        // Compute gamma = barycentric coefficient along the z axis
+        gamma = fabs(point[2]-corner0[2])/fabs(corner4[2]-corner0[2]);
+
+        // cornerMovements
+        const VecDeriv& cornerMovements = m_cornerMovements.getValue();
+
+        // Compute displacement by linear interpolation
+        displacement = (cornerMovements[0]*(1-alpha)*(1-beta) + cornerMovements[1]*alpha*(1-beta)+ cornerMovements[2]*alpha*beta+cornerMovements[3]*(1-alpha)*beta) * (1-gamma)
+        + (cornerMovements[4]*(1-alpha)*(1-beta) + cornerMovements[5]*alpha*(1-beta)+ cornerMovements[6]*alpha*beta+cornerMovements[7]*(1-alpha)*beta) * gamma;
+    }
+    else
+    {
+        std::cout << "error don't find the corner points" << std::endl;
+    }
+    
 }
 
 template <class DataTypes>

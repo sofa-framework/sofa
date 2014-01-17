@@ -183,8 +183,7 @@ void PairBoxROI<DataTypes>::update()
     const VecCoord* x0 = &f_X0.getValue();
 
     //Points
-    std::cout << "x0->size() = " << x0->size() << std::endl;
-    for( unsigned i=0; i<x0->size(); ++i )
+    for(size_t i=0; i<x0->size(); ++i )
     {
         if (isPointInBox(i,maxvb) && !isPointInBox(i,minvb))
         {
@@ -194,7 +193,7 @@ void PairBoxROI<DataTypes>::update()
     }
    
     f_indices.endEdit();
-   
+    
 }
 
 
