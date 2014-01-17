@@ -35,23 +35,13 @@
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/common/Node.h>
 
-//Including Solvers
-#include <sofa/component/odesolver/EulerSolver.h>
-#include <sofa/component/odesolver/EulerImplicitSolver.h>
-#include <sofa/component/linearsolver/CGLinearSolver.h>
-
 // Including constraint, force and mass
 #include <sofa/component/topology/RegularGridTopology.h>
 #include <sofa/component/projectiveconstraintset/BilinearMovementConstraint.h>
 #include <sofa/component/container/MechanicalObject.h>
 #include <sofa/component/interactionforcefield/MeshSpringForceField.h>
 #include <sofa/component/forcefield/TetrahedronFEMForceField.h>
-#include <sofa/component/mass/UniformMass.h>
 #include <sofa/core/MechanicalParams.h>
-
-// Including engine
-#include <sofa/component/engine/BoxROI.h>
-#include <sofa/component/engine/PairBoxRoi.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <plugins/SceneCreator/SceneCreator.h>
@@ -64,8 +54,6 @@ using std::endl;
 using namespace component;
 using namespace defaulttype;
 using namespace modeling;
-
-typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
 
 /**  Test suite for ProjectToLineConstraint.
 The test cases are defined in the #Test_Cases member group.
