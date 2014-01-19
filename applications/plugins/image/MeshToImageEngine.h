@@ -323,7 +323,7 @@ protected:
 
         for( size_t meshId=0 ; meshId<f_nbMeshes.getValue() ; ++meshId )
         {
-            if( !vf_fillInside[meshId]->getValue() || vf_values[meshId]->getValue().size() > 1 )
+            if( /*!vf_fillInside[meshId]->getValue() ||*/ vf_values[meshId]->getValue().size() > 1 )
                 rasterizeSeveralValues( meshId, im, tr );
             else
                 rasterizeUniqueValueAndFill( meshId, im, tr );
@@ -416,17 +416,31 @@ protected:
         else colorClosing = (T)this->closingValue.getValue();
 
 
-        // flood fill from the exterior point (0,0,0) with the color 3 so every voxel==3 are outside
-        if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: "<<this->getName()<<":  Filling object (mesh "<<meshId<<")..."<<std::endl;
-
-        unsigned char fillColor = (unsigned char)3;
-        imCurrent.draw_fill(0,0,0,&fillColor);
-        cimg_foroff(imCurrent,off)
+        if( vf_fillInside[meshId]->getValue() )
         {
-            if( imCurrent[off]!=fillColor ) // not outside
+            // flood fill from the exterior point (0,0,0) with the color 3 so every voxel==3 are outside
+            if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: "<<this->getName()<<":  Filling object (mesh "<<meshId<<")..."<<std::endl;
+
+            unsigned char fillColor = (unsigned char)3;
+            imCurrent.draw_fill(0,0,0,&fillColor);
+            cimg_foroff(imCurrent,off)
             {
-                if( !imCurrent[off] || imCurrent[off]==(unsigned char)1 ) im[off]=color; // inside or rasterized
-                else if( imCurrent[off]==(unsigned char)2 ) im[off]=colorClosing; // closing
+                if( imCurrent[off]!=fillColor ) // not outside
+                {
+                    if( !imCurrent[off] || imCurrent[off]==(unsigned char)1 ) im[off]=color; // inside or rasterized
+                    else if( imCurrent[off]==(unsigned char)2 ) im[off]=colorClosing; // closing
+                }
+            }
+        }
+        else
+        {
+            cimg_foroff(imCurrent,off)
+            {
+                if( imCurrent[off]!=0 ) // not outside
+                {
+                    if( !imCurrent[off] || imCurrent[off]==(unsigned char)1 ) im[off]=color; // inside or rasterized
+                    else if( imCurrent[off]==(unsigned char)2 ) im[off]=colorClosing; // closing
+                }
             }
         }
     }
@@ -453,7 +467,7 @@ protected:
         // draw all rasterized object with color 1
 
         // draw edges
-        if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: "<<this->getName()<<":  Voxelizing edges (mesh "<<meshId<<")..."<<std::endl;
+        if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: "<<this->getName()<<":  Voxelizing "<<nbedg<<" edges (mesh "<<meshId<<")..."<<std::endl;
 
 #ifdef USING_OMP_PRAGMAS
         #pragma omp parallel for
@@ -473,7 +487,7 @@ protected:
         }
 
 //            // draw filled faces
-        if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: "<<this->getName()<<":  Voxelizing triangles (mesh "<<meshId<<")..."<<std::endl;
+        if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: "<<this->getName()<<":  Voxelizing "<<nbtri<<" triangles (mesh "<<meshId<<")..."<<std::endl;
 
 #ifdef USING_OMP_PRAGMAS
         #pragma omp parallel for
