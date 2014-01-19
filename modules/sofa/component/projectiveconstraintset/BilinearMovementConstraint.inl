@@ -428,7 +428,10 @@ void BilinearMovementConstraint<DataTypes>::computeInterpolatedDisplacement(int 
         beta = fabs(point[1]-corner0[1])/fabs(corner3[1]-corner0[1]);
 
         // Compute gamma = barycentric coefficient along the z axis
-        gamma = fabs(point[2]-corner0[2])/fabs(corner4[2]-corner0[2]);
+        if( CoordSize>2 )
+            gamma = fabs(point[2]-corner0[2])/fabs(corner4[2]-corner0[2]); // 3D
+        else
+            gamma = 0; // 2D
 
         // cornerMovements
         const VecDeriv& cornerMovements = m_cornerMovements.getValue();

@@ -18,13 +18,13 @@
 
   <EulerImplicit rayleighMass="1" rayleighStiffness="0.03" />
   <CGLinearSolver />
-  <Mesh  src="@../sampler" />
+  <Mesh  src="@sampler" />
   <MechanicalObject  name="dofs" />
 
   <BarycentricShapeFunction nbRef="8" />
 
     <Node 	name="behavior"   >
-	<TopologyGaussPointSampler name="sampler" inPosition="@../dofs.rest_position" showSamples="false" method="0" order="2"/>
+	<TopologyGaussPointSampler name="sampler" inPosition="@../dofs.rest_position" method="0" order="2"/>
 	<MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
     	<LinearMapping template="Mapping&lt;Vec3d,F331&gt;"  />
 
