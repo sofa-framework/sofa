@@ -1696,8 +1696,8 @@ void Decompose<Real>::eigenDecomposition_iterative( const defaulttype::Mat<3,3,R
 template<class Real>
 void Decompose<Real>::eigenDecomposition_iterative( const defaulttype::Mat<2,2,Real> &M, defaulttype::Mat<2,2,Real> &V, defaulttype::Vec<2,Real> &diag )
 {
-    typedef defaulttype::Vec<2,Real> Vec2;
-    typedef defaulttype::Mat<2,2,Real> Mat22;
+//    typedef defaulttype::Vec<2,Real> Vec2;
+//    typedef defaulttype::Mat<2,2,Real> Mat22;
 
     Vec<2,Real> subDiag;
 
