@@ -44,7 +44,7 @@ using sofa::defaulttype::Vector3;
 
 // uncomment if you want to use the freePoint information
 // #define DETECTIONOUTPUT_FREEMOTION
-#define DETECTIONOUTPUT_BARYCENTRICINFO
+//#define DETECTIONOUTPUT_BARYCENTRICINFO
 
 
 
