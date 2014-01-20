@@ -1,7 +1,5 @@
-# cmake modules path, for our FindXXX.cmake modules
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${SOFA_CMAKE_DIR})
 
-# useful pathes
+# Path variables
 set(SOFA_CMAKE_DIR "${CMAKE_CURRENT_LIST_DIR}" CACHE INTERNAL "Path to the Sofa cmake directory")
 
 set(SOFA_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE INTERNAL "Path to the Sofa source directory")
@@ -31,10 +29,13 @@ set(SOFA_APPLICATIONS_DEV_PROJECTS_DIR "${SOFA_APPLICATIONS_DEV_DIR}/projects" C
 set(SOFA_TOOLS_DIR "${SOFA_SRC_DIR}/tools" CACHE INTERNAL "Path to the Sofa tools directory")
 set(SOFA_CUDA_DIR "${SOFA_APPLICATIONS_DIR}/plugins/SofaCUDA" CACHE INTERNAL "Path to the SofaCuda directory")
 
-# useful settings
+# CMake modules path, for our FindXXX.cmake modules
+list(APPEND CMAKE_MODULE_PATH ${SOFA_CMAKE_DIR}/find_package)
+
+# Misc
 set(SOFA_VERSION_NUM "1_0" CACHE STRING "Version number for this build.")
 
-## os-specific
+## OS-specific
 if(WIN32)
     if(CMAKE_CL_64)
         set(SOFA_LIB_OS_DIR "${SOFA_SRC_DIR}/lib/win64/" CACHE INTERNAL "Path to the Sofa os-dependent lib directory")
@@ -49,20 +50,84 @@ if(PS3)
     set(SOFA_LIB_OS_DIR "${SOFA_SRC_DIR}/lib/ps3/Common" CACHE INTERNAL "Path to the Sofa os-dependent lib directory")
 endif()
 
-# cmake modules path, for our FindXXX.cmake modules
-#set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${SOFA_CMAKE_DIR}) #moved to preProject.cmake
-
 # disable every pre-enabled modules
 foreach(dependency ${GLOBAL_DEPENDENCIES})
     unset(GLOBAL_PROJECT_ENABLED_${dependency} CACHE)
 endforeach()
 
-# clear cached variables that we regenerate each time
-unset(GLOBAL_DEPENDENCIES CACHE) # reset the dependency database (used to compute interdependencies)
-unset(GLOBAL_COMPILER_DEFINES CACHE)
-unset(GLOBAL_INCLUDE_DIRECTORIES CACHE)
+# Clear the internal cache variables that we regenerate each time
+function(sofa_resetInternalCacheVariables)
+    unset(GLOBAL_DEPENDENCIES CACHE)        # dependency database
+    unset(GLOBAL_COMPILER_DEFINES CACHE)    #
+    unset(GLOBAL_INCLUDE_DIRECTORIES CACHE) #
 
-unset(GLOBAL_ERROR_MESSAGE CACHE)
-unset(GLOBAL_WARNING_MESSAGE CACHE)
-unset(GLOBAL_LOG_MESSAGE CACHE)
-unset(GLOBAL_FORCE_RECONFIGURE CACHE)
+    unset(SOFA_FORCE_RECONFIGURE CACHE)
+    unset(SOFA_ERROR_MESSAGES CACHE)
+    unset(SOFA_WARNING_MESSAGES CACHE)
+endfunction()
+
+function(sofa_forceReconfigure)
+    set(SOFA_FORCE_RECONFIGURE 1 CACHE INTERNAL "" FORCE)
+endfunction()
+
+function(sofa_logWarning message)
+    set(SOFA_WARNING_MESSAGES ${SOFA_WARNING_MESSAGES} "${message}" CACHE INTERNAL "" FORCE)
+    message(WARNING "\n${message}\n")
+endfunction()
+
+function(sofa_logError message)
+    set(SOFA_ERROR_MESSAGES ${SOFA_ERROR_MESSAGES} "${message}" CACHE INTERNAL "" FORCE)
+    message(SEND_ERROR "\n${message}\n")
+endfunction()
+
+function(sofa_printDetailedProjectsInfo)
+    message(STATUS "Detailed projects information:")
+    message("")
+    set(projectNames ${GLOBAL_DEPENDENCIES})
+    foreach(projectName ${projectNames})
+        if(TARGET ${projectName})
+            set(dependencies ${GLOBAL_PROJECT_DEPENDENCIES_${projectName}})
+            set(defines ${GLOBAL_PROJECT_COMPILER_DEFINITIONS_${projectName}})
+            message("> ${projectName}")
+            if(defines)
+                message("  - Compiler definitions: ${defines}")
+            else()
+                message("  - No compiler definitions")
+            endif()
+            if (dependencies)
+                message("  - Dependencies:")
+                foreach(dependency ${dependencies})
+                    message("    > ${dependency}")
+                endforeach()
+            else()
+                message("  - No dependencies")
+            endif()
+        endif()
+    endforeach()
+endfunction()
+
+macro(sofa_printSummary messageList messageType)
+    if(${messageList})
+        message("> ${messageType}:")
+        foreach(MESSAGE ${${messageList}})
+            message("  - ${MESSAGE}")
+        endforeach()
+    endif()
+endmacro()
+
+function(sofa_printConfigurationReport)
+    if(SOFA-MISC_CMAKE_VERBOSE)
+        sofa_printDetailedProjectsInfo()
+    endif()
+    if(SOFA_ERROR_MESSAGES OR SOFA_WARNING_MESSAGES)
+        message("")
+        message(STATUS "Log summary:")
+        sofa_printSummary(SOFA_ERROR_MESSAGES "Errors")
+        sofa_printSummary(SOFA_WARNING_MESSAGES "Warnings")
+    endif()
+    message("")
+    if(NOT SOFA_ERROR_MESSAGES AND SOFA_FORCE_RECONFIGURE)
+        message(">>> The configuration has changed, you must configure the project again")
+    endif()
+    message("")
+endfunction()

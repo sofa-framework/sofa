@@ -1,4 +1,3 @@
-include(${SOFA_CMAKE_DIR}/preSolution.cmake)
 
 RegisterProjects("ObjectCreator" PATH "${CMAKE_CURRENT_SOURCE_DIR}/objectCreator")
 
@@ -10,5 +9,3 @@ RegisterProjects("OneParticle" OPTION "SOFA-TUTORIAL_ONE_PARTICLE" COMPILE_DEFIN
 #RegisterProjects("OneParticleWithSofaTypedefs" OPTION "SOFA-TUTORIAL_ONE_PARTICLE_WITH_SOFA_TYPEDEFS" COMPILE_DEFINITIONS "SOFA_HAVE_TUTORIALS" PATH "${CMAKE_CURRENT_SOURCE_DIR}/oneParticleWithSofaTypedefs")
 RegisterProjects("OneTetrahedron" OPTION "SOFA-TUTORIAL_ONE_TETRAHEDRON" COMPILE_DEFINITIONS "SOFA_HAVE_TUTORIALS" PATH "${CMAKE_CURRENT_SOURCE_DIR}/oneTetrahedron")
 #RegisterProjects("AnatomyModelling" OPTION "SOFA-TUTORIAL_ANATOMY_MODELLING" COMPILE_DEFINITIONS "SOFA_HAVE_TUTORIALS" PATH "${CMAKE_CURRENT_SOURCE_DIR}/anatomyModelling") # currently there is no CMakeLists.txt
-
-include(${SOFA_CMAKE_DIR}/postSolution.cmake)

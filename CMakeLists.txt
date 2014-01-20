@@ -5,19 +5,24 @@ project(${SOLUTION_NAME})
 
 # MSVC: Use solution folders.
 if(MSVC)
-	set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+    set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 endif()
 
-include(cmake/preMainSolution.cmake)
+include(cmake/environment.cmake)
+include(cmake/functions.cmake)
+include(cmake/options.cmake)
 
-if(PRECONFIGURE_DONE)
-	
-	include(cmake/preSolution.cmake)
+sofa_resetInternalCacheVariables()
 
-	include(cmake/dependencies.cmake)
-	
-	include(cmake/postSolution.cmake)
-
+if(NOT PRECONFIGURE_DONE)
+    message("")
+    message(">>> SOFA framework pre-configuration complete")
+    message(">>> Select your options and launch 'configure' or re-run cmake")
+    message("")
+    set(PRECONFIGURE_DONE 1 CACHE INTERNAL "")
+else()
+    include(cmake/externals.cmake)
+    include(cmake/buildFlags.cmake)
+    include(cmake/dependencies.cmake)
+    sofa_printConfigurationReport()
 endif()
-
-include(cmake/postMainSolution.cmake)
