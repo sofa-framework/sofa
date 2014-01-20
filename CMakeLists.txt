@@ -9,10 +9,9 @@ if(MSVC)
 endif()
 
 include(cmake/environment.cmake)
+sofa_resetInternalCacheVariables()
 include(cmake/functions.cmake)
 include(cmake/options.cmake)
-
-sofa_resetInternalCacheVariables()
 
 if(NOT PRECONFIGURE_DONE)
     message("")
