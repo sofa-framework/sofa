@@ -1,8 +1,6 @@
 set(SOLUTION_NAME "SofaComponent")
 project(${SOLUTION_NAME})
 
-include(${SOFA_CMAKE_DIR}/preSolution.cmake)
-
 RegisterProjects("SofaBaseAnimationLoop" OPTION "SOFA-LIB_COMPONENT_BASE_ANIMATION_LOOP" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaBaseAnimationLoop")
 RegisterProjects("SofaBaseCollision" OPTION "SOFA-LIB_COMPONENT_BASE_COLLISION" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaBaseCollision")
 RegisterProjects("SofaBaseLinearSolver" OPTION "SOFA-LIB_COMPONENT_BASE_LINEAR_SOLVER" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaBaseLinearSolver")
@@ -58,5 +56,3 @@ RegisterProjects("SofaTopologyMapping" OPTION "SOFA-LIB_COMPONENT_TOPOLOGY_MAPPI
 RegisterProjects("SofaUserInteraction" OPTION "SOFA-LIB_COMPONENT_USER_INTERACTION" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaUserInteraction")
 RegisterProjects("SofaValidation" OPTION "SOFA-LIB_COMPONENT_VALIDATION" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaValidation")
 RegisterProjects("SofaVolumetricData" OPTION "SOFA-LIB_COMPONENT_VOLUMETRIC_DATA" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaVolumetricData")
-
-include(${SOFA_CMAKE_DIR}/postSolution.cmake)
