@@ -376,6 +376,7 @@ int BarycentricMapperMeshTopology<In,Out>::createPointInTriangle ( const typenam
         }
     }
 
+//    std::cout<<"barycoords : "<<baryCoords[0]<<" "<<baryCoords[1]<<std::endl;
 //    const sofa::core::topology::BaseMeshTopology::Triangle& elem = this->fromTopology->getTriangle ( triangleIndex );
 //    const typename In::Coord p0 = ( *points ) [elem[0]];
 //    const typename In::Coord pA = ( *points ) [elem[1]] - p0;
