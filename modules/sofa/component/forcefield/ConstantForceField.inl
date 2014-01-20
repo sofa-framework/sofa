@@ -231,6 +231,8 @@ void ConstantForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
     }
     else
     {
+        glPushAttrib(GL_LIGHTING_BIT);
+        glEnable(GL_LIGHTING);
         for (unsigned int i=0; i<indices.size(); i++)
         {
             Real xx,xy,xz,fx,fy,fz;
@@ -251,17 +253,21 @@ void ConstantForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
 
             float norm = (float)(p2-p1).norm();
 
+//            static const defaulttype::Vec<4,float> color(1.0f,0.4f,0.4f,1.0f);
+            static const defaulttype::Vec<4,float> color(0.2,0.9,0.3,1.0f);
+
             if( aSC > 0)
             {
                 //helper::gl::drawArrow(p1,p2, norm/20.0);
-                vparams->drawTool()->drawArrow(p1,p2, norm/20.0f, defaulttype::Vec<4,float>(1.0f,0.4f,0.4f,1.0f));
+                vparams->drawTool()->drawArrow(p1,p2, norm/20.0f, color);
             }
             else
             {
                 //helper::gl::drawArrow(p2,p1, norm/20.0);
-                vparams->drawTool()->drawArrow(p2,p1, norm/20.0f, defaulttype::Vec<4,float>(1.0f,0.4f,0.4f,1.0f));
+                vparams->drawTool()->drawArrow(p2,p1, norm/20.0f, color);
             }
         }
+        glPopAttrib();
     }
 }
 
