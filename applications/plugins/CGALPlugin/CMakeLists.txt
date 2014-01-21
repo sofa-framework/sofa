@@ -3,8 +3,6 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 set(HEADER_FILES
 
     initCGALPlugin.h
-	MeshGenerationFromImage.h
-    MeshGenerationFromImage.inl
 	MeshGenerationFromPolyhedron.h
     MeshGenerationFromPolyhedron.inl
     TriangularConvexHull3D.h
@@ -16,7 +14,6 @@ set(HEADER_FILES
 set(SOURCE_FILES
 
     initCGALPlugin.cpp
-    MeshGenerationFromImage.cpp
     MeshGenerationFromPolyhedron.cpp
     TriangularConvexHull3D.cpp
     DecimateMesh.cpp
@@ -42,6 +39,13 @@ if(NOT SOFA-EXTERNAL_BOOST)
     message(FATAL_ERROR "CGALPlugin needs full boost. Please modify the SOFA-EXTERNAL_BOOST_PATH option to fix it...")
 endif()
 
+if(SOFA-PLUGIN_IMAGE)
+    list(APPEND HEADER_FILES MeshGenerationFromImage.h)
+    list(APPEND HEADER_FILES MeshGenerationFromImage.inl)
+    list(APPEND SOURCE_FILES MeshGenerationFromImage.cpp)
+    AddLinkerDependencies(${CGAL_ImageIO_LIBRARY} image)
+endif()
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
 find_package(CGAL REQUIRED)
@@ -54,21 +58,6 @@ find_package(MPFR REQUIRED)
 
 AddCompilerDefinitions("SOFA_BUILD_CGALPLUGIN")
 AddLinkerDependencies(SofaGuiQt ${Boost_LIBRARIES} ${GMP_LIBRARIES} ${MPFR_LIBRARIES} ${CGAL_LIBRARY})
-
-if(SOFA-PLUGIN_IMAGE)
-
-    set(HEADER_FILES
-	MeshGenerationFromImage.h
-        MeshGenerationFromImage.inl
-    )
-
-    set(SOURCE_FILES
-        MeshGenerationFromImage.cpp
-    )
-    
-    AddLinkerDependencies(${CGAL_ImageIO_LIBRARY} image)
-
-endif()
 
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
