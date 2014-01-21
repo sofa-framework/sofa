@@ -35,7 +35,8 @@ if(SOFA-PLUGIN_IMAGE)
     
     include_directories("${SOFA_EXTLIBS_DIR}")
     include_directories("${SOFA_APPLICATIONS_PLUGINS_DIR}")
-	include_directories(${SOFA_APPLICATIONS_PLUGINS_DIR}/image)
+
+    AddLinkerDependencies(image)
 endif()
 
 set(README_FILES
@@ -48,18 +49,5 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILE
 AddCompilerDefinitions("SOFA_BUILD_REGISTRATION")
 AddLinkerDependencies(SofaGuiQt )
 
-if(SOFA-PLUGIN_IMAGE)
-
-    if(SOFA-PLUGIN_IMAGE_OPENCV)
-    
-        AddLinkerDependencies("ml")
-        AddLinkerDependencies("cvaux")
-        AddLinkerDependencies("highgui")
-        AddLinkerDependencies("cv")
-        AddLinkerDependencies("cxcore")
-
-    endif()
-
-endif()
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
