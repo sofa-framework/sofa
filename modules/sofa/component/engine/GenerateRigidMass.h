@@ -25,6 +25,7 @@
 #ifndef SOFA_COMPONENT_ENGINE_GENERATERIGIDMASS_H
 #define SOFA_COMPONENT_ENGINE_GENERATERIGIDMASS_H
 
+#include <sofa/component/component.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/helper/io/Mesh.h>
@@ -45,10 +46,10 @@ class GenerateRigidMass : public core::DataEngine
 {
 public:
     SOFA_CLASS(GenerateRigidMass,core::DataEngine);
-protected:
+
     GenerateRigidMass();
     ~GenerateRigidMass();
-public:
+
     /// Initialization method called at graph modification, during bottom-up traversal.
     virtual void init();
     /// Update method called when variables used in precomputation are modified.
@@ -70,7 +71,6 @@ protected:
     /**
       * Data Fields
       */
-
     /// input
     Data< Real > m_density; // kg * m^-3
     Data< helper::vector< Vector3 > > m_positions;
@@ -89,7 +89,6 @@ protected:
     /**
       * Protected methods
       */
-
     /// integrates the whole mesh
     void integrateMesh();
 
@@ -113,6 +112,14 @@ public:
 
 };
 
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_GENERATERIGIDMASS_CPP)
+#ifndef SOFA_FLOAT
+extern template class SOFA_ENGINE_API GenerateRigidMass<defaulttype::Rigid3dTypes, defaulttype::Rigid3dMass>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_ENGINE_API GenerateRigidMass<defaulttype::Rigid3fTypes, defaulttype::Rigid3fMass>;
+#endif
+#endif
 
 } // namespace engine
 
