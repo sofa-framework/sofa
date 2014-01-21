@@ -30,7 +30,7 @@ set(SOFA_TOOLS_DIR "${SOFA_SRC_DIR}/tools" CACHE INTERNAL "Path to the Sofa tool
 set(SOFA_CUDA_DIR "${SOFA_APPLICATIONS_DIR}/plugins/SofaCUDA" CACHE INTERNAL "Path to the SofaCuda directory")
 
 # CMake modules path, for our FindXXX.cmake modules
-list(APPEND CMAKE_MODULE_PATH ${SOFA_CMAKE_DIR}/find_package)
+list(APPEND CMAKE_MODULE_PATH ${SOFA_CMAKE_DIR}/Modules)
 
 # Misc
 set(SOFA_VERSION_NUM "1_0" CACHE STRING "Version number for this build.")
