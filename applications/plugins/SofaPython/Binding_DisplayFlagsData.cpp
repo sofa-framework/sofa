@@ -22,11 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/visual/DisplayFlags.h>
-using namespace sofa::core::visual;
-
 #include "Binding_DisplayFlagsData.h"
 #include "Binding_Data.h"
+
+#include <sofa/core/visual/DisplayFlags.h>
+using namespace sofa::core::visual;
 
 SP_CLASS_METHODS_BEGIN(DisplayFlagsData)
 SP_CLASS_METHODS_END

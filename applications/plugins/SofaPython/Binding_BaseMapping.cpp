@@ -23,7 +23,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-
 #include "Binding_BaseMapping.h"
 #include "Binding_BaseObject.h"
 

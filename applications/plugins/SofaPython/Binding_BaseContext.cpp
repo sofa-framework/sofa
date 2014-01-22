@@ -22,17 +22,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/ObjectFactory.h>
-using namespace sofa::core;
-#include <sofa/core/objectmodel/BaseContext.h>
-using namespace sofa::core::objectmodel;
+
 
 #include "Binding_BaseContext.h"
 #include "Binding_Base.h"
 #include "Binding_Vector.h"
-
 #include "ScriptEnvironment.h"
 
+#include <sofa/core/ObjectFactory.h>
+using namespace sofa::core;
+#include <sofa/core/objectmodel/BaseContext.h>
+using namespace sofa::core::objectmodel;
 #include <sofa/simulation/common/Node.h>
 using namespace sofa::simulation;
 

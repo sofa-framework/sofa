@@ -22,15 +22,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include "Binding_Base.h"
+#include "Binding_Data.h"
+#include "Binding_DisplayFlagsData.h"
+
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/BaseData.h>
 using namespace sofa::core::objectmodel;
 #include <sofa/core/visual/DisplayFlags.h>
 using namespace sofa::core::visual;
-
-#include "Binding_Base.h"
-#include "Binding_Data.h"
-#include "Binding_DisplayFlagsData.h"
 
 extern "C" PyObject * Base_findData(PyObject *self, PyObject * args)
 {

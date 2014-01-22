@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "SceneLoaderPY.h"
 #include "PythonEnvironment.h"
+#include "SceneLoaderPY.h"
 #include "ScriptEnvironment.h"
 #include "PythonMacros.h"
 

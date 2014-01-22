@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "initSofaPython.h"
 #include "SceneLoaderPY.h"
+#include "initSofaPython.h"
 
 namespace sofa
 {

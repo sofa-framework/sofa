@@ -25,10 +25,10 @@
 #ifndef BINDING_LINEARSPRING_H
 #define BINDING_LINEARSPRING_H
 
+#include "PythonMacros.h"
+
 #include <sofa/component/interactionforcefield/SpringForceField.h>
 using namespace sofa::component::interactionforcefield;
-
-#include "PythonMacros.h"
 
 SP_DECLARE_CLASS_TYPE(LinearSpring)
 
