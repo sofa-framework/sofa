@@ -1,33 +1,35 @@
-# - Find HAPI
-# Find the native HAPI headers and libraries.
+# - Find OpenCascade
+# Find the OpenCascade headers and libraries.
 #
 #  OPENCASCADE_INCLUDE_DIR -  where to find BRep_Toolbox.hxx, etc.
 #  OPENCASCADE_LIBRARIES_DIR - where to find all the libraries
 #  OPENCASCADE_FOUND        - True if OpenCascade found.
 
-# Look for the header file.
-FIND_PATH(OPENCASCADE_INCLUDE_DIR NAMES BRep_Tool.hxx
-    PATHS ${SOFA_EXTLIBS_DIR}/OpenCASCADE*/ros/inc )
-MARK_AS_ADVANCED(OPENCASCADE_INCLUDE_DIR)
+if(WIN32)
+    find_path(OPENCASCADE_INCLUDE_DIR BRep_Tool.hxx
+        PATHS ${SOFA_EXTLIBS_DIR}/OpenCASCADE*/ros/inc )
+    find_path(OPENCASCADE_LIBRARIES_DIR TKBRep.lib
+        PATHS ${SOFA_EXTLIBS_DIR}/OpenCASCADE*/ros/win32/vc9/lib )
+else()
+    # Search standard locations
+    find_path(OPENCASCADE_INCLUDE_DIR BRep_Tool.hxx PATH_SUFFIXES opencascade)
+    find_library(OPENCASCADE_LIBRARIES TKBRep)
+    mark_as_advanced(OPENCASCADE_LIBRARIES)
+    get_filename_component(OPENCASCADE_LIBRARIES_DIR ${OPENCASCADE_LIBRARIES} PATH CACHE)
+endif()
+mark_as_advanced(OPENCASCADE_INCLUDE_DIR)
+mark_as_advanced(OPENCASCADE_LIBRARIES_DIR)
 
-FIND_PATH(OPENCASCADE_LIBRARIES_DIR NAMES TKBRep.lib
-    PATHS ${SOFA_EXTLIBS_DIR}/OpenCASCADE*/ros/win32/vc9/lib )
-MARK_AS_ADVANCED(OPENCASCADE_LIBRARIES_DIR)
-
-IF(OPENCASCADE_INCLUDE_DIR AND OPENCASCADE_LIBRARIES_DIR)
-
-    SET(OPENCASCADE_FOUND 1)
-    SET(OPENCASCADE_FOUND ${OPENCASCADE_FOUND} )
-
-ENDIF(OPENCASCADE_INCLUDE_DIR AND OPENCASCADE_LIBRARIES_DIR)
+if(OPENCASCADE_INCLUDE_DIR AND OPENCASCADE_LIBRARIES_DIR)
+    set(OPENCASCADE_FOUND 1)
+endif()
 
 # Report the results.
-IF(NOT OPENCASCADE_FOUND)
-    SET(OPENCASCADE_DIR_MESSAGE
-        "OPENCASCADE was not found. Make sure OPENCASCADE_INCLUDE_DIR and OPENCASCADE_LIBRARIES_DIR are set.")
-    IF(OPENCASCADE_FIND_REQUIRED)
-        MESSAGE(FATAL_ERROR "${OPENCASCADE_DIR_MESSAGE}")
-    ELSEIF(NOT OPENCASCADE_FIND_QUIETLY)
-        MESSAGE(STATUS "${OPENCASCADE_DIR_MESSAGE}")
-    ENDIF(OPENCASCADE_FIND_REQUIRED)
-ENDIF(NOT OPENCASCADE_FOUND)
+if(NOT OPENCASCADE_FOUND)
+    set(msg "Unable to fine OpenCascade.")
+    if(OpenCascade_FIND_REQUIRED)
+        message(FATAL_ERROR "${msg}")
+    else()
+        message("${msg}")
+    endif()
+endif()

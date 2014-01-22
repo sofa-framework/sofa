@@ -9,7 +9,6 @@ if(MSVC)
 endif()
 
 include(cmake/environment.cmake)
-sofa_resetInternalCacheVariables()
 include(cmake/functions.cmake)
 include(cmake/options.cmake)
 

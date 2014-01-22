@@ -363,7 +363,7 @@ elseif(SOFA-MISC_USE_DOUBLE AND NOT SOFA-MISC_USE_FLOAT)
 endif()
 
 # SSE
-option(SOFA-MISC_VECTORIZE "Enable SSE2 instructions")
+option(SOFA-MISC_VECTORIZE "Enable SSE2 instructions (only on Windows for now)" OFF)
 
 # use OpenMP multithreading
 option(SOFA-MISC_OPENMP "Use OpenMP multithreading" OFF)
