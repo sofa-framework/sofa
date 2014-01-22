@@ -56,15 +56,14 @@ foreach(dependency ${GLOBAL_DEPENDENCIES})
 endforeach()
 
 # Clear the internal cache variables that we regenerate each time
-function(sofa_resetInternalCacheVariables)
-    unset(GLOBAL_DEPENDENCIES CACHE)        # dependency database
-    unset(GLOBAL_COMPILER_DEFINES CACHE)    #
-    unset(GLOBAL_INCLUDE_DIRECTORIES CACHE) #
+unset(GLOBAL_DEPENDENCIES CACHE)        # dependency database
+unset(GLOBAL_COMPILER_DEFINES CACHE)    #
+unset(GLOBAL_INCLUDE_DIRECTORIES CACHE) #
 
-    unset(SOFA_FORCE_RECONFIGURE CACHE)
-    unset(SOFA_ERROR_MESSAGES CACHE)
-    unset(SOFA_WARNING_MESSAGES CACHE)
-endfunction()
+unset(SOFA_FORCE_RECONFIGURE CACHE)
+unset(SOFA_ERROR_MESSAGES CACHE)
+unset(SOFA_WARNING_MESSAGES CACHE)
+
 
 function(sofa_forceReconfigure)
     set(SOFA_FORCE_RECONFIGURE 1 CACHE INTERNAL "" FORCE)
