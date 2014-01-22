@@ -23,9 +23,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
+#include "PythonEnvironment.h"
 #include "ScriptController.h"
 #include "ScriptEnvironment.h"
-#include "PythonEnvironment.h"
 
 #include <sofa/core/objectmodel/GUIEvent.h>
 #include <sofa/core/objectmodel/MouseEvent.h>

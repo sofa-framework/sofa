@@ -22,11 +22,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/objectmodel/BaseContext.h>
-using namespace sofa::core::objectmodel;
 
 #include "Binding_BaseObject.h"
 #include "Binding_Base.h"
+
+#include <sofa/core/objectmodel/BaseContext.h>
+using namespace sofa::core::objectmodel;
 
 extern "C" PyObject * BaseObject_init(PyObject *self, PyObject * /*args*/)
 {

@@ -25,10 +25,10 @@
 #ifndef BINDING_VEC3_H
 #define BINDING_VEC3_H
 
+#include "PythonMacros.h"
+
 #include <sofa/defaulttype/Vec.h>
 using namespace sofa::defaulttype;
-
-#include "PythonMacros.h"
 
 SP_DECLARE_CLASS_TYPE(Vector3)
 

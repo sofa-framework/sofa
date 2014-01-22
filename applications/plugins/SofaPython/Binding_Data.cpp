@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include "Binding_Data.h"
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/core/objectmodel/Data.h>
@@ -35,7 +36,6 @@ using namespace sofa::defaulttype;
 // se servir du DataTypeInfo pour utiliser directement les bons type :-)
 // Il y a un seul type "Data" exposé en python, le transtypage est géré automatiquement
 
-#include "Binding_Data.h"
 
 SP_CLASS_ATTR_GET(Data,name)(PyObject *self, void*)
 {

@@ -22,11 +22,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include "PythonMacros.h"
+
 #include "Binding_SofaModule.h"
 #include "Binding_BaseObject.h"
 #include "Binding_BaseState.h"
 #include "Binding_Node.h"
-#include "PythonMacros.h"
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/gui/BaseGUI.h>

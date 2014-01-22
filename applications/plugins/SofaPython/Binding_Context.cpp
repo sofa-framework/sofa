@@ -22,11 +22,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/objectmodel/Context.h>
-using namespace sofa::core::objectmodel;
 
 #include "Binding_Context.h"
 #include "Binding_BaseContext.h"
+
+#include <sofa/core/objectmodel/Context.h>
+using namespace sofa::core::objectmodel;
 
 
 SP_CLASS_METHODS_BEGIN(Context)
