@@ -362,6 +362,9 @@ elseif(SOFA-MISC_USE_DOUBLE AND NOT SOFA-MISC_USE_FLOAT)
     list(APPEND compilerDefines SOFA_DOUBLE)
 endif()
 
+# SSE
+option(SOFA-MISC_VECTORIZE "Enable SSE2 instructions")
+
 # use OpenMP multithreading
 option(SOFA-MISC_OPENMP "Use OpenMP multithreading" OFF)
 
