@@ -59,6 +59,10 @@ protected:
     HausdorffDistance();
 
     virtual ~HausdorffDistance() {}
+
+    void handleEvent(core::objectmodel::Event *event);
+    void onBeginAnimationStep(const double /*dt*/);
+
 public:
     void init();
 
