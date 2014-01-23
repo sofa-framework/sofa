@@ -314,11 +314,15 @@ protected:
         // update image extents
         unsigned int dim[3];
         for(size_t j=0; j<3; j++) dim[j]=ceil((BB[j][1]-BB[j][0])/tr->getScale()[j]+(Real)2.0*this->padSize.getValue());
-        iml->getCImgList().assign(1,dim[0],dim[1],dim[2],1);
+        
+		if(iml->getCImgList().size() == 0)
+			iml->getCImgList().assign(1,dim[0],dim[1],dim[2],1);
+		else
+			// Just realloc the memory of the image to suit new size
+			iml->getCImgList()(0).assign(dim[0],dim[1],dim[2],1);
 
-
-
-        CImg<T>& im=iml->getCImg();
+		// Keep it as a pointer since the code will be called recursively
+        CImg<T>& im= iml->getCImg();
         im.fill((T)0);
 
         for( size_t meshId=0 ; meshId<f_nbMeshes.getValue() ; ++meshId )
@@ -338,6 +342,11 @@ protected:
     // regular rasterization like first implementation, with inside filled by the unique value
     void rasterizeUniqueValueAndFill( unsigned meshId, CImg<T>& im, const waTransform& tr )
     {
+		vf_positions[meshId]->cleanDirty();
+		vf_triangles[meshId]->cleanDirty();
+		vf_edges[meshId]->cleanDirty();
+		closingTriangles.cleanDirty();
+
         raPositions pos(*this->vf_positions[meshId]);       unsigned int nbp = pos.size();
         raTriangles tri(*this->vf_triangles[meshId]);       unsigned int nbtri = tri.size();
         raEdges edg(*this->vf_edges[meshId]);               unsigned int nbedg = edg.size();
@@ -510,6 +519,9 @@ protected:
 
 
         // draw closing faces with color 2
+
+		// This will avoid to cause recursion double deletion
+		closingTriangles.cleanDirty();
 
         raTriangles cltri(this->closingTriangles);
         unsigned previousClosingTriSize = cltri.size();
