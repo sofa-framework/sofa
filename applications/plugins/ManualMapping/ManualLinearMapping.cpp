@@ -62,7 +62,7 @@ int ManualLinearMappingClass = core::RegisterObject("Maps displacement from subs
 
 
 #ifndef SOFA_FLOAT
-template class SOFA_ManualMapping_API ManualLinearMapping< Vec1dTypes, Vec3dTypes >;
+template class SOFA_ManualMapping_API ManualLinearMapping< Vec3dTypes, Vec3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
 template class SOFA_ManualMapping_API ManualLinearMapping< Vec3fTypes, Vec3fTypes >;
