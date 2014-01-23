@@ -32,7 +32,8 @@
 #include "HausdorffDistance.h"
 #include <sofa/helper/gl/template.h>
 #include <iostream>
-
+#include <sofa/core/objectmodel/Event.h>
+#include <sofa/simulation/common/AnimateBeginEvent.h>
 
 namespace sofa
 {
@@ -60,6 +61,8 @@ HausdorffDistance<DataTypes>::HausdorffDistance()
     d21.setGroup("Output");
     d12.setGroup("Output");
     max.setGroup("Output");
+
+    f_listening.setValue(true);
 
 }
 
@@ -130,6 +133,19 @@ void HausdorffDistance<DataTypes>::computeDistances()
         max.setValue(max21);
     else
         max.setValue(max12);
+}
+
+template<class DataTypes>
+void HausdorffDistance<DataTypes>::handleEvent(core::objectmodel::Event *event)
+{
+    if (dynamic_cast<sofa::simulation::AnimateBeginEvent *>(event))
+        this->onBeginAnimationStep(this->getContext()->getDt());
+}
+
+template <class DataTypes>
+void HausdorffDistance<DataTypes>::onBeginAnimationStep(const double /*dt*/)
+{
+        update();
 }
 
 } // namespace engine
