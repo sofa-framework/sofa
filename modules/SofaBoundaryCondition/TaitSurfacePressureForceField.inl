@@ -68,7 +68,7 @@ TaitSurfacePressureForceField<DataTypes>::TaitSurfacePressureForceField():
     m_currentSurfaceArea(initData(&m_currentSurfaceArea, (Real)0.0, "currentSurfaceArea", "OUT: Current surface area, as computed from the last surface position")),
     m_drawForceScale(initData(&m_drawForceScale, (Real)0.001, "drawForceScale", "DEBUG: scale used to render force vectors")),
     m_drawForceColor(initData(&m_drawForceColor, defaulttype::Vec4f(0,1,1,1), "drawForceColor", "DEBUG: color used to render force vectors")),
-    m_volumeAfterTC(initData(&m_volumeAfterTC, (Real)0.0, "volumeAfterTC", "OUT: Volume after a topology change")),
+    m_volumeAfterTC(initData(&m_volumeAfterTC, "volumeAfterTC", "OUT: Volume after a topology change")),
     m_surfaceAreaAfterTC(initData(&m_surfaceAreaAfterTC, (Real)0.0, "surfaceAreaAfterTC", "OUT: Surface area after a topology change")),
     m_topology(NULL),
     lastTopologyRevision(-1)
@@ -176,8 +176,10 @@ void TaitSurfacePressureForceField<DataTypes>::updateFromTopology()
     {
         if (lastTopologyRevision >= 0)
             serr << "NEW TOPOLOGY v" << m_topology->getRevision() << sendl;
+
         lastTopologyRevision = m_topology->getRevision();
         computePressureTriangles();
+
         computeMeshVolumeAndArea(*m_volumeAfterTC.beginEdit(), *m_surfaceAreaAfterTC.beginEdit(), this->mstate->read(core::ConstVecCoordId::restPosition()));
         m_volumeAfterTC.endEdit();
         m_surfaceAreaAfterTC.endEdit();
@@ -187,6 +189,7 @@ void TaitSurfacePressureForceField<DataTypes>::updateFromTopology()
 			m_initialSurfaceArea.setValue(m_surfaceAreaAfterTC.getValue());
 		}
     }
+
     m_v0.setValue(m_initialVolume.getValue() + m_currentInjectedVolume.getValue());
 }
 
@@ -227,7 +230,12 @@ void TaitSurfacePressureForceField<DataTypes>::addForce(const core::MechanicalPa
     Real currentStiffness = 0;
     Real currentPressure = 0;
 	// apply volume correction after a topological change
-	currentVolume = currentVolume - (m_volumeAfterTC.getValue() - m_initialVolume.getValue());
+
+    if (m_volumeAfterTC.isSet())
+    {
+	    currentVolume -= (m_volumeAfterTC.getValue() - m_initialVolume.getValue());
+    }
+
     computePressureAndStiffness(currentPressure, currentStiffness, currentVolume, m_v0.getValue());
     m_currentPressure.setValue(currentPressure);
     m_currentStiffness.setValue(currentStiffness);
