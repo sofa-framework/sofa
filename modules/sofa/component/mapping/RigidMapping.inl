@@ -626,7 +626,9 @@ void RigidMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/
 template <class TIn, class TOut>
 void RigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams /* PARAMS FIRST */, core::MultiVecDerivId parentForceChangeId, core::ConstMultiVecDerivId )
 {
-    if( mparams->symmetricMatrix() ) return;  // This method corresponds to a non-symmetric matrix, due to the non-commutativity of the group of rotations.
+    if( mparams->symmetricMatrix() )
+        return;  // This method corresponds to a non-symmetric matrix, due to the non-commutativity of the group of rotations.
+
     helper::ReadAccessor<Data<VecDeriv> > childForces (*mparams->readF(this->toModel));
     helper::WriteAccessor<Data<InVecDeriv> > parentForces (*parentForceChangeId[this->fromModel.get(mparams)].write());
     helper::ReadAccessor<Data<InVecDeriv> > parentDisplacements (*mparams->readDx(this->fromModel));

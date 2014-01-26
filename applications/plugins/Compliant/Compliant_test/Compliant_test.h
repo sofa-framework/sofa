@@ -25,6 +25,10 @@
 /** \file Compliant test suite main file */
 // Francois Faure,
 
+/** \page Page_CompliantTestSuite Compliant plugin test suite
+  */
+
+
 #include <plugins/SofaTest/Solver_test.h>
 
 #include <sofa/simulation/graph/DAGSimulation.h>
@@ -72,9 +76,8 @@ using namespace sofa::component;
 using namespace modeling;
 using sofa::helper::vector;
 
-/** Test suite for matrix assembly of class sofa::component::odesolver::ComplianceSolver.
-The unit tests are defined in group  \ref ComplianceSolver_Unit_Tests
- */
+
+/** Base class for tests of the Compliance plugin. Contains typedefs and helpers */
 class CompliantSolver_test : public Solver_test
 {
 protected:

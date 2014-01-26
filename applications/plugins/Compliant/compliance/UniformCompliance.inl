@@ -53,8 +53,9 @@ void UniformCompliance<DataTypes>::reinit()
     }
     else matC.compressedMatrix.resize(0,0);
 
-    if( !this->isCompliance.getValue() || this->rayleighStiffness.getValue() )
-    {
+    // matK must be computed since it is used by MechanicalComputeComplianceForceVisitor to compute the compliance forces
+//    if( !this->isCompliance.getValue() || this->rayleighStiffness.getValue() )
+//    {
         // the stiffness df/dx is the opposite of the inverse compliance
         Real k = helper::rabs(compliance.getValue()) > std::numeric_limits<Real>::epsilon() ?
                 -1 / compliance.getValue() :
@@ -68,8 +69,8 @@ void UniformCompliance<DataTypes>::reinit()
         }
 
         matK.compressedMatrix.finalize();
-    }
-    else matK.compressedMatrix.resize(0,0);
+//    }
+//    else matK.compressedMatrix.resize(0,0);
 
 
     // TODO if(this->isCompliance.getValue() && this->rayleighStiffness.getValue()) mettre rayleigh dans B mais attention à kfactor avec/sans rayleigh factor

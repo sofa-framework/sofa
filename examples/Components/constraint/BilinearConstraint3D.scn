@@ -4,7 +4,7 @@
   <Node 	name="Square"  >
     <EulerImplicitSolver name="Euler Implicit"  printLog="0"  rayleighStiffness="0.5"  rayleighMass="0.5"  vdamping="0"  verbose="0" />
     <CGLinearSolver template="GraphScattered" name="CG Solver"  printLog="0"  iterations="40"  tolerance="1e-06"  threshold="1e-10"  verbose="0" />
-    <RegularGrid name ="loader" nx="3" ny="3" nz="3" xmin="0" xmax="1" ymin="0" ymax="1" zmin="0" zmax="1" />
+    <RegularGrid name ="loader" nx="5" ny="5" nz="5" xmin="0" xmax="1" ymin="0" ymax="1" zmin="0" zmax="1" />
     <MechanicalObject template="Vec3d" name="mObject1" position="@loader.position"  showIndices="true" showIndicesScale="0.0005" />
     <UniformMass template="Vec3d" totalmass="1"/>
     <TetrahedronFEMForceField template="Vec3d" name="forcefield" youngModulus="200" poissonRatio="0.4" method="polar" />
