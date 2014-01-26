@@ -57,8 +57,9 @@ void DiagonalCompliance<DataTypes>::reinit()
     }
     else matC.compressedMatrix.resize(0,0);
 
-    if( !this->isCompliance.getValue() || this->rayleighStiffness.getValue() )
-    {
+    // matK must be computed since it is used by MechanicalComputeComplianceForceVisitor to compute the compliance forces
+//    if( !this->isCompliance.getValue() || this->rayleighStiffness.getValue() )
+//    {
         matK.resize(state->getMatrixSize(), state->getMatrixSize());
 
         unsigned int row = 0;
@@ -66,15 +67,13 @@ void DiagonalCompliance<DataTypes>::reinit()
         {
             for(unsigned int j = 0; j < m; ++j)
             {
-    //            matC.beginRow(row);
                 matK.insertBack(row, row, -1.0/diagonal.getValue()[i][j]);
-    //            matC.add(row, row, diagonal.getValue()[i][j]);
                 ++row;
             }
         }
         matK.compress();
-    }
-    else matK.compressedMatrix.resize(0,0);
+//    }
+//    else matK.compressedMatrix.resize(0,0);
 
     if( damping.getValue() > 0 ) {
         SReal d = damping.getValue();
