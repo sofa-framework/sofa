@@ -226,6 +226,10 @@ public:
 
         return this->mapper->addPointInLine ( index, baryCoords );
     }
+
+    int addPointB(const Coord& P, int elementId, Real& r){
+        return BaseContactMapper<DataTypes>::addPointB(P,elementId,r);
+    }
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_MESH_COLLISION)
