@@ -49,6 +49,10 @@ void ManualLinearMapping<TIn, TOut>::init()
 {
     Inherit::init();
 
+	// init js
+	js.clear();
+	js.push_back(&_matrixJ);
+
     // resize output
     this->toModel->resize( _matrixJ.rowSize() / NOut );
 }
