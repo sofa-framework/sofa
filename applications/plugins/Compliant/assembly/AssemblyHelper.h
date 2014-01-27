@@ -84,6 +84,7 @@ static void add_shifted_right( densemat& res, const mat& m, unsigned off, SReal 
 }
 
 
+/// return the shifted matrix @m (so returns a larger matrix with nb col = @total_cols) where @m begin at the index @off (m is possibly multiplied by @factor)
 template<class real>
 static Eigen::SparseMatrix<real, Eigen::RowMajor> shifted_matrix( const Eigen::SparseMatrix<real, Eigen::RowMajor>& m, unsigned off, unsigned total_cols, real factor = 1.0 )
 {

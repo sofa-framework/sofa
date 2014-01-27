@@ -67,7 +67,12 @@ void DiagonalCompliance<DataTypes>::reinit()
         {
             for(unsigned int j = 0; j < m; ++j)
             {
-                matK.insertBack(row, row, -1.0/diagonal.getValue()[i][j]);
+                // the stiffness df/dx is the opposite of the inverse compliance
+                Real k = diagonal.getValue()[i][j] > std::numeric_limits<Real>::epsilon() ?
+                        -1 / diagonal.getValue()[i][j] :
+                        -1 / std::numeric_limits<Real>::epsilon();
+
+                matK.insertBack(row, row, k);
                 ++row;
             }
         }
@@ -125,7 +130,8 @@ void DiagonalCompliance<DataTypes>::addBToMatrix( sofa::defaulttype::BaseMatrix 
 template<class DataTypes>
 void DiagonalCompliance<DataTypes>::addForce(const core::MechanicalParams *, DataVecDeriv& _f, const DataVecCoord& _x, const DataVecDeriv& /*_v*/)
 {
-    matK.addMult( _f, _x );
+//    if( matK.compressedMatrix.nonZeros() )
+        matK.addMult( _f, _x );
 
 //    cerr<<"UniformCompliance<DataTypes>::addForce, f after = " << f << endl;
 }

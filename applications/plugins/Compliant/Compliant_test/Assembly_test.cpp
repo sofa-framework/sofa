@@ -1,5 +1,6 @@
 #include "Compliant_test.h"
 
+#include "../assembly/AssemblyVisitor.h"
 
 
 namespace sofa
@@ -23,6 +24,40 @@ struct Assembly_test : public CompliantSolver_test
         Vector f,phi,dv,lambda;
     } expected;
 
+    struct
+    {
+        SparseMatrix M /*, K*/;
+    } assembled;
+
+    /// assembling the system with the given params (useful to assemble the mass or stiffness matrices alone)
+    /// @warning the scene must be initialized
+    static SparseMatrix getAssembledImplicitMatrix( Node::SPtr node, const core::MechanicalParams* mparams )
+    {
+        simulation::AssemblyVisitor assemblyVisitor(mparams);
+        node->getContext()->executeVisitor( &assemblyVisitor );
+        component::linearsolver::AssembledSystem sys = assemblyVisitor.assemble(); // assemble system
+        return sys.H;
+    }
+
+    /// assembling the mass matrix alone
+    /// @warning the scene must be initialized
+    static SparseMatrix getAssembledMassMatrix( Node::SPtr node, core::MechanicalParams mparams=*core::MechanicalParams::defaultInstance() )
+    {
+        mparams.setMFactor( 1 );
+        mparams.setBFactor( 0 );
+        mparams.setKFactor( 0 );
+        return getAssembledImplicitMatrix( node, &mparams );
+    }
+
+    /// assembling the stiffness matrix alone
+    /// @warning the scene must be initialized
+    static SparseMatrix getAssembledStiffnessMatrix( Node::SPtr node, core::MechanicalParams mparams=*core::MechanicalParams::defaultInstance() )
+    {
+        mparams.setMFactor( 0 );
+        mparams.setBFactor( 0 );
+        mparams.setKFactor( 1 );
+        return getAssembledImplicitMatrix( node, &mparams );
+    }
 
     /** @defgroup ComplianceSolver_Unit_Tests ComplianceSolver Assembly Tests
      These methods create a scene, run a short simulation, and save the expected matrix and vector values in the  expected member struct.
@@ -95,10 +130,13 @@ struct Assembly_test : public CompliantSolver_test
 
 
         sofa::simulation::getSimulation()->init(root.get());
+
+        assembled.M = getAssembledMassMatrix( root );
+
         sofa::simulation::getSimulation()->animate(root.get(),1.0);
 
         // actual results
-        //        cout<<"M = " << complianceSolver->M() << endl;
+        //        cout<<"M = " << assembled.M << endl;
         //        cout<<"J = " << complianceSolver->J() << endl;
         //        cout<<"C = " << complianceSolver->C() << endl;
         //        cout<<"P = " << complianceSolver->P() << endl;
@@ -174,6 +212,9 @@ struct Assembly_test : public CompliantSolver_test
 
 
         sofa::simulation::getSimulation()->init(root.get());
+
+        assembled.M = getAssembledMassMatrix( root );
+
         sofa::simulation::getSimulation()->animate(root.get(),1.0);
 
         //        cerr<<"lambda = " << complianceSolver->getLambda().transpose() << endl;
@@ -266,6 +307,7 @@ struct Assembly_test : public CompliantSolver_test
         compliance->compliance.setValue(0);
 
 
+
         // =================  Expected results
         expected.M = expected.P = DenseMatrix::Identity( 3*n, 3*n );
         expected.C = DenseMatrix::Zero(n,n); // null
@@ -289,10 +331,13 @@ struct Assembly_test : public CompliantSolver_test
 
         //  ================= Run
         sofa::simulation::getSimulation()->init(root.get());
+
+        assembled.M = getAssembledMassMatrix( root );
+
         sofa::simulation::getSimulation()->animate(root.get(),1.0);
 
         // actual results
-        //        cerr<<"M = " << endl << DenseMatrix(complianceSolver->M()) << endl;
+        //        cerr<<"M = " << endl << DenseMatrix(assembled.M) << endl;
         //        cerr<<"result, J = " << endl << DenseMatrix(complianceSolver->J()) << endl;
         //        cerr<<"result, C = " << endl << DenseMatrix(complianceSolver->C()) << endl;
         //        cerr<<"P = " << endl << DenseMatrix(complianceSolver->P()) << endl;
@@ -424,10 +469,13 @@ struct Assembly_test : public CompliantSolver_test
 
         //  ================= Run
         sofa::simulation::getSimulation()->init(root.get());
+
+        assembled.M = getAssembledMassMatrix( solverObject );
+
         sofa::simulation::getSimulation()->animate(root.get(),1.0);
 
         // actual results
-        //        cerr<<"M = " << endl << DenseMatrix(complianceSolver->M()) << endl;
+        //        cerr<<"M = " << endl << DenseMatrix(assembled.M) << endl;
         //        cerr<<"result, J = " << endl << DenseMatrix(complianceSolver->J()) << endl;
         //        cerr<<"result, C = " << endl << DenseMatrix(complianceSolver->C()) << endl;
         //        cerr<<"P = " << endl << DenseMatrix(complianceSolver->P()) << endl;
@@ -571,13 +619,16 @@ struct Assembly_test : public CompliantSolver_test
 
 
         sofa::simulation::getSimulation()->init(root.get());
+
+        assembled.M = getAssembledMassMatrix( root );
+
         //        for( unsigned i=0; i<multimapping->getJs()->size(); i++ ){
         //            cerr<<"multimapping Jacobian " << i << ": " << endl << *(*multimapping->getJs())[i] << endl;
         //        }
         sofa::simulation::getSimulation()->animate(root.get(),1.0);
 
         // actual results
-        //        cerr<<"M = " << endl << DenseMatrix(complianceSolver->M()) << endl;
+        //        cerr<<"M = " << endl << DenseMatrix(assembled.M) << endl;
         //        cerr<<"J = " << endl << DenseMatrix(complianceSolver->J()) << endl;
         //        cerr<<"C = " << endl << DenseMatrix(complianceSolver->C()) << endl;
         //        cerr<<"P = " << endl << DenseMatrix(complianceSolver->P()) << endl;
@@ -717,10 +768,13 @@ struct Assembly_test : public CompliantSolver_test
 
         // ***** Perform simulation
         sofa::simulation::getSimulation()->init(root.get());
+
+        assembled.M = getAssembledMassMatrix( root );
+
         sofa::simulation::getSimulation()->animate(root.get(),1.0);
 
         // actual results
-        //        cerr<<"M = " << endl << DenseMatrix(complianceSolver->M()) << endl;
+        //        cerr<<"M = " << endl << DenseMatrix(assembled.M) << endl;
         //        cerr<<"J = " << endl << DenseMatrix(complianceSolver->J()) << endl;
         //        cerr<<"C = " << endl << DenseMatrix(complianceSolver->C()) << endl;
         //        cerr<<"P = " << endl << DenseMatrix(complianceSolver->P()) << endl;
@@ -745,7 +799,7 @@ TEST_F( Assembly_test, testHardString )
     unsigned numParticles=3;
     ::testing::Message() << "Assembly_test: hard string of " << numParticles << " particles";
     testHardString(numParticles);
-    ASSERT_TRUE(matricesAreEqual( expected.M, complianceSolver->M() ));
+    ASSERT_TRUE(matricesAreEqual( expected.M, assembled.M ));
     ASSERT_TRUE(matricesAreEqual( expected.P, complianceSolver->P() ));
     ASSERT_TRUE(matricesAreEqual( expected.J, complianceSolver->J() ));
     ASSERT_TRUE(matricesAreEqual( expected.C, complianceSolver->C() ));
@@ -758,7 +812,7 @@ TEST_F( Assembly_test, testAttachedHardString )
     unsigned numParticles=3;
     ::testing::Message() << "Assembly_test: hard string of " << numParticles << " particles attached using a projective constraint (FixedConstraint)";
     testAttachedHardString(numParticles);
-    ASSERT_TRUE(matricesAreEqual( expected.M, complianceSolver->M() ));
+    ASSERT_TRUE(matricesAreEqual( expected.M, assembled.M ));
     ASSERT_TRUE(matricesAreEqual( expected.P, complianceSolver->P() ));
     ASSERT_TRUE(matricesAreEqual( expected.J, complianceSolver->J() ));
     ASSERT_TRUE(matricesAreEqual( expected.C, complianceSolver->C() ));
@@ -771,7 +825,7 @@ TEST_F( Assembly_test, testConstrainedHardString )
     unsigned numParticles=4;
     ::testing::Message() << "Assembly_test: hard string of " << numParticles << " particles attached using a distance constraint";
     testConstrainedHardString(numParticles);
-    ASSERT_TRUE(matricesAreEqual( expected.M, complianceSolver->M() ));
+    ASSERT_TRUE(matricesAreEqual( expected.M, assembled.M ));
     ASSERT_TRUE(matricesAreEqual( expected.P, complianceSolver->P() ));
     ASSERT_TRUE(matricesAreEqual( expected.J, complianceSolver->J() ));
     ASSERT_TRUE(matricesAreEqual( expected.C, complianceSolver->C() ));
@@ -784,7 +838,7 @@ TEST_F( Assembly_test, testExternallyConstrainedHardString )
     unsigned numParticles=2;
     ::testing::Message() << "Assembly_test: hard string of " << numParticles << " particles attached using a constraint with an out-of-scope particle";
     testExternallyConstrainedHardString(numParticles);
-    ASSERT_TRUE(matricesAreEqual( expected.M, complianceSolver->M() ));
+    ASSERT_TRUE(matricesAreEqual( expected.M, assembled.M ));
     ASSERT_TRUE(matricesAreEqual( expected.P, complianceSolver->P() ));
     ASSERT_TRUE(matricesAreEqual( expected.J, complianceSolver->J() ));
     ASSERT_TRUE(matricesAreEqual( expected.C, complianceSolver->C() ));
@@ -797,7 +851,7 @@ TEST_F( Assembly_test, testAttachedConnectedHardStrings )
     unsigned numParticles=2;
     ::testing::Message() << "Assembly_test: hard strings of " << numParticles << " particles connected using a MultiMapping";
     testAttachedConnectedHardStrings(numParticles);
-    ASSERT_TRUE(matricesAreEqual( expected.M, complianceSolver->M() ));
+    ASSERT_TRUE(matricesAreEqual( expected.M, assembled.M ));
     ASSERT_TRUE(matricesAreEqual( expected.P, complianceSolver->P() ));
     ASSERT_TRUE(matricesAreEqual( expected.J, complianceSolver->J() ));
     ASSERT_TRUE(matricesAreEqual( expected.C, complianceSolver->C() ));
@@ -811,8 +865,8 @@ TEST_F( Assembly_test, testRigidConnectedToString )
     ::testing::Message() << "Assembly_test: hard string of " << numParticles << " particles connected to a rigid";
     testRigidConnectedToString(numParticles);
 //    cerr<<"expected.M = " << endl << expected.M << endl;
-//    cerr<<"complianceSolver->M() = " << endl << complianceSolver->M() << endl;
-    ASSERT_TRUE(matricesAreEqual( expected.M, complianceSolver->M() ));
+//    cerr<<"assembled.M = " << endl << assembled.M << endl;
+    ASSERT_TRUE(matricesAreEqual( expected.M, assembled.M ));
     ASSERT_TRUE(matricesAreEqual( expected.P, complianceSolver->P() ));
     ASSERT_TRUE(matricesAreEqual( expected.J, complianceSolver->J() ));
     ASSERT_TRUE(matricesAreEqual( expected.C, complianceSolver->C() ));

@@ -57,9 +57,9 @@ void UniformCompliance<DataTypes>::reinit()
 //    if( !this->isCompliance.getValue() || this->rayleighStiffness.getValue() )
 //    {
         // the stiffness df/dx is the opposite of the inverse compliance
-        Real k = helper::rabs(compliance.getValue()) > std::numeric_limits<Real>::epsilon() ?
+        Real k = compliance.getValue() > std::numeric_limits<Real>::epsilon() ?
                 -1 / compliance.getValue() :
-                -std::numeric_limits<Real>::max();
+                -1 / std::numeric_limits<Real>::epsilon();
 
         matK.resize(state->getMatrixSize(), state->getMatrixSize());
 
@@ -118,7 +118,8 @@ void UniformCompliance<DataTypes>::addBToMatrix( sofa::defaulttype::BaseMatrix *
 template<class DataTypes>
 void UniformCompliance<DataTypes>::addForce(const core::MechanicalParams *, DataVecDeriv& _f, const DataVecCoord& _x, const DataVecDeriv& /*_v*/)
 {
-    matK.addMult( _f, _x  );
+//    if( matK.compressedMatrix.nonZeros() )
+        matK.addMult( _f, _x  );
 
 //    cerr<<"UniformCompliance<DataTypes>::addForce, f after = " << f << endl;
 }
