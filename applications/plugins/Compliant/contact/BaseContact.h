@@ -121,7 +121,10 @@ public:
 
             // obtain point mechanical models from mappers
             mstate1 = mapper1.createMapping( name1.c_str() );
+			mstate1->setName("dofs");
+
             mstate2 = this->selfCollision ? mstate1 : mapper2.createMapping( name2.c_str() );
+			mstate2->setName("dofs");
         }
 
         // resize mappers
