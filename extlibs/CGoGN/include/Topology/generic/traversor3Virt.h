@@ -61,7 +61,7 @@ public:
  * Traverse all Y incident to X
  */
 template <typename MAP, unsigned int ORBX, unsigned int ORBY>
-class VTraversor3XY: public Traversor<MAP>
+class VTraversor3XY: public Traversor/*<MAP>*/
 {
 private:
 	MAP& m_map ;
@@ -89,7 +89,7 @@ public:
  * Traverse all X adjacent to X by an Y
  */
 template <typename MAP, unsigned int ORBX, unsigned int ORBY>
-class VTraversor3XXaY: public Traversor<MAP>
+class VTraversor3XXaY: public Traversor/*<MAP>*/
 {
 private:
 	MAP& m_map ;
