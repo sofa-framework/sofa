@@ -75,6 +75,26 @@ extern "C" PyObject * Node_simulationStep(PyObject * self, PyObject * args)
     Py_RETURN_NONE;
 }
 
+// reset a node
+extern "C" PyObject * Node_reset(PyObject * self, PyObject * /*args*/)
+{
+    Node* node=dynamic_cast<Node*>(((PySPtr<Base>*)self)->object.get());
+
+    getSimulation()->reset(node);
+
+    Py_RETURN_NONE;
+}
+
+// init a node
+extern "C" PyObject * Node_init(PyObject * self, PyObject * /*args*/)
+{
+    Node* node=dynamic_cast<Node*>(((PySPtr<Base>*)self)->object.get());
+
+    getSimulation()->init(node);
+
+    Py_RETURN_NONE;
+}
+
 extern "C" PyObject * Node_getChild(PyObject * self, PyObject * args)
 {
     // BaseNode is not binded in SofaPython, so getChildNode is binded in Node instead of BaseNode
@@ -296,6 +316,8 @@ SP_CLASS_METHODS_BEGIN(Node)
 SP_CLASS_METHOD(Node,executeVisitor)
 SP_CLASS_METHOD(Node,getRoot)
 SP_CLASS_METHOD(Node,simulationStep)
+SP_CLASS_METHOD(Node,reset)
+SP_CLASS_METHOD(Node,init)
 SP_CLASS_METHOD(Node,getChild)
 SP_CLASS_METHOD(Node,getChildren)
 SP_CLASS_METHOD(Node,getParents)
