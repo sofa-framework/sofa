@@ -164,8 +164,8 @@ struct PatchTestStruct
 };
 
 /// Create a scene with a regular grid and a bilinear constraint for patch test
-template<class T> SOFA_SceneCreator_API PatchTestStruct<T> createRegularGridScene(simulation::Node::SPtr root ,Vec<3,SReal> startPoint, Vec<3,SReal> endPoint, unsigned numX, unsigned numY, unsigned numZ, helper::vector< Vec<6,SReal> > vecBoxRoi, Vec<6,SReal> inclusiveBox, Vec<6,SReal> includedBox);
-template<class T> PatchTestStruct<T> createRegularGridScene(simulation::Node::SPtr root, Vec<3,SReal> startPoint, Vec<3,SReal> endPoint, unsigned numX, unsigned numY, unsigned numZ, helper::vector< Vec<6,SReal> > vecBoxRoi, Vec<6,SReal> inclusiveBox, Vec<6,SReal> includedBox)
+template<class T> SOFA_SceneCreator_API PatchTestStruct<T> createRegularGridScene(simulation::Node::SPtr root ,Vec<3,SReal> startPoint, Vec<3,SReal> endPoint, unsigned numX, unsigned numY, unsigned numZ, Vec<6,SReal> entireBoxRoi, Vec<6,SReal> inclusiveBox, Vec<6,SReal> includedBox);
+template<class T> PatchTestStruct<T> createRegularGridScene(simulation::Node::SPtr root, Vec<3,SReal> startPoint, Vec<3,SReal> endPoint, unsigned numX, unsigned numY, unsigned numZ, Vec<6,SReal> entireBoxRoi, Vec<6,SReal> inclusiveBox, Vec<6,SReal> includedBox)
 {
     // Definitions
     PatchTestStruct<T> patchStruct;
@@ -205,10 +205,12 @@ template<class T> PatchTestStruct<T> createRegularGridScene(simulation::Node::SP
     patchStruct.dofs->setSrc("@"+gridMesh->getName(), gridMesh.get());
 
     //BoxRoi to find all mesh points
+    helper::vector < defaulttype::Vec<6,SReal> > vecBox;
+    vecBox.push_back(entireBoxRoi);
     typename BoxRoi::SPtr boxRoi = addNew<BoxRoi>(SquareNode,"boxRoi");
-    boxRoi->boxes.setValue(vecBoxRoi);
+    boxRoi->boxes.setValue(vecBox);
 
-    //PairBoxRoi to define the constrained points = points of the border
+    //PairBoxRoi to define the constrained points = points of the border    
     typename PairBoxRoi::SPtr pairBoxRoi = addNew<PairBoxRoi>(SquareNode,"pairBoxRoi");
     pairBoxRoi->inclusiveBox.setValue(inclusiveBox);
     pairBoxRoi->includedBox.setValue(includedBox);

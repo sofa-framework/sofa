@@ -55,9 +55,9 @@ using namespace component;
 using namespace defaulttype;
 using namespace modeling;
 
-/**  Test suite for ProjectToLineConstraint.
-The test cases are defined in the #Test_Cases member group.
-  */
+/**  Patch test in 2D and 3D.
+A movement is applied to the borders of a mesh. The points within should have a bilinear movement relative to the border movements.*/
+
 template <typename _DataTypes>
 struct Patch_test : public Sofa_test<typename _DataTypes::Real>
 {
@@ -90,18 +90,13 @@ struct Patch_test : public Sofa_test<typename _DataTypes::Real>
     // Create a scene with a 2D regular grid and a bilinear constraint
     void createScene2DRegularGrid()
     { 
-        // Initialization
-        Vec<6,SReal> box (-0.1,-0.1,0,1.1,1.1,0);
-        helper::vector< Vec<6,SReal> > vecBox;
-        vecBox.push_back(box);
-
         // Create a scene with a regular grid
         patchStruct = createRegularGridScene<DataTypes>(
                         root,  // attached to the root node
                         Vec<3,SReal>(0,0,0), // Start point of regular grid
                         Vec<3,SReal>(1,1,0), // End point of regular grid
                         5,5,1,  // Resolution of the regular grid
-                        vecBox, // BoxRoi to find all mesh points
+                        Vec<6,SReal>(-0.1,-0.1,0,1.1,1.1,0), // BoxRoi to find all mesh points
                         Vec<6,SReal>(-0.1,-0.1,0,1.1,1.1,0), // inclusive box of pair box roi
                         Vec<6,SReal>(0.1,0.1,0,0.9,0.9,0)); // included box of pair box roi
 
@@ -124,18 +119,13 @@ struct Patch_test : public Sofa_test<typename _DataTypes::Real>
      // Create a scene with a 3D regular grid and a bilinear constraint
     void createScene3DRegularGrid()
     {
-        // Initialization
-        Vec<6,SReal> box (-0.1,-0.1,-0.1,1.1,1.1,1.1);
-        helper::vector< Vec<6,SReal> > vecBox;
-        vecBox.push_back(box);
-
         // Create a scene with a regular grid
         patchStruct = createRegularGridScene<DataTypes>(
                         root,  // attached to the root node
                         Vec<3,SReal>(0,0,0), // Start point of regular grid
                         Vec<3,SReal>(1,1,1), // End point of regular grid
                         5,5,5,  // Resolution of the regular grid
-                        vecBox, // BoxRoi to find all mesh points
+                        Vec<6,SReal> (-0.1,-0.1,-0.1,1.1,1.1,1.1), // BoxRoi to find all mesh points
                         Vec<6,SReal>(-0.1,-0.1,-0.1,1.1,1.1,1.1), // inclusive box of pair box roi
                         Vec<6,SReal>(0.1,0.1,0.1,0.9,0.9,0.9)); // included box of pair box roi
        
@@ -143,7 +133,7 @@ struct Patch_test : public Sofa_test<typename _DataTypes::Real>
   
         // Force field for 3D Grid
         typename TetraForceField::SPtr tetraFEM = addNew<TetraForceField>(SquareNode,"forceField");
-        tetraFEM->setMethod("polar");
+        tetraFEM->setMethod("small");
         tetraFEM->setYoungModulus(20);
         tetraFEM->setPoissonRatio(0.4);
 
@@ -169,7 +159,7 @@ struct Patch_test : public Sofa_test<typename _DataTypes::Real>
         // Animate
         do
         {sofa::simulation::getSimulation()->animate(root.get(),0.5);}
-        while(root->getAnimationLoop()->getTime() < 22); 
+        while(root->getAnimationLoop()->getTime() < 30); 
    
         // Get the simulated final positions
         typename MechanicalObject::WriteVecCoord x = patchStruct.dofs->writePositions();
@@ -185,7 +175,7 @@ struct Patch_test : public Sofa_test<typename _DataTypes::Real>
             if((finalPos[i]-x[i]).norm()>7e-4)
             {   
                 succeed = false;
-                ADD_FAILURE() << "final Position of point " << i << " is wrong: " << x[i] << std::endl <<"the expected Position is " << finalPos[i] << "difference = " <<(finalPos[i]-x[i]).norm() << std::endl;
+                ADD_FAILURE() << "final Position of point " << i << " is wrong: " << x[i] << std::endl <<"the expected Position is " << finalPos[i] << std::endl << "difference = " <<(finalPos[i]-x[i]).norm() << std::endl;
             }
         }
         return succeed;
@@ -204,7 +194,6 @@ struct Patch_test : public Sofa_test<typename _DataTypes::Real>
 // Define the list of DataTypes to instanciate
 using testing::Types;
 typedef Types<
-    Vec3Types,
     Vec3Types
 > DataTypes; // the types to instanciate.
 
