@@ -233,7 +233,7 @@ public:
     /// @see CollisionModel::canCollideWithElement
     bool canCollideWith(TCollisionElementIterator<Model>& elem)
     {
-        return ((model != elem.model) || (index != elem.index)) && model->canCollideWithElement(index, elem.model, elem.index);
+        return ((model != elem.model) || (index < elem.index)) && model->canCollideWithElement(index, elem.model, elem.index);
     }
 
     /// Distance to the actual (visual) surface
