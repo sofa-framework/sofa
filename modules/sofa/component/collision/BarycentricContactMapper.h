@@ -134,8 +134,6 @@ template<class DataTypes>
 class ContactMapper<LineModel, DataTypes> : public BarycentricContactMapper<LineModel, DataTypes>
 {
 public:
-    using BaseContactMapper<DataTypes>::addPointB;
-
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
     int addPoint(const Coord& P, int index, Real&)
@@ -145,8 +143,9 @@ public:
     int addPointB(const Coord& /*P*/, int index, Real& /*r*/, const Vector3& baryP)
     {
         return this->mapper->addPointInLine(this->model->getElemEdgeIndex(index), baryP.ptr());
-    }        
+    }
 
+    inline int addPointB(const Coord& P, int index, Real& r ){return addPoint(P,index,r);}
 };
 
 /// Mapper for TriangleModel
@@ -154,8 +153,6 @@ template<class DataTypes>
 class ContactMapper<TriangleModel, DataTypes> : public BarycentricContactMapper<TriangleModel, DataTypes>
 {
 public:
-    using BaseContactMapper<DataTypes>::addPointB;
-
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
     int addPoint(const Coord& P, int index, Real&)
@@ -199,6 +196,8 @@ public:
         }
     }
 
+    inline int addPointB(const Coord& P, int index, Real& r ){return addPoint(P,index,r);}
+
 };
 
 
@@ -208,8 +207,6 @@ class ContactMapper<CapsuleModel, DataTypes> : public BarycentricContactMapper<C
     typedef typename DataTypes::Coord Coord;
 
 public:
-    using BaseContactMapper<DataTypes>::addPointB;
-
     int addPoint(const Coord& P, int index, Real& r){
         r = this->model->radius(index);
 
@@ -225,10 +222,6 @@ public:
             baryCoords[0] = 0;
 
         return this->mapper->addPointInLine ( index, baryCoords );
-    }
-
-    int addPointB(const Coord& P, int elementId, Real& r){
-        return BaseContactMapper<DataTypes>::addPointB(P,elementId,r);
     }
 };
 

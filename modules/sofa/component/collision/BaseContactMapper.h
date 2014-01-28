@@ -143,47 +143,11 @@ extern template class SOFA_BASE_COLLISION_API BaseContactMapper<defaulttype::Vec
 
 } // namespace component
 
-//#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_BASE_COLLISION)
-//namespace helper
-//{
-//extern template class SOFA_BASE_COLLISION_API Factory< std::string, sofa::component::collision::BaseContactMapper<defaulttype::Vec3Types>, core::CollisionModel* >;
-//} // namespace helper
-//#endif
-
-
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_BASE_COLLISION)
-
-namespace component
-{
-
-namespace collision
-{
-
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BASE_COLLISION_API BaseContactMapper< defaulttype::Vec3fTypes>;
-extern template class SOFA_BASE_COLLISION_API BaseContactMapper< defaulttype::Rigid3fTypes >;
-#endif
-#ifndef SOFA_FLOAT
-extern template class SOFA_BASE_COLLISION_API BaseContactMapper< defaulttype::Vec3dTypes>;
-extern template class SOFA_BASE_COLLISION_API BaseContactMapper< defaulttype::Rigid3dTypes >;
-#endif
-
-} // namespace collision
-
-} // namespace component
-
 namespace helper
 {
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BASE_COLLISION_API Factory< std::string, sofa::component::collision::BaseContactMapper<defaulttype::Vec3fTypes>, core::CollisionModel* >;
-extern template class SOFA_BASE_COLLISION_API Factory< std::string, sofa::component::collision::BaseContactMapper<defaulttype::Rigid3fTypes>, core::CollisionModel* >;
-#endif
-#ifndef SOFA_FLOAT
-extern template class SOFA_BASE_COLLISION_API Factory< std::string, sofa::component::collision::BaseContactMapper<defaulttype::Vec3dTypes>, core::CollisionModel* >;
-extern template class SOFA_BASE_COLLISION_API Factory< std::string, sofa::component::collision::BaseContactMapper<defaulttype::Rigid3dTypes>, core::CollisionModel* >;
-#endif
+extern template class SOFA_BASE_COLLISION_API Factory< std::string, sofa::component::collision::BaseContactMapper<defaulttype::Vec3Types>, core::CollisionModel* >;
 } // namespace helper
-
 #endif
 
 } // namespace sofa
