@@ -326,18 +326,21 @@ struct AssemblyVisitor::propagation_helper {
 //		dofs_type* dofs = g[v].dofs;
 		chunk* c = g[v].data;
 
+        // if the current child is a mechanical dof
         if( c->mechanical ) {
 
+            // have a look to all its parents
 			for(graph_type::out_edge_range e = boost::out_edges(v, g); e.first != e.second; ++e.first) {
 
 				chunk* p = g[ boost::target(*e.first, g) ].data;
-				p->mechanical = true;
+                p->mechanical = true; // a parent of a mechanical child is necessarily mechanical
 
+                // add the eventual geometric stiffness to parent
                 if(!zero( g[*e.first].data->K)) {
                     add(p->H, mparams->kFactor() * g[*e.first].data->K ); // todo how to include rayleigh damping for geometric stiffness?
 				}
 
-				// max: no we don't
+                // max: no we don't
 //                p->H = p->P.transpose() * p->H * p->P;   /// \warning project the ODE matrix
 
             }
