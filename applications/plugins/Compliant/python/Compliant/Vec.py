@@ -69,6 +69,9 @@ class Proxy:
     def dot(self, other): 
         return dot(self.data, other.data)
 
+    def cross(self, other):
+        return Proxy(cross(self.data, other.data))
+
     def __getitem__(self, index):
         return self.data[index]
 
