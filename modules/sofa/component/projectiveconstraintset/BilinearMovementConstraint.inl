@@ -178,8 +178,7 @@ void BilinearMovementConstraint<DataTypes>::findCornerPoints()
             isMeshin3D = true;
         }
     }
-    std::cout << "isMesh in 3D " << isMeshin3D << std::endl;
-    
+  
     if(constrainedPoints.size() > 0)
     {
         corner0 = constrainedPoints[0];
