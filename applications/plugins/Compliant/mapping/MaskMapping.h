@@ -53,7 +53,7 @@ protected:
 	virtual void assemble( const typename self::in_pos_type& in) {
 		// note: index is filled in @apply
 		
-		const dofs_type& d = dofs.getValue();
+//		const dofs_type& d = dofs.getValue();
 		
 		// resize/clear jacobian
 		typename self::jacobian_type::CompressedMatrix& J = this->jacobian.compressedMatrix;

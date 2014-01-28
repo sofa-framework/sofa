@@ -57,7 +57,7 @@ using namespace core::behavior;
         return RESULT_CONTINUE;
     }
 
-    propagate_visitor::Result propagate_visitor::fwdMechanicalState(simulation::Node* node,
+    propagate_visitor::Result propagate_visitor::fwdMechanicalState(simulation::Node* /*node*/,
                                                                     core::behavior::BaseMechanicalState* state) {
         state->resetForce(mparams, out.getId(state));
         // not working :-/
@@ -65,7 +65,7 @@ using namespace core::behavior;
         return RESULT_CONTINUE;
     }
 
-    void propagate_visitor::bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map) {
+    void propagate_visitor::bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) {
         map->applyJT(mparams /* PARAMS FIRST */, out, out);
     }
 

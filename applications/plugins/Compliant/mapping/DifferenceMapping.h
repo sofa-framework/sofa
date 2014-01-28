@@ -43,7 +43,7 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
 		assert( !p.empty() );
 
 		for( unsigned j = 0, m = p.size(); j < m; ++j) {
-			if( p[j][1] > p[j][0] ) std::swap( p[j][1], p[j][0] );
+//			if( p[j][1] > p[j][0] ) std::swap( p[j][1], p[j][0] ); // MattN: why should it be sorted, if something like that is needed, should not be handled outside of this mapping?
 
 			out[j] = in[p[j][1]] - in[p[j][0]];
 		}
@@ -65,22 +65,20 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
 		for(unsigned k = 0, n = p.size(); k < n; ++k) {
 			
 			for(unsigned i = 0; i < Nout; ++i) {
-				unsigned row = k * Nout + i;
-				
-				// needs to be sorted !
-				if( p[k][1] > p[k][0] ) std::swap( p[k][1], p[k][0] );
+                unsigned row = k * Nout + i;
+                // needs to be sorted ! // MattN: why should it be sorted, if something like that is needed, should not be handled outside of this mapping?
+//				if( p[k][1] > p[k][0] ) std::swap( p[k][1], p[k][0] );
 				
 				if(p[k][1] == p[k][0]) continue;
 				
 				J.startVec( row );
 
 				for( unsigned u = 0; u < 2; ++u ) {
-					SReal sign = (u == 0) ? -1 : 1;
-					
-					for( unsigned j = 0; j < Nin; ++j) {
-						unsigned col = p[k][u] * Nin + j;
-						J.insertBack(row, col) = sign;
-					}
+                    SReal sign = (u == 0) ? -1 : 1;
+
+                    unsigned col = p[k][u] * Nin + i;
+
+                    J.insertBack(row, col) = sign;
 				}
 			}
 		}

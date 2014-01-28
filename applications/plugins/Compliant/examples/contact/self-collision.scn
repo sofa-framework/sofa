@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<Node name="Root" dt="0.01" gravity="0 0 0">
+  <VisualStyle displayFlags=" showBehaviorModels hideVisual showCollisionModels" />
+  
+  
+  <RequiredPlugin name="Compliant" pluginName="Compliant" />
+  
+  <DefaultPipeline depth="6" />
+  <BruteForceDetection />
+<!--   <IncrementalSweepAndPrune/> -->
+  <DiscreteIntersection />
+<!--   <NewProximityIntersection alarmDistance="0" contactDistance="0"/> -->
+  <DefaultContactManager responseParams="compliance=0&amp;restitution=1" response="CompliantContact" />
+  
+  
+  
+  
+  <Node name="Assembled Balls" >
+    
+    
+  <AssembledSolver stabilization="1"/>
+  <SequentialSolver precision="1e-10" relative="false" iterations="100" /> 
+    
+  <MechanicalObject name="dofs" template="Vec3d" position="0 3 0  3 3 0" velocity="1 0 0  -1 0 0" showObject="1" showObjectScale="1"/>
+  <UniformMass totalMass="1"/>
+  <SphereModel template="Vec3d" contactFriction="0" contactRestitution="0" selfCollision='1' />
+</Node>
+    
+  
+  <Node name="Separated Balls" >
+    
+    
+  <AssembledSolver stabilization="1"/>
+  <SequentialSolver precision="1e-10" relative="false" iterations="100" /> 
+    
+    <Node name="Ball1">
+      <MechanicalObject name="dofs" template="Vec3d" position="0 0 0" velocity="1 0 0" showObject="1" showObjectScale="1"/>
+      <UniformMass totalMass="1"/>
+      <SphereModel template="Vec3d" contactFriction="0" contactRestitution="0" />
+    </Node>
+    <Node name="Ball2">
+      <MechanicalObject name="dofs" template="Vec3d" position="3 0 0" velocity="-1 0 0" showObject="1" showObjectScale="1"/>
+      <UniformMass totalMass="1"/>
+      <SphereModel template="Vec3d" contactFriction="0" contactRestitution="0"/>
+    </Node>
+    
+  </Node >
+  
+  
+  
+  
+</Node>
