@@ -42,8 +42,12 @@ elseif(CMAKE_BUILD_TYPE MATCHES "MinSizeRel")
 endif()
 
 set(compilerDefines ${GLOBAL_COMPILER_DEFINES})
+
+# windows specific
 if(WIN32)
     list(APPEND compilerDefines "UNICODE")
+	
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
 endif()
 
 # NDEBUG preprocessor macro
