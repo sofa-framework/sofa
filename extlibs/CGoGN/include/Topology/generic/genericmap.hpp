@@ -526,7 +526,7 @@ inline void GenericMap::updateQuickIncidentTraversal()
 	for (Dart d = tra_glob.begin(); d != tra_glob.end(); d = tra_glob.next())
 	{
 		buffer.clear();
-		Traversor<MAP>* tra_loc = TraversorFactory<MAP>::createIncident(map, d, map.dimension(), ORBIT, INCI);
+        Traversor/*<MAP>*/* tra_loc = TraversorFactory<MAP>::createIncident(map, d, map.dimension(), ORBIT, INCI);
 		for (Dart e = tra_loc->begin(); e != tra_loc->end(); e = tra_loc->next())
 			buffer.push_back(e);
 		delete tra_loc;
@@ -587,7 +587,7 @@ inline void GenericMap::updateQuickAdjacentTraversal()
 	for (Dart d = tra_glob.begin(); d != tra_glob.end(); d = tra_glob.next())
 	{
 		buffer.clear();
-		Traversor<MAP>* tra_loc = TraversorFactory<MAP>::createAdjacent(map, d, map.dimension(), ORBIT, ADJ);
+        Traversor/*<MAP>*/* tra_loc = TraversorFactory<MAP>::createAdjacent(map, d, map.dimension(), ORBIT, ADJ);
 		for (Dart e = tra_loc->begin(); e != tra_loc->end(); e = tra_loc->next())
 			buffer.push_back(e);
 		buffer.push_back(NIL);
@@ -871,7 +871,7 @@ template <typename MAP, unsigned int ORBIT, unsigned int INCIDENT>
 unsigned int GenericMap::degree(Dart d)
 {
 	assert(ORBIT != INCIDENT || !"degree does not manage adjacency counting") ;
-	Traversor<MAP>* t = TraversorFactory<MAP>::createIncident(*(reinterpret_cast<MAP*>(this)), d, dimension(), ORBIT, INCIDENT) ;
+    Traversor/*<MAP>*/* t = TraversorFactory<MAP>::createIncident(*(reinterpret_cast<MAP*>(this)), d, dimension(), ORBIT, INCIDENT) ;
 	FunctorCount fcount ;
 	t->applyFunctor(fcount) ;
 	delete t ;

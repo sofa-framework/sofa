@@ -37,7 +37,7 @@ namespace CGoGN
 
 // Traverse the edges incident to a given vertex
 template <typename MAP>
-class VTraversor2VE: public Traversor<MAP>
+class VTraversor2VE: public Traversor/*<MAP>*/
 {
 private:
 	MAP& m ;
@@ -55,7 +55,7 @@ public:
 
 // Traverse the faces incident to a given vertex
 template <typename MAP>
-class VTraversor2VF : public Traversor<MAP>
+class VTraversor2VF : public Traversor/*<MAP>*/
 {
 private:
 	MAP& m ;
@@ -73,7 +73,7 @@ public:
 
 // Traverse the vertices adjacent to a given vertex through sharing a common edge
 template <typename MAP>
-class VTraversor2VVaE : public Traversor<MAP>
+class VTraversor2VVaE : public Traversor/*<MAP>*/
 {
 private:
 	MAP& m ;
@@ -91,7 +91,7 @@ public:
 
 // Traverse the vertices adjacent to a given vertex through sharing a common face
 template <typename MAP>
-class VTraversor2VVaF : public Traversor<MAP>
+class VTraversor2VVaF : public Traversor/*<MAP>*/
 {
 private:
 	MAP& m ;
@@ -115,7 +115,7 @@ public:
 
 // Traverse the vertices incident to a given edge
 template <typename MAP>
-class VTraversor2EV : public Traversor<MAP>
+class VTraversor2EV : public Traversor/*<MAP>*/
 {
 private:
 	MAP& m ;
@@ -133,7 +133,7 @@ public:
 
 // Traverse the faces incident to a given edge
 template <typename MAP>
-class VTraversor2EF : public Traversor<MAP>
+class VTraversor2EF : public Traversor/*<MAP>*/
 {
 private:
 	MAP& m ;
@@ -151,7 +151,7 @@ public:
 
 // Traverse the edges adjacent to a given edge through sharing a common vertex
 template <typename MAP>
-class VTraversor2EEaV : public Traversor<MAP>
+class VTraversor2EEaV : public Traversor/*<MAP>*/
 {
 private:
 	MAP& m ;
@@ -171,7 +171,7 @@ public:
 
 // Traverse the edges adjacent to a given edge through sharing a common face
 template <typename MAP>
-class VTraversor2EEaF : public Traversor<MAP>
+class VTraversor2EEaF : public Traversor/*<MAP>*/
 {
 private:
 	MAP& m ;
@@ -195,7 +195,7 @@ public:
 
 // Traverse the vertices incident to a given face
 template <typename MAP>
-class VTraversor2FV : public Traversor<MAP>
+class VTraversor2FV : public Traversor/*<MAP>*/
 {
 private:
 	MAP& m ;
@@ -222,7 +222,7 @@ public:
 
 // Traverse the faces adjacent to a given face through sharing a common vertex
 template <typename MAP>
-class VTraversor2FFaV : public Traversor<MAP>
+class VTraversor2FFaV : public Traversor/*<MAP>*/
 {
 private:
 	MAP& m ;
@@ -242,7 +242,7 @@ public:
 
 // Traverse the faces adjacent to a given face through sharing a common edge
 template <typename MAP>
-class VTraversor2FFaE : public Traversor<MAP>
+class VTraversor2FFaE : public Traversor/*<MAP>*/
 {
 private:
 	MAP& m ;

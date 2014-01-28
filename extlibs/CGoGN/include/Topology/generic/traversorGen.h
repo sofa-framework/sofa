@@ -31,7 +31,7 @@
 namespace CGoGN
 {
 
-template <typename MAP>
+//template <typename MAP>
 class Traversor
 {
 public:

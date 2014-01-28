@@ -34,7 +34,7 @@ namespace CGoGN
 {
 
 template <typename MAP, unsigned int ORBIT>
-class VTraversorCell : public Traversor<MAP>
+class VTraversorCell : public Traversor/*<MAP>*/
 {
 private:
 	MAP& m ;
@@ -65,7 +65,7 @@ public:
 
 
 template <unsigned int ORBIT>
-class VTraversorCell<GenericMap,ORBIT> : public Traversor<GenericMap>
+class VTraversorCell<GenericMap,ORBIT> : public Traversor/*<MAP>*/
 {
 private:
 	GenericMap& m ;

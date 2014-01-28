@@ -42,17 +42,17 @@ namespace Import
 template <typename PFP>
 bool importMesh(typename PFP::MAP& map, MeshTablesSurface<PFP>& mts)
 {
-	VertexAutoAttribute< NoTypeNameAttribute< std::vector<Dart> > > vecDartsPerVertex(map, "incidents");
+    VertexAutoAttribute< NoTypeNameAttribute< std::vector<Dart> > > vecDartsPerVertex(map, "incidents");
 
 	unsigned nbf = mts.getNbFaces();
 	int index = 0;
-	// buffer for tempo faces (used to remove degenerated edges)
-	std::vector<unsigned int> edgesBuffer;
+    // buffer for tempo faces (used to remove degenerated edges)
+    std::vector<unsigned int> edgesBuffer;
 	edgesBuffer.reserve(16);
 
 	DartMarkerNoUnmark m(map) ;
 
-	FunctorInitEmb<typename PFP::MAP, VERTEX> fsetemb(map);
+    FunctorInitEmb<typename PFP::MAP, VERTEX> fsetemb(map);
 
 	// for each face of table
 	for(unsigned int i = 0; i < nbf; ++i)
@@ -70,6 +70,7 @@ bool importMesh(typename PFP::MAP& map, MeshTablesSurface<PFP>& mts)
 				edgesBuffer.push_back(em);
 			}
 		}
+
 		// check first/last vertices
 		if (edgesBuffer.front() == edgesBuffer.back())
 			edgesBuffer.pop_back();
@@ -136,7 +137,6 @@ bool importMesh(typename PFP::MAP& map, MeshTablesSurface<PFP>& mts)
 		// ensure bijection between topo and embedding
 		map.template bijectiveOrbitEmbedding<VERTEX>();
 	}
-
 	return true ;
 }
 

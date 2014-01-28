@@ -51,7 +51,7 @@ public:
 
 
 template <typename MAP, unsigned int ORBIT>
-class VTraversorDartsOfOrbit : public Traversor<MAP>
+class VTraversorDartsOfOrbit : public Traversor/*<MAP>*/
 {
 private:
 	std::vector<Dart>::iterator m_current ;
