@@ -295,6 +295,13 @@ void PythonScriptController::script_onScriptEvent(core::objectmodel::ScriptEvent
 }
 
 
+void PythonScriptController::script_draw(const core::visual::VisualParams*)
+{
+//    SP_CALL_MODULEFUNC_NOPARAM(m_Func_storeResetState)
+    SP_CALL_OBJECTFUNC(const_cast<char*>("draw"),0)
+}
+
+
 
 } // namespace controller
 
