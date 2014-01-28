@@ -24,7 +24,7 @@ void LDLTResponse::factor(const mat& H ) {
     {
         system_type::rmat identity(H.rows(),H.cols());
         identity.setIdentity();
-        response.compute( H.selfadjointView<Eigen::Upper>() + identity * regularize.getValue() );
+        response.compute( ( H + identity * regularize.getValue() ).selfadjointView<Eigen::Upper>() );
     }
     else
     {
