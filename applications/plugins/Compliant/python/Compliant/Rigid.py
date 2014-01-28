@@ -303,12 +303,13 @@ class Joint:
 
 class SphericalJoint(Joint):
 
-        def __init__(self):
+        def __init__(self, **args):
                 Joint.__init__(self)
                 self.dofs = [0, 0, 0, 1, 1, 1]
                 self.name = 'spherical'
                 
-
+                for k in args:
+                        setattr(self, k, args[k])
 
 # this one has limits \o/
 class RevoluteJoint(Joint):
