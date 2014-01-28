@@ -189,6 +189,12 @@ void ScriptController::handleEvent(core::objectmodel::Event *event)
 }
 
 
+void ScriptController::draw(const core::visual::VisualParams* vis)
+{
+	script_draw(vis);
+	ScriptEnvironment::initScriptNodes();
+}
+
 } // namespace controller
 
 } // namespace component

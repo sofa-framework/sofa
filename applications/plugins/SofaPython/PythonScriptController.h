@@ -83,6 +83,9 @@ protected:
     /// Script events; user data is implementation-dependant
     virtual void script_onScriptEvent(core::objectmodel::ScriptEvent* event);
 
+	/// drawing
+	virtual void script_draw(const core::visual::VisualParams*);
+
     /// @}
 
 

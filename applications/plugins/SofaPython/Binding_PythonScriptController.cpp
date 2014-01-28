@@ -331,6 +331,17 @@ extern "C" PyObject * PythonScriptController_onScriptEvent(PyObject * /*self*/, 
     Py_RETURN_NONE;
 }
 
+extern "C" PyObject * PythonScriptController_draw(PyObject * /*self*/, PyObject * /*args*/)
+{
+
+#ifdef LOG_UNIMPLEMENTED_METHODS
+    PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
+    std::cerr << obj->m_classname.getValueString() << ".draw not implemented in " << obj->name.getValueString() << std::endl;
+#endif
+
+    Py_RETURN_NONE;
+}
+
 
 
 
@@ -353,6 +364,7 @@ SP_CLASS_METHOD(PythonScriptController,reset)
 SP_CLASS_METHOD(PythonScriptController,cleanup)
 SP_CLASS_METHOD(PythonScriptController,onGUIEvent)
 SP_CLASS_METHOD(PythonScriptController,onScriptEvent)
+SP_CLASS_METHOD(PythonScriptController,draw)
 SP_CLASS_METHODS_END
 
 
