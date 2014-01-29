@@ -233,6 +233,10 @@ class Joint:
                         local = Frame().read( s )
                         self.append(n, local.inv() * frame)
         
+        # joint dimension
+        def dim(self):
+                return sum( self.dofs )
+
         class Node:
                 pass
         
