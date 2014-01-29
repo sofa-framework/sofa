@@ -18,6 +18,7 @@ set(HEADER_FILES
     mapping/MaskMapping.h
     mapping/ProjectionMapping.h
     mapping/RigidComMultiMapping.h
+    mapping/AffineMultiMapping.h
 
     numericalsolver/KKTSolver.h
     numericalsolver/LDLTSolver.h
@@ -103,6 +104,7 @@ set(SOURCE_FILES
     mapping/MaskMapping.cpp 
     mapping/ProjectionMapping.cpp
     mapping/RigidComMultiMapping.cpp
+    mapping/AffineMultiMapping.cpp
 
     numericalsolver/LDLTSolver.cpp
     numericalsolver/MinresSolver.cpp

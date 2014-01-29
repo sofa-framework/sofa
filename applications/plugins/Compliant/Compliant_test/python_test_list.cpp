@@ -9,8 +9,9 @@ const char* test_files[] = {
 
 	"Example.py",
 	"LambdaPropagation.py",
-	"UniformCompliance.py"
-	
+	"UniformCompliance.py",
+	"AffineMultiMapping.py"
+
 	// add yours here
 };
 

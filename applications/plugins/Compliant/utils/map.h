@@ -40,6 +40,7 @@ static inline Eigen::Map< Eigen::Matrix<U, Eigen::Dynamic, 1> > map(U* v, unsign
 }
 
 
+
 }
 
 #endif

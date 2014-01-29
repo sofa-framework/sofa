@@ -61,7 +61,7 @@ def createScene(node):
                             iterations = 100,
                             precision = 0)
 
-    resp = node.createObject('DiagonalResponse')
+    # resp = node.createObject('DiagonalResponse')
 
     script = node.createObject('PythonScriptController',
                                filename = __file__,
