@@ -70,6 +70,7 @@ public:
     typedef core::topology::BaseMeshTopology::Edge Edge;
     typedef core::topology::BaseMeshTopology::Triangle Triangle;
     typedef core::topology::BaseMeshTopology::Tetra Tetra;
+    typedef core::topology::BaseMeshTopology::Quad Quad;
 
 protected:
 
@@ -127,7 +128,7 @@ protected:
     bool isEdgeInBox(const Edge& e, const Vec6& b);
     bool isTriangleInBox(const Triangle& t, const Vec6& b);
     bool isTetrahedronInBox(const Tetra& t, const Vec6& b);
-
+    bool isQuadInBox(const Quad& q, const Vec6& b);
 
 public:
     //Input
@@ -136,20 +137,23 @@ public:
     Data<helper::vector<Edge> > f_edges;
     Data<helper::vector<Triangle> > f_triangles;
     Data<helper::vector<Tetra> > f_tetrahedra;
+    Data<helper::vector<Quad> > f_quad;
     Data<bool> f_computeEdges;
     Data<bool> f_computeTriangles;
     Data<bool> f_computeTetrahedra;
+    Data<bool> f_computeQuad;
 
     //Output
     Data<SetIndex> f_indices;
     Data<SetIndex> f_edgeIndices;
     Data<SetIndex> f_triangleIndices;
     Data<SetIndex> f_tetrahedronIndices;
+    Data<SetIndex> f_quadIndices;
     Data<VecCoord > f_pointsInROI;
     Data<helper::vector<Edge> > f_edgesInROI;
     Data<helper::vector<Triangle> > f_trianglesInROI;
     Data<helper::vector<Tetra> > f_tetrahedraInROI;
-
+    Data<helper::vector<Quad> > f_quadInROI;
 	Data< unsigned int > f_nbIndices;
 
     //Parameter
@@ -158,6 +162,7 @@ public:
     Data<bool> p_drawEdges;
     Data<bool> p_drawTriangles;
     Data<bool> p_drawTetrahedra;
+    Data<bool> p_drawQuads;
     Data<double> _drawSize;
 };
 
