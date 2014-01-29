@@ -24,9 +24,12 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
 	typedef DifferenceMapping self;
 	
 	typedef defaulttype::Vec<2, unsigned> index_pair;
-	typedef vector< index_pair > pairs_type;
-	
+    typedef vector< index_pair > pairs_type;
+
 	Data< pairs_type > pairs;
+
+
+
 	
 	DifferenceMapping() 
 		: pairs( initData(&pairs, "pairs", "index pairs for computing deltas") ) {
@@ -42,9 +45,8 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
 		pairs_type& p = *pairs.beginEdit();
 		assert( !p.empty() );
 
-		for( unsigned j = 0, m = p.size(); j < m; ++j) {
-//			if( p[j][1] > p[j][0] ) std::swap( p[j][1], p[j][0] ); // MattN: why should it be sorted, if something like that is needed, should not be handled outside of this mapping?
-
+        for( unsigned j = 0, m = p.size(); j < m; ++j)
+        {
 			out[j] = in[p[j][1]] - in[p[j][0]];
 		}
 
@@ -64,22 +66,24 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
 
 		for(unsigned k = 0, n = p.size(); k < n; ++k) {
 			
-			for(unsigned i = 0; i < Nout; ++i) {
+            for(unsigned i = 0; i < Nout; ++i) {
+
+                if(p[k][1] == p[k][0]) continue;
+
                 unsigned row = k * Nout + i;
-                // needs to be sorted ! // MattN: why should it be sorted, if something like that is needed, should not be handled outside of this mapping?
-//				if( p[k][1] > p[k][0] ) std::swap( p[k][1], p[k][0] );
-				
-				if(p[k][1] == p[k][0]) continue;
-				
-				J.startVec( row );
+                J.startVec( row );
 
-				for( unsigned u = 0; u < 2; ++u ) {
-                    SReal sign = (u == 0) ? -1 : 1;
-
-                    unsigned col = p[k][u] * Nin + i;
-
-                    J.insertBack(row, col) = sign;
-				}
+                // needs to be inserted in the right order in the eigen matrix
+                if( p[k][1] < p[k][0] )
+                {
+                    J.insertBack(row, p[k][1] * Nin + i ) = 1;
+                    J.insertBack(row, p[k][0] * Nin + i ) = -1;
+                }
+                else
+                {
+                    J.insertBack(row, p[k][0] * Nin + i ) = -1;
+                    J.insertBack(row, p[k][1] * Nin + i ) = 1;
+                }
 			}
 		}
 		J.finalize();
