@@ -192,10 +192,14 @@ class SOFA_Compliant_API AssembledMultiMapping : public core::MultiMapping<TIn, 
     typedef helper::ReadAccessor< Data< typename self::OutVecDeriv > > in_force_type;
     typedef helper::WriteAccessor< Data< typename self::InVecDeriv > > out_force_type;
 	
-
+	
+	// perform a jacobian blocs assembly
 	// TODO pass out value as well ?
 	virtual void assemble( const vector<in_pos_type>& in ) = 0;
-    virtual void apply(out_pos_type& out, const vector<in_pos_type>& in ) = 0;
+
+	// perform mapping operation on positions
+    virtual void apply(out_pos_type& out, 
+					   const vector<in_pos_type>& in ) = 0;
 
   private:
 
@@ -226,6 +230,19 @@ class SOFA_Compliant_API AssembledMultiMapping : public core::MultiMapping<TIn, 
 	
 	typedef vector< sofa::defaulttype::BaseMatrix* > js_type;
 	js_type js;
+
+
+  protected:
+	
+	core::behavior::BaseMechanicalState* from(unsigned i) {
+		// TODO assert
+		return dynamic_cast<core::behavior::BaseMechanicalState* > (this->getFrom()[i]);
+	}
+
+	core::behavior::BaseMechanicalState* to(unsigned i) {
+		// TODO assert
+		return dynamic_cast<core::behavior::BaseMechanicalState* > (this->getTo()[i]);
+	}
 
 	
   public:
