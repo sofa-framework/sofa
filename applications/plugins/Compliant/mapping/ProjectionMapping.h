@@ -90,7 +90,8 @@ protected:
 			
 			SReal delta = off.empty() ? 0 : off[ std::min<int>(off.size() - 1, i) ];
 			
-            mapToEigen(out[i])(0) = mapToEigen(in[s[i].pair.first]).dot( mapToEigen(s[i].pair.second ) ) - delta;
+			using namespace utils;
+            map(out[i])(0) = map(in[s[i].pair.first]).dot( map(s[i].pair.second ) ) - delta;
 		}
 		
 	}
