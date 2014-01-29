@@ -158,9 +158,9 @@ using sofa::defaulttype::Rigid3dTypes;
 #ifndef SOFA_DOUBLE
 using sofa::defaulttype::Vec3fTypes;
 using sofa::defaulttype::Vec1fTypes;
-using sofa::defaulttype::ExtVec3fTypes;
 using sofa::defaulttype::Rigid3fTypes;
 #endif
+using sofa::defaulttype::ExtVec3fTypes;
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_SUBSETMAPPING_CPP)
 
