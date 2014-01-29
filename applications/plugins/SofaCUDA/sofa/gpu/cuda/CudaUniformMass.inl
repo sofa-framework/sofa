@@ -157,7 +157,7 @@ void UniformMass<CudaVec3f1Types, float>::addForce(const core::MechanicalParams*
 }
 
 template<>
-void UniformMass<gpu::cuda::CudaRigid3fTypes, sofa::defaulttype::Rigid3fMass>::addMDx(const core::MechanicalParams * /*mparams*/ /* PARAMS FIRST */, DataVecDeriv &f, const DataVecDeriv &dx, double factor)
+void UniformMass<gpu::cuda::CudaRigid3fTypes, sofa::defaulttype::RigidMass<3,float> >::addMDx(const core::MechanicalParams * /*mparams*/ /* PARAMS FIRST */, DataVecDeriv &f, const DataVecDeriv &dx, double factor)
 {
 	VecDeriv& _f = *f.beginEdit();
 	const VecDeriv& _dx = dx.getValue();
@@ -172,7 +172,7 @@ void UniformMass<gpu::cuda::CudaRigid3fTypes, sofa::defaulttype::Rigid3fMass>::a
 }
 
 template<>
-void UniformMass<gpu::cuda::CudaRigid3fTypes, sofa::defaulttype::Rigid3fMass>::accFromF(const core::MechanicalParams * /*mparams*/ /* PARAMS FIRST */, DataVecDeriv &a, const DataVecDeriv &f)
+void UniformMass<gpu::cuda::CudaRigid3fTypes, sofa::defaulttype::RigidMass<3,float> >::accFromF(const core::MechanicalParams * /*mparams*/ /* PARAMS FIRST */, DataVecDeriv &a, const DataVecDeriv &f)
 {
 
 	VecDeriv& _a = *a.beginEdit();
@@ -184,7 +184,7 @@ void UniformMass<gpu::cuda::CudaRigid3fTypes, sofa::defaulttype::Rigid3fMass>::a
 }
 
 template<>
-void UniformMass<gpu::cuda::CudaRigid3fTypes, sofa::defaulttype::Rigid3fMass>::addForce(const core::MechanicalParams * /*mparams*/ /* PARAMS FIRST */, DataVecDeriv &f, const DataVecCoord& /*x*/, const DataVecDeriv& /*v*/)
+void UniformMass<gpu::cuda::CudaRigid3fTypes, sofa::defaulttype::RigidMass<3,float> >::addForce(const core::MechanicalParams * /*mparams*/ /* PARAMS FIRST */, DataVecDeriv &f, const DataVecCoord& /*x*/, const DataVecDeriv& /*v*/)
 {
 
 	VecDeriv& _f = *f.beginEdit();
@@ -200,7 +200,7 @@ void UniformMass<gpu::cuda::CudaRigid3fTypes, sofa::defaulttype::Rigid3fMass>::a
 
 
 template <>
-double UniformMass<gpu::cuda::CudaRigid3fTypes,sofa::defaulttype::Rigid3fMass>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecCoord& d_x) const
+double UniformMass<gpu::cuda::CudaRigid3fTypes,sofa::defaulttype::RigidMass<3,float> >::getPotentialEnergy(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecCoord& d_x) const
 {
     const VecCoord& x = d_x.getValue();
 
@@ -215,13 +215,13 @@ double UniformMass<gpu::cuda::CudaRigid3fTypes,sofa::defaulttype::Rigid3fMass>::
 }
 
 template <>
-double UniformMass<gpu::cuda::CudaRigid3fTypes,sofa::defaulttype::Rigid3fMass>::getElementMass(unsigned int ) const
+double UniformMass<gpu::cuda::CudaRigid3fTypes,sofa::defaulttype::RigidMass<3,float> >::getElementMass(unsigned int ) const
 {
     return (double)(mass.getValue().mass);
 }
 
 template <>
-void UniformMass<gpu::cuda::CudaRigid3fTypes, Rigid3fMass>::draw(const core::visual::VisualParams* vparams)
+void UniformMass<gpu::cuda::CudaRigid3fTypes, RigidMass<3,float> >::draw(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
@@ -367,7 +367,7 @@ void UniformMass<CudaVec3d1Types, double>::addForce(const core::MechanicalParams
 // }
 
 template <>
-double UniformMass<gpu::cuda::CudaRigid3dTypes,sofa::defaulttype::Rigid3dMass>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecCoord& d_x) const
+double UniformMass<gpu::cuda::CudaRigid3dTypes,sofa::defaulttype::RigidMass<3,double> >::getPotentialEnergy(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecCoord& d_x) const
 {
     const VecCoord& x = d_x.getValue();
 
@@ -382,13 +382,13 @@ double UniformMass<gpu::cuda::CudaRigid3dTypes,sofa::defaulttype::Rigid3dMass>::
 }
 
 template <>
-double UniformMass<gpu::cuda::CudaRigid3dTypes,sofa::defaulttype::Rigid3dMass>::getElementMass(unsigned int ) const
+double UniformMass<gpu::cuda::CudaRigid3dTypes,sofa::defaulttype::RigidMass<3,double> >::getElementMass(unsigned int ) const
 {
     return (double)(mass.getValue().mass);
 }
 
 template <>
-void UniformMass<gpu::cuda::CudaRigid3dTypes, Rigid3dMass>::draw(const core::visual::VisualParams* vparams )
+void UniformMass<gpu::cuda::CudaRigid3dTypes, RigidMass<3,double> >::draw(const core::visual::VisualParams* vparams )
 {
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
