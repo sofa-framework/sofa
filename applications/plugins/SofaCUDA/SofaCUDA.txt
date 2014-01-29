@@ -17,3 +17,8 @@ LICENCE :
 
 
 OTHER COMMENTS :
+
+HowTo enable SofaCUDA in CMake build system ?
+- enable SOFA-CUDA_THRUST
+- enable SOFA-CUDA_GREATER_GCC44
+- manualy set CUDA_SDK_ROOT_DIR

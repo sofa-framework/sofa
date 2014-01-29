@@ -2,6 +2,9 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 find_package(CUDA REQUIRED)
 
+# SofaCUDA plugin requires SOFA-MISC_USE_FLOAT
+# set (SOFA-MISC_USE_FLOAT 1)
+
 # quick and dirty fix for nvcc compatibility with -fno-partial-inlining flag
 set(CUDA_PROPAGATE_HOST_FLAGS OFF)
 
