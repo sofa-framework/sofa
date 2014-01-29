@@ -93,7 +93,7 @@ protected:
 		this->getToModel()->resize( index.size() );
 		
 		for(unsigned i = 0, n = index.size(); i < n; ++i) {
-            mapToEigen(out[i])(0) = mapToEigen(in[ index[i].first ])(index[i].second);
+			utils::map(out[i])(0) = utils::map(in[ index[i].first ])(index[i].second);
 		}
 	
 	}

@@ -97,7 +97,7 @@ protected:
 				assert( std::abs( normal[i].norm() - 1 ) <= std::numeric_limits<SReal>::epsilon() );
 				
 				// first vector is normal
-                local_frame.col(0) = mapToEigen( normal[i] );
+                local_frame.col(0) = utils::map( normal[i] );
 				
 				// possibly tangent directions
 				if( self::Nout == 3 ) {

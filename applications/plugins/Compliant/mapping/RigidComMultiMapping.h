@@ -49,8 +49,10 @@ protected:
 	virtual void apply(typename self::out_pos_type& out, 
 					   const vector<typename self::in_pos_type>& in ) {
 		const mass_type& m = mass.getValue();
+	
+		using namespace utils;
 
-        mapToEigen(out[0]).setZero();
+        map(out[0]).setZero();
 		
 		unsigned off = 0;
 		total = 0;
@@ -59,13 +61,13 @@ protected:
 			
 			for(unsigned j = 0, jend = in[i].size(); j < jend; ++j) {
 				assert( off < m.size() );
-                mapToEigen(out[0]) += m[off] * mapToEigen(in[i][j].getCenter());
+                map(out[0]) += m[off] * map(in[i][j].getCenter());
 				total += m[off];
 				++off;
 			}
 		}
 
-        mapToEigen(out[0]) /= total;
+        map(out[0]) /= total;
 		
 		assert( off == m.size() );
 	}

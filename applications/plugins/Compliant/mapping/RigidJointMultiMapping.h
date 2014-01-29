@@ -73,9 +73,9 @@ protected:
 			coord_type delta = se3::prod( se3::inv(parent), child);
 
 			typename se3::deriv_type value = se3::product_log( delta );
-
-            mapToEigen(out[i]).template head<3>() =  mapToEigen(value.getLinear()).template cast<out_real>();
-            mapToEigen(out[i]).template tail<3>() =  mapToEigen(value.getAngular()).template cast<out_real>();
+			using namespace utils;
+            map(out[i]).template head<3>() =  map(value.getLinear()).template cast<out_real>();
+            map(out[i]).template tail<3>() =  map(value.getAngular()).template cast<out_real>();
 			
 		}
 		

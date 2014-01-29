@@ -204,11 +204,13 @@ public:
 		for(unsigned i = 0, n = this->mstate->getSize(); i < n; ++i) {
 			const unsigned index = clamp(i);
 			
-            mapToEigen(f[i].getLinear()) += (factor * mass.getValue()[ index ]) * mapToEigen(dx[i].getLinear());
+			using namespace utils;
+			
+            map(f[i].getLinear()) += (factor * mass.getValue()[ index ]) * map(dx[i].getLinear());
 
 			typename se3::quat q = se3::rotation( (*this->mstate->getX())[i] );
-            mapToEigen(f[i].getAngular()) += factor *
-                ( q * mapToEigen(inertia.getValue()[ index ]).cwiseProduct( q.conjugate() * mapToEigen(dx[i].getAngular() ) ));
+            map(f[i].getAngular()) += factor *
+                ( q * map(inertia.getValue()[ index ]).cwiseProduct( q.conjugate() * map(dx[i].getAngular() ) ));
 			
 		}
 		
