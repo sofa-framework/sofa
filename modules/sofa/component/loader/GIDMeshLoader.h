@@ -65,9 +65,9 @@ protected :
 //	Data<helper::vector<Hexahedron> > m_hexahedra;
 
 private :
-	unsigned char m_dimensions;
+	unsigned short m_dimensions;
 	ElementType m_eltType;
-	unsigned char m_nNode;
+	unsigned short m_nNode;
 
 
 };

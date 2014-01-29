@@ -43,7 +43,7 @@ bool GIDMeshLoader::load()
 
 bool GIDMeshLoader::readGID(std::ifstream &file)
 {
-	helper::vector<Coord> vertices = *positions.beginEdit();
+	helper::vector<Coord>& vertices = *positions.beginEdit();
 
 	std::string line;
 	std::istringstream iss;
@@ -54,6 +54,7 @@ bool GIDMeshLoader::readGID(std::ifstream &file)
 
 	iss >> finput;
 
+	std::cout << finput << std::endl;
 	if( finput == "MESH" )
 	{
 		if( iss.eof() )
@@ -63,7 +64,9 @@ bool GIDMeshLoader::readGID(std::ifstream &file)
 		}
 
 		iss >> finput;
-		sout << "Mesh name : " << finput << sendl;
+
+		while( finput != "dimension" )
+			iss >> finput;
 
 		if( iss.eof() )
 		{
@@ -80,6 +83,8 @@ bool GIDMeshLoader::readGID(std::ifstream &file)
 				return false;
 			}
 
+			sout << "dimensions = " << m_dimensions << sendl;
+
 			if( iss.eof() )
 			{
 				serr << "Bad GID file" << sendl;
@@ -88,7 +93,7 @@ bool GIDMeshLoader::readGID(std::ifstream &file)
 
 			iss >> finput;
 
-			if( finput == "Elemtype" )
+			if( finput == "ElemType" )
 			{
 				std::string element = "";
 				iss >> element;
@@ -107,6 +112,8 @@ bool GIDMeshLoader::readGID(std::ifstream &file)
 
 				if( element == "Hexahedra" )
 					m_eltType = HEXAHEDRA;
+
+				sout << "Elemtype = " << element << sendl;
 
 				if( element == "Prism" )
 				{
@@ -138,63 +145,72 @@ bool GIDMeshLoader::readGID(std::ifstream &file)
 					return false;
 				}
 
-				if( !(iss >> m_nNode) )
-				{
-					serr << "Bad GID file header" << sendl;
-					return false;
-				}
+				iss >> finput;
 
-				if( (m_eltType == LINEAR) && ( m_nNode != 2 && m_nNode != 3 ) )
+				if( finput == "Nnode" )
 				{
-					serr << "Incompatible node count for element type Linear : expected 2 or 3, found " << m_nNode << "." << sendl;
-					return false;
-				}
+					if( !(iss >> m_nNode) )
+					{
+						serr << "Bad GID file header" << sendl;
+						return false;
+					}
 
-				if( (m_eltType == TRIANGLE) && ( m_nNode != 3 && m_nNode != 6 ) )
-				{
-					serr << "Incompatible node count for element type Triangle : expected 2 or 3, found " << m_nNode << "." << sendl;
-					return false;
-				}
+					sout << "Nnodes = " << m_nNode << sendl;
 
-				if( (m_eltType == QUADRILATERAL) && ( m_nNode != 4 && m_nNode != 8 && m_nNode != 9 ) )
-				{
-					serr << "Incompatible node count for element type Quadrilateral : expected 4, 8 or 9, found " << m_nNode << "." << sendl;
-					return false;
-				}
+					if( (m_eltType == LINEAR) && ( m_nNode != 2 && m_nNode != 3 ) )
+					{
+						serr << "Incompatible node count for element type Linear : expected 2 or 3, found " << m_nNode << "." << sendl;
+						return false;
+					}
 
-				if( (m_eltType == TETRAHEDRA) && ( m_nNode != 4 && m_nNode != 10 ) )
-				{
-					serr << "Incompatible node count for element type Tetrahedra : expected 4 or 10, found " << m_nNode << "." << sendl;
-					return false;
-				}
+					if( (m_eltType == TRIANGLE) && ( m_nNode != 3 && m_nNode != 6 ) )
+					{
+						serr << "Incompatible node count for element type Triangle : expected 2 or 3, found " << m_nNode << "." << sendl;
+						return false;
+					}
 
-				if( (m_eltType == HEXAHEDRA) && ( m_nNode != 8 && m_nNode != 20 && m_nNode != 27 ) )
-				{
-					serr << "Incompatible node count for element type Quadrilateral : expected 8, 20 or 27, found " << m_nNode << "." << sendl;
-					return false;
-				}
+					if( (m_eltType == QUADRILATERAL) && ( m_nNode != 4 && m_nNode != 8 && m_nNode != 9 ) )
+					{
+						serr << "Incompatible node count for element type Quadrilateral : expected 4, 8 or 9, found " << m_nNode << "." << sendl;
+						return false;
+					}
 
-				if( (m_eltType == HEXAHEDRA) && ( m_nNode != 8 && m_nNode != 20 && m_nNode != 27 ) )
+
+					if( (m_eltType == TETRAHEDRA) && ( m_nNode != 4 && m_nNode != 10 ) )
+					{
+						serr << "Incompatible node count for element type Tetrahedra : expected 4 or 10, found " << m_nNode << "." << sendl;
+						return false;
+					}
+
+					if( (m_eltType == HEXAHEDRA) && ( m_nNode != 8 && m_nNode != 20 && m_nNode != 27 ) )
+					{
+						serr << "Incompatible node count for element type Quadrilateral : expected 8, 20 or 27, found " << m_nNode << "." << sendl;
+						return false;
+					}
+
+				}
+				else
 				{
-					serr << "Incompatible node count for element type Quadrilateral : expected 8, 20 or 27, found " << m_nNode << "." << sendl;
+					serr << "Bad GID file header : expecting Nnode tag." << sendl;
 					return false;
 				}
 
 			}
 			else
 			{
-				sout << "Bad GID file header : missing element type tag." << sendl;
+				serr << "Bad GID file header : missing Elemtype tag." << sendl;
 				return false;
 			}
 		}
 		else
 		{
-			sout << "Bad GID file header : missing dimension tag" << sendl;
+			serr << "Bad GID file header : missing dimension tag." << sendl;
 			return false;
 		}
 	}
+	else
 	{
-		sout << "Bad GID mesh header" << sendl;
+		serr << "Bad GID mesh header" << sendl;
 		return false;
 	}
 
@@ -208,16 +224,32 @@ bool GIDMeshLoader::readGID(std::ifstream &file)
 	std::getline(file, line);
 	std::transform(line.begin(), line.end(), line.begin(), ::tolower);
 
+//	std::istringstream test("    1               0              -5               0");
+//	int one;
+//	double two, three, four;
+//	test >> one;
+//	test >> two;
+//	test >> three;
+//	test >> four;
+
+//	std::cout << one << " " << two << " " << three << " " << four << std::endl;
+
 	while( line != "end coordinates")
 	{
-		unsigned int vid;
+//		std::cout << line << std::endl;
+		int vid;
+
 
 		iss.str(line);
+//		iss.seekg(0, std::ios::beg);
+		iss.clear();
 		iss >> vid; // vertex id
 
 		Coord vtx;
 		for(unsigned char d = 0 ; d < m_dimensions ; ++d)
+		{
 			iss >> vtx(d);
+		}
 
 		vertices.push_back(vtx);
 
@@ -228,7 +260,10 @@ bool GIDMeshLoader::readGID(std::ifstream &file)
 		}
 
 		getline(file, line);
+		std::transform(line.begin(), line.end(), line.begin(), ::tolower);
 	}
+
+	positions.endEdit();
 
 	do
 	{
@@ -270,16 +305,20 @@ bool GIDMeshLoader::readLinearElements(std::ifstream &file)
 {
 	std::string line;
 	std::istringstream iss;
-	helper::vector<Edge> meshEdges = *edges.beginEdit();
+	helper::vector<Edge>& meshEdges = *edges.beginEdit();
 
 	std::getline(file, line);
 	std::transform(line.begin(), line.end(), line.begin(), ::tolower);
+
+	if( m_nNode != 2 )
+		serr << "Warning : implementation only supports 2 nodes Linear elements" << sendl;
 
 	while( line != "end elements")
 	{
 		unsigned int eid; // element id
 		unsigned int vid; // vertex id
 		iss.str(line);
+		iss.clear();
 
 		iss >> eid;
 
@@ -311,6 +350,7 @@ bool GIDMeshLoader::readLinearElements(std::ifstream &file)
 		}
 
 		getline(file, line);
+		std::transform(line.begin(), line.end(), line.begin(), ::tolower);
 	}
 
 	return true;
@@ -320,16 +360,20 @@ bool GIDMeshLoader::readTriangleElements(std::ifstream &file)
 {
 	std::string line;
 	std::istringstream iss;
-	helper::vector<Triangle> meshTriangles = *triangles.beginEdit();
+	helper::vector<Triangle>& meshTriangles = *triangles.beginEdit();
 
 	std::getline(file, line);
 	std::transform(line.begin(), line.end(), line.begin(), ::tolower);
+
+	if( m_nNode != 3 )
+		serr << "Warning : implementation only supports 3 nodes Triangle elements" << sendl;
 
 	while( line != "end elements")
 	{
 		unsigned int eid; // element id
 		unsigned int vid; // vertex id
 		iss.str(line);
+		iss.clear();
 
 		iss >> eid;
 
@@ -365,6 +409,7 @@ bool GIDMeshLoader::readTriangleElements(std::ifstream &file)
 		}
 
 		getline(file, line);
+		std::transform(line.begin(), line.end(), line.begin(), ::tolower);
 	}
 
 	return true;
@@ -374,16 +419,20 @@ bool GIDMeshLoader::readQuadrilateralElements(std::ifstream &file)
 {
 	std::string line;
 	std::istringstream iss;
-	helper::vector<Quad> meshQuads = *quads.beginEdit();
+	helper::vector<Quad>& meshQuads = *quads.beginEdit();
 
 	std::getline(file, line);
 	std::transform(line.begin(), line.end(), line.begin(), ::tolower);
+
+	if( m_nNode != 4 )
+		serr << "Warning : implementation only supports 4 nodes Quadrilateral elements" << sendl;
 
 	while( line != "end elements")
 	{
 		unsigned int eid; // element id
 		unsigned int vid; // vertex id
 		iss.str(line);
+		iss.clear();
 
 		iss >> eid;
 
@@ -427,6 +476,7 @@ bool GIDMeshLoader::readQuadrilateralElements(std::ifstream &file)
 		}
 
 		getline(file, line);
+		std::transform(line.begin(), line.end(), line.begin(), ::tolower);
 	}
 
 	return true;
@@ -436,16 +486,20 @@ bool GIDMeshLoader::readTetrahedralElements(std::ifstream &file)
 {
 	std::string line;
 	std::istringstream iss;
-	helper::vector<Tetrahedron> meshTetra = *tetrahedra.beginEdit();
+	helper::vector<Tetrahedron>& meshTetra = *tetrahedra.beginEdit();
 
 	std::getline(file, line);
 	std::transform(line.begin(), line.end(), line.begin(), ::tolower);
+
+	if( m_nNode != 4 )
+		serr << "Warning : implementation only supports 4 nodes Tetrahedra elements" << sendl;
 
 	while( line != "end elements")
 	{
 		unsigned int eid; // element id
 		unsigned int vid; // vertex id
 		iss.str(line);
+		iss.clear();
 
 		iss >> eid;
 
@@ -489,8 +543,10 @@ bool GIDMeshLoader::readTetrahedralElements(std::ifstream &file)
 		}
 
 		getline(file, line);
+		std::transform(line.begin(), line.end(), line.begin(), ::tolower);
 	}
 
+	tetrahedra.endEdit();
 	return true;
 }
 
@@ -498,16 +554,20 @@ bool GIDMeshLoader::readHexahedralElements(std::ifstream &file)
 {
 	std::string line;
 	std::istringstream iss;
-	helper::vector<Hexahedron> meshHexa = *hexahedra.beginEdit();
+	helper::vector<Hexahedron>& meshHexa = *hexahedra.beginEdit();
 
 	std::getline(file, line);
 	std::transform(line.begin(), line.end(), line.begin(), ::tolower);
+
+	if( m_nNode != 8 )
+		serr << "Warning : implementation only supports 8 nodes Hexahedra elements" << sendl;
 
 	while( line != "end elements")
 	{
 		unsigned int eid; // element id
 		unsigned int vid; // vertex id
 		iss.str(line);
+		iss.clear();
 
 		iss >> eid;
 
@@ -579,6 +639,7 @@ bool GIDMeshLoader::readHexahedralElements(std::ifstream &file)
 		}
 
 		getline(file, line);
+		std::transform(line.begin(), line.end(), line.begin(), ::tolower);
 	}
 
 	return true;
