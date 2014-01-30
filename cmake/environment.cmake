@@ -34,6 +34,7 @@ list(APPEND CMAKE_MODULE_PATH ${SOFA_CMAKE_DIR}/Modules)
 
 # Misc
 set(SOFA_VERSION_NUM "1_0" CACHE STRING "Version number for this build.")
+file(MAKE_DIRECTORY "${SOFA_BUILD_DIR}/misc/")
 
 ## OS-specific
 if(WIN32)
