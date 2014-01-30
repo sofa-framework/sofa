@@ -1,3 +1,40 @@
+
+set(SOFA_OPTION_LIST CACHE INTERNAL "List of cmake options")
+
+function(sofa_option name type default_value description)
+    set(${name} "${default_value}" CACHE ${type} "${description}")
+    set(SOFA_OPTION_LIST ${SOFA_OPTION_LIST} ${name} CACHE INTERNAL "List of cmake options")
+    # list(REMOVE_DUPLICATES SOFA_OPTION_LIST)
+    if(NOT DEFINED SOFA_OPTION_DEFAULT_VALUE_${name})
+        set(SOFA_OPTION_DEFAULT_VALUE_${name} "${default_value}" CACHE INTERNAL "Default value for ${name}")
+    endif()
+endfunction()
+
+function(sofa_save_option_list filename)
+    set(human_readable_list "")
+    set(cmake_option_list "")
+    foreach(option ${SOFA_OPTION_LIST})
+        if(NOT "${${option}}" STREQUAL "${SOFA_OPTION_DEFAULT_VALUE_${option}}")
+            set(cmake_option_list "${cmake_option_list} -D${option}=${${option}}")
+            set(human_readable_list "${human_readable_list}- ${option} = ${${option}}\n")
+        endif()
+    endforeach()
+    if("${human_readable_list}" STREQUAL "")
+        set(human_readable_list "(none)\n")
+    endif()
+    file(WRITE "${filename}"
+"Those options differ from their default values:
+
+${human_readable_list}
+You should obtain a similar configuration for a fresh build of SOFA with the
+following command. (Beware: this only takes into account the options that were
+declared with the 'sofa_option' function; e.g. CMAKE_BUILD_TYPE will not be listed)
+
+cmake${cmake_option_list} .
+")
+    message(STATUS "The list of the options you changed was saved in: ${filename}")
+endfunction()
+
 # group files
 macro(GroupFiles fileGroup topGroup baseDir)
     string(REPLACE "_" " " fileGroupName ${fileGroup})
@@ -289,7 +326,7 @@ function(RetrieveDependencies projectsPath optionPrefix optionDescription defini
                         string(REPLACE "/CMakeLists.txt" "" solutionFolder ${solutionPath})
                         get_filename_component(solutionName ${solutionFolder} NAME)
                         if(NOT dependencyToUpperName MATCHES ".*_TEST.*")
-                            option("${optionName}" "${optionDescription} ${dependencyName}" OFF)
+                            sofa_option("${optionName}" BOOL OFF "${optionDescription} ${dependencyName}")
                         endif()
                         RegisterProjects(${solutionName} OPTION "${optionName}" COMPILE_DEFINITIONS "${definitionPrefix}${dependencyToUpperName}" PATH "${solutionFolder}")
                     endif()
@@ -299,7 +336,7 @@ function(RetrieveDependencies projectsPath optionPrefix optionDescription defini
                     if(projectPath)
                         string(REPLACE "/CMakeLists.txt" "" projectFolder ${projectPath})
                         get_filename_component(projectName ${projectFolder} NAME)
-                        option("${optionName}" "${optionDescription} ${dependencyName}" OFF)
+                        sofa_option("${optionName}" BOOL OFF "${optionDescription} ${dependencyName}")
                         RegisterProjects(${projectName} OPTION "${optionName}" COMPILE_DEFINITIONS "${definitionPrefix}${dependencyToUpperName}" PATH "${projectFolder}")
 
                         # then gather CMakeLists in every direct sub-folders
