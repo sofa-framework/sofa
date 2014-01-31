@@ -1,6 +1,7 @@
 
-set(SOFA_OPTION_LIST CACHE INTERNAL "List of cmake options")
-
+# Declare an option. Just as the standard 'option' command, it creates
+# a cache variable, but it also stores the list of options it created, as
+# well as their default values
 function(sofa_option name type default_value description)
     set(${name} "${default_value}" CACHE ${type} "${description}")
     set(SOFA_OPTION_LIST ${SOFA_OPTION_LIST} ${name} CACHE INTERNAL "List of cmake options")
@@ -9,7 +10,10 @@ function(sofa_option name type default_value description)
         set(SOFA_OPTION_DEFAULT_VALUE_${name} "${default_value}" CACHE INTERNAL "Default value for ${name}")
     endif()
 endfunction()
+set(SOFA_OPTION_LIST CACHE INTERNAL "List of cmake options") # Reset option list
 
+# Write to a file the list of build options, declared with sofa_options(),
+# that are not any more set to their default values
 function(sofa_save_option_list filename)
     set(human_readable_list "")
     set(cmake_option_list "")
@@ -22,7 +26,7 @@ function(sofa_save_option_list filename)
     if("${human_readable_list}" STREQUAL "")
         set(human_readable_list "(none)\n")
     endif()
-    file(WRITE "${filename}"
+    file(WRITE "${SOFA_BUILD_DIR}/${filename}"
 "Those options differ from their default values:
 
 ${human_readable_list}
@@ -32,7 +36,7 @@ declared with the 'sofa_option' function; e.g. CMAKE_BUILD_TYPE will not be list
 
 cmake${cmake_option_list} .
 ")
-    message(STATUS "The list of the options you changed was saved in: ${filename}")
+    message(STATUS "The list of the options you changed was saved to: ${filename}")
 endfunction()
 
 # group files
@@ -262,8 +266,8 @@ function(EnableDependencyOption projectName)
     #enable the project option
     if(GLOBAL_PROJECT_OPTION_${projectName})
         if(NOT ${${GLOBAL_PROJECT_OPTION_${projectName}}})
-            sofa_logWarning("Adding needed project option: ${GLOBAL_PROJECT_OPTION_${projectName}}")
-            sofa_forceReconfigure()
+            sofa_log_warning("Adding needed project option: ${GLOBAL_PROJECT_OPTION_${projectName}}")
+            sofa_force_reconfigure()
 
             get_property(variableDocumentation CACHE ${GLOBAL_PROJECT_OPTION_${projectName}} PROPERTY HELPSTRING)
             set(${GLOBAL_PROJECT_OPTION_${projectName}} 1 CACHE BOOL "${variableDocumentation}" FORCE)
@@ -276,8 +280,8 @@ function(EnableDependencyOption projectName)
             get_property(variableDocumentation CACHE ${GLOBAL_PROJECT_NO_OPTION_${projectName}} PROPERTY HELPSTRING)
             set(${GLOBAL_PROJECT_NO_OPTION_${projectName}} 0 CACHE BOOL "${variableDocumentation}" FORCE)
 
-            sofa_logWarning("Disabling option: ${GLOBAL_PROJECT_NO_OPTION_${projectName}}")
-            sofa_forceReconfigure()
+            sofa_log_warning("Disabling option: ${GLOBAL_PROJECT_NO_OPTION_${projectName}}")
+            sofa_force_reconfigure()
         endif()
     endif()
 endfunction()
@@ -529,3 +533,202 @@ macro(listSubtraction outList inList0 inList1)
 
     set(${outList} ${tmpList})
 endmacro()
+
+# Set 'var' to TRUE if 'value' appears in the remaining arguments, otherwise unset 'var'
+macro(list_contains var value)
+  set(${var})
+  foreach (value2 ${ARGN})
+    if (${value} STREQUAL ${value2})
+      set(${var} TRUE)
+    endif()
+  endforeach()
+endmacro()
+
+# Set SOFA_FORCE_RECONFIGURE to signal that CMake must be run again
+function(sofa_force_reconfigure)
+    set(SOFA_FORCE_RECONFIGURE 1 CACHE INTERNAL "" FORCE)
+endfunction()
+unset(SOFA_FORCE_RECONFIGURE CACHE) # Reset flag
+
+# Print a warning message and store it. A summary of the warnings is printed at
+# the end of the configuration step with sofa_print_list()
+function(sofa_log_warning message)
+    set(SOFA_WARNING_MESSAGES ${SOFA_WARNING_MESSAGES} "${message}" CACHE INTERNAL "" FORCE)
+    message(WARNING "\n${message}\n")
+endfunction()
+unset(SOFA_WARNING_MESSAGES CACHE) # Clear warning list
+
+# Print an error message and store it. A summary of the errors is printed at
+# the end of the configuration step with sofa_print_list()
+function(sofa_log_error message)
+    set(SOFA_ERROR_MESSAGES ${SOFA_ERROR_MESSAGES} "${message}" CACHE INTERNAL "" FORCE)
+    message(SEND_ERROR "\n${message}\n")
+endfunction()
+unset(SOFA_ERROR_MESSAGES CACHE) # Clear error list
+
+# Print a list of messages with a little bit of formatting
+function(sofa_print_list title message_list)
+    if(message_list)
+        message("> ${title}:")
+        foreach(message "${message_list}")
+            message("  - ${message}")
+        endforeach()
+    endif()
+endfunction()
+
+function(sofa_print_detailed_projects_info)
+    message(STATUS "Detailed projects information:")
+    message("")
+    set(projectNames ${GLOBAL_DEPENDENCIES})
+    foreach(projectName ${projectNames})
+        if(TARGET ${projectName})
+            set(dependencies ${GLOBAL_PROJECT_DEPENDENCIES_${projectName}})
+            set(defines ${GLOBAL_PROJECT_COMPILER_DEFINITIONS_${projectName}})
+            message("> ${projectName}")
+            if(defines)
+                message("  - Compiler definitions: ${defines}")
+            else()
+                message("  - No compiler definitions")
+            endif()
+            if (dependencies)
+                message("  - Dependencies:")
+                foreach(dependency ${dependencies})
+                    message("    > ${dependency}")
+                endforeach()
+            else()
+                message("  - No dependencies")
+            endif()
+        endif()
+    endforeach()
+endfunction()
+
+function(sofa_save_dependencies filename)
+    set(text "")
+
+    set(projectNames ${GLOBAL_DEPENDENCIES})
+    foreach(projectName ${projectNames})
+        if(TARGET ${projectName})
+            set(dependencies ${GLOBAL_PROJECT_DEPENDENCIES_${projectName}})
+            if (dependencies)
+                set(text "${text}> ${projectName} depends on:\n")
+                foreach(dependency ${dependencies})
+                    set(text "${text}  - ${dependency}\n")
+                endforeach()
+            else()
+                set(text "${text}> ${projectName} has no dependencies\n")
+            endif()
+        endif()
+    endforeach()
+    file(WRITE "${SOFA_BUILD_DIR}/${filename}"
+"Here are the direct dependencies for every project:
+
+${text}")
+    message(STATUS "The list of direct dependencies was saved to: ${filename}")
+endfunction()
+
+# Write to a file the list of compilation definitions
+function(sofa_save_compiler_definitions filename)
+    # Get the definitions for the first TARGET project,
+    foreach(project_name ${GLOBAL_DEPENDENCIES})
+        if(TARGET ${project_name})
+            set(common_definition_list ${GLOBAL_PROJECT_COMPILER_DEFINITIONS_${project_name}})
+            break()
+        endif()
+    endforeach()
+    # and find the list of definitions which are common to every project
+    foreach(project_name ${GLOBAL_DEPENDENCIES})
+        if(TARGET ${project_name})
+            listIntersection(new_list common_definition_list GLOBAL_PROJECT_COMPILER_DEFINITIONS_${project_name})
+            set(common_definition_list ${new_list})
+        endif()
+    endforeach()
+
+    # List, for each project, the definitions which are not in the common list
+    set(project_list)
+    foreach(project_name ${GLOBAL_DEPENDENCIES})
+        if(TARGET ${project_name})
+            listSubtraction(defines GLOBAL_PROJECT_COMPILER_DEFINITIONS_${project_name} common_definition_list)
+            set(project_list "${project_list}- ${project_name}: ${defines}\n")
+        endif()
+    endforeach()
+
+    if("${common_definition_list}" STREQUAL "")
+        set(common_definition_list "(none)")
+    endif()
+
+    file(WRITE "${SOFA_BUILD_DIR}/${filename}"
+        "Every project is compiled with the following definitions:
+
+${common_definition_list}
+
+And here are the project-specific compiler definitions:
+
+${project_list}")
+    message(STATUS "The list of compiler definitions was saved to: ${filename}")
+endfunction()
+
+function(sofa_print_configuration_report)
+    if(SOFA-MISC_CMAKE_VERBOSE)
+        sofa_print_detailed_projects_info()
+    endif()
+    if(SOFA_ERROR_MESSAGES OR SOFA_WARNING_MESSAGES)
+        message("")
+        message(STATUS "Log summary:")
+        sofa_print_list("Errors" "${SOFA_ERROR_MESSAGES}")
+        sofa_print_list("Warnings" "${SOFA_WARNING_MESSAGES}")
+        message("")
+    endif()
+    if(NOT SOFA_ERROR_MESSAGES AND SOFA_FORCE_RECONFIGURE)
+        message(">>> The configuration has changed, you must configure the project again")
+        message("")
+    endif()
+endfunction()
+
+
+# Iteratively retrieve all the dependencies of 'project' and store them in 'out_dependency_list'
+function(sofa_get_complete_dependencies project out_dependency_list)
+    set(current_list)
+
+    set(new_dependencies ${GLOBAL_PROJECT_DEPENDENCIES_${project}})
+    while(new_dependencies)
+        list(APPEND current_list ${new_dependencies})
+        # Get these new_dependencies' own dependencies
+        set(dependencies_of_dependencies)
+        foreach(name ${new_dependencies})
+            list(APPEND dependencies_of_dependencies ${GLOBAL_PROJECT_DEPENDENCIES_${name}})
+        endforeach()
+        if(dependencies_of_dependencies)
+            list(REMOVE_DUPLICATES dependencies_of_dependencies)
+        endif()
+        # But keep only the new ones
+        listSubtraction(new_dependencies dependencies_of_dependencies current_list)
+    endwhile()
+
+    set(${out_dependency_list} ${current_list} PARENT_SCOPE)
+endfunction()
+
+function(sofa_save_complete_dependencies filename)
+    foreach(projectName ${GLOBAL_DEPENDENCIES})
+        if(TARGET ${projectName})
+            sofa_get_complete_dependencies(${projectName} dependencies)
+            set(targets)
+            set(others)
+            foreach(dependency ${dependencies})
+                if(TARGET ${dependency})
+                    list(APPEND targets "${dependency}")
+                else()
+                    list(APPEND others "${dependency}")
+                endif()
+            endforeach()
+            if(NOT targets)
+                set(targets "(none)")
+            endif()
+            if(NOT others)
+                set(others "(none)")
+            endif()
+            set(text "${text}> ${projectName}:\n- Targets:\n${targets}\n- Others:\n${others}\n\n")
+        endif()
+    endforeach()
+    file(WRITE "${SOFA_BUILD_DIR}/${filename}" "For debugging purposes, here is the list of ALL dependencies for each project.\n\n${text}")
+    message(STATUS "The list of complete dependencies was saved to: ${filename}")
+endfunction()
