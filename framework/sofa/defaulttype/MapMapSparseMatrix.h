@@ -63,7 +63,7 @@ public:
     }
 
     /// @return the number of rows
-    size_t size() const
+    std::size_t size() const
     {
         return m_data.size();
     }

@@ -659,7 +659,7 @@ public:
         return removedEdgesArray;
     }
 
-    virtual unsigned int getNbRemovedEdges() const
+    virtual std::size_t getNbRemovedEdges() const
     {
         return removedEdgesArray.size();
     }
@@ -845,7 +845,7 @@ public:
 
     virtual ~TrianglesRemoved();
 
-    unsigned int getNbRemovedTriangles() const
+    std::size_t getNbRemovedTriangles() const
     {
         return removedTrianglesArray.size();
     }
@@ -1042,7 +1042,7 @@ public:
 
     virtual ~QuadsRemoved();
 
-    unsigned int getNbRemovedQuads() const
+    std::size_t getNbRemovedQuads() const
     {
         return removedQuadsArray.size();
     }
@@ -1238,7 +1238,7 @@ public:
         return removedTetrahedraArray;
     }
 
-    unsigned int getNbRemovedTetrahedra() const
+    std::size_t getNbRemovedTetrahedra() const
     {
         return removedTetrahedraArray.size();
     }
@@ -1421,7 +1421,7 @@ public:
         return removedHexahedraArray;
     }
 
-    unsigned int getNbRemovedHexahedra() const
+    std::size_t getNbRemovedHexahedra() const
     {
         return removedHexahedraArray.size();
     }

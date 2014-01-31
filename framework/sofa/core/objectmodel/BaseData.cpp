@@ -205,10 +205,10 @@ bool BaseData::updateFromParentValue(const BaseData* parent)
     void* dataValue = this->beginEditVoidPtr();
 
     // First decide how many values will be copied
-    int inSize = 1;
-    int outSize = 1;
-    int copySize = 1;
-    int nbl = 1;
+    std::size_t inSize = 1;
+    std::size_t outSize = 1;
+    std::size_t copySize = 1;
+    std::size_t nbl = 1;
     if (dataInfo->FixedSize())
     {
         outSize = dataInfo->size();
@@ -228,13 +228,13 @@ bool BaseData::updateFromParentValue(const BaseData* parent)
     }
     else
     {
-        int dataBSize = dataInfo->size();
-        int parentBSize = parentInfo->size();
+        std::size_t dataBSize = dataInfo->size();
+        std::size_t parentBSize = parentInfo->size();
         if (dataBSize > parentBSize)
             msgs << "parent Data type " << parentInfo->name() << " contains " << parentBSize << " values per element while Data type " << dataInfo->name() << " requires " << dataBSize << " values.";
         else if (dataBSize < parentBSize)
             msgs << "parent Data type " << parentInfo->name() << " contains " << parentBSize << " values per element while Data type " << dataInfo->name() << " only requires " << dataBSize << " values.";
-        int parentSize = parentInfo->size(parentValue);
+        std::size_t parentSize = parentInfo->size(parentValue);
         inSize = parentBSize;
         outSize = dataBSize;
         nbl = parentSize / parentBSize;

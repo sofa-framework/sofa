@@ -101,7 +101,7 @@ public:
     virtual void opMulV(defaulttype::BaseVector* result, const defaulttype::BaseVector* v) const
     {
         //Solve lv = R * lvR
-        size_t k = 0;
+        std::size_t k = 0;
         unsigned int l = 0;
         while (k < data.size())
         {
@@ -115,7 +115,7 @@ public:
 
     virtual void opMulTV(defaulttype::BaseVector* result, const defaulttype::BaseVector* v) const
     {
-        size_t k = 0;
+        std::size_t k = 0;
         unsigned int l = 0;
         while (k < data.size())
         {
@@ -135,10 +135,10 @@ public:
             if (RotationMatrix<Real> * result = dynamic_cast<RotationMatrix<Real> * >(bresult))
             {
                 Real tmp[9];
-                size_t datSz = data.size() < m->data.size() ? data.size() : m->data.size();
-                size_t minSz = datSz < result->data.size() ? datSz : result->data.size();
+                std::size_t datSz = data.size() < m->data.size() ? data.size() : m->data.size();
+                std::size_t minSz = datSz < result->data.size() ? datSz : result->data.size();
 
-                for (size_t i=0; i<minSz; i+=9)
+                for (std::size_t i=0; i<minSz; i+=9)
                 {
                     tmp[0] = data[i+0] * m->data[i+0] + data[i+1] * m->data[i+1] + data[i+2] * m->data[i+2];
                     tmp[1] = data[i+0] * m->data[i+3] + data[i+1] * m->data[i+4] + data[i+2] * m->data[i+5];
@@ -161,7 +161,7 @@ public:
                 {
                     if (datSz<data.size())
                     {
-                        for (size_t i=minSz; i<data.size(); i+=9)
+                        for (std::size_t i=minSz; i<data.size(); i+=9)
                         {
                             result->data[i+0] = data[i+0]; result->data[i+1] = data[i+1]; result->data[i+2] = data[i+2];
                             result->data[i+3] = data[i+3]; result->data[i+4] = data[i+4]; result->data[i+5] = data[i+5];
@@ -171,7 +171,7 @@ public:
                     }
                     else if (datSz<m->data.size())
                     {
-                        for (size_t i=datSz; i<m->data.size(); i+=9)
+                        for (std::size_t i=datSz; i<m->data.size(); i+=9)
                         {
                             result->data[i+0] = m->data[i+0]; result->data[i+1] = m->data[i+1]; result->data[i+2] = m->data[i+2];
                             result->data[i+3] = m->data[i+3]; result->data[i+4] = m->data[i+4]; result->data[i+5] = m->data[i+5];
@@ -183,7 +183,7 @@ public:
 
                 if (minSz < result->data.size())
                 {
-                    for (size_t i=datSz; i<result->data.size(); i+=9)
+                    for (std::size_t i=datSz; i<result->data.size(); i+=9)
                     {
                         result->data[i+0] = 1; result->data[i+1] = 0; result->data[i+2] = 0;
                         result->data[i+3] = 0; result->data[i+4] = 1; result->data[i+5] = 0;
