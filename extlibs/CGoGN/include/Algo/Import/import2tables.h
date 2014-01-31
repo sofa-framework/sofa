@@ -150,57 +150,76 @@ namespace Import
 template <typename PFP>
 class MeshTablesVolume
 {
+public:
+    typedef typename PFP::VEC3 VEC3 ;
+    typedef typename VEC3::DATA_TYPE DATA_TYPE ;
+    typedef typename PFP::REAL REAL;
+
 protected:
-	typename PFP::MAP& m_map;
+    typename PFP::MAP& m_map;
 
-	unsigned int m_nbVertices;
+    unsigned int m_nbVertices;
 
-	unsigned int m_nbFaces;
+    unsigned int m_nbVolumes;
 
-	unsigned int m_nbVolumes;
+    /**
+     * number of faces per volume
+     */
+    std::vector<short> m_nbFaces;
 
-	/**
-	* number of edges per face
-	*/
-	std::vector<short> m_nbEdges;
+    /**
+    * table of emb ptr (for each face, first vertex)
+    */
+    std::vector<unsigned int> m_emb;
 
-	/**
-	* table of emb ptr (for each face, first vertex)
-	*/
-	std::vector<unsigned int> m_emb;
+    //Tetrahedra
 
-	static ImportType getFileType(const std::string& filename);
+    /**
+     * @brief importTet
+     * @param filename
+     * @param attrNames
+     * @return
+     */
+    bool importTet(const std::string& filename, std::vector<std::string>& attrNames);
+
+    bool importOFFWithELERegions(const std::string& filenameOFF, const std::string& filenameELE, std::vector<std::string>& attrNames);
+
+    bool importNodeWithELERegions(const std::string& filenameNode, const std::string& filenameELE, std::vector<std::string>& attrNames);
+
+    bool importTetmesh(const std::string& filename, std::vector<std::string>& attrNames);
+
+    bool importTs(const std::string& filename, std::vector<std::string>& attrNames);
+
+    //
+
+    bool importMSH(const std::string& filename, std::vector<std::string>& attrNames);
+
+    bool importVTU(const std::string& filename, std::vector<std::string>& attrNames);
+
+    bool importNAS(const std::string& filename, std::vector<std::string>& attrNames);
+
+    bool importVBGZ(const std::string& filename, std::vector<std::string>& attrNames);
+
+    //bool importMoka(const std::string& filename, std::vector<std::string>& attrNames);
+
+    //bool importOVM(const std::string& filename, std::vector<std::string>& attrNames);
 
 public:
-	typedef typename PFP::VEC3 VEC3 ;
-	typedef typename VEC3::DATA_TYPE DATA_TYPE ;
+    //static ImportType getFileType(const std::string& filename);
 
-	typedef Geom::Vector<6,DATA_TYPE> VEC6;
-	typedef Geom::Matrix<3,3,DATA_TYPE> MAT33;
-	typedef Geom::Matrix<3,6,DATA_TYPE> MAT36;
+    inline unsigned getNbVertices() const { return m_nbVertices; }
 
-	inline short getNbEdgesFace(int i) const  { return m_nbEdges[i]; }
+    inline unsigned getNbVolumes() const { return m_nbVolumes; }
 
-	inline unsigned getNbVolumes() const { return m_nbVolumes; }
+    inline short getNbFacesVolume(int i) const { return m_nbFaces[i]; }
 
-	inline unsigned getNbFaces() const { return m_nbFaces; }
+    inline unsigned int getEmbIdx(int i) { return  m_emb[i]; }
 
-	inline unsigned getNbVertices() const { return m_nbVertices; }
+    bool importMesh(const std::string& filename, std::vector<std::string>& attrNames);
 
-	//inline short getNbVerticesPerFace(int i) const  { return m_nbVerticesPerFace[i]; }
-
-	//inline short getNbFacesPerVolume(int i) const { return m_nbFacesPerVolume[i]; }
-
-	inline unsigned int getEmbIdx(int i) { return  m_emb[i]; }
-
-	bool importMesh(const std::string& filename, std::vector<std::string>& attrNames, float scaleFactor = 1.0f);
-
-	bool importTet(const std::string& filename, std::vector<std::string>& attrNames, float scaleFactor = 1.0f);
-
-	MeshTablesVolume(typename PFP::MAP& map):
-		m_map(map)
-	{
-	}
+    MeshTablesVolume(typename PFP::MAP& map):
+        m_map(map)
+    { }
 };
 
 
