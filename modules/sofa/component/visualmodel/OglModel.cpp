@@ -628,7 +628,7 @@ bool OglModel::loadTextures()
         if (!sofa::helper::system::DataRepository.findFile(textureFile))
         {
             textureFile = this->fileMesh.getFullPath();
-            size_t position = textureFile.rfind("/");
+            std::size_t position = textureFile.rfind("/");
             textureFile.replace (position+1,textureFile.length() - position, this->materials.getValue()[*i].textureFilename);
 
             if (!sofa::helper::system::DataRepository.findFile(textureFile))

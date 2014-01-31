@@ -691,7 +691,7 @@ void RecordedCamera::draw(const core::visual::VisualParams* /*vparams*/)
 
         Vec3 _lookAt = m_rotationLookAt.getValue();
         unsigned int dx = 4;
-        size_t ratio = m_rotationPoints.size()/dx;
+        std::size_t ratio = m_rotationPoints.size()/dx;
         glBegin(GL_LINES);
         for (unsigned int i=0; i<dx; ++i)
         {

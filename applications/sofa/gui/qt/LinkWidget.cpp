@@ -103,8 +103,8 @@ void QDisplayLinkInfoWidget::formatHelperString(const std::string& helper, std::
             current_sentence = label_text;
         if (current_sentence.size() > SIZE_TEXT)
         {
-            const size_t cut = current_sentence.size()/SIZE_TEXT;
-            for (size_t index_cut=1; index_cut<=cut; index_cut++)
+            const std::size_t cut = current_sentence.size()/SIZE_TEXT;
+            for (std::size_t index_cut=1; index_cut<=cut; index_cut++)
             {
                 std::string::size_type numero_char=current_sentence.rfind(' ',SIZE_TEXT*index_cut);
                 current_sentence = current_sentence.insert(numero_char+1,1,'\n');
