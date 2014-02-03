@@ -39,17 +39,21 @@ using namespace sofa::defaulttype;
 using namespace core::behavior;
 
 #ifndef SOFA_FLOAT
+template class MultiMapping< Vec1dTypes, Vec1dTypes >;
 template class MultiMapping< Vec3dTypes, Vec3dTypes >;
 template class MultiMapping< Rigid3dTypes, Vec3dTypes >;
 #endif
 
 #ifndef SOFA_DOUBLE
+template class MultiMapping< Vec1fTypes, Vec1fTypes >;
 template class MultiMapping< Vec3fTypes, Vec3fTypes >;
 template class MultiMapping< Rigid3fTypes, Vec3fTypes >;
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
+template class MultiMapping< Vec1dTypes, Vec1fTypes >;
+template class MultiMapping< Vec1fTypes, Vec1dTypes > ;
 template class MultiMapping< Vec3dTypes, Vec3fTypes >;
 template class MultiMapping< Vec3fTypes, Vec3dTypes > ;
 template class MultiMapping< Rigid3dTypes, Vec3fTypes >;
