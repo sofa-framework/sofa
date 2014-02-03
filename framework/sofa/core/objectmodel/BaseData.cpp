@@ -247,22 +247,22 @@ bool BaseData::updateFromParentValue(const BaseData* parent)
     if (dataInfo->Integer() && parentInfo->Integer())
     {
         // integer conversion
-        for (int l=0; l<nbl; ++l)
-            for (int c=0; c<copySize; ++c)
+        for (size_t l=0; l<nbl; ++l)
+            for (size_t c=0; c<copySize; ++c)
                 dataInfo->setIntegerValue(dataValue, l*outSize+c, parentInfo->getIntegerValue(parentValue, l*inSize+c));
     }
     else if ((dataInfo->Integer() || dataInfo->Scalar()) && (parentInfo->Integer() || parentInfo->Scalar()))
     {
         // scalar conversion
-        for (int l=0; l<nbl; ++l)
-            for (int c=0; c<copySize; ++c)
+        for (size_t l=0; l<nbl; ++l)
+            for (size_t c=0; c<copySize; ++c)
                 dataInfo->setScalarValue(dataValue, l*outSize+c, parentInfo->getScalarValue(parentValue, l*inSize+c));
     }
     else
     {
         // text conversion
-        for (int l=0; l<nbl; ++l)
-            for (int c=0; c<copySize; ++c)
+        for (size_t l=0; l<nbl; ++l)
+            for (size_t c=0; c<copySize; ++c)
                 dataInfo->setTextValue(dataValue, l*outSize+c, parentInfo->getTextValue(parentValue, l*inSize+c));
     }
 
