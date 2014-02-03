@@ -20,13 +20,13 @@ struct Assembly_test : public CompliantSolver_test
     /** Expected results of the different tests. */
     struct
     {
-        DenseMatrix M,C,J,P;
+        DenseMatrix M,C,J,P,K;
         Vector f,phi,dv,lambda;
     } expected;
 
     struct
     {
-        SparseMatrix M /*, K*/;
+        SparseMatrix M , K;
     } assembled;
 
     /// assembling the system with the given params (useful to assemble the mass or stiffness matrices alone)
@@ -788,7 +788,152 @@ struct Assembly_test : public CompliantSolver_test
 
 
 
+
+    /** A spring composed by two independent dofs + subsetMapping to bring them in the same mechanical object + extensionMapping + uniformCompliance
+        Do we obtain the same stiffness matrix as a regular spring?
+    */
+    void testDecomposedString( SReal stiffness = 1e4 )
+    {
+        Node::SPtr root = clearScene();
+        root->setGravity( Vec3(0,0,0) );
+
+        Vec3 p0(0,0,0), p1(2,0,0); // make it deformed at start, such as it creates a force and geometric stiffness
+
+        // The solver
+        complianceSolver = addNew<OdeSolver>(root);
+        complianceSolver->storeDynamicsSolution(true);
+        linearSolver = addNew<LinearSolver>(root);
+        complianceSolver->alpha.setValue(1.0);
+        complianceSolver->beta.setValue(1.0);
+
+        // ========= DOF1
+        simulation::Node::SPtr node1 = root->createChild("node1");
+        MechanicalObject3::SPtr dof1 = addNew<MechanicalObject3>(node1);
+        dof1->resize(1);
+        MechanicalObject3::WriteVecCoord x1 = dof1->writePositions();
+        x1[0] = p0;
+        UniformMass3::SPtr mass1 = addNew<UniformMass3>(node1);
+        mass1->setTotalMass( 1 );
+
+        // ========= DOF2
+        simulation::Node::SPtr node2 = root->createChild("node2");
+        MechanicalObject3::SPtr dof2 = addNew<MechanicalObject3>(node2);
+        dof2->resize(1);
+        MechanicalObject3::WriteVecCoord x2 = dof2->writePositions();
+        x2[0] = p1;
+        UniformMass3::SPtr mass2 = addNew<UniformMass3>(node2);
+        mass1->setTotalMass( 1 );
+
+        // =========== common DOFs
+        simulation::Node::SPtr subset_node = node1->createChild( "SubsetNode");
+        node2->addChild( subset_node );
+        MechanicalObject3::SPtr allDofs = addNew<MechanicalObject3>(subset_node);
+        SubsetMultiMapping3_to_3::SPtr subsetMapping = addNew<SubsetMultiMapping3_to_3>(subset_node);
+        subsetMapping->addInputModel( dof1.get() );
+        subsetMapping->addInputModel( dof2.get() );
+        subsetMapping->addOutputModel( allDofs.get() );
+        subsetMapping->addPoint( dof1.get(), 0 );
+        subsetMapping->addPoint( dof2.get(), 0 );
+
+        // ========= extension
+        simulation::Node::SPtr extension_node = subset_node->createChild( "ExtensionNode");
+
+        MechanicalObject1::SPtr extensions = addNew<MechanicalObject1>(extension_node);
+        EdgeSetTopologyContainer::SPtr edgeSet = addNew<EdgeSetTopologyContainer>(extension_node);
+        edgeSet->addEdge(0,1);
+
+        ExtensionMapping31::SPtr extensionMapping = addNew<ExtensionMapping31>(extension_node);
+        extensionMapping->setModels( allDofs.get(), extensions.get() );
+        helper::vector<SReal> restLengths(1); restLengths[0]=1; // make it deformed at start, such as it creates a force and geometric stiffness
+        extensionMapping->f_restLengths.setValue( restLengths );
+        UniformCompliance1::SPtr compliance = addNew<UniformCompliance1>(extension_node);
+        compliance->compliance.setValue(1.0/stiffness);
+        compliance->isCompliance.setValue(false);
+
+
+        // ***** Expected results
+        expected.M = expected.P = DenseMatrix::Identity( 6, 6 );
+        expected.dv = Vector::Zero(6);        // equilibrium
+
+        expected.C = DenseMatrix::Zero(0,0); // null compliance
+        expected.phi = Vector::Zero(0);       // null imposed constraint value
+        expected.J = DenseMatrix::Zero(0,0);
+        expected.lambda.resize(0);
+
+        expected.K = DenseMatrix::Zero(6,6);
+        for( int i=0 ; i<6 ; i+=3 )
+        {
+            expected.K(i,i) = -stiffness;
+            expected.K(i, (i+3)%6) = stiffness;
+        }
+
+        // ***** Perform initialization
+        sofa::simulation::getSimulation()->init(root.get());
+
+
+        // before deformation and associated geometric stiffness
+        assembled.K = getAssembledStiffnessMatrix( root );
+        ASSERT_TRUE( matricesAreEqual( expected.K, assembled.K ) );
+
+
+        // ***** Perform simulation
+        sofa::simulation::getSimulation()->animate(root.get(),1.0);
+
+        // after animation, the force has been computed as weel as the geometric stiffness
+
+
+        assembled.M = getAssembledMassMatrix( root );
+        assembled.K = getAssembledStiffnessMatrix( root );
+
+
+        // test the shape of K (but not all the values)
+        bool ok = true;
+        DenseMatrix K = assembled.K;
+        for( int i=0 ; i<6 && ok ; i+=3 )
+        {
+            if( i%3 ) ok = ok && ( K(i,i) == -K(i, (i+3)%6) ) && ( K(i,i) == expected.K(i,i) );
+            ok = ok && ( K(i+1,i+1) == -K(i+1, (i+4)%6) );
+            ok = ok && ( K(i+2,i+2) == -K(i+2, (i+5)%6) );
+            ok = ok && ( K(i+1,i+1) == K(i+2, i+2) );
+            ok = ok && ( K(i+1,i+1) == K((i+4)%6, (i+4)%6) );
+        }
+        ASSERT_TRUE( ok );
+
+
+        // build a spring stiffness matrix from a simple mapping to test the values
+        root = clearScene();
+        root->setGravity( Vec3(0,0,0) );complianceSolver = addNew<OdeSolver>(root);
+        complianceSolver->storeDynamicsSolution(true);
+        linearSolver = addNew<LinearSolver>(root);
+        complianceSolver->alpha.setValue(1.0);
+        complianceSolver->beta.setValue(1.0);
+        createCompliantString( root, p0, p1, 2, 2, 1.0/stiffness, false, 1 );
+        sofa::simulation::getSimulation()->init(root.get());
+        sofa::simulation::getSimulation()->animate(root.get(),1.0);
+        expected.K = getAssembledStiffnessMatrix( root );
+
+
+
+        // actual results
+        //        cerr<<"M = " << endl << DenseMatrix(assembled.M) << endl;
+        //        cerr<<"J = " << endl << DenseMatrix(complianceSolver->J()) << endl;
+        //        cerr<<"C = " << endl << DenseMatrix(complianceSolver->C()) << endl;
+        //        cerr<<"P = " << endl << DenseMatrix(complianceSolver->P()) << endl;
+        //        cerr<<"f = " << endl << complianceSolver->getF().transpose() << endl;
+        //        cerr<<"phi = " << complianceSolver->getPhi().transpose() << endl;
+        //        cerr<<"actual dv = " << complianceSolver->getDv().transpose() << endl;
+        //        cerr<<"actual lambda = " << complianceSolver->getLambda().transpose() << endl;
+    }
+
+    ///@}
+
+
+
 };
+
+
+
+
 
 
 
@@ -876,7 +1021,12 @@ TEST_F( Assembly_test, testRigidConnectedToString )
 
     //    cout<<"all tests done" << endl;
 }
-
+TEST_F( Assembly_test, testDecomposedString )
+{
+    testDecomposedString();
+    ASSERT_TRUE(matricesAreEqual( expected.M, assembled.M ));
+    ASSERT_TRUE(matricesAreEqual( expected.K, assembled.K ));
+}
 
 } // sofa
 

@@ -97,12 +97,12 @@ protected:
     ///@{
 
     /// Helper method to create strings used in various tests.
-    Node::SPtr createCompliantString(simulation::Node::SPtr parent, Vec3 startPoint, Vec3 endPoint, unsigned numParticles, double totalMass, double complianceValue=0/*, double dampingRatio=0*/ )
+    Node::SPtr createCompliantString(simulation::Node::SPtr parent, Vec3 startPoint, Vec3 endPoint, unsigned numParticles, double totalMass, double complianceValue=0/*, double dampingRatio=0*/, bool isCompliant=true, SReal totalRestLength = -1 )
     {
         static unsigned numObject = 1;
         std::ostringstream oss;
         oss << "string_" << numObject++;
-        SReal totalLength = (endPoint-startPoint).norm();
+        SReal totalLength = totalRestLength<0 ? (endPoint-startPoint).norm() : totalRestLength;
 
         //--------
         simulation::Node::SPtr  string_node = parent->createChild(oss.str());
@@ -138,8 +138,8 @@ protected:
         extension_node->addObject(compliance);
         compliance->setName(oss.str()+"_extensionsCompliance");
         compliance->compliance.setValue(complianceValue);
+        compliance->isCompliance.setValue(isCompliant);
         //        compliance->dampingRatio.setValue(dampingRatio);
-
 
         //--------
         // create the particles
@@ -157,7 +157,6 @@ protected:
             }
         }
         extensionMapping->f_restLengths.setValue( restLengths );
-
 
         return string_node;
 
