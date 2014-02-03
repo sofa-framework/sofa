@@ -15,13 +15,13 @@ using namespace sofa::defaulttype;
 int UniformComplianceClass = core::RegisterObject("Uniform compliance")
 #ifndef SOFA_FLOAT
         .add< UniformCompliance< Vec1dTypes > >(true)
-	.add< UniformCompliance< Vec3dTypes > >(true)
-        .add< UniformCompliance< Vec6dTypes > >(true)
+        .add< UniformCompliance< Vec3dTypes > >()
+        .add< UniformCompliance< Vec6dTypes > >()
 #endif
 #ifndef SOFA_DOUBLE
-        .add< UniformCompliance< Vec1fTypes > >(true)
-	.add< UniformCompliance< Vec3fTypes > >(true)
-        .add< UniformCompliance< Vec6fTypes > >(true)
+        .add< UniformCompliance< Vec1fTypes > >()
+        .add< UniformCompliance< Vec3fTypes > >()
+        .add< UniformCompliance< Vec6fTypes > >()
 #endif
         ;
 
