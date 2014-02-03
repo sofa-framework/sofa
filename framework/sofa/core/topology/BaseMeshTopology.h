@@ -124,11 +124,11 @@ public:
     /// Random accessors
     /// @{
 
-    virtual int getNbEdges()                   { return getEdges().size(); }
-    virtual int getNbTriangles()               { return getTriangles().size(); }
-    virtual int getNbQuads()                   { return getQuads().size(); }
-    virtual int getNbTetrahedra()              { return getTetrahedra().size(); }
-    virtual int getNbHexahedra()	       { return getHexahedra().size(); }
+    virtual int getNbEdges()                   { return (int)getEdges().size(); }
+    virtual int getNbTriangles()               { return (int)getTriangles().size(); }
+    virtual int getNbQuads()                   { return (int)getQuads().size(); }
+    virtual int getNbTetrahedra()              { return (int)getTetrahedra().size(); }
+    virtual int getNbHexahedra()	       { return (int)getHexahedra().size(); }
 
     virtual const Edge getEdge(EdgeID i)             { return getEdges()[i]; }
     virtual const Triangle getTriangle(TriangleID i) { return getTriangles()[i]; }
@@ -139,8 +139,8 @@ public:
 
     /// Bridge from old functions (using Tetra/Tetras and Hexa/Hexas) to new ones
     ///@{
-    virtual int getNbTetras()    { return getTetrahedra().size(); }
-    virtual int getNbHexas()     { return getHexahedra().size(); }
+    virtual int getNbTetras()    { return (int)getTetrahedra().size(); }
+    virtual int getNbHexas()     { return (int)getHexahedra().size(); }
 
     virtual Tetra getTetra(TetraID i)          { return getTetrahedra()[i]; }
     virtual Hexa getHexa(HexaID i)             { return getHexahedra()[i]; }

@@ -327,7 +327,7 @@ public:
     void assign (const T& value)
     {
         //std::fill_n(begin(),size(),value);
-        for (size_type i=0; i<(unsigned int)N; i++)
+        for (size_type i=0; i<N; i++)
             elems[i] = value;
     }
 

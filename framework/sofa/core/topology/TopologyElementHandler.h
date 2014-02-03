@@ -106,7 +106,7 @@ protected:
             )
     {
         // call old method by default
-        add(index.size(), elems, ancestors, coefs);
+        add((unsigned int)index.size(), elems, ancestors, coefs);
     }
 
     /// Remove the values corresponding to the ELement removed.

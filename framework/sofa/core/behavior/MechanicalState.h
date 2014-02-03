@@ -149,8 +149,8 @@ public:
         return (v == NULL) ? NULL : &(v->getValue());
     }
 
-    virtual unsigned int getCoordDimension() const { return defaulttype::DataTypeInfo<Coord>::size(); }
-    virtual unsigned int getDerivDimension() const { return defaulttype::DataTypeInfo<Deriv>::size(); }
+    virtual unsigned int getCoordDimension() const { return (unsigned int)defaulttype::DataTypeInfo<Coord>::size(); }
+    virtual unsigned int getDerivDimension() const { return (unsigned int)defaulttype::DataTypeInfo<Deriv>::size(); }
 
     /// Get the indices of the particles located in the given bounding box
     virtual void getIndicesInSpace(sofa::helper::vector<unsigned>& /*indices*/, Real /*xmin*/, Real /*xmax*/,Real /*ymin*/, Real /*ymax*/, Real /*zmin*/, Real /*zmax*/) const=0;

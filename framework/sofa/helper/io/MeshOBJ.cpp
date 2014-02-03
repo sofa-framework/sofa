@@ -62,7 +62,7 @@ void MeshOBJ::readOBJ (std::ifstream &file, const std::string &filename)
     Vec3d result;
     Vec3d texCoord;
     Vec3d normal;
-    size_t nbf = facets.size();
+    int nbf = (int)facets.size();
 
     std::string line;
 

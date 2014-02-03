@@ -826,7 +826,7 @@ public:
             core::MultiVecId r = it->first;
             out << r.getName();
             const helper::vector< std::pair< core::ConstMultiVecId, double > >& operands = it->second;
-            int nop = operands.size();
+            int nop = (int)operands.size();
             if (nop==0)
             {
                 out << " = 0";
@@ -1863,7 +1863,7 @@ public:
 
     virtual void clear() {datasC.clear(); offset=0;}
     virtual const std::vector< core::behavior::BaseLMConstraint *> &getConstraints() const {return datasC;}
-    virtual unsigned int numConstraint() {return datasC.size();}
+    virtual unsigned int numConstraint() {return (unsigned int)datasC.size();}
 
     virtual void setMultiVecId(core::MultiVecId i) {id=i;}
     core::MultiVecId getMultiVecId() const { return id; }
