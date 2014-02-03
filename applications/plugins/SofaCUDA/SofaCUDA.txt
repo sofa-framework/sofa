@@ -18,6 +18,10 @@ LICENCE :
 
 OTHER COMMENTS :
 
+Installation on Ubuntu 12.04
+- nvidia-cuda-toolkit
+- libthrust-dev
+
 HowTo enable SofaCUDA in CMake build system ?
 - enable SOFA-CUDA_THRUST
 - enable SOFA-CUDA_GREATER_GCC44
