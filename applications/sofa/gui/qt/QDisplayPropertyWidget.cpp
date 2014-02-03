@@ -426,7 +426,7 @@ void QDisplayPropertyWidget::addDescriptionItem(QTreeWidgetItem *groupItem, cons
 	descriptionItem->setText(0, name);
 	
 	QDisplayTreeItemWidget *widget = new QDisplayTreeItemWidget(this, descriptionItem);
-	QLabel* label = new QLabel(description, widget);
+	new QLabel(description, widget);
 	setItemWidget(descriptionItem, 1, widget);
 }
 

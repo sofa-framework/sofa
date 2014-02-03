@@ -61,6 +61,7 @@ struct ModifierCondition
 
 class QNamingModifierCondition: public QWidget, public ModifierCondition
 {
+    Q_OBJECT
 public:
     QNamingModifierCondition(QWidget *parent=0);
 
@@ -77,6 +78,7 @@ protected:
 
 class QValueModifierCondition: public QWidget, public ModifierCondition
 {
+    Q_OBJECT
 public:
     QValueModifierCondition(QWidget *parent=0);
 
