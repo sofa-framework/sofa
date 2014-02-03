@@ -100,7 +100,7 @@ sofa::simulation::Node::SPtr SceneLoaderPHP::load(const char *filename)
         if (out == "")
             return NULL;
     }
-    root = SceneLoaderXML::loadFromMemory(filename, out.c_str(), out.size());
+    root = SceneLoaderXML::loadFromMemory(filename, out.c_str(), (unsigned int)out.size());
 
     return root;
 }

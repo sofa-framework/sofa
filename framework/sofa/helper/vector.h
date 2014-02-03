@@ -139,7 +139,8 @@ public:
     {
         if( this->size()>0 )
         {
-            for( unsigned int i=0; i<this->size()-1; ++i ) os<<(*this)[i]<<" ";
+            for( size_type i=0; i<this->size()-1; ++i )
+                os<<(*this)[i]<<" ";
             os<<(*this)[this->size()-1];
         }
         return os;
@@ -249,7 +250,8 @@ inline std::ostream& vector<unsigned char >::write(std::ostream& os) const
 {
     if( this->size()>0 )
     {
-        for( unsigned int i=0; i<this->size()-1; ++i ) os<<(int)(*this)[i]<<" ";
+        for( size_type i=0; i<this->size()-1; ++i )
+            os<<(int)(*this)[i]<<" ";
         os<<(int)(*this)[this->size()-1];
     }
     return os;

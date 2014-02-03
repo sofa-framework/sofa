@@ -88,7 +88,7 @@ void glfntWriteBitmap(float x,float y,char *s)
 
     glGetIntegerv(GL_LIST_BASE,&CurBase);
     glListBase(LettersDL);
-    glCallLists(strlen(s),GL_UNSIGNED_BYTE,s);
+    glCallLists((GLsizei)strlen(s),GL_UNSIGNED_BYTE,s);
     glListBase(CurBase);
 }
 #endif // WIN32

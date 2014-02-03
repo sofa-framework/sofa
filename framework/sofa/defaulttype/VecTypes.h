@@ -114,7 +114,7 @@ public:
 
         Coord c;
 
-        for (unsigned int i = 0; i < ancestors.size(); i++)
+        for (std::size_t i = 0; i < ancestors.size(); i++)
         {
             c += ancestors[i] * coefs[i];
         }
@@ -158,7 +158,7 @@ protected:
 
 public:
     explicit ExtVector(ExtVectorAllocator<T>* alloc = NULL) : data(NULL),  maxsize(0), cursize(0), allocator(alloc) {}
-    ExtVector(int size, ExtVectorAllocator<T>* alloc) : data(NULL), maxsize(0), cursize(0), allocator(alloc) { resize(size); }
+    ExtVector(size_type size, ExtVectorAllocator<T>* alloc) : data(NULL), maxsize(0), cursize(0), allocator(alloc) { resize(size); }
     ~ExtVector() { if (allocator.get()) allocator->close(data); }
 
     void init() {}
@@ -225,7 +225,7 @@ public:
     }
     void push_back(const T& v)
     {
-        int i = this->size();
+        size_type i = this->size();
         resize(i+1);
         (*this)[i] = v;
     }
@@ -268,7 +268,7 @@ public:
     {
         if( vec.size()>0 )
         {
-            for( unsigned int i=0; i<vec.size()-1; ++i ) os<<vec[i]<<" ";
+            for( std::size_t i=0; i<vec.size()-1; ++i ) os<<vec[i]<<" ";
             os<<vec[vec.size()-1];
         }
         return os;
@@ -403,7 +403,7 @@ public:
 
         Coord c;
 
-        for (unsigned int i = 0; i < ancestors.size(); i++)
+        for (std::size_t i = 0; i < ancestors.size(); i++)
         {
             c += ancestors[i] * coefs[i];
         }

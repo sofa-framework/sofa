@@ -138,7 +138,7 @@ void MeshSTL::readSTL (const std::string &filename)
             if (!find)
             {
                 vertices.push_back(result);
-                vIndices.push_back(vertices.size()-1);
+                vIndices.push_back((int)vertices.size()-1);
             }
             
             // Useless but necessary to work -- need to be fixed properly
@@ -226,7 +226,7 @@ void MeshSTL::readBinarySTL (const std::string &filename)
             if (!find)
             {
                 vertices.push_back(result);
-                vIndices.push_back(vertices.size()-1);
+                vIndices.push_back((int)vertices.size()-1);
             }
             
             // Useless but necessary to work -- need to be fixed properly

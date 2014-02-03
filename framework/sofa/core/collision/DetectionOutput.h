@@ -140,7 +140,7 @@ public:
     /// Current size (number of detected contacts)
     virtual unsigned int size() const
     {
-        return this->Vector::size();
+        return (unsigned int)this->Vector::size();
     }
 };
 
