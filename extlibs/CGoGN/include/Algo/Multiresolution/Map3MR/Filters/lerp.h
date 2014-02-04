@@ -403,15 +403,6 @@ public:
 /*****************************************************************************************/
 
 
-
-
-
-
-
-
-
-
-
 template <typename PFP>
 class LerpEdgeSynthesisFilter : public Algo::MR::Filter
 {
@@ -593,7 +584,7 @@ public:
 //	map.setCurrentLevel(cur);
 //	return false;
 //}
-
+/*
 template <typename PFP>
 class LerpSqrt3VolumeSynthesisFilter : public Algo::MR::Filter
 {
@@ -717,6 +708,7 @@ public:
 	}
 } ;
 
+*/
 
 } // namespace Filters
 

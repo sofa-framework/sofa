@@ -105,8 +105,8 @@ public:
 
 	bool operator() (Dart d)
 	{
-		//Dart df = m_map.phi1(m_map.phi1(d)) ;
-		Dart df = m_map.phi1(d) ;
+        Dart df = m_map.phi1(m_map.phi1(d)) ;
+        //Dart df = m_map.phi1(d) ;
 
 		m_map.decCurrentLevel() ;
 

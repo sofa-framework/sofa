@@ -92,6 +92,11 @@ class Plane3D
 		// return on/over/under according to the side of the plane where point p is
 		Orientation3D orient(const Vector<3,T>& p) const;
 
+		// return on/over/under according to the side of the plane where point p is
+		// return the distance to the point in dist reference
+		Orientation3D orient(const Vector<3,T>& p, T& dist) const;
+
+
 		/**********************************************/
 		/*             STREAM OPERATORS               */
 		/**********************************************/

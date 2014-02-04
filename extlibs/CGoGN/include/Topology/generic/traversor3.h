@@ -42,11 +42,11 @@ template <typename MAP, unsigned int ORBIT>
 class MarkerForTraversor
 {
 private:
-	MAP& m_map ;
+	const MAP& m_map ;
 	DartMarkerStore* m_dmark ;
 	CellMarkerStore<ORBIT>* m_cmark ;
 public:
-	MarkerForTraversor(MAP& map, bool forceDartMarker = false, unsigned int thread = 0) ;
+	MarkerForTraversor(const MAP& map, bool forceDartMarker = false, unsigned int thread = 0) ;
 	~MarkerForTraversor();
 	DartMarkerStore* dmark();
 	CellMarkerStore<ORBIT>* cmark();
@@ -64,20 +64,20 @@ template <typename MAP, unsigned int ORBX, unsigned int ORBY>
 class Traversor3XY//: public Traversor<MAP>
 {
 private:
-	MAP& m_map ;
+	const MAP& m_map ;
 	DartMarkerStore* m_dmark ;
 	CellMarkerStore<ORBY>* m_cmark ;
 	Dart m_current ;
 	TraversorDartsOfOrbit<MAP, ORBX> m_tradoo;
 
-	std::vector<Dart>* m_QLT;
-	std::vector<Dart>::iterator m_ItDarts;
+	const std::vector<Dart>* m_QLT;
+	std::vector<Dart>::const_iterator m_ItDarts;
 
 	bool m_allocated;
 	bool m_first;
 public:
-	Traversor3XY(MAP& map, Dart dart, bool forceDartMarker = false, unsigned int thread = 0) ;
-	Traversor3XY(MAP& map, Dart dart, MarkerForTraversor<MAP, ORBY>& tmo, bool forceDartMarker = false, unsigned int thread = 0) ;
+	Traversor3XY(const MAP& map, Dart dart, bool forceDartMarker = false, unsigned int thread = 0) ;
+	Traversor3XY(const MAP& map, Dart dart, MarkerForTraversor<MAP, ORBY>& tmo, bool forceDartMarker = false, unsigned int thread = 0) ;
 	~Traversor3XY();
 	Dart begin() ;
 	Dart end() ;
@@ -92,14 +92,14 @@ template <typename MAP, unsigned int ORBX, unsigned int ORBY>
 class Traversor3XXaY//: public Traversor<MAP>
 {
 private:
-	MAP& m_map ;
+	const MAP& m_map ;
 	std::vector<Dart> m_vecDarts;
 	std::vector<Dart>::iterator m_iter;
 
-	std::vector<Dart>* m_QLT;
-	std::vector<Dart>::iterator m_ItDarts;
+	const std::vector<Dart>* m_QLT;
+	std::vector<Dart>::const_iterator m_ItDarts;
 public:
-	Traversor3XXaY(MAP& map, Dart dart, bool forceDartMarker = false, unsigned int thread = 0);
+	Traversor3XXaY(const MAP& map, Dart dart, bool forceDartMarker = false, unsigned int thread = 0);
 
 	Dart begin();
 
@@ -116,7 +116,7 @@ template <typename MAP>
 class Traversor3WV: public Traversor3XY<MAP, VOLUME, VERTEX>
 {
 public:
-	Traversor3WV(MAP& m, Dart dart, bool forceDartMarker = false, unsigned int thread = 0) : Traversor3XY<MAP, VOLUME, VERTEX>(m, dart, forceDartMarker, thread)	{}
+	Traversor3WV(const MAP& m, Dart dart, bool forceDartMarker = false, unsigned int thread = 0) : Traversor3XY<MAP, VOLUME, VERTEX>(m, dart, forceDartMarker, thread)	{}
 };
 
 /**
@@ -126,7 +126,7 @@ template <typename MAP>
 class Traversor3WE: public Traversor3XY<MAP, VOLUME, EDGE>
 {
 public:
-	Traversor3WE(MAP& m, Dart dart, bool forceDartMarker = false, unsigned int thread = 0) : Traversor3XY<MAP, VOLUME, EDGE>(m, dart, forceDartMarker, thread)	{}
+	Traversor3WE(const MAP& m, Dart dart, bool forceDartMarker = false, unsigned int thread = 0) : Traversor3XY<MAP, VOLUME, EDGE>(m, dart, forceDartMarker, thread)	{}
 };
 
 /**
@@ -136,7 +136,7 @@ template <typename MAP>
 class Traversor3WF: public Traversor3XY<MAP, VOLUME, FACE>
 {
 public:
-	Traversor3WF(MAP& m, Dart dart, bool forceDartMarker = false, unsigned int thread = 0) : Traversor3XY<MAP, VOLUME, FACE>(m, dart, forceDartMarker, thread) {}
+	Traversor3WF(const MAP& m, Dart dart, bool forceDartMarker = false, unsigned int thread = 0) : Traversor3XY<MAP, VOLUME, FACE>(m, dart, forceDartMarker, thread) {}
 };
 
 /**
@@ -146,7 +146,7 @@ template <typename MAP>
 class Traversor3FV: public Traversor3XY<MAP, FACE, VERTEX>
 {
 public:
-	Traversor3FV(MAP& m, Dart dart, bool forceDartMarker = false, unsigned int thread = 0) : Traversor3XY<MAP, FACE, VERTEX>(m, dart, forceDartMarker, thread)	{}
+	Traversor3FV(const MAP& m, Dart dart, bool forceDartMarker = false, unsigned int thread = 0) : Traversor3XY<MAP, FACE, VERTEX>(m, dart, forceDartMarker, thread)	{}
 };
 
 /**
@@ -156,7 +156,7 @@ template <typename MAP>
 class Traversor3FE: public Traversor3XY<MAP, FACE, EDGE>
 {
 public:
-	Traversor3FE(MAP& m, Dart dart, bool forceDartMarker = false, unsigned int thread = 0) : Traversor3XY<MAP, FACE, EDGE>(m, dart, forceDartMarker, thread)	{}
+	Traversor3FE(const MAP& m, Dart dart, bool forceDartMarker = false, unsigned int thread = 0) : Traversor3XY<MAP, FACE, EDGE>(m, dart, forceDartMarker, thread)	{}
 };
 
 /**
@@ -166,7 +166,7 @@ template <typename MAP>
 class Traversor3FW: public Traversor3XY<MAP, FACE, VOLUME>
 {
 public:
-	Traversor3FW(MAP& m, Dart dart, bool forceDartMarker = false, unsigned int thread = 0) : Traversor3XY<MAP, FACE, VOLUME>(m, dart, forceDartMarker, thread)	{}
+	Traversor3FW(const MAP& m, Dart dart, bool forceDartMarker = false, unsigned int thread = 0) : Traversor3XY<MAP, FACE, VOLUME>(m, dart, forceDartMarker, thread)	{}
 };
 
 /**
@@ -176,7 +176,7 @@ template <typename MAP>
 class Traversor3EV: public Traversor3XY<MAP, EDGE, VERTEX>
 {
 public:
-	Traversor3EV(MAP& m, Dart dart, bool forceDartMarker = false, unsigned int thread = 0) : Traversor3XY<MAP, EDGE, VERTEX>(m, dart, forceDartMarker, thread)	{}
+	Traversor3EV(const MAP& m, Dart dart, bool forceDartMarker = false, unsigned int thread = 0) : Traversor3XY<MAP, EDGE, VERTEX>(m, dart, forceDartMarker, thread)	{}
 };
 
 /**
@@ -186,7 +186,7 @@ template <typename MAP>
 class Traversor3EF: public Traversor3XY<MAP, EDGE, FACE>
 {
 public:
-	Traversor3EF(MAP& m, Dart dart, bool forceDartMarker = false, unsigned int thread = 0) : Traversor3XY<MAP, EDGE, FACE>(m, dart, forceDartMarker, thread)	{}
+	Traversor3EF(const MAP& m, Dart dart, bool forceDartMarker = false, unsigned int thread = 0) : Traversor3XY<MAP, EDGE, FACE>(m, dart, forceDartMarker, thread)	{}
 };
 
 /**
@@ -196,7 +196,7 @@ template <typename MAP>
 class Traversor3EW: public Traversor3XY<MAP, EDGE, VOLUME>
 {
 public:
-	Traversor3EW(MAP& m, Dart dart, bool forceDartMarker = false, unsigned int thread = 0) : Traversor3XY<MAP, EDGE, VOLUME>(m, dart, forceDartMarker, thread)	{}
+	Traversor3EW(const MAP& m, Dart dart, bool forceDartMarker = false, unsigned int thread = 0) : Traversor3XY<MAP, EDGE, VOLUME>(m, dart, forceDartMarker, thread)	{}
 };
 
 /**
@@ -206,7 +206,7 @@ template <typename MAP>
 class Traversor3VE: public Traversor3XY<MAP, VERTEX, EDGE>
 {
 public:
-	Traversor3VE(MAP& m, Dart dart, bool forceDartMarker = false, unsigned int thread = 0) : Traversor3XY<MAP, VERTEX, EDGE>(m, dart, forceDartMarker, thread)	{}
+	Traversor3VE(const MAP& m, Dart dart, bool forceDartMarker = false, unsigned int thread = 0) : Traversor3XY<MAP, VERTEX, EDGE>(m, dart, forceDartMarker, thread)	{}
 };
 
 /**
@@ -216,7 +216,7 @@ template <typename MAP>
 class Traversor3VF: public Traversor3XY<MAP, VERTEX, FACE>
 {
 public:
-	Traversor3VF(MAP& m, Dart dart, bool forceDartMarker = false, unsigned int thread = 0) : Traversor3XY<MAP, VERTEX, FACE>(m, dart, forceDartMarker, thread)	{}
+	Traversor3VF(const MAP& m, Dart dart, bool forceDartMarker = false, unsigned int thread = 0) : Traversor3XY<MAP, VERTEX, FACE>(m, dart, forceDartMarker, thread)	{}
 };
 
 /**
@@ -226,7 +226,7 @@ template <typename MAP>
 class Traversor3VW: public Traversor3XY<MAP, VERTEX, VOLUME>
 {
 public:
-	Traversor3VW(MAP& m, Dart dart, bool forceDartMarker = false, unsigned int thread = 0) : Traversor3XY<MAP, VERTEX, VOLUME>(m, dart, forceDartMarker, thread)	{}
+	Traversor3VW(const MAP& m, Dart dart, bool forceDartMarker = false, unsigned int thread = 0) : Traversor3XY<MAP, VERTEX, VOLUME>(m, dart, forceDartMarker, thread)	{}
 };
 
 /**
@@ -236,7 +236,7 @@ template <typename MAP>
 class Traversor3VVaE: public Traversor3XXaY<MAP, VERTEX, EDGE>
 {
 public:
-	Traversor3VVaE(MAP& m, Dart d, bool forceDartMarker = false, unsigned int thread = 0) : Traversor3XXaY<MAP, VERTEX, EDGE>(m, d, forceDartMarker, thread)	{}
+	Traversor3VVaE(const MAP& m, Dart d, bool forceDartMarker = false, unsigned int thread = 0) : Traversor3XXaY<MAP, VERTEX, EDGE>(m, d, forceDartMarker, thread)	{}
 };
 
 /**
@@ -246,7 +246,7 @@ template <typename MAP>
 class Traversor3VVaF: public Traversor3XXaY<MAP, VERTEX, FACE>
 {
 public:
-	Traversor3VVaF(MAP& m, Dart d, bool forceDartMarker = false, unsigned int thread = 0) : Traversor3XXaY<MAP, VERTEX, FACE>(m, d, forceDartMarker, thread)	{}
+	Traversor3VVaF(const MAP& m, Dart d, bool forceDartMarker = false, unsigned int thread = 0) : Traversor3XXaY<MAP, VERTEX, FACE>(m, d, forceDartMarker, thread)	{}
 };
 
 /**
@@ -256,7 +256,7 @@ template <typename MAP>
 class Traversor3VVaW: public Traversor3XXaY<MAP, VERTEX, VOLUME>
 {
 public:
-	Traversor3VVaW(MAP& m, Dart d, bool forceDartMarker = false, unsigned int thread = 0) : Traversor3XXaY<MAP, VERTEX, VOLUME>(m, d, forceDartMarker, thread)	{}
+	Traversor3VVaW(const MAP& m, Dart d, bool forceDartMarker = false, unsigned int thread = 0) : Traversor3XXaY<MAP, VERTEX, VOLUME>(m, d, forceDartMarker, thread)	{}
 };
 
 /**
@@ -266,7 +266,7 @@ template <typename MAP>
 class Traversor3EEaV: public Traversor3XXaY<MAP, EDGE, VERTEX>
 {
 public:
-	Traversor3EEaV(MAP& m, Dart d, bool forceDartMarker = false, unsigned int thread = 0) : Traversor3XXaY<MAP, EDGE, VERTEX>(m, d, forceDartMarker, thread)	{}
+	Traversor3EEaV(const MAP& m, Dart d, bool forceDartMarker = false, unsigned int thread = 0) : Traversor3XXaY<MAP, EDGE, VERTEX>(m, d, forceDartMarker, thread)	{}
 };
 
 /**
@@ -276,7 +276,7 @@ template <typename MAP>
 class Traversor3EEaF: public Traversor3XXaY<MAP, EDGE, FACE>
 {
 public:
-	Traversor3EEaF(MAP& m, Dart d, bool forceDartMarker = false, unsigned int thread = 0) : Traversor3XXaY<MAP, EDGE, FACE>(m, d, forceDartMarker, thread)	{}
+	Traversor3EEaF(const MAP& m, Dart d, bool forceDartMarker = false, unsigned int thread = 0) : Traversor3XXaY<MAP, EDGE, FACE>(m, d, forceDartMarker, thread)	{}
 };
 
 /**
@@ -286,7 +286,7 @@ template <typename MAP>
 class Traversor3EEaW: public Traversor3XXaY<MAP, EDGE, VOLUME>
 {
 public:
-	Traversor3EEaW(MAP& m, Dart d, bool forceDartMarker = false, unsigned int thread = 0) : Traversor3XXaY<MAP, EDGE, VOLUME>(m, d, forceDartMarker, thread)	{}
+	Traversor3EEaW(const MAP& m, Dart d, bool forceDartMarker = false, unsigned int thread = 0) : Traversor3XXaY<MAP, EDGE, VOLUME>(m, d, forceDartMarker, thread)	{}
 };
 
 /**
@@ -296,7 +296,7 @@ template <typename MAP>
 class Traversor3FFaV: public Traversor3XXaY<MAP, FACE, VERTEX>
 {
 public:
-	Traversor3FFaV(MAP& m, Dart d, bool forceDartMarker = false, unsigned int thread = 0) : Traversor3XXaY<MAP, FACE, VERTEX>(m, d, forceDartMarker, thread)	{}
+	Traversor3FFaV(const MAP& m, Dart d, bool forceDartMarker = false, unsigned int thread = 0) : Traversor3XXaY<MAP, FACE, VERTEX>(m, d, forceDartMarker, thread)	{}
 };
 
 /**
@@ -306,7 +306,7 @@ template <typename MAP>
 class Traversor3FFaE: public Traversor3XXaY<MAP, FACE, EDGE>
 {
 public:
-	Traversor3FFaE(MAP& m, Dart d, bool forceDartMarker = false, unsigned int thread = 0) : Traversor3XXaY<MAP, FACE, EDGE>(m, d, forceDartMarker, thread)	{}
+	Traversor3FFaE(const MAP& m, Dart d, bool forceDartMarker = false, unsigned int thread = 0) : Traversor3XXaY<MAP, FACE, EDGE>(m, d, forceDartMarker, thread)	{}
 };
 
 /**
@@ -316,7 +316,7 @@ template <typename MAP>
 class Traversor3FFaW: public Traversor3XXaY<MAP, FACE, VOLUME>
 {
 public:
-	Traversor3FFaW(MAP& m, Dart d, bool forceDartMarker = false, unsigned int thread = 0) : Traversor3XXaY<MAP, FACE, VOLUME>(m, d, forceDartMarker, thread)	{}
+	Traversor3FFaW(const MAP& m, Dart d, bool forceDartMarker = false, unsigned int thread = 0) : Traversor3XXaY<MAP, FACE, VOLUME>(m, d, forceDartMarker, thread)	{}
 };
 
 /**
@@ -326,7 +326,7 @@ template <typename MAP>
 class Traversor3WWaV: public Traversor3XXaY<MAP, VOLUME, VERTEX>
 {
 public:
-	Traversor3WWaV(MAP& m, Dart d, bool forceDartMarker = false, unsigned int thread = 0) : Traversor3XXaY<MAP, VOLUME, VERTEX>(m, d, forceDartMarker, thread)	{}
+	Traversor3WWaV(const MAP& m, Dart d, bool forceDartMarker = false, unsigned int thread = 0) : Traversor3XXaY<MAP, VOLUME, VERTEX>(m, d, forceDartMarker, thread)	{}
 };
 
 /**
@@ -336,7 +336,7 @@ template <typename MAP>
 class Traversor3WWaE: public Traversor3XXaY<MAP, VOLUME, EDGE>
 {
 public:
-	Traversor3WWaE(MAP& m, Dart d, bool forceDartMarker = false, unsigned int thread = 0) : Traversor3XXaY<MAP, VOLUME, EDGE>(m, d, forceDartMarker, thread)	{}
+	Traversor3WWaE(const MAP& m, Dart d, bool forceDartMarker = false, unsigned int thread = 0) : Traversor3XXaY<MAP, VOLUME, EDGE>(m, d, forceDartMarker, thread)	{}
 };
 
 /**
@@ -346,7 +346,7 @@ template <typename MAP>
 class Traversor3WWaF: public Traversor3XXaY<MAP, VOLUME, FACE>
 {
 public:
-	Traversor3WWaF(MAP& m, Dart d, bool forceDartMarker = false, unsigned int thread = 0) : Traversor3XXaY<MAP, VOLUME, FACE>(m, d, forceDartMarker, thread)	{}
+	Traversor3WWaF(const MAP& m, Dart d, bool forceDartMarker = false, unsigned int thread = 0) : Traversor3XXaY<MAP, VOLUME, FACE>(m, d, forceDartMarker, thread)	{}
 };
 
 } // namespace CGoGN

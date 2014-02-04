@@ -25,7 +25,7 @@
 #ifndef __MAP2MR_PRIMAL_ADAPT__
 #define __MAP2MR_PRIMAL_ADAPT__
 
-#include "Topology/map/embeddedMap2.h"
+#include "Topology/ihmap/ihm2.h"
 #include "Topology/generic/traversorCell.h"
 #include "Topology/generic/traversor2.h"
 
@@ -52,8 +52,6 @@ class IHM2
 
 public:
 	typedef typename PFP::MAP MAP ;
-	typedef typename PFP::VEC3 VEC3 ;
-	typedef typename PFP::REAL REAL ;
 
 protected:
 	MAP& m_map;
@@ -65,6 +63,59 @@ protected:
 
 public:
 	IHM2(MAP& map) ;
+
+
+    /***************************************************
+     *               CELLS INFORMATION                 *
+     ***************************************************/
+
+    /**
+     * Return the level of the edge of d in the current level map
+     */
+    unsigned int edgeLevel(Dart d) ;
+
+    /**
+     * Return the level of the face of d in the current level map
+     */
+    unsigned int faceLevel(Dart d) ;
+
+    /**
+     * Given the face of d in the current level map,
+     * return a level 0 dart of its origin face
+     */
+    Dart faceOrigin(Dart d) ;
+
+    /**
+     * Return the oldest dart of the face of d in the current level map
+     */
+    Dart faceOldestDart(Dart d) ;
+
+    /**
+     * Return true if the edge of d in the current level map
+     * has already been subdivided to the next level
+     */
+    bool edgeIsSubdivided(Dart d) ;
+
+    /**
+     * Return true if the edge of d in the current level map
+     * is subdivided to the next level,
+     * none of its resulting edges is in turn subdivided to the next level
+     * and the middle vertex is of degree 2
+     */
+    bool edgeCanBeCoarsened(Dart d) ;
+
+    /**
+     * Return true if the face of d in the current level map
+     * has already been subdivided to the next level
+     */
+    bool faceIsSubdivided(Dart d) ;
+
+    /**
+     * Return true if the face of d in the current level map
+     * is subdivided to the next level
+     * and none of its resulting faces is in turn subdivided to the next level
+     */
+    bool faceIsSubdividedOnce(Dart d) ;
 
 
 protected:
@@ -87,11 +138,6 @@ public:
 	 * subdivide the face of d to the next level
 	 */
 	unsigned int subdivideFace(Dart d, bool triQuad = true, bool OneLevelDifference = true);
-
-	/**
-	 *
-	 */
-	unsigned int subdivideFaceSqrt3(Dart d);
 
 	/**
 	 * coarsen the face of d from the next level

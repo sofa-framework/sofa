@@ -61,7 +61,7 @@ public:
 	/*!
 	 *
 	 */
-	void initImplicitProperties() ;
+	void initImplicitProperties();
 
 	/**
 	 * clear the map
@@ -85,17 +85,17 @@ public:
 
 	virtual Dart newDart() ;
 
-	Dart phi1(Dart d) ;
+	Dart phi1(Dart d) const ;
 
-	Dart phi_1(Dart d) ;
+	Dart phi_1(Dart d) const ;
 
-	Dart phi2(Dart d) ;
+	Dart phi2(Dart d) const ;
 
-	Dart alpha0(Dart d) ;
+	Dart alpha0(Dart d) const ;
 
-	Dart alpha1(Dart d) ;
+	Dart alpha1(Dart d) const ;
 
-	Dart alpha_1(Dart d) ;
+	Dart alpha_1(Dart d) const ;
 
 	virtual Dart begin() const ;
 
@@ -103,23 +103,25 @@ public:
 
 	virtual void next(Dart& d) const ;
 
-	virtual bool foreach_dart_of_vertex(Dart d, FunctorType& f, unsigned int thread = 0) ;
+	virtual bool foreach_dart_of_vertex(Dart d, FunctorType& f, unsigned int thread = 0) const;
 
-	virtual bool foreach_dart_of_edge(Dart d, FunctorType& f, unsigned int thread = 0) ;
+	virtual bool foreach_dart_of_edge(Dart d, FunctorType& f, unsigned int thread = 0) const ;
 
-	virtual bool foreach_dart_of_oriented_face(Dart d, FunctorType& f, unsigned int thread = 0) ;
-	virtual bool foreach_dart_of_face(Dart d, FunctorType& f, unsigned int thread = 0) ;
+	virtual bool foreach_dart_of_oriented_face(Dart d, FunctorType& f, unsigned int thread = 0) const ;
+	virtual bool foreach_dart_of_face(Dart d, FunctorType& f, unsigned int thread = 0)  const;
 
-	virtual bool foreach_dart_of_oriented_volume(Dart d, FunctorType& f, unsigned int thread = 0) ;
-	virtual bool foreach_dart_of_volume(Dart d, FunctorType& f, unsigned int thread = 0) ;
+	virtual bool foreach_dart_of_oriented_volume(Dart d, FunctorType& f, unsigned int thread = 0) const ;
+	virtual bool foreach_dart_of_volume(Dart d, FunctorType& f, unsigned int thread = 0) const ;
 
-	virtual bool foreach_dart_of_cc(Dart d, FunctorType& f, unsigned int thread = 0) ;
+	virtual bool foreach_dart_of_cc(Dart d, FunctorType& f, unsigned int thread = 0) const ;
 
 	/***************************************************
 	 *               MAP MANIPULATION                  *
 	 ***************************************************/
 
 	void splitFace(Dart d, Dart e) ;
+
+    unsigned int vertexDegree(Dart d);
 
 	/***************************************************
 	 *              LEVELS MANAGEMENT                  *
@@ -139,6 +141,8 @@ public:
 
 	void setDartLevel(Dart d, unsigned int i) ;
 
+	void setMaxLevel(unsigned int l);
+
 	/***************************************************
 	 *             EDGE ID MANAGEMENT                  *
 	 ***************************************************/
@@ -157,62 +161,73 @@ public:
 
 	void setEdgeId(Dart d, unsigned int i) ;
 
+	unsigned int getTriRefinementEdgeId(Dart d);
+
+	unsigned int getQuadRefinementEdgeId(Dart d);
+
 	/***************************************************
 	 *               CELLS INFORMATION                 *
 	 ***************************************************/
+
+    /**
+     * @brief faceDegree
+     * @param d
+     * @return
+     */
+    unsigned int faceDegree(Dart d);
 
 	/**
 	 * Return the level of insertion of the vertex of d
 	 */
 	unsigned int vertexInsertionLevel(Dart d) ;
 
-	/**
-	 * Return the level of the edge of d in the current level map
-	 */
-	unsigned int edgeLevel(Dart d) ;
+//	/**
+//	 * Return the level of the edge of d in the current level map
+//	 */
+//	unsigned int edgeLevel(Dart d) ;
 
-	/**
-	 * Return the level of the face of d in the current level map
-	 */
-	unsigned int faceLevel(Dart d) ;
+//	/**
+//	 * Return the level of the face of d in the current level map
+//	 */
+//	unsigned int faceLevel(Dart d) ;
 
-	/**
-	 * Given the face of d in the current level map,
-	 * return a level 0 dart of its origin face
-	 */
-	Dart faceOrigin(Dart d) ;
+//	/**
+//	 * Given the face of d in the current level map,
+//	 * return a level 0 dart of its origin face
+//	 */
+//	Dart faceOrigin(Dart d) ;
 
-	/**
-	 * Return the oldest dart of the face of d in the current level map
-	 */
-	Dart faceOldestDart(Dart d) ;
+//	/**
+//	 * Return the oldest dart of the face of d in the current level map
+//	 */
+//	Dart faceOldestDart(Dart d) ;
 
-	/**
-	 * Return true if the edge of d in the current level map
-	 * has already been subdivided to the next level
-	 */
-	bool edgeIsSubdivided(Dart d) ;
+//	/**
+//	 * Return true if the edge of d in the current level map
+//	 * has already been subdivided to the next level
+//	 */
+//	bool edgeIsSubdivided(Dart d) ;
 
-	/**
-	 * Return true if the edge of d in the current level map
-	 * is subdivided to the next level,
-	 * none of its resulting edges is in turn subdivided to the next level
-	 * and the middle vertex is of degree 2
-	 */
-	bool edgeCanBeCoarsened(Dart d) ;
+//	/**
+//	 * Return true if the edge of d in the current level map
+//	 * is subdivided to the next level,
+//	 * none of its resulting edges is in turn subdivided to the next level
+//	 * and the middle vertex is of degree 2
+//	 */
+//	bool edgeCanBeCoarsened(Dart d) ;
 
-	/**
-	 * Return true if the face of d in the current level map
-	 * has already been subdivided to the next level
-	 */
-	bool faceIsSubdivided(Dart d) ;
+//	/**
+//	 * Return true if the face of d in the current level map
+//	 * has already been subdivided to the next level
+//	 */
+//	bool faceIsSubdivided(Dart d) ;
 
-	/**
-	 * Return true if the face of d in the current level map
-	 * is subdivided to the next level
-	 * and none of its resulting faces is in turn subdivided to the next level
-	 */
-	bool faceIsSubdividedOnce(Dart d) ;
+//	/**
+//	 * Return true if the face of d in the current level map
+//	 * is subdivided to the next level
+//	 * and none of its resulting faces is in turn subdivided to the next level
+//	 */
+//	bool faceIsSubdividedOnce(Dart d) ;
 } ;
 
 template <typename T, unsigned int ORBIT>

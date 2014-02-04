@@ -39,7 +39,7 @@ private:
 	std::vector<Dart> m_vd ;
 
 public:
-	TraversorDartsOfOrbit(MAP& map, Dart d, unsigned int thread = 0) ;
+	TraversorDartsOfOrbit(const MAP& map, Dart d, unsigned int thread = 0) ;
 
 	Dart begin() ;
 
@@ -51,14 +51,14 @@ public:
 
 
 template <typename MAP, unsigned int ORBIT>
-class VTraversorDartsOfOrbit : public Traversor/*<MAP>*/
+class VTraversorDartsOfOrbit : public Traversor
 {
 private:
 	std::vector<Dart>::iterator m_current ;
 	std::vector<Dart> m_vd ;
 
 public:
-	VTraversorDartsOfOrbit(MAP& map, Dart d, unsigned int thread = 0) ;
+	VTraversorDartsOfOrbit(const MAP& map, Dart d, unsigned int thread = 0) ;
 
 	Dart begin() ;
 

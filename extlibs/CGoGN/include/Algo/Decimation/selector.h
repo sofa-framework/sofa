@@ -62,6 +62,8 @@ enum SelectorType
 	// Geom + color criteria
 	S_hQEMextColor = 13, /**< Prioritizes half-edges by the quadric error metric (QEM) error extended in R^6 (x,y,z,R,G,B) [GH98]. Requires a geometry approximator. Requires a color approximator. */
 	S_hColorGradient = 14, /**< EXPERIMENTAL Prioritizes half-edges according to the sum of the quadric error metric (QEM) for geometry and the gradient color deviation metric of [Vanhoey,Sauvage]. Requires a geometry approximator. Requires a color approximator. */
+	// Geom + color + normal criteria
+	S_hQEMextColorNormal = 15, /**< Prioritizes half-edges by the quadric error metric (QEM) error extended in R^9 (x,y,z,R,G,B,nx,ny,nz) [GH98]. Requires a geometry approximator. Requires a color approximator. Requires a normal approximator */
 
 	S_OTHER /**< Can be used for extensions. */
 } ;

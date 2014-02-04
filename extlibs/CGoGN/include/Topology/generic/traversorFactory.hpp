@@ -32,7 +32,7 @@ namespace CGoGN
 {
 
 template<typename MAP>
-Traversor/*<MAP>*/* TraversorFactory<MAP>::createIncident(MAP& map, Dart dart, unsigned int dim, unsigned int orbX, unsigned int orbY)
+Traversor* TraversorFactory<MAP>::createIncident(MAP& map, Dart dart, unsigned int dim, unsigned int orbX, unsigned int orbY)
 {
 	int code = 0x100*dim + 0x10*(orbX-VERTEX) + orbY-VERTEX;
 
@@ -112,7 +112,7 @@ Traversor/*<MAP>*/* TraversorFactory<MAP>::createIncident(MAP& map, Dart dart, u
 }
 
 template<typename MAP>
-Traversor/*<MAP>*/* TraversorFactory<MAP>::createAdjacent(MAP& map, Dart dart, unsigned int dim, unsigned int orbX, unsigned int orbY)
+Traversor* TraversorFactory<MAP>::createAdjacent(MAP& map, Dart dart, unsigned int dim, unsigned int orbX, unsigned int orbY)
 {
 	int code = 0x100*dim + 0x10*(orbX-VERTEX) + orbY-VERTEX;
 
@@ -192,7 +192,7 @@ Traversor/*<MAP>*/* TraversorFactory<MAP>::createAdjacent(MAP& map, Dart dart, u
 }
 
 template<typename MAP>
-Traversor/*<MAP>*/* TraversorFactory<MAP>::createCell(MAP& map, unsigned int orb, bool forceDartMarker, unsigned int thread)
+Traversor* TraversorFactory<MAP>::createCell(MAP& map, unsigned int orb, bool forceDartMarker, unsigned int thread)
 {
 	switch(orb)
 	{
@@ -233,7 +233,7 @@ Traversor/*<MAP>*/* TraversorFactory<MAP>::createCell(MAP& map, unsigned int orb
 }
 
 template<typename MAP>
-Traversor/*<MAP>*/* TraversorFactory<MAP>::createDartsOfOrbits(MAP& map, Dart dart, unsigned int orb)
+Traversor* TraversorFactory<MAP>::createDartsOfOrbits(MAP& map, Dart dart, unsigned int orb)
 {
 	switch(orb)
 	{

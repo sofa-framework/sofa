@@ -105,7 +105,7 @@ VTraversor3XY<MAP, ORBX, ORBY>::VTraversor3XY(MAP& map, Dart dart, bool forceDar
 	m_allocated(true),
 	m_first(true)
 {
-	AttributeMultiVector<NoTypeNameAttribute<std::vector<Dart> > >* quickTraversal = map.template getQuickIncidentTraversal<ORBX,ORBY>() ;
+	const AttributeMultiVector<NoTypeNameAttribute<std::vector<Dart> > >* quickTraversal = map.template getQuickIncidentTraversal<ORBX,ORBY>() ;
 	if (quickTraversal != NULL)
 	{
 		m_QLT  = &(quickTraversal->operator[](map.template getEmbedding<ORBX>(dart)));
@@ -258,7 +258,7 @@ template <typename MAP, unsigned int ORBX, unsigned int ORBY>
 VTraversor3XXaY<MAP, ORBX, ORBY>::VTraversor3XXaY(MAP& map, Dart dart, bool forceDartMarker, unsigned int thread):
 	m_map(map),m_QLT(NULL)
 {
-	AttributeMultiVector<NoTypeNameAttribute<std::vector<Dart> > >* quickTraversal = map.template getQuickAdjacentTraversal<ORBX,ORBY>() ;
+	const AttributeMultiVector<NoTypeNameAttribute<std::vector<Dart> > >* quickTraversal = map.template getQuickAdjacentTraversal<ORBX,ORBY>() ;
 	if (quickTraversal != NULL)
 	{
 		m_QLT  = &(quickTraversal->operator[](map.template getEmbedding<ORBX>(dart)));

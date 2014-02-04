@@ -28,6 +28,8 @@
 #include "Topology/generic/traversor2.h"
 #include "Topology/generic/cellmarker.h"
 
+#include "Utils/compress.h"
+
 namespace CGoGN
 {
 
@@ -393,7 +395,7 @@ bool exportOFF(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3>
 }
 /*
 template <typename PFP>
-bool exportOBJ(typename PFP::MAP& map, const typename PFP::TVEC3& position, const char* filename)
+bool exportOBJ(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3>& position, const char* filename)
 {
 	typedef typename PFP::MAP MAP;
 	typedef typename PFP::VEC3 VEC3;
@@ -1015,6 +1017,8 @@ bool exportChoupi(typename PFP::MAP& map, const AttributeHandler<typename PFP::V
 	out.close() ;
 	return true ;
 }
+
+
 
 } // namespace Export
 

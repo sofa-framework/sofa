@@ -451,7 +451,7 @@ public:
 	* @param fs a file stream
 	* @param id the id to save
 	*/
-	void saveBin(CGoGNostream& fs, unsigned int id);
+	void saveBin(CGoGNostream& fs, unsigned int id) const;
 
 	/**
 	* get id from file binary stream

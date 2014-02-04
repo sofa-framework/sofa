@@ -167,6 +167,10 @@ template <typename VEC3>
 Intersection intersectionSegmentPlan(const VEC3& PA, const VEC3& PB, const VEC3& PlaneP, const VEC3& NormP); //, VEC3& Inter) ;
 
 template <typename VEC3>
+Intersection intersectionSegmentPlan(const VEC3& PA, const VEC3& PB, const VEC3& PlaneP, const VEC3& NormP, VEC3& Inter) ;
+
+
+template <typename VEC3>
 Intersection intersectionTrianglePlan(const VEC3& Ta, const VEC3& Tb, const VEC3& Tc, const VEC3& PlaneP, const VEC3& NormP);//, VEC3& Inter) ;
 
 template <typename VEC3>
@@ -177,6 +181,20 @@ template <typename VEC3>
 Intersection intersectionTriangleHalfPlan(const VEC3& Ta, const VEC3& Tb, const VEC3& Tc,
 		const VEC3& P, const VEC3& DirP, const VEC3& OrientP); //, VEC3& Inter) ;
 
+
+/**
+* compute intersection between line and segment
+* @param A point of line
+* @param AB vector of line
+* @param AB2 AB*AB (for optimization if call several times with AB
+* @param P first point of segment
+* @param Q second point of segment
+* @param inter the computed intersection
+* @return intersection of not
+*/
+template <typename VEC3>
+bool interLineSeg(const VEC3& A, const VEC3& AB, typename VEC3::DATA_TYPE AB2,
+				  const VEC3& P, const VEC3& Q, VEC3& inter);
 } // namespace Geom
 
 } // namespace CGoGN

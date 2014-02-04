@@ -610,7 +610,7 @@ void GMap2::splitSurface(std::vector<Dart>& vd, bool firstSideClosed, bool secon
  *  Return or set various topological information
  *************************************************************************/
 
-bool GMap2::sameOrientedVertex(Dart d, Dart e)
+bool GMap2::sameOrientedVertex(Dart d, Dart e) const
 {
 	Dart it = d;
 	do
@@ -622,7 +622,7 @@ bool GMap2::sameOrientedVertex(Dart d, Dart e)
 	return false;		// None is equal to e => vertices are distinct
 }
 
-unsigned int GMap2::vertexDegree(Dart d)
+unsigned int GMap2::vertexDegree(Dart d) const
 {
 	unsigned int count = 0 ;
 	Dart it = d ;
@@ -634,7 +634,7 @@ unsigned int GMap2::vertexDegree(Dart d)
 	return count ;
 }
 
-int GMap2::checkVertexDegree(Dart d, unsigned int vd)
+int GMap2::checkVertexDegree(Dart d, unsigned int vd) const
 {
 	unsigned int count = 0 ;
 	Dart it = d ;
@@ -648,7 +648,7 @@ int GMap2::checkVertexDegree(Dart d, unsigned int vd)
 }
 
 
-bool GMap2::isBoundaryVertex(Dart d)
+bool GMap2::isBoundaryVertex(Dart d) const
 {
 	Dart it = d ;
 	do
@@ -660,7 +660,7 @@ bool GMap2::isBoundaryVertex(Dart d)
 	return false ;
 }
 
-Dart GMap2::findBoundaryEdgeOfVertex(Dart d)
+Dart GMap2::findBoundaryEdgeOfVertex(Dart d) const
 {
 	Dart it = d ;
 	do
@@ -672,7 +672,7 @@ Dart GMap2::findBoundaryEdgeOfVertex(Dart d)
 	return NIL ;
 }
 
-bool GMap2::isBoundaryFace(Dart d)
+bool GMap2::isBoundaryFace(Dart d) const
 {
 	Dart it = d ;
 	do
@@ -684,7 +684,7 @@ bool GMap2::isBoundaryFace(Dart d)
 	return false ;
 }
 
-bool GMap2::sameOrientedVolume(Dart d, Dart e)
+bool GMap2::sameOrientedVolume(Dart d, Dart e) const
 {
 	DartMarkerStore mark(*this);	// Lock a marker
 
@@ -714,7 +714,7 @@ bool GMap2::sameOrientedVolume(Dart d, Dart e)
 	return false;
 }
 
-unsigned int GMap2::volumeDegree(Dart d)
+unsigned int GMap2::volumeDegree(Dart d) const
 {
 	unsigned int count = 0;
 	DartMarkerStore mark(*this);		// Lock a marker
@@ -747,7 +747,7 @@ unsigned int GMap2::volumeDegree(Dart d)
 }
 
 
-int GMap2::checkVolumeDegree(Dart d, unsigned int volDeg)
+int GMap2::checkVolumeDegree(Dart d, unsigned int volDeg) const
 {
 	unsigned int count = 0;
 	DartMarkerStore mark(*this);		// Lock a marker
@@ -783,7 +783,7 @@ int GMap2::checkVolumeDegree(Dart d, unsigned int volDeg)
 
 
 
-bool GMap2::isTriangular()
+bool GMap2::isTriangular() const
 {
 	TraversorF<GMap2> t(*this) ;
 	for(Dart d = t.begin(); d != t.end(); d = t.next())
@@ -794,7 +794,7 @@ bool GMap2::isTriangular()
 	return true ;
 }
 
-bool GMap2::check()
+bool GMap2::check() const
 {
 	CGoGNout << "Check: topology begin" << CGoGNendl;
 	for(Dart d = begin(); d != end(); next(d))
@@ -854,7 +854,7 @@ bool GMap2::checkSimpleOrientedPath(std::vector<Dart>& vd)
  *  Apply functors to all darts of a cell
  *************************************************************************/
 
-bool GMap2::foreach_dart_of_oriented_vertex(Dart d, FunctorType& f, unsigned int /*thread*/)
+bool GMap2::foreach_dart_of_oriented_vertex(Dart d, FunctorType& f, unsigned int /*thread*/) const
 {
 	Dart it = d;
 	do
@@ -866,7 +866,7 @@ bool GMap2::foreach_dart_of_oriented_vertex(Dart d, FunctorType& f, unsigned int
  	return false;
 }
 
-bool GMap2::foreach_dart_of_oriented_edge(Dart d, FunctorType& f, unsigned int /*thread*/)
+bool GMap2::foreach_dart_of_oriented_edge(Dart d, FunctorType& f, unsigned int /*thread*/) const
 {
 	if (f(d))
 		return true ;
@@ -877,7 +877,7 @@ bool GMap2::foreach_dart_of_oriented_edge(Dart d, FunctorType& f, unsigned int /
 	return false ;
 }
 
-bool GMap2::foreach_dart_of_edge(Dart d, FunctorType& f, unsigned int /*thread*/)
+bool GMap2::foreach_dart_of_edge(Dart d, FunctorType& f, unsigned int /*thread*/) const
 {
 	if (f(d))
 		return true ;
@@ -894,7 +894,7 @@ bool GMap2::foreach_dart_of_edge(Dart d, FunctorType& f, unsigned int /*thread*/
 	return false ;
 }
 
-bool GMap2::foreach_dart_of_oriented_cc(Dart d, FunctorType& f, unsigned int thread)
+bool GMap2::foreach_dart_of_oriented_cc(Dart d, FunctorType& f, unsigned int thread) const
 {
 	DartMarkerStore mark(*this, thread);	// Lock a marker
 	bool found = false;				// Last functor return value

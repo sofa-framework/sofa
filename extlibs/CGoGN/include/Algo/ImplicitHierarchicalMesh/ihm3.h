@@ -26,6 +26,7 @@
 #define __IMPLICIT_HIERARCHICAL_MAP3__
 
 #include "Topology/map/embeddedMap3.h"
+#include "Algo/Multiresolution/filter.h"
 
 namespace CGoGN
 {
@@ -63,6 +64,9 @@ public:
 	DartAttribute<unsigned int> m_faceId ;
 
 	AttributeMultiVector<unsigned int>* m_nextLevelCell[NB_ORBITS] ;
+
+//    std::vector<Algo::MR::Filter*> synthesisFilters ;
+//    std::vector<Algo::MR::Filter*> analysisFilters ;
 
 public:
 	ImplicitHierarchicalMap3() ;
@@ -116,25 +120,25 @@ public:
 	//@{
 	virtual Dart newDart() ;
 
-	Dart phi1(Dart d) ;
+	Dart phi1(Dart d) const;
 
-	Dart phi_1(Dart d) ;
+	Dart phi_1(Dart d) const;
 
-	Dart phi2(Dart d) ;
+	Dart phi2(Dart d) const;
 
 private:
-	Dart phi2bis(Dart d) ;
+	Dart phi2bis(Dart d) const;
 
 public:
-	Dart phi3(Dart d);
+	Dart phi3(Dart d) const;
 
-	Dart alpha0(Dart d);
+	Dart alpha0(Dart d) const;
 
-	Dart alpha1(Dart d);
+	Dart alpha1(Dart d) const;
 
-	Dart alpha2(Dart d);
+	Dart alpha2(Dart d) const;
 
-	Dart alpha_2(Dart d);
+	Dart alpha_2(Dart d) const;
 	//@}
 
 	/*! @name Topological Operators with Cells id management
@@ -152,6 +156,19 @@ public:
 	 *
 	 */
 	void swapEdges(Dart d, Dart e);
+
+
+
+
+
+//    void addSynthesisFilter(Algo::MR::Filter* f) { synthesisFilters.push_back(f) ; }
+//    void addAnalysisFilter(Algo::MR::Filter* f) { analysisFilters.push_back(f) ; }
+
+//    void clearSynthesisFilters() { synthesisFilters.clear() ; }
+//    void clearAnalysisFilters() { analysisFilters.clear() ; }
+
+//    void analysis() ;
+//    void synthesis() ;
 
 	//!
 	/*!
@@ -190,7 +207,7 @@ public:
 	/*!
 	 *
 	 */
-	unsigned int getCurrentLevel() ;
+	unsigned int getCurrentLevel() const ;
 
 	//!
 	/*!
@@ -202,13 +219,13 @@ public:
 	/*!
 	 *
 	 */
-	unsigned int getMaxLevel() ;
+	unsigned int getMaxLevel() const ;
 
 	//!
 	/*!
 	 *
 	 */
-	unsigned int getDartLevel(Dart d) ;
+	unsigned int getDartLevel(Dart d) const ;
 
 	//!
 	/*!
@@ -273,7 +290,7 @@ public:
 	//! Return the level of insertion of the vertex of d
 	/*!
 	 */
-	unsigned int vertexInsertionLevel(Dart d) ;
+	unsigned int vertexInsertionLevel(Dart d) const;
 
 	//! Return the level of the edge of d in the current level map
 	/*!
@@ -362,28 +379,28 @@ public:
 
 	virtual void next(Dart& d) const ;
 
-	virtual bool foreach_dart_of_vertex(Dart d, FunctorType& f, unsigned int thread = 0) ;
+	virtual bool foreach_dart_of_vertex(Dart d, FunctorType& f, unsigned int thread = 0) const ;
 
-	virtual bool foreach_dart_of_edge(Dart d, FunctorType& f, unsigned int thread = 0) ;
+	virtual bool foreach_dart_of_edge(Dart d, FunctorType& f, unsigned int thread = 0) const ;
 
-	bool foreach_dart_of_oriented_face(Dart d, FunctorType& f, unsigned int thread = 0);
-	virtual bool foreach_dart_of_face(Dart d, FunctorType& f, unsigned int thread = 0) ;
+	bool foreach_dart_of_oriented_face(Dart d, FunctorType& f, unsigned int thread = 0) const;
+	virtual bool foreach_dart_of_face(Dart d, FunctorType& f, unsigned int thread = 0) const ;
 
-	bool foreach_dart_of_oriented_volume(Dart d, FunctorType& f, unsigned int thread = 0);
-	virtual bool foreach_dart_of_volume(Dart d, FunctorType& f, unsigned int thread = 0) ;
+	bool foreach_dart_of_oriented_volume(Dart d, FunctorType& f, unsigned int thread = 0) const;
+	virtual bool foreach_dart_of_volume(Dart d, FunctorType& f, unsigned int thread = 0) const ;
 
-	virtual bool foreach_dart_of_cc(Dart d, FunctorType& f, unsigned int thread = 0) ;
+	virtual bool foreach_dart_of_cc(Dart d, FunctorType& f, unsigned int thread = 0) const ;
 
 
-	virtual bool foreach_dart_of_vertex2(Dart d, FunctorType& f, unsigned int thread = 0);
+	virtual bool foreach_dart_of_vertex2(Dart d, FunctorType& f, unsigned int thread = 0) const;
 
-	virtual bool foreach_dart_of_edge2(Dart d, FunctorType& f, unsigned int thread = 0);
+	virtual bool foreach_dart_of_edge2(Dart d, FunctorType& f, unsigned int thread = 0) const;
 
-	virtual bool foreach_dart_of_face2(Dart d, FunctorType& f, unsigned int thread = 0);
+	virtual bool foreach_dart_of_face2(Dart d, FunctorType& f, unsigned int thread = 0) const;
 	//@}
 
-	template <unsigned int ORBIT>
-		unsigned int getEmbedding(Dart d);
+    template <unsigned int ORBIT>
+	unsigned int getEmbedding(Dart d) const;
 } ;
 
 template <typename T, unsigned int ORBIT>

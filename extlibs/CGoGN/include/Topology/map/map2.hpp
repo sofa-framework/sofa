@@ -81,13 +81,13 @@ inline Dart Map2::newDart()
 	return d ;
 }
 
-inline Dart Map2::phi2(Dart d)
+inline Dart Map2::phi2(Dart d) const
 {
 	return (*m_phi2)[dartIndex(d)] ;
 }
 
 template <int N>
-inline Dart Map2::phi(Dart d)
+inline Dart Map2::phi(Dart d) const
 {
 	assert( (N > 0) || !"negative parameters not allowed in template multi-phi");
 	if (N < 10)
@@ -107,27 +107,27 @@ inline Dart Map2::phi(Dart d)
 	}
 }
 
-inline Dart Map2::alpha0(Dart d)
+inline Dart Map2::alpha0(Dart d) const
 {
 	return phi2(d) ;
 }
 
-inline Dart Map2::alpha1(Dart d)
+inline Dart Map2::alpha1(Dart d) const
 {
 	return phi2(phi_1(d)) ;
 }
 
-inline Dart Map2::alpha_1(Dart d)
+inline Dart Map2::alpha_1(Dart d) const
 {
 	return phi1(phi2(d)) ;
 }
 
-inline Dart Map2::phi2_1(Dart d)
+inline Dart Map2::phi2_1(Dart d) const
 {
 	return phi2(phi_1(d)) ;
 }
 
-inline Dart Map2::phi12(Dart d)
+inline Dart Map2::phi12(Dart d) const
 {
 	return phi1(phi2(d)) ;
 }
@@ -154,44 +154,44 @@ inline void Map2::phi2unsew(Dart d)
  *  Return or set various topological information
  *************************************************************************/
 
-inline bool Map2::sameVertex(Dart d, Dart e)
+inline bool Map2::sameVertex(Dart d, Dart e) const
 {
 	return sameOrientedVertex(d, e) ;
 }
 
-inline bool Map2::sameEdge(Dart d, Dart e)
+inline bool Map2::sameEdge(Dart d, Dart e) const
 {
 	return d == e || phi2(d) == e ;
 }
 
-inline bool Map2::isBoundaryEdge(Dart d)
+inline bool Map2::isBoundaryEdge(Dart d) const
 {
 	return isBoundaryMarked2(d) || isBoundaryMarked2(phi2(d));
 }
 
-inline bool Map2::sameOrientedFace(Dart d, Dart e)
+inline bool Map2::sameOrientedFace(Dart d, Dart e) const
 {
 	return Map1::sameCycle(d, e) ;
 }
 
-inline bool Map2::sameFace(Dart d, Dart e)
+inline bool Map2::sameFace(Dart d, Dart e) const
 {
 	return sameOrientedFace(d, e) ;
 }
 
-inline unsigned int Map2::faceDegree(Dart d)
+inline unsigned int Map2::faceDegree(Dart d) const
 {
 	return Map1::cycleDegree(d) ;
 }
 
 
-inline int Map2::checkFaceDegree(Dart d, unsigned int le)
+inline int Map2::checkFaceDegree(Dart d, unsigned int le) const
 {
 	return Map1::checkCycleDegree(d,le) ;
 }
 
 
-inline bool Map2::sameVolume(Dart d, Dart e)
+inline bool Map2::sameVolume(Dart d, Dart e) const
 {
 	return sameOrientedVolume(d, e) ;
 }
@@ -200,22 +200,22 @@ inline bool Map2::sameVolume(Dart d, Dart e)
  *  Apply functors to all darts of a cell
  *************************************************************************/
 
-inline bool Map2::foreach_dart_of_face(Dart d, FunctorType& f, unsigned int thread)
+inline bool Map2::foreach_dart_of_face(Dart d, FunctorType& f, unsigned int thread) const
 {
 	return Map1::foreach_dart_of_cc(d, f, thread);
 }
 
-inline bool Map2::foreach_dart_of_volume(Dart d, FunctorType& f, unsigned int thread)
+inline bool Map2::foreach_dart_of_volume(Dart d, FunctorType& f, unsigned int thread) const
 {
 	return foreach_dart_of_cc(d, f, thread);
 }
 
-inline bool Map2::foreach_dart_of_vertex1(Dart d, FunctorType& f, unsigned int thread)
+inline bool Map2::foreach_dart_of_vertex1(Dart d, FunctorType& f, unsigned int thread) const
 {
 	return Map1::foreach_dart_of_vertex(d,f,thread);
 }
 
-inline bool Map2::foreach_dart_of_edge1(Dart d, FunctorType& f, unsigned int thread)
+inline bool Map2::foreach_dart_of_edge1(Dart d, FunctorType& f, unsigned int thread) const
 {
 	return Map1::foreach_dart_of_edge(d,f,thread);
 }

@@ -87,20 +87,20 @@ inline Dart Map1::newDart()
 	return d ;
 }
 
-inline Dart Map1::phi1(Dart d)
+inline Dart Map1::phi1(Dart d) const
 {
 //	unsigned int d_index = dartIndex(d);
 	return (*m_phi1)[dartIndex(d)] ;
 }
 
-inline Dart Map1::phi_1(Dart d)
+inline Dart Map1::phi_1(Dart d) const
 {
 //	unsigned int d_index = dartIndex(d);
 	return (*m_phi_1)[dartIndex(d)] ;
 }
 
 template <int N>
-inline Dart Map1::phi(Dart d)
+inline Dart Map1::phi(Dart d) const
 {
 	assert((N > 0) || !"negative parameters not allowed in template multi-phi");
 	if (N < 10)
@@ -118,12 +118,12 @@ inline Dart Map1::phi(Dart d)
 	}
 }
 
-inline Dart Map1::alpha1(Dart d)
+inline Dart Map1::alpha1(Dart d) const
 {
 	return phi1(d) ;
 }
 
-inline Dart Map1::alpha_1(Dart d)
+inline Dart Map1::alpha_1(Dart d) const
 {
 	return phi_1(d) ;
 }
@@ -207,7 +207,7 @@ inline void Map1::linkCycles(Dart d, Dart e)
  *  Return or set various topological information
  *************************************************************************/
 
-inline bool Map1::sameCycle(Dart d, Dart e)
+inline bool Map1::sameCycle(Dart d, Dart e) const
 {
 	Dart it = d ;
 	do
@@ -219,12 +219,12 @@ inline bool Map1::sameCycle(Dart d, Dart e)
 	return false ;
 }
 
-inline unsigned int Map1::cycleDegree(Dart d)
+inline unsigned int Map1::cycleDegree(Dart d) const
 {
 	unsigned int count = 0 ;
 	Dart it = d ;
 	do
-	{
+    {
 		++count ;
 		it = phi1(it) ;
 	} while (it != d) ;
@@ -232,7 +232,7 @@ inline unsigned int Map1::cycleDegree(Dart d)
 }
 
 
-inline int Map1::checkCycleDegree(Dart d, unsigned int degree)
+inline int Map1::checkCycleDegree(Dart d, unsigned int degree) const
 {
 	unsigned int count = 0 ;
 	Dart it = d ;
@@ -246,7 +246,7 @@ inline int Map1::checkCycleDegree(Dart d, unsigned int degree)
 }
 
 
-inline bool Map1::isCycleTriangle(Dart d)
+inline bool Map1::isCycleTriangle(Dart d) const
 {
 	return (phi1(d) != d) && (phi1(phi1(phi1(d))) == d) ;
 }
@@ -255,17 +255,17 @@ inline bool Map1::isCycleTriangle(Dart d)
  *  Apply functors to all darts of a cell
  *************************************************************************/
 
-inline bool Map1::foreach_dart_of_vertex(Dart d, FunctorType& f, unsigned int /*thread*/)
+inline bool Map1::foreach_dart_of_vertex(Dart d, FunctorType& f, unsigned int /*thread*/) const
 {
 	return f(d) ;
 }
 
-inline bool Map1::foreach_dart_of_edge(Dart d, FunctorType& f, unsigned int /*thread*/)
+inline bool Map1::foreach_dart_of_edge(Dart d, FunctorType& f, unsigned int /*thread*/) const
 {
 	return f(d) ;
 }
 
-inline bool Map1::foreach_dart_of_cc(Dart d, FunctorType& f, unsigned int /*thread*/)
+inline bool Map1::foreach_dart_of_cc(Dart d, FunctorType& f, unsigned int /*thread*/) const
 {
 	Dart it = d ;
 	do

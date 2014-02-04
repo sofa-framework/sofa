@@ -69,16 +69,16 @@ public:
 
 	virtual Dart newDart();
 
-	Dart phi1(Dart d);
+	Dart phi1(Dart d) const;
 
-	Dart phi_1(Dart d);
+	Dart phi_1(Dart d) const;
 
 	template <int N>
-	Dart phi(Dart d);
+	Dart phi(Dart d) const;
 
-	Dart alpha1(Dart d);
+	Dart alpha1(Dart d) const;
 
-	Dart alpha_1(Dart d);
+	Dart alpha_1(Dart d) const;
 
 protected:
 	//! Link the current dart to dart d with a permutation
@@ -181,26 +181,26 @@ public:
 	/*! @param d a dart
 	 *  @param e a dart
 	 */
-	bool sameCycle(Dart d, Dart e) ;
+	bool sameCycle(Dart d, Dart e) const;
 
 	//! Length of a cycle (its number of oriented edges)
 	/*! @param d a dart of the cycle
 	 *  @return the length of the cycle
 	 */
-	unsigned int cycleDegree(Dart d) ;
+	unsigned int cycleDegree(Dart d) const;
 
 	//! Check the Length of a cycle (its number of oriented edges)
 	/*! @param d a dart of the cycle
 	 *  @param degree the length to compare
 	 *  @return  negative/null/positive if face degree is less/equal/greater than given degree
 	 */
-	 int checkCycleDegree(Dart d, unsigned int degree) ;
+	 int checkCycleDegree(Dart d, unsigned int degree) const;
 
 	/**
 	 * check if the cycle of d is a triangle
 	 * @return a boolean indicating if the cycle is a triangle
 	 */
-	bool isCycleTriangle(Dart d);
+	bool isCycleTriangle(Dart d) const;
 	//@}
 
 	/*! @name Cell Functors
@@ -212,20 +212,20 @@ public:
 	/*! @param d a dart of the vertex
 	 *  @param f the functor to apply
 	 */
-	bool foreach_dart_of_vertex(Dart d, FunctorType& f, unsigned int thread = 0);
+	bool foreach_dart_of_vertex(Dart d, FunctorType& f, unsigned int thread = 0) const;
 
 	//! Apply a functor on every dart of an edge
 	/*! @param d a dart of the edge
 	 *  @param f the functor to apply
 	 */
-	bool foreach_dart_of_edge(Dart d, FunctorType& f, unsigned int thread = 0);
+	bool foreach_dart_of_edge(Dart d, FunctorType& f, unsigned int thread = 0) const;
 
 
 	//! Apply a functor on every dart of a connected component
 	/*! @param d a dart of the connected component
 	 *  @param f the functor to apply
 	 */
-	bool foreach_dart_of_cc(Dart d, FunctorType& f, unsigned int thread = 0);
+	bool foreach_dart_of_cc(Dart d, FunctorType& f, unsigned int thread = 0) const;
 	//@}
 } ;
 

@@ -32,7 +32,7 @@ namespace CGoGN
 // Traversor1VE
 
 template <typename MAP>
-Traversor1VE<MAP>::Traversor1VE(MAP& map, Dart dart) : m(map), start(dart)
+Traversor1VE<MAP>::Traversor1VE(const MAP& map, Dart dart) : m(map), start(dart)
 {
 	d2 = m.phi_1(start) ;
 	if(d2 == start) // 1 edge loop case
@@ -68,7 +68,7 @@ Dart Traversor1VE<MAP>::next()
 // Traversor1VVaE
 
 template <typename MAP>
-Traversor1VVaE<MAP>::Traversor1VVaE(MAP& map, Dart dart) : m(map)
+Traversor1VVaE<MAP>::Traversor1VVaE(const MAP& map, Dart dart) : m(map)
 {
 	start = m.phi_1(dart) ;
 	if(start == dart) // 1 edge loop case
@@ -114,7 +114,7 @@ Dart Traversor1VVaE<MAP>::next()
 // Traversor1EV
 
 template <typename MAP>
-Traversor1EV<MAP>::Traversor1EV(MAP& map, Dart dart) : m(map), start(dart)
+Traversor1EV<MAP>::Traversor1EV(const MAP& map, Dart dart) : m(map), start(dart)
 {
 	d2 = m.phi1(start) ;
 	if(d2 == start) // 1 edge loop case
@@ -150,7 +150,7 @@ Dart Traversor1EV<MAP>::next()
 // Traversor1EEaV
 
 template <typename MAP>
-Traversor1EEaV<MAP>::Traversor1EEaV(MAP& map, Dart dart) : m(map)
+Traversor1EEaV<MAP>::Traversor1EEaV(const MAP& map, Dart dart) : m(map)
 {
 	start = m.phi_1(dart) ;
 	if(start == dart) // 1 edge loop case

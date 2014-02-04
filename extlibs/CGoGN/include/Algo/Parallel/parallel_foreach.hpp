@@ -171,7 +171,7 @@ void foreach_cell(MAP& map, std::vector<FunctorMapThreaded<MAP>*>& funcs, bool n
 	AttributeContainer* cont = NULL;
 	DartMarker* dmark = NULL;
 	CellMarker<ORBIT>* cmark = NULL;
-	AttributeMultiVector<Dart>* quickTraversal = map.template getQuickTraversal<ORBIT>() ;
+	const AttributeMultiVector<Dart>* quickTraversal = map.template getQuickTraversal<ORBIT>() ;
 
 	// fill each vd buffers with SIZE_BUFFER_THREAD darts
 	Dart d;

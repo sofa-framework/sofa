@@ -318,6 +318,51 @@ void BoundingBox<VEC>::centeredScale(typename VEC::DATA_TYPE size)
 	m_pMax = ((m_pMax - center) * size) + center ;
 }
 
+
+
+/// test if bb is intersected by a ray
+template <typename VEC>
+bool BoundingBox<VEC>::rayIntersect(const VEC& P, const VEC& V) const
+{
+	static float EPSILON = 0.000001f;
+
+	if (fabs(V[2]) > EPSILON)
+	{
+		VEC Q = P + ((m_pMin[2] - P[2])/V[2])*V;
+		if ((Q[0]<m_pMax[0]) && (Q[0]>m_pMin[0]) && (Q[1]<m_pMax[1]) && (Q[1]>m_pMin[1]))
+			return true;
+		Q = P + ((m_pMax[2] - P[2])/V[2])*V;
+				if ((Q[0]<m_pMax[0]) && (Q[0]>m_pMin[0]) && (Q[1]<m_pMax[1]) && (Q[1]>m_pMin[1]))
+					return true;
+	}
+
+	if (fabs(V[1]) > EPSILON)
+	{
+		VEC Q = P + ((m_pMin[1] - P[1])/V[1])*V;
+		if ((Q[0]<m_pMax[0]) && (Q[0]>m_pMin[0]) && (Q[2]<m_pMax[2]) && (Q[2]>m_pMin[2]))
+			return true;
+		Q = P + ((m_pMax[1] - P[1])/V[1])*V;
+				if ((Q[0]<m_pMax[0]) && (Q[0]>m_pMin[0]) && (Q[2]<m_pMax[2]) && (Q[2]>m_pMin[2]))
+					return true;
+	}
+
+
+	if (fabs(V[0]) > EPSILON)
+	{
+		VEC Q = P + ((m_pMin[0] - P[0])/V[0])*V;
+		if ((Q[1]<m_pMax[1]) && (Q[1]>m_pMin[1]) && (Q[2]<m_pMax[2]) && (Q[2]>m_pMin[2]))
+			return true;
+		Q = P + ((m_pMax[0] - P[0])/V[0])*V;
+				if ((Q[1]<m_pMax[1]) && (Q[1]>m_pMin[1]) && (Q[2]<m_pMax[2]) && (Q[2]>m_pMin[2]))
+					return true;
+	}
+
+	return false;
+}
+
+
+
+
 } // namespace Geom
 
 } // namespace CGoGN

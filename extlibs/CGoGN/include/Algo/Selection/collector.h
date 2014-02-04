@@ -257,105 +257,6 @@ public:
 	void collectBorder(Dart d) ;
 };
 
-/*********************************************************
- * Collector Criterions
- *********************************************************/
-class CollectorCriterion
-{
-public :
-	CollectorCriterion() {};
-	virtual ~CollectorCriterion() {} ;
-	virtual void init(Dart center) = 0;
-	virtual bool isInside(Dart d) = 0;
-
-};
-
-template <typename PFP>
-class CollectorCriterion_VertexNormalAngle : public CollectorCriterion
-{ // tests if the angle between vertex normals is below some threshold
-private :
-	typedef typename PFP::VEC3 VEC3;
-	typedef typename PFP::REAL REAL;
-
-	const VertexAttribute<VEC3> & vertexNormals;
-	REAL threshold;
-	VEC3 centerNormal;
-public :
-	CollectorCriterion_VertexNormalAngle(const VertexAttribute<VEC3> & n, REAL th) :
-		vertexNormals(n), threshold(th), centerNormal(0) {}
-
-	void init (Dart center) {centerNormal = vertexNormals[center];}
-	bool isInside (Dart d) {
-		return ( Geom::angle(centerNormal, vertexNormals[d]) < threshold);
-	}
-};
-
-template <typename PFP>
-class CollectorCriterion_TriangleNormalAngle : public CollectorCriterion
-{ // tests if the angle between vertex normals is below some threshold
-private :
-	typedef typename PFP::VEC3 VEC3;
-	typedef typename PFP::REAL REAL;
-
-	const FaceAttribute<VEC3> & faceNormals;
-	REAL threshold;
-	VEC3 centerNormal;
-public :
-	CollectorCriterion_TriangleNormalAngle(const FaceAttribute<VEC3> & n, REAL th) :
-		faceNormals(n), threshold(th), centerNormal(0) {}
-
-	void init (Dart center) {centerNormal = faceNormals[center];}
-	bool isInside (Dart d) {
-		return ( Geom::angle(centerNormal, faceNormals[d]) < threshold);
-	}
-};
-
-template <typename PFP>
-class CollectorCriterion_VertexWithinSphere : public CollectorCriterion
-{ // tests if the distance between vertices is below some threshold
-private :
-	typedef typename PFP::VEC3 VEC3;
-	typedef typename PFP::REAL REAL;
-
-	const VertexAttribute<VEC3> & vertexPositions;
-	REAL threshold;
-	VEC3 centerPosition;
-public :
-	CollectorCriterion_VertexWithinSphere(const VertexAttribute<VEC3> & p, REAL th) :
-		vertexPositions(p), threshold(th), centerPosition(0) {}
-
-	void init (Dart center) {centerPosition = vertexPositions[center];}
-	bool isInside (Dart d) {
-		return (vertexPositions[d] - centerPosition).norm() < threshold ;
-	}
-};
-
-
-/*********************************************************
- * Collector Vertices
- *********************************************************/
-
-/*
- * collect all vertices of the connected component containing "centerDart"
- * within a distance to centerDart defined by the CollectorCriterion
- * (hopefully) it defines a 2-manifold (if inserting border-vertices along the border-edges)
- */
-template <typename PFP>
-class Collector_Vertices : public Collector<PFP>
-{
-protected:
-	CollectorCriterion & crit;
-
-public:
-	Collector_Vertices(typename PFP::MAP& m, CollectorCriterion& c, unsigned int thread=0) :
-		Collector<PFP>(m, thread),
-		crit(c)
-	{}
-
-	void collectAll(Dart d);
-	void collectBorder(Dart d);
-};
-
 
 /*********************************************************
  * Collector Normal Angle (Triangles)
@@ -390,6 +291,110 @@ public:
 	void collectBorder(Dart d) ;
 };
 
+
+/*********************************************************
+ * Collector Criterions
+ *********************************************************/
+
+class CollectorCriterion
+{
+public :
+	CollectorCriterion() {}
+	virtual ~CollectorCriterion() {}
+	virtual void init(Dart center) = 0;
+	virtual bool isInside(Dart d) = 0;
+};
+
+template <typename PFP>
+class CollectorCriterion_VertexNormalAngle : public CollectorCriterion
+{ // tests if the angle between vertex normals is below some threshold
+private :
+	typedef typename PFP::VEC3 VEC3;
+	typedef typename PFP::REAL REAL;
+
+	const VertexAttribute<VEC3>& vertexNormals;
+	REAL threshold;
+	VEC3 centerNormal;
+public :
+	CollectorCriterion_VertexNormalAngle(const VertexAttribute<VEC3>& n, REAL th) :
+		vertexNormals(n), threshold(th), centerNormal(0) {}
+
+	void init (Dart center) {centerNormal = vertexNormals[center];}
+	bool isInside (Dart d)
+	{
+		return ( Geom::angle(centerNormal, vertexNormals[d]) < threshold);
+	}
+};
+
+template <typename PFP>
+class CollectorCriterion_TriangleNormalAngle : public CollectorCriterion
+{ // tests if the angle between vertex normals is below some threshold
+private :
+	typedef typename PFP::VEC3 VEC3;
+	typedef typename PFP::REAL REAL;
+
+	const FaceAttribute<VEC3>& faceNormals;
+	REAL threshold;
+	VEC3 centerNormal;
+public :
+	CollectorCriterion_TriangleNormalAngle(const FaceAttribute<VEC3>& n, REAL th) :
+		faceNormals(n), threshold(th), centerNormal(0) {}
+
+	void init (Dart center) {centerNormal = faceNormals[center];}
+	bool isInside (Dart d)
+	{
+		return ( Geom::angle(centerNormal, faceNormals[d]) < threshold);
+	}
+};
+
+template <typename PFP>
+class CollectorCriterion_VertexWithinSphere : public CollectorCriterion
+{ // tests if the distance between vertices is below some threshold
+private :
+	typedef typename PFP::VEC3 VEC3;
+	typedef typename PFP::REAL REAL;
+
+	const VertexAttribute<VEC3>& vertexPositions;
+	REAL threshold;
+	VEC3 centerPosition;
+public :
+	CollectorCriterion_VertexWithinSphere(const VertexAttribute<VEC3>& p, REAL th) :
+		vertexPositions(p), threshold(th), centerPosition(0) {}
+
+	void init (Dart center) {centerPosition = vertexPositions[center];}
+	bool isInside (Dart d)
+	{
+		return (vertexPositions[d] - centerPosition).norm() < threshold ;
+	}
+};
+
+
+/*********************************************************
+ * Collector Vertices
+ *********************************************************/
+
+/*
+ * collect all vertices of the connected component containing "centerDart"
+ * that satisfy the CollectorCriterion
+ * (hopefully) it defines a 2-manifold (if inserting border-vertices along the border-edges)
+ */
+template <typename PFP>
+class Collector_Vertices : public Collector<PFP>
+{
+protected:
+	CollectorCriterion & crit;
+
+public:
+	Collector_Vertices(typename PFP::MAP& m, CollectorCriterion& c, unsigned int thread=0) :
+		Collector<PFP>(m, thread),
+		crit(c)
+	{}
+
+	void collectAll(Dart d);
+	void collectBorder(Dart d);
+};
+
+
 /*********************************************************
  * Collector Triangles
  *********************************************************/
@@ -412,6 +417,7 @@ public:
 	void collectAll(Dart d) ;
 	void collectBorder(Dart d) ;
 };
+
 
 /*********************************************************
  * Collector Dijkstra_Vertices
@@ -450,7 +456,8 @@ public:
 	{
 		vertexInfo = m.template addAttribute<VertexInfo, VERTEX>("vertexInfo");
 	}
-	~Collector_Dijkstra_Vertices(){
+	~Collector_Dijkstra_Vertices()
+	{
 		this->map.removeAttribute(vertexInfo);
 	}
 	inline void init (Dart d) {Collector<PFP>::init(d); front.clear();}
@@ -497,7 +504,8 @@ public:
 	{
 		vertexInfo = m.template addAttribute<VertexInfo, VERTEX>("vertexInfo");
 	}
-	~Collector_Dijkstra(){
+	~Collector_Dijkstra()
+	{
 		this->map.removeAttribute(vertexInfo);
 	}
 	inline void init (Dart d) {Collector<PFP>::init(d); front.clear();}
@@ -507,6 +515,7 @@ public:
 
 	void collectAll(Dart d);
 	void collectBorder(Dart d);
+
 private :
 	inline float edgeLength (Dart d);
 //	inline Dart oppositeVertex (Dart d);

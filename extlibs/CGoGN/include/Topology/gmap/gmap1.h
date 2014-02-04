@@ -65,21 +65,21 @@ public:
 
 	virtual Dart newDart();
 
-	Dart beta1(const Dart d);
+	Dart beta1(const Dart d) const;
 
 	template <int N>
-	Dart beta(const Dart d);
+	Dart beta(const Dart d) const;
 
-	Dart phi1(const Dart d);
+	Dart phi1(const Dart d) const;
 
-	Dart phi_1(const Dart d);
+	Dart phi_1(const Dart d) const;
 
 	template <int N>
-	Dart phi(const Dart d);
+	Dart phi(const Dart d) const;
 
-	Dart alpha1(const Dart d);
+	Dart alpha1(const Dart d) const;
 
-	Dart alpha_1(const Dart d);
+	Dart alpha_1(const Dart d) const;
 
 protected:
 	void beta1sew(Dart d, Dart e);
@@ -166,32 +166,32 @@ public:
 	/*! @param d a dart
 	 *  @param e a dart
 	 */
-	bool sameOrientedCycle(Dart d, Dart e) ;
+	bool sameOrientedCycle(Dart d, Dart e) const;
 
 	//! Test if dart d and e belong to the same face
 	/*! @param d a dart
 	 *  @param e a dart
 	 */
-	bool sameCycle(Dart d, Dart e) ;
+	bool sameCycle(Dart d, Dart e) const;
 
 	//! Length of a face (its number of oriented edges)
 	/*! @param d a dart of the face
 	 *  @return the length of the face
 	 */
-	unsigned int cycleDegree(Dart d);
+	unsigned int cycleDegree(Dart d) const;
 
 	//! Check the Length of a cycle (its number of oriented edges)
 	/*! @param d a dart of the cycle
 	 *  @param le the length to compare
 	 *  @return  negative/null/positive if face degree is less/equal/greater than given degree
 	 */
-	 int checkCycleDegree(Dart d, unsigned int le) ;
+	 int checkCycleDegree(Dart d, unsigned int le) const;
 
 	/**
 	 * check if the face of d is a triangle
 	 * @return a boolean indicating if the face is a triangle
 	 */
-	bool isCycleTriangle(Dart d);
+	bool isCycleTriangle(Dart d) const;
 	//@}
 
 	/*! @name Cell Functors
@@ -204,27 +204,31 @@ public:
 	* @param d a dart of the vertex
 	* @param fonct functor obj ref
 	*/
-	bool foreach_dart_of_vertex(Dart d, FunctorType& fonct, unsigned int thread=0);
+	bool foreach_dart_of_vertex(Dart d, FunctorType& fonct, unsigned int thread=0) const;
+//	bool foreach_dart_of_vertex(Dart d, FunctorConstType& fonct, unsigned int thread=0);
 
 	/**
 	* Apply a functor on each dart of an edge
 	* @param d a dart of the edge
 	* @param fonct functor obj ref
 	*/
-	bool foreach_dart_of_edge(Dart d, FunctorType& fonct, unsigned int thread=0);
+	bool foreach_dart_of_edge(Dart d, FunctorType& fonct, unsigned int thread=0) const;
+//	bool foreach_dart_of_edge(Dart d, FunctorConstType& fonct, unsigned int thread=0);
 
 	/**
 	* Apply a functor on each dart of an oriented cc (face)
 	* @param d a dart of the oriented cc
 	* @param fonct functor obj ref
 	*/
-	bool foreach_dart_of_oriented_cc(Dart d, FunctorType& f, unsigned int thread=0);
+	bool foreach_dart_of_oriented_cc(Dart d, FunctorType& f, unsigned int thread=0) const;
+//	bool foreach_dart_of_oriented_cc(Dart d, FunctorConstType& f, unsigned int thread=0);
 
 	//! Apply a functor on every dart of a cc (face)
 	/*! @param d a dart of the cc
 	 *  @param f the functor to apply
 	 */
-	bool foreach_dart_of_cc(Dart d, FunctorType& fonct, unsigned int thread=0);
+	bool foreach_dart_of_cc(Dart d, FunctorType& fonct, unsigned int thread=0) const;
+//	bool foreach_dart_of_cc(Dart d, FunctorConstType& fonct, unsigned int thread=0);
 	//@}
 };
 

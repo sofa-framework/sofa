@@ -69,13 +69,13 @@ inline Dart GMap2::newDart()
 	return d ;
 }
 
-inline Dart GMap2::beta2(Dart d)
+inline Dart GMap2::beta2(Dart d) const
 {
 	return (*m_beta2)[d.index] ;
 }
 
 template <int N>
-inline Dart GMap2::beta(const Dart d)
+inline Dart GMap2::beta(const Dart d) const
 {
 	assert( (N > 0) || !"negative parameters not allowed in template multi-beta");
 	if (N<10)
@@ -97,13 +97,13 @@ inline Dart GMap2::beta(const Dart d)
 	}
 }
 
-inline Dart GMap2::phi2(Dart d)
+inline Dart GMap2::phi2(Dart d) const
 {
 	return beta2(beta0(d)) ;
 }
 
 template <int N>
-inline Dart GMap2::phi(Dart d)
+inline Dart GMap2::phi(Dart d) const
 {
 	assert( (N >0) || !"negative parameters not allowed in template multi-phi");
 	if (N<10)
@@ -123,17 +123,17 @@ inline Dart GMap2::phi(Dart d)
 	}
 }
 
-inline Dart GMap2::alpha0(Dart d)
+inline Dart GMap2::alpha0(Dart d) const
 {
 	return beta2(beta0(d)) ;
 }
 
-inline Dart GMap2::alpha1(Dart d)
+inline Dart GMap2::alpha1(Dart d) const
 {
 	return beta2(beta1(d)) ;
 }
 
-inline Dart GMap2::alpha_1(Dart d)
+inline Dart GMap2::alpha_1(Dart d) const
 {
 	return beta1(beta2(d)) ;
 }
@@ -157,43 +157,43 @@ inline void GMap2::beta2unsew(Dart d)
  *  Return or set various topological information
  *************************************************************************/
 
-inline bool GMap2::sameVertex(Dart d, Dart e)
+inline bool GMap2::sameVertex(Dart d, Dart e) const
 {
 	return sameOrientedVertex(d, e) || sameOrientedVertex(beta2(d), e) ;
 }
 
-inline bool GMap2::sameEdge(Dart d, Dart e)
+inline bool GMap2::sameEdge(Dart d, Dart e) const
 {
 	return d == e || beta2(d) == e || beta0(d) == e || beta2(beta0(d)) == e ;
 }
 
-inline bool GMap2::isBoundaryEdge(Dart d)
+inline bool GMap2::isBoundaryEdge(Dart d) const
 {
 	return isBoundaryMarked2(d) || isBoundaryMarked2(beta2(d));
 }
 
-inline bool GMap2::sameOrientedFace(Dart d, Dart e)
+inline bool GMap2::sameOrientedFace(Dart d, Dart e) const
 {
 	return GMap1::sameOrientedCycle(d, e) ;
 }
 
-inline bool GMap2::sameFace(Dart d, Dart e)
+inline bool GMap2::sameFace(Dart d, Dart e) const
 {
 	return GMap1::sameCycle(d, e) ;
 }
 
-inline unsigned int GMap2::faceDegree(Dart d)
+inline unsigned int GMap2::faceDegree(Dart d) const
 {
 	return GMap1::cycleDegree(d) ;
 }
 
-inline int GMap2::checkFaceDegree(Dart d, unsigned int le)
+inline int GMap2::checkFaceDegree(Dart d, unsigned int le) const
 {
 	return GMap1::checkCycleDegree(d,le) ;
 }
 
 
-inline bool GMap2::sameVolume(Dart d, Dart e)
+inline bool GMap2::sameVolume(Dart d, Dart e) const
 {
 	return sameOrientedVolume(d, e) || sameOrientedVolume(beta2(d), e) ;
 }
@@ -202,34 +202,68 @@ inline bool GMap2::sameVolume(Dart d, Dart e)
  *  Apply functors to all darts of a cell
  *************************************************************************/
 
-inline bool GMap2::foreach_dart_of_vertex(Dart d, FunctorType& f, unsigned int thread)
+inline bool GMap2::foreach_dart_of_vertex(Dart d, FunctorType& f, unsigned int thread) const
 {
 	return GMap2::foreach_dart_of_oriented_vertex(d, f, thread) || GMap2::foreach_dart_of_oriented_vertex(beta1(d), f, thread) ;
 }
 
-inline bool GMap2::foreach_dart_of_cc(Dart d, FunctorType& f, unsigned int thread)
+inline bool GMap2::foreach_dart_of_cc(Dart d, FunctorType& f, unsigned int thread) const
 {
 	return GMap2::foreach_dart_of_oriented_cc(d, f, thread) || GMap2::foreach_dart_of_oriented_cc(beta0(d), f, thread) ;
 }
 
-inline bool GMap2::foreach_dart_of_face(Dart d, FunctorType& f, unsigned int thread)
+inline bool GMap2::foreach_dart_of_face(Dart d, FunctorType& f, unsigned int thread) const
 {
 	return GMap1::foreach_dart_of_cc(d, f, thread);
 }
 
-inline bool GMap2::foreach_dart_of_oriented_face(Dart d, FunctorType& f, unsigned int thread)
+inline bool GMap2::foreach_dart_of_oriented_face(Dart d, FunctorType& f, unsigned int thread) const
 {
 	return GMap1::foreach_dart_of_oriented_cc(d, f, thread);
 }
 
-inline bool GMap2::foreach_dart_of_vertex1(Dart d, FunctorType& f, unsigned int thread)
+inline bool GMap2::foreach_dart_of_vertex1(Dart d, FunctorType& f, unsigned int thread) const
 {
 	return GMap1::foreach_dart_of_vertex(d,f,thread);
 }
 
-inline bool GMap2::foreach_dart_of_edge1(Dart d, FunctorType& f, unsigned int thread)
+inline bool GMap2::foreach_dart_of_edge1(Dart d, FunctorType& f, unsigned int thread) const
 {
 	return GMap1::foreach_dart_of_edge(d,f,thread);
 }
+
+// CONST VERSIONS
+//inline bool GMap2::foreach_dart_of_vertex(Dart d, FunctorConstType& f, unsigned int thread) const
+//{
+//	return GMap2::foreach_dart_of_oriented_vertex(d, f, thread) || GMap2::foreach_dart_of_oriented_vertex(beta1(d), f, thread) ;
+//}
+
+//inline bool GMap2::foreach_dart_of_cc(Dart d, FunctorConstType& f, unsigned int thread) const
+//{
+//	return GMap2::foreach_dart_of_oriented_cc(d, f, thread) || GMap2::foreach_dart_of_oriented_cc(beta0(d), f, thread) ;
+//}
+
+//inline bool GMap2::foreach_dart_of_face(Dart d, FunctorConstType& f, unsigned int thread) const
+//{
+//	return GMap1::foreach_dart_of_cc(d, f, thread);
+//}
+
+//inline bool GMap2::foreach_dart_of_oriented_face(Dart d, FunctorConstType& f, unsigned int thread) const
+//{
+//	return GMap1::foreach_dart_of_oriented_cc(d, f, thread);
+//}
+
+//inline bool GMap2::foreach_dart_of_vertex1(Dart d, FunctorConstType& f, unsigned int thread) const
+//{
+//	return GMap1::foreach_dart_of_vertex(d,f,thread);
+//}
+
+//inline bool GMap2::foreach_dart_of_edge1(Dart d, FunctorConstType& f, unsigned int thread) const
+//{
+//	return GMap1::foreach_dart_of_edge(d,f,thread);
+//}
+
+
+
 
 } // namespace CGoGN

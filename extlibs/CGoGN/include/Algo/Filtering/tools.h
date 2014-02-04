@@ -262,69 +262,107 @@ void computeNoise(typename PFP::MAP& map, long amount, const VertexAttribute<typ
     float gaussNumbers[3];
     float noiseLevel = 0.1f;
 
+//    TraversorV<typename PFP::MAP> tv(map) ;
+//    for(Dart dit = tv.begin(); dit != tv.end(); dit = tv.next())
+//	{
+
+//    	// pseudo-random Gaussian-distributed numbers generation from uniformly-distributed pseudo-random numbers
+//    	float x, y, r2;
+//    	for (int i=0; i<3; i++)
+//    	{
+//    		do
+//    		{
+//    			x = -1.0 + 2.0 * 1.0*rand()/RAND_MAX;
+//    			y = -1.0 + 2.0 * 1.0*rand()/RAND_MAX;
+//    			r2 = x * x + y * y;
+//    		} while ((r2>1.0)||(r2==0.0));
+//    		gaussNumbers[i] = y * sqrt(-2.0 * log(r2) / r2);
+//    	}
+
+//    	noisex = noiseLevel * gaussNumbers[0];
+//    	noisey = noiseLevel * gaussNumbers[1];
+//    	noisez = noiseLevel * gaussNumbers[2];
+
+//    	position2[dit] = position[dit] + VEC3(noisex,noisey,noisez);
+//	}
+
+
+    // init the seed for random
+    srand(time(NULL)) ;
+
+    // apply noise on each vertex
+    TraversorV<typename PFP::MAP> t(map) ;
+    for(Dart d = t.begin(); d != t.end(); d = t.next())
+    {
+        const VEC3& pos = position[d] ;
+        VEC3 norm = position[d] ;
+
+        float r1 = float(rand() % amount) / 100.0f ;
+        float r2 = 0 ;
+        if (amount >= 5)
+            r2 = float(rand() % (amount/5)) / 100.0f ;
+
+        long sign = rand() % 2 ;
+        if (sign == 1) norm *= -1.0f ;
+        float avEL = 0.0f ;
+        VEC3 td(0) ;
+
+        long nbE = 0 ;
+        Traversor3VVaE<typename PFP::MAP> tav(map, d) ;
+        for(Dart it = tav.begin(); it != tav.end(); it = tav.next())
+        {
+            const VEC3& p = position[it] ;
+            VEC3 vec = p - pos ;
+            float el = vec.norm() ;
+            vec *= r2 ;
+            td += vec ;
+            avEL += el ;
+            nbE++ ;
+        }
+
+        avEL /= float(nbE) ;
+        norm *= avEL * r1 ;
+        norm += td ;
+        position2[d] = pos + norm ;
+    }
+}
+
+
+template <typename PFP>
+void computeNoiseGaussian(typename PFP::MAP& map, long amount, const VertexAttribute<typename PFP::VEC3>& position, VertexAttribute<typename PFP::VEC3>& position2)
+{
+    typedef typename PFP::VEC3 VEC3 ;
+
+    // add random gaussian-distributed
+    srand((unsigned)time(NULL));
+    float noisex, noisey, noisez;
+    float gaussNumbers[3];
+    float noiseLevel = 0.08f;
+
     TraversorV<typename PFP::MAP> tv(map) ;
     for(Dart dit = tv.begin(); dit != tv.end(); dit = tv.next())
-	{
+    {
 
-    	// pseudo-random Gaussian-distributed numbers generation from uniformly-distributed pseudo-random numbers
-    	float x, y, r2;
-    	for (int i=0; i<3; i++)
-    	{
-    		do
-    		{
-    			x = -1.0 + 2.0 * 1.0*rand()/RAND_MAX;
-    			y = -1.0 + 2.0 * 1.0*rand()/RAND_MAX;
-    			r2 = x * x + y * y;
-    		} while ((r2>1.0)||(r2==0.0));
-    		gaussNumbers[i] = y * sqrt(-2.0 * log(r2) / r2);
-    	}
+        // pseudo-random Gaussian-distributed numbers generation from uniformly-distributed pseudo-random numbers
+        float x, y, r2;
+        for (int i=0; i<3; i++)
+        {
+            do
+            {
+                x = -1.0 + 2.0 * 1.0*rand()/RAND_MAX;
+                y = -1.0 + 2.0 * 1.0*rand()/RAND_MAX;
+                r2 = x * x + y * y;
+            } while ((r2>1.0)||(r2==0.0));
+            gaussNumbers[i] = y * sqrt(-2.0 * log(r2) / r2);
+        }
 
-    	noisex = noiseLevel * gaussNumbers[0];
-    	noisey = noiseLevel * gaussNumbers[1];
-    	noisez = noiseLevel * gaussNumbers[2];
+        noisex = noiseLevel * gaussNumbers[0];
+        noisey = noiseLevel * gaussNumbers[1];
+        noisez = noiseLevel * gaussNumbers[2];
 
-    	position2[dit] = position[dit] + VEC3(noisex,noisey,noisez);
-	}
+        position2[dit] = position[dit] + VEC3(noisex,noisey,noisez);
+    }
 
-
-//	// init the seed for random
-//	srand(time(NULL)) ;
-//
-//	// apply noise on each vertex
-//	TraversorV<typename PFP::MAP> t(map) ;
-//	for(Dart d = t.begin(); d != t.end(); d = t.next())
-//	{
-//		const VEC3& pos = position[d] ;
-//		VEC3 norm = position[d] ;
-//
-//		float r1 = float(rand() % amount) / 100.0f ;
-//		float r2 = 0 ;
-//		if (amount >= 5)
-//			r2 = float(rand() % (amount/5)) / 100.0f ;
-//
-//		long sign = rand() % 2 ;
-//		if (sign == 1) norm *= -1.0f ;
-//		float avEL = 0.0f ;
-//		VEC3 td(0) ;
-//
-//		long nbE = 0 ;
-//		Traversor3VVaE<typename PFP::MAP> tav(map, d) ;
-//		for(Dart it = tav.begin(); it != tav.end(); it = tav.next())
-//		{
-//			const VEC3& p = position[it] ;
-//			VEC3 vec = p - pos ;
-//			float el = vec.norm() ;
-//			vec *= r2 ;
-//			td += vec ;
-//			avEL += el ;
-//			nbE++ ;
-//		}
-//
-//		avEL /= float(nbE) ;
-//		norm *= avEL * r1 ;
-//		norm += td ;
-//		position2[d] = pos + norm ;
-//	}
 }
 
 } //namespace Filtering

@@ -70,21 +70,21 @@ public:
 
 	virtual Dart newDart();
 
-	Dart beta2(Dart d);
+	Dart beta2(Dart d) const;
 
 	template <int N>
-	Dart beta(const Dart d);
+	Dart beta(const Dart d) const;
 
-	Dart phi2(Dart d);
+	Dart phi2(Dart d) const;
 
 	template <int N>
-	Dart phi(const Dart d);
+	Dart phi(const Dart d) const;
 
-	Dart alpha0(Dart d);
+	Dart alpha0(Dart d) const;
 
-	Dart alpha1(Dart d);
+	Dart alpha1(Dart d) const;
 
-	Dart alpha_1(Dart d);
+	Dart alpha_1(Dart d) const;
 
 protected:
 	void beta2sew(Dart d, Dart e);
@@ -274,114 +274,114 @@ public:
 	/*! @param d a dart
 	 *  @param e a dart
 	 */
-	bool sameOrientedVertex(Dart d, Dart e);
+	bool sameOrientedVertex(Dart d, Dart e) const;
 
 	//! Test if dart d and e belong to the same vertex
 	/*! @param d a dart
 	 *  @param e a dart
 	 */
-	bool sameVertex(Dart d, Dart e);
+	bool sameVertex(Dart d, Dart e) const;
 
 	/**
 	 * compute the number of edges of the vertex of d
 	 */
-	unsigned int vertexDegree(Dart d) ;
+	unsigned int vertexDegree(Dart d) const;
 
 	//! Check number of edges of the vertex of d with given parameter
 	/*! @param d a dart
 	 *	@param vd degree to compare with
 	 *  @return  negative/null/positive if vertex degree is less/equal/greater than given degree
 	 */
-	int checkVertexDegree(Dart d, unsigned int vd);
+	int checkVertexDegree(Dart d, unsigned int vd) const;
 
 	//! tell if the vertex of d is on the boundary of the map
 	/*! @param d a dart
 	 */
-	bool isBoundaryVertex(Dart d) ;
+	bool isBoundaryVertex(Dart d) const;
 
 	/**
 	 * find the dart of vertex that belong to the boundary
 	 * return NIL if the vertex is not on the boundary
 	 */
-	Dart findBoundaryEdgeOfVertex(Dart d);
+	Dart findBoundaryEdgeOfVertex(Dart d) const;
 
 	//! Test if dart d and e belong to the same edge
 	/*! @param d a dart
 	 *  @param e a dart
 	 */
-	bool sameEdge(Dart d, Dart e) ;
+	bool sameEdge(Dart d, Dart e) const;
 
 	/**
 	 * tell if the edge of d is on the boundary of the map
 	 */
-	bool isBoundaryEdge(Dart d) ;
+	bool isBoundaryEdge(Dart d) const;
 
 	//!Test if dart d and e belong to the same oriented face
 	/*! @param d a dart
 	 *  @param e a dart
 	 */
-	bool sameOrientedFace(Dart d, Dart e);
+	bool sameOrientedFace(Dart d, Dart e) const;
 
 	//! Test if dart d and e belong to the same face
 	/*! @param d a dart
 	 *  @param e a dart
 	 */
-	bool sameFace(Dart d, Dart e) ;
+	bool sameFace(Dart d, Dart e) const;
 
 	/**
 	 * compute the number of edges of the face of d
 	 */
-	unsigned int faceDegree(Dart d) ;
+	unsigned int faceDegree(Dart d) const;
 
 	//! Check number of edges of the face of d with given parameter
 	/*! @param d a dart
 	 *	@param vd degree to compare with
 	 *  @return  negative/null/positive if vertex degree is less/equal/greater than given degree
 	 */
-	int checkFaceDegree(Dart d, unsigned int le);
+	int checkFaceDegree(Dart d, unsigned int le) const;
 
 	/**
 	 * tell if the face of d is on the boundary of the map
 	 */
-	bool isBoundaryFace(Dart d) ;
+	bool isBoundaryFace(Dart d) const;
 
 	//! Test if dart d and e belong to the same oriented volume
 	/*! @param d a dart
 	 *  @param e a dart
 	 */
-	bool sameOrientedVolume(Dart d, Dart e);
+	bool sameOrientedVolume(Dart d, Dart e) const;
 
 	//! Test if dart d and e belong to the same volume
 	/*! @param d a dart
 	 *  @param e a dart
 	 */
-	bool sameVolume(Dart d, Dart e);
+	bool sameVolume(Dart d, Dart e) const;
 
 	//! Compute the number of faces in the volume of d
 	/*! @param d a dart
 	 */
-	unsigned int volumeDegree(Dart d);
+	unsigned int volumeDegree(Dart d) const;
 
 	//! Check number of faces of the volume of d with given parameter
 	/*! @param d a dart
 	 *	@param vd degree to compare with
 	 *  @return  negative/null/positive if volume degree is less/equal/greater than given degree
 	 */
-	int checkVolumeDegree(Dart d, unsigned int volDeg);
+	int checkVolumeDegree(Dart d, unsigned int volDeg) const;
 
 	// TODO a mettre en algo
 	/**
 	 * check if the mesh is triangular or not
 	 * @return a boolean indicating if the mesh is triangular
 	 */
-	bool isTriangular() ;
+	bool isTriangular() const;
 
 	// TODO a mettre en algo
 	/**
 	 * Check if map is complete
 	 * Should be executed after import
 	 */
-	virtual bool check();
+	virtual bool check() const;
 
 	/**
 	 * Check if a serie of darts is an oriented simple close path
@@ -399,52 +399,60 @@ public:
 	* @param d a dart of the oriented vertex
 	* @param fonct functor obj ref
 	*/
-	bool foreach_dart_of_oriented_vertex(Dart d, FunctorType& fonct, unsigned int thread = 0);
+	bool foreach_dart_of_oriented_vertex(Dart d, FunctorType& fonct, unsigned int thread = 0) const;
+//	bool foreach_dart_of_oriented_vertex(Dart d, FunctorConstType& fonct, unsigned int thread = 0) const;
 
 	/**
 	* Apply a functor on each dart of a vertex
 	* @param d a dart of the vertex
 	* @param fonct functor obj ref
 	*/
-	bool foreach_dart_of_vertex(Dart d, FunctorType& fonct, unsigned int thread = 0);
+	bool foreach_dart_of_vertex(Dart d, FunctorType& fonct, unsigned int thread = 0) const;
+//	bool foreach_dart_of_vertex(Dart d, FunctorConstType& fonct, unsigned int thread = 0) const;
 
 	/**
 	* Apply a functor on each dart of an oriented edge
 	* @param d a dart of the oriented edge
 	* @param fonct functor obj ref
 	*/
-	bool foreach_dart_of_oriented_edge(Dart d, FunctorType& fonct, unsigned int thread = 0);
+	bool foreach_dart_of_oriented_edge(Dart d, FunctorType& fonct, unsigned int thread = 0) const;
+//	bool foreach_dart_of_oriented_edge(Dart d, FunctorConstType& fonct, unsigned int thread = 0) const;
 
 	/**
 	* Apply a functor on each dart of an edge
 	* @param d a dart of the oriented edge
 	* @param fonct functor obj ref
 	*/
-	bool foreach_dart_of_edge(Dart d, FunctorType& fonct, unsigned int thread = 0);
+	bool foreach_dart_of_edge(Dart d, FunctorType& fonct, unsigned int thread = 0) const;
+//	bool foreach_dart_of_edge(Dart d, FunctorConstType& fonct, unsigned int thread = 0) const;
 
 	//! Apply a functor on every dart of an oriented face
 	/*! @param d a dart of the oriented face
 	 *  @param f the functor to apply
 	 */
-	bool foreach_dart_of_oriented_face(Dart d, FunctorType& fonct, unsigned int thread = 0);
+	bool foreach_dart_of_oriented_face(Dart d, FunctorType& fonct, unsigned int thread = 0) const;
+//	bool foreach_dart_of_oriented_face(Dart d, FunctorConstType& fonct, unsigned int thread = 0) const;
 
 	//! Apply a functor on every dart of a face
 	/*! @param d a dart of the face
 	 *  @param f the functor to apply
 	 */
-	bool foreach_dart_of_face(Dart d, FunctorType& fonct, unsigned int thread = 0);
+	bool foreach_dart_of_face(Dart d, FunctorType& fonct, unsigned int thread = 0) const;
+//	bool foreach_dart_of_face(Dart d, FunctorConstType& fonct, unsigned int thread = 0) const;
 
 	//! Apply a functor on every dart of an oriented convex component
 	/*! @param d a dart of the oriented convex component
 	 *  @param f the functor to apply
 	 */
-	bool foreach_dart_of_oriented_cc(Dart d, FunctorType& fonct, unsigned int thread = 0);
+	bool foreach_dart_of_oriented_cc(Dart d, FunctorType& fonct, unsigned int thread = 0) const;
+//	bool foreach_dart_of_oriented_cc(Dart d, FunctorConstType& fonct, unsigned int thread = 0) const;
 
 	//! Apply a functor on every dart of a convex component
 	/*! @param d a dart of the convex component
 	 *  @param f the functor to apply
 	 */
-	bool foreach_dart_of_cc(Dart d, FunctorType& fonct, unsigned int thread = 0);
+	bool foreach_dart_of_cc(Dart d, FunctorType& fonct, unsigned int thread = 0) const;
+//	bool foreach_dart_of_cc(Dart d, FunctorConstType& fonct, unsigned int thread = 0) const;
 
 
 	/**
@@ -452,14 +460,17 @@ public:
 	* @param d a dart of the vertex
 	* @param fonct functor obj ref
 	*/
-	bool foreach_dart_of_vertex1(Dart d, FunctorType& fonct, unsigned int thread = 0);
+	bool foreach_dart_of_vertex1(Dart d, FunctorType& fonct, unsigned int thread = 0) const;
+//	bool foreach_dart_of_vertex1(Dart d, FunctorConstType& fonct, unsigned int thread = 0) const;
 
 	/**
 	* Apply a functor on each dart of an edge
 	* @param d a dart of the oriented edge
 	* @param fonct functor obj ref
 	*/
-	bool foreach_dart_of_edge1(Dart d, FunctorType& fonct, unsigned int thread = 0);
+	bool foreach_dart_of_edge1(Dart d, FunctorType& fonct, unsigned int thread = 0) const;
+//	bool foreach_dart_of_edge1(Dart d, FunctorConstType& fonct, unsigned int thread = 0) const;
+
 	//@}
 
 	/*! @name Close map after import or creation

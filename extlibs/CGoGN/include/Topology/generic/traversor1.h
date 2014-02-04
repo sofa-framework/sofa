@@ -37,17 +37,17 @@ namespace CGoGN
 
 // Traverse the edges incident to a given vertex
 template <typename MAP>
-class Traversor1VE: public Traversor /*<MAP>*/
+class Traversor1VE: public Traversor
 {
 private:
-	MAP& m ;
+	const MAP& m ;
 	Dart start ;
 	Dart current ;
 
 	Dart d2 ;
 
 public:
-	Traversor1VE(MAP& map, Dart dart) ;
+	Traversor1VE(const MAP& map, Dart dart) ;
 
 	Dart begin() ;
 	Dart end() ;
@@ -56,17 +56,17 @@ public:
 
 // Traverse the vertices adjacent to a given vertex through sharing a common edge
 template <typename MAP>
-class Traversor1VVaE: public Traversor /*<MAP>*/
+class Traversor1VVaE: public Traversor
 {
 private:
-	MAP& m ;
+	const MAP& m ;
 	Dart start ;
 	Dart current ;
 
 	Dart d2 ;
 
 public:
-	Traversor1VVaE(MAP& map, Dart dart) ;
+	Traversor1VVaE(const MAP& map, Dart dart) ;
 
 	Dart begin() ;
 	Dart end() ;
@@ -79,17 +79,17 @@ public:
 
 // Traverse the vertices incident to a given edge
 template <typename MAP>
-class Traversor1EV: public Traversor /*<MAP>*/
+class Traversor1EV: public Traversor
 {
 private:
-	MAP& m ;
+	const MAP& m ;
 	Dart start ;
 	Dart current ;
 
 	Dart d2 ;
 
 public:
-	Traversor1EV(MAP& map, Dart dart) ;
+	Traversor1EV(const MAP& map, Dart dart) ;
 
 	Dart begin() ;
 	Dart end() ;
@@ -98,17 +98,17 @@ public:
 
 // Traverse the edges adjacent to a given edge through sharing a common vertex
 template <typename MAP>
-class Traversor1EEaV: public Traversor /*<MAP>*/
+class Traversor1EEaV: public Traversor
 {
 private:
-	MAP& m ;
+	const MAP& m ;
 	Dart start ;
 	Dart current ;
 
 	Dart d2 ;
 
 public:
-	Traversor1EEaV(MAP& map, Dart dart) ;
+	Traversor1EEaV(const MAP& map, Dart dart) ;
 
 	Dart begin() ;
 	Dart end() ;

@@ -44,6 +44,13 @@ enum SubdivideType
 	S_QUAD
 } ;
 
+
+
+
+template <typename PFP>
+void newLevelHexa(typename PFP::MAP& map, AttributeHandler<typename PFP::VEC3, VERTEX>& position);
+
+
 /***********************************************************************************
  *								 Subdivision									   *
  ***********************************************************************************/

@@ -599,7 +599,7 @@ void Map2::splitSurface(std::vector<Dart>& vd, bool firstSideClosed, bool second
  *  Return or set various topological information
  *************************************************************************/
 
-bool Map2::sameOrientedVertex(Dart d, Dart e)
+bool Map2::sameOrientedVertex(Dart d, Dart e) const
 {
 	Dart it = d;				// Foreach dart dNext in the vertex of d
 	do
@@ -611,7 +611,7 @@ bool Map2::sameOrientedVertex(Dart d, Dart e)
 	return false;				// None is equal to e => vertices are distinct
 }
 
-unsigned int Map2::vertexDegree(Dart d)
+unsigned int Map2::vertexDegree(Dart d) const
 {
 	unsigned int count = 0 ;
 	Dart it = d ;
@@ -623,7 +623,7 @@ unsigned int Map2::vertexDegree(Dart d)
 	return count ;
 }
 
-int Map2::checkVertexDegree(Dart d, unsigned int vd)
+int Map2::checkVertexDegree(Dart d, unsigned int vd) const
 {
 	unsigned int count = 0 ;
 	Dart it = d ;
@@ -636,7 +636,7 @@ int Map2::checkVertexDegree(Dart d, unsigned int vd)
 	return count-vd;
 }
 
-bool Map2::isBoundaryVertex(Dart d)
+bool Map2::isBoundaryVertex(Dart d) const
 {
 	Dart it = d ;
 	do
@@ -648,7 +648,7 @@ bool Map2::isBoundaryVertex(Dart d)
 	return false ;
 }
 
-Dart Map2::findBoundaryEdgeOfVertex(Dart d)
+Dart Map2::findBoundaryEdgeOfVertex(Dart d) const
 {
 	Dart it = d ;
 	do
@@ -660,7 +660,7 @@ Dart Map2::findBoundaryEdgeOfVertex(Dart d)
 	return NIL ;
 }
 
-Dart Map2::findBoundaryEdgeOfFace(Dart d)
+Dart Map2::findBoundaryEdgeOfFace(Dart d) const
 {
 	Dart it = d ;
 	do
@@ -672,7 +672,7 @@ Dart Map2::findBoundaryEdgeOfFace(Dart d)
 	return NIL ;
 }
 
-bool Map2::isBoundaryFace(Dart d)
+bool Map2::isBoundaryFace(Dart d) const
 {
 	Dart it = d ;
 	do
@@ -684,7 +684,7 @@ bool Map2::isBoundaryFace(Dart d)
 	return false ;
 }
 
-bool Map2::sameOrientedVolume(Dart d, Dart e)
+bool Map2::sameOrientedVolume(Dart d, Dart e) const
 {
 	DartMarkerStore mark(*this);	// Lock a marker
 
@@ -714,7 +714,7 @@ bool Map2::sameOrientedVolume(Dart d, Dart e)
 	return false;
 }
 
-unsigned int Map2::volumeDegree(Dart d)
+unsigned int Map2::volumeDegree(Dart d) const
 {
 	unsigned int count = 0;
 	DartMarkerStore mark(*this);		// Lock a marker
@@ -748,7 +748,7 @@ unsigned int Map2::volumeDegree(Dart d)
 
 
 
-int Map2::checkVolumeDegree(Dart d, unsigned int volDeg)
+int Map2::checkVolumeDegree(Dart d, unsigned int volDeg) const
 {
 	unsigned int count = 0;
 	DartMarkerStore mark(*this);		// Lock a marker
@@ -783,7 +783,7 @@ int Map2::checkVolumeDegree(Dart d, unsigned int volDeg)
 
 
 
-bool Map2::isTriangular()
+bool Map2::isTriangular() const
 {
 	TraversorF<Map2> t(*this) ;
 	for(Dart d = t.begin(); d != t.end(); d = t.next())
@@ -794,7 +794,7 @@ bool Map2::isTriangular()
 	return true ;
 }
 
-bool Map2::check()
+bool Map2::check() const
 {
 	CGoGNout << "Check: topology begin" << CGoGNendl;
 	DartMarker m(*this);
@@ -873,7 +873,7 @@ bool Map2::checkSimpleOrientedPath(std::vector<Dart>& vd)
  *  Apply functors to all darts of a cell
  *************************************************************************/
 
-bool Map2::foreach_dart_of_vertex(Dart d, FunctorType& f, unsigned int /*thread*/)
+bool Map2::foreach_dart_of_vertex(Dart d, FunctorType& f, unsigned int /*thread*/) const
 {
 	Dart dNext = d;
 	do
@@ -885,14 +885,14 @@ bool Map2::foreach_dart_of_vertex(Dart d, FunctorType& f, unsigned int /*thread*
  	return false;
 }
 
-bool Map2::foreach_dart_of_edge(Dart d, FunctorType& fonct, unsigned int /*thread*/)
+bool Map2::foreach_dart_of_edge(Dart d, FunctorType& fonct, unsigned int /*thread*/) const
 {
 	if (fonct(d))
 		return true;
 	return fonct(phi2(d));
 }
 
-bool Map2::foreach_dart_of_cc(Dart d, FunctorType& f, unsigned int thread)
+bool Map2::foreach_dart_of_cc(Dart d, FunctorType& f, unsigned int thread) const
 {
 	DartMarkerStore mark(*this, thread);	// Lock a marker
 	bool found = false;				// Last functor return value

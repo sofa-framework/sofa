@@ -27,7 +27,7 @@
 
 #include <math.h>
 #include <vector>
-#include "Algo/Modelisation/polyhedron.h"
+#include "Algo/Tiling/Surface/square.h"
 
 #include "Algo/Modelisation/subdivision.h"
 #include "Algo/Geometry/normal.h"
@@ -82,7 +82,8 @@ Dart extrusion_scale(typename PFP::MAP& the_map, VertexAttribute<typename PFP::V
 * size of vector must be the same as path
 */
 template<typename PFP>
-Polyhedron<PFP>* extrusion_scale_prim(typename PFP::MAP& the_map, VertexAttribute<typename PFP::VEC3>& positions,
+//Polyhedron<PFP>* extrusion_scale_prim(typename PFP::MAP& the_map, VertexAttribute<typename PFP::VEC3>& positions,
+Algo::Surface::Tilings::Tiling<PFP>* extrusion_scale_prim(typename PFP::MAP& the_map, VertexAttribute<typename PFP::VEC3>& positions,
 	const std::vector<typename PFP::VEC3>& profile,
 	const typename PFP::VEC3& centerProfile,
 	const typename PFP::VEC3& normalProfile,
@@ -106,7 +107,8 @@ Polyhedron<PFP>* extrusion_scale_prim(typename PFP::MAP& the_map, VertexAttribut
 * size of vector must be the same as path
 */
 template<typename PFP>
-Polyhedron<PFP>* extrusion_prim(typename PFP::MAP& the_map, VertexAttribute<typename PFP::VEC3>& positions,
+//Polyhedron<PFP>* extrusion_prim(typename PFP::MAP& the_map, VertexAttribute<typename PFP::VEC3>& positions,
+Algo::Surface::Tilings::Tiling<PFP>* extrusion_prim(typename PFP::MAP& the_map, VertexAttribute<typename PFP::VEC3>& positions,
 	const std::vector<typename PFP::VEC3>& profile,
 	const typename PFP::VEC3& centerProfile,
 	const typename PFP::VEC3& normalProfile,
@@ -146,7 +148,8 @@ Dart extrusion(typename PFP::MAP& the_map, VertexAttribute<typename PFP::VEC3>& 
 * @param nbSide number of steps around the revolution
 */
 template<typename PFP>
-Polyhedron<PFP>* revolution_prim(typename PFP::MAP& the_map, VertexAttribute<typename PFP::VEC3>& positions,
+//Polyhedron<PFP>* revolution_prim(typename PFP::MAP& the_map, VertexAttribute<typename PFP::VEC3>& positions,
+Algo::Surface::Tilings::Tiling<PFP>* revolution_prim(typename PFP::MAP& the_map, VertexAttribute<typename PFP::VEC3>& positions,
 	const std::vector<typename PFP::VEC3>& profile,
 	const typename PFP::VEC3& center,
 	const typename PFP::VEC3& axis,
@@ -191,9 +194,13 @@ template<typename PFP>
 Dart extrudeFace(typename PFP::MAP& the_map, VertexAttribute<typename PFP::VEC3>& positions,
 	Dart d,	float dist);
 
+template<typename PFP>
+Dart extrudeRegion(typename PFP::MAP& the_map, VertexAttribute<typename PFP::VEC3>& position,
+   Dart d, const CellMarker<FACE>& cm);
+
 } // namespace Modelisation
 
-}
+} // namespace Surface
 
 } // namespace Algo
 

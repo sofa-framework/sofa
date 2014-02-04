@@ -29,11 +29,11 @@ namespace CGoGN
 {
 
 template <typename MAP, unsigned int ORBIT>
-TraversorDartsOfOrbit<MAP, ORBIT>::TraversorDartsOfOrbit(MAP& map, Dart d, unsigned int thread)
+TraversorDartsOfOrbit<MAP, ORBIT>::TraversorDartsOfOrbit(const MAP& map, Dart d, unsigned int thread)
 {
 	m_vd.reserve(16);
 	FunctorStoreNotBoundary<MAP> fs(map, m_vd);
-	map.template foreach_dart_of_orbit<ORBIT>(d, fs, thread);
+	const_cast<MAP&>(map).template foreach_dart_of_orbit<ORBIT>(d, fs, thread);
 	m_vd.push_back(NIL);
 }
 
@@ -62,7 +62,7 @@ Dart TraversorDartsOfOrbit<MAP, ORBIT>::next()
 
 
 template <typename MAP, unsigned int ORBIT>
-VTraversorDartsOfOrbit<MAP, ORBIT>::VTraversorDartsOfOrbit(MAP& map, Dart d, unsigned int thread)
+VTraversorDartsOfOrbit<MAP, ORBIT>::VTraversorDartsOfOrbit(const MAP& map, Dart d, unsigned int thread)
 {
 	m_vd.reserve(16);
 	FunctorStoreNotBoundary<MAP> fs(map, m_vd);

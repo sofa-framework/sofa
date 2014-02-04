@@ -61,7 +61,7 @@ public:
  * Traverse all Y incident to X
  */
 template <typename MAP, unsigned int ORBX, unsigned int ORBY>
-class VTraversor3XY: public Traversor/*<MAP>*/
+class VTraversor3XY: public Traversor
 {
 private:
 	MAP& m_map ;
@@ -70,8 +70,8 @@ private:
 	Dart m_current ;
 	TraversorDartsOfOrbit<MAP, ORBX> m_tradoo;
 
-	std::vector<Dart>* m_QLT;
-	std::vector<Dart>::iterator m_ItDarts;
+	const std::vector<Dart>* m_QLT;
+	std::vector<Dart>::const_iterator m_ItDarts;
 
 	bool m_allocated;
 	bool m_first;
@@ -89,15 +89,15 @@ public:
  * Traverse all X adjacent to X by an Y
  */
 template <typename MAP, unsigned int ORBX, unsigned int ORBY>
-class VTraversor3XXaY: public Traversor/*<MAP>*/
+class VTraversor3XXaY: public Traversor
 {
 private:
 	MAP& m_map ;
 	std::vector<Dart> m_vecDarts;
 	std::vector<Dart>::iterator m_iter;
 
-	std::vector<Dart>* m_QLT;
-	std::vector<Dart>::iterator m_ItDarts;
+	const std::vector<Dart>* m_QLT;
+	std::vector<Dart>::const_iterator m_ItDarts;
 public:
 	VTraversor3XXaY(MAP& map, Dart dart, bool forceDartMarker = false, unsigned int thread = 0);
 

@@ -37,15 +37,34 @@ namespace Surface
 namespace Geometry
 {
 
+//! \brief Compute triangle area
+//! @param map
+//! @param d
+//! @param position
+//! @return
 template <typename PFP>
 typename PFP::REAL triangleArea(typename PFP::MAP& map, Dart d, const VertexAttribute<typename PFP::VEC3>& position) ;
 
+//! \brief Compute convex polygonal face area
+//! @param map
+//! @param d
+//! @param position
+//! @return
 template <typename PFP>
 typename PFP::REAL convexFaceArea(typename PFP::MAP& map, Dart d, const VertexAttribute<typename PFP::VEC3>& position) ;
 
+//! \brief Compute the total area of a mesh by summing all face areas.
+//! @param map
+//! @param position
+//! @return
 template <typename PFP>
 typename PFP::REAL totalArea(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3>& position, unsigned int thread = 0) ;
 
+//! \brief Compute the area of the faces around a vertex.
+//! @param map
+//! @param d
+//! @param position
+//! @return
 template <typename PFP>
 typename PFP::REAL vertexOneRingArea(typename PFP::MAP& map, Dart d, const VertexAttribute<typename PFP::VEC3>& position) ;
 

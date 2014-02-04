@@ -183,6 +183,97 @@ public:
 } ;
 
 /*****************************************************************************************************************
+ *                           HALF-EDGE QEMextColorNormal METRIC                                                  *
+ *****************************************************************************************************************/
+template <typename PFP>
+class HalfEdgeSelector_QEMextColorNormal : public Selector<PFP>
+{
+public:
+	typedef typename PFP::MAP MAP ;
+	typedef typename PFP::REAL REAL ;
+	typedef typename PFP::VEC3 VEC3 ;
+	typedef typename Geom::Vector<9,REAL> VEC9 ;
+
+private:
+	typedef	struct
+	{
+		typename std::multimap<float,Dart>::iterator it ;
+		bool valid ;
+		static std::string CGoGNnameOfType() { return "QEMextColorNormalHalfEdgeInfo" ; }
+	} QEMextColorNormalHalfEdgeInfo ;
+	typedef NoTypeNameAttribute<QEMextColorNormalHalfEdgeInfo> HalfEdgeInfo ;
+
+	DartAttribute<HalfEdgeInfo> halfEdgeInfo ;
+	VertexAttribute<Utils::QuadricNd<REAL,9> > m_quadric ;
+
+	VertexAttribute<VEC3> m_pos, m_color, m_normal ;
+	int m_approxindex_pos, m_attrindex_pos ;
+	int m_approxindex_color, m_attrindex_color ;
+	int m_approxindex_normal, m_attrindex_normal ;
+
+	std::vector<Approximator<PFP, typename PFP::VEC3,DART>* > m_approx ;
+
+	std::multimap<float,Dart> halfEdges ;
+	typename std::multimap<float,Dart>::iterator cur ;
+
+	void initHalfEdgeInfo(Dart d) ;
+	void updateHalfEdgeInfo(Dart d, bool recompute) ;
+	void computeHalfEdgeInfo(Dart d, HalfEdgeInfo& einfo) ;
+	void recomputeQuadric(const Dart d, const bool recomputeNeighbors = false) ;
+
+public:
+	HalfEdgeSelector_QEMextColorNormal(MAP& m, VertexAttribute<typename PFP::VEC3>& pos, std::vector<ApproximatorGen<PFP>*>& approx) :
+		Selector<PFP>(m, pos, approx),
+		m_approxindex_pos(-1),
+		m_attrindex_pos(-1),
+		m_approxindex_color(-1),
+		m_attrindex_color(-1),
+		m_approxindex_normal(-1),
+		m_attrindex_normal(-1)
+	{
+		halfEdgeInfo = m.template addAttribute<HalfEdgeInfo, DART>("halfEdgeInfo") ;
+		m_quadric = m.template addAttribute<Utils::QuadricNd<REAL,9>, VERTEX>("hQEMextNormal-quadric") ;
+	}
+	~HalfEdgeSelector_QEMextColorNormal()
+	{
+		this->m_map.removeAttribute(m_quadric) ;
+		this->m_map.removeAttribute(halfEdgeInfo) ;
+	}
+	SelectorType getType() { return S_hQEMextColorNormal ; }
+	bool init() ;
+	bool nextEdge(Dart& d) const ;
+	void updateBeforeCollapse(Dart d) ;
+	void updateAfterCollapse(Dart d2, Dart dd2) ;
+
+	void updateWithoutCollapse() { }
+
+	void getEdgeErrors(EdgeAttribute<typename PFP::REAL> *errors) const
+	{
+		assert(errors != NULL || !"EdgeSelector::setColorMap requires non null vertexattribute argument") ;
+		if (!errors->isValid())
+			std::cerr << "EdgeSelector::setColorMap requires valid edgeattribute argument" << std::endl ;
+		assert(halfEdgeInfo.isValid()) ;
+
+		TraversorE<typename PFP::MAP> travE(this->m_map) ;
+		for(Dart d = travE.begin() ; d != travE.end() ; d = travE.next())
+		{
+			Dart dd = this->m_map.phi2(d) ;
+			if (halfEdgeInfo[d].valid)
+			{
+				(*errors)[d] = halfEdgeInfo[d].it->first ;
+			}
+			if (halfEdgeInfo[dd].valid && halfEdgeInfo[dd].it->first < (*errors)[d])
+			{
+				(*errors)[d] = halfEdgeInfo[dd].it->first ;
+			}
+			if (!(halfEdgeInfo[d].valid || halfEdgeInfo[dd].valid))
+				(*errors)[d] = -1 ;
+
+		}
+	}
+} ;
+
+/*****************************************************************************************************************
  *                                 HALF-EDGE COLOR GRADIENT ERR                                                  *
  *****************************************************************************************************************/
 template <typename PFP>

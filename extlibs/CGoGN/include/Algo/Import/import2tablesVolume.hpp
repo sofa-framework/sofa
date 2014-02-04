@@ -39,15 +39,15 @@ namespace Import
 template <typename PFP>
 bool MeshTablesVolume<PFP>::importMesh(const std::string& filename, std::vector<std::string>& attrNames)
 {
-    ImportType kind = getFileType(filename);
+	ImportType kind = getFileType(filename);
 
     attrNames.clear() ;
 
-    switch (kind)
-    {
-    case TET:
+	switch (kind)
+	{
+	case TET:
         return importTet(filename, attrNames);
-        break;
+		break;
     case OFF:
     {
         size_t pos = filename.rfind(".");
@@ -57,19 +57,19 @@ bool MeshTablesVolume<PFP>::importMesh(const std::string& filename, std::vector<
         return importOFFWithELERegions(filename, fileEle, attrNames);
         break;
     }
-    case NODE:
+	case NODE:
     {
         size_t pos = filename.rfind(".");
         std::string fileEle = filename;
         fileEle.erase(pos);
         fileEle.append(".ele");
         return importNodeWithELERegions(filename, fileEle, attrNames);
-        break;
+		break;
     }
     case TETMESH:
         return importTetmesh(filename, attrNames);
         break;
-    case TS:
+	case TS:
         return importTs(filename, attrNames);
         break;
     case MSH:
@@ -86,15 +86,15 @@ bool MeshTablesVolume<PFP>::importMesh(const std::string& filename, std::vector<
         break;
 //	case ImportVolumique::MOKA:
 //		return importMoka(filename,attrNames);
-//		break;
+//		break;      
 //	case OVM:
 //		return importOVM(filename, attrNames);
 //		break;
-    default:
-        CGoGNerr << "Not yet supported" << CGoGNendl;
-        break;
-    }
-    return false;
+	default:
+		CGoGNerr << "Not yet supported" << CGoGNendl;
+		break;
+	}
+	return false;
 }
 
 template <typename PFP>
@@ -107,77 +107,77 @@ bool MeshTablesVolume<PFP>::importTet(const std::string& filename, std::vector<s
 
     attrNames.push_back(position.name()) ;
 
-    AttributeContainer& container = m_map.template getAttributeContainer<VERTEX>() ;
+	AttributeContainer& container = m_map.template getAttributeContainer<VERTEX>() ;
 
-    //open file
-    std::ifstream fp(filename.c_str(), std::ios::in);
-    if (!fp.good())
-    {
-        CGoGNerr << "Unable to open file " << filename << CGoGNendl;
-        return false;
-    }
+	//open file
+	std::ifstream fp(filename.c_str(), std::ios::in);
+	if (!fp.good())
+	{
+		CGoGNerr << "Unable to open file " << filename << CGoGNendl;
+		return false;
+	}
 
     std::string ligne;
 
-    // reading number of vertices
-    std::getline (fp, ligne);
-    std::stringstream oss(ligne);
+	// reading number of vertices
+	std::getline (fp, ligne);
+	std::stringstream oss(ligne);
     oss >> m_nbVertices;
 
-    // reading number of tetrahedra
-    std::getline (fp, ligne);
-    std::stringstream oss2(ligne);
+	// reading number of tetrahedra
+	std::getline (fp, ligne);
+	std::stringstream oss2(ligne);
     oss2 >> m_nbVolumes;
 
-    //reading vertices
-    std::vector<unsigned int> verticesID;
+	//reading vertices
+	std::vector<unsigned int> verticesID;
     verticesID.reserve(m_nbVertices);
 
     for(unsigned int i = 0; i < m_nbVertices; ++i)
-    {
-        do
-        {
-            std::getline (fp, ligne);
-        } while (ligne.size() == 0);
+	{
+		do
+		{
+			std::getline (fp, ligne);
+		} while (ligne.size() == 0);
 
-        std::stringstream oss(ligne);
+		std::stringstream oss(ligne);
 
-        float x,y,z;
-        oss >> x;
-        oss >> y;
-        oss >> z;
-        // TODO : if required read other vertices attributes here
+		float x,y,z;
+		oss >> x;
+		oss >> y;
+		oss >> z;
+		// TODO : if required read other vertices attributes here
         VEC3 pos(x,y,z);
 
-        unsigned int id = container.insertLine();
+		unsigned int id = container.insertLine();
         position[id] = pos;
 
-        verticesID.push_back(id);
-    }
+		verticesID.push_back(id);
+	}
 
     // reading tetrahedra
     m_nbFaces.reserve(m_nbVolumes*4);
     m_emb.reserve(m_nbVolumes*12);
 
-    for (unsigned int i = 0; i < m_nbVolumes ; ++i)
-    {
-        do
-        {
-            std::getline (fp, ligne);
-        } while (ligne.size()==0);
+	for (unsigned int i = 0; i < m_nbVolumes ; ++i)
+	{
+    	do
+    	{
+    		std::getline (fp, ligne);
+    	} while (ligne.size()==0);
 
-        std::stringstream oss(ligne);
-        int n;
-        oss >> n; // nb de faces d'un volume ?
+		std::stringstream oss(ligne);
+		int n;
+		oss >> n; // nb de faces d'un volume ?
 
         m_nbFaces.push_back(4);
 
         int s0,s1,s2,s3;
 
-        oss >> s0;
-        oss >> s1;
-        oss >> s2;
-        oss >> s3;
+		oss >> s0;
+		oss >> s1;
+		oss >> s2;
+		oss >> s3;
 
         typename PFP::VEC3 P = position[verticesID[s0]];
         typename PFP::VEC3 A = position[verticesID[s1]];
@@ -195,10 +195,10 @@ bool MeshTablesVolume<PFP>::importTet(const std::string& filename, std::vector<s
         m_emb.push_back(verticesID[s1]);
         m_emb.push_back(verticesID[s2]);
         m_emb.push_back(verticesID[s3]);
-    }
+	}
 
-    fp.close();
-    return true;
+	fp.close();
+	return true;
 }
 
 template <typename PFP>
@@ -658,7 +658,7 @@ bool MeshTablesVolume<PFP>::importTs(const std::string& filename, std::vector<st
 
     //Read and embed all tetrahedrons
     for(unsigned int i = 0; i < m_nbVolumes ; ++i)
-    {
+    {        
         do
         {
             std::getline(fp,ligne);

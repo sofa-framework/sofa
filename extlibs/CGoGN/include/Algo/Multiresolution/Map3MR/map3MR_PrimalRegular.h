@@ -31,6 +31,7 @@
 
 #include "Algo/Multiresolution/filter.h"
 #include "Algo/Modelisation/tetrahedralization.h"
+#include "Algo/Modelisation/subdivision.h"
 
 namespace CGoGN
 {
@@ -117,6 +118,7 @@ public:
 	void addNewLevelSqrt3(bool embedNewVertices = false);
 
 	void addNewLevelSqrt3(bool embedNewVertices, VertexAttribute<typename PFP::VEC3> position);
+    void addNewLevelSqrt3Geom(bool embedNewVertices, VertexAttribute<typename PFP::VEC3> position);
 
 	//!
 	/*
