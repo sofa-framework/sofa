@@ -17,8 +17,8 @@ set(HEADER_FILES
     ../mapping/CurveMapping.inl 
     ../mapping/DistanceMapping.h
     ../mapping/DistanceMapping.inl
-    ../mapping/ExtensionMapping.h
-    ../mapping/ExtensionMapping.inl
+    ../mapping/DistanceFromTargetMapping.h
+    ../mapping/DistanceFromTargetMapping.inl
     ../mapping/ExternalInterpolationMapping.h
     ../mapping/ExternalInterpolationMapping.inl
     ../mapping/SubsetMultiMapping.h 
@@ -47,7 +47,7 @@ set(SOURCE_FILES
     ../mapping/CenterOfMassMulti2Mapping.cpp 
     ../mapping/CurveMapping.cpp 
     ../mapping/DistanceMapping.cpp
-    ../mapping/ExtensionMapping.cpp
+    ../mapping/DistanceFromTargetMapping.cpp
     ../mapping/ExternalInterpolationMapping.cpp
     ../mapping/SubsetMultiMapping.cpp 
     ../mapping/TubularMapping.cpp 

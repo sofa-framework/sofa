@@ -13,7 +13,7 @@
     <Node name="extensionsNode" >
         <MechanicalObject template="Vec1d"  name="extensionsDOF" />
         <EdgeSetTopologyContainer edges="0 1  " />
-        <ExtensionMapping />
+        <DistanceMapping />
         <UniformCompliance template="Vec1d" compliance="1.e-3" dampingRatio="0"  isCompliance="0"/>
     </Node>
 </Node>

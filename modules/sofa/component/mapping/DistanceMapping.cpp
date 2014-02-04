@@ -24,6 +24,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_DistanceMapping_CPP
 
+//#include "../initFlexible.h"
 #include "DistanceMapping.inl"
 #include <sofa/core/ObjectFactory.h>
 

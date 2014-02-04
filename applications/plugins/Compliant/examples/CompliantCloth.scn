@@ -19,7 +19,7 @@
     <Node name="extensionsNode" >
         <MechanicalObject template="Vec1d"  name="extensionsDOF" />
         <EdgeSetTopologyContainer edges="@../mesh.edges" />
-        <ExtensionMapping  />
+        <DistanceMapping  />
         <UniformCompliance name="ucomp" template="Vec1d" compliance="1.0e-4" isCompliance="1" />
     </Node>
 </Node>

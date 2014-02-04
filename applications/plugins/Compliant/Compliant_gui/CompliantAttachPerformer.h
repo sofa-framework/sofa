@@ -28,7 +28,7 @@
 #include "initCompliant_gui.h"
 #include <sofa/component/collision/InteractionPerformer.h>
 #include <sofa/component/collision/BaseContactMapper.h>
-#include <sofa/component/mapping/DistanceMapping.h>
+#include <sofa/component/mapping/DistanceFromTargetMapping.h>
 #include <sofa/component/container/MechanicalObject.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/simulation/common/Node.h>
@@ -78,7 +78,7 @@ class SOFA_Compliant_gui_API CompliantAttachPerformer: public TInteractionPerfor
 {
     typedef typename DataTypes::Real                                  Real;
     typedef defaulttype::StdVectorTypes< Vec<1,Real>, Vec<1,Real>  >  DataTypes1;
-    typedef mapping::DistanceMapping< DataTypes,DataTypes1 >          DistanceMapping31;
+    typedef mapping::DistanceFromTargetMapping< DataTypes,DataTypes1 >          DistanceFromTargetMapping31;
     typedef sofa::component::container::MechanicalObject< DataTypes > Point3dState;
 
     simulation::Node::SPtr pickedNode;       ///< Node containing the picked MechanicalState
@@ -87,7 +87,7 @@ class SOFA_Compliant_gui_API CompliantAttachPerformer: public TInteractionPerfor
     core::BaseMapping::SPtr mouseMapping;   ///< Mapping from the mouse position to the 3D point on the ray
     sofa::component::collision::BaseContactMapper< DataTypes >  *mapper;
     Point3dState* mouseState;                  ///< Mouse state container  (position, velocity)
-    typename DistanceMapping31::SPtr distanceMapping; ///< computes the distance from the picked point to its target
+    typename DistanceFromTargetMapping31::SPtr distanceMapping; ///< computes the distance from the picked point to its target
 
     void clear();                             ///< release the current interaction
 

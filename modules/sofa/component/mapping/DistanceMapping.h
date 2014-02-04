@@ -27,7 +27,7 @@
 
 #include <sofa/core/Mapping.h>
 #include <sofa/component/linearsolver/EigenSparseMatrix.h>
-#include <sofa/component/topology/PointSetTopologyContainer.h>
+#include <sofa/component/topology/EdgeSetTopologyContainer.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
 
@@ -50,16 +50,19 @@ public:
 };
 
 
-/** Maps point positions to distances from target points.
-    Only a subset of the parent points is mapped. This can be used to constrain the trajectories of one or several particles.
+/** Maps point positions to distances, in meters.
+  Type TOut corresponds to a scalar value.
+  The pairs are given in an EdgeSetTopologyContainer in the same node.
+  If the rest lengths are not defined, they are set using the initial values.
+  If computeDistance is set to true, the rest lengths are set to 0.
+
+  (Changed class name on Feb. 4, 2014, previous name was ExtensionMapping)
 
     In: parent point positions
 
     Out: distance from each point to a target position, minus a rest distance.
 
-
-
-  @author Francois Faure
+@author Francois Faure
   */
 template <class TIn, class TOut>
 class DistanceMapping : public core::Mapping<TIn, TOut>
@@ -81,64 +84,57 @@ public:
     typedef typename In::Coord InCoord;
     typedef typename In::VecCoord InVecCoord;
     typedef typename In::VecDeriv InVecDeriv;
-    typedef linearsolver::EigenSparseMatrix<TIn,TOut>    SparseMatrixEigen;
-    typedef linearsolver::EigenSparseMatrix<In,In>    SparseKMatrixEigen;
+    typedef linearsolver::EigenSparseMatrix<TIn,TOut>   SparseMatrixEigen;
+    typedef linearsolver::EigenSparseMatrix<TIn,TIn>    SparseKMatrixEigen;
     enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
+    typedef defaulttype::Mat<Out::deriv_total_size, In::deriv_total_size,Real>  Block;
+    typedef topology::EdgeSetTopologyContainer::SeqEdges SeqEdges;
 
-    Data< vector<unsigned> > f_indices;         ///< indices of the parent points
-    Data< InVecCoord >       f_targetPositions; ///< positions the distances are measured from
-    Data< vector< Real > >   f_restDistances;   ///< rest distance from each position
 
-    /// Add a target with a desired distance
-    void createTarget( unsigned index, InCoord position, Real distance);
-
-    /// Update the position of a target
-    void updateTarget( unsigned index, InCoord position);
-
-    /// Remove all targets
-    void clear();
+    Data< bool >		   f_computeDistance;	///< computeDistance = true ---> restDistance = 0
+    Data< vector< Real > > f_restLengths;		///< rest length of each link
 
     virtual void init();
 
-    virtual void apply(const core::MechanicalParams *mparams /* PARAMS FIRST */, Data<OutVecCoord>& out, const Data<InVecCoord>& in);
+    virtual void apply(const core::MechanicalParams *mparams, Data<OutVecCoord>& out, const Data<InVecCoord>& in);
 
-    virtual void applyJ(const core::MechanicalParams *mparams /* PARAMS FIRST */, Data<OutVecDeriv>& out, const Data<InVecDeriv>& in);
+    virtual void applyJ(const core::MechanicalParams *mparams, Data<OutVecDeriv>& out, const Data<InVecDeriv>& in);
 
-    virtual void applyJT(const core::MechanicalParams *mparams /* PARAMS FIRST */, Data<InVecDeriv>& out, const Data<OutVecDeriv>& in);
+    virtual void applyJT(const core::MechanicalParams *mparams, Data<InVecDeriv>& out, const Data<OutVecDeriv>& in);
 
-    virtual void applyJT(const core::ConstraintParams *cparams /* PARAMS FIRST */, Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in);
+    virtual void applyJT(const core::ConstraintParams *cparams, Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in);
 
-    virtual void applyDJT(const core::MechanicalParams* mparams /* PARAMS FIRST  = core::MechanicalParams::defaultInstance()*/, core::MultiVecDerivId parentForce, core::ConstMultiVecDerivId  childForce );
+//    virtual void computeGeometricStiffness(const core::MechanicalParams *mparams);
 
-    virtual const vector<defaulttype::BaseMatrix*>* getKs();
+    virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForce, core::ConstMultiVecDerivId  childForce );
 
     virtual const sofa::defaulttype::BaseMatrix* getJ();
     virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs();
+    virtual const vector<defaulttype::BaseMatrix*>* getKs();
 
     virtual void draw(const core::visual::VisualParams* vparams);
-    SReal _arrowSize;
-    defaulttype::Vec<4,SReal> _color;
 
 protected:
     DistanceMapping();
     virtual ~DistanceMapping();
 
-    SparseMatrixEigen jacobian;                      ///< Jacobian of the mapping
-    vector<defaulttype::BaseMatrix*> baseMatrices;   ///< Jacobian of the mapping, in a vector
-    SparseKMatrixEigen K;  ///< Assembled geometric stiffness matrix
+    topology::EdgeSetTopologyContainer* edgeContainer;  ///< where the edges are defined
+    SparseMatrixEigen jacobian;                         ///< Jacobian of the mapping
+    SparseMatrixEigen geometricStiffness;               ///< Stiffness due to the non-linearity of the mapping
+    vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
+    SparseKMatrixEigen K;                               ///< Assembled geometric stiffness matrix
     vector<defaulttype::BaseMatrix*> stiffnessBaseMatrices;      ///< Vector of geometric stiffness matrices, for the Compliant plugin API
     vector<InDeriv> directions;                         ///< Unit vectors in the directions of the lines
     vector< Real > invlengths;                          ///< inverse of current distances. Null represents the infinity (null distance)
-
 };
 
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_DistanceMapping_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_MISC_MAPPING_API DistanceMapping< defaulttype::Vec3dTypes, defaulttype::Vec1dTypes >;
+extern template class SOFA_MISC_MAPPING_API DistanceMapping< Vec3dTypes, Vec1dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_MAPPING_API DistanceMapping< defaulttype::Vec3fTypes, defaulttype::Vec1fTypes >;
+extern template class SOFA_MISC_MAPPING_API DistanceMapping< Vec3fTypes, Vec1fTypes >;
 #endif
 
 #endif

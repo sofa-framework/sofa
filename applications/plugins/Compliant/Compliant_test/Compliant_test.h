@@ -41,8 +41,8 @@
 #include <sofa/component/forcefield/ConstantForceField.h>
 #include <sofa/component/mapping/SubsetMultiMapping.h>
 #include <sofa/component/mapping/RigidMapping.h>
-#include <sofa/component/mapping/ExtensionMapping.h>
 #include <sofa/component/mapping/DistanceMapping.h>
+#include <sofa/component/mapping/DistanceFromTargetMapping.h>
 #include <sofa/component/container/MechanicalObject.h>
 #include <sofa/component/topology/EdgeSetTopologyContainer.h>
 #include <sofa/component/projectiveconstraintset/FixedConstraint.h>
@@ -88,8 +88,8 @@ protected:
     typedef forcefield::UniformCompliance<Vec1Types> UniformCompliance1;
 
     // Vec3-Vec1
-    typedef mapping::ExtensionMapping<MechanicalObject3::DataTypes, MechanicalObject1::DataTypes> ExtensionMapping31;
     typedef mapping::DistanceMapping<MechanicalObject3::DataTypes, MechanicalObject1::DataTypes> DistanceMapping31;
+    typedef mapping::DistanceFromTargetMapping<MechanicalObject3::DataTypes, MechanicalObject1::DataTypes> DistanceFromTargetMapping31;
 
 
 protected:
@@ -129,7 +129,7 @@ protected:
         EdgeSetTopologyContainer::SPtr edgeSet = New<EdgeSetTopologyContainer>();
         extension_node->addObject(edgeSet);
 
-        ExtensionMapping31::SPtr extensionMapping = New<ExtensionMapping31>();
+        DistanceMapping31::SPtr extensionMapping = New<DistanceMapping31>();
         extensionMapping->setName(oss.str()+"_extensionsMapping");
         extensionMapping->setModels( DOF.get(), extensions.get() );
         extension_node->addObject( extensionMapping );
@@ -174,7 +174,7 @@ protected:
         simulation::Node::SPtr extension_node;
         MechanicalObject1::SPtr extensions;
         EdgeSetTopologyContainer::SPtr edgeSet;
-        ExtensionMapping31::SPtr extensionMapping;
+        DistanceMapping31::SPtr extensionMapping;
         UniformCompliance1::SPtr compliance;
 
         ParticleString(simulation::Node::SPtr parent, Vec3 startPoint, Vec3 endPoint, unsigned numParticles, double totalMass )
@@ -208,7 +208,7 @@ protected:
         edgeSet = New<EdgeSetTopologyContainer>();
         extension_node->addObject(edgeSet);
 
-        extensionMapping = New<ExtensionMapping31>();
+        extensionMapping = New<DistanceMapping31>();
         extensionMapping->setName(oss.str()+"_extensionsMapping");
         extensionMapping->setModels( DOF.get(), extensions.get() );
         extension_node->addObject( extensionMapping );

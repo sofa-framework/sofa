@@ -38,4 +38,4 @@ def createScene(root):
     extensiondof = extension.createObject('MechanicalObject',template="Vec1d",name='extensiondof')
     extension.createObject('EdgeSetTopologyContainer',edges="0 1")
     extension.createObject('UniformCompliance',template="Vec1d",compliance="0")
-    extension.createObject('ExtensionMapping',template="Vec3d,Vec1d")
+    extension.createObject('DistanceMapping',template="Vec3d,Vec1d")

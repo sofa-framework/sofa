@@ -22,8 +22,8 @@
 
 #include <sofa/component/init.h>
 #include <sofa/component/mapping/SubsetMultiMapping.h>
-#include <sofa/component/mapping/ExtensionMapping.h>
 #include <sofa/component/mapping/DistanceMapping.h>
+#include <sofa/component/mapping/DistanceFromTargetMapping.h>
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/component/topology/EdgeSetTopologyContainer.h>
 #include <sofa/component/collision/SphereModel.h>
