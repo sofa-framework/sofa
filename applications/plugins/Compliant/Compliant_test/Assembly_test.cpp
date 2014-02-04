@@ -293,7 +293,7 @@ struct Assembly_test : public CompliantSolver_test
         extensions->setName(nodeName+"DOF");
         fixNode->addObject(extensions);
 
-        DistanceMapping31::SPtr distanceMapping = New<DistanceMapping31>();
+        DistanceFromTargetMapping31::SPtr distanceMapping = New<DistanceFromTargetMapping31>();
         MechanicalObject3* DOF = dynamic_cast<MechanicalObject3*>(string1->getMechanicalState());
         assert(DOF != NULL);
         distanceMapping->setModels(DOF,extensions.get());
@@ -434,7 +434,7 @@ struct Assembly_test : public CompliantSolver_test
         extension_node->addObject(edgeSet);
         edgeSet->addEdge(0,1);
 
-        ExtensionMapping31::SPtr extensionMapping = New<ExtensionMapping31>();
+        DistanceMapping31::SPtr extensionMapping = New<DistanceMapping31>();
         extensionMapping->setModels(mappedDOF.get(),extensions.get());
         extension_node->addObject( extensionMapping );
         extensionMapping->setName("ConnectionExtension_mapping");
@@ -573,7 +573,7 @@ struct Assembly_test : public CompliantSolver_test
         extension_node->addObject(edgeSet);
         edgeSet->addEdge(0,1);
 
-        ExtensionMapping31::SPtr extensionMapping = New<ExtensionMapping31>();
+        DistanceMapping31::SPtr extensionMapping = New<DistanceMapping31>();
         extensionMapping->setModels(mappedDOF.get(),extensions.get());
         extension_node->addObject( extensionMapping );
         extensionMapping->setName("ConnectionExtension_mapping");
@@ -726,7 +726,7 @@ struct Assembly_test : public CompliantSolver_test
         EdgeSetTopologyContainer::SPtr extensionEdgeSet = addNew<EdgeSetTopologyContainer>(extension);
         extensionEdgeSet->addEdge(0,1);
 
-        ExtensionMapping31::SPtr extensionMapping = addNew<ExtensionMapping31>(extension);
+        DistanceMapping31::SPtr extensionMapping = addNew<DistanceMapping31>(extension);
         extensionMapping->setModels(pointPairDOF.get(),extensionDOF.get());
         //        helper::WriteAccessor< Data< vector< Real > > > restLengths( extensionMapping->f_restLengths );
         //        restLengths.resize(1);
@@ -842,7 +842,7 @@ struct Assembly_test : public CompliantSolver_test
         EdgeSetTopologyContainer::SPtr edgeSet = addNew<EdgeSetTopologyContainer>(extension_node);
         edgeSet->addEdge(0,1);
 
-        ExtensionMapping31::SPtr extensionMapping = addNew<ExtensionMapping31>(extension_node);
+        DistanceMapping31::SPtr extensionMapping = addNew<DistanceMapping31>(extension_node);
         extensionMapping->setModels( allDofs.get(), extensions.get() );
         helper::vector<SReal> restLengths(1); restLengths[0]=1; // make it deformed at start, such as it creates a force and geometric stiffness
         extensionMapping->f_restLengths.setValue( restLengths );

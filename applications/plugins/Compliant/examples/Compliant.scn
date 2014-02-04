@@ -6,7 +6,7 @@
     <UniformMass />
     <Node>
         <MechanicalObject template="Vec1" />
-        <ExtensionMapping links="0 1" />
+        <DistanceMapping links="0 1" />
         <UniformCompliance compliance="1.0" />
     </Node>
 </Node>

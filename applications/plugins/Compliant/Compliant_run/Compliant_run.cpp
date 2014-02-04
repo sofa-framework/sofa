@@ -45,8 +45,8 @@
 
 #include <sofa/component/init.h>
 #include <sofa/component/mapping/SubsetMultiMapping.h>
-#include <sofa/component/mapping/ExtensionMapping.h>
 #include <sofa/component/mapping/DistanceMapping.h>
+#include <sofa/component/mapping/DistanceFromTargetMapping.h>
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/component/topology/EdgeSetTopologyContainer.h>
 #include <sofa/component/topology/RegularGridTopology.h>
@@ -85,8 +85,8 @@ using namespace sofa::component::forcefield;
 typedef SReal Scalar;
 typedef Vec<3,SReal> Vec3;
 typedef Vec<1,SReal> Vec1;
-typedef ExtensionMapping<MechanicalObject3::DataTypes, MechanicalObject1::DataTypes> ExtensionMapping31;
 typedef DistanceMapping<MechanicalObject3::DataTypes, MechanicalObject1::DataTypes> DistanceMapping31;
+typedef DistanceFromTargetMapping<MechanicalObject3::DataTypes, MechanicalObject1::DataTypes> DistanceFromTargetMapping31;
 typedef UniformCompliance<Vec1Types> UniformCompliance1;
 
 typedef component::odesolver::AssembledSolver AssembledSolver;
@@ -135,10 +135,10 @@ simulation::Node::SPtr createCompliantString(simulation::Node::SPtr parent, Vec3
     EdgeSetTopologyContainer::SPtr edgeSet = New<EdgeSetTopologyContainer>();
     extension_node->addObject(edgeSet);
 
-    ExtensionMapping31::SPtr extensionMapping = New<ExtensionMapping31>();
+    DistanceMapping31::SPtr extensionMapping = New<DistanceMapping31>();
     extensionMapping->setModels(DOF.get(),extensions.get());
     extension_node->addObject( extensionMapping );
-    extensionMapping->setName(oss.str()+"_ExtensionMapping");
+    extensionMapping->setName(oss.str()+"_DistanceMapping");
     extensionMapping->setModels( DOF.get(), extensions.get() );
 
     UniformCompliance1::SPtr compliance = New<UniformCompliance1>();
@@ -177,7 +177,7 @@ simulation::Node::SPtr createCompliantString(simulation::Node::SPtr parent, Vec3
     //        MechanicalObject1::SPtr extensions = New<MechanicalObject1>();
     //        fixNode->addObject(extensions);
 
-    //        DistanceMapping31::SPtr distanceMapping = New<DistanceMapping31>();
+    //        DistanceFromTargetMapping31::SPtr distanceMapping = New<DistanceFromTargetMapping31>();
     //        distanceMapping->setModels(DOF.get(),extensions.get());
     //        fixNode->addObject( distanceMapping );
     //        distanceMapping->setName("fix_distanceMapping");
@@ -266,7 +266,7 @@ simulation::Node::SPtr createCompliantScene()
     extension_node->addObject(edgeSet);
     edgeSet->addEdge(0,1);
 
-    ExtensionMapping31::SPtr extensionMapping = New<ExtensionMapping31>();
+    DistanceMapping31::SPtr extensionMapping = New<DistanceMapping31>();
     extensionMapping->setModels(mappedDOF.get(),extensions.get());
     extension_node->addObject( extensionMapping );
     extensionMapping->setName("InteractionExtension_mapping");

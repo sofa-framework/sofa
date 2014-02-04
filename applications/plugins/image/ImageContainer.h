@@ -239,7 +239,7 @@ struct ImageContainerSpecialization<defaulttype::IMAGELABEL_IMAGE>
     template<class ImageContainer>
     static bool loadCamera( ImageContainer* container )
     {
-        typedef typename ImageContainer::T T;
+//        typedef typename ImageContainer::T T;
 
         if( container->m_filename.isSet() ) return false;
         if( container->name.getValue().find("CAMERA") == std::string::npos ) return false;

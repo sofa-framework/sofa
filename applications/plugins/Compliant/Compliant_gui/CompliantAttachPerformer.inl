@@ -35,7 +35,7 @@ using std::endl;
 #include "compliance/UniformCompliance.h"
 #include <sofa/simulation/common/InitVisitor.h>
 
-#include <sofa/component/mapping/DistanceMapping.inl>
+#include <sofa/component/mapping/DistanceFromTargetMapping.inl>
 
 
 namespace sofa
@@ -183,7 +183,7 @@ void CompliantAttachPerformer<DataTypes>::start()
     //---------- Set up the interaction
 
     // look for existing interactions
-    static const std::string distanceMappingName="InteractionDistanceMapping_createdByCompliantAttachPerformer";
+    static const std::string distanceMappingName="InteractionDistanceFromTargetMapping_createdByCompliantAttachPerformer";
 
     interactionNode = pickedNode->createChild("InteractionDistanceNode");
 
@@ -192,7 +192,7 @@ void CompliantAttachPerformer<DataTypes>::start()
     interactionNode->addObject(extensions);
     extensions->setName("extensionValues");
 
-    distanceMapping = New<DistanceMapping31>();
+    distanceMapping = New<DistanceFromTargetMapping31>();
     distanceMapping->setModels(mstateCollision,extensions.get());
     interactionNode->addObject( distanceMapping );
     distanceMapping->setName(distanceMappingName.c_str());

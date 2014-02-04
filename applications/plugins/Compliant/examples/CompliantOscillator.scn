@@ -25,7 +25,7 @@
     <Node name="extensionsNode" >
         <MechanicalObject template="Vec1d"  name="extensionsDOF" />
         <EdgeSetTopologyContainer edges="@../mesh.edges" />
-        <ExtensionMapping  />
+        <DistanceMapping  />
 
         <!-- Non-null compliance for elasticity. Compliance=1/stiffness -->
         <UniformCompliance name="ucomp" template="Vec1d" compliance="1" dampingRatio="0.0"  isCompliance="1" />

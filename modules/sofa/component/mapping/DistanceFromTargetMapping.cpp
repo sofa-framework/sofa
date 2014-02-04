@@ -22,10 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_MAPPING_ExtensionMapping_CPP
+#define SOFA_COMPONENT_MAPPING_DistanceFromTargetMapping_CPP
 
-//#include "../initFlexible.h"
-#include "ExtensionMapping.inl"
+#include "DistanceFromTargetMapping.inl"
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
@@ -37,26 +36,26 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(ExtensionMapping)
+SOFA_DECL_CLASS(DistanceFromTargetMapping)
 
 using namespace defaulttype;
 
 // Register in the Factory
-int ExtensionMappingClass = core::RegisterObject("Compute edge extensions")
+int DistanceFromTargetMappingClass = core::RegisterObject("Compute edge extensions")
 #ifndef SOFA_FLOAT
-        .add< ExtensionMapping< Vec3dTypes, Vec1dTypes > >()
+        .add< DistanceFromTargetMapping< Vec3dTypes, Vec1dTypes > >()
 #endif
 #ifndef SOFA_DOUBLE
-        .add< ExtensionMapping< Vec3fTypes, Vec1fTypes > >()
+        .add< DistanceFromTargetMapping< Vec3fTypes, Vec1fTypes > >()
 #endif
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_MISC_MAPPING_API ExtensionMapping< Vec3dTypes, Vec1dTypes >;
+template class SOFA_MISC_MAPPING_API DistanceFromTargetMapping< Vec3dTypes, Vec1dTypes >;
 #endif
 
 #ifndef SOFA_DOUBLE
-template class SOFA_MISC_MAPPING_API ExtensionMapping< Vec3fTypes, Vec1fTypes >;
+template class SOFA_MISC_MAPPING_API DistanceFromTargetMapping< Vec3fTypes, Vec1fTypes >;
 #endif
 
 
