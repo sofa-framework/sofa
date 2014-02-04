@@ -25,6 +25,8 @@
 #ifndef __IMPORT_MR_DAT__
 #define __IMPORT_MR_DAT__
 
+#include "Topology/generic/autoAttributeHandler.h"
+
 namespace CGoGN
 {
 
@@ -97,25 +99,37 @@ public:
 				unsigned int idx = emb == v0 ? 0 : emb == v1 ? 1 : 2 ;
 				map.incCurrentLevel() ;
 				Dart dd = map.phi1(next) ;
-				unsigned int oldEmb = map.template getEmbedding<VERTEX>(dd) ;
+//				unsigned int oldEmb = map.template getEmbedding<VERTEX>(dd) ;
 				unsigned int newEmb = vID[children[0]->indices[idx]] ;
-				if(oldEmb == EMBNULL)
-				{
+//				if(oldEmb == EMBNULL)
+//				{
+					//std::cout << "oldEmb == NULL"<< std::endl;
 					map.template setOrbitEmbedding<VERTEX>(dd, newEmb) ;
-					map.pushLevel() ;
+
+					//needed because the darts are duplicated at each level
+					//and the vertex orbits are initialized at the creation of each level with wrong embedding indices
+
+					//map.pushLevel() ;
+					unsigned int cur = map.getCurrentLevel(); //necessary because IHM2 does not allow a Stack
 					for(unsigned int i = map.getCurrentLevel() + 1; i <= map.getMaxLevel(); ++i)
 					{
 						map.setCurrentLevel(i) ;
 						map.template setOrbitEmbedding<VERTEX>(dd, newEmb) ;
 					}
-					map.popLevel() ;
-				}
-				else
-					assert(oldEmb == newEmb) ;
+					//map.popLevel() ;
+					map.setCurrentLevel(cur);
+//				}
+//				else
+//				{
+//					//std::cout << "oldEmb != NULL"<< std::endl;
+//					assert(oldEmb == newEmb) ;
+//				}
+
 				map.decCurrentLevel() ;
 				it = next ;
 			} while(it != d) ;
 
+			//embed the 4 children (begin with the center child)
 			map.incCurrentLevel() ;
 			Dart d0 = map.phi2(map.phi1(d)) ;
 			children[0]->embed<PFP>(map, d0, vID) ;
@@ -155,6 +169,7 @@ public:
 	std::vector<QuadTreeNode*> roots ;
 	std::vector<Dart> darts ;
 	std::vector<unsigned int> verticesID ;
+	unsigned int depth;
 
 	~QuadTree()
 	{

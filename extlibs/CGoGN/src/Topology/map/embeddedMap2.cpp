@@ -440,6 +440,9 @@ void EmbeddedMap2::unsewFaces(Dart d, bool withBoundary)
 
 	if (isOrbitEmbedded<VERTEX>())
 	{
+		copyDartEmbedding<VERTEX>(phi2(e), d) ;
+		copyDartEmbedding<VERTEX>(phi2(d), e) ;
+
 		Dart ee = phi1(e) ;
 		if(!sameVertex(d, ee))
 		{
@@ -692,13 +695,16 @@ bool EmbeddedMap2::check()
 	CGoGNout << "Check: embedding ok" << CGoGNendl ;
 
     std::cout << "nb vertex orbits : " << getNbOrbits<VERTEX>() << std::endl ;
-    std::cout << "nb vertex cells : " << m_attribs[VERTEX].size() << std::endl ;
+	if (isOrbitEmbedded<VERTEX>())
+		std::cout << "nb vertex cells : " << m_attribs[VERTEX].size() << std::endl ;
 
     std::cout << "nb edge orbits : " << getNbOrbits<EDGE>() << std::endl ;
-    std::cout << "nb edge cells : " << m_attribs[EDGE].size() << std::endl ;
+	if (isOrbitEmbedded<EDGE>())
+		std::cout << "nb edge cells : " << m_attribs[EDGE].size() << std::endl ;
 
     std::cout << "nb face orbits : " << getNbOrbits<FACE>() << std::endl ;
-    std::cout << "nb face cells : " << m_attribs[FACE].size() << std::endl ;
+	if (isOrbitEmbedded<FACE>())
+		std::cout << "nb face cells : " << m_attribs[FACE].size() << std::endl ;
 
 	return true ;
 }

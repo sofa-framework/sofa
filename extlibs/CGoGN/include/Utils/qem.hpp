@@ -506,7 +506,7 @@ QuadricHF<REAL>::evaluate(const std::vector<VEC3>& coefs) const
 	{
 		Eigen::VectorXd tmp(coefs.size()) ;
 		for (unsigned int i = 0 ; i < coefs.size() ; ++i)
-			tmp[i] = coefs[i][c] ;
+            tmp[i] = coefs[i][c] ;
 		res[c] = tmp.transpose() * m_A * tmp ;		// A
 		res[c] -= 2. * (m_b[c]).transpose() * tmp ;	// - 2b
 		res[c] += m_c[c] ;							// + c

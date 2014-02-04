@@ -75,7 +75,7 @@ public:
 				np2 += m_position[dd] ;
 				dd = m_map.phi1(dd) ;
 			} while(dd != end) ;
-			it = m_map.alpha1(it) ;
+			it = m_map.phi2(m_map.phi_1(it)) ;
 		} while(it != d) ;
 
 		float beta = 3.0 / (2.0 * degree1) ;

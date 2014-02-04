@@ -104,6 +104,9 @@ class BoundingBox
 		// 0-centered scale of the bounding box
 		void centeredScale(typename VEC::DATA_TYPE size);
 
+		/// test if bb is intersected by a ray
+		bool rayIntersect(const VEC& P, const VEC& V) const;
+
 		/**********************************************/
 		/*             STREAM OPERATORS               */
 		/**********************************************/

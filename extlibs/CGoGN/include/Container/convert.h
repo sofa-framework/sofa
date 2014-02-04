@@ -4,6 +4,7 @@
 #include <limits>
 #include <math.h>
 #include <iostream>
+#include "Geometry/vector_gen.h"
 
 namespace CGoGN
 {
@@ -11,10 +12,10 @@ namespace CGoGN
 /**
  * Conversion d'un T* en U* en fonction de la surcharge des membres
  * Classe abstraite, a surcharger:
- * - reserve(), convert() & destructeur (exemple dans ConvertSimpleCast)
+ * - reserve(), convert(), release() & vectorSize()
  * 
  */
-class ConvertAttrib
+class ConvertBuffer
 {
 protected:
 	/**
@@ -28,35 +29,49 @@ protected:
 	unsigned int m_nb;
 
 	/**
+	 * size of element in input
+	 */
+	unsigned int m_szElt;
+
+	/**
 	 * buffer
 	 */
 	void* m_buffer;
-	
+
 public:
 	/**
-	 * size of buffer in
+	 *
 	 */
-	 ConvertAttrib() : m_size(0),m_nb(0),m_buffer(NULL) {}
+	ConvertBuffer() : m_size(0),m_nb(0),m_szElt(0),m_buffer(NULL) {}
+
+	ConvertBuffer(unsigned int sz) : m_size(0),m_nb(0),m_szElt(sz),m_buffer(NULL) {}
 
 	/**
-	 * size of buffer in
+	 *
 	 */
-	virtual ~ConvertAttrib() {}
+//	virtual ~ConvertBuffer() = 0;
+	 ~ConvertBuffer() {}
 
 	/**
 	 * set the number of element to convert & reserve memory for buffer
+	 * @param nb nb elements (usually block size when call from VBO)
 	 */
 	virtual void reserve(unsigned int nb) = 0;
 
 	/**
-	 * release memory buffer ( and set ptr to null)
+	 * release memory buffer ( and set ptrs to null)
 	 */
-	virtual void release();
+	 virtual void release() =  0;
 
 	/**
-	 * convert a table to tbe buffer
+	 * convert the buffer
 	 */
 	virtual void convert(const void* ptrIn) = 0;
+
+	/**
+	 * get the data size in elements (ex: 3 for Vec3f)
+	 */
+	virtual unsigned int vectorSize() = 0;
 
 	/**
 	 * get the buffer (void*)
@@ -68,29 +83,26 @@ public:
 	 */
 	unsigned int sizeBuffer() { return m_size; }
 
-	/**
-	 * get the size of buffer in bytes
-	 */
-	unsigned int sizeElt() { return m_size/m_nb; }
-
-	/**
-	 * get the size of buffer in bytes
-	 */
-	unsigned int nbElt() { return m_nb; }
 };
 
 
 /**
 * Convertit simplement en castant chaque element
+* Exemple double ou int float
 */
-template<typename TYPE_IN, typename TYPE_OUT>
-class ConvertSimpleCast : public ConvertAttrib
+template<typename TYPE_IN>
+class ConvertToFloat : public ConvertBuffer
 {
 protected:
-	TYPE_OUT* m_typedBuffer; 
+	float* m_typedBuffer;
+	unsigned int m_szVect;
 
 public:
-	~ConvertSimpleCast()
+	ConvertToFloat():
+		ConvertBuffer(sizeof(TYPE_IN)),m_szVect(1)
+	{}
+
+	~ConvertToFloat()
 	{
 		if (m_typedBuffer)
 			delete[] m_typedBuffer;
@@ -98,30 +110,39 @@ public:
 
 	void release()
 	{
-		if (m_typedBuffer)
-		{
-			delete[] m_typedBuffer;
-			m_typedBuffer = NULL;
-			m_buffer = NULL;
-		}
+		delete[] m_typedBuffer;
+		m_typedBuffer = NULL;
+		m_buffer = NULL;
+		m_nb = 0;
+		m_size = 0;
 	}
 	
 	void reserve(unsigned int nb)
 	{
-		m_nb = nb;							// store number of elements
-		m_typedBuffer = new TYPE_OUT[nb];	// allocate buffer typed (not possible to delete void*)
+		m_nb = nb*m_szVect;						// store number of elements
+		m_typedBuffer = new float[m_nb];	// allocate buffer
 		m_buffer = m_typedBuffer;			// store void* casted ptr
-		m_size = nb*sizeof(TYPE_OUT);		// store size of buffer in bytes
+		m_size = m_nb*sizeof(float);		// store size of buffer in bytes
 	}
 	
 	void convert(const void* ptrIn)
 	{
 		// cast ptr in & out with right type
 		const TYPE_IN* typedIn = reinterpret_cast<const TYPE_IN*>(ptrIn);
-		TYPE_OUT* typedOut = reinterpret_cast<TYPE_OUT*>(m_buffer);
+		float* typedOut = reinterpret_cast<float*>(m_buffer);
 		// compute conversion
-		for (int i = 0; i < m_nb; ++i)
-			*typedOut++ = TYPE_OUT(*typedIn++);
+		for (unsigned int i = 0; i < m_nb; ++i)
+			*typedOut++ = float(*typedIn++);
+	}
+
+	unsigned int vectorSize()
+	{
+		return m_szVect;
+	}
+
+	void setPseudoVectorSize(unsigned int sz)
+	{
+		m_szVect = sz;
 	}
 };
 
@@ -132,12 +153,16 @@ public:
 * entre 0 et 1
 */
 template<typename TYPE_IN, typename TYPE_OUT>
-class ConvertNormalized : public ConvertAttrib
+class ConvertNormalized : public ConvertBuffer
 {
 protected:
 	TYPE_OUT* m_typedBuffer;
 	
 public:
+	ConvertNormalized():
+		ConvertBuffer(sizeof(TYPE_IN))
+	{}
+
 	~ConvertNormalized()
 	{
 		if (m_typedBuffer)
@@ -151,15 +176,17 @@ public:
 			delete[] m_typedBuffer;
 			m_typedBuffer = NULL;
 			m_buffer = NULL;
+			m_nb = 0;
+			m_size = 0;
 		}
 	}
 	
 	void reserve(unsigned int nb)
 	{
 		m_nb = nb;							// store number of elements
-		m_typedBuffer = new TYPE_OUT[nb];	// allocate buffer
+		m_typedBuffer = new TYPE_OUT[m_nb];	// allocate buffer
 		m_buffer = m_typedBuffer;			// store void* casted ptr
-		m_size = nb*sizeof(TYPE_OUT);		// store size of buffer in bytes
+		m_size = m_nb*sizeof(TYPE_OUT);		// store size of buffer in bytes
 	}
 	
 	void convert(const void* ptrIn)
@@ -176,6 +203,12 @@ public:
 			*typedOut++ = val;
 		}
 	}
+
+	unsigned int vectorSize()
+	{
+		return 1;
+	}
+
 };
 
 
@@ -185,7 +218,7 @@ public:
 * Un min et max donne les valeurs servant à l'interpolation
 */
 template<typename TYPE_IN>
-class ConvertFloatToRGBf : public ConvertAttrib
+class ConvertToRGBf : public ConvertBuffer
 {
 protected:
 	float* m_typedBuffer;
@@ -193,9 +226,9 @@ protected:
 	TYPE_IN m_diff;
 
 public:
-	ConvertFloatToRGBf(TYPE_IN min, TYPE_IN max) : m_min(min), m_diff(max-min) {}
-	
-	~ConvertFloatToRGBf()
+	ConvertToRGBf(TYPE_IN min, TYPE_IN max) : ConvertBuffer(sizeof(TYPE_IN)),m_min(min), m_diff(max-min) {}
+
+	~ConvertToRGBf()
 	{
 		if (m_typedBuffer)
 			delete[] m_typedBuffer;
@@ -208,6 +241,8 @@ public:
 			delete[] m_typedBuffer;
 			m_typedBuffer = NULL;
 			m_buffer = NULL;
+			m_nb = 0;
+			m_size = 0;
 		}
 	}
 	
@@ -268,7 +303,72 @@ public:
 			}
 		}
 	}
+
+	unsigned int vectorSize()
+	{
+		return 1;
+	}
 };
+
+
+
+class ConvertVec3dToVec3f : public ConvertBuffer
+{
+protected:
+	Geom::Vec3f* m_typedBuffer;
+
+public:
+	ConvertVec3dToVec3f():
+		ConvertBuffer(sizeof(Geom::Vec3d))
+	{}
+
+	~ConvertVec3dToVec3f()
+	{
+		if (m_typedBuffer)
+			delete[] m_typedBuffer;
+	}
+
+	void release()
+	{
+		delete[] m_typedBuffer;
+		m_typedBuffer = NULL;
+		m_buffer = NULL;
+		m_nb = 0;
+		m_size = 0;
+	}
+
+	void reserve(unsigned int nb)
+	{
+		m_nb = nb;							// store number of elements
+		m_typedBuffer = new Geom::Vec3f[nb];	// allocate buffer typed (not possible to delete void*)
+		m_buffer = m_typedBuffer;			// store void* casted ptr
+		m_size = nb*sizeof(Geom::Vec3f);		// store size of buffer in bytes
+	}
+
+	void convert(const void* ptrIn)
+	{
+		// cast ptr in & out with right type
+		const Geom::Vec3d* typedIn = reinterpret_cast<const Geom::Vec3d*>(ptrIn);
+		Geom::Vec3f* typedOut = reinterpret_cast<Geom::Vec3f*>(m_buffer);
+		// compute conversion
+		for (unsigned int i = 0; i < m_nb; ++i)
+		{
+			const Geom::Vec3d& vd = *typedIn++;
+			*typedOut++ = Geom::Vec3f(vd[0],vd[1],vd[2]);
+//			Geom::Vec3f& vf = *typedOut++;
+//			vf[0]=vd[0];vf[1]=vd[1];vf[2]=vd[2];
+		}
+	}
+
+	unsigned int vectorSize()
+	{
+		return 3;
+	}
+};
+
+
+
+typedef ConvertToFloat<double> ConvertDoubleToFloat;
 
 }
 

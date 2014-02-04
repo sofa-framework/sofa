@@ -79,7 +79,8 @@ public:
 				ef += m_position[m_map.phi1(dit)];
 				m_map.decCurrentLevel();
 				++count;
-			}
+			}            
+
 			ef /= count;
 			ef *= 2.0;
 
@@ -87,8 +88,9 @@ public:
 
 			m_map.incCurrentLevel() ;
 			Dart midF = m_map.phi1(m_map.phi1(d));
-			m_position[midF] += vf + ef ;
+            m_position[midF] += vf + ef ;
 			m_map.decCurrentLevel() ;
+            break;
 		}
 
 		TraversorE<typename PFP::MAP> travE(m_map) ;
@@ -213,7 +215,7 @@ public:
 
 			m_map.incCurrentLevel() ;
 			Dart midF = m_map.phi1(m_map.phi1(d));
-			m_position[midF] -= vf + ef ;
+            m_position[midF] -= vf + ef ;
 			m_map.decCurrentLevel() ;
 		}
 	}

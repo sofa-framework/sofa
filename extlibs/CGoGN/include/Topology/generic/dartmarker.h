@@ -61,6 +61,14 @@ public:
 		m_map.dartMarkers[m_thread].push_back(this) ;
 	}
 
+	DartMarkerGen(const GenericMap& map, unsigned int thread = 0) :
+		m_map(const_cast<GenericMap&>(map)), m_thread(thread), releaseOnDestruct(true)
+	{
+		m_mark = m_map.getMarkerSet<DART>(m_thread).getNewMark() ;
+		m_markVector = m_map.getMarkVector<DART>(m_thread) ;
+		m_map.dartMarkers[m_thread].push_back(this) ;
+	}
+
 	~DartMarkerGen()
 	{
 		if (releaseOnDestruct)
@@ -214,12 +222,12 @@ public:
 class DartMarker : public DartMarkerGen
 {
 public:
-	DartMarker(GenericMap& map) :
-		DartMarkerGen(map)
-	{
-	}
 
-	DartMarker(GenericMap& map, unsigned int thread) :
+	DartMarker(const GenericMap& map) :
+		DartMarkerGen(map)
+	{ }
+
+	DartMarker(const GenericMap& map, unsigned int thread) :
 		DartMarkerGen(map, thread)
 	{
 	}
@@ -256,15 +264,15 @@ protected:
 	std::vector<unsigned int> m_markedDarts ;
 
 public:
-	DartMarkerStore(GenericMap& map) :
+	DartMarkerStore(const GenericMap& map) :
 		DartMarkerGen(map)
-	{
-	}
+	{ }
 
-	DartMarkerStore(GenericMap& map, unsigned int thread) :
+
+	DartMarkerStore(const GenericMap& map, unsigned int thread) :
 		DartMarkerGen(map, thread)
-	{
-	}
+	{ }
+
 
 	~DartMarkerStore()
 	{
@@ -325,15 +333,14 @@ public:
 class DartMarkerNoUnmark : public DartMarkerGen
 {
 public:
-	DartMarkerNoUnmark(GenericMap& map) :
+	DartMarkerNoUnmark(const GenericMap& map) :
 		DartMarkerGen(map)
-	{
-	}
+	{ }
 
-	DartMarkerNoUnmark(GenericMap& map, unsigned int th) :
+
+	DartMarkerNoUnmark(const GenericMap& map, unsigned int th) :
 		DartMarkerGen(map, th)
-	{
-	}
+	{ }
 
 	~DartMarkerNoUnmark()
 	{

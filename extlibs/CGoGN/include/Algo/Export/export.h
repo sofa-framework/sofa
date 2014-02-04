@@ -81,7 +81,7 @@ bool exportOFF(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3>
 * @return true
 */
 template <typename PFP>
-bool exportOBJ(typename PFP::MAP& map, const typename PFP::TVEC3& position, const char* filename) ;
+bool exportOBJ(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3>& position, const char* filename) ;
 
 /**
 * export the map into a Trian file
@@ -91,6 +91,8 @@ bool exportOBJ(typename PFP::MAP& map, const typename PFP::TVEC3& position, cons
 */
 template <typename PFP>
 bool exportTrian(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3>& position, char* filename) ;
+
+
 
 /**
 * export the map into a PLYPTMgeneric file (K. Vanhoey generic format).
@@ -159,6 +161,7 @@ bool exportPLYPTM(typename PFP::MAP& map, const char* filename, const VertexAttr
  */
 template <typename PFP>
 bool exportChoupi(typename PFP::MAP& map, const AttributeHandler<typename PFP::VEC3, VERTEX>& position, const char* filename) ;
+
 
 } // namespace Export
 

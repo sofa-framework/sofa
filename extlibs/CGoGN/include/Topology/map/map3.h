@@ -92,18 +92,18 @@ public:
 
 	virtual Dart newDart();
 
-	Dart phi3(Dart d);
+	Dart phi3(Dart d) const;
 
 	template <int N>
-	Dart phi(Dart d);
+	Dart phi(Dart d) const;
 
-	Dart alpha0(Dart d);
+	Dart alpha0(Dart d) const;
 
-	Dart alpha1(Dart d);
+	Dart alpha1(Dart d) const;
 
-	Dart alpha2(Dart d);
+	Dart alpha2(Dart d) const;
 
-	Dart alpha_2(Dart d);
+	Dart alpha_2(Dart d) const;
 
 protected:
 	//! Link dart d with dart e by an involution
@@ -290,6 +290,10 @@ public:
 	virtual Dart collapseVolume(Dart d, bool delDegenerateVolumes = true);
 	//@}
 
+
+    //BROUILLON
+    Dart faceToEdge(Dart d);
+
 	/*! @name Topological Queries
 	 *  Return or set various topological information
 	 *************************************************************************/
@@ -299,12 +303,12 @@ public:
 	/*! @param d a dart
 	 *  @param e a dart
 	 */
-	bool sameVertex(Dart d, Dart e) ;
+	bool sameVertex(Dart d, Dart e) const;
 
 	//! Compute the number of edges of the vertex of d
 	/*! @param d a dart
 	 */
-	unsigned int vertexDegree(Dart d) ;
+	unsigned int vertexDegree(Dart d) const;
 
 
 	//! Check number of edges of the vertex of d with given parameter
@@ -312,78 +316,78 @@ public:
 	 *	@param vd degree to compare with
 	 *  @return  negative/null/positive if vertex degree is less/equal/greater than given degree
 	 */
-	int checkVertexDegree(Dart d, unsigned int vd);
+	int checkVertexDegree(Dart d, unsigned int vd) const;
 
 
 	//! Compute the number of edges of the vertex of d on the boundary
 	/*!	@param d a dart
 	 */
-	unsigned int vertexDegreeOnBoundary(Dart d);
+	unsigned int vertexDegreeOnBoundary(Dart d) const;
 
 	//! Tell if the vertex of d is on the boundary
 	/*! @param d a dart
 	 */
-	bool isBoundaryVertex(Dart d) ;
+	bool isBoundaryVertex(Dart d) const;
 
 	//! Find the dart of vertex that belong to the boundary
 	/*! return NIL if the vertex is not on the boundary
 	 *  @param d a dart
 	 */
-	Dart findBoundaryFaceOfVertex(Dart d) ;
+	Dart findBoundaryFaceOfVertex(Dart d) const;
 
 	//! Test if dart d and e belong to the same oriented edge
 	/*! @param d a dart
 	 *  @param e a dart
 	 */
-	bool sameOrientedEdge(Dart d, Dart e) ;
+	bool sameOrientedEdge(Dart d, Dart e) const;
 
 	//! Test if dart d and e belong to the same edge
 	/*! @param d a dart
 	 *  @param e a dart
 	 */
-	bool sameEdge(Dart d, Dart e) ;
+	bool sameEdge(Dart d, Dart e) const;
 
 	//! Compute the number of volumes around the edge of d
 	/*! @param d a dart
 	 */
-	unsigned int edgeDegree(Dart d) ;
+	unsigned int edgeDegree(Dart d) const;
 
 	//! Tell if the edge of d is on the boundary of the map
 	/*! @param d a dart
 	 */
-	bool isBoundaryEdge(Dart d) ;
+	bool isBoundaryEdge(Dart d) const;
 
 	//! Find the dart of edge that belong to the boundary
 	/*! return NIL if the edge is not on the boundary
 	 *  @param d a dart
 	 */
-	Dart findBoundaryFaceOfEdge(Dart d) ;
+	Dart findBoundaryFaceOfEdge(Dart d) const;
 
 	//! Test if dart d and e belong to the same oriented face
 	/*! @param d a dart
 	 *  @param e a dart
 	 */
-	bool sameFace(Dart d, Dart e) ;
+	bool sameFace(Dart d, Dart e) const;
 
 	//! Test if the face is on the boundary
 	/*! @param d a dart from the face
 	 */
-	bool isBoundaryFace(Dart d) ;
+	bool isBoundaryFace(Dart d) const;
 
 	//! Tell if a face of the volume is on the boundary
 	/*  @param d a dart
 	 */
-	bool isBoundaryVolume(Dart d) ;
+	bool isBoundaryVolume(Dart d) const;
 
 	//! Tell if an edge of the volume is on the boundary
 	/*	@param d a dart
 	 */
-	bool hasBoundaryEdge(Dart d);
+	bool hasBoundaryEdge(Dart d) const;
 
 	//! Check the map completeness
 	/*! Test if phi3 and phi2 ares involutions and if phi1 is a permutation
 	 */
-	virtual bool check() ;
+	virtual bool check() const;
 	//@}
 
 	/*! @name Cell Functors
@@ -395,50 +399,50 @@ public:
 	/*! @param d a dart of the vertex
 	 *  @param fonct the functor
 	 */
-	bool foreach_dart_of_vertex(Dart d, FunctorType& f, unsigned int thread = 0);
+	bool foreach_dart_of_vertex(Dart d, FunctorType& f, unsigned int thread = 0) const;
 
 	//! Apply a functor on each dart of an edge
 	/*! @param d a dart of the oriented edge
 	 *  @param fonct the functor
 	 */
-	bool foreach_dart_of_edge(Dart d, FunctorType& f, unsigned int thread = 0);
+	bool foreach_dart_of_edge(Dart d, FunctorType& f, unsigned int thread = 0) const;
 
 	//! Apply a functor on each dart of a face
 	/*! @param d a dart of the oriented face
 	 *  @param fonct the functor
 	 */
-	bool foreach_dart_of_face(Dart d, FunctorType& f, unsigned int thread = 0);
+	bool foreach_dart_of_face(Dart d, FunctorType& f, unsigned int thread = 0) const;
 
 	//! Apply a functor on each dart of a face
 	/*! @param d a dart of the oriented face
 	 *  @param fonct the functor
 	 */
-	bool foreach_dart_of_volume(Dart d, FunctorType& f, unsigned int thread = 0);
+	bool foreach_dart_of_volume(Dart d, FunctorType& f, unsigned int thread = 0) const;
 
 	//! Apply a functor on each dart of a cc
 	/*! @param d a dart of the cc
 	 *  @param fonct the functor
 	 */
-	bool foreach_dart_of_cc(Dart d, FunctorType& f, unsigned int thread = 0);
+	bool foreach_dart_of_cc(Dart d, FunctorType& f, unsigned int thread = 0) const;
 
 
 	//! Apply a functor on each dart of a vertex
 	/*! @param d a dart of the vertex
 	 *  @param fonct the functor
 	 */
-	bool foreach_dart_of_vertex2(Dart d, FunctorType& f, unsigned int thread = 0);
+	bool foreach_dart_of_vertex2(Dart d, FunctorType& f, unsigned int thread = 0) const;
 
 	//! Apply a functor on each dart of an edge
 	/*! @param d a dart of the oriented edge
 	 *  @param fonct the functor
 	 */
-	bool foreach_dart_of_edge2(Dart d, FunctorType& f, unsigned int thread = 0);
+	bool foreach_dart_of_edge2(Dart d, FunctorType& f, unsigned int thread = 0) const;
 
 	//! Apply a functor on each dart of an oriented face
 	/*! @param d a dart of the oriented face
 	 *  @param fonct the functor
 	 */
-	bool foreach_dart_of_face2(Dart d, FunctorType& f, unsigned int thread = 0);
+	bool foreach_dart_of_face2(Dart d, FunctorType& f, unsigned int thread = 0) const;
 
 	//@}
 

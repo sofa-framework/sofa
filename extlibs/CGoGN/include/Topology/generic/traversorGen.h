@@ -31,7 +31,6 @@
 namespace CGoGN
 {
 
-//template <typename MAP>
 class Traversor
 {
 public:
@@ -49,6 +48,16 @@ public:
 		}
 		return false;
 	}
+
+//	bool applyFunctor(FunctorConstType& f)
+//	{
+//		for (Dart d = begin(); d != end(); d = next())
+//		{
+//				if (f(d))
+//					return true;
+//		}
+//		return false;
+//	}
 };
 
 } // namespace CGoGN

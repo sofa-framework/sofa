@@ -25,6 +25,7 @@
 #ifndef __TETRAHEDRALIZATION_H__
 #define __TETRAHEDRALIZATION_H__
 
+//#include "tetgen/tetgen.h"
 
 namespace CGoGN
 {
@@ -171,9 +172,37 @@ Dart flip1To3(typename PFP::MAP& map, Dart d);
 template <typename PFP>
 Dart edgeBisection(typename PFP::MAP& map, Dart d);
 
+
+
+
+
+
+
+//namespace Tetgen
+//{
+
+///**
+// * generate tetrahedra based on an surface mesh object
+// */
+//template <typename PFP>
+//bool tetrahedralize(const typename PFP::MAP2& map2, typename PFP::MAP3& map3, bool add_steiner_points_on_exterior_boundary,
+//                    bool add_steiner_points_on_interior_boundary, double max_volume, double max_shape);
+
+///**
+// * generate tetrahedra based on an surface mesh object
+// */
+//template <typename PFP>
+//bool process(const std::string& filename, typename PFP::MAP3& map3, bool add_steiner_points_on_exterior_boundary,
+//             bool add_steiner_points_on_interior_boundary, double max_volume, double max_shape);
+
+//} //namespace Tetgen
+
+
+
+
 } // namespace Tetrahedralization
 
-}
+} // namespace Volume
 
 } // namespace Modelisation
 

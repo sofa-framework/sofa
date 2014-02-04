@@ -244,13 +244,16 @@ void GenericMap::addLevelBack()
 	std::stringstream ss ;
 	ss << "MRdart_"<< newLevel ;
 	AttributeMultiVector<unsigned int>* newAttrib = m_mrattribs.addAttribute<unsigned int>(ss.str()) ;
-	AttributeMultiVector<unsigned int>* prevAttrib = m_mrDarts[newLevel - 1];
-
-	// copy the indices of previous level into new level
-	m_mrattribs.copyAttribute(newAttrib->getIndex(), prevAttrib->getIndex()) ;
 
 	m_mrDarts.push_back(newAttrib) ;
 	m_mrNbDarts.push_back(0) ;
+
+	if(m_mrDarts.size() > 1 )
+	{
+		// copy the indices of previous level into new level
+		AttributeMultiVector<unsigned int>* prevAttrib = m_mrDarts[newLevel - 1];
+		m_mrattribs.copyAttribute(newAttrib->getIndex(), prevAttrib->getIndex()) ;
+	}
 }
 
 void GenericMap::addLevelFront()
@@ -341,13 +344,22 @@ void GenericMap::copyLevel(unsigned int level)
 	m_mrattribs.copyAttribute(newAttrib->getIndex(), prevAttrib->getIndex()) ;
 }
 
-void GenericMap::duplicateDarts(unsigned int level)
+void GenericMap::duplicateDarts(unsigned int newlevel)
 {
-	AttributeMultiVector<unsigned int>* attrib = m_mrDarts[level] ;
+//	AttributeMultiVector<unsigned int>* attrib = m_mrDarts[level] ;  //is a copy of the mrDarts at level-1 or level+1
+
+//	for(unsigned int i = m_mrattribs.begin(); i != m_mrattribs.end(); m_mrattribs.next(i))
+//	{
+//		unsigned int oldi = (*attrib)[i] ;	// get the index of the dart in previous level
+//		(*attrib)[i] = copyDartLine(oldi) ;	// copy the dart and affect it to the new level
+//	}
+
+	AttributeMultiVector<unsigned int>* attrib = m_mrDarts[newlevel] ;  //is a copy of the mrDarts at level-1 or level+1
+	AttributeMultiVector<unsigned int>* prevAttrib = m_mrDarts[newlevel - 1] ;      // copy the indices of
 
 	for(unsigned int i = m_mrattribs.begin(); i != m_mrattribs.end(); m_mrattribs.next(i))
 	{
-		unsigned int oldi = (*attrib)[i] ;	// get the index of the dart in previous level
+		unsigned int oldi = (*prevAttrib)[i] ;	// get the index of the dart in previous level
 		(*attrib)[i] = copyDartLine(oldi) ;	// copy the dart and affect it to the new level
 	}
 }
@@ -478,7 +490,7 @@ void GenericMap::removeThreadMarker(unsigned int nb)
  *             SAVE & LOAD              *
  ****************************************/
 
-bool GenericMap::saveMapBin(const std::string& filename)
+bool GenericMap::saveMapBin(const std::string& filename) const
 {
 	CGoGNostream fs(filename.c_str(), std::ios::out|std::ios::binary);
 	if (!fs)

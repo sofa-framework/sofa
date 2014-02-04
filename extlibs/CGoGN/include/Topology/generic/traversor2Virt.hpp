@@ -34,7 +34,7 @@ namespace CGoGN
 template <typename MAP>
 VTraversor2VE<MAP>::VTraversor2VE(MAP& map, Dart dart) : m(map), start(dart),m_QLT(NULL)
 {
-	AttributeMultiVector<NoTypeNameAttribute<std::vector<Dart> > >* quickTraversal = map.template getQuickIncidentTraversal<VERTEX,EDGE>() ;
+	const AttributeMultiVector<NoTypeNameAttribute<std::vector<Dart> > >* quickTraversal = map.template getQuickIncidentTraversal<VERTEX,EDGE>() ;
 	if (quickTraversal != NULL)
 	{
 		m_QLT  = &(quickTraversal->operator[](map.template getEmbedding<VERTEX>(dart)));
@@ -83,7 +83,7 @@ Dart VTraversor2VE<MAP>::next()
 template <typename MAP>
 VTraversor2VF<MAP>::VTraversor2VF(MAP& map, Dart dart) : m(map), start(dart),m_QLT(NULL)
 {
-	AttributeMultiVector<NoTypeNameAttribute<std::vector<Dart> > >* quickTraversal = map.template getQuickIncidentTraversal<VERTEX,FACE>() ;
+	const AttributeMultiVector<NoTypeNameAttribute<std::vector<Dart> > >* quickTraversal = map.template getQuickIncidentTraversal<VERTEX,FACE>() ;
 	if (quickTraversal != NULL)
 	{
 		m_QLT  = &(quickTraversal->operator[](map.template getEmbedding<VERTEX>(dart)));
@@ -137,7 +137,7 @@ Dart VTraversor2VF<MAP>::next()
 template <typename MAP>
 VTraversor2VVaE<MAP>::VTraversor2VVaE(MAP& map, Dart dart) : m(map),m_QLT(NULL)
 {
-	AttributeMultiVector<NoTypeNameAttribute<std::vector<Dart> > >* quickTraversal = map.template getQuickAdjacentTraversal<VERTEX,EDGE>() ;
+	const AttributeMultiVector<NoTypeNameAttribute<std::vector<Dart> > >* quickTraversal = map.template getQuickAdjacentTraversal<VERTEX,EDGE>() ;
 	if (quickTraversal != NULL)
 	{
 		m_QLT  = &(quickTraversal->operator[](map.template getEmbedding<VERTEX>(dart)));
@@ -188,7 +188,7 @@ Dart VTraversor2VVaE<MAP>::next()
 template <typename MAP>
 VTraversor2VVaF<MAP>::VTraversor2VVaF(MAP& map, Dart dart) : m(map),m_QLT(NULL)
 {
-	AttributeMultiVector<NoTypeNameAttribute<std::vector<Dart> > >* quickTraversal = map.template getQuickAdjacentTraversal<VERTEX,FACE>() ;
+	const AttributeMultiVector<NoTypeNameAttribute<std::vector<Dart> > >* quickTraversal = map.template getQuickAdjacentTraversal<VERTEX,FACE>() ;
 	if (quickTraversal != NULL)
 	{
 		m_QLT  = &(quickTraversal->operator[](map.template getEmbedding<VERTEX>(dart)));
@@ -261,7 +261,8 @@ Dart VTraversor2VVaF<MAP>::next()
 
 template <typename MAP>
 VTraversor2EV<MAP>::VTraversor2EV(MAP& map, Dart dart) : m(map), start(dart),m_QLT(NULL)
-{	AttributeMultiVector<NoTypeNameAttribute<std::vector<Dart> > >* quickTraversal = map.template getQuickIncidentTraversal<EDGE,VERTEX>() ;
+{
+	const AttributeMultiVector<NoTypeNameAttribute<std::vector<Dart> > >* quickTraversal = map.template getQuickIncidentTraversal<EDGE,VERTEX>() ;
 	if (quickTraversal != NULL)
 	{
 		m_QLT  = &(quickTraversal->operator[](map.template getEmbedding<EDGE>(dart)));
@@ -308,7 +309,7 @@ Dart VTraversor2EV<MAP>::next()
 template <typename MAP>
 VTraversor2EF<MAP>::VTraversor2EF(MAP& map, Dart dart) : m(map), start(dart),m_QLT(NULL)
 {
-	AttributeMultiVector<NoTypeNameAttribute<std::vector<Dart> > >* quickTraversal = map.template getQuickIncidentTraversal<EDGE,FACE>() ;
+	const AttributeMultiVector<NoTypeNameAttribute<std::vector<Dart> > >* quickTraversal = map.template getQuickIncidentTraversal<EDGE,FACE>() ;
 	if (quickTraversal != NULL)
 	{
 		m_QLT  = &(quickTraversal->operator[](map.template getEmbedding<EDGE>(dart)));
@@ -360,7 +361,7 @@ Dart VTraversor2EF<MAP>::next()
 template <typename MAP>
 VTraversor2EEaV<MAP>::VTraversor2EEaV(MAP& map, Dart dart) : m(map),m_QLT(NULL)
 {
-	AttributeMultiVector<NoTypeNameAttribute<std::vector<Dart> > >* quickTraversal = map.template getQuickAdjacentTraversal<EDGE,VERTEX>() ;
+	const AttributeMultiVector<NoTypeNameAttribute<std::vector<Dart> > >* quickTraversal = map.template getQuickAdjacentTraversal<EDGE,VERTEX>() ;
 	if (quickTraversal != NULL)
 	{
 		m_QLT  = &(quickTraversal->operator[](map.template getEmbedding<EDGE>(dart)));
@@ -415,7 +416,7 @@ Dart VTraversor2EEaV<MAP>::next()
 template <typename MAP>
 VTraversor2EEaF<MAP>::VTraversor2EEaF(MAP& map, Dart dart) : m(map),m_QLT(NULL)
 {
-	AttributeMultiVector<NoTypeNameAttribute<std::vector<Dart> > >* quickTraversal = map.template getQuickAdjacentTraversal<EDGE,FACE>() ;
+	const AttributeMultiVector<NoTypeNameAttribute<std::vector<Dart> > >* quickTraversal = map.template getQuickAdjacentTraversal<EDGE,FACE>() ;
 	if (quickTraversal != NULL)
 	{
 		m_QLT  = &(quickTraversal->operator[](map.template getEmbedding<EDGE>(dart)));
@@ -474,7 +475,7 @@ Dart VTraversor2EEaF<MAP>::next()
 template <typename MAP>
 VTraversor2FV<MAP>::VTraversor2FV(MAP& map, Dart dart) : m(map), start(dart),m_QLT(NULL)
 {
-	AttributeMultiVector<NoTypeNameAttribute<std::vector<Dart> > >* quickTraversal = map.template getQuickIncidentTraversal<FACE,VERTEX>() ;
+	const AttributeMultiVector<NoTypeNameAttribute<std::vector<Dart> > >* quickTraversal = map.template getQuickIncidentTraversal<FACE,VERTEX>() ;
 	if (quickTraversal != NULL)
 	{
 		m_QLT  = &(quickTraversal->operator[](map.template getEmbedding<FACE>(dart)));
@@ -521,7 +522,7 @@ Dart VTraversor2FV<MAP>::next()
 template <typename MAP>
 VTraversor2FFaV<MAP>::VTraversor2FFaV(MAP& map, Dart dart) : m(map),m_QLT(NULL)
 {
-	AttributeMultiVector<NoTypeNameAttribute<std::vector<Dart> > >* quickTraversal = map.template getQuickAdjacentTraversal<FACE,VERTEX>() ;
+	const AttributeMultiVector<NoTypeNameAttribute<std::vector<Dart> > >* quickTraversal = map.template getQuickAdjacentTraversal<FACE,VERTEX>() ;
 	if (quickTraversal != NULL)
 	{
 		m_QLT  = &(quickTraversal->operator[](map.template getEmbedding<FACE>(dart)));
@@ -594,7 +595,7 @@ Dart VTraversor2FFaV<MAP>::next()
 template <typename MAP>
 VTraversor2FFaE<MAP>::VTraversor2FFaE(MAP& map, Dart dart) : m(map),m_QLT(NULL)
 {
-	AttributeMultiVector<NoTypeNameAttribute<std::vector<Dart> > >* quickTraversal = map.template getQuickAdjacentTraversal<FACE,EDGE>() ;
+	const AttributeMultiVector<NoTypeNameAttribute<std::vector<Dart> > >* quickTraversal = map.template getQuickAdjacentTraversal<FACE,EDGE>() ;
 	if (quickTraversal != NULL)
 	{
 		m_QLT  = &(quickTraversal->operator[](map.template getEmbedding<FACE>(dart)));

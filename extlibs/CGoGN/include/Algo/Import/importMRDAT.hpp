@@ -77,7 +77,8 @@ bool importMRDAT(typename PFP::MAP& map, const std::string& filename, std::vecto
 		std::stringstream oss(line) ;
 		std::string s ;
 		oss >> s ;
-		oss >> depth ;
+		oss >> qt.depth ;
+		depth = qt.depth;
 	}
 
 	std::cout << "  MR depth -> " << depth << std::endl ;
@@ -252,19 +253,6 @@ bool importMRDAT(typename PFP::MAP& map, const std::string& filename, std::vecto
 		CGoGNout << "Open mesh.. not managed yet.." << CGoGNendl ;
 		return false ;
 	}
-
-	std::cout << "..done" << std::endl ;
-	std::cout << "  Create finer resolution levels.." << std::flush ;
-
-	for(unsigned int i = 0; i < depth; ++i)
-		map.addNewLevel(false) ;
-
-	std::cout << "..done" << std::endl ;
-	std::cout << "  Embed finer resolution levels.." << std::flush ;
-
-	map.setCurrentLevel(0) ;
-	qt.embed<PFP>(map) ;
-	map.setCurrentLevel(map.getMaxLevel()) ;
 
 	std::cout << "..done" << std::endl ;
 

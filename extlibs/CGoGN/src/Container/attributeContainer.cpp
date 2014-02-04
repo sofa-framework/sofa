@@ -174,11 +174,13 @@ void AttributeContainer::clear(bool removeAttrib)
 	for (std::vector<HoleBlockRef*>::iterator it = m_holesBlocks.begin(); it != m_holesBlocks.end(); ++it)
 		delete (*it);
 
-	std::vector<HoleBlockRef*> bf;
-	m_holesBlocks.swap(bf);
+	{ // add bracket just for scope of temporary vectors
+		std::vector<HoleBlockRef*> bf;
+		m_holesBlocks.swap(bf);
 
-	std::vector<unsigned int> bwf;
-	m_tableBlocksWithFree.swap(bwf);
+		std::vector<unsigned int> bwf;
+		m_tableBlocksWithFree.swap(bwf);
+	}
 
 	// detruit les données
 	for (std::vector<AttributeMultiVectorGen*>::iterator it = m_tableAttribs.begin(); it != m_tableAttribs.end(); ++it)
@@ -656,7 +658,7 @@ void AttributeContainer::removeLine(unsigned int index)
 //	return true;
 //}
 
-void AttributeContainer::saveBin(CGoGNostream& fs, unsigned int id)
+void AttributeContainer::saveBin(CGoGNostream& fs, unsigned int id) const
 {
 	// en ascii id et taille les tailles
 
@@ -677,7 +679,7 @@ void AttributeContainer::saveBin(CGoGNostream& fs, unsigned int id)
 
 	unsigned int i = 0;
 
-	for(std::vector<AttributeMultiVectorGen*>::iterator it = m_tableAttribs.begin(); it != m_tableAttribs.end(); ++it)
+	for(std::vector<AttributeMultiVectorGen*>::const_iterator it = m_tableAttribs.begin(); it != m_tableAttribs.end(); ++it)
 	{
 		if (*it != NULL)
 			(*it)->saveBin(fs, i++);
@@ -689,7 +691,7 @@ void AttributeContainer::saveBin(CGoGNostream& fs, unsigned int id)
 	}
 
 	//en binaire les blocks de ref
-	for (std::vector<HoleBlockRef*>::iterator it = m_holesBlocks.begin(); it != m_holesBlocks.end(); ++it)
+	for (std::vector<HoleBlockRef*>::const_iterator it = m_holesBlocks.begin(); it != m_holesBlocks.end(); ++it)
 		(*it)->saveBin(fs);
 
 	// les indices des blocks libres

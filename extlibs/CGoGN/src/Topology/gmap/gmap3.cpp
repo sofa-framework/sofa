@@ -451,7 +451,7 @@ void GMap3::splitVolume(std::vector<Dart>& vd)
  *  Return or set various topological information
  *************************************************************************/
 
-bool GMap3::sameOrientedVertex(Dart d, Dart e)
+bool GMap3::sameOrientedVertex(Dart d, Dart e) const
 {
 	DartMarkerStore mv(*this);	// Lock a marker
 
@@ -484,7 +484,7 @@ bool GMap3::sameOrientedVertex(Dart d, Dart e)
 	return false;
 }
 
-bool GMap3::sameVertex(Dart d, Dart e)
+bool GMap3::sameVertex(Dart d, Dart e) const
 {
 	DartMarkerStore mv(*this);	// Lock a marker
 
@@ -562,7 +562,7 @@ bool GMap3::sameVertex(Dart d, Dart e)
 //	return count;
 //}
 
-unsigned int GMap3::vertexDegree(Dart d)
+unsigned int GMap3::vertexDegree(Dart d) const
 {
 	unsigned int count = 0;
 
@@ -576,7 +576,7 @@ unsigned int GMap3::vertexDegree(Dart d)
 }
 
 
-int GMap3::checkVertexDegree(Dart d, unsigned int vd)
+int GMap3::checkVertexDegree(Dart d, unsigned int vd) const
 {
 	unsigned int count = 0;
 
@@ -590,7 +590,7 @@ int GMap3::checkVertexDegree(Dart d, unsigned int vd)
 	return count - vd;
 }
 
-bool GMap3::isBoundaryVertex(Dart d)
+bool GMap3::isBoundaryVertex(Dart d) const
 {
 	DartMarkerStore mv(*this);	// Lock a marker
 
@@ -623,7 +623,7 @@ bool GMap3::isBoundaryVertex(Dart d)
 	return false ;
 }
 
-bool GMap3::sameOrientedEdge(Dart d, Dart e)
+bool GMap3::sameOrientedEdge(Dart d, Dart e) const
 {
 	Dart it = d;
 	do
@@ -635,7 +635,7 @@ bool GMap3::sameOrientedEdge(Dart d, Dart e)
 	return false;
 }
 
-bool GMap3::sameEdge(Dart d, Dart e)
+bool GMap3::sameEdge(Dart d, Dart e) const
 {
 	Dart it = d;
 	do
@@ -648,7 +648,7 @@ bool GMap3::sameEdge(Dart d, Dart e)
 	return false;
 }
 
-unsigned int GMap3::edgeDegree(Dart d)
+unsigned int GMap3::edgeDegree(Dart d) const
 {
 	unsigned int deg = 0;
 	Dart it = d;
@@ -660,7 +660,7 @@ unsigned int GMap3::edgeDegree(Dart d)
 	return deg;
 }
 
-bool GMap3::isBoundaryEdge(Dart d)
+bool GMap3::isBoundaryEdge(Dart d) const
 {
 	Dart it = d;
 	do
@@ -672,7 +672,7 @@ bool GMap3::isBoundaryEdge(Dart d)
 	return false;
 }
 
-Dart GMap3::findBoundaryFaceOfEdge(Dart d)
+Dart GMap3::findBoundaryFaceOfEdge(Dart d) const
 {
 	Dart it = d;
 	do
@@ -684,7 +684,7 @@ Dart GMap3::findBoundaryFaceOfEdge(Dart d)
 	return NIL ;
 }
 
-bool GMap3::sameOrientedFace(Dart d, Dart e)
+bool GMap3::sameOrientedFace(Dart d, Dart e) const
 {
 	Dart it = d;
 	do
@@ -696,7 +696,7 @@ bool GMap3::sameOrientedFace(Dart d, Dart e)
 	return false;
 }
 
-bool GMap3::isBoundaryVolume(Dart d)
+bool GMap3::isBoundaryVolume(Dart d) const
 {
 	DartMarkerStore mark(*this);	// Lock a marker
 
@@ -725,7 +725,7 @@ bool GMap3::isBoundaryVolume(Dart d)
 	return false;
 }
 
-bool GMap3::check()
+bool GMap3::check() const
 {
     CGoGNout << "Check: topology begin" << CGoGNendl;
     DartMarker m(*this);
@@ -808,7 +808,7 @@ bool GMap3::check()
  *  Apply functors to all darts of a cell
  *************************************************************************/
 
-bool GMap3::foreach_dart_of_oriented_vertex(Dart d, FunctorType& f, unsigned int thread)
+bool GMap3::foreach_dart_of_oriented_vertex(Dart d, FunctorType& f, unsigned int thread) const
 {
 	DartMarkerStore mv(*this, thread);	// Lock a marker
 	bool found = false;					// Last functor return value
@@ -841,7 +841,7 @@ bool GMap3::foreach_dart_of_oriented_vertex(Dart d, FunctorType& f, unsigned int
 	return found;
 }
 
-bool GMap3::foreach_dart_of_vertex(Dart d, FunctorType& f, unsigned int thread)
+bool GMap3::foreach_dart_of_vertex(Dart d, FunctorType& f, unsigned int thread) const
 {
 	DartMarkerStore mv(*this, thread);	// Lock a marker
 	bool found = false;					// Last functor return value
@@ -877,7 +877,7 @@ bool GMap3::foreach_dart_of_vertex(Dart d, FunctorType& f, unsigned int thread)
 	return found;
 }
 
-bool GMap3::foreach_dart_of_oriented_edge(Dart d, FunctorType& f, unsigned int thread)
+bool GMap3::foreach_dart_of_oriented_edge(Dart d, FunctorType& f, unsigned int thread) const
 {
 	Dart it = d;
 	do
@@ -889,7 +889,7 @@ bool GMap3::foreach_dart_of_oriented_edge(Dart d, FunctorType& f, unsigned int t
 	return false;
 }
 
-bool GMap3::foreach_dart_of_edge(Dart d, FunctorType& f, unsigned int thread)
+bool GMap3::foreach_dart_of_edge(Dart d, FunctorType& f, unsigned int thread) const
 {
 	Dart it = d;
 	do
@@ -901,7 +901,7 @@ bool GMap3::foreach_dart_of_edge(Dart d, FunctorType& f, unsigned int thread)
 	return false;
 }
 
-bool GMap3::foreach_dart_of_cc(Dart d, FunctorType& f, unsigned int thread)
+bool GMap3::foreach_dart_of_cc(Dart d, FunctorType& f, unsigned int thread) const
 {
 	DartMarkerStore mv(*this,thread);	// Lock a marker
 	bool found = false;					// Last functor return value

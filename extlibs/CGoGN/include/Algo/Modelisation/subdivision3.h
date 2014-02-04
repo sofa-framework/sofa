@@ -42,6 +42,10 @@ namespace Volume
 namespace Modelisation
 {
 
+template <typename PFP>
+bool isHexahedron(typename PFP::MAP& the_map, Dart d, unsigned int thread=0);
+
+
 /**
 * Cut a 3D ear from a mesh : the ear is sewn by phi3 to the rest of the volume
 * @param d dart of the point of the ear

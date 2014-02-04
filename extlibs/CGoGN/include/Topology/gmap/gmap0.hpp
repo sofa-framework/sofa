@@ -71,7 +71,7 @@ inline Dart GMap0::newDart()
 	return d ;
 }
 
-inline Dart GMap0::beta0(Dart d)
+inline Dart GMap0::beta0(Dart d) const
 {
 	return (*m_beta0)[d.index] ;
 }
@@ -95,18 +95,33 @@ inline void GMap0::beta0unsew(Dart d)
  *  Apply functors to all darts of a cell
  *************************************************************************/
 
-inline bool GMap0::foreach_dart_of_vertex(Dart d, FunctorType& f, unsigned int /*thread*/)
+inline bool GMap0::foreach_dart_of_vertex(Dart d, FunctorType& f, unsigned int /*thread*/) const
 {
 	return f(d) ;
 }
 
-inline bool GMap0::foreach_dart_of_edge(Dart d, FunctorType& f, unsigned int /*thread*/)
+//inline bool GMap0::foreach_dart_of_vertex(Dart d, FunctorConstType& f, unsigned int /*thread*/) const
+//{
+//	return f(d) ;
+//}
+
+inline bool GMap0::foreach_dart_of_edge(Dart d, FunctorType& f, unsigned int /*thread*/) const
 {
 	if (f(d)) return true;
 	Dart d1 = beta0(d);
 	if (d1 != d) return f(d1);
 	return false;
 }
+
+
+//inline bool GMap0::foreach_dart_of_edge(Dart d, FunctorConstType& f, unsigned int /*thread*/)
+//{
+//	if (f(d)) return true;
+//	Dart d1 = beta0(d);
+//	if (d1 != d) return f(d1);
+//	return false;
+//}
+
 
 
 } // namespace CGoGN

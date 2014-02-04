@@ -22,6 +22,8 @@
  *                                                                              *
  *******************************************************************************/
 
+#include "Geometry/distances.h"
+
 namespace CGoGN
 {
 
@@ -487,17 +489,59 @@ Intersection intersection2DSegmentSegment(const VEC3& PA, const VEC3& PB, const 
 template <typename VEC3>
 Intersection intersectionSegmentPlan(const VEC3& PA, const VEC3& PB, const VEC3& PlaneP, const VEC3& NormP)//, VEC3& Inter)
 {
-	typename VEC3::DATA_TYPE panp = NormP * PA;
-	typename VEC3::DATA_TYPE pbnp = NormP * PB;
+//	typename VEC3::DATA_TYPE panp = NormP * PA;
+//	typename VEC3::DATA_TYPE pbnp = NormP * PB;
 
-	if(panp == 0 || pbnp == 0)
+//	if(panp == 0 || pbnp == 0)
+//		return VERTEX_INTERSECTION;
+//	else if((panp < 0 && pbnp > 0) || (panp > 0 && pbnp < 0))
+//		return EDGE_INTERSECTION;
+//	else
+//		return NO_INTERSECTION;
+
+#define EPSILON 1e-12
+
+	typename VEC3::DATA_TYPE panp = NormP * (PA-PlaneP);
+	typename VEC3::DATA_TYPE pbnp = NormP * (PB-PlaneP);
+
+	if(abs(panp) < EPSILON || abs(pbnp) < EPSILON)
 		return VERTEX_INTERSECTION;
-	else if((panp < 0 && pbnp > 0) || (panp > 0 && pbnp < 0))
-		return EDGE_INTERSECTION;
+//	else if((panp < 0 && pbnp > 0) || (panp > 0 && pbnp < 0))
+	else if (panp*pbnp < 0)
+			return EDGE_INTERSECTION;
 	else
 		return NO_INTERSECTION;
-
+#undef EPSILON
 }
+
+template <typename VEC3>
+Intersection intersectionSegmentPlan(const VEC3& PA, const VEC3& PB, const VEC3& PlaneP, const VEC3& NormP, VEC3& Inter)
+{
+#define EPSILON 1e-12
+
+	typename VEC3::DATA_TYPE panp = NormP * (PA-PlaneP);
+	typename VEC3::DATA_TYPE pbnp = NormP * (PB-PlaneP);
+
+	if(abs(panp) < EPSILON)
+	{
+		Inter = PA;
+		return VERTEX_INTERSECTION;
+	}
+	else if(abs(pbnp) < EPSILON)
+	{
+		Inter = PB;
+		return VERTEX_INTERSECTION;
+	}
+	else if (panp*pbnp < 0)
+	{
+		Inter = (abs(panp)*PB + abs(pbnp)*PA)/(abs(panp)+abs(pbnp)) ;
+		return EDGE_INTERSECTION;
+	}
+	else
+		return NO_INTERSECTION;
+#undef EPSILON
+}
+
 
 
 template <typename VEC3>
@@ -564,6 +608,35 @@ Intersection intersectionTriangleHalfPlan(const VEC3& Ta, const VEC3& Tb, const 
 	{
 		return NO_INTERSECTION;
 	}
+}
+
+template <typename VEC3>
+bool interLineSeg(const VEC3& A, const VEC3& AB, typename VEC3::DATA_TYPE AB2,
+				  const VEC3& P, const VEC3& Q, VEC3& inter)
+{
+#define EPSILON (1.0e-5)
+	typedef typename VEC3::DATA_TYPE T ;
+
+	T dist = Geom::distancePoint2TrianglePlane(AB-A,A,P,Q);
+
+//	std::cout << "dist "<<  dist << std::endl;
+
+	if (dist>EPSILON)
+		return false;
+
+	VEC3 AP = P - A ;
+	VEC3 PQ = Q - P ;
+	T X = AB * PQ ;
+	T beta = ( AB2 * (AP*PQ) - X * (AP*AB) ) / ( X*X - AB2 * PQ.norm2() ) ;
+
+//	std::cout << "beta "<<  beta << std::endl;
+
+	if ((beta<0.0) || (beta>1.0))
+		return false;
+
+	inter = beta*Q +(1.0-beta)*P;
+	return true;
+#undef EPSILON
 }
 
 }

@@ -57,7 +57,13 @@ void ImplicitHierarchicalMap2::clear(bool removeAttrib)
 
 void ImplicitHierarchicalMap2::initImplicitProperties()
 {
-	initEdgeId() ;
+	//initEdgeId() ;
+
+	//init each edge Id at 0
+	for(Dart d = Map2::begin(); d != Map2::end(); Map2::next(d))
+	{
+		m_edgeId[d] = 0;
+	}
 
 	for(unsigned int orbit = 0; orbit < NB_ORBITS; ++orbit)
 	{
@@ -85,222 +91,234 @@ void ImplicitHierarchicalMap2::initEdgeId()
 	}
 }
 
-unsigned int ImplicitHierarchicalMap2::faceLevel(Dart d)
+unsigned int ImplicitHierarchicalMap2::vertexDegree(Dart d)
 {
-	assert(m_dartLevel[d] <= m_curLevel || !"Access to a dart introduced after current level") ;
+    unsigned int count = 0 ;
+    Dart it = d ;
+    do
+    {
+        ++count ;
+        it = phi2(phi_1(it)) ;
+    } while (it != d) ;
+    return count ;
+}
 
-	if(m_curLevel == 0)
-		return 0 ;
+//unsigned int ImplicitHierarchicalMap2::faceLevel(Dart d)
+//{
+//	assert(m_dartLevel[d] <= m_curLevel || !"Access to a dart introduced after current level") ;
 
-//	unsigned int cur = m_curLevel ;
+//	if(m_curLevel == 0)
+//		return 0 ;
+
+////	unsigned int cur = m_curLevel ;
+////	Dart it = d ;
+////	Dart end = d ;
+////	bool resetEnd = true ;
+////	bool firstEdge = true ;
+////	do
+////	{
+////		if(!resetEnd)
+////			firstEdge = false ;
+////
+////		unsigned int eId = m_edgeId[it] ;
+////		Dart next = it ;
+////		do
+////		{
+////			unsigned int l = edgeLevel(next) ;
+////			if(l < m_curLevel)
+////				m_curLevel = l ;
+////			else // l == curLevel
+////			{
+////				if(!firstEdge)
+////				{
+////					--m_curLevel ;
+////					next = it ;
+////				}
+////			}
+////			next = phi1(next) ;
+////		} while(m_edgeId[next] == eId) ;
+////		it = next ;
+////
+////		if(resetEnd)
+////		{
+////			end = it ;
+////			resetEnd = false ;
+////		}
+////
+////	} while(!firstEdge && it != end) ;
+////
+////	unsigned int fLevel = m_curLevel ;
+////	m_curLevel = cur ;
+
 //	Dart it = d ;
-//	Dart end = d ;
-//	bool resetEnd = true ;
-//	bool firstEdge = true ;
+//	Dart old = it ;
+//	unsigned int l_old = m_dartLevel[old] ;
+//	unsigned int fLevel = edgeLevel(it) ;
 //	do
 //	{
-//		if(!resetEnd)
-//			firstEdge = false ;
-//
-//		unsigned int eId = m_edgeId[it] ;
-//		Dart next = it ;
-//		do
-//		{
-//			unsigned int l = edgeLevel(next) ;
-//			if(l < m_curLevel)
-//				m_curLevel = l ;
-//			else // l == curLevel
-//			{
-//				if(!firstEdge)
-//				{
-//					--m_curLevel ;
-//					next = it ;
-//				}
-//			}
-//			next = phi1(next) ;
-//		} while(m_edgeId[next] == eId) ;
-//		it = next ;
-//
-//		if(resetEnd)
-//		{
-//			end = it ;
-//			resetEnd = false ;
-//		}
-//
-//	} while(!firstEdge && it != end) ;
-//
-//	unsigned int fLevel = m_curLevel ;
+//		it = phi1(it) ;
+//		unsigned int dl = m_dartLevel[it] ;
+//		if(dl < l_old)							// compute the oldest dart of the face
+//		{										// in the same time
+//			old = it ;
+//			l_old = dl ;
+//		}										// in a first time, the level of a face
+//		unsigned int l = edgeLevel(it) ;		// is the minimum of the levels
+//		fLevel = l < fLevel ? l : fLevel ;		// of its edges
+//	} while(it != d) ;
+
+//	unsigned int cur = m_curLevel ;
+//	m_curLevel = fLevel ;
+
+//	unsigned int nbSubd = 0 ;
+//	it = old ;
+//	unsigned int eId = m_edgeId[old] ;			// the particular case of a face
+//	do											// with all neighboring faces regularly subdivided
+//	{											// but not the face itself
+//		++nbSubd ;								// is treated here
+//		it = phi1(it) ;
+//	} while(m_edgeId[it] == eId) ;
+
+//	while(nbSubd > 1)
+//	{
+//		nbSubd /= 2 ;
+//		--fLevel ;
+//	}
+
 //	m_curLevel = cur ;
 
-	Dart it = d ;
-	Dart old = it ;
-	unsigned int l_old = m_dartLevel[old] ;
-	unsigned int fLevel = edgeLevel(it) ;
-	do
-	{
-		it = phi1(it) ;
-		unsigned int dl = m_dartLevel[it] ;
-		if(dl < l_old)							// compute the oldest dart of the face
-		{										// in the same time
-			old = it ;
-			l_old = dl ;
-		}										// in a first time, the level of a face
-		unsigned int l = edgeLevel(it) ;		// is the minimum of the levels
-		fLevel = l < fLevel ? l : fLevel ;		// of its edges
-	} while(it != d) ;
+//	return fLevel ;
+//}
 
-	unsigned int cur = m_curLevel ;
-	m_curLevel = fLevel ;
+//Dart ImplicitHierarchicalMap2::faceOrigin(Dart d)
+//{
+//	assert(m_dartLevel[d] <= m_curLevel || !"Access to a dart introduced after current level") ;
+//	unsigned int cur = m_curLevel ;
+//	Dart p = d ;
+//	unsigned int pLevel = m_dartLevel[p] ;
+//	while(pLevel > 0)
+//	{
+//		p = faceOldestDart(p) ;
+//		pLevel = m_dartLevel[p] ;
+//		m_curLevel = pLevel ;
+//	}
+//	m_curLevel = cur ;
+//	return p ;
+//}
 
-	unsigned int nbSubd = 0 ;
-	it = old ;
-	unsigned int eId = m_edgeId[old] ;			// the particular case of a face
-	do											// with all neighboring faces regularly subdivided
-	{											// but not the face itself
-		++nbSubd ;								// is treated here
-		it = phi1(it) ;
-	} while(m_edgeId[it] == eId) ;
+//Dart ImplicitHierarchicalMap2::faceOldestDart(Dart d)
+//{
+//	assert(m_dartLevel[d] <= m_curLevel || !"Access to a dart introduced after current level") ;
+//	Dart it = d ;
+//	Dart oldest = it ;
+//	unsigned int l_old = m_dartLevel[oldest] ;
+//	do
+//	{
+//		unsigned int l = m_dartLevel[it] ;
+//		if(l == 0)
+//			return it ;
+//		if(l < l_old)
+////		if(l < l_old || (l == l_old && it < oldest))
+//		{
+//			oldest = it ;
+//			l_old = l ;
+//		}
+//		it = phi1(it) ;
+//	} while(it != d) ;
+//	return oldest ;
+//}
 
-	while(nbSubd > 1)
-	{
-		nbSubd /= 2 ;
-		--fLevel ;
-	}
+//bool ImplicitHierarchicalMap2::edgeIsSubdivided(Dart d)
+//{
+//	assert(m_dartLevel[d] <= m_curLevel || !"Access to a dart introduced after current level") ;
+////	Dart d2 = phi2(d) ;
+//	Dart d1 = phi1(d) ;
+//	++m_curLevel ;
+////	Dart d2_l = phi2(d) ;
+//	Dart d1_l = phi1(d) ;
+//	--m_curLevel ;
+//	if(d1 != d1_l)
+//		return true ;
+//	else
+//		return false ;
+//}
 
-	m_curLevel = cur ;
+//bool ImplicitHierarchicalMap2::edgeCanBeCoarsened(Dart d)
+//{
+//	assert(m_dartLevel[d] <= m_curLevel || !"Access to a dart introduced after current level") ;
+//	bool subd = false ;
+//	bool subdOnce = true ;
+//	bool degree2 = false ;
+//	if(edgeIsSubdivided(d))
+//	{
+//		subd = true ;
+//		Dart d2 = phi2(d) ;
+//		++m_curLevel ;
+//		if(vertexDegree(phi1(d)) == 2)
+//		{
+//			degree2 = true ;
+//			if(edgeIsSubdivided(d) || edgeIsSubdivided(d2))
+//				subdOnce = false ;
+//		}
+//		--m_curLevel ;
+//	}
+//	return subd && degree2 && subdOnce ;
+//}
 
-	return fLevel ;
-}
+//bool ImplicitHierarchicalMap2::faceIsSubdivided(Dart d)
+//{
+//	assert(m_dartLevel[d] <= m_curLevel || !"Access to a dart introduced after current level") ;
+//	unsigned int fLevel = faceLevel(d) ;
+//	if(fLevel < m_curLevel)
+//		return false ;
 
-Dart ImplicitHierarchicalMap2::faceOrigin(Dart d)
-{
-	assert(m_dartLevel[d] <= m_curLevel || !"Access to a dart introduced after current level") ;
-	unsigned int cur = m_curLevel ;
-	Dart p = d ;
-	unsigned int pLevel = m_dartLevel[p] ;
-	while(pLevel > 0)
-	{
-		p = faceOldestDart(p) ;
-		pLevel = m_dartLevel[p] ;
-		m_curLevel = pLevel ;
-	}
-	m_curLevel = cur ;
-	return p ;
-}
+//	bool subd = false ;
+//	++m_curLevel ;
+//	if(m_dartLevel[phi1(d)] == m_curLevel && m_edgeId[phi1(d)] != m_edgeId[d])
+//		subd = true ;
+//	--m_curLevel ;
+//	return subd ;
+//}
 
-Dart ImplicitHierarchicalMap2::faceOldestDart(Dart d)
-{
-	assert(m_dartLevel[d] <= m_curLevel || !"Access to a dart introduced after current level") ;
-	Dart it = d ;
-	Dart oldest = it ;
-	unsigned int l_old = m_dartLevel[oldest] ;
-	do
-	{
-		unsigned int l = m_dartLevel[it] ;
-		if(l == 0)
-			return it ;
-		if(l < l_old)
-//		if(l < l_old || (l == l_old && it < oldest))
-		{
-			oldest = it ;
-			l_old = l ;
-		}
-		it = phi1(it) ;
-	} while(it != d) ;
-	return oldest ;
-}
+//bool ImplicitHierarchicalMap2::faceIsSubdividedOnce(Dart d)
+//{
+//	assert(m_dartLevel[d] <= m_curLevel || !"Access to a dart introduced after current level") ;
+//	unsigned int fLevel = faceLevel(d) ;
+//	if(fLevel < m_curLevel)		// a face whose level in the current level map is lower than
+//		return false ;			// the current level can not be subdivided to higher levels
 
-bool ImplicitHierarchicalMap2::edgeIsSubdivided(Dart d)
-{
-	assert(m_dartLevel[d] <= m_curLevel || !"Access to a dart introduced after current level") ;
-//	Dart d2 = phi2(d) ;
-	Dart d1 = phi1(d) ;
-	++m_curLevel ;
-//	Dart d2_l = phi2(d) ;
-	Dart d1_l = phi1(d) ;
-	--m_curLevel ;
-	if(d1 != d1_l)
-		return true ;
-	else
-		return false ;
-}
+//	unsigned int degree = 0 ;
+//	bool subd = false ;
+//	bool subdOnce = true ;
+//	Dart fit = d ;
+//	do
+//	{
+//		++m_curLevel ;
+//		if(m_dartLevel[phi1(fit)] == m_curLevel && m_edgeId[phi1(fit)] != m_edgeId[fit])
+//		{
+//			subd = true ;
+//			++m_curLevel ;
+//			if(m_dartLevel[phi1(fit)] == m_curLevel && m_edgeId[phi1(fit)] != m_edgeId[fit])
+//				subdOnce = false ;
+//			--m_curLevel ;
+//		}
+//		--m_curLevel ;
+//		++degree ;
+//		fit = phi1(fit) ;
+//	} while(subd && subdOnce && fit != d) ;
 
-bool ImplicitHierarchicalMap2::edgeCanBeCoarsened(Dart d)
-{
-	assert(m_dartLevel[d] <= m_curLevel || !"Access to a dart introduced after current level") ;
-	bool subd = false ;
-	bool subdOnce = true ;
-	bool degree2 = false ;
-	if(edgeIsSubdivided(d))
-	{
-		subd = true ;
-		Dart d2 = phi2(d) ;
-		++m_curLevel ;
-		if(vertexDegree(phi1(d)) == 2)
-		{
-			degree2 = true ;
-			if(edgeIsSubdivided(d) || edgeIsSubdivided(d2))
-				subdOnce = false ;
-		}
-		--m_curLevel ;
-	}
-	return subd && degree2 && subdOnce ;
-}
+//	if(degree == 3 && subd)
+//	{
+//		++m_curLevel ;
+//		Dart cf = phi2(phi1(d)) ;
+//		++m_curLevel ;
+//		if(m_dartLevel[phi1(cf)] == m_curLevel && m_edgeId[phi1(cf)] != m_edgeId[cf])
+//			subdOnce = false ;
+//		--m_curLevel ;
+//		--m_curLevel ;
+//	}
 
-bool ImplicitHierarchicalMap2::faceIsSubdivided(Dart d)
-{
-	assert(m_dartLevel[d] <= m_curLevel || !"Access to a dart introduced after current level") ;
-	unsigned int fLevel = faceLevel(d) ;
-	if(fLevel < m_curLevel)
-		return false ;
-
-	bool subd = false ;
-	++m_curLevel ;
-	if(m_dartLevel[phi1(d)] == m_curLevel && m_edgeId[phi1(d)] != m_edgeId[d])
-		subd = true ;
-	--m_curLevel ;
-	return subd ;
-}
-
-bool ImplicitHierarchicalMap2::faceIsSubdividedOnce(Dart d)
-{
-	assert(m_dartLevel[d] <= m_curLevel || !"Access to a dart introduced after current level") ;
-	unsigned int fLevel = faceLevel(d) ;
-	if(fLevel < m_curLevel)		// a face whose level in the current level map is lower than
-		return false ;			// the current level can not be subdivided to higher levels
-
-	unsigned int degree = 0 ;
-	bool subd = false ;
-	bool subdOnce = true ;
-	Dart fit = d ;
-	do
-	{
-		++m_curLevel ;
-		if(m_dartLevel[phi1(fit)] == m_curLevel && m_edgeId[phi1(fit)] != m_edgeId[fit])
-		{
-			subd = true ;
-			++m_curLevel ;
-			if(m_dartLevel[phi1(fit)] == m_curLevel && m_edgeId[phi1(fit)] != m_edgeId[fit])
-				subdOnce = false ;
-			--m_curLevel ;
-		}
-		--m_curLevel ;
-		++degree ;
-		fit = phi1(fit) ;
-	} while(subd && subdOnce && fit != d) ;
-
-	if(degree == 3 && subd)
-	{
-		++m_curLevel ;
-		Dart cf = phi2(phi1(d)) ;
-		++m_curLevel ;
-		if(m_dartLevel[phi1(cf)] == m_curLevel && m_edgeId[phi1(cf)] != m_edgeId[cf])
-			subdOnce = false ;
-		--m_curLevel ;
-		--m_curLevel ;
-	}
-
-	return subd && subdOnce ;
-}
+//	return subd && subdOnce ;
+//}
 
 } //namespace CGoGN

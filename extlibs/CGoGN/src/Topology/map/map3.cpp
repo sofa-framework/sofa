@@ -821,11 +821,31 @@ Dart Map3::collapseVolume(Dart d, bool delDegenerateVolumes)
 	return resV;
 }
 
+
+Dart Map3::faceToEdge(Dart d)
+{
+    Dart dc = phi2(phi1(d));
+    Dart dc1 = phi_1(d);
+    Dart dc2 = phi1(phi2(dc));
+
+    unsewFaces(dc,false);
+    unsewFaces(dc1,false);
+    unsewFaces(dc2,false);
+
+    unsewFaces(phi3(dc),false);
+    unsewFaces(phi3(dc1),false);
+    unsewFaces(phi3(dc2),false);
+
+
+
+    return dc;
+}
+
 /*! @name Topological Queries
  *  Return or set various topological information
  *************************************************************************/
 
-bool Map3::sameVertex(Dart d, Dart e)
+bool Map3::sameVertex(Dart d, Dart e) const
 {
 	DartMarkerStore mv(*this);	// Lock a marker
 
@@ -858,7 +878,7 @@ bool Map3::sameVertex(Dart d, Dart e)
 	return false;
 }
 
-unsigned int Map3::vertexDegree(Dart d)
+unsigned int Map3::vertexDegree(Dart d) const
 {
 	unsigned int count = 0;
 
@@ -872,7 +892,7 @@ unsigned int Map3::vertexDegree(Dart d)
 }
 
 
-int Map3::checkVertexDegree(Dart d, unsigned int vd)
+int Map3::checkVertexDegree(Dart d, unsigned int vd) const
 {
 	unsigned int count = 0;
 
@@ -887,14 +907,14 @@ int Map3::checkVertexDegree(Dart d, unsigned int vd)
 }
 
 
-unsigned int Map3::vertexDegreeOnBoundary(Dart d)
+unsigned int Map3::vertexDegreeOnBoundary(Dart d) const
 {
 	assert(Map3::isBoundaryVertex(d));
 
 	return Map2::vertexDegree(d);
 }
 
-bool Map3::isBoundaryVertex(Dart d)
+bool Map3::isBoundaryVertex(Dart d) const
 {
 	DartMarkerStore mv(*this);	// Lock a marker
 
@@ -927,7 +947,7 @@ bool Map3::isBoundaryVertex(Dart d)
 	return false ;
 }
 
-Dart Map3::findBoundaryFaceOfVertex(Dart d)
+Dart Map3::findBoundaryFaceOfVertex(Dart d) const
 {
 	DartMarkerStore mv(*this);	// Lock a marker
 
@@ -960,7 +980,7 @@ Dart Map3::findBoundaryFaceOfVertex(Dart d)
 	return NIL ;
 }
 
-bool Map3::sameOrientedEdge(Dart d, Dart e)
+bool Map3::sameOrientedEdge(Dart d, Dart e) const
 {
 	Dart it = d;
 	do
@@ -972,7 +992,7 @@ bool Map3::sameOrientedEdge(Dart d, Dart e)
 	return false;
 }
 
-unsigned int Map3::edgeDegree(Dart d)
+unsigned int Map3::edgeDegree(Dart d) const
 {
 	unsigned int deg = 0;
 	Dart it = d;
@@ -985,7 +1005,7 @@ unsigned int Map3::edgeDegree(Dart d)
 	return deg;
 }
 
-bool Map3::isBoundaryEdge(Dart d)
+bool Map3::isBoundaryEdge(Dart d) const
 {
 	Dart it = d;
 	do
@@ -997,7 +1017,7 @@ bool Map3::isBoundaryEdge(Dart d)
 	return false;
 }
 
-Dart Map3::findBoundaryFaceOfEdge(Dart d)
+Dart Map3::findBoundaryFaceOfEdge(Dart d) const
 {
 	Dart it = d;
 	do
@@ -1009,7 +1029,7 @@ Dart Map3::findBoundaryFaceOfEdge(Dart d)
 	return NIL ;
 }
 
-bool Map3::isBoundaryVolume(Dart d)
+bool Map3::isBoundaryVolume(Dart d) const
 {
 	Traversor3WF<Map3> tra(*this, d);
 	for(Dart dit = tra.begin() ; dit != tra.end() ; dit = tra.next())
@@ -1020,7 +1040,7 @@ bool Map3::isBoundaryVolume(Dart d)
 	return false;
 }
 
-bool Map3::hasBoundaryEdge(Dart d)
+bool Map3::hasBoundaryEdge(Dart d) const
 {
 	Traversor3WE<Map3> tra(*this, d);
 	for(Dart dit = tra.begin() ; dit != tra.end() ; dit = tra.next())
@@ -1032,7 +1052,7 @@ bool Map3::hasBoundaryEdge(Dart d)
 	return false;
 }
 
-bool Map3::check()
+bool Map3::check() const
 {
     std::cout << "Check: topology begin" << std::endl;
     DartMarkerStore m(*this);
@@ -1139,7 +1159,7 @@ bool Map3::check()
  *  Apply functors to all darts of a cell
  *************************************************************************/
 
-bool Map3::foreach_dart_of_vertex(Dart d, FunctorType& f, unsigned int thread)
+bool Map3::foreach_dart_of_vertex(Dart d, FunctorType& f, unsigned int thread) const
 {
 	DartMarkerStore mv(*this, thread);	// Lock a marker
 	bool found = false;					// Last functor return value
@@ -1172,7 +1192,7 @@ bool Map3::foreach_dart_of_vertex(Dart d, FunctorType& f, unsigned int thread)
 	return found;
 }
 
-bool Map3::foreach_dart_of_edge(Dart d, FunctorType& f, unsigned int thread)
+bool Map3::foreach_dart_of_edge(Dart d, FunctorType& f, unsigned int thread) const
 {
 	Dart it = d;
 	do
@@ -1184,7 +1204,7 @@ bool Map3::foreach_dart_of_edge(Dart d, FunctorType& f, unsigned int thread)
 	return false;
 }
 
-bool Map3::foreach_dart_of_cc(Dart d, FunctorType& f, unsigned int thread)
+bool Map3::foreach_dart_of_cc(Dart d, FunctorType& f, unsigned int thread) const
 {
 	DartMarkerStore mv(*this,thread);	// Lock a marker
 	bool found = false;					// Last functor return value

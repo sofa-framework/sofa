@@ -43,48 +43,6 @@ namespace Import
 {
 
 template<typename PFP>
-ImportType MeshTablesSurface<PFP>::getFileType(const std::string& filename)
-{
-    if ((filename.rfind(".trianbgz")!=std::string::npos) || (filename.rfind(".TRIANBGZ")!=std::string::npos))
-        return TRIANBGZ;
-
-    if ((filename.rfind(".trian")!=std::string::npos) || (filename.rfind(".TRIAN")!=std::string::npos))
-        return TRIAN;
-
-    if ((filename.rfind(".meshbin")!=std::string::npos) || (filename.rfind(".MESHBIN")!=std::string::npos))
-        return MESHBIN;
-
-/*	if ((filename.rfind(".plyptm")!=std::string::npos) || (filename.rfind(".PLYGEN")!=std::string::npos))
-        return PLYPTM;
-*/
-    if ((filename.rfind(".plyPTMextBin")!=std::string::npos) || (filename.rfind(".plySHrealBin")!=std::string::npos))
-        return PLYSLFgenericBin;
-
-    if ((filename.rfind(".plyPTMext")!=std::string::npos) || (filename.rfind(".plySHreal")!=std::string::npos))
-        return PLYSLFgeneric;
-
-    if ((filename.rfind(".ply")!=std::string::npos) || (filename.rfind(".PLY")!=std::string::npos))
-        return PLY;
-
-    if ((filename.rfind(".off")!=std::string::npos) || (filename.rfind(".OFF")!=std::string::npos))
-        return OFF;
-
-    if ((filename.rfind(".obj")!=std::string::npos) || (filename.rfind(".OBJ")!=std::string::npos))
-        return OBJ;
-
-    if ((filename.rfind(".ahem")!=std::string::npos) || (filename.rfind(".AHEM")!=std::string::npos))
-        return AHEM;
-
-    if ((filename.rfind(".stlb")!=std::string::npos) || (filename.rfind(".STLB")!=std::string::npos))
-        return STLB;
-
-    if ((filename.rfind(".stl")!=std::string::npos) || (filename.rfind(".STL")!=std::string::npos))
-        return STL;
-
-    return UNKNOWNSURFACE;
-}
-
-template<typename PFP>
 bool MeshTablesSurface<PFP>::importMesh(const std::string& filename, std::vector<std::string>& attrNames)
 {
     ImportType kind = getFileType(filename);

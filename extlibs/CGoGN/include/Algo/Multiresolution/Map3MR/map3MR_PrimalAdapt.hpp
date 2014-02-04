@@ -507,50 +507,50 @@ void Map3MR<PFP>::subdivideFace(Dart d, bool triQuad)
 
 	m_map.setCurrentLevel(fLevel + 1) ;	// go to the next level to perform face subdivision
 
-	if(triQuad && degree == 3)	// if subdividing a triangle
-	{
-		Dart dd = m_map.phi1(old) ;
-		Dart e = m_map.phi1(dd) ;
-		//(*vertexVertexFunctor)(e) ;
-		e = m_map.phi1(e) ;
-		splitFace(dd, e) ;
+    if(triQuad && degree == 3)	// if subdividing a triangle
+    {
+        Dart dd = m_map.phi1(old) ;
+        Dart e = m_map.phi1(dd) ;
+        (*vertexVertexFunctor)(e) ;
+        e = m_map.phi1(e) ;
+        splitFace(dd, e) ;
 
-		dd = e ;
-		e = m_map.phi1(dd) ;
-		//(*vertexVertexFunctor)(e) ;
-		e = m_map.phi1(e) ;
-		splitFace(dd, e) ;
+        dd = e ;
+        e = m_map.phi1(dd) ;
+        (*vertexVertexFunctor)(e) ;
+        e = m_map.phi1(e) ;
+        splitFace(dd, e) ;
 
-		dd = e ;
-		e = m_map.phi1(dd) ;
-		//(*vertexVertexFunctor)(e) ;
-		e = m_map.phi1(e) ;
-		splitFace(dd, e) ;
-	}
-	else							// if subdividing a polygonal face
-	{
-		Dart dd = m_map.phi1(old) ;
-		Dart next = m_map.phi1(dd) ;
-		//(*vertexVertexFunctor)(next) ;
-		next = m_map.phi1(next) ;
-		splitFace(dd, next) ;			// insert a first edge
-		Dart ne = m_map.phi2(m_map.phi_1(dd));
+        dd = e ;
+        e = m_map.phi1(dd) ;
+        (*vertexVertexFunctor)(e) ;
+        e = m_map.phi1(e) ;
+        splitFace(dd, e) ;
+    }
+    else							// if subdividing a polygonal face
+    {
+        Dart dd = m_map.phi1(old) ;
+        Dart next = m_map.phi1(dd) ;
+        (*vertexVertexFunctor)(next) ;
+        next = m_map.phi1(next) ;
+        splitFace(dd, next) ;			// insert a first edge
+        Dart ne = m_map.phi2(m_map.phi_1(dd));
 
-		cutEdge(ne) ;					// cut the new edge to insert the central vertex
+        cutEdge(ne) ;					// cut the new edge to insert the central vertex
 
-		dd = m_map.phi1(next) ;
-		//(*vertexVertexFunctor)(dd) ;
-		dd = m_map.phi1(dd) ;
-		while(dd != ne)					// turn around the face and insert new edges
-		{								// linked to the central vertex
-			splitFace(m_map.phi1(ne), dd) ;
-			dd = m_map.phi1(dd) ;
-			//(*vertexVertexFunctor)(dd) ;
-			dd = m_map.phi1(dd) ;
-		}
+        dd = m_map.phi1(next) ;
+        (*vertexVertexFunctor)(dd) ;
+        dd = m_map.phi1(dd) ;
+        while(dd != ne)					// turn around the face and insert new edges
+        {								// linked to the central vertex
+            splitFace(m_map.phi1(ne), dd) ;
+            dd = m_map.phi1(dd) ;
+            (*vertexVertexFunctor)(dd) ;
+            dd = m_map.phi1(dd) ;
+        }
 
-		(*faceVertexFunctor)(m_map.phi1(ne)) ;
-	}
+        (*faceVertexFunctor)(m_map.phi1(ne)) ;
+    }
 
 	m_map.popLevel() ;
 }
@@ -1027,18 +1027,278 @@ unsigned int Map3MR<PFP>::subdivideHexa(Dart d, bool OneLevelDifference)
 		m_map.incCurrentLevel();
 	}
 
-
-
-
-
-
-
-
-
 	m_map.popLevel() ;
 
 	return vLevel;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+template <typename PFP>
+void Map3MR<PFP>::subdivideFace2(Dart d, bool triQuad)
+{
+    assert(m_map.getDartLevel(d) <= m_map.getCurrentLevel() || !"subdivideFace : called with a dart inserted after current level") ;
+    assert(!faceIsSubdivided(d) || !"Trying to subdivide an already subdivided face") ;
+
+    unsigned int fLevel = faceLevel(d) ;
+    Dart old = faceOldestDart(d) ;
+
+    m_map.pushLevel() ;
+    m_map.setCurrentLevel(fLevel) ;		// go to the level of the face to subdivide its edges
+
+    unsigned int degree = 0 ;
+    Dart it = old ;
+    do
+    {
+        ++degree ;						// compute the degree of the face
+
+        if(!edgeIsSubdivided(it))
+            subdivideEdge(it) ;			// and cut the edges (if they are not already)
+        it = m_map.phi1(it) ;
+    } while(it != old) ;
+
+    m_map.setCurrentLevel(fLevel + 1) ;	// go to the next level to perform face subdivision
+
+//    if(triQuad && degree == 3)	// if subdividing a triangle
+//    {
+//        Dart dd = m_map.phi1(old) ;
+//        Dart e = m_map.phi1(dd) ;
+//        (*vertexVertexFunctor)(e) ;
+//        e = m_map.phi1(e) ;
+//        splitFace(dd, e) ;
+
+//        dd = e ;
+//        e = m_map.phi1(dd) ;
+//        (*vertexVertexFunctor)(e) ;
+//        e = m_map.phi1(e) ;
+//        splitFace(dd, e) ;
+
+//        dd = e ;
+//        e = m_map.phi1(dd) ;
+//        (*vertexVertexFunctor)(e) ;
+//        e = m_map.phi1(e) ;
+//        splitFace(dd, e) ;
+//    }
+//    else							// if subdividing a polygonal face
+//    {
+//        Dart dd = m_map.phi1(old) ;
+//        Dart next = m_map.phi1(dd) ;
+//        (*vertexVertexFunctor)(next) ;
+//        next = m_map.phi1(next) ;
+//        splitFace(dd, next) ;			// insert a first edge
+//        Dart ne = m_map.phi2(m_map.phi_1(dd));
+
+//        cutEdge(ne) ;					// cut the new edge to insert the central vertex
+
+//        dd = m_map.phi1(next) ;
+//        (*vertexVertexFunctor)(dd) ;
+//        dd = m_map.phi1(dd) ;
+//        while(dd != ne)					// turn around the face and insert new edges
+//        {								// linked to the central vertex
+//            splitFace(m_map.phi1(ne), dd) ;
+//            dd = m_map.phi1(dd) ;
+//            (*vertexVertexFunctor)(dd) ;
+//            dd = m_map.phi1(dd) ;
+//        }
+
+//        (*faceVertexFunctor)(m_map.phi1(ne)) ;
+//    }
+
+    m_map.popLevel() ;
+}
+
+
+
+template <typename PFP>
+unsigned int Map3MR<PFP>::subdivideHexa2(Dart d, bool OneLevelDifference)
+{
+    assert(m_map.getDartLevel(d) <= m_map.getCurrentLevel() || !"subdivideVolume : called with a dart inserted after current level") ;
+    assert(!volumeIsSubdivided(d) || !"Trying to subdivide an already subdivided face") ;
+
+    unsigned int vLevel = volumeLevel(d);
+    Dart old = volumeOldestDart(d);
+
+    m_map.pushLevel() ;
+    m_map.setCurrentLevel(vLevel) ;		// go to the level of the volume to subdivide its faces
+
+    if(m_map.getCurrentLevel() == m_map.getMaxLevel())
+        m_map.addLevelBack() ;
+
+
+    Traversor3WV<typename PFP::MAP> tWV(m_map, d);
+    for(Dart ditWV = tWV.begin(); ditWV != tWV.end(); ditWV = tWV.next())
+    {
+        //dupliquer tous les brins de l'orbite
+        TraversorDartsOfOrbit<typename PFP::MAP, VERTEX> td(m_map, ditWV);
+        for(Dart dtd = td.begin() ; dtd != td.end() ; dtd = td.next())
+        {
+            m_map.incCurrentLevel();
+            m_map.duplicateDart(dtd);
+            m_map.decCurrentLevel() ;
+        }
+
+    }
+
+    //	std::vector<Dart> vertices;
+//	Traversor3WV<typename PFP::MAP> traWV(m_map, d);
+//	for(Dart ditWV = traWV.begin(); ditWV != traWV.end(); ditWV = traWV.next())
+//	{
+//		vertices.push_back(ditWV);
+//		std::cout << "back" << std::endl;
+//	}
+
+    //
+    // Subdivide Faces and Edges
+    //
+    Traversor3WF<typename PFP::MAP> traF(m_map, old);
+    for(Dart dit = traF.begin(); dit != traF.end(); dit = traF.next())
+    {
+        //if needed subdivide face
+        if(!faceIsSubdivided(dit))
+            subdivideFace2(dit,false);
+    }
+
+//    std::vector<std::pair<Dart, Dart> > subdividedFaces;
+//    subdividedFaces.reserve(128);
+//    Dart centralDart = NIL;
+
+////	for(std::vector<Dart>::iterator it = vertices.begin() ; it != vertices.end() ; ++it)
+////	{
+////		Dart ditWV = *it;
+
+//    Traversor3WV<typename PFP::MAP> traWV(m_map, d);
+//    for(Dart ditWV = traWV.begin(); ditWV != traWV.end(); ditWV = traWV.next())
+//    {
+//        m_map.incCurrentLevel() ;
+
+//        (*vertexVertexFunctor)(ditWV) ;
+
+//        Dart e = ditWV;
+//        std::vector<Dart> v ;
+
+//        do
+//        {
+//            v.push_back(m_map.phi1(e));
+//            v.push_back(m_map.phi1(m_map.phi1(e)));
+
+//            if(!m_map.PFP::MAP::ParentMap::isBoundaryEdge(m_map.phi1(e)))
+//                subdividedFaces.push_back(std::pair<Dart,Dart>(m_map.phi1(e),m_map.phi2(m_map.phi1(e))));
+
+//            if(m_map.phi1(m_map.phi1(m_map.phi1(e))) != e)
+//                if(!m_map.PFP::MAP::ParentMap::isBoundaryEdge(m_map.phi1(m_map.phi1(e))))
+//                    subdividedFaces.push_back(std::pair<Dart,Dart>(m_map.phi1(m_map.phi1(e)),m_map.phi2(m_map.phi1(m_map.phi1(e)))));
+
+//            e = m_map.phi2(m_map.phi_1(e));
+//        }
+//        while(e != ditWV);
+
+//        m_map.splitVolume(v);
+
+//        Dart dd = m_map.phi2(m_map.phi1(ditWV));;
+//        Dart next = m_map.phi1(m_map.phi1(dd)) ;
+//        m_map.splitFace(dd, next) ;		// insert a first edge
+
+//        Dart ne = m_map.phi2(m_map.phi_1(dd)) ;
+//        m_map.cutEdge(ne) ;				// cut the new edge to insert the central vertex
+//        centralDart = m_map.phi1(ne);
+
+//        dd = m_map.phi1(m_map.phi1(next)) ;
+//        while(dd != ne)				// turn around the face and insert new edges
+//        {							// linked to the central vertex
+//            Dart tmp = m_map.phi1(ne) ;
+//            m_map.splitFace(tmp, dd) ;
+//            dd = m_map.phi1(m_map.phi1(dd)) ;
+//        }
+
+//        m_map.decCurrentLevel() ;
+//    }
+
+//    m_map.incCurrentLevel();
+
+//    m_map.deleteVolume(m_map.phi3(m_map.phi2(m_map.phi1(d))));
+
+//    for (std::vector<std::pair<Dart,Dart> >::iterator it = subdividedFaces.begin(); it != subdividedFaces.end(); ++it)
+//    {
+//        Dart f1 = m_map.phi2((*it).first);
+//        Dart f2 = m_map.phi2((*it).second);
+
+//        if(m_map.isBoundaryFace(f1) && m_map.isBoundaryFace(f2))
+//        {
+//            m_map.sewVolumes(f1, f2);//, false);
+//        }
+//    }
+
+//    (*volumeVertexFunctor)(centralDart) ;
+
+
+//    {
+//        m_map.decCurrentLevel() ;
+//        Traversor3WV<typename PFP::MAP> traWV(m_map, d);
+//        for(Dart ditWV = traWV.begin(); ditWV != traWV.end(); ditWV = traWV.next())
+//        {
+//            std::cout << "plop" << std::endl;
+//        }
+//        m_map.incCurrentLevel();
+//    }
+
+
+
+
+
+
+
+
+
+    m_map.popLevel() ;
+
+    return vLevel;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

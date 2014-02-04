@@ -305,7 +305,7 @@ inline bool GenericMap::isOrbitEmbedded(unsigned int orbit) const
 }
 
 template <unsigned int ORBIT>
-inline unsigned int GenericMap::getEmbedding(Dart d)
+inline unsigned int GenericMap::getEmbedding(Dart d) const
 {
 	assert(isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
 
@@ -432,7 +432,8 @@ inline void GenericMap::initCell(unsigned int i)
 template <unsigned int ORBIT>
 void GenericMap::initAllOrbitsEmbedding(bool realloc)
 {
-	assert(isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded") ;
+	if(!isOrbitEmbedded<ORBIT>())
+		addEmbedding<ORBIT>() ;
 	DartMarker mark(*this) ;
 	for(Dart d = begin(); d != end(); next(d))
 	{
@@ -479,7 +480,7 @@ inline void GenericMap::updateQuickTraversal()
 }
 
 template <unsigned int ORBIT>
-inline AttributeMultiVector<Dart>* GenericMap::getQuickTraversal()
+inline const AttributeMultiVector<Dart>* GenericMap::getQuickTraversal() const
 {
 	return m_quickTraversal[ORBIT] ;
 }
@@ -526,7 +527,7 @@ inline void GenericMap::updateQuickIncidentTraversal()
 	for (Dart d = tra_glob.begin(); d != tra_glob.end(); d = tra_glob.next())
 	{
 		buffer.clear();
-        Traversor/*<MAP>*/* tra_loc = TraversorFactory<MAP>::createIncident(map, d, map.dimension(), ORBIT, INCI);
+		Traversor* tra_loc = TraversorFactory<MAP>::createIncident(map, d, map.dimension(), ORBIT, INCI);
 		for (Dart e = tra_loc->begin(); e != tra_loc->end(); e = tra_loc->next())
 			buffer.push_back(e);
 		delete tra_loc;
@@ -539,7 +540,7 @@ inline void GenericMap::updateQuickIncidentTraversal()
 }
 
 template <unsigned int ORBIT, unsigned int INCI>
-inline AttributeMultiVector<NoTypeNameAttribute<std::vector<Dart> > >* GenericMap::getQuickIncidentTraversal()
+inline const AttributeMultiVector<NoTypeNameAttribute<std::vector<Dart> > >* GenericMap::getQuickIncidentTraversal() const
 {
 	return m_quickLocalIncidentTraversal[ORBIT][INCI] ;
 }
@@ -587,7 +588,7 @@ inline void GenericMap::updateQuickAdjacentTraversal()
 	for (Dart d = tra_glob.begin(); d != tra_glob.end(); d = tra_glob.next())
 	{
 		buffer.clear();
-        Traversor/*<MAP>*/* tra_loc = TraversorFactory<MAP>::createAdjacent(map, d, map.dimension(), ORBIT, ADJ);
+		Traversor* tra_loc = TraversorFactory<MAP>::createAdjacent(map, d, map.dimension(), ORBIT, ADJ);
 		for (Dart e = tra_loc->begin(); e != tra_loc->end(); e = tra_loc->next())
 			buffer.push_back(e);
 		buffer.push_back(NIL);
@@ -600,7 +601,7 @@ inline void GenericMap::updateQuickAdjacentTraversal()
 }
 
 template <unsigned int ORBIT, unsigned int ADJ>
-inline AttributeMultiVector<NoTypeNameAttribute<std::vector<Dart> > >* GenericMap::getQuickAdjacentTraversal()
+inline const AttributeMultiVector<NoTypeNameAttribute<std::vector<Dart> > >* GenericMap::getQuickAdjacentTraversal() const
 {
 	return m_quickLocalAdjacentTraversal[ORBIT][ADJ] ;
 }
@@ -614,9 +615,6 @@ inline void GenericMap::disableQuickAdjacentTraversal()
 		m_quickLocalAdjacentTraversal[ORBIT][ADJ] = NULL ;
 	}
 }
-
-
-
 
 
 
@@ -636,10 +634,22 @@ inline AttributeContainer& GenericMap::getAttributeContainer()
 	return m_attribs[ORBIT] ;
 }
 
+template <unsigned int ORBIT>
+inline const AttributeContainer& GenericMap::getAttributeContainer() const
+{
+	return m_attribs[ORBIT] ;
+}
+
 inline AttributeContainer& GenericMap::getAttributeContainer(unsigned int orbit)
 {
 	return m_attribs[orbit] ;
 }
+
+inline const AttributeContainer& GenericMap::getAttributeContainer(unsigned int orbit) const
+{
+	return m_attribs[orbit] ;
+}
+
 
 template <unsigned int ORBIT>
 inline AttributeMultiVector<Mark>* GenericMap::getMarkVector(unsigned int thread)
@@ -826,7 +836,7 @@ inline void GenericMap::next(Dart& d) const
 //}
 
 template <unsigned int ORBIT>
-bool GenericMap::foreach_dart_of_orbit(Dart d, FunctorType& f, unsigned int thread)
+bool GenericMap::foreach_dart_of_orbit(Dart d, FunctorType& f, unsigned int thread) const
 {
 	switch(ORBIT)
 	{
@@ -845,8 +855,28 @@ bool GenericMap::foreach_dart_of_orbit(Dart d, FunctorType& f, unsigned int thre
 	return false;
 }
 
+//template <unsigned int ORBIT>
+//bool GenericMap::foreach_dart_of_orbit(Dart d, FunctorConstType& f, unsigned int thread) const
+//{
+//	switch(ORBIT)
+//	{
+//		case DART:		return f(d);
+//		case VERTEX: 	return foreach_dart_of_vertex(d, f, thread);
+//		case EDGE: 		return foreach_dart_of_edge(d, f, thread);
+//		case FACE: 		return foreach_dart_of_face(d, f, thread);
+//		case VOLUME: 	return foreach_dart_of_volume(d, f, thread);
+//		case VERTEX1: 	return foreach_dart_of_vertex1(d, f, thread);
+//		case EDGE1: 	return foreach_dart_of_edge1(d, f, thread);
+//		case VERTEX2: 	return foreach_dart_of_vertex2(d, f, thread);
+//		case EDGE2:		return foreach_dart_of_edge2(d, f, thread);
+//		case FACE2:		return foreach_dart_of_face2(d, f, thread);
+//		default: 		assert(!"Cells of this dimension are not handled"); break;
+//	}
+//	return false;
+//}
+
 template <unsigned int ORBIT>
-bool GenericMap::foreach_orbit(FunctorType& fonct, unsigned int thread)
+bool GenericMap::foreach_orbit(FunctorType& fonct, unsigned int thread) const
 {
 	TraversorCell<GenericMap, ORBIT> trav(*this, true, thread);
 	bool found = false;
@@ -859,8 +889,23 @@ bool GenericMap::foreach_orbit(FunctorType& fonct, unsigned int thread)
 	return found;
 }
 
+
+//template <unsigned int ORBIT>
+//bool GenericMap::foreach_orbit(FunctorConstType& fonct, unsigned int thread) const
+//{
+//	TraversorCell<GenericMap, ORBIT> trav(*this, true, thread);
+//	bool found = false;
+
+//	for (Dart d = trav.begin(); !found && d != trav.end(); d = trav.next())
+//	{
+//		if ((fonct)(d))
+//			found = true;
+//	}
+//	return found;
+//}
+
 template <unsigned int ORBIT>
-unsigned int GenericMap::getNbOrbits()
+unsigned int GenericMap::getNbOrbits() const
 {
 	FunctorCount fcount;
 	foreach_orbit<ORBIT>(fcount);
@@ -868,10 +913,10 @@ unsigned int GenericMap::getNbOrbits()
 }
 
 template <typename MAP, unsigned int ORBIT, unsigned int INCIDENT>
-unsigned int GenericMap::degree(Dart d)
+unsigned int GenericMap::degree(Dart d) const
 {
 	assert(ORBIT != INCIDENT || !"degree does not manage adjacency counting") ;
-    Traversor/*<MAP>*/* t = TraversorFactory<MAP>::createIncident(*(reinterpret_cast<MAP*>(this)), d, dimension(), ORBIT, INCIDENT) ;
+	Traversor* t = TraversorFactory<MAP>::createIncident(*(reinterpret_cast<MAP*>(this)), d, dimension(), ORBIT, INCIDENT) ;
 	FunctorCount fcount ;
 	t->applyFunctor(fcount) ;
 	delete t ;

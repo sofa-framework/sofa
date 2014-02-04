@@ -106,26 +106,17 @@ bool importMesh(typename PFP::MAP& map, const std::string& filename, std::vector
 template <typename PFP>
 bool importMeshToExtrude(typename PFP::MAP& map, const std::string& filename, std::vector<std::string>& attrNames, float scale = 5.0f, unsigned int nbStage = 1);
 
+/**
+ *
+ */
 template <typename PFP>
 bool importMeshSAsV(typename PFP::MAP& map, const std::string& filename, std::vector<std::string>& attrNames);
 
-/*
- * TODO a transformer en utilisant un MeshTableVolume.
+
+
+/**
+ * TODO ADD TO MeshTablesVolume
  */
-template <typename PFP>
-bool importOFFWithELERegions(typename PFP::MAP& the_map, const std::string& filenameOFF, const std::string& filenameELE, std::vector<std::string>& attrNames);
-
-template <typename PFP>
-bool importNodeWithELERegions(typename PFP::MAP& map, const std::string& filenameNode, const std::string& filenameELE, std::vector<std::string>& attrNames);
-
-template <typename PFP>
-bool importTet(typename PFP::MAP& the_map, const std::string& filename, std::vector<std::string>& attrNames, float scaleFactor = 1.0f);
-
-template <typename PFP>
-bool importMoka(typename PFP::MAP& the_gmap, const std::string& filename, std::vector<std::string>& attrNames);
-
-template <typename PFP>
-bool importTs(typename PFP::MAP& the_map, const std::string& filename, std::vector<std::string>& attrNames, float scaleFactor = 1.0f);
 
 template <typename PFP>
 bool importMSH(typename PFP::MAP& the_map, const std::string& filename, std::vector<std::string>& attrNames, float scaleFactor = 1.0f);
@@ -139,13 +130,6 @@ bool importNAS(typename PFP::MAP& the_map, const std::string& filename, std::vec
 template <typename PFP>
 bool importVBGZ(typename PFP::MAP& the_map, const std::string& filename, std::vector<std::string>& attrNames, float scaleFactor = 1.0f);
 
-template <typename PFP>
-bool importTetmesh(typename PFP::MAP& the_map, const std::string& filename, std::vector<std::string>& attrNames, float scaleFactor = 1.0f);
-
-template <typename PFP>
-bool importOVM(typename PFP::MAP& the_map, const std::string& filename, std::vector<std::string>& attrNames, float scaleFactor = 1.0f);
-
-
 
 } // Import
 
@@ -156,18 +140,17 @@ bool importOVM(typename PFP::MAP& the_map, const std::string& filename, std::vec
 
 } // namespace CGoGN
 
-#include "Algo/Import/importMesh.hpp"
-#include "Algo/Import/importObjEle.hpp"
-#include "Algo/Import/importTet.hpp"
-#include "Algo/Import/importMoka.hpp"
-#include "Algo/Import/importTs.hpp"
-#include "Algo/Import/importNodeEle.hpp"
+#include "Algo/Import/import.hpp"
+#include "Algo/Import/importChoupi.hpp"
+
+
 #include "Algo/Import/importMSH.hpp"
 #include "Algo/Import/importVTU.hpp"
 #include "Algo/Import/importNAS.hpp"
 #include "Algo/Import/importVBGZ.hpp"
-#include "Algo/Import/importTetmesh.hpp"
+//#include "Algo/Import/importMoka.hpp"
 
-#include "Algo/Import/importChoupi.hpp"
+
+//#include "Algo/Import/importObjTex.hpp"
 
 #endif

@@ -32,6 +32,7 @@
 #include <utility>
 
 #include "Algo/Geometry/normal.h"
+#include "Topology/generic/autoAttributeHandler.h"
 
 namespace CGoGN
 {

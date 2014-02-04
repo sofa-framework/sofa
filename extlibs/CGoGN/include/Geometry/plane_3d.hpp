@@ -139,6 +139,23 @@ Orientation3D Plane3D<T>::orient(const Vector<3,T>& p) const
 #undef PRECISION
 }
 
+
+template <typename T>
+Orientation3D Plane3D<T>::orient(const Vector<3,T>& p, T& dist) const
+{
+#define PRECISION 1e-6
+	dist = distance(p) ;
+
+	if(dist < -PRECISION)
+		return UNDER ;
+	if(dist > PRECISION)
+		return OVER ;
+	return ON ;
+#undef PRECISION
+}
+
+
+
 /**********************************************/
 /*             STREAM OPERATORS               */
 /**********************************************/

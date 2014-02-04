@@ -117,6 +117,7 @@ protected:
 	/**
 	 * Direct access to the attributes that store Marks
 	 */
+
 	AttributeMultiVector<Mark>* m_markTables[NB_ORBITS][NB_THREAD] ;
 
 	unsigned int m_nbThreads ;
@@ -174,7 +175,7 @@ public:
 
 	GenericMap() ;
 
-	~GenericMap() ;
+	virtual ~GenericMap() ;
 
 	virtual std::string mapTypeName() const = 0 ;
 
@@ -281,7 +282,7 @@ public:
 	/**
 	 * duplicate darts from level-1 to level
 	 */
-	void duplicateDarts(unsigned int level);
+	void duplicateDarts(unsigned int newlevel);
 
 	/**
 	 * duplicate a dart starting from current level
@@ -377,7 +378,7 @@ public:
 	 * @return EMBNULL if the orbit of d is not attached to any cell
 	 */
 	template<unsigned int ORBIT>
-	unsigned int getEmbedding(Dart d) ;
+	unsigned int getEmbedding(Dart d) const;
 
 	/**
 	 * Set the cell index of the given dimension associated to dart d
@@ -486,7 +487,7 @@ public:
 	void updateQuickTraversal() ;
 
 	template <unsigned int ORBIT>
-	AttributeMultiVector<Dart>* getQuickTraversal() ;
+	const AttributeMultiVector<Dart>* getQuickTraversal() const;
 
 	template <unsigned int ORBIT>
 	void disableQuickTraversal() ;
@@ -499,7 +500,7 @@ public:
 	void updateQuickIncidentTraversal();
 
 	template <unsigned int ORBIT, unsigned int INCI>
-	AttributeMultiVector<NoTypeNameAttribute<std::vector<Dart> > >* getQuickIncidentTraversal();
+	const AttributeMultiVector<NoTypeNameAttribute<std::vector<Dart> > >* getQuickIncidentTraversal() const;
 
 	template <unsigned int ORBIT, unsigned int INCI>
 	void disableQuickIncidentTraversal();
@@ -511,7 +512,7 @@ public:
 	void updateQuickAdjacentTraversal();
 
 	template <unsigned int ORBIT, unsigned int INCI>
-	AttributeMultiVector<NoTypeNameAttribute<std::vector<Dart> > >* getQuickAdjacentTraversal();
+	const AttributeMultiVector<NoTypeNameAttribute<std::vector<Dart> > >* getQuickAdjacentTraversal() const;
 
 	template <unsigned int ORBIT, unsigned int ADJ>
 	void disableQuickAdjacentTraversal();
@@ -533,7 +534,12 @@ public:
 	template <unsigned int ORBIT>
 	AttributeContainer& getAttributeContainer() ;
 
+	template <unsigned int ORBIT>
+	const AttributeContainer& getAttributeContainer() const;
+
 	AttributeContainer& getAttributeContainer(unsigned int orbit) ;
+
+	const AttributeContainer& getAttributeContainer(unsigned int orbit) const;
 
 	/**
 	 * get a multi vector of mark attribute (direct access with [i])
@@ -669,7 +675,7 @@ public:
 	 * @param filename the file name
 	 * @return true if OK
 	 */
-	bool saveMapBin(const std::string& filename) ;
+	bool saveMapBin(const std::string& filename) const;
 
 	/**
 	 * Load map from a binary file
@@ -739,21 +745,39 @@ public:
 	 *  @param d a dart of the orbit
 	 *  @param f a functor obj
 	 */
+//	template <unsigned int ORBIT>
+//	bool foreach_dart_of_orbit(Dart d, FunctorType& f, unsigned int thread = 0) ;
 	template <unsigned int ORBIT>
-	bool foreach_dart_of_orbit(Dart d, FunctorType& f, unsigned int thread = 0) ;
+	bool foreach_dart_of_orbit(Dart d, FunctorType& f, unsigned int thread = 0) const;
 
-	virtual bool foreach_dart_of_vertex(Dart d, FunctorType& f, unsigned int thread = 0) = 0 ;
-	virtual bool foreach_dart_of_edge(Dart d, FunctorType& f, unsigned int thread = 0) = 0 ;
-	virtual bool foreach_dart_of_face(Dart /*d*/, FunctorType& /*f*/, unsigned int /*thread = 0*/) { std::cerr << "Not implemented" << std::endl; return false; }
-	virtual bool foreach_dart_of_volume(Dart /*d*/, FunctorType& /*f*/, unsigned /*int thread = 0*/) { std::cerr << "Not implemented" << std::endl; return false; }
-	virtual bool foreach_dart_of_cc(Dart /*d*/, FunctorType& /*f*/, unsigned int /*thread = 0*/) { std::cerr << "Not implemented" << std::endl; return false; }
 
-	virtual bool foreach_dart_of_vertex1(Dart /*d*/, FunctorType& /*f*/, unsigned int /*thread = 0*/) { std::cerr << "Not implemented" << std::endl; return false; }
-	virtual bool foreach_dart_of_edge1(Dart /*d*/, FunctorType& /*f*/, unsigned int /*thread = 0*/) { std::cerr << "Not implemented" << std::endl; return false; }
+	virtual bool foreach_dart_of_vertex(Dart d, FunctorType& f, unsigned int thread = 0) const = 0 ;
+	virtual bool foreach_dart_of_edge(Dart d, FunctorType& f, unsigned int thread = 0) const = 0 ;
+	virtual bool foreach_dart_of_face(Dart /*d*/, FunctorType& /*f*/, unsigned int /*thread = 0*/) const { std::cerr << "Not implemented" << std::endl; return false; }
+	virtual bool foreach_dart_of_volume(Dart /*d*/, FunctorType& /*f*/, unsigned /*int thread = 0*/) const { std::cerr << "Not implemented" << std::endl; return false; }
+	virtual bool foreach_dart_of_cc(Dart /*d*/, FunctorType& /*f*/, unsigned int /*thread = 0*/) const { std::cerr << "Not implemented" << std::endl; return false; }
 
-	virtual bool foreach_dart_of_vertex2(Dart /*d*/, FunctorType& /*f*/, unsigned int /*thread = 0*/) { std::cerr << "Not implemented" << std::endl; return false; }
-	virtual bool foreach_dart_of_edge2(Dart /*d*/, FunctorType& /*f*/, unsigned int /*thread = 0*/) { std::cerr << "Not implemented" << std::endl; return false; }
-	virtual bool foreach_dart_of_face2(Dart /*d*/, FunctorType& /*f*/, unsigned int /*thread = 0*/) { std::cerr << "Not implemented" << std::endl; return false; }
+	virtual bool foreach_dart_of_vertex1(Dart /*d*/, FunctorType& /*f*/, unsigned int /*thread = 0*/) const { std::cerr << "Not implemented" << std::endl; return false; }
+	virtual bool foreach_dart_of_edge1(Dart /*d*/, FunctorType& /*f*/, unsigned int /*thread = 0*/) const { std::cerr << "Not implemented" << std::endl; return false; }
+
+	virtual bool foreach_dart_of_vertex2(Dart /*d*/, FunctorType& /*f*/, unsigned int /*thread = 0*/) const { std::cerr << "Not implemented" << std::endl; return false; }
+	virtual bool foreach_dart_of_edge2(Dart /*d*/, FunctorType& /*f*/, unsigned int /*thread = 0*/) const { std::cerr << "Not implemented" << std::endl; return false; }
+	virtual bool foreach_dart_of_face2(Dart /*d*/, FunctorType& /*f*/, unsigned int /*thread = 0*/) const { std::cerr << "Not implemented" << std::endl; return false; }
+
+
+//	virtual bool foreach_dart_of_vertex(Dart d, FunctorConstType& f, unsigned int thread = 0) const = 0 ;
+//	virtual bool foreach_dart_of_edge(Dart d, FunctorConstType& f, unsigned int thread = 0) const = 0 ;
+//	virtual bool foreach_dart_of_face(Dart /*d*/, FunctorConstType& /*f*/, unsigned int /*thread = 0*/) const { std::cerr << "Not implemented" << std::endl; return false; }
+//	virtual bool foreach_dart_of_volume(Dart /*d*/, FunctorConstType& /*f*/, unsigned /*int thread = 0*/) const { std::cerr << "Not implemented" << std::endl; return false; }
+//	virtual bool foreach_dart_of_cc(Dart /*d*/, FunctorConstType& /*f*/, unsigned int /*thread = 0*/) const { std::cerr << "Not implemented" << std::endl; return false; }
+
+//	virtual bool foreach_dart_of_vertex1(Dart /*d*/, FunctorConstType& /*f*/, unsigned int /*thread = 0*/) const { std::cerr << "Not implemented" << std::endl; return false; }
+//	virtual bool foreach_dart_of_edge1(Dart /*d*/, FunctorConstType& /*f*/, unsigned int /*thread = 0*/) const { std::cerr << "Not implemented" << std::endl; return false; }
+
+//	virtual bool foreach_dart_of_vertex2(Dart /*d*/, FunctorConstType& /*f*/, unsigned int /*thread = 0*/) const { std::cerr << "Not implemented" << std::endl; return false; }
+//	virtual bool foreach_dart_of_edge2(Dart /*d*/, FunctorConstType& /*f*/, unsigned int /*thread = 0*/) const { std::cerr << "Not implemented" << std::endl; return false; }
+//	virtual bool foreach_dart_of_face2(Dart /*d*/, FunctorConstType& /*f*/, unsigned int /*thread = 0*/) const { std::cerr << "Not implemented" << std::endl; return false; }
+
 
 	/**
 	* execute functor for each orbit
@@ -761,20 +785,24 @@ public:
 	* @param f the functor
 	*/
 	template <unsigned int ORBIT>
-	bool foreach_orbit(FunctorType& f, unsigned int thread = 0) ;
+	bool foreach_orbit(FunctorType& f, unsigned int thread = 0) const;
+
+//	template <unsigned int ORBIT>
+//	bool foreach_orbit(FunctorConstType& f, unsigned int thread = 0) const;
+
 
 	//! Count the number of orbits of dimension dim in the map
 	/*! @param dim the dimension of the orbit
 	 * 	@return the number of orbits
 	 */
 	template <unsigned int ORBIT>
-	unsigned int getNbOrbits() ;
+	unsigned int getNbOrbits() const;
 
 	//! For an orbit of a given dimension, return the number of incident cells of an other given dimension
 	/*! @param d a dart
 	 */
 	template <typename MAP, unsigned int ORBIT, unsigned int INCIDENT>
-	unsigned int degree(Dart d);
+	unsigned int degree(Dart d) const;
 
 protected:
 	/// boundary markers

@@ -59,6 +59,10 @@ namespace Import
 template <typename PFP>
 class MeshTablesSurface
 {
+public:
+    typedef typename PFP::VEC3 VEC3 ;
+    typedef typename VEC3::DATA_TYPE DATA_TYPE ;
+
 protected:
 	typename PFP::MAP& m_map;
 
@@ -78,25 +82,9 @@ protected:
 	*/
 	std::vector<unsigned int> m_emb;
 
-	static ImportType getFileType(const std::string& filename);
-
 #ifdef WITH_ASSIMP
 	void extractMeshRec(AttributeContainer& container, VertexAttribute<typename PFP::VEC3>& positions, const struct aiScene* scene, const struct aiNode* nd, struct aiMatrix4x4* trafo);
 #endif
-
-public:
-	typedef typename PFP::VEC3 VEC3 ;
-	typedef typename VEC3::DATA_TYPE DATA_TYPE ;
-
-	inline unsigned getNbFaces() const { return m_nbFaces; }
-
-	inline unsigned getNbVertices() const { return m_nbVertices; }
-
-	inline short getNbEdgesFace(int i) const  { return m_nbEdges[i]; }
-
-	inline unsigned int getEmbIdx(int i) { return  m_emb[i]; }
-
-	bool importMesh(const std::string& filename, std::vector<std::string>& attrNames);
 
 	bool importTrian(const std::string& filename, std::vector<std::string>& attrNames);
 
@@ -104,22 +92,21 @@ public:
 
 	bool importOff(const std::string& filename, std::vector<std::string>& attrNames);
 
-    bool importVoxellisation(Algo::Surface::Modelisation::Voxellisation& voxellisation, std::vector<std::string>& attrNames);
-
 	bool importMeshBin(const std::string& filename, std::vector<std::string>& attrNames);
 
     bool importObj(const std::string& filename, std::vector<std::string>& attrNames);
 
 	bool importPly(const std::string& filename, std::vector<std::string>& attrNames);
 
-	// bool importPlyPTM(const std::string& filename, std::vector<std::string>& attrNames);
+    //bool importPlyPTM(const std::string& filename, std::vector<std::string>& attrNames);
+
 	bool importPlySLFgeneric(const std::string& filename, std::vector<std::string>& attrNames);
+
 	bool importPlySLFgenericBin(const std::string& filename, std::vector<std::string>& attrNames);
 
 #ifdef WITH_ASSIMP
 	bool importASSIMP(const std::string& filename, std::vector<std::string>& attrNames);
 #endif	
-	bool mergeCloseVertices();
 
 	bool importAHEM(const std::string& filename, std::vector<std::string>& attrNames);
 
@@ -127,19 +114,31 @@ public:
 
 	bool importSTLBin(const std::string& filename, std::vector<std::string>& attrNames);
 
-	/**
-	 * @param container container of vertex orbite
-	 * @param idPositions id of position attribute in the container
-	 * @param idLabels id of label attribute in the container
-	 */
+public:
+    //static ImportType getFileType(const std::string& filename);
+
+    bool mergeCloseVertices();
+
+    inline unsigned getNbFaces() const { return m_nbFaces; }
+
+    inline unsigned getNbVertices() const { return m_nbVertices; }
+
+    inline short getNbEdgesFace(int i) const  { return m_nbEdges[i]; }
+
+    inline unsigned int getEmbIdx(int i) { return  m_emb[i]; }
+
+    bool importMesh(const std::string& filename, std::vector<std::string>& attrNames);
+
+    bool importVoxellisation(Algo::Surface::Modelisation::Voxellisation& voxellisation, std::vector<std::string>& attrNames);
+
 	MeshTablesSurface(typename PFP::MAP& map):
 		m_map(map)
-	{
-	}
+    { }
 };
 
-}
-}
+} // namespace Import
+
+} // namespace Surface
 
 
 namespace Volume
@@ -156,9 +155,9 @@ public:
     typedef typename PFP::REAL REAL;
 
 protected:
-    typename PFP::MAP& m_map;
+	typename PFP::MAP& m_map;
 
-    unsigned int m_nbVertices;
+	unsigned int m_nbVertices;
 
     unsigned int m_nbVolumes;
 
@@ -167,10 +166,10 @@ protected:
      */
     std::vector<short> m_nbFaces;
 
-    /**
-    * table of emb ptr (for each face, first vertex)
-    */
-    std::vector<unsigned int> m_emb;
+	/**
+	* table of emb ptr (for each face, first vertex)
+	*/
+	std::vector<unsigned int> m_emb;
 
     //Tetrahedra
 
@@ -217,15 +216,15 @@ public:
 
     bool importMesh(const std::string& filename, std::vector<std::string>& attrNames);
 
-    MeshTablesVolume(typename PFP::MAP& map):
-        m_map(map)
+	MeshTablesVolume(typename PFP::MAP& map):
+		m_map(map)
     { }
 };
 
 
 } // namespace Import
 
-}
+} // namespace Volume
 
 
 } // namespace Algo

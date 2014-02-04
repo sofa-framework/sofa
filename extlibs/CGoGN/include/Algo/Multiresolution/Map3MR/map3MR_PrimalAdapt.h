@@ -169,6 +169,10 @@ public:
 
 	unsigned int subdivideHexa(Dart d, bool OneLevelDifference = true);
 
+    void subdivideFace2(Dart d, bool triQuad = false);
+
+    unsigned int subdivideHexa2(Dart d, bool OneLevelDifference = true);
+
 	//! Subdivide the volume of d to hexahedral cells
 	/*! @param d Dart from the volume
 	 */

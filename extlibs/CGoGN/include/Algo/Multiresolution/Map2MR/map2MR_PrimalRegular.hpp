@@ -22,6 +22,8 @@
 *                                                                              *
 *******************************************************************************/
 
+#include "Algo/Import/importMRDAT.h"
+
 namespace CGoGN
 {
 
@@ -62,7 +64,7 @@ Map2MR<PFP>::~Map2MR()
 }
 
 template <typename PFP>
-void Map2MR<PFP>::addNewLevel(bool triQuad)
+void Map2MR<PFP>::addNewLevel(bool triQuad, bool embedNewVertices)
 {
 	m_map.pushLevel() ;
 
@@ -74,7 +76,7 @@ void Map2MR<PFP>::addNewLevel(bool triQuad)
 	TraversorE<typename PFP::MAP> travE(m_map) ;
 	for (Dart d = travE.begin(); d != travE.end(); d = travE.next())
 	{
-//		if(!shareVertexEmbeddings)
+//		if(!shareVertexEmbeddings && embedNewVertices)
 //		{
 //			if(m_map.template getEmbedding<VERTEX>(d) == EMBNULL)
 //				m_map.template setOrbitEmbeddingOnNewCell<VERTEX>(d) ;
@@ -86,6 +88,10 @@ void Map2MR<PFP>::addNewLevel(bool triQuad)
 		travE.skip(d) ;
 		travE.skip(m_map.phi1(d)) ;
 
+		//std::cout << "is EMB NULL : " << ( m_map.template getEmbedding<VERTEX>(m_map.phi1(d)) == EMBNULL ? "true" : "false" ) << std::endl;
+
+		//if(embedNewVertices)
+		//	m_map.template setOrbitEmbeddingOnNewCell<VERTEX>(m_map.phi1(d)) ;
 	}
 
 	// split faces
@@ -128,6 +134,9 @@ void Map2MR<PFP>::addNewLevel(bool triQuad)
 			Dart ne = m_map.phi2(m_map.phi_1(dd)) ;
 			m_map.cutEdge(ne) ;				// cut the new edge to insert the central vertex
 			travF.skip(dd) ;
+
+			//if(embedNewVertices)
+			//		m_map.template setOrbitEmbeddingOnNewCell<VERTEX>(m_map.phi1(ne)) ;
 
 			dd = m_map.phi1(m_map.phi1(next)) ;
 			while(dd != ne)				// turn around the face and insert new edges
@@ -265,6 +274,98 @@ void Map2MR<PFP>::synthesis()
 		(*synthesisFilters[i])() ;
 
 	m_map.incCurrentLevel() ;
+}
+
+template <typename PFP>
+void Map2MR<PFP>::addLevelFront()
+{
+	DartMarker md(m_map);
+
+	m_map.addLevelFront() ;
+	m_map.duplicateDarts(0);
+	m_map.setCurrentLevel(0);
+
+	std::vector<Dart> visitedVertices;
+	visitedVertices.reserve(1024);
+
+	//look for an irregular vertex
+
+	TraversorV<typename PFP::MAP> tv(m_map);
+	bool found = false;
+	for(Dart d = tv.begin() ; !found && d != tv.end() ; d = tv.next())
+	{
+		if(m_map.vertexDegree(d) != 6)
+		{
+			found = true;
+			visitedVertices.push_back(d);
+		}
+	}
+
+	std::cout << "d = " << visitedVertices[0] << std::endl;
+
+	for(unsigned int i = 0 ; i < visitedVertices.size() ; ++i)
+	{
+		Dart d = visitedVertices[i];
+
+			Dart fit1 = m_map.phi2(m_map.phi1(d));
+			//m_map.mergeFaces(fit1) ;
+
+//		Traversor2VE<typename PFP::MAP> tve(m_map, d);
+//		for(Dart eit = tve.begin() ; eit != tve.end() ; eit = tve.next())
+//		{
+//			//coarse all faces around the vertex
+//			if(!md.isMarked(eit))
+//			{
+//				unsigned int degree = m_map.faceDegree(eit);
+
+//				if(degree == 3)
+//				{
+//					Dart fit1 = m_map.phi2(m_map.phi1(eit));
+//					//Dart fit2 = m_map.phi1(fit1);
+//					//Dart fit3 = m_map.phi1(fit2);
+
+//					m_map.mergeFaces(fit1) ;
+//					//m_map.mergeFaces(fit2) ;
+//					//m_map.mergeFaces(fit3) ;
+//				}
+//				else
+//				{
+
+//				}
+
+//				//visitedVertices.push_back(m_map.phi1(m_map.phi1(eit)));
+//				//visitedVertices.push_back(m_map.phi_1(m_map.phi_1(eit)));
+//			}
+//		}
+
+//		for(Dart eit = tve.begin() ; eit != tve.end() ; eit = tve.next())
+//		{
+//			if(!md.isMarked(eit))
+//			{
+//				//coarse all edges around the vertex
+//				m_map.uncutEdge(eit) ;
+//				md.markOrbit<EDGE>(eit);
+//			}
+//		}
+	}
+}
+
+template <typename PFP>
+void Map2MR<PFP>::import(Algo::Surface::Import::QuadTree& qt)
+{
+	std::cout << "  Create finer resolution levels.." << std::flush ;
+
+	for(unsigned int i = 0; i < qt.depth; ++i)
+		addNewLevel(true, false) ;
+
+	std::cout << "..done" << std::endl ;
+	std::cout << "  Embed finer resolution levels.." << std::flush ;
+
+	m_map.setCurrentLevel(0) ;
+	qt.embed<PFP>(m_map) ;
+	m_map.setCurrentLevel(m_map.getMaxLevel()) ;
+
+	std::cout << "..done" << std::endl ;
 }
 
 

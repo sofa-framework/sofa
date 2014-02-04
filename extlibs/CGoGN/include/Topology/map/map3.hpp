@@ -79,14 +79,14 @@ inline Dart Map3::newDart()
 	return d ;
 }
 
-inline Dart Map3::phi3(Dart d)
+inline Dart Map3::phi3(Dart d) const
 {
 	unsigned int d_index = dartIndex(d);
 	return (*m_phi3)[d_index] ;
 }
 
 template <int N>
-inline Dart Map3::phi(Dart d)
+inline Dart Map3::phi(Dart d) const
 {
 	assert( (N >0) || !"negative parameters not allowed in template multi-phi");
 	if (N<10)
@@ -108,22 +108,22 @@ inline Dart Map3::phi(Dart d)
 	}
 }
 
-inline Dart Map3::alpha0(Dart d)
+inline Dart Map3::alpha0(Dart d) const
 {
 	return phi3(d) ;
 }
 
-inline Dart Map3::alpha1(Dart d)
+inline Dart Map3::alpha1(Dart d) const
 {
 	return phi3(phi_1(d)) ;
 }
 
-inline Dart Map3::alpha2(Dart d)
+inline Dart Map3::alpha2(Dart d) const
 {
 	return phi3(phi2(d));
 }
 
-inline Dart Map3::alpha_2(Dart d)
+inline Dart Map3::alpha_2(Dart d) const
 {
 	return phi2(phi3(d));
 }
@@ -151,17 +151,17 @@ inline void Map3::phi3unsew(Dart d)
  *  Return or set various topological information
  *************************************************************************/
 
-inline bool Map3::sameEdge(Dart d, Dart e)
+inline bool Map3::sameEdge(Dart d, Dart e) const
 {
 	return sameOrientedEdge(d, e) || sameOrientedEdge(phi2(d), e) ;
 }
 
-inline bool Map3::sameFace(Dart d, Dart e)
+inline bool Map3::sameFace(Dart d, Dart e) const
 {
 	return Map2::sameOrientedFace(d, e) || Map2::sameOrientedFace(phi3(d), e) ;
 }
 
-inline bool Map3::isBoundaryFace(Dart d)
+inline bool Map3::isBoundaryFace(Dart d) const
 {
 	return isBoundaryMarked3(d) || isBoundaryMarked3(phi3(d));
 }
@@ -170,27 +170,27 @@ inline bool Map3::isBoundaryFace(Dart d)
  *  Apply functors to all darts of a cell
  *************************************************************************/
 
-inline bool Map3::foreach_dart_of_face(Dart d, FunctorType& f, unsigned int thread)
+inline bool Map3::foreach_dart_of_face(Dart d, FunctorType& f, unsigned int thread) const
 {
 	return Map2::foreach_dart_of_face(d, f, thread) || Map2::foreach_dart_of_face(phi3(d), f, thread);
 }
 
-inline bool Map3::foreach_dart_of_volume(Dart d, FunctorType& f, unsigned int thread)
+inline bool Map3::foreach_dart_of_volume(Dart d, FunctorType& f, unsigned int thread) const
 {
 	return Map2::foreach_dart_of_cc(d, f, thread);
 }
 
-inline bool Map3::foreach_dart_of_vertex2(Dart d, FunctorType& f, unsigned int thread)
+inline bool Map3::foreach_dart_of_vertex2(Dart d, FunctorType& f, unsigned int thread) const
 {
 	return Map2::foreach_dart_of_vertex(d, f, thread);
 }
 
-inline bool Map3::foreach_dart_of_edge2(Dart d, FunctorType& f, unsigned int thread)
+inline bool Map3::foreach_dart_of_edge2(Dart d, FunctorType& f, unsigned int thread) const
 {
 	return Map2::foreach_dart_of_edge(d, f, thread);
 }
 
-inline bool Map3::foreach_dart_of_face2(Dart d, FunctorType& f, unsigned int thread)
+inline bool Map3::foreach_dart_of_face2(Dart d, FunctorType& f, unsigned int thread) const
 {
 	return Map2::foreach_dart_of_face(d, f, thread);
 }

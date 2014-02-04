@@ -89,6 +89,11 @@ typename VEC3::DATA_TYPE squaredDistanceLine2Point(const VEC3& A, const VEC3& B,
 
 /**
 * compute squared distance from line to line
+* @param A point of first line
+* @param AB vector of first line
+* @param AB2 AB*AB (for optimization if call several times with AB
+* @param P first point of second line
+* @param Q second point of second line
 * @return the squared distance
 */
 template <typename VEC3>
@@ -96,6 +101,11 @@ typename VEC3::DATA_TYPE squaredDistanceLine2Line(const VEC3& A, const VEC3& AB,
 
 /**
 * compute squared distance from line to segment
+* @param A point of line
+* @param AB vector of line
+* @param AB2 AB*AB (for optimization if call several times with AB
+* @param P first point of segment
+* @param Q second point of segment
 * @return the squared distance
 */
 template <typename VEC3>
@@ -103,6 +113,9 @@ typename VEC3::DATA_TYPE squaredDistanceLine2Seg(const VEC3& A, const VEC3& AB, 
 
 /**
 * compute squared distance from segment to point
+* @param A point of segment
+* @param AB vector of segment
+* @param AB2 AB*AB (for optimization if call several times with AB
 * @return the squared distance
 */
 template <typename VEC3>

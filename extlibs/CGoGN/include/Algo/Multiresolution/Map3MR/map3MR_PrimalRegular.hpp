@@ -133,42 +133,42 @@ void Map3MR<PFP>::splitSurfaceInVolume(std::vector<Dart>& vd, bool firstSideClos
 template <typename PFP>
 Dart Map3MR<PFP>::swap2To3(Dart d)
 {
-	std::vector<Dart> edges;
+    std::vector<Dart> edges;
 
-	Dart d2_1 = m_map.phi_1(m_map.phi2(d));
-	m_map.mergeVolumes(d,false);
+    Dart d2_1 = m_map.phi_1(m_map.phi2(d));
+    m_map.mergeVolumes(d,false);
 
-	//
-	// Cut the 1st tetrahedron
-	//
-	Dart stop = d2_1;
-	Dart dit = stop;
-	do
-	{
-		edges.push_back(dit);
-		dit = m_map.phi1(m_map.phi2(m_map.phi1(dit)));
-	}
-	while(dit != stop);
+    //
+    // Cut the 1st tetrahedron
+    //
+    Dart stop = d2_1;
+    Dart dit = stop;
+    do
+    {
+        edges.push_back(dit);
+        dit = m_map.phi1(m_map.phi2(m_map.phi1(dit)));
+    }
+    while(dit != stop);
 
-	m_map.splitVolume(edges);
-	m_map.splitFace(m_map.alpha2(edges[0]), m_map.alpha2(edges[2]));
+    m_map.splitVolume(edges);
+    m_map.splitFace(m_map.alpha2(edges[0]), m_map.alpha2(edges[2]));
 
-	//
-	// Cut the 2nd tetrahedron
-	//
-	edges.clear();
-	stop = m_map.phi1(m_map.phi2(d2_1));
-	dit = stop;
-	do
-	{
-		edges.push_back(dit);
-		dit = m_map.phi1(m_map.phi2(m_map.phi1(dit)));
-	}
-	while(dit != stop);
-	m_map.splitVolumeWithFace(edges,m_map.phi_1(m_map.phi3(d)));
-	//m_map.splitVolume(edges);
+    //
+    // Cut the 2nd tetrahedron
+    //
+    edges.clear();
+    stop = m_map.phi1(m_map.phi2(d2_1));
+    dit = stop;
+    do
+    {
+        edges.push_back(dit);
+        dit = m_map.phi1(m_map.phi2(m_map.phi1(dit)));
+    }
+    while(dit != stop);
+    m_map.splitVolumeWithFace(edges,m_map.phi_1(m_map.phi3(d)));
+    //m_map.splitVolume(edges);
 
-	return m_map.phi1(d2_1);
+    return m_map.phi1(d2_1);
 }
 
 template <typename PFP>
@@ -250,7 +250,7 @@ void Map3MR<PFP>::swapGen3To2(Dart d)
 			{
 				dit = m_map.phi2(swap2To3(dit));
 			}
-            std::cout << "balalbalabaaaaaaaaaaaaaaaaaaa" << std::endl;
+            //std::cout << "balalbalabaaaaaaaaaaaaaaaaaaa" << std::endl;
             swap4To4(m_map.alpha2(dit));
 		}
 	}
@@ -261,7 +261,7 @@ void Map3MR<PFP>::swapGen3To2(Dart d)
 	}
 	else // si (n == 2)
 	{
-		std::cout << "arrrrrrghhhhhhhhhhhh" << std::endl;
+       //std::cout << "arrrrrrghhhhhhhhhhhh" << std::endl;
        swap2To2(d);
 	}
 }
@@ -366,34 +366,217 @@ void Map3MR<PFP>::addNewLevelSqrt3(bool embedNewVertices, VertexAttribute<typena
 	TraversorW<typename PFP::MAP> tWb(m_map);
 	for(Dart dit = tWb.begin() ; dit != tWb.end() ; dit = tWb.next())
 	{
-		if(m_map.isBoundaryVolume(dit))
-		{
-			Traversor3WE<typename PFP::MAP> tWE(m_map, dit);
-			for(Dart ditWE = tWE.begin() ; ditWE != tWE.end() ; ditWE = tWE.next())
-			{
-				if(m_map.isBoundaryEdge(ditWE) && !m.isMarked(ditWE))
-					m.markOrbit<EDGE>(ditWE);
-			}
+        if(m_map.isBoundaryVolume(dit))
+        {
+            Traversor3WE<typename PFP::MAP> tWE(m_map, dit);
+            for(Dart ditWE = tWE.begin() ; ditWE != tWE.end() ; ditWE = tWE.next())
+            {
+                if(m_map.isBoundaryEdge(ditWE) && !m.isMarked(ditWE))
+                    m.markOrbit<EDGE>(ditWE);
+            }
 
-			typename PFP::VEC3 faceCenter(0.0);
-			faceCenter += position[dit];
-			faceCenter += position[m_map.phi1(dit)];
-			faceCenter += position[m_map.phi_1(dit)];
-			faceCenter /= 3;
+            typename PFP::VEC3 faceCenter(0.0);
+            faceCenter += position[dit];
+            faceCenter += position[m_map.phi1(dit)];
+            faceCenter += position[m_map.phi_1(dit)];
+            faceCenter /= 3;
 
-			Dart dres = Volume::Modelisation::Tetrahedralization::flip1To3<PFP>(m_map, dit);
-			position[dres] = faceCenter;
+            Dart dres = Volume::Modelisation::Tetrahedralization::flip1To3<PFP>(m_map, dit);
+            position[dres] = faceCenter;
 
-			newBoundaryV.markOrbit<VERTEX>(dres);
-		}
+            newBoundaryV.markOrbit<VERTEX>(dres);
+        }
 	}
 
 
 	TraversorV<typename PFP::MAP> tVg(m_map);
 	for(Dart dit = tVg.begin() ; dit != tVg.end() ; dit = tVg.next())
 	{
-		if(m_map.isBoundaryVertex(dit) && !newBoundaryV.isMarked(dit))
-		{
+//		if(m_map.isBoundaryVertex(dit) && !newBoundaryV.isMarked(dit))
+//		{
+//            m_map.decCurrentLevel() ;
+//            Dart db = m_map.findBoundaryFaceOfVertex(dit);
+
+//            typename PFP::VEC3 np(0) ;
+//            unsigned int degree = 0 ;
+//            Traversor2VVaE<typename PFP::MAP> trav(m_map, db) ;
+//            for(Dart it = trav.begin(); it != trav.end(); it = trav.next())
+//            {
+//                ++degree ;
+//                np += position[it] ;
+//            }
+//            float alpha = 1.0/9.0 * ( 4.0 - 2.0 * cos(2.0 * M_PI / degree));
+//            np *= alpha / degree ;
+
+//            typename PFP::VEC3 vp = position[db] ;
+//            vp *= 1.0 - alpha ;
+
+//            m_map.incCurrentLevel() ;
+
+//            position[dit] = np + vp;
+
+                        //            Dart db = m_map.findBoundaryFaceOfVertex(dit);
+
+                        //            typename PFP::VEC3 P = position[db] ;
+                        //            typename PFP::VEC3 newP(0) ;
+                        //            unsigned int val = 0 ;
+                        //            Dart vit = db ;
+                        //            do
+                        //            {
+                        //                newP += position[m_map.phi2(m_map.phi_1(m_map.phi2(m_map.phi1(vit))))] ;
+                        //                ++val ;
+                        //                vit = m_map.phi2(m_map.phi_1(vit)) ;
+                        //            } while(vit != db) ;
+                        //            typename PFP::REAL K = sqrt3_K(val) ;
+                        //            newP *= typename PFP::REAL(3) ;
+                        //            newP -= typename PFP::REAL(val) * P ;
+                        //            newP *= K / typename PFP::REAL(2 * val) ;
+                        //            newP += (typename PFP::REAL(1) - K) * P ;
+                        //            position[db] = newP ;
+//		}
+                        //		else if(!m_map.isBoundaryVertex(dit) && !newV.isMarked(dit))
+                        //		{
+                        //			m_map.decCurrentLevel() ;
+                        //			typename PFP::VEC3 np(0) ;
+                        //			unsigned int degree = 0 ;
+                        //			Traversor3VVaE<typename PFP::MAP> trav(m_map, dit) ;
+                        //			for(Dart it = trav.begin(); it != trav.end(); it = trav.next())
+                        //			{
+                        //				++degree ;
+                        //				np += position[it] ;
+                        //			}
+                        //			np /= degree;
+
+                        //			m_map.incCurrentLevel() ;
+
+                        //			position[dit] = np;
+                        //		}
+	}
+
+    //
+    // edge-removal on all old boundary edges
+    //
+    TraversorE<typename PFP::MAP> tE(m_map);
+    for(Dart dit = tE.begin() ; dit != tE.end() ; dit = tE.next())
+    {
+        if(m.isMarked(dit))
+        {
+            m.unmarkOrbit<EDGE>(dit);
+            Dart d = m_map.phi2(m_map.phi3(m_map.findBoundaryFaceOfEdge(dit)));
+            swapGen3To2(d);
+
+        }
+    }
+
+
+	m_map.setCurrentLevel(m_map.getMaxLevel());
+	m_map.popLevel() ;
+}
+
+
+template <typename PFP>
+void Map3MR<PFP>::addNewLevelSqrt3Geom(bool embedNewVertices, VertexAttribute<typename PFP::VEC3> position)
+{
+    m_map.pushLevel();
+
+    m_map.addLevelBack();
+    m_map.duplicateDarts(m_map.getMaxLevel());
+    m_map.setCurrentLevel(m_map.getMaxLevel());
+
+    DartMarkerStore m(m_map);
+    DartMarkerStore newBoundaryV(m_map);
+    DartMarkerStore newV(m_map);
+
+    if(embedNewVertices)
+    {
+        TraversorV<typename PFP::MAP> tW(m_map);
+        for(Dart dit = tW.begin() ; dit != tW.end() ; dit = tW.next())
+        {
+            m_map.decCurrentLevel();
+            unsigned int emb = m_map.template getEmbedding<VERTEX>(dit);
+            m_map.incCurrentLevel();
+
+            unsigned int newemb = m_map.template setOrbitEmbeddingOnNewCell<VERTEX>(dit) ;
+            m_map.template copyCell<VERTEX>(newemb, emb);
+
+        }
+    }
+
+    //
+    // 1-4 flip of all tetrahedra
+    //
+    TraversorW<typename PFP::MAP> tW(m_map);
+    for(Dart dit = tW.begin() ; dit != tW.end() ; dit = tW.next())
+    {
+        Traversor3WF<typename PFP::MAP> tWF(m_map, dit);
+        for(Dart ditWF = tWF.begin() ; ditWF != tWF.end() ; ditWF = tWF.next())
+        {
+            if(!m_map.isBoundaryFace(ditWF) && !m.isMarked(ditWF))
+                m.markOrbit<FACE>(ditWF);
+        }
+
+        typename PFP::VEC3 volCenter(0.0);
+        volCenter += position[dit];
+        volCenter += position[m_map.phi1(dit)];
+        volCenter += position[m_map.phi_1(dit)];
+        volCenter += position[m_map.phi_1(m_map.phi2(dit))];
+        volCenter /= 4;
+
+        Dart dres = Volume::Modelisation::Tetrahedralization::flip1To4<PFP>(m_map, dit);
+        position[dres] = volCenter;
+        newV.markOrbit<VERTEX>(dres);
+
+    }
+
+
+    //
+    // 2-3 swap of all old interior faces
+    //
+    //TraversorF<typename PFP::MAP> tF(m_map);
+    for(Dart dit = m_map.begin() ; dit != m_map.end() ; m_map.next(dit))
+    {
+        if(m.isMarked(dit))
+        {
+            m.unmarkOrbit<FACE>(dit);
+            swap2To3(dit);
+        }
+    }
+
+
+    //
+    // 1-3 flip of all boundary tetrahedra
+    //
+    TraversorW<typename PFP::MAP> tWb(m_map);
+    for(Dart dit = tWb.begin() ; dit != tWb.end() ; dit = tWb.next())
+    {
+        if(m_map.isBoundaryVolume(dit))
+        {
+            Traversor3WE<typename PFP::MAP> tWE(m_map, dit);
+            for(Dart ditWE = tWE.begin() ; ditWE != tWE.end() ; ditWE = tWE.next())
+            {
+                if(m_map.isBoundaryEdge(ditWE) && !m.isMarked(ditWE))
+                    m.markOrbit<EDGE>(ditWE);
+            }
+
+            typename PFP::VEC3 faceCenter(0.0);
+            faceCenter += position[dit];
+            faceCenter += position[m_map.phi1(dit)];
+            faceCenter += position[m_map.phi_1(dit)];
+            faceCenter /= 3;
+
+            Dart dres = Volume::Modelisation::Tetrahedralization::flip1To3<PFP>(m_map, dit);
+            position[dres] = faceCenter;
+
+            newBoundaryV.markOrbit<VERTEX>(dres);
+        }
+    }
+
+
+    TraversorV<typename PFP::MAP> tVg(m_map);
+    for(Dart dit = tVg.begin() ; dit != tVg.end() ; dit = tVg.next())
+    {
+        if(m_map.isBoundaryVertex(dit) && !newBoundaryV.isMarked(dit))
+        {
             m_map.decCurrentLevel() ;
             Dart db = m_map.findBoundaryFaceOfVertex(dit);
 
@@ -415,43 +598,43 @@ void Map3MR<PFP>::addNewLevelSqrt3(bool embedNewVertices, VertexAttribute<typena
 
             position[dit] = np + vp;
 
-//            Dart db = m_map.findBoundaryFaceOfVertex(dit);
+                        //            Dart db = m_map.findBoundaryFaceOfVertex(dit);
 
-//            typename PFP::VEC3 P = position[db] ;
-//            typename PFP::VEC3 newP(0) ;
-//            unsigned int val = 0 ;
-//            Dart vit = db ;
-//            do
+                        //            typename PFP::VEC3 P = position[db] ;
+                        //            typename PFP::VEC3 newP(0) ;
+                        //            unsigned int val = 0 ;
+                        //            Dart vit = db ;
+                        //            do
+                        //            {
+                        //                newP += position[m_map.phi2(m_map.phi_1(m_map.phi2(m_map.phi1(vit))))] ;
+                        //                ++val ;
+                        //                vit = m_map.phi2(m_map.phi_1(vit)) ;
+                        //            } while(vit != db) ;
+                        //            typename PFP::REAL K = sqrt3_K(val) ;
+                        //            newP *= typename PFP::REAL(3) ;
+                        //            newP -= typename PFP::REAL(val) * P ;
+                        //            newP *= K / typename PFP::REAL(2 * val) ;
+                        //            newP += (typename PFP::REAL(1) - K) * P ;
+                        //            position[db] = newP ;
+        }
+//        else if(!m_map.isBoundaryVertex(dit) && !newV.isMarked(dit))
+//        {
+//            m_map.decCurrentLevel() ;
+//            typename PFP::VEC3 np(0) ;
+//            unsigned int degree = 0 ;
+//            Traversor3VVaE<typename PFP::MAP> trav(m_map, dit) ;
+//            for(Dart it = trav.begin(); it != trav.end(); it = trav.next())
 //            {
-//                newP += position[m_map.phi2(m_map.phi_1(m_map.phi2(m_map.phi1(vit))))] ;
-//                ++val ;
-//                vit = m_map.phi2(m_map.phi_1(vit)) ;
-//            } while(vit != db) ;
-//            typename PFP::REAL K = sqrt3_K(val) ;
-//            newP *= typename PFP::REAL(3) ;
-//            newP -= typename PFP::REAL(val) * P ;
-//            newP *= K / typename PFP::REAL(2 * val) ;
-//            newP += (typename PFP::REAL(1) - K) * P ;
-//            position[db] = newP ;
-		}
-//		else if(!m_map.isBoundaryVertex(dit) && !newV.isMarked(dit))
-//		{
-//			m_map.decCurrentLevel() ;
-//			typename PFP::VEC3 np(0) ;
-//			unsigned int degree = 0 ;
-//			Traversor3VVaE<typename PFP::MAP> trav(m_map, dit) ;
-//			for(Dart it = trav.begin(); it != trav.end(); it = trav.next())
-//			{
-//				++degree ;
-//				np += position[it] ;
-//			}
-//			np /= degree;
+//                ++degree ;
+//                np += position[it] ;
+//            }
+//            np /= degree;
 
-//			m_map.incCurrentLevel() ;
+//            m_map.incCurrentLevel() ;
 
-//			position[dit] = np;
-//		}
-	}
+//            position[dit] = np;
+//        }
+    }
 
     //
     // edge-removal on all old boundary edges
@@ -469,16 +652,25 @@ void Map3MR<PFP>::addNewLevelSqrt3(bool embedNewVertices, VertexAttribute<typena
     }
 
 
-
-	m_map.setCurrentLevel(m_map.getMaxLevel());
-	m_map.popLevel() ;
+    m_map.setCurrentLevel(m_map.getMaxLevel());
+    m_map.popLevel() ;
 }
+
+
+
+
+
+
+
+
+
+
 
 
 template <typename PFP>
 void Map3MR<PFP>::addNewLevelSqrt3(bool embedNewVertices)
 {
-	/*
+
 	m_map.pushLevel();
 
 	m_map.addLevelBack();
@@ -502,7 +694,7 @@ void Map3MR<PFP>::addNewLevelSqrt3(bool embedNewVertices)
 
 		Algo::Volume::Modelisation::Tetrahedralization::flip1To4<PFP>(m_map, dit);
 	}
-
+/*
 	//
 	// 2-3 swap of all old interior faces
 	//
@@ -512,10 +704,10 @@ void Map3MR<PFP>::addNewLevelSqrt3(bool embedNewVertices)
 		if(m.isMarked(dit))
 		{
 			m.unmarkOrbit<FACE>(dit);
-			std::cout << "dit = " << dit << std::endl;
 			swap2To3(dit);
 		}
 	}
+
 
 	//
 	// 1-3 flip of all boundary tetrahedra
@@ -552,10 +744,10 @@ void Map3MR<PFP>::addNewLevelSqrt3(bool embedNewVertices)
 		}
 	}
 
-
+*/
 	m_map.setCurrentLevel(m_map.getMaxLevel());
 	m_map.popLevel() ;
-	*/
+
 }
 
 template <typename PFP>

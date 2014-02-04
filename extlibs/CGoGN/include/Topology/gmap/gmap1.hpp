@@ -69,13 +69,13 @@ inline Dart GMap1::newDart()
 	return d ;
 }
 
-inline Dart GMap1::beta1(Dart d)
+inline Dart GMap1::beta1(Dart d) const
 {
 	return (*m_beta1)[d.index] ;
 }
 
 template <int N>
-inline Dart GMap1::beta(const Dart d)
+inline Dart GMap1::beta(const Dart d) const
 {
 	assert( (N > 0) || !"negative parameters not allowed in template multi-beta");
 	if (N<10)
@@ -95,18 +95,18 @@ inline Dart GMap1::beta(const Dart d)
 	}
 }
 
-inline Dart GMap1::phi1(Dart d)
+inline Dart GMap1::phi1(Dart d) const
 {
 	return beta1(beta0(d)) ;
 }
 
-inline Dart GMap1::phi_1(Dart d)
+inline Dart GMap1::phi_1(Dart d) const
 {
 	return beta0(beta1(d)) ;
 }
 
 template <int N>
-inline Dart GMap1::phi(Dart d)
+inline Dart GMap1::phi(Dart d) const
 {
 	assert((N > 0) || !"negative parameters not allowed in template multi-phi");
 	if (N < 10)
@@ -124,12 +124,12 @@ inline Dart GMap1::phi(Dart d)
 	}
 }
 
-inline Dart GMap1::alpha1(Dart d)
+inline Dart GMap1::alpha1(Dart d) const
 {
 	return beta1(beta0(d)) ;
 }
 
-inline Dart GMap1::alpha_1(Dart d)
+inline Dart GMap1::alpha_1(Dart d) const
 {
 	return beta0(beta1(d)) ;
 }
@@ -247,7 +247,7 @@ inline void GMap1::linkCycles(Dart d, Dart e)
  *  Return or set various topological information
  *************************************************************************/
 
-inline bool GMap1::sameOrientedCycle(Dart d, Dart e)
+inline bool GMap1::sameOrientedCycle(Dart d, Dart e) const
 {
 	Dart it = d ;
 	do
@@ -259,7 +259,7 @@ inline bool GMap1::sameOrientedCycle(Dart d, Dart e)
 	return false ;
 }
 
-inline bool GMap1::sameCycle(Dart d, Dart e)
+inline bool GMap1::sameCycle(Dart d, Dart e) const
 {
 	Dart it = d ;
 	do
@@ -274,7 +274,7 @@ inline bool GMap1::sameCycle(Dart d, Dart e)
 	return false ;
 }
 
-inline unsigned int GMap1::cycleDegree(Dart d)
+inline unsigned int GMap1::cycleDegree(Dart d) const
 {
 	unsigned int count = 0 ;
 	Dart it = d ;
@@ -286,7 +286,7 @@ inline unsigned int GMap1::cycleDegree(Dart d)
 	return count ;
 }
 
-inline int GMap1::checkCycleDegree(Dart d, unsigned int degree)
+inline int GMap1::checkCycleDegree(Dart d, unsigned int degree) const
 {
 	unsigned int count = 0 ;
 	Dart it = d ;
@@ -300,7 +300,7 @@ inline int GMap1::checkCycleDegree(Dart d, unsigned int degree)
 }
 
 
-inline bool GMap1::isCycleTriangle(Dart d)
+inline bool GMap1::isCycleTriangle(Dart d) const
 {
 	return (phi1(d) != d) && (phi1(phi1(phi1(d))) == d) ;
 }
@@ -309,7 +309,7 @@ inline bool GMap1::isCycleTriangle(Dart d)
  *  Apply functors to all darts of a cell
  *************************************************************************/
 
-inline bool GMap1::foreach_dart_of_vertex(Dart d, FunctorType& f, unsigned int /*thread*/)
+inline bool GMap1::foreach_dart_of_vertex(Dart d, FunctorType& f, unsigned int /*thread*/) const
 {
 	if (f(d)) return true;
 	Dart d1 = beta1(d);
@@ -317,7 +317,16 @@ inline bool GMap1::foreach_dart_of_vertex(Dart d, FunctorType& f, unsigned int /
 	return false;
 }
 
-inline bool GMap1::foreach_dart_of_edge(Dart d, FunctorType& f, unsigned int /*thread*/)
+//inline bool GMap1::foreach_dart_of_vertex(Dart d, FunctorConstType& f, unsigned int /*thread*/) const
+//{
+//	if (f(d)) return true;
+//	Dart d1 = beta1(d);
+//	if (d1 != d) return f(d1);
+//	return false;
+//}
+
+
+inline bool GMap1::foreach_dart_of_edge(Dart d, FunctorType& f, unsigned int /*thread*/) const
 {
 	if (f(d)) return true;
 	Dart d1 = beta0(d);
@@ -325,7 +334,16 @@ inline bool GMap1::foreach_dart_of_edge(Dart d, FunctorType& f, unsigned int /*t
 	return false;
 }
 
-inline bool GMap1::foreach_dart_of_oriented_cc(Dart d, FunctorType& f, unsigned int /*thread*/)
+//inline bool GMap1::foreach_dart_of_edge(Dart d, FunctorConstType& f, unsigned int /*thread*/) const
+//{
+//	if (f(d)) return true;
+//	Dart d1 = beta0(d);
+//	if (d1 != d) return f(d1);
+//	return false;
+//}
+
+
+inline bool GMap1::foreach_dart_of_oriented_cc(Dart d, FunctorType& f, unsigned int /*thread*/) const
 {
 	Dart it = d ;
 	do
@@ -337,21 +355,26 @@ inline bool GMap1::foreach_dart_of_oriented_cc(Dart d, FunctorType& f, unsigned 
 	return false ;
 }
 
-inline bool GMap1::foreach_dart_of_cc(Dart d, FunctorType& f, unsigned int thread)
-{
-	return GMap1::foreach_dart_of_oriented_cc(d, f, thread) || GMap1::foreach_dart_of_oriented_cc(beta0(d), f, thread) ;
-
+//inline bool GMap1::foreach_dart_of_oriented_cc(Dart d, FunctorConstType& f, unsigned int /*thread*/) const
+//{
 //	Dart it = d ;
 //	do
 //	{
 //		if (f(it))
 //			return true ;
-//		it = beta0(it);
-//		if (f(it))
-//			return true ;
-//		it = beta1(it) ;
+//		it = phi1(it) ;
 //	} while (it != d) ;
 //	return false ;
+//}
+
+inline bool GMap1::foreach_dart_of_cc(Dart d, FunctorType& f, unsigned int thread) const
+{
+	return GMap1::foreach_dart_of_oriented_cc(d, f, thread) || GMap1::foreach_dart_of_oriented_cc(beta0(d), f, thread) ;
 }
+
+//inline bool GMap1::foreach_dart_of_cc(Dart d, FunctorConstType& f, unsigned int thread) const
+//{
+//	return GMap1::foreach_dart_of_oriented_cc(d, f, thread) || GMap1::foreach_dart_of_oriented_cc(beta0(d), f, thread) ;
+//}
 
 } // namespace CGoGN

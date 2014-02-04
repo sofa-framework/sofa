@@ -26,7 +26,7 @@ namespace CGoGN
 {
 
 template <typename MAP, unsigned int ORBIT>
-TraversorCell<MAP, ORBIT>::TraversorCell(MAP& map, bool forceDartMarker, unsigned int thread) :
+TraversorCell<MAP, ORBIT>::TraversorCell(const MAP& map, bool forceDartMarker, unsigned int thread) :
 	m(map), dmark(NULL), cmark(NULL), quickTraversal(NULL), current(NIL), firstTraversal(true)
 {
 	if(forceDartMarker)
@@ -36,7 +36,8 @@ TraversorCell<MAP, ORBIT>::TraversorCell(MAP& map, bool forceDartMarker, unsigne
 		quickTraversal = map.template getQuickTraversal<ORBIT>() ;
 		if(quickTraversal != NULL)
 		{
-			cont = &(m.template getAttributeContainer<ORBIT>()) ;
+			cont = &(map.template getAttributeContainer<ORBIT>()) ;
+
 		}
 		else
 		{
@@ -162,7 +163,7 @@ void TraversorCell<MAP, ORBIT>::skip(Dart d)
 
 //special version (partial specialization) for Genric Map
 template <unsigned int ORBIT>
-TraversorCell<GenericMap, ORBIT>::TraversorCell(GenericMap& map, bool forceDartMarker, unsigned int thread) :
+TraversorCell<GenericMap, ORBIT>::TraversorCell(const GenericMap& map, bool forceDartMarker, unsigned int thread) :
 	m(map), dmark(NULL), cmark(NULL), quickTraversal(NULL), current(NIL), firstTraversal(true)
 {
 	if(forceDartMarker)
@@ -172,7 +173,7 @@ TraversorCell<GenericMap, ORBIT>::TraversorCell(GenericMap& map, bool forceDartM
 		quickTraversal = map.template getQuickTraversal<ORBIT>() ;
 		if(quickTraversal != NULL)
 		{
-			cont = &(m.template getAttributeContainer<ORBIT>()) ;
+			cont = &(map.template getAttributeContainer<ORBIT>()) ;
 		}
 		else
 		{

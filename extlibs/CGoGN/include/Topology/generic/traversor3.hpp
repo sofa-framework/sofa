@@ -33,7 +33,7 @@ namespace CGoGN
 //**********************
 
 template <typename MAP, unsigned int ORBIT>
-MarkerForTraversor<MAP, ORBIT>::MarkerForTraversor(MAP& map, bool forceDartMarker, unsigned int thread) :
+MarkerForTraversor<MAP, ORBIT>::MarkerForTraversor(const MAP& map, bool forceDartMarker, unsigned int thread) :
 	m_map(map),
 	m_dmark(NULL),
 	m_cmark(NULL)
@@ -96,7 +96,7 @@ DartMarkerStore* MarkerForTraversor<MAP, ORBIT>::dmark()
 //**************************************
 
 template <typename MAP, unsigned int ORBX, unsigned int ORBY>
-Traversor3XY<MAP, ORBX, ORBY>::Traversor3XY(MAP& map, Dart dart, bool forceDartMarker, unsigned int thread) :
+Traversor3XY<MAP, ORBX, ORBY>::Traversor3XY(const MAP& map, Dart dart, bool forceDartMarker, unsigned int thread) :
 	m_map(map),
 	m_dmark(NULL),
 	m_cmark(NULL),
@@ -105,7 +105,7 @@ Traversor3XY<MAP, ORBX, ORBY>::Traversor3XY(MAP& map, Dart dart, bool forceDartM
 	m_allocated(true),
 	m_first(true)
 {
-	AttributeMultiVector<NoTypeNameAttribute<std::vector<Dart> > >* quickTraversal = map.template getQuickIncidentTraversal<ORBX,ORBY>() ;
+	const AttributeMultiVector<NoTypeNameAttribute<std::vector<Dart> > >* quickTraversal = map.template getQuickIncidentTraversal<ORBX,ORBY>() ;
 	if (quickTraversal != NULL)
 	{
 		m_QLT  = &(quickTraversal->operator[](map.template getEmbedding<ORBX>(dart)));
@@ -120,7 +120,7 @@ Traversor3XY<MAP, ORBX, ORBY>::Traversor3XY(MAP& map, Dart dart, bool forceDartM
 }
 
 template <typename MAP, unsigned int ORBX, unsigned int ORBY>
-Traversor3XY<MAP, ORBX, ORBY>::Traversor3XY(MAP& map, Dart dart, MarkerForTraversor<MAP, ORBY>& tmo, bool /*forceDartMarker*/, unsigned int thread) :
+Traversor3XY<MAP, ORBX, ORBY>::Traversor3XY(const MAP& map, Dart dart, MarkerForTraversor<MAP, ORBY>& tmo, bool /*forceDartMarker*/, unsigned int thread) :
 	m_map(map),
 	m_tradoo(map, dart, thread),
 	m_QLT(NULL),
@@ -255,10 +255,10 @@ Dart Traversor3XY<MAP, ORBX, ORBY>::next()
 //*********************************************
 
 template <typename MAP, unsigned int ORBX, unsigned int ORBY>
-Traversor3XXaY<MAP, ORBX, ORBY>::Traversor3XXaY(MAP& map, Dart dart, bool forceDartMarker, unsigned int thread):
+Traversor3XXaY<MAP, ORBX, ORBY>::Traversor3XXaY(const MAP& map, Dart dart, bool forceDartMarker, unsigned int thread):
 	m_map(map),m_QLT(NULL)
 {
-	AttributeMultiVector<NoTypeNameAttribute<std::vector<Dart> > >* quickTraversal = map.template getQuickAdjacentTraversal<ORBX,ORBY>() ;
+	const AttributeMultiVector<NoTypeNameAttribute<std::vector<Dart> > >* quickTraversal =  map.template getQuickAdjacentTraversal<ORBX,ORBY>() ;
 	if (quickTraversal != NULL)
 	{
 		m_QLT  = &(quickTraversal->operator[](map.template getEmbedding<ORBX>(dart)));

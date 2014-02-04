@@ -42,7 +42,31 @@ struct PFP_STANDARD
 	typedef Geom::Matrix<3,3,REAL> MATRIX33;
 	typedef Geom::Matrix<4,4,REAL> MATRIX44;
 	typedef Geom::Matrix<3,6,REAL> MATRIX36;
+
+	static inline Geom::Vec3f toVec3f(const VEC3& P)
+	{
+		return P;
+	}
 };
+
+
+struct PFP_DOUBLE
+{
+	typedef double REAL;
+	typedef Geom::Vector<3,REAL> VEC3;
+	typedef Geom::Vector<4,REAL> VEC4;
+	typedef Geom::Vector<6,REAL> VEC6;
+	typedef Geom::Matrix<3,3,REAL> MATRIX33;
+	typedef Geom::Matrix<4,4,REAL> MATRIX44;
+	typedef Geom::Matrix<3,6,REAL> MATRIX36;
+
+	static inline Geom::Vec3f toVec3f(const VEC3& P)
+	{
+		return Geom::Vec3f(float(P[0]),float(P[1]),float(P[2]));
+	}
+};
+
+
 
 }
 
