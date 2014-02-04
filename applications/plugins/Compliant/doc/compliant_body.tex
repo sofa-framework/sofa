@@ -113,7 +113,7 @@ Combined with a time discretization scheme, this leads to an equation system sim
 % contrary to the standard implicit integration approach, where the indefinite stiffness matrix grows to infinity for hard constraints.
 
 \subsection{Force or constraint ?} \label{sec force or constraint}
-ForceFields usually contribute the the top line of Equation~\ref{eq acc hard}, by accumulating force in the right-hand term. In implicit integration, their stiffness matrix is also accumulated to the left-hand side.
+ForceFields usually contribute the top line of Equation~\ref{eq acc hard}, by accumulating force in the right-hand term. In implicit integration, their stiffness matrix is also accumulated to the left-hand side.
 When a ForceField has an invertible stiffness matrix, it can alternatively be handled as a constraint with non-null compliance, rather than a standard force. In this case, it contributes to the bottom of Equation~\ref{eq acc hard} rather than to the top.
 
 Due to matrix conditioning issues, and depending on which linear solver is used, it may be a good idea to process very stiff forces as low compliances rather than large stiffnesses. 
