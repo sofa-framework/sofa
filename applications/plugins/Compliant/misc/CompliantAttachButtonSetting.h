@@ -39,6 +39,9 @@ namespace component
 namespace configurationsetting
 {
 
+/**
+ * Mouse using multi mapping based modelisation rather than interaction force field (not only for compliant)
+ */
 class SOFA_Compliant_API CompliantAttachButtonSetting: public MouseButtonSetting
 {
 public:
