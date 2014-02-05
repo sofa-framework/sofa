@@ -732,6 +732,9 @@ public:
         assert(container_layout);
 
         QGridLayout* layout = new QGridLayout();
+		layout->setColStretch(0, 50);
+		layout->setColStretch(1, 50);
+
         if(graphXY) layout->addWidget(graphXY,0,0);
         if(optionsXY) layout->addWidget(optionsXY,1,0);
 
