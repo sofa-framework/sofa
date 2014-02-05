@@ -163,8 +163,6 @@ signals:
 public:
     ImagePlaneGraphWidget(QWidget *parent )	: QGraphicsView(parent),scene(NULL)   {	 this->setMouseTracking(true); }
 
-    virtual QSize 	sizeHint () const { return QSize(10000,10000); }  // for vertical expanding
-
     virtual void fromOption(const unsigned int i)=0;					// slice index change -> redraw
     virtual void fromGraph(const QPointF &pt,const bool clicked)=0;		// mouse move -> get image info
     virtual void draw()=0;
@@ -514,11 +512,11 @@ public:
         label2=new QLabel(this);
         label3=new QLabel(this);
 
-        QHBoxLayout *layout = new QHBoxLayout(this);
+        QVBoxLayout *layout = new QVBoxLayout(this);
         layout->add(label1);
         layout->add(label2);
         layout->add(label3);
-    }
+	}
 
 public slots:
 
