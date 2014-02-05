@@ -50,6 +50,8 @@ namespace engine
 using namespace core::behavior;
 using namespace core::topology;
 using namespace core::objectmodel;
+using sofa::defaulttype::Rigid3dTypes;
+using sofa::defaulttype::Rigid3fTypes;
 
 /**
  * This class find all the points/edges/triangles/tetrahedra located inside a given sphere.
@@ -126,13 +128,12 @@ public:
 
 protected:
 
-    bool isPointInSphere(const Vec3& c, const Real& r, const Coord& p);
+	bool isPointInSphere(const Vec3& c, const Real& r, const Coord& p);
     bool isPointInSphere(const PointID& pid, const Real& r, const Coord& p);
     bool isEdgeInSphere(const Vec3& c, const Real& r, const BaseMeshTopology::Edge& edge);
     bool isTriangleInSphere(const Vec3& c, const Real& r, const BaseMeshTopology::Triangle& triangle);
     bool isQuadInSphere(const Vec3& c, const Real& r, const BaseMeshTopology::Quad& quad);
     bool isTetrahedronInSphere(const Vec3& c, const Real& r, const BaseMeshTopology::Tetra& tetrahedron);
-
 
 public:
     //Input
@@ -180,12 +181,34 @@ public:
 
 };
 
+#ifndef SOFA_FLOAT
+template<> bool SphereROI<Rigid3dTypes>::isPointInSphere(const Vec3& c, const Real& r, const Coord& p);
+template<> bool SphereROI<Rigid3dTypes>::isPointInSphere(const PointID& pid, const Real& r, const Coord& p);
+template<> bool SphereROI<Rigid3dTypes>::isEdgeInSphere(const Vec3& c, const Real& r, const BaseMeshTopology::Edge& edge);
+template<> bool SphereROI<Rigid3dTypes>::isTriangleInSphere(const Vec3& c, const Real& r, const BaseMeshTopology::Triangle& triangle);
+template<> bool SphereROI<Rigid3dTypes>::isQuadInSphere(const Vec3& c, const Real& r, const BaseMeshTopology::Quad& quad);
+template<> bool SphereROI<Rigid3dTypes>::isTetrahedronInSphere(const Vec3& c, const Real& r, const BaseMeshTopology::Tetra& tetrahedron);
+template<> void SphereROI<Rigid3dTypes>::update();
+#endif
+
+#ifndef SOFA_DOUBLE
+template<> bool SphereROI<Rigid3fTypes>::isPointInSphere(const Vec3& c, const Real& r, const Coord& p);
+template<> bool SphereROI<Rigid3fTypes>::isPointInSphere(const PointID& pid, const Real& r, const Coord& p);
+template<> bool SphereROI<Rigid3fTypes>::isEdgeInSphere(const Vec3& c, const Real& r, const BaseMeshTopology::Edge& edge);
+template<> bool SphereROI<Rigid3fTypes>::isTriangleInSphere(const Vec3& c, const Real& r, const BaseMeshTopology::Triangle& triangle);
+template<> bool SphereROI<Rigid3fTypes>::isQuadInSphere(const Vec3& c, const Real& r, const BaseMeshTopology::Quad& quad);
+template<> bool SphereROI<Rigid3fTypes>::isTetrahedronInSphere(const Vec3& c, const Real& r, const BaseMeshTopology::Tetra& tetrahedron);
+template<> void SphereROI<Rigid3fTypes>::update();
+#endif
+
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_SPHEREROI_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_ENGINE_API SphereROI<defaulttype::Vec3dTypes>;
+//extern template class SOFA_ENGINE_API SphereROI<defaulttype::Rigid3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
 extern template class SOFA_ENGINE_API SphereROI<defaulttype::Vec3fTypes>;
+//extern template class SOFA_ENGINE_API SphereROI<defaulttype::Rigid3fTypes>;
 #endif //SOFA_DOUBLE
 #endif
 

@@ -42,21 +42,21 @@ SOFA_DECL_CLASS(SphereROI)
 int SphereROIClass = core::RegisterObject("Find the primitives (vertex/edge/triangle/tetrahedron) inside a given sphere")
 #ifndef SOFA_FLOAT
         .add< SphereROI<Vec3dTypes> >()
-//.add< SphereROI<Rigid3dTypes> >()
+.add< SphereROI<Rigid3dTypes> >()
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
         .add< SphereROI<Vec3fTypes> >()
-//.add< SphereROI<Rigid3fTypes> >()
+.add< SphereROI<Rigid3fTypes> >()
 #endif //SOFA_DOUBLE
         ;
 
 #ifndef SOFA_FLOAT
 template class SOFA_ENGINE_API SphereROI<Vec3dTypes>;
-//template class SOFA_ENGINE_API SphereROI<Rigid3dTypes>;
+template class SOFA_ENGINE_API SphereROI<Rigid3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
 template class SOFA_ENGINE_API SphereROI<Vec3fTypes>;
-//template class SOFA_ENGINE_API SphereROI<Rigid3fTypes>;
+template class SOFA_ENGINE_API SphereROI<Rigid3fTypes>;
 #endif //SOFA_DOUBLE
 
 
