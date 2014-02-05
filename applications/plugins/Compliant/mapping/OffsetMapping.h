@@ -36,9 +36,12 @@ class SOFA_Compliant_API OffsetMapping : public AssembledMapping<TIn, TOut>
     typedef vector< OutCoord > offsets_type;
     Data< offsets_type > offsets;
 
+    Data< bool > inverted;
+
 	
     OffsetMapping()
         : offsets( initData(&offsets, "offsets", "optional offsets (removed to given values)") )
+        , inverted( initData(&inverted, false, "inverted", "offset-p (rather than p-offset)") )
     {}
 
 
@@ -52,10 +55,16 @@ class SOFA_Compliant_API OffsetMapping : public AssembledMapping<TIn, TOut>
 
         if( o.empty() ) return;
 
-        for( size_t j = 0 ; j < in.size() ; ++j )
-        {
-            out[j] -= o[std::min(o.size()-1,j)];
-		}
+        if( inverted.getValue() )
+            for( size_t j = 0 ; j < in.size() ; ++j )
+            {
+                out[j] = o[std::min(o.size()-1,j)] - out[j];
+            }
+        else
+            for( size_t j = 0 ; j < in.size() ; ++j )
+            {
+                out[j] -= o[std::min(o.size()-1,j)];
+            }
 
 	}
 
@@ -64,6 +73,7 @@ class SOFA_Compliant_API OffsetMapping : public AssembledMapping<TIn, TOut>
         typename Self::jacobian_type::CompressedMatrix& J = this->jacobian.compressedMatrix;
         J.resize( Nin * in.size(), Nin * in.size());
         J.setIdentity();
+        if( inverted.getValue() ) J *= -1;
 	}
 
 	

@@ -12,7 +12,7 @@ namespace component {
 
 namespace mapping {
 
-/*
+/**
   
   A simple mask-filtering mapping, used to filter unconstrained dofs
   in rigid body constraints. it used to be part of RigidJointMapping,

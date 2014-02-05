@@ -1,0 +1,102 @@
+<?xml version="1.0"?>
+<Node gravity="0 -9.8 0" name="Root" dt="0.01">
+  <VisualStyle displayFlags="hideCollisionModels showVisual showBehaviorModels" />
+  
+  <RequiredPlugin pluginName="Compliant"/>
+  
+  <CompliantAttachButton/>
+  
+  <AssembledSolver stabilization="0" />
+  <SequentialSolver precision="1e-20" iterations="100" />
+
+  
+  
+  <Node name="SlindingVec3">
+    
+    <MechanicalObject template="Vec3d" position="0 0 0" showObject="1" showObjectScale="1" drawMode="1"/>
+    <UniformMass mass="1"/>
+    
+    <Node name="yz">
+      
+	<MechanicalObject template="Vec1d"/>
+	<MaskMapping dofs="0 1 1"/>
+
+	<Node name="sliding">
+		<MechanicalObject template="Vec1d" position="0 0"/>
+		<DifferenceFromTargetMapping targets="0 0"/>
+		<UniformCompliance/>
+		<Stabilization/>
+	</Node> 
+    </Node> 
+    
+    <Node name="stops">
+      
+	<MechanicalObject template="Vec1d"/>
+	<MaskMapping dofs="1 0 0"/>
+
+	<Node name="left">
+		<MechanicalObject template="Vec1d" position="0"/>
+		<DifferenceFromTargetMapping targets="-3"/>
+		<UniformCompliance/>
+		<UnilateralConstraint/>
+	</Node> 
+	
+	<Node name="right">
+		<MechanicalObject template="Vec1d" position="0"/>
+		<DifferenceFromTargetMapping targets="4" inverted="1"/>
+		<UniformCompliance/>
+		<UnilateralConstraint/>
+	</Node>
+	
+    </Node> 
+    
+  </Node>
+  
+  
+  
+  
+    <Node name="SlindingVec3">
+      
+	<MechanicalObject template="Vec3d" position="0 3 0" showObject="1" showObjectScale="1" drawMode="1"/>
+	<UniformMass mass="1"/>
+	
+	<Node name="yz">
+	  
+	    <MechanicalObject template="Vec1d"/>
+	    <MaskMapping dofs="0 1 1"/>
+
+	    <Node name="sliding">
+		    <MechanicalObject template="Vec1d" position="0 0"/>
+		    <DifferenceFromTargetMapping targets="3 0"/>
+		    <UniformCompliance/>
+		    <Stabilization/>
+	    </Node> 
+	</Node> 
+	
+	<Node name="stops">
+	  
+	    <MechanicalObject template="Vec1d"/>
+	    <MaskMapping dofs="1 0 0"/>
+
+	    <Node name="leftandright">
+		    <MechanicalObject template="Vec1d" position="0"/>
+		    <DistanceFromTargetMapping indices="0" targetPositions="0.5" restLengths="0"/>
+		    
+		    <Node name="offset">
+			  <MechanicalObject template="Vec1d" position="0"/>
+			  <OffsetMapping offsets="3.5" inverted="1"/>
+			  <UniformCompliance/>
+			  <UnilateralConstraint />
+		    </Node> 
+		    
+	    </Node> 
+	    
+	</Node> 
+    
+  </Node>
+  
+  
+  
+  
+  
+</Node>

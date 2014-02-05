@@ -14,6 +14,7 @@ set(HEADER_FILES
     mapping/AssembledMapping.h
     mapping/AssembledMultiMapping.h
     mapping/DifferenceMapping.h
+    mapping/DifferenceFromTargetMapping.h
     mapping/ContactMapping.h
     mapping/MaskMapping.h
     mapping/ProjectionMapping.h
@@ -101,6 +102,7 @@ set(SOURCE_FILES
     mapping/RigidJointMultiMapping.cpp
     mapping/AssembledRigidRigidMapping.cpp
     mapping/DifferenceMapping.cpp
+    mapping/DifferenceFromTargetMapping.cpp
     mapping/ContactMapping.cpp
     mapping/MaskMapping.cpp 
     mapping/ProjectionMapping.cpp
