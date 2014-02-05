@@ -71,14 +71,15 @@ protected:
 
         delta.node->addChild( contact_node.get() );
 
+        typedef defaulttype::Vec3Types contact_type;
 
-        typedef container::MechanicalObject<defaulttype::Vec3Types> contact_dofs_type;
+        typedef container::MechanicalObject<contact_type> contact_dofs_type;
         typename contact_dofs_type::SPtr contact_dofs = sofa::core::objectmodel::New<contact_dofs_type>();
 
         contact_dofs->resize( size );
         contact_node->addObject( contact_dofs.get() );
 
-        typedef mapping::ContactMapping<ResponseDataTypes, defaulttype::Vec3Types> contact_map_type;
+        typedef mapping::ContactMapping<ResponseDataTypes, contact_type> contact_map_type;
         typename contact_map_type::SPtr contact_map = core::objectmodel::New<contact_map_type>();
 
         contact_map->setModels( delta.dofs.get(), contact_dofs.get() );
@@ -90,41 +91,29 @@ protected:
         contact_map->init();
 
         // TODO diagonal compliance, soft  and compliance_value for normal
-        typedef forcefield::UniformCompliance<defaulttype::Vec3Types> compliance_type;
+        typedef forcefield::UniformCompliance<contact_type> compliance_type;
         compliance_type::SPtr compliance = sofa::core::objectmodel::New<compliance_type>( contact_dofs.get() );
 //        compliance->_restitution.setValue( restitution_coef.getValue() );
         contact_node->addObject( compliance.get() );
         compliance->compliance.setValue( compliance_value.getValue() );
+        compliance->damping.setValue( damping_ratio.getValue() );
         compliance->init();
 
 
-        // approximate current mu between the 2 objects as the average of
-        // both friction coefficients
-//        const SReal frictionCoefficient = ( this->model1->getContactFriction(0) + this->model2->getContactFriction(0) ) * 0.5;
-
-        // TODO max: there is also this->mu.getValue() for this; we
-        // should use it or disable it.
-
-        // TODO max: the friction coefficient should be that of the
-        // slipperiest material anyways (think of rock/ice contact),
-        // but probably not the average
-
-        // TODO max: the restitution coefficient should be enforced
-        // via a relative velocity constraint (see comments in
-        // FrictionProjector), thus somewhere in a ContactMapping
-        // derivative
-//        const SReal restitutionCoefficient = this->model1->getContactRestitution(0) * this->model2->getContactRestitution(0);
-
+        // approximate current mu between the 2 objects as the product of both friction coefficients
+        const SReal frictionCoefficient = mu.getValue() ? mu.getValue() : this->model1->getContactFriction(0)*this->model2->getContactFriction(0);
 
         // projector
         typedef linearsolver::CoulombConstraint proj_type;
-        proj_type::SPtr proj = sofa::core::objectmodel::New<proj_type>( mu.getValue() );
-
+        proj_type::SPtr proj = sofa::core::objectmodel::New<proj_type>( frictionCoefficient );
         contact_node->addObject( proj.get() );
         
+
+        // approximate restitution coefficient between the 2 objects as the product of both coefficients
+        const SReal restitutionCoefficient = restitution_coef.getValue() ? restitution_coef.getValue() : this->model1->getContactRestitution(0) * this->model2->getContactRestitution(0);
+
         // constraint value
-        this->addConstraintValue( contact_node.get(), contact_dofs.get(), 
-								  damping_ratio.getValue(), restitution_coef.getValue(), 3);
+        this->addConstraintValue( contact_node.get(), contact_dofs.get(), restitutionCoefficient, 3);
 
         return delta.node;
     }

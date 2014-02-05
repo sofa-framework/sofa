@@ -11,6 +11,9 @@
 #include "../mapping/ContactMapping.h" 		// should be normal mapping
 
 
+//#include <sofa/simulation/common/MechanicalVisitor.h>
+//#include <sofa/core/VecId.h>
+//#include <sofa/core/MultiVecId.h>
 
 namespace sofa
 {
@@ -57,6 +60,29 @@ protected:
 
     typename node_type::SPtr create_node()
     {
+
+//        simulation::MechanicalPropagatePositionAndVelocityVisitor bob( sofa::core::MechanicalParams::defaultInstance() );
+//        this->mstate1->getContext()->getRootContext()->executeVisitor( &bob );
+//        this->mstate2->getContext()->getRootContext()->executeVisitor( &bob );
+//        this->mstate1->getContext()->executeVisitor( &bob );
+//        this->mstate2->getContext()->executeVisitor( &bob );
+
+
+//        typedef sofa::core::TMultiVecId<core::V_DERIV,core::V_READ> DestMultiVecId;
+//        typedef sofa::core::TVecId<core::V_DERIV,core::V_READ> MyVecId;
+
+//        DestMultiVecId v(core::VecDerivId::velocity());
+//        MyVecId vid = v.getId(this->mstate1.get());
+
+//        std::cerr<<SOFA_CLASS_METHOD<<"dof1 "<<this->mstate1->getName()<<"  ";this->mstate1->writeVec(core::VecId::velocity(),std::cerr);std::cerr<<std::endl;
+
+//        MyVecId vid2 = v.getId(this->mstate2.get());
+//        std::cerr<<SOFA_CLASS_METHOD<<"dof2 "<<this->mstate2->getName()<<"  ";this->mstate2->writeVec(core::VecId::velocity(),std::cerr);std::cerr<<std::endl;
+
+
+
+
+
         const unsigned size = this->mappedContacts.size();
 
         delta_type delta = this->make_delta();
@@ -83,23 +109,31 @@ protected:
         this->copyNormals( contact_map->normal );
         this->copyPenetrations( contact_map->penetrations );
 
-        contact_map->init();	 
+        contact_map->init();
+
+
+//        std::cerr<<SOFA_CLASS_METHOD<<"delta ";delta.dofs.get()->writeVec(core::VecDerivId::velocity(),std::cerr);std::cerr<<std::endl;
+//        std::cerr<<SOFA_CLASS_METHOD<<"contact ";contact_dofs.get()->writeVec(core::VecDerivId::velocity(),std::cerr);std::cerr<<std::endl;
 
         // compliance
         typedef forcefield::UniformCompliance<defaulttype::Vec1Types> compliance_type;
         compliance_type::SPtr compliance = sofa::core::objectmodel::New<compliance_type>( contact_dofs.get() );
         contact_node->addObject( compliance.get() );
         compliance->compliance.setValue( compliance_value.getValue() );
+        compliance->damping.setValue( damping_ratio.getValue() );
         compliance->init();
 
 
         // projector
         typedef linearsolver::UnilateralConstraint projector_type;
-        projector_type::SPtr projector = sofa::core::objectmodel::New<projector_type>(  );
+        projector_type::SPtr projector = sofa::core::objectmodel::New<projector_type>();
         contact_node->addObject( projector.get() );
         
+        // approximate restitution coefficient between the 2 objects as the product of both coefficients
+        const SReal restitutionCoefficient = restitution_coef.getValue() ? restitution_coef.getValue() : this->model1->getContactRestitution(0) * this->model2->getContactRestitution(0);
+
         // constraint value
-        this->addConstraintValue( contact_node.get(), contact_dofs.get(), damping_ratio.getValue(), restitution_coef.getValue() );
+        this->addConstraintValue( contact_node.get(), contact_dofs.get(), restitutionCoefficient );
 
         return delta.node;
     }

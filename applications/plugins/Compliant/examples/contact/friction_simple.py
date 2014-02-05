@@ -21,7 +21,7 @@ def createScene(node):
 
     manager = node.getObject('manager')
     manager.response = 'FrictionCompliantContact'
-    manager.responseParams = 'mu=0.5' 
+    manager.responseParams = 'mu=0' # per object friction coefficient (the friction coef between 2 objects is approximated as the product of both coefs)
 
     ode = node.getObject('ode')
     ode.stabilization = True
@@ -43,6 +43,7 @@ def createScene(node):
     plane.visual = dir + '/../mesh/ground.obj'
     plane.collision = plane.visual
     plane.mass_from_mesh( plane.visual, 10 )
+    plane.mu = 0.8 # per object friction coefficient
     plane.node = plane.insert( scene )
     plane.node.createObject('FixedConstraint', indices = '0')
     
@@ -52,6 +53,7 @@ def createScene(node):
     box.collision = box.visual
     box.dofs.translation = [0, 3, 0]
     box.mass_from_mesh( box.visual, 50 )
+    box.mu = 1 # per object friction coefficient
     box.node = box.insert( scene )
 
    

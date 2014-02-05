@@ -121,6 +121,7 @@ class Body:
                 self.offset = None       # rigid offset for com/inertia axes
                 self.inertia_forces = False # compute inertia forces flag
                 self.group = None
+                self.mu = 0           # friction coefficient
 
                 # TODO more if needed (scale, color)
                 
@@ -194,7 +195,8 @@ class Body:
                         
 			model = collision.createObject('TriangleModel', 
                                                name = 'model',
-                                               template = 'Vec3d' )
+                                               template = 'Vec3d',
+                                               contactFriction = self.mu)
                         if self.group != None:
                                 model.group = self.group                        
                         

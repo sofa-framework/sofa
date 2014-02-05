@@ -21,6 +21,8 @@ def path( name ):
 def scene(node):
     
     node.createObject('RequiredPlugin', pluginName = "Compliant" )
+    
+    #node.createObject('CompliantAttachButtonSetting') # Compliant friendly mouse picking but not working yet with rigid...
 
     node.dt = 0.01
     node.gravity = '0 -9.81 0'
