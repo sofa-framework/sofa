@@ -12,29 +12,15 @@ int UnilateralConstraintClass = core::RegisterObject("Unilateral constraint")
         .add< UnilateralConstraint >()
         .addAlias("UnilateralProjector"); // eheh :p
 
-UnilateralConstraint::UnilateralConstraint()
-    : positive( initData(&positive, true, "positive", "Keeping only positive values? (otherwise only negative ones)") )
-{}
 
 void UnilateralConstraint::project(SReal* out, unsigned n) const {
     //Eigen::Map< Eigen::Matrix<SReal, Eigen::Dynamic, 1> > view(out, n);
 
 	// std::cerr << "before: " << view.transpose() << std::endl;
-
-    if( positive.getValue() )
-    {
         for(unsigned i = 0; i < n; ++i)
         {
             out[i] = std::max( (SReal)0.0, out[i] );
         }
-    }
-    else
-    {
-        for(unsigned i = 0; i < n; ++i)
-        {
-            out[i] = std::min( (SReal)0.0, out[i] );
-        }
-    }
 	// std::cerr << "after: " << view.transpose() << std::endl;
 	
 }

@@ -43,7 +43,7 @@
 	
 	<Node name="right">
 		<MechanicalObject template="Vec1d" position="0"/>
-		<DifferenceFromTargetMapping targets="4" inverted="1"/>
+		<DifferenceFromTargetMapping targets="9" inverted="1"/>
 		<UniformCompliance/>
 		<UnilateralConstraint/>
 	</Node>
@@ -80,11 +80,11 @@
 
 	    <Node name="leftandright">
 		    <MechanicalObject template="Vec1d" position="0"/>
-		    <DistanceFromTargetMapping indices="0" targetPositions="0.5" restLengths="0"/>
+		    <DistanceFromTargetMapping indices="0" targetPositions="3" restLengths="0"/>
 		    
 		    <Node name="offset">
 			  <MechanicalObject template="Vec1d" position="0"/>
-			  <OffsetMapping offsets="3.5" inverted="1"/>
+			  <OffsetMapping offsets="6" inverted="1"/>
 			  <UniformCompliance/>
 			  <UnilateralConstraint />
 		    </Node> 

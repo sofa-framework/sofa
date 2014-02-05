@@ -10,10 +10,6 @@ namespace linearsolver {
 struct SOFA_Compliant_API UnilateralConstraint : Constraint {
 	
     SOFA_CLASS(UnilateralConstraint, Constraint);
-
-    Data< bool > positive;
-
-    UnilateralConstraint();
 	
 	virtual void project(SReal* out, unsigned n) const;
 	
