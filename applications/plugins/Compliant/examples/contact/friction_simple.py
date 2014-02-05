@@ -1,4 +1,10 @@
 import Sofa
+
+import sys
+import os
+current_path = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(current_path + '/..')
+
 import Plugin
 
 import math
@@ -34,7 +40,7 @@ def createScene(node):
   
     # plane
     plane = Rigid.Body('plane')
-    plane.visual = dir + '/mesh/ground.obj'
+    plane.visual = dir + '/../mesh/ground.obj'
     plane.collision = plane.visual
     plane.mass_from_mesh( plane.visual, 10 )
     plane.node = plane.insert( scene )
@@ -42,7 +48,7 @@ def createScene(node):
     
     # box
     box = Rigid.Body('box')
-    box.visual = dir + '/mesh/cube.obj'
+    box.visual = dir + '/../mesh/cube.obj'
     box.collision = box.visual
     box.dofs.translation = [0, 3, 0]
     box.mass_from_mesh( box.visual, 50 )
