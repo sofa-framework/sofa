@@ -25,7 +25,7 @@
 #ifndef BINDING_SOFAMODULE_H
 #define BINDING_SOFAMODULE_H
 
-#include "python.h"
+#include "PythonCommon.h"
 
 extern PyMethodDef SofaModuleMethods[];
 

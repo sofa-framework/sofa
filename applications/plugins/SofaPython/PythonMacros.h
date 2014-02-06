@@ -28,11 +28,10 @@
 // Must be included before python.h on Windows to support debug compilation.
 #if defined(_MSC_VER)
 #include <boost/intrusive_ptr.hpp>
-#include "python.h"
 #else
-#include "python.h"
 #include <boost/intrusive_ptr.hpp>
 #endif
+#include "PythonCommon.h"
 
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/BaseObject.h>

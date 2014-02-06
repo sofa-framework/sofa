@@ -25,7 +25,7 @@
 #ifndef PYTHONVISITOR_H
 #define PYTHONVISITOR_H
 
-#include "python.h"
+#include "PythonCommon.h"
 
 #include <sofa/simulation/common/Visitor.h>
 
