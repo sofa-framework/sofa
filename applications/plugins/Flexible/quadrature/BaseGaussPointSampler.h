@@ -129,6 +129,8 @@ protected:
 
     virtual void draw(const core::visual::VisualParams* vparams)
     {
+
+#ifndef SOFA_NO_OPENGL
         if (!vparams->displayFlags().getShowVisualModels()) return;
         raPositions pos(this->f_position);
         if (this->showSamplesScale.getValue())
@@ -145,6 +147,7 @@ protected:
             }
         }
 
+#endif /* SOFA_NO_OPENGL */
     }
 
 

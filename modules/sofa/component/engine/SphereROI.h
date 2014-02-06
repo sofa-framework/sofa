@@ -50,8 +50,14 @@ namespace engine
 using namespace core::behavior;
 using namespace core::topology;
 using namespace core::objectmodel;
+#ifndef SOFA_FLOAT
 using sofa::defaulttype::Rigid3dTypes;
+#endif //#ifndef SOFA_FLOAT
+
+#ifndef SOFA_DOUBLE
 using sofa::defaulttype::Rigid3fTypes;
+#endif //#ifndef SOFA_
+
 
 /**
  * This class find all the points/edges/triangles/tetrahedra located inside a given sphere.

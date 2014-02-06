@@ -45,9 +45,9 @@ template class MultiMapping< Rigid3dTypes, Vec3dTypes >;
 #endif
 
 #ifndef SOFA_DOUBLE
-template class MultiMapping< Vec1fTypes, Vec1fTypes >;
-template class MultiMapping< Vec3fTypes, Vec3fTypes >;
-template class MultiMapping< Rigid3fTypes, Vec3fTypes >;
+template class SOFA_CORE_API MultiMapping< Vec1fTypes, Vec1fTypes >;
+template class SOFA_CORE_API MultiMapping< Vec3fTypes, Vec3fTypes >;
+template class SOFA_CORE_API MultiMapping< Rigid3fTypes, Vec3fTypes >;
 #endif
 
 #ifndef SOFA_FLOAT

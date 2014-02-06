@@ -1158,6 +1158,7 @@ protected:
 
     virtual void draw(const core::visual::VisualParams* vparams)
     {
+#ifndef SOFA_NO_OPENGL
         if (!vparams->displayFlags().getShowVisualModels()) return;
 
         raPositions pos(this->position);
@@ -1207,6 +1208,8 @@ protected:
                 }
             vparams->drawTool()->drawLines(points,2.0,defaulttype::Vec4f(1,1,0.5,1));
         }
+
+#endif /* SOFA_NO_OPENGL */
     }
 
 

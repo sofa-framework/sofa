@@ -598,7 +598,7 @@ void SphereROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
 ////////////////////											////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
 
-
+#ifndef SOFA_FLOAT
 
 template <>
 bool SphereROI<Rigid3dTypes>::isPointInSphere(const Vec3& c, const Real& r, const Coord& p)
@@ -849,6 +849,7 @@ void SphereROI<Rigid3dTypes>::update()
 	f_quadIndices.endEdit();
 	f_tetrahedronIndices.endEdit();
 }
+#endif //#ifndef SOFA_FLOAT
 
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -856,6 +857,8 @@ void SphereROI<Rigid3dTypes>::update()
 ////////////////////	Rigid types specialization (float)		////////////////////////
 ////////////////////											////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
+
+#ifndef SOFA_DOUBLE
 
 template <>
 bool SphereROI<Rigid3fTypes>::isPointInSphere(const Vec3& c, const Real& r, const Coord& p)
@@ -1106,6 +1109,8 @@ void SphereROI<Rigid3fTypes>::update()
 	f_quadIndices.endEdit();
 	f_tetrahedronIndices.endEdit();
 }
+
+#endif //#ifndef SOFA_DOUBLE
 
 
 } // namespace engine

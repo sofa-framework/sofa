@@ -186,6 +186,7 @@ void ConstantForceField<DataTypes>::setForce(unsigned i, const Deriv& force)
 template<class DataTypes>
 void ConstantForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     double aSC = arrowSizeCoef.getValue();
 
     Deriv singleForce;
@@ -269,6 +270,8 @@ void ConstantForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
         }
         glPopAttrib();
     }
+
+#endif /* SOFA_NO_OPENGL */
 }
 
 } // namespace forcefield
