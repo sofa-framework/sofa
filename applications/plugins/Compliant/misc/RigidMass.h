@@ -104,8 +104,10 @@ public:
 			len[0] = sqrt(m11+m22-m00);
 			len[1] = sqrt(m00+m22-m11);
 			len[2] = sqrt(m00+m11-m22);
-			
+
+#ifndef SOFA_NO_OPENGL 
 			helper::gl::Axis::draw(x[i].getCenter(), x[i].getOrientation(), len);
+#endif 
 		}
 		
 	}
