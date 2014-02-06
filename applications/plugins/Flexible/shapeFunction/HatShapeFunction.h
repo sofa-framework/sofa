@@ -59,7 +59,7 @@ public:
     typedef typename Inherit::Real Real;
     typedef typename Inherit::Coord Coord;
     typedef typename Inherit::VCoord VCoord;
-    enum {material_dimensions=Inherit::material_dimensions};
+    enum {spatial_dimensions=Inherit::spatial_dimensions};
     typedef typename Inherit::VReal VReal;
     typedef typename Inherit::VGradient VGradient;
     typedef typename Inherit::VHessian VHessian;
@@ -88,7 +88,7 @@ public:
         raParam prm(this->param);
 
         M=MaterialToSpatial();
-        for ( unsigned int i = 0; i < material_dimensions; i++ ) M[i][i]=(Real)1.; //identity
+        for ( unsigned int i = 0; i < spatial_dimensions; i++ ) M[i][i]=(Real)1.; //identity
 
         // get the nbRef closest parents
         ref.resize(nbRef); ref.fill(0);

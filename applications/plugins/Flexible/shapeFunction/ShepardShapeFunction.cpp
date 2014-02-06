@@ -40,12 +40,10 @@ SOFA_DECL_CLASS(ShepardShapeFunction)
 // Register in the Factory
 int ShepardShapeFunctionClass = core::RegisterObject("Computes Shepard shape functions")
 
-        .add< ShepardShapeFunction<sofa::core::behavior::ShapeFunction3f> >(true)
-        .add< ShepardShapeFunction<sofa::core::behavior::ShapeFunction3d> >(true)
+        .add< ShepardShapeFunction<sofa::core::behavior::ShapeFunction> >(true)
         ;
 
-template class SOFA_Flexible_API ShepardShapeFunction<sofa::core::behavior::ShapeFunction3f>;
-template class SOFA_Flexible_API ShepardShapeFunction<sofa::core::behavior::ShapeFunction3d>;
+template class SOFA_Flexible_API ShepardShapeFunction<sofa::core::behavior::ShapeFunction>;
 }
 }
 }

@@ -823,19 +823,19 @@ double UniformMass<defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::TYPEABSTRA
 
     int EVALUATOR(TYPEABSTRACTNAME,ImageDensityMassClass) = core::RegisterObject ( "Define a global mass matrix including non diagonal terms" )
 #ifndef SOFA_FLOAT
-    .add< ImageDensityMass<TYPEABSTRACTNAME3dTypes,core::behavior::ShapeFunction3d,TYPEABSTRACTNAME3dMass> >()
+    .add< ImageDensityMass<TYPEABSTRACTNAME3dTypes,core::behavior::ShapeFunctiond,TYPEABSTRACTNAME3dMass> >()
 #endif
 #ifndef SOFA_DOUBLE
-    .add< ImageDensityMass<TYPEABSTRACTNAME3fTypes,core::behavior::ShapeFunction3f,TYPEABSTRACTNAME3fMass> >()
+    .add< ImageDensityMass<TYPEABSTRACTNAME3fTypes,core::behavior::ShapeFunctionf,TYPEABSTRACTNAME3fMass> >()
 #endif
             ;
 
 
 #ifndef SOFA_FLOAT
-    template class SOFA_Flexible_API ImageDensityMass<TYPEABSTRACTNAME3dTypes,core::behavior::ShapeFunction3d,TYPEABSTRACTNAME3dMass>;
+    template class SOFA_Flexible_API ImageDensityMass<TYPEABSTRACTNAME3dTypes,core::behavior::ShapeFunctiond,TYPEABSTRACTNAME3dMass>;
 #endif
 #ifndef SOFA_DOUBLE
-    template class SOFA_Flexible_API ImageDensityMass<TYPEABSTRACTNAME3fTypes,core::behavior::ShapeFunction3f,TYPEABSTRACTNAME3fMass>;
+    template class SOFA_Flexible_API ImageDensityMass<TYPEABSTRACTNAME3fTypes,core::behavior::ShapeFunctionf,TYPEABSTRACTNAME3fMass>;
 #endif
 
 

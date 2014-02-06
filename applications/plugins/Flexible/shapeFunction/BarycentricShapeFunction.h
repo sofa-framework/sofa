@@ -57,7 +57,6 @@ public:
     typedef typename Inherit::Real Real;
     typedef typename Inherit::Coord Coord;
     typedef typename Inherit::VCoord VCoord;
-    enum {material_dimensions=Inherit::material_dimensions};
     typedef typename Inherit::VReal VReal;
     typedef typename Inherit::VGradient VGradient;
     typedef typename Inherit::VHessian VHessian;
@@ -72,8 +71,7 @@ public:
     typedef typename Inherit::MaterialToSpatial MaterialToSpatial;
     typedef typename Inherit::VMaterialToSpatial VMaterialToSpatial;
     enum {spatial_dimensions=Inherit::spatial_dimensions};
-    typedef Mat<spatial_dimensions,spatial_dimensions,Real> BasesType;
-    sofa::helper::vector<BasesType> bases;
+    sofa::helper::vector<MaterialToSpatial> bases;
 
     /** @name orientation data */
     //@{
@@ -97,9 +95,9 @@ protected:
     {
 
         // local coordinate systems
-        static BasesType getLocalFrame1D( const Coord &p1,const Coord &p2)
+        static MaterialToSpatial getLocalFrame1D( const Coord &p1,const Coord &p2)
         {
-            BasesType R;
+            MaterialToSpatial R;
             R(0) = p2-p1; R(0).normalize();
             R(1) = Coord(1,0,0); if(dot(R(0),R(1))==1.) R(1) = Coord(0,1,0); if(dot(R(0),R(1))==1.) R(1) = Coord(0,0,1);
             R(2) = cross(R(0),R(1)); R(2).normalize();
@@ -107,9 +105,9 @@ protected:
             R.transpose();
             return R;
         }
-        static BasesType getLocalFrame2D( const Coord &p1, const Coord &p2,const Coord &p3)
+        static MaterialToSpatial getLocalFrame2D( const Coord &p1, const Coord &p2,const Coord &p3)
         {
-            BasesType R;
+            MaterialToSpatial R;
             R(0) = p2-p1; R(0).normalize();
             R(1) = p3-p1;
             R(2) = cross(R(0),R(1)); R(2).normalize();
@@ -118,7 +116,7 @@ protected:
             return R;
         }
 
-        static void getBasisFrom2DElements( BasesType& b, const Coord& p0, const Coord& p1, const Coord& p2 )
+        static void getBasisFrom2DElements( MaterialToSpatial& b, const Coord& p0, const Coord& p1, const Coord& p2 )
         {
             b[0] = p1 - p0;
             b[1] = p2 - p0;
@@ -127,10 +125,10 @@ protected:
 
 
 
-        // align user provided global orientation to 2D manifold (to required for 1D and 3D cells)
-        static BasesType reorientGlobalOrientation( const BasesType& Global, const BasesType& Local)
+        // align user provided global orientation to 2D manifold
+        static MaterialToSpatial reorientGlobalOrientation( const MaterialToSpatial& Global, const MaterialToSpatial& Local)
         {
-            BasesType R;
+            MaterialToSpatial R;
             R(2)=Local.transposed()(2); // third axis = face normal
             R(0)=Global.transposed()(0) - R(2)*dot(R(2),Global.transposed()(0)); R(0).normalize();
             R(1)= cross(R(2),R(0));
@@ -171,14 +169,14 @@ protected:
                 Coord f = p[0]*g[0]*g[2]*g[1] + p[1]*w[0]*g[2]*g[1] + p[5]*w[0]*w[2]*g[1] + p[4]*g[0]*w[2]*g[1] + p[3]*g[0]*g[2]*w[1] + p[2]*w[0]*g[2]*w[1] + p[6]*w[0]*w[2]*w[1] + p[7]*g[0]*w[2]*w[1] - x; // function to minimize
                 if(f.norm2()<tolerance) {  return; }
 
-                BasesType df;
+                MaterialToSpatial df;
                 df[0] = - p[0]*g[2]*g[1] + p[1]*g[2]*g[1] + p[5]*w[2]*g[1] - p[4]*w[2]*g[1] - p[3]*g[2]*w[1] + p[2]*g[2]*w[1] + p[6]*w[2]*w[1] - p[7]*w[2]*w[1];
                 df[1] = - p[0]*g[0]*g[2] - p[1]*w[0]*g[2] - p[5]*w[0]*w[2] - p[4]*g[0]*w[2] + p[3]*g[0]*g[2] + p[2]*w[0]*g[2] + p[6]*w[0]*w[2] + p[7]*g[0]*w[2];
                 df[2] = - p[0]*g[0]*g[1] - p[1]*w[0]*g[1] + p[5]*w[0]*g[1] + p[4]*g[0]*g[1] - p[3]*g[0]*w[1] - p[2]*w[0]*w[1] + p[6]*w[0]*w[1] + p[7]*g[0]*w[1];
 
                 Real det=determinant(df);
                 if ( -MIN_DETERMINANT<=det && det<=MIN_DETERMINANT) { return; }
-                BasesType dfinv;
+                MaterialToSpatial dfinv;
                 dfinv(0,0)= (df(1,1)*df(2,2) - df(2,1)*df(1,2))/det;
                 dfinv(0,1)= (df(1,2)*df(2,0) - df(2,2)*df(1,0))/det;
                 dfinv(0,2)= (df(1,0)*df(2,1) - df(2,0)*df(1,1))/det;
@@ -229,7 +227,7 @@ protected:
                     B->bases.resize ( triangles.size() +quads.size() );
                     for ( unsigned int t = 0; t < triangles.size(); t++ )
                     {
-                        BasesType m,mt;
+                        MaterialToSpatial m,mt;
                         getBasisFrom2DElements( m, parent[triangles[t][0]], parent[triangles[t][1]], parent[triangles[t][2]] );
                         mt.transpose ( m );
                         B->bases[t].invert ( mt );
@@ -237,7 +235,7 @@ protected:
                     int c0 = triangles.size();
                     for ( unsigned int c = 0; c < quads.size(); c++ )
                     {
-                        BasesType m,mt;
+                        MaterialToSpatial m,mt;
                         getBasisFrom2DElements( m, parent[quads[c][0]], parent[quads[c][1]], parent[quads[c][3]] );
                         mt.transpose ( m );
                         B->bases[c0+c].invert ( mt );
@@ -252,7 +250,7 @@ protected:
                 B->bases.resize ( tetrahedra.size() +cubes.size() );
                 for ( unsigned int t = 0; t < tetrahedra.size(); t++ )
                 {
-                    BasesType m,mt;
+                    MaterialToSpatial m,mt;
                     m[0] = parent[tetrahedra[t][1]]-parent[tetrahedra[t][0]];
                     m[1] = parent[tetrahedra[t][2]]-parent[tetrahedra[t][0]];
                     m[2] = parent[tetrahedra[t][3]]-parent[tetrahedra[t][0]];
@@ -262,7 +260,7 @@ protected:
                 int c0 = tetrahedra.size();
                 for ( unsigned int c = 0; c < cubes.size(); c++ )
                 {
-                    BasesType m,mt;
+                    MaterialToSpatial m,mt;
                     m[0] = parent[cubes[c][1]]-parent[cubes[c][0]];
                     m[1] = parent[cubes[c][3]]-parent[cubes[c][0]];
                     m[2] = parent[cubes[c][4]]-parent[cubes[c][0]];
@@ -275,7 +273,7 @@ protected:
         static void computeShapeFunction( const BarycentricShapeFunction<ShapeFunctionTypes_>* B, const Coord& childPosition, MaterialToSpatial& M, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL, const Cell cell=-1)
         {
             M=MaterialToSpatial();
-            for ( unsigned int i = 0; i < material_dimensions; i++ ) M[i][i]=(Real)1.; //identity
+            for ( unsigned int i = 0; i < spatial_dimensions; i++ ) M[i][i]=(Real)1.; //identity
 
             // resize input
             unsigned int nbRef=B->f_nbRef.getValue();
@@ -318,9 +316,7 @@ protected:
                     {
                         ref[0]=edges[index][0]; ref[1]=edges[index][1];
                         // local frame
-                        BasesType R;
-                        R = getLocalFrame1D(parent[ref[0]],parent[ref[1]]); // orientation = local element frame (no user input for 1D elements)
-                        for(unsigned int i=0; i<spatial_dimensions; i++) for(unsigned int j=0; j<material_dimensions; j++) M[i][j]=R[i][j];
+                        M = getLocalFrame1D(parent[ref[0]],parent[ref[1]]); // orientation = local element frame (no user input for 1D elements)
                         // weights
                         w[0]=(Real)1.-coefs[0]; w[1]=coefs[0];
                         if(dw) {  (*dw)[0]=-B->bases[index][0]; (*dw)[1]=B->bases[index][0]; }
@@ -348,11 +344,10 @@ protected:
                     {
                         ref[0]=triangles[index][0];                          ref[1]=triangles[index][1];  ref[2]=triangles[index][2];
                         // compute local orientation given user input and local element frame
-                        BasesType U=B->getUserOrientation(index),R,A;
+                        MaterialToSpatial U=B->getUserOrientation(index),R;
                         R = getLocalFrame2D(parent[ref[0]],parent[ref[1]],parent[ref[2]]);
-                        if(B->f_useLocalOrientation.getValue()) A = reorientGlobalOrientation(R*U,R);
-                        else A = reorientGlobalOrientation(U,R);
-                        for(unsigned int i=0; i<spatial_dimensions; i++) for(unsigned int j=0; j<material_dimensions; j++) M[i][j]=A[i][j];
+                        if(B->f_useLocalOrientation.getValue()) M = reorientGlobalOrientation(R*U,R);
+                        else M = reorientGlobalOrientation(U,R);
                         // weights
                         w[0]=(Real)1.-coefs[0]-coefs[1];                     w[1]=coefs[0];               w[2]=coefs[1];
                         if(dw) {  (*dw)[0]=-B->bases[index][0]-B->bases[index][1]; (*dw)[1]=B->bases[index][0];    (*dw)[2]=B->bases[index][1]; }
@@ -365,11 +360,10 @@ protected:
                         Gradient dgx=-dfx,dgy=-dfy;
                         for ( unsigned int i = 0; i < 4; i++ ) ref[i]=quads[index-c0][i];
                         // compute local orientation given user input and local element frame
-                        BasesType U=B->getUserOrientation(index-c0),R,A;
+                        MaterialToSpatial U=B->getUserOrientation(index-c0),R;
                         R = getLocalFrame2D(parent[ref[0]],parent[ref[1]],parent[ref[3]]);
-                        if(B->f_useLocalOrientation.getValue()) A = reorientGlobalOrientation(R*U,R);
-                        else A = reorientGlobalOrientation(U,R);
-                        for(unsigned int i=0; i<spatial_dimensions; i++) for(unsigned int j=0; j<material_dimensions; j++) M[i][j]=A[i][j];
+                        if(B->f_useLocalOrientation.getValue()) M = reorientGlobalOrientation(R*U,R);
+                        else M = reorientGlobalOrientation(U,R);
                         // weights
                         w[0]=gx*gy; w[1]=fx*gy; w[2]=fx*fy; w[3]=gx*fy;
                         if(dw)
@@ -412,10 +406,9 @@ protected:
                 {
                     ref[0]=tetrahedra[index][0];                                         ref[1]=tetrahedra[index][1];  ref[2]=tetrahedra[index][2];    ref[3]=tetrahedra[index][3];
                     // compute local orientation given user input and local element frame
-                    BasesType U=B->getUserOrientation(index),A;
-                    if(B->f_useLocalOrientation.getValue()) A = getLocalFrame2D(parent[ref[0]],parent[ref[1]],parent[ref[2]]) * U;
-                    else A=U;
-                    for(unsigned int i=0; i<spatial_dimensions; i++) for(unsigned int j=0; j<material_dimensions; j++) M[i][j]=A[i][j];
+                    MaterialToSpatial U=B->getUserOrientation(index);
+                    if(B->f_useLocalOrientation.getValue()) M = getLocalFrame2D(parent[ref[0]],parent[ref[1]],parent[ref[2]]) * U;
+                    else M=U;
                     // weights
                     w[0]=(Real)1.-coefs[0]-coefs[1]-coefs[2];                            w[1]=coefs[0];                w[2]=coefs[1];                  w[3]=coefs[2];
                     if(dw) {
@@ -431,10 +424,9 @@ protected:
                     Coord dgx=-dfx,dgy=-dfy,dgz=-dfz;
                     for ( unsigned int i = 0; i < 8; i++ ) ref[i]=cubes[index-c0][i];
                     // compute local orientation given user input and local element frame
-                    BasesType U=B->getUserOrientation(index),A;
-                    if(B->f_useLocalOrientation.getValue()) A = getLocalFrame2D(parent[ref[0]],parent[ref[1]],parent[ref[4]]) * U;
-                    else A=U;
-                    for(unsigned int i=0; i<spatial_dimensions; i++) for(unsigned int j=0; j<material_dimensions; j++) M[i][j]=A[i][j];
+                    MaterialToSpatial U=B->getUserOrientation(index);
+                    if(B->f_useLocalOrientation.getValue()) M = getLocalFrame2D(parent[ref[0]],parent[ref[1]],parent[ref[4]]) * U;
+                    else M=U;
                     w[0]=gx*gy*gz;
                     w[1]=fx*gy*gz;
                     w[2]=fx*fy*gz;
@@ -490,9 +482,9 @@ protected:
 
 
         // local coordinate systems
-        static BasesType getLocalFrame( const Coord &p1,const Coord &p2 )
+        static MaterialToSpatial getLocalFrame( const Coord &p1,const Coord &p2 )
         {
-            BasesType R;
+            MaterialToSpatial R;
             R(0) = p2-p1; R(0).normalize();
             R(1) = Coord( -R(0)[1], R(0)[0] );
             R.transpose();
@@ -500,7 +492,7 @@ protected:
         }
 
 
-        static void getBasisFrom2DElements( BasesType& b, const Coord& p0, const Coord& p1, const Coord& p2 )
+        static void getBasisFrom2DElements( MaterialToSpatial& b, const Coord& p0, const Coord& p1, const Coord& p2 )
         {
             b[0] = p1 - p0;
             b[1] = p2 - p0;
@@ -508,8 +500,8 @@ protected:
 
 
 
-        //        // align user provided global orientation to 2D manifold (to required for 1D cells)
-        static BasesType reorientGlobalOrientation( const BasesType& /*Global*/, const BasesType& Local )
+        //        // align user provided global orientation to 2D manifold
+        static MaterialToSpatial reorientGlobalOrientation( const MaterialToSpatial& /*Global*/, const MaterialToSpatial& Local )
         {
             // TODO WARNING I am really not sure of this!!
             return Local.transposed();
@@ -556,7 +548,7 @@ protected:
                 B->bases.resize ( triangles.size() +quads.size() );
                 for ( unsigned int t = 0; t < triangles.size(); t++ )
                 {
-                    BasesType m,mt;
+                    MaterialToSpatial m,mt;
                     getBasisFrom2DElements( m, parent[triangles[t][0]], parent[triangles[t][1]], parent[triangles[t][2]] );
                     mt.transpose ( m );
                     B->bases[t].invert ( mt );
@@ -564,7 +556,7 @@ protected:
                 int c0 = triangles.size();
                 for ( unsigned int c = 0; c < quads.size(); c++ )
                 {
-                    BasesType m,mt;
+                    MaterialToSpatial m,mt;
                     getBasisFrom2DElements( m, parent[quads[c][0]], parent[quads[c][1]], parent[quads[c][3]] );
                     mt.transpose ( m );
                     B->bases[c0+c].invert ( mt );
@@ -575,7 +567,7 @@ protected:
         static void computeShapeFunction( const BarycentricShapeFunction<ShapeFunctionTypes_>* B, const Coord& childPosition, MaterialToSpatial& M, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL, const Cell cell=-1)
         {
             M=MaterialToSpatial();
-            for ( unsigned int i = 0; i < material_dimensions; i++ ) M[i][i]=(Real)1.; //identity
+            for ( unsigned int i = 0; i < spatial_dimensions; i++ ) M[i][i]=(Real)1.; //identity
 
             // resize input
             unsigned int nbRef=B->f_nbRef.getValue();
@@ -614,9 +606,7 @@ protected:
                 {
                     ref[0]=edges[index][0]; ref[1]=edges[index][1];
                     // local frame
-                    BasesType R;
-                    R = getLocalFrame(parent[ref[0]],parent[ref[1]]); // orientation = local element frame (no user input for 1D elements)
-                    for(unsigned int i=0; i<spatial_dimensions; i++) for(unsigned int j=0; j<material_dimensions; j++) M[i][j]=R[i][j];
+                    M = getLocalFrame(parent[ref[0]],parent[ref[1]]); // orientation = local element frame (no user input for 1D elements)
                     // weights
                     w[0]=(Real)1.-coefs[0]; w[1]=coefs[0];
                     if(dw) {  (*dw)[0]=-B->bases[index][0]; (*dw)[1]=B->bases[index][0]; }
@@ -644,11 +634,10 @@ protected:
                 {
                     ref[0]=triangles[index][0];                          ref[1]=triangles[index][1];  ref[2]=triangles[index][2];
                     // compute local orientation given user input and local element frame
-                    BasesType U=B->getUserOrientation(index),R,A;
+                    MaterialToSpatial U=B->getUserOrientation(index),R;
                     R = getLocalFrame(parent[ref[0]],parent[ref[1]]);
-                    if(B->f_useLocalOrientation.getValue()) A = reorientGlobalOrientation(R*U,R);
-                    else A = reorientGlobalOrientation(U,R);
-                    for(unsigned int i=0; i<spatial_dimensions; i++) for(unsigned int j=0; j<material_dimensions; j++) M[i][j]=A[i][j];
+                    if(B->f_useLocalOrientation.getValue()) M = reorientGlobalOrientation(R*U,R);
+                    else M = reorientGlobalOrientation(U,R);
                     // weights
                     w[0]=(Real)1.-coefs[0]-coefs[1];                     w[1]=coefs[0];               w[2]=coefs[1];
                     if(dw) {  (*dw)[0]=-B->bases[index][0]-B->bases[index][1]; (*dw)[1]=B->bases[index][0];    (*dw)[2]=B->bases[index][1]; }
@@ -661,11 +650,10 @@ protected:
                     Gradient dgx=-dfx,dgy=-dfy;
                     for ( unsigned int i = 0; i < 4; i++ ) ref[i]=quads[index-c0][i];
                     // compute local orientation given user input and local element frame
-                    BasesType U=B->getUserOrientation(index-c0),R,A;
+                    MaterialToSpatial U=B->getUserOrientation(index-c0),R;
                     R = getLocalFrame(parent[ref[0]],parent[ref[1]]);
-                    if(B->f_useLocalOrientation.getValue()) A = reorientGlobalOrientation(R*U,R);
-                    else A = reorientGlobalOrientation(U,R);
-                    for(unsigned int i=0; i<spatial_dimensions; i++) for(unsigned int j=0; j<material_dimensions; j++) M[i][j]=A[i][j];
+                    if(B->f_useLocalOrientation.getValue()) M = reorientGlobalOrientation(R*U,R);
+                    else M = reorientGlobalOrientation(U,R);
                     // weights
                     w[0]=gx*gy; w[1]=fx*gy; w[2]=fx*fy; w[3]=gx*fy;
                     if(dw)
@@ -744,11 +732,11 @@ protected:
 
 
     // user provided orientation
-    BasesType getUserOrientation(const unsigned int index) const
+    MaterialToSpatial getUserOrientation(const unsigned int index) const
     {
         defaulttype::Vec<3,Real> orient; if(this->f_orientation.getValue().size()) orient=(this->f_orientation.getValue().size()>index)?this->f_orientation.getValue()[index]:this->f_orientation.getValue()[0];
         helper::Quater<Real> q = helper::Quater< Real >::createQuaterFromEuler(orient * (Real)M_PI / (Real)180.0);
-        BasesType R; q.toMatrix(R);
+        MaterialToSpatial R; q.toMatrix(R);
         return R;
     }
 

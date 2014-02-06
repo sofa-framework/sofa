@@ -75,7 +75,7 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::init()
 template < class DataTypes, class ShapeFunctionTypes, class MassType >
 typename ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::Real ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::getVoxelVolume( const TransformType& transform ) const
 {
-    if( ShapeFunctionTypes::material_dimensions == 2 ) // for 2D shape functions, it should return an area
+/*    if( ShapeFunctionTypes::material_dimensions == 2 ) // for 2D shape functions, it should return an area
     {
         // todo how to find the right directions to compute the area? Would need the topology or at least the voxel neighbourhood.
         Real volume = transform.getScale()[0] * transform.getScale()[1] * transform.getScale()[2];
@@ -83,6 +83,7 @@ typename ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::Real Image
         return volume * volume;
     }
     else
+*/
     {
         // by default, it returns the voxel volume
         return transform.getScale()[0] * transform.getScale()[1] * transform.getScale()[2];
@@ -125,7 +126,7 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::reinit()
         if( voxelDensity > 0 )
         {
             // the voxel position in space
-            mCoord voxelPos = transform.fromImage( typename TransformType::Coord( x, y, z ) );
+            sCoord voxelPos = transform.fromImage( typename TransformType::Coord( x, y, z ) );
 
             // compute interpolation points/weights
             VRef controlPoints;  ///< The cp indices. controlPoints[j] is the index of the j-th parent influencing child.

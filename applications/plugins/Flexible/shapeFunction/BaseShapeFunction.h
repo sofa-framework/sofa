@@ -55,10 +55,10 @@ struct ShapeFunctionInternalData
 };
 
 
-/** Compute interpolation weights and their derivatives.
-  Interpolation is defined across a material space as \f$ x_j = \sum_i w_{ij} x_i \f$, where the x are material coordinates (3 dimensions for a volumetris solid, 2 for a surface, 1 for a line, independently of the dimension of the space they are moving in).
-  Shape function \f$ w_{ij}(x_j) \f$ encodes the influence of a parent node at \f$ x_i \f$ an a child node at \f$ x_j \f$.
+/** Compute interpolation weights, their spatial derivatives, and a local orthonormal frame to map material to spatial coordinates.
+  Interpolation is defined across space as \f$ x_j = \sum_i w_{ij} x_i \f$
   It is used to map displacements/velocities/forces, but any other quantities in general.
+  Shape function \f$ w_{ij}(x_j) \f$ encodes the influence of a parent node at \f$ x_i \f$ an a child node at \f$ x_j \f$.
   For efficiency, child nodes depend at most on nbRef parents.
   In general, it is a partition of unity : \f$ sum_i w_{ij}(x)=1 \f$ everywhere.
   When \f$ w_i(x_j)=0, i!=j \f$ and  \f$ w_i(x_i)=1 \f$, shape functions are called interpolating. Otherwise they are called approximating.
@@ -73,7 +73,6 @@ public:
 
     typedef TShapeFunctionTypes ShapeFunctionTypes;
     typedef typename ShapeFunctionTypes::Real Real;
-	enum {material_dimensions=ShapeFunctionTypes::material_dimensions};
 	static const unsigned int spatial_dimensions=ShapeFunctionTypes::spatial_dimensions;
 
     /** @name types */
@@ -195,7 +194,7 @@ protected:
 };
 
 
-template <int spatial_dimensions_, int material_dimensions_, class Real_>
+template <int spatial_dimensions_, class Real_>
 struct ShapeFunctionTypes
 {
     typedef Real_ Real;
@@ -207,7 +206,7 @@ struct ShapeFunctionTypes
 	typedef vector<Gradient> VGradient;
     typedef Mat<spatial_dimensions_,spatial_dimensions_,Real> Hessian;    ///< Hessian (second derivative) of a scalar value in world space
 	typedef vector<Hessian> VHessian;
-    typedef Mat<spatial_dimensions_,material_dimensions_,Real> MaterialToSpatial;           ///< local transformation from material to spatial space ( linear for now). Used in mapping to convert gradients and hessians to material space
+    typedef Mat<spatial_dimensions_,spatial_dimensions_,Real> MaterialToSpatial;           ///< local transformation from material to spatial space ( linear for now). Used in mapping to convert gradients and hessians to material space
 	typedef vector<MaterialToSpatial> VMaterialToSpatial;
 	typedef int Cell;
 	typedef vector<Cell> VCell;
@@ -218,40 +217,26 @@ struct ShapeFunctionTypes
 	typedef vector<VHessian> VecVHessian;
 
     static const int spatial_dimensions=spatial_dimensions_ ;
-    static const int material_dimensions=material_dimensions_ ;  ///< number of node dimensions (1 for a wire, 2 for a hull, 3 for a volumetric object)
     static const char* Name();
 };
 
-typedef ShapeFunctionTypes<3,1,float>  ShapeFunction1f;
-typedef ShapeFunctionTypes<3,1,double> ShapeFunction1d;
-typedef ShapeFunctionTypes<3,2,float>  ShapeFunction2f;
-typedef ShapeFunctionTypes<3,2,double> ShapeFunction2d;
-typedef ShapeFunctionTypes<3,3,float>  ShapeFunction3f;
-typedef ShapeFunctionTypes<3,3,double> ShapeFunction3d;
-typedef ShapeFunctionTypes<2,2,float>  ShapeFunction22f;
-typedef ShapeFunctionTypes<2,2,double> ShapeFunction22d;
+typedef ShapeFunctionTypes<3,float>  ShapeFunctionf;
+typedef ShapeFunctionTypes<3,double> ShapeFunctiond;
+typedef ShapeFunctionTypes<2,float>  ShapeFunction2f;
+typedef ShapeFunctionTypes<2,double> ShapeFunction2d;
 
 #ifdef SOFA_FLOAT
-typedef ShapeFunction1f ShapeFunction1;
+typedef ShapeFunctionf ShapeFunction;
 typedef ShapeFunction2f ShapeFunction2;
-typedef ShapeFunction3f ShapeFunction3;
-typedef ShapeFunction22f ShapeFunction22;
 #else
-typedef ShapeFunction1d ShapeFunction1;
+typedef ShapeFunctiond ShapeFunction;
 typedef ShapeFunction2d ShapeFunction2;
-typedef ShapeFunction3d ShapeFunction3;
-typedef ShapeFunction22d ShapeFunction22;
 #endif
 
-template<> inline const char* ShapeFunction1d::Name() { return "ShapeFunction1d"; }
-template<> inline const char* ShapeFunction1f::Name() { return "ShapeFunction1f"; }
+template<> inline const char* ShapeFunctiond::Name() { return "ShapeFunctiond"; }
+template<> inline const char* ShapeFunctionf::Name() { return "ShapeFunctionf"; }
 template<> inline const char* ShapeFunction2d::Name() { return "ShapeFunction2d"; }
 template<> inline const char* ShapeFunction2f::Name() { return "ShapeFunction2f"; }
-template<> inline const char* ShapeFunction3d::Name() { return "ShapeFunction3d"; }
-template<> inline const char* ShapeFunction3f::Name() { return "ShapeFunction3f"; }
-template<> inline const char* ShapeFunction22d::Name() { return "ShapeFunction22d"; }
-template<> inline const char* ShapeFunction22f::Name() { return "ShapeFunction22f"; }
-
 
 }
 }
