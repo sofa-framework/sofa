@@ -177,7 +177,7 @@ public:
 
     /** @name  Shape Function types    */
     //@{
-    typedef core::behavior::ShapeFunctionTypes<spatial_dimensions,material_dimensions,Real> ShapeFunctionType;
+    typedef core::behavior::ShapeFunctionTypes<spatial_dimensions,Real> ShapeFunctionType;
     typedef core::behavior::BaseShapeFunction<ShapeFunctionType> BaseShapeFunction;
     typedef typename BaseShapeFunction::VReal VReal;
     typedef typename BaseShapeFunction::Gradient Gradient;

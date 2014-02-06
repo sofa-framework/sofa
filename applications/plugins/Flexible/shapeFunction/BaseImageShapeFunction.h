@@ -308,7 +308,6 @@ public:
     typedef typename Inherit::Real Real;
     typedef typename Inherit::Coord Coord;
     typedef typename Inherit::VCoord VCoord;
-    enum {material_dimensions=Inherit::material_dimensions};
     typedef typename Inherit::VReal VReal;
     typedef typename Inherit::VGradient VGradient;
     typedef typename Inherit::VHessian VHessian;
@@ -366,7 +365,7 @@ public:
         // material to world transformation = image orientation
         helper::Quater<Real> q = helper::Quater< Real >::createQuaterFromEuler(this->transform.getValue().getRotation() * (Real)M_PI / (Real)180.0);
         Mat<3,3,Real> R; q.toMatrix(R);
-        for ( unsigned int i = 0; i < BaseImageShapeFunction::spatial_dimensions; i++ )  for ( unsigned int j = 0; j < BaseImageShapeFunction::material_dimensions; j++ ) M[i][j]=R[i][j];
+        for ( unsigned int i = 0; i < BaseImageShapeFunction::spatial_dimensions; i++ )  for ( unsigned int j = 0; j < BaseImageShapeFunction::spatial_dimensions; j++ ) M[i][j]=R[i][j];
 
         BaseImageShapeFunctionSpecialization<ImageTypes::label>::computeShapeFunction( this, childPosition, M, ref, w, dw, ddw, cell );
 

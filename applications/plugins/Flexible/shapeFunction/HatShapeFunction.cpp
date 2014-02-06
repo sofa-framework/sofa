@@ -40,12 +40,10 @@ SOFA_DECL_CLASS(HatShapeFunction)
 // Register in the Factory
 int HatShapeFunctionClass = core::RegisterObject("Computes compactly supported hat shape functions")
 
-        .add< HatShapeFunction<sofa::core::behavior::ShapeFunction3f> >(true)
-        .add< HatShapeFunction<sofa::core::behavior::ShapeFunction3d> >(true)
+        .add< HatShapeFunction<sofa::core::behavior::ShapeFunction> >(true)
         ;
 
-template class SOFA_Flexible_API HatShapeFunction<sofa::core::behavior::ShapeFunction3f>;
-template class SOFA_Flexible_API HatShapeFunction<sofa::core::behavior::ShapeFunction3d>;
+template class SOFA_Flexible_API HatShapeFunction<sofa::core::behavior::ShapeFunction>;
 }
 }
 }

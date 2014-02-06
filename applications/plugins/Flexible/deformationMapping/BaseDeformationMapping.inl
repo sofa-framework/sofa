@@ -583,8 +583,8 @@ void BaseDeformationMappingT<JacobianBlockType>::BackwardMapping(Coord& p0,const
     MaterialToSpatial F0;  VRef ref; VReal w; VGradient dw;
     Coord pnew;
     MaterialToSpatial F;
-    Mat<material_dimensions,spatial_dimensions,Real> Finv;
-    Mat<spatial_dimensions,spatial_dimensions,Real> F0Finv;
+    MaterialToSpatial Finv;
+    MaterialToSpatial F0Finv;
 
     while(count<NbMaxIt)
     {

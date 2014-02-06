@@ -43,26 +43,26 @@ SOFA_DECL_CLASS(VoronoiShapeFunction)
 // Register in the Factory
 int VoronoiShapeFunctionClass = core::RegisterObject("Computes natural neighbor shape functions in images")
 
-        .add< VoronoiShapeFunction<ShapeFunction3,ImageUC> >(true)
-        .add< VoronoiShapeFunction<ShapeFunction3,ImageD> >()
-        .add< VoronoiShapeFunction<ShapeFunction3,ImageB> >()
-        .add< VoronoiShapeFunction<ShapeFunction3,ImageF> >()
+        .add< VoronoiShapeFunction<ShapeFunction,ImageUC> >(true)
+        .add< VoronoiShapeFunction<ShapeFunction,ImageD> >()
+        .add< VoronoiShapeFunction<ShapeFunction,ImageB> >()
+        .add< VoronoiShapeFunction<ShapeFunction,ImageF> >()
 
-        .add<VoronoiShapeFunction<ShapeFunction3,BranchingImageB> >()
-        .add<VoronoiShapeFunction<ShapeFunction3,BranchingImageUC> >()
-        .add<VoronoiShapeFunction<ShapeFunction3,BranchingImageD> >()
-        .add<VoronoiShapeFunction<ShapeFunction3,BranchingImageUS> >()
+        .add<VoronoiShapeFunction<ShapeFunction,BranchingImageB> >()
+        .add<VoronoiShapeFunction<ShapeFunction,BranchingImageUC> >()
+        .add<VoronoiShapeFunction<ShapeFunction,BranchingImageD> >()
+        .add<VoronoiShapeFunction<ShapeFunction,BranchingImageUS> >()
         ;
 
-template class SOFA_Flexible_API VoronoiShapeFunction<ShapeFunction3,ImageUC>;
-template class SOFA_Flexible_API VoronoiShapeFunction<ShapeFunction3,ImageD>;
-template class SOFA_Flexible_API VoronoiShapeFunction<ShapeFunction3,ImageB>;
-template class SOFA_Flexible_API VoronoiShapeFunction<ShapeFunction3,ImageF>;
+template class SOFA_Flexible_API VoronoiShapeFunction<ShapeFunction,ImageUC>;
+template class SOFA_Flexible_API VoronoiShapeFunction<ShapeFunction,ImageD>;
+template class SOFA_Flexible_API VoronoiShapeFunction<ShapeFunction,ImageB>;
+template class SOFA_Flexible_API VoronoiShapeFunction<ShapeFunction,ImageF>;
 
-template class SOFA_Flexible_API VoronoiShapeFunction<ShapeFunction3,BranchingImageB>;
-template class SOFA_Flexible_API VoronoiShapeFunction<ShapeFunction3,BranchingImageUC>;
-template class SOFA_Flexible_API VoronoiShapeFunction<ShapeFunction3,BranchingImageD>;
-template class SOFA_Flexible_API VoronoiShapeFunction<ShapeFunction3,BranchingImageUS>;
+template class SOFA_Flexible_API VoronoiShapeFunction<ShapeFunction,BranchingImageB>;
+template class SOFA_Flexible_API VoronoiShapeFunction<ShapeFunction,BranchingImageUC>;
+template class SOFA_Flexible_API VoronoiShapeFunction<ShapeFunction,BranchingImageD>;
+template class SOFA_Flexible_API VoronoiShapeFunction<ShapeFunction,BranchingImageUS>;
 }
 }
 }

@@ -223,7 +223,8 @@ public:
     typedef Mat<dim,dim,Basis> Hessian;
 
     typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,mdim,Real> MaterialToSpatial;
+    typedef Mat<dim,dim,Real> MaterialToSpatial;
+    typedef Mat<dim,mdim,Real> Ftype;
 
     typedef Vec<mdim,Real> mGradient;
 
@@ -245,10 +246,11 @@ public:
 
     void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& M, const Basis& p, const Gradient& dP, const Hessian& /*ddP*/)
     {
+        Ftype F0; for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) F0[i][j]=M[i][j];
         SpatialCoord dw; for(unsigned int i=0; i<dim; i++) dw[i]=dP[i][0];
-        Ft=M.transposed()*dw;
+        Ft=F0.transposed()*dw;
         C.getF()=covMN(SPos-InPos,Ft);
-        C.getF()+=M*p[0];
+        C.getF()+=F0*p[0];
     }
 
     void addapply( OutCoord& result, const InCoord& data )
@@ -308,7 +310,8 @@ public:
     typedef Mat<dim,dim,Basis> Hessian;
 
     typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,mdim,Real> MaterialToSpatial;
+    typedef Mat<dim,dim,Real> MaterialToSpatial;
+    typedef Mat<dim,mdim,Real> Ftype;
 
     typedef Vec<mdim,Real> mGradient;
 
@@ -330,10 +333,11 @@ public:
 
     void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& M, const Basis& p, const Gradient& dP, const Hessian& /*ddP*/)
     {
+        Ftype F0; for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) F0[i][j]=M[i][j];
         SpatialCoord dw; for(unsigned int i=0; i<dim; i++) dw[i]=dP[i][0];
-        Ft=M.transposed()*dw;
+        Ft=F0.transposed()*dw;
         C.getF()=covMN(SPos-InPos,Ft);
-        C.getF()+=M*p[0];
+        C.getF()+=F0*p[0];
     }
 
     void addapply( OutCoord& result, const InCoord& data )
@@ -393,7 +397,8 @@ public:
     typedef Mat<dim,dim,Basis> Hessian;
 
     typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,mdim,Real> MaterialToSpatial;
+    typedef Mat<dim,dim,Real> MaterialToSpatial;
+    typedef Mat<dim,mdim,Real> Ftype;
 
     typedef Vec<mdim,Real> mGradient;
 
@@ -415,10 +420,11 @@ public:
 
     void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& M, const Basis& p, const Gradient& dP, const Hessian& /*ddP*/)
     {
+        Ftype F0; for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) F0[i][j]=M[i][j];
         SpatialCoord dw; for(unsigned int i=0; i<dim; i++) dw[i]=dP[i][0];
-        Ft=M.transposed()*dw;
+        Ft=F0.transposed()*dw;
         C.getF()=covMN(SPos-InPos,Ft);
-        C.getF()+=M*p[0];
+        C.getF()+=F0*p[0];
     }
 
     void addapply( OutCoord& result, const InCoord& data )
@@ -478,7 +484,8 @@ public:
     typedef Mat<dim,dim,Basis> Hessian;
 
     typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,mdim,Real> MaterialToSpatial;
+    typedef Mat<dim,dim,Real> MaterialToSpatial;
+    typedef Mat<dim,mdim,Real> Ftype;
 
     typedef Vec<mdim,Real> mGradient;
     typedef Mat<dim,mdim,Real> mHessian;
@@ -505,14 +512,15 @@ public:
 
     void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& M, const Basis& p, const Gradient& dP, const Hessian& ddP)
     {
+        Ftype F0; for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) F0[i][j]=M[i][j];
         SpatialCoord dw; for(unsigned int i=0; i<dim; i++) dw[i]=dP[i][0];
-        Ft=M.transposed()*dw;
+        Ft=F0.transposed()*dw;
         C.getF()=covMN(SPos-InPos,Ft);
-        C.getF()+=M*p[0];
+        C.getF()+=F0*p[0];
 
         Mat<dim,dim,Real> ddw;
         for (unsigned int i = 0; i < dim; ++i) for (unsigned int j = 0; j < dim; ++j) ddw(i,j)=ddP(i,j)[0];
-        dFt=ddw.transposed()*M;
+        dFt=ddw.transposed()*F0;
         for (unsigned int k = 0; k < dim; ++k)
         {
             C.getGradientF(k)=covMN(SPos-InPos,dFt[k]);

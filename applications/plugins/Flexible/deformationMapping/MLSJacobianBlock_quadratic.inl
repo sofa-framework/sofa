@@ -254,7 +254,8 @@ public:
     typedef Mat<dim,dim,Basis> Hessian;
 
     typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,mdim,Real> MaterialToSpatial;
+    typedef Mat<dim,dim,Real> MaterialToSpatial;
+    typedef Mat<dim,mdim,Real> Ftype;
 
     typedef Vec<mdim,Real> mGradient;
 
@@ -280,15 +281,16 @@ public:
     // Warning: here we suppose that AOinv is the identity
     void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& M, const Basis& p, const Gradient& dp, const Hessian& /*ddp*/)
     {
+        Ftype F0; for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) F0[i][j]=M[i][j];
         SpatialCoord dw; for(unsigned int i=0; i<dim; i++) dw[i]=dp[i][0];
-        Ft=M.transposed()*dw;
+        Ft=F0.transposed()*dw;
 
         Mat<dimq,dim,Real> gradps; for (unsigned int j = 0; j < dimq; ++j) for (unsigned int k = 0; k < dim; ++k) gradps(j,k)=dp[k][j+1];
-        PFa = (gradps* M - covMN(convertSpatialToQuadraticCoord(InPos.getCenter()),Ft) );
+        PFa = (gradps* F0 - covMN(convertSpatialToQuadraticCoord(InPos.getCenter()),Ft) );
 
         Mat<dim,dim,Real> wI; for (unsigned int j = 0; j < dim; ++j) wI(j,j)=p[0];
         Mat<dim,dim,Real> gradps1;  for (unsigned int j = 0; j < dim; ++j) for (unsigned int k = 0; k < dim; ++k) gradps1(j,k)=gradps(j,k);
-        C.getF()=covMN(SPos,Ft) + (wI-gradps1)*M ;
+        C.getF()=covMN(SPos,Ft) + (wI-gradps1)*F0 ;
     }
 
     void addapply( OutCoord& result, const InCoord& data )
@@ -358,7 +360,8 @@ public:
     typedef Mat<dim,dim,Basis> Hessian;
 
     typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,mdim,Real> MaterialToSpatial;
+    typedef Mat<dim,dim,Real> MaterialToSpatial;
+    typedef Mat<dim,mdim,Real> Ftype;
 
     typedef Vec<mdim,Real> mGradient;
 
@@ -384,15 +387,16 @@ public:
     // Warning: here we suppose that AOinv is the identity
     void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& M, const Basis& p, const Gradient& dp, const Hessian& /*ddp*/)
     {
+        Ftype F0; for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) F0[i][j]=M[i][j];
         SpatialCoord dw; for(unsigned int i=0; i<dim; i++) dw[i]=dp[i][0];
-        Ft=M.transposed()*dw;
+        Ft=F0.transposed()*dw;
 
         Mat<dimq,dim,Real> gradps; for (unsigned int j = 0; j < dimq; ++j) for (unsigned int k = 0; k < dim; ++k) gradps(j,k)=dp[k][j+1];
-        PFa = (gradps* M - covMN(convertSpatialToQuadraticCoord(InPos.getCenter()),Ft) );
+        PFa = (gradps* F0 - covMN(convertSpatialToQuadraticCoord(InPos.getCenter()),Ft) );
 
         Mat<dim,dim,Real> wI; for (unsigned int j = 0; j < dim; ++j) wI(j,j)=p[0];
         Mat<dim,dim,Real> gradps1;  for (unsigned int j = 0; j < dim; ++j) for (unsigned int k = 0; k < dim; ++k) gradps1(j,k)=gradps(j,k);
-        C.getF()=covMN(SPos,Ft) + (wI-gradps1)*M ;
+        C.getF()=covMN(SPos,Ft) + (wI-gradps1)*F0 ;
     }
 
     void addapply( OutCoord& result, const InCoord& data )
@@ -462,7 +466,8 @@ public:
     typedef Mat<dim,dim,Basis> Hessian;
 
     typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,mdim,Real> MaterialToSpatial;
+    typedef Mat<dim,dim,Real> MaterialToSpatial;
+    typedef Mat<dim,mdim,Real> Ftype;
 
     typedef Vec<mdim,Real> mGradient;
 
@@ -488,15 +493,16 @@ public:
     // Warning: here we suppose that AOinv is the identity
     void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& M, const Basis& p, const Gradient& dp, const Hessian& /*ddp*/)
     {
+        Ftype F0; for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) F0[i][j]=M[i][j];
         SpatialCoord dw; for(unsigned int i=0; i<dim; i++) dw[i]=dp[i][0];
-        Ft=M.transposed()*dw;
+        Ft=F0.transposed()*dw;
 
         Mat<dimq,dim,Real> gradps; for (unsigned int j = 0; j < dimq; ++j) for (unsigned int k = 0; k < dim; ++k) gradps(j,k)=dp[k][j+1];
-        PFa = (gradps* M - covMN(convertSpatialToQuadraticCoord(InPos.getCenter()),Ft) );
+        PFa = (gradps* F0 - covMN(convertSpatialToQuadraticCoord(InPos.getCenter()),Ft) );
 
         Mat<dim,dim,Real> wI; for (unsigned int j = 0; j < dim; ++j) wI(j,j)=p[0];
         Mat<dim,dim,Real> gradps1;  for (unsigned int j = 0; j < dim; ++j) for (unsigned int k = 0; k < dim; ++k) gradps1(j,k)=gradps(j,k);
-        C.getF()=covMN(SPos,Ft) + (wI-gradps1)*M ;
+        C.getF()=covMN(SPos,Ft) + (wI-gradps1)*F0 ;
     }
 
     void addapply( OutCoord& result, const InCoord& data )
@@ -565,7 +571,8 @@ public:
     typedef Mat<dim,dim,Basis> Hessian;
 
     typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,mdim,Real> MaterialToSpatial;
+    typedef Mat<dim,dim,Real> MaterialToSpatial;
+    typedef Mat<dim,mdim,Real> Ftype;
 
     typedef Vec<mdim,Real> mGradient;
     typedef Mat<dim,mdim,Real> mHessian;
@@ -593,8 +600,9 @@ public:
 
     void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& M, const Basis& p, const Gradient& dp, const Hessian& ddp)
     {
-//        Ft=M.transposed()*dw;
-//        dFt=ddw.transposed()*M;
+//        Ftype F0; for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) F0[i][j]=M[i][j];
+//        Ft=F0.transposed()*dw;
+//        dFt=ddw.transposed()*F0;
 
 //        InCoord inverseInitialTransform = In::inverse(InPos);   // inverse of quadratic transform (warning: only affine part inverted)
 
@@ -604,10 +612,10 @@ public:
 //        Mat<dimq,dim,Real> gradQ0 = SpatialToQuadraticCoordGradient (q0) ;  // grad q0^*
 //        for (unsigned int i=0; i<dim; ++i) for (unsigned int j=0; j<dim; ++j) gradQ0[i][j]=inverseInitialTransform.getAffine()[i][j];
 
-//        PFdFa[0]=covMN(vectorInLocalCoordinates,Ft) + gradQ0 * M * w;
+//        PFdFa[0]=covMN(vectorInLocalCoordinates,Ft) + gradQ0 * F0 * w;
 
 //        Mat<dim,dimq,Real> gradQ0T = gradQ0.transposed();
-//        Mat<dimq,mdim> gradQ0M; for (unsigned int k = 0; k < dimq; ++k) gradQ0M[k]=M.transposed()*gradQ0[k];
+//        Mat<dimq,mdim> gradQ0M; for (unsigned int k = 0; k < dimq; ++k) gradQ0M[k]=F0.transposed()*gradQ0[k];
 //        for (unsigned int k = 0; k < dim; ++k) PFdFa[k+1] = covMN( vectorInLocalCoordinates, dFt[k]) + gradQ0M * dw[k] + covMN(gradQ0T[k],Ft);
     }
 

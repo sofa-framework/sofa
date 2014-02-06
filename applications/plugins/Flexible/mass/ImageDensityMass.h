@@ -70,7 +70,7 @@ public:
     typedef typename BaseShapeFunction::Hessian Hessian;
     typedef typename BaseShapeFunction::VRef VRef;
     typedef typename BaseShapeFunction::MaterialToSpatial MaterialToSpatial ; ///< MaterialToSpatial transformation = deformation gradient type
-    typedef typename BaseShapeFunction::Coord mCoord; ///< material coordinates
+    typedef typename BaseShapeFunction::Coord sCoord; ///< spatial coordinates
     BaseShapeFunction* m_shapeFunction;        ///< the component where the weights are computed
     //@}
 
@@ -182,14 +182,12 @@ protected:
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_FLEXIBLE_ImageDensityMass_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::Vec3dTypes,core::behavior::ShapeFunction3d,defaulttype::Mat3x3d>; // volume FEM (tetra, hexa)
-extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::Vec3dTypes,core::behavior::ShapeFunction2d,defaulttype::Mat3x3d>; // surface FEM (triangles, quads)
-//extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::Rigid3dTypes,core::behavior::ShapeFunction3d,defaulttype::Rigid3dMass>; // rigid frame
+extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::Vec3dTypes,core::behavior::ShapeFunctiond,defaulttype::Mat3x3d>; // volume FEM (tetra, hexa)
+//extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::Rigid3dTypes,core::behavior::ShapeFunctiond,defaulttype::Rigid3dMass>; // rigid frame
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::Vec3fTypes,core::behavior::ShapeFunction3f,defaulttype::Mat3x3f>;
-extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::Vec3fTypes,core::behavior::ShapeFunction2f,defaulttype::Mat3x3f>;
-//extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::Rigid3fTypes,core::behavior::ShapeFunction3f,defaulttype::Rigid3fMass>; // rigid frame
+extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::Vec3fTypes,core::behavior::ShapeFunctionf,defaulttype::Mat3x3f>;
+//extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::Rigid3fTypes,core::behavior::ShapeFunctionf,defaulttype::Rigid3fMass>; // rigid frame
 #endif
 #endif
 

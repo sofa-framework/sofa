@@ -88,13 +88,14 @@ public:
     enum { dim = Out::spatial_dimensions };
     enum { mdim = Out::material_dimensions };
     typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,mdim,Real> MaterialToSpatial;
+    typedef Mat<dim,dim,Real> MaterialToSpatial;
+    typedef Mat<dim,mdim,Real> Ftype;
 
     MatBlock J;
     OutCoord X0;
     static const bool constant=true;
 
-    void init(const MatBlock& _J, const SpatialCoord& /*SPos*/, const MaterialToSpatial& M)    { J=_J; X0.getF()=M; }
+    void init(const MatBlock& _J, const SpatialCoord& /*SPos*/, const MaterialToSpatial& M)    { J=_J; for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) X0.getF()[i][j]=M[i][j];  }
     void addapply( OutCoord& result, const InCoord& data )    { result.getVec() +=  J*data + X0.getVec(); }
     void addmult( OutDeriv& result,const InDeriv& data )    { result.getVec() += J*data; }
     void addMultTranspose( InDeriv& result, const OutDeriv& data )    { result += J.multTranspose(data.getVec()); }
@@ -123,13 +124,14 @@ public:
     enum { dim = Out::spatial_dimensions };
     enum { mdim = Out::material_dimensions };
     typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,mdim,Real> MaterialToSpatial;
+    typedef Mat<dim,dim,Real> MaterialToSpatial;
+    typedef Mat<dim,mdim,Real> Ftype;
 
     MatBlock J;
     OutCoord X0;
     static const bool constant=true;
 
-    void init(const MatBlock& _J, const SpatialCoord& /*SPos*/, const MaterialToSpatial& M)    { J=_J; X0.getF()=M; }
+    void init(const MatBlock& _J, const SpatialCoord& /*SPos*/, const MaterialToSpatial& M)    { J=_J; for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) X0.getF()[i][j]=M[i][j];  }
     void addapply( OutCoord& result, const InCoord& data )    { result.getVec() +=  J*data + X0.getVec(); }
     void addmult( OutDeriv& result,const InDeriv& data )    { result.getVec() += J*data; }
     void addMultTranspose( InDeriv& result, const OutDeriv& data )    { result += J.multTranspose(data.getVec()); }
@@ -158,13 +160,14 @@ public:
     enum { dim = Out::spatial_dimensions };
     enum { mdim = Out::material_dimensions };
     typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,mdim,Real> MaterialToSpatial;
+    typedef Mat<dim,dim,Real> MaterialToSpatial;
+    typedef Mat<dim,mdim,Real> Ftype;
 
     MatBlock J;
     OutCoord X0;
     static const bool constant=true;
 
-    void init(const MatBlock& _J, const SpatialCoord& /*SPos*/, const MaterialToSpatial& M)    { J=_J; X0.getF()=M; }
+    void init(const MatBlock& _J, const SpatialCoord& /*SPos*/, const MaterialToSpatial& M)    { J=_J; for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) X0.getF()[i][j]=M[i][j];  }
     void addapply( OutCoord& result, const InCoord& data )    { result.getVec() +=  J*data + X0.getVec(); }
     void addmult( OutDeriv& result,const InDeriv& data )    { result.getVec() += J*data; }
     void addMultTranspose( InDeriv& result, const OutDeriv& data )    { result += J.multTranspose(data.getVec()); }
@@ -193,13 +196,14 @@ public:
     enum { dim = Out::spatial_dimensions };
     enum { mdim = Out::material_dimensions };
     typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,mdim,Real> MaterialToSpatial;
+    typedef Mat<dim,dim,Real> MaterialToSpatial;
+    typedef Mat<dim,mdim,Real> Ftype;
 
     MatBlock J;
     OutCoord X0;
     static const bool constant=true;
 
-    void init(const MatBlock& _J, const SpatialCoord& /*SPos*/, const MaterialToSpatial& M)    { J=_J; X0.getF()=M; }
+    void init(const MatBlock& _J, const SpatialCoord& /*SPos*/, const MaterialToSpatial& M)    { J=_J; for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) X0.getF()[i][j]=M[i][j];  }
     void addapply( OutCoord& result, const InCoord& data )    { result.getVec() +=  J*data + X0.getVec(); }
     void addmult( OutDeriv& result,const InDeriv& data )    { result.getVec() += J*data; }
     void addMultTranspose( InDeriv& result, const OutDeriv& data )    { result += J.multTranspose(data.getVec()); }

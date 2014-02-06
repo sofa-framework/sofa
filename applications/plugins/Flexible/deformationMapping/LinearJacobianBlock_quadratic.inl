@@ -240,7 +240,8 @@ public:
     typedef Vec<dim,Real> Gradient;
     typedef Mat<dim,dim,Real> Hessian;
     typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,mdim,Real> MaterialToSpatial;
+    typedef Mat<dim,dim,Real> MaterialToSpatial;
+    typedef Mat<dim,mdim,Real> Ftype;
 
     typedef Vec<mdim,Real> mGradient;
 
@@ -263,7 +264,8 @@ public:
 
     void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& M, const Real& w, const Gradient& dw, const Hessian& /*ddw*/)
     {
-        Ft=M.transposed()*dw;
+        Ftype F0; for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) F0[i][j]=M[i][j];
+        Ft=F0.transposed()*dw;
         InCoord inverseInitialTransform = In::inverse(InPos);   // inverse of quadratic transform (warning: only affine part inverted)
 
         SpatialCoord q0 = inverseInitialTransform.pointToParent(SPos);
@@ -272,7 +274,7 @@ public:
         Mat<dimq,dim,Real> gradQ0 = SpatialToQuadraticCoordGradient (q0) ;  // grad q0^*
         for (unsigned int i=0; i<dim; ++i) for (unsigned int j=0; j<dim; ++j) gradQ0[i][j]=inverseInitialTransform.getAffine()[i][j];
 
-        PFa=covMN(vectorInLocalCoordinates,Ft) + gradQ0 * M * w;
+        PFa=covMN(vectorInLocalCoordinates,Ft) + gradQ0 * F0 * w;
     }
 
     void addapply( OutCoord& result, const InCoord& data )
@@ -340,7 +342,8 @@ public:
     typedef Vec<dim,Real> Gradient;
     typedef Mat<dim,dim,Real> Hessian;
     typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,mdim,Real> MaterialToSpatial;
+    typedef Mat<dim,dim,Real> MaterialToSpatial;
+    typedef Mat<dim,mdim,Real> Ftype;
 
     typedef Vec<mdim,Real> mGradient;
 
@@ -363,7 +366,8 @@ public:
 
     void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& M, const Real& w, const Gradient& dw, const Hessian& /*ddw*/)
     {
-        Ft=M.transposed()*dw;
+        Ftype F0; for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) F0[i][j]=M[i][j];
+        Ft=F0.transposed()*dw;
         InCoord inverseInitialTransform = In::inverse(InPos);   // inverse of quadratic transform (warning: only affine part inverted)
 
         SpatialCoord q0 = inverseInitialTransform.pointToParent(SPos);
@@ -372,7 +376,7 @@ public:
         Mat<dimq,dim,Real> gradQ0 = SpatialToQuadraticCoordGradient (q0) ;  // grad q0^*
         for (unsigned int i=0; i<dim; ++i) for (unsigned int j=0; j<dim; ++j) gradQ0[i][j]=inverseInitialTransform.getAffine()[i][j];
 
-        PFa=covMN(vectorInLocalCoordinates,Ft) + gradQ0 * M * w;
+        PFa=covMN(vectorInLocalCoordinates,Ft) + gradQ0 * F0 * w;
     }
 
     void addapply( OutCoord& result, const InCoord& data )
@@ -441,7 +445,8 @@ public:
     typedef Vec<dim,Real> Gradient;
     typedef Mat<dim,dim,Real> Hessian;
     typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,mdim,Real> MaterialToSpatial;
+    typedef Mat<dim,dim,Real> MaterialToSpatial;
+    typedef Mat<dim,mdim,Real> Ftype;
 
     typedef Vec<mdim,Real> mGradient;
 
@@ -464,7 +469,8 @@ public:
 
     void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& M, const Real& w, const Gradient& dw, const Hessian& /*ddw*/)
     {
-        Ft=M.transposed()*dw;
+        Ftype F0; for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) F0[i][j]=M[i][j];
+        Ft=F0.transposed()*dw;
         InCoord inverseInitialTransform = In::inverse(InPos);   // inverse of quadratic transform (warning: only affine part inverted)
 
         SpatialCoord q0 = inverseInitialTransform.pointToParent(SPos);
@@ -473,7 +479,7 @@ public:
         Mat<dimq,dim,Real> gradQ0 = SpatialToQuadraticCoordGradient (q0) ;  // grad q0^*
         for (unsigned int i=0; i<dim; ++i) for (unsigned int j=0; j<dim; ++j) gradQ0[i][j]=inverseInitialTransform.getAffine()[i][j];
 
-        PFa=covMN(vectorInLocalCoordinates,Ft) + gradQ0 * M * w;
+        PFa=covMN(vectorInLocalCoordinates,Ft) + gradQ0 * F0 * w;
     }
 
     void addapply( OutCoord& result, const InCoord& data )
@@ -540,7 +546,8 @@ public:
     typedef Vec<dim,Real> Gradient;
     typedef Mat<dim,dim,Real> Hessian;
     typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,mdim,Real> MaterialToSpatial;
+    typedef Mat<dim,dim,Real> MaterialToSpatial;
+    typedef Mat<dim,mdim,Real> Ftype;
 
     typedef Vec<mdim,Real> mGradient;
     typedef Mat<dim,mdim,Real> mHessian;
@@ -568,8 +575,9 @@ public:
 
     void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& M, const Real& w, const Gradient& dw, const Hessian& ddw)
     {
-        Ft=M.transposed()*dw;
-        dFt=ddw.transposed()*M;
+        Ftype F0; for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) F0[i][j]=M[i][j];
+        Ft=F0.transposed()*dw;
+        dFt=ddw.transposed()*F0;
 
         InCoord inverseInitialTransform = In::inverse(InPos);   // inverse of quadratic transform (warning: only affine part inverted)
 
@@ -579,10 +587,10 @@ public:
         Mat<dimq,dim,Real> gradQ0 = SpatialToQuadraticCoordGradient (q0) ;  // grad q0^*
         for (unsigned int i=0; i<dim; ++i) for (unsigned int j=0; j<dim; ++j) gradQ0[i][j]=inverseInitialTransform.getAffine()[i][j];
 
-        PFdFa[0]=covMN(vectorInLocalCoordinates,Ft) + gradQ0 * M * w;
+        PFdFa[0]=covMN(vectorInLocalCoordinates,Ft) + gradQ0 * F0 * w;
 
         Mat<dim,dimq,Real> gradQ0T = gradQ0.transposed();
-        Mat<dimq,mdim> gradQ0M; for (unsigned int k = 0; k < dimq; ++k) gradQ0M[k]=M.transposed()*gradQ0[k];
+        Mat<dimq,mdim> gradQ0M; for (unsigned int k = 0; k < dimq; ++k) gradQ0M[k]=F0.transposed()*gradQ0[k];
         for (unsigned int k = 0; k < dim; ++k) PFdFa[k+1] = covMN( vectorInLocalCoordinates, dFt[k]) + gradQ0M * dw[k] + covMN(gradQ0T[k],Ft);
     }
 

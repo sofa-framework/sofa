@@ -238,7 +238,8 @@ public:
     typedef Vec<dim,Real> Gradient;
     typedef Mat<dim,dim,Real> Hessian;
     typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,mdim,Real> MaterialToSpatial;
+    typedef Mat<dim,dim,Real> MaterialToSpatial;
+    typedef Mat<dim,mdim,Real> Ftype;
 
     typedef Vec<mdim,Real> mGradient;
 
@@ -267,10 +268,11 @@ public:
 
     void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& M, const Real& w, const Gradient& dw, const Hessian& /*ddw*/)
     {
-        Ft=M.transposed()*dw;
+        Ftype F0; for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) F0[i][j]=M[i][j];
+        Ft=F0.transposed()*dw;
         InCoord inverseInitialTransform = In::inverse(InPos);   // A0^{-1}
         SpatialCoord vectorInLocalCoordinates = inverseInitialTransform.pointToParent(SPos);  // q0
-        PFa.getF()=covMN(vectorInLocalCoordinates,Ft) + inverseInitialTransform.getAffine() * M * w;
+        PFa.getF()=covMN(vectorInLocalCoordinates,Ft) + inverseInitialTransform.getAffine() * F0 * w;
     }
 
     void addapply( OutCoord& result, const InCoord& data )
@@ -335,7 +337,8 @@ public:
     typedef Vec<dim,Real> Gradient;
     typedef Mat<dim,dim,Real> Hessian;
     typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,mdim,Real> MaterialToSpatial;
+    typedef Mat<dim,dim,Real> MaterialToSpatial;
+    typedef Mat<dim,mdim,Real> Ftype;
 
     typedef Vec<mdim,Real> mGradient;
 
@@ -364,10 +367,11 @@ public:
 
     void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& M, const Real& w, const Gradient& dw, const Hessian& /*ddw*/)
     {
-        Ft=M.transposed()*dw;
+        Ftype F0; for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) F0[i][j]=M[i][j];
+        Ft=F0.transposed()*dw;
         InCoord inverseInitialTransform = In::inverse(InPos);   // A0^{-1}
         SpatialCoord vectorInLocalCoordinates = inverseInitialTransform.pointToParent(SPos);  // q0
-        PFa.getF()=covMN(vectorInLocalCoordinates,Ft) + inverseInitialTransform.getAffine() * M * w;
+        PFa.getF()=covMN(vectorInLocalCoordinates,Ft) + inverseInitialTransform.getAffine() * F0 * w;
     }
 
     void addapply( OutCoord& result, const InCoord& data )
@@ -433,7 +437,8 @@ public:
     typedef Vec<dim,Real> Gradient;
     typedef Mat<dim,dim,Real> Hessian;
     typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,mdim,Real> MaterialToSpatial;
+    typedef Mat<dim,dim,Real> MaterialToSpatial;
+    typedef Mat<dim,mdim,Real> Ftype;
 
     typedef Vec<mdim,Real> mGradient;
 
@@ -462,10 +467,11 @@ public:
 
     void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& M, const Real& w, const Gradient& dw, const Hessian& /*ddw*/)
     {
-        Ft=M.transposed()*dw;
+        Ftype F0; for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) F0[i][j]=M[i][j];
+        Ft=F0.transposed()*dw;
         InCoord inverseInitialTransform = In::inverse(InPos);   // A0^{-1}
         SpatialCoord vectorInLocalCoordinates = inverseInitialTransform.pointToParent(SPos);  // q0
-        PFa.getF()=covMN(vectorInLocalCoordinates,Ft) + inverseInitialTransform.getAffine() * M * w;
+        PFa.getF()=covMN(vectorInLocalCoordinates,Ft) + inverseInitialTransform.getAffine() * F0 * w;
     }
 
     void addapply( OutCoord& result, const InCoord& data )
@@ -529,7 +535,8 @@ public:
     typedef Vec<dim,Real> Gradient;
     typedef Mat<dim,dim,Real> Hessian;
     typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,mdim,Real> MaterialToSpatial;
+    typedef Mat<dim,dim,Real> MaterialToSpatial;
+    typedef Mat<dim,mdim,Real> Ftype;
 
     typedef Vec<mdim,Real> mGradient;
     typedef Mat<dim,mdim,Real> mHessian;
@@ -564,16 +571,18 @@ public:
 
     void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& M, const Real& w, const Gradient& dw, const Hessian& ddw)
     {
-        Ft=M.transposed()*dw;
-        dFt=ddw.transposed()*M;
+        Ftype F0; for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) F0[i][j]=M[i][j];
+
+        Ft=F0.transposed()*dw;
+        dFt=ddw.transposed()*F0;
 
         InCoord inverseInitialTransform = In::inverse(InPos);   // A0^{-1}
         SpatialCoord vectorInLocalCoordinates = inverseInitialTransform.pointToParent(SPos);  // q0
-        PFdFa.getF()=covMN(vectorInLocalCoordinates,Ft) + inverseInitialTransform.getAffine() * M * w;
+        PFdFa.getF()=covMN(vectorInLocalCoordinates,Ft) + inverseInitialTransform.getAffine() * F0 * w;
 
         Mat<dim,dim> AOinv = inverseInitialTransform.getAffine();
         Mat<dim,dim> AOinvT = AOinv.transposed();
-        Mat<dim,mdim> AOinvM; for (unsigned int k = 0; k < dim; ++k) AOinvM[k]=M.transposed()*AOinv[k];
+        Mat<dim,mdim> AOinvM; for (unsigned int k = 0; k < dim; ++k) AOinvM[k]=F0.transposed()*AOinv[k];
         for (unsigned int k = 0; k < dim; ++k) PFdFa.getGradientF(k) = covMN( vectorInLocalCoordinates, dFt[k]) + AOinvM * dw[k] + covMN(AOinvT[k],Ft);
     }
 
