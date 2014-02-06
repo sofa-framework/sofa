@@ -78,12 +78,14 @@ ShewchukPCGLinearSolver<TMatrix,TVector>::ShewchukPCGLinearSolver()
 template<class TMatrix, class TVector>
 void ShewchukPCGLinearSolver<TMatrix,TVector>::init()
 {
-    BaseContext * c = this->getContext();
+    if (! f_preconditioners.getValue().empty()) {
+        BaseContext * c = this->getContext();
 
-    c->get(preconditioners, f_preconditioners.getValue());
+        c->get(preconditioners, f_preconditioners.getValue());
 
-    if (preconditioners) sout << "Found " << f_preconditioners.getValue() << sendl;
-    else serr << "Solver \"" << f_preconditioners.getValue() << "\" not found." << sendl;
+        if (preconditioners) sout << "Found " << f_preconditioners.getValue() << sendl;
+        else serr << "Solver \"" << f_preconditioners.getValue() << "\" not found." << sendl;
+    }
 
     first = true;
 }
