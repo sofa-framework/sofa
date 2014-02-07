@@ -37,6 +37,15 @@
 
     <MeshMatrixMass massDensity="0.001" lumping="false"/>
 
+
+  <Node name="Collision"  >
+        <MeshObjLoader name="loader" filename="mesh/Armadillo_simplified.obj" triangulate="1"/>
+	<Mesh  src="@loader" />
+	<MechanicalObject  />
+	<TTriangleModel />
+        <LinearMapping template="MechanicalMapping&lt;Vec3d,Vec3d&gt;"  />
+   </Node>
+
   <Node name="Visual"  >
         <VisualModel  fileMesh="mesh/Armadillo_simplified.obj"   />
         <LinearMapping template="MechanicalMapping&lt;Vec3d,ExtVec3f&gt;"  />

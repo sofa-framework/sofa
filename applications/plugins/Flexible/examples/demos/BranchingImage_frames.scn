@@ -31,7 +31,7 @@
 
 <!-- voxels indices at nodes are passed to the shape function (needed in case of overlapping voxels) -->
 	<ImageValuesFromPositions name="cell" template="ImageUI" interpolation="0" position ="@sampler.position" image="@coarsener.outputFineImage" transform="@image.transform" />
-	<VoronoiShapeFunction name="SF" template="ShapeFunction3d,BranchingImageUC" position="@dof.rest_position" src="@branchingImage" method="0" nbRef="4" cell="@cell.values" />
+	<VoronoiShapeFunction name="SF" template="ShapeFunctiond,BranchingImageUC" position="@dof.rest_position" src="@branchingImage" method="0" nbRef="4" cell="@cell.values" />
 
 <!--  Visualization ShapeFunction data -->
 <!--   <BranchingImageToImageConverter template="BranchingImageUI,ImageUI" name="imageConverter" inputBranchingImage="@SF.indices" conversionType="0" printLog="true"/>  -->

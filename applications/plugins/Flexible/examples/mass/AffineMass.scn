@@ -34,7 +34,7 @@
     <Node 	name="behavior"   >
 
       <!-- targetNumber = DESIRED NUMBER OF GAUSS POINTS -->
-      <ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" showSamples="false" printLog="false" targetNumber="1" />
+      <ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" showSamplesScale="0" printLog="false" targetNumber="1" />
 
       <MechanicalObject template="F332" name="F"  useMask="0"  showObject="1" showObjectScale="0.05" />
       <LinearMapping template="Mapping&lt;Affine,F332&gt;"  />
@@ -94,12 +94,12 @@
 
 
     <TransferFunction name="densityTF" template="ImageUC,ImageD" inputImage="@rasterizer.image" param="0 0 1 0.022"/>
-    <ImageDensityMass  template="Affine3d,ShapeFunction3d" densityImage="@densityTF.outputImage" transform="@rasterizer.transform" printMassMatrix="true" />
+    <ImageDensityMass  template="Affine3d,ShapeFunctiond" densityImage="@densityTF.outputImage" transform="@rasterizer.transform" printMassMatrix="true" />
 
     <Node 	name="behavior"   >
 
       <!-- targetNumber = DESIRED NUMBER OF GAUSS POINTS -->
-      <ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" showSamples="false" printLog="false" targetNumber="1" />
+      <ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" showSamplesScale="0" printLog="false" targetNumber="1" />
 
       <MechanicalObject template="F332" name="F"  useMask="0"  showObject="1" showObjectScale="0.05" />
       <LinearMapping template="Mapping&lt;Affine,F332&gt;"  />
@@ -146,12 +146,12 @@
 
 
     <TransferFunction name="densityTF" template="ImageUC,ImageD" inputImage="@rasterizer.image" param="0 0 1 0.022"/>
-    <ImageDensityMass  template="Affine3d,ShapeFunction3d" densityImage="@densityTF.outputImage" transform="@rasterizer.transform" lumping="1" printMassMatrix="true"/>
+    <ImageDensityMass  template="Affine3d,ShapeFunctiond" densityImage="@densityTF.outputImage" transform="@rasterizer.transform" lumping="1" printMassMatrix="true"/>
 
     <Node 	name="behavior"   >
 
       <!-- targetNumber = DESIRED NUMBER OF GAUSS POINTS -->
-      <ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" showSamples="false" printLog="false" targetNumber="1" />
+      <ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" showSamplesScale="0" printLog="false" targetNumber="1" />
 
       <MechanicalObject template="F332" name="F"  useMask="0"  showObject="1" showObjectScale="0.05" />
       <LinearMapping template="Mapping&lt;Affine,F332&gt;"  />
@@ -199,12 +199,12 @@
 
 
     <TransferFunction name="densityTF" template="ImageUC,ImageD" inputImage="@rasterizer.image" param="0 0 1 0.022"/>
-    <ImageDensityMass  template="Affine3d,ShapeFunction3d" densityImage="@densityTF.outputImage" transform="@rasterizer.transform" lumping="2" printMassMatrix="true"/>
+    <ImageDensityMass  template="Affine3d,ShapeFunctiond" densityImage="@densityTF.outputImage" transform="@rasterizer.transform" lumping="2" printMassMatrix="true"/>
 
     <Node 	name="behavior"   >
 
       <!-- targetNumber = DESIRED NUMBER OF GAUSS POINTS -->
-      <ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" showSamples="false" printLog="false" targetNumber="1" />
+      <ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" showSamplesScale="0" printLog="false" targetNumber="1" />
 
       <MechanicalObject template="F332" name="F"  useMask="0"  showObject="1" showObjectScale="0.05" />
       <LinearMapping template="Mapping&lt;Affine,F332&gt;"  />
@@ -257,7 +257,7 @@
     <Node 	name="behavior"   >
 
       <!-- targetNumber = DESIRED NUMBER OF GAUSS POINTS -->
-      <ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" showSamples="false" printLog="false" targetNumber="1" />
+      <ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" showSamplesScale="0" printLog="false" targetNumber="1" />
 
       <MechanicalObject template="F332" name="F"  useMask="0"  showObject="1" showObjectScale="0.05" />
       <LinearMapping template="Mapping&lt;Affine,F332&gt;"  />

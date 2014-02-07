@@ -13,7 +13,7 @@
 		<ImageSampler template="ImageUC" name="sampler"  printLog="0"  listening="1"  image="@image.image"  transform="@image.transform"  method="1 - Uniform sampling using Fast Marching and Lloyd relaxation (nbSamples | bias distances=false | nbiterations=100  | FastMarching(0)/Dijkstra(1)=1)"  param="1" />
 		<MergeMeshes template="Vec3d" name="merged"  nbMeshes="2"  position1="@sampler.fixedPosition"  position2="@sampler.position" />
 		<MechanicalObject template="Rigid" name="parent"  useMask="0"  position="@merged.position"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1"  showObject="1" />
-		<VoronoiShapeFunction template="ShapeFunction3d,ImageUC" name="SF"  nbRef="4"  position="@parent.rest_position"  image="@image.image"  transform="@image.transform"  method="0 - Distance ratio"  useDijkstra="1" />
+		<VoronoiShapeFunction template="ShapeFunctiond,ImageUC" name="SF"  nbRef="4"  position="@parent.rest_position"  image="@image.image"  transform="@image.transform"  method="0 - Distance ratio"  useDijkstra="1" />
 		<Node 	 name="collision"  >
 			<MeshTopology name="mesh"  position="@../../mesh.position"  edges="@../../mesh.edges"  triangles="@../../mesh.triangles"  quads="@../../mesh.quads"  tetrahedra="@../../mesh.tetras"  hexahedra="@../../mesh.hexas" />
 			<MechanicalObject template="Vec3d" name="pts"  useMask="0"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1" />

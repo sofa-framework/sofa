@@ -37,7 +37,7 @@
         <Node 	name="behavior"   >
 	    <!--  Exact cell volumes are computed based on branching and fine image  -->
 	    <BranchingCellVolumes name="vol" image="@../coarsener.outputFineImage" transform="@../image.transform" branchingImage="@../coarsener.branchingImage" branchingImageTransform="@../coarsener.transform" />
-	    <TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamples="false" method="0" order="2" fineVolumes="@vol.volumes"/>
+	    <TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamplesScale="0" method="0" order="2" fineVolumes="@vol.volumes"/>
 
 	    <MechanicalObject  template="F331" />
 	    <!--  cell indices are retrieved from GaussPointSampler (needed by shapefunction to differentiate overlapping cells) -->

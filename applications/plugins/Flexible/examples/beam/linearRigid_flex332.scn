@@ -85,7 +85,7 @@
 <!--    <PartialFixedConstraint indices="0 1 2 3 4 5 6 7 8" fixedDirections="1 1 1 1 1 0 1 1 0 1 1 0" /> -->
 
     <Node 	name="behavior"   >
-        <ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" showSamples="false" printLog="false" targetNumber="1"/>
+        <ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" showSamplesScale="0" printLog="false" targetNumber="1"/>
 	<MechanicalObject template="F332" name="F"  />
 	<LinearMapping template="Mapping&lt;Rigid,F332&gt;"  />
 
@@ -132,7 +132,7 @@
 <!--    <FixedConstraint indices="0" />  -->
 
     <Node 	name="behavior"   >
-        <ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" showSamples="false" printLog="false" targetNumber="10"/>
+        <ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" showSamplesScale="0" printLog="false" targetNumber="10"/>
 	<MechanicalObject template="F332" name="F"  />
 	<LinearMapping template="Mapping&lt;Rigid,F332&gt;"  />
 

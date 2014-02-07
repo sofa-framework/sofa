@@ -7,7 +7,6 @@
     <DefaultAnimationLoop />
     <DefaultVisualManagerLoop />
 
-
 	<Node name="Plane"  >
 
 		<OglModel name="Visual"  fileMesh="mesh/cubeUV.obj"  translation="0 -5 0"  rotation="0 0 0"  scale3d="500 0.1 500"   material="Default Diffuse 1 0.5 0.5 0.5 1 Ambient 1 0.1 0.1 0.1 1 Specular 0 0.5 0.5 0.5 1 Emissive 0 0.5 0.5 0.5 1 Shininess 0 45 No texture linked to the material No bump texture linked to the material "  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
@@ -33,7 +32,7 @@
 	    <VoronoiShapeFunction name="SF" position="@parent.rest_position" src="@image" useDijkstra="true" method="0" nbRef="5" />
 
 	    <Node 	name="behavior"   >
-		<ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" showSamples="false" printLog="false" targetNumber="1"/>
+		<ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" showSamplesScale="0" printLog="false" targetNumber="1"/>
 		<MechanicalObject template="F332" name="F"  useMask="0"  showObject="0" showObjectScale="0.05" />
 	    	<LinearMapping template="Mapping&lt;Affine,F332&gt;"  />
 
@@ -65,9 +64,9 @@
 
 
 
-		<LightManager name="lightManager1"  listening="1"  shadows="1"  softShadows="1" ambient="1 1 1 1"/>
 	<OglShadowShader name="oglShadowShader1" />
-	<SpotLight name="spotLight2" shadowTextureSize="256" position="20 10 -25"  direction="-3 -2 3"  cutoff="40" exponent="0.5"/>
-	<SpotLight name="spotLight2" shadowTextureSize="256" position="30 15 15"  direction="-3 -2 0"  cutoff="30" exponent="0.2"/>
+		<LightManager name="lightManager1"  listening="1"  shadows="1"  softShadows="1" ambient="1 1 1 1"/>
+	<SpotLight name="spotLight2" shadowTextureSize="1024" position="20 10 -25"  direction="-3 -2 3"  cutoff="40" exponent="0.5" softShadows="0" zFar="2000"/>
+	<SpotLight name="spotLight2" shadowTextureSize="1024" position="30 15 15"  direction="-3 -2 0"  cutoff="30" exponent="0.2" softShadows="0" zFar="2000"/>
 
 </Node>

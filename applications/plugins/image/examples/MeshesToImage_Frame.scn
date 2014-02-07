@@ -28,7 +28,7 @@
       <ImageSampler template="ImageD" name="sampler" src="@../image" method="1" param="10" fixedPosition="-1.5 0 0"  />
       <MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />
       <MechanicalObject template="Affine" name="parent" useMask="0" showObject="true" showObjectScale="0.2" src="@merged" />
-      <VoronoiShapeFunction template="ShapeFunction3d,ImageD" name="SF" position="@parent.rest_position" src="@../image" bias="true"/>
+      <VoronoiShapeFunction template="ShapeFunctiond,ImageD" name="SF" position="@parent.rest_position" src="@../image" bias="true"/>
 
       <Node name="behavior">
         <ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="1" targetNumber="100" />
@@ -88,7 +88,7 @@
       <ImageSampler template="ImageD" name="sampler" src="@../image" method="1" param="10" fixedPosition="-1.5 0 0"  />
       <MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />
       <MechanicalObject template="Affine" name="parent" useMask="0" showObject="true" showObjectScale="0.2" src="@merged" />
-      <VoronoiShapeFunction template="ShapeFunction3d,ImageD" name="SF" position="@parent.rest_position" src="@../image" bias="true"/>
+      <VoronoiShapeFunction template="ShapeFunctiond,ImageD" name="SF" position="@parent.rest_position" src="@../image" bias="true"/>
 
       <Node name="behavior">
         <ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="1" targetNumber="100" />

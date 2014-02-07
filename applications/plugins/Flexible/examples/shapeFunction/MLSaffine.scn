@@ -38,7 +38,7 @@
             <MeshToImageEngine template="ImageUC" name="rasterizer" src="@surf" voxelSize="0.1" padSize="1" rotateImage="true" />
 	    <ImageContainer template="ImageUC" name="image" src="@rasterizer" drawBB="false"/>
 
-	    <ImageSampler template="ImageUC" name="sampler" src="@image" method="1" param="50" fixedPosition="" showSamples="false"/> 
+	    <ImageSampler template="ImageUC" name="sampler" src="@image" method="1" param="50" fixedPosition="" showSamplesScale="0"/> 
             <MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />
 	    <MechanicalObject template="Affine" name="dof" src="@merged" showObject="1" showObjectScale=".1"/>
 
@@ -47,10 +47,10 @@
 <!--	    <HatShapeFunction name="SF" position="@dof.rest_position" param="1 2 3" nbRef="4" />-->
 
 	    <Node 	name="behavior"   >
-		<ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="1" showSamples="false" printLog="1" targetNumber="200" />
+		<ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="1" showSamplesScale="0" printLog="1" targetNumber="200" />
 <!--        <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />-->
 <!--	<Mesh name="mesh" src="@loader" />-->
-<!--	    <TopologyGaussPointSampler name="sampler" inPosition="@mesh.position" showSamples="false" method="0" order="1" />-->
+<!--	    <TopologyGaussPointSampler name="sampler" inPosition="@mesh.position" showSamplesScale="0" method="0" order="1" />-->
 
 		<MechanicalObject template="F331" name="F" />
 	    	<MLSMapping template="Mapping&lt;Affine,F331&gt;"   showDeformationGradientScale="0.1"/>

@@ -9,13 +9,13 @@
         <GridMeshCreator name="loader" filename="nofile" resolution="11 11" trianglePattern="1" rotation="0 0 0 " scale="1 1 0" />
         <MeshTopology name="mesh" src="@loader" />
         <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" />
-        <BarycentricShapeFunction template="ShapeFunction2d"  />
+        <BarycentricShapeFunction template="ShapeFunctiond"  />
 
 <!--simple mesh-->
 <!--    <TriangleSetTopologyContainer name="mesh" triangles="0 1 2" />
     <TriangleSetGeometryAlgorithms  drawTriangles="true" drawColorTriangles="0.2 0.2 0.2"/>
     <MechanicalObject name="defoDOF" template="Vec3d"  position="0 0 0  1 0 0  0 1 0" />
-    <BarycentricShapeFunction template="ShapeFunction2d" position="0 0  1 0  1 1" />-->
+    <BarycentricShapeFunction template="ShapeFunctiond" position="0 0  1 0  1 1" />-->
 
 
         <BoxConstraint box="0.395 0.395 -0.005    0.605 0.605 0.005  " />
@@ -26,7 +26,7 @@
 
 <!--    Just to compute and visualize deformation gradients. Does nothing until we set a strain mapping and a material-->
     <Node name="deformationNode" >
-	<TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamples="false" method="0" order="1" />
+	<TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamplesScale="0" method="0" order="1" />
         <MechanicalObject template="F321"  name="triangleDeformationsDOF" />
   	<LinearMapping template="Mapping&lt;Vec3d,F321&gt;"  />
     

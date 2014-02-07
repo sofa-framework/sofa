@@ -21,10 +21,10 @@
         <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@mesh.position" name="FixedROI"/>
         <FixedConstraint indices="@FixedROI.indices" />
         
-        <BarycentricShapeFunction  template="ShapeFunction2d"/>
+        <BarycentricShapeFunction  template="ShapeFunctiond"/>
 
         <Node 	name="behavior_hooke"   >
-	    <TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamples="false" method="0" order="1" />
+	    <TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamplesScale="0" method="0" order="1" />
 	    <MechanicalObject  template="F321" name="F"  showObject="0" showObjectScale="0.05" />
     	    <LinearMapping template="Mapping&lt;Vec3d,F321&gt;"  assemble="1"/>
 
@@ -58,10 +58,10 @@
         <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@mesh.position" name="FixedROI"/>
         <FixedConstraint indices="@FixedROI.indices" />
         
-        <BarycentricShapeFunction  template="ShapeFunction2d"/>
+        <BarycentricShapeFunction  template="ShapeFunctiond"/>
 
         <Node 	name="behavior_hooke"   >
-	    <TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamples="false" method="0" order="1" />
+	    <TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamplesScale="0" method="0" order="1" />
 	    <MechanicalObject  template="F321" name="F"  showObject="0" showObjectScale="0.05" />
     	    <LinearMapping template="Mapping&lt;Vec3d,F321&gt;"  assemble="1"/>
 

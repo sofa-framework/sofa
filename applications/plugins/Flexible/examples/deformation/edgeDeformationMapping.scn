@@ -17,10 +17,10 @@
     <UniformMass  name="mass" totalMass="1"/>
     <FixedConstraint name="FixedConstraint" indices="0" />
 
-    <BarycentricShapeFunction template="ShapeFunction1d"  />
+    <BarycentricShapeFunction template="ShapeFunctiond"  />
 
     <Node name="deformationNode" >
-	<TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamples="false" method="0" order="1" />
+	<TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamplesScale="0" method="0" order="1" />
         <MechanicalObject template="F311"  name="triangleDeformationsDOF" />
   	<LinearMapping template="Mapping&lt;Vec3d,F311&gt;"  />
         <Node name="StrainNode">
@@ -49,10 +49,10 @@
     <UniformMass  name="mass" totalMass="1"/>
     <FixedConstraint name="FixedConstraint" indices="0" />
 
-    <BarycentricShapeFunction template="ShapeFunction1d"  />
+    <BarycentricShapeFunction template="ShapeFunctiond"  />
 
     <Node name="deformationNode" >
-	<TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamples="false" method="0" order="1" />
+	<TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamplesScale="0" method="0" order="1" />
         <MechanicalObject template="F311"  name="triangleDeformationsDOF" />
   	<LinearMapping template="Mapping&lt;Vec3d,F311&gt;"  />
         <Node name="StrainNode">
@@ -82,7 +82,7 @@
     <Node name="extensionsNode" >
         <MechanicalObject template="Vec1d"  name="extensionsDOF" />
         <EdgeSetTopologyContainer edges="@../mesh.edges" />
-        <DistanceMapping  />
+        <ExtensionMapping  />
         <UniformCompliance name="ucomp" template="Vec1d" compliance="1" dampingRatio="0."  isCompliance="0" /> 
     </Node>
 
