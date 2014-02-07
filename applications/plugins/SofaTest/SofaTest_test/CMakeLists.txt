@@ -14,6 +14,7 @@ set(SOURCE_FILES
     ProjectToPlaneConstraint_test.cpp
     ProjectToLineConstraint_test.cpp
     BaryMapperTest.cpp
+    LoadScene_test.cpp
         )
 
 if(APPLE)
@@ -26,6 +27,7 @@ endif()
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${RC_FILES})
 AddCompilerDefinitions("SOFA_PROJECT_TEST")
+AddCompilerDefinitions("SOFA_TEST_SCENES_PATH=${CMAKE_CURRENT_SOURCE_DIR}")
 
 AddLinkerDependencies(
     SofaTest

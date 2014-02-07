@@ -35,7 +35,7 @@ namespace simulation
 
 // register the loader in the factory
 static SceneLoader* loaderXML = SceneLoaderFactory::getInstance()->addEntry(new SceneLoaderXML());
-
+bool SceneLoaderXML::loadSucceed = true;
 
 
 bool SceneLoaderXML::canLoadFileExtension(const char *extension)
@@ -81,6 +81,8 @@ sofa::simulation::Node::SPtr SceneLoaderXML::load(const char *filename)
 /// Load a scene from a file
 Node::SPtr SceneLoaderXML::processXML(xml::BaseElement* xml, const char *filename)
 {
+    loadSucceed = true;
+
     if ( xml==NULL )
     {
         return NULL;
@@ -101,17 +103,20 @@ Node::SPtr SceneLoaderXML::processXML(xml::BaseElement* xml, const char *filenam
     if( nodeElt==NULL )
     {
         std::cerr << "LOAD ERROR: XML Root Node is not an Element."<<std::endl;
+        loadSucceed = false;
         std::exit(1);
     }
     else if( !(nodeElt->init()) )
     {
         std::cerr << "LOAD ERROR: Node initialization failed."<<std::endl;
+        loadSucceed = false;
     }
 
     Node::SPtr root = dynamic_cast<Node*> ( xml->getObject() );
     if ( root == NULL )
     {
         std::cerr << "LOAD ERROR: Objects initialization failed."<<std::endl;
+        loadSucceed = false;
         return NULL;
     }
 

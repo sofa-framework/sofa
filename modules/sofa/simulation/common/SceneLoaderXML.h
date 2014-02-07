@@ -53,6 +53,9 @@ public:
 
     /// get the list of file extensions
     virtual void getExtensionList(ExtensionList* list);
+
+    // Test if load succeed
+    static bool loadSucceed;
 };
 
 } // namespace simulation
