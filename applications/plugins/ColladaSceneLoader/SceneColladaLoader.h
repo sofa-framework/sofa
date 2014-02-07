@@ -29,7 +29,7 @@
 #include <sofa/core/loader/SceneLoader.h>
 #include <sofa/component/component.h>
 #include <sofa/helper/SVector.h>
-#include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/common/Node.h>
 #include <sofa/component/projectiveconstraintset/SkeletalMotionConstraint.h>
 
 #include <assimp/Importer.hpp>      // C++ importer interface
@@ -49,7 +49,7 @@ namespace loader
 //  using namespace sofa::helper::io;
 using sofa::defaulttype::Vec4f;
 using sofa::defaulttype::Mat4x4f;
-using namespace sofa::simulation::tree;
+using namespace sofa::simulation;
 using namespace sofa::component::projectiveconstraintset;
 
 /*
@@ -62,19 +62,19 @@ public:
 
     struct NodeInfo;
 
-    // describing a link between Assimp Node and Sofa GNode allowing us to build a node hierarchy
+    // describing a link between Assimp Node and Sofa Node allowing us to build a node hierarchy
     struct NodeInfo
     {
         int					mChildIndex;		// index of the current child node to process
         aiNode*				mAiNode;			// aiNode being processed
-        GNode::SPtr			mGNode;				// corresponding GNode created in the sofa scene graph
+        Node::SPtr			mNode;				// corresponding Node created in the sofa scene graph
         NodeInfo*			mParentNode;		// parent node (useful to retrieve mesh skeleton and to compute world transformation matrix)
         aiMatrix4x4			mTransformation;	// matrix that transforms from node space to world space
 
-        NodeInfo(aiNode* pAiNode, GNode::SPtr pGNode, NodeInfo* mParentNode = NULL) :
+        NodeInfo(aiNode* pAiNode, Node::SPtr pNode, NodeInfo* mParentNode = NULL) :
             mChildIndex(0),
             mAiNode(pAiNode),
-            mGNode(pGNode),
+            mNode(pNode),
             mParentNode(mParentNode),
             mTransformation()
         {
@@ -96,7 +96,7 @@ public:
         NodeInfo(const NodeInfo& nodeInfo) :
             mChildIndex(nodeInfo.mChildIndex),
             mAiNode(nodeInfo.mAiNode),
-            mGNode(nodeInfo.mGNode),
+            mNode(nodeInfo.mNode),
             mParentNode(nodeInfo.mParentNode),
             mTransformation(nodeInfo.mTransformation)
         {
@@ -108,11 +108,11 @@ public:
     struct MeshInfo
     {
         aiMesh*		mAiMesh;	// mesh being processed
-        NodeInfo	mNode;		// its owner node
+        NodeInfo	mNodeInfo;		// its owner node
 
-        MeshInfo(aiMesh* pAiMesh, NodeInfo pNode) :
+        MeshInfo(aiMesh* pAiMesh, NodeInfo pNodeInfo) :
             mAiMesh(pAiMesh),
-            mNode(pNode)
+            mNodeInfo(pNodeInfo)
         {
 
         }
@@ -152,7 +152,7 @@ public:
     virtual std::string type() { return "The format of this scene is Collada (.dae)."; }
 
 private:
-    GNode::SPtr subSceneRoot;		// the GNode containing the whole Collada loaded scene
+    Node::SPtr subSceneRoot;		// the Node containing the whole Collada loaded scene
 
     Assimp::Importer importer;		// the Assimp importer used to easily load the Collada scene
 
