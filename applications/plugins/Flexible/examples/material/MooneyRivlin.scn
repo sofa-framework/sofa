@@ -26,7 +26,7 @@
     <BarycentricShapeFunction  />
 
     <Node 	name="behavior"   >
-      <TopologyGaussPointSampler name="sampler" inPosition="@../parent.rest_position" showSamples="false" />
+      <TopologyGaussPointSampler name="sampler" inPosition="@../parent.rest_position" showSamplesScale="0" />
       <MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
       <LinearMapping template="Mapping&lt;Vec3d,F331&gt;"  />
 
@@ -67,7 +67,7 @@
     <BarycentricShapeFunction  />
 
     <Node 	name="behavior"   >
-      <TopologyGaussPointSampler name="sampler" inPosition="@../parent.rest_position" showSamples="false" />
+      <TopologyGaussPointSampler name="sampler" inPosition="@../parent.rest_position" showSamplesScale="0" />
       <MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
       <LinearMapping template="Mapping&lt;Vec3d,F331&gt;"  />
 
@@ -124,13 +124,13 @@
     <GridMeshCreator name="loader" filename="nofile" resolution="10 10" trianglePattern="1" translation="6 0 0" rotation="90 0 0 " scale="5 5 0" />
     <MeshTopology name="mesh" src="@loader" />
     <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" />
-    <BarycentricShapeFunction template="ShapeFunction2d"  />
+    <BarycentricShapeFunction template="ShapeFunctiond"  />
 
     <BoxConstraint box="5.9 -1 -1    6.1 1 6 " />
     <UniformMass  name="mass" totalMass="1"/>
 
     <Node name="deformationNode" >
-      <TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamples="false" method="0" order="1" />
+      <TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamplesScale="0" method="0" order="1" />
       <MechanicalObject template="F321"  name="triangleDeformationsDOF" />
       <LinearMapping template="Mapping&lt;Vec3d,F321&gt;"  />
 

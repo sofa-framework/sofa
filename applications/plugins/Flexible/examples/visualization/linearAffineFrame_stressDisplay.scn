@@ -23,7 +23,7 @@
           <FixedConstraint indices="@FixedROI.indices" />
 
 	  <TransferFunction name="densityTF" template="ImageUC,ImageD" inputImage="@rasterizer.image" param="0 0 1 3E-3"/>
-	  <ImageDensityMass  template="Affine3d,ShapeFunction3d" densityImage="@densityTF.outputImage" transform="@rasterizer.transform" lumping="1" /> 
+	  <ImageDensityMass  template="Affine3d,ShapeFunctiond" densityImage="@densityTF.outputImage" transform="@rasterizer.transform" lumping="1" /> 
 
 	    <Node 	name="collision"   >
 		<Mesh name="mesh" src="@../loader" /> 

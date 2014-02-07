@@ -41,7 +41,7 @@
   <MechanicalObject template="Affine" name="dof" showObject="true" showObjectScale="1.2" src="@mergedSamples" />
   <FixedConstraint indices="0" />
 
-  <VoronoiShapeFunction name="SF" template="ShapeFunction3d,BranchingImageD" position="@dof.rest_position" src="@youngM" method="0" nbRef="4" bias="true" />
+  <VoronoiShapeFunction name="SF" template="ShapeFunctiond,BranchingImageD" position="@dof.rest_position" src="@youngM" method="0" nbRef="4" bias="true" />
 <!--  Visualization ShapeFunction data -->
 <!--   <BranchingImageToImageConverter template="BranchingImageD,ImageD" inputBranchingImage="@SF.weights" conversionType="0" />  -->
 <!--   <ImageViewer template="ImageD" image="@[-1].image" transform="@image.transform"/> -->

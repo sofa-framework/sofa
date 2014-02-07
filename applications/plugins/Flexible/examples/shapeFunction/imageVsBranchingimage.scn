@@ -25,7 +25,7 @@
           <FixedConstraint indices="@FixedROI.indices" />
 
 	    <Node 	name="behavior"   >
-		<ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="0" showSamples="true" printLog="true" targetNumber="30" />
+		<ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="0" showSamplesScale="1" printLog="true" targetNumber="30" />
 		<MechanicalObject template="F331" name="F"  useMask="0"  showObject="1" showObjectScale="0.05" />
 	    	<LinearMapping template="Mapping&lt;Affine,F331&gt;" />
 
@@ -58,7 +58,7 @@
  	  <ImageSampler template="BranchingImageUC" name="sampler" image="@coarsener.branchingImage" transform="@coarsener.transform" method="1" param="10" />
 	  <ImageValuesFromPositions name="cell" template="ImageUI" interpolation="0" position ="@sampler.position" image="@coarsener.outputFineImage" transform="@rasterizer.transform" />
 	  <MechanicalObject template="Affine" name="dof" showObject="1" showObjectScale="0.5" src="@sampler" />
-	  <VoronoiShapeFunction name="SF" template="ShapeFunction3d,BranchingImageUC" position="@dof.rest_position" image="@coarsener.branchingImage" transform="@coarsener.transform" method="0" nbRef="4" cell="@cell.values" clearData="false"/>
+	  <VoronoiShapeFunction name="SF" template="ShapeFunctiond,BranchingImageUC" position="@dof.rest_position" image="@coarsener.branchingImage" transform="@coarsener.transform" method="0" nbRef="4" cell="@cell.values" clearData="false"/>
 
    	  <BranchingImageToImageConverter template="BranchingImageUI,ImageUI" name="imageConverter" inputBranchingImage="@SF.voronoi" conversionType="0" printLog="true"/>  
    	  <ImageViewer template="ImageUI" name="viewer" image="@imageConverter.image" transform="@coarsener.transform" plane="3 -1 -1"/> 
@@ -67,7 +67,7 @@
           <FixedConstraint indices="@FixedROI.indices" />
 
 	    <Node 	name="behavior"   >
-		<ImageGaussPointSampler template="BranchingImageD" name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="0" showSamples="true" printLog="true" targetNumber="30" />
+		<ImageGaussPointSampler template="BranchingImageD" name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="0" showSamplesScale="1" printLog="true" targetNumber="30" />
 		<MechanicalObject template="F331" name="F"  useMask="0"  showObject="1" showObjectScale="0.05" />
 	    	<LinearMapping template="Mapping&lt;Affine,F331&gt;" />
 
