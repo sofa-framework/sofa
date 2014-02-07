@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "SceneColladaLoader.h"
-#include <sofa/simulation/tree/TreeSimulation.h>
+#include <sofa/simulation/common/Simulation.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/component/container/MechanicalObject.h>
 #include <sofa/component/mass/UniformMass.h>
@@ -83,56 +83,62 @@ SceneColladaLoader::~SceneColladaLoader()
 
 void SceneColladaLoader::init()
 {
-    if(subSceneRoot)
+	if(0 == subSceneRoot)
+	{
+		sout << "subSceneRoot: " << subSceneRoot << sendl;
+		return;
+	}
+
+    // retrieving parent node
+    BaseContext* currentContext = getContext();
+    Node* parentNode = dynamic_cast<Node*>(currentContext);
+    if(!parentNode)
     {
-        // retrieving parent node
-        BaseContext* currentContext = getContext();
-        GNode* parentNode = dynamic_cast<GNode*>(currentContext);
-        if(!parentNode)
+        sout << "Error: SceneColladaLoader::init, loader " << name.getValue() << "has no parentNode" << sendl;
+		if(currentContext)
+			sout << "Context is : " << currentContext->getName() << sendl;
+
+        return;
+    }
+
+    // placing root node of the loaded sub scene
+    std::string subSceneName(name.getValue());
+    if(!subSceneName.empty())
+        subSceneName += "_";
+    subSceneName += "scene";
+    subSceneRoot->setName(subSceneName);
+    parentNode->addChild(subSceneRoot);
+
+    // find how many siblings scene loaders there are upward the current one
+    int sceneLoaderNum = 0;
+
+    Node::ObjectIterator objectIt;
+    for(objectIt = parentNode->object.begin(); objectIt != parentNode->object.end(); ++objectIt)
+    {
+        if(dynamic_cast<SceneLoader*>(objectIt->get()))
+            ++sceneLoaderNum;
+
+        if(this == *objectIt)
+            break;
+    }
+
+    // place an iterator on the last scene loader generated node
+    int sceneLoaderNodeNum = 0;
+
+    Node::ChildIterator childIt = parentNode->child.begin();
+    if(1 != sceneLoaderNum)
+    {
+        for(; childIt != parentNode->child.end() - 1; ++childIt)
         {
-            sout << "Error: SceneColladaLoader::init, this loader has no parentNode : " << name.getValue() << sendl;
-            return;
-        }
-
-        // placing root node of the loaded sub scene
-        std::string subSceneName(name.getValue());
-        if(!subSceneName.empty())
-            subSceneName += "_";
-        subSceneName += "scene";
-        subSceneRoot->setName(subSceneName);
-        parentNode->addChild(subSceneRoot);
-
-        // find how many siblings scene loaders there are upward the current one
-        int sceneLoaderNum = 0;
-
-        GNode::ObjectIterator objectIt;
-        for(objectIt = parentNode->object.begin(); objectIt != parentNode->object.end(); ++objectIt)
-        {
-            if(dynamic_cast<SceneLoader*>(objectIt->get()))
-                ++sceneLoaderNum;
-
-            if(this == *objectIt)
+            ++sceneLoaderNodeNum;
+            if(subSceneRoot == *childIt || sceneLoaderNum == sceneLoaderNodeNum)
                 break;
         }
-
-        // place an iterator on the last scene loader generated node
-        int sceneLoaderNodeNum = 0;
-
-        GNode::ChildIterator childIt = parentNode->child.begin();
-        if(1 != sceneLoaderNum)
-        {
-            for(; childIt != parentNode->child.end() - 1; ++childIt)
-            {
-                ++sceneLoaderNodeNum;
-                if(subSceneRoot == *childIt || sceneLoaderNum == sceneLoaderNodeNum)
-                    break;
-            }
-        }
-
-        // swap our generated node position till it is at the right place
-        for (GNode::ChildIterator it = parentNode->child.end() - 1; it != childIt; --it)
-            parentNode->child.swap(it, it - 1);
     }
+
+    // swap our generated node position till it is at the right place
+    for (Node::ChildIterator it = parentNode->child.end() - 1; it != childIt; --it)
+        parentNode->child.swap(it, it - 1);
 }
 
 bool SceneColladaLoader::load()
@@ -177,10 +183,10 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
     // traversing the scene graph
     if(currentAiScene->mRootNode)
     {
-        // use a stack to process the nodes of the scene graph in the right order, we link an assimp node with a GNode with a NodeInfo
+        // use a stack to process the nodes of the scene graph in the right order, we link an assimp node with a Node with a NodeInfo
         std::stack<NodeInfo> nodes;
 
-        subSceneRoot = sofa::core::objectmodel::New<GNode>();
+        subSceneRoot = getSimulation()->createNewNode("subroot");
         nodes.push(NodeInfo(currentAiScene->mRootNode, subSceneRoot));
 
         int articulationIndex = 0;
@@ -193,12 +199,12 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
         while(!nodes.empty())
         {
             // fast access node parent pointer
-            NodeInfo& currentNode = nodes.top();
-            NodeInfo* parentNode = currentNode.mParentNode;
-            aiNode* currentAiNode = currentNode.mAiNode;
-            GNode::SPtr currentGNode = currentNode.mGNode;
-            int& childIndex = currentNode.mChildIndex;
-            aiMatrix4x4& currentTransformation = currentNode.mTransformation;
+            NodeInfo& currentNodeInfo = nodes.top();
+            NodeInfo* parentNodeInfo = currentNodeInfo.mParentNode;
+            aiNode* currentAiNode = currentNodeInfo.mAiNode;
+            Node::SPtr currentNode = currentNodeInfo.mNode;
+            int& childIndex = currentNodeInfo.mChildIndex;
+            aiMatrix4x4& currentTransformation = currentNodeInfo.mTransformation;
 
             // process the node just one time
             if(0 == childIndex)
@@ -208,9 +214,9 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
                     std::stringstream nameStream(std::string(currentAiNode->mName.data, currentAiNode->mName.length));
                     if(nameStream.str().empty())
                         nameStream << childIndex++;
-                    currentGNode->setName(nameStream.str());
+                    currentNode->setName(nameStream.str());
 
-                    //std::cout << currentGNode->getName() << std::endl;
+                    //std::cout << currentNode->getName() << std::endl;
                 }
 
                 // extract the node transformation to apply them later on its meshes
@@ -229,12 +235,11 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
                 // for each mesh in the node
                 for(unsigned int j = 0; j < currentAiNode->mNumMeshes; ++j, ++meshId)
                 {
-                    GNode::SPtr meshGNode = sofa::core::objectmodel::New<GNode>();
-                    currentGNode->addChild(meshGNode);
-
                     std::stringstream meshNameStream;
                     meshNameStream << "mesh " << (int)meshId;
-                    meshGNode->setName(meshNameStream.str());
+                    
+					Node::SPtr meshNode = getSimulation()->createNewNode(meshNameStream.str());
+					currentNode->addChild(meshNode);
 
                     aiMesh* currentAiMesh = currentAiScene->mMeshes[currentAiNode->mMeshes[j]];
 
@@ -242,7 +247,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
                     std::string meshName(currentAiMesh->mName.data, currentAiMesh->mName.length);
 
                     // node used for collision
-                    GNode::SPtr collisionGNode;
+                    Node::SPtr collisionNode;
 
                     // generating a MechanicalObject and a SkinningMapping if the mesh contains bones and filling up theirs properties
                     MechanicalObject<Rigid3dTypes>::SPtr currentBoneMechanicalObject;
@@ -255,8 +260,8 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
 
                         currentBoneMechanicalObject = sofa::core::objectmodel::New<MechanicalObject<Rigid3dTypes> >();
                         {
-                            // adding the generated MechanicalObject to its parent GNode
-                            meshGNode->addObject(currentBoneMechanicalObject);
+                            // adding the generated MechanicalObject to its parent Node
+                            meshNode->addObject(currentBoneMechanicalObject);
 
                             std::stringstream nameStream(meshName);
                             if(meshName.empty())
@@ -293,8 +298,8 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
                         // generating a SkeletalMotionConstraint and filling up its properties
                         SkeletalMotionConstraint<Rigid3dTypes>::SPtr currentSkeletalMotionConstraint = sofa::core::objectmodel::New<SkeletalMotionConstraint<Rigid3dTypes> >();
                         {
-                            // adding the generated SkeletalMotionConstraint to its parent GNode
-                            meshGNode->addObject(currentSkeletalMotionConstraint);
+                            // adding the generated SkeletalMotionConstraint to its parent Node
+                            meshNode->addObject(currentSkeletalMotionConstraint);
 
                             std::stringstream nameStream(meshName);
                             if(meshName.empty())
@@ -304,8 +309,8 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
 //							currentSkeletalMotionConstraint->setAnimationSpeed(animationSpeed.getValue());
 
                             aiNode* parentAiNode = NULL;
-                            if(parentNode)
-                                parentAiNode = parentNode->mAiNode;
+                            if(parentNodeInfo)
+                                parentAiNode = parentNodeInfo->mAiNode;
 
                             helper::vector<SkeletonJoint<Rigid3dTypes> > skeletonJoints;
                             helper::vector<SkeletonBone> skeletonBones;
@@ -313,23 +318,22 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
                             currentSkeletalMotionConstraint->setSkeletalMotion(skeletonJoints, skeletonBones);
                         }
 
-                        collisionGNode = sofa::core::objectmodel::New<GNode>();
-                        meshGNode->addChild(collisionGNode);
+						std::stringstream collisionNameStream;
+						collisionNameStream << "collision " << (int)meshId;
 
-                        std::stringstream collisionNameStream;
-                        collisionNameStream << "collision " << (int)meshId;
-                        collisionGNode->setName(collisionNameStream.str());
+						collisionNode = getSimulation()->createNewNode(collisionNameStream.str());
+						meshNode->addChild(collisionNode);
                     }
                     else
                     {
-                        collisionGNode = meshGNode;
+                        collisionNode = meshNode;
                     }
 
                     // generating a MechanicalObject and filling up its properties
                     MechanicalObject<Vec3dTypes>::SPtr currentMechanicalObject = sofa::core::objectmodel::New<MechanicalObject<Vec3dTypes> >();
                     {
-                        // adding the generated MechanicalObject to its parent GNode
-                        collisionGNode->addObject(currentMechanicalObject);
+                        // adding the generated MechanicalObject to its parent Node
+                        collisionNode->addObject(currentMechanicalObject);
 
                         std::stringstream nameStream(meshName);
                         if(meshName.empty())
@@ -357,8 +361,8 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
                     // generating a MeshTopology and filling up its properties
                     MeshTopology::SPtr currentMeshTopology = sofa::core::objectmodel::New<MeshTopology>();
                     {
-                        // adding the generated MeshTopology to its parent GNode
-                        collisionGNode->addObject(currentMeshTopology);
+                        // adding the generated MeshTopology to its parent Node
+                        collisionNode->addObject(currentMeshTopology);
 
                         std::stringstream nameStream(meshName);
                         if(meshName.empty())
@@ -439,8 +443,8 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
 					{
 						UniformMass<defaulttype::Vec3dTypes, double>::SPtr currentUniformMass = sofa::core::objectmodel::New<UniformMass<defaulttype::Vec3dTypes, double> >();
 						{
-							// adding the generated UniformMass to its parent GNode
-							collisionGNode->addObject(currentUniformMass);
+							// adding the generated UniformMass to its parent Node
+							collisionNode->addObject(currentUniformMass);
 
 							std::stringstream nameStream(meshName);
 							if(meshName.empty())
@@ -452,8 +456,8 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
 
 						TTriangleModel<defaulttype::Vec3dTypes>::SPtr currentTTriangleModel = sofa::core::objectmodel::New<TTriangleModel<defaulttype::Vec3dTypes> >();
 						{
-							// adding the generated TTriangleModel to its parent GNode
-							collisionGNode->addObject(currentTTriangleModel);
+							// adding the generated TTriangleModel to its parent Node
+							collisionNode->addObject(currentTTriangleModel);
 
 							std::stringstream nameStream(meshName);
 							if(meshName.empty())
@@ -463,8 +467,8 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
 
 						TLineModel<defaulttype::Vec3dTypes>::SPtr currentTLineModel = sofa::core::objectmodel::New<TLineModel<defaulttype::Vec3dTypes> >();
 						{
-							// adding the generated TLineModel to its parent GNode
-							collisionGNode->addObject(currentTLineModel);
+							// adding the generated TLineModel to its parent Node
+							collisionNode->addObject(currentTLineModel);
 
 							std::stringstream nameStream(meshName);
 							if(meshName.empty())
@@ -474,8 +478,8 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
 
 						TPointModel<defaulttype::Vec3dTypes>::SPtr currentTPointModel = sofa::core::objectmodel::New<TPointModel<defaulttype::Vec3dTypes> >();
 						{
-							// adding the generated TPointModel to its parent GNode
-							collisionGNode->addObject(currentTPointModel);
+							// adding the generated TPointModel to its parent Node
+							collisionNode->addObject(currentTPointModel);
 
 							std::stringstream nameStream(meshName);
 							if(meshName.empty())
@@ -488,8 +492,8 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
                     {
                         SkinningMapping<Rigid3dTypes, Vec3dTypes>::SPtr currentSkinningMapping = sofa::core::objectmodel::New<SkinningMapping<Rigid3dTypes, Vec3dTypes> >();
                         {
-                            // adding the generated SkinningMapping to its parent GNode
-                            collisionGNode->addObject(currentSkinningMapping);
+                            // adding the generated SkinningMapping to its parent Node
+                            collisionNode->addObject(currentSkinningMapping);
 
                             std::stringstream nameStream(meshName);
                             if(meshName.empty())
@@ -519,7 +523,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
 
                                     if(id >= currentAiMesh->mNumVertices)
                                     {
-                                        sout << "Error: SceneColladaLoader::readDAE, a mesh could not be load : " << nameStream.str() << " - in node : " << currentGNode->getName() << sendl;
+                                        sout << "Error: SceneColladaLoader::readDAE, a mesh could not be load : " << nameStream.str() << " - in node : " << currentNode->getName() << sendl;
                                         return false;
                                     }
 
@@ -541,18 +545,17 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
                     }
 
 					// node used for visualization
-                    GNode::SPtr visuGNode = sofa::core::objectmodel::New<GNode>();
-                    collisionGNode->addChild(visuGNode);
+					std::stringstream visuNameStream;
+					visuNameStream << "visu " << (int)meshId;
 
-                    std::stringstream visuNameStream;
-                    visuNameStream << "visu " << (int)meshId;
-                    visuGNode->setName(visuNameStream.str());
+					Node::SPtr visuNode = getSimulation()->createNewNode(visuNameStream.str());
+					collisionNode->addChild(visuNode);
 					
                     // generating an OglModel and filling up its properties
                     OglModel::SPtr currentOglModel = sofa::core::objectmodel::New<OglModel>();
                     {
-                        // adding the generated OglModel to its parent GNode
-                        visuGNode->addObject(currentOglModel);
+                        // adding the generated OglModel to its parent Node
+                        visuNode->addObject(currentOglModel);
 
                         std::stringstream nameStream(meshName);
                         if(meshName.empty())
@@ -577,66 +580,66 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
                         // vertex / triangle / quad array are automatically filled up with the MeshTopology data
 
                         // filling up vertex array (redundancy with positions coordinates but required ?!)
-                        /*if(0 != currentAiMesh->mNumVertices)
-                        {
-                        	ResizableExtVector<Vec3d> vertices;
-                        	vertices.resize(currentAiMesh->mNumVertices);
-                        	memcpy(&vertices[0], currentAiMesh->mVertices, currentAiMesh->mNumVertices * sizeof(aiVector3D));
-                        	currentOglModel->setVertices(&vertices);
-                        }
-
-                        // filling up triangle array
-                        ResizableExtVector<OglModel::Triangle> triangles;
-                        unsigned int numTriangles = 0;
-                        for(int k = 0; k < currentAiMesh->mNumFaces; ++k)
-                        	if(3 == currentAiMesh->mFaces[k].mNumIndices)
-                        		++numTriangles;
-
-                        if(0 != numTriangles)
-                        {
-                        	triangles.resize(numTriangles);
-
-                        	unsigned int triangleOffset = 0;
-                        	for(int k = 0; k < currentAiMesh->mNumFaces; ++k)
-                        	{
-                        		if(3 != currentAiMesh->mFaces[k].mNumIndices)
-                        			continue;
-
-                        		memcpy(&triangles[0] + triangleOffset, currentAiMesh->mFaces[k].mIndices, sizeof(Triangle));
-                        		++triangleOffset;
-                        	}
-                        	currentOglModel->setTriangles(&triangles);
-                        }
-
-                        // filling up quad array
-                        ResizableExtVector<OglModel::Quad> quads;
-                        unsigned int numQuads = 0;
-                        for(int k = 0; k < currentAiMesh->mNumFaces; ++k)
-                        	if(4 == currentAiMesh->mFaces[k].mNumIndices)
-                        		++numQuads;
-
-                        if(0 != numQuads)
-                        {
-                        	quads.resize(numQuads);
-
-                        	unsigned int quadOffset = 0;
-                        	for(int k = 0; k < currentAiMesh->mNumFaces; ++k)
-                        	{
-                        		if(4 != currentAiMesh->mFaces[k].mNumIndices)
-                        			continue;
-
-                        		memcpy(&quads[0] + quadOffset, currentAiMesh->mFaces[k].mIndices, sizeof(Quad));
-                        		++quadOffset;
-                        	}
-
-                        	currentOglModel->setQuads(&quads);
-                        }*/
+//                         if(0 != currentAiMesh->mNumVertices)
+//                         {
+//                         	ResizableExtVector<Vec3d> vertices;
+//                         	vertices.resize(currentAiMesh->mNumVertices);
+//                         	memcpy(&vertices[0], currentAiMesh->mVertices, currentAiMesh->mNumVertices * sizeof(aiVector3D));
+//                         	currentOglModel->setVertices(&vertices);
+//                         }
+// 
+//                         // filling up triangle array
+//                         ResizableExtVector<OglModel::Triangle> triangles;
+//                         unsigned int numTriangles = 0;
+//                         for(int k = 0; k < currentAiMesh->mNumFaces; ++k)
+//                         	if(3 == currentAiMesh->mFaces[k].mNumIndices)
+//                         		++numTriangles;
+// 
+//                         if(0 != numTriangles)
+//                         {
+//                         	triangles.resize(numTriangles);
+// 
+//                         	unsigned int triangleOffset = 0;
+//                         	for(int k = 0; k < currentAiMesh->mNumFaces; ++k)
+//                         	{
+//                         		if(3 != currentAiMesh->mFaces[k].mNumIndices)
+//                         			continue;
+// 
+//                         		memcpy(&triangles[0] + triangleOffset, currentAiMesh->mFaces[k].mIndices, sizeof(Triangle));
+//                         		++triangleOffset;
+//                         	}
+//                         	currentOglModel->setTriangles(&triangles);
+//                         }
+// 
+//                         // filling up quad array
+//                         ResizableExtVector<OglModel::Quad> quads;
+//                         unsigned int numQuads = 0;
+//                         for(int k = 0; k < currentAiMesh->mNumFaces; ++k)
+//                         	if(4 == currentAiMesh->mFaces[k].mNumIndices)
+//                         		++numQuads;
+// 
+//                         if(0 != numQuads)
+//                         {
+//                         	quads.resize(numQuads);
+// 
+//                         	unsigned int quadOffset = 0;
+//                         	for(int k = 0; k < currentAiMesh->mNumFaces; ++k)
+//                         	{
+//                         		if(4 != currentAiMesh->mFaces[k].mNumIndices)
+//                         			continue;
+// 
+//                         		memcpy(&quads[0] + quadOffset, currentAiMesh->mFaces[k].mIndices, sizeof(Quad));
+//                         		++quadOffset;
+//                         	}
+// 
+//                         	currentOglModel->setQuads(&quads);
+//                         }
                     }
 
 					IdentityMapping<Vec3dTypes, ExtVec3fTypes>::SPtr currentIdentityMapping = sofa::core::objectmodel::New<IdentityMapping<Vec3dTypes, ExtVec3fTypes> >();
 					{
-						// adding the generated IdentityMapping to its parent GNode
-						visuGNode->addObject(currentIdentityMapping);
+						// adding the generated IdentityMapping to its parent Node
+						visuNode->addObject(currentIdentityMapping);
 
 						std::stringstream nameStream(meshName);
 						if(meshName.empty())
@@ -656,13 +659,13 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
             // process next sub node
             else
             {
-                // generating sub GNode and filling up its properties
+                // generating sub Node and filling up its properties
                 // store it in the stack to process its children later
-                NodeInfo subNode(currentAiNode->mChildren[childIndex], sofa::core::objectmodel::New<GNode>(), &currentNode);
-                nodes.push(subNode);
+                NodeInfo subNodeInfo(currentAiNode->mChildren[childIndex], getSimulation()->createNewNode(""), &currentNodeInfo);
+                nodes.push(subNodeInfo);
 
-                // adding the generated node to its parent GNode
-                currentGNode->addChild(subNode.mGNode);
+                // adding the generated node to its parent Node
+                currentNode->addChild(subNodeInfo.mNode);
 
                 // this child will be processed, go to the next one
                 ++childIndex;
@@ -892,12 +895,12 @@ void SceneColladaLoader::removeEmptyNodes()
 {
     // remove intermediary or empty nodes
     {
-        std::stack<std::pair<GNode::SPtr, int> > nodes;
+        std::stack<std::pair<Node::SPtr, int> > nodes;
 
-        nodes.push(std::pair<GNode::SPtr, int>(subSceneRoot, 0));
+        nodes.push(std::pair<Node::SPtr, int>(subSceneRoot, 0));
         while(!nodes.empty())
         {
-            GNode::SPtr& node = nodes.top().first;
+            Node::SPtr& node = nodes.top().first;
             int& index = nodes.top().second;
 
             if(node->getChildren().size() <= index)
@@ -907,7 +910,7 @@ void SceneColladaLoader::removeEmptyNodes()
                 if(nodes.empty())
                     break;
 
-                GNode::SPtr& parentNode = nodes.top().first;
+                Node::SPtr& parentNode = nodes.top().first;
                 int& parentIndex = nodes.top().second;
 
                 // remove the node if it has no objects
@@ -918,7 +921,7 @@ void SceneColladaLoader::removeEmptyNodes()
                         // links its child nodes directly to its parent node before remove the current intermediary node
                         while(!node->getChildren().empty())
                         {
-                            GNode::SPtr childNode = static_cast<GNode*>(node->getChildren()[0]);
+                            Node::SPtr childNode = static_cast<Node*>(node->getChildren()[0]);
                             parentNode->moveChild(childNode);
                         }
                     }
@@ -932,8 +935,8 @@ void SceneColladaLoader::removeEmptyNodes()
             }
             else
             {
-                GNode::SPtr child = static_cast<GNode*>(node->getChildren()[index]);
-                nodes.push(std::pair<GNode::SPtr, int>(child, 0));
+                Node::SPtr child = static_cast<Node*>(node->getChildren()[index]);
+                nodes.push(std::pair<Node::SPtr, int>(child, 0));
             }
         }
     }
