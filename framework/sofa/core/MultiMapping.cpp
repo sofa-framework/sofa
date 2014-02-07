@@ -39,9 +39,9 @@ using namespace sofa::defaulttype;
 using namespace core::behavior;
 
 #ifndef SOFA_FLOAT
-template class MultiMapping< Vec1dTypes, Vec1dTypes >;
-template class MultiMapping< Vec3dTypes, Vec3dTypes >;
-template class MultiMapping< Rigid3dTypes, Vec3dTypes >;
+template class SOFA_CORE_API MultiMapping< Vec1dTypes, Vec1dTypes >;
+template class SOFA_CORE_API MultiMapping< Vec3dTypes, Vec3dTypes >;
+template class SOFA_CORE_API MultiMapping< Rigid3dTypes, Vec3dTypes >;
 #endif
 
 #ifndef SOFA_DOUBLE
