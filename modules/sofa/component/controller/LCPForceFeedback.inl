@@ -36,7 +36,7 @@
 namespace
 {
 template <typename DataTypes>
-bool derivVectors(const typename DataTypes::VecCoord& x0, const typename DataTypes::VecCoord& x1, typename DataTypes::VecDeriv& d)
+bool derivVectors(const typename DataTypes::VecCoord& x0, const typename DataTypes::VecCoord& x1, typename DataTypes::VecDeriv& d, bool /*derivRotation*/ )
 {
     unsigned int sz0 = x0.size();
     unsigned int szmin = std::min(sz0,(unsigned int)x1.size());
@@ -46,7 +46,7 @@ bool derivVectors(const typename DataTypes::VecCoord& x0, const typename DataTyp
     {
         d[i]=x1[i]-x0[i];
     }
-    for(unsigned int i=szmin; i<sz0; ++i)
+    for(unsigned int i=szmin; i<sz0; ++i) // not sure in what case this is applicable..
     {
         d[i]=-x0[i];
     }
@@ -54,7 +54,7 @@ bool derivVectors(const typename DataTypes::VecCoord& x0, const typename DataTyp
 }
 
 template <typename DataTypes>
-bool derivRigid3Vectors(const typename DataTypes::VecCoord& x0, const typename DataTypes::VecCoord& x1, typename DataTypes::VecDeriv& d)
+bool derivRigid3Vectors(const typename DataTypes::VecCoord& x0, const typename DataTypes::VecCoord& x1, typename DataTypes::VecDeriv& d, bool derivRotation=false)
 {
     unsigned int sz0 = x0.size();
     unsigned int szmin = std::min(sz0,(unsigned int)x1.size());
@@ -63,11 +63,26 @@ bool derivRigid3Vectors(const typename DataTypes::VecCoord& x0, const typename D
     for(unsigned int i=0; i<szmin; ++i)
     {
         getVCenter(d[i]) = x1[i].getCenter() - x0[i].getCenter();
-        // Pas de prise en charge des rotations
+        if (derivRotation)
+        {
+            // rotations are taken into account to compute the violations
+            Quat q;
+            getVOrientation(d[i]) = x0[i].rotate(q.angularDisplacement(x1[i].getOrientation(), x0[i].getOrientation() ) );
+        }
     }
-    for(unsigned int i=szmin; i<sz0; ++i)
+
+
+    for(unsigned int i=szmin; i<sz0; ++i)  // not sure in what case this is applicable..
     {
         getVCenter(d[i]) = - x0[i].getCenter();
+
+        if (derivRotation)
+        {
+            // rotations are taken into account to compute the violations
+            Quat q= x0[i].getOrientation();
+             getVOrientation(d[i]) = -x0[i].rotate( q.toEulerVector() );
+        }
+
     }
     return true;
 }
@@ -83,9 +98,9 @@ double computeDot(const typename DataTypes::Deriv& v0, const typename DataTypes:
 #ifndef SOFA_FLOAT
 using sofa::defaulttype::Rigid3dTypes;
 template<>
-bool derivVectors<Rigid3dTypes>(const Rigid3dTypes::VecCoord& x0, const Rigid3dTypes::VecCoord& x1, Rigid3dTypes::VecDeriv& d)
+bool derivVectors<Rigid3dTypes>(const Rigid3dTypes::VecCoord& x0, const Rigid3dTypes::VecCoord& x1, Rigid3dTypes::VecDeriv& d, bool derivRotation )
 {
-    return derivRigid3Vectors<Rigid3dTypes>(x0,x1,d);
+    return derivRigid3Vectors<Rigid3dTypes>(x0,x1,d, derivRotation);
 }
 template <>
 double computeDot<Rigid3dTypes>(const Rigid3dTypes::Deriv& v0, const Rigid3dTypes::Deriv& v1)
@@ -97,9 +112,9 @@ double computeDot<Rigid3dTypes>(const Rigid3dTypes::Deriv& v0, const Rigid3dType
 #ifndef SOFA_DOUBLE
 using sofa::defaulttype::Rigid3fTypes;
 template<>
-bool derivVectors<Rigid3fTypes>(const Rigid3fTypes::VecCoord& x0, const Rigid3fTypes::VecCoord& x1, Rigid3fTypes::VecDeriv& d)
+bool derivVectors<Rigid3fTypes>(const Rigid3fTypes::VecCoord& x0, const Rigid3fTypes::VecCoord& x1, Rigid3fTypes::VecDeriv& d, bool derivRotation )
 {
-    return derivRigid3Vectors<Rigid3fTypes>(x0,x1,d);
+    return derivRigid3Vectors<Rigid3fTypes>(x0,x1,d, derivRotation);
 }
 template <>
 double computeDot<Rigid3fTypes>(const Rigid3fTypes::Deriv& v0, const Rigid3fTypes::Deriv& v1)
@@ -126,7 +141,7 @@ template <class DataTypes>
 LCPForceFeedback<DataTypes>::LCPForceFeedback()
 : forceCoef(initData(&forceCoef, 0.03, "forceCoef","multiply haptic force by this coef.")),
   solverTimeout(initData(&solverTimeout, 0.0008, "solverTimeout","max time to spend solving constraints.")),
-
+  derivRotations(initData(&derivRotations, false, "derivRotations", "if true, deriv the rotations when updating the violations")),
   mState(NULL),
   mNextBufferId(0),
   mCurBufferId(0),
@@ -229,7 +244,7 @@ void LCPForceFeedback<DataTypes>::computeForce(const VecCoord& state,  VecDeriv&
     {
         VecDeriv dx;
 
-        derivVectors< DataTypes >(val, state, dx);
+        derivVectors< DataTypes >(val, state, dx, derivRotations.getValue());
 
         // Modify Dfree
         MatrixDerivRowConstIterator rowItEnd = constraints.end();
