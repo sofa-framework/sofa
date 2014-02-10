@@ -46,6 +46,8 @@ class SOFA_Compliant_API SequentialSolver : public KKTSolver {
 
 	Data<std::string> bench;
 
+    Data<bool> projectH;    ///< Replace H with P^T.H.P to account for projective constraints
+
   protected:
 
 	// performs a single iteration
@@ -59,9 +61,9 @@ class SOFA_Compliant_API SequentialSolver : public KKTSolver {
 	Response::SPtr response;
 	
 	// mapping matrix response 
-	typedef Response::cmat cmat;
-	cmat mapping_response;		
-	
+    typedef Response::cmat cmat;
+    cmat mapping_response;
+
 	// data blocks 
 	struct block {
 		block();

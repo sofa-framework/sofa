@@ -24,6 +24,7 @@ SequentialSolver::SequentialSolver()
 	  relative(initData(&relative, false, "relative", "relative numerical precision ?")),
       omega(initData(&omega, (SReal)1.0, "omega", "SOR parameter:  omega < 1 : better, slower convergence, omega = 1 : vanilla gauss-seidel, 2 > omega > 1 : faster convergence, ok for SPD systems, omega > 2 : will probably explode" )),
 	  bench(initData(&bench, "bench", "filename for convergence benchmark output"))
+    , projectH( initData(&projectH, false, "projectH", "Replace H with P^T.H.P to account for projective constraints"))
 {
 	
 }
@@ -128,7 +129,10 @@ void SequentialSolver::factor(const system_type& system) {
 
 	// response matrix
 	assert( response );
-	response->factor( system.H );
+
+    if( projectH.getValue() ) response->factor( system.P.transpose() * system.H * system.P );
+    else response->factor( system.H );
+
 	
 	// find blocks
 	fetch_blocks(system);
