@@ -48,6 +48,7 @@ private:
 public:
 
     typedef Real value_type;
+    typedef int size_type;
 
     Quater();
     ~Quater();

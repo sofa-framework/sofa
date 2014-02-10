@@ -64,6 +64,7 @@ class RigidDeriv<3, real>
 {
 public:
     typedef real value_type;
+    typedef int size_type;
     typedef real Real;
     typedef Vec<3,Real> Pos;
     typedef Vec<3,Real> Rot;
@@ -341,6 +342,7 @@ class RigidCoord<3,real>
 {
 public:
     typedef real value_type;
+    typedef int size_type;
     typedef real Real;
     typedef Vec<3,Real> Pos;
     typedef helper::Quater<Real> Rot;
@@ -982,6 +984,7 @@ class RigidDeriv<2,real>
 {
 public:
     typedef real value_type;
+    typedef int size_type;
     typedef real Real;
     typedef Vec<2,Real> Pos;
     typedef Real Rot;
@@ -1205,6 +1208,7 @@ class RigidCoord<2,real>
 {
 public:
     typedef real value_type;
+    typedef int size_type;
     typedef real Real;
     typedef Vec<2,Real> Pos;
     typedef Real Rot;
