@@ -84,6 +84,7 @@ struct DefGradientTypes
 
         static const unsigned int total_size = VSize;
         typedef Real value_type;
+        typedef int size_type;
 
         static unsigned int size() { return VSize; }
 
