@@ -69,6 +69,8 @@ bool derivRigid3Vectors(const typename DataTypes::VecCoord& x0, const typename D
             Quat q;
             getVOrientation(d[i]) = x0[i].rotate(q.angularDisplacement(x1[i].getOrientation(), x0[i].getOrientation() ) );
         }
+        else
+            getVOrientation(d[i]) *=0;
     }
 
 
@@ -82,6 +84,8 @@ bool derivRigid3Vectors(const typename DataTypes::VecCoord& x0, const typename D
             Quat q= x0[i].getOrientation();
              getVOrientation(d[i]) = -x0[i].rotate( q.toEulerVector() );
         }
+        else
+            getVOrientation(d[i]) *=0;
 
     }
     return true;
@@ -91,7 +95,7 @@ bool derivRigid3Vectors(const typename DataTypes::VecCoord& x0, const typename D
 template <typename DataTypes>
 double computeDot(const typename DataTypes::Deriv& v0, const typename DataTypes::Deriv& v1)
 {
-    return v0.x()*v1.x();
+    return dot(v0,v1);
 }
 
 
@@ -105,7 +109,7 @@ bool derivVectors<Rigid3dTypes>(const Rigid3dTypes::VecCoord& x0, const Rigid3dT
 template <>
 double computeDot<Rigid3dTypes>(const Rigid3dTypes::Deriv& v0, const Rigid3dTypes::Deriv& v1)
 {
-    return dot(getVCenter(v0),getVCenter(v1));
+    return dot(getVCenter(v0),getVCenter(v1)) + dot(getVOrientation(v0), getVOrientation(v1));
 }
 
 #endif
@@ -119,7 +123,7 @@ bool derivVectors<Rigid3fTypes>(const Rigid3fTypes::VecCoord& x0, const Rigid3fT
 template <>
 double computeDot<Rigid3fTypes>(const Rigid3fTypes::Deriv& v0, const Rigid3fTypes::Deriv& v1)
 {
-    return dot(getVCenter(v0),getVCenter(v1));
+    return dot(getVCenter(v0),getVCenter(v1)) + dot(getVOrientation(v0), getVOrientation(v1));
 }
 
 #endif
