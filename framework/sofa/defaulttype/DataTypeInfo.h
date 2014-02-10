@@ -529,7 +529,7 @@ struct FixedArrayTypeInfo
         }
         else if (BaseTypeInfo::FixedSize)
         {
-            BaseTypeInfo::getValue(data[(size_type)index/BaseTypeInfo::size()], index%BaseTypeInfo::size(), value);
+            BaseTypeInfo::getValue(data[(size_type)(index/BaseTypeInfo::size())], index%BaseTypeInfo::size(), value);
         }
         else
         {
@@ -556,7 +556,7 @@ struct FixedArrayTypeInfo
         }
         else if (BaseTypeInfo::FixedSize)
         {
-            BaseTypeInfo::setValue(data[(size_type)index/BaseTypeInfo::size()], index%BaseTypeInfo::size(), value);
+            BaseTypeInfo::setValue(data[(size_type)(index/BaseTypeInfo::size())], index%BaseTypeInfo::size(), value);
         }
         else
         {
@@ -582,7 +582,7 @@ struct FixedArrayTypeInfo
         }
         else if (BaseTypeInfo::FixedSize)
         {
-            BaseTypeInfo::getValueString(data[(size_type)index/BaseTypeInfo::size()], index%BaseTypeInfo::size(), value);
+            BaseTypeInfo::getValueString(data[(size_type)(index/BaseTypeInfo::size())], index%BaseTypeInfo::size(), value);
         }
         else
         {
@@ -608,7 +608,7 @@ struct FixedArrayTypeInfo
         }
         else if (BaseTypeInfo::FixedSize)
         {
-            BaseTypeInfo::setValueString(data[(size_type)index/BaseTypeInfo::size()], index%BaseTypeInfo::size(), value);
+            BaseTypeInfo::setValueString(data[(size_type)(index/BaseTypeInfo::size())], index%BaseTypeInfo::size(), value);
         }
         else
         {
@@ -682,7 +682,7 @@ struct VectorTypeInfo
         }
         else if (BaseTypeInfo::FixedSize)
         {
-            BaseTypeInfo::getValue(data[(size_type)index/BaseTypeInfo::size()], index%BaseTypeInfo::size(), value);
+            BaseTypeInfo::getValue(data[(size_type)(index/BaseTypeInfo::size())], index%BaseTypeInfo::size(), value);
         }
         else
         {
@@ -709,7 +709,7 @@ struct VectorTypeInfo
         }
         else if (BaseTypeInfo::FixedSize)
         {
-            BaseTypeInfo::setValue(data[(size_type)index/BaseTypeInfo::size()], index%BaseTypeInfo::size(), value);
+            BaseTypeInfo::setValue(data[(size_type)(index/BaseTypeInfo::size())], index%BaseTypeInfo::size(), value);
         }
         else
         {
@@ -735,7 +735,7 @@ struct VectorTypeInfo
         }
         else if (BaseTypeInfo::FixedSize)
         {
-            BaseTypeInfo::getValueString(data[(size_type)index/BaseTypeInfo::size()], index%BaseTypeInfo::size(), value);
+            BaseTypeInfo::getValueString(data[(size_type)(index/BaseTypeInfo::size())], index%BaseTypeInfo::size(), value);
         }
         else
         {
@@ -761,7 +761,7 @@ struct VectorTypeInfo
         }
         else if (BaseTypeInfo::FixedSize)
         {
-            BaseTypeInfo::setValueString(data[(size_type)index/BaseTypeInfo::size()], index%BaseTypeInfo::size(), value);
+            BaseTypeInfo::setValueString(data[(size_type)(index/BaseTypeInfo::size())], index%BaseTypeInfo::size(), value);
         }
         else
         {
