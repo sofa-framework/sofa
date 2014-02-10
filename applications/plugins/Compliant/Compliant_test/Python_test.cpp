@@ -1,10 +1,11 @@
+#include <plugins/SofaPython/PythonScriptController.h>
+#include <plugins/SofaPython/ScriptEvent.h>
+
 #include "Python_test.h"
 
 #include <sofa/simulation/common/SceneLoaderFactory.h>
 #include <sofa/helper/system/PluginManager.h>
 
-#include <plugins/SofaPython/ScriptEvent.h>
-#include <plugins/SofaPython/PythonScriptController.h>
 
 #include <sofa/simulation/graph/DAGSimulation.h>
 
