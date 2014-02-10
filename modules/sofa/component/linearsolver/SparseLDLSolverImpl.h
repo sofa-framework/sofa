@@ -115,13 +115,16 @@ protected :
         int * M_rowind = (int *) &Mfiltered.getColsIndex()[0];
         Real * M_values = (Real *) &Mfiltered.getColsValue()[0];
 
+        data->n = M.colSize();
+        data->P_nnz = M_colptr[data->n];
+        data->P_values.clear();data->P_values.fastResize(data->P_nnz);
+        memcpy(&data->P_values[0],M_values,data->P_nnz * sizeof(Real));
+
         bool new_factorization_needed = need_symbolic_factorization(data->P_colptr,data->P_rowind);
 
         // we test if the matrix has the same struct as previous factorized matrix
         if (new_factorization_needed) {
             sout << "RECOMPUTE NEW FACTORIZATION" << sendl;
-            data->n = M.colSize();
-            data->P_nnz = M_colptr[data->n];
 
             data->perm.clear();data->perm.fastResize(data->n);
             data->invperm.clear();data->invperm.fastResize(data->n);
@@ -130,11 +133,9 @@ protected :
             data->L_colptr.clear();data->L_colptr.fastResize(data->n+1);
             data->LT_colptr.clear();data->LT_colptr.fastResize(data->n+1);
             data->P_rowind.clear();data->P_rowind.fastResize(data->P_nnz);
-            data->P_values.clear();data->P_values.fastResize(data->P_nnz);
 
             memcpy(&data->P_colptr[0],M_colptr,(data->n+1) * sizeof(int));
             memcpy(&data->P_rowind[0],M_rowind,data->P_nnz * sizeof(int));
-            memcpy(&data->P_values[0],M_values,data->P_nnz * sizeof(Real));
 
             //ordering function
             LDL_ordering(data->n,M_colptr,M_rowind,&data->perm[0],&data->invperm[0]);
