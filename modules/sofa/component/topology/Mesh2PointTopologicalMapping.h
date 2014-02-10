@@ -137,7 +137,9 @@ protected:
 
     Data< bool > copyEdges; ///< Activate mapping of input edges into the output topology (requires at least one item in pointBaryCoords)
     Data< bool > copyTriangles; ///< Activate mapping of input triangles into the output topology (requires at least one item in pointBaryCoords)
+	Data< bool > copyTetrahedra; ///< Activate mapping of input tetrahedras into the output topology (requires at least one item in pointBaryCoords)
 
+	Data < unsigned int > bezierTetrahedronDegree; /// Fills pointBaryCoords, edgeBaryCoords, triangleBaryCoords and tetraBaryCoords so as to create a Bezier Tetrahedron mesh of a given order
     helper::fixed_array< vector< vector<int> >, NB_ELEMENTS > pointsMappedFrom; ///< Points mapped from the differents elements (see the enum Element declared before)
 
     vector< std::pair<Element,int> > pointSource; ///< Correspondance between the points mapped and the elements from which are mapped
@@ -147,6 +149,7 @@ protected:
     size_t addInputPoint(unsigned int i, PointSetTopologyModifier* toPointMod=NULL); ///< Returns the number of points added inside the output topology. 
     void addInputEdge(unsigned int i, PointSetTopologyModifier* toPointMod=NULL);
     void addInputTriangle(unsigned int i, PointSetTopologyModifier* toPointMod=NULL);
+    void addInputTetrahedron(unsigned int i, PointSetTopologyModifier* toPointMod=NULL);
 
     void swapInput(Element elem, int i1, int i2);
     void removeInput(Element elem, const sofa::helper::vector<unsigned int>& tab );

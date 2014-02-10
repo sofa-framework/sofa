@@ -63,6 +63,8 @@ Mesh2PointTopologicalMapping::Mesh2PointTopologicalMapping ()
       hexaBaryCoords ( initData ( &hexaBaryCoords, "hexaBaryCoords", "Coordinates for the points of the output topology created from the hexa of the input topology" ) ),
       copyEdges ( initData ( &copyEdges, false, "copyEdges", "Activate mapping of input edges into the output topology (requires at least one item in pointBaryCoords)" ) ),
       copyTriangles ( initData ( &copyTriangles, false, "copyTriangles", "Activate mapping of input triangles into the output topology (requires at least one item in pointBaryCoords)" ) ),
+      copyTetrahedra ( initData ( &copyTetrahedra, false, "copyTetrahedra", "Activate mapping of input tetrahedra into the output topology (requires at least one item in pointBaryCoords)" ) ),
+      bezierTetrahedronDegree ( initData ( &bezierTetrahedronDegree, (unsigned int)0, "bezierTetrahedronDegree", "Tesselate a tetrahedral mesh as to create a Bezier Tetrahedral mesh of a given order" ) ),
       initDone(false)
 {
     pointBaryCoords.setGroup("BaryCoords");
@@ -76,6 +78,53 @@ Mesh2PointTopologicalMapping::Mesh2PointTopologicalMapping ()
 void Mesh2PointTopologicalMapping::init()
 {
     initDone = true;
+	if (bezierTetrahedronDegree.getValue()>0) {
+		size_t degree=bezierTetrahedronDegree.getValue();
+		// make copyTetrahedra as true
+		copyTetrahedra.setValue(true);
+
+		// process each coord array
+		helper::WriteAccessor< Data<vector< Vec3d > > > pBary = pointBaryCoords;
+		pBary.clear();
+		pBary.push_back(Vec3d(0,0,0));
+		if (degree >1) {
+			// process each edge array
+			helper::WriteAccessor< Data<vector< Vec3d > > > eBary = edgeBaryCoords;
+			eBary.clear();
+			size_t i;
+			for (i=1;i<degree;++i) {
+				eBary.push_back(Vec3d((double)i/degree,(double)(degree-i)/degree,0));
+			}
+			
+		}
+		if (degree >2) {
+			// process each triangle array
+			helper::WriteAccessor< Data<vector< Vec3d > > > trBary = triangleBaryCoords;
+			trBary.clear();
+			size_t i,j;
+			for (i=1;i<(degree-1);++i) {
+				for (j=1;j<(degree-i);++j) {
+					trBary.push_back(Vec3d((double)i/degree,(double)j/degree,(double)(degree-i-j)/degree));
+				}
+			}
+			
+		}
+		if (degree >3) {
+			// process each tetrahedron array
+			helper::WriteAccessor< Data<vector< Vec3d > > > tetBary = tetraBaryCoords;
+			tetBary.clear();
+			size_t i,j,k;
+			for (i=1;i<(degree-2);++i) {
+				for (j=1;j<(degree-i-1);++j) {
+					for (k=1;k<(degree-j-i);++k) {
+						tetBary.push_back(Vec3d((double)i/degree,(double)j/degree,(double)k/degree));
+					}
+				}
+			}
+			
+		}
+
+	} 
     if(fromModel)
     {
         if(toModel)
@@ -89,6 +138,8 @@ void Mesh2PointTopologicalMapping::init()
             toModel->getContext()->get(toEdgeMod, sofa::core::objectmodel::BaseContext::Local);
             TriangleSetTopologyModifier *toTriangleMod = NULL;
             toModel->getContext()->get(toTriangleMod, sofa::core::objectmodel::BaseContext::Local);
+			TetrahedronSetTopologyModifier *toTetrahedronMod = NULL;
+            toModel->getContext()->get(toTetrahedronMod, sofa::core::objectmodel::BaseContext::Local);
             //QuadSetTopologyModifier *toQuadMod = NULL;
             //TetrahedronSetTopologyModifier *toTetrahedronMod = NULL;
             //HexahedronSetTopologyModifier *toHexahedronMod = NULL;
@@ -104,6 +155,11 @@ void Mesh2PointTopologicalMapping::init()
             {
                 serr << "copyTriangles requires at least one item in pointBaryCoords" << sendl;
                 copyTriangles.setValue(false);
+            }
+           if (copyTetrahedra.getValue() && pointBaryCoords.getValue().empty())
+            {
+                serr << "copyTetrahedra requires at least one item in pointBaryCoords" << sendl;
+                copyTetrahedra.setValue(false);
             }
 
             // point to point mapping
@@ -206,33 +262,25 @@ void Mesh2PointTopologicalMapping::init()
                 pointsMappedFrom[TETRA].resize(fromModel->getNbTetrahedra());
                 for (int i=0; i<fromModel->getNbTetrahedra(); i++)
                 {
-                    for (unsigned int j=0; j<tetraBaryCoords.getValue().size(); j++)
-                    {
-                        Tetra t = fromModel->getTetrahedron(i);
-
-                        Vec3d p0(fromModel->getPX(t[0]), fromModel->getPY(t[0]), fromModel->getPZ(t[0]));
-                        Vec3d p1(fromModel->getPX(t[1]), fromModel->getPY(t[1]), fromModel->getPZ(t[1]));
-                        Vec3d p2(fromModel->getPX(t[2]), fromModel->getPY(t[2]), fromModel->getPZ(t[2]));
-                        Vec3d p3(fromModel->getPX(t[3]), fromModel->getPY(t[3]), fromModel->getPZ(t[3]));
-
-                        double fx = tetraBaryCoords.getValue()[j][0];
-                        double fy = tetraBaryCoords.getValue()[j][1];
-                        double fz = tetraBaryCoords.getValue()[j][2];
-
-                        Vec3d result =  p0 * (1-fx-fy-fz)
-                                + p1 * fx
-                                + p2 * fy
-                                + p3 * fz;
-
-                        toModel->addPoint(result[0], result[1], result[2]);
-
-                        pointsMappedFrom[TETRA][i].push_back(toModelLastPointIndex);
-                        pointSource.push_back(std::make_pair(TETRA,i));
-                        toModelLastPointIndex++;
-                    }
+					addInputTetrahedron(i, NULL);
                 }
             }
+			// triangle to triangle identity mapping
+            if (copyTetrahedra.getValue())
+            {
 
+                sout << "Copying " << fromModel->getNbTetrahedra() << " tetrahedra" << sendl;
+                for (int i=0; i<fromModel->getNbTetrahedra(); i++)
+                {
+                    Tetrahedron t = fromModel->getTetrahedron(i);
+                    for (unsigned int j=0; j<t.size(); ++j)
+                        t[j] = pointsMappedFrom[POINT][t[j]][0];
+                    if (toTetrahedronMod)
+                        toTetrahedronMod->addTetrahedronProcess(t);
+                    else
+                        toModel->addTetra(t[0],t[1],t[2],t[3]);
+                }
+            }
             // hexahedron to point mapping
             if (!hexaBaryCoords.getValue().empty())
             {
@@ -366,6 +414,16 @@ bool Mesh2PointTopologicalMapping::internalCheck(const char* step, const helper:
             ok = false;
         }
     }
+	if (copyTetrahedra.getValue())
+    {
+        if (fromModel->getNbTetrahedra() - nbInputRemoved[TETRA] != toModel->getNbTetrahedra())
+        {
+            serr << "Internal Error after " << step << ": tetrahedra were copied, yet output tetrahedra size " << toModel->getNbTetrahedra() << " != input tetrahedra size " << fromModel->getNbTetrahedra();
+            if (nbInputRemoved[TETRA]) serr << " - " << nbInputRemoved[TETRA];
+            serr << sendl;
+            ok = false;
+        }
+    }
     sout << "Internal check done after " << step << ", " << fromModel->getNbPoints();
     if (nbInputRemoved[POINT]) sout << " - " << nbInputRemoved[POINT];
     sout << " input points, " << nbPOut;
@@ -373,6 +431,7 @@ bool Mesh2PointTopologicalMapping::internalCheck(const char* step, const helper:
     sout << " generated points";
     if (copyEdges.getValue()) sout << ", " << toModel->getNbEdges() << " generated edges";
     if (copyTriangles.getValue()) sout << ", " << toModel->getNbTriangles() << " generated triangles";
+    if (copyTetrahedra.getValue()) sout << ", " << toModel->getNbTetrahedra() << " generated tetrahedra";
     sout << "." << sendl;
     return ok;
 }
@@ -505,6 +564,53 @@ void Mesh2PointTopologicalMapping::addInputTriangle(unsigned int i, PointSetTopo
 }
 
 
+void Mesh2PointTopologicalMapping::addInputTetrahedron(unsigned int i, PointSetTopologyModifier* toPointMod)
+{
+    if (pointsMappedFrom[TETRA].size() < i+1)
+        pointsMappedFrom[TETRA].resize(i+1);
+    else
+        pointsMappedFrom[TETRA][i].clear();
+
+    Tetrahedron t = fromModel->getTetrahedron(i);
+    const vector< Vec3d > &tBaryCoords = tetraBaryCoords.getValue();
+
+    Vec3d p0(fromModel->getPX(t[0]), fromModel->getPY(t[0]), fromModel->getPZ(t[0]));
+    Vec3d p1(fromModel->getPX(t[1]), fromModel->getPY(t[1]), fromModel->getPZ(t[1]));
+    Vec3d p2(fromModel->getPX(t[2]), fromModel->getPY(t[2]), fromModel->getPZ(t[2]));
+    Vec3d p3(fromModel->getPX(t[2]), fromModel->getPY(t[2]), fromModel->getPZ(t[2]));
+
+    for (unsigned int j = 0; j < tBaryCoords.size(); j++)
+    {
+        pointsMappedFrom[TETRA][i].push_back(pointSource.size());
+        pointSource.push_back(std::make_pair(TETRA,i));
+    }
+
+    if (toPointMod)
+    {
+        toPointMod->addPointsProcess(tBaryCoords.size());
+    }
+    else
+    {
+        for (unsigned int j = 0; j < tBaryCoords.size(); j++)
+        {
+            double fx = tBaryCoords[j][0];
+            double fy = tBaryCoords[j][1];
+	        double fz = tBaryCoords[j][2];
+
+            Vec3d result =  p0 * (1-fx-fy-fz) + p1 * fx + p2 * fy +p3*fz;         
+
+            toModel->addPoint(result[0], result[1], result[2]);
+        }
+    }
+
+    if (toPointMod)
+    {
+        helper::vector< helper::vector< unsigned int > > ancestors;
+        helper::vector< helper::vector< double       > > coefs;
+        toPointMod->addPointsWarning(tBaryCoords.size(), ancestors, coefs);
+    }
+}
+
 void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
 {
     if(fromModel && toModel && initDone)
@@ -515,8 +621,8 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
         PointSetTopologyModifier *toPointMod = NULL;
         EdgeSetTopologyModifier *toEdgeMod = NULL;
         TriangleSetTopologyModifier *toTriangleMod = NULL;
+        TetrahedronSetTopologyModifier *toTetrahedronMod = NULL;
         //QuadSetTopologyModifier *toQuadMod = NULL;
-        //TetrahedronSetTopologyModifier *toTetrahedronMod = NULL;
         //HexahedronSetTopologyModifier *toHexahedronMod = NULL;
         toModel->getContext()->get(toPointMod, sofa::core::objectmodel::BaseContext::Local);
         bool check = false;
@@ -687,12 +793,52 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
             }
             case core::topology::TETRAHEDRAADDED:
             {
-                /// @TODO
+				const TetrahedraAdded *tAdd = static_cast< const TetrahedraAdded * >( *changeIt );
+                const sofa::helper::vector<unsigned int> &tab = tAdd->getArray();
+//				sout << "INPUT ADD TETRAHEDRA " << tab << sendl;
+                for (unsigned int i=0; i < tab.size(); i++)
+                    addInputTetrahedron(tab[i], toPointMod);
+                toPointMod->propagateTopologicalChanges();
+                if (copyTetrahedra.getValue())
+                {
+                    if (!toTetrahedronMod) toModel->getContext()->get(toTetrahedronMod, sofa::core::objectmodel::BaseContext::Local);
+                    if (toTetrahedronMod)
+                    {
+                        sout << "TETRAHEDRAADDED : " << tAdd->getNbAddedTetrahedra() << sendl;
+                        const sofa::helper::vector<Tetrahedron>& fromArray = tAdd->tetrahedronArray;
+                        sofa::helper::vector<Tetrahedron> toArray;
+                        toArray.resize(fromArray.size());
+                        for (unsigned int i=0; i<fromArray.size(); ++i)
+                            for (unsigned int j=0; j<fromArray[i].size(); ++j)
+                                toArray[i][j] = pointsMappedFrom[POINT][fromArray[i][j]][0];
+                        sout << "<IN: " << fromModel->getNbTetrahedra() << " OUT: " << toModel->getNbTetrahedra() << sendl;
+                        sout << "     ToArray : " << toArray.size() << " : " << toArray << sendl;
+                        toTetrahedronMod->addTetrahedraProcess(toArray);
+                        sout << "     tetrahedronIndexArray : " << tAdd->tetrahedronIndexArray.size() << " : " << tAdd->tetrahedronIndexArray << sendl;
+                        toTetrahedronMod->addTetrahedraWarning(tAdd->getNbAddedTetrahedra(), toArray, tAdd->tetrahedronIndexArray, tAdd->ancestorsList, tAdd->coefs);
+                        toTetrahedronMod->propagateTopologicalChanges();
+                        sout << ">IN: " << fromModel->getNbTetrahedra() << " OUT: " << toModel->getNbTetrahedra() << sendl;
+                    }
+                }
+                check = true;
                 break;
             }
             case core::topology::TETRAHEDRAREMOVED:
             {
-                const sofa::helper::vector<unsigned int> &tab = ( static_cast< const TetrahedraRemoved *>( *changeIt ) )->getArray();
+				const TetrahedraRemoved *tRem = static_cast< const TetrahedraRemoved * >( *changeIt );
+                const sofa::helper::vector<unsigned int> &tab = tRem->getArray();
+                if (copyTetrahedra.getValue())
+                {
+                    if (!toTetrahedronMod) toModel->getContext()->get(toTetrahedronMod, sofa::core::objectmodel::BaseContext::Local);
+                    if (toTetrahedronMod)
+                    {
+                        sout << "TETRAHEDRAREMOVED : " << tRem->getNbRemovedTetrahedra() << " : " << tab << sendl;
+                        sofa::helper::vector<unsigned int> toArray = tab;
+                        toTetrahedronMod->removeTetrahedraWarning(toArray);
+                        toTetrahedronMod->propagateTopologicalChanges();
+                        toTetrahedronMod->removeTetrahedraProcess(tab, false);
+                    }
+                }
 //				sout << "INPUT REMOVE TETRAHEDRA "<<tab << sendl;
                 removeInput(TETRA, tab );
                 nbInputRemoved[TETRA] += tab.size();
