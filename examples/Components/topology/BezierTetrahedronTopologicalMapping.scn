@@ -1,0 +1,26 @@
+<?xml version="1.0" ?>
+<Node name="root" dt="0.05" showBoundingTree="0" gravity="0 0 0">
+    <VisualStyle displayFlags="showBehaviorModels showForceFields showCollisionModels showVisual" />
+    <CollisionPipeline verbose="0" name="CollisionPipeline" />
+    <BruteForceDetection name="N2" />
+    <CollisionResponse response="default" name="collision response" />
+    <Node name="MeshTopology">
+        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <TetrahedronSetTopologyContainer name="Container1" fileTopology="mesh/liver.msh" />
+        <TetrahedronSetTopologyModifier />
+        <TetrahedronSetGeometryAlgorithms name="GeomAlgo" />
+        <MechanicalObject name="dofs" />
+        <FixedConstraint name="FixedConstraint" indices="3 39 64" />
+        <DiagonalMass massDensity="1" name="computed using mass density" />
+        <TetrahedralCorotationalFEMForceField name="FEM" youngModulus="3000" poissonRatio="0.3" computeGlobalMatrix="false" method="large" />
+        <Node name="PointSetTopology">
+        	<BezierTetrahedronSetTopologyContainer name="ContainerBezier" degree="2"/>
+	        <TetrahedronSetTopologyModifier />
+			<TetrahedronSetGeometryAlgorithms name="GeomAlgo" />
+			<Mesh2PointTopologicalMapping object1="Container1" object2="ContainerBezier" bezierTetrahedronDegree="3" />		
+			<MechanicalObject />	
+            <SphereModel radius="0.05" />
+        </Node>
+    </Node>
+</Node>
