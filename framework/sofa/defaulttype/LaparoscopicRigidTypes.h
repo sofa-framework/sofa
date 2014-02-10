@@ -52,6 +52,7 @@ public:
         Vector3 vOrientation;
     public:
         typedef Real value_type;
+        typedef int size_type;
         typedef Real Pos;
         typedef Vector3 Rot;
         friend class Coord;
@@ -149,6 +150,7 @@ public:
         Quat orientation;
     public:
         typedef Real value_type;
+        typedef int size_type;
         typedef Real Pos;
         typedef Quat Rot;
         Coord (const Real &posTranslation, const Quat &orient)
