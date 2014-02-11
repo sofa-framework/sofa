@@ -55,6 +55,7 @@ template< class DataTypes>
 TetrahedronSetGeometryAlgorithms<DataTypes>()
 		,degree(0)
         ,drawControlPointsEdges (core::objectmodel::Base::initData(&drawControlPointsEdges, (bool) false, "drawControlPointsEdges", "Debug : view Control point indices"))
+        , _drawColor(initData(&_drawColor, sofa::defaulttype::Vec3f(0.2f,1.0f,1.0f), "drawColorEdges", "RGB code color used to draw edges"))
     {
     }
 template< class DataTypes>

@@ -59,10 +59,10 @@ class BezierTetrahedronSetGeometryAlgorithms : public TetrahedronSetGeometryAlgo
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(BezierTetrahedronSetGeometryAlgorithms,DataTypes),SOFA_TEMPLATE(TetrahedronSetGeometryAlgorithms,DataTypes));
-	typedef sofa::defaulttype::Vec<4,Real> Vec4;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
+    typedef sofa::defaulttype::Vec<4,Real> Vec4;
 protected:
     BezierTetrahedronSetGeometryAlgorithms();
 	/// container	
@@ -87,9 +87,10 @@ public:
 	/// computes the nodal value 
 	Coord computeNodalValue(const size_t tetrahedronIndex,const Vec4 barycentricCoordinate); 
 	/// computes the shape function 
-	typename Real computeBernsteinPolynomial(const TetrahedronBezierIndex tbi, const Vec4 barycentricCoordinate);
+	Real computeBernsteinPolynomial(const TetrahedronBezierIndex tbi, const Vec4 barycentricCoordinate);
 protected:
     Data<bool> drawControlPointsEdges;
+    Data<sofa::defaulttype::Vec3f> _drawColor;
 };
 
 
