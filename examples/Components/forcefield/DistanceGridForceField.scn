@@ -1,3 +1,4 @@
+<!-- TO FIX OR REMOVE -->
 <Node name="root" dt="0.001" showBoundingTree="0" gravity="0 0 0">
     <VisualStyle displayFlags="showBehaviorModels showForceFields showCollisionModels showWireframe" />
     <CollisionPipeline verbose="0" />

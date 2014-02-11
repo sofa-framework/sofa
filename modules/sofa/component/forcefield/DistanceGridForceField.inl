@@ -155,6 +155,7 @@ void DistanceGridForceField<DataTypes>::addForce(const sofa::core::MechanicalPar
     const Real stiffOut = stiffnessOut.getValue();
     const Real damp = damping.getValue();
     const Real maxdist = maxDist.getValue();
+    unsigned int nbIn = 0;
     for (unsigned int i=ibegin; i<iend; i++)
     {
         if (i < pOnBorder.size() && !pOnBorder[i]) continue;
@@ -186,8 +187,11 @@ void DistanceGridForceField<DataTypes>::addForce(const sofa::core::MechanicalPar
             c.normal = grad;
             c.fact = forceIntensity;
             contacts.push_back(c);
+            nbIn++;
         }
     }
+
+    if (this->f_printLog.getValue()) std::cout << "Nb points in: " << nbIn << std::endl;
 
     this->contacts.endEdit();
 
@@ -525,6 +529,27 @@ void DistanceGridForceField<DataTypes>::drawDistanceGrid(const core::visual::Vis
         }
         vparams->drawTool()->drawTriangles(pointsTet, defaulttype::Vec<4,double>(0.8,0.8,0,0.25));
     }
+
+    if (drawPoints.getValue())
+    {
+        std::vector< defaulttype::Vector3 > distancePointsIn;
+        std::vector< defaulttype::Vector3 > distancePointsOut;
+
+        for (unsigned int i=0; i < grid->getNx(); i++)
+            for (unsigned int j=0; j < grid->getNy(); j++)
+                for (unsigned int k=0; k < grid->getNz(); k++)
+                {
+                    Coord cellCoord = grid->coord(i,j,k);
+                    if (grid->teval(cellCoord) < 0.0)
+                        distancePointsIn.push_back(cellCoord);
+                    else
+                        distancePointsOut.push_back(cellCoord);
+                }
+
+        if (distancePointsIn.size()) vparams->drawTool()->drawPoints(distancePointsIn,drawSize.getValue(), defaulttype::Vec<4,double>(0.8,0.2,0.2,1.0));
+        if (distancePointsOut.size()) vparams->drawTool()->drawPoints(distancePointsOut,drawSize.getValue()*1.2, defaulttype::Vec<4,double>(0.2,0.8,0.2,1.0));
+    }
+
 }
 } // namespace forcefield
 
