@@ -56,6 +56,7 @@ typedef sofa::helper::vector<PointID>         VecPointID;
 typedef sofa::helper::vector<TetraID>         VecTetraID;
 typedef unsigned char BezierDegreeType;
 typedef sofa::helper::fixed_array<BezierDegreeType,4> TetrahedronBezierIndex;
+typedef sofa::helper::fixed_array<int,4> ElementTetrahedronIndex;
 
 /** a class that stores a set of Bezier tetrahedra and provides access with adjacent triangles, edges and vertices 
 A Bezier Tetrahedron has exactly the same topology as a Tetrahedron but with additional (control) points on its edges, triangles and inside 
@@ -63,6 +64,7 @@ We use a Vec4D to number the control points inside  a Bezier tetrahedron */
 class SOFA_BASE_TOPOLOGY_API BezierTetrahedronSetTopologyContainer : public TetrahedronSetTopologyContainer
 {
     friend class BezierTetrahedronSetTopologyModifier;
+	friend class Mesh2BezierTopologicalMapping;
 
 public:
     SOFA_CLASS(BezierTetrahedronSetTopologyContainer,TetrahedronSetTopologyContainer);
@@ -76,6 +78,8 @@ protected:
     virtual ~BezierTetrahedronSetTopologyContainer() {}
 public:
     virtual void init();
+	// build some maps specific of the degree of the tetrahedral elements.
+	virtual void reinit();
 
     /// Bezier Specific Information Topology API
     /// @{
@@ -83,7 +87,7 @@ protected :
 	/// the degree of the Bezier Tetrahedron 1=linear, 2=quadratic...
 	Data <BezierDegreeType> d_degree;
 	/// the number of control points corresponding to the vertices of the tetrahedra (different from the total number of points)
-    Data<size_t> numberOfTetrahedralPoints;
+    Data<size_t> d_numberOfTetrahedralPoints;
 public :
 	// specifies where a Bezier Point can lies with respect to the underlying tetrahedral mesh
 	enum BezierTetrahedronPointLocation
@@ -104,6 +108,8 @@ public :
 	/// return the Bezier index given the local index in a tetrahedron
 	TetrahedronBezierIndex getTetrahedronBezierIndex(const size_t localIndex) const;
 	sofa::helper::vector<TetrahedronBezierIndex> getTetrahedronBezierIndexArray() const;
+	/// return the local index in a tetrahedron from a tetrahedron Bezier index (inverse of getTetrahedronBezierIndex())
+	size_t getLocalIndexFromTetrahedronBezierIndex(const TetrahedronBezierIndex id) const;
 	/// return the location, the element index and offset from the global index of a point
 	void getLocationFromGlobalIndex(const size_t globalIndex, BezierTetrahedronPointLocation &location, 
 		size_t &elementIndex, size_t &elementOffset) ;
@@ -173,6 +179,20 @@ public :
 		t.setNbPoints(nbp);
         return in;
     }
+protected:
+	/// Map which provides the location (point, edge, triangle, tetrahedron) of a control point given its tetrahedron Bezier index
+	std::map<TetrahedronBezierIndex,ElementTetrahedronIndex> elementMap;
+	/// Map which provides the offset in the DOF vector for a control point lying on an edge 
+	std::map<TetrahedronBezierIndex,size_t> edgeOffsetMap;
+	/// Map which provides the offset in the DOF vector for a control point lying on a triangle 
+	std::map<TetrahedronBezierIndex,size_t> triangleOffsetMap;
+	/// Map which provides the offset in the DOF vector for a control point lying on a tetrahedron
+	std::map<TetrahedronBezierIndex,size_t> tetrahedronOffsetMap;
+	/// Map which provides the rank in a control point from the array outputed by getGlobalIndexArrayOfBezierPointsInTetrahedron (consistent with bezierIndexArray) 
+	std::map<TetrahedronBezierIndex,size_t> localIndexMap;
+	/// array of the tetrahedron Bezier index outputed by the function getGlobalIndexArrayOfBezierPointsInTetrahedron()
+	sofa::helper::vector<TetrahedronBezierIndex> bezierIndexArray;
+
 };
 
 } // namespace topology

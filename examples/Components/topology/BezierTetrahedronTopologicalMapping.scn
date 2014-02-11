@@ -11,15 +11,16 @@
         <TetrahedronSetTopologyModifier />
         <TetrahedronSetGeometryAlgorithms name="GeomAlgo" />
         <MechanicalObject name="dofs" />
-        <FixedConstraint name="FixedConstraint" indices="3 39 64" />
+<!--        <FixedConstraint name="FixedConstraint" indices="3 39 64" /> -->
         <DiagonalMass massDensity="1" name="computed using mass density" />
         <TetrahedralCorotationalFEMForceField name="FEM" youngModulus="3000" poissonRatio="0.3" computeGlobalMatrix="false" method="large" />
         <Node name="PointSetTopology">
-        	<BezierTetrahedronSetTopologyContainer name="ContainerBezier" degree="2"/>
 	        <TetrahedronSetTopologyModifier />
-			<TetrahedronSetGeometryAlgorithms name="GeomAlgo" />
-			<Mesh2PointTopologicalMapping object1="Container1" object2="ContainerBezier" bezierTetrahedronDegree="3" />		
+        	<BezierTetrahedronSetTopologyContainer name="ContainerBezier"/>	
+			<Mesh2BezierTopologicalMapping object1="Container1" object2="ContainerBezier" bezierTetrahedronDegree="3" />
 			<MechanicalObject />	
+			<BezierTetrahedronSetGeometryAlgorithms name="GeomAlgo" drawControlPointsEdges="true"/>
+
             <SphereModel radius="0.05" />
         </Node>
     </Node>

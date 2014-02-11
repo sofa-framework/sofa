@@ -64,8 +64,7 @@ Mesh2PointTopologicalMapping::Mesh2PointTopologicalMapping ()
       copyEdges ( initData ( &copyEdges, false, "copyEdges", "Activate mapping of input edges into the output topology (requires at least one item in pointBaryCoords)" ) ),
       copyTriangles ( initData ( &copyTriangles, false, "copyTriangles", "Activate mapping of input triangles into the output topology (requires at least one item in pointBaryCoords)" ) ),
       copyTetrahedra ( initData ( &copyTetrahedra, false, "copyTetrahedra", "Activate mapping of input tetrahedra into the output topology (requires at least one item in pointBaryCoords)" ) ),
-      bezierTetrahedronDegree ( initData ( &bezierTetrahedronDegree, (unsigned int)0, "bezierTetrahedronDegree", "Tesselate a tetrahedral mesh as to create a Bezier Tetrahedral mesh of a given order" ) ),
-      initDone(false)
+       initDone(false)
 {
     pointBaryCoords.setGroup("BaryCoords");
     edgeBaryCoords.setGroup("BaryCoords");
@@ -78,53 +77,6 @@ Mesh2PointTopologicalMapping::Mesh2PointTopologicalMapping ()
 void Mesh2PointTopologicalMapping::init()
 {
     initDone = true;
-	if (bezierTetrahedronDegree.getValue()>0) {
-		size_t degree=bezierTetrahedronDegree.getValue();
-		// make copyTetrahedra as true
-		copyTetrahedra.setValue(true);
-
-		// process each coord array
-		helper::WriteAccessor< Data<vector< Vec3d > > > pBary = pointBaryCoords;
-		pBary.clear();
-		pBary.push_back(Vec3d(0,0,0));
-		if (degree >1) {
-			// process each edge array
-			helper::WriteAccessor< Data<vector< Vec3d > > > eBary = edgeBaryCoords;
-			eBary.clear();
-			size_t i;
-			for (i=1;i<degree;++i) {
-				eBary.push_back(Vec3d((double)i/degree,(double)(degree-i)/degree,0));
-			}
-			
-		}
-		if (degree >2) {
-			// process each triangle array
-			helper::WriteAccessor< Data<vector< Vec3d > > > trBary = triangleBaryCoords;
-			trBary.clear();
-			size_t i,j;
-			for (i=1;i<(degree-1);++i) {
-				for (j=1;j<(degree-i);++j) {
-					trBary.push_back(Vec3d((double)i/degree,(double)j/degree,(double)(degree-i-j)/degree));
-				}
-			}
-			
-		}
-		if (degree >3) {
-			// process each tetrahedron array
-			helper::WriteAccessor< Data<vector< Vec3d > > > tetBary = tetraBaryCoords;
-			tetBary.clear();
-			size_t i,j,k;
-			for (i=1;i<(degree-2);++i) {
-				for (j=1;j<(degree-i-1);++j) {
-					for (k=1;k<(degree-j-i);++k) {
-						tetBary.push_back(Vec3d((double)i/degree,(double)j/degree,(double)k/degree));
-					}
-				}
-			}
-			
-		}
-
-	} 
     if(fromModel)
     {
         if(toModel)
@@ -577,7 +529,7 @@ void Mesh2PointTopologicalMapping::addInputTetrahedron(unsigned int i, PointSetT
     Vec3d p0(fromModel->getPX(t[0]), fromModel->getPY(t[0]), fromModel->getPZ(t[0]));
     Vec3d p1(fromModel->getPX(t[1]), fromModel->getPY(t[1]), fromModel->getPZ(t[1]));
     Vec3d p2(fromModel->getPX(t[2]), fromModel->getPY(t[2]), fromModel->getPZ(t[2]));
-    Vec3d p3(fromModel->getPX(t[2]), fromModel->getPY(t[2]), fromModel->getPZ(t[2]));
+    Vec3d p3(fromModel->getPX(t[3]), fromModel->getPY(t[3]), fromModel->getPZ(t[3]));
 
     for (unsigned int j = 0; j < tBaryCoords.size(); j++)
     {

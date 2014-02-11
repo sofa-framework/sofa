@@ -43,7 +43,7 @@ void TriangleSetGeometryAlgorithms< DataTypes >::init()
 {
     EdgeSetGeometryAlgorithms<DataTypes>::init();
 
-    this->reinit();
+    TriangleSetGeometryAlgorithms< DataTypes >::reinit();
 }
 
 template<class DataTypes>
