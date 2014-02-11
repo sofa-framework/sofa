@@ -39,15 +39,6 @@ if(NOT SOFA-EXTERNAL_BOOST)
     message(FATAL_ERROR "CGALPlugin needs full boost. Please modify the SOFA-EXTERNAL_BOOST_PATH option to fix it...")
 endif()
 
-if(SOFA-PLUGIN_IMAGE)
-    list(APPEND HEADER_FILES MeshGenerationFromImage.h)
-    list(APPEND HEADER_FILES MeshGenerationFromImage.inl)
-    list(APPEND SOURCE_FILES MeshGenerationFromImage.cpp)
-    AddLinkerDependencies(${CGAL_ImageIO_LIBRARY} image)
-endif()
-
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
-
 find_package(CGAL REQUIRED)
 include_directories("${CGAL_DIR}/include")
 
@@ -56,8 +47,16 @@ include_directories("${GMP_INCLUDE_DIR}")
 
 find_package(MPFR REQUIRED)
 
+if(SOFA-PLUGIN_IMAGE)
+    list(APPEND HEADER_FILES MeshGenerationFromImage.h)
+    list(APPEND HEADER_FILES MeshGenerationFromImage.inl)
+    list(APPEND SOURCE_FILES MeshGenerationFromImage.cpp)
+    AddLinkerDependencies(${CGAL_ImageIO_LIBRARY} image)
+endif()
+
 AddCompilerDefinitions("SOFA_BUILD_CGALPLUGIN")
 AddLinkerDependencies(SofaGuiQt ${Boost_LIBRARIES} ${GMP_LIBRARIES} ${MPFR_LIBRARIES} ${CGAL_LIBRARY})
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
