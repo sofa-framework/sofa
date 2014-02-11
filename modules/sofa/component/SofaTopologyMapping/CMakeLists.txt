@@ -12,6 +12,7 @@ set(HEADER_FILES
     ../topology/Hexa2QuadTopologicalMapping.h 
     ../topology/Hexa2TetraTopologicalMapping.h 
     ../topology/Mesh2PointTopologicalMapping.h  
+    ../topology/Mesh2BezierTopologicalMapping.h  
     ../topology/Quad2TriangleTopologicalMapping.h 
     ../topology/SimpleTesselatedHexaTopologicalMapping.h 
     ../topology/SimpleTesselatedTetraTopologicalMapping.h 
@@ -32,6 +33,7 @@ set(SOURCE_FILES
     ../topology/Hexa2QuadTopologicalMapping.cpp 
     ../topology/Hexa2TetraTopologicalMapping.cpp 
     ../topology/Mesh2PointTopologicalMapping.cpp  
+    ../topology/Mesh2BezierTopologicalMapping.cpp  
     ../topology/Quad2TriangleTopologicalMapping.cpp 
     ../topology/SimpleTesselatedHexaTopologicalMapping.cpp 
     ../topology/SimpleTesselatedTetraTopologicalMapping.cpp 

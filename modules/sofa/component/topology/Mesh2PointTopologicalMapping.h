@@ -139,7 +139,6 @@ protected:
     Data< bool > copyTriangles; ///< Activate mapping of input triangles into the output topology (requires at least one item in pointBaryCoords)
 	Data< bool > copyTetrahedra; ///< Activate mapping of input tetrahedras into the output topology (requires at least one item in pointBaryCoords)
 
-	Data < unsigned int > bezierTetrahedronDegree; /// Fills pointBaryCoords, edgeBaryCoords, triangleBaryCoords and tetraBaryCoords so as to create a Bezier Tetrahedron mesh of a given order
     helper::fixed_array< vector< vector<int> >, NB_ELEMENTS > pointsMappedFrom; ///< Points mapped from the differents elements (see the enum Element declared before)
 
     vector< std::pair<Element,int> > pointSource; ///< Correspondance between the points mapped and the elements from which are mapped
