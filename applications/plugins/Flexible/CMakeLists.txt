@@ -29,12 +29,15 @@ set(HEADER_FILES
     deformationMapping/BaseDeformationMapping.inl 
     deformationMapping/CustomJacobianBlock.h
     deformationMapping/LinearMapping.h
-    deformationMapping/LinearJacobianBlock.h 
+    deformationMapping/LinearJacobianBlock.h
     deformationMapping/LinearJacobianBlock_point.inl 
     deformationMapping/LinearJacobianBlock_affine.inl 
     deformationMapping/LinearJacobianBlock_rigid.inl 
     deformationMapping/LinearJacobianBlock_quadratic.inl 
-    deformationMapping/MLSMapping.h 
+    deformationMapping/BaseDeformationMultiMapping.h
+    deformationMapping/BaseDeformationMultiMapping.inl
+    deformationMapping/LinearMultiMapping.h
+    deformationMapping/MLSMapping.h
     deformationMapping/MLSJacobianBlock.h 
     deformationMapping/MLSJacobianBlock_point.inl 
     deformationMapping/MLSJacobianBlock_affine.inl 
@@ -101,7 +104,8 @@ set(SOURCE_FILES
     deformationMapping/LinearMapping_affine.cpp 
     deformationMapping/LinearMapping_rigid.cpp 
     deformationMapping/LinearMapping_quadratic.cpp 
-    deformationMapping/MLSMapping_point.cpp 
+    deformationMapping/LinearMultiMapping_rigidaffine.cpp
+    deformationMapping/MLSMapping_point.cpp
     deformationMapping/MLSMapping_affine.cpp 
     deformationMapping/MLSMapping_rigid.cpp 
     deformationMapping/MLSMapping_quadratic.cpp 
