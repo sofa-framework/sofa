@@ -443,9 +443,11 @@ endif()
 # GPU architecture for which CUDA code will be compiled.
 sofa_option(SOFA-CUDA_SM STRING "20" "GPU architecture; it will translate to the following option for nvcc: -arch sm_<value>")
 
-set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} -arch sm_${SOFA-CUDA_SM} -Xcompiler -O2 -DNDEBUG)
+set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} -arch sm_${SOFA-CUDA_SM})
 if(NOT WIN32)
-	set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} -Xcompiler -fPIC)
+    set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} -Xcompiler -fPIC)
+else()
+    set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} -Xcompiler)
 endif()
 
 # TODO   activate it automatically
@@ -461,6 +463,12 @@ if (${CUDA_HOST_COMPILER} MATCHES "ccache$")
     set(CUDA_HOST_COMPILER "gcc" CACHE STRING "Host side compiler used by NVCC" FORCE)
 endif()
 
+# in debug mode, enforce cuda to compile host code in debug (the same could be done for device code with -G)
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} -g)
+else()
+    set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} -O2 -DNDEBUG)
+endif()
 
 
 # plugins (auto-search)
