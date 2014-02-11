@@ -84,10 +84,7 @@ SceneColladaLoader::~SceneColladaLoader()
 void SceneColladaLoader::init()
 {
 	if(0 == subSceneRoot)
-	{
-		sout << "subSceneRoot: " << subSceneRoot << sendl;
 		return;
-	}
 
     // retrieving parent node
     BaseContext* currentContext = getContext();
