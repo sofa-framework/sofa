@@ -32,6 +32,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/gui/BaseGUI.h>
 #include <sofa/gui/GUIManager.h>
+#include <sofa/config.h>
 
 
 using namespace sofa::core;
@@ -169,11 +170,11 @@ extern "C" PyObject * Sofa_sendGUIMessage(PyObject * /*self*/, PyObject * args)
 
 
 extern "C" PyObject* Sofa_build_dir(PyObject * /*self*/, PyObject * /*args*/ ) {
-	return Py_BuildValue("s", sofa_tostring(SOFA_BUILD_DIR));
+	return Py_BuildValue("s", SOFA_BUILD_DIR);
 }
 
 extern "C" PyObject* Sofa_src_dir(PyObject * /*self*/, PyObject * /*args*/ ) {
-	return Py_BuildValue("s", sofa_tostring(SOFA_SRC_DIR));
+	return Py_BuildValue("s", SOFA_SRC_DIR);
 }
 
 
