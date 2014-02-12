@@ -41,8 +41,8 @@ set(HEADER_FILES
     ../collision/StartNavigationPerformer.h
     ../controller/MechanicalStateControllerOmni.h 
 	../controller/MechanicalStateControllerOmni.inl 
-    ../controller/NodeToggleController.h 
-
+    ../controller/NodeToggleController.h
+    ../controller/InterpolationController.h
     )
     
 set(SOURCE_FILES
@@ -74,8 +74,9 @@ set(SOURCE_FILES
     ../collision/AddRecordedCameraPerformer.cpp
     ../collision/StartNavigationPerformer.cpp
     ../controller/MechanicalStateControllerOmni.cpp 
-    ../controller/NodeToggleController.cpp 
-
+    ../controller/NodeToggleController.cpp
+    ../controller/InterpolationController.cpp
+    ../controller/InterpolationController.inl
     )
 
 set(GROUP_BASE_DIR "..")
