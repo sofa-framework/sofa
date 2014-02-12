@@ -225,6 +225,7 @@ size_t BezierTetrahedronSetTopologyContainer::getGlobalIndexOfBezierPoint(const 
 #endif
 		return (0);
 		} 
+        return 0;
 }
 
 TetrahedronBezierIndex BezierTetrahedronSetTopologyContainer::getTetrahedronBezierIndex(const size_t localIndex) const
@@ -381,7 +382,7 @@ bool BezierTetrahedronSetTopologyContainer::checkBezierPointTopology()
 	sofa::helper::vector<TetrahedronBezierIndex> tbiArray=getTetrahedronBezierIndexArray();
 	VecPointID indexArray;
 	BezierTetrahedronPointLocation location; 
-	size_t elementIndex, elementOffset,localIndex;
+    size_t elementIndex, elementOffset/*,localIndex*/;
 	for (nTetras=0;nTetras<getNumberOfTetrahedra();++nTetras) {
 		indexArray.clear();
 		getGlobalIndexArrayOfBezierPointsInTetrahedron(nTetras,indexArray);
@@ -391,7 +392,9 @@ bool BezierTetrahedronSetTopologyContainer::checkBezierPointTopology()
 			size_t globalIndex=getGlobalIndexOfBezierPoint(nTetras,tbiArray[elem]);
 			// check that getGlobalIndexOfBezierPoint and getGlobalIndexArrayOfBezierPointsInTetrahedron give the same answer
 			assert(globalIndex==indexArray[elem]);
-			TetrahedronBezierIndex tbi=getTetrahedronBezierIndex(elem);
+#ifndef NDEBUG
+            TetrahedronBezierIndex tbi=getTetrahedronBezierIndex(elem);
+#endif
 			assert(elem==getLocalIndexFromTetrahedronBezierIndex(tbi));
 			// check that getTetrahedronBezierIndex is consistant with getTetrahedronBezierIndexArray
 			assert(tbiArray[elem][0]==tbi[0]);
@@ -410,9 +413,11 @@ bool BezierTetrahedronSetTopologyContainer::checkBezierPointTopology()
 				assert(elementIndex==getEdgesInTetrahedron(nTetras)[(elem-4)/(degree-1)]);
 			}
 			else if (elem<(4+6*(degree-1)+2*(degree-1)*(degree-2))){
-				assert(location==TRIANGLE);
-				size_t nbPointPerEdge=(degree-1)*(degree-2)/2;
-				size_t val=(elem-4-6*(degree-1))/(nbPointPerEdge);
+                assert(location==TRIANGLE);
+#ifndef NDEBUG
+                size_t nbPointPerEdge=(degree-1)*(degree-2)/2;
+                size_t val=(elem-4-6*(degree-1))/(nbPointPerEdge);
+#endif
 				assert(elementIndex==getTrianglesInTetrahedron(nTetras)[val]);
 			}
 		}

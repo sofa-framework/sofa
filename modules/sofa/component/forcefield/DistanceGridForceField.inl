@@ -535,9 +535,9 @@ void DistanceGridForceField<DataTypes>::drawDistanceGrid(const core::visual::Vis
         std::vector< defaulttype::Vector3 > distancePointsIn;
         std::vector< defaulttype::Vector3 > distancePointsOut;
 
-        for (unsigned int i=0; i < grid->getNx(); i++)
-            for (unsigned int j=0; j < grid->getNy(); j++)
-                for (unsigned int k=0; k < grid->getNz(); k++)
+        for (int i=0; i < grid->getNx(); i++)
+            for (int j=0; j < grid->getNy(); j++)
+                for (int k=0; k < grid->getNz(); k++)
                 {
                     Coord cellCoord = grid->coord(i,j,k);
                     if (grid->teval(cellCoord) < 0.0)
