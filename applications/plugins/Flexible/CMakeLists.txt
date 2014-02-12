@@ -81,7 +81,9 @@ set(HEADER_FILES
     material/VolumePreservationForceField.h 
     material/VolumePreservationMaterialBlock.h 
     material/VolumePreservationMaterialBlock.inl 
-    #forceField/FlexibleTetrahedronFEMForceField.h
+    material/PolynomialMaterialForceField.h
+    material/PolynomialMaterialBlock.h
+    #forceField/Flex    ibleTetrahedronFEMForceField.h
 
 	)
 
@@ -125,6 +127,7 @@ set(SOURCE_FILES
     material/MooneyRivlinForceField.cpp 
     material/OgdenForceField.cpp 
     material/VolumePreservationForceField.cpp 
+    material/PolynomialMaterialForceField.cpp
     #forceField/FlexibleTetrahedronFEMForceField.cpp
 
 	)
