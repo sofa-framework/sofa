@@ -41,9 +41,6 @@ struct LoadScene_test: public Sofa_test<double>
     // root
    simulation::Node::SPtr root;
 
-   // Define the path for the scenes directory
-   #define ADD_SOFA_TEST_SCENES_PATH( x ) sofa_tostring(SOFA_TEST_SCENES_PATH)sofa_tostring(x) 
-
    bool LoadScene(std::string sceneName)
    {
        // Init Sofa
@@ -51,12 +48,8 @@ struct LoadScene_test: public Sofa_test<double>
        simulation::Simulation* simulation;
        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
-       // Get the scene directory
-       sofa::helper::system::FileRepository repository("SOFA_DATA_PATH");
-       repository.addFirstPath( ADD_SOFA_TEST_SCENES_PATH( /Scenes ) );
-      
        // Load the scene from the xml file
-       std::string fileName = repository.getFile(sceneName);
+       std::string fileName = sofa::helper::system::DataRepository.getFile(sceneName);
        root = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()));
 
        // Test if load has succeeded
@@ -94,9 +87,9 @@ struct LoadScene_test: public Sofa_test<double>
 
 TEST_F( LoadScene_test,BilinearConstraint)
 {
-     ASSERT_TRUE(this->LoadScene("BilinearConstraint.scn"));
-     ASSERT_TRUE(this->initScene("BilinearConstraint.scn"));
-     ASSERT_NO_THROW(this->initScene("BilinearConstraint.scn"));   
+     ASSERT_TRUE(this->LoadScene("tests/SofaTest/BilinearConstraint.scn"));
+     ASSERT_TRUE(this->initScene("tests/SofaTest/BilinearConstraint.scn"));
+     ASSERT_NO_THROW(this->initScene("tests/SofaTest/BilinearConstraint.scn"));
 }
 
 }// namespace sofa
