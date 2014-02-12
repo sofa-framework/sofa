@@ -49,7 +49,7 @@ DistanceFromTargetMapping<TIn, TOut>::DistanceFromTargetMapping()
     , f_indices(initData(&f_indices, "indices", "Indices of the parent points"))
     , f_targetPositions(initData(&f_targetPositions, "targetPositions", "Positions to compute the distances from"))
     , f_restDistances(initData(&f_restDistances, "restLengths", "Rest lengths of the connections."))
-    , _arrowSize(0)
+    , _arrowSize(-1)
     , _color( 1,0,0,1 )
 {
 }
@@ -184,6 +184,8 @@ void DistanceFromTargetMapping<TIn, TOut>::apply(const core::MechanicalParams * 
 
 }
 
+
+
 template <class TIn, class TOut>
 void DistanceFromTargetMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams*/ , Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)
 {
@@ -238,6 +240,8 @@ void DistanceFromTargetMapping<TIn, TOut>::applyDJT(const core::MechanicalParams
 }
 
 
+
+
 template <class TIn, class TOut>
 const sofa::defaulttype::BaseMatrix* DistanceFromTargetMapping<TIn, TOut>::getJ()
 {
@@ -287,9 +291,13 @@ const vector<defaulttype::BaseMatrix*>* DistanceFromTargetMapping<TIn, TOut>::ge
     return &stiffnessBaseMatrices;
 }
 
+
+
 template <class TIn, class TOut>
 void DistanceFromTargetMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
+    if( _arrowSize<0 ) return;
+
     typename core::behavior::MechanicalState<In>::ReadVecCoord pos = this->getFromModel()->readPositions();
     helper::ReadAccessor< Data<InVecCoord > > targetPositions(f_targetPositions);
     helper::ReadAccessor< Data<vector<unsigned> > > indices(f_indices);
@@ -298,8 +306,8 @@ void DistanceFromTargetMapping<TIn, TOut>::draw(const core::visual::VisualParams
 
     for(unsigned i=0; i<indices.size(); i++ )
     {
-        points.push_back(targetPositions[i]);
-        points.push_back(pos[indices[i]]);
+        points.push_back( Vector3(targetPositions[i]) );
+        points.push_back( Vector3(pos[indices[i]]) );
     }
 
     if( !_arrowSize )
