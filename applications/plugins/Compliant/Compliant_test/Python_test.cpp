@@ -5,6 +5,7 @@
 
 #include <sofa/simulation/common/SceneLoaderFactory.h>
 #include <sofa/helper/system/PluginManager.h>
+#include <sofa/helper/system/FileRepository.h>
 
 
 #include <sofa/simulation/graph/DAGSimulation.h>
@@ -50,25 +51,13 @@ struct Listener : core::objectmodel::BaseObject {
 
 
 
-std::string Python_test::path() {
-	std::string full = sofa_tostring(SOFA_SRC_DIR);
-
-	full += "/applications/plugins/Compliant/Compliant_test/";
-	
-	return full;
-}
-
 void Python_test::run(const char* filename) {
-
-	// adapt filename
-	std::string full = path();
-	full += filename;
+	std::string filepath = std::string("tests/Compliant/") + filename;
+	bool scriptFound = sofa::helper::system::DataRepository.findFile(filepath);
+	ASSERT_TRUE(scriptFound);
+	simulation::Node::SPtr root = loader->load(filepath.c_str());
 	
-	// std::cerr << "running: " << full << std::endl;
-
-	simulation::Node::SPtr root = loader->load(full.c_str());
-	
-    root->addObject( new Listener );
+	root->addObject( new Listener );
 
 	simulation::getSimulation()->init(root.get());
 
