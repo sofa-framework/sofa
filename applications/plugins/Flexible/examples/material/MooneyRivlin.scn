@@ -32,7 +32,7 @@
 
       <Node 	name="I"   >
         <MechanicalObject  template="I331" name="I"  />
-        <InvariantMapping template="Mapping&lt;F331,I331&gt;"     deviatoric="true"/>
+        <InvariantMapping template="Mapping&lt;F331,I331&gt;"    />
         <MooneyRivlinForceField  template="I331" C1="1000" C2="100" bulk="1000"      />
       </Node>
     </Node>

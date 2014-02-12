@@ -39,8 +39,8 @@ namespace mapping
 
 using helper::vector;
 
-/** Map deformation gradients to the square root of (deviatoric) invariants of the right Cauchy Green deformation tensor: sqrt(I1),sqrt(I2) and J
-*/
+/** Map deformation gradients to invariants of the right Cauchy Green deformation tensor: I1, I2 and J
+s*/
 
 template <class TIn, class TOut>
 class InvariantMapping : public BaseStrainMappingT<defaulttype::InvariantJacobianBlock<TIn,TOut> >
@@ -51,18 +51,9 @@ public:
 
     SOFA_CLASS(SOFA_TEMPLATE2(InvariantMapping,TIn,TOut), SOFA_TEMPLATE(BaseStrainMappingT,BlockType ));
 
-    Data<bool> deviatoric;
-
-    virtual void reinit()
-    {
-        for(unsigned int i=0; i<this->jacobian.size(); i++) this->jacobian[i].deviatoric=deviatoric.getValue();
-        Inherit::reinit();
-    }
-
 protected:
     InvariantMapping (core::State<TIn>* from = NULL, core::State<TOut>* to= NULL)
         : Inherit ( from, to )
-        , deviatoric(initData(&deviatoric,true,"deviatoric","use deviatoric tensor: C.J^(-2/3)"))
     {
     }
 

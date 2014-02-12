@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
+*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -16,48 +16,47 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Plugins                               *
+*                               SOFA :: Modules                               *
 *                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_MAPPING_InvariantMAPPING_CPP
+#define SOFA_PolynomialMaterialFORCEFIELD_CPP
 
 #include "../initFlexible.h"
-#include "../strainMapping/InvariantMapping.h"
-#include <sofa/core/ObjectFactory.h>
-
-#include "../types/DeformationGradientTypes.h"
+#include "../material/PolynomialMaterialForceField.h"
 #include "../types/StrainTypes.h"
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
 namespace component
 {
-namespace mapping
+namespace forcefield
 {
 
-SOFA_DECL_CLASS(InvariantMapping);
+SOFA_DECL_CLASS(PolynomialMaterialForceField);
 
 using namespace defaulttype;
 
 // Register in the Factory
-int InvariantMappingClass = core::RegisterObject("Map deformation gradients to the invariants of the right Cauchy Green deformation tensor: I1, I2 and J")
+int PolynomialMaterialForceFieldClass = core::RegisterObject("Polynomial Material Law for isotropic homogeneous materials")
 
-        .add< InvariantMapping< F331Types, I331Types > >(true)
-//.add< InvariantMapping< F332Types, I332Types > >()
-//.add< InvariantMapping< F332Types, I333Types > >()
-
-//        .add< InvariantMapping< U331Types, I331Types > >()
+        .add< PolynomialMaterialForceField< I331Types > >(true)
+//.add< PolynomialMaterialForceField< I332Types > >()
+//.add< PolynomialMaterialForceField< I333Types > >()
+//        .add< PolynomialMaterialForceField< U331Types > >(true)
+//        .add< PolynomialMaterialForceField< U321Types > >()
         ;
 
-template class SOFA_Flexible_API InvariantMapping< F331Types, I331Types >;
-//template class SOFA_Flexible_API InvariantMapping< F332Types, I332Types >;
-//template class SOFA_Flexible_API InvariantMapping< F332Types, I333Types >;
-//template class SOFA_Flexible_API InvariantMapping< U331Types, I331Types >;
+template class SOFA_Flexible_API PolynomialMaterialForceField< I331Types >;
+//template class SOFA_Flexible_API PolynomialMaterialForceField< I332Types >;
+//template class SOFA_Flexible_API PolynomialMaterialForceField< I333Types >;
+//template class SOFA_Flexible_API PolynomialMaterialForceField< U331Types >;
+//template class SOFA_Flexible_API PolynomialMaterialForceField< U321Types >;
 
-} // namespace mapping
-} // namespace component
-} // namespace sofa
+}
+}
+}
 

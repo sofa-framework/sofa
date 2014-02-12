@@ -29,7 +29,6 @@
 
 #include "../material/BaseMaterial.h"
 #include "../BaseJacobian.h"
-#include "MooneyRivlinMaterialBlock.h"
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include "../types/StrainTypes.h"
@@ -348,6 +347,12 @@ public:
 ////  I331
 //////////////////////////////////////////////////////////////////////////////////
 
+//    - deviatoric \f$ F -> [ I1/J^{2/3} , I2/J^{4/3}, J ] \f$
+//    - deviatoric \f$ J = [ d(sqrt(I1))/J^{1/3} - dJ*sqrt(I1/J^{2/3})/3J, d(sqrt(I2))/J^{2/3} - dJ*sqrt(I2/J^{2/3})*2/3J, dJ ] \f$
+
+//* The energy is : C1 ( I1/ J^2/3  - 3)  + C2 ( I2/ J^4/3  - 3) + bulk/2 (J-1)^2
+
+
 template<class _Real>
 class MooneyRivlinMaterialBlock< I331(_Real) > :
     public  BaseMaterialBlock< I331(_Real) >
@@ -362,66 +367,83 @@ public:
     typedef typename Inherit::Real Real;
 
     /**
-      * DOFs: sqrt(I1), sqrt(I2), J
+      * DOFs: I1, I2, J
       *
       * classic Mooney rivlin
-      *     - W = vol* [ C1 ( I1 - 3)  + C2 ( I2 - 3) + bulk/2 (I3 -1)^2 ]
-      *     - f = -vol [ 2*C1*sqrt(I1) , 2*C2*sqrt(I2) , bulk*(J-1) ]
-      *     - df =  -vol [ 2*C1 , 2*C2 , bulk*dJ ]
+      *     - W = vol* [ C1 ( I1/J^2/3 - 3)  + C2 ( I2/J^4/3 - 3) + bulk/2 (J -1)^2 ]
+      *     - f = vol [ -C1/J^2/3 , -C2/J^4/3 , (2/3)*C1*I1/J^(5/3) + (4/3)*C2*I2/J^(7/3) - bulk*(J-1) ]
+      *     - K  =   vol [ 0                , 0                 , (2/3)*C1/J^(5/3)                                 ]
+      *                  [ 0                , 0                 , (4/3)*C2/J^(7/3)                                 ]
+      *                  [ (2/3)*C1/J^(5/3) , (4/3)*C2/J^(7/3)  , -(10/9)*C1*I1/J^(8/3)-(28/9)*C2*I2/J^(10/3)-bulk ]
       */
 
-    static const bool constantK=true;
+    static const bool constantK=false;
 
-    Real C1Vol2;  ///<  first coef * volume * 2
-    Real C2Vol2;  ///<  second coef * volume * 2
+    Real C1Vol;  ///<  first coef * volume
+    Real C2Vol;  ///<  second coef * volume
     Real bulkVol; ///< bulk modulus * volume
+    mutable Real K02;
+    mutable Real K12;
+    mutable Real K22;
 
     void init(const Real &C1,const Real &C2,const Real &bulk,bool)
     {
         Real vol=1.;
         if(this->volume) vol=(*this->volume)[0];
-        C1Vol2=C1*vol*(Real)2.;
-        C2Vol2=C2*vol*(Real)2.;
+        C1Vol = C1 * vol;
+        C2Vol = C2 * vol;
         bulkVol = bulk * vol;
     }
 
     Real getPotentialEnergy(const Coord& x) const
     {
-        Real Jm1 = x.getStrain()[2]-(Real)1;
-        return C1Vol2*(Real)0.5*(x.getStrain()[0]*x.getStrain()[0]-(Real)3.) +
-               C2Vol2*(Real)0.5*(x.getStrain()[1]*x.getStrain()[1]-(Real)3.) +
-               bulkVol*(Real)0.5*Jm1*Jm1;
+        Real Jm23=pow(x.getStrain()[2],-(Real)2./(Real)3.);
+        Real Jm43=Jm23*Jm23;
+
+        return C1Vol*(x.getStrain()[0]*Jm23-(Real)3.) +
+               C2Vol*(x.getStrain()[1]*Jm43-(Real)3.) +
+               bulkVol*(Real)0.5*(x.getStrain()[2]-1.0)*(x.getStrain()[2]-1.0);
     }
 
     void addForce( Deriv& f , const Coord& x , const Deriv& /*v*/) const
     {
-        f.getStrain()[0]-=C1Vol2*x.getStrain()[0];
-        f.getStrain()[1]-=C2Vol2*x.getStrain()[1];
-        f.getStrain()[2]-=bulkVol*(x.getStrain()[2]-(Real)1.);
+        Real Jm13=pow(x.getStrain()[2],-(Real)1./(Real)3.);
+        Real Jm23=Jm13*Jm13;
+        Real Jm43=Jm23*Jm23;
+        Real Jm53=Jm43*Jm13;
+        Real Jm73=Jm53*Jm23;
+
+        K02 = 2./3.*C1Vol*Jm53;
+        K12 = 4./3.*C2Vol*Jm73;
+        K22 = -bulkVol;
+        K22 -= (10./9.)*C1Vol*x.getStrain()[0]*Jm73*Jm13;
+        K22 -= (28./9.)*C2Vol*x.getStrain()[0]*Jm53*Jm53;
+
+        f.getStrain()[0]-=C1Vol*Jm23;
+        f.getStrain()[1]-=C2Vol*Jm43;
+        f.getStrain()[2]+=K02*x.getStrain()[0] + K12*x.getStrain()[1] - bulkVol*(x.getStrain()[2]-1.);
     }
 
     void addDForce( Deriv&   df, const Deriv&   dx, const double& kfactor, const double& /*bfactor*/ ) const
     {
-        df.getStrain()[0]-=C1Vol2*dx.getStrain()[0]*kfactor;
-        df.getStrain()[1]-=C2Vol2*dx.getStrain()[1]*kfactor;
-        df.getStrain()[2]-=bulkVol*dx.getStrain()[2]*kfactor;
+        df.getStrain()[0]+=K02*dx.getStrain()[2]*kfactor;
+        df.getStrain()[1]+=K12*dx.getStrain()[2]*kfactor;
+        df.getStrain()[2]+=(K02*dx.getStrain()[0]+K12*dx.getStrain()[1]+K22*dx.getStrain()[2])*kfactor;
     }
 
     MatBlock getK() const
     {
         MatBlock K = MatBlock();
-        K[0][0]=-C1Vol2;
-        K[1][1]=-C2Vol2;
-        K[2][2]=-bulkVol;
+        K[0][2]=K[2][0]=K02;
+        K[1][2]=K[2][1]=K12;
+        K[2][2]=K22;
         return K;
     }
 
     MatBlock getC() const
     {
         MatBlock C = MatBlock();
-        C[0][0]=1./C1Vol2;
-        C[1][1]=1./C2Vol2;
-        C[2][2]=1./bulkVol;
+        // singular K!!
         return C;
     }
 

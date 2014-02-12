@@ -86,7 +86,7 @@ static Mat<9,9,real> getDeterminantHessian(const Mat<3,3,real>& from)
 //    out(2,0)+=from(1,2)*in(0,1)-from(1,1)*in(0,2)-from(0,2)*in(1,1)+from(0,1)*in(1,2);  out(2,1)+=-from(1,2)*in(0,0)+from(1,0)*in(0,2)+from(0,2)*in(1,0)-from(0,0)*in(1,2); out(2,2)+=from(1,1)*in(0,0)-from(1,0)*in(0,1)-from(0,1)*in(1,0)+from(0,0)*in(1,1);
 //}
 
-/// returns  d^2 I2 /d from^2 = d( from.(I1*Id - from^T.from) )/d from
+/// returns  d^2 I1 /d from^2 = d( 2.*from )/d from
 template<class real>
 static Mat<9,9,real> getI1Hessian()
 {
@@ -113,16 +113,6 @@ static Mat<9,9,real> getI2Hessian(const Mat<3,3,real>& from)
     return ret;
 }
 
-/// returns  U.V^T where U and V are 9d vectors
-template<class real>
-static Mat<9,9,real> getCov(const real* u,const real* v)
-{
-    Mat<9,9,real> ret;
-    for ( unsigned int i = 0; i < 9; ++i)
-        for ( unsigned int j = 0; j < 9; ++j)
-            ret(i,j) = u[i] * v[j];
-    return ret;
-}
 
 //////////////////////////////////////////////////////////////////////////////////
 ////  F331 -> I331
@@ -157,13 +147,11 @@ public:
 
     /**
     Mapping:
-        - non-deviatoric: \f$ F -> [ sqrt(I1) , sqrt(I2), J ] \f$
-        - deviatoric \f$ F -> [ sqrt(I1/J^{2/3}) , sqrt(I2/J^{4/3}), J ] \f$
+        - \f$ F -> [ I1 , I2, J ] \f$
     Jacobian:
-        - non-deviatoric: \f$ J = [ dI1/(2.sqrt(I1)) , dI2/(2.sqrt(I2)), dJ ] \f$
-        - deviatoric \f$ J = [ d(sqrt(I1))/J^{1/3} - dJ*sqrt(I1/J^{2/3})/3J, d(sqrt(I2))/J^{2/3} - dJ*sqrt(I2/J^{2/3})*2/3J, dJ ] \f$
+        - \f$ J = [ dI1 , dI2 , dJ ] \f$
     Hessian:
-        - non-deviatoric: \f$ H = [ ddI1/(2.sqrt(I1)) - dI1^T.dI1/(4*I1^{3/2}), ddI2/(2.sqrt(I2)) - dI2^T.dI2/(4*I2^{3/2}), dJ ] \f$
+        - \f$ H = [ ddI1 , ddI2 , ddJ ] \f$
     where:
         - \f$ I1 = trace(C) \f$ ,                           \f$ dI1 = trace(dF^T F + F^T dF ) = 2 sum F_i.dF_i \f$
         - \f$ I2 = [ ( trace(C^2)-trace(C)^2 )/2 ]  \f$ ,   \f$ dI2 = 2 sum ( F(I1*Id - C) )_i dF_i \f$
@@ -171,17 +159,11 @@ public:
         - \f$ C=F^TF \f$ is the right Cauchy deformation tensor
     */
 
-
-
-    static const Real MIN_DETERMINANT() {return 0.001;} ///< J is clamped to avoid undefined deviatoric expressions
-
     static const bool constant=false;
-    bool deviatoric;
-    Real Jm13; Real Jm23; Real Jm43; Real Jm53; ///< stored variables to handle deviatoric invariants
 
     /// mapping parameters
-    Frame dsrI1;
-    Frame dsrI2;
+    Frame dI1;
+    Frame dI2;
     Frame dJ;
 
     Hessian dd1;
@@ -193,60 +175,35 @@ public:
         Frame F=data.getF();
         Real detF=getDeterminantGradient(dJ, F);
 
-        if ( detF<=MIN_DETERMINANT()) detF = MIN_DETERMINANT();   // CLAMP J
-
         StrainMat C=F.multTranspose( F );
 
-        Real srI1 = C[0][0] + C[1][1] + C[2][2];
-        Real srI2 = C[0][0]*(C[1][1] + C[2][2]) + C[1][1]*C[2][2] - C[0][1]*C[0][1] - C[0][2]*C[0][2] - C[1][2]*C[1][2];
-        for(unsigned int j=0; j<material_dimensions; j++) C[j][j]-=srI1;
+        Real I1 = C[0][0] + C[1][1] + C[2][2];
+        Real I2 = C[0][0]*(C[1][1] + C[2][2]) + C[1][1]*C[2][2] - C[0][1]*C[0][1] - C[0][2]*C[0][2] - C[1][2]*C[1][2];
+        for(unsigned int j=0; j<material_dimensions; j++) C[j][j]-=I1;
 
-        srI1=sqrt(srI1);
-        srI2=sqrt(srI2);
-
-        dsrI1=F/srI1;
-        dsrI2=-F*C/srI2;
+        dI1=2.*F;
+        dI2=-2.*F*C;
 
         // hessian
         ddJ = getDeterminantHessian(F);
-        dd1 = (getI1Hessian<Real>()*0.5 - getCov(&dsrI1[0][0],&dsrI1[0][0]))/srI1;
-        dd2 = (getI2Hessian(F)*0.5 - getCov(&dsrI2[0][0],&dsrI2[0][0]))/srI2;
+        dd1 = getI1Hessian<Real>();
+        dd2 = getI2Hessian(F);
 
-        if(deviatoric)
-        {
-            Jm13=pow(detF,-(Real)1./(Real)3.); Jm23=Jm13*Jm13;
-            srI1*=Jm13; srI2*=Jm23;
-            Jm43=srI1/(detF*(Real)3.); Jm53=(Real)2.*srI2/(detF*(Real)3.);
-
-            // hessian
-            ddJ = getDeterminantHessian(F);
-            dd1 = dd1*Jm13 - ddJ*Jm43
-                    - (getCov(&dsrI1[0][0],&dJ[0][0])+getCov(&dJ[0][0],&dsrI1[0][0]))*Jm23*Jm23/(Real)3.
-                    + getCov(&dJ[0][0],&dJ[0][0])*(Real)4.*srI1/(detF*detF*(Real)9.);
-            dd2 = dd2*Jm23 - ddJ*Jm53
-                    - (getCov(&dsrI2[0][0],&dJ[0][0])+getCov(&dJ[0][0],&dsrI2[0][0]))*(Real)2.*Jm23/(detF*(Real)3.)
-                    + getCov(&dJ[0][0],&dJ[0][0])*(Real)10.*srI2/(detF*detF*(Real)9.);
-        }
-//        std::cout<<"F="<<F<<std::endl;
-//        std::cout<<"dd1="<<dd1<<std::endl;
-//        std::cout<<"dd2="<<dd2<<std::endl;
-//        std::cout<<"ddJ="<<ddJ<<std::endl;
-        result.getStrain()[0]+= srI1;
-        result.getStrain()[1]+= srI2;
+        result.getStrain()[0]+= I1;
+        result.getStrain()[1]+= I2;
         result.getStrain()[2]+= detF;
+
+        //        std::cout<<"F="<<F<<std::endl;
+        //        std::cout<<"dd1="<<dd1<<std::endl;
+        //        std::cout<<"dd2="<<dd2<<std::endl;
+        //        std::cout<<"ddJ="<<ddJ<<std::endl;
     }
 
     void addmult( OutDeriv& result,const InDeriv& data )
     {
-        Real di1 =  scalarProduct(dsrI1,data.getF());
-        Real di2 =  scalarProduct(dsrI2,data.getF());
+        Real di1 =  scalarProduct(dI1,data.getF());
+        Real di2 =  scalarProduct(dI2,data.getF());
         Real dj =   scalarProduct(dJ,data.getF());
-
-        if(deviatoric)
-        {
-            di1 = di1*Jm13 - dj*Jm43;
-            di2 = di2*Jm23 - dj*Jm53;
-        }
 
         result.getStrain()[0] +=  di1;
         result.getStrain()[1] +=  di2;
@@ -255,32 +212,16 @@ public:
 
     void addMultTranspose( InDeriv& result, const OutDeriv& data )
     {
-        if(deviatoric)
-        {
-            result.getF() += (dsrI1*Jm13 - dJ*Jm43)*data.getStrain()[0];
-            result.getF() += (dsrI2*Jm23 - dJ*Jm53)*data.getStrain()[1];
-        }
-        else
-        {
-            result.getF() += dsrI1*data.getStrain()[0];
-            result.getF() += dsrI2*data.getStrain()[1];
-        }
+        result.getF() += dI1*data.getStrain()[0];
+        result.getF() += dI2*data.getStrain()[1];
         result.getF() += dJ*data.getStrain()[2];
     }
 
     MatBlock getJ()
     {
         MatBlock B = MatBlock();
-        if(deviatoric)
-        {
-            for(unsigned int j=0; j<frame_size; j++)      B(0,j) +=  *(&dsrI1[0][0]+j)*Jm13 - *(&dJ[0][0]+j)*Jm43;
-            for(unsigned int j=0; j<frame_size; j++)      B(1,j) +=  *(&dsrI2[0][0]+j)*Jm23 - *(&dJ[0][0]+j)*Jm53;
-        }
-        else
-        {
-            for(unsigned int j=0; j<frame_size; j++)      B(0,j) +=  *(&dsrI1[0][0]+j);
-            for(unsigned int j=0; j<frame_size; j++)      B(1,j) +=  *(&dsrI2[0][0]+j);
-        }
+        for(unsigned int j=0; j<frame_size; j++)      B(0,j) +=  *(&dI1[0][0]+j);
+        for(unsigned int j=0; j<frame_size; j++)      B(1,j) +=  *(&dI2[0][0]+j);
         for(unsigned int j=0; j<frame_size; j++)      B(2,j) +=  *(&dJ[0][0]+j);
         return B;
     }
@@ -289,14 +230,6 @@ public:
     {
         KBlock K = KBlock();
         K=dd1*childForce.getStrain()[0]+dd2*childForce.getStrain()[1]+ddJ*childForce.getStrain()[2];
-
-//        typedef Eigen::Map<Eigen::Matrix<Real,In::deriv_total_size,In::deriv_total_size,Eigen::RowMajor> > EigenMap;
-//        EigenMap eK(&K[0][0]);
-//        typedef Eigen::Map<Eigen::Matrix<Real,frame_size,frame_size,Eigen::RowMajor> > EigenHMap;
-//        EigenHMap eH(&H[0][0]);
-
-//        eK.template block(spatial_dimensions,spatial_dimensions,frame_size,frame_size) += eH;
-
         return K;
     }
     void addDForce( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
