@@ -24,6 +24,7 @@
 ******************************************************************************/
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
+#include <sofa/config.h>
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -99,22 +100,22 @@ static FileRepository createSofaDataPath()
 {
     FileRepository repository("SOFA_DATA_PATH");
 
-    repository.addLastPath( AddSofaBuildDir("/") );
-    repository.addLastPath( AddSofaSrcDir("/share") );
-    repository.addLastPath( AddSofaSrcDir("/examples") );
+    repository.addLastPath(std::string(SOFA_BUILD_DIR));
+    repository.addLastPath(std::string(SOFA_SRC_DIR) + "/share");
+    repository.addLastPath(std::string(SOFA_SRC_DIR) + "/examples");
 
 #if defined (WIN32) || defined (_XBOX) || defined(PS3)
 #elif defined (__APPLE__)
-    repository.addLastPath( AddSofaSrcDir( "/Resources/examples" ) );
-    repository.addLastPath( AddSofaSrcDir( "/Resources" ) );
-    repository.addLastPath( AddSofaSrcDir( "/../../../examples" ) );
-    repository.addLastPath( AddSofaSrcDir( "/../../../share" ) );
+    repository.addLastPath(std::string(SOFA_SRC_DIR) + "/Resources/examples");
+    repository.addLastPath(std::string(SOFA_SRC_DIR) + "/Resources");
+    repository.addLastPath(std::string(SOFA_SRC_DIR) + "/../../../examples");
+    repository.addLastPath(std::string(SOFA_SRC_DIR) + "/../../../share");
 #else // LINUX
-    repository.addLastPath( AddSofaSrcDir( "/../Verification/data" ) );
-    repository.addLastPath( AddSofaSrcDir( "/../Verification/simulation" ) );
+    repository.addLastPath(std::string(SOFA_SRC_DIR) + "/../Verification/data");
+    repository.addLastPath(std::string(SOFA_SRC_DIR) + "/../Verification/simulation");
 #endif
 
-    repository.addLastPath( AddSofaSrcDir() );
+    repository.addLastPath(std::string(SOFA_SRC_DIR));
 
     return repository;
 }

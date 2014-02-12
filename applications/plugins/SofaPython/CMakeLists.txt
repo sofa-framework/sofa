@@ -103,8 +103,5 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 AddCompilerDefinitions("SOFA_BUILD_SOFAPYTHON")
 AddLinkerDependencies(SofaCore SofaSimulationCommon SofaGuiCommon ${PYTHON_LIBRARIES})
 
-AddCompilerDefinitions("SOFA_SRC_DIR=${SOFA_SRC_DIR}")
-AddCompilerDefinitions("SOFA_BUILD_DIR=${SOFA_BUILD_DIR}")
-
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
 
