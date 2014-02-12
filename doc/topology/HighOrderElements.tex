@@ -100,7 +100,7 @@ Figure \ref{fig:LayoutBezierTetrahedron} shows this ordering of control points. 
 
 There are however some issues. In a tetrahedral mesh, edges and triangles are not oriented ({\em e.g.} a triangle is common to 2 tetrahedra and is ordered differently among each tetrahedron) and therefore the order in the DoF array may not reflect the order in each tetrahedron. It is the role of the BezierTetrahedronSetTopologyContainer class to provide a proper ordering.
 
-Second, since there are several control points for a given edge, triangle and tetrahedron, it is important to specify the ordering inside each element. Figure\ref{DofBezierTetrahedronTesselation}
+Second, since there are several control points for a given edge, triangle and tetrahedron, it is important to specify the ordering inside each element. Figure\ref{DofBezierTetrahedronTesselation} show in a simplified way how the control points are numbered for an edge, triangle and tetrahedron. In a nutshell, the element are stored in increasing lexicographic order of its barycentric coordinates. Thus on a quartic Tetrahedron element, the points of barycentric coordinates $(1/4, 3/4), (1/2,1/2), (3/4, 1/4)$ are stored in this order. However, this order may not the one suitable for a given Bezier tetrahedron as the edge is shared by several tetrahedra.
 
 \begin{figure}[!htbp]
 	\centering
@@ -111,9 +111,38 @@ Second, since there are several control points for a given edge, triangle and te
 
 \subsection{BezierTetrahedronSetTopologyContainer Class}
 
-This class describes 
+This class provides an interface to the array of DoFs store in the MechanicalState object. More precisely, a control point can specified in 3 different ways :
+
+\begin{itemize}
+	\item A {\em global index} which is its rank in the array of size $\ncontrols$.
+	\item A tetrahedron index and a Tetrahedron Bezier Index (like $(2,0,2,0)$ on a tetrahedron of order 4).
+	\item A tetrahedron index and its {\em local index}. The local index is an integer between 0 and $N_\degree$ which give the rank of the control points in this local (tetrahedron specific) list of control points.
+\end{itemize}
+
+The class thus provides function to move from one representation of a control point to another.
+
+The function {\it void getGlobalIndexArrayOfBezierPointsInTetrahedron(const size\_t tetrahedronIndex, VecPointID \& indexArray) } is particularly useful as it outputs an array of $N_\degree$ global indices of the control points located inside a given tetrahedron. The tetrahedron Bezier indices of those control points are always the same for a given degree $\degree$ and is given by the array returned by the function {\it sofa::helper::vector<TetrahedronBezierIndex> getTetrahedronBezierIndexArray() const;}.
+
+Obviously the class can return the degree of  Bezier tetrahedra (they are all of the same degree). Note that it provides both the total number $\ncontrols$ of control points $getNbPoint()$ and the number $V$ of tetrahedral points.
+
+
 
 \subsection{BezierTetrahedronSetGeometryAlgorithms Class}
+
+This class provides basic geometric functions :
+
+\begin{itemize}
+	\item {\it Coord computeNodalValue(const size\_t tetrahedronIndex,const Vec4 barycentricCoordinate); } which computes the position / value of a node given the index of a tetrahedron and its barycentric coordinate.
+	\item {\it Real computeBernsteinPolynomial(const TetrahedronBezierIndex tbi, const Vec4 barycentricCoordinate);} which computes $B^d_{\mathbf p}(r,s,t,u)$.
+\end{itemize}
+
+To optimize things it precomputes the Bernstein coefficients of a given degree. If {\it drawControlPointsEdges} is set to true then it draws the edges of the control point net.  
+
+\subsection{Mesh2BezierTopologicalMapping Class}
+
+This class provide a way to create a Bezier tetrahedral mesh of any order given a tetrahedral mesh. The control points are simply linearly interpolated from the tetrahedral vertices : a control point of index ${\mathbf p}=(i,j,k,l)$ is computed with the barycentric coordinates $(\frac{i}{\degree},\frac{j}{\degree},\frac{k}{\degree},\frac{l}{\degree})$. The mapping automatically sets the degree and the number of tetrahedral vertices in the object BezierTetrahedronSetTopologyContainer.
+
+Note that the position of the mapping in the scene has be after BezierTetrahedronSetTopologyContainer (see the example in BezierTetrahedronTopologicalMapping.scn) 
 
 \end{document}          
 
