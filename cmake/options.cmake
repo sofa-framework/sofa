@@ -464,11 +464,9 @@ if (${CUDA_HOST_COMPILER} MATCHES "ccache$")
 endif()
 
 # in debug mode, enforce cuda to compile host code in debug (the same could be done for device code with -G)
-if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-    set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} -g)
-else()
-    set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} -O2 -DNDEBUG)
-endif()
+set(CUDA_NVCC_FLAGS_DEBUG ${CUDA_NVCC_FLAGS_DEBUG} -g)
+# in release mode, enforce optimizations for host code
+set(CUDA_NVCC_FLAGS_RELEASE ${CUDA_NVCC_FLAGS_RELEASE} -O2 -DNDEBUG)
 
 
 # plugins (auto-search)
