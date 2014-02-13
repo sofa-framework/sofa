@@ -24,7 +24,7 @@ else()
     include(cmake/dependencies.cmake)
 
     # Generate config.h header
-    configure_file("${SOFA_FRAMEWORK_DIR}/sofa/config.h.in" "${SOFA_FRAMEWORK_DIR}/sofa/config.h")
+    configure_file("${SOFA_FRAMEWORK_DIR}/sofa/config.h.in" "${SOFA_BUILD_DIR}/misc/include/sofa/config.h")
 
     sofa_save_option_list("misc/options.txt")
     sofa_save_compiler_definitions("misc/compiler-definitions.txt")
