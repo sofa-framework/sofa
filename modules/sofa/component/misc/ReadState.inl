@@ -44,9 +44,10 @@ namespace misc
 
 ReadState::ReadState()
     : f_filename( initData(&f_filename, "filename", "output file name"))
-    , f_interval( initData(&f_interval, 0.0, "interval", "time duration between inputs"))
+    , f_interval( initData(&f_interval, 0.0, "interval", "time duration between inputs"))    
     , f_shift( initData(&f_shift, 0.0, "shift", "shift between times in the file and times when they will be read"))
     , f_loop( initData(&f_loop, false, "loop", "set to 'true' to re-read the file when reaching the end"))
+    , f_scalePos( initData(&f_scalePos, 1.0, "scalePos", "scale the input mechanical object"))
     , mmodel(NULL)
     , infile(NULL)
 #ifdef SOFA_HAVE_ZLIB
@@ -235,7 +236,9 @@ void ReadState::processReadState()
         str >> cmd;
         if (cmd == "X=")
         {
-            mmodel->readVec(core::VecId::position(), str);
+            mmodel->readVec(core::VecId::position(), str);            
+            mmodel->applyScale(f_scalePos.getValue(), f_scalePos.getValue(), f_scalePos.getValue());
+
             updated = true;
         }
         else if (cmd == "V=")
