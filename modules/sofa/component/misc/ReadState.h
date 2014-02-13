@@ -62,6 +62,7 @@ public:
     Data < double > f_interval;
     Data < double > f_shift;
     Data < bool > f_loop;
+    Data < double > f_scalePos;
 
 protected:
     core::behavior::BaseMechanicalState* mmodel;
