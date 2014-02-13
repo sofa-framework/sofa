@@ -53,7 +53,8 @@ class SOFA_Compliant_API BaseConstraintValue : public core::objectmodel::BaseObj
     virtual void correction(SReal* dst, unsigned n) const = 0;
 	
     /// Value for dynamics: right-hand term for time integration.
-    virtual void dynamics(SReal* dst, unsigned n) const = 0;
+    /// @stabilization tells if the solver is performing the correction pass (ie if the correction value is used). Otherwise the constraint must be fully corrected by the dynamics (not stabilized constraint)
+    virtual void dynamics(SReal* dst, unsigned n, bool stabilization) const = 0;
 
 };
 

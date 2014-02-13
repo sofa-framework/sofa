@@ -23,7 +23,7 @@ class SOFA_Compliant_API Stabilization : public BaseConstraintValue {
 	virtual void correction(SReal* dst, unsigned n) const;
 	
 	// value for dynamics
-	virtual void dynamics(SReal* dst, unsigned n) const;	
+    virtual void dynamics(SReal* dst, unsigned n, bool stabilization) const;
 	
 };
 

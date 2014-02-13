@@ -51,7 +51,7 @@ class SOFA_Compliant_API KKTSolver : public core::behavior::BaseLinearSolver {
 	
 	virtual void solve(vec& x,
 	                   const system_type& system,
-	                   const vec& rhs) const = 0;
+                       const vec& rhs) const = 0;
 
 
     virtual void solveWithPreconditioner(vec& x,
@@ -64,6 +64,9 @@ class SOFA_Compliant_API KKTSolver : public core::behavior::BaseLinearSolver {
 
     // return true if the solver can only handle equality constraints (in opposition with LCP for instance)
     virtual bool isLinear() const { return true; }
+
+    /// By default, it does nothing, but for some LCP solvers, it is useful to distinguish between dynamics vs correction passes (not to perform the same constraint projection for instance)
+    virtual void setCorrectionPass( bool ){}
 
     
 #ifdef GR_BENCHMARK

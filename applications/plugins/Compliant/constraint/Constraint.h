@@ -16,7 +16,8 @@ struct SOFA_Compliant_API Constraint : core::objectmodel::BaseObject {
     virtual ~Constraint() {};
 	
     /// project the response on the valid sub-space
-	virtual void project(SReal* out, unsigned n) const = 0;
+    /// @correctionPass informs if the correction pass is performing (in which case only a friction projection should only treat the unilateral projection for example)
+    virtual void project(SReal* out, unsigned n, bool correctionPass=false) const = 0;
 	
 };
 

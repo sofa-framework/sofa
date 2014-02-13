@@ -23,10 +23,10 @@ Restitution::Restitution( mstate_type* mstate )
 // in that case we should switch to damped (or stabilized is no damping) constraints.
 
 
-void Restitution::dynamics(SReal* dst, unsigned n) const
+void Restitution::dynamics(SReal* dst, unsigned n, bool stabilization) const
 {
     // by default a regular position constraint (will be used for non-violated constraints, under alarm distance)
-    ConstraintValue::dynamics(dst,n);
+    ConstraintValue::dynamics(dst,n,stabilization);
 
     const mask_type& mask = this->mask.getValue();
 
