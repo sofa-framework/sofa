@@ -22,14 +22,15 @@ ConstraintValue::ConstraintValue( mstate_type* mstate )
 
 void ConstraintValue::correction(SReal* dst, unsigned n) const {
 	
-	for(SReal* last = dst + n; dst < last; ++dst) {
-		*dst = 0;
-	}
+//	for(SReal* last = dst + n; dst < last; ++dst) {
+//		*dst = 0;
+//	}
 	
+    memset( dst, 0, n*sizeof(SReal) );
 }
 
 
-void ConstraintValue::dynamics(SReal* dst, unsigned n) const {
+void ConstraintValue::dynamics(SReal* dst, unsigned n, bool) const {
     assert( mstate );
 
 	mstate->copyToBuffer(dst, core::VecCoordId::position(), n);

@@ -16,30 +16,36 @@ CoulombConstraint::CoulombConstraint(SReal mu)
 	assert(mu >= 0); 
 }
 
-void CoulombConstraint::project( SReal* out, unsigned n) const
+void CoulombConstraint::project( SReal* out, unsigned n, bool correctionPass ) const
 {
     assert( n >= 3 );
 
-	// side-node: this is how you turn off an 'unused variable'
-	// warning: 
-	(void)n;
+    if( correctionPass )
+    {
+        // during correction pass, only the unilateral projection is performed
+        // the cone projection will be performed during the dynamics pass
+        for( unsigned i = 0 ; i < n ; ++i )
+            out[i] = std::max( (SReal)0.0, out[i] );
+    }
+    else
+    {
+    //    std::cerr<<SOFA_CLASS_METHOD<<out[0]<<" "<<out[1]<<" "<<out[2]<<"     "<<mu<<std::endl;
 
-//    std::cerr<<SOFA_CLASS_METHOD<<out[0]<<" "<<out[1]<<" "<<out[2]<<"     "<<mu<<std::endl;
+       typedef Eigen::Matrix<SReal, 3, 1> vec3;
+       Eigen::Map< vec3 > view(out);
+       // std::cout << "before: " << view.transpose()  << " , norm = " <<  view.norm() << std::endl;
 
-   typedef Eigen::Matrix<SReal, 3, 1> vec3;
-   Eigen::Map< vec3 > view(out);
-   // std::cout << "before: " << view.transpose()  << " , norm = " <<  view.norm() << std::endl;
+       // Coulomb Friction
 
-   // Coulomb Friction
+       // max: this one is broken !
+//        coneProjection<SReal>( out, mu );
 
-   // max: this one is broken !
-   // coneProjection<SReal>( out, mu );
+       // reverting to slow-but-working code ;)
+       vec3 normal = vec3::UnitX();
+       view = cone<SReal>(view, normal, mu);
 
-   // reverting to slow-but-working code ;)
-   vec3 normal = vec3::UnitX(); 
-   view = cone<SReal>(view, normal, mu);
-   
-   // std::cout << "after: " << view.transpose() << " , norm = " <<  view.norm() << std::endl;
+       // std::cout << "after: " << view.transpose() << " , norm = " <<  view.norm() << std::endl;
+    }
 
 }
 

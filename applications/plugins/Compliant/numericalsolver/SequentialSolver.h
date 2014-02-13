@@ -33,11 +33,13 @@ class SOFA_Compliant_API SequentialSolver : public KKTSolver {
 	
 	virtual void solve(vec& x,
 	                   const system_type& system,
-	                   const vec& rhs) const;
+                       const vec& rhs) const;
 
 	virtual bool isLinear() const { return false; }
 	
 	virtual void init();
+
+    virtual void setCorrectionPass( bool b  ){ _correctionPass=b; }
 	
 	Data<unsigned> iterations;
 	Data<SReal> precision;
@@ -49,6 +51,8 @@ class SOFA_Compliant_API SequentialSolver : public KKTSolver {
     Data<bool> projectH;    ///< Replace H with P^T.H.P to account for projective constraints
 
   protected:
+
+    bool _correctionPass;
 
 	// performs a single iteration
 	SReal step(vec& lambda, 

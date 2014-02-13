@@ -173,6 +173,8 @@ using namespace core::behavior;
 
         mop.computeForce(fk); // computing only stiffness force (neglecting compliance)
 
+//        cerr<<SOFA_CLASS_METHOD<<"fk "<< fk << endl;
+
         // f = fk including mapped dofs
         {
             simulation::MechanicalVOpVisitor eqvis( &params, f, fk, core::ConstMultiVecId::null(), 1.0);
@@ -204,6 +206,8 @@ using namespace core::behavior;
 
         vop.v_free( fk.id(), false, true );
 
+//        cerr<<SOFA_CLASS_METHOD<<"c "<< c << endl;
+
         // computing fc (neglecting stiffness)
         MultiVecDeriv fc( &vop ); // only compliance force (neglecting stiffness)
         fc.realloc( &vop, false, true );
@@ -219,6 +223,9 @@ using namespace core::behavior;
             peqvis.setMapped( true );
             send( peqvis );
         }
+
+//        cerr<<SOFA_CLASS_METHOD<<"f "<< f << endl;
+
         vop.v_free( fc.id(), false, true );
     }
 
@@ -270,7 +277,7 @@ using namespace core::behavior;
 
             }
 
-            value->dynamics(&res(off), dim);
+            value->dynamics(&res(off), dim, stabilization.getValue());
             off += dim;
         }
         assert( off == sys.size() );
@@ -511,6 +518,7 @@ using namespace core::behavior;
                 x = vec::Zero( sys.size() );
                 rhs_correction(rhs, sys);
 
+                kkt->setCorrectionPass( true ); // to correctly perform projectors (only unilateral but no friction for example)
                 kkt->solve(x, sys, rhs);
 
                 if( debug.getValue() ) {
@@ -533,6 +541,7 @@ using namespace core::behavior;
                 rhs_dynamics(rhs, sys, current.head(sys.m), b );
                 vop.v_free( b.id(), false, true );
 
+                kkt->setCorrectionPass( false );
                 kkt->solveWithPreconditioner(x, sys, rhs);
 
                 if( debug.getValue() ) {

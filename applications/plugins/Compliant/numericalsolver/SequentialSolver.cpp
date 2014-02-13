@@ -25,6 +25,7 @@ SequentialSolver::SequentialSolver()
       omega(initData(&omega, (SReal)1.0, "omega", "SOR parameter:  omega < 1 : better, slower convergence, omega = 1 : vanilla gauss-seidel, 2 > omega > 1 : faster convergence, ok for SPD systems, omega > 2 : will probably explode" )),
 	  bench(initData(&bench, "bench", "filename for convergence benchmark output"))
     , projectH( initData(&projectH, false, "projectH", "Replace H with P^T.H.P to account for projective constraints"))
+    , _correctionPass( false )
 {
 	
 }
@@ -261,7 +262,7 @@ SReal SequentialSolver::step(vec& lambda,
 		
 		// project if needed
 		if( b.projector ) {
-            b.projector->project( lambda_chunk.data(), lambda_chunk.size() );
+            b.projector->project( lambda_chunk.data(), lambda_chunk.size(), _correctionPass );
 			assert( !has_nan(lambda_chunk.eval()) );
 		}
 			

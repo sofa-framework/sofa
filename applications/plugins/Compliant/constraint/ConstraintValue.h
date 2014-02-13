@@ -26,7 +26,7 @@ class SOFA_Compliant_API ConstraintValue : public BaseConstraintValue {
 	virtual void correction(SReal* dst, unsigned n) const;
 	
 	// value for dynamics
-	virtual void dynamics(SReal* dst, unsigned n) const;	
+    virtual void dynamics(SReal* dst, unsigned n, bool) const;
 
 
 //    Data< SReal > dampingRatio;  ///< Same damping ratio applied to all the constraints
