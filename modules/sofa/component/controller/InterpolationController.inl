@@ -46,14 +46,13 @@ using sofa::defaulttype::Vector3;
 
 template<class DataTypes>
 InterpolationController<DataTypes>::InterpolationController()
-  : fromModel(initLink("original", "Original mesh"))
-  , toModel(initLink("objective", "Objective mesh"))
-  //, interpModel(initLink("interpolated", "Objective mesh"))
+  : f_evolution( initData(&f_evolution, (int)STABLE , "evolution", "O for fixity, 1 for inflation, 2 for deflation"))
+  , f_period( initData(&f_period, double(1.0), "period", "time to cover all the interpolation positions between original mesh and alpha*(objective mesh), in seconds "))
   , f_alphaMax( initData(&f_alphaMax, float(1.0), "alphaMax", "bound defining the max interpolation between the origina (alpha=0) and the objectiv (alpha=1) meshes"))
   , f_alpha0( initData(&f_alpha0, float(0.0), "alpha0", "alpha value at t=0. (0 < alpha0 < 1)"))
-  , f_evolution( initData(&f_evolution, (int)STABLE , "evolution", "O for fixity, 1 for inflation, 2 for deflation"))
-  , f_period( initData(&f_period, double(1.0), "period", "time to cover all the interpolation positions between original mesh and alpha*(objective mesh), in seconds "))
   , f_interpValues(initData(&f_interpValues, "interpValues", "values or the interpolation"))
+  , fromModel(initLink("original", "Original mesh"))
+  , toModel(initLink("objective", "Objective mesh"))
 {
 }
 
