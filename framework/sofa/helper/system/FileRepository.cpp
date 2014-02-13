@@ -85,15 +85,12 @@ std::string cleanPath( const std::string& path )
 }
 
 #if defined (WIN32) || defined (_XBOX)
-#define SOFA_PLUGIN_SUBDIR /bin
+static std::string pluginSubdir("/bin");
 #else
-#define SOFA_PLUGIN_SUBDIR /lib
+static std::string pluginSubdir("/lib");
 #endif
 
-FileRepository PluginRepository("SOFA_PLUGIN_PATH", AddSofaBuildDir("SOFA_PLUGIN_SUBDIR").c_str());
-
-#undef SOFA_PLUGIN_SUBDIR
-
+FileRepository PluginRepository("SOFA_PLUGIN_PATH", AddSofaBuildDir(pluginSubdir).c_str());
 
 
 static FileRepository createSofaDataPath()
