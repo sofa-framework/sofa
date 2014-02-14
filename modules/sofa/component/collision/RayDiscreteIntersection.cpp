@@ -33,6 +33,7 @@
 #include <algorithm>
 #include <sofa/core/collision/IntersectorFactory.h>
 
+#include <sofa/component/collision/MinProximityIntersection.h>
 
 namespace sofa
 {
@@ -49,6 +50,9 @@ using namespace sofa::core::collision;
 SOFA_DECL_CLASS(RayDiscreteIntersection)
 
 IntersectorCreator<DiscreteIntersection, RayDiscreteIntersection> RayDiscreteIntersectors("Ray");
+
+// since MinProximityIntersection inherits from DiscreteIntersection, should not this line be implicit? (but it is not the case...)
+IntersectorCreator<MinProximityIntersection, RayDiscreteIntersection> RayMinProximityIntersectors("Ray");
 
 RayDiscreteIntersection::RayDiscreteIntersection(DiscreteIntersection* object, bool addSelf)
     : intersection(object)
