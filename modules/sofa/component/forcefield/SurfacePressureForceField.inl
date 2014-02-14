@@ -596,7 +596,7 @@ void SurfacePressureForceField<Rigid3dTypes>::addDForce(const core::MechanicalPa
 }
 
 template <>
-typename SurfacePressureForceField<Rigid3dTypes>::Real SurfacePressureForceField<Rigid3dTypes>::computeMeshVolume(const VecDeriv& /*f*/, const VecCoord& x)
+SurfacePressureForceField<Rigid3dTypes>::Real SurfacePressureForceField<Rigid3dTypes>::computeMeshVolume(const VecDeriv& /*f*/, const VecCoord& x)
 {
 	typedef BaseMeshTopology::Triangle Triangle;
 	typedef BaseMeshTopology::Quad Quad;
@@ -808,7 +808,7 @@ void SurfacePressureForceField<Rigid3fTypes>::addDForce(const core::MechanicalPa
 }
 
 template <>
-typename SurfacePressureForceField<Rigid3fTypes>::Real SurfacePressureForceField<Rigid3fTypes>::computeMeshVolume(const VecDeriv& /*f*/, const VecCoord& x)
+SurfacePressureForceField<Rigid3fTypes>::Real SurfacePressureForceField<Rigid3fTypes>::computeMeshVolume(const VecDeriv& /*f*/, const VecCoord& x)
 {
 	typedef BaseMeshTopology::Triangle Triangle;
 	typedef BaseMeshTopology::Quad Quad;
