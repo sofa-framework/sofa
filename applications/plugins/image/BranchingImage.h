@@ -100,7 +100,7 @@ struct BranchingImageNeighbourOffset
     {
         BranchingImageNeighbourOffset op( *this );
         for( unsigned int i=0 ; i<3 ; ++i )
-            if( op[i] ) op[i] =- op[i];
+            if( op[i] ) op[i] = -op[i];
         return op;
     }
 

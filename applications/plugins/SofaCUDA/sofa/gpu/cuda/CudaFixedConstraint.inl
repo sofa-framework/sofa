@@ -77,7 +77,7 @@ void FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal
     data.minIndex = -1;
     data.maxIndex = -1;
     data.cudaIndices.clear();
-    m->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
+    m->core::behavior::template ProjectiveConstraintSet<DataTypes>::init();
     const SetIndexArray& indices = m->f_indices.getValue();
     if (!indices.empty())
     {
@@ -205,7 +205,7 @@ void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::init(Mai
     data.minIndex = -1;
     data.maxIndex = -1;
     data.cudaIndices.clear();
-    m->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
+    m->core::behavior::template ProjectiveConstraintSet<DataTypes>::init();
     const SetIndexArray& indices = m->f_indices.getValue();
     if (!indices.empty())
     {

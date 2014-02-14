@@ -295,7 +295,7 @@ Polynomial_LD<Real,N>::Polynomial_LD(const Monomial_LD<Real,N> & a)
 
 ////////////////////////////////
 template<typename Real, unsigned int N>
-Monomial_LD<Real,N>::Monomial_LD(const Real & m_coef, ...)
+Monomial_LD<Real,N>::Monomial_LD(Real m_coef, ...)
 {
     coef=m_coef;
     va_list vl;

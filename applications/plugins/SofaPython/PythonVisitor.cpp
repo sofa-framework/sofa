@@ -25,7 +25,7 @@ Visitor::Result PythonVisitor::processNodeTopDown(simulation::Node* node)
         return Visitor::RESULT_PRUNE;
     }
 
-    if (PyBool_Check(res))
+    if PyBool_Check(res)
         return Visitor::RESULT_CONTINUE;
 
     return Visitor::RESULT_PRUNE;
