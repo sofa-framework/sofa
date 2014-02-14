@@ -523,6 +523,7 @@ void RigidMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/
 
     unsigned outIdxBegin;
     unsigned outIdxEnd;
+    unsigned inputPerOutput;
 
     if (repartitionCount == 0)
     {
@@ -532,22 +533,15 @@ void RigidMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/
             outIdxBegin = out.size() - 1 - outIdxBegin;
         }
         outIdxEnd = outIdxBegin + 1;
+        inputPerOutput = pts.size();
     }
     else
     {
         outIdxBegin = 0;
         outIdxEnd = out.size();
-    }
-
-    unsigned inputPerOutput;
-    if (repartitionCount == 0)
-    {
-        inputPerOutput = pts.size();
-    }
-    else
-    {
         inputPerOutput = pointsPerFrame.getValue()[0];
     }
+
 
     typedef helper::ParticleMask ParticleMask;
     ParticleMask::InternalStorage* indices = isMaskInUse ? &maskTo->getEntries() : NULL;
@@ -588,6 +582,7 @@ void RigidMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/
             maskFrom->insertEntry(outIdx);
         }
     }
+
 }
 
 //            using defaulttype::Vec;

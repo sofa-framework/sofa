@@ -34,6 +34,8 @@ void UniformCompliance<DataTypes>::reinit()
     core::behavior::BaseMechanicalState* state = this->getContext()->getMechanicalState();
     assert(state);
 
+    static const Real EPSILON = std::numeric_limits<Real>::epsilon();
+
     if( this->isCompliance.getValue() )
     {
         matC.resize(state->getMatrixSize(), state->getMatrixSize());
@@ -45,7 +47,7 @@ void UniformCompliance<DataTypes>::reinit()
 
         matC.compressedMatrix.finalize();
 
-        if( helper::rabs(compliance.getValue()) <= std::numeric_limits<Real>::epsilon() && this->rayleighStiffness.getValue() )
+        if( helper::rabs(compliance.getValue()) <= EPSILON && this->rayleighStiffness.getValue() )
         {
             serr<<"Warning: a null compliance can not generate rayleighDamping, forced to 0"<<sendl;
             this->rayleighStiffness.setValue(0);
@@ -57,9 +59,9 @@ void UniformCompliance<DataTypes>::reinit()
 //    if( !this->isCompliance.getValue() || this->rayleighStiffness.getValue() )
 //    {
         // the stiffness df/dx is the opposite of the inverse compliance
-        Real k = compliance.getValue() > std::numeric_limits<Real>::epsilon() ?
+        Real k = compliance.getValue() > EPSILON ?
                 -1 / compliance.getValue() :
-                -1 / std::numeric_limits<Real>::epsilon();
+                -1 / EPSILON;
 
         matK.resize(state->getMatrixSize(), state->getMatrixSize());
 
@@ -90,6 +92,7 @@ void UniformCompliance<DataTypes>::reinit()
 	}
     else matB.compressedMatrix.resize(0,0);
 	
+//    std::cerr<<SOFA_CLASS_METHOD<<matC<<" "<<matK<<std::endl;
 }
 
 
@@ -116,28 +119,28 @@ void UniformCompliance<DataTypes>::addBToMatrix( sofa::defaulttype::BaseMatrix *
 }
 
 template<class DataTypes>
-void UniformCompliance<DataTypes>::addForce(const core::MechanicalParams *, DataVecDeriv& _f, const DataVecCoord& _x, const DataVecDeriv& /*_v*/)
+void UniformCompliance<DataTypes>::addForce(const core::MechanicalParams *, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& /*v*/)
 {
 //    if( matK.compressedMatrix.nonZeros() )
-        matK.addMult( _f, _x  );
+        matK.addMult( f, x  );
 
-//    cerr<<"UniformCompliance<DataTypes>::addForce, f after = " << f << endl;
+//    cerr<<SOFA_CLASS_METHOD<< f << endl;
 }
 
 template<class DataTypes>
-void UniformCompliance<DataTypes>::addDForce(const core::MechanicalParams *mparams, DataVecDeriv& _df,  const DataVecDeriv& _dx)
+void UniformCompliance<DataTypes>::addDForce(const core::MechanicalParams *mparams, DataVecDeriv& df,  const DataVecDeriv& dx)
 {
     Real kfactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
     if( kfactor )
     {
-        matK.addMult( _df, _dx, kfactor );
+        matK.addMult( df, dx, kfactor );
     }
 
     if( damping.getValue() > 0 )
     {
         Real bfactor = (Real)mparams->bFactor();
-        matB.addMult( _df, _dx, bfactor );
+        matB.addMult( df, dx, bfactor );
     }
 }
 

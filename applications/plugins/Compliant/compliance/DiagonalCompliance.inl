@@ -35,6 +35,7 @@ void DiagonalCompliance<DataTypes>::reinit()
     core::behavior::BaseMechanicalState* state = this->getContext()->getMechanicalState();
     assert(state);
 
+//    cerr<<SOFA_CLASS_METHOD<<std::endl;
 
     unsigned int m = state->getMatrixBlockSize(), n = state->getSize();
 
@@ -117,6 +118,7 @@ const sofa::defaulttype::BaseMatrix* DiagonalCompliance<DataTypes>::getComplianc
 template<class DataTypes>
 void DiagonalCompliance<DataTypes>::addKToMatrix( sofa::defaulttype::BaseMatrix * matrix, double kFact, unsigned int &offset )
 {
+//    cerr<<SOFA_CLASS_METHOD<<std::endl;
     matK.addToBaseMatrix( matrix, kFact, offset );
 }
 
@@ -128,28 +130,28 @@ void DiagonalCompliance<DataTypes>::addBToMatrix( sofa::defaulttype::BaseMatrix 
 
 
 template<class DataTypes>
-void DiagonalCompliance<DataTypes>::addForce(const core::MechanicalParams *, DataVecDeriv& _f, const DataVecCoord& _x, const DataVecDeriv& /*_v*/)
+void DiagonalCompliance<DataTypes>::addForce(const core::MechanicalParams *, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& /*v*/)
 {
 //    if( matK.compressedMatrix.nonZeros() )
-        matK.addMult( _f, _x );
+        matK.addMult( f, x );
 
-//    cerr<<"UniformCompliance<DataTypes>::addForce, f after = " << f << endl;
+//        cerr<<SOFA_CLASS_METHOD<<"f after = " << f << std::endl << x << std::endl << matK << endl;
 }
 
 template<class DataTypes>
-void DiagonalCompliance<DataTypes>::addDForce(const core::MechanicalParams *mparams, DataVecDeriv& _df,  const DataVecDeriv& _dx)
+void DiagonalCompliance<DataTypes>::addDForce(const core::MechanicalParams *mparams, DataVecDeriv& df,  const DataVecDeriv& dx)
 {
     Real kfactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
     if( kfactor )
     {
-        matK.addMult( _df, _dx, kfactor );
+        matK.addMult( df, dx, kfactor );
     }
 
     if( damping.getValue() > 0 )
     {
         Real bfactor = (Real)mparams->bFactor();
-        matB.addMult( _df, _dx, bfactor );
+        matB.addMult( df, dx, bfactor );
     }
 }
 
