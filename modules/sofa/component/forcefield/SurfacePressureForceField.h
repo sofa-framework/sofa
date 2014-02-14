@@ -159,14 +159,59 @@ protected:
     void verifyDerivative(VecDeriv& v_plus, VecDeriv& v,  VecVec3DerivValues& DVval, VecVec3DerivIndices& DVind, const VecDeriv& Din);
 };
 
+#ifndef SOFA_FLOAT
+template<>
+void SurfacePressureForceField<Rigid3dTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& /* d_df */, const DataVecDeriv& /* d_dx */);
+
+template<>
+SurfacePressureForceField<Rigid3dTypes>::Real SurfacePressureForceField<Rigid3dTypes>::computeMeshVolume(const VecDeriv& f,const VecCoord& x);
+
+template<>
+void SurfacePressureForceField<Rigid3dTypes>::addTriangleSurfacePressure(unsigned int triId, VecDeriv& /*f*/, const VecCoord& /*x*/, const VecDeriv& /*v*/, const Real& /*pressure*/, bool computeDerivatives);
+
+template<>
+void SurfacePressureForceField<Rigid3dTypes>::addQuadSurfacePressure(unsigned int quadId, VecDeriv& /*f*/, const VecCoord& /*x*/, const VecDeriv& /*v*/, const Real& /*pressure*/);
+
+template<>
+void SurfacePressureForceField<Rigid3dTypes>::verifyDerivative(VecDeriv& v_plus, VecDeriv& v,  VecVec3DerivValues& DVval, VecVec3DerivIndices& DVind, const VecDeriv& Din);
+
+
+template<>
+void SurfacePressureForceField<Rigid3dTypes>::draw(const core::visual::VisualParams* vparams);
+
+#endif
+
+#ifndef SOFA_DOUBLE
+template<>
+void SurfacePressureForceField<Rigid3fTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& /* d_df */, const DataVecDeriv& /* d_dx */);
+
+template<>
+SurfacePressureForceField<Rigid3fTypes>::Real SurfacePressureForceField<Rigid3fTypes>::computeMeshVolume(const VecDeriv& f,const VecCoord& x);
+
+template<>
+void SurfacePressureForceField<Rigid3fTypes>::addTriangleSurfacePressure(unsigned int triId, VecDeriv& /*f*/, const VecCoord& /*x*/, const VecDeriv& /*v*/, const Real& /*pressure*/, bool computeDerivatives);
+
+template<>
+void SurfacePressureForceField<Rigid3fTypes>::addQuadSurfacePressure(unsigned int quadId, VecDeriv& /*f*/, const VecCoord& /*x*/, const VecDeriv& /*v*/, const Real& /*pressure*/);
+
+template<>
+void SurfacePressureForceField<Rigid3fTypes>::verifyDerivative(VecDeriv& v_plus, VecDeriv& v,  VecVec3DerivValues& DVval, VecVec3DerivIndices& DVind, const VecDeriv& Din);
+
+template<>
+void SurfacePressureForceField<Rigid3fTypes>::draw(const core::visual::VisualParams* vparams);
+
+#endif
+
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_SURFACEPRESSUREFORCEFIELD_CPP)
 
 #ifndef SOFA_FLOAT
 extern template class SOFA_BOUNDARY_CONDITION_API SurfacePressureForceField<defaulttype::Vec3dTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API SurfacePressureForceField<defaulttype::Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
 extern template class SOFA_BOUNDARY_CONDITION_API SurfacePressureForceField<defaulttype::Vec3fTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API SurfacePressureForceField<defaulttype::Rigid3fTypes>;
 #endif
 #endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_SURFACEPRESSUREFORCEFIELD_CPP)
 
