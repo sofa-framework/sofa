@@ -47,6 +47,9 @@ public:
     typedef core::collision::TDetectionOutputVector<CollisionModel1,CollisionModel2> DetectionOutputVector;
 
 
+
+    Data< SReal > damping_ratio;
+
 protected:
 
     CollisionModel1* model1;
@@ -76,10 +79,13 @@ protected:
 
 
 
-    BaseContact() { }
+    BaseContact()
+        : damping_ratio( this->initData(&damping_ratio, SReal(0.0), "damping", "contact damping (used for stabilization)") )
+    { }
 
     BaseContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)
-        : model1(model1)
+        : damping_ratio( this->initData(&damping_ratio, SReal(0.0), "damping", "contact damping (used for stabilization)") )
+        , model1(model1)
         , model2(model2)
         , intersectionMethod(intersectionMethod)
         , parent(NULL)
@@ -246,12 +252,12 @@ protected:
     typedef container::MechanicalObject<ResponseDataTypes> delta_dofs_type;
 
     // convenience
-    struct delta_type {
+    struct delta_type { // TODO to compliantconstraint
         node_type::SPtr node;
         typename delta_dofs_type::SPtr dofs;
     };
 
-    delta_type make_delta() const {
+    delta_type make_delta() const {  // TODO to compliantconstraint
         node_type::SPtr delta_node = node_type::create( this->getName() + " delta" );
 
         // TODO vec3types according to the types in interaction !
@@ -278,14 +284,18 @@ protected:
             pairs[i][1] = mappedContacts[i].index2;
         }
 
+
         // delta mappings
         if( this->selfCollision ) {
             typedef mapping::DifferenceMapping<ResponseDataTypes, ResponseDataTypes> map_type;
             typename map_type::SPtr map = sofa::core::objectmodel::New<map_type>();
 
             map->setModels( this->mstate1.get(), delta_dofs.get() );
+            this->mstate1->useMask.setValue(false); // TODO activate the mask and fill mstate1->forceMask for dof that will receive a force
 
             map->pairs.setValue( pairs );
+
+            map->setName( "delta mapping" );
 
             delta_node->addObject( map.get() );
 
@@ -303,10 +313,14 @@ protected:
 
             map->addInputModel( this->mstate1.get() );
             map->addInputModel( this->mstate2.get() );
+            this->mstate1->useMask.setValue(false); // TODO activate the mask and fill mstate1->forceMask for dof that will receive a force
+            this->mstate2->useMask.setValue(false); // TODO activate the mask and fill mstate1->forceMask for dof that will receive a force
 
             map->addOutputModel( delta_dofs.get() );
 
             map->pairs.setValue( pairs );
+
+            map->setName( "delta mapping" );
 
             delta_node->addObject( map.get() );
 
@@ -329,7 +343,7 @@ protected:
 
 
     typedef SReal real;
-
+// TODO to compliantconstraint
     /// insert a ConstraintValue component in the given graph depending on restitution/damping values
     template<class contact_dofs_type>
     void addConstraintValue( node_type* node, contact_dofs_type* dofs/*, real damping*/, real restitution=0, unsigned size = 1)
@@ -358,7 +372,7 @@ protected:
 
             constraintValue->init();
         }
-//        else if( damping ) // damped constraint
+//        else //if( damping ) // damped constraint
 //        {
 //            odesolver::ConstraintValue::SPtr constraintValue = sofa::core::objectmodel::New<odesolver::ConstraintValue>( dofs );
 //            node->addObject( constraintValue.get() );
@@ -377,9 +391,9 @@ protected:
             for(unsigned i = 0; i < this->mappedContacts.size(); ++i) {
                 (*edit(stab->mask))[size * i] = ( (*this->contacts)[i].value <= 0 );
 
-				for(unsigned j = 1; j < size; ++j) {
-					(*edit(stab->mask))[size * i + j] = false;
-				}
+                for(unsigned j = 1; j < size; ++j) {
+                    (*edit(stab->mask))[size * i + j] = false;
+                }
             }
 
             stab->init();
@@ -426,6 +440,41 @@ protected:
     }
 
 };
+
+
+/// a base class for compliant constraint based contact
+template <class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes = sofa::defaulttype::Vec3Types>
+class BaseCompliantConstraintContact : public BaseContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>
+{
+public:
+
+    SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE3(BaseCompliantConstraintContact, TCollisionModel1, TCollisionModel2, ResponseDataTypes),SOFA_TEMPLATE3(BaseContact, TCollisionModel1, TCollisionModel2, ResponseDataTypes));
+
+    typedef BaseContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes> Inherit;
+    typedef TCollisionModel1 CollisionModel1;
+    typedef TCollisionModel2 CollisionModel2;
+    typedef core::collision::Intersection Intersection;
+
+
+    Data< SReal > compliance_value;
+    Data< SReal > restitution_coef;
+
+protected:
+
+    BaseCompliantConstraintContact()
+        : Inherit()
+        , compliance_value( this->initData(&compliance_value, SReal(0.0), "compliance", "contact compliance: use model contact stiffnesses when < 0, use given value otherwise"))
+        , restitution_coef( initData(&restitution_coef, SReal(0.0), "restitution", "global restitution coef") )
+    {}
+
+    BaseCompliantConstraintContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)
+        : Inherit( model1, model2, intersectionMethod )
+        , compliance_value( this->initData(&compliance_value, SReal(0.0), "compliance", "contact compliance: use model contact stiffnesses when < 0, use given value otherwise"))
+        , restitution_coef( initData(&restitution_coef, SReal(0.0), "restitution", "global restitution coef") )
+    {}
+
+};
+
 
 
 }

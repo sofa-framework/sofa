@@ -51,9 +51,6 @@ Creator<Contact::Factory, CompliantContact<CapsuleModel, RigidSphereModel> > Cap
 Creator<Contact::Factory, CompliantContact<RigidSphereModel, OBBModel> > RigidSphereOBBCompliantContactClass("CompliantContact",true);
 
 
-// template class ContactMapper<LineModel, Vec3dTypes>;
-// template class ContactMapper<LineModel, Vec3fTypes>;
-
 } // namespace collision
 
 } // namespace component

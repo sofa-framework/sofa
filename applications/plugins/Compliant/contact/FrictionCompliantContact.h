@@ -21,38 +21,29 @@ namespace collision
 
 // TODO we should inherit from more basic classes, eventually
 template <class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes = sofa::defaulttype::Vec3Types>
-class FrictionCompliantContact : public BaseContact<TCollisionModel1, TCollisionModel2, ResponseDataTypes> {
+class FrictionCompliantContact : public BaseCompliantConstraintContact<TCollisionModel1, TCollisionModel2, ResponseDataTypes> {
 public:
 
-    SOFA_CLASS(SOFA_TEMPLATE3(FrictionCompliantContact, TCollisionModel1, TCollisionModel2, ResponseDataTypes), SOFA_TEMPLATE3(BaseContact, TCollisionModel1, TCollisionModel2, ResponseDataTypes) );
+    SOFA_CLASS(SOFA_TEMPLATE3(FrictionCompliantContact, TCollisionModel1, TCollisionModel2, ResponseDataTypes), SOFA_TEMPLATE3(BaseCompliantConstraintContact, TCollisionModel1, TCollisionModel2, ResponseDataTypes) );
 
-    typedef BaseContact<TCollisionModel1, TCollisionModel2, ResponseDataTypes> Inherit;
+    typedef BaseCompliantConstraintContact<TCollisionModel1, TCollisionModel2, ResponseDataTypes> Inherit;
     typedef typename Inherit::node_type node_type;
     typedef typename Inherit::delta_type delta_type;
     typedef typename Inherit::CollisionModel1 CollisionModel1;
     typedef typename Inherit::CollisionModel2 CollisionModel2;
     typedef typename Inherit::Intersection Intersection;
 
-    Data< SReal > damping_ratio;
-    Data< SReal > compliance_value;
-    Data< SReal > restitution_coef;
     Data< SReal > mu; ///< friction coef
 
 protected:
 
     FrictionCompliantContact()
-        : FrictionCompliantContact::BaseContact()
-        , damping_ratio( this->initData(&damping_ratio, SReal(0.0), "damping", "contact damping (use for stabilization)") )
-        , compliance_value( this->initData(&compliance_value, SReal(0.0), "compliance", "contact compliance: use model contact stiffnesses when < 0, use given value otherwise"))
-        , restitution_coef( initData(&restitution_coef, SReal(0.0), "restitution", "global restitution coef") )
+        : Inherit()
         , mu( initData(&mu, SReal(0.0), "mu", "friction coefficient (0 for frictionless contacts)") )
     {}
 
     FrictionCompliantContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)
         : Inherit(model1, model2, intersectionMethod)
-        , damping_ratio( this->initData(&damping_ratio, SReal(0.0), "damping", "contact damping (use for stabilization)") )
-        , compliance_value( this->initData(&compliance_value, SReal(0.0), "compliance", "contact compliance: use model contact stiffnesses when < 0, use given value otherwise"))
-        , restitution_coef( initData(&restitution_coef, SReal(0.0), "restitution", "global restitution coef") )
         , mu( initData(&mu, SReal(0.0), "mu", "friction coefficient (0 for frictionless contacts)") )
     {}
 
@@ -95,8 +86,8 @@ protected:
         compliance_type::SPtr compliance = sofa::core::objectmodel::New<compliance_type>( contact_dofs.get() );
 //        compliance->_restitution.setValue( restitution_coef.getValue() );
         contact_node->addObject( compliance.get() );
-        compliance->compliance.setValue( compliance_value.getValue() );
-        compliance->damping.setValue( damping_ratio.getValue() );
+        compliance->compliance.setValue( this->compliance_value.getValue() );
+        compliance->damping.setValue( this->damping_ratio.getValue() );
         compliance->init();
 
 
@@ -110,7 +101,7 @@ protected:
         
 
         // approximate restitution coefficient between the 2 objects as the product of both coefficients
-        const SReal restitutionCoefficient = restitution_coef.getValue() ? restitution_coef.getValue() : this->model1->getContactRestitution(0) * this->model2->getContactRestitution(0);
+        const SReal restitutionCoefficient = this->restitution_coef.getValue() ? this->restitution_coef.getValue() : this->model1->getContactRestitution(0) * this->model2->getContactRestitution(0);
 
         // constraint value
         this->addConstraintValue( contact_node.get(), contact_dofs.get(), restitutionCoefficient, 3);

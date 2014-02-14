@@ -62,6 +62,7 @@ set(HEADER_FILES
     contact/CompliantContact.h
     contact/FrictionCompliantContact.h
     contact/BaseContact.h
+    contact/PenalityCompliantContact.h
 	
     utils/basis.h
     utils/bench.h
@@ -137,6 +138,7 @@ set(SOURCE_FILES
 
     contact/CompliantContact.cpp
     contact/FrictionCompliantContact.cpp
+    contact/PenalityCompliantContact.cpp
 	)
 
 set(README_FILES

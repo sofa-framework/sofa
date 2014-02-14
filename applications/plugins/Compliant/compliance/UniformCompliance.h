@@ -35,7 +35,7 @@ public:
 
     Data< Real > compliance;    ///< Same compliance applied to all the DOFs
 
-	Data< Real > damping;
+    Data< Real > damping;
 
     virtual void init();
 
