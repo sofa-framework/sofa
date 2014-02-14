@@ -566,6 +566,430 @@ void SurfacePressureForceField<DataTypes>::draw(const core::visual::VisualParams
 #endif /* SOFA_NO_OPENGL */
 }
 
+#ifndef SOFA_FLOAT
+
+template<>
+void SurfacePressureForceField<Rigid3dTypes>::addDForce(const core::MechanicalParams* mparams , DataVecDeriv& d_df , const DataVecDeriv& d_dx)
+{
+
+
+	Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+	VecDeriv& df       = *(d_df.beginEdit());
+	const VecDeriv& dx =   d_dx.getValue()  ;
+
+
+	for (unsigned int i=0; i<derivTriNormalIndices.size(); i++)
+	{
+
+		for (unsigned int j=0; j<derivTriNormalIndices[i].size(); j++)
+		{
+			unsigned int v = derivTriNormalIndices[i][j];
+			df[i].getVCenter() += (derivTriNormalValues[i][j] * dx[v].getVCenter())*kFactor;
+
+		}
+
+	}
+
+	d_df.endEdit();
+
+
+}
+
+template <>
+typename SurfacePressureForceField<Rigid3dTypes>::Real SurfacePressureForceField<Rigid3dTypes>::computeMeshVolume(const VecDeriv& /*f*/, const VecCoord& x)
+{
+	typedef BaseMeshTopology::Triangle Triangle;
+	typedef BaseMeshTopology::Quad Quad;
+
+	Real volume = 0;
+	int i = 0;
+
+	for (i = 0; i < m_topology->getNbTriangles(); i++)
+	{
+		Triangle t = m_topology->getTriangle(i);
+		Rigid3dTypes::CPos ab = x[t[1]].getCenter() - x[t[0]].getCenter();
+		Rigid3dTypes::CPos ac = x[t[2]].getCenter() - x[t[0]].getCenter();
+		volume += (ab.cross(ac))[2] * (x[t[0]][2] + x[t[1]][2] + x[t[2]][2]) / static_cast<Real>(6.0);
+	}
+
+	for (i = 0; i < m_topology->getNbQuads(); i++)
+	{
+		Quad q = m_topology->getQuad(i);
+
+		Rigid3dTypes::CPos ab = x[q[1]].getCenter() - x[q[0]].getCenter();
+		Rigid3dTypes::CPos ac = x[q[2]].getCenter() - x[q[0]].getCenter();
+		Rigid3dTypes::CPos ad = x[q[3]].getCenter() - x[q[0]].getCenter();
+
+		volume += ab.cross(ac)[2] * (x[q[0]][2] + x[q[1]][2] + x[q[2]][2]) / static_cast<Real>(6.0);
+		volume += ac.cross(ad)[2] * (x[q[0]][2] + x[q[2]][2] + x[q[3]][2]) / static_cast<Real>(6.0);
+	}
+
+	return volume;
+}
+
+template <>
+void SurfacePressureForceField<Rigid3dTypes>::addTriangleSurfacePressure(unsigned int triId, VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/, const Real& pressure, bool computeDerivatives)
+{
+	Triangle t = m_topology->getTriangle(triId);
+
+	Rigid3dTypes::CPos ab = x[t[1]].getCenter() - x[t[0]].getCenter();
+	Rigid3dTypes::CPos ac = x[t[2]].getCenter() - x[t[0]].getCenter();
+	Rigid3dTypes::CPos bc = x[t[2]].getCenter() - x[t[1]].getCenter();
+
+	Rigid3dTypes::CPos p = (ab.cross(ac)) * (pressure / static_cast<Real>(6.0));
+
+
+	if(computeDerivatives)
+	{
+		Mat33 DcrossDA;
+		DcrossDA[0][0]=0;       DcrossDA[0][1]=-bc[2];  DcrossDA[0][2]=bc[1];
+		DcrossDA[1][0]=bc[2];   DcrossDA[1][1]=0;       DcrossDA[1][2]=-bc[0];
+		DcrossDA[2][0]=-bc[1];  DcrossDA[2][1]=bc[0];   DcrossDA[2][2]=0;
+
+		Mat33 DcrossDB;
+		DcrossDB[0][0]=0;       DcrossDB[0][1]=ac[2];   DcrossDB[0][2]=-ac[1];
+		DcrossDB[1][0]=-ac[2];  DcrossDB[1][1]=0;       DcrossDB[1][2]=ac[0];
+		DcrossDB[2][0]=ac[1];  DcrossDB[2][1]=-ac[0];   DcrossDB[2][2]=0;
+
+
+		Mat33 DcrossDC;
+		DcrossDC[0][0]=0;       DcrossDC[0][1]=-ab[2];  DcrossDC[0][2]=ab[1];
+		DcrossDC[1][0]=ab[2];   DcrossDC[1][1]=0;       DcrossDC[1][2]=-ab[0];
+		DcrossDC[2][0]=-ab[1];  DcrossDC[2][1]=ab[0];   DcrossDC[2][2]=0;
+
+		for (unsigned int j=0; j<3; j++)
+		{
+			derivTriNormalValues[t[j]].push_back( DcrossDA * (pressure / static_cast<Real>(6.0))  );
+			derivTriNormalValues[t[j]].push_back( DcrossDB * (pressure / static_cast<Real>(6.0))  );
+			derivTriNormalValues[t[j]].push_back( DcrossDC * (pressure / static_cast<Real>(6.0))  );
+
+			derivTriNormalIndices[t[j]].push_back( t[0] );
+			derivTriNormalIndices[t[j]].push_back( t[1] );
+			derivTriNormalIndices[t[j]].push_back( t[2] );
+		}
+
+
+
+	}
+
+
+
+	if (m_mainDirection.getValue().getVCenter() != Rigid3dTypes::CPos())
+	{
+		Rigid3dTypes::CPos n = ab.cross(ac);
+		n.normalize();
+		Real scal = n * m_mainDirection.getValue().getVCenter();
+		p *= fabs(scal);
+	}
+
+	f[t[0]].getVCenter() += p;
+	f[t[1]].getVCenter() += p;
+	f[t[2]].getVCenter() += p;
+}
+
+template <>
+void SurfacePressureForceField<Rigid3dTypes>::addQuadSurfacePressure(unsigned int quadId, VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/, const Real& pressure)
+{
+	Quad q = m_topology->getQuad(quadId);
+
+	Rigid3dTypes::CPos ab = x[q[1]].getCenter() - x[q[0]].getCenter();
+	Rigid3dTypes::CPos ac = x[q[2]].getCenter() - x[q[0]].getCenter();
+	Rigid3dTypes::CPos ad = x[q[3]].getCenter() - x[q[0]].getCenter();
+
+	Rigid3dTypes::CPos p1 = (ab.cross(ac)) * (pressure / static_cast<Real>(6.0));
+	Rigid3dTypes::CPos p2 = (ac.cross(ad)) * (pressure / static_cast<Real>(6.0));
+
+	Rigid3dTypes::CPos p = p1 + p2;
+
+	f[q[0]].getVCenter() += p;
+	f[q[1]].getVCenter() += p1;
+	f[q[2]].getVCenter() += p;
+	f[q[3]].getVCenter() += p2;
+}
+
+template<>
+void SurfacePressureForceField<Rigid3dTypes>::verifyDerivative(VecDeriv& /*v_plus*/, VecDeriv& /*v*/,  VecVec3DerivValues& /*DVval*/, VecVec3DerivIndices& /*DVind*/, const VecDeriv& /*Din*/)
+{
+}
+
+template<>
+void SurfacePressureForceField<Rigid3dTypes>::draw(const core::visual::VisualParams* vparams)
+{
+#ifndef SOFA_NO_OPENGL
+	if (!vparams->displayFlags().getShowForceFields()) return;
+	if (!this->mstate) return;
+
+	if (vparams->displayFlags().getShowWireFrame())
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+
+	glDisable(GL_LIGHTING);
+
+	glColor4f(0.f,0.8f,0.3f,1.f);
+
+	glBegin(GL_LINE_LOOP);
+	glVertex3d(m_min.getValue()[0],m_min.getValue()[1],m_min.getValue()[2]);
+	glVertex3d(m_max.getValue()[0],m_min.getValue()[1],m_min.getValue()[2]);
+	glVertex3d(m_max.getValue()[0],m_min.getValue()[1],m_max.getValue()[2]);
+	glVertex3d(m_min.getValue()[0],m_min.getValue()[1],m_max.getValue()[2]);
+	glEnd();
+
+	glBegin(GL_LINE_LOOP);
+	glVertex3d(m_min.getValue()[0],m_max.getValue()[1],m_min.getValue()[2]);
+	glVertex3d(m_max.getValue()[0],m_max.getValue()[1],m_min.getValue()[2]);
+	glVertex3d(m_max.getValue()[0],m_max.getValue()[1],m_max.getValue()[2]);
+	glVertex3d(m_min.getValue()[0],m_max.getValue()[1],m_max.getValue()[2]);
+	glEnd();
+
+	glBegin(GL_LINES);
+	glVertex3d(m_min.getValue()[0],m_min.getValue()[1],m_min.getValue()[2]);
+	glVertex3d(m_min.getValue()[0],m_max.getValue()[1],m_min.getValue()[2]);
+
+	glVertex3d(m_max.getValue()[0],m_min.getValue()[1],m_min.getValue()[2]);
+	glVertex3d(m_max.getValue()[0],m_max.getValue()[1],m_min.getValue()[2]);
+
+	glVertex3d(m_max.getValue()[0],m_min.getValue()[1],m_max.getValue()[2]);
+	glVertex3d(m_max.getValue()[0],m_max.getValue()[1],m_max.getValue()[2]);
+
+	glVertex3d(m_min.getValue()[0],m_min.getValue()[1],m_max.getValue()[2]);
+	glVertex3d(m_min.getValue()[0],m_max.getValue()[1],m_max.getValue()[2]);
+	glEnd();
+
+
+	if (vparams->displayFlags().getShowWireFrame())
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+
+	helper::ReadAccessor<DataVecCoord> x = this->mstate->read(core::ConstVecCoordId::position());
+	if (m_drawForceScale.getValue() && m_f.size()==x.size())
+	{
+		std::vector< defaulttype::Vector3 > points;
+		const Vec<4,float> color(0,1,0.5,1);
+
+		for (unsigned int i=0; i<x.size(); i++)
+		{
+			points.push_back(x[i].getCenter());
+			points.push_back(x[i].getCenter()+m_f[i].getVCenter()*m_drawForceScale.getValue());
+		}
+		vparams->drawTool()->drawLines(points, 1, color);
+	}
+#endif /* SOFA_NO_OPENGL */
+}
+
+#endif
+
+#ifndef SOFA_DOUBLE
+
+template<>
+void SurfacePressureForceField<Rigid3fTypes>::addDForce(const core::MechanicalParams* mparams , DataVecDeriv& d_df , const DataVecDeriv& d_dx)
+{
+
+
+	Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+	VecDeriv& df       = *(d_df.beginEdit());
+	const VecDeriv& dx =   d_dx.getValue()  ;
+
+
+	for (unsigned int i=0; i<derivTriNormalIndices.size(); i++)
+	{
+
+		for (unsigned int j=0; j<derivTriNormalIndices[i].size(); j++)
+		{
+			unsigned int v = derivTriNormalIndices[i][j];
+			df[i].getVCenter() += (derivTriNormalValues[i][j] * dx[v].getVCenter())*kFactor;
+
+		}
+
+	}
+
+	d_df.endEdit();
+
+
+}
+
+template <>
+typename SurfacePressureForceField<Rigid3fTypes>::Real SurfacePressureForceField<Rigid3fTypes>::computeMeshVolume(const VecDeriv& /*f*/, const VecCoord& x)
+{
+	typedef BaseMeshTopology::Triangle Triangle;
+	typedef BaseMeshTopology::Quad Quad;
+
+	Real volume = 0;
+	int i = 0;
+
+	for (i = 0; i < m_topology->getNbTriangles(); i++)
+	{
+		Triangle t = m_topology->getTriangle(i);
+		Rigid3fTypes::CPos ab = x[t[1]].getCenter() - x[t[0]].getCenter();
+		Rigid3fTypes::CPos ac = x[t[2]].getCenter() - x[t[0]].getCenter();
+		volume += (ab.cross(ac))[2] * (x[t[0]][2] + x[t[1]][2] + x[t[2]][2]) / static_cast<Real>(6.0);
+	}
+
+	for (i = 0; i < m_topology->getNbQuads(); i++)
+	{
+		Quad q = m_topology->getQuad(i);
+
+		Rigid3fTypes::CPos ab = x[q[1]].getCenter() - x[q[0]].getCenter();
+		Rigid3fTypes::CPos ac = x[q[2]].getCenter() - x[q[0]].getCenter();
+		Rigid3fTypes::CPos ad = x[q[3]].getCenter() - x[q[0]].getCenter();
+
+		volume += ab.cross(ac)[2] * (x[q[0]][2] + x[q[1]][2] + x[q[2]][2]) / static_cast<Real>(6.0);
+		volume += ac.cross(ad)[2] * (x[q[0]][2] + x[q[2]][2] + x[q[3]][2]) / static_cast<Real>(6.0);
+	}
+
+	return volume;
+}
+
+template <>
+void SurfacePressureForceField<Rigid3fTypes>::addTriangleSurfacePressure(unsigned int triId, VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/, const Real& pressure, bool computeDerivatives)
+{
+	Triangle t = m_topology->getTriangle(triId);
+
+	Rigid3fTypes::CPos ab = x[t[1]].getCenter() - x[t[0]].getCenter();
+	Rigid3fTypes::CPos ac = x[t[2]].getCenter() - x[t[0]].getCenter();
+	Rigid3fTypes::CPos bc = x[t[2]].getCenter() - x[t[1]].getCenter();
+
+	Rigid3fTypes::CPos p = (ab.cross(ac)) * (pressure / static_cast<Real>(6.0));
+
+
+	if(computeDerivatives)
+	{
+		Mat33 DcrossDA;
+		DcrossDA[0][0]=0;       DcrossDA[0][1]=-bc[2];  DcrossDA[0][2]=bc[1];
+		DcrossDA[1][0]=bc[2];   DcrossDA[1][1]=0;       DcrossDA[1][2]=-bc[0];
+		DcrossDA[2][0]=-bc[1];  DcrossDA[2][1]=bc[0];   DcrossDA[2][2]=0;
+
+		Mat33 DcrossDB;
+		DcrossDB[0][0]=0;       DcrossDB[0][1]=ac[2];   DcrossDB[0][2]=-ac[1];
+		DcrossDB[1][0]=-ac[2];  DcrossDB[1][1]=0;       DcrossDB[1][2]=ac[0];
+		DcrossDB[2][0]=ac[1];  DcrossDB[2][1]=-ac[0];   DcrossDB[2][2]=0;
+
+
+		Mat33 DcrossDC;
+		DcrossDC[0][0]=0;       DcrossDC[0][1]=-ab[2];  DcrossDC[0][2]=ab[1];
+		DcrossDC[1][0]=ab[2];   DcrossDC[1][1]=0;       DcrossDC[1][2]=-ab[0];
+		DcrossDC[2][0]=-ab[1];  DcrossDC[2][1]=ab[0];   DcrossDC[2][2]=0;
+
+		for (unsigned int j=0; j<3; j++)
+		{
+			derivTriNormalValues[t[j]].push_back( DcrossDA * (pressure / static_cast<Real>(6.0))  );
+			derivTriNormalValues[t[j]].push_back( DcrossDB * (pressure / static_cast<Real>(6.0))  );
+			derivTriNormalValues[t[j]].push_back( DcrossDC * (pressure / static_cast<Real>(6.0))  );
+
+			derivTriNormalIndices[t[j]].push_back( t[0] );
+			derivTriNormalIndices[t[j]].push_back( t[1] );
+			derivTriNormalIndices[t[j]].push_back( t[2] );
+		}
+
+
+
+	}
+
+
+
+	if (m_mainDirection.getValue().getVCenter() != Rigid3fTypes::CPos())
+	{
+		Rigid3fTypes::CPos n = ab.cross(ac);
+		n.normalize();
+		Real scal = n * m_mainDirection.getValue().getVCenter();
+		p *= fabs(scal);
+	}
+
+	f[t[0]].getVCenter() += p;
+	f[t[1]].getVCenter() += p;
+	f[t[2]].getVCenter() += p;
+}
+
+template <>
+void SurfacePressureForceField<Rigid3fTypes>::addQuadSurfacePressure(unsigned int quadId, VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/, const Real& pressure)
+{
+	Quad q = m_topology->getQuad(quadId);
+
+	Rigid3fTypes::CPos ab = x[q[1]].getCenter() - x[q[0]].getCenter();
+	Rigid3fTypes::CPos ac = x[q[2]].getCenter() - x[q[0]].getCenter();
+	Rigid3fTypes::CPos ad = x[q[3]].getCenter() - x[q[0]].getCenter();
+
+	Rigid3fTypes::CPos p1 = (ab.cross(ac)) * (pressure / static_cast<Real>(6.0));
+	Rigid3fTypes::CPos p2 = (ac.cross(ad)) * (pressure / static_cast<Real>(6.0));
+
+	Rigid3fTypes::CPos p = p1 + p2;
+
+	f[q[0]].getVCenter() += p;
+	f[q[1]].getVCenter() += p1;
+	f[q[2]].getVCenter() += p;
+	f[q[3]].getVCenter() += p2;
+}
+
+template<>
+void SurfacePressureForceField<Rigid3fTypes>::verifyDerivative(VecDeriv& /*v_plus*/, VecDeriv& /*v*/,  VecVec3DerivValues& /*DVval*/, VecVec3DerivIndices& /*DVind*/, const VecDeriv& /*Din*/)
+{
+}
+
+template<>
+void SurfacePressureForceField<Rigid3fTypes>::draw(const core::visual::VisualParams* vparams)
+{
+#ifndef SOFA_NO_OPENGL
+	if (!vparams->displayFlags().getShowForceFields()) return;
+	if (!this->mstate) return;
+
+	if (vparams->displayFlags().getShowWireFrame())
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+
+	glDisable(GL_LIGHTING);
+
+	glColor4f(0.f,0.8f,0.3f,1.f);
+
+	glBegin(GL_LINE_LOOP);
+	glVertex3d(m_min.getValue()[0],m_min.getValue()[1],m_min.getValue()[2]);
+	glVertex3d(m_max.getValue()[0],m_min.getValue()[1],m_min.getValue()[2]);
+	glVertex3d(m_max.getValue()[0],m_min.getValue()[1],m_max.getValue()[2]);
+	glVertex3d(m_min.getValue()[0],m_min.getValue()[1],m_max.getValue()[2]);
+	glEnd();
+
+	glBegin(GL_LINE_LOOP);
+	glVertex3d(m_min.getValue()[0],m_max.getValue()[1],m_min.getValue()[2]);
+	glVertex3d(m_max.getValue()[0],m_max.getValue()[1],m_min.getValue()[2]);
+	glVertex3d(m_max.getValue()[0],m_max.getValue()[1],m_max.getValue()[2]);
+	glVertex3d(m_min.getValue()[0],m_max.getValue()[1],m_max.getValue()[2]);
+	glEnd();
+
+	glBegin(GL_LINES);
+	glVertex3d(m_min.getValue()[0],m_min.getValue()[1],m_min.getValue()[2]);
+	glVertex3d(m_min.getValue()[0],m_max.getValue()[1],m_min.getValue()[2]);
+
+	glVertex3d(m_max.getValue()[0],m_min.getValue()[1],m_min.getValue()[2]);
+	glVertex3d(m_max.getValue()[0],m_max.getValue()[1],m_min.getValue()[2]);
+
+	glVertex3d(m_max.getValue()[0],m_min.getValue()[1],m_max.getValue()[2]);
+	glVertex3d(m_max.getValue()[0],m_max.getValue()[1],m_max.getValue()[2]);
+
+	glVertex3d(m_min.getValue()[0],m_min.getValue()[1],m_max.getValue()[2]);
+	glVertex3d(m_min.getValue()[0],m_max.getValue()[1],m_max.getValue()[2]);
+	glEnd();
+
+
+	if (vparams->displayFlags().getShowWireFrame())
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+
+	helper::ReadAccessor<DataVecCoord> x = this->mstate->read(core::ConstVecCoordId::position());
+	if (m_drawForceScale.getValue() && m_f.size()==x.size())
+	{
+		std::vector< defaulttype::Vector3 > points;
+		const Vec<4,float> color(0,1,0.5,1);
+
+		for (unsigned int i=0; i<x.size(); i++)
+		{
+			points.push_back(x[i].getCenter());
+			points.push_back(x[i].getCenter()+m_f[i].getVCenter()*m_drawForceScale.getValue());
+		}
+		vparams->drawTool()->drawLines(points, 1, color);
+	}
+#endif /* SOFA_NO_OPENGL */
+}
+
+#endif
+
 } // namespace forcefield
 
 } // namespace component
