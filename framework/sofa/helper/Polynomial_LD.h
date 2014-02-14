@@ -82,7 +82,7 @@ public :
     sofa::defaulttype::Vec<N,int>  powers;
 
     Monomial_LD();
-    Monomial_LD(const Real &,...);
+    Monomial_LD(Real ,...);
     Monomial_LD(const Monomial_LD<Real,N> & a);
     Monomial_LD<Real,N>& operator=(const Monomial_LD<Real,N> & b);
 
