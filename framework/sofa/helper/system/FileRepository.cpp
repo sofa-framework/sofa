@@ -92,7 +92,6 @@ static std::string pluginSubdir("/lib");
 
 FileRepository PluginRepository("SOFA_PLUGIN_PATH", AddSofaBuildDir(pluginSubdir).c_str());
 
-
 static FileRepository createSofaDataPath()
 {
     FileRepository repository("SOFA_DATA_PATH");
