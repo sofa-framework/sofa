@@ -59,6 +59,8 @@ int main(int argc, char** argv)
     (argc,argv);
     sofa::gui::initMain();
     sofa::gui::GUIManager::Init(argv[0]);
+    sofa::gui::GUIManager::SetDimension(1200,600);
+//    sofa::gui::GUIManager::SetFullScreen();
 
     // The graph root node
     sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
@@ -74,16 +76,19 @@ int main(int argc, char** argv)
     // One node to define the particle
     sofa::simulation::Node::SPtr particule_node = groot.get()->createChild("particle_node");
     // The particule, i.e, its degrees of freedom : a point with a velocity
-    MechanicalObject3::SPtr particle = sofa::core::objectmodel::New<MechanicalObject3>();
-    particle->setName("particle");
-    particule_node->addObject(particle);
-    particle->resize(1);
+    MechanicalObject3::SPtr dof = sofa::core::objectmodel::New<MechanicalObject3>();
+    dof->setName("particle");
+    particule_node->addObject(dof);
+    dof->resize(1);
     // get write access the particle positions vector
-    WriteAccessor< Data<MechanicalObject3::VecCoord> > positions = *particle->write( VecId::position() );
+    WriteAccessor< Data<MechanicalObject3::VecCoord> > positions = *dof->write( VecId::position() );
     positions[0] = Coord3(0,0,0);
     // get write access the particle velocities vector
-    WriteAccessor< Data<MechanicalObject3::VecDeriv> > velocities = *particle->write( VecId::velocity() );
+    WriteAccessor< Data<MechanicalObject3::VecDeriv> > velocities = *dof->write( VecId::velocity() );
     velocities[0] = Deriv3(0,0,0);
+    // show the particle
+    dof->showObject.setValue(true);
+    dof->showObjectScale.setValue(10.);
 
     // Its properties, i.e, a simple mass node
     UniformMass3::SPtr mass = sofa::core::objectmodel::New<UniformMass3>();

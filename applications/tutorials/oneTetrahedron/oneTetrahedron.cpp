@@ -84,11 +84,13 @@ int main(int argc, char** argv)
     DOF->setName("DOF");
     //get write access to the position vector of mechanical object DOF
     WriteAccessor<Data<VecCoord3> > x = *DOF->write(VecId::position());
-
     x[0] = Coord3(0,10,0);
     x[1] = Coord3(10,0,0);
     x[2] = Coord3(-10*0.5,0,10*0.866);
     x[3] = Coord3(-10*0.5,0,-10*0.866);
+    DOF->showObject.setValue(true);
+    DOF->showObjectScale.setValue(10.);
+
 
     // Tetrahedron uniform mass
     UniformMass3::SPtr mass = sofa::core::objectmodel::New<UniformMass3>();
