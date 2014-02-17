@@ -177,6 +177,31 @@ typename DataTypes::Real BezierTetrahedronSetGeometryAlgorithms<DataTypes>::comp
 	}
 }
 
+ template<class DataTypes>
+ typename BezierTetrahedronSetGeometryAlgorithms<DataTypes>::Vec4 BezierTetrahedronSetGeometryAlgorithms<DataTypes>::computeBernsteinPolynomialGradient(const TetrahedronBezierIndex tbi, const Vec4 barycentricCoordinate)
+ {
+     Real  val=computeBernsteinPolynomial(tbi,barycentricCoordinate);
+     Vec4 dval(0,0,0,0);
+     for(unsigned i=0;i<4;++i)
+         if(tbi[i] && barycentricCoordinate[i])
+             dval[i]=(Real)tbi[i]*val/barycentricCoordinate[i];
+     return dval;
+ }
+
+ template<class DataTypes>
+ typename BezierTetrahedronSetGeometryAlgorithms<DataTypes>::Mat44 BezierTetrahedronSetGeometryAlgorithms<DataTypes>::computeBernsteinPolynomialHessian(const TetrahedronBezierIndex tbi, const Vec4 barycentricCoordinate)
+ {
+     Vec4 dval = computeBernsteinPolynomialGradient(tbi,barycentricCoordinate);
+     Mat44 ddval;
+     for(unsigned i=0;i<4;++i)
+         if(barycentricCoordinate[i])
+             for(unsigned j=0;j<4;++j)
+             {
+                 if(i==j) { if(tbi[i]>1) ddval[j][i]=((Real)tbi[i]-1.)*dval[j]/barycentricCoordinate[i]; }
+                 else { if(tbi[i]) ddval[j][i]=(Real)tbi[i]*dval[j]/barycentricCoordinate[i]; }
+             }
+     return ddval;
+ }
 
 template<class DataTypes>
 void BezierTetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams* vparams)

@@ -72,20 +72,19 @@ public:
     typedef typename Inherit::VMaterialToSpatial VMaterialToSpatial;
     enum {spatial_dimensions=Inherit::spatial_dimensions};
     sofa::helper::vector<MaterialToSpatial> bases;
+    Data< Real > f_tolerance;
+    Cell cellIndex;  ///< used by external classes to retrieve the index of the cell where barycentric weights are computed from
 
     /** @name orientation data */
     //@{
     Data< VCoord > f_orientation; // = rest deformation gradient orientation in each cell (Euler angles)
     Data< bool > f_useLocalOrientation;
-    Data< Real > f_tolerance;
     //@}
-
-
 
 
     void computeShapeFunction(const Coord& childPosition, MaterialToSpatial& M, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL, const Cell cell=-1)
     {
-        InternalShapeFunction<spatial_dimensions>::computeShapeFunction( this, childPosition, M, ref, w, dw, ddw, cell );
+        InternalShapeFunction<spatial_dimensions>::computeShapeFunction( this, childPosition, this->cellIndex, M, ref, w, dw, ddw, cell );
     }
 
 protected:
@@ -270,7 +269,7 @@ protected:
             }
         }
 
-        static void computeShapeFunction( const BarycentricShapeFunction<ShapeFunctionTypes_>* B, const Coord& childPosition, MaterialToSpatial& M, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL, const Cell cell=-1)
+        static void computeShapeFunction( const BarycentricShapeFunction<ShapeFunctionTypes_>* B, const Coord& childPosition, Cell &index, MaterialToSpatial& M, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL, const Cell cell=-1)
         {
             M=MaterialToSpatial();
             for ( unsigned int i = 0; i < spatial_dimensions; i++ ) M[i][i]=(Real)1.; //identity
@@ -295,7 +294,7 @@ protected:
             const Topo::SeqEdges& edges = B->parentTopology->getEdges();
 
             // compute barycentric weights by projection in cell basis
-            int index = -1;
+            index = -1;
             double distance = -B->f_tolerance.getValue();
             Coord coefs;
 
@@ -564,7 +563,7 @@ protected:
             }
         }
 
-        static void computeShapeFunction( const BarycentricShapeFunction<ShapeFunctionTypes_>* B, const Coord& childPosition, MaterialToSpatial& M, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL, const Cell cell=-1)
+        static void computeShapeFunction( const BarycentricShapeFunction<ShapeFunctionTypes_>* B, const Coord& childPosition, Cell &index, MaterialToSpatial& M, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL, const Cell cell=-1)
         {
             M=MaterialToSpatial();
             for ( unsigned int i = 0; i < spatial_dimensions; i++ ) M[i][i]=(Real)1.; //identity
@@ -587,7 +586,7 @@ protected:
             const Topo::SeqEdges& edges = B->parentTopology->getEdges();
 
             // compute barycentric weights by projection in cell basis
-            int index = -1;
+            index = -1;
             double distance = -B->f_tolerance.getValue();
             Coord coefs;
 
@@ -718,9 +717,10 @@ protected:
     BarycentricShapeFunction()
         : Inherit()
         , parentTopology( NULL )
+        , f_tolerance(initData(&f_tolerance,(Real)-1.0,"tolerance","minimum weight (allows for mapping outside elements)"))
+        , cellIndex(-1)
         , f_orientation(initData(&f_orientation,"orientation","input orientation (Euler angles) inside each cell"))
         , f_useLocalOrientation(initData(&f_useLocalOrientation,false,"useLocalOrientation","tells if orientations are defined in the local basis on each cell"))
-        , f_tolerance(initData(&f_tolerance,(Real)-1.0,"tolerance","minimum weight (allows for mapping outside elements)"))
     {
     }
 

@@ -91,6 +91,7 @@ SOFA_LINK_CLASS(ImageDensityMass)
 
 SOFA_LINK_CLASS(ShepardShapeFunction)
 SOFA_LINK_CLASS(BarycentricShapeFunction)
+SOFA_LINK_CLASS(BezierShapeFunction)
 SOFA_LINK_CLASS(DefGradientMechanicalObject)
 SOFA_LINK_CLASS(LinearMapping_point)
 SOFA_LINK_CLASS(LinearMapping_affine)

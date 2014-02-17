@@ -25,7 +25,8 @@ set(HEADER_FILES
     shapeFunction/ShepardShapeFunction.h 
     shapeFunction/HatShapeFunction.h 
     shapeFunction/BarycentricShapeFunction.h 
-    deformationMapping/BaseDeformationMapping.h 
+    shapeFunction/BezierShapeFunction.h
+    deformationMapping/BaseDeformationMapping.h
     deformationMapping/BaseDeformationMapping.inl 
     deformationMapping/CustomJacobianBlock.h
     deformationMapping/LinearMapping.h
@@ -106,7 +107,8 @@ set(SOURCE_FILES
     shapeFunction/ShepardShapeFunction.cpp 
     shapeFunction/HatShapeFunction.cpp 
     shapeFunction/BarycentricShapeFunction.cpp 
-    deformationMapping/LinearMapping_point.cpp 
+    shapeFunction/BezierShapeFunction.cpp
+    deformationMapping/LinearMapping_point.cpp
     deformationMapping/LinearMapping_affine.cpp 
     deformationMapping/LinearMapping_rigid.cpp 
     deformationMapping/LinearMapping_quadratic.cpp 
