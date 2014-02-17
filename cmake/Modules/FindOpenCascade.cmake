@@ -12,7 +12,7 @@ if(WIN32)
         PATHS ${SOFA_EXTLIBS_DIR}/OpenCASCADE*/ros/win32/vc9/lib )
 else()
     # Search standard locations
-    find_path(OPENCASCADE_INCLUDE_DIR BRep_Tool.hxx PATH_SUFFIXES opencascade)
+    find_path(OPENCASCADE_INCLUDE_DIR BRep_Tool.hxx PATH_SUFFIXES oce opencascade)
     find_library(OPENCASCADE_LIBRARIES TKBRep)
     mark_as_advanced(OPENCASCADE_LIBRARIES)
     get_filename_component(OPENCASCADE_LIBRARIES_DIR ${OPENCASCADE_LIBRARIES} PATH CACHE)
@@ -26,7 +26,7 @@ endif()
 
 # Report the results.
 if(NOT OPENCASCADE_FOUND)
-    set(msg "Unable to fine OpenCascade.")
+    set(msg "Unable to find OpenCascade.")
     if(OpenCascade_FIND_REQUIRED)
         message(FATAL_ERROR "${msg}")
     else()
