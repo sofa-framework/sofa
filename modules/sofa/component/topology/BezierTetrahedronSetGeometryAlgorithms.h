@@ -63,6 +63,7 @@ public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
     typedef sofa::defaulttype::Vec<4,Real> Vec4;
+    typedef sofa::defaulttype::Mat<4,4,Real> Mat44;
 protected:
     BezierTetrahedronSetGeometryAlgorithms();
 	/// container	
@@ -88,6 +89,10 @@ public:
 	Coord computeNodalValue(const size_t tetrahedronIndex,const Vec4 barycentricCoordinate); 
 	/// computes the shape function 
 	Real computeBernsteinPolynomial(const TetrahedronBezierIndex tbi, const Vec4 barycentricCoordinate);
+    /// computes the shape function gradient
+    Vec4 computeBernsteinPolynomialGradient(const TetrahedronBezierIndex tbi, const Vec4 barycentricCoordinate);
+    /// computes the shape function hessian
+    Mat44 computeBernsteinPolynomialHessian(const TetrahedronBezierIndex tbi, const Vec4 barycentricCoordinate);
 protected:
     Data<bool> drawControlPointsEdges;
     Data<sofa::defaulttype::Vec3f> _drawColor;

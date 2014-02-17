@@ -234,34 +234,56 @@ protected:
             }
             else if(this->f_method.getValue().getSelectedId() == GAUSSLEGENDRE || this->f_order.getValue()==2)
             {
-                pos.resize ( 8*cubes.size() );
+                pos.resize ( 4*tetrahedra.size() + 8*cubes.size() );
                 vol.resize ( pos.size() );
                 cel.resize ( pos.size() );
+                unsigned int count=0;
 
+                // 4 points per tet at [ (5+3sqrt(5))/20, (5-sqrt(5))/20, (5-sqrt(5))/20, (5-sqrt(5))/20 ], weight = volume/4
+                if(tetrahedra.size())
+                {
+                    const Real offsetB = (5.0-sqrt(5.0))/20.0;
+                    const Real offsetA = 1.0-4.0*offsetB;
+                    for ( unsigned int i = 0; i < tetrahedra.size(); i++ )
+                    {
+                        const Coord p[4]={parent[tetrahedra[i][0]],parent[tetrahedra[i][1]],parent[tetrahedra[i][2]],parent[tetrahedra[i][3]]};
+                        Real V; if(f_fineVolumes.getValue().size()>i) V=f_fineVolumes.getValue()[i]/4.0; else  V = fabs(dot(cross(p[3]-p[0],p[2]-p[0]),p[1]-p[0]))/(Real)24.;
+                        for ( unsigned int j = 0; j < 4; j++ )
+                        {
+                            pos[count] = (p[0]+p[1]+p[2]+p[3])*offsetB + p[j]*offsetA;
+                            vol[count].resize(1); vol[count][0] = V;
+                            cel[count] = i;
+                            count++;
+                            // to do : volume integrals for elastons
+                        }
+                    }
+                }
 
                 // 8 points per cube at [ +-1/sqrt(3), +-1/sqrt(3), +-1/sqrt(3) ], weight = volume/8
-                const Real offset = 0.5/sqrt(3.0);
-                unsigned int count=0;
-                for ( unsigned int i = 0; i < cubes.size(); i++ )
+                if(cubes.size())
                 {
-                    const Coord& p1=parent[cubes[i][0]],p2=parent[cubes[i][1]],p3=parent[cubes[i][2]],p4=parent[cubes[i][3]],p5=parent[cubes[i][4]],p6=parent[cubes[i][5]],p7=parent[cubes[i][6]],p8=parent[cubes[i][7]];
-                    Coord u=(p2-p1),v=(p5-p1),w=(p4-p1);
-                    Real V;
-                    if(f_fineVolumes.getValue().size()>i) V=f_fineVolumes.getValue()[i]/(Real)8; else  V=u.norm()*v.norm()*w.norm()/(Real)8.;
+                    const Real offset = 0.5/sqrt(3.0);
+                    for ( unsigned int i = 0; i < cubes.size(); i++ )
+                    {
+                        const Coord& p1=parent[cubes[i][0]],p2=parent[cubes[i][1]],p3=parent[cubes[i][2]],p4=parent[cubes[i][3]],p5=parent[cubes[i][4]],p6=parent[cubes[i][5]],p7=parent[cubes[i][6]],p8=parent[cubes[i][7]];
+                        Coord u=(p2-p1),v=(p5-p1),w=(p4-p1);
+                        Real V;
+                        if(f_fineVolumes.getValue().size()>i) V=f_fineVolumes.getValue()[i]/(Real)8; else  V=u.norm()*v.norm()*w.norm()/(Real)8.;
 
-                    u*=offset; v*=offset; w*=offset;
-                    const Coord c = (p1+p2+p3+p4+p5+p6+p7+p8)*0.125;
-                    for (int gx1=-1; gx1<=1; gx1+=2)
-                        for (int gx2=-1; gx2<=1; gx2+=2)
-                            for (int gx3=-1; gx3<=1; gx3+=2)
-                            {
-                                pos[count] = c + u*gx3 + v*gx2 + w*gx1;
-                                vol[count].resize(1); vol[count][0] = V;
-                                cel[count] = i;
-                                //getCubeVolumes(vol[i+c0],p1,p2,p3,p4,this->f_order.getValue());
-                                //
-                                count++;
-                            }
+                        u*=offset; v*=offset; w*=offset;
+                        const Coord c = (p1+p2+p3+p4+p5+p6+p7+p8)*0.125;
+                        for (int gx1=-1; gx1<=1; gx1+=2)
+                            for (int gx2=-1; gx2<=1; gx2+=2)
+                                for (int gx3=-1; gx3<=1; gx3+=2)
+                                {
+                                    pos[count] = c + u*gx3 + v*gx2 + w*gx1;
+                                    vol[count].resize(1); vol[count][0] = V;
+                                    cel[count] = i;
+                                    //getCubeVolumes(vol[i+c0],p1,p2,p3,p4,this->f_order.getValue());
+                                    //
+                                    count++;
+                                }
+                    }
                 }
             }
             else serr<<"Requested quadrature method not yet implemented"<<sendl;
@@ -272,7 +294,7 @@ protected:
     }
 
 
-// returns integrated volumes and moments across an element
+    // returns integrated volumes and moments across an element
     inline void getCubeVolumes(vector<Real> &V, const Coord& p1,const Coord& p2,const Coord& p3,const Coord& p4, const unsigned int order)
     {
         Coord u=p2-p1,v=p3-p1,w=p4-p1;
