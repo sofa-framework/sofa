@@ -127,7 +127,7 @@ PyObject* PythonEnvironment::importScript( const char *filename )
     assert(pSysModuleDict != 0 && PyMapping_Check(pSysModuleDict));
 
     bool previously_loaded = (PyMapping_HasKey(pSysModuleDict,PyString_FromString(bareFilename.c_str())) == 1);
-    /// if true, a module with similar name has been loaded. We need to do a reload the module.
+    /// if true, a module with similar name has been loaded. We need to reload the module.
 
     PyRun_SimpleString("import sys");
 //    printf("<SofaPython> 1\n");

@@ -280,6 +280,13 @@ void GUIManager::SetFullScreen()
     if (currentGUI) currentGUI->setFullScreen();
 }
 
+void GUIManager::SaveScreenshot(const char* filename)
+{
+    if (currentGUI) {
+		std::string output = (filename?std::string(filename):"output.png");
+		currentGUI->saveScreenshot(output);
+	}
+}
 
 
 }

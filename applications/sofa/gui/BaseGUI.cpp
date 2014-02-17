@@ -120,6 +120,15 @@ void BaseGUI::exportGnuplot(sofa::simulation::Node* node, std::string /*gnuplot_
     node->execute ( expg );
 }
 
+bool BaseGUI::saveScreenshot(const std::string& filename, int compression_level)
+{
+	if(getViewer()) { 
+		getViewer()->screenshot(filename, compression_level);
+		return true;
+	}
+	else return false;
+}
+
 
 } // namespace gui
 

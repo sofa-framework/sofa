@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "PythonMacros.h"
+#include "initSofaPython.h"
 
 #include "Binding_SofaModule.h"
 #include "Binding_BaseObject.h"
@@ -37,9 +38,17 @@
 
 using namespace sofa::core;
 using namespace sofa::core::objectmodel;
+using namespace sofa::component;
 
 #include <sofa/simulation/common/Node.h>
 using namespace sofa::simulation;
+
+
+// set the viewer resolution
+extern "C" PyObject * Sofa_getSofaPythonVersion(PyObject * /*self*/, PyObject *)
+{
+    return Py_BuildValue("s", getModuleVersion());
+}
 
 
 // object factory
@@ -176,17 +185,95 @@ extern "C" PyObject* Sofa_build_dir(PyObject * /*self*/, PyObject * /*args*/ ) {
 extern "C" PyObject* Sofa_src_dir(PyObject * /*self*/, PyObject * /*args*/ ) {
 	return Py_BuildValue("s", SOFA_SRC_DIR);
 }
+// ask the GUI to save a screenshot
+extern "C" PyObject * Sofa_saveScreenshot(PyObject * /*self*/, PyObject * args)
+{
+    char *filename;
+    if (!PyArg_ParseTuple(args, "s",&filename))
+    {
+        PyErr_BadArgument();
+        return 0;
+    }
+    BaseGUI *gui = GUIManager::getGUI();
+    if (!gui)
+    {
+        printf("<SofaPython> ERROR saveScreenshot(%s): no GUI !!\n",filename);
+        return Py_BuildValue("i",-1);
+    }
+    gui->saveScreenshot(filename);
+
+
+    return Py_BuildValue("i",0);
+}
+
+
+// set the viewer resolution
+extern "C" PyObject * Sofa_setViewerResolution(PyObject * /*self*/, PyObject * args)
+{
+	int width, height;
+    if (!PyArg_ParseTuple(args, "ii",&width,&height))
+    {
+        PyErr_BadArgument();
+        return 0;
+    }
+    BaseGUI *gui = GUIManager::getGUI();
+    if (!gui)
+    {
+        printf("<SofaPython> ERROR setViewerResolution(%i,%i): no GUI !!\n",width,height);
+        return Py_BuildValue("i",-1);
+    }
+    gui->setViewerResolution(width,height);
+
+
+    return Py_BuildValue("i",0);
+}
+
+
+// set the viewer resolution
+extern "C" PyObject * Sofa_setViewerBackgroundColor(PyObject * /*self*/, PyObject * args)
+{
+	float r = 0.0f, g = 0.0f, b = 0.0f;
+	sofa::defaulttype::Vector3 color;
+    if (!PyArg_ParseTuple(args, "fff", &r, &g, &b))
+    {
+        PyErr_BadArgument();
+        return 0;
+    }
+	color[0] = r; color[1] = g; color[2] = b;
+	for (int i = 0; i < 3; ++i){
+		if (color[i] < 00.f || color[i] > 1.0) {
+			PyErr_BadArgument();
+			return 0;
+		}
+	}
+
+    BaseGUI *gui = GUIManager::getGUI();
+    if (!gui)
+    {
+        printf("<SofaPython> ERROR setViewerBackgroundColor(%i,%i,%i): no GUI !!\n",r,g,b);
+        return Py_BuildValue("i",-1);
+    }
+    gui->setBackgroundColor(color);
+
+
+    return Py_BuildValue("i",0);
+}
+
 
 
 
 // Méthodes du module
 SP_MODULE_METHODS_BEGIN(Sofa)
+SP_MODULE_METHOD(Sofa,getSofaPythonVersion) 
 SP_MODULE_METHOD_KW(Sofa,createObject)
 SP_MODULE_METHOD(Sofa,getObject)        // deprecated on date 2012/07/18
 SP_MODULE_METHOD(Sofa,getChildNode)     // deprecated on date 2012/07/18
 SP_MODULE_METHOD(Sofa,sendGUIMessage)
 SP_MODULE_METHOD(Sofa,build_dir)
 SP_MODULE_METHOD(Sofa,src_dir)
+SP_MODULE_METHOD(Sofa,saveScreenshot)
+SP_MODULE_METHOD(Sofa,setViewerResolution)
+SP_MODULE_METHOD(Sofa,setViewerBackgroundColor)
 SP_MODULE_METHODS_END
 
 
