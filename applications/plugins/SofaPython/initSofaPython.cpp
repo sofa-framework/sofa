@@ -32,7 +32,7 @@ namespace component
 {
 
 //Here are just several convenient functions to help user to know what contains the plugin
-
+/*
 extern "C" {
     SOFA_SOFAPYTHON_API void initExternalModule();
     SOFA_SOFAPYTHON_API const char* getModuleName();
@@ -41,6 +41,7 @@ extern "C" {
     SOFA_SOFAPYTHON_API const char* getModuleDescription();
     SOFA_SOFAPYTHON_API const char* getModuleComponentList();
 }
+*/
 
 void initExternalModule()
 {
