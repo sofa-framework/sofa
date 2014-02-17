@@ -22,46 +22,73 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <sofa/component/initOpenGLVisual.h>
+#ifndef SOFA_COMPONENT_VISUALMODEL_POINTSPLATMODEL_H
+#define SOFA_COMPONENT_VISUALMODEL_POINTSPLATMODEL_H
 
+#include <sofa/core/visual/VisualModel.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/component/topology/TopologyData.h>
+#include <sofa/component/component.h>
 
 namespace sofa
 {
+namespace core
+{
+namespace topology
+{
+class BaseMeshTopology;
+}
+namespace behavior
+{
+class BaseMechanicalState;
+}
+}
 
 namespace component
 {
 
-
-void initOpenGLVisual()
+namespace visualmodel
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
 
-SOFA_LINK_CLASS(OglModel)
-SOFA_LINK_CLASS(OglViewport)
-SOFA_LINK_CLASS(Light)
-SOFA_LINK_CLASS(LightManager)
-SOFA_LINK_CLASS(PointSplatModel)
-SOFA_LINK_CLASS(OglCylinderModel)
-SOFA_LINK_CLASS(OglRenderingSRGB)
-SOFA_LINK_CLASS(ClipPlane)
-SOFA_LINK_CLASS(ColorMap)
-SOFA_LINK_CLASS(DataDisplay)
-SOFA_LINK_CLASS(OglLabel)
-#ifdef SOFA_HAVE_GLEW
-SOFA_LINK_CLASS(OglShader)
-SOFA_LINK_CLASS(OglShaderVisualModel)
-SOFA_LINK_CLASS(OglShadowShader)
-SOFA_LINK_CLASS(OglTetrahedralModel)
-SOFA_LINK_CLASS(OglTexture)
-#endif
+class SOFA_OPENGL_VISUAL_API OglCylinderModel : public core::visual::VisualModel
+{
+public:
+    SOFA_CLASS(OglCylinderModel,core::visual::VisualModel);
+protected:
+    OglCylinderModel();
+    virtual ~OglCylinderModel();
+public:
+    virtual void init();
 
+    virtual void reinit();
+
+
+    virtual void draw(const core::visual::VisualParams* vparams);
+
+private:
+    void setColor(float r, float g, float b, float a);
+    void setColor(std::string color);
+
+private:
+    Data<float>		radius;
+    // Data<float>		alpha;
+    Data<std::string>	color;
+
+    core::topology::BaseMeshTopology*	_topology;
+    core::behavior::BaseMechanicalState* _mstate;
+
+    float r,g,b,a;
+    // component::topology::PointData<sofa::helper::vector<unsigned char> >		pointData;
+
+    typedef defaulttype::ExtVec3fTypes::Coord Coord;
+    typedef defaulttype::ExtVec3fTypes::VecCoord VecCoord;
+    typedef defaulttype::ExtVec3fTypes::Real Real;
+};
+
+} // namespace visualmodel
 
 } // namespace component
 
 } // namespace sofa
+
+#endif

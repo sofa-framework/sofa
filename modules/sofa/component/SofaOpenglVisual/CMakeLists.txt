@@ -13,6 +13,8 @@ set(HEADER_FILES
     ../visualmodel/CompositingVisualLoop.h 
     ../visualmodel/ColorMap.h 
     ../visualmodel/DataDisplay.h
+    ../visualmodel/OglLabel.h
+    ../visualmodel/OglCylinderModel.h
 
     )
     
@@ -29,6 +31,8 @@ set(SOURCE_FILES
     ../visualmodel/CompositingVisualLoop.cpp 
     ../visualmodel/ColorMap.cpp 
     ../visualmodel/DataDisplay.cpp
+    ../visualmodel/OglLabel.cpp
+    ../visualmodel/OglCylinderModel.cpp
 
     )
     
