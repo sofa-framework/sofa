@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+*                (c) 2006-2011 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -16,15 +16,24 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Modules                               *
+*                              SOFA :: Framework                              *
 *                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+* Authors: The SOFA Team (see Authors.txt)                                    *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <sofa/component/initOpenGLVisual.h>
+#ifndef SOFA_COMPONENT_VISUALMODEL_LABEL_H
+#define SOFA_COMPONENT_VISUALMODEL_LABEL_H
 
+#include <sofa/core/objectmodel/Data.h>
+#include <sofa/component/component.h>
+#include <sofa/core/visual/VisualModel.h>
+#include <sofa/helper/OptionsGroup.h>
+#include <sofa/helper/vector.h>
+#include <sofa/helper/rmath.h>
+#include <sofa/helper/gl/template.h>
+#include <sofa/defaulttype/Vec.h>
+#include <string>
 
 namespace sofa
 {
@@ -32,36 +41,47 @@ namespace sofa
 namespace component
 {
 
-
-void initOpenGLVisual()
+namespace visualmodel
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
+
+class SOFA_OPENGL_VISUAL_API OglLabel : public virtual sofa::core::visual::VisualModel
+{
+public:
+    SOFA_CLASS(OglLabel, sofa::core::visual::VisualModel);
+
+protected:
+    OglLabel();
+    virtual ~OglLabel() {
     }
-}
 
-SOFA_LINK_CLASS(OglModel)
-SOFA_LINK_CLASS(OglViewport)
-SOFA_LINK_CLASS(Light)
-SOFA_LINK_CLASS(LightManager)
-SOFA_LINK_CLASS(PointSplatModel)
-SOFA_LINK_CLASS(OglCylinderModel)
-SOFA_LINK_CLASS(OglRenderingSRGB)
-SOFA_LINK_CLASS(ClipPlane)
-SOFA_LINK_CLASS(ColorMap)
-SOFA_LINK_CLASS(DataDisplay)
-SOFA_LINK_CLASS(OglLabel)
-#ifdef SOFA_HAVE_GLEW
-SOFA_LINK_CLASS(OglShader)
-SOFA_LINK_CLASS(OglShaderVisualModel)
-SOFA_LINK_CLASS(OglShadowShader)
-SOFA_LINK_CLASS(OglTetrahedralModel)
-SOFA_LINK_CLASS(OglTexture)
-#endif
+public:
 
+
+    Data<std::string> label;
+    Data<unsigned int> x;
+    Data<unsigned int> y;
+    Data<unsigned int> fontsize;
+    Data<std::string> color;
+	Data<bool> f_visible;
+
+
+    void reinit();
+    void drawVisual(const core::visual::VisualParams* vparams);
+
+private:
+    void setColor(float r, float g, float b, float a);
+    void setColor(std::string color);
+
+
+    float r,g,b,a;
+    typedef defaulttype::Vec4f Color;   // Color with alpha value
+
+};
+
+} // namespace visualmodel
 
 } // namespace component
 
 } // namespace sofa
+
+#endif

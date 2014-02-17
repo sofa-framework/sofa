@@ -324,6 +324,9 @@ void ColorMap::drawVisual(const core::visual::VisualParams* vparams)
     glDisable(GL_LIGHTING);
     glDisable(GL_BLEND);
 
+	for(int i = 0; i < GL_MAX_CLIP_PLANES; ++i)
+		glDisable(GL_CLIP_PLANE0+i);
+
     // Setup orthogonal projection
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
@@ -366,7 +369,11 @@ void ColorMap::drawVisual(const core::visual::VisualParams* vparams)
     // Restore state
     glPopAttrib();
 
-    //
+    // Save state and disable clipping plane
+    glPushAttrib(GL_ENABLE_BIT);
+	for(int i = 0; i < GL_MAX_CLIP_PLANES; ++i)
+		glDisable(GL_CLIP_PLANE0+i);
+
     // Maximum & minimum
     //
 
@@ -374,15 +381,28 @@ void ColorMap::drawVisual(const core::visual::VisualParams* vparams)
     smin << min;
     smax << max;
 
+	Color textcolor(1.0f, 1.0f, 1.0f, 1.0f);
+
+	// We check here if the background is dark enough to have white text
+	// else we use black text
+	GLfloat bgcol[4];
+	glGetFloatv(GL_COLOR_CLEAR_VALUE,bgcol);
+	float maxdarkcolor = 0.2f; 
+	if(bgcol[0] > maxdarkcolor || bgcol[1] > maxdarkcolor || bgcol[2] > maxdarkcolor)
+		textcolor = Color (0.0f, 0.0f, 0.0f, 0.0f);
+
     vparams->drawTool()->writeOverlayText(
         10, 10, 14,  // x, y, size
-        Color(1.0f, 1.0f, 1.0f, 1.0f),
+        textcolor,
         smax.str().c_str());
 
     vparams->drawTool()->writeOverlayText(
         10, 135, 14,  // x, y, size
-        Color(1.0f, 1.0f, 1.0f, 1.0f),
+        textcolor,
         smin.str().c_str());
+
+    // Restore state
+    glPopAttrib();
 }
 
 
