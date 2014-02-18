@@ -109,13 +109,13 @@ public:
     virtual bool projectPointOutOfSurface(defaulttype::Vec3d& point, int i, defaulttype::Vec3d& dir, double &dist_out);
 
 
-    bool projectPointonSurface2(defaulttype::Vec3d& point, int i=0)
+    virtual bool projectPointonSurface2(defaulttype::Vec3d& point, int i=0)
     {
         defaulttype::Vec3d dir = defaulttype::Vec3d(0,0,0);
         return projectPointonSurface2(point, i, dir);
     }
 
-    bool projectPointOutOfSurface(defaulttype::Vec3d& point, int i=0)
+    virtual bool projectPointOutOfSurface(defaulttype::Vec3d& point, int i=0)
     {
         defaulttype::Vec3d dir;
         double dist_out = 0.0;
