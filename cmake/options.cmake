@@ -167,6 +167,10 @@ if(SOFA-MISC_NO_UPDATE_BBOX)
     list(APPEND compilerDefines SOFA_NO_UPDATE_BBOX)
 endif()
 
+option(SOFA-MISC_DEV "Compiling SOFA_DEV code" OFF)
+if(SOFA-MISC_DEV)
+    list(APPEND compilerDefines SOFA_DEV)
+endif()
 
 ## tutorial
 if(PS3)
