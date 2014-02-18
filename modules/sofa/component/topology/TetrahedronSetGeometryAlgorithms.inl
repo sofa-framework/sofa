@@ -28,7 +28,7 @@
 #include <sofa/component/topology/TetrahedronSetGeometryAlgorithms.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/topology/CommonAlgorithms.h>
-
+#include <sofa/component/topology/NumericalIntegrationDescriptor.inl>
 namespace sofa
 {
 
@@ -38,6 +38,124 @@ namespace component
 namespace topology
 {
 using namespace sofa::defaulttype;
+const unsigned int edgesInTetrahedronArray[6][2] = {{0,1}, {0,2}, {0,3}, {1,2}, {1,3}, {2,3}};
+
+template< class DataTypes>
+NumericalIntegrationDescriptor<typename TetrahedronSetGeometryAlgorithms< DataTypes >::Real,4> &TetrahedronSetGeometryAlgorithms< DataTypes >::getTetrahedronNumericalIntegrationDescriptor()
+{
+	// initialize the cubature table only if needed.
+	if (initializedCubatureTables==false) {
+		initializedCubatureTables=true;
+		defineTetrahedronCubaturePoints();
+	}
+	return tetrahedronNumericalIntegration;
+}
+
+template< class DataTypes>
+void TetrahedronSetGeometryAlgorithms< DataTypes >::defineTetrahedronCubaturePoints() {
+	typedef NumericalIntegrationDescriptor<typename TetrahedronSetGeometryAlgorithms< DataTypes >::Real,4>::QuadraturePoint QuadraturePoint;
+	typedef NumericalIntegrationDescriptor<typename TetrahedronSetGeometryAlgorithms< DataTypes >::Real,4>::BarycentricCoordinatesType BarycentricCoordinatesType;
+	// Gauss method
+	NumericalIntegrationDescriptor<typename TetrahedronSetGeometryAlgorithms< DataTypes >::Real,4>::QuadratureMethod m=NumericalIntegrationDescriptor<typename TetrahedronSetGeometryAlgorithms< DataTypes >::Real,4>::GAUSS_METHOD;
+	NumericalIntegrationDescriptor<typename TetrahedronSetGeometryAlgorithms< DataTypes >::Real,4>::QuadraturePointArray qpa;
+	BarycentricCoordinatesType v;
+	/// integration with linear accuracy.
+	v=BarycentricCoordinatesType(0.25,0.25,0.25,0.25);
+	qpa.push_back(QuadraturePoint(v,1/(Real)6));
+	tetrahedronNumericalIntegration.addQuadratureMethod(m,1,qpa);
+	/// integration with quadratic accuracy.
+	qpa.clear();
+	Real a=(5-sqrt((Real)5))/20;
+	Real b=(5+3*sqrt((Real)5))/20;
+	size_t i;
+	for (i=0;i<4;++i) {
+		v=BarycentricCoordinatesType(a,a,a,a);
+		v[i]=b;
+		qpa.push_back(QuadraturePoint(v,1/(Real)24));
+	}
+	tetrahedronNumericalIntegration.addQuadratureMethod(m,2,qpa);
+	/// integration with cubic accuracy.
+	qpa.clear();
+	v=BarycentricCoordinatesType(0.25,0.25,0.25,0.25);
+	qpa.push_back(QuadraturePoint(v,(Real) -2/15));
+	a=1/6;
+	b=1/2;
+	for (i=0;i<4;++i) {
+		v=BarycentricCoordinatesType(a,a,a,a);
+		v[i]=b;
+		qpa.push_back(QuadraturePoint(v,1/(Real)24));
+	} 
+	tetrahedronNumericalIntegration.addQuadratureMethod(m,3,qpa);
+	/// integration with quintic accuracy and 15 points
+	qpa.clear();
+	v=BarycentricCoordinatesType(0.25,0.25,0.25,0.25);
+	qpa.push_back(QuadraturePoint(v,(Real) 8/405));
+	a=(7+sqrt((Real)15))/34;
+	b=(13+3*sqrt((Real)15))/34;
+	Real c=(2665-14*sqrt((Real)15))/226800;
+	for (i=0;i<4;++i) {
+		v=BarycentricCoordinatesType(a,a,a,a);
+		v[i]=b;
+		qpa.push_back(QuadraturePoint(v,c));
+	}
+	a=(7-sqrt((Real)15))/34;
+	b=(13-3*sqrt((Real)15))/34;
+	c=(2665+14*sqrt((Real)15))/226800;
+	for (i=0;i<4;++i) {
+		v=BarycentricCoordinatesType(a,a,a,a);
+		v[i]=b;
+		qpa.push_back(QuadraturePoint(v,c));
+	}
+	a=(5-sqrt((Real)15))/20;
+	b=(5+sqrt((Real)15))/20;
+	c=(Real)5/567;
+	for (i=0;i<6;++i) {
+		v=BarycentricCoordinatesType(a,a,a,a);
+		v[edgesInTetrahedronArray[i][0]]=b;
+		v[edgesInTetrahedronArray[i][1]]=b;
+		qpa.push_back(QuadraturePoint(v,c));
+	} 
+	tetrahedronNumericalIntegration.addQuadratureMethod(m,5,qpa);
+	/// integration with sixtic accuracy with 24 points
+	qpa.clear();
+	a=(Real)0.214602871259152029288839219386284;
+	b=1-3*a;
+	c=(Real) 0.00665379170969458201661510459291332;
+	for (i=0;i<4;++i) {
+		v=BarycentricCoordinatesType(a,a,a,a);
+		v[i]=b;
+		qpa.push_back(QuadraturePoint(v,c));
+	}
+	a=(Real)0.0406739585346113531155794489564100;
+	b=1-3*a;
+	c=(Real) 0.00167953517588677382466887290765614;
+	for (i=0;i<4;++i) {
+		v=BarycentricCoordinatesType(a,a,a,a);
+		v[i]=b;
+		qpa.push_back(QuadraturePoint(v,c));
+	}
+	a=(Real)0.322337890142275510343994470762492;
+	b=1-3*a;
+	c=(Real) 0.00922619692394245368252554630895433;
+	for (i=0;i<4;++i) {
+		v=BarycentricCoordinatesType(a,a,a,a);
+		v[i]=b;
+		qpa.push_back(QuadraturePoint(v,c));
+	}
+	a=(Real)0.269672331458315808034097805727606;
+	b=1-3*a;
+	c=(Real) 0.00803571428571428571428571428571428;
+	for (i=0;i<4;++i) {
+		v=BarycentricCoordinatesType(a,a,a,a);
+		v[i]=b;
+		qpa.push_back(QuadraturePoint(v,c));
+	}
+	tetrahedronNumericalIntegration.addQuadratureMethod(m,6,qpa);
+	/// TBD : integration with  accuracy of order 8 with 24 points
+		
+}
+
+
 
 template< class DataTypes>
 void TetrahedronSetGeometryAlgorithms< DataTypes >::computeTetrahedronAABB(const TetraID i, Coord& minCoord, Coord& maxCoord) const
