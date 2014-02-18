@@ -271,7 +271,7 @@ defaulttype::Vec3d SphereSurface::getGradient(defaulttype::Vec3d &Pos, int &doma
   return g;
 }
 
-void SphereSurface::getValueAndGradient(defaulttype::Vec3d& Pos, double &value, defaulttype::Vec3d& grad, int& domain)
+void SphereSurface::getValueAndGradient(defaulttype::Vec3d& Pos, double &value, defaulttype::Vec3d& /*grad*/, int& domain)
 {
   (void)domain;
   defaulttype::Vec3d g;
@@ -292,7 +292,7 @@ void SphereSurface::getValueAndGradient(defaulttype::Vec3d& Pos, double &value, 
   return;
 }
 
-double SphereSurface::getDistance(defaulttype::Vec3d& Pos, int& domain)
+double SphereSurface::getDistance(defaulttype::Vec3d& Pos, int& /*domain*/)
 {
   double result = _radius - sqrt((Pos[0] - _Center[0])*(Pos[0] - _Center[0]) +
 				 (Pos[1] - _Center[1])*(Pos[1] - _Center[1]) +
@@ -300,7 +300,7 @@ double SphereSurface::getDistance(defaulttype::Vec3d& Pos, int& domain)
   return _inside ? result : -result;
 }
 
-double SphereSurface::getDistance(defaulttype::Vec3d& Pos, double value, double grad_norm, int &domain)
+double SphereSurface::getDistance(defaulttype::Vec3d& /*Pos*/, double value, double grad_norm, int &domain)
 {
   (void)domain;
   if (grad_norm < 0) // use value

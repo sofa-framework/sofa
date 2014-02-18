@@ -54,7 +54,7 @@ protected:
     ImplicitSurface( ) { }
     virtual ~ImplicitSurface() { }
 public:
-    virtual int getDomain(sofa::defaulttype::Vec3d& pos, int ref_domain) {return -1;}
+    virtual int getDomain(sofa::defaulttype::Vec3d& /*pos*/, int /*ref_domain*/) {return -1;}
 
     virtual double getValue(defaulttype::Vec3d& pos)
     { int domain=-1; return getValue(pos,domain);}
@@ -94,11 +94,11 @@ public:
       return getDistance(pos, value, grad_norm, domain);
     }
 
-    virtual double getDistance(defaulttype::Vec3d& pos, double value, double grad_norm, int &domain)
+    virtual double getDistance(defaulttype::Vec3d& /*pos*/, double value, double grad_norm, int &domain)
     { 
       (void)domain;
       // use Taubin's distance by default
-      if (grad_norm < 1e-10) return value < 0 ? double(LONG_MIN) : double(LONG_MAX);
+      if (grad_norm < 1e-10) return value < 0 ? double(std::numeric_limits<long>::min()) : double(std::numeric_limits<long>::max());
       return value/grad_norm;
     }
 

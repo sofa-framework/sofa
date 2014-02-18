@@ -250,7 +250,7 @@ extern "C" PyObject * Sofa_setViewerBackgroundColor(PyObject * /*self*/, PyObjec
     BaseGUI *gui = GUIManager::getGUI();
     if (!gui)
     {
-        printf("<SofaPython> ERROR setViewerBackgroundColor(%i,%i,%i): no GUI !!\n",r,g,b);
+        printf("<SofaPython> ERROR setViewerBackgroundColor(%f,%f,%f): no GUI !!\n",r,g,b);
         return Py_BuildValue("i",-1);
     }
     gui->setBackgroundColor(color);
