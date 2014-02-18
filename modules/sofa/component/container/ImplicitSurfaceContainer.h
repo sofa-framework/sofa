@@ -54,10 +54,53 @@ protected:
     ImplicitSurface( ) { }
     virtual ~ImplicitSurface() { }
 public:
-    virtual double getValue(defaulttype::Vec3d& pos) = 0;
+    virtual int getDomain(sofa::defaulttype::Vec3d& pos, int ref_domain) {return -1;}
+
+    virtual double getValue(defaulttype::Vec3d& pos)
+    { int domain=-1; return getValue(pos,domain);}
     virtual double getValue(defaulttype::Vec3d& pos, int& domain) = 0;  ///< the second parameter is used to identify a domain
-    virtual defaulttype::Vec3d getGradient(defaulttype::Vec3d& pos, int i=0);
-    virtual unsigned int getDomain(sofa::defaulttype::Vec3d& pos, int ref_domain) = 0;
+
+    virtual defaulttype::Vec3d getGradient(defaulttype::Vec3d& pos)
+    {int domain=-1; return getGradient(pos,domain);}
+    virtual defaulttype::Vec3d getGradient(defaulttype::Vec3d& pos, int& i);
+
+    virtual void getValueAndGradient(defaulttype::Vec3d& pos, double &value, defaulttype::Vec3d& grad)
+    {
+      int domain=-1;
+      return getValueAndGradient(pos,value,grad,domain);
+    }
+    virtual void getValueAndGradient(defaulttype::Vec3d& pos, double &value, defaulttype::Vec3d& grad, int& domain)
+    {
+      value = getValue(pos,domain);
+      grad = getGradient(pos,domain);
+    }
+
+    virtual double getDistance(defaulttype::Vec3d& pos)
+    {
+      int domain=-1;
+      return getDistance(pos,domain);
+    }
+    virtual double getDistance(defaulttype::Vec3d& pos, int& domain)
+    {
+      defaulttype::Vec3d grad;
+      double value;
+      getValueAndGradient(pos,value,grad,domain);
+      return getDistance(pos,value,grad.norm());
+    }
+
+    virtual double getDistance(defaulttype::Vec3d& pos, double value, double grad_norm)
+    {
+      int domain=-1;
+      return getDistance(pos, value, grad_norm, domain);
+    }
+
+    virtual double getDistance(defaulttype::Vec3d& pos, double value, double grad_norm, int &domain)
+    { 
+      (void)domain;
+      // use Taubin's distance by default
+      if (grad_norm < 1e-10) return value < 0 ? double(LONG_MIN) : double(LONG_MAX);
+      return value/grad_norm;
+    }
 
 
     virtual bool computeSegIntersection(defaulttype::Vec3d& posInside, defaulttype::Vec3d& posOutside, defaulttype::Vec3d& intersecPos, int i=0);
@@ -105,10 +148,15 @@ public:
 
     void reinit() {init();}
 
-    double getValue(defaulttype::Vec3d& Pos);
-    double getValue(defaulttype::Vec3d& pos, int& /*domain*/) { return getValue(pos); }
-    unsigned int getDomain(sofa::defaulttype::Vec3d& /*pos*/, int /*ref_domain*/) { return 0; }
-    //defaulttype::Vec3d getGradient(defaulttype::Vec3d &Pos);
+  double getValue(defaulttype::Vec3d& Pos, int &domain);
+  defaulttype::Vec3d getGradient(defaulttype::Vec3d &Pos, int& domain);
+  void getValueAndGradient(defaulttype::Vec3d& Pos, double &value, defaulttype::Vec3d& grad, int& domain);
+  virtual double getDistance(defaulttype::Vec3d& pos, int& domain);
+  // The following function uses only either value or grad_norm (they are redundant)
+  // - value is used is grad_norm < 0
+  // - else grad_norm is used: for example, in that case dist = _radius - grad_norm/2 (with _inside=true)
+  virtual double getDistance(defaulttype::Vec3d& pos, double value, double grad_norm, int &domain);
+
 
     Data<bool> inside;
     Data<double> radiusSphere;
