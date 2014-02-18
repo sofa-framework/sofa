@@ -7,7 +7,7 @@
 #                   --get-test-count|--get-failure-count|--get-disabled-count|--get-error-count|
 #                   --get-test-executable-count|--get-test-report-count
 #
-# With --run, it runs each file which matches "bin/*_test{,d}", and outputs
+# With --run, it runs each file which matches "bin/*_test?", and outputs
 # the results in a JUnit XML file stored in $PWD/test-reports/
 #
 # E.g. bin/foo_test will produce test-reports/foo_test.xml
@@ -28,12 +28,12 @@ run-tests ()
         mkdir test-reports
     fi
     # Check the existence of test programs
-    if ! ls bin/*_test{,d} &> /dev/null; then
+    if ! ls bin/*_test? &> /dev/null; then
         echo "$0: no test executable found"
         exit 0
     fi
     # Run each test
-    for test in bin/*_test{,d}; do
+    for test in bin/*_test?; do
         output_file=test-reports/`basename "$test"`.xml
         "$test" --gtest_output=xml:"$output_file"
         exit_code="$?"
@@ -90,7 +90,7 @@ case "$1" in
         sum-attribute-from-testsuites errors
         ;;
     --get-test-executable-count )
-        ls bin/*_test{,d} 2> /dev/null | wc -l
+        ls bin/*_test? 2> /dev/null | wc -l
         ;;
     --get-test-report-count )
         ls test-reports/*.xml 2> /dev/null | wc -l
