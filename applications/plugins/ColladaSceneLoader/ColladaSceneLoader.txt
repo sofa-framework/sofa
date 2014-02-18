@@ -17,3 +17,6 @@ LICENCE :
 
 
 OTHER COMMENTS :
+
+depends on libassimp
+http://assimp.sourceforge.net
