@@ -7,7 +7,7 @@
 #                   --get-test-count|--get-failure-count|--get-disabled-count|--get-error-count|
 #                   --get-test-executable-count|--get-test-report-count
 #
-# With --run, it runs each file which matches "bin/*_test?", and outputs
+# With --run, it runs each file which matches "bin/*_test{,d}", and outputs
 # the results in a JUnit XML file stored in $PWD/test-reports/
 #
 # E.g. bin/foo_test will produce test-reports/foo_test.xml
@@ -17,6 +17,13 @@ if [ $# -ne 1 ]; then
     echo "$0: one argument expected, $# provided" >&2
     exit 1
 fi
+
+get-tests()
+{
+    test_files=$(ls bin/*_test 2> /dev/null)
+    testd_files=$(ls bin/*_testd 2> /dev/null)
+    echo $test_files $testd_files
+}
 
 run-tests ()
 {
@@ -28,12 +35,12 @@ run-tests ()
         mkdir test-reports
     fi
     # Check the existence of test programs
-    if ! ls bin/*_test? &> /dev/null; then
+    if [ -z "$(get-tests)" ]; then
         echo "$0: no test executable found"
         exit 0
     fi
     # Run each test
-    for test in bin/*_test?; do
+    for test in $(get-tests); do
         output_file=test-reports/`basename "$test"`.xml
         "$test" --gtest_output=xml:"$output_file"
         exit_code="$?"
@@ -77,6 +84,7 @@ case "$1" in
     --run )
         run-tests
         ;;
+    # Those we be removed eventually,
     --get-test-count )
         sum-attribute-from-testsuites tests
         ;;
@@ -90,9 +98,28 @@ case "$1" in
         sum-attribute-from-testsuites errors
         ;;
     --get-test-executable-count )
-        ls bin/*_test? 2> /dev/null | wc -l
+        get-tests | wc -w
         ;;
     --get-test-report-count )
+        ls test-reports/*.xml 2> /dev/null | wc -l
+        ;;
+    # because I prefer those names:
+    --count-tests )
+        sum-attribute-from-testsuites tests
+        ;;
+    --count-failures )
+        sum-attribute-from-testsuites failures
+        ;;
+    --count-disabled )
+        sum-attribute-from-testsuites disabled
+        ;;
+    --count-errors )
+        sum-attribute-from-testsuites errors
+        ;;
+    --count-binaries )
+        get-tests | wc -w
+        ;;
+    --count-reports )
         ls test-reports/*.xml 2> /dev/null | wc -l
         ;;
     * )
