@@ -285,33 +285,43 @@ protected:
 	void mult_impl(OutType& result, const InType& data) const {
 		 
 		// use optimized product if possible
-		if(canCast(data)) {
+        if(canCast(data)) {
 
+#ifdef USING_OMP_PRAGMAS
+            typename map_traits<OutType>::map_type res = map(result);
+            linearsolver::mul_EigenSparseDenseMatrix_MT( res, this->compressedMatrix, map(data).template cast<Real>() );
+#else
             if( alias(result, data) ) {
-				this->map(result) = (this->compressedMatrix * 
-				                     this->map(data).template cast<Real>()).template cast<OutReal>();
+                this->map(result) = (this->compressedMatrix *
+                                     this->map(data).template cast<Real>()).template cast<OutReal>();
             } else {
                 this->map(result).noalias() = (this->compressedMatrix *
                                                this->map(data).template cast<Real>()).template cast<OutReal>();
             }
+#endif
 			
 			return;
 		}
 
 		// convert the data to Eigen type
-		VectorEigenOut aux1(this->colSize(),1), aux2(this->rowSize(),1);
-		for(unsigned i = 0, n = data.size(); i < n; ++i) {
+        VectorEigenOut aux1(this->colSize(),1), aux2(this->rowSize(),1);
+        for(unsigned i = 0, n = data.size(); i < n; ++i) {
 			for(unsigned j = 0; j < Nin; ++j) {
-				aux1[Nin * i + j] = data[i][j];
+                aux1[Nin * i + j] = data[i][j];
 			}
 		}
 		
-		// compute the product
-		aux2.noalias() = this->compressedMatrix * aux1;
-		// convert the result back to the Sofa type
-		for(unsigned i = 0, n = result.size(); i < n; ++i) {
+        // compute the product
+#ifdef USING_OMP_PRAGMAS
+        linearsolver::mul_EigenSparseDenseMatrix_MT( aux2, this->compressedMatrix, aux1 );
+#else
+        aux2.noalias() = this->compressedMatrix * aux1;
+#endif
+
+        // convert the result back to the Sofa type
+        for(unsigned i = 0, n = result.size(); i < n; ++i) {
 			for(unsigned j = 0; j < Nout; ++j) {
-				result[i][j] = aux2[Nout * i + j];
+                result[i][j] = aux2[Nout * i + j];
 			}
 		}
 	}
@@ -323,31 +333,41 @@ protected:
 		// use optimized product if possible
 		if( canCast(data) ) {
 
+#ifdef USING_OMP_PRAGMAS
+            Eigen::Matrix<OutReal,Eigen::Dynamic,1> tmp;
+            linearsolver::mul_EigenSparseDenseMatrix_MT( tmp, this->compressedMatrix, this->map(data).template cast<Real>() * fact );
+            typename map_traits<OutType>::map_type r = map(result);
+            r.noalias() = r + tmp;
+#else
 			// TODO multiply only the smallest dimension by fact 
-
             if( alias(result, data) ) {
                 map(result) += (this->compressedMatrix * (map(data).template cast<Real>() * fact)).template cast<OutReal>();
             } else {
                 typename map_traits<OutType>::map_type r = map(result);
                 r.noalias() = r + (this->compressedMatrix * (map(data).template cast<Real>() * fact)).template cast<OutReal>();
             }
+#endif
 			
 			return;
 		}
 
 		// convert the data to Eigen type
-		VectorEigenOut aux1(this->colSize()),aux2(this->rowSize());
-		for(unsigned i = 0, n = data.size(); i < n; ++i) {
+        VectorEigenOut aux1(this->colSize()),aux2(this->rowSize());
+        for(unsigned i = 0, n = data.size(); i < n; ++i) {
 			for(unsigned j = 0; j < Nin; ++j) {
 				aux1[Nin * i + j] = data[i][j];
 			}
 		}
         
-		// compute the product
-		aux2.noalias() = this->compressedMatrix * aux1;
+        // compute the product
+#ifdef USING_OMP_PRAGMAS
+        linearsolver::mul_EigenSparseDenseMatrix_MT( aux2, this->compressedMatrix, aux1 );
+#else
+        aux2.noalias() = this->compressedMatrix * aux1;
+#endif
         
-		// convert the result back to the Sofa type
-		for(unsigned i = 0, n = result.size(); i < n; ++i) {
+        // convert the result back to the Sofa type
+        for(unsigned i = 0, n = result.size(); i < n; ++i) {
 			for(unsigned j = 0; j < Nout; ++j) {
 				result[i][j] += aux2[Nout * i + j] * fact;
 			}
@@ -360,32 +380,42 @@ protected:
 		// use optimized product if possible
 		if(canCast(result)) {
 
+#ifdef USING_OMP_PRAGMAS
+            Eigen::Matrix<InReal,Eigen::Dynamic,1> tmp;
+            linearsolver::mul_EigenSparseDenseMatrix_MT( tmp, this->compressedMatrix.transpose(), this->map(data).template cast<Real>() * fact );
+            typename map_traits<InType>::map_type r = map(result);
+            r.noalias() = r + tmp;
+#else
             // TODO multiply only the smallest dimension by fact
-
             if( alias(result, data) ) {
                 map(result) += (this->compressedMatrix.transpose() * (map(data).template cast<Real>() * fact)).template cast<InReal>();
             } else {
                 typename map_traits<InType>::map_type r = map(result);
                 r.noalias() = r + (this->compressedMatrix.transpose() * (map(data).template cast<Real>() * fact)).template cast<InReal>();
             }
+#endif
 			
 			return;
 		}
 
 		// convert the data to Eigen type
-		VectorEigenOut aux1(this->rowSize()), aux2(this->colSize());
+        VectorEigenOut aux1(this->rowSize()), aux2(this->colSize());
 
-		for(unsigned i = 0, n = data.size(); i < n; ++i) {
+        for(unsigned i = 0, n = data.size(); i < n; ++i) {
 			for(unsigned j = 0; j < Nout; ++j) {
 				aux1[Nout * i + j] = data[i][j];
 			}
 		}
 		
 		// compute the product
-		aux2.noalias() = this->compressedMatrix.transpose() * aux1;
-		
+#ifdef USING_OMP_PRAGMAS
+        linearsolver::mul_EigenSparseDenseMatrix_MT( aux2, this->compressedMatrix.transpose(), aux1 );
+#else
+        aux2.noalias() = this->compressedMatrix.transpose() * aux1;
+#endif
+
 		// convert the result back to the Sofa type
-		for(unsigned i = 0, n = result.size(); i < n; ++i) {
+        for(unsigned i = 0, n = result.size(); i < n; ++i) {
 			for(unsigned j = 0; j < Nin; ++j) {
                 result[i][j] += aux2[Nin * i + j] * fact;
 			}

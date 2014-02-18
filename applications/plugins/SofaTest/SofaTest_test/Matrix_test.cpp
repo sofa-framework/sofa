@@ -40,11 +40,11 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/RandomGenerator.h>
 
+
+#define BENCHMARK_MATRIX_PRODUCT 0
+
+#if BENCHMARK_MATRIX_PRODUCT
 #include <ctime>
-
-#define BENCHMARK_MATRIX_MULTIPLICATION 1
-
-#if BENCHMARK_MATRIX_MULTIPLICATION
 using sofa::helper::system::thread::CTime;
 double get_time() {
     CTime * timer;
@@ -97,8 +97,10 @@ struct TestSparseMatrices : public Sofa_test<_Real>
     // Implementation based on Eigen
     typedef sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<BCOLS,Real>, sofa::defaulttype::Vec<BCOLS,Real> > InTypes;
     typedef sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<BROWS,Real>, sofa::defaulttype::Vec<BROWS,Real> > OutTypes;
-    typedef sofa::component::linearsolver::EigenSparseMatrix<InTypes,OutTypes> EigenBlockMatrix;
-    typedef sofa::component::linearsolver::EigenBaseSparseMatrix<Real> EigenBaseMatrix;
+    typedef sofa::component::linearsolver::EigenSparseMatrix<InTypes,OutTypes> EigenBlockSparseMatrix;
+    typedef sofa::component::linearsolver::EigenBaseSparseMatrix<Real> EigenBaseSparseMatrix;
+    typedef Eigen::Matrix<Real,Eigen::Dynamic,Eigen::Dynamic> EigenDenseMatrix;
+    typedef Eigen::Matrix<Real,Eigen::Dynamic,1> EigenDenseVec;
 
 
     // Regular Mat implementation
@@ -114,8 +116,8 @@ struct TestSparseMatrices : public Sofa_test<_Real>
     CRSMatrixMN crs1,crs2;
     FullMatrix fullMat;
     MapMatrix mapMat;
-    EigenBlockMatrix eiBlock1,eiBlock2,eiBlock3;
-    EigenBaseMatrix eiBase;
+    EigenBlockSparseMatrix eiBlock1,eiBlock2,eiBlock3;
+    EigenBaseSparseMatrix eiBase;
     // matrices for multiplication test
     CRSMatrixNM crsMultiplier;
     CRSMatrixMM crsMultiplication;
@@ -127,8 +129,10 @@ struct TestSparseMatrices : public Sofa_test<_Real>
     MatNM matMultiplier;
     MatMM matMultiplication;
     MatNN matTransposeMultiplication;
-    EigenBaseMatrix eiBaseMultiplier;
-    EigenBaseMatrix eiBaseMultiplication;
+    EigenBaseSparseMatrix eiBaseMultiplier;
+    EigenBaseSparseMatrix eiBaseMultiplication;
+    EigenDenseMatrix eiDenseMultiplier;
+    EigenDenseMatrix eiDenseMultiplication;
 
 
     // The vectors used in the tests
@@ -136,6 +140,7 @@ struct TestSparseMatrices : public Sofa_test<_Real>
     FullVector fullVec_nrows_reference,fullVec_nrows_result;
     VecM vecM;
     VecN vecN;
+    EigenDenseVec eiVecM, eiVecN;
 
 
     /// generating a random Mat
@@ -192,16 +197,17 @@ struct TestSparseMatrices : public Sofa_test<_Real>
         eiBlock3.copyFrom(crs1);
 
 
-
-
         // resize and fill the vectors
         fullVec_ncols.resize(NCOLS);
         fullVec_nrows_reference.resize(NROWS);
         fullVec_nrows_result.resize(NROWS);
+        eiVecM.resize(NROWS);
+        eiVecN.resize(NCOLS);
         for( unsigned i=0; i<NCOLS; i++)
         {
             fullVec_ncols[i] = i;
             vecN[i] = i;
+            eiVecN[i] = i;
         }
         fullMat.mul(fullVec_nrows_reference,fullVec_ncols); //    cerr<<"MatrixTest: vref = " << vref << endl;
 
@@ -216,12 +222,14 @@ struct TestSparseMatrices : public Sofa_test<_Real>
         copyFromMat( crsMultiplier, matMultiplier );
         copyFromMat( fullMultiplier, matMultiplier );
         copyFromMat( eiBaseMultiplier, matMultiplier );
+        eiDenseMultiplier = Eigen::Map< EigenDenseMatrix >( &(matMultiplier.transposed())[0][0], NCOLS, NROWS ); // need to transpose because EigenDenseMatrix is ColMajor
 
 
         matMultiplication = mat * matMultiplier;
         crs1.mul( crsMultiplication, crsMultiplier );
         fullMat.mul( fullMultiplication, fullMultiplier );
-        eiBase.mul_MT( eiBaseMultiplication, eiBaseMultiplier );
+        eiBase.mul_MT( eiBaseMultiplication, eiBaseMultiplier ); // sparse x sparse
+        eiBase.mul_MT( eiDenseMultiplication, eiDenseMultiplier ); // sparse x dense
 
         matTransposeMultiplication = mat.multTranspose( mat );
         crs1.mulTranspose( crsTransposeMultiplication, crs1 );
@@ -234,7 +242,7 @@ struct TestSparseMatrices : public Sofa_test<_Real>
     bool checkEigenMatrixUpdate()
     {
         // fill two matrices with the same values, one directly, one it two passes, then compare their values
-        EigenBlockMatrix a,b;
+        EigenBlockSparseMatrix a,b;
         a.resize(NROWS,NCOLS);
         b.resize(NROWS,NCOLS);
         for( unsigned j=0; j<NCOLS; j++)
@@ -271,7 +279,7 @@ struct TestSparseMatrices : public Sofa_test<_Real>
     /** Check the filling of EigenMatrix per rows of blocks. Return true if the test succeeds.*/
     bool checkEigenMatrixBlockRowFilling()
     {
-        EigenBlockMatrix mb;
+        EigenBlockSparseMatrix mb;
         FullMatrix ma;
         unsigned br=3, bc=3;
         ma.resize(br*BROWS,bc*BCOLS);
@@ -310,6 +318,19 @@ struct TestSparseMatrices : public Sofa_test<_Real>
 //        }
         return Sofa_test<_Real>::matricesAreEqual(crs1,eiBlock3);
     }
+
+    bool checkEigenDenseMatrix()
+    {
+        if( matMultiplier.nbCols != eiDenseMultiplier.cols() || matMultiplier.nbLines != eiDenseMultiplier.rows() ) return false;
+        for( int j=0; j<matMultiplier.nbCols; j++)
+        {
+            for( int i=0; i<matMultiplier.nbLines; i++)
+            {
+                if( matMultiplier(i,j) != eiDenseMultiplier(i,j) ) return false;
+            }
+        }
+        return true;
+    }
 };
 
 #ifndef SOFA_FLOAT
@@ -322,7 +343,7 @@ typedef TestSparseMatrices<double,4,8,4,8> Ts4848;
 #include "Matrix_test.inl"
 #undef TestMatrix
 
-// semi-trivial blocs
+//// semi-trivial blocs
 typedef TestSparseMatrices<double,4,8,4,2> Ts4842;
 #define TestMatrix Ts4842
 #include "Matrix_test.inl"
@@ -346,11 +367,13 @@ typedef TestSparseMatrices<double,4,8,2,2> Ts4822;
 //#undef TestMatrix
 
 
-#if BENCHMARK_MATRIX_MULTIPLICATION
-///// multiplication timing
-typedef TestSparseMatrices<double,360,900,3,3> TsMultiplicationTimings;
-TEST_F(TsMultiplicationTimings, benchmark )
+#if BENCHMARK_MATRIX_PRODUCT
+///// product timing
+typedef TestSparseMatrices<double,360,300,3,3> TsProductTimings;
+TEST_F(TsProductTimings, benchmark )
 {
+    std::cerr<<"=== Matrix-Matrix Products:"<<std::endl;
+
     matMultiplication.clear();
     double start = get_time();
     matMultiplication = mat * matMultiplier;
@@ -382,6 +405,44 @@ TEST_F(TsMultiplicationTimings, benchmark )
     stop = get_time();
     std::cerr<<"Eigen Base MT:\t\t"<<stop-start<<" (ms)"<<std::endl;
 #endif
+
+    start = get_time();
+    eiDenseMultiplication = eiBase.compressedMatrix * eiDenseMultiplier;
+    stop = get_time();
+    std::cerr<<"Eigen Sparse*Dense:\t\t"<<stop-start<<" (ms)"<<std::endl;
+
+    start = get_time();
+    component::linearsolver::mul_EigenSparseDenseMatrix_MT( eiDenseMultiplication, eiBase.compressedMatrix, eiDenseMultiplier );
+    stop = get_time();
+    std::cerr<<"Eigen Sparse*Dense MT:\t\t"<<stop-start<<" (ms)"<<std::endl;
+
+
+    std::cerr<<"=== Matrix-Vector Products:"<<std::endl;
+
+    start = get_time();
+    eiVecM = eiBlock1 * eiVecN;
+    stop = get_time();
+    std::cerr<<"Eigen Block:\t\t"<<stop-start<<" (ms)"<<std::endl;
+
+#ifdef USING_OMP_PRAGMAS
+    start = get_time();
+    component::linearsolver::mul_EigenSparseDenseMatrix_MT( eiVecM, eiBlock1.compressedMatrix, eiVecN );
+    stop = get_time();
+    std::cerr<<"Eigen Block MT:\t\t"<<stop-start<<" (ms)"<<std::endl;
+#endif
+
+    start = get_time();
+    eiVecM = eiBase * eiVecN;
+    stop = get_time();
+    std::cerr<<"Eigen Base:\t\t"<<stop-start<<" (ms)"<<std::endl;
+
+#ifdef USING_OMP_PRAGMAS
+    start = get_time();
+    component::linearsolver::mul_EigenSparseDenseMatrix_MT( eiVecM, eiBase.compressedMatrix, eiVecN );
+    stop = get_time();
+    std::cerr<<"Eigen Base MT:\t\t"<<stop-start<<" (ms)"<<std::endl;
+#endif
+
 
     ASSERT_TRUE( true );
 }
@@ -418,6 +479,12 @@ typedef TestSparseMatrices<float,4,8,2,2> Ts4822f;
 #undef TestMatrix
 
 #endif
+
+
+
+
+
+
 
 }// namespace sofa
 

@@ -276,6 +276,17 @@ public:
         result = compressedMatrix * data;
     }
 
+    /// Matrix-vector product openmp multithreaded
+    void mult_MT( VectorEigen& result, const VectorEigen& data )
+    {
+        compress();
+#ifdef USING_OMP_PRAGMAS
+        linearsolver::mul_EigenSparseDenseMatrix_MT( result, compressedMatrix, data );
+#else
+        result = compressedMatrix * data;
+#endif
+    }
+
     /// Matrix-Vector product (dense vector with contiguous memory layout)
     template<class V1, class V2>
     void multVector( V1& output, const V2& input ){
@@ -402,6 +413,17 @@ public:
     #else
         mul( res, rhs );
     #endif
+    }
+
+    /// Sparse x Dense Matrix product openmp multithreaded
+    void mul_MT( Eigen::Matrix<Real,Eigen::Dynamic,Eigen::Dynamic>& res, const Eigen::Matrix<Real,Eigen::Dynamic,Eigen::Dynamic>& rhs )
+    {
+        compress();
+#ifdef USING_OMP_PRAGMAS
+        linearsolver::mul_EigenSparseDenseMatrix_MT( res, compressedMatrix, rhs );
+#else
+        res = compressedMatrix * rhs;
+#endif
     }
 
 };
