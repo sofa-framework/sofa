@@ -63,7 +63,7 @@ public:
     virtual void init();
     virtual double getValue( defaulttype::Vec3d &transformedPos );
     virtual double getValue( defaulttype::Vec3d &transformedPos, int &domain );
-    virtual unsigned int getDomain( sofa::defaulttype::Vec3d &pos, int ref_domain ) { (void)pos; return ref_domain; }
+    virtual int getDomain( sofa::defaulttype::Vec3d &pos, int ref_domain ) { (void)pos; return ref_domain; }
 
 
 
