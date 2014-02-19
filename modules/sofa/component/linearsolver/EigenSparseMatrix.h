@@ -274,7 +274,9 @@ public:
 
     }
 
-
+#ifdef USING_OMP_PRAGMAS
+#define EIGENSPARSEMATRIX_PARALLEL
+#endif
 
 protected:
 
@@ -287,9 +289,11 @@ protected:
 		// use optimized product if possible
         if(canCast(data)) {
 
-#ifdef USING_OMP_PRAGMAS
-            typename map_traits<OutType>::map_type res = map(result);
-            linearsolver::mul_EigenSparseDenseMatrix_MT( res, this->compressedMatrix, map(data).template cast<Real>() );
+#ifdef EIGENSPARSEMATRIX_PARALLEL
+            if( alias(result, data) )
+                map(result) = linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix, map(data).template cast<Real>() );
+            else
+                map(result).noalias() = linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix, map(data).template cast<Real>() );
 #else
             if( alias(result, data) ) {
                 this->map(result) = (this->compressedMatrix *
@@ -312,8 +316,8 @@ protected:
 		}
 		
         // compute the product
-#ifdef USING_OMP_PRAGMAS
-        linearsolver::mul_EigenSparseDenseMatrix_MT( aux2, this->compressedMatrix, aux1 );
+#ifdef EIGENSPARSEMATRIX_PARALLEL
+        aux2.noalias() = linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix, aux1 );
 #else
         aux2.noalias() = this->compressedMatrix * aux1;
 #endif
@@ -333,11 +337,14 @@ protected:
 		// use optimized product if possible
 		if( canCast(data) ) {
 
-#ifdef USING_OMP_PRAGMAS
-            Eigen::Matrix<OutReal,Eigen::Dynamic,1> tmp;
-            linearsolver::mul_EigenSparseDenseMatrix_MT( tmp, this->compressedMatrix, this->map(data).template cast<Real>() * fact );
-            typename map_traits<OutType>::map_type r = map(result);
-            r.noalias() = r + tmp;
+#ifdef EIGENSPARSEMATRIX_PARALLEL
+            if( alias(result, data) )
+                map(result) += linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix, this->map(data).template cast<Real>() * fact ).template cast<OutReal>();
+            else
+            {
+                typename map_traits<OutType>::map_type r = map(result);
+                r.noalias() = r +  linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix, this->map(data).template cast<Real>() * fact ).template cast<OutReal>();
+            }
 #else
 			// TODO multiply only the smallest dimension by fact 
             if( alias(result, data) ) {
@@ -360,8 +367,8 @@ protected:
 		}
         
         // compute the product
-#ifdef USING_OMP_PRAGMAS
-        linearsolver::mul_EigenSparseDenseMatrix_MT( aux2, this->compressedMatrix, aux1 );
+#ifdef EIGENSPARSEMATRIX_PARALLEL
+        aux2.noalias() = linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix, aux1 );
 #else
         aux2.noalias() = this->compressedMatrix * aux1;
 #endif
@@ -380,11 +387,13 @@ protected:
 		// use optimized product if possible
 		if(canCast(result)) {
 
-#ifdef USING_OMP_PRAGMAS
-            Eigen::Matrix<InReal,Eigen::Dynamic,1> tmp;
-            linearsolver::mul_EigenSparseDenseMatrix_MT( tmp, this->compressedMatrix.transpose(), this->map(data).template cast<Real>() * fact );
-            typename map_traits<InType>::map_type r = map(result);
-            r.noalias() = r + tmp;
+#ifdef EIGENSPARSEMATRIX_PARALLEL
+            if( alias(result, data) )
+                map(result) += linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix.transpose(), this->map(data).template cast<Real>() * fact ).template cast<InReal>();
+            else {
+                typename map_traits<InType>::map_type r = map(result);
+                r.noalias() = r + linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix.transpose(), this->map(data).template cast<Real>() * fact ).template cast<InReal>();
+            }
 #else
             // TODO multiply only the smallest dimension by fact
             if( alias(result, data) ) {
@@ -408,8 +417,8 @@ protected:
 		}
 		
 		// compute the product
-#ifdef USING_OMP_PRAGMAS
-        linearsolver::mul_EigenSparseDenseMatrix_MT( aux2, this->compressedMatrix.transpose(), aux1 );
+#ifdef EIGENSPARSEMATRIX_PARALLEL
+        aux2.noalias() = linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix.transpose(), aux1 );
 #else
         aux2.noalias() = this->compressedMatrix.transpose() * aux1;
 #endif

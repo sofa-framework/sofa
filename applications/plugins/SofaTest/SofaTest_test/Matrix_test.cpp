@@ -374,10 +374,12 @@ TEST_F(TsProductTimings, benchmark )
 {
     std::cerr<<"=== Matrix-Matrix Products:"<<std::endl;
 
+    double start, stop;
+
     matMultiplication.clear();
-    double start = get_time();
+    start = get_time();
     matMultiplication = mat * matMultiplier;
-    double stop = get_time();
+    stop = get_time();
     std::cerr<<"Mat:\t\t"<<stop-start<<" (ms)"<<std::endl;
 
     fullMultiplication.clear();
@@ -411,37 +413,79 @@ TEST_F(TsProductTimings, benchmark )
     stop = get_time();
     std::cerr<<"Eigen Sparse*Dense:\t\t"<<stop-start<<" (ms)"<<std::endl;
 
+#ifdef USING_OMP_PRAGMAS
     start = get_time();
-    component::linearsolver::mul_EigenSparseDenseMatrix_MT( eiDenseMultiplication, eiBase.compressedMatrix, eiDenseMultiplier );
+    eiDenseMultiplication.noalias() = component::linearsolver::mul_EigenSparseDenseMatrix_MT( eiBase.compressedMatrix, eiDenseMultiplier, omp_get_max_threads()/2 );
     stop = get_time();
     std::cerr<<"Eigen Sparse*Dense MT:\t\t"<<stop-start<<" (ms)"<<std::endl;
-
-
-    std::cerr<<"=== Matrix-Vector Products:"<<std::endl;
-
-    start = get_time();
-    eiVecM = eiBlock1 * eiVecN;
-    stop = get_time();
-    std::cerr<<"Eigen Block:\t\t"<<stop-start<<" (ms)"<<std::endl;
-
-#ifdef USING_OMP_PRAGMAS
-    start = get_time();
-    component::linearsolver::mul_EigenSparseDenseMatrix_MT( eiVecM, eiBlock1.compressedMatrix, eiVecN );
-    stop = get_time();
-    std::cerr<<"Eigen Block MT:\t\t"<<stop-start<<" (ms)"<<std::endl;
 #endif
 
-    start = get_time();
-    eiVecM = eiBase * eiVecN;
-    stop = get_time();
-    std::cerr<<"Eigen Base:\t\t"<<stop-start<<" (ms)"<<std::endl;
+    std::cerr<<"=== Eigen Matrix-Vector Products:"<<std::endl;
+    unsigned nbrows = 100, nbcols;
+    std::cerr<<"=== nb rows:"<<nbrows<<std::endl;
 
-#ifdef USING_OMP_PRAGMAS
-    start = get_time();
-    component::linearsolver::mul_EigenSparseDenseMatrix_MT( eiVecM, eiBase.compressedMatrix, eiVecN );
-    stop = get_time();
-    std::cerr<<"Eigen Base MT:\t\t"<<stop-start<<" (ms)"<<std::endl;
-#endif
+
+    for( int j=1; j<300 ; j+=30 )
+    {
+        nbcols = 100 * j;
+
+        std::cerr<<"=== nb cols:"<<nbcols<<std::endl;
+
+        Eigen::SparseMatrix<SReal,Eigen::RowMajor> A;
+        A.resize(nbrows,nbcols);
+#define NBCOLSRHS 1
+        Eigen::Matrix<SReal, Eigen::Dynamic, NBCOLSRHS> res, rhs;
+        rhs.resize(nbcols,NBCOLSRHS);
+        res.resize(nbrows,NBCOLSRHS);
+
+        sofa::helper::RandomGenerator randomGenerator;
+        randomGenerator.initSeed( (long)time(0) );
+
+        for( unsigned j=0; j<nbcols; j++)
+        {
+            Real random = randomGenerator.random<Real>( (Real) -1, (Real) 1 );
+            for( unsigned i=0; i<NBCOLSRHS; i++)
+                rhs.coeffRef(j,i) = random;
+            for( unsigned i=0; i<nbrows; i++)
+            {
+                if( random > -0.5 && random < 0.5 ) A.coeffRef(i,j)=random;
+            }
+        }
+
+        double min=std::numeric_limits<double>::max(), max=0, sum=0;
+        for( int i=0; i<100 ; ++i )
+        {
+            start = get_time();
+            res.noalias() = A * rhs;
+            stop = get_time();
+            double current = stop-start;
+            sum+=current;
+            if( current<min ) min=current;
+            if( current>max ) max=current;
+        }
+
+        std::cerr<<"ST: "<<sum/100.0<<" "<<min<<" "<<max<<std::endl;
+
+
+
+    #ifdef USING_OMP_PRAGMAS
+        min=std::numeric_limits<double>::max(), max=0, sum=0;
+        for( int i=0; i<100 ; ++i )
+        {
+            start = get_time();
+//            res.noalias() = typename Eigen::SparseDenseProductReturnType_MT<Eigen::SparseMatrix<SReal,Eigen::RowMajor>,Eigen::Matrix<SReal, Eigen::Dynamic, 1> >::Type( A.derived(), rhs.derived() );
+//            component::linearsolver::mul_EigenSparseDenseMatrix_MT( res, A, rhs );
+            res.noalias() = component::linearsolver::mul_EigenSparseDenseMatrix_MT( A, rhs );
+            stop = get_time();
+            double current = stop-start;
+            sum+=current;
+            if( current<min ) min=current;
+            if( current>max ) max=current;
+        }
+        std::cerr<<"MT: "<<sum/100.0<<" "<<min<<" "<<max<<std::endl;
+    #endif
+    }
+
 
 
     ASSERT_TRUE( true );

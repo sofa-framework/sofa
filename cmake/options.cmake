@@ -367,6 +367,11 @@ sofa_option(SOFA-MISC_VECTORIZE BOOL OFF "Enable SSE2 instructions (only on Wind
 
 # use OpenMP multithreading
 sofa_option(SOFA-MISC_OPENMP BOOL OFF "Use OpenMP multithreading")
+if(SOFA-MISC_OPENMP )
+    sofa_option(OpenMP_DEFAULT_NUM_THREADS_EIGEN_SPARSE_DENSE_PRODUCT INT 1 "Default number of threads for Eigen Sparse x Dense Matrix product (this number must not be too large for Matrix-Vector products where the MT overhead is hard to compensate)")
+    list(APPEND compilerDefines OMP_DEFAULT_NUM_THREADS_EIGEN_SPARSE_DENSE_PRODUCT=${OpenMP_DEFAULT_NUM_THREADS_EIGEN_SPARSE_DENSE_PRODUCT})
+endif()
+
 
 # os-specific
 if(XBOX)

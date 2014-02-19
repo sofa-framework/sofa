@@ -303,12 +303,14 @@ void mul_EigenSparseMatrix_MT( ResultType& res, const Lhs& lhs, const Rhs& rhs )
 /////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////
 
+#include <Eigen/Sparse>
+
 namespace Eigen
 {
 
 template<typename Lhs, typename Rhs>        class SparseTimeDenseProduct_MT;
 //template<typename Lhs, typename Rhs>        class DenseTimeSparseProduct_MT;
-template<typename Lhs, typename Rhs, bool Transpose> class SparseDenseOuterProduct_MT;
+//template<typename Lhs, typename Rhs, bool Transpose> class SparseDenseOuterProduct_MT;
 //template<typename Lhs, typename Rhs, int InnerSize = internal::traits<Lhs>::ColsAtCompileTime> struct DenseSparseProductReturnType;
 template<typename Lhs, typename Rhs, int InnerSize = internal::traits<Lhs>::ColsAtCompileTime> struct SparseDenseProductReturnType_MT;
 
@@ -319,7 +321,8 @@ template<typename Lhs, typename Rhs, int InnerSize> struct SparseDenseProductRet
 
 template<typename Lhs, typename Rhs> struct SparseDenseProductReturnType_MT<Lhs,Rhs,1>
 {
-  typedef SparseDenseOuterProduct_MT<Lhs,Rhs,false> Type;
+//  typedef SparseDenseOuterProduct_MT<Lhs,Rhs,false> Type;
+    typedef SparseDenseOuterProduct<Lhs,Rhs,false> Type;
 };
 
 //template<typename Lhs, typename Rhs, int InnerSize> struct DenseSparseProductReturnType_MT
@@ -333,104 +336,104 @@ template<typename Lhs, typename Rhs> struct SparseDenseProductReturnType_MT<Lhs,
 //};
 
 
-namespace internal {
+//namespace internal {
 
 //using Eigen::internal::traits;
 
-template<typename Lhs, typename Rhs, bool Tr>
-struct traits<SparseDenseOuterProduct_MT<Lhs,Rhs,Tr> >
-{
-  typedef Sparse StorageKind;
-  typedef typename scalar_product_traits<typename traits<Lhs>::Scalar,
-                                         typename traits<Rhs>::Scalar>::ReturnType Scalar;
-  typedef typename Lhs::Index Index;
-  typedef typename Lhs::Nested LhsNested;
-  typedef typename Rhs::Nested RhsNested;
-  typedef typename remove_all<LhsNested>::type _LhsNested;
-  typedef typename remove_all<RhsNested>::type _RhsNested;
+//template<typename Lhs, typename Rhs, bool Tr>
+//struct traits<SparseDenseOuterProduct_MT<Lhs,Rhs,Tr> >
+//{
+//  typedef Sparse StorageKind;
+//  typedef typename scalar_product_traits<typename traits<Lhs>::Scalar,
+//                                         typename traits<Rhs>::Scalar>::ReturnType Scalar;
+//  typedef typename Lhs::Index Index;
+//  typedef typename Lhs::Nested LhsNested;
+//  typedef typename Rhs::Nested RhsNested;
+//  typedef typename remove_all<LhsNested>::type _LhsNested;
+//  typedef typename remove_all<RhsNested>::type _RhsNested;
 
-  enum {
-    LhsCoeffReadCost = traits<_LhsNested>::CoeffReadCost,
-    RhsCoeffReadCost = traits<_RhsNested>::CoeffReadCost,
+//  enum {
+//    LhsCoeffReadCost = traits<_LhsNested>::CoeffReadCost,
+//    RhsCoeffReadCost = traits<_RhsNested>::CoeffReadCost,
 
-    RowsAtCompileTime    = Tr ? int(traits<Rhs>::RowsAtCompileTime)     : int(traits<Lhs>::RowsAtCompileTime),
-    ColsAtCompileTime    = Tr ? int(traits<Lhs>::ColsAtCompileTime)     : int(traits<Rhs>::ColsAtCompileTime),
-    MaxRowsAtCompileTime = Tr ? int(traits<Rhs>::MaxRowsAtCompileTime)  : int(traits<Lhs>::MaxRowsAtCompileTime),
-    MaxColsAtCompileTime = Tr ? int(traits<Lhs>::MaxColsAtCompileTime)  : int(traits<Rhs>::MaxColsAtCompileTime),
+//    RowsAtCompileTime    = Tr ? int(traits<Rhs>::RowsAtCompileTime)     : int(traits<Lhs>::RowsAtCompileTime),
+//    ColsAtCompileTime    = Tr ? int(traits<Lhs>::ColsAtCompileTime)     : int(traits<Rhs>::ColsAtCompileTime),
+//    MaxRowsAtCompileTime = Tr ? int(traits<Rhs>::MaxRowsAtCompileTime)  : int(traits<Lhs>::MaxRowsAtCompileTime),
+//    MaxColsAtCompileTime = Tr ? int(traits<Lhs>::MaxColsAtCompileTime)  : int(traits<Rhs>::MaxColsAtCompileTime),
 
-    Flags = Tr ? RowMajorBit : 0,
+//    Flags = Tr ? RowMajorBit : 0,
 
-    CoeffReadCost = LhsCoeffReadCost + RhsCoeffReadCost + NumTraits<Scalar>::MulCost
-  };
-};
+//    CoeffReadCost = LhsCoeffReadCost + RhsCoeffReadCost + NumTraits<Scalar>::MulCost
+//  };
+//};
 
-} // end namespace internal
+//} // end namespace internal
 
-template<typename Lhs, typename Rhs, bool Tr>
-class SparseDenseOuterProduct_MT
- : public SparseMatrixBase<SparseDenseOuterProduct_MT<Lhs,Rhs,Tr> >
-{
-  public:
+//template<typename Lhs, typename Rhs, bool Tr>
+//class SparseDenseOuterProduct_MT
+// : public SparseMatrixBase<SparseDenseOuterProduct_MT<Lhs,Rhs,Tr> >
+//{
+//  public:
 
-    typedef SparseMatrixBase<SparseDenseOuterProduct_MT> Base;
-    EIGEN_DENSE_PUBLIC_INTERFACE(SparseDenseOuterProduct_MT)
-    typedef internal::traits<SparseDenseOuterProduct_MT> Traits;
+//    typedef SparseMatrixBase<SparseDenseOuterProduct_MT> Base;
+//    EIGEN_DENSE_PUBLIC_INTERFACE(SparseDenseOuterProduct_MT)
+//    typedef internal::traits<SparseDenseOuterProduct_MT> Traits;
 
-  private:
+//  private:
 
-    typedef typename Traits::LhsNested LhsNested;
-    typedef typename Traits::RhsNested RhsNested;
-    typedef typename Traits::_LhsNested _LhsNested;
-    typedef typename Traits::_RhsNested _RhsNested;
+//    typedef typename Traits::LhsNested LhsNested;
+//    typedef typename Traits::RhsNested RhsNested;
+//    typedef typename Traits::_LhsNested _LhsNested;
+//    typedef typename Traits::_RhsNested _RhsNested;
 
-  public:
+//  public:
 
-    class InnerIterator;
+//    class InnerIterator;
 
-    EIGEN_STRONG_INLINE SparseDenseOuterProduct_MT(const Lhs& lhs, const Rhs& rhs)
-      : m_lhs(lhs), m_rhs(rhs)
-    {
-      EIGEN_STATIC_ASSERT(!Tr,YOU_MADE_A_PROGRAMMING_MISTAKE);
-    }
+//    EIGEN_STRONG_INLINE SparseDenseOuterProduct_MT(const Lhs& lhs, const Rhs& rhs)
+//      : m_lhs(lhs), m_rhs(rhs)
+//    {
+//      EIGEN_STATIC_ASSERT(!Tr,YOU_MADE_A_PROGRAMMING_MISTAKE);
+//    }
 
-    EIGEN_STRONG_INLINE SparseDenseOuterProduct_MT(const Rhs& rhs, const Lhs& lhs)
-      : m_lhs(lhs), m_rhs(rhs)
-    {
-      EIGEN_STATIC_ASSERT(Tr,YOU_MADE_A_PROGRAMMING_MISTAKE);
-    }
+//    EIGEN_STRONG_INLINE SparseDenseOuterProduct_MT(const Rhs& rhs, const Lhs& lhs)
+//      : m_lhs(lhs), m_rhs(rhs)
+//    {
+//      EIGEN_STATIC_ASSERT(Tr,YOU_MADE_A_PROGRAMMING_MISTAKE);
+//    }
 
-    EIGEN_STRONG_INLINE Index rows() const { return Tr ? m_rhs.rows() : m_lhs.rows(); }
-    EIGEN_STRONG_INLINE Index cols() const { return Tr ? m_lhs.cols() : m_rhs.cols(); }
+//    EIGEN_STRONG_INLINE Index rows() const { return Tr ? m_rhs.rows() : m_lhs.rows(); }
+//    EIGEN_STRONG_INLINE Index cols() const { return Tr ? m_lhs.cols() : m_rhs.cols(); }
 
-    EIGEN_STRONG_INLINE const _LhsNested& lhs() const { return m_lhs; }
-    EIGEN_STRONG_INLINE const _RhsNested& rhs() const { return m_rhs; }
+//    EIGEN_STRONG_INLINE const _LhsNested& lhs() const { return m_lhs; }
+//    EIGEN_STRONG_INLINE const _RhsNested& rhs() const { return m_rhs; }
 
-  protected:
-    LhsNested m_lhs;
-    RhsNested m_rhs;
-};
+//  protected:
+//    LhsNested m_lhs;
+//    RhsNested m_rhs;
+//};
 
-template<typename Lhs, typename Rhs, bool Transpose>
-class SparseDenseOuterProduct_MT<Lhs,Rhs,Transpose>::InnerIterator : public _LhsNested::InnerIterator
-{
-    typedef typename _LhsNested::InnerIterator Base;
-    typedef typename SparseDenseOuterProduct_MT::Index Index;
-  public:
-    EIGEN_STRONG_INLINE InnerIterator(const SparseDenseOuterProduct_MT& prod, Index outer)
-      : Base(prod.lhs(), 0), m_outer(outer), m_factor(prod.rhs().coeff(outer))
-    {
-    }
+//template<typename Lhs, typename Rhs, bool Transpose>
+//class SparseDenseOuterProduct_MT<Lhs,Rhs,Transpose>::InnerIterator : public _LhsNested::InnerIterator
+//{
+//    typedef typename _LhsNested::InnerIterator Base;
+//    typedef typename SparseDenseOuterProduct_MT::Index Index;
+//  public:
+//    EIGEN_STRONG_INLINE InnerIterator(const SparseDenseOuterProduct_MT& prod, Index outer)
+//      : Base(prod.lhs(), 0), m_outer(outer), m_factor(prod.rhs().coeff(outer))
+//    {
+//    }
 
-    inline Index outer() const { return m_outer; }
-    inline Index row() const { return Transpose ? Base::row() : m_outer; }
-    inline Index col() const { return Transpose ? m_outer : Base::row(); }
+//    inline Index outer() const { return m_outer; }
+//    inline Index row() const { return Transpose ? Base::row() : m_outer; }
+//    inline Index col() const { return Transpose ? m_outer : Base::row(); }
 
-    inline Scalar value() const { return Base::value() * m_factor; }
+//    inline Scalar value() const { return Base::value() * m_factor; }
 
-  protected:
-    int m_outer;
-    Scalar m_factor;
-};
+//  protected:
+//    int m_outer;
+//    Scalar m_factor;
+//};
 
 namespace internal {
 template<typename Lhs, typename Rhs>
@@ -454,17 +457,18 @@ struct sparse_time_dense_product_impl_MT<SparseLhsType,DenseRhsType,DenseResType
   typedef typename internal::remove_all<DenseResType>::type Res;
   typedef typename Lhs::Index Index;
   typedef typename Lhs::InnerIterator LhsInnerIterator;
-  static void run(const SparseLhsType& lhs, const DenseRhsType& rhs, DenseResType& res, const typename Res::Scalar& alpha)
+  static void run(const SparseLhsType& lhs, const DenseRhsType& rhs, DenseResType& res, const typename Res::Scalar& alpha, unsigned nbThreads)
   {
-#pragma omp parallel for
+#pragma omp parallel for num_threads(nbThreads) //schedule(static,3000)
       for(Index j=0; j<lhs.outerSize(); ++j)
       {
           for(Index c=0; c<rhs.cols(); ++c)
           {
-            typename Res::Scalar tmp(0);
+            typename Res::Scalar& r = res.coeffRef(j,c);
+            r = 0;
             for(LhsInnerIterator it(lhs,j); it ;++it)
-                tmp += it.value() * rhs.coeff(it.index(),c);
-            res.coeffRef(j,c) = alpha * tmp;
+                r += it.value() * rhs.coeff(it.index(),c);
+            r *= alpha;
           }
       }
   }
@@ -478,9 +482,9 @@ struct sparse_time_dense_product_impl_MT<SparseLhsType,DenseRhsType,DenseResType
   typedef typename internal::remove_all<DenseResType>::type Res;
   typedef typename Lhs::InnerIterator LhsInnerIterator;
   typedef typename Lhs::Index Index;
-  static void run(const SparseLhsType& lhs, const DenseRhsType& rhs, DenseResType& res, const typename Res::Scalar& alpha)
+  static void run(const SparseLhsType& lhs, const DenseRhsType& rhs, DenseResType& res, const typename Res::Scalar& alpha, unsigned nbThreads)
   {
-#pragma omp parallel for
+#pragma omp parallel for num_threads(nbThreads)
     for(Index j=0; j<lhs.outerSize(); ++j)
     {
       for(Index c=0; c<rhs.cols(); ++c)
@@ -501,9 +505,9 @@ struct sparse_time_dense_product_impl_MT<SparseLhsType,DenseRhsType,DenseResType
   typedef typename internal::remove_all<DenseResType>::type Res;
   typedef typename Lhs::InnerIterator LhsInnerIterator;
   typedef typename Lhs::Index Index;
-  static void run(const SparseLhsType& lhs, const DenseRhsType& rhs, DenseResType& res, const typename Res::Scalar& alpha)
+  static void run(const SparseLhsType& lhs, const DenseRhsType& rhs, DenseResType& res, const typename Res::Scalar& alpha, unsigned nbThreads)
   {
-#pragma omp parallel for
+#pragma omp parallel for num_threads(nbThreads)
     for(Index j=0; j<lhs.outerSize(); ++j)
     {
       typename Res::RowXpr res_j(res.row(j));
@@ -521,9 +525,9 @@ struct sparse_time_dense_product_impl_MT<SparseLhsType,DenseRhsType,DenseResType
   typedef typename internal::remove_all<DenseResType>::type Res;
   typedef typename Lhs::InnerIterator LhsInnerIterator;
   typedef typename Lhs::Index Index;
-  static void run(const SparseLhsType& lhs, const DenseRhsType& rhs, DenseResType& res, const typename Res::Scalar& alpha)
+  static void run(const SparseLhsType& lhs, const DenseRhsType& rhs, DenseResType& res, const typename Res::Scalar& alpha, unsigned nbThreads)
   {
-    #pragma omp parallel for
+    #pragma omp parallel for num_threads(nbThreads)
     for(Index j=0; j<lhs.outerSize(); ++j)
     {
       typename Rhs::ConstRowXpr rhs_j(rhs.row(j));
@@ -534,9 +538,9 @@ struct sparse_time_dense_product_impl_MT<SparseLhsType,DenseRhsType,DenseResType
 };
 
 template<typename SparseLhsType, typename DenseRhsType, typename DenseResType,typename AlphaType>
-inline void sparse_time_dense_product_MT(const SparseLhsType& lhs, const DenseRhsType& rhs, DenseResType& res, const AlphaType& alpha)
+inline void sparse_time_dense_product_MT(const SparseLhsType& lhs, const DenseRhsType& rhs, DenseResType& res, const AlphaType& alpha, unsigned nbThreads)
 {
-  sparse_time_dense_product_impl_MT<SparseLhsType,DenseRhsType,DenseResType>::run(lhs, rhs, res, alpha);
+  sparse_time_dense_product_impl_MT<SparseLhsType,DenseRhsType,DenseResType>::run(lhs, rhs, res, alpha, nbThreads);
 }
 
 } // end namespace internal
@@ -545,15 +549,27 @@ template<typename Lhs, typename Rhs>
 class SparseTimeDenseProduct_MT
   : public ProductBase<SparseTimeDenseProduct_MT<Lhs,Rhs>, Lhs, Rhs>
 {
+    unsigned m_nbThreads;
   public:
     EIGEN_PRODUCT_PUBLIC_INTERFACE(SparseTimeDenseProduct_MT)
 
-    SparseTimeDenseProduct_MT(const Lhs& lhs, const Rhs& rhs) : Base(lhs,rhs)
+    SparseTimeDenseProduct_MT(const Lhs& lhs, const Rhs& rhs, unsigned nbThreads) : Base(lhs,rhs), m_nbThreads(nbThreads)
     {}
 
     template<typename Dest> void scaleAndAddTo(Dest& dest, const Scalar& alpha) const
     {
-      internal::sparse_time_dense_product_MT(m_lhs, m_rhs, dest, alpha);
+#ifdef USING_OMP_PRAGMAS
+        // no multithreading for too small vectors
+        if( ( m_rhs.cols() == 1 && m_rhs.rows()<3000 ) || m_nbThreads==1 )
+            internal::sparse_time_dense_product(m_lhs, m_rhs, dest, alpha);
+        else
+        {
+//            std::cerr<<"SparseTimeDenseProduct_MT: "<<m_nbThreads<<std::endl;
+            internal::sparse_time_dense_product_MT<Lhs,Rhs,Dest,Scalar>(m_lhs, m_rhs, dest, alpha, m_nbThreads);
+        }
+#else
+        internal::sparse_time_dense_product(m_lhs, m_rhs, dest, alpha);
+#endif
     }
 
   private:
@@ -573,16 +589,19 @@ namespace component
 
 namespace linearsolver
 {
-    /// Eigen::Sparse * Dense Matrices multiplication (openmp multithreaded version)
-    template<typename Result, typename Derived, typename OtherDerived>
-    void mul_EigenSparseDenseMatrix_MT( Result& res, const Eigen::SparseMatrixBase<Derived>& lhs, const Eigen::MatrixBase<OtherDerived>& rhs )
-    {
-#ifdef USING_OMP_PRAGMAS
-        res = (typename Eigen::SparseDenseProductReturnType_MT<Derived,OtherDerived>::Type( lhs.derived(), rhs.derived() )).template cast<typename Result::Scalar>();
-#else
-        res = lhs * rhs;
+#ifndef OMP_DEFAULT_NUM_THREADS_EIGEN_SPARSE_DENSE_PRODUCT
+#define OMP_DEFAULT_NUM_THREADS_EIGEN_SPARSE_DENSE_PRODUCT 1
 #endif
+
+    /// Eigen::Sparse * Dense Matrices multiplication (openmp multi-threaded version)
+    template<typename Derived, typename OtherDerived >
+    inline const typename Eigen::SparseDenseProductReturnType_MT<Derived,OtherDerived>::Type
+    mul_EigenSparseDenseMatrix_MT( const Eigen::SparseMatrixBase<Derived>& lhs, const Eigen::MatrixBase<OtherDerived>& rhs, unsigned nbThreads=OMP_DEFAULT_NUM_THREADS_EIGEN_SPARSE_DENSE_PRODUCT )
+    {
+        return typename Eigen::SparseDenseProductReturnType_MT<Derived,OtherDerived>::Type( lhs.derived(), rhs.derived(), nbThreads );
     }
+
+
 }
 }
 }

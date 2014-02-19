@@ -281,7 +281,7 @@ public:
     {
         compress();
 #ifdef USING_OMP_PRAGMAS
-        linearsolver::mul_EigenSparseDenseMatrix_MT( result, compressedMatrix, data );
+        result = linearsolver::mul_EigenSparseDenseMatrix_MT( result, compressedMatrix );
 #else
         result = compressedMatrix * data;
 #endif
@@ -415,12 +415,18 @@ public:
     #endif
     }
 
+    /// Sparse x Dense Matrix product
+    void mul( Eigen::Matrix<Real,Eigen::Dynamic,Eigen::Dynamic>& res, const Eigen::Matrix<Real,Eigen::Dynamic,Eigen::Dynamic>& rhs )
+    {
+        res = compressedMatrix * rhs;
+    }
+
     /// Sparse x Dense Matrix product openmp multithreaded
     void mul_MT( Eigen::Matrix<Real,Eigen::Dynamic,Eigen::Dynamic>& res, const Eigen::Matrix<Real,Eigen::Dynamic,Eigen::Dynamic>& rhs )
     {
         compress();
 #ifdef USING_OMP_PRAGMAS
-        linearsolver::mul_EigenSparseDenseMatrix_MT( res, compressedMatrix, rhs );
+        res = linearsolver::mul_EigenSparseDenseMatrix_MT( compressedMatrix, rhs );
 #else
         res = compressedMatrix * rhs;
 #endif
