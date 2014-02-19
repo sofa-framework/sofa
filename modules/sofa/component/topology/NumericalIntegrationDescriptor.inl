@@ -39,11 +39,11 @@ namespace topology
 using namespace sofa::defaulttype;
 
 
-template< typename class Real, int N>
+template< typename Real, int N>
 typename NumericalIntegrationDescriptor<Real,N>::QuadraturePointArray NumericalIntegrationDescriptor<Real,N>::getQuadratureMethod(const QuadratureMethod qt, const IntegrationOrder order) const
 {
 	QuadratureMethodKey key(qt,order);
-	std::map<typename QuadratureMethodKey,typename QuadraturePointArray>::const_iterator it=quadratureMap.find(key);
+	typename std::map<QuadratureMethodKey, QuadraturePointArray>::const_iterator it=quadratureMap.find(key);
 	if (it!=quadratureMap.end())
 		return ((*it).second);
 	else {
@@ -52,21 +52,21 @@ typename NumericalIntegrationDescriptor<Real,N>::QuadraturePointArray NumericalI
 	}
 
 }
-template< typename class Real, int N>
+template< typename Real, int N>
 sofa::helper::set<typename NumericalIntegrationDescriptor<Real,N>::QuadratureMethod>  NumericalIntegrationDescriptor<Real,N>::getQuadratureMethods() const 
 {
 	sofa::helper::set<QuadratureMethod>  qmset;
-	std::map<typename QuadratureMethodKey,typename QuadraturePointArray>::const_iterator it;
+	typename std::map<QuadratureMethodKey, QuadraturePointArray>::const_iterator it;
 	for (it=quadratureMap.begin();it!=quadratureMap.end();it++) {
 		qmset.insert((*it).first.first);
 	}
 	return(qmset);
 }
-template< typename class Real, int N>
+template< typename Real, int N>
 sofa::helper::set<typename NumericalIntegrationDescriptor<Real,N>::IntegrationOrder>  NumericalIntegrationDescriptor<Real,N>::getIntegrationOrders(const QuadratureMethod qt) const
 {
 	sofa::helper::set<IntegrationOrder>  ioset;
-	std::map<typename QuadratureMethodKey,typename QuadraturePointArray>::const_iterator it;
+	typename std::map<QuadratureMethodKey, QuadraturePointArray>::const_iterator it;
 	for (it=quadratureMap.begin();it!=quadratureMap.end();it++) {
 		if (((*it).first.first)==qt){
 			ioset.insert((*it).first.second);
@@ -74,7 +74,7 @@ sofa::helper::set<typename NumericalIntegrationDescriptor<Real,N>::IntegrationOr
 	}
 	return(ioset);
 }
-template< typename class Real, int N>
+template< typename Real, int N>
 void NumericalIntegrationDescriptor<Real,N>::addQuadratureMethod(const QuadratureMethod qt, const IntegrationOrder order, QuadraturePointArray qpa)
 {
 	quadratureMap.insert(std::pair<QuadratureMethodKey,QuadraturePointArray>(QuadratureMethodKey(qt,order),qpa));

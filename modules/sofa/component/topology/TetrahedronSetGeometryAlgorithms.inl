@@ -53,11 +53,11 @@ NumericalIntegrationDescriptor<typename TetrahedronSetGeometryAlgorithms< DataTy
 
 template< class DataTypes>
 void TetrahedronSetGeometryAlgorithms< DataTypes >::defineTetrahedronCubaturePoints() {
-	typedef NumericalIntegrationDescriptor<typename TetrahedronSetGeometryAlgorithms< DataTypes >::Real,4>::QuadraturePoint QuadraturePoint;
-	typedef NumericalIntegrationDescriptor<typename TetrahedronSetGeometryAlgorithms< DataTypes >::Real,4>::BarycentricCoordinatesType BarycentricCoordinatesType;
+	typedef typename NumericalIntegrationDescriptor<typename TetrahedronSetGeometryAlgorithms< DataTypes >::Real,4>::QuadraturePoint QuadraturePoint;
+	typedef typename NumericalIntegrationDescriptor<typename TetrahedronSetGeometryAlgorithms< DataTypes >::Real,4>::BarycentricCoordinatesType BarycentricCoordinatesType;
 	// Gauss method
-	NumericalIntegrationDescriptor<typename TetrahedronSetGeometryAlgorithms< DataTypes >::Real,4>::QuadratureMethod m=NumericalIntegrationDescriptor<typename TetrahedronSetGeometryAlgorithms< DataTypes >::Real,4>::GAUSS_METHOD;
-	NumericalIntegrationDescriptor<typename TetrahedronSetGeometryAlgorithms< DataTypes >::Real,4>::QuadraturePointArray qpa;
+	typename NumericalIntegrationDescriptor<typename TetrahedronSetGeometryAlgorithms< DataTypes >::Real,4>::QuadratureMethod m=NumericalIntegrationDescriptor<typename TetrahedronSetGeometryAlgorithms< DataTypes >::Real,4>::GAUSS_METHOD;
+	typename NumericalIntegrationDescriptor<typename TetrahedronSetGeometryAlgorithms< DataTypes >::Real,4>::QuadraturePointArray qpa;
 	BarycentricCoordinatesType v;
 	/// integration with linear accuracy.
 	v=BarycentricCoordinatesType(0.25,0.25,0.25,0.25);
