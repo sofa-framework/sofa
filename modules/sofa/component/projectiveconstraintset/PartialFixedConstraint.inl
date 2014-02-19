@@ -315,7 +315,7 @@ void PartialFixedConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseMa
             {
                 if (blockedDirection[c])
                 {
-                    M->clearRowCol( offset + i * blockSize );
+                    M->clearRowCol( offset + i * blockSize + c );
                 }
             }
         }
@@ -329,7 +329,7 @@ void PartialFixedConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseMa
             {
                 if (blockedDirection[c])
                 {
-                    M->clearRowCol( offset + (*it) * blockSize );
+                    M->clearRowCol( offset + (*it) * blockSize + c);
                 }
             }
         }
