@@ -543,7 +543,7 @@ using namespace core::behavior;
 
                 kkt->setCorrectionPass( false );
                 kkt->solveWithPreconditioner(x, sys, rhs);
-
+				
                 if( debug.getValue() ) {
                     std::cerr << "dynamics rhs:" << std::endl
                               << rhs.transpose() << std::endl

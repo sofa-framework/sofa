@@ -91,7 +91,8 @@ class SOFA_Compliant_API AffineMultiMapping : public AssembledMultiMapping<TIn, 
 					// each dof dimension
 					for(unsigned u = 0; u < self::Nin; ++u) {
 						unsigned c = k * self::Nin + u;
-						jack.insertBack(r, c) = matrix.getValue()[off + c];
+						SReal value = matrix.getValue()[off + c];
+						if( value ) jack.insertBack(r, c) = value;
 					}					
 				}
 				off += dim;

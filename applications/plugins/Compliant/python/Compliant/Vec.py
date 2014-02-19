@@ -83,3 +83,6 @@ class Proxy:
     
     def __str__(self):
         return ' '.join(map(str, self.data))
+
+    def copy(self):
+        return Proxy( [xi for xi in self.data] )
