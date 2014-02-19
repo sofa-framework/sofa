@@ -149,8 +149,14 @@ void SequentialSolver::factor(const system_type& system) {
 
 	cmat PJT = system.P * system.J.transpose();
 
+	cmat tmp; tmp.resize( mapping_response.rows(),
+						  mapping_response.cols());
+	
+
 	// TODO: temporary :-/
-	response->solve(mapping_response, PJT);
+	response->solve(tmp, PJT);
+	mapping_response = system.P * tmp;
+	
 
 	// to avoid allocating matrices for each block, could be a vec instead ?
 	dense_matrix storage;
