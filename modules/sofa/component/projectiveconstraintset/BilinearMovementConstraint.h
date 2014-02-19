@@ -59,7 +59,7 @@ class BilinearMovementConstraintInternalData
 };
 
 /** 
-    Impose a motion to all the boundary points of a 2D mesh. The motion of the 4 corners are given in the data m_cornerMovements and the movements of the edge points are computed by linear interpolation. 
+    Impose a motion to all the boundary points of a mesh. The motion of the 4 corners are given in the data m_cornerMovements and the movements of the edge points are computed by linear interpolation. 
 */
 template <class TDataTypes>
 class BilinearMovementConstraint : public core::behavior::ProjectiveConstraintSet<TDataTypes>
@@ -175,14 +175,7 @@ private:
     /// Handler for subset Data
     FCPointHandler* pointHandler;
 
-    // Vector with index = indice of the constrained points and value is a Vec<3,Real> with the index of the two neighboor corner points (see schema bellow) and the barycentryc coefficient alpha
-    // 0------1
-    // |      |
-    // |      |
-    // 3------2      
-    sofa::helper::vector < Vec<3,Real> > m_contraintParametersVector;
-
-    /// Find the 4 corners of the 2D grid
+    /// Find the corners of the grid mesh
     void findCornerPoints();
     
     /// Compute the displacement of each mesh point by linear interpolation with the displacement of corner points

@@ -3,6 +3,7 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 set(SOURCE_FILES
 
     StrainMappings_test.cpp
+    Patch_test.cpp
         )
 
 if(APPLE)
