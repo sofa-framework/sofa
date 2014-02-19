@@ -40,10 +40,10 @@ namespace topology
 using namespace sofa::defaulttype;
 
 /// Cross product for 3-elements vectors.
-template< typename class Real, int N>
+template< typename Real, int N>
 class NumericalIntegrationDescriptor {
 public:
-	typedef typename Vec<N, Real> BarycentricCoordinatesType;
+	typedef Vec<N, Real> BarycentricCoordinatesType;
 	typedef std::pair<BarycentricCoordinatesType,Real> QuadraturePoint;
 	typedef sofa::helper::vector<QuadraturePoint> QuadraturePointArray;
 	
@@ -55,7 +55,7 @@ public:
 	typedef std::pair<QuadratureMethod,IntegrationOrder> QuadratureMethodKey;
 
 protected:
-	std::map<typename QuadratureMethodKey,typename QuadraturePointArray>  quadratureMap;
+	std::map<QuadratureMethodKey, QuadraturePointArray>  quadratureMap;
 public:
 	/// empty constructor
 	NumericalIntegrationDescriptor(){}
