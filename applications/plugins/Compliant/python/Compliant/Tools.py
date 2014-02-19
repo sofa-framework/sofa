@@ -51,6 +51,8 @@ def scene(node):
     return node.createChild('scene') 
 
 
+
+
 # recursive find (nodes only, depth-first)
 def find(root, name):
     

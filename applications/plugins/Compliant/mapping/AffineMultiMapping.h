@@ -22,6 +22,7 @@ namespace mapping {
 	
 */
 
+// TODO make it work for any vector output dofs (only 1d dofs for now)
 
 template<class TIn, class TOut>
 class SOFA_Compliant_API AffineMultiMapping : public AssembledMultiMapping<TIn, TOut> {

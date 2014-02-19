@@ -65,10 +65,6 @@ class Frame:
         # TODO more: apply( vec3 ), wrench/twist frame change.
 
 
-# TODO remove ?
-def mesh_offset( mesh, path = "" ):
-	str = subprocess.Popen("GenerateRigid " + mesh ).stdout.read()
-        
 class MassInfo:
         pass
 
@@ -80,8 +76,15 @@ def generate_rigid(filename, density = 1000.0):
 		output = Popen([cmd, args], stdout=PIPE)
 		line = output.stdout.read().split('\n')
 	except OSError:
-		print 'error when calling GenerateRigid, do you have GenerateRigid built in SOFA ?'
-		raise
+                # try the debug version
+                cmd += 'd'
+                
+                try:
+                        output = Popen([cmd, args], stdout=PIPE)
+                        line = output.stdout.read().split('\n')
+                except OSError:
+                        print 'error when calling GenerateRigid, do you have GenerateRigid built in SOFA ?'
+                        raise
 
         start = 2
         
