@@ -74,7 +74,7 @@ class PID:
 # this is for large gains + zero target velocity
 class ImplicitPID:
     
-    def __init__(self, dofs):
+    def __init__(self, dofs, **args):
         # gains
         self.kp = -1
         self.kd = -0
@@ -89,9 +89,15 @@ class ImplicitPID:
         
         self.name = 'pid'
 
+        # overrides stuff
+        for k in args:
+            setattr(self, k, args[k])
+
+        # insert start here
         node = dofs.getContext().createChild( self.name )
 
         self.dofs = node.createObject('MechanicalObject', 
+                                      name = 'dofs',
                                       template = 'Vec1d',
                                       position = '0')
         
@@ -104,7 +110,6 @@ class ImplicitPID:
         
         self.node = node
         
-
 
     def reset(self):
         self.integral = 0
