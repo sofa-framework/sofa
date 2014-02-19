@@ -282,9 +282,10 @@ SReal SequentialSolver::step(vec& lambda,
 		// fix net to avoid error accumulations ?
 	}
 	
-	// TODO this is needed to avoid error accumulation
-	net = mapping_response * lambda;
+	// std::cerr << "sanity check: " << (net - mapping_response * lambda).norm() << std::endl;
 
+	// TODO is this needed to avoid error accumulation ?
+	// net = mapping_response * lambda;
 
 	// TODO flag to return real residual estimate !! otherwise
 	// convergence plots are not fair.
@@ -306,11 +307,12 @@ void SequentialSolver::solve(vec& res,
 	// we're done lol
 	if( !sys.n ) return;
 
-	// net constraint velocity correction
-	vec net = vec::Zero( sys.m );
 	
 	// lagrange multipliers TODO reuse res.tail( sys.n ) ?
 	vec lambda = res.tail(sys.n); 
+
+	// net constraint velocity correction
+	vec net = mapping_response * lambda;
 	
 	// lambda change work vector
 	vec delta = vec::Zero( sys.n );
@@ -339,6 +341,8 @@ void SequentialSolver::solve(vec& res,
 		if( estimate <= epsilon2 ) break;
 	}
 	
+	// std::cerr << "sanity check: " << (net - mapping_response * lambda).norm() << std::endl;
+
 	res.head( sys.m ) += net;
 	res.tail( sys.n ) = lambda;
 	
