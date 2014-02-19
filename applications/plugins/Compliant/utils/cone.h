@@ -10,33 +10,31 @@ Eigen::Matrix<U, 3, 1> cone(const Eigen::Matrix<U, 3, 1>& f,
                             U mu = 1.0) {
 	typedef Eigen::Matrix<U, 3, 1> vec3;
 
-	// normal 
+	assert( std::abs(normal.norm() - 1) < std::numeric_limits<U>::epsilon() );
+	
+	// normal norm
 	U theta_n = f.dot(normal); 
 
 	// normal / tangent forces
 	vec3 f_n = normal * theta_n;
 	vec3 f_t = f - f_n;
 
+	// tangent norm
 	U theta_t = f_t.norm();
 	
+	// this might be the negative cone
 	bool inside_cone = (theta_t <= mu * theta_n);
 	
 	// projection
 	if( !inside_cone ) {
-		// are we in the negative cone ?
-		// U sign = attractive ? -1 : 1;
+		// find cone edge along tangent direction: 
+		U alpha = mu * theta_n - theta_t; // < 0
 		
-		// find cone generator
-		U alpha = theta_t / mu - theta_n;
-		assert( alpha > 0);
+		// project f horizontally on the cone
+		vec3 gen = f + alpha / theta_t * f_t;
 		
-		// U check = std::abs(theta_t - (sign * mu * alpha) * theta_n);
-		// assert( check < 1e-5 );
-		
-		// vertically project f on the cone to get generator
-		vec3 gen = f + alpha * normal; 
-		
-		assert( gen.dot(normal) >= 0 );
+		// flip generator to get *positive* cone generator
+		if( gen.dot(normal) < 0 ) gen = -gen;
 		
 		// project f onto generator
 		U beta = gen.dot(f);
