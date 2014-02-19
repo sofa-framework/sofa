@@ -141,7 +141,7 @@ class ImplicitPID:
     # apply an explicit force
     def apply(self, f):
         self.explicit += f
-        self.dofs.externalForce = str( f )
+        self.dofs.externalForce = str( self.explicit )
 
 
     # force applied at the end of time step
