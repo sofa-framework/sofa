@@ -80,10 +80,9 @@ set(UI_FILES
 	VideoRecorderManager.ui
 	)
 
-if(SOFA_DUMP_VISITOR_INFO)
+if(SOFA-MISC_DUMP_VISITOR_INFO)
 	list(APPEND HEADER_FILES
-	
-		 GraphVisitor.h
+
 		 WindowVisitor.h
 		 QVisitorControlPanel.h
 		 PieWidget.h
@@ -143,6 +142,10 @@ list(APPEND HEADER_FILES
 	ImageQt.h
 	QModelViewTableDataContainer.h
 	)
+
+if(SOFA-MISC_DUMP_VISITOR_INFO)
+    list(APPEND HEADER_FILES  GraphVisitor.h  )
+endif()
 
 set(MOC_FILES_GROUP "Generated")
 set(FORM_FILES_GROUP "Generated")

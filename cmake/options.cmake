@@ -172,6 +172,12 @@ if(SOFA-MISC_DEV)
     list(APPEND compilerDefines SOFA_DEV)
 endif()
 
+option(SOFA-MISC_DUMP_VISITOR_INFO "Compiling with performance analysis" OFF)
+if(SOFA-MISC_DUMP_VISITOR_INFO)
+    list(APPEND compilerDefines SOFA_DUMP_VISITOR_INFO)
+endif()
+
+
 ## tutorial
 if(PS3)
     sofa_option(SOFA-TUTORIAL_CHAIN_HYBRID BOOL OFF "Build Chain hybrid tutorial")
