@@ -62,7 +62,7 @@
 #      define HASH_NAMESPACE std
 #    endif
 #  else
-#    if __GNUC__ > 4 || (__GNUC__ == 4 && (__GNUC_MINOR__ >= 3 ))
+#    if __GNUC__ > 4 || (__GNUC__ == 4 && (__GNUC_MINOR__ >= 3 )) || __llvm__ || __clang__ // I am not sure about clang version, but sofa compiles only from clang3.4 anyway
 #      include <tr1/unordered_map>
 #      define HASH_NAMESPACE std::tr1
 #    else
@@ -262,7 +262,7 @@ public:
 
 
 #ifndef _MSC_VER
-#    if __GNUC__ > 4 || (__GNUC__ == 4 && (__GNUC_MINOR__ >= 3 ))        //hash_map is deprecated since gcc-4.3
+#    if __GNUC__ > 4 || (__GNUC__ == 4 && (__GNUC_MINOR__ >= 3 )) || __llvm__ || __clang__       //hash_map is deprecated since gcc-4.3
     typedef HASH_NAMESPACE::unordered_map<Key, Grid*, key_hash_fun> Map;
 #    else
     typedef HASH_NAMESPACE::hash_map<Key, Grid*, key_hash_fun> Map;
