@@ -73,6 +73,7 @@ public:
     //Parameters
     Data<std::string> p_mapGroupModulus;
     Data<Real> p_defaultModulus;
+    Data<helper::vector<Real> > p_groupMod;
 
     virtual std::string getTemplateName() const
     {
