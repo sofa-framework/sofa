@@ -66,6 +66,10 @@ public:
     New(A1 a1, A2 a2, A3 a3) : SPtr(new T(a1,a2,a3)) {}
     template <class A1, class A2, class A3, class A4>
     New(A1 a1, A2 a2, A3 a3, A4 a4) : SPtr(new T(a1,a2,a3,a4)) {}
+    template <class A1, class A2, class A3, class A4, class A5>
+    New(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5) : SPtr(new T(a1,a2,a3,a4,a5)) {}
+    template <class A1, class A2, class A3, class A4, class A5, class A6>
+    New(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6) : SPtr(new T(a1,a2,a3,a4,a5,a6)) {}
 };
 
 /// dynamic_cast operator for SPtr
