@@ -80,7 +80,6 @@ protected:
 
 	virtual void assemble( const typename self::in_pos_type& in_pos ) {
 
-
 		Eigen::Matrix<real, 3, self::Nout> local_frame;
 
 		unsigned n = in_pos.size();
@@ -94,7 +93,7 @@ protected:
 		for(unsigned i = 0; i < n; ++i)
 			{
 				assert( !normal.empty() );
-				assert( std::abs( normal[i].norm() - 1 ) <= std::numeric_limits<SReal>::epsilon() );
+//				assert( std::abs( normal[i].norm() - 1 ) <= std::numeric_limits<SReal>::epsilon() );
 				
 				// first vector is normal
                 local_frame.col(0) = utils::map( normal[i] );

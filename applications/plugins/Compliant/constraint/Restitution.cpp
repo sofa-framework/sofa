@@ -32,12 +32,12 @@ void Restitution::dynamics(SReal* dst, unsigned n, bool stabilization) const
 
     // access contact velocity
     SReal* v = new SReal[n];
-    mstate->copyToBuffer(v, core::VecDerivId::velocity(), n); // todo improve by accessing directly the i-th entrie without copy the entire array
+    mstate->copyToBuffer(v, core::VecDerivId::velocity(), n); // todo improve this by accessing directly the i-th entry without copying the entire array
 
     // create restitution for violated constraints (under contact distance)
     unsigned i = 0;
     for(SReal* last = dst + n; dst < last; ++dst, ++i) {
-        if( mask[i] /*&& v[i] < epsilon*/ ) // TODO handle too small velocity
+        if( ( mask.empty() || mask[i] ) /*&& v[i] < epsilon*/ ) // TODO handle too small velocity
             *dst = -v[i] * restitution.getValue(); // we sneakily fake constraint error with reflected-adjusted relative velocity
     }
 
