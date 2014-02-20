@@ -50,23 +50,6 @@ namespace helper
 
 namespace system
 {
-
-std::string AddSofaSrcDir (const std::string & path = std::string())
-{
-    std::string result = sofa_tostring(SOFA_SRC_DIR);
-    result = result.substr(1,result.size()-2);
-    result += path;
-    return result;
-}
-
-std::string AddSofaBuildDir (const std::string & path = std::string())
-{
-    std::string result = sofa_tostring(SOFA_BUILD_DIR);
-    result = result.substr(1,result.size()-2);
-    result += path;
-    return result;
-}
-
 // replacing every occurences of "//"  by "/"
 std::string cleanPath( const std::string& path )
 {
@@ -90,7 +73,7 @@ static std::string pluginSubdir("/bin");
 static std::string pluginSubdir("/lib");
 #endif
 
-FileRepository PluginRepository("SOFA_PLUGIN_PATH", AddSofaBuildDir(pluginSubdir).c_str());
+FileRepository PluginRepository("SOFA_PLUGIN_PATH", (std::string(SOFA_BUILD_DIR)+pluginSubdir).c_str());
 
 static FileRepository createSofaDataPath()
 {
