@@ -553,7 +553,17 @@ protected:
     }
 
 
-
+	template<class PixelT>
+	bool isInsideImage(CImg<PixelT>& img, unsigned int x, unsigned int y, unsigned z)
+	{
+		if(x<0) return false;
+		if(y<0) return false;
+		if(z<0) return false;
+		if(x>=img.width()) return false;
+		if(y>=img.height()) return false;
+		if(z>=img.depth()) return false;
+		return true;
+	}
 
     template<class PixelT>
     void draw_line(CImg<PixelT>& im,const Coord& p0,const Coord& p1,const PixelT& color,const unsigned int subdiv)
@@ -568,8 +578,10 @@ protected:
         Coord P (P0);
         for (unsigned int t = 0; t<=dmax; ++t)
         {
-            im((unsigned int)sofa::helper::round(P[0]),(unsigned int)sofa::helper::round(P[1]),(unsigned int)sofa::helper::round(P[2]))=color;
-            P+=dP;
+			if(isInsideImage<PixelT>(im, (unsigned int)sofa::helper::round(P[0]),(unsigned int)sofa::helper::round(P[1]),(unsigned int)sofa::helper::round(P[2])))
+				im((unsigned int)sofa::helper::round(P[0]),(unsigned int)sofa::helper::round(P[1]),(unsigned int)sofa::helper::round(P[2]))=color;
+            
+			P+=dP;
         }
     }
 
@@ -596,8 +608,9 @@ protected:
                 Real u = (Real)t / (Real)dmax;
                 color = (PixelT)(color0 * (1.0 - u) + color1 * u);
             }
-
-            im((unsigned int)sofa::helper::round(P[0]),(unsigned int)sofa::helper::round(P[1]),(unsigned int)sofa::helper::round(P[2]))=color;
+			
+			if(isInsideImage<PixelT>(im, (unsigned int)sofa::helper::round(P[0]),(unsigned int)sofa::helper::round(P[1]),(unsigned int)sofa::helper::round(P[2])))
+				im((unsigned int)sofa::helper::round(P[0]),(unsigned int)sofa::helper::round(P[1]),(unsigned int)sofa::helper::round(P[2]))=color;
             P+=dP;
         }
     }
@@ -661,7 +674,7 @@ protected:
             {
                 unsigned int p1=tri[i][(j==0)?2:j-1],p2=tri[i][j];
                 edgesetit it=edges.find(edge(p2,p1));
-                if(it==edges.end()) edges.insert(edge(p1,p2));
+                if(it==edges.end()) edges.insert(edge(p2,p1));
                 else edges.erase(it);
             }
         if(!edges.size()) return; // no hole
