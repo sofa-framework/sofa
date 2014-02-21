@@ -285,7 +285,8 @@ unsigned int AttributeMultiVector<T>::getBlocksPointers(std::vector<void*>& addr
 template <typename T>
 inline void AttributeMultiVector<T>::initElt(unsigned int id)
 {
-	m_tableData[id / _BLOCKSIZE_][id % _BLOCKSIZE_] = T(0);
+    // E.S. : removed the 0 argument that caused incompatibility with sofa::fixed_array and others
+    m_tableData[id / _BLOCKSIZE_][id % _BLOCKSIZE_] = T(/*0*/);
 }
 
 template <typename T>
