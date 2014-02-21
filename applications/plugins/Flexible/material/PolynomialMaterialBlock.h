@@ -150,7 +150,7 @@ class PolynomialMaterialBlock< I331(_Real) >:
         MatBlock getC() const
         {
             MatBlock C = MatBlock();
-            C.invert(-K);
+            //C.invert(-K);
             return C;
         }
 

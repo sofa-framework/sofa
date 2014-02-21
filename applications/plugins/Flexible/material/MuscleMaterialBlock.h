@@ -64,55 +64,48 @@ class MuscleMaterialBlock< E311(_Real) >:
     /**
           * DOFs: strain computed with corotational mapping : E
           *
-          * fiber stretch :  lambda = E + 1
-          * normalized stretch :  lambdaN  =  lambda/Lambda0
-          * 2nd PK stress :  f = -vol*sigmaMax*1/Lambda0 * (fpassive + a.factive) = c * (fpassive + a.factive)
+          * vol = l0
+          * fiber stretch :  lambda = l/l0 = E + 1
+          * normalized stretch :  lambdaN  =  l/lopt = lambda/Lambda0
+          * normalized strain :  EN = lambdaN - 1
           *
-          * passive part:
-          *    -  fpassive = 0                                    lambdaN <= 1
-          *    -  fpassive = P1.(exp(P2*(lambdaN-1))-1)           1 < lambdaN <= lambdaL
-          *              k = df/dE = c*P2/Lambda0*( fpassive + P1 )
-          *    -  fpassive = P3*lambdaN + P4                      lambdaL < lambdaN
-          *                = P1*P2*exp((lambdaL-1)*P2)*lambdaN + P1.(exp((lambdaL-1)*P2)*(1-lambdaL*P2)-1)    to ensure CO and C1 continuity
-          *              k = c*P3/Lambda0
-          * active part:
-          *    -  factive = 9*(lambdaN-0.4)^2                   lambdaN <= 0.6
-          *             k = 18*c*a(lambdaN-0.4)/Lambda0
-          *    -  factive = 1-4*(1-lambdaN)^2                   0.6 < lambdaN <= 1.4
-          *             k = 8*c*a*(1-lambdaN)/Lambda0
-          *    -  factive = 9*(lambdaN-1.6)^2                   1.4 < lambdaN
-          *             k = 18*c*a(lambdaN-1.6)/Lambda0
-          *
-          * for details, see  "A 3D model of muscle reveals the causes of nonuniform strains in the biceps brachii", Blemker et al., 2005
+          *   f = -vol*sigmaMax*a*fl*fv
+          *   with fl = exp{-EN^2/b^2}
+          *        fv = Vsh(Vmax + lopt.ENdot)/(Vsh.Vmax-lopt.ENdot)    with   Vmax = vm(1-ver(1-a.fl))  and  lopt.ENdot = ldot = Edot.l0
+          *   k = -2*f*EN/(b^2*Lambda0)
+          *   b = -vol*sigmaMax*a*fl * Vmax.(Vsh+1)*Vsh/(Vsh.Vmax-lopt.ENdot)^2
           */
 
 
     static const bool constantK=false;
 
-    Real C; ///< -vol*sigmaMax/Lambda0
-    Real P1;
-    Real P2;
-    Real P3;
-    Real P4;
-    Real Lambda0;
-    Real LambdaL;
     Real A;
+    Real C; ///< -vol*sigmaMax*a
+    Real D; ///< -2/(b*Lambda0)
+    Real Lambda0;
+    Real B2;
+    Real Vvm;
+    Real Ver;
+    Real Vsh;
+    Real L0;
 
     mutable Real K;
+    mutable Real B;
 
-    void init(const Real p1,const Real p2,const Real l0,const Real ll,const Real a,const Real sigmaMax)
+    void init(const Real lambda0,const Real sigmaMax,const Real a,const Real b,const Real vvm,const Real ver,const Real vsh)
     {
         K=0;
-        Real vol=1.;
-        if(this->volume) vol=(*this->volume)[0];
-        P1 = p1;
-        P2 = p2;
-        LambdaL = ll;
-        P3 = P1*P2*exp((LambdaL-1.)*P2);
-        P4 = P3*(1./P2-LambdaL)-P1;
-        Lambda0 = l0;
+        L0=1.;
+        if(this->volume) L0=(*this->volume)[0];
+
+        Lambda0 = lambda0;
         A = a;
-        C = - sigmaMax * vol / l0;
+        B2 = b*b;
+        C = - sigmaMax * L0 * a;
+        D = -2./(B2*lambda0);
+        Vvm = vvm;
+        Ver = ver;
+        Vsh = vsh;
     }
 
     Real getPotentialEnergy(const Coord& /*x*/) const
@@ -121,51 +114,29 @@ class MuscleMaterialBlock< E311(_Real) >:
         return 0;
     }
 
-    void addForce( Deriv& f , const Coord& x , const Deriv& /*v*/) const
+    void addForce( Deriv& f , const Coord& x , const Deriv& v) const
     {
-        Real lambdaN = (x.getStrain()[0]+1.)/Lambda0;
+        Real EN = (x.getStrain()[0]+1.)/Lambda0 - 1.;
+        Real Fl = exp(-EN*EN/B2);
+        Real Vmax = Vvm*(1. - Ver*(1. - A*Fl ) );
+        Real ldot = v.getStrain()[0]*L0;
+        Real fact = (Vsh*Vmax-ldot);
+        if(fact==0) fact=1E-10;
+        Real Fv = Vsh*(Vmax + ldot)/fact;
 
-        Real fpassive = 0 , kpassive = 0;
-        if(lambdaN>1.0)
-        {
-            if(lambdaN<=LambdaL)
-            {
-                fpassive = P1*(exp(P2*(lambdaN-1.))-1.);
-                kpassive = P2/Lambda0*( fpassive + P1 );
-            }
-            else
-            {
-                fpassive = P3*lambdaN + P4;
-                kpassive = P3/Lambda0;
-            }
-        }
+        Real F = C*Fl*Fv;
+//        std::cout<<"ldot,vmax = "<<ldot<<","<<Vmax<<std::endl;
+//        std::cout<<"Fv = "<<Fv<<std::endl;
 
-        Real factive= 0 , kactive = 0;
-        if(lambdaN<=0.6)
-        {
-            factive = 9.*(lambdaN-0.4)*(lambdaN-0.4);
-            kactive = 18*(lambdaN-0.4)/Lambda0;
-        }
-        else  if(lambdaN<=1.4)
-        {
-            factive = 1-4.*(1.-lambdaN)*(1.-lambdaN) ;
-            kactive = 8.*(1.-lambdaN)/Lambda0;
-        }
-        else
-        {
-            factive = 9.*(lambdaN-1.6)*(lambdaN-1.6);
-            kactive = 18*(lambdaN-1.6)/Lambda0;
-        }
+        K = F*D*EN;
+        B = C*Fl*Vmax*(Vsh+1.)*Vsh/fact/fact;
 
-//        std::cout<<"lambdaN "<<lambdaN<<" fpassive "<<fpassive<<" kpassive "<<kpassive<<std::endl;
-
-        f.getStrain()[0] += C*(fpassive + A*factive);
-        K = C*(kpassive + A*kactive);
+        f.getStrain()[0] += F;
     }
 
-    void addDForce( Deriv&   df, const Deriv&   dx, const double& kfactor, const double& /*bfactor*/ ) const
+    void addDForce( Deriv&   df, const Deriv&   dx, const double& kfactor, const double& bfactor ) const
     {
-        df.getStrain()+=K*dx.getStrain()*kfactor;
+        df.getStrain()+=K*dx.getStrain()*kfactor + B*dx.getStrain()*bfactor;
     }
 
     MatBlock getK() const
@@ -185,7 +156,10 @@ class MuscleMaterialBlock< E311(_Real) >:
 
     MatBlock getB() const
     {
-        return MatBlock();
+        MatBlock mB;
+        mB[0][0]=B;
+        return mB;
+
     }
 
 };
