@@ -1156,6 +1156,7 @@ protected:
         }
     }
 
+#ifndef SOFA_NO_OPENGL
     virtual void draw(const core::visual::VisualParams* vparams)
     {
 #ifndef SOFA_NO_OPENGL
@@ -1211,7 +1212,7 @@ protected:
 
 #endif /* SOFA_NO_OPENGL */
     }
-
+#endif
 
     /**
     * put regularly spaced samples at each non empty voxel center or corners
