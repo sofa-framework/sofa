@@ -206,11 +206,9 @@ typename DataTypes::Real BezierTetrahedronSetGeometryAlgorithms<DataTypes>::comp
 template<class DataTypes>
 void BezierTetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
 	if ((degree>0) && (container) ){
 		TetrahedronSetGeometryAlgorithms<DataTypes>::draw(vparams);	
-
-
-#ifndef SOFA_NO_OPENGL
 		// Draw Tetra
 		if (drawControlPointsEdges.getValue())
 		{
