@@ -228,6 +228,12 @@ public:
     const defaulttype::BaseMatrix* getJ(const core::MechanicalParams * /*mparams*/)
     {
         if(!this->assemble.getValue() || !BlockType::constant) updateJ();
+        else if( this->maskTo && this->maskTo->isInUse() && previousMask!=this->maskTo->getEntries() )
+        {
+            previousMask = this->maskTo->getEntries();
+            updateJ();
+        }
+
         return &eigenJacobian;
     }
 
@@ -235,7 +241,19 @@ public:
     virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs()
     {
         if(!this->assemble.getValue() || !BlockType::constant) updateJ();
+        else if( this->maskTo && this->maskTo->isInUse() && previousMask!=this->maskTo->getEntries() )
+        {
+            previousMask = this->maskTo->getEntries();
+            updateJ();
+        }
+
         return &baseMatrices;
+    }
+
+    virtual const vector<defaulttype::BaseMatrix*>* getKs()
+    {
+        updateK(this->toModel->readForces().ref());
+        return &stiffnessBaseMatrices;
     }
 
     void draw(const core::visual::VisualParams* vparams);
@@ -302,15 +320,18 @@ protected:
     SparseMatrix jacobian;   ///< Jacobian of the mapping
     virtual void initJacobianBlocks()=0;
 
-    helper::ParticleMask* maskFrom;  ///< Subset of master DOF, to cull out computations involving null forces or displacements
+//    helper::ParticleMask* maskFrom;  ///< Subset of master DOF, to cull out computations involving null forces or displacements
     helper::ParticleMask* maskTo;    ///< Subset of slave DOF, to cull out computations involving null forces or displacements
 
 
     SparseMatrixEigen eigenJacobian;  ///< Assembled Jacobian matrix
     vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Vector of jacobian matrices, for the Compliant plugin API
+    bool Jdirty; ///< Does J needs to be updated?
     void updateJ();
+    helper::ParticleMask::InternalStorage previousMask; ///< storing previous dof maskTo to check if it changed from last time step to updateJ in consequence (TODO add such a mechanism directly in ParticleMask?)
 
     SparseKMatrixEigen K;  ///< Assembled geometric stiffness matrix
+    vector<defaulttype::BaseMatrix*> stiffnessBaseMatrices;      ///< Vector of geometric stiffness matrices, for the Compliant plugin API
     void updateK(const OutVecDeriv& childForce);
 
     const core::topology::BaseMeshTopology::SeqTriangles *triangles; // Used for visualization

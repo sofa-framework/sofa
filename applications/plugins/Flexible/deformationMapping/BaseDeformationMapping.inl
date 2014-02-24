@@ -67,7 +67,7 @@ BaseDeformationMappingT<JacobianBlockType>::BaseDeformationMappingT (core::State
     , f_pos0 ( initData ( &f_pos0,"restPosition","initial spatial positions of children" ) )
     , missingInformationDirty(true)
     , KdTreeDirty(true)
-    , maskFrom(NULL)
+//    , maskFrom(NULL)
     , maskTo(NULL)
     , triangles(0)
     , extTriangles(0)
@@ -209,8 +209,8 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut(const vector<Coord>& 
 template <class JacobianBlockType>
 void BaseDeformationMappingT<JacobianBlockType>::init()
 {
-    if (core::behavior::BaseMechanicalState* stateFrom = dynamic_cast<core::behavior::BaseMechanicalState*>(this->fromModel.get()))
-        maskFrom = &stateFrom->forceMask;
+//    if (core::behavior::BaseMechanicalState* stateFrom = dynamic_cast<core::behavior::BaseMechanicalState*>(this->fromModel.get()))
+//        maskFrom = &stateFrom->forceMask;
     if (core::behavior::BaseMechanicalState* stateTo = dynamic_cast<core::behavior::BaseMechanicalState*>(this->toModel.get()))
         maskTo = &stateTo->forceMask;
 
@@ -227,6 +227,9 @@ void BaseDeformationMappingT<JacobianBlockType>::init()
 
     baseMatrices.resize( 1 ); // just a wrapping for getJs()
     baseMatrices[0] = &eigenJacobian;
+
+    stiffnessBaseMatrices.resize(1);
+    stiffnessBaseMatrices[0] = &K;
 
     resizeOut();
 
@@ -251,24 +254,46 @@ void BaseDeformationMappingT<JacobianBlockType>::updateJ()
 {
     helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
     //helper::ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
-    eigenJacobian.resizeBlocks(jacobian.size(),in.size());
-    for(size_t i=0; i<jacobian.size(); i++)
+
+    SparseMatrixEigen& J = eigenJacobian;
+
+    J.resizeBlocks(jacobian.size(),in.size());
+
+    if( !this->maskTo || !this->maskTo->isInUse() )
     {
-        //            vector<MatBlock> blocks;
-        //            vector<unsigned> columns;
-        eigenJacobian.beginBlockRow(i);
-        for(size_t j=0; j<jacobian[i].size(); j++)
+        for(size_t i=0; i<jacobian.size(); i++)
         {
-            //                columns.push_back( this->f_index.getValue()[i][j] );
-            //                blocks.push_back( jacobian[i][j].getJ() );
-            eigenJacobian.createBlock( this->f_index.getValue()[i][j], jacobian[i][j].getJ());
+            //            vector<MatBlock> blocks;
+            //            vector<unsigned> columns;
+            J.beginBlockRow(i);
+            for(size_t j=0; j<jacobian[i].size(); j++)
+            {
+                //                columns.push_back( this->f_index.getValue()[i][j] );
+                //                blocks.push_back( jacobian[i][j].getJ() );
+                J.createBlock( this->f_index.getValue()[i][j], jacobian[i][j].getJ());
+            }
+            //            J.appendBlockRow( i, columns, blocks );
+            J.endBlockRow();
         }
-        //            eigenJacobian.appendBlockRow( i, columns, blocks );
-        eigenJacobian.endBlockRow();
+        //        J.endEdit();
     }
-    //        eigenJacobian.endEdit();
-    eigenJacobian.compress();
+    else
+    {
+        typedef helper::ParticleMask ParticleMask;
+        const ParticleMask::InternalStorage &indices=this->maskTo->getEntries();
+        for (ParticleMask::InternalStorage::const_iterator  it=indices.begin(); it!=indices.end(); it++ )
+        {
+            size_t i = ( size_t ) ( *it );
+            J.beginBlockRow(i);
+            for(size_t j=0; j<jacobian[i].size(); j++)
+                J.createBlock( this->f_index.getValue()[i][j], jacobian[i][j].getJ());
+            J.endBlockRow();
+        }
+    }
+    J.compress();
 }
+
+
 
 template <class JacobianBlockType>
 void BaseDeformationMappingT<JacobianBlockType>::updateK(const OutVecDeriv& childForce)
@@ -277,14 +302,32 @@ void BaseDeformationMappingT<JacobianBlockType>::updateK(const OutVecDeriv& chil
     K.resizeBlocks(in.size(),in.size());
     vector<KBlock> diagonalBlocks; diagonalBlocks.resize(in.size());
 
-    for(size_t i=0; i<jacobian.size(); i++)
+    if( !this->maskTo || !this->maskTo->isInUse() )
     {
-        for(size_t j=0; j<jacobian[i].size(); j++)
+        for(size_t i=0; i<jacobian.size(); i++)
         {
-            size_t index=this->f_index.getValue()[i][j];
-            diagonalBlocks[index] += jacobian[i][j].getK(childForce[i]);
+            for(size_t j=0; j<jacobian[i].size(); j++)
+            {
+                size_t index=this->f_index.getValue()[i][j];
+                diagonalBlocks[index] += jacobian[i][j].getK(childForce[i]);
+            }
         }
     }
+    else
+    {
+        typedef helper::ParticleMask ParticleMask;
+        const ParticleMask::InternalStorage &indices=this->maskTo->getEntries();
+        for (ParticleMask::InternalStorage::const_iterator  it=indices.begin(); it!=indices.end(); it++ )
+        {
+            size_t i = ( size_t ) ( *it );
+            for(size_t j=0; j<jacobian[i].size(); j++)
+            {
+                size_t index=this->f_index.getValue()[i][j];
+                diagonalBlocks[index] += jacobian[i][j].getK(childForce[i]);
+            }
+        }
+    }
+
     for(size_t i=0; i<in.size(); i++)
     {
         //            vector<KBlock> blocks;
@@ -327,7 +370,7 @@ void BaseDeformationMappingT<JacobianBlockType>::apply(const core::MechanicalPar
     }
     dOut.endEdit();
 
-    if(!BlockType::constant) if(this->assemble.getValue()) updateJ();
+    if(this->assemble.getValue() && !BlockType::constant)  Jdirty = true; // J needs to be updated later in ApplyJ where the dof mask can be activated
 
     this->missingInformationDirty=true; this->KdTreeDirty=true; // need to update spatial positions of defo grads if needed for visualization
 }
@@ -337,13 +380,27 @@ void BaseDeformationMappingT<JacobianBlockType>::apply(const core::MechanicalPar
 template <class JacobianBlockType>
 void BaseDeformationMappingT<JacobianBlockType>::applyJ(const core::MechanicalParams * /*mparams*/ , Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)
 {
-    if(this->assemble.getValue())  eigenJacobian.mult(dOut,dIn);
+    if(this->assemble.getValue())
+    {
+        if( Jdirty )
+        {
+            updateJ();
+            Jdirty = false;
+        }
+        else if( this->maskTo && this->maskTo->isInUse() && previousMask!=this->maskTo->getEntries() )
+        {
+            previousMask = this->maskTo->getEntries();
+            updateJ();
+        }
+
+        eigenJacobian.mult(dOut,dIn);
+    }
     else
     {
-        OutVecDeriv&  out = *dOut.beginEdit();
-        const InVecDeriv&  in = dIn.getValue();
+        OutVecDeriv& out = *dOut.beginEdit();
+        const InVecDeriv& in = dIn.getValue();
 
-        if ((!this->maskTo)||(this->maskTo&& !(this->maskTo->isInUse())) )
+        if( !this->maskTo || !this->maskTo->isInUse() )
         {
 #ifdef USING_OMP_PRAGMAS
         #pragma omp parallel for
@@ -387,7 +444,7 @@ void BaseDeformationMappingT<JacobianBlockType>::applyJT(const core::MechanicalP
         InVecDeriv&  in = *dIn.beginEdit();
         const OutVecDeriv&  out = dOut.getValue();
 
-        if((!this->maskTo)||(this->maskTo&& !(this->maskTo->isInUse())) )
+        if( !this->maskTo || !this->maskTo->isInUse() )
         {
             // update index_parentToChild
             if( this->f_index_parentToChild.size()!=in.size())
@@ -397,7 +454,7 @@ void BaseDeformationMappingT<JacobianBlockType>::applyJT(const core::MechanicalP
             }
 
 #ifdef USING_OMP_PRAGMAS
-			#pragma omp parallel for
+            #pragma omp parallel for
 #endif
             for(unsigned int i=0; i<this->f_index_parentToChild.size(); i++)
             {
@@ -447,10 +504,10 @@ void BaseDeformationMappingT<JacobianBlockType>::applyDJT(const core::Mechanical
     }
     else
     {
-        if((!this->maskTo)||(this->maskTo&& !(this->maskTo->isInUse())) )
+        if( !this->maskTo || !this->maskTo->isInUse() )
         {
 #ifdef USING_OMP_PRAGMAS
-		#pragma omp parallel for
+        #pragma omp parallel for
 #endif
             for(unsigned int i=0; i<this->f_index_parentToChild.size(); i++)
             {

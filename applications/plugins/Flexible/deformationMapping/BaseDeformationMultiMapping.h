@@ -200,9 +200,30 @@ public:
     // Compliant plugin experimental API
     virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs()
     {
-        if(!this->assemble.getValue() || !BlockType1::constant) updateJ1();
-        if(!this->assemble.getValue() || !BlockType2::constant) updateJ2();
+        if(!this->assemble.getValue()) { updateJ1(); updateJ2(); }
+        else
+        {
+            if( this->maskTo && this->maskTo->isInUse() && previousMask!=this->maskTo->getEntries() )
+            {
+                previousMask = this->maskTo->getEntries();
+                updateJ1();
+                updateJ2();
+            }
+            else
+            {
+                if(!BlockType1::constant) updateJ1();
+                if(!BlockType2::constant) updateJ2();
+            }
+        }
+
         return &baseMatrices;
+    }
+
+    virtual const vector<defaulttype::BaseMatrix*>* getKs()
+    {
+        updateK1(this->toModel->readForces().ref());
+        updateK2(this->toModel->readForces().ref());
+        return &stiffnessBaseMatrices;
     }
 
     void draw(const core::visual::VisualParams* vparams);
@@ -283,6 +304,8 @@ protected:
     helper::ParticleMask* maskTo;    ///< Subset of slave DOF, to cull out computations involving null forces or displacements
 
 
+
+    bool J1Dirty, J2Dirty; ///< Does J needs to be updated?
     SparseMatrixEigen1 eigenJacobian1;  ///< Assembled Jacobian matrix
     void updateJ1();
     SparseMatrixEigen2 eigenJacobian2;  ///< Assembled Jacobian matrix
@@ -293,6 +316,8 @@ protected:
     void updateK1(const OutVecDeriv& childForce);
     SparseKMatrixEigen2 K2;  ///< Assembled geometric stiffness matrix
     void updateK2(const OutVecDeriv& childForce);
+    vector<defaulttype::BaseMatrix*> stiffnessBaseMatrices;      ///< Vector of geometric stiffness matrices, for the Compliant plugin API
+    helper::ParticleMask::InternalStorage previousMask; ///< storing previous dof maskTo to check if it changed from last time step to updateJ in consequence
 
     const core::topology::BaseMeshTopology::SeqTriangles *triangles; // Used for visualization
     const defaulttype::ResizableExtVector<core::topology::BaseMeshTopology::Triangle> *extTriangles;
