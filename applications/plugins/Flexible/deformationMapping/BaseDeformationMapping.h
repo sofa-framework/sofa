@@ -228,11 +228,15 @@ public:
     const defaulttype::BaseMatrix* getJ(const core::MechanicalParams * /*mparams*/)
     {
         if(!this->assemble.getValue() || !BlockType::constant) updateJ();
-        else if( this->maskTo && this->maskTo->isInUse() && previousMask!=this->maskTo->getEntries() )
+        else if( this->maskTo && this->maskTo->isInUse() )
         {
-            previousMask = this->maskTo->getEntries();
-            updateJ();
+            if( previousMask!=this->maskTo->getEntries() )
+            {
+                previousMask = this->maskTo->getEntries();
+                updateJ();
+            }
         }
+        else if( !eigenJacobian.compressedMatrix.nonZeros() ) updateJ();
 
         return &eigenJacobian;
     }
@@ -241,11 +245,21 @@ public:
     virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs()
     {
         if(!this->assemble.getValue() || !BlockType::constant) updateJ();
-        else if( this->maskTo && this->maskTo->isInUse() && previousMask!=this->maskTo->getEntries() )
+        else if( this->maskTo && this->maskTo->isInUse() )
         {
-            previousMask = this->maskTo->getEntries();
-            updateJ();
+            if( previousMask!=this->maskTo->getEntries()  )
+            {
+                previousMask = this->maskTo->getEntries();
+                updateJ();
+            }
+
+//            typedef helper::ParticleMask ParticleMask;
+//            const ParticleMask::InternalStorage &indices=this->maskTo->getEntries();
+//            for (ParticleMask::InternalStorage::const_iterator  it=indices.begin(); it!=indices.end(); it++ )
+//                std::cerr<<*it<<" ";
+//            std::cerr<<std::endl;
         }
+        else if( !eigenJacobian.compressedMatrix.nonZeros() ) updateJ();
 
         return &baseMatrices;
     }
