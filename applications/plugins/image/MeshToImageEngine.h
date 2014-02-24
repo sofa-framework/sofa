@@ -556,12 +556,12 @@ protected:
 	template<class PixelT>
 	bool isInsideImage(CImg<PixelT>& img, unsigned int x, unsigned int y, unsigned z)
 	{
-		if(x<0) return false;
-		if(y<0) return false;
-		if(z<0) return false;
-		if(x>=img.width()) return false;
-		if(y>=img.height()) return false;
-		if(z>=img.depth()) return false;
+//		if(x<0) return false;
+//		if(y<0) return false;
+//		if(z<0) return false;
+        if(x>=(unsigned int)img.width() ) return false;
+        if(y>=(unsigned int)img.height()) return false;
+        if(z>=(unsigned int)img.depth() ) return false;
 		return true;
 	}
 
