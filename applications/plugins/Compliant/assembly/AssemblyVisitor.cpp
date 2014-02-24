@@ -58,15 +58,21 @@ AssemblyVisitor::chunk::map_type AssemblyVisitor::mapping(simulation::Node* node
 
 	using helper::vector;
 
-	const vector<sofa::defaulttype::BaseMatrix*>* js = node->mechanicalMapping->getJs();
-	const vector<sofa::defaulttype::BaseMatrix*>* ks = node->mechanicalMapping->getKs();
-
 	assert( node->mechanicalMapping->getTo().size() == 1 &&
 	        "only n -> 1 mappings are handled");
 
-	vector<core::BaseState*> from = node->mechanicalMapping->getFrom();
+    ForceMaskActivate(node->mechanicalMapping->getMechTo());
+    ForceMaskActivate(node->mechanicalMapping->getMechFrom());
 
-	for( unsigned i = 0, n = from.size(); i < n; ++i ) {
+    const vector<sofa::defaulttype::BaseMatrix*>* js = node->mechanicalMapping->getJs();
+    const vector<sofa::defaulttype::BaseMatrix*>* ks = node->mechanicalMapping->getKs();
+
+    ForceMaskDeactivate(node->mechanicalMapping->getMechTo());
+
+
+    vector<core::BaseState*> from = node->mechanicalMapping->getFrom();
+
+    for( unsigned i = 0, n = from.size(); i < n; ++i ) {
 
 		// parent dofs
 		dofs_type* p = safe_cast<dofs_type>(from[i]);
@@ -75,7 +81,7 @@ AssemblyVisitor::chunk::map_type AssemblyVisitor::mapping(simulation::Node* node
 		if(!p) continue;
 
 		// mapping wrt p
-		chunk::mapped& c = res[p];
+        chunk::mapped& c = res[p];
 
         if( js ) c.J = convert<mat>( (*js)[i] );
 
@@ -118,26 +124,53 @@ AssemblyVisitor::mat AssemblyVisitor::proj(simulation::Node* node) {
 }
 
 
+
+
+AssemblyVisitor::mat compliance_impl( const MechanicalParams* mparams, BaseForceField* ffield )
+{
+    const BaseMatrix* c = ffield->getComplianceMatrix(mparams);
+
+    if( c )
+        return convert<AssemblyVisitor::mat>( c );
+    else
+    {
+        std::cerr<<"AssemblyVisitor::compliance: "<<ffield->getName()<<" getComplianceMatrix not implemented"<< std::endl;
+        // TODO inverting stiffness matrix
+    }
+
+    return AssemblyVisitor::mat();
+}
+
+
 // compliance matrix
-AssemblyVisitor::mat AssemblyVisitor::compliance(simulation::Node* node) {
-
-	mat res;
-
-	for(unsigned i = 0; i < node->forceField.size(); ++i ) {
+AssemblyVisitor::mat AssemblyVisitor::compliance(simulation::Node* node)
+{
+    for(unsigned i = 0; i < node->forceField.size(); ++i )
+    {
 		BaseForceField* ffield = node->forceField[i];
 
 		if( !ffield->isCompliance.getValue() ) continue;
 
-		const BaseMatrix* c = ffield->getComplianceMatrix(mparams);
-
-		if( c ) return convert<mat>( c );
-#ifndef NDEBUG
-		else std::cerr<<SOFA_CLASS_METHOD<<ffield->getName()<<" getComplianceMatrix not implemented"<< std::endl;
-#endif
-
+        return compliance_impl( mparams, ffield );
 	}
 
-    return res;
+    for(unsigned i = 0; i < node->interactionForceField.size(); ++i )
+    {
+        BaseInteractionForceField* ffield = node->interactionForceField[i];
+
+        if( !ffield->isCompliance.getValue() ) continue;
+
+        if( ffield->getMechModel1() != ffield->getMechModel2() )
+        {
+            std::cerr<<SOFA_CLASS_METHOD<<"WARNING: interactionForceField "<<ffield->getName()<<" cannot be simulated as a compliance."<<std::endl;
+        }
+        else
+        {
+            return compliance_impl( mparams, ffield );
+        }
+    }
+
+    return mat();
 }
 
 
@@ -149,24 +182,21 @@ AssemblyVisitor::mat AssemblyVisitor::odeMatrix(simulation::Node* node)
     typedef EigenBaseSparseMatrix<SReal> Sqmat;
     Sqmat sqmat( size, size );
 
-    if( node->interactionForceField.size() )
+    for(unsigned i = 0; i < node->interactionForceField.size(); ++i )
     {
-        for(unsigned i = 0; i < node->interactionForceField.size(); ++i )
+        BaseInteractionForceField* ffield = node->interactionForceField[i];
+
+        if( ffield->getMechModel1() != ffield->getMechModel2() )
         {
-            BaseInteractionForceField* ffield = node->interactionForceField[i];
+            std::cerr<<SOFA_CLASS_METHOD<<"WARNING: interactionForceField "<<ffield->getName()<<" will be treated as explicit, external forces (interactionForceFields are not handled by Compliant assembly, the same scene should be modelised with MultiMappings)"<<std::endl;
+        }
+        else
+        {
+            // interactionForceFields that work on a unique set of dofs are OK
+            SingleMatrixAccessor accessor( &sqmat );
 
-            if( ffield->getMechModel1() != ffield->getMechModel2() )
-            {
-                std::cerr<<SOFA_CLASS_METHOD<<"WARNING: interactionForceField "<<ffield->getName()<<" will be treated as explicit, external forces (interactionForceFields are not handled by Compliant assembly, the same scene should be modelised with MultiMappings)"<<std::endl;
-            }
-            else
-            {
-                // interactionForceFields that work on a unique set of dofs are OK
-                SingleMatrixAccessor accessor( &sqmat );
-
-                // when it is a compliant, you need to add M if mass, B but not K
-                ffield->addMBKToMatrix( ffield->isCompliance.getValue() ? &mparamsWithoutStiffness : mparams, &accessor );
-            }
+            // when it is a compliant, you need to add M if mass, B but not K
+            ffield->addMBKToMatrix( ffield->isCompliance.getValue() ? &mparamsWithoutStiffness : mparams, &accessor );
         }
     }
 
@@ -230,6 +260,7 @@ void AssemblyVisitor::fill_prefix(simulation::Node* node) {
 	if( !zero(c.H) ) {
 		c.mechanical = true;
 	}
+
 
     // if the visitor is excecuted from a mapped node, do not look at its mapping
     if( node != start_node ) c.map = mapping( node );
@@ -414,8 +445,13 @@ AssemblyVisitor::process_type* AssemblyVisitor::process() const {
 
 // this is meant to optimize L^T D L products
 static inline AssemblyVisitor::mat ltdl(const AssemblyVisitor::mat& l,
-                                        const AssemblyVisitor::mat& d) {
-	return l.transpose() * (d * l);
+                                        const AssemblyVisitor::mat& d)
+{
+//#ifdef USING_OMP_PRAGMAS
+//    return component::linearsolver::mul_EigenSparseMatrix_MT( l.transpose(), component::linearsolver::mul_EigenSparseMatrix_MT( d, l ) );
+//#else
+    return l.transpose() * (d * l);
+//#endif
 }
 
 
