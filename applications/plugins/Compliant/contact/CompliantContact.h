@@ -99,6 +99,13 @@ protected:
         this->copyNormals( contact_map->normal );
         this->copyPenetrations( contact_map->penetrations );
 
+        // every contact points must propagate constraint forces
+        for(unsigned i = 0; i < size; ++i)
+        {
+            this->mstate1->forceMask.insertEntry( this->mappedContacts[i].index1 );
+            if( !this->selfCollision ) this->mstate2->forceMask.insertEntry( this->mappedContacts[i].index2 );
+        }
+
         contact_map->init();
 
 

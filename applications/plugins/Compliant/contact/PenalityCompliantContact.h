@@ -91,13 +91,25 @@ protected:
         compliance->damping.setValue( this->damping_ratio.getValue() );
         compliance->isCompliance.setValue( false );
 
-        typename compliance_type::VecDeriv complianceValues( this->mappedContacts.size() );
+        typename compliance_type::VecDeriv complianceValues( size );
         for( unsigned i = 0 ; i < size ; ++i )
         {
             // no stiffness for non-violated penetration (alarm distance)
             // TODO add a kind of projector to perform an unilateral stiffness (to add stiffness only one way).
             // This would prevent sticky contacts and would allow to add small stiffness in alarm distance to slow-down object trying to go closer.
-            complianceValues[i][0] = ( (*this->contacts)[i].value < 0 ) ? 1.0/this->stiffness.getValue() : 9999999999999;
+
+            if( (*this->contacts)[i].value < 0 )
+            {
+                complianceValues[i][0] = 1.0/this->stiffness.getValue();
+
+                // only violated penetrations will propagate forces
+                this->mstate1->forceMask.insertEntry( this->mappedContacts[i].index1 );
+                if( !this->selfCollision ) this->mstate2->forceMask.insertEntry( this->mappedContacts[i].index2 );
+            }
+            else
+            {
+                complianceValues[i][0] = std::numeric_limits<int>::max();
+            }
         }
         compliance->diagonal.setValue( complianceValues );
 
