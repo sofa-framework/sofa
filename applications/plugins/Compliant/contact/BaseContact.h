@@ -127,10 +127,9 @@ public:
 
             // obtain point mechanical models from mappers
             mstate1 = mapper1.createMapping( name1.c_str() );
-			mstate1->setName("dofs");
 
             mstate2 = this->selfCollision ? mstate1 : mapper2.createMapping( name2.c_str() );
-			mstate2->setName("dofs");
+            mstate2->setName("dofs");
         }
 
         // resize mappers
@@ -291,7 +290,6 @@ protected:
             typename map_type::SPtr map = sofa::core::objectmodel::New<map_type>();
 
             map->setModels( this->mstate1.get(), delta_dofs.get() );
-            this->mstate1->useMask.setValue(false); // TODO activate the mask and fill mstate1->forceMask for dof that will receive a force
 
             map->pairs.setValue( pairs );
 
@@ -313,8 +311,6 @@ protected:
 
             map->addInputModel( this->mstate1.get() );
             map->addInputModel( this->mstate2.get() );
-            this->mstate1->useMask.setValue(false); // TODO activate the mask and fill mstate1->forceMask for dof that will receive a force
-            this->mstate2->useMask.setValue(false); // TODO activate the mask and fill mstate1->forceMask for dof that will receive a force
 
             map->addOutputModel( delta_dofs.get() );
 
