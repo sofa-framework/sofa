@@ -239,7 +239,7 @@ void BaseDeformationMappingT<JacobianBlockType>::init()
 template <class JacobianBlockType>
 void BaseDeformationMappingT<JacobianBlockType>::reinit()
 {
-    if(this->assemble.getValue()) updateJ();
+//    if(this->assemble.getValue()) updateJ();
 
     apply(NULL, *this->toModel->write(core::VecCoordId::position()), *this->fromModel->read(core::ConstVecCoordId::position()));
     if(this->toModel->write(core::VecDerivId::velocity())) applyJ(NULL, *this->toModel->write(core::VecDerivId::velocity()), *this->fromModel->read(core::ConstVecDerivId::velocity()));
@@ -370,7 +370,7 @@ void BaseDeformationMappingT<JacobianBlockType>::apply(const core::MechanicalPar
     }
     dOut.endEdit();
 
-    if(this->assemble.getValue() && !BlockType::constant)  Jdirty = true; // J needs to be updated later in ApplyJ where the dof mask can be activated
+    if(this->assemble.getValue() && ( !BlockType::constant ) )  Jdirty = true; // J needs to be updated later where the dof mask can be activated
 
     this->missingInformationDirty=true; this->KdTreeDirty=true; // need to update spatial positions of defo grads if needed for visualization
 }
@@ -387,11 +387,15 @@ void BaseDeformationMappingT<JacobianBlockType>::applyJ(const core::MechanicalPa
             updateJ();
             Jdirty = false;
         }
-        else if( this->maskTo && this->maskTo->isInUse() && previousMask!=this->maskTo->getEntries() )
+        else if( this->maskTo && this->maskTo->isInUse() )
         {
-            previousMask = this->maskTo->getEntries();
-            updateJ();
+            if( previousMask!=this->maskTo->getEntries() )
+            {
+                previousMask = this->maskTo->getEntries();
+                updateJ();
+            }
         }
+        else if( !eigenJacobian.compressedMatrix.nonZeros() ) updateJ();
 
         eigenJacobian.mult(dOut,dIn);
     }

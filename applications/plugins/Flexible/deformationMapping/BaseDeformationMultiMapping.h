@@ -203,16 +203,19 @@ public:
         if(!this->assemble.getValue()) { updateJ1(); updateJ2(); }
         else
         {
-            if( this->maskTo && this->maskTo->isInUse() && previousMask!=this->maskTo->getEntries() )
+            if( this->maskTo && this->maskTo->isInUse() )
             {
-                previousMask = this->maskTo->getEntries();
-                updateJ1();
-                updateJ2();
+                if( previousMask!=this->maskTo->getEntries() )
+                {
+                    previousMask = this->maskTo->getEntries();
+                    updateJ1();
+                    updateJ2();
+                }
             }
             else
             {
-                if(!BlockType1::constant) updateJ1();
-                if(!BlockType2::constant) updateJ2();
+                if(!BlockType1::constant || !eigenJacobian1.compressedMatrix.nonZeros()) updateJ1();
+                if(!BlockType2::constant || !eigenJacobian2.compressedMatrix.nonZeros()) updateJ2();
             }
         }
 

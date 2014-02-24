@@ -275,7 +275,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::init()
 template <class JacobianBlockType1,class JacobianBlockType2>
 void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::reinit()
 {
-    if(this->assemble.getValue()) { updateJ1(); updateJ2(); }
+//    if(this->assemble.getValue()) { updateJ1(); updateJ2(); }
 
     apply(NULL, *this->toModel->write(core::VecCoordId::position()), *this->fromModel1->read(core::ConstVecCoordId::position()), *this->fromModel2->read(core::ConstVecCoordId::position()) );
     if(this->toModel->write(core::VecDerivId::velocity())) applyJ(NULL, *this->toModel->write(core::VecDerivId::velocity()), *this->fromModel1->read(core::ConstVecDerivId::velocity()), *this->fromModel2->read(core::ConstVecDerivId::velocity()));
@@ -484,21 +484,24 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ
 
     if(this->assemble.getValue())
     {
-        if( this->maskTo && this->maskTo->isInUse() && previousMask!=this->maskTo->getEntries() )
+        if( this->maskTo && this->maskTo->isInUse() )
         {
-            previousMask = this->maskTo->getEntries();
-            updateJ1();
-            updateJ2();
-            J1Dirty = J2Dirty = false;
+            if( previousMask!=this->maskTo->getEntries() )
+            {
+                previousMask = this->maskTo->getEntries();
+                updateJ1();
+                updateJ2();
+                J1Dirty = J2Dirty = false;
+            }
         }
         else
         {
-            if( J1Dirty )
+            if( J1Dirty || !eigenJacobian1.compressedMatrix.nonZeros() )
             {
                 updateJ1();
                 J1Dirty = false;
             }
-            if( J2Dirty )
+            if( J2Dirty || !eigenJacobian2.compressedMatrix.nonZeros() )
             {
                 updateJ2();
                 J2Dirty = false;
