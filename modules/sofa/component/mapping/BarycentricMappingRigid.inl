@@ -252,7 +252,7 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::applyJT( typename In:
 
     actualPos.clear();
     actualPos.resize(map.size());
-    if ((!maskTo)||(maskTo&& !(maskTo->isInUse())) )
+    if( !maskTo || !maskTo->isInUse() )
     {
         maskFrom->setInUse(false);
         for ( unsigned int i=0; i<map.size(); i++ )
@@ -350,7 +350,7 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::applyJ( typename Out:
     out.resize ( map.size() );
 
 
-    if ((!maskTo)||(maskTo&& !(maskTo->isInUse())) )
+    if( !maskTo || !maskTo->isInUse() )
     {
         for ( unsigned int i=0; i<map.size(); i++ )
         {
