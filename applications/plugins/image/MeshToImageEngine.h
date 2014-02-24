@@ -674,7 +674,7 @@ protected:
             {
                 unsigned int p1=tri[i][(j==0)?2:j-1],p2=tri[i][j];
                 edgesetit it=edges.find(edge(p2,p1));
-                if(it==edges.end()) edges.insert(edge(p2,p1));
+                if(it==edges.end()) edges.insert(edge(p1,p2));
                 else edges.erase(it);
             }
         if(!edges.size()) return; // no hole
