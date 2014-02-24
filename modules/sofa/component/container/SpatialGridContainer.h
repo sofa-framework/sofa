@@ -47,7 +47,15 @@
 #include <list>
 
 
-// I need C++0x !!!
+// I need C++0x !!! 
+// a: we all do ;-)
+
+// TODO: the following should probably be moved outside this file (in
+// the build system) and only deal with TR1 includes/namespaces
+
+// also, no need to define a preprocessor macro for namespace aliasing:
+//    namespace foo = std::tr1
+
 #ifndef HASH_NAMESPACE
 #  ifdef _MSC_VER
 #    if _MSC_VER >= 1300
@@ -62,9 +70,16 @@
 #      define HASH_NAMESPACE std
 #    endif
 #  else
+#  // TODO this test should not be about the compiler, but which stdc++ library to use
 #    if __GNUC__ > 4 || (__GNUC__ == 4 && (__GNUC_MINOR__ >= 3 )) || __llvm__ || __clang__ // I am not sure about clang version, but sofa compiles only from clang3.4 anyway
+#     ifdef _LIBCPP_VERSION
+#      // using libc++
+#      include <unordered_map>
+#      define HASH_NAMESPACE std
+#     else
 #      include <tr1/unordered_map>
 #      define HASH_NAMESPACE std::tr1
+#     endif
 #    else
 #		ifndef PS3
 #      include <ext/hash_map>
