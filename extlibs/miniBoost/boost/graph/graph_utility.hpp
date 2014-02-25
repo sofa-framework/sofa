@@ -237,8 +237,13 @@ namespace boost {
   template <class Graph, class Vertex>
   bool is_adj_dispatch(Graph& g, Vertex a, Vertex b, bidirectional_tag)
   {
+#ifdef __GNUC__
+    typedef typename graph_traits<Graph>::edge_descriptor 
+      edge_descriptor __attribute__((unused));
+#else
     typedef typename graph_traits<Graph>::edge_descriptor 
       edge_descriptor;
+#endif
     typename graph_traits<Graph>::adjacency_iterator vi, viend, 
       adj_found;
     boost::tie(vi, viend) = adjacent_vertices(a, g);
@@ -265,8 +270,13 @@ namespace boost {
   template <class Graph, class Vertex>
   bool is_adj_dispatch(Graph& g, Vertex a, Vertex b, directed_tag)
   {
+#ifdef __GNUC__
+    typedef typename graph_traits<Graph>::edge_descriptor 
+      edge_descriptor __attribute__((unused));
+#else
     typedef typename graph_traits<Graph>::edge_descriptor 
       edge_descriptor;
+#endif
     typename graph_traits<Graph>::adjacency_iterator vi, viend, found;
     boost::tie(vi, viend) = adjacent_vertices(a, g);
 #if defined(BOOST_MSVC) && BOOST_MSVC <= 1300 && defined(__SGI_STL_PORT)

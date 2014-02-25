@@ -456,7 +456,6 @@ void LMConstraintSolver::buildLMatrices( ConstOrder Order,
         DofToMatrix &LMatrices,
         DofToMask &dofUsed) const
 {
-    typedef core::behavior::BaseMechanicalState::ConstraintBlock ConstraintBlock;
     unsigned constraintOffset=0;
     //We Take one by one the constraint, and write their equations in the corresponding matrix L
     for (unsigned int mat=0; mat<LMConstraints.size(); ++mat)

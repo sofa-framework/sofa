@@ -65,11 +65,20 @@ struct requirement_<void(*)(Model)>
   
 # endif
 
+#if defined(__GNUC__)
+#  define BOOST_CONCEPT_ASSERT_FN( ModelFnPtr )             \
+    typedef ::boost::concepts::detail::instantiate<          \
+    &::boost::concepts::requirement_<ModelFnPtr>::failed>    \
+      BOOST_PP_CAT(boost_concept_check,__LINE__) __attribute__((unused))
+
+}}
+#else
 #  define BOOST_CONCEPT_ASSERT_FN( ModelFnPtr )             \
     typedef ::boost::concepts::detail::instantiate<          \
     &::boost::concepts::requirement_<ModelFnPtr>::failed>    \
       BOOST_PP_CAT(boost_concept_check,__LINE__)
 
 }}
+#endif
 
 #endif // BOOST_CONCEPT_DETAIL_GENERAL_DWA2006429_HPP

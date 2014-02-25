@@ -75,7 +75,11 @@ namespace boost {
   {
 
     //create queue, visitor...don't forget namespaces!
+#ifdef __GNUC__
+    typedef typename property_traits<DegreeMap>::value_type ds_type __attribute__((unused));
+#else
     typedef typename property_traits<DegreeMap>::value_type ds_type;
+#endif
     typedef typename graph_traits<Graph>::vertex_descriptor Vertex;
     typedef typename boost::sparse::sparse_ordering_queue<Vertex> queue;
     typedef typename detail::bfs_rcm_visitor<OutputIterator, queue, DegreeMap> Visitor;
@@ -137,7 +141,11 @@ namespace boost {
       return permutation;
 
     typedef typename boost::graph_traits<Graph>::vertex_descriptor Vertex;
+#ifdef __GNUC__
+    typedef typename boost::graph_traits<Graph>::vertex_iterator   VerIter __attribute__((unused));
+#else
     typedef typename boost::graph_traits<Graph>::vertex_iterator   VerIter;
+#endif
     typedef typename property_traits<ColorMap>::value_type ColorValue;
     typedef color_traits<ColorValue> Color;
 
@@ -172,7 +180,11 @@ namespace boost {
     if (boost::graph::has_no_vertices(G))
       return permutation;
     
+#ifdef __GNUC__
+    typedef out_degree_property_map<Graph> DegreeMap __attribute__((unused));
+#else
     typedef out_degree_property_map<Graph> DegreeMap;
+#endif
     std::vector<default_color_type> colors(num_vertices(G));
     return cuthill_mckee_ordering(G, permutation, 
                                   make_iterator_property_map(&colors[0], 

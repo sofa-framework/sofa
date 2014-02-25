@@ -34,7 +34,11 @@ template< int I > struct arg
     template< class T > arg( T const & /* t */ )
     {
         // static assert I == is_placeholder<T>::value
+#ifdef __GNUC__
+        typedef char T_must_be_placeholder[ I == is_placeholder<T>::value? 1: -1 ] __attribute__((unused));
+#else
         typedef char T_must_be_placeholder[ I == is_placeholder<T>::value? 1: -1 ];
+#endif
     }
 };
 

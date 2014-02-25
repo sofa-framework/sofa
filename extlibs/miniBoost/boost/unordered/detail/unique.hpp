@@ -334,7 +334,11 @@ namespace boost { namespace unordered { namespace detail {
 
         value_type& operator[](key_type const& k)
         {
+#if defined(__GNUC__)
+            typedef typename value_type::second_type mapped_type __attribute__((unused));
+#else
             typedef typename value_type::second_type mapped_type;
+#endif
     
             std::size_t key_hash = this->hash(k);
             iterator pos = this->find_node(key_hash, k);
