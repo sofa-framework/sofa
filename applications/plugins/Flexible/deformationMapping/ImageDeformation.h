@@ -310,8 +310,8 @@ protected:
                             if(pi[0]>=0) if(pi[1]>=0) if(pi[2]>=0) if(pi[0]<img.width()) if(pi[1]<img.height()) if(pi[2]<img.depth())
                                                 {
                                                     if(interp==0)        cimg_forC(img,c) outImg(x,y,z,c) = img.atXYZ(sofa::helper::round((double)pi[0]),sofa::helper::round((double)pi[1]),sofa::helper::round((double)pi[2]),c);
-                                                    else if(interp==2)   cimg_forC(img,c) outImg(x,y,z,c) = img.cubic_atXYZ(pi[0],pi[1],pi[2],c,0,cimg::type<T>::min(),cimg::type<T>::max());
-                                                    else                        cimg_forC(img,c) outImg(x,y,z,c) = img.linear_atXYZ(pi[0],pi[1],pi[2],c,0);
+                                                    else if(interp==2)   cimg_forC(img,c) outImg(x,y,z,c) = (T)img.cubic_atXYZ(pi[0],pi[1],pi[2],c,0,cimg::type<T>::min(),cimg::type<T>::max()); // warning cast for non-floating types
+                                                    else                        cimg_forC(img,c) outImg(x,y,z,c) = (T)img.linear_atXYZ(pi[0],pi[1],pi[2],c,0); // warning cast for non-floating types
                                                 }
                         }
                     }
