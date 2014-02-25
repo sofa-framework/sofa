@@ -185,8 +185,6 @@ template < class TIn1, class TIn2, class TOut >
 void CenterOfMassMulti2Mapping< TIn1, TIn2, TOut >::applyJT( const helper::vector<typename In1::VecDeriv*>& outDeriv1 ,const helper::vector<typename In2::VecDeriv*>& outDeriv2 , const helper::vector<const typename Out::VecDeriv*>& inDeriv )
 {
     assert( inDeriv.size() == 1 );
-    typedef helper::vector<const BaseMass*>::iterator iter_mass;
-
 
     typename Out::Deriv gravityCenterForce;
     const typename Out::VecDeriv* inForce = inDeriv[0];

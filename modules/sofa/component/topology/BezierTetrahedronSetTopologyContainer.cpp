@@ -276,7 +276,7 @@ void BezierTetrahedronSetTopologyContainer::getGlobalIndexArrayOfBezierPointsInT
 			offset=getNumberOfTetrahedralPoints()+eit[i]*(degree-1);
 			// check the order of the edge to be consistent with the tetrahedron
 			if (e[0]==tet[edgesInTetrahedronArray[i][0]]) {
-				for (j=0;j<(degree-1);++j) {
+				for (j=0;j<(size_t)(degree-1);++j) {
 					indexArray.push_back(offset+j);
 				}
 			} else {
@@ -304,7 +304,7 @@ void BezierTetrahedronSetTopologyContainer::getGlobalIndexArrayOfBezierPointsInT
 				indexTriangle[(k+2)%3]=1;
 				indexTriangle[(k+1)%3]=2;
 			}
-			for (j=1;j<(degree-1);++j) {
+			for (j=1;j<(size_t)(degree-1);++j) {
 				for (k=1;k<(degree-j);++k) {
 					TetrahedronBezierIndex bti(0,0,0,0);
 					bti[trianglesInTetrahedronArray[i][indexTriangle[0]]]=j;
@@ -323,7 +323,7 @@ void BezierTetrahedronSetTopologyContainer::getGlobalIndexArrayOfBezierPointsInT
 		size_t pointsPerTetrahedron=(degree-1)*(degree-2)*(degree-3)/6;
 		offset=getNumberOfTetrahedralPoints()+getNumberOfEdges()*(degree-1)+getNumberOfTriangles()*(degree-1)*(degree-2)/2+tetrahedronIndex*pointsPerTetrahedron;
 		size_t rank=0;
-		for (i=0;i<(degree-3);++i) {
+		for (i=0;i<(size_t)(degree-3);++i) {
 			for (j=0;j<(degree-i-3);++j) {
 				for (k=0;k<(degree-j-i-3);++k) {
 					indexArray.push_back(offset+rank);
@@ -408,11 +408,11 @@ bool BezierTetrahedronSetTopologyContainer::checkBezierPointTopology()
 				assert(elementIndex==getTetrahedron(nTetras)[elem]);
 				assert(elementOffset==0);
 			}
-			else if (elem<(4+6*(degree-1))){
+			else if (elem<(size_t)(4+6*(degree-1))){
 				assert(location==EDGE);
 				assert(elementIndex==getEdgesInTetrahedron(nTetras)[(elem-4)/(degree-1)]);
 			}
-			else if (elem<(4+6*(degree-1)+2*(degree-1)*(degree-2))){
+			else if (elem<(size_t)(4+6*(degree-1)+2*(degree-1)*(degree-2))){
                 assert(location==TRIANGLE);
 #ifndef NDEBUG
                 size_t nbPointPerEdge=(degree-1)*(degree-2)/2;

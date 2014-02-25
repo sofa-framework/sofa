@@ -86,7 +86,11 @@ namespace boost {
 
     typedef typename graph_traits<Graph>::vertex_descriptor Vertex;
     BOOST_CONCEPT_ASSERT(( WritablePropertyMapConcept<ComponentMap, Vertex> ));
+#ifdef __GNUC__
+    typedef typename boost::graph_traits<Graph>::directed_category directed __attribute__((unused));
+#else
     typedef typename boost::graph_traits<Graph>::directed_category directed;
+#endif
     // BOOST_STATIC_ASSERT((boost::is_same<directed, undirected_tag>::value));
 
     typedef typename property_traits<ComponentMap>::value_type comp_type;

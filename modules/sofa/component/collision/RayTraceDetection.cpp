@@ -286,12 +286,6 @@ void RayTraceDetection::addCollisionPair (const std::pair <
         core::CollisionModel *,
         core::CollisionModel * >&cmPair)
 {
-    typedef std::pair < std::pair < core::CollisionElementIterator,
-            core::CollisionElementIterator >,
-            std::pair < core::CollisionElementIterator,
-            core::CollisionElementIterator > >TestPair;
-
-
     CubeModel *cm1 = dynamic_cast < CubeModel * >(cmPair.first);
     CubeModel *cm2 = dynamic_cast < CubeModel * >(cmPair.second);
     if (cm1 && cm2)

@@ -64,7 +64,11 @@ namespace boost {
     BOOST_CONCEPT_ASSERT(( IncidenceGraphConcept<IncidenceGraph> ));
     typedef graph_traits<IncidenceGraph> GTraits;
     typedef typename GTraits::vertex_descriptor Vertex;
+#ifdef __GNUC__
+    typedef typename GTraits::edge_descriptor Edge __attribute__((unused));
+#else
     typedef typename GTraits::edge_descriptor Edge;
+#endif
     BOOST_CONCEPT_ASSERT(( BFSVisitorConcept<BFSVisitor, IncidenceGraph> ));
     BOOST_CONCEPT_ASSERT(( ReadWritePropertyMapConcept<ColorMap, Vertex> ));
     typedef typename property_traits<ColorMap>::value_type ColorValue;
