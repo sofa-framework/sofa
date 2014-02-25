@@ -34,6 +34,14 @@ using namespace sofa::component::controller;
 
 //using namespace sofa::simulation::tree;
 
+
+// WARNING workaround to be able to import python libraries on linux (like numpy) at least on ubuntu
+// more details on http://bugs.python.org/issue4434
+// It is not fixing the real problem, but at least it is working for now
+#if __linux__
+#include <dlfcn.h>
+#endif
+
 namespace sofa
 {
 
@@ -50,8 +58,17 @@ void PythonEnvironment::Init()
     if (m_Initialized) return;
     // Initialize the Python Interpreter
     //std::cout<<"<SofaPython> Initializing python framework..."<<std::endl;
-    std::cout<<"<SofaPython> Python framework version: "<<Py_GetVersion()<<std::endl;
+
+    std::string pythonVersion = Py_GetVersion();
+    std::cout<<"<SofaPython> Python framework version: "<<pythonVersion<<std::endl;
 //    PyEval_InitThreads();
+
+#if __linux__
+    // fixing the library import on ubuntu
+    std::string pythonLibraryName = "libpython" + std::string(pythonVersion,0,3) + ".so";
+    dlopen( pythonLibraryName.c_str(), RTLD_LAZY|RTLD_GLOBAL );
+#endif
+
     //std::cout<<"<SofaPython> Py_Initialize();"<<std::endl;
     Py_Initialize();
     //std::cout<<"<SofaPython> Registering Sofa bindings..."<<std::endl;
