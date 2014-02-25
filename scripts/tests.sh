@@ -3,9 +3,9 @@
 # This script in used on the continuous integration platform to execute the tests
 # and extract some information about the results
 #
-# Usage: ./tests.sh --run|
-#                   --get-test-count|--get-failure-count|--get-disabled-count|--get-error-count|
-#                   --get-test-executable-count|--get-test-report-count
+# Usage: ./tests.sh --run |
+#                   --count-tests | --count-failures | --count-disabled
+#                   --count-errors | --count-binaries | --count-reports
 #
 # With --run, it runs each file which matches "bin/*_test{,d}", and outputs
 # the results in a JUnit XML file stored in $PWD/test-reports/
@@ -71,7 +71,8 @@ sum-attribute-from-testsuites ()
     fi
     attribute="$1"
     # grep the lines containing '<testsuites'; for each one, match the 'attribute="..."' pattern, and collect the "..." part
-    counts=`sed -ne "s/.*<testsuites[^>]* $attribute=\"\([^\"]\+\)[^>]\+.*/\1/p" test-reports/*.xml`
+    counts=`sed -ne "s/.*<testsuites[^>]* $attribute=\"//" \
+                 -e "/^[0-9]/s/\".*//p" test-reports/*.xml`
     # sum the values
     total=0
     for value in $counts; do
@@ -101,7 +102,7 @@ case "$1" in
         get-tests | wc -w
         ;;
     --get-test-report-count )
-        ls test-reports/*.xml 2> /dev/null | wc -l
+        ls test-reports/*.xml 2> /dev/null | wc -l | tr -d ' '
         ;;
     # because I prefer those names:
     --count-tests )
@@ -117,10 +118,10 @@ case "$1" in
         sum-attribute-from-testsuites errors
         ;;
     --count-binaries )
-        get-tests | wc -w
+        get-tests | wc -w | tr -d ' '
         ;;
     --count-reports )
-        ls test-reports/*.xml 2> /dev/null | wc -l
+        ls test-reports/*.xml 2> /dev/null | wc -l | tr -d ' '
         ;;
     * )
         echo "$0: unexpected argument: $1"
