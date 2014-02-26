@@ -237,7 +237,7 @@ void MeshMatrixMass<DataTypes, MassType>::TetrahedronMassHandler::applyCreateFun
 				{
 					dp2=MMM->bezierTetraGeo->getPointRestPosition(indexArray[correspondanceArray[j][1]])-
 						MMM->bezierTetraGeo->getPointRestPosition(indexArray[correspondanceArray[j][3]]);
-					tmp=cross<Real>(dp1,dp2);
+					tmp=cross(dp1,dp2);
 					multinomialArray[1]=tbiDerivArray[j];
 					rank=0;
 					for (l=0;l<nbControlPoints;l++) {
