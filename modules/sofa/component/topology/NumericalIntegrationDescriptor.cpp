@@ -22,12 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_NUMERICALINTEGRATIONDESCRIPTOR_INL
-#define SOFA_COMPONENT_TOPOLOGY_NUMERICALINTEGRATIONDESCRIPTOR_INL
-
-#include <sofa/component/topology/NumericalIntegrationDescriptor.h>
-#include <map>
-
+#define SOFA_COMPONENT_TOPOLOGY_NUMERICALINTEGRATIONDESCRIPTOR_CPP
+#include <sofa/component/topology/NumericalIntegrationDescriptor.inl>
 namespace sofa
 {
 
@@ -36,50 +32,17 @@ namespace component
 
 namespace topology
 {
-
 using namespace sofa::defaulttype;
 
 
-template< typename Real, int N>
-typename NumericalIntegrationDescriptor<Real,N>::QuadraturePointArray NumericalIntegrationDescriptor<Real,N>::getQuadratureMethod(const QuadratureMethod qt, const IntegrationOrder order) const
-{
-	QuadratureMethodKey key(qt,order);
-	typename std::map<QuadratureMethodKey, QuadraturePointArray>::const_iterator it=quadratureMap.find(key);
-	if (it!=quadratureMap.end())
-		return ((*it).second);
-	else {
-		QuadraturePointArray qpa;
-		return(qpa);
-	}
+#ifndef SOFA_FLOAT
+template class  SOFA_BASE_TOPOLOGY_API NumericalIntegrationDescriptor<double,4>;
 
-}
-template< typename Real, int N>
-sofa::helper::set<typename NumericalIntegrationDescriptor<Real,N>::QuadratureMethod>  NumericalIntegrationDescriptor<Real,N>::getQuadratureMethods() const 
-{
-	sofa::helper::set<QuadratureMethod>  qmset;
-	typename std::map<QuadratureMethodKey, QuadraturePointArray>::const_iterator it;
-	for (it=quadratureMap.begin();it!=quadratureMap.end();it++) {
-		qmset.insert((*it).first.first);
-	}
-	return(qmset);
-}
-template< typename Real, int N>
-sofa::helper::set<typename NumericalIntegrationDescriptor<Real,N>::IntegrationOrder>  NumericalIntegrationDescriptor<Real,N>::getIntegrationOrders(const QuadratureMethod qt) const
-{
-	sofa::helper::set<IntegrationOrder>  ioset;
-	typename std::map<QuadratureMethodKey, QuadraturePointArray>::const_iterator it;
-	for (it=quadratureMap.begin();it!=quadratureMap.end();it++) {
-		if (((*it).first.first)==qt){
-			ioset.insert((*it).first.second);
-		}
-	}
-	return(ioset);
-}
-template< typename Real, int N>
-void NumericalIntegrationDescriptor<Real,N>::addQuadratureMethod(const QuadratureMethod qt, const IntegrationOrder order, QuadraturePointArray qpa)
-{
-	quadratureMap.insert(std::pair<QuadratureMethodKey,QuadraturePointArray>(QuadratureMethodKey(qt,order),qpa));
-}
+#endif
+
+#ifndef SOFA_DOUBLE
+template class SOFA_BASE_TOPOLOGY_API NumericalIntegrationDescriptor<float,4>;
+#endif
 
 } // namespace topology
 
@@ -87,4 +50,3 @@ void NumericalIntegrationDescriptor<Real,N>::addQuadratureMethod(const Quadratur
 
 } // namespace sofa
 
-#endif

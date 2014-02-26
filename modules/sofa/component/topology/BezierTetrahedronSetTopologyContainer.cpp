@@ -257,6 +257,74 @@ sofa::helper::vector<TetrahedronBezierIndex> BezierTetrahedronSetTopologyContain
 {
 	return (bezierIndexArray);
 }
+sofa::helper::vector<TetrahedronBezierIndex> BezierTetrahedronSetTopologyContainer::getTetrahedronBezierIndexArrayOfGivenDegree(const size_t deg) const
+{
+	// vertex index
+	size_t i,j,k;
+	sofa::helper::vector<TetrahedronBezierIndex> tbiArray;
+	for (i=0;i<4;++i) {
+		TetrahedronBezierIndex bti(0,0,0,0);
+		bti[i]=deg;
+		tbiArray.push_back(bti);
+	}
+	// edge index
+	if (deg>1) {
+		for (i=0;i<6;++i) {
+			for (j=1;j<deg;++j) {
+				TetrahedronBezierIndex bti(0,0,0,0);
+				bti[edgesInTetrahedronArray[i][0]]=deg-j;
+				bti[edgesInTetrahedronArray[i][1]]=j;
+				tbiArray.push_back(bti);
+			}
+		}
+	}
+	// triangle index
+	if (deg>2) {;
+		for (i=0;i<4;++i) {
+			for (j=1;j<(deg-1);++j) {
+				for (k=1;k<(deg-j);++k) {
+					TetrahedronBezierIndex bti(0,0,0,0);
+					bti[trianglesInTetrahedronArray[i][0]]=j;
+					bti[trianglesInTetrahedronArray[i][1]]=k;
+					bti[trianglesInTetrahedronArray[i][2]]=deg-j-k;
+					tbiArray.push_back(bti);
+				}
+			}
+		}
+	}
+	// tetrahedron index
+	if (deg>3) {
+		for (i=1;i<(deg-2);++i) {
+			for (j=1;j<(deg-1);++j) {
+				for (k=1;k<(deg-j-i);++k) {
+					TetrahedronBezierIndex bti(0,0,0,0);
+					bti[0]=i;bti[1]=j;bti[2]=k;
+					bti[3]=deg-i-j-k;
+				}
+			}
+		}
+	}
+	return(tbiArray);
+}
+sofa::helper::vector<LocalTetrahedronIndex> BezierTetrahedronSetTopologyContainer::getMapOfTetrahedronBezierIndexArrayFromInferiorDegree() const 
+{
+	BezierDegreeType degree=d_degree.getValue();
+	sofa::helper::vector<TetrahedronBezierIndex> tbiDerivArray=getTetrahedronBezierIndexArrayOfGivenDegree(degree-1);
+	sofa::helper::vector<TetrahedronBezierIndex> tbiLinearArray=getTetrahedronBezierIndexArrayOfGivenDegree(1);
+	TetrahedronBezierIndex tbi;
+	sofa::helper::vector<LocalTetrahedronIndex> correspondanceArray;
+//	correspondanceArray.resize(tbiDerivArray.size());
+	size_t i,j;
+	for (i=0;i<tbiDerivArray.size();++i) {
+		LocalTetrahedronIndex correspondance;
+		for (j=0;j<4;++j) {
+			tbi=tbiDerivArray[i]+tbiLinearArray[j];
+			correspondance[j]=getLocalIndexFromTetrahedronBezierIndex(tbi);
+		}
+		correspondanceArray.push_back(correspondance);
+	}
+	return(correspondanceArray);
+}
 void BezierTetrahedronSetTopologyContainer::getGlobalIndexArrayOfBezierPointsInTetrahedron(const size_t tetrahedronIndex, VecPointID & indexArray) 
 {
 	Tetrahedron tet=getTetrahedron(tetrahedronIndex);

@@ -27,6 +27,8 @@
 
 #include <sofa/defaulttype/Vec.h>
 #include <map>
+#include <sofa/helper/vector.h>
+#include <sofa/component/component.h>
 
 namespace sofa
 {
@@ -41,7 +43,8 @@ using namespace sofa::defaulttype;
 
 /// Cross product for 3-elements vectors.
 template< typename Real, int N>
-class NumericalIntegrationDescriptor {
+class  SOFA_BASE_TOPOLOGY_API NumericalIntegrationDescriptor {
+ 
 public:
 	typedef Vec<N, Real> BarycentricCoordinatesType;
 	typedef std::pair<BarycentricCoordinatesType,Real> QuadraturePoint;

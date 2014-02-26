@@ -41,6 +41,7 @@
 #include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
 #include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
 #include <sofa/component/topology/TetrahedronSetGeometryAlgorithms.h>
+#include <sofa/component/topology/BezierTetrahedronSetGeometryAlgorithms.h>
 #include <sofa/component/topology/QuadSetGeometryAlgorithms.h>
 #include <sofa/component/topology/HexahedronSetGeometryAlgorithms.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -82,7 +83,8 @@ public:
     typedef core::objectmodel::Data<VecCoord>               DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv>               DataVecDeriv;
     typedef TMassType                                       MassType;
-    typedef helper::vector<MassType> MassVector;
+    typedef helper::vector<MassType>						MassVector;
+	 typedef helper::vector<MassVector>						MassVectorVector;
 
     // In case of non 3D template
     typedef Vec<3,Real> Vec3;
@@ -96,14 +98,29 @@ public:
         TOPOLOGY_TRIANGLESET=2,
         TOPOLOGY_TETRAHEDRONSET=3,
         TOPOLOGY_QUADSET=4,
-        TOPOLOGY_HEXAHEDRONSET=5
+        TOPOLOGY_HEXAHEDRONSET=5,
+		TOPOLOGY_BEZIERTETRAHEDRONSET=6,
     } TopologyType;
+	/// the way the mass should be computed on non-linear elements
+	typedef enum 
+	{
+		EXACT_COMPUTATION=0,
+		NUMERICAL_INTEGRATION=1,
+		LINEAR_ELEMENT=2
+	} IntegrationMethod;
 
 
     /// Mass info are stocked on vertices and edges (if lumped matrix)
     PointData<helper::vector<MassType> >  vertexMassInfo;
     EdgeData<helper::vector<MassType> >   edgeMassInfo;
 
+	/* ---------- Specific data for Bezier Elements ------*/
+	/// use this data structure to store mass for Bezier tetrahedra. 
+	//// The size of the vector is nbControlPoints*(nbControlPoints+1)/2 where nbControlPoints=(degree+1)*(degree+2)*(degree+3)/2
+	TetrahedronData<helper::vector<MassVector> > tetrahedronMassInfo;
+	// array of Tetrahedral Bezier indices
+	//sofa::helper::vector<TetrahedronBezierIndex> tbiArray;
+	/* ---------- end ------*/
 
     /// the mass density used to compute the mass from a mesh topology and geometry
     Data< Real >         m_massDensity;
@@ -111,9 +128,17 @@ public:
     /// to display the center of gravity of the system
     Data< bool >         showCenterOfGravity;
     Data< Real >         showAxisSize;
+	/// if mass lumping should be performed (only compute mass on vertices)
     Data< bool >         lumping;
+	/// if specific mass information should be outputed
     Data< bool >         printMass;
     Data<std::map < std::string, sofa::helper::vector<double> > > f_graph;
+	/// the order of integration for numerical integration
+	Data<size_t>	     numericalIntegrationOrder;
+	/// the type of numerical integration method chosen
+	Data<size_t>	     numericalIntegrationMethod;
+	/// the type of integration method chosen for non linear element.
+	Data<size_t>		 integrationMethod;
 
 
 
@@ -140,6 +165,7 @@ public:
     sofa::component::topology::QuadSetGeometryAlgorithms<GeometricalTypes>* quadGeo;
     sofa::component::topology::TetrahedronSetGeometryAlgorithms<GeometricalTypes>* tetraGeo;
     sofa::component::topology::HexahedronSetGeometryAlgorithms<GeometricalTypes>* hexaGeo;
+	sofa::component::topology::BezierTetrahedronSetGeometryAlgorithms<GeometricalTypes>* bezierTetraGeo;
 
     void clear();
 
@@ -311,6 +337,27 @@ protected:
     };
 
     EdgeMassHandler* edgeMassHandler;
+
+	class TetrahedronMassHandler : public topology::TopologyDataHandler<Tetrahedron,MassVectorVector>
+    {
+    public:
+		typedef typename DataTypes::Real Real;
+        TetrahedronMassHandler(MeshMatrixMass<DataTypes,TMassType>* _m, TetrahedronData<helper::vector<MassVector> >* _data) : topology::TopologyDataHandler<Tetrahedron,helper::vector<MassVector> >(_data), m(_m) {}
+
+        /// Edge mass coefficient matrix creation function
+        void applyCreateFunction(unsigned int tetrahedronIndex, MassVector & tetrahedronMass,
+                const Tetrahedron&,
+                const sofa::helper::vector< unsigned int > &,
+                const sofa::helper::vector< double >&);
+
+               /// Edge coefficient of mass matrix destruction function to handle creation of new tetrahedra
+        void applyDestructionFunction(const sofa::helper::vector<unsigned int> & /*indices*/);
+
+    protected:
+        MeshMatrixMass<DataTypes,TMassType>* m;
+    };
+
+    TetrahedronMassHandler* tetrahedronMassHandler;
 
 };
 

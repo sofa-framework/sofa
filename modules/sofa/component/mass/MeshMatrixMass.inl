@@ -33,6 +33,9 @@
 #include <sofa/component/topology/RegularGridTopology.h>
 #include <sofa/component/mass/AddMToMatrixFunctor.h>
 #include <sofa/simulation/common/Simulation.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/helper/vector.h>
+#include <sofa/component/topology/CommonAlgorithms.h>
 
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
 #include <sofa/core/behavior/InertiaForce.h>
@@ -59,15 +62,20 @@ template <class DataTypes, class MassType>
 MeshMatrixMass<DataTypes, MassType>::MeshMatrixMass()
     : vertexMassInfo( initData(&vertexMassInfo, "vertexMass", "values of the particles masses on vertices") )
     , edgeMassInfo( initData(&edgeMassInfo, "edgeMass", "values of the particles masses on edges") )
+    , tetrahedronMassInfo( initData(&tetrahedronMassInfo, "tetrahedronMass", "values of the particles masses for all control points inside a Bezier tetrahedron") )
     , m_massDensity( initData(&m_massDensity, (Real)1.0,"massDensity", "mass density that allows to compute the  particles masses from a mesh topology and geometry.\nOnly used if > 0") )
     , showCenterOfGravity( initData(&showCenterOfGravity, false, "showGravityCenter", "display the center of gravity of the system" ) )
     , showAxisSize( initData(&showAxisSize, (Real)1.0, "showAxisSizeFactor", "factor length of the axis displayed (only used for rigids)" ) )
     , lumping( initData(&lumping, true, "lumping","boolean if you need to use a lumped mass matrix") )
     , printMass( initData(&printMass, false, "printMass","boolean if you want to get the totalMass") )
     , f_graph( initData(&f_graph,"graph","Graph of the controlled potential") )
+	, numericalIntegrationOrder( initData(&numericalIntegrationOrder,(size_t)2,"integrationOrder","The order of integration for numerical integration"))
+	, integrationMethod( initData(&integrationMethod,(size_t)1,"integrationMethod","=0 if exact computation is chosen (could be slow), =1 if numerical integration, =2 if expression for linear element is chosen "))
+	, numericalIntegrationMethod( initData(&numericalIntegrationMethod,(size_t)0,"numericalIntegrationMethod","The type of numerical integration method chosen"))
     , topologyType(TOPOLOGY_UNKNOWN)
     , vertexMassHandler(NULL)
     , edgeMassHandler(NULL)
+    , tetrahedronMassHandler(NULL)
 {
     f_graph.setWidget("graph");
 }
@@ -77,6 +85,7 @@ MeshMatrixMass<DataTypes, MassType>::~MeshMatrixMass()
 {
     if (vertexMassHandler) delete vertexMassHandler;
     if (edgeMassHandler) delete edgeMassHandler;
+	if (tetrahedronMassHandler) delete tetrahedronMassHandler;
 }
 
 template< class DataTypes, class MassType>
@@ -94,6 +103,177 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyCreateFunction(u
         const sofa::helper::vector< double >&)
 {
     EdgeMass = 0;
+}
+template< class DataTypes, class MassType>
+void MeshMatrixMass<DataTypes, MassType>::TetrahedronMassHandler::applyCreateFunction(unsigned int tetra, MassVector & TetrahedronMass,
+        const Tetrahedron&,
+        const sofa::helper::vector< unsigned int > &,
+        const sofa::helper::vector< double >&)
+{
+	MeshMatrixMass<DataTypes, MassType> *MMM = this->m;
+
+	if (MMM && (MMM->bezierTetraGeo) && (MMM->getMassTopologyType()==MeshMatrixMass<DataTypes, MassType>::TOPOLOGY_BEZIERTETRAHEDRONSET))
+	{	
+		Real densityM = MMM->getMassDensity();
+		BezierDegreeType degree=MMM->bezierTetraGeo->getTopologyContainer()->getDegree();
+		size_t nbControlPoints=(degree+1)*(degree+2)*(degree+3)/6;
+		size_t nbMassEntries=nbControlPoints*(nbControlPoints+1)/2;
+
+		if (TetrahedronMass.size()!=nbMassEntries) {
+			TetrahedronMass.resize(nbMassEntries);
+		}
+		// set array to zero
+		std::fill(TetrahedronMass.begin(),TetrahedronMass.end(),(MassType)0);
+		sofa::helper::vector<MassType> lumpedVertexMass;
+		lumpedVertexMass.resize(nbControlPoints);
+		size_t i,j,k,rank;
+		VecPointID indexArray;
+		/// get the global index of each control point in the tetrahedron
+		MMM->bezierTetraGeo->getTopologyContainer()->getGlobalIndexArrayOfBezierPointsInTetrahedron(tetra,indexArray);
+		std::fill(lumpedVertexMass.begin(),lumpedVertexMass.end(),(MassType)0);
+		if (MMM->integrationMethod==MeshMatrixMass<DataTypes, MassType>::NUMERICAL_INTEGRATION) {
+			sofa::helper::vector<Real> shapeFunctionValue;
+			shapeFunctionValue.resize(nbControlPoints);
+			// set array to zero
+
+			/// get value of integration points
+			NumericalIntegrationDescriptor<Real,4> &nid=MMM->bezierTetraGeo->getTetrahedronNumericalIntegrationDescriptor();
+			NumericalIntegrationDescriptor<Real,4>::QuadraturePointArray qpa=nid.getQuadratureMethod((NumericalIntegrationDescriptor<Real,4>::QuadratureMethod)MMM->numericalIntegrationMethod.getValue(),
+				MMM->numericalIntegrationOrder.getValue());
+
+			sofa::defaulttype::Vec<4,Real> bc;
+			sofa::helper::vector<TetrahedronBezierIndex> tbi=MMM->bezierTetraGeo->getTopologyContainer()->getTetrahedronBezierIndexArray();
+			typename DataTypes::Real jac,weight;
+			MassType tmpMass;
+
+			// loop through the integration points
+			for (i=0;i<qpa.size();++i) {
+				NumericalIntegrationDescriptor<Real,4>::QuadraturePoint qp=qpa[i];
+				// the barycentric coordinate
+				bc=qp.first;
+				// the weight of the integration point
+				weight=qp.second;
+				// the Jacobian Derterminant of the integration point 
+				jac=MMM->bezierTetraGeo->computeJacobian(tetra,bc)*densityM;
+				/// prestore the shape function value for that integration point.
+				for (j=0;j<nbControlPoints;j++) {
+					shapeFunctionValue[j]=MMM->bezierTetraGeo->computeBernsteinPolynomial(tbi[j],bc);
+				}
+				// now loop through each pair of control point to compute the mass
+				rank=0;
+				for (j=0;j<nbControlPoints;j++) {
+					// use the fact that the shapefunctions sum to 1 to get the lumped value
+					lumpedVertexMass[j]+=shapeFunctionValue[j]*fabs(jac)*weight;
+
+					for (k=j;k<nbControlPoints;k++,rank++) {
+						/// compute the mass as the integral of product of the 2 shape functions multiplied by the Jacobian
+						tmpMass=shapeFunctionValue[k]*shapeFunctionValue[j]*fabs(jac)*weight;
+						TetrahedronMass[rank]+=tmpMass;
+					}
+				}
+			}
+	//		std::cerr<<"Mass Matrix= "<<TetrahedronMass<<std::endl;
+	//		std::cerr<<"Lumped Mass Matrix= "<<lumpedVertexMass<<std::endl;
+			// now updates the the mass matrix on each vertex.
+			vector<MassType>& my_vertexMassInfo = *MMM->vertexMassInfo.beginEdit();
+			for (j=0;j<nbControlPoints;j++) {
+				my_vertexMassInfo[indexArray[j]]+=lumpedVertexMass[j];
+			}
+		} else if ((MMM->integrationMethod==MeshMatrixMass<DataTypes, MassType>::LINEAR_ELEMENT) || 
+			(MMM->bezierTetraGeo->isBezierTetrahedronAffine(tetra,*(MMM->bezierTetraGeo->getDOF()->getX0()) ))) 
+		{
+			/// affine mass simple computation
+			
+			Real totalMass= densityM*MMM->tetraGeo->computeRestTetrahedronVolume(tetra);
+			Real mass=totalMass/(binomial<typename DataTypes::Real>(degree,degree)*binomial<typename DataTypes::Real>(2*degree,3));
+			sofa::helper::vector<TetrahedronBezierIndex> tbiArray;
+			TetrahedronBezierIndex tbi1,tbi2;
+			tbiArray=MMM->bezierTetraGeo->getTopologyContainer()->getTetrahedronBezierIndexArray();
+			rank=0;
+			for (j=0;j<nbControlPoints;j++) {
+				tbi1=tbiArray[j];
+				for (k=j;k<nbControlPoints;k++,rank++) {
+					tbi2=tbiArray[k];
+					TetrahedronMass[rank]+=mass*binomialVector<4,typename DataTypes::Real>(tbi1,tbi2);
+	//				std::cerr<<" tbi = "<<tbi1<<" "<<tbi2<<" ="<<TetrahedronMass[rank]<<std::endl;
+				}
+			}
+			// mass for mass lumping
+			mass=totalMass/nbControlPoints;
+			// now updates the the mass matrix on each vertex.
+			vector<MassType>& my_vertexMassInfo = *MMM->vertexMassInfo.beginEdit();
+			for (j=0;j<nbControlPoints;j++) {
+				my_vertexMassInfo[indexArray[j]]+=mass;
+			}
+		} else {
+			/// exact computation
+			sofa::helper::vector<TetrahedronBezierIndex> tbiArray,tbiDerivArray,multinomialArray;
+			sofa::helper::vector<unsigned char> multinomialScalarArray;
+			/// use the rest configuration
+//			const typename DataTypes::VecCoord &p=*(MMM->bezierTetraGeo->getDOF()->getX0());
+
+			Real factor;
+			MassType tmpMass;
+
+			tbiArray=MMM->bezierTetraGeo->getTopologyContainer()->getTetrahedronBezierIndexArray();
+			tbiDerivArray=MMM->bezierTetraGeo->getTopologyContainer()->getTetrahedronBezierIndexArrayOfGivenDegree(degree-1);
+			sofa::helper::vector<LocalTetrahedronIndex> correspondanceArray=
+				MMM->bezierTetraGeo->getTopologyContainer()->getMapOfTetrahedronBezierIndexArrayFromInferiorDegree();
+			typename DataTypes::Coord dp1,dp2,dp3,dpos,tmp;
+			multinomialArray.resize(5);
+			multinomialScalarArray.resize(5);
+			multinomialScalarArray[0]=degree-1;
+			multinomialScalarArray[1]=degree-1;
+			multinomialScalarArray[2]=degree-1;
+			multinomialScalarArray[3]=degree;
+			multinomialScalarArray[4]=degree;
+			size_t l,m;
+			factor=6*multinomial<Real>(5*degree-3,multinomialScalarArray)*binomial<Real>(5*degree-3,3)/(degree*degree*degree*densityM);
+			for (i=0;i<tbiDerivArray.size();++i) 
+			{
+				dp1=MMM->bezierTetraGeo->getPointRestPosition(indexArray[correspondanceArray[i][0]])-MMM->bezierTetraGeo->getPointRestPosition(indexArray[correspondanceArray[i][3]]);
+				multinomialArray[0]=tbiDerivArray[i];
+				for (j=0;j<tbiDerivArray.size();++j) 
+				{
+					dp2=MMM->bezierTetraGeo->getPointRestPosition(indexArray[correspondanceArray[j][1]])-
+						MMM->bezierTetraGeo->getPointRestPosition(indexArray[correspondanceArray[j][3]]);
+					tmp=cross<Real>(dp1,dp2);
+					multinomialArray[1]=tbiDerivArray[j];
+					rank=0;
+					for (l=0;l<nbControlPoints;l++) {
+						multinomialArray[3]=tbiArray[l];
+						for (m=l;m<nbControlPoints;m++,rank++) {
+							multinomialArray[4]=tbiArray[m];
+							// set dp3 to 0 in a generic way
+							std::fill(dp3.begin(),dp3.end(),(Real)0);
+							for (k=0;k<tbiDerivArray.size();++k) 
+							{
+								multinomialArray[2]=tbiDerivArray[k];
+								dpos=MMM->bezierTetraGeo->getPointRestPosition(indexArray[correspondanceArray[k][2]])-
+									MMM->bezierTetraGeo->getPointRestPosition(indexArray[correspondanceArray[k][3]]);
+								dpos*=multinomialVector<4,Real>(multinomialArray);
+								dp3+=dpos;
+							}
+							dp3/=factor;
+							tmpMass=fabs(dp3*tmp);
+							TetrahedronMass[rank]+=tmpMass;
+							lumpedVertexMass[l]+=tmpMass;
+							if (m>l)
+								lumpedVertexMass[m]+=tmpMass;
+						}
+
+					}
+				}
+
+			}
+
+			// now updates the the mass matrix on each vertex.
+			vector<MassType>& my_vertexMassInfo = *MMM->vertexMassInfo.beginEdit();
+			for (j=0;j<nbControlPoints;j++) {
+				my_vertexMassInfo[indexArray[j]]+=lumpedVertexMass[j];
+			}
+		}
+	}
 }
 
 // -------------------------------------------------------
@@ -695,6 +875,7 @@ void MeshMatrixMass<DataTypes, MassType>::init()
     this->getContext()->get(quadGeo);
     this->getContext()->get(tetraGeo);
     this->getContext()->get(hexaGeo);
+	this->getContext()->get(bezierTetraGeo);
 
     // add the functions to handle topology changes for Vertex informations
     vertexMassHandler = new VertexMassHandler(this, &vertexMassInfo);
@@ -714,6 +895,13 @@ void MeshMatrixMass<DataTypes, MassType>::init()
     edgeMassInfo.linkToTetrahedronDataArray();
     edgeMassInfo.linkToHexahedronDataArray();
     edgeMassInfo.registerTopologicalData();
+
+	if (bezierTetraGeo) {
+		// for Bezier Tetrahedra add the functions to handle topology changes for Tetrahedron informations
+		tetrahedronMassHandler = new TetrahedronMassHandler(this, &tetrahedronMassInfo);
+		tetrahedronMassInfo.createTopologicalEngine(_topology, tetrahedronMassHandler);
+		tetrahedronMassInfo.linkToTetrahedronDataArray();
+	}
 
     if ((vertexMassInfo.getValue().size()==0 || edgeMassInfo.getValue().size()==0) && (_topology!=0))
         reinit();
@@ -771,7 +959,37 @@ void MeshMatrixMass<DataTypes, MassType>::reinit()
             edgeMassHandler->applyHexahedronCreation(hexahedraAdded, _topology->getHexahedra(), emptyAncestors, emptyCoefficients);
             massLumpingCoeff = 2.5;
         }
-        else if (_topology->getNbTetrahedra()>0 && tetraGeo)  // Tetrahedron topology
+        
+
+		else if (_topology->getNbTetrahedra()>0 && bezierTetraGeo)  // Bezier Tetrahedron topology
+        {
+			vector<MassVector>& my_tetrahedronMassInfo = *tetrahedronMassInfo.beginEdit();
+
+
+			size_t  nbTetrahedra=_topology->getNbTetrahedra();
+			const helper::vector<Tetra>& tetrahedra = _topology->getTetrahedra();
+
+			my_tetrahedronMassInfo.resize(nbTetrahedra);
+			 setMassTopologyType(TOPOLOGY_BEZIERTETRAHEDRONSET);
+			// set vertex tensor to 0
+			for (unsigned int i = 0; i<nbTetrahedra; ++i)
+				tetrahedronMassHandler->applyCreateFunction(i, my_tetrahedronMassInfo[i], tetrahedra[i],emptyAncestor, emptyCoefficient);
+
+            // create vector tensor by calling the tetrahedron creation function on the entire mesh
+            sofa::helper::vector<unsigned int> tetrahedraAdded;
+           
+
+			size_t n = _topology->getNbTetrahedra();
+			for (size_t i = 0; i<n; ++i)
+				tetrahedraAdded.push_back(i);
+
+//			tetrahedronMassHandler->applyTetrahedronCreation(tetrahedraAdded, _topology->getTetrahedra(), _topology->getTetrahedron(i),emptyAncestors, emptyCoefficients);
+			massLumpingCoeff = 1.0;
+
+			tetrahedronMassInfo.registerTopologicalData();
+			tetrahedronMassInfo.endEdit();
+        }
+		else if (_topology->getNbTetrahedra()>0 && tetraGeo)  // Tetrahedron topology
         {
             // create vector tensor by calling the tetrahedron creation function on the entire mesh
             sofa::helper::vector<unsigned int> tetrahedraAdded;
@@ -785,7 +1003,6 @@ void MeshMatrixMass<DataTypes, MassType>::reinit()
             edgeMassHandler->applyTetrahedronCreation(tetrahedraAdded, _topology->getTetrahedra(), emptyAncestors, emptyCoefficients);
             massLumpingCoeff = 2.5;
         }
-
         else if (_topology->getNbQuads()>0 && quadGeo)  // Quad topology
         {
             // create vector tensor by calling the quad creation function on the entire mesh
@@ -833,10 +1050,13 @@ void MeshMatrixMass<DataTypes, MassType>::clear()
 {
     MassVector& vertexMass = *vertexMassInfo.beginEdit();
     MassVector& edgeMass = *edgeMassInfo.beginEdit();
+	MassVectorVector& tetrahedronMass = *tetrahedronMassInfo.beginEdit();
     vertexMass.clear();
     edgeMass.clear();
+	tetrahedronMass.clear();
     vertexMassInfo.endEdit();
     edgeMassInfo.endEdit();
+	tetrahedronMassInfo.endEdit();
 }
 
 
@@ -855,64 +1075,92 @@ void MeshMatrixMass<DataTypes, MassType>::addMDx(const core::MechanicalParams* /
     //using a lumped matrix (default)-----
     if(this->lumping.getValue())
     {
-        for (unsigned int i=0; i<dx.size(); i++)
+        for (size_t i=0; i<dx.size(); i++)
         {
             res[i] += dx[i] * vertexMass[i] * massLumpingCoeff * (Real)factor;
             massTotal += vertexMass[i]*massLumpingCoeff * (Real)factor;
         }
-        if(printMass.getValue() && (this->getContext()->getTime()==0.0))
-            std::cout<<"Mass totale = "<<massTotal<<std::endl;
-
-        if(printMass.getValue())
-        {
-            std::map < std::string, sofa::helper::vector<double> >& graph = *f_graph.beginEdit();
-            sofa::helper::vector<double>& graph_error = graph["Mass variations"];
-            graph_error.push_back(massTotal);
-
-            f_graph.endEdit();
-        }
+        
     }
 
 
     //using a sparse matrix---------------
-    else
-    {
-        unsigned int nbEdges=_topology->getNbEdges();
-        unsigned int v0,v1;
+	else if (getMassTopologyType()!=TOPOLOGY_BEZIERTETRAHEDRONSET) 
+	{
+		size_t nbEdges=_topology->getNbEdges();
+		size_t v0,v1;
 
-        for (unsigned int i=0; i<dx.size(); i++)
-        {
-            res[i] += dx[i] * vertexMass[i] * (Real)factor;
-            massTotal += vertexMass[i] * (Real)factor;
-        }
+		for (unsigned int i=0; i<dx.size(); i++)
+		{
+			res[i] += dx[i] * vertexMass[i] * (Real)factor;
+			massTotal += vertexMass[i] * (Real)factor;
+		}
 
-        Real tempMass=0.0;
+		Real tempMass=0.0;
 
-        for (unsigned int j=0; j<nbEdges; ++j)
-        {
-            tempMass = edgeMass[j] * (Real)factor;
+		for (unsigned int j=0; j<nbEdges; ++j)
+		{
+			tempMass = edgeMass[j] * (Real)factor;
 
-            v0=_topology->getEdge(j)[0];
-            v1=_topology->getEdge(j)[1];
+			v0=_topology->getEdge(j)[0];
+			v1=_topology->getEdge(j)[1];
 
-            res[v0] += dx[v1] * tempMass;
-            res[v1] += dx[v0] * tempMass;
+			res[v0] += dx[v1] * tempMass;
+			res[v1] += dx[v0] * tempMass;
 
-            massTotal += 2*edgeMass[j] * (Real)factor;
-        }
+			massTotal += 2*edgeMass[j] * (Real)factor;
+		}
+	} else if (bezierTetraGeo ){
+			BezierDegreeType degree=bezierTetraGeo->getTopologyContainer()->getDegree();
+			size_t nbControlPoints=(degree+1)*(degree+2)*(degree+3)/6;
+			VecPointID indexArray;
+			size_t nbTetras=_topology->getNbTetrahedra();
+#ifdef NDEBUG
+			assert(tetrahedronMassInfo.size()==(nbControlPoints*(nbControlPoints+1)/2));
+#endif
+			// go through the mass stored in each tetrahedron element
+			size_t rank=0;
+			MassType tempMass;
+			size_t v0,v1;
+			// loop over each tetrahedron of size nbControlPoints*nbControlPoints
+			for (size_t i=0; i<nbTetras; i++) {
+				indexArray.clear();
+				/// get the global index of each control point in the tetrahedron
+				bezierTetraGeo->getTopologyContainer()->getGlobalIndexArrayOfBezierPointsInTetrahedron(i,indexArray) ;
+				// get the mass matrix in the tetrahedron
+				const MassVector &mv=tetrahedronMassInfo.getValue()[i];
+				// loop over each entry in the mass matrix of size nbControlPoints*(nbControlPoints+1)/2
+				for (size_t j=0; j<nbControlPoints; ++j) {
+					v0 = indexArray[j];
+					for (size_t k=j; k<nbControlPoints; ++k,++rank) {
+						v1 = indexArray[k];
+						tempMass =mv[rank] * (Real)factor;					
+						if (k>j) {
+							res[v0] += dx[v1] * tempMass;
+							res[v1] += dx[v0] * tempMass;
+							massTotal += 2*tempMass;
+						} else {
+							res[v0] += dx[v0] * tempMass;
+							massTotal += tempMass;
+						}
+					}
+				}
+			}
+		}
+	if(printMass.getValue() && (this->getContext()->getTime()==0.0))
+		std::cout<<"Total Mass = "<<massTotal<<std::endl;
 
-        if(printMass.getValue() && (this->getContext()->getTime()==0.0))
-            std::cout<<"Mass totale = "<<massTotal<<std::endl;
+	if(printMass.getValue())
+	{
+		std::map < std::string, sofa::helper::vector<double> >& graph = *f_graph.beginEdit();
+		sofa::helper::vector<double>& graph_error = graph["Mass variations"];
+		graph_error.push_back(massTotal+0.000001);
 
-        if(printMass.getValue())
-        {
-            std::map < std::string, sofa::helper::vector<double> >& graph = *f_graph.beginEdit();
-            sofa::helper::vector<double>& graph_error = graph["Mass variations"];
-            graph_error.push_back(massTotal+0.000001);
+		f_graph.endEdit();
+	}
 
-            f_graph.endEdit();
-        }
-    }
+        
+    
 
 }
 
@@ -1016,14 +1264,48 @@ double MeshMatrixMass<DataTypes, MassType>::getKineticEnergy( const core::Mechan
     {
         e += dot(v[i],v[i]) * vertexMass[i]; // v[i]*v[i]*masses[i] would be more efficient but less generic
     }
+	if (getMassTopologyType()!=TOPOLOGY_BEZIERTETRAHEDRONSET) {
+		for (unsigned int i=0; i<nbEdges; ++i)
+		{
+			v0=_topology->getEdge(i)[0];
+			v1=_topology->getEdge(i)[1];
 
-    for (unsigned int i=0; i<nbEdges; ++i)
-    {
-        v0=_topology->getEdge(i)[0];
-        v1=_topology->getEdge(i)[1];
+			e += 2*dot(v[v0],v[v1])*edgeMass[i];
 
-        e += 2*dot(v[v0],v[v1])*edgeMass[i];
-    }
+		} 
+	} else if (bezierTetraGeo ){
+			BezierDegreeType degree=bezierTetraGeo->getTopologyContainer()->getDegree();
+			size_t nbControlPoints=(degree+1)*(degree+2)*(degree+3)/6;
+			VecPointID indexArray;
+			size_t nbTetras=_topology->getNbTetrahedra();
+#ifdef NDEBUG
+			assert(tetrahedronMassInfo.size()==(nbControlPoints*(nbControlPoints+1)/2));
+#endif
+			// go through the mass stored in each tetrahedron element
+			size_t rank=0;
+			// loop over each tetrahedron of size nbControlPoints*nbControlPoints
+			for (size_t i=0; i<nbTetras; i++) {
+				indexArray.clear();
+				/// get the global index of each control point in the tetrahedron
+				bezierTetraGeo->getTopologyContainer()->getGlobalIndexArrayOfBezierPointsInTetrahedron(i,indexArray) ;
+				// get the mass matrix in the tetrahedron
+				const MassVector &mv=tetrahedronMassInfo.getValue()[i];
+			//	MassVector mv;
+				// loop over each entry in the mass matrix of size nbControlPoints*(nbControlPoints+1)/2
+				for (size_t j=0; j<nbControlPoints; ++j) {
+					v0 = indexArray[j];
+					for (size_t k=j; k<nbControlPoints; ++k,++rank) {
+						v1 = indexArray[k];
+						
+						if (k>j) {
+							e += 2*dot(v[v0],v[v1])*mv[rank];
+						} else 
+							e += dot(v[v0],v[v1])*mv[rank];
+					}
+				}
+			}
+		}
+
 
     return e/2;
 }
@@ -1087,8 +1369,8 @@ void MeshMatrixMass<DataTypes, MassType>::addMToMatrix(const core::MechanicalPar
     const MassVector &vertexMass= vertexMassInfo.getValue();
     const MassVector &edgeMass= edgeMassInfo.getValue();
 
-    unsigned int nbEdges=_topology->getNbEdges();
-    unsigned int v0,v1;
+    size_t nbEdges=_topology->getNbEdges();
+    size_t v0,v1;
 
     const int N = defaulttype::DataTypeInfo<Deriv>::size();
     AddMToMatrixFunctor<Deriv,MassType> calc;
@@ -1106,14 +1388,14 @@ void MeshMatrixMass<DataTypes, MassType>::addMToMatrix(const core::MechanicalPar
 
     if(this->lumping.getValue())
     {
-        for (unsigned int i=0; i<vertexMass.size(); i++)
+        for (size_t i=0; i<vertexMass.size(); i++)
         {
             calc(r.matrix, vertexMass[i] * massLumpingCoeff, r.offset + N*i, mFactor);
             massTotal += vertexMass[i] * massLumpingCoeff;
         }
 
         if(printMass.getValue() && (this->getContext()->getTime()==0.0))
-            std::cout<<"Mass totale = "<<massTotal<<std::endl;
+            std::cout<<"Total Mass = "<<massTotal<<std::endl;
 
         if(printMass.getValue())
         {
@@ -1128,26 +1410,59 @@ void MeshMatrixMass<DataTypes, MassType>::addMToMatrix(const core::MechanicalPar
 
     else
     {
-        for (unsigned int i=0; i<vertexMass.size(); i++)
-        {
-            calc(r.matrix, vertexMass[i], r.offset + N*i, mFactor);
-            massTotal += vertexMass[i];
-        }
+		if (getMassTopologyType()!=TOPOLOGY_BEZIERTETRAHEDRONSET) {
+			for (size_t i=0; i<vertexMass.size(); i++)
+			{
+				calc(r.matrix, vertexMass[i], r.offset + N*i, mFactor);
+				massTotal += vertexMass[i];
+			}
 
 
-        for (unsigned int j=0; j<nbEdges; ++j)
-        {
-            v0=_topology->getEdge(j)[0];
-            v1=_topology->getEdge(j)[1];
+			for (size_t j=0; j<nbEdges; ++j)
+			{
+				v0=_topology->getEdge(j)[0];
+				v1=_topology->getEdge(j)[1];
 
-            calc(r.matrix, edgeMass[j], r.offset + N*v0, r.offset + N*v1, mFactor);
-            calc(r.matrix, edgeMass[j], r.offset + N*v1, r.offset + N*v0, mFactor);
+				calc(r.matrix, edgeMass[j], r.offset + N*v0, r.offset + N*v1, mFactor);
+				calc(r.matrix, edgeMass[j], r.offset + N*v1, r.offset + N*v0, mFactor);
 
-            massTotal += 2*edgeMass[j];
-        }
-
+				massTotal += 2*edgeMass[j];
+			}
+		} else if (bezierTetraGeo ){
+			BezierDegreeType degree=bezierTetraGeo->getTopologyContainer()->getDegree();
+			size_t nbControlPoints=(degree+1)*(degree+2)*(degree+3)/6;
+			VecPointID indexArray;
+			size_t nbTetras=_topology->getNbTetrahedra();
+#ifdef NDEBUG
+			assert(tetrahedronMassInfo.size()==(nbControlPoints*(nbControlPoints+1)/2));
+#endif
+			// go through the mass stored in each tetrahedron element
+			size_t rank=0;
+			// loop over each tetrahedron of size nbControlPoints*nbControlPoints
+			for (size_t i=0; i<nbTetras; i++) {
+				indexArray.clear();
+				/// get the global index of each control point in the tetrahedron
+				bezierTetraGeo->getTopologyContainer()->getGlobalIndexArrayOfBezierPointsInTetrahedron(i,indexArray) ;
+				// get the mass matrix in the tetrahedron
+				MassVector &mv=tetrahedronMassInfo[i];
+				// loop over each entry in the mass matrix of size nbControlPoints*(nbControlPoints+1)/2
+				for (size_t j=0; j<nbControlPoints; ++j) {
+					v0 = indexArray[j];
+					for (size_t k=j; k<nbControlPoints; ++k,++rank) {
+						v1 = indexArray[k];
+						calc(r.matrix, mv[rank], r.offset + N*v0, r.offset + N*v1, mFactor);
+						
+						if (k>j) {
+							calc(r.matrix, mv[rank], r.offset + N*v1, r.offset + N*v0, mFactor);
+							massTotal += 2*mv[rank];
+						} else 
+							massTotal += mv[rank];
+					}
+				}
+			}
+		}
         if(printMass.getValue() && (this->getContext()->getTime()==0.0))
-            std::cout<<"Mass totale = "<<massTotal<<std::endl;
+            std::cout<<"Total Mass  = "<<massTotal<<std::endl;
 
         if(printMass.getValue())
         {
@@ -1189,9 +1504,6 @@ void MeshMatrixMass<DataTypes, MassType>::getElementMass(unsigned int index, def
     AddMToMatrixFunctor<Deriv,MassType>()(m, vertexMassInfo.getValue()[index] * massLumpingCoeff, 0, 1);
 }
 
-
-
-
 template <class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::draw(const core::visual::VisualParams* vparams)
 {
@@ -1208,43 +1520,17 @@ void MeshMatrixMass<DataTypes, MassType>::draw(const core::visual::VisualParams*
     Coord gravityCenter;
     Real totalMass=0.0;
 
-    std::vector<  Vector3 > points;
+	std::vector<  Vector3 > points;
+	for (unsigned int i=0; i<x.size(); i++)
+	{
+		Vector3 p;
+		p = DataTypes::getCPos(x[i]);
 
-    if(this->lumping.getValue())
-    {
-        for (unsigned int i=0; i<x.size(); i++)
-        {
-            Vector3 p;
-            p = DataTypes::getCPos(x[i]);
-
-            points.push_back(p);
-            gravityCenter += x[i]*vertexMass[i]*massLumpingCoeff;
-            totalMass += vertexMass[i]*massLumpingCoeff;
-        }
-    }
-    else
-    {
-        for (unsigned int i=0; i<x.size(); i++)
-        {
-            Vector3 p;
-            p = DataTypes::getCPos(x[i]);
-
-            points.push_back(p);
-            gravityCenter += x[i]*vertexMass[i];
-            totalMass += vertexMass[i];
-        }
-
-        for (unsigned int i=0; i<nbEdges; ++i)
-        {
-            v0=_topology->getEdge(i)[0];
-            v1=_topology->getEdge(i)[1];
-
-            gravityCenter += x[v0]*edgeMass[v0];
-            gravityCenter += x[v1]*edgeMass[v1];
-            totalMass += edgeMass[v0];
-            totalMass += edgeMass[v1];
-        }
-    }
+		points.push_back(p);
+		gravityCenter += x[i]*vertexMass[i]*massLumpingCoeff;
+		totalMass += vertexMass[i]*massLumpingCoeff;
+	}
+ 
 
 
     vparams->drawTool()->drawPoints(points, 2, Vec<4,float>(1,1,1,1));

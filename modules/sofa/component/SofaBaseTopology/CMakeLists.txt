@@ -20,6 +20,8 @@ set(HEADER_FILES
     ../topology/HexahedronSetTopologyAlgorithms.inl 
     ../topology/HexahedronSetTopologyContainer.h 
     ../topology/HexahedronSetTopologyModifier.h 
+	../topology/NumericalIntegrationDescriptor.h 
+	../topology/NumericalIntegrationDescriptor.inl 
     ../topology/MeshTopology.h 
     ../topology/PointSetGeometryAlgorithms.h 
     ../topology/PointSetGeometryAlgorithms.inl 
@@ -82,7 +84,8 @@ set(SOURCE_FILES
     ../topology/HexahedronSetTopologyAlgorithms.cpp 
     ../topology/HexahedronSetTopologyContainer.cpp 
     ../topology/HexahedronSetTopologyModifier.cpp 
-    ../topology/MeshTopology.cpp 
+    ../topology/MeshTopology.cpp
+	../topology/NumericalIntegrationDescriptor.cpp  
     ../topology/PointSetGeometryAlgorithms.cpp 
     ../topology/PointSetTopologyAlgorithms.cpp 
     ../topology/PointSetTopologyContainer.cpp 

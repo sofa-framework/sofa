@@ -27,6 +27,7 @@
 
 #include <sofa/component/topology/BezierTetrahedronSetGeometryAlgorithms.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/component/topology/CommonAlgorithms.h>
 
 namespace sofa
 {
@@ -42,13 +43,19 @@ using namespace sofa::defaulttype;
 typedef std::pair<TetrahedronBezierIndex,double> bernsteinCoeffMapType;
 typedef std::map<TetrahedronBezierIndex,double>::iterator bernsteinCoeffMapIterator;
 
-/// this function is only valid for small value of n which should be sufficient for a regular use.
-size_t factorial(size_t n)
+
+double multinomial(const size_t n,const TetrahedronBezierIndex tbiIn)
  {
- 	size_t retval = 1;
- 	for (int i = n; i > 1; --i)
- 		retval *= (size_t) i;
- 	return retval;
+	double val=1;
+	size_t i,ival;
+	TetrahedronBezierIndex tbi=tbiIn;
+	// divide n! with the largest of the multinomial coefficient
+	std::sort(tbi.begin(),tbi.end());
+	ival=1;
+	for (i=n;i>tbi[3];--i){
+		ival*=i;
+	}
+	return(((double)ival)/(factorial(tbi[0])*factorial(tbi[1])*factorial(tbi[2])));
  }
 template< class DataTypes>
  BezierTetrahedronSetGeometryAlgorithms< DataTypes >::BezierTetrahedronSetGeometryAlgorithms() : 
@@ -83,12 +90,22 @@ template< class DataTypes>
 		double degreeFactorial=(double)factorial(degree);
 		for (i=0;i<tbiArray.size();++i) {
 			tbi=tbiArray[i];
-			bernsteinCoefficientArray[i]=degreeFactorial/(factorial(tbi[0])*factorial(tbi[1])*factorial(tbi[2])*factorial(tbi[3]));
+			bernsteinCoefficientArray[i]=multinomial(degree,tbi); 
 			bernsteinCoeffMap.insert(bernsteinCoeffMapType(tbi,(double) bernsteinCoefficientArray[i]));
+		}
+		/// insert coefficient for the inferior degree
+		size_t j,k,l,m,n,index1,index2;
+		for (i=0;i<=degree-1;++i) {
+			for (j=0;j<=(degree-i-1);++j) {
+				for (k=0;k<=(degree-j-i-1);++k) {
+					l=degree-1-i-j-k;
+					tbi=TetrahedronBezierIndex(i,j,k,l);
+					bernsteinCoeffMap.insert(bernsteinCoeffMapType(tbi,(double) multinomial(degree-1,tbi)));
+				}
+			}
 		}
 		/// fills the array of edges
 		bezierTetrahedronEdgeSet.clear();
-		size_t j,k,l,m,n,index1,index2;
 		TetrahedronBezierIndex tbiNext;
 		/*
 		const VecCoord& coords = *(this->object->getX());
@@ -146,10 +163,8 @@ template< class DataTypes>
 {
 }
 template< class DataTypes>
-typename DataTypes::Coord BezierTetrahedronSetGeometryAlgorithms< DataTypes >::computeNodalValue(const size_t tetrahedronIndex,const Vec4 barycentricCoordinate)
+typename DataTypes::Coord BezierTetrahedronSetGeometryAlgorithms< DataTypes >::computeNodalValue(const size_t tetrahedronIndex,const Vec4 barycentricCoordinate, const typename DataTypes::VecCoord& p)
 {
-    const typename DataTypes::VecCoord& p = *(this->object->getX());
-
 	Coord nodalValue;
 	nodalValue.clear();
 	VecPointID indexArray;
@@ -162,7 +177,12 @@ typename DataTypes::Coord BezierTetrahedronSetGeometryAlgorithms< DataTypes >::c
 	}
 	return(nodalValue);
 }
-
+template< class DataTypes>
+typename DataTypes::Coord BezierTetrahedronSetGeometryAlgorithms< DataTypes >::computeNodalValue(const size_t tetrahedronIndex,const Vec4 barycentricCoordinate)
+{
+	const typename DataTypes::VecCoord& p = *(this->object->getX());
+	return(computeNodalValue(tetrahedronIndex,barycentricCoordinate,p));
+}
 template<class DataTypes>
 typename DataTypes::Real BezierTetrahedronSetGeometryAlgorithms<DataTypes>::computeBernsteinPolynomial(const TetrahedronBezierIndex tbi, const Vec4 barycentricCoordinate)
 {
@@ -175,6 +195,96 @@ typename DataTypes::Real BezierTetrahedronSetGeometryAlgorithms<DataTypes>::comp
 		serr<< "Tetrahedron Bezier Index "<< tbi << " out of range"<< sendl;
 		return ((Real)1);
 	}
+}
+ template<class DataTypes>
+ typename BezierTetrahedronSetGeometryAlgorithms<DataTypes>::Real 
+	 BezierTetrahedronSetGeometryAlgorithms<DataTypes>::computeJacobian(const size_t tetrahedronIndex, const Vec4 barycentricCoordinate, const typename DataTypes::VecCoord& p)
+ {
+	/// the 3 derivatives
+	Coord dpos[3];
+	VecPointID indexArray;
+	TetrahedronBezierIndex tbi;
+	size_t j;
+	Real val;
+	container->getGlobalIndexArrayOfBezierPointsInTetrahedron(tetrahedronIndex, indexArray);
+	for(size_t i=0; i<tbiArray.size(); ++i)
+	{
+		tbi=tbiArray[i];
+		val=bernsteinCoefficientArray[i]*pow(barycentricCoordinate[0],tbi[0])*pow(barycentricCoordinate[1],tbi[1])*pow(barycentricCoordinate[2],tbi[2])*pow(barycentricCoordinate[3],tbi[3]);
+		Vec4 dval(0,0,0,0);
+		for (j=0;j<4;++j) {
+			if(tbi[j] && barycentricCoordinate[j]){
+				 dval[j]=(Real)tbi[j]*val/barycentricCoordinate[j];
+			}
+		}
+		for (j=0;j<3;++j) {
+			dpos[j]+=(dval[j]-dval[3])*p[indexArray[i]];
+		}
+	}
+	
+	return(tripleProduct(dpos[0],dpos[1],dpos[2]));
+ }
+ template<class DataTypes>
+ typename BezierTetrahedronSetGeometryAlgorithms<DataTypes>::Real 
+	 BezierTetrahedronSetGeometryAlgorithms<DataTypes>::computeJacobian(const size_t tetrahedronIndex, const Vec4 barycentricCoordinate)
+ {
+	 const typename DataTypes::VecCoord& p = *(this->object->getX());
+	 return(computeJacobian(tetrahedronIndex,barycentricCoordinate,p));
+
+ }
+template<class DataTypes>
+void BezierTetrahedronSetGeometryAlgorithms<DataTypes>::computeDeCasteljeauPoints(const size_t tetrahedronIndex, const Vec4 barycentricCoordinate, Coord dpos[4])
+{
+	/// the 4 derivatives
+	VecPointID indexArray;
+	TetrahedronBezierIndex tbi;
+	size_t j;
+	Real val;
+	const typename DataTypes::VecCoord& p = *(this->object->getX());
+	container->getGlobalIndexArrayOfBezierPointsInTetrahedron(tetrahedronIndex, indexArray);
+	for(size_t i=0; i<tbiArray.size(); ++i)
+	{
+		tbi=tbiArray[i];
+		val=bernsteinCoefficientArray[i]*pow(barycentricCoordinate[0],tbi[0])*pow(barycentricCoordinate[1],tbi[1])*pow(barycentricCoordinate[2],tbi[2])*pow(barycentricCoordinate[3],tbi[3]);
+		Vec4 dval(0,0,0,0);
+		for (j=0;j<4;++j) {
+			if(tbi[i] && barycentricCoordinate[i]){
+				 dval[i]=(Real)tbi[i]*val/barycentricCoordinate[i];
+			}
+		}
+		for (j=0;j<4;++j) {
+			dpos[j]+=dval[j]*p[indexArray[i]];
+		}
+	}
+	
+}
+
+template<class DataTypes>
+bool BezierTetrahedronSetGeometryAlgorithms<DataTypes>::isBezierTetrahedronAffine(const size_t tetrahedronIndex,const VecCoord& p, Real tolerance) const{
+	// get the global indices of all points
+	VecPointID indexArray;
+	container->getGlobalIndexArrayOfBezierPointsInTetrahedron(tetrahedronIndex, indexArray);
+	bool affine=true;
+
+	/// skip the first 4 control points corresponding to the 4 corners
+	size_t index=0;
+	Coord corner[4],pos,actualPos;
+	// store the position of the 4 corners
+	for (index=0;index<4;++index)
+		corner[index]=p[indexArray[index]];
+	do {
+		// compute the position of the control point as if the tetrahedron was affine
+		pos=corner[0]*tbiArray[index][0]+corner[1]*tbiArray[index][1]+corner[2]*tbiArray[index][2]+
+			corner[3]*tbiArray[index][3];
+		pos/=degree;
+		// measure the distance between the real position and the affine position
+		actualPos=p[indexArray[index]];
+		if ((actualPos-pos).norm2()>tolerance) {
+			affine=false;
+		}
+		index++;
+	} while ((affine) && (index<indexArray.size()));
+	return (affine);
 }
 
  template<class DataTypes>
