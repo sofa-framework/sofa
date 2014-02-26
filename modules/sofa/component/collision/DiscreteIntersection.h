@@ -60,12 +60,12 @@ public:
     typedef core::collision::IntersectorFactory<DiscreteIntersection> IntersectorFactory;
 
     template <class Elem1,class Elem2>
-    inline int computeIntersection(Elem1 & e1,Elem2 & e2,OutputVector* contacts){
+    int computeIntersection(Elem1 & e1,Elem2 & e2,OutputVector* contacts){
         return BaseIntTool::computeIntersection(e1,e2,e1.getProximity() + e2.getProximity() + getAlarmDistance(),e1.getProximity() + e2.getProximity() + getContactDistance(),contacts);
     }
 
     template <class Elem1,class Elem2>
-    inline int testIntersection(Elem1& e1,Elem2& e2){
+    int testIntersection(Elem1& e1,Elem2& e2){
         return BaseIntTool::testIntersection(e1,e2,this->getAlarmDistance());
     }
 };
