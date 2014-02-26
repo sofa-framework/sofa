@@ -29,6 +29,9 @@ public:
         return false;
     }
 
+    static bool testIntersection(Cube &cube1, Cube &cube2,SReal alarmDist);
+
+
     template <class DataTypes1,class DataTypes2>
     static bool testIntersection(TSphere<DataTypes1>& sph1, TSphere<DataTypes2>& sph2,SReal alarmDist)
     {
