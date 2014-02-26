@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_TOPOLOGY_COMMONALGORITHMS_H
 
 #include <sofa/defaulttype/VecTypes.h>
+#include <sofa/helper/vector.h>
 
 namespace sofa
 {
@@ -37,6 +38,7 @@ namespace topology
 {
 
 using namespace sofa::defaulttype;
+using namespace sofa::helper;
 
 /// Cross product for 3-elements vectors.
 template< class Real>
@@ -62,6 +64,21 @@ Real areaProduct(const defaulttype::Vec<1,Real>& , const defaulttype::Vec<1,Real
     return (Real)0;
 }
 
+/// cross product  for 2-elements vectors.
+template< class Real>
+defaulttype::Vec<2,Real> cross(const defaulttype::Vec<2,Real>& a, const defaulttype::Vec<2,Real>& b )
+{
+	assert(false);
+	return(Vec<2,Real>());
+}
+
+/// cross product  for 1-elements vectors.
+template< class Real>
+defaulttype::Vec<1,Real> cross(const defaulttype::Vec<1,Real>& a, const defaulttype::Vec<1,Real>& b )
+{
+	assert(false);
+	return(Vec<1,Real>());
+}
 
 /// Volume (triple product) for 3-elements vectors.
 template<typename real>
@@ -85,7 +102,87 @@ inline real tripleProduct(const Vec<1,real>& , const Vec<1,real>& , const Vec<1,
     assert(false);
     return (real)0;
 }
+/// this function is only valid for small value of n which should be sufficient for a regular use.
+inline size_t lfactorial(size_t n)
+ {
+ 	size_t retval = 1;
+ 	for (int i = n; i > 1; --i)
+ 		retval *= (size_t) i;
+ 	return retval;
+ }
+template < class Real >
+Real binomial(const size_t p, const size_t q) {
+	size_t ival=1;
+	size_t i;
+	if (p>q) {
+		for (i=p+q;i>p;--i){
+			ival*=i;
+		}
+		return((Real)ival)/lfactorial(q);
+	} else {
+		for (i=p+q;i>q;--i){
+			ival*=i;
+		}
+		return((Real)ival)/lfactorial(p);
+	}
+}
+template <class Real>
+Real multinomial(const size_t n,vector<unsigned char> valArray)
+ {
+	
+	size_t i,ival,N;
+	N=valArray.size();
+	// divide n! with the largest of the multinomial coefficient
+	std::sort(valArray.begin(),valArray.end());
+	ival=1;
+	for (i=n;i>valArray[N-1];--i){
+		ival*=i;
+	}
+	Real val=1;
+	for (i=0;i<(N-1);++i)
+		val*=lfactorial(valArray[i]);
+	return((Real)ival)/(val);
+ }
+template <size_t N, class Real>
+Real multinomial(const size_t n,const Vec<N,unsigned char> tbi)
+ {
+	 vector<unsigned char> valArray;
+	 for (j=0;j<N;++j) {
+		 valArray.push_back(tbi[j]);
+	 }
+	 return(multinomial(n,valArray));
+}
 
+template <size_t N, class Real>
+Real multinomialVector(const vector<Vec<N,unsigned char> > tbiArray)
+{
+	size_t i,j;
+	Real result=(Real)1;
+	vector<unsigned char> valArray;
+	size_t totalDegree;
+	for (j=0;j<N;++j) {
+		valArray.clear();
+		totalDegree=0;
+		for (i=0;i<tbiArray.size();++i)
+		{
+			valArray.push_back(tbiArray[i][j]);
+			totalDegree+=tbiArray[i][j];
+		}
+		result*=multinomial<Real>(totalDegree,valArray);
+	}
+	return(result);
+}
+template <size_t N, class Real>
+Real binomialVector(const Vec<N,unsigned char>  tbi1,const Vec<N,unsigned char>  tbi2)
+{
+	size_t j;
+	Real result=(Real)1;
+	size_t totalDegree=0;
+	for (j=0;j<N;++j) {
+		result*=binomial<Real>(tbi1[j],tbi2[j]);
+	}
+	return(result);
+}
 } // namespace topology
 
 } // namespace component

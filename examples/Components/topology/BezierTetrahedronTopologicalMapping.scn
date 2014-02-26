@@ -7,11 +7,10 @@
     <Node name="MeshTopology">
         <EulerImplicit name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <TetrahedronSetTopologyContainer name="Container1" fileTopology="mesh/liver.msh" />
+        <TetrahedronSetTopologyContainer name="Container1" fileTopology="mesh/tetraSimple.msh" />
         <TetrahedronSetTopologyModifier />
         <TetrahedronSetGeometryAlgorithms name="GeomAlgo" />
         <MechanicalObject name="dofs" />
-<!--        <FixedConstraint name="FixedConstraint" indices="3 39 64" /> -->
         <DiagonalMass massDensity="1" name="computed using mass density" />
         <TetrahedralCorotationalFEMForceField name="FEM" youngModulus="3000" poissonRatio="0.3" computeGlobalMatrix="false" method="large" />
         <Node name="PointSetTopology">
@@ -19,8 +18,9 @@
         	<BezierTetrahedronSetTopologyContainer name="ContainerBezier"/>	
 			<Mesh2BezierTopologicalMapping object1="Container1" object2="ContainerBezier" bezierTetrahedronDegree="3" />
 			<MechanicalObject />	
+	
 			<BezierTetrahedronSetGeometryAlgorithms name="GeomAlgo" drawControlPointsEdges="true"/>
-
+        	<MeshMatrixMass name="mass" lumping="0" printMass="1" massDensity="1"  integrationMethod="1" numericalIntegrationMethod="0" integrationOrder="6"/>	
             <SphereModel radius="0.05" />
         </Node>
     </Node>

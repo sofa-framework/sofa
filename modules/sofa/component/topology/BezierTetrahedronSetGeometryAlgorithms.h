@@ -28,6 +28,7 @@
 #include <sofa/component/topology/TetrahedronSetGeometryAlgorithms.h>
 #include <sofa/component/topology/BezierTetrahedronSetTopologyContainer.h>
 
+
 namespace sofa
 {
 
@@ -75,17 +76,22 @@ protected:
 	// array of Bernstein coefficient following the same order as tbiArray
 	sofa::helper::vector<Real> bernsteinCoefficientArray;
 	// map used to store the Bernstein coefficient given a Tetrahedron Bezier Index
-	std::map<TetrahedronBezierIndex,double> bernsteinCoeffMap;
+	std::map<TetrahedronBezierIndex,Real> bernsteinCoeffMap;
 	/// the list of edges of the Bezier Tetrahedron used in the draw function
 	sofa::helper::set<Edge> bezierTetrahedronEdgeSet;
-
     virtual ~BezierTetrahedronSetGeometryAlgorithms() {}
 public:
 	/// 
 	virtual void init();
 	virtual void reinit();
     virtual void draw(const core::visual::VisualParams* vparams);
-	/// computes the nodal value 
+	/// returns a pointer to the BezierTetrahedronSetTopologyContainer object
+	BezierTetrahedronSetTopologyContainer *getTopologyContainer() const {
+		return container;
+	}
+	/// computes the nodal value given the tetrahedron index, the barycentric coordinates and the vector of nodal values
+	Coord computeNodalValue(const size_t tetrahedronIndex,const Vec4 barycentricCoordinate,const VecCoord& p); 
+	/// computes the nodal value assuming that the position is the regular position in the mechanical state object
 	Coord computeNodalValue(const size_t tetrahedronIndex,const Vec4 barycentricCoordinate); 
 	/// computes the shape function 
 	Real computeBernsteinPolynomial(const TetrahedronBezierIndex tbi, const Vec4 barycentricCoordinate);
@@ -93,6 +99,14 @@ public:
     Vec4 computeBernsteinPolynomialGradient(const TetrahedronBezierIndex tbi, const Vec4 barycentricCoordinate);
     /// computes the shape function hessian
     Mat44 computeBernsteinPolynomialHessian(const TetrahedronBezierIndex tbi, const Vec4 barycentricCoordinate);
+	/// computes Jacobian i.e. determinant of dpos/dmu
+	Real computeJacobian(const size_t tetrahedronIndex, const Vec4 barycentricCoordinate,const VecCoord& p);
+	/// computes Jacobian
+	Real computeJacobian(const size_t tetrahedronIndex, const Vec4 barycentricCoordinate);
+	/// compute the 4 De Casteljeau  of degree d-1
+	void computeDeCasteljeauPoints(const size_t tetrahedronIndex, const Vec4 barycentricCoordinate, Coord point[4]);
+	/// test if the Bezier tetrahedron is a simple affine tesselation of a regular tetrahedron
+	bool isBezierTetrahedronAffine(const size_t tetrahedronIndex,const VecCoord& p, const Real tolerance=(Real)1e-5) const; 
 protected:
     Data<bool> drawControlPointsEdges;
     Data<sofa::defaulttype::Vec3f> _drawColor;

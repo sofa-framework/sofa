@@ -55,8 +55,9 @@ typedef TrianglesInTetrahedron	TrianglesInTetrahedron;
 typedef sofa::helper::vector<PointID>         VecPointID;
 typedef sofa::helper::vector<TetraID>         VecTetraID;
 typedef unsigned char BezierDegreeType;
-typedef sofa::helper::fixed_array<BezierDegreeType,4> TetrahedronBezierIndex;
-typedef sofa::helper::fixed_array<int,4> ElementTetrahedronIndex;
+typedef sofa::defaulttype::Vec<4,BezierDegreeType> TetrahedronBezierIndex;
+typedef sofa::defaulttype::Vec<4,int> ElementTetrahedronIndex;
+typedef sofa::defaulttype::Vec<4,size_t> LocalTetrahedronIndex;
 
 /** a class that stores a set of Bezier tetrahedra and provides access with adjacent triangles, edges and vertices 
 A Bezier Tetrahedron has exactly the same topology as a Tetrahedron but with additional (control) points on its edges, triangles and inside 
@@ -107,7 +108,13 @@ public :
 	void getGlobalIndexArrayOfBezierPointsInTetrahedron(const size_t tetrahedronIndex, VecPointID & indexArray) ;
 	/// return the Bezier index given the local index in a tetrahedron
 	TetrahedronBezierIndex getTetrahedronBezierIndex(const size_t localIndex) const;
+	/// get the Tetrahedron Bezier Index Array of degree d
 	sofa::helper::vector<TetrahedronBezierIndex> getTetrahedronBezierIndexArray() const;
+	/// get the Tetrahedron Bezier Index Array of a given degree 
+	sofa::helper::vector<TetrahedronBezierIndex> getTetrahedronBezierIndexArrayOfGivenDegree(const size_t deg) const;
+	/** create an array which maps the local index of a Tetrahedron Bezier Index of degree d-1
+	into a local index of a TBI of degree d by adding respectively (1,0,0,0), (0,1,0,0), (0,0,1,0), (0,0,0,1) **/
+	sofa::helper::vector<LocalTetrahedronIndex> getMapOfTetrahedronBezierIndexArrayFromInferiorDegree() const;
 	/// return the local index in a tetrahedron from a tetrahedron Bezier index (inverse of getTetrahedronBezierIndex())
 	size_t getLocalIndexFromTetrahedronBezierIndex(const TetrahedronBezierIndex id) const;
 	/// return the location, the element index and offset from the global index of a point
@@ -192,6 +199,8 @@ protected:
 	std::map<TetrahedronBezierIndex,size_t> localIndexMap;
 	/// array of the tetrahedron Bezier index outputed by the function getGlobalIndexArrayOfBezierPointsInTetrahedron()
 	sofa::helper::vector<TetrahedronBezierIndex> bezierIndexArray;
+	/// array of the tetrahedron Bezier index outputed by the function getGlobalIndexArrayOfBezierPointsInTetrahedron()
+	sofa::helper::vector<TetrahedronBezierIndex> reducedDegreeBezierIndexArray;
 
 };
 

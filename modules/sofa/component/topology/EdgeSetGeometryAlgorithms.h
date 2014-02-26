@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_H
 
 #include <sofa/component/topology/PointSetGeometryAlgorithms.h>
-#include <sofa/component/topology/CommonAlgorithms.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
@@ -49,7 +48,7 @@ public:
     virtual ~BasicArrayInterface() {}
 
 };
-
+using namespace sofa::defaulttype;
 using core::topology::BaseMeshTopology;
 typedef BaseMeshTopology::EdgeID EdgeID;
 typedef BaseMeshTopology::Edge Edge;
