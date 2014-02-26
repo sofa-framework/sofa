@@ -35,7 +35,7 @@
 
 #include <sofa/component/collision/MouseInteractor.inl>
 #include <sofa/component/collision/NewProximityIntersection.inl>
-#include <sofa/component/collision/DiscreteIntersection.inl>
+#include <sofa/component/collision/DiscreteIntersection.h>
 #include <sofa/component/collision/ComponentMouseInteraction.inl>
 #include <sofa/component/collision/AttachBodyPerformer.inl>
 #include <sofa/component/collision/FixParticlePerformer.inl>
