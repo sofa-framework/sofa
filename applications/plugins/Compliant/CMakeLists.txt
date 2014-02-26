@@ -111,6 +111,7 @@ set(SOURCE_FILES
     mapping/AffineMultiMapping.cpp
     mapping/OffsetMapping.cpp
 
+    numericalsolver/KKTSolver.cpp
     numericalsolver/LDLTSolver.cpp
     numericalsolver/MinresSolver.cpp
     numericalsolver/KrylovSolver.cpp
@@ -146,28 +147,45 @@ set(README_FILES
 	Compliant.txt
 	)
 
-if(WIN32)
-	include_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Include")
-	link_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Lib")
-else()
-	include_directories("/usr/include/suitesparse/")
-endif()
+#if(WIN32)
+#	include_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Include")
+#	link_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Lib")
+#else()
+#	include_directories("/usr/include/suitesparse/")
+#endif()
 	
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_Compliant")
 AddLinkerDependencies(SofaEigen2Solver SofaUserInteraction SofaComponentMisc SofaHelper SofaSimulationGraph)
-if(NOT APPLE)
-	AddLinkerDependencies(amd lapack blas camd colamd cholmod)
-endif()
+
+# is this really useful?
+#if(NOT APPLE)
+#	AddLinkerDependencies(amd lapack blas camd colamd cholmod)
+#endif()
 
 # WIN32: copy the needed dlls from the lib dir to the Sofa bin dir
-if(WIN32)
-	file(GLOB sharedObjects "${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Lib/*.dll")
-	foreach(sharedObject ${sharedObjects})
-		file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
-	endforeach()
+#if(WIN32)
+#	file(GLOB sharedObjects "${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Lib/*.dll")
+#	foreach(sharedObject ${sharedObjects})
+#		file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
+#	endforeach()
+#endif()
+
+
+
+
+# to be able to use boost::chrono without compiling it
+AddCompilerDefinitions("BOOST_CHRONO_HEADER_ONLY")
+
+
+if(LINUX OR UNIX) # what about apple?
+    AddLinkerDependencies( rt ) # clock_gettime
 endif()
+
+# I do not understand why it is necessary but otherwise it does not link on debug mode on linux
+# is it necessary on windows and apple?
+AddLinkerDependencies( ${Boost_SYSTEM_LIBRARY} )
 	
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
 include(custom.cmake OPTIONAL)

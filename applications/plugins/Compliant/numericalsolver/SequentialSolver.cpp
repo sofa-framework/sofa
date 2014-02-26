@@ -1,11 +1,11 @@
 #include "SequentialSolver.h"
 
 #include <sofa/core/ObjectFactory.h>
-#include "../utils/scoped.h"
 
 #include "LDLTResponse.h"
-#include "../utils/nan.h"
 
+#include "../utils/scoped.h"
+#include "../utils/nan.h"
 #include "../utils/bench.h"
 
 namespace sofa {
@@ -22,8 +22,7 @@ SequentialSolver::SequentialSolver()
 	: iterations(initData(&iterations, unsigned(10), "iterations", "iteration count")),
       precision(initData(&precision, (SReal)1e-5, "precision", "numerical precision")),
 	  relative(initData(&relative, false, "relative", "relative numerical precision ?")),
-      omega(initData(&omega, (SReal)1.0, "omega", "SOR parameter:  omega < 1 : better, slower convergence, omega = 1 : vanilla gauss-seidel, 2 > omega > 1 : faster convergence, ok for SPD systems, omega > 2 : will probably explode" )),
-	  bench(initData(&bench, "bench", "filename for convergence benchmark output"))
+      omega(initData(&omega, (SReal)1.0, "omega", "SOR parameter:  omega < 1 : better, slower convergence, omega = 1 : vanilla gauss-seidel, 2 > omega > 1 : faster convergence, ok for SPD systems, omega > 2 : will probably explode" ))
     , projectH( initData(&projectH, false, "projectH", "Replace H with P^T.H.P to account for projective constraints"))
     , _correctionPass( false )
 {
@@ -128,6 +127,8 @@ void SequentialSolver::factor(const system_type& system) {
  
 	// assert( diagonal_dominant(system) );
 
+    _benchmark->beginFactor( this->getContext()->getTime() );
+
 	// response matrix
 	assert( response );
 
@@ -194,6 +195,8 @@ void SequentialSolver::factor(const system_type& system) {
 
 		factor_block( blocks_inv[i], schur );
 	}
+
+    _benchmark->endFactor();
 }
 
 // TODO make sure this does not cause any alloc
@@ -298,11 +301,15 @@ void SequentialSolver::solve(vec& res,
                              const vec& rhs) const {
 	assert( response );
 
+    _benchmark->beginSolve( true );
+
 	// free velocity
 	vec tmp( sys.m );
 	
 	response->solve(tmp, sys.P.selfadjointView<Eigen::Upper>() * rhs.head( sys.m ) );
 	res.head(sys.m).noalias() = sys.P.selfadjointView<Eigen::Upper>() * tmp;
+
+    _benchmark->setLCP( &sys, response.get(), res.head(sys.m), rhs.tail(sys.n) );
 	
 	// we're done lol
 	if( !sys.n ) return;
@@ -310,6 +317,8 @@ void SequentialSolver::solve(vec& res,
 	
 	// lagrange multipliers TODO reuse res.tail( sys.n ) ?
 	vec lambda = res.tail(sys.n); 
+
+    (*_benchmark)(lambda); // output initial error
 
 	// net constraint velocity correction
 	vec net = mapping_response * lambda;
@@ -328,13 +337,15 @@ void SequentialSolver::solve(vec& res,
 
 	real epsilon2 = epsilon * epsilon;
 
-	vec primal;
+//	vec primal;
 	
 	// outer loop
 	unsigned k = 0, max = iterations.getValue();
 	for(k = 0; k < max; ++k) {
 
         real estimate = step( lambda, net, sys, constant, error, delta );
+
+        (*_benchmark)(lambda);
 
 		// primal = sys.J * net - constant;
 		

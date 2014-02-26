@@ -3,21 +3,21 @@
 
 #include "initCompliant.h"
 
-#include "assembly/AssembledSystem.h"
-#include "preconditioner/BasePreconditioner.h"
+#include "../assembly/AssembledSystem.h"
+#include "../preconditioner/BasePreconditioner.h"
 #include <sofa/core/behavior/LinearSolver.h>
+
 
 namespace sofa {
 namespace component {
 namespace linearsolver {
+
+class BaseBenchmark; ///< forward declaration
 			
+
 // Solver for an AssembledSystem (could be non-linear in case of
 // inequalities). This will eventually serve as a base class for
 // all kinds of derived solver (sparse cholesky, minres, qp)
-
-
-
-//#define GR_BENCHMARK
 
 			
 // TODO: base + derived classes (minres/cholesky/unilateral)
@@ -36,16 +36,9 @@ class SOFA_Compliant_API KKTSolver : public core::behavior::BaseLinearSolver {
 
     Data<bool> debug; ///< print debug info
 
-    KKTSolver()
-       : debug(initData(&debug,false,"debug","print debug info"))
-       , _preconditioner( NULL )
-    {}
+    KKTSolver();
 
-    virtual void init()
-    {
-        // look for an optional preconditioner
-        _preconditioner = this->getContext()->get<preconditioner_type>(core::objectmodel::BaseContext::Local);
-    }
+    virtual void init();
 	
 	virtual void factor(const system_type& system) = 0;
 	
@@ -68,15 +61,18 @@ class SOFA_Compliant_API KKTSolver : public core::behavior::BaseLinearSolver {
     /// By default, it does nothing, but for some LCP solvers, it is useful to distinguish between dynamics vs correction passes (not to perform the same constraint projection for instance)
     virtual void setCorrectionPass( bool ){}
 
-    
-#ifdef GR_BENCHMARK
-    mutable unsigned nbiterations;
-#endif
+
+
+    Data<std::string> benchmarkPath;
+
 
 protected:
 
     typedef linearsolver::BasePreconditioner preconditioner_type;
     preconditioner_type* _preconditioner;
+
+
+    BaseBenchmark* _benchmark; ///< utility callback generating benchmark files
 
 };
 
