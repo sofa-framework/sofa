@@ -17,7 +17,7 @@ static inline Eigen::Matrix<U, 3, 2> ker(const Eigen::Matrix<U, 3, 1>& n) {
 	if( std::abs(n(1)) > eps  ) u = vec3(0, -n(2), n(1) ).normalized();
 	else if( std::abs(n(2)) > eps  ) u =  vec3(n(2), 0, -n(0) ).normalized();
 	else if( std::abs(n(0)) > eps  ) u =  vec3(n(1), -n(0), 0 ).normalized();
-	else throw std::logic_error("derp");
+    else throw std::logic_error("Compliant::utils::basis.h - ker - null normal");
 	
 	Eigen::Matrix<U, 3, 2> res;
 	

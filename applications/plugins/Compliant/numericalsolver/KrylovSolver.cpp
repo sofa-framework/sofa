@@ -23,7 +23,7 @@ KrylovSolver::KrylovSolver()
 }
 
 void KrylovSolver::init() {
-	
+
     KKTSolver::init();
 
 	if( schur.getValue() ) {
@@ -31,7 +31,7 @@ void KrylovSolver::init() {
 		
 		if(!response) throw std::logic_error("response component not found, you need one next to the KKTSolver");
 		
-	}
+    }
 
 }
 

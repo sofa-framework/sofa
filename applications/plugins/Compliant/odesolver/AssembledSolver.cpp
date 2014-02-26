@@ -13,10 +13,6 @@
 #include "utils/scoped.h"
 
 
-#ifdef GR_BENCHMARK
-#include <sofa/helper/system/thread/CTime.h>
-#endif
-
 using std::cerr;
 using std::endl;
 
@@ -206,8 +202,6 @@ using namespace core::behavior;
 
         vop.v_free( fk.id(), false, true );
 
-//        cerr<<SOFA_CLASS_METHOD<<"c "<< c << endl;
-
         // computing fc (neglecting stiffness)
         MultiVecDeriv fc( &vop ); // only compliance force (neglecting stiffness)
         fc.realloc( &vop, false, true );
@@ -216,6 +210,8 @@ using namespace core::behavior;
             simulation::MechanicalComputeComplianceForceVisitor mccfv( &params, fc );
             send( mccfv );
         }
+
+//        cerr<<SOFA_CLASS_METHOD<<"fc "<< fc << endl;
 
         // f += fc including mapped dofs
         {
@@ -587,7 +583,7 @@ using namespace core::behavior;
         kkt = this->getContext()->get<kkt_type>(core::objectmodel::BaseContext::Local);
 
         // TODO slightly less dramatic error, maybe ?
-        if( !kkt ) throw std::logic_error("AssembledSolver needs a KKTSolver lol");
+        if( !kkt ) throw std::logic_error("AssembledSolver needs a KKTSolver");
     }
 
 

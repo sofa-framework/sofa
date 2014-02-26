@@ -46,8 +46,6 @@ class SOFA_Compliant_API SequentialSolver : public KKTSolver {
 	Data<bool> relative;
 	Data<SReal> omega;
 
-	Data<std::string> bench;
-
     Data<bool> projectH;    ///< Replace H with P^T.H.P to account for projective constraints
 
   protected:
