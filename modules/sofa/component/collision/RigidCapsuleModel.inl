@@ -247,7 +247,7 @@ template<class MyReal>
 const typename TCapsule<StdRigidTypes<3,MyReal> >::Coord & TCapsule<StdRigidTypes<3,MyReal> >::v() const {return this->model->velocity(this->index);}
 
 template<class MyReal>
-const Quaternion & TCapsuleModel<StdRigidTypes<3,MyReal> >::orientation(int index)const{
+const Quaternion TCapsuleModel<StdRigidTypes<3,MyReal> >::orientation(int index)const{
     return (*_mstate->getX())[index].getOrientation();
 }
 
