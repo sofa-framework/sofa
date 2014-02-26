@@ -224,7 +224,7 @@ void EdgeSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename) co
 
     const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
 
-    const unsigned int numVertices = vect_c.size();
+    const unsigned int numVertices = (unsigned int)vect_c.size();
 
     myfile << "$NOD\n";
     myfile << numVertices <<"\n";

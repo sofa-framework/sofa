@@ -40,8 +40,7 @@ namespace topology
 using namespace sofa::defaulttype;
 
 
-typedef std::pair<TetrahedronBezierIndex,double> bernsteinCoeffMapType;
-typedef std::map<TetrahedronBezierIndex,double>::iterator bernsteinCoeffMapIterator;
+
 
 
 double multinomial(const size_t n,const TetrahedronBezierIndex tbiIn)
@@ -91,7 +90,7 @@ template< class DataTypes>
 		for (i=0;i<tbiArray.size();++i) {
 			tbi=tbiArray[i];
 			bernsteinCoefficientArray[i]=multinomial(degree,tbi); 
-			bernsteinCoeffMap.insert(bernsteinCoeffMapType(tbi,(double) bernsteinCoefficientArray[i]));
+			bernsteinCoeffMap.insert(std::pair<TetrahedronBezierIndex,Real>(tbi,(double) bernsteinCoefficientArray[i]));
 		}
 		/// insert coefficient for the inferior degree
 		size_t j,k,l,m,n,index1,index2;
@@ -100,7 +99,7 @@ template< class DataTypes>
 				for (k=0;k<=(degree-j-i-1);++k) {
 					l=degree-1-i-j-k;
 					tbi=TetrahedronBezierIndex(i,j,k,l);
-					bernsteinCoeffMap.insert(bernsteinCoeffMapType(tbi,(double) multinomial(degree-1,tbi)));
+					bernsteinCoeffMap.insert(std::pair<TetrahedronBezierIndex,Real>(tbi,(double) multinomial(degree-1,tbi)));
 				}
 			}
 		}
@@ -187,7 +186,7 @@ template<class DataTypes>
 typename DataTypes::Real BezierTetrahedronSetGeometryAlgorithms<DataTypes>::computeBernsteinPolynomial(const TetrahedronBezierIndex tbi, const Vec4 barycentricCoordinate)
 {
 	Real  val=pow(barycentricCoordinate[0],tbi[0])*pow(barycentricCoordinate[1],tbi[1])*pow(barycentricCoordinate[2],tbi[2])*pow(barycentricCoordinate[3],tbi[3]);
-	bernsteinCoeffMapIterator it=bernsteinCoeffMap.find(tbi);
+	std::map<TetrahedronBezierIndex,Real>::iterator it=bernsteinCoeffMap.find(tbi);
 	if (it!=bernsteinCoeffMap.end()) {
 		val*=(*it).second;
 		return(val);
