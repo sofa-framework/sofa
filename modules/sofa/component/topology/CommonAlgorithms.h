@@ -106,7 +106,7 @@ inline real tripleProduct(const Vec<1,real>& , const Vec<1,real>& , const Vec<1,
 inline size_t lfactorial(size_t n)
  {
  	size_t retval = 1;
- 	for (int i = n; i > 1; --i)
+ 	for (int i = (int)n; i > 1; --i)
  		retval *= (size_t) i;
  	return retval;
  }
