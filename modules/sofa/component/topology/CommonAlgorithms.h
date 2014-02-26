@@ -150,7 +150,7 @@ Real multinomial(const size_t n,const Vec<N,unsigned char> tbi)
 	 for (size_t j=0;j<N;++j) {
 		 valArray.push_back(tbi[j]);
 	 }
-	 return(multinomial(n,valArray));
+	 return(multinomial<Real>(n,valArray));
 }
 
 template <size_t N, class Real>
