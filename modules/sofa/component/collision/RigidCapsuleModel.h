@@ -144,7 +144,7 @@ public:
 
     Real radius(int index) const;
 
-    inline const Coord & center(int i)const;
+    const Coord & center(int i)const;
 
     Coord point1(int index)const;
 
