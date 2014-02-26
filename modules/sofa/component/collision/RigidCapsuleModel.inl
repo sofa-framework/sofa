@@ -196,7 +196,7 @@ typename TCapsuleModel<StdRigidTypes<3,MyReal> >::Real TCapsuleModel<StdRigidTyp
 }
 
 template <class MyReal>
-inline const typename TCapsuleModel<StdRigidTypes<3,MyReal> >::Coord & TCapsuleModel<StdRigidTypes<3,MyReal> >::center(int i)const{
+const typename TCapsuleModel<StdRigidTypes<3,MyReal> >::Coord & TCapsuleModel<StdRigidTypes<3,MyReal> >::center(int i)const{
     return DataTypes::getCPos((*(_mstate->getX()))[i]);
 }
 
