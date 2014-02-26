@@ -153,7 +153,7 @@ public:
     //Returns the point1-point2 normalized vector
     Coord axis(int index)const;
 
-    const Quaternion & orientation(int index)const;
+    const Quaternion orientation(int index)const;
 
     const Quaternion& quaterByYAxis(int index)const;
 
