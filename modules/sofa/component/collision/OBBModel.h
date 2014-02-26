@@ -132,6 +132,8 @@ public:
       */
     void vertices(std::vector<Coord> & vs)const;
 
+    void showVertices()const;
+
     bool onSurface(const Coord & p)const;
 };
 

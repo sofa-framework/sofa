@@ -138,7 +138,7 @@ void MeshMatrixMass<DataTypes, MassType>::TetrahedronMassHandler::applyCreateFun
 
 			/// get value of integration points
 			NumericalIntegrationDescriptor<Real,4> &nid=MMM->bezierTetraGeo->getTetrahedronNumericalIntegrationDescriptor();
-			NumericalIntegrationDescriptor<Real,4>::QuadraturePointArray qpa=nid.getQuadratureMethod((NumericalIntegrationDescriptor<Real,4>::QuadratureMethod)MMM->numericalIntegrationMethod.getValue(),
+            typename NumericalIntegrationDescriptor<Real,4>::QuadraturePointArray qpa=nid.getQuadratureMethod((typename NumericalIntegrationDescriptor<Real,4>::QuadratureMethod)MMM->numericalIntegrationMethod.getValue(),
 				MMM->numericalIntegrationOrder.getValue());
 
 			sofa::defaulttype::Vec<4,Real> bc;
@@ -148,7 +148,7 @@ void MeshMatrixMass<DataTypes, MassType>::TetrahedronMassHandler::applyCreateFun
 
 			// loop through the integration points
 			for (i=0;i<qpa.size();++i) {
-				NumericalIntegrationDescriptor<Real,4>::QuadraturePoint qp=qpa[i];
+                typename NumericalIntegrationDescriptor<Real,4>::QuadraturePoint qp=qpa[i];
 				// the barycentric coordinate
 				bc=qp.first;
 				// the weight of the integration point

@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/FnDispatcher.inl>
-#include <sofa/component/collision/DiscreteIntersection.inl>
+#include <sofa/component/collision/DiscreteIntersection.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/collision/Intersection.inl>
 #include <sofa/helper/proximity.h>
@@ -68,6 +68,13 @@ DiscreteIntersection::DiscreteIntersection()
     intersectors.add<CapsuleModel,RigidSphereModel,DiscreteIntersection>(this);
     intersectors.add<RigidSphereModel,OBBModel,DiscreteIntersection>(this);
 
+    intersectors.add<CapsuleModel,RigidCapsuleModel, DiscreteIntersection> (this);
+    intersectors.add<RigidCapsuleModel,RigidCapsuleModel, DiscreteIntersection> (this);
+    intersectors.add<RigidCapsuleModel,SphereModel, DiscreteIntersection> (this);
+    intersectors.add<RigidCapsuleModel,OBBModel,DiscreteIntersection>(this);
+    intersectors.add<RigidCapsuleModel,RigidSphereModel,DiscreteIntersection>(this);
+
+
     //IntersectorFactory::getInstance()->addIntersectors(this);
 }
 
@@ -76,51 +83,6 @@ ElementIntersector* DiscreteIntersection::findIntersector(core::CollisionModel* 
 {
     return intersectors.get(object1, object2, swapModels);
 }
-
-bool DiscreteIntersection::testIntersection(Cube& cube1, Cube& cube2)
-{    
-    return BaseIntTool::testIntersection(cube1,cube2,getAlarmDistance());
-}
-
-int DiscreteIntersection::computeIntersection(Cube&, Cube&, OutputVector*)
-{
-    return 0; /// \todo
-}
-
-
-
-bool DiscreteIntersection::testIntersection(Capsule&, Capsule&){
-    //TO DO
-    return false;
-}
-
-
-int DiscreteIntersection::computeIntersection(Capsule & e1,Capsule & e2,OutputVector * contacts){
-    return CapsuleIntTool::computeIntersection(e1,e2,getAlarmDistance(),getContactDistance(),contacts);
-}
-
-
-
-
-bool DiscreteIntersection::testIntersection(OBB &,OBB &){
-    return false;
-}
-
-bool DiscreteIntersection::testIntersection(Capsule &,OBB &){
-    return false;
-}
-
-
-
-
-int DiscreteIntersection::computeIntersection(OBB & box0, OBB & box1,OutputVector* contacts){
-    return OBBIntTool::computeIntersection(box0,box1,getAlarmDistance(), getContactDistance(),contacts);
-}
-
-int DiscreteIntersection::computeIntersection(Capsule & cap, OBB & box,OutputVector* contacts){
-    return CapsuleIntTool::computeIntersection(cap,box,getAlarmDistance(),getContactDistance(),contacts);
-}
-
 
 
 } // namespace collision

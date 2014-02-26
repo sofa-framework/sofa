@@ -252,7 +252,51 @@ typename TCapsuleModel<DataTypes>::Deriv TCapsuleModel<DataTypes>::velocity(int 
                                                                                        (*(_mstate->getV()))[_capsule_points[index].second])/2.0;}
 
 template<class DataTypes>
-typename TCapsule<DataTypes>::Deriv TCapsule<DataTypes>::v() const {return this->model->velocity(this->index);}
+typename TCapsule<DataTypes>::Coord TCapsule<DataTypes>::v() const {return this->model->velocity(this->index);}
+
+template<class DataTypes>
+typename TCapsuleModel<DataTypes>::Coord TCapsuleModel<DataTypes>::axis(int index) const {
+    Coord ax(point2(index) - point1(index));
+    ax.normalize();
+    return ax;
+}
+
+template<class DataTypes>
+Quaternion TCapsuleModel<DataTypes>::orientation(int index) const {
+    Coord ax(point2(index) - point1(index));
+    ax.normalize();
+
+    Coord x1(1,0,0);
+    Coord x2(0,1,0);
+
+    Coord rx1,rx2;
+
+    if((rx1 = cross(x1,ax)).norm2() > 1e-6){
+        rx1.normalize();
+        rx2 = cross(rx1,ax);
+    }
+    else{
+        rx1 = cross(x2,ax);
+        rx2 = cross(rx1,ax);
+    }
+
+    return Quaternion::createQuaterFromFrame(rx1,ax,rx2);
+}
+
+template<class DataTypes>
+typename TCapsuleModel<DataTypes>::Coord TCapsuleModel<DataTypes>::center(int index) const {
+    return (point2(index) + point1(index))/2;
+}
+
+template<class DataTypes>
+typename TCapsuleModel<DataTypes>::Real TCapsuleModel<DataTypes>::height(int index) const {
+    return (point2(index) - point1(index)).norm();
+}
+
+template<class DataTypes>
+typename TCapsule<DataTypes>::Coord TCapsule<DataTypes>::axis() const {
+    return this->model->axis(this->index);
+}
 
 template<class DataTypes>
 Data<typename TCapsuleModel<DataTypes>::VecReal > & TCapsuleModel<DataTypes>::writeRadii(){

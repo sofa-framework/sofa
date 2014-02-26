@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_CAPSULEMODEL_H
-#define SOFA_COMPONENT_COLLISION_CAPSULEMODEL_H
+#ifndef SOFA_COMPONENT_COLLISION_RIGIDCAPSULEMODEL_H
+#define SOFA_COMPONENT_COLLISION_RIGIDCAPSULEMODEL_H
 
 #include <sofa/core/CollisionModel.h>
 #include <sofa/component/container/MechanicalObject.h>
@@ -48,18 +48,21 @@ using namespace sofa::defaulttype;
 template<class DataTypes>
 class TCapsuleModel;
 
+template<class DataTypes>
+class TCapsule;
+
 /**
   *A capsule can be viewed as a segment with a radius, here the segment is
   *defined by its apexes.
   */
-template<class TDataTypes>
-class TCapsule : public core::TCollisionElementIterator< TCapsuleModel<TDataTypes> >
+template< class MyReal>
+class TCapsule<StdRigidTypes<3,MyReal> > : public core::TCollisionElementIterator< TCapsuleModel<StdRigidTypes<3,MyReal> > >
 {
 public:
-    typedef TDataTypes DataTypes;
+    typedef StdRigidTypes<3,MyReal> DataTypes;
     typedef typename DataTypes::Real   Real;
     typedef typename DataTypes::Deriv Deriv;
-    typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::CPos Coord;
     typedef typename DataTypes::VecCoord VecCoord;
 
     typedef TCapsuleModel<DataTypes> ParentModel;
@@ -82,19 +85,25 @@ public:
 
     Real radius() const;
 
-    Coord v()const;
+    const Coord & v()const;
+
+    void displayIndex()const{
+        std::cout<<"index "<<this->index<<std::endl;
+    }
 };
 
+
 /**
-  *A capsule model is a set of capsules. It is linked to a topology more precisely edge topology since a capsule
-  *is a segment with a radius.
+  *CapsuleModel templated by RigidTypes (frames), direction is given by Y direction of the frame.
   */
-template< class TDataTypes>
-class TCapsuleModel : public core::CollisionModel
+template< class MyReal>
+class TCapsuleModel<StdRigidTypes<3,MyReal> > : public core::CollisionModel
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(TCapsuleModel, TDataTypes), core::CollisionModel);
-    typedef TDataTypes DataTypes;
+    SOFA_CLASS(SOFA_TEMPLATE(TCapsuleModel, SOFA_TEMPLATE2(StdRigidTypes, 3, MyReal)), core::CollisionModel);
+
+
+    typedef StdRigidTypes<3,MyReal> DataTypes;
     typedef DataTypes InDataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename  DataTypes::VecDeriv VecDeriv;
@@ -106,11 +115,15 @@ public:
     friend class TCapsule<DataTypes>;
 protected:
     Data<VecReal > _capsule_radii;
+    Data<VecReal > _capsule_heights;
+
     Data<Real> _default_radius;
+    Data<Real> _default_height;
+
     sofa::helper::vector<std::pair<int,int> > _capsule_points;
 
     TCapsuleModel();
-    TCapsuleModel(core::behavior::MechanicalState<TDataTypes>* mstate );
+    TCapsuleModel(core::behavior::MechanicalState<DataTypes>* mstate );
 public:
     virtual void init();
 
@@ -131,22 +144,22 @@ public:
 
     Real radius(int index) const;
 
-    inline const Coord & point(int i)const;
+    inline const Coord & center(int i)const;
 
-    const Coord & point1(int index)const;
+    Coord point1(int index)const;
 
-    const Coord & point2(int index)const;
+    Coord point2(int index)const;
 
     //Returns the point1-point2 normalized vector
     Coord axis(int index)const;
 
-    Quaternion orientation(int index)const;
+    const Quaternion & orientation(int index)const;
+
+    const Quaternion& quaterByYAxis(int index)const;
 
     int point1Index(int index)const;
 
     int point2Index(int index)const;
-
-    Coord center(int index)const;
 
     Real height(int index)const;
 
@@ -154,14 +167,14 @@ public:
 
     Real defaultRadius()const;
 
-    Deriv velocity(int index)const;
+    const Coord & velocity(int index)const;
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (dynamic_cast<core::behavior::MechanicalState<TDataTypes>*>(context->getMechanicalState()) == NULL && context->getMechanicalState() != NULL)
+        if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL && context->getMechanicalState() != NULL)
             return false;
 
         return BaseObject::canCreate(obj, context, arg);
@@ -179,32 +192,32 @@ public:
 
     Data<VecReal > & writeRadii();
 protected:
-    core::behavior::MechanicalState<DataTypes>* _mstate;    
+    core::behavior::MechanicalState<DataTypes>* _mstate;
 };
 
-template<class DataTypes>
-inline TCapsule<DataTypes>::TCapsule(ParentModel* model, int index)
+
+template<class MyReal>
+inline TCapsule<StdRigidTypes<3,MyReal> >::TCapsule(ParentModel* model, int index)
     : core::TCollisionElementIterator<ParentModel>(model, index)
 {}
 
-template<class DataTypes>
-inline TCapsule<DataTypes>::TCapsule(const core::CollisionElementIterator& i)
+template<class MyReal>
+inline TCapsule<StdRigidTypes<3,MyReal> >::TCapsule(const core::CollisionElementIterator& i)
     : core::TCollisionElementIterator<ParentModel>(static_cast<ParentModel*>(i.getCollisionModel()), i.getIndex())
 {
 }
 
-
-typedef TCapsuleModel<Vec3Types> CapsuleModel;
-typedef TCapsule<Vec3Types> Capsule;
+typedef TCapsuleModel<Rigid3Types> RigidCapsuleModel;
+typedef TCapsule<Rigid3Types> RigidCapsule;
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_BASE_COLLISION)
 #ifndef SOFA_FLOAT
-extern template class SOFA_BASE_COLLISION_API TCapsule<defaulttype::Vec3dTypes>;
-extern template class SOFA_BASE_COLLISION_API TCapsuleModel<defaulttype::Vec3dTypes>;
+extern template class SOFA_BASE_COLLISION_API TCapsule<defaulttype::Rigid3dTypes>;
+extern template class SOFA_BASE_COLLISION_API TCapsuleModel<defaulttype::Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_BASE_COLLISION_API TCapsule<defaulttype::Vec3fTypes>;
-extern template class SOFA_BASE_COLLISION_API TCapsuleModel<defaulttype::Vec3fTypes>;
+extern template class SOFA_BASE_COLLISION_API TCapsule<defaulttype::Rigid3fTypes>;
+extern template class SOFA_BASE_COLLISION_API TCapsuleModel<defaulttype::Rigid3fTypes>;
 #endif
 #endif
 

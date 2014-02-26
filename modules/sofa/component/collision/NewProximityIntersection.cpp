@@ -71,46 +71,12 @@ void NewProximityIntersection::init()
     intersectors.add<CapsuleModel,RigidSphereModel, NewProximityIntersection> (this);
     intersectors.add<RigidSphereModel,OBBModel, NewProximityIntersection> (this);
 
+    intersectors.add<CapsuleModel,RigidCapsuleModel, NewProximityIntersection> (this);
+    intersectors.add<RigidCapsuleModel,SphereModel, NewProximityIntersection> (this);
+    intersectors.add<RigidCapsuleModel,OBBModel, NewProximityIntersection> (this);
+    intersectors.add<RigidCapsuleModel,RigidSphereModel, NewProximityIntersection> (this);
+
     IntersectorFactory::getInstance()->addIntersectors(this);
-}
-
-bool NewProximityIntersection::testIntersection(Cube &cube1, Cube &cube2)
-{
-    return BaseIntTool::testIntersection(cube1,cube2,getAlarmDistance() + cube1.getProximity() + cube2.getProximity());
-}
-
-
-bool NewProximityIntersection::testIntersection(Capsule&, Capsule&){    
-    return true;
-}
-
-
-int NewProximityIntersection::computeIntersection(Capsule & e1,Capsule & e2,OutputVector * contacts){
-    return CapsuleIntTool::computeIntersection(e1,e2,e1.getProximity() + e2.getProximity() + getAlarmDistance(),e1.getProximity() + e2.getProximity() + getContactDistance(),contacts);
-}
-
-
-int NewProximityIntersection::computeIntersection(Cube&, Cube&, OutputVector* /*contacts*/)
-{
-    return 0; /// \todo
-}
-
-bool NewProximityIntersection::testIntersection(OBB&, OBB&){
-    return true;
-}
-
-int NewProximityIntersection::computeIntersection(OBB & box0, OBB & box1,OutputVector* contacts){
-    return OBBIntTool::computeIntersection(box0,box1,box0.getProximity() + box1.getProximity() + getAlarmDistance(),box0.getProximity() + box1.getProximity() + getContactDistance(),contacts);
-}
-
-
-int NewProximityIntersection::computeIntersection(Capsule& cap,OBB& obb,OutputVector * contacts){
-    return CapsuleIntTool::computeIntersection(cap,obb,cap.getProximity() + obb.getProximity() + getAlarmDistance(),cap.getProximity() + obb.getProximity() + getContactDistance(),contacts);
-}
-
-
-bool NewProximityIntersection::testIntersection(Capsule&, OBB&){
-    return true;
 }
 
 } // namespace collision

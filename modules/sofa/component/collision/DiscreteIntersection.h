@@ -35,6 +35,7 @@
 #include <sofa/component/collision/OBBModel.h>
 #include <sofa/component/collision/OBBIntTool.h>
 #include <sofa/component/collision/BaseIntTool.h>
+#include <sofa/component/collision/RigidCapsuleModel.h>
 
 namespace sofa
 {
@@ -58,22 +59,15 @@ public:
     core::collision::IntersectorMap intersectors;
     typedef core::collision::IntersectorFactory<DiscreteIntersection> IntersectorFactory;
 
-    bool testIntersection(Cube&, Cube&);
-    template <class DataTypes1,class DataTypes2> bool testIntersection(TSphere<DataTypes1>&, TSphere<DataTypes2>&);
-    template <class DataTypes> bool testIntersection(TSphere<DataTypes>&, Cube&);
-    bool testIntersection(Capsule&, Capsule&);
-    template <class DataTypes> bool testIntersection(Capsule&, TSphere<DataTypes>&);
-    bool testIntersection(OBB &,OBB &);
-    template <class DataTypes> bool testIntersection(TSphere<DataTypes> &,OBB &);
-    bool testIntersection(Capsule &,OBB &);
+    template <class Elem1,class Elem2>
+    inline int computeIntersection(Elem1 & e1,Elem2 & e2,OutputVector* contacts){
+        return BaseIntTool::computeIntersection(e1,e2,e1.getProximity() + e2.getProximity() + getAlarmDistance(),e1.getProximity() + e2.getProximity() + getContactDistance(),contacts);
+    }
 
-    int computeIntersection(Cube&, Cube&, OutputVector*);    
-    template <class DataTypes1,class DataTypes2> int computeIntersection(TSphere<DataTypes1>&, TSphere<DataTypes2>&, OutputVector*);
-    int computeIntersection(Capsule&, Capsule&,OutputVector* contacts);
-    template <class DataTypes> int computeIntersection(Capsule&, TSphere<DataTypes>&,OutputVector* contacts);
-    int computeIntersection(OBB &, OBB &,OutputVector* contacts);
-    template <class DataTypes> int computeIntersection(TSphere<DataTypes> &, OBB &,OutputVector* contacts);
-    int computeIntersection(Capsule &, OBB &,OutputVector* contacts);
+    template <class Elem1,class Elem2>
+    inline int testIntersection(Elem1& e1,Elem2& e2){
+        return BaseIntTool::testIntersection(e1,e2,this->getAlarmDistance());
+    }
 };
 
 } // namespace collision

@@ -25,7 +25,6 @@
 #include <sofa/component/collision/RayNewProximityIntersection.h>
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/FnDispatcher.inl>
-#include <sofa/component/collision/DiscreteIntersection.inl>
 #include <sofa/core/collision/Intersection.inl>
 //#include <sofa/component/collision/ProximityIntersection.h>
 #include <sofa/helper/proximity.h>

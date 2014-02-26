@@ -7,6 +7,7 @@
 
 #include <sofa/component/collision/Intersector.h>
 #include <sofa/component/collision/CapsuleModel.h>
+#include <sofa/component/collision/RigidCapsuleModel.h>
 #include <sofa/component/collision/OBBModel.h>
 
 namespace sofa{
@@ -48,9 +49,11 @@ typedef TIntrCapsuleOBB<Vec3Types,Rigid3Types> IntrCapsuleOBB;
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_BASE_COLLISION)
 #ifndef SOFA_FLOAT
 extern template class SOFA_BASE_COLLISION_API TIntrCapsuleOBB<Vec3dTypes,Rigid3dTypes>;
+extern template class SOFA_BASE_COLLISION_API TIntrCapsuleOBB<Rigid3dTypes,Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
 extern template class SOFA_BASE_COLLISION_API TIntrCapsuleOBB<Vec3fTypes,Rigid3fTypes>;
+extern template class SOFA_BASE_COLLISION_API TIntrCapsuleOBB<Rigid3fTypes,Rigid3fTypes>;
 #endif
 #endif
 

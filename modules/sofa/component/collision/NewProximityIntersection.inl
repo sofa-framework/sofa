@@ -71,40 +71,6 @@ inline int NewProximityIntersection::doIntersectionPointPoint(SReal dist2, const
     return 1;
 }
 
-template <class DataTypes1,class DataTypes2>
-bool NewProximityIntersection::testIntersection(TSphere<DataTypes1>& e1, TSphere<DataTypes2>& e2)
-{
-    OutputVector contacts;
-    const SReal alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity() + e1.r() + e2.r();
-    return doIntersectionPointPoint(alarmDist*alarmDist, e1.center(), e2.center(), &contacts, -1) > 0;
-}
-
-template <class DataTypes>
-bool NewProximityIntersection::testIntersection(Capsule&, TSphere<DataTypes>&){
-    //you can do but not useful because it is not called
-    return false;
-}
-
-template <class DataTypes>
-int NewProximityIntersection::computeIntersection(Capsule & cap, TSphere<DataTypes> & sph,OutputVector* contacts){
-    return CapsuleIntTool::computeIntersection(cap,sph,getAlarmDistance()+cap.getProximity()+sph.getProximity(),getContactDistance()+cap.getProximity()+sph.getProximity(),contacts);
-}
-
-template <class DataTypes>
-int NewProximityIntersection::computeIntersection(TSphere<DataTypes> & sph, OBB & box,OutputVector* contacts){
-    return OBBIntTool::computeIntersection(sph,box,sph.getProximity() + box.getProximity() + getAlarmDistance(),box.getProximity() + sph.getProximity() + getContactDistance(),contacts);
-}
-
-template <class DataTypes>
-bool NewProximityIntersection::testIntersection(TSphere<DataTypes> &,OBB &){
-    return true;
-}
-
-template <class DataTypes1,class DataTypes2>
-int NewProximityIntersection::computeIntersection(TSphere<DataTypes1>& sph1, TSphere<DataTypes2>& sph2, OutputVector* contacts)
-{
-    return BaseIntTool::computeIntersection(sph1,sph2,sph1.getProximity() + sph2.getProximity() + getAlarmDistance(),sph1.getProximity() + sph2.getProximity() +getContactDistance(),contacts);
-}
 
 } // namespace collision
 

@@ -66,8 +66,12 @@ Creator<Contact::Factory, FrictionContact<TriangleModel, RigidSphereModel> > Tri
 Creator<Contact::Factory, FrictionContact<RigidSphereModel, PointModel> > RigidSpherePointFrictionContactClass("FrictionContact",true);
 Creator<Contact::Factory, FrictionContact<CapsuleModel, RigidSphereModel> > CapsuleRigidSphereFrictionContactClass("FrictionContact",true);
 Creator<Contact::Factory, FrictionContact<RigidSphereModel, OBBModel> > RigidSphereOBBFrictionContactClass("FrictionContact",true);
-
-
+Creator<Contact::Factory, FrictionContact<RigidCapsuleModel, RigidCapsuleModel> > RigidCapsuleRigidCapsuleFrictionContactClass("FrictionContact",true);
+Creator<Contact::Factory, FrictionContact<CapsuleModel, RigidCapsuleModel> > CapsuleRigidCapsuleFrictionContactClass("FrictionContact",true);
+Creator<Contact::Factory, FrictionContact<RigidCapsuleModel, TriangleModel> > RigidCapsuleTriangleFrictionContactClass("FrictionContact",true);
+Creator<Contact::Factory, FrictionContact<RigidCapsuleModel, SphereModel> > RigidCapsuleSphereFrictionContactClass("FrictionContact",true);
+Creator<Contact::Factory, FrictionContact<RigidCapsuleModel, OBBModel> > RigidCapsuleOBBFrictionContactClass("FrictionContact",true);
+Creator<Contact::Factory, FrictionContact<RigidCapsuleModel, RigidSphereModel> > RigidCapsuleRigidSphereFrictionContactClass("FrictionContact",true);
 
 
 } // namespace collision

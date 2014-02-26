@@ -23,7 +23,13 @@ class SOFA_BASE_COLLISION_API BaseIntTool : public CapsuleIntTool,public OBBIntT
 public:
     typedef sofa::helper::vector<sofa::core::collision::DetectionOutput> OutputVector;
 
-    static bool testIntersection(Cube& ,Cube&,SReal alarmDist);
+    template <class Elem1,class Elem2>
+    static bool testIntersection(Elem1&,Elem2&,SReal){
+        std::cerr<<"testIntersection should not be used with theese types"<<std::endl;
+        return false;
+    }
+
+//    static bool testIntersection(Cube& ,Cube&,SReal alarmDist);
 
     template <class DataTypes1,class DataTypes2>
     static bool testIntersection(TSphere<DataTypes1>& sph1, TSphere<DataTypes2>& sph2,SReal alarmDist)
@@ -64,17 +70,18 @@ public:
 
 
 
-
-    inline static int computeIntersection(Capsule &c1, Capsule &c2, SReal alarmDist, SReal contactDist, OutputVector *contacts){
+    template <class DataTypes1,class DataTypes2>
+    inline static int computeIntersection(TCapsule<DataTypes1> &c1, TCapsule<DataTypes2> &c2, SReal alarmDist, SReal contactDist, OutputVector *contacts){
         return CapsuleIntTool::computeIntersection(c1,c2,alarmDist,contactDist,contacts);
     }
 
-    template <class DataType>
-    inline static int computeIntersection(Capsule &cap, TSphere<DataType> &sph, SReal alarmDist, SReal contactDist, OutputVector *contacts){
+    template <class DataTypes1,class DataTypes2>
+    inline static int computeIntersection(TCapsule<DataTypes1> &cap, TSphere<DataTypes2> &sph, SReal alarmDist, SReal contactDist, OutputVector *contacts){
         return CapsuleIntTool::computeIntersection(cap,sph,alarmDist,contactDist,contacts);
     }
 
-    inline static int computeIntersection(Capsule &cap, OBB & obb, SReal alarmDist, SReal contactDist, OutputVector *contacts){
+    template <class DataTyes>
+    inline static int computeIntersection(TCapsule<DataTyes> &cap, OBB & obb, SReal alarmDist, SReal contactDist, OutputVector *contacts){
         return CapsuleIntTool::computeIntersection(cap,obb,alarmDist,contactDist,contacts);
     }
 
@@ -86,6 +93,11 @@ public:
     inline static int computeIntersection(TSphere<DataType> &sph, OBB &obb, SReal alarmDist, SReal contactDist, OutputVector *contacts){
         return OBBIntTool::computeIntersection(sph,obb,alarmDist,contactDist,contacts);
     }
+
+    inline static int computeIntersection(Cube&, Cube&, SReal, SReal, OutputVector *){
+        return 0;
+    }
+
 
 };
 

@@ -82,53 +82,10 @@ void MinProximityIntersection::init()
     IntersectorFactory::getInstance()->addIntersectors(this);
 }
 
-bool MinProximityIntersection::testIntersection(Cube &cube1, Cube &cube2)
-{
-    return BaseIntTool::testIntersection(cube1,cube2,getAlarmDistance() + cube1.getProximity() + cube2.getProximity());
-}
-
-
-bool MinProximityIntersection::testIntersection(Capsule&, Capsule&){
-    return true;
-}
-
-
-int MinProximityIntersection::computeIntersection(Capsule & e1,Capsule & e2,OutputVector * contacts){
-    return CapsuleIntTool::computeIntersection(e1,e2,e1.getProximity() + e2.getProximity() + getAlarmDistance(),e1.getProximity() + e2.getProximity() + getContactDistance(),contacts);
-}
-
-
-int MinProximityIntersection::computeIntersection(Cube&, Cube&, OutputVector* /*contacts*/)
-{
-    return 0; /// \todo
-}
-
-bool MinProximityIntersection::testIntersection(OBB&, OBB&){
-    return true;
-}
-
-int MinProximityIntersection::computeIntersection(OBB & box0, OBB & box1,OutputVector* contacts){
-    return OBBIntTool::computeIntersection(box0,box1,box0.getProximity() + box1.getProximity() + getAlarmDistance(),box0.getProximity() + box1.getProximity() + getContactDistance(),contacts);
-}
-
-
-int MinProximityIntersection::computeIntersection(Capsule& cap,OBB& obb,OutputVector * contacts){
-    return CapsuleIntTool::computeIntersection(cap,obb,cap.getProximity() + obb.getProximity() + getAlarmDistance(),cap.getProximity() + obb.getProximity() + getContactDistance(),contacts);
-}
-
-
-bool MinProximityIntersection::testIntersection(Capsule&, OBB&){
-    return true;
-}
-
-
 
 bool MinProximityIntersection::getUseSurfaceNormals(){
     return useSurfaceNormals.getValue();
 }
-
-
-
 
 void MinProximityIntersection::draw(const core::visual::VisualParams* vparams)
 {
