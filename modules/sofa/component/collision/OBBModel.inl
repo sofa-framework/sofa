@@ -417,6 +417,16 @@ inline Data<typename TOBBModel<DataTypes>::VecCoord> & TOBBModel<DataTypes>::wri
 template <class DataTypes>
 inline void TOBB<DataTypes>::vertices(std::vector<Coord> & vs)const{return this->model->vertices(this->index,vs);}
 
+template <class DataTypes>
+inline void TOBB<DataTypes>::showVertices()const{
+    std::vector<Coord> vs;
+    vertices(vs);
+
+    std::cout<<"vertices==============="<<std::endl;
+    for(unsigned int i = 0 ; i < vs.size() ; ++i)
+        std::cout<<"\t"<<vs[i]<<std::endl;
+}
+
 //template <class DataTypes>
 //bool TOBBModel<DataTypes>::bidon()const{return false;}
 

@@ -499,37 +499,6 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, TSphere<T>& 
     return 1;
 }
 
-template<class T>
-bool MeshNewProximityIntersection::testIntersection(TSphere<T>& e1, Point& e2)
-{
-    OutputVector contacts;
-    const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity() + e1.r();
-    int n = intersection->doIntersectionPointPoint(alarmDist*alarmDist, e1.center(), e2.p(), &contacts, -1);
-    return n>0;
-}
-
-template<class T>
-bool MeshNewProximityIntersection::testIntersection(Line&, TSphere<T>&)
-{
-    intersection->serr << "Unnecessary call to NewProximityIntersection::testIntersection(Line,Sphere)."<<intersection->sendl;
-    return true;
-}
-
-template<class T>
-bool MeshNewProximityIntersection::testIntersection(Triangle&, TSphere<T>&)
-{
-    intersection->serr << "Unnecessary call to NewProximityIntersection::testIntersection(Triangle,Sphere)."<<intersection->sendl;
-    return true;
-}
-
-inline int MeshNewProximityIntersection::computeIntersection(Capsule & cap,Triangle & tri,OutputVector* contacts){
-    return MeshIntTool::computeIntersection(cap,tri,intersection->getAlarmDistance(),intersection->getContactDistance(),contacts);
-}
-
-inline int MeshNewProximityIntersection::computeIntersection(Capsule & cap,Line & lin,OutputVector* contacts){
-    return MeshIntTool::computeIntersection(cap,lin,intersection->getAlarmDistance(),intersection->getContactDistance(),contacts);
-}
-
 } // namespace collision
 
 } // namespace component

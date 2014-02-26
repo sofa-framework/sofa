@@ -25,7 +25,6 @@
 #include <sofa/component/collision/MeshNewProximityIntersection.inl>
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/FnDispatcher.inl>
-#include <sofa/component/collision/DiscreteIntersection.inl>
 #include <sofa/core/collision/Intersection.inl>
 //#include <sofa/component/collision/ProximityIntersection.h>
 #include <sofa/helper/proximity.h>
@@ -74,15 +73,6 @@ MeshNewProximityIntersection::MeshNewProximityIntersection(NewProximityIntersect
     }
 }
 
-bool MeshNewProximityIntersection::testIntersection(Point& e1, Point& e2)
-{
-    OutputVector contacts;
-    const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
-    int n = intersection->doIntersectionPointPoint(alarmDist*alarmDist, e1.p(), e2.p(), &contacts, -1);
-    return n>0;
-}
-
-
 int MeshNewProximityIntersection::computeIntersection(Point& e1, Point& e2, OutputVector* contacts)
 {
     const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
@@ -101,13 +91,6 @@ int MeshNewProximityIntersection::computeIntersection(Point& e1, Point& e2, Outp
 }
 
 
-bool MeshNewProximityIntersection::testIntersection(Line&, Point&)
-{
-    intersection->serr << "Unnecessary call to NewProximityIntersection::testIntersection(Line,Point)."<<intersection->sendl;
-    return true;
-}
-
-
 int MeshNewProximityIntersection::computeIntersection(Line& e1, Point& e2, OutputVector* contacts)
 {
     const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
@@ -122,13 +105,6 @@ int MeshNewProximityIntersection::computeIntersection(Line& e1, Point& e2, Outpu
         }
     }
     return n;
-}
-
-
-bool MeshNewProximityIntersection::testIntersection(Line&, Line&)
-{
-    intersection->serr << "Unnecessary call to NewProximityIntersection::testIntersection(Line,Line)."<<intersection->sendl;
-    return true;
 }
 
 
@@ -150,14 +126,6 @@ int MeshNewProximityIntersection::computeIntersection(Line& e1, Line& e2, Output
     return n;
 }
 
-
-bool MeshNewProximityIntersection::testIntersection(Triangle&, Point&)
-{
-    intersection->serr << "Unnecessary call to NewProximityIntersection::testIntersection(Triangle,Point)."<<intersection->sendl;
-    return true;
-}
-
-
 int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Point& e2, OutputVector* contacts)
 {
     const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
@@ -173,13 +141,6 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Point& e2, O
         }
     }
     return n;
-}
-
-
-bool MeshNewProximityIntersection::testIntersection(Triangle&, Line&)
-{
-    intersection->serr << "Unnecessary call to NewProximityIntersection::testIntersection(Triangle& e1, Line& e2)."<<intersection->sendl;
-    return true;
 }
 
 
@@ -235,13 +196,6 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Line& e2, Ou
     }
 
     return n;
-}
-
-
-bool MeshNewProximityIntersection::testIntersection(Triangle&, Triangle&)
-{
-    intersection->serr << "Unnecessary call to NewProximityIntersection::testIntersection(Triangle& e1, Triangle& e2)."<<intersection->sendl;
-    return true;
 }
 
 
@@ -341,21 +295,6 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2
 }
 
 
-bool MeshNewProximityIntersection::testIntersection(Capsule&,Triangle&){
-    return true;
-}
-
-bool MeshNewProximityIntersection::testIntersection(Capsule&,Line&){
-    return true;
-}
-
-int MeshNewProximityIntersection::computeIntersection(Triangle& tri,OBB& obb,OutputVector* contacts){
-    return MeshIntTool::computeIntersection(tri,obb,tri.getProximity() + obb.getProximity() + intersection->getAlarmDistance(),tri.getProximity() + obb.getProximity() + intersection->getContactDistance(),contacts);
-}
-
-bool MeshNewProximityIntersection::testIntersection(Triangle&,OBB&){
-    return true;
-}
 
 } // namespace collision
 

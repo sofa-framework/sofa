@@ -35,6 +35,7 @@
 #include <sofa/component/collision/CubeModel.h>
 #include <sofa/component/collision/MeshIntTool.h>
 #include <sofa/component/collision/IntrUtility3.h>
+#include <sofa/component/collision/BaseIntTool.h>
 
 namespace sofa
 {
@@ -52,19 +53,11 @@ class SOFA_MESH_COLLISION_API MeshNewProximityIntersection : public core::collis
 public:
     MeshNewProximityIntersection(NewProximityIntersection* object, bool addSelf=true);
 
-    bool testIntersection(Point&, Point&);
-    template <class T> bool testIntersection(TSphere<T>&, Point&);
-    bool testIntersection(Line&, Point&);
-    template <class T> bool testIntersection(Line&, TSphere<T>&);
-    bool testIntersection(Line&, Line&);
-    bool testIntersection(Triangle&, Point&);
 
-    template <class T> bool testIntersection(Triangle&, TSphere<T>&);
-    bool testIntersection(Triangle&, Line&);
-    bool testIntersection(Triangle&, Triangle&);
-    bool testIntersection(Capsule&,Triangle&);
-    bool testIntersection(Capsule&,Line&);
-    bool testIntersection(Triangle&,OBB&);
+    template <class T1,class T2>
+    bool testIntersection(T1 & e1,T2 & e2){
+        return BaseIntTool::testIntersection(e1,e2,intersection->getAlarmDistance());
+    }
 
 
     int computeIntersection(Point&, Point&, OutputVector*);
@@ -73,13 +66,16 @@ public:
     template <class T> int computeIntersection(Line&, TSphere<T>&, OutputVector*);
     int computeIntersection(Line&, Line&, OutputVector*);
     int computeIntersection(Triangle&, Point&, OutputVector*);
+
     template <class T> int computeIntersection(Triangle&, TSphere<T>&, OutputVector*);
     int computeIntersection(Triangle&, Line&, OutputVector*);
-    int computeIntersection(Triangle&, Triangle&, OutputVector*);
-    inline int computeIntersection(Capsule & cap,Triangle & tri,OutputVector* contacts);
-    inline int computeIntersection(Capsule & cap,Line & lin,OutputVector* contacts);
-    int computeIntersection(Triangle&,OBB&,OutputVector* contacts);
 
+    int computeIntersection(Triangle&, Triangle&, OutputVector*);
+
+    template <class T1,class T2>
+    int computeIntersection(T1 & e1,T2 & e2,OutputVector* contacts){
+        return MeshIntTool::computeIntersection(e1,e2,e1.getProximity() + e2.getProximity() + intersection->getAlarmDistance(),e1.getProximity() + e2.getProximity() + intersection->getContactDistance(),contacts);
+    }
 
     static inline int doIntersectionLineLine(SReal dist2, const Vector3& p1, const Vector3& p2, const Vector3& q1, const Vector3& q2, OutputVector* contacts, int id);
 

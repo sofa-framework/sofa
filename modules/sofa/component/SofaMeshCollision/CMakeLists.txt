@@ -35,6 +35,7 @@ set(HEADER_FILES
     ../collision/TriangleLocalMinDistanceFilter.h
     ../collision/LocalMinDistanceFilter.h
     ../collision/MeshIntTool.h
+    ../collision/MeshIntTool.inl
     ../collision/IntrTriangleOBB.h
     ../collision/IntrTriangleOBB.inl
     ../collision/IntrMeshUtility.h

@@ -57,22 +57,6 @@ public:
 
     virtual void init();
 
-    bool testIntersection(Cube& ,Cube&);
-    template <class DataTypes1,class DataTypes2> bool testIntersection(TSphere<DataTypes1>&, TSphere<DataTypes2>&);
-    bool testIntersection(Capsule&,Capsule&);
-    template <class DataTypes>  bool testIntersection(Capsule&,TSphere<DataTypes>&);
-    bool testIntersection(OBB&, OBB&);
-    template <class DataTypes> bool testIntersection(TSphere<DataTypes>&, OBB&);
-    bool testIntersection(Capsule&, OBB&);
-
-    int computeIntersection(Cube&, Cube&, OutputVector*);
-    template <class DataTypes1,class DataTypes2> int computeIntersection(TSphere<DataTypes1>&, TSphere<DataTypes2>&, OutputVector*);
-    int computeIntersection(Capsule&, Capsule&,OutputVector* contacts);
-    template <class DataTypes> int computeIntersection(Capsule&, TSphere<DataTypes>&,OutputVector* contacts);
-    int computeIntersection(OBB&, OBB&,OutputVector* contacts);
-    template <class DataTypes> int computeIntersection(TSphere<DataTypes>&,OBB&,OutputVector * contacts);
-    int computeIntersection(Capsule&,OBB&,OutputVector * contacts);
-
     static inline int doIntersectionPointPoint(SReal dist2, const Vector3& p, const Vector3& q, OutputVector* contacts, int id);
 
 };
