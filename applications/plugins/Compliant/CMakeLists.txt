@@ -33,6 +33,7 @@ set(HEADER_FILES
     numericalsolver/SequentialSolver.h
 	numericalsolver/IterativeSolver.h
 	numericalsolver/Benchmark.h
+	numericalsolver/BenchmarkSolver.h
 
     preconditioner/BasePreconditioner.h
     preconditioner/LDLTPreconditioner.h
@@ -123,6 +124,7 @@ set(SOURCE_FILES
     numericalsolver/SequentialSolver.cpp
 	numericalsolver/IterativeSolver.cpp
 	numericalsolver/Benchmark.cpp
+	numericalsolver/BenchmarkSolver.cpp
 
     preconditioner/LDLTPreconditioner.cpp
     #preconditioner/IncompleteCholeskyPreconditioner.cpp
