@@ -5,6 +5,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 
 #include <Eigen/Core>
+#include <boost/chrono.hpp>
 
 namespace sofa {
 namespace component {
@@ -36,6 +37,11 @@ class SOFA_Compliant_API Benchmark : public core::objectmodel::BaseObject {
 	void clear();
 	void debug() const;
 
+    //  return elapsed microseconds since last call
+	unsigned restart();
+
+	// microseconds elapsed since last restart call
+	unsigned elapsed() const;
 
 	// push the results for the last iteration, for an LCP solver
 	void lcp(const AssembledSystem& system, 
@@ -48,7 +54,31 @@ class SOFA_Compliant_API Benchmark : public core::objectmodel::BaseObject {
 			const vec& rhs,
 			const vec& x);
 
+	// convenience timing tool
+	struct scoped_timer {
+		Benchmark* bench;
+		Data<SReal> Benchmark::* member;
+
+		scoped_timer(Benchmark* bench,
+					 Data<SReal> Benchmark::* member)
+			: bench(bench),
+			  member(member) {
+			if( bench ) bench->restart();
+		}
+
+		~scoped_timer() {
+			if( bench ) {
+
+				(bench->*member).setValue( bench->restart() );
+			}
+		}
+
+	};
+
   protected:
+	
+	typedef boost::chrono::high_resolution_clock clock_type;
+	clock_type::time_point last;
 
 	void push(const vec& primal, const vec& dual);
 	

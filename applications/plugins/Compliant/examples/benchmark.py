@@ -108,8 +108,10 @@ class Controller(Sofa.PythonScriptController):
 
             total.append(p[0] + d[0] + c[0])
 
-        print total
-
+        print 'factor:', shared.bench.factor / 1000, 'ms'
+        print 'solve:', shared.bench.solve / 1000, 'ms'
+        print 'convergence:', total
+        print 
         return 0
 
           
