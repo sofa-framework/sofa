@@ -119,9 +119,15 @@ static bool diagonal_dominant(const AssembledSystem& sys)
 
 
 
+
+
+
+
 void SequentialSolver::factor(const system_type& system) { 
 	scoped::timer timer("system factorization");
  
+	Benchmark::scoped_timer bench_timer(this->bench, &Benchmark::factor);
+	
 	// assert( diagonal_dominant(system) );
 
     // _benchmark->beginFactor( this->getContext()->getTime() );
@@ -293,9 +299,13 @@ SReal SequentialSolver::step(vec& lambda,
 	return estimate;
 }
 
+
+
+
 void SequentialSolver::solve(vec& res,
 							 const system_type& sys,
 							 const vec& rhs) const {
+	scoped_timer timer(this->bench, &Benchmark::solve );
 	solve_impl(res, sys, rhs, false );
 }
 
