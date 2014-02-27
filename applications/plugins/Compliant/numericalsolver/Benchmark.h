@@ -22,7 +22,7 @@ class SOFA_Compliant_API Benchmark : public core::objectmodel::BaseObject {
 	// should not dealloc/realloc, so we should be fine.
 	
 	// duration
-	Data<SReal> factor, solve;
+	Data<SReal> factor;
 	
 	// convergence
 	Data< vector<SReal> > dual, primal, complementarity, duration;
