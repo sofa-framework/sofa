@@ -13,9 +13,10 @@
 #if defined(_MSC_VER) && defined(_DEBUG)
 // undefine _DEBUG since we want to always link agains the release version of
 // python and pyconfig.h automatically links debug version if _DEBUG is defined.
-#    undef _DEBUG
+// ocarre: no we don't, in debug on Windows we cannot link with python release, if we want to build SofaPython in debug we have to compile python in debug
+//#    undef _DEBUG
 #    include <Python.h>
-#    define _DEBUG
+//#    define _DEBUG
 #elif defined(__APPLE__) && defined(__MACH__)
 #    include <Python/Python.h>
 #else

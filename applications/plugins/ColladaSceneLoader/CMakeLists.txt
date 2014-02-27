@@ -53,4 +53,8 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILE
 AddCompilerDefinitions("SOFA_BUILD_COLLADASCENELOADER")
 AddLinkerDependencies(SofaLoader SofaSimulationCommon SofaBaseMechanics SofaRigid SofaBoundaryCondition SofaBaseTopology SofaBaseVisual SofaOpenglVisual SofaDeformable SofaMeshCollision ${ASSIMP_LIBRARY})
 
+if(SOFA-PLUGIN_FLEXIBLE)
+	AddLinkerDependencies(Flexible)
+endif()
+
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

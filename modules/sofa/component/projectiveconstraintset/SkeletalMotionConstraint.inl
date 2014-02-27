@@ -55,6 +55,7 @@ template <class DataTypes>
 SkeletalMotionConstraint<DataTypes>::SkeletalMotionConstraint() : ProjectiveConstraintSet<DataTypes>()
     , skeletonJoints(initData(&skeletonJoints, "joints", "skeleton joints"))
     , skeletonBones(initData(&skeletonBones, "bones", "skeleton bones"))
+	, animationSpeed(initData(&animationSpeed, 1.0f, "animationSpeed", "animation speed"))
 {
 
 }
@@ -80,7 +81,7 @@ void SkeletalMotionConstraint<DataTypes>::reset()
 template <class DataTypes>
 void SkeletalMotionConstraint<DataTypes>::findKeyTimes()
 {
-    Real cT = (Real) this->getContext()->getTime();
+    Real cT = (Real) this->getContext()->getTime() * animationSpeed.getValue();
     finished = false;
 
     for(unsigned int i = 0; i < skeletonJoints.getValue().size(); ++i)
@@ -119,7 +120,7 @@ template <class DataTypes>
 template <class DataDeriv>
 void SkeletalMotionConstraint<DataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataDeriv& dx)
 {
-    Real cT = (Real) this->getContext()->getTime();
+    Real cT = (Real) this->getContext()->getTime() * animationSpeed.getValue();
 
     if(0.0 != cT)
     {
@@ -145,7 +146,7 @@ template <class DataTypes>
 void SkeletalMotionConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& vData)
 {
     helper::WriteAccessor<DataVecDeriv> dx = vData;
-    Real cT = (Real) this->getContext()->getTime();
+    Real cT = (Real) this->getContext()->getTime() * animationSpeed.getValue();
 
     if(0.0 != cT)
     {
@@ -187,7 +188,7 @@ template <class DataTypes>
 void SkeletalMotionConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecCoord& xData)
 {
     helper::WriteAccessor<DataVecCoord> x = xData;
-    Real cT = (Real) this->getContext()->getTime();
+    Real cT = (Real) this->getContext()->getTime() * animationSpeed.getValue();
 
     if(0.0 != cT)
     {
