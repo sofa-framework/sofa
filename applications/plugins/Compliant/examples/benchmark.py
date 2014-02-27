@@ -80,6 +80,9 @@ def createScene(node):
     box.mass_from_mesh( box.visual, 50 )
     box.node = box.insert( scene )
 
+    
+from itertools import izip
+
 
 # scene controller
 class Controller(Sofa.PythonScriptController):
@@ -96,7 +99,15 @@ class Controller(Sofa.PythonScriptController):
     def onEndAnimationStep(self, dt):
 
         # display the values from the bench object
-        print 'complementarity', shared.bench.complementarity
+        total = []
+        
+        for (p, d, c) in izip(shared.bench.primal, 
+                              shared.bench.dual,
+                              shared.bench.complementarity):
+
+            total.append(p[0] + d[0] + c[0])
+
+        print total
 
         return 0
 
