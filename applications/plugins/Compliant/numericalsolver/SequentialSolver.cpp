@@ -306,7 +306,6 @@ SReal SequentialSolver::step(vec& lambda,
 void SequentialSolver::solve(vec& res,
 							 const system_type& sys,
 							 const vec& rhs) const {
-	Benchmark::scoped_timer timer(this->bench, &Benchmark::solve );
 	solve_impl(res, sys, rhs, false );
 }
 

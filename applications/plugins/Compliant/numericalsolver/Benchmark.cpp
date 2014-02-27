@@ -16,7 +16,6 @@ int BenchmarkClass = core::RegisterObject("A benchmark for iterative solvers.").
 
 Benchmark::Benchmark()
 	: factor(initData(&factor, "factor", "time elapsed during factor")),
-	  solve(initData(&solve, "solve", "time elapsed during solve")),
 
 	  primal(initData(&primal, "primal", "primal error")),	  
 	  dual(initData(&dual, "dual", "dual error")),
