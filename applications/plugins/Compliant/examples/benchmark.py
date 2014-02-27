@@ -26,13 +26,13 @@ def createScene(node):
                       filename = __file__,
                       classname = 'Controller' )
 
+    # time step
     node.dt = 0.005
 
-    # friction coefficient
-    shared.mu = 0.5
-
+    # scene node
     scene = Tools.scene( node )
 
+    # display flags
     style = node.getObject('style')
     style.findData('displayFlags').showMappings = True
 
@@ -77,7 +77,6 @@ def createScene(node):
                             precision = 1e-8,
                             bench = '@./bench-qp')
     
-    
     # plane
     plane = Rigid.Body('plane')
     plane.visual = dir + '/mesh/ground.obj'
@@ -99,7 +98,6 @@ def createScene(node):
     
 from itertools import izip
 
-
 # scene controller
 class Controller(Sofa.PythonScriptController):
      
@@ -114,6 +112,7 @@ class Controller(Sofa.PythonScriptController):
         return 0
 
     def onEndAnimationStep(self, dt):
+        # print benchmark report
         print 't =', self.node.getTime()
         print
 
