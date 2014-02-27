@@ -38,10 +38,7 @@ struct schur {
 		
 		tmp2.noalias() = JP.transpose() * x;
 		Minv.solve(tmp1, tmp2);
-		tmp2.noalias() = sys.C * x;
-		tmp1 += tmp2;
-		result.noalias() = JP * tmp1;
-		
+		result.noalias() = JP * tmp1 + sys.C * x;
 		return result;
 	};
 	
