@@ -111,6 +111,7 @@ class Controller(Sofa.PythonScriptController):
         print 'factor:', shared.bench.factor / 1000, 'ms'
         print 'solve:', shared.bench.solve / 1000, 'ms'
         print 'convergence:', total
+        print 'duration:', [ x[0] for x in shared.bench.duration]
         print 
         return 0
 

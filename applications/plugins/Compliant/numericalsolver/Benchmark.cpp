@@ -20,17 +20,18 @@ Benchmark::Benchmark()
 
 	  primal(initData(&primal, "primal", "primal error")),	  
 	  dual(initData(&dual, "dual", "dual error")),
-	  complementarity(initData(&complementarity, "complementarity", "complementarity error"))
+	  complementarity(initData(&complementarity, "complementarity", "complementarity error")),
+	  duration(initData(&duration, "duration", "cumulated solve time"))
 {
 	
 }
-
 
 void Benchmark::clear() {
 	
 	edit(primal)->clear();
 	edit(dual)->clear();
 	edit(complementarity)->clear();
+	edit(duration)->clear();
 	
 }
 
@@ -54,7 +55,7 @@ unsigned Benchmark::elapsed() const {
 	using namespace boost::chrono;
 	clock_type::time_point now = clock_type::now();
 	
-	return  duration_cast<microseconds> (now - last).count();
+	return duration_cast<microseconds> (now - last).count();
 }
 
 
@@ -75,16 +76,19 @@ void Benchmark::lcp(const AssembledSystem& system,
 					const vec& rhs,
 					const Response& response, 
 					const vec& dual) {
+	edit(this->duration)->push_back(elapsed());
 	vec v(system.m);
-	response.solve( v, system.J.transpose() * dual );
+	response.solve( v, system.P * (system.J.transpose() * dual) );
 	
-	push( system.J * v - rhs, dual );
+	push( system.J * (system.P * v) - rhs, dual );
 }  
 
 
 void Benchmark::qp(const AssembledSystem& system, 
 				   const vec& rhs,
 				   const vec& x) {
+	edit(this->duration)->push_back(elapsed());
+	
 	// TODO optimality error
 	push( system.J * x.head(system.m) - rhs.tail(system.n), x.tail(system.n) );
 }  
