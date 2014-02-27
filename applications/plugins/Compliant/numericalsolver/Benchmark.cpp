@@ -20,6 +20,7 @@ Benchmark::Benchmark()
 	  primal(initData(&primal, "primal", "primal error")),	  
 	  dual(initData(&dual, "dual", "dual error")),
 	  complementarity(initData(&complementarity, "complementarity", "complementarity error")),
+	  optimality(initData(&optimality, "optimality", "optimality error")),
 	  duration(initData(&duration, "duration", "cumulated solve time"))
 {
 	
@@ -30,6 +31,7 @@ void Benchmark::clear() {
 	edit(primal)->clear();
 	edit(dual)->clear();
 	edit(complementarity)->clear();
+	edit(optimality)->clear();
 	edit(duration)->clear();
 	
 }
@@ -80,6 +82,7 @@ void Benchmark::lcp(const AssembledSystem& system,
 	response.solve( v, system.P * (system.J.transpose() * dual) );
 	
 	push( system.J * (system.P * v) - rhs, dual );
+	edit(this->optimality)->push_back( 0 );
 }  
 
 
@@ -88,8 +91,11 @@ void Benchmark::qp(const AssembledSystem& system,
 				   const vec& x) {
 	edit(this->duration)->push_back(elapsed());
 	
-	// TODO optimality error
-	push( system.J * x.head(system.m) - rhs.tail(system.n), x.tail(system.n) );
+	push( system.J * system.P * x.head(system.m) - rhs.tail(system.n), x.tail(system.n) );
+	
+	vec opt = system.P * (system.H * (system.P * x.head(system.m)) - system.J.transpose() * x.tail(system.n) - rhs.head(system.m));
+
+	edit(this->optimality)->push_back( opt.norm() / system.m );
 }  
 
 

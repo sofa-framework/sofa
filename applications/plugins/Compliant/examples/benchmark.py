@@ -53,13 +53,15 @@ def createScene(node):
     # main solver
     num = node.createObject('BenchmarkSolver', name = 'num')
 
+    response = node.createObject('LDLTResponse', name = 'response')
+    
     # pgs benchmark
     shared.pgs = node.createObject('Benchmark', name = 'bench-pgs')
     
     # pgs solver
     pgs = node.createObject('SequentialSolver',
                             name = 'pgs',
-                            iterations = 100,
+                            iterations = 200,
                             precision = 1e-8,
                             bench = '@./bench-pgs')
 
@@ -72,10 +74,11 @@ def createScene(node):
     
     # qp solver
     qp = node.createObject('QPSolver',
-                            name = 'qp',
-                            iterations = 100,
-                            precision = 1e-8,
-                            bench = '@./bench-qp')
+                           name = 'qp',
+                           iterations = 200,
+                           precision = 1e-8,
+                           bench = '@./bench-qp',
+                           schur = True)
     
     # plane
     plane = Rigid.Body('plane')
@@ -87,22 +90,29 @@ def createScene(node):
     plane.node.createObject('FixedConstraint', 
                              indices = '0')
 
-    # box
-    box = Rigid.Body('box')
-    box.visual = dir + '/mesh/cube.obj'
-    box.collision = box.visual
-    box.dofs.translation = [0, 3, 0]
-    box.mass_from_mesh( box.visual, 50 )
-    box.node = box.insert( scene )
+    # boxes
+    for i in xrange(5):
+        box = Rigid.Body('box-{0}'.format(i))
+        box.visual = dir + '/mesh/cube.obj'
+        box.collision = box.visual
+        box.dofs.translation = [0, 3 * (i + 1), 0]
+        box.mass_from_mesh( box.visual, 50 )
+        box.node = box.insert( scene )
 
     
 from itertools import izip
+from matplotlib import pyplot as plt
+import matplotlib.animation as anim
 
 # scene controller
 class Controller(Sofa.PythonScriptController):
      
     def onLoaded(self,node):
         self.node = node
+
+        plt.ion()
+        plt.show()
+
         return 0
           
     def reset(self):
@@ -111,7 +121,32 @@ class Controller(Sofa.PythonScriptController):
     def onBeginAnimationStep(self, dt):
         return 0
 
-    def onEndAnimationStep(self, dt):
+    def print_report(self):
+        pass
+
+    def draw_report(self):
+        plt.clf()
+
+        for bench in [shared.pgs, shared.qp]:
+            values = []
+            for (p, d, c, o) in izip(bench.primal, 
+                                     bench.dual,
+                                     bench.complementarity,
+                                     bench.optimality):
+                values.append(p[0] + d[0] + c[0] + o[0])
+                
+            # total time
+            time = [(bench.factor + x[0]) / 1000 for x in bench.duration]
+            try:
+                plt.plot(time, values, label = bench.name)
+            except ValueError:
+                pass
+
+        # self.ax.set_yscale('log')
+        plt.yscale('log')
+        plt.draw()
+
+    def print_report(self):
         # print benchmark report
         print 't =', self.node.getTime()
         print
@@ -121,17 +156,20 @@ class Controller(Sofa.PythonScriptController):
             # display the values from the bench object
             total = []
         
-            for (p, d, c) in izip(bench.primal, 
-                                  bench.dual,
-                                  bench.complementarity):
-                total.append(p[0] + d[0] + c[0])
+            for (p, d, c, o) in izip(bench.primal, 
+                                     bench.dual,
+                                     bench.complementarity,
+                                     bench.optimality):
+                total.append(p[0] + d[0] + c[0] + o[0])
 
             print bench.name
             print 'factor:', bench.factor / 1000, 'ms'
             print 'convergence:', total
             print 'duration (ms):', [ x[0] / 1000 for x in bench.duration]
             print 
-        return 0
+
+    def onEndAnimationStep(self, dt):
+        self.draw_report()
 
           
     def bwdInitGraph(self,node):

@@ -293,7 +293,7 @@ SReal SequentialSolver::step(vec& lambda,
 	// std::cerr << "sanity check: " << (net - mapping_response * lambda).norm() << std::endl;
 
 	// TODO is this needed to avoid error accumulation ?
-	// net = mapping_response * lambda;
+	net = mapping_response * lambda;
 
 	// TODO flag to return real residual estimate !! otherwise
 	// convergence plots are not fair.
@@ -364,6 +364,8 @@ void SequentialSolver::solve_impl(vec& res,
 		constant.norm() * precision.getValue() : precision.getValue();
 
 	real epsilon2 = epsilon * epsilon;
+
+	if( this->bench ) this->bench->lcp(sys, constant, *response, lambda);
 
 	// outer loop
 	unsigned k = 0, max = iterations.getValue();
