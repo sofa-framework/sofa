@@ -2,7 +2,7 @@
 #define COMPLIANT_ITERATIVESOLVER_H
 
 #include "KKTSolver.h"
-#include "Response.h"
+#include "Benchmark.h"
 
 namespace sofa {
 namespace component {
@@ -20,14 +20,8 @@ class SOFA_Compliant_API IterativeSolver : public KKTSolver {
 	Data<unsigned> iterations;
 	Data<bool> relative;
 
-	// convergence logging
-	Data<bool> cv_record;
-	Data< vector<SReal> > cv_data;
-	
   protected:
-	// convenience 
-	void cv_clear();
-	void cv_push(SReal value);
+	SingleLink<IterativeSolver, Benchmark, 0> bench;
 };
 
 }

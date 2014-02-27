@@ -17,6 +17,8 @@ class BaseMechanicalState;
 namespace component {
 namespace linearsolver {
 			
+// TODO this should go in numericalsolver/linearsolver
+
 // Assembly of all the relevant data in the scene graph. Used by
 // KKTSolver and AssemblyVisitor.
 

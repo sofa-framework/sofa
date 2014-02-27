@@ -35,26 +35,32 @@ class SOFA_Compliant_API SequentialSolver : public IterativeSolver {
 	                   const system_type& system,
                        const vec& rhs) const;
 
+	virtual void correct(vec& x,
+						 const system_type& system,
+						 const vec& rhs) const;
+	
 	virtual bool isLinear() const { return false; }
 	
 	virtual void init();
 
-    virtual void setCorrectionPass( bool b  ){ _correctionPass=b; }
-	
 	Data<SReal> omega;
 
     Data<bool> projectH;    ///< Replace H with P^T.H.P to account for projective constraints
 
   protected:
 
-    bool _correctionPass;
+	virtual void solve_impl(vec& x,
+							const system_type& system,
+							const vec& rhs,
+							bool correct) const;
 
 	// performs a single iteration
 	SReal step(vec& lambda, 
 	           vec& net, 
 	           const system_type& sys,
 	           const vec& rhs,
-	           vec& tmp1, vec& tmp2 ) const;
+	           vec& tmp1, vec& tmp2,
+			   bool correct = false) const;
 	
 	// response matrix
 	Response::SPtr response;
