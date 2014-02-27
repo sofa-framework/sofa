@@ -5,7 +5,7 @@
 // #include "utils/debug.h"
 #include "../initCompliant.h"
 
-#include "KKTSolver.h"
+#include "IterativeSolver.h"
 #include "Response.h"
 
 #include "../constraint/Constraint.h"
@@ -22,10 +22,10 @@ namespace component {
 namespace linearsolver {
 
 // sequential impulse/projected block gauss-seidel kkt solver
-class SOFA_Compliant_API SequentialSolver : public KKTSolver {
+class SOFA_Compliant_API SequentialSolver : public IterativeSolver {
   public:
 
-	SOFA_CLASS(SequentialSolver, KKTSolver);
+	SOFA_CLASS(SequentialSolver, IterativeSolver);
 	
 	SequentialSolver();
 
@@ -41,9 +41,6 @@ class SOFA_Compliant_API SequentialSolver : public KKTSolver {
 
     virtual void setCorrectionPass( bool b  ){ _correctionPass=b; }
 	
-	Data<unsigned> iterations;
-	Data<SReal> precision;
-	Data<bool> relative;
 	Data<SReal> omega;
 
     Data<bool> projectH;    ///< Replace H with P^T.H.P to account for projective constraints

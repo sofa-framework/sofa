@@ -1,7 +1,7 @@
 #ifndef COMPLIANT_KRYLOVSOLVER_H
 #define COMPLIANT_KRYLOVSOLVER_H
 
-#include "KKTSolver.h"
+#include "IterativeSolver.h"
 #include "Response.h"
 
 #include "utils/krylov.h"
@@ -18,17 +18,12 @@ namespace linearsolver {
 
 
 // should be IterativeSolver -> KrylovSolver -> ...
-class SOFA_Compliant_API KrylovSolver : public KKTSolver {
+class SOFA_Compliant_API KrylovSolver : public IterativeSolver {
   public:
 	
 	KrylovSolver();				
 	
-	Data<SReal> precision;
-	Data<unsigned> iterations;
-	Data<bool> relative;
-	
 	Data<bool> schur;
-	
 	Data<bool> verbose;
 	
 	virtual void init();

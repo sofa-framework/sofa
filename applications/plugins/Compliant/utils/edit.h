@@ -1,5 +1,5 @@
-#ifndef EDIT_H
-#define EDIT_H
+#ifndef UTILS_EDIT_H
+#define UTILS_EDIT_H
 
 namespace {
 

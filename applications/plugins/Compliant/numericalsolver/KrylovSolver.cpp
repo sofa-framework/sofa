@@ -7,16 +7,7 @@ namespace linearsolver {
 
 
 KrylovSolver::KrylovSolver() 
-	: precision(initData(&precision, 
-	                     SReal(1e-3),
-	                     "precision",
-	                     "residual norm threshold")),
-	  iterations(initData(&iterations,
-	                      unsigned(10),
-	                      "iterations",
-	                      "iteration bound")),
-	  relative(initData(&relative, false, "relative", "use relative precision") ),
-	  schur(initData(&schur, false, "schur", "perform solving on the schur complement. you *must* have a response component nearby in the graph.")),
+	: schur(initData(&schur, false, "schur", "perform solving on the schur complement. you *must* have a response component nearby in the graph.")),
 	  verbose(initData(&verbose, false, "verbose", "print debug stuff on std::cerr") )
 {
 	
