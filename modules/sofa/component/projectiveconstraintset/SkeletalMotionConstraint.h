@@ -80,6 +80,9 @@ public:
     void init();
     void reset();
 
+	float getAnimationSpeed() const			{return animationSpeed.getValue();}
+	void setAnimationSpeed(float speed)		{animationSpeed.setValue(speed);}
+
     void findKeyTimes();
 
     void projectResponse(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& resData);
@@ -89,6 +92,16 @@ public:
 
     void applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset);
     void applyConstraint(defaulttype::BaseVector *vect, unsigned int offset);
+
+	void projectMatrix( sofa::defaulttype::BaseMatrix* M, unsigned offset )
+	{
+		unsigned blockSize = DataTypes::deriv_total_size;	
+		unsigned size = this->mstate->getSize();
+		for( unsigned i=0; i<size; i++ )
+		{
+			M->clearRowsCols( offset + i * blockSize, offset + (i+1) * (blockSize) );
+		}
+	}
 
     virtual void draw(const core::visual::VisualParams* vparams);
 
@@ -111,6 +124,9 @@ protected:
     Data<helper::SVector<SkeletonJoint<TDataTypes> > >	skeletonJoints;
     // mesh skeleton bones which need to be updated according to the animated nodes, we use them to fill the mechanical object
     Data<helper::SVector<SkeletonBone> >				skeletonBones;
+
+	// control how fast the animation is played since animation time is not simulation time
+	Data<float>											animationSpeed;
 
 private:
     /// the key times surrounding the current simulation time (for interpolation)

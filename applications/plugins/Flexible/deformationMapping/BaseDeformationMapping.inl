@@ -135,8 +135,7 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
         else if((int)sf[i]->f_position.getValue().size() == this->fromModel->getSize()) _shapeFunction=sf[i];
     }
 
-    if ( !_shapeFunction ) serr << "ShapeFunction<"<<ShapeFunctionType::Name()<<"> component not found" << sendl;
-    else
+    if(_shapeFunction) // if we have a shape function, we use it to compute needed data (index, weights, etc.)
     {
         if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : found shape function "<<_shapeFunction->getName()<<std::endl;
         vector<mCoord> mpos0;
@@ -156,6 +155,41 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
             if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : "<<rest.size()<<" rest positions imported "<<std::endl;
         }
     }
+	else if(0 != f_index.getValue().size() && pos0.size() == f_index.getValue().size() && f_w.getValue().size() == f_index.getValue().size()) // if we do not have a shape function but we already have the needed data, we directly use them
+	{
+		if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : using filled data" <<std::endl;
+
+		VMaterialToSpatial& F0	= *f_F0.beginEdit();
+		vector<VReal>& w		= *f_w.beginEdit();
+		vector<VGradient>& dw	= *f_dw.beginEdit();
+		vector<VHessian>& ddw	= *f_ddw.beginEdit();
+
+		F0.assign(pos0.size(), MaterialToSpatial());
+		dw.assign(pos0.size(), VGradient());
+		ddw.assign(pos0.size(), VHessian());
+
+		for(size_t i = 0; i < pos0.size(); ++i)
+		{
+			dw[i].assign(w.size(), Gradient());
+			ddw[i].assign(w.size(), Hessian());
+		}
+
+		f_ddw.endEdit();
+		f_dw.endEdit();
+		f_F0.endEdit();
+
+		// use custom rest positions (to set material directions or set residual deformations)
+		if(restPositionSet)
+		{
+			helper::WriteAccessor<Data< VMaterialToSpatial > >  F0(this->f_F0);
+			for(size_t i=0; i<rest.size(); ++i) F0[i]=OutDataTypesInfo<Out>::getF(rest[i]);
+			if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : "<<rest.size()<<" rest positions imported "<<std::endl;
+		}
+	}
+	else // if the prerequisites are not fulfilled we print an error
+	{
+		serr << "ShapeFunction<"<<ShapeFunctionType::Name()<<"> component not found" << sendl;
+	}
 
     // init jacobians
     initJacobianBlocks();
