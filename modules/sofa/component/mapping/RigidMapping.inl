@@ -873,16 +873,120 @@ void RigidMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/
     dOut.endEdit();
 }
 
+
 #ifdef SOFA_HAVE_EIGEN2
 template <class TIn, class TOut>
 const helper::vector<sofa::defaulttype::BaseMatrix*>* RigidMapping<TIn, TOut>::getJs()
 {
-    const MatrixType* crsJacobian = dynamic_cast<const MatrixType*>(getJ());
-    //    cerr<<"RigidMapping<TIn, TOut>::getJs(), J = " << *crsJacobian << endl;
-    assert(crsJacobian);
-    eigenJacobian.copyFrom( *crsJacobian );
-    //    eigenJacobian.setIdentity();
-    //    cerr<<"RigidMapping<TIn, TOut>::getJs(), J copied = " << eigenJacobian << endl;
+	const VecCoord& out = *this->toModel->getX();
+    const InVecCoord& in = *this->fromModel->getX();
+    const VecCoord& pts = this->getPoints();
+
+	typename SparseMatrixEigen::CompressedMatrix& J = eigenJacobian.compressedMatrix;
+	
+	if( updateJ || J.size() == 0 ) {
+		
+		J.resize(out.size() * NOut, in.size() * NIn);
+		J.setZero();
+
+		assert( NOut == 3 );
+		assert( NIn = 6 );
+		
+		// delicious copypasta... why do we have to deal with all this
+		// crap *inside* the mapping in the first place? ideally, the
+		// mapping should only have a (index, local_coords) list,
+		// setup from the outside.
+		unsigned repartitionCount = pointsPerFrame.getValue().size();
+
+        if (repartitionCount > 1 && repartitionCount != in.size())
+        {
+            serr << "Error : mapping dofs repartition is not correct" << sendl;
+            return 0;
+        }
+
+        unsigned inIdxBegin;
+        unsigned inIdxEnd;
+
+        if (repartitionCount == 0)
+        {
+            inIdxBegin = index.getValue();
+            if (indexFromEnd.getValue())
+            {
+                inIdxBegin = in.size() - 1 - inIdxBegin;
+            }
+            inIdxEnd = inIdxBegin + 1;
+        }
+        else
+        {
+            inIdxBegin = 0;
+            inIdxEnd = in.size();
+        }
+
+        unsigned outputPerInput;
+        if (repartitionCount == 0)
+        {
+            outputPerInput = pts.size();
+        }
+        else
+        {
+            outputPerInput = pointsPerFrame.getValue()[0];
+        }
+
+		// matrix chunk
+		typedef typename TOut::Real real;
+		typedef Eigen::Matrix<real, NOut, NIn> mat36;
+		mat36 block;
+		
+		block.template leftCols<3>().setIdentity();
+		
+		// col indices are strictly increasing
+		for (unsigned inIdx = inIdxBegin, outIdx = 0; inIdx < inIdxEnd; ++inIdx) {
+            if (repartitionCount > 1) {
+				
+				// max: wtf ? we just set outputPerInput earlier 
+                outputPerInput = pointsPerFrame.getValue()[inIdx];
+            }
+
+            for (unsigned iOutput = 0;
+                 iOutput < outputPerInput; 
+                 ++iOutput, ++outIdx) {
+				
+				const Coord& v = rotatedPoints[outIdx];
+
+				real x = v[0];
+				real y = v[1];
+				real z = v[2];
+				
+				// note: this is -hat(v)
+				block.template rightCols<3>() <<
+					
+					0,   z,  -y,
+					-z,  0,   x,
+					y,  -x,   0;
+				
+				// block is set, now insert it in sparse matrix
+				for(unsigned i = 0; i < NOut; ++i){
+					unsigned row = outIdx * NOut + i;
+					
+					J.startVec( row );
+					
+					// TODO optimize identity off-diagonal and
+					// skew-symmetric diagonal
+					for(unsigned j = 0; j < NIn; ++j) {
+						unsigned col = inIdx * NIn + j;
+
+						if( block(i, j) != 0 ) {
+							J.insertBack(row, col) = block(i, j);
+						}
+
+					}
+				}
+            }
+        }
+
+		J.finalize();		
+	}
+												
     return &eigenJacobians;
 }
 #endif
