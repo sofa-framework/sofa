@@ -12,7 +12,7 @@ namespace sofa {
 namespace component {
 namespace linearsolver {
 
-class BaseBenchmark; ///< forward declaration
+// class BaseBenchmark; ///< forward declaration
 			
 
 // Solver for an AssembledSystem (could be non-linear in case of
@@ -46,7 +46,8 @@ class SOFA_Compliant_API KKTSolver : public core::behavior::BaseLinearSolver {
 	                   const system_type& system,
                        const vec& rhs) const = 0;
 
-
+	// TODO WTF is this doing here ? this should go in a dedicated
+	// derived class.
     virtual void solveWithPreconditioner(vec& x,
                        const system_type& system,
                        const vec& rhs) const
@@ -55,15 +56,21 @@ class SOFA_Compliant_API KKTSolver : public core::behavior::BaseLinearSolver {
         solve( x, system, rhs );
     }
 
-    // return true if the solver can only handle equality constraints (in opposition with LCP for instance)
+    // return true if the solver can only handle equality constraints
+    // (in opposition with LCP for instance)
+	// TODO: who uses this anyways ?
     virtual bool isLinear() const { return true; }
 
-    /// By default, it does nothing, but for some LCP solvers, it is useful to distinguish between dynamics vs correction passes (not to perform the same constraint projection for instance)
-    virtual void setCorrectionPass( bool ){}
-
-
-
-    Data<std::string> benchmarkPath;
+	// performs a correction pass, by default the same as dynamics
+	// unless derived classes know better (e.g. only correct normal
+	// constraints for friction)
+	virtual void correct(vec& x,
+						 const system_type& system,
+						 const vec& rhs) const {
+		solve(x, system, rhs);
+	}
+	
+		// Data<std::string> benchmarkPath;
 
 
 protected:
@@ -72,7 +79,7 @@ protected:
     preconditioner_type* _preconditioner;
 
 
-    BaseBenchmark* _benchmark; ///< utility callback generating benchmark files
+    // BaseBenchmark* _benchmark; ///< utility callback generating benchmark files
 
 };
 

@@ -17,25 +17,8 @@ IterativeSolver::IterativeSolver()
 	                      "iteration bound")),
 	  relative(initData(&relative, false, "relative", "use relative precision") ),
 
-	  cv_record(initData(&cv_record, false, "cv_record", "record convergence during solve")),
-	  cv_data(initData(&cv_data, "cv_data", "recorded convergence values, if any (read-only)")) {
-
-
-}
-
-
-void IterativeSolver::cv_clear() {
-	if( cv_record.getValue() ) {
-		edit(cv_data)->clear();
-		edit(cv_data)->reserve( iterations.getValue() );
-	}
-}
-
-
-void IterativeSolver::cv_push(SReal value) {
-	if( cv_record.getValue() ) {
-		edit(cv_data)->push_back( value );
-	}
+	  bench(BaseLink::InitLink<IterativeSolver>(this, "bench", "benchmark component to record convergence")) {
+	  
 }
 
 

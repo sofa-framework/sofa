@@ -514,8 +514,7 @@ using namespace core::behavior;
                 x = vec::Zero( sys.size() );
                 rhs_correction(rhs, sys);
 
-                kkt->setCorrectionPass( true ); // to correctly perform projectors (only unilateral but no friction for example)
-                kkt->solve(x, sys, rhs);
+                kkt->correct(x, sys, rhs);
 
                 if( debug.getValue() ) {
                     std::cerr << "correction rhs:" << std::endl
@@ -537,7 +536,6 @@ using namespace core::behavior;
                 rhs_dynamics(rhs, sys, current.head(sys.m), b );
                 vop.v_free( b.id(), false, true );
 
-                kkt->setCorrectionPass( false );
                 kkt->solveWithPreconditioner(x, sys, rhs);
 				
                 if( debug.getValue() ) {

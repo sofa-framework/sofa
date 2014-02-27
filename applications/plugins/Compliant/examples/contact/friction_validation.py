@@ -41,6 +41,8 @@ def createScene(node):
 
     ode = node.getObject('ode')
     ode.stabilization = True
+
+    bench = node.createObject('Benchmark')
     
     num = node.createObject('SequentialSolver',
                             name = 'num',

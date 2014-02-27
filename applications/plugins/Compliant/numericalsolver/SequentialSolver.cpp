@@ -6,7 +6,8 @@
 
 #include "../utils/scoped.h"
 #include "../utils/nan.h"
-#include "../utils/bench.h"
+
+// #include "../utils/bench.h"
 
 namespace sofa {
 namespace component {
@@ -21,7 +22,6 @@ int SequentialSolverClass = core::RegisterObject("Sequential Impulses solver").a
 SequentialSolver::SequentialSolver() 
 	: omega(initData(&omega, (SReal)1.0, "omega", "SOR parameter:  omega < 1 : better, slower convergence, omega = 1 : vanilla gauss-seidel, 2 > omega > 1 : faster convergence, ok for SPD systems, omega > 2 : will probably explode" ))
     , projectH( initData(&projectH, false, "projectH", "Replace H with P^T.H.P to account for projective constraints"))
-    , _correctionPass( false )
 {
 	
 }
@@ -124,7 +124,7 @@ void SequentialSolver::factor(const system_type& system) {
  
 	// assert( diagonal_dominant(system) );
 
-    _benchmark->beginFactor( this->getContext()->getTime() );
+    // _benchmark->beginFactor( this->getContext()->getTime() );
 
 	// response matrix
 	assert( response );
@@ -193,7 +193,7 @@ void SequentialSolver::factor(const system_type& system) {
 		factor_block( blocks_inv[i], schur );
 	}
 
-    _benchmark->endFactor();
+    // _benchmark->endFactor();
 }
 
 // TODO make sure this does not cause any alloc
@@ -232,7 +232,8 @@ SReal SequentialSolver::step(vec& lambda,
                              vec& net, 
                              const system_type& sys,
                              const vec& rhs,
-                             vec& error, vec& delta ) const {
+                             vec& error, vec& delta,
+							 bool correct ) const {
 	// TODO size asserts
 	
 	// error norm2 estimate (seems conservative and much cheaper to
@@ -268,7 +269,7 @@ SReal SequentialSolver::step(vec& lambda,
 		
 		// project if needed
 		if( b.projector ) {
-            b.projector->project( lambda_chunk.data(), lambda_chunk.size(), _correctionPass );
+            b.projector->project( lambda_chunk.data(), lambda_chunk.size(), correct );
 			assert( !has_nan(lambda_chunk.eval()) );
 		}
 			
@@ -292,13 +293,30 @@ SReal SequentialSolver::step(vec& lambda,
 	return estimate;
 }
 
-
 void SequentialSolver::solve(vec& res,
-                             const system_type& sys,
-                             const vec& rhs) const {
+							 const system_type& sys,
+							 const vec& rhs) const {
+	solve_impl(res, sys, rhs, false );
+}
+
+
+void SequentialSolver::correct(vec& res,
+							 const system_type& sys,
+							 const vec& rhs) const {
+	solve_impl(res, sys, rhs, true );
+}
+
+
+void SequentialSolver::solve_impl(vec& res,
+								  const system_type& sys,
+								  const vec& rhs,
+								  bool correct) const {
 	assert( response );
 
-    _benchmark->beginSolve( true );
+	// reset bench if needed
+	if( this->bench ) bench->clear();
+
+    // _benchmark->beginSolve( true );
 
 	// free velocity
 	vec tmp( sys.m );
@@ -306,7 +324,7 @@ void SequentialSolver::solve(vec& res,
 	response->solve(tmp, sys.P.selfadjointView<Eigen::Upper>() * rhs.head( sys.m ) );
 	res.head(sys.m).noalias() = sys.P.selfadjointView<Eigen::Upper>() * tmp;
 
-    _benchmark->setLCP( &sys, response.get(), res.head(sys.m), rhs.tail(sys.n) );
+    // _benchmark->setLCP( &sys, response.get(), res.head(sys.m), rhs.tail(sys.n) );
 	
 	// we're done lol
 	if( !sys.n ) return;
@@ -315,7 +333,7 @@ void SequentialSolver::solve(vec& res,
 	// lagrange multipliers TODO reuse res.tail( sys.n ) ?
 	vec lambda = res.tail(sys.n); 
 
-    (*_benchmark)(lambda); // output initial error
+    // (*_benchmark)(lambda); // output initial error
 
 	// net constraint velocity correction
 	vec net = mapping_response * lambda;
@@ -334,18 +352,14 @@ void SequentialSolver::solve(vec& res,
 
 	real epsilon2 = epsilon * epsilon;
 
-//	vec primal;
-	
 	// outer loop
 	unsigned k = 0, max = iterations.getValue();
 	for(k = 0; k < max; ++k) {
 
-        real estimate = step( lambda, net, sys, constant, error, delta );
+        real estimate = step( lambda, net, sys, constant, error, delta, correct );
 
-        (*_benchmark)(lambda);
+		if( this->bench ) this->bench->lcp(sys, constant, *response, lambda);
 
-		// primal = sys.J * net - constant;
-		
 		if( estimate <= epsilon2 ) break;
 	}
 	
@@ -354,6 +368,7 @@ void SequentialSolver::solve(vec& res,
 	res.head( sys.m ) += net;
 	res.tail( sys.n ) = lambda;
 	
+
 }
 
 }
