@@ -25,7 +25,7 @@ class SOFA_Compliant_API Benchmark : public core::objectmodel::BaseObject {
 	Data<SReal> factor, solve;
 	
 	// convergence
-	Data< vector<SReal> > dual, primal, complementarity;
+	Data< vector<SReal> > dual, primal, complementarity, duration;
 	
 	typedef SReal real;
 	typedef Eigen::Matrix<real, Eigen::Dynamic, 1> vec;
@@ -34,31 +34,37 @@ class SOFA_Compliant_API Benchmark : public core::objectmodel::BaseObject {
 
 	Benchmark();
 
+	// clear benchmark data. call this at the beginning of solve.
 	void clear();
+	
+	// 
 	void debug() const;
 
-    //  return elapsed microseconds since last call
+    // restart timer and return elapsed microseconds since last call
 	unsigned restart();
 
 	// microseconds elapsed since last restart call
 	unsigned elapsed() const;
 
-	// push the results for the last iteration, for an LCP solver
+	// push the results for the last iteration, including elapsed
+	// time, for an LCP solver
 	void lcp(const AssembledSystem& system, 
 			 const vec& rhs,	// the lcp rhs: b - J Minv f
 			 const Response& response, 
 			 const vec& dual); 
 	
-	// push the results for the last iteration, for a QP solver
+	// push the results for the last iteration, including elapsed
+	// time, for a QP solver
 	void qp(const AssembledSystem& system, 
 			const vec& rhs,
 			const vec& x);
 
-	// convenience timing tool
+	// convenience scoped timing tool
 	struct scoped_timer {
 		Benchmark* bench;
 		Data<SReal> Benchmark::* member;
 
+		// write elapsed time to member pointer on destruction
 		scoped_timer(Benchmark* bench,
 					 Data<SReal> Benchmark::* member)
 			: bench(bench),

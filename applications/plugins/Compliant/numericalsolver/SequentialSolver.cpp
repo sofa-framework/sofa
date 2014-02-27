@@ -284,8 +284,8 @@ SReal SequentialSolver::step(vec& lambda,
 
 		// incrementally update net forces, we only do fresh
 		// computation after the loop to keep perfs decent
-		// net.noalias() = net + mapping_response.middleCols(b.offset, b.size) * delta_chunk;
-		net.noalias() = mapping_response * lambda;
+		net.noalias() = net + mapping_response.middleCols(b.offset, b.size) * delta_chunk;
+		// net.noalias() = mapping_response * lambda;
 
 		// fix net to avoid error accumulations ?
 	}
@@ -325,7 +325,10 @@ void SequentialSolver::solve_impl(vec& res,
 	assert( response );
 
 	// reset bench if needed
-	if( this->bench ) bench->clear();
+	if( this->bench ) {
+		bench->clear();
+		bench->restart();
+	}
 
     // _benchmark->beginSolve( true );
 
