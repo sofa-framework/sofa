@@ -20,6 +20,7 @@ shared = Shared()
 dir = Tools.path( __file__ )
 
 def createScene(node):
+
     # controller
     node.createObject('PythonScriptController', 
                       filename = __file__,

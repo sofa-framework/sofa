@@ -46,8 +46,7 @@ class SOFA_Compliant_API Benchmark : public core::objectmodel::BaseObject {
 	// push the results for the last iteration, for a QP solver
 	void qp(const AssembledSystem& system, 
 			const vec& rhs,
-			const vec& primal, 
-			const vec& dual);
+			const vec& x);
 
   protected:
 

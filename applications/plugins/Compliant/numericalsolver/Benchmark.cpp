@@ -54,12 +54,20 @@ void Benchmark::lcp(const AssembledSystem& system,
 					const vec& rhs,
 					const Response& response, 
 					const vec& dual) {
-
 	vec v(system.m);
 	response.solve( v, system.J.transpose() * dual );
 	
 	push( system.J * v - rhs, dual );
 }  
+
+
+void Benchmark::qp(const AssembledSystem& system, 
+				   const vec& rhs,
+				   const vec& x) {
+	// TODO optimality error
+	push( system.J * x.head(system.m) - rhs.tail(system.n), x.tail(system.n) );
+}  
+
 
 
 void Benchmark::debug() const {
