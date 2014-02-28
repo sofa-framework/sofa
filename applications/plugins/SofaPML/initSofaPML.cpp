@@ -16,21 +16,61 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Modules                               *
+*                               SOFA :: Plugins                               *
 *                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_BUILD_FILEMANAGER_SOFAPML_H
-#define SOFA_BUILD_FILEMANAGER_SOFAPML_H
+#include "initSofaPML.h"
 
-#include <sofa/helper/system/config.h>
+namespace sofa
+{
 
-#ifdef SOFA_BUILD_FILEMANAGER_PML
-#  define SOFA_BUILD_FILEMANAGER_PML_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_BUILD_FILEMANAGER_PML_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+namespace component
+{
 
-#endif
+void initExternalModule()
+{
+    static bool first = true;
+    if (first)
+    {
+        first = false;        
+    }
+}
+
+const char* getModuleName()
+{
+    return "SofaPML";
+}
+
+const char* getModuleVersion()
+{
+    return "";
+}
+
+const char* getModuleLicense()
+{
+    return "";
+}
+
+
+const char* getModuleDescription()
+{
+    return "";
+}
+
+const char* getModuleComponentList()
+{
+    return "";
+}
+
+
+
+}
+
+}
+
+/// Use the SOFA_LINK_CLASS macro for each class, to enable linking on all platforms
+//SOFA_LINK_CLASS(MyClass)
+

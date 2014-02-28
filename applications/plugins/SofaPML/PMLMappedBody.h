@@ -34,24 +34,18 @@
 
 //-------------------------------------------------------------------------
 //						--   Description   --
-//	LMLConstraint imports from a LML file (see LMLReader class) imposed displacements,
-//  including translations and fixed points, and traduces it to sofa constraints.
-//  It inherits from Constraint sofa core class.
+//	PMLMappedModel references points wich are mapped on an other mechanical model
 //-------------------------------------------------------------------------
 
-#ifndef LMLCONSTRAINT_H
-#define LMLCONSTRAINT_H
 
+#ifndef PMLMAPPEDBODY_H
+#define PMLMAPPEDBODY_H
 
-#include "sofa/core/behavior/Constraint.h"
-#include "sofa/core/behavior/MechanicalState.h"
-#include "sofa/core/VisualModel.h"
-#include "sofapml.h"
+#include "PMLBody.h"
+#include "initSofaPML.h"
 
-#include <vector>
+#include "sofa/component/container/MechanicalObject.h"
 #include <map>
-
-#include <Loads.h>
 
 
 namespace sofa
@@ -62,72 +56,46 @@ namespace filemanager
 
 namespace pml
 {
+using namespace std;
+using namespace sofa::component::container;
 
-//using namespace sofa::core;
-//using namespace sofa::core::behavior;
-//using namespace std;
-
-template<class DataTypes>
-class LMLConstraint : public sofa::core::behavior::Constraint<DataTypes> //, public sofa::core::VisualModel
+class SOFA_BUILD_FILEMANAGER_PML_API PMLMappedBody: public PMLBody
 {
 public :
-    ///template types
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::VecCoord::iterator VecCoordIterator;
-    typedef typename DataTypes::VecDeriv::iterator VecDerivIterator;
-    typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::Deriv Deriv;
 
-    ///constructor
-    LMLConstraint(Loads* loadsList, const std::map<unsigned int, unsigned int> &atomIndexToDOFIndex, sofa::core::behavior::MechanicalState<DataTypes> *mm);
+    PMLMappedBody(StructuralComponent* body, PMLBody* fromBody, GNode * parent);
 
-    ~LMLConstraint() { /*delete loads;*/}
+    ~PMLMappedBody();
 
-    /// return the targets list
-    std::vector<unsigned int> getTargets() {return targets;}
+    string isTypeOf() { return "mapped"; }
 
-    ///fix or translate a point
-    LMLConstraint<DataTypes>* addConstraint(unsigned int index, Deriv trans);
-    LMLConstraint<DataTypes>* removeConstraint(int index);
+    bool FusionBody(PMLBody*) {return false;}
 
-    /// Constraint inherits
-    void projectResponse(VecDeriv& dx); ///< project dx to constrained space
-    virtual void projectVelocity(VecDeriv& ) {} ///< project dx to constrained space (dx models a velocity)
-    virtual void projectPosition(VecCoord& x); ///< project x to constrained space (x models a position)
+    Vector3 getDOF(unsigned int );
 
-    sofa::core::objectmodel::BaseClass* getClass() const { return NULL; }
+    GNode::SPtr getPointsNode() {return parentNode;}
 
-    /// -- VisualModel interface
-    void draw();
-    void initTextures() { }
-    void update() { }
+private :
 
-private:
+    /// creation of the scene graph
+    /// only a mapping and mechanical model are created
+    void createForceField() {}
+    void createMechanicalState(StructuralComponent* );
+    void createTopology(StructuralComponent* ) {}
+    void createMass(StructuralComponent* ) {}
+    void createVisualModel(StructuralComponent* ) {}
+    void createCollisionModel() {}
 
-    /// fix a point on the axe specified (0=x, 1=y, 2=z)
-    void fixDOF(int index, int axe);
+    //structure
+    PMLBody * bodyRef;
+    BaseMapping::SPtr mapping;
 
-    sofa::core::behavior::MechanicalState<DataTypes> * mmodel;
-    /// the set of vertex targets
-    std::vector<unsigned int> targets;
-    /// list of translations
-    VecDeriv translations;
-    /// list of fixed directions
-    VecDeriv directionsNULLs;
-    VecDeriv initPos;
 
-    /// the lml loads
-    Loads * loads;
-    ///link between PML object indexes and sofa Dofs Indexes
-    std::map<unsigned int, unsigned int> atomToDOFIndexes;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_FILEMANAGER_PML)
-extern template class SOFA_BUILD_FILEMANAGER_PML_API LMLConstraint<Vec3Types>;
+}
+}
+}
+
 #endif
 
-}
-}
-}
-#endif //LMLCONSTRAINT_H

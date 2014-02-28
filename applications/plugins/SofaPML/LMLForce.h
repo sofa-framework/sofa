@@ -32,14 +32,24 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "PMLInteractionForceField.h"
+//-------------------------------------------------------------------------
+//						--   Description   --
+//	LMLForce imports from a LML file (see LMLReader class) the forces
+//  applied on DOFs, and traduces it to sofa Forcefield.
+//  It inherits from ForceField sofa core class.
+//-------------------------------------------------------------------------
 
-#include "sofa/component/container/MechanicalObject.h"
-#include "sofa/component/forcefield/StiffSpringForceField.h"
+#ifndef LMLFORCE_H
+#define LMLFORCE_H
 
-#include <PhysicalModel.h>
-#include <MultiComponent.h>
-#include <CellProperties.h>
+#include <Loads.h>
+
+#include <sofa/core/behavior/ForceField.h>
+#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/visual/VisualModel.h>
+#include "initSofaPML.h"
+
+#include <map>
 
 
 namespace sofa
@@ -51,61 +61,68 @@ namespace filemanager
 namespace pml
 {
 
-using namespace sofa::component::forcefield;
-PMLInteractionForceField::PMLInteractionForceField(StructuralComponent* body, PMLBody* b1, PMLBody* b2, GNode * parent)
+using namespace sofa::core;
+using namespace sofa::core::behavior;
+using namespace std;
+
+template<class DataTypes>
+class LMLForce : public ForceField<DataTypes> //, public VisualModel
 {
-    parentNode = parent;
+public :
+    ///template types
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::VecDeriv VecDeriv;
+    typedef typename DataTypes::VecCoord::iterator VecCoordIterator;
+    typedef typename DataTypes::VecDeriv::iterator VecDerivIterator;
+    typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::Deriv Deriv;
 
-    //get the parameters
-    collisionsON = false;
-    name = body->getProperties()->getName();
+    ///constructors
+    LMLForce(MechanicalState<DataTypes> *mm = NULL)
+        : ForceField<DataTypes>(mm)
+    {}
+    LMLForce(Loads* loadsList, const map<unsigned int, unsigned int> &atomIndexToDOFIndex, MechanicalState<DataTypes> *mm);
 
-    body1 = b1;
-    body2 = b2;
+    ~LMLForce() { /*delete loads;*/}
 
-    ks = body->getProperties()->getDouble("stiffness");
-    kd = body->getProperties()->getDouble("damping");
+    /// return targets list
+    std::vector<unsigned int> getTargets() {return targets;}
 
-    //create the structure
-    createForceField();
-    createSprings(body);
+    ///add a new target (dof index)
+    void addTarget(unsigned int i) { targets.push_back(i); forces.push_back(Deriv() ); }
+
+    /// -- ForceField Inherits
+    virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
+    virtual void addDForce (VecDeriv& , const VecDeriv& ) {}
+    virtual double getPotentialEnergy(const VecCoord& ) const {return 0;}
+
+    sofa::core::objectmodel::BaseClass* getClass() const { return NULL; }
+
+    /// -- VisualModel interface
+    void draw();
+    void initTextures() { }
+    void update() { }
+
+protected:
+
+    MechanicalState<DataTypes> * mmodel;
+    /// list of forces targets
+    std::vector<unsigned int> targets;
+    /// list of force directions
+    VecDeriv forces;
+    /// LML loads
+    Loads* loads;
+    /// link between PML object indexes and sofa dofs indexs
+    map<unsigned int, unsigned int> atomToDOFIndexes;
+
+};
+
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_FILEMANAGER_PML)
+extern template class SOFA_BUILD_FILEMANAGER_PML_API LMLForce<Vec3Types>;
+#endif
+
 }
-
-PMLInteractionForceField::~PMLInteractionForceField()
-{
-    if(mmodel) delete mmodel;
-    if (Sforcefield) delete Sforcefield;
-}
-
-
-//create a TetrahedronFEMForceField
-void PMLInteractionForceField::createForceField()
-{
-    Sforcefield = new StiffSpringForceField<Vec3Types>((MechanicalObject<Vec3Types>*)body1->getMechanicalState(), (MechanicalObject<Vec3Types>*)body2->getMechanicalState());
-    parentNode->addObject(Sforcefield);
-}
-
-
-void PMLInteractionForceField::createSprings(StructuralComponent * body)
-{
-    Vec3Types::VecCoord& P1 = *((MechanicalObject<Vec3Types>*)body1->getMechanicalState())->getX();
-    Vec3Types::VecCoord& P2 = *((MechanicalObject<Vec3Types>*)body2->getMechanicalState())->getX();
-    if (kd==0.0)kd=5.0;
-    if (ks==0.0)ks=500.0;
-    for (unsigned int i=0; i<body->getNumberOfCells() ; i++)
-    {
-        Cell * cell = body->getCell(i);
-        if (cell->getType() == StructureProperties::LINE)
-        {
-            unsigned int dof1 = body1->AtomsToDOFsIndexes[cell->getStructure(0)->getIndex()];
-            unsigned int dof2 = body2->AtomsToDOFsIndexes[cell->getStructure(1)->getIndex()];
-            Vec3Types::Deriv gap = P1[dof1] - P2[dof2];
-            Sforcefield->addSpring(dof1, dof2, ks, kd, sqrt(dot(gap,gap)));
-        }
-    }
-}
-
-
 }
 }
-}
+#endif
+

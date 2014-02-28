@@ -32,23 +32,30 @@
  *                                                                         *
  ***************************************************************************/
 
-/**-------------------------------------------------------------------------
-*						--   Description   --
-*	PMLReader is used to import a PML document to the sofa structure.
-*  It builds the scenegraph with DOFs, mechanical models, and Forcefields,
-*  reading a PML file, and using PMLRigid and PML ForceFields classes.
--------------------------------------------------------------------------**/
-
-#ifndef PMLREADER_H
-#define PMLREADER_H
+//-------------------------------------------------------------------------
+//						--   Description   --
+//	PMLFemForceField translate an FEM object from Physical Model structure
+//  to sofa structure, using TetrahedronFEMForcefield.
+//  It inherits from PMLBody abstract class.
+//-------------------------------------------------------------------------
 
 
-#include <PhysicalModel.h>
-#include <StructuralComponent.h>
+#ifndef PMLFEMFORCEFIELD_H
+#define PMLFEMFORCEFIELD_H
+
 #include "PMLBody.h"
-#include "sofapml.h"
 
-#include <sofa/simulation/tree/GNode.h>
+#include <StructuralComponent.h>
+#include "sofa/core/topology/BaseMeshTopology.h"
+#include "sofa/component/collision/TriangleModel.h"
+//#include "sofa/component/collision/LineModel.h"
+//#include "sofa/component/collision/PointModel.h"
+#include "initSofaPML.h"
+
+
+
+#include <map>
+
 
 namespace sofa
 {
@@ -58,43 +65,63 @@ namespace filemanager
 
 namespace pml
 {
+using namespace sofa::component::container;
+using namespace sofa::core::topology;
+using namespace sofa::component::collision;
+using namespace std;
 
-using namespace sofa::simulation::tree;
-
-class SOFA_BUILD_FILEMANAGER_PML_API PMLReader
+class SOFA_BUILD_FILEMANAGER_PML_API PMLFemForceField: public PMLBody
 {
 public :
-    PMLReader() {pm = NULL;}
 
-    ///build all the scene graph under the GNode root, from the pml filename
-    void BuildStructure(const char* filename, GNode* root);
-    ///build all the scene graph under the GNode root, from the a specified physicalmodel
-    void BuildStructure(PhysicalModel * model, GNode* root);
-    void BuildStructure(GNode* root);
+    PMLFemForceField(StructuralComponent* body, GNode * parent);
 
-    ///create a body (all object structure) from a PML StructuralComponent
-    PMLBody* createBody(StructuralComponent* SC, GNode * root);
+    ~PMLFemForceField();
 
-    ///Merge the bodies of same type which share any DOFS
-    void processFusions(GNode * root);
+    string isTypeOf() { return "FEM"; }
 
-    ///return a point position giving its pml's index
-    Vector3 getAtomPos(unsigned int atomindex);
+    ///accessors
+    TriangleModel::SPtr getTriangleModel() { return tmodel; }
+    //LineModel * getLineModel() { return lmodel; }
+    //PointModel * getPointModel() { return pmodel; }
 
-    ///save the structure under a pml file
-    void saveAsPML(const char * filename);
+    ///merge a body with current object
+    bool FusionBody(PMLBody*);
 
-    ///update all pml points positions
-    void updatePML();
+    Vector3 getDOF(unsigned int index);
 
-    ///the list of the bodies created
-    std::vector<PMLBody*> bodiesList;
+    GNode::SPtr getPointsNode() {return parentNode;}
 
 private :
 
-    ///the physical model from which strucutre is created
-    PhysicalModel * pm;
+    /// creation of the scene graph
+    void createMechanicalState(StructuralComponent* body);
+    void createTopology(StructuralComponent* body);
+    void createMass(StructuralComponent* body);
+    void createVisualModel(StructuralComponent* body);
+    void createForceField();
+    void createCollisionModel();
 
+    //initialization of properties
+    void initMass(string m);
+    void initDensity(string m);
+
+    //tesselation of hexahedron to 5 tetrahedrons
+    BaseMeshTopology::Tetra * Tesselate(Cell* pCell);
+    
+    //structure
+    TriangleModel::SPtr tmodel;
+    //LineModel * lmodel;
+    //PointModel * pmodel;
+
+    //members for the mass (only one of the 2 vectors is filled)
+    std::vector<SReal> massList;
+    std::vector<SReal> density;
+
+    //members for FEM properties
+    SReal young;
+    SReal poisson;
+    std::string deformationType;
 
 };
 
@@ -102,5 +129,5 @@ private :
 }
 }
 
-#endif //PMLREADER_H
+#endif
 

@@ -45,7 +45,7 @@
 #include "sofa/defaulttype/Vec3Types.h"
 #include "sofa/defaulttype/RigidTypes.h"
 #include "sofa/core/objectmodel/BaseObject.h"
-#include "sofa/component/constraint/FixedConstraint.h"
+#include "sofa/component/projectiveconstraintset/FixedConstraint.h"
 
 namespace sofa
 {
@@ -58,7 +58,7 @@ namespace pml
 
 using namespace sofa::defaulttype;
 using namespace sofa::core::objectmodel;
-using namespace sofa::component::constraint;
+using namespace sofa::component::projectiveconstraintset;
 
 LMLReader::LMLReader(char* filename)
 {
@@ -105,7 +105,7 @@ void LMLReader::BuildStructure(PMLReader * pmlreader)
     while(it!=pmlreader->bodiesList.end())
     {
         //find forces and constraints in the loads list
-        LMLConstraint<Vec3Types> *constraints = new LMLConstraint<Vec3Types>(loadsList, (*it)->AtomsToDOFsIndexes, (MechanicalState<Vec3Types>*)(*it)->getMechanicalState());
+        LMLConstraint<Vec3Types> *constraints = new LMLConstraint<Vec3Types>(loadsList, (*it)->AtomsToDOFsIndexes, (MechanicalState<Vec3Types>*)(*it)->getMechanicalState().get());
         std::cout << "Looking for a constraint" << std::endl;
         if (constraints->getTargets().size() >0)
         {
@@ -113,7 +113,7 @@ void LMLReader::BuildStructure(PMLReader * pmlreader)
             if ( (*it)->isTypeOf() == "rigid")
             {
                 delete constraints;
-                FixedConstraint<RigidTypes> * fixedConstraint = new FixedConstraint<RigidTypes>;
+                FixedConstraint<RigidTypes>::SPtr fixedConstraint = New<FixedConstraint<RigidTypes> >();
                 //fixedConstraint->addConstraint(0);
                 fixedConstraint->setName("loads");
                 (*it)->parentNode->addObject(fixedConstraint);
@@ -125,7 +125,7 @@ void LMLReader::BuildStructure(PMLReader * pmlreader)
         else
             delete constraints;
 
-        LMLForce<Vec3Types> *forces = new LMLForce<Vec3Types>(loadsList, (*it)->AtomsToDOFsIndexes, (MechanicalState<Vec3Types>*)(*it)->getMechanicalState());
+        LMLForce<Vec3Types> *forces = new LMLForce<Vec3Types>(loadsList, (*it)->AtomsToDOFsIndexes, (MechanicalState<Vec3Types>*)(*it)->getMechanicalState().get());
         if (forces->getTargets().size() >0)
             (*it)->getPointsNode()->addObject(forces);
         else
@@ -143,22 +143,22 @@ void LMLReader::updateStructure(Loads * loads, PMLReader * pmlreader)
 
     while (it != pmlreader->bodiesList.end() )
     {
-        pointsNode = (*it)->getPointsNode();
+        pointsNode = (*it)->getPointsNode().get();
 
-        //update constraints
-        for (unsigned i=0 ; i<pointsNode->constraint.size() ; i++)
-        {
-            if (pointsNode->constraint[i]->getName() == "loads")
-                pointsNode->removeObject ( pointsNode->constraint[i] );
-            //delete ?
-        }
-        LMLConstraint<Vec3Types> *constraints = new LMLConstraint<Vec3Types>(loadsList, (*it)->AtomsToDOFsIndexes, (MechanicalState<Vec3Types>*)(*it)->getMechanicalState());
+        // //update constraints
+        // for (unsigned i=0 ; i<pointsNode->constraint.size() ; i++)
+        // {
+        //     if (pointsNode->constraint[i]->getName() == "loads")
+        //         pointsNode->removeObject ( pointsNode->constraint[i] );
+        //     //delete ?
+        // }
+        LMLConstraint<Vec3Types> *constraints = new LMLConstraint<Vec3Types>(loadsList, (*it)->AtomsToDOFsIndexes, (MechanicalState<Vec3Types>*)(*it)->getMechanicalState().get());
         if (constraints->getTargets().size() >0)
         {
             if( (*it)->isTypeOf() == "rigid")
             {
                 delete constraints;
-                FixedConstraint<RigidTypes> * fixedConstraint = new FixedConstraint<RigidTypes>;
+                FixedConstraint<RigidTypes>::SPtr fixedConstraint = New<FixedConstraint<RigidTypes> >();
                 //fixedConstraint->addConstraint(0);
                 (*it)->parentNode->addObject(fixedConstraint);
                 fixedConstraint->setName("loads");
@@ -177,7 +177,7 @@ void LMLReader::updateStructure(Loads * loads, PMLReader * pmlreader)
                 pointsNode->removeObject ( pointsNode->forceField[i] );
             //delete ?
         }
-        LMLForce<Vec3Types> *forces = new LMLForce<Vec3Types>(loadsList, (*it)->AtomsToDOFsIndexes, (MechanicalState<Vec3Types>*)(*it)->getMechanicalState());
+        LMLForce<Vec3Types> *forces = new LMLForce<Vec3Types>(loadsList, (*it)->AtomsToDOFsIndexes, (MechanicalState<Vec3Types>*)(*it)->getMechanicalState().get());
         if (forces->getTargets().size() >0)
             (*it)->getPointsNode()->addObject(forces);
         else

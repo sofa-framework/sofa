@@ -34,32 +34,21 @@
 
 //-------------------------------------------------------------------------
 //						--   Description   --
-//	PMLBody is an abstract class representing an object and its structure,
-//  imported from a PML file, to create the sofa scene graph.
-//  it is inherited by PMLRigidBody and PML(ForcefieldName) classes.
+//	PMLInteractionForceField create an interaction Forcefield (stiffSprings)
+//  between 2 other pml Bodies. The sofa structure is translated from pml,
+//  specifying the 2 bodies and the list of springs (LINES)
+//  It inherits from PMLBody abstract class.
 //-------------------------------------------------------------------------
 
-#ifndef PMLBODY_H
-#define PMLBODY_H
 
-#include <StructuralComponent.h>
+#ifndef PMLINTERACTIONFORCEFIELD_H
+#define PMLINTERACTIONFORCEFIELD_H
 
-#include "sofa/core/behavior/BaseMechanicalState.h"
-#include "sofa/core/BaseMapping.h"
-#include "sofa/core/topology/Topology.h"
-#include "sofa/core/behavior/BaseMass.h"
-#include "sofa/core/behavior/ForceField.h"
-#include "sofa/component/visualmodel/OglModel.h"
-#include "sofa/core/CollisionModel.h"
-#include <sofa/core/behavior/OdeSolver.h>
-#include <sofa/core/behavior/LinearSolver.h>
+#include "PMLBody.h"
+#include "sofa/component/interactionforcefield/StiffSpringForceField.h"
+#include "initSofaPML.h"
 
-#include "sofa/defaulttype/Vec3Types.h"
-#include <sofa/simulation/tree/GNode.h>
-#include "sofapml.h"
-
-//#include "sofa/component/StiffSpringForceField.h"
-
+#include "sofa/component/container/MechanicalObject.h"
 #include <map>
 
 
@@ -71,78 +60,53 @@ namespace filemanager
 
 namespace pml
 {
-using namespace sofa::core;
-using namespace sofa::core::behavior;
-using namespace sofa::core::topology;
-using namespace sofa::component::visualmodel;
-using namespace sofa::component;
-using namespace sofa::defaulttype;
-using namespace sofa::simulation::tree;
+
+using namespace sofa::component::interactionforcefield;
 using namespace std;
+using namespace sofa::component::container;
 
-
-class SOFA_BUILD_FILEMANAGER_PML_API PMLBody
+class SOFA_BUILD_FILEMANAGER_PML_API PMLInteractionForceField: public PMLBody
 {
 public :
 
-    PMLBody();
+    PMLInteractionForceField(StructuralComponent* body, PMLBody* b1, PMLBody* b2, GNode * parent);
 
-    virtual ~PMLBody();
+    ~PMLInteractionForceField();
 
-    string getName() {return name;}
+    string isTypeOf() { return "interaction"; }
 
-    virtual string isTypeOf() =0;
+    ///Inherit methods
+    GNode::SPtr getPointsNode() {return NULL;}
+    bool FusionBody(PMLBody*) {return false;}
+    Vector3 getDOF(unsigned int ) {return Vector3();}
 
-    /// accessors
-    BaseMechanicalState* getMechanicalState() { return mmodel; }
-    BaseMass* getMass() { return mass; }
-    Topology* getTopology() { return topology; }
-    ForceField<Vec3Types>* getForcefield() { return forcefield; }
+private :
 
-    bool hasCollisions() { return collisionsON; }
-    virtual GNode* getPointsNode()=0;
+    /// creation of the scene graph
+    /// only a forcefield is created
+    void createForceField();
+    void createMechanicalState(StructuralComponent* ) {}
+    void createTopology(StructuralComponent* ) {}
+    void createMass(StructuralComponent* ) {}
+    void createVisualModel(StructuralComponent* ) {}
+    void createCollisionModel() {}
 
-    ///merge 2 bodies
-    virtual bool FusionBody(PMLBody*)=0;
+    void createSprings(StructuralComponent * body);
 
-    virtual Vector3 getDOF(unsigned int index)=0;
 
-    //link between atoms indexes (physical model) and DOFs indexes (sofa)
-    map<unsigned int, unsigned int> AtomsToDOFsIndexes;
+    //structure
+    StiffSpringForceField<Vec3Types>::SPtr Sforcefield;
+    PMLBody * body1;
+    PMLBody * body2;
 
-    ///the node from which the body is created
-    GNode * parentNode;
-
-protected :
-
-    ///creation of the scene graph
-    virtual void createMechanicalState(StructuralComponent* body) =0;
-    virtual void createTopology(StructuralComponent* body) =0;
-    virtual void createMass(StructuralComponent* body) =0;
-    virtual void createVisualModel(StructuralComponent* body) =0;
-    virtual void createForceField() =0;
-    virtual void createCollisionModel() =0;
-    void createSolver();
-
-    //name of the object
-    string name;
-
-    ///is collisions detection activated
-    bool collisionsON;
-
-    ///objects structure
-    BaseMechanicalState * mmodel;
-    BaseMass * mass;
-    Topology * topology;
-    ForceField<Vec3Types> * forcefield;
-    OdeSolver * odeSolver;
-    LinearSolver * linearSolver;
-
-    std::string odeSolverName, linearSolverName;
+    //properties
+    SReal  ks;			// spring stiffness
+    SReal  kd;			// damping factor
 };
 
 }
 }
 }
 
-#endif //PMLBODY_H
+#endif
+

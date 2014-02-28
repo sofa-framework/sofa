@@ -34,26 +34,24 @@
 
 //-------------------------------------------------------------------------
 //						--   Description   --
-//	PMLStiffSpringForceField translate an FEM object from Physical Model structure
-//  to sofa structure, using StiffSpringForceField.
-//  It inherits from PMLBody abstract class.
+//	LMLConstraint imports from a LML file (see LMLReader class) imposed displacements,
+//  including translations and fixed points, and traduces it to sofa constraints.
+//  It inherits from Constraint sofa core class.
 //-------------------------------------------------------------------------
 
-
-#ifndef PMLSTIFFSPRINGFORCEFIELD_H
-#define PMLSTIFFSPRINGFORCEFIELD_H
-
-#include "PMLBody.h"
-#include "sofapml.h"
-
-#include <StructuralComponent.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/component/topology/MeshTopology.h>
-#include <sofa/component/collision/TriangleModel.h>
-#include <sofa/component/forcefield/MeshSpringForceField.h>
+#ifndef LMLCONSTRAINT_H
+#define LMLCONSTRAINT_H
 
 
+#include "sofa/core/behavior/Constraint.h"
+#include "sofa/core/behavior/MechanicalState.h"
+#include "sofa/core/visual/VisualModel.h"
+#include "initSofaPML.h"
+
+#include <vector>
 #include <map>
+
+#include <Loads.h>
 
 
 namespace sofa
@@ -65,72 +63,71 @@ namespace filemanager
 namespace pml
 {
 
-using namespace sofa::component::container;
-using namespace sofa::component::topology;
-using namespace sofa::component::collision;
-using namespace sofa::component::forcefield;
-using namespace std;
+//using namespace sofa::core;
+//using namespace sofa::core::behavior;
+//using namespace std;
 
-class SOFA_BUILD_FILEMANAGER_PML_API PMLStiffSpringForceField: public PMLBody
+template<class DataTypes>
+class LMLConstraint : public sofa::core::behavior::Constraint<DataTypes> //, public sofa::core::VisualModel
 {
 public :
+    ///template types
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::VecDeriv VecDeriv;
+    typedef typename DataTypes::VecCoord::iterator VecCoordIterator;
+    typedef typename DataTypes::VecDeriv::iterator VecDerivIterator;
+    typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::Deriv Deriv;
 
-    PMLStiffSpringForceField(StructuralComponent* body, GNode * parent);
+    ///constructor
+    LMLConstraint(Loads* loadsList, const std::map<unsigned int, unsigned int> &atomIndexToDOFIndex, sofa::core::behavior::MechanicalState<DataTypes> *mm);
 
-    ~PMLStiffSpringForceField();
+    ~LMLConstraint() { /*delete loads;*/}
 
-    string isTypeOf() { return "StiffSpring"; }
+    /// return the targets list
+    std::vector<unsigned int> getTargets() {return targets;}
 
-    ///accessors
-    TriangleModel * getTriangleModel() { return tmodel; }
-    //LineModel * getLineModel() { return lmodel; }
-    //PointModel * getPointModel() { return pmodel; }
+    ///fix or translate a point
+    LMLConstraint<DataTypes>* addConstraint(unsigned int index, Deriv trans);
+    LMLConstraint<DataTypes>* removeConstraint(int index);
 
-    ///merge a body with current object
-    bool FusionBody(PMLBody*);
+    /// Constraint inherits
+    void projectResponse(VecDeriv& dx); ///< project dx to constrained space
+    virtual void projectVelocity(VecDeriv& ) {} ///< project dx to constrained space (dx models a velocity)
+    virtual void projectPosition(VecCoord& x); ///< project x to constrained space (x models a position)
 
-    Vector3 getDOF(unsigned int index);
-    GNode* getPointsNode() {return parentNode;}
+    sofa::core::objectmodel::BaseClass* getClass() const { return NULL; }
 
-private :
+    /// -- VisualModel interface
+    void draw();
+    void initTextures() { }
+    void update() { }
 
-    /// creation of the scene graph
-    void createMechanicalState(StructuralComponent* body);
-    void createTopology(StructuralComponent* body);
-    void createMass(StructuralComponent* body);
-    void createVisualModel(StructuralComponent* body);
-    void createForceField();
-    void createCollisionModel();
+private:
 
-    // extract edges to a list of lines
-    BaseMeshTopology::Line * hexaToLines(Cell* pCell);
-    BaseMeshTopology::Line * tetraToLines(Cell* pCell);
-    BaseMeshTopology::Line * triangleToLines(Cell* pCell);
-    BaseMeshTopology::Line * quadToLines(Cell* pCell);
+    /// fix a point on the axe specified (0=x, 1=y, 2=z)
+    void fixDOF(int index, int axe);
 
-    //initialization of properties
-    void initMass(string m);
-    void initDensity(string m);
+    sofa::core::behavior::MechanicalState<DataTypes> * mmodel;
+    /// the set of vertex targets
+    std::vector<unsigned int> targets;
+    /// list of translations
+    VecDeriv translations;
+    /// list of fixed directions
+    VecDeriv directionsNULLs;
+    VecDeriv initPos;
 
-    //structure
-    MeshSpringForceField<Vec3Types> *Sforcefield;
-    TriangleModel * tmodel;
-    //LineModel * lmodel;
-    //PointModel * pmodel;
-
-    //members for the mass (only one of the 2 vectors is filled)
-    std::vector<SReal> massList;
-    std::vector<SReal> density;
-
-    //properties
-    SReal  ks;			// spring stiffness
-    SReal  kd;			// damping factor
-
+    /// the lml loads
+    Loads * loads;
+    ///link between PML object indexes and sofa Dofs Indexes
+    std::map<unsigned int, unsigned int> atomToDOFIndexes;
 };
 
-}
-}
-}
-
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_FILEMANAGER_PML)
+extern template class SOFA_BUILD_FILEMANAGER_PML_API LMLConstraint<Vec3Types>;
 #endif
 
+}
+}
+}
+#endif //LMLCONSTRAINT_H

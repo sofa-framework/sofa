@@ -34,27 +34,21 @@
 
 //-------------------------------------------------------------------------
 //						--   Description   --
-//	PMLRigidBody translate an indeformable object from Physical Model structure
-//  to sofa structure.
-//  It inherits from PMLBody abstract class.
+//	LMLReader is used to import a LML document to the sofa structure.
+//  It builds forcefields and constraints on the objects of the scene,
+//  reading a LML file, and using LMLConstraint and LMLForce classes.
 //-------------------------------------------------------------------------
 
+#ifndef LMLREADER_H
+#define LMLREADER_H
 
-#ifndef PMLRIGIDBODY_H
-#define PMLRIGIDBODY_H
-
-#include "PMLBody.h"
-#include "sofapml.h"
-
-#include <StructuralComponent.h>
-
-#include "sofa/component/container/MechanicalObject.h"
-#include "sofa/defaulttype/RigidTypes.h"
-#include "sofa/defaulttype/Quat.h"
-
-
+#include <Loads.h>
 #include <map>
 
+#include "sofa/core/behavior/MechanicalState.h"
+#include "sofa/defaulttype/Vec3Types.h"
+#include <sofa/simulation/tree/GNode.h>
+#include "initSofaPML.h"
 
 namespace sofa
 {
@@ -66,78 +60,33 @@ namespace pml
 {
 
 using namespace sofa::defaulttype;
-using namespace std;
-using namespace sofa::component::container;
+using namespace sofa::simulation::tree;
+
+class PMLReader;
 
 
-class SOFA_BUILD_FILEMANAGER_PML_API PMLRigidBody: public PMLBody
+class SOFA_BUILD_FILEMANAGER_PML_API LMLReader
 {
 public :
+    LMLReader(char* filename=NULL);
 
-    PMLRigidBody(StructuralComponent* body, GNode * parent);
+    void BuildStructure(const char* filename, PMLReader * pmlreader);
+    void BuildStructure(Loads * loads, PMLReader * pmlreader);
+    void BuildStructure(PMLReader * pmlreader);
 
-    ~PMLRigidBody();
+    void updateStructure(Loads * loads, PMLReader * pmlreader);
 
-    string isTypeOf() { return "rigid"; }
+    void saveAsLML(const char * filename);
 
-    ///merge the body with current object
-    bool FusionBody(PMLBody*);
-
-    Vector3 getDOF(unsigned int index);
-
-    GNode* getPointsNode() {return VisualNode;}
-
-    MechanicalObject<RigidTypes> * getRefDOF() { return refDOF;}
-
-    ///is the body totally fixed?
-    bool bodyFixed;
-
+    unsigned int numberOfLoads() { if(loadsList)return loadsList->numberOfLoads(); else return 0;}
 
 private :
-
-    ///creation of the scene graph
-    void createMechanicalState(StructuralComponent* body);
-    void createTopology(StructuralComponent* body);
-    void createMass(StructuralComponent* body);
-    void createVisualModel(StructuralComponent* body);
-    void createForceField() {}
-    void createCollisionModel();
-
-    ///initialization of properties
-    void initMass(string m);
-    void initInertiaMatrix(string m);
-    void initPosition(string m);
-    void initVelocity(string m);
-
-
-    ///mechanical model containing the reference node (gravity center)
-    MechanicalObject<RigidTypes> * refDOF;
-    ///mapping between refDof and mesh points
-    BaseMapping * mapping;
-    ///GNode containing the visual model
-    GNode * VisualNode;
-    ///GNode containing the collision models
-    GNode * CollisionNode;
-    ///barycenter coordinates of the solid
-    Vector3 bary;
-
-    //members for the mass (only one of the 2 vectors is filled)
-    std::vector<SReal> massList;
-    std::vector<SReal> inertiaMatrix;
-
-    //members coding for the position
-    Vector3 transPos;
-    Quat rotPos;
-
-    //members coding for the velocity
-    Vector3 transVel;
-    Vector3 rotVel;
-
+    Loads * loadsList;
+    const char * lmlFile;
 };
 
 }
 }
 }
 
-#endif
-
+#endif //LMLREADER_H

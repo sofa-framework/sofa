@@ -23,7 +23,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -33,15 +32,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "PMLMappedBody.h"
+#include "PMLInteractionForceField.h"
 
 #include "sofa/component/container/MechanicalObject.h"
-#include "sofa/component/mapping/BarycentricMapping.h"
+#include "sofa/component/interactionforcefield/StiffSpringForceField.h"
 
 #include <PhysicalModel.h>
 #include <MultiComponent.h>
-#include <CellProperties.h>
-#include <PMLTransform.h>
+#include <PhysicalProperties/CellProperties.h>
+
 
 namespace sofa
 {
@@ -51,59 +50,58 @@ namespace filemanager
 
 namespace pml
 {
-using namespace sofa::component::mapping;
-using namespace sofa::component;
 
-PMLMappedBody::PMLMappedBody(StructuralComponent* body, PMLBody* fromBody, GNode * parent)
+using namespace sofa::core::objectmodel;
+using namespace sofa::component::interactionforcefield;
+PMLInteractionForceField::PMLInteractionForceField(StructuralComponent* body, PMLBody* b1, PMLBody* b2, GNode * parent)
 {
     parentNode = parent;
-    bodyRef = fromBody;
 
-    odeSolverName = body->getProperties()->getString("odesolver");
-    linearSolverName = body->getProperties()->getString("linearsolver");
+    //get the parameters
+    collisionsON = false;
+    name = body->getProperties()->getName();
+
+    body1 = b1;
+    body2 = b2;
+
+    ks = body->getProperties()->getDouble("stiffness");
+    kd = body->getProperties()->getDouble("damping");
 
     //create the structure
-    createMechanicalState(body);
-    createSolver();
+    createForceField();
+    createSprings(body);
+}
+
+PMLInteractionForceField::~PMLInteractionForceField()
+{
 }
 
 
-PMLMappedBody::~PMLMappedBody()
+//create a TetrahedronFEMForceField
+void PMLInteractionForceField::createForceField()
 {
-    if(mapping) delete mapping;
+    Sforcefield = New<StiffSpringForceField<Vec3Types> >((MechanicalObject<Vec3Types>*)(body1->getMechanicalState().get()), (MechanicalObject<Vec3Types>*)(body2->getMechanicalState().get()));
+    parentNode->addObject(Sforcefield);
 }
 
 
-Vector3 PMLMappedBody::getDOF(unsigned int index)
+void PMLInteractionForceField::createSprings(StructuralComponent * body)
 {
-    return (*((MechanicalState<Vec3Types>*)mmodel)->getX())[index];
-}
-
-
-//creation of the mechanical model
-//each pml atom constituing the body correspond to a DOF
-void PMLMappedBody::createMechanicalState(StructuralComponent* body)
-{
-    mmodel = new MechanicalObject<Vec3Types>;
-    StructuralComponent* atoms = body->getAtoms();
-    mmodel->resize(atoms->getNumberOfStructures());
-    Atom* pAtom;
-
-    SReal pos[3];
-    for (unsigned int i(0) ; i<atoms->getNumberOfStructures() ; i++)
+    const Vec3Types::VecCoord& P1 = *((MechanicalObject<Vec3Types>*)body1->getMechanicalState().get())->getX();
+    const Vec3Types::VecCoord& P2 = *((MechanicalObject<Vec3Types>*)body2->getMechanicalState().get())->getX();
+    if (kd==0.0)kd=5.0;
+    if (ks==0.0)ks=500.0;
+    for (unsigned int i=0; i<body->getNumberOfCells() ; i++)
     {
-        pAtom = (Atom*) (atoms->getStructure(i));
-        pAtom->getPosition(pos);
-        AtomsToDOFsIndexes.insert(std::pair <unsigned int, unsigned int>(pAtom->getIndex(),i));
-        (*((MechanicalState<Vec3Types>*)mmodel)->getX())[i] = Vector3(pos[0],pos[1],pos[2]);
+        Cell * cell = body->getCell(i);
+        if (cell->getType() == StructureProperties::LINE)
+        {
+            unsigned int dof1 = body1->AtomsToDOFsIndexes[cell->getStructure(0)->getIndex()];
+            unsigned int dof2 = body2->AtomsToDOFsIndexes[cell->getStructure(1)->getIndex()];
+            Vec3Types::Deriv gap = P1[dof1] - P2[dof2];
+            Sforcefield->addSpring(dof1, dof2, ks, kd, sqrt(dot(gap,gap)));
+        }
     }
-
-    //creation of the mapping
-    mapping = new BarycentricMapping< MechanicalMapping<MechanicalState<Vec3Types>, MechanicalState<Vec3Types> > >((MechanicalState<Vec3Types>*)bodyRef->getMechanicalState(),(MechanicalState<Vec3Types>*) mmodel);
-
-    parentNode->addObject(mmodel);
-    parentNode->addObject(mapping);
-
 }
 
 

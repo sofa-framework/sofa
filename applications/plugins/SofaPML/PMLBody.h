@@ -34,17 +34,32 @@
 
 //-------------------------------------------------------------------------
 //						--   Description   --
-//	PMLMappedModel references points wich are mapped on an other mechanical model
+//	PMLBody is an abstract class representing an object and its structure,
+//  imported from a PML file, to create the sofa scene graph.
+//  it is inherited by PMLRigidBody and PML(ForcefieldName) classes.
 //-------------------------------------------------------------------------
 
+#ifndef PMLBODY_H
+#define PMLBODY_H
 
-#ifndef PMLMAPPEDBODY_H
-#define PMLMAPPEDBODY_H
+#include <StructuralComponent.h>
 
-#include "PMLBody.h"
-#include "sofapml.h"
+#include "sofa/core/behavior/BaseMechanicalState.h"
+#include "sofa/core/BaseMapping.h"
+#include "sofa/core/topology/Topology.h"
+#include "sofa/core/behavior/BaseMass.h"
+#include "sofa/core/behavior/ForceField.h"
+#include "sofa/component/visualmodel/OglModel.h"
+#include "sofa/core/CollisionModel.h"
+#include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/core/behavior/LinearSolver.h>
 
-#include "sofa/component/container/MechanicalObject.h"
+#include "sofa/defaulttype/Vec3Types.h"
+#include <sofa/simulation/tree/GNode.h>
+#include "initSofaPML.h"
+
+//#include "sofa/component/StiffSpringForceField.h"
+
 #include <map>
 
 
@@ -56,46 +71,78 @@ namespace filemanager
 
 namespace pml
 {
+using namespace sofa::core;
+using namespace sofa::core::behavior;
+using namespace sofa::core::topology;
+using namespace sofa::component::visualmodel;
+using namespace sofa::component;
+using namespace sofa::defaulttype;
+using namespace sofa::simulation::tree;
 using namespace std;
-using namespace sofa::component::container;
 
-class SOFA_BUILD_FILEMANAGER_PML_API PMLMappedBody: public PMLBody
+
+class SOFA_BUILD_FILEMANAGER_PML_API PMLBody
 {
 public :
 
-    PMLMappedBody(StructuralComponent* body, PMLBody* fromBody, GNode * parent);
+    PMLBody();
 
-    ~PMLMappedBody();
+    virtual ~PMLBody();
 
-    string isTypeOf() { return "mapped"; }
+    string getName() {return name;}
 
-    bool FusionBody(PMLBody*) {return false;}
+    virtual string isTypeOf() =0;
 
-    Vector3 getDOF(unsigned int );
+    /// accessors
+    BaseMechanicalState::SPtr getMechanicalState() { return mmodel; }
+    BaseMass::SPtr getMass() { return mass; }
+    Topology::SPtr getTopology() { return topology; }
+    ForceField<Vec3Types>::SPtr getForcefield() { return forcefield; }
 
-    GNode* getPointsNode() {return parentNode;}
+    bool hasCollisions() { return collisionsON; }
+    virtual GNode::SPtr getPointsNode()=0;
 
-private :
+    ///merge 2 bodies
+    virtual bool FusionBody(PMLBody*)=0;
 
-    /// creation of the scene graph
-    /// only a mapping and mechanical model are created
-    void createForceField() {}
-    void createMechanicalState(StructuralComponent* );
-    void createTopology(StructuralComponent* ) {}
-    void createMass(StructuralComponent* ) {}
-    void createVisualModel(StructuralComponent* ) {}
-    void createCollisionModel() {}
+    virtual Vector3 getDOF(unsigned int index)=0;
 
-    //structure
-    PMLBody * bodyRef;
-    BaseMapping * mapping;
+    //link between atoms indexes (physical model) and DOFs indexes (sofa)
+    map<unsigned int, unsigned int> AtomsToDOFsIndexes;
 
+    ///the node from which the body is created
+    GNode * parentNode;
 
+protected :
+
+    ///creation of the scene graph
+    virtual void createMechanicalState(StructuralComponent* body) =0;
+    virtual void createTopology(StructuralComponent* body) =0;
+    virtual void createMass(StructuralComponent* body) =0;
+    virtual void createVisualModel(StructuralComponent* body) =0;
+    virtual void createForceField() =0;
+    virtual void createCollisionModel() =0;
+    void createSolver();
+
+    //name of the object
+    string name;
+
+    ///is collisions detection activated
+    bool collisionsON;
+
+    ///objects structure
+    BaseMechanicalState::SPtr mmodel;
+    BaseMass::SPtr mass;
+    Topology::SPtr topology;
+    ForceField<Vec3Types>::SPtr forcefield;
+    OdeSolver::SPtr odeSolver;
+    LinearSolver::SPtr linearSolver;
+
+    std::string odeSolverName, linearSolverName;
 };
 
 }
 }
 }
 
-#endif
-
+#endif //PMLBODY_H
