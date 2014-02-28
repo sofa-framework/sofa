@@ -4,16 +4,12 @@
 #include "initCompliant.h"
 
 #include "../assembly/AssembledSystem.h"
-#include "../preconditioner/BasePreconditioner.h"
 #include <sofa/core/behavior/LinearSolver.h>
 
 
 namespace sofa {
 namespace component {
 namespace linearsolver {
-
-// class BaseBenchmark; ///< forward declaration
-			
 
 // Solver for an AssembledSystem (could be non-linear in case of
 // inequalities). This will eventually serve as a base class for
@@ -36,9 +32,8 @@ class SOFA_Compliant_API KKTSolver : public core::behavior::BaseLinearSolver {
 
     Data<bool> debug; ///< print debug info
 
-    KKTSolver();
+    KKTSolver() : debug(initData(&debug,false,"debug","print debug info")) {}
 
-    virtual void init();
 	
 	virtual void factor(const system_type& system) = 0;
 	
@@ -46,25 +41,10 @@ class SOFA_Compliant_API KKTSolver : public core::behavior::BaseLinearSolver {
 	                   const system_type& system,
                        const vec& rhs) const = 0;
 
-	// // TODO WTF is this doing here ? this should go in a dedicated
-	// // derived class.
-    // virtual void solveWithPreconditioner(vec& x,
-    //                    const system_type& system,
-    //                    const vec& rhs) const
-    // {
-    //     if( _preconditioner ) serr<<"The preconditioner won't be used by this numerical solver\n";
-    //     solve( x, system, rhs );
-    // }
-
-    // return true if the solver can only handle equality constraints
-    // (in opposition with LCP for instance)
-	// TODO: who uses this anyways ?
-    virtual bool isLinear() const { return true; }
 
 	// performs a correction pass, by default the same as dynamics
 	// unless derived classes know better (e.g. only correct normal
 	// constraints for friction)
-
 	// damping allows to numerically damp unfeasible problems that may
 	// arise during correction
 	virtual void correct(vec& x,
@@ -73,17 +53,8 @@ class SOFA_Compliant_API KKTSolver : public core::behavior::BaseLinearSolver {
 						 real damping = 0) const {
 		solve(x, system, rhs);
 	}
-	
-		// Data<std::string> benchmarkPath;
 
 
-protected:
-
-    typedef linearsolver::BasePreconditioner preconditioner_type;
-    preconditioner_type* _preconditioner;
-
-
-    // BaseBenchmark* _benchmark; ///< utility callback generating benchmark files
 
 };
 

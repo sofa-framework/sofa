@@ -2,10 +2,12 @@
 
 #include <sofa/core/ObjectFactory.h>
 
+
 #include "utils/schur.h"
 #include "utils/kkt.h"
 #include "utils/cg.h"
 #include "utils/preconditionedcg.h"
+
 
 namespace sofa {
 namespace component {
@@ -78,25 +80,6 @@ void CgSolver::solve_kkt(AssembledSystem::vec& x,
 
 }
 
-
-
-void CgSolver::solve_kkt_with_preconditioner(AssembledSystem::vec& x,
-											 const AssembledSystem& system,
-											 const AssembledSystem::vec& b) const {
-	if( system.n ) {
-		throw std::logic_error("CG can't solve KKT system with constraints. you need to turn on schur and add a response component for this");
-    }
-
-    params_type p = params(b);
-
-    kkt::matrixQ A( system );
-    kkt::Preconditioner P( system, _preconditioner );
-
-    typedef ::preconditionedcg<real> solver_type;
-    solver_type::solve(x, A, P, b, p);
-
-    report("cg (kkt)", p );
-}
 
 
 }

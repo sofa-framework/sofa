@@ -541,8 +541,6 @@ using namespace core::behavior;
                 rhs_dynamics(rhs, sys, current.head(sys.m), b );
                 vop.v_free( b.id(), false, true );
 
-				// TODO: preconditioners go in derived classes !
-                // kkt->solveWithPreconditioner(x, sys, rhs);
                 kkt->solve(x, sys, rhs);
 				
                 if( debug.getValue() ) {

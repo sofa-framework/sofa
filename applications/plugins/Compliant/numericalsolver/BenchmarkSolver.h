@@ -30,9 +30,7 @@ class SOFA_Compliant_API BenchmarkSolver : public KKTSolver {
 	virtual void correct(vec& x,
 						 const system_type& system,
 						 const vec& rhs) const;
-	
-	virtual bool isLinear() const { return false; }
-	
+
   protected:
     std::vector< KKTSolver::SPtr > solvers;
 

@@ -21,7 +21,7 @@ class SOFA_Compliant_API IterativeSolver : public KKTSolver {
 	Data<bool> relative;
 
   protected:
-	SingleLink<IterativeSolver, Benchmark, 0> bench;
+    SingleLink<IterativeSolver, Benchmark, 0> bench;
 };
 
 }

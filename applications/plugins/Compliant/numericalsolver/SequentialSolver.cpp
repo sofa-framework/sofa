@@ -7,7 +7,6 @@
 #include "../utils/scoped.h"
 #include "../utils/nan.h"
 
-// #include "../utils/bench.h"
 
 namespace sofa {
 namespace component {
@@ -130,8 +129,6 @@ void SequentialSolver::factor(const system_type& system) {
 	
 	// assert( diagonal_dominant(system) );
 
-    // _benchmark->beginFactor( this->getContext()->getTime() );
-
 	// response matrix
 	assert( response );
 
@@ -199,7 +196,6 @@ void SequentialSolver::factor(const system_type& system) {
 		factor_block( blocks_inv[i], schur );
 	}
 
-    // _benchmark->endFactor();
 }
 
 // TODO make sure this does not cause any alloc
@@ -218,7 +214,7 @@ void SequentialSolver::solve_block(chunk_type result, const inverse_type& inv, c
 
 void SequentialSolver::init() {
 	
-    KKTSolver::init();
+    IterativeSolver::init();
 
 	// let's find a response 
 	response = this->getContext()->get<Response>( core::objectmodel::BaseContext::Local );
@@ -330,15 +326,12 @@ void SequentialSolver::solve_impl(vec& res,
 		bench->restart();
 	}
 
-    // _benchmark->beginSolve( true );
 
 	// free velocity
 	vec tmp( sys.m );
 	
 	response->solve(tmp, sys.P.selfadjointView<Eigen::Upper>() * rhs.head( sys.m ) );
 	res.head(sys.m).noalias() = sys.P.selfadjointView<Eigen::Upper>() * tmp;
-
-    // _benchmark->setLCP( &sys, response.get(), res.head(sys.m), rhs.tail(sys.n) );
 	
 	// we're done lol
 	if( !sys.n ) return;
@@ -346,8 +339,6 @@ void SequentialSolver::solve_impl(vec& res,
 	
 	// lagrange multipliers TODO reuse res.tail( sys.n ) ?
 	vec lambda = res.tail(sys.n); 
-
-    // (*_benchmark)(lambda); // output initial error
 
 	// net constraint velocity correction
 	vec net = mapping_response * lambda;

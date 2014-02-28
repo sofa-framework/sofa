@@ -17,9 +17,9 @@ IterativeSolver::IterativeSolver()
 	                      "iteration bound")),
 	  relative(initData(&relative, false, "relative", "use relative precision") ),
 
-	  bench(BaseLink::InitLink<IterativeSolver>(this, "bench", "benchmark component to record convergence")) {
-	  
-}
+      bench(BaseLink::InitLink<IterativeSolver>(this, "bench", "benchmark component to record convergence"))
+{}
+
 
 
 }

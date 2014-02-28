@@ -15,7 +15,7 @@ KrylovSolver::KrylovSolver()
 
 void KrylovSolver::init() {
 
-    KKTSolver::init();
+    IterativeSolver::init();
 
 	if( schur.getValue() ) {
 		response = this->getContext()->get<Response>(core::objectmodel::BaseContext::Local);
@@ -50,8 +50,8 @@ void KrylovSolver::solve(vec& x,
 	if( schur.getValue() ) {
 		assert( response );
 		solve_schur(x, system, rhs);
-	} else {
-		solve_kkt(x, system, rhs);
+    } else {
+        solve_kkt(x, system, rhs);
 	}
 }
 
@@ -63,25 +63,10 @@ void KrylovSolver::correct(vec& x,
 	if( schur.getValue() ) {
 		assert( response );
 		solve_schur(x, system, rhs, damping);
-	} else {
+    } else {
 		solve_kkt(x, system, rhs, damping);
 	}
 	
-}
-
-
-void KrylovSolver::solveWithPreconditioner(vec& x,
-                         const system_type& system,
-                         const vec& rhs) const {
-    if( schur.getValue() ) {
-        assert( response );
-        solve_schur(x, system, rhs);
-    } else {
-        if( _preconditioner )
-            solve_kkt_with_preconditioner(x, system, rhs);
-        else
-            solve_kkt(x, system, rhs);
-    }
 }
 
 
