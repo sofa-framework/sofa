@@ -183,7 +183,7 @@ AddLinkerDependencies(SofaEigen2Solver SofaUserInteraction SofaComponentMisc Sof
 
 
 
-# to be able to use boost::chrono without compiling it
+# to be able to use boost::chrono without linking with precompiled boost
 AddCompilerDefinitions("BOOST_CHRONO_HEADER_ONLY")
 
 
@@ -191,9 +191,13 @@ if(LINUX OR UNIX AND NOT APPLE)
     AddLinkerDependencies( rt ) # clock_gettime
 endif()
 
-
-find_package(Boost COMPONENTS system REQUIRED)
-AddLinkerDependencies( ${Boost_SYSTEM_LIBRARY} )
+# the link with boost-system is only necessary for debug compilation (at least on linux)
+# that means you need an installed version of boost to compile Compliant in debug, boring...
+# I loved the header-only boost
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    find_package(Boost COMPONENTS system REQUIRED)
+    AddLinkerDependencies( ${Boost_SYSTEM_LIBRARY} )
+endif()
 
 
 
