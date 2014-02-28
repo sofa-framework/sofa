@@ -182,11 +182,6 @@ AddLinkerDependencies(SofaEigen2Solver SofaUserInteraction SofaComponentMisc Sof
 
 
 
-
-# to be able to use boost::chrono without linking with precompiled boost
-AddCompilerDefinitions("BOOST_CHRONO_HEADER_ONLY")
-
-
 if(LINUX OR UNIX AND NOT APPLE)
     AddLinkerDependencies( rt ) # clock_gettime
 endif()

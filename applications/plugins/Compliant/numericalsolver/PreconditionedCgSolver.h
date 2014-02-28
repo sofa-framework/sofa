@@ -13,7 +13,7 @@ class SOFA_Compliant_API PreconditionedCgSolver : public CgSolver, public Precon
 {
 
   public:
-    SOFA_CLASS(PreconditionedCgSolver, KrylovSolver);
+    SOFA_CLASS(PreconditionedCgSolver, CgSolver);
 
     virtual void init();
 

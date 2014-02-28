@@ -5,7 +5,10 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 
 #include <Eigen/Core>
+
+#define BOOST_CHRONO_HEADER_ONLY // to be able to use boost::chrono without linking with precompiled boost
 #include <boost/chrono.hpp>
+#undef BOOST_CHRONO_HEADER_ONLY
 
 namespace sofa {
 namespace component {
