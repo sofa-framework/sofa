@@ -45,8 +45,8 @@
 #include "sofa/component/collision/DefaultPipeline.h"
 #include "sofa/component/collision/DefaultContactManager.h"
 #include "sofa/component/collision/NewProximityIntersection.h"
-#include "sofa/component/collision/TreeCollisionGroupManager.h"
 #include "sofa/component/collision/BruteForceDetection.h"
+#include "sofa/component/collision/DefaultCollisionGroupManager.h"
 #include "sofa/simulation/common/VisualVisitor.h"
 #include "sofa/simulation/common/Simulation.h"
 #include "sofa/simulation/common/Node.h"
@@ -133,11 +133,11 @@ void PMLReader::BuildStructure(GNode* root)
     //if at least one of the bodies wants to detect contacts, we create all objects to do this
     if (collisionsExist)
     {
-        DefaultPipeline * ps = new DefaultPipeline;
-        BruteForceDetection * bfd = new BruteForceDetection;
-        NewProximityIntersection * mpi = new NewProximityIntersection;
+        DefaultPipeline::SPtr ps = New<DefaultPipeline>();
+        BruteForceDetection::SPtr bfd = New<BruteForceDetection>();
+        NewProximityIntersection::SPtr mpi = New<NewProximityIntersection>();
         //computes the distance contact from the bounding box
-        VisualComputeBBoxVisitor act;
+        VisualComputeBBoxVisitor act(NULL);
         getSimulation()->init(root);
         root->execute(act);
         SReal dx=(act.maxBBox[0]-act.minBBox[0]);
@@ -147,8 +147,8 @@ void PMLReader::BuildStructure(GNode* root)
         //maybe the ratio should be changed...
         mpi->setAlarmDistance(dmax/30);
         mpi->setContactDistance(dmax/40);
-        DefaultContactManager * contactManager = new DefaultContactManager;
-        TreeCollisionGroupManager * cgm = new TreeCollisionGroupManager;
+        DefaultContactManager::SPtr contactManager = New<DefaultContactManager>();
+        DefaultCollisionGroupManager::SPtr cgm = New<DefaultCollisionGroupManager>();
 
         root->addObject(ps);
         root->addObject(bfd);
@@ -170,26 +170,25 @@ PMLBody* PMLReader::createBody(StructuralComponent* SC, GNode * root)
 
     string type = SC->getProperties()->getString("bodyType");
 
-    GNode * child = new GNode(SC->getProperties()->getName());
+    GNode::SPtr child = New<GNode>(SC->getProperties()->getName());
 
     if (type == "rigid" )
     {
-        root->addChild((simulation::Node*)child);
-        return new PMLRigidBody(SC, child);
+        root->addChild((simulation::Node*)child.get());
+        return new PMLRigidBody(SC, child.get());
     }
     if (type == "FEM" )
     {
-        root->addChild((simulation::Node*)child);
-        return new PMLFemForceField(SC, child);
+        root->addChild((simulation::Node*)child.get());
+        return new PMLFemForceField(SC, child.get());
     }
     if (type == "stiffSpring" )
     {
-        root->addChild((simulation::Node*)child);
-        return new PMLStiffSpringForceField(SC, child);
+        root->addChild((simulation::Node*)child.get());
+        return new PMLStiffSpringForceField(SC, child.get());
     }
     if (type == "interaction" )
     {
-        delete child;
         std::string name1 = SC->getProperties()->getString("body1");
         std::string name2 = SC->getProperties()->getString("body2");
         PMLBody * body1=NULL;
@@ -220,8 +219,8 @@ PMLBody* PMLReader::createBody(StructuralComponent* SC, GNode * root)
         }
         if (body1)
         {
-            body1->parentNode->addChild((simulation::Node*)child);
-            return new PMLMappedBody(SC, body1, child);
+            body1->parentNode->addChild((simulation::Node*)child.get());
+            return new PMLMappedBody(SC, body1, child.get());
         }
         else
             cerr<<"mapped body : no body ref named "<<name1<<" found"<<endl;

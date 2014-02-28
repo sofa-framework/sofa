@@ -210,7 +210,7 @@ void LMLConstraint<DataTypes>::projectResponse(VecDeriv& dx)
 }
 
 template<class DataTypes>
-void LMLConstraint<DataTypes>::projectPosition(VecCoord& x)
+void LMLConstraint<DataTypes>::projectPosition(VecCoord& /*x*/)
 {
     /*SReal time = this->getContext()->getTime();
 
@@ -256,9 +256,9 @@ template<class DataTypes>
 void LMLConstraint<DataTypes>::draw()
 {
 
-    if (!vparams->displayFlags().getShowBehaviorModels()) return;
+    // if (!vparams->displayFlags().getShowBehaviorModels()) return;
 
-    VecCoord& x = *mmodel->getX();
+    const VecCoord& x = *mmodel->getX();
     glDisable (GL_LIGHTING);
     glColor4f (1,0.5,0.5,1);
 

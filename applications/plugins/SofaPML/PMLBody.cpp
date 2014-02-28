@@ -32,30 +32,15 @@
  *                                                                         *
  ***************************************************************************/
 
-//-------------------------------------------------------------------------
-//						--   Description   --
-//	PMLFemForceField translate an FEM object from Physical Model structure
-//  to sofa structure, using TetrahedronFEMForcefield.
-//  It inherits from PMLBody abstract class.
-//-------------------------------------------------------------------------
-
-
-#ifndef PMLFEMFORCEFIELD_H
-#define PMLFEMFORCEFIELD_H
-
 #include "PMLBody.h"
-
-#include <StructuralComponent.h>
-#include "sofa/core/topology/BaseMeshTopology.h"
-#include "sofa/component/collision/TriangleModel.h"
-//#include "sofa/component/collision/LineModel.h"
-//#include "sofa/component/collision/PointModel.h"
-#include "sofapml.h"
-
-
-
-#include <map>
-
+#include "sofa/component/odesolver/EulerSolver.h"
+#include "sofa/component/odesolver/EulerImplicitSolver.h"
+#include "sofa/component/odesolver/StaticSolver.h"
+#include "sofa/component/odesolver/RungeKutta4Solver.h"
+#include "sofa/component/linearsolver/CGLinearSolver.h"
+#include "sofa/component/linearsolver/FullMatrix.h"
+#include "sofa/component/linearsolver/FullVector.h"
+#include "sofa/core/objectmodel/SPtr.h"
 
 namespace sofa
 {
@@ -65,69 +50,38 @@ namespace filemanager
 
 namespace pml
 {
-using namespace sofa::component::container;
-using namespace sofa::core::topology;
-using namespace sofa::component::collision;
-using namespace std;
 
-class SOFA_BUILD_FILEMANAGER_PML_API PMLFemForceField: public PMLBody
+
+using namespace sofa::component::odesolver;
+using namespace sofa::component::linearsolver;
+using namespace sofa::core::objectmodel;
+
+PMLBody::PMLBody()
 {
-public :
+    collisionsON = false;
 
-    PMLFemForceField(StructuralComponent* body, GNode * parent);
+    AtomsToDOFsIndexes.clear();
+}
 
-    ~PMLFemForceField();
+PMLBody::~PMLBody()
+{
+}
 
-    string isTypeOf() { return "FEM"; }
+void PMLBody::createSolver()
+{
+    if(odeSolverName == "Static") odeSolver = New<StaticSolver>();
+    else if(odeSolverName == "EulerImplicit") odeSolver = New<EulerImplicitSolver>();
+    else if(odeSolverName == "RungeKutta4") odeSolver = New<RungeKutta4Solver>();
+    else if(odeSolverName == "None") return;
+    else odeSolver = New<EulerSolver>();
 
-    ///accessors
-    TriangleModel * getTriangleModel() { return tmodel; }
-    //LineModel * getLineModel() { return lmodel; }
-    //PointModel * getPointModel() { return pmodel; }
+    linearSolver = New<CGLinearSolver< FullMatrix<double>, FullVector<double> > >();
 
-    ///merge a body with current object
-    bool FusionBody(PMLBody*);
+    parentNode->addObject(linearSolver);
+    parentNode->addObject(odeSolver);
+}
 
-    Vector3 getDOF(unsigned int index);
-
-    GNode* getPointsNode() {return parentNode;}
-
-private :
-
-    /// creation of the scene graph
-    void createMechanicalState(StructuralComponent* body);
-    void createTopology(StructuralComponent* body);
-    void createMass(StructuralComponent* body);
-    void createVisualModel(StructuralComponent* body);
-    void createForceField();
-    void createCollisionModel();
-
-    //initialization of properties
-    void initMass(string m);
-    void initDensity(string m);
-
-    //tesselation of hexahedron to 5 tetrahedrons
-    BaseMeshTopology::Tetra * Tesselate(Cell* pCell);
-
-    //structure
-    TriangleModel * tmodel;
-    //LineModel * lmodel;
-    //PointModel * pmodel;
-
-    //members for the mass (only one of the 2 vectors is filled)
-    std::vector<SReal> massList;
-    std::vector<SReal> density;
-
-    //members for FEM properties
-    SReal young;
-    SReal poisson;
-    std::string deformationType;
-
-};
 
 }
 }
 }
-
-#endif
-

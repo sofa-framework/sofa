@@ -34,21 +34,25 @@
 
 //-------------------------------------------------------------------------
 //						--   Description   --
-//	PMLInteractionForceField create an interaction Forcefield (stiffSprings)
-//  between 2 other pml Bodies. The sofa structure is translated from pml,
-//  specifying the 2 bodies and the list of springs (LINES)
+//	PMLStiffSpringForceField translate an FEM object from Physical Model structure
+//  to sofa structure, using StiffSpringForceField.
 //  It inherits from PMLBody abstract class.
 //-------------------------------------------------------------------------
 
 
-#ifndef PMLINTERACTIONFORCEFIELD_H
-#define PMLINTERACTIONFORCEFIELD_H
+#ifndef PMLSTIFFSPRINGFORCEFIELD_H
+#define PMLSTIFFSPRINGFORCEFIELD_H
 
 #include "PMLBody.h"
-#include "sofa/component/forcefield/StiffSpringForceField.h"
-#include "sofapml.h"
+#include "initSofaPML.h"
 
-#include "sofa/component/container/MechanicalObject.h"
+#include <StructuralComponent.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/component/topology/MeshTopology.h>
+#include <sofa/component/collision/TriangleModel.h>
+#include <sofa/component/interactionforcefield/MeshSpringForceField.h>
+
+
 #include <map>
 
 
@@ -61,47 +65,67 @@ namespace filemanager
 namespace pml
 {
 
-using namespace sofa::component::forcefield;
-using namespace std;
 using namespace sofa::component::container;
+using namespace sofa::component::topology;
+using namespace sofa::component::collision;
+using namespace sofa::component::interactionforcefield;
+using namespace std;
 
-class SOFA_BUILD_FILEMANAGER_PML_API PMLInteractionForceField: public PMLBody
+class SOFA_BUILD_FILEMANAGER_PML_API PMLStiffSpringForceField: public PMLBody
 {
 public :
 
-    PMLInteractionForceField(StructuralComponent* body, PMLBody* b1, PMLBody* b2, GNode * parent);
+    PMLStiffSpringForceField(StructuralComponent* body, GNode * parent);
 
-    ~PMLInteractionForceField();
+    ~PMLStiffSpringForceField();
 
-    string isTypeOf() { return "interaction"; }
+    string isTypeOf() { return "StiffSpring"; }
 
-    ///Inherit methods
-    GNode* getPointsNode() {return NULL;}
-    bool FusionBody(PMLBody*) {return false;}
-    Vector3 getDOF(unsigned int ) {return Vector3();}
+    ///accessors
+    TriangleModel::SPtr getTriangleModel() { return tmodel; }
+    //LineModel * getLineModel() { return lmodel; }
+    //PointModel * getPointModel() { return pmodel; }
+
+    ///merge a body with current object
+    bool FusionBody(PMLBody*);
+
+    Vector3 getDOF(unsigned int index);
+    GNode::SPtr getPointsNode() {return parentNode;}
 
 private :
 
     /// creation of the scene graph
-    /// only a forcefield is created
+    void createMechanicalState(StructuralComponent* body);
+    void createTopology(StructuralComponent* body);
+    void createMass(StructuralComponent* body);
+    void createVisualModel(StructuralComponent* body);
     void createForceField();
-    void createMechanicalState(StructuralComponent* ) {}
-    void createTopology(StructuralComponent* ) {}
-    void createMass(StructuralComponent* ) {}
-    void createVisualModel(StructuralComponent* ) {}
-    void createCollisionModel() {}
+    void createCollisionModel();
 
-    void createSprings(StructuralComponent * body);
+    // extract edges to a list of lines
+    BaseMeshTopology::Line * hexaToLines(Cell* pCell);
+    BaseMeshTopology::Line * tetraToLines(Cell* pCell);
+    BaseMeshTopology::Line * triangleToLines(Cell* pCell);
+    BaseMeshTopology::Line * quadToLines(Cell* pCell);
 
+    //initialization of properties
+    void initMass(string m);
+    void initDensity(string m);
 
     //structure
-    StiffSpringForceField<Vec3Types> *Sforcefield;
-    PMLBody * body1;
-    PMLBody * body2;
+    MeshSpringForceField<Vec3Types>::SPtr Sforcefield;
+    TriangleModel::SPtr tmodel;
+    //LineModel * lmodel;
+    //PointModel * pmodel;
+
+    //members for the mass (only one of the 2 vectors is filled)
+    std::vector<SReal> massList;
+    std::vector<SReal> density;
 
     //properties
     SReal  ks;			// spring stiffness
     SReal  kd;			// damping factor
+
 };
 
 }

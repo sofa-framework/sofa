@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
+
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -32,25 +33,15 @@
  *                                                                         *
  ***************************************************************************/
 
-//-------------------------------------------------------------------------
-//						--   Description   --
-//	LMLForce imports from a LML file (see LMLReader class) the forces
-//  applied on DOFs, and traduces it to sofa Forcefield.
-//  It inherits from ForceField sofa core class.
-//-------------------------------------------------------------------------
+#include "PMLMappedBody.h"
 
-#ifndef LMLFORCE_H
-#define LMLFORCE_H
+#include "sofa/component/container/MechanicalObject.h"
+#include "sofa/component/mapping/BarycentricMapping.h"
 
-#include <Loads.h>
-
-#include <sofa/core/behavior/ForceField.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/VisualModel.h>
-#include "sofapml.h"
-
-#include <map>
-
+#include <PhysicalModel.h>
+#include <MultiComponent.h>
+#include <PhysicalProperties/CellProperties.h>
+#include <PMLTransform.h>
 
 namespace sofa
 {
@@ -60,69 +51,63 @@ namespace filemanager
 
 namespace pml
 {
+using namespace sofa::core::objectmodel;
+using namespace sofa::component::mapping;
+using namespace sofa::component;
 
-using namespace sofa::core;
-using namespace sofa::core::behavior;
-using namespace std;
-
-template<class DataTypes>
-class LMLForce : public ForceField<DataTypes> //, public VisualModel
+PMLMappedBody::PMLMappedBody(StructuralComponent* body, PMLBody* fromBody, GNode * parent)
 {
-public :
-    ///template types
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::VecCoord::iterator VecCoordIterator;
-    typedef typename DataTypes::VecDeriv::iterator VecDerivIterator;
-    typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::Deriv Deriv;
+    parentNode = parent;
+    bodyRef = fromBody;
 
-    ///constructors
-    LMLForce(MechanicalState<DataTypes> *mm = NULL)
-        : ForceField<DataTypes>(mm)
-    {}
-    LMLForce(Loads* loadsList, const map<unsigned int, unsigned int> &atomIndexToDOFIndex, MechanicalState<DataTypes> *mm);
+    odeSolverName = body->getProperties()->getString("odesolver");
+    linearSolverName = body->getProperties()->getString("linearsolver");
 
-    ~LMLForce() { /*delete loads;*/}
+    //create the structure
+    createMechanicalState(body);
+    createSolver();
+}
 
-    /// return targets list
-    std::vector<unsigned int> getTargets() {return targets;}
 
-    ///add a new target (dof index)
-    void addTarget(unsigned int i) { targets.push_back(i); forces.push_back(Deriv() ); }
+PMLMappedBody::~PMLMappedBody()
+{
+}
 
-    /// -- ForceField Inherits
-    virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
-    virtual void addDForce (VecDeriv& , const VecDeriv& ) {}
-    virtual double getPotentialEnergy(const VecCoord& ) const {return 0;}
 
-    sofa::core::objectmodel::BaseClass* getClass() const { return NULL; }
+Vector3 PMLMappedBody::getDOF(unsigned int index)
+{
+    return (*((MechanicalState<Vec3Types>*)mmodel.get())->getX())[index];
+}
 
-    /// -- VisualModel interface
-    void draw();
-    void initTextures() { }
-    void update() { }
 
-protected:
+//creation of the mechanical model
+//each pml atom constituing the body correspond to a DOF
+void PMLMappedBody::createMechanicalState(StructuralComponent* body)
+{
+    mmodel = New<MechanicalObject<Vec3Types> >();
+    StructuralComponent* atoms = body->getAtoms();
+    mmodel->resize(atoms->getNumberOfStructures());
+    Atom* pAtom;
 
-    MechanicalState<DataTypes> * mmodel;
-    /// list of forces targets
-    std::vector<unsigned int> targets;
-    /// list of force directions
-    VecDeriv forces;
-    /// LML loads
-    Loads* loads;
-    /// link between PML object indexes and sofa dofs indexs
-    map<unsigned int, unsigned int> atomToDOFIndexes;
+    SReal pos[3];
+    for (unsigned int i(0) ; i<atoms->getNumberOfStructures() ; i++)
+    {
+        pAtom = (Atom*) (atoms->getStructure(i));
+        pAtom->getPosition(pos);
+        AtomsToDOFsIndexes.insert(std::pair <unsigned int, unsigned int>(pAtom->getIndex(),i));
+        ((MechanicalState<Vec3Types>*)mmodel.get())->writePositions()[i] = Vector3(pos[0],pos[1],pos[2]);
+    }
 
-};
+    //creation of the mapping
+    mapping = New<BarycentricMapping< Vec3Types, Vec3Types> > ();
+    ((Mapping< Vec3Types, Vec3Types>*)mapping.get())->setModels((MechanicalState<Vec3Types>*)bodyRef->getMechanicalState().get(),(MechanicalState<Vec3Types>*) mmodel.get());
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_FILEMANAGER_PML)
-extern template class SOFA_BUILD_FILEMANAGER_PML_API LMLForce<Vec3Types>;
-#endif
+    parentNode->addObject(mmodel);
+    parentNode->addObject(mapping);
+
+}
+
 
 }
 }
 }
-#endif
-

@@ -35,12 +35,12 @@
 #include "PMLRigidBody.h"
 
 #include <PhysicalModel.h>
-#include <CellProperties.h>
+#include <PhysicalProperties/CellProperties.h>
 
+#include <sofa/core/objectmodel/SPtr.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/component/mapping/RigidMapping.h>
 #include <sofa/component/mapping/IdentityMapping.h>
-//#include "sofa/componentCore/MappedModel.h"
 #include <sofa/component/mass/UniformMass.h>
 #include <sofa/component/mass/DiagonalMass.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -60,6 +60,8 @@ namespace filemanager
 
 namespace pml
 {
+using namespace sofa::core::objectmodel;
+using namespace sofa::core::behavior;
 using namespace sofa::component;
 using namespace sofa::component::mapping;
 using namespace sofa::component::collision;
@@ -96,10 +98,6 @@ PMLRigidBody::PMLRigidBody(StructuralComponent* body, GNode * parent)
 
 PMLRigidBody::~PMLRigidBody()
 {
-    if(mmodel) { delete mmodel; mmodel=NULL;}
-    if (mapping) { delete mapping; mapping = NULL;}
-    if (VisualNode) { delete VisualNode; VisualNode = NULL;}
-    if (CollisionNode) { delete CollisionNode; CollisionNode = NULL;}
 }
 
 
@@ -208,20 +206,20 @@ void PMLRigidBody::initVelocity(string m)
 
 Vector3 PMLRigidBody::getDOF(unsigned int index)
 {
-    return (*((MechanicalState<Vec3Types>*)mmodel)->getX())[index];
+    return (*((MechanicalState<Vec3Types>*)mmodel.get())->getX())[index];
 }
 
 
 void PMLRigidBody::createMechanicalState(StructuralComponent* )
 {
-    refDOF = new MechanicalObject<RigidTypes>;
+    refDOF = New<MechanicalObject<RigidTypes> >();
     refDOF->resize(1);
 
     //initial position and orientation of model
-    (*((MechanicalState<RigidTypes>*)refDOF)->getX())[0] = RigidTypes::Coord(transPos+bary, rotPos);
+    ((MechanicalState<RigidTypes>*)refDOF.get())->writePositions()[0] = RigidTypes::Coord(transPos+bary, rotPos);
 
     //initial velocity (translation and rotation)
-    (*((MechanicalState<RigidTypes>*)refDOF)->getV())[0] = RigidTypes::Deriv(transVel, rotVel);
+    ((MechanicalState<RigidTypes>*)refDOF.get())->writeVelocities()[0] = RigidTypes::Deriv(transVel, rotVel);
 
     parentNode->addObject(refDOF);
 }
@@ -237,8 +235,8 @@ void PMLRigidBody::createTopology(StructuralComponent* body)
     if (nbCells == 1 && body->getCell(0)->getProperties()->getType() == StructureProperties::POLY_VERTEX )
         return;
 
-    topology = new MeshTopology();
-    ((BaseMeshTopology*)topology)->clear();
+    topology = New<MeshTopology>();
+    ((BaseMeshTopology*)topology.get())->clear();
 
     BaseMeshTopology::Triangle * tri;
     BaseMeshTopology::Quad * quad;
@@ -259,7 +257,7 @@ void PMLRigidBody::createTopology(StructuralComponent* body)
                 pAtom = (Atom*)(pCell->getStructure(p));
                 (*tri)[p] = AtomsToDOFsIndexes[pAtom->getIndex()];
             }
-            ((BaseMeshTopology::SeqTriangles&)((BaseMeshTopology*)topology)->getTriangles()).push_back(*tri);
+            ((BaseMeshTopology::SeqTriangles&)((BaseMeshTopology*)topology.get())->getTriangles()).push_back(*tri);
             break;
 
         case StructureProperties::QUAD :
@@ -269,7 +267,7 @@ void PMLRigidBody::createTopology(StructuralComponent* body)
                 pAtom = (Atom*)(pCell->getStructure(p));
                 (*quad)[p] = AtomsToDOFsIndexes[pAtom->getIndex()];
             }
-            ((BaseMeshTopology::SeqQuads&)((BaseMeshTopology*)topology)->getQuads()).push_back(*quad);
+            ((BaseMeshTopology::SeqQuads&)((BaseMeshTopology*)topology.get())->getQuads()).push_back(*quad);
             break;
 
         default : break;
@@ -280,12 +278,12 @@ void PMLRigidBody::createTopology(StructuralComponent* body)
 
 void PMLRigidBody::createVisualModel(StructuralComponent* body)
 {
-    VisualNode = new GNode("points");
-    parentNode->addChild((simulation::Node*)VisualNode);
+    VisualNode = New<GNode>("points");
+    parentNode->addChild((simulation::Node*)VisualNode.get());
     //create mechanical object
-    mmodel = new MechanicalObject<Vec3Types>;
+    mmodel = New<MechanicalObject<Vec3Types> >();
     //create visual model
-    OglModel * vmodel = new OglModel;
+    OglModel::SPtr vmodel = New<OglModel>();
     StructuralComponent* atoms = body->getAtoms();
     mmodel->resize(atoms->getNumberOfStructures());
     Atom* pAtom;
@@ -296,7 +294,7 @@ void PMLRigidBody::createVisualModel(StructuralComponent* body)
         pAtom = (Atom*) (atoms->getStructure(i));
         pAtom->getPosition(pos);
         AtomsToDOFsIndexes.insert(std::pair <unsigned int, unsigned int>(pAtom->getIndex(),i));
-        (*((MechanicalState<Vec3Types>*)mmodel)->getX())[i] = Vector3(pos[0]-bary[0],pos[1]-bary[1],pos[2]-bary[2]);
+        ((MechanicalState<Vec3Types>*)mmodel.get())->writePositions()[i] = Vector3(pos[0]-bary[0],pos[1]-bary[1],pos[2]-bary[2]);
     }
 
     VisualNode->addObject(mmodel);
@@ -309,8 +307,11 @@ void PMLRigidBody::createVisualModel(StructuralComponent* body)
     vmodel->load("","","");
 
     //create mappings
-    mapping = new RigidMapping< MechanicalMapping<MechanicalState<RigidTypes>, MechanicalState<Vec3Types> > >( (MechanicalState<RigidTypes>*)refDOF, (MechanicalState<Vec3Types>*)mmodel);
-    BaseMapping * Vmapping = new IdentityMapping< Mapping< State<Vec3Types>, MappedModel< ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > > > >((MechanicalState<Vec3Types>*)mmodel, vmodel);
+    mapping = New<RigidMapping<RigidTypes, Vec3Types> >();
+    ((Mapping<RigidTypes, Vec3Types>*)mapping.get())->setModels((MechanicalState<RigidTypes>*)refDOF.get(), (MechanicalState<Vec3Types>*)mmodel.get());
+    // BaseMapping * Vmapping = new IdentityMapping< Mapping< State<Vec3Types>, MappedModel< ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > > > >
+    BaseMapping::SPtr Vmapping = New<IdentityMapping< Vec3Types, ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > > >();
+    ((Mapping< Vec3Types, ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > >*)Vmapping.get())->setModels((MechanicalState<Vec3Types>*)mmodel.get(), vmodel.get());
 
     VisualNode->addObject(mapping);
     VisualNode->addObject(Vmapping);
@@ -368,19 +369,19 @@ void PMLRigidBody::createMass(StructuralComponent* body)
         //add uniform or diagonal mass to model
         if (massList.size() ==1)
         {
-            mass = new UniformMass<Rigid3Types,Rigid3Mass>;
+            mass = New<UniformMass<Rigid3Types,Rigid3Mass> >();
             Rigid3Mass m(masse);
             m.inertiaMatrix = iMatrix;
-            ((UniformMass<Rigid3Types,Rigid3Mass>*)mass)->setMass( m );
+            ((UniformMass<Rigid3Types,Rigid3Mass>*)mass.get())->setMass( m );
         }
         else
         {
-            mass = new DiagonalMass<Rigid3Types,Rigid3Mass>;
+            mass = New<DiagonalMass<Rigid3Types,Rigid3Mass> >();
             for (unsigned int j=0 ; j<massList.size(); j++)
             {
                 Rigid3Mass m(massList[j]);
                 m.inertiaMatrix = iMatrix;
-                ((DiagonalMass<Rigid3Types,Rigid3Mass>*)mass)->addMass( m );
+                ((DiagonalMass<Rigid3Types,Rigid3Mass>*)mass.get())->addMass( m );
             }
         }
     }
@@ -417,10 +418,10 @@ void PMLRigidBody::createMass(StructuralComponent* body)
             cerr<<"WARNING building "<<name<<" object : inertia matrix not properly defined."<<endl;
             return;
         }
-        mass = new UniformMass<Rigid3Types,Rigid3Mass>;
+        mass = New<UniformMass<Rigid3Types,Rigid3Mass> >();
         Rigid3Mass m(1.0);
         m.inertiaMatrix = iMatrix;
-        ((UniformMass<Rigid3Types,Rigid3Mass>*)mass)->setMass( m );
+        ((UniformMass<Rigid3Types,Rigid3Mass>*)mass.get())->setMass( m );
     }
 
     if (mass)
@@ -438,7 +439,7 @@ void PMLRigidBody::createCollisionModel()
         CollisionNode->addObject(topology);
         CollisionNode->addObject(mapping);*/
 
-        TriangleModel * cmodel = new TriangleModel;
+        TriangleModel::SPtr cmodel = New<TriangleModel>();
         //LineModel *lmodel = new LineModel;
         //PointModel *pmodel = new PointModel;
         VisualNode->addObject(cmodel);

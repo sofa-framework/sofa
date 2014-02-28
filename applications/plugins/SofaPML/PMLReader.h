@@ -32,15 +32,23 @@
  *                                                                         *
  ***************************************************************************/
 
+/**-------------------------------------------------------------------------
+*						--   Description   --
+*	PMLReader is used to import a PML document to the sofa structure.
+*  It builds the scenegraph with DOFs, mechanical models, and Forcefields,
+*  reading a PML file, and using PMLRigid and PML ForceFields classes.
+-------------------------------------------------------------------------**/
+
+#ifndef PMLREADER_H
+#define PMLREADER_H
+
+
+#include <PhysicalModel.h>
+#include <StructuralComponent.h>
 #include "PMLBody.h"
-#include "sofa/component/odesolver/CGImplicitSolver.h"
-#include "sofa/component/odesolver/EulerSolver.h"
-#include "sofa/component/odesolver/EulerImplicitSolver.h"
-#include "sofa/component/odesolver/StaticSolver.h"
-#include "sofa/component/odesolver/RungeKutta4Solver.h"
-#include "sofa/component/linearsolver/CGLinearSolver.h"
-#include "sofa/component/linearsolver/FullMatrix.h"
-#include "sofa/component/linearsolver/FullVector.h"
+#include "initSofaPML.h"
+
+#include <sofa/simulation/tree/GNode.h>
 
 namespace sofa
 {
@@ -51,48 +59,48 @@ namespace filemanager
 namespace pml
 {
 
+using namespace sofa::simulation::tree;
 
-using namespace sofa::component::odesolver;
-
-PMLBody::PMLBody()
+class SOFA_BUILD_FILEMANAGER_PML_API PMLReader
 {
-    collisionsON = false;
+public :
+    PMLReader() {pm = NULL;}
 
-    mass=NULL;
-    topology=NULL;
-    forcefield=NULL;
-    mmodel=NULL;
-    odeSolver = NULL;
-    linearSolver = NULL;
+    ///build all the scene graph under the GNode root, from the pml filename
+    void BuildStructure(const char* filename, GNode* root);
+    ///build all the scene graph under the GNode root, from the a specified physicalmodel
+    void BuildStructure(PhysicalModel * model, GNode* root);
+    void BuildStructure(GNode* root);
 
-    AtomsToDOFsIndexes.clear();
-}
+    ///create a body (all object structure) from a PML StructuralComponent
+    PMLBody* createBody(StructuralComponent* SC, GNode * root);
 
-PMLBody::~PMLBody()
-{
-    if(mass) delete mass;
-    if(topology) delete topology;
-    if(forcefield) delete forcefield;
-    if (odeSolver) delete odeSolver;
-    if (linearSolver) delete linearSolver;
-}
+    ///Merge the bodies of same type which share any DOFS
+    void processFusions(GNode * root);
 
-void PMLBody::createSolver()
-{
-    if(odeSolverName == "Static") odeSolver = new StaticSolver;
-    else if(odeSolverName == "EulerImplicit") odeSolver = new EulerImplicitSolver;
-    else if(odeSolverName == "RungeKutta4") odeSolver = new RungeKutta4Solver;
-    else if(odeSolverName == "None") return;
-    else odeSolver = new  EulerSolver;
+    ///return a point position giving its pml's index
+    Vector3 getAtomPos(unsigned int atomindex);
 
-    if (linearSolverName == "CGImplicitSolver") linearSolver = new CGLinearSolver< FullMatrix<double>, FullVector<double> >;
-    else linearSolver = new CGLinearSolver< FullMatrix<double>, FullVector<double> >;
+    ///save the structure under a pml file
+    void saveAsPML(const char * filename);
 
-    parentNode->addObject(linearSolver);
-    parentNode->addObject(odeSolver);
-}
+    ///update all pml points positions
+    void updatePML();
 
+    ///the list of the bodies created
+    std::vector<PMLBody*> bodiesList;
+
+private :
+
+    ///the physical model from which strucutre is created
+    PhysicalModel * pm;
+
+
+};
 
 }
 }
 }
+
+#endif //PMLREADER_H
+
