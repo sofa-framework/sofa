@@ -86,9 +86,12 @@ struct kkt {
 
 	struct matrixC {
 		const sys_type& sys;
+		const real damping;
 		
-		matrixC(const sys_type& sys) 
-			: sys(sys) {
+		matrixC(const sys_type& sys,
+				real damping = 0) 
+			: sys(sys),
+			  damping(damping) {
 			
 		}
 		
@@ -97,6 +100,7 @@ struct kkt {
 		template<class Vec>
 		const vec& operator()(const Vec& x) const {
 			result.noalias() = sys.C.selfadjointView<Eigen::Upper>() * x;
+			if( damping ) result += damping * x;
 			return result;
 		}
 		
@@ -133,17 +137,17 @@ private:
 
 	unsigned m, n;
 	
-	bool parallel;
-	
+
 	mutable vec storage;
 	
 public:
+	bool parallel;
 	
-    kkt( const sys_type& sys, bool parallel = false )
+    kkt( const sys_type& sys, bool parallel = false, real damping = 0)
 		: Q(sys),
 		  A(sys),
 		  AT(sys),
-          C(sys),
+          C(sys, damping),
 		  m( sys.m ),
           n( sys.n ),
 		  parallel(parallel) {
@@ -162,6 +166,7 @@ private:
 		if( n ) {
 			storage.head(m) -= AT( x.tail(n) );
 			storage.tail(n) = - A( x.head(m) ) - C(x.tail(n));
+			// if( damping ) storage.tail(n) -= damping * x.tail(n);
 		}
 		
 		return storage;
@@ -205,6 +210,8 @@ private:
 #pragma omp section
 #endif
 				storage.tail(n) = -A.result - C.result;
+
+				// if( damping ) storage.tail(n) -= damping * x.tail(n);
 			}
 			
 			} else {

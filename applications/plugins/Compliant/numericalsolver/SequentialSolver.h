@@ -37,7 +37,8 @@ class SOFA_Compliant_API SequentialSolver : public IterativeSolver {
 
 	virtual void correct(vec& x,
 						 const system_type& system,
-						 const vec& rhs) const;
+						 const vec& rhs,
+						 real damping) const;
 	
 	virtual bool isLinear() const { return false; }
 	

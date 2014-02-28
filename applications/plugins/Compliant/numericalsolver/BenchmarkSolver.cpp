@@ -37,7 +37,7 @@ void BenchmarkSolver::correct(vec& res,
 							  const system_type& sys,
 							  const vec& rhs) const {
 	assert( solvers.size() > 1 );
-	solvers[1]->correct(res, sys, rhs);
+	solvers.back()->correct(res, sys, rhs);
 }
 
 // solution is that of the last solver

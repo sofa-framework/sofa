@@ -47,14 +47,14 @@ class SOFA_Compliant_API Benchmark : public core::objectmodel::BaseObject {
 	unsigned elapsed() const;
 
 	// push the results for the last iteration, including elapsed
-	// time, for an LCP solver
+	// time, for an LCP solver. restart timer at the end.
 	void lcp(const AssembledSystem& system, 
 			 const vec& rhs,	// the lcp rhs: b - J Minv f
 			 const Response& response, 
 			 const vec& dual); 
 	
 	// push the results for the last iteration, including elapsed
-	// time, for a QP solver
+	// time, for a QP solver. restart timer at the end.
 	void qp(const AssembledSystem& system, 
 			const vec& rhs,
 			const vec& x);

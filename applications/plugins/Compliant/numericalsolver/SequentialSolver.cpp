@@ -311,8 +311,9 @@ void SequentialSolver::solve(vec& res,
 
 
 void SequentialSolver::correct(vec& res,
-							 const system_type& sys,
-							 const vec& rhs) const {
+							   const system_type& sys,
+							   const vec& rhs,
+							   real /*damping*/ ) const {
 	solve_impl(res, sys, rhs, true );
 }
 
@@ -366,6 +367,7 @@ void SequentialSolver::solve_impl(vec& res,
 	real epsilon2 = epsilon * epsilon;
 
 	if( this->bench ) this->bench->lcp(sys, constant, *response, lambda);
+
 
 	// outer loop
 	unsigned k = 0, max = iterations.getValue();

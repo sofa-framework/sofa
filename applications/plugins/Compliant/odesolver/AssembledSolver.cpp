@@ -94,7 +94,12 @@ using namespace core::behavior;
           beta( initData(&beta,
                          SReal(1),
                          "implicitPosition",
-                         "Weight of the next velocities in the average velocities used to update the positions. 1 is implicit, 0 is explicit."))
+                         "Weight of the next velocities in the average velocities used to update the positions. 1 is implicit, 0 is explicit.")),
+
+		stabilization_damping(initData(&stabilization_damping,
+									   SReal(1e-7),
+									   "stabilization_damping",
+									   "stabilization damping hint to relax infeasible problems"))
     {
         storeDSol = false;
         assemblyVisitor = NULL;
@@ -513,9 +518,9 @@ using namespace core::behavior;
 
                 x = vec::Zero( sys.size() );
                 rhs_correction(rhs, sys);
-
-                kkt->correct(x, sys, rhs);
-
+				
+                kkt->correct(x, sys, rhs, stabilization_damping.getValue() );
+				
                 if( debug.getValue() ) {
                     std::cerr << "correction rhs:" << std::endl
                               << rhs.transpose() << std::endl
@@ -536,7 +541,9 @@ using namespace core::behavior;
                 rhs_dynamics(rhs, sys, current.head(sys.m), b );
                 vop.v_free( b.id(), false, true );
 
-                kkt->solveWithPreconditioner(x, sys, rhs);
+				// TODO: preconditioners go in derived classes !
+                // kkt->solveWithPreconditioner(x, sys, rhs);
+                kkt->solve(x, sys, rhs);
 				
                 if( debug.getValue() ) {
                     std::cerr << "dynamics rhs:" << std::endl

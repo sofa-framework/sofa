@@ -32,6 +32,11 @@ class SOFA_Compliant_API KrylovSolver : public IterativeSolver {
 	                   const system_type& system,
                        const vec& rhs) const;
 
+	virtual void correct(vec& x,
+						 const system_type& system,
+						 const vec& rhs,
+						 real damping) const;
+
     virtual void solveWithPreconditioner(vec& x,
                        const system_type& system,
                        const vec& rhs) const;
@@ -42,15 +47,18 @@ class SOFA_Compliant_API KrylovSolver : public IterativeSolver {
 
 	virtual void solve_schur(vec& x,
 	                         const system_type& system,
-	                         const vec& rhs) const = 0;
+	                         const vec& rhs, 
+							 real damping = 0) const = 0;
 	
 	virtual void solve_kkt(vec& x,
 	                       const system_type& system,
-	                       const vec& rhs) const = 0;
+	                       const vec& rhs,
+						   real damping = 0) const = 0;
 
     virtual void solve_kkt_with_preconditioner(vec& x,
-                           const system_type& system,
-                           const vec& rhs) const
+											   const system_type& system,
+											   const vec& rhs,
+											   real damping = 0) const
     {
         if( _preconditioner ) serr<<"The preconditioner won't be used by this numerical solver\n";
         solve_kkt( x, system, rhs );
