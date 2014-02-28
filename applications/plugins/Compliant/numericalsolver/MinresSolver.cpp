@@ -28,7 +28,8 @@ MinresSolver::MinresSolver()
 
 void MinresSolver::solve_schur(AssembledSystem::vec& x,
                                const AssembledSystem& sys,
-                               const AssembledSystem::vec& b) const {
+                               const AssembledSystem::vec& b,
+							   real damping) const {
 	// unconstrained velocity
 	vec tmp(sys.m);
 	response->solve(tmp, b.head(sys.m));
@@ -36,7 +37,7 @@ void MinresSolver::solve_schur(AssembledSystem::vec& x,
 	
 	if( sys.n ) {
 		
-		::schur<response_type> A(sys, *response);
+		::schur<response_type> A(sys, *response, damping);
 		
 		vec rhs = b.tail(sys.n) - sys.J * x.head(sys.m);
 		
@@ -62,13 +63,14 @@ void MinresSolver::solve_schur(AssembledSystem::vec& x,
 
 void MinresSolver::solve_kkt(AssembledSystem::vec& x,
                              const AssembledSystem& system,
-                             const AssembledSystem::vec& b) const {
+                             const AssembledSystem::vec& b,
+							 real damping) const {
 	params_type p = params(b);
 			
 	vec rhs = b;
 	if( system.n ) rhs.tail(system.n) = -rhs.tail(system.n);
 	
-	kkt A(system, parallel.getValue() );
+	kkt A(system, parallel.getValue(), damping);
 	
 	typedef minres<real> solver_type;
 	solver_type::solve(x, A, rhs, p);

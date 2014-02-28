@@ -46,15 +46,15 @@ class SOFA_Compliant_API KKTSolver : public core::behavior::BaseLinearSolver {
 	                   const system_type& system,
                        const vec& rhs) const = 0;
 
-	// TODO WTF is this doing here ? this should go in a dedicated
-	// derived class.
-    virtual void solveWithPreconditioner(vec& x,
-                       const system_type& system,
-                       const vec& rhs) const
-    {
-        if( _preconditioner ) serr<<"The preconditioner won't be used by this numerical solver\n";
-        solve( x, system, rhs );
-    }
+	// // TODO WTF is this doing here ? this should go in a dedicated
+	// // derived class.
+    // virtual void solveWithPreconditioner(vec& x,
+    //                    const system_type& system,
+    //                    const vec& rhs) const
+    // {
+    //     if( _preconditioner ) serr<<"The preconditioner won't be used by this numerical solver\n";
+    //     solve( x, system, rhs );
+    // }
 
     // return true if the solver can only handle equality constraints
     // (in opposition with LCP for instance)
@@ -64,9 +64,13 @@ class SOFA_Compliant_API KKTSolver : public core::behavior::BaseLinearSolver {
 	// performs a correction pass, by default the same as dynamics
 	// unless derived classes know better (e.g. only correct normal
 	// constraints for friction)
+
+	// damping allows to numerically damp unfeasible problems that may
+	// arise during correction
 	virtual void correct(vec& x,
 						 const system_type& system,
-						 const vec& rhs) const {
+						 const vec& rhs,
+						 real damping = 0) const {
 		solve(x, system, rhs);
 	}
 	

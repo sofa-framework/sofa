@@ -30,7 +30,7 @@ struct minres  {
 	typedef typename krylov::natural natural;
 	typedef typename krylov::params params;
 
-	// solves Ax = b using minres. 
+	// solves (A - sigma I) x = b using minres. 
 	// @A is a function object vec -> vec implementing matrix multiplication
 	template<class Matrix>
 	static void solve(vec& x, const Matrix& A, const vec& b, params& p, real sigma = 0) {

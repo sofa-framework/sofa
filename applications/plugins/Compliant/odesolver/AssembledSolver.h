@@ -145,7 +145,7 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
     Data<bool> warm_start, propagate_lambdas, stabilization, debug;
     Data<SReal> alpha, beta;     ///< the \alpha and \beta parameters of the integration scheme
 
-
+	Data<SReal> stabilization_damping;
   protected:
 
     // keep a pointer on the visitor used to assemble

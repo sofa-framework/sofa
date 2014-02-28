@@ -83,6 +83,7 @@ void Benchmark::lcp(const AssembledSystem& system,
 	
 	push( system.J * (system.P * v) - rhs, dual );
 	edit(this->optimality)->push_back( 0 );
+	restart();
 }  
 
 
@@ -96,6 +97,7 @@ void Benchmark::qp(const AssembledSystem& system,
 	vec opt = system.P * (system.H * (system.P * x.head(system.m)) - system.J.transpose() * x.tail(system.n) - rhs.head(system.m));
 
 	edit(this->optimality)->push_back( opt.norm() / system.m );
+	restart();
 }  
 
 

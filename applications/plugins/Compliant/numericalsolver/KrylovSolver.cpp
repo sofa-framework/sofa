@@ -55,6 +55,21 @@ void KrylovSolver::solve(vec& x,
 	}
 }
 
+
+void KrylovSolver::correct(vec& x,
+						   const system_type& system,
+						   const vec& rhs,
+						   real damping) const {
+	if( schur.getValue() ) {
+		assert( response );
+		solve_schur(x, system, rhs, damping);
+	} else {
+		solve_kkt(x, system, rhs, damping);
+	}
+	
+}
+
+
 void KrylovSolver::solveWithPreconditioner(vec& x,
                          const system_type& system,
                          const vec& rhs) const {
