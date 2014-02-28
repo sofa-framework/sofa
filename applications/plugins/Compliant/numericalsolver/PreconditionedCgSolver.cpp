@@ -29,12 +29,12 @@ void PreconditionedCgSolver::solve_kkt(AssembledSystem::vec& x,
                          const AssembledSystem::vec& b,
                          real damping ) const {
 
-	if( system.n ) {
-		throw std::logic_error("CG can't solve KKT system with constraints. you need to turn on schur and add a response component for this");
-    }
-
     if( _preconditioner )
     {
+        if( system.n ) {
+            throw std::logic_error("CG can't solve KKT system with constraints. you need to turn on schur and add a response component for this");
+        }
+
         params_type p = params(b);
 
         kkt::matrixQ A( system );
