@@ -34,6 +34,8 @@ set(HEADER_FILES
 	numericalsolver/IterativeSolver.h
 	numericalsolver/Benchmark.h
 	numericalsolver/BenchmarkSolver.h
+    numericalsolver/PreconditionedSolver.h
+    numericalsolver/PreconditionedCgSolver.h
 
     preconditioner/BasePreconditioner.h
     preconditioner/LDLTPreconditioner.h
@@ -68,7 +70,6 @@ set(HEADER_FILES
     contact/PenalityCompliantContact.h
 	
     utils/basis.h
-    utils/bench.h
     utils/cast.h
     utils/cg.h
     utils/cone.h
@@ -114,7 +115,6 @@ set(SOURCE_FILES
     mapping/AffineMultiMapping.cpp
     mapping/OffsetMapping.cpp
 
-    numericalsolver/KKTSolver.cpp
     numericalsolver/LDLTSolver.cpp
     numericalsolver/MinresSolver.cpp
     numericalsolver/KrylovSolver.cpp
@@ -124,7 +124,9 @@ set(SOURCE_FILES
     numericalsolver/SequentialSolver.cpp
 	numericalsolver/IterativeSolver.cpp
 	numericalsolver/Benchmark.cpp
-	numericalsolver/BenchmarkSolver.cpp
+    numericalsolver/BenchmarkSolver.cpp
+    numericalsolver/PreconditionedSolver.cpp
+    numericalsolver/PreconditionedCgSolver.cpp
 
     preconditioner/LDLTPreconditioner.cpp
     #preconditioner/IncompleteCholeskyPreconditioner.cpp
@@ -185,21 +187,15 @@ AddLinkerDependencies(SofaEigen2Solver SofaUserInteraction SofaComponentMisc Sof
 AddCompilerDefinitions("BOOST_CHRONO_HEADER_ONLY")
 
 
-if(LINUX OR UNIX AND NOT APPLE) # what about apple?
+if(LINUX OR UNIX AND NOT APPLE)
     AddLinkerDependencies( rt ) # clock_gettime
 endif()
 
-# I do not understand why it is necessary but otherwise it does not link on debug mode on linux
-# is it necessary on windows and apple?
 
-# on apple you need to flag 'system' explicitely otherwise
-# ${Boost_SYSTEM_LIBRARY} is empty 
-# see http://stackoverflow.com/questions/1065672/how-to-link-against-boost-system-with-cmake/1065729#1065729
-if( APPLE )
-	find_package(Boost COMPONENTS system REQUIRED)
-endif()
-
+find_package(Boost COMPONENTS system REQUIRED)
 AddLinkerDependencies( ${Boost_SYSTEM_LIBRARY} )
+
+
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
 include(custom.cmake OPTIONAL)
