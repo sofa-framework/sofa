@@ -49,41 +49,40 @@ def createScene(node):
     # integrator
     ode = node.getObject('ode',)
     ode.stabilization = True
-    ode.stabilization_damping = 1e-1
+    ode.stabilization_damping = 0
 
     # main solver
     num = node.createObject('BenchmarkSolver', name = 'num')
 
     response = node.createObject('LDLTResponse', name = 'response')
     
-    # pgs benchmark
-    shared.pgs = node.createObject('Benchmark', name = 'bench-pgs')
-    
     iterations = 200
-    precision = 1e-8
+    precision = 1e-10
 
-    # pgs solver
+    
+    # we need compliantdev for qpsolver
+    node.createObject('RequiredPlugin', 
+                      pluginName = 'CompliantDev')
+
+    # benchmarks
+    shared.pgs = node.createObject('Benchmark', name = 'bench-pgs')
+    shared.qp = node.createObject('Benchmark', name = 'bench-qp')
+
+    # solvers
     pgs = node.createObject('SequentialSolver',
                             name = 'pgs',
                             iterations = iterations,
                             precision = precision,
                             bench = '@./bench-pgs')
 
-    # we need compliantdev for qpsolver
-    node.createObject('RequiredPlugin', 
-                      pluginName = 'CompliantDev')
-
-    # qp benchmark
-    shared.qp = node.createObject('Benchmark', name = 'bench-qp')
-    
-    # qp solver
     qp = node.createObject('QPSolver',
                            name = 'qp',
                            iterations = iterations,
                            precision = precision,
                            bench = '@./bench-qp',
                            schur = True)
-    
+
+
     # plane
     plane = Rigid.Body('plane')
     plane.visual = dir + '/mesh/ground.obj'
@@ -95,7 +94,7 @@ def createScene(node):
                              indices = '0')
 
     # boxes
-    n_boxes = 3
+    n_boxes = 5
 
     for i in xrange(n_boxes):
         box = Rigid.Body('box-{0}'.format(i))
@@ -128,10 +127,7 @@ class Controller(Sofa.PythonScriptController):
     def onBeginAnimationStep(self, dt):
         return 0
 
-    def print_report(self):
-        pass
-
-    def draw_report(self):
+    def plot_bench(self):
         plt.clf()
 
         for bench in [shared.pgs, shared.qp]:
@@ -145,16 +141,15 @@ class Controller(Sofa.PythonScriptController):
             # total time
             time = [x[0] for x in bench.duration]
             timesum = (bench.factor + np.cumsum( time )) / 1000
-            try:
+
+            if len(time) > 0:
                 plt.plot(timesum, values, label = bench.name)
-            except ValueError:
-                pass
 
         # self.ax.set_yscale('log')
         plt.yscale('log')
         plt.draw()
 
-    def print_report_bench( self, bench ):
+    def report_bench( self, bench ):
         # display the values from the bench object
         total = []
         
@@ -172,8 +167,27 @@ class Controller(Sofa.PythonScriptController):
         print 'convergence:', total
         print 'duration (ms):', timesum
         print 
+
+
+    def detailed_report_bench( self, bench ):
+        # display the values from the bench object
+        total = []
         
-    def print_report(self):
+        time = [x[0] for x in bench.duration]
+        timesum = (bench.factor + np.cumsum( time )) / 1000
+
+        print bench.name
+        print 'factor:', bench.factor / 1000, 'ms'
+
+        print 'primal:', [ x[0] for x in bench.primal ]
+        print 'dual:', [ x[0] for x in bench.dual ]
+        print 'complementarity:', [ x[0] for x in bench.complementarity ]
+        print 'convergence:', total
+        print 'duration (ms):', timesum
+        print 
+
+        
+    def report(self):
         # print benchmark report
         print 't =', self.node.getTime()
         print
@@ -183,9 +197,9 @@ class Controller(Sofa.PythonScriptController):
             
 
     def onEndAnimationStep(self, dt):
-        self.draw_report()
+        self.plot_bench()
         # self.print_report()
-        # self.print_report_bench( shared.qp )
+        self.detailed_report_bench( shared.qp )
         return 0
           
     def bwdInitGraph(self,node):

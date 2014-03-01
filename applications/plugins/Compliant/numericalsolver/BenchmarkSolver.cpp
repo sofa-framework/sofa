@@ -19,6 +19,10 @@ void BenchmarkSolver::init() {
 	
 	if( solvers.size() < 2 ) {
 		std::cerr << "warning: no other kkt solvers found" << std::endl;
+	} else {
+		std::cout << "BenchmarkSolver: dynamics/correction will use " 
+				  << solvers.back()->getName() 
+				  << std::endl;
 	}
 }
 
