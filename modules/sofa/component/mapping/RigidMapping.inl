@@ -874,6 +874,36 @@ void RigidMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/
 }
 
 
+namespace impl {
+
+template<class U, class Coord>
+static void fill_block(Eigen::Matrix<U, 3, 6>& block, const Coord& v) {
+	U x = v[0];
+	U y = v[1];
+	U z = v[2];
+				
+	// note: this is -hat(v)
+	block.template rightCols<3>() <<
+					
+		0,   z,  -y,
+		-z,  0,   x,
+		y,  -x,   0;
+}
+
+template<class U, class Coord>
+void fill_block(Eigen::Matrix<U, 2, 3>& block, const Coord& v) {
+	U x = v[0];
+	U y = v[1];
+				
+	// note: this is -hat(v)
+	block.template rightCols<1>() <<
+		-y,
+		x;
+}
+
+
+}
+
 #ifdef SOFA_HAVE_EIGEN2
 template <class TIn, class TOut>
 const helper::vector<sofa::defaulttype::BaseMatrix*>* RigidMapping<TIn, TOut>::getJs()
@@ -889,9 +919,6 @@ const helper::vector<sofa::defaulttype::BaseMatrix*>* RigidMapping<TIn, TOut>::g
 		J.resize(out.size() * NOut, in.size() * NIn);
 		J.setZero();
 
-		assert( NOut == 3 );
-        assert( NIn == 6 );
-		
 		// delicious copypasta... why do we have to deal with all this
 		// crap *inside* the mapping in the first place? ideally, the
 		// mapping should only have a (index, local_coords) list,
@@ -934,10 +961,11 @@ const helper::vector<sofa::defaulttype::BaseMatrix*>* RigidMapping<TIn, TOut>::g
 
 		// matrix chunk
 		typedef typename TOut::Real real;
-		typedef Eigen::Matrix<real, NOut, NIn> mat36;
-		mat36 block;
+		typedef Eigen::Matrix<real, NOut, NIn> block_type;
+		block_type block;
 		
-		block.template leftCols<3>().setIdentity();
+		// translation part
+		block.template leftCols<NOut>().setIdentity();
 		
 		// col indices are strictly increasing
 		for (unsigned inIdx = inIdxBegin, outIdx = 0; inIdx < inIdxEnd; ++inIdx) {
@@ -953,17 +981,8 @@ const helper::vector<sofa::defaulttype::BaseMatrix*>* RigidMapping<TIn, TOut>::g
 				
 				const Coord& v = rotatedPoints[outIdx];
 
-				real x = v[0];
-				real y = v[1];
-				real z = v[2];
-				
-				// note: this is -hat(v)
-				block.template rightCols<3>() <<
-					
-					0,   z,  -y,
-					-z,  0,   x,
-					y,  -x,   0;
-				
+				impl::fill_block(block, v);
+
 				// block is set, now insert it in sparse matrix
 				for(unsigned i = 0; i < NOut; ++i){
 					unsigned row = outIdx * NOut + i;
