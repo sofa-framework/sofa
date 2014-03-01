@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/helper/ArgumentParser.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/component/contextobject/Gravity.h>
@@ -30,6 +31,7 @@
 #include <sofa/component/odesolver/EulerSolver.h>
 #include <sofa/component/visualmodel/VisualStyle.h>
 #include <sofa/core/objectmodel/Context.h>
+#include <sofa/component/collision/SphereModel.h>
 #include <sofa/core/VecId.h>
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/Main.h>
@@ -41,10 +43,12 @@
 
 using namespace sofa::simulation::tree;
 using sofa::component::odesolver::EulerSolver;
+using namespace sofa::component::collision;
 using sofa::core::objectmodel::Data;
 using sofa::helper::ReadAccessor;
 using sofa::helper::WriteAccessor;
 using sofa::core::VecId;
+using sofa::core::objectmodel::New;
 
 //Using double by default, if you have SOFA_FLOAT in use in you sofa-default.cfg, then it will be FLOAT.
 #include <sofa/component/typedef/Sofa_typedef.h>
@@ -59,11 +63,11 @@ int main(int argc, char** argv)
     (argc,argv);
     sofa::gui::initMain();
     sofa::gui::GUIManager::Init(argv[0]);
-    sofa::gui::GUIManager::SetDimension(1200,600);
+    sofa::gui::GUIManager::SetDimension(1200,800);
 //    sofa::gui::GUIManager::SetFullScreen();
 
     // The graph root node
-    sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
+    sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
     sofa::simulation::Node::SPtr groot = sofa::simulation::getSimulation()->createNewGraph("root");
     groot->setGravity( Coord3(0,-10,0) );
 
@@ -96,11 +100,18 @@ int main(int argc, char** argv)
     particule_node->addObject(mass);
     mass->setMass( 1 );
 
+    // this currently reveals a bug
+//    // attach a collision surface to the particle
+//    SphereModel::SPtr sphere = New<SphereModel>();
+//    particule_node->addObject(sphere);
+//    sphere->defaultRadius.setValue(0.1);
+
     // Display Flags
     sofa::component::visualmodel::VisualStyle::SPtr style = sofa::core::objectmodel::New<sofa::component::visualmodel::VisualStyle>();
     groot->addObject(style);
     sofa::core::visual::DisplayFlags& flags = *style->displayFlags.beginEdit();
     flags.setShowBehaviorModels(true);
+    flags.setShowCollisionModels(true);
     style->displayFlags.endEdit();
 
     sofa::simulation::tree::getSimulation()->init(groot.get());

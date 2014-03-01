@@ -189,12 +189,10 @@ endif()
 # the link with boost-system is only necessary for debug compilation (at least on linux)
 # that means you need an installed version of boost to compile Compliant in debug, boring...
 # I loved the header-only boost
-
-# it is always necessary on osx/clang
-if(CMAKE_BUILD_TYPE STREQUAL "Debug" OR APPLE)
+#if(CMAKE_BUILD_TYPE STREQUAL "Debug")   #FF: this seems to be always required now
     find_package(Boost COMPONENTS system REQUIRED)
     AddLinkerDependencies( ${Boost_SYSTEM_LIBRARY} )
-endif()
+#endif()
 
 
 
