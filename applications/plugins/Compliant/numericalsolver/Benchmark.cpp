@@ -76,12 +76,17 @@ unsigned Benchmark::restart() {
 void Benchmark::lcp(const AssembledSystem& system, 
 					const vec& rhs,
 					const Response& response, 
-					const vec& dual) {
+					const vec& dual,
+					const vec* prec) {
 	edit(this->duration)->push_back(elapsed());
+
+	vec lambda = dual;
+	if( prec ) lambda = prec->array() * lambda.array();
+
 	vec v(system.m);
-	response.solve( v, system.P * (system.J.transpose() * dual) );
+	response.solve( v, system.P * (system.J.transpose() * lambda) );
 	
-	push( system.J * (system.P * v) - rhs, dual );
+	push( system.J * (system.P * v) - rhs, lambda );
 	edit(this->optimality)->push_back( 0 );
 	restart();
 }  
@@ -94,7 +99,8 @@ void Benchmark::qp(const AssembledSystem& system,
 	
 	push( system.J * system.P * x.head(system.m) - rhs.tail(system.n), x.tail(system.n) );
 	
-	vec opt = system.P * (system.H * (system.P * x.head(system.m)) - system.J.transpose() * x.tail(system.n) - rhs.head(system.m));
+	vec opt = system.P * (system.H * (system.P * x.head(system.m)) 
+						  - system.J.transpose() * x.tail(system.n) - rhs.head(system.m));
 
 	edit(this->optimality)->push_back( opt.norm() / system.m );
 	restart();

@@ -54,7 +54,8 @@ class SOFA_Compliant_API Benchmark : public core::objectmodel::BaseObject {
 	void lcp(const AssembledSystem& system, 
 			 const vec& rhs,	// the lcp rhs: b - J Minv f
 			 const Response& response, 
-			 const vec& dual); 
+			 const vec& dual,
+			 const vec* prec = 0); 
 	
 	// push the results for the last iteration, including elapsed
 	// time, for a QP solver. restart timer at the end.
