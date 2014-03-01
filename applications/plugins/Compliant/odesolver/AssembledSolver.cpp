@@ -484,8 +484,9 @@ using namespace core::behavior;
         MultiVecDeriv f( &vop, core::VecDerivId::force() ); // total force (stiffness + compliance) (f_k term)
         MultiVecDeriv b( &vop ); b.realloc( &vop, false, true ); // the right part of the implicit system (c_k term)
 
-        // compute forces and implicit right part
-        // warning: must be call before assemblyVisitor since the mapping's geometric stiffness depends on its child force
+        // compute forces and implicit right part warning: must be
+        // call before assemblyVisitor since the mapping's geometric
+        // stiffness depends on its child force
         compute_forces( mparams, mop, vop, f, b );
 
         // assemble system
