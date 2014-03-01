@@ -8,20 +8,27 @@ namespace linearsolver {
 
 SOFA_DECL_CLASS(LDLTResponse);
 int LDLTResponseClass = core::RegisterObject("A sparse Cholesky factorization of the response matrix.").add< LDLTResponse >();
-
+ 
 
 LDLTResponse::LDLTResponse()
-    : regularize( initData(&regularize, std::numeric_limits<real>::epsilon(), "regularize", "add identity*regularize to matrix H to make it definite."))
+    : regularize( initData(&regularize, 
+						   SReal(0), 
+						   "regularize", 
+						   "add identity*regularize to matrix H to make it definite.")),
+	  constant( initData(&constant, 
+						 false,
+						 "constant",
+						 "reuse first factorization"))
 {}
 
 void LDLTResponse::factor(const mat& H ) {
 
-    if( _constant.getValue() && !_firstFactorization ) return;
-    _firstFactorization = false;
+	bool first = (response.cols() != H.cols() );
 
+    if( constant.getValue() && !first ) return;
 
-    if( regularize.getValue() != (SReal)0.0 ) // add a tiny diagonal matrix to make H psd.
-    {
+    if( regularize.getValue() ) {
+		// add a tiny diagonal matrix to make H psd.
         system_type::rmat identity(H.rows(),H.cols());
         identity.setIdentity();
         response.compute( ( H + identity * regularize.getValue() ).selfadjointView<Eigen::Upper>() );

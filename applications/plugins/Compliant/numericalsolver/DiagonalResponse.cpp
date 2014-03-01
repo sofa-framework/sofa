@@ -11,11 +11,15 @@ SOFA_DECL_CLASS(DiagonalResponse);
 int DiagonalResponseClass = core::RegisterObject("A diagonal factorization of the response matrix.").add< DiagonalResponse >();
 
 
+DiagonalResponse::DiagonalResponse() 
+	: constant(initData(&constant, false, "constant", "reuse first factorization")) 
+{
+
+}
+
 void DiagonalResponse::factor(const mat& H ) {
 	
-    if( _constant.getValue() && !_firstFactorization ) return;
-    _firstFactorization = false;
-
+    if( constant.getValue() && diag.size() == H.rows() ) return;
 	diag = H.diagonal().cwiseInverse();
 	
 	assert( !has_nan(diag) );

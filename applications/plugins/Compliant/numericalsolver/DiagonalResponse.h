@@ -12,11 +12,15 @@ class SOFA_Compliant_API DiagonalResponse : public Response {
 public:
 	SOFA_CLASS(DiagonalResponse, Response);
 	
+	DiagonalResponse();
+
 	virtual void factor(const mat& sys);
 	virtual void solve(cmat& lval, const cmat& rval) const;
 	virtual void solve(vec& lval,  const vec& rval) const;
 
 	const vec& diagonal() const { return diag; }
+
+    Data<bool> constant;
 	
 protected:
 
