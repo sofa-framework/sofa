@@ -50,7 +50,9 @@ struct cg
         }
 
         // easy peasy
-        data d( residual );
+        data d;
+
+		d.residual( residual );
 
         natural i;
         for( i = 0; i < p.iterations && d.phi > p.precision; ++i)
@@ -62,14 +64,14 @@ struct cg
     }
 
 
-    // contains all the data needed for minres iterations
+    // contains all the data needed for cg iterations
     struct data
     {
 
 //        natural n;			// dimension
 
         vec p;			// descent direction
-        vec& r;			// residual
+        vec r;			// residual
         vec Ap;			// A(p)
 
         real phi2;		// residual squared norm
@@ -77,11 +79,13 @@ struct cg
 
         natural k;		// iteration
 
-        data( vec&r ) : r(r)
-        {
+        void residual( const vec& rr ) {
+			r = rr;
             p = r;
+			
             phi2 = r.squaredNorm();
             phi = std::sqrt( phi2 );
+			
             k = 1;
         }
 
