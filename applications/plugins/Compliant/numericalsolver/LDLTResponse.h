@@ -18,7 +18,12 @@ public:
 	virtual void solve(cmat& lval, const cmat& rval) const;
 	virtual void solve(vec& lval,  const vec& rval) const;
 
-    Data<SReal> regularize; ///< Add identity*regularize to matrix H to make it definite (this is useful with a projective contraint)
+	/// Add identity*regularize to matrix H to make it definite (this
+	/// is useful with a projective contraint)
+    Data<SReal> regularize; 
+
+	/// reuse first factorization
+	Data<bool> constant;
 
 protected:
 
