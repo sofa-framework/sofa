@@ -919,6 +919,9 @@ const helper::vector<sofa::defaulttype::BaseMatrix*>* RigidMapping<TIn, TOut>::g
 		J.resize(out.size() * NOut, in.size() * NIn);
 		J.setZero();
 
+		assert( NOut == 3 );
+		assert( NIn == 6 );
+		
 		// delicious copypasta... why do we have to deal with all this
 		// crap *inside* the mapping in the first place? ideally, the
 		// mapping should only have a (index, local_coords) list,
