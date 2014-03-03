@@ -7,7 +7,7 @@
 #include <Eigen/Core>
 
 #ifndef BOOST_CHRONO_HEADER_ONLY
-#define BOOST_CHRONO_HEADER_ONLY // to be able to use boost::chrono without linking with precompiled boost
+#define BOOST_CHRONO_HEADER_ONLY // to be able to use boost::chrono without linking with precompiled boost-chrono
 #endif
 
 #include <boost/chrono.hpp>
