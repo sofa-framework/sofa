@@ -26,7 +26,7 @@
 #define SOFA_GPU_OPENCL_OPENCLFIXEDCONSTRAINT_H
 
 #include "OpenCLTypes.h"
-#include <sofa/component/projectiveconstraintset/FixedConstraint.h>
+#include <BoundaryCondition/projectiveconstraintset/FixedConstraint.h>
 
 namespace sofa
 {

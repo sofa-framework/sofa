@@ -26,7 +26,7 @@
 #define SOFA_GPU_CUDA_CUDABARYCENTRICMAPPING_INL
 
 #include "CudaBarycentricMapping.h"
-#include <sofa/component/mapping/BarycentricMapping.inl>
+#include <BaseMechanics/BarycentricMapping.inl>
 
 namespace sofa
 {

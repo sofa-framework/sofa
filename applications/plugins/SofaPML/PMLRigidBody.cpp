@@ -39,15 +39,15 @@
 
 #include <sofa/core/objectmodel/SPtr.h>
 #include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/component/mapping/RigidMapping.h>
-#include <sofa/component/mapping/IdentityMapping.h>
-#include <sofa/component/mass/UniformMass.h>
-#include <sofa/component/mass/DiagonalMass.h>
+#include <Rigid/RigidMapping.h>
+#include <BaseMechanics/IdentityMapping.h>
+#include <BaseMechanics/UniformMass.h>
+#include <BaseMechanics/DiagonalMass.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/component/topology/MeshTopology.h>
-#include <sofa/component/collision/TriangleModel.h>
-//#include "sofa/component/collision/LineModel.h"
-//#include "sofa/component/collision/PointModel.h"
+#include <BaseTopology/MeshTopology.h>
+#include <MeshCollision/TriangleModel.h>
+//#include <MeshCollision/LineModel.h>
+//#include <MeshCollision/PointModel.h>
 //using namespace sofa::component::GL;
 //using namespace sofa::Core;
 

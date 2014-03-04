@@ -168,7 +168,7 @@ endif()
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_Flexible")
-AddLinkerDependencies(SofaEigen2Solver SofaBaseVisual)
+AddLinkerDependencies(Eigen2Solver BaseVisual)
 
 if(WIN32)
 	include_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Include")

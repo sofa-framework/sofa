@@ -34,7 +34,7 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 
 AddCompilerDefinitions("SOFA_BUILD_SOFAGUI")
-AddLinkerDependencies(SofaComponentMain SofaGraphComponent SofaBaseCollision SofaUserInteraction SofaBaseVisual)
+AddLinkerDependencies(ComponentMain GraphComponent BaseCollision UserInteraction BaseVisual)
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
 

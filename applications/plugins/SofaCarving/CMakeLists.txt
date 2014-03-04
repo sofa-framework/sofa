@@ -22,6 +22,6 @@ set(README_FILES
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES} ${README_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_SOFACARVING")
-AddLinkerDependencies(SofaComponentMain)
+AddLinkerDependencies(ComponentMain)
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

@@ -28,7 +28,7 @@
 #ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_AdaptativeSpringForceField_H
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_AdaptativeSpringForceField_H
 
-#include <sofa/component/interactionforcefield/SpringForceField.h>
+#include <Deformable/interactionforcefield/SpringForceField.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/core/MechanicalParams.h>
 

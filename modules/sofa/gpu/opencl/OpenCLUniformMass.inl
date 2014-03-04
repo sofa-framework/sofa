@@ -26,7 +26,7 @@
 #define SOFA_GPU_OPENCL_OPENCLUNIFORMMASS_INL
 
 #include "OpenCLUniformMass.h"
-#include <sofa/component/mass/UniformMass.inl>
+#include <BaseMechanics/UniformMass.inl>
 #include <sofa/helper/gl/Axis.h>
 
 namespace sofa

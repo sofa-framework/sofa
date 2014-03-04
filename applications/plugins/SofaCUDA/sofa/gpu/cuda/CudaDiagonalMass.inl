@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_COLLISION_CUDADIAGONALMASS_INL
 
 #include "CudaDiagonalMass.h"
-#include <sofa/component/mass/DiagonalMass.inl>
+#include <BaseMechanics/DiagonalMass.inl>
 
 
 namespace sofa

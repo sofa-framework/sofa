@@ -27,7 +27,7 @@
 
 #include "../deformationMapping/TriangleDeformationMapping.h"
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/container/MechanicalObject.inl>
+#include <BaseMechanics/MechanicalObject.inl>
 #include <iostream>
 using std::cerr;
 using std::endl;

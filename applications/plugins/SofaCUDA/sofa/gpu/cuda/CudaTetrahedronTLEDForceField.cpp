@@ -27,7 +27,7 @@
 #include "mycuda.h"
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/component/topology/RegularGridTopology.h>
+#include <BaseTopology/RegularGridTopology.h>
 
 namespace sofa
 {

@@ -1,7 +1,7 @@
 
 #include "CompliantSolverMerger.h"
 
-#include <sofa/component/collision/SolverMerger.h>
+#include <MiscCollision/SolverMerger.h>
 #include <sofa/helper/FnDispatcher.inl>
 
 #include "odesolver/AssembledSolver.h"

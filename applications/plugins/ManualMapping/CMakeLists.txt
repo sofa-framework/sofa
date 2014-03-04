@@ -21,7 +21,7 @@ include_directories("${SOFA_EXTLIBS_DIR}")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
-AddLinkerDependencies(SofaComponentBase)
+AddLinkerDependencies(ComponentBase)
 
 AddCompilerDefinitions("SOFA_BUILD_ManualMapping")
 

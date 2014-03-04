@@ -30,11 +30,11 @@
 #include <gtest/gtest.h>
 #include "Sofa_test.h"
 
-#include <sofa/component/linearsolver/EigenSparseMatrix.h>
-#include <sofa/component/linearsolver/SparseMatrix.h>
-#include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
-#include <sofa/component/linearsolver/FullMatrix.h>
-#include <sofa/component/linearsolver/FullVector.h>
+#include <Eigen2Solver/EigenSparseMatrix.h>
+#include <BaseLinearSolver/SparseMatrix.h>
+#include <BaseLinearSolver/CompressedRowSparseMatrix.h>
+#include <BaseLinearSolver/FullMatrix.h>
+#include <BaseLinearSolver/FullVector.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>

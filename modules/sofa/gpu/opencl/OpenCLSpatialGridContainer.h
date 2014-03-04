@@ -37,7 +37,7 @@
 #ifndef SOFA_GPU_OPENCL_OPENCLSPATIALGRIDCONTAINER_H
 #define SOFA_GPU_OPENCL_OPENCLSPATIALGRIDCONTAINER_H
 
-#include <sofa/component/container/SpatialGridContainer.h>
+#include <SphFluid/SpatialGridContainer.h>
 #include <sofa/gpu/opencl/OpenCLTypes.h>
 #include <sofa/defaulttype/Vec.h>
 #include "oclRadixSort/RadixSort.h"

@@ -33,13 +33,13 @@
  ***************************************************************************/
 
 #include "PMLBody.h"
-#include "sofa/component/odesolver/EulerSolver.h"
-#include "sofa/component/odesolver/EulerImplicitSolver.h"
-#include "sofa/component/odesolver/StaticSolver.h"
-#include "sofa/component/odesolver/RungeKutta4Solver.h"
-#include "sofa/component/linearsolver/CGLinearSolver.h"
-#include "sofa/component/linearsolver/FullMatrix.h"
-#include "sofa/component/linearsolver/FullVector.h"
+#include <ExplicitOdeSolver/EulerSolver.h>
+#include <ImplicitOdeSolver/EulerImplicitSolver.h>
+#include <ImplicitOdeSolver/StaticSolver.h>
+#include <ExplicitOdeSolver/RungeKutta4Solver.h>
+#include <BaseLinearSolver/CGLinearSolver.h>
+#include <BaseLinearSolver/FullMatrix.h>
+#include <BaseLinearSolver/FullVector.h>
 #include "sofa/core/objectmodel/SPtr.h"
 
 namespace sofa

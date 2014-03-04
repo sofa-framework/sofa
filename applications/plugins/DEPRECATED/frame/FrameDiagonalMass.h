@@ -33,7 +33,7 @@
 #include "FrameMass.h"
 #include "Blending.h"
 #include "initFrame.h"
-#include <sofa/component/topology/PointSetTopologyContainer.h>
+#include <BaseTopology/PointSetTopologyContainer.h>
 
 namespace sofa
 {

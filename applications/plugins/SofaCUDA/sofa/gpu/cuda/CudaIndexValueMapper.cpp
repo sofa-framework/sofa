@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include "CudaTypes.h"
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/component/engine/IndexValueMapper.inl>
+#include <Engine/IndexValueMapper.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 

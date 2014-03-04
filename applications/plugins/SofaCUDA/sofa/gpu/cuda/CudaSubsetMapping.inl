@@ -26,7 +26,7 @@
 #define SOFA_GPU_CUDA_CUDASUBSETMAPPING_INL
 
 #include "CudaSubsetMapping.h"
-#include <sofa/component/mapping/SubsetMapping.inl>
+#include <BaseMechanics/SubsetMapping.inl>
 
 namespace sofa
 {

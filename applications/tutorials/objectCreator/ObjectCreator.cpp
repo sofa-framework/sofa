@@ -34,27 +34,27 @@
 
 
 //Including Solvers
-#include <sofa/component/odesolver/EulerSolver.h>
-#include <sofa/component/odesolver/EulerImplicitSolver.h>
-#include <sofa/component/linearsolver/CGLinearSolver.h>
+#include <ExplicitOdeSolver/EulerSolver.h>
+#include <ImplicitOdeSolver/EulerImplicitSolver.h>
+#include <BaseLinearSolver/CGLinearSolver.h>
 
 //Including components for collision detection
-#include <sofa/component/collision/DefaultPipeline.h>
-#include <sofa/component/collision/DefaultContactManager.h>
-#include <sofa/component/collision/DefaultCollisionGroupManager.h>
-#include <sofa/component/collision/BruteForceDetection.h>
-#include <sofa/component/collision/MinProximityIntersection.h>
+#include <BaseCollision/DefaultPipeline.h>
+#include <BaseCollision/DefaultContactManager.h>
+#include <MiscCollision/DefaultCollisionGroupManager.h>
+#include <BaseCollision/BruteForceDetection.h>
+#include <BaseCollision/MinProximityIntersection.h>
 
 //Including Collision Models
-#include <sofa/component/collision/TriangleModel.h>
-#include <sofa/component/collision/LineModel.h>
-#include <sofa/component/collision/PointModel.h>
-#include <sofa/component/collision/SphereModel.h>
-#include <sofa/component/collision/CapsuleModel.h>
+#include <MeshCollision/TriangleModel.h>
+#include <MeshCollision/LineModel.h>
+#include <MeshCollision/PointModel.h>
+#include <BaseCollision/SphereModel.h>
+#include <BaseCollision/CapsuleModel.h>
 
 //Including Visual Models
-#include <sofa/component/visualmodel/VisualStyle.h>
-#include <sofa/component/visualmodel/OglModel.h>
+#include <BaseVisual/VisualStyle.h>
+#include <OpenglVisual/OglModel.h>
 
 namespace sofa
 {

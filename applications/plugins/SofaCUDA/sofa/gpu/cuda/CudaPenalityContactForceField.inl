@@ -26,7 +26,7 @@
 #define SOFA_GPU_CUDA_CUDAPENALITYCONTACTFORCEFIELD_INL
 
 #include "CudaPenalityContactForceField.h"
-#include <sofa/component/interactionforcefield/PenalityContactForceField.inl>
+#include <ObjectInteraction/PenalityContactForceField.inl>
 
 
 namespace sofa

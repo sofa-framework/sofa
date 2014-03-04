@@ -25,9 +25,9 @@
 #ifndef SOFA_COMPONENT_CONTROLLER_ARTRACKCONTROLLER_H
 #define SOFA_COMPONENT_CONTROLLER_ARTRACKCONTROLLER_H
 
-#include <sofa/component/controller/Controller.h>
+#include <UserInteraction/controller/Controller.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/component/container/ArticulatedHierarchyContainer.h>
+#include <Rigid/ArticulatedHierarchyContainer.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
 #include <ARTrackEvent.h>
 

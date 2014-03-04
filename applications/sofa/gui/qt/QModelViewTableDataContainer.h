@@ -30,7 +30,7 @@
 #ifdef TODOTOPO
 #include <sofa/component/topology/PointSubsetData.h>
 #endif
-#include <sofa/component/topology/TopologyData.h>
+#include <BaseTopology/TopologyData.h>
 
 #include "QModelViewTableUpdater.h"
 #include "QDisplayDataWidget.h"

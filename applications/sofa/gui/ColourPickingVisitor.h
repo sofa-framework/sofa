@@ -30,9 +30,9 @@
 #include <sofa/simulation/common/Visitor.h>
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/ExecParams.h>
-#include <sofa/component/collision/TriangleModel.h>
-#include <sofa/component/collision/SphereModel.h>
-#include <sofa/component/collision/MouseInteractor.h>
+#include <MeshCollision/TriangleModel.h>
+#include <BaseCollision/SphereModel.h>
+#include <UserInteraction/collision/MouseInteractor.h>
 
 namespace sofa
 {

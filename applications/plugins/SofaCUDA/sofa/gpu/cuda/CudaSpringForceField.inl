@@ -26,11 +26,11 @@
 #define SOFA_GPU_CUDA_CUDASPRINGFORCEFIELD_INL
 
 #include "CudaSpringForceField.h"
-#include <sofa/component/interactionforcefield/SpringForceField.inl>
-#include <sofa/component/interactionforcefield/StiffSpringForceField.inl>
-#include <sofa/component/interactionforcefield/MeshSpringForceField.inl>
-#include <sofa/component/interactionforcefield/TriangleBendingSprings.inl>
-#include <sofa/component/interactionforcefield/QuadBendingSprings.inl>
+#include <Deformable/interactionforcefield/SpringForceField.inl>
+#include <Deformable/interactionforcefield/StiffSpringForceField.inl>
+#include <Deformable/interactionforcefield/MeshSpringForceField.inl>
+#include <Deformable/interactionforcefield/TriangleBendingSprings.inl>
+#include <Deformable/interactionforcefield/QuadBendingSprings.inl>
 
 namespace sofa
 {

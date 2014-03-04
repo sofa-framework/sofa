@@ -28,8 +28,8 @@
 
 #include "HexaRemover.h"
 #include "MeshGenerator.inl"
-#include <sofa/component/topology/TriangleSetGeometryAlgorithms.inl>
-#include <sofa/component/topology/HexahedronSetGeometryAlgorithms.inl>
+#include <BaseTopology/TriangleSetGeometryAlgorithms.inl>
+#include <BaseTopology/HexahedronSetGeometryAlgorithms.inl>
 
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/Simulation.h>

@@ -19,7 +19,7 @@ set(SOURCE_FILES
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_ARTRACKPLUGIN")
-AddLinkerDependencies(ARTrackLib SofaUserInteraction)
+AddLinkerDependencies(ARTrackLib UserInteraction)
 
 if(WIN32)
 	AddLinkerDependencies(Ws2_32)

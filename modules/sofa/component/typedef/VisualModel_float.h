@@ -39,12 +39,12 @@
 
 
 #ifndef SOFA_NO_OPENGL
-#include <sofa/component/visualmodel/OglModel.h>
-#include <sofa/component/visualmodel/OglShaderVisualModel.h>
-#include <sofa/component/visualmodel/OglTetrahedralModel.h>
+#include <OpenglVisual/OglModel.h>
+#include <OpenglVisual/OglShaderVisualModel.h>
+#include <OpenglVisual/OglTetrahedralModel.h>
 #endif
 
-#include <sofa/component/visualmodel/VisualModelImpl.h>
+#include <BaseVisual/VisualModelImpl.h>
 
 
 #ifndef SOFA_NO_OPENGL

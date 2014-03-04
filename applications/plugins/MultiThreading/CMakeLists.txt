@@ -57,7 +57,7 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 
 AddCompilerDefinitions("SOFA_MULTITHREADING_PLUGIN" )
-AddLinkerDependencies(SofaComponentMain SofaMiscMapping)
+AddLinkerDependencies(ComponentMain MiscMapping)
 
 if(SOFA-PLUGIN_SOFACUDA)
 	AddLinkerDependencies(SofaCUDA)

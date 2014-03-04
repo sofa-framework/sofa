@@ -8,7 +8,7 @@ set(SOURCE_FILES
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
-AddLinkerDependencies(SofaSimulationTree SofaComponentMain SofaGuiMain)
+AddLinkerDependencies(SofaSimulationTree ComponentMain SofaGuiMain)
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
 

@@ -26,35 +26,35 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-#include <sofa/component/topology/PointSetTopologyAlgorithms.h>
-#include <sofa/component/topology/PointSetTopologyAlgorithms.inl>
-#include <sofa/component/topology/PointSetGeometryAlgorithms.h>
-#include <sofa/component/topology/PointSetGeometryAlgorithms.inl>
+#include <BaseTopology/PointSetTopologyAlgorithms.h>
+#include <BaseTopology/PointSetTopologyAlgorithms.inl>
+#include <BaseTopology/PointSetGeometryAlgorithms.h>
+#include <BaseTopology/PointSetGeometryAlgorithms.inl>
 
-#include <sofa/component/topology/EdgeSetTopologyAlgorithms.h>
-#include <sofa/component/topology/EdgeSetTopologyAlgorithms.inl>
-#include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
-#include <sofa/component/topology/EdgeSetGeometryAlgorithms.inl>
+#include <BaseTopology/EdgeSetTopologyAlgorithms.h>
+#include <BaseTopology/EdgeSetTopologyAlgorithms.inl>
+#include <BaseTopology/EdgeSetGeometryAlgorithms.h>
+#include <BaseTopology/EdgeSetGeometryAlgorithms.inl>
 
-#include <sofa/component/topology/TriangleSetTopologyAlgorithms.h>
-#include <sofa/component/topology/TriangleSetTopologyAlgorithms.inl>
-#include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
-#include <sofa/component/topology/TriangleSetGeometryAlgorithms.inl>
+#include <BaseTopology/TriangleSetTopologyAlgorithms.h>
+#include <BaseTopology/TriangleSetTopologyAlgorithms.inl>
+#include <BaseTopology/TriangleSetGeometryAlgorithms.h>
+#include <BaseTopology/TriangleSetGeometryAlgorithms.inl>
 
-#include <sofa/component/topology/QuadSetTopologyAlgorithms.h>
-#include <sofa/component/topology/QuadSetTopologyAlgorithms.inl>
-#include <sofa/component/topology/QuadSetGeometryAlgorithms.h>
-#include <sofa/component/topology/QuadSetGeometryAlgorithms.inl>
+#include <BaseTopology/QuadSetTopologyAlgorithms.h>
+#include <BaseTopology/QuadSetTopologyAlgorithms.inl>
+#include <BaseTopology/QuadSetGeometryAlgorithms.h>
+#include <BaseTopology/QuadSetGeometryAlgorithms.inl>
 
-#include <sofa/component/topology/TetrahedronSetTopologyAlgorithms.h>
-#include <sofa/component/topology/TetrahedronSetTopologyAlgorithms.inl>
-#include <sofa/component/topology/TetrahedronSetGeometryAlgorithms.h>
-#include <sofa/component/topology/TetrahedronSetGeometryAlgorithms.inl>
+#include <BaseTopology/TetrahedronSetTopologyAlgorithms.h>
+#include <BaseTopology/TetrahedronSetTopologyAlgorithms.inl>
+#include <BaseTopology/TetrahedronSetGeometryAlgorithms.h>
+#include <BaseTopology/TetrahedronSetGeometryAlgorithms.inl>
 
-#include <sofa/component/topology/HexahedronSetTopologyAlgorithms.h>
-#include <sofa/component/topology/HexahedronSetTopologyAlgorithms.inl>
-#include <sofa/component/topology/HexahedronSetGeometryAlgorithms.h>
-#include <sofa/component/topology/HexahedronSetGeometryAlgorithms.inl>
+#include <BaseTopology/HexahedronSetTopologyAlgorithms.h>
+#include <BaseTopology/HexahedronSetTopologyAlgorithms.inl>
+#include <BaseTopology/HexahedronSetGeometryAlgorithms.h>
+#include <BaseTopology/HexahedronSetGeometryAlgorithms.inl>
 
 
 namespace sofa

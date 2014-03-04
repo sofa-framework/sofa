@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_MAPPING_BEAMLINEARMAPPING_PARALLEL_H
 
 
-#include <sofa/component/mapping/BeamLinearMapping.h>
+#include <MiscMapping/BeamLinearMapping.h>
 
 
 #include "TaskSchedulerBoost.h"

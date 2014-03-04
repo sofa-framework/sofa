@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include <sofa/component/constraintset/LagrangianMultiplierContactConstraint.inl>
 #include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <BaseMechanics/MechanicalObject.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

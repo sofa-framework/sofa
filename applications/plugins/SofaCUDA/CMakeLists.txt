@@ -216,6 +216,6 @@ if(SOFA-CUDA_CUBLAS)
 endif()
 
 AddCompilerDefinitions("SOFA_BUILD_GPU_CUDA")
-AddLinkerDependencies(SofaHelper SofaOpenglVisual SofaEngine SofaSphFluid SofaUserInteraction SofaVolumetricData)
+AddLinkerDependencies(SofaHelper OpenglVisual Engine SphFluid UserInteraction VolumetricData)
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

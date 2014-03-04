@@ -25,7 +25,7 @@
 
 #include "GUIManager.h"
 #include "BaseGUI.h"
-#include <sofa/component/init.h>
+#include <ComponentMain/init.h>
 #include <sofa/simulation/common/xml/initXml.h>
 
 namespace sofa
