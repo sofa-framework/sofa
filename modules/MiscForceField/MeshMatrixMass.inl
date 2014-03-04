@@ -69,9 +69,9 @@ MeshMatrixMass<DataTypes, MassType>::MeshMatrixMass()
     , lumping( initData(&lumping, true, "lumping","boolean if you need to use a lumped mass matrix") )
     , printMass( initData(&printMass, false, "printMass","boolean if you want to get the totalMass") )
     , f_graph( initData(&f_graph,"graph","Graph of the controlled potential") )
-	, numericalIntegrationOrder( initData(&numericalIntegrationOrder,(size_t)2,"integrationOrder","The order of integration for numerical integration"))
-	, integrationMethod( initData(&integrationMethod,(size_t)1,"integrationMethod","=0 if exact computation is chosen (could be slow), =1 if numerical integration, =2 if expression for linear element is chosen "))
-	, numericalIntegrationMethod( initData(&numericalIntegrationMethod,(size_t)0,"numericalIntegrationMethod","The type of numerical integration method chosen"))
+    , numericalIntegrationOrder( initData(&numericalIntegrationOrder,(size_t)2,"integrationOrder","The order of integration for numerical integration"))
+    , numericalIntegrationMethod( initData(&numericalIntegrationMethod,(size_t)0,"numericalIntegrationMethod","The type of numerical integration method chosen"))
+    , integrationMethod( initData(&integrationMethod,(size_t)1,"integrationMethod","=0 if exact computation is chosen (could be slow), =1 if numerical integration, =2 if expression for linear element is chosen "))
     , topologyType(TOPOLOGY_UNKNOWN)
     , vertexMassHandler(NULL)
     , edgeMassHandler(NULL)
@@ -1511,10 +1511,6 @@ void MeshMatrixMass<DataTypes, MassType>::draw(const core::visual::VisualParams*
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
 
     const MassVector &vertexMass= vertexMassInfo.getValue();
-    const MassVector &edgeMass= edgeMassInfo.getValue();
-
-    unsigned int nbEdges=_topology->getNbEdges();
-    unsigned int v0,v1;
 
     const VecCoord& x = *this->mstate->getX();
     Coord gravityCenter;

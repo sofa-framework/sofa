@@ -45,7 +45,6 @@ using namespace sofa::defaulttype;
 
 double multinomial(const size_t n,const TetrahedronBezierIndex tbiIn)
  {
-	double val=1;
 	size_t i,ival;
 	TetrahedronBezierIndex tbi=tbiIn;
 	// divide n! with the largest of the multinomial coefficient
@@ -86,7 +85,6 @@ template< class DataTypes>
 		size_t i;
 		TetrahedronBezierIndex tbi;
 		/// precompute the factorial of the degree.
-		double degreeFactorial=(double)factorial(degree);
 		for (i=0;i<tbiArray.size();++i) {
 			tbi=tbiArray[i];
 			bernsteinCoefficientArray[i]=multinomial(degree,tbi); 
