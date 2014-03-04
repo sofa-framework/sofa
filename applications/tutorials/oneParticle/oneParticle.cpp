@@ -26,12 +26,12 @@
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
 #include <sofa/simulation/common/Node.h>
-#include <sofa/component/contextobject/Gravity.h>
+#include <GraphComponent/contextobject/Gravity.h>
 #include <sofa/component/contextobject/CoordinateSystem.h>
-#include <sofa/component/odesolver/EulerSolver.h>
-#include <sofa/component/visualmodel/VisualStyle.h>
+#include <ExplicitOdeSolver/EulerSolver.h>
+#include <BaseVisual/VisualStyle.h>
 #include <sofa/core/objectmodel/Context.h>
-#include <sofa/component/collision/SphereModel.h>
+#include <BaseCollision/SphereModel.h>
 #include <sofa/core/VecId.h>
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/Main.h>

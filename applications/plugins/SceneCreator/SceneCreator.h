@@ -29,20 +29,20 @@
 #include "initSceneCreator.h"
 #include <string>
 #include <sofa/simulation/common/Node.h>
-#include <sofa/component/loader/MeshObjLoader.h>
-#include <sofa/component/mass/UniformMass.h>
+#include <Loader/loader/MeshObjLoader.h>
+#include <BaseMechanics/UniformMass.h>
 #include <sofa/core/objectmodel/BaseData.h>
 
 // Solvers
-#include <sofa/component/odesolver/EulerImplicitSolver.h>
-#include <sofa/component/linearsolver/CGLinearSolver.h>
+#include <ImplicitOdeSolver/EulerImplicitSolver.h>
+#include <BaseLinearSolver/CGLinearSolver.h>
 
 // Box roi
-#include <sofa/component/engine/PairBoxRoi.h>
-#include <sofa/component/engine/BoxROI.h>
+#include <Engine/PairBoxRoi.h>
+#include <Engine/BoxROI.h>
 
 // Constraint
-#include <sofa/component/projectiveconstraintset/BilinearMovementConstraint.h>
+#include <BoundaryCondition/projectiveconstraintset/BilinearMovementConstraint.h>
 
 //Using double by default, if you have SOFA_FLOAT in use in you sofa-default.cfg, then it will be FLOAT.
 #include <sofa/component/typedef/Sofa_typedef.h>

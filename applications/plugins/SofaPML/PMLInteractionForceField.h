@@ -45,10 +45,10 @@
 #define PMLINTERACTIONFORCEFIELD_H
 
 #include "PMLBody.h"
-#include "sofa/component/interactionforcefield/StiffSpringForceField.h"
+#include <Deformable/interactionforcefield/StiffSpringForceField.h>
 #include "initSofaPML.h"
 
-#include "sofa/component/container/MechanicalObject.h"
+#include <BaseMechanics/MechanicalObject.h>
 #include <map>
 
 

@@ -48,9 +48,9 @@
 
 #include <StructuralComponent.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/component/topology/MeshTopology.h>
-#include <sofa/component/collision/TriangleModel.h>
-#include <sofa/component/interactionforcefield/MeshSpringForceField.h>
+#include <BaseTopology/MeshTopology.h>
+#include <MeshCollision/TriangleModel.h>
+#include <Deformable/interactionforcefield/MeshSpringForceField.h>
 
 
 #include <map>

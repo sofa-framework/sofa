@@ -25,8 +25,8 @@
 
 
 #include "Solver_test.h"
-#include <sofa/component/odesolver/EulerImplicitSolver.h>
-#include <sofa/component/linearsolver/CGLinearSolver.h>
+#include <ImplicitOdeSolver/EulerImplicitSolver.h>
+#include <BaseLinearSolver/CGLinearSolver.h>
 #include <sofa/simulation/common/Simulation.h>
 
 namespace sofa {

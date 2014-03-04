@@ -36,11 +36,11 @@
 #include <sofa/helper/gl/glText.inl>
 #include <sofa/helper/gl/template.h>
 #include <sofa/simulation/common/Simulation.h>
-#include <sofa/component/topology/TopologyData.inl>
-#include <sofa/component/container/MechanicalObject.inl>
+#include <BaseTopology/TopologyData.inl>
+#include <BaseMechanics/MechanicalObject.inl>
 #include <iostream>
 #include <sofa/simulation/tree/GNode.h>
-#include <sofa/component/loader/MeshObjLoader.h>
+#include <Loader/loader/MeshObjLoader.h>
 namespace sofa
 {
 

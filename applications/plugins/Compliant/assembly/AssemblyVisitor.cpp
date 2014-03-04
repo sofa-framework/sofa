@@ -1,8 +1,8 @@
 #include "AssemblyVisitor.h"
 
 
-#include <sofa/component/linearsolver/EigenVectorWrapper.h>
-#include <sofa/component/linearsolver/SingleMatrixAccessor.h>
+#include <Eigen2Solver/EigenVectorWrapper.h>
+#include <BaseLinearSolver/SingleMatrixAccessor.h>
 
 #include "./utils/scoped.h"
 #include "./utils/cast.h"

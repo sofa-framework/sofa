@@ -35,17 +35,17 @@
 #include <sofa/helper/fixed_array.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/system/thread/ctime.h>
-#include <sofa/component/linearsolver/FullMatrix.h>
-#include <sofa/component/linearsolver/SparseMatrix.h>
+#include <BaseLinearSolver/FullMatrix.h>
+#include <BaseLinearSolver/SparseMatrix.h>
 
-#include <sofa/component/topology/MeshTopology.h>
-#include <sofa/component/topology/RegularGridTopology.h>
-#include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
-#include <sofa/component/topology/EdgeSetGeometryAlgorithms.inl>
-#include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
-#include <sofa/component/topology/TriangleSetGeometryAlgorithms.inl>
-#include <sofa/component/topology/QuadSetGeometryAlgorithms.h>
-#include <sofa/component/topology/QuadSetGeometryAlgorithms.inl>
+#include <BaseTopology/MeshTopology.h>
+#include <BaseTopology/RegularGridTopology.h>
+#include <BaseTopology/EdgeSetGeometryAlgorithms.h>
+#include <BaseTopology/EdgeSetGeometryAlgorithms.inl>
+#include <BaseTopology/TriangleSetGeometryAlgorithms.h>
+#include <BaseTopology/TriangleSetGeometryAlgorithms.inl>
+#include <BaseTopology/QuadSetGeometryAlgorithms.h>
+#include <BaseTopology/QuadSetGeometryAlgorithms.inl>
 //#include <sofa/component/topology/PointSubset.h>
 //#include <sofa/component/topology/EdgeSubsetData.h>
 

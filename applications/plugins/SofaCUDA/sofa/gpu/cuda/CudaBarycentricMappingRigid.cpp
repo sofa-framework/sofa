@@ -24,8 +24,8 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_CUDABARYCENTRICMAPPINGRIGID_CPP
 #include "CudaTypes.h"
-#include <sofa/component/mapping/BarycentricMappingRigid.h>
-#include <sofa/component/mapping/BarycentricMappingRigid.inl>
+#include <MiscMapping/BarycentricMappingRigid.h>
+#include <MiscMapping/BarycentricMappingRigid.inl>
 
 #include <sofa/core/ObjectFactory.h>
 

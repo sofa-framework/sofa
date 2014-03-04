@@ -1,7 +1,7 @@
 #include "ConstantAssembledSolver.h"
 
-#include <sofa/component/linearsolver/EigenSparseMatrix.h>
-#include <sofa/component/linearsolver/EigenVector.h>
+#include <Eigen2Solver/EigenSparseMatrix.h>
+#include <Eigen2Solver/EigenVector.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/common/MechanicalOperations.h>
 #include <sofa/simulation/common/VectorOperations.h>

@@ -35,14 +35,14 @@
 #include <sofa/simulation/common/Simulation.h>
 
 #include "../shapeFunction/BaseShapeFunction.h"
-#include <sofa/component/topology/TopologyData.inl>
+#include <BaseTopology/TopologyData.inl>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <BaseMechanics/MechanicalObject.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/helper/kdTree.inl>
 
-#include <sofa/component/linearsolver/EigenSparseMatrix.h>
+#include <Eigen2Solver/EigenSparseMatrix.h>
 
 #include "BaseDeformationMapping.h"
 

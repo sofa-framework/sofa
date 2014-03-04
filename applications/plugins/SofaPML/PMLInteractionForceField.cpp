@@ -34,8 +34,8 @@
 
 #include "PMLInteractionForceField.h"
 
-#include "sofa/component/container/MechanicalObject.h"
-#include "sofa/component/interactionforcefield/StiffSpringForceField.h"
+#include <BaseMechanics/MechanicalObject.h>
+#include <Deformable/interactionforcefield/StiffSpringForceField.h>
 
 #include <PhysicalModel.h>
 #include <MultiComponent.h>

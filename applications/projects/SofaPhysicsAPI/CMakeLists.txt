@@ -26,7 +26,7 @@ set(SOURCE_FILES
 
 add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
 
-AddLinkerDependencies(SofaGuiMain SofaComponentMain)
+AddLinkerDependencies(SofaGuiMain ComponentMain)
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
 

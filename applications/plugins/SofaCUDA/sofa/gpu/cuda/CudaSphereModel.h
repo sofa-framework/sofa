@@ -28,7 +28,7 @@
 #include <sofa/gpu/cuda/gpucuda.h>
 #include "CudaTypes.h"
 
-#include <sofa/component/collision/SphereModel.h>
+#include <BaseCollision/SphereModel.h>
 
 namespace sofa
 {

@@ -20,19 +20,19 @@
 #include <sofa/gui/Main.h>
 #include <sofa/helper/system/FileRepository.h>
 
-#include <sofa/component/init.h>
-#include <sofa/component/mapping/SubsetMultiMapping.h>
-#include <sofa/component/mapping/DistanceMapping.h>
-#include <sofa/component/mapping/DistanceFromTargetMapping.h>
-#include <sofa/component/topology/MeshTopology.h>
-#include <sofa/component/topology/EdgeSetTopologyContainer.h>
-#include <sofa/component/collision/SphereModel.h>
-#include <sofa/component/topology/CubeTopology.h>
-#include <sofa/component/visualmodel/VisualStyle.h>
-#include <sofa/component/odesolver/EulerImplicitSolver.h>
-#include <sofa/component/odesolver/EulerSolver.h>
-#include <sofa/component/linearsolver/CGLinearSolver.h>
-#include <sofa/component/collision/OBBModel.h>
+#include <ComponentMain/init.h>
+#include <MiscMapping/SubsetMultiMapping.h>
+#include <MiscMapping/DistanceMapping.h>
+#include <MiscMapping/DistanceFromTargetMapping.h>
+#include <BaseTopology/MeshTopology.h>
+#include <BaseTopology/EdgeSetTopologyContainer.h>
+#include <BaseCollision/SphereModel.h>
+#include <BaseTopology/CubeTopology.h>
+#include <BaseVisual/VisualStyle.h>
+#include <ImplicitOdeSolver/EulerImplicitSolver.h>
+#include <ExplicitOdeSolver/EulerSolver.h>
+#include <BaseLinearSolver/CGLinearSolver.h>
+#include <BaseCollision/OBBModel.h>
 #include <sofa/simulation/tree/tree.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
 
@@ -42,11 +42,11 @@
 
 
 #include <sofa/simulation/common/Simulation.h>
-#include <sofa/component/collision/DefaultCollisionGroupManager.h>
+#include <MiscCollision/DefaultCollisionGroupManager.h>
 #include <sofa/simulation/tree/GNode.h>
 
-#include <sofa/component/topology/MeshTopology.h>
-#include <sofa/component/collision/MeshIntTool.h>
+#include <BaseTopology/MeshTopology.h>
+#include <MeshCollision/MeshIntTool.h>
 
 #include "Sofa_test.h"
 

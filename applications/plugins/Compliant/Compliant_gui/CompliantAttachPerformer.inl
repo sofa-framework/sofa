@@ -26,7 +26,7 @@
 #include "CompliantAttachPerformer.h"
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/BaseMapping.h>
-#include <sofa/component/collision/MouseInteractor.h>
+#include <UserInteraction/collision/MouseInteractor.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <iostream>
 using std::cerr;
@@ -35,7 +35,7 @@ using std::endl;
 #include "compliance/UniformCompliance.h"
 #include <sofa/simulation/common/InitVisitor.h>
 
-#include <sofa/component/mapping/DistanceFromTargetMapping.inl>
+#include <MiscMapping/DistanceFromTargetMapping.inl>
 
 
 namespace sofa

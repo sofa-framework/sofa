@@ -26,8 +26,8 @@
 #define SOFA_GPU_OPENCL_OPENCLMECHANICALOBJECT_INL
 
 #include "OpenCLMechanicalObject.h"
-#include <sofa/component/container/MechanicalObject.inl>
-#include <sofa/component/container/MappedObject.inl>
+#include <BaseMechanics/MechanicalObject.inl>
+#include <BaseMechanics/MappedObject.inl>
 #include <stdio.h>
 
 #define DEBUG_TEXT(t) //printf("   %s\t %s %d\n",t,__FILE__,__LINE__);

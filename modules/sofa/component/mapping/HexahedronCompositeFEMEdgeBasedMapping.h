@@ -31,7 +31,7 @@
 
 //#include <sofa/defaulttype/Mat.h>
 
-#include <sofa/component/mapping/HexahedronCompositeFEMMapping.h>
+#include <NonUniformFem/mapping/HexahedronCompositeFEMMapping.h>
 
 namespace sofa
 {

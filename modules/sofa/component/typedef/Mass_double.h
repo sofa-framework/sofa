@@ -39,15 +39,15 @@
 
 
 
-#include <sofa/component/mass/DiagonalMass.h>
-#include <sofa/component/forcefield/HexahedralFEMForceFieldAndMass.h>
-#include <sofa/component/forcefield/HexahedronCompositeFEMForceFieldAndMass.h>
-#include <sofa/component/forcefield/HexahedronFEMForceFieldAndMass.h>
-#include <sofa/component/mass/MatrixMass.h>
-#include <sofa/component/mass/MeshMatrixMass.h>
-#include <sofa/component/forcefield/NonUniformHexahedralFEMForceFieldAndMass.h>
-#include <sofa/component/forcefield/NonUniformHexahedronFEMForceFieldAndMass.h>
-#include <sofa/component/mass/UniformMass.h>
+#include <BaseMechanics/DiagonalMass.h>
+#include <SimpleFem/forcefield/HexahedralFEMForceFieldAndMass.h>
+#include <NonUniformFem/forcefield/HexahedronCompositeFEMForceFieldAndMass.h>
+#include <SimpleFem/forcefield/HexahedronFEMForceFieldAndMass.h>
+#include <MiscForceField/MatrixMass.h>
+#include <MiscForceField/MeshMatrixMass.h>
+#include <NonUniformFem/forcefield/NonUniformHexahedralFEMForceFieldAndMass.h>
+#include <NonUniformFem/forcefield/NonUniformHexahedronFEMForceFieldAndMass.h>
+#include <BaseMechanics/UniformMass.h>
 
 
 

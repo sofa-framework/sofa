@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_VISUALMODEL_OGRESUBMESH
 
 #include <Ogre.h>
-#include <sofa/component/visualmodel/VisualModelImpl.h>
+#include <BaseVisual/VisualModelImpl.h>
 #include "OgreShaderParameter.h"
 
 namespace sofa

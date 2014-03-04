@@ -46,17 +46,17 @@
 #include <sofa/gui/Main.h>
 #include <sofa/helper/system/FileRepository.h>
 
-#include <sofa/component/init.h>
-#include <sofa/component/mapping/SubsetMultiMapping.h>
-#include <sofa/component/topology/MeshTopology.h>
-#include <sofa/component/topology/EdgeSetTopologyContainer.h>
-#include <sofa/component/topology/RegularGridTopology.h>
-#include <sofa/component/collision/SphereModel.h>
-#include <sofa/component/topology/CubeTopology.h>
-#include <sofa/component/visualmodel/VisualStyle.h>
-#include <sofa/component/odesolver/EulerImplicitSolver.h>
-#include <sofa/component/linearsolver/CGLinearSolver.h>
-#include <sofa/component/loader/MeshObjLoader.h>
+#include <ComponentMain/init.h>
+#include <MiscMapping/SubsetMultiMapping.h>
+#include <BaseTopology/MeshTopology.h>
+#include <BaseTopology/EdgeSetTopologyContainer.h>
+#include <BaseTopology/RegularGridTopology.h>
+#include <BaseCollision/SphereModel.h>
+#include <BaseTopology/CubeTopology.h>
+#include <BaseVisual/VisualStyle.h>
+#include <ImplicitOdeSolver/EulerImplicitSolver.h>
+#include <BaseLinearSolver/CGLinearSolver.h>
+#include <Loader/loader/MeshObjLoader.h>
 
 // Include of sofaImage classes
 #ifdef SOFA_HAVE_IMAGE

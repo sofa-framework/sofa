@@ -34,10 +34,10 @@
 
 #include "PMLStiffSpringForceField.h"
 
-#include "sofa/component/container/MechanicalObject.h"
-#include "sofa/component/mass/UniformMass.h"
-#include "sofa/component/mass/DiagonalMass.h"
-#include "sofa/component/mapping/IdentityMapping.h"
+#include <BaseMechanics/MechanicalObject.h>
+#include <BaseMechanics/UniformMass.h>
+#include <BaseMechanics/DiagonalMass.h>
+#include <BaseMechanics/IdentityMapping.h>
 
 
 #include <PhysicalModel.h>

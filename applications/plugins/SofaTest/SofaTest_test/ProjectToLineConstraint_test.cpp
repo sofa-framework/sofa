@@ -25,12 +25,12 @@
 
 
 #include "Sofa_test.h"
-#include <sofa/component/init.h>
+#include <ComponentMain/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/component/topology/PointSetTopologyContainer.h>
-#include <sofa/component/projectiveconstraintset/ProjectToLineConstraint.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <BaseTopology/PointSetTopologyContainer.h>
+#include <BoundaryCondition/projectiveconstraintset/ProjectToLineConstraint.h>
+#include <BaseMechanics/MechanicalObject.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/defaulttype/VecTypes.h>
 

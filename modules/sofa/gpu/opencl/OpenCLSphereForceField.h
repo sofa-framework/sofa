@@ -26,7 +26,7 @@
 #define SOFA_GPU_OPENCL_OPENCLSPHEREFORCEFIELD_H
 
 #include "OpenCLTypes.h"
-#include <sofa/component/forcefield/SphereForceField.h>
+#include <BoundaryCondition/forcefield/SphereForceField.h>
 
 namespace sofa
 {

@@ -36,9 +36,9 @@
 #include <sofa/simulation/tree/SMPSimulation.h>
 #endif
 #include <sofa/simulation/tree/TreeSimulation.h>
-#include <sofa/component/init.h>
-#include <sofa/component/misc/ReadState.h>
-#include <sofa/component/misc/CompareState.h>
+#include <ComponentMain/init.h>
+#include <Loader/misc/ReadState.h>
+#include <Validation/CompareState.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/system/FileRepository.h>

@@ -39,9 +39,9 @@
 
 
 
-#include <sofa/component/constraintset/LinearSolverConstraintCorrection.h>
-#include <sofa/component/constraintset/PrecomputedConstraintCorrection.h>
-#include <sofa/component/constraintset/UncoupledConstraintCorrection.h>
+#include <Constraint/constraintset/LinearSolverConstraintCorrection.h>
+#include <Constraint/constraintset/PrecomputedConstraintCorrection.h>
+#include <Constraint/constraintset/UncoupledConstraintCorrection.h>
 
 
 

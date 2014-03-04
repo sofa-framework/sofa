@@ -27,7 +27,7 @@
 
 #include "PersistentContactBarycentricMapping.h"
 
-#include <sofa/component/mapping/BarycentricMapping.inl>
+#include <BaseMechanics/BarycentricMapping.inl>
 
 #include <sofa/simulation/common/AnimateEndEvent.h>
 

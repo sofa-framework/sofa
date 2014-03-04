@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_CONSTRAINTSET_PERSISTENTUNILATERALINTERACTIONCONSTRAINT_H
 #define SOFA_COMPONENT_CONSTRAINTSET_PERSISTENTUNILATERALINTERACTIONCONSTRAINT_H
 
-#include <sofa/component/constraintset/UnilateralInteractionConstraint.h>
+#include <Constraint/constraintset/UnilateralInteractionConstraint.h>
 
 #include "PersistentContact.h"
 

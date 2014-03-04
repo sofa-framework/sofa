@@ -37,7 +37,7 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Quat.h>
-#include <sofa/component/visualmodel/VisualModelImpl.h>
+#include <BaseVisual/VisualModelImpl.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/accessor.h>
 #include <sofa/helper/fixed_array.h>

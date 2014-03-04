@@ -26,7 +26,7 @@
 #define SOFA_GPU_CUDA_CUDASPHEREFORCEFIELD_H
 
 #include "CudaTypes.h"
-#include <sofa/component/forcefield/SphereForceField.h>
+#include <BoundaryCondition/forcefield/SphereForceField.h>
 
 namespace sofa
 {

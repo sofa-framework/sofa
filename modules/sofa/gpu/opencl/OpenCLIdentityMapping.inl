@@ -26,7 +26,7 @@
 #define SOFA_GPU_OPENCL_OPENCLIDENTITYMAPPING_INL
 
 #include "OpenCLIdentityMapping.h"
-#include <sofa/component/mapping/IdentityMapping.inl>
+#include <BaseMechanics/IdentityMapping.inl>
 
 namespace sofa
 {

@@ -26,7 +26,7 @@
 #define SOFA_GPU_CUDA_CUDAMECHANICALOBJECT_INL
 
 #include "CudaMechanicalObject.h"
-#include <sofa/component/container/MechanicalObject.inl>
+#include <BaseMechanics/MechanicalObject.inl>
 
 namespace sofa
 {

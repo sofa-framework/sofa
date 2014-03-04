@@ -42,7 +42,7 @@ endif()
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_MESHSTEPLOADERPLUGIN")
-AddLinkerDependencies(SofaBaseTopology)
+AddLinkerDependencies(BaseTopology)
 
 set(TKLibraries
     TKBRep

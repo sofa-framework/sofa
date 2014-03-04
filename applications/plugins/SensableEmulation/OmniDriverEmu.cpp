@@ -33,8 +33,8 @@
 
 //
 ////force feedback
-#include <sofa/component/controller/ForceFeedback.h>
-#include <sofa/component/controller/NullForceFeedback.h>
+#include <Haptics/ForceFeedback.h>
+#include <Haptics/NullForceFeedback.h>
 //
 #include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
@@ -44,7 +44,7 @@
 #include <sofa/simulation/common/Node.h>
 #include <cstring>
 
-#include <sofa/component/visualmodel/OglModel.h>
+#include <OpenglVisual/OglModel.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/core/objectmodel/MouseEvent.h>

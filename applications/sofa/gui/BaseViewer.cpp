@@ -26,7 +26,7 @@
 #include "PickHandler.h"
 
 #include <sofa/helper/Factory.inl>
-#include <sofa/component/visualmodel/VisualStyle.h>
+#include <BaseVisual/VisualStyle.h>
 #include <sofa/core/visual/DisplayFlags.h>
 
 namespace sofa

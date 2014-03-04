@@ -26,7 +26,7 @@
 #define SOFA_GPU_CUDA_CUDAPARTICLESOURCE_H
 
 #include "CudaTypes.h"
-#include <sofa/component/misc/ParticleSource.h>
+#include <SphFluid/ParticleSource.h>
 #include <sofa/core/behavior/ProjectiveConstraintSet.inl>
 
 namespace sofa

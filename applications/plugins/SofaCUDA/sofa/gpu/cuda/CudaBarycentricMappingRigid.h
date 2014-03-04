@@ -26,7 +26,7 @@
 #define SOFA_GPU_CUDA_CUDABARYCENTRICMAPPINGRIGID_H
 
 #include "CudaTypes.h"
-#include <sofa/component/mapping/BarycentricMappingRigid.h>
+#include <MiscMapping/BarycentricMappingRigid.h>
 
 namespace sofa
 {

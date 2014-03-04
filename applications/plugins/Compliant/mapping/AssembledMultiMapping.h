@@ -4,7 +4,7 @@
 #include <sofa/core/Mapping.h>
 #include <sofa/core/MultiMapping.h>
 #include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/component/linearsolver/EigenSparseMatrix.h>
+#include <Eigen2Solver/EigenSparseMatrix.h>
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/objectmodel/DataFileName.h>

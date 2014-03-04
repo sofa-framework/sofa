@@ -2,7 +2,7 @@
 #define SOFAPHYSICSDATACONTROLLER_IMPL_H
 
 #include "SofaPhysicsAPI.h"
-#include <sofa/component/misc/DataController.h>
+#include <Validation/DataController.h>
 
 class SofaPhysicsDataController::Impl
 {

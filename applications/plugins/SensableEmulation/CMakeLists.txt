@@ -29,6 +29,6 @@ include_directories(${THREADS_PTHREADS_INCLUDE_DIR})
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_SENSABLEEMULATIONPLUGIN")
-AddLinkerDependencies(SofaGuiQt SofaComponentGeneral SofaHaptics ${CMAKE_THREAD_LIBS_INIT})
+AddLinkerDependencies(SofaGuiQt ComponentGeneral Haptics ${CMAKE_THREAD_LIBS_INIT})
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

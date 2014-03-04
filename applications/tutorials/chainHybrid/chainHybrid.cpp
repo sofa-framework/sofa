@@ -34,9 +34,9 @@
 #include <sofa/helper/system/FileRepository.h>
 
 
-#include <sofa/component/loader/MeshGmshLoader.h>
-#include <sofa/component/topology/MeshTopology.h>
-#include <sofa/component/topology/RegularGridTopology.h>
+#include <Loader/loader/MeshGmshLoader.h>
+#include <BaseTopology/MeshTopology.h>
+#include <BaseTopology/RegularGridTopology.h>
 
 
 //Using double by default, if you have SOFA_FLOAT in use in you sofa-default.cfg, then it will be FLOAT.

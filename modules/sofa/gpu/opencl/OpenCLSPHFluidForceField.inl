@@ -27,7 +27,7 @@
 
 #include "OpenCLSPHFluidForceField.h"
 //#include "CPUSPHFluidForceFieldWithOpenCL.h"
-#include <sofa/component/forcefield/SPHFluidForceField.inl>
+#include <SphFluid/SPHFluidForceField.inl>
 //#include <sofa/gpu/opencl/OpenCLSpatialGridContainer.inl>
 
 namespace sofa

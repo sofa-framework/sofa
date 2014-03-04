@@ -29,7 +29,7 @@
 #include "ManifoldTriangleSetTopologyModifier.h"
 #include "ManifoldTriangleSetTopologyAlgorithms.h"
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
+#include <BaseTopology/TriangleSetGeometryAlgorithms.h>
 
 #include <algorithm>
 #include <functional>
