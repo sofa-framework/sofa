@@ -118,6 +118,25 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyEdgeDestruction(c
 }
 
 template <class DataTypes, class MassType>
+void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(const core::topology::EdgesAdded* e)
+{
+    const sofa::helper::vector< unsigned int >& edgeIndex = e->getIndexArray();
+    const sofa::helper::vector< Edge >& edges = e->getArray();
+    const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors = e->ancestorsList;
+    const sofa::helper::vector< sofa::helper::vector< double > >& coeffs = e->coefs;
+
+    applyEdgeCreation(edgeIndex, edges, ancestors, coeffs);
+}
+
+template <class DataTypes, class MassType>
+void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(const core::topology::EdgesRemoved* e)
+{
+    const sofa::helper::vector<unsigned int> & edgeRemoved = e->getArray();
+
+    applyEdgeDestruction(edgeRemoved);
+}
+
+template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyTriangleCreation(const sofa::helper::vector< unsigned int >& triangleAdded,
         const sofa::helper::vector< Triangle >& /*elems*/,
         const sofa::helper::vector< sofa::helper::vector< unsigned int > >& /*ancestors*/,
@@ -178,6 +197,25 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyTriangleDestructi
             //serr<< "mass vertex " << t[2]<< " = " << masses[t[2]]<<sendl;
         }
     }
+}
+
+template <class DataTypes, class MassType>
+void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(const core::topology::TrianglesAdded* e)
+{
+    const sofa::helper::vector< unsigned int >& triangleAdded = e->getIndexArray();
+    const sofa::helper::vector< Triangle >& elems = e->getElementArray();
+    const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors = e->ancestorsList;
+    const sofa::helper::vector< sofa::helper::vector< double > >& coefs = e->coefs;
+
+    applyTriangleCreation(triangleAdded,elems,ancestors,coefs);
+}
+
+template <class DataTypes, class MassType>
+void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(const core::topology::TrianglesRemoved* e)
+{
+    const sofa::helper::vector<unsigned int> & triangleRemoved = e->getArray();
+
+    applyTriangleDestruction(triangleRemoved);
 }
 
 template <class DataTypes, class MassType>
@@ -247,6 +285,25 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyTetrahedronDestru
 
 
 template <class DataTypes, class MassType>
+void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(const core::topology::TetrahedraAdded* e)
+{
+    const sofa::helper::vector< unsigned int >& tetrahedronAdded = e->getIndexArray();
+    const sofa::helper::vector< Tetrahedron >& elems = e->getElementArray();
+    const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors = e->ancestorsList;
+    const sofa::helper::vector< sofa::helper::vector< double > >& coefs = e->coefs;
+
+    applyTetrahedronCreation(tetrahedronAdded, elems, ancestors, coefs);
+}
+
+template <class DataTypes, class MassType>
+void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(const core::topology::TetrahedraRemoved* e)
+{
+    const sofa::helper::vector<unsigned int> & tetrahedronRemoved = e->getArray();
+
+    applyTetrahedronDestruction(tetrahedronRemoved);
+}
+
+template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyHexahedronCreation(const sofa::helper::vector< unsigned int >& hexahedronAdded,
         const sofa::helper::vector< Hexahedron >& /*elems*/,
         const sofa::helper::vector< sofa::helper::vector< unsigned int > >& /*ancestors*/,
@@ -303,6 +360,24 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyHexahedronDestruc
         }
 
     }
+}
+template <class DataTypes, class MassType>
+void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(const core::topology::HexahedraAdded* e)
+{
+    const sofa::helper::vector< unsigned int >& hexahedronAdded = e->getIndexArray();
+    const sofa::helper::vector< Hexahedron >& elems = e->getElementArray();
+    const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors = e->ancestorsList;
+    const sofa::helper::vector< sofa::helper::vector< double > >& coefs = e->coefs;
+
+    applyHexahedronCreation(hexahedronAdded,elems,ancestors,coefs);
+}
+
+template <class DataTypes, class MassType>
+void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(const core::topology::HexahedraRemoved* e)
+{
+    const sofa::helper::vector<unsigned int> & hexahedronRemoved = e->getArray();
+
+    applyHexahedronDestruction(hexahedronRemoved);
 }
 
 
