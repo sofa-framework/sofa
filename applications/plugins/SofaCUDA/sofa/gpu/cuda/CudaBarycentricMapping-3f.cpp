@@ -50,7 +50,7 @@ using namespace sofa::gpu::cuda;
 template<>
 void BarycentricMapperRegularGridTopology<CudaVec3fTypes,CudaVec3fTypes>::apply( Out::VecCoord& out, const In::VecCoord& in )
 {
-    unsigned int gridsize[3] = { topology->getNx(), topology->getNy(), topology->getNz() };
+    unsigned int gridsize[3] = { (unsigned int)topology->getNx(), (unsigned int)topology->getNy(), (unsigned int)topology->getNz() };
     out.fastResize(map.size());
     RegularGridMapperCuda3f_apply(map.size(), gridsize, map.deviceRead(), out.deviceWrite(), in.deviceRead());
 }
@@ -58,7 +58,7 @@ void BarycentricMapperRegularGridTopology<CudaVec3fTypes,CudaVec3fTypes>::apply(
 template<>
 void BarycentricMapperRegularGridTopology<CudaVec3fTypes,CudaVec3fTypes>::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
 {
-    unsigned int gridsize[3] = { topology->getNx(), topology->getNy(), topology->getNz() };
+    unsigned int gridsize[3] = { (unsigned int)topology->getNx(), (unsigned int)topology->getNy(), (unsigned int)topology->getNz() };
     out.fastResize(map.size());
     RegularGridMapperCuda3f_applyJ(map.size(), gridsize, map.deviceRead(), out.deviceWrite(), in.deviceRead());
 }
@@ -68,7 +68,7 @@ void BarycentricMapperRegularGridTopology<CudaVec3fTypes,CudaVec3fTypes>::applyJ
 {
     if (map.size() == 0) return;
     calcMapT();
-    unsigned int gridsize[3] = { topology->getNx(), topology->getNy(), topology->getNz() };
+    unsigned int gridsize[3] = { (unsigned int)topology->getNx(), (unsigned int)topology->getNy(), (unsigned int)topology->getNz() };
     unsigned int insize = out.size();
 
     RegularGridMapperCuda3f_applyJT(insize, maxNOut, gridsize, mapT.deviceRead(), out.deviceWrite(), in.deviceRead());

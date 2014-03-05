@@ -192,10 +192,6 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
         subSceneRoot = getSimulation()->createNewNode("subroot");
         nodes.push(NodeInfo(currentAiScene->mRootNode, subSceneRoot));
 
-        int articulationIndex = 0;
-        int parentIndex = 0;
-        int index = 1;
-
         int meshId = 0;
 
         // processing each node of the scene graph
@@ -584,7 +580,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
 							
 							size_t nbref = currentAiMesh->mNumBones;
 
-							for(int i = 0; i < indices.size(); ++i)
+							for(std::size_t i = 0; i < indices.size(); ++i)
 							{
 								indices[i].reserve(nbref);
 								weights[i].reserve(nbref);

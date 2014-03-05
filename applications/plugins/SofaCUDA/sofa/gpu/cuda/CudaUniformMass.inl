@@ -191,7 +191,7 @@ void UniformMass<gpu::cuda::CudaRigid3fTypes, sofa::defaulttype::RigidMass<3,flo
 	Vec3d g(this->getContext()->getGravity());
 
 	float m = mass.getValue().mass;
-	const float mg[] = { m*g(0), m*g(1), m*g(2) };
+	const float mg[] = { (float)(m*g(0)), (float)(m*g(1)), (float)(m*g(2)) };
 	UniformMassCudaRigid3f_addForce(_f.size(), mg, _f.deviceWrite());
 
 	f.endEdit();

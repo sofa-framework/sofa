@@ -151,7 +151,7 @@ void BarycentricMapperRegularGridTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn
     if (!map.empty() && maxNOut == 0)
     {
         const unsigned int insize = topology->getNbPoints();
-        const unsigned int gridsize[3] = { topology->getNx(), topology->getNy(), topology->getNz() };
+        const unsigned int gridsize[3] = { (unsigned int)topology->getNx(), (unsigned int)topology->getNy(), (unsigned int)topology->getNz() };
         // compute mapT
         const int nx = gridsize[0];
         const int nxny = gridsize[0]*gridsize[1];
