@@ -104,7 +104,6 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
     template<class ImageGaussPointSampler>
     static void midpoint(ImageGaussPointSampler* This)
     {
-        typedef typename ImageGaussPointSampler::Real Real;
         typedef typename ImageGaussPointSampler::IndTypes IndTypes;
         typedef typename ImageGaussPointSampler::raInd raInd;
         typedef typename ImageGaussPointSampler::waInd waInd;
@@ -114,7 +113,6 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
         typedef typename ImageGaussPointSampler::SeqPositions SeqPositions;
         typedef typename ImageGaussPointSampler::Coord Coord;
         typedef typename ImageGaussPointSampler::waPositions waPositions;
-        typedef typename ImageGaussPointSampler::waVolume waVolume;
         typedef typename ImageGaussPointSampler::indList indList;
         typedef typename ImageGaussPointSampler::raTransform raTransform;
         typedef typename ImageGaussPointSampler::factType factType;
@@ -396,11 +394,9 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
         typedef typename ImageGaussPointSampler::IndTypes IndTypes;
         typedef typename ImageGaussPointSampler::raInd raInd;
         typedef typename ImageGaussPointSampler::DistTypes DistTypes;
-        typedef typename ImageGaussPointSampler::DistT DistT;
         typedef typename ImageGaussPointSampler::raDist raDist;
         typedef typename ImageGaussPointSampler::waDist waDist;
         typedef typename ImageGaussPointSampler::Coord Coord;
-        typedef typename ImageGaussPointSampler::indList indList;
         typedef typename ImageGaussPointSampler::indListIt indListIt;
         typedef typename ImageGaussPointSampler::raTransform raTransform;
         typedef typename ImageGaussPointSampler::factType factType;
@@ -511,7 +507,6 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMA
         typedef typename ImageGaussPointSampler::waDist waDist;
         typedef typename ImageGaussPointSampler::Coord Coord;
         typedef typename ImageGaussPointSampler::waPositions waPositions;
-        typedef typename ImageGaussPointSampler::waVolume waVolume;
         typedef typename ImageGaussPointSampler::indList indList;
         typedef typename ImageGaussPointSampler::raTransform raTransform;
         typedef typename ImageGaussPointSampler::factType factType;
@@ -817,11 +812,9 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMA
         typedef typename ImageGaussPointSampler::IndTypes IndTypes;
         typedef typename ImageGaussPointSampler::raInd raInd;
         typedef typename ImageGaussPointSampler::DistTypes DistTypes;
-        typedef typename ImageGaussPointSampler::DistT DistT;
         typedef typename ImageGaussPointSampler::raDist raDist;
         typedef typename ImageGaussPointSampler::waDist waDist;
         typedef typename ImageGaussPointSampler::Coord Coord;
-        typedef typename ImageGaussPointSampler::indList indList;
         typedef typename ImageGaussPointSampler::indListIt indListIt;
         typedef typename ImageGaussPointSampler::raTransform raTransform;
         typedef typename ImageGaussPointSampler::factType factType;

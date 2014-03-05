@@ -492,7 +492,6 @@ struct VoronoiShapeFunctionSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE
 
         typedef typename ImageTypes::VoxelIndex VoxelIndex;
         typedef typename ImageTypes::Neighbours Neighbours;
-        typedef typename ImageTypes::NeighbourOffset NeighbourOffset;
         typedef std::pair<DistT,VoxelIndex > DistanceToPoint;
 
         // retrieve data
