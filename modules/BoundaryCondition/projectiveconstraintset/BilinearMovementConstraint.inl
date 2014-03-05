@@ -323,6 +323,24 @@ void BilinearMovementConstraint<DataTypes>::projectPosition(const core::Mechanic
 }
 
 template <class DataTypes>
+void BilinearMovementConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseMatrix* M, unsigned offset )
+{
+    // Diagonal to 0 for constraint points and 1 for other points
+    unsigned blockSize = DataTypes::deriv_total_size;
+  
+    for(size_t i=0; i<M->rows(); i++ ) 
+    { 
+        M->set(i,i,1);
+    } 
+
+    for(SetIndexArray::const_iterator it= m_indices.getValue().begin(), iend=m_indices.getValue().end(); it!=iend; it++ )
+    {
+        M->clearRowsCols((*it) * blockSize,(*it+1) * (blockSize) );
+    }
+   
+}
+
+template <class DataTypes>
 void BilinearMovementConstraint<DataTypes>::getFinalPositions( VecCoord& finalPos,DataVecCoord& xData)
 {
     // Indices of mesh points
