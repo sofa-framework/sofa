@@ -1,24 +1,6 @@
 
-   SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4
-           (c) 2006-2011 INRIA, USTL, UJF, CNRS, MGH
-
-  Authors: See Authors.txt
-
-
-SOFA is an Open Source framework primarily targeted at real-time simulation, 
-with an emphasis on medical simulation. It is mainly intended for the 
-research community to help foster newer algorithms, but can also be used as 
-an efficient prototyping tool. SOFA's advanced software architecture allows:
-(1) the creation of complex and evolving simulations by combining new algorithms with 
-    existing algorithms; 
-(2) the modification of key parameters of the simulation  such as deformable
-    behavior, surface representation, solvers, constraints, collision algorithm, etc. by 
-    simply editing an XML file; 
-(3) the synthesis of complex models from simpler ones using a scene-graph description; 
-(4) the efficient simulation of the dynamics of interacting objects using abstract 
-    equation solvers; and 
-(5) the comparison of various algorithms available in SOFA. 
-
+   SOFA, Simulation Open-Framework Architecture
+     (c) 2006-2014 INRIA, USTL, UJF, CNRS, MGH
 
 LICENSES: 
 
@@ -48,5 +30,3 @@ This library is distributed in the hope that it will be useful, but
 WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
 or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public 
 License and GNU General Public License for more details.
-
-Contact information: contact@sofa-framework.org
