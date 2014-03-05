@@ -222,8 +222,10 @@ void SequentialSolver::init() {
 	// fallback in case we missed
 	if( !response ) {
         response = new LDLTResponse();
-		std::cout << "SequentialSolver: using fallback response class: " 
-				  << response->getClassName() << std::endl;
+        this->getContext()->addObject( response );
+        std::cout << "SequentialSolver: fallback response class: "
+                  << response->getClassName()
+                  << " added to the scene" << std::endl;
 	}
 
 }
