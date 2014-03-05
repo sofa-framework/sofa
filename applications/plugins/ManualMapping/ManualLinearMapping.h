@@ -30,7 +30,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <vector>
 #include <memory>
-#include <Eigen2Solver/EigenSparseMatrix.h>
+#include <sofa/component/linearsolver/EigenSparseMatrix.h>
 #include "initManualMapping.h"
 
 

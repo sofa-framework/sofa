@@ -27,9 +27,9 @@
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include <sofa/helper/vector.h>
 
-#include <GraphComponent/configurationsetting/SofaDefaultPathSetting.h>
-#include <GraphComponent/configurationsetting/BackgroundSetting.h>
-#include <GraphComponent/configurationsetting/StatsSetting.h>
+#include <sofa/component/configurationsetting/SofaDefaultPathSetting.h>
+#include <sofa/component/configurationsetting/BackgroundSetting.h>
+#include <sofa/component/configurationsetting/StatsSetting.h>
 
 #include <algorithm>
 #include <string.h>

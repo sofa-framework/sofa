@@ -28,7 +28,7 @@
 #ifndef SOFA_DOUBLE //cuda only operates with float
 
 #include "CudaTypes.h"
-#include <BaseMechanics/UniformMass.h>
+#include <sofa/component/mass/UniformMass.h>
 
 namespace sofa
 {

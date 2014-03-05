@@ -26,12 +26,12 @@
 /* Francois Faure, 2013 */
 
 #include "Sofa_test.h"
-#include <ComponentMain/init.h>
+#include <sofa/component/init.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/simulation/common/VectorOperations.h>
-#include <BaseLinearSolver/FullVector.h>
-#include <Eigen2Solver/EigenSparseMatrix.h>
-#include <BaseMechanics/MechanicalObject.h>
+#include <sofa/component/linearsolver/FullVector.h>
+#include <sofa/component/linearsolver/EigenSparseMatrix.h>
+#include <sofa/component/container/MechanicalObject.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <plugins/SceneCreator/SceneCreator.h>
 

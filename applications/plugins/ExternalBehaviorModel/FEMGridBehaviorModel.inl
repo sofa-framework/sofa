@@ -32,9 +32,9 @@
 
 
 // internal model includes (here SOFA but could be any library)
-#include <BoundaryCondition/projectiveconstraintset/FixedConstraint.h>
-#include <ImplicitOdeSolver/EulerImplicitSolver.h>
-#include <BaseLinearSolver/CGLinearSolver.h>
+#include <sofa/component/projectiveconstraintset/FixedConstraint.h>
+#include <sofa/component/odesolver/EulerImplicitSolver.h>
+#include <sofa/component/linearsolver/CGLinearSolver.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/simulation/common/InitVisitor.h>
 #include <sofa/simulation/common/AnimateVisitor.h>

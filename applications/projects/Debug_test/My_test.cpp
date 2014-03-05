@@ -25,13 +25,13 @@
 
 #include <plugins/SofaTest/Mapping_test.h>
 #include <gtest/gtest.h>
-#include <ComponentMain/init.h>
+#include <sofa/component/init.h>
 #include <plugins/SceneCreator/SceneCreator.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 
-#include <ImplicitOdeSolver/EulerImplicitSolver.h>
-#include <BaseLinearSolver/CGLinearSolver.h>
-#include <BaseLinearSolver/FullVector.h>
+#include <sofa/component/odesolver/EulerImplicitSolver.h>
+#include <sofa/component/linearsolver/CGLinearSolver.h>
+#include <sofa/component/linearsolver/FullVector.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <plugins/SceneCreator/GetVectorVisitor.h>
 #include <plugins/SceneCreator/GetAssembledSizeVisitor.h>

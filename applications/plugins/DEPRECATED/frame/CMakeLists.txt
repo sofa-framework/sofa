@@ -88,7 +88,7 @@ set(README_FILES
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_FRAME")
-AddLinkerDependencies(SofaGuiQt SparseSolver Eigen2Solver)
+AddLinkerDependencies(SofaGuiQt SofaSparseSolver SofaEigen2Solver)
 
 if(UNIX)
     find_package(X11)

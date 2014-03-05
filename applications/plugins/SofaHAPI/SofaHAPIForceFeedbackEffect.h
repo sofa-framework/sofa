@@ -32,7 +32,7 @@
 #include <H3DUtil/AutoRef.h>
 
 #include <sofa/defaulttype/SolidTypes.h>
-#include <Haptics/ForceFeedback.h>
+#include <sofa/component/controller/ForceFeedback.h>
 
 namespace SofaHAPI
 {

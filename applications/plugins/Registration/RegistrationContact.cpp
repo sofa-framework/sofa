@@ -23,10 +23,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "RegistrationContact.inl"
-#include <MeshCollision/BarycentricContactMapper.inl>
+#include <sofa/component/collision/BarycentricContactMapper.inl>
 
-#include <MeshCollision/IdentityContactMapper.inl>
-#include <MeshCollision/RigidContactMapper.inl>
+#include <sofa/component/collision/IdentityContactMapper.inl>
+#include <sofa/component/collision/RigidContactMapper.inl>
 #include "RegistrationContactForceField.inl"
 
 namespace sofa

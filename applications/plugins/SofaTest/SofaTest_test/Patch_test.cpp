@@ -27,7 +27,7 @@
 #include "Sofa_test.h"
 #include<sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileRepository.h>
-#include <ComponentMain/init.h>
+#include <sofa/component/init.h>
 #include <sofa/core/ExecParams.h>
 
 //Including Simulation
@@ -36,11 +36,11 @@
 #include <sofa/simulation/common/Node.h>
 
 // Including constraint, force and mass
-#include <BaseTopology/RegularGridTopology.h>
-#include <BoundaryCondition/projectiveconstraintset/BilinearMovementConstraint.h>
-#include <BaseMechanics/MechanicalObject.h>
-#include <Deformable/interactionforcefield/MeshSpringForceField.h>
-#include <SimpleFem/forcefield/TetrahedronFEMForceField.h>
+#include <sofa/component/topology/RegularGridTopology.h>
+#include <sofa/component/projectiveconstraintset/BilinearMovementConstraint.h>
+#include <sofa/component/container/MechanicalObject.h>
+#include <sofa/component/interactionforcefield/MeshSpringForceField.h>
+#include <sofa/component/forcefield/TetrahedronFEMForceField.h>
 #include <sofa/core/MechanicalParams.h>
 
 #include <sofa/defaulttype/VecTypes.h>

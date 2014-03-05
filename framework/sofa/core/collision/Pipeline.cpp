@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/collision/Pipeline.h>
-//#include <BaseCollision/DiscreteIntersection.h>
+//#include <sofa/component/collision/DiscreteIntersection.h>
 //#include <sofa/simulation/common/Node.h>
 
 namespace sofa

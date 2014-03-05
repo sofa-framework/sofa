@@ -26,7 +26,7 @@
 #define SOFA_GPU_CUDA_CUDAPARTICLESREPULSIONFORCEFIELD_INL
 
 #include "CudaParticlesRepulsionForceField.h"
-#include <SphFluid/ParticlesRepulsionForceField.inl>
+#include <sofa/component/forcefield/ParticlesRepulsionForceField.inl>
 //#include <sofa/gpu/cuda/CudaSpatialGridContainer.inl>
 
 namespace sofa

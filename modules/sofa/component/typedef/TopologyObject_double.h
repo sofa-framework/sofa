@@ -39,20 +39,20 @@
 
 
 
-#include <NonUniformFem/topology/DynamicSparseGridGeometryAlgorithms.h>
-#include <NonUniformFem/topology/DynamicSparseGridTopologyAlgorithms.h>
-#include <BaseTopology/EdgeSetGeometryAlgorithms.h>
-#include <BaseTopology/EdgeSetTopologyAlgorithms.h>
-#include <BaseTopology/HexahedronSetGeometryAlgorithms.h>
-#include <BaseTopology/HexahedronSetTopologyAlgorithms.h>
-#include <BaseTopology/PointSetGeometryAlgorithms.h>
-#include <BaseTopology/PointSetTopologyAlgorithms.h>
-#include <BaseTopology/QuadSetGeometryAlgorithms.h>
-#include <BaseTopology/QuadSetTopologyAlgorithms.h>
-#include <BaseTopology/TetrahedronSetGeometryAlgorithms.h>
-#include <BaseTopology/TetrahedronSetTopologyAlgorithms.h>
-#include <BaseTopology/TriangleSetGeometryAlgorithms.h>
-#include <BaseTopology/TriangleSetTopologyAlgorithms.h>
+#include <sofa/component/topology/DynamicSparseGridGeometryAlgorithms.h>
+#include <sofa/component/topology/DynamicSparseGridTopologyAlgorithms.h>
+#include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
+#include <sofa/component/topology/EdgeSetTopologyAlgorithms.h>
+#include <sofa/component/topology/HexahedronSetGeometryAlgorithms.h>
+#include <sofa/component/topology/HexahedronSetTopologyAlgorithms.h>
+#include <sofa/component/topology/PointSetGeometryAlgorithms.h>
+#include <sofa/component/topology/PointSetTopologyAlgorithms.h>
+#include <sofa/component/topology/QuadSetGeometryAlgorithms.h>
+#include <sofa/component/topology/QuadSetTopologyAlgorithms.h>
+#include <sofa/component/topology/TetrahedronSetGeometryAlgorithms.h>
+#include <sofa/component/topology/TetrahedronSetTopologyAlgorithms.h>
+#include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
+#include <sofa/component/topology/TriangleSetTopologyAlgorithms.h>
 
 
 

@@ -8,7 +8,7 @@ set(SOURCE_FILES
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
-AddLinkerDependencies(SofaSimulationTree ComponentMain SofaGuiMain)
+AddLinkerDependencies(SofaSimulationTree SofaComponentMain SofaGuiMain)
 
 if(SOFA-LIB_SIMULATION_GRAPH_DAG)
     AddLinkerDependencies(SofaSimulationGraph)

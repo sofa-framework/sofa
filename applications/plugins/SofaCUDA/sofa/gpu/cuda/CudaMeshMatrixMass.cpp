@@ -23,13 +23,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/gpu/cuda/CudaMeshMatrixMass.inl>
-#include <MiscForceField/MeshMatrixMass.inl>
+#include <sofa/component/mass/MeshMatrixMass.inl>
 #include <sofa/core/behavior/Mass.inl>
 
-#include <BaseTopology/TriangleSetGeometryAlgorithms.inl>
-#include <BaseTopology/TetrahedronSetGeometryAlgorithms.inl>
-#include <BaseTopology/QuadSetGeometryAlgorithms.inl>
-#include <BaseTopology/HexahedronSetGeometryAlgorithms.inl>
+#include <sofa/component/topology/TriangleSetGeometryAlgorithms.inl>
+#include <sofa/component/topology/TetrahedronSetGeometryAlgorithms.inl>
+#include <sofa/component/topology/QuadSetGeometryAlgorithms.inl>
+#include <sofa/component/topology/HexahedronSetGeometryAlgorithms.inl>
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>

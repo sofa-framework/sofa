@@ -39,7 +39,7 @@
 
 
 
-#include <UserInteraction/collision/MouseInteractor.h>
+#include <sofa/component/collision/MouseInteractor.h>
 
 
 

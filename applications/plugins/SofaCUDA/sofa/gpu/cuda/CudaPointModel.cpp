@@ -25,7 +25,7 @@
 #include "CudaPointModel.h"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <BaseCollision/CubeModel.h>
+#include <sofa/component/collision/CubeModel.h>
 #include <fstream>
 #include <sofa/helper/system/gl.h>
 

@@ -27,7 +27,7 @@
 
 #include "PersistentUnilateralInteractionConstraint.h"
 
-#include <Constraint/constraintset/UnilateralInteractionConstraint.inl>
+#include <sofa/component/constraintset/UnilateralInteractionConstraint.inl>
 
 #include <sofa/helper/rmath.h>
 

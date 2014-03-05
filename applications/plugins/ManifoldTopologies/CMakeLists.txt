@@ -44,6 +44,6 @@ set(README_FILES
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_MANIFOLDTOPOLOGIES")
-AddLinkerDependencies(BaseTopology )
+AddLinkerDependencies(SofaBaseTopology )
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

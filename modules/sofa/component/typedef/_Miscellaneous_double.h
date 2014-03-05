@@ -39,15 +39,15 @@
 
 
 
-#include <Validation/DevAngleCollisionMonitor.h>
-#include <Validation/DevMonitorManager.h>
-#include <Validation/DevTensionMonitor.h>
-#include <Validation/EvalPointsDistance.h>
-#include <Validation/EvalSurfaceDistance.h>
-#include <Validation/ExtraMonitor.h>
-#include <BaseMechanics/MappedObject.h>
-#include <Validation/Monitor.h>
-#include <SphFluid/SpatialGridContainer.h>
+#include <sofa/component/misc/DevAngleCollisionMonitor.h>
+#include <sofa/component/misc/DevMonitorManager.h>
+#include <sofa/component/misc/DevTensionMonitor.h>
+#include <sofa/component/misc/EvalPointsDistance.h>
+#include <sofa/component/misc/EvalSurfaceDistance.h>
+#include <sofa/component/misc/ExtraMonitor.h>
+#include <sofa/component/container/MappedObject.h>
+#include <sofa/component/misc/Monitor.h>
+#include <sofa/component/container/SpatialGridContainer.h>
 
 
 

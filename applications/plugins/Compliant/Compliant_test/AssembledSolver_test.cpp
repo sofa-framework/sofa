@@ -2,7 +2,7 @@
 #include <plugins/Compliant/numericalsolver/LDLTSolver.h>
 #include <plugins/Compliant/Compliant_test/Compliant_test.h>
 #include <plugins/Compliant/odesolver/AssembledSolver.h>
-#include <ExplicitOdeSolver/EulerSolver.h>
+#include <sofa/component/odesolver/EulerSolver.h>
 #include <plugins/SceneCreator/SceneCreator.h>
 using namespace sofa::modeling;
 

@@ -25,7 +25,7 @@
 #ifndef CUDAOGLTETRAHEDRALMODEL_H_
 #define CUDAOGLTETRAHEDRALMODEL_H_
 
-#include <OpenglVisual/OglTetrahedralModel.h>
+#include <sofa/component/visualmodel/OglTetrahedralModel.h>
 #include <sofa/gpu/cuda/CudaTypes.h>
 
 namespace sofa

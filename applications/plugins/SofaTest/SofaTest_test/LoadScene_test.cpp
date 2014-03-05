@@ -24,7 +24,7 @@
 ******************************************************************************/
 
 #include "Sofa_test.h"
-#include <ComponentMain/init.h>
+#include <sofa/component/init.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/common/Node.h>

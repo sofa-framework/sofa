@@ -28,9 +28,9 @@
 #include "SimpleDataWidget.h"
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/LaparoscopicRigidTypes.h>
-#include <Deformable/interactionforcefield/SpringForceField.h>
-#include <Rigid/JointSpringForceField.h>
-#include <MiscForceField/GearSpringForceField.h>
+#include <sofa/component/interactionforcefield/SpringForceField.h>
+#include <sofa/component/interactionforcefield/JointSpringForceField.h>
+#include <sofa/component/interactionforcefield/GearSpringForceField.h>
 /* #include <../../../projects/vulcain/lib/DiscreteElementModel.h> */
 #include <sofa/helper/io/Mesh.h>
 

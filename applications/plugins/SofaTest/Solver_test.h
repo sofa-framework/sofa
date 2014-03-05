@@ -25,7 +25,7 @@
 
 
 #include "Sofa_test.h"
-#include <ComponentMain/init.h>
+#include <sofa/component/init.h>
 #include <plugins/SceneCreator/SceneCreator.h>
 
 namespace sofa

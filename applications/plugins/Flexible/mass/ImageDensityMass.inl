@@ -10,7 +10,7 @@
 #include <sofa/core/behavior/Mass.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
-//#include <BaseMechanics/AddMToMatrixFunctor.h>
+//#include <sofa/component/mass/AddMToMatrixFunctor.h>
 
 
 

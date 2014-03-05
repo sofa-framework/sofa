@@ -18,7 +18,7 @@ endif()
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${RC_FILES})
 
-AddLinkerDependencies(ComponentMain )
+AddLinkerDependencies(SofaComponentMain )
 
 if(UNIX)
 

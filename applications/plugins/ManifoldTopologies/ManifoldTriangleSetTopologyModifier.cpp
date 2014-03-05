@@ -26,7 +26,7 @@
 #include <sofa/core/visual/VisualParams.h>
 //#include <sofa/component/topology/TriangleSetTopologyChange.h>
 #include "ManifoldTriangleSetTopologyContainer.h"
-#include <BaseTopology/TriangleSetTopologyContainer.h>
+#include <sofa/component/topology/TriangleSetTopologyContainer.h>
 #include <algorithm>
 //#include <functional>
 #include <iostream>

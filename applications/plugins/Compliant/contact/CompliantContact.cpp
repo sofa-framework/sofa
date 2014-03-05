@@ -2,7 +2,7 @@
 
 #include "CompliantContact.h"
 
-#include <Constraint/collision/FrictionContact.inl>
+#include <sofa/component/collision/FrictionContact.inl>
 
 
 namespace sofa

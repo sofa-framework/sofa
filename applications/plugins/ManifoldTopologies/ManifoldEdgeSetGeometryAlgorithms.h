@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_MANIFOLDEDGESETGEOMETRYALGORITHMS_H
 #define SOFA_COMPONENT_TOPOLOGY_MANIFOLDEDGESETGEOMETRYALGORITHMS_H
 
-#include <BaseTopology/EdgeSetGeometryAlgorithms.h>
+#include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
 
 namespace sofa
 {

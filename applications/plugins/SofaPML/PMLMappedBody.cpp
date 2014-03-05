@@ -35,8 +35,8 @@
 
 #include "PMLMappedBody.h"
 
-#include <BaseMechanics/MechanicalObject.h>
-#include <BaseMechanics/BarycentricMapping.h>
+#include "sofa/component/container/MechanicalObject.h"
+#include "sofa/component/mapping/BarycentricMapping.h"
 
 #include <PhysicalModel.h>
 #include <MultiComponent.h>

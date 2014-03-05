@@ -32,10 +32,10 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/simulation/common/Simulation.h>
 
-#include <BaseMechanics/MechanicalObject.inl>
+#include <sofa/component/container/MechanicalObject.inl>
 #include <sofa/core/Mapping.inl>
 
-#include <Eigen2Solver/EigenSparseMatrix.h>
+#include <sofa/component/linearsolver/EigenSparseMatrix.h>
 
 
 namespace sofa

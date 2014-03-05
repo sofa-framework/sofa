@@ -3,7 +3,7 @@
 #define COMPLIANT_ASSEMBLEDMAPPING_H
 
 #include <sofa/core/Mapping.h>
-#include <Eigen2Solver/EigenSparseMatrix.h>
+#include <sofa/component/linearsolver/EigenSparseMatrix.h>
 
 namespace sofa {
 	namespace component {

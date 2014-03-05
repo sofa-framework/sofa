@@ -26,11 +26,11 @@
 #define SOFA_GPU_OPENCL_OPENCLSPRINGFORCEFIELD_INL
 
 #include "OpenCLSpringForceField.h"
-#include <Deformable/interactionforcefield/SpringForceField.inl>
-#include <Deformable/interactionforcefield/StiffSpringForceField.inl>
-#include <Deformable/interactionforcefield/MeshSpringForceField.inl>
-#include <Deformable/interactionforcefield/TriangleBendingSprings.inl>
-#include <Deformable/interactionforcefield/QuadBendingSprings.inl>
+#include <sofa/component/interactionforcefield/SpringForceField.inl>
+#include <sofa/component/interactionforcefield/StiffSpringForceField.inl>
+#include <sofa/component/interactionforcefield/MeshSpringForceField.inl>
+#include <sofa/component/interactionforcefield/TriangleBendingSprings.inl>
+#include <sofa/component/interactionforcefield/QuadBendingSprings.inl>
 
 #define DEBUG_TEXT(t) //printf("\t%s\t %s %d\n",t,__FILE__,__LINE__);
 

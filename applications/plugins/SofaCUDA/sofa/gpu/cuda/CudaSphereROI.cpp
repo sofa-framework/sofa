@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include "CudaTypes.h"
 #include <sofa/core/ObjectFactory.h>
-#include <Engine/SphereROI.inl>
+#include <sofa/component/engine/SphereROI.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 

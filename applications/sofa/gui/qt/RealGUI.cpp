@@ -57,7 +57,7 @@
 #include <sofa/gui/BaseViewer.h>
 #include <sofa/simulation/common/xml/XML.h>
 #include <sofa/simulation/common/DeactivatedNodeVisitor.h>
-#include <BaseVisual/VisualStyle.h>
+#include <sofa/component/visualmodel/VisualStyle.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/helper/system/SetDirectory.h>
 

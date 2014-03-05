@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include "CudaTypes.h"
 #include "CudaTriangleModel.h"
-#include <MeshCollision/LineModel.inl>
+#include <sofa/component/collision/LineModel.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

@@ -3,7 +3,7 @@
 
 #include "initCompliant.h"
 #include <sofa/core/behavior/ForceField.h>
-#include <Eigen2Solver/EigenSparseMatrix.h>
+#include <sofa/component/linearsolver/EigenSparseMatrix.h>
 
 
 namespace sofa

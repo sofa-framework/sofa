@@ -26,7 +26,7 @@
 #include "Binding_GridTopology.h"
 #include "Binding_MeshTopology.h"
 
-#include <BaseTopology/GridTopology.h>
+#include <sofa/component/topology/GridTopology.h>
 using namespace sofa::component::topology;
 
 extern "C" PyObject * GridTopology_setSize(PyObject *self, PyObject * args)

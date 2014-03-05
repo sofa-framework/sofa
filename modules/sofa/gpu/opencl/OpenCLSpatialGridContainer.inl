@@ -38,7 +38,7 @@
 #define SOFA_GPU_OPENCL_OPENCLSPATIALGRIDCONTAINER_INL
 
 #include <sofa/gpu/opencl/OpenCLSpatialGridContainer.h>
-#include <SphFluid/SpatialGridContainer.inl>
+#include <sofa/component/container/SpatialGridContainer.inl>
 #include <sofa/helper/gl/template.h>
 
 

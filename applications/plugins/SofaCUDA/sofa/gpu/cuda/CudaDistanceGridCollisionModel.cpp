@@ -31,7 +31,7 @@
 #include "CudaDistanceGridCollisionModel.h"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <BaseCollision/CubeModel.h>
+#include <sofa/component/collision/CubeModel.h>
 #include <fstream>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/rmath.h>

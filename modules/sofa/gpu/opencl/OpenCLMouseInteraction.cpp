@@ -29,10 +29,10 @@
 #include <sofa/gpu/opencl/OpenCLFixedConstraint.h>
 #include <sofa/gpu/opencl/OpenCLSpringForceField.h>
 
-#include <UserInteraction/collision/MouseInteractor.inl>
-#include <UserInteraction/collision/ComponentMouseInteraction.inl>
-#include <UserInteraction/collision/AttachBodyPerformer.inl>
-#include <UserInteraction/collision/FixParticlePerformer.inl>
+#include <sofa/component/collision/MouseInteractor.inl>
+#include <sofa/component/collision/ComponentMouseInteraction.inl>
+#include <sofa/component/collision/AttachBodyPerformer.inl>
+#include <sofa/component/collision/FixParticlePerformer.inl>
 #include <sofa/helper/Factory.inl>
 #include <sofa/core/ObjectFactory.h>
 

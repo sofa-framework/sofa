@@ -28,8 +28,8 @@
 #include "SofaGUI.h"
 #include <sofa/simulation/common/Node.h>
 #include <sofa/defaulttype/Vec.h>
-#include <GraphComponent/configurationsetting/ViewerSetting.h>
-#include <GraphComponent/configurationsetting/MouseButtonSetting.h>
+#include <sofa/component/configurationsetting/ViewerSetting.h>
+#include <sofa/component/configurationsetting/MouseButtonSetting.h>
 
 #include <list>
 

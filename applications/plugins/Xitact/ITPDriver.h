@@ -33,14 +33,14 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/behavior/BaseController.h>
 #include <sofa/component/visualModel/OglModel.h>
-#include <UserInteraction/controller/Controller.h>
+#include <sofa/component/controller/Controller.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/Quat.h>
 #include "XiTrocarInterface.h"
 
 //#include <sofa/gui/PickHandler.h>
 //#include <sofa/gui/qt/SofaMouseManager.h>
-#include <UserInteraction/collision/RayModel.h>
+#include <sofa/component/collision/RayModel.h>
 //#include <sofa/component/collision/HeartSimulationManager.h>
 #include "initXitact.h"
 

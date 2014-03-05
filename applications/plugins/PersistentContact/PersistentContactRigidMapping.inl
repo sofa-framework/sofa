@@ -27,7 +27,7 @@
 
 #include "PersistentContactRigidMapping.h"
 
-#include <Rigid/RigidMapping.inl>
+#include <sofa/component/mapping/RigidMapping.inl>
 
 #include <sofa/simulation/common/AnimateEndEvent.h>
 

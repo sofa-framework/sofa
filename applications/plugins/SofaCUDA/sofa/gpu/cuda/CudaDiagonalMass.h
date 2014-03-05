@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_COLLISION_CUDADIAGONALMASS_H
 
 #include "CudaTypes.h"
-#include <BaseMechanics/DiagonalMass.h>
+#include <sofa/component/mass/DiagonalMass.h>
 
 namespace sofa
 {

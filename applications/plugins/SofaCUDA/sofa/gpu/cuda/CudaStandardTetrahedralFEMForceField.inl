@@ -26,7 +26,7 @@
 #define SOFA_GPU_CUDA_CUDASTANDARDTETRAHEDRALFEMFORCEFIELD_INL
 
 #include <sofa/gpu/cuda/CudaStandardTetrahedralFEMForceField.h>
-#include <MiscFem/StandardTetrahedralFEMForceField.inl>
+#include <sofa/component/forcefield/StandardTetrahedralFEMForceField.inl>
 
 
 #define EDGEDEBUG 100

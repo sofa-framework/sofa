@@ -165,7 +165,7 @@ set(README_FILES
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_Compliant")
-AddLinkerDependencies(Eigen2Solver UserInteraction ComponentMisc SofaHelper SofaSimulationGraph)
+AddLinkerDependencies(SofaEigen2Solver SofaUserInteraction SofaComponentMisc SofaHelper SofaSimulationGraph)
 
 # is this really useful?
 #if(NOT APPLE)

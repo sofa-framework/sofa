@@ -26,7 +26,7 @@
 #define SOFA_GPU_OPENCL_OPENCLSPHFLUIDFORCEFIELD_H
 
 #include "OpenCLTypes.h"
-#include <SphFluid/SPHFluidForceField.h>
+#include <sofa/component/forcefield/SPHFluidForceField.h>
 #include <sofa/gpu/opencl/OpenCLSpatialGridContainer.h>
 
 namespace sofa

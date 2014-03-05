@@ -30,14 +30,15 @@ AddCompilerDefinitions("SOFA_PROJECT_TEST")
 
 AddLinkerDependencies(
     SofaTest
-    ComponentMain
+    SofaComponentMain
     SofaSimulationGraph
     SceneCreator
-    Eigen2Solver
-    BaseCollision
+    SofaEigen2Solver
+    SofaComponentMain
+    SofaBaseCollision
     SofaSimulationGraph
-    BoundaryCondition
-    Engine
+    SofaBoundaryCondition
+    SofaEngine
 )
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

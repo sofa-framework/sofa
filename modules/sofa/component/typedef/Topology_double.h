@@ -39,8 +39,8 @@
 
 
 
-#include <VolumetricData/mapping/ImplicitSurfaceMapping.h>
-#include <SphFluid/SPHFluidSurfaceMapping.h>
+#include <sofa/component/mapping/ImplicitSurfaceMapping.h>
+#include <sofa/component/mapping/SPHFluidSurfaceMapping.h>
 
 
 
