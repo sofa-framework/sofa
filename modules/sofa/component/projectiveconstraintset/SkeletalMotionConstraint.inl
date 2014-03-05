@@ -378,10 +378,10 @@ void SkeletalMotionConstraint<DataTypes>::draw(const core::visual::VisualParams*
             line = point + DataTypes::getCRot(jointWorldRigid).rotate(Vec3f(0.0f, 0.0f, 0.1f));
             linesZ.push_back(line);
         }
-        vparams->drawTool()->drawPoints(points, 10, Vec<4, float> (0.75f, 0.75f, 1.0f , 1));
-        vparams->drawTool()->drawLines (linesX,  2, Vec<4, float> (0.75f, 0.0f , 0.0f , 1));
-        vparams->drawTool()->drawLines (linesY,  2, Vec<4, float> (0.0f , 0.75f, 0.0f , 1));
-        vparams->drawTool()->drawLines (linesZ,  2, Vec<4, float> (0.0f , 0.0f , 0.75f, 1));
+        vparams->drawTool()->drawPoints(points, 10, Vec<4, float> (1.0f , 0.5f , 0.5f , 1.0f));
+        vparams->drawTool()->drawLines (linesX,  2, Vec<4, float> (0.75f, 0.0f , 0.0f , 1.0f));
+        vparams->drawTool()->drawLines (linesY,  2, Vec<4, float> (0.0f , 0.75f, 0.0f , 1.0f));
+        vparams->drawTool()->drawLines (linesZ,  2, Vec<4, float> (0.0f , 0.0f , 0.75f, 1.0f));
     }
 
     points.clear();

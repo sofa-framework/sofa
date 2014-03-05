@@ -58,7 +58,7 @@ Real areaProduct(const defaulttype::Vec<2,Real>& a, const defaulttype::Vec<2,Rea
 
 /// area invalid for 1-elements vectors.
 template< class Real>
-Real areaProduct(const defaulttype::Vec<1,Real>& , const defaulttype::Vec<1,Real>& )
+Real areaProduct(const defaulttype::Vec<1,Real>&, const defaulttype::Vec<1,Real>&)
 {
     assert(false);
     return (Real)0;
@@ -66,7 +66,7 @@ Real areaProduct(const defaulttype::Vec<1,Real>& , const defaulttype::Vec<1,Real
 
 /// cross product  for 2-elements vectors.
 template< class Real>
-defaulttype::Vec<2,Real> cross(const defaulttype::Vec<2,Real>& a, const defaulttype::Vec<2,Real>& b )
+defaulttype::Vec<2,Real> cross(const defaulttype::Vec<2,Real>&, const defaulttype::Vec<2,Real>&)
 {
 	assert(false);
 	return(Vec<2,Real>());
@@ -74,7 +74,7 @@ defaulttype::Vec<2,Real> cross(const defaulttype::Vec<2,Real>& a, const defaultt
 
 /// cross product  for 1-elements vectors.
 template< class Real>
-defaulttype::Vec<1,Real> cross(const defaulttype::Vec<1,Real>& a, const defaulttype::Vec<1,Real>& b )
+defaulttype::Vec<1,Real> cross(const defaulttype::Vec<1,Real>&, const defaulttype::Vec<1,Real>&)
 {
 	assert(false);
 	return(Vec<1,Real>());
@@ -89,7 +89,7 @@ inline real tripleProduct(const Vec<3,real>& a, const Vec<3,real>& b,const Vec<3
 
 /// Volume invalid for 2-elements vectors.
 template <typename real>
-inline real tripleProduct(const Vec<2,real>& , const Vec<2,real>& , const Vec<2,real> &)
+inline real tripleProduct(const Vec<2,real>&, const Vec<2,real>&, const Vec<2,real> &)
 {
     assert(false);
     return (real)0;
@@ -97,7 +97,7 @@ inline real tripleProduct(const Vec<2,real>& , const Vec<2,real>& , const Vec<2,
 
 /// Volume invalid for 1-elements vectors.
 template <typename real>
-inline real tripleProduct(const Vec<1,real>& , const Vec<1,real>& , const Vec<1,real> &)
+inline real tripleProduct(const Vec<1,real>&, const Vec<1,real>&, const Vec<1,real> &)
 {
     assert(false);
     return (real)0;
@@ -177,7 +177,6 @@ Real binomialVector(const Vec<N,unsigned char>  tbi1,const Vec<N,unsigned char> 
 {
 	size_t j;
 	Real result=(Real)1;
-	size_t totalDegree=0;
 	for (j=0;j<N;++j) {
 		result*=binomial<Real>(tbi1[j],tbi2[j]);
 	}
