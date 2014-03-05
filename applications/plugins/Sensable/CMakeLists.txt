@@ -27,6 +27,6 @@ include_directories(${OPENHAPTICS_UTIL_INCLUDE_DIR})
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_SENSABLEPLUGIN")
-AddLinkerDependencies(SofaGuiQt ComponentGeneral BaseCollision Haptics ${OPENHAPTICS_LIBRARIES})
+AddLinkerDependencies(SofaGuiQt SofaComponentGeneral SofaBaseCollision SofaHaptics ${OPENHAPTICS_LIBRARIES})
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

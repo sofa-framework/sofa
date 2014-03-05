@@ -27,7 +27,7 @@
 
 #include "PythonMacros.h"
 
-#include <Deformable/interactionforcefield/SpringForceField.h>
+#include <sofa/component/interactionforcefield/SpringForceField.h>
 using namespace sofa::component::interactionforcefield;
 
 SP_DECLARE_CLASS_TYPE(LinearSpring)

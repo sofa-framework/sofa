@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define RIGIDTOQUATENGINE_CPP
 
-#include <Engine/RigidToQuatEngine.inl>
+#include <sofa/component/engine/RigidToQuatEngine.inl>
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>

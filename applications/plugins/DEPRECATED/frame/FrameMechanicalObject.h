@@ -25,7 +25,7 @@
 #ifndef FRAME_FRAMEMECHANICALOBJECT_H
 #define FRAME_FRAMEMECHANICALOBJECT_H
 
-#include <BaseMechanics/MechanicalObject.h>
+#include <sofa/component/container/MechanicalObject.h>
 #include "QuadraticTypes.h"
 #include "AffineTypes.h"
 #include "DeformationGradientTypes.h"

@@ -26,7 +26,7 @@
 #define SOFA_GPU_CUDA_CUDAELLIPSOIDFORCEFIELD_INL
 
 #include "CudaEllipsoidForceField.h"
-#include <BoundaryCondition/forcefield/EllipsoidForceField.inl>
+#include <sofa/component/forcefield/EllipsoidForceField.inl>
 
 namespace sofa
 {

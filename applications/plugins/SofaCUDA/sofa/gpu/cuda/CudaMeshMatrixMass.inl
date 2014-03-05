@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_MASS_CUDAMESHMATRIXMASS_INL
 
 #include "CudaMeshMatrixMass.h"
-#include <MiscForceField/MeshMatrixMass.inl>
+#include <sofa/component/mass/MeshMatrixMass.inl>
 #include <sofa/gpu/cuda/CudaTypes.h>
 
 namespace sofa

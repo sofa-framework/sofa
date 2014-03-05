@@ -39,7 +39,7 @@
 
 
 
-#include <OpenglVisual/OglTetrahedralModel.h>
+#include <sofa/component/visualmodel/OglTetrahedralModel.h>
 
 
 

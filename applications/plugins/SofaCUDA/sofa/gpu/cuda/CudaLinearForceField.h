@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "CudaTypes.h"
-#include <BoundaryCondition/forcefield/LinearForceField.h>
+#include <sofa/component/forcefield/LinearForceField.h>
 #include <sofa/core/behavior/ForceField.inl>
 
 namespace sofa

@@ -67,7 +67,7 @@ Year = {2009}                                                                   
 
 #include "CudaTypes.h"
 #include <sofa/core/behavior/ForceField.h>
-#include <BaseTopology/MeshTopology.h>
+#include <sofa/component/topology/MeshTopology.h>
 
 
 namespace sofa

@@ -34,12 +34,12 @@
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/simulation/common/Node.h>
 
-#include <BaseMechanics/MechanicalObject.h>
+#include <sofa/component/container/MechanicalObject.h>
 
-#include <UserInteraction/collision/RayModel.h>
-#include <UserInteraction/collision/MouseInteractor.h>
+#include <sofa/component/collision/RayModel.h>
+#include <sofa/component/collision/MouseInteractor.h>
 
-#include <GraphComponent/configurationsetting/MouseButtonSetting.h>
+#include <sofa/component/configurationsetting/MouseButtonSetting.h>
 
 #include <sofa/helper/fixed_array.h>
 #include <sofa/helper/gl/FrameBufferObject.h>

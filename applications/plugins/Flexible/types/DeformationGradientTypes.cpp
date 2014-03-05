@@ -28,7 +28,7 @@
 #include "../types/DeformationGradientTypes.h"
 #include <sofa/core/ObjectFactory.h>
 
-#include <BaseMechanics/MechanicalObject.inl>
+#include <sofa/component/container/MechanicalObject.inl>
 
 namespace sofa
 {

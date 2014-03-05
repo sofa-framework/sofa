@@ -53,7 +53,7 @@
 
 #include <sofa/simulation/common/PropagateEventVisitor.h>
 #ifdef SOFA_SMP
-#include <BaseVisual/VisualModelImpl.h>
+#include <sofa/component/visualmodel/VisualModelImpl.h>
 #include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/simulation/common/CollisionVisitor.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>

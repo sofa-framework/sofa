@@ -39,21 +39,21 @@
 
 
 
-#include <ObjectInteraction/BoxStiffSpringForceField.h>
-#include <Deformable/interactionforcefield/FrameSpringForceField.h>
-#include <MiscForceField/GearSpringForceField.h>
-#include <ObjectInteraction/InteractionEllipsoidForceField.h>
-#include <Rigid/JointSpringForceField.h>
-#include <MiscForceField/LineBendingSprings.h>
-#include <Deformable/interactionforcefield/MeshSpringForceField.h>
-#include <ObjectInteraction/PenalityContactForceField.h>
-#include <Deformable/interactionforcefield/QuadBendingSprings.h>
-#include <Deformable/interactionforcefield/RegularGridSpringForceField.h>
-#include <ObjectInteraction/RepulsiveSpringForceField.h>
-#include <Deformable/interactionforcefield/SpringForceField.h>
-#include <Deformable/interactionforcefield/StiffSpringForceField.h>
-#include <Deformable/interactionforcefield/TriangleBendingSprings.h>
-#include <Deformable/interactionforcefield/VectorSpringForceField.h>
+#include <sofa/component/interactionforcefield/BoxStiffSpringForceField.h>
+#include <sofa/component/interactionforcefield/FrameSpringForceField.h>
+#include <sofa/component/interactionforcefield/GearSpringForceField.h>
+#include <sofa/component/interactionforcefield/InteractionEllipsoidForceField.h>
+#include <sofa/component/interactionforcefield/JointSpringForceField.h>
+#include <sofa/component/interactionforcefield/LineBendingSprings.h>
+#include <sofa/component/interactionforcefield/MeshSpringForceField.h>
+#include <sofa/component/interactionforcefield/PenalityContactForceField.h>
+#include <sofa/component/interactionforcefield/QuadBendingSprings.h>
+#include <sofa/component/interactionforcefield/RegularGridSpringForceField.h>
+#include <sofa/component/interactionforcefield/RepulsiveSpringForceField.h>
+#include <sofa/component/interactionforcefield/SpringForceField.h>
+#include <sofa/component/interactionforcefield/StiffSpringForceField.h>
+#include <sofa/component/interactionforcefield/TriangleBendingSprings.h>
+#include <sofa/component/interactionforcefield/VectorSpringForceField.h>
 
 
 

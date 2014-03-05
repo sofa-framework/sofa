@@ -25,7 +25,7 @@
 #ifndef FRAME_FRAMECONSTANTFROCEFIELD_H
 #define FRAME_FRAMECONSTANTFROCEFIELD_H
 
-#include <BoundaryCondition/forcefield/ConstantForceField.h>
+#include <sofa/component/forcefield/ConstantForceField.h>
 #include "AffineTypes.h"
 #include "DeformationGradientTypes.h"
 #include "initFrame.h"

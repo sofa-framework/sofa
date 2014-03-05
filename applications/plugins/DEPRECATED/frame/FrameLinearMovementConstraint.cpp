@@ -25,7 +25,7 @@
 #define FRAME_FRAMELINEARMOVEMENTCONSTRAINT_CPP
 
 #include "FrameLinearMovementConstraint.h"
-#include <BoundaryCondition/projectiveconstraintset/LinearMovementConstraint.inl>
+#include <sofa/component/projectiveconstraintset/LinearMovementConstraint.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/gl/template.h>
 #include <iostream>

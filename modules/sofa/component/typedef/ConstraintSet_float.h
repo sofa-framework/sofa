@@ -39,11 +39,11 @@
 
 
 
-#include <Constraint/constraintset/DOFBlockerLMConstraint.h>
-#include <Constraint/constraintset/DistanceLMConstraint.h>
-#include <Constraint/constraintset/DistanceLMContactConstraint.h>
-#include <Constraint/constraintset/FixedLMConstraint.h>
-#include <Constraint/constraintset/UnilateralInteractionConstraint.h>
+#include <sofa/component/constraintset/DOFBlockerLMConstraint.h>
+#include <sofa/component/constraintset/DistanceLMConstraint.h>
+#include <sofa/component/constraintset/DistanceLMContactConstraint.h>
+#include <sofa/component/constraintset/FixedLMConstraint.h>
+#include <sofa/component/constraintset/UnilateralInteractionConstraint.h>
 
 
 

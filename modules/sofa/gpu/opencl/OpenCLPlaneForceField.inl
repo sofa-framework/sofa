@@ -26,7 +26,7 @@
 #define SOFA_GPU_OPENCL_OPENCLPLANEFORCEFIELD_INL
 
 #include "OpenCLPlaneForceField.h"
-#include <BoundaryCondition/forcefield/PlaneForceField.inl>
+#include <sofa/component/forcefield/PlaneForceField.inl>
 
 namespace sofa
 {

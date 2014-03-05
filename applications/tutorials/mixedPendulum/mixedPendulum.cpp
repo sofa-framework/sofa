@@ -27,11 +27,11 @@
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
-#include <GraphComponent/contextobject/Gravity.h>
-#include <ExplicitOdeSolver/EulerSolver.h>
-#include <ImplicitOdeSolver/StaticSolver.h>
-#include <OpenglVisual/OglModel.h>
-#include <BaseVisual/VisualStyle.h>
+#include <sofa/component/contextobject/Gravity.h>
+#include <sofa/component/odesolver/EulerSolver.h>
+#include <sofa/component/odesolver/StaticSolver.h>
+#include <sofa/component/visualmodel/OglModel.h>
+#include <sofa/component/visualmodel/VisualStyle.h>
 // gui
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/Main.h>

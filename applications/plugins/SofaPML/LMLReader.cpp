@@ -45,7 +45,7 @@
 #include "sofa/defaulttype/Vec3Types.h"
 #include "sofa/defaulttype/RigidTypes.h"
 #include "sofa/core/objectmodel/BaseObject.h"
-#include <BoundaryCondition/projectiveconstraintset/FixedConstraint.h>
+#include "sofa/component/projectiveconstraintset/FixedConstraint.h"
 
 namespace sofa
 {

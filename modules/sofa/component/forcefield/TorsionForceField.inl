@@ -1,6 +1,6 @@
 #include <sofa/component/forcefield/TorsionForceField.h>
 #include <sofa/defaulttype/BaseMatrix.h>
-#include <BaseLinearSolver/CompressedRowSparseMatrix.h>
+#include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
 
 namespace sofa
 {

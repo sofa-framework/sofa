@@ -39,20 +39,20 @@
 
 
 
-#include <ObjectInteraction/AttachConstraint.h>
-#include <BoundaryCondition/projectiveconstraintset/FixedConstraint.h>
-#include <BoundaryCondition/projectiveconstraintset/FixedPlaneConstraint.h>
-#include <BoundaryCondition/projectiveconstraintset/FixedRotationConstraint.h>
-#include <BoundaryCondition/projectiveconstraintset/FixedTranslationConstraint.h>
-#include <BoundaryCondition/projectiveconstraintset/HermiteSplineConstraint.h>
-#include <BoundaryCondition/projectiveconstraintset/LinearMovementConstraint.h>
-#include <BoundaryCondition/projectiveconstraintset/LinearVelocityConstraint.h>
-#include <BoundaryCondition/projectiveconstraintset/OscillatorConstraint.h>
-#include <BoundaryCondition/projectiveconstraintset/ParabolicConstraint.h>
-#include <BoundaryCondition/projectiveconstraintset/PartialFixedConstraint.h>
-#include <BoundaryCondition/projectiveconstraintset/PartialLinearMovementConstraint.h>
-#include <SphFluid/ParticleSink.h>
-#include <SphFluid/ParticleSource.h>
+#include <sofa/component/projectiveconstraintset/AttachConstraint.h>
+#include <sofa/component/projectiveconstraintset/FixedConstraint.h>
+#include <sofa/component/projectiveconstraintset/FixedPlaneConstraint.h>
+#include <sofa/component/projectiveconstraintset/FixedRotationConstraint.h>
+#include <sofa/component/projectiveconstraintset/FixedTranslationConstraint.h>
+#include <sofa/component/projectiveconstraintset/HermiteSplineConstraint.h>
+#include <sofa/component/projectiveconstraintset/LinearMovementConstraint.h>
+#include <sofa/component/projectiveconstraintset/LinearVelocityConstraint.h>
+#include <sofa/component/projectiveconstraintset/OscillatorConstraint.h>
+#include <sofa/component/projectiveconstraintset/ParabolicConstraint.h>
+#include <sofa/component/projectiveconstraintset/PartialFixedConstraint.h>
+#include <sofa/component/projectiveconstraintset/PartialLinearMovementConstraint.h>
+#include <sofa/component/misc/ParticleSink.h>
+#include <sofa/component/misc/ParticleSource.h>
 
 
 

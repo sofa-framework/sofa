@@ -26,7 +26,7 @@
 #define SOFA_GPU_CUDA_CUDABARYCENTRICMAPPING_H
 
 #include "CudaTypes.h"
-#include <BaseMechanics/BarycentricMapping.h>
+#include <sofa/component/mapping/BarycentricMapping.h>
 #include <sofa/core/behavior/MechanicalState.h>
 
 namespace sofa

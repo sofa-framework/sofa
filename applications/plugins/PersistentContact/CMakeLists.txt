@@ -37,6 +37,6 @@ set(README_FILES
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_PERSISTENTCONTACT")
-AddLinkerDependencies(SofaHelper MeshCollision Constraint )
+AddLinkerDependencies(SofaHelper SofaMeshCollision SofaConstraint )
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

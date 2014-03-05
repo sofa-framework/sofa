@@ -51,7 +51,7 @@ endif()
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_COLLADASCENELOADER")
-AddLinkerDependencies(Loader SofaSimulationCommon BaseMechanics Rigid BoundaryCondition BaseTopology BaseVisual OpenglVisual Deformable MeshCollision ${ASSIMP_LIBRARY})
+AddLinkerDependencies(SofaLoader SofaSimulationCommon SofaBaseMechanics SofaRigid SofaBoundaryCondition SofaBaseTopology SofaBaseVisual SofaOpenglVisual SofaDeformable SofaMeshCollision ${ASSIMP_LIBRARY})
 
 if(SOFA-PLUGIN_FLEXIBLE)
 	AddLinkerDependencies(Flexible)

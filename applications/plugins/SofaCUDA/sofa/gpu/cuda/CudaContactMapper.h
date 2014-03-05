@@ -25,9 +25,9 @@
 #ifndef SOFA_GPU_CUDA_CUDACONTACTMAPPER_H
 #define SOFA_GPU_CUDA_CUDACONTACTMAPPER_H
 
-#include <MeshCollision/BarycentricContactMapper.h>
-#include <MeshCollision/RigidContactMapper.inl>
-#include <MeshCollision/SubsetContactMapper.inl>
+#include <sofa/component/collision/BarycentricContactMapper.h>
+#include <sofa/component/collision/RigidContactMapper.inl>
+#include <sofa/component/collision/SubsetContactMapper.inl>
 #include <sofa/gpu/cuda/CudaDistanceGridCollisionModel.h>
 #include <sofa/gpu/cuda/CudaPointModel.h>
 #include <sofa/gpu/cuda/CudaSphereModel.h>

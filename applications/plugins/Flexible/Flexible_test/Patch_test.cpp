@@ -1,3 +1,4 @@
+
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
 *                (c) 2006-2011 INRIA, USTL, UJF, CNRS, MGH                    *
@@ -26,7 +27,7 @@
 #include <plugins/SofaTest/Sofa_test.h>
 #include<sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileRepository.h>
-#include <ComponentMain/init.h>
+#include <sofa/component/init.h>
 #include <sofa/core/ExecParams.h>
 
 //Including Simulation
@@ -35,8 +36,8 @@
 #include <sofa/simulation/common/Node.h>
 
 // Including component
-#include <BoundaryCondition/projectiveconstraintset/BilinearMovementConstraint.h>
-#include <BaseMechanics/MechanicalObject.h>
+#include <sofa/component/projectiveconstraintset/BilinearMovementConstraint.h>
+#include <sofa/component/container/MechanicalObject.h>
 
 
 namespace sofa {
@@ -45,18 +46,13 @@ namespace sofa {
     using namespace defaulttype;
 
     /**  Patch test in 3D with Flexible. The tested scene is contained in share/tests/Flexible/PatchTest.scn.
-    A movement is applied to the borders of a mesh. The points within should have a linear movement relative to the border movements.
-    * This screenshot explain how the patch test works:
-    *  \image html PatchTest.png
-   */
+    A movement is applied to the borders of a mesh. The points within should have a bilinear movement relative to the border movements.*/
 
     template <typename _DataTypes>
     struct Patch_test : public Sofa_test<typename _DataTypes::Real>
     {
         typedef _DataTypes DataTypes;
-        typedef typename DataTypes::CPos CPos;
         typedef typename DataTypes::VecCoord VecCoord;
-        typedef typename DataTypes::VecDeriv VecDeriv;
         typedef projectiveconstraintset::BilinearMovementConstraint<DataTypes> BilinearMovementConstraint;
         typedef container::MechanicalObject<DataTypes> MechanicalObject;
 
@@ -82,57 +78,30 @@ namespace sofa {
             root = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()));
         }
 
-        bool compareSimulatedToTheoreticalPositions(double convergenceAccuracy, double diffMaxBetweenSimulatedAndTheoreticalPosition)
+        bool test_projectPosition()
         {
             // Init simulation
             sofa::simulation::getSimulation()->init(root.get());
 
-            // Compute the theoretical final positions    
-            VecCoord finalPos;
-            typename BilinearMovementConstraint::SPtr bilinearConstraint  = root->get<BilinearMovementConstraint>(root->SearchDown);
-            typename MechanicalObject::SPtr dofs = root->get<MechanicalObject>(root->SearchDown);
-            typename MechanicalObject::WriteVecCoord x = dofs->writePositions();
-            bilinearConstraint->getFinalPositions( finalPos,*dofs->write(core::VecCoordId::position()) );
-            
-            // Initialize
-            size_t numNodes = finalPos.size();
-            VecCoord xprev(numNodes);
-            VecDeriv dx(numNodes); 
-            bool hasConverged = true;
-            
-            for (size_t i=0; i<numNodes; i++)
-            {
-                xprev[i] = CPos(0,0,0);
-            }
-
             // Animate
             do
-            {
-                hasConverged = true;
-                sofa::simulation::getSimulation()->animate(root.get(),0.5);
-                typename MechanicalObject::ReadVecCoord x = dofs->readPositions();
+            {sofa::simulation::getSimulation()->animate(root.get(),0.5);}
+            while(root->getAnimationLoop()->getTime() < 40); 
 
-                // Compute dx
-                for (size_t i=0; i<x.size(); i++)
-                {
-                    dx[i] = x[i]-xprev[i];
-                    // Test convergence
-                    if(dx[i].norm()>convergenceAccuracy) hasConverged = false;
-                }
-               
-                // xprev = x
-                for (size_t i=0; i<numNodes; i++)
-                {
-                    xprev[i]=x[i];
-                }
-            }
-            while(!hasConverged); // not converged
+            // Get the simulated final positions
+            typename MechanicalObject::SPtr dofs = root->get<MechanicalObject>(root->SearchDown);
+            typename MechanicalObject::WriteVecCoord x = dofs->writePositions();
+
+            // Compute the theoretical final positions    
+            typename BilinearMovementConstraint::SPtr bilinearConstraint = root->get<BilinearMovementConstraint>(root->SearchDown);
+            VecCoord finalPos;
+            bilinearConstraint->getFinalPositions( finalPos,*dofs->write(core::VecCoordId::position()) );
 
             // Compare the theoretical positions and the simulated positions   
             bool succeed=true;
             for(size_t i=0; i<finalPos.size(); i++ )
             {
-                if((finalPos[i]-x[i]).norm()>diffMaxBetweenSimulatedAndTheoreticalPosition)
+                if((finalPos[i]-x[i]).norm()>2.3e-4)
                 {   
                     succeed = false;
                     ADD_FAILURE() << "final Position of point " << i << " is wrong: " << x[i] << std::endl <<"the expected Position is " << finalPos[i] << std::endl 
@@ -147,6 +116,7 @@ namespace sofa {
         {
             if (root!=NULL)
                 sofa::simulation::getSimulation()->unload(root);
+            //        cerr<<"tearing down"<<endl;
         }
 
     };
@@ -160,20 +130,11 @@ namespace sofa {
     // Test suite for all the instantiations
     TYPED_TEST_CASE(Patch_test, DataTypes);
 
-    // test case: polarcorotationalStrainMapping 
-    TYPED_TEST( Patch_test , PolarCorotationalPatchTest)
+    // test case
+    TYPED_TEST( Patch_test , patchTest3D )
     {
-        // With polar method
-        this->loadScene( "tests/Flexible/PolarCorotationalPatchTest.scn");
-        ASSERT_TRUE( this->compareSimulatedToTheoreticalPositions(1e-6,2.3e-4)); 
-    }
-
-    // test case: smallcorotationalStrainMapping 
-    TYPED_TEST( Patch_test , SmallCorotationalPatchTest)
-    {
-        // With small method
-        this->loadScene( "tests/Flexible/SmallCorotationalPatchTest.scn");
-        ASSERT_TRUE( this->compareSimulatedToTheoreticalPositions(1e-12,6e-12)); 
+        this->loadScene( "tests/Flexible/PatchTest.scn");
+        ASSERT_TRUE( this->test_projectPosition());
     }
 
 } // namespace sofa

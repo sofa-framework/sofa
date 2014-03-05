@@ -32,7 +32,7 @@
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
-#include <BaseVisual/VisualModelImpl.h>
+#include <sofa/component/visualmodel/VisualModelImpl.h>
 
 #include <fstream>
 

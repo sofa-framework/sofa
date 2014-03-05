@@ -26,7 +26,7 @@
 #include "Binding_RegularGridTopology.h"
 #include "Binding_GridTopology.h"
 
-#include <BaseTopology/RegularGridTopology.h>
+#include <sofa/component/topology/RegularGridTopology.h>
 using namespace sofa::component::topology;
 
 extern "C" PyObject * RegularGridTopology_setPos(PyObject *self, PyObject * args)

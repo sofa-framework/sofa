@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "GenerateRigid.h"
-#include <ComponentMain/init.h>
+#include <sofa/component/init.h>
 #include <sofa/simulation/common/xml/initXml.h>
 #include <iostream>
 #include <fstream>

@@ -26,7 +26,7 @@
 #define SOFA_GPU_CUDA_CUDALINEARMOVEMENTCONSTRAINT_H
 
 #include "CudaTypes.h"
-#include <BoundaryCondition/projectiveconstraintset/LinearMovementConstraint.h>
+#include <sofa/component/projectiveconstraintset/LinearMovementConstraint.h>
 
 namespace sofa
 {

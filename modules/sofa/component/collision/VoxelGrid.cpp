@@ -24,10 +24,10 @@
 ******************************************************************************/
 #include <sofa/component/collision/VoxelGrid.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <BaseCollision/Sphere.h>
-#include <MeshCollision/Triangle.h>
-#include <MeshCollision/Line.h>
-#include <MeshCollision/Point.h>
+#include <sofa/component/collision/Sphere.h>
+#include <sofa/component/collision/Triangle.h>
+#include <sofa/component/collision/Line.h>
+#include <sofa/component/collision/Point.h>
 #include <sofa/helper/FnDispatcher.h>
 #include <sofa/simulation/tree/xml/ObjectFactory.h>
 #include <map>

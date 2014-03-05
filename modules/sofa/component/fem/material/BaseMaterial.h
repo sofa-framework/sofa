@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_FEM_BASEMATERIAL_H
 #define SOFA_COMPONENT_FEM_BASEMATERIAL_H
 
-#include <MiscFem/initMiscFEM.h>
+#include <sofa/component/initMiscFEM.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec.h>
 

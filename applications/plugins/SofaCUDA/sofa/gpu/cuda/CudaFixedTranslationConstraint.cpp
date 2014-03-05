@@ -23,8 +23,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "CudaTypes.h"
-#include <BoundaryCondition/projectiveconstraintset/FixedTranslationConstraint.h>
-#include <BoundaryCondition/projectiveconstraintset/FixedTranslationConstraint.inl>
+#include <sofa/component/projectiveconstraintset/FixedTranslationConstraint.h>
+#include <sofa/component/projectiveconstraintset/FixedTranslationConstraint.inl>
 
 
 #include <sofa/defaulttype/RigidTypes.h>

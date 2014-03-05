@@ -33,7 +33,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/objectmodel/Event.h>
 
-#include <BaseMechanics/MechanicalObject.h>
+#include <sofa/component/container/MechanicalObject.h>
 
 
 namespace sofa

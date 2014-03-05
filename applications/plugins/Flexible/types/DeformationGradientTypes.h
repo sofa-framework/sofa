@@ -30,7 +30,7 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/core/objectmodel/BaseContext.h>
-#include <BaseMechanics/MechanicalObject.h>
+#include <sofa/component/container/MechanicalObject.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/rmath.h>
 #ifdef SOFA_SMP

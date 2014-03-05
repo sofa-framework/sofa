@@ -26,12 +26,12 @@
 /* Francois Faure, 2013 */
 
 #include "Mapping_test.h"
-#include <ComponentMain/init.h>
+#include <sofa/component/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <Rigid/RigidMapping.h>
-#include <BaseMechanics/MechanicalObject.h>
+#include <sofa/component/mapping/RigidMapping.h>
+#include <sofa/component/container/MechanicalObject.h>
 
 
 namespace sofa {

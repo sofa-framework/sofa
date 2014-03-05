@@ -30,7 +30,7 @@
 #include <sofa/component/component.h>
 #include <sofa/helper/SVector.h>
 #include <sofa/simulation/common/Node.h>
-#include <BoundaryCondition/projectiveconstraintset/SkeletalMotionConstraint.h>
+#include <sofa/component/projectiveconstraintset/SkeletalMotionConstraint.h>
 
 #include <assimp/Importer.hpp>      // C++ importer interface
 #include <assimp/scene.h>           // Output data structure

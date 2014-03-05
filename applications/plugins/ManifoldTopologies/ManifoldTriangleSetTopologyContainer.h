@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_MANIFOLDTRIANGLESETTOPOLOGYCONTAINER_H
 #define SOFA_COMPONENT_TOPOLOGY_MANIFOLDTRIANGLESETTOPOLOGYCONTAINER_H
 
-#include <BaseTopology/TriangleSetTopologyContainer.h>
+#include <sofa/component/topology/TriangleSetTopologyContainer.h>
 
 namespace sofa
 {

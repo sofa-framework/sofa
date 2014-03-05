@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include "CudaTypes.h"
 #include "CudaLinearForceField.h"
-#include <BoundaryCondition/forcefield/LinearForceField.inl>
+#include <sofa/component/forcefield/LinearForceField.inl>
 
 namespace sofa
 {

@@ -28,7 +28,7 @@
 #include "../types/StrainTypes.h"
 #include <sofa/core/ObjectFactory.h>
 
-#include <BaseMechanics/MechanicalObject.inl>
+#include <sofa/component/container/MechanicalObject.inl>
 
 namespace sofa
 {

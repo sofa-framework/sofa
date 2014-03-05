@@ -47,7 +47,7 @@ endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 AddCompilerDefinitions("SOFA_BUILD_SOFAHAPI")
-AddLinkerDependencies(ComponentGeneral Haptics ${HAPI_LIBRARIES} ${H3DUTIL_LIBRARIES} )
+AddLinkerDependencies(SofaComponentGeneral SofaHaptics ${HAPI_LIBRARIES} ${H3DUTIL_LIBRARIES} )
 
 
 IF( H3D_USE_DEPENDENCIES_ONLY )

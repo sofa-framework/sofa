@@ -47,9 +47,9 @@
 
 #include <StructuralComponent.h>
 #include "sofa/core/topology/BaseMeshTopology.h"
-#include <MeshCollision/TriangleModel.h>
-//#include <MeshCollision/LineModel.h>
-//#include <MeshCollision/PointModel.h>
+#include "sofa/component/collision/TriangleModel.h"
+//#include "sofa/component/collision/LineModel.h"
+//#include "sofa/component/collision/PointModel.h"
 #include "initSofaPML.h"
 
 

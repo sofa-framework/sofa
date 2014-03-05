@@ -8,36 +8,36 @@
 #ifdef Success
 #undef Success // before including eigen stuff http://eigen.tuxfamily.org/bz/show_bug.cgi?id=253
 #endif
-#include <BoundaryCondition/projectiveconstraintset/ProjectToPointConstraint.inl>
-#include <BoundaryCondition/projectiveconstraintset/ProjectToLineConstraint.inl>
-#include <BoundaryCondition/projectiveconstraintset/ProjectToPlaneConstraint.inl>
-#include <BoundaryCondition/projectiveconstraintset/ProjectDirectionConstraint.inl>
+#include <sofa/component/projectiveconstraintset/ProjectToPointConstraint.inl>
+#include <sofa/component/projectiveconstraintset/ProjectToLineConstraint.inl>
+#include <sofa/component/projectiveconstraintset/ProjectToPlaneConstraint.inl>
+#include <sofa/component/projectiveconstraintset/ProjectDirectionConstraint.inl>
 
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/simulation/common/Node.h>
 
-#include <BaseMechanics/MechanicalObject.inl>
+#include <sofa/component/container/MechanicalObject.inl>
 
-#include <BoundaryCondition/projectiveconstraintset/FixedConstraint.inl>
-#include <BoundaryCondition/projectiveconstraintset/PartialFixedConstraint.inl>
+#include <sofa/component/projectiveconstraintset/FixedConstraint.inl>
+#include <sofa/component/projectiveconstraintset/PartialFixedConstraint.inl>
 #include <sofa/core/behavior/ProjectiveConstraintSet.inl>
 
-#include <Engine/BoxROI.inl>
+#include <sofa/component/engine/BoxROI.inl>
 
 
-#include <BaseMechanics/UniformMass.inl>
+#include <sofa/component/mass/UniformMass.inl>
 
-#include <Validation/Monitor.inl>
-#include <Validation/ExtraMonitor.inl>
+#include <sofa/component/misc/Monitor.inl>
+#include <sofa/component/misc/ExtraMonitor.inl>
 
-#include <Constraint/constraintset/UncoupledConstraintCorrection.inl>
+#include <sofa/component/constraintset/UncoupledConstraintCorrection.inl>
 
-#include <BaseMechanics/IdentityMapping.inl>
-#include <MiscMapping/SubsetMultiMapping.inl>
+#include <sofa/component/mapping/IdentityMapping.inl>
+#include <sofa/component/mapping/SubsetMultiMapping.inl>
 
 #include <sofa/core/behavior/ForceField.inl>
-#include <Deformable/forcefield/RestShapeSpringsForceField.inl>
+#include <sofa/component/forcefield/RestShapeSpringsForceField.inl>
 
 
 #ifdef SOFA_HAVE_IMAGE

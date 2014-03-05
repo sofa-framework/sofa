@@ -32,7 +32,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/fixed_array.h>
 #include <sofa/simulation/common/Node.h>
-#include <Validation/Monitor.h>
+#include <sofa/component/misc/Monitor.h>
 #include <sofa/gui/qt/WDoubleLineEdit.h>
 
 #ifdef SOFA_QT4

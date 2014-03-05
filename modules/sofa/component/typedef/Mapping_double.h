@@ -42,28 +42,28 @@
 #include <sofa/core/Mapping.h>
 
 
-#include <Rigid/ArticulatedSystemMapping.h>
-#include <BaseMechanics/BarycentricMapping.h>
-#include <MiscMapping/BeamLinearMapping.h>
-#include <MiscMapping/CenterOfMassMapping.h>
-#include <MiscMapping/CenterOfMassMulti2Mapping.h>
-#include <MiscMapping/CenterOfMassMultiMapping.h>
-#include <MiscMapping/CenterPointMechanicalMapping.h>
-#include <MiscMapping/CurveMapping.h>
-#include <MiscMapping/ExternalInterpolationMapping.h>
-#include <NonUniformFem/mapping/HexahedronCompositeFEMMapping.h>
-#include <BaseMechanics/IdentityMapping.h>
-#include <VolumetricData/mapping/ImplicitSurfaceMapping.h>
-#include <Rigid/LineSetSkinningMapping.h>
-#include <TopologyMapping/mapping/Mesh2PointMechanicalMapping.h>
-#include <Rigid/RigidMapping.h>
-#include <Rigid/RigidRigidMapping.h>
-#include <SphFluid/SPHFluidSurfaceMapping.h>
-#include <TopologyMapping/mapping/SimpleTesselatedTetraMechanicalMapping.h>
-#include <Rigid/SkinningMapping.h>
-#include <BaseMechanics/SubsetMapping.h>
-#include <MiscMapping/SubsetMultiMapping.h>
-#include <MiscMapping/TubularMapping.h>
+#include <sofa/component/mapping/ArticulatedSystemMapping.h>
+#include <sofa/component/mapping/BarycentricMapping.h>
+#include <sofa/component/mapping/BeamLinearMapping.h>
+#include <sofa/component/mapping/CenterOfMassMapping.h>
+#include <sofa/component/mapping/CenterOfMassMulti2Mapping.h>
+#include <sofa/component/mapping/CenterOfMassMultiMapping.h>
+#include <sofa/component/mapping/CenterPointMechanicalMapping.h>
+#include <sofa/component/mapping/CurveMapping.h>
+#include <sofa/component/mapping/ExternalInterpolationMapping.h>
+#include <sofa/component/mapping/HexahedronCompositeFEMMapping.h>
+#include <sofa/component/mapping/IdentityMapping.h>
+#include <sofa/component/mapping/ImplicitSurfaceMapping.h>
+#include <sofa/component/mapping/LineSetSkinningMapping.h>
+#include <sofa/component/mapping/Mesh2PointMechanicalMapping.h>
+#include <sofa/component/mapping/RigidMapping.h>
+#include <sofa/component/mapping/RigidRigidMapping.h>
+#include <sofa/component/mapping/SPHFluidSurfaceMapping.h>
+#include <sofa/component/mapping/SimpleTesselatedTetraMechanicalMapping.h>
+#include <sofa/component/mapping/SkinningMapping.h>
+#include <sofa/component/mapping/SubsetMapping.h>
+#include <sofa/component/mapping/SubsetMultiMapping.h>
+#include <sofa/component/mapping/TubularMapping.h>
 
 
 

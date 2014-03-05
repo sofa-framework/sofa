@@ -31,9 +31,9 @@
 #include <sofa/helper/io/MassSpringLoader.h>
 #include <sofa/helper/gl/Axis.h>
 #include <sofa/helper/gl/template.h>
-#include <BaseMechanics/AddMToMatrixFunctor.h>
+#include <sofa/component/mass/AddMToMatrixFunctor.h>
 #include <sofa/simulation/common/Simulation.h>
-#include <BaseTopology/TopologyData.inl>
+#include <sofa/component/topology/TopologyData.inl>
 
 namespace sofa
 {

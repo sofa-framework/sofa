@@ -28,13 +28,13 @@
 #include "RegistrationContactForceField.h"
 #include <sofa/core/collision/Contact.h>
 #include <sofa/core/collision/Intersection.h>
-//#include <BaseMechanics/BarycentricMapping.h>
+//#include <sofa/component/mapping/BarycentricMapping.h>
 #include <sofa/helper/Factory.h>
-#include <BaseCollision/BaseContactMapper.h>
+#include <sofa/component/collision/BaseContactMapper.h>
 
-#include <MeshCollision/BarycentricContactMapper.h>
-#include <MeshCollision/IdentityContactMapper.h>
-#include <MeshCollision/RigidContactMapper.inl>
+#include <sofa/component/collision/BarycentricContactMapper.h>
+#include <sofa/component/collision/IdentityContactMapper.h>
+#include <sofa/component/collision/RigidContactMapper.inl>
 
 
 namespace sofa

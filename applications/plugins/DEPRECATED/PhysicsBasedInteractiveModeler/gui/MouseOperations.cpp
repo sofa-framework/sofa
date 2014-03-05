@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include "MouseOperations.h"
 #include <sofa/gui/PickHandler.h>
-#include <UserInteraction/collision/ComponentMouseInteraction.h>
+#include <sofa/component/collision/ComponentMouseInteraction.h>
 #include <plugins/PhysicsBasedInteractiveModeler/pim/SculptBodyPerformer.h>
 
 namespace plugins

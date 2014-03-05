@@ -156,9 +156,9 @@ sofa_option(SOFA-MISC_SMP BOOL OFF "Use SMP")
 sofa_option(SOFA-MISC_NO_OPENGL BOOL OFF "Disable OpenGL")
 if(SOFA-MISC_NO_OPENGL)
     list(APPEND compilerDefines SOFA_NO_OPENGL)
-    set(SOFA_VISUAL_LIB BaseVisual)
+    set(SOFA_VISUAL_LIB SofaBaseVisual)
 else()
-    set(SOFA_VISUAL_LIB OpenglVisual)
+    set(SOFA_VISUAL_LIB SofaOpenglVisual)
 endif()
 
 ## SOFA_NO_UPDATE_BBOX
