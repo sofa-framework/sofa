@@ -142,6 +142,9 @@ public:
     /// Compute the theoretical final positions
     void getFinalPositions (VecCoord& finalPos, DataVecCoord& xData); 
 
+    // Implement projectMatrix for assembled solver of compliant
+    virtual void projectMatrix( sofa::defaulttype::BaseMatrix* /*M*/, unsigned /*offset*/ );
+
     /// Draw the constrained points (= border mesh points)
      virtual void draw(const core::visual::VisualParams* vparams);
 
