@@ -74,14 +74,18 @@ OglModel::OglModel()
     , alphaBlend(initData(&alphaBlend, (bool) false, "alphaBlend", "Enable alpha blending"))
     , depthTest(initData(&depthTest, (bool) true, "depthTest", "Enable depth testing"))
     , cullFace(initData(&cullFace, (int) 0, "cullFace", "Face culling (0 = no culling, 1 = cull back faces, 2 = cull front faces)"))
+    , lineWidth(initData(&lineWidth, (GLfloat) 1, "lineWidth", "Line width (set if != 1, only for lines rendering)"))
+    , pointSize(initData(&pointSize, (GLfloat) 1, "pointSize", "Point size (set if != 1, only for points rendering)"))
+    , lineSmooth(initData(&lineSmooth, (bool) false, "lineSmooth", "Enable smooth line rendering"))
+    , pointSmooth(initData(&pointSmooth, (bool) false, "pointSmooth", "Enable smooth point rendering"))
     , primitiveType( initData(&primitiveType, "primitiveType", "Select types of primitives to send (necessary for some shader types such as geometry or tesselation)"))
     , blendEquation( initData(&blendEquation, "blendEquation", "if alpha blending is enabled this specifies how source and destination colors are combined") )
     , sourceFactor( initData(&sourceFactor, "sfactor", "if alpha blending is enabled this specifies how the red, green, blue, and alpha source blending factors are computed") )
     , destFactor( initData(&destFactor, "dfactor", "if alpha blending is enabled this specifies how the red, green, blue, and alpha destination blending factors are computed") )
     , tex(NULL)
-    , vbo(0), iboTriangles(0), iboQuads(0)
-    , canUseVBO(false), VBOGenDone(false), initDone(false), useTriangles(false), useQuads(false), canUsePatches(false)
-    , oldTrianglesSize(0), oldQuadsSize(0)
+    , vbo(0), iboEdges(0), iboTriangles(0), iboQuads(0)
+    , canUseVBO(false), VBOGenDone(false), initDone(false), useEdges(false), useTriangles(false), useQuads(false), canUsePatches(false)
+    , oldEdgesSize(0), oldTrianglesSize(0), oldQuadsSize(0)
 {
     textures.clear();
 
@@ -128,11 +132,14 @@ OglModel::~OglModel()
     {
         glDeleteBuffersARB(1,&vbo);
     }
+    if( iboEdges > 0)
+    {
+        glDeleteBuffersARB(1,&iboEdges);
+    }
     if( iboTriangles > 0)
     {
         glDeleteBuffersARB(1,&iboTriangles);
     }
-
     if( iboQuads > 0 )
     {
         glDeleteBuffersARB(1,&iboQuads);
@@ -143,6 +150,7 @@ OglModel::~OglModel()
 
 void OglModel::drawGroup(int ig, bool transparent)
 {
+    const ResizableExtVector<Edge>& edges = this->getEdges();
     const ResizableExtVector<Triangle>& triangles = this->getTriangles();
     const ResizableExtVector<Quad>& quads = this->getQuads();
     const VecCoord& vertices = this->getVertices();
@@ -152,6 +160,8 @@ void OglModel::drawGroup(int ig, bool transparent)
     if (ig < 0)
     {
         g.materialId = -1;
+        g.edge0 = 0;
+        g.nbe = edges.size();
         g.tri0 = 0;
         g.nbt = triangles.size();
         g.quad0 = 0;
@@ -263,6 +273,42 @@ void OglModel::drawGroup(int ig, bool transparent)
     if (drawPoints)
     {
         glDrawArrays(GL_POINTS, 0, vertices.size());
+    }
+    if (g.nbe > 0 && !drawPoints)
+    {
+        const Edge* indices = NULL;
+#ifdef SOFA_HAVE_GLEW
+        if (useBufferObjects)
+            glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, iboEdges);
+        else
+#endif
+            indices = edges.getData();
+
+        GLenum prim = GL_LINES;
+        switch (primitiveType.getValue().getSelectedId())
+        {
+        case 1:
+            serr << "LINES_ADJACENCY primitive type invalid for edge topologies" << sendl;
+            break;
+        case 2:
+#if defined(GL_PATCHES) && defined(SOFA_HAVE_GLEW)
+            if (canUsePatches)
+            {
+                prim = GL_PATCHES;
+                glPatchParameteri(GL_PATCH_VERTICES,2);
+            }
+#endif
+            break;
+        default:
+            break;
+        }
+
+        glDrawElements(prim, g.nbe * 2, GL_UNSIGNED_INT, indices + g.edge0);
+
+#ifdef SOFA_HAVE_GLEW
+        if (useBufferObjects)
+            glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
+#endif
     }
     if (g.nbt > 0 && !drawPoints)
     {
@@ -513,7 +559,48 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
         break;
     }
 
+    if (lineWidth.isSet())
+    {
+        glLineWidth(lineWidth.getValue());
+    }
+    
+    if (pointSize.isSet())
+    {
+        glPointSize(pointSize.getValue());
+    }
+    
+    if (pointSmooth.getValue())
+    {
+        glEnable(GL_POINT_SMOOTH);
+    }
+
+    if (lineSmooth.getValue())
+    {
+        glEnable(GL_LINE_SMOOTH);
+        glHint( GL_LINE_SMOOTH_HINT, GL_NICEST );
+    }
+
     drawGroups(transparent);
+    
+    if (lineSmooth.getValue())
+    {
+        glDisable(GL_LINE_SMOOTH);
+    }
+
+    if (pointSmooth.getValue())
+    {
+        glDisable(GL_POINT_SMOOTH);
+    }
+
+    if (lineWidth.isSet())
+    {
+        glLineWidth((GLfloat)1);
+    }
+
+    if (pointSize.isSet())
+    {
+        glPointSize((GLfloat)1);
+    }
 
     switch (cullFace.getValue())
     {
@@ -790,6 +877,13 @@ void OglModel::createVertexBuffer()
     VBOGenDone = true;
 }
 
+void OglModel::createEdgesIndicesBuffer()
+{
+    glGenBuffersARB(1, &iboEdges);
+    initEdgesIndicesBuffer();
+    useEdges = true;
+}
+
 void OglModel::createTrianglesIndicesBuffer()
 {
     glGenBuffersARB(1, &iboTriangles);
@@ -846,6 +940,18 @@ void OglModel::initVertexBuffer()
     glBindBufferARB(GL_ARRAY_BUFFER, 0);
 }
 
+
+void OglModel::initEdgesIndicesBuffer()
+{
+    const ResizableExtVector<Edge>& edges = this->getEdges();
+
+    glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, iboEdges);
+
+    glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER, edges.size()*sizeof(edges[0]), NULL, GL_DYNAMIC_DRAW);
+    updateEdgesIndicesBuffer();
+
+    glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
 
 void OglModel::initTrianglesIndicesBuffer()
 {
@@ -933,6 +1039,14 @@ void OglModel::updateVertexBuffer()
 
 }
 
+void OglModel::updateEdgesIndicesBuffer()
+{
+    const ResizableExtVector<Edge>& edges = this->getEdges();
+    glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, iboEdges);
+    glBufferSubDataARB(GL_ELEMENT_ARRAY_BUFFER, 0, edges.size()*sizeof(edges[0]), &edges[0]);
+    glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
+
 void OglModel::updateTrianglesIndicesBuffer()
 {
     const ResizableExtVector<Triangle>& triangles = this->getTriangles();
@@ -951,6 +1065,7 @@ void OglModel::updateQuadsIndicesBuffer()
 #endif
 void OglModel::updateBuffers()
 {
+    const ResizableExtVector<Edge>& edges = this->getEdges();
     const ResizableExtVector<Triangle>& triangles = this->getTriangles();
     const ResizableExtVector<Quad>& quads = this->getQuads();
     const VecCoord& vertices = this->getVertices();
@@ -964,6 +1079,9 @@ void OglModel::updateBuffers()
             {
                 createVertexBuffer();
                 //Index Buffer Object
+                //Edges indices
+                if(edges.size() > 0)
+                    createEdgesIndicesBuffer();
                 //Triangles indices
                 if(triangles.size() > 0)
                     createTrianglesIndicesBuffer();
@@ -979,6 +1097,15 @@ void OglModel::updateBuffers()
                 else
                     updateVertexBuffer();
                 //Indices
+                //Edges
+                if(useEdges)
+                    if(oldEdgesSize != edges.size())
+                        initEdgesIndicesBuffer();
+                    else
+                        updateEdgesIndicesBuffer();
+                else if (edges.size() > 0)
+                    createEdgesIndicesBuffer();
+
                 //Triangles
                 if(useTriangles)
                     if(oldTrianglesSize != triangles.size())
@@ -998,6 +1125,7 @@ void OglModel::updateBuffers()
                     createQuadsIndicesBuffer();
             }
             oldVerticesSize = vertices.size();
+            oldEdgesSize = edges.size();
             oldTrianglesSize = triangles.size();
             oldQuadsSize = quads.size();
         }

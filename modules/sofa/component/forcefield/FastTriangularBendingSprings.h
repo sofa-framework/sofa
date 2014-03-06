@@ -55,6 +55,8 @@
 #include <sofa/component/linearsolver/EigenSparseMatrix.h>
 #endif
 
+#define LOCAL_OPTIM
+
 namespace sofa
 {
 
@@ -114,7 +116,6 @@ public:
 
     void draw(const core::visual::VisualParams* vparams);
 
-
 protected:
 
 
@@ -125,6 +126,7 @@ protected:
         enum {A=0,B,C,D};     ///< vertex names as in Volino's paper
         Vec<4,unsigned> vid;  ///< vertex indices, in circular order
         Vec<4,Real> alpha;    ///< weight of each vertex in the bending vector
+        //mutable Deriv dpKfact[4];
         Real lambda;          ///< bending stiffness
 
         bool is_activated;
@@ -178,13 +180,36 @@ protected:
             return R * R * lambda * (Real)0.5;
         }
 
+#ifdef LOCAL_OPTIM
+        // Optimized version of addDForce
         void addDForce( VecDeriv& df, const VecDeriv& dp, Real kfactor) const
         {
             if( !is_activated ) return;
-            for( unsigned j=0; j<4; j++ )
-                for( unsigned k=0; k<4; k++ )
-                    df[vid[j]] -= dp[vid[k]] * lambda * alpha[j] * alpha[k] * kfactor;
+
+            Deriv dpKfact[4];
+
+            dpKfact[0] = dp[vid[0]] * lambda * kfactor * alpha[0];
+            dpKfact[1] = dp[vid[1]] * lambda * kfactor * alpha[1];
+            dpKfact[2] = dp[vid[2]] * lambda * kfactor * alpha[2];
+            dpKfact[3] = dp[vid[3]] * lambda * kfactor * alpha[3];
+
+            for( unsigned j=0; j<4; ++j)
+            {
+                for( unsigned k=0; k<4; ++k)
+                {
+                    df[vid[j]] -= dpKfact[k] * alpha[j];
+                }
+            }
         }
+#else
+        void addDForce( VecDeriv& df, const VecDeriv& dp, Real kfactor) const
+        {
+	        if( !is_activated ) return;
+	        for( unsigned j=0; j<4; j++ )
+	            for( unsigned k=0; k<4; k++ )
+	                df[vid[j]] -= dp[vid[k]] * lambda * alpha[j] * alpha[k] * kfactor;
+        }
+#endif
 
         /// Stiffness matrix assembly
         void addStiffness( sofa::defaulttype::BaseMatrix *bm, unsigned int offset, SReal scale, core::behavior::ForceField< _DataTypes>* ff ) const
@@ -259,6 +284,16 @@ protected:
         void applyPointDestruction(const sofa::helper::vector<unsigned int> &pointIndices);
 
         void applyPointRenumbering(const sofa::helper::vector<unsigned int> &pointToRenumber);
+
+        /// Callback to add triangles elements.
+        void ApplyTopologyChange(const core::topology::TrianglesAdded* /*event*/);
+        /// Callback to remove triangles elements.
+        void ApplyTopologyChange(const core::topology::TrianglesRemoved* /*event*/);
+
+        /// Callback to remove points elements.
+        void ApplyTopologyChange(const core::topology::PointsRemoved* /*event*/);
+        /// Callback to renumbering on points elements.
+        void ApplyTopologyChange(const core::topology::PointsRenumbering* /*event*/);
 
     protected:
         FastTriangularBendingSprings<DataTypes>* ff;

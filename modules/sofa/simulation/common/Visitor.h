@@ -77,6 +77,9 @@ public:
     /// Callback method called after child node have been processed and before going back to the parent node.
     virtual void processNodeBottomUp(simulation::Node* /*node*/) {}
 
+    /// Return true to reverse the order of traversal of child nodes
+    virtual bool childOrderReversed(simulation::Node* /*node*/) { return false; }
+
     /// Return a category name for this visitor
     /// Only used for debugging / profiling purposes
     virtual const char* getCategoryName() const { return "default"; }

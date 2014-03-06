@@ -101,11 +101,14 @@ public:
         typename T::MyData* data = dynamic_cast<typename T::MyData*>(arg.data);
         if(!data) return NULL;
         T* instance = new T(arg.parent, arg.name.c_str(), data);
-        instance->setEnabled(arg.readOnly);
         if ( !instance->createWidgets() )
         {
             delete instance;
             instance = NULL;
+        }
+        if (instance)
+        {
+            instance->setDataReadOnly(arg.readOnly);
         }
         return instance;
     }
@@ -210,6 +213,8 @@ public:
     /// The implementation of this method holds the widget creation and the signal / slot
     /// connections.
     virtual bool createWidgets() = 0;
+    /// This method is called after createWidgets to configure whether the created widgets should be read-only
+    virtual void setDataReadOnly(bool readOnly) = 0;
     /// Helper method to give a size.
     virtual unsigned int sizeWidget() {return 1;}
     /// Helper method for colum.
@@ -253,17 +258,20 @@ public:
         else
         {
             RealObject* obj = new RealObject(arg.parent,arg.name.c_str(), realData);
-            obj->setEnabled(!arg.readOnly);
             if( !obj->createWidgets() )
             {
                 delete obj;
                 obj = NULL;
             }
+            if (obj)
+            {
+                obj->setDataReadOnly(arg.readOnly);
+            }
             return obj;
         }
 
     }
-
+    
     TDataWidget(QWidget* parent,const char* name, MyTData* d):
         DataWidget(parent,name,d),Tdata(d) {}
     /// Accessor function. Gives you the actual data instead

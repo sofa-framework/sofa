@@ -132,6 +132,11 @@ protected:
                 const sofa::helper::vector<sofa::helper::vector<double> > &);
 
         void applyTriangleDestruction(const sofa::helper::vector<unsigned int> &triangleRemoved);
+
+        /// Callback to add triangles elements.
+        void ApplyTopologyChange(const core::topology::TrianglesAdded* /*event*/);
+        /// Callback to remove triangles elements.
+        void ApplyTopologyChange(const core::topology::TrianglesRemoved* /*event*/);
     protected:
         TriangularTensorMassForceField<DataTypes>* ff;
     };

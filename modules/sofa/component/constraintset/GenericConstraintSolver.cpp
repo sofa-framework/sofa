@@ -65,6 +65,11 @@ GenericConstraintSolver::GenericConstraintSolver()
 , graphConstraints( initData(&graphConstraints,"graphConstraints","Graph of each constraint's error at the end of the resolution"))
 , graphForces( initData(&graphForces,"graphForces","Graph of each constraint's force at each step of the resolution"))
 , graphViolations( initData(&graphViolations, "graphViolations", "Graph of each constraint's violation at each step of the resolution"))
+, currentNumConstraints(initData(&currentNumConstraints, 0, "currentNumConstraints", "OUTPUT: current number of constraints"))
+, currentNumConstraintGroups(initData(&currentNumConstraintGroups, 0, "currentNumConstraintGroups", "OUTPUT: current number of constraints"))
+, currentIterations(initData(&currentIterations, 0, "currentIterations", "OUTPUT: current number of constraint groups"))
+, currentError(initData(&currentError, 0.0, "currentError", "OUTPUT: current error"))
+, reverseAccumulateOrder(initData(&reverseAccumulateOrder, false, "reverseAccumulateOrder", "True to accumulate constraints from nodes in reversed order (can be necessary when using multi-mappings or interaction constraints not following the node hierarchy)"))
 , current_cp(&cp1)
 , last_cp(NULL)
 {
@@ -81,6 +86,15 @@ GenericConstraintSolver::GenericConstraintSolver()
 
 	graphViolations.setWidget("graph_linear");
 	graphViolations.setGroup("Graph2");
+
+	currentNumConstraints.setReadOnly(true);
+	currentNumConstraints.setGroup("Stats");
+	currentNumConstraintGroups.setReadOnly(true);
+	currentNumConstraintGroups.setGroup("Stats");
+	currentIterations.setReadOnly(true);
+	currentIterations.setGroup("Stats");
+	currentError.setReadOnly(true);
+	currentError.setGroup("Stats");
 }
 
 GenericConstraintSolver::~GenericConstraintSolver()
@@ -136,7 +150,7 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
 	//simulation::MechanicalAccumulateConstraint(&cparams /* PARAMS FIRST */, core::MatrixDerivId::holonomicC(), numConstraints).execute(context);
 
 	MechanicalSetConstraint(cParams, core::MatrixDerivId::holonomicC(), numConstraints).execute(context);
-	MechanicalAccumulateConstraint2(cParams, core::MatrixDerivId::holonomicC()).execute(context);
+    MechanicalAccumulateConstraint2(cParams, core::MatrixDerivId::holonomicC(), reverseAccumulateOrder.getValue()).execute(context);
 
     // suppress the constraints that are on DOFS currently concerned by projective constraint
     core::MechanicalParams mparams = core::MechanicalParams(*cParams);
@@ -303,6 +317,11 @@ bool GenericConstraintSolver::solveSystem(const core::ConstraintParams * /*cPara
 		sofa::helper::AdvancedTimer::stepEnd("ConstraintsGaussSeidel");
 	}
 
+    this->currentError.setValue(current_cp->currentError);
+    this->currentIterations.setValue(current_cp->currentIterations);
+    this->currentNumConstraints.setValue(current_cp->getNumConstraints());
+    this->currentNumConstraintGroups.setValue(current_cp->getNumConstraintGroups());
+
 	if ( displayTime.getValue() )
 	{
 		sout<<" TOTAL solve_LCP " <<( (double) timer.getTime() - time)*timeScale<<" ms" <<sendl;
@@ -417,6 +436,25 @@ void GenericConstraintProblem::freeConstraintResolutions()
 		}
 	}
 }
+int GenericConstraintProblem::getNumConstraints()
+{
+    return dimension;
+}
+
+int GenericConstraintProblem::getNumConstraintGroups()
+{
+    int n = 0;
+    for(int i=0; i<dimension; )
+    {
+        if(!constraintsResolutions[i])
+        {
+            break;
+        }
+        ++n;
+        i += constraintsResolutions[i]->nbLines;
+    }
+    return n;
+}
 
 void GenericConstraintProblem::solveTimed(double tol, int maxIt, double timeout)
 {
@@ -440,7 +478,11 @@ void GenericConstraintProblem::solveTimed(double tol, int maxIt, double timeout)
 void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolver* solver)
 {
 	if(!dimension)
-		return;
+    {
+        currentError = 0.0;
+        currentIterations = 0;
+        return;
+    }
 
 	double t0 = (double)CTime::getTime() ;
 	double timeScale = 1.0 / (double)CTime::getTicksPerSec();
@@ -620,7 +662,9 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
 		{
 			if(solver && solver->f_printLog.getValue())
 				std::cout << "TimeOut" << std::endl;
-
+            
+            currentError = error;
+            currentIterations = i+1;
 			return;
 		}
 		else if(allVerified)
@@ -638,6 +682,8 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
 		}
 	}
 
+    currentError = error;
+    currentIterations = i+1;
 	if(solver)
 	{
 		if(!convergence)
@@ -696,7 +742,11 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
 void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstraintSolver* solver)
 {
 	if(!dimension)
-		return;
+    {
+        currentError = 0.0;
+        currentIterations = 0;
+        return;
+    }
 
 	double t0 = (double)CTime::getTime();
 	double timeScale = 1.0 / (double)CTime::getTicksPerSec();
@@ -879,12 +929,18 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
 			for(j=0; j<dimension; j++)
 				force[j] = sor * force[j] + (1-sor) * tempForces[j];
 		}
+        if(timeout)
+        {
+            double t1 = (double)CTime::getTime();
+            double dt = (t1 - t0)*timeScale;
 
-		double t1 = (double)CTime::getTime();
-		double dt = (t1 - t0)*timeScale;
-
-		if(timeout && dt > timeout)
-			return;
+            if(dt > timeout)
+            {
+                currentError = error;
+                currentIterations = i+1;
+                return;
+            }
+        }
 		else if(allVerified)
 		{
 			if(constraintsAreVerified)
@@ -901,6 +957,9 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
 	}
     
 	sofa::helper::AdvancedTimer::valSet("GS iterations", i+1);
+
+    currentError = error;
+    currentIterations = i+1;
 
 	if(solver)
 	{

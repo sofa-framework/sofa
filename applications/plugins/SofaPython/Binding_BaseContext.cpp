@@ -142,6 +142,10 @@ extern "C" PyObject * BaseContext_getObject(PyObject * self, PyObject * args)
     }
     BaseObject::SPtr sptr;
     context->get<BaseObject>(sptr,path);
+	if (!sptr)
+	{
+		Py_RETURN_NONE;
+	}
 
     return SP_BUILD_PYSPTR(sptr.get());
 }

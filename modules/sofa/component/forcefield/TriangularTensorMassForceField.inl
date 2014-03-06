@@ -251,6 +251,25 @@ void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::applyTr
     }
 }
 
+template<class DataTypes>
+void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::ApplyTopologyChange(const core::topology::TrianglesAdded* e)
+{
+    const sofa::helper::vector<unsigned int> &triangleAdded = e->getIndexArray();
+    const sofa::helper::vector<Triangle> &elems = e->getElementArray();
+    const sofa::helper::vector<sofa::helper::vector<unsigned int> > & ancestors = e->ancestorsList;
+    const sofa::helper::vector<sofa::helper::vector<double> > & coefs = e->coefs;
+
+    applyTriangleCreation(triangleAdded, elems, ancestors, coefs);
+}
+
+template<class DataTypes>
+void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::ApplyTopologyChange(const core::topology::TrianglesRemoved* e)
+{
+    const sofa::helper::vector<unsigned int> &triangleRemoved = e->getArray();
+
+    applyTriangleDestruction(triangleRemoved);
+}
+
 template <class DataTypes> TriangularTensorMassForceField<DataTypes>::TriangularTensorMassForceField()
     : edgeInfo(initData(&edgeInfo, "edgeInfo", "Internal edge data"))
     , _initialPoints(0)

@@ -65,7 +65,18 @@ void RuleBasedContactManager::createVariableData ( std::string variable )
 {
     Data<std::string>* d = new Data<std::string>("", true, false);
     d->setName(variable);
-    d->setGroup("Variables");
+    std::size_t sep = variable.find('_');
+    if (sep != std::string::npos)
+    {
+        // store group names in static set so that pointer to string content is kept valid
+        static std::set<std::string> groupNames;
+        const std::string& group = *groupNames.insert(variable.substr(0,sep)).first;
+        d->setGroup(group.c_str());
+    }
+    else
+    {
+        d->setGroup("Variables");
+    }
     this->addData(d);
     variablesData[variable] = d;
 }

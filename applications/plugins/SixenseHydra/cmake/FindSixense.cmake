@@ -11,10 +11,12 @@
 set(SIXENSE_POSSIBLE_PATHS
 	${SIXENSE_ROOT}
 	$ENV{SIXENSE_ROOT}
-	"C:/Program Files/Steam/steamapps/common/sixense sdk/SixenseSDK"
-	"C:/Program Files (x86)/Steam/steamapps/common/sixense sdk/SixenseSDK"
-	"C:/Program Files/SixenseSDK"
-	"C:/Program Files (x86)/SixenseSDK"
+  $ENV{SIXENSE_SDK_PATH}
+	"$ENV{ProgramFiles}/Steam/steamapps/common/sixense sdk/SixenseSDK"
+	"$ENV{ProgramFiles(x86)}/Steam/steamapps/common/sixense sdk/SixenseSDK"
+	"$ENV{ProgramFiles}/SixenseSDK"
+	"$ENV{ProgramFiles(x86)}/SixenseSDK"
+	"C:/SixenseSDK"
 	~/Library/Frameworks
 	/Library/Frameworks
 	/usr/local/

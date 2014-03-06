@@ -61,6 +61,11 @@ bool DataFileNameWidget::createWidgets()
     return true;
 }
 
+void DataFileNameWidget::setDataReadOnly(bool readOnly)
+{
+    openFilePath->setReadOnly(readOnly);
+    openFileButton->setEnabled(!readOnly);
+}
 
 void DataFileNameWidget::readFromData()
 {

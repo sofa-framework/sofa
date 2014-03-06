@@ -128,6 +128,7 @@ public :
     virtual unsigned int numColumnWidget() {return 3;}
     virtual unsigned int sizeWidget() {return 6;}
     virtual bool createWidgets();
+    virtual void setDataReadOnly(bool readOnly);
 protected:
     virtual void readFromData();
     virtual void writeToData();
@@ -140,6 +141,7 @@ class QPoissonRatioWidget : public TDataWidget<double>
 public :
     QPoissonRatioWidget(QWidget*, const char*, core::objectmodel::Data<double>*);
     virtual bool createWidgets();
+    virtual void setDataReadOnly(bool readOnly);
 
 protected slots :
     void changeLineEditValue();

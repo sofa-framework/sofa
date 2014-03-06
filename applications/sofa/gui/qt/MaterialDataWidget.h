@@ -98,6 +98,7 @@ public:
     {}
 
     virtual bool createWidgets();
+    virtual void setDataReadOnly(bool readOnly);
     virtual unsigned int numColumnWidget() {return 1;}
 
 protected:
@@ -134,6 +135,7 @@ public:
     };
 
     virtual bool createWidgets();
+    virtual void setDataReadOnly(bool readOnly);
     virtual unsigned int numColumnWidget() {return 1;}
 
 

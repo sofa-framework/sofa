@@ -128,6 +128,8 @@ protected:
     void findVertexOnBorder(const Triangle& t, unsigned int idROI);
     void findVertexOnBorder(const Tetra& t, unsigned int idROI);
 
+	bool isPointChecked(unsigned int id, sofa::helper::vector<bool>& pointChecked);
+
 public:
     enum ROIType
     {
@@ -153,6 +155,7 @@ public:
     Data<helper::vector<Edge> > f_edges;
     Data<helper::vector<Triangle> > f_triangles;
     Data<helper::vector<Tetra> > f_tetrahedra;
+	Data<SetIndex> d_tetrahedraInput;
 
     //Output
     Data<SetIndex> f_indices;

@@ -26,7 +26,7 @@
 #define SOFA_HELPER_MAP_PTR_STABLE_COMPARE_H
 
 #include <sofa/helper/helper.h>
-
+#include <memory>
 #include <map>
 
 namespace sofa
@@ -57,6 +57,12 @@ public:
 		}
 		return id;
 	}
+
+    inline unsigned int id(T* p)
+    {
+       return this->operator()(p);
+    }
+
 protected:
 	mutable unsigned int counter;
 	mutable std::map<T*,unsigned int> idMap;
@@ -70,28 +76,52 @@ template <typename T>
 class ptr_stable_compare<T*>
 {
 public:
+    // wrap the ptr_stable_id<T> into an opaque type
+    typedef ptr_stable_id<T> stable_map_type;
 	// This operator must be declared const in order to be used within const methods
 	// such as std::map::find()
 	bool operator()(T* a, T* b) const
 	{
-		return (ids(a) < ids(b));
+		return (m_ids->id(a) < m_ids->id(b));
 	}
+
+    explicit ptr_stable_compare( const ptr_stable_id<T>* ids ):m_ids(ids)
+    {
+    } 
+
 protected:
-	mutable ptr_stable_id<T> ids;
+    /// memory is owned by the map_ptr_stable_compare instance
+	mutable ptr_stable_id<T>* m_ids;
 };
 
 template <typename T>
 class ptr_stable_compare< std::pair<T*,T*> >
 {
 public:
+    // wrap the ptr_stable_id<T> into an opaque type
+    typedef ptr_stable_id<T> stable_id_map_type;
 	// This operator must be declared const in order to be used within const methods
 	// such as std::map::find()
 	bool operator()(const std::pair<T*,T*>& a, const std::pair<T*,T*>& b) const
 	{
-		return (std::make_pair(ids(a.first),ids(a.second)) < std::make_pair(ids(b.first),ids(b.second)));
+		return (std::make_pair(m_ids->id(a.first), m_ids->id(a.second)) < std::make_pair(m_ids->id(b.first), m_ids->id(b.second)) );
 	}
+
+    explicit ptr_stable_compare( ptr_stable_id<T>* ids):m_ids(ids)
+    {
+    }
+    
+    ptr_stable_id<T>* get_stable_id_map() const 
+    {
+        return m_ids;
+    } 
+
 protected:
-	mutable ptr_stable_id<T> ids;
+    /// memory is owned by the map_ptr_stable_compare instance
+	mutable ptr_stable_id<T>* m_ids;
+
+private:
+    ptr_stable_compare():m_ids(NULL){}
 };
 
 /// A map container that order pointers in a stable way, i.e. in the order pointers are presented
@@ -118,26 +148,42 @@ public:
     typedef typename Inherit::reverse_iterator       reverse_iterator;
     /// const reverse iterator
     typedef typename Inherit::const_reverse_iterator const_reverse_iterator;
+    /// compare
+    typedef typename Inherit::key_compare            key_compare;
+    /// stable map type used by the compare object
+    typedef typename key_compare::stable_id_map_type stable_id_map_type;
 
     /// Basic constructor
-    map_ptr_stable_compare() {}
-    /// Constructor
-    map_ptr_stable_compare(const Inherit& x): Inherit(x) {}
-    /// Constructor
-    map_ptr_stable_compare<Key, Tp>& operator=(const Inherit& x)
+    map_ptr_stable_compare()
+    :Inherit( key_compare(new stable_id_map_type() ) )
+    ,m_stable_id_map(Inherit::key_comp().get_stable_id_map())
+    {}
+
+    /// Copy constructor
+    map_ptr_stable_compare(const map_ptr_stable_compare& other)
+    :Inherit( other.begin(), other.end(), key_compare( new stable_id_map_type( *other.m_stable_id_map) ) )
+    ,m_stable_id_map(Inherit::key_comp().get_stable_id_map())
     {
-        Inherit::operator = (x);
-        return (*this);
     }
 
 #ifdef __STL_MEMBER_TEMPLATES
     /// Constructor
     template <class InputIterator>
-    map_ptr_stable_compare(InputIterator first, InputIterator last): Inherit(first,last) {}
+    map_ptr_stable_compare(InputIterator first, InputIterator last)
+    :Inherit(first,last, key_compare(new stable_id_map_type()))
+    ,m_stable_id_map(Inherit::key_comp().get_stable_id_map())
+    {}
 #else /* __STL_MEMBER_TEMPLATES */
     /// Constructor
-    map_ptr_stable_compare(const_iterator first, const_iterator last): Inherit(first,last) {}
+    map_ptr_stable_compare(const_iterator first, const_iterator last)
+    :Inherit(first,last, key_compare(new stable_id_map_type()) ) 
+    ,m_stable_id_map(Inherit::key_comp().get_stable_id_map())
+    {}
 #endif /* __STL_MEMBER_TEMPLATES */
+
+private:
+    /// auto_ptr for memory ownership
+    std::auto_ptr<stable_id_map_type> m_stable_id_map;
 };
 
 } // namespace helper

@@ -57,6 +57,8 @@ public:
     Data<RigidCoord > p_cameraRigid;
     Data<double> p_zNear, p_zFar;
     Data<double> p_fovy;
+    Data<bool> p_enabled;
+    Data<bool> p_advancedRendering;
     Data<bool> p_useFBO;
     Data<bool> p_swapMainView;
     Data<bool> p_drawCamera;
@@ -73,6 +75,8 @@ public:
     void preDrawScene(core::visual::VisualParams* vp);
     bool drawScene(core::visual::VisualParams* vp);
     void postDrawScene(core::visual::VisualParams* vp);
+
+    bool isVisible(const core::visual::VisualParams* vparams);
 
 protected:
     void renderToViewport(core::visual::VisualParams* vp);

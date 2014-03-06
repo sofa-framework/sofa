@@ -108,8 +108,8 @@ void TLineModel<DataTypes>::init()
 
     for(int i = 0; i < bmt->getNbEdges(); i++)
     {
-        elems[i].i1 = bmt->getEdge(i)[0];
-        elems[i].i2 = bmt->getEdge(i)[1];
+        elems[i].p[0] = bmt->getEdge(i)[0];
+        elems[i].p[1] = bmt->getEdge(i)[1];
     }
 
     updateFromTopology();
@@ -167,8 +167,8 @@ void TLineModel<DataTypes>::handleTopologyChange()
 
         for(int i = 0; i < bmt->getNbEdges(); i++)
         {
-            elems[i].i1 = bmt->getEdge(i)[0];
-            elems[i].i2 = bmt->getEdge(i)[1];
+            elems[i].p[0] = bmt->getEdge(i)[0];
+            elems[i].p[1] = bmt->getEdge(i)[1];
         }
 
         needsUpdate = true;
@@ -203,8 +203,8 @@ void TLineModel<DataTypes>::handleTopologyChange()
 
                 for (unsigned int i = 0; i < ta->getNbAddedEdges(); ++i)
                 {
-                    elems[elems.size() - ta->getNbAddedEdges() + i].i1 = (ta->edgeArray[i])[0];
-                    elems[elems.size() - ta->getNbAddedEdges() + i].i2 = (ta->edgeArray[i])[1];
+                    elems[elems.size() - ta->getNbAddedEdges() + i].p[0] = (ta->edgeArray[i])[0];
+                    elems[elems.size() - ta->getNbAddedEdges() + i].p[1] = (ta->edgeArray[i])[1];
                 }
 
                 resize( elems.size() );
@@ -310,13 +310,13 @@ void TLineModel<DataTypes>::handleTopologyChange()
                         {
                             unsigned int ind_j = shell[j];
 
-                            if ((unsigned)elems[ind_j].i1 == last)
+                            if ((unsigned)elems[ind_j].p[0] == last)
                             {
-                                elems[ind_j].i1 = tab[i];
+                                elems[ind_j].p[0] = tab[i];
                             }
-                            else if ((unsigned)elems[ind_j].i2 == last)
+                            else if ((unsigned)elems[ind_j].p[1] == last)
                             {
-                                elems[ind_j].i2 = tab[i];
+                                elems[ind_j].p[1] = tab[i];
                             }
                         }
 
@@ -340,8 +340,8 @@ void TLineModel<DataTypes>::handleTopologyChange()
 
                     for ( i = 0; i < elems.size(); ++i)
                     {
-                        elems[i].i1  = tab[elems[i].i1];
-                        elems[i].i2  = tab[elems[i].i2];
+                        elems[i].p[0]  = tab[elems[i].p[0]];
+                        elems[i].p[1]  = tab[elems[i].p[1]];
                     }
                 }
 
@@ -388,8 +388,8 @@ void TLineModel<DataTypes>::updateFromTopology()
                 continue;
             }
 
-            elems[index].i1 = idx[0];
-            elems[index].i2 = idx[1];
+            elems[index].p[0] = idx[0];
+            elems[index].p[1] = idx[1];
             ++index;
         }
 
@@ -469,8 +469,8 @@ bool TLineModel<DataTypes>::canCollideWithElement(int index, CollisionModel* mod
     	if( this->getContext()->get<TriangleModel>  != NULL)
     		NoTriangles = false;
     */
-    int p11 = elems[index].i1;
-    int p12 = elems[index].i2;
+    int p11 = elems[index].p[0];
+    int p12 = elems[index].p[1];
 
 
     if (!topology)
@@ -486,8 +486,8 @@ bool TLineModel<DataTypes>::canCollideWithElement(int index, CollisionModel* mod
     if (model2 == this)
     {
         // if point in common, return false:
-        int p21 = elems[index2].i1;
-        int p22 = elems[index2].i2;
+        int p21 = elems[index2].p[0];
+        int p22 = elems[index2].p[1];
 
         if (p11==p21 || p11==p22 || p12==p21 || p12==p22)
             return false;
@@ -546,23 +546,23 @@ bool TLineModel<DataTypes>::canCollideWithElement(int index, CollisionModel* mod
         for (unsigned int i1=0; i1<EdgesAroundVertex11.size(); i1++)
         {
             unsigned int e11 = EdgesAroundVertex11[i1];
-            p11 = elems[e11].i1;
-            p12 = elems[e11].i2;
+            p11 = elems[e11].p[0];
+            p12 = elems[e11].p[1];
             if (index2==p11 || index2==p12)
                 return false;
         }
         for (unsigned int i1=0; i1<EdgesAroundVertex12.size(); i1++)
         {
             unsigned int e12 = EdgesAroundVertex12[i1];
-            p11 = elems[e12].i1;
-            p12 = elems[e12].i2;
+            p11 = elems[e12].p[0];
+            p12 = elems[e12].p[1];
             if (index2==p11 || index2==p12)
                 return false;
         }
         return true;
 
         //sout << "line-point self test "<<index<<" - "<<index2<<sendl;
-        //std::cout << "line-point self test "<<index<<" - "<<index2<<"   - elems[index].i1-1"<<elems[index].i1-1<<"   elems[index].i2+1 "<<elems[index].i2+1<<std::endl;
+        //std::cout << "line-point self test "<<index<<" - "<<index2<<"   - elems[index].p[0]-1"<<elems[index].p[0]-1<<"   elems[index]..p[1]+1 "<<elems[index].p[1]+1<<std::endl;
 
 
         // case1: only lines (aligned lines !!)
@@ -662,6 +662,29 @@ void TLineModel<DataTypes>::computeContinuousBoundingTree(double dt, int maxDept
         }
         cubeModel->computeBoundingTree(maxDepth);
     }
+}
+
+template<class DataTypes>
+int TLineModel<DataTypes>::getLineFlags(int i)
+{
+    int f = 0;
+    if (topology)
+    {
+        sofa::core::topology::BaseMeshTopology::Edge e(elems[i].p[0], elems[i].p[1]);
+        i = getElemEdgeIndex(i);
+        if ((unsigned)i < (unsigned)topology->getNbEdges())
+        {
+            for (unsigned int j=0; j<2; ++j)
+            {
+                const sofa::core::topology::BaseMeshTopology::EdgesAroundVertex& eav = topology->getEdgesAroundVertex(e[j]);
+                if (eav[0] == (sofa::core::topology::BaseMeshTopology::EdgeID)i)
+                    f |= (FLAG_P1 << j);
+                if (eav.size() == 1)
+                    f |= (FLAG_BP1 << j);
+            }
+        }
+    }
+    return f;
 }
 
 template<class DataTypes>

@@ -26,17 +26,18 @@
 #define SOFA_COMPONENT_CONTROLLER_LCPFORCEFEEDBACK_INL
 
 #include <sofa/component/controller/LCPForceFeedback.h>
-#include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/common/AnimateEndEvent.h>
+
 #include <sofa/component/constraintset/ConstraintSolverImpl.h>
-#include <sofa/core/objectmodel/BaseContext.h>
+
+#include <sofa/simulation/common/AnimateEndEvent.h>
 
 #include <algorithm>
 
 namespace
 {
+
 template <typename DataTypes>
-bool derivVectors(const typename DataTypes::VecCoord& x0, const typename DataTypes::VecCoord& x1, typename DataTypes::VecDeriv& d, bool /*derivRotation*/ )
+bool derivVectors(const typename DataTypes::VecCoord& x0, const typename DataTypes::VecCoord& x1, typename DataTypes::VecDeriv& d, bool /*derivRotation*/)
 {
     unsigned int sz0 = x0.size();
     unsigned int szmin = std::min(sz0,(unsigned int)x1.size());
@@ -46,12 +47,13 @@ bool derivVectors(const typename DataTypes::VecCoord& x0, const typename DataTyp
     {
         d[i]=x1[i]-x0[i];
     }
-    for(unsigned int i=szmin; i<sz0; ++i) // not sure in what case this is applicable..
+    for(unsigned int i=szmin; i<sz0; ++i) // not sure in what case this is applicable...
     {
         d[i]=-x0[i];
     }
     return true;
 }
+
 
 template <typename DataTypes>
 bool derivRigid3Vectors(const typename DataTypes::VecCoord& x0, const typename DataTypes::VecCoord& x1, typename DataTypes::VecDeriv& d, bool derivRotation=false)
@@ -70,11 +72,10 @@ bool derivRigid3Vectors(const typename DataTypes::VecCoord& x0, const typename D
             getVOrientation(d[i]) = x0[i].rotate(q.angularDisplacement(x1[i].getOrientation(), x0[i].getOrientation() ) );
         }
         else
-            getVOrientation(d[i]) *=0;
+            getVOrientation(d[i]) *= 0; 
     }
 
-
-    for(unsigned int i=szmin; i<sz0; ++i)  // not sure in what case this is applicable..
+    for(unsigned int i=szmin; i<sz0; ++i) // not sure in what case this is applicable.. 
     {
         getVCenter(d[i]) = - x0[i].getCenter();
 
@@ -82,12 +83,12 @@ bool derivRigid3Vectors(const typename DataTypes::VecCoord& x0, const typename D
         {
             // rotations are taken into account to compute the violations
             Quat q= x0[i].getOrientation();
-             getVOrientation(d[i]) = -x0[i].rotate( q.toEulerVector() );
+            getVOrientation(d[i]) = -x0[i].rotate( q.toEulerVector() );
         }
         else
-            getVOrientation(d[i]) *=0;
-
+            getVOrientation(d[i]) *= 0;
     }
+
     return true;
 }
 
@@ -128,40 +129,38 @@ double computeDot<Rigid3fTypes>(const Rigid3fTypes::Deriv& v0, const Rigid3fType
 
 #endif
 
-
-}
-
-
-
+} // anonymous namespace
 
 namespace sofa
 {
+
 namespace component
 {
+
 namespace controller
 {
 
 template <class DataTypes>
 LCPForceFeedback<DataTypes>::LCPForceFeedback()
-: forceCoef(initData(&forceCoef, 0.03, "forceCoef","multiply haptic force by this coef.")),
-  solverTimeout(initData(&solverTimeout, 0.0008, "solverTimeout","max time to spend solving constraints.")),
-  derivRotations(initData(&derivRotations, false, "derivRotations", "if true, deriv the rotations when updating the violations")),
-  mState(NULL),
-  mNextBufferId(0),
-  mCurBufferId(0),
-  mIsCuBufferInUse(false),
-  constraintSolver(NULL),
-  _timer(NULL),
-  time_buf(0),
-  timer_iterations(0),
-  haptic_freq(0.0),
-  num_constraints(0)
+    : forceCoef(initData(&forceCoef, 0.03, "forceCoef","multiply haptic force by this coef."))
+    , solverTimeout(initData(&solverTimeout, 0.0008, "solverTimeout","max time to spend solving constraints."))
+    , d_derivRotations(initData(&d_derivRotations, false, "derivRotations", "if true, deriv the rotations when updating the violations"))
+    , mState(NULL)
+    , mNextBufferId(0)
+    , mCurBufferId(0)
+    , mIsCuBufferInUse(false)
+    , constraintSolver(NULL)
+    , _timer(NULL)
+    , time_buf(0)
+    , timer_iterations(0)
+    , haptic_freq(0.0)
+    , num_constraints(0)
 {
     this->f_listening.setValue(true);
     mCP[0] = NULL;
     mCP[1] = NULL;
     mCP[2] = NULL;
-    _timer = new CTime();
+    _timer = new helper::system::thread::CTime();
     time_buf = _timer->getTime();
     timer_iterations = 0;
 }
@@ -193,15 +192,14 @@ void LCPForceFeedback<DataTypes>::init()
         serr << "LCPForceFeedback has no binding MechanicalState. Initialisation failed." << sendl;
         return;
     }
-
-    //sout << "init LCPForceFeedback done " << sendl;
-};
-
+}
 
 
 template <class DataTypes>
 void LCPForceFeedback<DataTypes>::computeForce(const VecCoord& state,  VecDeriv& forces)
 {
+    using namespace helper::system::thread;
+
     const unsigned int stateSize = state.size();
     // Resize du vecteur force. Initialization � 0 ?
     forces.resize(stateSize);
@@ -248,7 +246,7 @@ void LCPForceFeedback<DataTypes>::computeForce(const VecCoord& state,  VecDeriv&
     {
         VecDeriv dx;
 
-        derivVectors< DataTypes >(val, state, dx, derivRotations.getValue());
+        derivVectors< DataTypes >(val, state, dx, d_derivRotations.getValue());
 
         // Modify Dfree
         MatrixDerivRowConstIterator rowItEnd = constraints.end();
@@ -302,6 +300,7 @@ void LCPForceFeedback<DataTypes>::computeForce(const VecCoord& state,  VecDeriv&
 
     mIsCuBufferInUse = false;
 }
+
 
 template <typename DataTypes>
 void LCPForceFeedback<DataTypes>::handleEvent(sofa::core::objectmodel::Event *event)
@@ -369,103 +368,50 @@ void LCPForceFeedback<DataTypes>::handleEvent(sofa::core::objectmodel::Event *ev
 }
 
 
-
-
 //
 // Those functions are here for compatibility with the sofa::component::controller::Forcefeedback scheme
 //
 
 template <typename DataTypes>
 void LCPForceFeedback<DataTypes>::computeForce(SReal , SReal, SReal, SReal, SReal, SReal, SReal, SReal&, SReal&, SReal&)
-{}
-
-#ifndef SOFA_DOUBLE
-using sofa::defaulttype::Rigid3fTypes;
-template <>
-void LCPForceFeedback<Rigid3fTypes>::computeForce(SReal x, SReal y, SReal z, SReal, SReal, SReal, SReal, SReal& fx, SReal& fy, SReal& fz)
 {
-    Rigid3fTypes::VecCoord state;
-    Rigid3fTypes::VecDeriv forces;
-    state.resize(1);
-    state[0].getCenter() = sofa::defaulttype::Vec3f((float)x,(float)y,(float)z);
-    computeForce(state,forces);
-    fx = getVCenter(forces[0]).x();
-    fy = getVCenter(forces[0]).y();
-    fz = getVCenter(forces[0]).z();
+
 }
-#endif
-
-#ifndef SOFA_FLOAT
-using sofa::defaulttype::Rigid3dTypes;
-template <>
-void LCPForceFeedback<Rigid3dTypes>::computeForce(double x, double y, double z, double, double, double, double, double& fx, double& fy, double& fz)
-{
-    Rigid3dTypes::VecCoord state;
-    Rigid3dTypes::VecDeriv forces;
-    state.resize(1);
-    state[0].getCenter() = sofa::defaulttype::Vec3d(x,y,z);
-    computeForce(state,forces);
-    fx = getVCenter(forces[0]).x();
-    fy = getVCenter(forces[0]).y();
-    fz = getVCenter(forces[0]).z();
-}
-#endif
-
-// 6D rendering of contacts
-#ifndef SOFA_FLOAT
-using sofa::defaulttype::Rigid3dTypes;
-template <>
-void LCPForceFeedback<Rigid3dTypes>::computeWrench(const SolidTypes<double>::Transform &world_H_tool,
-        const SolidTypes<double>::SpatialVector &/*V_tool_world*/,
-        SolidTypes<double>::SpatialVector &W_tool_world )
-{
-    //std::cerr<<"WARNING : LCPForceFeedback::computeWrench is not implemented"<<std::endl;
-
-    if (!this->f_activate.getValue())
-    {
-        return;
-    }
-
-
-    Rigid3dTypes::VecCoord state;
-    Rigid3dTypes::VecDeriv forces;
-    state.resize(1);
-    state[0].getCenter()	  = world_H_tool.getOrigin();
-    state[0].getOrientation() = world_H_tool.getOrientation();
-
-
-    computeForce(state,forces);
-
-    W_tool_world.setForce(getVCenter(forces[0]));
-    W_tool_world.setTorque(getVOrientation(forces[0]));
-
-
-
-    //Vec3d Force(0.0,0.0,0.0);
-
-    //this->computeForce(world_H_tool.getOrigin()[0], world_H_tool.getOrigin()[1],world_H_tool.getOrigin()[2],
-    //				   world_H_tool.getOrientation()[0], world_H_tool.getOrientation()[1], world_H_tool.getOrientation()[2], world_H_tool.getOrientation()[3],
-    //				   Force[0],  Force[1], Force[2]);
-
-    //W_tool_world.setForce(Force);
-
-
-
-};
-
-
-#endif
 
 
 template <typename DataTypes>
 void LCPForceFeedback<DataTypes>::computeWrench(const SolidTypes<SReal>::Transform &,
         const SolidTypes<SReal>::SpatialVector &,
         SolidTypes<SReal>::SpatialVector & )
-{}
+{
+
+}
+
+
+#ifndef SOFA_DOUBLE
+
+template <>
+void SOFA_HAPTICS_API LCPForceFeedback< Rigid3fTypes >::computeForce(SReal x, SReal y, SReal z, SReal, SReal, SReal, SReal, SReal& fx, SReal& fy, SReal& fz);
+
+#endif // SOFA_DOUBLE
+
+#ifndef SOFA_FLOAT
+
+template <>
+void SOFA_HAPTICS_API LCPForceFeedback< Rigid3dTypes >::computeForce(double x, double y, double z, double, double, double, double, double& fx, double& fy, double& fz);
+
+template <>
+void SOFA_HAPTICS_API LCPForceFeedback< Rigid3dTypes >::computeWrench(const SolidTypes<double>::Transform &world_H_tool,
+        const SolidTypes<double>::SpatialVector &/*V_tool_world*/,
+        SolidTypes<double>::SpatialVector &W_tool_world );
+
+#endif // SOFA_FLOAT
 
 
 } // namespace controller
+
 } // namespace component
+
 } // namespace sofa
 
-#endif
+#endif // SOFA_COMPONENT_CONTROLLER_LCPFORCEFEEDBACK_INL

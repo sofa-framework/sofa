@@ -63,6 +63,10 @@ public:
 protected:
     Data<bool> premultipliedAlpha, useVBO, writeZTransparent, alphaBlend, depthTest;
     Data<int> cullFace;
+    Data<GLfloat> lineWidth;
+    Data<GLfloat> pointSize;
+    Data<bool> lineSmooth;
+    Data<bool> pointSmooth;
 
     // primitive types
     Data<sofa::helper::OptionsGroup> primitiveType;
@@ -74,9 +78,9 @@ protected:
     GLenum blendEq, sfactor, dfactor;
 
     helper::gl::Texture *tex; //this texture is used only if a texture name is specified in the scn
-    GLuint vbo, iboTriangles, iboQuads;
-    bool canUseVBO, VBOGenDone, initDone, useTriangles, useQuads, canUsePatches;
-    unsigned int oldVerticesSize, oldTrianglesSize, oldQuadsSize;
+    GLuint vbo, iboEdges, iboTriangles, iboQuads;
+    bool canUseVBO, VBOGenDone, initDone, useEdges, useTriangles, useQuads, canUsePatches;
+    unsigned int oldVerticesSize, oldEdgesSize, oldTrianglesSize, oldQuadsSize;
     void internalDraw(const core::visual::VisualParams* vparams, bool transparent);
 
     void drawGroup(int ig, bool transparent);
@@ -110,24 +114,29 @@ public:
     bool hasTransparent();
 
 public:
+    bool isUseEdges()	{ return useEdges; }
     bool isUseTriangles()	{ return useTriangles; }
     bool isUseQuads()	{ return useQuads; }
     bool isUseVbo()	{ return useVBO.getValue(); }
 
     helper::gl::Texture* getTex() const	{ return tex; }
     GLuint getVbo()	{ return vbo;	}
+    GLuint getIboEdges() { return iboEdges; }
     GLuint getIboTriangles() { return iboTriangles; }
     GLuint getIboQuads()    { return iboQuads; }
     const std::vector<helper::gl::Texture*>& getTextures() const { return textures;	}
 
 #ifdef SOFA_HAVE_GLEW
     void createVertexBuffer();
+    void createEdgesIndicesBuffer();
     void createTrianglesIndicesBuffer();
     void createQuadsIndicesBuffer();
     void initVertexBuffer();
+    void initEdgesIndicesBuffer();
     void initTrianglesIndicesBuffer();
     void initQuadsIndicesBuffer();
     void updateVertexBuffer();
+    void updateEdgesIndicesBuffer();
     void updateTrianglesIndicesBuffer();
     void updateQuadsIndicesBuffer();
 #endif

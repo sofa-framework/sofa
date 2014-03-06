@@ -113,10 +113,11 @@ void DefaultVisualManagerLoop::drawStep(sofa::core::visual::VisualParams* vparam
     {
         vparams->pass() = sofa::core::visual::VisualParams::Std;
         VisualDrawVisitor act ( vparams );
-
+        act.setTags(this->getTags());
         gRoot->execute ( &act );
         vparams->pass() = sofa::core::visual::VisualParams::Transparent;
         VisualDrawVisitor act2 ( vparams );
+        act2.setTags(this->getTags());
         gRoot->execute ( &act2 );
     }
     else
@@ -136,9 +137,11 @@ void DefaultVisualManagerLoop::drawStep(sofa::core::visual::VisualParams* vparam
             vparams->pass() = sofa::core::visual::VisualParams::Std;
 
             VisualDrawVisitor act ( vparams );
+            act.setTags(this->getTags());
             gRoot->execute ( &act );
             vparams->pass() = sofa::core::visual::VisualParams::Transparent;
             VisualDrawVisitor act2 ( vparams );
+            act2.setTags(this->getTags());
             gRoot->execute ( &act2 );
         }
         Node::Sequence<core::visual::VisualManager>::reverse_iterator rbegin = gRoot->visualManager.rbegin(), rend = gRoot->visualManager.rend(), rit;

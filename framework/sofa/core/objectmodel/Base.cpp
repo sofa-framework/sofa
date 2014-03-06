@@ -241,22 +241,38 @@ void Base::setName(const std::string& n, int counter)
     setName(o.str());
 }
 
+#define MAXLOGSIZE 10000000
+
 void Base::processStream(std::ostream& out)
 {
     if (&out == &serr)
     {
         serr << "\n";
+        std::string str = serr.str();
         //if (f_printLog.getValue())
-        std::cerr<< "WARNING[" << getName() << "(" << getClassName() << ")]: "<<serr.str();
-        warnings += serr.str();
+        std::cerr<< "WARNING[" << getName() << "(" << getClassName() << ")]: "<<str;
+        if (warnings.size()+str.size() >= MAXLOGSIZE)
+        {
+            std::cerr<< "LOG OVERFLOW[" << getName() << "(" << getClassName() << ")]: resetting serr buffer." << std::endl;
+            warnings.clear();
+            warnings = "LOG EVERFLOW: resetting serr buffer\n";
+        }
+        warnings += str;
         serr.str("");
     }
     else if (&out == &sout)
     {
         sout << "\n";
+        std::string str = sout.str();
         if (f_printLog.getValue())
-            std::cout<< "[" << getName() << "(" << getClassName() << ")]: "<< sout.str() << std::flush;
-        outputs += sout.str();
+            std::cout<< "[" << getName() << "(" << getClassName() << ")]: "<< str << std::flush;
+        if (outputs.size()+str.size() >= MAXLOGSIZE)
+        {
+            std::cerr<< "LOG OVERFLOW[" << getName() << "(" << getClassName() << ")]: resetting sout buffer." << std::endl;
+            outputs.clear();
+            outputs = "LOG EVERFLOW: resetting sout buffer\n";
+        }
+        outputs += str;
         sout.str("");
     }
 }
@@ -490,11 +506,15 @@ void  Base::parse ( BaseObjectDescription* arg )
     arg->getAttributeList(attributeList);
     for (unsigned int i=0; i<attributeList.size(); ++i)
     {
-        if (!hasField(attributeList[i])) continue;
-        const char* val = arg->getAttribute(attributeList[i]);
+        std::string attrName = attributeList[i];
+        // FIX: "type" is already used to define the type of object to instanciate, any Data with
+        // the same name cannot be extracted from BaseObjectDescription
+        if (attrName == std::string("type")) continue;
+        if (!hasField(attrName)) continue;
+        const char* val = arg->getAttribute(attrName);
         if (!val) continue;
         std::string valueString(val);
-        parseField(attributeList[i], valueString);
+        parseField(attrName, valueString);
     }
     updateLinks(false);
 }

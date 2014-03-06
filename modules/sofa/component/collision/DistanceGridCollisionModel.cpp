@@ -84,6 +84,10 @@ RigidDistanceGridCollisionModel::RigidDistanceGridCollisionModel()
     , dumpfilename( initData( &dumpfilename, "dumpfilename","write distance grid to specified file"))
     , usePoints( initData( &usePoints, true, "usePoints", "use mesh vertices for collision detection"))
     , flipNormals( initData( &flipNormals, false, "flipNormals", "reverse surface direction, i.e. points are considered in collision if they move outside of the object instead of inside"))
+    , showMeshPoints( initData( &showMeshPoints, true, "showMeshPoints", "Enable rendering of mesh points"))
+    , showGridPoints( initData( &showGridPoints, false, "showGridPoints", "Enable rendering of grid points"))
+    , showMaxDist ( initData( &showMaxDist, 0.0, "showMaxDist", "Max distance to render gradients"))
+    , showMinDist ( initData( &showMinDist, 0.0, "showMinDist", "Min distance to render gradients"))
 {
     rigid = NULL;
     addAlias(&fileRigidDistanceGrid,"filename");
@@ -100,7 +104,6 @@ RigidDistanceGridCollisionModel::~RigidDistanceGridCollisionModel()
 
 void RigidDistanceGridCollisionModel::init()
 {
-    std::cout << "> RigidDistanceGridCollisionModel::init()"<<std::endl;
     this->core::CollisionModel::init();
     rigid = dynamic_cast< core::behavior::MechanicalState<RigidTypes>* > (getContext()->getMechanicalState());
 
@@ -108,26 +111,31 @@ void RigidDistanceGridCollisionModel::init()
     if (fileRigidDistanceGrid.getValue().empty())
     {
         if (elems.size()==0 || elems[0].grid==NULL)
-            std::cerr << "ERROR: RigidDistanceGridCollisionModel requires an input filename.\n";
+            serr << "ERROR: RigidDistanceGridCollisionModel requires an input filename." << sendl;
         // else the grid has already been set
         return;
     }
-    std::cout << "RigidDistanceGridCollisionModel: creating "<<nx.getValue()<<"x"<<ny.getValue()<<"x"<<nz.getValue()<<" DistanceGrid from file "<<fileRigidDistanceGrid.getValue();
-    if (scale.getValue()!=1.0) std::cout<<" scale="<<scale.getValue();
-    if (sampling.getValue()!=0.0) std::cout<<" sampling="<<sampling.getValue();
-    if (box.getValue()[0][0]<box.getValue()[1][0]) std::cout<<" bbox=<"<<box.getValue()[0]<<">-<"<<box.getValue()[0]<<">";
-    std::cout << std::endl;
+    sout << "RigidDistanceGridCollisionModel: creating "<<nx.getValue()<<"x"<<ny.getValue()<<"x"<<nz.getValue()<<" DistanceGrid from file "<<fileRigidDistanceGrid.getValue();
+    if (scale.getValue()!=1.0) sout<<" scale="<<scale.getValue();
+    if (sampling.getValue()!=0.0) sout<<" sampling="<<sampling.getValue();
+    if (box.getValue()[0][0]<box.getValue()[1][0]) sout<<" bbox=<"<<box.getValue()[0]<<">-<"<<box.getValue()[0]<<">";
+    sout << sendl;
     grid = DistanceGrid::loadShared(fileRigidDistanceGrid.getFullPath(), scale.getValue(), sampling.getValue(), nx.getValue(),ny.getValue(),nz.getValue(),box.getValue()[0],box.getValue()[1]);
-
+    if (grid->getNx() != this->nx.getValue())
+        this->nx.setValue(grid->getNx());
+    if (grid->getNy() != this->ny.getValue())
+        this->ny.setValue(grid->getNy());
+    if (grid->getNz() != this->nz.getValue())
+        this->nz.setValue(grid->getNz());
     resize(1);
     elems[0].grid = grid;
     if (grid && !dumpfilename.getValue().empty())
     {
-        std::cout << "RigidDistanceGridCollisionModel: dump grid to "<<dumpfilename.getValue()<<std::endl;
+        sout << "RigidDistanceGridCollisionModel: dump grid to "<<dumpfilename.getValue()<<sendl;
         grid->save(dumpfilename.getFullPath());
     }
     updateState();
-    std::cout << "< RigidDistanceGridCollisionModel::init()"<<std::endl;
+    sout << "< RigidDistanceGridCollisionModel::init()"<<sendl;
 }
 
 void RigidDistanceGridCollisionModel::resize(int s)
@@ -353,10 +361,12 @@ void RigidDistanceGridCollisionModel::draw(const core::visual::VisualParams* ,in
     }
     glEnd();
 
-    const SReal mindist = (SReal)( -(grid->getPMax()-grid->getPMin()).norm()*0.1);
-    const SReal maxdist = (SReal)(  (grid->getPMax()-grid->getPMin()).norm()*0.025);
+    const SReal mindist = (SReal)(this->showMinDist.isSet() ? this->showMinDist.getValue() :
+        -(grid->getPMax()-grid->getPMin()).norm()*0.1);
+    const SReal maxdist = (SReal)(this->showMaxDist.isSet() ? this->showMaxDist.getValue() :
+         (grid->getPMax()-grid->getPMin()).norm()*0.025);
 
-    if (grid->meshPts.empty())
+    if (this->showGridPoints.getValue())
     {
         int dnz = (grid->getNz() < 128) ? grid->getNz() : 128;
         int dny = (grid->getNy() < 128) ? grid->getNy() : 128;
@@ -389,7 +399,7 @@ void RigidDistanceGridCollisionModel::draw(const core::visual::VisualParams* ,in
         }
         glEnd();
     }
-    else
+    if (!grid->meshPts.empty() && this->showMeshPoints.getValue())
     {
         glColor3d(1, 1 ,1);
         glBegin(GL_POINTS);
@@ -465,7 +475,7 @@ FFDDistanceGridCollisionModel::~FFDDistanceGridCollisionModel()
 
 void FFDDistanceGridCollisionModel::init()
 {
-    std::cout << "> FFDDistanceGridCollisionModel::init()"<<std::endl;
+    //std::cout << "> FFDDistanceGridCollisionModel::init()"<<std::endl;
     this->core::CollisionModel::init();
     ffd = dynamic_cast< core::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());
     ffdMesh = /*dynamic_cast< topology::RegularGridTopology* >*/ (getContext()->getMeshTopology());
@@ -483,25 +493,25 @@ void FFDDistanceGridCollisionModel::init()
         serr<<"ERROR: FFDDistanceGridCollisionModel requires an input filename" << sendl;
         return;
     }
-    std::cout << "FFDDistanceGridCollisionModel: creating "<<nx.getValue()<<"x"<<ny.getValue()<<"x"<<nz.getValue()<<" DistanceGrid from file "<<fileFFDDistanceGrid.getValue();
-    if (scale.getValue()!=1.0) std::cout<<" scale="<<scale.getValue();
-    if (sampling.getValue()!=0.0) std::cout<<" sampling="<<sampling.getValue();
-    if (box.getValue()[0][0]<box.getValue()[1][0]) std::cout<<" bbox=<"<<box.getValue()[0]<<">-<"<<box.getValue()[0]<<">";
-    std::cout << std::endl;
+    sout << "FFDDistanceGridCollisionModel: creating "<<nx.getValue()<<"x"<<ny.getValue()<<"x"<<nz.getValue()<<" DistanceGrid from file "<<fileFFDDistanceGrid.getValue();
+    if (scale.getValue()!=1.0) sout<<" scale="<<scale.getValue();
+    if (sampling.getValue()!=0.0) sout<<" sampling="<<sampling.getValue();
+    if (box.getValue()[0][0]<box.getValue()[1][0]) sout<<" bbox=<"<<box.getValue()[0]<<">-<"<<box.getValue()[0]<<">";
+    sout << sendl;
     grid = DistanceGrid::loadShared(fileFFDDistanceGrid.getFullPath(), scale.getValue(), sampling.getValue(), nx.getValue(),ny.getValue(),nz.getValue(),box.getValue()[0],box.getValue()[1]);
     if (grid && !dumpfilename.getValue().empty())
     {
-        std::cout << "FFDDistanceGridCollisionModel: dump grid to "<<dumpfilename.getValue()<<std::endl;
+        sout << "FFDDistanceGridCollisionModel: dump grid to "<<dumpfilename.getValue()<<sendl;
         grid->save(dumpfilename.getFullPath());
     }
     /// place points in ffd elements
     int nbp = grid->meshPts.size();
 #ifdef SOFA_NEW_HEXA
     elems.resize(ffdMesh->getNbHexahedra());
-    std::cout << "FFDDistanceGridCollisionModel: placing "<<nbp<<" points in "<<ffdMesh->getNbHexahedra()<<" cubes."<<std::endl;
+    sout << "FFDDistanceGridCollisionModel: placing "<<nbp<<" points in "<<ffdMesh->getNbHexahedra()<<" cubes."<<sendl;
 #else
     elems.resize(ffdMesh->getNbHexahedra());
-    std::cout << "FFDDistanceGridCollisionModel: placing "<<nbp<<" points in "<<ffdMesh->getNbCubes()<<" cubes."<<std::endl;
+    sout << "FFDDistanceGridCollisionModel: placing "<<nbp<<" points in "<<ffdMesh->getNbCubes()<<" cubes."<<sendl;
 #endif
     for (int i=0; i<nbp; i++)
     {
@@ -511,7 +521,7 @@ void FFDDistanceGridCollisionModel::init()
         if (elem == -1) continue;
         if ((unsigned)elem >= elems.size())
         {
-            std::cerr << "ERROR (FFDDistanceGridCollisionModel): point "<<i<<" "<<p0<<" in invalid cube "<<elem<<std::endl;
+            serr << "ERROR (FFDDistanceGridCollisionModel): point "<<i<<" "<<p0<<" in invalid cube "<<elem<<sendl;
         }
         else
         {
@@ -527,11 +537,11 @@ void FFDDistanceGridCollisionModel::init()
     /// fill other data and remove inactive elements
 
 #ifdef SOFA_NEW_HEXA
-    std::cout << "FFDDistanceGridCollisionModel: initializing "<<ffdMesh->getNbHexahedra()<<" cubes."<<std::endl;
+    sout << "FFDDistanceGridCollisionModel: initializing "<<ffdMesh->getNbHexahedra()<<" cubes."<<sendl;
     int c=0;
     for (int e=0; e<ffdMesh->getNbHexahedra(); e++)
 #else
-    std::cout << "FFDDistanceGridCollisionModel: initializing "<<ffdMesh->getNbCubes()<<" cubes."<<std::endl;
+    sout << "FFDDistanceGridCollisionModel: initializing "<<ffdMesh->getNbCubes()<<" cubes."<<sendl;
     int c=0;
     for (int e=0; e<ffdMesh->getNbCubes(); e++)
 #endif
@@ -588,8 +598,7 @@ void FFDDistanceGridCollisionModel::init()
         elems[i].neighbors.erase(i);
     }
 
-    std::cout << "FFDDistanceGridCollisionModel: "<<c<<" active cubes."<<std::endl;
-    std::cout << "< FFDDistanceGridCollisionModel::init()"<<std::endl;
+    sout << "FFDDistanceGridCollisionModel: "<<c<<" active cubes."<<sendl;
 }
 
 void FFDDistanceGridCollisionModel::resize(int s)

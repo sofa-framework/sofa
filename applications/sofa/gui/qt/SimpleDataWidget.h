@@ -90,6 +90,10 @@ public:
         std::istringstream i(s);
         i >> d;
     }
+    static void setReadOnly(Widget* w, bool readOnly)
+    {
+        w->setReadOnly(readOnly);
+    }
     static void connectChanged(Widget* w, DataWidget* datawidget)
     {
         datawidget->connect(w, SIGNAL( textChanged(const QString&) ), datawidget, SLOT(setWidgetDirty()));
@@ -135,14 +139,14 @@ public:
 
         helper::readFromData(w, d);
         if (readOnly)
-            w->setEnabled(false);
+            helper::setReadOnly(w, readOnly);
         else
             helper::connectChanged(w, parent);
         return true;
     }
     void setReadOnly(bool readOnly)
     {
-        w->setEnabled(!readOnly);
+        if(w) helper::setReadOnly(w, readOnly);
     }
     void readFromData(const data_type& d)
     {
@@ -187,6 +191,11 @@ public:
 
         return true;
     }
+    virtual void setDataReadOnly(bool readOnly)
+    {
+        container.setReadOnly(readOnly);
+    }
+
     virtual void readFromData()
     {
         container.readFromData(this->getData()->getValue());
@@ -231,6 +240,10 @@ public:
     {
         d = w->text().ascii();
     }
+    static void setReadOnly(Widget* w, bool readOnly)
+    {
+        w->setReadOnly(readOnly);
+    }
     static void connectChanged(Widget* w, DataWidget* datawidget)
     {
         datawidget->connect(w, SIGNAL( textChanged(const QString&) ), datawidget, SLOT(setWidgetDirty()) );
@@ -260,6 +273,10 @@ public:
     static void writeToData(Widget* w, data_type& d)
     {
         d = (data_type) w->isOn();
+    }
+    static void setReadOnly(Widget* w, bool readOnly)
+    {
+        w->setEnabled(!readOnly);
     }
     static void connectChanged(Widget* w, DataWidget* datawidget)
     {
@@ -294,6 +311,10 @@ public:
     static void writeToData(Widget* w, data_type& d)
     {
         d = (data_type) w->getDisplayedValue();
+    }
+    static void setReadOnly(Widget* w, bool readOnly)
+    {
+        w->setEnabled(!readOnly);
     }
     static void connectChanged(Widget* w, DataWidget* datawidget)
     {
@@ -333,6 +354,10 @@ public:
     static void writeToData(Widget* w, data_type& d)
     {
         d = (data_type) w->value();
+    }
+    static void setReadOnly(Widget* w, bool readOnly)
+    {
+        w->setEnabled(!readOnly);
     }
     static void connectChanged(Widget* w, DataWidget* datawidget)
     {
@@ -785,6 +810,10 @@ public:
     static void writeToData(Widget* , data_type& )
     {
     }
+    static void setReadOnly(Widget* w, bool readOnly)
+    {
+        w->setReadOnly(readOnly);
+    }
     static void connectChanged(Widget* w, DataWidget* datawidget)
     {
         datawidget->connect(w, SIGNAL( textChanged(const QString&) ), datawidget, SLOT(setWidgetDirty()) );
@@ -822,6 +851,10 @@ public:
         bool canwrite = d.setPath ( w->text().ascii() );
         if(!canwrite)
             std::cerr<<"canot set Path "<<w->text().ascii()<<std::endl;
+    }
+    static void setReadOnly(Widget* w, bool readOnly)
+    {
+        w->setReadOnly(readOnly);
     }
     static void connectChanged(Widget* w, DataWidget* datawidget)
     {
@@ -915,6 +948,7 @@ public :
 
     ///In this method we  create the widgets and perform the signal / slots connections.
     virtual bool createWidgets();
+    virtual void setDataReadOnly(bool readOnly);
 
 protected:
     ///Implements how update the widgets knowing the data value.

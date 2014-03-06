@@ -31,6 +31,7 @@
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/fixed_array.h>
 #include <sofa/helper/system/glu.h>
+#include <sofa/component/visualmodel/VisualStyle.h>
 
 namespace sofa
 {
@@ -59,6 +60,8 @@ OglViewport::OglViewport()
     ,p_zNear(initData(&p_zNear, "zNear", "Camera's ZNear"))
     ,p_zFar(initData(&p_zFar, "zFar", "Camera's ZFar"))
     ,p_fovy(initData(&p_fovy, (double) 60.0, "fovy", "Field of View (Y axis)"))
+    ,p_enabled(initData(&p_enabled, true, "enabled", "Enable visibility of the viewport"))
+    ,p_advancedRendering(initData(&p_advancedRendering, false, "advancedRendering", "If true, viewport will be hidden if advancedRendering visual flag is not enabled"))
     ,p_useFBO(initData(&p_useFBO, true, "useFBO", "Use a FBO to render the viewport"))
     ,p_swapMainView(initData(&p_swapMainView, false, "swapMainView", "Swap this viewport with the main view"))
     ,p_drawCamera(initData(&p_drawCamera, false, "drawCamera", "Draw a frame representing the camera (see it in main viewport)"))
@@ -92,9 +95,24 @@ void OglViewport::initVisual()
     }
 }
 
+bool OglViewport::isVisible(const core::visual::VisualParams*)
+{
+    if (!p_enabled.getValue())
+        return false;
+    if (p_advancedRendering.getValue())
+    {
+        VisualStyle* vstyle = NULL;
+        this->getContext()->get(vstyle);
+        if (vstyle && !vstyle->displayFlags.getValue().getShowRendering())
+            return false;
+    }
+    return true;
+}
 
 void OglViewport::preDrawScene(core::visual::VisualParams* vp)
 {
+    if (!isVisible(vp)) return;
+
     if (p_swapMainView.getValue())
     {
         const sofa::defaulttype::BoundingBox& sceneBBox = vp->sceneBBox();
@@ -189,6 +207,8 @@ bool OglViewport::drawScene(core::visual::VisualParams* /* vp */)
 
 void OglViewport::postDrawScene(core::visual::VisualParams* vp)
 {
+    if (!isVisible(vp)) return;
+
     if (p_swapMainView.getValue())
     {
         glMatrixMode(GL_PROJECTION);
@@ -336,9 +356,11 @@ void OglViewport::renderToViewport(core::visual::VisualParams* vp)
     vp->viewport() = Viewport(x0,y0,screenSize[0],screenSize[1]);
     vp->pass() = core::visual::VisualParams::Std;
     simulation::VisualDrawVisitor vdv( vp );
+    vdv.setTags(this->getTags());
     vdv.execute ( getContext() );
     vp->pass() = core::visual::VisualParams::Transparent;
     simulation::VisualDrawVisitor vdvt( vp );
+    vdvt.setTags(this->getTags());
     vdvt.execute ( getContext() );
 
     glMatrixMode(GL_PROJECTION);

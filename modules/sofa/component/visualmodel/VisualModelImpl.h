@@ -181,7 +181,8 @@ public:
     typedef Vec<2, float> TexCoord;
     //typedef helper::vector<TexCoord> VecTexCoord;
     typedef ResizableExtVector<TexCoord> VecTexCoord;
-
+    
+    typedef sofa::core::topology::BaseMeshTopology::Edge Edge;
     typedef sofa::core::topology::BaseMeshTopology::Triangle Triangle;
     typedef sofa::core::topology::BaseMeshTopology::Quad Quad;
 
@@ -213,6 +214,7 @@ public:
     topology::PointData< VecTexCoord > m_vtexcoords;
     topology::PointData< VecCoord > m_vtangents;
     topology::PointData< VecCoord > m_vbitangents;
+    Data< ResizableExtVector< Edge > > m_edges;
     Data< ResizableExtVector< Triangle > > m_triangles;
     Data< ResizableExtVector< Quad > > m_quads;
 
@@ -290,25 +292,30 @@ public:
     {
     public:
         /// tri0: first triangle index of a group
-        /// nbt: number of texture element per triangle
+        /// nbt: number of triangle elements
         int tri0, nbt;
 
         /// quad0: first quad index of a group
-        /// nbq: number of texture element per quad
+        /// nbq: number of quad elements
         int quad0, nbq;
+
+        /// edge0: first edge index of a group
+        /// nbe: number of edge elements
+        int edge0, nbe;
+
         std::string materialName;
         std::string groupName;
         int materialId;
-        FaceGroup() : tri0(0), nbt(0), quad0(0), nbq(0), materialName("defaultMaterial"), groupName("defaultGroup"), materialId(-1) {}
+        FaceGroup() : tri0(0), nbt(0), quad0(0), nbq(0), edge0(0), nbe(0), materialName("defaultMaterial"), groupName("defaultGroup"), materialId(-1) {}
         inline friend std::ostream& operator << (std::ostream& out, const FaceGroup &g)
         {
-            out << g.groupName << " " << g.materialName << " " << g.materialId << " " << g.tri0 << " " << g.nbt << " " << g.quad0 << " " << g.nbq;
+            out << g.groupName << " " << g.materialName << " " << g.materialId << " " << g.tri0 << " " << g.nbt << " " << g.quad0 << " " << g.nbq << " " << g.edge0 << " " << g.nbe;
             return out;
         }
         inline friend std::istream& operator >> (std::istream& in, FaceGroup &g)
         {
 
-            in >> g.groupName >> g.materialName >> g.materialId >> g.tri0 >> g.nbt >> g.quad0 >> g.nbq;
+            in >> g.groupName >> g.materialName >> g.materialId >> g.tri0 >> g.nbt >> g.quad0 >> g.nbq >> g.edge0 >> g.nbe;
             return in;
         }
     };
@@ -416,6 +423,11 @@ public:
     {
         return m_quads.getValue();
     };
+    
+    const ResizableExtVector<Edge>& getEdges() const
+    {
+        return m_edges.getValue();
+    };
 
     void setVertices(ResizableExtVector<Coord> * x)
     {
@@ -451,6 +463,11 @@ public:
     void setQuads(ResizableExtVector<Quad> * q)
     {
         m_quads.setValue(*q);
+    };
+    
+    void setEdges(ResizableExtVector<Edge> * e)
+    {
+        m_edges.setValue(*e);
     };
 
     virtual void computePositions();

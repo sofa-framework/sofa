@@ -22,42 +22,163 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_CONTROLLER_LCPFORCEFEEDBACK_CPP
+
 #include <sofa/component/controller/LCPForceFeedback.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/LCPcalc.h>
 #include <sofa/defaulttype/RigidTypes.h>
+/*
+namespace
+{
 
-using namespace std;
-using namespace sofa::defaulttype;
+#ifndef SOFA_FLOAT
+using sofa::defaulttype::Rigid3dTypes;
+
+template<>
+bool derivVectors<Rigid3dTypes>(const Rigid3dTypes::VecCoord& x0, const Rigid3dTypes::VecCoord& x1, Rigid3dTypes::VecDeriv& d, bool derivRotation)
+{
+    return derivRigid3Vectors<Rigid3dTypes>(x0, x1, d, derivRotation);
+}
+
+template <>
+double computeDot<Rigid3dTypes>(const Rigid3dTypes::Deriv& v0, const Rigid3dTypes::Deriv& v1)
+{
+    return dot(getVCenter(v0),getVCenter(v1)) + dot(getVOrientation(v0), getVOrientation(v1));
+}
+
+#endif
+
+#ifndef SOFA_DOUBLE
+using sofa::defaulttype::Rigid3fTypes;
+
+template<>
+bool derivVectors<Rigid3fTypes>(const Rigid3fTypes::VecCoord& x0, const Rigid3fTypes::VecCoord& x1, Rigid3fTypes::VecDeriv& d, bool derivRotation)
+{
+    return derivRigid3Vectors<Rigid3fTypes>(x0, x1, d, derivRotation);
+}
+
+template <>
+double computeDot<Rigid3fTypes>(const Rigid3fTypes::Deriv& v0, const Rigid3fTypes::Deriv& v1)
+{
+    return dot(getVCenter(v0),getVCenter(v1)) + dot(getVOrientation(v0), getVOrientation(v1));
+}
+
+#endif
+
+} */// anonymous namespace
+
 
 namespace sofa
 {
+
 namespace component
 {
+
 namespace controller
 {
+
+#ifndef SOFA_DOUBLE
+
+using sofa::defaulttype::Rigid3fTypes;
+
+template <>
+void LCPForceFeedback< Rigid3fTypes >::computeForce(SReal x, SReal y, SReal z, SReal, SReal, SReal, SReal, SReal& fx, SReal& fy, SReal& fz)
+{
+    Rigid3fTypes::VecCoord state;
+    Rigid3fTypes::VecDeriv forces;
+    state.resize(1);
+    state[0].getCenter() = sofa::defaulttype::Vec3f((float)x,(float)y,(float)z);
+    computeForce(state,forces);
+    fx = getVCenter(forces[0]).x();
+    fy = getVCenter(forces[0]).y();
+    fz = getVCenter(forces[0]).z();
+}
+
+#endif // SOFA_DOUBLE
+
+#ifndef SOFA_FLOAT
+
+using sofa::defaulttype::Rigid3dTypes;
+
+template <>
+void LCPForceFeedback< Rigid3dTypes >::computeForce(double x, double y, double z, double, double, double, double, double& fx, double& fy, double& fz)
+{
+    Rigid3dTypes::VecCoord state;
+    Rigid3dTypes::VecDeriv forces;
+    state.resize(1);
+    state[0].getCenter() = sofa::defaulttype::Vec3d(x,y,z);
+    computeForce(state,forces);
+    fx = getVCenter(forces[0]).x();
+    fy = getVCenter(forces[0]).y();
+    fz = getVCenter(forces[0]).z();
+}
+
+
+template <>
+void LCPForceFeedback< Rigid3dTypes >::computeWrench(const SolidTypes<double>::Transform &world_H_tool,
+        const SolidTypes<double>::SpatialVector &/*V_tool_world*/,
+        SolidTypes<double>::SpatialVector &W_tool_world )
+{
+    //std::cerr<<"WARNING : LCPForceFeedback::computeWrench is not implemented"<<std::endl;
+
+    if (!this->f_activate.getValue())
+    {
+        return;
+    }
+
+
+    Rigid3dTypes::VecCoord state;
+    Rigid3dTypes::VecDeriv forces;
+    state.resize(1);
+    state[0].getCenter()	  = world_H_tool.getOrigin();
+    state[0].getOrientation() = world_H_tool.getOrientation();
+
+
+    computeForce(state,forces);
+
+    W_tool_world.setForce(getVCenter(forces[0]));
+    W_tool_world.setTorque(getVOrientation(forces[0]));
+
+
+
+    //Vec3d Force(0.0,0.0,0.0);
+
+    //this->computeForce(world_H_tool.getOrigin()[0], world_H_tool.getOrigin()[1],world_H_tool.getOrigin()[2],
+    //				   world_H_tool.getOrientation()[0], world_H_tool.getOrientation()[1], world_H_tool.getOrientation()[2], world_H_tool.getOrientation()[3],
+    //				   Force[0],  Force[1], Force[2]);
+
+    //W_tool_world.setForce(Force);
+}
+
+#endif // SOFA_FLOAT
+
+
+
 int lCPForceFeedbackClass = sofa::core::RegisterObject("LCP force feedback for the device")
 #ifndef SOFA_FLOAT
-        .add< LCPForceFeedback<sofa::defaulttype::Vec1dTypes> >()
-        .add< LCPForceFeedback<sofa::defaulttype::Rigid3dTypes> >()
+        .add< LCPForceFeedback<defaulttype::Vec1dTypes> >()
+        .add< LCPForceFeedback<defaulttype::Rigid3dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
-        .add< LCPForceFeedback<sofa::defaulttype::Vec1fTypes> >()
-        .add< LCPForceFeedback<sofa::defaulttype::Rigid3fTypes> >()
+        .add< LCPForceFeedback<defaulttype::Vec1fTypes> >()
+        .add< LCPForceFeedback<defaulttype::Rigid3fTypes> >()
 #endif
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_HAPTICS_API LCPForceFeedback<Vec1dTypes>;
-template class SOFA_HAPTICS_API LCPForceFeedback<Rigid3dTypes>;
+template class SOFA_HAPTICS_API LCPForceFeedback<defaulttype::Vec1dTypes>;
+template class SOFA_HAPTICS_API LCPForceFeedback<defaulttype::Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_HAPTICS_API LCPForceFeedback<Vec1fTypes>;
-template class SOFA_HAPTICS_API LCPForceFeedback<Rigid3fTypes>;
+template class SOFA_HAPTICS_API LCPForceFeedback<defaulttype::Vec1fTypes>;
+template class SOFA_HAPTICS_API LCPForceFeedback<defaulttype::Rigid3fTypes>;
 #endif
+
 SOFA_DECL_CLASS(LCPForceFeedback)
 
 
 } // namespace controller
+
 } // namespace component
+
 } // namespace sofa

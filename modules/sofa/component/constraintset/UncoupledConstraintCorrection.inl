@@ -359,7 +359,7 @@ void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(co
                 W->add(indexCurRowConst, indexCurRowConst, w);
                 dofsConstraint.pop_front();
 
-                for (CIndicesAndValues::const_iterator it = dofsConstraint.begin(), itEnd = dofsConstraint.end(); it != itEnd; ++it)
+                for (typename CIndicesAndValues::const_iterator it = dofsConstraint.begin(), itEnd = dofsConstraint.end(); it != itEnd; ++it)
                 {
                     w = n * it->second * dofComp;
                     W->add(indexCurRowConst, it->first, w);

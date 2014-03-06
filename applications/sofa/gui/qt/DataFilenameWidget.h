@@ -57,6 +57,7 @@ public:
         TDataWidget<std::string>(parent,name,data) {};
 
     virtual bool createWidgets();
+    virtual void setDataReadOnly(bool readOnly);
 protected:
     ///Implements how update the widgets knowing the data value.
     virtual void readFromData();

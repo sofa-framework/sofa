@@ -32,6 +32,9 @@
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/BackTrace.h>
 
+// activate to check for NaN from device data
+#define SOFAHAPI_CHECK_NAN
+
 namespace SofaHAPI
 {
 
@@ -49,7 +52,21 @@ ForceFeedbackEffect::~ForceFeedbackEffect()
 ForceFeedbackEffect::EffectOutput ForceFeedbackEffect::calculateForces( const EffectInput &input )
 {
     ForceFeedbackEffect::EffectOutput res;
-
+#ifdef SOFAHAPI_CHECK_NAN
+    if (input.position.x != input.position.x ||
+        input.position.y != input.position.y ||
+        input.position.z != input.position.z ||
+        input.orientation.axis.x != input.orientation.axis.x ||
+        input.orientation.axis.y != input.orientation.axis.y ||
+        input.orientation.axis.z != input.orientation.axis.z )
+    {
+        //std::cerr << "Invalid data received from haptic device" << std::endl;
+        res.force.x = 0.0;
+        res.force.y = 0.0;
+        res.force.z = 0.0;
+        return res;
+    }
+#endif
     /// COMPUTATION OF THE virtualTool 6D POSITION IN THE World COORDINATES
     Vec3d pos = conv(input.position);
     Quat quat = conv(input.orientation);

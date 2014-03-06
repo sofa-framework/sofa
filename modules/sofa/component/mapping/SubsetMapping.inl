@@ -44,11 +44,11 @@ template <class TIn, class TOut>
 SubsetMapping<TIn, TOut>::SubsetMapping()
     : Inherit()
     , f_indices( initData(&f_indices, "indices", "list of input indices"))
-	, f_definedSubsetSize( initData(&f_definedSubsetSize, -1, "definedSubsetSize", "Size of the wanted subset"))
     , f_first( initData(&f_first, -1, "first", "first index (use if indices are sequential)"))
     , f_last( initData(&f_last, -1, "last", "last index (use if indices are sequential)"))
     , f_radius( initData(&f_radius, (Real)1.0e-5, "radius", "search radius to find corresponding points in case no indices are given"))
     , f_handleTopologyChange( initData(&f_handleTopologyChange, true, "handleTopologyChange", "Enable support of topological changes for indices (disable if it is linked from SubsetTopologicalMapping::pointD2S)"))
+    , f_ignoreNotFound( initData(&f_ignoreNotFound, false, "ignoreNotFound", "True to ignore points that are not found in the input model, they will be treated as fixed points"))
     , matrixJ()
     , updateJ(false)
 {
@@ -97,6 +97,8 @@ void SubsetMapping<TIn, TOut>::handleTopologyChange(core::topology::Topology* t)
 template <class TIn, class TOut>
 void SubsetMapping<TIn, TOut>::init()
 {
+    const bool ignoreNotFound = f_ignoreNotFound.getValue();
+    int numnotfound = 0;
     unsigned int inSize = this->fromModel->getX()->size();
     if (f_indices.getValue().empty() && f_first.getValue() != -1)
     {
@@ -120,12 +122,7 @@ void SubsetMapping<TIn, TOut>::init()
         const OutVecCoord& out = *this->toModel->getX();
         IndexArray& indices = *f_indices.beginEdit();
 
-		int defSize = f_definedSubsetSize.getValue();
-		unsigned int unfound_card=0;
-		if(defSize!=-1)
-			indices.resize(defSize);
-		else
-			indices.resize(out.size());
+        indices.resize(out.size());
 
         // searching for the first corresponding point in the 'from' model (there might be several ones).
         for (unsigned int i = 0; i < out.size(); ++i)
@@ -137,26 +134,28 @@ void SubsetMapping<TIn, TOut>::init()
                 Real r = (Real)((out[i] - in[j]).norm());
                 if ( r < rmax )
                 {
-                    indices[i-unfound_card] = j;
+                    indices[i] = j;
                     found = true;
                     rmax = r;
                 }
             }
-			
-			if(!found)
-			{
-				if(defSize==-1)
-				{
-					sout<<"ERROR(SubsetMapping): point "<<i<<"="<<out[i]<<" not found in input model within a radius of "<<rmax<<"."<<sendl;
-					indices[i] = -1;
-				}
-				else
-					++unfound_card;
-			}
+            if(!found)
+            {
+                ++numnotfound;
+                if(!ignoreNotFound)
+                {
+                    sout<<"ERROR(SubsetMapping): point "<<i<<"="<<out[i]<<" not found in input model within a radius of "<<rmax<<"."<<sendl;
+                }
+                indices[i] = (unsigned int)-1;
+            }
         }
         f_indices.endEdit();
+        if (numnotfound > 0)
+        {
+            sout << out.size() << " points, " << out.size()-numnotfound << " found, " << numnotfound << " fixed points" << sendl;
+        }
     }
-    else
+    else if (!ignoreNotFound)
     {
         IndexArray& indices = *f_indices.beginEdit();
         for (unsigned int i=0; i<indices.size(); ++i)
@@ -192,13 +191,17 @@ void SubsetMapping<TIn, TOut>::apply ( const core::MechanicalParams* /*mparams*/
     const IndexArray& indices = f_indices.getValue();
 
     const InVecCoord& in = dIn.getValue();
+    const OutVecCoord& out0 = this->toModel->read(core::ConstVecCoordId::restPosition())->getValue();
     OutVecCoord& out = *dOut.beginEdit();
+    const unsigned int fromSize = in.size();
 
     out.resize(indices.size());
     for(unsigned int i = 0; i < out.size(); ++i)
     {
-//		if(indices[i]>=0) // Always true for unsigned
-			out[i] = in[ indices[i] ];
+        if(indices[i] < fromSize)
+            out[i] = in[ indices[i] ];
+        else
+            out[i] = out0[i];
     }
 
     dOut.endEdit();
@@ -211,12 +214,13 @@ void SubsetMapping<TIn, TOut>::applyJ( const core::MechanicalParams* /*mparams*/
 
     const InVecDeriv& in = dIn.getValue();
     OutVecDeriv& out = *dOut.beginEdit();
+    const unsigned int fromSize = in.size();
 
     out.resize(indices.size());
     for(unsigned int i = 0; i < out.size(); ++i)
     {
-//		if(indices[i]>=0) // Always true for unsigned
-			out[i] = in[ indices[i] ];
+        if(indices[i] < fromSize)
+            out[i] = in[ indices[i] ];
     }
 
     dOut.endEdit();
@@ -229,6 +233,7 @@ void SubsetMapping<TIn, TOut>::applyJT ( const core::MechanicalParams* /*mparams
 
     const OutVecDeriv& in = dIn.getValue();
     InVecDeriv& out = *dOut.beginEdit();
+    const unsigned int fromSize = out.size();
 
     if (indices.empty())
         return;
@@ -240,8 +245,8 @@ void SubsetMapping<TIn, TOut>::applyJT ( const core::MechanicalParams* /*mparams
 
     for(unsigned int i = 0; i < in.size(); ++i)
     {
-//		if(indices[i]>=0) // Always true for unsigned
-			out[indices[i]] += in[ i ];
+        if(indices[i] < fromSize)
+            out[indices[i]] += in[ i ];
     }
 
     dOut.endEdit();
@@ -254,6 +259,7 @@ void SubsetMapping<TIn, TOut>::applyJT ( const core::ConstraintParams * /*cparam
 
     InMatrixDeriv& out = *dOut.beginEdit();
     const OutMatrixDeriv& in = dIn.getValue();
+    const unsigned int fromSize = this->fromModel->getSize();
 
     typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
 
@@ -269,8 +275,8 @@ void SubsetMapping<TIn, TOut>::applyJT ( const core::ConstraintParams * /*cparam
 
             while (colIt != colItEnd)
             {
-//				if(indices[colIt.index()]>=0) // Always true for unsigned
-					o.addCol(indices[colIt.index()], colIt.val());
+                if(indices[colIt.index()] < fromSize)
+                    o.addCol(indices[colIt.index()], colIt.val());
                 ++colIt;
             }
         }
@@ -303,6 +309,7 @@ const sofa::defaulttype::BaseMatrix* SubsetMapping<TIn, TOut>::getJ()
         const InVecCoord& in = *this->fromModel->getX();
         const IndexArray& indices = f_indices.getValue();
         assert(indices.size() == out.size());
+        const unsigned int fromSize = in.size();
 
         updateJ = false;
         if (matrixJ.get() == 0 ||
@@ -317,11 +324,11 @@ const sofa::defaulttype::BaseMatrix* SubsetMapping<TIn, TOut>::getJ()
         }
         for (unsigned i = 0; i < indices.size(); ++i)
         {
-//			if(indices[i]>=0) // Always true for unsigned
-			{
-				MBloc& block = *matrixJ->wbloc(i, indices[i], true);
-				block.identity();
-			}
+            if(indices[i] < fromSize)
+            {
+                MBloc& block = *matrixJ->wbloc(i, indices[i], true);
+                block.identity();
+            }
         }
     }
     return matrixJ.get();
