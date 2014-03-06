@@ -206,6 +206,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
     helper::vector< sofa::core::loader::PrimitiveGroup>& my_edgesGroups = *(edgesGroups.beginEdit());
     helper::vector< sofa::core::loader::PrimitiveGroup>& my_trianglesGroups = *(trianglesGroups.beginEdit());
     helper::vector< sofa::core::loader::PrimitiveGroup>& my_tetrahedraGroups = *(tetrahedraGroups.beginEdit());
+    helper::vector< sofa::core::loader::PrimitiveGroup>& my_hexahedraGroups = *(hexahedraGroups.beginEdit());
 
     for (unsigned int i=0; i<nelems; ++i) // for each elem
     {
@@ -266,7 +267,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
             nodes[n] = (((unsigned int)t)<pmap.size())?pmap[t]:0;
             //sout << "nodes[" << n << "] = " << nodes[n] << sendl;
         }
-        Hexahedron hexa;
+
         switch (etype)
         {
         case 1: // Line
@@ -289,10 +290,8 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
             ++ntetrahedra;
             break;
         case 5: // Hexa
-
-            for (unsigned int n=0; n<8; n++)
-                hexa[n] = nodes[n];
-            addHexahedron(&my_hexahedra,hexa);
+            addInGroup(my_hexahedraGroups,tag,my_hexahedra.size());
+            addHexahedron(&my_hexahedra,Hexahedron(nodes[0], nodes[1], nodes[2], nodes[3],nodes[4],nodes[5],nodes[6],nodes[7]));
             ++ncubes;
             break;
 
@@ -306,10 +305,12 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
     normalizeGroup(my_edgesGroups);
     normalizeGroup(my_trianglesGroups);
     normalizeGroup(my_tetrahedraGroups);
+    normalizeGroup(my_hexahedraGroups);
 
     edgesGroups.endEdit();
     trianglesGroups.endEdit();
     tetrahedraGroups.endEdit();
+    hexahedraGroups.endEdit();
 
     edges.endEdit();
     triangles.endEdit();
