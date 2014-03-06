@@ -54,15 +54,21 @@ CircularQueue<T, StoragePolicy, ThreadAccessPolicy>::~CircularQueue()
 }
 
 template<class T, template<class U> class StoragePolicy, class ThreadAccessPolicy>
+bool CircularQueue<T, StoragePolicy, ThreadAccessPolicy>::isEmpty() const
+{
+    return ThreadAccessPolicy::isEmpty(this->maxSize());
+}
+
+template<class T, template<class T> class StoragePolicy, class ThreadAccessPolicy>
 bool CircularQueue<T, StoragePolicy, ThreadAccessPolicy>::isFull() const
 {
     return ThreadAccessPolicy::isFull(this->maxSize());
 }
 
 template<class T, template<class U> class StoragePolicy, class ThreadAccessPolicy>
-bool CircularQueue<T, StoragePolicy, ThreadAccessPolicy>::pop(T& item)
+unsigned CircularQueue<T, StoragePolicy, ThreadAccessPolicy>::size() const
 {
-    return ThreadAccessPolicy::pop(this->getQueue(), this->maxSize(), this->maxCapacity(), item);
+    return ThreadAccessPolicy::size(this->maxSize());
 }
 
 template<class T, template<class U> class StoragePolicy, class ThreadAccessPolicy>
@@ -71,26 +77,48 @@ bool CircularQueue<T, StoragePolicy, ThreadAccessPolicy>::push(const T& item)
     return ThreadAccessPolicy::push(this->getQueue(), this->maxSize(), this->maxCapacity(), item);
 }
 
+template<class T, template<class T> class StoragePolicy, class ThreadAccessPolicy>
+bool CircularQueue<T, StoragePolicy, ThreadAccessPolicy>::pop(T& item, bool clear)
+{
+    return ThreadAccessPolicy::pop(this->getQueue(), this->maxSize(), this->maxCapacity(), item, clear);
+}
+
+template<class T, template<class T> class StoragePolicy, class ThreadAccessPolicy>
+unsigned CircularQueue<T, StoragePolicy, ThreadAccessPolicy>::skip(unsigned maxsize, bool clear)
+{
+    return ThreadAccessPolicy::skip(this->getQueue(), this->maxSize(), this->maxCapacity(), maxsize, clear);
+}
+
+template<class T, template<class T> class StoragePolicy, class ThreadAccessPolicy>
+template<class OutputIterator>
+unsigned CircularQueue<T, StoragePolicy, ThreadAccessPolicy>::pop(OutputIterator out, unsigned maxsize, bool clear)
+{
+    return ThreadAccessPolicy::pop(this->getQueue(), this->maxSize(), this->maxCapacity(), out, maxsize, clear);
+}
 
 
-OneThreadPerEnd::OneThreadPerEnd()
+
+inline SOFA_HELPER_API OneThreadPerEnd::OneThreadPerEnd()
     : head(0), tail(0)
 {
 }
 
-bool OneThreadPerEnd::isEmpty() const
+inline SOFA_HELPER_API bool OneThreadPerEnd::isEmpty(unsigned /*maxSize*/) const
 {
     return head == tail;
 }
 
-bool OneThreadPerEnd::isFull(unsigned maxSize) const
+inline SOFA_HELPER_API bool OneThreadPerEnd::isFull(unsigned maxSize) const
 {
     return (tail+1) % maxSize == head;
 }
 
-unsigned OneThreadPerEnd::size() const
+inline SOFA_HELPER_API unsigned OneThreadPerEnd::size(unsigned maxSize) const
 {
-    return tail - head;
+    unsigned h = head;
+    unsigned t = tail;
+    if (t < h) t += maxSize;
+    return t - h;
 }
 
 template<class T>
@@ -99,55 +127,139 @@ void OneThreadPerEnd::init(T /*array*/[], unsigned /*maxCapacity*/)
 }
 
 template<class T>
-bool OneThreadPerEnd::pop(T array[], unsigned maxSize, unsigned /*maxCapacity*/, T& item)
+bool OneThreadPerEnd::push(T array[], unsigned maxSize, unsigned /*maxCapacity*/, const T& item)
 {
-    if(isEmpty()) return false;
+    unsigned nextTail = (tail + 1) % maxSize;
+    if(nextTail == head)
+    {
+        // queue is full
+        return false;
+    }
+    array[tail] = item;
+    tail = nextTail;
+    return true;
+
+}
+
+template<class T>
+bool OneThreadPerEnd::pop(T array[], unsigned maxSize, unsigned /*maxCapacity*/, T& item, bool clear)
+{
+    if(isEmpty(maxSize))
+    {
+        // queue is empty
+        return false;
+    }
 
     item = array[head];
-    array[head] = T();
+    if (clear)
+    {
+        array[head] = T();
+    }
     head = (head + 1) % maxSize;
     return true;
 }
 
 template<class T>
-bool OneThreadPerEnd::push(T array[], unsigned maxSize, unsigned /*maxCapacity*/, const T& item)
+unsigned OneThreadPerEnd::skip(T array[], unsigned maxSize, unsigned /*maxCapacity*/, unsigned outmaxsize, bool clear)
 {
-    unsigned nextTail = (tail + 1) % maxSize;
-    if(nextTail != head)
+    unsigned currentSize = size(maxSize);
+    unsigned outsize = (currentSize < outmaxsize) ? currentSize : outmaxsize;
+    if (outsize == 0)
     {
-        array[tail] = item;
-        tail = nextTail;
-        return true;
+        // queue is empty
+        return 0;
     }
+    if (clear)
+    {
+        unsigned i    = head;
+        unsigned iend = head + outsize;
+        if (iend >= maxSize)
+        {
+            for (;i<maxSize;++i)
+            {
+                array[i] = T();
+            }
+            i = 0;
+            iend -= maxSize;
+        }
+        for (;i<iend;++i)
+        {
+            array[i] = T();
+        }
+        head = iend;
+    }
+    else
+    {
+        head = (head + outsize) % maxSize;
+    }
+    return outsize;
+}
 
-    // queue was full
-    return false;
+template<class T, class OutputIterator>
+unsigned OneThreadPerEnd::pop(T array[], unsigned maxSize, unsigned /*maxCapacity*/, OutputIterator out, unsigned outmaxsize, bool clear)
+{
+    unsigned currentSize = size(maxSize);
+    unsigned outsize = (currentSize < outmaxsize) ? currentSize : outmaxsize;
+    if (outsize == 0)
+    {
+        // queue is empty
+        return 0;
+    }
+    // copy values + optional clear
+    {
+        unsigned i    = head;
+        unsigned iend = head + outsize;
+        if (iend >= maxSize)
+        {
+            for (;i<maxSize;++i)
+            {
+                *out = array[i];
+                ++out;
+                if (clear)
+                {
+                    array[i] = T();
+                }
+            }
+            i = 0;
+            iend -= maxSize;
+        }
+        for (;i<iend;++i)
+        {
+            *out = array[i];
+            ++out;
+            if (clear)
+            {
+                array[i] = T();
+            }
+        }
+        head = iend;
+    }
+    return outsize;
 }
 
 
 
-ManyThreadsPerEnd::ManyThreadsPerEnd()
+inline SOFA_HELPER_API ManyThreadsPerEnd::ManyThreadsPerEnd()
     : head(0), tail(0)
 {
 }
 
-bool ManyThreadsPerEnd::isEmpty() const
+inline SOFA_HELPER_API bool ManyThreadsPerEnd::isEmpty(unsigned /*maxSize*/) const
 {
-    return head >= tail;
+    return head == tail;
 }
 
-bool ManyThreadsPerEnd::isFull(int maxSize) const
+inline SOFA_HELPER_API bool ManyThreadsPerEnd::isFull(unsigned maxSize) const
 {
-    return tail-head >= maxSize;
+    return tail-head >= (int)maxSize;
 }
 
-
-int ManyThreadsPerEnd::size() const
+inline SOFA_HELPER_API unsigned ManyThreadsPerEnd::size(unsigned /*maxSize*/) const
 {
     return tail - head;
 }
 
-void ManyThreadsPerEnd::init(AtomicInt array[], int maxCapacity)
+inline SOFA_HELPER_API void ManyThreadsPerEnd::init(AtomicInt array[], int maxCapacity)
 {
     for(int i = 0; i < maxCapacity; ++i)
     {
@@ -155,9 +267,9 @@ void ManyThreadsPerEnd::init(AtomicInt array[], int maxCapacity)
     }
 }
 
-bool ManyThreadsPerEnd::pop(AtomicInt array[], int maxSize, int maxCapacity, AtomicInt& item)
+inline SOFA_HELPER_API bool ManyThreadsPerEnd::pop(AtomicInt array[], int maxSize, int maxCapacity, AtomicInt& item, bool /*clear*/)
 {
-    if(isEmpty())
+    if(isEmpty(maxSize))
     {
 #if SOFA_HAVE_BOOST
         boost::thread::yield();
@@ -166,13 +278,15 @@ bool ManyThreadsPerEnd::pop(AtomicInt array[], int maxSize, int maxCapacity, Ato
     }
     // atomically reserve the element to read
     int readIdx = head.exchange_and_add(1) & (maxCapacity-1); // maxCapacity is assumed to be a power of 2
-    std::cout << "CQ"<<array<<"/"<<maxSize<<"/"<<maxCapacity<<": pop from " << readIdx << std::endl;
+    //std::cout << "CQ"<<array<<"/"<<maxSize<<"/"<<maxCapacity<<": pop from " << readIdx << std::endl;
 
     // Active wait:
     // loop as long as other threads have not put any valid value in the element.
     // It happens when the queue is temporarily empty.
     while((item = array[readIdx]) == -1)
-        std::cout << "CQ"<<array<<"/"<<maxSize<<"/"<<maxCapacity<<": pop wait loop" << std::endl;
+    {
+        //std::cout << "CQ"<<array<<"/"<<maxSize<<"/"<<maxCapacity<<": pop wait loop" << std::endl;
+    }
 
     // mark the element as available
     array[readIdx] = -1;
@@ -180,7 +294,7 @@ bool ManyThreadsPerEnd::pop(AtomicInt array[], int maxSize, int maxCapacity, Ato
     return true;
 }
 
-bool ManyThreadsPerEnd::push(AtomicInt array[], int maxSize, int maxCapacity, const AtomicInt& item)
+inline SOFA_HELPER_API bool ManyThreadsPerEnd::push(AtomicInt array[], int maxSize, int maxCapacity, const AtomicInt& item)
 {
     if(isFull(maxSize))
     {
@@ -192,13 +306,40 @@ bool ManyThreadsPerEnd::push(AtomicInt array[], int maxSize, int maxCapacity, co
 
     // atomically reserve the element to write
     int writeIdx = tail.exchange_and_add(1) & (maxCapacity-1); // maxCapacity is assumed to be a power of 2
-    std::cout << "CQ"<<array<<"/"<<maxSize<<"/"<<maxCapacity<<": push " << (int)item << " to " << writeIdx << std::endl;
+    //std::cout << "CQ"<<array<<"/"<<maxSize<<"/"<<maxCapacity<<": push " << (int)item << " to " << writeIdx << std::endl;
     // Active wait:
     // loop as long as the element has not been read by another thread (which is indicated by a -1 value).
     // It happens when the queue is temporarily full.
-    while(array[writeIdx].compare_and_swap(-1, item) != -1);
+    while(array[writeIdx].compare_and_swap(-1, item) != -1)
+    {
+    }
 
     return true;
+}
+
+inline SOFA_HELPER_API unsigned ManyThreadsPerEnd::skip(AtomicInt array[], int maxSize, int maxCapacity, unsigned outmaxsize, bool clear)
+{
+    // NOT OPTIMIZED
+    unsigned outsize = 0;
+    AtomicInt tmp;
+    while (outsize < outmaxsize && pop(array, maxSize, maxCapacity, tmp, clear))
+    {
+        ++outsize;
+    }
+    return outsize;
+}
+
+template<class OutputIterator>
+unsigned ManyThreadsPerEnd::pop(AtomicInt array[], int maxSize, int maxCapacity, OutputIterator out, unsigned outmaxsize, bool clear)
+{
+    // NOT OPTIMIZED
+    unsigned outsize = 0;
+    while (outsize < outmaxsize && pop(array, maxSize, maxCapacity, *out, clear))
+    {
+        ++out;
+        ++outsize;
+    }
+    return outsize;
 }
 
 } // namespace thread

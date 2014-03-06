@@ -66,6 +66,9 @@ protected:
     BruteForceDetection();
 
     ~BruteForceDetection();
+
+    virtual bool keepCollisionBetween(core::CollisionModel *cm1, core::CollisionModel *cm2);
+
 public:
     void setDraw(bool val) { bDraw.setValue(val); }
 

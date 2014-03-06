@@ -62,6 +62,7 @@ protected:
     Data< Real >  tetrahedraDamping;
     Data< Real >  cubesStiffness;
     Data< Real >  cubesDamping;
+    Data< bool >  noCompression;
 
     /// optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)
     Data< defaulttype::Vec<2,int> > localRange;
@@ -81,6 +82,7 @@ protected:
         , cubesStiffness(initData(&cubesStiffness,Real(0),"cubesStiffness","Stiffness for the Cubes",true))
         , cubesDamping(initData(&cubesDamping,Real(0),"cubesDamping","Damping for the Cubes",true))
         , localRange( initData(&localRange, defaulttype::Vec<2,int>(-1,-1), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
+        , noCompression( initData(&noCompression, false, "noCompression", "Only consider elongation", false))
     {
         this->ks.setDisplayed(false);
         this->kd.setDisplayed(false);

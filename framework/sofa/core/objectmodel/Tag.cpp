@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include <sofa/helper/TagFactory.h>
 #include <sofa/core/objectmodel/Tag.h>
-#include <algorithm> // for std::includes
+//#include <algorithm> // for std::includes
 
 namespace sofa
 {
@@ -40,19 +40,105 @@ Tag::Tag(const std::string& s)
 {
     if (!s.empty())
     {
-        id = helper::TagFactory::getID(s);
+        if (s[0] == '!')
+        {
+            id = -(int)helper::TagFactory::getID(std::string(s.begin()+1,s.end()));
+        }
+        else
+        {
+            id = (int)helper::TagFactory::getID(s);
+        }
     }
 }
 
 Tag::operator std::string() const
 {
     if (id == 0) return std::string("0");
-    else return helper::TagFactory::getName(id);
+    else if (id > 0) return helper::TagFactory::getName((unsigned)id);
+    else return std::string("!")+helper::TagFactory::getName((unsigned)-id);
 }
 
 bool TagSet::includes(const TagSet& t) const
 {
-    return !empty() && std::includes( this->begin(), this->end(), t.begin(), t.end());
+    //return !empty() && std::includes( this->begin(), this->end(), t.begin(), t.end());
+    if (t.empty())
+        return true;
+    if (empty())
+    {
+        // An empty TagSet satisfies the conditions only if either :
+        // t is also empty (already handled)
+        // t only includes negative tags
+        if (*t.rbegin() <= Tag(0))
+            return true;
+        // t includes the "0" tag
+        if (t.count(Tag(0)) > 0)
+            return true;
+        // otherwise the TagSet t does not "include" empty sets
+        return false;
+    }
+#if 1
+    // Simple but not optimal version
+    for (sofa::helper::set<Tag>::const_iterator first2 = t.begin(), last2 = t.end();
+        first2 != last2; ++first2)
+    {
+        Tag t2 = *first2;
+        if (t2 == Tag(0)) continue; // tag "0" is used to indicate that we should include objects without any tag
+        if (!t2.negative())
+        {
+            if (this->count(t2) == 0)
+                return false; // tag not found in this
+        }
+        else
+        {
+            if (this->count(-t2) > 0)
+                return false; // tag found in this
+        }
+    }
+    return true;
+#else
+    // First test : no negative tag from t should appear as positive in this
+    if (t.begin()->negative())
+    {
+        sofa::helper::set<Tag>::const_reverse_iterator first1, last1;
+        sofa::helper::set<Tag>::const_iterator first2, last2;
+        first1 = this->rbegin(); last1 = this->rend();
+        first2 = t.begin(); last2 = t.end();
+        for (; first2 != last2; ++first1)
+        {
+            if (first1 == last1) break; // no more tags in this
+            Tag t1 = *first1;
+            if (t1.negative()) break; // no more positive tags in this
+            Tag t2 = *first2;
+            if (!t2.negative()) break; // no more negative tags in t
+            if (-t1 == t2)
+                return false; // found an excluded tag
+            if (!(-t1 < t2))
+                ++first2;
+        }
+    }
+    // Second test : all positive tags from t should appear as positive in this
+    if (!t.rbegin()->negative())
+    {
+        sofa::helper::set<Tag>::const_iterator first1, last1;
+        sofa::helper::set<Tag>::const_iterator first2, last2;
+        first1 = this->lower_bound(Tag(0)); last1 = this->end();
+        first2 = t.lower_bound(Tag(0)); last2 = t.end();
+        //for(; first1 != last1 && first1->negative(); ++first1); // skip negative tags in this
+        //for(; first2 != last2 && first2->negative(); ++first2); // skip negative tags in t
+        for (; first2 != last2; ++first1)
+        {
+            if (first1 == last1)
+                return false; // no more positive tags in this
+            Tag t1 = *first1;
+            Tag t2 = *first2;
+            if (t2 < t1)
+                return false; // tag not found
+            if (!(t1 < t2))
+                ++first2;
+        }
+    }
+    return true; // all tests passed
+#endif
 }
 
 } // namespace objectmodel

@@ -259,7 +259,7 @@ const Real*  SofaPhysicsOutputMeshTetrahedron::Impl::getVAttributeValue(int inde
     if ((unsigned)index >= sVA.size())
         return NULL;
     else
-        return (Real*)((ResizableExtVector<Real>*)sVA[index]->getSEValue()->getValueVoidPtr())->getData();
+        return (const Real*)((ResizableExtVector<Real>*)sVA[index]->getSEValue()->getValueVoidPtr())->getData();
 }
 
 int SofaPhysicsOutputMeshTetrahedron::Impl::getVAttributeRevision(int index)      ///< changes each time vertices attribute is updated

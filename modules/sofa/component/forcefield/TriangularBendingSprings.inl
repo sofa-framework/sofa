@@ -308,6 +308,24 @@ void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTriangle
 
 }
 
+template<class DataTypes>
+void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::ApplyTopologyChange(const core::topology::TrianglesAdded* e)
+{
+    const sofa::helper::vector<unsigned int> &triangleAdded = e->getIndexArray();
+    const sofa::helper::vector<Triangle> &elems = e->getElementArray();
+    const sofa::helper::vector<sofa::helper::vector<unsigned int> > & ancestors = e->ancestorsList;
+    const sofa::helper::vector<sofa::helper::vector<double> > & coefs = e->coefs;
+
+    applyTriangleCreation(triangleAdded, elems, ancestors, coefs);
+}
+
+template<class DataTypes>
+void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::ApplyTopologyChange(const core::topology::TrianglesRemoved* e)
+{
+    const sofa::helper::vector<unsigned int> &triangleRemoved = e->getArray();
+
+    applyTriangleDestruction(triangleRemoved);
+}
 
 
 template<class DataTypes>
@@ -428,6 +446,20 @@ void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyPointRen
         }
         ff->edgeInfo.endEdit();
     }
+}
+
+template<class DataTypes>
+void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::ApplyTopologyChange(const core::topology::PointsRemoved* e)
+{
+    const sofa::helper::vector<unsigned int> & tab = e->getArray();
+    applyPointDestruction(tab);
+}
+
+template<class DataTypes>
+void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::ApplyTopologyChange(const core::topology::PointsRenumbering* e)
+{
+    const sofa::helper::vector<unsigned int> &newIndices = e->getIndexArray();
+    applyPointRenumbering(newIndices);
 }
 
 

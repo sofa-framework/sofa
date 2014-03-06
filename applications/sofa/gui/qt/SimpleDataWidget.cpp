@@ -200,6 +200,22 @@ bool RadioDataWidget::createWidgets()
 
     return true;
 }
+void RadioDataWidget::setDataReadOnly(bool readOnly)
+{
+    if (buttonMode)
+    {
+        QList<QAbstractButton *> buttons = buttonList->buttons();
+        for (int i = 0; i < buttons.size(); ++i)
+        {
+            buttons.at(i)->setEnabled(!readOnly);
+        }
+    }
+    else
+    {
+        comboList->setEnabled(!readOnly);
+    }
+}
+
 void RadioDataWidget::readFromData()
 {
     sofa::helper::OptionsGroup m_radiotrick = getData()->virtualGetValue();

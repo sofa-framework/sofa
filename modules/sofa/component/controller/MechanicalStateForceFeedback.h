@@ -25,10 +25,10 @@
 #ifndef SOFA_COMPONENT_CONTROLLER_MECHANICALSTATEFORCEFEEDBACK_H
 #define SOFA_COMPONENT_CONTROLLER_MECHANICALSTATEFORCEFEEDBACK_H
 
-#include <sofa/component/component.h>
 #include <sofa/component/controller/ForceFeedback.h>
-#include <sofa/component/container/MechanicalObject.h>
-#include <sofa/component/constraintset/ConstraintSolverImpl.h>
+
+#include <sofa/component/component.h>
+
 
 namespace sofa
 {
@@ -38,12 +38,6 @@ namespace component
 
 namespace controller
 {
-
-using namespace std;
-using namespace helper::system::thread;
-using namespace core::behavior;
-using namespace core;
-
 
 template<class TDataTypes>
 class SOFA_HAPTICS_API MechanicalStateForceFeedback : public sofa::component::controller::ForceFeedback

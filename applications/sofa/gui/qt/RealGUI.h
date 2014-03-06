@@ -48,6 +48,9 @@ typedef QStackedWidget QWidgetStack;
 
 #include <time.h>
 
+// Recorder GUI is not used (broken in most scenes)
+#define SOFA_GUI_QT_NO_RECORDER
+
 #ifdef SOFA_QT4
 class QTimer;
 class QTextBrowser;

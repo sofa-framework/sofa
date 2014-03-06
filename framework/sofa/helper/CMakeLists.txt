@@ -121,6 +121,7 @@ set(SOURCE_FILES
     system/FileRepository.cpp
     system/thread/CTime.cpp
     system/thread/debug.cpp
+    system/thread/CircularQueue.cpp
     system/PipeProcess.cpp
     system/SofaOStream.cpp
     system/DynamicLibrary.cpp

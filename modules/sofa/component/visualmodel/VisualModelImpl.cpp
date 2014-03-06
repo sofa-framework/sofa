@@ -119,16 +119,17 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
     , m_updateNormals   (initData   (&m_updateNormals, true, "updateNormals", "True if normals should be updated at each iteration"))
     , m_computeTangents (initData   (&m_computeTangents, false, "computeTangents", "True if tangents should be computed at startup"))
     , m_updateTangents  (initData   (&m_updateTangents, true, "updateTangents", "True if tangents should be updated at each iteration"))
-    , m_handleDynamicTopology  (initData   (&m_handleDynamicTopology, true, "handleDynamicTopology", "True if topological changes should be handled"))
-    , m_fixMergedUVSeams  (initData   (&m_fixMergedUVSeams, true, "fixMergedUVSeams", "True if UV seams should be handled even when duplicate UVs are merged"))
-    , m_vertices2		(initData   (&m_vertices2, "vertices", "vertices of the model (only if vertices have multiple normals/texcoords, otherwise positions are used)"))
-    , m_vtexcoords		(initData   (&m_vtexcoords, "texcoords", "coordinates of the texture"))
-    , m_vtangents		(initData   (&m_vtangents, "tangents", "tangents for normal mapping"))
-    , m_vbitangents		(initData   (&m_vbitangents, "bitangents", "tangents for normal mapping"))
-    , m_triangles		(initData   (&m_triangles, "triangles", "triangles of the model"))
-    , m_quads			(initData   (&m_quads, "quads", "quads of the model"))
-    , m_vertPosIdx		(initData   (&m_vertPosIdx, "vertPosIdx", "If vertices have multiple normals/texcoords stores vertices position indices"))
-    , m_vertNormIdx		(initData   (&m_vertNormIdx, "vertNormIdx", "If vertices have multiple normals/texcoords stores vertices normal indices"))
+    , m_handleDynamicTopology (initData   (&m_handleDynamicTopology, true, "handleDynamicTopology", "True if topological changes should be handled"))
+    , m_fixMergedUVSeams (initData   (&m_fixMergedUVSeams, true, "fixMergedUVSeams", "True if UV seams should be handled even when duplicate UVs are merged"))
+    , m_vertices2       (initData   (&m_vertices2, "vertices", "vertices of the model (only if vertices have multiple normals/texcoords, otherwise positions are used)"))
+    , m_vtexcoords      (initData   (&m_vtexcoords, "texcoords", "coordinates of the texture"))
+    , m_vtangents       (initData   (&m_vtangents, "tangents", "tangents for normal mapping"))
+    , m_vbitangents     (initData   (&m_vbitangents, "bitangents", "tangents for normal mapping"))
+    , m_edges           (initData   (&m_edges, "edges", "edges of the model"))
+    , m_triangles       (initData   (&m_triangles, "triangles", "triangles of the model"))
+    , m_quads           (initData   (&m_quads, "quads", "quads of the model"))
+    , m_vertPosIdx      (initData   (&m_vertPosIdx, "vertPosIdx", "If vertices have multiple normals/texcoords stores vertices position indices"))
+    , m_vertNormIdx     (initData   (&m_vertNormIdx, "vertNormIdx", "If vertices have multiple normals/texcoords stores vertices normal indices"))
     , fileMesh          (initData   (&fileMesh, "fileMesh"," Path to the model"))
     , texturename       (initData   (&texturename, "texturename", "Name of the Texture"))
     , m_translation     (initData   (&m_translation, Vec3Real(), "translation", "Initial Translation of the object"))
@@ -155,17 +156,20 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
     //material.setDisplayed(false);
     addAlias(&fileMesh, "filename");
 
-    m_vertices2		.setGroup("Vector");
-    m_vnormals		.setGroup("Vector");
-    m_vtexcoords	.setGroup("Vector");
-    m_vtangents		.setGroup("Vector");
-    m_vbitangents	.setGroup("Vector");
-    m_triangles		.setGroup("Vector");
-    m_quads			.setGroup("Vector");
+    m_vertices2     .setGroup("Vector");
+    m_vnormals      .setGroup("Vector");
+    m_vtexcoords    .setGroup("Vector");
+    m_vtangents     .setGroup("Vector");
+    m_vbitangents   .setGroup("Vector");
+    m_edges         .setGroup("Vector");
+    m_triangles     .setGroup("Vector");
+    m_quads         .setGroup("Vector");
 
-    m_translation	.setGroup("Transformation");
-    m_rotation		.setGroup("Transformation");
-    m_scale			.setGroup("Transformation");
+    m_translation   .setGroup("Transformation");
+    m_rotation      .setGroup("Transformation");
+    m_scale         .setGroup("Transformation");
+
+    m_edges.setAutoLink(false); // disable linking of edges by default
 
     // add one identity matrix
     xforms.resize(1);
@@ -259,24 +263,27 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
         for (unsigned i=0; i<materials.size(); ++i)
             materials[i] = objLoader.getMaterials()[i];
 
-        // compute the triangle and quad index corresponding to each facet
+        // compute the edge / triangle / quad index corresponding to each facet
         // convert the groups info
-        int nbt = 0, nbq = 0;
-        helper::vector< std::pair<int, int> > facet2tq;
+        enum { NBE = 0, NBT = 1, NBQ = 2 };
+        helper::fixed_array<int, 3> nbf(0,0,0);
+        helper::vector< helper::fixed_array<int, 3> > facet2tq;
         facet2tq.resize(facetsImport.size()+1);
         for (unsigned int i = 0; i < facetsImport.size(); i++)
         {
-            facet2tq[i] = std::make_pair(nbt, nbq);
+            facet2tq[i] = nbf;
             const vector<vector <int> >& vertNormTexIndex = facetsImport[i];
             const vector<int>& verts = vertNormTexIndex[0];
-            if (verts.size() < 3)
-                ; // ignore lines
+            if (verts.size() < 2)
+                ; // ignore points
+            else if (verts.size() == 2)
+                nbf[NBE] += 1;
             else if (verts.size() == 4)
-                nbq += 1;
+                nbf[NBQ] += 1;
             else
-                nbt += verts.size()-2;
+                nbf[NBT] += verts.size()-2;
         }
-        facet2tq[facetsImport.size()] = std::make_pair(nbt, nbq);
+        facet2tq[facetsImport.size()] = nbf;
         groups.resize(objLoader.getGroups().size());
         for (unsigned int ig = 0; ig < groups.size(); ig++)
         {
@@ -287,10 +294,12 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
             if (g0.groupName.empty())    g.groupName = "defaultGroup";
             else                         g.groupName = g0.groupName;
             g.materialId = g0.materialId;
-            g.tri0 = facet2tq[g0.p0].first;
-            g.nbt = facet2tq[g0.p0+g0.nbp].first - g.tri0;
-            g.quad0 = facet2tq[g0.p0].second;
-            g.nbq = facet2tq[g0.p0+g0.nbp].second - g.quad0;
+            g.edge0 = facet2tq[g0.p0][NBE];
+            g.nbe = facet2tq[g0.p0+g0.nbp][NBE] - g.edge0;
+            g.tri0 = facet2tq[g0.p0][NBT];
+            g.nbt = facet2tq[g0.p0+g0.nbp][NBT] - g.tri0;
+            g.quad0 = facet2tq[g0.p0][NBQ];
+            g.nbq = facet2tq[g0.p0+g0.nbp][NBQ] - g.quad0;
             if (g.materialId == -1 && !g0.materialName.empty())
                 sout << "face group " << ig << " name " << g0.materialName << " uses missing material " << g0.materialName << sendl;
         }
@@ -399,6 +408,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
     m_vertNormIdx.endEdit();
 
     // Then we create the triangles and quads
+    ResizableExtVector< Edge >& edges = *(m_edges.beginEdit());
     ResizableExtVector< Triangle >& triangles = *(m_triangles.beginEdit());
     ResizableExtVector< Quad >& quads = *(m_quads.beginEdit());
 
@@ -421,7 +431,11 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
             }
         }
 
-        if (verts.size() == 4)
+        if (verts.size() == 2)
+        {
+            edges.push_back(Edge(idxs[0],idxs[1]));
+        }
+        else if (verts.size() == 4)
         {
             quads.push_back(Quad(idxs[0],idxs[1],idxs[2],idxs[3]));
         }
@@ -433,7 +447,8 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
             }
         }
     }
-
+    
+    m_edges.endEdit();
     m_triangles.endEdit();
     m_quads.endEdit();
 
@@ -467,6 +482,7 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
     m_vtexcoords.updateIfDirty();
     m_vtangents.updateIfDirty();
     m_vbitangents.updateIfDirty();
+    m_edges.updateIfDirty();
     m_triangles.updateIfDirty();
     m_quads.updateIfDirty();
     
@@ -977,8 +993,16 @@ void VisualModelImpl::computeBBox(sofa::core::ExecParams* params)
 void VisualModelImpl::flipFaces()
 {
     ResizableExtVector<Deriv>& vnormals = *(m_vnormals.beginEdit());
+    ResizableExtVector<Edge>& edges = *(m_edges.beginEdit());
     ResizableExtVector<Triangle>& triangles = *(m_triangles.beginEdit());
     ResizableExtVector<Quad>& quads = *(m_quads.beginEdit());
+    
+    for (unsigned int i = 0; i < edges.size() ; i++)
+    {
+        int temp = edges[i][1];
+        edges[i][1] = edges[i][0];
+        edges[i][0] = temp;
+    }
 
     for (unsigned int i = 0; i < triangles.size() ; i++)
     {
@@ -1000,6 +1024,7 @@ void VisualModelImpl::flipFaces()
     }
 
     m_vnormals.endEdit();
+    m_edges.endEdit();
     m_triangles.endEdit();
     m_quads.endEdit();
 }
@@ -1142,6 +1167,7 @@ void VisualModelImpl::updateVisual()
     //m_vtexcoords.updateIfDirty();
     m_vtangents.updateIfDirty();
     m_vbitangents.updateIfDirty();
+    m_edges.updateIfDirty();
     m_triangles.updateIfDirty();
     m_quads.updateIfDirty();
 
@@ -1754,6 +1780,7 @@ void VisualModelImpl::exportOBJ(std::string name, std::ostream* out, std::ostrea
     const VecCoord& x = m_positions.getValue();
     const ResizableExtVector<Deriv>& vnormals = m_vnormals.getValue();
     const VecTexCoord& vtexcoords = m_vtexcoords.getValue();
+    const ResizableExtVector<Edge>& edges = m_edges.getValue();
     const ResizableExtVector<Triangle>& triangles = m_triangles.getValue();
     const ResizableExtVector<Quad>& quads = m_quads.getValue();
 
@@ -1805,7 +1832,22 @@ void VisualModelImpl::exportOBJ(std::string name, std::ostream* out, std::ostrea
             *out << "vt "<< std::fixed << vtexcoords[i][0]<<' '<< std::fixed <<vtexcoords[i][1]<<'\n';
         }
     }
-
+    
+    for (unsigned int i = 0; i < edges.size() ; i++)
+    {
+        *out << "f";
+        for (int j=0; j<2; j++)
+        {
+            int i0 = edges[i][j];
+            int i_p = vertPosIdx.empty() ? i0 : vertPosIdx[i0];
+            int i_n = vertNormIdx.empty() ? i0 : vertNormIdx[i0];
+            if (vtexcoords.empty())
+                *out << ' ' << i_p+vindex+1 << "//" << i_n+nindex+1;
+            else
+                *out << ' ' << i_p+vindex+1 << '/' << i0+tindex+1 << '/' << i_n+nindex+1;
+        }
+        *out << '\n';
+    }
     for (unsigned int i = 0; i < triangles.size() ; i++)
     {
         *out << "f";

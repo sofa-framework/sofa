@@ -161,6 +161,11 @@ bool DisplayFlagsDataWidget::createWidgets()
     return true;
 }
 
+void DisplayFlagsDataWidget::setDataReadOnly(bool readOnly)
+{
+    flags->setEnabled(!readOnly);
+}
+
 void DisplayFlagsDataWidget::readFromData()
 {
     const DisplayFlags& displayFlags = this->getData()->getValue();

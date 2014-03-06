@@ -40,6 +40,7 @@ namespace system
 
 namespace thread
 {
+
 /**
  * This class implements a policy-based circular queue.
  * The template parameter ThreadAccessPolicy allows to customize access to the
@@ -52,10 +53,16 @@ public:
     CircularQueue();
     ~CircularQueue();
 
-    bool pop(T& item);
     bool push(const T& item);
+    bool pop(T& item, bool clear = true);
 
+    bool isEmpty() const;
+    unsigned size() const;
     bool isFull() const;
+
+    unsigned skip(unsigned maxsize, bool clear = true);
+    template<class OutputIterator>
+    unsigned pop(OutputIterator out, unsigned maxsize, bool clear = true);
 };
 
 template<int N>
@@ -125,26 +132,34 @@ struct FixedPower2Size
  * This is a lock-free single-producer single-consumer implementation of a
  * circular queue matching the ThreadAccessPolicy of CircularQueue.
  */
-class OneThreadPerEnd
+class SOFA_HELPER_API OneThreadPerEnd
 {
 public:
-    bool isEmpty() const;
 
-    unsigned size() const;
 protected:
     OneThreadPerEnd();
 
+    bool isEmpty(unsigned maxSize) const;
+
     bool isFull(unsigned maxSize) const;
+
+    unsigned size(unsigned maxSize) const;
 
     template<class T>
     void init(T array[], unsigned maxCapacity);
 
     template<class T>
-    bool pop(T array[], unsigned maxSize, unsigned maxCapacity, T& item);
+    bool push(T array[], unsigned maxSize, unsigned maxCapacity, const T& item);
+    
+    template<class T>
+    bool pop(T array[], unsigned maxSize, unsigned maxCapacity, T& item, bool clear = true);
 
     template<class T>
-    bool push(T array[], unsigned maxSize, unsigned maxCapacity, const T& item);
-
+    unsigned skip(T array[], unsigned maxSize, unsigned maxCapacity, unsigned outmaxsize, bool clear = true);
+    
+    template<class T, class OutputIterator>
+    unsigned pop(T array[], unsigned maxSize, unsigned maxCapacity, OutputIterator out, unsigned outmaxsize, bool clear = true);
+    
     volatile unsigned head;
     volatile unsigned tail;
 };
@@ -154,21 +169,31 @@ protected:
  * implementation of a circular queue matching the ThreadAccessPolicy of CircularQueue.
  * @note maxCapacity parameters MUST always be a power of 2.
  */
-class ManyThreadsPerEnd
+class SOFA_HELPER_API ManyThreadsPerEnd
 {
 public:
-    bool isEmpty() const;
-    int size() const;
 
 protected:
     typedef helper::system::atomic<int> AtomicInt;
 
     ManyThreadsPerEnd();
+    
+    bool isEmpty(unsigned maxSize) const;
 
-    bool isFull(int size) const;
+    bool isFull(unsigned maxSize) const;
+
+    unsigned size(unsigned maxSize) const;
+
     void init(AtomicInt array[], int maxCapacity);
-    bool pop(AtomicInt array[], int maxSize, int maxCapacity, AtomicInt& item);
+
     bool push(AtomicInt array[], int maxSize, int maxCapacity, const AtomicInt& item);
+
+    bool pop(AtomicInt array[], int maxSize, int maxCapacity, AtomicInt& item, bool clear = true);
+
+    unsigned skip(AtomicInt array[], int maxSize, int maxCapacity, unsigned outmaxsize, bool clear = true);
+    
+    template<class OutputIterator>
+    unsigned pop(AtomicInt array[], int maxSize, int maxCapacity, OutputIterator out, unsigned outmaxsize, bool clear = true);
 
     AtomicInt head;
     AtomicInt tail;

@@ -25,37 +25,31 @@
 #ifndef SOFA_COMPONENT_CONTROLLER_LCPFORCEFEEDBACK_H
 #define SOFA_COMPONENT_CONTROLLER_LCPFORCEFEEDBACK_H
 
-#include <sofa/component/component.h>
-#include <sofa/component/controller/ForceFeedback.h>
 #include <sofa/component/controller/MechanicalStateForceFeedback.h>
-#include <sofa/component/container/MechanicalObject.h>
-#include <sofa/component/constraintset/ConstraintSolverImpl.h>
+#include <sofa/core/behavior/MechanicalState.h>
+
+#include <sofa/helper/system/thread/CTime.h>
+
+#include <sofa/component/component.h>
 
 namespace sofa
 {
 
 namespace component
 {
-//namespace constraint
-//{
-//	class LCPConstraintSolver;
-//	class LCP;
-//}
+
+namespace constraintset { class ConstraintProblem; class ConstraintSolverImpl; }
+
 
 namespace controller
 {
-using namespace std;
-using namespace helper::system::thread;
-using namespace core::behavior;
-using namespace core;
 
 /**
 * LCP force field
 */
 template <class TDataTypes>
-class SOFA_HAPTICS_API LCPForceFeedback : public sofa::component::controller::MechanicalStateForceFeedback<TDataTypes>
+class LCPForceFeedback : public sofa::component::controller::MechanicalStateForceFeedback<TDataTypes>
 {
-
 public:
 
     SOFA_CLASS(SOFA_TEMPLATE(LCPForceFeedback,TDataTypes),sofa::component::controller::MechanicalStateForceFeedback<TDataTypes>);
@@ -87,8 +81,8 @@ public:
 
     Data< double > solverTimeout;
 
-    // deriv (or not) the rotations when updating the violations
-    Data <bool> derivRotations;
+    // deriv (or not) the rotations when updating the violations 
+    Data <bool> d_derivRotations; 
 
     virtual void computeForce(SReal x, SReal y, SReal z, SReal u, SReal v, SReal w, SReal q, SReal& fx, SReal& fy, SReal& fz);
     virtual void computeWrench(const SolidTypes<SReal>::Transform &world_H_tool, const SolidTypes<SReal>::SpatialVector &V_tool_world, SolidTypes<SReal>::SpatialVector &W_tool_world );
@@ -110,7 +104,7 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
+        if (dynamic_cast< core::behavior::MechanicalState<DataTypes>* >(context->getMechanicalState()) == NULL)
             return false;
         return core::objectmodel::BaseObject::canCreate(obj, context, arg);
     }
@@ -141,12 +135,24 @@ protected:
     //core::behavior::MechanicalState<defaulttype::Vec1dTypes> *mState1d; ///< The device try to follow this mechanical state.
     sofa::component::constraintset::ConstraintSolverImpl* constraintSolver;
     // timer: verifies the time rates of the haptic loop
-    CTime *_timer;
-    ctime_t time_buf;
+    helper::system::thread::CTime *_timer;
+    helper::system::thread::ctime_t time_buf;
     int timer_iterations;
     double haptic_freq;
     unsigned int num_constraints;
 };
+
+
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_CONTROLLER_LCPFORCEFEEDBACK_CPP)
+#ifndef SOFA_FLOAT
+extern template class SOFA_HAPTICS_API LCPForceFeedback<defaulttype::Vec1dTypes>;
+extern template class SOFA_HAPTICS_API LCPForceFeedback<defaulttype::Rigid3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_HAPTICS_API LCPForceFeedback<defaulttype::Vec1fTypes>;
+extern template class SOFA_HAPTICS_API LCPForceFeedback<defaulttype::Rigid3fTypes>;
+#endif
+#endif
 
 } // namespace controller
 
@@ -154,4 +160,4 @@ protected:
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_COMPONENT_CONTROLLER_LCPFORCEFEEDBACK_H

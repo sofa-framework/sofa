@@ -67,7 +67,7 @@ using core::topology::BaseMeshTopology;
 typedef BaseMeshTopology::EdgesInTriangle EdgesInTriangle;
 
 template< class DataTypes>
-void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyCreateFunction(unsigned int , EdgeSpring &ei, const Edge &, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
+void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyCreateFunction(unsigned int edgeIndex, EdgeSpring &ei, const Edge &, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
 {
     if (ff)
     {
@@ -86,10 +86,9 @@ void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTria
         typename MechanicalState::ReadVecCoord restPosition = ff->mstate->readRestPositions();
 
         helper::WriteAccessor<Data<vector<EdgeSpring> > > edgeData(ff->edgeSprings);
-
+        
         for (unsigned int i=0; i<triangleAdded.size(); ++i)
         {
-
             /// edges of the new triangle
             EdgesInTriangle te2 = ff->_topology->getEdgesInTriangle(triangleAdded[i]);
             /// vertices of the new triangle
@@ -101,56 +100,50 @@ void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTria
             // for each edge in the new triangle
             for(unsigned int j=0; j<3; ++j)
             {
-
                 EdgeSpring &ei = edgeData[te2[j]]; // edge spring
-                if(!(ei.is_initialized))
+                unsigned int edgeIndex = te2[j];
+
+                const sofa::helper::vector< unsigned int > shell = ff->_topology->getTrianglesAroundEdge(edgeIndex);
+                    
+                if (shell.size()==2)   // there is another triangle attached to this edge, so a spring is needed
                 {
-                    unsigned int edgeIndex = te2[j];
-
-                    const sofa::helper::vector< unsigned int > shell = ff->_topology->getTrianglesAroundEdge(edgeIndex);
-
-                    if (shell.size()==2)   // there is another triangle attached to this edge, so a spring is needed
+                    // the other triangle and its edges
+                    EdgesInTriangle te1;
+                    Triangle t1;
+                    if(shell[0] == triangleAdded[i])
                     {
-                        // the other triangle and its edges
-                        EdgesInTriangle te1;
-                        Triangle t1;
-                        if(shell[0] == triangleAdded[i])
-                        {
 
-                            te1 = ff->_topology->getEdgesInTriangle(shell[1]);
-                            t1 = ff->_topology->getTriangle(shell[1]);
+                        te1 = ff->_topology->getEdgesInTriangle(shell[1]);
+                        t1 = ff->_topology->getTriangle(shell[1]);
 
-                        }
-                        else   // shell[1] == triangleAdded[i]
-                        {
-
-                            te1 = ff->_topology->getEdgesInTriangle(shell[0]);
-                            t1 = ff->_topology->getTriangle(shell[0]);
-                        }
-
-                        int i1 = ff->_topology->getEdgeIndexInTriangle(te1, edgeIndex); // index of the vertex opposed to the current edge in the other triangle (?)
-                        int i2 = ff->_topology->getEdgeIndexInTriangle(te2, edgeIndex); // index of the vertex opposed to the current edge in the new triangle (?)
-                        Edge edge = ff->_topology->getEdge(edgeIndex);                  // indices of the vertices of the current edge
-
-						const PointID& v1 = t1[i1];
-						const PointID& v2 = t2[i2];
-						const PointID& e1 = edge[0];
-						const PointID& e2 = edge[1];
-
-						Deriv vp = restPosition[v2]-restPosition[v1];
-						Deriv ve = restPosition[e2]-restPosition[e1];
-
-						if(vp.norm2()>epsilonSq && ve.norm2()>epsilonSq)
-							ei.setEdgeSpring( restPosition.ref(), v1, v2, e1, e2, (Real)ff->f_bendingStiffness.getValue() );
                     }
+                    else   // shell[1] == triangleAdded[i]
+                    {
+
+                        te1 = ff->_topology->getEdgesInTriangle(shell[0]);
+                        t1 = ff->_topology->getTriangle(shell[0]);
+                    }
+
+                    int i1 = ff->_topology->getEdgeIndexInTriangle(te1, edgeIndex); // index of the vertex opposed to the current edge in the other triangle (?)
+                    int i2 = ff->_topology->getEdgeIndexInTriangle(te2, edgeIndex); // index of the vertex opposed to the current edge in the new triangle (?)
+                    Edge edge = ff->_topology->getEdge(edgeIndex);                  // indices of the vertices of the current edge
+
+					const PointID& v1 = t1[i1];
+					const PointID& v2 = t2[i2];
+					const PointID& e1 = edge[0];
+					const PointID& e2 = edge[1];
+
+					Deriv vp = restPosition[v2]-restPosition[v1];
+					Deriv ve = restPosition[e2]-restPosition[e1];
+
+					if(vp.norm2()>epsilonSq && ve.norm2()>epsilonSq)
+						ei.setEdgeSpring( restPosition.ref(), v1, v2, e1, e2, (Real)ff->f_bendingStiffness.getValue() );
                 }
+                else
+                    ei.is_activated = ei.is_initialized = false;
             }
-
         }
-
-        ff->edgeSprings.endEdit();
     }
-
 }
 
 
@@ -163,7 +156,6 @@ void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTria
     {
         typename MechanicalState::ReadVecCoord restPosition = ff->mstate->readRestPositions();
         helper::vector<EdgeSpring>& edgeData = *(ff->edgeSprings.beginEdit());
-
         for (unsigned int i=0; i<triangleRemoved.size(); ++i)
         {
             /// describe the jth edge index of triangle no i
@@ -176,80 +168,83 @@ void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTria
 
             for(unsigned int j=0; j<3; ++j)
             {
-
                 EdgeSpring &ei = edgeData[te[j]]; // ff->edgeInfo
-                if(ei.is_initialized)
+                unsigned int edgeIndex = te[j];
+
+                const sofa::helper::vector< unsigned int > shell = ff->_topology->getTrianglesAroundEdge(edgeIndex);
+
+                //check if there is going to be only 2 triangles after modification
+                bool valid=false;
+                std::vector<unsigned int> keepingTri;
+                keepingTri.reserve(2);
+                if(shell.size()>3)
                 {
-
-                    unsigned int edgeIndex = te[j];
-
-                    const sofa::helper::vector< unsigned int > shell = ff->_topology->getTrianglesAroundEdge(edgeIndex);
-                    if (shell.size()==3)
-                    {
-
-                        EdgesInTriangle te1;
-                        Triangle t1;
-                        EdgesInTriangle te2;
-                        Triangle t2;
-
-                        if(shell[0] == triangleRemoved[i])
-                        {
-                            te1 = ff->_topology->getEdgesInTriangle(shell[1]);
-                            t1 = ff->_topology->getTriangle(shell[1]);
-                            te2 = ff->_topology->getEdgesInTriangle(shell[2]);
-                            t2 = ff->_topology->getTriangle(shell[2]);
-
-                        }
+                    unsigned int toSuppr=0;
+                    for(unsigned int k = 0 ; k < shell.size() ; ++k)
+                        if(std::find(triangleRemoved.begin(),triangleRemoved.end(),shell[k])!=triangleRemoved.end())
+                            toSuppr++;
                         else
-                        {
+                            keepingTri.push_back(shell[k]);
 
-                            if(shell[1] == triangleRemoved[i])
-                            {
-
-                                te1 = ff->_topology->getEdgesInTriangle(shell[2]);
-                                t1 = ff->_topology->getTriangle(shell[2]);
-                                te2 = ff->_topology->getEdgesInTriangle(shell[0]);
-                                t2 = ff->_topology->getTriangle(shell[0]);
-
-                            }
-                            else   // shell[2] == triangleRemoved[i]
-                            {
-
-                                te1 = ff->_topology->getEdgesInTriangle(shell[0]);
-                                t1 = ff->_topology->getTriangle(shell[0]);
-                                te2 = ff->_topology->getEdgesInTriangle(shell[1]);
-                                t2 = ff->_topology->getTriangle(shell[1]);
-
-                            }
-                        }
-
-                        int i1 = ff->_topology->getEdgeIndexInTriangle(te1, edgeIndex);
-                        int i2 = ff->_topology->getEdgeIndexInTriangle(te2, edgeIndex);
-
-                        Edge edge = ff->_topology->getEdge(edgeIndex);
-
-
-						const PointID& v1 = t1[i1];
-						const PointID& v2 = t2[i2];
-						const PointID& e1 = edge[0];
-						const PointID& e2 = edge[1];
-
-						Deriv vp = restPosition[v2]-restPosition[v1];
-						Deriv ve = restPosition[e2]-restPosition[e1];
-
-						if(vp.norm2()>epsilonSq && ve.norm2()>epsilonSq)
-							ei.setEdgeSpring(restPosition.ref(), v1, v2, e1, e2, (Real)ff->f_bendingStiffness.getValue());
-						else
-						{
-							ei.is_activated = false;
-						}
+                    if(shell.size()-toSuppr==2)
+                        valid=true;
+                }
+                else if(shell.size()==3)
+                {
+                    valid=true;
+                    if(shell[0]==triangleRemoved[i])
+                    {
+                        keepingTri.push_back(shell[1]);
+                        keepingTri.push_back(shell[2]);
+                    }
+                    else if(shell[1]==triangleRemoved[i])
+                    {
+                        keepingTri.push_back(shell[0]);
+                        keepingTri.push_back(shell[2]);
                     }
                     else
-                        ei.is_activated = ei.is_initialized = false;
+                    {
+                        keepingTri.push_back(shell[0]);
+                        keepingTri.push_back(shell[1]);
+                    }
+                }
 
+                //in this case : set a bending spring
+                if (valid)
+                {
+                    EdgesInTriangle te1;
+                    Triangle t1;
+                    EdgesInTriangle te2;
+                    Triangle t2;
+
+                    te1 = ff->_topology->getEdgesInTriangle(keepingTri[0]);
+                    t1 = ff->_topology->getTriangle(keepingTri[0]);
+                    te2 = ff->_topology->getEdgesInTriangle(keepingTri[1]);
+                    t2 = ff->_topology->getTriangle(keepingTri[1]);
+
+                    int i1 = ff->_topology->getEdgeIndexInTriangle(te1, edgeIndex);
+                    int i2 = ff->_topology->getEdgeIndexInTriangle(te2, edgeIndex);
+
+                    Edge edge = ff->_topology->getEdge(edgeIndex);
+
+					const PointID& v1 = t1[i1];
+					const PointID& v2 = t2[i2];
+					const PointID& e1 = edge[0];
+					const PointID& e2 = edge[1];
+
+					Deriv vp = restPosition[v2]-restPosition[v1];
+					Deriv ve = restPosition[e2]-restPosition[e1];
+
+					if(vp.norm2()>epsilonSq && ve.norm2()>epsilonSq)
+                    {
+						ei.setEdgeSpring(restPosition.ref(), v1, v2, e1, e2, (Real)ff->f_bendingStiffness.getValue());
+                    }
+					else
+						ei.is_activated = ei.is_initialized = false;
                 }
                 else
-                    ei.is_activated = false;
+                    ei.is_activated = ei.is_initialized = false;
+
             }
 
         }
@@ -259,7 +254,24 @@ void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTria
 
 }
 
+template<class DataTypes>
+void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::ApplyTopologyChange(const core::topology::TrianglesAdded* e)
+{
+    const sofa::helper::vector<unsigned int> &triangleAdded = e->getIndexArray();
+    const sofa::helper::vector<Triangle> &elems = e->getElementArray();
+    const sofa::helper::vector<sofa::helper::vector<unsigned int> > & ancestors = e->ancestorsList;
+    const sofa::helper::vector<sofa::helper::vector<double> > & coefs = e->coefs;
 
+    applyTriangleCreation(triangleAdded, elems, ancestors, coefs);
+}
+
+template<class DataTypes>
+void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::ApplyTopologyChange(const core::topology::TrianglesRemoved* e)
+{
+    const sofa::helper::vector<unsigned int> &triangleRemoved = e->getArray();
+
+    applyTriangleDestruction(triangleRemoved);
+}
 
 template<class DataTypes>
 void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyPointDestruction(const sofa::helper::vector<unsigned int> &tab)
@@ -273,55 +285,43 @@ void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyPoin
 
         helper::vector<EdgeSpring>& edgeInf = *(ff->edgeSprings.beginEdit());
 
+        //make a reverse copy of tab
         sofa::helper::vector<unsigned int> lastIndexVec;
+        lastIndexVec.reserve(tab.size());
         for(unsigned int i_init = 0; i_init < tab.size(); ++i_init)
-        {
-
             lastIndexVec.push_back(last - i_init);
-        }
 
         for ( i = 0; i < tab.size(); ++i)
         {
-
             unsigned int i_next = i;
             bool is_reached = false;
             while( (!is_reached) && (i_next < lastIndexVec.size() - 1))
             {
-
-                i_next += 1 ;
-                is_reached = is_reached || (lastIndexVec[i_next] == tab[i]);
+                ++i_next;
+                is_reached = (lastIndexVec[i_next] == tab[i]);
             }
 
             if(is_reached)
-            {
-
                 lastIndexVec[i_next] = lastIndexVec[i];
-
-            }
 
             const sofa::helper::vector<unsigned int> &shell= ff->_topology->getTrianglesAroundVertex(lastIndexVec[i]);
             for (j=0; j<shell.size(); ++j)
             {
-
                 Triangle tj = ff->_topology->getTriangle(shell[j]);
 
-                int vertexIndex = ff->_topology->getVertexIndexInTriangle(tj, lastIndexVec[i]);
-
                 EdgesInTriangle tej = ff->_topology->getEdgesInTriangle(shell[j]);
-
-                unsigned int ind_j = tej[vertexIndex];
-
-                edgeInf[ind_j].replaceIndex( last, tab[i]);
+                for(unsigned int k=0; k < 3 ; ++k)
+                {
+                    unsigned int ind_j = tej[k];
+                    edgeInf[ind_j].replaceIndex( last, tab[i]);
+                }
             }
 
             if(debug_mode)
             {
-
                 for (unsigned int j_loc=0; j_loc<edgeInf.size(); ++j_loc)
                 {
-
                     edgeInf[j_loc].replaceIndex( last, tab[i]);
-
                 }
             }
 
@@ -350,6 +350,19 @@ void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyPoin
     }
 }
 
+template<class DataTypes>
+void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::ApplyTopologyChange(const core::topology::PointsRemoved* e)
+{
+    const sofa::helper::vector<unsigned int> & tab = e->getArray();
+    applyPointDestruction(tab);
+}
+
+template<class DataTypes>
+void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::ApplyTopologyChange(const core::topology::PointsRenumbering* e)
+{
+    const sofa::helper::vector<unsigned int> &newIndices = e->getIndexArray();
+    applyPointRenumbering(newIndices);
+}
 
 template<class DataTypes>
 FastTriangularBendingSprings<DataTypes>::FastTriangularBendingSprings(/*double _ks, double _kd*/)
@@ -487,7 +500,7 @@ void FastTriangularBendingSprings<DataTypes>::draw(const core::visual::VisualPar
     glPushAttrib(GL_LIGHTING_BIT);
     glDisable(GL_LIGHTING);
 
-    unsigned int nb_to_draw = 0;
+    //unsigned int nb_to_draw = 0;
 
     const helper::vector<EdgeSpring>& edgeInf = edgeSprings.getValue();
 
@@ -497,18 +510,17 @@ void FastTriangularBendingSprings<DataTypes>::draw(const core::visual::VisualPar
     {
         if(edgeInf[i].is_activated)
         {
-            nb_to_draw+=1;
+            //nb_to_draw+=1;
             helper::gl::glVertexT(x[edgeInf[i].vid[EdgeSpring::A]]);
             helper::gl::glVertexT(x[edgeInf[i].vid[EdgeSpring::B]]);
 
         }
     }
     glEnd();
-
+    
     glPopAttrib();
 #endif /* SOFA_NO_OPENGL */
 }
-
 
 } // namespace forcefield
 

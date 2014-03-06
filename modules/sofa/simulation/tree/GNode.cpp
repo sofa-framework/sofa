@@ -347,9 +347,19 @@ void GNode::doExecuteVisitor(simulation::Visitor* action)
 
     if(action->processNodeTopDown(this) != simulation::Visitor::RESULT_PRUNE)
     {
-        for(unsigned int i = 0; i<child.size(); ++i)
+        if (action->childOrderReversed(this))
         {
-            child[i]->executeVisitor(action);
+            for(unsigned int i = child.size(); i>0;)
+            {
+                child[--i]->executeVisitor(action);
+            }
+        }
+        else
+        {
+            for(unsigned int i = 0; i<child.size(); ++i)
+            {
+                child[i]->executeVisitor(action);
+            }
         }
     }
 

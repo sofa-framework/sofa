@@ -41,7 +41,10 @@ int SphereLoaderClass = core::RegisterObject("Loader for sphere model descriptio
 SphereLoader::SphereLoader()
     :BaseLoader(),
      positions(initData(&positions,"position","Sphere centers")),
-     radius(initData(&radius,"listRadius","Radius of each sphere"))
+     radius(initData(&radius,"listRadius","Radius of each sphere")),
+     d_scale(initData(&d_scale,"scale","Scale applied to sphere positions & radius")),
+     d_translation(initData(&d_translation,"translation","Translation applied to sphere positions"))
+
 {
     addAlias(&positions,"sphere_centers");
 }
@@ -114,6 +117,39 @@ bool SphereLoader::load()
 
 
     (void) fclose(file);
+
+    if (d_scale.isSet())
+    {
+        const SReal sx = d_scale.getValue()[0];
+        const SReal sy = d_scale.getValue()[1];
+        const SReal sz = d_scale.getValue()[2];
+
+        for (unsigned int i = 0; i < my_radius.size(); i++)
+        {
+            my_radius[i] *= sx;
+        }
+
+        for (unsigned int i = 0; i < my_positions.size(); i++)
+        {
+            my_positions[i].x() *= sx;
+            my_positions[i].y() *= sy;
+            my_positions[i].z() *= sz;
+        }
+    }
+
+    if (d_translation.isSet())
+    {
+        const SReal dx = d_translation.getValue()[0];
+        const SReal dy = d_translation.getValue()[1];
+        const SReal dz = d_translation.getValue()[2];
+
+        for (unsigned int i = 0; i < my_positions.size(); i++)
+        {
+            my_positions[i].x() += dx;
+            my_positions[i].y() += dy;
+            my_positions[i].z() += dz;
+        }
+    }
 
     positions.endEdit();
     radius.endEdit();

@@ -97,7 +97,7 @@ QDisplayDataInfoWidget::QDisplayDataInfoWidget(QWidget* parent, const std::strin
         linkpath_edit = new QLineEdit(this);
 		linkpath_edit->setContentsMargins(2, 0, 0, 0);
         linkpath_edit->setText(QString(data->getLinkPath().c_str()));
-        linkpath_edit->setEnabled(modifiable);
+        linkpath_edit->setReadOnly(!modifiable);
         layout->addWidget(linkpath_edit);
         linkpath_edit->setShown(!data->getLinkPath().empty());
 		if(modifyObjectFlags.PROPERTY_WIDGET_FLAG)

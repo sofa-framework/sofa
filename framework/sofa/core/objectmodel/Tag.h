@@ -54,11 +54,11 @@ public:
 
     Tag() : id(0) {}
 
-    /// A can is constructed from a string and appears like one after, without actually storing a string
+    /// A tag is constructed from a string and appears like one after, without actually storing a string
     Tag(const std::string& s);
 
     /// This constructor should be used only if really necessary
-    Tag(unsigned int id) : id(id) {}
+    explicit Tag(int id) : id(id) {}
 
     /// Any operation requiring a string can be used on a tag using this conversion
     operator std::string() const;
@@ -70,6 +70,9 @@ public:
     bool operator<=(const Tag& t) const { return id <= t.id; }
     bool operator>=(const Tag& t) const { return id >= t.id; }
     bool operator!() const { return !id; }
+
+    bool negative() const { return id < 0; }
+    Tag operator-() const { return Tag(-id); }
 
     friend std::ostream& operator<<(std::ostream& o, const Tag& t)
     {
@@ -85,7 +88,7 @@ public:
     }
 
 protected:
-    unsigned int id;
+    int id;
 };
 
 class SOFA_CORE_API TagSet : public sofa::helper::set<Tag>

@@ -32,6 +32,7 @@
 #include <sofa/core/core.h>
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/helper/accessor.h>
+#include <sofa/helper/vector.h>
 #include <boost/shared_ptr.hpp>
 #include <stdlib.h>
 #include <string>
@@ -557,6 +558,8 @@ std::string TData<T>::getValueTypeString() const
 
 extern template class SOFA_CORE_API TData< std::string >;
 extern template class SOFA_CORE_API Data< std::string >;
+extern template class SOFA_CORE_API TData< sofa::helper::vector<std::string> >;
+extern template class SOFA_CORE_API Data< sofa::helper::vector<std::string> >;
 extern template class SOFA_CORE_API TData< bool >;
 extern template class SOFA_CORE_API Data< bool >;
 

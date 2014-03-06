@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+*                (c) 2006-2011 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -16,43 +16,32 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Modules                               *
+*                              SOFA :: Framework                              *
 *                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+* Authors: The SOFA Team (see Authors.txt)                                    *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LOADER_SPHERELOADER_H
-#define SOFA_COMPONENT_LOADER_SPHERELOADER_H
-
-#include <sofa/core/loader/BaseLoader.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/helper/vector.h>
+#include <sofa/helper/system/thread/CircularQueue.inl>
 
 namespace sofa
 {
-namespace component
-{
-namespace loader
+
+namespace helper
 {
 
-class SphereLoader : public sofa::core::loader::BaseLoader
+namespace system
 {
-public:
-    SOFA_CLASS(SphereLoader,sofa::core::loader::BaseLoader);
-protected:
-    SphereLoader();
-public:
-    // Point coordinates in 3D in double.
-    Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > positions;
-    Data< helper::vector<SReal> > radius;
-    Data< defaulttype::Vector3 > d_scale;
-    Data< defaulttype::Vector3 > d_translation;
-    virtual bool load();
-};
 
-} //loader
-} //component
-} //sofa
+namespace thread
+{
 
-#endif // SOFA_COMPONENT_LOADER_SPHERELOADER_H
+
+} // namespace thread
+
+} // namespace system
+
+} // namespace helper
+
+} // namespace sofa
+

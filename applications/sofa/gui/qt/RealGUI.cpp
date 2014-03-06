@@ -1470,7 +1470,7 @@ void RealGUI::eventNewTime()
     if (recorder)
         recorder->UpdateTime(currentSimulation());
 #else
-    Node* root = getScene();
+    Node* root = currentSimulation();
     if (root && timeLabel)
     {
         double time = root->getTime();

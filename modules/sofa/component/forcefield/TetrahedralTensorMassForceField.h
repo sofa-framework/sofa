@@ -167,6 +167,11 @@ public:
 
         void applyTetrahedronDestruction(const sofa::helper::vector<unsigned int> &edgeRemoved);
 
+        /// Callback to add tetrahedron elements.
+        void ApplyTopologyChange(const core::topology::TetrahedraAdded* /*event*/);
+        /// Callback to remove tetrahedron elements.
+        void ApplyTopologyChange(const core::topology::TetrahedraRemoved* /*event*/);
+
     protected:
         TetrahedralTensorMassForceField<DataTypes>* ff;
     };

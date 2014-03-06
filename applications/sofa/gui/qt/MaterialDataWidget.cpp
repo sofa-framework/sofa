@@ -245,7 +245,20 @@ bool MaterialDataWidget::createWidgets()
 
     return true;
 }
-
+void MaterialDataWidget::setDataReadOnly(bool readOnly)
+{
+    _nameEdit->setReadOnly(readOnly);
+    _ambientPicker->setEnabled(!readOnly);
+    _ambientCheckBox->setEnabled(!readOnly);
+    _emissivePicker->setEnabled(!readOnly);
+    _emissiveCheckBox->setEnabled(!readOnly);
+    _specularPicker->setEnabled(!readOnly);
+    _specularCheckBox->setEnabled(!readOnly);
+    _diffusePicker->setEnabled(!readOnly);
+    _diffuseCheckBox->setEnabled(!readOnly);
+    _shininessEdit->setReadOnly(readOnly);
+    _shininessCheckBox->setEnabled(!readOnly);
+}
 void MaterialDataWidget::readFromData()
 {
     using namespace sofa::core::loader;
@@ -314,6 +327,12 @@ bool VectorMaterialDataWidget::createWidgets()
     readFromData();
 
     return true;
+}
+
+void VectorMaterialDataWidget::setDataReadOnly(bool readOnly)
+{
+    if (_materialDataWidget)
+        _materialDataWidget->setDataReadOnly(readOnly);
 }
 
 void VectorMaterialDataWidget::readFromData()

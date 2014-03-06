@@ -125,29 +125,16 @@ void BruteForceDetection::addCollisionModel(core::CollisionModel *cm)
     }
     for (sofa::helper::vector<core::CollisionModel*>::iterator it = collisionModels.begin(); it != collisionModels.end(); ++it)
     {
-
         core::CollisionModel* cm2 = *it;
-
-        //sout<<"make pair with Collision Model ? :"<<cm2->getLast()->getName();
 
         if (!cm->isSimulated() && !cm2->isSimulated())
         {
-            //sout<<" - No : case 1"<<sendl;
             continue;
         }
-        /*
-        if (!cm->canCollideWith(cm2))
-        {
-        	sout<<" - No : case 2"<<sendl;
-        	continue;
-        }
-        */
-        if (!cm->getLast()->canCollideWith(cm2->getLast()))
-        {
-            //sout<<" - No : case 3"<<sendl;
+
+        if (!keepCollisionBetween(cm->getLast(), cm2->getLast()))
             continue;
-        }
-        //sout<<" - Yes !"<<sendl;
+
         bool swapModels = false;
         core::collision::ElementIntersector* intersector = intersectionMethod->findIntersector(cm, cm2, swapModels);
         if (intersector == NULL)
@@ -186,6 +173,18 @@ void BruteForceDetection::addCollisionModel(core::CollisionModel *cm)
     }
     collisionModels.push_back(cm);
 }
+
+
+bool BruteForceDetection::keepCollisionBetween(core::CollisionModel *cm1, core::CollisionModel *cm2)
+{
+    if (!cm1->canCollideWith(cm2) || !cm2->canCollideWith(cm1))
+    {
+        return false;
+    }
+
+    return true;
+}
+
 
 class MirrorIntersector : public core::collision::ElementIntersector
 {

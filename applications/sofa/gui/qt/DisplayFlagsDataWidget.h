@@ -110,6 +110,7 @@ public:
     }
 
     virtual bool createWidgets();
+    virtual void setDataReadOnly(bool readOnly);
 
 protected:
 

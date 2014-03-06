@@ -259,6 +259,25 @@ void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::apply
     }
 }
 
+template< class DataTypes>
+void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::ApplyTopologyChange(const core::topology::TetrahedraAdded* e)
+{
+    const sofa::helper::vector<unsigned int> &tetraAdded = e->getIndexArray();
+    const sofa::helper::vector<Tetrahedron> &elems = e->getElementArray();
+    const sofa::helper::vector<sofa::helper::vector<unsigned int> > & ancestors = e->ancestorsList;
+    const sofa::helper::vector<sofa::helper::vector<double> > & coefs = e->coefs;
+
+    applyTetrahedronCreation(tetraAdded, elems, ancestors, coefs);
+}
+        
+template< class DataTypes>
+void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::ApplyTopologyChange(const core::topology::TetrahedraRemoved* e)
+{
+    const sofa::helper::vector<unsigned int> &tetraRemoved = e->getArray();
+
+    applyTetrahedronDestruction(tetraRemoved);
+}
+
 
 template <class DataTypes> TetrahedralTensorMassForceField<DataTypes>::TetrahedralTensorMassForceField()
     : _initialPoints(0)

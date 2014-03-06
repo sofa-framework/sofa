@@ -859,23 +859,23 @@ int TTriangleModel<DataTypes>::getTriangleFlags(int i)
 
     if (i < _topology->getNbTriangles())
     {
-        if (_topology->getTrianglesAroundVertex(t[0])[0] == (sofa::core::topology::BaseMeshTopology::TriangleID)i)
-            f |= FLAG_P1;
-        if (_topology->getTrianglesAroundVertex(t[1])[0] == (sofa::core::topology::BaseMeshTopology::TriangleID)i)
-            f |= FLAG_P2;
-        if (_topology->getTrianglesAroundVertex(t[2])[0] == (sofa::core::topology::BaseMeshTopology::TriangleID)i)
-            f |= FLAG_P3;
+        for (unsigned int j=0; j<3; ++j)
+        {
+            const sofa::core::topology::BaseMeshTopology::TrianglesAroundVertex& tav = _topology->getTrianglesAroundVertex(t[j]);
+            if (tav[0] == (sofa::core::topology::BaseMeshTopology::TriangleID)i)
+                f |= (FLAG_P1 << j);
+        }
 
         const sofa::core::topology::BaseMeshTopology::EdgesInTriangle& e = _topology->getEdgesInTriangle(i);
 
-
-
-        if (_topology->getTrianglesAroundEdge(e[0])[0] == (sofa::core::topology::BaseMeshTopology::TriangleID)i)
-            f |= FLAG_E12;
-        if (_topology->getTrianglesAroundEdge(e[1])[0] == (sofa::core::topology::BaseMeshTopology::TriangleID)i)
-            f |= FLAG_E23;
-        if (_topology->getTrianglesAroundEdge(e[2])[0] == (sofa::core::topology::BaseMeshTopology::TriangleID)i)
-            f |= FLAG_E31;
+        for (unsigned int j=0; j<3; ++j)
+        {
+            const sofa::core::topology::BaseMeshTopology::TrianglesAroundEdge& tae = _topology->getTrianglesAroundEdge(e[j]);
+            if (tae[0] == (sofa::core::topology::BaseMeshTopology::TriangleID)i)
+                f |= (FLAG_E23 << j);
+            if (tae.size() == 1)
+                f |= (FLAG_BE23 << j);
+        }
     }
     else
     {

@@ -139,6 +139,10 @@ public:
 
     Data< bool > usePoints;
     Data< bool > flipNormals;
+    Data< bool > showMeshPoints;
+    Data< bool > showGridPoints;
+    Data< double > showMinDist;
+    Data< double > showMaxDist;
 protected:
     RigidDistanceGridCollisionModel();
 

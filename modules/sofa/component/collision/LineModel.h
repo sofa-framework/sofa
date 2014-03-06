@@ -65,9 +65,11 @@ public:
 
     unsigned i1() const;
     unsigned i2() const;
+    int flags() const;
 
     const Coord& p1() const;
     const Coord& p2() const;
+    const Coord& p(int i) const;
 
     const Coord& p1Free() const;
     const Coord& p2Free() const;
@@ -98,11 +100,21 @@ class TLineModel : public core::CollisionModel
 {
 public :
     SOFA_CLASS(SOFA_TEMPLATE(TLineModel, TDataTypes), core::CollisionModel);
+    
+    enum LineFlag
+    {
+        FLAG_P1  = 1<<0, ///< Point 1  is attached to this line
+        FLAG_P2  = 1<<1, ///< Point 2  is attached to this line
+        FLAG_BP1 = 1<<2, ///< Point 1  is attached to this line and is a boundary
+        FLAG_BP2 = 1<<3, ///< Point 2  is attached to this line and is a boundary
+        FLAG_POINTS  = FLAG_P1|FLAG_P2,
+        FLAG_BPOINTS = FLAG_BP1|FLAG_BP2,
+    };
 
 protected:
     struct LineData
     {
-        int i1,i2;
+        int p[2];
         // Triangles neighborhood
 //		int tRight, tLeft;
     };
@@ -154,7 +166,8 @@ public:
     LineLocalMinDistanceFilter *getFilter() const;
 
     virtual int getElemEdgeIndex(int index) const { return index; }
-
+    
+    int getLineFlags(int i);
 
     //template< class TFilter >
     //TFilter *getFilter() const
@@ -222,22 +235,27 @@ inline TLine<DataTypes>::TLine(const core::CollisionElementIterator& i)
 }
 
 template<class DataTypes>
-inline unsigned TLine<DataTypes>::i1() const { return this->model->elems[this->index].i1; }
+inline unsigned TLine<DataTypes>::i1() const { return this->model->elems[this->index].p[0]; }
 
 template<class DataTypes>
-inline unsigned TLine<DataTypes>::i2() const { return this->model->elems[this->index].i2; }
+inline unsigned TLine<DataTypes>::i2() const { return this->model->elems[this->index].p[1]; }
 
 template<class DataTypes>
-inline const typename DataTypes::Coord& TLine<DataTypes>::p1() const { return (*this->model->mstate->getX())[this->model->elems[this->index].i1]; }
+inline const typename DataTypes::Coord& TLine<DataTypes>::p1() const { return (*this->model->mstate->getX())[this->model->elems[this->index].p[0]]; }
 
 template<class DataTypes>
-inline const typename DataTypes::Coord& TLine<DataTypes>::p2() const { return (*this->model->mstate->getX())[this->model->elems[this->index].i2]; }
+inline const typename DataTypes::Coord& TLine<DataTypes>::p2() const { return (*this->model->mstate->getX())[this->model->elems[this->index].p[1]]; }
+
+template<class DataTypes>
+inline const typename DataTypes::Coord& TLine<DataTypes>::p(int i) const {
+    return (*this->model->mstate->getX())[this->model->elems[this->index].p[i]];
+}
 
 template<class DataTypes>
 inline const typename DataTypes::Coord& TLine<DataTypes>::p1Free() const
 {
     if (hasFreePosition())
-        return this->model->mstate->read(core::ConstVecCoordId::freePosition())->getValue()[this->model->elems[this->index].i1];
+        return this->model->mstate->read(core::ConstVecCoordId::freePosition())->getValue()[this->model->elems[this->index].p[0]];
     else
         return p1();
 }
@@ -246,20 +264,23 @@ template<class DataTypes>
 inline const typename DataTypes::Coord& TLine<DataTypes>::p2Free() const
 {
     if (hasFreePosition())
-        return this->model->mstate->read(core::ConstVecCoordId::freePosition())->getValue()[this->model->elems[this->index].i2];
+        return this->model->mstate->read(core::ConstVecCoordId::freePosition())->getValue()[this->model->elems[this->index].p[1]];
     else
         return p2();
 }
 
 template<class DataTypes>
-inline const typename DataTypes::Deriv& TLine<DataTypes>::v1() const { return (*this->model->mstate->getV())[this->model->elems[this->index].i1]; }
+inline const typename DataTypes::Deriv& TLine<DataTypes>::v1() const { return (*this->model->mstate->getV())[this->model->elems[this->index].p[0]]; }
 
 template<class DataTypes>
-inline const typename DataTypes::Deriv& TLine<DataTypes>::v2() const { return (*this->model->mstate->getV())[this->model->elems[this->index].i2]; }
+inline const typename DataTypes::Deriv& TLine<DataTypes>::v2() const { return (*this->model->mstate->getV())[this->model->elems[this->index].p[1]]; }
 
 
 template<class DataTypes>
-inline typename TLineModel<DataTypes>::Deriv TLineModel<DataTypes>::velocity(int index) const { return ((*mstate->getV())[elems[index].i1] + (*mstate->getV())[elems[index].i2])/((Real)(2.0)); }
+inline typename TLineModel<DataTypes>::Deriv TLineModel<DataTypes>::velocity(int index) const { return ((*mstate->getV())[elems[index].p[0]] + (*mstate->getV())[elems[index].p[1]])/((Real)(2.0)); }
+
+template<class DataTypes>
+inline int TLine<DataTypes>::flags() const { return this->model->getLineFlags(this->index); }
 
 template<class DataTypes>
 inline bool TLine<DataTypes>::hasFreePosition() const { return this->model->mstate->read(core::ConstVecCoordId::freePosition())->isSet(); }

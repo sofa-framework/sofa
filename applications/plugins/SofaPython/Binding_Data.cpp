@@ -55,6 +55,7 @@ PyObject *GetDataValuePython(BaseData* data)
     // depending on the data type, we return the good python type (int, float, sting, array, ...)
 
     const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
+    const void* valueVoidPtr = data->getValueVoidPtr();
     int rowWidth = typeinfo->size();
     int nbRows = typeinfo->size(data->getValueVoidPtr()) / typeinfo->size();
 
@@ -63,7 +64,7 @@ PyObject *GetDataValuePython(BaseData* data)
     if (vectorLinearSpring)
     {
         // special type, a vector of LinearSpring objects
-        if (typeinfo->size(data->getValueVoidPtr())==1)
+        if (typeinfo->size(valueVoidPtr)==1)
         {
             // this type is NOT a vector; return directly the proper native type
             const LinearSpring<SReal> value = vectorLinearSpring->getValue()[0];
@@ -91,23 +92,23 @@ PyObject *GetDataValuePython(BaseData* data)
 
     }
 
-    if (typeinfo->size(data->getValueVoidPtr())==1)
+    if (typeinfo->size(valueVoidPtr)==1)
     {
         // this type is NOT a vector; return directly the proper native type
         if (typeinfo->Text())
         {
             // it's some text
-            return PyString_FromString(typeinfo->getTextValue(data->getValueVoidPtr(),0).c_str());
+            return PyString_FromString(typeinfo->getTextValue(valueVoidPtr,0).c_str());
         }
         if (typeinfo->Scalar())
         {
             // it's a SReal
-            return PyFloat_FromDouble(typeinfo->getScalarValue(data->getValueVoidPtr(),0));
+            return PyFloat_FromDouble(typeinfo->getScalarValue(valueVoidPtr,0));
         }
         if (typeinfo->Integer())
         {
             // it's some Integer...
-            return PyInt_FromLong((long)typeinfo->getIntegerValue(data->getValueVoidPtr(),0));
+            return PyInt_FromLong((long)typeinfo->getIntegerValue(valueVoidPtr,0));
         }
     }
     else
@@ -124,23 +125,23 @@ PyObject *GetDataValuePython(BaseData* data)
                 if (typeinfo->Text())
                 {
                     // it's some text
-                    PyList_SetItem(row,j,PyString_FromString(typeinfo->getTextValue(data->getValueVoidPtr(),i*rowWidth+j).c_str()));
+                    PyList_SetItem(row,j,PyString_FromString(typeinfo->getTextValue(valueVoidPtr,i*rowWidth+j).c_str()));
                 }
                 else if (typeinfo->Scalar())
                 {
                     // it's a SReal
-                    PyList_SetItem(row,j,PyFloat_FromDouble(typeinfo->getScalarValue(data->getValueVoidPtr(),i*rowWidth+j)));
+                    PyList_SetItem(row,j,PyFloat_FromDouble(typeinfo->getScalarValue(valueVoidPtr,i*rowWidth+j)));
                 }
                 else if (typeinfo->Integer())
                 {
                     // it's some Integer...
-                    PyList_SetItem(row,j,PyInt_FromLong((long)typeinfo->getIntegerValue(data->getValueVoidPtr(),i*rowWidth+j)));
+                    PyList_SetItem(row,j,PyInt_FromLong((long)typeinfo->getIntegerValue(valueVoidPtr,i*rowWidth+j)));
                 }
                 else
                 {
                     // this type is not yet supported
                     printf("<SofaPython> BaseData_getAttr_value WARNING: unsupported native type=%s ; returning string value\n",data->getValueTypeString().c_str());
-                    PyList_SetItem(row,j,PyString_FromString(typeinfo->getTextValue(data->getValueVoidPtr(),i*rowWidth+j).c_str()));
+                    PyList_SetItem(row,j,PyString_FromString(typeinfo->getTextValue(valueVoidPtr,i*rowWidth+j).c_str()));
                 }
             }
             PyList_SetItem(rows,i,row);
@@ -161,8 +162,9 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
     bool isString = PyString_Check(args);
     bool isList = PyList_Check(args);
     const AbstractTypeInfo *typeinfo = data->getValueTypeInfo(); // info about the data value
-    int rowWidth = typeinfo->size();
-    int nbRows = typeinfo->size(data->getValueVoidPtr()) / typeinfo->size();
+    const void* valueVoidPtr = data->getValueVoidPtr();
+    int rowWidth = (typeinfo && typeinfo->ValidInfo()) ? typeinfo->size() : 1;
+    int nbRows = (typeinfo && typeinfo->ValidInfo()) ? typeinfo->size(data->getValueVoidPtr()) / typeinfo->size() : 1;
 
     // special cases...
     Data<sofa::helper::vector<LinearSpring<SReal> > >* dataVectorLinearSpring = dynamic_cast<Data<sofa::helper::vector<LinearSpring<SReal> > >*>(data);
@@ -311,7 +313,9 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
                             return false;
                         }
                         SReal value = PyFloat_AsDouble(listElt);
-                        typeinfo->setScalarValue((void*)data->getValueVoidPtr(),i,value);
+                        void* editVoidPtr = data->beginEditVoidPtr();
+                        typeinfo->setScalarValue(editVoidPtr,i,value);
+                        data->endEditVoidPtr();
                     }
      */
                 }
@@ -337,10 +341,12 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
             return false;
         }
         long value = PyInt_AsLong(args);
+        void* editVoidPtr = data->beginEditVoidPtr();
         if (typeinfo->Scalar())
-            typeinfo->setScalarValue((void*)data->getValueVoidPtr(),0,(SReal)value); // cast int to float
+            typeinfo->setScalarValue(editVoidPtr,0,(SReal)value); // cast int to float
         else
-            typeinfo->setIntegerValue((void*)data->getValueVoidPtr(),0,value);
+            typeinfo->setIntegerValue(editVoidPtr,0,value);
+        data->endEditVoidPtr();
         return true;
     }
     else if (isScalar)
@@ -353,7 +359,9 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
             return false;
         }
         SReal value = PyFloat_AsDouble(args);
-        typeinfo->setScalarValue((void*)data->getValueVoidPtr(),0,value);
+        void* editVoidPtr = data->beginEditVoidPtr();
+        typeinfo->setScalarValue(editVoidPtr,0,value);
+        data->endEditVoidPtr();
         return true;
     }
     else if (isString)
@@ -389,6 +397,8 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
                     nbRows = PyList_Size(args);
             }
 
+            void* editVoidPtr = data->beginEditVoidPtr();
+
             // let's fill our rows!
             for (int i=0; i<nbRows; i++)
             {
@@ -417,13 +427,13 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
                         {
                             // integer value
                             long value = PyInt_AsLong(listElt);
-                            typeinfo->setIntegerValue((void*)data->getValueVoidPtr(),i*rowWidth+j,value);
+                            typeinfo->setIntegerValue(editVoidPtr,i*rowWidth+j,value);
                         }
                         else if (typeinfo->Scalar())
                         {
                             // cast to scalar value
                             SReal value = (SReal)PyInt_AsLong(listElt);
-                            typeinfo->setScalarValue((void*)data->getValueVoidPtr(),i*rowWidth+j,value);
+                            typeinfo->setScalarValue(editVoidPtr,i*rowWidth+j,value);
                         }
                         else
                         {
@@ -442,7 +452,7 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
                             return false;
                         }
                         SReal value = PyFloat_AsDouble(listElt);
-                        typeinfo->setScalarValue((void*)data->getValueVoidPtr(),i*rowWidth+j,value);
+                        typeinfo->setScalarValue(editVoidPtr,i*rowWidth+j,value);
                     }
                     else if (PyString_Check(listElt))
                     {
@@ -454,7 +464,7 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
                             return false;
                         }
                         char *str = PyString_AsString(listElt); // pour les setters, un seul objet et pas un tuple....
-                        typeinfo->setTextValue((void*)data->getValueVoidPtr(),i*rowWidth+j,str);
+                        typeinfo->setTextValue(editVoidPtr,i*rowWidth+j,str);
                     }
                     else
                     {
@@ -468,6 +478,7 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
 
 
             }
+            data->endEditVoidPtr();
             return true;
 
         }
@@ -484,6 +495,8 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
                     size = PyList_Size(args);
             }
 
+            void* editVoidPtr = data->beginEditVoidPtr();
+
             // okay, let's set our list...
             for (int i=0; i<size; i++)
             {
@@ -497,13 +510,13 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
                     {
                         // integer value
                         long value = PyInt_AsLong(listElt);
-                        typeinfo->setIntegerValue((void*)data->getValueVoidPtr(),i,value);
+                        typeinfo->setIntegerValue(editVoidPtr,i,value);
                     }
                     else if (typeinfo->Scalar())
                     {
                         // cast to scalar value
                         SReal value = (SReal)PyInt_AsLong(listElt);
-                        typeinfo->setScalarValue((void*)data->getValueVoidPtr(),i,value);
+                        typeinfo->setScalarValue(editVoidPtr,i,value);
                     }
                     else
                     {
@@ -522,7 +535,7 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
                         return false;
                     }
                     SReal value = PyFloat_AsDouble(listElt);
-                    typeinfo->setScalarValue((void*)data->getValueVoidPtr(),i,value);
+                    typeinfo->setScalarValue(editVoidPtr,i,value);
                 }
                 else if (PyString_Check(listElt))
                 {
@@ -534,7 +547,7 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
                         return false;
                     }
                     char *str = PyString_AsString(listElt); // pour les setters, un seul objet et pas un tuple....
-                    typeinfo->setTextValue((void*)data->getValueVoidPtr(),i,str);
+                    typeinfo->setTextValue(editVoidPtr,i,str);
                 }
                 else
                 {
@@ -544,7 +557,7 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
 
                 }
             }
-
+            data->endEditVoidPtr();
             return true;
         }
 

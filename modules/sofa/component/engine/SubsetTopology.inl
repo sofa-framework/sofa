@@ -59,6 +59,7 @@ SubsetTopology<DataTypes>::SubsetTopology()
     , normal( initData(&normal, "normal", "Normal direction of the triangles (if triAngle > 0)") )
     , edgeAngle( initData(&edgeAngle, (Real)0, "edgeAngle", "Max angle between the direction of the selected edges and the specified direction") )
     , triAngle( initData(&triAngle, (Real)0, "triAngle", "Max angle between the normal of the selected triangle and the specified normal direction") )
+    , d_tetrahedraInput( initData(&d_tetrahedraInput,"tetrahedraInput","Indices of the tetrahedra to keep") )
     , f_X0( initData (&f_X0, "rest_position", "Rest position coordinates of the degrees of freedom") )
     , f_edges(initData (&f_edges, "edges", "Edge Topology") )
     , f_triangles(initData (&f_triangles, "triangles", "Triangle Topology") )
@@ -169,6 +170,7 @@ void SubsetTopology<DataTypes>::init()
     addInput(&normal);
     addInput(&edgeAngle);
     addInput(&triAngle);
+    addInput(&d_tetrahedraInput);
 
     addInput(&f_X0);
     addInput(&f_edges);
@@ -561,34 +563,112 @@ void SubsetTopology<DataTypes>::update()
     }
 
     //Tetrahedra
-    for(unsigned int i=0 ; i<tetrahedra.size() ; i++)
-    {
-        bool inside = false;
-        Tetra t = tetrahedra[i];
-        for (unsigned int bi=0; bi<ROInum; ++bi)
-        {
-            if (isTetrahedronInROI(t, bi))
-            {
-                if (local) { t[0] = localIndices[t[0]]; t[1] = localIndices[t[1]]; t[2] = localIndices[t[2]]; t[3] = localIndices[t[3]];}
-                tetrahedronIndices.push_back(i);
-                tetrahedraInROI.push_back(t);
-                inside = true;
-                break;
-            }
-        }
+	if (!d_tetrahedraInput.isSet())
+	{
+		for(unsigned int i=0 ; i<tetrahedra.size() ; i++)
+		{
+	        bool inside = false;
+			Tetra t = tetrahedra[i];
+			for (unsigned int bi=0; bi<ROInum; ++bi)
+			{
+				if (isTetrahedronInROI(t, bi))
+				{
+					if (local) { t[0] = localIndices[t[0]]; t[1] = localIndices[t[1]]; t[2] = localIndices[t[2]]; t[3] = localIndices[t[3]];}
+					tetrahedronIndices.push_back(i);
+					tetrahedraInROI.push_back(t);
+					inside = true;
+					break;
+				}
+			}
+			if (!inside)
+			{
+				if (local) { t[0] = localIndices[t[0]]; t[1] = localIndices[t[1]]; t[2] = localIndices[t[2]]; t[3] = localIndices[t[3]];}
+				tetrahedraOutROI.push_back(t);
+			}
+		}
+	}
+	else
+	{
+		helper::ReadAccessor< Data<SetIndex> > tetrahedraInput = d_tetrahedraInput;
+		sofa::helper::vector<bool> pointCheckedIn, pointCheckedOut;
+		pointCheckedIn.resize(x0->size(), false);
+		pointCheckedOut.resize(x0->size(), false);
 
-        if (!inside)
-        {
-            if (local) { t[0] = localIndices[t[0]]; t[1] = localIndices[t[1]]; t[2] = localIndices[t[2]]; t[3] = localIndices[t[3]];}
-            tetrahedraOutROI.push_back(t);
-        }
-    }
+		SetIndex localIndicesOut;
+		localIndicesOut.resize(x0->size());
+
+		pointsOutROI.clear();
+		pointsInROI.clear();
+
+		cpt_in = 0;
+		cpt_out = 0;
+
+		for(unsigned int i=0 ; i<tetrahedra.size() ; i++)
+		{
+			bool inside = false;
+			Tetra t = tetrahedra[i];
+			for (unsigned int j=0; j<tetrahedraInput.size(); ++j)
+			{
+				if (tetrahedraInput[j] == i)
+				{
+					for (unsigned int k=0; k<t.size(); ++k)
+					{
+						if (!isPointChecked(t[k], pointCheckedIn))
+						{
+							indices.push_back(t[k]);
+							pointsInROI.push_back((*x0)[t[k]]);
+							if (local)
+							{
+								localIndices[t[k]] = cpt_in;
+								cpt_in++;
+							}
+						}
+						if (local)
+							t[k] = localIndices[t[k]];
+					}
+					tetrahedronIndices.push_back(i);
+					tetrahedraInROI.push_back(t);
+					inside = true;
+					break;
+				}
+			}
+			if (!inside)
+			{
+				for (unsigned int k=0; k<t.size(); ++k)
+				{
+					if (!isPointChecked(t[k], pointCheckedOut))
+					{
+						pointsOutROI.push_back((*x0)[t[k]]);
+						if (local)
+						{
+							localIndicesOut[t[k]] = cpt_out;
+							cpt_out++;
+						}
+					}
+					if (local)
+						t[k] = localIndicesOut[t[k]];
+				}
+				tetrahedraOutROI.push_back(t);
+			}
+		}
+	}
 
     f_indices.endEdit();
     f_edgeIndices.endEdit();
     f_triangleIndices.endEdit();
     f_tetrahedronIndices.endEdit();
     f_nbrborder.endEdit();
+}
+
+template <class DataTypes>
+bool SubsetTopology<DataTypes>::isPointChecked(unsigned int id, sofa::helper::vector<bool>& pointChecked)
+{
+	if (!pointChecked[id])
+	{
+		pointChecked[id] = true;
+		return false;
+	}
+	return true;
 }
 
 template <class DataTypes>

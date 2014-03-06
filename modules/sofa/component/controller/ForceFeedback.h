@@ -67,7 +67,7 @@ public:
     virtual void init() {context = dynamic_cast<simulation::Node *>(this->getContext());};
     virtual void computeForce(SReal x, SReal y, SReal z, SReal u, SReal v, SReal w, SReal q, SReal& fx, SReal& fy, SReal& fz) = 0;
     virtual void computeWrench(const SolidTypes<SReal>::Transform &, const SolidTypes<SReal>::SpatialVector &, SolidTypes<SReal>::SpatialVector & )=0;
-
+    virtual bool isEnabled() { return this->getContext()->isActive(); }
     virtual void setReferencePosition(SolidTypes<SReal>::Transform& /*referencePosition*/) {};
 };
 

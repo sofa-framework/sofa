@@ -84,7 +84,7 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyCreateFunction(unsig
 
 template< class DataTypes>
 void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyQuadCreation(const sofa::helper::vector<unsigned int> &quadAdded,
-        const sofa::helper::vector<Edge> &,
+        const sofa::helper::vector<Quad> &,
         const sofa::helper::vector<sofa::helper::vector<unsigned int> > &,
         const sofa::helper::vector<sofa::helper::vector<double> > &)
 {
@@ -313,6 +313,25 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyQuadDestruction(cons
     }
 }
 
+template< class DataTypes>
+void QuadularBendingSprings<DataTypes>::EdgeBSHandler::ApplyTopologyChange(const core::topology::QuadsAdded* e)
+{
+    const sofa::helper::vector<unsigned int> &quadAdded = e->getIndexArray();
+    const sofa::helper::vector<Quad> &elems = e->getElementArray();
+    const sofa::helper::vector<sofa::helper::vector<unsigned int> > & ancestors = e->ancestorsList;
+    const sofa::helper::vector<sofa::helper::vector<double> > & coefs = e->coefs;
+
+    applyQuadCreation(quadAdded, elems, ancestors, coefs);
+}
+
+template< class DataTypes>
+void QuadularBendingSprings<DataTypes>::EdgeBSHandler::ApplyTopologyChange(const core::topology::QuadsRemoved* e)
+{
+    const sofa::helper::vector<unsigned int> &quadRemoved = e->getArray();
+
+    applyQuadDestruction(quadRemoved);
+}
+
 
 template< class DataTypes>
 void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyPointDestruction(const sofa::helper::vector<unsigned int> &tab)
@@ -472,6 +491,20 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyPointRenumbering(con
     }
 }
 
+template< class DataTypes>
+void QuadularBendingSprings<DataTypes>::EdgeBSHandler::ApplyTopologyChange(const core::topology::PointsRemoved* e)
+{
+    const sofa::helper::vector<unsigned int> & tab = e->getArray();
+    applyPointDestruction(tab);
+}
+
+template< class DataTypes>
+void QuadularBendingSprings<DataTypes>::EdgeBSHandler::ApplyTopologyChange(const core::topology::PointsRenumbering* e)
+{
+    const sofa::helper::vector<unsigned int> &newIndices = e->getIndexArray();
+    applyPointRenumbering(newIndices);
+}
+
 
 
 template<class DataTypes>
@@ -530,7 +563,7 @@ void QuadularBendingSprings<DataTypes>::init()
         quadAdded.push_back(i);
 
     edgeHandler->applyQuadCreation(quadAdded,
-            (const sofa::helper::vector<Edge>)0,
+            (const sofa::helper::vector<Quad>)0,
             (const sofa::helper::vector<sofa::helper::vector<unsigned int> >)0,
             (const sofa::helper::vector<sofa::helper::vector<double> >)0);
 

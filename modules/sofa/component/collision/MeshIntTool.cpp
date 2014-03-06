@@ -221,7 +221,7 @@ int MeshIntTool::doIntersectionTrianglePoint(SReal dist2, int flags, const Vecto
             else if (pAC < 0.999999 && alpha < 0.000001)
             {
                 // closest point is on AC
-                if (!(flags&TriangleModel::FLAG_E12)) return 0; // this edge is not considered
+                if (!(flags&TriangleModel::FLAG_E31)) return 0; // this edge is not considered
                 alpha = 0.0;
                 beta = pAC;
             }
@@ -247,7 +247,7 @@ int MeshIntTool::doIntersectionTrianglePoint(SReal dist2, int flags, const Vecto
                 else
                 {
                     // closest point is on BC
-                    if (!(flags&TriangleModel::FLAG_E31)) return 0; // this edge is not considered
+                    if (!(flags&TriangleModel::FLAG_E23)) return 0; // this edge is not considered
                     alpha = 1.0-pBC;
                     beta = pBC;
                 }

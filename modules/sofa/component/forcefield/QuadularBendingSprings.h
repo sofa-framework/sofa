@@ -165,15 +165,25 @@ public:
                 const sofa::helper::vector< double > &);
 
         void applyQuadCreation(const sofa::helper::vector<unsigned int> & quadAdded,
-                const sofa::helper::vector<Edge> &,
+                const sofa::helper::vector<Quad> &,
                 const sofa::helper::vector<sofa::helper::vector<unsigned int> > &,
                 const sofa::helper::vector<sofa::helper::vector<double> > &);
 
         void applyQuadDestruction(const sofa::helper::vector<unsigned int> & quadRemoved);
 
+        /// Callback to add quads elements.
+        void ApplyTopologyChange(const core::topology::QuadsAdded* /*event*/);
+        /// Callback to remove quads elements.
+        void ApplyTopologyChange(const core::topology::QuadsRemoved* /*event*/);
+
         void applyPointDestruction(const sofa::helper::vector<unsigned int> &pointIndices);
 
         void applyPointRenumbering(const sofa::helper::vector<unsigned int> &pointToRenumber);
+
+        /// Callback to remove points elements.
+        void ApplyTopologyChange(const core::topology::PointsRemoved* /*event*/);
+        /// Callback to renumbering on points elements.
+        void ApplyTopologyChange(const core::topology::PointsRenumbering* /*event*/);
 
     protected:
         QuadularBendingSprings<DataTypes>* ff;

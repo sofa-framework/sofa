@@ -103,6 +103,10 @@ TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedralCorotationalFEMForce
     , _updateStiffnessMatrix(core::objectmodel::BaseObject::initData(&_updateStiffnessMatrix,false,"updateStiffnessMatrix",""))
     , _assembling(core::objectmodel::BaseObject::initData(&_assembling,false,"computeGlobalMatrix",""))
     , f_drawing(initData(&f_drawing,true,"drawing"," draw the forcefield if true"))
+    , drawColor1(initData(&drawColor1,defaulttype::Vec4f(0.0f,0.0f,1.0f,1.0f),"drawColor1"," draw color for faces 1"))
+    , drawColor2(initData(&drawColor2,defaulttype::Vec4f(0.0f,0.5f,1.0f,1.0f),"drawColor2"," draw color for faces 2"))
+    , drawColor3(initData(&drawColor3,defaulttype::Vec4f(0.0f,1.0f,1.0f,1.0f),"drawColor3"," draw color for faces 3"))
+    , drawColor4(initData(&drawColor4,defaulttype::Vec4f(0.5f,1.0f,1.0f,1.0f),"drawColor4"," draw color for faces 4"))
     , tetrahedronHandler(NULL)
 {
     this->addAlias(&_assembling, "assembling");
@@ -1350,10 +1354,10 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::draw(const core::visual::V
         points[3].push_back(pb);
     }
 
-    vparams->drawTool()->drawTriangles(points[0], Vec<4,float>(0.0,0.0,1.0,1.0));
-    vparams->drawTool()->drawTriangles(points[1], Vec<4,float>(0.0,0.5,1.0,1.0));
-    vparams->drawTool()->drawTriangles(points[2], Vec<4,float>(0.0,1.0,1.0,1.0));
-    vparams->drawTool()->drawTriangles(points[3], Vec<4,float>(0.5,1.0,1.0,1.0));
+    vparams->drawTool()->drawTriangles(points[0], drawColor1.getValue());
+    vparams->drawTool()->drawTriangles(points[1], drawColor2.getValue());
+    vparams->drawTool()->drawTriangles(points[2], drawColor3.getValue());
+    vparams->drawTool()->drawTriangles(points[3], drawColor4.getValue());
 
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0,false);
