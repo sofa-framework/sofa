@@ -959,7 +959,6 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::draw(c
     helper::ReadAccessor<Data<InVecCoord1> > in1 (*this->fromModel1->read(core::ConstVecCoordId::position()));
     helper::ReadAccessor<Data<InVecCoord2> > in2 (*this->fromModel2->read(core::ConstVecCoordId::position()));
     helper::ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
-    helper::ReadAccessor<Data<OutVecDeriv> > outf (*this->toModel->read(core::ConstVecDerivId::force()));
     helper::ReadAccessor<Data<vector<VRef> > > ref (this->f_index);
     helper::ReadAccessor<Data<vector<VReal> > > w (this->f_w);
     size_t size1=this->getFromSize1();
@@ -992,6 +991,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::draw(c
     }
     if (showDeformationGradientScale.getValue())
     {
+        const Data<OutVecDeriv>* outf = this->toModel->read(core::ConstVecDerivId::force());
         glEnable ( GL_LIGHTING );
         float scale=showDeformationGradientScale.getValue();
         Vec<4,float> col( 0.5, 0.5, 0.0, 1.0 );
@@ -1031,10 +1031,10 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::draw(c
                 vparams->drawTool()->setMaterial(col);
                 drawEllipsoid(F,p,0.5*scale);
             }
-            else if(showDeformationGradientStyle.getValue().getSelectedId()==5) // stress
+            else if(showDeformationGradientStyle.getValue().getSelectedId()==5 && outf) // stress
                 if(OutDataTypesInfo<Out>::FMapped)
                 {
-                    F=(Mat<3,3,float>)OutDataTypesInfo<Out>::getF(outf[i]);
+                    F=(Mat<3,3,float>)OutDataTypesInfo<Out>::getF(outf->getValue()[i]);
                     vparams->drawTool()->setMaterial(col);
                     drawEllipsoid(F,p,0.5*scale);
                 }
