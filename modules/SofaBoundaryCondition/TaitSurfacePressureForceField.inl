@@ -227,6 +227,7 @@ void TaitSurfacePressureForceField<DataTypes>::addForce(const core::MechanicalPa
     m_currentVolume.endEdit();
     m_currentSurfaceArea.endEdit();
     Real currentVolume = m_currentVolume.getValue();
+    computeStatistics(x);
     Real currentStiffness = 0;
     Real currentPressure = 0;
 	// apply volume correction after a topological change
@@ -239,7 +240,6 @@ void TaitSurfacePressureForceField<DataTypes>::addForce(const core::MechanicalPa
     computePressureAndStiffness(currentPressure, currentStiffness, currentVolume, m_v0.getValue());
     m_currentPressure.setValue(currentPressure);
     m_currentStiffness.setValue(currentStiffness);
-    computeStatistics(x);
 
     // first compute gradV
     helper::WriteAccessor<VecDeriv> gradV = this->gradV;
