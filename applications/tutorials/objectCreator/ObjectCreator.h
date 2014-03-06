@@ -115,7 +115,7 @@ Node::SPtr massSpringString
 //    return component;
 //}
 template<class T>
-class addNew : public objectmodel::New<T>
+class addNew : public sofa::core::objectmodel::New<T>
 {
     typedef typename T::SPtr SPtr;
 public:
