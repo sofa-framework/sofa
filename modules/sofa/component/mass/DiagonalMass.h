@@ -175,12 +175,6 @@ public:
         /// Callback to remove hexahedron elements.
         virtual void ApplyTopologyChange(const core::topology::HexahedraRemoved* /*event*/);
 
-        /// Callback to add hexahedron elements.
-        virtual void ApplyTopologyChange(const core::topology::HexahedraAdded* /*event*/);
-        /// Callback to remove hexahedron elements.
-        virtual void ApplyTopologyChange(const core::topology::HexahedraRemoved* /*event*/);
-        
-
     protected:
         DiagonalMass<DataTypes,TMassType>* dm;
     };
