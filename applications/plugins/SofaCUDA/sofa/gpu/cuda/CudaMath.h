@@ -615,6 +615,20 @@ public:
                      x.z * v.x.y + y.z * v.y.y + z.z * v.z.y,
                      x.z * v.x.z + y.z * v.y.z + z.z * v.z.z );
     }
+
+    __device__ matrix3<real> mulT(matrix3<real> v) const
+    {
+        return make( x.x * v.x.x + y.x * v.y.x + z.x * v.z.x,
+                     x.x * v.x.y + y.x * v.y.y + z.x * v.z.y,
+                     x.x * v.x.z + y.x * v.y.z + z.x * v.z.z,
+                     x.y * v.x.x + y.y * v.y.x + z.y * v.z.x,
+                     x.y * v.x.y + y.y * v.y.y + z.y * v.z.y,
+                     x.y * v.x.z + y.y * v.y.z + z.y * v.z.z,
+                     x.z * v.x.x + y.z * v.y.x + z.z * v.z.x,
+                     x.z * v.x.y + y.z * v.y.y + z.z * v.z.y,
+                     x.z * v.x.z + y.z * v.y.z + z.z * v.z.z );
+    }
+
     __device__ real determinant(matrix3<real> v)
     {
         real det;

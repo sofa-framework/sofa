@@ -34,6 +34,7 @@
 #include <sofa/core/behavior/BaseRotationFinder.h>
 #include <sofa/helper/decompose.h>
 #include <sofa/core/behavior/RotationMatrix.h>
+#include <sofa/helper/OptionsGroup.h>
 
 namespace sofa
 {
@@ -48,9 +49,21 @@ using namespace sofa::defaulttype;
 using sofa::helper::vector;
 
 template<class DataTypes>
+class HexahedronFEMForceField;
+
+template<class DataTypes>
 class HexahedronFEMForceFieldInternalData
 {
 public:
+    typedef HexahedronFEMForceField<DataTypes> Main;
+    void initPtrData(Main * m)
+    {
+        m->_gatherPt.beginEdit()->setNames(1," ");
+        m->_gatherPt.endEdit();
+
+        m->_gatherBsize.beginEdit()->setNames(1," ");
+        m->_gatherBsize.endEdit();
+    }
 };
 
 /** Compute Finite Element forces based on hexahedral elements.
@@ -158,6 +171,8 @@ public:
     Data<Real> f_youngModulus;
     Data<bool> f_updateStiffnessMatrix;
     Data<bool> f_assembling;
+    Data< sofa::helper::OptionsGroup > _gatherPt; //use in GPU version
+    Data< sofa::helper::OptionsGroup > _gatherBsize; //use in GPU version
     Data<bool> f_drawing;
     Data<Real> f_drawPercentageOffset;
 
@@ -173,9 +188,12 @@ protected:
         , f_youngModulus(initData(&f_youngModulus,(Real)5000,"youngModulus",""))
         , f_updateStiffnessMatrix(initData(&f_updateStiffnessMatrix,false,"updateStiffnessMatrix",""))
         , f_assembling(initData(&f_assembling,false,"assembling",""))
+        , _gatherPt(initData(&_gatherPt,"gatherPt","number of dof accumulated per threads during the gather operation (Only use in GPU version)"))
+        , _gatherBsize(initData(&_gatherBsize,"gatherBsize","number of dof accumulated per threads during the gather operation (Only use in GPU version)"))
         , f_drawing(initData(&f_drawing,true,"drawing"," draw the forcefield if true"))
         , f_drawPercentageOffset(initData(&f_drawPercentageOffset,(Real)0.15,"drawPercentageOffset","size of the hexa"))
     {
+        data->initPtrData(this);
         _coef[0][0]=-1;
         _coef[1][0]=1;
         _coef[2][0]=1;
