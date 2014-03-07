@@ -119,8 +119,7 @@ void HexahedronFEMForceField<DataTypes>::init()
     _materialsStiffnesses.resize(this->getIndexedElements()->size() );
     _rotations.resize( this->getIndexedElements()->size() );
     _rotatedInitialElements.resize(this->getIndexedElements()->size());
-
-
+    _initialrotations.resize( this->getIndexedElements()->size() );
 
 
 // 	if( _elementStiffnesses.getValue().empty() )
@@ -272,7 +271,7 @@ void HexahedronFEMForceField<DataTypes>::addDForce (const core::MechanicalParams
 }
 
 template <class DataTypes>
-const typename HexahedronFEMForceField<DataTypes>::Transformation& HexahedronFEMForceField<DataTypes>::getRotation(const unsigned elemidx)
+const typename HexahedronFEMForceField<DataTypes>::Transformation& HexahedronFEMForceField<DataTypes>::getElementRotation(const unsigned elemidx)
 {
     return _rotations[elemidx];
 }
@@ -848,6 +847,7 @@ void HexahedronFEMForceField<DataTypes>::initLarge(int i, const Element &elem)
     Coord vertical;
     vertical = (nodes[3]-nodes[0] + nodes[2]-nodes[1] + nodes[7]-nodes[4] + nodes[6]-nodes[5])*.25;
     computeRotationLarge( _rotations[i], horizontal,vertical);
+    _initialrotations[i] = _rotations[i];
 
     for(int w=0; w<8; ++w)
 #ifndef SOFA_NEW_HEXA
@@ -982,7 +982,7 @@ void HexahedronFEMForceField<DataTypes>::initPolar(int i, const Element& elem)
 #endif
 
     computeRotationPolar( _rotations[i], nodes );
-
+    _initialrotations[i] = _rotations[i];
 
     for(int j=0; j<8; ++j)
     {
@@ -1112,6 +1112,8 @@ void HexahedronFEMForceField<DataTypes>::addKToMatrix(const core::MechanicalPara
 //         const Transformation& Rt = _rotations[e];
 //         Transformation R; R.transpose(Rt);
 
+        Transformation Rot = getElementRotation(e);
+
         Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
         // find index of node 1
         for (n1=0; n1<8; n1++)
@@ -1129,9 +1131,9 @@ void HexahedronFEMForceField<DataTypes>::addKToMatrix(const core::MechanicalPara
 #else
                 node2 = (*it)[n2];
 #endif
-                Mat33 tmp = _rotations[e].multTranspose( Mat33(Coord(Ke[3*n1+0][3*n2+0],Ke[3*n1+0][3*n2+1],Ke[3*n1+0][3*n2+2]),
+                Mat33 tmp = Rot.multTranspose( Mat33(Coord(Ke[3*n1+0][3*n2+0],Ke[3*n1+0][3*n2+1],Ke[3*n1+0][3*n2+2]),
                         Coord(Ke[3*n1+1][3*n2+0],Ke[3*n1+1][3*n2+1],Ke[3*n1+1][3*n2+2]),
-                        Coord(Ke[3*n1+2][3*n2+0],Ke[3*n1+2][3*n2+1],Ke[3*n1+2][3*n2+2])) ) * _rotations[e];
+                        Coord(Ke[3*n1+2][3*n2+0],Ke[3*n1+2][3*n2+1],Ke[3*n1+2][3*n2+2])) ) * Rot;
                 for(i=0; i<3; i++)
                     for (j=0; j<3; j++)
                         r.matrix->add(r.offset+3*node1+i, r.offset+3*node2+j, - tmp[i][j]*kFactor);

@@ -563,6 +563,12 @@ public:
     {
         return CudaVec3<real>::make(dot(x,v),dot(y,v),dot(z,v));
     }
+
+    __device__ CudaVec3<real> operator*(CudaVec3<real> v) const
+    {
+        return CudaVec3<real>::make(dot(x,v),dot(y,v),dot(z,v));
+    }
+
     __device__ CudaVec3<real> mulT(CudaVec3<real> v)
     {
         return x*v.x+y*v.y+z*v.z;
@@ -581,6 +587,22 @@ public:
                      z.x * v.x.y + z.y * v.y.y + z.z * v.z.y,
                      z.x * v.x.z + z.y * v.y.z + z.z * v.z.z );
     }
+
+    __device__ matrix3<real> operator*(matrix3<real> v) const
+    {
+        return make( x.x * v.x.x + x.y * v.y.x + x.z * v.z.x,
+                     x.x * v.x.y + x.y * v.y.y + x.z * v.z.y,
+                     x.x * v.x.z + x.y * v.y.z + x.z * v.z.z,
+
+                     y.x * v.x.x + y.y * v.y.x + y.z * v.z.x,
+                     y.x * v.x.y + y.y * v.y.y + y.z * v.z.y,
+                     y.x * v.x.z + y.y * v.y.z + y.z * v.z.z,
+
+                     z.x * v.x.x + z.y * v.y.x + z.z * v.z.x,
+                     z.x * v.x.y + z.y * v.y.y + z.z * v.z.y,
+                     z.x * v.x.z + z.y * v.y.z + z.z * v.z.z );
+    }
+
     __device__ matrix3<real> mulT(matrix3<real> v)
     {
         return make( x.x * v.x.x + y.x * v.y.x + z.x * v.z.x,

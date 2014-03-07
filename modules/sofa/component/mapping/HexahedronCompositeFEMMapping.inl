@@ -247,7 +247,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::apply ( OutVecCoord& out, cons
 // 		const Transformation& rotation = _forcefield->getRotation(i);
 // 		_rotations[i].fromMatrix( rotation );
 
-        _rotations[i] = _forcefield->getRotation(i);
+        _rotations[i] = _forcefield->getElementRotation(i);
 
 
         for(int w=0; w<8; ++w)
