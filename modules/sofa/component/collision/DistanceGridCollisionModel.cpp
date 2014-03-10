@@ -86,8 +86,8 @@ RigidDistanceGridCollisionModel::RigidDistanceGridCollisionModel()
     , flipNormals( initData( &flipNormals, false, "flipNormals", "reverse surface direction, i.e. points are considered in collision if they move outside of the object instead of inside"))
     , showMeshPoints( initData( &showMeshPoints, true, "showMeshPoints", "Enable rendering of mesh points"))
     , showGridPoints( initData( &showGridPoints, false, "showGridPoints", "Enable rendering of grid points"))
-    , showMaxDist ( initData( &showMaxDist, 0.0, "showMaxDist", "Max distance to render gradients"))
     , showMinDist ( initData( &showMinDist, 0.0, "showMinDist", "Min distance to render gradients"))
+    , showMaxDist ( initData( &showMaxDist, 0.0, "showMaxDist", "Max distance to render gradients"))
 {
     rigid = NULL;
     addAlias(&fileRigidDistanceGrid,"filename");

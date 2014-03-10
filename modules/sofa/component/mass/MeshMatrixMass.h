@@ -142,13 +142,13 @@ public:
     /// if specific mass information should be outputed
     Data< bool >         printMass;
     Data<std::map < std::string, sofa::helper::vector<double> > > f_graph;
-	/// the order of integration for numerical integration
-	Data<size_t>	     numericalIntegrationOrder;
-	/// the type of numerical integration method chosen
-	Data<size_t>	     numericalIntegrationMethod;
-	/// the type of integration method chosen for non linear element.
-	Data<std::string>	 d_integrationMethod; 
-	IntegrationMethod    integrationMethod;
+    /// the order of integration for numerical integration
+    Data<size_t>	     numericalIntegrationOrder;
+    /// the type of numerical integration method chosen
+    Data<size_t>	     numericalIntegrationMethod;
+    /// the type of integration method chosen for non linear element.
+    Data<std::string>	 d_integrationMethod; 
+    IntegrationMethod    integrationMethod;
 
 
 
