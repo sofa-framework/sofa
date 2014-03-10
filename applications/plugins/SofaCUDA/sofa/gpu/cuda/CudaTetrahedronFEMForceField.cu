@@ -792,7 +792,7 @@ __global__ void TetrahedronFEMForceFieldCuda3t_addForce4_kernel(int nbVertex, un
 
         int iext = fastmul(blockIdx.x,(BSIZE/4)*3)+index1; //index0*3+index1;
 
-        f[iext] = res;
+        f[iext] += res;
     }
 }
 
