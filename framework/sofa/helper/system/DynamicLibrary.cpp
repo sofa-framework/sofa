@@ -141,7 +141,7 @@ void DynamicLibrary::fetchLastError()
 # ifndef UNICODE
     m_lastError = std::string(pMsgBuf);
 # else
-    std::wstring s = std::string(pMsgBuf);
+    std::wstring s(pMsgBuf);
     // This is terrible, it will truncate wchar_t to char_t,
     // but it should work for characters 0 to 127.
     m_lastError = std::string(s.begin(), s.end());
