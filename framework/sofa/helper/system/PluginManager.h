@@ -127,7 +127,7 @@ public:
     GetModuleComponentList getModuleComponentList;
     GetModuleVersion       getModuleVersion;
 private:
-    boost::shared_ptr<DynamicLibrary> dynamicLibrary;
+    DynamicLibrary::Handle dynamicLibrary;
 
 };
 
