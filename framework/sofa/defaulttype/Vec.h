@@ -49,6 +49,9 @@ class Vec : public helper::fixed_array<real,N>
     BOOST_STATIC_ASSERT( N > 0 );
 
 public:
+    // Type inconsistency workaround, see Mat.h
+    typedef int size_type;
+
     /// Compile-time constant specifying the number of scalars within this vector (equivalent to static_size and size() method)
     enum { total_size = N };
     /// Compile-time constant specifying the number of dimensions of space (equivalent to total_size here)
