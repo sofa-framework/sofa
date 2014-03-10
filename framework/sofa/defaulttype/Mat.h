@@ -44,6 +44,11 @@ public:
 
     enum { N = L*C };
 
+    // Cheap and hacky workaround: Mat inherits from fixed_array - which uses
+    // std:size_t - but it defines its own operator[] with int, and this causes
+    // warnings when calling mat[(size_type)foo].
+    typedef int size_type;
+
     typedef real Real;
     typedef Vec<C,real> Line;
     typedef VecNoInit<C,real> LineNoInit;
