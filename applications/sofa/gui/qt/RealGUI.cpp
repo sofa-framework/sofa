@@ -1219,13 +1219,15 @@ void RealGUI::setExportState(bool b)
 
 //------------------------------------
 
+#ifndef SOFA_GUI_QT_NO_RECORDER
 void RealGUI::setRecordPath(const std::string & path)
 {
-#ifndef SOFA_GUI_QT_NO_RECORDER
     if (recorder)
         recorder->SetRecordDirectory(path);
-#endif
 }
+#else
+void RealGUI::setRecordPath(const std::string&) {}
+#endif
 
 //------------------------------------
 

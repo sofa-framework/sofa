@@ -155,7 +155,7 @@ public:
     Data<helper::vector<Edge> > f_edges;
     Data<helper::vector<Triangle> > f_triangles;
     Data<helper::vector<Tetra> > f_tetrahedra;
-	Data<SetIndex> d_tetrahedraInput;
+    Data<SetIndex> d_tetrahedraInput;
 
     //Output
     Data<SetIndex> f_indices;
