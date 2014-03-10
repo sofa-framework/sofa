@@ -59,8 +59,8 @@ template< class DataTypes>
  BezierTetrahedronSetGeometryAlgorithms< DataTypes >::BezierTetrahedronSetGeometryAlgorithms() : 
 TetrahedronSetGeometryAlgorithms<DataTypes>()
 		,degree(0)
-        ,drawControlPointsEdges (core::objectmodel::Base::initData(&drawControlPointsEdges, (bool) false, "drawControlPointsEdges", "Debug : view Control point indices"))
-        , _drawColor(initData(&_drawColor, sofa::defaulttype::Vec3f(0.2f,1.0f,1.0f), "drawColorEdges", "RGB code color used to draw edges"))
+        ,drawControlPointsEdges (core::objectmodel::Base::initData(&drawControlPointsEdges, (bool) false, "drawControlPointsEdges", "Debug : draw Control point edges "))
+        ,drawVolumeEdges (core::objectmodel::Base::initData(&drawVolumeEdges, (bool) false, "drawVolumeEdges", "Debug : draw edges on Bezier volume"))
     {
     }
 template< class DataTypes>
@@ -189,8 +189,8 @@ typename DataTypes::Real BezierTetrahedronSetGeometryAlgorithms<DataTypes>::comp
 		val*=(*it).second;
 		return(val);
 	} else {
-		serr<< "Tetrahedron Bezier Index "<< tbi << " out of range"<< sendl;
-		return ((Real)1);
+		val*=multinomial(tbi[0]+tbi[1]+tbi[2]+tbi[3],tbi);
+		return(val);
 	}
 }
  template<class DataTypes>
@@ -230,27 +230,27 @@ typename DataTypes::Real BezierTetrahedronSetGeometryAlgorithms<DataTypes>::comp
 
  }
 template<class DataTypes>
-void BezierTetrahedronSetGeometryAlgorithms<DataTypes>::computeDeCasteljeauPoints(const size_t tetrahedronIndex, const Vec4 barycentricCoordinate, Coord dpos[4])
+void BezierTetrahedronSetGeometryAlgorithms<DataTypes>::computeDeCasteljeauPoints(const size_t tetrahedronIndex, const Vec4 barycentricCoordinate,  const VecCoord& p, Coord dpos[4])
 {
 	/// the 4 derivatives
 	VecPointID indexArray;
 	TetrahedronBezierIndex tbi;
 	size_t j;
 	Real val;
-	const typename DataTypes::VecCoord& p = *(this->object->getX());
 	container->getGlobalIndexArrayOfBezierPointsInTetrahedron(tetrahedronIndex, indexArray);
+	// initialize dpos
+	for (j=0;j<4;++j) 
+		dpos[j]=Coord();
 	for(size_t i=0; i<tbiArray.size(); ++i)
 	{
 		tbi=tbiArray[i];
 		val=bernsteinCoefficientArray[i]*pow(barycentricCoordinate[0],tbi[0])*pow(barycentricCoordinate[1],tbi[1])*pow(barycentricCoordinate[2],tbi[2])*pow(barycentricCoordinate[3],tbi[3]);
 		Vec4 dval(0,0,0,0);
 		for (j=0;j<4;++j) {
-			if(tbi[i] && barycentricCoordinate[i]){
-				 dval[i]=(Real)tbi[i]*val/barycentricCoordinate[i];
+			if(tbi[j] && barycentricCoordinate[j]){
+				 dval[j]=(Real)tbi[j]*val/barycentricCoordinate[j];
+				 dpos[j]+=dval[j]*p[indexArray[i]];
 			}
-		}
-		for (j=0;j<4;++j) {
-			dpos[j]+=dval[j]*p[indexArray[i]];
 		}
 	}
 	
@@ -317,7 +317,7 @@ void BezierTetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual:
 	if ((degree>0) && (container) ){
 		TetrahedronSetGeometryAlgorithms<DataTypes>::draw(vparams);	
 		// Draw Tetra
-		if (drawControlPointsEdges.getValue())
+		if ((drawControlPointsEdges.getValue())||(drawVolumeEdges.getValue()))
 		{
 			const sofa::helper::vector<Tetrahedron> &tetraArray = this->m_topology->getTetrahedra();
 
@@ -336,17 +336,22 @@ void BezierTetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual:
 					indexArray.clear();
 					container->getGlobalIndexArrayOfBezierPointsInTetrahedron(i, indexArray);
 					sofa::helper::vector <sofa::defaulttype::Vec3f> tetraCoord;
+					if (drawControlPointsEdges.getValue()) {
+						for (unsigned int j = 0; j<indexArray.size(); j++)
+						{
+							p = DataTypes::getCPos(coords[indexArray[j]]);
+							tetraCoord.push_back(p);
+						}
+					} else {
+						for (unsigned int j = 0; j<indexArray.size(); j++)
+						{
+							baryCoord=Vec4((double)tbiArray[j][0]/degree,(double)tbiArray[j][1]/degree,(double)tbiArray[j][2]/degree,(double)tbiArray[j][3]/degree);
+							p=DataTypes::getCPos(computeNodalValue(i,baryCoord));
 
-					for (unsigned int j = 0; j<indexArray.size(); j++)
-					{
-/*
-						baryCoord=Vec4((double)tbiArray[j][0]/degree,(double)tbiArray[j][1]/degree,(double)tbiArray[j][2]/degree,(double)tbiArray[j][3]/degree);
-						
-						p=DataTypes::getCPos(computeNodalValue(i,baryCoord));
-						
-						if ((p-p2).norm2()>1e-3) std::cerr<< "error in tetra"<< i << std::endl;*/
-						p = DataTypes::getCPos(coords[indexArray[j]]);
-						tetraCoord.push_back(p);
+						//	if ((p-p2).norm2()>1e-3) std::cerr<< "error in tetra"<< i << std::endl;*/
+						//	p = DataTypes::getCPos(coords[indexArray[j]]);
+							tetraCoord.push_back(p);
+						}
 					}
 					sofa::helper::set<Edge>::iterator ite=bezierTetrahedronEdgeSet.begin();
 					for (; ite!=bezierTetrahedronEdgeSet.end(); ite++)

@@ -123,10 +123,19 @@ void FastTetrahedralCorotationalForceField<DataTypes>::FTCFTetrahedronHandler::a
                     }
                 }
             }
-            my_tinfo.transposedLinearDfDx[j]=my_tinfo.linearDfDx[j].transposed();
+			//			if (tetrahedronIndex==10)
+			//std::cerr<<" edge stiffness["<<j<<"]= "<<my_tinfo.linearDfDx[j]<<std::endl;
         }
-        // compute the rotation matrix of the initial tetrahedron for the QR decomposition
-        computeQRRotation(my_tinfo.restRotation,my_tinfo.restEdgeVector);
+		if (ff->decompositionMethod==QR_DECOMPOSITION) {
+			// compute the rotation matrix of the initial tetrahedron for the QR decomposition
+			computeQRRotation(my_tinfo.restRotation,my_tinfo.restEdgeVector);
+		} else 	if (ff->decompositionMethod==POLAR_DECOMPOSITION_MODIFIED) {
+			Mat3x3 Transformation;
+			Transformation[0]=point[1]-point[0];
+			Transformation[1]=point[2]-point[0];
+			Transformation[2]=point[3]-point[0];
+			helper::Decompose<Real>::polarDecomposition( Transformation, my_tinfo.restRotation );
+		}
     }
 }
 
@@ -135,7 +144,7 @@ template <class DataTypes> FastTetrahedralCorotationalForceField<DataTypes>::Fas
     , tetrahedronInfo(initData(&tetrahedronInfo, "tetrahedronInfo", "Internal tetrahedron data"))
     , _initialPoints(0)
     , updateMatrix(true)
-    , f_method(initData(&f_method,std::string("large"),"method","\"large\" (by QR) or \"polar\" displacements"))
+    , f_method(initData(&f_method,std::string("qr"),"method"," method for rotation computation :\"qr\" (by QR) or \"polar\" or \"polar2\" or \"none\" (Linear elastic) "))
     , f_poissonRatio(initData(&f_poissonRatio,(Real)0.3,"poissonRatio","Poisson ratio in Hooke's law"))
     , f_youngModulus(initData(&f_youngModulus,(Real)1000.,"youngModulus","Young modulus in Hooke's law"))
     , lambda(0)
@@ -167,11 +176,15 @@ template <class DataTypes> void FastTetrahedralCorotationalForceField<DataTypes>
 
     if (f_method.getValue() == "polar")
         decompositionMethod= POLAR_DECOMPOSITION;
-    else if (f_method.getValue() == "large")
+     else if ((f_method.getValue() == "qr") || (f_method.getValue() == "large"))
         decompositionMethod= QR_DECOMPOSITION;
+    else if (f_method.getValue() == "polar2")
+        decompositionMethod= POLAR_DECOMPOSITION_MODIFIED;
+	 else if ((f_method.getValue() == "none") || (f_method.getValue() == "linear"))
+        decompositionMethod= LINEAR_ELASTIC;
     else
     {
-        serr << "cannot recognize method "<< f_method.getValue() << ". Must be either large or polar" << sendl;
+        serr << "cannot recognize method "<< f_method.getValue() << ". Must be either qr, polar, polar2 or none" << sendl;
     }
 
 
@@ -353,15 +366,23 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addForce(const sofa::core
             // polar decomposition of the transformation
             helper::Decompose<Real>::polarDecomposition(deformationGradient,R);
         }
-        else
+        else if (decompositionMethod==QR_DECOMPOSITION)
         {
 
             /// perform QR decomposition
             computeQRRotation(S,dp);
             R=S.transposed()*tetinfo->restRotation;
 
-        }
-
+        } else if (decompositionMethod==POLAR_DECOMPOSITION_MODIFIED) {
+			
+			S[0]=dp[0];
+			S[1]=dp[1];
+			S[2]=dp[2];
+			helper::Decompose<Real>::polarDecomposition( S, R );
+			R=R.transposed()*tetinfo->restRotation;
+		}  else if (decompositionMethod==LINEAR_ELASTIC) {
+			R.identity();
+		}
         // store transpose of rotation
         tetinfo->rotation=R.transposed();
         Coord force[4];
@@ -376,7 +397,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addForce(const sofa::core
             // force on first vertex in the rest configuration
             force[edgesInTetrahedronArray[j][1]]+=tetinfo->linearDfDx[j]*dp[j];
             // force on second vertex in the rest configuration
-            force[edgesInTetrahedronArray[j][0]]-=tetinfo->transposedLinearDfDx[j]*dp[j];
+            force[edgesInTetrahedronArray[j][0]]-=tetinfo->linearDfDx[j].multTranspose(dp[j]);
         }
         for (j=0; j<4; ++j)
         {
@@ -403,7 +424,6 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addDForce(const sofa::cor
 
     unsigned int j;
     int i;
-    //	const std::vector< Edge> &edgeArray=_topology->getEdges() ;
     int nbEdges=_topology->getNbEdges();
 
     if (updateMatrix==true)
@@ -422,7 +442,6 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addDForce(const sofa::cor
         for(einfo=&edgeInf[0],i=0; i<nbEdges; i++,einfo++ )
         {
             einfo->DfDx.clear();
-            einfo->reverseDfDx.clear();
         }
 
         for(i=0; i<nbTetrahedra; i++ )
@@ -442,14 +461,10 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addDForce(const sofa::cor
                 {
                     // store the two edge matrices since the stiffness matrix is not symmetric
                     einfo->DfDx+=tetinfo->rotation.transposed()*tmp;
-                    einfo->reverseDfDx+= tmp.transposed()*tetinfo->rotation;
-
                 }
                 else
                 {
-                    einfo->reverseDfDx+=tetinfo->rotation.transposed()*tmp;
                     einfo->DfDx+= tmp.transposed()*tetinfo->rotation;
-
                 }
             }
         }
@@ -471,9 +486,8 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addDForce(const sofa::cor
         v1=einfo->v[1];
 
         deltax= dx[v1] -dx[v0];
-        // einfo->reverseDfDx is not the transposed of einfo->DfDx
-        df[v1]+= (einfo->DfDx*deltax) * kFactor;
-        df[v0]-= (einfo->reverseDfDx*deltax) * kFactor;
+        df[v1]+= einfo->DfDx*(deltax * kFactor);
+        df[v0]-= einfo->DfDx.multTranspose(deltax * kFactor);
     }
 
     datadF.endEdit();

@@ -72,7 +72,9 @@ public:
     typedef enum
     {
         POLAR_DECOMPOSITION,
-        QR_DECOMPOSITION
+        QR_DECOMPOSITION,
+	    POLAR_DECOMPOSITION_MODIFIED,
+		LINEAR_ELASTIC
     } RotationDecompositionMethod;
 protected:
 
@@ -81,7 +83,6 @@ protected:
     {
     public:
         Mat3x3 DfDx; /// the edge stiffness matrix
-        Mat3x3 reverseDfDx; /// the edge stiffness matrix
         unsigned int v[2];
         Coord restDp;
 
@@ -110,7 +111,6 @@ protected:
         Real restVolume;
         Coord restEdgeVector[6];
         Mat3x3 linearDfDx[6];  // the off-diagonal 3x3 block matrices that makes the 12x12 linear elastic matrix
-        Mat3x3 transposedLinearDfDx[6]; // the transposed of those matrices
         Mat3x3 rotation; // rotation from deformed to rest configuration
         Mat3x3 restRotation; // used for QR decomposition
         unsigned int v[4]; // the indices of the 4 vertices

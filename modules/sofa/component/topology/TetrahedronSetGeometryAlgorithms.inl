@@ -66,7 +66,7 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::defineTetrahedronCubaturePoi
 	/// integration with quadratic accuracy.
 	qpa.clear();
 	Real a=(5-sqrt((Real)5))/20;
-	Real b=(5+3*sqrt((Real)5))/20;
+	Real b=1-3*a;
 	size_t i;
 	for (i=0;i<4;++i) {
 		v=BarycentricCoordinatesType(a,a,a,a);
@@ -78,21 +78,74 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::defineTetrahedronCubaturePoi
 	qpa.clear();
 	v=BarycentricCoordinatesType(0.25,0.25,0.25,0.25);
 	qpa.push_back(QuadraturePoint(v,(Real) -2/15));
-	a=1/6;
-	b=1/2;
+	a=(Real)1/6;
+	b=(Real)1/2;
 	for (i=0;i<4;++i) {
 		v=BarycentricCoordinatesType(a,a,a,a);
 		v[i]=b;
-		qpa.push_back(QuadraturePoint(v,1/(Real)24));
+		qpa.push_back(QuadraturePoint(v,(Real)15/(Real)200));
 	} 
 	tetrahedronNumericalIntegration.addQuadratureMethod(m,3,qpa);
-	/// integration with quintic accuracy and 15 points
+	/// integration with quadric accuracy.
 	qpa.clear();
+	v=BarycentricCoordinatesType(0.25,0.25,0.25,0.25);
+	Real c= -0.131555555555555556e-01;
+	qpa.push_back(QuadraturePoint(v,(Real)c ));
+	a=(Real)0.714285714285714285e-01;
+	b=(Real)1-3*a;
+	Real c1=0.762222222222222222e-02;
+	for (i=0;i<4;++i) {
+		v=BarycentricCoordinatesType(a,a,a,a);
+		v[i]=b;
+		qpa.push_back(QuadraturePoint(v,c1));
+	} 
+	a=(Real)0.399403576166799219;
+	b=(Real)0.5-a;
+	Real c2=((Real)1/6 -c-4*c1)/6;
+	for (i=0;i<6;++i) {
+		v=BarycentricCoordinatesType(a,a,a,a);
+		v[edgesInTetrahedronArray[i][0]]=b;
+		v[edgesInTetrahedronArray[i][1]]=b;
+		qpa.push_back(QuadraturePoint(v,c2));
+	} 
+	tetrahedronNumericalIntegration.addQuadratureMethod(m,4,qpa);
+	/// integration with quintic accuracy and 14 points
+	/// Walkington's fifth-order 14-point rule from
+  // "Quadrature on Simplices of Arbitrary Dimension"
+	qpa.clear();
+	a=(Real)0.31088591926330060980;
+	b=(Real)1-3*a;
+	c1=(Real)0.018781320953002641800;
+	for (i=0;i<4;++i) {
+		v=BarycentricCoordinatesType(a,a,a,a);
+		v[i]=b;
+		qpa.push_back(QuadraturePoint(v,c1));
+	} 
+	a=(Real)  0.092735250310891226402;
+	b=(Real)1-3*a;
+	c2=(Real)0.012248840519393658257;
+	for (i=0;i<4;++i) {
+		v=BarycentricCoordinatesType(a,a,a,a);
+		v[i]=b;
+		qpa.push_back(QuadraturePoint(v,c2));
+	} 
+	a=(Real)0.045503704125649649492;
+	b=(Real)0.5-a;
+	Real c3=((Real)1/6 -4*c1-4*c2)/6;
+	for (i=0;i<6;++i) {
+		v=BarycentricCoordinatesType(a,a,a,a);
+		v[edgesInTetrahedronArray[i][0]]=b;
+		v[edgesInTetrahedronArray[i][1]]=b;
+		qpa.push_back(QuadraturePoint(v,c3));
+	} 
+	tetrahedronNumericalIntegration.addQuadratureMethod(m,5,qpa);
+
+/*
 	v=BarycentricCoordinatesType(0.25,0.25,0.25,0.25);
 	qpa.push_back(QuadraturePoint(v,(Real) 8/405));
 	a=(7+sqrt((Real)15))/34;
 	b=(13+3*sqrt((Real)15))/34;
-	Real c=(2665-14*sqrt((Real)15))/226800;
+	 c=(2665-14*sqrt((Real)15))/226800;
 	for (i=0;i<4;++i) {
 		v=BarycentricCoordinatesType(a,a,a,a);
 		v[i]=b;
@@ -115,44 +168,130 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::defineTetrahedronCubaturePoi
 		v[edgesInTetrahedronArray[i][1]]=b;
 		qpa.push_back(QuadraturePoint(v,c));
 	} 
-	tetrahedronNumericalIntegration.addQuadratureMethod(m,5,qpa);
+	tetrahedronNumericalIntegration.addQuadratureMethod(m,5,qpa); */
 	/// integration with sixtic accuracy with 24 points
+	// This rule is originally from Keast:
+	// Patrick Keast,
+	// Moderate Degree Tetrahedral Quadrature Formulas,
+	// Computer Methods in Applied Mechanics and Engineering,
+	// Volume 55, Number 3, May 1986, pages 339-348.
 	qpa.clear();
-	a=(Real)0.214602871259152029288839219386284;
+	a=(Real) 0.214602871259151684;
 	b=1-3*a;
-	c=(Real) 0.00665379170969458201661510459291332;
+	c1=(Real)  0.00665379170969464506;
 	for (i=0;i<4;++i) {
 		v=BarycentricCoordinatesType(a,a,a,a);
 		v[i]=b;
-		qpa.push_back(QuadraturePoint(v,c));
+		qpa.push_back(QuadraturePoint(v,c1));
 	}
-	a=(Real)0.0406739585346113531155794489564100;
+	a=(Real)0.0406739585346113397;
 	b=1-3*a;
-	c=(Real) 0.00167953517588677382466887290765614;
+	c2=(Real)  0.00167953517588677620;
 	for (i=0;i<4;++i) {
 		v=BarycentricCoordinatesType(a,a,a,a);
 		v[i]=b;
-		qpa.push_back(QuadraturePoint(v,c));
+		qpa.push_back(QuadraturePoint(v,c2));
 	}
-	a=(Real)0.322337890142275510343994470762492;
+	a=(Real) 0.322337890142275646;
 	b=1-3*a;
-	c=(Real) 0.00922619692394245368252554630895433;
+	c3=(Real)  0.00922619692394239843;
 	for (i=0;i<4;++i) {
 		v=BarycentricCoordinatesType(a,a,a,a);
 		v[i]=b;
-		qpa.push_back(QuadraturePoint(v,c));
+		qpa.push_back(QuadraturePoint(v,c3));
 	}
-	a=(Real)0.269672331458315808034097805727606;
-	b=1-3*a;
-	c=(Real) 0.00803571428571428571428571428571428;
-	for (i=0;i<4;++i) {
+	a=(Real)0.0636610018750175299;
+	b=(Real)0.269672331458315867;
+	c=(Real) 0.603005664791649076;
+	Real d=(Real) ((Real)1/6 -4*c1-4*c2-4*c3)/12;
+	for (i=0;i<6;++i) {
 		v=BarycentricCoordinatesType(a,a,a,a);
-		v[i]=b;
-		qpa.push_back(QuadraturePoint(v,c));
-	}
+		v[edgesInTetrahedronArray[i][0]]=b;
+		v[edgesInTetrahedronArray[i][1]]=c;
+		qpa.push_back(QuadraturePoint(v,d));
+		v[edgesInTetrahedronArray[i][0]]=c;
+		v[edgesInTetrahedronArray[i][1]]=b;
+		qpa.push_back(QuadraturePoint(v,d));
+	} 
 	tetrahedronNumericalIntegration.addQuadratureMethod(m,6,qpa);
-	/// TBD : integration with  accuracy of order 8 with 24 points
-		
+	/// integration with  accuracy of order 8 with 45 points
+	// This rule is originally from Keast:
+	// Patrick Keast,
+	// Moderate Degree Tetrahedral Quadrature Formulas,
+	// Computer Methods in Applied Mechanics and Engineering,
+	// Volume 55, Number 3, May 1986, pages 339-348.
+	qpa.clear();
+	v=BarycentricCoordinatesType(0.25,0.25,0.25,0.25);
+	c1= (Real)-0.393270066412926145e-01;
+	qpa.push_back(QuadraturePoint(v,(Real)c1 ));
+	// 4 points
+	a=(Real)0.127470936566639015;
+	b=1-3*a;
+	c2=(Real)   0.408131605934270525e-02;
+	for (i=0;i<4;++i) {
+		v=BarycentricCoordinatesType(a,a,a,a);
+		v[i]=b;
+		qpa.push_back(QuadraturePoint(v,c2));
+	}
+	// 4 points
+	a=(Real)0.320788303926322960e-01;
+	b=1-3*a;
+	c3=(Real)   0.658086773304341943e-03;
+	for (i=0;i<4;++i) {
+		v=BarycentricCoordinatesType(a,a,a,a);
+		v[i]=b;
+		qpa.push_back(QuadraturePoint(v,c3));
+	}
+	// 6 points
+	a=(Real)0.497770956432810185e-01;
+	b=(Real)0.5-a;
+	Real c4= (Real) 0.438425882512284693e-02;
+	for (i=0;i<6;++i) {
+		v=BarycentricCoordinatesType(a,a,a,a);
+		v[edgesInTetrahedronArray[i][0]]=b;
+		v[edgesInTetrahedronArray[i][1]]=b;
+		qpa.push_back(QuadraturePoint(v,c4));
+	}
+	// 6 points
+	a=(Real)0.183730447398549945;
+	b=(Real)0.5-a;
+	Real c5= (Real) 0.138300638425098166e-01;
+	for (i=0;i<6;++i) {
+		v=BarycentricCoordinatesType(a,a,a,a);
+		v[edgesInTetrahedronArray[i][0]]=b;
+		v[edgesInTetrahedronArray[i][1]]=b;
+		qpa.push_back(QuadraturePoint(v,c5));
+	}
+	/// 12 points
+ 	a=(Real)0.231901089397150906;
+	b=(Real) 0.229177878448171174e-01;
+	c=(Real) 1-2*a-b;
+	d=(Real) 0.424043742468372453e-02;
+	for (i=0;i<6;++i) {
+		v=BarycentricCoordinatesType(a,a,a,a);
+		v[edgesInTetrahedronArray[i][0]]=b;
+		v[edgesInTetrahedronArray[i][1]]=c;
+		qpa.push_back(QuadraturePoint(v,d));
+		v[edgesInTetrahedronArray[i][0]]=c;
+		v[edgesInTetrahedronArray[i][1]]=b;
+		qpa.push_back(QuadraturePoint(v,d));
+	} 
+	/// 12 points
+ 	a=(Real)0.379700484718286102e-01;
+	b=(Real)  0.730313427807538396;
+	c=(Real) 1-2*a-b;
+	Real d1=((Real) 1/6 -12*d-6*(c5+c4)-4*(c3+c2)-c1)/12;
+	for (i=0;i<6;++i) {
+		v=BarycentricCoordinatesType(a,a,a,a);
+		v[edgesInTetrahedronArray[i][0]]=b;
+		v[edgesInTetrahedronArray[i][1]]=c;
+		qpa.push_back(QuadraturePoint(v,d1));
+		v[edgesInTetrahedronArray[i][0]]=c;
+		v[edgesInTetrahedronArray[i][1]]=b;
+		qpa.push_back(QuadraturePoint(v,d1));
+	} 
+	tetrahedronNumericalIntegration.addQuadratureMethod(m,8,qpa);
+	
 }
 
 
