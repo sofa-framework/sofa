@@ -138,7 +138,14 @@ void DynamicLibrary::fetchLastError()
                   NULL, ::GetLastError(),
                   MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
                   (LPTSTR)&pMsgBuf, 0, NULL);
-    m_lastError = pMsgBuf;
+# ifdef UNICODE
+    m_lastError = std::string(pMsgBuf);
+# else
+    std::wstring s = std::string(pMsgBuf);
+    // This is terrible, it will truncate wchar_t to char_t,
+    // but it should work for characters 0 to 127.
+    m_lastError = std::string(s.begin(), s.end());
+# endif
     LocalFree(pMsgBuf);
 #else
     const char *dlopenError = ::dlerror();
