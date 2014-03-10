@@ -92,7 +92,7 @@ template< class DataTypes>
 		}
 		/// insert coefficient for the inferior degree
 		size_t j,k,l,m,n,index1,index2;
-		for (i=0;i<=degree-1;++i) {
+		for (i=0;i<=(size_t)(degree-1);++i) {
 			for (j=0;j<=(degree-i-1);++j) {
 				for (k=0;k<=(degree-j-i-1);++k) {
 					l=degree-1-i-j-k;
@@ -324,7 +324,7 @@ void BezierTetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual:
 			if (!tetraArray.empty())
 			{
 				glDisable(GL_LIGHTING);
-				const sofa::defaulttype::Vec3f& color = _drawColor.getValue();
+				const sofa::defaulttype::Vec3f& color =  this->_drawColor.getValue();
 				glColor3f(color[0], color[1], color[2]);
 				glBegin(GL_LINES);
 				const VecCoord& coords = *(this->object->getX());
