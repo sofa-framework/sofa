@@ -36,6 +36,12 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/vector.h>
 #include <sofa/component/topology/CommonAlgorithms.h>
+#include <sofa/component/topology/BezierTetrahedronSetGeometryAlgorithms.h>
+#include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
+#include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
+#include <sofa/component/topology/TetrahedronSetGeometryAlgorithms.h>
+#include <sofa/component/topology/QuadSetGeometryAlgorithms.h>
+#include <sofa/component/topology/HexahedronSetGeometryAlgorithms.h>
 
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
 #include <sofa/core/behavior/InertiaForce.h>
@@ -69,9 +75,9 @@ MeshMatrixMass<DataTypes, MassType>::MeshMatrixMass()
     , lumping( initData(&lumping, true, "lumping","boolean if you need to use a lumped mass matrix") )
     , printMass( initData(&printMass, false, "printMass","boolean if you want to get the totalMass") )
     , f_graph( initData(&f_graph,"graph","Graph of the controlled potential") )
-    , numericalIntegrationOrder( initData(&numericalIntegrationOrder,(size_t)2,"integrationOrder","The order of integration for numerical integration"))
-    , numericalIntegrationMethod( initData(&numericalIntegrationMethod,(size_t)0,"numericalIntegrationMethod","The type of numerical integration method chosen"))
-    , integrationMethod( initData(&integrationMethod,(size_t)1,"integrationMethod","=0 if exact computation is chosen (could be slow), =1 if numerical integration, =2 if expression for linear element is chosen "))
+	, numericalIntegrationOrder( initData(&numericalIntegrationOrder,(size_t)2,"integrationOrder","The order of integration for numerical integration"))
+	, d_integrationMethod( initData(&d_integrationMethod,std::string("analytical"),"integrationMethod","\"exact\" if closed form expression for high order elements, \"analytical\" if closed form expression for affine element, \"numerical\" if numerical integration is chosen"))
+	, numericalIntegrationMethod( initData(&numericalIntegrationMethod,(size_t)0,"numericalIntegrationMethod","The type of numerical integration method chosen"))
     , topologyType(TOPOLOGY_UNKNOWN)
     , vertexMassHandler(NULL)
     , edgeMassHandler(NULL)
@@ -179,7 +185,7 @@ void MeshMatrixMass<DataTypes, MassType>::TetrahedronMassHandler::applyCreateFun
 			for (j=0;j<nbControlPoints;j++) {
 				my_vertexMassInfo[indexArray[j]]+=lumpedVertexMass[j];
 			}
-		} else if ((MMM->integrationMethod==MeshMatrixMass<DataTypes, MassType>::LINEAR_ELEMENT) || 
+		} else if ((MMM->integrationMethod==MeshMatrixMass<DataTypes, MassType>::AFFINE_ELEMENT_INTEGRATION) || 
 			(MMM->bezierTetraGeo->isBezierTetrahedronAffine(tetra,*(MMM->bezierTetraGeo->getDOF()->getX0()) ))) 
 		{
 			/// affine mass simple computation
@@ -1014,6 +1020,17 @@ void MeshMatrixMass<DataTypes, MassType>::init()
     this->Inherited::init();
     massLumpingCoeff = 0.0;
 
+	if (d_integrationMethod.getValue() == "analytical")
+		integrationMethod= AFFINE_ELEMENT_INTEGRATION;
+	else if (d_integrationMethod.getValue() == "numerical") 
+		integrationMethod= NUMERICAL_INTEGRATION;
+	else if (d_integrationMethod.getValue() == "exact") 
+		integrationMethod= EXACT_INTEGRATION;
+	else
+	{
+		serr << "cannot recognize method "<< d_integrationMethod.getValue() << ". Must be either  \"exact\", \"analytical\" or \"numerical\"" << sendl;
+	}
+
     _topology = this->getContext()->getMeshTopology();
     savedMass = m_massDensity.getValue();
 
@@ -1051,6 +1068,7 @@ void MeshMatrixMass<DataTypes, MassType>::init()
 		tetrahedronMassHandler = new TetrahedronMassHandler(this, &tetrahedronMassInfo);
 		tetrahedronMassInfo.createTopologicalEngine(_topology, tetrahedronMassHandler);
 		tetrahedronMassInfo.linkToTetrahedronDataArray();
+
 	}
 
     if ((vertexMassInfo.getValue().size()==0 || edgeMassInfo.getValue().size()==0) && (_topology!=0))
@@ -1280,6 +1298,7 @@ void MeshMatrixMass<DataTypes, MassType>::addMDx(const core::MechanicalParams* /
 				// get the mass matrix in the tetrahedron
 				const MassVector &mv=tetrahedronMassInfo.getValue()[i];
 				// loop over each entry in the mass matrix of size nbControlPoints*(nbControlPoints+1)/2
+				rank=0;
 				for (size_t j=0; j<nbControlPoints; ++j) {
 					v0 = indexArray[j];
 					for (size_t k=j; k<nbControlPoints; ++k,++rank) {

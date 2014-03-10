@@ -52,6 +52,7 @@ const unsigned int trianglesInTetrahedronArray[4][3]= {{1,2,3}, {0,3,2}, {1,3,0}
 
 TetrahedronSetTopologyContainer::TetrahedronSetTopologyContainer()
     : TriangleSetTopologyContainer()
+	, d_createTriangleArray(initData(&d_createTriangleArray, bool(false),"createTriangleArray", "Force the creation of a set of triangles associated with each tetrahedron"))
     , d_tetrahedron(initData(&d_tetrahedron, "tetrahedra", "List of tetrahedron indices"))
 {
     addAlias(&d_tetrahedron, "tetras");
@@ -86,6 +87,9 @@ void TetrahedronSetTopologyContainer::init()
     }
 
     TriangleSetTopologyContainer::init();
+	// eventually force the creation of triangles
+	if (d_createTriangleArray.getValue())
+		createTriangleSetArray();
 
     /*===========  TEST   EDGES IN TETRAHEDRON ARRAY  =================*
     createEdgesInTetrahedronArray();

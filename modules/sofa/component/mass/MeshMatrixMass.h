@@ -35,36 +35,45 @@
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/component/topology/TopologyData.h>
 #include <sofa/helper/vector.h>
-#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
+//VERY IMPORTANT FOR GRAPHS
+#include <sofa/helper/map.h>
 
-#include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
-#include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
-#include <sofa/component/topology/TetrahedronSetGeometryAlgorithms.h>
-#include <sofa/component/topology/BezierTetrahedronSetGeometryAlgorithms.h>
-#include <sofa/component/topology/QuadSetGeometryAlgorithms.h>
-#include <sofa/component/topology/HexahedronSetGeometryAlgorithms.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
 
-//VERY IMPORTANT FOR GRAPHS
-#include <sofa/helper/map.h>
+
+
+
+
 
 namespace sofa
 {
 
 namespace component
 {
+namespace topology
+{
+	/// forward declaration to avoid adding includes in .h
+	template< class DataTypes> class EdgeSetGeometryAlgorithms;
+	template< class DataTypes> class TriangleSetGeometryAlgorithms;
+	template< class DataTypes> class TetrahedronSetGeometryAlgorithms;
+	template< class DataTypes> class BezierTetrahedronSetGeometryAlgorithms;
+	template< class DataTypes> class QuadSetGeometryAlgorithms;
+	template< class DataTypes> class HexahedronSetGeometryAlgorithms;
+}
 
 namespace mass
 {
 
 using namespace sofa::component::topology;
+using namespace sofa::defaulttype;
 
 template<class DataTypes, class TMassType>
 class MeshMatrixMassInternalData
 {
 };
+
 
 
 // template<class Vec> void readVec1(Vec& vec, const char* str);
@@ -101,13 +110,13 @@ public:
         TOPOLOGY_HEXAHEDRONSET=5,
         TOPOLOGY_BEZIERTETRAHEDRONSET=6,
     } TopologyType;
-    /// the way the mass should be computed on non-linear elements
-    typedef enum 
-    {
-        EXACT_COMPUTATION=0,
-        NUMERICAL_INTEGRATION=1,
-        LINEAR_ELEMENT=2
-    } IntegrationMethod;
+	/// the way the mass should be computed on non-linear elements
+	typedef enum 
+	{
+		EXACT_INTEGRATION=1,
+		NUMERICAL_INTEGRATION=2,
+		AFFINE_ELEMENT_INTEGRATION=3
+	} IntegrationMethod;
 
 
     /// Mass info are stocked on vertices and edges (if lumped matrix)
@@ -133,12 +142,13 @@ public:
     /// if specific mass information should be outputed
     Data< bool >         printMass;
     Data<std::map < std::string, sofa::helper::vector<double> > > f_graph;
-    /// the order of integration for numerical integration
-    Data<size_t>         numericalIntegrationOrder;
-    /// the type of numerical integration method chosen
-    Data<size_t>         numericalIntegrationMethod;
-    /// the type of integration method chosen for non linear element.
-    Data<size_t>         integrationMethod;
+	/// the order of integration for numerical integration
+	Data<size_t>	     numericalIntegrationOrder;
+	/// the type of numerical integration method chosen
+	Data<size_t>	     numericalIntegrationMethod;
+	/// the type of integration method chosen for non linear element.
+	Data<std::string>	 d_integrationMethod; 
+	IntegrationMethod    integrationMethod;
 
 
 
