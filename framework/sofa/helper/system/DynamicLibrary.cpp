@@ -138,7 +138,7 @@ void DynamicLibrary::fetchLastError()
                   NULL, ::GetLastError(),
                   MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
                   (LPTSTR)&pMsgBuf, 0, NULL);
-# ifdef UNICODE
+# ifndef UNICODE
     m_lastError = std::string(pMsgBuf);
 # else
     std::wstring s = std::string(pMsgBuf);
