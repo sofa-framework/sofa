@@ -24,13 +24,13 @@
 ******************************************************************************/
 #include <sofa/helper/system/DynamicLibrary.h>
 #ifdef WIN32
-#include <Windows.h>
+# include <Windows.h>
 #elif defined(_XBOX)
-#include <xtl.h>
+# include <xtl.h>
 #elif defined(PS3)
-#include <sys/prx.h>
+# include <sys/prx.h>
 #else
-#include <dlfcn.h>
+# include <dlfcn.h>
 #endif
 #include <string>
 
@@ -42,108 +42,124 @@ namespace system
 {
 
 
-DynamicLibrary::DynamicLibrary(const std::string& name, void * handle) : m_handle(handle)
-    ,m_name(name)
+DynamicLibrary::Handle::Handle(const std::string& filename, void *handle)
+    : m_realHandle(handle), m_filename(new std::string(filename))
 {
 }
 
-DynamicLibrary::~DynamicLibrary()
+DynamicLibrary::Handle::Handle(const Handle& that)
+    : m_realHandle(that.m_realHandle), m_filename(that.m_filename)
 {
-    /* if (m_handle)
-     {
-     #ifndef WIN32
-       ::dlclose(m_handle);
-     #else
-       ::FreeLibrary((HMODULE)m_handle);
-     #endif
-     } */
 }
 
-DynamicLibrary * DynamicLibrary::load(const std::string & name,
-        std::ostream* errlog)
+DynamicLibrary::Handle::Handle(): m_realHandle(NULL)
 {
-    if (name.empty())
-    {
-        if(errlog) (*errlog) <<  "Empty path." << std::endl;
-        return NULL;
-    }
+}
 
-    void * handle = NULL;
+bool DynamicLibrary::Handle::isValid() const
+{
+    return m_realHandle != NULL;
+}
 
-#ifdef WIN32
-    handle = ::LoadLibraryA(name.c_str());
+
+DynamicLibrary::Handle DynamicLibrary::load(const std::string& filename)
+{
+#if defined(_XBOX) || defined(PS3)
+    // not supported
+    return Handle();
+#else
+# if defined(WIN32)
+    void *handle = ::LoadLibraryA(filename.c_str());
+# else
+    void *handle = ::dlopen(filename.c_str(), RTLD_NOW);
+# endif
     if (handle == NULL)
-    {
-        DWORD errorCode = ::GetLastError();
-        if(errlog) (*errlog) << "LoadLibrary("<<name<<") Failed. errorCode: "<<errorCode;
-        if(errlog) (*errlog) << std::endl;
-    }
-#elif defined(_XBOX) || defined(PS3)
-	return NULL; // not supported
-#else
-    handle = ::dlopen(name.c_str(), RTLD_NOW);
-    if (!handle)
-    {
-        std::string dlErrorString;
-        const char *zErrorString = ::dlerror();
-        if (zErrorString)
-            dlErrorString = zErrorString;
-        if(errlog)
-        {
-            (*errlog) <<  "Failed to load \"" + name + '"';
-            if(dlErrorString.size())
-                (*errlog) << ": " + dlErrorString;
-            (*errlog) << std::endl;
-        }
-        return NULL;
-    }
-
+        fetchLastError();
+    return handle ? Handle(filename, handle) : Handle();
 #endif
-    return new DynamicLibrary(name,handle);
 }
 
-void * DynamicLibrary::getSymbol(const std::string & symbol, std::ostream* errlog)
+int DynamicLibrary::unload(Handle handle)
 {
-    if (!m_handle)
-        return NULL;
-    void* symbolAddress = NULL;
-
-#ifdef WIN32
-    symbolAddress =  ::GetProcAddress((HMODULE)m_handle, symbol.c_str());
-#elif defined(_XBOX) || defined(PS3)
-	return NULL; // not supported
+#if defined(_XBOX) || defined(PS3)
+    // not supported
+    return 1;
 #else
-    symbolAddress =  ::dlsym(m_handle, symbol.c_str());
+# if defined(WIN32)
+    int error = (::FreeLibrary((HMODULE)(handle.m_realHandle)) == 0);
+# else
+    int error = ::dlclose(handle.m_realHandle);
+# endif
+    if (error)
+        fetchLastError();
+    return error;
 #endif
-    if( errlog && symbolAddress == NULL )
-    {
-        (*errlog) << m_name << " symbol: "<< symbol <<" not found" << std::endl;
+}
+
+void * DynamicLibrary::getSymbolAddress(Handle handle,
+                                        const std::string& symbol)
+{
+#if defined(_XBOX) || defined(PS3)
+    // not supported
+    return NULL;
+#else
+    if (!handle.isValid()) {
+        m_lastError = "DynamicLibrary::getSymbolAddress(): invalid handle";
+        return NULL;
     }
+# if defined(WIN32)
+    void *symbolAddress = ::GetProcAddress((HMODULE)handle.m_realHandle,
+                                     symbol.c_str());
+# else
+    void *symbolAddress = ::dlsym(handle.m_realHandle, symbol.c_str());
+# endif
+    if(symbolAddress == NULL)
+        fetchLastError();
     return symbolAddress;
+#endif
 }
 
-const char* DynamicLibrary::getExtension()
+std::string DynamicLibrary::getLastError()
 {
-#if defined(__APPLE__)
-    return "dylib";
+    std::string msg = m_lastError;
+    m_lastError = "";
+    return msg;
+}
+
+void DynamicLibrary::fetchLastError()
+{
+#if defined(_XBOX) || defined(PS3)
+    // not supported
 #elif defined(WIN32)
-    return "dll";
-#elif defined(PS3)
-	return "prx";
+    LPTSTR pMsgBuf;
+    FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER
+                  | FORMAT_MESSAGE_FROM_SYSTEM
+                  | FORMAT_MESSAGE_IGNORE_INSERTS,
+                  NULL, ::GetLastError(),
+                  MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+                  (LPTSTR)&pMsgBuf, 0, NULL);
+    m_lastError = pMsgBuf;
+    LocalFree(pMsgBuf);
 #else
-    return "so";
-#endif
-
-}
-
-const char* DynamicLibrary::getSuffix()
-{
-#ifdef NDEBUG
-    return "";
-#else
-    return "d";
+    const char *dlopenError = ::dlerror();
+    m_lastError = dlopenError ? dlopenError : "";
 #endif
 }
+
+
+#if defined(WIN32)
+const std::string DynamicLibrary::extension = ".dll";
+#elif defined(__APPLE__)
+const std::string DynamicLibrary::extension = ".dylib";
+#elif defined(_XBOX) || defined(PS3)
+const std::string DynamicLibrary::extension = "";
+#else
+const std::string DynamicLibrary::extension = ".so";
+#endif
+
+
+std::string DynamicLibrary::m_lastError = std::string("");
+
 
 }
 

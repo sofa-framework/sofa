@@ -42,10 +42,10 @@ const std::string pluginsIniFile = "share/config/sofaplugins_debug.ini";
 #endif
 
 template <class LibraryEntry>
-bool getPluginEntry(LibraryEntry& entry, DynamicLibrary* plugin, std::ostream* errlog)
+bool getPluginEntry(LibraryEntry& entry, DynamicLibrary::Handle handle)
 {
     typedef typename LibraryEntry::FuncPtr FuncPtr;
-    entry.func = (FuncPtr)plugin->getSymbol(entry.symbol,errlog);
+    entry.func = (FuncPtr)DynamicLibrary::getSymbolAddress(handle, entry.symbol);
     if( entry.func == 0 )
     {
         return false;
@@ -152,28 +152,28 @@ bool PluginManager::loadPlugin(std::string& pluginPath, std::ostream* errlog)
         if(errlog) (*errlog) << "Plugin " << pluginPath << " already in PluginManager" << std::endl;
         return false;
     }
-    DynamicLibrary* d  = DynamicLibrary::load(pluginPath, errlog);
+    DynamicLibrary::Handle d  = DynamicLibrary::load(pluginPath);
     Plugin p;
-    if( d == NULL )
+    if( ! d.isValid() )
     {
         if (errlog) (*errlog) << "Plugin " << pluginPath << " loading FAILED" << std::endl;
         return false;
     }
     else
     {
-        if(! getPluginEntry(p.initExternalModule,d,errlog) )
+        if(! getPluginEntry(p.initExternalModule,d))
         {
             if (errlog) (*errlog) << "Plugin " << pluginPath << " method initExternalModule() NOT FOUND" << std::endl;
             return false;
         }
-        getPluginEntry(p.getModuleName,d,errlog);
-        getPluginEntry(p.getModuleDescription,d,errlog);
-        getPluginEntry(p.getModuleLicense,d,errlog);
-        getPluginEntry(p.getModuleComponentList,d,errlog);
-        getPluginEntry(p.getModuleVersion,d,errlog);
+        getPluginEntry(p.getModuleName,d);
+        getPluginEntry(p.getModuleDescription,d);
+        getPluginEntry(p.getModuleLicense,d);
+        getPluginEntry(p.getModuleComponentList,d);
+        getPluginEntry(p.getModuleVersion,d);
     }
 
-    p.dynamicLibrary = boost::shared_ptr<DynamicLibrary>(d);
+    p.dynamicLibrary = d;
     m_pluginMap[pluginPath] = p;
 
     return true;

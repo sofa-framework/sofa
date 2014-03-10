@@ -26,7 +26,9 @@
 #define SOFA_HELPER_SYSTEM_DYNAMICLIBRARY_H
 
 #include <sofa/helper/helper.h>
+#include <boost/shared_ptr.hpp>
 #include <iostream>
+
 
 namespace sofa
 {
@@ -35,27 +37,60 @@ namespace helper
 namespace system
 {
 
+
+/**
+   This class provides wrappers around dynamic library facilities, which are
+   system-specific.
+*/
 class SOFA_HELPER_API DynamicLibrary
 {
 public:
 
-    static DynamicLibrary * load(const std::string & path,
-            std::ostream* errlog=&std::cerr);
-    ~DynamicLibrary();
+    /**
+       A handle to a dynamic library.
+    */
+    class Handle {
+        friend class DynamicLibrary;
+    public:
+        Handle();
+        Handle(const Handle& that);
+        /// Check if the handle is valid, i.e. if load() was successful.
+        bool isValid() const;
+    private:
+        void * m_realHandle;
+        boost::shared_ptr<std::string> m_filename;
+        Handle(const std::string& filename, void *handle);
+    };
 
-    void * getSymbol(const std::string & name,
-            std::ostream* errlog=&std::cerr);
-    static const char* getExtension();
-    static const char* getSuffix();
+    /// Load a dynamic library
+    ///
+    /// @return a handle, that must be unloaded with unload().
+    /// Use Handle::isValid() to know if the loading was successful.
+    static Handle load(const std::string& filename);
+
+    /// Unload a dynamic library loaded with load().
+    ///
+    /// @return 0 on success, and nonzero on error.
+    static int unload(Handle handle);
+
+    /// Get the address of a symbol
+    ///
+    /// @return a pointer to the symbol if it was found, or NULL on error.
+    static void * getSymbolAddress(Handle handle, const std::string& symbol);
+
+    /// Get the message for the most recent error that occurred from load(),
+    /// unload() or getSymbolAddress().
+    ///
+    /// @return the error message, or an empty string if no errors have occurred
+    /// since initialization or since it was last called.
+    static std::string getLastError();
+
+    /// System-specific file extension for a dynamic library (e.g. ".so")
+    static const std::string extension;
+
 private:
-    DynamicLibrary();
-
-    DynamicLibrary(const std::string& name, void * handle );
-    DynamicLibrary(const DynamicLibrary &);
-
-private:
-    void * m_handle;
-    std::string m_name;
+    static std::string m_lastError;
+    static void fetchLastError();
 };
 
 
