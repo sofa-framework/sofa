@@ -176,4 +176,19 @@ namespace sofa {
         ASSERT_TRUE( this->compareSimulatedToTheoreticalPositions(1e-12,6e-12)); 
     }
 
+    // test case: svdcorotationalStrainMapping 
+    TYPED_TEST( Patch_test , SvdCorotationalPatchTest)
+    {
+        // With svd method
+        this->loadScene( "tests/Flexible/SvdCorotationalPatchTest.scn");
+        ASSERT_TRUE( this->compareSimulatedToTheoreticalPositions(1e-6,2.1e-4)); 
+    }
+
+    // test case: GreenStrainMapping 
+    TYPED_TEST( Patch_test , GreenPatchTest)
+    {
+        this->loadScene( "tests/Flexible/GreenPatchTest.scn");
+        ASSERT_TRUE( this->compareSimulatedToTheoreticalPositions(1e-6,9.9e-4)); 
+    }
+
 } // namespace sofa
