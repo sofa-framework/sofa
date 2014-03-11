@@ -141,7 +141,7 @@ public:
 
     static bool sortedFind(const VecIndex& v, Index val, Index& result)
     {
-        return sortedFind(v, Range(0,v.size()), val, result);
+        return sortedFind(v, Range(0,(Index)v.size()), val, result);
     }
 
 public :
@@ -248,7 +248,7 @@ public:
         rowBegin.reserve((oldRowIndex.empty() ? nBlocRow : oldRowIndex.size())+1);
         colsIndex.reserve(oldColsIndex.size() + btemp.size());
         colsValue.reserve(oldColsIndex.size() + btemp.size());
-        const Index oldNRow = oldRowIndex.size();
+        const Index oldNRow = (Index)oldRowIndex.size();
         const Index EndRow = nBlocRow;
         const Index EndCol = nBlocCol;
         //const Index EndVal = oldColsIndex.size();
