@@ -59,7 +59,7 @@ bool CircularQueue<T, StoragePolicy, ThreadAccessPolicy>::isEmpty() const
     return ThreadAccessPolicy::isEmpty(this->maxSize());
 }
 
-template<class T, template<class T> class StoragePolicy, class ThreadAccessPolicy>
+template<class T, template<class U> class StoragePolicy, class ThreadAccessPolicy>
 bool CircularQueue<T, StoragePolicy, ThreadAccessPolicy>::isFull() const
 {
     return ThreadAccessPolicy::isFull(this->maxSize());
@@ -77,19 +77,19 @@ bool CircularQueue<T, StoragePolicy, ThreadAccessPolicy>::push(const T& item)
     return ThreadAccessPolicy::push(this->getQueue(), this->maxSize(), this->maxCapacity(), item);
 }
 
-template<class T, template<class T> class StoragePolicy, class ThreadAccessPolicy>
+template<class T, template<class U> class StoragePolicy, class ThreadAccessPolicy>
 bool CircularQueue<T, StoragePolicy, ThreadAccessPolicy>::pop(T& item, bool clear)
 {
     return ThreadAccessPolicy::pop(this->getQueue(), this->maxSize(), this->maxCapacity(), item, clear);
 }
 
-template<class T, template<class T> class StoragePolicy, class ThreadAccessPolicy>
+template<class T, template<class U> class StoragePolicy, class ThreadAccessPolicy>
 unsigned CircularQueue<T, StoragePolicy, ThreadAccessPolicy>::skip(unsigned maxsize, bool clear)
 {
     return ThreadAccessPolicy::skip(this->getQueue(), this->maxSize(), this->maxCapacity(), maxsize, clear);
 }
 
-template<class T, template<class T> class StoragePolicy, class ThreadAccessPolicy>
+template<class T, template<class U> class StoragePolicy, class ThreadAccessPolicy>
 template<class OutputIterator>
 unsigned CircularQueue<T, StoragePolicy, ThreadAccessPolicy>::pop(OutputIterator out, unsigned maxsize, bool clear)
 {
