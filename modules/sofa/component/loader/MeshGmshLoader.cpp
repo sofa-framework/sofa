@@ -210,7 +210,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
 
     for (unsigned int i=0; i<nelems; ++i) // for each elem
     {
-        int index, etype, rphys, relem, nnodes, ntags, tag;
+        int index, etype, rphys, relem, nnodes, ntags, tag = 0; // TODO: i don't know if tag must be set to 0, but if it's not, the application assert / crash on Windows (uninitialized value)
 
         if (gmshFormat==1)
         {
