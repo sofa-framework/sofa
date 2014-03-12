@@ -100,6 +100,13 @@ set(SOURCE_FILES
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
+# Python's implementation deliberately breaks strict-aliasing rules, so we
+# compile with -fno-strict-aliasing to prevent the compiler from relying on
+# those rules to optimize the code.
+if(${CMAKE_COMPILER_IS_GNUCC})
+    AddCompilerFlags("-fno-strict-aliasing")
+endif()
+
 AddCompilerDefinitions("SOFA_BUILD_SOFAPYTHON")
 AddLinkerDependencies(SofaCore SofaSimulationCommon SofaGuiCommon ${PYTHON_LIBRARIES})
 
