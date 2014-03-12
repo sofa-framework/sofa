@@ -204,15 +204,8 @@ becomes...
     SP_ADD_CLASS(module,DummyClass)
 */
 
-/* Workaround: Py_INCREF(&SP_SOFAPYTYPEOBJECT(C)) generates pointer aliasing
-   warnings with GCC, but storing the value of &SP_SOFAPYTYPEOBJECT(C) before
-   Py_INCREF dereferences it somehow suppresses those warnings. */
-#define SP_Py_TYPE_OBJECT_INCREF(C)                                \
-    {const PyTypeObject *n4xRRbisnHZrlqVX=&SP_SOFAPYTYPEOBJECT(C); \
-     Py_INCREF(n4xRRbisnHZrlqVX);};                                \
-
 #define SP_ADD_CLASS(M,C)   PyType_Ready(&SP_SOFAPYTYPEOBJECT(C));   \
-                            SP_Py_TYPE_OBJECT_INCREF(C); \
+                            Py_INCREF(&SP_SOFAPYTYPEOBJECT(C));      \
                             PyModule_AddObject(M, #C, (PyObject *)&SP_SOFAPYTYPEOBJECT(C));
 
 
