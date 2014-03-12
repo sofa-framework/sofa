@@ -28,7 +28,8 @@
 #include "../initFlexible.h"
 #include "../quadrature/BaseGaussPointSampler.h"
 #include <sofa/core/topology/BaseMeshTopology.h>
-
+#include <sofa/component/topology/TetrahedronSetGeometryAlgorithms.h>
+#include <sofa/component/topology/NumericalIntegrationDescriptor.h>
 
 namespace sofa
 {
@@ -65,6 +66,9 @@ public:
     typedef sofa::core::topology::BaseMeshTopology Topo;
     Topo* parentTopology;
     Data< vector<unsigned int> > f_cell;
+
+    typedef topology::TetrahedronSetGeometryAlgorithms<defaulttype::StdVectorTypes<Coord,Coord,Real> > TetraGeoAlg;
+    TetraGeoAlg* tetraGeoAlgo;
     //@}
 
     Data< vector<Real> > f_fineVolumes;
@@ -82,6 +86,11 @@ public:
             if(!this->parentTopology) serr<<"MeshTopology not found"<<sendl;
         }
 
+        if(!this->tetraGeoAlgo)
+        {
+            this->getContext()->get(tetraGeoAlgo,core::objectmodel::BaseContext::SearchUp);
+        }
+
         addInput(&f_inPosition);
         addInput(&f_fineVolumes);
         addOutput(&f_cell);
@@ -95,6 +104,7 @@ protected:
       , f_inPosition(initData(&f_inPosition,SeqPositions(),"inPosition","input node positions"))
       , parentTopology( 0 )
       , f_cell(initData(&f_cell,"cell","cell index associated with each sample"))
+      , tetraGeoAlgo( 0 )
       , f_fineVolumes(initData(&f_fineVolumes,"fineVolumes","input cell volumes (typically computed from a fine model)"))
     {
     }
@@ -232,59 +242,84 @@ protected:
                     //vol[i+c0].resize(1); if(f_fineVolumes.getValue().size()>i+c0) vol[i+c0][0]=f_fineVolumes.getValue()[i+c0]; else  vol[i+c0][0] = fabs(dot(cross(p4-p1,p3-p1),p2-p1));
                 }
             }
-            else if(this->f_method.getValue().getSelectedId() == GAUSSLEGENDRE || this->f_order.getValue()==2)
+            else if(this->f_method.getValue().getSelectedId() == GAUSSLEGENDRE)
             {
-                pos.resize ( 4*tetrahedra.size() + 8*cubes.size() );
-                vol.resize ( pos.size() );
-                cel.resize ( pos.size() );
-                unsigned int count=0;
-
-                // 4 points per tet at [ (5+3sqrt(5))/20, (5-sqrt(5))/20, (5-sqrt(5))/20, (5-sqrt(5))/20 ], weight = volume/4
-                if(tetrahedra.size())
+                if(tetraGeoAlgo)  // retrieve gauss points from geometry algorithm
                 {
-                    const Real offsetB = (5.0-sqrt(5.0))/20.0;
-                    const Real offsetA = 1.0-4.0*offsetB;
+                    typedef topology::NumericalIntegrationDescriptor<Real,4> IntegrationDescriptor;
+                    IntegrationDescriptor::QuadraturePointArray qpa=tetraGeoAlgo->getTetrahedronNumericalIntegrationDescriptor().getQuadratureMethod( (IntegrationDescriptor::QuadratureMethod)0,this->f_order.getValue());
+                    pos.resize ( qpa.size()*tetrahedra.size());
+                    vol.resize ( pos.size() );
+                    cel.resize ( pos.size() );
+                    unsigned int count=0;
                     for ( unsigned int i = 0; i < tetrahedra.size(); i++ )
                     {
                         const Coord p[4]={parent[tetrahedra[i][0]],parent[tetrahedra[i][1]],parent[tetrahedra[i][2]],parent[tetrahedra[i][3]]};
-                        Real V; if(f_fineVolumes.getValue().size()>i) V=f_fineVolumes.getValue()[i]/4.0; else  V = fabs(dot(cross(p[3]-p[0],p[2]-p[0]),p[1]-p[0]))/(Real)24.;
-                        for ( unsigned int j = 0; j < 4; j++ )
+                        Real V; if(f_fineVolumes.getValue().size()>i) V=f_fineVolumes.getValue()[i]; else  V = fabs(dot(cross(p[3]-p[0],p[2]-p[0]),p[1]-p[0]))/(Real)6.;
+                        for ( unsigned int j = 0; j < qpa.size(); j++ )
                         {
-                            pos[count] = (p[0]+p[1]+p[2]+p[3])*offsetB + p[j]*offsetA;
-                            vol[count].resize(1); vol[count][0] = V;
+                            pos[count]=Coord(); for ( unsigned int k = 0; k < qpa[j].first.size(); k++ ) pos[count]+=p[k]*qpa[j].first[k];
+                            vol[count].resize(1); vol[count][0] = V*qpa[j].second*(Real)6.0;        // todo: change weight in TetrahedronGeoAlgo to correspond to tet volume weighting (not 6xtet volume weighting)
                             cel[count] = i;
                             count++;
-                            // to do : volume integrals for elastons
                         }
                     }
                 }
-
-                // 8 points per cube at [ +-1/sqrt(3), +-1/sqrt(3), +-1/sqrt(3) ], weight = volume/8
-                if(cubes.size())
+                else   if(this->f_order.getValue()==2)  // else use built in gauss points sampling
                 {
-                    const Real offset = 0.5/sqrt(3.0);
-                    for ( unsigned int i = 0; i < cubes.size(); i++ )
-                    {
-                        const Coord& p1=parent[cubes[i][0]],p2=parent[cubes[i][1]],p3=parent[cubes[i][2]],p4=parent[cubes[i][3]],p5=parent[cubes[i][4]],p6=parent[cubes[i][5]],p7=parent[cubes[i][6]],p8=parent[cubes[i][7]];
-                        Coord u=(p2-p1),v=(p5-p1),w=(p4-p1);
-                        Real V;
-                        if(f_fineVolumes.getValue().size()>i) V=f_fineVolumes.getValue()[i]/(Real)8; else  V=u.norm()*v.norm()*w.norm()/(Real)8.;
+                    pos.resize ( 4*tetrahedra.size() + 8*cubes.size() );
+                    vol.resize ( pos.size() );
+                    cel.resize ( pos.size() );
+                    unsigned int count=0;
 
-                        u*=offset; v*=offset; w*=offset;
-                        const Coord c = (p1+p2+p3+p4+p5+p6+p7+p8)*0.125;
-                        for (int gx1=-1; gx1<=1; gx1+=2)
-                            for (int gx2=-1; gx2<=1; gx2+=2)
-                                for (int gx3=-1; gx3<=1; gx3+=2)
-                                {
-                                    pos[count] = c + u*gx3 + v*gx2 + w*gx1;
-                                    vol[count].resize(1); vol[count][0] = V;
-                                    cel[count] = i;
-                                    //getCubeVolumes(vol[i+c0],p1,p2,p3,p4,this->f_order.getValue());
-                                    //
-                                    count++;
-                                }
+                    // 4 points per tet at [ (5+3sqrt(5))/20, (5-sqrt(5))/20, (5-sqrt(5))/20, (5-sqrt(5))/20 ], weight = volume/4
+                    if(tetrahedra.size())
+                    {
+                        const Real offsetB = (5.0-sqrt(5.0))/20.0;
+                        const Real offsetA = 1.0-4.0*offsetB;
+                        for ( unsigned int i = 0; i < tetrahedra.size(); i++ )
+                        {
+                            const Coord p[4]={parent[tetrahedra[i][0]],parent[tetrahedra[i][1]],parent[tetrahedra[i][2]],parent[tetrahedra[i][3]]};
+                            Real V; if(f_fineVolumes.getValue().size()>i) V=f_fineVolumes.getValue()[i]/4.0; else  V = fabs(dot(cross(p[3]-p[0],p[2]-p[0]),p[1]-p[0]))/(Real)24.;
+                            for ( unsigned int j = 0; j < 4; j++ )
+                            {
+                                pos[count] = (p[0]+p[1]+p[2]+p[3])*offsetB + p[j]*offsetA;
+                                vol[count].resize(1); vol[count][0] = V;
+                                cel[count] = i;
+                                count++;
+                                // to do : volume integrals for elastons
+                            }
+                        }
+                    }
+
+                    // 8 points per cube at [ +-1/sqrt(3), +-1/sqrt(3), +-1/sqrt(3) ], weight = volume/8
+                    if(cubes.size())
+                    {
+                        const Real offset = 0.5/sqrt(3.0);
+                        for ( unsigned int i = 0; i < cubes.size(); i++ )
+                        {
+                            const Coord& p1=parent[cubes[i][0]],p2=parent[cubes[i][1]],p3=parent[cubes[i][2]],p4=parent[cubes[i][3]],p5=parent[cubes[i][4]],p6=parent[cubes[i][5]],p7=parent[cubes[i][6]],p8=parent[cubes[i][7]];
+                            Coord u=(p2-p1),v=(p5-p1),w=(p4-p1);
+                            Real V;
+                            if(f_fineVolumes.getValue().size()>i) V=f_fineVolumes.getValue()[i]/(Real)8; else  V=u.norm()*v.norm()*w.norm()/(Real)8.;
+
+                            u*=offset; v*=offset; w*=offset;
+                            const Coord c = (p1+p2+p3+p4+p5+p6+p7+p8)*0.125;
+                            for (int gx1=-1; gx1<=1; gx1+=2)
+                                for (int gx2=-1; gx2<=1; gx2+=2)
+                                    for (int gx3=-1; gx3<=1; gx3+=2)
+                                    {
+                                        pos[count] = c + u*gx3 + v*gx2 + w*gx1;
+                                        vol[count].resize(1); vol[count][0] = V;
+                                        cel[count] = i;
+                                        //getCubeVolumes(vol[i+c0],p1,p2,p3,p4,this->f_order.getValue());
+                                        //
+                                        count++;
+                                    }
+                        }
                     }
                 }
+                else serr<<"Requested quadrature order not implemented here: use GeometryAlgorithms"<<sendl;
             }
             else serr<<"Requested quadrature method not yet implemented"<<sendl;
 
