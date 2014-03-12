@@ -90,7 +90,7 @@ protected:
 		typedef typename se3::mat66 mat66;
 		typedef typename se3::mat33 mat33;
 
-		std::vector< mat66 , Eigen::aligned_allocator<mat66>> blocks(2);			
+		std::vector< mat66 , Eigen::aligned_allocator<mat66> > blocks(2);
 
 		if( translation.getValue() ) {
 			blocks[0] = -mat66::Identity();
