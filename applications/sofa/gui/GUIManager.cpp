@@ -27,6 +27,8 @@
 #include "BaseGUI.h"
 #include <sofa/component/init.h>
 #include <sofa/simulation/common/xml/initXml.h>
+using std::cerr;
+using std::endl;
 
 namespace sofa
 {
@@ -278,6 +280,7 @@ void GUIManager::SetDimension(int  width , int  height )
 void GUIManager::SetFullScreen()
 {
     if (currentGUI) currentGUI->setFullScreen();
+    else cerr<<"GUIManager::SetFullScreen(), no currentGUI" << endl;
 }
 
 void GUIManager::SaveScreenshot(const char* filename)

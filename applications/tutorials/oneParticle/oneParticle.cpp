@@ -24,7 +24,6 @@
 ******************************************************************************/
 #include <sofa/helper/ArgumentParser.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
-#include <sofa/simulation/tree/TreeSimulation.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/component/contextobject/Gravity.h>
 #include <sofa/component/contextobject/CoordinateSystem.h>
@@ -41,7 +40,6 @@
 
 
 
-using namespace sofa::simulation::tree;
 using sofa::component::odesolver::EulerSolver;
 using namespace sofa::component::collision;
 using sofa::core::objectmodel::Data;
@@ -57,14 +55,9 @@ using sofa::core::objectmodel::New;
 // ---------------------------------------------------------------------
 int main(int argc, char** argv)
 {
-
     glutInit(&argc,argv);
     sofa::helper::parse("This is a SOFA application.")
     (argc,argv);
-    sofa::gui::initMain();
-    sofa::gui::GUIManager::Init(argv[0]);
-    sofa::gui::GUIManager::SetDimension(1200,800);
-//    sofa::gui::GUIManager::SetFullScreen();
 
     // The graph root node
     sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
@@ -114,8 +107,17 @@ int main(int argc, char** argv)
     flags.setShowCollisionModels(true);
     style->displayFlags.endEdit();
 
-    sofa::simulation::tree::getSimulation()->init(groot.get());
+    sofa::simulation::graph::getSimulation()->init(groot.get());
     groot->setAnimate(false);
+
+    //======================================
+    // Set up the GUI
+    sofa::gui::initMain();
+    sofa::gui::GUIManager::Init(argv[0]);
+    sofa::gui::GUIManager::createGUI(groot);
+    sofa::gui::GUIManager::SetDimension(800,700);
+//    sofa::gui::GUIManager::SetFullScreen();  // why does this not work ?
+
 
     //=======================================
     // Run the main loop
