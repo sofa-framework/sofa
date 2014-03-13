@@ -340,9 +340,11 @@ BaseElement* loadFromFile(const char *filename)
         delete doc;
         return NULL;
     }
-#ifndef NDEBUG
-    doc->Print();
-#endif
+
+
+//#ifndef NDEBUG
+//    doc->Print();
+//#endif
     BaseElement* r = processXMLLoading(filename, *doc);
     //std::cerr << "clear doc"<<std::endl;
     doc->Clear();

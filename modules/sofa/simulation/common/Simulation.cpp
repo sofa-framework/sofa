@@ -218,7 +218,10 @@ void Simulation::initNode( Node* node)
 /// Execute one timestep. If do is 0, the dt parameter in the graph will be used
 void Simulation::animate ( Node* root, double dt )
 {
-    if ( !root ) return;
+    if ( !root ) {
+        serr<<"Simulation::animate, no root found"<<sendl;
+        return;
+    }
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
 
     sofa::core::behavior::BaseAnimationLoop* aloop = root->getAnimationLoop();
