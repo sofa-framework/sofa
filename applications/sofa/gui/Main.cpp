@@ -34,6 +34,8 @@
 #ifdef SOFA_HAVE_BOOST
 #include "glut/MultithreadGUI.h"
 #endif
+using std::cerr;
+using std::endl;
 
 namespace sofa
 {
@@ -43,6 +45,7 @@ namespace gui
 
 void initMain()
 {
+    // This function does nothing. It is used to make sure that this file is linked, so that the following GUI registrations are made.
     static bool first = true;
     if (first)
     {

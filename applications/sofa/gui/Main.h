@@ -40,6 +40,7 @@ namespace sofa
 namespace gui
 {
 
+/// necessary to register all the available GUI
 void SOFA_GUIMAIN_API initMain();
 
 }
