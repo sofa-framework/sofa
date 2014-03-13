@@ -50,9 +50,11 @@ set(HEADER_FILES
     deformationMapping/TriangleStrainAverageMapping.inl 
     deformationMapping/VolumeMapping.h
     strainMapping/BaseStrainMapping.h
-    strainMapping/GreenStrainMapping.h 
-    strainMapping/GreenStrainJacobianBlock.h 
-    strainMapping/CorotationalStrainMapping.h 
+    strainMapping/CauchyStrainMapping.h
+    strainMapping/CauchyStrainJacobianBlock.h
+    strainMapping/GreenStrainMapping.h
+    strainMapping/GreenStrainJacobianBlock.h
+    strainMapping/CorotationalStrainMapping.h
     strainMapping/CorotationalStrainJacobianBlock.h 
     strainMapping/CorotationalStrainJacobianBlock.inl 
     strainMapping/PrincipalStretchesMapping.h 
@@ -120,6 +122,7 @@ set(SOURCE_FILES
     deformationMapping/TriangleDeformationMapping.cpp 
     deformationMapping/TriangleStrainAverageMapping.cpp 
     deformationMapping/VolumeMapping.cpp
+    strainMapping/CauchyStrainMapping.cpp
     strainMapping/GreenStrainMapping.cpp
     strainMapping/CorotationalStrainMapping.cpp 
     strainMapping/PrincipalStretchesMapping.cpp 
