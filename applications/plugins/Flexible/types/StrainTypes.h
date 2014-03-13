@@ -532,8 +532,8 @@ template<> struct DataTypeName< defaulttype::U321dTypes::Coord > { static const 
 // Helpers
 
 /// Convert a symmetric strain matrix to voigt notation  exx=Fxx, eyy=Fyy, ezz=Fzz, exy=(Fxy+Fyx) eyz=(Fyz+Fzy), ezx=(Fxz+Fzx)
-template<int material_dimensions, typename Real>
-static inline Vec<material_dimensions * (1+material_dimensions) / 2, Real> StrainMatToVoigt( const  Mat<material_dimensions,material_dimensions, Real>& f )
+template<int material_dimensions, int dim, typename Real>
+static inline Vec<material_dimensions * (1+material_dimensions) / 2, Real> StrainMatToVoigt( const  Mat<dim,material_dimensions, Real>& f )
 {
     static const unsigned int strain_size = material_dimensions * (1+material_dimensions) / 2; ///< independent entries in the strain tensor
     typedef Vec<strain_size,Real> StrainVec;    ///< Strain in vector form
