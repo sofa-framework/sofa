@@ -37,8 +37,9 @@ set(SOURCE_FILES
 include_directories("include")
 add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${SOURCE_FILES})
 
-# fix link errors when linked with shared libraries
-if(${CMAKE_COMPILER_IS_GNUCC})
+# The code must be relocatable if we want to link a shared library against it
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU"
+        OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     AddCompilerFlags("-fPIC")
 endif()
 
