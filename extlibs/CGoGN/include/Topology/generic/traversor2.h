@@ -241,6 +241,7 @@ public:
 } ;
 
 // Traverse the faces adjacent to a given face through sharing a common edge
+// Warning mult-incidence is not managed (some faces can be send several times)
 template <typename MAP>
 class Traversor2FFaE //: public Traversor<MAP>
 {

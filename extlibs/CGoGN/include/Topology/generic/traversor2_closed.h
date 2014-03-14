@@ -41,15 +41,15 @@ namespace ClosedMap
 
 // Traverse the edges incident to a given vertex
 template <typename MAP>
-class Traversor2VE: public Traversor<MAP>
+class Traversor2VE: public Traversor
 {
 private:
-	MAP& m ;
+	const MAP& m ;
 	Dart start ;
 	Dart current ;
 
 public:
-	Traversor2VE(MAP& map, Dart dart) ;
+	Traversor2VE(const MAP& map, Dart dart) ;
 
 	Dart begin() ;
 	Dart end() ;
@@ -58,15 +58,15 @@ public:
 
 // Traverse the faces incident to a given vertex
 template <typename MAP>
-class Traversor2VF : public Traversor<MAP>
+class Traversor2VF : public Traversor
 {
 private:
-	MAP& m ;
+	const MAP& m ;
 	Dart start ;
 	Dart current ;
 
 public:
-	Traversor2VF(MAP& map, Dart dart) ;
+	Traversor2VF(const MAP& map, Dart dart) ;
 
 	Dart begin() ;
 	Dart end() ;
@@ -75,15 +75,15 @@ public:
 
 // Traverse the vertices adjacent to a given vertex through sharing a common edge
 template <typename MAP>
-class Traversor2VVaE : public Traversor<MAP>
+class Traversor2VVaE : public Traversor
 {
 private:
-	MAP& m ;
+	const MAP& m ;
 	Dart start ;
 	Dart current ;
 
 public:
-	Traversor2VVaE(MAP& map, Dart dart) ;
+	Traversor2VVaE(const MAP& map, Dart dart) ;
 
 	Dart begin() ;
 	Dart end() ;
@@ -92,17 +92,17 @@ public:
 
 // Traverse the vertices adjacent to a given vertex through sharing a common face
 template <typename MAP>
-class Traversor2VVaF : public Traversor<MAP>
+class Traversor2VVaF : public Traversor
 {
 private:
-	MAP& m ;
+	const MAP& m ;
 	Dart start ;
 	Dart current ;
 
 	Dart stop ;
 
 public:
-	Traversor2VVaF(MAP& map, Dart dart) ;
+	Traversor2VVaF(const MAP& map, Dart dart) ;
 
 	Dart begin() ;
 	Dart end() ;
@@ -115,15 +115,15 @@ public:
 
 // Traverse the vertices incident to a given edge
 template <typename MAP>
-class Traversor2EV : public Traversor<MAP>
+class Traversor2EV : public Traversor
 {
 private:
-	MAP& m ;
+	const MAP& m ;
 	Dart start ;
 	Dart current ;
 
 public:
-	Traversor2EV(MAP& map, Dart dart) ;
+	Traversor2EV(const MAP& map, Dart dart) ;
 
 	Dart begin() ;
 	Dart end() ;
@@ -132,15 +132,15 @@ public:
 
 // Traverse the faces incident to a given edge
 template <typename MAP>
-class Traversor2EF : public Traversor<MAP>
+class Traversor2EF : public Traversor
 {
 private:
-	MAP& m ;
+	const MAP& m ;
 	Dart start ;
 	Dart current ;
 
 public:
-	Traversor2EF(MAP& map, Dart dart) ;
+	Traversor2EF(const MAP& map, Dart dart) ;
 
 	Dart begin() ;
 	Dart end() ;
@@ -149,17 +149,17 @@ public:
 
 // Traverse the edges adjacent to a given edge through sharing a common vertex
 template <typename MAP>
-class Traversor2EEaV : public Traversor<MAP>
+class Traversor2EEaV : public Traversor
 {
 private:
-	MAP& m ;
+	const MAP& m ;
 	Dart start ;
 	Dart current ;
 
 	Dart stop1, stop2 ;
 
 public:
-	Traversor2EEaV(MAP& map, Dart dart) ;
+	Traversor2EEaV(const MAP& map, Dart dart) ;
 
 	Dart begin() ;
 	Dart end() ;
@@ -168,17 +168,17 @@ public:
 
 // Traverse the edges adjacent to a given edge through sharing a common face
 template <typename MAP>
-class Traversor2EEaF : public Traversor<MAP>
+class Traversor2EEaF : public Traversor
 {
 private:
-	MAP& m ;
+	const MAP& m ;
 	Dart start ;
 	Dart current ;
 
 	Dart stop1, stop2 ;
 
 public:
-	Traversor2EEaF(MAP& map, Dart dart) ;
+	Traversor2EEaF(const MAP& map, Dart dart) ;
 
 	Dart begin() ;
 	Dart end() ;
@@ -191,15 +191,15 @@ public:
 
 // Traverse the vertices incident to a given face
 template <typename MAP>
-class Traversor2FV : public Traversor<MAP>
+class Traversor2FV : public Traversor
 {
 private:
-	MAP& m ;
+	const MAP& m ;
 	Dart start ;
 	Dart current ;
 
 public:
-	Traversor2FV(MAP& map, Dart dart) ;
+	Traversor2FV(const MAP& map, Dart dart) ;
 
 	Dart begin() ;
 	Dart end() ;
@@ -212,22 +212,22 @@ template <typename MAP>
 class Traversor2FE: public Traversor2FV<MAP>
 {
 public:
-	Traversor2FE(MAP& map, Dart dart):Traversor2FV<MAP>(map,dart){}
+	Traversor2FE(const MAP& map, Dart dart):Traversor2FV<MAP>(map,dart){}
 } ;
 
 // Traverse the faces adjacent to a given face through sharing a common vertex
 template <typename MAP>
-class Traversor2FFaV : public Traversor<MAP>
+class Traversor2FFaV : public Traversor
 {
 private:
-	MAP& m ;
+	const MAP& m ;
 	Dart start ;
 	Dart current ;
 
 	Dart stop ;
 
 public:
-	Traversor2FFaV(MAP& map, Dart dart) ;
+	Traversor2FFaV(const MAP& map, Dart dart) ;
 
 	Dart begin() ;
 	Dart end() ;
@@ -236,15 +236,15 @@ public:
 
 // Traverse the faces adjacent to a given face through sharing a common edge
 template <typename MAP>
-class Traversor2FFaE : public Traversor<MAP>
+class Traversor2FFaE : public Traversor
 {
 private:
-	MAP& m ;
+	const MAP& m ;
 	Dart start ;
 	Dart current ;
 
 public:
-	Traversor2FFaE(MAP& map, Dart dart) ;
+	Traversor2FFaE(const MAP& map, Dart dart) ;
 
 	Dart begin() ;
 	Dart end() ;

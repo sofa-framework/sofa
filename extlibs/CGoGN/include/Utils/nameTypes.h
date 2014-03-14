@@ -64,7 +64,6 @@ template <> inline std::string nameOfType(const double& /*v*/) { return "double"
 
 template <> inline std::string nameOfType(const std::string& /*v*/) { return "std::string"; }
 
-
 // Ply compatibility
 template <typename T>
 std::string nameOfTypePly(const T& v)
