@@ -13,7 +13,9 @@ if(UNIX)
     target_link_libraries(metis m)
 endif()
 
-if(${CMAKE_COMPILER_IS_GNUCC})
+# The code must be relocatable if we want to link a shared library against it
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU"
+        OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     AddCompilerFlags("-fPIC")
 endif()
 

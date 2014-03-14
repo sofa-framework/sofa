@@ -48,11 +48,12 @@ if(SOFA-MISC_USE_FLOAT)
 AddCompilerDefinitions("SOFA_FLOAT")
 endif()
 
-# fix link errors when linked with shared libraries
-if(${CMAKE_COMPILER_IS_GNUCC})
+# The code must be relocatable if we want to link a shared library against it
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU"
+        OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     AddCompilerFlags("-fPIC")
 endif()
-	
+
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
 
 

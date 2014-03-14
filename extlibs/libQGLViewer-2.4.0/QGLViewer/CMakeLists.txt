@@ -101,8 +101,9 @@ endif()
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_FILES} ${MOC_UI_FILES} ${FORM_FILES} ${SOURCE_FILES})
 AddLinkerDependencies(${OPENGL_LIBRARIES})
 
-# fix link errors when linked with shared libraries
-if(${CMAKE_COMPILER_IS_GNUCC})
+# The code must be relocatable if we want to link a shared library against it
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU"
+        OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     AddCompilerFlags("-fPIC")
 endif()
 
