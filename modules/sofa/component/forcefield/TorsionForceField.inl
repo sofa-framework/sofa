@@ -141,8 +141,9 @@ void TorsionForceField<Rigid3fTypes>::addForce(const core::MechanicalParams *, D
 	for(size_t n = 0 ; n < nNodes ; ++n)
 	{
 		PointId id = indices[n];
-		const Pos lever = tau*m_u;
-		fq[id].getVCenter() += lever.cross(q[id].getCenter() - (o + (q[id].getCenter() * m_u)*m_u) );
+		const Pos t = tau*m_u;
+		fq[id].getVCenter() += t.cross(q[id].getCenter() - (o + (q[id].getCenter() * m_u)*m_u) );
+		fq[id].getVOrientation() += t;
 	}
 
 	f.endEdit();
@@ -190,8 +191,9 @@ void TorsionForceField<Rigid3dTypes>::addForce(const core::MechanicalParams *, D
 	for(size_t n = 0 ; n < nNodes ; ++n)
 	{
 		PointId id = indices[n];
-		const Pos lever = tau*m_u;
-		fq[id].getVCenter() += lever.cross(q[id].getCenter() - (o + (q[id].getCenter() * m_u)*m_u) );
+		const Pos t = tau*m_u;
+		fq[id].getVCenter() += t.cross(q[id].getCenter() - (o + (q[id].getCenter() * m_u)*m_u) );
+		fq[id].getVOrientation() += t;
 	}
 
 	f.endEdit();
