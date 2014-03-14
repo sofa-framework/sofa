@@ -1,536 +1,563 @@
+/*                               nulstein @ Evoke 2009
+*
+*
+* ____________________________________
+* Copyright 2009 Intel Corporation
+* All Rights Reserved
+*
+* Permission is granted to use, copy, distribute and prepare derivative works of this
+* software for any purpose and without fee, provided, that the above copyright notice
+* and this statement appear in all copies.  Intel makes no representations about the
+* suitability of this software for any purpose.  THIS SOFTWARE IS PROVIDED "AS IS."
+* INTEL SPECIFICALLY DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, AND ALL LIABILITY,
+* INCLUDING CONSEQUENTIAL AND OTHER INDIRECT DAMAGES, FOR THE USE OF THIS SOFTWARE,
+* INCLUDING LIABILITY FOR INFRINGEMENT OF ANY PROPRIETARY RIGHTS, AND INCLUDING THE
+* WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.  Intel does not
+* assume any responsibility for any errors which may appear in this software nor any
+* responsibility to update it.
+* ____________________________________
+*
+*
+* A multicore tasking engine in some 500 lines of C
+* This is the code corresponding to the seminar on writing a task-scheduler suitable 
+* for use in multicore optimisation of small prods by Jerome Muffat-Meridol.
+*
+* Credits :
+* -=-=-=-=-
+*  .music taken from M40-Southbound, by Ghaal (c)2009
+*  .liposuction advice from Matt Pietrek
+*     http://www.microsoft.com/msj/archive/S572.aspx
+*  .ordering display list ideas based on Christer Ericson's article 
+*     http://realtimecollisiondetection.net/blog/?p=86
+*  .Approximate Math Library by Alex Klimovitski, Intel GmbH
+*  .kkrunchy packed this exe, kudos to ryg/farbrausch
+*     http://www.farbrausch.de/~fg/kkrunchy/
+*/
+
 #include "TaskSchedulerBoost.h"
-
-
-
 #include <sofa/helper/system/thread/CTime.h>
-
 
 namespace sofa
 {
 
-	namespace simulation
-	{
-
-		boost::thread_specific_ptr<WorkerThread> TaskScheduler::mWorkerThreadIndex;
-
-
-		TaskScheduler& TaskScheduler::getInstance()
-		{
-			static TaskScheduler instance;
-
-			return instance;
-		}
-
-		TaskScheduler::TaskScheduler()
-		{
-			mIsInitialized = false;
-			mThreadCount = 0;
-			mIsClosing = false;
-			
-			readyForWork = false;
-
-			mThread[0] = new WorkerThread( this );
-			mThread[0]->attachToThisThread( this );
-
-		}
-
-		TaskScheduler::~TaskScheduler()
-		{
-			if ( mIsInitialized ) 
-			{
-				//stop();
-			}
-			if ( mThread[0] != 0 )
-			{
-				//delete mThread[0]; 
-			}
-		}
-
-		unsigned TaskScheduler::GetHardwareThreadsCount()
-		{
-			return boost::thread::hardware_concurrency();
-		}
-
-
-		const WorkerThread* TaskScheduler::getWorkerThread(const unsigned int index) 
-		{
-			const WorkerThread* thread = mThread[index];
-			if ( index >= mThreadCount ) 
-			{
-				return thread = 0;
-			}
-			return thread;
-		}
-
-		bool TaskScheduler::start(const unsigned int NbThread )
-		{
-
-			if ( mIsInitialized ) 
-			{
-				stop();
-			}
-
-			//if ( !mIsInitialized ) 
-			{
-				mIsClosing		= false;
-				mWorkersIdle		= false;
-				mainTaskStatus	= NULL;
+namespace simulation
+{
+
+boost::thread_specific_ptr<WorkerThread> TaskScheduler::mWorkerThreadIndex;
+
+TaskScheduler& TaskScheduler::getInstance()
+{
+	static TaskScheduler instance;
+	return instance;
+}
+
+TaskScheduler::TaskScheduler()
+{
+    mIsInitialized = false;
+    mThreadCount = 0;
+    mIsClosing = false;
+
+    readyForWork = false;
+
+    mThread[0] = new WorkerThread( this );
+    mThread[0]->attachToThisThread( this );
+
+}
+
+TaskScheduler::~TaskScheduler()
+{
+    if ( mIsInitialized ) 
+    {
+        //stop();
+        mThread;
+    }
+    if ( mThread[0] != 0 )
+    {
+        //delete mThread[0]; 
+        mThread;
+    }
+}
+
+unsigned TaskScheduler::GetHardwareThreadsCount()
+{
+    return boost::thread::hardware_concurrency();
+}
+
+
+const WorkerThread* TaskScheduler::getWorkerThread(const unsigned int index) 
+{
+    const WorkerThread* thread = 0;
+    if ( index < mThreadCount ) 
+    {
+        thread = mThread[index];
+    }
+    return thread;
+}
+
+bool TaskScheduler::start(const unsigned int NbThread )
+{
 
-				// only physicsal cores. no advantage from hyperthreading.
-				mThreadCount = GetHardwareThreadsCount() / 2;
+    if ( mIsInitialized ) 
+    {
+        stop();
+    }
 
-				if ( NbThread > 0 && NbThread <= MAX_THREADS  )
-				{
-					mThreadCount = NbThread;
-				}			
+    //if ( !mIsInitialized ) 
+    {
+        mIsClosing		= false;
+        mWorkersIdle		= false;
+        mainTaskStatus	= NULL;
 
+        // only physicsal cores. no advantage from hyperthreading.
+        mThreadCount = GetHardwareThreadsCount() / 2;
 
-				//mThread[0] =  new WorkerThread( this ) ;
-				//mThread[0]->attachToThisThread( this );
+        if ( NbThread > 0 && NbThread <= MAX_THREADS  )
+        {
+            mThreadCount = NbThread;
+        }			
 
-				/* start worker threads */ 
-				for( unsigned int iThread=1; iThread<mThreadCount; ++iThread)
-				{
-					//mThread[iThread] = boost::shared_ptr<WorkerThread>(new WorkerThread(this) );
-					mThread[iThread] = new WorkerThread(this);
-					mThread[iThread]->create_and_attach( this );
-					mThread[iThread]->start( this );
-				}
 
-				mWorkerCount = mThreadCount;
-				mIsInitialized = true;
-				return true;
-			}
-			//else
-			//{
-			//	return false;
-			//}
+        //mThread[0] =  new WorkerThread( this ) ;
+        //mThread[0]->attachToThisThread( this );
 
-		}
+        /* start worker threads */ 
+        for( unsigned int iThread=1; iThread<mThreadCount; ++iThread)
+        {
+            //mThread[iThread] = boost::shared_ptr<WorkerThread>(new WorkerThread(this) );
+            mThread[iThread] = new WorkerThread(this);
+            mThread[iThread]->create_and_attach( this );
+            mThread[iThread]->start( this );
+        }
 
+        mWorkerCount = mThreadCount;
+        mIsInitialized = true;
+        return true;
+    }
+    //else
+    //{
+    //	return false;
+    //}
 
+}
 
-		bool TaskScheduler::stop()
-		{
-			unsigned iThread;
 
-			mIsClosing = true;
 
-			if ( mIsInitialized ) 
-			{
-				// wait for all
-				WaitForWorkersToBeReady();
-				wakeUpWorkers();
+bool TaskScheduler::stop()
+{
+    unsigned iThread;
 
-				for(iThread=1; iThread<mThreadCount; ++iThread)
-				{
-					while (!mThread[iThread]->mFinished)
-					{ 
-						//mThread[iThread]->join();
-						//WorkerThread::release( mThread[iThread] );
-						//mThread[iThread].reset();						
-					}
-				}
-				for(iThread=1; iThread<mThreadCount; ++iThread)
-				{
-					mThread[iThread] = 0;
-				}
+    mIsClosing = true;
 
+    if ( mIsInitialized ) 
+    {
+        // wait for all
+        WaitForWorkersToBeReady();
+        wakeUpWorkers();
 
-				mIsInitialized = false;
-				mWorkerCount = 1;
-			}
+        for(iThread=1; iThread<mThreadCount; ++iThread)
+        {
+            while (!mThread[iThread]->mFinished)
+            { 
+                //mThread[iThread]->join();
+                //WorkerThread::release( mThread[iThread] );
+                //mThread[iThread].reset();						
+            }
+        }
+        for(iThread=1; iThread<mThreadCount; ++iThread)
+        {
+            mThread[iThread] = 0;
+        }
 
-			
-			return true;
-		}
 
+        mIsInitialized = false;
+        mWorkerCount = 1;
+    }
 
 
-		void TaskScheduler::wakeUpWorkers()
-		{
-			
-			mWorkersIdle = false;
+    return true;
+}
 
-			{
-				boost::lock_guard<boost::mutex> lock(wakeUpMutex);
-				readyForWork = true;
-			}
 
-			wakeUpEvent.notify_all();
 
-		}
+void TaskScheduler::wakeUpWorkers()
+{
 
+    mWorkersIdle = false;
 
-		void TaskScheduler::WaitForWorkersToBeReady()
-		{
-		
-			for(unsigned i=0; i<mThreadCount-1; ++i)
-			{}
+    {
+        boost::lock_guard<boost::mutex> lock(wakeUpMutex);
+        readyForWork = true;
+    }
 
-			mWorkersIdle = true;
-		}
+    wakeUpEvent.notify_all();
 
+}
 
 
+void TaskScheduler::WaitForWorkersToBeReady()
+{
 
-		unsigned TaskScheduler::size()	const volatile
-		{
-			return mWorkerCount;
-		}
+    for(unsigned i=0; i<mThreadCount-1; ++i)
+    {}
 
+    mWorkersIdle = true;
+}
 
 
-		WorkerThread::WorkerThread(TaskScheduler* const& pScheduler)
-			: mTaskScheduler(pScheduler)
-		{
-			assert(pScheduler);
 
-			mTaskCount		= 0;
-			mFinished		= false;
-			mCurrentStatus = NULL;
-			mTaskMutex.v_ = 0L;
-		}
 
+unsigned TaskScheduler::size()	const volatile
+{
+    return mWorkerCount;
+}
 
-		WorkerThread::~WorkerThread()
-		{
-			//{
-			//	release( this->mThread );
-			//}
-		}		
 
-        bool WorkerThread::attachToThisThread(TaskScheduler* /*pScheduler*/)
-		{
 
-			mTaskCount		= 0;
-			mFinished		= false;			
+WorkerThread::WorkerThread(TaskScheduler* const& pScheduler)
+    : mTaskScheduler(pScheduler)
+{
+    assert(pScheduler);
 
-			TaskScheduler::mWorkerThreadIndex.reset( this );
+    mTaskCount		= 0;
+    mFinished		= false;
+    mCurrentStatus = NULL;
+    mTaskMutex.v_ = 0L;
+}
 
-			return true;
-		}
 
+WorkerThread::~WorkerThread()
+{
+    this->mThread;
+    //{
+    //	release( this->mThread );
+    //}
+}		
 
+bool WorkerThread::attachToThisThread(TaskScheduler* pScheduler)
+{
 
-		bool WorkerThread::start(TaskScheduler* const& taskScheduler)
-		{
-			assert(taskScheduler);
-			mTaskScheduler = taskScheduler;
-			mCurrentStatus = NULL;
+    mTaskCount		= 0;
+    mFinished		= false;			
 
-			return  mThread != 0;
-		}
+    TaskScheduler::mWorkerThreadIndex.reset( this );
 
+    return true;
+}
 
 
 
-		boost::shared_ptr<boost::thread> WorkerThread::create_and_attach( TaskScheduler* const & /*taskScheduler*/)
-		{
+bool WorkerThread::start(TaskScheduler* const& taskScheduler)
+{
+    assert(taskScheduler);
+    mTaskScheduler = taskScheduler;
+    mCurrentStatus = NULL;
 
-			//boost::shared_ptr<WorkerThread> worker( new WorkerThread(taskScheduler) );
-			//if(worker)
-			//{
-				mThread = boost::shared_ptr<boost::thread>(new boost::thread(boost::bind(&WorkerThread::run, this)));
-			//}
-			return mThread;
-		}
+    return  mThread != 0;
+}
 
 
-		bool WorkerThread::release()
-		{
 
-			if ( mThread.get() != 0 )
-			{
-				mThread->join();
 
-				return true;
-			}
-			
-			return false;
-		}
+boost::shared_ptr<boost::thread> WorkerThread::create_and_attach( TaskScheduler* const & taskScheduler)
+{
 
+    //boost::shared_ptr<WorkerThread> worker( new WorkerThread(taskScheduler) );
+    //if(worker)
+    //{
+    mThread = boost::shared_ptr<boost::thread>(new boost::thread(boost::bind(&WorkerThread::run, this)));
+    //}
+    return mThread;
+}
 
-		WorkerThread* WorkerThread::getCurrent()
-		{
-			return TaskScheduler::mWorkerThreadIndex.get();
-		}
 
+bool WorkerThread::release()
+{
 
-		void WorkerThread::run(void)
-		{
+    if ( mThread.get() != 0 )
+    {
+        mThread->join();
 
-			// Thread Local Storage 
-			TaskScheduler::mWorkerThreadIndex.reset( this );
+        return true;
+    }
 
-			// main loop 
-			for(;;)
-			{
-				Idle();
+    return false;
+}
 
-				if ( mTaskScheduler->isClosing() ) 
-					break;
 
+WorkerThread* WorkerThread::getCurrent()
+{
+    return TaskScheduler::mWorkerThreadIndex.get();
+}
 
-				while (mTaskScheduler->mainTaskStatus)
-				{
-				
-					doWork(0);
 
-				
-					if (mTaskScheduler->isClosing() ) 
-						break;
-				}
+void WorkerThread::run(void)
+{
 
-			}
+    // Thread Local Storage 
+    TaskScheduler::mWorkerThreadIndex.reset( this );
 
-			mFinished = true;
-			return;
-		}
+    // main loop 
+    for(;;)
+    {
+        Idle();
 
+        if ( mTaskScheduler->isClosing() ) 
+            break;
 
-		boost::thread::id WorkerThread::getId()
-		{
-			return mThread->get_id();
-		}
 
+        while (mTaskScheduler->mainTaskStatus)
+        {
 
-		void WorkerThread::Idle()
-		{
+            doWork(0);
 
-			boost::unique_lock<boost::mutex> lock( mTaskScheduler->wakeUpMutex );
 
-			while(!mTaskScheduler->readyForWork)
-			{
-				mTaskScheduler->wakeUpEvent.wait(lock);
-			}
+            if (mTaskScheduler->isClosing() ) 
+                break;
+        }
 
-			return;
-		}
+    }
 
-		
+    mFinished = true;
+    return;
+}
 
 
-		void WorkerThread::doWork(Task::Status* status)
-		{
+boost::thread::id WorkerThread::getId()
+{
+    return mThread->get_id();
+}
 
-			do
-			{
-				Task*		pTask;
-				Task::Status*	pPrevStatus = NULL;
 
-				while (popTask(&pTask))
-				{
-					// run
-					pPrevStatus = mCurrentStatus;
-					mCurrentStatus = pTask->getStatus();
-				
-					pTask->run(this);
-					
-					mCurrentStatus->MarkBusy(false);
-					mCurrentStatus = pPrevStatus;
-					
-					if ( status && !status->IsBusy() ) 
-						return;
-				}
+void WorkerThread::Idle()
+{
 
-				/* check if main work is finished */ 
-				if (!mTaskScheduler->mainTaskStatus) 
-					return;
+    boost::unique_lock<boost::mutex> lock( mTaskScheduler->wakeUpMutex );
 
-			} while (stealTasks());	
+    while(!mTaskScheduler->readyForWork)
+    {
+        mTaskScheduler->wakeUpEvent.wait(lock);
+    }
 
-		
-			return;
+    return;
+}
 
-		}
+void WorkerThread::doWork(Task::Status* status)
+{
+    do
+    {
+        Task*		pTask;
+        Task::Status*	pPrevStatus = NULL;
 
+        while (popTask(&pTask))
+        {
+            // run
+            pPrevStatus = mCurrentStatus;
+            mCurrentStatus = pTask->getStatus();
 
-		void WorkerThread::workUntilDone(Task::Status* status)
-		{
-			//PROFILE_SYNC_PREPARE( this );
+            pTask->run(this);
 
-			while (status->IsBusy())
-			{
-				//boost::this_thread::yield();
-				doWork(status);
-			}
+            mCurrentStatus->MarkBusy(false);
+            mCurrentStatus = pPrevStatus;
 
-			//PROFILE_SYNC_CANCEL( this );
+            if ( status && !status->IsBusy() ) 
+                return;
+        }
 
-			if (mTaskScheduler->mainTaskStatus == status)
-			{	
+        /* check if main work is finished */ 
+        if (!mTaskScheduler->mainTaskStatus) 
+            return;
 
-				mTaskScheduler->mainTaskStatus = NULL;
+    } while (stealTasks());	
 
-				boost::lock_guard<boost::mutex> lock(mTaskScheduler->wakeUpMutex);
-				mTaskScheduler->readyForWork = false;				
-			}
-		}
 
+    return;
 
-		bool WorkerThread::popTask(Task** outTask)
-		{
-			SpinMutexLock lock( &mTaskMutex );
+}
 
-			//
-			if (!mTaskCount) 
-				return false;
 
-			Task* task = mTask[mTaskCount-1];
+void WorkerThread::workUntilDone(Task::Status* status)
+{
+    //PROFILE_SYNC_PREPARE( this );
 
+    while (status->IsBusy())
+    {
+        //boost::this_thread::yield();
+        doWork(status);
+    }
 
-			// pop from top of the pile
-			*outTask = task;
-			--mTaskCount;
-			return true;
-		}
+    //PROFILE_SYNC_CANCEL( this );
 
+    if (mTaskScheduler->mainTaskStatus == status)
+    {	
 
-		bool WorkerThread::pushTask(Task* task)
-		{
-			// if we're single threaded return false
-			if ( mTaskScheduler->getThreadCount()<2 ) 
-				return false;
-			 	
-			{	
-				SpinMutexLock lock( &mTaskMutex );
+        mTaskScheduler->mainTaskStatus = NULL;
 
-				
-				if (mTaskCount >= Max_TasksPerThread )
-					return false;
+        boost::lock_guard<boost::mutex> lock(mTaskScheduler->wakeUpMutex);
+        mTaskScheduler->readyForWork = false;				
+    }
+}
 
-				
-				task->getStatus()->MarkBusy(true);
-				mTask[mTaskCount] = task;
-				++mTaskCount;
-			}
 
-			
-			if (!mTaskScheduler->mainTaskStatus)
-			{
-				mTaskScheduler->mainTaskStatus = task->getStatus();
-				mTaskScheduler->wakeUpWorkers();
-			}
+bool WorkerThread::popTask(Task** outTask)
+{
+    SpinMutexLock lock( &mTaskMutex );
 
-			return true;
-		}
+    //
+    if (!mTaskCount) 
+        return false;
 
-		bool WorkerThread::addTask(Task* task)
-		{
-			if (pushTask(task))
-				return true;
+    Task* task = mTask[mTaskCount-1];
 
-			
-			task->run(this);
-			return false;
-		}
 
+    // pop from top of the pile
+    *outTask = task;
+    --mTaskCount;
+    return true;
+}
 
-		bool WorkerThread::giveUpSomeWork(WorkerThread* idleThread)
-		{	
-			SpinMutexLock lock;
 
-			if ( !lock.try_lock( &mTaskMutex ) ) 
-				return false;
+bool WorkerThread::pushTask(Task* task)
+{
+    // if we're single threaded return false
+    if ( mTaskScheduler->getThreadCount()<2 ) 
+        return false;
 
-	
-			if (!mTaskCount)
-				return false;
+    {	
+        SpinMutexLock lock( &mTaskMutex );
 
-		
-			SpinMutexLock	lockIdleThread( &idleThread->mTaskMutex );
 
-			if ( idleThread->mTaskCount )
-				return false;
+        if (mTaskCount >= Max_TasksPerThread )
+            return false;
 
 
+        task->getStatus()->MarkBusy(true);
+        mTask[mTaskCount] = task;
+        ++mTaskCount;
+    }
 
-			unsigned int count = (mTaskCount+1) /2;
 
-			
-			Task** p = idleThread->mTask;
+    if (!mTaskScheduler->mainTaskStatus)
+    {
+        mTaskScheduler->mainTaskStatus = task->getStatus();
+        mTaskScheduler->wakeUpWorkers();
+    }
 
-			unsigned int iTask;
-			for( iTask=0; iTask< count; ++iTask)
-			{
-				*p++ = mTask[iTask];
-				mTask[iTask] = NULL;
-			}
-			idleThread->mTaskCount = count;
+    return true;
+}
 
-			
-			for( p = mTask; iTask<mTaskCount; ++iTask)
-			{
-				*p++ = mTask[iTask];
-			}
-			mTaskCount -= count;
+bool WorkerThread::addTask(Task* task)
+{
+    if (pushTask(task))
+        return true;
 
-			return true;
-		}
 
+    task->run(this);
+    return false;
+}
 
-		bool WorkerThread::stealTasks()
-		{
 
-	
-			for( unsigned int iThread=0; iThread<mTaskScheduler->getThreadCount(); ++iThread)
-			{
-				//WorkerThread*	pThread;
+bool WorkerThread::giveUpSomeWork(WorkerThread* idleThread)
+{	
+    SpinMutexLock lock;
 
-				WorkerThread* pThread = mTaskScheduler->mThread[ (iThread)% mTaskScheduler->getThreadCount() ];
-				if ( pThread == this) 
-					continue;
+    if ( !lock.try_lock( &mTaskMutex ) ) 
+        return false;
 
-				if ( pThread->giveUpSomeWork(this) ) 
-					return true;
 
-				if ( mTaskCount ) 
-					return true;
-			}
+    if (!mTaskCount)
+        return false;
 
-			return false;
-		}
 
+    SpinMutexLock	lockIdleThread( &idleThread->mTaskMutex );
 
-		
-		// called once by each thread used
-		// by the TaskScheduler
-		bool runThreadSpecificTask(WorkerThread* thread, const Task * /*task*/ )
-		{
+    if ( idleThread->mTaskCount )
+        return false;
 
-			
-			//volatile long atomicCounter = TaskScheduler::getInstance().size();// mNbThread;
-			helper::system::atomic<int> atomicCounter( TaskScheduler::getInstance().size() );
 
-			boost::mutex  InitThreadSpecificMutex;
 
-			Task::Status status;
+    unsigned int count = (mTaskCount+1) /2;
 
-			const int nbThread = TaskScheduler::getInstance().size();
 
-			for (int i=0; i<nbThread; ++i)
-			{
-				thread->addTask( new ThreadSpecificTask( &atomicCounter, &InitThreadSpecificMutex, &status ) );
-			}
+    Task** p = idleThread->mTask;
 
+    unsigned int iTask;
+    for( iTask=0; iTask< count; ++iTask)
+    {
+        *p++ = mTask[iTask];
+        mTask[iTask] = NULL;
+    }
+    idleThread->mTaskCount = count;
 
-			thread->workUntilDone(&status);
 
-			return true;
-		}
+    for( p = mTask; iTask<mTaskCount; ++iTask)
+    {
+        *p++ = mTask[iTask];
+    }
+    mTaskCount -= count;
 
+    return true;
+}
 
-		// called once by each thread used
-		// by the TaskScheduler
-		bool runThreadSpecificTask(const Task *task )
-		{
-			return runThreadSpecificTask(WorkerThread::getCurrent(), task );
-		}
 
+bool WorkerThread::stealTasks()
+{
 
 
+    for( unsigned int iThread=0; iThread<mTaskScheduler->getThreadCount(); ++iThread)
+    {
+        //WorkerThread*	pThread;
 
-	} // namespace simulation
+        WorkerThread* pThread = mTaskScheduler->mThread[ (iThread)% mTaskScheduler->getThreadCount() ];
+        if ( pThread == this) 
+            continue;
+
+        if ( pThread->giveUpSomeWork(this) ) 
+            return true;
+
+        if ( mTaskCount ) 
+            return true;
+    }
+
+    return false;
+}
+
+
+
+// called once by each thread used
+// by the TaskScheduler
+bool runThreadSpecificTask(WorkerThread* thread, const Task * /*task*/ )
+{
+
+
+    //volatile long atomicCounter = TaskScheduler::getInstance().size();// mNbThread;
+    helper::system::atomic<int> atomicCounter( TaskScheduler::getInstance().size() );
+
+    boost::mutex  InitThreadSpecificMutex;
+
+    Task::Status status;
+
+    const int nbThread = TaskScheduler::getInstance().size();
+
+    for (int i=0; i<nbThread; ++i)
+    {
+        thread->addTask( new ThreadSpecificTask( &atomicCounter, &InitThreadSpecificMutex, &status ) );
+    }
+
+
+    thread->workUntilDone(&status);
+
+    return true;
+}
+
+
+// called once by each thread used
+// by the TaskScheduler
+bool runThreadSpecificTask(const Task *task )
+{
+    return runThreadSpecificTask(WorkerThread::getCurrent(), task );
+}
+
+
+} // namespace simulation
 
 } // namespace sofa

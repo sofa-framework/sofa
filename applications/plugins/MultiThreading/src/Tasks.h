@@ -1,163 +1,124 @@
-/******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
-*                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU Lesser General Public License as published by    *
-* the Free Software Foundation; either version 2.1 of the License, or (at     *
-* your option) any later version.                                             *
-*                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
-* for more details.                                                           *
-*                                                                             *
-* You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
-*******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
+/*                               nulstein @ Evoke 2009
+*
+*
+* ____________________________________
+* Copyright 2009 Intel Corporation
+* All Rights Reserved
+*
+* Permission is granted to use, copy, distribute and prepare derivative works of this
+* software for any purpose and without fee, provided, that the above copyright notice
+* and this statement appear in all copies.  Intel makes no representations about the
+* suitability of this software for any purpose.  THIS SOFTWARE IS PROVIDED "AS IS."
+* INTEL SPECIFICALLY DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, AND ALL LIABILITY,
+* INCLUDING CONSEQUENTIAL AND OTHER INDIRECT DAMAGES, FOR THE USE OF THIS SOFTWARE,
+* INCLUDING LIABILITY FOR INFRINGEMENT OF ANY PROPRIETARY RIGHTS, AND INCLUDING THE
+* WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.  Intel does not
+* assume any responsibility for any errors which may appear in this software nor any
+* responsibility to update it.
+* ____________________________________
+*
+*
+* A multicore tasking engine in some 500 lines of C
+* This is the code corresponding to the seminar on writing a task-scheduler suitable 
+* for use in multicore optimisation of small prods by Jerome Muffat-Meridol.
+*
+* Credits :
+* -=-=-=-=-
+*  .music taken from M40-Southbound, by Ghaal (c)2009
+*  .liposuction advice from Matt Pietrek
+*     http://www.microsoft.com/msj/archive/S572.aspx
+*  .ordering display list ideas based on Christer Ericson's article 
+*     http://realtimecollisiondetection.net/blog/?p=86
+*  .Approximate Math Library by Alex Klimovitski, Intel GmbH
+*  .kkrunchy packed this exe, kudos to ryg/farbrausch
+*     http://www.farbrausch.de/~fg/kkrunchy/
+*/
+
 #ifndef MultiThreadingTasks_h__
 #define MultiThreadingTasks_h__
 
 #include <MultiThreading/config.h>
 
 #include <boost/detail/atomic_count.hpp>
-#include <boost/pool/singleton_pool.hpp>
-
 #include <sofa/helper/system/atomic.h>
 #include <boost/thread/mutex.hpp>
 
 namespace sofa
 {
 
-	namespace simulation
-	{
+namespace simulation
+{
 
-		class WorkerThread;
-		class TaskScheduler;
+class WorkerThread;
+class TaskScheduler;
 
+class SOFA_MULTITHREADING_PLUGIN_API Task
+{
+public:
+    // Task Status class definition
+    class Status
+    {
+    public:
+        Status();
 
-		class SOFA_MULTITHREADING_PLUGIN_API Task
-		{
-		public:
+        bool IsBusy() const;
 
+    private:
 
-			// Task Status class definition
-			class Status
-			{
-			public:
-				Status();
+        void MarkBusy(bool bBusy);
 
-				bool IsBusy() const;
+        /*volatile*/ boost::detail::atomic_count mBusy;
 
-				
+        friend class WorkerThread;
+    };
 
-			private:
+    virtual bool run(WorkerThread* thread) = 0;
 
-				void MarkBusy(bool bBusy);
+protected:
 
-				/*volatile*/ boost::detail::atomic_count mBusy;
+    Task(const Task::Status* status);
 
-				friend class WorkerThread;
-			};
+    inline Task::Status* getStatus(void) const;
 
+    const Task::Status*	m_Status;
 
+    friend class WorkerThread;
 
-		protected:
+private:
 
-			Task(const Task::Status* status);
+    //Task(const Task& /*task*/) {}
+    //Task& operator= (const Task& /*task*/) {return *this;}
+};
 
-		
-		public:
-			
-			virtual ~Task();
+// This task is called once by each thread used by the TasScheduler
+// this is useful to initialize the thread specific variables
+class SOFA_MULTITHREADING_PLUGIN_API ThreadSpecificTask : public Task
+{
 
-			//struct TaskTag{};
-			//typedef boost::singleton_pool<TaskTag, sizeof(*this)> memory_pool;
+public:
 
+    //InitPerThreadDataTask(volatile long* atomicCounter, boost::mutex* mutex, TaskStatus* pStatus );
+    ThreadSpecificTask(helper::system::atomic<int>* atomicCounter, boost::mutex* mutex, Task::Status* pStatus );
 
-			virtual bool run(WorkerThread* thread) = 0;
+    virtual ~ThreadSpecificTask();
 
+    virtual bool runThreadSpecific()  {return true;}
 
-		private:
+    virtual bool runCriticalThreadSpecific() {return true;}
 
-            Task(const Task& /*task*/) {}
-            Task& operator= (const Task& /*task*/) {return *this;}
+private:
 
+    virtual bool run(WorkerThread* );
 
-		protected:
+    //volatile long* mAtomicCounter;
+    helper::system::atomic<int>* mAtomicCounter;
 
-			inline Task::Status* getStatus(void) const;
+    boost::mutex*	 mThreadSpecificMutex;
 
-
-
-			const Task::Status*	m_Status;
-
-			friend class WorkerThread;
-
-		};
-
-
-
-		// This task is called once by each thread used by the TasScheduler
-		// this is useful to initialize the thread specific variables
-		class SOFA_MULTITHREADING_PLUGIN_API ThreadSpecificTask : public Task
-		{
-
-		public:
-
-			//InitPerThreadDataTask(volatile long* atomicCounter, boost::mutex* mutex, TaskStatus* pStatus );
-            ThreadSpecificTask(helper::system::atomic<int>* atomicCounter, boost::mutex* mutex, Task::Status* pStatus );
-
-			virtual ~ThreadSpecificTask();
-
-			virtual bool runThreadSpecific()  {return true;}
-
-			virtual bool runCriticalThreadSpecific() {return true;}
-
-		private:
-
-			virtual bool run(WorkerThread* );
-
-			//volatile long* mAtomicCounter;
-			helper::system::atomic<int>* mAtomicCounter;
-
-			boost::mutex*	 mThreadSpecificMutex;
-
-		};
+};
 
 
-
-
-		// not used yet
-		template<class T>
-		class TaskAllocator
-		{
-			struct TaskBaseTag{};
-			typedef boost::singleton_pool<TaskBaseTag, sizeof(T)> memory_pool; 
-
-		public:
-            static inline void* operator new (std::size_t /*size*/)
-			{
-				return memory_pool::malloc();
-			}
-
-			static inline void operator delete (void* ptr) 
-			{
-				memory_pool::free(ptr);
-
-			}
-
-		};
-
-
-	} // namespace simulation
+} // namespace simulation
 
 } // namespace sofa
 
