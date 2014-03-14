@@ -57,19 +57,20 @@ Dart EmbeddedGMap2::newFace(unsigned int nbEdges, bool withBoundary)
 			initOrbitEmbeddingNewCell<FACE>(phi2(d)) ;
 		}
 	}
-	else
-	{
-		if (isOrbitEmbedded<VERTEX>())
-		{
-			Traversor2FV<EmbeddedGMap2> t(*this, d);
-			for(Dart it = t.begin(); it != t.end(); it = t.next())
-				initOrbitEmbeddingNewCell<VERTEX>(it) ;
-		}
 
-		if(isOrbitEmbedded<FACE>())
-			initOrbitEmbeddingNewCell<FACE>(d) ;
+//	else
+//	{
+//		if (isOrbitEmbedded<VERTEX>())
+//		{
+//			Traversor2FV<EmbeddedGMap2> t(*this, d);
+//			for(Dart it = t.begin(); it != t.end(); it = t.next())
+//				initOrbitEmbeddingNewCell<VERTEX>(it) ;
+//		}
 
-	}
+//		if(isOrbitEmbedded<FACE>())
+//			initOrbitEmbeddingNewCell<FACE>(d) ;
+
+//	}
 	return d ;
 }
 
