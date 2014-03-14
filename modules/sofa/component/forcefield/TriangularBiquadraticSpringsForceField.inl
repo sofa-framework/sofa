@@ -444,8 +444,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addDForce(const core::Me
             {
                 JJ=tinfo->J-1;
 
-                // TODO WARNING there are strange double minus
-                h=- -JJ;
+                h=-JJ;
                 val2= 3*areaStiffness*JJ*JJ/tinfo->restArea;
                 val1= areaStiffness*JJ*JJ*JJ/2;
                 dp= -tinfo->currentNormal*val1; // vector for antisymmetric matrix
