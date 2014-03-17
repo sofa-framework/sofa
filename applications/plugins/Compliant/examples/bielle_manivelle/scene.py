@@ -1,11 +1,5 @@
 import Sofa
 
-# TODO ease this nonsense, upstream in SofaPython
-compliant_path = Sofa.src_dir() + '/applications/plugins/Compliant'
-
-import sys
-sys.path.append(compliant_path + '/python')
-
 from Compliant import Rigid
 
 mesh_path = compliant_path + '/examples/bielle_manivelle'
