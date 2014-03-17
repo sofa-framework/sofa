@@ -41,8 +41,8 @@
 //-------------------------------------------------------------------------
 
 
-#ifndef PMLINTERACTIONFORCEFIELD_H
-#define PMLINTERACTIONFORCEFIELD_H
+#ifndef SOFAPML_PMLINTERACTIONFORCEFIELD_H
+#define SOFAPML_PMLINTERACTIONFORCEFIELD_H
 
 #include "PMLBody.h"
 #include "sofa/component/interactionforcefield/StiffSpringForceField.h"

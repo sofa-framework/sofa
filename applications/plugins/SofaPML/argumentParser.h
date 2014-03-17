@@ -27,8 +27,8 @@
 // Fran�is Faure, iMAGIS-GRAVIR, May 2001
 //========================================================
 
-#ifndef ANIMAL_command_line_parser________
-#define ANIMAL_command_line_parser________
+#ifndef SOFAPML_ARGUMENT_PARSER_H
+#define SOFAPML_ARGUMENT_PARSER_H
 
 #include <iostream>
 #include <stdlib.h>

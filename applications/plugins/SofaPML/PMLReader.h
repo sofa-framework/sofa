@@ -39,8 +39,8 @@
 *  reading a PML file, and using PMLRigid and PML ForceFields classes.
 -------------------------------------------------------------------------**/
 
-#ifndef PMLREADER_H
-#define PMLREADER_H
+#ifndef SOFAPML_PMLREADER_H
+#define SOFAPML_PMLREADER_H
 
 
 #include <PhysicalModel.h>

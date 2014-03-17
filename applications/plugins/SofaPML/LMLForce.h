@@ -39,8 +39,8 @@
 //  It inherits from ForceField sofa core class.
 //-------------------------------------------------------------------------
 
-#ifndef LMLFORCE_H
-#define LMLFORCE_H
+#ifndef SOFAPML_LMLFORCE_H
+#define SOFAPML_LMLFORCE_H
 
 #include <Loads.h>
 

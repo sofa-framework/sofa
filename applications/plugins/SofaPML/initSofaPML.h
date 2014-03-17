@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef INITSOFAPML_API_H
-#define INITSOFAPML_API_H
+#ifndef SOFAPML_INITSOFAPML_H
+#define SOFAPML_INITSOFAPML_H
 
 
 #include <sofa/helper/system/config.h>

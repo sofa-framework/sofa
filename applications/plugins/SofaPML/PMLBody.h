@@ -39,8 +39,8 @@
 //  it is inherited by PMLRigidBody and PML(ForcefieldName) classes.
 //-------------------------------------------------------------------------
 
-#ifndef PMLBODY_H
-#define PMLBODY_H
+#ifndef SOFAPML_PMLBODY_H
+#define SOFAPML_PMLBODY_H
 
 #include <StructuralComponent.h>
 
