@@ -31,7 +31,7 @@ namespace core
 {
 
 std::vector<int> BaseCollisionElementIterator::emptyVector; ///< empty vector to be able to initialize the iterator to an empty pair
-
+int CollisionModel::nb_collision_models = 0;
 
 /// Get a color that can be used to display this CollisionModel
 const float* CollisionModel::getColor4f()
@@ -67,6 +67,8 @@ const float* CollisionModel::getColor4f()
     else if (isActive()) {setColor4f(defaultColorActive); return defaultColorActive;}
     else            {setColor4f(defaultColor); return defaultColor;}
 }
+
+
 
 } // namespace core
 

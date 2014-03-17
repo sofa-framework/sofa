@@ -32,7 +32,8 @@ using namespace helper;
 
 template<class MyReal>
 TCapsuleModel<StdRigidTypes<3,MyReal> >::TCapsuleModel():
-      _capsule_radii(initData(&_capsule_radii, "listCapsuleRadii","Radius of each capsule")),
+      _capsule_radii(initData(&_capsule_radii, "radii","Radius of each capsule")),
+      _capsule_heights(initData(&_capsule_heights,"heights","The capsule heights")),
       _default_radius(initData(&_default_radius,(Real)0.5,"defaultRadius","The default radius")),
       _default_height(initData(&_default_height,(Real)2,"dafaultHeight","The default height")),
       _mstate(NULL)
@@ -42,7 +43,8 @@ TCapsuleModel<StdRigidTypes<3,MyReal> >::TCapsuleModel():
 
 template<class MyReal>
 TCapsuleModel<StdRigidTypes<3,MyReal> >::TCapsuleModel(core::behavior::MechanicalState<DataTypes>* mstate):
-    _capsule_radii(initData(&_capsule_radii, "listCapsuleRadii","Radius of each capsule")),
+    _capsule_radii(initData(&_capsule_radii, "radii","Radius of each capsule")),
+    _capsule_heights(initData(&_capsule_heights,"heights","The capsule heights")),
     _default_radius(initData(&_default_radius,(Real)0.5,"defaultRadius","The default radius")),
     _default_height(initData(&_default_height,(Real)2,"dafaultHeight","The default height")),
     _mstate(mstate)
