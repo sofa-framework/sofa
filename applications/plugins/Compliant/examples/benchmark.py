@@ -56,8 +56,8 @@ def createScene(node):
 
     response = node.createObject('LDLTResponse', name = 'response')
     
-    iterations = 200
-    precision = 1e-10
+    iterations = 300
+    precision = 1e-8
 
     
     # we need compliantdev for qpsolver
@@ -94,13 +94,13 @@ def createScene(node):
                              indices = '0')
 
     # boxes
-    n_boxes = 5
+    n_boxes = 10
 
     for i in xrange(n_boxes):
         box = Rigid.Body('box-{0}'.format(i))
         box.visual = dir + '/mesh/cube.obj'
         box.collision = box.visual
-        box.dofs.translation = [0, 3 * (i + 1), 0]
+        box.dofs.translation = [0, 2.5 * (i + 1), 0]
         box.mass_from_mesh( box.visual, 50 )
         box.node = box.insert( scene )
 
@@ -199,7 +199,7 @@ class Controller(Sofa.PythonScriptController):
     def onEndAnimationStep(self, dt):
         self.plot_bench()
         # self.print_report()
-        self.detailed_report_bench( shared.qp )
+        # self.detailed_report_bench( shared.qp )
         return 0
           
     def bwdInitGraph(self,node):
