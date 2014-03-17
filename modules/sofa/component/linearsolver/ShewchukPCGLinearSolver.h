@@ -54,12 +54,12 @@ public:
 
     Data<unsigned> f_maxIter;
     Data<double> f_tolerance;
-    Data<bool> f_verbose;
-    Data<unsigned> f_update_step;
     Data<bool> f_use_precond;
+    Data<unsigned> f_update_step;
     Data<bool> f_build_precond;
     Data< std::string > f_preconditioners;
     Data<std::map < std::string, sofa::helper::vector<double> > > f_graph;
+
 
 protected:
     ShewchukPCGLinearSolver();

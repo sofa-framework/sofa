@@ -60,20 +60,24 @@ BoxROI<DataTypes>::BoxROI()
     , f_edges(initData (&f_edges, "edges", "Edge Topology") )
     , f_triangles(initData (&f_triangles, "triangles", "Triangle Topology") )
     , f_tetrahedra(initData (&f_tetrahedra, "tetrahedra", "Tetrahedron Topology") )
+    , f_hexahedra(initData (&f_hexahedra, "hexahedra", "Hexahedron Topology") )
     , f_quad(initData (&f_quad, "quad", "Quad Topology") )
     , f_computeEdges( initData(&f_computeEdges, true,"computeEdges","If true, will compute edge list and index list inside the ROI.") )
     , f_computeTriangles( initData(&f_computeTriangles, true,"computeTriangles","If true, will compute triangle list and index list inside the ROI.") )
     , f_computeTetrahedra( initData(&f_computeTetrahedra, true,"computeTetrahedra","If true, will compute tetrahedra list and index list inside the ROI.") )
+    , f_computeHexahedra( initData(&f_computeHexahedra, true,"computeHexahedra","If true, will compute hexahedra list and index list inside the ROI.") )
     , f_computeQuad( initData(&f_computeQuad, true,"computeQuad","If true, will compute quad list and index list inside the ROI.") )
     , f_indices( initData(&f_indices,"indices","Indices of the points contained in the ROI") )
     , f_edgeIndices( initData(&f_edgeIndices,"edgeIndices","Indices of the edges contained in the ROI") )
     , f_triangleIndices( initData(&f_triangleIndices,"triangleIndices","Indices of the triangles contained in the ROI") )
     , f_tetrahedronIndices( initData(&f_tetrahedronIndices,"tetrahedronIndices","Indices of the tetrahedra contained in the ROI") )
+    , f_hexahedronIndices( initData(&f_hexahedronIndices,"hexahedronIndices","Indices of the hexahedra contained in the ROI") )
     , f_quadIndices( initData(&f_quadIndices,"quadIndices","Indices of the quad contained in the ROI") )
     , f_pointsInROI( initData(&f_pointsInROI,"pointsInROI","Points contained in the ROI") )
     , f_edgesInROI( initData(&f_edgesInROI,"edgesInROI","Edges contained in the ROI") )
     , f_trianglesInROI( initData(&f_trianglesInROI,"trianglesInROI","Triangles contained in the ROI") )
     , f_tetrahedraInROI( initData(&f_tetrahedraInROI,"tetrahedraInROI","Tetrahedra contained in the ROI") )
+    , f_hexahedraInROI( initData(&f_hexahedraInROI,"hexahedraInROI","Hexahedra contained in the ROI") )
     , f_quadInROI( initData(&f_quadInROI,"quadInROI","Quad contained in the ROI") )
     , f_nbIndices( initData(&f_nbIndices,"nbIndices", "Number of selected indices") )
     , p_drawBoxes( initData(&p_drawBoxes,false,"drawBoxes","Draw Box(es)") )
@@ -81,6 +85,7 @@ BoxROI<DataTypes>::BoxROI()
     , p_drawEdges( initData(&p_drawEdges,false,"drawEdges","Draw Edges") )
     , p_drawTriangles( initData(&p_drawTriangles,false,"drawTriangles","Draw Triangles") )
     , p_drawTetrahedra( initData(&p_drawTetrahedra,false,"drawTetrahedra","Draw Tetrahedra") )
+    , p_drawHexahedra( initData(&p_drawHexahedra,false,"drawHexahedra","Draw Tetrahedra") )
     , p_drawQuads( initData(&p_drawQuads,false,"drawQuads","Draw Quads") )
     , _drawSize( initData(&_drawSize,0.0,"drawSize","rendering size for box and topological elements") )
 {
@@ -89,6 +94,7 @@ BoxROI<DataTypes>::BoxROI()
     addAlias(&f_edgesInROI,"edgesInBox");
     addAlias(&f_trianglesInROI,"f_trianglesInBox");
     addAlias(&f_tetrahedraInROI,"f_tetrahedraInBox");
+    addAlias(&f_hexahedraInROI,"f_tetrahedraInBox");
     addAlias(&f_quadInROI,"f_quadInBOX");
     addAlias(&f_X0,"rest_position");
 
@@ -144,7 +150,7 @@ void BoxROI<DataTypes>::init()
             }
         }
     }
-    if (!f_edges.isSet() || !f_triangles.isSet() || !f_tetrahedra.isSet() || !f_quad.isSet() )
+    if (!f_edges.isSet() || !f_triangles.isSet() || !f_tetrahedra.isSet() || !f_hexahedra.isSet() || !f_quad.isSet() )
     {
         BaseMeshTopology* topology;
         this->getContext()->get(topology,BaseContext::Local);
@@ -177,6 +183,15 @@ void BoxROI<DataTypes>::init()
                     f_tetrahedra.setReadOnly(true);
                 }
             }
+            if (!f_hexahedra.isSet() && f_computeHexahedra.getValue())
+            {
+                BaseData* tparent = topology->findField("hexahedra");
+                if (tparent)
+                {
+                    f_hexahedra.setParent(tparent);
+                    f_hexahedra.setReadOnly(true);
+                }
+            }
             if (!f_quad.isSet() && f_computeQuad.getValue())
             {
                 BaseData* tparent = topology->findField("quads");
@@ -194,17 +209,20 @@ void BoxROI<DataTypes>::init()
     addInput(&f_edges);
     addInput(&f_triangles);
     addInput(&f_tetrahedra);
+    addInput(&f_hexahedra);
     addInput(&f_quad);
 
     addOutput(&f_indices);
     addOutput(&f_edgeIndices);
     addOutput(&f_triangleIndices);
     addOutput(&f_tetrahedronIndices);
+    addOutput(&f_hexahedronIndices);
     addOutput(&f_quadIndices);
     addOutput(&f_pointsInROI);
     addOutput(&f_edgesInROI);
     addOutput(&f_trianglesInROI);
     addOutput(&f_tetrahedraInROI);
+    addOutput(&f_hexahedraInROI);
     addOutput(&f_quadInROI);
 	addOutput(&f_nbIndices);
     setDirtyValue();
@@ -273,6 +291,22 @@ bool BoxROI<DataTypes>::isTetrahedronInBox(const Tetra &t, const Vec6 &b)
     return (isPointInBox(c,b));
 }
 
+template <class DataTypes>
+bool BoxROI<DataTypes>::isHexahedronInBox(const Hexa &t, const Vec6 &b)
+{
+    const VecCoord* x0 = &f_X0.getValue();
+    CPos p0 =  DataTypes::getCPos((*x0)[t[0]]);
+    CPos p1 =  DataTypes::getCPos((*x0)[t[1]]);
+    CPos p2 =  DataTypes::getCPos((*x0)[t[2]]);
+    CPos p3 =  DataTypes::getCPos((*x0)[t[3]]);
+    CPos p4 =  DataTypes::getCPos((*x0)[t[4]]);
+    CPos p5 =  DataTypes::getCPos((*x0)[t[5]]);
+    CPos p6 =  DataTypes::getCPos((*x0)[t[6]]);
+    CPos p7 =  DataTypes::getCPos((*x0)[t[7]]);
+    CPos c = (p7+p6+p5+p4+p3+p2+p1+p0)/8.0;
+
+    return (isPointInBox(c,b));
+}
 
 
 template <class DataTypes>
@@ -315,6 +349,7 @@ void BoxROI<DataTypes>::update()
     helper::ReadAccessor< Data<helper::vector<Edge> > > edges = f_edges;
     helper::ReadAccessor< Data<helper::vector<Triangle> > > triangles = f_triangles;
     helper::ReadAccessor< Data<helper::vector<Tetra> > > tetrahedra = f_tetrahedra;
+    helper::ReadAccessor< Data<helper::vector<Hexa> > > hexahedra = f_hexahedra;
     helper::ReadAccessor< Data<helper::vector<Quad> > > quad = f_quad;
 
     // Write accessor for topological element indices in BOX
@@ -322,6 +357,7 @@ void BoxROI<DataTypes>::update()
     SetIndex& edgeIndices = *f_edgeIndices.beginEdit();
     SetIndex& triangleIndices = *f_triangleIndices.beginEdit();
     SetIndex& tetrahedronIndices = *f_tetrahedronIndices.beginEdit();
+    SetIndex& hexahedronIndices = *f_hexahedronIndices.beginEdit();
     SetIndex& quadIndices = *f_quadIndices.beginEdit();
 
     // Write accessor for toplogical element in BOX
@@ -329,6 +365,7 @@ void BoxROI<DataTypes>::update()
     helper::WriteAccessor< Data<helper::vector<Edge> > > edgesInROI = f_edgesInROI;
     helper::WriteAccessor< Data<helper::vector<Triangle> > > trianglesInROI = f_trianglesInROI;
     helper::WriteAccessor< Data<helper::vector<Tetra> > > tetrahedraInROI = f_tetrahedraInROI;
+    helper::WriteAccessor< Data<helper::vector<Hexa> > > hexahedraInROI = f_hexahedraInROI;
     helper::WriteAccessor< Data<helper::vector<Quad> > > quadInROI = f_quadInROI;
 
 
@@ -337,6 +374,7 @@ void BoxROI<DataTypes>::update()
     edgeIndices.clear();
     triangleIndices.clear();
     tetrahedronIndices.clear();
+    hexahedronIndices.clear();
     quadIndices.clear();
 
 
@@ -344,6 +382,7 @@ void BoxROI<DataTypes>::update()
     edgesInROI.clear();
     trianglesInROI.clear();
     tetrahedraInROI.clear();
+    hexahedraInROI.clear();
     quadInROI.clear();
 
     const VecCoord* x0 = &f_X0.getValue();
@@ -417,6 +456,24 @@ void BoxROI<DataTypes>::update()
         }
     }
 
+    //Hexahedra
+    if (f_computeHexahedra.getValue())
+    {
+        for(unsigned int i=0 ; i<hexahedra.size() ; i++)
+        {
+            Hexa t = hexahedra[i];
+            for (unsigned int bi=0; bi<vb.size(); ++bi)
+            {
+                if (isHexahedronInBox(t, vb[bi]))
+                {
+                    hexahedronIndices.push_back(i);
+                    hexahedraInROI.push_back(t);
+                    break;
+                }
+            }
+        }
+    }
+
     //Quads
     if (f_computeQuad.getValue())
     {
@@ -442,6 +499,7 @@ void BoxROI<DataTypes>::update()
     f_edgeIndices.endEdit();
     f_triangleIndices.endEdit();
     f_tetrahedronIndices.endEdit();
+    f_hexahedronIndices.endEdit();
     f_quadIndices.endEdit();
 
 }
@@ -602,6 +660,67 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
                 pv[j] = p[j];
             vertices.push_back( pv );
             p = DataTypes::getCPos((*x0)[t[3]]);
+            for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
+                pv[j] = p[j];
+            vertices.push_back( pv );
+        }
+        vparams->drawTool()->drawLines(vertices, linesWidth, color);
+    }
+
+    ///draw hexahedra in ROI
+    if( p_drawHexahedra.getValue())
+    {
+        vparams->drawTool()->setLightingEnabled(false);
+        float linesWidth = _drawSize.getValue() ? (float)_drawSize.getValue() : 1;
+        std::vector<sofa::defaulttype::Vector3> vertices;
+        helper::ReadAccessor< Data<helper::vector<Hexa> > > hexahedraInROI = f_hexahedraInROI;
+        for (unsigned int i=0; i<hexahedraInROI.size() ; ++i)
+        {
+            Hexa t = hexahedraInROI[i];
+            for (unsigned int j=0 ; j<8 ; j++)
+            {
+                CPos p = DataTypes::getCPos((*x0)[t[j]]);
+                sofa::defaulttype::Vector3 pv;
+                for( unsigned int k=0 ; k<max_spatial_dimensions ; ++k )
+                    pv[k] = p[k];
+                vertices.push_back( pv );
+
+                p = DataTypes::getCPos((*x0)[t[(j+1)%4]]);
+                for( unsigned int k=0 ; k<max_spatial_dimensions ; ++k )
+                    pv[k] = p[k];
+                vertices.push_back( pv );
+            }
+
+            CPos p = DataTypes::getCPos((*x0)[t[0]]);
+            sofa::defaulttype::Vector3 pv;
+            for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
+                pv[j] = p[j];
+            vertices.push_back( pv );
+            p = DataTypes::getCPos((*x0)[t[2]]);
+            for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
+                pv[j] = p[j];
+            vertices.push_back( pv );
+            p = DataTypes::getCPos((*x0)[t[1]]);
+            for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
+                pv[j] = p[j];
+            vertices.push_back( pv );
+            p = DataTypes::getCPos((*x0)[t[3]]);
+            for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
+                pv[j] = p[j];
+            vertices.push_back( pv );
+            p = DataTypes::getCPos((*x0)[t[4]]);
+            for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
+                pv[j] = p[j];
+            vertices.push_back( pv );
+            p = DataTypes::getCPos((*x0)[t[5]]);
+            for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
+                pv[j] = p[j];
+            vertices.push_back( pv );
+            p = DataTypes::getCPos((*x0)[t[6]]);
+            for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
+                pv[j] = p[j];
+            vertices.push_back( pv );
+            p = DataTypes::getCPos((*x0)[t[7]]);
             for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
                 pv[j] = p[j];
             vertices.push_back( pv );
