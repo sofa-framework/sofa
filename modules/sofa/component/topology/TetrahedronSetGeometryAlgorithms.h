@@ -66,6 +66,7 @@ public:
 protected:
 	bool initializedCubatureTables;
 	void defineTetrahedronCubaturePoints();
+public:
     TetrahedronSetGeometryAlgorithms()
         : TriangleSetGeometryAlgorithms<DataTypes>()
 		,initializedCubatureTables(false)
@@ -77,7 +78,7 @@ protected:
     }
 
     virtual ~TetrahedronSetGeometryAlgorithms() {}
-public:
+
     virtual void draw(const core::visual::VisualParams* vparams);
 
     void computeTetrahedronAABB(const TetraID i, Coord& minCoord, Coord& maxCoord) const;

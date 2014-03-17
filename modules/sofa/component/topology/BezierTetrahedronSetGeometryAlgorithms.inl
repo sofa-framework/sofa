@@ -104,29 +104,7 @@ template< class DataTypes>
 		/// fills the array of edges
 		bezierTetrahedronEdgeSet.clear();
 		TetrahedronBezierIndex tbiNext;
-		/*
-		const VecCoord& coords = *(this->object->getX());
-		VecPointID indexArray;
-		for ( i = 0; i<container->getNumberOfTetrahedra(); i++)
-		{
-			indexArray.clear();
-			container->getGlobalIndexArrayOfBezierPointsInTetrahedron(i, indexArray);
-
-
-			for (j=0;j<tbiArray.size();++j) {
-
-				if (j>=4) {
-					// test if the position is correct
-					Coord pos=coords[indexArray[0]]*(double)tbiArray[j][0]/degree+coords[indexArray[1]]*(double)tbiArray[j][1]/degree+coords[indexArray[2]]*(double)tbiArray[j][2]/degree+coords[indexArray[3]]*(double)tbiArray[j][3]/degree;
-					if ((pos-coords[indexArray[j]]).norm2()>1e-3) {
-						std::cerr<<"error for vertex position : should be = "<< pos<<std::endl;
-						std::cerr<<"Point no "<<j <<" of tetrahedron "<<i<<" = "<<(unsigned int)tbiArray[j][0] << ' '<<(unsigned int)tbiArray[j][1]<< ' '<<(unsigned int)tbiArray[j][2]<< ' '<<(unsigned int)tbiArray[j][3]<<std::endl;
-						std::cerr<< coords[indexArray[j]]<<std::endl;
-					}
-				}
-
-			}
-		}*/
+	
 		for (i=0;i<=degree;++i) {
 			for (j=0;j<=(degree-i);++j) {
 				for (k=0;k<=(degree-j-i);++k) {
