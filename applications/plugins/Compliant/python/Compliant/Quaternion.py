@@ -2,6 +2,7 @@
 # author: maxime.tournier@inria.fr
 
 import Vec
+import math
 
 def id():
     return [0, 0, 0, 1]
@@ -28,3 +29,15 @@ def prod(a, b):
 def rotate(q, x):
     # TODO assert q is unit
     return im( prod(q, prod( x + [0], conj(q))) )
+
+
+def exp(v):
+    theta = Vec.norm(v)
+    s = math.sin(theta / 2)
+    c = math.cos(theta / 2)
+
+    return [ v[0] / theta * s,
+             v[1] / theta * s,
+             v[2] / theta * s,
+             c ]
+             

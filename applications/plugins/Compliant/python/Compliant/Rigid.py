@@ -61,6 +61,12 @@ class Frame:
 		res.translation = vec.minus( quat.rotate(res.rotation,
 							 self.translation) )
 		return res
+
+        def set(self, **kwargs):
+                for k in kwargs:
+                        setattr(self, k, kwargs[k])
+                        
+                return self
 					  
         # TODO more: apply( vec3 ), wrench/twist frame change.
 
@@ -125,6 +131,7 @@ class Body:
                 self.inertia_forces = False # compute inertia forces flag
                 self.group = None
                 self.mu = 0           # friction coefficient
+                self.scale = [1, 1, 1]
 
                 # TODO more if needed (scale, color)
                 
@@ -175,7 +182,7 @@ class Body:
                                                   name='mesh', 
                                                   fileMesh = self.visual, 
                                                   color = concat(self.color), 
-                                                  scale3d='1 1 1')
+                                                  scale3d = concat(self.scale))
                         
                         visual_map = visual.createObject('RigidMapping', 
                                                          template = 'Rigid' + ', ' + visual_template, 
@@ -186,7 +193,8 @@ class Body:
                 
                         collision.createObject("MeshObjLoader", 
 					       name = 'loader', 
-					       filename = self.collision )
+					       filename = self.collision,
+                                               scale3d = concat(self.scale) )
 			
                         collision.createObject('MeshTopology', 
                                                name = 'topology',

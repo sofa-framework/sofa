@@ -12,7 +12,7 @@ from Vec import Proxy as vec
 class PID:
     
     def __init__(self, dofs):
-        self.dofs = dofs
+        # self.dofs = dofs
 
         # gains
         self.kp = -1
@@ -25,7 +25,22 @@ class PID:
         # actuation basis
         self.basis = [0, 0, 0, 0, 0, 0]
         
+        self.name = 'pid'
+
+        # insert starts here
+        node = dofs.getContext().createChild( self.name )
+
+        self.dofs = node.createObject('MechanicalObject', 
+                                      name = 'dofs',
+                                      template = 'Vec1d',
+                                      position = '0')
+        
+        self.map = node.createObject('ProjectionMapping',
+                                     set = '0 ' + Tools.cat(self.basis) )
+        self.node = node
+
         self.reset()
+    
 
     def reset(self):
         self.integral = 0
@@ -34,18 +49,22 @@ class PID:
     def apply(self, tau): 
 
         current = self.dofs.externalForce
-        value = [tau * ei for ei in self.basis]
-        
-        # TODO optimize ? setting the list directly does not work
-        # across time steps :-/
-        if len(current) == 0:
-            self.dofs.externalForce = Tools.cat(value)
+
+        if type(current) == list:
+            if len(current) == 0:
+                value = 0
+            else:
+                value = current[0]
         else:
-            self.dofs.externalForce = Tools.cat( Vec.sum(current[0], value) )
-        
+            value = current
+
+        value += tau
+
+        self.dofs.externalForce = str(value)
+
     def pid(self, dt):
-        p = Vec.dot(self.basis, self.dofs.position[0]) - self.pos
-        d = Vec.dot(self.basis, self.dofs.velocity[0]) - self.vel
+        p = self.dofs.position - self.pos
+        d = self.dofs.velocity - self.vel
         i = self.integral + dt * p
 
         return p, i, d
@@ -62,6 +81,10 @@ class PID:
 
     # hop
     def pre_step(self, dt):
+        # update mapping just in case
+        self.map.set = Tools.cat([0] + self.basis)
+        self.map.init()
+
         self.update(dt)
 
     def post_step(self, dt):
@@ -124,7 +147,7 @@ class ImplicitPID:
         self.map.init()
 
         stiff = - self.kp - dt * self.ki
-        damping = - self.kd / dt
+        damping = - self.kd
         
         self.ff.compliance = 1.0 / stiff
         self.ff.damping = damping
@@ -146,7 +169,7 @@ class ImplicitPID:
 
     # force applied at the end of time step
     def post_force(self):
-        return self.dofs.force + self.kd * self.dofs.velocity + self.explicit
+        return self.dofs.force - self.kd * self.dofs.velocity + self.explicit
 
     # call this during onEndAnimationStep
     def post_step(self, dt):
