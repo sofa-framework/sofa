@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include <sofa/simulation/common/xml/NodeElement.h>
 //#include <sofa/simulation/common/xml/ObjectElement.h>
-#include <sofa/simulation/common/xml/Element.inl>
+#include <sofa/simulation/common/xml/Element.h>
 
 namespace sofa
 {

@@ -25,7 +25,6 @@
 #ifndef SOFA_SIMULATION_COMMON_XML_ELEMENT_INL
 #define SOFA_SIMULATION_COMMON_XML_ELEMENT_INL
 
-#include "Element.h"
 #include <sofa/helper/Factory.inl>
 
 namespace sofa
