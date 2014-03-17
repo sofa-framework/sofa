@@ -39,9 +39,11 @@ namespace simulation
 namespace xml
 {
 
-
+// note: removing SOFA_SIMULATION_COMMON_API as the class is template
+// with no .inl/.cpp (and this breaks windows builds due to dllimport
+// definitions)
 template<class Object>
-class SOFA_SIMULATION_COMMON_API Element : public BaseElement
+class Element : public BaseElement
 {
 private:
     typename Object::SPtr object;
