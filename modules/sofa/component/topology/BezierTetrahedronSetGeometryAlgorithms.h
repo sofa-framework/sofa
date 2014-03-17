@@ -66,7 +66,7 @@ public:
     typedef sofa::defaulttype::Vec<4,Real> Vec4;
     typedef sofa::defaulttype::Mat<4,4,Real> Mat44;
 protected:
-    BezierTetrahedronSetGeometryAlgorithms();
+   
 	/// container	
 	BezierTetrahedronSetTopologyContainer *container; 
 	/// degree of the polynomial
@@ -79,9 +79,11 @@ protected:
 	std::map<TetrahedronBezierIndex,Real> bernsteinCoeffMap;
 	/// the list of edges of the Bezier Tetrahedron used in the draw function
 	sofa::helper::set<Edge> bezierTetrahedronEdgeSet;
-    virtual ~BezierTetrahedronSetGeometryAlgorithms() {}
+
 public:
-	/// 
+	/// constructor 
+	BezierTetrahedronSetGeometryAlgorithms();
+    virtual ~BezierTetrahedronSetGeometryAlgorithms() {}
 	virtual void init();
 	virtual void reinit();
     virtual void draw(const core::visual::VisualParams* vparams);
