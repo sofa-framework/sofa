@@ -27,7 +27,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-#include <sofa/gpu/opencl/myopencl.h>
+#include <SofaOpenCL/myopencl.h>
 
 #include <sofa/simulation/common/xml/initXml.h>
 #include <sofa/simulation/tree/TreeSimulation.h>

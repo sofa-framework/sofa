@@ -12,7 +12,8 @@ set(RC_FILES
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${RC_FILES})
 
-AddLinkerDependencies(SofaGuiMain SofaGpuOpenCL )
+include_directories(${SOFA_APPLICATIONS_PLUGINS_DIR})
+AddLinkerDependencies(SofaGuiMain SofaOpenCL)
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
 
