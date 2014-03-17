@@ -80,7 +80,7 @@ void Benchmark::lcp(const AssembledSystem& system,
 					const vec* prec) {
 	edit(this->duration)->push_back(elapsed());
 
-	vec lambda = dual;
+	vec lambda = dual.head(system.n);
 	if( prec ) lambda = prec->array() * lambda.array();
 
 	vec v(system.m);
