@@ -148,17 +148,17 @@ void SequentialSolver::factor(const system_type& system) {
 
 	mapping_response.resize( system.J.cols(), system.J.rows() );
 
-	cmat PJT = system.P * system.J.transpose();
+	this->JP = system.J * system.P;
 
 	cmat tmp; tmp.resize( mapping_response.rows(),
 						  mapping_response.cols());
 	
 
 	// TODO: temporary :-/
-	response->solve(tmp, PJT);
+	response->solve(tmp, JP.transpose());
 	mapping_response = system.P * tmp;
 	
-
+	
 	// to avoid allocating matrices for each block, could be a vec instead ?
 	dense_matrix storage;
 
@@ -173,9 +173,10 @@ void SequentialSolver::factor(const system_type& system) {
 		schur_type schur(storage.data(), b.size, b.size);
 		
 		// temporary sparse mat, difficult to remove :-/
-		cmat tmp = PJT.middleCols(b.offset, b.size).transpose() * 
+		cmat tmp = JP.middleRows(b.offset, b.size) * 
 			mapping_response.middleCols(b.offset, b.size);
 		
+		// fill constraint block
 		schur = tmp;
 		
 		// real symmetry = (schur - schur.transpose()).squaredNorm() / schur.size();
@@ -256,11 +257,11 @@ SReal SequentialSolver::step(vec& lambda,
 			
 		// update rhs TODO track and remove possible allocs
 		error_chunk.noalias() = rhs.segment(b.offset, b.size);
-		error_chunk.noalias() = error_chunk	- sys.J.middleRows(b.offset, b.size) * net;
+		error_chunk.noalias() = error_chunk	- JP.middleRows(b.offset, b.size) * net;
 		error_chunk.noalias() = error_chunk - sys.C.middleRows(b.offset, b.size) * lambda;
-			
+		
 		// error estimate update, we sum current chunk errors
-		estimate += error_chunk.squaredNorm();
+		// estimate += error_chunk.squaredNorm();
 			
 		// solve for lambda changes
 		solve_block(delta_chunk, blocks_inv[i], error_chunk);
@@ -271,14 +272,18 @@ SReal SequentialSolver::step(vec& lambda,
 		// update lambdas
 		lambda_chunk = lambda_chunk + omega.getValue() * delta_chunk;
 		
-		// project if needed
+		// project new lambdas if needed
 		if( b.projector ) {
             b.projector->project( lambda_chunk.data(), lambda_chunk.size(), correct );
 			assert( !has_nan(lambda_chunk.eval()) );
 		}
-			
-		// correct lambda differences
+
+		// correct lambda differences based on projection
 		delta_chunk = lambda_chunk - error_chunk;
+
+		// we estimate the total lambda change. since GS convergence
+		// is linear, this can give an idea about current precision.
+		estimate += delta_chunk.squaredNorm();
 
 		// incrementally update net forces, we only do fresh
 		// computation after the loop to keep perfs decent
@@ -291,7 +296,7 @@ SReal SequentialSolver::step(vec& lambda,
 	// std::cerr << "sanity check: " << (net - mapping_response * lambda).norm() << std::endl;
 
 	// TODO is this needed to avoid error accumulation ?
-	net = mapping_response * lambda;
+	// net = mapping_response * lambda;
 
 	// TODO flag to return real residual estimate !! otherwise
 	// convergence plots are not fair.
@@ -349,7 +354,7 @@ void SequentialSolver::solve_impl(vec& res,
 	vec delta = vec::Zero( sys.n );
 	
 	// lcp rhs 
-	vec constant = rhs.tail(sys.n) - sys.J * res.head( sys.m );
+	vec constant = rhs.tail(sys.n) - JP * res.head( sys.m );
 	
 	// lcp error
 	vec error = vec::Zero( sys.n );
@@ -357,20 +362,20 @@ void SequentialSolver::solve_impl(vec& res,
 	const real epsilon = relative.getValue() ? 
 		constant.norm() * precision.getValue() : precision.getValue();
 
-	real epsilon2 = epsilon * epsilon;
-
 	if( this->bench ) this->bench->lcp(sys, constant, *response, lambda);
 
 
 	// outer loop
 	unsigned k = 0, max = iterations.getValue();
+	vec primal;
 	for(k = 0; k < max; ++k) {
 
-        real estimate = step( lambda, net, sys, constant, error, delta, correct );
+        real estimate2 = step( lambda, net, sys, constant, error, delta, correct );
 
 		if( this->bench ) this->bench->lcp(sys, constant, *response, lambda);
-
-		if( estimate <= epsilon2 ) break;
+		
+		// stop if we only gain one significant digit after precision
+		if( std::sqrt(estimate2) / sys.n <= epsilon ) break;
 	}
 	
 	// std::cerr << "sanity check: " << (net - mapping_response * lambda).norm() << std::endl;
