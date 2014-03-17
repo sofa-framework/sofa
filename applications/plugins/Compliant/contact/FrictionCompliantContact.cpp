@@ -1,6 +1,8 @@
 #include "FrictionCompliantContact.h"
 
 #include <sofa/component/collision/FrictionContact.inl>
+#include <sofa/component/collision/RigidContactMapper.inl>
+#include <sofa/component/collision/BarycentricContactMapper.inl>
 
 namespace sofa
 {
