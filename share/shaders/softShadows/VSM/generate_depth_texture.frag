@@ -1,3 +1,5 @@
+#version 120
+
 uniform float shadowBias; 
 uniform float zFar;
 uniform float zNear;

@@ -1,3 +1,5 @@
+#version 120
+
 uniform sampler2D colorTexture;
 uniform float mapDimX;
 uniform int orientation; // 0 -> Horizontal, 1 -> Vertical
