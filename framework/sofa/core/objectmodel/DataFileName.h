@@ -96,12 +96,7 @@ public:
     }
     virtual void virtualEndEdit() { endEdit(); }
     virtual void virtualSetValue(const std::string& v) { setValue(v); }
-    virtual bool read( std::string& s )
-    {
-        bool ret = Inherit::read(s);
-        if (ret) updatePath();
-        return ret;
-    }
+    virtual bool read( std::string& s );
 
     virtual const std::string& getRelativePath() const { return getValue(); }
     virtual const std::string& getFullPath() const
