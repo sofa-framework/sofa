@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/simulation/common/xml/ObjectElement.h>
-#include <sofa/simulation/common/xml/Element.inl>
+#include <sofa/simulation/common/xml/Element.h>
 #include <sofa/core/ObjectFactory.h>
 
 

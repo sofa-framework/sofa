@@ -35,13 +35,9 @@ namespace sofa
 namespace simulation
 {
 
-
 namespace xml
 {
 
-// note: removing SOFA_SIMULATION_COMMON_API as the class is template
-// with no .inl/.cpp (and this breaks windows builds due to dllimport
-// definitions)
 template<class Object>
 class Element : public BaseElement
 {
@@ -60,7 +56,6 @@ public:
     virtual core::objectmodel::Base* getObject();
 
     typedef helper::Factory< std::string, Object, Element<Object>*, typename Object::SPtr > Factory;
-
 };
 
 
@@ -69,5 +64,7 @@ public:
 } // namespace simulation
 
 } // namespace sofa
+
+#include "Element.inl"
 
 #endif
