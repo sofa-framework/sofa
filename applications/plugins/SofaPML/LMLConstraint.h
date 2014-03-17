@@ -39,8 +39,8 @@
 //  It inherits from Constraint sofa core class.
 //-------------------------------------------------------------------------
 
-#ifndef LMLCONSTRAINT_H
-#define LMLCONSTRAINT_H
+#ifndef SOFAPML_LMLCONSTRAINT_H
+#define SOFAPML_LMLCONSTRAINT_H
 
 
 #include "sofa/core/behavior/Constraint.h"

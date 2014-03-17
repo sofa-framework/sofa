@@ -39,8 +39,8 @@
 //  reading a LML file, and using LMLConstraint and LMLForce classes.
 //-------------------------------------------------------------------------
 
-#ifndef LMLREADER_H
-#define LMLREADER_H
+#ifndef SOFAPML_LMLREADER_H
+#define SOFAPML_LMLREADER_H
 
 #include <Loads.h>
 #include <map>

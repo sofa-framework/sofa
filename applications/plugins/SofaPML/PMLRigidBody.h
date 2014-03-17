@@ -40,8 +40,8 @@
 //-------------------------------------------------------------------------
 
 
-#ifndef PMLRIGIDBODY_H
-#define PMLRIGIDBODY_H
+#ifndef SOFAPML_PMLRIGIDBODY_H
+#define SOFAPML_PMLRIGIDBODY_H
 
 #include "PMLBody.h"
 #include "initSofaPML.h"

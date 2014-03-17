@@ -40,8 +40,8 @@
 //-------------------------------------------------------------------------
 
 
-#ifndef PMLSTIFFSPRINGFORCEFIELD_H
-#define PMLSTIFFSPRINGFORCEFIELD_H
+#ifndef SOFAPML_PMLSTIFFSPRINGFORCEFIELD_H
+#define SOFAPML_PMLSTIFFSPRINGFORCEFIELD_H
 
 #include "PMLBody.h"
 #include "initSofaPML.h"

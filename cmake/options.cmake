@@ -258,10 +258,6 @@ sofa_option(SOFA-LIB_COMPONENT_USER_INTERACTION BOOL ON "")
 sofa_option(SOFA-LIB_COMPONENT_VALIDATION BOOL ON "")
 sofa_option(SOFA-LIB_COMPONENT_VOLUMETRIC_DATA BOOL ON "")
 
-sofa_option(SOFA-LIB_COMPONENT_SOFA_PML BOOL OFF "")
-
-sofa_option(SOFA-LIB_COMPONENT_GPU_OPENCL BOOL OFF "")
-
 # i don't know if we mark default components as advanced or not
 # it would enhance readability but thinking to look for
 # advanced options is not really obvious
@@ -319,9 +315,6 @@ if(false)
     mark_as_advanced(SOFA-LIB_VALIDATION)
     mark_as_advanced(SOFA-LIB_VOLUMETRIC_DATA)
 
-    #mark_as_advanced(SOFA-LIB_COMPONENT_SOFA_PML)
-
-    #mark_as_advanced(SOFA-LIB_COMPONENT_GPU_OPENCL)
 endif()
 
 # simulation

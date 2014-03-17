@@ -40,8 +40,8 @@
 //-------------------------------------------------------------------------
 
 
-#ifndef PMLFEMFORCEFIELD_H
-#define PMLFEMFORCEFIELD_H
+#ifndef SOFAPML_PMLFEMFORCEFIELD_H
+#define SOFAPML_PMLFEMFORCEFIELD_H
 
 #include "PMLBody.h"
 

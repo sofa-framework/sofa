@@ -38,8 +38,8 @@
 //-------------------------------------------------------------------------
 
 
-#ifndef PMLMAPPEDBODY_H
-#define PMLMAPPEDBODY_H
+#ifndef SOFAPML_PMLMAPPEDBODY_H
+#define SOFAPML_PMLMAPPEDBODY_H
 
 #include "PMLBody.h"
 #include "initSofaPML.h"
