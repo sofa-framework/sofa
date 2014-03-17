@@ -1,8 +1,8 @@
 import Sofa
 
-from Compliant import Rigid
+from Compliant import Rigid, Tools
 
-mesh_path = compliant_path + '/examples/bielle_manivelle'
+mesh_path = Tools.path( __file__ )
 
 scale = 1
 

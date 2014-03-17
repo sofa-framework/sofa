@@ -1,9 +1,5 @@
 import Sofa
 
-import sys
-
-import os
-
 import math
 
 from Compliant import Rigid, Vec, Quaternion, Tools, Control

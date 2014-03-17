@@ -1,8 +1,5 @@
 import Sofa
 
-# TODO handle this more cleanly, i.e. standardize plugins python
-# directory, then use something like Sofa.add_plugin_path('Compliant')
-
 from Compliant import Rigid
 
 
