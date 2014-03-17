@@ -24,6 +24,7 @@
 ******************************************************************************/
 #include <sofa/component/collision/FrictionContact.inl>
 #include <sofa/component/collision/BarycentricContactMapper.h>
+#include <sofa/component/collision/BarycentricContactMapper.inl>
 
 namespace sofa
 {
