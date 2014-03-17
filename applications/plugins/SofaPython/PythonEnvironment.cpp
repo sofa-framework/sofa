@@ -78,7 +78,8 @@ void PythonEnvironment::Init()
     bindSofaPythonModule();
 
     // load a python script which search for python packages defined in the modules
-    std::string scriptPy = std::string(SOFA_SRC_DIR)+"/applications/plugins/SofaPython/addPluginPythonPackage.py";
+    std::string scriptPy = std::string(SOFA_SRC_DIR) + "/applications/plugins/SofaPython/SofaPython.py";
+
     FILE* scriptPyFile = fopen(scriptPy.c_str(),"r");
     PyRun_SimpleFile(scriptPyFile, scriptPy.c_str());
     fclose(scriptPyFile);
