@@ -41,6 +41,8 @@
 
 #include <boost/detail/atomic_count.hpp>
 #include <sofa/helper/system/atomic.h>
+#include <sofa/helper/system/thread/CTime.h>
+#include <sofa/defaulttype/Vec.h>
 #include <boost/thread/mutex.hpp>
 
 namespace sofa
@@ -72,9 +74,21 @@ public:
         friend class WorkerThread;
     };
 
-    virtual bool run(WorkerThread* thread) = 0;
+    typedef sofa::helper::system::thread::ctime_t ctime_t;
+    typedef std::pair<ctime_t,ctime_t> TimeInterval;
+    typedef sofa::defaulttype::Vec4f Color;
+
+    virtual const char* getName();
+    virtual Color getColor();
+    
+    bool runTask(WorkerThread* thread);
+
+    const TimeInterval& getExecTime() const { return execTime; }
+    int getExecThreadIndex() const { return execThreadIndex; }
 
 protected:
+    
+    virtual bool run(WorkerThread* thread) = 0;
 
     Task(const Task::Status* status);
 
@@ -83,6 +97,9 @@ protected:
     const Task::Status*	m_Status;
 
     friend class WorkerThread;
+
+    TimeInterval execTime;
+    int execThreadIndex;
 
 private:
 

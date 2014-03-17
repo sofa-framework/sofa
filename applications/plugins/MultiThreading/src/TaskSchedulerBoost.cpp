@@ -59,7 +59,7 @@ TaskScheduler::TaskScheduler()
 
     readyForWork = false;
 
-    mThread[0] = new WorkerThread( this );
+    mThread[0] = new WorkerThread( this, 0 );
     mThread[0]->attachToThisThread( this );
 
 }
@@ -108,7 +108,7 @@ bool TaskScheduler::start(const unsigned int NbThread )
         mWorkersIdle		= false;
         mainTaskStatus	= NULL;
 
-        // only physicsal cores. no advantage from hyperthreading.
+        // only physical cores. no advantage from hyperthreading.
         mThreadCount = GetHardwareThreadsCount() / 2;
 
         if ( NbThread > 0 && NbThread <= MAX_THREADS  )
@@ -124,7 +124,7 @@ bool TaskScheduler::start(const unsigned int NbThread )
         for( unsigned int iThread=1; iThread<mThreadCount; ++iThread)
         {
             //mThread[iThread] = boost::shared_ptr<WorkerThread>(new WorkerThread(this) );
-            mThread[iThread] = new WorkerThread(this);
+            mThread[iThread] = new WorkerThread(this, iThread);
             mThread[iThread]->create_and_attach( this );
             mThread[iThread]->start( this );
         }
@@ -213,8 +213,8 @@ unsigned TaskScheduler::size()	const volatile
 
 
 
-WorkerThread::WorkerThread(TaskScheduler* const& pScheduler)
-    : mTaskScheduler(pScheduler)
+WorkerThread::WorkerThread(TaskScheduler* const& pScheduler, int index)
+    : mTaskScheduler(pScheduler), mThreadIndex(index)
 {
     assert(pScheduler);
 
@@ -327,6 +327,11 @@ boost::thread::id WorkerThread::getId()
     return mThread->get_id();
 }
 
+int WorkerThread::getThreadIndex()
+{
+    return mThreadIndex;
+}
+
 
 void WorkerThread::Idle()
 {
@@ -354,7 +359,7 @@ void WorkerThread::doWork(Task::Status* status)
             pPrevStatus = mCurrentStatus;
             mCurrentStatus = pTask->getStatus();
 
-            pTask->run(this);
+            pTask->runTask(this);
 
             mCurrentStatus->MarkBusy(false);
             mCurrentStatus = pPrevStatus;
@@ -451,7 +456,7 @@ bool WorkerThread::addTask(Task* task)
         return true;
 
 
-    task->run(this);
+    task->runTask(this);
     return false;
 }
 

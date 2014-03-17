@@ -100,7 +100,7 @@ class SOFA_MULTITHREADING_PLUGIN_API WorkerThread
 {
 public:
 
-    WorkerThread(TaskScheduler* const& taskScheduler);
+    WorkerThread(TaskScheduler* const& taskScheduler, int index);
 
     ~WorkerThread();
 
@@ -114,6 +114,8 @@ public:
     Task::Status* getCurrentStatus() const {return mCurrentStatus;}
 
     boost::detail::spinlock* getTaskMutex() const {return &mTaskMutex;}
+    
+    int getThreadIndex();
 
 
 private:
@@ -161,7 +163,8 @@ private:
     unsigned			              mTaskCount;								
     Task::Status*	                  mCurrentStatus;	
     TaskScheduler*                    mTaskScheduler;    
-    boost::shared_ptr<boost::thread>  mThread;  
+    boost::shared_ptr<boost::thread>  mThread;
+    int                               mThreadIndex;
 
     // The following members may be accessed by _multiple_ threads at the same time:
     volatile bool	mFinished;
