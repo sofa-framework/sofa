@@ -39,7 +39,8 @@
 #include <sofa/core/behavior/MechanicalState.h>
 
 #include <sofa/helper/system/thread/CTime.h>
-#include <pthread.h>
+#include <boost/thread.hpp>
+
 
 namespace sofa
 {
@@ -153,7 +154,9 @@ public:
 
     //neede for "omni simulation"
     CTime *thTimer;
-    pthread_t hapSimuThread;
+    //boost
+    boost::thread *hapSimuThread;
+    //pthread_t hapSimuThread;
     double lastStep;
     bool executeAsynchro;
     Data<VecCoord> trajPts;
