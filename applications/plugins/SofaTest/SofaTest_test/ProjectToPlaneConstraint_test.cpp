@@ -150,7 +150,7 @@ struct ProjectToPlaneConstraint_test : public Sofa_test<typename _DataTypes::Rea
        typename Indices::const_iterator it = indices.begin(); // must be sorted
        for(unsigned i=0; i<numNodes; i++ )
        {
-           if( i==*it )  // constrained particle
+           if ((it!=indices.end()) && ( i==*it ))  // constrained particle
            {
               Real scal = (x[i]-origin)*normal; // null if x is in the plane
 //              cerr<<"scal = "<< scal << endl;
@@ -189,9 +189,9 @@ struct ProjectToPlaneConstraint_test : public Sofa_test<typename _DataTypes::Rea
        bool succeed=true;
        typename Indices::const_iterator it = indices.begin(); // must be sorted
        for(unsigned i=0; i<numNodes; i++ )
-       {
-           if( i==*it )  // constrained particle
-           {
+	   {
+		   if ((it!=indices.end()) && ( i==*it ))  // constrained particle
+		   {
               Real scal = v[i]*normal; // null if v is in the plane
 //              cerr<<"scal = "<< scal << endl;
               if( !Sofa_test<typename _DataTypes::Real>::isSmall(scal,100) ){
