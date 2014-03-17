@@ -34,6 +34,13 @@ namespace core
 namespace objectmodel
 {
 
+bool DataFileName::read( std::string& s )
+{
+	bool ret = Inherit::read(s);
+	if (ret) updatePath();
+	return ret;
+}
+
 void DataFileName::updatePath()
 {
     DataFileName* parentDataFileName = NULL;
