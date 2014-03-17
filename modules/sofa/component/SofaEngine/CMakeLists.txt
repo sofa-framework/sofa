@@ -14,7 +14,9 @@ set(HEADER_FILES
     ../engine/SphereROI.h 
     ../engine/SphereROI.inl 
     ../engine/DilateEngine.h 
-    ../engine/DilateEngine.inl 
+    ../engine/DilateEngine.inl
+    ../engine/GenerateCylinder.h 
+    ../engine/GenerateCylinder.inl  
     ../engine/ExtrudeSurface.h 
     ../engine/ExtrudeSurface.inl 
     ../engine/ExtrudeQuadsAndGenerateHexas.h 
@@ -93,6 +95,7 @@ set(SOURCE_FILES
     ../engine/PlaneROI.cpp 
     ../engine/SphereROI.cpp 
     ../engine/DilateEngine.cpp 
+    ../engine/GenerateCylinder.cpp 
     ../engine/ExtrudeSurface.cpp 
     ../engine/ExtrudeQuadsAndGenerateHexas.cpp 
     ../engine/ExtrudeEdgesAndGenerateQuads.cpp 
