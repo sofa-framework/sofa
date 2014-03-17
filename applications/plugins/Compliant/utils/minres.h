@@ -187,7 +187,7 @@ struct minres  {
 				const real aabs = abs(a);
 				const real babs = abs(b);
       
-				if( babs > aabs ) {
+				if( babs >= aabs ) {
 					const real tau = a / b;
 
 					s = sign( b ) / std::sqrt( 1 + tau * tau );
