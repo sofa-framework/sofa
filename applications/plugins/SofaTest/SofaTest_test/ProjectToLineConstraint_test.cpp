@@ -152,7 +152,7 @@ struct ProjectToLineConstraint_test : public Sofa_test<typename _DataTypes::Real
        typename Indices::const_iterator it = indices.begin(); // must be sorted
        for(unsigned i=0; i<numNodes; i++ )
        {
-           if( i==*it )  // constrained particle
+           if ((it!=indices.end()) && ( i==*it ))  // constrained particle
            {
               CPos crossprod = (x[i]-origin).cross(direction); // should be parallel
               Real scal = crossprod*crossprod; // null if x is on the line
@@ -193,7 +193,7 @@ struct ProjectToLineConstraint_test : public Sofa_test<typename _DataTypes::Real
        typename Indices::const_iterator it = indices.begin(); // must be sorted
        for(unsigned i=0; i<numNodes; i++ )
        {
-           if( i==*it )  // constrained particle
+          if ((it!=indices.end()) && ( i==*it ))  // constrained particle
            {
               CPos crossprod = v[i].cross(direction); // should be parallel
               Real scal = crossprod.norm(); // null if v is ok
