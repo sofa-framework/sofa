@@ -1,10 +1,5 @@
 import Sofa
 
-# TODO standardize plugins python directory, then use something like
-# Sofa.plugin_path('Compliant')
-
-import sys
-sys.path.append( Sofa.src_dir() + '/applications/plugins/Compliant/python' )
 
 from Compliant import Rigid
 
