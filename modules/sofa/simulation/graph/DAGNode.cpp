@@ -23,7 +23,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/simulation/graph/DAGNode.h>
-#include <sofa/simulation/common/Visitor.h>
 #include <sofa/simulation/common/xml/NodeElement.h>
 #include <sofa/helper/Factory.inl>
 
@@ -312,55 +311,52 @@ void* DAGNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
 }
 
 
+
+
 /// Generic list of objects access, possibly searching up or down from the current context
 ///
 /// Note that the template wrapper method should generally be used to have the correct return type,
 void DAGNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir) const
 {
-    if (dir == SearchRoot)
+    if( dir == SearchRoot )
     {
-        if (!getParents().empty())
+        if( !getParents().empty() )
         {
-            getRootContext()->getObjects(class_info, container, tags, dir);
+            getRootContext()->getObjects( class_info, container, tags, dir );
             return;
         }
         else dir = SearchDown; // we are the root, search down from here.
     }
-    if (dir != SearchParents)
-        for (ObjectIterator it = this->object.begin(); it != this->object.end(); ++it)
-        {
-            core::objectmodel::BaseObject* obj = it->get();
-            void* result = class_info.dynamicCast(obj);
-            if (result != NULL && (tags.empty() || (obj)->getTags().includes(tags)))
-                container(result);
-        }
 
+
+    switch( dir )
     {
-        switch(dir)
-        {
         case Local:
+            this->getLocalObjects( class_info, container, tags );
             break;
-        case SearchParents:
+
         case SearchUp:
+            this->getLocalObjects( class_info, container, tags ); // add locals then SearchParents
+            // no break here, we want to execute the SearchParents code.
+        case SearchParents:
         {
-            // WORK IN PROGRESS
-            // TODO: manage diamond setups to avoid multiple getObjects() calls on a Node...
-            Parents parents = getParents();
-            for (Parents::iterator it = parents.begin(); it!=parents.end(); it++)
-                dynamic_cast<Node*>(*it)->getObjects(class_info, container, tags, SearchUp);
+            // a visitor executed from top but only run for this' parents will enforce the selected object unicity due even with diamond graph setups
+            GetUpObjectsVisitor vis( (DAGNode*)this, class_info, container, tags);
+            getRootContext()->executeVisitor(&vis);
         }
         break;
+
         case SearchDown:
-            for(ChildIterator it = child.begin(); it != child.end(); ++it)
-            {
-                if ((*it)->isActive())
-                    (*it)->getObjects(class_info, container, tags, dir);
-            }
-            break;
-        case SearchRoot:
-            std::cerr << "SearchRoot SHOULD NOT BE POSSIBLE HERE!\n";
+        {
+            // a regular visitor is enforcing the selected object unicity
+            GetDownObjectsVisitor vis(class_info, container, tags);
+            ((DAGNode*)(this))->executeVisitor(&vis);
             break;
         }
+
+        //case SearchRoot:
+        default:
+            break;
     }
 }
 
