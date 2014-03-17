@@ -103,7 +103,10 @@ protected:
         , size(0), numberOfContacts(0)
         , previous(initLink("previous", "Previous (coarser / upper / parent level) CollisionModel in the hierarchy."))
         , next(initLink("next", "Next (finer / lower / child level) CollisionModel in the hierarchy."))
+        , collisionGroupTags(initData(&collisionGroupTags,"collisionGroupTags","If not empty, collision can occur only when two CollisionModel share a same tag."))
+
     {
+        ++nb_collision_models;
     }
 
     /// Destructor
@@ -287,14 +290,46 @@ public:
     ///
     /// Default to false if the collision models are attached to the same
     /// context (i.e. the same node in the scenegraph).
+//    virtual bool canCollideWith(CollisionModel* model)
+//    {
+//        if (model != this && this->group.getValue() != 0 && this->group.getValue() == model->group.getValue())
+//            return false;
+//        else if (model->getContext() != this->getContext())
+//            return true;
+//        else return bSelfCollision.getValue();
+//    }
+//      virtual bool canCollideWith(CollisionModel* model)
+//        {
+//            if (model->getContext() == this->getContext())
+//                return bSelfCollision.getValue();
+//            else if(collisionID.getValue()< 0)
+//                return true;
+//            else if(model->collisionID.getValue() < 0)
+//                return true;
+//            else
+//                return collisionFilter.getValue()[model->collisionID.getValue()];
+//        }
+
+
     virtual bool canCollideWith(CollisionModel* model)
     {
-        if (model != this && this->group.getValue() != 0 && this->group.getValue() == model->group.getValue())
+        if (model->getContext() == this->getContext())
+            return bSelfCollision.getValue();
+        else if(!(this->collisionGroupTags.getValue().empty())){
+            if(model->collisionGroupTags.getValue().empty())
+                return true;
+
+            sofa::core::objectmodel::TagSet::const_iterator it = collisionGroupTags.getValue().begin();
+            for(;it != collisionGroupTags.getValue().end() ; ++it)
+                if(model->collisionGroupTags.getValue().includes(*it))
+                    return true;
+
             return false;
-        else if (model->getContext() != this->getContext())
+        }
+        else
             return true;
-        else return bSelfCollision.getValue();
     }
+
     //virtual bool canCollideWith(CollisionModel* model) { return model != this; }
 
     /// \brief Test if two elements can collide with each other.
@@ -458,6 +493,8 @@ protected:
     /// color used to display the collision model if requested
     Data<defaulttype::Vec4f> color;
 
+    Data< sofa::core::objectmodel::TagSet > collisionGroupTags;
+
     /// Number of collision elements
     int size;
 
@@ -470,6 +507,7 @@ protected:
     /// Pointer to the next (finer / lower / child level) CollisionModel in the hierarchy.
     SingleLink<CollisionModel,CollisionModel,BaseLink::FLAG_DOUBLELINK> next;
 
+    static int nb_collision_models;
     int enum_type;
 };
 
