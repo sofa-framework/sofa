@@ -40,7 +40,7 @@
 #include <sofa/component/topology/BezierTetrahedronSetGeometryAlgorithms.h>
 #include <sofa/component/container/MechanicalObject.h>
 #include <sofa/core/MechanicalParams.h>
-#include <plugins\SceneCreator\SceneCreator.h>
+#include <plugins/SceneCreator/SceneCreator.h>
 #include <sofa/component/mass/MeshMatrixMass.h>
 #include <sofa/component/engine/GenerateCylinder.h>
 #include <sofa/component/topology/Mesh2BezierTopologicalMapping.h>
@@ -109,7 +109,7 @@ struct BezierTetrahedronTopology_test : public Sofa_test<typename _DataTypes::Re
     void createScene()
     {
 		// GenerateCylinder object
-		sofa::component::engine::GenerateCylinder<DataTypes>::SPtr eng= sofa::modeling::addNew<sofa::component::engine::GenerateCylinder<DataTypes> >(root,"cylinder");
+        typename sofa::component::engine::GenerateCylinder<DataTypes>::SPtr eng= sofa::modeling::addNew<sofa::component::engine::GenerateCylinder<DataTypes> >(root,"cylinder");
 		eng->f_radius=0.2;
 		eng->f_height=1.0;
 		// TetrahedronSetTopologyContainer object
@@ -117,9 +117,9 @@ struct BezierTetrahedronTopology_test : public Sofa_test<typename _DataTypes::Re
 		sofa::modeling::setDataLink(&eng->f_tetrahedron,&container1->d_tetrahedron);
 		sofa::modeling::setDataLink(&eng->f_outputX,&container1->d_initPoints);
 		// TetrahedronSetGeometryAlgorithms object
-		sofa::component::topology::TetrahedronSetGeometryAlgorithms<DataTypes>::SPtr geo1= sofa::modeling::addNew<sofa::component::topology::TetrahedronSetGeometryAlgorithms<DataTypes> >(root);
+        typename sofa::component::topology::TetrahedronSetGeometryAlgorithms<DataTypes>::SPtr geo1= sofa::modeling::addNew<sofa::component::topology::TetrahedronSetGeometryAlgorithms<DataTypes> >(root);
 		// mechanicalObject object
-		MechanicalObject::SPtr meca1= sofa::modeling::addNew<MechanicalObject>(root);
+        typename MechanicalObject::SPtr meca1= sofa::modeling::addNew<MechanicalObject>(root);
 		sofa::modeling::setDataLink(&eng->f_outputX,&meca1->x);
 		// subnode
 	    simulation::Node::SPtr bezierNode = root->createChild("BezierTetrahedronTopology");
@@ -130,11 +130,11 @@ struct BezierTetrahedronTopology_test : public Sofa_test<typename _DataTypes::Re
 		mapping->setTopologies(container1.get(),container2.get());
 		mapping->bezierTetrahedronDegree=3;
 		// mechanicalObject object
-		MechanicalObject::SPtr meca2= sofa::modeling::addNew<MechanicalObject>(bezierNode,"BezierMechanicalObject");
+        typename MechanicalObject::SPtr meca2= sofa::modeling::addNew<MechanicalObject>(bezierNode,"BezierMechanicalObject");
 		// BezierTetrahedronSetGeometryAlgorithms
-		sofa::component::topology::BezierTetrahedronSetGeometryAlgorithms<DataTypes>::SPtr geo2= sofa::modeling::addNew<sofa::component::topology::BezierTetrahedronSetGeometryAlgorithms<DataTypes> >(bezierNode);
+        typename sofa::component::topology::BezierTetrahedronSetGeometryAlgorithms<DataTypes>::SPtr geo2= sofa::modeling::addNew<sofa::component::topology::BezierTetrahedronSetGeometryAlgorithms<DataTypes> >(bezierNode);
 		// MeshMatrixMass
-		MeshMatrixMass::SPtr mass= sofa::modeling::addNew<MeshMatrixMass >(bezierNode,"BezierMass");
+        typename MeshMatrixMass::SPtr mass= sofa::modeling::addNew<MeshMatrixMass >(bezierNode,"BezierMass");
 		mass->m_massDensity=1.0;
 		mass->d_integrationMethod.setValue(std::string("analytical"));
 	}
