@@ -58,6 +58,17 @@ public:
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
+    Data<Deriv> pressure;
+
+    Data<sofa::helper::vector<unsigned int> > triangleList;
+
+    /// the normal used to define the edge subjected to the pressure force.
+    Data<Deriv> normal;
+
+    Data<Real> dmin; // coordinates min of the plane for the vertex selection
+    Data<Real> dmax;// coordinates max of the plane for the vertex selection
+    Data<bool> p_showForces;
+
 protected:
 
     class TrianglePressureInformation
@@ -87,19 +98,6 @@ protected:
     TriangleSparseData<sofa::helper::vector<TrianglePressureInformation> > trianglePressureMap;
 
     sofa::core::topology::BaseMeshTopology* _topology;
-
-    Data<Deriv> pressure;
-
-    Data<sofa::helper::vector<unsigned int> > triangleList;
-
-    /// the normal used to define the edge subjected to the pressure force.
-    Data<Deriv> normal;
-
-    Data<Real> dmin; // coordinates min of the plane for the vertex selection
-    Data<Real> dmax;// coordinates max of the plane for the vertex selection
-    Data<bool> p_showForces;
-
-
 
     TrianglePressureForceField()
         : trianglePressureMap(initData(&trianglePressureMap, "trianglePressureMap", "map between edge indices and their pressure"))
