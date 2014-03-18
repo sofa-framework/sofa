@@ -4,7 +4,7 @@
 	
 	<VisualStyle displayFlags="showBehavior showVisual" />
 	
-	<EulerImplicitSolver rayleighStiffness="0.5"  rayleighMass="0.5" vdamping=0.01/>
+	<EulerImplicitSolver rayleighStiffness="0.5"  rayleighMass="0.5" vdamping="0.01"/>
 	<CGLinearSolver template="GraphScattered" iterations="25"  threshold="1e-008" />
 
 	<Node name="target">
