@@ -649,6 +649,7 @@ Real Decompose<Real>::polarDecomposition( const defaulttype::Mat<3,3,Real>& M, d
 
   do
   {
+
     defaulttype::Mat<3,3,Real> MadjTk;
 
     // row 2 x row 3
@@ -661,8 +662,8 @@ Real Decompose<Real>::polarDecomposition( const defaulttype::Mat<3,3,Real>& M, d
     det = Mk(0,0) * MadjTk(0,0) + Mk(0,1) * MadjTk(0,1) + Mk(0,2) * MadjTk(0,2);
     if (det == 0.0)
     {
-//      printf("Warning (polarDecomposition) : zero determinant encountered.\n");
-      break;
+        std::cerr<<"Decompose::polarDecomposition: zero determinant encountered.\n";
+        break;
     }
 
     Real MadjT_one = oneNorm(MadjTk);
@@ -672,18 +673,17 @@ Real Decompose<Real>::polarDecomposition( const defaulttype::Mat<3,3,Real>& M, d
     Real g1 = gamma * static_cast<Real>(0.5);
     Real g2 = static_cast<Real>(0.5) / (gamma * det);
 
-    for(int i=0; i<9; i++)
-    {
-      Ek.ptr()[i] = Mk.ptr()[i];
-      Mk.ptr()[i] = g1 * Mk.ptr()[i] + g2 * MadjTk.ptr()[i];
-      Ek.ptr()[i] -= Mk.ptr()[i];
-    }
+    Ek = Mk;
+    Mk = Mk * g1 + MadjTk * g2;
+    Ek -= Mk;
 
     E_oneNorm = oneNorm(Ek);
     M_oneNorm = oneNorm(Mk);
     M_infNorm = infNorm(Mk);
+
   }
   while ( E_oneNorm > M_oneNorm * zeroTolerance() );
+
 
   // Q = Mk^T
   Q.transpose( Mk );
@@ -706,7 +706,7 @@ Real Decompose<Real>::polarDecomposition( const defaulttype::Mat<3,3,Real>& M, d
   Real det, M_oneNorm, M_infNorm, E_oneNorm;
 
   // Mk = M^T
-  Mk.transpose( M );;
+  Mk.transpose( M );
 
   M_oneNorm = oneNorm(Mk);
   M_infNorm = infNorm(Mk);
@@ -725,8 +725,8 @@ Real Decompose<Real>::polarDecomposition( const defaulttype::Mat<3,3,Real>& M, d
     det = Mk(0,0) * MadjTk(0,0) + Mk(0,1) * MadjTk(0,1) + Mk(0,2) * MadjTk(0,2);
     if (det == 0.0)
     {
-//      printf("Warning (polarDecomposition) : zero determinant encountered.\n");
-      break;
+        std::cerr<<"Decompose::polarDecomposition: zero determinant encountered.\n";
+        break;
     }
 
     Real MadjT_one = oneNorm(MadjTk);
@@ -736,12 +736,9 @@ Real Decompose<Real>::polarDecomposition( const defaulttype::Mat<3,3,Real>& M, d
     Real g1 = gamma * static_cast<Real>(0.5);
     Real g2 = static_cast<Real>(0.5) / (gamma * det);
 
-    for(int i=0; i<9; i++)
-    {
-      Ek.ptr()[i] = Mk.ptr()[i];
-      Mk.ptr()[i] = g1 * Mk.ptr()[i] + g2 * MadjTk.ptr()[i];
-      Ek.ptr()[i] -= Mk.ptr()[i];
-    }
+    Ek = Mk;
+    Mk = Mk * g1 + MadjTk * g2;
+    Ek -= Mk;
 
     E_oneNorm = oneNorm(Ek);
     M_oneNorm = oneNorm(Mk);
@@ -1076,7 +1073,7 @@ bool Decompose<Real>::polarDecomposition_stable_Gradient_dQOverdM( const default
                     omega[i][j][k][l] = ( U[i][k]*V[l][j] - U[i][l]*V[k][j] ) / A;
                 }
 
-                omega[i][j][l][k] = -omega[i][j][k][l];
+                omega[i][j][l][k] = -omega[i][j][k][l]; // skew-symmetric (antisymmetric)
             }
             omega[i][j] = U * omega[i][j] * V;
         }
@@ -1110,7 +1107,7 @@ bool Decompose<Real>::polarDecompositionGradient_dQOverdM( const defaulttype::Ma
             Mat<2,2,Real> omega;
 
             omega[0][1] = ( U[i][0]*V[1][j] - U[i][1]*V[0][j] ) / A;
-            omega[1][0] = -omega[0][1];
+            omega[1][0] = -omega[0][1]; // skew-symmetric (antisymmetric)
 
             dQdMij[i][j] = U * omega * V;
         }

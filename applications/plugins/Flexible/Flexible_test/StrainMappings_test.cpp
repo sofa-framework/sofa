@@ -65,8 +65,8 @@ namespace sofa {
 
             // rotation
             f = rotation * f;
-            cerr<<"StrainMappingTest::runTest, f="<< f << endl;
-            cerr<<"StrainMappingTest::runTest, expected="<< expectedChildCoords << endl;
+//            cerr<<"StrainMappingTest::runTest, f="<< f << endl;
+//            cerr<<"StrainMappingTest::runTest, expected="<< expectedChildCoords << endl;
 
 
             return Inherited::runTest(xin,xout,xin,expectedChildCoords);
@@ -109,7 +109,7 @@ namespace sofa {
               symGradDef[i][j] = (i+1)*2+j*0.3; // todo randomize it being careful not to create a rotation
               if( i!=j ) symGradDef[j][i] = symGradDef[i][j];
           }
-          cerr<<"symGradDef = " << symGradDef << endl;
+//          cerr<<"symGradDef = " << symGradDef << endl;
 
           // expected mapped values
           OutVecCoord expectedChildCoords(1);
@@ -117,7 +117,7 @@ namespace sofa {
           for( unsigned int i=0 ; i<In::material_dimensions ; ++i )
               defo[i][i] -= 1.0;
           expectedChildCoords[0].getVec() = defaulttype::StrainMatToVoigt( defo );
-          cerr<<"voigt strain = " << defo << endl;
+//          cerr<<"voigt strain = " << defo << endl;
 
 //          helper::Quater<Real>::fromEuler( 0.1, -.2, .3 ).toMatrix(rotation); // random rotation to combine to strain
           helper::Quater<Real>::fromEuler( 0,0,0 ).toMatrix(rotation); // random rotation to combine to strain
