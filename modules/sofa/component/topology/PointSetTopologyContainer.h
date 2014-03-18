@@ -174,12 +174,12 @@ protected:
     /// \brief functions to display the graph of Data/DataEngines linked to the different Data array, using member variable.
     virtual void displayDataGraph(sofa::core::objectmodel::BaseData& my_Data);
 
-protected:
+public:
 
     Data<unsigned int> nbPoints;
 
     Data<InitTypes::VecCoord> d_initPoints;
-
+protected:
     /// Boolean used to know if the topology Data of this container is dirty
     bool m_pointTopologyDirty;
 

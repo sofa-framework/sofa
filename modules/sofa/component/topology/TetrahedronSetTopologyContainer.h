@@ -464,13 +464,13 @@ protected:
     void cleanTetrahedronTopologyFromDirty() {m_tetrahedronTopologyDirty = false;}
     const bool& isTetrahedronTopologyDirty() {return m_tetrahedronTopologyDirty;}
 
-protected:
+public:
 	/// force the creation of triangles
 	Data<bool>  d_createTriangleArray;
 
     /// provides the set of tetrahedra.
     Data< sofa::helper::vector<Tetrahedron> > d_tetrahedron;
-
+protected:
     /// provides the set of edges for each tetrahedron.
     sofa::helper::vector<EdgesInTetrahedron> m_edgesInTetrahedron;
 
