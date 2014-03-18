@@ -163,6 +163,8 @@ public slots:
     void fileSaveAs();
     void fileReload();
 
+	void exportSofaClasses();
+
     /// Remove all components of the current simulation
     void clearTab();
     /// Close the current simulation

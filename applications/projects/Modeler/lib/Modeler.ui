@@ -28,7 +28,7 @@
   <property name="windowTitle">
    <string>Sofa Modeler</string>
   </property>
-  <widget class="QWidget" name="widget">
+  <widget class="QWidget" name="widget" native="true">
    <property name="geometry">
     <rect>
      <x>0</x>
@@ -47,7 +47,7 @@
      <height>32</height>
     </rect>
    </property>
-   <property name="label">
+   <property name="label" stdset="0">
     <string>Tools</string>
    </property>
    <addaction name="fileNewTabAction"/>
@@ -88,6 +88,8 @@
     <addaction name="fileSaveAction"/>
     <addaction name="fileSaveAsAction"/>
     <addaction name="fileReloadAction"/>
+    <addaction name="separator"/>
+    <addaction name="exportSofaClassesAction"/>
     <addaction name="separator"/>
     <addaction name="separator"/>
     <addaction name="fileExitAction"/>
@@ -449,14 +451,14 @@
     <cstring>TestAction</cstring>
    </property>
   </action>
+  <action name="exportSofaClassesAction">
+   <property name="text">
+    <string>Export Sofa Classes</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="2" margin="5"/>
  <customwidgets>
-  <customwidget>
-   <class>Q3ToolBar</class>
-   <extends>Q3Frame</extends>
-   <header>q3listview.h</header>
-  </customwidget>
   <customwidget>
    <class>Q3Frame</class>
    <extends>QFrame</extends>
@@ -467,6 +469,12 @@
    <class>Q3MainWindow</class>
    <extends>QWidget</extends>
    <header>q3mainwindow.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Q3ToolBar</class>
+   <extends>Q3Frame</extends>
+   <header>q3listview.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
@@ -717,6 +725,22 @@
    <signal>activated()</signal>
    <receiver>Modeler</receiver>
    <slot>showPluginManager()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>exportSofaClassesAction</sender>
+   <signal>activated()</signal>
+   <receiver>Modeler</receiver>
+   <slot>exportSofaClasses()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>

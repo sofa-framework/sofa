@@ -54,7 +54,6 @@ int main(int argc, char** argv)
 	Q_INIT_RESOURCE(icons);
     sofa::gui::qt::SofaModeler* sofaModeler = new sofa::gui::qt::SofaModeler();
 
-
     application->setMainWidget(sofaModeler);
     sofaModeler->show();
 
