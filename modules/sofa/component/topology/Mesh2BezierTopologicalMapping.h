@@ -72,7 +72,7 @@ public:
     /** \brief Initializes the target BaseTopology from the source BaseTopology.
      */
     virtual void init();
-protected:
+
     /// Fills pointBaryCoords, edgeBaryCoords, triangleBaryCoords and tetraBaryCoords so as to create a Bezier Tetrahedron mesh of a given order
 	Data < unsigned int > bezierTetrahedronDegree;
 };

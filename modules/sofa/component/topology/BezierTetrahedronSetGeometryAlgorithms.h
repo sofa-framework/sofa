@@ -80,10 +80,11 @@ protected:
 	/// the list of edges of the Bezier Tetrahedron used in the draw function
 	sofa::helper::set<Edge> bezierTetrahedronEdgeSet;
 
-public:
+
 	/// constructor 
 	BezierTetrahedronSetGeometryAlgorithms();
     virtual ~BezierTetrahedronSetGeometryAlgorithms() {}
+public:
 	virtual void init();
 	virtual void reinit();
     virtual void draw(const core::visual::VisualParams* vparams);

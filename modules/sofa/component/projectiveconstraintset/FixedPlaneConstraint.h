@@ -68,7 +68,12 @@ public:
     typedef Data<MatrixDeriv> DataMatrixDeriv;
     typedef helper::vector<unsigned int> SetIndexArray;
     typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
+public:
+    /// direction on which the constraint applies
+    Data<Coord> direction;
 
+    Data<Real> dmin; // coordinates min of the plane for the vertex selection
+    Data<Real> dmax;// coordinates max of the plane for the vertex selection
 protected:
     FixedPlaneConstraintInternalData<DataTypes> data;
     friend class FixedPlaneConstraintInternalData<DataTypes>;
@@ -77,13 +82,10 @@ protected:
     void projectResponseT(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataDeriv& dx);
 
     SetIndex indices; // the set of vertex indices
-    /// direction on which the constraint applies
-    Data<Coord> direction;
+
     /// whether vertices should be selected from 2 parallel planes
     bool selectVerticesFromPlanes;
 
-    Data<Real> dmin; // coordinates min of the plane for the vertex selection
-    Data<Real> dmax;// coordinates max of the plane for the vertex selection
 
     FixedPlaneConstraint();
 
