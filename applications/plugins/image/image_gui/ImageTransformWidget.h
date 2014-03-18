@@ -84,7 +84,7 @@ public :
     {}
 
     virtual bool createWidgets();
-	virtual void setDataReadOnly(bool readOnly) {};
+    virtual void setDataReadOnly(bool /*readOnly*/) {};
 
     virtual unsigned int sizeWidget() {return 12;}
     virtual unsigned int numColumnWidget() {return 3;}
