@@ -23,17 +23,17 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "Sofa_test.h"
-#include <sofa/defaulttype/Vec3Types.h>
-#include <plugins\SceneCreator\SceneCreator.h>
+#include <plugins/SceneCreator/SceneCreator.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 //Including Simulation
-#include <sofa/simulation/common/Simulation.h>
 #include <sofa/component/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 // ForceField
 #include <sofa/component/forcefield/TetrahedralTensorMassForceField.h>
 #include <sofa/component/forcefield/TetrahedralCorotationalFEMForceField.h>
+#include <sofa/component/topology/TopologySparseData.inl>
+
 namespace sofa {
 
 using std::cout;
@@ -71,7 +71,7 @@ struct LinearElasticity_test : public Sofa_test<typename _DataTypes::Real>
     typedef typename sofa::component::mass::MeshMatrixMass<DataTypes,Real>  MeshMatrixMass;
 	typedef typename sofa::component::forcefield::TetrahedralTensorMassForceField<DataTypes> TetrahedralTensorMassForceField;
     typedef typename sofa::core::behavior::ForceField<DataTypes>::SPtr ForceFieldSPtr;
-	typedef typename ForceFieldSPtr (LinearElasticity_test<_DataTypes>::*LinearElasticityFF)(simulation::Node::SPtr,double,double);
+    typedef ForceFieldSPtr (LinearElasticity_test<_DataTypes>::*LinearElasticityFF)(simulation::Node::SPtr,double,double);
     /// Simulation
     simulation::Simulation* simulation;
 	/// struct with the pointer of the main components 
@@ -100,15 +100,15 @@ struct LinearElasticity_test : public Sofa_test<typename _DataTypes::Real>
 		vIndex=(resolutionCircumferential*(resolutionRadial-1)+1)*resolutionHeight/2;
     }
 	ForceFieldSPtr addTetrahedralLinearElastic(simulation::Node::SPtr root,
-		double youngModulus,double poissonRatio)
+        double youngModulus,double poissonRatio)
 	{
-		TetrahedralTensorMassForceField::SPtr ff=addNew<TetrahedralTensorMassForceField>(root);
+        typename TetrahedralTensorMassForceField::SPtr ff=addNew<TetrahedralTensorMassForceField>(root);
 		ff->setYoungModulus(youngModulus);
 		ff->setPoissonRatio(poissonRatio);
 		return (ForceFieldSPtr )ff;
 	}
 	ForceFieldSPtr addTetrahedralCorotationalFEMLinearElastic(simulation::Node::SPtr root,
-		double youngModulus,double poissonRatio)
+        double youngModulus,double poissonRatio)
 	{
 		typename sofa::component::forcefield::TetrahedralCorotationalFEMForceField<DataTypes>::SPtr ff=addNew<sofa::component::forcefield::TetrahedralCorotationalFEMForceField<DataTypes> >(root);
 		ff->setYoungModulus(youngModulus);
@@ -194,13 +194,13 @@ TYPED_TEST_CASE(LinearElasticity_test, DataTypes);
 TYPED_TEST( LinearElasticity_test , testTractionTensorMass )
 {
 	//	this->loadScene( "tests/SofaTest/LinearElasticity.scn");
-	ASSERT_TRUE( this->testLinearElasticityInTraction(&sofa::LinearElasticity_test<DataTypes>::addTetrahedralLinearElastic));
+    ASSERT_TRUE( this->testLinearElasticityInTraction(&sofa::LinearElasticity_test<TypeParam>::addTetrahedralLinearElastic));
 }
 
 TYPED_TEST( LinearElasticity_test , testTractionCorotational )
 {
 //	this->loadScene( "tests/SofaTest/LinearElasticity.scn");
-	ASSERT_TRUE( this->testLinearElasticityInTraction(&sofa::LinearElasticity_test<DataTypes>::addTetrahedralCorotationalFEMLinearElastic));
+    ASSERT_TRUE( this->testLinearElasticityInTraction(&sofa::LinearElasticity_test<TypeParam>::addTetrahedralCorotationalFEMLinearElastic));
 }
 
 } // namespace sofa

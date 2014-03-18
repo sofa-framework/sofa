@@ -38,7 +38,6 @@
 namespace sofa {
 
 using std::cout;
-using std::cout;
 using std::endl;
 using namespace core;
 using namespace modeling;
@@ -189,7 +188,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         for( unsigned i=0; i<xout.size(); i++ )
         {
             if( !this->isSmall( difference(xout[i],expectedChildNew[i]).norm(), errorMax ) ) {
-                ADD_FAILURE() << "Position of mapped particle " << i << " is wrong: " << xout[i] <<", expected: " << expectedChildNew[i];
+                ADD_FAILURE() << "Position of mapped particle " << i << " is wrong: \n" << xout[i] <<"\nexpected: \n" << expectedChildNew[i];
                 succeed = false;
             }
         }
