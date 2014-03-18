@@ -38,7 +38,12 @@ class Frame:
                 
         def __str__(self):
                 return concat(self.translation) + ' ' + concat(self.rotation) 
-               
+            
+        def copy(self):
+                # TODO better !
+                return Rigid.Frame().read( str(self) )
+                                          
+   
         def read(self, str):
                 num = map(float, str.split())
                 self.translation = num[:3]
@@ -151,35 +156,42 @@ class Body:
                 
                 # TODO handle principal axes
                 
+
         def insert(self, node):
                 res = node.createChild( self.name )
 
-                dofs = self.dofs.insert(res, name = 'dofs' )
-                
-                mass_node = res
-                
+                # mass offset, if any
+                off = Frame()
                 if self.offset != None:
-                        mass_node = res.createChild('mapped_mass')
-                        self.offset.insert(mass_node, name = 'dofs')
-                        mapping = mass_node.createObject('AssembledRigidRigidMapping',
-                                                         template = 'Rigid',
-                                                         source = '0 ' + str( self.offset) )
-                # mass
-                mass = mass_node.createObject('RigidMass', 
-                                              template = 'Rigid',
-                                              name = 'mass', 
-                                              mass = self.mass, 
-                                              inertia = concat(self.inertia),
-                                              inertia_forces = self.inertia_forces )
+                        off = self.offset
+
+                # kinematic dofs
+                frame = self.dofs * off
+                dofs = frame.insert(res, name = 'dofs' )
+                
+                # dofs are now located at the mass frame, good
+                mass = res.createObject('RigidMass', 
+                                        template = 'Rigid',
+                                        name = 'mass', 
+                                        mass = self.mass, 
+                                        inertia = concat(self.inertia),
+                                        inertia_forces = self.inertia_forces )
+                
+                # user node i.e. the one the user provided
+                user = res.createChild( 'user' )
+                off.inv().insert(user, name = 'dofs')
+                user.createObject('AssembledRigidRigidMapping',
+                                  template = 'Rigid,Rigid',
+                                  source = '0 ' + str(off.inv()) )
                 
                 # visual model
                 if self.visual != None:
                         visual_template = 'ExtVec3f'
                         
-                        visual = res.createChild( 'visual' )
+                        visual = user.createChild( 'visual' )
                         ogl = visual.createObject('OglModel', 
                                                   template = visual_template, 
-                                                  name='mesh', 
+                                                  name = 'mesh', 
                                                   fileMesh = self.visual, 
                                                   color = concat(self.color), 
                                                   scale3d = concat(self.scale))
@@ -189,7 +201,7 @@ class Body:
                                                          input = '@../')
                 # collision model
                 if self.collision != None:
-                        collision = res.createChild('collision')
+                        collision = user.createChild('collision')
                 
                         collision.createObject("MeshObjLoader", 
 					       name = 'loader', 
@@ -258,9 +270,9 @@ class Joint:
                 input = []
                 for b, o in zip(self.body, self.offset):
                         if o is None:
-                                input.append( '@' + b.name + '/dofs' )
+                                input.append( '@' + b.name + '/user/dofs' )
                         else:
-                                joint = b.createChild( self.name + '-offset' )
+                                joint = b.getChild('user').createChild( self.name + '-offset' )
                                 
                                 joint.createObject('MechanicalObject', 
                                                    template = 'Rigid', 
@@ -270,7 +282,7 @@ class Joint:
                                                    template = "Rigid,Rigid",
                                                    source = '0 ' + str( o ) )
                                 
-                                input.append( '@' + b.name + '/' + joint.name + '/dofs' )
+                                input.append( '@' + b.name + '/user/' + joint.name + '/dofs' )
                              
                 if len(input) == 0:
                         print 'warning: empty joint'
@@ -283,7 +295,7 @@ class Joint:
                                          template = 'Vec6d', 
                                          name = 'dofs', 
                                          position = '0 0 0 0 0 0' )
-                
+
                 map = node.createObject('RigidJointMultiMapping',
                                         name = 'mapping', 
                                         template = 'Rigid,Vec6d', 
