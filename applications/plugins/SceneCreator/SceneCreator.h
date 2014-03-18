@@ -28,6 +28,7 @@
 
 #include "initSceneCreator.h"
 #include <string>
+#include <sofa/simulation/common/Simulation.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/component/loader/MeshObjLoader.h>
 #include <sofa/component/mass/UniformMass.h>
@@ -256,7 +257,7 @@ template<class DataTypes> CylinderTractionStruct<DataTypes>  createCylinderTract
 	CylinderTractionStruct<DataTypes> tractionStruct;
 
     // Root node
-	root = this->simulation::getSimulation()->createNewGraph("root");
+	root = sofa::simulation::getSimulation()->createNewGraph("root");
 	tractionStruct.root=root;
 
     root->setGravity( Coord3(0,0,0) );
