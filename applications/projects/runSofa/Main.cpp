@@ -118,6 +118,7 @@ int main(int argc, char** argv)
     bool        printFactory = false;
     bool        loadRecent = false;
     bool        temporaryFile = false;
+	bool		testMode = false;
     int	        nbIterations = 0;
     unsigned    computationTimeSampling=0; ///< Frequency of display of the computation time statistics, in number of animation steps. 0 means never.
 
@@ -151,6 +152,7 @@ int main(int argc, char** argv)
     .option(&loadRecent,'r',"recent","load most recently opened file")
     .option(&simulationType,'s',"simu","select the type of simulation (bgl, dag, tree, smp)")
     .option(&temporaryFile,'t',"temporary","the loaded scene won't appear in history of opened files")
+	.option(&testMode,'m',"test","select test mode with xml output after N iteration")
     .option(&verif,'v',"verification","load verification data for the scene")
 #ifdef SOFA_SMP
     .option(&disableStealing,'w',"disableStealing","Disable Work Stealing")
@@ -261,7 +263,7 @@ int main(int argc, char** argv)
 
     if (startAnim)
         groot->setAnimate(true);
-
+    bool save = (nbIterations > 0);
     if (printFactory)
     {
         std::cout << "////////// FACTORY //////////" << std::endl;
@@ -279,8 +281,14 @@ int main(int argc, char** argv)
     // Run the main loop
     if (int err = sofa::gui::GUIManager::MainLoop(groot,fileName.c_str()))
         return err;
-
     groot = dynamic_cast<sofa::simulation::Node*>( sofa::gui::GUIManager::CurrentSimulation() );
+
+    if (testMode)
+    {
+        std::string xmlname = fileName.substr(0,fileName.length()-4)+"-scene.scn";
+        std::cout << "Exporting to XML " << xmlname << std::endl;
+		sofa::simulation::getSimulation()->exportXML(groot.get(), xmlname.c_str());
+    }
 
     if (groot!=NULL)
         sofa::simulation::getSimulation()->unload(groot);

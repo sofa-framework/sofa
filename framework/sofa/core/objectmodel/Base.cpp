@@ -555,6 +555,24 @@ void  Base::writeDatas ( std::map<std::string,std::string*>& args )
     }
 }
 
+static std::string xmlencode(const std::string& str)
+{
+    std::string res;
+    for (unsigned int i=0; i<str.length(); ++i)
+    {
+        switch(str[i])
+        {
+        case '<': res += "&lt;"; break;
+        case '>': res += "&gt;"; break;
+        case '&': res += "&amp;"; break;
+        case '"': res += "&quot;"; break;
+        case '\'': res += "&apos;"; break;
+        default:  res += str[i];
+        }
+    }
+    return res;
+}
+
 void  Base::xmlWriteDatas (std::ostream& out, int /*level*/)
 {
     for(VecData::const_iterator iData = m_vecData.begin(); iData != m_vecData.end(); ++iData)
@@ -562,7 +580,7 @@ void  Base::xmlWriteDatas (std::ostream& out, int /*level*/)
         BaseData* field = *iData;
         if (!field->getLinkPath().empty() )
         {
-            out << " " << field->getName() << "=\""<< field->getLinkPath() << "\" ";
+            out << " " << field->getName() << "=\""<< xmlencode( field->getLinkPath() )<< "\" ";
         }
         else
         {
@@ -570,7 +588,7 @@ void  Base::xmlWriteDatas (std::ostream& out, int /*level*/)
             {
                 std::string val = field->getValueString();
                 if (!val.empty())
-                    out << " " << field->getName() << "=\""<< val << "\" ";
+                    out << " " << field->getName() << "=\""<< xmlencode( val ) << "\" ";
             }
         }
     }
@@ -581,7 +599,7 @@ void  Base::xmlWriteDatas (std::ostream& out, int /*level*/)
         {
             std::string val = link->getValueString();
             if (!val.empty())
-                out << " " << link->getName() << "=\""<< val << "\" ";
+                out << " " << link->getName() << "=\""<< xmlencode( val ) << "\" ";
         }
     }
 }
