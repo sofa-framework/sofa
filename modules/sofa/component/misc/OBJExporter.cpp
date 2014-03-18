@@ -54,7 +54,8 @@ namespace misc
 SOFA_DECL_CLASS(OBJExporter)
 
 int OBJExporterClass = core::RegisterObject("Export under Wavefront OBJ format")
-        .add< OBJExporter >();
+        .add< OBJExporter >()
+        .addAlias("ObjExporter");
 
 OBJExporter::OBJExporter()
     : stepCounter(0)
@@ -94,11 +95,15 @@ void OBJExporter::writeOBJ()
         oss << stepCounter / maxStep;
         filename += oss.str();
     }
-    filename += ".obj";
+    if ( !(filename.size() > 3 && filename.substr(filename.size()-4)==".obj"))
+        filename += ".obj";
     outfile = new std::ofstream(filename.c_str());
 
     std::string mtlfilename = objFilename.getFullPath();
-    mtlfilename = mtlfilename + ".mtl";
+    if ( !(mtlfilename.size() > 3 && mtlfilename.substr(filename.size()-4)==".obj"))
+        mtlfilename += ".mtl";
+    else
+        mtlfilename = mtlfilename.substr(0, mtlfilename.size()-4) + ".mtl";
     mtlfile = new std::ofstream(mtlfilename.c_str());
     sofa::simulation::ExportOBJVisitor exportOBJ(core::ExecParams::defaultInstance(),outfile, mtlfile);
     context->executeVisitor(&exportOBJ);
