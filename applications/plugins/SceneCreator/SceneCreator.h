@@ -256,7 +256,7 @@ template<class DataTypes> CylinderTractionStruct<DataTypes>  createCylinderTract
 	CylinderTractionStruct<DataTypes> tractionStruct;
 
     // Root node
-	root = simulation::getSimulation()->createNewGraph("root");
+	root = this->simulation::getSimulation()->createNewGraph("root");
 	tractionStruct.root=root;
 
     root->setGravity( Coord3(0,0,0) );
@@ -265,22 +265,22 @@ template<class DataTypes> CylinderTractionStruct<DataTypes>  createCylinderTract
 
 
 	// GenerateCylinder object
-	sofa::component::engine::GenerateCylinder<DataTypes>::SPtr eng= sofa::modeling::addNew<sofa::component::engine::GenerateCylinder<DataTypes> >(root,"cylinder");
+	typename sofa::component::engine::GenerateCylinder<DataTypes>::SPtr eng= sofa::modeling::addNew<sofa::component::engine::GenerateCylinder<DataTypes> >(root,"cylinder");
 	eng->f_radius=0.2;
 	eng->f_height=1.0;
 	eng->f_resolutionCircumferential=resolutionCircumferential;
 	eng->f_resolutionRadial=resolutionRadial;
 	eng->f_resolutionHeight=resolutionHeight;
 	// TetrahedronSetTopologyContainer object
-	sofa::component::topology::TetrahedronSetTopologyContainer::SPtr container1= sofa::modeling::addNew<sofa::component::topology::TetrahedronSetTopologyContainer>(root,"Container1");
+	typename sofa::component::topology::TetrahedronSetTopologyContainer::SPtr container1= sofa::modeling::addNew<sofa::component::topology::TetrahedronSetTopologyContainer>(root,"Container1");
 	sofa::modeling::setDataLink(&eng->f_tetrahedron,&container1->d_tetrahedron);
 	sofa::modeling::setDataLink(&eng->f_outputX,&container1->d_initPoints);
 	container1->d_createTriangleArray=true;
 	// TetrahedronSetGeometryAlgorithms object
-	sofa::component::topology::TetrahedronSetGeometryAlgorithms<DataTypes>::SPtr geo1= sofa::modeling::addNew<sofa::component::topology::TetrahedronSetGeometryAlgorithms<DataTypes> >(root);
+	typename sofa::component::topology::TetrahedronSetGeometryAlgorithms<DataTypes>::SPtr geo1= sofa::modeling::addNew<sofa::component::topology::TetrahedronSetGeometryAlgorithms<DataTypes> >(root);
 
 	// CGLinearSolver
-	CGLinearSolver::SPtr cgLinearSolver = addNew< CGLinearSolver >(root,"linearSolver");
+	typename CGLinearSolver::SPtr cgLinearSolver = addNew< CGLinearSolver >(root,"linearSolver");
 	cgLinearSolver->f_maxIter=maxIter;
 	cgLinearSolver->f_tolerance =1e-9;
 	cgLinearSolver->f_smallDenominatorThreshold=1e-9;
