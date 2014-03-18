@@ -37,20 +37,20 @@ template <typename MAP, unsigned int ORBIT>
 class VTraversorCell : public Traversor
 {
 private:
-	MAP& m ;
+	const MAP& m ;
 
-	AttributeContainer* cont ;
+	const AttributeContainer* cont ;
 	unsigned int qCurrent ;
 
 	DartMarker* dmark ;
 	CellMarker<ORBIT>* cmark ;
-	AttributeMultiVector<Dart>* quickTraversal ;
+	const AttributeMultiVector<Dart>* quickTraversal ;
 
 	Dart current ;
 	bool firstTraversal ;
 
 public:
-	VTraversorCell(MAP& map, bool forceDartMarker = false, unsigned int thread = 0) ;
+	VTraversorCell(const MAP& map, bool forceDartMarker = false, unsigned int thread = 0) ;
 
 	~VTraversorCell() ;
 
@@ -68,20 +68,20 @@ template <unsigned int ORBIT>
 class VTraversorCell<GenericMap,ORBIT> : public Traversor
 {
 private:
-	GenericMap& m ;
+	const GenericMap& m ;
 
-	AttributeContainer* cont ;
+	const AttributeContainer* cont ;
 	unsigned int qCurrent ;
 
 	DartMarker* dmark ;
 	CellMarker<ORBIT>* cmark ;
-	AttributeMultiVector<Dart>* quickTraversal ;
+	const AttributeMultiVector<Dart>* quickTraversal ;
 
 	Dart current ;
 	bool firstTraversal ;
 
 public:
-	VTraversorCell(GenericMap& map, bool forceDartMarker = false, unsigned int thread = 0) ;
+	VTraversorCell(const GenericMap& map, bool forceDartMarker = false, unsigned int thread = 0) ;
 
 	~VTraversorCell() ;
 

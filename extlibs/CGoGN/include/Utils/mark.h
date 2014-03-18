@@ -43,7 +43,7 @@ class Mark
 {
 	friend class MarkSet;
 
-	typedef unsigned int value_type;
+    typedef unsigned int value_type;
 	value_type m_bits;
 
 public:

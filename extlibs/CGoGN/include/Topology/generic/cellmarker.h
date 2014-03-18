@@ -58,8 +58,7 @@ public:
 
 
 
-	~CellMarkerGen()
-	{}
+    virtual ~CellMarkerGen() {}
 
 	unsigned int getThread() { return m_thread ; }
 	unsigned int getCell() { return m_cell ; }
@@ -113,7 +112,7 @@ public:
 		m_map.cellMarkers[m_thread].push_back(this) ;
 	}
 
-	/*virtual */~CellMarkerBase()
+    virtual ~CellMarkerBase()
 	{
 		if(releaseOnDestruct)
 		{
@@ -241,6 +240,7 @@ public:
 	}
 };
 
+
 /**
  * class that allows the marking of cells
  * \warning no default constructor
@@ -258,7 +258,7 @@ public:
 
 	~CellMarker()
 	{
-		unmarkAll() ;
+        unmarkAll() ;
 	}
 
 protected:
@@ -271,9 +271,10 @@ public:
 		assert(this->m_map.template getMarkerSet<CELL>(this->m_thread).testMark(this->m_mark));
 		assert(this->m_markVector != NULL);
 
-		AttributeContainer& cont = this->m_map.template getAttributeContainer<CELL>() ;
-		for (unsigned int i = cont.realBegin(); i != cont.realEnd(); cont.realNext(i))
-			this->m_markVector->operator[](i).unsetMark(this->m_mark) ;
+        this->m_markVector->memset(0);
+//		AttributeContainer& cont = this->m_map.template getAttributeContainer<CELL>() ;
+//		for (unsigned int i = cont.realBegin(); i != cont.realEnd(); cont.realNext(i))
+//			this->m_markVector->operator[](i).unsetMark(this->m_mark) ;
 	}
 };
 
@@ -352,7 +353,7 @@ public:
 
 	~CellMarkerMemo()
 	{
-		unmarkAll() ;
+        unmarkAll() ;
 //		assert(isAllUnmarked);
 //		CGoGN_ASSERT(this->isAllUnmarked())
 	}

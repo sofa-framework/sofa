@@ -220,6 +220,8 @@ public:
 
 	void clear();
 
+    void memset(unsigned char) ;
+
 	int getSizeOfType() const;
 
 	/**************************************

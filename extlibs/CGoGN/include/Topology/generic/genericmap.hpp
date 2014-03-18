@@ -468,15 +468,30 @@ inline void GenericMap::updateQuickTraversal()
 {
 	assert(m_quickTraversal[ORBIT] != NULL || !"updateQuickTraversal on a disabled orbit") ;
 
-	CellMarker<ORBIT> cm(*this) ;
-	for(Dart d = begin(); d != end(); next(d))
+//	CellMarker<ORBIT> cm(*this) ;
+//	for(Dart d = begin(); d != end(); next(d))
+//	{
+//		if ((!cm.isMarked(d)) && (!isBoundaryMarkedCurrent(d)))
+//		{
+//			cm.mark(d) ;
+//			(*m_quickTraversal[ORBIT])[getEmbedding<ORBIT>(d)] = d ;
+//		}
+//	}
+
+	// ensure that we do not try to use quick traversal in Traversors
+	AttributeMultiVector<Dart>* qt = m_quickTraversal[ORBIT];
+	m_quickTraversal[ORBIT] = NULL;
+
+	// fill the quick travsersal
+    TraversorCell<GenericMap,ORBIT> trav(*this);
+	for(Dart d = trav.begin(); d != trav.end(); d=trav.next())
 	{
-		if(!cm.isMarked(d))
-		{
-			cm.mark(d) ;
-			(*m_quickTraversal[ORBIT])[getEmbedding<ORBIT>(d)] = d ;
-		}
+		(*qt)[getEmbedding<ORBIT>(d)] = d ;
 	}
+
+	// restore ptr
+	m_quickTraversal[ORBIT] = qt;
+
 }
 
 template <unsigned int ORBIT>

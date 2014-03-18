@@ -26,7 +26,7 @@ namespace CGoGN
 {
 
 template <typename MAP, unsigned int ORBIT>
-VTraversorCell<MAP, ORBIT>::VTraversorCell(MAP& map, bool forceDartMarker, unsigned int thread) :
+VTraversorCell<MAP, ORBIT>::VTraversorCell(const MAP& map, bool forceDartMarker, unsigned int thread) :
 	m(map), dmark(NULL), cmark(NULL), quickTraversal(NULL), current(NIL), firstTraversal(true)
 {
 	if(forceDartMarker)
@@ -159,7 +159,7 @@ void VTraversorCell<MAP, ORBIT>::skip(Dart d)
 
 //special version (partial specialization) for Genric Map
 template <unsigned int ORBIT>
-VTraversorCell<GenericMap, ORBIT>::VTraversorCell(GenericMap& map, bool forceDartMarker, unsigned int thread) :
+VTraversorCell<GenericMap, ORBIT>::VTraversorCell(const GenericMap& map, bool forceDartMarker, unsigned int thread) :
 	m(map), dmark(NULL), cmark(NULL), quickTraversal(NULL), current(NIL), firstTraversal(true)
 {
 	if(forceDartMarker)

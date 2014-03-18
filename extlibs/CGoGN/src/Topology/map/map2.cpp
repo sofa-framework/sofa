@@ -898,7 +898,7 @@ bool Map2::foreach_dart_of_cc(Dart d, FunctorType& f, unsigned int thread) const
 	bool found = false;				// Last functor return value
 
 	std::vector<Dart> visitedFaces;	// Faces that are traversed
-	visitedFaces.reserve(1024) ;
+    visitedFaces.reserve(1024) ;
 	visitedFaces.push_back(d);		// Start with the face of d
 
 	// For every face added to the list
