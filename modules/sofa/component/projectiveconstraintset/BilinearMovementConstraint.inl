@@ -330,7 +330,7 @@ void BilinearMovementConstraint<DataTypes>::projectMatrix( sofa::defaulttype::Ba
  
     for(SetIndexArray::const_iterator it= m_indices.getValue().begin(), iend=m_indices.getValue().end(); it!=iend; it++ )
     {
-        M->clearRowsCols((*it) * blockSize,(*it+1) * (blockSize) );
+        M->clearRowsCols( offset + (*it) * blockSize, offset + (*it+1) * (blockSize) );
     }
    
 }
