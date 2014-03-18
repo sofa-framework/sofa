@@ -50,7 +50,7 @@ class SOFA_Compliant_API KKTSolver : public core::behavior::BaseLinearSolver {
 	virtual void correct(vec& x,
 						 const system_type& system,
 						 const vec& rhs,
-						 real damping = 0) const {
+                         real /*damping*/ = 0) const {
 		solve(x, system, rhs);
 	}
 
