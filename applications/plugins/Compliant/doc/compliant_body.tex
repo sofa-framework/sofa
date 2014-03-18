@@ -164,7 +164,7 @@ We can rewrite the previous equation as:
 \end{equation}
 where values without indices denote current values.
 The complete equation system has the following generalized KKT form:
-\begin{equation}
+\begin{equation} \label{eq:kktode}
  \left( \begin{array}{cc}
 \frac{1}{h}\P\M & -\P\Jt \\
 \J & \frac{1}{l} \C \end{array}\right)
@@ -175,26 +175,36 @@ The complete equation system has the following generalized KKT form:
 - \frac{1}{l} (\violation +(d+\alpha h) \dviolation)
 \end{array}\right) 
 \end{equation}
-where $ l=\alpha(h \beta + d) $
-The system is singular due to matrix $\P $, which removes independent degrees of freedom without reducing the size of the mass matrix accordingly.
-To remedy this, we set an option to replace it with 
-\begin{equation} \label{eq mbar}
-\bar\M = \P \M \P^T + diag(\epsilon),
-\end{equation}
- where $\epsilon$ is a very small number. 
-This makes the matrix PSD, and does not significantly change the value of the equation solution thanks to the small magnitude of the perturbation.
-
-% \[ \begin{array}{ccc}
-% \left( h\J\P\Minv\P\Jt + \frac{1}{l}\C \right) \avlam &=& -\frac{1}{l} \left(\violation + (\dampingratio+h\alpha)\dviolation \right) - h\J \Minv \forcext \\
-% \dv &=& h\P\Minv(\forcext +\Jt \avlam ) \\
-% \dx &=& h( \vel + \beta \dv )
-% \end{array} \]
-
-By inverting $\bar\M$, we can insert the first line of the equation system and get:
+where $ l=\alpha(h \beta + d) $.
+The matrix in equation~\ref{eq:kktode} is semi-definite when matrix $\C$ is null, or when matrix $\P $ removes independent degrees of freedom without reducing the size of the mass matrix accordingly.
+This equation system can be solved using iterative solvers, such as CG or other Krylov methods.
+An other option is to create a reduced equation system on constraint forces only:
 \begin{equation} \label{eq schur complement}
  \left( h\J\Mbinv\Jt + \frac{1}{l}\C \right) \avlam = -\frac{1}{l} \left(\violation + (\dampingratio+h\alpha)\dviolation \right) - h\J \P^T \Mbinv \forcext
 \end{equation}
 where matrix $ h\J\Mbinv\Jt + \frac{1}{l}\C $ is called the Schur complement of the KKT equation system.
+Matrix $\bar\M= \P \M \P^T + diag(\epsilon)$ is optionally regularized by the linear solver using a very small number $\epsilon$. 
+This makes the matrix PSD, and does not significantly change the value of the equation solution thanks to the small magnitude of the perturbation.
+
+% Note that the system is singular due to matrix $\P $, which removes independent degrees of freedom without reducing the size of the mass matrix accordingly.
+% To remedy this, we set an option to replace it with 
+% \begin{equation} \label{eq mbar}
+% \bar\M = \P \M \P^T + diag(\epsilon),
+% \end{equation}
+%  where $\epsilon$ is a very small number. 
+% This makes the matrix PSD, and does not significantly change the value of the equation solution thanks to the small magnitude of the perturbation.
+% 
+% % \[ \begin{array}{ccc}
+% % \left( h\J\P\Minv\P\Jt + \frac{1}{l}\C \right) \avlam &=& -\frac{1}{l} \left(\violation + (\dampingratio+h\alpha)\dviolation \right) - h\J \Minv \forcext \\
+% % \dv &=& h\P\Minv(\forcext +\Jt \avlam ) \\
+% % \dx &=& h( \vel + \beta \dv )
+% % \end{array} \]
+% 
+% By inverting $\bar\M$, we can insert the first line of the equation system and get:
+% \begin{equation} \label{eq schur complement}
+%  \left( h\J\Mbinv\Jt + \frac{1}{l}\C \right) \avlam = -\frac{1}{l} \left(\violation + (\dampingratio+h\alpha)\dviolation \right) - h\J \P^T \Mbinv \forcext
+% \end{equation}
+% where matrix $ h\J\Mbinv\Jt + \frac{1}{l}\C $ is called the Schur complement of the KKT equation system.
 Solving for $\avlam$ allows us to update the velocities and the positions:
 \begin{eqnarray}
  \dv &=& h\P\Mbinv(\forcext +\Jt \avlam ) \label{eq update velocities}\\
