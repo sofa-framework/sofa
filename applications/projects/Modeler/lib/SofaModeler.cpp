@@ -637,7 +637,7 @@ void SofaModeler::exportSofaClasses()
 {
 	QString filename = sofa::gui::qt::getSaveFileName(this, QString(binPath.c_str()), "Sofa Classes (*.xml)", "export classes dialog", "Choose where the Sofa classes will be exported");
 	if(filename.isEmpty())
-		filename = "sofaClasses.xml";
+		return;
 
 	simulation::Node::SPtr root = getSimulation()->createNewGraph("components");
 
