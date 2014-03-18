@@ -1,7 +1,9 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(SOURCE_FILES
-
+    LinearElasticity_test.cpp
+	BezierTetrahedronTopology_test.cpp
+	TetrahedronNumericalIntegration_test.cpp
     PrimitiveCreation.cpp
     RigidMapping_test.cpp
     EulerImplicit_test.cpp
@@ -27,7 +29,7 @@ endif()
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${RC_FILES})
 AddCompilerDefinitions("SOFA_PROJECT_TEST")
-
+AddCompilerDefinitions("SOFA_TEST_SCENES_PATH=${CMAKE_CURRENT_SOURCE_DIR}")
 AddLinkerDependencies(
     SofaTest
     SofaComponentMain
