@@ -49,6 +49,7 @@ set(HEADER_FILES
     deformationMapping/TriangleStrainAverageMapping.h 
     deformationMapping/TriangleStrainAverageMapping.inl 
     deformationMapping/VolumeMapping.h
+    deformationMapping/CorotationalMeshMapping.h
     strainMapping/BaseStrainMapping.h
     strainMapping/CauchyStrainMapping.h
     strainMapping/CauchyStrainJacobianBlock.h
@@ -122,6 +123,7 @@ set(SOURCE_FILES
     deformationMapping/TriangleDeformationMapping.cpp 
     deformationMapping/TriangleStrainAverageMapping.cpp 
     deformationMapping/VolumeMapping.cpp
+    deformationMapping/CorotationalMeshMapping.cpp
     strainMapping/CauchyStrainMapping.cpp
     strainMapping/GreenStrainMapping.cpp
     strainMapping/CorotationalStrainMapping.cpp 
