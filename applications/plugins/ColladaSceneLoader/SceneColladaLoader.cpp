@@ -528,10 +528,10 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
 							currentTTriangleModel->setName(nameStream.str());
 						}
 
-						/*TLineModel<defaulttype::Vec3dTypes>::SPtr currentTLineModel = sofa::core::objectmodel::New<TLineModel<defaulttype::Vec3dTypes> >();
+                        TLineModel<defaulttype::Vec3dTypes>::SPtr currentTLineModel = sofa::core::objectmodel::New<TLineModel<defaulttype::Vec3dTypes> >();
 						{
 							// adding the generated TLineModel to its parent Node
-							collisionNode->addObject(currentTLineModel);
+                            currentSubNode->addObject(currentTLineModel);
 
 							std::stringstream nameStream(meshName);
 							if(meshName.empty())
@@ -542,13 +542,13 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
 						TPointModel<defaulttype::Vec3dTypes>::SPtr currentTPointModel = sofa::core::objectmodel::New<TPointModel<defaulttype::Vec3dTypes> >();
 						{
 							// adding the generated TPointModel to its parent Node
-							collisionNode->addObject(currentTPointModel);
+                            currentSubNode->addObject(currentTPointModel);
 
 							std::stringstream nameStream(meshName);
 							if(meshName.empty())
 								nameStream << componentIndex++;
 							currentTPointModel->setName(nameStream.str());
-						}*/
+                        }
 					}
 
 //					std::string xnodeName(currentAiNode->mName.data);
