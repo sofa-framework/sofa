@@ -472,7 +472,11 @@ protected:
 
     std::vector<ElementData> elems;
     bool modified;
+    core::behavior::MechanicalState<RigidTypes>* rigid;
 
+    void updateGrid();
+
+public:
     // Input data parameters
     sofa::core::objectmodel::DataFileName fileCudaRigidDistanceGrid;
     Data< double > scale;
@@ -483,10 +487,6 @@ protected:
     Data< int > nz;
     sofa::core::objectmodel::DataFileName dumpfilename;
 
-    core::behavior::MechanicalState<RigidTypes>* rigid;
-
-    void updateGrid();
-public:
     typedef Rigid3Types InDataTypes;
     typedef Vec3Types DataTypes;
     typedef CudaRigidDistanceGridCollisionElement Element;

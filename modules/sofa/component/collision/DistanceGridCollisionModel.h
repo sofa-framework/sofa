@@ -116,6 +116,14 @@ protected:
 
     sofa::helper::vector<ElementData> elems;
     bool modified;
+    core::behavior::MechanicalState<RigidTypes>* rigid;
+
+    void updateGrid();
+
+public:
+    typedef Rigid3Types InDataTypes;
+    typedef Vec3Types DataTypes;
+    typedef RigidDistanceGridCollisionElement Element;
 
     // Input data parameters
     sofa::core::objectmodel::DataFileName fileRigidDistanceGrid;
@@ -128,14 +136,6 @@ protected:
     Data< int > ny;
     Data< int > nz;
     sofa::core::objectmodel::DataFileName dumpfilename;
-
-    core::behavior::MechanicalState<RigidTypes>* rigid;
-
-    void updateGrid();
-public:
-    typedef Rigid3Types InDataTypes;
-    typedef Vec3Types DataTypes;
-    typedef RigidDistanceGridCollisionElement Element;
 
     Data< bool > usePoints;
     Data< bool > flipNormals;
