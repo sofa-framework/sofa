@@ -337,11 +337,11 @@ protected:
     void cleanTriangleTopologyFromDirty() {m_triangleTopologyDirty = false;}
     const bool& isTriangleTopologyDirty() {return m_triangleTopologyDirty;}
 
-protected:
-
+public:
     /// provides the set of triangles.
     Data< sofa::helper::vector<Triangle> > d_triangle;
 
+protected:
     /// provides the 3 edges in each triangle.
     sofa::helper::vector<EdgesInTriangle> m_edgesInTriangle;
 

@@ -233,9 +233,6 @@ protected:
 
 protected:
 
-    /** The array that stores the set of edges in the edge set */
-    Data< sofa::helper::vector<Edge> > d_edge;
-
     /** the array that stores the set of edge-vertex shells, ie for each vertex gives the set of adjacent edges */
     sofa::helper::vector< EdgesAroundVertex > m_edgesAroundVertex;
 
@@ -251,6 +248,8 @@ protected:
     sofa::helper::vector < sofa::helper::vector <std::string> > m_enginesGraph;
 
 public:
+    /** The array that stores the set of edges in the edge set */
+    Data< sofa::helper::vector<Edge> > d_edge;
 
     Data <bool> m_checkConnexity;
 
