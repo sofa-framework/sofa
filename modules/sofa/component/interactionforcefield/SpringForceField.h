@@ -117,15 +117,16 @@ public:
 
     typedef LinearSpring<Real> Spring;
 
-protected:
-    bool maskInUse;
-    Real m_potentialEnergy;
     Data<SReal> ks;
     Data<SReal> kd;
     Data<float> showArrowSize;
     Data<int> drawMode; //Draw Mode: 0=Line - 1=Cylinder - 2=Arrow
     Data<sofa::helper::vector<Spring> > springs;
     core::objectmodel::DataFileName fileSprings;
+
+protected:
+    bool maskInUse;
+    Real m_potentialEnergy;
     class Loader;
 
     SpringForceFieldInternalData<DataTypes> data;
