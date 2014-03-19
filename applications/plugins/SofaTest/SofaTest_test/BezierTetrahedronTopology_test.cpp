@@ -228,7 +228,7 @@ struct BezierTetrahedronTopology_test : public Sofa_test<typename _DataTypes::Re
 
 				if (j>=4) {
 					// test if the position is correct
-					Coord pos=coords[indexArray[0]]*(double)tbiArray[j][0]/degree+coords[indexArray[1]]*(double)tbiArray[j][1]/degree+coords[indexArray[2]]*(double)tbiArray[j][2]/degree+coords[indexArray[3]]*(double)tbiArray[j][3]/degree;
+					Coord pos=coords[indexArray[0]]*(Real)tbiArray[j][0]/degree+coords[indexArray[1]]*(Real)tbiArray[j][1]/degree+coords[indexArray[2]]*(Real)tbiArray[j][2]/degree+coords[indexArray[3]]*(Real)tbiArray[j][3]/degree;
 					if ((pos-coords[indexArray[j]]).norm()>1e-8) {
 						ADD_FAILURE() << "Wrong control point position in tetrahedron no  : "<<i <<" for point of local index " <<j;
 						ADD_FAILURE() << " Got point position="<<coords[indexArray[j]]<<" instead of "<<pos<<std::endl;
