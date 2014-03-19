@@ -73,12 +73,18 @@ void TextureInterpolation<DataTypes>::init()
     addInput(&_inputField);
     addOutput(&_outputCoord);
     setDirtyValue();
+
+    if (!_inputField.isSet())
+        this->standardLinearInterpolation();
 }
 
 
 template <class DataTypes>
 void TextureInterpolation<DataTypes>::reinit()
 {
+    if (!_inputField.isSet())
+        this->standardLinearInterpolation();
+
     if (_vertexPloted.isDirty())
         this->resetGraph();
 
@@ -90,6 +96,9 @@ template <class DataTypes>
 void TextureInterpolation<DataTypes>::update()
 {
     cleanDirty();
+
+    if (!_inputField.isSet())
+        return;
 
     const sofa::helper::vector <Coord>& realInputs = _inputField.getValue();
     ResizableExtVector2D& outputs = *(_outputCoord.beginEdit());
@@ -194,6 +203,59 @@ void TextureInterpolation<DataTypes>::resetGraph()
     }
 
     f_graph.endEdit();
+}
+
+
+template <class DataTypes>
+void TextureInterpolation<DataTypes>::standardLinearInterpolation()
+{
+    const VecCoord3D& coords = _inputCoords.getValue();
+    ResizableExtVector2D& outputs = *(_outputCoord.beginEdit());
+
+    outputs.clear();
+    outputs.resize(coords.size());
+
+    SReal Cmin[3]; Cmin[0] = 100000, Cmin[1] = 100000, Cmin[2] = 100000;
+    SReal Cmax[3]; Cmax[0] = -100000, Cmax[1] = -100000, Cmax[2] = -100000;
+
+    // creating BB
+    for (unsigned int i=0; i<coords.size(); ++i)
+    {
+        const Coord3D& p0 = coords[i];
+        for (unsigned int j=0; j<3; ++j)
+        {
+            if (p0[j] < Cmin[j]) Cmin[j] = p0[j];
+            if (p0[j] > Cmax[j]) Cmax[j] = p0[j];
+        }
+    }
+
+    unsigned int nullAxis = 0;
+    for (unsigned int j=0; j<3; ++j)
+        if (Cmin[j] == Cmax[j])
+            nullAxis = j;
+
+    unsigned int axe1 = 0, axe2 = 1;
+    if (nullAxis == 0)
+    {
+        axe1 = 1; axe2 = 2;
+    }
+    else if (nullAxis == 1)
+    {
+        axe1 = 2; axe2 = 0;
+    }
+
+    SReal Uscale = 1/(SReal)(Cmax[axe1]-Cmin[axe1]);
+    SReal Vscale = 1/(SReal)(Cmax[axe2]-Cmin[axe2]);
+
+    for (unsigned int i=0; i<coords.size(); ++i)
+    {
+        const Coord3D& p0 = coords[i];
+        Coord2D& textC = outputs[i];
+        textC[0] = (p0[axe1] - Cmin[axe1])*Uscale;
+        textC[1] = (p0[axe2] - Cmin[axe2])*Vscale;
+    }
+
+    _outputCoord.endEdit();
 }
 
 
