@@ -650,24 +650,6 @@ void SofaModeler::exportSofaClasses()
 
 	for (std::size_t i=0; i<entries.size(); ++i)
 	{
-#ifdef      TEST_CREATION_COMPONENT
-		{
-			sofa::core::objectmodel::BaseObject::SPtr object;
-			std::cerr << "Creating " << entries[i]->className << std::endl;
-			if (entries[i]->creatorMap.find(entries[i]->defaultTemplate) != entries[i]->creatorMap.end())
-			{
-				object = entries[i]->creatorMap.find(entries[i]->defaultTemplate)->second->createInstance(NULL, NULL);
-			}
-			else
-			{
-				object = entries[i]->creatorList.begin()->second->createInstance(NULL, NULL);
-			}
-			std::cerr << "Deleting " << entries[i]->className << std::endl;
-			object.reset();
-			std::cerr << "Ok for " << entries[i]->className << std::endl;
-		}
-#endif
-
 		//Insert Template specification
 		std::set< std::string >::iterator it;
 		for (it = entries[i]->baseClasses.begin(); it != entries[i]->baseClasses.end(); ++it)
@@ -690,21 +672,20 @@ void SofaModeler::exportSofaClasses()
 	for (itCategory = mainCategories.begin(); itCategory != mainCategories.end(); ++itCategory)
 	{
 		const std::string& categoryName = *itCategory;
-		IteratorInventory itComponent;
 
 		std::pair< IteratorInventory,IteratorInventory > rangeCategory;
 		rangeCategory = inventory.equal_range(categoryName);
 
-		/*const unsigned int numComponentInCategory = (unsigned int)inventory.count(categoryName);
-		CategoryLibrary *category = createCategory(categoryName,numComponentInCategory);*/
-
 		simulation::Node::SPtr node = root->createChild(categoryName);
 
 		//Process all the component of the current category, and add them to the group
-		for (itComponent=rangeCategory.first; itComponent != rangeCategory.second; ++itComponent)
+		for (IteratorInventory itComponent=rangeCategory.first; itComponent != rangeCategory.second; ++itComponent)
 		{
 			ObjectFactory::ClassEntry *entry = itComponent->second;
-			const std::string &componentName=entry->className;
+			const std::string &componentName = entry->className;
+
+			if(0 == entry->className.compare("Distances")) // this component lead to a crash
+				continue;
 
 			//Special Case of Mass Component: they are also considered as forcefield. We remove their occurence of the force field category group
 			if (categoryName == "ForceField")
@@ -739,7 +720,14 @@ void SofaModeler::exportSofaClasses()
 
 				BaseObjectDescription desc(componentNameStream.str().c_str(), componentName.c_str());
 				desc.setAttribute("template", templateName.c_str());
-				BaseObject::SPtr component = ObjectFactory::getInstance()->createObject(node->getContext(), &desc);
+
+				// print log
+				//std::cout << componentName << " - " << templateName <<  std::endl;
+
+				if(creatorIterator->second->canCreate(node->getContext(), &desc))
+					creatorIterator->second->createInstance(node->getContext(), &desc);
+				else
+					creatorIterator->second->createInstance(node->getContext(), 0);
 			}
 		}
 	}
