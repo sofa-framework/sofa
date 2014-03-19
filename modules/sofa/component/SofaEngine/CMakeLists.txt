@@ -59,6 +59,8 @@ set(HEADER_FILES
     ../engine/MapIndices.inl 
     ../engine/RandomPointDistributionInSurface.h 
     ../engine/RandomPointDistributionInSurface.inl 
+    ../engine/SmoothMeshEngine.h
+    ../engine/SmoothMeshEngine.inl
     ../engine/Spiral.h 
     ../engine/Spiral.inl 
     ../engine/Vertex2Frame.h 
@@ -117,6 +119,7 @@ set(SOURCE_FILES
     ../engine/JoinPoints.cpp 
     ../engine/MapIndices.cpp 
     ../engine/RandomPointDistributionInSurface.cpp 
+    ../engine/SmoothMeshEngine.cpp
     ../engine/Spiral.cpp 
     ../engine/Vertex2Frame.cpp 
     ../engine/TextureInterpolation.cpp 
