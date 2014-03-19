@@ -57,7 +57,7 @@ protected:
 public:
     void init();
 
-    void initShaders(unsigned int numberOfLights, bool softShadow);
+    virtual void initShaders(unsigned int numberOfLights, bool softShadow);
 
 protected:
     static const std::string PATH_TO_SHADOW_VERTEX_SHADERS;

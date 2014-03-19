@@ -25,11 +25,11 @@
 #ifndef SOFA_VIEWER_H
 #define SOFA_VIEWER_H
 
-#include "../../BaseViewer.h"
 #include "VisualModelPolicy.h"
-#include "../PickHandlerCallBacks.h"
-#include "../SofaGUIQt.h"
-#include "../SofaVideoRecorderManager.h"
+#include <sofa/gui/BaseViewer.h>
+#include <sofa/gui/qt/PickHandlerCallBacks.h>
+#include <sofa/gui/qt/SofaGUIQt.h>
+#include <sofa/gui/qt/SofaVideoRecorderManager.h>
 
 #include <qstring.h>
 #include <qwidget.h>

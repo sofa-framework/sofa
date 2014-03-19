@@ -48,10 +48,10 @@ using namespace sofa::defaulttype;
 
 template <class DataTypes>
 FixedPlaneConstraint<DataTypes>::FixedPlaneConstraint()
-    : indices( initData(&indices,"indices","Indices of the fixed points"))
-    , direction( initData(&direction,"direction","normal direction of the plane"))
+    : direction( initData(&direction,"direction","normal direction of the plane"))
     , dmin( initData(&dmin,(Real)0,"dmin","Minimum plane distance from the origin"))
     , dmax( initData(&dmax,(Real)0,"dmax","Maximum plane distance from the origin") )
+    , indices( initData(&indices,"indices","Indices of the fixed points"))
 {
     selectVerticesFromPlanes=false;
     pointHandler = new FCPointHandler(this, &indices);
