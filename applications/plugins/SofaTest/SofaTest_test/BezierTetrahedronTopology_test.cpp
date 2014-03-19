@@ -229,7 +229,7 @@ struct BezierTetrahedronTopology_test : public Sofa_test<typename _DataTypes::Re
 				if (j>=4) {
 					// test if the position is correct
 					Coord pos=coords[indexArray[0]]*(Real)tbiArray[j][0]/degree+coords[indexArray[1]]*(Real)tbiArray[j][1]/degree+coords[indexArray[2]]*(Real)tbiArray[j][2]/degree+coords[indexArray[3]]*(Real)tbiArray[j][3]/degree;
-					if ((pos-coords[indexArray[j]]).norm()>1e-7) {
+					if ((pos-coords[indexArray[j]]).norm()>1e-5) {
 						ADD_FAILURE() << "Wrong control point position in tetrahedron no  : "<<i <<" for point of local index " <<j
 						<< " Got point position="<<coords[indexArray[j]]<<" instead of "<<pos<<std::endl;
 						return false;
@@ -279,7 +279,7 @@ struct BezierTetrahedronTopology_test : public Sofa_test<typename _DataTypes::Re
 						tetraVol2+=2*mv[i][rank]; 
 				}
 			}
-			if (fabs(tetraVol1-tetraVol2)>1e-8) {
+			if (fabs(tetraVol1-tetraVol2)>1e-5) {
 				ADD_FAILURE() << "Wrong mass matrix in tetrahedron no  : "<<i
 				<< " Got total mass="<<tetraVol2<<" instead of "<<tetraVol1<<std::endl;
 				return false;
@@ -291,7 +291,7 @@ struct BezierTetrahedronTopology_test : public Sofa_test<typename _DataTypes::Re
 		{
 			totalVol2+=ma[i];
 		}
-		if (fabs(totalVol1-totalVol2)>1e-8) {
+		if (fabs(totalVol1-totalVol2)>1e-5) {
 			ADD_FAILURE() << "Wrong total vertex mass value."
 			 << " Got total vertex mass="<<totalVol2<<" instead of "<<totalVol1<<std::endl;
 			return false;
