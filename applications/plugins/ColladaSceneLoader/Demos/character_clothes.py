@@ -9,10 +9,14 @@ mesh_path = colladasceneloader_path + '/Demos/'
 
 scale = 1
 
+clothSelfCollision = 0
+
+
+
 def createScene(root):
 
     # simulation parameters
-    root.dt = 0.05
+    root.dt = 0.01
     root.gravity = [0, -9.81, 0]
         
     # plugins
@@ -21,22 +25,20 @@ def createScene(root):
     root.createObject('RequiredPlugin', name='ColladaSceneLoader', pluginName='ColladaSceneLoader')
     
     # visual style
-    root.createObject('VisualStyle', displayFlags='showBehavior')
+    root.createObject('VisualStyle', displayFlags='showBehaviorModels')
     
     # scene node
     scene = root.createChild('scene')
 
     scene.createObject('DefaultPipeline', depth='6')
     scene.createObject('BruteForceDetection')
-    scene.createObject('DefaultContactManager', responseParams='damping=0&amp;compliance=0&amp;restitution=0.5', response='CompliantContact')
-    scene.createObject('NewProximityIntersection', alarmDistance='2.5', contactDistance='2.0')
+    scene.createObject('DefaultContactManager', responseParams='damping=0&amp;compliance=0&amp;restitution=0', response='CompliantContact')
+    scene.createObject('MinProximityIntersection', alarmDistance='2', contactDistance='1.5')
     
-    #scene.createObject('EulerImplicitSolver')
-    #scene.createObject('CGLinearSolver', template='GraphScattered', iterations='40', tolerance='1e-009', threshold='1e-009')
-    scene.createObject('AssembledSolver', stabilization='0')
-    scene.createObject('SequentialSolver', precision='1e-08', relative='false', iterations='50')
-    #scene.createObject('LDLTSolver') # lead to a very very big computation ... i do not know why
-    #scene.createObject('MinresSolver', iterations='500')
+    scene.createObject('AssembledSolver', stabilization='1', warm_start=1)
+    scene.createObject('SequentialSolver', precision='1e-30', iterations='1000', projectH=1)
+    scene.createObject('LDLTResponse', regularize=1e-18 )
+    scene.createObject('CompliantAttachButtonSetting')
     
     # character (currently we use a fixed box)
     createCharacter(scene.createChild('character'))
@@ -69,7 +71,11 @@ def createBox(parent):
     collisionNode.createObject('MeshObjLoader', name='loader', filename=mesh_path + 'cube.obj')
     collisionNode.createObject('MeshTopology', position='@loader.position', edges='@loader.edges', triangles='@loader.triangles', quads='@loader.quads', tetrahedra='@loader.tetras', hexahedra='@loader.hexas')
     collisionNode.createObject('MechanicalObject', template='Vec3d', name='vertices', position='@loader.position')
-    collisionNode.createObject('TTriangleModel', template='Vec3d')
+    collisionNode.createObject('Triangle', template='Vec3d')
+    collisionNode.createObject('Line', template='Vec3d')
+    collisionNode.createObject('Point', template='Vec3d')
+    
+    
     collisionNode.createObject('RigidMapping', template='Rigid,Vec3d', input='@../model', output='@./vertices')
 
     visuNode = collisionNode.createChild('visu')
@@ -84,26 +90,34 @@ def createChlothes(parent):
     parent.createObject('MechanicalObject', template='Vec3d', name='dof', position='@loader.position')
     parent.createObject('UniformMass')
     parent.createObject('MeshTopology', name='mesh', position='@loader.position', edges='@loader.edges', triangles='@loader.triangles', quads='@loader.quads', tetrahedra='@loader.tetras', hexahedra='@loader.hexas')
-    parent.createObject('TTriangleModel', template='Vec3d', name='models', proximity='0.2')
-    parent.createObject('MeshSpringForceField', linesStiffness='1.e+4', linesDamping='0.1')
+    
+    parent.createObject('Triangle', template='Vec3d', name='models', proximity='0', selfCollision=clothSelfCollision)
+    parent.createObject('Line', template='Vec3d', name='models', proximity='0', selfCollision=clothSelfCollision)
+    parent.createObject('Point', template='Vec3d', name='models', proximity='0', selfCollision=clothSelfCollision)
+    
     #parent.createObject('ConstantForceField', force='9.81 -9.81 9.81', points='0') #0 24 599 623
     #parent.createObject('ConstantForceField', force='-9.81 -9.81 9.81', points='24')
     #parent.createObject('ConstantForceField', force='9.81 -9.81 -9.81', points='599')
     #parent.createObject('ConstantForceField', force='-9.81 -9.81 -9.81', points='623')
 	
-    createFlexibleClothes(parent)
+    
+    #parent.createObject('MeshSpringForceField', linesStiffness='1.e+4', linesDamping='0.1') // spring version
 	
-    #createCompliantClothes(parent)
+    createFlexibleClothes(parent) # fem
+	
+    #createCompliantClothes(parent) # another spring version
+    
+    parent.createObject('FastTriangularBendingSprings', bendingStiffness=0.2) # bending springs
     
     visuNode = parent.createChild('visu')
-    visuNode.createObject('OglModel', template='ExtVec3f', name='visual')
+    visuNode.createObject('OglModel', template='ExtVec3f', name='visual', color="red")
     visuNode.createObject('IdentityMapping', template='Vec3d,ExtVec3f', input='@../dof', output='@visual')
 	
 	
 	
 def createFlexibleClothes(parent):
 
-    parent.createObject('BarycentricShapeFunction', template='ShapeFunction2d')
+    parent.createObject('BarycentricShapeFunction', template='ShapeFunctiond')
 	
     deformationNode = parent.createChild('deformation')
     deformationNode.createObject('TopologyGaussPointSampler', name='sampler', inPosition='@../dof.position', showSamples='false', method='0', order='1')
@@ -113,7 +127,7 @@ def createFlexibleClothes(parent):
     strainNode = deformationNode.createChild('strain')
     strainNode.createObject('MechanicalObject', template='E321', name="StrainDOF")
     strainNode.createObject('CorotationalStrainMapping', template='Mapping&lt;F321,E321&gt;', method="svd") # try qr instead of svd
-    strainNode.createObject('HookeForceField', template='E321', youngModulus='2000', poissonRatio='0.2', viscosity='0.1')
+    strainNode.createObject('HookeForceField', template='E321', youngModulus='20000', poissonRatio='0.35', viscosity='0')
 
 	
 
@@ -124,3 +138,4 @@ def createCompliantClothes(parent):
     extensionNode.createObject('EdgeSetTopologyContainer', template='Vec1d', name='ExtensionEdge', edges='@../mesh.edges')
     extensionNode.createObject('ExtensionMapping', template='Vec3d,Vec1d', name="ExtensionMap", input='@../', output='@./')
     extensionNode.createObject('UniformCompliance', template='Vec1d', name="UniComp", compliance='1e-4', isCompliance='0')
+    
