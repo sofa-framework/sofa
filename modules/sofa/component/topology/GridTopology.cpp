@@ -145,6 +145,9 @@ void GridTopology::GridUpdate::updateHexas()
 
 GridTopology::GridTopology()
     : n(initData(&n,Vec3i(2,2,2),"n","grid resolution"))
+    , p_createTexCoords(initData(&p_createTexCoords, (bool)false, "createTexCoords", "If set to true, virtual texture coordinates will be generated using 3D interpolation."))
+    , m_texCoords(initData(&m_texCoords, "texcoords", "If createTexCoords is set to true, this data will store the virtual texture coordinates of the grid."))
+
 {
     setSize();
     GridUpdate::SPtr gridUpdate = sofa::core::objectmodel::New<GridUpdate>(this);
@@ -153,6 +156,8 @@ GridTopology::GridTopology()
 
 GridTopology::GridTopology(int _nx, int _ny, int _nz)
     : n(initData(&n,Vec3i(_nx,_ny,_nz),"n","grid resolution"))
+    , p_createTexCoords(initData(&p_createTexCoords, (bool)false, "createTexCoords", "If set to true, virtual texture coordinates will be generated using 3D interpolation."))
+    , m_texCoords(initData(&m_texCoords, "texcoords", "If createTexCoords is set to true, this data will store the virtual texture coordinates of the grid."))
 {
     nbPoints = _nx*_ny*_nz;
     this->n.setValue(Vec3i(_nx,_ny,_nz));
@@ -160,12 +165,20 @@ GridTopology::GridTopology(int _nx, int _ny, int _nz)
 
 GridTopology::GridTopology( Vec3i np )
     : n(initData(&n,np,"n","grid resolution"))
+    , p_createTexCoords(initData(&p_createTexCoords, (bool)false, "createTexCoords", "If set to true, virtual texture coordinates will be generated using 3D interpolation."))
+    , m_texCoords(initData(&m_texCoords, "texcoords", "If createTexCoords is set to true, this data will store the virtual texture coordinates of the grid."))
 {
     nbPoints = np[0]*np[1]*np[2];
     this->n.setValue(np);
 }
 
+void GridTopology::init()
+{
+    if (p_createTexCoords.getValue())
+        this->createTexCoords();
 
+    this->reinit();
+}
 
 void GridTopology::setSize(int nx, int ny, int nz)
 {
