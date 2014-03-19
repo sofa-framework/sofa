@@ -132,8 +132,8 @@ struct TetrahedronNumericalIntegration_test : public Sofa_test<typename _DataTyp
 					sofa::component::topology::lfactorial(randomPolynomial[3])/(sofa::component::topology::lfactorial((*itio)+3));
 				if (fabs(realIntegral-integral)>1e-8) {
 					ADD_FAILURE() << "Error in numerical integration on tetrahedron for integration method " <<(*itio)<<
-						"  and integration order " <<(*itio)  << " for polynomial defined by "<< randomPolynomial<< std::endl;
-					ADD_FAILURE() << "Got  " <<integral<<" instead of " <<realIntegral  << std::endl;
+						"  and integration order " <<(*itio)  << " for polynomial defined by "<< randomPolynomial<< std::endl
+					 << "Got  " <<integral<<" instead of " <<realIntegral  << std::endl;
 					return false;
 				}
 			}

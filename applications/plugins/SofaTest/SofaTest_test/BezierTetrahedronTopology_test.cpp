@@ -229,9 +229,9 @@ struct BezierTetrahedronTopology_test : public Sofa_test<typename _DataTypes::Re
 				if (j>=4) {
 					// test if the position is correct
 					Coord pos=coords[indexArray[0]]*(Real)tbiArray[j][0]/degree+coords[indexArray[1]]*(Real)tbiArray[j][1]/degree+coords[indexArray[2]]*(Real)tbiArray[j][2]/degree+coords[indexArray[3]]*(Real)tbiArray[j][3]/degree;
-					if ((pos-coords[indexArray[j]]).norm()>1e-8) {
-						ADD_FAILURE() << "Wrong control point position in tetrahedron no  : "<<i <<" for point of local index " <<j;
-						ADD_FAILURE() << " Got point position="<<coords[indexArray[j]]<<" instead of "<<pos<<std::endl;
+					if ((pos-coords[indexArray[j]]).norm()>1e-7) {
+						ADD_FAILURE() << "Wrong control point position in tetrahedron no  : "<<i <<" for point of local index " <<j
+						<< " Got point position="<<coords[indexArray[j]]<<" instead of "<<pos<<std::endl;
 						return false;
 					}
 				}
@@ -257,7 +257,6 @@ struct BezierTetrahedronTopology_test : public Sofa_test<typename _DataTypes::Re
 		sofa::component::topology::VecPointID indexArray;
 		sofa::helper::vector<TetrahedronBezierIndex> tbiArray=container->getTetrahedronBezierIndexArray();
 		size_t nbControlPoints=(degree+1)*(degree+2)*(degree+3)/6;
-		size_t nbMassEntries=nbControlPoints*(nbControlPoints+1)/2;
 		totalVol1=0;
 		for ( i = 0; i<container->getNumberOfTetrahedra(); i++)
 		{
@@ -281,8 +280,8 @@ struct BezierTetrahedronTopology_test : public Sofa_test<typename _DataTypes::Re
 				}
 			}
 			if (fabs(tetraVol1-tetraVol2)>1e-8) {
-				ADD_FAILURE() << "Wrong mass matrix in tetrahedron no  : "<<i;
-				ADD_FAILURE() << " Got total mass="<<tetraVol2<<" instead of "<<tetraVol1<<std::endl;
+				ADD_FAILURE() << "Wrong mass matrix in tetrahedron no  : "<<i
+				<< " Got total mass="<<tetraVol2<<" instead of "<<tetraVol1<<std::endl;
 				return false;
 			}
 		}
@@ -293,8 +292,8 @@ struct BezierTetrahedronTopology_test : public Sofa_test<typename _DataTypes::Re
 			totalVol2+=ma[i];
 		}
 		if (fabs(totalVol1-totalVol2)>1e-8) {
-			ADD_FAILURE() << "Wrong total vertex mass value.";
-			ADD_FAILURE() << " Got total vertex mass="<<totalVol2<<" instead of "<<totalVol1<<std::endl;
+			ADD_FAILURE() << "Wrong total vertex mass value."
+			 << " Got total vertex mass="<<totalVol2<<" instead of "<<totalVol1<<std::endl;
 			return false;
 		}
 		return true;
