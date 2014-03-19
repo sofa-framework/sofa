@@ -18,5 +18,5 @@ LICENCE :
 
 OTHER COMMENTS :
 
-depends on libassimp
+depends on libassimp3
 http://assimp.sourceforge.net

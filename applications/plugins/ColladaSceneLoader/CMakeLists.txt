@@ -46,6 +46,7 @@ if(WIN32)
 	endforeach()
 else()
 	find_library(ASSIMP_LIBRARY NAMES assimp)
+    #todo add a test for assimp version >= 3
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
