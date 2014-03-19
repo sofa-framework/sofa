@@ -9,14 +9,14 @@ mesh_path = colladasceneloader_path + '/Demos/'
 
 scale = 1
 
-clothSelfCollision = 0
+clothSelfCollision = 1
 
 
 
 def createScene(root):
 
     # simulation parameters
-    root.dt = 0.01
+    root.dt = 0.02
     root.gravity = [0, -9.81, 0]
         
     # plugins
@@ -33,10 +33,10 @@ def createScene(root):
     scene.createObject('DefaultPipeline', depth='6')
     scene.createObject('BruteForceDetection')
     scene.createObject('DefaultContactManager', responseParams='damping=0&amp;compliance=0&amp;restitution=0', response='CompliantContact')
-    scene.createObject('MinProximityIntersection', alarmDistance='2', contactDistance='1.5')
+    scene.createObject('MinProximityIntersection', alarmDistance='.7', contactDistance='0.5')
     
     scene.createObject('AssembledSolver', stabilization='1', warm_start=1)
-    scene.createObject('SequentialSolver', precision='1e-30', iterations='1000', projectH=1)
+    scene.createObject('SequentialSolver', precision='1e-10', iterations='100', projectH=1)
     scene.createObject('LDLTResponse', regularize=1e-18 )
     scene.createObject('CompliantAttachButtonSetting')
     
@@ -107,7 +107,7 @@ def createChlothes(parent):
 	
     #createCompliantClothes(parent) # another spring version
     
-    parent.createObject('FastTriangularBendingSprings', bendingStiffness=0.2) # bending springs
+    parent.createObject('FastTriangularBendingSprings', bendingStiffness=3) # bending springs
     
     visuNode = parent.createChild('visu')
     visuNode.createObject('OglModel', template='ExtVec3f', name='visual', color="red")
@@ -127,7 +127,7 @@ def createFlexibleClothes(parent):
     strainNode = deformationNode.createChild('strain')
     strainNode.createObject('MechanicalObject', template='E321', name="StrainDOF")
     strainNode.createObject('CorotationalStrainMapping', template='Mapping&lt;F321,E321&gt;', method="svd") # try qr instead of svd
-    strainNode.createObject('HookeForceField', template='E321', youngModulus='20000', poissonRatio='0.35', viscosity='0')
+    strainNode.createObject('HookeForceField', template='E321', youngModulus='30000', poissonRatio='0.35', viscosity='0')
 
 	
 
