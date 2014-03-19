@@ -174,7 +174,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
     quadsGroups.beginEdit()->clear(); quadsGroups.endEdit();
 
     int vtn[3];
-    Vec3d result;
+    Vector3 result;
     helper::WriteAccessor<Data<helper::vector< PrimitiveGroup> > > my_faceGroups[NBFACETYPE] =
     {
         edgesGroups,

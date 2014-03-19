@@ -54,7 +54,9 @@ TagFactory::TagFactory()
         return i;
     else
     {
+#ifndef NDEBUG
         std::cout << "TagFactory: creating new tag "<<i<<": "<<name<<std::endl;
+#endif
         tagfac->tagsList.push_back(name);
         return i;
     }
