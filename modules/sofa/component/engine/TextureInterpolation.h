@@ -119,6 +119,7 @@ protected:
     void updateGraph();
     void resetGraph();
 
+    void standardLinearInterpolation();
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_TEXTUREINTERPOLATION_CPP)
