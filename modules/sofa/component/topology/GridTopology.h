@@ -45,6 +45,7 @@ class SOFA_BASE_TOPOLOGY_API GridTopology : public MeshTopology
 {
 public:
     SOFA_CLASS(GridTopology,MeshTopology);
+    typedef ResizableExtVector <Vector2>      TextCoords2D;
     friend class GridUpdate;
 private:
     class GridUpdate : public sofa::core::DataEngine
@@ -68,6 +69,11 @@ protected:
     GridTopology(int nx, int ny, int nz);
     GridTopology(Vec3i nXnYnZ );
 public:
+    virtual void init();
+
+    /// BaseObject method should be overwritten by children
+    virtual void reinit(){}
+
     /// Set grid resolution, given the number of vertices
     void setSize(int nx, int ny, int nz);
     /// set grid resolution, given the number of vertices
@@ -128,8 +134,13 @@ public:
     int hexa(int x, int y, int z) const { return x+(n.getValue()[0]-1)*(y+(n.getValue()[1]-1)*z); }
     int cube(int x, int y, int z) const { return hexa(x,y,z); }
 
+    // Method to create grid texture coordinates, should be overwritten by children
+    virtual void createTexCoords(){}
+
 protected:
     Data< Vec3i > n;
+    Data <bool> p_createTexCoords;
+    Data <TextCoords2D> m_texCoords;
 
     virtual void setSize();
 };

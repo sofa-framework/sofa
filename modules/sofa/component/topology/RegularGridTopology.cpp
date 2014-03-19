@@ -174,7 +174,7 @@ void RegularGridTopology::init()
 
     //    MeshTopology::init();
 
-    reinit();
+    Inherit1::init();
 }
 
 void RegularGridTopology::setPos(BoundingBox b)
@@ -343,6 +343,87 @@ Vector3 RegularGridTopology::getCubeCoordinate(int i) const
     result[1] = (SReal)(i%(n.getValue()[1]-1)); i/=(n.getValue()[1]-1);
     result[2] = (SReal)i;
     return result;
+}
+
+void RegularGridTopology::createTexCoords()
+{
+#ifndef NDEBUG
+    std::cout << "createTexCoords" << std::endl;
+#endif
+    unsigned int nPts = this->getNbPoints();
+    const Vec3i& _n = n.getValue();
+
+    if ( (_n[0] == 1 && _n[1] == 1) || (_n[0] == 1 && _n[2] == 1) || (_n[1] == 1 && _n[2] == 1))
+    {
+        std::cerr << "Error: can't create Texture coordinates as at least 2 dimensions of the grid are null."  << std::endl;
+        return;
+    }
+
+#ifndef NDEBUG
+    std::cout << "nbP: " << nPts << std::endl;
+#endif
+    helper::WriteAccessor< Data< TextCoords2D > > _texCoords = m_texCoords;
+    _texCoords.resize(nPts);
+
+    // check if flat grid
+    Vec3ui axes;
+
+    if (_n[0] == 1)
+        axes = Vec3i(1, 2, 0);
+    else if (_n[1] == 1)
+        axes = Vec3i(0, 2, 1);
+    else
+        axes = Vec3i(0, 1, 2);
+
+    SReal Uscale = 1/(SReal)(_n[ axes[0] ]-1);
+    SReal Vscale = 1/(SReal)(_n[ axes[1] ]-1);
+
+    for (int n1 = 0; n1 < _n[ axes[1] ]; ++n1)
+    {
+        for (int n0 = 0; n0 < _n[ axes[0] ]; ++n0)
+        {
+            unsigned int pt1 = n0 + _n[ axes[0] ] * n1;
+            unsigned int pt2 = n0 + _n[ axes[0] ] * (n1 + _n[ axes[1] ] * (_n[ axes[2] ]-1));
+#ifndef NDEBUG
+            std::cout << "pt1: " << pt1 << std::endl;
+            std::cout << "pt2: " << pt2 << std::endl;
+#endif
+            _texCoords[pt1] = Vector2(n0*Uscale, n1*Vscale);
+            _texCoords[pt2] = Vector2(1- n0*Uscale, 1 - n1*Vscale);
+        }
+    }
+
+    if (_n[ axes[2] ] != 0)
+    {
+        Uscale = 1/(SReal)(_n[ axes[0] ]-1);
+        Vscale = 1/(SReal)(_n[ axes[2] ]-1);
+
+        for (int n2 = 1; n2 < _n[ axes[2] ]-1; ++n2)
+        {
+            for (int n0 = 1; n0 < _n[ axes[0] ]-1; ++n0)
+            {
+                unsigned int pt1 = n0 + _n[ axes[0] ] * n2;
+                unsigned int pt2 = n0 + _n[ axes[0] ] * (n2 + _n[ axes[2] ] * (_n[ axes[1] ]-1));
+                _texCoords[pt1] = Vector2(n0*Uscale, n2*Vscale);
+                _texCoords[pt2] = Vector2(1- n0*Uscale, 1 - n2*Vscale);
+            }
+        }
+
+
+        Uscale = 1/(SReal)(_n[ axes[2] ]-1);
+        Vscale = 1/(SReal)(_n[ axes[1] ]-1);
+
+        for (int n1 = 1; n1 < _n[ axes[1] ]-1; ++n1)
+        {
+            for (int n2 = 1; n2 < _n[ axes[2] ]-1; ++n2)
+            {
+                unsigned int pt1 = n2 + _n[ axes[2] ] * n1;
+                unsigned int pt2 = n2 + _n[ axes[2] ] * (n1 + _n[ axes[1] ] * (_n[ axes[0] ])-1);
+                _texCoords[pt1] = Vector2(n2*Uscale, n1*Vscale);
+                _texCoords[pt2] = Vector2(1- n2*Uscale, 1 - n1*Vscale);
+            }
+        }
+    }
 }
 
 

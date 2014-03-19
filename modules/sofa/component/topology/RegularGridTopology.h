@@ -48,6 +48,7 @@ class SOFA_BASE_TOPOLOGY_API RegularGridTopology : public GridTopology
 {
 public:
     typedef Vec<3, int> Vec3i;
+    typedef Vec<3, unsigned int> Vec3ui;
     SOFA_CLASS(RegularGridTopology,GridTopology);
 protected:
     RegularGridTopology();
@@ -66,6 +67,8 @@ public:
     virtual void reinit()
     {
         setPos(min.getValue()[0],max.getValue()[0],min.getValue()[1],max.getValue()[1],min.getValue()[2],max.getValue()[2]);
+
+        Inherit1::reinit();
     }
     void parse(core::objectmodel::BaseObjectDescription* arg);
 
@@ -116,6 +119,8 @@ public:
     void setDx(const Vector3& val) { dx = val; inv_dx2 = 1/(dx*dx); }
     void setDy(const Vector3& val) { dy = val; inv_dy2 = 1/(dy*dy); }
     void setDz(const Vector3& val) { dz = val; inv_dz2 = 1/(dz*dz); }
+
+    virtual void createTexCoords();
 
 protected:
 
