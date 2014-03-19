@@ -405,8 +405,6 @@ AttachConstraint<DataTypes>::AttachConstraint()
 //     f_indices1.endEdit();
 //     f_indices2.beginEdit()->push_back(0);
 //     f_indices2.endEdit();
-
-    std::cout << "Hey\n";
 }
 
 template <class DataTypes>
@@ -429,8 +427,6 @@ AttachConstraint<DataTypes>::AttachConstraint(core::behavior::MechanicalState<Da
 //     f_indices1.endEdit();
 //     f_indices2.beginEdit()->push_back(0);
 //     f_indices2.endEdit();
-
-    std::cout << "Hey 2  params\n";
 }
 
 #if 0
