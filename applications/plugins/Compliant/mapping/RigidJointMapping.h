@@ -89,8 +89,13 @@ protected:
 
 		typedef typename se3::mat66 mat66;
 		typedef typename se3::mat33 mat33;
-
-		std::vector< mat66 , Eigen::aligned_allocator<mat66> > blocks(2);
+		
+#ifdef _MSC_VER
+		mat66* blocks;
+		void* blockPtr = ::_aligned_malloc(sizeof(mat66)*2, 16);
+#else
+		std::vector< mat66* , Eigen::aligned_allocator<mat66*> > blocks(2);	
+#endif
 
 		if( translation.getValue() ) {
 			blocks[0] = -mat66::Identity();
@@ -143,7 +148,10 @@ protected:
 		}
 		
 		J.finalize();
-		
+
+#if _MSC_VER
+		::_aligned_free(blockPtr);
+#endif		
 		pairs.endEdit();
 	} 
 	
