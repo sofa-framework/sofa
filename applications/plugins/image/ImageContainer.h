@@ -303,6 +303,15 @@ struct ImageContainerSpecialization<defaulttype::IMAGELABEL_IMAGE>
             }
         }
 
+        float pixdim[8];
+        fseek(file, 2*sizeof(int) + 3*sizeof(float) + 30*sizeof(char) + 13*sizeof(short), SEEK_SET);
+        result = fread(&pixdim, 1, sizeof(pixdim), file);
+
+        if (result!=sizeof(pixdim))
+            std::cerr << "Error reading header of " << fname << std::endl;
+        else
+            for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)pixdim[i+1];
+
         fclose(file);
     }
 };
