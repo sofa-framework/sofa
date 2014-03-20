@@ -238,6 +238,7 @@ class Joint:
                 self.body = []
                 self.offset = []
                 self.name = name
+                self.pathToBodies = '' # to be used when bodies are not inserted in rootNode
 
                 # link constraints compliance
                 self.compliance = 0
@@ -270,7 +271,7 @@ class Joint:
                 input = []
                 for b, o in zip(self.body, self.offset):
                         if o is None:
-                                input.append( '@' + b.name + '/user/dofs' )
+                                input.append( '@' + self.pathToBodies + b.name + '/user/dofs' )
                         else:
                                 joint = b.getChild('user').createChild( self.name + '-offset' )
                                 
@@ -282,7 +283,7 @@ class Joint:
                                                    template = "Rigid,Rigid",
                                                    source = '0 ' + str( o ) )
                                 
-                                input.append( '@' + b.name + '/user/' + joint.name + '/dofs' )
+                                input.append( '@' + self.pathToBodies + b.name + '/user/' + joint.name + '/dofs' )
                              
                 if len(input) == 0:
                         print 'warning: empty joint'
