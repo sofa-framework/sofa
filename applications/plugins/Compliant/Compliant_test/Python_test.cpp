@@ -6,9 +6,9 @@
 #include <sofa/simulation/common/SceneLoaderFactory.h>
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/helper/system/FileRepository.h>
-
-
 #include <sofa/simulation/graph/DAGSimulation.h>
+
+#include <fstream>
 
 #include "../utils/edit.h"
 
@@ -52,9 +52,13 @@ struct Listener : core::objectmodel::BaseObject {
 
 
 void Python_test::run(const char* filename) {
-	std::string filepath = std::string("tests/Compliant/") + filename;
-	bool scriptFound = sofa::helper::system::DataRepository.findFile(filepath);
+	std::string filepath = std::string(COMPLIANT_TEST_PYTHON_DIR) + "/" + filename;
+        std::cout << filepath << std::endl;
+        // Check the file exists
+        std::ifstream file(filepath.c_str());
+	bool scriptFound = file.good();
 	ASSERT_TRUE(scriptFound);
+
 	simulation::Node::SPtr root = loader->load(filepath.c_str());
 	
 	root->addObject( new Listener );

@@ -6,7 +6,6 @@
 // in the meantime, this:
 
 const char* test_files[] = {
-	// Those files are in share/tests/Compliant/
 	"Example.py",
 	"LambdaPropagation.py",
 	"UniformCompliance.py",

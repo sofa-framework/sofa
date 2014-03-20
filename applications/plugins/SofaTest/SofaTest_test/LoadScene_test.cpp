@@ -49,7 +49,7 @@ struct LoadScene_test: public Sofa_test<double>
        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
        // Load the scene from the xml file
-       std::string fileName = sofa::helper::system::DataRepository.getFile(sceneName);
+       std::string fileName = std::string(SOFATEST_SCENES_DIR) + "/" + sceneName;
        root = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()));
 
        // Test if load has succeeded
@@ -87,9 +87,9 @@ struct LoadScene_test: public Sofa_test<double>
 
 TEST_F( LoadScene_test,BilinearConstraint)
 {
-     ASSERT_TRUE(this->LoadScene("tests/SofaTest/BilinearConstraint.scn"));
-     ASSERT_TRUE(this->initScene("tests/SofaTest/BilinearConstraint.scn"));
-     ASSERT_NO_THROW(this->initScene("tests/SofaTest/BilinearConstraint.scn"));
+     ASSERT_TRUE(this->LoadScene("BilinearConstraint.scn"));
+     ASSERT_TRUE(this->initScene("BilinearConstraint.scn"));
+     ASSERT_NO_THROW(this->initScene("BilinearConstraint.scn"));
 }
 
 }// namespace sofa
