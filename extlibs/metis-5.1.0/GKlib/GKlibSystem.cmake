@@ -3,15 +3,24 @@ include(CheckFunctionExists)
 include(CheckIncludeFile)
 
 # Setup options.
-option(GDB "enable use of GDB" OFF)
-option(ASSERT "turn asserts on" OFF)
-option(ASSERT2 "additional assertions" OFF)
-option(DEBUG "add debugging support" OFF)
-option(GPROF "add gprof support" OFF)
-option(OPENMP "enable OpenMP support" OFF)
-option(PCRE "enable PCRE support" OFF)
-option(GKREGEX "enable GKREGEX support" OFF)
-option(GKRAND "enable GKRAND support" OFF)
+option(METIS-GKLIB_GDB "enable use of GDB" OFF)
+mark_as_advanced(METIS-GKLIB_GDB)
+option(METIS-GKLIB_ASSERT "turn asserts on" OFF)
+mark_as_advanced(METIS-GKLIB_ASSERT)
+option(METIS-GKLIB_ASSERT2 "additional assertions" OFF)
+mark_as_advanced(METIS-GKLIB_ASSERT2)
+option(METIS-GKLIB_DEBUG "add debugging support" OFF)
+mark_as_advanced(METIS-GKLIB_DEBUG)
+option(METIS-GKLIB_GPROF "add gprof support" OFF)
+mark_as_advanced(METIS-GKLIB_GPROF)
+option(METIS-GKLIB_OPENMP "enable OpenMP support" OFF)
+mark_as_advanced(METIS-GKLIB_OPENMP)
+option(METIS-GKLIB_PCRE "enable PCRE support" OFF)
+mark_as_advanced(METIS-GKLIB_PCRE)
+option(METIS-GKLIB_GKREGEX "enable GKREGEX support" OFF)
+mark_as_advanced(METIS-GKLIB_GKREGEX)
+option(METIS-GKLIB_GKRAND "enable GKRAND support" OFF)
+mark_as_advanced(METIS-GKLIB_GKRAND)
 
 # Add compiler flags.
 if(MSVC)
@@ -40,53 +49,53 @@ elseif(${CMAKE_C_COMPILER_ID} MATCHES "Sun")
 endif(CMAKE_COMPILER_IS_GNUCC)
 
 # Find OpenMP if it is requested.
-if(OPENMP)
+if(METIS-GKLIB_OPENMP)
   include(FindOpenMP)
   if(OPENMP_FOUND)
     set(GKlib_COPTIONS "${GKlib_COPTIONS} -D__OPENMP__ ${OpenMP_C_FLAGS}")
   else()
     message(WARNING "OpenMP was requested but support was not found")
   endif(OPENMP_FOUND)
-endif(OPENMP)
+endif(METIS-GKLIB_OPENMP)
 
 
 # Add various definitions.
-if(GDB)
+if(METIS-GKLIB_GDB)
   set(GKlib_COPTS "${GKlib_COPTS} -g")
   set(GKlib_COPTIONS "${GKlib_COPTIONS} -Werror")
-endif(GDB)
+endif(METIS-GKLIB_GDB)
 
 
-if(DEBUG)
+if(METIS-GKLIB_DEBUG)
   set(GKlib_COPTS "-g")
   set(GKlib_COPTIONS "${GKlib_COPTIONS} -DDEBUG")
-endif(DEBUG)
+endif(METIS-GKLIB_DEBUG)
 
-if(GPROF)
+if(METIS-GKLIB_GPROF)
   set(GKlib_COPTS "-pg")
-endif(GPROF)
+endif(METIS-GKLIB_GPROF)
 
-if(NOT ASSERT)
+if(NOT METIS-GKLIB_ASSERT)
   set(GKlib_COPTIONS "${GKlib_COPTIONS} -DNDEBUG")
-endif(NOT ASSERT)
+endif(NOT METIS-GKLIB_ASSERT)
 
-if(NOT ASSERT2)
+if(NOT METIS-GKLIB_ASSERT2)
   set(GKlib_COPTIONS "${GKlib_COPTIONS} -DNDEBUG2")
-endif(NOT ASSERT2)
+endif(NOT METIS-GKLIB_ASSERT2)
 
 
 # Add various options
-if(PCRE)
+if(METIS-GKLIB_PCRE)
   set(GKlib_COPTIONS "${GKlib_COPTIONS} -D__WITHPCRE__")
-endif(PCRE)
+endif(METIS-GKLIB_PCRE)
 
-if(GKREGEX)
+if(METIS-GKLIB_GKREGEX)
   set(GKlib_COPTIONS "${GKlib_COPTIONS} -DUSE_GKREGEX")
-endif(GKREGEX)
+endif(METIS-GKLIB_GKREGEX)
 
-if(GKRAND)
+if(METIS-GKLIB_GKRAND)
   set(GKlib_COPTIONS "${GKlib_COPTIONS} -DUSE_GKRAND")
-endif(GKRAND)
+endif(METIS-GKLIB_GKRAND)
 
 
 # Check for features.
