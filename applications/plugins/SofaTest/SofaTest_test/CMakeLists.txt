@@ -2,8 +2,8 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(SOURCE_FILES
     LinearElasticity_test.cpp
-	BezierTetrahedronTopology_test.cpp
-	TetrahedronNumericalIntegration_test.cpp
+    BezierTetrahedronTopology_test.cpp
+    TetrahedronNumericalIntegration_test.cpp
     PrimitiveCreation.cpp
     RigidMapping_test.cpp
     EulerImplicit_test.cpp
@@ -24,12 +24,15 @@ if(APPLE)
 endif()
 
 if(WIN32)
-	link_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Lib")
+    link_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Lib")
 endif()
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${RC_FILES})
-AddCompilerDefinitions("SOFA_PROJECT_TEST")
-AddCompilerDefinitions("SOFA_TEST_SCENES_PATH=${CMAKE_CURRENT_SOURCE_DIR}")
+
+# Define a macro to get the absolute path to a directory;
+# absolute paths are perfectly OK for test resources.
+AddCompilerDefinitions("SOFATEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
+
 AddLinkerDependencies(
     SofaTest
     SofaComponentMain

@@ -28,6 +28,7 @@ add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES} ${RC_FILES})
 
 AddLinkerDependencies(Compliant SofaTest)
 
+AddCompilerDefinitions("COMPLIANT_TEST_PYTHON_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/python\"")
 
 # needed by python tests
 AddCompilerDefinitions("SOFA_SRC_DIR=${SOFA_SRC_DIR}")

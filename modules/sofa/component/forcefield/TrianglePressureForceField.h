@@ -100,13 +100,13 @@ protected:
     sofa::core::topology::BaseMeshTopology* _topology;
 
     TrianglePressureForceField()
-        : trianglePressureMap(initData(&trianglePressureMap, "trianglePressureMap", "map between edge indices and their pressure"))
-        , pressure(initData(&pressure, "pressure", "Pressure force per unit area"))
+        : pressure(initData(&pressure, "pressure", "Pressure force per unit area"))
         , triangleList(initData(&triangleList,"triangleList", "Indices of triangles separated with commas where a pressure is applied"))
         , normal(initData(&normal,"normal", "Normal direction for the plane selection of triangles"))
         , dmin(initData(&dmin,(Real)0.0, "dmin", "Minimum distance from the origin along the normal direction"))
         , dmax(initData(&dmax,(Real)0.0, "dmax", "Maximum distance from the origin along the normal direction"))
         , p_showForces(initData(&p_showForces, (bool)false, "showForces", "draw triangles which have a given pressure"))
+        , trianglePressureMap(initData(&trianglePressureMap, "trianglePressureMap", "map between edge indices and their pressure"))
     {
     }
 

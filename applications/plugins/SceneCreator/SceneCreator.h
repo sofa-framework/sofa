@@ -249,9 +249,7 @@ template<class DataTypes> CylinderTractionStruct<DataTypes>  createCylinderTract
     // Definitions
 	 typedef typename DataTypes::Coord Coord;
     typedef typename component::container::MechanicalObject<DataTypes> MechanicalObject;
-    typedef typename sofa::component::mass::UniformMass <DataTypes, SReal> UniformMass;
     typedef typename component::engine::BoxROI<DataTypes> BoxRoi;
-    typedef typename sofa::component::engine::PairBoxROI<DataTypes> PairBoxRoi;
     typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
 	typename simulation::Node::SPtr root;
 	CylinderTractionStruct<DataTypes> tractionStruct;

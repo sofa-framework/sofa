@@ -85,7 +85,7 @@ struct TetrahedronNumericalIntegration_test : public Sofa_test<typename _DataTyp
     }
 	bool testNumericalIntegration()
 	{
-		size_t k,l;
+		size_t k;
 		Real integral,weight;
 		typename NumericalIntegrationDescriptor::BarycentricCoordinatesType bc;
 		Vec<4,unsigned short> randomPolynomial;
