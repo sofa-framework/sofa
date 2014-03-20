@@ -44,8 +44,6 @@ class SOFA_Compliant_API SequentialSolver : public IterativeSolver {
 
 	Data<SReal> omega;
 
-    Data<bool> projectH;    ///< Replace H with P^T.H.P to account for projective constraints
-
   protected:
 
 	virtual void solve_impl(vec& x,

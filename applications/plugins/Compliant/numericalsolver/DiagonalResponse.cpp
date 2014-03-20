@@ -12,7 +12,11 @@ int DiagonalResponseClass = core::RegisterObject("A diagonal factorization of th
 
 
 DiagonalResponse::DiagonalResponse() 
-	: constant(initData(&constant, false, "constant", "reuse first factorization")) 
+    : regularize( initData(&regularize,
+                           std::numeric_limits<real>::epsilon(),
+                           "regularize",
+                           "add identity*regularize to matrix H to make it definite."))
+    , constant(initData(&constant, false, "constant", "reuse first factorization"))
 {
 
 }
@@ -20,7 +24,17 @@ DiagonalResponse::DiagonalResponse()
 void DiagonalResponse::factor(const mat& H ) {
 	
     if( constant.getValue() && diag.size() == H.rows() ) return;
-	diag = H.diagonal().cwiseInverse();
+
+    if( regularize.getValue() )
+    {
+        diag = H.diagonal();
+        for( unsigned i=0 ; i<H.rows() ; ++i )
+            diag.coeffRef(i) = real(1) / ( diag.coeff(i) + regularize.getValue() );
+    }
+    else
+    {
+        diag = H.diagonal().cwiseInverse();
+    }
 	
 	assert( !has_nan(diag) );
 }

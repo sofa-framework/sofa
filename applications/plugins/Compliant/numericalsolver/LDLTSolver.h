@@ -34,8 +34,7 @@ class SOFA_Compliant_API LDLTSolver : public KKTSolver {
 	~LDLTSolver();
 
 
-    Data<bool> projectH;    ///< Replace H with P^T.H.P to account for projective constraints
-    Data<SReal> regularize; ///< Add identity*regularize to matrix H to make it definite. This is useful when H is projected (see @projectH).
+    Data<SReal> regularize; ///< Add identity*regularize to matrix H to make it definite. This is useful when H is projected with a projective constraint
 
   private:
 	

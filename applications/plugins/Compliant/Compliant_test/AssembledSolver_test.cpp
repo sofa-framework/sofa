@@ -38,7 +38,6 @@ struct AssembledSolver_test : public CompliantSolver_test
         SReal precision = 1.0e-6;
 
         linearsolver::LDLTSolver::SPtr linearSolver = addNew<linearsolver::LDLTSolver>(getRoot());
-        linearSolver->projectH.setValue(true);
         linearSolver->debug.setValue(debug);
 
         // The string
@@ -185,7 +184,6 @@ struct AssembledSolver_test : public CompliantSolver_test
         SReal precision = 1.0e-6;
 
         linearsolver::LDLTSolver::SPtr linearSolver = addNew<linearsolver::LDLTSolver>(root);
-        linearSolver->projectH.setValue(true);
         linearSolver->debug.setValue(debug);
 
         // The string

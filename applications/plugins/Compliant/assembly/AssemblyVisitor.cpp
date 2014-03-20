@@ -93,6 +93,8 @@ AssemblyVisitor::chunk::map_type AssemblyVisitor::mapping(simulation::Node* node
 			throw std::logic_error(msg);
 		}
 
+//        std::cerr<<"AssemblyVisitor::mapping "<<node->mechanicalMapping->getName()<<" "<<c.J<<std::endl;
+
         if( ks && (*ks)[i] ) {
             c.K = convert<mat>( (*ks)[i] );
         }
@@ -118,6 +120,7 @@ AssemblyVisitor::mat AssemblyVisitor::proj(simulation::Node* node) {
 
 	for(unsigned i=0; i<node->projectiveConstraintSet.size(); i++){
 		node->projectiveConstraintSet[i]->projectMatrix(&tmp_p, 0);
+        isPIdentity = false;
 	}
 
 	return tmp_p.compressedMatrix;
@@ -471,6 +474,7 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
     system_type res(_processed->size_m, _processed->size_c);
 
 	res.dt = mparams->dt();
+    res.isPIdentity = isPIdentity;
 
 	// master/compliant offsets
 	unsigned off_m = 0;
@@ -634,7 +638,11 @@ void AssemblyVisitor::clear() {
 
 
 Visitor::Result AssemblyVisitor::processNodeTopDown(simulation::Node* node) {
-	if( !start_node ) start_node = node;
+    if( !start_node )
+    {
+        start_node = node;
+        isPIdentity = true;
+    }
 
 	if( node->mechanicalState ) fill_prefix( node );
 	return RESULT_CONTINUE;

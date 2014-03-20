@@ -58,7 +58,11 @@ public:
     mat H,
         C, J,
         P;
-	
+
+    /// false iff there are projective constraints (useful to eventually replace H with P^T.H.P in the numerical solver)
+    /// cheaper to evaluate than effectively testing if P==I
+    bool isPIdentity;
+
 	// master/compliant dofs, sorted consistently with the above
 	typedef core::behavior::BaseMechanicalState dofs_type;
 	std::vector< dofs_type* > master, compliant;

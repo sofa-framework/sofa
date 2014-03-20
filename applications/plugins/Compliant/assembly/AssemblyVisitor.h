@@ -247,6 +247,8 @@ private:
 		tmp_p_type(const tmp_p_type&) : base() { }
 	} tmp_p;
 
+    bool isPIdentity; ///< false iff there are projective constraints
+
     //simulation::Node* start_node;
 
 

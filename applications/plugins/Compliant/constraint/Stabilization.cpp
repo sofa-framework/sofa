@@ -48,7 +48,7 @@ void Stabilization::dynamics(SReal* dst, unsigned n, bool stabilization) const {
     map(dst, n) = -map(dst, n) / this->getContext()->getDt();
 
     // if there is no stabilization, the constraint must be corrected by the dynamics pass
-    // if there is stabilization, the veolcities will be corrected by the correction pass
+    // if there is stabilization, the velocities will be corrected by the correction pass
     if( stabilization )
     {
         const mask_type& mask = this->mask.getValue();
