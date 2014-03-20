@@ -20,7 +20,6 @@ int SequentialSolverClass = core::RegisterObject("Sequential Impulses solver").a
 
 SequentialSolver::SequentialSolver() 
 	: omega(initData(&omega, (SReal)1.0, "omega", "SOR parameter:  omega < 1 : better, slower convergence, omega = 1 : vanilla gauss-seidel, 2 > omega > 1 : faster convergence, ok for SPD systems, omega > 2 : will probably explode" ))
-    , projectH( initData(&projectH, false, "projectH", "Replace H with P^T.H.P to account for projective constraints"))
 {
 	
 }
@@ -132,7 +131,7 @@ void SequentialSolver::factor(const system_type& system) {
 	// response matrix
 	assert( response );
 
-    if( projectH.getValue() ) response->factor( system.P.transpose() * system.H * system.P );
+    if( !system.isPIdentity ) response->factor( system.P.transpose() * system.H * system.P ); // replace H with P^T.H.P to account for projective constraints
     else response->factor( system.H );
 
 	

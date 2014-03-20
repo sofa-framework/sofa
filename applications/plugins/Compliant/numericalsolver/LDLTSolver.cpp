@@ -27,7 +27,6 @@ typedef AssembledSystem::vec vec;
 
 LDLTSolver::LDLTSolver() 
     : KKTSolver()
-    , projectH( initData(&projectH, false, "projectH", "Replace H with P^T.H.P to account for projective constraints"))
     , regularize( initData(&regularize, std::numeric_limits<real>::epsilon(), "regularize", "add identity*regularize to matrix H to make it definite."))
     , pimpl()
 {
@@ -43,7 +42,8 @@ void LDLTSolver::factor(const AssembledSystem& sys) {
 
     typedef AssembledSystem::dmat dmat;
 
-    if(projectH.getValue()){
+    if( !sys.isPIdentity ) // replace H with P^T.H.P to account for projective constraints
+    {
         if( regularize.getValue() != (SReal)0.0 ) // add a tiny diagonal matrix to make H psd.
         {
             system_type::cmat identity(sys.m,sys.m);
@@ -53,7 +53,8 @@ void LDLTSolver::factor(const AssembledSystem& sys) {
         else
             pimpl->Hinv.compute( sys.P.transpose() * sys.H * sys.P );
     }
-    else {
+    else
+    {
         if( regularize.getValue() != (SReal)0.0 ) // add a tiny diagonal matrix to make H psd.
         {
             system_type::rmat identity(sys.m,sys.m);

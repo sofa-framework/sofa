@@ -106,25 +106,6 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
 				
     virtual void init();
 
-	// broken, will go soon
-    virtual void solve(const core::ExecParams* params,
-	                   double dt, 
-                       core::MultiVecCoordId posId,
-                       core::MultiVecDerivId velId,
-                       bool computeForce, // should the right part of the implicit system be computed?
-                       bool integratePosition, // should the position be updated?
-                       simulation::AssemblyVisitor *vis
-                       );
-
-	// broken, will go soon
-    virtual void solve(const core::ExecParams* params,
-                       double dt,
-                       core::MultiVecCoordId posId,
-                       core::MultiVecDerivId velId,
-                       bool computeForce, // should the right part of the implicit system be computed?
-                       bool integratePosition // should the position be updated?
-                       );
-
     // OdeSolver API
     virtual void solve(const core::ExecParams* params,
                        double dt,
@@ -134,8 +115,8 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
 
 	AssembledSolver();
     virtual ~AssembledSolver();
-	
-	virtual void cleanup();
+
+    virtual void cleanup();
 
     // mechanical params
     void buildMparams( core::MechanicalParams& mparams,
@@ -174,8 +155,7 @@ public:
 	typedef system_type::vec vec;
 
 
-    /** Compute the forces f (summing stiffness and compliance) and the right part of the implicit system c (c_k in compliant-reference.pdf, section 3)
-      */
+    /// Compute the forces f (summing stiffness and compliance) and the right part of the implicit system c (c_k in compliant-reference.pdf, section 3)
     virtual void compute_forces(const core::MechanicalParams& params,
                                simulation::common::MechanicalOperations& mop,
                                simulation::common::VectorOperations& vop,
@@ -187,10 +167,10 @@ public:
 	virtual void rhs_correction(vec& res, const system_type& sys) const;
 	
 	// current v, lambda
-	virtual void get_state(vec& res, const system_type& sys) const;
+    virtual void get_state(vec& res, const system_type& sys, const core::MultiVecDerivId& multiVecId) const;
 
 	// set v, lambda
-	virtual void set_state(const system_type& sys, const vec& data) const;
+    virtual void set_state(const system_type& sys, const vec& data, const core::MultiVecDerivId& multiVecId) const;
 
 
 	// TODO does this work yo ?
@@ -220,8 +200,6 @@ protected:
     bool storeDSol;
     vec dynamics_solution;       ///< to store dv and lambda
     vec dynamics_rhs;            ///< to store f and phi, the right-hand side
-
-	void alloc(const core::ExecParams& params);
 
 };
 

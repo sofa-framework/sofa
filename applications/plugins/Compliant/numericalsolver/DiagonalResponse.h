@@ -20,6 +20,10 @@ public:
 
 	const vec& diagonal() const { return diag; }
 
+    /// Add identity*regularize to matrix H to make it definite (this
+    /// is useful with a projective contraint)
+    Data<SReal> regularize;
+
     Data<bool> constant;
 	
 protected:

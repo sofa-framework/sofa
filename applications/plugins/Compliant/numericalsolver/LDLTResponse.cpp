@@ -12,7 +12,7 @@ int LDLTResponseClass = core::RegisterObject("A sparse Cholesky factorization of
 
 LDLTResponse::LDLTResponse()
     : regularize( initData(&regularize, 
-						   SReal(0), 
+                           std::numeric_limits<real>::epsilon(),
 						   "regularize", 
 						   "add identity*regularize to matrix H to make it definite.")),
 	  constant( initData(&constant, 

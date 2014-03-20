@@ -142,13 +142,6 @@ using namespace core::behavior;
 
 
 
-
-    void AssembledSolver::alloc(const core::ExecParams& params) {
-        scoped::timer step("lambdas alloc");
-        sofa::simulation::common::VectorOperations vop( &params, this->getContext() );
-        lagrange.realloc( &vop, false, true );
-    }
-
     AssembledSolver::~AssembledSolver() {
         if( assemblyVisitor ) delete assemblyVisitor;
     }
@@ -352,7 +345,7 @@ using namespace core::behavior;
 
 
 
-    void AssembledSolver::get_state(vec& res, const system_type& sys) const {
+    void AssembledSolver::get_state(vec& res, const system_type& sys, const core::MultiVecDerivId& multiVecId) const {
 
         assert( res.size() == sys.size() );
 
@@ -363,7 +356,7 @@ using namespace core::behavior;
 
             unsigned dim = dofs->getMatrixSize();
 
-            dofs->copyToBuffer(&res(off), core::VecDerivId::velocity(), dim);
+            dofs->copyToBuffer(&res(off), multiVecId.getId(dofs), dim);
             off += dim;
         }
 
@@ -389,7 +382,7 @@ using namespace core::behavior;
     }
 
 
-    void AssembledSolver::set_state(const system_type& sys, const vec& data) const {
+    void AssembledSolver::set_state(const system_type& sys, const vec& data, const core::MultiVecDerivId& multiVecId) const {
 
         assert( data.size() == sys.size() );
 
@@ -401,7 +394,7 @@ using namespace core::behavior;
 
             unsigned dim = dofs->getMatrixSize();
 
-            dofs->copyFromBuffer(core::VecDerivId::velocity(), &data(off), dim);
+            dofs->copyFromBuffer(multiVecId.getId(dofs), &data(off), dim);
             off += dim;
         }
 
@@ -430,29 +423,6 @@ using namespace core::behavior;
 
     }
 
-    void AssembledSolver::solve(const core::ExecParams* /*params*/,
-                                double /*dt*/,
-                                core::MultiVecCoordId /*posId*/,
-                                core::MultiVecDerivId /*velId*/,
-                                bool /*computeForce*/, // should the right part of the implicit system be computed?
-                                bool /*integratePosition*/, // should the position be updated?
-                                simulation::AssemblyVisitor */*vis*/) {
-
-        throw std::logic_error("broken lol ! subclass AssembledSolver if you need customization");
-
-    }
-
-    void AssembledSolver::solve(const core::ExecParams* /*params*/,
-                                double /*dt*/,
-                                core::MultiVecCoordId /*posId*/,
-                                core::MultiVecDerivId /*velId*/,
-                                bool /*computeForce*/, // should the right part of the implicit system be computed?
-                                bool /*integratePosition*/ // should the position be updated?
-                                ) {
-
-        throw std::logic_error("broken lol ! subclass AssembledSolver if you need customization");
-
-    }
 
 
 
@@ -501,9 +471,15 @@ using namespace core::behavior;
             kkt->factor( sys );
         }
 
+        if( sys.n )
+        {
+            scoped::timer step("lambdas alloc");
+            lagrange.realloc( &vop, false, true );
+        }
+
         // backup current state as correction might erase it, if any
         vec current( sys.size() );
-        get_state( current, sys );
+        get_state( current, sys, velId );
 
         // system solution / rhs
         vec x(sys.size());
@@ -529,7 +505,7 @@ using namespace core::behavior;
                               << x.transpose() << std::endl;
                 }
 
-                set_state(sys, x);
+                set_state( sys, x, velId );
                 integrate( &mparams, posId, velId );
             }
 
@@ -555,7 +531,7 @@ using namespace core::behavior;
                     dynamics_solution = x;
                 }
 
-                set_state(sys, x);
+                set_state( sys, x, velId );
                 integrate( &mparams, posId, velId );
 
                 // TODO is this even needed at this point ?
@@ -565,7 +541,7 @@ using namespace core::behavior;
         }
 
         // propagate lambdas if asked to
-        if( propagate_lambdas.getValue() ) {
+        if( propagate_lambdas.getValue() && sys.n ) {
             scoped::timer step("lambda propagation");
             propagate_visitor prop( &mparams );
 
