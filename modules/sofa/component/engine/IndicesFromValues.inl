@@ -47,6 +47,8 @@ IndicesFromValues<T>::IndicesFromValues()
     : f_values( initData (&f_values, "values", "input values") )
     , f_global( initData (&f_global, "global", "Global values, in which the input values are searched") )
     , f_indices( initData(&f_indices, "indices","Output indices of the given values, searched in global") )
+    , f_otherIndices( initData(&f_otherIndices, "otherIndices","Output indices of the other values, (NOT the given ones) searched in global") )
+    , f_recursiveSearch( initData(&f_recursiveSearch, false, "recursiveSearch", "if set to true, output are indices of the \"global\" data matching with one of the values"))
 {
 }
 
@@ -61,6 +63,7 @@ void IndicesFromValues<T>::init()
     addInput(&f_values);
     addInput(&f_global);
     addOutput(&f_indices);
+    addOutput(&f_otherIndices);
     setDirtyValue();
 }
 
@@ -77,27 +80,53 @@ void IndicesFromValues<T>::update()
     helper::ReadAccessor<Data<VecValue> > global = f_global;
     helper::ReadAccessor<Data<VecValue> > values = f_values;
     helper::WriteAccessor<Data<VecIndex> > indices = f_indices;
+    helper::WriteAccessor<Data<VecIndex> > otherIndices = f_otherIndices;
 
     indices.clear();
-    indices.reserve(values.size());
-    for (unsigned int i=0; i<values.size(); ++i)
-    {
-        const Value v = values[i];
-        int index=-1;
-        for (unsigned int j=0; j<global.size(); ++j)
+    otherIndices.clear();
+
+    if(f_recursiveSearch.getValue()) {
+        for (unsigned int i=0; i<values.size(); i++)
         {
-            //if (global[j] == v)
-            /// @TODO: add operator== to helper::fixed_array and defaulttype::RididCoord/Deriv
-            if (!(global[j] < v) && !(v < global[j]))
+            const Value v = values[i];
+            int index=-1;
+            for (unsigned int j=0; j<global.size(); j++)
             {
-                index = j;
-                break;
+                //if (global[j] == v)
+                /// @TODO: add operator== to helper::fixed_array and defaulttype::RididCoord/Deriv
+                if (!(global[j] < v) && !(v < global[j]))
+                {
+                    index = j;
+                    indices.push_back(j);
+                } else {
+                    otherIndices.push_back(j);
+                }
+            }
+            if (index < 0) {
+                sout << "Input value " << values[i] <<" not found"<< sendl;
             }
         }
-        if (index >= 0)
-            indices.push_back(index);
-        else
-            serr << "Input value " << i <<" not found : " << v << sendl;
+    } else {
+        indices.reserve(values.size());
+        for (unsigned int i=0; i<values.size(); ++i)
+        {
+            const Value v = values[i];
+            int index=-1;
+            for (unsigned int j=0; j<global.size(); ++j)
+            {
+                //if (global[j] == v)
+                /// @TODO: add operator== to helper::fixed_array and defaulttype::RididCoord/Deriv
+                if (!(global[j] < v) && !(v < global[j]))
+                {
+                    index = j;
+                    break;
+                }
+            }
+            if (index >= 0)
+                indices.push_back(index);
+            else
+                serr << "Input value " << i <<" not found : " << v << sendl;
+        }
     }
 }
 
