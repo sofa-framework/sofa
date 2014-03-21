@@ -44,9 +44,7 @@ endif()
 
 ## google test
 if(SOFA-MISC_BUILD_GTEST)
-    add_subdirectory("${SOFA_EXTLIBS_DIR}/gtest")
-    # try to replace with :
-    # RegisterProjects("gtest" "gtest_main" PATH "${SOFA_EXTLIBS_DIR}/gtest")
+    RegisterProjects("gtest" PATH "${SOFA_EXTLIBS_DIR}/gtest")
 
     if(MSVC)
         get_target_property(gtestCompilerDefines gtest COMPILE_DEFINITIONS)
