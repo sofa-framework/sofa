@@ -311,10 +311,9 @@ if(false)
     mark_as_advanced(SOFA-LIB_SPH_FLUID)
     #mark_as_advanced(SOFA-LIB_TAUCS_SOLVER)
     mark_as_advanced(SOFA-LIB_TOPOLOGY_MAPPING)
-    mark_as_advanced(SOFA-LIB_USER_INTERACTION)
+    #mark_as_advanced(SOFA-LIB_USER_INTERACTION)
     mark_as_advanced(SOFA-LIB_VALIDATION)
     mark_as_advanced(SOFA-LIB_VOLUMETRIC_DATA)
-
 endif()
 
 # simulation
