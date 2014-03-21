@@ -245,18 +245,18 @@ public:
 	/**
 	 * return the index of the first line of the container
 	 */
-	unsigned int realBegin() const;
+    inline unsigned int realBegin() const;
 
 	/**
 	 * return the index of the last line of the container
 	 */
-	unsigned int realEnd() const;
+    inline unsigned int realEnd() const;
 
 	/**
 	 * get the index of the line after it in the container
 	 * MUST BE USED INSTEAD OF ++ !
 	 */
-	void realNext(unsigned int &it) const;
+    inline void realNext(unsigned int &it) const;
 
 
 	/**************************************
