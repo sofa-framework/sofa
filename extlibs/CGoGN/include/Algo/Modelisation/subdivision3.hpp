@@ -24,7 +24,7 @@
 
 #include "Algo/Geometry/centroid.h"
 #include "Algo/Modelisation/subdivision.h"
-#include "Algo/Modelisation/extrusion.h"
+//#include "Algo/Modelisation/extrusion.h"
 #include "Geometry/intersection.h"
 #include "NL/nl.h"
 //#include "Algo/LinearSolving/basic.h"
