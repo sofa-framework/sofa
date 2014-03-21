@@ -156,7 +156,7 @@ bool PluginManager::loadPlugin(std::string& pluginPath, std::ostream* errlog)
     Plugin p;
     if( ! d.isValid() )
     {
-        if (errlog) (*errlog) << "Plugin " << pluginPath << " loading FAILED" << std::endl;
+        if (errlog) (*errlog) << "Plugin " << pluginPath << " loading FAILED with error: " << DynamicLibrary::getLastError() << std::endl;
         return false;
     }
     else
