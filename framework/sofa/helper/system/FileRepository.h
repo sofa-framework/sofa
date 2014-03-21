@@ -144,6 +144,27 @@ protected:
 extern SOFA_HELPER_API FileRepository DataRepository; ///< Default repository
 extern SOFA_HELPER_API FileRepository PluginRepository; ///< Default repository
 
+/// Remove the file name at the end of a full path, i.e. the longest sub-string ending with slash.
+inline std::string getPath( std::string fileName )
+{
+    int last=-1;
+    for(std::size_t i=0; i<fileName.size(); i++ )
+    {
+        if(fileName[i]=='/'){
+            last = i;
+        }
+    }
+    fileName.resize(last+1);
+    return fileName;
+}
+
+/** Return the full path to a file, given its relative path from the file where this macro is used.
+ * This has to be a precompiler macro rather than a function, otherwise the the macro used to get the file name would return the path to this header file,
+ * rather than the path to the file which uses it.
+ */
+#define SOFA_FULL_PATH( localPath ) ((getPath(__FILE__)+localPath).c_str())
+
+
 } // namespace system
 
 } // namespace helper
