@@ -70,6 +70,8 @@ public:
     core::objectmodel::Data<VecValue> f_values;
     core::objectmodel::Data<VecValue> f_global;
     core::objectmodel::Data<VecIndex> f_indices;
+    core::objectmodel::Data<VecIndex> f_otherIndices;
+    core::objectmodel::Data<bool> f_recursiveSearch;
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_INDICESFROMVALUES_CPP)
