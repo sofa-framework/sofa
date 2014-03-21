@@ -445,7 +445,7 @@ function(ComputeDependencies projectName forceEnable fromProject offset)
 
             # set the updated compiler definitions of the current project
             set(definitions_list ${dependenciesCompilerDefines} ${GLOBAL_PROJECT_OPTION_COMPILER_DEFINITIONS_${projectName}})
-            sofa_remove_duplicates(definitions_list)
+            #sofa_remove_duplicates(definitions_list)
             set(GLOBAL_PROJECT_REGISTERED_COMPILER_DEFINITIONS_${projectName} ${definitions_list} CACHE INTERNAL "${projectName} compiler definitions from option and dependencies options" FORCE)
 
             if(TARGET ${projectName})
