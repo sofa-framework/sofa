@@ -8,6 +8,7 @@ if(MSVC)
     set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 endif()
 
+include(cmake/utils.cmake)
 include(cmake/environment.cmake)
 include(cmake/functions.cmake)
 include(cmake/options.cmake)
