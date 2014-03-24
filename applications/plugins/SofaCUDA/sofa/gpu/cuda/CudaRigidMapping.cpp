@@ -45,12 +45,15 @@ using namespace sofa::gpu::cuda;
 
 template class RigidMapping< CudaRigid3fTypes, CudaVec3fTypes>;
 template class RigidMapping< Rigid3fTypes, CudaVec3fTypes>;
+#ifndef SOFA_FLOAT
 template class RigidMapping< Rigid3dTypes, CudaVec3fTypes>;
+template class RigidMapping< Rigid3dTypes, CudaVec3f1Types>;
+#endif
 //template class RigidMapping< CudaRigid3fTypes, Vec3dTypes>;
 //template class RigidMapping< CudaRigid3fTypes, Vec3fTypes>;
 template class RigidMapping< CudaRigid3fTypes, CudaVec3f1Types>;
 template class RigidMapping< Rigid3fTypes, CudaVec3f1Types>;
-template class RigidMapping< Rigid3dTypes, CudaVec3f1Types>;
+
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 template class RigidMapping< CudaRigid3fTypes, CudaVec3dTypes>;
@@ -81,12 +84,15 @@ SOFA_DECL_CLASS(CudaRigidMapping)
 int RigidMappingCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< RigidMapping< CudaRigid3fTypes, CudaVec3fTypes> >()
         .add< RigidMapping< Rigid3fTypes, CudaVec3fTypes> >()
+#ifndef SOFA_FLOAT
         .add< RigidMapping< Rigid3dTypes, CudaVec3fTypes> >()
+        .add< RigidMapping< Rigid3dTypes, CudaVec3f1Types> >()
+#endif
 //.add< RigidMapping< CudaRigid3fTypes, Vec3dTypes> >()
 //.add< RigidMapping< CudaRigid3fTypes, Vec3fTypes> >()
         .add< RigidMapping< CudaRigid3fTypes, CudaVec3f1Types> >()
         .add< RigidMapping< Rigid3fTypes, CudaVec3f1Types> >()
-        .add< RigidMapping< Rigid3dTypes, CudaVec3f1Types> >()
+
 #ifdef SOFA_GPU_CUDA_DOUBLE
         .add< RigidMapping< CudaRigid3fTypes, CudaVec3dTypes> >()
         .add< RigidMapping< Rigid3fTypes, CudaVec3dTypes> >()

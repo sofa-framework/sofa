@@ -110,15 +110,15 @@ extern template class  IdentityMapping< CudaVec3dTypes, ExtVec3dTypes >;
 #endif
 extern template class  IdentityMapping< CudaVec3f1Types, ExtVec3fTypes >;
 extern template class  IdentityMapping< CudaVec3f1Types, CudaVec3f1Types>;
-extern template class  IdentityMapping< CudaVec3f1Types, Vec3dTypes>;
 extern template class  IdentityMapping< CudaVec3f1Types, Vec3fTypes>;
 #ifndef SOFA_FLOAT
 extern template class  IdentityMapping< Vec3dTypes, CudaVec3f1Types>;
+extern template class  IdentityMapping< CudaVec3f1Types, Vec3dTypes>;
+extern template class  IdentityMapping< CudaVec3f1Types, ExtVec3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
 extern template class  IdentityMapping< Vec3fTypes, ExtVec3fTypes>;
 #endif
-extern template class  IdentityMapping< CudaVec3f1Types, ExtVec3dTypes >;
 extern template class  IdentityMapping< CudaVec3f1Types, CudaVec3fTypes>;
 extern template class  IdentityMapping< CudaVec3fTypes, CudaVec3f1Types>;
 
