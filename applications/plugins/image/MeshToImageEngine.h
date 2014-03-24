@@ -120,6 +120,11 @@ public:
 
     helper::vector< Data< bool >*> vf_fillInside;
 
+    typedef helper::vector<size_t> SeqIndex;
+    typedef helper::ReadAccessor<Data< SeqIndex > > raIndex;
+    helper::vector< Data< SeqIndex >*> vf_roiVertices;
+    helper::vector< Data< double >*> vf_roiValue;
+
 
     Data< double > closingValue;
 
@@ -156,6 +161,8 @@ public:
         deleteInputDataVector(vf_triangles);
         deleteInputDataVector(vf_values);
         deleteInputDataVector(vf_fillInside);
+        deleteInputDataVector(vf_roiVertices);
+        deleteInputDataVector(vf_roiValue);
     }
 
     virtual void init()
@@ -169,6 +176,8 @@ public:
             this->vf_positions[meshId]->getValue();
             this->vf_edges[meshId]->getValue();
             this->vf_triangles[meshId]->getValue();
+            this->vf_roiVertices[meshId]->getValue();
+            this->vf_roiValue[meshId]->getValue();
         }
 
         addOutput(&closingPosition);
@@ -345,29 +354,39 @@ protected:
 		vf_positions[meshId]->cleanDirty();
 		vf_triangles[meshId]->cleanDirty();
 		vf_edges[meshId]->cleanDirty();
+//        TODO - need this ?
+//        vf_roi[meshId]->cleanDirty();
+//        vf_roiValues[meshId]->cleanDirty();
 		closingTriangles.cleanDirty();
 
         raPositions pos(*this->vf_positions[meshId]);       unsigned int nbp = pos.size();
         raTriangles tri(*this->vf_triangles[meshId]);       unsigned int nbtri = tri.size();
         raEdges edg(*this->vf_edges[meshId]);               unsigned int nbedg = edg.size();
+        raIndex roiVertices(*this->vf_roiVertices[meshId]); bool hasRoi = roiVertices.size()>0;
+
 
         if(!nbp || (!nbtri && !nbedg) ) return;
 
+        // colors definition for painting voxels
+        unsigned char defaultColor = 0;
+        unsigned char fillColor = 1;
+        unsigned char closingColor = 2;
+        unsigned char roiColor = 3;
+        unsigned char outsideColor = 4;
 
         CImg<unsigned char> imCurrent;
         imCurrent.assign( im.width(), im.height(), im.depth(), 1 );
-        imCurrent.fill((unsigned char)0);
+        imCurrent.fill(defaultColor);
 
 
         //        bool isTransformSet=false;
         //        if(this->transform.isSet()) { isTransformSet=true; if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: Voxelize using existing transform.."<<std::endl;}
 
-
-
-        // draw all rasterized object with color 1
+        if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: "<<this->getName()<<":  ROI number of vertices: " << roiVertices.size() << std::endl;
 
         // draw edges
         if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: "<<this->getName()<<":  Voxelizing edges (mesh "<<meshId<<")..."<<std::endl;
+
 
 
 #ifdef USING_OMP_PRAGMAS
@@ -377,7 +396,19 @@ protected:
         {
             Coord pts[2];
             for(size_t j=0; j<2; j++) pts[j] = (tr->toImage(Coord(pos[edg[i][j]])));
-            draw_line(imCurrent,pts[0],pts[1],(unsigned char)1,this->subdiv.getValue());
+            unsigned char currentColor = fillColor;
+            if (hasRoi) {
+                bool isRoi = true;
+                for(size_t j=0; j<2; j++) { // edge is in roi if both ends are in roi
+                    if(std::find(roiVertices.begin(), roiVertices.end(), edg[i][j])==roiVertices.end()) {
+                        isRoi=false;
+                        break;
+                    }
+                }
+                if (isRoi)
+                    currentColor = roiColor;
+            }
+            draw_line(imCurrent,pts[0],pts[1],currentColor,this->subdiv.getValue());
         }
 
 //            // draw filled faces
@@ -390,14 +421,24 @@ protected:
         {
             Coord pts[3];
             for(size_t j=0; j<3; j++) pts[j] = (tr->toImage(Coord(pos[tri[i][j]])));
-            draw_triangle(imCurrent,pts[0],pts[1],pts[2],(unsigned char)1,this->subdiv.getValue());
-            draw_triangle(imCurrent,pts[1],pts[2],pts[0],(unsigned char)1,this->subdiv.getValue());  // fill along two directions to be sure that there is no hole
+            unsigned char currentColor = fillColor;
+            if (hasRoi) {
+                bool isRoi = true;
+                for(size_t j=0; j<3; j++) { // triangle is in roi if all 3 vertices are in roi
+                    if(std::find(roiVertices.begin(), roiVertices.end(), tri[i][j])==roiVertices.end()) {
+                        isRoi=false;
+                        break;
+                    }
+                }
+                if (isRoi) {
+                    currentColor = roiColor;
+                }
+            }
+            draw_triangle(imCurrent,pts[0],pts[1],pts[2],currentColor,this->subdiv.getValue());
+            draw_triangle(imCurrent,pts[1],pts[2],pts[0],currentColor,this->subdiv.getValue());  // fill along two directions to be sure that there is no hole
         }
 
-
-
-
-        // draw closing faces with color 2
+        // draw closing faces with closingColor
 
         raTriangles cltri(this->closingTriangles);
         unsigned previousClosingTriSize = cltri.size();
@@ -414,30 +455,36 @@ protected:
         {
             Coord pts[3];
             for(size_t j=0; j<3; j++) pts[j] = (tr->toImage(Coord(clpos[cltri[i][j]])));
-            draw_triangle(imCurrent,pts[0],pts[1],pts[2],(unsigned char)2,this->subdiv.getValue());
-            draw_triangle(imCurrent,pts[1],pts[2],pts[0],(unsigned char)2,this->subdiv.getValue());  // fill along two directions to be sure that there is no hole
+            draw_triangle(imCurrent,pts[0],pts[1],pts[2],closingColor,this->subdiv.getValue());
+            draw_triangle(imCurrent,pts[1],pts[2],pts[0],closingColor,this->subdiv.getValue());  // fill along two directions to be sure that there is no hole
         }
 
 
-        T color = (T)this->vf_values[meshId]->getValue()[0];
-        T colorClosing;
-        if( this->closingValue.getValue()==0 ) colorClosing=color;
-        else colorClosing = (T)this->closingValue.getValue();
+        T trueFillColor = (T)this->vf_values[meshId]->getValue()[0];
+        T trueClosingColor;
+        if( this->closingValue.getValue()==0 ) trueClosingColor=trueFillColor;
+        else trueClosingColor = (T)this->closingValue.getValue();
+        T trueRoiColor;
+        if( this->vf_roiValue[meshId]->getValue()==0 ) trueRoiColor=trueClosingColor;
+        else trueRoiColor = (T)this->vf_roiValue[meshId]->getValue();
 
 
         if( vf_fillInside[meshId]->getValue() )
         {
-            // flood fill from the exterior point (0,0,0) with the color 3 so every voxel==3 are outside
+            // flood fill from the exterior point (0,0,0) with the color outsideColor so every voxel==outsideColor are outside
             if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: "<<this->getName()<<":  Filling object (mesh "<<meshId<<")..."<<std::endl;
 
-            unsigned char fillColor = (unsigned char)3;
-            imCurrent.draw_fill(0,0,0,&fillColor);
+
+            imCurrent.draw_fill(0,0,0,&outsideColor);
             cimg_foroff(imCurrent,off)
             {
-                if( imCurrent[off]!=fillColor ) // not outside
+                if( imCurrent[off]!=outsideColor ) // not outside
                 {
-                    if( !imCurrent[off] || imCurrent[off]==(unsigned char)1 ) im[off]=color; // inside or rasterized
-                    else if( imCurrent[off]==(unsigned char)2 ) im[off]=colorClosing; // closing
+                    if( !imCurrent[off] || imCurrent[off]==fillColor ) im[off]=trueFillColor; // inside or rasterized
+                    else if( imCurrent[off]==closingColor ) im[off]=trueClosingColor; // closing
+                    else if( imCurrent[off]==roiColor ) {
+                        im[off]=trueRoiColor; // Roi
+                    }
                 }
             }
         }
@@ -445,10 +492,11 @@ protected:
         {
             cimg_foroff(imCurrent,off)
             {
-                if( imCurrent[off]!=0 ) // not outside
+                if( imCurrent[off]!=defaultColor ) // not outside and not inside
                 {
-                    if( !imCurrent[off] || imCurrent[off]==(unsigned char)1 ) im[off]=color; // inside or rasterized
-                    else if( imCurrent[off]==(unsigned char)2 ) im[off]=colorClosing; // closing
+                    if( imCurrent[off]==fillColor ) im[off]=trueFillColor; // rasterized
+                    else if( imCurrent[off]==closingColor ) im[off]=trueClosingColor; // closing
+                    else if( imCurrent[off]==roiColor ) im[off]=trueRoiColor; // roi
                 }
             }
         }
@@ -743,6 +791,9 @@ protected:
         createInputDataVector(n, vf_values, "value", "pixel value for mesh ", defaultValues, false);
 
         createInputDataVector(n, vf_fillInside, "fillInside", "fill the inside? (only valable for unique value)", true, false);
+
+        createInputDataVector(n, vf_roiVertices, "roiVertices", "Region Of Interest, vertices index ", SeqIndex(), false);
+        createInputDataVector(n, vf_roiValue, "roiValue", "pixel value for ROI ", 1.0, false);
     }
 
     template<class U>
