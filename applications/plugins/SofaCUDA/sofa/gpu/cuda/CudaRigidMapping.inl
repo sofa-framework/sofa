@@ -133,7 +133,7 @@ void RigidMapping<gpu::cuda::CudaRigid3fTypes, gpu::cuda::CudaVec3fTypes>::apply
 }
 
 //////// Rigid3d ////////
-
+#ifndef SOFA_FLOAT
 template <>
 void RigidMapping<defaulttype::Rigid3dTypes, gpu::cuda::CudaVec3fTypes>::apply( const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, OutDataVecCoord& dOut, const InDataVecCoord& dIn )
 {
@@ -205,7 +205,7 @@ void RigidMapping<defaulttype::Rigid3dTypes, gpu::cuda::CudaVec3fTypes>::applyJT
 
     dOut.endEdit();
 }
-
+#endif
 //////// Rigid3f ////////
 
 template <>
