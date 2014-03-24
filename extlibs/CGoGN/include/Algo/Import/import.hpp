@@ -531,8 +531,8 @@ bool importMeshSurfToVol(typename PFP::MAP& map, Surface::Import::MeshTablesSurf
 
 
 template <typename PFP>
-bool importMesh(typename PFP::MAP& map, MeshTablesVolume<PFP>& mtv)
-{
+bool importMesh(typename PFP::MAP& map, MeshTablesVolume<PFP>& mtv) {
+    typedef typename MeshTablesVolume<PFP>::VOLUME_TYPE VOLUME_TYPE;
     VertexAutoAttribute< NoTypeNameAttribute< std::vector<Dart> > > vecDartsPerVertex(map, "incidents");
 
     unsigned int nbv = mtv.getNbVolumes();
@@ -549,6 +549,7 @@ bool importMesh(typename PFP::MAP& map, MeshTablesVolume<PFP>& mtv)
     {
         // store volume in buffer, removing degenated faces
         unsigned int nbf = mtv.getNbFacesVolume(i);
+        VOLUME_TYPE VT = mtv.getVolumeType(i);
 
         edgesBuffer.clear();
         unsigned int prec = EMBNULL;
@@ -562,7 +563,7 @@ bool importMesh(typename PFP::MAP& map, MeshTablesVolume<PFP>& mtv)
             }
         }
 
-        if(nbf == 4) //tetrahedral case
+        if(VT == MeshTablesVolume<PFP>::TETRAHEDRON) //tetrahedral case
         {
             Dart d = Surface::Modelisation::createTetrahedron<PFP>(map,false);
 
@@ -602,7 +603,7 @@ bool importMesh(typename PFP::MAP& map, MeshTablesVolume<PFP>& mtv)
             } while(dd != d);
 
         }
-        else if(nbf == 6) //hexahedral case
+        else if(nbf == MeshTablesVolume<PFP>::HEXAHEDRON) //hexahedral case
         {
             Dart d = Surface::Modelisation::createHexahedron<PFP>(map,false);
 
@@ -686,6 +687,13 @@ bool importMesh(typename PFP::MAP& map, MeshTablesVolume<PFP>& mtv)
             vecDartsPerVertex[em].push_back(dd); m.mark(dd);
 
         }  //end of hexa
+        else if (VT == MeshTablesVolume<PFP>::SQUARE_PYRAMID) {
+            //         std::cerr << __FILE__ << ":" << __LINE__ <<  std::endl;
+            Dart d = Surface::Modelisation::createQuadrangularPyramid<PFP>(map,false);
+        } else if (VT == MeshTablesVolume<PFP>::TRIANGULAR_PRISM) {
+            //            std::cerr << __FILE__ << ":" << __LINE__ <<  std::endl;
+            Dart d = Surface::Modelisation::createTriangularPrism<PFP>(map,false);
+        }
     }
 
 

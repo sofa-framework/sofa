@@ -552,7 +552,7 @@ public:
 	 * (may be NULL if the orbit is not embedded)
 	 */
 	template <unsigned int ORBIT>
-	AttributeMultiVector<unsigned int>* getEmbeddingAttributeVector() ;
+    inline AttributeMultiVector<unsigned int>* getEmbeddingAttributeVector() ;
 
 	/**
 	 * get the MR attribute container

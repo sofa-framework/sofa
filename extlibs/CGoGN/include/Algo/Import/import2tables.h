@@ -154,6 +154,13 @@ public:
     typedef typename VEC3::DATA_TYPE DATA_TYPE ;
     typedef typename PFP::REAL REAL;
 
+    enum VOLUME_TYPE {
+        TETRAHEDRON = 0,
+        HEXAHEDRON,
+        SQUARE_PYRAMID,
+        TRIANGULAR_PRISM
+    };
+
 protected:
 	typename PFP::MAP& m_map;
 
@@ -165,6 +172,7 @@ protected:
      * number of faces per volume
      */
     std::vector<short> m_nbFaces;
+    std::vector<VOLUME_TYPE> m_volumeType;
 
 	/**
 	* table of emb ptr (for each face, first vertex)
@@ -211,6 +219,8 @@ public:
     inline unsigned getNbVolumes() const { return m_nbVolumes; }
 
     inline short getNbFacesVolume(int i) const { return m_nbFaces[i]; }
+
+    inline VOLUME_TYPE getVolumeType(int i) const { return m_volumeType[i] ;}
 
     inline unsigned int getEmbIdx(int i) { return  m_emb[i]; }
 
