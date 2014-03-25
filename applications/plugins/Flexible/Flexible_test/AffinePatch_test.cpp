@@ -57,6 +57,7 @@ namespace sofa {
         typedef typename DataTypes::Coord Coord;
         typedef typename DataTypes::VecCoord VecCoord;
         typedef typename DataTypes::VecDeriv VecDeriv;
+        typedef typename DataTypes::Real Real;
         typedef projectiveconstraintset::AffineMovementConstraint<DataTypes> AffineMovementConstraint;
         typedef container::MechanicalObject<DataTypes> MechanicalObject;
         typedef defaulttype::Quat Quat;
