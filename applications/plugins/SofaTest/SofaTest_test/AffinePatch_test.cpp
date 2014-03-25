@@ -66,6 +66,7 @@ struct AffinePatch_test : public Sofa_test<typename _DataTypes::Real>
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Deriv Deriv;
+    typedef typename DataTypes::Real Real;
     typedef projectiveconstraintset::AffineMovementConstraint<DataTypes> AffineMovementConstraint;
     typedef container::MechanicalObject<DataTypes> MechanicalObject;
     typedef typename component::interactionforcefield::MeshSpringForceField<DataTypes> MeshSpringForceField;
