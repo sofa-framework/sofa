@@ -50,5 +50,5 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_LOADER" )
 AddLinkerDependencies(${ZLIB_LIBRARIES_OPTIONAL} SofaSimulationTree tinyxml)
-    
+
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
