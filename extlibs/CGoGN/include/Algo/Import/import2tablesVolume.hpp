@@ -154,9 +154,8 @@ bool MeshTablesVolume<PFP>::importTet(const std::string& filename, std::vector<s
 
 		verticesID.push_back(id);
 	}
-
     // reading tetrahedra
-    m_nbFaces.reserve(m_nbVolumes*4);
+    m_nbVerticesPerVolume.reserve(m_nbVolumes*4);
     m_emb.reserve(m_nbVolumes*12);
 
 	for (unsigned int i = 0; i < m_nbVolumes ; ++i)
@@ -170,7 +169,7 @@ bool MeshTablesVolume<PFP>::importTet(const std::string& filename, std::vector<s
 		int n;
 		oss >> n; // nb de faces d'un volume ?
 
-        m_nbFaces.push_back(4);
+        m_nbVerticesPerVolume.push_back(4);
 
         int s0,s1,s2,s3;
 
@@ -294,7 +293,7 @@ bool MeshTablesVolume<PFP>::importOFFWithELERegions(const std::string& filenameO
     }
 
     // reading tetrahedra
-    m_nbFaces.reserve(m_nbVolumes*4);
+    m_nbVerticesPerVolume.reserve(m_nbVolumes*4);
     m_emb.reserve(m_nbVolumes*12);
 
     for(unsigned i = 0; i < m_nbVolumes ; ++i)
@@ -307,7 +306,7 @@ bool MeshTablesVolume<PFP>::importOFFWithELERegions(const std::string& filenameO
         std::stringstream oss(line);
         oss >> nbe;
 
-        m_nbFaces.push_back(4);
+        m_nbVerticesPerVolume.push_back(4);
 
         int s0,s1,s2,s3;
 
@@ -429,7 +428,7 @@ bool MeshTablesVolume<PFP>::importNodeWithELERegions(const std::string& filename
     }
 
     // reading tetrahedra
-    m_nbFaces.reserve(m_nbVolumes*4);
+    m_nbVerticesPerVolume.reserve(m_nbVolumes*4);
     m_emb.reserve(m_nbVolumes*12);
 
     for(unsigned i = 0; i < m_nbVolumes ; ++i)
@@ -442,7 +441,7 @@ bool MeshTablesVolume<PFP>::importNodeWithELERegions(const std::string& filename
         std::stringstream oss(line);
         oss >> nbe;
 
-        m_nbFaces.push_back(4);
+        m_nbVerticesPerVolume.push_back(4);
 
         int s0,s1,s2,s3;
 
@@ -545,7 +544,7 @@ bool MeshTablesVolume<PFP>::importTetmesh(const std::string& filename, std::vect
     std::getline (fp, line);
 
     // reading tetrahedra
-    m_nbFaces.reserve(m_nbVolumes*4);
+    m_nbVerticesPerVolume.reserve(m_nbVolumes*4);
     m_emb.reserve(m_nbVolumes*12);
 
     for(unsigned i = 0; i < m_nbVolumes ; ++i)
@@ -557,7 +556,7 @@ bool MeshTablesVolume<PFP>::importTetmesh(const std::string& filename, std::vect
 
         std::stringstream oss(line);
 
-        m_nbFaces.push_back(4);
+        m_nbVerticesPerVolume.push_back(4);
 
         int s0,s1,s2,s3;
 
@@ -666,7 +665,7 @@ bool MeshTablesVolume<PFP>::importTs(const std::string& filename, std::vector<st
 
         std::stringstream oss(ligne);
 
-        m_nbFaces.push_back(4);
+        m_nbVerticesPerVolume.push_back(4);
 
         int s0,s1,s2,s3,nbe;
 
@@ -789,7 +788,7 @@ bool MeshTablesVolume<PFP>::importMSH(const std::string& filename, std::vector<s
 
         if ((type_elm==4) && (nb==4))
         {
-            m_nbFaces.push_back(4);
+            m_nbVerticesPerVolume.push_back(4);
 
             int s0,s1,s2,s3;
 
@@ -823,7 +822,7 @@ bool MeshTablesVolume<PFP>::importMSH(const std::string& filename, std::vector<s
         }
         else if((type_elm==5) && (nb==8))
         {
-            m_nbFaces.push_back(8);
+            m_nbVerticesPerVolume.push_back(8);
         }
         else
         {

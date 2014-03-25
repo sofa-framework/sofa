@@ -650,7 +650,7 @@ bool Map3::sewVolumesPreCond(Dart d, Dart e)
 
 void Map3::sewVolumes(Dart d, Dart e, bool withBoundary)
 {
-	assert(sewVolumesPreCond(d,e));
+    assert(sewVolumesPreCond(d,e));
 
 	// if sewing with fixed points
 	if (!withBoundary)
