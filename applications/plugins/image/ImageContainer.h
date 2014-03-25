@@ -112,7 +112,7 @@ struct ImageContainerSpecialization<defaulttype::IMAGELABEL_IMAGE>
 #ifdef SOFA_HAVE_ZLIB
             float voxsize[3];
             float translation[3]={0.,0.,0.}, rotation[3]={0.,0.,0.};
-            CImg<T> img = _load_gz_inr<T>(NULL, fname.c_str(), voxsize, translation, rotation);
+            CImg<T> img = cimg_library::_load_gz_inr<T>(NULL, fname.c_str(), voxsize, translation, rotation);
             wimage->getCImgList().push_back(img);
 
             for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)voxsize[i];
