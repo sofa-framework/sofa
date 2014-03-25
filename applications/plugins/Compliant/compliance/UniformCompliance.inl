@@ -128,7 +128,7 @@ void UniformCompliance<DataTypes>::addForce(const core::MechanicalParams *, Data
 }
 
 template<class DataTypes>
-void UniformCompliance<DataTypes>::addDForce(const core::MechanicalParams *mparams, DataVecDeriv& df,  const DataVecDeriv& dx)
+void UniformCompliance<DataTypes>::addDForce(const core::MechanicalParams *mparams, DataVecDeriv& df, const DataVecDeriv& dx)
 {
     Real kfactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 

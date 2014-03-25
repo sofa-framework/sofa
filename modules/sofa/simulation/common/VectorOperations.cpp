@@ -73,9 +73,9 @@ void VectorOperations::v_alloc(sofa::core::MultiVecDerivId& v)
     executeVisitor(  MechanicalVAllocVisitor<V_DERIV>(params /* PARAMS FIRST */, v) );
 }
 
-void VectorOperations::v_free(sofa::core::MultiVecCoordId& id)
+void VectorOperations::v_free(sofa::core::MultiVecCoordId& id, bool interactionForceField, bool propagate)
 {
-    if( !id.isNull() ) executeVisitor( MechanicalVFreeVisitor<V_COORD>( params /* PARAMS FIRST */, id) );
+    if( !id.isNull() ) executeVisitor( MechanicalVFreeVisitor<V_COORD>( params /* PARAMS FIRST */, id, interactionForceField, propagate) );
 }
 
 void VectorOperations::v_free(sofa::core::MultiVecDerivId& id, bool interactionForceField, bool propagate)

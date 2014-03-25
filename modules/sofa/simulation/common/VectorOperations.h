@@ -53,7 +53,7 @@ public:
     void v_alloc(sofa::core::MultiVecCoordId& v);
     void v_alloc(sofa::core::MultiVecDerivId& v);
     /// Free a previously allocated temporary vector
-    void v_free(sofa::core::MultiVecCoordId& id);
+    void v_free(sofa::core::MultiVecCoordId& id, bool interactionForceField=false, bool propagate=false);
     void v_free(sofa::core::MultiVecDerivId& id, bool interactionForceField=false, bool propagate=false);
 
     void v_realloc(sofa::core::MultiVecCoordId& id, bool interactionForceField=false, bool propagate=false);

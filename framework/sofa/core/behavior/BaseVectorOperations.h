@@ -58,7 +58,7 @@ public:
     virtual void v_alloc(sofa::core::MultiVecCoordId& id) = 0;
     virtual void v_alloc(sofa::core::MultiVecDerivId& id) = 0;
     /// Free a previously allocated temporary vector
-    virtual void v_free(sofa::core::MultiVecCoordId& id) = 0;
+    virtual void v_free(sofa::core::MultiVecCoordId& id, bool interactionForceField=false, bool propagate=false) = 0;
     virtual void v_free(sofa::core::MultiVecDerivId& id, bool interactionForceField=false, bool propagate=false) = 0;
 
     /// keep already allocated vectors and allocates others. If interactionForceField, also allocates mechanical states linked by an InteractionForceField
