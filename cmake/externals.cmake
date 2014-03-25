@@ -37,26 +37,6 @@ else()
     list(APPEND GLOBAL_INCLUDE_DIRECTORIES "${SOFA-EXTERNAL_BOOST_PATH}")
 endif()
 
-
-## Zlib (SOFA-EXTERNAL_ZLIB)
-if(WIN32 OR XBOX OR PS3)
-    if(PS3)
-        set(ZLIB_LIBRARIES "${SOFA_LIB_OS_DIR}/zlib.a")
-        set(ZLIB_INCLUDE_DIR ${SOFA_INC_DIR})
-    else()
-        set(ZLIB_LIBRARIES "zlib")
-    endif(PS3)
-else()
-    find_library(ZLIB_LIBRARIES "z")
-endif()
-set(ZLIB_LIBRARIES ${ZLIB_LIBRARIES} CACHE INTERNAL "ZLib Library")
-if (SOFA-EXTERNAL_ZLIB)
-    set(ZLIB_LIBRARIES_OPTIONAL ${ZLIB_LIBRARIES} CACHE INTERNAL "ZLib Library")
-else()
-    set(ZLIB_LIBRARIES_OPTIONAL "" CACHE INTERNAL "ZLib Library (optional)")
-endif()
-RegisterProjects(${ZLIB_LIBRARIES} OPTION SOFA-EXTERNAL_ZLIB COMPILE_DEFINITIONS SOFA_HAVE_ZLIB)
-
 # packages and libraries
 
 ## opengl / glew / glut
@@ -154,6 +134,31 @@ else()
     RegisterProjects(${GLUT_LIBRARIES})
 endif()
 RegisterProjects(${PNG_LIBRARIES} OPTION SOFA-EXTERNAL_PNG COMPILE_DEFINITIONS SOFA_HAVE_PNG)
+
+
+## Zlib (SOFA-EXTERNAL_ZLIB)
+# Note: zlib has to be registered AFTER libpng, because zlib is part of PNG_LIBRARIES; this way,
+# GLOBAL_PROJECT_OPTION_COMPILERDEFINITIONS_zlib is set to SOFA_HAS_ZLIB (and not SOFA_HAVE_PNG)
+# (This is quite a ugly workaround, I agree)
+if(WIN32 OR XBOX OR PS3)
+    if(PS3)
+        set(ZLIB_LIBRARIES "${SOFA_LIB_OS_DIR}/zlib.a")
+        set(ZLIB_INCLUDE_DIR ${SOFA_INC_DIR})
+    else()
+        set(ZLIB_LIBRARIES "zlib")
+    endif(PS3)
+else()
+    find_library(ZLIB_LIBRARIES "z")
+endif()
+set(ZLIB_LIBRARIES ${ZLIB_LIBRARIES} CACHE INTERNAL "ZLib Library")
+if (SOFA-EXTERNAL_ZLIB)
+    set(ZLIB_LIBRARIES_OPTIONAL ${ZLIB_LIBRARIES} CACHE INTERNAL "ZLib Library")
+else()
+    set(ZLIB_LIBRARIES_OPTIONAL "" CACHE INTERNAL "ZLib Library (optional)")
+endif()
+RegisterProjects(${ZLIB_LIBRARIES} OPTION SOFA-EXTERNAL_ZLIB COMPILE_DEFINITIONS SOFA_HAVE_ZLIB)
+
+
 
 # enable unit tests
 if(SOFA-MISC_TESTS)
