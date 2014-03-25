@@ -23,7 +23,7 @@
 
 		
 
-		<MinresSolver iterations="500" precision="0" relative="false" />
+		<MinresSolver iterations="200" precision="0" relative="false" />
 
 		
 
@@ -111,7 +111,7 @@
 
 
 
-		<MinresSolver iterations="500" precision="0" relative="false" />
+		<MinresSolver iterations="200" precision="0" relative="false" />
 
 		
 
@@ -203,7 +203,7 @@
 
 		<EulerImplicitSolver rayleighStiffness="0" rayleighMass="0" vdamping="0"  />
 
-		<MinResLinearSolver iterations="500" tolerance="0"  />
+		<MinResLinearSolver iterations="200" tolerance="0" />
 
 		<Node name="Flexible2"  >
 
@@ -233,7 +233,7 @@
 
 				<MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
 
-    		<LinearMapping template="Mapping&lt;Vec3d,F331&gt;" assemble="false"/>
+    		<LinearMapping template="Mapping&lt;Vec3d,F331&gt;" assemble="1"/>
 
 
 
@@ -241,9 +241,9 @@
 
 					<MechanicalObject  template="E331" name="E"  />
 
-	    		<CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" assemble="0" method="svd" geometricStiffness="1"/>
+	    		<CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" assemble="1" method="svd" geometricStiffness="1"/>
 
-					<HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="2" assemble="false" isCompliance="false"/>	    
+					<HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="2" assemble="true" isCompliance="false"/>	    
 
 				</Node>
 
@@ -291,7 +291,7 @@
 
 		<EulerImplicitSolver firstOrder="1" rayleighStiffness="1" rayleighMass="1" vdamping="0"  />
 
-		<MinResLinearSolver iterations="500" tolerance="0"  />
+		<MinResLinearSolver iterations="200" tolerance="0"  />
 
 		<Node name="Flexible2"  >
 

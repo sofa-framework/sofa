@@ -80,7 +80,21 @@ void AssembledSystem::copyToMultiVec( core::MultiVecId targetId, const vec& sour
 
 }
 
+void AssembledSystem::addToMultiVec( core::MultiVecId targetId, const vec& source )
+{
+    unsigned off = 0;
+    // master dofs
+    for(unsigned i = 0, end = master.size(); i < end; ++i)
+    {
+        dofs_type* dofs = master[i];
 
+        unsigned dim = dofs->getMatrixSize();
+
+        dofs->addFromBuffer(targetId.getId(dofs), &source(off), dim);
+        off += dim;
+    }
+
+}
 
 
 }

@@ -1053,7 +1053,7 @@ MechanicalPropagatePositionVisitor::MechanicalPropagatePositionVisitor(const sof
 #ifdef SOFA_DUMP_VISITOR_INFO
     setReadWriteVectors();
 #endif
-    //cerr<<"::MechanicalPropagatePositionAndVelocityVisitor"<<endl;
+    //cerr<<"::MechanicalPropagatePositionVisitor"<<endl;
 }
 
 

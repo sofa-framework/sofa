@@ -84,6 +84,8 @@ public:
     /// Copy a state vector from this system to the scene graph. Only the independent DOFs are copied.
     void copyToMultiVec( core::MultiVecId targetId, const vec& source );
 
+    /// Add a state vector from this system to the scene graph. Only the independent DOFs are copied.
+    void addToMultiVec( core::MultiVecId targetId, const vec& source );
 };
 
 
