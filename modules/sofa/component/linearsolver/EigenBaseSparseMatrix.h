@@ -84,9 +84,15 @@ class EigenBaseSparseMatrix : public defaulttype::BaseMatrix
 {
     /** Impossible using this class
     */
-    void set(int /*i*/, int /*j*/, double /*v*/)
+    void set(int i, int j, double v)
     {
-        assert( false && "EigenBaseSparseMatrix::set(int i, int j, double v) is not implemented !");
+        for (typename CompressedMatrix::InnerIterator it(compressedMatrix,i); it; ++it)
+        {
+            if(it.index()==j) // diagonal entry
+                it.valueRef()=0.0;
+        }
+
+        incoming.push_back( Triplet(i,j,v) );
     }
 
 

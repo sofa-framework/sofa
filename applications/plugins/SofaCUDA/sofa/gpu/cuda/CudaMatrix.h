@@ -153,8 +153,8 @@ public:
             T* prevHostPointer = hostPointer;
 
             size_t oldpitch_device = pitch_device;
-            size_t oldpitch_host = pitch_device;
-            pitch_host = d_x * sizeof(T);// new pitch_host biger than oldpitch_host
+            size_t oldpitch_host = pitch_host;
+            pitch_host = d_x * sizeof(T);// new pitch_host larger than oldpitch_host : guarantee that data on the host are continuous
 
             mycudaMallocPitch(&devicePointer, &pitch_device, d_x*sizeof(T), allocSizeY);// new pitch_device biger than oldpitch_device
             MemoryManager::hostAlloc( (void **) &hostPointer, pitch_host*allocSizeY);
