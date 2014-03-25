@@ -168,10 +168,8 @@ protected:
 
     unsigned int m_nbVolumes;
 
-    /**
-     * number of faces per volume
-     */
-    std::vector<short> m_nbFaces;
+
+    std::vector<short> m_nbVerticesPerVolume;
     std::vector<VOLUME_TYPE> m_volumeType;
 
 	/**
@@ -214,15 +212,27 @@ protected:
 public:
     //static ImportType getFileType(const std::string& filename);
 
+    unsigned int getNbVerticesOfVolume(VOLUME_TYPE vt) const  {
+        if (vt == TETRAHEDRON)
+            return 4u;
+        else if ( vt == SQUARE_PYRAMID)
+            return 5u;
+        else if (vt == TRIANGULAR_PRISM)
+            return 6u;
+        else if ( vt == HEXAHEDRON )
+            return 8u;
+        return 0xFFFFFF;
+    }
+
     inline unsigned getNbVertices() const { return m_nbVertices; }
 
     inline unsigned getNbVolumes() const { return m_nbVolumes; }
 
-    inline short getNbFacesVolume(int i) const { return m_nbFaces[i]; }
+    inline short getNbFacesVolume(int i) const { return m_nbVerticesPerVolume[i]; }
 
     inline VOLUME_TYPE getVolumeType(int i) const { return m_volumeType[i] ;}
 
-    inline unsigned int getEmbIdx(int i) { return  m_emb[i]; }
+    inline unsigned int getEmbIdx(int i) const { return  m_emb[i]; }
 
     bool importMesh(const std::string& filename, std::vector<std::string>& attrNames);
 
