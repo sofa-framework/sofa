@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_BILINEARMOVEMENTCONSTRAINT_CPP
-#include <sofa/component/projectiveconstraintset/BilinearMovementConstraint.inl>
+#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_AFFINEMOVEMENTCONSTRAINT_CPP
+#include <sofa/component/projectiveconstraintset/AffineMovementConstraint.inl>
 #include <sofa/core/behavior/ProjectiveConstraintSet.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
@@ -41,27 +41,27 @@ namespace projectiveconstraintset
 {
 
 //declaration of the class, for the factory
-SOFA_DECL_CLASS(BilinearMovementConstraint)
+SOFA_DECL_CLASS(AffineMovementConstraint)
 
 
-int BilinearMovementConstraintClass = core::RegisterObject("bilinear constraint")
+int AffineMovementConstraintClass = core::RegisterObject("bilinear constraint")
 #ifndef SOFA_FLOAT
-        .add< BilinearMovementConstraint<Vec3dTypes> >()
-        .add< BilinearMovementConstraint<Rigid3dTypes> >()
+        .add< AffineMovementConstraint<Vec3dTypes> >()
+        .add< AffineMovementConstraint<Rigid3dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
-        .add< BilinearMovementConstraint<Vec3fTypes> >()
-        .add< BilinearMovementConstraint<Rigid3fTypes> >()
+        .add< AffineMovementConstraint<Vec3fTypes> >()
+        .add< AffineMovementConstraint<Rigid3fTypes> >()
 #endif
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_BOUNDARY_CONDITION_API BilinearMovementConstraint<Vec3dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API BilinearMovementConstraint<Rigid3dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API AffineMovementConstraint<Vec3dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API AffineMovementConstraint<Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_BOUNDARY_CONDITION_API BilinearMovementConstraint<Vec3fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API BilinearMovementConstraint<Rigid3fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API AffineMovementConstraint<Vec3fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API AffineMovementConstraint<Rigid3fTypes>;
 #endif
 
 } // namespace projectiveconstraintset

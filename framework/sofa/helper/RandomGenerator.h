@@ -119,7 +119,8 @@ private:
 template<>
 inline long RandomGenerator::random( long min, long max )
 {
-	return (min + ((max - min)*randomBase())/RANDOM_BASE_MAX);
+    SReal randomReal = min + ((max - min)*(SReal)randomBase())/(SReal)RANDOM_BASE_MAX;
+	return (long)(randomReal);
 }
 
 // specialization for double

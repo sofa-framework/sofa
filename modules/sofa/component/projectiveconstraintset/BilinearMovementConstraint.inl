@@ -27,14 +27,12 @@
 
 #include <sofa/component/projectiveconstraintset/BilinearMovementConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/ProjectiveConstraintSet.inl>
+#include <sofa/component/topology/TopologySubsetData.inl>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/helper/gl/template.h>
-#include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
-#include <sofa/component/topology/TopologySubsetData.inl>
-
 
 
 namespace sofa
@@ -102,12 +100,6 @@ BilinearMovementConstraint<DataTypes>::~BilinearMovementConstraint()
         delete pointHandler;
 }
 
-template <class DataTypes>
-void BilinearMovementConstraint<DataTypes>::setCornerMovements(VecDeriv cornerMovements)
-{
-     m_cornerMovements.setValue(cornerMovements);
-}
- 
 template <class DataTypes>
 void BilinearMovementConstraint<DataTypes>::clearConstraints()
 {

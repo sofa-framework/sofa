@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<Node 	name="Root" gravity="0 0 0" time="0" animate="0"  dt="0.02" showAxis="true">
+<Node 	name="Root" gravity="0 0 0" time="0" animate="0"  dt="0.02" >
   <RequiredPlugin pluginName="Flexible"/>
   <RequiredPlugin pluginName="Compliant"/>
   <VisualStyle displayFlags="showVisualModels showBehaviorModels showForceFields" />
@@ -15,14 +15,8 @@
     <!--Constraint and roi-->
     <BoxROI name="Box" box="-0.1 -0.1 -0.1  1.1 1.1 1.1"/>
     <PairBoxROI name="PairBox" inclusiveBox="-0.1 -0.1 -0.1  1.1 1.1 1.1" includedBox="0.1 0.1 0.1 0.9 0.9 0.9"/>
-    <BilinearMovementConstraint name="bilinearConstraint" indices="@PairBox.indices" meshIndices = "@Box.indices" constrainedPoints="@PairBox.pointsInROI" drawConstrainedPoints="1" cornerMovements=" 0 0 -0.2
-       0.1 -0.1 -0.6
-       0.1 0.1 -0.1
-       0 0 0
-      -0.5 -0.1 0.1
-      -0.1 0 0
-      0.2 0.1 0
-      -0.3 0.1 0.1"/>
+    <AffineMovementConstraint name="bilinearConstraint" indices="@PairBox.indices" meshIndices = "@Box.indices" translation="0.1 0 -0.3" rotation="[1 0 0,0 1 0,1 0 1]"  drawConstrainedPoints="1"/>
+   
     <!--Mass-->
     <UniformMass  name="mass" totalMass="1"/>
     
@@ -37,9 +31,9 @@
 
       <!--Material-->
       <Node 	name="Material" >
-        <MechanicalObject template="E332"  name="VoigtStrainDOF" />
-        <CorotationalStrainMapping template="Mapping&lt;F332,E332&gt;" method="small"/> 
-        <HookeForceField template="E332" youngModulus="1000" poissonRatio="0" />
+        <MechanicalObject  template="E332" name="E"  />
+        <GreenStrainMapping template="Mapping&lt;F332,E332&gt;"/>
+        <HookeForceField  template="E332" name="ff" youngModulus="1000.0" poissonRatio="0" viscosity="0"/> 
       </Node>
     
     </Node>
@@ -47,7 +41,7 @@
     <!--Visualisation-->
     <Node 	name="Visualisation" >
     </Node>
-    
+ 
   </Node>
 
 </Node>

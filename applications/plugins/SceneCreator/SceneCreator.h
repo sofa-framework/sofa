@@ -48,7 +48,7 @@
 // Constraint
 #include <sofa/component/projectiveconstraintset/ProjectToLineConstraint.h>
 #include <sofa/component/projectiveconstraintset/FixedConstraint.h>
-#include <sofa/component/projectiveconstraintset/BilinearMovementConstraint.h>
+#include <sofa/component/projectiveconstraintset/AffineMovementConstraint.h>
 #include <sofa/component/projectiveconstraintset/FixedPlaneConstraint.h>
 
 // ForceField
@@ -169,11 +169,11 @@ template<class T>
 struct PatchTestStruct
 {
    simulation::Node::SPtr SquareNode;
-   typename component::projectiveconstraintset::BilinearMovementConstraint<T>::SPtr bilinearConstraint;
+   typename component::projectiveconstraintset::AffineMovementConstraint<T>::SPtr affineConstraint;
    typename component::container::MechanicalObject<T>::SPtr dofs;
 };
 
-/// Create a scene with a regular grid and a bilinear constraint for patch test
+/// Create a scene with a regular grid and an affine constraint for patch test
 template<class T> SOFA_SceneCreator_API PatchTestStruct<T> createRegularGridScene(simulation::Node::SPtr root ,Vec<3,SReal> startPoint, Vec<3,SReal> endPoint, unsigned numX, unsigned numY, unsigned numZ, Vec<6,SReal> entireBoxRoi, Vec<6,SReal> inclusiveBox, Vec<6,SReal> includedBox);
 template<class T> PatchTestStruct<T> createRegularGridScene(simulation::Node::SPtr root, Vec<3,SReal> startPoint, Vec<3,SReal> endPoint, unsigned numX, unsigned numY, unsigned numZ, Vec<6,SReal> entireBoxRoi, Vec<6,SReal> inclusiveBox, Vec<6,SReal> includedBox)
 {
@@ -184,7 +184,7 @@ template<class T> PatchTestStruct<T> createRegularGridScene(simulation::Node::SP
     typedef component::topology::RegularGridTopology RegularGridTopology;
     typedef typename component::engine::BoxROI<T> BoxRoi;
     typedef typename sofa::component::engine::PairBoxROI<T> PairBoxRoi;
-    typedef typename component::projectiveconstraintset::BilinearMovementConstraint<T> BilinearMovementConstraint;
+    typedef typename component::projectiveconstraintset::AffineMovementConstraint<T> AffineMovementConstraint;
     typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
 
     // Root node
@@ -225,12 +225,11 @@ template<class T> PatchTestStruct<T> createRegularGridScene(simulation::Node::SP
     pairBoxRoi->inclusiveBox.setValue(inclusiveBox);
     pairBoxRoi->includedBox.setValue(includedBox);
       
-    //Bilinear constraint 
-    patchStruct.bilinearConstraint  = addNew<BilinearMovementConstraint>(SquareNode,"bilinearConstraint");
-    setDataLink(&boxRoi->f_indices,&patchStruct.bilinearConstraint->m_meshIndices);
-    setDataLink(&pairBoxRoi->f_indices,& patchStruct.bilinearConstraint->m_indices);
-    setDataLink(&pairBoxRoi->f_pointsInROI,& patchStruct.bilinearConstraint->m_constrainedPoints);
-
+    //Affine constraint 
+    patchStruct.affineConstraint  = addNew<AffineMovementConstraint>(SquareNode,"affineConstraint");
+    setDataLink(&boxRoi->f_indices,&patchStruct.affineConstraint->m_meshIndices);
+    setDataLink(&pairBoxRoi->f_indices,& patchStruct.affineConstraint->m_indices);
+   
     patchStruct.SquareNode = SquareNode;
     return patchStruct;
 }

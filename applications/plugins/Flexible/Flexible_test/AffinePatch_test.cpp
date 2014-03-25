@@ -26,6 +26,8 @@
 #include <plugins/SofaTest/Sofa_test.h>
 #include<sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileRepository.h>
+#include <sofa/helper/Quater.h>
+#include <sofa/helper/RandomGenerator.h>
 #include <sofa/component/init.h>
 #include <sofa/core/ExecParams.h>
 
@@ -35,7 +37,7 @@
 #include <sofa/simulation/common/Node.h>
 
 // Including component
-#include <sofa/component/projectiveconstraintset/BilinearMovementConstraint.h>
+#include <sofa/component/projectiveconstraintset/AffineMovementConstraint.h>
 #include <sofa/component/container/MechanicalObject.h>
 
 
@@ -44,26 +46,34 @@ namespace sofa {
     using namespace component;
     using namespace defaulttype;
 
-    /**  Patch test in 3D with Flexible. The tested scene is contained in share/tests/Flexible/PatchTest.scn.
-    A movement is applied to the borders of a mesh. The points within should have a linear movement relative to the border movements.
-    * This screenshot explain how the patch test works:
-    *  \image html PatchTest.png
-   */
+  /**  Affine patch test in 3D.
+    An affine movement (rotation and translation) is applied to the borders of a mesh. Test if the points within have the same affine movement.*/
 
     template <typename _DataTypes>
-    struct Patch_test : public Sofa_test<typename _DataTypes::Real>
+    struct AffinePatch_test : public Sofa_test<typename _DataTypes::Real>
     {
         typedef _DataTypes DataTypes;
         typedef typename DataTypes::CPos CPos;
+        typedef typename DataTypes::Coord Coord;
         typedef typename DataTypes::VecCoord VecCoord;
         typedef typename DataTypes::VecDeriv VecDeriv;
-        typedef projectiveconstraintset::BilinearMovementConstraint<DataTypes> BilinearMovementConstraint;
+        typedef projectiveconstraintset::AffineMovementConstraint<DataTypes> AffineMovementConstraint;
         typedef container::MechanicalObject<DataTypes> MechanicalObject;
+        typedef defaulttype::Quat Quat;
+        typedef defaulttype::Vector3 Vec3;
 
         /// Root of the scene graph
         simulation::Node::SPtr root;      
         /// Simulation
-        simulation::Simulation* simulation;  
+        simulation::Simulation* simulation; 
+        // Rotation
+        defaulttype::Mat<3,3,Real> testedRotation;
+        // Translation
+        Coord testedTranslation;
+        // Seed
+        long seed;
+        // Random generator
+        sofa::helper::RandomGenerator randomGenerator;
 
         // Create the context for the scene
         void SetUp()
@@ -73,15 +83,46 @@ namespace sofa {
             sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
             root = simulation::getSimulation()->createNewGraph("root");
+
+            // Init seed with a random value between 0 and 100
+            randomGenerator.initSeed( (long)time(0) );
+            seed = randomGenerator.random<long>(0,100);
         }
 
         void loadScene(std::string sceneName)
         {
             // Load the scene from the xml file
-            std::string fileName = std::string(FLEXIBLE_TEST_SCENES_DIR) + "/" + sceneName;
+            std::string fileName = sofa::helper::system::DataRepository.getFile(sceneName);
             root = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()));
         }
 
+        void SetRandomTestedRotationAndTranslation(int seedValue)
+        {
+            // Random Rotation
+            SReal x,y,z,w;
+            x = randomGenerator.random<SReal>(-1.0,1.0);
+            y = randomGenerator.random<SReal>(-1.0,1.0);
+            z = randomGenerator.random<SReal>(-1.0,1.0);
+            // If the rotation axis is null
+            Vec3 rotationAxis(x,y,z);
+            if(rotationAxis.norm() < 1e-7)
+            {
+                rotationAxis = Vec3(0,0,1);
+            }
+            w = randomGenerator.random<SReal>(0.0,360.0);
+            Quat quat(x,y,z,w);
+            quat.normalize();
+            //testedRotation = patchStruct.affineConstraint->m_rotation.getValue();
+            quat.toMatrix(testedRotation);
+     
+            // Random Translation
+            for(size_t i=0;i<Coord::total_size;++i)
+            {
+                testedTranslation[i]=randomGenerator.random<SReal>(-2.0,2.0);
+            }
+            
+        }
+        
         bool compareSimulatedToTheoreticalPositions(double convergenceAccuracy, double diffMaxBetweenSimulatedAndTheoreticalPosition)
         {
             // Init simulation
@@ -89,11 +130,18 @@ namespace sofa {
 
             // Compute the theoretical final positions    
             VecCoord finalPos;
-            typename BilinearMovementConstraint::SPtr bilinearConstraint  = root->get<BilinearMovementConstraint>(root->SearchDown);
+            typename AffineMovementConstraint::SPtr affineConstraint  = root->get<AffineMovementConstraint>(root->SearchDown);
             typename MechanicalObject::SPtr dofs = root->get<MechanicalObject>(root->SearchDown);
             typename MechanicalObject::WriteVecCoord x = dofs->writePositions();
-            bilinearConstraint->getFinalPositions( finalPos,*dofs->write(core::VecCoordId::position()) );
+            affineConstraint->getFinalPositions( finalPos,*dofs->write(core::VecCoordId::position()) );
             
+            // Set random rotation and translation for affine constraint
+            randomGenerator.initSeed(seed);
+            this->SetRandomTestedRotationAndTranslation(seed);
+            // Set data values of affine movement constraint
+            affineConstraint->m_rotation.setValue(testedRotation);
+            affineConstraint->m_translation.setValue(testedTranslation);
+
             // Initialize
             size_t numNodes = finalPos.size();
             VecCoord xprev(numNodes);
@@ -151,21 +199,44 @@ namespace sofa {
 
     };
 
-    // Define the list of DataTypes to instantiate
+      // Define the list of DataTypes to instantiate
     using testing::Types;
     typedef Types<
         Vec3Types
     > DataTypes; // the types to instantiate.
 
     // Test suite for all the instantiations
-    TYPED_TEST_CASE(Patch_test, DataTypes);
+    TYPED_TEST_CASE(AffinePatch_test, DataTypes);
+
+    // test case: polarcorotationalStrainMapping 
+    TYPED_TEST( AffinePatch_test , PolarCorotationalAffinePatchTest)
+    {
+        // With polar method
+        this->loadScene( "tests/Flexible/PolarCorotationalAffinePatchTest.scn");
+        ASSERT_TRUE( this->compareSimulatedToTheoreticalPositions(1e-14,1e-13)); 
+    }
 
     // test case: smallcorotationalStrainMapping 
-    TYPED_TEST( Patch_test , SmallCorotationalPatchTest)
+    TYPED_TEST( AffinePatch_test , SmallCorotationalAffinePatchTest)
     {
         // With small method
-        this->loadScene( "SmallCorotationalPatchTest.scn");
-        ASSERT_TRUE( this->compareSimulatedToTheoreticalPositions(1e-12,6e-12)); 
+        this->loadScene( "tests/Flexible/SmallCorotationalAffinePatchTest.scn");
+        ASSERT_TRUE( this->compareSimulatedToTheoreticalPositions(1e-15,1e-14)); 
+    }
+
+    // test case: svdcorotationalStrainMapping 
+    TYPED_TEST( AffinePatch_test , SvdCorotationalAffinePatchTest)
+    {
+        // With svd method
+        this->loadScene( "tests/Flexible/SvdCorotationalAffinePatchTest.scn");
+        ASSERT_TRUE( this->compareSimulatedToTheoreticalPositions(1e-14,1e-13));
+    }
+
+    // test case: GreenStrainMapping 
+    TYPED_TEST( AffinePatch_test , GreenAffinePatchTest)
+    {
+        this->loadScene( "tests/Flexible/GreenAffinePatchTest.scn");
+        ASSERT_TRUE( this->compareSimulatedToTheoreticalPositions(1e-14,1e-13)); 
     }
 
 } // namespace sofa

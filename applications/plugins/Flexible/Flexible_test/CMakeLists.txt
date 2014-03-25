@@ -3,6 +3,7 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 set(SOURCE_FILES
 
     StrainMappings_test.cpp
+    AffinePatch_test.cpp
     Patch_test.cpp
         )
 

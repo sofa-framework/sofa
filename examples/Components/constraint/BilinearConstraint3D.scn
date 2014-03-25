@@ -4,8 +4,8 @@
   <Node 	name="Square"  >
     <EulerImplicitSolver name="Euler Implicit"  printLog="0"  rayleighStiffness="0.5"  rayleighMass="0.5"  vdamping="0"  verbose="0" />
     <CGLinearSolver template="GraphScattered" name="CG Solver"  printLog="0"  iterations="40"  tolerance="1e-06"  threshold="1e-10"  verbose="0" />
-    <RegularGrid name ="loader" nx="5" ny="5" nz="5" xmin="0" xmax="1" ymin="0" ymax="1" zmin="0" zmax="1" />
-    <MechanicalObject template="Vec3d" name="mObject1" position="@loader.position"  showIndices="true" showIndicesScale="0.0005" />
+    <MechanicalObject template="Vec3d" name="mObject1" showObject="true" showObjectScale="3"/>
+    <RegularGrid name ="loader" nx="4" ny="4" nz="4" xmin="0" xmax="1" ymin="0" ymax="1" zmin="0" zmax="1" position="@mObject1.position" drawHexahedra="true"/>
     <UniformMass template="Vec3d" totalmass="1"/>
     <TetrahedronFEMForceField template="Vec3d" name="forcefield" youngModulus="200" poissonRatio="0.4" method="polar" />
     <BoxROI name="Box" box="-0.1 -0.1 -0.1  1.1 1.1 1.1"/>

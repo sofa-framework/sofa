@@ -29,6 +29,10 @@ set(HEADER_FILES
     ../forcefield/TrianglePressureForceField.inl 
     ../forcefield/VaccumSphereForceField.h 
     ../forcefield/VaccumSphereForceField.inl 
+    ../projectiveconstraintset/AffineMovementConstraint.inl 
+    ../projectiveconstraintset/AffineMovementConstraint.h 
+    ../projectiveconstraintset/BilinearMovementConstraint.inl 
+    ../projectiveconstraintset/BilinearMovementConstraint.h 
     ../projectiveconstraintset/FixedConstraint.h 
     ../projectiveconstraintset/FixedConstraint.inl 
     ../projectiveconstraintset/FixedPlaneConstraint.h 
@@ -40,8 +44,6 @@ set(HEADER_FILES
     ../projectiveconstraintset/HermiteSplineConstraint.h 
     ../projectiveconstraintset/HermiteSplineConstraint.inl 
      ../projectiveconstraintset/LinearMovementConstraint.h 
-    ../projectiveconstraintset/BilinearMovementConstraint.inl 
-    ../projectiveconstraintset/BilinearMovementConstraint.h 
     ../projectiveconstraintset/LinearMovementConstraint.inl 
     ../projectiveconstraintset/LinearVelocityConstraint.h 
     ../projectiveconstraintset/LinearVelocityConstraint.inl 
@@ -77,12 +79,13 @@ set(SOURCE_FILES
     ../forcefield/TaitSurfacePressureForceField.cpp 
     ../forcefield/TrianglePressureForceField.cpp 
     ../forcefield/VaccumSphereForceField.cpp 
+    ../projectiveconstraintset/AffineMovementConstraint.cpp 
+    ../projectiveconstraintset/BilinearMovementConstraint.cpp 
     ../projectiveconstraintset/FixedConstraint.cpp 
     ../projectiveconstraintset/FixedPlaneConstraint.cpp 
     ../projectiveconstraintset/FixedRotationConstraint.cpp 
     ../projectiveconstraintset/FixedTranslationConstraint.cpp 
     ../projectiveconstraintset/HermiteSplineConstraint.cpp 
-    ../projectiveconstraintset/BilinearMovementConstraint.cpp 
     ../projectiveconstraintset/LinearMovementConstraint.cpp 
     ../projectiveconstraintset/LinearVelocityConstraint.cpp 
     ../projectiveconstraintset/OscillatorConstraint.cpp 
