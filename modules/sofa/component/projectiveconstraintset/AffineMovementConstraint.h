@@ -22,23 +22,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_BILINEARMOVEMENTCONSTRAINT_H
-#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_BILINEARMOVEMENTCONSTRAINT_H
+#ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_AFFINEMOVEMENTCONSTRAINT_H
+#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_AFFINEMOVEMENTCONSTRAINT_H
 
-#include <sofa/component/topology/TopologySubsetData.h>
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/objectmodel/Event.h>
-#include <sofa/defaulttype/BaseMatrix.h>
-#include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/vector.h>
-
+#include <sofa/component/topology/TopologySubsetData.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <set>
-
 
 namespace sofa
 {
@@ -55,7 +53,7 @@ using namespace sofa::defaulttype;
 using namespace sofa::component::topology;
 
 template<class DataTypes>
-class BilinearMovementConstraintInternalData
+class AffineMovementConstraintInternalData
 {
 };
 
@@ -63,26 +61,30 @@ class BilinearMovementConstraintInternalData
     Impose a motion to all the boundary points of a mesh. The motion of the 4 corners are given in the data m_cornerMovements and the movements of the edge points are computed by linear interpolation. 
 */
 template <class TDataTypes>
-class BilinearMovementConstraint : public core::behavior::ProjectiveConstraintSet<TDataTypes>
+class AffineMovementConstraint : public core::behavior::ProjectiveConstraintSet<TDataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(BilinearMovementConstraint,TDataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, TDataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(AffineMovementConstraint,TDataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, TDataTypes));
 
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::CPos CPos;
     typedef typename DataTypes::Deriv Deriv;
+    typedef typename DataTypes::Real Real;
     typedef Data<VecCoord> DataVecCoord;
     typedef Data<VecDeriv> DataVecDeriv;
     typedef helper::vector<unsigned int> SetIndexArray;
     typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
-
+   
     static const unsigned int CoordSize = Coord::total_size;
+    typedef Mat<3,3,Real> RotationMatrix;
+   
 
 protected:
-    BilinearMovementConstraintInternalData<DataTypes> *data;
-    friend class BilinearMovementConstraintInternalData<DataTypes>;
+    AffineMovementConstraintInternalData<DataTypes> *data;
+    friend class AffineMovementConstraintInternalData<DataTypes>;
 
 public :
     /// indices of the DOFs of the mesh
@@ -93,12 +95,10 @@ public :
     Data <double> m_beginConstraintTime;
     /// data end time when the constraint is applied
     Data <double> m_endConstraintTime;
-    /// coordinates of the DOFs the constraint is applied to
-    Data<VecCoord> m_constrainedPoints;
-    /// the movements of the corner points (this is the difference between initial and final positions of the 4 corners)
-    Data<VecDeriv> m_cornerMovements;
-    /// the coordinates of the corner points
-    Data<VecCoord> m_cornerPoints;
+    /// Rotation Matrix of affine transformation
+    Data<RotationMatrix> m_rotation;
+    /// Translation Matrix of affine transformation
+    Data<Coord> m_translation;
     /// Draw constrained points
     Data <bool> m_drawConstrainedPoints;
     /// initial constrained DOFs position
@@ -111,9 +111,9 @@ public :
     VecCoord meshPointsXf;
  
 protected:
-    BilinearMovementConstraint();
+    AffineMovementConstraint();
 
-    virtual ~BilinearMovementConstraint();
+    virtual ~AffineMovementConstraint();
 
 public:
     //Add or clear constraints
@@ -130,11 +130,12 @@ public:
     void projectVelocity(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& vData);
     /// Apply the computed movements to the border mesh points between beginConstraintTime and endConstraintTime
     void projectPosition(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecCoord& xData);
-    // Implement projectMatrix for assembled solver of compliant
-    virtual void projectMatrix( sofa::defaulttype::BaseMatrix* /*M*/, unsigned /*offset*/ );
 
     /// Compute the theoretical final positions
     void getFinalPositions (VecCoord& finalPos, DataVecCoord& xData); 
+
+    // Implement projectMatrix for assembled solver of compliant
+    virtual void projectMatrix( sofa::defaulttype::BaseMatrix* /*M*/, unsigned /*offset*/ );
 
     /// Draw the constrained points (= border mesh points)
      virtual void draw(const core::visual::VisualParams* vparams);
@@ -142,9 +143,9 @@ public:
     class FCPointHandler : public TopologySubsetDataHandler<Point, SetIndexArray >
     {
     public:
-        typedef typename BilinearMovementConstraint<DataTypes>::SetIndexArray SetIndexArray;
+        typedef typename AffineMovementConstraint<DataTypes>::SetIndexArray SetIndexArray;
 
-        FCPointHandler(BilinearMovementConstraint<DataTypes>* _fc, PointSubsetData<SetIndexArray>* _data)
+        FCPointHandler(AffineMovementConstraint<DataTypes>* _fc, PointSubsetData<SetIndexArray>* _data)
             : sofa::component::topology::TopologySubsetDataHandler<Point, SetIndexArray >(_data), fc(_fc) {}
 
         void applyDestroyFunction(unsigned int /*index*/, value_type& /*T*/);
@@ -153,7 +154,7 @@ public:
                 const sofa::helper::vector< unsigned int > & /*ancestors*/,
                 const sofa::helper::vector< double > & /*coefs*/);
     protected:
-        BilinearMovementConstraint<DataTypes> *fc;
+        AffineMovementConstraint<DataTypes> *fc;
     };
 
 protected:
@@ -169,12 +170,6 @@ private:
     /// Handler for subset Data
     FCPointHandler* pointHandler;
 
-    /// Find the corners of the grid mesh
-    void findCornerPoints();
-    
-    /// Compute the displacement of each mesh point by linear interpolation with the displacement of corner points
-    void computeInterpolatedDisplacement (int pointIndice,const DataVecCoord& xData, Deriv& displacement);
-
     /// Initialize initial positions
     void initializeInitialPositions (const SetIndexArray & indices, DataVecCoord& xData, VecCoord& x0);
 
@@ -183,14 +178,14 @@ private:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_BILINEARMOVEMENTCONSTRAINT_CPP)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_AFFINEMOVEMENTCONSTRAINT_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_BOUNDARY_CONDITION_API BilinearMovementConstraint<defaulttype::Vec3dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API BilinearMovementConstraint<defaulttype::Rigid3dTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API AffineMovementConstraint<defaulttype::Vec3dTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API AffineMovementConstraint<defaulttype::Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_BOUNDARY_CONDITION_API BilinearMovementConstraint<defaulttype::Vec3fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API BilinearMovementConstraint<defaulttype::Rigid3fTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API AffineMovementConstraint<defaulttype::Vec3fTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API AffineMovementConstraint<defaulttype::Rigid3fTypes>;
 #endif
 #endif
 

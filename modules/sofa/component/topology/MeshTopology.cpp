@@ -2248,6 +2248,7 @@ bool MeshTopology::hasPos() const
 {
     return !seqPoints.getValue().empty();
 }
+
 double MeshTopology::getPX(int i) const
 {
     return ((unsigned)i<seqPoints.getValue().size()?seqPoints.getValue()[i][0]:0.0);
@@ -2614,48 +2615,135 @@ const sofa::helper::vector <unsigned int> MeshTopology::getElementAroundElements
 
 /// @}
 
+double MeshTopology::getPosX(int i) const
+{
+    return ((unsigned)i<seqPoints.getValue().size()?seqPoints.getValue()[i][0]:0.0);
+}
 
+double MeshTopology::getPosY(int i) const
+{
+    return ((unsigned)i<seqPoints.getValue().size()?seqPoints.getValue()[i][1]:0.0);
+}
+
+double MeshTopology::getPosZ(int i) const
+{
+    return ((unsigned)i<seqPoints.getValue().size()?seqPoints.getValue()[i][2]:0.0);
+}
 
 void MeshTopology::draw(const core::visual::VisualParams* )
 {
 #ifndef SOFA_NO_OPENGL
-    //Draw edges
-    if (_drawEdges.getValue())
+    // Draw Edges
+    if(_drawEdges.getValue())
     {
         glDisable(GL_LIGHTING);
         glColor3f(0.4f,1.0f,0.3f);
+        glColor3f(1,0,0);
+        for (int i=0; i<getNbEdges(); i++)
+        {
+            const Edge& c = getEdge(i);
+            glBegin(GL_LINE_STRIP);
+            glVertex3d(getPosX(c[0]), getPosY(c[0]), getPosZ(c[0]));
+            glVertex3d(getPosX(c[1]), getPosY(c[1]), getPosZ(c[1]));
+            glEnd();
+        }
+    }
+    
+    //Draw Triangles
+    if(_drawTriangles.getValue())
+    {
+        glDisable(GL_LIGHTING);
+        glColor3f(0.4f,1.0f,0.3f);
+        glColor3f(1,0,0);
+        for (int i=0; i<getNbTriangles(); i++)
+        {
+            const Triangle& c = getTriangle(i);
+            glBegin(GL_LINE_STRIP);
+            glVertex3d(getPosX(c[0]), getPosY(c[0]), getPosZ(c[0]));
+            glVertex3d(getPosX(c[1]), getPosY(c[1]), getPosZ(c[1]));
+            glVertex3d(getPosX(c[2]), getPosY(c[2]), getPosZ(c[2]));
+            glVertex3d(getPosX(c[0]), getPosY(c[0]), getPosZ(c[0]));
+            glEnd();
+        }
+    }
 
-
+    //Draw Quads
+    if(_drawQuads.getValue())
+    {
+        glDisable(GL_LIGHTING);
+        glColor3f(0.4f,1.0f,0.3f);
+        glColor3f(1,0,0);
+        for (int i=0; i<getNbQuads(); i++)
+        {
+            const Quad& c = getQuad(i);
+            glBegin(GL_LINE_STRIP);
+            glVertex3d(getPosX(c[0]), getPosY(c[0]), getPosZ(c[0]));
+            glVertex3d(getPosX(c[1]), getPosY(c[1]), getPosZ(c[1]));
+            glVertex3d(getPosX(c[2]), getPosY(c[2]), getPosZ(c[2]));
+            glVertex3d(getPosX(c[3]), getPosY(c[3]), getPosZ(c[3]));
+            glVertex3d(getPosX(c[0]), getPosY(c[0]), getPosZ(c[0]));
+            glEnd();
+        }
+    }
+ 
+    //Draw Hexahedron
+    if (_drawHexa.getValue())
+    {
+        glDisable(GL_LIGHTING);
+        glColor3f(0.4f,1.0f,0.3f);
         glColor3f(1,0,0);
         for (int i=0; i<getNbHexahedra(); i++)
         {
             const Hexa& c = getHexahedron(i);
             glBegin(GL_LINE_STRIP);
-            glVertex3d(getPX(c[0]), getPY(c[0]), getPZ(c[0]));
-            glVertex3d(getPX(c[1]), getPY(c[1]), getPZ(c[1]));
-            glVertex3d(getPX(c[2]), getPY(c[2]), getPZ(c[2]));
-            glVertex3d(getPX(c[3]), getPY(c[3]), getPZ(c[3]));
-            glVertex3d(getPX(c[0]), getPY(c[0]), getPZ(c[0]));
+            glVertex3d(getPosX(c[0]), getPosY(c[0]), getPosZ(c[0]));
+            glVertex3d(getPosX(c[1]), getPosY(c[1]), getPosZ(c[1]));
+            glVertex3d(getPosX(c[2]), getPosY(c[2]), getPosZ(c[2]));
+            glVertex3d(getPosX(c[3]), getPosY(c[3]), getPosZ(c[3]));
+            glVertex3d(getPosX(c[0]), getPosY(c[0]), getPosZ(c[0]));
             glEnd();
             glBegin(GL_LINE_STRIP);
-            glVertex3d(getPX(c[4]), getPY(c[4]), getPZ(c[4]));
-            glVertex3d(getPX(c[5]), getPY(c[5]), getPZ(c[5]));
-            glVertex3d(getPX(c[6]), getPY(c[6]), getPZ(c[6]));
-            glVertex3d(getPX(c[7]), getPY(c[7]), getPZ(c[7]));
-            glVertex3d(getPX(c[4]), getPY(c[4]), getPZ(c[4]));
+            glVertex3d(getPosX(c[4]), getPosY(c[4]), getPosZ(c[4]));
+            glVertex3d(getPosX(c[5]), getPosY(c[5]), getPosZ(c[5]));
+            glVertex3d(getPosX(c[6]), getPosY(c[6]), getPosZ(c[6]));
+            glVertex3d(getPosX(c[7]), getPosY(c[7]), getPosZ(c[7]));
+            glVertex3d(getPosX(c[4]), getPosY(c[4]), getPosZ(c[4]));
             glEnd();
             glBegin(GL_LINES);
-            glVertex3d(getPX(c[3]), getPY(c[3]), getPZ(c[3]));
-            glVertex3d(getPX(c[7]), getPY(c[7]), getPZ(c[7]));
-            glVertex3d(getPX(c[2]), getPY(c[2]), getPZ(c[2]));
-            glVertex3d(getPX(c[6]), getPY(c[6]), getPZ(c[6]));
-            glVertex3d(getPX(c[0]), getPY(c[0]), getPZ(c[0]));
-            glVertex3d(getPX(c[4]), getPY(c[4]), getPZ(c[4]));
-            glVertex3d(getPX(c[1]), getPY(c[1]), getPZ(c[1]));
-            glVertex3d(getPX(c[5]), getPY(c[5]), getPZ(c[5]));
+            glVertex3d(getPosX(c[3]), getPosY(c[3]), getPosZ(c[3]));
+            glVertex3d(getPosX(c[7]), getPosY(c[7]), getPosZ(c[7]));
+            glVertex3d(getPosX(c[2]), getPosY(c[2]), getPosZ(c[2]));
+            glVertex3d(getPosX(c[6]), getPosY(c[6]), getPosZ(c[6]));
+            glVertex3d(getPosX(c[0]), getPosY(c[0]), getPosZ(c[0]));
+            glVertex3d(getPosX(c[4]), getPosY(c[4]), getPosZ(c[4]));
+            glVertex3d(getPosX(c[1]), getPosY(c[1]), getPosZ(c[1]));
+            glVertex3d(getPosX(c[5]), getPosY(c[5]), getPosZ(c[5]));
             glEnd();
         }
     }
+
+    // Draw Tetra
+    if(_drawTetra.getValue())
+    {
+        glDisable(GL_LIGHTING);
+        glColor3f(1,0,0);
+        
+        for (int i=0; i<getNbTetras(); i++)
+        {
+            const Tetra& t = getTetra(i);
+            glBegin(GL_LINE_STRIP);
+            glVertex3d(getPosX(t[0]), getPosY(t[0]), getPosZ(t[0]));
+            glVertex3d(getPosX(t[1]), getPosY(t[1]), getPosZ(t[1]));
+            glVertex3d(getPosX(t[2]), getPosY(t[2]), getPosZ(t[2]));
+            glVertex3d(getPosX(t[3]), getPosY(t[3]), getPosZ(t[3]));
+            glVertex3d(getPosX(t[0]), getPosY(t[0]), getPosZ(t[0]));
+            glVertex3d(getPosX(t[2]), getPosY(t[2]), getPosZ(t[2]));
+            glVertex3d(getPosX(t[1]), getPosY(t[1]), getPosZ(t[1]));
+            glVertex3d(getPosX(t[3]), getPosY(t[3]), getPosZ(t[3]));
+            glEnd();
+        }
+    }
+
 #endif /* SOFA_NO_OPENGL */
 }
 

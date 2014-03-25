@@ -210,6 +210,10 @@ public:
     virtual const sofa::helper::vector<unsigned int> getElementAroundElements(sofa::helper::vector<unsigned int> elems);
     /// @}
 
+    // Get point positions (same methods as points accessors but not inherited)
+    double getPosX(int i) const;
+    double getPosY(int i) const;
+    double getPosZ(int i) const;
 
     // Points accessors (not always available)
 
@@ -640,6 +644,7 @@ public:
 
     int revision;
 
+    // To draw the mesh, the topology position must be linked with the mechanical object position 
     Data< bool > _drawEdges;
     Data< bool > _drawTriangles;
     Data< bool > _drawQuads;

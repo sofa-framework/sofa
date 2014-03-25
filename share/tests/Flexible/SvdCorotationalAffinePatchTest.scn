@@ -10,19 +10,13 @@
 
     <!--Nodes-->
     <MechanicalObject name="defoDOF" showObject="1"  showObjectScale="5"  showIndices="1"  showIndicesScale="0.0001" />
-    <RegularGrid name ="loader" nx="4" ny="4" nz="4" xmin="0" xmax="1" ymin="0" ymax="1" zmin="0" zmax="1" position="@defoDOF.position" drawHexahedra="true" />
+	<RegularGrid name ="loader" nx="4" ny="4" nz="4" xmin="0" xmax="1" ymin="0" ymax="1" zmin="0" zmax="1" position="@defoDOF.position" drawHexahedra="true" />
     
     <!--Constraint and roi-->
     <BoxROI name="Box" box="-0.1 -0.1 -0.1  1.1 1.1 1.1"/>
     <PairBoxROI name="PairBox" inclusiveBox="-0.1 -0.1 -0.1  1.1 1.1 1.1" includedBox="0.1 0.1 0.1 0.9 0.9 0.9"/>
-    <BilinearMovementConstraint name="bilinearConstraint" indices="@PairBox.indices" meshIndices = "@Box.indices" constrainedPoints="@PairBox.pointsInROI" drawConstrainedPoints="1" cornerMovements=" 0 0 -0.2
-       0.1 -0.1 -0.6
-       0.1 0.1 -0.1
-       0 0 0
-      -0.5 -0.1 0.1
-      -0.1 0 0
-      0.2 0.1 0
-      -0.3 0.1 0.1"/>
+    <AffineMovementConstraint name="bilinearConstraint" indices="@PairBox.indices" meshIndices = "@Box.indices" translation="0.1 0 -0.3" rotation="[1 0 0,0 1 0,1 0 1]"  drawConstrainedPoints="1"/>
+   
     <!--Mass-->
     <UniformMass  name="mass" totalMass="1"/>
     
@@ -30,16 +24,17 @@
     <BarycentricShapeFunction template="ShapeFunctiond" />
     
     <!--Elasticity-->
-    <Node 	name="Elasticity" >
+    <Node name="Elasticity" >
       <TopologyGaussPointSampler name="sampler" inPosition="@../loader.position" showSamplesScale="0" method="0" order="1" />
       <MechanicalObject template="F332"  name="MoElasticity" showObject="1" showObjectScale="5"/>
       <LinearMapping template="Mapping&lt;Vec3d,F332&gt;" showDeformationGradientScale="0.05"  showDeformationGradientStyle="0 - All axis"  showColorOnTopology="2 - sqrt(det(F^T.F))-1"/>
 
       <!--Material-->
-      <Node 	name="Material" >
+      <Node name="Material" >
         <MechanicalObject template="E332"  name="VoigtStrainDOF" />
-        <CorotationalStrainMapping template="Mapping&lt;F332,E332&gt;" method="small"/> 
+        <CorotationalStrainMapping template="Mapping&lt;F332,E332&gt;" method="svd"/>
         <HookeForceField template="E332" youngModulus="1000" poissonRatio="0" />
+
       </Node>
     
     </Node>
@@ -47,7 +42,7 @@
     <!--Visualisation-->
     <Node 	name="Visualisation" >
     </Node>
-    
+ 
   </Node>
 
 </Node>
