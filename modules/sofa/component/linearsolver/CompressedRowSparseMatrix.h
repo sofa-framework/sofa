@@ -53,7 +53,6 @@ public:
     typedef typename traits::Real Real;
     enum { NL = traits::NL };  ///< Number of rows of a block
     enum { NC = traits::NC };  ///< Number of columns of a block
-    typedef int Index;
 
     typedef Matrix Expr;
     typedef CompressedRowSparseMatrix<double> matrix_type;
@@ -96,8 +95,8 @@ public:
     };
     typedef helper::vector<IndexedBloc> VecIndexedBloc;
 
-    static void split_row_index(int& index, int& modulo) { bloc_index_func<NL>::split(index, modulo); }
-    static void split_col_index(int& index, int& modulo) { bloc_index_func<NC>::split(index, modulo); }
+    static void split_row_index(Index& index, Index& modulo) { bloc_index_func<NL>::split(index, modulo); }
+    static void split_col_index(Index& index, Index& modulo) { bloc_index_func<NC>::split(index, modulo); }
 
     class Range : public std::pair<Index, Index>
     {
@@ -170,7 +169,7 @@ public:
     {
     }
 
-    CompressedRowSparseMatrix(int nbRow, int nbCol)
+    CompressedRowSparseMatrix(Index nbRow, Index nbCol)
         : nRow(nbRow), nCol(nbCol),
           nBlocRow((nbRow + NL-1) / NL), nBlocCol((nbCol + NC-1) / NC),
           compressed(true)
@@ -191,16 +190,16 @@ public:
 
     const VecIndex& getRowIndex() const { return rowIndex; }
     const VecIndex& getRowBegin() const { return rowBegin; }
-    Range getRowRange(int id) const { return Range(rowBegin[id], rowBegin[id+1]); }
+    Range getRowRange(Index id) const { return Range(rowBegin[id], rowBegin[id+1]); }
     const VecIndex& getColsIndex() const { return colsIndex; }
     const VecBloc& getColsValue() const { return colsValue; }
 
-    void resizeBloc(int nbBRow, int nbBCol)
+    void resizeBloc(Index nbBRow, Index nbBCol)
     {
         if (nBlocRow == nbBRow && nBlocRow == nbBCol)
         {
             // just clear the matrix
-            for (unsigned int i=0; i < colsValue.size(); ++i)
+            for (Index i=0; i < colsValue.size(); ++i)
                 traits::clear(colsValue[i]);
             compressed = colsValue.empty();
             btemp.clear();
@@ -391,15 +390,15 @@ public:
     void fullRows()
     {
         compress();
-        if ((int)rowIndex.size() >= nRow) return;
+        if (rowIndex.size() >= nRow) return;
         oldRowIndex.swap(rowIndex);
         oldRowBegin.swap(rowBegin);
         rowIndex.resize(nRow);
         rowBegin.resize(nRow+1);
-        for (int i=0; i<nRow; ++i) rowIndex[i] = i;
-        int j = 0;
-        int b = 0;
-        for (unsigned int i=0; i<oldRowIndex.size(); ++i)
+        for (Index i=0; i<nRow; ++i) rowIndex[i] = i;
+        Index j = 0;
+        Index b = 0;
+        for (Index i=0; i<oldRowIndex.size(); ++i)
         {
             b = oldRowBegin[i];
             for (; j<=oldRowIndex[i]; ++j)
@@ -414,13 +413,13 @@ public:
     void fullDiagonal()
     {
         compress();
-        int ndiag = 0;
-        for (unsigned int r=0; r<rowIndex.size(); ++r)
+        Index ndiag = 0;
+        for (Index r=0; r<rowIndex.size(); ++r)
         {
-            int i = rowIndex[r];
-            int b = rowBegin[r];
-            int e = rowBegin[r+1];
-            int t = b;
+            Index i = rowIndex[r];
+            Index b = rowBegin[r];
+            Index e = rowBegin[r+1];
+            Index t = b;
             while (b < e && colsIndex[t] != i)
             {
                 if (colsIndex[t] < i)
@@ -441,10 +440,10 @@ public:
         rowBegin.resize(nRow+1);
         colsIndex.resize(oldColsIndex.size()+nRow-ndiag);
         colsValue.resize(oldColsValue.size()+nRow-ndiag);
-        int nv = 0;
-        for (int i=0; i<nRow; ++i) rowIndex[i] = i;
-        int j = 0;
-        for (unsigned int i=0; i<oldRowIndex.size(); ++i)
+        Index nv = 0;
+        for (Index i=0; i<nRow; ++i) rowIndex[i] = i;
+        Index j = 0;
+        for (Index i=0; i<oldRowIndex.size(); ++i)
         {
             for (; j<oldRowIndex[i]; ++j)
             {
@@ -454,8 +453,8 @@ public:
                 ++nv;
             }
             rowBegin[j] = nv;
-            int b = oldRowBegin[i];
-            int e = oldRowBegin[i+1];
+            Index b = oldRowBegin[i];
+            Index e = oldRowBegin[i+1];
             for (; b<e && oldColsIndex[b] < j; ++b)
             {
                 colsIndex[nv] = oldColsIndex[b];
@@ -491,50 +490,50 @@ public:
     /// Note that the matrix will no longer be valid
     /// from the point of view of C/C++ codes. You need
     /// to call again with -1 as base to undo it.
-    void shiftIndices(int base)
+    void shiftIndices(Index base)
     {
-        for (unsigned int i=0; i<rowIndex.size(); ++i)
+        for (Index i=0; i<rowIndex.size(); ++i)
             rowIndex[i] += base;
-        for (unsigned int i=0; i<rowBegin.size(); ++i)
+        for (Index i=0; i<rowBegin.size(); ++i)
             rowBegin[i] += base;
-        for (unsigned int i=0; i<colsIndex.size(); ++i)
+        for (Index i=0; i<colsIndex.size(); ++i)
             colsIndex[i] += base;
     }
 
     // filtering-out part of a matrix
-    typedef bool filter_fn    (int   i  , int   j  , Bloc& val, const Bloc&   ref  );
-    static bool       nonzeros(int /*i*/, int /*j*/, Bloc& val, const Bloc& /*ref*/) { return (!traits::empty(val)); }
-    static bool       nonsmall(int /*i*/, int /*j*/, Bloc& val, const Bloc&   ref  )
+    typedef bool filter_fn    (Index   i  , Index   j  , Bloc& val, const Bloc&   ref  );
+    static bool       nonzeros(Index /*i*/, Index /*j*/, Bloc& val, const Bloc& /*ref*/) { return (!traits::empty(val)); }
+    static bool       nonsmall(Index /*i*/, Index /*j*/, Bloc& val, const Bloc&   ref  )
     {
-        for (int bi = 0; bi < NL; ++bi)
-            for (int bj = 0; bj < NC; ++bj)
+        for (Index bi = 0; bi < NL; ++bi)
+            for (Index bj = 0; bj < NC; ++bj)
                 if (helper::rabs(traits::v(val, bi, bj)) >= ref) return true;
         return false;
     }
-    static bool upper         (int   i  , int   j  , Bloc& val, const Bloc& /*ref*/)
+    static bool upper         (Index   i  , Index   j  , Bloc& val, const Bloc& /*ref*/)
     {
         if (NL>1 && i*NL == j*NC)
         {
-            for (int bi = 1; bi < NL; ++bi)
-                for (int bj = 0; bj < bi; ++bj)
+            for (Index bi = 1; bi < NL; ++bi)
+                for (Index bj = 0; bj < bi; ++bj)
                     traits::v(val, bi, bj) = 0;
         }
         return i*NL <= j*NC;
     }
-    static bool lower         (int   i  , int   j  , Bloc& val, const Bloc& /*ref*/)
+    static bool lower         (Index   i  , Index   j  , Bloc& val, const Bloc& /*ref*/)
     {
         if (NL>1 && i*NL == j*NC)
         {
-            for (int bi = 0; bi < NL-1; ++bi)
-                for (int bj = bi+1; bj < NC; ++bj)
+            for (Index bi = 0; bi < NL-1; ++bi)
+                for (Index bj = bi+1; bj < NC; ++bj)
                     traits::v(val, bi, bj) = 0;
         }
         return i*NL >= j*NC;
     }
-    static bool upper_nonzeros(int   i  , int   j  , Bloc& val, const Bloc&   ref  ) { return upper(i,j,val,ref) && nonzeros(i,j,val,ref); }
-    static bool lower_nonzeros(int   i  , int   j  , Bloc& val, const Bloc&   ref  ) { return lower(i,j,val,ref) && nonzeros(i,j,val,ref); }
-    static bool upper_nonsmall(int   i  , int   j  , Bloc& val, const Bloc&   ref  ) { return upper(i,j,val,ref) && nonsmall(i,j,val,ref); }
-    static bool lower_nonsmall(int   i  , int   j  , Bloc& val, const Bloc&   ref  ) { return lower(i,j,val,ref) && nonsmall(i,j,val,ref); }
+    static bool upper_nonzeros(Index   i  , Index   j  , Bloc& val, const Bloc&   ref  ) { return upper(i,j,val,ref) && nonzeros(i,j,val,ref); }
+    static bool lower_nonzeros(Index   i  , Index   j  , Bloc& val, const Bloc&   ref  ) { return lower(i,j,val,ref) && nonzeros(i,j,val,ref); }
+    static bool upper_nonsmall(Index   i  , Index   j  , Bloc& val, const Bloc&   ref  ) { return upper(i,j,val,ref) && nonsmall(i,j,val,ref); }
+    static bool lower_nonsmall(Index   i  , Index   j  , Bloc& val, const Bloc&   ref  ) { return lower(i,j,val,ref) && nonsmall(i,j,val,ref); }
 
     template<class TMatrix>
     void filterValues(TMatrix& M, filter_fn* filter = &nonzeros, const Bloc& ref = Bloc())
@@ -555,16 +554,16 @@ public:
         colsIndex.reserve(M.colsIndex.size());
         colsValue.reserve(M.colsValue.size());
 
-        int vid = 0;
-        for (unsigned int rowId = 0; rowId < M.rowIndex.size(); ++rowId)
+        Index vid = 0;
+        for (Index rowId = 0; rowId < M.rowIndex.size(); ++rowId)
         {
-            int i = M.rowIndex[rowId];
+            Index i = M.rowIndex[rowId];
             rowIndex.push_back(i);
             rowBegin.push_back(vid);
             Range rowRange(M.rowBegin[rowId], M.rowBegin[rowId+1]);
-            for (int xj = rowRange.begin(); xj < rowRange.end(); ++xj)
+            for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
             {
-                int j = M.colsIndex[xj];
+                Index j = M.colsIndex[xj];
                 Bloc b = M.colsValue[xj];
                 if ((*filter)(i,j,b,ref))
                 {
@@ -625,10 +624,10 @@ public:
         filterValues(M, lower_nonsmall, ref);
     }
 
-    const Bloc& bloc(int i, int j) const
+    const Bloc& bloc(Index i, Index j) const
     {
         static Bloc empty;
-        int rowId = i * rowIndex.size() / nBlocRow;
+        Index rowId = i * rowIndex.size() / nBlocRow;
         if (sortedFind(rowIndex, i, rowId))
         {
             Range rowRange(rowBegin[rowId], rowBegin[rowId+1]);
@@ -641,13 +640,13 @@ public:
         return empty;
     }
 
-    Bloc* wbloc(int i, int j, bool create = false)
+    Bloc* wbloc(Index i, Index j, bool create = false)
     {
-        int rowId = i * rowIndex.size() / nBlocRow;
+        Index rowId = i * rowIndex.size() / nBlocRow;
         if (sortedFind(rowIndex, i, rowId))
         {
             Range rowRange(rowBegin[rowId], rowBegin[rowId+1]);
-            int colId = rowRange.begin() + j * rowRange.size() / nBlocCol;
+            Index colId = rowRange.begin() + j * rowRange.size() / nBlocCol;
             if (sortedFind(colsIndex, rowRange, j, colId))
             {
 #ifdef SPARSEMATRIX_VERBOSE
@@ -683,10 +682,10 @@ public:
         return nCol;
     }
 
-    void resize(int nbRow, int nbCol)
+    void resize(Index nbRow, Index nbCol)
     {
 #ifdef SPARSEMATRIX_VERBOSE
-        if (nbRow != (int)rowSize() || nbCol != (int)colSize())
+        if (nbRow != rowSize() || nbCol != colSize())
             std::cout << /* this->Name()  <<  */": resize("<<nbRow<<","<<nbCol<<")"<<std::endl;
 #endif
         resizeBloc((nbRow + NL-1) / NL, (nbCol + NC-1) / NC);
@@ -694,153 +693,153 @@ public:
         nCol = nbCol;
     }
 
-    SReal element(int i, int j) const
+    SReal element(Index i, Index j) const
     {
 #ifdef SPARSEMATRIX_CHECK
-        if ((unsigned)i >= (unsigned)rowSize() || (unsigned)j >= (unsigned)colSize())
+        if (i >= rowSize() || j >= colSize())
         {
             std::cerr << "ERROR: invalid read access to element ("<<i<<","<<j<<") in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
             return 0.0;
         }
 #endif
-        int bi=0, bj=0; split_row_index(i, bi); split_col_index(j, bj);
+        Index bi=0, bj=0; split_row_index(i, bi); split_col_index(j, bj);
         ((Matrix*)this)->compress();  /// \warning this violates the const-ness of the method !
         return traits::v(bloc(i, j), bi, bj);
     }
 
-    void set(int i, int j, double v)
+    void set(Index i, Index j, double v)
     {
 #ifdef SPARSEMATRIX_VERBOSE
         std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = "<<v<<std::endl;
 #endif
 #ifdef SPARSEMATRIX_CHECK
-        if ((unsigned)i >= (unsigned)rowSize() || (unsigned)j >= (unsigned)colSize())
+        if (i >= rowSize() || j >= colSize())
         {
             std::cerr << "ERROR: invalid write access to element ("<<i<<","<<j<<") in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
             return;
         }
 #endif
-        int bi=0, bj=0; split_row_index(i, bi); split_col_index(j, bj);
+        Index bi=0, bj=0; split_row_index(i, bi); split_col_index(j, bj);
 #ifdef SPARSEMATRIX_VERBOSE
         std::cout << /* this->Name()  <<  */"("<<rowBSize()<<"*"<<NL<<","<<colBSize()<<"*"<<NC<<"): bloc("<<i<<","<<j<<")["<<bi<<","<<bj<<"] = "<<v<<std::endl;
 #endif
         traits::v(*wbloc(i,j,true), bi, bj) = (Real)v;
     }
 
-    void add(int i, int j, double v)
+    void add(Index i, Index j, double v)
     {
 #ifdef SPARSEMATRIX_VERBOSE
         std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") += "<<v<<std::endl;
 #endif
 #ifdef SPARSEMATRIX_CHECK
-        if ((unsigned)i >= (unsigned)rowSize() || (unsigned)j >= (unsigned)colSize())
+        if (i >= rowSize() || j >= colSize())
         {
             std::cerr << "ERROR: invalid write access to element ("<<i<<","<<j<<") in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
             return;
         }
 #endif
-        int bi=0, bj=0; split_row_index(i, bi); split_col_index(j, bj);
+        Index bi=0, bj=0; split_row_index(i, bi); split_col_index(j, bj);
 #ifdef SPARSEMATRIX_VERBOSE
         std::cout << /* this->Name()  <<  */"("<<rowBSize()<<"*"<<NL<<","<<colBSize()<<"*"<<NC<<"): bloc("<<i<<","<<j<<")["<<bi<<","<<bj<<"] += "<<v<<std::endl;
 #endif
         traits::v(*wbloc(i,j,true), bi, bj) += (Real)v;
     }
 
-    void clear(int i, int j)
+    void clear(Index i, Index j)
     {
 #ifdef SPARSEMATRIX_VERBOSE
         std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = 0"<<std::endl;
 #endif
 #ifdef SPARSEMATRIX_CHECK
-        if ((unsigned)i >= (unsigned)rowSize() || (unsigned)j >= (unsigned)colSize())
+        if (i >= rowSize() || j >= colSize())
         {
             std::cerr << "ERROR: invalid write access to element ("<<i<<","<<j<<") in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
             return;
         }
 #endif
-        int bi=0, bj=0; split_row_index(i, bi); split_col_index(j, bj);
+        Index bi=0, bj=0; split_row_index(i, bi); split_col_index(j, bj);
         compress();
         Bloc* b = wbloc(i,j,false);
         if (b)
             traits::v(*b, bi, bj) = 0;
     }
 
-    void clearRow(int i)
+    void clearRow(Index i)
     {
 #ifdef SPARSEMATRIX_VERBOSE
         std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): row("<<i<<") = 0"<<std::endl;
 #endif
 #ifdef SPARSEMATRIX_CHECK
-        if ((unsigned)i >= (unsigned)rowSize())
+        if (i >= rowSize())
         {
             std::cerr << "ERROR: invalid write access to row "<<i<<" in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
             return;
         }
 #endif
-        int bi=0; split_row_index(i, bi);
+        Index bi=0; split_row_index(i, bi);
         compress();
         /*
-        for (int j=0; j<nBlocCol; ++j)
+        for (Index j=0; j<nBlocCol; ++j)
         {
             Bloc* b = wbloc(i,j,false);
             if (b)
             {
-                for (int bj = 0; bj < NC; ++bj)
+                for (Index bj = 0; bj < NC; ++bj)
                     traits::v(*b, bi, bj) = 0;
             }
         }
         */
-        int rowId = i * rowIndex.size() / nBlocRow;
+        Index rowId = i * rowIndex.size() / nBlocRow;
         if (sortedFind(rowIndex, i, rowId))
         {
             Range rowRange(rowBegin[rowId], rowBegin[rowId+1]);
-            for (int xj = rowRange.begin(); xj < rowRange.end(); ++xj)
+            for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
             {
                 Bloc& b = colsValue[xj];
-                for (int bj = 0; bj < NC; ++bj)
+                for (Index bj = 0; bj < NC; ++bj)
                     traits::v(b, bi, bj) = 0;
             }
         }
     }
 
-    void clearCol(int j)
+    void clearCol(Index j)
     {
 #ifdef SPARSEMATRIX_VERBOSE
         std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): col("<<j<<") = 0"<<std::endl;
 #endif
 #ifdef SPARSEMATRIX_CHECK
-        if ((unsigned)j >= (unsigned)colSize())
+        if (j >= colSize())
         {
             std::cerr << "ERROR: invalid write access to column "<<j<<" in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
             return;
         }
 #endif
-        int bj=0; split_col_index(j, bj);
+        Index bj=0; split_col_index(j, bj);
         compress();
-        for (int i=0; i<nBlocRow; ++i)
+        for (Index i=0; i<nBlocRow; ++i)
         {
             Bloc* b = wbloc(i,j,false);
             if (b)
             {
-                for (int bi = 0; bi < NL; ++bi)
+                for (Index bi = 0; bi < NL; ++bi)
                     traits::v(*b, bi, bj) = 0;
             }
         }
     }
 
-    void clearRowCol(int i)
+    void clearRowCol(Index i)
     {
 #ifdef SPARSEMATRIX_VERBOSE
         std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): row("<<i<<") = 0 and col("<<i<<") = 0"<<std::endl;
 #endif
 #ifdef SPARSEMATRIX_CHECK
-        if ((unsigned)i >= (unsigned)rowSize() || (unsigned)i >= (unsigned)colSize())
+        if (i >= rowSize() || i >= colSize())
         {
             std::cerr << "ERROR: invalid write access to row and column "<<i<<" in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
             return;
         }
 #endif
-        if ((int)NL != (int)NC || nRow != nCol)
+        if (((Index)NL) != ((Index)NC) || nRow != nCol)
         {
             clearRow(i);
             clearCol(i);
@@ -849,25 +848,25 @@ public:
         {
             //std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): sparse row("<<i<<") = 0 and col("<<i<<") = 0"<<std::endl;
             // Here we assume the matrix is symmetric
-            int bi=0; split_row_index(i, bi);
+            Index bi=0; split_row_index(i, bi);
             compress();
-            int rowId = i * rowIndex.size() / nBlocRow;
+            Index rowId = i * rowIndex.size() / nBlocRow;
             if (sortedFind(rowIndex, i, rowId))
             {
                 Range rowRange(rowBegin[rowId], rowBegin[rowId+1]);
-                for (int xj = rowRange.begin(); xj < rowRange.end(); ++xj)
+                for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
                 {
                     Bloc& b = colsValue[xj];
-                    for (int bj = 0; bj < NC; ++bj)
+                    for (Index bj = 0; bj < NC; ++bj)
                         traits::v(b, bi, bj) = 0;
-                    int j = colsIndex[xj];
+                    Index j = colsIndex[xj];
                     if (j != i)
                     {
                         // non diagonal bloc
                         Bloc* b = wbloc(j,i,false);
                         if (b)
                         {
-                            for (int bj = 0; bj < NL; ++bj)
+                            for (Index bj = 0; bj < NL; ++bj)
                                 traits::v(*b, bj, bi) = 0;
                         }
                     }
@@ -878,7 +877,7 @@ public:
 
     void clear()
     {
-        for (unsigned int i=0; i < colsValue.size(); ++i)
+        for (Index i=0; i < colsValue.size(); ++i)
             traits::clear(colsValue[i]);
         compressed = colsValue.empty();
         btemp.clear();
@@ -891,25 +890,25 @@ public:
     virtual ElementType getElementType() const { return traits::getElementType(); }
 
     /// @return size of elements stored in this matrix
-    virtual unsigned int getElementSize() const { return sizeof(Real); }
+    virtual std::size_t getElementSize() const { return sizeof(Real); }
 
     /// @return the category of this matrix
     virtual MatrixCategory getCategory() const { return MATRIX_SPARSE; }
 
     /// @return the number of rows in each block, or 1 of there are no fixed block size
-    virtual int getBlockRows() const { return NL; }
+    virtual Index getBlockRows() const { return NL; }
 
     /// @return the number of columns in each block, or 1 of there are no fixed block size
-    virtual int getBlockCols() const { return NC; }
+    virtual Index getBlockCols() const { return NC; }
 
     /// @return the number of rows of blocks
-    virtual int bRowSize() const { return rowBSize(); }
+    virtual Index bRowSize() const { return rowBSize(); }
 
     /// @return the number of columns of blocks
-    virtual int bColSize() const { return colBSize(); }
+    virtual Index bColSize() const { return colBSize(); }
 
     /// @return the width of the band on each side of the diagonal (only for band matrices)
-    virtual int getBandWidth() const { return NC-1; }
+    virtual Index getBandWidth() const { return NC-1; }
 
     /// @}
 
@@ -919,24 +918,24 @@ public:
 protected:
     virtual void bAccessorDelete(const InternalBlockAccessor* /*b*/) const {}
     virtual void bAccessorCopy(InternalBlockAccessor* /*b*/) const {}
-    virtual SReal bAccessorElement(const InternalBlockAccessor* b, int i, int j) const
+    virtual SReal bAccessorElement(const InternalBlockAccessor* b, Index i, Index j) const
     {
         //return element(b->row * getBlockRows() + i, b->col * getBlockCols() + j);
-        int index = b->data;
+        Index index = b->data;
         const Bloc& data = (index >= 0) ? colsValue[index] : btemp[-index-1].value;
         return (SReal)traits::v(data, i, j);
     }
-    virtual void bAccessorSet(InternalBlockAccessor* b, int i, int j, double v)
+    virtual void bAccessorSet(InternalBlockAccessor* b, Index i, Index j, double v)
     {
         //set(b->row * getBlockRows() + i, b->col * getBlockCols() + j, v);
-        int index = b->data;
+        Index index = b->data;
         Bloc& data = (index >= 0) ? colsValue[index] : btemp[-index-1].value;
         traits::v(data, i, j) = (Real)v;
     }
-    virtual void bAccessorAdd(InternalBlockAccessor* b, int i, int j, double v)
+    virtual void bAccessorAdd(InternalBlockAccessor* b, Index i, Index j, double v)
     {
         //add(b->row * getBlockRows() + i, b->col * getBlockCols() + j, v);
-        int index = b->data;
+        Index index = b->data;
         Bloc& data = (index >= 0) ? colsValue[index] : btemp[-index-1].value;
         traits::v(data, i, j) += (Real)v;
     }
@@ -944,10 +943,10 @@ protected:
     template<class T>
     const T* bAccessorElementsCSRImpl(const InternalBlockAccessor* b, T* buffer) const
     {
-        int index = b->data;
+        Index index = b->data;
         const Bloc& data = (index >= 0) ? colsValue[index] : btemp[-index-1].value;
-        for (int l=0; l<NL; ++l)
-            for (int c=0; c<NC; ++c)
+        for (Index l=0; l<NL; ++l)
+            for (Index c=0; c<NC; ++c)
                 buffer[l*NC+c] = (T)traits::v(data, l, c);
         return buffer;
     }
@@ -967,10 +966,10 @@ protected:
     template<class T>
     void bAccessorSetCSRImpl(InternalBlockAccessor* b, const T* buffer)
     {
-        int index = b->data;
+        Index index = b->data;
         Bloc& data = (index >= 0) ? colsValue[index] : btemp[-index-1].value;
-        for (int l=0; l<NL; ++l)
-            for (int c=0; c<NC; ++c)
+        for (Index l=0; l<NL; ++l)
+            for (Index c=0; c<NC; ++c)
                 traits::v(data, l, c) = (Real)buffer[l*NC+c];
     }
     virtual void bAccessorSet(InternalBlockAccessor* b, const float* buffer)
@@ -989,10 +988,10 @@ protected:
     template<class T>
     void bAccessorAddCSRImpl(InternalBlockAccessor* b, const T* buffer)
     {
-        int index = b->data;
+        Index index = b->data;
         Bloc& data = (index >= 0) ? colsValue[index] : btemp[-index-1].value;
-        for (int l=0; l<NL; ++l)
-            for (int c=0; c<NC; ++c)
+        for (Index l=0; l<NL; ++l)
+            for (Index c=0; c<NC; ++c)
                 traits::v(data, l, c) += (Real)buffer[l*NC+c];
     }
     virtual void bAccessorAdd(InternalBlockAccessor* b, const float* buffer)
@@ -1011,11 +1010,11 @@ protected:
 public:
 
     /// Get read access to a bloc
-    virtual BlockConstAccessor blocGet(int i, int j) const
+    virtual BlockConstAccessor blocGet(Index i, Index j) const
     {
         ((Matrix*)this)->compress();
 
-        int rowId = i * rowIndex.size() / nBlocRow;
+        Index rowId = i * rowIndex.size() / nBlocRow;
         if (sortedFind(rowIndex, i, rowId))
         {
             Range rowRange(rowBegin[rowId], rowBegin[rowId+1]);
@@ -1025,15 +1024,15 @@ public:
                 return createBlockConstAccessor(i, j, colId);
             }
         }
-        return createBlockConstAccessor(-1-i, -1-j, 0);
+        return createBlockConstAccessor(-1-i, -1-j, (Index)0);
     }
 
     /// Get write access to a bloc
-    virtual BlockAccessor blocGetW(int i, int j)
+    virtual BlockAccessor blocGetW(Index i, Index j)
     {
         ((Matrix*)this)->compress();
 
-        int rowId = i * rowIndex.size() / nBlocRow;
+        Index rowId = i * rowIndex.size() / nBlocRow;
         if (sortedFind(rowIndex, i, rowId))
         {
             Range rowRange(rowBegin[rowId], rowBegin[rowId+1]);
@@ -1043,17 +1042,17 @@ public:
                 return createBlockAccessor(i, j, colId);
             }
         }
-        return createBlockAccessor(-1-i, -1-j, 0);
+        return createBlockAccessor(-1-i, -1-j, (Index)0);
     }
 
     /// Get write access to a bloc, possibly creating it
-    virtual BlockAccessor blocCreate(int i, int j)
+    virtual BlockAccessor blocCreate(Index i, Index j)
     {
-        int rowId = i * rowIndex.size() / nBlocRow;
+        Index rowId = i * rowIndex.size() / nBlocRow;
         if (sortedFind(rowIndex, i, rowId))
         {
             Range rowRange(rowBegin[rowId], rowBegin[rowId+1]);
-            int colId = rowRange.begin() + j * rowRange.size() / nBlocCol;
+            Index colId = rowRange.begin() + j * rowRange.size() / nBlocCol;
             if (sortedFind(colsIndex, rowRange, j, colId))
             {
 #ifdef SPARSEMATRIX_VERBOSE
@@ -1072,7 +1071,7 @@ public:
                 btemp.push_back(IndexedBloc(i,j));
                 traits::clear(btemp.back().value);
             }
-            return createBlockAccessor(i, j, -(int)btemp.size());
+            return createBlockAccessor(i, j, -btemp.size());
         }
     }
 
@@ -1081,7 +1080,7 @@ protected:
     virtual void itDeleteColBlock(const InternalColBlockIterator* /*it*/) const {}
     virtual void itAccessColBlock(InternalColBlockIterator* it, BlockConstAccessor* b) const
     {
-        int index = it->data;
+        Index index = it->data;
         setMatrix(b);
         getInternal(b)->row = it->row;
         getInternal(b)->data = index;
@@ -1089,36 +1088,36 @@ protected:
     }
     virtual void itIncColBlock(InternalColBlockIterator* it) const
     {
-        int index = it->data;
+        Index index = it->data;
         ++index;
         it->data = index;
     }
     virtual void itDecColBlock(InternalColBlockIterator* it) const
     {
-        int index = it->data;
+        Index index = it->data;
         --index;
         it->data = index;
     }
     virtual bool itEqColBlock(const InternalColBlockIterator* it, const InternalColBlockIterator* it2) const
     {
-        int index = it->data;
-        int index2 = it2->data;
+        Index index = it->data;
+        Index index2 = it2->data;
         return index == index2;
     }
     virtual bool itLessColBlock(const InternalColBlockIterator* it, const InternalColBlockIterator* it2) const
     {
-        int index = it->data;
-        int index2 = it2->data;
+        Index index = it->data;
+        Index index2 = it2->data;
         return index < index2;
     }
 
 public:
     /// Get the iterator corresponding to the beginning of the given row of blocks
-    virtual ColBlockConstIterator bRowBegin(int ib) const
+    virtual ColBlockConstIterator bRowBegin(Index ib) const
     {
         ((Matrix*)this)->compress();
-        int rowId = ib * rowIndex.size() / nBlocRow;
-        int index = 0;
+        Index rowId = ib * rowIndex.size() / nBlocRow;
+        Index index = 0;
         if (sortedFind(rowIndex, ib, rowId))
         {
             index = rowBegin[rowId];
@@ -1127,11 +1126,11 @@ public:
     }
 
     /// Get the iterator corresponding to the end of the given row of blocks
-    virtual ColBlockConstIterator bRowEnd(int ib) const
+    virtual ColBlockConstIterator bRowEnd(Index ib) const
     {
         ((Matrix*)this)->compress();
-        int rowId = ib * rowIndex.size() / nBlocRow;
-        int index2 = 0;
+        Index rowId = ib * rowIndex.size() / nBlocRow;
+        Index index2 = 0;
         if (sortedFind(rowIndex, ib, rowId))
         {
             index2 = rowBegin[rowId+1];
@@ -1140,11 +1139,11 @@ public:
     }
 
     /// Get the iterators corresponding to the beginning and end of the given row of blocks
-    virtual std::pair<ColBlockConstIterator, ColBlockConstIterator> bRowRange(int ib) const
+    virtual std::pair<ColBlockConstIterator, ColBlockConstIterator> bRowRange(Index ib) const
     {
         ((Matrix*)this)->compress();
-        int rowId = ib * rowIndex.size() / nBlocRow;
-        int index = 0, index2 = 0;
+        Index rowId = ib * rowIndex.size() / nBlocRow;
+        Index index = 0, index2 = 0;
         if (sortedFind(rowIndex, ib, rowId))
         {
             index = rowBegin[rowId];
@@ -1158,57 +1157,57 @@ public:
 protected:
     virtual void itCopyRowBlock(InternalRowBlockIterator* /*it*/) const {}
     virtual void itDeleteRowBlock(const InternalRowBlockIterator* /*it*/) const {}
-    virtual int itAccessRowBlock(InternalRowBlockIterator* it) const
+    virtual Index itAccessRowBlock(InternalRowBlockIterator* it) const
     {
-        int rowId = it->data[0];
+        Index rowId = it->data[0];
         return rowIndex[rowId];
     }
     virtual ColBlockConstIterator itBeginRowBlock(InternalRowBlockIterator* it) const
     {
-        int rowId = it->data[0];
-        int row = rowIndex[rowId];
-        int index = rowBegin[rowId];
+        Index rowId = it->data[0];
+        Index row = rowIndex[rowId];
+        Index index = rowBegin[rowId];
         return createColBlockConstIterator(row, index);
     }
     virtual ColBlockConstIterator itEndRowBlock(InternalRowBlockIterator* it) const
     {
-        int rowId = it->data[0];
-        int row = rowIndex[rowId];
-        int index2 = rowBegin[rowId+1];
+        Index rowId = it->data[0];
+        Index row = rowIndex[rowId];
+        Index index2 = rowBegin[rowId+1];
         return createColBlockConstIterator(row, index2);
     }
     virtual std::pair<ColBlockConstIterator, ColBlockConstIterator> itRangeRowBlock(InternalRowBlockIterator* it) const
     {
-        int rowId = it->data[0];
-        int row = rowIndex[rowId];
-        int index = rowBegin[rowId];
-        int index2 = rowBegin[rowId+1];
+        Index rowId = it->data[0];
+        Index row = rowIndex[rowId];
+        Index index = rowBegin[rowId];
+        Index index2 = rowBegin[rowId+1];
         return std::make_pair(createColBlockConstIterator(row, index ),
                 createColBlockConstIterator(row, index2));
     }
 
     virtual void itIncRowBlock(InternalRowBlockIterator* it) const
     {
-        int rowId = it->data[0];
+        Index rowId = it->data[0];
         ++rowId;
         it->data[0] = rowId;
     }
     virtual void itDecRowBlock(InternalRowBlockIterator* it) const
     {
-        int rowId = it->data[0];
+        Index rowId = it->data[0];
         --rowId;
         it->data[0] = rowId;
     }
     virtual bool itEqRowBlock(const InternalRowBlockIterator* it, const InternalRowBlockIterator* it2) const
     {
-        int rowId = it->data[0];
-        int rowId2 = it2->data[0];
+        Index rowId = it->data[0];
+        Index rowId2 = it2->data[0];
         return rowId == rowId2;
     }
     virtual bool itLessRowBlock(const InternalRowBlockIterator* it, const InternalRowBlockIterator* it2) const
     {
-        int rowId = it->data[0];
-        int rowId2 = it2->data[0];
+        Index rowId = it->data[0];
+        Index rowId2 = it2->data[0];
         return rowId < rowId2;
     }
 
@@ -1243,28 +1242,28 @@ protected:
     /// @name setter/getter & product methods on template vector types
     /// @{
 
-    template<class Vec> static Real vget(const Vec& vec, int i, int j, int k) { return vget( vec, i*j+k ); }
-    template<class Vec> static Real vget(const helper::vector<Vec>&vec, int i, int /*j*/, int k) { return vec[i][k]; }
+    template<class Vec> static Real vget(const Vec& vec, Index i, Index j, Index k) { return vget( vec, i*j+k ); }
+    template<class Vec> static Real vget(const helper::vector<Vec>&vec, Index i, Index /*j*/, Index k) { return vec[i][k]; }
 
-                          static Real  vget(const defaulttype::BaseVector& vec, int i) { return vec.element(i); }
-    template<class Real2> static Real2 vget(const FullVector<Real2>& vec, int i) { return vec[i]; }
-
-
-    template<class Vec> static void vset(Vec& vec, int i, int j, int k, Real v) { vset( vec, i*j+k, v ); }
-    template<class Vec> static void vset(helper::vector<Vec>&vec, int i, int /*j*/, int k, Real v) { vec[i][k] = v; }
-
-                          static void vset(defaulttype::BaseVector& vec, int i, Real v) { vec.set(i, v); }
-    template<class Real2> static void vset(FullVector<Real2>& vec, int i, Real2 v) { vec[i] = v; }
+                          static Real  vget(const defaulttype::BaseVector& vec, Index i) { return vec.element(i); }
+    template<class Real2> static Real2 vget(const FullVector<Real2>& vec, Index i) { return vec[i]; }
 
 
-    template<class Vec> static void vadd(Vec& vec, int i, int j, int k, Real v) { vadd( vec, i*j+k, v ); }
-    template<class Vec> static void vadd(helper::vector<Vec>&vec, int i, int /*j*/, int k, Real v) { vec[i][k] += v; }
+    template<class Vec> static void vset(Vec& vec, Index i, Index j, Index k, Real v) { vset( vec, i*j+k, v ); }
+    template<class Vec> static void vset(helper::vector<Vec>&vec, Index i, Index /*j*/, Index k, Real v) { vec[i][k] = v; }
 
-                          static void vadd(defaulttype::BaseVector& vec, int i, Real v) { vec.add(i, v); }
-    template<class Real2> static void vadd(FullVector<Real2>& vec, int i, Real2 v) { vec[i] += v; }
+                          static void vset(defaulttype::BaseVector& vec, Index i, Real v) { vec.set(i, v); }
+    template<class Real2> static void vset(FullVector<Real2>& vec, Index i, Real2 v) { vec[i] = v; }
 
-    template<class Vec> static void vresize(Vec& vec, int /*blockSize*/, int totalSize) { vec.resize( totalSize ); }
-    template<class Vec> static void vresize(helper::vector<Vec>&vec, int blockSize, int /*totalSize*/) { vec.resize( blockSize ); }
+
+    template<class Vec> static void vadd(Vec& vec, Index i, Index j, Index k, Real v) { vadd( vec, i*j+k, v ); }
+    template<class Vec> static void vadd(helper::vector<Vec>&vec, Index i, Index /*j*/, Index k, Real v) { vec[i][k] += v; }
+
+                          static void vadd(defaulttype::BaseVector& vec, Index i, Real v) { vec.add(i, v); }
+    template<class Real2> static void vadd(FullVector<Real2>& vec, Index i, Real2 v) { vec[i] += v; }
+
+    template<class Vec> static void vresize(Vec& vec, Index /*blockSize*/, Index totalSize) { vec.resize( totalSize ); }
+    template<class Vec> static void vresize(helper::vector<Vec>&vec, Index blockSize, Index /*totalSize*/) { vec.resize( blockSize ); }
 
 
 
@@ -1276,30 +1275,30 @@ protected:
 
           ((Matrix*)this)->compress();
           vresize( res, rowBSize(), rowSize() );
-          for (unsigned int xi = 0; xi < rowIndex.size(); ++xi)  // for each non-empty block row
+          for (Index xi = 0; xi < rowIndex.size(); ++xi)  // for each non-empty block row
           {
               defaulttype::Vec<NL,Real2> r;  // local block-sized vector to accumulate the product of the block row  with the large vector
 
               // multiply the non-null blocks with the corresponding chunks of the large vector
               Range rowRange(rowBegin[xi], rowBegin[xi+1]);
-              for (int xj = rowRange.begin(); xj < rowRange.end(); ++xj)
+              for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
               {
                   // transfer a chunk of large vector to a local block-sized vector
                   defaulttype::Vec<NC,Real2> v;
                   //Index jN = colsIndex[xj] * NC;    // scalar column index
-                  for (int bj = 0; bj < NC; ++bj)
+                  for (Index bj = 0; bj < NC; ++bj)
                       v[bj] = vget(vec,colsIndex[xj],NC,bj);
 
                   // multiply the block with the local vector
                   const Bloc& b = colsValue[xj];    // non-null block has block-indices (rowIndex[xi],colsIndex[xj]) and value colsValue[xj]
-                  for (int bi = 0; bi < NL; ++bi)
-                      for (int bj = 0; bj < NC; ++bj)
+                  for (Index bi = 0; bi < NL; ++bi)
+                      for (Index bj = 0; bj < NC; ++bj)
                           r[bi] += traits::v(b, bi, bj) * v[bj];
               }
 
               // transfer the local result  to the large result vector
               //Index iN = rowIndex[xi] * NL;                      // scalar row index
-              for (int bi = 0; bi < NL; ++bi)
+              for (Index bi = 0; bi < NL; ++bi)
                   vset(res, rowIndex[xi], NL, bi, r[bi]);
           }
       }
@@ -1313,30 +1312,30 @@ protected:
 
           ((Matrix*)this)->compress();
           vresize( res, rowBSize(), rowSize() );
-          for (unsigned int xi = 0; xi < rowIndex.size(); ++xi)  // for each non-empty block row
+          for (Index xi = 0; xi < rowIndex.size(); ++xi)  // for each non-empty block row
           {
               defaulttype::Vec<NL,Real2> r;  // local block-sized vector to accumulate the product of the block row  with the large vector
 
               // multiply the non-null blocks with the corresponding chunks of the large vector
               Range rowRange(rowBegin[xi], rowBegin[xi+1]);
-              for (int xj = rowRange.begin(); xj < rowRange.end(); ++xj)
+              for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
               {
                   // transfer a chunk of large vector to a local block-sized vector
                   defaulttype::Vec<NC,Real2> v;
                   //Index jN = colsIndex[xj] * NC;    // scalar column index
-                  for (int bj = 0; bj < NC; ++bj)
+                  for (Index bj = 0; bj < NC; ++bj)
                       v[bj] = vget(vec,colsIndex[xj],NC,bj);
 
                   // multiply the block with the local vector
                   const Bloc& b = colsValue[xj];    // non-null block has block-indices (rowIndex[xi],colsIndex[xj]) and value colsValue[xj]
-                  for (int bi = 0; bi < NL; ++bi)
-                      for (int bj = 0; bj < NC; ++bj)
+                  for (Index bi = 0; bi < NL; ++bi)
+                      for (Index bj = 0; bj < NC; ++bj)
                           r[bi] += traits::v(b, bi, bj) * v[bj];
               }
 
               // transfer the local result  to the large result vector
               //Index iN = rowIndex[xi] * NL;                      // scalar row index
-              for (int bi = 0; bi < NL; ++bi)
+              for (Index bi = 0; bi < NL; ++bi)
                   vadd(res, rowIndex[xi], NL, bi, r[bi]);
           }
       }
@@ -1350,24 +1349,24 @@ protected:
 
           ((Matrix*)this)->compress();
           vresize( res, rowBSize(), rowSize() );
-          for (unsigned int xi = 0; xi < rowIndex.size(); ++xi)  // for each non-empty block row
+          for (Index xi = 0; xi < rowIndex.size(); ++xi)  // for each non-empty block row
           {
               defaulttype::Vec<NL,Real2> r;  // local block-sized vector to accumulate the product of the block row  with the large vector
 
               // multiply the non-null blocks with the corresponding chunks of the large vector
               Range rowRange(rowBegin[xi], rowBegin[xi+1]);
-              for (int xj = rowRange.begin(); xj < rowRange.end(); ++xj)
+              for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
               {
                   // multiply the block with the local vector
                   const Bloc& b = colsValue[xj];    // non-null block has block-indices (rowIndex[xi],colsIndex[xj]) and value colsValue[xj]
-                  for (int bi = 0; bi < NL; ++bi)
-                      for (int bj = 0; bj < NC; ++bj)
+                  for (Index bi = 0; bi < NL; ++bi)
+                      for (Index bj = 0; bj < NC; ++bj)
                           r[bi] += traits::v(b, bi, bj) * vec[bj];
               }
 
               // transfer the local result  to the large result vector
               //Index iN = rowIndex[xi] * NL;                      // scalar row index
-              for (int bi = 0; bi < NL; ++bi)
+              for (Index bi = 0; bi < NL; ++bi)
                   vadd(res, rowIndex[xi], NL, bi, r[bi]);
           }
       }
@@ -1380,17 +1379,17 @@ protected:
 
           ((Matrix*)this)->compress();
           vresize( res, colBSize(), colSize() );
-          for (unsigned int xi = 0; xi < rowIndex.size(); ++xi) // for each non-empty block row (i.e. column of the transpose)
+          for (Index xi = 0; xi < rowIndex.size(); ++xi) // for each non-empty block row (i.e. column of the transpose)
           {
               // copy the corresponding chunk of the input to a local vector
               defaulttype::Vec<NL,Real2> v;
               //Index iN = rowIndex[xi] * NL;    // index of the row in the vector
-              for (int bi = 0; bi < NL; ++bi)
+              for (Index bi = 0; bi < NL; ++bi)
                   v[bi] = vget(vec, rowIndex[xi], NL, bi);
 
               // accumulate the product of the column with the local vector
               Range rowRange(rowBegin[xi], rowBegin[xi+1]);
-              for (int xj = rowRange.begin(); xj < rowRange.end(); ++xj) // for each non-empty block in the row
+              for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj) // for each non-empty block in the row
               {
                   const Bloc& b = colsValue[xj]; // non-empty block
 
@@ -1398,14 +1397,14 @@ protected:
                   //Index jN = colsIndex[xj] * NC;
 
                   // columnwise bloc-vector product
-                  for (int bj = 0; bj < NC; ++bj)
+                  for (Index bj = 0; bj < NC; ++bj)
                       r[bj] = traits::v(b, 0, bj) * v[0];
-                  for (int bi = 1; bi < NL; ++bi)
-                      for (int bj = 0; bj < NC; ++bj)
+                  for (Index bi = 1; bi < NL; ++bi)
+                      for (Index bj = 0; bj < NC; ++bj)
                           r[bj] += traits::v(b, bi, bj) * v[bi];
 
                   // accumulate the product to the result
-                  for (int bj = 0; bj < NC; ++bj)
+                  for (Index bj = 0; bj < NC; ++bj)
                       vadd(res, colsIndex[xj], NC, bj, r[bj]);
               }
           }
@@ -1448,14 +1447,14 @@ public:
 
         if( m.rowIndex.empty() ) return; // if m is null
 
-        for( unsigned int xi = 0; xi < rowIndex.size(); ++xi )  // for each non-null block row
+        for( Index xi = 0; xi < rowIndex.size(); ++xi )  // for each non-null block row
         {
             unsigned mr = 0; // block row index in m
 
             Index row = rowIndex[xi];      // block row
 
             Range rowRange( rowBegin[xi], rowBegin[xi+1] );
-            for( int xj = rowRange.begin() ; xj < rowRange.end() ; ++xj )  // for each non-null block
+            for( Index xj = rowRange.begin() ; xj < rowRange.end() ; ++xj )  // for each non-null block
             {
                 Index col = colsIndex[xj];     // block column
                 const Bloc& b = colsValue[xj]; // block value
@@ -1502,14 +1501,14 @@ public:
 
         if( m.rowIndex.empty() ) return; // if m is null
 
-        for( unsigned int xi = 0 ; xi < rowIndex.size() ; ++xi )  // for each non-null transpose block column
+        for( Index xi = 0 ; xi < rowIndex.size() ; ++xi )  // for each non-null transpose block column
         {
             unsigned mr = 0; // block row index in m
 
             Index col = rowIndex[xi];      // block col (transposed col = row)
 
             Range rowRange( rowBegin[xi], rowBegin[xi+1] );
-            for (int xj = rowRange.begin(); xj < rowRange.end(); ++xj)  // for each non-null block
+            for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)  // for each non-null block
             {
                 Index row = colsIndex[xj];     // block row (transposed row = col)
                 const Bloc& b = colsValue[xj]; // block value
@@ -1710,16 +1709,16 @@ public:
     template<class Dest>
     void addTo(Dest* dest) const
     {
-        for (unsigned int xi = 0; xi < rowIndex.size(); ++xi)
+        for (Index xi = 0; xi < rowIndex.size(); ++xi)
         {
             Index iN = rowIndex[xi] * NL;
             Range rowRange(rowBegin[xi], rowBegin[xi+1]);
-            for (int xj = rowRange.begin(); xj < rowRange.end(); ++xj)
+            for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
             {
                 Index jN = colsIndex[xj] * NC;
                 const Bloc& b = colsValue[xj];
-                for (int bi = 0; bi < NL; ++bi)
-                    for (int bj = 0; bj < NC; ++bj)
+                for (Index bi = 0; bi < NL; ++bi)
+                    for (Index bj = 0; bj < NC; ++bj)
                         dest->add(iN+bi, jN+bj, traits::v(b, bi, bj));
             }
         }
@@ -1730,8 +1729,8 @@ public:
                 Index iN = it->l * NL;
                 Index jN = it->c * NC;
                 const Bloc& b = it->value;
-                for (int bi = 0; bi < NL; ++bi)
-                    for (int bj = 0; bj < NC; ++bj)
+                for (Index bi = 0; bi < NL; ++bi)
+                    for (Index bj = 0; bj < NC; ++bj)
                         dest->add(iN+bi, jN+bj, traits::v(b, bi, bj));
             }
         }
@@ -1844,18 +1843,18 @@ public:
                 this->getColsValue().size(),
                 this->rowBSize(),
                 this->colBSize(),
-                (int *) &(this->getRowBegin()[0]),
-                (int *) &(this->getColsIndex()[0]),
+                (Index *) &(this->getRowBegin()[0]),
+                (Index *) &(this->getColsIndex()[0]),
                 (double *) &(this->getColsValue()[0])
                 );
     }
 
     static bool check_matrix(
-        int nzmax,// nb values
-        int m,// number of row
-        int n,// number of columns
-        int * a_p,// column pointers (size n+1) or col indices (size nzmax)
-        int * a_i,// row indices, size nzmax
+        Index nzmax,// nb values
+        Index m,// number of row
+        Index n,// number of columns
+        Index * a_p,// column pointers (size n+1) or col indices (size nzmax)
+        Index * a_i,// row indices, size nzmax
         double * a_x// numerical values, size nzmax
     )
     {
@@ -1866,7 +1865,7 @@ public:
             return false;
         }
 
-        for (int i=1; i<=m; i++)
+        for (Index i=1; i<=m; i++)
         {
             if (a_p[i]<=a_p[i-1])
             {
@@ -1885,8 +1884,8 @@ public:
         }
 
 
-        int k=1;
-        for (int i=0; i<nzmax; i++)
+        Index k=1;
+        for (Index i=0; i<nzmax; i++)
         {
             i++;
             for (; i<a_p[k]; i++)
@@ -1905,7 +1904,7 @@ public:
             k++;
         }
 
-        for (int i=0; i<nzmax; i++)
+        for (Index i=0; i<nzmax; i++)
         {
             if (a_x[i]==0)
             {

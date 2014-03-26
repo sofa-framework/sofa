@@ -51,14 +51,14 @@ public:
     typedef TNewMatMatrix<NEWMAT::Matrix> SubMatrixType;
     typedef TNewMatMatrix<NEWMAT::Matrix> InvMatrixType;
     // return the dimension of submatrices when requesting a given size
-    static int getSubMatrixDim(int n) { return n; }
+    static Index getSubMatrixDim(Index n) { return n; }
     typedef NEWMAT::LinearEquationSolver LUSolver;
-    explicit TNewMatMatrix(int defaultBandWidth = 11)
+    explicit TNewMatMatrix(Index defaultBandWidth = 11)
         : bandWidth(defaultBandWidth)
     {
     }
 
-    void resize(int nbRow, int nbCol)
+    void resize(Index nbRow, Index nbCol)
     {
 #ifdef NEWMAT_VERBOSE
         std::cout << /* this->Name()  <<  */": resize("<<nbRow<<","<<nbCol<<")"<<std::endl;
@@ -77,7 +77,7 @@ public:
         return M::Ncols();
     }
 
-    SReal element(int i, int j) const
+    SReal element(Index i, Index j) const
     {
 #ifdef NEWMAT_CHECK
         if ((unsigned)i >= (unsigned)rowSize() || (unsigned)j >= (unsigned)colSize())
@@ -89,7 +89,7 @@ public:
         return M::element(i,j);
     }
 
-    void set(int i, int j, double v)
+    void set(Index i, Index j, double v)
     {
 #ifdef NEWMAT_VERBOSE
         std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = "<<v<<std::endl;
@@ -104,7 +104,7 @@ public:
         M::element(i,j) = v;
     }
 
-    void add(int i, int j, double v)
+    void add(Index i, Index j, double v)
     {
 #ifdef NEWMAT_VERBOSE
         std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") += "<<v<<std::endl;
@@ -119,7 +119,7 @@ public:
         M::element(i,j) += v;
     }
 
-    void clear(int i, int j)
+    void clear(Index i, Index j)
     {
 #ifdef NEWMAT_VERBOSE
         std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = 0"<<std::endl;
@@ -134,7 +134,7 @@ public:
         M::element(i,j) = 0.0;
     }
 
-    void clearRow(int i)
+    void clearRow(Index i)
     {
 #ifdef NEWMAT_VERBOSE
         std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): row("<<i<<") = 0"<<std::endl;
@@ -149,7 +149,7 @@ public:
         M::Row(1+i) = 0.0;
     }
 
-    void clearCol(int j)
+    void clearCol(Index j)
     {
 #ifdef NEWMAT_VERBOSE
         std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): col("<<j<<") = 0"<<std::endl;
@@ -164,7 +164,7 @@ public:
         M::Column(1+j) = 0.0;
     }
 
-    void clearRowCol(int i)
+    void clearRowCol(Index i)
     {
 #ifdef NEWMAT_VERBOSE
         std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): row("<<i<<") = 0 and col("<<i<<") = 0"<<std::endl;
@@ -180,36 +180,36 @@ public:
         M::Column(1+i) = 0.0;
     }
 
-    NEWMAT::GetSubMatrix sub(int i, int j, int nrow, int ncol)
+    NEWMAT::GetSubMatrix sub(Index i, Index j, Index nrow, Index ncol)
     {
         return M::SubMatrix(i+1,i+nrow,j+1,j+ncol);
     }
 
     template<class T>
-    void getSubMatrix(int i, int j, int nrow, int ncol, T& m)
+    void getSubMatrix(Index i, Index j, Index nrow, Index ncol, T& m)
     {
         m = M::SubMatrix(i+1,i+nrow,j+1,j+ncol);
     }
 
     template<class T>
-    void setSubMatrix(int i, int j, int nrow, int ncol, const T& m)
+    void setSubMatrix(Index i, Index j, Index nrow, Index ncol, const T& m)
     {
         M::SubMatrix(i+1,i+nrow,j+1,j+ncol) = m;
     }
 
-    NEWMAT::GetSubMatrix asub(int bi, int bj, int nrow, int ncol)
+    NEWMAT::GetSubMatrix asub(Index bi, Index bj, Index nrow, Index ncol)
     {
         return M::SubMatrix(bi*nrow+1,bi*nrow+nrow,bj*ncol+1,bj*ncol+ncol);
     }
 
     template<class T>
-    void getAlignedSubMatrix(int bi, int bj, int nrow, int ncol, T& m)
+    void getAlignedSubMatrix(Index bi, Index bj, Index nrow, Index ncol, T& m)
     {
         m = M::SubMatrix(bi*nrow+1,bi*nrow+nrow,bj*ncol+1,bj*ncol+ncol);
     }
 
     template<class T>
-    void setAlignedSubMatrix(int bi, int bj, int nrow, int ncol, const T& m)
+    void setAlignedSubMatrix(Index bi, Index bj, Index nrow, Index ncol, const T& m)
     {
         M::SubMatrix(bi*nrow+1,bi*nrow+nrow,bj*ncol+1,bj*ncol+ncol) = m;
     }
@@ -257,13 +257,13 @@ public:
 
     friend std::ostream& operator << (std::ostream& out, const TNewMatMatrix& v )
     {
-        int nx = v.Ncols();
-        int ny = v.Nrows();
+        Index nx = v.Ncols();
+        Index ny = v.Nrows();
         out << "[";
-        for (int y=0; y<ny; ++y)
+        for (Index y=0; y<ny; ++y)
         {
             out << "\n[";
-            for (int x=0; x<nx; ++x)
+            for (Index x=0; x<nx; ++x)
             {
                 out << " " << v.element(y,x);
             }
@@ -275,7 +275,7 @@ public:
 
     static const char* Name();
 
-    int bandWidth;
+    Index bandWidth;
 };
 
 typedef TNewMatMatrix<NEWMAT::Matrix> NewMatMatrix;
@@ -296,7 +296,7 @@ template<>
 inline const char* TNewMatMatrix<NEWMAT::SymmetricBandMatrix>::Name() { return "NewMatSymmetricBand"; }
 
 template<>
-inline void TNewMatMatrix<NEWMAT::SymmetricMatrix>::resize(int nbRow, int nbCol)
+inline void TNewMatMatrix<NEWMAT::SymmetricMatrix>::resize(Index nbRow, Index nbCol)
 {
     if (nbCol != nbRow)
         std::cerr << "ERROR: NEWMAT::SymmetricMatrix must be square, size "<<nbRow<<"x"<<nbCol<<" not supported."<<std::endl;
@@ -304,7 +304,7 @@ inline void TNewMatMatrix<NEWMAT::SymmetricMatrix>::resize(int nbRow, int nbCol)
 }
 
 template<>
-inline void TNewMatMatrix<NEWMAT::BandMatrix>::resize(int nbRow, int nbCol)
+inline void TNewMatMatrix<NEWMAT::BandMatrix>::resize(Index nbRow, Index nbCol)
 {
     if (nbCol != nbRow)
         std::cerr << "ERROR: NEWMAT::BandMatrix must be square, size "<<nbRow<<"x"<<nbCol<<" not supported."<<std::endl;
@@ -312,7 +312,7 @@ inline void TNewMatMatrix<NEWMAT::BandMatrix>::resize(int nbRow, int nbCol)
 }
 
 template<>
-inline void TNewMatMatrix<NEWMAT::SymmetricBandMatrix>::resize(int nbRow, int nbCol)
+inline void TNewMatMatrix<NEWMAT::SymmetricBandMatrix>::resize(Index nbRow, Index nbCol)
 {
     if (nbCol != nbRow)
         std::cerr << "ERROR: NEWMAT::SymmetricBandMatrix must be square, size "<<nbRow<<"x"<<nbCol<<" not supported."<<std::endl;
@@ -320,7 +320,7 @@ inline void TNewMatMatrix<NEWMAT::SymmetricBandMatrix>::resize(int nbRow, int nb
 }
 
 template<>
-inline void TNewMatMatrix<NEWMAT::SymmetricMatrix>::set(int i, int j, double v)
+inline void TNewMatMatrix<NEWMAT::SymmetricMatrix>::set(Index i, Index j, double v)
 {
 #ifdef NEWMAT_VERBOSE
     std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = "<<v<<std::endl;
@@ -337,7 +337,7 @@ inline void TNewMatMatrix<NEWMAT::SymmetricMatrix>::set(int i, int j, double v)
 }
 
 template<>
-inline void TNewMatMatrix<NEWMAT::SymmetricMatrix>::add(int i, int j, double v)
+inline void TNewMatMatrix<NEWMAT::SymmetricMatrix>::add(Index i, Index j, double v)
 {
 #ifdef NEWMAT_VERBOSE
     std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") += "<<v<<std::endl;
@@ -354,7 +354,7 @@ inline void TNewMatMatrix<NEWMAT::SymmetricMatrix>::add(int i, int j, double v)
 }
 
 template<>
-inline SReal TNewMatMatrix<NEWMAT::BandMatrix>::element(int i, int j) const
+inline SReal TNewMatMatrix<NEWMAT::BandMatrix>::element(Index i, Index j) const
 {
 #ifdef NEWMAT_CHECK
     if ((unsigned)i >= (unsigned)rowSize() || (unsigned)j >= (unsigned)colSize())
@@ -371,7 +371,7 @@ inline SReal TNewMatMatrix<NEWMAT::BandMatrix>::element(int i, int j) const
 
 
 template<>
-inline void TNewMatMatrix<NEWMAT::BandMatrix>::set(int i, int j, double v)
+inline void TNewMatMatrix<NEWMAT::BandMatrix>::set(Index i, Index j, double v)
 {
 #ifdef NEWMAT_VERBOSE
     std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = "<<v<<std::endl;
@@ -390,7 +390,7 @@ inline void TNewMatMatrix<NEWMAT::BandMatrix>::set(int i, int j, double v)
 }
 
 template<>
-inline void TNewMatMatrix<NEWMAT::BandMatrix>::add(int i, int j, double v)
+inline void TNewMatMatrix<NEWMAT::BandMatrix>::add(Index i, Index j, double v)
 {
 #ifdef NEWMAT_VERBOSE
     std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") += "<<v<<std::endl;
@@ -409,7 +409,7 @@ inline void TNewMatMatrix<NEWMAT::BandMatrix>::add(int i, int j, double v)
 }
 
 template<>
-inline SReal TNewMatMatrix<NEWMAT::SymmetricBandMatrix>::element(int i, int j) const
+inline SReal TNewMatMatrix<NEWMAT::SymmetricBandMatrix>::element(Index i, Index j) const
 {
 #ifdef NEWMAT_CHECK
     if ((unsigned)i >= (unsigned)rowSize() || (unsigned)j >= (unsigned)colSize())
@@ -425,7 +425,7 @@ inline SReal TNewMatMatrix<NEWMAT::SymmetricBandMatrix>::element(int i, int j) c
 }
 
 template<>
-inline void TNewMatMatrix<NEWMAT::SymmetricBandMatrix>::set(int i, int j, double v)
+inline void TNewMatMatrix<NEWMAT::SymmetricBandMatrix>::set(Index i, Index j, double v)
 {
 #ifdef NEWMAT_VERBOSE
     std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = "<<v<<std::endl;
@@ -447,7 +447,7 @@ inline void TNewMatMatrix<NEWMAT::SymmetricBandMatrix>::set(int i, int j, double
 }
 
 template<>
-inline void TNewMatMatrix<NEWMAT::SymmetricBandMatrix>::add(int i, int j, double v)
+inline void TNewMatMatrix<NEWMAT::SymmetricBandMatrix>::add(Index i, Index j, double v)
 {
 #ifdef NEWMAT_VERBOSE
     std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") += "<<v<<std::endl;

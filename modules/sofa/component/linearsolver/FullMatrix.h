@@ -49,7 +49,7 @@ class FullMatrix : public defaulttype::BaseMatrix
 {
 public:
     typedef T Real;
-    typedef int Index;
+    typedef typename defaulttype::BaseMatrix::Index Index;
     typedef FullVector<Real> Line;
     class LineConstIterator
     {
@@ -89,17 +89,17 @@ public:
     {
     }
 
-    FullMatrix(int nbRow, int nbCol)
+    FullMatrix(Index nbRow, Index nbCol)
         : data(new T[nbRow*nbCol]), nRow(nbRow), nCol(nbCol), pitch(nbCol), allocsize(nbRow*nbCol)
     {
     }
 
-    FullMatrix(Real* p, int nbRow, int nbCol)
+    FullMatrix(Real* p, Index nbRow, Index nbCol)
         : data(p), nRow(nbRow), nCol(nbCol), pitch(nbCol), allocsize(-nbRow*nbCol)
     {
     }
 
-    FullMatrix(Real* p, int nbRow, int nbCol, int pitch)
+    FullMatrix(Real* p, Index nbRow, Index nbCol, Index pitch)
         : data(p), nRow(nbRow), nCol(nbCol), pitch(pitch), allocsize(-nbRow*pitch)
     {
     }
@@ -137,7 +137,7 @@ public:
         return data+i*pitch;
     }
 
-    void resize(int nbRow, int nbCol)
+    void resize(Index nbRow, Index nbCol)
     {
 #ifdef FULLMATRIX_VERBOSE
         if (nbRow != rowSize() || nbCol != colSize())
@@ -181,7 +181,7 @@ public:
         return nCol;
     }
 
-    SReal element(int i, int j) const
+    SReal element(Index i, Index j) const
     {
 #ifdef FULLMATRIX_CHECK
         if ((unsigned)i >= (unsigned)rowSize() || (unsigned)j >= (unsigned)colSize())
@@ -193,7 +193,7 @@ public:
         return data[i*pitch+j];
     }
 
-    void set(int i, int j, double v)
+    void set(Index i, Index j, double v)
     {
 #ifdef FULLMATRIX_VERBOSE
         std::cout << /*this->Name() <<*/ "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = "<<v<<std::endl;
@@ -208,7 +208,7 @@ public:
         data[i*pitch+j] = (Real)v;
     }
 
-    void add(int i, int j, double v)
+    void add(Index i, Index j, double v)
     {
 #ifdef FULLMATRIX_VERBOSE
         std::cout << /*this->Name() << */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") += "<<v<<std::endl;
@@ -223,7 +223,7 @@ public:
         data[i*pitch+j] += (Real)v;
     }
 
-    void clear(int i, int j)
+    void clear(Index i, Index j)
     {
 #ifdef FULLMATRIX_VERBOSE
         std::cout << /*this->Name() <<*/ "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = 0"<<std::endl;
@@ -238,7 +238,7 @@ public:
         data[i*pitch+j] = (Real)0;
     }
 
-    void clearRow(int i)
+    void clearRow(Index i)
     {
 #ifdef FULLMATRIX_VERBOSE
         std::cout << /*this->Name() <<*/ "("<<rowSize()<<","<<colSize()<<"): row("<<i<<") = 0"<<std::endl;
@@ -254,7 +254,7 @@ public:
             data[i*pitch+j] = (Real)0;
     }
 
-    void clearCol(int j)
+    void clearCol(Index j)
     {
 #ifdef FULLMATRIX_VERBOSE
         std::cout <</* this->Name() << */"("<<rowSize()<<","<<colSize()<<"): col("<<j<<") = 0"<<std::endl;
@@ -270,7 +270,7 @@ public:
             data[i*pitch+j] = (Real)0;
     }
 
-    void clearRowCol(int i)
+    void clearRowCol(Index i)
     {
 #ifdef FULLMATRIX_VERBOSE
         std::cout << /*this->Name() << */"("<<rowSize()<<","<<colSize()<<"): row("<<i<<") = 0 and col("<<i<<") = 0"<<std::endl;
@@ -390,13 +390,13 @@ public:
 
     friend std::ostream& operator << (std::ostream& out, const FullMatrix<T>& v )
     {
-        int nx = v.colSize();
-        int ny = v.rowSize();
+        Index nx = v.colSize();
+        Index ny = v.rowSize();
         out << "[";
-        for (int y=0; y<ny; ++y)
+        for (Index y=0; y<ny; ++y)
         {
             out << "\n[";
-            for (int x=0; x<nx; ++x)
+            for (Index x=0; x<nx; ++x)
             {
                 out << " " << v.element(y,x);
             }
@@ -417,9 +417,10 @@ template<> inline const char* FullMatrix<float>::Name() { return "FullMatrixf"; 
 template<typename T>
 class LPtrFullMatrix : public FullMatrix<T>
 {
+    typedef typename FullMatrix<T>::Index Index;
 protected:
     T** ldata;
-    int lallocsize;
+    Index lallocsize;
 public:
     LPtrFullMatrix()
         : ldata(NULL), lallocsize(0)
@@ -432,7 +433,7 @@ public:
             delete[] ldata;
     }
 
-    void resize(int nbRow, int nbCol)
+    void resize(Index nbRow, Index nbCol)
     {
         if (nbRow == this->nRow && nbCol == this->nCol)
             this->clear();
@@ -446,7 +447,7 @@ public:
                 ldata = new T*[nbRow];
                 lallocsize = nbRow;
             }
-            for (int i=0; i<nbRow; ++i)
+            for (Index i=0; i<nbRow; ++i)
                 ldata[i] = this->data + i*this->pitch;
         }
     }

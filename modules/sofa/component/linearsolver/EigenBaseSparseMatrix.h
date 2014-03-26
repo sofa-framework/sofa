@@ -66,7 +66,7 @@ An Eigen::SparseMatrix<Real, RowMajor> matrix is used to store the data in Compr
 This matrix can not be accessed randomly. Two access modes are implemented.
 
 The first access mode consists in inserting entries in increasing row, increasing column order.
-Method beginRow(int index) must be called before any entry can be appended to row i.
+Method beginRow(Index index) must be called before any entry can be appended to row i.
 Then insertBack(i,j,value) must be used in for increasing j. There is no need to explicitly end a row.
 Finally, method compress() must be called after the last entry has been inserted.
 This is the most efficient access mode.
@@ -82,9 +82,7 @@ Rows, columns, or the full matrix can be set to zero using the clear* methods.
 template<class TReal>
 class EigenBaseSparseMatrix : public defaulttype::BaseMatrix
 {
-    /** Impossible using this class
-    */
-    void set(int i, int j, double v)
+    void set(Index i, Index j, double v)
     {
         for (typename CompressedMatrix::InnerIterator it(compressedMatrix,i); it; ++it)
         {
@@ -114,7 +112,7 @@ public:
     CompressedMatrix compressedMatrix;    ///< the compressed matrix
 
 
-    EigenBaseSparseMatrix(int nbRow=0, int nbCol=0)
+    EigenBaseSparseMatrix(Index nbRow=0, Index nbCol=0)
     {
         resize(nbRow,nbCol);
     }
@@ -131,17 +129,17 @@ public:
     }
 
     /// Schedule the addition of the value at the given place. Scheduled additions must be finalized using function compress() .
-    void add( int row, int col, double value ){
+    void add( Index row, Index col, double value ){
         incoming.push_back( Triplet(row,col,(Real)value) );
     }
 
     /// Insert in the compressed matrix. There must be no value at this place already. Efficient only if the value is inserted at the last place of the last row.
-    void insertBack( int row, int col, Real value){
+    void insertBack( Index row, Index col, Real value){
         compressedMatrix.insert(row,col) = value;
     }
 
     /// Return a reference to the given entry in the compressed matrix.There can (must ?) be a value at this place already. Efficient only if the it is at the last place of the compressed matrix.
-    Real& coeffRef( int i, int j ){
+    Real& coeffRef( Index i, Index j ){
         return compressedMatrix.coeffRef(i,j);
     }
 
@@ -152,7 +150,7 @@ public:
     {
         resize(m.rowSize(),nbCol);
         const CompressedMatrix& im = m.compressedMatrix;
-        for(int i=0; i<im.rows(); i++)
+        for(Index i=0; i<im.rows(); i++)
         {
             for(typename CompressedMatrix::InnerIterator j(im,i); j; ++j)
                 add(i,shift+j.col(),j.value());
@@ -162,7 +160,7 @@ public:
 
 
     /// Resize the matrix without preserving the data (the matrix is set to zero)
-    void resize(int nbRow, int nbCol)
+    void resize(Index nbRow, Index nbCol)
     {
         compressedMatrix.resize(nbRow,nbCol);
     }
@@ -181,14 +179,14 @@ public:
         return compressedMatrix.cols();
     }
 
-    SReal element(int i, int j) const
+    SReal element(Index i, Index j) const
     {
         return compressedMatrix.coeff(i,j);
     }
 
 
 
-    /// Add the values from the scheduled list, and clears the schedule list. @sa set(int i, int j, double v).
+    /// Add the values from the scheduled list, and clears the schedule list. @sa set(Index i, Index j, double v).
     void compress()
     {
         if( incoming.empty() ) return;
@@ -200,7 +198,7 @@ public:
 
 
     /// Set all the entries of a row to 0, except the diagonal set to an extremely small number.
-    void clearRow(int i)
+    void clearRow(Index i)
     {
         compress();
         for (typename CompressedMatrix::InnerIterator it(compressedMatrix,i); it; ++it)
@@ -212,10 +210,10 @@ public:
     }
 
     /// Set all the entries of rows imin to imax-1 to 0.
-    void clearRows(int imin, int imax)
+    void clearRows(Index imin, Index imax)
     {
         compress();
-        for(int i=imin; i<imax; i++)
+        for(Index i=imin; i<imax; i++)
             for (typename CompressedMatrix::InnerIterator it(compressedMatrix,i); it; ++it)
             {
                 it.valueRef() = 0;
@@ -223,10 +221,10 @@ public:
     }
 
     ///< Set all the entries of a column to 0, except the diagonal set to an extremely small number.. Not efficient !
-    void clearCol(int col)
+    void clearCol(Index col)
     {
         compress();
-        for(int i=0; i<compressedMatrix.rows(); i++ )
+        for(Index i=0; i<compressedMatrix.rows(); i++ )
             for (typename CompressedMatrix::InnerIterator it(compressedMatrix,i); it; ++it)
             {
                 if( it.col()==col)
@@ -240,10 +238,10 @@ public:
     }
 
     ///< Clears the all the entries of column imin to column imax-1. Not efficient !
-    void clearCols(int imin, int imax)
+    void clearCols(Index imin, Index imax)
     {
         compress();
-        for(int i=0; i<compressedMatrix.rows(); i++ )
+        for(Index i=0; i<compressedMatrix.rows(); i++ )
             for (typename CompressedMatrix::InnerIterator it(compressedMatrix,i); it && it.col()<imax; ++it)
             {
                 if( imin<=it.col() )
@@ -252,14 +250,14 @@ public:
     }
 
     ///< Set all the entries of column i and of row i to 0. Not efficient !
-    void clearRowCol(int i)
+    void clearRowCol(Index i)
     {
         clearRow(i);
         clearCol(i);
     }
 
     ///< Clears all the entries of rows imin to imax-1 and columns imin to imax-1
-    void clearRowsCols(int imin, int imax)
+    void clearRowsCols(Index imin, Index imax)
     {
         clearRows(imin,imax);
         clearCols(imin,imax);
@@ -269,7 +267,7 @@ public:
     /// Set all values to 0, by resizing to the same size. @todo check that it really resets.
     void clear()
     {
-        int r=rowSize(), c=colSize();
+        Index r=rowSize(), c=colSize();
         resize(0,0);
         resize(r,c);
         incoming.clear();
@@ -387,7 +385,7 @@ public:
     /// add this EigenBaseSparseMatrix to a BaseMatrix at the offset and multiplied by factor
     void addToBaseMatrix( BaseMatrix *matrix, SReal factor, unsigned int &offset )
     {
-        for( int j=0 ; j<compressedMatrix.outerSize() ; ++j )
+        for( Index j=0 ; j<compressedMatrix.outerSize() ; ++j )
             for( typename CompressedMatrix::InnerIterator it(compressedMatrix,j) ; it ; ++it )
             {
                 matrix->add( offset+it.row(), offset+it.col(), factor*it.value() );

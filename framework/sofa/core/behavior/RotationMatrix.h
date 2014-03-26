@@ -55,16 +55,16 @@ public:
     }
 
     /// Read the value of the element at row i, column j (using 0-based indices)
-    virtual SReal element(int i, int j) const
+    virtual SReal element(Index i, Index j) const
     {
-        int bd = j-(i/3)*3;
+        Index bd = j-(i/3)*3;
         if ((bd<0) || (bd>2)) return 0.0 ;
 
         return data[i*3+bd];
     }
 
     /// Resize the matrix and reset all values to 0
-    virtual void resize(int nbRow, int nbCol)
+    virtual void resize(Index nbRow, Index nbCol)
     {
         if (nbRow!=nbCol) return;
         data.resize(nbRow*3);
@@ -87,17 +87,17 @@ public:
     }
 
     /// Write the value of the element at row i, column j (using 0-based indices)
-    virtual void set(int i, int j, double v)
+    virtual void set(Index i, Index j, double v)
     {
-        int bd = (i/3)*3;
+        Index bd = (i/3)*3;
         if ((j<bd) || (j>bd+2)) return;
         data[i*3+j-bd] = (Real)v;
     }
 
     /// Add v to the existing value of the element at row i, column j (using 0-based indices)
-    virtual void add(int i, int j, double v)
+    virtual void add(Index i, Index j, double v)
     {
-        int bd = (i/3)*3;
+        Index bd = (i/3)*3;
         if ((j<bd) || (j>bd+2)) return;
 
         data[i*3+j-bd] += (Real)v;
@@ -112,7 +112,7 @@ public:
     {
         //Solve lv = R * lvR
         std::size_t k = 0;
-        unsigned int l = 0;
+        Index l = 0;
         while (k < data.size())
         {
             result->set(l+0,data[k + 0] * v->element(l+0) + data[k + 1] * v->element(l+1) + data[k + 2] * v->element(l+2));
@@ -126,7 +126,7 @@ public:
     virtual void opMulTV(defaulttype::BaseVector* result, const defaulttype::BaseVector* v) const
     {
         std::size_t k = 0;
-        unsigned int l = 0;
+        Index l = 0;
         while (k < data.size())
         {
             result->set(l+0,data[k + 0] * v->element(l+0) + data[k + 3] * v->element(l+1) + data[k + 6] * v->element(l+2));
@@ -217,10 +217,10 @@ public:
         if (const SparseMatrix<float> * J = dynamic_cast<const SparseMatrix<float> * >(Jmat)) {
             for (typename sofa::component::linearsolver::SparseMatrix<float>::LineConstIterator jit1 = J->begin(), jend = J->end() ; jit1 != jend; jit1++)
             {
-                int l = jit1->first;
+                Index l = jit1->first;
                 for (typename sofa::component::linearsolver::SparseMatrix<float>::LElementConstIterator i1 = jit1->second.begin(), jitend = jit1->second.end(); i1 != jitend;)
                 {
-                    int c = i1->first;
+                    Index c = i1->first;
                     Real v0 = (Real)i1->second; i1++; if (i1==jitend) break;
                     Real v1 = (Real)i1->second; i1++; if (i1==jitend) break;
                     Real v2 = (Real)i1->second; i1++;
@@ -232,10 +232,10 @@ public:
         } else if (const SparseMatrix<double> * J = dynamic_cast<const SparseMatrix<double> * >(Jmat)) {
             for (typename sofa::component::linearsolver::SparseMatrix<double>::LineConstIterator jit1 = J->begin(), jend = J->end() ; jit1 != jend; jit1++)
             {
-                int l = jit1->first;
+                Index l = jit1->first;
                 for (typename sofa::component::linearsolver::SparseMatrix<double>::LElementConstIterator i1 = jit1->second.begin(), jitend = jit1->second.end(); i1 != jitend;)
                 {
-                    int c = i1->first;
+                    Index c = i1->first;
                     Real v0 = (Real)i1->second; i1++; if (i1==jitend) break;
                     Real v1 = (Real)i1->second; i1++; if (i1==jitend) break;
                     Real v2 = (Real)i1->second; i1++;
@@ -255,7 +255,7 @@ public:
         out << "[";
         for (unsigned y=0; y<v.data.size(); y+=9)
         {
-            for (int x=0; x<3; ++x)
+            for (Index x=0; x<3; ++x)
             {
                 out << "\n[" << std::fixed << v.data[y+x*3] << " " << std::fixed << v.data[y+x*3+1] << " " << std::fixed << v.data[y+x*3+2] << "]";
             }
