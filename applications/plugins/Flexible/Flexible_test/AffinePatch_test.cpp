@@ -93,7 +93,7 @@ namespace sofa {
         void loadScene(std::string sceneName)
         {
             // Load the scene from the xml file
-            std::string fileName = sofa::helper::system::DataRepository.getFile(sceneName);
+            std::string fileName = std::string(FLEXIBLE_TEST_SCENES_DIR) + "/" + sceneName;
             root = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()));
         }
 
@@ -213,7 +213,7 @@ namespace sofa {
     TYPED_TEST( AffinePatch_test , PolarCorotationalAffinePatchTest)
     {
         // With polar method
-        this->loadScene( "tests/Flexible/PolarCorotationalAffinePatchTest.scn");
+        this->loadScene( "PolarCorotationalAffinePatchTest.scn");
         ASSERT_TRUE( this->compareSimulatedToTheoreticalPositions(1e-14,1e-13)); 
     }
 
@@ -221,7 +221,7 @@ namespace sofa {
     TYPED_TEST( AffinePatch_test , SmallCorotationalAffinePatchTest)
     {
         // With small method
-        this->loadScene( "tests/Flexible/SmallCorotationalAffinePatchTest.scn");
+        this->loadScene( "SmallCorotationalAffinePatchTest.scn");
         ASSERT_TRUE( this->compareSimulatedToTheoreticalPositions(1e-15,1e-14)); 
     }
 
@@ -229,14 +229,14 @@ namespace sofa {
     TYPED_TEST( AffinePatch_test , SvdCorotationalAffinePatchTest)
     {
         // With svd method
-        this->loadScene( "tests/Flexible/SvdCorotationalAffinePatchTest.scn");
+        this->loadScene( "SvdCorotationalAffinePatchTest.scn");
         ASSERT_TRUE( this->compareSimulatedToTheoreticalPositions(1e-14,1e-13));
     }
 
     // test case: GreenStrainMapping 
     TYPED_TEST( AffinePatch_test , GreenAffinePatchTest)
     {
-        this->loadScene( "tests/Flexible/GreenAffinePatchTest.scn");
+        this->loadScene( "GreenAffinePatchTest.scn");
         ASSERT_TRUE( this->compareSimulatedToTheoreticalPositions(1e-14,1e-13)); 
     }
 
