@@ -88,6 +88,8 @@ public:
 
     void computeResidual(const core::ExecParams* params, defaulttype::BaseVector* /*f*/);
 
+    void updateSystemMatrix();
+
 private :
 
     core::behavior::LinearSolver* realSolver;

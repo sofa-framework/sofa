@@ -146,6 +146,10 @@ void WarpPreconditioner<TMatrix,TVector,ThreadManager >::setSystemMBKMatrix(cons
 
         rotationWork[indexwork]->resize(updateSystemSize,updateSystemSize);
         rotationFinders[f_useRotationFinder.getValue()]->getRotations(rotationWork[indexwork]);
+
+        this->currentGroup->systemMatrix->resize(updateSystemSize,updateSystemSize);
+        for (int i=0;i<updateSystemSize;i++) this->currentGroup->systemMatrix->setIdentity(); // identity rotationa after update
+
     } else if (realSolver->hasUpdatedMatrix()) {
         updateSystemSize = getSystemDimention(mparams);
         this->resizeSystem(updateSystemSize);
@@ -156,20 +160,29 @@ void WarpPreconditioner<TMatrix,TVector,ThreadManager >::setSystemMBKMatrix(cons
         rotationFinders[f_useRotationFinder.getValue()]->getRotations(rotationWork[indexwork]);
 
         if (realSolver->isAsyncSolver()) indexwork = (indexwork==0) ? 1 : 0;
+
+        this->currentGroup->systemMatrix->resize(updateSystemSize,updateSystemSize);
+        for (int i=0;i<updateSystemSize;i++) this->currentGroup->systemMatrix->setIdentity(); // identity rotationa after update
+    } else {
+        currentSystemSize = getSystemDimention(sofa::core::MechanicalParams::defaultInstance());
+
+
+        this->currentGroup->systemMatrix->clear();
+        this->currentGroup->systemMatrix->resize(currentSystemSize,currentSystemSize);
+        rotationFinders[f_useRotationFinder.getValue()]->getRotations(this->currentGroup->systemMatrix);
+
+        this->currentGroup->systemMatrix->opMulTM(this->currentGroup->systemMatrix,rotationWork[indexwork]);
     }
 }
 
 template<class TMatrix, class TVector,class ThreadManager>
-void WarpPreconditioner<TMatrix,TVector,ThreadManager >::invert(Matrix& Rcur) {
+void WarpPreconditioner<TMatrix,TVector,ThreadManager >::invert(Matrix& /*Rcur*/) {}
+
+template<class TMatrix, class TVector,class ThreadManager>
+void WarpPreconditioner<TMatrix,TVector,ThreadManager >::updateSystemMatrix() {
     realSolver->updateSystemMatrix();
-
-    currentSystemSize = getSystemDimention(sofa::core::MechanicalParams::defaultInstance());
-
-    Rcur.clear();
-    Rcur.resize(currentSystemSize,currentSystemSize);
-    rotationFinders[f_useRotationFinder.getValue()]->getRotations(&Rcur);
-    Rcur.opMulTM(&Rcur,rotationWork[indexwork]);
 }
+
 
 /// Solve the system as constructed using the previous methods
 template<class TMatrix, class TVector,class ThreadManager>

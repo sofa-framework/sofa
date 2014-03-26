@@ -76,6 +76,16 @@ public:
         data.clear();
     }
 
+    virtual void setIdentity()
+    {
+        memset(&data[0],0,data.size());
+        for (unsigned j=0;j<data.size();j+=9) {
+            for (int i=0;i<3;i++) {
+                data[j+i*3+i] = 1.0;
+            }
+        }
+    }
+
     /// Write the value of the element at row i, column j (using 0-based indices)
     virtual void set(int i, int j, double v)
     {
