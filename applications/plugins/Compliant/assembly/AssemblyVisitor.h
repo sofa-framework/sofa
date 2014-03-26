@@ -104,11 +104,12 @@ public:
         mm->vOp(this->mparams,f.getId(mm),fk.getId(mm),fc.getId(mm));
     }
 
+    // not necessary, projection matrix is applied later in flat vector representation
 //    virtual void bwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c)
 //    {
-//        c->projectResponse(mparams /* PARAMS FIRST */, fk);
-//        c->projectResponse(mparams /* PARAMS FIRST */, fc);
-//        c->projectResponse(mparams /* PARAMS FIRST */, f);
+//        c->projectResponse( this->mparams, fk );
+//        c->projectResponse( this->mparams, fc );
+//        c->projectResponse( this->mparams, f );
 //    }
 
 

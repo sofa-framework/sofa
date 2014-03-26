@@ -225,7 +225,8 @@ using namespace core::behavior;
         }
 
 
-        // TODO in compute_forces instead ?
+        // Applying the projection here (in flat vector representation) is great.
+        // In compute_forces (in multivec representation) it would require a visitor (more expensive).
         res.head( sys.m ) = sys.P * res.head( sys.m );
 
         // compliant dofs
@@ -489,9 +490,10 @@ using namespace core::behavior;
             // actual dynamics
             {
                 scoped::timer step("dynamics");
-                x = vec::Zero( sys.size() );
 
                 if( warm_start.getValue() ) x = current;
+                else x = vec::Zero( sys.size() );
+
                 rhs_dynamics(rhs, sys, current.head(sys.m), b );
                 vop.v_free( b.id(), false, true );
 
