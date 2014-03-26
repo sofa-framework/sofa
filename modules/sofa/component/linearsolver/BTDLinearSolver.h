@@ -49,7 +49,6 @@ public:
 
     enum { BSIZE = N };
     typedef T Real;
-    typedef int Index;
 
     class TransposedBloc
     {
@@ -69,15 +68,15 @@ public:
     class Bloc : public defaulttype::Mat<BSIZE,BSIZE,Real>
     {
     public:
-        int Nrows() const { return BSIZE; }
-        int Ncols() const { return BSIZE; }
-        void resize(int, int)
+        Index Nrows() const { return BSIZE; }
+        Index Ncols() const { return BSIZE; }
+        void resize(Index, Index)
         {
             clear();
         }
-        const T& element(int i, int j) const { return (*this)[i][j]; }
-        void set(int i, int j, const T& v) { (*this)[i][j] = v; }
-        void add(int i, int j, const T& v) { (*this)[i][j] += v; }
+        const T& element(Index i, Index j) const { return (*this)[i][j]; }
+        void set(Index i, Index j, const T& v) { (*this)[i][j] = v; }
+        void add(Index i, Index j, const T& v) { (*this)[i][j] += v; }
         void operator=(const defaulttype::Mat<BSIZE,BSIZE,Real>& v)
         {
             defaulttype::Mat<BSIZE,BSIZE,Real>::operator=(v);
@@ -120,7 +119,7 @@ public:
     typedef Bloc SubMatrixType;
     typedef FullMatrix<T> InvMatrixType;
     // return the dimension of submatrices when requesting a given size
-    static int getSubMatrixDim(int) { return BSIZE; }
+    static Index getSubMatrixDim(Index) { return BSIZE; }
 
 protected:
     Bloc* data;
@@ -135,7 +134,7 @@ public:
     {
     }
 
-    BlocFullMatrix(int nbRow, int nbCol)
+    BlocFullMatrix(Index nbRow, Index nbCol)
         : data(new T[nbRow*nbCol]), nTRow(nbRow), nTCol(nbCol), nBRow(nbRow/BSIZE), nBCol(nbCol/BSIZE), allocsize((nbCol/BSIZE)*(nbRow/BSIZE))
     {
     }
@@ -149,16 +148,16 @@ public:
     Bloc* ptr() { return data; }
     const Bloc* ptr() const { return data; }
 
-    const Bloc& bloc(int bi, int bj) const
+    const Bloc& bloc(Index bi, Index bj) const
     {
         return data[bi*nBCol + bj];
     }
-    Bloc& bloc(int bi, int bj)
+    Bloc& bloc(Index bi, Index bj)
     {
         return data[bi*nBCol + bj];
     }
 
-    void resize(int nbRow, int nbCol)
+    void resize(Index nbRow, Index nbCol)
     {
         if (nbCol != nTCol || nbRow != nTRow)
         {
@@ -198,95 +197,95 @@ public:
         return nTCol;
     }
 
-    SReal element(int i, int j) const
+    SReal element(Index i, Index j) const
     {
-        int bi = i / BSIZE; i = i % BSIZE;
-        int bj = j / BSIZE; j = j % BSIZE;
+        Index bi = i / BSIZE; i = i % BSIZE;
+        Index bj = j / BSIZE; j = j % BSIZE;
         return bloc(bi,bj)[i][j];
     }
 
-    const Bloc& asub(int bi, int bj, int, int) const
+    const Bloc& asub(Index bi, Index bj, Index, Index) const
     {
         return bloc(bi,bj);
     }
 
-    const Bloc& sub(int i, int j, int, int) const
+    const Bloc& sub(Index i, Index j, Index, Index) const
     {
         return asub(i/BSIZE,j/BSIZE);
     }
 
-    Bloc& asub(int bi, int bj, int, int)
+    Bloc& asub(Index bi, Index bj, Index, Index)
     {
         return bloc(bi,bj);
     }
 
-    Bloc& sub(int i, int j, int, int)
+    Bloc& sub(Index i, Index j, Index, Index)
     {
         return asub(i/BSIZE,j/BSIZE);
     }
 
     template<class B>
-    void getSubMatrix(int i, int j, int nrow, int ncol, B& m)
+    void getSubMatrix(Index i, Index j, Index nrow, Index ncol, B& m)
     {
         m = sub(i,j, nrow, ncol);
     }
 
     template<class B>
-    void getAlignedSubMatrix(int bi, int bj, int nrow, int ncol, B& m)
+    void getAlignedSubMatrix(Index bi, Index bj, Index nrow, Index ncol, B& m)
     {
         m = asub(bi, bj, nrow, ncol);
     }
 
     template<class B>
-    void setSubMatrix(int i, int j, int nrow, int ncol, const B& m)
+    void setSubMatrix(Index i, Index j, Index nrow, Index ncol, const B& m)
     {
         sub(i,j, nrow, ncol) = m;
     }
 
     template<class B>
-    void setAlignedSubMatrix(int bi, int bj, int nrow, int ncol, const B& m)
+    void setAlignedSubMatrix(Index bi, Index bj, Index nrow, Index ncol, const B& m)
     {
         asub(bi, bj, nrow, ncol) = m;
     }
 
-    void set(int i, int j, double v)
+    void set(Index i, Index j, double v)
     {
-        int bi = i / BSIZE; i = i % BSIZE;
-        int bj = j / BSIZE; j = j % BSIZE;
+        Index bi = i / BSIZE; i = i % BSIZE;
+        Index bj = j / BSIZE; j = j % BSIZE;
         bloc(bi,bj)[i][j] = (Real)v;
     }
 
-    void add(int i, int j, double v)
+    void add(Index i, Index j, double v)
     {
-        int bi = i / BSIZE; i = i % BSIZE;
-        int bj = j / BSIZE; j = j % BSIZE;
+        Index bi = i / BSIZE; i = i % BSIZE;
+        Index bj = j / BSIZE; j = j % BSIZE;
         bloc(bi,bj)[i][j] += (Real)v;
     }
 
-    void clear(int i, int j)
+    void clear(Index i, Index j)
     {
-        int bi = i / BSIZE; i = i % BSIZE;
-        int bj = j / BSIZE; j = j % BSIZE;
+        Index bi = i / BSIZE; i = i % BSIZE;
+        Index bj = j / BSIZE; j = j % BSIZE;
         bloc(bi,bj)[i][j] = (Real)0;
     }
 
-    void clearRow(int i)
+    void clearRow(Index i)
     {
-        int bi = i / BSIZE; i = i % BSIZE;
-        for (int bj = 0; bj < nBCol; ++bj)
-            for (int j=0; j<BSIZE; ++j)
+        Index bi = i / BSIZE; i = i % BSIZE;
+        for (Index bj = 0; bj < nBCol; ++bj)
+            for (Index j=0; j<BSIZE; ++j)
                 bloc(bi,bj)[i][j] = (Real)0;
     }
 
-    void clearCol(int j)
+    void clearCol(Index j)
     {
-        int bj = j / BSIZE; j = j % BSIZE;
-        for (int bi = 0; bi < nBRow; ++bi)
-            for (int i=0; i<BSIZE; ++i)
+        Index bj = j / BSIZE; j = j % BSIZE;
+        for (Index bi = 0; bi < nBRow; ++bi)
+            for (Index i=0; i<BSIZE; ++i)
                 bloc(bi,bj)[i][j] = (Real)0;
     }
 
-    void clearRowCol(int i)
+    void clearRowCol(Index i)
     {
         clearRow(i);
         clearCol(i);
@@ -302,13 +301,13 @@ public:
     FullVector<Real2> operator*(const FullVector<Real2>& v) const
     {
         FullVector<Real2> res(rowSize());
-        for (int bi=0; bi<nBRow; ++bi)
+        for (Index bi=0; bi<nBRow; ++bi)
         {
-            int bj = 0;
-            for (int i=0; i<BSIZE; ++i)
+            Index bj = 0;
+            for (Index i=0; i<BSIZE; ++i)
             {
                 Real r = 0;
-                for (int j=0; j<BSIZE; ++j)
+                for (Index j=0; j<BSIZE; ++j)
                 {
                     r += bloc(bi,bj)[i][j] * v[(bi + bj - 1)*BSIZE + j];
                 }
@@ -316,10 +315,10 @@ public:
             }
             for (++bj; bj<nBCol; ++bj)
             {
-                for (int i=0; i<BSIZE; ++i)
+                for (Index i=0; i<BSIZE; ++i)
                 {
                     Real r = 0;
-                    for (int j=0; j<BSIZE; ++j)
+                    for (Index j=0; j<BSIZE; ++j)
                     {
                         r += bloc(bi,bj)[i][j] * v[(bi + bj - 1)*BSIZE + j];
                     }
@@ -350,8 +349,8 @@ public:
     class Bloc : public defaulttype::Vec<N,T>
     {
     public:
-        int Nrows() const { return N; }
-        void resize(int) { this->clear(); }
+        Index Nrows() const { return N; }
+        void resize(Index) { this->clear(); }
         void operator=(const defaulttype::Vec<N,T>& v)
         {
             defaulttype::Vec<N,T>::operator=(v);
@@ -387,22 +386,22 @@ public:
     {
     }
 
-    const Bloc& sub(int i, int) const
+    const Bloc& sub(Index i, Index) const
     {
         return (const Bloc&)*(this->ptr()+i);
     }
 
-    Bloc& sub(int i, int)
+    Bloc& sub(Index i, Index)
     {
         return (Bloc&)*(this->ptr()+i);
     }
 
-    const Bloc& asub(int bi, int) const
+    const Bloc& asub(Index bi, Index) const
     {
         return (const Bloc&)*(this->ptr()+bi*N);
     }
 
-    Bloc& asub(int bi, int)
+    Bloc& asub(Index bi, Index)
     {
         return (Bloc&)*(this->ptr()+bi*N);
     }
@@ -415,8 +414,6 @@ class BTDMatrix : public defaulttype::BaseMatrix
 public:
     enum { BSIZE = N };
     typedef T Real;
-    typedef int Index;
-
 
     class TransposedBloc
     {
@@ -430,8 +427,8 @@ public:
         defaulttype::Mat<BSIZE,BSIZE,Real> operator-() const
         {
             defaulttype::Mat<BSIZE,BSIZE,Real> r;
-            for (int i=0; i<BSIZE; i++)
-                for (int j=0; j<BSIZE; j++)
+            for (Index i=0; i<BSIZE; i++)
+                for (Index j=0; j<BSIZE; j++)
                     r[i][j]=-m[j][i];
             return r;
         }
@@ -440,15 +437,15 @@ public:
     class Bloc : public defaulttype::Mat<BSIZE,BSIZE,Real>
     {
     public:
-        int Nrows() const { return BSIZE; }
-        int Ncols() const { return BSIZE; }
-        void resize(int, int)
+        Index Nrows() const { return BSIZE; }
+        Index Ncols() const { return BSIZE; }
+        void resize(Index, Index)
         {
             this->clear();
         }
-        const T& element(int i, int j) const { return (*this)[i][j]; }
-        void set(int i, int j, const T& v) { (*this)[i][j] = v; }
-        void add(int i, int j, const T& v) { (*this)[i][j] += v; }
+        const T& element(Index i, Index j) const { return (*this)[i][j]; }
+        void set(Index i, Index j, const T& v) { (*this)[i][j] = v; }
+        void add(Index i, Index j, const T& v) { (*this)[i][j] += v; }
         void operator=(const defaulttype::Mat<BSIZE,BSIZE,Real>& v)
         {
             defaulttype::Mat<BSIZE,BSIZE,Real>::operator=(v);
@@ -456,8 +453,8 @@ public:
         defaulttype::Mat<BSIZE,BSIZE,Real> operator-() const
         {
             defaulttype::Mat<BSIZE,BSIZE,Real> r;
-            for (int i=0; i<BSIZE; i++)
-                for (int j=0; j<BSIZE; j++)
+            for (Index i=0; i<BSIZE; i++)
+                for (Index j=0; j<BSIZE; j++)
                     r[i][j]=-(*this)[i][j];
             return r;
         }
@@ -497,7 +494,7 @@ public:
     typedef sofa::defaulttype::Mat<N,N,Real> BlocType;
     typedef BlocFullMatrix<N,T> InvMatrixType;
     // return the dimension of submatrices when requesting a given size
-    static int getSubMatrixDim(int) { return BSIZE; }
+    static Index getSubMatrixDim(Index) { return BSIZE; }
 
 protected:
     Bloc* data;
@@ -512,7 +509,7 @@ public:
     {
     }
 
-    BTDMatrix(int nbRow, int nbCol)
+    BTDMatrix(Index nbRow, Index nbCol)
         : data(new T[3*(nbRow/BSIZE)]), nTRow(nbRow), nTCol(nbCol), nBRow(nbRow/BSIZE), nBCol(nbCol/BSIZE), allocsize(3*(nbRow/BSIZE))
     {
     }
@@ -530,16 +527,16 @@ public:
     //{
     //    return data+i*pitch;
     //}
-    const Bloc& bloc(int bi, int bj) const
+    const Bloc& bloc(Index bi, Index bj) const
     {
         return data[3*bi + (bj - bi + 1)];
     }
-    Bloc& bloc(int bi, int bj)
+    Bloc& bloc(Index bi, Index bj)
     {
         return data[3*bi + (bj - bi + 1)];
     }
 
-    void resize(int nbRow, int nbCol)
+    void resize(Index nbRow, Index nbCol)
     {
         if (nbCol != nTCol || nbRow != nTRow)
         {
@@ -579,114 +576,114 @@ public:
         return nTCol;
     }
 
-    SReal element(int i, int j) const
+    SReal element(Index i, Index j) const
     {
-        int bi = i / BSIZE; i = i % BSIZE;
-        int bj = j / BSIZE; j = j % BSIZE;
-        int bindex = bj - bi + 1;
+        Index bi = i / BSIZE; i = i % BSIZE;
+        Index bj = j / BSIZE; j = j % BSIZE;
+        Index bindex = bj - bi + 1;
         if ((unsigned)bindex >= 3) return (SReal)0;
         return data[bi*3+bindex][i][j];
     }
 
-    const Bloc& asub(int bi, int bj, int, int) const
+    const Bloc& asub(Index bi, Index bj, Index, Index) const
     {
         static Bloc b;
-        int bindex = bj - bi + 1;
+        Index bindex = bj - bi + 1;
         if ((unsigned)bindex >= 3) return b;
         return data[bi*3+bindex];
     }
 
-    const Bloc& sub(int i, int j, int, int) const
+    const Bloc& sub(Index i, Index j, Index, Index) const
     {
         return asub(i/BSIZE,j/BSIZE);
     }
 
-    Bloc& asub(int bi, int bj, int, int)
+    Bloc& asub(Index bi, Index bj, Index, Index)
     {
         static Bloc b;
-        int bindex = bj - bi + 1;
+        Index bindex = bj - bi + 1;
         if ((unsigned)bindex >= 3) return b;
         return data[bi*3+bindex];
     }
 
-    Bloc& sub(int i, int j, int, int)
+    Bloc& sub(Index i, Index j, Index, Index)
     {
         return asub(i/BSIZE,j/BSIZE);
     }
 
     template<class B>
-    void getSubMatrix(int i, int j, int nrow, int ncol, B& m)
+    void getSubMatrix(Index i, Index j, Index nrow, Index ncol, B& m)
     {
         m = sub(i,j, nrow, ncol);
     }
 
     template<class B>
-    void getAlignedSubMatrix(int bi, int bj, int nrow, int ncol, B& m)
+    void getAlignedSubMatrix(Index bi, Index bj, Index nrow, Index ncol, B& m)
     {
         m = asub(bi, bj, nrow, ncol);
     }
 
     template<class B>
-    void setSubMatrix(int i, int j, int nrow, int ncol, const B& m)
+    void setSubMatrix(Index i, Index j, Index nrow, Index ncol, const B& m)
     {
         sub(i,j, nrow, ncol) = m;
     }
 
     template<class B>
-    void setAlignedSubMatrix(int bi, int bj, int nrow, int ncol, const B& m)
+    void setAlignedSubMatrix(Index bi, Index bj, Index nrow, Index ncol, const B& m)
     {
         asub(bi, bj, nrow, ncol) = m;
     }
 
-    void set(int i, int j, double v)
+    void set(Index i, Index j, double v)
     {
-        int bi = i / BSIZE; i = i % BSIZE;
-        int bj = j / BSIZE; j = j % BSIZE;
-        int bindex = bj - bi + 1;
+        Index bi = i / BSIZE; i = i % BSIZE;
+        Index bj = j / BSIZE; j = j % BSIZE;
+        Index bindex = bj - bi + 1;
         if ((unsigned)bindex >= 3) return;
         data[bi*3+bindex][i][j] = (Real)v;
     }
 
-    void add(int i, int j, double v)
+    void add(Index i, Index j, double v)
     {
-        int bi = i / BSIZE; i = i % BSIZE;
-        int bj = j / BSIZE; j = j % BSIZE;
-        int bindex = bj - bi + 1;
+        Index bi = i / BSIZE; i = i % BSIZE;
+        Index bj = j / BSIZE; j = j % BSIZE;
+        Index bindex = bj - bi + 1;
         if ((unsigned)bindex >= 3) return;
         data[bi*3+bindex][i][j] += (Real)v;
     }
 
-    void clear(int i, int j)
+    void clear(Index i, Index j)
     {
-        int bi = i / BSIZE; i = i % BSIZE;
-        int bj = j / BSIZE; j = j % BSIZE;
-        int bindex = bj - bi + 1;
+        Index bi = i / BSIZE; i = i % BSIZE;
+        Index bj = j / BSIZE; j = j % BSIZE;
+        Index bindex = bj - bi + 1;
         if ((unsigned)bindex >= 3) return;
         data[bi*3+bindex][i][j] = (Real)0;
     }
 
-    void clearRow(int i)
+    void clearRow(Index i)
     {
-        int bi = i / BSIZE; i = i % BSIZE;
-        for (int bj = 0; bj < 3; ++bj)
-            for (int j=0; j<BSIZE; ++j)
+        Index bi = i / BSIZE; i = i % BSIZE;
+        for (Index bj = 0; bj < 3; ++bj)
+            for (Index j=0; j<BSIZE; ++j)
                 data[bi*3+bj][i][j] = (Real)0;
     }
 
-    void clearCol(int j)
+    void clearCol(Index j)
     {
-        int bj = j / BSIZE; j = j % BSIZE;
+        Index bj = j / BSIZE; j = j % BSIZE;
         if (bj > 0)
-            for (int i=0; i<BSIZE; ++i)
+            for (Index i=0; i<BSIZE; ++i)
                 data[(bj-1)*3+2][i][j] = (Real)0;
-        for (int i=0; i<BSIZE; ++i)
+        for (Index i=0; i<BSIZE; ++i)
             data[bj*3+1][i][j] = (Real)0;
         if (bj < nBRow-1)
-            for (int i=0; i<BSIZE; ++i)
+            for (Index i=0; i<BSIZE; ++i)
                 data[(bj+1)*3+0][i][j] = (Real)0;
     }
 
-    void clearRowCol(int i)
+    void clearRowCol(Index i)
     {
         clearRow(i);
         clearCol(i);
@@ -702,16 +699,16 @@ public:
     FullVector<Real2> operator*(const FullVector<Real2>& v) const
     {
         FullVector<Real2> res(rowSize());
-        for (int bi=0; bi<nBRow; ++bi)
+        for (Index bi=0; bi<nBRow; ++bi)
         {
-            int b0 = (bi > 0) ? 0 : 1;
-            int b1 = ((bi < nBRow - 1) ? 3 : 2);
-            for (int i=0; i<BSIZE; ++i)
+            Index b0 = (bi > 0) ? 0 : 1;
+            Index b1 = ((bi < nBRow - 1) ? 3 : 2);
+            for (Index i=0; i<BSIZE; ++i)
             {
                 Real r = 0;
-                for (int bj = b0; bj < b1; ++bj)
+                for (Index bj = b0; bj < b1; ++bj)
                 {
-                    for (int j=0; j<BSIZE; ++j)
+                    for (Index j=0; j<BSIZE; ++j)
                     {
                         r += data[bi*3+bj][i][j] * v[(bi + bj - 1)*BSIZE + j];
                     }
@@ -750,8 +747,9 @@ public:
     typedef typename Matrix::SubMatrixType SubMatrix;
     typedef typename Vector::Real Real;
     typedef typename Matrix::BlocType BlocType;
-    typedef std::list<int> ListIndex;
-    typedef std::pair<int,int> IndexPair;
+    typedef typename Matrix::Index Index;
+    typedef std::list<Index> ListIndex;
+    typedef std::pair<Index,Index> IndexPair;
     typedef std::map<IndexPair, SubMatrix> MysparseM;
     typedef typename std::map<IndexPair, SubMatrix>::iterator MysparseMit;
 
@@ -772,11 +770,11 @@ public:
     //Vector _df_buf;		 //
     SubVector _acc_rh_bloc;		// accumulation of rh through the browsing of the structure
     SubVector _acc_lh_bloc;		// accumulation of lh through the browsing of the strucutre
-    int	current_bloc, first_block;
+    Index	current_bloc, first_block;
     std::vector<SubVector> Vec_dRH;			// buf the dRH on block that are not current_bloc...
     ////////////////////////////
 
-    helper::vector<int> nBlockComputedMinv;
+    helper::vector<Index> nBlockComputedMinv;
     Vector Y;
 
     Data<int> f_blockSize;
@@ -789,24 +787,24 @@ protected:
         , test_perf(initData(&test_perf, false,"test_perf", "verification of performance"))
         , f_blockSize( initData(&f_blockSize,6,"blockSize","dimension of the blocks in the matrix") )
     {
-        int bsize = Matrix::getSubMatrixDim(0);
+        Index bsize = Matrix::getSubMatrixDim(0);
         if (bsize > 0)
         {
             // the template uses fixed bloc size
-            f_blockSize.setValue(bsize);
+            f_blockSize.setValue((int)bsize);
             f_blockSize.setReadOnly(true);
         }
     }
 public:
-    void my_identity(SubMatrix& Id, const int size_id);
+    void my_identity(SubMatrix& Id, const Index size_id);
 
     void invert(SubMatrix& Inv, const BlocType& m);
 
     void invert(Matrix& M);
 
-    void computeMinvBlock(int i, int j);
+    void computeMinvBlock(Index i, Index j);
 
-    double getMinvElement(int i, int j);
+    double getMinvElement(Index i, Index j);
 
     /// Solve Mx=b
     void solve (Matrix& /*M*/, Vector& x, Vector& b);
@@ -834,7 +832,7 @@ public:
 
 
 
-    void init_partial_inverse(const int &nb, const int &bsize);
+    void init_partial_inverse(const Index &nb, const Index &bsize);
 
 
 
@@ -846,13 +844,13 @@ public:
 private:
 
 
-    int _indMaxNonNullForce; // point with non null force which index is the greatest and for which globalAccumulate was not proceed
+    Index _indMaxNonNullForce; // point with non null force which index is the greatest and for which globalAccumulate was not proceed
 
-    int _indMaxFwdLHComputed;  // indice of node from which bwdLH is accurate
+    Index _indMaxFwdLHComputed;  // indice of node from which bwdLH is accurate
 
     /// private functions for partial solve
     /// step1=> accumulate RH locally for the InBloc (only if a new force is detected on RH)
-    void bwdAccumulateRHinBloc(int indMaxBloc);   // indMaxBloc should be equal to _indMaxNonNullForce
+    void bwdAccumulateRHinBloc(Index indMaxBloc);   // indMaxBloc should be equal to _indMaxNonNullForce
 
 
     /// step2=> accumulate LH globally to step down the value of current_bloc to 0
@@ -860,12 +858,12 @@ private:
 
 
     /// step3=> accumulate RH globally to step up the value of current_bloc to the smallest value needed in OutBloc
-    void fwdAccumulateRHGlobal(int indMinBloc);
+    void fwdAccumulateRHGlobal(Index indMinBloc);
 
 
     /// step4=> compute solution for the indices in the bloc
     /// (and accumulate the potential local dRH (set in Vec_dRH) [set in step1] that have not been yet taken into account by the global bwd and fwd
-    void fwdComputeLHinBloc(int indMaxBloc);
+    void fwdComputeLHinBloc(Index indMaxBloc);
 
 
 

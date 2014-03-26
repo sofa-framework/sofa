@@ -79,10 +79,10 @@ namespace linearsolver
 ///                    [  (Minv31)(-l0t)   (Minv32)(-l1t)   (Minv33)(-l2t)   inva3  ]
 ///
 template<class Matrix, class Vector>
-void BTDLinearSolver<Matrix,Vector>::my_identity(SubMatrix& Id, const int size_id)
+void BTDLinearSolver<Matrix,Vector>::my_identity(SubMatrix& Id, const Index size_id)
 {
     Id.resize(size_id,size_id);
-    for (int i=0; i<size_id; i++)
+    for (Index i=0; i<size_id; i++)
         Id.set(i,i,1.0);
 }
 
@@ -92,12 +92,12 @@ void BTDLinearSolver<Matrix,Vector>::invert(SubMatrix& Inv, const BlocType& m)
     SubMatrix M;
     M = m;
     // Check for diagonal matrices
-    unsigned int i0 = 0;
-    const unsigned int n = M.Nrows();
+    Index i0 = 0;
+    const Index n = M.Nrows();
     Inv.resize(n,n);
     while (i0 < n)
     {
-        unsigned int j0 = i0+1;
+        Index j0 = i0+1;
         double eps = M.element(i0,i0)*1.0e-10;
         while (j0 < n)
             if (fabs(M.element(i0,j0)) > eps) break;
@@ -129,8 +129,8 @@ void BTDLinearSolver<Matrix,Vector>::invert(Matrix& M)
         serr<<"BTDLinearSolver, invert Matrix = "<< M <<sendl;
     }
 
-    const int bsize = Matrix::getSubMatrixDim(f_blockSize.getValue());
-    const int nb = M.rowSize() / bsize;
+    const Index bsize = Matrix::getSubMatrixDim(f_blockSize.getValue());
+    const Index nb = M.rowSize() / bsize;
     if (nb == 0) return;
     //alpha.resize(nb);
     alpha_inv.resize(nb);
@@ -145,7 +145,7 @@ void BTDLinearSolver<Matrix,Vector>::invert(Matrix& M)
     }
 
     SubMatrix A, C;
-    //int ndiag = 0;
+    //Index ndiag = 0;
     M.getAlignedSubMatrix(0,0,bsize,bsize,A);
     //if (verbose) sout << "A[0] = " << A << sendl;
     M.getAlignedSubMatrix(0,1,bsize,bsize,C);
@@ -158,7 +158,7 @@ void BTDLinearSolver<Matrix,Vector>::invert(Matrix& M)
     //if (verbose) sout << "C[0] = alpha[0]*lambda[0] = " << alpha[0]*lambda[0] << sendl;
 
 
-    for (int i=1; i<nb; ++i)
+    for (Index i=1; i<nb; ++i)
     {
         M.getAlignedSubMatrix((i  ),(i  ),bsize,bsize,A);
         //if (verbose) sout << "A["<<i<<"] = " << A << sendl;
@@ -192,7 +192,7 @@ void BTDLinearSolver<Matrix,Vector>::invert(Matrix& M)
         }
     }
     nBlockComputedMinv.resize(nb);
-    for (int i=0; i<nb; ++i)
+    for (Index i=0; i<nb; ++i)
         nBlockComputedMinv[i] = 0;
 
     // WARNING : cost of resize here : ???
@@ -227,7 +227,7 @@ void BTDLinearSolver<Matrix,Vector>::invert(Matrix& M)
 ///
 
 template<class Matrix, class Vector>
-void BTDLinearSolver<Matrix,Vector>::computeMinvBlock(int i, int j)
+void BTDLinearSolver<Matrix,Vector>::computeMinvBlock(Index i, Index j)
 {
     //serr<<"computeMinvBlock("<<i<<","<<j<<")"<<sendl;
 
@@ -235,7 +235,7 @@ void BTDLinearSolver<Matrix,Vector>::computeMinvBlock(int i, int j)
     {
         // i < j correspond to the upper diagonal
         // for the computation, we use the lower diagonal matrix
-        int t = i; i = j; j = t;
+        Index t = i; i = j; j = t;
     }
     if (nBlockComputedMinv[i] > i-j) return; // the block was already computed
 
@@ -245,8 +245,8 @@ void BTDLinearSolver<Matrix,Vector>::computeMinvBlock(int i, int j)
 
     // the block is computed now :
     // 1. all the diagonal block between N and i need to be computed
-    const int bsize = Matrix::getSubMatrixDim(f_blockSize.getValue());
-    int i0 = i;
+    const Index bsize = Matrix::getSubMatrixDim(f_blockSize.getValue());
+    Index i0 = i;
     while (nBlockComputedMinv[i0]==0)
         ++i0;
     // i0 is the "closest" block of the diagonal that is computed
@@ -293,7 +293,7 @@ void BTDLinearSolver<Matrix,Vector>::computeMinvBlock(int i, int j)
     //2. all the block on the lines of block i between the diagonal and the block j are computed
     // i0=i
 
-    int j0 = i-nBlockComputedMinv[i];
+    Index j0 = i-nBlockComputedMinv[i];
 
 
     /////////////// ADD : Calcul pour faire du partial_solve //////////
@@ -341,9 +341,9 @@ void BTDLinearSolver<Matrix,Vector>::computeMinvBlock(int i, int j)
 }
 
 template<class Matrix, class Vector>
-double BTDLinearSolver<Matrix,Vector>::getMinvElement(int i, int j)
+double BTDLinearSolver<Matrix,Vector>::getMinvElement(Index i, Index j)
 {
-    const int bsize = Matrix::getSubMatrixDim(f_blockSize.getValue());
+    const Index bsize = Matrix::getSubMatrixDim(f_blockSize.getValue());
     if (i < j)
     {
         // lower diagonal
@@ -365,14 +365,14 @@ void BTDLinearSolver<Matrix,Vector>::solve (Matrix& /*M*/, Vector& x, Vector& b)
 
     //invert(M);
 
-    const int bsize = Matrix::getSubMatrixDim(f_blockSize.getValue());
-    const int nb = b.size() / bsize;
+    const Index bsize = Matrix::getSubMatrixDim(f_blockSize.getValue());
+    const Index nb = b.size() / bsize;
     if (nb == 0) return;
 
     //if (verbose) sout << "D["<<0<<"] = " << b.asub(0,bsize) << sendl;
     x.asub(0,bsize) = alpha_inv[0] * b.asub(0,bsize);
     //if (verbose) sout << "Y["<<0<<"] = " << x.asub(0,bsize) << sendl;
-    for (int i=1; i<nb; ++i)
+    for (Index i=1; i<nb; ++i)
     {
         //if (verbose) sout << "D["<<i<<"] = " << b.asub(i,bsize) << sendl;
         x.asub(i,bsize) = alpha_inv[i]*(b.asub(i,bsize) - B[i]*x.asub((i-1),bsize));
@@ -380,7 +380,7 @@ void BTDLinearSolver<Matrix,Vector>::solve (Matrix& /*M*/, Vector& x, Vector& b)
     }
     //x.asub((nb-1),bsize) = Y.asub((nb-1),bsize);
     //if (verbose) sout << "x["<<nb-1<<"] = " << x.asub((nb-1),bsize) << sendl;
-    for (int i=nb-2; i>=0; --i)
+    for (Index i=nb-2; i>=0; --i)
     {
         x.asub(i,bsize) /* = Y.asub(i,bsize)- */ -= lambda[i]*x.asub((i+1),bsize);
         //if (verbose) sout << "x["<<i<<"] = " << x.asub(i,bsize) << sendl;
@@ -440,7 +440,7 @@ bool BTDLinearSolver<Matrix,Vector>::addJMInvJt(defaulttype::BaseMatrix* result,
 
 
 template<class Matrix, class Vector>
-void BTDLinearSolver<Matrix,Vector>::init_partial_inverse(const int &/*nb*/, const int &/*bsize*/)
+void BTDLinearSolver<Matrix,Vector>::init_partial_inverse(const Index &/*nb*/, const Index &/*bsize*/)
 {
     // need to stay in init_partial_inverse (called before inverse)
     H.clear();
@@ -451,8 +451,8 @@ template<class Matrix, class Vector>
 void BTDLinearSolver<Matrix,Vector>::init_partial_solve()
 {
 
-    const int bsize = Matrix::getSubMatrixDim(f_blockSize.getValue());
-    const int nb = this->currentGroup->systemRHVector->size() / bsize;
+    const Index bsize = Matrix::getSubMatrixDim(f_blockSize.getValue());
+    const Index nb = this->currentGroup->systemRHVector->size() / bsize;
 
     //TODO => optimisation ??
     bwdContributionOnLH.clear();
@@ -473,7 +473,7 @@ void BTDLinearSolver<Matrix,Vector>::init_partial_solve()
 
     // DF represents the variation of the right hand side of the equation (Force in mechanics)
     Vec_dRH.resize(nb);
-    for (int i=0; i<nb; i++)
+    for (Index i=0; i<nb; i++)
     {
         Vec_dRH[i]=0;
         Vec_dRH[i].resize(bsize);
@@ -491,11 +491,11 @@ void BTDLinearSolver<Matrix,Vector>::init_partial_solve()
 
 
 template<class Matrix, class Vector>
-void BTDLinearSolver<Matrix,Vector>::bwdAccumulateRHinBloc(int indMaxBloc)
+void BTDLinearSolver<Matrix,Vector>::bwdAccumulateRHinBloc(Index indMaxBloc)
 {
-    const int bsize = Matrix::getSubMatrixDim(f_blockSize.getValue());
+    const Index bsize = Matrix::getSubMatrixDim(f_blockSize.getValue());
 
-    int b=indMaxBloc;
+    Index b=indMaxBloc;
 
     //debug
     if (indMaxBloc <  current_bloc)
@@ -551,7 +551,7 @@ void BTDLinearSolver<Matrix,Vector>::bwdAccumulateRHinBloc(int indMaxBloc)
 template<class Matrix, class Vector>
 void BTDLinearSolver<Matrix,Vector>::bwdAccumulateLHGlobal( )
 {
-    const int bsize = Matrix::getSubMatrixDim(f_blockSize.getValue());
+    const Index bsize = Matrix::getSubMatrixDim(f_blockSize.getValue());
     _acc_lh_bloc =  bwdContributionOnLH.asub(current_bloc, bsize);
 
     while( current_bloc > 0)
@@ -590,9 +590,9 @@ void BTDLinearSolver<Matrix,Vector>::bwdAccumulateLHGlobal( )
 /////// STEP 3
 
 template<class Matrix, class Vector>
-void BTDLinearSolver<Matrix,Vector>::fwdAccumulateRHGlobal(int indMinBloc)
+void BTDLinearSolver<Matrix,Vector>::fwdAccumulateRHGlobal(Index indMinBloc)
 {
-    const int bsize = Matrix::getSubMatrixDim(f_blockSize.getValue());
+    const Index bsize = Matrix::getSubMatrixDim(f_blockSize.getValue());
     _acc_rh_bloc =fwdContributionOnRH.asub(current_bloc, bsize);
 
     while( current_bloc< indMinBloc)
@@ -615,7 +615,7 @@ void BTDLinearSolver<Matrix,Vector>::fwdAccumulateRHGlobal(int indMinBloc)
     _indMaxFwdLHComputed = current_bloc;
 
 
-    int b = current_bloc;
+    Index b = current_bloc;
     // compute the bloc which indice is _indMaxFwdLHComputed
     this->currentGroup->systemLHVector->asub(b,bsize) = Minv.asub( b, b ,bsize,bsize) * ( fwdContributionOnRH.asub(b, bsize) + this->currentGroup->systemRHVector->asub(b,bsize) ) +
             bwdContributionOnLH.asub(b, bsize);
@@ -630,12 +630,12 @@ void BTDLinearSolver<Matrix,Vector>::fwdAccumulateRHGlobal(int indMinBloc)
 /////// STEP 4
 
 template<class Matrix, class Vector>
-void BTDLinearSolver<Matrix,Vector>::fwdComputeLHinBloc(int indMaxBloc)
+void BTDLinearSolver<Matrix,Vector>::fwdComputeLHinBloc(Index indMaxBloc)
 {
 
-    const int bsize = Matrix::getSubMatrixDim(f_blockSize.getValue());
+    const Index bsize = Matrix::getSubMatrixDim(f_blockSize.getValue());
 
-    int b;
+    Index b;
 
     while(_indMaxFwdLHComputed < indMaxBloc )
     {
@@ -669,16 +669,16 @@ template<class Matrix, class Vector>
 void BTDLinearSolver<Matrix,Vector>::partial_solve(ListIndex&  Iout, ListIndex&  Iin , bool NewIn)  ///*Matrix& M, Vector& result, Vector& rh, */
 {
 
-    int MinIdBloc_OUT = Iout.front();
-    int MaxIdBloc_OUT = Iout.back();
+    Index MinIdBloc_OUT = Iout.front();
+    Index MaxIdBloc_OUT = Iout.back();
 
 
     //std::cout<<"partial_solve: need update on position for bloc between dofs "<< MinIdBloc_OUT<< "  and "<<MaxIdBloc_OUT<<std::endl;
     if (verification.getValue())
     {
-//        const int bsize = Matrix::getSubMatrixDim(f_blockSize.getValue());
+//        const Index bsize = Matrix::getSubMatrixDim(f_blockSize.getValue());
 //        std::cout<<" input Force= ";
-//        for (int i=MinIdBloc_OUT; i<=MaxIdBloc_OUT; i++)
+//        for (Index i=MinIdBloc_OUT; i<=MaxIdBloc_OUT; i++)
 //        {
 //            std::cout<<"     ["<<i<<"] "<<this->currentGroup->systemRHVector->asub(i,bsize);
 //        }
@@ -689,8 +689,8 @@ void BTDLinearSolver<Matrix,Vector>::partial_solve(ListIndex&  Iout, ListIndex& 
     if( NewIn)
     {
 
-        int MinIdBloc_IN = Iin.front(); //  Iin needs to be sorted
-        int MaxIdBloc_IN = Iin.back();  //
+        Index MinIdBloc_IN = Iin.front(); //  Iin needs to be sorted
+        Index MaxIdBloc_IN = Iin.back();  //
 
 
 
@@ -767,7 +767,7 @@ void BTDLinearSolver<Matrix,Vector>::partial_solve(ListIndex&  Iout, ListIndex& 
     // debug: test
     if (verification.getValue())
     {
-        const int bsize = Matrix::getSubMatrixDim(f_blockSize.getValue());
+        const Index bsize = Matrix::getSubMatrixDim(f_blockSize.getValue());
         Vector *Result_partial_Solve = new Vector();
         (*Result_partial_Solve) = (*this->currentGroup->systemLHVector);
 
@@ -783,7 +783,7 @@ void BTDLinearSolver<Matrix,Vector>::partial_solve(ListIndex&  Iout, ListIndex& 
 
         double normDR = 0.0;
         double normR = 0.0;
-        for (int i=MinIdBloc_OUT; i<=MaxIdBloc_OUT; i++)
+        for (Index i=MinIdBloc_OUT; i<=MaxIdBloc_OUT; i++)
         {
             normDR += (DR->asub(i,bsize)).norm();
             normR += (Result->asub(i,bsize)).norm();
@@ -794,14 +794,14 @@ void BTDLinearSolver<Matrix,Vector>::partial_solve(ListIndex&  Iout, ListIndex& 
 
 
             std::cout<<"++++++++++++++++ WARNING +++++++++++\n \n Found solution for bloc OUT :";
-            for (int i=MinIdBloc_OUT; i<=MaxIdBloc_OUT; i++)
+            for (Index i=MinIdBloc_OUT; i<=MaxIdBloc_OUT; i++)
             {
                 std::cout<<"     ["<<i<<"] "<< Result_partial_Solve->asub(i,bsize);
             }
             std::cout<<std::endl;
 
             std::cout<<" after complete resolution OUT :";
-            for (int i=MinIdBloc_OUT; i<=MaxIdBloc_OUT; i++)
+            for (Index i=MinIdBloc_OUT; i<=MaxIdBloc_OUT; i++)
             {
                 std::cout<<"     ["<<i<<"] "<<Result->asub(i,bsize);
             }
@@ -831,8 +831,8 @@ template<class Matrix, class Vector>
 template<class RMatrix, class JMatrix>
 bool BTDLinearSolver<Matrix,Vector>::addJMInvJt(RMatrix& result, JMatrix& J, double fact)
 {
-    //const int Jrows = J.rowSize();
-    const unsigned int Jcols = J.colSize();
+    //const Index Jrows = J.rowSize();
+    const Index Jcols = J.colSize();
     if (Jcols != Minv.rowSize())
     {
         serr << "BTDLinearSolver::addJMInvJt ERROR: incompatible J matrix size." << sendl;
@@ -844,10 +844,10 @@ bool BTDLinearSolver<Matrix,Vector>::addJMInvJt(RMatrix& result, JMatrix& J, dou
     {
 // debug christian: print of the inverse matrix:
         sout<< "C = ["<<sendl;
-        for  (unsigned int mr=0; mr<Minv.rowSize(); mr++)
+        for  (Index mr=0; mr<Minv.rowSize(); mr++)
         {
             sout<<" "<<sendl;
-            for (unsigned int mc=0; mc<Minv.colSize(); mc++)
+            for (Index mc=0; mc<Minv.colSize(); mc++)
             {
                 sout<<" "<< getMinvElement(mr,mc);
             }
@@ -856,10 +856,10 @@ bool BTDLinearSolver<Matrix,Vector>::addJMInvJt(RMatrix& result, JMatrix& J, dou
 
 // debug christian: print of matrix J:
         sout<< "J = ["<<sendl;
-        for  (unsigned int jr=0; jr<J.rowSize(); jr++)
+        for  (Index jr=0; jr<J.rowSize(); jr++)
         {
             sout<<" "<<sendl;
-            for (unsigned int jc=0; jc<J.colSize(); jc++)
+            for (Index jc=0; jc<J.colSize(); jc++)
             {
                 sout<<" "<< J.element(jr, jc) ;
             }
@@ -871,18 +871,18 @@ bool BTDLinearSolver<Matrix,Vector>::addJMInvJt(RMatrix& result, JMatrix& J, dou
     const typename JMatrix::LineConstIterator jitend = J.end();
     for (typename JMatrix::LineConstIterator jit1 = J.begin(); jit1 != jitend; ++jit1)
     {
-        int row1 = jit1->first;
+        Index row1 = jit1->first;
         for (typename JMatrix::LineConstIterator jit2 = jit1; jit2 != jitend; ++jit2)
         {
-            int row2 = jit2->first;
+            Index row2 = jit2->first;
             double acc = 0.0;
             for (typename JMatrix::LElementConstIterator i1 = jit1->second.begin(), i1end = jit1->second.end(); i1 != i1end; ++i1)
             {
-                int col1 = i1->first;
+                Index col1 = i1->first;
                 double val1 = i1->second;
                 for (typename JMatrix::LElementConstIterator i2 = jit2->second.begin(), i2end = jit2->second.end(); i2 != i2end; ++i2)
                 {
-                    int col2 = i2->first;
+                    Index col2 = i2->first;
                     double val2 = i2->second;
                     acc += val1 * getMinvElement(col1,col2) * val2;
                 }

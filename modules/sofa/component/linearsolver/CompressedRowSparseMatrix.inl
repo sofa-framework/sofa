@@ -55,21 +55,21 @@ inline void CompressedRowSparseMatrix<double>::filterValues(CompressedRowSparseM
     colsIndex.reserve(M.colsIndex.size()*9);
     colsValue.reserve(M.colsValue.size()*9);
 
-    int vid = 0;
-    for (unsigned int rowId = 0; rowId < M.rowIndex.size(); ++rowId)
+    Index vid = 0;
+    for (Index rowId = 0; rowId < (Index)M.rowIndex.size(); ++rowId)
     {
-        int i = M.rowIndex[rowId] * 3;
+        Index i = M.rowIndex[rowId] * 3;
 
         Range rowRange(M.rowBegin[rowId], M.rowBegin[rowId+1]);
 
-        for (int lb = 0; lb<3 ; lb++)
+        for (Index lb = 0; lb<3 ; lb++)
         {
             rowIndex.push_back(i+lb);
             rowBegin.push_back(vid);
 
-            for (int xj = rowRange.begin(); xj < rowRange.end(); ++xj)
+            for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
             {
-                int j = M.colsIndex[xj] * 3;
+                Index j = M.colsIndex[xj] * 3;
                 defaulttype::Mat<3,3,double> b = M.colsValue[xj];
                 if ((*filter)(i+lb,j+0,b[lb][0],ref))
                 {
@@ -120,21 +120,21 @@ inline void CompressedRowSparseMatrix<double>::filterValues(CompressedRowSparseM
     colsIndex.reserve(M.colsIndex.size()*9);
     colsValue.reserve(M.colsValue.size()*9);
 
-    int vid = 0;
-    for (unsigned int rowId = 0; rowId < M.rowIndex.size(); ++rowId)
+    Index vid = 0;
+    for (Index rowId = 0; rowId < (Index)M.rowIndex.size(); ++rowId)
     {
-        int i = M.rowIndex[rowId] * 3;
+        Index i = M.rowIndex[rowId] * 3;
 
         Range rowRange(M.rowBegin[rowId], M.rowBegin[rowId+1]);
 
-        for (int lb = 0; lb<3 ; lb++)
+        for (Index lb = 0; lb<3 ; lb++)
         {
             rowIndex.push_back(i+lb);
             rowBegin.push_back(vid);
 
-            for (int xj = rowRange.begin(); xj < rowRange.end(); ++xj)
+            for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
             {
-                int j = M.colsIndex[xj] * 3;
+                Index j = M.colsIndex[xj] * 3;
                 defaulttype::Mat<3,3,double> b = M.colsValue[xj];
                 if ((*filter)(i+lb,j+0,b[lb][0],ref))
                 {
@@ -185,21 +185,21 @@ inline void CompressedRowSparseMatrix<float>::filterValues(CompressedRowSparseMa
     colsIndex.reserve(M.colsIndex.size()*9);
     colsValue.reserve(M.colsValue.size()*9);
 
-    int vid = 0;
-    for (unsigned int rowId = 0; rowId < M.rowIndex.size(); ++rowId)
+    Index vid = 0;
+    for (Index rowId = 0; rowId < (Index)M.rowIndex.size(); ++rowId)
     {
-        int i = M.rowIndex[rowId] * 3;
+        Index i = M.rowIndex[rowId] * 3;
 
         Range rowRange(M.rowBegin[rowId], M.rowBegin[rowId+1]);
 
-        for (int lb = 0; lb<3 ; lb++)
+        for (Index lb = 0; lb<3 ; lb++)
         {
             rowIndex.push_back(i+lb);
             rowBegin.push_back(vid);
 
-            for (int xj = rowRange.begin(); xj < rowRange.end(); ++xj)
+            for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
             {
-                int j = M.colsIndex[xj] * 3;
+                Index j = M.colsIndex[xj] * 3;
                 defaulttype::Mat<3,3,float> b = M.colsValue[xj];
                 if ((*filter)(i+lb,j+0,b[lb][0],ref))
                 {
@@ -250,21 +250,21 @@ inline void CompressedRowSparseMatrix<float>::filterValues(CompressedRowSparseMa
     colsIndex.reserve(M.colsIndex.size()*9);
     colsValue.reserve(M.colsValue.size()*9);
 
-    int vid = 0;
-    for (unsigned int rowId = 0; rowId < M.rowIndex.size(); ++rowId)
+    Index vid = 0;
+    for (Index rowId = 0; rowId < (Index)M.rowIndex.size(); ++rowId)
     {
-        int i = M.rowIndex[rowId] * 3;
+        Index i = M.rowIndex[rowId] * 3;
 
         Range rowRange(M.rowBegin[rowId], M.rowBegin[rowId+1]);
 
-        for (int lb = 0; lb<3 ; lb++)
+        for (Index lb = 0; lb<3 ; lb++)
         {
             rowIndex.push_back(i+lb);
             rowBegin.push_back(vid);
 
-            for (int xj = rowRange.begin(); xj < rowRange.end(); ++xj)
+            for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
             {
-                int j = M.colsIndex[xj] * 3;
+                Index j = M.colsIndex[xj] * 3;
                 defaulttype::Mat<3,3,float> b = M.colsValue[xj];
                 if ((*filter)(i+lb,j+0,b[lb][0],ref))
                 {

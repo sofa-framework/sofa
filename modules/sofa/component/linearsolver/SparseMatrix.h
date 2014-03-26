@@ -51,7 +51,6 @@ class SparseMatrix : public defaulttype::BaseMatrix
 {
 public:
     typedef T Real;
-    typedef int Index;
     typedef std::map<Index,Real> Line;
     typedef std::map<Index,Line> Data;
     typedef typename Line::iterator LElementIterator;
@@ -75,7 +74,7 @@ public:
     {
     }
 
-    SparseMatrix(int nbRow, int nbCol)
+    SparseMatrix(Index nbRow, Index nbCol)
         : nRow(nbRow), nCol(nbCol)
     {
     }
@@ -100,7 +99,7 @@ public:
             return it->second;
     }
 
-    void resize(int nbRow, int nbCol)
+    void resize(Index nbRow, Index nbCol)
     {
 
 #ifdef SPARSEMATRIX_VERBOSE
@@ -117,15 +116,15 @@ public:
         return nRow;
     }
 
-    unsigned int colSize(void) const
+    unsigned colSize(void) const
     {
         return nCol;
     }
 
-    SReal element(int i, int j) const
+    SReal element(Index i, Index j) const
     {
 #ifdef SPARSEMATRIX_CHECK
-        if ((unsigned)i >= (unsigned)rowSize() || (unsigned)j >= (unsigned)colSize())
+        if (i >= rowSize() || j >= colSize())
         {
             std::cerr << "ERROR: invalid read access to element ("<<i<<","<<j<<") in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
             return 0.0;
@@ -140,13 +139,13 @@ public:
         return ite->second;
     }
 
-    void set(int i, int j, double v)
+    void set(Index i, Index j, double v)
     {
 #ifdef SPARSEMATRIX_VERBOSE
         std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = "<<v<<std::endl;
 #endif
 #ifdef SPARSEMATRIX_CHECK
-        if ((unsigned)i >= (unsigned)rowSize() || (unsigned)j >= (unsigned)colSize())
+        if (i >= rowSize() || j >= colSize())
         {
             std::cerr << "ERROR: invalid write access to element ("<<i<<","<<j<<") in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
             return;
@@ -155,13 +154,13 @@ public:
         data[i][j] = (Real)v;
     }
 
-    void add(int i, int j, double v)
+    void add(Index i, Index j, double v)
     {
 #ifdef SPARSEMATRIX_VERBOSE
         std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") += "<<v<<std::endl;
 #endif
 #ifdef SPARSEMATRIX_CHECK
-        if ((unsigned)i >= (unsigned)rowSize() || (unsigned)j >= (unsigned)colSize())
+        if (i >= rowSize() || j >= colSize())
         {
             std::cerr << "ERROR: invalid write access to element ("<<i<<","<<j<<") in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
             return;
@@ -170,13 +169,13 @@ public:
         data[i][j] += (Real)v;
     }
 
-    void clear(int i, int j)
+    void clear(Index i, Index j)
     {
 #ifdef SPARSEMATRIX_VERBOSE
         std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = 0"<<std::endl;
 #endif
 #ifdef SPARSEMATRIX_CHECK
-        if ((unsigned)i >= (unsigned)rowSize() || (unsigned)j >= (unsigned)colSize())
+        if (i >= rowSize() || j >= colSize())
         {
             std::cerr << "ERROR: invalid write access to element ("<<i<<","<<j<<") in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
             return;
@@ -193,13 +192,13 @@ public:
             data.erase(it);
     }
 
-    void clearRow(int i)
+    void clearRow(Index i)
     {
 #ifdef SPARSEMATRIX_VERBOSE
         std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): row("<<i<<") = 0"<<std::endl;
 #endif
 #ifdef SPARSEMATRIX_CHECK
-        if ((unsigned)i >= (unsigned)rowSize())
+        if (i >= rowSize())
         {
             std::cerr << "ERROR: invalid write access to row "<<i<<" in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
             return;
@@ -211,13 +210,13 @@ public:
         data.erase(it);
     }
 
-    void clearCol(int j)
+    void clearCol(Index j)
     {
 #ifdef SPARSEMATRIX_VERBOSE
         std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): col("<<j<<") = 0"<<std::endl;
 #endif
 #ifdef SPARSEMATRIX_CHECK
-        if ((unsigned)j >= (unsigned)colSize())
+        if (j >= colSize())
         {
             std::cerr << "ERROR: invalid write access to column "<<j<<" in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
             return;
@@ -231,13 +230,13 @@ public:
         }
     }
 
-    void clearRowCol(int i)
+    void clearRowCol(Index i)
     {
 #ifdef SPARSEMATRIX_VERBOSE
         std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): row("<<i<<") = 0 and col("<<i<<") = 0"<<std::endl;
 #endif
 #ifdef SPARSEMATRIX_CHECK
-        if ((unsigned)i >= (unsigned)rowSize() || (unsigned)i >= (unsigned)colSize())
+        if (i >= rowSize() || i >= colSize())
         {
             std::cerr << "ERROR: invalid write access to row and column "<<i<<" in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
             return;
@@ -361,7 +360,7 @@ public:
             res->resize(rowSize(), m.colSize());
             for (LineConstIterator itl = begin(), itlend=end(); itl!=itlend; ++itl)
             {
-    	    const int this_line = itl->first;
+    	    const Index this_line = itl->first;
                 for (LElementConstIterator ite = itl->second.begin(), iteend=itl->second.end(); ite!=iteend; ++ite)
     	    {
     		Real v = ite->second;
@@ -369,7 +368,7 @@ public:
     		for (typename SparseMatrix<Real2>::LElementConstIterator ite2 = ml.begin(), ite2end=ml.end(); ite2!=ite2end; ++ite2)
     		{
     		    Real2 v2 = ite2->second;
-    		    const int m_col = ite2->first;
+    		    const Index m_col = ite2->first;
     		    res->add(this_line, m_col, (Real)(v*v2));
     		}
     	    }
@@ -382,7 +381,7 @@ public:
             //res->resize(rowSize(), m.colSize());
             for (LineConstIterator itl = begin(), itlend=end(); itl!=itlend; ++itl)
             {
-    	    const int this_line = itl->first;
+    	    const Index this_line = itl->first;
                 for (LElementConstIterator ite = itl->second.begin(), iteend=itl->second.end(); ite!=iteend; ++ite)
     	    {
     		Real v = ite->second;
@@ -390,7 +389,7 @@ public:
     		for (typename SparseMatrix<Real2>::LElementConstIterator ite2 = ml.begin(), ite2end=ml.end(); ite2!=ite2end; ++ite2)
     		{
     		    Real2 v2 = ite2->second;
-    		    const int m_col = ite2->first;
+    		    const Index m_col = ite2->first;
     		    res->add(this_line, m_col, (Real)(v*v2));
     		}
     	    }
@@ -479,10 +478,10 @@ public:
     {
         for (LineConstIterator itl = begin(), itlend=end(); itl!=itlend; ++itl)
         {
-            const int l = itl->first;
+            const Index l = itl->first;
             for (LElementConstIterator ite = itl->second.begin(), iteend=itl->second.end(); ite!=iteend; ++ite)
             {
-                const int c = ite->first;
+                const Index c = ite->first;
                 Real v = ite->second;
                 dest->add(l,c,v);
             }

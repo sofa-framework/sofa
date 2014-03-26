@@ -29,7 +29,7 @@
 #include <sofa/defaulttype/defaulttype.h>
 #include <sofa/defaulttype/BaseVector.h>
 #include <utility> // for std::pair
-#include <cstddef> // for NULL
+#include <cstddef> // for NULL and std::size_t
 #include <iostream>
 
 namespace sofa
@@ -45,6 +45,8 @@ namespace defaulttype
 class SOFA_DEFAULTTYPE_API BaseMatrix
 {
 public:
+    typedef int Index;
+
     BaseMatrix();
     virtual ~BaseMatrix();
 
@@ -57,35 +59,35 @@ public:
     /// Number of columns (Eigen-compatible API)
     inline unsigned int cols(void) const { return colSize(); }
     /// Read the value of the element at row i, column j (using 0-based indices)
-    virtual SReal element(int i, int j) const = 0;
+    virtual SReal element(Index i, Index j) const = 0;
     /// Read the value of the element at row i, column j (using 0-based indices). Eigen-compatible API.
-    inline SReal operator() (int i, int j) const { return element(i,j); }
+    inline SReal operator() (Index i, Index j) const { return element(i,j); }
     /// Resize the matrix and reset all values to 0
-    virtual void resize(int nbRow, int nbCol) = 0;
+    virtual void resize(Index nbRow, Index nbCol) = 0;
     /// Reset all values to 0
     virtual void clear() = 0;
     /// Write the value of the element at row i, column j (using 0-based indices)
-    virtual void set(int i, int j, double v) = 0;
+    virtual void set(Index i, Index j, double v) = 0;
     /// Add v to the existing value of the element at row i, column j (using 0-based indices)
-    virtual void add(int i, int j, double v) = 0;
+    virtual void add(Index i, Index j, double v) = 0;
     /*    /// Write the value of the element at row i, column j (using 0-based indices)
-        virtual void set(int i, int j, float v) { set(i,j,(double)v); }
+        virtual void set(Index i, Index j, float v) { set(i,j,(double)v); }
         /// Add v to the existing value of the element at row i, column j (using 0-based indices)
-        virtual void add(int i, int j, float v) { add(i,j,(double)v); }
+        virtual void add(Index i, Index j, float v) { add(i,j,(double)v); }
         /// Reset the value of element i,j to 0
-    */    virtual void clear(int i, int j) { set(i,j,0.0); }
+    */    virtual void clear(Index i, Index j) { set(i,j,0.0); }
     /// Reset all the values in row i to 0
-    virtual void clearRow(int i) { for (int j=0,n=colSize(); j<n; ++j) clear(i,j); }
+    virtual void clearRow(Index i) { for (Index j=0,n=colSize(); j<n; ++j) clear(i,j); }
     /// Clears the value of rows imin to imax-1
-    virtual void clearRows(int imin, int imax) { for (int i=imin; i<imax; i++) clearRow(i); }
+    virtual void clearRows(Index imin, Index imax) { for (Index i=imin; i<imax; i++) clearRow(i); }
     /// Reset the all values in column j to 0
-    virtual void clearCol(int j) { for (int i=0,n=rowSize(); i<n; ++i) clear(i,j); }
+    virtual void clearCol(Index j) { for (Index i=0,n=rowSize(); i<n; ++i) clear(i,j); }
     /// Clears all the values in columns imin to imax-1
-    virtual void clearCols(int imin, int imax) { for (int i=imin; i<imax; i++) clearCol(i); }
+    virtual void clearCols(Index imin, Index imax) { for (Index i=imin; i<imax; i++) clearCol(i); }
     /// Reset the value of both row and column i to 0
-    virtual void clearRowCol(int i) { clearRow(i); clearCol(i); }
+    virtual void clearRowCol(Index i) { clearRow(i); clearCol(i); }
     /// Clears all the values in rows imin to imax-1 and columns imin to imax-1
-    virtual void clearRowsCols(int imin, int imax) { clearRows(imin,imax); clearCols(imin,imax); }
+    virtual void clearRowsCols(Index imin, Index imax) { clearRows(imin,imax); clearCols(imin,imax); }
     /** Make the final data setup after adding entries. For most concrete types, this method does nothing.
       */
     virtual void compress();
@@ -104,7 +106,7 @@ public:
     virtual ElementType getElementType() const { return ELEMENT_FLOAT; }
 
     /// @return size of elements stored in this matrix
-    virtual unsigned int getElementSize() const { return sizeof(SReal); }
+    virtual std::size_t getElementSize() const { return sizeof(SReal); }
 
     enum MatrixCategory
     {
@@ -120,19 +122,19 @@ public:
     virtual MatrixCategory getCategory() const { return MATRIX_UNKNOWN; }
 
     /// @return the number of rows in each block, or 1 of there are no fixed block size
-    virtual int getBlockRows() const { return 1; }
+    virtual Index getBlockRows() const { return 1; }
 
     /// @return the number of columns in each block, or 1 of there are no fixed block size
-    virtual int getBlockCols() const { return 1; }
+    virtual Index getBlockCols() const { return 1; }
 
     /// @return the number of rows of blocks
-    virtual int bRowSize() const { return rowSize() / getBlockRows(); }
+    virtual Index bRowSize() const { return rowSize() / getBlockRows(); }
 
     /// @return the number of columns of blocks
-    virtual int bColSize() const { return colSize() / getBlockCols(); }
+    virtual Index bColSize() const { return colSize() / getBlockCols(); }
 
     /// @return the width of the band on each side of the diagonal (only for band matrices)
-    virtual int getBandWidth() const { return -1; }
+    virtual Index getBandWidth() const { return -1; }
 
     /// @return true if this matrix is diagonal
     bool isDiagonal() const
@@ -179,12 +181,12 @@ public:
     class InternalBlockAccessor
     {
     public:
-        int row;
-        int col;
+        Index row;
+        Index col;
         union
         {
             void* ptr;
-            int data;
+            Index data;
         };
 
         InternalBlockAccessor()
@@ -194,14 +196,14 @@ public:
             data = 0;
         }
 
-        InternalBlockAccessor(int row, int col, void* internalPtr)
+        InternalBlockAccessor(Index row, Index col, void* internalPtr)
             : row(row), col(col)
         {
             data = 0;
             ptr = internalPtr;
         }
 
-        InternalBlockAccessor(int row, int col, int internalData)
+        InternalBlockAccessor(Index row, Index col, Index internalData)
             : row(row), col(col)
         {
             ptr = NULL;
@@ -212,11 +214,11 @@ public:
     class InternalColBlockIterator
     {
     public:
-        int row;
+        Index row;
         union
         {
             void* ptr;
-            int data;
+            Index data;
         };
 
         InternalColBlockIterator()
@@ -226,14 +228,14 @@ public:
             data = 0;
         }
 
-        InternalColBlockIterator(int row, void* internalPtr)
+        InternalColBlockIterator(Index row, void* internalPtr)
             : row(row)
         {
             data = 0;
             ptr = internalPtr;
         }
 
-        InternalColBlockIterator(int row, int internalData)
+        InternalColBlockIterator(Index row, Index internalData)
             : row(row)
         {
             ptr = NULL;
@@ -247,7 +249,7 @@ public:
         union
         {
             void* ptr;
-            int data[2];
+            Index data[2];
         };
 
         InternalRowBlockIterator()
@@ -264,7 +266,7 @@ public:
             ptr = internalPtr;
         }
 
-        InternalRowBlockIterator(int internalData0, int internalData1)
+        InternalRowBlockIterator(Index internalData0, Index internalData1)
         {
             ptr = NULL;
             data[0] = internalData0;
@@ -294,12 +296,12 @@ public:
         {
         }
 
-        BlockAccessor(BaseMatrix* matrix, int row, int col, void* internalPtr)
+        BlockAccessor(BaseMatrix* matrix, Index row, Index col, void* internalPtr)
             : matrix(matrix), internal(row, col, internalPtr)
         {
         }
 
-        BlockAccessor(BaseMatrix* matrix, int row, int col, int internalData)
+        BlockAccessor(BaseMatrix* matrix, Index row, Index col, Index internalData)
             : matrix(matrix), internal(row, col, internalData)
         {
         }
@@ -327,9 +329,9 @@ public:
                 matrix->bAccessorCopy(&internal);
         }
 
-        int getRow() const { return internal.row; }
+        Index getRow() const { return internal.row; }
 
-        int getCol() const { return internal.col; }
+        Index getCol() const { return internal.col; }
 
         const BaseMatrix* getMatrix() const { return matrix; }
 
@@ -337,23 +339,23 @@ public:
 
         bool isValid() const
         {
-            return matrix && (unsigned) internal.row < matrix->rowSize() && (unsigned) internal.col < matrix->colSize();
+            return matrix && internal.row < (Index)matrix->rowSize() && internal.col < (Index)matrix->colSize();
         }
 
         /// Read the value of the element at row i, column j within this block (using 0-based indices)
-        SReal element(int i, int j) const
+        SReal element(Index i, Index j) const
         {
             return matrix->bAccessorElement(&internal, i, j);
         }
 
         /// Write the value of the element at row i, column j within this block (using 0-based indices)
-        void set(int i, int j, double v)
+        void set(Index i, Index j, double v)
         {
             matrix->bAccessorSet(&internal, i, j, v);
         }
 
         /// Add v to the existing value of the element at row i, column j within this block (using 0-based indices)
-        void add(int i, int j, double v)
+        void add(Index i, Index j, double v)
         {
             matrix->bAccessorAdd(&internal, i, j, v);
         }
@@ -476,12 +478,12 @@ public:
         {
         }
 
-        BlockConstAccessor(const BaseMatrix* matrix, int row, int col, void* internalPtr)
+        BlockConstAccessor(const BaseMatrix* matrix, Index row, Index col, void* internalPtr)
             : matrix(matrix), internal(row, col, internalPtr)
         {
         }
 
-        BlockConstAccessor(const BaseMatrix* matrix, int row, int col, int internalData)
+        BlockConstAccessor(const BaseMatrix* matrix, Index row, Index col, Index internalData)
             : matrix(matrix), internal(row, col, internalData)
         {
         }
@@ -525,19 +527,19 @@ public:
                 matrix->bAccessorCopy(&internal);
         }
 
-        int getRow() const { return internal.row; }
+        Index getRow() const { return internal.row; }
 
-        int getCol() const { return internal.col; }
+        Index getCol() const { return internal.col; }
 
         const BaseMatrix* getMatrix() const { return matrix; }
 
         bool isValid() const
         {
-            return matrix && (unsigned) internal.row < matrix->rowSize() && (unsigned) internal.col < matrix->colSize();
+            return matrix && internal.row < (Index)matrix->rowSize() && internal.col < (Index)matrix->colSize();
         }
 
         /// Read the value of the element at row i, column j within this block (using 0-based indices)
-        SReal element(int i, int j) const
+        SReal element(Index i, Index j) const
         {
             return matrix->bAccessorElement(&internal, i, j);
         }
@@ -568,15 +570,15 @@ protected:
 
     virtual void bAccessorDelete(const InternalBlockAccessor* /*b*/) const {}
     virtual void bAccessorCopy(InternalBlockAccessor* /*b*/) const {}
-    virtual SReal bAccessorElement(const InternalBlockAccessor* b, int i, int j) const
+    virtual SReal bAccessorElement(const InternalBlockAccessor* b, Index i, Index j) const
     {
         return element(b->row * getBlockRows() + i, b->col * getBlockCols() + j);
     }
-    virtual void bAccessorSet(InternalBlockAccessor* b, int i, int j, double v)
+    virtual void bAccessorSet(InternalBlockAccessor* b, Index i, Index j, double v)
     {
         set(b->row * getBlockRows() + i, b->col * getBlockCols() + j, v);
     }
-    virtual void bAccessorAdd(InternalBlockAccessor* b, int i, int j, double v)
+    virtual void bAccessorAdd(InternalBlockAccessor* b, Index i, Index j, double v)
     {
         add(b->row * getBlockRows() + i, b->col * getBlockCols() + j, v);
     }
@@ -584,10 +586,10 @@ protected:
     template<class T>
     const T* bAccessorElementsDefaultImpl(const InternalBlockAccessor* b, T* buffer) const
     {
-        const int NL = getBlockRows();
-        const int NC = getBlockCols();
-        for (int l=0; l<NL; ++l)
-            for (int c=0; c<NC; ++c)
+        const Index NL = getBlockRows();
+        const Index NC = getBlockCols();
+        for (Index l=0; l<NL; ++l)
+            for (Index c=0; c<NC; ++c)
                 buffer[l*NC+c] = (T)bAccessorElement(b, l, c);
         return buffer;
     }
@@ -607,10 +609,10 @@ protected:
     template<class T>
     void bAccessorSetDefaultImpl(InternalBlockAccessor* b, const T* buffer)
     {
-        const int NL = getBlockRows();
-        const int NC = getBlockCols();
-        for (int l=0; l<NL; ++l)
-            for (int c=0; c<NC; ++c)
+        const Index NL = getBlockRows();
+        const Index NC = getBlockCols();
+        for (Index l=0; l<NL; ++l)
+            for (Index c=0; c<NC; ++c)
                 bAccessorSet(b, l, c, (double)buffer[l*NC+c]);
     }
     virtual void bAccessorSet(InternalBlockAccessor* b, const float* buffer)
@@ -629,10 +631,10 @@ protected:
     template<class T>
     void bAccessorAddDefaultImpl(InternalBlockAccessor* b, const T* buffer)
     {
-        const int NL = getBlockRows();
-        const int NC = getBlockCols();
-        for (int l=0; l<NL; ++l)
-            for (int c=0; c<NC; ++c)
+        const Index NL = getBlockRows();
+        const Index NC = getBlockCols();
+        for (Index l=0; l<NL; ++l)
+            for (Index c=0; c<NC; ++c)
                 bAccessorAdd(b, l, c, (double)buffer[l*NC+c]);
     }
     virtual void bAccessorAdd(InternalBlockAccessor* b, const float* buffer)
@@ -651,10 +653,10 @@ protected:
     template<class T>
     T* bAccessorPrepareAddDefaultImpl(InternalBlockAccessor* /*b*/, T* buffer)
     {
-        const int NL = getBlockRows();
-        const int NC = getBlockCols();
-        const int N = NL*NC;
-        for (int i=0; i<N; ++i)
+        const Index NL = getBlockRows();
+        const Index NC = getBlockCols();
+        const Index N = NL*NC;
+        for (Index i=0; i<N; ++i)
             buffer[i] = (T)0;
         return buffer;
     }
@@ -684,22 +686,22 @@ protected:
         bAccessorAdd(b, buffer);
     }
 
-    BlockAccessor createBlockAccessor(int row, int col, void* internalPtr = NULL)
+    BlockAccessor createBlockAccessor(Index row, Index col, void* internalPtr = NULL)
     {
         return BlockAccessor(this, row, col, internalPtr);
     }
 
-    BlockAccessor createBlockAccessor(int row, int col, int internalData)
+    BlockAccessor createBlockAccessor(Index row, Index col, Index internalData)
     {
         return BlockAccessor(this, row, col, internalData);
     }
 
-    BlockConstAccessor createBlockConstAccessor(int row, int col, void* internalPtr = NULL) const
+    BlockConstAccessor createBlockConstAccessor(Index row, Index col, void* internalPtr = NULL) const
     {
         return BlockConstAccessor(this, row, col, internalPtr);
     }
 
-    BlockConstAccessor createBlockConstAccessor(int row, int col, int internalData) const
+    BlockConstAccessor createBlockConstAccessor(Index row, Index col, Index internalData) const
     {
         return BlockConstAccessor(this, row, col, internalData);
     }
@@ -717,40 +719,40 @@ public:
 
 
     /// Get read access to a bloc
-    virtual BlockConstAccessor blocGet(int i, int j) const
+    virtual BlockConstAccessor blocGet(Index i, Index j) const
     {
         return createBlockConstAccessor(i, j);
     }
 
     /// Get write access to a bloc
-    virtual BlockAccessor blocGetW(int i, int j)
+    virtual BlockAccessor blocGetW(Index i, Index j)
     {
         return createBlockAccessor(i, j);
     }
 
     /// Get write access to a bloc, possibly creating it
-    virtual BlockAccessor blocCreate(int i, int j)
+    virtual BlockAccessor blocCreate(Index i, Index j)
     {
         return createBlockAccessor(i, j);
     }
 
     /// Shortcut for blocGet(i,j).elements(buffer)
     template<class T>
-    const T* blocElements(int i, int j, T* buffer) const
+    const T* blocElements(Index i, Index j, T* buffer) const
     {
         return blocGet(i,j).elements(buffer);
     }
 
     /// Shortcut for blocCreate(i,j).set(buffer)
     template<class T>
-    void blocSet(int i, int j, const T* buffer)
+    void blocSet(Index i, Index j, const T* buffer)
     {
         blocCreate(i,j).set(buffer);
     }
 
     /// Shortcut for blocCreate(i,j).add(buffer)
     template<class T>
-    void blocAdd(int i, int j, const T* buffer)
+    void blocAdd(Index i, Index j, const T* buffer)
     {
         blocCreate(i,j).add(buffer);
     }
@@ -762,12 +764,12 @@ public:
         InternalColBlockIterator internal;
         BlockConstAccessor b;
 
-        ColBlockConstIterator(const BaseMatrix* matrix, int row, void* internalPtr)
+        ColBlockConstIterator(const BaseMatrix* matrix, Index row, void* internalPtr)
             : matrix(matrix), internal(row, internalPtr)
         {
         }
 
-        ColBlockConstIterator(const BaseMatrix* matrix, int row, int internalData)
+        ColBlockConstIterator(const BaseMatrix* matrix, Index row, Index internalData)
             : matrix(matrix), internal(row, internalData)
         {
         }
@@ -868,34 +870,34 @@ protected:
     }
     virtual void itIncColBlock(InternalColBlockIterator* it) const
     {
-        int col = it->data;
+        Index col = it->data;
         ++col;
         it->data = col;
     }
     virtual void itDecColBlock(InternalColBlockIterator* it) const
     {
-        int col = it->data;
+        Index col = it->data;
         --col;
         it->data = col;
     }
     virtual bool itEqColBlock(const InternalColBlockIterator* it, const InternalColBlockIterator* it2) const
     {
-        int col = it->data;
-        int col2 = it2->data;
+        Index col = it->data;
+        Index col2 = it2->data;
         return col == col2;
     }
     virtual bool itLessColBlock(const InternalColBlockIterator* it, const InternalColBlockIterator* it2) const
     {
-        int col = it->data;
-        int col2 = it2->data;
+        Index col = it->data;
+        Index col2 = it2->data;
         return col < col2;
     }
 
-    ColBlockConstIterator createColBlockConstIterator(int row, void* internalPtr) const
+    ColBlockConstIterator createColBlockConstIterator(Index row, void* internalPtr) const
     {
         return ColBlockConstIterator(this, row, internalPtr);
     }
-    ColBlockConstIterator createColBlockConstIterator(int row, int internalData) const
+    ColBlockConstIterator createColBlockConstIterator(Index row, Index internalData) const
     {
         return ColBlockConstIterator(this, row, internalData);
     }
@@ -903,19 +905,19 @@ protected:
 public:
 
     /// Get the iterator corresponding to the beginning of the given row of blocks
-    virtual ColBlockConstIterator bRowBegin(int ib) const
+    virtual ColBlockConstIterator bRowBegin(Index ib) const
     {
-        return createColBlockConstIterator(ib, (int)(0));
+        return createColBlockConstIterator(ib, (Index)(0));
     }
 
     /// Get the iterator corresponding to the end of the given row of blocks
-    virtual ColBlockConstIterator bRowEnd(int ib) const
+    virtual ColBlockConstIterator bRowEnd(Index ib) const
     {
-        return createColBlockConstIterator(ib, (int)(bColSize()));
+        return createColBlockConstIterator(ib, bColSize());
     }
 
     /// Get the iterators corresponding to the beginning and end of the given row of blocks
-    virtual std::pair<ColBlockConstIterator, ColBlockConstIterator> bRowRange(int ib) const
+    virtual std::pair<ColBlockConstIterator, ColBlockConstIterator> bRowRange(Index ib) const
     {
         return std::make_pair(bRowBegin(ib), bRowEnd(ib));
     }
@@ -932,7 +934,7 @@ public:
         {
         }
 
-        RowBlockConstIterator(const BaseMatrix* matrix, int internalData0, int internalData1)
+        RowBlockConstIterator(const BaseMatrix* matrix, Index internalData0, Index internalData1)
             : matrix(matrix), internal(internalData0, internalData1)
         {
         }
@@ -966,11 +968,11 @@ public:
                 matrix->itCopyRowBlock(&internal);
         }
 
-        int row()
+        Index row()
         {
             return matrix->itAccessRowBlock(&internal);
         }
-        int operator*()
+        Index operator*()
         {
             return row();
         }
@@ -1037,49 +1039,49 @@ protected:
 
     virtual void itCopyRowBlock(InternalRowBlockIterator* /*it*/) const {}
     virtual void itDeleteRowBlock(const InternalRowBlockIterator* /*it*/) const {}
-    virtual int itAccessRowBlock(InternalRowBlockIterator* it) const
+    virtual Index itAccessRowBlock(InternalRowBlockIterator* it) const
     {
-        int row = (it->data[0]);
+        Index row = (it->data[0]);
         return row;
     }
     virtual ColBlockConstIterator itBeginRowBlock(InternalRowBlockIterator* it) const
     {
-        int row = (it->data[0]);
+        Index row = (it->data[0]);
         return bRowBegin(row);
     }
     virtual ColBlockConstIterator itEndRowBlock(InternalRowBlockIterator* it) const
     {
-        int row = (it->data[0]);
+        Index row = (it->data[0]);
         return bRowEnd(row);
     }
     virtual std::pair<ColBlockConstIterator, ColBlockConstIterator> itRangeRowBlock(InternalRowBlockIterator* it) const
     {
-        int row = (it->data[0]);
+        Index row = (it->data[0]);
         return bRowRange(row);
     }
 
     virtual void itIncRowBlock(InternalRowBlockIterator* it) const
     {
-        int row = (it->data[0]);
+        Index row = (it->data[0]);
         ++row;
         it->data[0] = row;
     }
     virtual void itDecRowBlock(InternalRowBlockIterator* it) const
     {
-        int row = (it->data[0]);
+        Index row = (it->data[0]);
         --row;
         it->data[0] = row;
     }
     virtual bool itEqRowBlock(const InternalRowBlockIterator* it, const InternalRowBlockIterator* it2) const
     {
-        int row = (it->data[0]);
-        int row2 = (it2->data[0]);
+        Index row = (it->data[0]);
+        Index row2 = (it2->data[0]);
         return row == row2;
     }
     virtual bool itLessRowBlock(const InternalRowBlockIterator* it, const InternalRowBlockIterator* it2) const
     {
-        int row = (it->data[0]);
-        int row2 = (it2->data[0]);
+        Index row = (it->data[0]);
+        Index row2 = (it2->data[0]);
         return row < row2;
     }
 
@@ -1087,7 +1089,7 @@ protected:
     {
         return RowBlockConstIterator(this, internalPtr);
     }
-    RowBlockConstIterator createRowBlockConstIterator(int internalData0, int internalData1) const
+    RowBlockConstIterator createRowBlockConstIterator(Index internalData0, Index internalData1) const
     {
         return RowBlockConstIterator(this, internalData0, internalData1);
     }
@@ -1169,13 +1171,13 @@ public:
 
     friend std::ostream& operator << (std::ostream& out, const  sofa::defaulttype::BaseMatrix& v )
     {
-        int nx = v.colSize();
-        int ny = v.rowSize();
+        Index nx = v.colSize();
+        Index ny = v.rowSize();
         out << "[";
-        for (int y=0; y<ny; ++y)
+        for (Index y=0; y<ny; ++y)
         {
             out << "\n[";
-            for (int x=0; x<nx; ++x)
+            for (Index x=0; x<nx; ++x)
             {
                 out << " " << v.element(y,x);
             }

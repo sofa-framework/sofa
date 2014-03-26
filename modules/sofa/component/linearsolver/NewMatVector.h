@@ -55,33 +55,33 @@ public:
     {
     }
 
-    virtual void resize(int dim)
+    virtual void resize(Index dim)
     {
         ReSize(dim);
         (*this) = 0.0;
     }
 
-    virtual SReal element(int i) const
+    virtual SReal element(Index i) const
     {
         return NEWMAT::ColumnVector::element(i);
     }
 
-    void set(int i, SReal v)
+    void set(Index i, SReal v)
     {
         NEWMAT::ColumnVector::element(i) = v;
     }
 
-    void add(int i, SReal v)
+    void add(Index i, SReal v)
     {
         NEWMAT::ColumnVector::element(i) += v;
     }
 
-    SReal& operator[](int i)
+    SReal& operator[](Index i)
     {
         return NEWMAT::ColumnVector::element(i);
     }
 
-    SReal operator[](int i) const
+    SReal operator[](Index i) const
     {
         return NEWMAT::ColumnVector::element(i);
     }
@@ -91,19 +91,19 @@ public:
         return Nrows();
     }
 
-    NEWMAT::GetSubMatrix sub(int i, int n)
+    NEWMAT::GetSubMatrix sub(Index i, Index n)
     {
         return NEWMAT::ColumnVector::SubMatrix(i+1,i+n,1,1);
     }
 
     template<class T>
-    void getsub(int i, int n, T& v)
+    void getsub(Index i, Index n, T& v)
     {
         v = NEWMAT::ColumnVector::SubMatrix(i+1,i+n,1,1);
     }
 
     template<class T>
-    void setsub(int i, int n, const T& v)
+    void setsub(Index i, Index n, const T& v)
     {
         NEWMAT::ColumnVector::SubMatrix(i+1,i+n,1,1) = v;
     }
@@ -155,7 +155,7 @@ public:
 
     friend std::ostream& operator << (std::ostream& out, const NewMatVector& v )
     {
-        for (int i=0,s=v.Nrows(); i<s; ++i)
+        for (Index i=0,s=v.Nrows(); i<s; ++i)
         {
             if (i) out << ' ';
             out << v[i];

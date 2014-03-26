@@ -44,7 +44,6 @@ class DiagonalMatrix : public defaulttype::BaseMatrix
 {
 public:
     typedef T Real;
-    typedef int Index;
 
     typedef DiagonalMatrix<T> Expr;
     typedef DiagonalMatrix<double> matrix_type;
@@ -60,12 +59,12 @@ public:
     {
     }
 
-    DiagonalMatrix(int nbRow, int nbCol)
+    DiagonalMatrix(Index nbRow, Index nbCol)
         : data(new T[nbRow])
     {
     }
 
-    DiagonalMatrix(Real* p, int nbRow, int nbCol)
+    DiagonalMatrix(Real* p, Index nbRow, Index nbCol)
         : data(p)
     {
     }
@@ -85,7 +84,7 @@ public:
         return data+i;
     }
 
-    void resize(int nbRow, int /*nbCol*/)
+    void resize(Index nbRow, Index /*nbCol*/)
     {
         data.resize(nbRow);
     }
@@ -100,38 +99,38 @@ public:
         return data.size();
     }
 
-    SReal element(int i, int j) const
+    SReal element(Index i, Index j) const
     {
         if (i!=j) return (Real)0;
         return data[i];
     }
 
-    void set(int i, int j, double v)
+    void set(Index i, Index j, double v)
     {
         if (i==j) data[i] = (Real)v;
     }
 
-    void add(int i, int j, double v)
+    void add(Index i, Index j, double v)
     {
         if (i==j) data[i] += (Real)v;
     }
 
-    void clear(int i, int j)
+    void clear(Index i, Index j)
     {
         if (i==j) data[i] = (Real)0;
     }
 
-    void clearRow(int i)
+    void clearRow(Index i)
     {
         data[i] = (Real)0;
     }
 
-    void clearCol(int j)
+    void clearCol(Index j)
     {
         data[j] = (Real)0;
     }
 
-    void clearRowCol(int i)
+    void clearRowCol(Index i)
     {
         data[i] = (Real)0;
     }
@@ -143,7 +142,7 @@ public:
 
     // operators similar to vectors
 
-    void resize(int nbRow)
+    void resize(Index nbRow)
     {
         data.resize(nbRow);
     }
@@ -158,22 +157,22 @@ public:
         data.swap(v.data);
     }
 
-    SReal element(int i) const
+    SReal element(Index i) const
     {
         return data[i];
     }
 
-    void set(int i, double v)
+    void set(Index i, double v)
     {
         data[i] = (Real)v;
     }
 
-    void add(int i, double v)
+    void add(Index i, double v)
     {
         data[i] += (Real)v;
     }
 
-    void clear(int i)
+    void clear(Index i)
     {
         printf("je clear\n");
         data[i] = (Real)0;
@@ -184,19 +183,19 @@ public:
     {
         FullVector<Real2> res;
         res.resize(rowSize());
-        for (unsigned i=0; i<rowSize(); i++) res[i] = data[i] * v[i];
+        for (Index i=0; i<rowSize(); i++) res[i] = data[i] * v[i];
         return res;
     }
 
     void invert()
     {
-        for (unsigned i=0; i<rowSize(); i++) data[i] = 1.0 / data[i];
+        for (Index i=0; i<rowSize(); i++) data[i] = 1.0 / data[i];
     }
 
     template<class Real2>
     void mult(FullVector<Real2>& z,const FullVector<Real2>& v) const
     {
-        for (unsigned i=0; i<rowSize(); i++) z[i] = data[i] * v[i];
+        for (Index i=0; i<rowSize(); i++) z[i] = data[i] * v[i];
     }
 
     // methods for MatrixExpr support
@@ -220,8 +219,8 @@ public:
     template<class Dest>
     void addTo(Dest* dest) const
     {
-        int ny = rowSize();
-        for (int y=0; y<ny; ++y)
+        Index ny = rowSize();
+        for (Index y=0; y<ny; ++y)
             dest->add(y,y,element(y));
     }
 
@@ -318,9 +317,9 @@ public:
 
     friend std::ostream& operator << (std::ostream& out, const DiagonalMatrix<T>& v )
     {
-        int ny = v.rowSize();
+        Index ny = v.rowSize();
         out << "[";
-        for (int y=0; y<ny; ++y) out << " " << v.element(y);
+        for (Index y=0; y<ny; ++y) out << " " << v.element(y);
         out << " ]";
         return out;
     }
@@ -335,7 +334,6 @@ class BlockDiagonalMatrix : public defaulttype::BaseMatrix
 {
 public:
     typedef T Real;
-    typedef int Index;
     typedef defaulttype::Mat<LC,LC,Real> Bloc;
     typedef matrix_bloc_traits<Bloc> traits;
 
@@ -349,7 +347,7 @@ public:
 
 protected:
     std::vector< Bloc > data;
-    unsigned cSize;
+    Index cSize;
 
 public:
 
@@ -360,11 +358,11 @@ public:
 
     ~BlockDiagonalMatrix() {}
 
-    void resize(int nbRow, int )
+    void resize(Index nbRow, Index )
     {
         cSize = nbRow;
         data.resize((cSize+LC-1) / LC);
-        //for (unsigned i=0;i<data.size();i++) data[i].ReSize(LC,LC);
+        //for (Index i=0;i<data.size();i++) data[i].ReSize(LC,LC);
     }
 
     unsigned rowSize(void) const
@@ -387,12 +385,12 @@ public:
         return data.size();
     }
 
-    const Bloc& bloc(int i) const
+    const Bloc& bloc(Index i) const
     {
         return data[i];
     }
 
-    const Bloc& bloc(int i, int j) const
+    const Bloc& bloc(Index i, Index j) const
     {
         static Bloc empty;
         if (i != j)
@@ -401,12 +399,12 @@ public:
             return bloc(i);
     }
 
-    Bloc* wbloc(int i)
+    Bloc* wbloc(Index i)
     {
         return &(data[i]);
     }
 
-    Bloc* wbloc(int i, int j)
+    Bloc* wbloc(Index i, Index j)
     {
         if (i != j)
             return NULL;
@@ -414,85 +412,85 @@ public:
             return wbloc(i);
     }
 
-    SReal element(int i, int j) const
+    SReal element(Index i, Index j) const
     {
-        int bi=0, bj=0; traits::split_row_index(i, bi); traits::split_col_index(j, bj);
+        Index bi=0, bj=0; traits::split_row_index(i, bi); traits::split_col_index(j, bj);
         if (i != j) return 0;
         else return traits::v(data[i], bi, bj);
     }
 
-    void set(int i, int j, double v)
+    void set(Index i, Index j, double v)
     {
-        int bi=0, bj=0; traits::split_row_index(i, bi); traits::split_col_index(j, bj);
+        Index bi=0, bj=0; traits::split_row_index(i, bi); traits::split_col_index(j, bj);
         if (i == j) traits::v(data[i], bi, bj) = (Real)v;
     }
 
-    void setB(int i, const Bloc& b)
+    void setB(Index i, const Bloc& b)
     {
         data[i] = b;
     }
 
-    void setB(int i, int j, const Bloc& b)
+    void setB(Index i, Index j, const Bloc& b)
     {
         if (i == j)
             setB(i, b);
     }
 
-    void add(int i, int j, double v)
+    void add(Index i, Index j, double v)
     {
-        int bi=0, bj=0; traits::split_row_index(i, bi); traits::split_col_index(j, bj);
+        Index bi=0, bj=0; traits::split_row_index(i, bi); traits::split_col_index(j, bj);
         if (i == j) traits::v(data[i], bi, bj) += (Real)v;
     }
 
-    void addB(int i, const Bloc& b)
+    void addB(Index i, const Bloc& b)
     {
         data[i] += b;
     }
 
-    void addB(int i, int j, const Bloc& b)
+    void addB(Index i, Index j, const Bloc& b)
     {
         if (i == j)
             addB(i, b);
     }
 
-    void clear(int i, int j)
+    void clear(Index i, Index j)
     {
-        int bi=0, bj=0; traits::split_row_index(i, bi); traits::split_col_index(j, bj);
+        Index bi=0, bj=0; traits::split_row_index(i, bi); traits::split_col_index(j, bj);
         if (i == j) traits::v(data[i], bi, bj) = (Real)0;
     }
 
-    void clearRow(int i)
+    void clearRow(Index i)
     {
-        int bi=0; traits::split_row_index(i, bi);
-        for (int bj=0; bj<LC; ++bj)
+        Index bi=0; traits::split_row_index(i, bi);
+        for (Index bj=0; bj<LC; ++bj)
             traits::v(data[i], bi, bj) = (Real)0;
     }
 
-    void clearCol(int j)
+    void clearCol(Index j)
     {
-        int bj=0; traits::split_col_index(j, bj);
-        for (int bi=0; bi<LC; ++bi)
+        Index bj=0; traits::split_col_index(j, bj);
+        for (Index bi=0; bi<LC; ++bi)
             traits::v(data[j], bi, bj) = (Real)0;
     }
 
-    void clearRowCol(int i)
+    void clearRowCol(Index i)
     {
-        int bi=0; traits::split_row_index(i, bi);
-        for (int bj=0; bj<LC; ++bj)
+        Index bi=0; traits::split_row_index(i, bi);
+        for (Index bj=0; bj<LC; ++bj)
             traits::v(data[i], bi, bj) = (Real)0;
-        for (int bj=0; bj<LC; ++bj)
+        for (Index bj=0; bj<LC; ++bj)
             traits::v(data[i], bj, bi) = (Real)0;
     }
 
     void clear()
     {
-        for (unsigned b=0; b<data.size(); b++)
+        for (Index b=0; b<data.size(); b++)
             traits::clear(data[b]);
     }
 
     void invert()
     {
-        for (unsigned b=0; b<data.size(); b++)
+        for (Index b=0; b<data.size(); b++)
         {
             const Bloc m = data[b];
             traits::invert(data[b], m);
@@ -503,16 +501,16 @@ public:
     void mul(FullVector<Real2>& res, const FullVector<Real2>& v) const
     {
         res.resize(cSize);
-        int nblocs = cSize;
-        int szlast = 0;
+        Index nblocs = cSize;
+        Index szlast = 0;
         traits::split_row_index(nblocs, szlast);
-        for (int b=0; b<nblocs; b++)
+        for (Index b=0; b<nblocs; b++)
         {
-            int i = b*LC;
-            for (int bj=0; bj<LC; bj++)
+            Index i = b*LC;
+            for (Index bj=0; bj<LC; bj++)
             {
                 Real2 r = 0;
-                for (int bi=0; bi<LC; bi++)
+                for (Index bi=0; bi<LC; bi++)
                 {
                     r += (Real2)(traits::v(data[b],bi,bj) * v[i+bi]);
                 }
@@ -521,12 +519,12 @@ public:
         }
         if (szlast)
         {
-            int b = nblocs;
-            int i = b*LC;
-            for (int bj=0; bj<szlast; bj++)
+            Index b = nblocs;
+            Index i = b*LC;
+            for (Index bj=0; bj<szlast; bj++)
             {
                 Real2 r = 0;
-                for (int bi=0; bi<szlast; bi++)
+                for (Index bi=0; bi<szlast; bi++)
                 {
                     r += (Real2)(traits::v(data[b],bi,bj) * v[i+bi]);
                 }
@@ -546,7 +544,7 @@ public:
     friend std::ostream& operator << (std::ostream& out, const BlockDiagonalMatrix<LC>& v )
     {
         out << "[";
-        for (unsigned i=0; i<v.data.size(); i++) out << " " << v.data[i];
+        for (Index i=0; i<v.data.size(); i++) out << " " << v.data[i];
         out << " ]";
         return out;
     }
@@ -569,6 +567,7 @@ typedef BlockDiagonalMatrix<12> BlockDiagonalMatrix12;
 template<class R1, class M2>
 class MatrixProductOp<DiagonalMatrix<R1>, M2>
 {
+    typedef typename M2::Index Index;
 protected:
     template<class Dest>
     class MyDest
@@ -624,15 +623,16 @@ class MatrixProductOp<DiagonalMatrix<R1>, DiagonalMatrix<R2> >
 public:
     typedef DiagonalMatrix<R1> M1;
     typedef DiagonalMatrix<R2> M2;
+    typedef typename M1::Index Index;
     typedef typename type_selector<(sizeof(R2)>sizeof(R1)),M1,M2>::T matrix_type;
     enum { category = matrix_type::category };
 
     template<class Dest>
     void operator()(const DiagonalMatrix<R1>& m1, const DiagonalMatrix<R2>& m2, Dest* d)
     {
-        unsigned int n = m1.size();
+        Index n = m1.size();
         std::cout << "EXPR using diagonal product: " << m1.expr() << " * " << m2.expr() << std::endl;
-        for (unsigned int i=0; i<n; ++i)
+        for (Index i=0; i<n; ++i)
             d->add(i,i,m1.element(i)*m2.element(i));
     }
 };
@@ -641,14 +641,15 @@ template<class R1>
 class MatrixInvertOp<DiagonalMatrix<R1> >
 {
 public:
-    typedef DiagonalMatrix<double> matrix_type;
+    typedef DiagonalMatrix<R1> matrix_type;
+    typedef typename matrix_type::Index Index;
     enum { category = matrix_type::category };
 
     template<class Dest>
     void operator()(const DiagonalMatrix<R1>& m1, Dest* d)
     {
-        unsigned int n = m1.size();
-        for (unsigned int i=0; i<n; ++i)
+        Index n = m1.size();
+        for (Index i=0; i<n; ++i)
             d->add(i,i,1.0/m1.element(i));
     }
 };

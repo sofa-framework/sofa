@@ -47,7 +47,7 @@ class FullVector : public defaulttype::BaseVector
 {
 public:
     typedef T Real;
-    typedef int Index;
+    typedef defaulttype::BaseVector::Index Index;
     typedef T* Iterator;
     typedef const T* ConstIterator;
 
@@ -64,7 +64,7 @@ protected:
 #if !defined(SOFA_NO_VECTOR_ACCESS_FAILURE) && !defined(NDEBUG)
     void checkIndex(Index n) const
     {
-        if ((unsigned int)n >= (unsigned int)cursize)
+        if (n >= cursize)
             sofa::helper::vector_access_failure(this, cursize, n, typeid(*this));
     }
 #else
@@ -126,7 +126,7 @@ public:
     ConstIterator begin() const { return data; }
     ConstIterator end()   const { return data+cursize; }
 
-    void fastResize(int dim)
+    void fastResize(Index dim)
     {
         if (dim == cursize) return;
         if (allocsize >= 0)
@@ -150,7 +150,7 @@ public:
         cursize = dim;
     }
 
-    void resize(int dim)
+    void resize(Index dim)
     {
         fastResize(dim);
         clear();
@@ -172,7 +172,7 @@ public:
     }
 
     // for compatibility with baseVector
-    void clear(int dim)
+    void clear(Index dim)
     {
         resize(dim);
     }
@@ -189,19 +189,19 @@ public:
         return data[i];
     }
 
-    SReal element(int i) const
+    SReal element(Index i) const
     {
         checkIndex(i);
         return (SReal) data[i];
     }
 
-    void set(int i, SReal v)
+    void set(Index i, SReal v)
     {
         checkIndex(i);
         data[i] = (Real)v;
     }
 
-    void add(int i, SReal v)
+    void add(Index i, SReal v)
     {
         checkIndex(i);
         data[i] +=  (Real)v;
@@ -212,21 +212,21 @@ public:
         return cursize;
     }
 
-    FullVector<T> sub(int i, int n)
+    FullVector<T> sub(Index i, Index n)
     {
         if (n > 0) checkIndex(i+n-1);
         return FullVector<T>(data+i,n);
     }
 
     template<class TV>
-    void getsub(int i, int n, TV& v)
+    void getsub(Index i, Index n, TV& v)
     {
         if (n > 0) checkIndex(i+n-1);
         v = FullVector<T>(data+i,n);
     }
 
     template<class TV>
-    void setsub(int i, int n, const TV& v)
+    void setsub(Index i, Index n, const TV& v)
     {
         if (n > 0) checkIndex(i+n-1);
         FullVector<T>(data+i,n) = v;
@@ -248,7 +248,7 @@ public:
     template<typename Real2>
     void operator+=(const FullVector<Real2>& a)
     {
-        for(int i=0; i<cursize; ++i)
+        for(Index i=0; i<cursize; ++i)
             (*this)[i] += (Real)a[i];
     }
 
@@ -256,7 +256,7 @@ public:
     template<typename Real2>
     void operator-=(const FullVector<Real2>& a)
     {
-        for(int i=0; i<cursize; ++i)
+        for(Index i=0; i<cursize; ++i)
             (*this)[i] -= (Real)a[i];
     }
 
@@ -264,7 +264,7 @@ public:
     template<typename Real2,typename Real3>
     void eq(const FullVector<Real2>& a, Real3 f)
     {
-        for(int i=0; i<cursize; ++i)
+        for(Index i=0; i<cursize; ++i)
             (*this)[i] = (Real)(a[i]*f);
     }
 
@@ -272,7 +272,7 @@ public:
     template<typename Real2,typename Real3>
     void eq(const FullVector<Real2>& a, const FullVector<Real2>& b, Real3 f=1.0)
     {
-        for(int i=0; i<cursize; ++i)
+        for(Index i=0; i<cursize; ++i)
             (*this)[i] = (Real)(a[i]+b[i]*f);
     }
 
@@ -280,7 +280,7 @@ public:
     template<typename Real2,typename Real3>
     void peq(const FullVector<Real2>& a, Real3 f)
     {
-        for(int i=0; i<cursize; ++i)
+        for(Index i=0; i<cursize; ++i)
             (*this)[i] += (Real)(a[i]*f);
     }
 
@@ -288,7 +288,7 @@ public:
     template<typename Real2>
     void operator*=(Real2 f)
     {
-        for(int i=0; i<cursize; ++i)
+        for(Index i=0; i<cursize; ++i)
             (*this)[i] *= (Real)f;
     }
 
@@ -296,7 +296,7 @@ public:
     Real dot(const FullVector<Real>& a) const
     {
         Real r = 0;
-        for(int i=0; i<cursize; ++i)
+        for(Index i=0; i<cursize; ++i)
             r += (*this)[i]*a[i];
         return r;
     }
@@ -309,7 +309,7 @@ public:
 
     friend std::ostream& operator << (std::ostream& out, const FullVector<Real>& v )
     {
-        for (int i=0,s=v.size(); i<s; ++i)
+        for (Index i=0,s=v.size(); i<s; ++i)
         {
             if (i) out << ' ';
             out << v[i];
@@ -324,8 +324,8 @@ public:
 //extern template class SOFA_BASE_LINEAR_SOLVER_API FullVector<bool>;
 #endif
 
-template<> SOFA_BASE_LINEAR_SOLVER_API void FullVector<bool>::set(int i, SReal v);
-template<> SOFA_BASE_LINEAR_SOLVER_API void FullVector<bool>::add(int i, SReal v);
+template<> SOFA_BASE_LINEAR_SOLVER_API void FullVector<bool>::set(Index i, SReal v);
+template<> SOFA_BASE_LINEAR_SOLVER_API void FullVector<bool>::add(Index i, SReal v);
 template<> SOFA_BASE_LINEAR_SOLVER_API bool FullVector<bool>::dot(const FullVector<Real>& a) const;
 template<> SOFA_BASE_LINEAR_SOLVER_API double FullVector<bool>::norm() const;
 

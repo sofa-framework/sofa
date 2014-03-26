@@ -41,22 +41,24 @@ namespace defaulttype
 class BaseVector
 {
 public:
+    typedef int Index;
+
     virtual ~BaseVector() {}
 
     /// Number of elements
     virtual unsigned int size(void) const = 0;
     /// Read the value of element i
-    virtual SReal element(int i) const = 0;
+    virtual SReal element(Index i) const = 0;
 
     /// Resize the vector, and reset all values to 0
-    virtual void resize(int dim) = 0;
+    virtual void resize(Index dim) = 0;
     /// Reset all values to 0
     virtual void clear() = 0;
 
     /// Write the value of element i
-    virtual void set(int i, SReal v) = 0;
+    virtual void set(Index i, SReal v) = 0;
     /// Add v to the existing value of element i
-    virtual void add(int i, SReal v) = 0;
+    virtual void add(Index i, SReal v) = 0;
 
     /// @name Get information about the content and structure of this vector
     /// @{
@@ -72,7 +74,7 @@ public:
     virtual ElementType getElementType() const { return ELEMENT_FLOAT; }
 
     /// @return size of elements stored in this matrix
-    virtual unsigned int getElementSize() const { return sizeof(SReal); }
+    virtual std::size_t getElementSize() const { return sizeof(SReal); }
 
     /// Return true if this vector is full, i.a. all elements are stored in memory
     virtual bool isFull() const { return true; }
@@ -86,98 +88,98 @@ public:
 protected:
 
     template<class T>
-    const T* elementsDefaultImpl(int i0, int n, T* buffer) const
+    const T* elementsDefaultImpl(Index i0, Index n, T* buffer) const
     {
         if (buffer)
-            for (int i=0; i<n; ++i)
+            for (Index i=0; i<n; ++i)
                 buffer[i]=(T)element(i0+i);
         return buffer;
     }
 
     template<class T>
-    void setDefaultImpl(int i0, int n, const T* src)
+    void setDefaultImpl(Index i0, Index n, const T* src)
     {
-        for (int i=0; i<n; ++i)
+        for (Index i=0; i<n; ++i)
             set(i0+i,(SReal)src[i]);
     }
 
     template<class T>
-    void addDefaultImpl(int i0, int n, const T* src)
+    void addDefaultImpl(Index i0, Index n, const T* src)
     {
-        for (int i=0; i<n; ++i)
+        for (Index i=0; i<n; ++i)
             add(i0+i,(SReal)src[i]);
     }
 
 public:
 
     /// Get the values of n elements, starting at element i0, into given float buffer, or return the pointer to the data if the in-memory format is compatible
-    virtual const float* elements(int i0, int n, float* src) const
+    virtual const float* elements(Index i0, Index n, float* src) const
     {
         return elementsDefaultImpl(i0,n,src);
     }
 
     /// Get the values of n elements, starting at element i0, into given double buffer, or return the pointer to the data if the in-memory format is compatible
-    virtual const double* elements(int i0, int n, double* src) const
+    virtual const double* elements(Index i0, Index n, double* src) const
     {
         return elementsDefaultImpl(i0,n,src);
     }
 
     /// Get the values of n elements, starting at element i0, into given int buffer, or return the pointer to the data if the in-memory format is compatible
-    virtual const int* elements(int i0, int n, int* src) const
+    virtual const int* elements(Index i0, Index n, int* src) const
     {
         return elementsDefaultImpl(i0,n,src);
     }
 
     /// Write the values of n float elements, starting at element i0
-    virtual void set(int i0, int n, const float* src)
+    virtual void set(Index i0, Index n, const float* src)
     {
         setDefaultImpl(i0,n,src);
     }
 
     /// Write the values of n double elements, starting at element i0
-    virtual void set(int i0, int n, const double* src)
+    virtual void set(Index i0, Index n, const double* src)
     {
         setDefaultImpl(i0,n,src);
     }
 
     /// Write the values of n int elements, starting at element i0
-    virtual void set(int i0, int n, const int* src)
+    virtual void set(Index i0, Index n, const int* src)
     {
         setDefaultImpl(i0,n,src);
     }
 
 
     /// Add to the values of n float elements, starting at element i0
-    virtual void add(int i0, int n, const float* src)
+    virtual void add(Index i0, Index n, const float* src)
     {
         addDefaultImpl(i0,n,src);
     }
 
     /// Add to the values of n double elements, starting at element i0
-    virtual void add(int i0, int n, const double* src)
+    virtual void add(Index i0, Index n, const double* src)
     {
         addDefaultImpl(i0,n,src);
     }
 
     /// Add to the values of n int elements, starting at element i0
-    virtual void add(int i0, int n, const int* src)
+    virtual void add(Index i0, Index n, const int* src)
     {
         addDefaultImpl(i0,n,src);
     }
 
     /*
         /// Write the value of element i
-        virtual void set(int i, SReal v) { set(i,(SReal)v); }
+        virtual void set(Index i, SReal v) { set(i,(SReal)v); }
         /// Add v to the existing value of element i
-        virtual void add(int i, SReal v) { add(i,(SReal)v); }
+        virtual void add(Index i, SReal v) { add(i,(SReal)v); }
     */
     /// Reset the value of element i to 0
-    virtual void clear(int i) { set(i,0.0); }
+    virtual void clear(Index i) { set(i,0.0); }
 
     friend std::ostream& operator << (std::ostream& out, const BaseVector& v )
     {
-        int ny = v.size();
-        for (int y=0; y<ny; ++y)
+        Index ny = v.size();
+        for (Index y=0; y<ny; ++y)
         {
             out << " " << v.element(y);
         }

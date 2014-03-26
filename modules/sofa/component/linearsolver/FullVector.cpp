@@ -40,12 +40,12 @@ template<> FullVector<bool>::FullVector()
 {
 }
 */
-template<> void FullVector<bool>::set(int i, SReal v)
+template<> void FullVector<bool>::set(Index i, SReal v)
 {
     data[i] = (v!=0);
 }
 
-template<> void FullVector<bool>::add(int i, SReal v)
+template<> void FullVector<bool>::add(Index i, SReal v)
 {
     data[i] |= (v!=0);
 }
@@ -53,7 +53,7 @@ template<> void FullVector<bool>::add(int i, SReal v)
 template<> bool FullVector<bool>::dot(const FullVector<Real>& a) const
 {
     Real r = false;
-    for(int i=0; i<cursize && !r; ++i)
+    for(Index i=0; i<cursize && !r; ++i)
         r = (*this)[i] && a[i];
     return r;
 }
@@ -61,7 +61,7 @@ template<> bool FullVector<bool>::dot(const FullVector<Real>& a) const
 template<> double FullVector<bool>::norm() const
 {
     double r = 0.0;
-    for(int i=0; i<cursize; ++i)
+    for(Index i=0; i<cursize; ++i)
         r += (*this)[i] ? 1.0 : 0.0;
     return helper::rsqrt(r);
 }
