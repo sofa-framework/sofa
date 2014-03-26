@@ -44,6 +44,7 @@
 #define ALPHABLEND 2
 #define SEPARATE 3
 #define ADDITIVE 4
+#define INTERSECT 5
 
 #define INTERPOLATION_NEAREST 0
 #define INTERPOLATION_LINEAR 1
@@ -115,11 +116,12 @@ public:
         this->addAlias(&image, "outputImage");
         this->addAlias(&transform, "outputTransform");
 
-        helper::OptionsGroup overlapOptions(5	,"0 - Average pixels"
+        helper::OptionsGroup overlapOptions(6	,"0 - Average pixels"
                 ,"1 - Use image order as priority"
                 ,"2 - Alpha blending according to distance from border"
                 ,"3 - Take farthest pixel from border"
                 ,"4 - Add pixels of each images"
+                ,"5 - Set overlapping pixels of the first image to zero (only if the corresponding pixel in the other images different to zero)"
                                            );
         overlapOptions.setSelectedItem(ALPHABLEND);
         overlap.setValue(overlapOptions);
@@ -357,6 +359,11 @@ protected:
                 else if(overlp==ADDITIVE)
                 {
                     for(unsigned int j=1; j<nbp; j++) for(unsigned int t=0; t<nbt; t++) for(unsigned int k=0; k<nbc; k++) pts[0].vals[t][k] += pts[j].vals[t][k];
+                    for(unsigned int t=0; t<nbt; t++) for(unsigned int k=0; k<nbc; k++) img(t)(x,y,z,k) = (T)(pts[0].vals[t][k]);
+                }
+                else if(overlp==INTERSECT)
+                {
+                    for(unsigned int j=1; j<nbp; j++) for(unsigned int t=0; t<nbt; t++) for(unsigned int k=0; k<nbc; k++) if (pts[0].vals[t][k] && pts[j].vals[t][k]) pts[0].vals[t][k] = (T)0.0;
                     for(unsigned int t=0; t<nbt; t++) for(unsigned int k=0; k<nbc; k++) img(t)(x,y,z,k) = (T)(pts[0].vals[t][k]);
                 }
             }
