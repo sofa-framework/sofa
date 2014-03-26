@@ -66,7 +66,7 @@ void LDLTSolver::factor(const AssembledSystem& sys) {
     }
 
     if( pimpl->Hinv.info() == Eigen::NumericalIssue ) {
-        std::cerr << "LDLTSolver::factor: H is not psd. System solution will be wrong." << std::endl;
+        std::cerr << "LDLTSolver::factor: H is not psd. System solution will be wrong. P is identity=" << sys.isPIdentity << " regularize=" << regularize.getValue() << std::endl;
 
         std::cerr << pimpl->H << std::endl;
     }
