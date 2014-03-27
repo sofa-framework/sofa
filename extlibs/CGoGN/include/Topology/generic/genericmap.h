@@ -554,6 +554,8 @@ public:
 	template <unsigned int ORBIT>
     inline AttributeMultiVector<unsigned int>* getEmbeddingAttributeVector() ;
 
+
+    inline AttributeMultiVector<unsigned int>* getEmbeddingAttributeVector(unsigned int ORBIT) { return m_embeddings[ORBIT]; }
 	/**
 	 * get the MR attribute container
 	 */
