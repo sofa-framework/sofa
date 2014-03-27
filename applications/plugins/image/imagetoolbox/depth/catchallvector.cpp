@@ -26,6 +26,7 @@
 
 #include "catchallvector.h"
 #include <sofa/core/ObjectFactory.h>
+#include "ImageTypes.h"
 
 namespace sofa
 {
@@ -50,6 +51,8 @@ int CatchAllVectorClass = core::RegisterObject("CatchAllVector")
         .add<CatchAllVector<long > >()
         .add<CatchAllVector<unsigned long > >()
         .add<CatchAllVector<bool > >()
+        .add<CatchAllVector<sofa::defaulttype::Vec3f> >()
+        .add<CatchAllVector<sofa::defaulttype::Vec3d> >()
         ;
 
 template class SOFA_IMAGE_API CatchAllVector<float >;
@@ -63,6 +66,8 @@ template class SOFA_IMAGE_API CatchAllVector<double >;
 template class SOFA_IMAGE_API CatchAllVector<long >;
 template class SOFA_IMAGE_API CatchAllVector<unsigned long >;
 template class SOFA_IMAGE_API CatchAllVector<bool >;
+template class SOFA_IMAGE_API CatchAllVector<sofa::defaulttype::Vec3f >;
+template class SOFA_IMAGE_API CatchAllVector<sofa::defaulttype::Vec3d >;
 
 
 
