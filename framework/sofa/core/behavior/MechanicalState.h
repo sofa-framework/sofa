@@ -259,7 +259,7 @@ public:
                 for(size_t j = 0; j < dim; ++j) {
                     typename Coord::value_type tmp;
                     defaulttype::DataTypeInfo<Coord>::getValue(vec[i], j, tmp);
-                    tmp += *(src++);
+                    tmp += (typename Coord::value_type) *(src++);
                     defaulttype::DataTypeInfo<Coord>::setValue(vec[i], j, tmp);
                 }
             }
@@ -274,7 +274,7 @@ public:
                 for(size_t j = 0; j < dim; ++j) {
                     typename Deriv::value_type tmp;
                     defaulttype::DataTypeInfo<Deriv>::getValue(vec[i], j, tmp);
-                    tmp += *(src++);
+                    tmp += (typename Coord::value_type) *(src++);
                     defaulttype::DataTypeInfo<Deriv>::setValue(vec[i], j, tmp);
                 }
             }
