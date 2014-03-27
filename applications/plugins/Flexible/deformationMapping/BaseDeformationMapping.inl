@@ -199,7 +199,15 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
     // clear velocities
     if(this->toModel->write(core::VecDerivId::velocity())) { helper::WriteAccessor<Data< OutVecDeriv > >  vel(*this->toModel->write(core::VecDerivId::velocity())); for(size_t i=0;i<vel.size();i++) vel[i].clear(); }
 
+    //Apply mapping to init child positions
     reinit();
+
+    //Init child rest positions if non custom rest position were provided
+    if(restPositionSet == false)
+    {
+        helper::WriteAccessor<Data< OutVecCoord > > rest_pos(*this->toModel->write(core::VecCoordId::restPosition()));
+        for(size_t i=0; i<rest_pos.size();++i){rest_pos[i]=out[i];}
+    }
 }
 
 
@@ -236,7 +244,12 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut(const vector<Coord>& 
     // clear velocities
     if(this->toModel->write(core::VecDerivId::velocity())) { helper::WriteAccessor<Data< OutVecDeriv > >  vel(*this->toModel->write(core::VecDerivId::velocity())); for(size_t i=0;i<vel.size();i++) vel[i].clear(); }
 
+    //Apply mapping to init child positions
     reinit();
+
+    //Need to init child rest positions
+    helper::WriteAccessor<Data< OutVecCoord > > rest_pos(*this->toModel->write(core::VecCoordId::restPosition()));
+    for(size_t i=0; i<rest_pos.size();++i){rest_pos[i]=out[i];}
 }
 
 

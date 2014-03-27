@@ -294,11 +294,11 @@ public:
         return jacobian;
     }
 
-	void setWeights(const vector<VReal>& weights, const vector<VRef>& indices)
-	{
-		f_index = indices;
-		f_w = weights;
-	}
+    void setWeights(const vector<VReal>& weights, const vector<VRef>& indices)
+    {
+        f_index = indices;
+        f_w = weights;
+    }
 
     Data<std::string> f_shapeFunction_name; ///< name of the shape function component (optional: if not specified, will searchup)
     BaseShapeFunction* _shapeFunction;        ///< where the weights are computed
