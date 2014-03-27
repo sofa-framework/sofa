@@ -65,7 +65,7 @@ public:
     // describing a link between Assimp Node and Sofa Node allowing us to build a node hierarchy
     struct NodeInfo
     {
-        int				mChildIndex;		// index of the current child node to process
+        std::size_t			mChildIndex;		// index of the current child node to process
         aiNode*				mAiNode;		// aiNode being processed
         Node::SPtr			mNode;			// corresponding Node created in the sofa scene graph
         NodeInfo*			mParentNode;		// parent node (useful to retrieve mesh skeleton and to compute world transformation matrix)

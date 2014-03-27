@@ -135,9 +135,9 @@ public:
     }
 
     //Inputs
+    sofa::core::objectmodel::DataFileName m_filename;
     Data< ImageTypes > image;
     Data< TransformType > transform;
-    sofa::core::objectmodel::DataFileName m_filename;
 
     //Outputs
     Data<VecCoord> f_newX0;
@@ -150,9 +150,9 @@ public:
     //Parameters
     Data<double> facetAngle, facetSize, facetApproximation;
     Data<double> cellRatio;
-	Data<double> cellSize;
-	Data< sofa::helper::vector<int> > label;
-	Data< sofa::helper::vector<double> > labelCellSize;
+    Data<double> cellSize;
+    Data< sofa::helper::vector<int> > label;
+    Data< sofa::helper::vector<double> > labelCellSize;
     Data<bool> odt, lloyd, perturb, exude;
     Data<int> odt_max_it, lloyd_max_it;
     Data<double> perturb_max_time, exude_max_time;
