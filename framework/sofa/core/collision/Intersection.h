@@ -28,6 +28,8 @@
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/collision/DetectionOutput.h>
 #include <sofa/helper/FnDispatcher.h>
+#include <boost/unordered_map.hpp>
+
 
 namespace sofa
 {

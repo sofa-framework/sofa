@@ -12,6 +12,8 @@ set(HEADER_FILES
     ../collision/CubeModel.h
     ../collision/DiscreteIntersection.h
     ../collision/BruteForceDetection.h
+    ../collision/TeschnerSpatialHashing.h
+    ../collision/TeschnerHashTable.h
     ../collision/DefaultContactManager.h
     ../collision/MinProximityIntersection.h
     ../collision/NewProximityIntersection.h
@@ -49,6 +51,7 @@ set(SOURCE_FILES
     ../collision/CapsuleModel.cpp
     ../collision/DiscreteIntersection.cpp
     ../collision/BruteForceDetection.cpp
+    ../collision/TeschnerSpatialHashing.cpp
     ../collision/DefaultContactManager.cpp
     ../collision/MinProximityIntersection.cpp
     ../collision/NewProximityIntersection.cpp
