@@ -74,6 +74,7 @@ public:
         int typeOffset1, typeOffset2;
         double offset1, offset2;
         std::string name;
+        int nbSlice;
 
         Layer():layer1(-1),layer2(-1),base(-1),typeOffset1(Distance),typeOffset2(Distance),offset1(0),offset2(0){}
     };
@@ -369,7 +370,7 @@ public:
         return true;
     }
 
-    bool createMeshFromLayer(LabelGridImageToolBoxNoTemplated *base, VecReal &v1,VecReal &v2,Vec2i reso,unsigned int numLayer)
+    bool createMeshFromLayer(LabelGridImageToolBoxNoTemplated *base, VecReal &v1,VecReal &v2,Vec2i reso,unsigned int numLayer, Layer& l)
     {
         //std::cout << "createMeshFromLayer" << std::endl;
 
@@ -380,11 +381,13 @@ public:
         MeshDataImageToolBox::VecCoord3 &position = meshs.positions;
         MeshDataImageToolBox::Layer &layer = meshs.veclayer[numLayer];
         layer.clear();
+        layer.name=l.name;
 
         unsigned int k0=position.size();
         //unsigned int k=0;
 
-        unsigned int slides = 1;
+        int &slices = l.nbSlice;
+        layer.setSlice(slices);
 
         helper::vector<sofa::defaulttype::Vec3d>& baseIP = *(base->d_outImagePosition.beginEdit());
         helper::vector<sofa::defaulttype::Vec3d>& baseN = *(base->d_outNormalImagePositionBySection.beginEdit());
@@ -392,7 +395,7 @@ public:
         Quads& baseQuad = *(base->d_outQuads.beginEdit());
 
         //modify position vector
-        unsigned int nbposition = (reso.x()+1)*(reso.y()+1)*(slides+1);
+        unsigned int nbposition = (reso.x()+1)*(reso.y()+1)*(slices+1);
         for(unsigned int i=0;i<nbposition;i++)position.push_back(Coord3(0,0,0));
 
         VecReal sumByMesh;
@@ -402,16 +405,15 @@ public:
         //for(unsigned int i=0;i<reso.x()+1;i++)
         //for(unsigned int j=0;j<reso.y()+1;j++)
 
-
         for(unsigned int k=0;k<baseQuad.size();k++)
         {
             Quad &quad = baseQuad[k];
 
 
-            double dt = (double)1.0/(double)slides;
+            double dt = (double)1.0/(double)slices;
 
             //std::cout << "quad " << k << "("<< baseIPk <<"//" << baseNk<< "//"<<min<<"//"<<max<< "//"<<v1[k] << " " << v2[k] <<" ) : ";
-            for(unsigned int h=0;h<slides+1;h++)
+            for(unsigned int h=0;h<slices+1;h++)
             {
                 double dt_h = dt*h;
 
@@ -430,8 +432,9 @@ public:
 
                     sofa::defaulttype::Vec3d point = min*dt_h+max*(1-dt_h);
 
-                    unsigned int index =  (quad[q]*(slides+1)) + h;
+                    unsigned int index =  (quad[q]*(slices+1)) + h;
                     position[k0 +index] += (/*fromImage(*/point/*)*/);
+                    layer.positionIndexOfSlice[h].push_back(k0+index);
                     sumByMesh[index] += 1;
                 }
             }
@@ -447,6 +450,49 @@ public:
             //std::cout << "point[" << i << "] = " << position[i] << " -> " << sumByMesh[i] << std::endl;
         }
 
+        //create edge Around the domain
+        std::map<unsigned int,int> mapEdge;
+        std::map<unsigned int,int>::iterator it;
+        for(unsigned int i=0;i<baseQuad.size();i++)
+        {
+            Quad &quad = baseQuad[i];
+
+            for(unsigned int j=0;j<4;j++)
+            {
+                unsigned int &p = quad[j];
+
+                it=mapEdge.find(p);
+                if(it==mapEdge.end())
+                {
+                    std::cout << "map " << p << " true" << std::endl;
+                    mapEdge[p]=0;
+                }
+                else
+                {
+                    std::cout << "map " << p << " false"<< std::endl;
+                    mapEdge[p]++;
+                }
+            }
+        }
+        it = mapEdge.begin();
+        while(it != mapEdge.end())
+        {
+            if(it->second < 2)
+            {
+                std::cout << "mmap"<< it->first << " "<<it->second<<std::endl;
+                for(unsigned int i=0;i<slices+1;i++)
+                {
+                    std::cout << " ->"<<k0+it->first*(slices+1)+i<<std::endl;
+
+                    layer.edgePositionIndexOfSlice[i].push_back(k0+it->first*(slices+1)+i);
+                }
+            }
+
+            ++it;
+        }
+
+
+
         MeshDataImageToolBox::VecIndex4& outG1 = layer.grid1;
         MeshDataImageToolBox::VecIndex4& outG2 = layer.grid2;
 
@@ -460,20 +506,20 @@ public:
             unsigned int p3 = (j+1)*(reso.x()+1)+i;
             unsigned int p4 = (j+1)*(reso.x()+1)+i+1;
 
-            p1*=(slides+1);
-            p2*=(slides+1);
-            p3*=(slides+1);
-            p4*=(slides+1);
+            p1*=(slices+1);
+            p2*=(slices+1);
+            p3*=(slices+1);
+            p4*=(slices+1);
 
             MeshDataImageToolBox::Index4 q1(p1+k0,p2+k0,p4+k0,p3+k0);
             //std::cout << "e"<<std::endl;
             outG1.push_back(q1);
             //std::cout << "f"<<std::endl;
 
-            p1+=slides;
-            p2+=slides;
-            p3+=slides;
-            p4+=slides;
+            p1+=slices;
+            p2+=slices;
+            p3+=slices;
+            p4+=slices;
 
             MeshDataImageToolBox::Index4 q2(p1+k0,p2+k0,p4+k0,p3+k0);
 
@@ -488,6 +534,9 @@ public:
         }
 
 //std::cout << "quit "<<std::endl;
+
+
+
 
         //create extern mesh
         MeshDataImageToolBox::VecIndex3 &outM = layer.triangles;
@@ -533,12 +582,12 @@ public:
             unsigned int p3 = p1+reso.x();
             unsigned int p4 = p2+reso.x();
 
-            p1*=(slides+1);
-            p2*=(slides+1);
-            p3*=(slides+1);
-            p4*=(slides+1);
+            p1*=(slices+1);
+            p2*=(slices+1);
+            p3*=(slices+1);
+            p4*=(slices+1);
 
-            for(unsigned int s=0;s<slides;s++)
+            for(unsigned int s=0;s<slices;s++)
             {
                 MeshDataImageToolBox::Index3  v1(p1+k0,p2+k0,p2+1+k0);
                 MeshDataImageToolBox::Index3  v2(p1+k0,p2+1+k0,p1+1+k0);
@@ -566,12 +615,12 @@ public:
             unsigned int p3 = reso.y()*(reso.x()+1)+i;
             unsigned int p4 = p3+1;
 
-            p1*=(slides+1);
-            p2*=(slides+1);
-            p3*=(slides+1);
-            p4*=(slides+1);
+            p1*=(slices+1);
+            p2*=(slices+1);
+            p3*=(slices+1);
+            p4*=(slices+1);
 
-            for(unsigned int s=0;s<slides;s++)
+            for(unsigned int s=0;s<slices;s++)
             {
                 MeshDataImageToolBox::Index3  v1(p2+1+k0,p2+k0,p1+k0);
                 MeshDataImageToolBox::Index3  v2(p1+1+k0,p2+1+k0,p1+k0);
@@ -599,11 +648,14 @@ public:
         {
             MeshDataImageToolBox::Index4  &q = layer.grid1[i];
 
-            for(unsigned int j=0;j<slides;j++)
+            for(unsigned int j=0;j<slices;j++)
             {
                 MeshDataImageToolBox::Index8  v1(q[0]+j,q[1]+j,q[2]+j,q[3]+j,q[0]+j+1,q[1]+j+1,q[2]+j+1,q[3]+j+1);
 
+                layer.hexaIndexOfSlice[j].push_back(outH.size());
                 outH.push_back(v1);
+
+
 
                 //std::cout << "hexahedra "<<v1 << std::endl;
             }
@@ -622,6 +674,13 @@ public:
             MeshDataImageToolBox::Index4 v4(q[3],q[1],q[2],q[6]);
             MeshDataImageToolBox::Index4 v5(q[7],q[3],q[6],q[4]);
 
+            uint ss = outT.size();
+            uint sl = i%slices;
+            layer.tetraIndexOfSlice[sl].push_back(ss);
+            layer.tetraIndexOfSlice[sl].push_back(ss+1);
+            layer.tetraIndexOfSlice[sl].push_back(ss+2);
+            layer.tetraIndexOfSlice[sl].push_back(ss+3);
+            layer.tetraIndexOfSlice[sl].push_back(ss+4);
             outT.push_back(v1);
             outT.push_back(v2);
             outT.push_back(v3);
@@ -694,9 +753,9 @@ public:
         }
 
         createLayerInImage(v1,v2,base->d_reso.getValue(),numLayer);
-        createMeshFromLayer(base,v1,v2,base->d_reso.getValue(),numLayer);
+        createMeshFromLayer(base,v1,v2,base->d_reso.getValue(),numLayer,l);
 
-        meshs.veclayer[numLayer].name=l.name;
+
 
   //      std::cout << toImage(1) << "/"<<fromImage(1)<<"/"<< toImage(Coord3(1.0,1.0,1.0)) << "/"<<fromImage(Coord3(435.934, 778.795, -70.2253)) <<std::endl;
   //      std::cout << d_transform.getValue() << std::endl;
@@ -1005,8 +1064,19 @@ public:
             saveSCN_grid1(out, i);
             saveSCN_grid2(out, i);
             saveSCN_indexLayer(out,i);
-            saveSCN_indexGrid1(out,i);
-            saveSCN_indexGrid2(out,i);
+
+            std::list<unsigned int> vecG1, vecG2;
+            saveSCN_indexGrid1(out,i,vecG1);
+            saveSCN_indexGrid2(out,i,vecG2);
+
+            saveSCN_simplifiedGrid1(out,i,vecG1);
+            saveSCN_simplifiedGrid2(out,i,vecG2);
+
+            saveSCN_positionIndexSlice(out,i);
+            saveSCN_edgepositionIndexSlice(out,i);
+            saveSCN_hexaIndexSlice(out,i);
+            saveSCN_tetraIndexSlice(out,i);
+
 
             out << "</Node>\n";
         }
@@ -1040,6 +1110,99 @@ public:
         saveSCN_indexHexa(out, meshs.veclayer[index].hexas);
         out << "/>\n";
         //std::cout << std::endl;
+    }
+
+    void saveSCN_positionIndexSlice(QTextStream &out, int index)
+    {
+        int nbSlice = meshs.veclayer[index].nbSlice;
+        for(int i=0;i<nbSlice+1;i++)
+        {
+            out <<" <CatchAllVector name=\"SlicePositionIndex" << i << "\" data=\"";
+
+            MeshDataImageToolBox::VecIndex & vecl = meshs.veclayer[index].positionIndexOfSlice[i];
+            std::list<unsigned int> vec;
+
+            for(int j=0;j<vecl.size();j++)vec.push_back(vecl[j]);
+
+
+            vec.sort();
+            vec.unique();
+
+            for(std::list<unsigned int>::iterator it=vec.begin();it!= vec.end();++it)
+            {
+                out << *it << " ";
+            }
+            out << "\"/>\n";
+        }
+    }
+
+    void saveSCN_edgepositionIndexSlice(QTextStream &out, int index)
+    {
+        int nbSlice = meshs.veclayer[index].nbSlice;
+        for(int i=0;i<nbSlice+1;i++)
+        {
+            out <<" <CatchAllVector name=\"SliceEdgePositionIndex" << i << "\" data=\"";
+
+            MeshDataImageToolBox::VecIndex & vecl = meshs.veclayer[index].edgePositionIndexOfSlice[i];
+            std::list<unsigned int> vec;
+
+            for(int j=0;j<vecl.size();j++)vec.push_back(vecl[j]);
+
+            vec.sort();
+            vec.unique();
+
+            for(std::list<unsigned int>::iterator it=vec.begin();it!= vec.end();++it)
+            {
+                out << *it << " ";
+            }
+            out << "\"/>\n";
+        }
+    }
+
+    void saveSCN_hexaIndexSlice(QTextStream &out, int index)
+    {
+        int nbSlice = meshs.veclayer[index].nbSlice;
+        for(int i=0;i<nbSlice;i++)
+        {
+            out <<" <CatchAllVector name=\"SliceHexaIndex" << i << "\" data=\"";
+
+            MeshDataImageToolBox::VecIndex & vecl = meshs.veclayer[index].hexaIndexOfSlice[i];
+            std::list<unsigned int> vec;
+
+            for(int j=0;j<vecl.size();j++)vec.push_back(vecl[j]);
+
+            vec.sort();
+            vec.unique();
+
+            for(std::list<unsigned int>::iterator it=vec.begin();it!= vec.end();++it)
+            {
+                out << *it << " ";
+            }
+            out << "\"/>\n";
+        }
+    }
+
+    void saveSCN_tetraIndexSlice(QTextStream &out, int index)
+    {
+        int nbSlice = meshs.veclayer[index].nbSlice;
+        for(int i=0;i<nbSlice;i++)
+        {
+            out <<" <CatchAllVector name=\"SliceTetraIndex" << i << "\" data=\"";
+
+            MeshDataImageToolBox::VecIndex & vecl = meshs.veclayer[index].tetraIndexOfSlice[i];
+            std::list<unsigned int> vec;
+
+            for(int j=0;j<vecl.size();j++)vec.push_back(vecl[j]);
+
+            vec.sort();
+            vec.unique();
+
+            for(std::list<unsigned int>::iterator it=vec.begin();it!= vec.end();++it)
+            {
+                out << *it << " ";
+            }
+            out << "\"/>\n";
+        }
     }
 
     void saveSCN_indexLayer(QTextStream &out, int index)
@@ -1127,28 +1290,114 @@ public:
         //std::cout << "saveSCN_indexLayer4"<<std::endl;
     }
 
-
-
-    void saveSCN_indexGrid1(QTextStream &out, int index)
+    void saveSCN_simplifiedGrid1(QTextStream &out, int index, std::list<unsigned int> &vec)
     {
-        out << " <CatchAllVector name=\"UsedPositionGrid1Index\" data=\"";
-        saveSCN_indexGrid(out,meshs.veclayer[index].grid1);
+        out << " <Mesh name=\"SimplifiedGrid1\" position=\"";
+        saveSCN_clearPositionGrid1(out,vec);
+        out << "\" quads=\"";
+        saveSCN_clearIndexGrid1(out,index,vec);
         out << "\" />\n";
     }
 
-    void saveSCN_indexGrid2(QTextStream &out, int index)
+    void saveSCN_simplifiedGrid2(QTextStream &out, int index, std::list<unsigned int> &vec)
     {
-        out << " <CatchAllVector name=\"UsedPositionGrid2Index\" data=\"";
-        saveSCN_indexGrid(out,meshs.veclayer[index].grid2);
+        out << " <Mesh name=\"SimplifiedGrid2\" position=\"";
+        saveSCN_clearPositionGrid2(out,vec);
+        out << "\" quads=\"";
+        saveSCN_clearIndexGrid2(out,index,vec);
         out << "\" />\n";
     }
 
+    void saveSCN_clearPositionGrid1(QTextStream &out, /*int index,*/ std::list<unsigned int> &vec)
+    {
+        //out << " <CatchAllVector name=\"Grid1ClearPosition\" data=\"";
+        saveSCN_baseClearPositionGrid(out,vec);
+        //out << "\" />\n";
+    }
 
-    void saveSCN_indexGrid(QTextStream &out,MeshDataImageToolBox::VecIndex4 &grid)
+    void saveSCN_clearPositionGrid2(QTextStream &out, /*int index,*/ std::list<unsigned int> &vec)
+    {
+        //out << " <CatchAllVector name=\"Grid2ClearPosition\" data=\"";
+        saveSCN_baseClearPositionGrid(out,vec);
+        //out << "\" />\n";
+    }
+
+    void saveSCN_baseClearPositionGrid(QTextStream &out, std::list<unsigned int> &vec)
+    {
+        //std::cout << "saveSCN_baseClearPositionGrid" << vec.size() << std::endl;
+
+        VecCoord3 &pos = meshs.positions;
+
+        for(std::list<unsigned int>::iterator it=vec.begin();it!= vec.end();++it)
+        {
+            //std::cout << "+ " << i << std::endl;
+            Coord3 &c= pos[*it];
+
+            out << c.x() << " " << c.y() << " " << c.z() << " ";
+        }
+    }
+
+    void saveSCN_clearIndexGrid1(QTextStream &out, int index, std::list<unsigned int> &vec)
+    {
+        //out << " <CatchAllVector name=\"Grid1ClearIndex\" data=\"";
+        saveSCN_baseClearIndexGrid(out,meshs.veclayer[index].grid1,vec);
+        //out << "\" />\n";
+    }
+
+    void saveSCN_clearIndexGrid2(QTextStream &out, int index, std::list<unsigned int> &vec)
+    {
+        //out << " <CatchAllVector name=\"Grid2ClearIndex\" data=\"";
+        saveSCN_baseClearIndexGrid(out,meshs.veclayer[index].grid2,vec);
+        //out << "\" />\n";
+    }
+
+    void saveSCN_baseClearIndexGrid(QTextStream &out,MeshDataImageToolBox::VecIndex4 &grid, std::list<unsigned int> &vec)
     {
         //std::cout << "saveSCN_indexGrid" << grid.size() << std::endl;
 
-        std::list<unsigned int> vec;
+        //VecCoord3 &pos = meshs.positions;
+
+        for(unsigned int i=0;i<grid.size();i++)
+        {
+            //std::cout << "+ " << i << std::endl;
+            MeshDataImageToolBox::Index4 &quad= grid[i];
+
+            for(unsigned int j=0;j<4;j++)
+            {
+                unsigned int &point = quad[j];
+
+                unsigned int k=0;
+                for(std::list<unsigned int>::iterator it=vec.begin();it!= vec.end();++it)
+                {
+                    if(*it==point)
+                    {
+                        out << k << " ";
+                        k=vec.size();
+                    }
+
+                    k++;
+                }
+            }
+        }
+    }
+
+    void saveSCN_indexGrid1(QTextStream &out, int index, std::list<unsigned int> &vec)
+    {
+        out << " <CatchAllVector name=\"Grid1UsedPositionIndex\" data=\"";
+        saveSCN_baseIndexGrid(out,meshs.veclayer[index].grid1,vec);
+        out << "\" />\n";
+    }
+
+    void saveSCN_indexGrid2(QTextStream &out, int index, std::list<unsigned int> &vec)
+    {
+        out << " <CatchAllVector name=\"Grid2UsedPositionIndex\" data=\"";
+        saveSCN_baseIndexGrid(out,meshs.veclayer[index].grid2,vec);
+        out << "\" />\n";
+    }
+
+    void saveSCN_baseIndexGrid(QTextStream &out,MeshDataImageToolBox::VecIndex4 &grid, std::list<unsigned int> &vec)
+    {
+        //std::cout << "saveSCN_indexGrid" << grid.size() << std::endl;
 
         for(unsigned int i=0;i<grid.size();i++)
         {
@@ -1171,10 +1420,10 @@ public:
 
         //std::cout << "hh"<<std::endl;
 
-        while(!vec.empty())
+
+        for(std::list<unsigned int>::iterator it=vec.begin();it!= vec.end();++it)
         {
-            out << vec.front() << " ";
-            vec.pop_front();
+            out << *it << " ";
         }
 
         //std::cout << "hh"<<std::endl;

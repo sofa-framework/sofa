@@ -24,6 +24,10 @@ public:
     typedef sofa::helper::vector< Index3 > VecIndex3;
     typedef sofa::helper::vector< Index4 > VecIndex4;
     typedef sofa::helper::vector< Index8 > VecIndex8;
+    typedef sofa::helper::vector< VecIndex > VecVecIndex;
+    typedef sofa::helper::vector< VecIndex3 > VecVecIndex3;
+    typedef sofa::helper::vector< VecIndex8 > VecVecIndex8;
+    typedef sofa::helper::vector< VecIndex4 > VecVecIndex4;
 
     typedef sofa::helper::vector< Coord3 > VecCoord3;
 
@@ -39,15 +43,37 @@ public:
 
         std::string name;
 
+        unsigned int nbSlice;
+        VecVecIndex positionIndexOfSlice;
+        VecVecIndex edgePositionIndexOfSlice;
+        VecVecIndex hexaIndexOfSlice;
+        VecVecIndex tetraIndexOfSlice;
+
+
         void clear()
         {
+            nbSlice = 0;
             elements.clear();
             grid1.clear();
             grid2.clear();
             triangles.clear();
             tetras.clear();
             hexas.clear();
+            positionIndexOfSlice.clear();
+            edgePositionIndexOfSlice.clear();
+            hexaIndexOfSlice.clear();
+            tetraIndexOfSlice.clear();
         }
+
+        void setSlice(unsigned int slice)
+        {
+            nbSlice = slice;
+            positionIndexOfSlice.resize(slice+1);
+            edgePositionIndexOfSlice.resize(slice+1);
+            hexaIndexOfSlice.resize(slice);
+            tetraIndexOfSlice.resize(slice);
+        }
+
     };
     typedef sofa::helper::vector< Layer > VecLayer;
 

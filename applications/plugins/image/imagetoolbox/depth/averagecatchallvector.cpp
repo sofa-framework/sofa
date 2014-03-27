@@ -22,9 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_IMAGE_MERGEDCATCHALLVECTOR_CPP
+#define SOFA_IMAGE_AVERAGECATCHALLVECTOR_CPP
 
-#include "mergedcatchallvector.h"
+#include "averagecatchallvector.h"
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
@@ -36,37 +36,37 @@ namespace engine
 
 using namespace defaulttype;
 
-SOFA_DECL_CLASS(MergedCatchAllVector)
+SOFA_DECL_CLASS(AverageCatchAllVector)
 
-int MergedCatchAllVectorClass = core::RegisterObject("MergedCatchAllVector")
-        .add<MergedCatchAllVector<float > >(true)
-        //.add<MergedCatchAllVector<unsigned float> >()
-        .add<MergedCatchAllVector<short > >()
-        .add<MergedCatchAllVector<unsigned short > >()
-        .add<MergedCatchAllVector<int > >()
-        .add<MergedCatchAllVector<unsigned int > >()
-        .add<MergedCatchAllVector<double > >()
-        //.add<MergedCatchAllVector<unsigned double> >()
-        .add<MergedCatchAllVector<long > >()
-        .add<MergedCatchAllVector<unsigned long > >()
-        .add<MergedCatchAllVector<bool > >()
-        .add<MergedCatchAllVector<sofa::defaulttype::Vec3f> >()
-        .add<MergedCatchAllVector<sofa::defaulttype::Vec3d> >()
+int AverageCatchAllVectorClass = core::RegisterObject("AverageCatchAllVector")
+        .add<AverageCatchAllVector<float > >(true)
+        //.add<AverageCatchAllVector<unsigned float> >()
+        .add<AverageCatchAllVector<short > >()
+        .add<AverageCatchAllVector<unsigned short > >()
+        .add<AverageCatchAllVector<int > >()
+        .add<AverageCatchAllVector<unsigned int > >()
+        .add<AverageCatchAllVector<double > >()
+        //.add<AverageCatchAllVector<unsigned double> >()
+        .add<AverageCatchAllVector<long > >()
+        .add<AverageCatchAllVector<unsigned long > >()
+        .add<AverageCatchAllVector<bool > >()
+        .add<AverageCatchAllVector<sofa::defaulttype::Vec3f> >()
+        .add<AverageCatchAllVector<sofa::defaulttype::Vec3d> >()
         ;
 
-template class SOFA_IMAGE_API MergedCatchAllVector<float >;
-//template class SOFA_IMAGE_API MergedCatchAllVector<unsigned float >;
-template class SOFA_IMAGE_API MergedCatchAllVector<short >;
-template class SOFA_IMAGE_API MergedCatchAllVector<unsigned short >;
-template class SOFA_IMAGE_API MergedCatchAllVector<int >;
-template class SOFA_IMAGE_API MergedCatchAllVector<unsigned int >;
-template class SOFA_IMAGE_API MergedCatchAllVector<double >;
-//template class SOFA_IMAGE_API MergedCatchAllVector<unsigned double >;
-template class SOFA_IMAGE_API MergedCatchAllVector<long >;
-template class SOFA_IMAGE_API MergedCatchAllVector<unsigned long >;
-template class SOFA_IMAGE_API MergedCatchAllVector<bool >;
-template class SOFA_IMAGE_API MergedCatchAllVector<sofa::defaulttype::Vec3f >;
-template class SOFA_IMAGE_API MergedCatchAllVector<sofa::defaulttype::Vec3d >;
+template class SOFA_IMAGE_API AverageCatchAllVector<float >;
+//template class SOFA_IMAGE_API AverageCatchAllVector<unsigned float >;
+template class SOFA_IMAGE_API AverageCatchAllVector<short >;
+template class SOFA_IMAGE_API AverageCatchAllVector<unsigned short >;
+template class SOFA_IMAGE_API AverageCatchAllVector<int >;
+template class SOFA_IMAGE_API AverageCatchAllVector<unsigned int >;
+template class SOFA_IMAGE_API AverageCatchAllVector<double >;
+//template class SOFA_IMAGE_API AverageCatchAllVector<unsigned double >;
+template class SOFA_IMAGE_API AverageCatchAllVector<long >;
+template class SOFA_IMAGE_API AverageCatchAllVector<unsigned long >;
+template class SOFA_IMAGE_API AverageCatchAllVector<bool >;
+template class SOFA_IMAGE_API AverageCatchAllVector<sofa::defaulttype::Vec3f >;
+template class SOFA_IMAGE_API AverageCatchAllVector<sofa::defaulttype::Vec3d >;
 
 
 

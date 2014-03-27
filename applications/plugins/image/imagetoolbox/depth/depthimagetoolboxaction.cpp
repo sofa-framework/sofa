@@ -90,6 +90,8 @@ void DepthImageToolBoxAction::createMainCommands()
 
 void DepthImageToolBoxAction::createListLayers()
 {
+    std::cout<<"nnn "<<std::endl;
+
     sofa::component::engine::DepthImageToolBox *l = DITB();
     unsigned int numberGrid = l->labelsOfGrid.size();
 
@@ -105,7 +107,9 @@ void DepthImageToolBoxAction::createListLayers()
     listLayers->insertColumn(2);
     listLayers->insertColumn(3);
 
-    listLayers->setHorizontalHeaderLabels(QStringList() << "name" << "base" << "grid1" << "grid2");
+    QStringList header; header << "name" << "geometry" << "grid1" << "grid2";
+    listLayers->setHorizontalHeaderLabels(header);
+
 
     QPushButton *listLayersAdd = new QPushButton("Add");
     connect(listLayersAdd,SIGNAL(clicked()),this,SLOT(createNewRow()));
@@ -130,8 +134,10 @@ void DepthImageToolBoxAction::createListLayers()
     {
         listLayersAdd->setEnabled(false);
         listLayersRem->setEnabled(false);
-        listLayers->setEnabled(false);
+        //listLayers->setEnabled(false);
     }
+
+
 
     this->addWidget(gp);
 
@@ -149,8 +155,7 @@ void DepthImageToolBoxAction::createNewRow(int layer)
     QString offset1;offsetToText(offset1,l.offset1,l.typeOffset1);
     QString offset2;offsetToText(offset2,l.offset2,l.typeOffset2);
 
-    row->setValue(QString::fromStdString(l.name), l.layer1, offset1, l.layer2, offset2, l.base);
-
+    row->setValue(QString::fromStdString(l.name), l.layer1, offset1, l.layer2, offset2, l.base,l.nbSlice);
 }
 
 void DepthImageToolBoxAction::createNewRow()
@@ -168,7 +173,7 @@ void DepthImageToolBoxAction::createNewRow()
     l->createLayer();
     //std::cout << l->layers.size()<<std::endl;
 
-    this->connect(row,SIGNAL(valueChanged(int,QString,int,QString,int,QString,int)),this,SLOT(changeRow(int,QString,int,QString,int,QString,int)));
+    this->connect(row,SIGNAL(valueChanged(int,QString,int,QString,int,QString,int,int)),this,SLOT(changeRow(int,QString,int,QString,int,QString,int,int)));
     row->change();
 
     listRows.push_back(row);
@@ -216,7 +221,7 @@ void DepthImageToolBoxAction::textToOffset(QString text, double &outValue, int &
     return;
 }
 
-void DepthImageToolBoxAction::changeRow(int index,QString name,int layer1,QString offset1,int layer2,QString offset2,int base)
+void DepthImageToolBoxAction::changeRow(int index,QString name,int layer1,QString offset1,int layer2,QString offset2,int base,int nbSlice)
 {
     //std::cout << "DepthImageToolBoxAction::changeRow " << index << " "<< name.toStdString() << " "<<layer1<<" "<<offset1.toStdString()<<" "<<layer2<<" "<<offset2.toStdString()<<std::endl;
 
@@ -230,6 +235,7 @@ void DepthImageToolBoxAction::changeRow(int index,QString name,int layer1,QStrin
     layer.layer1 = layer1;
     layer.layer2 = layer2;
     layer.base = base;
+    layer.nbSlice = nbSlice;
 
     textToOffset(offset1,layer.offset1,layer.typeOffset1);
     textToOffset(offset2,layer.offset2,layer.typeOffset2);

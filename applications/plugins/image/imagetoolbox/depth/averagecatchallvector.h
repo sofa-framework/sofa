@@ -22,10 +22,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_IMAGE_MERGEDCATCHALLVECTOR_CPP
+#ifndef SOFA_IMAGE_AVERAGECATCHALLVECTOR_H
+#define SOFA_IMAGE_AVERAGECATCHALLVECTOR_H
 
-#include "mergedcatchallvector.h"
-#include <sofa/core/ObjectFactory.h>
+#include "initImage.h"
+#include <sofa/core/DataEngine.h>
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/defaulttype/Vec.h>
+
+#include <sofa/component/component.h>
+#include <sofa/helper/OptionsGroup.h>
+
+#include "ImageContainer.h"
 
 namespace sofa
 {
@@ -34,44 +42,74 @@ namespace component
 namespace engine
 {
 
-using namespace defaulttype;
+template <class _Type>
+class AverageCatchAllVector : public core::DataEngine
+{
+public:
+    typedef core::DataEngine Inherited;
+    SOFA_CLASS(SOFA_TEMPLATE(AverageCatchAllVector,_Type),Inherited);
 
-SOFA_DECL_CLASS(MergedCatchAllVector)
+    typedef _Type Type;
 
-int MergedCatchAllVectorClass = core::RegisterObject("MergedCatchAllVector")
-        .add<MergedCatchAllVector<float > >(true)
-        //.add<MergedCatchAllVector<unsigned float> >()
-        .add<MergedCatchAllVector<short > >()
-        .add<MergedCatchAllVector<unsigned short > >()
-        .add<MergedCatchAllVector<int > >()
-        .add<MergedCatchAllVector<unsigned int > >()
-        .add<MergedCatchAllVector<double > >()
-        //.add<MergedCatchAllVector<unsigned double> >()
-        .add<MergedCatchAllVector<long > >()
-        .add<MergedCatchAllVector<unsigned long > >()
-        .add<MergedCatchAllVector<bool > >()
-        .add<MergedCatchAllVector<sofa::defaulttype::Vec3f> >()
-        .add<MergedCatchAllVector<sofa::defaulttype::Vec3d> >()
-        ;
+    AverageCatchAllVector()    :   Inherited()
+        ,_data(initData(&_data,"data_out","data_out"))
+        ,_data1(initData(&_data1,"data_in1","data_in1"))
+        ,_data2(initData(&_data2,"data_in2","data_in2"))
 
-template class SOFA_IMAGE_API MergedCatchAllVector<float >;
-//template class SOFA_IMAGE_API MergedCatchAllVector<unsigned float >;
-template class SOFA_IMAGE_API MergedCatchAllVector<short >;
-template class SOFA_IMAGE_API MergedCatchAllVector<unsigned short >;
-template class SOFA_IMAGE_API MergedCatchAllVector<int >;
-template class SOFA_IMAGE_API MergedCatchAllVector<unsigned int >;
-template class SOFA_IMAGE_API MergedCatchAllVector<double >;
-//template class SOFA_IMAGE_API MergedCatchAllVector<unsigned double >;
-template class SOFA_IMAGE_API MergedCatchAllVector<long >;
-template class SOFA_IMAGE_API MergedCatchAllVector<unsigned long >;
-template class SOFA_IMAGE_API MergedCatchAllVector<bool >;
-template class SOFA_IMAGE_API MergedCatchAllVector<sofa::defaulttype::Vec3f >;
-template class SOFA_IMAGE_API MergedCatchAllVector<sofa::defaulttype::Vec3d >;
+    {
+
+    }
+
+    ~AverageCatchAllVector() {}
+
+    void init()
+    {
+        reinit();
+    }
+
+    void reinit()
+    {
+        vector<Type> data;
+        const vector<Type> &data1 = _data1.getValue();
+        const vector<Type> &data2 = _data2.getValue();
 
 
+        for(int i=0;i<data1.size();i++)
+        {
+            data.push_back((data1[i]+data2[i])/2);
+        }
+
+        _data.setValue(data);
+
+    }
+
+    Data< vector<Type> > _data;
+    Data< vector<Type> > _data1;
+    Data< vector<Type> > _data2;
+
+protected:
+
+    virtual void update()
+    {
+    }
+
+public:
+
+   /* virtual void draw(const core::visual::VisualParams*)
+    {
+    }
+
+    void handleEvent(core::objectmodel::Event *event)
+    {
+    }*/
+};
 
 
-} //
+
+
+
+} // namespace engine
 } // namespace component
 } // namespace sofa
 
+#endif // SOFA_IMAGE_AverageCatchAllVector_H
