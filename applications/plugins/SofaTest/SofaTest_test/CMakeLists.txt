@@ -17,6 +17,7 @@ set(SOURCE_FILES
     ProjectToLineConstraint_test.cpp
     BaryMapperTest.cpp
     LoadScene_test.cpp
+    TeschnerSpatialHashing_test.cpp
         )
 
 if(APPLE)
