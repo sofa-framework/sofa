@@ -38,6 +38,8 @@ namespace cgal
 template <class DataTypes, class _ImageTypes>
 MeshGenerationFromImage<DataTypes, _ImageTypes>::MeshGenerationFromImage()
 	: m_filename(initData(&m_filename,"filename","Image file"))
+    , image(initData(&image,ImageTypes(),"image","image input"))
+    , transform(initData(&transform, "transform" , "12-param vector for trans, rot, scale, ..."))
     , f_newX0( initData (&f_newX0, "outputPoints", "New Rest position coordinates from the tetrahedral generation"))
     , f_tetrahedra(initData(&f_tetrahedra, "outputTetras", "List of tetrahedra"))
     , f_tetraDomain(initData(&f_tetraDomain, "outputTetrasDomains", "domain of each tetrahedron"))
@@ -60,8 +62,6 @@ MeshGenerationFromImage<DataTypes, _ImageTypes>::MeshGenerationFromImage()
     , ordering(initData(&ordering, 0, "ordering", "Output points and elements ordering (0 = none, 1 = longest bbox axis)"))
     , drawTetras(initData(&drawTetras, false, "drawTetras", "display generated tetra mesh"))
     , drawSurface(initData(&drawSurface, false, "drawSurface", "display input surface mesh"))
-    , image(initData(&image,ImageTypes(),"image","image input"))
-    , transform(initData(&transform, "transform" , "12-param vector for trans, rot, scale, ..."))
 {
 }
 

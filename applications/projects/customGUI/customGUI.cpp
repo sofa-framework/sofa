@@ -227,7 +227,7 @@ void reshape (int w, int h)
     //    cout<<"reshape"<<endl;
 }
 
-void keyboard(unsigned char key, int x, int y)
+void keyboard(unsigned char key, int /*x*/, int /*y*/)
 {
     switch (key) {
     case 27:

@@ -202,7 +202,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
             NodeInfo* parentNodeInfo = currentNodeInfo.mParentNode;
             aiNode* currentAiNode = currentNodeInfo.mAiNode;
             Node::SPtr currentNode = currentNodeInfo.mNode;
-            int& childIndex = currentNodeInfo.mChildIndex;
+            std::size_t& childIndex = currentNodeInfo.mChildIndex;
             aiMatrix4x4& currentTransformation = currentNodeInfo.mTransformation;
 
             // process the node just one time
@@ -819,7 +819,7 @@ bool SceneColladaLoader::fillSkeletalInfo(const aiScene* scene, aiNode* meshPare
         return false;
     }
 
-    std::map<aiNode*, int> aiNodeToSkeletonJointIndex;
+    std::map<aiNode*, std::size_t> aiNodeToSkeletonJointIndex;
 
     // compute the mesh transformation into a rigid
     Mat4x4d meshWorldTranformation(meshTransformation[0]);
@@ -853,7 +853,7 @@ bool SceneColladaLoader::fillSkeletalInfo(const aiScene* scene, aiNode* meshPare
             aiNode* node = scene->mRootNode->FindNode(nodeName);
 
             // create the corresponding SkeletonJoint if it does not exist
-            std::map<aiNode*, int>::iterator aiNodeToSkeletonJointIndexIterator = aiNodeToSkeletonJointIndex.find(node);
+            std::map<aiNode*, std::size_t>::iterator aiNodeToSkeletonJointIndexIterator = aiNodeToSkeletonJointIndex.find(node);
             if(aiNodeToSkeletonJointIndex.end() == aiNodeToSkeletonJointIndexIterator)
             {
                 skeletonJoints.push_back(SkeletonJoint<Rigid3dTypes>());
@@ -869,12 +869,12 @@ bool SceneColladaLoader::fillSkeletalInfo(const aiScene* scene, aiNode* meshPare
             aiVectorKey positionKey, scaleKey;
             aiQuatKey	rotationKey;
 
-            int numKey = std::max(channel->mNumPositionKeys, channel->mNumRotationKeys);
+            unsigned int numKey = std::max(channel->mNumPositionKeys, channel->mNumRotationKeys);
             //int numKey = std::max(channel->mNumScalingKeys , std::max(channel->mNumPositionKeys, channel->mNumRotationKeys));
 
             skeletonJoint.mTimes.resize(numKey);
             skeletonJoint.mChannels.resize(numKey);
-            for(int l = 0; l < numKey; ++l)
+            for(unsigned int l = 0; l < numKey; ++l)
             {
                 double time = 0.0;
                 aiMatrix4x4 transformation;
@@ -931,7 +931,7 @@ bool SceneColladaLoader::fillSkeletalInfo(const aiScene* scene, aiNode* meshPare
         aiNode* node = scene->mRootNode->FindNode(boneName);
 
         // create the corresponding SkeletonJoint if it does not exist
-        std::map<aiNode*, int>::iterator aiNodeToSkeletonJointIndexIterator = aiNodeToSkeletonJointIndex.find(node);
+        std::map<aiNode*, std::size_t>::iterator aiNodeToSkeletonJointIndexIterator = aiNodeToSkeletonJointIndex.find(node);
         if(aiNodeToSkeletonJointIndex.end() == aiNodeToSkeletonJointIndexIterator)
         {
             skeletonJoints.push_back(SkeletonJoint<Rigid3dTypes>());
@@ -943,14 +943,14 @@ bool SceneColladaLoader::fillSkeletalInfo(const aiScene* scene, aiNode* meshPare
     }
 
     // register every SkeletonJoint and their parents and fill up theirs properties
-    for(int i = 0; i < skeletonJoints.size(); ++i)
+    for(std::size_t i = 0; i < skeletonJoints.size(); ++i)
     {
         SkeletonJoint<Rigid3dTypes>& skeletonJoint = skeletonJoints[i];
 
         aiNode*	node = NULL;
 
         // find the ai node corresponding to the SkeletonJoint
-        for(std::map<aiNode*, int>::iterator aiNodeToSkeletonJointIndexIterator = aiNodeToSkeletonJointIndex.begin(); aiNodeToSkeletonJointIndexIterator != aiNodeToSkeletonJointIndex.end(); ++aiNodeToSkeletonJointIndexIterator)
+        for(std::map<aiNode*, std::size_t>::iterator aiNodeToSkeletonJointIndexIterator = aiNodeToSkeletonJointIndex.begin(); aiNodeToSkeletonJointIndexIterator != aiNodeToSkeletonJointIndex.end(); ++aiNodeToSkeletonJointIndexIterator)
         {
             if(i == aiNodeToSkeletonJointIndexIterator->second)
             {
@@ -962,7 +962,8 @@ bool SceneColladaLoader::fillSkeletalInfo(const aiScene* scene, aiNode* meshPare
         if(NULL == node)
             return false;
 
-        int previousSkeletonJointIndex = -1;
+        std::size_t previousSkeletonJointIndex;
+        bool firstIteration = true;
 
         // find parents node
         while(NULL != node)
@@ -972,7 +973,7 @@ bool SceneColladaLoader::fillSkeletalInfo(const aiScene* scene, aiNode* meshPare
                 break;
 
             // create the corresponding SkeletonJoint if it does not exist
-            std::map<aiNode*, int>::iterator aiNodeToSkeletonJointIndexIterator = aiNodeToSkeletonJointIndex.find(node);
+            std::map<aiNode*, std::size_t>::iterator aiNodeToSkeletonJointIndexIterator = aiNodeToSkeletonJointIndex.find(node);
             if(aiNodeToSkeletonJointIndex.end() == aiNodeToSkeletonJointIndexIterator)
             {
                 skeletonJoints.push_back(SkeletonJoint<Rigid3dTypes>());
@@ -1003,15 +1004,16 @@ bool SceneColladaLoader::fillSkeletalInfo(const aiScene* scene, aiNode* meshPare
                 localRigid = meshTransformationRigid.mult(localRigid);
 
                 // apply the mesh transformation to each channel if the skeleton root joint contains animation
-                for(int i = 0; i < currentSkeletonJoint.mChannels.size(); ++i)
+                for(std::size_t i = 0; i < currentSkeletonJoint.mChannels.size(); ++i)
                     currentSkeletonJoint.mChannels[i] = meshTransformationRigid.mult(currentSkeletonJoint.mChannels[i]);
             }
 
             currentSkeletonJoint.setRestPosition(localRigid);
 
-            if(-1 != previousSkeletonJointIndex)
+            if(!firstIteration)
                 skeletonJoints[previousSkeletonJointIndex].mParentIndex = aiNodeToSkeletonJointIndexIterator->second;
 
+            firstIteration = false;
             previousSkeletonJointIndex = aiNodeToSkeletonJointIndexIterator->second;
 
             node = node->mParent;
@@ -1025,13 +1027,13 @@ void SceneColladaLoader::removeEmptyNodes()
 {
     // remove intermediary or empty nodes
     {
-        std::stack<std::pair<Node::SPtr, int> > nodes;
+        std::stack<std::pair<Node::SPtr, std::size_t> > nodes;
 
-        nodes.push(std::pair<Node::SPtr, int>(subSceneRoot, 0));
+        nodes.push(std::pair<Node::SPtr, std::size_t>(subSceneRoot, 0));
         while(!nodes.empty())
         {
             Node::SPtr& node = nodes.top().first;
-            int& index = nodes.top().second;
+            std::size_t& index = nodes.top().second;
 
             if(node->getChildren().size() <= index)
             {
@@ -1041,7 +1043,7 @@ void SceneColladaLoader::removeEmptyNodes()
                     break;
 
                 Node::SPtr& parentNode = nodes.top().first;
-                int& parentIndex = nodes.top().second;
+                std::size_t& parentIndex = nodes.top().second;
 
                 // remove the node if it has no objects
                 if(node->object.empty())
@@ -1066,7 +1068,7 @@ void SceneColladaLoader::removeEmptyNodes()
             else
             {
                 Node::SPtr child = static_cast<Node*>(node->getChildren()[index]);
-                nodes.push(std::pair<Node::SPtr, int>(child, 0));
+                nodes.push(std::pair<Node::SPtr, std::size_t>(child, 0));
             }
         }
     }

@@ -732,8 +732,6 @@ void SofaModeler::exportSofaClasses()
 		}
 	}
 
-	sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
-
 	getSimulation()->exportXML(root.get(), filename.toStdString().c_str());
 
 	std::cout << "Sofa classes have been XML exported in: " << filename.toStdString() << std::endl << std::endl;
