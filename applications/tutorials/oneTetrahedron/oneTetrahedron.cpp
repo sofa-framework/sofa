@@ -24,7 +24,8 @@
 ******************************************************************************/
 #include <sofa/component/contextobject/Gravity.h>
 #include <sofa/component/contextobject/CoordinateSystem.h>
-#include <sofa/component/odesolver/EulerSolver.h>
+#include <sofa/component/odesolver/EulerImplicitSolver.h>
+#include <sofa/component/linearsolver/CGLinearSolver.h>
 #include <sofa/component/typedef/Sofa_typedef.h>
 #include <sofa/component/visualmodel/OglModel.h>
 #include <sofa/component/visualmodel/VisualStyle.h>
@@ -46,14 +47,17 @@
 #include <fstream>
 
 using namespace sofa::simulation::tree;
+using namespace sofa;
 using sofa::simulation::Node;
-using sofa::component::odesolver::EulerSolver;
+using sofa::component::odesolver::EulerImplicitSolver;
+typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
 using sofa::component::topology::MeshTopology;
 using sofa::component::visualmodel::OglModel;
 using sofa::core::objectmodel::Data;
 using sofa::helper::ReadAccessor;
 using sofa::helper::WriteAccessor;
 using sofa::core::VecId;
+using sofa::core::objectmodel::New;
 // ---------------------------------------------------------------------
 // ---
 // ---------------------------------------------------------------------
@@ -72,10 +76,15 @@ int main(int argc, char** argv)
     groot->setGravity( Coord3(0,-10,0) );
 
     // One solver for all the graph
-    EulerSolver::SPtr solver = sofa::core::objectmodel::New<EulerSolver>();
+    EulerImplicitSolver::SPtr solver = sofa::core::objectmodel::New<EulerImplicitSolver>();
     solver->setName("solver");
     solver->f_printLog.setValue(false);
     groot->addObject(solver);
+
+    CGLinearSolver::SPtr linearSolver = New<CGLinearSolver>();
+    linearSolver->setName("linearSolver");
+    groot->addObject(linearSolver);
+
 
     // Tetrahedron degrees of freedom
     MechanicalObject3::SPtr DOF = sofa::core::objectmodel::New<MechanicalObject3>();
