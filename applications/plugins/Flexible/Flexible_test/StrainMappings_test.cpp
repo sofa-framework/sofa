@@ -324,6 +324,7 @@ namespace sofa {
         typedef typename Inherited::In In;
         typedef typename Inherited::Real Real;
         typedef typename Inherited::OutVecCoord OutVecCoord;
+        typedef typename Inherited::InVecCoord InVecCoord;
         typedef typename In::Frame InFrame;
 
 
