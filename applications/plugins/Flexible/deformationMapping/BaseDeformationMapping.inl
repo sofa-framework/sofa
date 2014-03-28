@@ -202,11 +202,10 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
     //Apply mapping to init child positions
     reinit();
 
-    //Init child rest positions if non custom rest position were provided
     if(restPositionSet == false)
     {
-        helper::WriteAccessor<Data< OutVecCoord > > rest_pos(*this->toModel->write(core::VecCoordId::restPosition()));
-        for(size_t i=0; i<rest_pos.size();++i){rest_pos[i]=out[i];}
+        //Init child rest positions from parent rest positions
+        apply(NULL, *this->toModel->write(core::VecCoordId::restPosition()), *this->fromModel->read(core::ConstVecCoordId::restPosition()));
     }
 }
 
@@ -216,8 +215,6 @@ template <class JacobianBlockType>
 void BaseDeformationMappingT<JacobianBlockType>::resizeOut(const vector<Coord>& position0, vector<vector<unsigned int> > index,vector<vector<Real> > w, vector<vector<Vec<spatial_dimensions,Real> > > dw, vector<vector<Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, vector<Mat<spatial_dimensions,spatial_dimensions,Real> > F0)
 {
     if(this->f_printLog.getValue()) std::cout<<this->getName()<<"::resizeOut()"<<std::endl;
-
-    helper::ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
 
     helper::WriteAccessor<Data<VecCoord> > pos0 (this->f_pos0);
     this->missingInformationDirty=true; this->KdTreeDirty=true; // need to update mapped spatial positions if needed for visualization
@@ -246,10 +243,6 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut(const vector<Coord>& 
 
     //Apply mapping to init child positions
     reinit();
-
-    //Need to init child rest positions
-    helper::WriteAccessor<Data< OutVecCoord > > rest_pos(*this->toModel->write(core::VecCoordId::restPosition()));
-    for(size_t i=0; i<rest_pos.size();++i){rest_pos[i]=out[i];}
 }
 
 
@@ -289,6 +282,7 @@ void BaseDeformationMappingT<JacobianBlockType>::reinit()
 //    if(this->assemble.getValue()) updateJ();
 
     apply(NULL, *this->toModel->write(core::VecCoordId::position()), *this->fromModel->read(core::ConstVecCoordId::position()));
+
     if(this->toModel->write(core::VecDerivId::velocity())) applyJ(NULL, *this->toModel->write(core::VecDerivId::velocity()), *this->fromModel->read(core::ConstVecDerivId::velocity()));
 
     Inherit::reinit();
