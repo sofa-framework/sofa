@@ -54,12 +54,12 @@ public:
         delete impl;
     }
 
-    virtual void resize(int dim)
+    virtual void resize(Index dim)
     {
         impl->resize(dim);
     };
 
-    virtual double &element(int i)
+    virtual double &element(Index i)
     {
         return impl->operator[](i);
     };

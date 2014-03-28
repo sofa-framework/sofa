@@ -45,7 +45,7 @@ namespace defaulttype
 class SOFA_DEFAULTTYPE_API BaseMatrix
 {
 public:
-    typedef int Index;
+    typedef BaseVector::Index Index;
 
     BaseMatrix();
     virtual ~BaseMatrix();
