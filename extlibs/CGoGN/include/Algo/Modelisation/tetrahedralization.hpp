@@ -299,7 +299,7 @@ Dart swap2To2(typename PFP::MAP& map, Dart d)
 }
 
 template <typename PFP>
-void swap4To4(typename PFP::MAP& map, Dart d)
+Dart swap4To4(typename PFP::MAP& map, Dart d)
 {
     Dart e = map.phi2(map.phi3(d));
     Dart dd = map.phi2(d);
@@ -314,6 +314,7 @@ void swap4To4(typename PFP::MAP& map, Dart d)
     //sew middle darts so that they do not cross
     map.sewVolumes(map.phi2(d1),map.phi2(map.phi3(d2)));
     map.sewVolumes(map.phi2(map.phi3(d1)),map.phi2(d2));
+    return d1;
 }
 
 template <typename PFP>
@@ -337,7 +338,7 @@ Dart swap3To2(typename PFP::MAP& map, Dart d)
     while(dit != stop);
     map.splitVolume(edges);
 
-    return map.phi3(stop);
+    return map.phi2(edges[0]); //map.phi3(stop);
 }
 
 //[precond] le brin doit venir d'une face partagé par 2 tetraèdres
@@ -379,7 +380,7 @@ Dart swap2To3(typename PFP::MAP& map, Dart d)
     while(dit != stop);
     map.splitVolume(edges);
 
-    return map.phi1(d2_1);
+    return stop; // map.phi1(d2_1);
 }
 
 template <typename PFP>
@@ -406,54 +407,49 @@ Dart swap5To4(typename PFP::MAP& map, Dart d)
 }
 
 template <typename PFP>
-void swapGen3To2(typename PFP::MAP& map, Dart d)
+Dart swapGen3To2(typename PFP::MAP& map, Dart d)
 {
-    unsigned int n = map.edgeDegree(d);
+       Dart stop = map.phi1(map.phi2(map.phi_1(d)));
+       map.deleteEdge(d);
 
+       std::vector<Dart> edges;
+       Dart dit = stop;
+       do
+       {
+               edges.push_back(dit);
+               dit = map.phi1(map.phi2(map.phi1(dit)));
+       }
+       while(dit != stop);
+       map.splitVolume(edges);
 
-    if(n >= 4)
-    {
-        Dart dit = d;
-        for(unsigned int i = 0 ; i < n - 4 ; ++i)
-        {
-            dit = map.phi2(Tetrahedralization::swap2To3<PFP>(map, dit));
-        }
-        Tetrahedralization::swap4To4<PFP>(map,  map.alpha2(dit));
-    }
+       Dart v = map.phi1(map.phi2(stop));
+       dit = map.phi_1(map.phi_1(v));
+       do
+       {
+               Dart save = map.phi_1(dit);
+               map.splitFace(v,dit);
 
+               //decoupe des tetraedres d'un cote du plan
+               Dart d_1 = map.phi_1(v);
+               std::vector<Dart> edges;
+               edges.push_back(d_1);
+               edges.push_back(map.phi1(map.phi2(map.phi1(d_1))));
+               edges.push_back(map.phi_1(map.phi2(map.phi_1(d_1))));
+               map.splitVolume(edges);
 
+               //decoupe des tetraedres d'un cote du plan
+               d_1 = map.phi3(map.phi_1(v));
+               edges.clear();
+               edges.push_back(d_1);
+               edges.push_back(map.phi1(map.phi2(map.phi1(d_1))));
+               edges.push_back(map.phi_1(map.phi2(map.phi_1(d_1))));
+               map.splitVolume(edges);
 
+               dit = save;
+       }
+       while(map.phi_1(dit) != v);
 
-//	if(n >= 4)
-//	{
-//		Dart dit = d;
-//		if(map.isBoundaryEdge(dit))
-//		{
-//			for(unsigned int i = 0 ; i < n - 2 ; ++i)
-//			{
-//				dit = map.phi2(Tetrahedralization::swap2To3<PFP>(map, dit));
-//			}
-//			Tetrahedralization::swap2To2<PFP>(map, dit);
-//		}
-//		else
-//		{
-//			for(unsigned int i = 0 ; i < n - 4 ; ++i)
-//			{
-//				dit = map.phi2(Tetrahedralization::swap2To3<PFP>(map, dit));
-//			}
-//			Tetrahedralization::swap4To4<PFP>(map,  map.alpha2(dit));
-//		}
-//	}
-//	else if (n == 3)
-//	{
-//		Dart dres = Tetrahedralization::swap2To3<PFP>(map, d);
-//		Tetrahedralization::swap2To2<PFP>(map, map.phi2(dres));
-//	}
-//	else // si (n == 2)
-//	{
-//		Tetrahedralization::swap2To2<PFP>(map, d);
-//	}
-
+       return stop;
 }
 
 template <typename PFP>
