@@ -46,8 +46,14 @@ namespace sofa {
     using namespace component;
     using namespace defaulttype;
 
-  /**  Affine patch test in 3D.
-    An affine movement (rotation and translation) is applied to the borders of a mesh. Test if the points within have the same affine movement.*/
+   /// Affine patch test in 3D
+  /**  
+    * An affine movement (rotation and translation) is applied to the borders of a mesh. Test if the points within have the same affine movement.
+    * This screenshot explains how the patch test works:
+    * \image html AffinePatchTest.png 
+    * The affine patch test runs with the Assembled Solver of compliant. The table above shows the different test cases achieved:
+    * \image html AffinePatchTestCases.png
+    */
 
     template <typename _DataTypes>
     struct AffinePatch_test : public Sofa_test<typename _DataTypes::Real>
@@ -67,16 +73,16 @@ namespace sofa {
         simulation::Node::SPtr root;      
         /// Simulation
         simulation::Simulation* simulation; 
-        // Rotation
+        /// Tested Rotation: random rotation matrix
         defaulttype::Mat<3,3,Real> testedRotation;
-        // Translation
+        /// Tested Translation: random translation
         Coord testedTranslation;
-        // Seed
+        /// Seed for random value
         long seed;
-        // Random generator
+        /// Random generator
         sofa::helper::RandomGenerator randomGenerator;
 
-        // Create the context for the scene
+        /// Create the context for the scene
         void SetUp()
         { 
             // Init simulation
@@ -90,6 +96,7 @@ namespace sofa {
             seed = randomGenerator.random<long>(0,100);
         }
 
+        /// Load the scene to test
         void loadScene(std::string sceneName)
         {
             // Load the scene from the xml file
@@ -124,6 +131,7 @@ namespace sofa {
             
         }
         
+        /// After simulation compare the positions of points to the theoretical positions.
         bool compareSimulatedToTheoreticalPositions(double convergenceAccuracy, double diffMaxBetweenSimulatedAndTheoreticalPosition)
         {
             // Init simulation
@@ -191,7 +199,7 @@ namespace sofa {
             return succeed;
         }
 
-
+        /// Unload the scene
         void TearDown()
         {
             if (root!=NULL)

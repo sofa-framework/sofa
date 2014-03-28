@@ -44,9 +44,12 @@ namespace sofa {
     using namespace component;
     using namespace defaulttype;
 
-    /**  Patch test in 3D with Flexible. The tested scene is contained in share/tests/Flexible/PatchTest.scn.
-    A movement is applied to the borders of a mesh. The points within should have a linear movement relative to the border movements.
-    * This screenshot explain how the patch test works:
+    /// Patch test 
+
+    /**  Patch test in 3D with Flexible.
+    * The tested scene is contained in the scenes subdirectory. The test works with the assembled solver of compliant and the small method of corotational strain mapping.
+    * A movement is applied to the borders of a mesh. The points within should have a linear movement relative to the border movements.
+    * This screenshot explains how the patch test works:
     *  \image html PatchTest.png
    */
 
@@ -65,7 +68,7 @@ namespace sofa {
         /// Simulation
         simulation::Simulation* simulation;  
 
-        // Create the context for the scene
+        /// Create the context for the scene
         void SetUp()
         { 
             // Init simulation
@@ -75,6 +78,7 @@ namespace sofa {
             root = simulation::getSimulation()->createNewGraph("root");
         }
 
+        /// Load the scene to test SmallCorotationalPatchTest.scn
         void loadScene(std::string sceneName)
         {
             // Load the scene from the xml file
@@ -82,6 +86,7 @@ namespace sofa {
             root = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()));
         }
 
+        /// After simulation compare the positions of points to the theoretical positions.
         bool compareSimulatedToTheoreticalPositions(double convergenceAccuracy, double diffMaxBetweenSimulatedAndTheoreticalPosition)
         {
             // Init simulation
@@ -142,7 +147,7 @@ namespace sofa {
             return succeed;
         }
 
-
+        /// Unload the scene
         void TearDown()
         {
             if (root!=NULL)

@@ -76,20 +76,20 @@ struct AffinePatch_test : public Sofa_test<typename _DataTypes::Real>
 
     /// Root of the scene graph
     simulation::Node::SPtr root;      
-    /// Simulation
+    /// Tested simulation
     simulation::Simulation* simulation;  
-    // Structure which contains current node and pointers to the mechanical object and the bilinear constraint
+    /// Structure which contains current node and pointers to the mechanical object and the affine constraint
     PatchTestStruct<DataTypes> patchStruct;
-    // Rotation
+    /// Tested Rotation: random rotation matrix  
     defaulttype::Mat<3,3,Real> testedRotation;
-    // Translation
+    /// Tested Translation: random translation
     Coord testedTranslation;
-    // Seed
+    /// Seed for random value
     long seed;
     // Random generator
     sofa::helper::RandomGenerator randomGenerator;
     
-    // Create the context for the scene
+    /// Create the context for the scene
     void SetUp()
     { 
         // Init simulation
@@ -103,7 +103,7 @@ struct AffinePatch_test : public Sofa_test<typename _DataTypes::Real>
          seed = randomGenerator.random<long>(0,100);
     }
 
-    // Create a scene with a 2D regular grid and a bilinear constraint
+    /// Create a scene with a 2D regular grid and an affine constraint
     void createScene2DRegularGrid(bool randomRotation = true, bool randomTranslation=true)
     { 
         // Create a scene with a regular grid
@@ -136,7 +136,6 @@ struct AffinePatch_test : public Sofa_test<typename _DataTypes::Real>
             w = randomGenerator.random<SReal>(0.0,360.0);
             Quat quat(x,y,z,w);
             quat.normalize();
-            //testedRotation = patchStruct.affineConstraint->m_rotation.getValue();
             quat.toMatrix(testedRotation);
         }
         patchStruct.affineConstraint->m_rotation.setValue(testedRotation);
@@ -144,7 +143,6 @@ struct AffinePatch_test : public Sofa_test<typename _DataTypes::Real>
         // Random Translation
         if(randomTranslation)
         {
-            //testedTranslation = patchStruct.affineConstraint->m_translation.getValue();
             for(size_t i=0;i<Coord::total_size;++i)
             {
                 testedTranslation[i]=randomGenerator.random<SReal>(-2.0,2.0);
@@ -156,7 +154,7 @@ struct AffinePatch_test : public Sofa_test<typename _DataTypes::Real>
 
     }
 
-     // Create a scene with a 3D regular grid and an affine constraint
+    /// Create a scene with a 3D regular grid and an affine constraint
     void createScene3DRegularGrid(bool randomRotation = true, bool randomTranslation=true)
     {
         // Create a scene with a regular grid
@@ -196,13 +194,11 @@ struct AffinePatch_test : public Sofa_test<typename _DataTypes::Real>
             w = randomGenerator.random<SReal>(0.0,360.0);
             Quat quat(x,y,z,w);
             quat.normalize();
-            //testedRotation = patchStruct.affineConstraint->m_rotation.getValue();
             quat.toMatrix(testedRotation);
         }
         patchStruct.affineConstraint->m_rotation.setValue(testedRotation);
 
         // Random Translation
-        //testedTranslation = patchStruct.affineConstraint->m_translation.getValue();
         if(randomTranslation)
         {
             for(size_t i=0;i<Coord::total_size;++i)
@@ -229,6 +225,7 @@ struct AffinePatch_test : public Sofa_test<typename _DataTypes::Real>
         this->seed = seedValue;
     }
 
+    /// After simulation compare the positions of points to the theoretical positions.
     bool compareSimulatedToTheoreticalPositions(double convergenceAccuracy, double diffMaxBetweenSimulatedAndTheoreticalPosition)
     {
         // Init simulation
@@ -290,12 +287,6 @@ struct AffinePatch_test : public Sofa_test<typename _DataTypes::Real>
             }
         }
         return succeed;
-    }
-
-    void TearDown()
-    {
-        if (root!=NULL)
-            sofa::simulation::getSimulation()->unload(root);
     }
 
 };
