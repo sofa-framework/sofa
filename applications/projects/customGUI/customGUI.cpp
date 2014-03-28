@@ -53,6 +53,7 @@ using std::cout;
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/component/collision/MouseInteractor.h>
+//#include <sofa/gui/PickHandler.h>
 
 /** Prototype used to completely encapsulate the use of Sofa in an OpenGL application, without any standard Sofa GUI.
  *
@@ -130,9 +131,20 @@ public:
         sofa::simulation::getSimulation()->animate(groot.get(),0.04);
     }
 
+    /**
+     * @brief rayPick Seeks a particle along the given ray. The direction needs not be normalized.
+     * @param ox ray origin x
+     * @param oy ray origin y
+     * @param oz ray origin z
+     * @param dx ray direction x
+     * @param dy ray direction y
+     * @param dz ray direction z
+     * @return true if a particle is found near the ray
+     */
     bool rayPick( double ox, double oy, double oz, double dx, double dy, double dz )
     {
         Vec3 origin(ox,oy,oz), direction(dx,dy,dz);
+        direction.normalize();
         double distance = 30, distanceGrowth = 0.001; // cone around the ray
         if( debug ){
             cout<< "SofaScene::rayPick from origin " << origin << ", in direction " << direction << endl;
@@ -156,10 +168,71 @@ public:
             return false;
     }
 
+    void reshape(int,int){}
+
 protected:
     sofa::core::visual::DrawToolGL   drawToolGL;
     sofa::core::visual::VisualParams* vparams;
     sofa::component::collision::BodyPicked result;
+
+};
+
+
+
+#include <sofa/gui/glut/SimpleGUI.h>
+class SofaGlutGui: public sofa::gui::glut::SimpleGUI, public sofa::simulation::graph::DAGSimulation
+{
+public:
+    typedef sofa::gui::glut::SimpleGUI Gui;
+    typedef sofa::simulation::graph::DAGSimulation Simulation;
+    bool debug;
+    SofaGlutGui():debug(true){}
+//    ~SofaGlutGui(){}
+
+    /**
+     * @brief Initialize Sofa and load a scene file
+     * @param plugins List of plugins to load
+     * @param fileName Scene file to load
+     */
+    void init( std::vector<std::string>& plugins, const std::string& fileName )
+    {
+        sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
+
+        sofa::component::init();
+        sofa::simulation::xml::initXml();
+
+
+        // --- plugins ---
+        for (unsigned int i=0; i<plugins.size(); i++)
+            sofa::helper::system::PluginManager::getInstance().loadPlugin(plugins[i]);
+
+        sofa::helper::system::PluginManager::getInstance().init();
+
+
+        // --- Create simulation graph ---
+        setScene( sofa::simulation::getSimulation()->load(fileName.c_str()) );
+        if (getScene()==NULL)
+        {
+            setScene( sofa::simulation::getSimulation()->createNewGraph("") );
+        }
+
+        Simulation::init(getScene());
+
+        if( debug ){
+            cout<<"SofaScene::init, scene loaded" << endl;
+            sofa::simulation::getSimulation()->print(getScene());
+        }
+
+    }
+
+    void glDraw() { Simulation::draw(vparams,getScene()); }
+    void animate() { Simulation::animate(getScene()); }
+    void reshape(int,int){}
+protected:
+//    sofa::core::visual::VisualParams vparams;
+//    sofa::simulation::Node::SPtr groot;
+//    sofa::simulation::Node* getScene(){ return groot.get(); }
+//    void setScene(sofa::simulation::Node::SPtr g){ groot=g; }
 
 };
 
@@ -169,7 +242,8 @@ protected:
 // Sofa is invoked only through variable sofaScene.
 // ---------------------------------------------------------------------
 
-SofaScene sofaScene; ///< The interface of the application with Sofa
+//SofaScene sofaScene; ///< The interface of the application with Sofa
+SofaGlutGui sofaScene; ///< The interface of the application with Sofa
 
 // Various shared variables for glut
 GLfloat light_position[] = { 0.0, 0.0, 25.0, 0.0 };
@@ -179,6 +253,9 @@ GLfloat light_specular[] = { 1.0, 1.0, 1.0, 0.0 };
 
 GLfloat spin_x = 0.0;
 GLfloat spin_y = 0.0;
+
+bool animating = true;
+
 
 
 void init(void)
@@ -225,6 +302,8 @@ void reshape (int w, int h)
     gluPerspective (55.0, (GLfloat) w/(GLfloat) h, light_position[2]-10, light_position[2]+10 );
     glMatrixMode (GL_MODELVIEW);
     //    cout<<"reshape"<<endl;
+
+    sofaScene.reshape(w,h);
 }
 
 void keyboard(unsigned char key, int /*x*/, int /*y*/)
@@ -235,13 +314,20 @@ void keyboard(unsigned char key, int /*x*/, int /*y*/)
         break;
     }
 
-    glutPostRedisplay();
+    if( key == ' ' ){
+        animating = !animating;
+    }
+
+//    sofaScene.glut_keyboard(key,x,y);
+//    glutPostRedisplay();
 }
 
 void idle()
 {
-    sofaScene.animate();
+    if( !animating )
+        return;
 
+    sofaScene.animate();
     glutPostRedisplay();
 }
 
@@ -250,6 +336,9 @@ int old_x, old_y;
 
 void mouseButton(int button, int state, int x, int y)
 {
+    sofaScene.glut_mouse(button,state,x,y);
+    return;
+
     old_x = x;
     old_y = y;
 
@@ -273,12 +362,12 @@ void mouseButton(int button, int state, int x, int y)
             gluUnProject ((GLdouble) x, (GLdouble) realy, 1.0, mvmatrix, projmatrix, viewport, &wx1, &wy1, &wz1); // z=0: far plane
             //cout<<"World coords at z=1.0 are ("<< wx <<","<< wy<<","<< wz <<")"<< endl;
 
-            if( sofaScene.rayPick(light_position[0],light_position[1],light_position[2], wx1-wx, wy1-wy, wz1-wz) ){
-                cout<<"picked particle " << endl;
-            }
-            else {
-                cout << "no particle picked" << endl;
-            }
+//            if( sofaScene.rayPick(light_position[0],light_position[1],light_position[2], wx1-wx, wy1-wy, wz1-wz) ){
+//                cout<<"picked particle " << endl;
+//            }
+//            else {
+//                cout << "no particle picked" << endl;
+//            }
         }
         break;
     case GLUT_RIGHT_BUTTON:
@@ -297,7 +386,23 @@ void mouseMotion(int x, int y)
     spin_x = x - old_x;
     spin_y = y - old_y;
 
-    glutPostRedisplay();
+    sofaScene.glut_motion(x,y);
+}
+
+//bool isControlPressed = false;
+//bool isShiftPressed = false;
+//bool isAltPressed = false;
+
+//void update_modifiers()
+//{
+//    isControlPressed =  (glutGetModifiers()&GLUT_ACTIVE_CTRL )!=0;
+//    isShiftPressed   =  (glutGetModifiers()&GLUT_ACTIVE_SHIFT)!=0;
+//    isAltPressed     =  (glutGetModifiers()&GLUT_ACTIVE_ALT  )!=0;
+//}
+void specialKey(int k, int x, int y)
+{
+//    update_modifiers();
+    sofaScene.glut_special(k,x,y);
 }
 
 
@@ -315,6 +420,7 @@ int main(int argc, char** argv)
     glutIdleFunc(idle);
     glutMotionFunc(mouseMotion);
     glutMouseFunc(mouseButton);
+    glutSpecialFunc( specialKey );
 
     // --- Parameter initialisation ---
     std::string fileName ;

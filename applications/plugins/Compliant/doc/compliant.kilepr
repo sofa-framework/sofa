@@ -27,7 +27,7 @@ Mode=LaTeX
 ReadWrite=true
 
 [document-settings,item:compliant_body.tex]
-Bookmarks=189,159,165
+Bookmarks=188,189,159,165
 Encoding=UTF-8
 FoldedColumns=
 FoldedLines=
@@ -71,7 +71,7 @@ archive=true
 column=0
 encoding=UTF-8
 highlight=LaTeX
-line=207
+line=212
 mode=LaTeX
 open=true
 order=1
@@ -84,6 +84,6 @@ ViMarks=
 
 [view-settings,view=0,item:compliant_body.tex]
 CursorColumn=0
-CursorLine=207
+CursorLine=212
 JumpList=
-ViMarks=.,188,0,[,188,0,],188,1,a,159,0,b,165,0,c,189,2
+ViMarks=.,188,0,[,188,0,],188,1,a,159,0,b,165,0,c,189,2,d,188,0
