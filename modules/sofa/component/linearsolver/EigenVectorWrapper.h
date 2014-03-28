@@ -50,6 +50,7 @@ class EigenVectorWrapper : public defaulttype::BaseVector
 
 public:
     typedef Eigen::Matrix<Real,Eigen::Dynamic,1>  VectorEigen;
+    typedef typename VectorEigen::Index  IndexEigen;
 protected:
     VectorEigen& eigenVector;    ///< the data
 
@@ -66,14 +67,14 @@ public:
     unsigned size() const { return eigenVector.size(); }
 
     /// Resize the matrix without preserving the data (the matrix is set to zero)
-    void resize(int nbRow)
+    void resize(Index nbRow)
     {
-        eigenVector.resize(nbRow);
+        eigenVector.resize((IndexEigen)nbRow);
     }
 
 
 
-    SReal element(int i) const
+    SReal element(Index i) const
     {
 #ifdef EigenVector_CHECK
         if ((unsigned)i >= (unsigned)rowSize() || (unsigned)j >= (unsigned)colSize())
@@ -82,10 +83,10 @@ public:
             return 0.0;
         }
 #endif
-        return eigenVector.coeff(i);
+        return eigenVector.coeff((IndexEigen)i);
     }
 
-    void set(int i, double v)
+    void set(Index i, double v)
     {
 #ifdef EigenVector_VERBOSE
         std::cout << /*this->Name() <<*/ "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = "<<v<<std::endl;
@@ -97,14 +98,14 @@ public:
             return;
         }
 #endif
-        eigenVector.coeffRef(i) = (Real)v;
+        eigenVector.coeffRef((IndexEigen)i) = (Real)v;
     }
 
 
 
 
 
-    void add(int i, double v)
+    void add(Index i, double v)
     {
 #ifdef EigenVector_VERBOSE
         std::cout << /*this->Name() << */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") += "<<v<<std::endl;
@@ -116,10 +117,10 @@ public:
             return;
         }
 #endif
-        eigenVector.coeffRef(i) += (Real)v;
+        eigenVector.coeffRef((IndexEigen)i) += (Real)v;
     }
 
-    void clear(int i)
+    void clear(Index i)
     {
 #ifdef EigenVector_VERBOSE
         std::cout << /*this->Name() <<*/ "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = 0"<<std::endl;
@@ -131,7 +132,7 @@ public:
             return;
         }
 #endif
-        eigenVector.coeffRef(i) = (Real)0;
+        eigenVector.coeffRef((IndexEigen)i) = (Real)0;
     }
 
 
@@ -145,8 +146,8 @@ public:
 
     friend std::ostream& operator << (std::ostream& out, const EigenVectorWrapper<Real>& v )
     {
-        int ny = v.size();
-        for (int y=0; y<ny; ++y)
+        IndexEigen ny = v.size();
+        for (IndexEigen y=0; y<ny; ++y)
         {
             out << " " << v.element(y);
         }

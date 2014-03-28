@@ -43,16 +43,17 @@ void BaseMatrix::compress() {
 }
 
 
-static inline void opVresize(defaulttype::BaseVector& vec, int n) { vec.resize(n); }
-template<class Real2> static inline void opVresize(Real2* vec, int n) { for (const Real2* end=vec+n; vec != end; ++vec) *vec = (Real2)0; }
-static inline SReal opVget(const defaulttype::BaseVector& vec, int i) { return (SReal)vec.element(i); }
-template<class Real2> static inline SReal opVget(const Real2* vec, int i) { return (SReal)vec[i]; }
-static inline void opVset(defaulttype::BaseVector& vec, int i, SReal v) { vec.set(i, v); }
-template<class Real2> static inline void opVset(Real2* vec, int i, SReal v) { vec[i] = (Real2)v; }
-static inline void opVadd(defaulttype::BaseVector& vec, int i, double v) { vec.add(i, (SReal)v); }
-static inline void opVadd(defaulttype::BaseVector& vec, int i, float v) { vec.add(i, (SReal)v); }
-template<class Real2> static inline void opVadd(Real2* vec, int i, double v) { vec[i] += (Real2)v; }
-template<class Real2> static inline void opVadd(Real2* vec, int i, float v) { vec[i] += (Real2)v; }
+
+static inline void opVresize(BaseVector& vec, BaseVector::Index n) { vec.resize(n); }
+template<class Real2> static inline void opVresize(Real2* vec, BaseVector::Index n) { for (const Real2* end=vec+n; vec != end; ++vec) *vec = (Real2)0; }
+static inline SReal opVget(const BaseVector& vec, BaseVector::Index i) { return (SReal)vec.element(i); }
+template<class Real2> static inline SReal opVget(const Real2* vec, BaseVector::Index i) { return (SReal)vec[i]; }
+static inline void opVset(BaseVector& vec, BaseVector::Index i, SReal v) { vec.set(i, v); }
+template<class Real2> static inline void opVset(Real2* vec, BaseVector::Index i, SReal v) { vec[i] = (Real2)v; }
+static inline void opVadd(BaseVector& vec, BaseVector::Index i, double v) { vec.add(i, (SReal)v); }
+static inline void opVadd(BaseVector& vec, BaseVector::Index i, float v) { vec.add(i, (SReal)v); }
+template<class Real2> static inline void opVadd(Real2* vec, BaseVector::Index i, double v) { vec[i] += (Real2)v; }
+template<class Real2> static inline void opVadd(Real2* vec, BaseVector::Index i, float v) { vec[i] += (Real2)v; }
 
 template <class Real, int NL, int NC, bool add, bool transpose, class M, class V1, class V2>
 struct BaseMatrixLinearOpMV_BlockDiagonal
@@ -60,11 +61,12 @@ struct BaseMatrixLinearOpMV_BlockDiagonal
     typedef typename M::RowBlockConstIterator RowBlockConstIterator;
     typedef typename M::ColBlockConstIterator ColBlockConstIterator;
     typedef typename M::BlockConstAccessor BlockConstAccessor;
+    typedef typename M::Index Index;
     typedef Mat<NL,NC,Real> BlockData;
     void operator()(const M* mat, V1& result, const V2& v)
     {
-        const int rowSize = mat->rowSize();
-        const int colSize = mat->colSize();
+        const Index rowSize = mat->rowSize();
+        const Index colSize = mat->colSize();
         BlockData buffer;
         Vec<NC,Real> vtmpj;
         Vec<NL,Real> vtmpi;
@@ -79,8 +81,8 @@ struct BaseMatrixLinearOpMV_BlockDiagonal
             {
                 BlockConstAccessor block = colRange.first.bloc();
                 const BlockData& bdata = *(const BlockData*)block.elements(buffer.ptr());
-                const int i = block.getRow() * NL;
-                const int j = block.getCol() * NC;
+                const Index i = block.getRow() * NL;
+                const Index j = block.getCol() * NC;
                 if (!transpose)
                 {
                     VecNoInit<NC,Real> vj;
@@ -114,14 +116,15 @@ struct BaseMatrixLinearOpMV_BlockDiagonal
 template <class Real, bool add, bool transpose, class M, class V1, class V2>
 struct BaseMatrixLinearOpMV_BlockDiagonal<Real, 1, 1, add, transpose, M, V1, V2>
 {
+    typedef typename M::Index Index;
     void operator()(const M* mat, V1& result, const V2& v)
     {
-        const int rowSize = mat->rowSize();
-        const int colSize = mat->colSize();
+        const Index rowSize = mat->rowSize();
+        const Index colSize = mat->colSize();
         if (!add)
             opVresize(result, (transpose ? colSize : rowSize));
-        const int size = (rowSize < colSize) ? rowSize : colSize;
-        for (int i=0; i<size; ++i)
+        const Index size = (rowSize < colSize) ? rowSize : colSize;
+        for (Index i=0; i<size; ++i)
         {
             opVadd(result, i, opVget(v, i));
         }
@@ -136,11 +139,12 @@ struct BaseMatrixLinearOpMV_BlockSparse
     typedef typename M::ColBlockConstIterator ColBlockConstIterator;
     typedef typename M::BlockConstAccessor BlockConstAccessor;
     typedef Mat<NL,NC,Real> BlockData;
+    typedef typename M::Index Index;
     void operator()(const M* mat, V1& result, const V2& v)
     {
 //         std::cout << "BaseMatrixLinearOpMV_BlockSparse: " << mat->bRowSize() << "x" << mat->bColSize() << " " << NL << "x" << NC << " blocks, " << (add ? "add" : "write") << " to result vector, use " << (transpose ? "transposed " : "") << "matrix." << std::endl;
-        const int rowSize = mat->rowSize();
-        const int colSize = mat->colSize();
+        const Index rowSize = mat->rowSize();
+        const Index colSize = mat->colSize();
         BlockData buffer;
         Vec<NC,Real> vtmpj;
         Vec<NL,Real> vtmpi;
@@ -150,7 +154,7 @@ struct BaseMatrixLinearOpMV_BlockSparse
                 rowRange.first != rowRange.second;
                 ++rowRange.first)
         {
-            const int i = rowRange.first.row() * NL;
+            const Index i = rowRange.first.row() * NL;
             if (!transpose)
             {
                 for (int bi = 0; bi < NL; ++bi)
@@ -167,7 +171,7 @@ struct BaseMatrixLinearOpMV_BlockSparse
             {
                 BlockConstAccessor block = colRange.first.bloc();
                 const BlockData& bdata = *(const BlockData*)block.elements(buffer.ptr());
-                const int j = block.getCol() * NC;
+                const Index j = block.getCol() * NC;
                 if (!transpose)
                 {
                     for (int bj = 0; bj < NC; ++bj)
@@ -203,19 +207,20 @@ template<bool add, bool transpose>
 class BaseMatrixLinearOpMV
 {
 public:
+    typedef typename BaseMatrix::Index Index;
     template <class M, class V1, class V2>
     static inline void opFull(const M* mat, V1& result, const V2& v)
     {
-        const int rowSize = mat->rowSize();
-        const int colSize = mat->colSize();
+        const Index rowSize = mat->rowSize();
+        const Index colSize = mat->colSize();
         if (!add)
             opVresize(result, (transpose ? colSize : rowSize));
         if (!transpose)
         {
-            for (int i=0; i<rowSize; ++i)
+            for (Index i=0; i<rowSize; ++i)
             {
                 double r = 0;
-                for (int j=0; j<colSize; ++j)
+                for (Index j=0; j<colSize; ++j)
                 {
                     r += mat->element(i,j) * opVget(v, j);
                 }
@@ -224,10 +229,10 @@ public:
         }
         else
         {
-            for (int i=0; i<rowSize; ++i)
+            for (Index i=0; i<rowSize; ++i)
             {
                 const double val = opVget(v, i);
-                for (int j=0; j<colSize; ++j)
+                for (Index j=0; j<colSize; ++j)
                 {
                     opVadd(result, j, mat->element(i,j) * val);
                 }
@@ -238,12 +243,12 @@ public:
     template <class M, class V1, class V2>
     static inline void opIdentity(const M* mat, V1& result, const V2& v)
     {
-        const int rowSize = mat->rowSize();
-        const int colSize = mat->colSize();
+        const Index rowSize = mat->rowSize();
+        const Index colSize = mat->colSize();
         if (!add)
             opVresize(result, (transpose ? colSize : rowSize));
-        const int size = (rowSize < colSize) ? rowSize : colSize;
-        for (int i=0; i<size; ++i)
+        const Index size = (rowSize < colSize) ? rowSize : colSize;
+        for (Index i=0; i<size; ++i)
         {
             opVadd(result, i, opVget(v, i));
         }
@@ -253,19 +258,19 @@ public:
     template <int NL, int NC, class M, class V1, class V2>
     static inline void opDiagonal(const M* mat, V1& result, const V2& v)
     {
-        const int rowSize = mat->rowSize();
-        const int colSize = mat->colSize();
+        const Index rowSize = mat->rowSize();
+        const Index colSize = mat->colSize();
         if (!add)
             opVresize(result, (transpose ? colSize : rowSize));
-        const int size = (rowSize < colSize) ? rowSize : colSize;
-        for (int i=0; i<size; ++i)
+        const Index size = (rowSize < colSize) ? rowSize : colSize;
+        for (Index i=0; i<size; ++i)
         {
             opVadd(result, i, mat->element(i,i) * opVget(v, i));
         }
     }
 
     template <class Real, class M, class V1, class V2>
-    static inline void opDynamicRealDefault(const M* mat, V1& result, const V2& v, int NL, int NC, BaseMatrix::MatrixCategory /*category*/)
+    static inline void opDynamicRealDefault(const M* mat, V1& result, const V2& v, Index NL, Index NC, BaseMatrix::MatrixCategory /*category*/)
     {
         std::cout << "PERFORMANCE WARNING: multiplication by matric with block size " << NL << "x" << NC << " not optimized." << std::endl;
         opFull(mat, result, v);
@@ -292,7 +297,7 @@ public:
     }
 
     template <class Real, int NL, class M, class V1, class V2>
-    static inline void opDynamicRealNL(const M* mat, V1& result, const V2& v, int NC, BaseMatrix::MatrixCategory category)
+    static inline void opDynamicRealNL(const M* mat, V1& result, const V2& v, Index NC, BaseMatrix::MatrixCategory category)
     {
         switch(NC)
         {
@@ -307,7 +312,7 @@ public:
     }
 
     template <class Real, class M, class V1, class V2>
-    static inline void opDynamicReal(const M* mat, V1& result, const V2& v, int NL, int NC, BaseMatrix::MatrixCategory category)
+    static inline void opDynamicReal(const M* mat, V1& result, const V2& v, Index NL, Index NC, BaseMatrix::MatrixCategory category)
     {
         switch(NL)
         {
@@ -324,11 +329,11 @@ public:
     template <class M, class V1, class V2>
     static inline void opDynamic(const M* mat, V1& result, const V2& v)
     {
-        const int NL = mat->getBlockRows();
-        const int NC = mat->getBlockCols();
+        const Index NL = mat->getBlockRows();
+        const Index NC = mat->getBlockCols();
         const BaseMatrix::MatrixCategory category = mat->getCategory();
         const BaseMatrix::ElementType elementType = mat->getElementType();
-        const unsigned int elementSize = mat->getElementSize();
+        const std::size_t elementSize = mat->getElementSize();
 //         std::cout << "BaseMatrixLinearOpMV: " << mat->bRowSize() << "x" << mat->bColSize() << " " << NL << "x" << NC << " blocks, ";
 //         switch (category)
 //         {
@@ -471,19 +476,20 @@ struct BaseMatrixLinearOpAM_BlockSparse
     typedef typename M1::RowBlockConstIterator RowBlockConstIterator;
     typedef typename M1::ColBlockConstIterator ColBlockConstIterator;
     typedef typename M1::BlockConstAccessor BlockConstAccessor;
+    typedef typename M1::Index Index;
     typedef Mat<NL,NC,Real> BlockData;
 
     void operator()(const M1* m1, M2* m2, double & fact)
     {
-        //const int rowSize = m1->rowSize();
-        //const int colSize = m1->colSize();
+        //const Index rowSize = m1->rowSize();
+        //const Index colSize = m1->colSize();
         BlockData buffer;
 
         for (std::pair<RowBlockConstIterator, RowBlockConstIterator> rowRange = m1->bRowsRange();
                 rowRange.first != rowRange.second;
                 ++rowRange.first)
         {
-            const int i = rowRange.first.row() * NL;
+            const Index i = rowRange.first.row() * NL;
 
             for (std::pair<ColBlockConstIterator,ColBlockConstIterator> colRange = rowRange.first.range();
                     colRange.first != colRange.second;
@@ -492,7 +498,7 @@ struct BaseMatrixLinearOpAM_BlockSparse
 
                 BlockConstAccessor block = colRange.first.bloc();
                 const BlockData& bdata = *(const BlockData*)block.elements(buffer.ptr());
-                const int j = block.getCol() * NC;
+                const Index j = block.getCol() * NC;
 
                 if (!transpose)
                 {
@@ -522,19 +528,20 @@ struct BaseMatrixLinearOpAMS_BlockSparse
     typedef typename M1::RowBlockConstIterator RowBlockConstIterator;
     typedef typename M1::ColBlockConstIterator ColBlockConstIterator;
     typedef typename M1::BlockConstAccessor BlockConstAccessor;
+    typedef typename M1::Index Index;
     typedef Mat<NL,NC,Real> BlockData;
 
     void operator()(const M1* m1, M1* m2, double & fact)
     {
-        //const int rowSize = m1->rowSize();
-        //const int colSize = m1->colSize();
+        //const Index rowSize = m1->rowSize();
+        //const Index colSize = m1->colSize();
         BlockData buffer;
 
         for (std::pair<RowBlockConstIterator, RowBlockConstIterator> rowRange = m1->bRowsRange();
                 rowRange.first != rowRange.second;
                 ++rowRange.first)
         {
-            const int i = rowRange.first.row() * NL;
+            const Index i = rowRange.first.row() * NL;
 
             for (std::pair<ColBlockConstIterator,ColBlockConstIterator> colRange = rowRange.first.range();
                     colRange.first != colRange.second;
@@ -543,7 +550,7 @@ struct BaseMatrixLinearOpAMS_BlockSparse
 
                 BlockConstAccessor block = colRange.first.bloc();
                 const BlockData& bdata = *(const BlockData*)block.elements(buffer.ptr());
-                const int j = block.getCol() * NC;
+                const Index j = block.getCol() * NC;
 
 //                 if (!transpose) {
 // 		    m2->add(i,j,bdata);
@@ -576,6 +583,7 @@ struct BaseMatrixLinearOpAM1_BlockSparse
     typedef typename M1::RowBlockConstIterator RowBlockConstIterator;
     typedef typename M1::ColBlockConstIterator ColBlockConstIterator;
     typedef typename M1::BlockConstAccessor BlockConstAccessor;
+    typedef typename M1::Index Index;
     typedef Real BlockData;
 
     void operator()(const M1* m1, M2* m2, double & fact)
@@ -586,7 +594,7 @@ struct BaseMatrixLinearOpAM1_BlockSparse
                 rowRange.first != rowRange.second;
                 ++rowRange.first)
         {
-            const int i = rowRange.first.row();
+            const Index i = rowRange.first.row();
 
             for (std::pair<ColBlockConstIterator,ColBlockConstIterator> colRange = rowRange.first.range();
                     colRange.first != colRange.second;
@@ -595,7 +603,7 @@ struct BaseMatrixLinearOpAM1_BlockSparse
 
                 BlockConstAccessor block = colRange.first.bloc();
                 const BlockData& bdata = *(const BlockData*)block.elements(&buffer);
-                const int j = block.getCol();
+                const Index j = block.getCol();
 
                 if (!transpose)
                 {
@@ -614,16 +622,17 @@ template< bool transpose>
 class BaseMatrixLinearOpAM
 {
 public:
+    typedef typename BaseMatrix::Index Index;
     template <class M1, class M2 >
     static inline void opFull(const M1 * m1, M2 * m2, double fact)
     {
-        const int rowSize = m1->rowSize();
-        const int colSize = m2->colSize();
+        const Index rowSize = m1->rowSize();
+        const Index colSize = m2->colSize();
         if (!transpose)
         {
-            for (int j=0; j<rowSize; ++j)
+            for (Index j=0; j<rowSize; ++j)
             {
-                for (int i=0; i<colSize; ++i)
+                for (Index i=0; i<colSize; ++i)
                 {
                     m2->add(j,i,m1->element(i,j)*fact);
                 }
@@ -631,9 +640,9 @@ public:
         }
         else
         {
-            for (int j=0; j<rowSize; ++j)
+            for (Index j=0; j<rowSize; ++j)
             {
-                for (int i=0; i<colSize; ++i)
+                for (Index i=0; i<colSize; ++i)
                 {
                     m2->add(j,i,m1->element(j,i)*fact);
                 }
@@ -644,8 +653,8 @@ public:
     template <class M1, class M2 >
     static inline void opIdentity(const M1 * m1, M2 * m2, double fact)
     {
-        const int colSize = m1->colSize();
-        for (int j=0; j<colSize; ++j)
+        const Index colSize = m1->colSize();
+        for (Index j=0; j<colSize; ++j)
         {
             m2->add(j,j,fact);
         }
@@ -655,15 +664,15 @@ public:
     template <int NL, int NC, class M1, class M2 >
     static inline void opDiagonal(const M1 * m1, M2 * m2, double fact)
     {
-        const int colSize = m1->colSize();
-        for (int j=0; j<colSize; ++j)
+        const Index colSize = m1->colSize();
+        for (Index j=0; j<colSize; ++j)
         {
             m2->add(j,j,m1->element(j,j) * fact);
         }
     }
 
     template <class Real, class M1, class M2 >
-    static inline void opDynamicRealDefault(const M1 * m1, M2 * m2, double fact, int NL, int NC, BaseMatrix::MatrixCategory /*category*/)
+    static inline void opDynamicRealDefault(const M1 * m1, M2 * m2, double fact, Index NL, Index NC, BaseMatrix::MatrixCategory /*category*/)
     {
         std::cout << "PERFORMANCE WARNING: multiplication by matric with block size " << NL << "x" << NC << " not optimized." << std::endl;
         opFull(m1, m2, fact);
@@ -682,8 +691,8 @@ public:
 // 	  }
 //	  default: // default to sparse
         {
-            const int NL1 = m2->getBlockRows();
-            const int NC2 = m2->getBlockCols();
+            const Index NL1 = m2->getBlockRows();
+            const Index NC2 = m2->getBlockCols();
             if ((NL1==NL) && (NC==NC2))
             {
                 BaseMatrixLinearOpAMS_BlockSparse<Real, NL, NC, transpose, M1 , M2 > op;
@@ -720,7 +729,7 @@ public:
     }
 
     template <class Real, int NL, class M1, class M2 >
-    static inline void opDynamicRealNL(const M1 * m1, M2 * m2, double fact, int NC, BaseMatrix::MatrixCategory category)
+    static inline void opDynamicRealNL(const M1 * m1, M2 * m2, double fact, Index NC, BaseMatrix::MatrixCategory category)
     {
         switch(NC)
         {
@@ -737,7 +746,7 @@ public:
     }
 
     template <class Real, class M1, class M2 >
-    static inline void opDynamicReal(const M1 * m1, M2 * m2, double fact, int NL, int NC, BaseMatrix::MatrixCategory category)
+    static inline void opDynamicReal(const M1 * m1, M2 * m2, double fact, Index NL, Index NC, BaseMatrix::MatrixCategory category)
     {
         switch(NL)
         {
@@ -754,11 +763,11 @@ public:
     template <class M1, class M2 >
     static inline void opDynamic(const M1 * m1, M2 * m2, double fact)
     {
-        const int NL = m1->getBlockRows();
-        const int NC = m1->getBlockCols();
+        const Index NL = m1->getBlockRows();
+        const Index NC = m1->getBlockCols();
         const BaseMatrix::MatrixCategory category = m1->getCategory();
         const BaseMatrix::ElementType elementType = m1->getElementType();
-        const unsigned int elementSize = m1->getElementSize();
+        const std::size_t elementSize = m1->getElementSize();
 
         if (category == BaseMatrix::MATRIX_IDENTITY)
         {

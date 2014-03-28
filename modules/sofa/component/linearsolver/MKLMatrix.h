@@ -54,13 +54,13 @@ public:
         delete impl;
     }
 
-    virtual void resize(int nbRow, int nbCol)
+    virtual void resize(Index nbRow, Index nbCol)
     {
-        impl->resize(nbRow, nbCol);
+        impl->resize((int)nbRow, (int)nbCol);
         //	(*impl) = 0.0;
     };
 
-    virtual unsigned  int rowSize(void)
+    virtual unsigned int rowSize(void)
     {
         return impl->rows;
     };
@@ -70,14 +70,14 @@ public:
         return impl->columns;
     };
 
-    virtual SReal &element(int i, int j)
+    virtual SReal &element(Index i, Index j)
     {
-        return *(impl->operator[](j) + i);
+        return *(impl->operator[]((unsigned int)j) + i);
     };
 
     virtual void solve(MKLVector *rHTerm)
     {
-        int n=impl->rows;
+        int n= (int)impl->rows;
         int nrhs=1;
         int lda = n;
         int ldb = n;
@@ -87,6 +87,7 @@ public:
         // solve Ax=b
         // b is overwritten by the linear system solution
         dgesv(&n,&nrhs,impl->m,&lda,ipiv,rHTerm->impl->v,&ldb,&info);
+        delete ipiv;
     };
 
 

@@ -52,6 +52,7 @@ protected:
     typedef typename InDataTypes::Real Real;
 public:
     typedef Eigen::Matrix<Real,Eigen::Dynamic,1>  VectorEigen;
+    typedef typename VectorEigen::Index  IndexEigen;
 protected:
     VectorEigen eigenVector;    ///< the data
 
@@ -66,7 +67,7 @@ public:
 
 
 
-    EigenVector(int nbRow=0)
+    EigenVector(Index nbRow=0)
     {
         resize(nbRow);
     }
@@ -74,21 +75,21 @@ public:
     unsigned size() const { return eigenVector.size(); }
 
     /// Resize the matrix without preserving the data (the matrix is set to zero)
-    void resize(int nbRow)
+    void resize(Index nbRow)
     {
-        eigenVector.resize(nbRow);
+        eigenVector.resize((IndexEigen)nbRow);
     }
 
     /// Resize the matrix without preserving the data (the matrix is set to zero), with the size given in number of blocks
-    void resizeBlocks(int nbBlocks)
+    void resizeBlocks(Index nbBlocks)
     {
-        eigenVector.resize(nbBlocks * Nin);
+        eigenVector.resize((IndexEigen)nbBlocks * Nin);
     }
 
 
 
 
-    SReal element(int i) const
+    SReal element(Index i) const
     {
 #ifdef EigenVector_CHECK
         if ((unsigned)i >= (unsigned)rowSize() || (unsigned)j >= (unsigned)colSize())
@@ -97,10 +98,10 @@ public:
             return 0.0;
         }
 #endif
-        return eigenVector.coeff(i);
+        return eigenVector.coeff((IndexEigen)i);
     }
 
-    void set(int i, double v)
+    void set(Index i, double v)
     {
 #ifdef EigenVector_VERBOSE
         std::cout << /*this->Name() <<*/ "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = "<<v<<std::endl;
@@ -112,10 +113,10 @@ public:
             return;
         }
 #endif
-        eigenVector.coeffRef(i) = (Real)v;
+        eigenVector.coeffRef((IndexEigen)i) = (Real)v;
     }
 
-    void setBlock(int i, const Block& v)
+    void setBlock(Index i, const Block& v)
     {
 #ifdef EigenVector_VERBOSE
         std::cout << /*this->Name() <<*/ "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = "<<v<<std::endl;
@@ -128,13 +129,13 @@ public:
         }
 #endif
         for(unsigned l=0; l<Nin; l++)
-            eigenVector.coeffRef(Nin*i+l) = (Real) v[l];
+            eigenVector.coeffRef((IndexEigen)Nin*i+l) = (Real) v[l];
     }
 
 
 
 
-    void add(int i, double v)
+    void add(Index i, double v)
     {
 #ifdef EigenVector_VERBOSE
         std::cout << /*this->Name() << */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") += "<<v<<std::endl;
@@ -146,10 +147,10 @@ public:
             return;
         }
 #endif
-        eigenVector.coeffRef(i) += (Real)v;
+        eigenVector.coeffRef((IndexEigen)i) += (Real)v;
     }
 
-    void clear(int i)
+    void clear(Index i)
     {
 #ifdef EigenVector_VERBOSE
         std::cout << /*this->Name() <<*/ "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = 0"<<std::endl;
@@ -161,7 +162,7 @@ public:
             return;
         }
 #endif
-        eigenVector.coeffRef(i) = (Real)0;
+        eigenVector.coeffRef((IndexEigen)i) = (Real)0;
     }
 
 
@@ -175,8 +176,8 @@ public:
 
     friend std::ostream& operator << (std::ostream& out, const EigenVector<InDataTypes>& v )
     {
-        int ny = v.size();
-        for (int y=0; y<ny; ++y)
+        IndexEigen ny = v.size();
+        for (IndexEigen y=0; y<ny; ++y)
         {
             out << " " << v.element(y);
         }
@@ -222,20 +223,20 @@ public:
 
     unsigned size() const { return eigenVector.size(); }
 
-    EigenVector(int nbRow=0)
+    EigenVector(Index nbRow=0)
     {
         resize(nbRow);
     }
 
     /// Resize the matrix without preserving the data
-    void resize(int nbRow)
+    void resize(Index nbRow)
     {
         eigenVector.resize(nbRow);
     }
 
 
 
-    SReal element(int i) const
+    SReal element(Index i) const
     {
 #ifdef EigenVector_CHECK
         if ((unsigned)i >= (unsigned)rowSize() || (unsigned)j >= (unsigned)colSize())
@@ -247,7 +248,7 @@ public:
         return eigenVector.coeff(i);
     }
 
-    void set(int i, double v)
+    void set(Index i, double v)
     {
 #ifdef EigenVector_VERBOSE
         std::cout << /*this->Name() <<*/ "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = "<<v<<std::endl;
@@ -266,7 +267,7 @@ public:
 
 
 
-    void add(int i, double v)
+    void add(Index i, double v)
     {
 #ifdef EigenVector_VERBOSE
         std::cout << /*this->Name() << */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") += "<<v<<std::endl;
@@ -281,7 +282,7 @@ public:
         eigenVector.coeffRef(i) += (Real)v;
     }
 
-    void clear(int i)
+    void clear(Index i)
     {
 #ifdef EigenVector_VERBOSE
         std::cout << /*this->Name() <<*/ "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = 0"<<std::endl;
@@ -306,8 +307,8 @@ public:
 
 //    friend std::ostream& operator << (std::ostream& out, const EigenVector<double>& v )
 //    {
-//        int ny = v.size();
-//        for (int y=0;y<ny;++y)
+//        IndexEigen ny = v.size();
+//        for (IndexEigen y=0;y<ny;++y)
 //        {
 //                out << " " << v.element(y);
 //        }
