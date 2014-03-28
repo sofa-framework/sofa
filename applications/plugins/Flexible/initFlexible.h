@@ -34,7 +34,10 @@
 #endif
 
 /** \mainpage
-  This is a the starting page of the plugin documentation, defined in file initFlexible.h
+  The Flexible plugin provides a unified approach to the simulation of deformable solids. It uses a three-level kinematic structure:
+  control nodes, deformation gradients,  strain measures, and new mappings between these. 
+  * \image html threeLevels.png 
+  * This approach maximizes the modularity of the implementation.
   */
-
+    
 #endif // INITFlexible_H

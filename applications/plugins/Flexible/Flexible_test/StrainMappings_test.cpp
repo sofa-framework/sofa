@@ -1,4 +1,3 @@
-
 // I do not know why extern template needs to be desactivated, but for now it does the job
 #define SOFA_NO_EXTERN_TEMPLATE
 #ifdef SOFA_EXTERN_TEMPLATE
@@ -12,6 +11,7 @@
 
 #include "../strainMapping/CorotationalStrainMapping.h"
 #include "../strainMapping/PrincipalStretchesMapping.h"
+#include "../strainMapping/GreenStrainMapping.h"
 
 #include <Mapping_test.h>
 
@@ -65,9 +65,8 @@ namespace sofa {
 
             // rotation
             f = rotation * f;
-//            cerr<<"StrainMappingTest::runTest, f="<< f << endl;
-//            cerr<<"StrainMappingTest::runTest, expected="<< expectedChildCoords << endl;
-
+            cerr<<"StrainMappingTest::runTest, f="<< f << endl;
+            cerr<<"StrainMappingTest::runTest, expected="<< expectedChildCoords << endl;
 
             return Inherited::runTest(xin,xout,xin,expectedChildCoords);
         }
@@ -77,78 +76,83 @@ namespace sofa {
 
 
 
-//////////////////////////////////////////////////////
-//////////////////////////////////////////////////////
-//////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////
 
 
 
-  template <typename _Mapping>
-  struct CorotationalStrainMappingTest : public StrainMappingTest<_Mapping>
-  {
-      typedef StrainMappingTest<_Mapping> Inherited;
+    template <typename _Mapping>
+    struct CorotationalStrainMappingTest : public StrainMappingTest<_Mapping>
+    {
+         /* Test the corotational strain mapping:
+         * Create a symmetric deformation gradient encoding a pure deformation D.
+         * Then the strain E is mapped from the deformation gradient as:
+         - \f$ E = D - I  \f$
+        */
+        typedef StrainMappingTest<_Mapping> Inherited;
 
-      typedef typename Inherited::In In;
-      typedef typename Inherited::Real Real;
-      typedef typename Inherited::OutVecCoord OutVecCoord;
+        typedef typename Inherited::In In;
+        typedef typename Inherited::Real Real;
+        typedef typename Inherited::OutVecCoord OutVecCoord;
 
 
 
-      bool runTest( unsigned method )
-      {
-          static_cast<_Mapping*>(this->mapping)->f_geometricStiffness.setValue(1);
-          static_cast<_Mapping*>(this->mapping)->f_method.beginEdit()->setSelectedItem( method );
+        bool runTest( unsigned method )
+        {
+            static_cast<_Mapping*>(this->mapping)->f_geometricStiffness.setValue(1);
+            static_cast<_Mapping*>(this->mapping)->f_method.beginEdit()->setSelectedItem( method );
 
-          defaulttype::Mat<3,3,Real> rotation;
-          defaulttype::Mat<In::material_dimensions,In::material_dimensions,Real> symGradDef; // local frame with onlu stretch and shear and no rotation
+            defaulttype::Mat<3,3,Real> rotation;
+            defaulttype::Mat<In::material_dimensions,In::material_dimensions,Real> symGradDef; // local frame with only stretch and shear and no rotation
 
-          // create a symmetric deformation gradient, encoding a pure deformation.
-          for( unsigned int i=0 ; i<In::material_dimensions ; ++i )
-          for( unsigned int j=i ; j<In::material_dimensions ; ++j )
-          {
-              symGradDef[i][j] = (i+1)*2+j*0.3; // todo randomize it being careful not to create a rotation
-              if( i!=j ) symGradDef[j][i] = symGradDef[i][j];
-          }
+            // create a symmetric deformation gradient, encoding a pure deformation.
+            for( unsigned int i=0 ; i<In::material_dimensions ; ++i )
+                for( unsigned int j=i ; j<In::material_dimensions ; ++j )
+                {
+                    symGradDef[i][j] = (i+1)*2+j*0.3; // todo randomize it being careful not to create a rotation
+                    if( i!=j ) symGradDef[j][i] = symGradDef[i][j];
+                }
 //          cerr<<"symGradDef = " << symGradDef << endl;
 
-          // expected mapped values
-          OutVecCoord expectedChildCoords(1);
-          defaulttype::Mat<In::material_dimensions,In::material_dimensions,Real> defo( symGradDef );
-          for( unsigned int i=0 ; i<In::material_dimensions ; ++i )
-              defo[i][i] -= 1.0;
-          expectedChildCoords[0].getVec() = defaulttype::StrainMatToVoigt( defo );
-//          cerr<<"voigt strain = " << defo << endl;
+                // expected mapped values
+                OutVecCoord expectedChildCoords(1);
+                defaulttype::Mat<In::material_dimensions,In::material_dimensions,Real> defo( symGradDef );
+                for( unsigned int i=0 ; i<In::material_dimensions ; ++i )
+                    defo[i][i] -= 1.0;
+                expectedChildCoords[0].getVec() = defaulttype::StrainMatToVoigt( defo );
+//              cerr<<"voigt strain = " << defo << endl;
 
-//          helper::Quater<Real>::fromEuler( 0.1, -.2, .3 ).toMatrix(rotation); // random rotation to combine to strain
-          helper::Quater<Real>::fromEuler( 0,0,0 ).toMatrix(rotation); // random rotation to combine to strain
+//              helper::Quater<Real>::fromEuler( 0.1, -.2, .3 ).toMatrix(rotation); // random rotation to combine to strain
+                helper::Quater<Real>::fromEuler( 0,0,0 ).toMatrix(rotation); // random rotation to combine to strain
 
-          return Inherited::runTest( rotation, symGradDef, expectedChildCoords );
+                return Inherited::runTest( rotation, symGradDef, expectedChildCoords );
 
-      }
+        }
 
-  };
-
-
-  // Define the list of types to instanciate.
-  typedef Types<
-  CorotationalStrainMapping<defaulttype::F331Types,defaulttype::E331Types>,
-  CorotationalStrainMapping<defaulttype::F321Types,defaulttype::E321Types>,
-  CorotationalStrainMapping<defaulttype::F311Types,defaulttype::E311Types>
-  > CorotationalDataTypes; // the types to instanciate.
-
-  // Test suite for all the instanciations
-  TYPED_TEST_CASE(CorotationalStrainMappingTest, CorotationalDataTypes);
-  // first test case
-  TYPED_TEST( CorotationalStrainMappingTest , test_auto )
-  {
-      ASSERT_TRUE( this->runTest( 0 ) ); // polar
-      ASSERT_TRUE( this->runTest( 3 ) ); // svd
-  }
+    };
 
 
-  //////////////////////////////////////////////////////
-  //////////////////////////////////////////////////////
-  //////////////////////////////////////////////////////
+    // Define the list of types to instanciate.
+    typedef Types<
+        CorotationalStrainMapping<defaulttype::F331Types,defaulttype::E331Types>,
+        CorotationalStrainMapping<defaulttype::F321Types,defaulttype::E321Types>,
+        CorotationalStrainMapping<defaulttype::F311Types,defaulttype::E311Types>
+    > CorotationalDataTypes; // the types to instanciate.
+
+    // Test suite for all the instanciations
+    TYPED_TEST_CASE(CorotationalStrainMappingTest, CorotationalDataTypes);
+    // first test case
+    TYPED_TEST( CorotationalStrainMappingTest , test_auto )
+    {
+        ASSERT_TRUE( this->runTest( 0 ) ); // polar
+        ASSERT_TRUE( this->runTest( 3 ) ); // svd
+    }
+
+
+    //////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////
 
 
     /// layer over PrincipalStretchesJacobianBlock that is able to order given child forces in the same order while computing J
@@ -180,7 +184,7 @@ namespace sofa {
                         _order[i] = j;
                         min = tmp.getStrain()[j];
                     }
-                tmp.getStrain()[_order[i]] = 999999999999999999;
+                    tmp.getStrain()[_order[i]] = 999999999999999999;
             }
         }
 
@@ -276,7 +280,7 @@ namespace sofa {
             OutVecCoord expectedChildCoords(1);
             for( unsigned int i=0 ; i<In::material_dimensions ; ++i )
                 expectedChildCoords[0].getVec()[i] = strain[i][i];
-
+            
             return Inherited::runTest( rotation, strain, expectedChildCoords );
         }
 
@@ -285,10 +289,10 @@ namespace sofa {
 
     // Define the list of types to instanciate.
     typedef Types<
-         PrincipalStretchesMappingTester<defaulttype::F331Types,defaulttype::U331Types>
+        PrincipalStretchesMappingTester<defaulttype::F331Types,defaulttype::U331Types>
         ,PrincipalStretchesMappingTester<defaulttype::F321Types,defaulttype::U321Types>
-//        ,PrincipalStretchesMapping<defaulttype::F331Types,defaulttype::D331Types> // not fully implemented yet (getJ)
-//        ,PrincipalStretchesMapping<defaulttype::F321Types,defaulttype::D321Types> // not fully implemented yet (getJ)
+        //        ,PrincipalStretchesMapping<defaulttype::F331Types,defaulttype::D331Types> // not fully implemented yet (getJ)
+        //        ,PrincipalStretchesMapping<defaulttype::F321Types,defaulttype::D321Types> // not fully implemented yet (getJ)
     > PrincipalStretchesDataTypes; // the types to instanciate.
 
     // Test suite for all the instanciations
@@ -300,6 +304,91 @@ namespace sofa {
     }
 
 
+    //////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////
+
+
+
+    template <typename _Mapping>
+    struct GreenStrainMappingTest : public Mapping_test<_Mapping>
+    {
+        /* Test the green strain mapping:
+        * Create a deformation gradient F. Then the strain E is mapped from the deformation gradient as:
+        - \f$ E = [ F^T.F - I ]/2  \f$*
+        * The expected mapped values should be equal to the strain. 
+        * Note that the strain is actually stored into vectors using Voigt notation. 
+        */
+        
+        typedef Mapping_test<_Mapping> Inherited;
+        typedef typename Inherited::In In;
+        typedef typename Inherited::Real Real;
+        typedef typename Inherited::OutVecCoord OutVecCoord;
+        typedef typename In::Frame InFrame;
+
+
+        bool runTest()
+        {
+            defaulttype::Mat<In::material_dimensions,In::material_dimensions,Real> strain; 
+
+            // create a deformation gradient
+            for( unsigned int i=0 ; i<In::material_dimensions ; ++i )
+                for( unsigned int j=i ; j<In::material_dimensions ; ++j )
+                {
+                    strain[i][j] = (i+1)*2+j*0.3; 
+                }
+
+                defaulttype::Mat<In::material_dimensions,In::material_dimensions,Real> defo( strain );
+
+                //Green Lagrange Tensor E = 0.5*(strain.transpose()*strain - Identity)
+                defo = ((strain.transposed())*strain - strain.Identity())*0.5;
+
+                // expected mapped values
+                OutVecCoord expectedChildCoords(1);
+                expectedChildCoords[0].getVec() = defaulttype::StrainMatToVoigt( defo );
+
+                this->deltaMax = 0.001;  
+                this->errorMax = 1;
+
+                InVecCoord xin(1);
+                OutVecCoord xout(1);
+
+                // parent position
+                InFrame &f = xin[0].getF();
+
+                // stretch + shear
+                for( unsigned int i=0 ; i<In::material_dimensions ; ++i )
+                {
+                    for( unsigned int j=0 ; j<In::material_dimensions ; ++j )
+                    {
+                        f[i][j] = strain[i][j];
+                    }
+                }
+
+                cerr<<"StrainMappingTest::runTest, f="<< f << endl;
+                cerr<<"StrainMappingTest::runTest, expected="<< expectedChildCoords << endl;
+
+                return Inherited::runTest(xin,xout,xin,expectedChildCoords);
+
+        }
+
+    };
+
+
+    // Define the list of types to instanciate.
+    typedef Types<
+        GreenStrainMapping<defaulttype::F331Types,defaulttype::E331Types>,
+        GreenStrainMapping<defaulttype::F321Types,defaulttype::E321Types>,
+        GreenStrainMapping<defaulttype::F311Types,defaulttype::E311Types>
+    > GreenDataTypes; // the types to instanciate.
+
+    // Test suite for all the instanciations
+    TYPED_TEST_CASE(GreenStrainMappingTest, GreenDataTypes);
+    // first test case
+    TYPED_TEST( GreenStrainMappingTest , test_auto )
+    {
+        ASSERT_TRUE( this->runTest() );
+    }
 
 
 
