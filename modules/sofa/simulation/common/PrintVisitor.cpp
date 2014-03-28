@@ -58,6 +58,7 @@ void PrintVisitor::processObjects(Seq& list, const char* name)
 
 Visitor::Result PrintVisitor::processNodeTopDown(simulation::Node* node)
 {
+    std::cout<<"PrintVisitor::processNodeTopDown "<< node->getName() << std::endl;
     for (int i=0; i<level; i++)
         std::cout << "| ";
     std::cout << "+-";
@@ -85,9 +86,10 @@ Visitor::Result PrintVisitor::processNodeTopDown(simulation::Node* node)
     return RESULT_CONTINUE;
 }
 
-void PrintVisitor::processNodeBottomUp(simulation::Node* /*node*/)
+void PrintVisitor::processNodeBottomUp(simulation::Node* node)
 {
     --level;
+    std::cout<<"PrintVisitor::processNodeBottomUp "<< node->getName() << std::endl;
 }
 
 } // namespace simulation

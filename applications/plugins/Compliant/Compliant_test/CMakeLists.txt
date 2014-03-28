@@ -34,8 +34,5 @@ AddCompilerDefinitions("COMPLIANT_TEST_PYTHON_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/
 AddCompilerDefinitions("SOFA_SRC_DIR=${SOFA_SRC_DIR}")
 AddLinkerDependencies(SofaPython)
 
-if(UNIX)
-    AddLinkerDependencies("dl")
-endif()
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

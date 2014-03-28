@@ -46,6 +46,7 @@ using std::cout;
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/simulation/tree/TreeSimulation.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/BackTrace.h>
 #include <sofa/component/misc/WriteState.h>
@@ -55,21 +56,54 @@ using std::cout;
 #include <sofa/component/collision/MouseInteractor.h>
 //#include <sofa/gui/PickHandler.h>
 
+using namespace sofa;
+using simulation::Node;
+typedef sofa::simulation::graph::DAGSimulation ParentSimulation;
+//typedef sofa::simulation::tree::TreeSimulation ParentSimulation;
+
 /** Prototype used to completely encapsulate the use of Sofa in an OpenGL application, without any standard Sofa GUI.
  *
  * @author Francois Faure, 2014
  * */
-class SofaScene : public sofa::simulation::graph::DAGSimulation
+class SofaScene : public ParentSimulation
 {
     // sofa types should not be exposed
-    typedef sofa::simulation::graph::DAGSimulation Parent;
     typedef sofa::defaulttype::Vector3 Vec3;
+    typedef sofa::component::container::MechanicalObject< defaulttype::Vec3Types > MouseContainer;
+    typedef sofa::component::collision::RayModel MouseCollisionModel;
+
+    // interaction
+    Node::SPtr mouseNode;
+    bool interactorInUse;
+    MouseContainer::SPtr      mouseContainer;
+    MouseCollisionModel::SPtr mouseCollision;
+
 
 public:
-    sofa::simulation::Node::SPtr groot;
+    Node::SPtr groot;
     bool debug;
 
-    SofaScene(): debug(true) {}
+    SofaScene()
+    {
+        interactorInUse = false;
+        debug = true;
+
+
+        sofa::simulation::setSimulation(new ParentSimulation());
+
+        sofa::component::init();
+        sofa::simulation::xml::initXml();
+
+        vparams = sofa::core::visual::VisualParams::defaultInstance();
+        vparams->drawTool() = &drawToolGL;
+
+//        groot = sofa::simulation::getSimulation()->createNewGraph("");
+
+
+
+//        mouseNode->detachFromGraph();
+
+    }
 
     /**
      * @brief Initialize Sofa and load a scene file
@@ -78,14 +112,6 @@ public:
      */
     void init( std::vector<std::string>& plugins, const std::string& fileName )
     {
-        sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
-
-        sofa::component::init();
-        sofa::simulation::xml::initXml();
-
-        vparams = sofa::core::visual::VisualParams::defaultInstance();
-        vparams->drawTool() = &drawToolGL;
-
 
         // --- plugins ---
         for (unsigned int i=0; i<plugins.size(); i++)
@@ -100,13 +126,16 @@ public:
         {
             groot = sofa::simulation::getSimulation()->createNewGraph("");
         }
+        groot->setName("theRoot");
 
-        Parent::init(groot.get());
+        ParentSimulation::init(groot.get());
 
         if( debug ){
             cout<<"SofaScene::init, scene loaded" << endl;
             sofa::simulation::getSimulation()->print(groot.get());
         }
+
+
 
     }
 
@@ -162,6 +191,43 @@ public:
             result.point[2] = mstate->getPZ(result.indexCollisionElement);
             result.dist =  0;
             result.rayLength = (result.point-origin)*direction;
+
+            if (!interactorInUse)
+            {
+                if( debug ){
+                    sofa::simulation::getSimulation()->print(groot.get());
+                    cout<<"SofaScene::raypick, mouse node to add to =============================" << groot->getName() << endl;
+                }
+//                groot->addChild(mouseNode);
+                // --- Interaction
+                cout<<"ray pick, groot has " << groot->getChildren().size() << " children before" << endl;
+                mouseNode = groot->createChild("Mouse");
+                cout<<"ray pick, groot has " << groot->getChildren().size() << " children after" << endl;
+
+                mouseContainer = sofa::core::objectmodel::New<MouseContainer>(); mouseContainer->resize(1);
+                mouseContainer->setName("MousePosition");
+                mouseNode->addObject(mouseContainer);
+
+
+                mouseCollision = sofa::core::objectmodel::New<MouseCollisionModel>();
+                mouseCollision->setNbRay(1);
+                mouseCollision->getRay(0).setL(1000000);
+                mouseCollision->setName("MouseCollisionModel");
+                mouseNode->addObject(mouseCollision);
+
+
+                mouseNode->init(sofa::core::ExecParams::defaultInstance());
+                mouseContainer->init();
+                mouseCollision->init();
+//                interaction->attach(mouseNode.get());
+                interactorInUse=true;
+                if( debug ){
+                    cout<<"SofaScene::raypick, mouse node added" << endl;
+                    sofa::simulation::getSimulation()->print(groot.get());
+                }
+            }
+
+
             return true;
         }
         else
@@ -175,66 +241,11 @@ protected:
     sofa::core::visual::VisualParams* vparams;
     sofa::component::collision::BodyPicked result;
 
-};
-
-
-
-#include <sofa/gui/glut/SimpleGUI.h>
-class SofaGlutGui: public sofa::gui::glut::SimpleGUI, public sofa::simulation::graph::DAGSimulation
-{
-public:
-    typedef sofa::gui::glut::SimpleGUI Gui;
-    typedef sofa::simulation::graph::DAGSimulation Simulation;
-    bool debug;
-    SofaGlutGui():debug(true){}
-//    ~SofaGlutGui(){}
-
-    /**
-     * @brief Initialize Sofa and load a scene file
-     * @param plugins List of plugins to load
-     * @param fileName Scene file to load
-     */
-    void init( std::vector<std::string>& plugins, const std::string& fileName )
-    {
-        sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
-
-        sofa::component::init();
-        sofa::simulation::xml::initXml();
-
-
-        // --- plugins ---
-        for (unsigned int i=0; i<plugins.size(); i++)
-            sofa::helper::system::PluginManager::getInstance().loadPlugin(plugins[i]);
-
-        sofa::helper::system::PluginManager::getInstance().init();
-
-
-        // --- Create simulation graph ---
-        setScene( sofa::simulation::getSimulation()->load(fileName.c_str()) );
-        if (getScene()==NULL)
-        {
-            setScene( sofa::simulation::getSimulation()->createNewGraph("") );
-        }
-
-        Simulation::init(getScene());
-
-        if( debug ){
-            cout<<"SofaScene::init, scene loaded" << endl;
-            sofa::simulation::getSimulation()->print(getScene());
-        }
-
-    }
-
-    void glDraw() { Simulation::draw(vparams,getScene()); }
-    void animate() { Simulation::animate(getScene()); }
-    void reshape(int,int){}
-protected:
-//    sofa::core::visual::VisualParams vparams;
-//    sofa::simulation::Node::SPtr groot;
-//    sofa::simulation::Node* getScene(){ return groot.get(); }
-//    void setScene(sofa::simulation::Node::SPtr g){ groot=g; }
 
 };
+
+
+
 
 
 // ---------------------------------------------------------------------
@@ -242,8 +253,8 @@ protected:
 // Sofa is invoked only through variable sofaScene.
 // ---------------------------------------------------------------------
 
-//SofaScene sofaScene; ///< The interface of the application with Sofa
-SofaGlutGui sofaScene; ///< The interface of the application with Sofa
+SofaScene sofaScene; ///< The interface of the application with Sofa
+//SofaGlutGui sofaScene; ///< The interface of the application with Sofa
 
 // Various shared variables for glut
 GLfloat light_position[] = { 0.0, 0.0, 25.0, 0.0 };
@@ -336,8 +347,8 @@ int old_x, old_y;
 
 void mouseButton(int button, int state, int x, int y)
 {
-    sofaScene.glut_mouse(button,state,x,y);
-    return;
+//    sofaScene.glut_mouse(button,state,x,y);
+//    return;
 
     old_x = x;
     old_y = y;
@@ -362,12 +373,12 @@ void mouseButton(int button, int state, int x, int y)
             gluUnProject ((GLdouble) x, (GLdouble) realy, 1.0, mvmatrix, projmatrix, viewport, &wx1, &wy1, &wz1); // z=0: far plane
             //cout<<"World coords at z=1.0 are ("<< wx <<","<< wy<<","<< wz <<")"<< endl;
 
-//            if( sofaScene.rayPick(light_position[0],light_position[1],light_position[2], wx1-wx, wy1-wy, wz1-wz) ){
-//                cout<<"picked particle " << endl;
-//            }
-//            else {
-//                cout << "no particle picked" << endl;
-//            }
+            if( sofaScene.rayPick(light_position[0],light_position[1],light_position[2], wx1-wx, wy1-wy, wz1-wz) ){
+                cout<<"picked particle " << endl;
+            }
+            else {
+                cout << "no particle picked" << endl;
+            }
         }
         break;
     case GLUT_RIGHT_BUTTON:
@@ -386,23 +397,23 @@ void mouseMotion(int x, int y)
     spin_x = x - old_x;
     spin_y = y - old_y;
 
-    sofaScene.glut_motion(x,y);
+//    sofaScene.glut_motion(x,y);
 }
 
-//bool isControlPressed = false;
-//bool isShiftPressed = false;
-//bool isAltPressed = false;
+bool _isControlPressed = false; bool isControlPressed(){ return _isControlPressed; }
+bool _isShiftPressed = false; bool isShiftPressed(){ return _isShiftPressed; }
+bool _isAltPressed = false; bool isAltPressed(){ return _isAltPressed; }
 
-//void update_modifiers()
-//{
-//    isControlPressed =  (glutGetModifiers()&GLUT_ACTIVE_CTRL )!=0;
-//    isShiftPressed   =  (glutGetModifiers()&GLUT_ACTIVE_SHIFT)!=0;
-//    isAltPressed     =  (glutGetModifiers()&GLUT_ACTIVE_ALT  )!=0;
-//}
+void update_modifiers()
+{
+    _isControlPressed =  (glutGetModifiers()&GLUT_ACTIVE_CTRL )!=0;
+    _isShiftPressed   =  (glutGetModifiers()&GLUT_ACTIVE_SHIFT)!=0;
+    _isAltPressed     =  (glutGetModifiers()&GLUT_ACTIVE_ALT  )!=0;
+}
 void specialKey(int k, int x, int y)
 {
-//    update_modifiers();
-    sofaScene.glut_special(k,x,y);
+    update_modifiers();
+//    sofaScene.glut_special(k,x,y);
 }
 
 
@@ -440,3 +451,61 @@ int main(int argc, char** argv)
 
     return 0;
 }
+
+
+//#include <sofa/gui/glut/SimpleGUI.h>
+//class SofaGlutGui: public sofa::gui::glut::SimpleGUI, public sofa::simulation::graph::DAGSimulation
+//{
+//public:
+//    typedef sofa::gui::glut::SimpleGUI Gui;
+//    typedef sofa::simulation::graph::DAGSimulation Simulation;
+//    bool debug;
+//    SofaGlutGui():debug(true){}
+////    ~SofaGlutGui(){}
+
+//    /**
+//     * @brief Initialize Sofa and load a scene file
+//     * @param plugins List of plugins to load
+//     * @param fileName Scene file to load
+//     */
+//    void init( std::vector<std::string>& plugins, const std::string& fileName )
+//    {
+//        sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
+
+//        sofa::component::init();
+//        sofa::simulation::xml::initXml();
+
+
+//        // --- plugins ---
+//        for (unsigned int i=0; i<plugins.size(); i++)
+//            sofa::helper::system::PluginManager::getInstance().loadPlugin(plugins[i]);
+
+//        sofa::helper::system::PluginManager::getInstance().init();
+
+
+//        // --- Create simulation graph ---
+//        setScene( sofa::simulation::getSimulation()->load(fileName.c_str()) );
+//        if (getScene()==NULL)
+//        {
+//            setScene( sofa::simulation::getSimulation()->createNewGraph("") );
+//        }
+
+//        Simulation::init(getScene());
+
+//        if( debug ){
+//            cout<<"SofaScene::init, scene loaded" << endl;
+//            sofa::simulation::getSimulation()->print(getScene());
+//        }
+
+//    }
+
+//    void glDraw() { Simulation::draw(vparams,getScene()); }
+//    void animate() { Simulation::animate(getScene()); }
+//    void reshape(int,int){}
+//protected:
+////    sofa::core::visual::VisualParams vparams;
+////    sofa::simulation::Node::SPtr groot;
+////    sofa::simulation::Node* getScene(){ return groot.get(); }
+////    void setScene(sofa::simulation::Node::SPtr g){ groot=g; }
+
+//};
