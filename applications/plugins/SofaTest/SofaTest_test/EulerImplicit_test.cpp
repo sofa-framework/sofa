@@ -73,7 +73,7 @@ struct EulerImplicit_test_2_particles_to_equilibrium : public Solver_test
         // run simulation
 
         Vector x0, x1, v0, v1;
-        x0 = getVector( core::VecId::position() ); cerr<<"EulerImplicit_test, new positions : " << x0.transpose() << endl;
+        x0 = getVector( core::VecId::position() ); //cerr<<"EulerImplicit_test, initial positions : " << x0.transpose() << endl;
         v0 = getVector( core::VecId::velocity() );
 
         Real dx, dv;
@@ -83,7 +83,7 @@ struct EulerImplicit_test_2_particles_to_equilibrium : public Solver_test
         do {
             sofa::simulation::getSimulation()->animate(getRoot().get(),1.0);
 
-            x1 = getVector( core::VecId::position() ); cerr<<"EulerImplicit_test, new positions : " << x1.transpose() << endl;
+            x1 = getVector( core::VecId::position() ); //cerr<<"EulerImplicit_test, new positions : " << x1.transpose() << endl;
             v1 = getVector( core::VecId::velocity() );
 
             dx = (x0-x1).lpNorm<Eigen::Infinity>();
