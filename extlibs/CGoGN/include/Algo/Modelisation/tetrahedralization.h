@@ -106,7 +106,7 @@ Dart swap2To2(typename PFP::MAP& map, Dart d);
  *
  */
 template <typename PFP>
-void swap4To4(typename PFP::MAP& map, Dart d);
+Dart swap4To4(typename PFP::MAP& map, Dart d);
 
 //!
 /*!
