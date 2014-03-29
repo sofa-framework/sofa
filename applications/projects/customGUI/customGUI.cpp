@@ -58,8 +58,8 @@ using std::cout;
 
 using namespace sofa;
 using simulation::Node;
-typedef sofa::simulation::graph::DAGSimulation ParentSimulation;
-//typedef sofa::simulation::tree::TreeSimulation ParentSimulation;
+//typedef sofa::simulation::graph::DAGSimulation ParentSimulation;
+typedef sofa::simulation::tree::TreeSimulation ParentSimulation;
 
 /** Prototype used to completely encapsulate the use of Sofa in an OpenGL application, without any standard Sofa GUI.
  *
@@ -134,10 +134,9 @@ public:
             cout<<"SofaScene::init, scene loaded" << endl;
             sofa::simulation::getSimulation()->print(groot.get());
         }
-
-
-
     }
+
+    void reshape(int,int){}
 
     /**
      * @brief glDraw Draw the Sofa scene using OpenGL.
@@ -198,34 +197,50 @@ public:
                     sofa::simulation::getSimulation()->print(groot.get());
                     cout<<"SofaScene::raypick, mouse node to add to =============================" << groot->getName() << endl;
                 }
-//                groot->addChild(mouseNode);
                 // --- Interaction
-                cout<<"ray pick, groot has " << groot->getChildren().size() << " children before" << endl;
-                mouseNode = groot->createChild("Mouse");
-                cout<<"ray pick, groot has " << groot->getChildren().size() << " children after" << endl;
+                addMouseNode(groot);
 
-                mouseContainer = sofa::core::objectmodel::New<MouseContainer>(); mouseContainer->resize(1);
-                mouseContainer->setName("MousePosition");
-                mouseNode->addObject(mouseContainer);
-
-
-                mouseCollision = sofa::core::objectmodel::New<MouseCollisionModel>();
-                mouseCollision->setNbRay(1);
-                mouseCollision->getRay(0).setL(1000000);
-                mouseCollision->setName("MouseCollisionModel");
-                mouseNode->addObject(mouseCollision);
-
-
-                mouseNode->init(sofa::core::ExecParams::defaultInstance());
-                mouseContainer->init();
-                mouseCollision->init();
-//                interaction->attach(mouseNode.get());
-                interactorInUse=true;
-                if( debug ){
-                    cout<<"SofaScene::raypick, mouse node added" << endl;
-                    sofa::simulation::getSimulation()->print(groot.get());
-                }
+                interactorInUse = true;
             }
+
+            //            // ========  Node with multiple parents to create an interaction using a MultiMapping
+            //            Node::SPtr commonChild = string1->createChild("commonChild");
+            //            string2->addChild(commonChild);
+
+            //            MechanicalObject3::SPtr mappedDOF = New<MechanicalObject3>(); // to contain particles from the two strings
+            //            commonChild->addObject(mappedDOF);
+
+            //            SubsetMultiMapping3_to_3::SPtr multimapping = New<SubsetMultiMapping3_to_3>();
+            //            multimapping->setName("InteractionMultiMapping");
+            //            multimapping->addInputModel( string1->getMechanicalState() );
+            //            multimapping->addInputModel( string2->getMechanicalState() );
+            //            multimapping->addOutputModel( mappedDOF.get() );
+            //            multimapping->addPoint( string1->getMechanicalState(), n1-1 );
+            //            multimapping->addPoint( string2->getMechanicalState(), n2-1 );
+            //            commonChild->addObject(multimapping);
+
+            //            // Node to handle the extension of the interaction link
+            //            Node::SPtr extension_node = commonChild->createChild("InteractionExtensionNode");
+
+            //            MechanicalObject1::SPtr extensions = New<MechanicalObject1>();
+            //            extension_node->addObject(extensions);
+
+            //            EdgeSetTopologyContainer::SPtr edgeSet = New<EdgeSetTopologyContainer>();
+            //            extension_node->addObject(edgeSet);
+            //            edgeSet->addEdge(0,1);
+
+            //            DistanceMapping31::SPtr extensionMapping = New<DistanceMapping31>();
+            //            extensionMapping->setModels(mappedDOF.get(),extensions.get());
+            //            extension_node->addObject( extensionMapping );
+            //            extensionMapping->setName("InteractionExtension_mapping");
+
+
+            //            UniformCompliance1::SPtr compliance = New<UniformCompliance1>();
+            //            extension_node->addObject(compliance);
+            //            compliance->compliance.setName("connectionCompliance");
+            //            compliance->compliance.setValue(complianceValue);
+
+
 
 
             return true;
@@ -234,12 +249,40 @@ public:
             return false;
     }
 
-    void reshape(int,int){}
-
 protected:
     sofa::core::visual::DrawToolGL   drawToolGL;
     sofa::core::visual::VisualParams* vparams;
     sofa::component::collision::BodyPicked result;
+
+    void addMouseNode( Node::SPtr groot )
+    {
+//        cout<<"ray pick, groot has " << groot->getChildren().size() << " children before" << endl;
+        mouseNode = groot->createChild("Mouse");
+//        cout<<"ray pick, groot has " << groot->getChildren().size() << " children after" << endl;
+
+        mouseContainer = sofa::core::objectmodel::New<MouseContainer>(); mouseContainer->resize(1);
+        mouseContainer->setName("MousePosition");
+        mouseNode->addObject(mouseContainer);
+
+
+        mouseCollision = sofa::core::objectmodel::New<MouseCollisionModel>();
+        mouseCollision->setNbRay(1);
+        mouseCollision->getRay(0).setL(1000000);
+        mouseCollision->setName("MouseCollisionModel");
+        mouseNode->addObject(mouseCollision);
+
+
+        mouseNode->init(sofa::core::ExecParams::defaultInstance());
+        mouseContainer->init();
+        mouseCollision->init();
+//                interaction->attach(mouseNode.get());
+        interactorInUse=true;
+        if( debug ){
+            cout<<"SofaScene::raypick, mouse node added" << endl;
+            sofa::simulation::getSimulation()->print(groot.get());
+        }
+
+    }
 
 
 };
