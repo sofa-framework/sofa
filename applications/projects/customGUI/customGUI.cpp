@@ -58,8 +58,8 @@ using std::cout;
 
 using namespace sofa;
 using simulation::Node;
-//typedef sofa::simulation::graph::DAGSimulation ParentSimulation;
-typedef sofa::simulation::tree::TreeSimulation ParentSimulation;
+typedef sofa::simulation::graph::DAGSimulation ParentSimulation;
+//typedef sofa::simulation::tree::TreeSimulation ParentSimulation;
 
 /** Prototype used to completely encapsulate the use of Sofa in an OpenGL application, without any standard Sofa GUI.
  *

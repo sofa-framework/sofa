@@ -18,6 +18,7 @@ set(SOURCE_FILES
     BaryMapperTest.cpp
     LoadScene_test.cpp
     TeschnerSpatialHashing_test.cpp
+    DAG_test.cpp
         )
 
 if(APPLE)
