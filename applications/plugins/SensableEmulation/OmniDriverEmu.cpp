@@ -50,6 +50,11 @@
 #include <sofa/core/objectmodel/MouseEvent.h>
 //sensable namespace
 
+#ifndef WIN32
+#include <pthread.h>
+#else
+#include <boost/thread/thread.hpp>
+#endif
 
 
 #include <sofa/simulation/common/UpdateMappingVisitor.h>
@@ -140,7 +145,7 @@ void sleep(int sleepus)
 /**
  function that is use to emulate a haptic device by interpolating the position of the tool between several points.
 */
-void hapticSimuExecute( OmniDriverEmu *ptr )
+void *hapticSimuExecute( void *ptr )
 {
 
     // Initialization
@@ -160,7 +165,7 @@ void hapticSimuExecute( OmniDriverEmu *ptr )
     if(pts.size()==0)
     {
         std::cerr << "Bad trajectory specification : there are no points for interpolation. " << std::endl;
-        return;
+        return(0);
     }
 
 
@@ -179,8 +184,7 @@ void hapticSimuExecute( OmniDriverEmu *ptr )
 
     helper::vector<unsigned int> stepNum;
     // Init the Step list
-	unsigned int num = (numPts+1)>numSegs ? numSegs : numPts+1;
-    for (unsigned int i = 0; i < num; i++)
+    for (unsigned int i = 0; i < numPts+1; i++)
     {
         stepNum.push_back(tmg[i]*omniDrv->simuFreq.getValue());
 
@@ -190,7 +194,7 @@ void hapticSimuExecute( OmniDriverEmu *ptr )
     if (numSegs != numPts)
     {
         std::cerr << "Bad trajectory specification : the number of trajectory timing does not match the number of trajectory points. " << std::endl;
-        return;
+        return(0);
     }
 
 
@@ -252,7 +256,6 @@ void hapticSimuExecute( OmniDriverEmu *ptr )
     // loop that updates the position tool.
     while (true)
     {
-//        std::cout << "-------- test Omni" << std::endl;
         if (omniDrv->executeAsynchro)
         {
             startTime = double(omniDrv->thTimer->getTime());
@@ -290,9 +293,11 @@ void hapticSimuExecute( OmniDriverEmu *ptr )
 
                 std::cout << "OmniDriverEmu : End of the movement!" << endl;
                 omniDrv->setOmniSimThreadCreated(false);
-                //boost::this_thread::
-                //pthread_exit(0);
-                return;
+#ifndef WIN32
+                pthread_exit(0);
+#else
+                return 0;
+#endif
             }
 
 
@@ -338,7 +343,11 @@ void hapticSimuExecute( OmniDriverEmu *ptr )
             timeToSleep = int( (requiredTime - totalTime) - timeCorrection); //  [us]
             if (timeToSleep > 0)
             {
-                sleep(timeToSleep);
+#ifndef WIN32
+                usleep(timeToSleep);
+#else
+                Sleep(static_cast<DWORD>(timeToSleep));
+#endif
                 //std::cout << "Frequency OK, computation time: " << totalTime << std::endl;
             }
             else
@@ -350,7 +359,11 @@ void hapticSimuExecute( OmniDriverEmu *ptr )
         else
         {
             //std::cout << "Running Asynchro without action" << std::endl;
-            sleep(10000);
+#ifndef WIN32
+                usleep(10000);
+#else
+                Sleep(static_cast<DWORD>(10000));
+#endif
         }
 
 
@@ -376,45 +389,47 @@ void OmniDriverEmu::bwdInit()
 
     copyDeviceDataCallback(&data);
 
-//    if (omniSimThreadCreated)
-//    {
+    if (omniSimThreadCreated)
+    {
+        serr << "Emulating thread already running" << sendl;
 
-//        sout << "Emulating thread already running" << sendl;
-//        //int err = pthread_cancel(hapSimuThread);
+#ifndef WIN32
+        int err = pthread_cancel(hapSimuThread);
 
-//        // no error: thread cancel
-//        if(err==0)
-//        {
-//            std::cout << "OmniDriverEmu: thread haptic cancel" << endl;
+        // no error: thread cancel
+        if(err==0)
+        {
+            std::cout << "OmniDriverEmu: thread haptic cancel" << endl;
 
-//        }
+        }
 
-//        // error
-//        else
-//        {
-//            std::cout << "thread not cancel = "  << err  << endl;
-//        }
-
-//    }
+        // error
+        else
+        {
+            std::cout << "thread not cancel = "  << err  << endl;
+        }
+#endif
+    }
     //sout << "Not initializing phantom, starting emulating thread..." << sendl;
     //pthread_t hapSimuThread;
 
     if (thTimer == NULL)
         thTimer = new(CTime);
-//boost
-    boost::thread t(&hapticSimuExecute,this);
-    hapSimuThread = &t;
 
-//    if ( pthread_create( &hapSimuThread, NULL, hapticSimuExecute, (void*)this) == 0 )
-//    {
-//        cout << "OmniDriver : Thread created for Omni simulation" << endl;
-//        omniSimThreadCreated=true;
-//    }
+#ifndef WIN32
+    if ( pthread_create( &hapSimuThread, NULL, hapticSimuExecute, (void*)this) == 0 )
+    {
+        cout << "OmniDriver : Thread created for Omni simulation" << endl;
+        omniSimThreadCreated=true;
+    }
 
     /* } else
         sout << "Emulating thread already running" << sendl;
         */
-
+#else
+    boost::thread hapSimuThread(hapticSimuExecute, this);
+    setOmniSimThreadCreated(true);
+#endif
 }
 
 
@@ -520,14 +535,14 @@ void OmniDriverEmu::stopCallback(OmniData *pUserData)
     data->servoDeviceData.stop = true;
 }
 
-void OmniDriverEmu::onKeyPressedEvent(core::objectmodel::KeypressedEvent */*kpe*/)
+void OmniDriverEmu::onKeyPressedEvent(core::objectmodel::KeypressedEvent * /*kpe*/)
 {
 
 
 
 }
 
-void OmniDriverEmu::onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent */*kre*/)
+void OmniDriverEmu::onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent * /*kre*/)
 {
 
 
@@ -544,16 +559,16 @@ void OmniDriverEmu::handleEvent(core::objectmodel::Event *event)
     if (dynamic_cast<sofa::simulation::AnimateBeginEvent *>(event))
     {
 
-//        cout << "test handle event "<< endl;
+        cout << "test handle event "<< endl;
         //getData(); // copy data->servoDeviceData to gDeviceData
         //if (!simulateTranslation.getValue()) {
         copyDeviceDataCallback(&data);
 
-//        cout << data.deviceData.ready<< endl;
+        cout << data.deviceData.ready<< endl;
 
         if (data.deviceData.ready)
         {
-//            cout << "Data ready, event" << endl;
+            cout << "Data ready, event" << endl;
             data.deviceData.quat.normalize();
 
             //sout << "driver is working ! " << data->servoDeviceData.transform[12+0] << endl;
@@ -611,7 +626,7 @@ void OmniDriverEmu::handleEvent(core::objectmodel::Event *event)
             if (moveOmniBase)
             {
 
-//                std::cout<<" new positionBase = "<<positionBase_buf[0]<<std::endl;
+                std::cout<<" new positionBase = "<<positionBase_buf[0]<<std::endl;
                 visu_base->applyTranslation(positionBase_buf[0]-positionBase.getValue()[0],
                         positionBase_buf[1]-positionBase.getValue()[1],
                         positionBase_buf[2]-positionBase.getValue()[2]);
@@ -622,8 +637,8 @@ void OmniDriverEmu::handleEvent(core::objectmodel::Event *event)
             executeAsynchro=true;
 
         }
-        //else
-//            std::cout<<"data not ready"<<std::endl;
+        else
+            std::cout<<"data not ready"<<std::endl;
         //} else {
 
 
