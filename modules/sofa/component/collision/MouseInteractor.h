@@ -41,9 +41,13 @@ namespace component
 namespace collision
 {
 
+/** @brief Represents a point on an object.
+ *
+ * This requires not only the 3D location, but also the MechanicalState it is attached to.
+ */
 struct BodyPicked
 {
-    BodyPicked():body(NULL), mstate(NULL) {};
+    BodyPicked():body(NULL), mstate(NULL) {}
     sofa::core::CollisionModel *body;
     sofa::core::behavior::BaseMechanicalState *mstate;
     unsigned int indexCollisionElement;
@@ -53,6 +57,7 @@ struct BodyPicked
 #endif
     SReal dist;
     SReal rayLength;
+    operator bool() { return mstate != NULL; }
 };
 
 class SOFA_USER_INTERACTION_API BaseMouseInteractor : public core::BehaviorModel
