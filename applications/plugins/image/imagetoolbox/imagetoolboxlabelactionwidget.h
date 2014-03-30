@@ -4,6 +4,7 @@
 #include <QtGui>
 #include "imagetoolboxcentralwidget.h"
 #include "labelimagetoolboxaction.h"
+#include "initImage_gui.h"
 
 namespace sofa
 {

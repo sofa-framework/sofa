@@ -11,7 +11,7 @@ namespace gui
 namespace qt
 {
 
-class ImageToolBoxBasicActionWidget: public QToolBar
+class SOFA_IMAGE_GUI_API ImageToolBoxBasicActionWidget: public QToolBar
 {
 Q_OBJECT
 

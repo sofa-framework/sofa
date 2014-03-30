@@ -384,7 +384,7 @@ void ContourImageToolBoxAction::optionChangeSection(sofa::defaulttype::Vec3i v)
 
 SOFA_DECL_CLASS(ContourImageToolBoxAction);
 
-//template class SOFA_IMAGE_API ImageToolBox<ImageUS>;
+//template class SOFA_IMAGE_GUI_API ImageToolBox<ImageUS>;
 
 
 

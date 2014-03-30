@@ -34,18 +34,18 @@ int ContourImageToolBox_Class = core::RegisterObject("ContourImageToolBox")
         .addLicense("LGPL")
         .addAuthor("Vincent Majorczyk");
 
-template class SOFA_IMAGE_API ContourImageToolBox<ImageUC>;
-template class SOFA_IMAGE_API ContourImageToolBox<ImageD>;
+template class SOFA_IMAGE_GUI_API ContourImageToolBox<ImageUC>;
+template class SOFA_IMAGE_GUI_API ContourImageToolBox<ImageD>;
 #ifdef BUILD_ALL_IMAGE_TYPES
-template class SOFA_IMAGE_API ContourImageToolBox<ImageC>;
-template class SOFA_IMAGE_API ContourImageToolBox<ImageI>;
-template class SOFA_IMAGE_API ContourImageToolBox<ImageUI>;
-template class SOFA_IMAGE_API ContourImageToolBox<ImageS>;
-template class SOFA_IMAGE_API ContourImageToolBox<ImageUS>;
-template class SOFA_IMAGE_API ContourImageToolBox<ImageL>;
-template class SOFA_IMAGE_API ContourImageToolBox<ImageUL>;
-template class SOFA_IMAGE_API ContourImageToolBox<ImageF>;
-template class SOFA_IMAGE_API ContourImageToolBox<ImageB>;
+template class SOFA_IMAGE_GUI_API ContourImageToolBox<ImageC>;
+template class SOFA_IMAGE_GUI_API ContourImageToolBox<ImageI>;
+template class SOFA_IMAGE_GUI_API ContourImageToolBox<ImageUI>;
+template class SOFA_IMAGE_GUI_API ContourImageToolBox<ImageS>;
+template class SOFA_IMAGE_GUI_API ContourImageToolBox<ImageUS>;
+template class SOFA_IMAGE_GUI_API ContourImageToolBox<ImageL>;
+template class SOFA_IMAGE_GUI_API ContourImageToolBox<ImageUL>;
+template class SOFA_IMAGE_GUI_API ContourImageToolBox<ImageF>;
+template class SOFA_IMAGE_GUI_API ContourImageToolBox<ImageB>;
 #endif
 
 

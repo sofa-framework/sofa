@@ -27,7 +27,7 @@
 
 #include <QObject>
 
-#include "initImage.h"
+#include "initImage_gui.h"
 #include "ImageTypes.h"
 #include "sofa/defaulttype/defaulttype.h"
 #include "sofa/defaulttype/VecTypes.h"

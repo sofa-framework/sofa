@@ -26,7 +26,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include "initImage.h"
+#include "initImage_gui.h"
 #include <sofa/gui/qt/DataWidget.h>
 #include <sofa/gui/qt/SimpleDataWidget.h>
 
@@ -71,7 +71,7 @@ using defaulttype::Vec;
 
 
 
-class ImageToolBoxOptionCentralWidget: public QWidget
+class SOFA_IMAGE_GUI_API ImageToolBoxOptionCentralWidget: public QWidget
 {
     Q_OBJECT
 
@@ -149,7 +149,7 @@ protected:
 
 
 
-class ImageToolBoxCentralWidget: public QWidget
+class SOFA_IMAGE_GUI_API ImageToolBoxCentralWidget: public QWidget
 {
     Q_OBJECT
 

@@ -38,18 +38,18 @@ int LabelGridImageToolBox_Class = core::RegisterObject("LabelGridImageToolBox")
         .addLicense("LGPL")
         .addAuthor("Vincent Majorczyk");
 
-template class SOFA_IMAGE_API LabelGridImageToolBox<ImageUC>;
-template class SOFA_IMAGE_API LabelGridImageToolBox<ImageD>;
+template class SOFA_IMAGE_GUI_API LabelGridImageToolBox<ImageUC>;
+template class SOFA_IMAGE_GUI_API LabelGridImageToolBox<ImageD>;
 #ifdef BUILD_ALL_IMAGE_TYPES
-template class SOFA_IMAGE_API LabelGridImageToolBox<ImageC>;
-template class SOFA_IMAGE_API LabelGridImageToolBox<ImageI>;
-template class SOFA_IMAGE_API LabelGridImageToolBox<ImageUI>;
-template class SOFA_IMAGE_API LabelGridImageToolBox<ImageS>;
-template class SOFA_IMAGE_API LabelGridImageToolBox<ImageUS>;
-template class SOFA_IMAGE_API LabelGridImageToolBox<ImageL>;
-template class SOFA_IMAGE_API LabelGridImageToolBox<ImageUL>;
-template class SOFA_IMAGE_API LabelGridImageToolBox<ImageF>;
-template class SOFA_IMAGE_API LabelGridImageToolBox<ImageB>;
+template class SOFA_IMAGE_GUI_API LabelGridImageToolBox<ImageC>;
+template class SOFA_IMAGE_GUI_API LabelGridImageToolBox<ImageI>;
+template class SOFA_IMAGE_GUI_API LabelGridImageToolBox<ImageUI>;
+template class SOFA_IMAGE_GUI_API LabelGridImageToolBox<ImageS>;
+template class SOFA_IMAGE_GUI_API LabelGridImageToolBox<ImageUS>;
+template class SOFA_IMAGE_GUI_API LabelGridImageToolBox<ImageL>;
+template class SOFA_IMAGE_GUI_API LabelGridImageToolBox<ImageUL>;
+template class SOFA_IMAGE_GUI_API LabelGridImageToolBox<ImageF>;
+template class SOFA_IMAGE_GUI_API LabelGridImageToolBox<ImageB>;
 #endif
 
 }}}

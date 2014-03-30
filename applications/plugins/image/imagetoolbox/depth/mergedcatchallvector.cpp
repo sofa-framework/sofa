@@ -26,6 +26,7 @@
 
 #include "mergedcatchallvector.h"
 #include <sofa/core/ObjectFactory.h>
+#include "initImage_gui.h"
 
 namespace sofa
 {
@@ -54,19 +55,19 @@ int MergedCatchAllVectorClass = core::RegisterObject("MergedCatchAllVector")
         .add<MergedCatchAllVector<sofa::defaulttype::Vec3d> >()
         ;
 
-template class SOFA_IMAGE_API MergedCatchAllVector<float >;
-//template class SOFA_IMAGE_API MergedCatchAllVector<unsigned float >;
-template class SOFA_IMAGE_API MergedCatchAllVector<short >;
-template class SOFA_IMAGE_API MergedCatchAllVector<unsigned short >;
-template class SOFA_IMAGE_API MergedCatchAllVector<int >;
-template class SOFA_IMAGE_API MergedCatchAllVector<unsigned int >;
-template class SOFA_IMAGE_API MergedCatchAllVector<double >;
-//template class SOFA_IMAGE_API MergedCatchAllVector<unsigned double >;
-template class SOFA_IMAGE_API MergedCatchAllVector<long >;
-template class SOFA_IMAGE_API MergedCatchAllVector<unsigned long >;
-template class SOFA_IMAGE_API MergedCatchAllVector<bool >;
-template class SOFA_IMAGE_API MergedCatchAllVector<sofa::defaulttype::Vec3f >;
-template class SOFA_IMAGE_API MergedCatchAllVector<sofa::defaulttype::Vec3d >;
+template class SOFA_IMAGE_GUI_API MergedCatchAllVector<float >;
+//template class SOFA_IMAGE_GUI_API MergedCatchAllVector<unsigned float >;
+template class SOFA_IMAGE_GUI_API MergedCatchAllVector<short >;
+template class SOFA_IMAGE_GUI_API MergedCatchAllVector<unsigned short >;
+template class SOFA_IMAGE_GUI_API MergedCatchAllVector<int >;
+template class SOFA_IMAGE_GUI_API MergedCatchAllVector<unsigned int >;
+template class SOFA_IMAGE_GUI_API MergedCatchAllVector<double >;
+//template class SOFA_IMAGE_GUI_API MergedCatchAllVector<unsigned double >;
+template class SOFA_IMAGE_GUI_API MergedCatchAllVector<long >;
+template class SOFA_IMAGE_GUI_API MergedCatchAllVector<unsigned long >;
+template class SOFA_IMAGE_GUI_API MergedCatchAllVector<bool >;
+template class SOFA_IMAGE_GUI_API MergedCatchAllVector<sofa::defaulttype::Vec3f >;
+template class SOFA_IMAGE_GUI_API MergedCatchAllVector<sofa::defaulttype::Vec3d >;
 
 
 
