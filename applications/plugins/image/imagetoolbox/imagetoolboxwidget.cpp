@@ -16,20 +16,22 @@ namespace qt
 
 using namespace defaulttype;
 
-SOFA_DECL_CLASS(ImageToolBoxWidget);
+//SOFA_DECL_CLASS(ImageToolBoxWidget);
 
-template class SOFA_IMAGE_API TDataWidget<ImageToolBoxData<unsigned char> >;
-template class SOFA_IMAGE_API TDataWidget<ImageToolBoxData<double> >;
+//class SOFA_IMAGE_GUI_API imagetoolbox_data_widget_container;
+
+template class SOFA_IMAGE_GUI_API TDataWidget<ImageToolBoxData<unsigned char> >;
+template class SOFA_IMAGE_GUI_API TDataWidget<ImageToolBoxData<double> >;
 #ifdef BUILD_ALL_IMAGE_TYPES
-template class SOFA_IMAGE_API TDataWidget<ImageToolBoxData<char> >;
-template class SOFA_IMAGE_API TDataWidget<ImageToolBoxData<int> >;
-template class SOFA_IMAGE_API TDataWidget<ImageToolBoxData<unsigned int> >;
-template class SOFA_IMAGE_API TDataWidget<ImageToolBoxData<short> >;
-template class SOFA_IMAGE_API TDataWidget<ImageToolBoxData<unsigned short> >;
-template class SOFA_IMAGE_API TDataWidget<ImageToolBoxData<long> >;
-template class SOFA_IMAGE_API TDataWidget<ImageToolBoxData<unsigned long> >;
-template class SOFA_IMAGE_API TDataWidget<ImageToolBoxData<float> >;
-template class SOFA_IMAGE_API TDataWidget<ImageToolBoxData<bool> >;
+template class SOFA_IMAGE_GUI_API TDataWidget<ImageToolBoxData<char> >;
+template class SOFA_IMAGE_GUI_API TDataWidget<ImageToolBoxData<int> >;
+template class SOFA_IMAGE_GUI_API TDataWidget<ImageToolBoxData<unsigned int> >;
+template class SOFA_IMAGE_GUI_API TDataWidget<ImageToolBoxData<short> >;
+template class SOFA_IMAGE_GUI_API TDataWidget<ImageToolBoxData<unsigned short> >;
+template class SOFA_IMAGE_GUI_API TDataWidget<ImageToolBoxData<long> >;
+template class SOFA_IMAGE_GUI_API TDataWidget<ImageToolBoxData<unsigned long> >;
+template class SOFA_IMAGE_GUI_API TDataWidget<ImageToolBoxData<float> >;
+template class SOFA_IMAGE_GUI_API TDataWidget<ImageToolBoxData<bool> >;
 #endif
 
 helper::Creator<DataWidgetFactory, ImageToolBoxWidget< ImageToolBoxData<unsigned char> > >	DWClass_imagetoolboxUC("ImageToolBoxWidget",true);

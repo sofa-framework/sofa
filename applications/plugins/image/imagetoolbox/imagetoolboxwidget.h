@@ -32,6 +32,7 @@
 
 #include "imagetoolboxbasicactionwidget.h"
 #include "imagetoolboxlabelactionwidget.h"
+#include "initImage_gui.h"
 
 namespace sofa
 {
@@ -47,7 +48,7 @@ using defaulttype::Vec;
 
 class imagetoolbox_data_widget_container: public QObject
 {
-    Q_OBJECT
+    Q_OBJECT;
 
 public slots:
     virtual void handleSliderPolicies()=0; // needed for synchronization of slider visiblity
@@ -59,7 +60,7 @@ signals:
 };
 
 template<class T>
-class Timagetoolbox_data_widget_container : public imagetoolbox_data_widget_container
+class SOFA_IMAGE_GUI_API Timagetoolbox_data_widget_container : public imagetoolbox_data_widget_container
 {
 
 
@@ -222,7 +223,7 @@ public:
         
     //std::cout << "~ImageToolBoxWidget::createWidgets" << std::endl;
     
-        imagetoolbox_data_widget_container* s = dynamic_cast<imagetoolbox_data_widget_container *>(&this->container);
+ //       imagetoolbox_data_widget_container* s = dynamic_cast<imagetoolbox_data_widget_container *>(&this->container);
         //this->connect(s,SIGNAL(updateImage()),this,SLOT(setWidgetDirty()));
 
         //this->connect(s,SIGNAL(updateImage()),this,SLOT(forceUpdateWidgetValue()));

@@ -28,7 +28,7 @@
 ******************************************************************************/
 
 
-#include "initImage.h"
+#include "initImage_gui.h"
 #include "ImageTypes.h"
 #include "VectorVis.h"
 
@@ -61,7 +61,7 @@ using defaulttype::Vector3;
 
 
 template<class _ImageTypes>
-class SOFA_IMAGE_API ImageToolBox : public sofa::core::objectmodel::BaseObject
+class SOFA_IMAGE_GUI_API ImageToolBox : public sofa::core::objectmodel::BaseObject
 {
 public:
     typedef sofa::core::objectmodel::BaseObject Inherited;

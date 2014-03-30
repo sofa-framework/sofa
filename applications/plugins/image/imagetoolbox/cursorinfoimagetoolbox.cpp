@@ -1,5 +1,5 @@
 #include "cursorinfoimagetoolbox.h"
 
-CursorInfoImageToolBox::CursorInfoImageToolBox()
+/*CursorInfoImageToolBox::CursorInfoImageToolBox()
 {
-}
+}*/

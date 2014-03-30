@@ -4,7 +4,7 @@
 #include <QMetaType>
 #include "imagetoolbox.h"
 #include <sofa/core/ObjectFactory.h>
-
+#include "initImage_gui.h"
 
 
 namespace sofa
@@ -34,18 +34,18 @@ int ImageToolBoxClass = core::RegisterObject ( "ImageToolBox" )
 #endif
         ;
 
-template class SOFA_IMAGE_API ImageToolBox<ImageUC>;
-template class SOFA_IMAGE_API ImageToolBox<ImageD>;
+template class SOFA_IMAGE_GUI_API ImageToolBox<ImageUC>;
+template class SOFA_IMAGE_GUI_API ImageToolBox<ImageD>;
 #ifdef BUILD_ALL_IMAGE_TYPES
-template class SOFA_IMAGE_API ImageToolBox<ImageC>;
-template class SOFA_IMAGE_API ImageToolBox<ImageI>;
-template class SOFA_IMAGE_API ImageToolBox<ImageUI>;
-template class SOFA_IMAGE_API ImageToolBox<ImageS>;
-template class SOFA_IMAGE_API ImageToolBox<ImageUS>;
-template class SOFA_IMAGE_API ImageToolBox<ImageL>;
-template class SOFA_IMAGE_API ImageToolBox<ImageUL>;
-template class SOFA_IMAGE_API ImageToolBox<ImageF>;
-template class SOFA_IMAGE_API ImageToolBox<ImageB>;
+template class SOFA_IMAGE_GUI_API ImageToolBox<ImageC>;
+template class SOFA_IMAGE_GUI_API ImageToolBox<ImageI>;
+template class SOFA_IMAGE_GUI_API ImageToolBox<ImageUI>;
+template class SOFA_IMAGE_GUI_API ImageToolBox<ImageS>;
+template class SOFA_IMAGE_GUI_API ImageToolBox<ImageUS>;
+template class SOFA_IMAGE_GUI_API ImageToolBox<ImageL>;
+template class SOFA_IMAGE_GUI_API ImageToolBox<ImageUL>;
+template class SOFA_IMAGE_GUI_API ImageToolBox<ImageF>;
+template class SOFA_IMAGE_GUI_API ImageToolBox<ImageB>;
 #endif
 
 } // namespace misc

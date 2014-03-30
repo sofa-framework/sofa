@@ -4,7 +4,7 @@
 #include "labelimagetoolbox.h"
 #include "ImageTypes.h"
 
-#include "initImage.h"
+#include "initImage_gui.h"
 
 namespace sofa
 {
@@ -13,7 +13,7 @@ namespace defaulttype
 {
 
 template<typename _T>
-struct ImageToolBoxData
+struct SOFA_IMAGE_GUI_API ImageToolBoxData
 {
 public:
     typedef _T T;
