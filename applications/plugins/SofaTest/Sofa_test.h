@@ -30,6 +30,7 @@
 #include <gtest/gtest.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/simulation/common/Node.h>
+#include <plugins/SceneCreator/SceneCreator.h>
 #include <time.h>
 #include <iostream>
 using std::cout;
@@ -38,24 +39,31 @@ using std::endl;
 
 namespace sofa {
 
-/** Base class for all Sofa test fixtures, to provide helper functions to compare vectors, matrices, etc.
+/** @brief Base class for Sofa test fixtures, to provide helper functions to compare vectors, matrices, etc.
   */
-template <typename _Real>
+template <typename _Real=SReal>
 struct Sofa_test : public ::testing::Test
 {
     typedef _Real Real; ///< Scalar type
 
+    /// the smallest real number
     static Real epsilon(){ return std::numeric_limits<Real>::epsilon(); }
+
+    /// Infinity
     static Real infinity(){ return std::numeric_limits<Real>::infinity(); }
 
+    /// Initialize Sofa and the random number generator
     Sofa_test()
     {
         srand (time(NULL)); // comment out if you want to generate always the same sequence of pseudo-random numbers
+        modeling::initSofa();
     }
 
-    /// true if the magnitude of r is less than ratio*numerical precision
-    static bool isSmall(Real r, Real factor=1. ){
-        return fabs(r) < factor * std::numeric_limits<Real>::epsilon();
+    virtual ~Sofa_test() { modeling::clearScene(); }
+
+    /// true if the magnitude of r is less than ratio*epsilon
+    static bool isSmall(Real r, Real ratio=1. ){
+        return fabs(r) < ratio * std::numeric_limits<Real>::epsilon();
     }
 
     /// return the maximum difference between corresponding entries, or the infinity if the matrices have different sizes
@@ -207,11 +215,11 @@ struct Sofa_test : public ::testing::Test
 
     /// Return the maximum difference between two containers. Issues a failure if sizes are different.
     template<class Container1, class Container2>
-    Real maxDiff( const Container1& c1, const Container2& c2 )
+    static Real maxDiff( const Container1& c1, const Container2& c2 )
     {
         if( c1.size()!=c2.size() ){
             ADD_FAILURE() << "containers have different sizes";
-            return this->infinity();
+            return infinity();
         }
 
         Real maxdiff = 0.;

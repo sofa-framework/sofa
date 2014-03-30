@@ -43,7 +43,8 @@ using namespace core;
 using namespace modeling;
 
 
-/** Base class for the Mapping tests.
+/** @brief Base class for the Mapping tests, with helpers to automatically test applyJ, applyJT, applyDJT and getJs using finite differences.
+
   Specific test cases can be created using a derived class instantiated on the mapping class to test,
   and calling function runTest( const InVecCoord& parentInit,
                   const OutVecCoord& childInit,
@@ -64,7 +65,7 @@ using namespace modeling;
   and a failure is issued if the error is greater than errorMax*epsilon,
   where epsilon=std::numeric_limits<Real>::epsilon() is 1.19209e-07 for float and 2.22045e-16 for double.
 
-  Francois Faure, LJK-INRIA, 2013
+  @author François Faure @date 2013
   */
 
 template< class _Mapping>

@@ -24,7 +24,7 @@
 ******************************************************************************/
 
 
-#include "Solver_test.h"
+#include "Sofa_test.h"
 #include <sofa/simulation/common/Visitor.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
@@ -35,18 +35,22 @@ using namespace modeling;
 
 
 /** Check the traversal of a Directed Acyclic Graph.
- * @warning Derived from a Solver_test since it requires the ability to create a scene and traverse them with visitors.
- * @todo generalize the concept of Solver_test
- * Francois Faure, 2014
+ * The traversal order is recorded in a string, and compared with an expected one.
+ * @author Francois Faure, Matthieu Nesme @date 2014
  */
-struct DAG_test : public Solver_test
+struct DAG_test : public Sofa_test<>
 {
     DAG_test()
     {
         sofa::simulation::setSimulation(new simulation::graph::DAGSimulation());
-//        sofa::simulation::setSimulation(new simulation::tree::TreeSimulation());
+        //        sofa::simulation::setSimulation(new simulation::tree::TreeSimulation());
     }
 
+
+    /**
+     * The TestVisitor struct records the name of the traversed nodes in a string.
+     * The string can be analyzed as a trace of the traversal.
+     */
     struct TestVisitor: public sofa::simulation::Visitor
     {
 
@@ -70,6 +74,17 @@ struct DAG_test : public Solver_test
 
     };
 
+    /**
+     * @brief The root and two children:
+\f$
+\begin{array}{ccc}
+ & R & \\
+ \diagup & & \diagdown \\
+ A & & B
+\end{array}
+\f$
+Expected output: RAABBR
+     */
     void traverse_simple_tree()
     {
         Node::SPtr root = clearScene();
@@ -79,11 +94,42 @@ struct DAG_test : public Solver_test
 
         TestVisitor t;
         t.execute(root.get());
-//        cout<<"traverse_simple_tree: visited = " << t.visited << endl;
+        //        cout<<"traverse_simple_tree: visited = " << t.visited << endl;
         if( t.visited != "RAABBR"){
             ADD_FAILURE() << "Dag_test::traverse_simple_tree : wrong traversal order, expected RAABBR, got " << t.visited;
         }
-//        sofa::simulation::getSimulation()->print(root.get());
+        //        sofa::simulation::getSimulation()->print(root.get());
+    }
+
+
+    /**
+     * @brief Diamond-shaped graph:
+\f$
+\begin{array}{ccc}
+ & R & \\
+ \diagup & & \diagdown \\
+ A & & B \\
+ \diagdown & & \diagup \\
+ & C
+\end{array}
+\f$
+Expected output: RABCCBAR
+     */
+    void traverse_simple_diamond()
+    {
+        Node::SPtr root = clearScene();
+        root->setName("R");
+        Node::SPtr A = root->createChild("A");
+        Node::SPtr B = root->createChild("B");
+        Node::SPtr C = A->createChild("C");
+        B->addChild(C);
+
+        TestVisitor t;
+        t.execute(root.get());
+        //cout<<"traverse_simple_diamond: visited = " << t.visited << endl;
+        if( t.visited != "RABCCBAR"){
+            ADD_FAILURE() << "Dag_test::traverse_simple_tree : wrong traversal order, expected RAABBR, got " << t.visited;
+        }
     }
 
 
@@ -93,6 +139,7 @@ struct DAG_test : public Solver_test
 TEST_F( DAG_test,  )
 {
     traverse_simple_tree();
+    traverse_simple_diamond();
 }
 
 }// namespace sofa

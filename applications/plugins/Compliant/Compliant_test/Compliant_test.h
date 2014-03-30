@@ -29,7 +29,7 @@
   */
 
 
-#include <plugins/SofaTest/Solver_test.h>
+#include <plugins/SofaTest/Sofa_test.h>
 
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -78,7 +78,7 @@ using sofa::helper::vector;
 
 
 /** Base class for tests of the Compliance plugin. Contains typedefs and helpers */
-class CompliantSolver_test : public Solver_test
+class CompliantSolver_test : public Sofa_test<>
 {
 protected:
     typedef linearsolver::AssembledSystem::rmat SMatrix;
