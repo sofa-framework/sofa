@@ -4,9 +4,7 @@ set(HEADER_FILES
 
     initTestPlugin.h
     Sofa_test.h
-    Solver_test.h
     Mapping_test.h
-    ProjectiveConstraintSet_test.h
 
 	)
 

@@ -35,7 +35,19 @@
 #endif
 
 /** \mainpage
-  This is a the starting page of the plugin documentation, defined in file initTestPlugin.h
+This is the test suite of Sofa. It contains:
+- base classes to ease the development of tests, such as sofa::Sofa_test , sofa::Mapping_test
+- tests of Sofa classes, in project SofaTest_test/. This currently contains all the tests of the standard (non-plugin) classes. It is far from complete.
+
+Motivation and detail about activation is given in http://wiki.sofa-framework.org/wiki/UnitTesting
+
+The tests are based on the googletest framework http://code.google.com/p/googletest/wiki/Documentation
+
+
+@author François Faure, Aurélie Dégletagne, and hopefully lots of others !
+@date Started in 2013
+
+This is a the starting page of the plugin documentation, defined in file initTestPlugin.h
   */
 
 #endif // INITTestPlugin_H

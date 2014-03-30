@@ -24,7 +24,7 @@
 ******************************************************************************/
 
 
-#include "Solver_test.h"
+#include "Sofa_test.h"
 #include <sofa/component/odesolver/EulerImplicitSolver.h>
 #include <sofa/component/linearsolver/CGLinearSolver.h>
 #include <sofa/simulation/common/Simulation.h>
@@ -40,7 +40,7 @@ typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphSc
  * Mass-spring string composed of two particles in gravity, one is fixed.
  * Francois Faure, 2013.
  */
-struct EulerImplicit_test_2_particles_to_equilibrium : public Solver_test
+struct EulerImplicit_test_2_particles_to_equilibrium : public Sofa_test<>
 {
     EulerImplicit_test_2_particles_to_equilibrium()
     {
