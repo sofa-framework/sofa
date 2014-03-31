@@ -116,7 +116,7 @@ namespace mapping
 				task->_firstPoint = i*taskSize;
 				task->_lastPoint = i*taskSize + mGrainSize.getValue();
 
-				thread->addTask( task );
+				thread->addStealableTask( task );
 
 			}
 			if ( pointsLeft > 0)
@@ -131,7 +131,7 @@ namespace mapping
 				task->_firstPoint = nbTasks*taskSize;
 				task->_lastPoint = nbTasks*taskSize + pointsLeft;
 
-				thread->addTask( task );
+				thread->addStealableTask( task );
 
 			}
 
@@ -150,7 +150,7 @@ namespace mapping
 				task->_firstPoint = i*taskSize + mGrainSize.getValue();
 				task->_lastPoint = i*taskSize + taskSize;
 
-				thread->addTask( task );
+				thread->addStealableTask( task );
 
 			}
 
@@ -209,7 +209,7 @@ namespace mapping
 				task->_firstPoint = i*taskSize;
 				task->_lastPoint = i*taskSize + mGrainSize.getValue();
 
-				thread->addTask( task );
+				thread->addStealableTask( task );
 
 			}
 			if ( pointsLeft > 0)
@@ -223,7 +223,7 @@ namespace mapping
 				task->_firstPoint = nbTasks*taskSize;
 				task->_lastPoint = nbTasks*taskSize + pointsLeft;
 
-				thread->addTask( task );
+				thread->addStealableTask( task );
 
 			}
 
@@ -241,7 +241,7 @@ namespace mapping
 				task->_firstPoint = i*taskSize + mGrainSize.getValue();
 				task->_lastPoint = i*taskSize + taskSize;
 
-				thread->addTask( task );
+				thread->addStealableTask( task );
 
 			}
 
@@ -296,7 +296,7 @@ namespace mapping
 				task->_firstPoint = i*taskSize;
 				task->_lastPoint = i*taskSize + mGrainSize.getValue();
 
-				thread->addTask( task );
+				thread->addStealableTask( task );
 
 			}
 			if ( pointsLeft > 0)
@@ -310,7 +310,7 @@ namespace mapping
 				task->_firstPoint = nbTasks*taskSize;
 				task->_lastPoint = nbTasks*taskSize + pointsLeft;
 
-				thread->addTask( task );
+				thread->addStealableTask( task );
 
 			}
 
@@ -328,7 +328,7 @@ namespace mapping
 				task->_firstPoint = i*taskSize + mGrainSize.getValue();
 				task->_lastPoint = i*taskSize + taskSize;
 
-				thread->addTask( task );
+				thread->addStealableTask( task );
 
 			}
 
@@ -444,7 +444,7 @@ namespace mapping
 	//	//		task->_firstPoint = i*taskSize;
 	//	//		task->_lastPoint = i*taskSize + mGrainSize.getValue();
 
-	//	//		thread->addTask( task );
+	//	//		thread->addStealableTask( task );
 
 	//	//	}
 	//	//	if ( pointsLeft > 0)
@@ -458,7 +458,7 @@ namespace mapping
 	//	//		task->_firstPoint = nbTasks*taskSize;
 	//	//		task->_lastPoint = nbTasks*taskSize + pointsLeft;
 
-	//	//		thread->addTask( task );
+	//	//		thread->addStealableTask( task );
 
 	//	//	}
 
@@ -476,7 +476,7 @@ namespace mapping
 	//	//		task->_firstPoint = i*taskSize + mGrainSize.getValue();
 	//	//		task->_lastPoint = i*taskSize + taskSize;
 
-	//	//		thread->addTask( task );
+	//	//		thread->addStealableTask( task );
 
 	//	//	}
 

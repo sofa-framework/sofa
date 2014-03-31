@@ -155,7 +155,7 @@ namespace simulation
 		{
 			if ( core::behavior::BaseAnimationLoop* aloop = (*it)->getAnimationLoop() )
 			{
-				thread->addTask( new( task_pool.malloc()) StepTask( aloop, dt, &status ) );
+				thread->addStealableTask( new( task_pool.malloc()) StepTask( aloop, dt, &status ) );
 
 			}
 
@@ -198,7 +198,7 @@ namespace simulation
 
 		for (int i=0; i<nbThread; ++i)
 		{
-			pThread->addTask( new( task_pool.malloc()) InitPerThreadDataTask( &atomicCounter, &InitPerThreadMutex, &status ) );
+			pThread->addStealableTask( new( task_pool.malloc()) InitPerThreadDataTask( &atomicCounter, &InitPerThreadMutex, &status ) );
 		}
 
 

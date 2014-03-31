@@ -214,14 +214,15 @@ unsigned TaskScheduler::size()	const volatile
 
 
 WorkerThread::WorkerThread(TaskScheduler* const& pScheduler, int index)
-    : mTaskScheduler(pScheduler), mThreadIndex(index)
-    , mTaskLogEnabled(false)
+:mTaskScheduler(pScheduler)
+,mThreadIndex(index)
+,mStealableTaskCount(0)
+,mSpecificTaskCount(0)
+,mCurrentStatus(NULL)
+,mTaskLogEnabled(false)
+,mFinished(false)
 {
     assert(pScheduler);
-
-    mTaskCount		= 0;
-    mFinished		= false;
-    mCurrentStatus = NULL;
     mTaskMutex.v_ = 0L;
 }
 
@@ -237,7 +238,7 @@ WorkerThread::~WorkerThread()
 bool WorkerThread::attachToThisThread(TaskScheduler* pScheduler)
 {
 
-    mTaskCount		= 0;
+    mStealableTaskCount		= 0;
     mFinished		= false;			
 
     TaskScheduler::mWorkerThreadIndex.reset( this );
@@ -370,7 +371,7 @@ void WorkerThread::doWork(Task::Status* status)
 {
     do
     {
-        Task*		pTask;
+        Task*		    pTask;
         Task::Status*	pPrevStatus = NULL;
 
         while (popTask(&pTask))
@@ -429,22 +430,34 @@ void WorkerThread::workUntilDone(Task::Status* status)
 bool WorkerThread::popTask(Task** outTask)
 {
     SpinMutexLock lock( &mTaskMutex );
+    
+    Task* task=NULL;
+    unsigned* taskCount=NULL;
+    ///< deal with specific task list first.
+    if(mSpecificTaskCount > 0)
+    {
+        taskCount =&mSpecificTaskCount;
+        task      =mSpecificTask[*taskCount-1];
+    }
+    else if(mStealableTaskCount > 0)
+    {
+        taskCount=&mStealableTaskCount;
+        task     =mStealableTask[*taskCount-1];
+    }
 
-    //
-    if (!mTaskCount) 
+    if(task == NULL || taskCount==NULL)
+    {
         return false;
-
-    Task* task = mTask[mTaskCount-1];
-
+    }
 
     // pop from top of the pile
     *outTask = task;
-    --mTaskCount;
+    --*taskCount;
     return true;
 }
 
 
-bool WorkerThread::pushTask(Task* task)
+bool WorkerThread::pushTask(Task* task, Task* taskArray[], unsigned* taskCount )
 {
     // if we're single threaded return false
     if ( mTaskScheduler->getThreadCount()<2 ) 
@@ -453,16 +466,13 @@ bool WorkerThread::pushTask(Task* task)
     {	
         SpinMutexLock lock( &mTaskMutex );
 
-
-        if (mTaskCount >= Max_TasksPerThread )
+        if (*taskCount >= Max_TasksPerThread )
             return false;
 
-
         task->getStatus()->MarkBusy(true);
-        mTask[mTaskCount] = task;
-        ++mTaskCount;
+        taskArray[*taskCount] = task;
+        ++*taskCount;
     }
-
 
     if (!mTaskScheduler->mainTaskStatus)
     {
@@ -473,9 +483,22 @@ bool WorkerThread::pushTask(Task* task)
     return true;
 }
 
-bool WorkerThread::addTask(Task* task)
+bool WorkerThread::addStealableTask(Task* task)
 {
-    if (pushTask(task))
+    if (pushTask(task,mStealableTask,&mStealableTaskCount))
+        return true;
+
+    task->runTask(this);
+
+    if (mTaskLogEnabled)
+        mTaskLog.push_back(task);
+
+    return false;
+}
+
+bool WorkerThread::addSpecificTask(Task* task)
+{
+    if (pushTask(task,mSpecificTask,&mSpecificTaskCount))
         return true;
 
     task->runTask(this);
@@ -493,37 +516,31 @@ bool WorkerThread::giveUpSomeWork(WorkerThread* idleThread)
     if ( !lock.try_lock( &mTaskMutex ) ) 
         return false;
 
-
-    if (!mTaskCount)
+    if (!mStealableTaskCount)
         return false;
-
 
     SpinMutexLock	lockIdleThread( &idleThread->mTaskMutex );
 
-    if ( idleThread->mTaskCount )
+    if ( idleThread->mStealableTaskCount )
         return false;
 
+    unsigned int count = (mStealableTaskCount+1) /2;
 
-
-    unsigned int count = (mTaskCount+1) /2;
-
-
-    Task** p = idleThread->mTask;
+    Task** p = idleThread->mStealableTask;
 
     unsigned int iTask;
     for( iTask=0; iTask< count; ++iTask)
     {
-        *p++ = mTask[iTask];
-        mTask[iTask] = NULL;
+        *p++ = mStealableTask[iTask];
+        mStealableTask[iTask] = NULL;
     }
-    idleThread->mTaskCount = count;
+    idleThread->mStealableTaskCount = count;
 
-
-    for( p = mTask; iTask<mTaskCount; ++iTask)
+    for( p = mStealableTask; iTask<mStealableTaskCount; ++iTask)
     {
-        *p++ = mTask[iTask];
+        *p++ = mStealableTask[iTask];
     }
-    mTaskCount -= count;
+    mStealableTaskCount -= count;
 
     return true;
 }
@@ -531,8 +548,6 @@ bool WorkerThread::giveUpSomeWork(WorkerThread* idleThread)
 
 bool WorkerThread::stealTasks()
 {
-
-
     for( unsigned int iThread=0; iThread<mTaskScheduler->getThreadCount(); ++iThread)
     {
         //WorkerThread*	pThread;
@@ -544,7 +559,7 @@ bool WorkerThread::stealTasks()
         if ( pThread->giveUpSomeWork(this) ) 
             return true;
 
-        if ( mTaskCount ) 
+        if ( mStealableTaskCount ) 
             return true;
     }
 
@@ -570,7 +585,7 @@ bool runThreadSpecificTask(WorkerThread* thread, const Task * /*task*/ )
 
     for (int i=0; i<nbThread; ++i)
     {
-        thread->addTask( new ThreadSpecificTask( &atomicCounter, &InitThreadSpecificMutex, &status ) );
+        thread->addStealableTask( new ThreadSpecificTask( &atomicCounter, &InitThreadSpecificMutex, &status ) );
     }
 
 
