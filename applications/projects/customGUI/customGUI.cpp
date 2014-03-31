@@ -39,28 +39,15 @@ using std::endl;
 using std::cout;
 
 #include <sofa/helper/ArgumentParser.h>
-
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/component/init.h>
 #include <sofa/simulation/common/xml/initXml.h>
-#include <sofa/helper/system/FileRepository.h>
-#include <sofa/helper/system/SetDirectory.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
-#include <sofa/helper/Factory.h>
-#include <sofa/helper/BackTrace.h>
-#include <sofa/component/misc/WriteState.h>
 #include <sofa/core/visual/DrawToolGL.h>
-#include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/component/collision/MouseInteractor.h>
-//#include <sofa/gui/PickHandler.h>
 #include <sofa/component/typedef/Sofa_typedef.h>
-
-//#include <sofa/component/mapping/DistanceMapping.h>
-//#include <plugins/Compliant/compliance/UniformCompliance.h>
-//typedef sofa::component::mapping::DistanceMapping<MechanicalObject3::DataTypes, MechanicalObject1::DataTypes> DistanceMapping31;
-//typedef sofa::component::forcefield::UniformCompliance<Vec1Types> UniformCompliance1;
 #include <sofa/simulation/common/InitVisitor.h>
 #include <sofa/simulation/common/DeleteVisitor.h>
 #include <sofa/component/interactionforcefield/StiffSpringForceField.h>
@@ -82,6 +69,9 @@ class SofaScene : public ParentSimulation
     typedef sofa::component::container::MechanicalObject< defaulttype::Vec3Types > Vec3DOF;
     typedef sofa::component::collision::RayModel RayCollisionModel;
 
+    Node::SPtr groot; ///< root of the graph
+    Node::SPtr sroot; ///< root of the scene, child of groot
+
     // interaction
     Node::SPtr mouseNode;
     bool interactorInUse;
@@ -91,34 +81,9 @@ class SofaScene : public ParentSimulation
 
 
 public:
-    struct PickedPoint: public sofa::component::collision::BodyPicked
-    {
 
-        /// distance to a given point
-        template <typename P1>
-        double distance( P1 p1 ) const {
-            double d=0;
-            for( int i=0; i<3; i++ )
-                d += (p1[i]-point[i])*(p1[i]-point[i]);
-            return sqrt(d);
-        }
-
-        /// Compute relative distance: near=0, far=1.
-        double computeDistance (
-                double xnear, double ynear, double znear,
-                double xfar, double yfar, double zfar
-                ) const
-        {
-            double d1 = sqrt( (point[0]-xnear)*(point[0]-xnear) + (point[1]-ynear)*(point[1]-ynear) + (point[2]-znear)*(point[2]-znear) );
-            double d2 = sqrt( (xfar-xnear)*(xfar-xnear) + (yfar-ynear)*(yfar-ynear) + (zfar-znear)*(zfar-znear) );
-            return d1/d2;
-        }
-
-    };
-
-    Node::SPtr groot; ///< root of the graph
-    Node::SPtr sroot; ///< root of the scene, child of groot
     bool debug;
+
 
     SofaScene()
     {
@@ -165,7 +130,7 @@ public:
             groot->addChild(sroot);
         }
         else {
-            cerr << "SofaScene::init, could not load scene " << fileName << endl;
+            serr << "SofaScene::init, could not load scene " << fileName << sendl;
         }
 
         ParentSimulation::init(groot.get());
@@ -208,6 +173,32 @@ public:
         //            cout<<"SofaScene::animate" << endl;
         sofa::simulation::getSimulation()->animate(groot.get(),0.04);
     }
+
+    /** Represents a point picked using the mouse. Todo: put this in the parent class */
+    struct PickedPoint: public sofa::component::collision::BodyPicked
+    {
+
+        /// distance to a given point
+        template <typename P1>
+        double distance( P1 p1 ) const {
+            double d=0;
+            for( int i=0; i<3; i++ )
+                d += (p1[i]-point[i])*(p1[i]-point[i]);
+            return sqrt(d);
+        }
+
+        /// Compute relative distance: near=0, far=1.
+        double computeDistance (
+                double xnear, double ynear, double znear,
+                double xfar, double yfar, double zfar
+                ) const
+        {
+            double d1 = sqrt( (point[0]-xnear)*(point[0]-xnear) + (point[1]-ynear)*(point[1]-ynear) + (point[2]-znear)*(point[2]-znear) );
+            double d2 = sqrt( (xfar-xnear)*(xfar-xnear) + (yfar-ynear)*(yfar-ynear) + (zfar-znear)*(zfar-znear) );
+            return d1/d2;
+        }
+
+    };
 
 
     /**
@@ -262,6 +253,7 @@ public:
                 cout<<"attaching interaction to " << parent->getName() << endl;
 //                mouseNode->addChild(interactionNode);
 
+                // use a spring for interaction
                 MechanicalObject3 *mouseDof = dynamic_cast<MechanicalObject3*>(mouseNode->getMechanicalState()); assert(mouseDof);
                 MechanicalObject3 *parentDof = dynamic_cast<MechanicalObject3*>(parent->getMechanicalState()); assert(parentDof);
                 StiffSpringForceField3::SPtr spring = New<StiffSpringForceField3>(mouseDof,parentDof);
