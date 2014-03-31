@@ -651,17 +651,13 @@ void SofaModeler::exportSofaClasses()
 	for (std::size_t i=0; i<entries.size(); ++i)
 	{
 		//Insert Template specification
-		std::set< std::string >::iterator it;
-		for (it = entries[i]->baseClasses.begin(); it != entries[i]->baseClasses.end(); ++it)
+		std::vector< std::string >::iterator it;
+		std::vector<std::string> categories;
+		sofa::core::CategoryLibrary::getCategories(entries[i]->creatorMap.begin()->second->getClass(), categories);
+		for (it = categories.begin(); it != categories.end(); ++it)
 		{
 			mainCategories.insert((*it));
 			inventory.insert(std::make_pair((*it), entries[i]));
-		}
-		//If no inheritance was found for the given component, we store it in a default category
-		if (entries[i]->baseClasses.empty())
-		{
-			mainCategories.insert("_Miscellaneous");
-			inventory.insert(std::make_pair("_Miscellaneous", entries[i]));
 		}
 	}
 
@@ -687,31 +683,8 @@ void SofaModeler::exportSofaClasses()
 			if(0 == entry->className.compare("Distances")) // this component lead to a crash
 				continue;
 
-			//Special Case of Mass Component: they are also considered as forcefield. We remove their occurence of the force field category group
-			if (categoryName == "ForceField")
-			{
-				std::set< std::string >::iterator inheritanceClass;
-				bool needToRemove=false;
-				for (inheritanceClass = entry->baseClasses.begin(); inheritanceClass != entry->baseClasses.end(); ++inheritanceClass)
-				{
-					if (*inheritanceClass == "Mass") { needToRemove=true; break;};
-				}
-				if (needToRemove) continue;
-			}
-			//Special Case of TopologyObject: they are also considered as Topology. We remove their occurence of the topology category group
-			else if (categoryName == "Topology")
-			{
-				std::set< std::string >::iterator inheritanceClass;
-				bool needToRemove=false;
-				for (inheritanceClass = entry->baseClasses.begin(); inheritanceClass != entry->baseClasses.end(); ++inheritanceClass)
-				{
-					if (*inheritanceClass == "TopologyObject") { needToRemove=true; break;};
-				}
-				if (needToRemove) continue;
-			}
-
 			int componentCount = 0;
-			for(ObjectFactory::CreatorList::const_iterator creatorIterator = entry->creatorList.begin(); creatorIterator != entry->creatorList.end(); ++creatorIterator)
+			for(ObjectFactory::CreatorMap::const_iterator creatorIterator = entry->creatorMap.begin(); creatorIterator != entry->creatorMap.end(); ++creatorIterator)
 			{
 				const std::string& templateName = creatorIterator->first;
 

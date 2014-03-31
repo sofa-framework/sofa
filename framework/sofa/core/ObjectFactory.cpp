@@ -24,32 +24,6 @@
 ******************************************************************************/
 #include "ObjectFactory.h"
 
-#include <sofa/core/objectmodel/ContextObject.h>
-#include <sofa/core/objectmodel/ConfigurationSetting.h>
-#include <sofa/core/visual/VisualModel.h>
-#include <sofa/core/BehaviorModel.h>
-#include <sofa/core/CollisionModel.h>
-#include <sofa/core/BaseMapping.h>
-#include <sofa/core/DataEngine.h>
-#include <sofa/core/collision/CollisionAlgorithm.h>
-#include <sofa/core/collision/Pipeline.h>
-#include <sofa/core/collision/Intersection.h>
-#include <sofa/core/behavior/BaseMechanicalState.h>
-#include <sofa/core/behavior/BaseForceField.h>
-#include <sofa/core/behavior/BaseInteractionForceField.h>
-#include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
-#include <sofa/core/behavior/BaseConstraintSet.h>
-#include <sofa/core/behavior/BaseConstraintCorrection.h>
-#include <sofa/core/behavior/BaseController.h>
-#include <sofa/core/behavior/BaseMass.h>
-#include <sofa/core/behavior/OdeSolver.h>
-#include <sofa/core/behavior/ConstraintSolver.h>
-#include <sofa/core/behavior/LinearSolver.h>
-#include <sofa/core/behavior/BaseAnimationLoop.h>
-#include <sofa/core/topology/BaseTopologyObject.h>
-#include <sofa/core/topology/Topology.h>
-#include <sofa/core/topology/TopologicalMapping.h>
-#include <sofa/core/loader/BaseLoader.h>
 
 // Uncomment to output a warning in the console each time a class is registered without corresponding SOFA_CLASS
 #define LOG_MISSING_CLASS
@@ -266,13 +240,6 @@ void ObjectFactory::dump(std::ostream& out)
                 out << " " << *it;
             out << "\n";
         }
-        if (!entry->baseClasses.empty())
-        {
-            out << "  base classes :";
-            for (std::set<std::string>::iterator it = entry->baseClasses.begin(), itend = entry->baseClasses.end(); it != itend; ++it)
-                out << " " << *it;
-            out << "\n";
-        }
         if (!entry->description.empty())
             out << entry->description;
         if (!entry->authors.empty())
@@ -313,8 +280,6 @@ void ObjectFactory::dumpXML(std::ostream& out)
         out << "<class name=\"" << xmlencode(entry->className) <<"\">\n";
         for (std::set<std::string>::iterator it = entry->aliases.begin(), itend = entry->aliases.end(); it != itend; ++it)
             out << "<alias>" << xmlencode(*it) << "</alias>\n";
-        for (std::set<std::string>::iterator it = entry->baseClasses.begin(), itend = entry->baseClasses.end(); it != itend; ++it)
-            out << "<base>" << *it << "</base>\n";
         if (!entry->description.empty())
             out << "<description>"<<entry->description<<"</description>\n";
         if (!entry->authors.empty())
@@ -348,13 +313,6 @@ void ObjectFactory::dumpHTML(std::ostream& out)
             for (std::set<std::string>::iterator it = entry->aliases.begin(), itend = entry->aliases.end(); it != itend; ++it)
                 out << " " << xmlencode(*it);
             out << "</i></li>\n";
-        }
-        if (!entry->baseClasses.empty())
-        {
-            out << "<li>Base Classes:<b>";
-            for (std::set<std::string>::iterator it = entry->baseClasses.begin(), itend = entry->baseClasses.end(); it != itend; ++it)
-                out << " " << xmlencode(*it);
-            out << "</b></li>\n";
         }
         if (!entry->authors.empty())
             out << "<li>Authors: <i>"<<entry->authors<<"</i></li>\n";
@@ -413,63 +371,6 @@ RegisterObject& RegisterObject::addLicense(std::string val)
 {
     //std::cout << "ObjectFactory: add license "<<val<<std::endl;
     entry.license += val;
-    return *this;
-}
-
-RegisterObject& RegisterObject::addBaseClasses(const core::objectmodel::BaseClass* mclass)
-{
-    if (mclass->hasParent(objectmodel::ContextObject::GetClass()))
-        entry.baseClasses.insert("ContextObject");
-    if (mclass->hasParent(core::visual::VisualModel::GetClass()))
-        entry.baseClasses.insert("VisualModel");
-    if (mclass->hasParent(BehaviorModel::GetClass()))
-        entry.baseClasses.insert("BehaviorModel");
-    if (mclass->hasParent(CollisionModel::GetClass()))
-        entry.baseClasses.insert("CollisionModel");
-    if (mclass->hasParent(core::behavior::BaseMechanicalState::GetClass()))
-        entry.baseClasses.insert("MechanicalState");
-    if (mclass->hasParent(core::behavior::BaseForceField::GetClass()))
-        entry.baseClasses.insert("ForceField");
-    if (mclass->hasParent(core::behavior::BaseInteractionForceField::GetClass()))
-        entry.baseClasses.insert("InteractionForceField");
-    if (mclass->hasParent(core::behavior::BaseProjectiveConstraintSet::GetClass()))
-        entry.baseClasses.insert("ProjectiveConstraintSet");
-    if (mclass->hasParent(core::behavior::BaseConstraintSet::GetClass()))
-        entry.baseClasses.insert("ConstraintSet");
-    if (mclass->hasParent(core::BaseMapping::GetClass()))
-        entry.baseClasses.insert("Mapping");
-    if (mclass->hasParent(core::DataEngine::GetClass()))
-        entry.baseClasses.insert("Engine");
-    if (mclass->hasParent(core::topology::TopologicalMapping::GetClass()))
-        entry.baseClasses.insert("TopologicalMapping");
-    if (mclass->hasParent(core::behavior::BaseMass::GetClass()))
-        entry.baseClasses.insert("Mass");
-    if (mclass->hasParent(core::behavior::OdeSolver::GetClass()))
-        entry.baseClasses.insert("OdeSolver");
-    if (mclass->hasParent(core::behavior::ConstraintSolver::GetClass()))
-        entry.baseClasses.insert("ConstraintSolver");
-    if (mclass->hasParent(core::behavior::BaseConstraintCorrection::GetClass()))
-        entry.baseClasses.insert("ConstraintSolver");
-    if (mclass->hasParent(core::behavior::LinearSolver::GetClass()))
-        entry.baseClasses.insert("LinearSolver");
-    if (mclass->hasParent(core::behavior::BaseAnimationLoop::GetClass()))
-        entry.baseClasses.insert("BaseAnimationLoop");
-    if (mclass->hasParent(core::topology::Topology::GetClass()))
-        entry.baseClasses.insert("Topology");
-    if (mclass->hasParent(core::topology::BaseTopologyObject::GetClass()))
-        entry.baseClasses.insert("TopologyObject");
-    if (mclass->hasParent(core::behavior::BaseController::GetClass()))
-        entry.baseClasses.insert("Controller");
-    if (mclass->hasParent(core::loader::BaseLoader::GetClass()))
-        entry.baseClasses.insert("Loader");
-    if (mclass->hasParent(core::collision::CollisionAlgorithm::GetClass()))
-        entry.baseClasses.insert("CollisionAlgorithm");
-    if (mclass->hasParent(core::collision::Pipeline::GetClass()))
-        entry.baseClasses.insert("CollisionAlgorithm");
-    if (mclass->hasParent(core::collision::Intersection::GetClass()))
-        entry.baseClasses.insert("CollisionAlgorithm");
-    if (mclass->hasParent(core::objectmodel::ConfigurationSetting::GetClass()))
-        entry.baseClasses.insert("ConfigurationSetting");
     return *this;
 }
 
@@ -560,14 +461,6 @@ RegisterObject::operator int()
                 ObjectFactory::getInstance()->addAlias(*it,entry.className);
             }
         }
-        for (std::set<std::string>::iterator it = entry.baseClasses.begin(), itend = entry.baseClasses.end(); it != itend; ++it)
-        {
-            if (reg->baseClasses.find(*it) == reg->baseClasses.end())
-            {
-                reg->baseClasses.insert(*it);
-            }
-        }
-        //std::cout << "ObjectFactory: commit end"<<std::endl;
         return 1;
     }
 }

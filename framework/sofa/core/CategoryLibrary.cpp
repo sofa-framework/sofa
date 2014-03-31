@@ -25,6 +25,33 @@
 
 #include "CategoryLibrary.h"
 
+#include <sofa/core/objectmodel/ContextObject.h>
+#include <sofa/core/objectmodel/ConfigurationSetting.h>
+#include <sofa/core/visual/VisualModel.h>
+#include <sofa/core/BehaviorModel.h>
+#include <sofa/core/CollisionModel.h>
+#include <sofa/core/BaseMapping.h>
+#include <sofa/core/DataEngine.h>
+#include <sofa/core/collision/CollisionAlgorithm.h>
+#include <sofa/core/collision/Pipeline.h>
+#include <sofa/core/collision/Intersection.h>
+#include <sofa/core/behavior/BaseMechanicalState.h>
+#include <sofa/core/behavior/BaseForceField.h>
+#include <sofa/core/behavior/BaseInteractionForceField.h>
+#include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
+#include <sofa/core/behavior/BaseConstraintSet.h>
+#include <sofa/core/behavior/BaseConstraintCorrection.h>
+#include <sofa/core/behavior/BaseController.h>
+#include <sofa/core/behavior/BaseMass.h>
+#include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/core/behavior/ConstraintSolver.h>
+#include <sofa/core/behavior/LinearSolver.h>
+#include <sofa/core/behavior/BaseAnimationLoop.h>
+#include <sofa/core/topology/BaseTopologyObject.h>
+#include <sofa/core/topology/Topology.h>
+#include <sofa/core/topology/TopologicalMapping.h>
+#include <sofa/core/loader/BaseLoader.h>
+
 namespace sofa
 {
 
@@ -106,6 +133,70 @@ const ComponentLibrary *CategoryLibrary::getComponent( const std::string &catego
     }
     return NULL;
 }
+
+
+
+void CategoryLibrary::getCategories(const objectmodel::BaseClass* mclass,
+                                    std::vector<std::string>& v)
+{
+    if (mclass->hasParent(objectmodel::ContextObject::GetClass()))
+        v.push_back("ContextObject");
+    if (mclass->hasParent(visual::VisualModel::GetClass()))
+        v.push_back("VisualModel");
+    if (mclass->hasParent(BehaviorModel::GetClass()))
+        v.push_back("BehaviorModel");
+    if (mclass->hasParent(CollisionModel::GetClass()))
+        v.push_back("CollisionModel");
+    if (mclass->hasParent(behavior::BaseMechanicalState::GetClass()))
+        v.push_back("MechanicalState");
+    // A Mass is a technically a ForceField, but we don't want it to appear in the ForceField category
+    if (mclass->hasParent(behavior::BaseForceField::GetClass()) && !mclass->hasParent(behavior::BaseMass::GetClass()))
+        v.push_back("ForceField");
+    if (mclass->hasParent(behavior::BaseInteractionForceField::GetClass()))
+        v.push_back("InteractionForceField");
+    if (mclass->hasParent(behavior::BaseProjectiveConstraintSet::GetClass()))
+        v.push_back("ProjectiveConstraintSet");
+    if (mclass->hasParent(behavior::BaseConstraintSet::GetClass()))
+        v.push_back("ConstraintSet");
+    if (mclass->hasParent(BaseMapping::GetClass()))
+        v.push_back("Mapping");
+    if (mclass->hasParent(DataEngine::GetClass()))
+        v.push_back("Engine");
+    if (mclass->hasParent(topology::TopologicalMapping::GetClass()))
+        v.push_back("TopologicalMapping");
+    if (mclass->hasParent(behavior::BaseMass::GetClass()))
+        v.push_back("Mass");
+    if (mclass->hasParent(behavior::OdeSolver::GetClass()))
+        v.push_back("OdeSolver");
+    if (mclass->hasParent(behavior::ConstraintSolver::GetClass()))
+        v.push_back("ConstraintSolver");
+    if (mclass->hasParent(behavior::BaseConstraintCorrection::GetClass()))
+        v.push_back("ConstraintSolver");
+    if (mclass->hasParent(behavior::LinearSolver::GetClass()))
+        v.push_back("LinearSolver");
+    if (mclass->hasParent(behavior::BaseAnimationLoop::GetClass()))
+        v.push_back("AnimationLoop");
+    if (mclass->hasParent(topology::Topology::GetClass()))
+        v.push_back("Topology");
+    // Just like Mass and ForceField, we don't want TopologyObject to appear in the Topology category
+    if (mclass->hasParent(topology::BaseTopologyObject::GetClass()) && !mclass->hasParent(topology::Topology::GetClass()))
+        v.push_back("TopologyObject");
+    if (mclass->hasParent(behavior::BaseController::GetClass()))
+        v.push_back("Controller");
+    if (mclass->hasParent(loader::BaseLoader::GetClass()))
+        v.push_back("Loader");
+    if (mclass->hasParent(collision::CollisionAlgorithm::GetClass()))
+        v.push_back("CollisionAlgorithm");
+    if (mclass->hasParent(collision::Pipeline::GetClass()))
+        v.push_back("CollisionAlgorithm");
+    if (mclass->hasParent(collision::Intersection::GetClass()))
+        v.push_back("CollisionAlgorithm");
+    if (mclass->hasParent(objectmodel::ConfigurationSetting::GetClass()))
+        v.push_back("ConfigurationSetting");
+    if (v.empty())
+        v.push_back("_Miscellaneous");
+}
+
 
 }
 }

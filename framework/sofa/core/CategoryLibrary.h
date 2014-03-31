@@ -63,6 +63,23 @@ public:
 
     size_t getNumComponents() const {return components.size();}
 
+    /** Get the list of categories a class belongs to, based on its parent classes.
+     *
+     *  @param mclass the class the categorize
+     *  @param outputVector the vector where to push the categories
+     *
+     *  The categories are: AnimationLoop, BehaviorModel,
+     *  CollisionAlgorithm, CollisionAlgorithm, CollisionAlgorithm,
+     *  CollisionModel, ConfigurationSetting, ConstraintSet,
+     *  ConstraintSolver, ConstraintSolver, ContextObject, Controller,
+     *  Engine, ForceField, InteractionForceField, LinearSolver,
+     *  Loader, Mapping, Mass, MechanicalState, OdeSolver,
+     *  ProjectiveConstraintSet, TopologicalMapping, Topology,
+     *  TopologyObject, and VisualModel
+     */
+    static void getCategories(const sofa::core::objectmodel::BaseClass* mclass,
+                              std::vector<std::string>& outputVector);
+
 protected:
     virtual ComponentLibrary *createComponent(const std::string &componentName, ClassEntry* entry, const std::vector< std::string > &exampleFiles) {return new ComponentLibrary(componentName, name, entry, exampleFiles);};
 
