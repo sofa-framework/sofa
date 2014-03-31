@@ -28,7 +28,7 @@
 #include "Topology/generic/traversor2.h"
 #include "Topology/generic/cellmarker.h"
 
-#include "Utils/compress.h"
+//#include "Utils/compress.h"
 
 namespace CGoGN
 {
