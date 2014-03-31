@@ -47,6 +47,8 @@ public:
     void setVerbose(int v) { verbose = v; }
     int getVerbose() const { return verbose; }
 
+    bool treeTraversal( TreeTraversalRepetition&repeat ) { repeat=REPEAT_ONCE; return true; }
+
     template<class T>
     void processObject(T obj);
 

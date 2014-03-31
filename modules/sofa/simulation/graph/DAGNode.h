@@ -43,7 +43,14 @@ namespace graph
 
 
 
-/** Define the structure of the scene. Contains (as pointer lists) Component objects and children DAGNode objects.
+/** Define the structure of the scene as a Directed Acyclic Graph. Contains component objects (as pointer lists) and parents/childs (as DAGNode objects).
+ *
+ * The visitor traversal is performed in two passes:
+ *      - a complete top-down traversal
+ *      - then a complete bottom-up traversal in the exact invert order than the top-down traversal
+ * NB: contrary to the "tree" traversal, there are no interlinked forward/backward callbacks. There are only forward then only backward callbacks.
+ *
+ * Note that nodes created during a traversal are not traversed if they are created upper than the current node during the top-down traversal or if they are created during the bottom-up traversal.
  */
 class SOFA_SIMULATION_GRAPH_API DAGNode : public simulation::Node
 {
@@ -165,7 +172,6 @@ protected:
     void doExecuteVisitor(simulation::Visitor* action);
 
 
-
     /// @name @internal stuff related to the DAG traversal
     /// @{
 
@@ -224,6 +230,9 @@ protected:
     void executeVisitorTopDown(simulation::Visitor* action, NodeList& executedNodes, StatusMap& statusMap, DAGNode* visitorRoot );
     void executeVisitorBottomUp(simulation::Visitor* action, NodeList& executedNodes );
     /// @}
+
+    /// @internal tree traversal implementation
+    void executeVisitorTreeTraversal( Visitor* action, StatusMap& statusMap, Visitor::TreeTraversalRepetition repeat, bool alreadyRepeated=false );
 
     /// @name @internal stuff related to getObjects
     /// @{

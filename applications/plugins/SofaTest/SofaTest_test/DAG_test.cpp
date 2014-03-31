@@ -43,7 +43,7 @@ struct DAG_test : public Sofa_test<>
     DAG_test()
     {
         sofa::simulation::setSimulation(new simulation::graph::DAGSimulation());
-        //        sofa::simulation::setSimulation(new simulation::tree::TreeSimulation());
+//        sofa::simulation::setSimulation(new simulation::tree::TreeSimulation());
     }
 
 
@@ -54,25 +54,89 @@ struct DAG_test : public Sofa_test<>
     struct TestVisitor: public sofa::simulation::Visitor
     {
 
-        std::string visited;
+        std::string visited, topdown, bottomup;
+        bool tree; // enforce tree traversal
+        TreeTraversalRepetition repeat; // repeat callbacks
 
-        TestVisitor():Visitor(sofa::core::ExecParams::defaultInstance() )
+        TestVisitor()
+            : Visitor(sofa::core::ExecParams::defaultInstance() )
+            , tree( false )
+            , repeat( NO_REPETITION )
+        {
+            clear();
+        }
+
+        void clear()
         {
             visited.clear();
+            topdown.clear();
+            bottomup.clear();
         }
 
         Result processNodeTopDown(simulation::Node* node)
         {
             visited += node->getName();
+            topdown += node->getName();
             return RESULT_CONTINUE;
         }
 
         void processNodeBottomUp(simulation::Node* node)
         {
             visited += node->getName();
+            bottomup += node->getName();
         }
 
+        bool treeTraversal(TreeTraversalRepetition& r) { r=repeat; return tree; }
+
     };
+
+
+
+    /// utility function testing a scene graph traversals with given expected results
+    void traverse_test( Node::SPtr node, std::string treeTraverse, std::string treeTraverseRepeatAll, std::string treeTraverseRepeatOnce, std::string dagTopDown )
+    {
+        // dagBottumUp must be the exact inverse of dagTopDown
+        std::string dagBottomUp(dagTopDown);
+        std::reverse(dagBottomUp.begin(), dagBottomUp.end());
+
+        TestVisitor t;
+
+        t.tree = true; // visitor as TREE traversal w/o repetition
+        t.execute( node.get() );
+        //        cout<<"traverse_simple_tree: visited = " << t.visited << endl;
+        if( t.visited != treeTraverse ){
+            ADD_FAILURE() << "Dag_test::traverse_test treeTraverse: wrong traversal order, expected "<<treeTraverse<<", got " << t.visited;
+        }
+        t.clear();
+        t.repeat = simulation::Visitor::REPEAT_ALL; // visitor as TREE traversal with repetitions
+        t.execute( node.get() );
+        //        cout<<"traverse_simple_tree: visited = " << t.visited << endl;
+        if( t.visited != treeTraverseRepeatAll ){
+            ADD_FAILURE() << "Dag_test::traverse_test treeTraverseRepeatAll: wrong traversal order, expected "<<treeTraverseRepeatAll<<", got " << t.visited;
+        }
+        t.clear();
+        t.repeat = simulation::Visitor::REPEAT_ONCE; // visitor as TREE traversal with repetitions
+        t.execute( node.get() );
+        //        cout<<"traverse_simple_tree: visited = " << t.visited << endl;
+        if( t.visited != treeTraverseRepeatOnce ){
+            ADD_FAILURE() << "Dag_test::traverse_test treeTraverseRepeatOnce: wrong traversal order, expected "<<treeTraverseRepeatOnce<<", got " << t.visited;
+        }
+
+        t.clear();
+        t.tree = false; // visitor as DAG traversal
+        t.execute(node.get());
+        //        cout<<"traverse_test: visited = " << t.visited << endl;
+        if( t.topdown != dagTopDown ){
+            ADD_FAILURE() << "Dag_test::traverse_test dagTopDown: wrong traversal order, expected "<<dagTopDown<<", got " << t.topdown;
+        }
+        if( t.bottomup != dagBottomUp ){
+            ADD_FAILURE() << "Dag_test::traverse_test dagBottomUp: wrong traversal order, expected "<<dagBottomUp<<", got " << t.bottomup;
+        }
+
+
+//        sofa::simulation::getSimulation()->print(node.get());
+    }
+
 
     /**
      * @brief The root and two children:
@@ -92,13 +156,7 @@ Expected output: RAABBR
         root->createChild("A");
         root->createChild("B");
 
-        TestVisitor t;
-        t.execute(root.get());
-        //        cout<<"traverse_simple_tree: visited = " << t.visited << endl;
-        if( t.visited != "RAABBR"){
-            ADD_FAILURE() << "Dag_test::traverse_simple_tree : wrong traversal order, expected RAABBR, got " << t.visited;
-        }
-        //        sofa::simulation::getSimulation()->print(root.get());
+        traverse_test( root, "RAABBR", "RAABBR", "RAABBR", "RAB" );
     }
 
 
@@ -124,22 +182,48 @@ Expected output: RABCCBAR
         Node::SPtr C = A->createChild("C");
         B->addChild(C);
 
-        TestVisitor t;
-        t.execute(root.get());
-        //cout<<"traverse_simple_diamond: visited = " << t.visited << endl;
-        if( t.visited != "RABCCBAR"){
-            ADD_FAILURE() << "Dag_test::traverse_simple_tree : wrong traversal order, expected RAABBR, got " << t.visited;
-        }
+        traverse_test( root, "RACCABBR", "RACCABCCBR", "RACCABCCBR", "RABC" );
     }
 
 
+/**
+  * @brief More complex graph:
+
+  R__
+ / \ |
+ A B |
+ \ / |
+  C  /
+  \ /
+   D
+   |
+   E
+
+Expected output: RABCDEEDCBAR
+     */
+    void traverse_complex()
+    {
+        Node::SPtr root = clearScene();
+        root->setName("R");
+        Node::SPtr A = root->createChild("A");
+        Node::SPtr B = root->createChild("B");
+        Node::SPtr C = A->createChild("C");
+        B->addChild(C);
+        Node::SPtr D = C->createChild("D");
+        root->addChild(D);
+        Node::SPtr E = D->createChild("E");
+
+        traverse_test( root, "RACDEEDCABBR", "RACDEEDCABCDEEDCBDEEDR", "RACDEEDCABCCBDDR", "RABCDE" );
+    }
 
 };
+
 
 TEST_F( DAG_test,  )
 {
     traverse_simple_tree();
     traverse_simple_diamond();
+    traverse_complex();
 }
 
 }// namespace sofa
