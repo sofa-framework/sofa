@@ -7,7 +7,7 @@ set(HEADER_FILES
     ../linearsolver/PrecomputedLinearSolver.inl 
     ../linearsolver/SparseCholeskySolver.h 
     ../linearsolver/SparseLUSolver.h 
-    ../linearsolver/SparseLDLSolverImpl.h 
+    ../linearsolver/SparseLDLSolverImpl.h
     ../linearsolver/SparseLDLSolver.h 
     ../linearsolver/SparseLDLSolver.inl
     )

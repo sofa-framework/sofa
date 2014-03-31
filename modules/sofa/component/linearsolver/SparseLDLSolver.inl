@@ -53,7 +53,16 @@ void SparseLDLSolver<TMatrix,TVector,TThreadManager>::solve (Matrix& M, Vector& 
 
 template<class TMatrix, class TVector, class TThreadManager>
 void SparseLDLSolver<TMatrix,TVector,TThreadManager>::invert(Matrix& M) {
-    Inherit::factorize(M,(InvertData *) this->getMatrixInvertData(&M));
+    Mfiltered.copyNonZeros(M);
+    Mfiltered.compress();
+
+    int n = M.colSize();
+
+    int * M_colptr = (int *) &Mfiltered.getRowBegin()[0];
+    int * M_rowind = (int *) &Mfiltered.getColsIndex()[0];
+    Real * M_values = (Real *) &Mfiltered.getColsValue()[0];
+
+    Inherit::factorize(n,M_colptr,M_rowind,M_values,(InvertData *) this->getMatrixInvertData(&M));
 }
 
 /// Default implementation of Multiply the inverse of the system matrix by the transpose of the given matrix, and multiply the result with the given matrix J

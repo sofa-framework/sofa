@@ -32,7 +32,6 @@
 #include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
 #include <sofa/helper/map.h>
 #include <math.h>
-
 #include <sofa/component/linearsolver/SparseLDLSolverImpl.h>
 #include <sofa/defaulttype/BaseMatrix.h>
 
@@ -72,6 +71,7 @@ protected :
     SparseLDLSolver();
 
     FullMatrix<Real> Jminv,Jdense;
+    sofa::component::linearsolver::CompressedRowSparseMatrix<Real> Mfiltered;
 //    helper::vector<Real> line,res;
 };
 

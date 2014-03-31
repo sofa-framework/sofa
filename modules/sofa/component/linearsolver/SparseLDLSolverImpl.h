@@ -107,20 +107,13 @@ protected :
     }
 
     template<class VecInt,class VecReal>
-    void factorize(TMatrix & M,SpaseLDLImplInvertData<VecInt,VecReal> * data,int group = 1) {
-        Mfiltered.copyNonZeros(M);
-        Mfiltered.compress();
+    void factorize(int n,int * M_colptr, int * M_rowind, Real * M_values, SpaseLDLImplInvertData<VecInt,VecReal> * data,int group = 1) {
+        bool new_factorization_needed = need_symbolic_factorization(n, M_colptr, M_rowind, data->n, (int *) &data->P_colptr[0],(int *) &data->P_rowind[0]);
 
-        int * M_colptr = (int *) &Mfiltered.getRowBegin()[0];
-        int * M_rowind = (int *) &Mfiltered.getColsIndex()[0];
-        Real * M_values = (Real *) &Mfiltered.getColsValue()[0];
-
-        data->n = M.colSize();
+        data->n = n;
         data->P_nnz = M_colptr[data->n];
         data->P_values.clear();data->P_values.fastResize(data->P_nnz);
         memcpy(&data->P_values[0],M_values,data->P_nnz * sizeof(Real));
-
-        bool new_factorization_needed = need_symbolic_factorization(data->P_colptr,data->P_rowind);
 
         // we test if the matrix has the same struct as previous factorized matrix
         if (new_factorization_needed) {
@@ -356,22 +349,16 @@ protected :
         }
     }
 
-    template<class VecInt>
-    bool need_symbolic_factorization(const VecInt & P_colptr,const VecInt & P_rowind) {
-        if (P_colptr.size() != Mfiltered.getRowBegin().size()) return true;
-        if (P_rowind.size() != Mfiltered.getColsIndex().size()) return true;
+    bool need_symbolic_factorization(int s_M, int * M_colptr,int * M_rowind, int s_P, int * P_colptr,int * P_rowind) {
+        if (s_M != s_P) return true;
+        if (M_colptr[s_M] != P_colptr[s_M] ) return true;
 
-        const int * M_colptr = (int *) &Mfiltered.getRowBegin()[0];
-        const int * M_rowind = (int *) &Mfiltered.getColsIndex()[0];
-        const int * colptr = &P_colptr[0];
-        const int * rowind = &P_rowind[0];
-
-        for (unsigned i=0;i<P_colptr.size();i++) {
-            if (M_colptr[i]!=colptr[i]) return true;
+        for (int i=0;i<s_P;i++) {
+            if (M_colptr[i]!=P_colptr[i]) return true;
         }
 
-        for (unsigned i=0;i<P_rowind.size();i++) {
-            if (M_rowind[i]!=rowind[i]) return true;
+        for (int i=0;i<M_colptr[s_M];i++) {
+            if (M_rowind[i]!=P_rowind[i]) return true;
         }
 
         return false;
@@ -382,7 +369,6 @@ private : //the folowing variables are used during the factorization they canno 
     helper::vector<int> xadj,adj;
     helper::vector<Real> Y;
     helper::vector<int> Lnz,Flag,Pattern;
-    sofa::component::linearsolver::CompressedRowSparseMatrix<Real> Mfiltered;
     helper::vector<int> tran_countvec;
 //    helper::vector<int> perm, invperm; //premutation inverse
 
