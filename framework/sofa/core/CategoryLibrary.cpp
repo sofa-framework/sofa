@@ -176,10 +176,10 @@ void CategoryLibrary::getCategories(const objectmodel::BaseClass* mclass,
         v.push_back("LinearSolver");
     if (mclass->hasParent(behavior::BaseAnimationLoop::GetClass()))
         v.push_back("AnimationLoop");
-    if (mclass->hasParent(topology::Topology::GetClass()))
-        v.push_back("Topology");
     // Just like Mass and ForceField, we don't want TopologyObject to appear in the Topology category
-    if (mclass->hasParent(topology::BaseTopologyObject::GetClass()) && !mclass->hasParent(topology::Topology::GetClass()))
+    if (mclass->hasParent(topology::Topology::GetClass()) && !mclass->hasParent(topology::BaseTopologyObject::GetClass()))
+        v.push_back("Topology");
+    if (mclass->hasParent(topology::BaseTopologyObject::GetClass()))
         v.push_back("TopologyObject");
     if (mclass->hasParent(behavior::BaseController::GetClass()))
         v.push_back("Controller");
