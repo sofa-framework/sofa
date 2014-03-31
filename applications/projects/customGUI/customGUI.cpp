@@ -57,12 +57,13 @@ using std::cout;
 //#include <sofa/gui/PickHandler.h>
 #include <sofa/component/typedef/Sofa_typedef.h>
 
-#include <sofa/component/mapping/DistanceMapping.h>
-#include <plugins/Compliant/compliance/UniformCompliance.h>
-typedef sofa::component::mapping::DistanceMapping<MechanicalObject3::DataTypes, MechanicalObject1::DataTypes> DistanceMapping31;
-typedef sofa::component::forcefield::UniformCompliance<Vec1Types> UniformCompliance1;
+//#include <sofa/component/mapping/DistanceMapping.h>
+//#include <plugins/Compliant/compliance/UniformCompliance.h>
+//typedef sofa::component::mapping::DistanceMapping<MechanicalObject3::DataTypes, MechanicalObject1::DataTypes> DistanceMapping31;
+//typedef sofa::component::forcefield::UniformCompliance<Vec1Types> UniformCompliance1;
 #include <sofa/simulation/common/InitVisitor.h>
 #include <sofa/simulation/common/DeleteVisitor.h>
+#include <sofa/component/interactionforcefield/StiffSpringForceField.h>
 
 
 using namespace sofa;
@@ -115,7 +116,8 @@ public:
 
     };
 
-    Node::SPtr groot;
+    Node::SPtr groot; ///< root of the graph
+    Node::SPtr sroot; ///< root of the scene, child of groot
     bool debug;
 
     SofaScene()
@@ -131,6 +133,10 @@ public:
 
         vparams = sofa::core::visual::VisualParams::defaultInstance();
         vparams->drawTool() = &drawToolGL;
+
+        groot = sofa::simulation::getSimulation()->createNewGraph("");
+        groot->setName("theRoot");
+
 
     }
 
@@ -152,12 +158,15 @@ public:
 
 
         // --- Create simulation graph ---
-        groot = sofa::simulation::getSimulation()->load(fileName.c_str());
-        if (groot==NULL)
+        sroot = sofa::simulation::getSimulation()->load(fileName.c_str());
+        if (sroot!=NULL)
         {
-            groot = sofa::simulation::getSimulation()->createNewGraph("");
+            sroot->setName("sceneRoot");
+            groot->addChild(sroot);
         }
-        groot->setName("theRoot");
+        else {
+            cerr << "SofaScene::init, could not load scene " << fileName << endl;
+        }
 
         ParentSimulation::init(groot.get());
 
@@ -170,6 +179,11 @@ public:
         addMouseNode(groot);
         mouseNode->detachFromGraph();
         interactorInUse = false;
+    }
+
+    void printScene()
+    {
+        sofa::simulation::getSimulation()->print(groot.get());
     }
 
     void reshape(int,int){}
@@ -234,10 +248,6 @@ public:
                 interactorInUse = true;
                 groot->addChild(mouseNode);
                 Vec3DOF::WriteVecCoord xmouse = mouseDOF->writePositions();
-                if( debug ){
-                    sofa::simulation::getSimulation()->print(groot.get());
-                    cout<<"SofaScene::raypick, mouse node added to =============================" << groot->getName() << endl;
-                }
                 xmouse[0] = pickedPoint.point;
                 //                cout<<"mouseDOF position: " << xmouse << endl;
 
@@ -245,48 +255,61 @@ public:
                 //                sofa::simulation::getSimulation()->print(groot.get());
 
                 // ========  Node with multiple parents to create an interaction using a MultiMapping
-                interactionNode = mouseNode->createChild("InteractionNode");
                 Node* parent = dynamic_cast<Node*>( pickedPoint.mstate->getContext() );
                 if( parent ) cout << "picked node " << parent->getName() << endl;
                 else cout << "could not get the parent " << endl;
-                parent->addChild(interactionNode);
+                interactionNode = parent->createChild("InteractionNode");
+                cout<<"attaching interaction to " << parent->getName() << endl;
+//                mouseNode->addChild(interactionNode);
 
-                MechanicalObject3::SPtr mappedDOF = New<MechanicalObject3>(); // to contain particles from the two strings
-                interactionNode->addObject(mappedDOF);
+                MechanicalObject3 *mouseDof = dynamic_cast<MechanicalObject3*>(mouseNode->getMechanicalState()); assert(mouseDof);
+                MechanicalObject3 *parentDof = dynamic_cast<MechanicalObject3*>(parent->getMechanicalState()); assert(parentDof);
+                StiffSpringForceField3::SPtr spring = New<StiffSpringForceField3>(mouseDof,parentDof);
+                interactionNode->addObject(spring);
+//                spring->getMState1() = mouseNode->getMechanicalState();
+//                spring->getMState2() = parent->getMechanicalState();
+                spring->addSpring(0,pickedPoint.indexCollisionElement,100,0.1,0.);
 
-                SubsetMultiMapping3_to_3::SPtr multimapping = New<SubsetMultiMapping3_to_3>();
-                multimapping->setName("InteractionMultiMapping");
-                multimapping->addInputModel( mouseNode->getMechanicalState() );
-                multimapping->addInputModel( parent->getMechanicalState() );
-                multimapping->addOutputModel( mappedDOF.get() );
-                multimapping->addPoint( mouseNode->getMechanicalState(), 0 );
-                multimapping->addPoint( pickedPoint.mstate, pickedPoint.indexCollisionElement );
-                interactionNode->addObject(multimapping);
+//                MechanicalObject3::SPtr mappedDOF = New<MechanicalObject3>(); // to contain particles from the two strings
+//                interactionNode->addObject(mappedDOF);
 
-                // Node to handle the extension of the interaction link
-                Node::SPtr extension_node = interactionNode->createChild("InteractionExtensionNode");
+//                SubsetMultiMapping3_to_3::SPtr multimapping = New<SubsetMultiMapping3_to_3>();
+//                multimapping->setName("InteractionMultiMapping");
+//                multimapping->addInputModel( mouseNode->getMechanicalState() );
+//                multimapping->addInputModel( parent->getMechanicalState() );
+//                multimapping->addOutputModel( mappedDOF.get() );
+//                multimapping->addPoint( mouseNode->getMechanicalState(), 0 );
+//                multimapping->addPoint( pickedPoint.mstate, pickedPoint.indexCollisionElement );
+//                interactionNode->addObject(multimapping);
 
-                MechanicalObject1::SPtr extensions = New<MechanicalObject1>();
-                extension_node->addObject(extensions);
+//                // Node to handle the extension of the interaction link
+//                Node::SPtr extension_node = interactionNode->createChild("InteractionExtensionNode");
 
-                using component::constraintset::EdgeSetTopologyContainer;
-                EdgeSetTopologyContainer::SPtr edgeSet = New<EdgeSetTopologyContainer>();
-                extension_node->addObject(edgeSet);
-                edgeSet->addEdge(0,1);
+//                MechanicalObject1::SPtr extensions = New<MechanicalObject1>();
+//                extension_node->addObject(extensions);
 
-                DistanceMapping31::SPtr extensionMapping = New<DistanceMapping31>();
-                extensionMapping->setModels(mappedDOF.get(),extensions.get());
-                extension_node->addObject( extensionMapping );
-                extensionMapping->setName("InteractionExtension_mapping");
+//                using component::constraintset::EdgeSetTopologyContainer;
+//                EdgeSetTopologyContainer::SPtr edgeSet = New<EdgeSetTopologyContainer>();
+//                extension_node->addObject(edgeSet);
+//                edgeSet->addEdge(0,1);
+
+//                DistanceMapping31::SPtr extensionMapping = New<DistanceMapping31>();
+//                extensionMapping->setModels(mappedDOF.get(),extensions.get());
+//                extension_node->addObject( extensionMapping );
+//                extensionMapping->setName("InteractionExtension_mapping");
 
 
-                UniformCompliance1::SPtr compliance = New<UniformCompliance1>();
-                extension_node->addObject(compliance);
-                compliance->compliance.setName("connectionCompliance");
-                compliance->compliance.setValue(0.0001);
+//                UniformCompliance1::SPtr compliance = New<UniformCompliance1>();
+//                extension_node->addObject(compliance);
+//                compliance->compliance.setName("connectionCompliance");
+//                compliance->compliance.setValue(0.0001);
 
-//                simulation::InitVisitor initVis;
-                interactionNode->execute<simulation::InitVisitor>(core::ExecParams::defaultInstance());
+
+             interactionNode->execute<simulation::InitVisitor>(core::ExecParams::defaultInstance());
+             if( debug ){
+                 sofa::simulation::getSimulation()->print(groot.get());
+                 cout<<"SofaScene::raypick, mouse node added to =============================" << groot->getName() << endl;
+             }
 
             }
 
