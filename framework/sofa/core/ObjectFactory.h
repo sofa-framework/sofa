@@ -29,28 +29,6 @@
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-/*
-#include <sofa/core/objectmodel/ContextObject.h>
-#include <sofa/core/VisualModel.h>
-#include <sofa/core/BehaviorModel.h>
-#include <sofa/core/CollisionModel.h>
-#include <sofa/core/BaseMapping.h>
-#include <sofa/core/topology/TopologicalMapping.h>
-#include <sofa/core/behavior/BaseMechanicalState.h>
-#include <sofa/core/behavior/BaseForceField.h>
-#include <sofa/core/behavior/InteractionForceField.h>
-#include <sofa/core/behavior/BaseConstraint.h>
-#include <sofa/core/behavior/BaseLMConstraint.h>
-#include <sofa/core/behavior/BaseMechanicalMapping.h>
-#include <sofa/core/behavior/BaseMass.h>
-#include <sofa/core/behavior/OdeSolver.h>
-#include <sofa/core/behavior/LinearSolver.h>
-#include <sofa/core/behavior/BaseAnimationLoop.h>
-#include <sofa/core/topology/Topology.h>
-#include <sofa/core/topology/BaseTopologyObject.h>
-#include <sofa/core/behavior/BaseController.h>
-#include <sofa/core/loader/BaseLoader.h>
-*/
 
 #include <map>
 #include <memory>
@@ -122,7 +100,6 @@ public:
     {
     public:
         std::string className;
-        std::set<std::string> baseClasses;
         std::set<std::string> aliases;
         std::string description;
         std::string authors;
@@ -328,9 +305,6 @@ public:
     /// Specify a license (LGPL, GPL, ...)
     RegisterObject& addLicense(std::string val);
 
-    /// Fill the base classes array using the BaseClass reflection system
-    RegisterObject& addBaseClasses(const core::objectmodel::BaseClass* mclass);
-
     /// Add a creator able to instance this class with the given templatename.
     ///
     /// See the add<RealObject>() method for an easy way to add a Creator.
@@ -348,8 +322,6 @@ public:
 
         if (defaultTemplate)
             entry.defaultTemplate = templatename;
-
-        addBaseClasses(RealObject::GetClass());
 
         return addCreator(classname, templatename, std::auto_ptr<ObjectFactory::Creator>(new ObjectCreator<RealObject>));
     }

@@ -27,14 +27,12 @@
 #include <sofa/core/ObjectFactory.h>
 
 
-//Automatically create and destroy all the components available: easy way to verify the default constructor and destructor
-//#define TEST_CREATION_COMPONENT
-
 namespace sofa
 {
-
 namespace core
 {
+//Automatically create and destroy all the components available: easy way to verify the default constructor and destructor
+//#define TEST_CREATION_COMPONENT
 void SofaLibrary::build( const std::vector< std::string >& examples)
 {
     exampleFiles=examples;
@@ -69,17 +67,12 @@ void SofaLibrary::build( const std::vector< std::string >& examples)
 #endif
 
         //Insert Template specification
-        std::set< std::string >::iterator it;
-        for (it = entries[i]->baseClasses.begin(); it != entries[i]->baseClasses.end(); ++it)
+        std::vector<std::string> categories;
+        CategoryLibrary::getCategories(entries[i]->creatorMap.begin()->second->getClass(), categories);
+        for (std::vector<std::string>::iterator it = categories.begin(); it != categories.end(); ++it)
         {
             mainCategories.insert((*it));
             inventory.insert(std::make_pair((*it), entries[i]));
-        }
-        //If no inheritance was found for the given component, we store it in a default category
-        if (entries[i]->baseClasses.empty())
-        {
-            mainCategories.insert("_Miscellaneous");
-            inventory.insert(std::make_pair("_Miscellaneous", entries[i]));
         }
     }
 
@@ -109,29 +102,6 @@ void SofaLibrary::build( const std::vector< std::string >& examples)
         {
             ClassEntry *entry = itComponent->second;
             const std::string &componentName=entry->className;
-
-            //Special Case of Mass Component: they are also considered as forcefield. We remove their occurence of the force field category group
-            if (categoryName == "ForceField")
-            {
-                std::set< std::string >::iterator inheritanceClass;
-                bool needToRemove=false;
-                for (inheritanceClass = entry->baseClasses.begin(); inheritanceClass != entry->baseClasses.end(); ++inheritanceClass)
-                {
-                    if (*inheritanceClass == "Mass") { needToRemove=true; break;};
-                }
-                if (needToRemove) continue;
-            }
-            //Special Case of TopologyObject: they are also considered as Topology. We remove their occurence of the topology category group
-            else if (categoryName == "Topology")
-            {
-                std::set< std::string >::iterator inheritanceClass;
-                bool needToRemove=false;
-                for (inheritanceClass = entry->baseClasses.begin(); inheritanceClass != entry->baseClasses.end(); ++inheritanceClass)
-                {
-                    if (*inheritanceClass == "TopologyObject") { needToRemove=true; break;};
-                }
-                if (needToRemove) continue;
-            }
 
             //Add the component to the category
             category->addComponent(componentName, entry, exampleFiles);

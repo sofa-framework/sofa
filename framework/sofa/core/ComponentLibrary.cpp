@@ -24,6 +24,7 @@
 ******************************************************************************/
 
 #include "ComponentLibrary.h"
+#include "CategoryLibrary.h"
 
 namespace sofa
 {
@@ -45,9 +46,13 @@ ComponentLibrary::ComponentLibrary( const std::string &componentN, const std::st
     description  = std::string("<H2>")  + entry->className + std::string(": ");
 
     std::vector< std::string > possiblePaths;
-    for (std::set< std::string >::iterator it=entry->baseClasses.begin(); it!=entry->baseClasses.end() ; it++)
+
+    std::vector<std::string> categories;
+    const objectmodel::BaseClass* entryClass = entry->creatorMap.begin()->second->getClass();
+    CategoryLibrary::getCategories(entryClass, categories);
+    for (std::vector< std::string >::iterator it=categories.begin(); it!=categories.end() ; it++)
     {
-        if (it != entry->baseClasses.begin()) description += std::string(", ");
+        if (it != categories.begin()) description += std::string(", ");
         description += (*it);
     }
 
