@@ -80,6 +80,13 @@ public:
     /// Return true to reverse the order of traversal of child nodes
     virtual bool childOrderReversed(simulation::Node* /*node*/) { return false; }
 
+
+
+    typedef enum{ NO_REPETITION=0, REPEAT_ALL, REPEAT_ONCE } TreeTraversalRepetition;
+    /// @returns treeTraversal=true iff a tree traversal must be enforced (even for a DAG)
+    /// if @param repeat=true, a node callback can be executed several times (at each traversal in diamond configurations)
+    virtual bool treeTraversal(TreeTraversalRepetition& repeat) { repeat=NO_REPETITION; return false; }
+
     /// Return a category name for this visitor
     /// Only used for debugging / profiling purposes
     virtual const char* getCategoryName() const { return "default"; }

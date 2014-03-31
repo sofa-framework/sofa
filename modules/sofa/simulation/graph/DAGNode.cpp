@@ -425,15 +425,21 @@ void DAGNode::doExecuteVisitor(simulation::Visitor* action)
 
     // Tous les noeuds executés à la descente sont stockés dans executedNodes dont l'ordre inverse est utilisé pour la remontée
 
-
-    NodeList executedNodes;
-
+    Visitor::TreeTraversalRepetition repeat;
+    if( action->treeTraversal(repeat) )
     {
         StatusMap statusMap;
-        executeVisitorTopDown( action, executedNodes, statusMap, this );
+        executeVisitorTreeTraversal( action, statusMap, repeat );
     }
-
-    executeVisitorBottomUp( action, executedNodes );
+    else
+    {
+        NodeList executedNodes;
+        {
+            StatusMap statusMap;
+            executeVisitorTopDown( action, executedNodes, statusMap, this );
+        }
+        executeVisitorBottomUp( action, executedNodes );
+    }
 
 }
 
@@ -493,8 +499,12 @@ void DAGNode::executeVisitorTopDown(simulation::Visitor* action, NodeList& execu
 
 //        std::cout << "...pruned (all parents pruned)" << std::endl;
         // ... but continue the recursion anyway!
-        for(unsigned int i = 0; i<child.size(); ++i)
-            static_cast<DAGNode*>(child[i].get())->executeVisitorTopDown(action,executedNodes,statusMap,visitorRoot);
+        if( action->childOrderReversed(this) )
+            for(unsigned int i = child.size(); i>0;)
+                static_cast<DAGNode*>(child[--i].get())->executeVisitorTopDown(action,executedNodes,statusMap,visitorRoot);
+        else
+            for(unsigned int i = 0; i<child.size(); ++i)
+                static_cast<DAGNode*>(child[i].get())->executeVisitorTopDown(action,executedNodes,statusMap,visitorRoot);
     }
     else
     {
@@ -507,8 +517,12 @@ void DAGNode::executeVisitorTopDown(simulation::Visitor* action, NodeList& execu
         executedNodes.push_back(this);
 
         // ... and continue the recursion
-        for(unsigned int i = 0; i<child.size(); ++i)
-            static_cast<DAGNode*>(child[i].get())->executeVisitorTopDown(action,executedNodes,statusMap,visitorRoot);
+        if( action->childOrderReversed(this) )
+            for(unsigned int i = child.size(); i>0;)
+                static_cast<DAGNode*>(child[--i].get())->executeVisitorTopDown(action,executedNodes,statusMap,visitorRoot);
+        else
+            for(unsigned int i = 0; i<child.size(); ++i)
+                static_cast<DAGNode*>(child[i].get())->executeVisitorTopDown(action,executedNodes,statusMap,visitorRoot);
 
     }
 }
@@ -549,6 +563,42 @@ void DAGNode::updateDescendancy()
             _descendancy.insert( dagnode );
         }
     }
+}
+
+
+
+void DAGNode::executeVisitorTreeTraversal( simulation::Visitor* action, StatusMap& statusMap, Visitor::TreeTraversalRepetition repeat, bool alreadyRepeated )
+{
+    if( !this->isActive() )
+    {
+        // do not execute the visitor on this node
+        statusMap[this] = PRUNED;
+        return;
+    }
+
+    // node already visited and repetition must be avoid
+    if( statusMap[this] != NOT_VISITED )
+    {
+        if( repeat==Visitor::NO_REPETITION || ( alreadyRepeated && repeat==Visitor::REPEAT_ONCE ) ) return;
+        else alreadyRepeated = true;
+    }
+
+    if( action->processNodeTopDown(this) != simulation::Visitor::RESULT_PRUNE )
+    {
+        statusMap[this] = VISITED;
+        if( action->childOrderReversed(this) )
+            for(unsigned int i = child.size(); i>0;)
+                static_cast<DAGNode*>(child[--i].get())->executeVisitorTreeTraversal(action,statusMap,repeat,alreadyRepeated);
+        else
+            for(unsigned int i = 0; i<child.size(); ++i)
+                static_cast<DAGNode*>(child[i].get())->executeVisitorTreeTraversal(action,statusMap,repeat,alreadyRepeated);
+    }
+    else
+    {
+        statusMap[this] = PRUNED;
+    }
+
+    action->processNodeBottomUp(this);
 }
 
 
