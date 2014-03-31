@@ -58,6 +58,76 @@ using simulation::Node;
 //typedef sofa::simulation::graph::DAGSimulation ParentSimulation;
 typedef sofa::simulation::tree::TreeSimulation ParentSimulation;
 
+/** Represents a point picked using the mouse. Todo: put this in the parent class */
+class PickedPoint: public sofa::component::collision::BodyPicked
+{
+    // sofa types should not be exposed
+    typedef sofa::defaulttype::Vector3 Vec3;
+    typedef sofa::component::container::MechanicalObject< defaulttype::Vec3Types > Vec3DOF;
+
+    Node::SPtr mouseNode; ///< scene node to attach the interaction to
+    MechanicalObject3 *mouseDof;
+    Node::SPtr interactionNode;  ///< node representing this PickedPoint, set as child to mouseNode
+
+
+public:
+    PickedPoint( Node::SPtr mnode, BaseMechanicalState::SPtr pickedState, unsigned pickedIndex, Vec3 pickedLocation )
+    {
+        this->mouseNode = mnode;
+        this->mstate=dynamic_cast<MechanicalObject3*>(pickedState.get()); assert(this->mstate);
+        this->indexCollisionElement = pickedIndex;
+        this->point = pickedLocation;
+        this->mouseDof = dynamic_cast<MechanicalObject3*>(mouseNode->getMechanicalState()); assert(this->mouseDof);
+
+        // use a spring for interaction
+        this->interactionNode = this->mouseNode->createChild("picked point interaction node");
+        MechanicalObject3 *pickedDof = dynamic_cast<MechanicalObject3*>(pickedState.get()); assert(pickedDof);
+        StiffSpringForceField3::SPtr spring = New<StiffSpringForceField3>(this->mouseDof,pickedDof);
+        interactionNode->addObject(spring);
+        spring->addSpring(0,pickedIndex,100,0.1,0.);
+
+
+        Vec3DOF::WriteVecCoord xmouse = this->mouseDof->writePositions();
+        xmouse[0] = this->point;
+    }
+
+    ~PickedPoint()
+    {
+        interactionNode->detachFromGraph();
+        interactionNode->execute<simulation::DeleteVisitor>(core::ExecParams::defaultInstance());
+    }
+
+    /// Displace the interaction ray by the given amount
+    void rayMove( double dx, double dy, double dz )
+    {
+        Vec3DOF::WriteVecCoord xmouse = mouseDof->writePositions();
+        xmouse[0] += Vec3(dx,dy,dz);
+    }
+
+
+    /// distance to a given point
+    template <typename P1>
+    double distance( P1 p1 ) const {
+        double d=0;
+        for( int i=0; i<3; i++ )
+            d += (p1[i]-point[i])*(p1[i]-point[i]);
+        return sqrt(d);
+    }
+
+    /// Compute relative distance: near=0, far=1.
+    double computeDistance (
+            double xnear, double ynear, double znear,
+            double xfar, double yfar, double zfar
+            ) const
+    {
+        double d1 = sqrt( (point[0]-xnear)*(point[0]-xnear) + (point[1]-ynear)*(point[1]-ynear) + (point[2]-znear)*(point[2]-znear) );
+        double d2 = sqrt( (xfar-xnear)*(xfar-xnear) + (yfar-ynear)*(yfar-ynear) + (zfar-znear)*(zfar-znear) );
+        return d1/d2;
+    }
+
+};
+
+
 /** Prototype used to completely encapsulate the use of Sofa in an OpenGL application, without any standard Sofa GUI.
  *
  * @author Francois Faure, 2014
@@ -67,7 +137,6 @@ class SofaScene : public ParentSimulation
     // sofa types should not be exposed
     typedef sofa::defaulttype::Vector3 Vec3;
     typedef sofa::component::container::MechanicalObject< defaulttype::Vec3Types > Vec3DOF;
-    typedef sofa::component::collision::RayModel RayCollisionModel;
 
     Node::SPtr groot; ///< root of the graph
     Node::SPtr sroot; ///< root of the scene, child of groot
@@ -76,13 +145,13 @@ class SofaScene : public ParentSimulation
     Node::SPtr mouseNode;
     bool interactorInUse;
     Vec3DOF::SPtr      mouseDOF;
-    RayCollisionModel::SPtr mouseRay;
     Node::SPtr interactionNode;
 
 
 public:
 
     bool debug;
+
 
 
     SofaScene()
@@ -141,8 +210,16 @@ public:
         }
 
         // --- Interaction
-        addMouseNode(groot);
-        mouseNode->detachFromGraph();
+        mouseNode = groot->createChild("Mouse");
+        //        cout<<"ray pick, groot has " << groot->getChildren().size() << " children after" << endl;
+
+        mouseDOF = sofa::core::objectmodel::New<Vec3DOF>(); mouseDOF->resize(1);
+        mouseDOF->setName("MousePosition");
+        mouseNode->addObject(mouseDOF);
+
+
+        mouseNode->init(sofa::core::ExecParams::defaultInstance());
+        mouseDOF->init();
         interactorInUse = false;
     }
 
@@ -174,47 +251,20 @@ public:
         sofa::simulation::getSimulation()->animate(groot.get(),0.04);
     }
 
-    /** Represents a point picked using the mouse. Todo: put this in the parent class */
-    struct PickedPoint: public sofa::component::collision::BodyPicked
+
+    PickedPoint* rayPick( GLdouble ox, GLdouble oy, GLdouble oz, GLdouble mvmatrix[16], GLdouble projmatrix[16], GLint viewport[4], int x, int y )
     {
-
-        /// distance to a given point
-        template <typename P1>
-        double distance( P1 p1 ) const {
-            double d=0;
-            for( int i=0; i<3; i++ )
-                d += (p1[i]-point[i])*(p1[i]-point[i]);
-            return sqrt(d);
-        }
-
-        /// Compute relative distance: near=0, far=1.
-        double computeDistance (
-                double xnear, double ynear, double znear,
-                double xfar, double yfar, double zfar
-                ) const
-        {
-            double d1 = sqrt( (point[0]-xnear)*(point[0]-xnear) + (point[1]-ynear)*(point[1]-ynear) + (point[2]-znear)*(point[2]-znear) );
-            double d2 = sqrt( (xfar-xnear)*(xfar-xnear) + (yfar-ynear)*(yfar-ynear) + (zfar-znear)*(zfar-znear) );
-            return d1/d2;
-        }
-
-    };
+        // Intersection of the ray with the near and far planes
+        GLint realy = viewport[3] - (GLint) y - 1; // convert coordinates from image space (y downward) to window space (y upward)
+        GLdouble wx, wy, wz;  /*  returned world x, y, z coords  */
+        gluUnProject ((GLdouble) x, (GLdouble) realy, 0.0, mvmatrix, projmatrix, viewport, &wx, &wy, &wz); // z=0: near plane
+        //cout<<"World coords at z=0.0 are ("<<wx<<","<<wy<<","<<wz<<")"<<endl;
+        GLdouble wx1, wy1, wz1;
+        gluUnProject ((GLdouble) x, (GLdouble) realy, 1.0, mvmatrix, projmatrix, viewport, &wx1, &wy1, &wz1); // z=1: far plane
 
 
-    /**
-     * @brief rayPick Seeks a particle along the given ray. The direction needs not be normalized.
-     * @param ox ray origin x
-     * @param oy ray origin y
-     * @param oz ray origin z
-     * @param dx ray direction x
-     * @param dy ray direction y
-     * @param dz ray direction z
-     * @return the closest point picked along the ray. If no point is picked, the conversion to bool returns false.
-     */
-    PickedPoint rayPick( double ox, double oy, double oz, double dx, double dy, double dz )
-    {
-        PickedPoint pickedPoint;
-        Vec3 origin(ox,oy,oz), direction(dx,dy,dz);
+        // Find a particle in this direction
+        Vec3 origin(ox,oy,oz), direction(wx1-wx, wy1-wy, wz1-wz);
         direction.normalize();
         double distance = 0.5, distanceGrowth = 0.001; // cone around the ray. todo: set this as class member
         if( debug ){
@@ -223,146 +273,46 @@ public:
         sofa::simulation::MechanicalPickParticlesVisitor picker(sofa::core::ExecParams::defaultInstance(),
                                                                 origin, direction, distance, distanceGrowth );
         picker.execute(groot->getContext());
+
+
+        // Return the picked point
         if (!picker.particles.empty())
         {
             sofa::core::behavior::BaseMechanicalState *mstate = picker.particles.begin()->second.first;
-            pickedPoint.mstate=mstate;
-            pickedPoint.indexCollisionElement = picker.particles.begin()->second.second;
-            pickedPoint.point[0] = mstate->getPX(pickedPoint.indexCollisionElement);
-            pickedPoint.point[1] = mstate->getPY(pickedPoint.indexCollisionElement);
-            pickedPoint.point[2] = mstate->getPZ(pickedPoint.indexCollisionElement);
-            pickedPoint.dist =  0;
-            pickedPoint.rayLength = (pickedPoint.point-origin)*direction;
-
-            if (!interactorInUse)
-            {
-                interactorInUse = true;
-                groot->addChild(mouseNode);
-                Vec3DOF::WriteVecCoord xmouse = mouseDOF->writePositions();
-                xmouse[0] = pickedPoint.point;
-                //                cout<<"mouseDOF position: " << xmouse << endl;
-
-                //                cout<<"SofaScene::raypick, mouse node added " << endl;
-                //                sofa::simulation::getSimulation()->print(groot.get());
-
-                // ========  Node with multiple parents to create an interaction using a MultiMapping
-                Node* parent = dynamic_cast<Node*>( pickedPoint.mstate->getContext() );
-                if( parent ) cout << "picked node " << parent->getName() << endl;
-                else cout << "could not get the parent " << endl;
-                interactionNode = parent->createChild("InteractionNode");
-                cout<<"attaching interaction to " << parent->getName() << endl;
-//                mouseNode->addChild(interactionNode);
-
-                // use a spring for interaction
-                MechanicalObject3 *mouseDof = dynamic_cast<MechanicalObject3*>(mouseNode->getMechanicalState()); assert(mouseDof);
-                MechanicalObject3 *parentDof = dynamic_cast<MechanicalObject3*>(parent->getMechanicalState()); assert(parentDof);
-                StiffSpringForceField3::SPtr spring = New<StiffSpringForceField3>(mouseDof,parentDof);
-                interactionNode->addObject(spring);
-//                spring->getMState1() = mouseNode->getMechanicalState();
-//                spring->getMState2() = parent->getMechanicalState();
-                spring->addSpring(0,pickedPoint.indexCollisionElement,100,0.1,0.);
-
-//                MechanicalObject3::SPtr mappedDOF = New<MechanicalObject3>(); // to contain particles from the two strings
-//                interactionNode->addObject(mappedDOF);
-
-//                SubsetMultiMapping3_to_3::SPtr multimapping = New<SubsetMultiMapping3_to_3>();
-//                multimapping->setName("InteractionMultiMapping");
-//                multimapping->addInputModel( mouseNode->getMechanicalState() );
-//                multimapping->addInputModel( parent->getMechanicalState() );
-//                multimapping->addOutputModel( mappedDOF.get() );
-//                multimapping->addPoint( mouseNode->getMechanicalState(), 0 );
-//                multimapping->addPoint( pickedPoint.mstate, pickedPoint.indexCollisionElement );
-//                interactionNode->addObject(multimapping);
-
-//                // Node to handle the extension of the interaction link
-//                Node::SPtr extension_node = interactionNode->createChild("InteractionExtensionNode");
-
-//                MechanicalObject1::SPtr extensions = New<MechanicalObject1>();
-//                extension_node->addObject(extensions);
-
-//                using component::constraintset::EdgeSetTopologyContainer;
-//                EdgeSetTopologyContainer::SPtr edgeSet = New<EdgeSetTopologyContainer>();
-//                extension_node->addObject(edgeSet);
-//                edgeSet->addEdge(0,1);
-
-//                DistanceMapping31::SPtr extensionMapping = New<DistanceMapping31>();
-//                extensionMapping->setModels(mappedDOF.get(),extensions.get());
-//                extension_node->addObject( extensionMapping );
-//                extensionMapping->setName("InteractionExtension_mapping");
-
-
-//                UniformCompliance1::SPtr compliance = New<UniformCompliance1>();
-//                extension_node->addObject(compliance);
-//                compliance->compliance.setName("connectionCompliance");
-//                compliance->compliance.setValue(0.0001);
-
-
-             interactionNode->execute<simulation::InitVisitor>(core::ExecParams::defaultInstance());
-             if( debug ){
-                 sofa::simulation::getSimulation()->print(groot.get());
-                 cout<<"SofaScene::raypick, mouse node added to =============================" << groot->getName() << endl;
-             }
-
-            }
-
+            unsigned index = picker.particles.begin()->second.second;
+            PickedPoint* pickedPoint = new PickedPoint(mouseNode,
+                                          mstate,  // BaseMechanicalState *
+                                          index, // index
+                                          Vec3( mstate->getPX(index),
+                                                mstate->getPY(index),
+                                                mstate->getPZ(index) )
+                                          );
+            pickedPoint->dist = pickedPoint->computeDistance(wx,wy,wz, wx1,wy1,wz1);
+            interactorInUse = true;
+            return pickedPoint;
 
         }
-        return pickedPoint;
+        else
+            return NULL;
     }
 
     /// Displace the interaction ray by the given amount
-    void rayMove( double dx, double dy, double dz )
+    void rayMove( PickedPoint* picked, GLdouble mvmatrix[16], GLdouble projmatrix[16], GLint viewport[4], int prev_x, int prev_y ,int x, int y )
     {
-//        cout << "SofaScene::rayMove "<< dx <<" "<< dy << " " << dz << endl;
-        if( interactorInUse )
-        {
-            Vec3DOF::WriteVecCoord xmouse = mouseDOF->writePositions();
-            xmouse[0] += Vec3(dx,dy,dz);
-        }
-        else {
-            cout<<"SofaScene::rayMove, but interactor not in use. Doing nothing." << endl;
-        }
+        GLdouble p[3], p_prev[3];
+        gluUnProject ( x, viewport[3]-y-1, picked->dist, mvmatrix, projmatrix, viewport, &p[0], &p[1], &p[2]); // new position of the picked point
+        //        cout<<"x="<< x <<", y="<< y <<", X="<<p[0]<<", Y="<<p[1]<<", Z="<<p[2]<<endl;
+        gluUnProject ( prev_x, viewport[3]-prev_y-1, picked->dist, mvmatrix, projmatrix, viewport, &p_prev[0], &p_prev[1], &p_prev[2]); // previous position of the picked point
+
+        picked->rayMove(  p[0]-p_prev[0], p[1]-p_prev[1], p[2]-p_prev[2] );
     }
 
-    /// Detach the interaction ray from the scene
-    void rayRelease()
-    {
-        interactionNode->detachFromGraph();
-        mouseNode->detachFromGraph();
-        interactorInUse = false;
-        interactionNode->execute<simulation::DeleteVisitor>(core::ExecParams::defaultInstance());
-    }
+
 
 
 protected:
     sofa::core::visual::DrawToolGL   drawToolGL;
     sofa::core::visual::VisualParams* vparams;
-
-    void addMouseNode( Node::SPtr groot )
-    {
-        //        cout<<"ray pick, groot has " << groot->getChildren().size() << " children before" << endl;
-        mouseNode = groot->createChild("Mouse");
-        //        cout<<"ray pick, groot has " << groot->getChildren().size() << " children after" << endl;
-
-        mouseDOF = sofa::core::objectmodel::New<Vec3DOF>(); mouseDOF->resize(1);
-        mouseDOF->setName("MousePosition");
-        mouseNode->addObject(mouseDOF);
-
-
-        mouseRay = sofa::core::objectmodel::New<RayCollisionModel>();
-        mouseRay->setNbRay(1);
-        mouseRay->getRay(0).setL(1000000);
-        mouseRay->setName("MouseCollisionModel");
-        mouseNode->addObject(mouseRay);
-
-
-        mouseNode->init(sofa::core::ExecParams::defaultInstance());
-        mouseDOF->init();
-        mouseRay->init();
-        //                interaction->attach(mouseNode.get());
-        interactorInUse=true;
-
-    }
 
 
 };
@@ -377,8 +327,7 @@ protected:
 // ---------------------------------------------------------------------
 
 SofaScene sofaScene; ///< The interface of the application with Sofa
-//SofaGlutGui sofaScene; ///< The interface of the application with Sofa
-SofaScene::PickedPoint picked; ///< Point picked using the mouse
+PickedPoint* picked; ///< Point picked using the mouse
 
 // Various shared variables for glut
 GLfloat light_position[] = { 0.0, 0.0, 25.0, 0.0 };
@@ -394,9 +343,7 @@ bool _isControlPressed = false; bool isControlPressed(){ return _isControlPresse
 bool _isShiftPressed = false; bool isShiftPressed(){ return _isShiftPressed; }
 bool _isAltPressed = false; bool isAltPressed(){ return _isAltPressed; }
 
-
-GLfloat delta_x = 0.0;
-GLfloat delta_y = 0.0;
+int prev_x, prev_y;
 
 bool animating = true;
 bool interacting = false;
@@ -442,8 +389,6 @@ void reshape (int w, int h)
     glViewport (0, 0, (GLsizei) w, (GLsizei) h);
     glMatrixMode (GL_PROJECTION);
     glLoadIdentity ();
-    //        glOrtho( -1.0, 1.0, -1.0, 1.0, 10, 2*camera_position[2]);
-    //    glFrustum (-1.0, 1.0, -1.0, 1.0, 1.5, 2*camera_position[2]);
     gluPerspective (55.0, (GLfloat) w/(GLfloat) h, znear, zfar );
     glMatrixMode (GL_MODELVIEW);
     //    cout<<"reshape"<<endl;
@@ -453,6 +398,7 @@ void reshape (int w, int h)
 
 void keyboard(unsigned char key, int /*x*/, int /*y*/)
 {
+
     switch (key) {
     case 27:
         exit(0);
@@ -463,8 +409,6 @@ void keyboard(unsigned char key, int /*x*/, int /*y*/)
         animating = !animating;
     }
 
-    //    sofaScene.glut_keyboard(key,x,y);
-    //    glutPostRedisplay();
 }
 
 void idle()
@@ -477,18 +421,10 @@ void idle()
 }
 
 
-int prev_x, prev_y;
-
-
 void mouseButton(int button, int state, int x, int y)
 {
-    //    sofaScene.glut_mouse(button,state,x,y);
-    //    return;
-
     prev_x = x;
     prev_y = y;
-
-    GLint realy;  /*  OpenGL y coordinate position  */
 
     switch (button) {
     case GLUT_LEFT_BUTTON:
@@ -499,29 +435,28 @@ void mouseButton(int button, int state, int x, int y)
             GLdouble mvmatrix[16], projmatrix[16];
             glGetDoublev (GL_MODELVIEW_MATRIX, mvmatrix);
             glGetDoublev (GL_PROJECTION_MATRIX, projmatrix);
-            // note viewport[3] is height of window in pixels
-            realy = viewport[3] - (GLint) y - 1;
-            //cout<< "Coordinates at cursor are ("<<x<<","<<realy<<")"<<endl;
-            GLdouble wx, wy, wz;  /*  returned world x, y, z coords  */
-            gluUnProject ((GLdouble) x, (GLdouble) realy, 0.0, mvmatrix, projmatrix, viewport, &wx, &wy, &wz); // z=0: near plane
-            //cout<<"World coords at z=0.0 are ("<<wx<<","<<wy<<","<<wz<<")"<<endl;
-            GLdouble wx1, wy1, wz1;
-            gluUnProject ((GLdouble) x, (GLdouble) realy, 1.0, mvmatrix, projmatrix, viewport, &wx1, &wy1, &wz1); // z=1: far plane
-            //cout<<"World coords at z=1.0 are ("<< wx <<","<< wy<<","<< wz <<")"<< endl;
 
-            if( (picked = sofaScene.rayPick(camera_position[0],camera_position[1],camera_position[2], wx1-wx, wy1-wy, wz1-wz)) )
+            if( (picked = sofaScene.rayPick(
+                     camera_position[0],camera_position[1],camera_position[2],
+                     mvmatrix,
+                     projmatrix,
+                     viewport,
+                     x,y )) )
             {
                 interacting = true;
-                picked.dist = picked.computeDistance(wx,wy,wz, wx1,wy1,wz1);
-                cout<<"picked particle index " << picked.indexCollisionElement << " in state " << picked.mstate->getName() <<", distance = " << picked.dist <<  ", position = " << picked.point << endl;
+                cout<<"picked particle index " << picked->indexCollisionElement << " in state " << picked->mstate->getName() <<", distance = " << picked->dist <<  ", position = " << picked->point << endl;
+                sofaScene.printScene();
             }
             else {
                 cout << "no particle picked" << endl;
             }
+
+
         }
         else
         {
-            sofaScene.rayRelease();
+            //            sofaScene.rayRelease();
+            delete picked;
             interacting = false;
         }
         break;
@@ -547,12 +482,7 @@ void mouseMotion(int x, int y)
         glGetDoublev (GL_MODELVIEW_MATRIX, mvmatrix);
         glGetDoublev (GL_PROJECTION_MATRIX, projmatrix);
 
-        GLdouble p[3], p_prev[3];
-        gluUnProject ( x, viewport[3]-y-1, picked.dist, mvmatrix, projmatrix, viewport, &p[0], &p[1], &p[2]); // new position of the picked point
-        //        cout<<"x="<< x <<", y="<< y <<", X="<<p[0]<<", Y="<<p[1]<<", Z="<<p[2]<<endl;
-        gluUnProject ( prev_x, viewport[3]-prev_y-1, picked.dist, mvmatrix, projmatrix, viewport, &p_prev[0], &p_prev[1], &p_prev[2]); // previous position of the picked point
-
-        sofaScene.rayMove(  p[0]-p_prev[0], p[1]-p_prev[1], p[2]-p_prev[2] );
+        sofaScene.rayMove(picked, mvmatrix, projmatrix, viewport, prev_x, prev_y, x, y );
     }
     else{
     }
@@ -576,7 +506,6 @@ void specialKey(int k, int x, int y)
     //    sofaScene.glut_special(k,x,y);
 }
 
-#include <sofa/config.h>
 
 int main(int argc, char** argv)
 {
@@ -593,8 +522,6 @@ int main(int argc, char** argv)
     glutMotionFunc(mouseMotion);
     glutMouseFunc(mouseButton);
     glutSpecialFunc( specialKey );
-
-    cout<<"SOFA_BUILD_DIR = " << SOFA_BUILD_DIR << endl;
 
     // --- Parameter initialisation ---
     std::string fileName ;
