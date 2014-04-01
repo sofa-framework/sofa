@@ -174,6 +174,8 @@ protected :
     Data<Real> normalThreshold;
     Data<bool> projectToPlane;
     Data<bool> rejectBorders;
+    Data<bool> rejectOutsideBbox;
+    defaulttype::BoundingBox targetBbox;
     Data<sofa::helper::vector<Spring> > springs;
 
     // source mesh data

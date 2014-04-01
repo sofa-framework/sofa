@@ -70,10 +70,11 @@ ClosestPointRegistrationForceField<DataTypes>::ClosestPointRegistrationForceFiel
     , kd(initData(&kd,(Real)5.0,"damping","uniform damping for the all springs."))
     , cacheSize(initData(&cacheSize,(unsigned int)5,"cacheSize","number of closest points used in the cache to speed up closest point computation."))
     , blendingFactor(initData(&blendingFactor,(Real)0,"blendingFactor","blending between projection (=0) and attraction (=1) forces."))
-    , outlierThreshold(initData(&outlierThreshold,(Real)2.5,"outlierThreshold","suppress outliers when distance > (meandistance + threshold*stddev)."))
+    , outlierThreshold(initData(&outlierThreshold,(Real)0,"outlierThreshold","suppress outliers when distance > (meandistance + threshold*stddev)."))
     , normalThreshold(initData(&normalThreshold,(Real)0.5,"normalThreshold","suppress outliers when normal.closestPointNormal < threshold."))
     , projectToPlane(initData(&projectToPlane,true,"projectToPlane","project closest points in the plane defined by the normal."))
     , rejectBorders(initData(&rejectBorders,true,"rejectBorders","ignore border vertices."))
+    , rejectOutsideBbox(initData(&rejectOutsideBbox,false,"rejectOutsideBbox","ignore source points outside bounding box of target points."))
     , springs(initData(&springs,"spring","index, stiffness, damping"))
     , sourceTriangles(initData(&sourceTriangles,"sourceTriangles","Triangles of the source mesh."))
     , sourceNormals(initData(&sourceNormals,"sourceNormals","Normals of the source mesh."))
@@ -172,6 +173,9 @@ void ClosestPointRegistrationForceField<DataTypes>::initTarget()
     const VecCoord&  p = targetPositions.getValue();
     targetKdTree.build(p);
 
+    // updatebbox
+    for(unsigned int i=0;i<p.size();++i)    targetBbox.include(p[i]);
+
     // detect border
     if(targetBorder.size()!=p.size()) { targetBorder.resize(p.size()); detectBorder(targetBorder,targetTriangles.getValue()); }
 }
@@ -192,6 +196,9 @@ void ClosestPointRegistrationForceField<DataTypes>::updateClosestPoints()
 
     if(nbs==0 || nbt==0) return;
 
+    this->sourceIgnored.resize(nbs); sourceIgnored.fill(false);
+    this->targetIgnored.resize(nbt); targetIgnored.fill(false);
+
     // closest target points from source points
     if(blendingFactor.getValue()<1) {
 
@@ -200,6 +207,8 @@ void ClosestPointRegistrationForceField<DataTypes>::updateClosestPoints()
         #pragma omp parallel for
 #endif
         for(int i=0;i<(int)nbs;i++)
+            if(rejectOutsideBbox.getValue() && !targetBbox.contains(x[i])) sourceIgnored[i]=true;
+        else
         {
             Real dx=(previousX[i]-x[i]).norm();
             //  closest point caching [cf. Simon96 thesis]
@@ -232,17 +241,16 @@ void ClosestPointRegistrationForceField<DataTypes>::updateClosestPoints()
     }
 
 
-    this->sourceIgnored.resize(nbs); sourceIgnored.fill(false);
-    this->targetIgnored.resize(nbt); targetIgnored.fill(false);
-
     // prune outliers
+//    if(rejectOutsideBbox.getValue()) {
+//        for(unsigned int i=0;i<nbt;i++) if(closestTarget[i].size()) if(!targetBbox.contains(x[closestTarget[i].begin()->second])) targetIgnored[i]=true;
+//    }
     if(outlierThreshold.getValue()!=0) {
         Real mean=0,stdev=0,count=0;
-        for(unsigned int i=0;i<nbs;i++) if(closestSource[i].size()) {count++; stdev+=closestSource[i].begin()->first; mean+=(Real)(closestSource[i].begin()->first); }
-        for(unsigned int i=0;i<nbt;i++) if(closestTarget[i].size()) {count++; stdev+=closestTarget[i].begin()->first; mean+=(Real)(closestTarget[i].begin()->first); }
+        for(unsigned int i=0;i<nbs;i++) if(closestSource[i].size()) {count++; Real d=closestSource[i].begin()->first; stdev+=d*d; mean+=d; }
+        for(unsigned int i=0;i<nbt;i++) if(closestTarget[i].size()) {count++; Real d=closestTarget[i].begin()->first; stdev+=d*d; mean+=d; }
         mean=mean/count; stdev=(Real)sqrt(stdev/count-mean*mean);
         mean+=stdev*outlierThreshold.getValue();
-        mean*=mean;
         for(unsigned int i=0;i<nbs;i++) if(closestSource[i].size()) if(closestSource[i].begin()->first>mean) sourceIgnored[i]=true;
         for(unsigned int i=0;i<nbt;i++) if(closestTarget[i].size()) if(closestTarget[i].begin()->first>mean) targetIgnored[i]=true;
     }

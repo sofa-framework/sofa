@@ -34,8 +34,11 @@
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <iostream>
-#include <omp.h>
 #include "float.h"
+
+#ifdef USING_OMP_PRAGMAS
+#include <omp.h>
+#endif
 
 using std::cerr;
 using std::endl;
