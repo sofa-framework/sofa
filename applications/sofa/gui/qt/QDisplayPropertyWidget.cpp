@@ -380,8 +380,8 @@ void QDisplayPropertyWidget::setDescription(const QString& component, const QStr
     }
 
 	// Class
-	core::ObjectFactory::ClassEntry* entry = core::ObjectFactory::getInstance()->getEntry(base->getClassName());
-    if(0 != entry && !entry->creatorMap.empty())
+	core::ObjectFactory::ClassEntry entry = core::ObjectFactory::getInstance()->getEntry(base->getClassName());
+    if(!entry.creatorMap.empty())
     {
 		QTreeWidgetItem *classItem = new QTreeWidgetItem(groupItem);
 		if(groupItem->childCount() % 2 == 0)
@@ -395,18 +395,18 @@ void QDisplayPropertyWidget::setDescription(const QString& component, const QStr
 		classItem->setText(0, "Class");
 		classItem->setFont(0, categoryFont);
 
-        if(!entry->description.empty() && std::string("TODO") != entry->description)
-			addDescriptionItem(groupItem, "Description", QString(entry->description.c_str()));
+        if(!entry.description.empty() && std::string("TODO") != entry.description)
+			addDescriptionItem(groupItem, "Description", QString(entry.description.c_str()));
 
-        core::ObjectFactory::CreatorMap::iterator it = entry->creatorMap.find(base->getTemplateName());
-        if(entry->creatorMap.end() != it && *it->second->getTarget())
+        core::ObjectFactory::CreatorMap::iterator it = entry.creatorMap.find(base->getTemplateName());
+        if(entry.creatorMap.end() != it && *it->second->getTarget())
 			addDescriptionItem(groupItem, "Provided by", QString(it->second->getTarget()));
 
-        if(!entry->authors.empty() && std::string("TODO") != entry->authors)
-			addDescriptionItem(groupItem, "Authors", QString(entry->authors.c_str()));
+        if(!entry.authors.empty() && std::string("TODO") != entry.authors)
+			addDescriptionItem(groupItem, "Authors", QString(entry.authors.c_str()));
 
-        if(!entry->license.empty() && std::string("TODO") != entry->license)
-			addDescriptionItem(groupItem, "License", QString(entry->license.c_str()));
+        if(!entry.license.empty() && std::string("TODO") != entry.license)
+			addDescriptionItem(groupItem, "License", QString(entry.license.c_str()));
     }
 }
 
