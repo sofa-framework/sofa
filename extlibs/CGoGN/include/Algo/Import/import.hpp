@@ -534,10 +534,10 @@ template <typename PFP>
 bool importMesh(typename PFP::MAP& map, MeshTablesVolume<PFP>& mtv) {
     typedef typename MeshTablesVolume<PFP>::VOLUME_TYPE VOLUME_TYPE;
     // store incident darts to a Vertex for every incident volume to this vertex
-    VertexAutoAttribute< NoTypeNameAttribute< std::vector<Dart> > > vecDartsPerVertex(map, "incidents");
+    VertexAutoAttribute< NoTypeNameAttribute< std::vector<Dart> > > vecIncidentFacesToVertex(map, "incidents");
 
     const unsigned int nbv = mtv.getNbVolumes();
-    int index = 0;
+    unsigned int index = 0u;
     // buffer for tempo faces (used to remove degenerated edges)
     std::vector<unsigned int> vertexEmbeddingsBuffer;
     vertexEmbeddingsBuffer.reserve(16);
@@ -579,7 +579,7 @@ bool importMesh(typename PFP::MAP& map, MeshTablesVolume<PFP>& mtv) {
                 do
                 {
                     m.mark(dd) ;
-                    vecDartsPerVertex[em].push_back(dd);
+                    vecIncidentFacesToVertex[em].push_back(dd);
                     dd = map.phi1(map.phi2(dd));
                 } while(dd != d);
 
@@ -598,7 +598,7 @@ bool importMesh(typename PFP::MAP& map, MeshTablesVolume<PFP>& mtv) {
             do
             {
                 m.mark(dd) ;
-                vecDartsPerVertex[em].push_back(dd);
+                vecIncidentFacesToVertex[em].push_back(dd);
                 dd = map.phi1(map.phi2(dd));
             } while(dd != d);
 
@@ -612,9 +612,9 @@ bool importMesh(typename PFP::MAP& map, MeshTablesVolume<PFP>& mtv) {
             fsetemb.changeEmb(em) ;
             map.template foreach_dart_of_orbit<PFP::MAP::VERTEX_OF_PARENT>(d, fsetemb);
             Dart dd = d;
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd);
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd);
 
             // 2.
             d = map.phi1(d);
@@ -622,9 +622,9 @@ bool importMesh(typename PFP::MAP& map, MeshTablesVolume<PFP>& mtv) {
             fsetemb.changeEmb(em) ;
             map.template foreach_dart_of_orbit<PFP::MAP::VERTEX_OF_PARENT>(d, fsetemb);
             dd = d;
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd);
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd);
 
             // 3.
             d = map.phi1(d);
@@ -632,9 +632,9 @@ bool importMesh(typename PFP::MAP& map, MeshTablesVolume<PFP>& mtv) {
             fsetemb.changeEmb(em) ;
             map.template foreach_dart_of_orbit<PFP::MAP::VERTEX_OF_PARENT>(d, fsetemb);
             dd = d;
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd);
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd);
 
             // 4.
             d = map.phi1(d);
@@ -642,9 +642,9 @@ bool importMesh(typename PFP::MAP& map, MeshTablesVolume<PFP>& mtv) {
             fsetemb.changeEmb(em) ;
             map.template foreach_dart_of_orbit<PFP::MAP::VERTEX_OF_PARENT>(d, fsetemb);
             dd = d;
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd);
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd);
 
             // 5.
             d = map.template phi<2112>(d);
@@ -652,9 +652,9 @@ bool importMesh(typename PFP::MAP& map, MeshTablesVolume<PFP>& mtv) {
             fsetemb.changeEmb(em) ;
             map.template foreach_dart_of_orbit<PFP::MAP::VERTEX_OF_PARENT>(d, fsetemb);
             dd = d;
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd);
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd);
 
             // 6.
             d = map.phi_1(d);
@@ -662,9 +662,9 @@ bool importMesh(typename PFP::MAP& map, MeshTablesVolume<PFP>& mtv) {
             fsetemb.changeEmb(em) ;
             map.template foreach_dart_of_orbit<PFP::MAP::VERTEX_OF_PARENT>(d, fsetemb);
             dd = d;
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd);
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd);
 
             // 7.
             d = map.phi_1(d);
@@ -672,9 +672,9 @@ bool importMesh(typename PFP::MAP& map, MeshTablesVolume<PFP>& mtv) {
             fsetemb.changeEmb(em) ;
             map.template foreach_dart_of_orbit<PFP::MAP::VERTEX_OF_PARENT>(d, fsetemb);
             dd = d;
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd);
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd);
 
             // 8.
             d = map.phi_1(d);
@@ -682,9 +682,9 @@ bool importMesh(typename PFP::MAP& map, MeshTablesVolume<PFP>& mtv) {
             fsetemb.changeEmb(em) ;
             map.template foreach_dart_of_orbit<PFP::MAP::VERTEX_OF_PARENT>(d, fsetemb);
             dd = d;
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd);
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd);
 
         }  //end of hexa
         else if (VT == MeshTablesVolume<PFP>::SQUARE_PYRAMID) {
@@ -695,9 +695,9 @@ bool importMesh(typename PFP::MAP& map, MeshTablesVolume<PFP>& mtv) {
             fsetemb.changeEmb(em) ;
             map.template foreach_dart_of_orbit<PFP::MAP::VERTEX_OF_PARENT>(d, fsetemb);
             Dart dd = d;
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd);
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd);
 
             // 2.
             d = map.phi1(d);
@@ -705,9 +705,9 @@ bool importMesh(typename PFP::MAP& map, MeshTablesVolume<PFP>& mtv) {
             fsetemb.changeEmb(em) ;
             map.template foreach_dart_of_orbit<PFP::MAP::VERTEX_OF_PARENT>(d, fsetemb);
             dd = d;
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd);
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd);
 
             // 3.
             d = map.phi1(d);
@@ -715,9 +715,9 @@ bool importMesh(typename PFP::MAP& map, MeshTablesVolume<PFP>& mtv) {
             fsetemb.changeEmb(em) ;
             map.template foreach_dart_of_orbit<PFP::MAP::VERTEX_OF_PARENT>(d, fsetemb);
             dd = d;
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd);
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd);
 
             // 4.
             d = map.phi1(d);
@@ -725,9 +725,9 @@ bool importMesh(typename PFP::MAP& map, MeshTablesVolume<PFP>& mtv) {
             fsetemb.changeEmb(em) ;
             map.template foreach_dart_of_orbit<PFP::MAP::VERTEX_OF_PARENT>(d, fsetemb);
             dd = d;
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd);
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd);
 
             // 5.
             d = map.phi_1(map.phi2((d)));
@@ -735,10 +735,10 @@ bool importMesh(typename PFP::MAP& map, MeshTablesVolume<PFP>& mtv) {
             fsetemb.changeEmb(em) ;
             map.template foreach_dart_of_orbit<PFP::MAP::VERTEX_OF_PARENT>(d, fsetemb);
             dd = d;
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd);
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd);
 
         } else if (VT == MeshTablesVolume<PFP>::TRIANGULAR_PRISM) {
             Dart d = Surface::Modelisation::createTriangularPrism<PFP>(map,false);
@@ -748,9 +748,9 @@ bool importMesh(typename PFP::MAP& map, MeshTablesVolume<PFP>& mtv) {
             fsetemb.changeEmb(em) ;
             map.template foreach_dart_of_orbit<PFP::MAP::VERTEX_OF_PARENT>(d, fsetemb);
             Dart dd = d;
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd);
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd);
 
             // 2.
             d = map.phi1(d);
@@ -758,9 +758,9 @@ bool importMesh(typename PFP::MAP& map, MeshTablesVolume<PFP>& mtv) {
             fsetemb.changeEmb(em) ;
             map.template foreach_dart_of_orbit<PFP::MAP::VERTEX_OF_PARENT>(d, fsetemb);
             dd = d;
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd);
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd);
 
             // 3.
             d = map.phi1(d);
@@ -768,9 +768,9 @@ bool importMesh(typename PFP::MAP& map, MeshTablesVolume<PFP>& mtv) {
             fsetemb.changeEmb(em) ;
             map.template foreach_dart_of_orbit<PFP::MAP::VERTEX_OF_PARENT>(d, fsetemb);
             dd = d;
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd);
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd);
 
             // 4.
             d = map.phi2(map.phi1(map.phi1(map.phi2(d))));//template phi<2112>(d);
@@ -778,9 +778,9 @@ bool importMesh(typename PFP::MAP& map, MeshTablesVolume<PFP>& mtv) {
             fsetemb.changeEmb(em) ;
             map.template foreach_dart_of_orbit<PFP::MAP::VERTEX_OF_PARENT>(d, fsetemb);
             dd = d;
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd);
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd);
 
             // 5.
             d = map.phi_1(d);
@@ -788,9 +788,9 @@ bool importMesh(typename PFP::MAP& map, MeshTablesVolume<PFP>& mtv) {
             fsetemb.changeEmb(em) ;
             map.template foreach_dart_of_orbit<PFP::MAP::VERTEX_OF_PARENT>(d, fsetemb);
             dd = d;
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd);
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd);
 
             // 6.
             d = map.phi_1(d);
@@ -798,46 +798,69 @@ bool importMesh(typename PFP::MAP& map, MeshTablesVolume<PFP>& mtv) {
             fsetemb.changeEmb(em) ;
             map.template foreach_dart_of_orbit<PFP::MAP::VERTEX_OF_PARENT>(d, fsetemb);
             dd = d;
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
-            vecDartsPerVertex[em].push_back(dd); m.mark(dd);
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
+            vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd);
         }
     }
 
 
     //reconstruct neighbourhood
     unsigned int nbBoundaryFaces = 0 ;
-//    Dart d1 = Dart(24);
-//    Dart d2 = Dart(141558);
-//    SHOW(map.template getEmbedding<VERTEX>(map.phi1(d1).index));
-//    SHOW(map.template getEmbedding<VERTEX>(map.phi1(d2).index));
-//    SHOW(map.template getEmbedding<VERTEX>(map.phi_1(d1).index));
-//    SHOW(map.template getEmbedding<VERTEX>(map.phi_1(d2).index));
-//    SHOW(map.faceDegree(d1));
-//    SHOW(map.faceDegree(d2));
-//    SHOW(map.template getEmbedding<VERTEX>(d1));
-//    SHOW(map.template getEmbedding<VERTEX>(d2));
+    //    Dart d1 = Dart(24);
+    //    Dart d2 = Dart(141558);
+    //    SHOW(map.template getEmbedding<VERTEX>(map.phi1(d1).index));
+    //    SHOW(map.template getEmbedding<VERTEX>(map.phi1(d2).index));
+    //    SHOW(map.template getEmbedding<VERTEX>(map.phi_1(d1).index));
+    //    SHOW(map.template getEmbedding<VERTEX>(map.phi_1(d2).index));
+    //    SHOW(map.faceDegree(d1));
+    //    SHOW(map.faceDegree(d2));
+    //    SHOW(map.template getEmbedding<VERTEX>(d1));
+    //    SHOW(map.template getEmbedding<VERTEX>(d2));
     for (Dart d = map.begin(); d != map.end(); map.next(d))
     {
 
         if (m.isMarked(d))
         {
-            std::vector<Dart>& vec = vecDartsPerVertex[map.phi1(d)];
+            std::vector<Dart>& vec = vecIncidentFacesToVertex[map.phi1(d)];
 
             Dart good_dart = NIL;
             for(typename std::vector<Dart>::iterator it = vec.begin(); it != vec.end() && good_dart == NIL; ++it)
             {
                 if (map.template getEmbedding<VERTEX>(map.phi1(*it)) == map.template getEmbedding<VERTEX>(d) &&
-                        map.template getEmbedding<VERTEX>(map.phi_1(*it)) == map.template getEmbedding<VERTEX>(map.phi1(map.phi1(d)) )) {
+                        map.template getEmbedding<VERTEX>(map.phi_1(*it)) == map.template getEmbedding<VERTEX>(map.phi1(map.phi1(d))) /*&&
+                                map.template getEmbedding<VERTEX>(*it) == map.template getEmbedding<VERTEX>(map.phi1(d))*/  /*Always true by construction */) {
                     good_dart = *it ;
                 }
             }
 
-            if (good_dart != NIL)
-            {
+            if (good_dart != NIL) { // not at the boundary
+                unsigned int F1_degree = map.faceDegree(d);
+                unsigned int F2_degree = map.faceDegree(good_dart);
+
+                if (F1_degree == F2_degree) {
                 map.sewVolumes(d, good_dart, false);
                 m.template unmarkOrbit<FACE>(d);
+                } else if (F1_degree > F2_degree) { // F1D = 4 ; F2D = 3
+                    const Dart dt = map.phi1(map.phi1(d));
+                    map.PFP::MAP::ParentMap::splitFace(d, dt);
+                    map.template setDartEmbedding<VERTEX>(map.phi_1(d), map.template getEmbedding<VERTEX>(dt));
+                    map.template setDartEmbedding<VERTEX>(map.phi_1(dt), map.template getEmbedding<VERTEX>(d));
+                    map.sewVolumes(d, good_dart, false);
+                    m.template unmarkOrbit<FACE>(d);
+                } else { // F1D = 3 ; F2D = 4
+                    const Dart gdt = map.phi1(good_dart);
+                    map.PFP::MAP::ParentMap::splitFace(map.phi_1(good_dart), gdt);
+                    map.template setDartEmbedding<VERTEX>(map.phi1(good_dart), map.template getEmbedding<VERTEX>(gdt));
+                    map.template setDartEmbedding<VERTEX>(map.phi_1(gdt), map.template getEmbedding<VERTEX>(map.phi_1(good_dart)));
+                    map.sewVolumes(d, good_dart, false);
+                    m.template unmarkOrbit<FACE>(d);
+                }
             }
+
+
+
+
             else
             {
                 m.unmarkOrbit<PFP::MAP::FACE_OF_PARENT>(d);
