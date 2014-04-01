@@ -202,7 +202,7 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
     //Apply mapping to init child positions
     reinit();
 
-    if(restPositionSet == false)
+    if(restPositionSet == false && this->toModel->read(core::VecCoordId::restPosition())->getValue().size()==size ) // not for states that do not have restpos (like visualmodel)
     {
         //Init child rest positions from parent rest positions
         apply(NULL, *this->toModel->write(core::VecCoordId::restPosition()), *this->fromModel->read(core::ConstVecCoordId::restPosition()));
