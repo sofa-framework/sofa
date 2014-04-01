@@ -74,6 +74,7 @@ public:
         mm->resetForce(this->mparams, fk.getId(mm));
         mm->resetForce(this->mparams, fc.getId(mm));
 //        mm->resetForce(this->params, f.getId(mm));
+        mm->accumulateForce(this->mparams, fk.getId(mm));
         return RESULT_CONTINUE;
     }
     virtual Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff)
