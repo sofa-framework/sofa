@@ -169,7 +169,7 @@ BaseObject::SPtr GraphModeler::addComponent(Node::SPtr parent, const ClassEntry*
 
     if (!templateName.empty()) description.setAttribute("template", templateName.c_str());
 
-    Creator* c=NULL;
+    boost::shared_ptr<Creator> c;
     if (entry->creatorMap.size() <= 1)
         c=entry->creatorMap.begin()->second;
     else

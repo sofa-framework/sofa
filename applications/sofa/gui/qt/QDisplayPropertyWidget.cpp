@@ -381,7 +381,7 @@ void QDisplayPropertyWidget::setDescription(const QString& component, const QStr
 
 	// Class
 	core::ObjectFactory::ClassEntry* entry = core::ObjectFactory::getInstance()->getEntry(base->getClassName());
-    if(0 != entry && !entry->creatorList.empty())
+    if(0 != entry && !entry->creatorMap.empty())
     {
 		QTreeWidgetItem *classItem = new QTreeWidgetItem(groupItem);
 		if(groupItem->childCount() % 2 == 0)

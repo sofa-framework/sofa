@@ -74,14 +74,13 @@ ComponentLibrary *CategoryLibrary::addComponent(const std::string &componentName
     ComponentLibrary* component = createComponent(componentName, entry, exampleFiles);
 
     //Add the corresponding templates
-    typedef std::list< std::pair< std::string, Creator*> >::iterator IteratorEntry;
-    IteratorEntry itTemplate;
+    std::map<std::string, boost::shared_ptr<Creator> >::iterator itTemplate;
 
     //It exists Mappings only Mechanical or only Visual. So, we must add the component if only a creator is available for the current category
     bool componentCreationPossible=false;
     //read all the template possible, and remove unused (for Mapping processing)
     std::list<std::string> templates;
-    for (itTemplate=entry->creatorList.begin(); itTemplate!= entry->creatorList.end(); itTemplate++)
+    for (itTemplate=entry->creatorMap.begin(); itTemplate!= entry->creatorMap.end(); itTemplate++)
     {
         const std::string &templateName = itTemplate->first;
         //If the component corresponds to a MechanicalMapping, we must remove the template related to the visual mapping

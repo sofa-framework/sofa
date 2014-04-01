@@ -177,7 +177,7 @@ int SimpleGUI::closeGUI()
 
 SOFA_DECL_CLASS(SimpleGUI)
 
-static sofa::core::ObjectFactory::ClassEntry* classVisualModel = NULL;
+static boost::shared_ptr<sofa::core::ObjectFactory::ClassEntry> classVisualModel;
 
 int SimpleGUI::InitGUI(const char* /*name*/, const std::vector<std::string>& /*options*/)
 {
