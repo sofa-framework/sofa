@@ -59,7 +59,7 @@
 #define SELECTCHANNEL 21
 #define SKELETON 22
 #define MEANDIFFUSION 23
-
+#define FILLHOLES 24
 
 
 namespace sofa
@@ -133,7 +133,7 @@ public:
         inputTransform.setReadOnly(true);
         outputImage.setReadOnly(true);
         outputTransform.setReadOnly(true);
-        helper::OptionsGroup filterOptions(24	,"0 - None"
+        helper::OptionsGroup filterOptions(25	,"0 - None"
                                            ,"1 - Blur ( sigma )"
                                            ,"2 - Blur Median ( n )"
                                            ,"3 - Blur Bilateral ( sigma_s, sigma_r)"
@@ -157,6 +157,7 @@ public:
                                            ,"21 - SelectChannels ( c0, c1 )"
                                            ,"22 - Skeleton from distance map"
                                            ,"23 - Mean Diffusion ( max iterations=0 (0->until convergence), fixed boundaries=1, exclude outside=1, threshold=eps )"
+                                           ,"24 - Fill Holes (inval=0, outval=1)"
                                            );
         filterOptions.setSelectedItem(NONE);
         filter.setValue(filterOptions);
@@ -568,6 +569,24 @@ protected:
 
                 }
 
+            }
+            break;
+
+
+        case FILLHOLES:
+            if(updateImage)
+            {
+                To inval=(To)1.;    if(p.size()) inval=(To)p[0];
+                To outval=(To)0;    if(p.size()>1)   outval=(To)p[1];
+
+                cimglist_for(img,l)
+                {
+                    CImg<unsigned char> im = inimg(l);
+                    cimg_foroff(im,off) if( im[off]!=0 ) im[off]=1;
+                    unsigned char fillColor = (unsigned char)2;
+                    im.draw_fill(0,0,0,&fillColor);
+                    cimg_foroff(im,off) if( im[off]==2 ) img(l)[off]=outval; else img(l)[off]=inval;
+                }
             }
             break;
 
