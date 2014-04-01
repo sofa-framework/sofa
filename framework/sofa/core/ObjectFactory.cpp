@@ -25,9 +25,6 @@
 #include "ObjectFactory.h"
 
 
-// Uncomment to output a warning in the console each time a class is registered without corresponding SOFA_CLASS
-#define LOG_MISSING_CLASS
-
 namespace sofa
 {
 namespace core
@@ -35,23 +32,16 @@ namespace core
 
 ObjectFactory::~ObjectFactory()
 {
-    for(ClassEntryList::iterator it = classEntries.begin(), itEnd = classEntries.end();
-        it != itEnd; ++it)
-    {
-        delete *it;
-    }
 }
 
-ObjectFactory::ClassEntry* ObjectFactory::getEntry(std::string classname)
+ObjectFactory::ClassEntry& ObjectFactory::getEntry(std::string classname)
 {
-    ClassEntry*& p = registry[classname];
-    if (p == NULL)
-    {
-        p = new ClassEntry;
-        p->className = classname;
-        classEntries.push_back(p);
+    if (registry.find(classname) == registry.end()) {
+        registry[classname] = boost::shared_ptr<ClassEntry>(new ClassEntry);
+        registry[classname]->className = classname;
     }
-    return p;
+
+    return *registry[classname];
 }
 
 /// Test if a creator exists for a given classname
@@ -60,7 +50,7 @@ bool ObjectFactory::hasCreator(std::string classname)
     ClassEntryMap::iterator it = registry.find(classname);
     if (it == registry.end())
         return false;
-    ClassEntry* entry = it->second;
+    ClassEntry* entry = it->second.get();
     return (!entry->creatorMap.empty());
 }
 
@@ -71,56 +61,57 @@ std::string ObjectFactory::shortName(std::string classname)
     ClassEntryMap::iterator it = registry.find(classname);
     if (it != registry.end())
     {
-        ClassEntry* entry = it->second;
+        ClassEntry* entry = it->second.get();
         if(!entry->creatorMap.empty())
         {
             CreatorMap::iterator it = entry->creatorMap.begin();
-            Creator* c = it->second;
+            Creator* c = it->second.get();
             shortname = c->getClass()->shortName;
         }
     }
     return shortname;
 }
 
-bool ObjectFactory::addAlias(std::string name, std::string result, bool force, ClassEntry** previous)
+bool ObjectFactory::addAlias(std::string name, std::string result, bool force,
+                             boost::shared_ptr<ClassEntry>* previous)
 {
-    ClassEntry*& p = registry[name];
-    if (previous)
-        *previous = p;
+    // Check that the pointed class does exist
     ClassEntryMap::iterator it = registry.find(result);
     if (it == registry.end())
     {
-        std::cerr << "ERROR: ObjectFactory: cannot create alias "<<name<<" to unknown class " << result << ".\n";
+        std::cerr << "ERROR: ObjectFactory: cannot create alias " << name << " to unknown class " << result << ".\n";
         return false;
     }
-    ClassEntry* entry = it->second;
-    if (p!=NULL && !force)
+
+    boost::shared_ptr<ClassEntry>& pointedEntry = it->second;
+    boost::shared_ptr<ClassEntry>& aliasEntry = registry[name];
+
+    // Check that the alias does not already exist, unless 'force' is true
+    if (aliasEntry.get()!=NULL && !force)
     {
-        std::cerr << "ERROR: ObjectFactory: cannot create alias "<<name<<" as a class with this name already exists.\n";
+        std::cerr << "ERROR: ObjectFactory: cannot create alias " << name << " because a class with this name already exists.\n";
         return false;
     }
-    else
-    {
-        if (p!=NULL)
-        {
-            p->aliases.erase(name);
-        }
-        p = entry;
-        entry->aliases.insert(name);
-        return true;
+
+    if (previous) {
+        boost::shared_ptr<ClassEntry>& entry = aliasEntry;
+        *previous = entry;
     }
+
+    registry[name] = pointedEntry;
+    pointedEntry->aliases.insert(name);
+    return true;
 }
 
-void ObjectFactory::resetAlias(std::string name, ClassEntry* previous)
+void ObjectFactory::resetAlias(std::string name, boost::shared_ptr<ClassEntry> previous)
 {
-    ClassEntry*& p = registry[name];
-    p = previous;
+    registry[name] = previous;
 }
 
 objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
 {
     objectmodel::BaseObject::SPtr object = NULL;
-    std::vector< std::pair<std::string, Creator*> > creators;
+    std::vector< std::pair<std::string, boost::shared_ptr<Creator> > > creators;
     std::string classname = arg->getAttribute( "type", "");
     std::string templatename = arg->getAttribute( "template", "");
     ClassEntryMap::iterator it = registry.find(classname);
@@ -131,23 +122,23 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
     else
     {
 //        std::cout << "ObjectFactory: class "<<classname<<" FOUND."<<std::endl;
-        ClassEntry* entry = it->second;
+        ClassEntry* entry = it->second.get();
         if(templatename.empty()) templatename = entry->defaultTemplate;
         CreatorMap::iterator it2 = entry->creatorMap.find(templatename);
         if (it2 != entry->creatorMap.end())
         {
 //            std::cout << "ObjectFactory: template "<<templatename<<" FOUND."<<std::endl;
-            Creator* c = it2->second;
+            Creator* c = it2->second.get();
             if (c->canCreate(context, arg))
                 creators.push_back(*it2);
         }
         else
         {
-//            std::cout << "ObjectFactory: template "<<templatename<<" NOT FOUND."<<std::endl;
-            CreatorList::iterator it3;
-            for (it3 = entry->creatorList.begin(); it3 != entry->creatorList.end(); ++it3)
+            // std::cout << "ObjectFactory: template "<<templatename<<" NOT FOUND for "<<classname<<std::endl;
+            CreatorMap::iterator it3;
+            for (it3 = entry->creatorMap.begin(); it3 != entry->creatorMap.end(); ++it3)
             {
-                Creator* c = it3->second;
+                Creator* c = it3->second.get();
                 if (c->canCreate(context, arg))
                     creators.push_back(*it3);
             }
@@ -185,10 +176,10 @@ ObjectFactory* ObjectFactory::getInstance()
 void ObjectFactory::getAllEntries(std::vector<ClassEntry*>& result)
 {
     result.clear();
-    for(ClassEntryList::iterator it = classEntries.begin(), itEnd = classEntries.end();
+    for(ClassEntryMap::iterator it = registry.begin(), itEnd = registry.end();
         it != itEnd; ++it)
     {
-        ClassEntry* entry = *it;
+        ClassEntry* entry = it->second.get();
         result.push_back(entry);
     }
 }
@@ -196,14 +187,14 @@ void ObjectFactory::getAllEntries(std::vector<ClassEntry*>& result)
 void ObjectFactory::getEntriesFromTarget(std::vector<ClassEntry*>& result, std::string target)
 {
     result.clear();
-    for(ClassEntryList::iterator it = classEntries.begin(), itEnd = classEntries.end();
+    for(ClassEntryMap::iterator it = registry.begin(), itEnd = registry.end();
         it != itEnd; ++it)
     {
-        ClassEntry* entry = *it;
+        ClassEntry* entry = it->second.get();
         bool inTarget = false;
-        for (CreatorList::iterator itc = entry->creatorList.begin(), itcend = entry->creatorList.end(); itc != itcend; ++itc)
+        for (CreatorMap::iterator itc = entry->creatorMap.begin(), itcend = entry->creatorMap.end(); itc != itcend; ++itc)
         {
-            Creator* c = itc->second;
+            Creator* c = itc->second.get();
             if (target == c->getTarget())
                 inTarget = true;
         }
@@ -230,7 +221,7 @@ void ObjectFactory::dump(std::ostream& out)
 {
     for (ClassEntryMap::iterator it = registry.begin(), itend = registry.end(); it != itend; ++it)
     {
-        ClassEntry* entry = it->second;
+        ClassEntry* entry = it->second.get();
         if (entry->className != it->first) continue;
         out << "class " << entry->className <<" :\n";
         if (!entry->aliases.empty())
@@ -246,7 +237,7 @@ void ObjectFactory::dump(std::ostream& out)
             out << "  authors : " << entry->authors << "\n";
         if (!entry->license.empty())
             out << "  license : " << entry->license << "\n";
-        for (CreatorList::iterator itc = entry->creatorList.begin(), itcend = entry->creatorList.end(); itc != itcend; ++itc)
+        for (CreatorMap::iterator itc = entry->creatorMap.begin(), itcend = entry->creatorMap.end(); itc != itcend; ++itc)
         {
             out << "  template instance : " << itc->first << "\n";
         }
@@ -275,7 +266,7 @@ void ObjectFactory::dumpXML(std::ostream& out)
 {
     for (ClassEntryMap::iterator it = registry.begin(), itend = registry.end(); it != itend; ++it)
     {
-        ClassEntry* entry = it->second;
+        ClassEntry* entry = it->second.get();
         if (entry->className != it->first) continue;
         out << "<class name=\"" << xmlencode(entry->className) <<"\">\n";
         for (std::set<std::string>::iterator it = entry->aliases.begin(), itend = entry->aliases.end(); it != itend; ++it)
@@ -286,7 +277,7 @@ void ObjectFactory::dumpXML(std::ostream& out)
             out << "<authors>"<<entry->authors<<"</authors>\n";
         if (!entry->license.empty())
             out << "<license>"<<entry->license<<"</license>\n";
-        for (CreatorList::iterator itc = entry->creatorList.begin(), itcend = entry->creatorList.end(); itc != itcend; ++itc)
+        for (CreatorMap::iterator itc = entry->creatorMap.begin(), itcend = entry->creatorMap.end(); itc != itcend; ++itc)
         {
             out << "<creator";
             if (!itc->first.empty()) out << " template=\"" << xmlencode(itc->first) << "\"";
@@ -301,7 +292,7 @@ void ObjectFactory::dumpHTML(std::ostream& out)
     out << "<ul>\n";
     for (ClassEntryMap::iterator it = registry.begin(), itend = registry.end(); it != itend; ++it)
     {
-        ClassEntry* entry = it->second;
+        ClassEntry* entry = it->second.get();
         if (entry->className != it->first) continue;
         out << "<li><b>" << xmlencode(entry->className) <<"</b>\n";
         if (!entry->description.empty())
@@ -318,10 +309,10 @@ void ObjectFactory::dumpHTML(std::ostream& out)
             out << "<li>Authors: <i>"<<entry->authors<<"</i></li>\n";
         if (!entry->license.empty())
             out << "<li>License: <i>"<<entry->license<<"</i></li>\n";
-        if (entry->creatorList.size()>2 || (entry->creatorList.size()==1 && !entry->creatorList.begin()->first.empty()))
+        if (entry->creatorMap.size()>2 || (entry->creatorMap.size()==1 && !entry->creatorMap.begin()->first.empty()))
         {
             out << "<li>Template instances:<i>";
-            for (CreatorList::iterator itc = entry->creatorList.begin(), itcend = entry->creatorList.end(); itc != itcend; ++itc)
+            for (CreatorMap::iterator itc = entry->creatorMap.begin(), itcend = entry->creatorMap.end(); itc != itcend; ++itc)
             {
                 if (itc->first == entry->defaultTemplate)
                     out << " <b>" << xmlencode(itc->first) << "</b>";
@@ -374,31 +365,8 @@ RegisterObject& RegisterObject::addLicense(std::string val)
     return *this;
 }
 
-RegisterObject& RegisterObject::addCreator(std::string classname, std::string templatename, std::auto_ptr<ObjectFactory::Creator> creator)
+RegisterObject& RegisterObject::addCreator(std::string classname, std::string templatename, boost::shared_ptr<ObjectFactory::Creator> creator)
 {
-    //std::cout << "ObjectFactory: add creator "<<classname<<" with template "<<templatename<<std::endl;
-    // check if the SOFA_CLASS macro is correctly used
-#ifdef LOG_MISSING_CLASS
-    if (entry.className.empty() && classname != creator->getClass()->className)
-    {
-        std::cerr << "CODE WARNING: MISSING SOFA_CLASS in class declaration " << classname;
-        if (!templatename.empty())
-            std::cerr << "<" << templatename << ">";
-        std::cerr << std::endl;
-        std::cerr << "  A code similar to the following needs to be added in " << classname << ".h: \n";
-        std::cerr << "    SOFA_CLASS(";
-        if (templatename.empty())
-            std::cerr << classname;
-        else
-            std::cerr << "SOFA_TEMPLATE(" << classname << ",DataTypes)";
-        std::cerr << ",";
-        if (creator->getClass()->templateName.empty())
-            std::cerr << creator->getClass()->namespaceName << "::" << creator->getClass()->className;
-        else
-            std::cerr << "SOFA_TEMPLATE(" << creator->getClass()->namespaceName << "::" << creator->getClass()->className << ",DataTypes)";
-        std::cerr << ");" << std::endl;
-    }
-#endif
 
     if (!entry.className.empty() && entry.className != classname)
     {
@@ -411,8 +379,7 @@ RegisterObject& RegisterObject::addCreator(std::string classname, std::string te
     else
     {
         entry.className = classname;
-        entry.creatorMap.insert(std::make_pair(templatename, creator.get()));
-        entry.creatorList.push_back(std::make_pair(templatename, creator.release()));
+        entry.creatorMap[templatename] =  creator;
     }
     return *this;
 }
@@ -426,37 +393,35 @@ RegisterObject::operator int()
     else
     {
         //std::cout << "ObjectFactory: commit"<<std::endl;
-        ObjectFactory::ClassEntry* reg = ObjectFactory::getInstance()->getEntry(entry.className);
-        reg->description += entry.description;
-        reg->authors += entry.authors;
-        reg->license += entry.license;
+        ObjectFactory::ClassEntry& reg = ObjectFactory::getInstance()->getEntry(entry.className);
+        reg.description += entry.description;
+        reg.authors += entry.authors;
+        reg.license += entry.license;
         if (!entry.defaultTemplate.empty())
         {
-            if (!reg->defaultTemplate.empty())
+            if (!reg.defaultTemplate.empty())
             {
-                std::cerr << "ERROR: ObjectFactory: default template for class "<<entry.className<<" already registered <"<<reg->defaultTemplate<<">, do not register <"<<entry.defaultTemplate<<"> as default.\n";
+                std::cerr << "ERROR: ObjectFactory: default template for class "<<entry.className<<" already registered <"<<reg.defaultTemplate<<">, do not register <"<<entry.defaultTemplate<<"> as default.\n";
             }
             else
             {
-                reg->defaultTemplate = entry.defaultTemplate;
+                reg.defaultTemplate = entry.defaultTemplate;
             }
         }
         for (ObjectFactory::CreatorMap::iterator itc = entry.creatorMap.begin(), itcend = entry.creatorMap.end(); itc != itcend; ++itc)
         {
-            if (reg->creatorMap.find(itc->first) != reg->creatorMap.end())
+            if (reg.creatorMap.find(itc->first) != reg.creatorMap.end())
             {
                 std::cerr << "ERROR: ObjectFactory: class "<<entry.className<<"<"<<itc->first<<"> already registered\n";
             }
             else
             {
-                reg->creatorMap.insert(*itc);
-                reg->creatorList.push_back(*itc);
-                itc->second = 0;
+                reg.creatorMap.insert(*itc);
             }
         }
         for (std::set<std::string>::iterator it = entry.aliases.begin(), itend = entry.aliases.end(); it != itend; ++it)
         {
-            if (reg->aliases.find(*it) == reg->aliases.end())
+            if (reg.aliases.find(*it) == reg.aliases.end())
             {
                 ObjectFactory::getInstance()->addAlias(*it,entry.className);
             }
@@ -464,31 +429,6 @@ RegisterObject::operator int()
         return 1;
     }
 }
-
-// void ObjectFactory::ClassEntry::print()
-// {
-//   std::cout<<"className = "<<className<<endl;
-//   std::cout<<"  baseClasses: ";
-//   for( std::set<std::string>::const_iterator i=baseClasses.begin(), iend=baseClasses.end(); i!=iend; i++ )
-//     std::cout<<*i<<", ";
-//   std::cout<<std::endl;
-//   std::cout<<"  aliases: ";
-//   for( std::set<std::string>::const_iterator i=aliases.begin(), iend=aliases.end(); i!=iend; i++ )
-//     std::cout<<*i<<", ";
-//   std::cout<<std::endl;
-//   std::cout<<"  description: "<<description<<std::endl;
-//   std::cout<<"  authors: "<<authors<<std::endl;
-//   std::cout<<"  license: "<<license<<std::endl;
-//   std::cout<<"  creators: ";
-//   for( std::list< std::pair<std::string, Creator*> >::const_iterator i=creatorList.begin(), iend=creatorList.end(); i!=iend; i++ )
-//     std::cout<<(*i).first<<", ";
-//   std::cout<<std::endl;
-//   std::cout<<"  creatorMap: ";
-//   for( std::map<std::string, Creator*>::const_iterator i=creatorMap.begin(), iend=creatorMap.end(); i!=iend; i++ )
-//     std::cout<<(*i).first<<", ";
-//   std::cout<<std::endl;
-//
-// }
 
 } // namespace core
 

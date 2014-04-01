@@ -35,6 +35,8 @@
 #include <iostream>
 #include <typeinfo>
 
+#include <boost/shared_ptr.hpp>
+
 namespace sofa
 {
 
@@ -59,10 +61,8 @@ public:
     class Creator;
     class ClassEntry;
 
-    typedef std::map<std::string, Creator*>                 CreatorMap;
-    typedef std::list< std::pair<std::string, Creator*> > CreatorList;
-    typedef std::map<std::string, ClassEntry*>              ClassEntryMap;
-    typedef std::vector<ClassEntry*>                        ClassEntryList;
+    typedef std::map<std::string, boost::shared_ptr<Creator> > CreatorMap;
+    typedef std::map<std::string, boost::shared_ptr<ClassEntry> > ClassEntryMap;
 
     /// Abstract interface of objects used to create instances of a given type
     class Creator
@@ -105,33 +105,20 @@ public:
         std::string authors;
         std::string license;
         std::string defaultTemplate;
-        CreatorList creatorList;
         CreatorMap creatorMap;
-        //void print();
-
-        ~ClassEntry()
-        {
-            for(CreatorMap::iterator it = creatorMap.begin(), itEnd = creatorMap.end();
-                it != itEnd; ++it)
-            {
-                delete it->second;
-                it->second = 0;
-            }
-        }
     };
 
 protected:
 
     /// Main class registry
     ClassEntryMap registry;
-    ClassEntryList classEntries;
 
 public:
 
     ~ObjectFactory();
 
     /// Get an entry given a class name (or alias)
-    ClassEntry* getEntry(std::string classname);
+    ClassEntry& getEntry(std::string classname);
 
     /// Test if a creator exists for a given classname
     bool hasCreator(std::string classname);
@@ -155,13 +142,14 @@ public:
     /// \param result   class pointed to by the new alias
     /// \param force    set to true if this method should override any entry already registered for this name
     /// \param previous (output) previous ClassEntry registered for this name
-    bool addAlias(std::string name, std::string result, bool force=false, ClassEntry** previous = NULL);
+    bool addAlias(std::string name, std::string result, bool force=false,
+                  boost::shared_ptr<ClassEntry>* previous = NULL);
 
     /// Reset an alias to a previous state
     ///
     /// \param name     name of the new alias
     /// \param previous previous ClassEntry that need to be registered back for this name
-    void resetAlias(std::string name, ClassEntry* previous);
+    void resetAlias(std::string name, boost::shared_ptr<ClassEntry> previous);
 
     /// Create an object given a context and a description.
     objectmodel::BaseObject::SPtr createObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg);
@@ -176,13 +164,14 @@ public:
     }
 
     /// \copydoc addAlias
-    static bool AddAlias(std::string name, std::string result, bool force=false, ClassEntry** previous = NULL)
+    static bool AddAlias(std::string name, std::string result, bool force=false,
+                         boost::shared_ptr<ClassEntry>* previous = NULL)
     {
         return getInstance()->addAlias(name, result, force, previous);
     }
 
     /// \copydoc resetAlias
-    static void ResetAlias(std::string name, ClassEntry* previous)
+    static void ResetAlias(std::string name, boost::shared_ptr<ClassEntry> previous)
     {
         getInstance()->resetAlias(name, previous);
     }
@@ -308,7 +297,8 @@ public:
     /// Add a creator able to instance this class with the given templatename.
     ///
     /// See the add<RealObject>() method for an easy way to add a Creator.
-    RegisterObject& addCreator(std::string classname, std::string templatename, std::auto_ptr<ObjectFactory::Creator> creator);
+    RegisterObject& addCreator(std::string classname, std::string templatename,
+                               boost::shared_ptr<ObjectFactory::Creator> creator);
 
     /// Add a template instanciation of this class.
     ///
@@ -323,7 +313,7 @@ public:
         if (defaultTemplate)
             entry.defaultTemplate = templatename;
 
-        return addCreator(classname, templatename, std::auto_ptr<ObjectFactory::Creator>(new ObjectCreator<RealObject>));
+        return addCreator(classname, templatename, boost::shared_ptr<ObjectFactory::Creator>(new ObjectCreator<RealObject>));
     }
 
     /// This is the final operation that will actually commit the additions to the ObjectFactory.

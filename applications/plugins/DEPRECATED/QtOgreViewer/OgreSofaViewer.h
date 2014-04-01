@@ -40,8 +40,8 @@ namespace viewer
 class OgreVisualModelPolicy : public VisualModelPolicy
 {
 protected:
-    sofa::core::ObjectFactory::ClassEntry* classVisualModel;
-    sofa::core::ObjectFactory::ClassEntry* classOglModel;
+    boost::shared_ptr<sofa::core::ObjectFactory::ClassEntry> classVisualModel;
+    boost::shared_ptr<sofa::core::ObjectFactory::ClassEntry> classOglModel;
     sofa::core::visual::DrawToolOGRE drawToolOGRE;
 public:
     void load()
