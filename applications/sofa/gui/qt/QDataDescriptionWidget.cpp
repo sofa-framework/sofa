@@ -76,33 +76,33 @@ QDataDescriptionWidget::QDataDescriptionWidget(QWidget* parent, core::objectmode
 
 
     //Class description
-    core::ObjectFactory::ClassEntry* entry = core::ObjectFactory::getInstance()->getEntry(object->getClassName());
-    if (entry != NULL && ! entry->creatorMap.empty())
+    core::ObjectFactory::ClassEntry entry = core::ObjectFactory::getInstance()->getEntry(object->getClassName());
+    if (! entry.creatorMap.empty())
     {
         Q3GroupBox *box = new Q3GroupBox(this, QString("Class"));
         box->setColumns(2);
         box->setTitle(QString("Class"));
-        if (!entry->description.empty() && entry->description != std::string("TODO"))
+        if (!entry.description.empty() && entry.description != std::string("TODO"))
         {
             new QLabel(QString("Description"), box);
-            (new QLabel(QString(entry->description.c_str()), box))->setMinimumWidth(20);
+            (new QLabel(QString(entry.description.c_str()), box))->setMinimumWidth(20);
         }
-        core::ObjectFactory::CreatorMap::iterator it = entry->creatorMap.find(object->getTemplateName());
-        if (it != entry->creatorMap.end() && *it->second->getTarget())
+        core::ObjectFactory::CreatorMap::iterator it = entry.creatorMap.find(object->getTemplateName());
+        if (it != entry.creatorMap.end() && *it->second->getTarget())
         {
             new QLabel(QString("Provided by"), box);
             (new QLabel(QString(it->second->getTarget()), box))->setMinimumWidth(20);
         }
 
-        if (!entry->authors.empty() && entry->authors != std::string("TODO"))
+        if (!entry.authors.empty() && entry.authors != std::string("TODO"))
         {
             new QLabel(QString("Authors"), box);
-            (new QLabel(QString(entry->authors.c_str()), box))->setMinimumWidth(20);
+            (new QLabel(QString(entry.authors.c_str()), box))->setMinimumWidth(20);
         }
-        if (!entry->license.empty() && entry->license != std::string("TODO"))
+        if (!entry.license.empty() && entry.license != std::string("TODO"))
         {
             new QLabel(QString("License"), box);
-            (new QLabel(QString(entry->license.c_str()), box))->setMinimumWidth(20);
+            (new QLabel(QString(entry.license.c_str()), box))->setMinimumWidth(20);
         }
         tabLayout->addWidget( box );
     }
