@@ -22,62 +22,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "initSensableEmulation.h"
+#ifndef INIT_ASYNCHRO_HAPTICS_H
+#define INIT_ASYNCHRO_HAPTICS_H
 
-namespace sofa
-{
+#include <sofa/helper/system/config.h>
 
-namespace component
-{
+#ifndef WIN32
+#define SOFA_EXPORT_DYNAMIC_LIBRARY
+#define SOFA_IMPORT_DYNAMIC_LIBRARY
+#define SOFA_SENSABLEEMUPLUGIN_API
+#else
+#ifdef SOFA_BUILD_SENSABLEEMULATIONPLUGIN
+#define SOFA_SENSABLEEMUPLUGIN_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#define SOFA_SENSABLEEMUPLUGIN_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+#endif
 
-//Here are just several convenient functions to help user to know what contains the plugin
-
-extern "C" {
-    SOFA_SENSABLEEMUPLUGIN_API void initExternalModule();
-    SOFA_SENSABLEEMUPLUGIN_API const char* getModuleName();
-    SOFA_SENSABLEEMUPLUGIN_API const char* getModuleVersion();
-    SOFA_SENSABLEEMUPLUGIN_API const char* getModuleLicense();
-    SOFA_SENSABLEEMUPLUGIN_API const char* getModuleDescription();
-    SOFA_SENSABLEEMUPLUGIN_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
-
-const char* getModuleName()
-{
-    return "Plugin Sensable Emulation";
-}
-
-const char* getModuleVersion()
-{
-    return "beta 1.0";
-}
-
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-const char* getModuleDescription()
-{
-    return "Force feedback with sensable devices into SOFA Framework";
-}
-
-const char* getModuleComponentList()
-{
-    return "OmniDriverEmu";
-}
-
-} // namespace component
-
-} // namespace sofa
-
-
-SOFA_LINK_CLASS(OmniDriverEmu)
+#endif // INIT_ASYNCHRO_HAPTICS_H
