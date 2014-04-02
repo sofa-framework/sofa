@@ -52,7 +52,7 @@ public:
     typedef QPushButton ComponentLabel;
     typedef QComboBox   ComponentTemplates;
 public:
-    QComponentTreeLibrary(QWidget *parent, QTreeWidgetItem* category,const std::string &componentName, const std::string &categoryName, ClassEntry* entry, const std::vector< std::string > &exampleFiles);
+    QComponentTreeLibrary(QWidget *parent, QTreeWidgetItem* category,const std::string &componentName, const std::string &categoryName, ClassEntry::SPtr entry, const std::vector< std::string > &exampleFiles);
     ~QComponentTreeLibrary();
 
     void endConstruction();
@@ -73,7 +73,7 @@ public slots:
     void componentPressed();
 
 signals:
-    void componentDragged( std::string description, std::string templateName, ClassEntry* entry);
+    void componentDragged( std::string description, std::string templateName, ClassEntry::SPtr entry);
 };
 
 }

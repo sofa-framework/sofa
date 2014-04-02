@@ -158,7 +158,7 @@ Node::SPtr GraphModeler::addNode(Node::SPtr parent, Node::SPtr child, bool saveH
     return child;
 }
 
-BaseObject::SPtr GraphModeler::addComponent(Node::SPtr parent, const ClassEntry* entry, const std::string &templateName, bool saveHistory, bool displayWarning)
+BaseObject::SPtr GraphModeler::addComponent(Node::SPtr parent, const ClassEntry::SPtr entry, const std::string &templateName, bool saveHistory, bool displayWarning)
 {
     BaseObject::SPtr object=NULL;
     if (!parent || !entry) return object;
@@ -169,7 +169,7 @@ BaseObject::SPtr GraphModeler::addComponent(Node::SPtr parent, const ClassEntry*
 
     if (!templateName.empty()) description.setAttribute("template", templateName.c_str());
 
-    boost::shared_ptr<Creator> c;
+    Creator::SPtr c;
     if (entry->creatorMap.size() <= 1)
         c=entry->creatorMap.begin()->second;
     else
@@ -720,7 +720,7 @@ Node::SPtr GraphModeler::buildNodeFromBaseElement(Node::SPtr node,xml::BaseEleme
             templatename = it->getAttribute(templateAttribute, "");
 
 
-            const ClassEntry *info = component->getEntry();
+            const ClassEntry::SPtr info = component->getEntry();
             BaseObject::SPtr newComponent=addComponent(newNode, info, templatename, saveHistory,displayWarning);
             if (!newComponent) continue;
             configureElement(newComponent.get(), it);

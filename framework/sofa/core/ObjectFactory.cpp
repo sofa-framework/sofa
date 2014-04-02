@@ -37,7 +37,7 @@ ObjectFactory::~ObjectFactory()
 ObjectFactory::ClassEntry& ObjectFactory::getEntry(std::string classname)
 {
     if (registry.find(classname) == registry.end()) {
-        registry[classname] = boost::shared_ptr<ClassEntry>(new ClassEntry);
+        registry[classname] = ClassEntry::SPtr(new ClassEntry);
         registry[classname]->className = classname;
     }
 
@@ -50,7 +50,7 @@ bool ObjectFactory::hasCreator(std::string classname)
     ClassEntryMap::iterator it = registry.find(classname);
     if (it == registry.end())
         return false;
-    ClassEntry* entry = it->second.get();
+    ClassEntry::SPtr entry = it->second;
     return (!entry->creatorMap.empty());
 }
 
@@ -61,11 +61,11 @@ std::string ObjectFactory::shortName(std::string classname)
     ClassEntryMap::iterator it = registry.find(classname);
     if (it != registry.end())
     {
-        ClassEntry* entry = it->second.get();
+        ClassEntry::SPtr entry = it->second;
         if(!entry->creatorMap.empty())
         {
             CreatorMap::iterator it = entry->creatorMap.begin();
-            Creator* c = it->second.get();
+	    Creator::SPtr c = it->second;
             shortname = c->getClass()->shortName;
         }
     }
@@ -73,7 +73,7 @@ std::string ObjectFactory::shortName(std::string classname)
 }
 
 bool ObjectFactory::addAlias(std::string name, std::string result, bool force,
-                             boost::shared_ptr<ClassEntry>* previous)
+                             ClassEntry::SPtr* previous)
 {
     // Check that the pointed class does exist
     ClassEntryMap::iterator it = registry.find(result);
@@ -83,8 +83,8 @@ bool ObjectFactory::addAlias(std::string name, std::string result, bool force,
         return false;
     }
 
-    boost::shared_ptr<ClassEntry>& pointedEntry = it->second;
-    boost::shared_ptr<ClassEntry>& aliasEntry = registry[name];
+    ClassEntry::SPtr& pointedEntry = it->second;
+    ClassEntry::SPtr& aliasEntry = registry[name];
 
     // Check that the alias does not already exist, unless 'force' is true
     if (aliasEntry.get()!=NULL && !force)
@@ -94,7 +94,7 @@ bool ObjectFactory::addAlias(std::string name, std::string result, bool force,
     }
 
     if (previous) {
-        boost::shared_ptr<ClassEntry>& entry = aliasEntry;
+        ClassEntry::SPtr& entry = aliasEntry;
         *previous = entry;
     }
 
@@ -103,7 +103,7 @@ bool ObjectFactory::addAlias(std::string name, std::string result, bool force,
     return true;
 }
 
-void ObjectFactory::resetAlias(std::string name, boost::shared_ptr<ClassEntry> previous)
+void ObjectFactory::resetAlias(std::string name, ClassEntry::SPtr previous)
 {
     registry[name] = previous;
 }
@@ -111,7 +111,7 @@ void ObjectFactory::resetAlias(std::string name, boost::shared_ptr<ClassEntry> p
 objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
 {
     objectmodel::BaseObject::SPtr object = NULL;
-    std::vector< std::pair<std::string, boost::shared_ptr<Creator> > > creators;
+    std::vector< std::pair<std::string, Creator::SPtr> > creators;
     std::string classname = arg->getAttribute( "type", "");
     std::string templatename = arg->getAttribute( "template", "");
     ClassEntryMap::iterator it = registry.find(classname);
@@ -122,13 +122,13 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
     else
     {
 //        std::cout << "ObjectFactory: class "<<classname<<" FOUND."<<std::endl;
-        ClassEntry* entry = it->second.get();
+        ClassEntry::SPtr entry = it->second;
         if(templatename.empty()) templatename = entry->defaultTemplate;
         CreatorMap::iterator it2 = entry->creatorMap.find(templatename);
         if (it2 != entry->creatorMap.end())
         {
 //            std::cout << "ObjectFactory: template "<<templatename<<" FOUND."<<std::endl;
-            Creator* c = it2->second.get();
+            Creator::SPtr c = it2->second;
             if (c->canCreate(context, arg))
                 creators.push_back(*it2);
         }
@@ -138,7 +138,7 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
             CreatorMap::iterator it3;
             for (it3 = entry->creatorMap.begin(); it3 != entry->creatorMap.end(); ++it3)
             {
-                Creator* c = it3->second.get();
+	        Creator::SPtr c = it3->second;
                 if (c->canCreate(context, arg))
                     creators.push_back(*it3);
             }
@@ -173,30 +173,30 @@ ObjectFactory* ObjectFactory::getInstance()
     return &instance;
 }
 
-void ObjectFactory::getAllEntries(std::vector<ClassEntry*>& result)
+void ObjectFactory::getAllEntries(std::vector<ClassEntry::SPtr>& result)
 {
     result.clear();
     for(ClassEntryMap::iterator it = registry.begin(), itEnd = registry.end();
         it != itEnd; ++it)
     {
-        ClassEntry* entry = it->second.get();
+        ClassEntry::SPtr entry = it->second;
         // Push the entry only if it is not an alias
         if (entry->className == it->first)
             result.push_back(entry);
     }
 }
 
-void ObjectFactory::getEntriesFromTarget(std::vector<ClassEntry*>& result, std::string target)
+void ObjectFactory::getEntriesFromTarget(std::vector<ClassEntry::SPtr>& result, std::string target)
 {
     result.clear();
     for(ClassEntryMap::iterator it = registry.begin(), itEnd = registry.end();
         it != itEnd; ++it)
     {
-        ClassEntry* entry = it->second.get();
+        ClassEntry::SPtr entry = it->second;
         bool inTarget = false;
         for (CreatorMap::iterator itc = entry->creatorMap.begin(), itcend = entry->creatorMap.end(); itc != itcend; ++itc)
         {
-            Creator* c = itc->second.get();
+	    Creator::SPtr c = itc->second;
             if (target == c->getTarget())
                 inTarget = true;
         }
@@ -207,7 +207,7 @@ void ObjectFactory::getEntriesFromTarget(std::vector<ClassEntry*>& result, std::
 
 std::string ObjectFactory::listClassesFromTarget(std::string target, std::string separator)
 {
-    std::vector<ClassEntry*> entries;
+    std::vector<ClassEntry::SPtr> entries;
     getEntriesFromTarget(entries, target);
     std::ostringstream oss;
     for (unsigned int i=0; i<entries.size(); ++i)
@@ -223,7 +223,7 @@ void ObjectFactory::dump(std::ostream& out)
 {
     for (ClassEntryMap::iterator it = registry.begin(), itend = registry.end(); it != itend; ++it)
     {
-        ClassEntry* entry = it->second.get();
+        ClassEntry::SPtr entry = it->second;
         if (entry->className != it->first) continue;
         out << "class " << entry->className <<" :\n";
         if (!entry->aliases.empty())
@@ -268,7 +268,7 @@ void ObjectFactory::dumpXML(std::ostream& out)
 {
     for (ClassEntryMap::iterator it = registry.begin(), itend = registry.end(); it != itend; ++it)
     {
-        ClassEntry* entry = it->second.get();
+        ClassEntry::SPtr entry = it->second;
         if (entry->className != it->first) continue;
         out << "<class name=\"" << xmlencode(entry->className) <<"\">\n";
         for (std::set<std::string>::iterator it = entry->aliases.begin(), itend = entry->aliases.end(); it != itend; ++it)
@@ -294,7 +294,7 @@ void ObjectFactory::dumpHTML(std::ostream& out)
     out << "<ul>\n";
     for (ClassEntryMap::iterator it = registry.begin(), itend = registry.end(); it != itend; ++it)
     {
-        ClassEntry* entry = it->second.get();
+        ClassEntry::SPtr entry = it->second;
         if (entry->className != it->first) continue;
         out << "<li><b>" << xmlencode(entry->className) <<"</b>\n";
         if (!entry->description.empty())
@@ -367,7 +367,9 @@ RegisterObject& RegisterObject::addLicense(std::string val)
     return *this;
 }
 
-RegisterObject& RegisterObject::addCreator(std::string classname, std::string templatename, boost::shared_ptr<ObjectFactory::Creator> creator)
+RegisterObject& RegisterObject::addCreator(std::string classname,
+					   std::string templatename,
+					   ObjectFactory::Creator::SPtr creator)
 {
 
     if (!entry.className.empty() && entry.className != classname)

@@ -159,7 +159,7 @@ SofaPhysicsDataController** SofaPhysicsSimulation::getDataControllers()
 using namespace sofa::defaulttype;
 using namespace sofa::helper::gl;
 
-static sofa::core::ObjectFactory::ClassEntry* classVisualModel = NULL;
+static sofa::core::ObjectFactory::ClassEntry::SPtr classVisualModel;
 
 SofaPhysicsSimulation::Impl::Impl(bool useGUI_, int GUIFramerate_) :
 useGUI(useGUI_), GUIFramerate(GUIFramerate_)

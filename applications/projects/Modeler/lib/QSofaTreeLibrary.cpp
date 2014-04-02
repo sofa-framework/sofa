@@ -57,8 +57,8 @@ void QSofaTreeLibrary::addCategory(CategoryLibrary *c)
 
     SofaLibrary::addCategory(category);
 
-    connect( category, SIGNAL( componentDragged( std::string, std::string, std::string, ClassEntry* ) ),
-            this, SLOT( componentDraggedReception( std::string, std::string, std::string , ClassEntry* )));
+    connect( category, SIGNAL( componentDragged( std::string, std::string, std::string, ClassEntry::SPtr ) ),
+            this, SLOT( componentDraggedReception( std::string, std::string, std::string , ClassEntry::SPtr )));
 }
 
 void QSofaTreeLibrary::filter(const FilterQuery &f)
@@ -139,7 +139,7 @@ void QSofaTreeLibrary::filter(const FilterQuery &f)
 //*********************//
 // SLOTS               //
 //*********************//
-void QSofaTreeLibrary::componentDraggedReception( std::string description, std::string categoryName, std::string templateName, ClassEntry* componentEntry)
+void QSofaTreeLibrary::componentDraggedReception( std::string description, std::string categoryName, std::string templateName, ClassEntry::SPtr componentEntry)
 {
     emit(componentDragged(description, categoryName,templateName,componentEntry));
 }

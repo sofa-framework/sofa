@@ -53,7 +53,7 @@ public:
     CategoryLibrary( const std::string &categoryName);
     virtual ~CategoryLibrary() {};
 
-    virtual ComponentLibrary *addComponent(const std::string &componentName, ClassEntry* entry, const std::vector< std::string > &exampleFiles);
+    virtual ComponentLibrary *addComponent(const std::string &componentName, ClassEntry::SPtr entry, const std::vector< std::string > &exampleFiles);
     virtual void endConstruction();
 
     const std::string  &getName()          const { return name;}
@@ -81,7 +81,7 @@ public:
                               std::vector<std::string>& outputVector);
 
 protected:
-    virtual ComponentLibrary *createComponent(const std::string &componentName, ClassEntry* entry, const std::vector< std::string > &exampleFiles) {return new ComponentLibrary(componentName, name, entry, exampleFiles);};
+    virtual ComponentLibrary *createComponent(const std::string &componentName, ClassEntry::SPtr entry, const std::vector< std::string > &exampleFiles) {return new ComponentLibrary(componentName, name, entry, exampleFiles);};
 
     std::string name;
     VecComponent components;

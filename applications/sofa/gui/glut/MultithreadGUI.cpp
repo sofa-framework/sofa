@@ -211,7 +211,7 @@ int MultithreadGUI::closeGUI()
 
 SOFA_DECL_CLASS(MultithreadGUI)
 
-static boost::shared_ptr<sofa::core::ObjectFactory::ClassEntry> classVisualModel;
+static sofa::core::ObjectFactory::ClassEntry::SPtr classVisualModel;
 
 int MultithreadGUI::InitGUI(const char* /*name*/, const std::vector<std::string>& /*options*/)
 {

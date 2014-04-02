@@ -160,8 +160,8 @@ SofaModeler::SofaModeler():recentlyOpenedFilesManager("share/config/Modeler.ini"
 
 
 
-    connect(l, SIGNAL( componentDragged( std::string, std::string, std::string, ClassEntry*) ),
-            this, SLOT( componentDraggedReception( std::string, std::string, std::string, ClassEntry*) ));
+    connect(l, SIGNAL( componentDragged( std::string, std::string, std::string, ClassEntry::SPtr) ),
+            this, SLOT( componentDraggedReception( std::string, std::string, std::string, ClassEntry::SPtr) ));
 
     for (unsigned int i=0; i<exampleQString.size(); ++i) exampleFiles.push_back(exampleQString[i].ascii());
 
@@ -641,12 +641,12 @@ void SofaModeler::exportSofaClasses()
 
 	simulation::Node::SPtr root = getSimulation()->createNewGraph("components");
 
-	std::vector< ClassEntry* > entries;
+	std::vector< ClassEntry::SPtr > entries;
 	sofa::core::ObjectFactory::getInstance()->getAllEntries(entries);
 	//Set of categories found in the Object Factory
 	std::set< std::string > mainCategories;
 	//Data containing all the entries for a given category
-	std::multimap< std::string, ClassEntry* > inventory;
+	std::multimap< std::string, ClassEntry::SPtr > inventory;
 
 	for (std::size_t i=0; i<entries.size(); ++i)
 	{
@@ -662,7 +662,7 @@ void SofaModeler::exportSofaClasses()
 	}
 
 	std::set< std::string >::iterator itCategory;
-	typedef std::multimap< std::string, ClassEntry* >::iterator IteratorInventory;
+	typedef std::multimap< std::string, ClassEntry::SPtr >::iterator IteratorInventory;
 
 	//We add the components category by category
 	for (itCategory = mainCategories.begin(); itCategory != mainCategories.end(); ++itCategory)
@@ -677,7 +677,7 @@ void SofaModeler::exportSofaClasses()
 		//Process all the component of the current category, and add them to the group
 		for (IteratorInventory itComponent=rangeCategory.first; itComponent != rangeCategory.second; ++itComponent)
 		{
-			ObjectFactory::ClassEntry *entry = itComponent->second;
+			ObjectFactory::ClassEntry::SPtr entry = itComponent->second;
 			const std::string &componentName = entry->className;
 
 			if(0 == entry->className.compare("Distances")) // this component lead to a crash
@@ -818,7 +818,7 @@ void SofaModeler::changeInformation(Q3ListViewItem *item)
 
 
 void SofaModeler::componentDraggedReception( std::string description, std::string // categoryName
-        , std::string templateName, ClassEntry* componentEntry)
+        , std::string templateName, ClassEntry::SPtr componentEntry)
 {
     changeComponent(description );
     if (!graph) return;

@@ -190,7 +190,7 @@ public:
     void configureElement(Base* b, xml::BaseElement *elem);
 
     /// Used to know what component is about to be created by a drag&drop
-    void setLastSelectedComponent( const std::string& templateName, ClassEntry* entry) {lastSelectedComponent = std::make_pair(templateName, entry);}
+    void setLastSelectedComponent( const std::string& templateName, ClassEntry::SPtr entry) {lastSelectedComponent = std::make_pair(templateName, entry);}
 
 
 signals:
@@ -275,7 +275,7 @@ protected:
     /// Insert a Node in the scene
     Node::SPtr addNode(Node::SPtr parent, Node::SPtr node=NULL, bool saveHistory=true);
     /// Insert a Component in the scene
-    BaseObject::SPtr addComponent(Node::SPtr parent, const ClassEntry* entry, const std::string& templateName, bool saveHistory=true, bool displayWarning=true );
+    BaseObject::SPtr addComponent(Node::SPtr parent, const ClassEntry::SPtr entry, const std::string& templateName, bool saveHistory=true, bool displayWarning=true );
 
     void changeComponentDataValue(const std::string &name, const std::string &value, Base* component) const ;
 
@@ -308,7 +308,7 @@ protected:
     std::string filenameXML; //name associated to the current graph
 
     //Store template + ClassEntry
-    std::pair< std::string, ClassEntry* > lastSelectedComponent;
+    std::pair< std::string, ClassEntry::SPtr > lastSelectedComponent;
 
     GraphHistoryManager *historyManager;
 };

@@ -39,12 +39,12 @@ void SofaLibrary::build( const std::vector< std::string >& examples)
     //-----------------------------------------------------------------------
     //Read the content of the Object Factory
     //-----------------------------------------------------------------------
-    std::vector< ClassEntry* > entries;
+    std::vector<ClassEntry::SPtr> entries;
     sofa::core::ObjectFactory::getInstance()->getAllEntries(entries);
     //Set of categories found in the Object Factory
     std::set< std::string > mainCategories;
     //Data containing all the entries for a given category
-    std::multimap< std::string, ClassEntry* > inventory;
+    std::multimap< std::string, ClassEntry::SPtr> inventory;
 
     for (std::size_t i=0; i<entries.size(); ++i)
     {
@@ -80,7 +80,7 @@ void SofaLibrary::build( const std::vector< std::string >& examples)
     //Using the inventory, Add each component to the Sofa Library
     //-----------------------------------------------------------------------
     std::set< std::string >::iterator itCategory;
-    typedef std::multimap< std::string, ClassEntry* >::iterator IteratorInventory;
+    typedef std::multimap< std::string, ClassEntry::SPtr >::iterator IteratorInventory;
 
 
     //We add the components category by category
@@ -100,7 +100,7 @@ void SofaLibrary::build( const std::vector< std::string >& examples)
         //Process all the component of the current category, and add them to the group
         for (itComponent=rangeCategory.first; itComponent != rangeCategory.second; ++itComponent)
         {
-            ClassEntry *entry = itComponent->second;
+            ClassEntry::SPtr entry = itComponent->second;
             const std::string &componentName=entry->className;
 
             //Add the component to the category

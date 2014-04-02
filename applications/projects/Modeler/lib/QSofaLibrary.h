@@ -85,10 +85,10 @@ protected:
     LibraryContainer *toolbox;
 
 public slots:
-    void componentDraggedReception( std::string description, std::string categoryName, std::string templateName, ClassEntry* componentEntry);
+    void componentDraggedReception( std::string description, std::string categoryName, std::string templateName, ClassEntry::SPtr componentEntry);
 
 signals:
-    void componentDragged( std::string description, std::string categoryName, std::string templateName, ClassEntry* entry);
+    void componentDragged( std::string description, std::string categoryName, std::string templateName, ClassEntry::SPtr entry);
 };
 
 }

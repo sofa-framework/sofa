@@ -63,7 +63,7 @@ static std::string xmlencode(const std::string& str)
     return res;
 }
 
-//bool generateClassPHPDoc(const std::string& filename, sofa::core::ObjectFactory::ClassEntry* entry)
+//bool generateClassPHPDoc(const std::string& filename, sofa::core::ObjectFactory::ClassEntry::SPtr entry)
 //{
 //    return true;
 //}
@@ -138,10 +138,10 @@ bool generateFactoryPHPDoc(const std::string& filename, const std::string& url)
     std::vector<std::string> templates;
     std::set<std::string> templateSet;
 
-    sofa::core::ObjectFactory::ClassEntry* mobject = sofa::core::ObjectFactory::getInstance()->getEntry("MechanicalObject");
+    sofa::core::ObjectFactory::ClassEntry::SPtr mobject = sofa::core::ObjectFactory::getInstance()->getEntry("MechanicalObject");
     if (mobject)
     {
-        for (std::list< std::pair< std::string, sofa::core::ObjectFactory::Creator* > >::iterator itc = mobject->creatorList.begin(), itcend = mobject->creatorList.end(); itc != itcend; ++itc)
+        for (std::list< std::pair< std::string, sofa::core::ObjectFactory::Creator::SPtr > >::iterator itc = mobject->creatorList.begin(), itcend = mobject->creatorList.end(); itc != itcend; ++itc)
         {
             if (itc->first.length() < 10) // only put short templates
             {
@@ -151,15 +151,15 @@ bool generateFactoryPHPDoc(const std::string& filename, const std::string& url)
         }
     }
 
-    std::vector<sofa::core::ObjectFactory::ClassEntry*> classes;
+    std::vector<sofa::core::ObjectFactory::ClassEntry::SPtr> classes;
     sofa::core::ObjectFactory::getInstance()->getAllEntries(classes);
 
     // re-order classes depending on namespaces
 
-    std::map<std::string, std::vector<sofa::core::ObjectFactory::ClassEntry*> > sortedClasses;
-    for (std::vector<sofa::core::ObjectFactory::ClassEntry*>::iterator it = classes.begin(), itend = classes.end(); it != itend; ++it)
+    std::map<std::string, std::vector<sofa::core::ObjectFactory::ClassEntry::SPtr> > sortedClasses;
+    for (std::vector<sofa::core::ObjectFactory::ClassEntry::SPtr>::iterator it = classes.begin(), itend = classes.end(); it != itend; ++it)
     {
-        sofa::core::ObjectFactory::ClassEntry* entry = *it;
+        sofa::core::ObjectFactory::ClassEntry::SPtr entry = *it;
         std::string nameSpace = sofa::core::objectmodel::BaseClass::decodeNamespaceName(entry->creatorList.begin()->second->type());
         sortedClasses[nameSpace].push_back(entry);
     }
@@ -208,10 +208,10 @@ bool generateFactoryPHPDoc(const std::string& filename, const std::string& url)
     out << "<td class=\"sofa-namespace-header\">Namespace</td>";
     out << "</tr>\n";
 
-    for (std::map< std::string, std::vector<sofa::core::ObjectFactory::ClassEntry*> >::iterator it1 = sortedClasses.begin(), it1end = sortedClasses.end(); it1 != it1end; ++it1)
-        for (std::vector<sofa::core::ObjectFactory::ClassEntry*>::iterator it = it1->second.begin(), itend = it1->second.end(); it != itend; ++it)
+    for (std::map< std::string, std::vector<sofa::core::ObjectFactory::ClassEntry::SPtr> >::iterator it1 = sortedClasses.begin(), it1end = sortedClasses.end(); it1 != it1end; ++it1)
+        for (std::vector<sofa::core::ObjectFactory::ClassEntry::SPtr>::iterator it = it1->second.begin(), itend = it1->second.end(); it != itend; ++it)
         {
-            sofa::core::ObjectFactory::ClassEntry* entry = *it;
+            sofa::core::ObjectFactory::ClassEntry::SPtr entry = *it;
 
             out << "<?php if (!$show || $show=='"<<xmlencode(entry->className)<<"'";
             for (std::set<std::string>::iterator it = entry->baseClasses.begin(), itend = entry->baseClasses.end(); it != itend; ++it)
@@ -248,7 +248,7 @@ bool generateFactoryPHPDoc(const std::string& filename, const std::string& url)
                 out << "</td>";
             }
             std::string others;
-            for (std::list< std::pair< std::string, sofa::core::ObjectFactory::Creator* > >::iterator itc = entry->creatorList.begin(), itcend = entry->creatorList.end(); itc != itcend; ++itc)
+            for (std::list< std::pair< std::string, sofa::core::ObjectFactory::Creator::SPtr > >::iterator itc = entry->creatorList.begin(), itcend = entry->creatorList.end(); itc != itcend; ++itc)
             {
                 if (!itc->first.empty() && templateSet.find(itc->first)==templateSet.end())
                 {
@@ -301,7 +301,7 @@ bool generateFactoryPHPDoc(const std::string& filename, const std::string& url)
             try
             {
                 std::cerr << "Trying to instantiate "<<entry->className<<std::endl;
-                sofa::core::ObjectFactory::Creator* creator = entry->creatorList.begin()->second;
+                sofa::core::ObjectFactory::Creator::SPtr creator = entry->creatorList.begin()->second;
                 //DummyObjectDescription arg;
                 //sofa::core::objectmodel::Context ctx;
                 sofa::core::objectmodel::BaseObject::SPtr object = creator->createInstance(NULL, NULL); //&ctx, &arg);

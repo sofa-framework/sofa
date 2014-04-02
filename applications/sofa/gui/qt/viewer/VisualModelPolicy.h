@@ -57,7 +57,7 @@ protected:
 class OglModelPolicy : public VisualModelPolicy
 {
 protected:
-    boost::shared_ptr<sofa::core::ObjectFactory::ClassEntry> classVisualModel;
+    sofa::core::ObjectFactory::ClassEntry::SPtr classVisualModel;
     sofa::core::visual::DrawToolGL drawTool;
 public:
     void load()
