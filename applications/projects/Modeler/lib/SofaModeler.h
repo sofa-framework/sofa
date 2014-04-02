@@ -139,7 +139,7 @@ public slots:
     void newGNode();
 
     /// Reception of a click on the Sofa library
-    void componentDraggedReception( std::string description, std::string categoryName, std::string templateName, ClassEntry* componentEntry);
+    void componentDraggedReception( std::string description, std::string categoryName, std::string templateName, ClassEntry::SPtr componentEntry);
     /// Build from scratch the Sofa Library
     void rebuildLibrary();
     /// when the GNodeButton is pressed

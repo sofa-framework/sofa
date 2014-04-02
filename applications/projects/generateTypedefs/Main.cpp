@@ -338,8 +338,8 @@ void printFullTypedefs( const CategoryLibrary &category, TYPES t)
     for (CategoryLibrary::VecComponentIterator itComp=components.begin(); itComp != components.end(); ++itComp)
     {
         const ComponentLibrary &component = *(*itComp);
-        const std::list< std::pair<std::string, Creator*> > &creatorList=component.getEntry()->creatorList;
-        std::list< std::pair<std::string, Creator*> >::const_iterator itCreator;
+        const std::list< std::pair<std::string, Creator::SPtr> > &creatorList=component.getEntry()->creatorList;
+        std::list< std::pair<std::string, Creator::SPtr> >::const_iterator itCreator;
 
         if ( belongToBannedComponents(category.getName(), component.getName() ) ) continue;
 

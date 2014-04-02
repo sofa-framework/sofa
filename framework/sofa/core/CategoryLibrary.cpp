@@ -65,7 +65,7 @@ CategoryLibrary::CategoryLibrary( const std::string &categoryName): name(categor
 }
 
 
-ComponentLibrary *CategoryLibrary::addComponent(const std::string &componentName, ClassEntry* entry, const std::vector< std::string > &exampleFiles)
+ComponentLibrary *CategoryLibrary::addComponent(const std::string &componentName, ClassEntry::SPtr entry, const std::vector< std::string > &exampleFiles)
 {
     //Special case of Mapping and MechanicalMapping
     bool isMechanicalMapping = (name == "MechanicalMapping");
@@ -74,7 +74,7 @@ ComponentLibrary *CategoryLibrary::addComponent(const std::string &componentName
     ComponentLibrary* component = createComponent(componentName, entry, exampleFiles);
 
     //Add the corresponding templates
-    std::map<std::string, boost::shared_ptr<Creator> >::iterator itTemplate;
+    std::map<std::string, Creator::SPtr>::iterator itTemplate;
 
     //It exists Mappings only Mechanical or only Visual. So, we must add the component if only a creator is available for the current category
     bool componentCreationPossible=false;

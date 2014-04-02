@@ -58,16 +58,13 @@ namespace core
 class SOFA_CORE_API ObjectFactory
 {
 public:
-    class Creator;
-    class ClassEntry;
-
-    typedef std::map<std::string, boost::shared_ptr<Creator> > CreatorMap;
-    typedef std::map<std::string, boost::shared_ptr<ClassEntry> > ClassEntryMap;
 
     /// Abstract interface of objects used to create instances of a given type
     class Creator
     {
     public:
+        typedef boost::shared_ptr<Creator> SPtr;
+
         virtual ~Creator() { }
         /// Pre-construction check.
         ///
@@ -94,11 +91,14 @@ public:
 
         virtual const char* getMakefileDir() = 0;
     };
+    typedef std::map<std::string, Creator::SPtr> CreatorMap;
 
     /// Record storing information about a class
     class ClassEntry
     {
     public:
+        typedef boost::shared_ptr<ClassEntry> SPtr;
+
         std::string className;
         std::set<std::string> aliases;
         std::string description;
@@ -107,9 +107,9 @@ public:
         std::string defaultTemplate;
         CreatorMap creatorMap;
     };
+    typedef std::map<std::string, ClassEntry::SPtr> ClassEntryMap;
 
 protected:
-
     /// Main class registry
     ClassEntryMap registry;
 
@@ -128,10 +128,10 @@ public:
     std::string shortName(std::string classname);
 
     /// Fill the given vector with all the registered classes
-    void getAllEntries(std::vector<ClassEntry*>& result);
+    void getAllEntries(std::vector<ClassEntry::SPtr>& result);
 
     /// Fill the given vector with the registered classes from a given target
-    void getEntriesFromTarget(std::vector<ClassEntry*>& result, std::string target);
+    void getEntriesFromTarget(std::vector<ClassEntry::SPtr>& result, std::string target);
 
     /// Return the list of classes from a given target
     std::string listClassesFromTarget(std::string target, std::string separator = ", ");
@@ -143,13 +143,13 @@ public:
     /// \param force    set to true if this method should override any entry already registered for this name
     /// \param previous (output) previous ClassEntry registered for this name
     bool addAlias(std::string name, std::string result, bool force=false,
-                  boost::shared_ptr<ClassEntry>* previous = NULL);
+		  ClassEntry::SPtr* previous = NULL);
 
     /// Reset an alias to a previous state
     ///
     /// \param name     name of the new alias
     /// \param previous previous ClassEntry that need to be registered back for this name
-    void resetAlias(std::string name, boost::shared_ptr<ClassEntry> previous);
+    void resetAlias(std::string name, ClassEntry::SPtr previous);
 
     /// Create an object given a context and a description.
     objectmodel::BaseObject::SPtr createObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg);
@@ -165,13 +165,13 @@ public:
 
     /// \copydoc addAlias
     static bool AddAlias(std::string name, std::string result, bool force=false,
-                         boost::shared_ptr<ClassEntry>* previous = NULL)
+                         ClassEntry::SPtr* previous = NULL)
     {
         return getInstance()->addAlias(name, result, force, previous);
     }
 
     /// \copydoc resetAlias
-    static void ResetAlias(std::string name, boost::shared_ptr<ClassEntry> previous)
+    static void ResetAlias(std::string name, ClassEntry::SPtr previous)
     {
         getInstance()->resetAlias(name, previous);
     }
@@ -298,7 +298,7 @@ public:
     ///
     /// See the add<RealObject>() method for an easy way to add a Creator.
     RegisterObject& addCreator(std::string classname, std::string templatename,
-                               boost::shared_ptr<ObjectFactory::Creator> creator);
+                               ObjectFactory::Creator::SPtr creator);
 
     /// Add a template instanciation of this class.
     ///
@@ -313,7 +313,7 @@ public:
         if (defaultTemplate)
             entry.defaultTemplate = templatename;
 
-        return addCreator(classname, templatename, boost::shared_ptr<ObjectFactory::Creator>(new ObjectCreator<RealObject>));
+        return addCreator(classname, templatename, ObjectFactory::Creator::SPtr(new ObjectCreator<RealObject>));
     }
 
     /// This is the final operation that will actually commit the additions to the ObjectFactory.

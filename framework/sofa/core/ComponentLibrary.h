@@ -46,7 +46,7 @@ typedef sofa::core::ObjectFactory::ClassEntry ClassEntry;
 class SOFA_CORE_API ComponentLibrary
 {
 public:
-    ComponentLibrary(const std::string& componentName, const std::string& categoryName, ClassEntry* entry, const std::vector< std::string >& exampleFiles);
+    ComponentLibrary(const std::string& componentName, const std::string& categoryName, ClassEntry::SPtr entry, const std::vector< std::string >& exampleFiles);
     virtual ~ComponentLibrary() {};
 
     virtual void addTemplate( const std::string& templateName);
@@ -57,7 +57,7 @@ public:
     const std::string& getDescription()              const { return description;}
     const std::string& getCategory()                 const { return categoryName;}
     const std::vector< std::string >& getTemplates() const { return templateName;}
-    const ClassEntry*  getEntry()                    const { return entry;}
+    const ClassEntry::SPtr  getEntry()               const { return entry;}
 
 protected:
     //--------------------------------------------
@@ -66,7 +66,7 @@ protected:
     std::vector< std::string > templateName;
     std::string description;
     std::string categoryName;
-    ClassEntry* entry;
+    ClassEntry::SPtr entry;
 };
 }
 }

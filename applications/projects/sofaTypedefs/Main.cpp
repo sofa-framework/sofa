@@ -80,8 +80,8 @@ int main(int argc, char** argv)
 	sofa::helper::system::PluginManager::getInstance().init();
 
 
-	helper::vector<ObjectFactory::ClassEntry*> registry;
-	helper::vector<ObjectFactory::ClassEntry*>::iterator it;
+	helper::vector<ObjectFactory::ClassEntry::SPtr> registry;
+	helper::vector<ObjectFactory::ClassEntry::SPtr>::iterator it;
 
 	//std::string outputPath = SetDirectory::GetRelativeFromProcess("../modules/sofa/");
 	std::string outputPath = "/modules/sofa/";
@@ -95,7 +95,7 @@ int main(int argc, char** argv)
 	// retrieve creators
 
 	typedef std::map< std::string, helper::vector< ObjectFactory::CreatorList::value_type >  > TargetCreatorMap;
-	typedef std::map< std::string, helper::vector< ObjectFactory::ClassEntry* >  > TargetClassEntryMap;
+	typedef std::map< std::string, helper::vector< ObjectFactory::ClassEntry::SPtr >  > TargetClassEntryMap;
 	TargetCreatorMap targetCreatorMap;
 	TargetClassEntryMap targetClassEntryMap;
 
@@ -103,7 +103,7 @@ int main(int argc, char** argv)
 
 	for( it = registry.begin(); it != registry.end(); ++it)
 	{
-		ObjectFactory::ClassEntry* entry = *it;
+		ObjectFactory::ClassEntry::SPtr entry = *it;
 		ObjectFactory::CreatorList::iterator itc;
 		itc = entry->creatorList.begin();
 		if( itc != entry->creatorList.end() )
@@ -113,7 +113,7 @@ int main(int argc, char** argv)
 
 		for(itc = entry->creatorList.begin(); itc != entry->creatorList.end(); ++itc )
 		{
-			ObjectFactory::Creator* creator = itc->second;
+			ObjectFactory::Creator::SPtr creator = itc->second;
 
 			if(!std::string(creator->getTarget()).empty())
 				targetCreatorMap[creator->getTarget()].push_back(*itc);
@@ -150,14 +150,14 @@ int main(int argc, char** argv)
 		TargetClassEntryMap::iterator it_vecEntry;
 		for(it_vecEntry = range.first; it_vecEntry != range.second; ++it_vecEntry)
 		{
-			helper::vector< ObjectFactory::ClassEntry*> &  vecEntry = it_vecEntry->second;
-			helper::vector< ObjectFactory::ClassEntry*>::iterator it_entry;
+			helper::vector< ObjectFactory::ClassEntry::SPtr> &  vecEntry = it_vecEntry->second;
+			helper::vector< ObjectFactory::ClassEntry::SPtr>::iterator it_entry;
 			for(it_entry = vecEntry.begin(); it_entry != vecEntry.end(); ++it_entry)
 			{
-				ObjectFactory::ClassEntry* entry = *it_entry;
+				ObjectFactory::ClassEntry::SPtr entry = *it_entry;
 				if( entry->creatorList.begin() != entry->creatorList.end() )
 				{
-					ObjectFactory::Creator* creator = entry->creatorList.begin()->second;
+					ObjectFactory::Creator::SPtr creator = entry->creatorList.begin()->second;
 					std::cout << "getHeaderFileLocation["<< std::string(creator->getHeaderFileLocation()).length() << "] = " << creator->getHeaderFileLocation() << std::endl;
 					std::string includePath = std::string(creator->getHeaderFileLocation());
 #if defined(WIN32)
@@ -179,7 +179,7 @@ int main(int argc, char** argv)
 
 		for(it_creatorlist = targetCreatorList.begin(); it_creatorlist != targetCreatorList.end(); ++it_creatorlist)
 		{
-			ObjectFactory::Creator* creator = it_creatorlist->second;
+			ObjectFactory::Creator::SPtr creator = it_creatorlist->second;
 			std::string templateName = creator->getClass()->templateName;
 
 			{
