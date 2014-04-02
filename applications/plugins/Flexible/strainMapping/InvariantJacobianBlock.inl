@@ -154,7 +154,7 @@ public:
         - \f$ H = [ ddI1 , ddI2 , ddJ ] \f$
     where:
         - \f$ I1 = trace(C) \f$ ,                           \f$ dI1 = trace(dF^T F + F^T dF ) = 2 sum F_i.dF_i \f$
-        - \f$ I2 = [ ( trace(C^2)-trace(C)^2 )/2 ]  \f$ ,   \f$ dI2 = 2 sum ( F(I1*Id - C) )_i dF_i \f$
+        - \f$ I2 = [ ( trace(C)^2-trace(C^2) )/2 ]  \f$ ,   \f$ dI2 = 2 sum ( F(I1*Id - C) )_i dF_i \f$
         - \f$ J = det(F) \f$ ,                              \f$ dJ = J sum (F^-T)_i dF_i \f$
         - \f$ C=F^TF \f$ is the right Cauchy deformation tensor
     */
