@@ -59,13 +59,13 @@ int main(int /*argc*/, char** argv)
     // get the classes and targets of the scene
     for (unsigned int i=0; i<objects.size(); i++)
     {
-        sofa::core::ObjectFactory::ClassEntry* entry = sofa::core::ObjectFactory::getInstance()->getEntry(objects[i]->getClassName());
-        if (entry != NULL && ! entry->creatorList.empty())
+        sofa::core::ObjectFactory::ClassEntry& entry = sofa::core::ObjectFactory::getInstance()->getEntry(objects[i]->getClassName());
+        if (entry.creatorMap.empty())
         {
-            classNames.insert(entry->className);
+            classNames.insert(entry.className);
 
-            sofa::core::ObjectFactory::CreatorMap::iterator it = entry->creatorMap.find(objects[i]->getTemplateName());
-            if (it != entry->creatorMap.end() && *it->second->getTarget())
+            sofa::core::ObjectFactory::CreatorMap::iterator it = entry.creatorMap.find(objects[i]->getTemplateName());
+            if (it != entry.creatorMap.end() && *it->second->getTarget())
             {
                 targets.insert(it->second->getTarget());
             }
