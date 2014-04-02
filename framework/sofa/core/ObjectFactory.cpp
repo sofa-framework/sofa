@@ -180,7 +180,9 @@ void ObjectFactory::getAllEntries(std::vector<ClassEntry*>& result)
         it != itEnd; ++it)
     {
         ClassEntry* entry = it->second.get();
-        result.push_back(entry);
+        // Push the entry only if it is not an alias
+        if (entry->className == it->first)
+            result.push_back(entry);
     }
 }
 
