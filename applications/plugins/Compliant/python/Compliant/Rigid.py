@@ -43,6 +43,10 @@ class Frame:
                 # TODO better !
                 return Rigid.Frame().read( str(self) )
                                           
+        def setValue(self, v):
+             self.translation = v[:3]
+             self.rotation = v[3:]
+             return self
    
         def read(self, str):
                 num = map(float, str.split())
