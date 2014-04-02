@@ -38,6 +38,7 @@
 
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/component/forcefield/RestShapeSpringsForceField.inl>
+#include <sofa/component/forcefield/ConstantForceField.inl>
 
 
 #ifdef SOFA_HAVE_IMAGE
@@ -1111,6 +1112,29 @@ namespace forcefield
     #endif
     #ifndef SOFA_DOUBLE
         template class SOFA_Flexible_API RestShapeSpringsForceField< defaulttype::TYPEABSTRACTNAME3fTypes >;
+    #endif
+
+
+
+
+
+    SOFA_DECL_CLASS(EVALUATOR(TYPEABSTRACTNAME,ConstantForceField))
+
+    // Register in the Factory
+    int EVALUATOR(TYPEABSTRACTNAME,ConstantForceFieldClass) = core::RegisterObject("Constant forces applied to given degrees of freedom")
+    #ifndef SOFA_FLOAT
+            .add< ConstantForceField< defaulttype::TYPEABSTRACTNAME3dTypes > >()
+    #endif
+    #ifndef SOFA_DOUBLE
+            .add< ConstantForceField< defaulttype::TYPEABSTRACTNAME3fTypes > >()
+    #endif
+    ;
+
+    #ifndef SOFA_FLOAT
+        template class SOFA_Flexible_API ConstantForceField< defaulttype::TYPEABSTRACTNAME3dTypes >;
+    #endif
+    #ifndef SOFA_DOUBLE
+        template class SOFA_Flexible_API ConstantForceField< defaulttype::TYPEABSTRACTNAME3fTypes >;
     #endif
 
 } // namespace forcefield
