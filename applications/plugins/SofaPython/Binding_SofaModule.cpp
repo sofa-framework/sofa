@@ -31,7 +31,9 @@
 #include "Binding_Node.h"
 
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/ObjectFactory.h>
 #include <sofa/gui/BaseGUI.h>
+#include <sofa/gui/BaseViewer.h>
 #include <sofa/gui/GUIManager.h>
 #include <sofa/config.h>
 
@@ -259,6 +261,59 @@ extern "C" PyObject * Sofa_setViewerBackgroundColor(PyObject * /*self*/, PyObjec
     return Py_BuildValue("i",0);
 }
 
+// set the viewer camera
+extern "C" PyObject * Sofa_setViewerCamera(PyObject * /*self*/, PyObject * args)
+{
+    float px = 0.0f, py = 0.0f, pz = 0.0f;
+    float qx = 0.0f, qy = 0.0f, qz = 0.0f, qw = 1.0f;
+
+    if (!PyArg_ParseTuple(args, "fffffff", &px, &py, &pz, &qx, &qy, &qz, &qw))
+    {
+        PyErr_BadArgument();
+        return 0;
+    }
+
+
+    BaseGUI *gui = GUIManager::getGUI();
+    if (!gui)
+    {
+        printf("<SofaPython> ERROR setViewerCamera: no GUI !!\n");
+        return Py_BuildValue("i",-1);
+    }
+    BaseViewer * viewer = gui->getViewer();
+    if (!viewer)
+    {
+        printf("<SofaPython> ERROR setViewerCamera: no Viewer !!\n");
+        return Py_BuildValue("i",-1);
+    }
+    viewer->setView(sofa::defaulttype::Vector3(px,py,pz),sofa::defaulttype::Quat(qx,qy,qz,qw));
+
+    return Py_BuildValue("i",0);
+}
+
+
+extern "C" PyObject * Sofa_getViewerCamera(PyObject * /*self*/, PyObject *)
+{
+    sofa::defaulttype::Vector3 pos;
+    sofa::defaulttype::Quat orient;
+
+
+    BaseGUI *gui = GUIManager::getGUI();
+    if (!gui)
+    {
+        printf("<SofaPython> ERROR getViewerCamera: no GUI !!\n");
+        return Py_BuildValue("i",-1);
+    }
+    BaseViewer * viewer = gui->getViewer();
+    if (!viewer)
+    {
+        printf("<SofaPython> ERROR getViewerCamera: no Viewer !!\n");
+        return Py_BuildValue("i",-1);
+    }
+    viewer->getView(pos,orient);
+
+    return Py_BuildValue("fffffff",pos.x(),pos.y(),pos.z(),orient[0],orient[1],orient[2],orient[3]);
+}
 
 
 
@@ -274,6 +329,8 @@ SP_MODULE_METHOD(Sofa,src_dir)
 SP_MODULE_METHOD(Sofa,saveScreenshot)
 SP_MODULE_METHOD(Sofa,setViewerResolution)
 SP_MODULE_METHOD(Sofa,setViewerBackgroundColor)
+SP_MODULE_METHOD(Sofa,setViewerCamera)
+SP_MODULE_METHOD(Sofa,getViewerCamera)
 SP_MODULE_METHODS_END
 
 
