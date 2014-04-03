@@ -332,12 +332,6 @@ void ConstraintAnimationLoop::freeMotion(const core::ExecParams* params /* PARAM
         {
             core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
             cc->applyPredictiveConstraintForce(&cparams, f, getCP()->getF());
-
-            /*if (doubleBuffer.getValue() && bufCP1)
-                cc->applyPredictiveConstraintForce(&cparams, f, CP2.getF());
-            else
-                cc->applyPredictiveConstraintForce(CP1.getF());*/
-
         }
     }
 
@@ -440,11 +434,6 @@ void ConstraintAnimationLoop::writeAndAccumulateAndCountConstraintDirections(con
     //    sout << "   1. resize constraints : numConstraints=" << numConstraints << sendl;
 
     getCP()->clear(numConstraints,this->_tol.getValue());
-
-    /*if (doubleBuffer.getValue() && bufCP1)
-        CP2.clear(numConstraints,this->_tol.getValue());
-    else
-        CP1.clear(numConstraints,this->_tol.getValue());*/
 }
 
 void ConstraintAnimationLoop::getIndividualConstraintViolations(const core::ExecParams* params /* PARAMS FIRST */, simulation::Node *context)
@@ -482,11 +471,6 @@ void ConstraintAnimationLoop::computeComplianceInConstraintSpace()
     {
         core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
         cc->addComplianceInConstraintSpace(core::ConstraintParams::defaultInstance(), getCP()->getW());
-
-        /*if (doubleBuffer.getValue() && bufCP1)
-            cc->getCompliance(CP2.getW());
-        else
-            cc->getCompliance(CP1.getW());*/
     }
 
     sofa::helper::AdvancedTimer::stepEnd  ("Get Compliance");
@@ -508,11 +492,6 @@ void ConstraintAnimationLoop::correctiveMotion(const core::ExecParams* params /*
         {
             core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
             cc->applyContactForce(getCP()->getdF());
-
-            /*if (doubleBuffer.getValue() && bufCP1)
-                cc->applyContactForce(CP2.getdF());
-            else
-                cc->applyContactForce(CP1.getdF());*/
         }
     }
     else
@@ -522,11 +501,6 @@ void ConstraintAnimationLoop::correctiveMotion(const core::ExecParams* params /*
         {
             core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
             cc->applyContactForce(getCP()->getF());
-
-            /*if (doubleBuffer.getValue() && bufCP1)
-                cc->applyContactForce(CP2.getF());
-            else
-                cc->applyContactForce(CP1.getF());*/
         }
     }
 
@@ -600,6 +574,8 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params /* PARAMS FI
         // SWAP BUFFER:
         bufCP1 = !bufCP1;
     }
+    
+    ConstraintProblem& CP = (doubleBuffer.getValue() && bufCP1) ? CP2 : CP1;
 
 #if !defined(WIN32) && !defined(_XBOX)
     if (_realTimeCompensation.getValue())
@@ -665,37 +641,18 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params /* PARAMS FI
         //3. Use the stored forces to compute
         if (debug)
         {
-            if (doubleBuffer.getValue() && bufCP1)
-            {
-                computePredictiveForce(CP2.getSize(), CP2.getF()->ptr(), CP2.getConstraintResolutions());
-                std::cout << "getF() after computePredictiveForce:" << std::endl;
-                helper::afficheResult(CP2.getF()->ptr(),CP2.getSize());
-            }
-            else
-            {
-                computePredictiveForce(CP1.getSize(), CP1.getF()->ptr(), CP1.getConstraintResolutions());
-                std::cout << "getF() after computePredictiveForce:" << std::endl;
-                helper::afficheResult(CP1.getF()->ptr(),CP1.getSize());
-            }
+            computePredictiveForce(CP.getSize(), CP.getF()->ptr(), CP.getConstraintResolutions());
+            std::cout << "getF() after computePredictiveForce:" << std::endl;
+            helper::afficheResult(CP.getF()->ptr(),CP.getSize());
         }
     }
 
     if (debug)
     {
-        if (doubleBuffer.getValue() && bufCP1)
-        {
-            (*CP2.getF())*=0.0;
-            computePredictiveForce(CP2.getSize(), CP2.getF()->ptr(), CP2.getConstraintResolutions());
-            std::cout << "getF() after re-computePredictiveForce:" << std::endl;
-            helper::afficheResult(CP2.getF()->ptr(),CP2.getSize());
-        }
-        else
-        {
-            (*CP1.getF())*=0.0;
-            computePredictiveForce(CP1.getSize(), CP1.getF()->ptr(), CP1.getConstraintResolutions());
-            std::cout << "getF() after re-computePredictiveForce:" << std::endl;
-            helper::afficheResult(CP1.getF()->ptr(),CP1.getSize());
-        }
+        (*CP.getF())*=0.0;
+        computePredictiveForce(CP.getSize(), CP.getF()->ptr(), CP.getConstraintResolutions());
+        std::cout << "getF() after re-computePredictiveForce:" << std::endl;
+        helper::afficheResult(CP.getF()->ptr(),CP.getSize());
     }
 
 
@@ -722,47 +679,24 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params /* PARAMS FI
 
     if (debug)
     {
-        if (doubleBuffer.getValue() && bufCP1)
-        {
-            std::cout << "getF() after setConstraintEquations:" << std::endl;
-            helper::afficheResult(CP2.getF()->ptr(),CP2.getSize());
-        }
-        else
-        {
-            std::cout << "getF() after setConstraintEquations:" << std::endl;
-            helper::afficheResult(CP1.getF()->ptr(),CP1.getSize());
-        }
+        std::cout << "getF() after setConstraintEquations:" << std::endl;
+        helper::afficheResult(CP.getF()->ptr(),CP.getSize());
     }
 
     sofa::helper::AdvancedTimer::stepBegin("GaussSeidel");
 
-    if (doubleBuffer.getValue() && bufCP1)
-    {
-        if (debug)
-            sout << "Gauss-Seidel solver is called on problem of size " << CP2.getSize() << sendl;
-        if(schemeCorrection.getValue())
-            (*CP2.getF())*=0.0;
+    if (debug)
+        sout << "Gauss-Seidel solver is called on problem of size " << CP.getSize() << sendl;
+    if(schemeCorrection.getValue())
+        (*CP.getF())*=0.0;
 
-        gaussSeidelConstraint(CP2.getSize(), CP2.getDfree()->ptr(), CP2.getW()->lptr(), CP2.getF()->ptr(), CP2.getD()->ptr(), CP2.getConstraintResolutions(), CP2.getdF()->ptr());
-    }
-    else
-    {
-        if (debug)
-            sout << "Gauss-Seidel solver is called on problem of size " << CP1.getSize() << sendl;
-        if(schemeCorrection.getValue())
-            (*CP1.getF())*=0.0;
-
-        gaussSeidelConstraint(CP1.getSize(), CP1.getDfree()->ptr(), CP1.getW()->lptr(), CP1.getF()->ptr(), CP1.getD()->ptr(), CP1.getConstraintResolutions(), CP1.getdF()->ptr());
-    }
+    gaussSeidelConstraint(CP.getSize(), CP.getDfree()->ptr(), CP.getW()->lptr(), CP.getF()->ptr(), CP.getD()->ptr(), CP.getConstraintResolutions(), CP.getdF()->ptr());
 
     sofa::helper::AdvancedTimer::stepEnd  ("GaussSeidel");
 
     if (debug)
     {
-        if (doubleBuffer.getValue() && bufCP1)
-            helper::afficheLCP(CP2.getDfree()->ptr(), CP2.getW()->lptr(), CP2.getF()->ptr(),  CP2.getSize());
-        else
-            helper::afficheLCP(CP1.getDfree()->ptr(), CP1.getW()->lptr(), CP1.getF()->ptr(),  CP1.getSize());
+        helper::afficheLCP(CP.getDfree()->ptr(), CP.getW()->lptr(), CP.getF()->ptr(),  CP.getSize());
     }
 
     if ( displayTime.getValue() )
@@ -773,21 +707,14 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params /* PARAMS FI
 
     /// CORRECTIVE MOTION
     correctiveMotion(params /* PARAMS FIRST */, this->gnode);
-    //       if (doubleBuffer.getValue() && bufCP1)
-    //           std::cout << " #C: " << CP2.getSize() << " constraints" << std::endl;
-    //       else
-    //           std::cout << " #C: " << CP1.getSize() << " constraints" << std::endl;
+    //    std::cout << " #C: " << CP.getSize() << " constraints" << std::endl;
 
 
     if ( displayTime.getValue() )
     {
         sout << " ContactCorrections                    " << ( (double) timer->getTime() - time)*timeScale <<" ms" <<sendl;
         sout << "  = Total                              " << ( (double) timer->getTime() - totaltime)*timeScale <<" ms" <<sendl;
-        if (doubleBuffer.getValue() && bufCP1)
-            sout << " With : " << CP2.getSize() << " constraints" << sendl;
-        else
-            sout << " With : " << CP1.getSize() << " constraints" << sendl;
-
+        sout << " With : " << CP.getSize() << " constraints" << sendl;
         sout << "<<<<< End display ConstraintAnimationLoop time." << sendl;
     }
 
@@ -1099,18 +1026,10 @@ void ConstraintAnimationLoop::debugWithContact(int numConstraints)
 {
 
     double mu=0.8;
-    if (doubleBuffer.getValue() && bufCP1)
-    {
-        helper::nlcp_gaussseidel(numConstraints, CP2.getDfree()->ptr(), CP2.getW()->lptr(), CP2.getF()->ptr(), mu, _tol.getValue(), _maxIt.getValue(), false, debug);
-        CP2.getF()->clear();
-        CP2.getF()->resize(numConstraints);
-    }
-    else
-    {
-        helper::nlcp_gaussseidel(numConstraints, CP1.getDfree()->ptr(), CP1.getW()->lptr(), CP1.getF()->ptr(), mu, _tol.getValue(), _maxIt.getValue(), false, debug);
-        CP1.getF()->clear();
-        CP1.getF()->resize(numConstraints);
-    }
+    ConstraintProblem& CP = (doubleBuffer.getValue() && bufCP1) ? CP2 : CP1;
+    helper::nlcp_gaussseidel(numConstraints, CP.getDfree()->ptr(), CP.getW()->lptr(), CP.getF()->ptr(), mu, _tol.getValue(), _maxIt.getValue(), false, debug);
+    CP.getF()->clear();
+    CP.getF()->resize(numConstraints);
 
 }
 
