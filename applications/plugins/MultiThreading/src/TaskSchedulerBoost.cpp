@@ -422,7 +422,7 @@ void WorkerThread::workUntilDone(Task::Status* status)
         mTaskScheduler->mainTaskStatus = NULL;
 
         boost::lock_guard<boost::mutex> lock(mTaskScheduler->wakeUpMutex);
-        mTaskScheduler->readyForWork = false;				
+        mTaskScheduler->readyForWork = false;
     }
 }
 
@@ -463,7 +463,7 @@ bool WorkerThread::pushTask(Task* task, Task* taskArray[], unsigned* taskCount )
     if ( mTaskScheduler->getThreadCount()<2 ) 
         return false;
 
-    {	
+    {
         SpinMutexLock lock( &mTaskMutex );
 
         if (*taskCount >= Max_TasksPerThread )
@@ -509,8 +509,16 @@ bool WorkerThread::addSpecificTask(Task* task)
     return false;
 }
 
+void WorkerThread::runTask(Task* task)
+{
+    task->runTask(this);
+
+    if (mTaskLogEnabled)
+        mTaskLog.push_back(task);
+}
+
 bool WorkerThread::giveUpSomeWork(WorkerThread* idleThread)
-{	
+{
     SpinMutexLock lock;
 
     if ( !lock.try_lock( &mTaskMutex ) ) 
@@ -565,43 +573,6 @@ bool WorkerThread::stealTasks()
 
     return false;
 }
-
-
-
-// called once by each thread used
-// by the TaskScheduler
-bool runThreadSpecificTask(WorkerThread* thread, const Task * /*task*/ )
-{
-
-
-    //volatile long atomicCounter = TaskScheduler::getInstance().size();// mNbThread;
-    helper::system::atomic<int> atomicCounter( TaskScheduler::getInstance().size() );
-
-    boost::mutex  InitThreadSpecificMutex;
-
-    Task::Status status;
-
-    const int nbThread = TaskScheduler::getInstance().size();
-
-    for (int i=0; i<nbThread; ++i)
-    {
-        thread->addStealableTask( new ThreadSpecificTask( &atomicCounter, &InitThreadSpecificMutex, &status ) );
-    }
-
-
-    thread->workUntilDone(&status);
-
-    return true;
-}
-
-
-// called once by each thread used
-// by the TaskScheduler
-bool runThreadSpecificTask(const Task *task )
-{
-    return runThreadSpecificTask(WorkerThread::getCurrent(), task );
-}
-
 
 } // namespace simulation
 

@@ -85,7 +85,17 @@ public:
 
     const TimeInterval& getExecTime() const { return execTime; }
     int getExecThreadIndex() const { return execThreadIndex; }
+    ctime_t getExecDuration() const { return execTime.second - execTime.first; }
 
+    static bool compareExecDuration(Task* a, Task* b)
+    {
+        return a->getExecDuration() < b->getExecDuration();
+    }
+    
+    static bool compareExecDurationReverse(Task* a, Task* b)
+    {
+        return a->getExecDuration() > b->getExecDuration();
+    }
 protected:
     
     virtual bool run(WorkerThread* thread) = 0;
@@ -106,34 +116,6 @@ private:
     //Task(const Task& /*task*/) {}
     //Task& operator= (const Task& /*task*/) {return *this;}
 };
-
-// This task is called once by each thread used by the TasScheduler
-// this is useful to initialize the thread specific variables
-class SOFA_MULTITHREADING_PLUGIN_API ThreadSpecificTask : public Task
-{
-
-public:
-
-    //InitPerThreadDataTask(volatile long* atomicCounter, boost::mutex* mutex, TaskStatus* pStatus );
-    ThreadSpecificTask(helper::system::atomic<int>* atomicCounter, boost::mutex* mutex, Task::Status* pStatus );
-
-    virtual ~ThreadSpecificTask();
-
-    virtual bool runThreadSpecific()  {return true;}
-
-    virtual bool runCriticalThreadSpecific() {return true;}
-
-private:
-
-    virtual bool run(WorkerThread* );
-
-    //volatile long* mAtomicCounter;
-    helper::system::atomic<int>* mAtomicCounter;
-
-    boost::mutex*	 mThreadSpecificMutex;
-
-};
-
 
 } // namespace simulation
 

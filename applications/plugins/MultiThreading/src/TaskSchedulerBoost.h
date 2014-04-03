@@ -107,10 +107,13 @@ public:
     static WorkerThread* getCurrent();
 
     /// queue task if there is space, and run it otherwise
-    bool addStealableTask(Task* pTask);	
+    bool addStealableTask(Task* pTask);
 
     /// queue a task to the specific task list. It cannot be stealed, and therefore be executed only by this thread. 
     bool addSpecificTask(Task* pTask);
+    
+    /// run the given task directly
+    void runTask(Task* pTask);
 
     void workUntilDone(Task::Status* status);
 
@@ -254,10 +257,6 @@ private:
 
     friend class WorkerThread;
 };		
-
-SOFA_MULTITHREADING_PLUGIN_API bool runThreadSpecificTask(WorkerThread* pThread, const Task *pTask );
-
-SOFA_MULTITHREADING_PLUGIN_API bool runThreadSpecificTask(const Task *pTask );
 
 } // namespace simulation
 
