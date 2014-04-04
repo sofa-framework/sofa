@@ -24,6 +24,8 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MISC_MONITOR_H
 #define SOFA_COMPONENT_MISC_MONITOR_H
+
+#include <sofa/component/component.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/Vec.h>
@@ -136,6 +138,22 @@ protected:
     sofa::helper::vector < sofa::helper::vector<Coord> > savedPos;
 
 };
+
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MISC_MONITOR_CPP)
+
+#ifndef SOFA_FLOAT
+extern template class SOFA_VALIDATION_API Monitor<defaulttype::Vec3dTypes>;
+extern template class SOFA_VALIDATION_API Monitor<defaulttype::Vec6dTypes>;
+extern template class SOFA_VALIDATION_API Monitor<defaulttype::Rigid3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_VALIDATION_API Monitor<defaulttype::Vec3fTypes>;
+extern template class SOFA_VALIDATION_API Monitor<defaulttype::Vec6fTypes>;
+extern template class SOFA_VALIDATION_API Monitor<defaulttype::Rigid3fTypes>;
+#endif
+
+#endif //defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MISC_MONITOR_CPP)
+
 
 } // namespace misc
 

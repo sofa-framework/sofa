@@ -22,6 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_MISC_MONITOR_CPP
+
 #include <sofa/component/misc/Monitor.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -57,14 +59,14 @@ int MonitorClass = core::RegisterObject("Monitoring of particles")
 
 
 #ifndef SOFA_FLOAT
-template class Monitor<Vec3dTypes>;
-template class Monitor<Vec6dTypes>;
-template class Monitor<Rigid3dTypes>;
+template class SOFA_VALIDATION_API Monitor<Vec3dTypes>;
+template class SOFA_VALIDATION_API Monitor<Vec6dTypes>;
+template class SOFA_VALIDATION_API Monitor<Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class Monitor<Vec3fTypes>;
-template class Monitor<Vec6fTypes>;
-template class Monitor<Rigid3fTypes>;
+template class SOFA_VALIDATION_API Monitor<Vec3fTypes>;
+template class SOFA_VALIDATION_API Monitor<Vec6fTypes>;
+template class SOFA_VALIDATION_API Monitor<Rigid3fTypes>;
 #endif
 
 
