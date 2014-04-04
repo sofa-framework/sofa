@@ -110,7 +110,7 @@ void kdTree<Coord>::closest(distanceToPoint &cl,const Coord &x, const unsigned i
 {
     Real Dmax=cl.first;
     Real c1=x[tree[currentnode].splitdir],c2=(*position)[currentnode][tree[currentnode].splitdir];
-    if(abs(c1-c2)<=Dmax)
+    if(fabs(c1-c2)<=Dmax)
     {
         Real d=(x-(*position)[currentnode]).norm();
         if(d<Dmax)

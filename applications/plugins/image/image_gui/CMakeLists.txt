@@ -7,7 +7,7 @@ include_directories(${SOFA_EXTLIBS_DIR})
 
 
 # these header files need MOCcing
-set(HEADER_FILES
+set(HEADER_MOC_FILES
 
 	ImagePlaneWidget.h 
 	HistogramWidget.h 
@@ -17,12 +17,13 @@ set(HEADER_FILES
         )
 
 
-
-
-
-
-
 # following files do not need MOCcing
+list(APPEND HEADER_FILES
+
+        initImage_gui.h
+        ImageTransformWidget.h
+
+        )
 
 
 set(SOURCE_FILES
@@ -37,17 +38,14 @@ set(SOURCE_FILES
 	)
 
 
-list(APPEND HEADER_FILES
-
-	initImage_gui.h
-	ImageTransformWidget.h 
-
-        )
 
 include(../imagetoolbox/imagetoolbox.cmake)
 
+
+
 UseQt()
-SOFA_QT4_WRAP_CPP(MOC_FILES ${HEADER_FILES})
+SOFA_QT4_WRAP_CPP(MOC_FILES ${HEADER_MOC_FILES})
+
 
 # make mocced header / form files path from absolute to relative
 ToRelativePath(MOC_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${MOC_FILES}")
@@ -55,7 +53,7 @@ ToRelativePath(MOC_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${MOC_FILES}")
 set(MOC_FILES_GROUP "Generated")
 
 	
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES} ${README_FILES})
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${HEADER_MOC_FILES} ${MOC_FILES} ${SOURCE_FILES} ${README_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_IMAGE_GUI")
 AddLinkerDependencies(SofaGuiQt image ${OPENGL_LIBRARIES})

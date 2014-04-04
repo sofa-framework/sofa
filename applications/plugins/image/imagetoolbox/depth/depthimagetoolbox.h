@@ -50,8 +50,8 @@ public:
     typedef sofa::defaulttype::ImageLPTransform<SReal> TransformType;
     typedef helper::ReadAccessor<Data< TransformType > > raTransform;
 
-    typedef typename sofa::defaulttype::ImageD ImageD;
-    typedef typename ImageD::imCoord imCoord;
+    typedef sofa::defaulttype::ImageD ImageD;
+    typedef ImageD::imCoord imCoord;
     typedef helper::WriteAccessor< Data< ImageD > > waImage;
 
     typedef sofa::core::topology::BaseMeshTopology::QuadsAroundEdge QuadsAroundEdge;
@@ -64,7 +64,7 @@ public:
     typedef sofa::core::topology::BaseMeshTopology::EdgeID EdgeID;
     typedef sofa::core::topology::BaseMeshTopology::EdgesAroundVertex EdgesAroundVertex;
     typedef sofa::core::topology::BaseMeshTopology::QuadsAroundVertex QuadsAoundVertex;
-    typedef typename sofa::core::objectmodel::Tag Tag;
+    typedef sofa::core::objectmodel::Tag Tag;
 
     struct Layer
     {

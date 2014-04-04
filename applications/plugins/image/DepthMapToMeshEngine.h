@@ -220,11 +220,11 @@ protected:
         for(unsigned int y=0; y<dimy-1; y++)
             for(unsigned int x=0; x<dimx-1; x++)
             {
-                diff1 = abs((Real)img(x,y) - (Real)img(x+1,y)); diff2 = abs((Real)img(x+1,y) - (Real)img(x,y+1)); diff3 = abs((Real)img(x,y+1) - (Real)img(x,y));
+                diff1 = fabs((Real)img(x,y) - (Real)img(x+1,y)); diff2 = fabs((Real)img(x+1,y) - (Real)img(x,y+1)); diff3 = fabs((Real)img(x,y+1) - (Real)img(x,y));
                 p1=x+y*dimx; p2=x+1+y*dimx; p3=x+(y+1)*dimx;
                 if(isValid[p1] && isValid[p2] && isValid[p3] && diff1<diffT && diff2<diffT && diff3<diffT) tri.push_back(Triangle(p1,p2,p3));
 
-                diff1 = abs((Real)img(x+1,y) - (Real)img(x+1,y+1)); diff2 = abs((Real)img(x+1,y+1) - (Real)img(x,y+1)); diff3 = abs((Real)img(x,y+1) - (Real)img(x+1,y));
+                diff1 = fabs((Real)img(x+1,y) - (Real)img(x+1,y+1)); diff2 = fabs((Real)img(x+1,y+1) - (Real)img(x,y+1)); diff3 = fabs((Real)img(x,y+1) - (Real)img(x+1,y));
                 p1=x+1+y*dimx; p2=x+1+(y+1)*dimx; p3=x+(y+1)*dimx;
                 if(isValid[p1] && isValid[p2] && isValid[p3] && diff1<diffT && diff2<diffT && diff3<diffT) tri.push_back(Triangle(p1,p2,p3));
             }

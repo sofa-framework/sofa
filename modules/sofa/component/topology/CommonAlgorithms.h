@@ -42,7 +42,7 @@ using namespace sofa::helper;
 
 /// Cross product for 3-elements vectors.
 template< class Real>
-Real areaProduct(const Vec<3,Real>& a, const Vec<3,Real>& b)
+inline Real areaProduct(const Vec<3,Real>& a, const Vec<3,Real>& b)
 {
     return Vec<3,Real>(a.y()*b.z() - a.z()*b.y(),
             a.z()*b.x() - a.x()*b.z(),
@@ -51,14 +51,14 @@ Real areaProduct(const Vec<3,Real>& a, const Vec<3,Real>& b)
 
 /// area for 2-elements vectors.
 template< class Real>
-Real areaProduct(const defaulttype::Vec<2,Real>& a, const defaulttype::Vec<2,Real>& b )
+inline Real areaProduct(const defaulttype::Vec<2,Real>& a, const defaulttype::Vec<2,Real>& b )
 {
     return a[0]*b[1] - a[1]*b[0];
 }
 
 /// area invalid for 1-elements vectors.
 template< class Real>
-Real areaProduct(const defaulttype::Vec<1,Real>&, const defaulttype::Vec<1,Real>&)
+inline Real areaProduct(const defaulttype::Vec<1,Real>&, const defaulttype::Vec<1,Real>&)
 {
     assert(false);
     return (Real)0;
