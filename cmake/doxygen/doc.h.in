@@ -1,0 +1,7 @@
+
+
+/**
+\mainpage SOFA documentation main page
+<p>This page lists the different Doxygen documentations available</p>
+@DOCUMENTATION_LIST@
+*/

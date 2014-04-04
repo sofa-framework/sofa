@@ -13,6 +13,7 @@ include(cmake/environment.cmake)
 include(cmake/functions.cmake)
 include(cmake/options.cmake)
 
+
 if(NOT PRECONFIGURE_DONE)
     message("")
     message(">>> SOFA framework pre-configuration complete")
@@ -32,4 +33,6 @@ else()
     sofa_save_dependencies("misc/dependencies.txt")
     sofa_save_complete_dependencies("misc/full-dependencies.txt")
     sofa_print_configuration_report()
+
+    include(cmake/doxygen.cmake)
 endif()
