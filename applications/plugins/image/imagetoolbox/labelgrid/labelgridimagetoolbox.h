@@ -59,7 +59,7 @@ public:
     typedef sofa::core::topology::BaseMeshTopology::EdgeID EdgeID;
     typedef sofa::core::topology::BaseMeshTopology::EdgesAroundVertex EdgesAroundVertex;
     typedef sofa::core::topology::BaseMeshTopology::QuadsAroundVertex QuadsAoundVertex;
-    typedef typename sofa::core::objectmodel::Tag Tag;
+    typedef sofa::core::objectmodel::Tag Tag;
 
 
 
