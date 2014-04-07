@@ -129,6 +129,71 @@ struct ImageExporterSpecialization<defaulttype::IMAGELABEL_IMAGE>
             float voxsize[3];
             for(unsigned int i=0; i<3; i++) voxsize[i]=(float)rtransform->getScale()[i];
             rimage->getCImg(exporter.time).save_analyze(fname.c_str(),voxsize);
+
+            //once CImg wrote the data, we complete them with a header containing spatial transformation
+            typedef struct
+            {
+                float nifti_voxOffset; //Offset into .nii file :: This value is not set in CImg
+
+                //////////////////////////////////////////////
+                char unchanged_0[140];
+                //////////////////////////////////////////////
+
+                short nifti_QForm; // NIFTI_XFORM_* code.
+                short nifti_SForm; // NIFTI_XFORM_* code.
+
+                //////////////////////////////////////////////
+
+                float nifti_quaternion[6]; // Quaternion parameters
+                float nifti_affine[12]; // affine transform
+
+                //////////////////////////////////////////////
+                char unchanged_1[16];
+                //////////////////////////////////////////////
+
+                char nifti_magic[4];// This value is not set in CImg
+
+            } NiftiHeader;
+
+            NiftiHeader header;
+
+            FILE* file = fopen(fname.c_str(), "rb+");
+            fseek(file, 108, SEEK_SET);
+            if (fread(&header, 1, sizeof(NiftiHeader), file) != sizeof(NiftiHeader))
+                std::cerr << "Error reading the header in " << fname << std::endl;
+
+            header.nifti_voxOffset = 352;
+
+            header.nifti_QForm = 1; //method 2
+            header.nifti_SForm = 0;
+
+            Vec<3,Real> rotation = rtransform->getRotation() * (Real)M_PI / (Real)180.0;
+            helper::Quater<Real> q = helper::Quater<Real>::createQuaterFromEuler(rotation);
+
+            for (unsigned int i = 0; i< 3; i++)
+            {
+                header.nifti_quaternion[i]   = q[i+1];
+                header.nifti_quaternion[3+i] = rtransform->getTranslation()[i];
+            }
+
+            defaulttype::Matrix3 mat;
+            q.toMatrix(mat);
+
+            header.nifti_affine[0] = mat(0,0) * voxsize[0]; header.nifti_affine[1] = mat(0,1);              header.nifti_affine[2] = mat(0,2);               header.nifti_affine[3] = rtransform->getTranslation()[0];
+            header.nifti_affine[4] = mat(1,0);              header.nifti_affine[5] = mat(1,1) * voxsize[1]; header.nifti_affine[6] = mat(1,2);               header.nifti_affine[7] = rtransform->getTranslation()[1];
+            header.nifti_affine[8] = mat(2,0);              header.nifti_affine[9] = mat(2,1);              header.nifti_affine[10] = mat(2,2) * voxsize[2]; header.nifti_affine[11] = rtransform->getTranslation()[2];
+
+            header.nifti_magic[0] = 'n';
+            if (fname.find(".hdr")!=std::string::npos)
+                header.nifti_magic[1] = 'i';
+            else if (fname.find(".nii")!=std::string::npos)
+                header.nifti_magic[1] = '+';
+            header.nifti_magic[2] = '1';
+
+            fseek(file, 108, SEEK_SET);
+            if (fwrite (&header , sizeof(NiftiHeader), 1, file) != 1)
+                std::cerr << "Error writing the header in " << fname << std::endl;
+            fclose(file);
         }
         else if (fname.find(".inr")!=std::string::npos)
         {
