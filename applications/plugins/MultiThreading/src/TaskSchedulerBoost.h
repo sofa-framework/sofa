@@ -119,7 +119,7 @@ public:
 
     Task::Status* getCurrentStatus() const {return mCurrentStatus;}
 
-    boost::detail::spinlock* getTaskMutex() const {return &mTaskMutex;}
+    boost::detail::spinlock* getTaskMutex() {return &mTaskMutex;}
     
     int getThreadIndex();
     

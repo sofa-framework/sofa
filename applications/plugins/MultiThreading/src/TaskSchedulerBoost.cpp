@@ -379,14 +379,14 @@ void WorkerThread::doWork(Task::Status* status)
             // run
             pPrevStatus = mCurrentStatus;
             mCurrentStatus = pTask->getStatus();
+            
+            if (mTaskLogEnabled)
+                mTaskLog.push_back(pTask);
 
             pTask->runTask(this);
 
             mCurrentStatus->MarkBusy(false);
             mCurrentStatus = pPrevStatus;
-
-            if (mTaskLogEnabled)
-                mTaskLog.push_back(pTask);
 
             if ( status && !status->IsBusy() ) 
                 return;
@@ -487,11 +487,11 @@ bool WorkerThread::addStealableTask(Task* task)
 {
     if (pushTask(task,mStealableTask,&mStealableTaskCount))
         return true;
-
-    task->runTask(this);
-
+    
     if (mTaskLogEnabled)
         mTaskLog.push_back(task);
+
+    task->runTask(this);
 
     return false;
 }
@@ -500,21 +500,21 @@ bool WorkerThread::addSpecificTask(Task* task)
 {
     if (pushTask(task,mSpecificTask,&mSpecificTaskCount))
         return true;
-
-    task->runTask(this);
-
+    
     if (mTaskLogEnabled)
         mTaskLog.push_back(task);
+
+    task->runTask(this);
 
     return false;
 }
 
 void WorkerThread::runTask(Task* task)
 {
-    task->runTask(this);
-
     if (mTaskLogEnabled)
         mTaskLog.push_back(task);
+
+    task->runTask(this);
 }
 
 bool WorkerThread::giveUpSomeWork(WorkerThread* idleThread)
