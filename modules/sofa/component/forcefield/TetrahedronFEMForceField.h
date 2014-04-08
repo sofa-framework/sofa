@@ -275,6 +275,7 @@ public:
 
     Data<int> _computeVonMisesStress;
     Data<helper::vector<Real> > _vonMises;
+    Data<helper::vector<Vec3f> > _vonMisesStressColors;
 
 #ifndef SOFA_NO_OPENGL
 	visualmodel::ColorMap::SPtr _showStressColorMapReal;
@@ -313,11 +314,13 @@ protected:
 #endif
         , _showStressColorMap(initData(&_showStressColorMap,"showStressColorMap", "Color map used to show stress values"))
         , _showStressAlpha(initData(&_showStressAlpha, 1.0f, "showStressAlpha", "Alpha for vonMises visualisation"))
+        , _vonMisesStressColors(initData(&_vonMisesStressColors, "vonMisesStressColors", "Vector of colors describing the VonMises stress"))
     {
         data.initPtrData(this);
         this->addAlias(&_assembling, "assembling");
         minYoung = 0.0;
         maxYoung = 0.0;
+
     }
 
     virtual ~TetrahedronFEMForceField()
