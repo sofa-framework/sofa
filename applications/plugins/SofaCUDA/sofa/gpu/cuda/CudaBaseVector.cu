@@ -43,13 +43,16 @@ extern "C"
     void SOFA_GPU_CUDA_API copy_vectorf(int dim,const void * a, void * b);
     void SOFA_GPU_CUDA_API vector_vector_peqf(int dim,float f,const void * a,void * b);
     void SOFA_GPU_CUDA_API sub_vector_vectorf(int dim,const void * a, const void * b, void * r);
+    void SOFA_GPU_CUDA_API permute_vectorf(int dim,const void * a, const void * perm, void * b);
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
     void SOFA_GPU_CUDA_API copy_vectord(int dim,const void * a, void * b);
     void SOFA_GPU_CUDA_API vector_vector_peqd(int dim,double f,const void * a,void * b);
     void SOFA_GPU_CUDA_API sub_vector_vectord(int dim,const void * a, const void * b, void * r);
+    void SOFA_GPU_CUDA_API permute_vectord(int dim,const void * a, const void * perm, void * b);
 #endif
 }
+
 
 template<class real>
 __global__ void Cuda_CopyVector_kernel(int dim, const real * a, real * b)
@@ -127,6 +130,33 @@ void SOFA_GPU_CUDA_API sub_vector_vectord(int dim,const void * a, const void * b
     dim3 grid((dim+BSIZE-1)/BSIZE,1);
 
     {Cuda_sub_vector_kernel<double><<< grid, threads >>>(dim,(const double *) a,(const double *) b,(double *) r); mycudaDebugError("Cuda_sub_vector_kernel<double>");}
+}
+#endif
+
+
+template<class real>
+__global__ void permute_vector_kernel(int dim,const real * a, const int * perm, real * b)
+{
+    int ti = umul24(blockIdx.x,BSIZE) + threadIdx.x;
+    if (ti >= dim) return;
+    b[ti] = a[perm[ti]];
+}
+
+void SOFA_GPU_CUDA_API permute_vectorf(int dim,const void * a, const void * perm, void * b)
+{
+    dim3 threads(BSIZE,1);
+    dim3 grid((dim+BSIZE-1)/BSIZE,1);
+
+    {permute_vector_kernel<float><<< grid, threads >>>(dim,(const float *) a,(const int *) perm, (float *) b); mycudaDebugError("Cuda_sub_vector_kernel<float>");}
+}
+
+#ifdef SOFA_GPU_CUDA_DOUBLE
+void SOFA_GPU_CUDA_API permute_vectord(int dim,const void * a, const void * perm, void * b)
+{
+    dim3 threads(BSIZE,1);
+    dim3 grid((dim+BSIZE-1)/BSIZE,1);
+
+    {permute_vector_kernel<double><<< grid, threads >>>(dim,(const double *) a,(const int *) perm,(double *) b); mycudaDebugError("Cuda_sub_vector_kernel<double>");}
 }
 #endif
 
