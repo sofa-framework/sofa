@@ -155,6 +155,9 @@ set(README_FILES
 	Compliant.txt
 	)
 
+# include python files
+include(./python/python.cmake)	
+	
 #if(WIN32)
 #	include_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Include")
 #	link_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Lib")
@@ -162,7 +165,7 @@ set(README_FILES
 #	include_directories("/usr/include/suitesparse/")
 #endif()
 	
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_Compliant")
 AddLinkerDependencies(SofaEigen2Solver SofaUserInteraction SofaComponentMisc SofaHelper SofaSimulationGraph)
