@@ -93,6 +93,7 @@ protected:
 #ifdef _MSC_VER
 		mat66* blocks;
 		void* blockPtr = ::_aligned_malloc(sizeof(mat66)*2, 16);
+		blocks = (mat66*) blockPtr;
 #else
 		std::vector< mat66 , Eigen::aligned_allocator<mat66> > blocks(2);	
 #endif
