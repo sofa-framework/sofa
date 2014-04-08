@@ -46,11 +46,13 @@ extern "C"
     void SOFA_GPU_CUDA_API copy_vectorf(int dim,const void * a, void * b);
     void SOFA_GPU_CUDA_API vector_vector_peqf(int dim,float f,const void * a,void * b);
     void SOFA_GPU_CUDA_API sub_vector_vectorf(int dim,const void * a, const void * b, void * r);
+    void SOFA_GPU_CUDA_API permute_vectorf(int dim,const void * a, const void * perm, void * b);
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
     void SOFA_GPU_CUDA_API copy_vectord(int dim,const void * a, void * b);
     void SOFA_GPU_CUDA_API vector_vector_peqd(int dim,double f,const void * a,void * b);
     void SOFA_GPU_CUDA_API sub_vector_vectord(int dim,const void * a, const void * b, void * r);
+    void SOFA_GPU_CUDA_API permute_vectord(int dim,const void * a, const void * perm, void * b);
 #endif
 }
 
@@ -70,6 +72,9 @@ public:
     // compute b = b + a*f
     static void sub_vector_vector(int dim,const void * a,const void * b,void * r)
     {   sub_vector_vectorf(dim,a,b,r); }
+
+    static void permute_vector(int dim,const void * a, const void * perm, void * b)
+    {   permute_vectorf(dim,a,perm,b); }
 };
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
@@ -87,6 +92,9 @@ public:
     // compute b = b + a*f
     static void sub_vector_vector(int dim,const void * a,const void * b,void * r)
     {   sub_vector_vectord(dim,a,b,r); }
+
+    static void permute_vector(int dim,const void * a, const void * perm, void * b)
+    {   permute_vectord(dim,a,perm,b); }
 };
 #endif
 
