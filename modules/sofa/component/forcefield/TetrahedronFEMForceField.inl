@@ -1434,6 +1434,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
         }
     }*/
 
+
     reinit(); // compute per-element stiffness matrices and other precomputed values
 
 //     sout << "TetrahedronFEMForceField: init OK, "<<_indexedElements->size()<<" tetra."<<sendl;
@@ -1587,7 +1588,9 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
 
             invertMatrix(elemShapeFun[i], matVert);
         }
+         computeVonMisesStress();
     }
+
 }
 
 
@@ -1695,6 +1698,12 @@ inline void TetrahedronFEMForceField<DataTypes>::addDForce(const core::Mechanica
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+
+    if (_computeVonMisesStress.getValue() > 0) {
+        if (updateVonMisesStress)
+            computeVonMisesStress();
+    }
+
 #ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
@@ -1732,8 +1741,12 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
         //maxVM=20000;
     }   
 
-
     vparams->drawTool()->setLightingEnabled(false);
+    glEnable(GL_BLEND) ;
+    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+    glDepthMask(0);
+
+
     if (edges)
     {
         std::vector< Vector3 > points[3];
@@ -1813,6 +1826,7 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
     }
     else
     {
+
         std::vector< Vector3 > points[4];
         typename VecElement::const_iterator it;
         int i;
@@ -1823,10 +1837,10 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
             Index c = (*it)[2];
             Index d = (*it)[3];
             Coord center = (x[a]+x[b]+x[c]+x[d])*0.125;
-            Coord pa = (x[a]+center)*(Real)0.666667;
-            Coord pb = (x[b]+center)*(Real)0.666667;
-            Coord pc = (x[c]+center)*(Real)0.666667;
-            Coord pd = (x[d]+center)*(Real)0.666667;
+            Coord pa = (x[a]);//+center)*(Real)0.666667;
+            Coord pb = (x[b]);//+center)*(Real)0.666667;
+            Coord pc = (x[c]);//+center)*(Real)0.666667;
+            Coord pd = (x[d]);//+center)*(Real)0.666667;
 
 // 		glColor4f(0,0,1,1);
             points[0].push_back(pa);
@@ -1881,7 +1895,9 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
                     vparams->drawTool()->drawTriangles(points[1],col);
                     vparams->drawTool()->drawTriangles(points[2],col);
                     vparams->drawTool()->drawTriangles(points[3],col);
+
                     for(unsigned int i=0 ; i<4 ; i++) points[i].clear();
+
                 }
             }
 
@@ -1936,6 +1952,10 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
 
     }
 #endif /* SOFA_NO_OPENGL */
+
+        glDisable(GL_BLEND);
+        glDepthMask(1);
+
 }
 
 template<class DataTypes>
@@ -2254,7 +2274,7 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
 
     typename VecElement::const_iterator it;
     size_t el;
-
+    helper::WriteAccessor<Data<helper::vector<Real> > > vM =  _vonMises;
     for(it = _indexedElements->begin(), el = 0 ; it != _indexedElements->end() ; ++it, ++el)
     {
         Vec<6,Real> vStrain;
@@ -2393,7 +2413,7 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
         for (size_t k = 0; k < 3; k++)
             s[k] += lambda*traceStrain;
 
-        helper::WriteAccessor<Data<helper::vector<Real> > > vM =  _vonMises;
+
         vM[el] = helper::rsqrt(s[0]*s[0] + s[1]*s[1] + s[2]*s[2] - s[0]*s[1] - s[1]*s[2] - s[2]*s[0] + 3*s[3]*s[3] + 3*s[4]*s[4] + 3*s[5]*s[5]);
         if (vM[el] < 1e-10)
             vM[el] = 0.0;
@@ -2402,6 +2422,48 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
     }
 
     updateVonMisesStress=false;
+
+    helper::WriteAccessor<Data<helper::vector<Vec3f> > > vonMisesStressColors(_vonMisesStressColors);
+    vonMisesStressColors.clear();
+    helper::vector<unsigned int> vonMisesStressColorsCoeff;
+
+    Real minVM = (Real)1e20, maxVM = (Real)-1e20;
+
+    for (size_t i = 0; i < vM.size(); i++) {
+        minVM = (vM[i] < minVM) ? vM[i] : minVM;
+        maxVM = (vM[i] > maxVM) ? vM[i] : maxVM;
+    }
+
+    if (maxVM < prevMaxStress)
+        maxVM = prevMaxStress;
+
+    //std::cout << "Min VMs: " << minVM << "   max: " << maxVM << std::endl;
+    maxVM*=_showStressAlpha.getValue();
+    int i;
+    vonMisesStressColors.resize(_mesh->getNbPoints());
+    vonMisesStressColorsCoeff.resize(_mesh->getNbPoints());
+    std::fill(vonMisesStressColorsCoeff.begin(), vonMisesStressColorsCoeff.end(), 0);
+
+    for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
+    {
+        visualmodel::ColorMap::evaluator<Real> evalColor = _showStressColorMapReal->getEvaluator(minVM, maxVM);
+        Vec4f col = evalColor(vM[i]); //*vM[i]);
+        Vec3f col3(col[0], col[1], col[2]);
+        Tetrahedron tetra = _mesh->getTetra(i);
+
+        for(unsigned int j=0 ; j<4 ; j++)
+        {
+            vonMisesStressColors[tetra[j]] += (col3);
+            vonMisesStressColorsCoeff[tetra[j]] ++;
+        }
+    }
+
+    for(unsigned int i=0 ; i<vonMisesStressColors.size() ; i++)
+    {
+        if(vonMisesStressColorsCoeff[i] > 0)
+            vonMisesStressColors[i] /= vonMisesStressColorsCoeff[i];
+    }
+
 }
 
 
