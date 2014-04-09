@@ -155,13 +155,13 @@ void DynamicLibrary::fetchLastError()
 
 
 #if defined(WIN32)
-const std::string DynamicLibrary::extension = ".dll";
+const std::string DynamicLibrary::extension = "dll";
 #elif defined(__APPLE__)
-const std::string DynamicLibrary::extension = ".dylib";
+const std::string DynamicLibrary::extension = "dylib";
 #elif defined(_XBOX) || defined(PS3)
 const std::string DynamicLibrary::extension = "";
 #else
-const std::string DynamicLibrary::extension = ".so";
+const std::string DynamicLibrary::extension = "so";
 #endif
 
 

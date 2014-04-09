@@ -31,6 +31,7 @@ namespace sofa
 {
 namespace core
 {
+
 //Automatically create and destroy all the components available: easy way to verify the default constructor and destructor
 //#define TEST_CREATION_COMPONENT
 void SofaLibrary::build( const std::vector< std::string >& examples)
@@ -67,12 +68,17 @@ void SofaLibrary::build( const std::vector< std::string >& examples)
 #endif
 
         //Insert Template specification
-        std::vector<std::string> categories;
-        CategoryLibrary::getCategories(entries[i]->creatorMap.begin()->second->getClass(), categories);
-        for (std::vector<std::string>::iterator it = categories.begin(); it != categories.end(); ++it)
+        ObjectFactory::CreatorMap::iterator creatorEntry = entries[i]->creatorMap.begin();
+        if (creatorEntry != entries[i]->creatorMap.end())
         {
-            mainCategories.insert((*it));
-            inventory.insert(std::make_pair((*it), entries[i]));
+            const objectmodel::BaseClass* baseClass = creatorEntry->second->getClass();
+            std::vector<std::string> categories;
+            CategoryLibrary::getCategories(baseClass, categories);
+            for (std::vector<std::string>::iterator it = categories.begin(); it != categories.end(); ++it)
+            {
+                mainCategories.insert((*it));
+                inventory.insert(std::make_pair((*it), entries[i]));
+            }
         }
     }
 
