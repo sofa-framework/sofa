@@ -274,7 +274,8 @@ public:
 
 
     Data<int> _computeVonMisesStress;
-    Data<helper::vector<Real> > _vonMises;
+    Data<helper::vector<Real> > _vonMisesPerElement;
+    Data<helper::vector<Real> > _vonMisesPerNode;
     Data<helper::vector<Vec3f> > _vonMisesStressColors;
 
 #ifndef SOFA_NO_OPENGL
@@ -283,10 +284,12 @@ public:
 
     Data<std::string> _showStressColorMap;
     Data<float> _showStressAlpha;
+    Data<bool> _showVonMisesStressPerNode;
 
     helper::vector<Vec<6,Real> > elemDisplacements;
 
     bool updateVonMisesStress;
+
 
 protected:
     TetrahedronFEMForceField()
@@ -308,13 +311,15 @@ protected:
         , drawHeterogeneousTetra(initData(&drawHeterogeneousTetra,false,"drawHeterogeneousTetra","Draw Heterogeneous Tetra in different color"))
         , drawAsEdges(initData(&drawAsEdges,false,"drawAsEdges","Draw as edges instead of tetrahedra"))
         , _computeVonMisesStress(initData(&_computeVonMisesStress,0,"computeVonMisesStress","compute and display von Mises stress: 0: no computations, 1: using corotational strain, 2: using full Green strain"))
-        , _vonMises(initData(&_vonMises, "vonMises", "Von Mises Stress"))
+        , _vonMisesPerElement(initData(&_vonMisesPerElement, "vonMisesPerElement", "von Mises Stress per element"))
+        , _vonMisesPerNode(initData(&_vonMisesPerNode, "vonMisesPerNode", "von Mises Stress per node"))
 #ifndef SOFA_NO_OPENGL
         , _showStressColorMapReal(sofa::core::objectmodel::New< visualmodel::ColorMap >())
 #endif
         , _showStressColorMap(initData(&_showStressColorMap,"showStressColorMap", "Color map used to show stress values"))
         , _showStressAlpha(initData(&_showStressAlpha, 1.0f, "showStressAlpha", "Alpha for vonMises visualisation"))
         , _vonMisesStressColors(initData(&_vonMisesStressColors, "vonMisesStressColors", "Vector of colors describing the VonMises stress"))
+        , _showVonMisesStressPerNode(initData(&_showVonMisesStressPerNode,false,"showVonMisesStressPerNode","draw points  showing vonMises stress interpolated in nodes"))
     {
         data.initPtrData(this);
         this->addAlias(&_assembling, "assembling");
