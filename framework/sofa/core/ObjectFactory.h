@@ -88,8 +88,6 @@ public:
         virtual const char* getTarget() = 0;
 
         virtual const char* getHeaderFileLocation() = 0;
-
-        virtual const char* getMakefileDir() = 0;
     };
     typedef std::map<std::string, Creator::SPtr> CreatorMap;
 
@@ -227,16 +225,6 @@ public:
     {
 #ifdef SOFA_TARGET
         return sofa_tostring(SOFA_TARGET);
-#else
-        return "";
-#endif
-    }
-
-    /// The name of the library or executable containing the binary code for this component
-    virtual const char* getMakefileDir()
-    {
-#ifdef SOFA_MAKEFILEDIR
-        return sofa_tostring(SOFA_MAKEFILEDIR);
 #else
         return "";
 #endif
