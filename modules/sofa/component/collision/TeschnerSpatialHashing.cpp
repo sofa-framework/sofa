@@ -16,7 +16,7 @@ namespace collision
 {
 
 struct CannotInitializeCellSize : std::exception {
-    virtual const char* what() const throw(){return "Cannot initialize cell size in TeschnerSpatialHashing because the scene doesn't contain any BaseMeshTopology";}
+    virtual const char* what() const throw(){return "Cannot initialize cell size in TeschnerSpatialHashing";}
 };
 
 
@@ -68,8 +68,10 @@ void TeschnerSpatialHashing::sumEdgeLength_template(core::CollisionModel *cm){
 
     const sofa::core::topology::BaseMeshTopology::SeqEdges & seq_edges = bmt->getEdges();
 
-    for(int i = 0 ; i < seq_edges.size() ; ++i)
+    for(int i = 0 ; i < seq_edges.size() ; ++i){
+        //std::cout<<"one edge length "<< (DataTypes::getCPos(coords[seq_edges[i][0]]) - DataTypes::getCPos(coords[seq_edges[i][1]])).norm()<<std::endl;
         _total_edges_length += (DataTypes::getCPos(coords[seq_edges[i][0]]) - DataTypes::getCPos(coords[seq_edges[i][1]])).norm();
+    }
 
     _nb_edges += seq_edges.size();
 }
@@ -82,6 +84,13 @@ void TeschnerSpatialHashing::sumEdgeLength(core::CollisionModel *cm){
         sumEdgeLength_template<sofa::component::collision::TetrahedronModel::DataTypes>(cm);
     else if(cm->getEnumType() == sofa::core::CollisionModel::LINE_TYPE)
         sumEdgeLength_template<sofa::component::collision::LineModel::DataTypes>(cm);
+    else if(cm->getEnumType() == sofa::core::CollisionModel::SPHERE_TYPE){
+        const SphereModel * sphm = static_cast<SphereModel *>(cm);
+        for(int i = 0 ; i < sphm->getSize() ; ++i){
+            _total_edges_length += (SReal)(2) * sphm->getRadius(i);
+        }
+        _nb_edges += sphm->getSize();
+    }
 }
 
 
@@ -106,31 +115,26 @@ void TeschnerSpatialHashing::endBroadPhase(){
             throw c;
         }
 
-        _cell_size = _total_edges_length/_nb_edges;
+        _cell_size = /*0.2 **/ _total_edges_length/_nb_edges;
+        _grid.cell_size = _cell_size;
         _params_initialized = true;
 
-        SReal* minBBox = new SReal[3];
-        SReal* maxBBox = new SReal[3];
-        sofa::simulation::getSimulation()->computeBBox(sofa::simulation::getSimulation()->GetRoot().get(),minBBox,maxBBox);
-
-        std::cout<<"minBBox "<<minBBox[0]<<" "<<minBBox[1]<<" "<<minBBox[2]<<std::endl;
-        std::cout<<"maxBBox "<<maxBBox[0]<<" "<<maxBBox[1]<<" "<<maxBBox[2]<<std::endl;
-        std::cout <<"BIG SIZE "<<3 * ((maxBBox[0] - minBBox[0])/_cell_size) * ((maxBBox[1] - minBBox[1])/_cell_size) * ((maxBBox[2] - minBBox[2])/_cell_size)<<std::endl;
+        std::cout<<"cell size "<<_cell_size<<std::endl;
+        std::cout<<"nb elems "<<_nb_elems<<std::endl;
 //        _grid.resize( 3 * ((maxBBox[0] - minBBox[0])/_cell_size) * ((maxBBox[1] - minBBox[1])/_cell_size) * ((maxBBox[2] - minBBox[2])/_cell_size));
 
-        _grid.resize(10000);
-
-        delete [] minBBox;
-        delete [] maxBBox;
+        _grid.resize(10 * _nb_elems);
     }
 }
 
 void TeschnerSpatialHashing::beginNarrowPhase(){
     NarrowPhaseDetection::beginNarrowPhase();
 
+    long int nb_added_elems = 0;
     int mincell[3];
     int maxcell[3];
     int movingcell[3];
+    SReal alarmDistd2 = intersectionMethod->getAlarmDistance()/((SReal)(2.0));
 
     sofa::helper::AdvancedTimer::stepBegin("TeschnerSpatialHashing : Hashing");
     for(int i = 0 ; i < cubeModels.size() ; ++i){
@@ -138,16 +142,17 @@ void TeschnerSpatialHashing::beginNarrowPhase(){
         Cube c(cubeModels[i]);
 
         for(;c.getIndex() < cubeModels[i]->getSize() ; ++c){
+            ++nb_added_elems;
             const Vector3 & minVec = c.minVect();
 
-            mincell[0] = std::floor(minVec[0]/_cell_size);
-            mincell[1] = std::floor(minVec[1]/_cell_size);
-            mincell[2] = std::floor(minVec[2]/_cell_size);
+            mincell[0] = std::floor((minVec[0]/* - alarmDistd2*/)/_cell_size);
+            mincell[1] = std::floor((minVec[1]/* - alarmDistd2*/)/_cell_size);
+            mincell[2] = std::floor((minVec[2]/* - alarmDistd2*/)/_cell_size);
 
             const Vector3 & maxVec = c.maxVect();
-            maxcell[0] = std::floor(maxVec[0]/_cell_size);
-            maxcell[1] = std::floor(maxVec[1]/_cell_size);
-            maxcell[2] = std::floor(maxVec[2]/_cell_size);
+            maxcell[0] = std::floor((maxVec[0]/* + alarmDistd2*/)/_cell_size);
+            maxcell[1] = std::floor((maxVec[1]/* + alarmDistd2*/)/_cell_size);
+            maxcell[2] = std::floor((maxVec[2]/* + alarmDistd2*/)/_cell_size);
 
             if(mincell[0] == maxcell[0] && mincell[1] == maxcell[1] && mincell[2] == maxcell[2]){
                 sofa::helper::AdvancedTimer::stepBegin("TeschnerSpatialHashing : addAndCollide");
@@ -159,14 +164,16 @@ void TeschnerSpatialHashing::beginNarrowPhase(){
                 continue;
             }
 
-
+            std::cout<<"=================show index"<<std::endl;
             for(movingcell[0] = mincell[0] ; movingcell[0] <= maxcell[0] ; ++movingcell[0]){
                 for(movingcell[1] = mincell[1] ; movingcell[1] <= maxcell[1] ; ++movingcell[1]){
                     for(movingcell[2] = mincell[2] ; movingcell[2] <= maxcell[2] ; ++movingcell[2]){
                         sofa::helper::AdvancedTimer::stepBegin("TeschnerSpatialHashing : addAndCollide");
                         _grid.addAndCollide(movingcell[0],movingcell[1],movingcell[2],c.getExternalChildren().first,_timeStamp,this,intersectionMethod);
                         sofa::helper::AdvancedTimer::stepEnd("TeschnerSpatialHashing : addAndCollide");
-                        //std::cout<<"\tadding elem at index "<<movingcell[0]<<" "<<movingcell[1]<<" "<<movingcell[2]<<" and index "<<_grid.getIndex(movingcell[0],movingcell[1],movingcell[2])<<std::endl;
+                        if(movingcell[0] == -7 && movingcell[1] == 0 && movingcell[2] == 7)
+                            std::cout<<"magik -7 0 7 cell coordinates minVec "<<minVec<<" maxVec "<<maxVec<<std::endl;
+                        std::cout<<"\tadding elem at index "<<movingcell[0]<<" "<<movingcell[1]<<" "<<movingcell[2]<<" and index "<<_grid.getIndex(movingcell[0],movingcell[1],movingcell[2])<<std::endl;
 //                        TeschnerCollisionSet & tset = _grid(movingcell[0],movingcell[1],movingcell[2]);
 //                        tset.add(c.getExternalChildren().first,_timeStamp);
                     }
@@ -177,6 +184,8 @@ void TeschnerSpatialHashing::beginNarrowPhase(){
 
     sofa::helper::AdvancedTimer::stepEnd("TeschnerSpatialHashing : Hashing");
 
+    //std::cout<<"nb added elems "<<nb_added_elems<<std::endl;
+    _grid.showStats(_timeStamp);
 //    sofa::helper::AdvancedTimer::stepBegin("TeschnerSpatialHashing : performCollision");
 //    _grid.performCollision(this,this->intersectionMethod,_timeStamp);
 //    sofa::helper::AdvancedTimer::stepEnd("TeschnerSpatialHashing : performCollision");

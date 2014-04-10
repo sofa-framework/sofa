@@ -4,6 +4,9 @@
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/core/collision/NarrowPhaseDetection.h>
 #include <sofa/helper/AdvancedTimer.h>
+#include <boost/functional/hash.hpp>
+#include <sofa/component/collision/CubeModel.h>
+
 
 namespace sofa{
 
@@ -76,11 +79,15 @@ public:
         return true;
     }
 
-    inline bool updated(SReal timeStamp){
+    inline bool updated(SReal timeStamp)const{
         return _timeStamp >= timeStamp;
     }
 
     std::vector<core::CollisionElementIterator> & getCollisionElems(){
+        return _coll_elems;
+    }
+
+    const std::vector<core::CollisionElementIterator> & getCollisionElems()const {
         return _coll_elems;
     }
 
@@ -113,6 +120,7 @@ public:
     void resize(int size){
         _size = size;
         _prime_size = boost::unordered::detail::next_prime(size);
+        std::cout<<"PRIM SIZE "<<_prime_size<<std::endl;
         _table.resize(_prime_size);
     }
 
@@ -121,8 +129,10 @@ public:
         _table.clear();
     }
 
-    inline int getIndex(int i,int j,int k)const{
-        int index = (i * _p1 ^ j * _p2 ^ k * _p3) % _prime_size;
+    inline long int getIndex(long int i,long int j,long int k)const{
+        //int index = (i * _p1 ^ j * _p2 ^ k * _p3) % _prime_size;
+        long int index = ((i * _p1) ^ (j * _p2) ^ (k * _p3)) % _prime_size;
+
 
         if(index < 0)
             index += _prime_size;
@@ -130,8 +140,10 @@ public:
         return index;
     }
 
-    inline TeschnerCollisionSet & operator()(int i,int j,int k){
-        int index = (i * _p1 ^ j * _p2 ^ k * _p3) % _prime_size;
+    inline TeschnerCollisionSet & operator()(long int i,long int j,long int k){
+        //int index = (i * _p1 ^ j * _p2 ^ k * _p3) % _prime_size;
+        long int index = ((i * _p1) ^ (j * _p2) ^ (k * _p3)) % _prime_size;
+//        long int index = i*j*k % _prime_size;
 
         if(index < 0)
             index += _prime_size;
@@ -139,8 +151,10 @@ public:
         return _table[index];
     }
 
-    inline const TeschnerCollisionSet & operator()(int i,int j,int k)const{
-        int index = (i * _p1 ^ j * _p2 ^ k * _p3) % _prime_size;
+    inline const TeschnerCollisionSet & operator()(long int i,long int j,long int k)const{
+        //int index = (i * _p1 ^ j * _p2 ^ k * _p3) % _prime_size;
+        long int index = ((i * _p1) ^ (j * _p2) ^ (k * _p3)) % _prime_size;
+//        long int index = i*j*k % _prime_size;
 
         if(index < 0)
             index += _prime_size;
@@ -148,7 +162,7 @@ public:
         return _table[index];
     }
 
-    void addAndCollide(int i,int j,int k,core::CollisionElementIterator elem,SReal timeStamp,core::collision::NarrowPhaseDetection * phase,sofa::core::collision::Intersection * interMehtod){
+    void addAndCollide(long int i,long int j,long int k,core::CollisionElementIterator elem,SReal timeStamp,core::collision::NarrowPhaseDetection * phase,sofa::core::collision::Intersection * interMehtod){
         TeschnerCollisionSet & tset = (*this)(i,j,k);
         std::vector<core::CollisionElementIterator> & vec_elems = tset.getCollisionElems();
 
@@ -160,8 +174,8 @@ public:
 
             cm1 = elem.getCollisionModel();
 
-            for(int i = 0 ; i < size ; ++i){
-                cm2 = vec_elems[i].getCollisionModel();
+            for(int ii = 0 ; ii < size ; ++ii){
+                cm2 = vec_elems[ii].getCollisionModel();
 
                 if(!(cm1->canCollideWith(cm2)))
                     continue;
@@ -179,7 +193,7 @@ public:
                         ei->beginIntersect(cm2,cm1,output);
 //                        sofa::helper::AdvancedTimer::stepEnd("TeschnerHashTable::performCollision : find output vector");
 
-                        ei->intersect(vec_elems[i],elem,output);
+                        ei->intersect(vec_elems[ii],elem,output);
                     }
                     else{
 //                        sofa::helper::AdvancedTimer::stepBegin("TeschnerHashTable::performCollision : find output vector");
@@ -187,7 +201,7 @@ public:
                         ei->beginIntersect(cm1,cm2,output);
 //                        sofa::helper::AdvancedTimer::stepEnd("TeschnerHashTable::performCollision : find output vector");
 
-                        ei->intersect(elem,vec_elems[i],output);
+                        ei->intersect(elem,vec_elems[ii],output);
                     }
                 }
 
@@ -196,10 +210,20 @@ public:
             }
 
             vec_elems.push_back(elem);
+            //std::cout<<"=====adding elem, final size "<<vec_elems.size()<<std::endl;
         }
         else{
             tset.clearAndAdd(elem,timeStamp);
         }
+
+//        if(vec_elems.size() > 18){
+//            std::cout<<"size of cell superior to 18========================================="<<std::endl;
+//            for(int ii = 0 ; ii < vec_elems.size() ; ++ii){
+//                std::cout<<"\tcollision model : "<<vec_elems[ii].getCollisionModel()<<" index : "<<vec_elems[ii].getIndex()<<std::endl;
+////                sofa::component::collision::Cube c();
+////                c.getVIterator()
+//            }
+//        }
     }
 
     void performCollision(core::collision::NarrowPhaseDetection * phase,sofa::core::collision::Intersection * interMehtod,SReal timeStamp){
@@ -259,12 +283,39 @@ public:
 //            delete _intersector_garbage[i];
     }
 
+    void showStats(SReal timeStamp)const{
+        int nb_full_cell = 0;
+        int nb_elems = 0;
+        int max_elems_in_cell = 0;
+
+        for(int i = 0 ; i < _table.size() ; ++i){
+            if(_table[i].updated(timeStamp)){
+                ++nb_full_cell;
+                nb_elems += _table[i].getCollisionElems().size();
+                if(_table[i].getCollisionElems().size() > max_elems_in_cell)
+                    max_elems_in_cell = _table[i].getCollisionElems().size();
+            }
+        }
+
+        SReal nb_elems_per_cell = (SReal)(nb_elems)/nb_full_cell;
+
+        std::cout<<"TeschnerHashTableStats ============================="<<std::endl;
+        std::cout<<"\tnb full cells "<<nb_full_cell<<std::endl;
+        std::cout<<"\tnb elems per cell "<<nb_elems_per_cell<<std::endl;
+        std::cout<<"\tmax exems found in a single cell "<<max_elems_in_cell<<std::endl;
+        std::cout<<"\ttable size "<<_table.size()<<std::endl;
+        std::cout<<"nb elems in hash table "<<nb_elems<<std::endl;
+        std::cout<<"===================================================="<<std::endl;
+    }
+
+    SReal cell_size;
 protected:
-    int _p1;
-    int _p2;
-    int _p3;
-    int _size;
-    int _prime_size;
+    boost::hash<std::pair<long int,long int> > _hash_func;
+    long int _p1;
+    long int _p2;
+    long int _p3;
+    long int _size;
+    long int _prime_size;
     std::vector<TeschnerCollisionSet> _table;
     //core::collision::ElementIntersector* _intersectors[sofa::core::CollisionModel::ENUM_TYPE_SIZE][sofa::core::CollisionModel::ENUM_TYPE_SIZE];
     //std::vector<MirrorIntersector*> _intersector_garbage;

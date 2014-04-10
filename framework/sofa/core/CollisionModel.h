@@ -98,17 +98,14 @@ protected:
 	  , contactFriction(initData(&contactFriction, (SReal)0.01, "contactFriction", "Default contact friction (damping) coefficient"))
 	  , contactRestitution(initData(&contactRestitution, (SReal)0.0, "contactRestitution", "Default contact coefficient of restitution"))
         , contactResponse(initData(&contactResponse, "contactResponse", "if set, indicate to the ContactManager that this model should use the given class of contacts.\nNote that this is only indicative, and in particular if both collision models specify a different class it is up to the manager to choose."))
-        , group(initData(&group, 0, "group", "If not zero, ID of a group containing this model. No collision can occur between collision models of the same group (allowing the same object to have multiple collision models)"))
         , color(initData(&color, defaulttype::Vec4f(1,0,0,1), "color", "color used to display the collision model if requested"))
-        , collisionGroupTags(initData(&collisionGroupTags,"collisionGroupTags","If not empty, collision can occur only when two CollisionModel share a same tag."))
+        , group(initData(&group,"group","if not empty, collision cannot occur between two CollisionModel that share a same tag"))
         , size(0), numberOfContacts(0)
         , previous(initLink("previous", "Previous (coarser / upper / parent level) CollisionModel in the hierarchy."))
         , next(initLink("next", "Next (finer / lower / child level) CollisionModel in the hierarchy."))
 
     {
-        ++nb_collision_models;
     }
-
     /// Destructor
     virtual ~CollisionModel()
     {
@@ -298,33 +295,21 @@ public:
 //            return true;
 //        else return bSelfCollision.getValue();
 //    }
-//      virtual bool canCollideWith(CollisionModel* model)
-//        {
-//            if (model->getContext() == this->getContext())
-//                return bSelfCollision.getValue();
-//            else if(collisionID.getValue()< 0)
-//                return true;
-//            else if(model->collisionID.getValue() < 0)
-//                return true;
-//            else
-//                return collisionFilter.getValue()[model->collisionID.getValue()];
-//        }
-
 
     virtual bool canCollideWith(CollisionModel* model)
     {
         if (model->getContext() == this->getContext())
             return bSelfCollision.getValue();
-        else if(!(this->collisionGroupTags.getValue().empty())){
-            if(model->collisionGroupTags.getValue().empty())
+        else if(!(this->group.getValue().empty())){
+            if(model->group.getValue().empty())
                 return true;
 
-            sofa::core::objectmodel::TagSet::const_iterator it = collisionGroupTags.getValue().begin();
-            for(;it != collisionGroupTags.getValue().end() ; ++it)
-                if(model->collisionGroupTags.getValue().includes(*it))
-                    return true;
+            sofa::core::objectmodel::TagSet::const_iterator it = group.getValue().begin();
+            for(;it != group.getValue().end() ; ++it)
+                if(model->group.getValue().includes(*it))
+                    return false;
 
-            return false;
+            return true;
         }
         else
             return true;
@@ -398,7 +383,7 @@ public:
             pmodel->setMoving(isMoving());
             pmodel->setSimulated(isSimulated());
             pmodel->proximity.setValue(proximity.getValue());
-            pmodel->group.setValue(group.getValue());
+            pmodel->group.setValue(group_old.getValue());
             //previous=pmodel;
             //pmodel->next = this;
             setPrevious(pmodel);
@@ -436,11 +421,11 @@ public:
 
     /// If not zero, ID of a group containing this model. No collision can occur between collision
     /// models of the same group (allowing the same object to have multiple collision models)
-    int getGroup() const { return group.getValue(); }
+    int getGroup() const { return group_old.getValue(); }
 
     /// Set ID of group of this model. No collision can occur between collision
     /// models of the same group (allowing the same object to have multiple collision models)
-    void setGroup(const int groupId) { group.setValue(groupId); }
+    void setGroup(const int groupId) { group_old.setValue(groupId); }
 
     /// @}
 
@@ -487,13 +472,13 @@ protected:
     /// given class of contacts.\nNote that this is only indicative, and in particular if both
     /// collision models specify a different class it is up to the manager to choose.
     Data<std::string> contactResponse;
-    /// If not zero, ID of a group containing this model. No collision can occur between collision
-    /// models of the same group (allowing the same object to have multiple collision models)
-    Data<int> group;
+
     /// color used to display the collision model if requested
     Data<defaulttype::Vec4f> color;
 
-    Data< sofa::core::objectmodel::TagSet > collisionGroupTags;
+    /// No collision can occur between collision
+    /// models of the same group (i.e. sharing a same tag)
+    Data< sofa::core::objectmodel::TagSet > group;
 
     /// Number of collision elements
     int size;
@@ -507,7 +492,6 @@ protected:
     /// Pointer to the next (finer / lower / child level) CollisionModel in the hierarchy.
     SingleLink<CollisionModel,CollisionModel,BaseLink::FLAG_DOUBLELINK> next;
 
-    static int nb_collision_models;
     int enum_type;
 };
 
