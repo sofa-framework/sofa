@@ -383,7 +383,9 @@ public:
             pmodel->setMoving(isMoving());
             pmodel->setSimulated(isSimulated());
             pmodel->proximity.setValue(proximity.getValue());
-            pmodel->group.setValue(group_old.getValue());
+            //pmodel->group.setValue(group_old.getValue());
+            pmodel->group.beginEdit()->insert(group.getValue().begin(),group.getValue().end());
+            pmodel->group.endEdit();
             //previous=pmodel;
             //pmodel->next = this;
             setPrevious(pmodel);
@@ -421,11 +423,16 @@ public:
 
     /// If not zero, ID of a group containing this model. No collision can occur between collision
     /// models of the same group (allowing the same object to have multiple collision models)
-    int getGroup() const { return group_old.getValue(); }
+    int getGroup() const {
+        if((group.getValue().empty()))
+            return 0;
+
+        return atoi(((std::string)(*(group.getValue().begin()))).c_str());
+    }
 
     /// Set ID of group of this model. No collision can occur between collision
     /// models of the same group (allowing the same object to have multiple collision models)
-    void setGroup(const int groupId) { group_old.setValue(groupId); }
+    void setGroup(const int groupId) { group.beginEdit()->insert(core::objectmodel::Tag(groupId));group.endEdit(); }
 
     /// @}
 
