@@ -19,6 +19,7 @@ set(SOURCE_FILES
     LoadScene_test.cpp
     TeschnerSpatialHashing_test.cpp
     DAG_test.cpp
+    BroadPhaseTest.cpp
         )
 
 if(APPLE)
