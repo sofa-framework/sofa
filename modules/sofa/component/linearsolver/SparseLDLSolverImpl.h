@@ -55,6 +55,139 @@ public :
     helper::vector<int> Parent;
 };
 
+
+#ifdef SOFA_HAVE_METIS
+inline void CSPARSE_ordering(int n,int * M_colptr,int * M_rowind,int * perm,int * invperm, int * xadj, int * adj)
+{
+    int it = 0;
+    for (int j=0; j<n; j++)
+    {
+        xadj[j] = M_colptr[j] - j;
+
+        for (int ip = M_colptr[j]; ip < M_colptr[j+1]; ip++)
+        {
+            int i = M_rowind[ip];
+            if (i != j) adj[it++] = i;
+        }
+    }
+    xadj[n] = M_colptr[n] - n;
+
+    //int numflag = 0, options = 0;
+    // The new API of metis requires pointers on numflag and "options" which are "structure" to parametrize the factorization
+    // We give NULL and NULL to use the default option (see doc of metis for details) !
+    // If you have the error "SparseLDLSolver failure to factorize, D(k,k) is zero" that probably means that you use the previsou version of metis.
+    // In this case you have to download and install the last version from : www.cs.umn.edu/~metis‎
+    METIS_NodeND(&n, xadj,adj, NULL, NULL, perm,invperm);
+}
+#else
+inline void CSPARSE_ordering(int n,int * /*M_colptr*/,int * /*M_rowind*/,int * perm,int * invperm, int * /*xadj*/, int * /*adj*/)
+{
+    for (int i=0; i<n; i++)
+    {
+        perm[i] = i;
+        invperm[i] = i;
+    }
+}
+#endif
+
+inline void CSPARSE_symbolic (int n,int * M_colptr,int * M_rowind,int * colptr,int * perm,int * invperm,int * Parent, int * Flag, int * Lnz)
+{
+    for (int k = 0 ; k < n ; k++)
+    {
+        Parent [k] = -1 ;	    /* parent of k is not yet known */
+        Flag [k] = k ;		    /* mark node k as visited */
+        Lnz [k] = 0 ;		    /* count of nonzeros in column k of L */
+        int kk = perm[k];  /* kth original, or permuted, column */
+        for (int p = M_colptr[kk] ; p < M_colptr[kk+1] ; p++)
+        {
+            /* A (i,k) is nonzero (original or permuted A) */
+            int i = invperm[M_rowind[p]];
+            if (i < k)
+            {
+                /* follow path from i to root of etree, stop at flagged node */
+                for ( ; Flag [i] != k ; i = Parent [i])
+                {
+                    /* find parent of i if not yet determined */
+                    if (Parent [i] == -1) Parent [i] = k ;
+                    Lnz [i]++ ;				/* L (k,i) is nonzero */
+                    Flag [i] = k ;			/* mark i as visited */
+                }
+            }
+        }
+    }
+
+    colptr[0] = 0 ;
+    for (int k = 0 ; k < n ; k++) colptr[k+1] = colptr[k] + Lnz[k] ;
+}
+
+template<class Real>
+inline void CSPARSE_numeric(int n,int * M_colptr,int * M_rowind,Real * M_values,int * colptr,int * rowind,Real * values,Real * D,int * perm,int * invperm,int * Parent, int * Flag, int * Lnz, int * Pattern, Real * Y)
+{
+    Real yi, l_ki ;
+    int i, p, kk, len, top ;
+
+    for (int k = 0 ; k < n ; k++)
+    {
+        Y [k] = 0.0 ;		    /* Y(0:k) is now all zero */
+        top = n ;		    /* stack for pattern is empty */
+        Flag [k] = k ;		    /* mark node k as visited */
+        Lnz [k] = 0 ;		    /* count of nonzeros in column k of L */
+        kk = perm[k];  /* kth original, or permuted, column */
+        for (p = M_colptr[kk] ; p < M_colptr[kk+1] ; p++)
+        {
+            i = invperm[M_rowind[p]];	/* get A(i,k) */
+            if (i <= k)
+            {
+                Y[i] += M_values[p] ;  /* scatter A(i,k) into Y (sum duplicates) */
+                for (len = 0 ; Flag[i] != k ; i = Parent[i])
+                {
+                    Pattern [len++] = i ;   /* L(k,i) is nonzero */
+                    Flag [i] = k ;	    /* mark i as visited */
+                }
+                while (len > 0) Pattern[--top] = Pattern [--len] ;
+            }
+        }
+        /* compute numerical values kth row of L (a sparse triangular solve) */
+        D[k] = Y [k] ;		    /* get D(k,k) and clear Y(k) */
+        Y[k] = 0.0 ;
+        for ( ; top < n ; top++)
+        {
+            i = Pattern [top] ;	    /* Pattern [top:n-1] is pattern of L(:,k) */
+            yi = Y [i] ;	    /* get and clear Y(i) */
+            Y [i] = 0.0 ;
+            for (p = colptr[i] ; p < colptr[i] + Lnz [i] ; p++)
+            {
+                Y[rowind[p]] -= values[p] * yi ;
+            }
+            l_ki = yi / D[i] ;	    /* the nonzero entry L(k,i) */
+            D[k] -= l_ki * yi ;
+            rowind[p] = k ;	    /* store L(k,i) in column form of L */
+            values[p] = l_ki ;
+            Lnz[i]++ ;		    /* increment count of nonzeros in col i */
+        }
+        if (D[k] == 0.0)
+        {
+            std::cerr << "SparseLDLSolver failure to factorize, D(k,k) is zero" << std::endl;
+            return;
+        }
+    }
+}
+
+inline bool CSPARSE_need_symbolic_factorization(int s_M, int * M_colptr,int * M_rowind, int s_P, int * P_colptr,int * P_rowind) {
+    if (s_M != s_P) return true;
+    if (M_colptr[s_M] != P_colptr[s_M] ) return true;
+
+    for (int i=0;i<s_P;i++) {
+        if (M_colptr[i]!=P_colptr[i]) return true;
+    }
+
+    for (int i=0;i<M_colptr[s_M];i++) {
+        if (M_rowind[i]!=P_rowind[i]) return true;
+    }
+
+    return false;
+}
+
 template<class TMatrix, class TVector, class TThreadManager>
 class SparseLDLSolverImpl : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector,TThreadManager>
 {
@@ -106,9 +239,34 @@ protected :
         }
     }
 
+    void LDL_ordering(int n,int * M_colptr,int * M_rowind,int * perm,int * invperm) {
+        xadj.resize(n+1);
+        adj.resize(M_colptr[n]-n);
+
+        CSPARSE_ordering(n,M_colptr,M_rowind,perm,invperm,&xadj[0],&adj[0]);
+    }
+
+    void LDL_symbolic (int n,int * M_colptr,int * M_rowind,int * colptr,int * perm,int * invperm,int * Parent) {
+        Lnz.clear();
+        Flag.clear();
+        Pattern.clear();
+
+        Lnz.resize(n);
+        Flag.resize(n);
+        Pattern.resize(n);
+
+        CSPARSE_symbolic(n,M_colptr,M_rowind,colptr,perm,invperm,Parent,&Flag[0],&Lnz[0]);
+    }
+
+    void LDL_numeric(int n,int * M_colptr,int * M_rowind,Real * M_values,int * colptr,int * rowind,Real * values,Real * D,int * perm,int * invperm,int * Parent) {
+        Y.resize(n);
+
+        CSPARSE_numeric<Real>(n,M_colptr,M_rowind,M_values,colptr,rowind,values,D,perm,invperm,Parent,&Flag[0],&Lnz[0],&Pattern[0],&Y[0]);
+    }
+
     template<class VecInt,class VecReal>
     void factorize(int n,int * M_colptr, int * M_rowind, Real * M_values, SpaseLDLImplInvertData<VecInt,VecReal> * data,int group = 1) {
-        bool new_factorization_needed = need_symbolic_factorization(n, M_colptr, M_rowind, data->n, (int *) &data->P_colptr[0],(int *) &data->P_rowind[0]);
+        bool new_factorization_needed = CSPARSE_need_symbolic_factorization(n, M_colptr, M_rowind, data->n, (int *) &data->P_colptr[0],(int *) &data->P_rowind[0]);
 
         data->n = n;
         data->P_nnz = M_colptr[data->n];
@@ -218,154 +376,8 @@ protected :
         }
     }
 
-
-#ifdef SOFA_HAVE_METIS
-    void LDL_ordering(int n,int * M_colptr,int * M_rowind,int * perm,int * invperm)
-    {
-        xadj.resize(n+1);
-        adj.resize(M_colptr[n]-n);
-
-        int it = 0;
-        for (int j=0; j<n; j++)
-        {
-            xadj[j] = M_colptr[j] - j;
-
-            for (int ip = M_colptr[j]; ip < M_colptr[j+1]; ip++)
-            {
-                int i = M_rowind[ip];
-                if (i != j) adj[it++] = i;
-            }
-        }
-        xadj[n] = M_colptr[n] - n;
-
-        //int numflag = 0, options = 0;
-        // The new API of metis requires pointers on numflag and "options" which are "structure" to parametrize the factorization
-        // We give NULL and NULL to use the default option (see doc of metis for details) !
-        // If you have the error "SparseLDLSolver failure to factorize, D(k,k) is zero" that probably means that you use the previsou version of metis.
-        // In this case you have to download and install the last version from : www.cs.umn.edu/~metis‎
-        METIS_NodeND(&n, &xadj[0],&adj[0], NULL, NULL, perm,invperm);
-    }
-#else
-    void LDL_ordering(int n,int * /*M_colptr*/,int * /*M_rowind*/,int * perm,int * invperm)
-    {
-        for (int i=0; i<n; i++)
-        {
-            perm[i] = i;
-            invperm[i] = i;
-        }
-    }
-#endif
-
-
-    void LDL_symbolic (int n,int * M_colptr,int * M_rowind,int * colptr,int * perm,int * invperm,int * Parent)
-    {
-        Lnz.clear();
-        Flag.clear();
-        Pattern.clear();
-
-        Lnz.resize(n);
-        Flag.resize(n);
-        Pattern.resize(n);
-
-        for (int k = 0 ; k < n ; k++)
-        {
-            Parent [k] = -1 ;	    /* parent of k is not yet known */
-            Flag [k] = k ;		    /* mark node k as visited */
-            Lnz [k] = 0 ;		    /* count of nonzeros in column k of L */
-            int kk = perm[k];  /* kth original, or permuted, column */
-            for (int p = M_colptr[kk] ; p < M_colptr[kk+1] ; p++)
-            {
-                /* A (i,k) is nonzero (original or permuted A) */
-                int i = invperm[M_rowind[p]];
-                if (i < k)
-                {
-                    /* follow path from i to root of etree, stop at flagged node */
-                    for ( ; Flag [i] != k ; i = Parent [i])
-                    {
-                        /* find parent of i if not yet determined */
-                        if (Parent [i] == -1) Parent [i] = k ;
-                        Lnz [i]++ ;				/* L (k,i) is nonzero */
-                        Flag [i] = k ;			/* mark i as visited */
-                    }
-                }
-            }
-        }
-
-        colptr[0] = 0 ;
-        for (int k = 0 ; k < n ; k++) colptr[k+1] = colptr[k] + Lnz[k] ;
-    }
-
-    void LDL_numeric(int n,int * M_colptr,int * M_rowind,Real * M_values,int * colptr,int * rowind,Real * values,Real * D,int * perm,int * invperm,int * Parent)
-    {
-        Real yi, l_ki ;
-        int i, p, kk, len, top ;
-
-        Y.resize(n);
-
-        for (int k = 0 ; k < n ; k++)
-        {
-            Y [k] = 0.0 ;		    /* Y(0:k) is now all zero */
-            top = n ;		    /* stack for pattern is empty */
-            Flag [k] = k ;		    /* mark node k as visited */
-            Lnz [k] = 0 ;		    /* count of nonzeros in column k of L */
-            kk = perm[k];  /* kth original, or permuted, column */
-            for (p = M_colptr[kk] ; p < M_colptr[kk+1] ; p++)
-            {
-                i = invperm[M_rowind[p]];	/* get A(i,k) */
-                if (i <= k)
-                {
-                    Y[i] += M_values[p] ;  /* scatter A(i,k) into Y (sum duplicates) */
-                    for (len = 0 ; Flag[i] != k ; i = Parent[i])
-                    {
-                        Pattern [len++] = i ;   /* L(k,i) is nonzero */
-                        Flag [i] = k ;	    /* mark i as visited */
-                    }
-                    while (len > 0) Pattern[--top] = Pattern [--len] ;
-                }
-            }
-            /* compute numerical values kth row of L (a sparse triangular solve) */
-            D[k] = Y [k] ;		    /* get D(k,k) and clear Y(k) */
-            Y[k] = 0.0 ;
-            for ( ; top < n ; top++)
-            {
-                i = Pattern [top] ;	    /* Pattern [top:n-1] is pattern of L(:,k) */
-                yi = Y [i] ;	    /* get and clear Y(i) */
-                Y [i] = 0.0 ;
-                for (p = colptr[i] ; p < colptr[i] + Lnz [i] ; p++)
-                {
-                    Y[rowind[p]] -= values[p] * yi ;
-                }
-                l_ki = yi / D[i] ;	    /* the nonzero entry L(k,i) */
-                D[k] -= l_ki * yi ;
-                rowind[p] = k ;	    /* store L(k,i) in column form of L */
-                values[p] = l_ki ;
-                Lnz[i]++ ;		    /* increment count of nonzeros in col i */
-            }
-            if (D[k] == 0.0)
-            {
-                serr << "SparseLDLSolver failure to factorize, D(k,k) is zero" << sendl;
-                return;
-            }
-        }
-    }
-
-    bool need_symbolic_factorization(int s_M, int * M_colptr,int * M_rowind, int s_P, int * P_colptr,int * P_rowind) {
-        if (s_M != s_P) return true;
-        if (M_colptr[s_M] != P_colptr[s_M] ) return true;
-
-        for (int i=0;i<s_P;i++) {
-            if (M_colptr[i]!=P_colptr[i]) return true;
-        }
-
-        for (int i=0;i<M_colptr[s_M];i++) {
-            if (M_rowind[i]!=P_rowind[i]) return true;
-        }
-
-        return false;
-    }
-
     helper::vector<Real> Tmp;
-private : //the folowing variables are used during the factorization they canno be used in the main thread !
+protected : //the folowing variables are used during the factorization they canno be used in the main thread !
     helper::vector<int> xadj,adj;
     helper::vector<Real> Y;
     helper::vector<int> Lnz,Flag,Pattern;

@@ -148,7 +148,7 @@ void WarpPreconditioner<TMatrix,TVector,ThreadManager >::setSystemMBKMatrix(cons
         rotationFinders[f_useRotationFinder.getValue()]->getRotations(rotationWork[indexwork]);
 
         this->currentGroup->systemMatrix->resize(updateSystemSize,updateSystemSize);
-        for (int i=0;i<updateSystemSize;i++) this->currentGroup->systemMatrix->setIdentity(); // identity rotationa after update
+        this->currentGroup->systemMatrix->setIdentity(); // identity rotationa after update
 
     } else if (realSolver->hasUpdatedMatrix()) {
         updateSystemSize = getSystemDimention(mparams);
@@ -162,7 +162,7 @@ void WarpPreconditioner<TMatrix,TVector,ThreadManager >::setSystemMBKMatrix(cons
         if (realSolver->isAsyncSolver()) indexwork = (indexwork==0) ? 1 : 0;
 
         this->currentGroup->systemMatrix->resize(updateSystemSize,updateSystemSize);
-        for (int i=0;i<updateSystemSize;i++) this->currentGroup->systemMatrix->setIdentity(); // identity rotationa after update
+        this->currentGroup->systemMatrix->setIdentity(); // identity rotationa after update
     } else {
         currentSystemSize = getSystemDimention(sofa::core::MechanicalParams::defaultInstance());
 
