@@ -36,21 +36,21 @@ std::vector<int> BaseCollisionElementIterator::emptyVector; ///< empty vector to
 const float* CollisionModel::getColor4f()
 {
 
-    static float defaultColorSimulatedMovingActive[4] = {1, 0.5f, 0, 1};
+    static const float defaultColorSimulatedMovingActive[4] = {1, 0.5f, 0, 1};
 
-    static float defaultColorSimulatedMoving[4] = {0.5f, 0.25f, 0, 1};
+    static const float defaultColorSimulatedMoving[4] = {0.5f, 0.25f, 0, 1};
 
-    static float defaultColorSimulatedActive[4] = {1, 0, 0, 1};
+    static const float defaultColorSimulatedActive[4] = {1, 0, 0, 1};
 
-    static float defaultColorSimulated[4] = {0.5f, 0, 0, 1};
+    static const float defaultColorSimulated[4] = {0.5f, 0, 0, 1};
 
-    static float defaultColorMovingActive[4] = {0, 1, 0.5f, 1};
+    static const float defaultColorMovingActive[4] = {0, 1, 0.5f, 1};
 
-    static float defaultColorMoving[4] = {0, 0.5f, 0.25f, 1};
+    static const float defaultColorMoving[4] = {0, 0.5f, 0.25f, 1};
 
-    static float defaultColorActive[4] = {0.5f, 0.5f, 0.5f, 1};
+    static const float defaultColorActive[4] = {0.5f, 0.5f, 0.5f, 1};
 
-    static float defaultColor[4] = {0.25f, 0.25f, 0.25f, 1};
+    static const float defaultColor[4] = {0.25f, 0.25f, 0.25f, 1};
 
     if (color.isSet())
         return color.getValue().ptr();

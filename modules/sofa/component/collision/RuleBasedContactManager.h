@@ -94,7 +94,7 @@ public:
             }
             else
             {
-                if (group1 != model1->getGroup())
+                if ( model1->getGroups().count(group1)==0 )
                     return false;
             }
             if (!name2.empty())
@@ -104,7 +104,7 @@ public:
             }
             else
             {
-                if (group2 != model2->getGroup())
+                if ( model2->getGroups().count(group2)==0 )
                     return false;
             }
             return true;
