@@ -72,14 +72,14 @@ QSofaStatWidget::QSofaStatWidget(QWidget* parent):QWidget(parent)
     statsCounter->addColumn(QString("Size"));
     statsCounter->header()->setClickEnabled(true, statsCounter->header()->count() - 1);
     statsCounter->header()->setResizeEnabled(true, statsCounter->header()->count() - 1);
-    statsCounter->addColumn(QString("Group"));
+    statsCounter->addColumn(QString("Groups"));
     statsCounter->header()->setClickEnabled(true, statsCounter->header()->count() - 1);
     statsCounter->header()->setResizeEnabled(true, statsCounter->header()->count() - 1);
     statsCounter->setResizeMode(Q3ListView::LastColumn);
     statsCounter->header()->setLabel(0, QString("Name"));
     statsCounter->header()->setLabel(1, QString("Type"));
     statsCounter->header()->setLabel(2, QString("Size"));
-    statsCounter->header()->setLabel(3, QString("Group"));
+    statsCounter->header()->setLabel(3, QString("Groups"));
     layout->addWidget(statsCounter);
 
 
@@ -132,7 +132,13 @@ void QSofaStatWidget::addCollisionModelsStat(const sofa::helper::vector< sofa::c
         item->setText(1,QString(v[i]->getClassName().c_str()));
         item->setText(0,v[i]->getName().c_str());
         item->setText(2,QString::number(v[i]->getSize()));
-        item->setText(3,QString::number(v[i]->getGroup()));
+        {
+        const helper::set<int>& groups = v[i]->getGroups();
+        QString groupString;
+        helper::set<int>::const_iterator it = groups.begin(), itend = groups.end();
+        for( ; it != itend ; ++it ) groupString += QString::number(*it) + ", ";
+        item->setText(3,groupString);
+        }
         items_stats.push_back(std::make_pair(v[i], item));
     }
 }
