@@ -40,6 +40,13 @@ public:
 	static const unsigned int DIMENSION = 3 ;
 
 
+    EmbeddedMap3() : Map3() {
+        std::cerr << "EMAP3  creation" << std::endl;
+        this->initAllOrbitsEmbedding<VERTEX>();
+        this->initAllOrbitsEmbedding<EDGE>();
+        this->initAllOrbitsEmbedding<FACE>();
+        this->initAllOrbitsEmbedding<VOLUME>();
+    }
 
 	//!
 	/*!

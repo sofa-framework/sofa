@@ -119,7 +119,7 @@ bool isTriangleObtuse(const VEC3& p1, const VEC3& p2, const VEC3& p3)
 template <typename VEC3>
 typename VEC3::DATA_TYPE tetraSignedVolume(const VEC3& p1, const VEC3& p2, const VEC3& p3, const VEC3& p4)
 {
-	return tripleProduct(p2 - p1, p3 - p1, p4 - p1) / typename VEC3::DATA_TYPE(6) ;
+    return tripleProduct(p2 - p1, p3 - p1, p4 - p1) / typename VEC3::value_type(6) ;
 }
 
 // volume of the tetrahedron formed by 4 points in 3D

@@ -427,7 +427,7 @@ inline T tripleProduct(const Vector<DIM, T>& v1, const Vector<DIM, T>& v2, const
 template <unsigned int DIM, typename T>
 inline Vector<DIM, T> slerp(const Vector<DIM, T>& v1, const Vector<DIM, T>& v2, const T& t)
 {
-	Vector<DIM, T> res ;
+    Vector<DIM, T> res ;
 
 	T scal = v1 * v2 ;
 

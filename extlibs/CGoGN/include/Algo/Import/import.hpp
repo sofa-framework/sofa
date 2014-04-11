@@ -26,6 +26,8 @@
 #include "Topology/generic/autoAttributeHandler.h"
 #include "Container/fakeAttribute.h"
 #include "Algo/Modelisation/polyhedron.h"
+#include "Algo/Export/exportVol.h"
+#include "Geometry/orientation.h"
 
 namespace CGoGN
 {
@@ -533,6 +535,7 @@ bool importMeshSurfToVol(typename PFP::MAP& map, Surface::Import::MeshTablesSurf
 template <typename PFP>
 bool importMesh(typename PFP::MAP& map, MeshTablesVolume<PFP>& mtv) {
     typedef typename MeshTablesVolume<PFP>::VOLUME_TYPE VOLUME_TYPE;
+    typedef typename PFP::VEC3 VEC3;
     // store incident darts to a Vertex for every incident volume to this vertex
     VertexAutoAttribute< NoTypeNameAttribute< std::vector<Dart> > > vecIncidentFacesToVertex(map, "incidents");
 
@@ -686,8 +689,8 @@ bool importMesh(typename PFP::MAP& map, MeshTablesVolume<PFP>& mtv) {
             vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
             vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd);
 
-        }  //end of hexa
-        else if (VT == MeshTablesVolume<PFP>::SQUARE_PYRAMID) {
+        } //end of hexa
+        else  if (VT == MeshTablesVolume<PFP>::SQUARE_PYRAMID) {
             Dart d = Surface::Modelisation::createQuadrangularPyramid<PFP>(map,false);
 
             // 1.
@@ -742,6 +745,11 @@ bool importMesh(typename PFP::MAP& map, MeshTablesVolume<PFP>& mtv) {
 
         } else if (VT == MeshTablesVolume<PFP>::TRIANGULAR_PRISM) {
             Dart d = Surface::Modelisation::createTriangularPrism<PFP>(map,false);
+            const Dart e = map.phi2(d);
+            const Dart f = map.phi1(map.phi2(map.phi1(e)));
+            const Dart g = map.phi1(map.phi2(map.phi1(f)));
+
+            VertexAttribute<typename PFP::VEC3> position =  map.template getAttribute<typename PFP::VEC3, VERTEX>("position") ;
 
             // 1.
             unsigned int em = vertexEmbeddingsBuffer[0];		// get embedding
@@ -801,6 +809,28 @@ bool importMesh(typename PFP::MAP& map, MeshTablesVolume<PFP>& mtv) {
             vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
             vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
             vecIncidentFacesToVertex[em].push_back(dd); m.mark(dd);
+
+            //debugging
+            const VEC3 & P =position[e];
+            const VEC3 & A = position[map.phi1(e)];
+            const VEC3 & B = position[map.phi1(map.phi1(e))];
+            const VEC3 & C = position[map.phi1(map.phi1(map.phi1(e)))];
+            if (Geom::testOrientation3D<VEC3>(P, A, B, C) == Geom::ON) {
+                d = map.phi2(e);
+                SHOW(position[d]);
+                d = map.phi1(d);
+                SHOW(position[d]);
+                d = map.phi1(d);
+                SHOW(position[d]);
+                d = map.phi2(map.phi1(map.phi1(map.phi2(d))));
+                SHOW(position[d]);
+                d = map.phi_1(d);
+                SHOW(position[d]);
+                d = map.phi_1(d);
+                SHOW(position[d]);
+                DEBUG;
+            }
+
         }
     }
 
@@ -828,8 +858,8 @@ bool importMesh(typename PFP::MAP& map, MeshTablesVolume<PFP>& mtv) {
             for(typename std::vector<Dart>::iterator it = vec.begin(); it != vec.end() && good_dart == NIL; ++it)
             {
                 if (map.template getEmbedding<VERTEX>(map.phi1(*it)) == map.template getEmbedding<VERTEX>(d) &&
-                        map.template getEmbedding<VERTEX>(map.phi_1(*it)) == map.template getEmbedding<VERTEX>(map.phi1(map.phi1(d))) /*&&
-                                map.template getEmbedding<VERTEX>(*it) == map.template getEmbedding<VERTEX>(map.phi1(d))*/  /*Always true by construction */) {
+                        map.template getEmbedding<VERTEX>(map.phi_1(*it)) == map.template getEmbedding<VERTEX>(map.phi1(map.phi1(d))) &&
+                        map.template getEmbedding<VERTEX>(*it) == map.template getEmbedding<VERTEX>(map.phi1(d))  /*Always true by construction */) {
                     good_dart = *it ;
                 }
             }
@@ -837,38 +867,63 @@ bool importMesh(typename PFP::MAP& map, MeshTablesVolume<PFP>& mtv) {
             if (good_dart != NIL) { // not at the boundary
                 unsigned int F1_degree = map.faceDegree(d);
                 unsigned int F2_degree = map.faceDegree(good_dart);
-
-                if (F1_degree == F2_degree) {
-                map.sewVolumes(d, good_dart, false);
-                m.template unmarkOrbit<FACE>(d);
-                } else if (F1_degree > F2_degree) { // F1D = 4 ; F2D = 3
-                    const Dart dt = map.phi1(map.phi1(d));
-                    map.PFP::MAP::ParentMap::splitFace(d, dt);
-                    map.template setDartEmbedding<VERTEX>(map.phi_1(d), map.template getEmbedding<VERTEX>(dt));
-                    map.template setDartEmbedding<VERTEX>(map.phi_1(dt), map.template getEmbedding<VERTEX>(d));
-                    map.sewVolumes(d, good_dart, false);
-                    m.template unmarkOrbit<FACE>(d);
-                } else { // F1D = 3 ; F2D = 4
-                    const Dart gdt = map.phi1(good_dart);
-                    map.PFP::MAP::ParentMap::splitFace(map.phi_1(good_dart), gdt);
-                    map.template setDartEmbedding<VERTEX>(map.phi1(good_dart), map.template getEmbedding<VERTEX>(gdt));
-                    map.template setDartEmbedding<VERTEX>(map.phi_1(gdt), map.template getEmbedding<VERTEX>(map.phi_1(good_dart)));
-                    map.sewVolumes(d, good_dart, false);
-                    m.template unmarkOrbit<FACE>(d);
+                if ( F1_degree  < 3 || F2_degree < 3 || F1_degree > 4  || F2_degree > 4 || d.index == 334425 || good_dart.index == 334425) {
+                    SHOW(F1_degree);
+                    SHOW(F2_degree);
                 }
-            }
+                //                SHOW(d);
+                //                SHOW(map.phi3(d));
+                //                SHOW(good_dart);
+                //                SHOW(map.phi3(good_dart));
+                if (F1_degree != F2_degree) {
+                    if (F1_degree > F2_degree) { // F1D = 4 ; F2D = 3
+                        const Dart dt = map.phi1(map.phi1(d));
+                        map.CGoGN::Map2::splitFace(d, dt);
+                        map.template setDartEmbedding<VERTEX>(map.phi_1(d), map.template getEmbedding<VERTEX>(dt));
+                        map.template setDartEmbedding<VERTEX>(map.phi_1(dt), map.template getEmbedding<VERTEX>(d));
+                    } else { // F1D = 3 ; F2D = 4
+                        const Dart gdt = map.phi1(good_dart);
+                        map.CGoGN::Map2::splitFace(map.phi_1(good_dart), gdt);
+                        map.template setDartEmbedding<VERTEX>(map.phi1(good_dart), map.template getEmbedding<VERTEX>(gdt));
+                        map.template setDartEmbedding<VERTEX>(map.phi_1(gdt), map.template getEmbedding<VERTEX>(map.phi_1(good_dart)));
+                    }
+                } else {
+                    if (F1_degree == 4u) {
+                        VertexAttribute<typename PFP::VEC3> position =  map.template getAttribute<typename PFP::VEC3, VERTEX>("position") ;
+                        assert(position.isValid());
+                        if (map.template getEmbedding<VERTEX>(map.phi_1(d)) != map.template getEmbedding<VERTEX>(map.phi1(map.phi1(good_dart)))) {
+                            //                            SHOW(position[d]);
+                            //                            SHOW(position[map.phi1(d)]);
+                            //                            SHOW(position[map.phi1(map.phi1(d))]);
+                            //                            SHOW(position[map.phi_1(d)]);
+                            //                            DEBUG;
+                            //                            SHOW(position[good_dart]);
+                            //                            SHOW(position[map.phi1(good_dart)]);
+                            //                            SHOW(position[map.phi1(map.phi1(good_dart))]);
+                            //                            SHOW(position[map.phi_1(good_dart)]);
+                            //                            std::cerr << std::endl;
+                        }
+                    }
+                }
+                if ( map.phi3(d) != d || map.phi3(good_dart) != good_dart ) {
+                    //debugging
+                    SHOW(d);
+                    SHOW(map.phi3(d));
+                    SHOW(good_dart);
+                    SHOW(map.phi3(good_dart));
 
 
-
-
-            else
-            {
+                }
+                map.sewVolumes(d, good_dart, false);
+                m.unmarkOrbit<FACE>(d);
+            } else { // good dart = NIL
                 m.unmarkOrbit<PFP::MAP::FACE_OF_PARENT>(d);
                 ++nbBoundaryFaces;
             }
         }
     }
-
+    //    map.saveMapBin("MAP.mapbin");
+    //    std::exit(20);
     if (nbBoundaryFaces > 0)
     {
         unsigned int nbH =  map.closeMap();
