@@ -44,8 +44,8 @@ typedef BaseMeshTopology::SeqEdges SeqEdges;
 typedef BaseMeshTopology::EdgesAroundVertex EdgesAroundVertex;
 
 /**
-* A class that can apply basic transformations on a set of edges.
-*/
+ * A class that can apply basic transformations on a set of edges.
+ */
 class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyModifier : public PointSetTopologyModifier
 {
 public:
@@ -130,14 +130,14 @@ public:
             const sofa::helper::vector< unsigned int >& edgesIndexList,
             const sofa::helper::vector< core::topology::EdgeAncestorElem >& ancestorElems);
 
-    /** \brief Effectively Add an edge.
+    /** \brief Effectively add an edge.
     */
     void addEdgeProcess(Edge e);
 
-    /** \brief Effectively Add some edges to this topology.
+    /** \brief Effectively add some edges to this topology.
     *
-    	* \sa addEdgesWarning
-    	*/
+    * \sa addEdgesWarning
+    */
     virtual void addEdgesProcess(const sofa::helper::vector< Edge > &edges);
 
     /** \brief Sends a message to warn that some edges are about to be deleted.
@@ -212,10 +212,10 @@ public:
             const sofa::helper::vector<unsigned int> &/*inv_index*/,
             const bool renumberDOF = true);
 
-    /** \brief Remove a set  of edges
+    /** \brief Remove a set of edges
     @param edges an array of edge indices to be removed (note that the array is not const since it needs to be sorted)
-    	*
-    	*/
+    *
+    */
     // side effect: edges are sorted in removeEdgesWarning
     virtual void removeEdges(/*const*/ sofa::helper::vector< unsigned int >& edges,
             const bool removeIsolatedPoints = true, const bool resetTopoChange = true);
@@ -265,13 +265,13 @@ public:
     /** \brief Move input points indices to input new coords.
      * Also propagate event and update edgesAroundVertex for data handling.
      *
-     * @param id : list of indices to move
-     * @param : ancestors list of ancestors to define relative new position
-     * @param coefs : barycoef to locate new coord relatively to ancestors.
+     * @param id The list of indices to move
+     * @param ancestors The list of ancestors to define relative new position
+     * @param coefs The barycoef to locate new coord relatively to ancestors.
      * @moveDOF bool allowing the move (default true)
      */
     virtual void movePointsProcess (const sofa::helper::vector <unsigned int>& id,
-            const sofa::helper::vector< sofa::helper::vector< unsigned              int > >& ancestors,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& coefs,
             const bool moveDOF = true);
 
@@ -280,14 +280,14 @@ public:
     /** \brief Given an element indice, it will remove all the connected component in which this element belongs to.
     *  Warning: if there is only one connected component in the model. All the object will be removed.
     *
-    * @param elemID, ID of the input element.
+    * @param elemID The ID of the input element.
     * @return false if something goes wrong during the process.
     */
     virtual bool removeConnectedComponents(unsigned int elemID);
 
     /** \brief Given an element indice, it will remove all elements directly connected to the input one.
     *
-    * @param elemID, ID of the input element.
+    * @param elemID The ID of the input element.
     * @return false if something goes wrong during the process.
     */
     virtual bool removeConnectedElements(unsigned int elemID);

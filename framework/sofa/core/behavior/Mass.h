@@ -195,7 +195,7 @@ public:
     //virtual void addGravityToV(double dt)=0;
 
     virtual double getElementMass(unsigned int) const;
-    virtual void   getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const;
+    virtual void getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const;
 
 protected:
     /// stream to export Kinematic, Potential and Mechanical Energy to gnuplot files

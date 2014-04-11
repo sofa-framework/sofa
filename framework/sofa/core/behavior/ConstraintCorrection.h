@@ -83,9 +83,9 @@ public:
     /// @param v is the velocity result VecId
     /// @param f is the motion space force vector
     /// @param lambda is the constraint space force vector
-    virtual void computeAndApplyMotionCorrection(const core::ConstraintParams * /*cparams*/, core::MultiVecCoordId /*x*/, core::MultiVecDerivId /*v*/, core::MultiVecDerivId /*f*/, const defaulttype::BaseVector * /*lambda*/);
+    virtual void computeAndApplyMotionCorrection(const core::ConstraintParams * cparams, core::MultiVecCoordId x, core::MultiVecDerivId v, core::MultiVecDerivId f, const defaulttype::BaseVector * lambda);
 
-    virtual void computeAndApplyMotionCorrection(const core::ConstraintParams * /*cparams*/, Data< VecCoord > &/*x*/, Data< VecDeriv > &/*v*/, Data< VecDeriv > &/*f*/, const defaulttype::BaseVector * /*lambda*/) = 0;
+    virtual void computeAndApplyMotionCorrection(const core::ConstraintParams * cparams, Data< VecCoord > &x, Data< VecDeriv > &v, Data< VecDeriv > &f, const defaulttype::BaseVector * lambda) = 0;
 
     /// Compute position correction from the constraint resolution (LCP) calculated force
     ///
@@ -93,9 +93,9 @@ public:
     /// @param x is the position result VecId
     /// @param f is the motion space force vector
     /// @param lambda is the constraint space force vector
-    virtual void computeAndApplyPositionCorrection(const core::ConstraintParams * /*cparams*/, core::MultiVecCoordId /*x*/, core::MultiVecDerivId /*f*/, const defaulttype::BaseVector * /*lambda*/);
+    virtual void computeAndApplyPositionCorrection(const core::ConstraintParams * cparams, core::MultiVecCoordId x, core::MultiVecDerivId f, const defaulttype::BaseVector * lambda);
 
-    virtual void computeAndApplyPositionCorrection(const core::ConstraintParams * /*cparams*/, Data< VecCoord > &/*x*/, Data< VecDeriv > &/*f*/, const defaulttype::BaseVector * /*lambda*/)  = 0;
+    virtual void computeAndApplyPositionCorrection(const core::ConstraintParams * cparams, Data< VecCoord > &x, Data< VecDeriv > &f, const defaulttype::BaseVector * lambda)  = 0;
 
     /// Compute velocity correction from the constraint resolution (LCP) calculated force
     ///
@@ -103,16 +103,16 @@ public:
     /// @param v is the velocity result VecId
     /// @param f is the motion space force vector
     /// @param lambda is the constraint space force vector
-    virtual void computeAndApplyVelocityCorrection(const core::ConstraintParams * /*cparams*/, core::MultiVecDerivId /*v*/, core::MultiVecDerivId /*f*/, const defaulttype::BaseVector * /*lambda*/);
+    virtual void computeAndApplyVelocityCorrection(const core::ConstraintParams * cparams, core::MultiVecDerivId v, core::MultiVecDerivId f, const defaulttype::BaseVector * lambda);
 
-    virtual void computeAndApplyVelocityCorrection(const core::ConstraintParams * /*cparams*/, Data< VecDeriv > &/*v*/, Data< VecDeriv > &/*f*/, const defaulttype::BaseVector * /*lambda*/) = 0;
+    virtual void computeAndApplyVelocityCorrection(const core::ConstraintParams * cparams, Data< VecDeriv > &v, Data< VecDeriv > &f, const defaulttype::BaseVector * lambda) = 0;
 
     /// Apply predictive constraint force
     ///
     /// @param cparams
     /// @param f is the motion space force vector
     /// @param lambda is the constraint space force vector
-    virtual void applyPredictiveConstraintForce(const core::ConstraintParams * /*cparams*/, core::MultiVecDerivId /*f*/, const defaulttype::BaseVector *lambda);
+    virtual void applyPredictiveConstraintForce(const core::ConstraintParams * cparams, core::MultiVecDerivId f, const defaulttype::BaseVector *lambda);
 
     virtual void applyPredictiveConstraintForce(const core::ConstraintParams * /*cparams*/, Data< VecDeriv > &/*f*/, const defaulttype::BaseVector * /*lambda*/) {};
 
@@ -120,35 +120,35 @@ public:
     ///
     /// @param f is the motion space force vector
     /// @param lambda is the constraint space force vector
-    void setConstraintForceInMotionSpace(core::MultiVecDerivId /*f*/, const defaulttype::BaseVector * /*lambda*/);
+    void setConstraintForceInMotionSpace(core::MultiVecDerivId f, const defaulttype::BaseVector * lambda);
 
-    void setConstraintForceInMotionSpace(Data< VecDeriv > &/*f*/, const defaulttype::BaseVector * /*lambda*/);
+    void setConstraintForceInMotionSpace(Data< VecDeriv > &f, const defaulttype::BaseVector * lambda);
 
     /// Converts constraint force from the constraints space to the motion space and accumulates it in f vector
     ///
     /// @param f is the motion space force vector
     /// @param lambda is the constraint space force vector
-    void addConstraintForceInMotionSpace(core::MultiVecDerivId /*f*/, const defaulttype::BaseVector * /*lambda*/);
+    void addConstraintForceInMotionSpace(core::MultiVecDerivId f, const defaulttype::BaseVector * lambda);
 
-    void addConstraintForceInMotionSpace(Data< VecDeriv > &/*f*/, const defaulttype::BaseVector * /*lambda*/);
+    void addConstraintForceInMotionSpace(Data< VecDeriv > &f, const defaulttype::BaseVector * lambda);
 
     /// Converts constraint force from the constraints space to the motion space and stores it in f vector
     ///
     /// @param f is the motion space force vector
     /// @param lambda is the constraint space force vector
     /// @param activeDofs stores constrained dofs indices
-    void setConstraintForceInMotionSpace(core::MultiVecDerivId /*f*/, const defaulttype::BaseVector * /*lambda*/, std::list< int > &activeDofs);
+    void setConstraintForceInMotionSpace(core::MultiVecDerivId f, const defaulttype::BaseVector * lambda, std::list< int > &activeDofs);
 
-    void setConstraintForceInMotionSpace(Data< VecDeriv > &/*f*/, const defaulttype::BaseVector * /*lambda*/, std::list< int > &activeDofs);
+    void setConstraintForceInMotionSpace(Data< VecDeriv > &f, const defaulttype::BaseVector * lambda, std::list< int > &activeDofs);
 
     /// Converts constraint force from the constraints space to the motion space and accumulates it in f vector
     ///
     /// @param f is the motion space force vector
     /// @param lambda is the constraint space force vector
     /// @param activeDofs stores constrained dofs indices
-    void addConstraintForceInMotionSpace(core::MultiVecDerivId /*f*/, const defaulttype::BaseVector * /*lambda*/, std::list< int > &activeDofs);
+    void addConstraintForceInMotionSpace(core::MultiVecDerivId f, const defaulttype::BaseVector * lambda, std::list< int > &activeDofs);
 
-    void addConstraintForceInMotionSpace(Data< VecDeriv > &/*f*/, const defaulttype::BaseVector * /*lambda*/, std::list< int > &activeDofs);
+    void addConstraintForceInMotionSpace(Data< VecDeriv > &f, const defaulttype::BaseVector * lambda, std::list< int > &activeDofs);
 
 
     /// Pre-construction check method called by ObjectFactory.

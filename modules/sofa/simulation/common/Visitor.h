@@ -83,8 +83,8 @@ public:
 
 
     typedef enum{ NO_REPETITION=0, REPEAT_ALL, REPEAT_ONCE } TreeTraversalRepetition;
-    /// @returns treeTraversal=true iff a tree traversal must be enforced (even for a DAG)
-    /// if @param repeat=true, a node callback can be executed several times (at each traversal in diamond configurations)
+    /// @return @a treeTraversal returns true if and only if a tree traversal must be enforced (even for a DAG)
+    /// @param repeat Tell if a node callback can be executed several times (at each traversal in diamond configurations)
     virtual bool treeTraversal(TreeTraversalRepetition& repeat) { repeat=NO_REPETITION; return false; }
 
     /// Return a category name for this visitor

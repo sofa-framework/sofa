@@ -108,101 +108,96 @@ public:
     /// BaseMeshTopology API
     /// @{
 
-    /** \brief Returns the hexahedra array. */
+    /** \brief Get the array of hexahedra. */
     virtual const SeqHexahedra& getHexahedra()
     {
         return getHexahedronArray();
     }
 
-    /** \brief Returns a reference to the Data of hexahedra array container. */
+    /** \brief Get the Data which contains the array of hexahedra. */
     Data< sofa::helper::vector<Hexahedron> >& getHexahedronDataArray() {return d_hexahedron;}
 
-    /** \brief Returns the ith Hexahedron.
+    /** \brief Get a hexahedron from its index.
      *
-     * @param ID of a hexahedron.
+     * @param i The index of a hexahedron.
      * @return The corresponding hexahedron.
      */
     virtual const Hexahedron getHexahedron(HexaID i);
 
 
-    /** \brief Returns the indices of a hexahedron given 8 vertex indices.
+    /** \brief Get the index of a hexahedron from the indices of its vertices.
      *
-     * @param the 8 vertex indices.
-     * @return the ID of the corresponding hexahedron.
-     * @return -1 if none
+     * @return The index of the corresponding hexahedron if it exists, -1 otherwise.
      */
     virtual int getHexahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4,
-            PointID v5, PointID v6, PointID v7, PointID v8);
+				   PointID v5, PointID v6, PointID v7, PointID v8);
 
 
-    /** \brief Returns the 12 edges adjacent to a given hexahedron.
+    /** \brief Get the 12 edges that form a hexahedron.
      *
-     * @param ID of a hexahedron.
-     * @return EdgesInHexahedron list composing the input hexahedron.
+     * @param i The index of a hexahedron.
+     * @return An EdgesInHexahedron containing the indices of the edges.
      */
     virtual const EdgesInHexahedron& getEdgesInHexahedron(HexaID i) ;
 
 
-    /** \brief Returns the 6 quads adjacent to a given hexahedron.
+    /** \brief Get the 6 quads that form a hexahedron.
      *
-     * @param ID of a hexahedron.
-     * @return QuadsInHexahedron list composing the input hexahedron.
+     * @param i The index of a hexahedron.
+     * @return A QuadsInHexahedron containing the indices of the quads.
      */
     virtual const QuadsInHexahedron& getQuadsInHexahedron(HexaID i) ;
 
 
-    /** \brief Returns the set of hexahedra adjacent to a given vertex.
+    /** \brief Get the hexahedra around a vertex.
      *
-     * @param ID of a vertex.
-     * @return HexahedraAroundVertex list around the input vertex.
+     * @param i The index of a vertex.
+     * @return A HexahedraAroundVertex containing the indices of the hexahedra this vertex belongs to.
      */
     virtual const HexahedraAroundVertex& getHexahedraAroundVertex(PointID i) ;
 
 
-    /** \brief Returns the set of hexahedra adjacent to a given edge.
+    /** \brief Get the hexahedra around an edge.
      *
-     * @param ID of a edge.
-     * @return HexahedraAroundEdge list around the input edge.
+     * @param i The index of an edge.
+     * @return A HexahedraAroundEdge containing the indices of the hexahedra this edge belongs to.
      */
     virtual const HexahedraAroundEdge& getHexahedraAroundEdge(EdgeID i) ;
 
 
-    /** \brief Returns the set of hexahedra adjacent to a given quad.
+    /** \brief Get the hexahedra around a quad.
      *
-     * @param ID of a quad.
-     * @return HexahedraAroundQuad list around the input quad.
+     * @param i The index of a quad.
+     * @return A HexahedraAroundQuad containing the indices of the hexahedra this quad belongs to.
      */
     virtual const HexahedraAroundQuad& getHexahedraAroundQuad(QuadID i) ;
 
 
-    /** returns the index (0 to 7) of the vertex whose global index is vertexIndex.
+    /** \brief Get the position of a vertex in a hexahedron from its index.
      *
-     * @param Ref to a Hexahedron.
-     * @param Id of a vertex.
-     * @return the position of this vertex in the Hexahedron (i.e. either 0, 1, ..., 7).
-     * @return -1 if none.
+     * @param t A Hexahedron.
+     * @param vertexIndex The index of a vertex.
+     * @return The position (between 0 and 7) of this vertex in the Hexahedron if it is present, -1 otherwise.
      */
-    int getVertexIndexInHexahedron(const Hexahedron &t, PointID vertexIndex) const;
+    int getVertexIndexInHexahedron(const Hexahedron& t, PointID vertexIndex) const;
 
 
-    /** returns the index (0 to 11) of the edge whose global index is edgeIndex.
+    /** \brief Get the position of an edge in a hexahedron from its index.
      *
-     * @param Ref to a EdgesInHexahedron.
-     * @param Id of an edge.
-     * @return the position of this edge in the Hexahedron (i.e. either 0, 1, ..., 11).
-     * @return -1 if none.
+     * @param t An EdgesInhexahedron.
+     * @param edgeIndex The index of an edge.
+     * @return The position (between 0 and 11) of this edge in the Hexahedron if it is present, -1 otherwise.
      */
-    int getEdgeIndexInHexahedron(const EdgesInHexahedron &t, EdgeID edgeIndex) const;
+    int getEdgeIndexInHexahedron(const EdgesInHexahedron& t, EdgeID edgeIndex) const;
 
 
-    /** returns the index (0 to 7) of the quad whose global index is quadIndex.
+    /** \brief Get the position of a quad in a hexahedron from its index.
      *
-     * @param Ref to a QuadsInHexahedron.
-     * @param Id of a quad.
-     * @return the position of this quad in the Hexahedron (i.e. either 0, 1, ..., 7).
-     * @return -1 if none.
+     * @param t A QuadInHexahedron.
+     * @param quadIndex The index of a quad.
+     * @return The position (between 0 and 5) of this quad in the Hexahedron if it is present, -1 otherwise.
      */
-    int getQuadIndexInHexahedron(const QuadsInHexahedron &t, QuadID quadIndex) const;
+    int getQuadIndexInHexahedron(const QuadsInHexahedron& t, QuadID quadIndex) const;
 
 
     /** \brief Returns for each index (between 0 and 11) the two vertex local indices that are adjacent to/forming that edge

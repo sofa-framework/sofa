@@ -73,12 +73,12 @@ public:
  *
  *  Each contact point is described by :
  *
- *  \item elem: pair of colliding elements.
- *  \item id: unique id of the contact for the given pair of collision models.
- *  \item point: contact points on the surface of each model.
- *  \item normal: normal of the contact, pointing outward from the first model.
- *  \item value: signed distance (negative if objects are interpenetrating).
- *  \item deltaT: estimated of time of contact.
+ *  - elem: pair of colliding elements.
+ *  - id: unique id of the contact for the given pair of collision models.
+ *  - point: contact points on the surface of each model.
+ *  - normal: normal of the contact, pointing outward from the first model.
+ *  - value: signed distance (negative if objects are interpenetrating).
+ *  - deltaT: estimated of time of contact.
  *
  *  The contact id is used to filter redundant contacts (only the contact with
  *  the smallest distance is kept), and to store persistant data over time for

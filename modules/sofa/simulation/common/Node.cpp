@@ -807,7 +807,7 @@ const core::objectmodel::BaseContext* Node::getContext() const
 
 void Node::setDefaultVisualContextValue()
 {
-    /// @TODO: This method is now broken because getShow*() methods never return -1
+    /// @todo: This method is now broken because getShow*() methods never return -1
     /*
     if (getShowVisualModels() == -1)            setShowVisualModels(true);
     if (getShowBehaviorModels() == -1)          setShowBehaviorModels(false);

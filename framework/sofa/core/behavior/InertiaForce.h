@@ -46,8 +46,13 @@ namespace behavior
  *         This default implementation returns no inertia.
  */
 template<class Coord, class Deriv, class Vec, class M, class SV>
-Deriv inertiaForce( const SV& /*sv*/, const Vec& /*a*/, const M& /*m*/, const Coord& /*x*/, const Deriv& /*v*/ )
+Deriv inertiaForce( const SV& sv, const Vec& a, const M& m, const Coord& x, const Deriv& v )
 {
+    SOFA_UNUSED(sv);
+    SOFA_UNUSED(a);
+    SOFA_UNUSED(m);
+    SOFA_UNUSED(x);
+    SOFA_UNUSED(v);
     return Deriv();
     //const Deriv& omega=sv.getAngularVelocity();
     //return -( a + omega.cross( omega.cross(x) + v*2 ))*m;

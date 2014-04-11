@@ -92,7 +92,7 @@ public:
     /// @name Matrix operations
     /// @{
 
-    /// Add Mass contribution to global Matrix assembling
+    /// Add Mass contribution to global Matrix assembling.
     ///
     /// This method must be implemented by the component.
     /// \param matrix matrix to add the result to
@@ -107,9 +107,9 @@ public:
     /// export kinetic and potential energy state at "time" to a gnuplot file
     virtual void exportGnuplot(const MechanicalParams* mparams /* PARAMS FIRST  = MechanicalParams::defaultInstance()*/, double time)=0;
 
-    /// return the mass relative to the DOF #index
+    /// Get the mass relative to the DOF at \a index.
     virtual double getElementMass(unsigned int index) const =0;
-    /// return the matrix relative to the DOF #index
+    /// Get the matrix relative to the DOF at \a index.
     virtual void getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const = 0;
 
     virtual bool isDiagonal() { return false; }
