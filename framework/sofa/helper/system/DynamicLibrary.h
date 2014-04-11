@@ -39,53 +39,57 @@ namespace system
 
 
 /**
-   This class provides wrappers around dynamic library facilities, which are
-   system-specific.
+   @brief Wrapper around the dynamic library facilities of the operating system.
 */
 class SOFA_HELPER_API DynamicLibrary
 {
 public:
 
-    /**
-       A handle to a dynamic library.
-    */
+    /// A handle to a dynamic library.
     class Handle {
         friend class DynamicLibrary;
     public:
+        /// Default constructor: invalid handle.
         Handle();
+        /// Copy constructor.
         Handle(const Handle& that);
         /// Check if the handle is valid, i.e. if load() was successful.
         bool isValid() const;
+        /// Get the filename of the library.
+        const std::string& filename() const;
     private:
         void * m_realHandle;
         boost::shared_ptr<std::string> m_filename;
         Handle(const std::string& filename, void *handle);
     };
 
-    /// Load a dynamic library
+    /// @brief Load a dynamic library.
     ///
-    /// @return a handle, that must be unloaded with unload().
+    /// @param filename The library to load.
+    /// @return A handle, that must be unloaded with unload().
     /// Use Handle::isValid() to know if the loading was successful.
     static Handle load(const std::string& filename);
 
-    /// Unload a dynamic library loaded with load().
+    /// @brief Unload a dynamic library loaded with load().
     ///
+    /// @param handle The handle of a library.
     /// @return 0 on success, and nonzero on error.
     static int unload(Handle handle);
 
-    /// Get the address of a symbol
+    /// @brief Get the address of a symbol.
     ///
-    /// @return a pointer to the symbol if it was found, or NULL on error.
+    /// @param handle The handle of a library.
+    /// @param symbol The symbol to look for.
+    /// @return A pointer to the symbol if it was found, or NULL on error.
     static void * getSymbolAddress(Handle handle, const std::string& symbol);
 
-    /// Get the message for the most recent error that occurred from load(),
-    /// unload() or getSymbolAddress().
+    /// @brief Get the message for the most recent error that occurred from load(), unload() or getSymbolAddress().
     ///
-    /// @return the error message, or an empty string if no errors have occurred
+    /// @return The error message, or an empty string if no errors have occurred
     /// since initialization or since it was last called.
     static std::string getLastError();
 
-    /// System-specific file extension for a dynamic library (e.g. ".so")
+    /// System-specific file extension for a dynamic library (e.g. "so").
     static const std::string extension;
 
 private:

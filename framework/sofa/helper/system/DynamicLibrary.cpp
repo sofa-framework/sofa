@@ -61,6 +61,11 @@ bool DynamicLibrary::Handle::isValid() const
     return m_realHandle != NULL;
 }
 
+const std::string& DynamicLibrary::Handle::filename() const
+{
+    return *m_filename;
+}
+
 
 DynamicLibrary::Handle DynamicLibrary::load(const std::string& filename)
 {
