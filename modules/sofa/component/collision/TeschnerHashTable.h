@@ -284,11 +284,11 @@ public:
     }
 
     void showStats(SReal timeStamp)const{
-        int nb_full_cell = 0;
-        int nb_elems = 0;
-        int max_elems_in_cell = 0;
+        std::size_t nb_full_cell = 0;
+        std::size_t nb_elems = 0;
+        std::size_t max_elems_in_cell = 0;
 
-        for(int i = 0 ; i < _table.size() ; ++i){
+        for(std::size_t i = 0 ; i < _table.size() ; ++i){
             if(_table[i].updated(timeStamp)){
                 ++nb_full_cell;
                 nb_elems += _table[i].getCollisionElems().size();

@@ -46,8 +46,6 @@ void PrintVisitor::processObjects(Seq& list, const char* name)
     for (int i=0; i<=level; i++)
         std::cout << "| ";
     std::cout << name << ":";
-    // the following line breaks the compilator on Visual2003
-    //for_each<PrintVisitor, Seq, typename Seq::value_type>(this, list, &PrintVisitor::processObject<typename Seq::value_type>);
     for (typename Seq::iterator it = list.begin(); it != list.end(); ++it)
     {
         typename Seq::value_type obj = *it;
@@ -86,7 +84,7 @@ Visitor::Result PrintVisitor::processNodeTopDown(simulation::Node* node)
     return RESULT_CONTINUE;
 }
 
-void PrintVisitor::processNodeBottomUp(simulation::Node* node)
+void PrintVisitor::processNodeBottomUp(simulation::Node* /*node*/)
 {
     --level;
 //    std::cout<<"PrintVisitor::processNodeBottomUp "<< node->getName() << std::endl;
