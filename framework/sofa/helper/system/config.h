@@ -86,6 +86,11 @@ typedef double SReal;
 #define SOFA_DECL_CLASS(name) extern "C" { int sofa_concat(class_,name) = 0; }
 #define SOFA_LINK_CLASS(name) extern "C" { extern int sofa_concat(class_,name); int sofa_concat(link_,name) = sofa_concat(class_,name); }
 
+// Prevent compiler warnings about 'unused variables'.
+// This should be used when a parameter name is needed (e.g. for
+// documentation purposes) even if it is not used in the code.
+#define SOFA_UNUSED(x) (void)(x)
+
 // Use of "extern template" is activated by the following macro
 // It must be used for DLLs on windows, and is now also activated
 // on other platforms (unless SOFA_NO_EXTERN_TEMPLATE is set), as
