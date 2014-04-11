@@ -307,7 +307,7 @@ void TetrahedronFEMForceField<DataTypes>::computeMaterialStiffness(int i, Index&
     Coord B = initialPoints[c] - initialPoints[a];
     Coord C = initialPoints[d] - initialPoints[a];
     Coord AB = cross(A, B);
-    Real volumes6 = fabs( dot( AB, C ) );    
+    Real volumes6 = fabs( dot( AB, C ) );
     if (volumes6<0)
     {
         serr << "ERROR: Negative volume for tetra "<<i<<" <"<<a<<','<<b<<','<<c<<','<<d<<"> = "<<volumes6/6<<sendl;
@@ -340,7 +340,7 @@ void TetrahedronFEMForceField<DataTypes>::computeMaterialStiffness(MaterialStiff
     Coord B = (*X0)[c] - (*X0)[a];
     Coord C = (*X0)[d] - (*X0)[a];
     Coord AB = cross(A, B);
-    Real volumes6 = fabs( dot( AB, C ) );    
+    Real volumes6 = fabs( dot( AB, C ) );
     if (volumes6<0)
     {
         serr << "ERROR: Negative volume for tetra"<<a<<','<<b<<','<<c<<','<<d<<"> = "<<volumes6/6<<sendl;
@@ -1022,7 +1022,7 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceLarge( Vector& f
     else
     {
         serr << "TODO(TetrahedronFEMForceField): support for assembling system matrix when using plasticity."<<sendl;
-    }    
+    }
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -1517,7 +1517,7 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
         rotations.resize( _indexedElements->size() );
         _initialRotations.resize( _indexedElements->size() );
         _rotationIdx.resize(_indexedElements->size() *4);
-        _rotatedInitialElements.resize(_indexedElements->size());        
+        _rotatedInitialElements.resize(_indexedElements->size());
         for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
         {
             Index a = (*it)[0];
@@ -1526,7 +1526,7 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
             Index d = (*it)[3];
             computeMaterialStiffness(i,a,b,c,d);
             initLarge(i,a,b,c,d);
-        }        
+        }
         break;
     }
     case POLAR :
@@ -1569,7 +1569,7 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
         }
         break;
     }
-    }    
+    }
 
     if (_computeVonMisesStress.getValue() > 0) {
         elemDisplacements.resize(  _indexedElements->size() );
@@ -1600,7 +1600,7 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
 
 template<class DataTypes>
 inline void TetrahedronFEMForceField<DataTypes>::addForce (const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& /* d_v */)
-{    
+{
     VecDeriv& f = *d_f.beginEdit();
     const VecCoord& p = d_x.getValue();
 
@@ -1650,7 +1650,7 @@ inline void TetrahedronFEMForceField<DataTypes>::addForce (const core::Mechanica
         }
         break;
     }
-    }   
+    }
     d_f.endEdit();
 
     updateVonMisesStress = true;
@@ -1658,7 +1658,7 @@ inline void TetrahedronFEMForceField<DataTypes>::addForce (const core::Mechanica
 
 template<class DataTypes>
 inline void TetrahedronFEMForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
-{    
+{
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
     Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
@@ -1751,7 +1751,7 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
         maxVM*=_showStressAlpha.getValue();
         maxVMN*=_showStressAlpha.getValue();
 
-    }   
+    }
 
     vparams->drawTool()->setLightingEnabled(false);
     glEnable(GL_BLEND) ;
@@ -1818,12 +1818,12 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
 
                 for(unsigned int i=0 ; i<3 ; i++) points[i].clear();
             } else {
-                if (_computeVonMisesStress.getValue() > 0) {                    
+                if (_computeVonMisesStress.getValue() > 0) {
                     /*visualmodel::ColorMap::evaluator<Real> evalColor = _showStressColorMapReal->getEvaluator(minVM, maxVM);
-                    Vec4f col = evalColor(vM[i]); //*vM[i]);
+                    Vec4f col = evalColor(vM[i]);
                     //col[3] = _showStressAlpha.getValue();
 
-                    col[3] = float(vM[i]/maxVM); //*(vM[i]/maxVM);
+                    col[3] = float(vM[i]/maxVM);
 
                     if (fabs(maxVM - minVM) < 1e-1)
                         col[3]=0.01f;
@@ -1899,7 +1899,7 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
                 vparams->drawTool()->drawTriangles(points[2],color3 );
                 vparams->drawTool()->drawTriangles(points[3],color4 );
 
-                for(unsigned int i=0 ; i<4 ; i++) points[i].clear();            
+                for(unsigned int i=0 ; i<4 ; i++) points[i].clear();
             } else {
                 if (_computeVonMisesStress.getValue() > 0) {
                     visualmodel::ColorMap::evaluator<Real> evalColor = _showStressColorMapReal->getEvaluator(minVM, maxVM);
@@ -1984,7 +1984,7 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
 
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset)
-{    
+{
     // Build Matrix Block for this ForceField
     int i,j,n1, n2, row, column, ROW, COLUMN , IT;
 
@@ -2065,7 +2065,7 @@ void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMa
                         }
                     }
                 }
-            }            
+            }
 
             *crsmat->wbloc(offd3 + (*it)[0], offd3 + (*it)[0],true) += tmpBlock[0][0];
             *crsmat->wbloc(offd3 + (*it)[0], offd3 + (*it)[1],true) += tmpBlock[0][1];

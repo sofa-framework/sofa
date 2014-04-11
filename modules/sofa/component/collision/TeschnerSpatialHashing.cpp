@@ -134,10 +134,10 @@ void TeschnerSpatialHashing::beginNarrowPhase(){
     int mincell[3];
     int maxcell[3];
     int movingcell[3];
-    SReal alarmDistd2 = intersectionMethod->getAlarmDistance()/((SReal)(2.0));
+    // SReal alarmDistd2 = intersectionMethod->getAlarmDistance()/((SReal)(2.0));
 
     sofa::helper::AdvancedTimer::stepBegin("TeschnerSpatialHashing : Hashing");
-    for(int i = 0 ; i < cubeModels.size() ; ++i){
+    for(std::size_t i = 0 ; i < cubeModels.size() ; ++i){
         //std::cout<<"Treating model "<<cubeModels[i]->getLast()->getName()<<std::endl;
         Cube c(cubeModels[i]);
 
