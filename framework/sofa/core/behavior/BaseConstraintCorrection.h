@@ -47,7 +47,7 @@ namespace core
 namespace behavior
 {
 
-/// @TODO All methods in this class need to be commented
+/// @todo All methods in this class need to be commented
 
 /**
  *  \brief Component computing contact forces within a simulated body using the compliance method.
@@ -83,7 +83,7 @@ public:
     /// @param v is the velocity result VecId
     /// @param f is the motion space force vector
     /// @param lambda is the constraint space force vector
-    virtual void computeAndApplyMotionCorrection(const ConstraintParams * /*cparams*/, MultiVecCoordId /*x*/, MultiVecDerivId /*v*/, MultiVecDerivId /*f*/, const defaulttype::BaseVector * /*lambda*/) = 0;
+    virtual void computeAndApplyMotionCorrection(const ConstraintParams * cparams, MultiVecCoordId x, MultiVecDerivId v, MultiVecDerivId f, const defaulttype::BaseVector * lambda) = 0;
 
     /// Compute position correction from the constraint resolution (LCP) calculated force
     ///
@@ -91,7 +91,7 @@ public:
     /// @param x is the position result VecId
     /// @param f is the motion space force vector
     /// @param lambda is the constraint space force vector
-    virtual void computeAndApplyPositionCorrection(const ConstraintParams * /*cparams*/, MultiVecCoordId /*x*/, MultiVecDerivId /*f*/, const defaulttype::BaseVector * /*lambda*/) = 0;
+    virtual void computeAndApplyPositionCorrection(const ConstraintParams * cparams, MultiVecCoordId x, MultiVecDerivId f, const defaulttype::BaseVector * lambda) = 0;
 
     /// Compute velocity correction from the constraint resolution (LCP) calculated force
     ///
@@ -99,14 +99,14 @@ public:
     /// @param v is the velocity result VecId
     /// @param f is the motion space force vector
     /// @param lambda is the constraint space force vector
-    virtual void computeAndApplyVelocityCorrection(const ConstraintParams * /*cparams*/, MultiVecDerivId /*v*/, MultiVecDerivId /*f*/, const defaulttype::BaseVector * /*lambda*/) = 0;
+    virtual void computeAndApplyVelocityCorrection(const ConstraintParams * cparams, MultiVecDerivId v, MultiVecDerivId f, const defaulttype::BaseVector * lambda) = 0;
 
     /// Apply predictive constraint force
     ///
     /// @param cparams
     /// @param f is the motion space force vector
     /// @param lambda is the constraint space force vector
-    virtual void applyPredictiveConstraintForce(const ConstraintParams * /*cparams*/, MultiVecDerivId /*f*/, const defaulttype::BaseVector * /*lambda*/) = 0;
+    virtual void applyPredictiveConstraintForce(const ConstraintParams * cparams, MultiVecDerivId f, const defaulttype::BaseVector * lambda) = 0;
 
     /// Rebuild the system using a mass and force factor
     /// Experimental API used to investigate convergence issues.

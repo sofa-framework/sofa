@@ -946,7 +946,7 @@ public:
 };
 
 /** Compute the norm of a vector.
- * The type of norm is set by parameter @l. Use 0 for the infinite norm.
+ * The type of norm is set by parameter @a l. Use 0 for the infinite norm.
  * Note that the 2-norm is more efficiently computed using the square root of the dot product.
  * @author Francois Faure, 2013
  */

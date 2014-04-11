@@ -142,7 +142,7 @@ protected:
     virtual ~Intersection();
 public:
     /// Return the intersector class handling the given pair of collision models, or NULL if not supported.
-    /// @param swapModel output value set to true if the collision models must be swapped before calling the intersector.
+    /// @param swapModels output value set to true if the collision models must be swapped before calling the intersector.
     virtual ElementIntersector* findIntersector(core::CollisionModel* object1, core::CollisionModel* object2, bool& swapModels) = 0;
 
     /// Test if intersection between 2 types of elements is supported, i.e. an intersection test is implemented for this combinaison of types.

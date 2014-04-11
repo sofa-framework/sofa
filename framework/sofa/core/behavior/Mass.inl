@@ -314,7 +314,6 @@ void Mass<DataTypes>::exportGnuplot(const MechanicalParams* mparams /* PARAMS FI
     }
 }
 
-/// return the mass relative to the DOF #index
 template <class DataTypes>
 double Mass<DataTypes>::getElementMass(unsigned int ) const
 {

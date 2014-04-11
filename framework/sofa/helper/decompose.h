@@ -163,12 +163,12 @@ public:
       * @{
       */
 
-    /** Non-iterative & faster Eigensystem decomposition: eigenvalues @param diag and eigenvectors (columns of @param V) of the 3x3 Real Matrix @param M
+    /** Non-iterative & faster Eigensystem decomposition: eigenvalues @param diag and eigenvectors (columns of @param V) of the 3x3 Real Matrix @param A
       * Derived from Wild Magic Library
       */
     static void eigenDecomposition( const defaulttype::Mat<3,3,Real> &A, defaulttype::Mat<3,3,Real> &V, defaulttype::Vec<3,Real> &diag );
 
-    /// Non-iterative Eigensystem decomposition: eigenvalues @param diag and eigenvectors (columns of @param V) of the 2x2 Real Matrix @param M
+    /// Non-iterative Eigensystem decomposition: eigenvalues @param diag and eigenvectors (columns of @param V) of the 2x2 Real Matrix @param A
     /// @warning this method is instable in specific configurations TODO
     static void eigenDecomposition( const defaulttype::Mat<2,2,Real> &A, defaulttype::Mat<2,2,Real> &V, defaulttype::Vec<2,Real> &diag );
 

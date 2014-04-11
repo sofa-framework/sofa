@@ -82,27 +82,27 @@ public:
         return getEdgeArray();
     }
 
-    /** \brief Returns the edge corresponding to the EdgeID i.
+    /** \brief Get an Edge from its ID.
      *
-     * @param ID of an Edge.
+     * @param i The ID of the Edge.
      * @return The corresponding Edge.
      */
     virtual const Edge getEdge(EdgeID i);
 
 
-    /** \brief Returns the index of the edge joining vertex v1 and vertex v2.
+    /** \brief Get the index of the edge joining two vertices.
      *
-     * @param Two vertex IDs v1 and v2.
-     * @return The Edge index formed by v1 and v2.
-     * @return -1 if no edge exists.
+     * @param v1 The first vertex
+     * @param v@ The second vertex
+     * @return The index of the Edge if it exists, -1 otherwise.
     */
     virtual int getEdgeIndex(PointID v1, PointID v2);
 
 
-    /** \brief Returns the list of Edge indices around the ith DOF.
+    /** \brief Get the indices of the edges around a vertex.
      *
-     * @param ID of a vertex.
-     * @return EdgesAroundVertex list around ith DOF.
+     * @param i The ID of the vertex.
+     * @return An EdgesAroundVertex containing the indices of the edges.
      */
     virtual const EdgesAroundVertex& getEdgesAroundVertex(PointID i);
 
