@@ -112,6 +112,7 @@ class Plane3D
 		T m_d ;
 } ;
 
+
 } // namespace Geom
 
 } // namespace CGoGN

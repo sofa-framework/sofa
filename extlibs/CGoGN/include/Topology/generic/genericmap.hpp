@@ -317,6 +317,7 @@ inline unsigned int GenericMap::getEmbedding(Dart d) const
 	return (*m_embeddings[ORBIT])[d_index] ;
 }
 
+
 template <unsigned int ORBIT>
 void GenericMap::setDartEmbedding(Dart d, unsigned int emb)
 {

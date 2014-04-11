@@ -39,7 +39,6 @@ namespace CGoGN
 class CellMarkerGen
 {
 	friend class GenericMap ;
-
 protected:
 	GenericMap& m_map ;
 	Mark m_mark ;
@@ -88,6 +87,7 @@ public:
 template <unsigned int CELL>
 class CellMarkerBase : public CellMarkerGen
 {
+//    BOOST_STATIC_ASSERT(CELL != DART);
 public:
 	/**
 	 * constructor
@@ -141,14 +141,11 @@ public:
 	 * mark the cell of dart
 	 */
 	inline void mark(Dart d)
-	{
-		assert(m_map.getMarkerSet<CELL>(m_thread).testMark(m_mark));
-		assert(m_markVector != NULL);
-
-		unsigned int a = m_map.getEmbedding<CELL>(d) ;
+    {
+        unsigned int a = m_map.getEmbeddingAttributeVector(CELL)->operator[](d.index) ;
 		if (a == EMBNULL)
-			a = m_map.setOrbitEmbeddingOnNewCell<CELL>(d) ;
-		m_markVector->operator[](a).setMark(m_mark) ;
+            a = m_map.setOrbitEmbeddingOnNewCell<CELL>(d) ;
+        m_markVector->operator[](a).setMark(m_mark) ;
 	}
 
 	/**
@@ -239,6 +236,170 @@ public:
 		return true ;
 	}
 };
+
+
+
+
+//template <>
+//class CellMarkerBase<DART> : public CellMarkerGen
+//{
+//public:
+//    /**
+//     * constructor
+//     * @param map the map on which we work
+//     */
+//    CellMarkerBase<DART>(GenericMap& map, unsigned int thread = 0) : CellMarkerGen(map, DART, thread)
+//    {
+//        if(!m_map.isOrbitEmbedded<DART>())
+//            m_map.addEmbedding<DART>() ;
+//        m_mark = m_map.getMarkerSet<DART>(m_thread).getNewMark() ;
+//        m_markVector = m_map.getMarkVector<DART>(m_thread) ;
+//        m_map.cellMarkers[m_thread].push_back(this) ;
+//    }
+
+//    CellMarkerBase<DART>(const GenericMap& map, unsigned int thread = 0) :
+//        CellMarkerGen(const_cast<GenericMap&>(map), DART, thread)
+//    {
+//        if(!m_map.isOrbitEmbedded<DART>())
+//            m_map.addEmbedding<DART>() ;
+//        m_mark = m_map.getMarkerSet<DART>(m_thread).getNewMark() ;
+//        m_markVector = m_map.getMarkVector<DART>(m_thread) ;
+//        m_map.cellMarkers[m_thread].push_back(this) ;
+//    }
+
+//    virtual ~CellMarkerBase()
+//    {
+//        if(releaseOnDestruct)
+//        {
+//            m_map.getMarkerSet<DART>(m_thread).releaseMark(m_mark) ;
+
+//            std::vector<CellMarkerGen*>& cmg = m_map.cellMarkers[m_thread];
+//            for(std::vector<CellMarkerGen*>::iterator it = cmg.begin(); it != cmg.end(); ++it)
+//            {
+//                if(*it == this)
+//                {
+//                    *it = cmg.back();
+//                    cmg.pop_back();
+//                    return;
+//                }
+//            }
+//        }
+//    }
+
+//protected:
+//    // protected copy constructor to forbid its usage
+//    CellMarkerBase<DART>(const CellMarkerGen& cm) : CellMarkerGen(cm.m_map, DART)
+//    {}
+
+//public:
+//    /**
+//     * mark the cell of dart
+//     */
+//    inline void mark(Dart d)
+//    {
+//        assert(m_map.getMarkerSet<DART>(m_thread).testMark(m_mark));
+//        assert(m_markVector != NULL);
+
+//        unsigned int a = m_map.getEmbedding<DART>(d) ;
+//        if (a == EMBNULL)
+//            a = m_map.setOrbitEmbeddingOnNewCell<DART>(d) ;
+//        m_markVector->operator[](a).setMark(m_mark) ;
+//    }
+
+//    /**
+//     * unmark the cell of dart
+//     */
+//    inline void unmark(Dart d)
+//    {
+//        assert(m_map.getMarkerSet<DART>(m_thread).testMark(m_mark));
+//        assert(m_markVector != NULL);
+
+//        unsigned int a = m_map.getEmbedding<DART>(d) ;
+//        if (a == EMBNULL)
+//            a = m_map.setOrbitEmbeddingOnNewCell<DART>(d) ;
+//        m_markVector->operator[](a).unsetMark(m_mark) ;
+//    }
+
+//    /**
+//     * test if cell of dart is marked
+//     */
+//    inline bool isMarked(Dart d) const
+//    {
+//        assert(m_map.getMarkerSet<DART>(m_thread).testMark(m_mark));
+//        assert(m_markVector != NULL);
+
+//        unsigned int a = m_map.getEmbedding<DART>(d) ;
+//        if (a == EMBNULL)
+//            return false ;
+//        return m_markVector->operator[](a).testMark(m_mark) ;
+//    }
+
+//    /**
+//     * mark the cell
+//     */
+//    inline void mark(unsigned int em)
+//    {
+//        assert(m_map.getMarkerSet<DART>(m_thread).testMark(m_mark));
+//        assert(m_markVector != NULL);
+
+//        m_markVector->operator[](em).setMark(m_mark) ;
+//    }
+
+//    /**
+//     * unmark the cell
+//     */
+//    inline void unmark(unsigned int em)
+//    {
+//        assert(m_map.getMarkerSet<DART>(m_thread).testMark(m_mark));
+//        assert(m_markVector != NULL);
+
+//        m_markVector->operator[](em).unsetMark(m_mark) ;
+//    }
+
+//    /**
+//     * test if cell is marked
+//     */
+//    inline bool isMarked(unsigned int em) const
+//    {
+//        assert(m_map.getMarkerSet<DART>(m_thread).testMark(m_mark));
+//        assert(m_markVector != NULL);
+
+//        if (em == EMBNULL)
+//            return false ;
+//        return m_markVector->operator[](em).testMark(m_mark) ;
+//    }
+
+//    /**
+//     * mark all the cells
+//     */
+//    inline void markAll()
+//    {
+//        assert(m_map.getMarkerSet<DART>(m_thread).testMark(m_mark));
+//        assert(m_markVector != NULL);
+
+//        AttributeContainer& cont = m_map.getAttributeContainer<DART>() ;
+//        for (unsigned int i = cont.begin(); i != cont.end(); cont.next(i))
+//            m_markVector->operator[](i).setMark(m_mark) ;
+//    }
+
+//    inline bool isAllUnmarked()
+//    {
+//        assert(m_map.getMarkerSet<DART>(m_thread).testMark(m_mark));
+//        assert(m_markVector != NULL);
+
+//        AttributeContainer& cont = m_map.getAttributeContainer<DART>() ;
+//        for (unsigned int i = cont.begin(); i != cont.end(); cont.next(i))
+//            if(m_markVector->operator[](i).testMark(m_mark))
+//                return false ;
+//        return true ;
+//    }
+//};
+
+
+
+
+
+
 
 
 /**

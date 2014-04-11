@@ -183,12 +183,12 @@ private:
 	Dart phi_internal(Dart a, int i) const {
 		assert(isDual() || !"Only use with dual darts");
 		if (i >= 0) {
-			unsigned int j = (unsigned int) i;
-			assert(j <= nbRelations() || !"Out of bounds");
-			if (j <= m_nbPermutations)
-				return getPermutation(a,j-1);
+//			unsigned int j = (unsigned int) i;
+            assert(i <= nbRelations() || !"Out of bounds");
+            if (i <= m_nbPermutations)
+                return getPermutation(a,i-1);
 			else
-				return getInvolution(a,j-1-m_nbPermutations);
+                return getInvolution(a,i-1-m_nbPermutations);
 		}
 		else {
 			unsigned int j = (unsigned int) -i;
@@ -317,22 +317,22 @@ public:
 	 * The value 0 (zero) is not allowed for i
 	 */
 	Dart phi(int i, const Dart d) {
-		if (isDual())
+//		if (isDual())
 			return phi_internal(d,i);
 
 		// Primal DART: phi is defined from alpha
-		if (i >= 0) {
-			if ((unsigned int)i == nbRelations())
-				return alpha(0,d);
-			else
-				return alpha(i,alpha(0,d));
-		}
-		else { // i < 0
-			if ((unsigned int)-i == nbRelations())
-				return alpha(-int(nbRelations()),d);
-			else
-				return alpha(-int(nbRelations()),alpha(i,d));
-		}
+//		if (i >= 0) {
+//			if ((unsigned int)i == nbRelations())
+//				return alpha(0,d);
+//			else
+//				return alpha(i,alpha(0,d));
+//		}
+//		else { // i < 0
+//			if ((unsigned int)-i == nbRelations())
+//				return alpha(-int(nbRelations()),d);
+//			else
+//				return alpha(-int(nbRelations()),alpha(i,d));
+//		}
 	}
 
 	//! Link dart d to dart e through relation phi(i)

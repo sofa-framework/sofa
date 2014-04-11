@@ -373,6 +373,8 @@ public:
 
 	bool isOrbitEmbedded(unsigned int orbit) const ;
 
+    inline bool isNonDartOrbitEmbedded(unsigned int orbit) const {return m_embeddings[orbit] != NULL ;}
+
 	/**
 	 * get the cell index of the given dimension associated to dart d
 	 * @return EMBNULL if the orbit of d is not attached to any cell
