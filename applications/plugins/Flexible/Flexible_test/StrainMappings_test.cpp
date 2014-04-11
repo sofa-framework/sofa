@@ -351,7 +351,7 @@ namespace sofa {
                 expectedChildCoords[0].getVec() = defaulttype::StrainMatToVoigt( defo );
 
                 this->deltaMax = 0.001;  
-                this->errorMax = 5;
+                this->errorMax = 10;
 
                 InVecCoord xin(1);
                 OutVecCoord xout(1);

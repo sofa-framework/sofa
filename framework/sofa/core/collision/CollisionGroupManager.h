@@ -76,7 +76,7 @@ public:
     /// Clear the integration groups
     virtual void clearGroups(objectmodel::BaseContext* scene) = 0;
 
-    /// Get de integration groups
+    /// Get the integration groups
     virtual const sofa::helper::vector<objectmodel::BaseContext::SPtr>& getGroups() { return groups; };
 
 protected:
