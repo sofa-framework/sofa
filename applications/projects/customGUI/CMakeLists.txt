@@ -2,14 +2,15 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(SOURCE_FILES
     customGUI.cpp
-    Anchor.cpp
-    DragAnchor.cpp
-    GlPickedPoint.cpp
+    Interactor.cpp
+    SpringInteractor.cpp
+    SofaGlInterface.cpp
 )
 set(HEADER_FILES
-    Anchor.h
-    DragAnchor.h
-    GlPickedPoint.h
+    Interactor.h
+    SpringInteractor.h
+    PickedPoint.h
+    SofaGlInterface.h
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
