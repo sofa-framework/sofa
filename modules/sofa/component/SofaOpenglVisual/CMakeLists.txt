@@ -15,6 +15,7 @@ set(HEADER_FILES
     ../visualmodel/DataDisplay.h
     ../visualmodel/OglLabel.h
     ../visualmodel/OglCylinderModel.h
+    ../visualmodel/OglSceneFrame.h
 
     )
     
@@ -33,6 +34,7 @@ set(SOURCE_FILES
     ../visualmodel/DataDisplay.cpp
     ../visualmodel/OglLabel.cpp
     ../visualmodel/OglCylinderModel.cpp
+    ../visualmodel/OglSceneFrame.cpp
 
     )
     
