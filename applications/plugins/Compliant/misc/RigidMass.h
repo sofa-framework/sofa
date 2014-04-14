@@ -86,6 +86,7 @@ public:
 	typedef core::objectmodel::Data<VecCoord> DataVecCoord;
 	typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
+#ifndef SOFA_NO_OPENGL
 	void draw(const core::visual::VisualParams* vparams) {
 		
 		if ( !vparams->displayFlags().getShowBehaviorModels() )
@@ -111,6 +112,7 @@ public:
 		}
 		
 	}
+#endif
 
 	void addForce(const core::MechanicalParams* , 
 	              DataVecDeriv& _f, 
@@ -208,11 +210,11 @@ public:
 			
 			using namespace utils;
 			
-            map(f[i].getLinear()) += (factor * mass.getValue()[ index ]) * map(dx[i].getLinear());
+            se3::map(f[i].getLinear()) += (factor * mass.getValue()[ index ]) * se3::map(dx[i].getLinear());
 
 			typename se3::quat q = se3::rotation( (*this->mstate->getX())[i] );
-            map(f[i].getAngular()) += factor *
-                ( q * map(inertia.getValue()[ index ]).cwiseProduct( q.conjugate() * map(dx[i].getAngular() ) ));
+            se3::map(f[i].getAngular()) += factor *
+                ( q * se3::map(inertia.getValue()[ index ]).cwiseProduct( q.conjugate() * se3::map(dx[i].getAngular() ) ));
 			
 		}
 		
