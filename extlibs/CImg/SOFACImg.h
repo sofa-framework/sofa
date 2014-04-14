@@ -90,9 +90,12 @@ bool save_metaimage(const CImgList<T>& img,const char *const headerFilename, con
     fileStream << "isPerpective = " << isPerspective << std::endl;
 
     std::string imageFilename(headerFilename);
-    std::size_t pos=imageFilename.find_last_of('/');    if(pos==std::string::npos) pos=imageFilename.find_last_of('\\');    if(pos!=std::string::npos) imageFilename.erase(0, pos + 1);
     imageFilename.replace(imageFilename.find_last_of('.')+1,imageFilename.size(),"raw");
-    fileStream << "ElementDataFile = " << imageFilename.c_str() << std::endl;
+
+    // write filename without path
+    std::string str(imageFilename);
+    std::size_t pos=str.find_last_of('/');    if(pos==std::string::npos) pos=str.find_last_of('\\');    if(pos!=std::string::npos) str.erase(0, pos + 1);
+    fileStream << "ElementDataFile = " << str.c_str() << std::endl;
     fileStream.close();
 
     std::FILE *const nfile = std::fopen(imageFilename.c_str(),"wb");
