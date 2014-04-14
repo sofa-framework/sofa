@@ -275,7 +275,7 @@ SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types
 
     m->resize(dimension * numDofs, dimension * numDofs);
 
-    /// @TODO Optimization
+    /// @todo Optimization
     for (unsigned int d = 0; d < numDofs; ++d)
     {
         const unsigned int d6 = 6 * d;

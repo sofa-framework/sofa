@@ -165,7 +165,7 @@ void ForceField<DataTypes>::addDForce(VecDeriv& df, const VecDeriv& dx, double k
         mstate->vAvail(core::ExecParams::defaultInstance(), vtmp);
         mstate->vAlloc(core::ExecParams::defaultInstance(), vtmp);
         VecDerivId vdx(0);
-        /// @TODO: Add a better way to get the current VecId of dx
+        /// @todo: Add a better way to get the current VecId of dx
         for (vdx.index=0; vdx.index<vtmp.index; ++vdx.index)
         {
             const Data<VecDeriv> *d_vdx = mstate->read(ConstVecDerivId(vdx));

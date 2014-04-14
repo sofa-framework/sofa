@@ -47,7 +47,7 @@ public:
 
     /// Given an input derivative order (0 for position, 1 for velocity, 2 for acceleration),
     /// how much will it affect the output derivative of the given order.
-    /// @TODO use real factors depending on the current RK4 step
+    /// @todo use real factors depending on the current RK4 step
     virtual double getIntegrationFactor(int inputDerivative, int outputDerivative) const
     {
         const double dt = getContext()->getDt();
@@ -65,7 +65,7 @@ public:
 
     /// Given a solution of the linear system,
     /// how much will it affect the output derivative of the given order.
-    /// @TODO use real factors depending on the current RK4 step
+    /// @todo use real factors depending on the current RK4 step
     virtual double getSolutionIntegrationFactor(int outputDerivative) const
     {
         const double dt = getContext()->getDt();

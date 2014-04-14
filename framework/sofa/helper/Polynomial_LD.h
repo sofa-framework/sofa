@@ -47,22 +47,9 @@ namespace helper
 
 using namespace sofa::defaulttype;
 using namespace std;
-/**
- * \file modules/sofa/component/femToolsForFEM.h
- * \namespace sofa::component::fem
- * \brief Polynomial_LD in Linear Design (opposed to Polynomial in Recurrent Design).
- *        in LD, polynomial are easier to implemented and more representative
- *        in RD, polynomial will be more efficient in evaluation operations
- *
- */
-///////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////
 
 /**
- * \class template<typename Real, unsigned int N>Monomial_LD
- *
- * A generic monomial with <N> variable of type <Real>
- * A monomial is one term in the polynomial
+ * \brief A generic monomial with <N> variable of type <Real>. A monomial is one term in the polynomial.
  *
  * Todo this first version of polynomial is a linear presentation.
  * This presentation is efficient for arithmetic operator like +,-,\*,/ and derivative.
@@ -140,10 +127,7 @@ protected :
 
 
 /**
- * \class template<typename Real, unsigned int N>Polynomial_LD
- *
- * A generic polynomial with <N> variable of type <Real>
- * A polynomial is a list composed several term of monomial
+ * \brief A generic polynomial with <N> variable of type <Real>. A polynomial is a list composed several term of monomial
  *
  */
 

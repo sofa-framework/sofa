@@ -512,9 +512,9 @@ void afficheSyst(double *q,double **M, int *base, double **mat, int dim)
  * Contact: Vincent ACARY vincent.acary@inrialpes.fr
 */
 
-/*!\file lcp_lexicolemke.c
+/* from: lcp_lexicolemke.c
  *
- * This subroutine allows the resolution of LCP (Linear Complementary Problem).\n
+ * The lcp_lexicolemke subroutine allows the resolution of LCP (Linear Complementary Problem).\n
  * Try \f$(z,w)\f$ such that:\n
  * \f$
  *  \left\lbrace

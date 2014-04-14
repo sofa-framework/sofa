@@ -282,7 +282,7 @@ template<class DataTypes>
 void UnilateralInteractionConstraint<DataTypes>::getConstraintInfo(VecConstraintBlockInfo& blocks, VecPersistentID& ids, VecConstCoord& /*positions*/, VecConstDeriv& directions, VecConstArea& /*areas*/)
 {
     if (contacts.empty()) return;
-    const bool friction = (contacts[0].mu > 0.0); /// @TODO: can there be both friction-less and friction contacts in the same UnilateralInteractionConstraint ???
+    const bool friction = (contacts[0].mu > 0.0); /// @todo: can there be both friction-less and friction contacts in the same UnilateralInteractionConstraint ???
     ConstraintBlockInfo info;
     info.parent = this;
     info.const0 = contacts[0].id;

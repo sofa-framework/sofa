@@ -879,7 +879,7 @@ int TTriangleModel<DataTypes>::getTriangleFlags(int i)
     }
     else
     {
-        /// \TODO flags for quads
+        /// \todo flags for quads
     }
     return f;
 }

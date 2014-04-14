@@ -195,7 +195,7 @@ void SimpleTesselatedTetraTopologicalMapping::updateTopologicalMappingBottomUp()
             }
             case core::topology::POINTSADDED:
             {
-                /// @TODO
+                /// @todo
                 break;
             }
             case core::topology::POINTSREMOVED:
@@ -214,7 +214,7 @@ void SimpleTesselatedTetraTopologicalMapping::updateTopologicalMappingBottomUp()
             }
             case core::topology::TETRAHEDRAADDED:
             {
-                /// @TODO
+                /// @todo
                 break;
             }
             case core::topology::TETRAHEDRAREMOVED:
@@ -413,7 +413,7 @@ void SimpleTesselatedTetraTopologicalMapping::updateTopologicalMappingTopDown()
             }
             case core::topology::POINTSADDED:
             {
-                /// @TODO
+                /// @todo
                 break;
             }
             case core::topology::POINTSREMOVED:
@@ -432,7 +432,7 @@ void SimpleTesselatedTetraTopologicalMapping::updateTopologicalMappingTopDown()
             }
             case core::topology::EDGESADDED:
             {
-                /// @TODO
+                /// @todo
                 break;
             }
             case core::topology::EDGESREMOVED:
@@ -444,7 +444,7 @@ void SimpleTesselatedTetraTopologicalMapping::updateTopologicalMappingTopDown()
             }
             case core::topology::TETRAHEDRAADDED:
             {
-                /// @TODO
+                /// @todo
                 break;
             }
             case core::topology::TETRAHEDRAREMOVED:

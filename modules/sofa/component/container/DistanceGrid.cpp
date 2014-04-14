@@ -515,7 +515,7 @@ void DistanceGrid::computeBBox()
     {
         bbmin = pmin;
         bbmax = pmax;
-        /// \TODO compute the SReal bbox from the grid content
+        /// \todo compute the SReal bbox from the grid content
     }
 }
 

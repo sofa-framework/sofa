@@ -264,7 +264,7 @@ void EdgePressureForceField<DataTypes>::updateEdgeInformation()
         Vec3d orig(0,0,0);
 
         Vec3d tang = p2 - p1;
-        tang.norm(); /// @TODO: shouldn't this be normalize() ?
+        tang.norm(); /// @todo: shouldn't this be normalize() ?
 
         Deriv myPressure;
 

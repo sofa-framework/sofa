@@ -75,8 +75,9 @@ public:
     /// dx = M^-1 f
     virtual void accFromF(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId aid) = 0;
 
-    /// Perform  v += dt*g operation. Used if mass wants to added G separately from the other forces to v.
-    /// \param mparams->dt() time step of for temporal discretization.
+    /// \brief Perform  v += dt*g operation. Used if mass wants to added G separately from the other forces to v.
+    ///
+    /// \param mparams \a mparams->dt() is the time step of for temporal discretization.
     virtual void addGravityToV(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId vid) = 0;
 
     /// vMv/2
@@ -92,11 +93,11 @@ public:
     /// @name Matrix operations
     /// @{
 
-    /// Add Mass contribution to global Matrix assembling.
+    /// \brief Add Mass contribution to global Matrix assembling.
     ///
     /// This method must be implemented by the component.
     /// \param matrix matrix to add the result to
-    /// \param mparams->mFactor() coefficient for mass contributions (i.e. second-order derivatives term in the ODE)
+    /// \param mparams \a mparams->mFactor() is the coefficient for mass contributions (i.e. second-order derivatives term in the ODE)
     virtual void addMToMatrix(const MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix) = 0;
 
     /// @}

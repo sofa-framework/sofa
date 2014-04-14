@@ -310,8 +310,8 @@ void ValuesFromPositions<DataTypes>::update()
     Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
     sofa::simulation::Node* context = dynamic_cast<sofa::simulation::Node*>(this->getContext());
     sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
-    data.bmin = (Real)*sceneMinBBox.ptr(); /// @TODO: shouldn't this be dot(sceneMinBBox,data.dir) ?
-    data.bmax = (Real)*sceneMaxBBox.ptr(); /// @TODO: shouldn't this be dot(sceneMaxBBox,data.dir) ?
+    data.bmin = (Real)*sceneMinBBox.ptr(); /// @todo: shouldn't this be dot(sceneMinBBox,data.dir) ?
+    data.bmax = (Real)*sceneMaxBBox.ptr(); /// @todo: shouldn't this be dot(sceneMaxBBox,data.dir) ?
 
     //std::cout << "data.bmax: " << sceneMaxBBox << std::endl;
     //std::cout << "data.bmin: " << sceneMinBBox << std::endl;
