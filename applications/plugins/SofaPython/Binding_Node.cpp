@@ -120,7 +120,7 @@ extern "C" PyObject * Node_getChild(PyObject * self, PyObject * args)
         }
     if (!childNode)
     {
-        printf("<SofaPython> Error: Node.getChildNode(%s) not found.\n",path);
+        SP_MESSAGE_ERROR( "Node.getChildNode("<<path<<") not found.")
         Py_RETURN_NONE;
     }
     return SP_BUILD_PYSPTR(childNode);
@@ -186,9 +186,9 @@ extern "C" PyObject * Node_addObject(PyObject *self, PyObject * args)
     node->addObject(object);
 
     if (node->isInitialized())
-        printf("<SofaPython> WARNING Sofa.Node.addObject called on a node(%s) that is already initialized\n",node->getName().c_str());
+        SP_MESSAGE_WARNING( "Sofa.Node.addObject called on a node("<<node->getName()<<") that is already initialized" )
     if (!ScriptEnvironment::isNodeCreatedByScript(node))
-        printf("<SofaPython> WARNING Sofa.Node.addObject called on a node(%s) that is not created by the script\n",node->getName().c_str());
+        SP_MESSAGE_WARNING( "Sofa.Node.addObject called on a node("<<node->getName()<<") that is not created by the script" )
 
     //object->init();
     // plus besoin !! node->init(sofa::core::ExecParams::defaultInstance());

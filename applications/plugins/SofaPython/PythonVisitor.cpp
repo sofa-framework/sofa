@@ -20,7 +20,7 @@ Visitor::Result PythonVisitor::processNodeTopDown(simulation::Node* node)
     PyObject *res=PyObject_CallMethod(m_PyVisitor,const_cast<char*>("processNodeTopDown"),const_cast<char*>("(O)"),SP_BUILD_PYSPTR(node));
     if (!res)
     {
-        printf("<SofaPython> exception\n");
+        SP_MESSAGE_EXCEPTION("")
         PyErr_Print();
         return Visitor::RESULT_PRUNE;
     }
@@ -37,7 +37,7 @@ void PythonVisitor::processNodeBottomUp(simulation::Node* node)
     PyObject *res=PyObject_CallMethod(m_PyVisitor,const_cast<char*>("processNodeBottomUp"),const_cast<char*>("(O)"),SP_BUILD_PYSPTR(node));
     if (!res)
     {
-        printf("<SofaPython> exception\n");
+        SP_MESSAGE_EXCEPTION("")
         PyErr_Print();
     }
 }

@@ -63,7 +63,7 @@ extern "C" PyObject * Sofa_createObject(PyObject * /*self*/, PyObject * args, Py
         Py_RETURN_NONE;
     }
 
-    printf("<SofaPython> WARNING Sofa.createObject is deprecated; use Sofa.Node.createObject instead.\n");
+    SP_MESSAGE_WARNING( "Sofa.createObject is deprecated; use Sofa.Node.createObject instead." )
 
     // temporarily, the name is set to the type name.
     // if a "name" parameter is provided, it will overwrite it.
@@ -84,9 +84,7 @@ extern "C" PyObject * Sofa_createObject(PyObject * /*self*/, PyObject * args, Py
     BaseObject::SPtr obj = ObjectFactory::getInstance()->createObject(0,&desc);//.get();
     if (obj==0)
     {
-        printf("<SofaPython> ERROR createObject '%s' of type '%s''\n",
-                desc.getName().c_str(),
-                desc.getAttribute("type",""));
+        SP_MESSAGE_ERROR( "createObject "<<desc.getName().c_str()<<" of type "<<desc.getAttribute("type","") )
         PyErr_BadArgument();
         Py_RETURN_NONE;
     }
@@ -115,7 +113,7 @@ extern "C" PyObject * Sofa_getObject(PyObject * /*self*/, PyObject * /*args*/)
         return SP_BUILD_PYSPTR(sptr.get());
     */
     // deprecated on date 2012/07/18
-    printf("<SofaPython> ERROR: Sofa.getObject(BaseContext,path) is deprecated.\nPlease use BaseContext.getObject(path) instead.\n");
+    SP_MESSAGE_ERROR( "Sofa.getObject(BaseContext,path) is deprecated. Please use BaseContext.getObject(path) instead." )
     PyErr_BadArgument();
     Py_RETURN_NONE;
 
@@ -147,13 +145,13 @@ extern "C" PyObject * Sofa_getChildNode(PyObject * /*self*/, PyObject * /*args*/
         }
     if (!childNode)
     {
-        printf("<SofaPython> Error: Sofa.getChildNode(%s) not found.\n",path);
+        SP_MESSAGE_ERROR( "Sofa.getChildNode("<<path<<") not found." )
         return 0;
     }
     return SP_BUILD_PYSPTR(childNode);
     */
     // deprecated on date 2012/07/18
-    printf("<SofaPython> ERROR: Sofa.getChildNode(Node,path) is deprecated.\nPlease use Node.getChild(path) instead.\n");
+    SP_MESSAGE_ERROR( "Sofa.getChildNode(Node,path) is deprecated. Please use Node.getChild(path) instead." )
     PyErr_BadArgument();
     Py_RETURN_NONE;
 }
@@ -170,7 +168,7 @@ extern "C" PyObject * Sofa_sendGUIMessage(PyObject * /*self*/, PyObject * args)
     BaseGUI *gui = GUIManager::getGUI();
     if (!gui)
     {
-        printf("<SofaPython> ERROR sendGUIMessage(%s,%s): no GUI !!\n",msgType,msgValue);
+        SP_MESSAGE_ERROR( "sendGUIMessage("<<msgType<<","<<msgValue<<"): no GUI!" )
         return Py_BuildValue("i",-1);
     }
     gui->sendMessage(msgType,msgValue);
@@ -199,7 +197,7 @@ extern "C" PyObject * Sofa_saveScreenshot(PyObject * /*self*/, PyObject * args)
     BaseGUI *gui = GUIManager::getGUI();
     if (!gui)
     {
-        printf("<SofaPython> ERROR saveScreenshot(%s): no GUI !!\n",filename);
+        SP_MESSAGE_ERROR( "saveScreenshot("<<filename<<"): no GUI!" )
         return Py_BuildValue("i",-1);
     }
     gui->saveScreenshot(filename);
@@ -221,7 +219,7 @@ extern "C" PyObject * Sofa_setViewerResolution(PyObject * /*self*/, PyObject * a
     BaseGUI *gui = GUIManager::getGUI();
     if (!gui)
     {
-        printf("<SofaPython> ERROR setViewerResolution(%i,%i): no GUI !!\n",width,height);
+        SP_MESSAGE_ERROR( "setViewerResolution("<<width<<","<<height<<"): no GUI!" )
         return Py_BuildValue("i",-1);
     }
     gui->setViewerResolution(width,height);
@@ -252,7 +250,7 @@ extern "C" PyObject * Sofa_setViewerBackgroundColor(PyObject * /*self*/, PyObjec
     BaseGUI *gui = GUIManager::getGUI();
     if (!gui)
     {
-        printf("<SofaPython> ERROR setViewerBackgroundColor(%f,%f,%f): no GUI !!\n",r,g,b);
+        SP_MESSAGE_ERROR( "setViewerBackgroundColor("<<r<<","<<g<<","<<b<<"): no GUI!" )
         return Py_BuildValue("i",-1);
     }
     gui->setBackgroundColor(color);
@@ -277,13 +275,13 @@ extern "C" PyObject * Sofa_setViewerCamera(PyObject * /*self*/, PyObject * args)
     BaseGUI *gui = GUIManager::getGUI();
     if (!gui)
     {
-        printf("<SofaPython> ERROR setViewerCamera: no GUI !!\n");
+        SP_MESSAGE_ERROR( "setViewerCamera: no GUI!" )
         return Py_BuildValue("i",-1);
     }
     BaseViewer * viewer = gui->getViewer();
     if (!viewer)
     {
-        printf("<SofaPython> ERROR setViewerCamera: no Viewer !!\n");
+        SP_MESSAGE_ERROR( "setViewerCamera: no Viewer!" )
         return Py_BuildValue("i",-1);
     }
     viewer->setView(sofa::defaulttype::Vector3(px,py,pz),sofa::defaulttype::Quat(qx,qy,qz,qw));
@@ -301,13 +299,13 @@ extern "C" PyObject * Sofa_getViewerCamera(PyObject * /*self*/, PyObject *)
     BaseGUI *gui = GUIManager::getGUI();
     if (!gui)
     {
-        printf("<SofaPython> ERROR getViewerCamera: no GUI !!\n");
+        SP_MESSAGE_ERROR( "getViewerCamera: no GUI!" )
         return Py_BuildValue("i",-1);
     }
     BaseViewer * viewer = gui->getViewer();
     if (!viewer)
     {
-        printf("<SofaPython> ERROR getViewerCamera: no Viewer !!\n");
+        SP_MESSAGE_ERROR( "getViewerCamera: no Viewer! ")
         return Py_BuildValue("i",-1);
     }
     viewer->getView(pos,orient);

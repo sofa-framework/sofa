@@ -140,7 +140,7 @@ PyObject *GetDataValuePython(BaseData* data)
                 else
                 {
                     // this type is not yet supported
-                    printf("<SofaPython> BaseData_getAttr_value WARNING: unsupported native type=%s ; returning string value\n",data->getValueTypeString().c_str());
+                    SP_MESSAGE_WARNING( "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" ; returning string value" )
                     PyList_SetItem(row,j,PyString_FromString(typeinfo->getTextValue(valueVoidPtr,i*rowWidth+j).c_str()));
                 }
             }
@@ -150,7 +150,7 @@ PyObject *GetDataValuePython(BaseData* data)
         return rows;
     }
     // default (should not happen)...
-    printf("<SofaPython> BaseData_getAttr_value WARNING: unsupported native type=%s ; returning string value\n",data->getValueTypeString().c_str());
+    SP_MESSAGE_WARNING( "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" ; returning string value" )
     return PyString_FromString(data->getValueString().c_str());
 }
 
@@ -210,7 +210,7 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
                 if (PyList_Size(args)!=nbRows)
                 {
                     // only a warning; do not raise an exception...
-                    printf("<SofaPython> Warning: list size mismatch for data \"%s\" (incorrect rows count)\n",data->getName().c_str());
+                    SP_MESSAGE_WARNING( "list size mismatch for data \""<<data->getName()<<"\" (incorrect rows count)" )
                     if (PyList_Size(args)<nbRows)
                         nbRows = PyList_Size(args);
                 }
@@ -227,7 +227,7 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
                     if (PyList_Size(row)!=size)
                     {
                         // only a warning; do not raise an exception...
-                        printf("<SofaPython> Warning: row %i size mismatch for data \"%s\" (src=%dx%d dst=%dx%d)\n",i,data->getName().c_str(),(int)PyList_Size(row),nbRows,size,nbRows);
+                        SP_MESSAGE_WARNING( "row "<<i<<" size mismatch for data \""<<data->getName()<<"\" (src="<<(int)PyList_Size(row)<<"x"<<nbRows<<" dst="<<size<<"x"<<nbRows<<")" )
                         if (PyList_Size(row)<size)
                             size = PyList_Size(row);
                     }
@@ -272,7 +272,7 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
                 if (PyList_Size(args)!=size)
                 {
                     // only a warning; do not raise an exception...
-                    printf("<SofaPython> Warning: list size mismatch for data \"%s\" (src=%d dst=%d)\n",data->getName().c_str(),(int)PyList_Size(args),size);
+                    SP_MESSAGE_WARNING( "list size mismatch for data \""<<data->getName()<<"\" (src="<<(int)PyList_Size(args)<<" dst="<<size<<")" )
                     if (PyList_Size(args)<size)
                         size = PyList_Size(args);
                 }
@@ -392,7 +392,7 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
             if (PyList_Size(args)!=nbRows)
             {
                 // only a warning; do not raise an exception...
-                printf("<SofaPython> Warning: list size mismatch for data \"%s\" (incorrect rows count)\n",data->getName().c_str());
+                SP_MESSAGE_WARNING( "list size mismatch for data \""<<data->getName()<<"\" (incorrect rows count)" )
                 if (PyList_Size(args)<nbRows)
                     nbRows = PyList_Size(args);
             }
@@ -409,7 +409,7 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
                 if (PyList_Size(row)!=size)
                 {
                     // only a warning; do not raise an exception...
-                    printf("<SofaPython> Warning: row %i size mismatch for data \"%s\"\n",i,data->getName().c_str());
+                    SP_MESSAGE_WARNING( "row "<<i<<" size mismatch for data \""<<data->getName()<<"\"" )
                     if (PyList_Size(row)<size)
                         size = PyList_Size(row);
                 }
@@ -490,7 +490,7 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
             if (PyList_Size(args)!=size)
             {
                 // only a warning; do not raise an exception...
-                printf("<SofaPython> Warning: list size mismatch for data \"%s\" (src=%d dst=%d)\n",data->getName().c_str(),(int)PyList_Size(args),size);
+                SP_MESSAGE_WARNING( "list size mismatch for data \""<<data->getName()<<"\" (src="<<(int)PyList_Size(args)<<" dst="<<size<<")" )
                 if (PyList_Size(args)<size)
                     size = PyList_Size(args);
             }
@@ -582,7 +582,7 @@ SP_CLASS_ATTR_SET(Data,value)(PyObject *self, PyObject * args, void*)
         return 0;   // OK
 
 
-    printf("<SofaPython> argument type not supported\n");
+    SP_MESSAGE_ERROR( "argument type not supported" )
     PyErr_BadArgument();
     return -1;
 }
@@ -601,7 +601,7 @@ extern "C" PyObject * Data_getValue(PyObject *self, PyObject * args)
     if ((unsigned int)index>=typeinfo->size())
     {
         // out of bounds!
-        printf("<SofaPython> Error: Data.getValue index overflow\n");
+        SP_MESSAGE_ERROR( "Data.getValue index overflow" )
         PyErr_BadArgument();
         Py_RETURN_NONE;
     }
@@ -613,7 +613,7 @@ extern "C" PyObject * Data_getValue(PyObject *self, PyObject * args)
         return PyString_FromString(typeinfo->getTextValue(data->getValueVoidPtr(),index).c_str());
 
     // should never happen....
-    printf("<SofaPython> Error: Data.getValue unknown data type\n");
+    SP_MESSAGE_ERROR( "Data.getValue unknown data type" )
     PyErr_BadArgument();
     Py_RETURN_NONE;
 }
@@ -631,7 +631,7 @@ extern "C" PyObject * Data_setValue(PyObject *self, PyObject * args)
     if ((unsigned int)index>=typeinfo->size())
     {
         // out of bounds!
-        printf("<SofaPython> Error: Data.setValue index overflow\n");
+        SP_MESSAGE_ERROR( "Data.setValue index overflow" )
         PyErr_BadArgument();
         Py_RETURN_NONE;
     }
@@ -652,7 +652,7 @@ extern "C" PyObject * Data_setValue(PyObject *self, PyObject * args)
     }
 
     // should never happen....
-    printf("<SofaPython> Error: Data.setValue type mismatch\n");
+    SP_MESSAGE_ERROR( "Data.setValue type mismatch" )
     PyErr_BadArgument();
     Py_RETURN_NONE;
 }

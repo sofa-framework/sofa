@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "PythonEnvironment.h"
+#include "PythonMacros.h"
 
 
 #include <sofa/simulation/common/Node.h>
@@ -50,7 +51,7 @@ namespace simulation
 {
 
 
-static bool     m_Initialized = false;
+static bool m_Initialized = false;
 
 
 
@@ -58,10 +59,10 @@ void PythonEnvironment::Init()
 {
     if (m_Initialized) return;
     // Initialize the Python Interpreter
-    //std::cout<<"<SofaPython> Initializing python framework..."<<std::endl;
+    // SP_MESSAGE_INFO( "Initializing python framework..." )
 
     std::string pythonVersion = Py_GetVersion();
-    std::cout<<"<SofaPython> Python framework version: "<<pythonVersion<<std::endl;
+    SP_MESSAGE_INFO( "Python framework version: "<<pythonVersion )
 //    PyEval_InitThreads();
 
 #if __linux__
@@ -70,9 +71,9 @@ void PythonEnvironment::Init()
     dlopen( pythonLibraryName.c_str(), RTLD_LAZY|RTLD_GLOBAL );
 #endif
 
-    //std::cout<<"<SofaPython> Py_Initialize();"<<std::endl;
+    //SP_MESSAGE_INFO( "Py_Initialize()" )
     Py_Initialize();
-    //std::cout<<"<SofaPython> Registering Sofa bindings..."<<std::endl;
+    //SP_MESSAGE_INFO( "Registering Sofa bindings..." )
 
     // append sofa modules to the embedded python environment
     bindSofaPythonModule();
@@ -92,7 +93,7 @@ void PythonEnvironment::Init()
     fclose(scriptPyFile);
 #endif 
 
-    //std::cout<<"<SofaPython> Initialization done."<<std::endl;
+    //SP_MESSAGE_INFO( "Initialization done." )
 
     m_Initialized = true;
 
@@ -138,10 +139,10 @@ PyObject* PythonEnvironment::importScript( const char *filename )
 {
     Init(); // MUST be called at least once; so let's call it each time we load a python script
 
-//    std::cout << "<SofaPython> Loading python script \""<<filename<<"\""<<std::endl;
+//    SP_MESSAGE_INFO( "Loading python script \""<<filename<<"\"" )
     std::string dir = sofa::helper::system::SetDirectory::GetParentDir(filename);
     std::string bareFilename = sofa::helper::system::SetDirectory::GetFileNameWithoutExtension(filename);
-//    std::cout << "<SofaPython> script directory \""<<dir<<"\""<<std::endl;
+//    SP_MESSAGE_INFO( "script directory \""<<dir<<"\"" )
 
     // temp: directory always added to environment;
     // TODO: check if the path is already set to this directory...
@@ -149,7 +150,7 @@ PyObject* PythonEnvironment::importScript( const char *filename )
     // append current path to Python module search path...
     std::string commandString = "sys.path.append(\""+dir+"\")";
 
-//    printf("<SofaPython> %s\n",commandString.c_str());
+//    SP_MESSAGE_INFO( commandString.c_str() )
 
     PyObject *pModule = 0;
 
@@ -163,29 +164,25 @@ PyObject* PythonEnvironment::importScript( const char *filename )
     /// if true, a module with similar name has been loaded. We need to reload the module.
 
     PyRun_SimpleString("import sys");
-//    printf("<SofaPython> 1\n");
     PyRun_SimpleString(commandString.c_str());
-//    printf("<SofaPython> 2\n");
 
     // Load the module object
     pModule = PyImport_Import(PyString_FromString(bareFilename.c_str()));
-    //  printf("<SofaPython> 3\n");
 
     //  Py_END_ALLOW_THREADS
 
     if (!pModule)
     {
-        printf("<SofaPython> Script \"%s\" import error\n",bareFilename.c_str());
+        SP_MESSAGE_ERROR( "Script \""<<bareFilename<<"\" import error" )
         PyErr_Print();
         return 0;
     }
 
     if (previously_loaded){
-        //printf("<SofaPython> Script \"%s\" reloaded\n",bareFilename.c_str());
+        //SP_MESSAGE_INFO( "Script \""<<bareFilename<<"\" reloaded" )
         pModule = PyImport_ReloadModule(pModule);
     }
 
-    //    printf("<SofaPython> 5\n");
 
     return pModule;
 }
@@ -211,7 +208,7 @@ bool PythonEnvironment::initGraph(PyObject *script, sofa::simulation::tree::GNod
         }
         catch (const error_already_set e)
         {
-            printf("<SofaPython> exception\n");
+            SP_MESSAGE_EXCEPTION("")
             PyErr_Print();
 
         }
