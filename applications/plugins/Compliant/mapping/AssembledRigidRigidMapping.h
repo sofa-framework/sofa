@@ -75,12 +75,12 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
 		
 	}
 
+	typedef defaulttype::SerializablePair<unsigned, typename TIn::Coord> source_type;
+	Data< vector< source_type > > source;
+
   protected:
 	typedef SE3< typename TIn::Real > se3;
-	
-    typedef defaulttype::SerializablePair<unsigned, typename TIn::Coord> source_type;
-    Data< vector< source_type > > source;
- 
+  
 	typedef AssembledRigidRigidMapping self;
 	
 	virtual void assemble( const typename self::in_pos_type& in_pos ) {
