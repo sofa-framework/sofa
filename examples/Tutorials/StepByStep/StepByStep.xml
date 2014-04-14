@@ -49,4 +49,10 @@
         <Tutorial name="Collision model of the Tongue" scene="Tutorials/StepByStep/Dentistry_Haptics/dentalSurgery_08.scn" />
         <Tutorial name="Annex: Mesh generation" scene="Tutorials/StepByStep/Dentistry_Haptics/dentalSurgery_Annex.scn" />
     </Group>
+    <Group name="Get your bearings">
+        <Tutorial name="Simple scene" scene="Tutorials/StepByStep/Getyourbearings/0_getyourbearings.scn" />
+        <Tutorial name="Grid" scene="Tutorials/StepByStep/Getyourbearings/1_getyourbearings.scn" />
+        <Tutorial name="Axis" scene="Tutorials/StepByStep/Getyourbearings/2_getyourbearings.scn" />
+        <Tutorial name="Frame" scene="Tutorials/StepByStep/Getyourbearings/3_getyourbearings.scn" />
+    </Group>
 </Category>
