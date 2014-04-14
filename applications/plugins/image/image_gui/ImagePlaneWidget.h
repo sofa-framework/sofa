@@ -118,7 +118,7 @@ private:
         }
         else
         {
-			QRectF r(sofa::helper::round(P1.x()),sofa::helper::round(P1.y()),1,1);
+            QRectF r(sofa::helper::round(P1.x()),sofa::helper::round(P1.y()),1,1);
             painter->setPen ( Qt::NoPen);
             painter->setBrush(Qt::SolidPattern);
             painter->setBrush(Qt::green);
@@ -221,11 +221,12 @@ protected:
     {
         QGraphicsView::mouseDoubleClickEvent(mouseEvent);
         if (mouseEvent->modifiers()==Qt::ControlModifier)  {  setRoi(QRectF(0,0,image.width(),image.height()));  emit roiResized(); }
-        
-        QPointF pt(this->mapToScene(mouseEvent->pos()));
-        pt.setX(pt.x()-0.5); pt.setY(pt.y()-0.5);
-        this->fromGraph(pt,true); // update info
-
+        else
+        {
+            QPointF pt(this->mapToScene(mouseEvent->pos()));
+            pt.setX(pt.x()-0.5); pt.setY(pt.y()-0.5);
+            this->fromGraph(pt,true); // update info
+        }
         emit mousedoubleclickevent();
     }
 
@@ -268,7 +269,7 @@ class TImagePlaneGraphWidget: public ImagePlaneGraphWidget
 protected:
     Coord point;
     // Points 2D to display double clicked points on slices
-    helper::vector<Coord> tab2DPoint; 
+    helper::vector<Coord> tab2DPoint;
     bool newPointClicked;
     const ImagePlanetype* imageplane;
     unsigned int backupindex;
@@ -354,8 +355,8 @@ public:
         {
             newPointClicked = true;
             point = p;
-           
-            CImg<unsigned char> plane = convertToUC( this->imageplane->get_slice(this->index, this->axis).cut(imageplane->getClamp()[0],imageplane->getClamp()[1]) );
+
+            //            CImg<unsigned char> plane = convertToUC( this->imageplane->get_slice(this->index, this->axis).cut(imageplane->getClamp()[0],imageplane->getClamp()[1]) );
             this->tab2DPoint.push_back(P);
             this->image.setPixel( pt.x(),pt.y() ,qRgb(255,0 ,0));
             emit onMouseDoubleClicked(p);
@@ -400,13 +401,13 @@ public:
         {
             Coord P = tab2DPoint[i];
             if( this->axis==0 && this->index == P.x())
-            this->image.setPixel(QPoint(P.z(),P.y()),qRgb(255,0 ,0));
+                this->image.setPixel(QPoint(P.z(),P.y()),qRgb(255,0 ,0));
 
             else if(this->axis==1 && this->index == P.y())
-            this->image.setPixel(QPoint(P.x(),P.z()),qRgb(255,0 ,0));
+                this->image.setPixel(QPoint(P.x(),P.z()),qRgb(255,0 ,0));
 
-            else if (this->axis==2 && this->index == P.z()) 
-            this->image.setPixel(QPoint(P.x(),P.y()),qRgb(255,0 ,0));
+            else if (this->axis==2 && this->index == P.z())
+                this->image.setPixel(QPoint(P.x(),P.y()),qRgb(255,0 ,0));
 
         }
 
@@ -516,7 +517,7 @@ public:
         layout->add(label1);
         layout->add(label2);
         layout->add(label3);
-	}
+    }
 
 public slots:
 
@@ -530,7 +531,7 @@ public slots:
 protected:
     QLabel *label1;
     QLabel *label2;
-    QLabel *label3;	
+    QLabel *label3;
 };
 
 //-----------------------------------------------------------------------------------------------//
@@ -553,16 +554,16 @@ public:
         layout->add(textEdit);
     }
 
-    public slots:
+public slots:
 
-        void onMouseDoubleClicked(const sofa::defaulttype::Vec3d& p)
-        {
-            QString newText ("\n Point " + QString().setNum((int)(indexPoint)) + " [ " + QString().setNum((float)p[0]) + "," + QString().setNum((float)p[1]) + "," +QString().setNum((float)p[2]) + " ]" );
-            QString textToWrite = textEdit->toPlainText() + newText;
-            textEdit->clear();
-            textEdit->setText(textToWrite);
-            indexPoint ++;
-        }
+    void onMouseDoubleClicked(const sofa::defaulttype::Vec3d& p)
+    {
+        QString newText ("\n Point " + QString().setNum((int)(indexPoint)) + " [ " + QString().setNum((float)p[0]) + "," + QString().setNum((float)p[1]) + "," +QString().setNum((float)p[2]) + " ]" );
+        QString textToWrite = textEdit->toPlainText() + newText;
+        textEdit->clear();
+        textEdit->setText(textToWrite);
+        indexPoint ++;
+    }
 
 protected:
     QTextEdit *textEdit;
@@ -609,6 +610,7 @@ public:
     ImagePlaneInfoWidget* info;
 
     ImagePlaneListPointWidget* pointList;
+    QCheckBox* togglePointList;
 
     QCheckBox* togglemodels;
 
@@ -616,7 +618,7 @@ public:
     Timageplane_data_widget_container()
         : optionsXY(NULL), graphXY(NULL),
           optionsXZ(NULL), graphXZ(NULL),
-          optionsZY(NULL), graphZY(NULL), 
+          optionsZY(NULL), graphZY(NULL),
           container_layout(NULL), info(NULL), pointList(NULL)
     {}
 
@@ -637,7 +639,9 @@ public:
     bool createWidgets(DataWidget* parent, const ImagePlanetype& d, bool /*readOnly*/)
     {
         info = new ImagePlaneInfoWidget(parent);
-        pointList = new ImagePlaneListPointWidget(parent);
+        pointList = new ImagePlaneListPointWidget(parent);  pointList->setVisible(false);
+        togglePointList = new QCheckBox(QString("Point list"),parent);         togglePointList->setChecked(false);
+        QObject::connect(togglePointList, SIGNAL( toggled(bool) ), pointList, SLOT( setVisible(bool) ) );
 
         togglemodels = new QCheckBox(QString("Visual Models"),parent); togglemodels->setChecked(true);
 
@@ -732,8 +736,8 @@ public:
         assert(container_layout);
 
         QGridLayout* layout = new QGridLayout();
-		layout->setColStretch(0, 50);
-		layout->setColStretch(1, 50);
+        layout->setColStretch(0, 50);
+        layout->setColStretch(1, 50);
 
         if(graphXY) layout->addWidget(graphXY,0,0);
         if(optionsXY) layout->addWidget(optionsXY,1,0);
@@ -745,8 +749,9 @@ public:
         if(optionsZY) layout->addWidget(optionsZY,1,1);
 
         layout->addWidget(pointList,2,1);
-        container_layout->addLayout(layout);
+        layout->addWidget(togglePointList,3,1);
 
+        container_layout->addLayout(layout);
         container_layout->add(togglemodels);
 
         //if(graphXY && graphXZ && graphZY) layout->addWidget(info,2,1);
