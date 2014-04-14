@@ -20,7 +20,7 @@ struct PickedPoint
     nat index;                       ///< index of the particle picked
     Vec3 point;                      ///< location of the picked particle in world space
 
-    /// Conversion to boolean for easier test writing
+    /// Conversion to boolean for easier test writing. Default value is converted to false.
     operator bool() const { return state != NULL; }
 
     PickedPoint()
