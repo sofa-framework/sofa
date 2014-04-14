@@ -330,11 +330,21 @@ static PyTypeObject DummyChild_PyTypeObject = {
         return 0; \
     }
 
+
+// =============================================================================
+// ERROR / WARNING MESSAGES
+// =============================================================================
+#define SP_MESSAGE_INFO( msg ) std::cerr << "<SofaPython> " << msg << std::endl;
+#define SP_MESSAGE_WARNING( msg ) std::cerr << "<SofaPython> WARNING " << msg << std::endl;
+#define SP_MESSAGE_ERROR( msg ) std::cerr << "<SofaPython> ERROR " << msg << std::endl;
+#define SP_MESSAGE_EXCEPTION( msg ) std::cerr << "<SofaPython> EXCEPTION " << msg << std::endl;
+
+
 // =============================================================================
 // PYTHON SCRIPT METHOD CALL
 // =============================================================================
-#define SP_CALL_MODULEFUNC(func, ...) { if (func) { if (!PyObject_CallObject(func,Py_BuildValue(__VA_ARGS__))) { printf("<SofaPython> exception\n"); PyErr_Print(); } } }
-#define SP_CALL_MODULEFUNC_NOPARAM(func) { if (func) { if (!PyObject_CallObject(func,0)) { printf("<SofaPython> exception\n"); PyErr_Print(); } } }
+#define SP_CALL_MODULEFUNC(func, ...) { if (func) { if (!PyObject_CallObject(func,Py_BuildValue(__VA_ARGS__))) { SP_MESSAGE_EXCEPTION("") PyErr_Print(); } } }
+#define SP_CALL_MODULEFUNC_NOPARAM(func) { if (func) { if (!PyObject_CallObject(func,0)) { SP_MESSAGE_EXCEPTION("") PyErr_Print(); } } }
 
 
 

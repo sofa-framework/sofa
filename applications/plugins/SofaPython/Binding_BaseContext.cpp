@@ -110,7 +110,7 @@ extern "C" PyObject * BaseContext_createObject(PyObject * self, PyObject * args,
     BaseObject::SPtr obj = ObjectFactory::getInstance()->createObject(context,&desc);
     if (obj==0)
     {
-        std::cerr << "<SofaPython> ERROR createObject " << desc.getName() << " of type " << desc.getAttribute("type","")<< " in node "<<context->getName()<<std::endl;
+        SP_MESSAGE_ERROR( "createObject " << desc.getName() << " of type " << desc.getAttribute("type","")<< " in node "<<context->getName() )
         PyErr_BadArgument();
         Py_RETURN_NONE;
     }
@@ -118,11 +118,11 @@ extern "C" PyObject * BaseContext_createObject(PyObject * self, PyObject * args,
     Node *node = dynamic_cast<Node*>(context);
     if (node)
     {
-        //printf("<SofaPython> Sofa.Node.createObject(%s) node=%s isInitialized()=%d\n",type,node->getName().c_str(),node->isInitialized());
+        //SP_MESSAGE_INFO( "Sofa.Node.createObject("<<type<<") node="<<node->getName()<<" isInitialized()="<<node->isInitialized() )
         if (node->isInitialized())
-            printf("<SofaPython> WARNING Sofa.Node.createObject(%s) called on a node(%s) that is already initialized\n",type,node->getName().c_str());
+            SP_MESSAGE_WARNING( "Sofa.Node.createObject("<<type<<") called on a node("<<node->getName()<<") that is already initialized" )
         if (!ScriptEnvironment::isNodeCreatedByScript(node))
-            printf("<SofaPython> WARNING Sofa.Node.createObject(%s) called on a node(%s) that is not created by the script\n",type,node->getName().c_str());
+            SP_MESSAGE_WARNING( "Sofa.Node.createObject("<<type<<") called on a node("<<node->getName()<<") that is not created by the script" )
     }
 
     return SP_BUILD_PYSPTR(obj.get());
@@ -134,7 +134,10 @@ extern "C" PyObject * BaseContext_getObject(PyObject * self, PyObject * args)
     BaseContext* context=dynamic_cast<BaseContext*>(((PySPtr<Base>*)self)->object.get());
     char *path;
     if (!PyArg_ParseTuple(args, "s",&path))
+    {
+        SP_MESSAGE_WARNING( "BaseContext_getObject: wrong argument, should be a string" )
         Py_RETURN_NONE;
+    }
     if (!context || !path)
     {
         PyErr_BadArgument();
@@ -144,6 +147,7 @@ extern "C" PyObject * BaseContext_getObject(PyObject * self, PyObject * args)
     context->get<BaseObject>(sptr,path);
 	if (!sptr)
 	{
+        SP_MESSAGE_WARNING( "BaseContext_getObject: component "<<path<<" not found (the complete relative path is needed)" )
 		Py_RETURN_NONE;
 	}
 

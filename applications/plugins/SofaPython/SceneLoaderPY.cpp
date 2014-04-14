@@ -66,7 +66,7 @@ sofa::simulation::Node::SPtr SceneLoaderPY::load(const char *filename)
     if (!script)
     {
         // LOAD ERROR
-        std::cerr << "<SofaPython> ERROR : scene script load error." << std::endl;
+        SP_MESSAGE_ERROR( "scene script load error." )
         return NULL;
     }
 
@@ -75,7 +75,7 @@ sofa::simulation::Node::SPtr SceneLoaderPY::load(const char *filename)
     if (!pDict)
     {
         // DICT ERROR
-        std::cerr << "<SofaPython> script dictionnary load error." << std::endl;
+        SP_MESSAGE_ERROR( "script dictionnary load error." )
         return NULL;
     }
 
@@ -91,7 +91,7 @@ sofa::simulation::Node::SPtr SceneLoaderPY::load(const char *filename)
     }
     else
     {
-        std::cerr << "<SofaPython> cannot create Scene, no \"createScene(rootNode)\" module method found." << std::endl;
+        SP_MESSAGE_ERROR( "cannot create Scene, no \"createScene(rootNode)\" module method found." )
     }
 
     return NULL;

@@ -76,7 +76,7 @@ void PythonScriptController::loadScript()
     if (!m_Script)
     {
         // LOAD ERROR
-        std::cerr << "<SofaPython> ERROR : "<<getName() << " object - "<<m_filename.getFullPath().c_str()<<" script load error." << std::endl;
+        SP_MESSAGE_ERROR( getName() << " object - "<<m_filename.getFullPath().c_str()<<" script load error." )
         return;
     }
 
@@ -87,7 +87,7 @@ void PythonScriptController::loadScript()
     if (!m_ScriptDict)
     {
         // LOAD ERROR
-        std::cerr << getName() << " load error (dictionnary not found)." << std::endl;
+        SP_MESSAGE_ERROR( getName() << " load error (dictionnary not found)." )
         return;
     }
 
@@ -96,7 +96,7 @@ void PythonScriptController::loadScript()
     if (!m_ScriptControllerClass)
     {
         // LOAD ERROR
-        std::cerr << getName() << " load error (class \""<<m_classname.getValueString()<<"\" not found)." << std::endl;
+        SP_MESSAGE_ERROR( getName() << " load error (class \""<<m_classname.getValueString()<<"\" not found)." )
         return;
     }
     //std::cout << getName() << " class \""<<m_classname.getValueString()<<"\" found OK." << std::endl;
@@ -108,7 +108,7 @@ void PythonScriptController::loadScript()
     if (1!=PyObject_IsSubclass(m_ScriptControllerClass,(PyObject*)&SP_SOFAPYTYPEOBJECT(PythonScriptController)))
     {
         // LOAD ERROR
-        std::cerr << getName() << " load error (class \""<<m_classname.getValueString()<<"\" does not inherit from \"Sofa.PythonScriptController\")." << std::endl;
+        SP_MESSAGE_ERROR( getName() << " load error (class \""<<m_classname.getValueString()<<"\" does not inherit from \"Sofa.PythonScriptController\")." )
         return;
     }
 
@@ -121,7 +121,7 @@ void PythonScriptController::loadScript()
     if (!m_ScriptControllerInstance)
     {
         // LOAD ERROR
-        std::cerr << getName() << " load error (class \""<<m_classname.getValueString()<<"\" instanciation error)." << std::endl;
+        SP_MESSAGE_ERROR( getName() << " load error (class \""<<m_classname.getValueString()<<"\" instanciation error)." )
         return;
     }
     //std::cout << getName() << " class \""<<m_classname.getValueString()<<"\" instanciation OK." << std::endl;
@@ -168,12 +168,12 @@ using namespace sofa::core::objectmodel;
     PyObject *res=PyObject_CallMethod(m_ScriptControllerInstance,func,__VA_ARGS__); \
     if (!res) \
     { \
-        std::cerr << "<SofaPython> exception in " << m_classname.getValueString() << "." << func << std::endl; \
+        SP_MESSAGE_EXCEPTION( "in " << m_classname.getValueString() << "." << func ) \
         PyErr_Print(); \
     } \
 }
 
-//#define SP_CALL_OBJECTFUNC_NOPARAM(func) { if (func) { if (!PyObject_CallObject(func,0)) { printf("<SofaPython> exception\n"); PyErr_Print(); } } }
+//#define SP_CALL_OBJECTFUNC_NOPARAM(func) { if (func) { if (!PyObject_CallObject(func,0)) { SP_MESSAGE_EXCEPTION("") PyErr_Print(); } } }
 
 
 
