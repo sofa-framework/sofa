@@ -125,7 +125,7 @@ public:
     /// Initialize an unset vector
     //virtual void vInit(const ExecParams* params /* PARAMS FIRST  = ExecParams::defaultInstance()*/, MatrixDerivId v, ConstMatrixDerivId vSrc) = 0;
 
-    /// Compute a linear operation on vectors : v = a + b * f.
+    /// \brief Compute a linear operation on vectors : v = a + b * f.
     ///
     /// This generic operation can be used for many simpler cases :
     /// \li v = 0
@@ -158,7 +158,7 @@ public:
 
     typedef helper::vector< VMultiOpEntry > VMultiOp;
 
-    /// Perform a sequence of linear vector accumulation operation $r_i = sum_j (v_j*f_{ij})$
+    /// \brief Perform a sequence of linear vector accumulation operation $r_i = sum_j (v_j*f_{ij})$
     ///
     /// This is used to compute in on steps operations such as $v = v + a*dt, x = x + v*dt$.
     /// Note that if the result vector appears inside the expression, it must be the first operand.
@@ -275,7 +275,8 @@ public:
     /// Translate the current state
     virtual void applyTranslation(const double dx, const double dy, const double dz)=0;
 
-    /// Rotate the current state
+    /// \brief Rotate the current state
+    ///
     /// This method is optional, it is used when the user want to interactively change the position of an object using Euler angles
     virtual void applyRotation (const double /*rx*/, const double /*ry*/, const double /*rz*/) {};
 
@@ -292,7 +293,8 @@ public:
         return false;
     }
 
-    /// Find mechanical particles hit by the given ray.
+    /// \brief Find mechanical particles hit by the given ray.
+    ///
     /// A mechanical particle is defined as a 2D or 3D, position or rigid DOF
     /// Returns false if this object does not support picking
     virtual bool pickParticles(const ExecParams* /* params */ /* PARAMS FIRST */, double /*rayOx*/, double /*rayOy*/, double /*rayOz*/,
@@ -317,44 +319,53 @@ public:
     /// @name Interface with BaseMatrix / BaseVector
     /// @{
 
-    /// Get the number of scalars per Deriv value, as necessary to build mechanical matrices and vectors.
+    /// \brief Get the number of scalars per Deriv value, as necessary to build mechanical matrices and vectors.
+    ///
     /// If not all Derivs have the same number of scalars, then return 1 here and overload the getMatrixSize() method.
     virtual unsigned int getMatrixBlockSize() const { return getDerivDimension(); }
 
-    /// Get the number of rows necessary to build mechanical matrices and vectors.
+    /// \brief Get the number of rows necessary to build mechanical matrices and vectors.
+    ///
     /// In most cases this is equivalent to getSize() * getMatrixBlockSize().
     virtual unsigned int getMatrixSize() const { return getSize() * getMatrixBlockSize(); }
 
-    /// Copy data to a global BaseVector from the state stored in a local vector
+    /// \brief Copy data to a global BaseVector from the state stored in a local vector.
     /// @param offset the offset in the BaseVector where the scalar values will be used. It will be updated to the first scalar value after the ones used by this operation when this method returns
     virtual void copyToBaseVector(defaulttype::BaseVector* dest, ConstVecId src, unsigned int &offset) = 0;
 
-    /// Copy data to a local vector from the state stored in a global BaseVector
+    /// \brief Copy data to a local vector from the state stored in a global BaseVector.
     /// @param offset the offset in the BaseVector where the scalar values will be used. It will be updated to the first scalar value after the ones used by this operation when this method returns
     virtual void copyFromBaseVector(VecId dest, const defaulttype::BaseVector* src, unsigned int &offset) = 0;
 
-    /// Copy data to an external, user-allocated buffer. *Exact*
-    /// element count must be provided for consistency checks.
+    /// \brief Copy data to an external, user-allocated buffer.
+    ///
+    /// *Exact* element count must be provided for consistency checks.
     virtual void copyToBuffer(SReal* dst, ConstVecId src, unsigned int n) const = 0;
 
-    /// Copy data from an external, user-allocated buffer. *Exact*
-    /// element count must be provided for consistency checks.
+    /// \brief Copy data from an external, user-allocated buffer.
+    ///
+    /// *Exact* element count must be provided for consistency checks.
     virtual void copyFromBuffer(VecId dst, const SReal* src, unsigned int n) = 0;
 
-    /// Add data from an external, user-allocated buffer. *Exact*
-    /// element count must be provided for consistency checks.
+    /// \brief Add data from an external, user-allocated buffer.
+    ///
+    /// *Exact* element count must be provided for consistency checks.
     virtual void addFromBuffer(VecId dst, const SReal* src, unsigned int n) = 0;
     
-    /// Add data to a global BaseVector from the state stored in a local vector
+    /// \brief Add data to a global BaseVector from the state stored in a local vector.
     /// @param offset the offset in the BaseVector where the scalar values will be used. It will be updated to the first scalar value after the ones used by this operation when this method returns
     virtual void addToBaseVector(defaulttype::BaseVector* dest, ConstVecId src, unsigned int &offset) = 0;
 
-    /// Performs dest[i][j] += src[offset + i][j] 0<= i < src_entries 0<= j < 3 (for 3D objects) 0 <= j < 2 (for 2D objects)
+    /// \brief
+    ///
+    /// Perform dest[i][j] += src[offset + i][j] 0<= i < src_entries 0<= j < 3 (for 3D objects) 0 <= j < 2 (for 2D objects)
     /// @param offset the offset in the BaseVector where the scalar values will be used. It will be updated to the first scalar value after the ones used by this operation when this method returns
     virtual void addFromBaseVectorSameSize(VecId dest, const defaulttype::BaseVector* src, unsigned int &offset) = 0;
 
 
-    /// Performs dest[ offset + i ][j] += src[i][j]  0<= i < src_entries  0<= j < 3 (for 3D objects) 0 <= j < 2 (for 2D objects)
+    /// \brief
+    ///
+    /// Perform dest[ offset + i ][j] += src[i][j]  0<= i < src_entries  0<= j < 3 (for 3D objects) 0 <= j < 2 (for 2D objects)
     /// @param offset the offset in the MechanicalObject local vector specified by VecId dest. It will be updated to the first scalar value after the ones used by this operation when this method returns.
     virtual void addFromBaseVectorDifferentSize(VecId dest, const defaulttype::BaseVector* src, unsigned int &offset ) = 0;
     /// @}

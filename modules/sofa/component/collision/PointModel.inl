@@ -399,7 +399,7 @@ void TPointModel<DataTypes>::updateNormals()
                 n3 += n;
             }
         }
-        /// @TODO Hexahedra
+        /// @todo Hexahedra
     }
     else if (mesh->getNbTriangles()+mesh->getNbQuads() > 0)
     {

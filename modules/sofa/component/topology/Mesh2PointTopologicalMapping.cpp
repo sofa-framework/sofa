@@ -731,7 +731,7 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
             }
             case core::topology::QUADSADDED:
             {
-                /// @TODO
+                /// @todo
                 break;
             }
             case core::topology::QUADSREMOVED:

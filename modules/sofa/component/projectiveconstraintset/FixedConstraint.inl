@@ -263,7 +263,7 @@ void FixedConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalPar
 template <class DataTypes>
 void FixedConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& /*vData*/)
 {
-#if 0 /// @TODO ADD A FLAG FOR THIS
+#if 0 /// @todo ADD A FLAG FOR THIS
     const SetIndexArray & indices = f_indices.getValue();
     //serr<<"FixedConstraint<DataTypes>::projectVelocity, res.size()="<<res.size()<<sendl;
     if( f_fixAll.getValue()==true )    // fix everyting

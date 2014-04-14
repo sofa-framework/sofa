@@ -3749,7 +3749,7 @@ void BarycentricMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cpa
 }
 
 
-/// @TODO Optimization
+/// @todo Optimization
 template <class In, class Out>
 void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in )
 {

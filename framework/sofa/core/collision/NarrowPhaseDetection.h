@@ -87,7 +87,7 @@ public:
 
             if (!do_vec || do_vec->empty())
             {
-                /// @TODO Optimization
+                /// @todo Optimization
                 DetectionOutputMap::iterator iterase = it;
 				++it;
 				m_outputsMap.erase(iterase);

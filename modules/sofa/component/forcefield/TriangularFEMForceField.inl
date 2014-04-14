@@ -484,7 +484,7 @@ void TriangularFEMForceField<DataTypes>::getRotations()
 template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::getFractureCriteria(int elementIndex, Deriv& direction, Real& value)
 {
-    /// @TODO evaluate the criteria on the current position instead of relying on the computations during the force evaluation (based on the previous position)
+    /// @todo evaluate the criteria on the current position instead of relying on the computations during the force evaluation (based on the previous position)
 
 //    computePrincipalStrain(elementIndex, J, D);
 
