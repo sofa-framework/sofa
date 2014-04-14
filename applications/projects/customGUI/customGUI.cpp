@@ -90,6 +90,7 @@ void display(void)
     glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity ();
 
+
     gluLookAt ( camera_position[0],camera_position[1],camera_position[2], 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
     sofaScene.glDraw();
@@ -129,6 +130,7 @@ void keyboard(unsigned char key, int /*x*/, int /*y*/)
         animating = !animating;
     }
 
+
 }
 
 void idle()
@@ -143,6 +145,8 @@ void idle()
 
 void mouseButton(int button, int state, int x, int y)
 {
+    cout<<"mousebutton, modifiers = " << glutGetModifiers() << endl;
+
     switch (button) {
     case GLUT_LEFT_BUTTON:
         if (state == GLUT_DOWN)
@@ -203,10 +207,9 @@ void update_modifiers()
 }
 void specialKey(int k, int x, int y)
 {
-    //    cout<<"special key " << k << endl;
+    cout<<"special key " << k << endl;
     cout<<"modifiers = " << glutGetModifiers() << endl; // looks like freeglut is currently buggy, since this is always null
     update_modifiers();
-    //    sofaScene.glut_special(k,x,y);
 }
 
 #include <sofa/config.h>
