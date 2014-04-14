@@ -17,6 +17,7 @@ set(HEADER_FILES
     ../visualmodel/OglCylinderModel.h
     ../visualmodel/OglSceneFrame.h
     ../visualmodel/OglGrid.h
+    ../visualmodel/OglLineAxis.h
 
     )
     
@@ -37,6 +38,7 @@ set(SOURCE_FILES
     ../visualmodel/OglCylinderModel.cpp
     ../visualmodel/OglSceneFrame.cpp
     ../visualmodel/OglGrid.cpp
+    ../visualmodel/OglLineAxis.cpp
 
     )
     

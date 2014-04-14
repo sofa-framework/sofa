@@ -1,0 +1,5 @@
+<Node name="root" dt="0.01">
+    <OglModel name="VisualModel" fileMesh="mesh/liver-smooth.obj" color="red" />
+    <OglGrid name="grid"/>
+    <OglLineAxis size="@grid.size"/>
+</Node>
