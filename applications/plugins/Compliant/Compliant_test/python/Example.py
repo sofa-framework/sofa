@@ -1,5 +1,7 @@
 import Sofa
 
+import Test
+
 def createScene(node):
 
     # simply build a python controller here
@@ -12,15 +14,14 @@ def createScene(node):
 
 
  
-class Controller(Sofa.PythonScriptController):
+class Controller(Test.Controller):
 
     def onLoaded(self, node):
         self.node = node
         return 0
         
     def onBeginAnimationStep(self, dt):
-        # send script event 'success' or 'failure' to return script result
-        if self.node.getTime() > 1:
-            self.node.sendScriptEvent('success', 0)
+        condition = True
+        self.should(condition, 'this test should never fail')
         return 0
 
