@@ -149,11 +149,11 @@ void *hapticSimuExecute( void *ptr )
 
     // Initialization
     OmniDriverEmu *omniDrv = (OmniDriverEmu*)ptr;
-    double timeScale = 1.0 / (double)helper::system::thread::CTime::getTicksPerSec();
-    double startTime, endTime, totalTime, realTimePrev = -1.0, realTimeAct;
-    double requiredTime = 1.0/double(omniDrv->simuFreq.getValue()) * 1.0/timeScale; // [us]
-    double timeCorrection = 0.1 * requiredTime;
-    int timeToSleep;
+    //double timeScale = 1.0 / (double)helper::system::thread::CTime::getTicksPerSec();
+    //double startTime, endTime, totalTime, realTimePrev = -1.0, realTimeAct;
+    //double requiredTime = 1.0/double(omniDrv->simuFreq.getValue()) * 1.0/timeScale; // [us]
+    //double timeCorrection = 0.1 * requiredTime;
+    //int timeToSleep;
 
     // Init the "trajectory" data
     OmniDriverEmu::VecCoord pts = omniDrv->trajPts.getValue(); //sets of points use for interpolation
@@ -245,11 +245,15 @@ void *hapticSimuExecute( void *ptr )
     sofa::defaulttype::Vec3d actualPos = pts[0].getCenter();
 
 
+    double timeScale = 1.0 / (double)helper::system::thread::CTime::getTicksPerSec();
+    double startTime, endTime, totalTime, realTimePrev = -1.0, realTimeAct;
+    double requiredTime = 1.0 / (double)omniDrv->simuFreq.getValue() * 1.0 / timeScale;
+    double timeCorrection = 0.1 * requiredTime;
+    int timeToSleep;
 
     // loop that updates the position tool.
     while (true)
     {
-        std::cout << ".";
         if (omniDrv->executeAsynchro)
         {
             startTime = double(omniDrv->thTimer->getTime());
@@ -336,21 +340,24 @@ void *hapticSimuExecute( void *ptr )
             realTimePrev = realTimeAct;
             asynchroStep++;
 
-            endTime = double(omniDrv->thTimer->getTime());  //[s]
+            endTime = (double)omniDrv->thTimer->getTime();  //[s]
             totalTime = (endTime - startTime);  // [us]
             timeToSleep = int( (requiredTime - totalTime) - timeCorrection); //  [us]
+
             if (timeToSleep > 0)
             {
 #ifndef WIN32
-                usleep(timeToSleep);
+                // Microseconds sleep
+                usleep(1000000.0 * timeScale * timeToSleep);
 #else
-                Sleep(static_cast<DWORD>(timeToSleep));
+                // Milliseconds sleep
+                Sleep(static_cast<DWORD>(1000.0 * timeScale * timeToSleep));
 #endif
                 //std::cout << "Frequency OK, computation time: " << totalTime << std::endl;
             }
             else
             {
-                std::cout << "Cannot achieve desired frequency, computation too slow: " << totalTime << std::endl;
+                std::cout << "Cannot achieve desired frequency, computation too slow : " << totalTime * timeScale << " seconds for last iteration." << std::endl;
             }
 
         }
@@ -645,7 +652,6 @@ void OmniDriverEmu::handleEvent(core::objectmodel::Event *event)
             }
             executeAsynchro=true;
 
-            std::cout << "executeAsynchro = true" << std::endl;
             executeAsynchro = true;
         }
         else
