@@ -93,7 +93,7 @@ class SOFA_Compliant_API SequentialSolver : public IterativeSolver {
 	
 	// blocks solve
 	typedef Eigen::Map< vec > chunk_type;
-	void solve_block(chunk_type result, const inverse_type& inv, chunk_type rhs) const;
+	virtual void solve_block(chunk_type result, const inverse_type& inv, chunk_type rhs) const;
 	
   protected:
 
