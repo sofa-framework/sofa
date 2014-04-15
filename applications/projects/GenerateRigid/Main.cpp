@@ -32,9 +32,9 @@ using namespace sofa::defaulttype;
 
 int main(int argc, char** argv)
 {
-    if (argc < 2 || argc > 4)
+    if (argc < 2 || argc > 7)
     {
-        std::cout <<"USAGE: "<<argv[0]<<" inputfile.obj [outputfile.rigid] [density]\n";
+        std::cout <<"USAGE: "<<argv[0]<<" inputfile.obj [outputfile.rigid] [density] [scaleX] [scaleY] [scaleZ]\n";
         return 1;
     }
 
@@ -51,8 +51,18 @@ int main(int argc, char** argv)
 
     Vec3d center;
     Rigid3Mass mass;
+	Vec3d scale(1, 1, 1);
 
+	for( unsigned i = 0; i < 3; ++i) {
+		if( argc > 4 + i ) scale[i] = std::atof(argv[4 + i]);
+	}
 
+	if( scale != Vec3d(1, 1, 1) ) {
+		for(unsigned i = 0, n = mesh->getVertices().size(); i < n; ++i) {
+			mesh->getVertices()[i] = mesh->getVertices()[i].linearProduct(scale);
+		}
+	}
+	
     projects::GenerateRigid(mass, center, mesh);
 
     double density = 1000;
