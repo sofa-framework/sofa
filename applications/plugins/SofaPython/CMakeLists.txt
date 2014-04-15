@@ -53,6 +53,7 @@ set(HEADER_FILES
     Binding_BaseMechanicalState.h
     Binding_PythonScriptController.h
     Binding_LinearSpring.h
+    Binding_VisualModel.h
     SceneLoaderPY.h
     ScriptEnvironment.h
 	)
@@ -94,6 +95,7 @@ set(SOURCE_FILES
     Binding_BaseMechanicalState.cpp
     Binding_PythonScriptController.cpp
     Binding_LinearSpring.cpp
+    Binding_VisualModel.cpp
     SceneLoaderPY.cpp
     ScriptEnvironment.cpp
 	)

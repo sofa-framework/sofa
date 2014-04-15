@@ -53,6 +53,7 @@
 //#include "Binding_RigidMapping.h"
 //#include "Binding_MultiMapping.h"
 #include "Binding_SubsetMultiMapping.h"
+#include "Binding_VisualModel.h"
 
 PyObject *SofaPythonModule = 0;
 
@@ -80,6 +81,7 @@ void bindSofaPythonModule()
                 SP_ADD_CLASS(SofaPythonModule,BaseState)
                     SP_ADD_CLASS(SofaPythonModule,BaseMechanicalState)
                         SP_ADD_CLASS(SofaPythonModule,MechanicalObject)
+                    SP_ADD_CLASS(SofaPythonModule,VisualModel)
                 SP_ADD_CLASS(SofaPythonModule,BaseMapping)
 //                    SP_ADD_CLASS(SofaPythonModule,Mapping)
 //                        SP_ADD_CLASS(SofaPythonModule,RigidMapping)

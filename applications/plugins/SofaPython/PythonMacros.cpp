@@ -42,6 +42,7 @@
 //#include "Binding_RigidMapping.h"
 //#include "Binding_MultiMapping.h"
 #include "Binding_SubsetMultiMapping.h"
+#include "Binding_VisualModel.h"
 
 // crée un objet Python à partir d'un objet Cpp héritant de Base,
 // retournant automatiquement le type Python de plus haut niveau possible
@@ -72,6 +73,8 @@ PyObject* SP_BUILD_PYSPTR(Base* obj)
     if (dynamic_cast<sofa::component::topology::Topology*>(obj))
         return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(Topology));
 
+    if (dynamic_cast<sofa::component::visualmodel::VisualModelImpl*>(obj))
+        return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(VisualModel));
     if (dynamic_cast<MechanicalObject3*>(obj))
         return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(MechanicalObject));
     if (dynamic_cast<sofa::core::behavior::BaseMechanicalState*>(obj))
