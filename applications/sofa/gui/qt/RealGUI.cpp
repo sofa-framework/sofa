@@ -375,7 +375,9 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
     TabStats->layout()->add(statWidget);
 
 	createSimulationGraph();
-    createPropertyWidget();
+
+    //disable widget, can be bothersome with objects with a lot of data
+    //createPropertyWidget();
 
     //viewer
     informationOnPickCallBack = InformationOnPickCallBack(this);
@@ -1954,7 +1956,10 @@ void RealGUI::playpauseGUI ( bool value )
     if ( currentSimulation() )
         currentSimulation()->getContext()->setAnimate ( value );
     if(value)
+    {
+        frameCounter=0;
         timerStep->start(0);
+    }
     else
         timerStep->stop();
 }
