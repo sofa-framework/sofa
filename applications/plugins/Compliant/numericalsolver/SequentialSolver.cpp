@@ -131,6 +131,8 @@ void SequentialSolver::factor(const system_type& system) {
 	// response matrix
 	assert( response );
 
+	// TODO this is nonsense and should be removed. This matrix is not
+	// invertible in the general case.
     if( !system.isPIdentity ) response->factor( system.P.transpose() * system.H * system.P ); // replace H with P^T.H.P to account for projective constraints
     else response->factor( system.H );
 
