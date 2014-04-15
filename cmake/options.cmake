@@ -9,8 +9,8 @@ if(NOT PRECONFIGURE_DONE)
 
     if(NOT PS3)
         override_default(SOFA-APPLICATION_RUNSOFA BOOL ON "Build RunSofa application")
-        override_default(SOFA-APPLICATION_SOFABATCH BOOL ON "Build SofaBatch application")
         override_default(SOFA-APPLICATION_MODELER BOOL ON "Build Modeler application")
+        override_default(SOFA-APPLICATION_GENERATERIGID BOOL ON "Build GenerateRigid application")
     endif()
 endif()
 
@@ -64,6 +64,7 @@ else()
     set(SOFA-EXTERNAL_BOOST 1 CACHE INTERNAL "Use the system / user compiled boost library instead of miniBoost" FORCE)
     list(APPEND compilerDefines SOFA_HAVE_BOOST)
 endif()
+
 
 ## geometric tools
 sofa_option(SOFA-EXTERNAL_GEOMETRIC_TOOLS_PATH PATH "" "Path to Geometric tools folder containing the cmake project")
@@ -438,7 +439,7 @@ endif()
 
 # Option to activate THRUST (for RadixSort)
 # Note: THRUST is included in CUDA SDK 4.0+, it is recommended to use it if available
-sofa_option(SOFA-CUDA_THRUST BOOL OFF "SOFA-CUDA_THRUST")
+sofa_option(SOFA-CUDA_THRUST BOOL ON "SOFA-CUDA_THRUST")
 if(SOFA-CUDA_THRUST)
     add_definitions("-DSOFA_GPU_THRUST")
     AddCompilerDefinitions("SOFA_GPU_THRUST")
