@@ -109,7 +109,6 @@ struct ImageContainerSpecialization<defaulttype::IMAGELABEL_IMAGE>
         //Load .inr.gz using ZLib
         if(fname.size() >= 3 && (fname.substr(fname.size()-7)==".inr.gz" || fname.substr(fname.size()-4)==".inr") )
         {
-#ifdef SOFA_HAVE_ZLIB
             float voxsize[3];
             float translation[3]={0.,0.,0.}, rotation[3]={0.,0.,0.};
             CImg<T> img = cimg_library::_load_gz_inr<T>(NULL, fname.c_str(), voxsize, translation, rotation);
@@ -131,7 +130,6 @@ struct ImageContainerSpecialization<defaulttype::IMAGELABEL_IMAGE>
             //			Real t0 = wtransform->getRotation()[0];
             //			Real t1 = wtransform->getRotation()[1];
             //			Real t2 = wtransform->getRotation()[2];
-#endif
 
         }
         else
