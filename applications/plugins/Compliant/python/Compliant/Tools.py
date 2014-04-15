@@ -51,7 +51,23 @@ def scene(node):
     return node.createChild('scene') 
 
 
+def node_depth(node):
+    parents = node.getParents()
+    if len(parents) == 0: return 0
+    else: return 1 + node_depth( parents[0] )
+    
 
+# path from root
+def node_path_abs(node):
+    parents = node.getParents()
+    if len(parents) == 0: return ''
+    else: return node_path_abs(parents[0]) + '/' + node.name
+    
+
+def node_path_rel(src, dst):
+
+    return ('../' * node_depth(src)) + node_path_abs(dst)
+    
 
 # recursive find (nodes only, depth-first)
 def find(root, name):
