@@ -1,7 +1,6 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
-
     initCompliant.h
 
     misc/CompliantAttachButtonSetting.h
@@ -31,9 +30,9 @@ set(HEADER_FILES
     numericalsolver/LDLTResponse.h
     numericalsolver/DiagonalResponse.h
     numericalsolver/SequentialSolver.h
-	numericalsolver/IterativeSolver.h
-	numericalsolver/Benchmark.h
-	numericalsolver/BenchmarkSolver.h
+    numericalsolver/IterativeSolver.h
+    numericalsolver/Benchmark.h
+    numericalsolver/BenchmarkSolver.h
     numericalsolver/PreconditionedSolver.h
     numericalsolver/PreconditionedCgSolver.h
 
@@ -68,7 +67,7 @@ set(HEADER_FILES
     contact/FrictionCompliantContact.h
     contact/BaseContact.h
     contact/PenalityCompliantContact.h
-	
+    
     utils/basis.h
     utils/cast.h
     utils/cg.h
@@ -87,11 +86,9 @@ set(HEADER_FILES
     utils/scoped.h
     utils/se3.h
     utils/sparse.h
-    utils/thread_local.h
-	)
+    utils/thread_local.h)
 
 set(SOURCE_FILES
-
     initCompliant.cpp
 
     misc/CompliantAttachButtonSetting.cpp
@@ -122,8 +119,8 @@ set(SOURCE_FILES
     numericalsolver/LDLTResponse.cpp
     numericalsolver/DiagonalResponse.cpp
     numericalsolver/SequentialSolver.cpp
-	numericalsolver/IterativeSolver.cpp
-	numericalsolver/Benchmark.cpp
+    numericalsolver/IterativeSolver.cpp
+    numericalsolver/Benchmark.cpp
     numericalsolver/BenchmarkSolver.cpp
     numericalsolver/PreconditionedSolver.cpp
     numericalsolver/PreconditionedCgSolver.cpp
@@ -147,13 +144,9 @@ set(SOURCE_FILES
 
     contact/CompliantContact.cpp
     contact/FrictionCompliantContact.cpp
-    contact/PenalityCompliantContact.cpp
-	)
+    contact/PenalityCompliantContact.cpp)
 
-set(README_FILES
-
-	Compliant.txt
-	)
+set(README_FILES Compliant.txt)
 
 # include python files
 include(./python/python.cmake)	

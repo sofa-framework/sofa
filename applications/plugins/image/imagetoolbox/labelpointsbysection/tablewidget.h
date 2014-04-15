@@ -101,7 +101,6 @@ public:
         // list the available slides
         listSection->clear();
 
-        mapSection[currentSection];
         QList<unsigned int> key = mapSection->keys();
 
 

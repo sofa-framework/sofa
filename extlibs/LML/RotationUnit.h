@@ -38,7 +38,7 @@ public:
   static RotationUnit DEG; 
   
 private:
-  RotationUnit(char * n) {unitString = n;}
+  RotationUnit(const char * n) {unitString = n;}
 };
       
 #endif //ROTATIONUNIT_H

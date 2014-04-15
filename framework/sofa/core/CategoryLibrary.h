@@ -63,7 +63,7 @@ public:
 
     size_t getNumComponents() const {return components.size();}
 
-    /** Get the list of categories a class belongs to, based on its parent classes.
+    /** \brief Get the list of categories a class belongs to, based on its parent classes.
      *
      *  @param mclass the class the categorize
      *  @param outputVector the vector where to push the categories

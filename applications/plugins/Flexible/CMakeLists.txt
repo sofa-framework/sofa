@@ -163,9 +163,6 @@ if(SOFA-PLUGIN_IMAGE)
    	list(APPEND SOURCE_FILES "deformationMapping/ImageDeformation.cpp")
    	list(APPEND SOURCE_FILES "mass/ImageDensityMass.cpp")
     
-	include_directories("${SOFA_EXTLIBS_DIR}")
-	include_directories("${SOFA_APPLICATIONS_PLUGINS_DIR}")
-
         AddLinkerDependencies(image)
         AddCompilerDefinitions("SOFA_HAVE_IMAGE" )
 endif()

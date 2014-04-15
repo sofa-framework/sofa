@@ -205,7 +205,7 @@ void update_modifiers()
     _isShiftPressed   =  (glutGetModifiers()&GLUT_ACTIVE_SHIFT)!=0; if( _isShiftPressed ) cout <<"shift pressed" <<endl; else cout<<"shift not pressed" << endl;
     _isAltPressed     =  (glutGetModifiers()&GLUT_ACTIVE_ALT  )!=0;
 }
-void specialKey(int k, int x, int y)
+void specialKey(int k, int /*x*/, int /*y*/)
 {
     cout<<"special key " << k << endl;
     cout<<"modifiers = " << glutGetModifiers() << endl; // looks like freeglut is currently buggy, since this is always null

@@ -1,63 +1,56 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
-include_directories(${SOFA_EXTLIBS_DIR})
-
-
 
 set(SOURCE_FILES
-
-	initImage.cpp 
-	ImageContainer.cpp 
-	ImageFilter.cpp 
-	ImageOperation.cpp 
+    initImage.cpp
+    ImageContainer.cpp
+    ImageFilter.cpp
+    ImageOperation.cpp
     ImageTransform.cpp
-    TransferFunction.cpp 
-    ImageValuesFromPositions.cpp 
-    MergeImages.cpp 
-    ImageAccumulator.cpp 
-    DepthMapToMeshEngine.cpp 
+    TransferFunction.cpp
+    ImageValuesFromPositions.cpp
+    MergeImages.cpp
+    ImageAccumulator.cpp
+    DepthMapToMeshEngine.cpp
     MeshToImageEngine.cpp
-    MarchingCubesEngine.cpp 
-    ImageSampler.cpp 
-    ImageExporter.cpp 
-    BranchingImageConverter.cpp 
+    MarchingCubesEngine.cpp
+    ImageSampler.cpp
+    ImageExporter.cpp
+    BranchingImageConverter.cpp
     BranchingCellIndicesFromPositions.cpp
     BranchingCellOffsetsFromPositions.cpp
     BranchingCellVolumes.cpp
     MergeBranchingImages.cpp
-    ImageDataDisplay.cpp
-        )
+    ImageDataDisplay.cpp)
 
-
-
-list(APPEND HEADER_FILES
-
-	initImage.h 
-	ImageTypes.h 
-	ImageContainer.h 
-	ImageFilter.h 
-	ImageOperation.h 
+set(HEADER_FILES
+    initImage.h
+    ImageTypes.h
+    ImageContainer.h
+    ImageFilter.h
+    ImageOperation.h
     ImageTransform.h
-    TransferFunction.h 
-    ImageValuesFromPositions.h 
-    MergeImages.h 
-    ImageAccumulator.h 
-    DepthMapToMeshEngine.h 
+    TransferFunction.h
+    ImageValuesFromPositions.h
+    MergeImages.h
+    ImageAccumulator.h
+    DepthMapToMeshEngine.h
     MeshToImageEngine.h
-    MarchingCubesEngine.h 
-    ImageSampler.h 
+    MarchingCubesEngine.h
+    ImageSampler.h
     ImageExporter.h
-    VectorVis.h 
-    ImageAlgorithms.h 
-    Containers.h 
-    BranchingImage.h 
+    VectorVis.h
+    ImageAlgorithms.h
+    Containers.h
+    BranchingImage.h
     BranchingImageConverter.h
     BranchingCellIndicesFromPositions.h
     BranchingCellOffsetsFromPositions.h
     BranchingCellVolumes.h
     MergeBranchingImages.h
-    ImageDataDisplay.h
-        )
+    ImageDataDisplay.h)
+
+set(README_FILES image.txt)
 
 if (NOT SOFA-MISC_NO_OPENGL)
     list(APPEND HEADER_FILES "ImageViewer.h")
@@ -65,26 +58,16 @@ if (NOT SOFA-MISC_NO_OPENGL)
 endif()
 
 if(SOFA-EXTERNAL_LIBFREENECT)
-
     list(APPEND HEADER_FILES "Kinect.h")
     list(APPEND SOURCE_FILES "Kinect.cpp")
-    
-    
     AddLinkerDependencies("freenect")
     AddLinkerDependencies("freenect_sync")
-
 endif()
-
-set(README_FILES
-
-	image.txt
-      )
-
 
 if(SOFA-EXTERNAL_ZLIB)
-	AddLinkerDependencies(${ZLIB_LIBRARIES})
+    AddLinkerDependencies(${ZLIB_LIBRARIES})
 endif()
-	
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES} ${README_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_IMAGE")
@@ -101,13 +84,11 @@ if(APPLE)
 endif()
 
 if(SOFA-EXTERNAL_OPENCV)
-
     AddLinkerDependencies("ml")
     AddLinkerDependencies("cvaux")
     AddLinkerDependencies("highgui")
     AddLinkerDependencies("cv")
     AddLinkerDependencies("cxcore")
-
 endif()
 
 AddLinkerDependencies(newmat)

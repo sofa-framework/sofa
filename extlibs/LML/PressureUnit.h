@@ -36,7 +36,7 @@ public:
   static PressureUnit MMHG;
  
 private:
-  PressureUnit(char * n) {unitString = n;}
+  PressureUnit(const char * n) {unitString = n;}
 };
 
 
