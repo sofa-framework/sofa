@@ -1,5 +1,5 @@
-#ifndef GRAPH_H
-#define GRAPH_H
+#ifndef UTILS_GRAPH_H
+#define UTILS_GRAPH_H
 
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/depth_first_search.hpp>
@@ -19,8 +19,21 @@ struct graph_traits {
 
 template<class Vertex, class Edge, class Direction = boost::undirectedS>
 struct graph : graph_traits<Vertex, Edge, Direction>::graph_type {
+
+	typedef typename graph_traits<Vertex, Edge, Direction>::graph_type base;
+	
+	typedef Vertex vertex_type;
+	typedef Edge edge_type;
+	typedef Direction direction_type;
+
+	graph() { }
+	graph(unsigned n) : base(n) { }
+	
 	
 	// some handy typedefs
+	typedef std::pair<typename graph::edge_iterator,
+	                  typename graph::edge_iterator> edge_range;
+
 	typedef std::pair<typename graph::in_edge_iterator,
 	                  typename graph::in_edge_iterator> in_edge_range;
 
