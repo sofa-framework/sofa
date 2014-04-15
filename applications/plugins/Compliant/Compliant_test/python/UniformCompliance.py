@@ -74,7 +74,7 @@ def createScene(node):
     # parameters
     mass = 1.0
     stiff = 1e3 
-    damping = 1e2
+    damping = 0.0
 
     # dofs
     p = insert_point(scene, 'p', [-1, 0, 0], mass) 
@@ -82,6 +82,7 @@ def createScene(node):
 
     sub = p.createChild('sub')
     sub.createObject('MechanicalObject',
+                     name = 'dofs',
                      position = '0 0 0')
     
     sub.createObject('IdentityMapping',
@@ -134,12 +135,8 @@ class Controller(Test.Controller):
 
         # velocity at time step end computed by solver
         v = vec( shared.dofs.velocity[0] )
-        
-        self.should( (v - sol).norm() < epsilon )
-        
-        
-            
-            
-    
 
+        # print v, sol
+        error = (v - sol).norm()
 
+        self.should( error < epsilon, 'velocity not what it should be' )
