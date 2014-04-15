@@ -12,12 +12,21 @@ namespace mapping {
 /** 
 	a very general affine multi mapping: y = A x + b
 	
-	where x is the concatenation of input dofs, in the order specified in fromModel(). 
+	where x is the concatenation of input dofs, in the order specified
+	in fromModel().
 
 	A is given as rows, b as a vector.
 
-	this is moslty useful to python scripts that need to compute arbitrary multimappings.
+	this is mostly useful to python scripts that need to compute
+	arbitrary multimappings.
 	
+	this class can be used to set arbitrary velocity constraints, by
+	setting 'hard_positions': in this case, y = b but the velocity is
+	still mapped as dy = A dx. With zero compliance, this corresponds
+	to a kinematic velocity constraint of the form:  A dx = -b / dt
+
+	Hence b corresponds to (current_position - desired_position)
+
 	@author Maxime Tournier
 	
 */
@@ -38,7 +47,7 @@ class SOFA_Compliant_API AffineMultiMapping : public AssembledMultiMapping<TIn, 
 	typedef vector< typename TOut::Real > value_type;
 
 	Data<matrix_type> matrix;
-	Data<value_type> value;
+	Data<value_type> value;		
 	Data<bool> hard_positions;
 	
 	AffineMultiMapping() :
