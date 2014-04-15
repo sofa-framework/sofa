@@ -276,9 +276,8 @@ class Joint:
                 pass
         
         def insert(self, parent):
-                # now for the joint dofs
                 node = parent.createChild(self.name)
-
+                
                 # build input data for multimapping
                 input = []
                 for b, o in zip(self.body, self.offset):
