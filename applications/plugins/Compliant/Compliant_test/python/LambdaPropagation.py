@@ -2,11 +2,9 @@ import Sofa
 
 import sys
 
-path = Sofa.src_dir() + '/applications/plugins/Compliant'
-sys.path.append(  path + '/python' )
-
-
 import Compliant
+path = Compliant.path()
+
 
 from Compliant.Vec import Proxy as vec
 
