@@ -15,6 +15,7 @@ from subprocess import Popen, PIPE
 import Quaternion as quat
 import Vec as vec
 
+import Tools
 from Tools import cat as concat
 
 
@@ -182,7 +183,7 @@ class Body:
                                         inertia_forces = self.inertia_forces )
                 
                 # user node i.e. the one the user provided
-                user = res.createChild( 'user' )
+                user = res.createChild( self.name + '-user' )
                 off.inv().insert(user, name = 'dofs')
                 user.createObject('AssembledRigidRigidMapping',
                                   template = 'Rigid,Rigid',
@@ -231,6 +232,10 @@ class Body:
                                                template = 'Rigid,Vec3d',
                                                input = '@../',
                                                output = '@./')
+
+                self.node = res
+                self.user = user
+                
                 return res
 
 
@@ -271,13 +276,16 @@ class Joint:
                 pass
         
         def insert(self, parent):
+                # now for the joint dofs
+                node = parent.createChild(self.name)
+
                 # build input data for multimapping
                 input = []
                 for b, o in zip(self.body, self.offset):
                         if o is None:
-                                input.append( '@' + self.pathToBodies + b.name + '/user/dofs' )
+                                input.append( '@' + Tools.node_path_rel(node, b) + '/dofs' )
                         else:
-                                joint = b.getChild('user').createChild( self.name + '-offset' )
+                                joint = b.createChild( self.name + '-offset' )
                                 
                                 joint.createObject('MechanicalObject', 
                                                    template = 'Rigid', 
@@ -287,14 +295,12 @@ class Joint:
                                                    template = "Rigid,Rigid",
                                                    source = '0 ' + str( o ) )
                                 
-                                input.append( '@' + self.pathToBodies + b.name + '/user/' + joint.name + '/dofs' )
+                                input.append( '@' + Tools.node_path_rel(node, b) + '/' + joint.name + '/dofs' )
                              
                 if len(input) == 0:
                         print 'warning: empty joint'
                         return None
    
-                # now for the joint dofs
-                node = parent.createChild(self.name)
                 
                 dofs = node.createObject('MechanicalObject', 
                                          template = 'Vec6d', 

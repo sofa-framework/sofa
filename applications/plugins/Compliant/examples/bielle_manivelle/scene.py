@@ -76,12 +76,13 @@ def createScene(node):
         r.dofs.read( p[3] )
         r.visual = mesh_path + '/' + p[15]
         r.collision = r.visual
-        r.inertia_forces = "false"
+        r.inertia_forces = True
         
         density = float(p[7])
         r.mass_from_mesh( r.visual, density )
-        
-        rigid.append( r.insert( scene ) )
+
+        r.insert( scene )
+        rigid.append( r )
         
     # create joints
     for i in links:
@@ -95,13 +96,13 @@ def createScene(node):
         c = offset[i[1]][0]
         off_c = offset[i[1]][1]
         
-        j.append(rigid[p], off_p)
-        j.append(rigid[c], off_c)
+        j.append(rigid[p].user, off_p)
+        j.append(rigid[c].user, off_c)
         
         joint.append( j.insert( scene) )
         
     # fix first body
-    rigid[0].createObject('FixedConstraint', indices = '0' )
+    rigid[0].node.createObject('FixedConstraint', indices = '0' )
             
     return node
 
