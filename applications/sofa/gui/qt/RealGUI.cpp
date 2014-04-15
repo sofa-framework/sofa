@@ -375,7 +375,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
     TabStats->layout()->add(statWidget);
 
 	createSimulationGraph();
-	createPropertyWidget();
+    createPropertyWidget();
 
     //viewer
     informationOnPickCallBack = InformationOnPickCallBack(this);
@@ -1788,11 +1788,11 @@ void RealGUI::createPropertyWidget()
 	this->topDock()->setAcceptDockWindow(dockProperty, false);
 	this->bottomDock()->setAcceptDockWindow(dockProperty, false);
 
-	dockProperty->setWidget(propertyWidget);
+    dockProperty->setWidget(propertyWidget);
 
-	connect(dockProperty, SIGNAL(placeChanged(Q3DockWindow::Place)), this, SLOT(propertyDockMoved(Q3DockWindow::Place)));
+    connect(dockProperty, SIGNAL(placeChanged(Q3DockWindow::Place)), this, SLOT(propertyDockMoved(Q3DockWindow::Place)));
     
-	simulationGraph->setPropertyWidget(propertyWidget);
+    simulationGraph->setPropertyWidget(propertyWidget);
 }
 
 //------------------------------------
@@ -2075,6 +2075,8 @@ void RealGUI::resetScene()
     emit ( newScene() );
     if (root)
     {
+        frameCounter=0;
+
         simulation::getSimulation()->reset ( root );
         eventNewTime();
         emit newStep();
