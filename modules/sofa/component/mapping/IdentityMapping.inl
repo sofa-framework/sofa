@@ -354,27 +354,38 @@ const typename IdentityMapping<TIn, TOut>::js_type* IdentityMapping<TIn, TOut>::
 {
 	if( !eigen.compressedMatrix.nonZeros() || updateJ ) {
 		updateJ = false;
-		
-        const unsigned rowsBlock = this->toModel->getSize();
-		
-        assert( rowsBlock == (unsigned)this->fromModel->getSize()/*colsBlock*/ );
 
-        const unsigned rows = rowsBlock * NOut;
-        const unsigned cols = rowsBlock * NIn;
+		assert( this->fromModel->getSize() == this->toModel->getSize());
+
+		const unsigned n = this->fromModel->getSize();
+
+		// each block (input i, output j) has only its top-left
+		// principal submatrix filled with identity
+		
+		const unsigned rows = n * NOut;
+        const unsigned cols = n * NIn;
 
         eigen.compressedMatrix.resize( rows, cols );
 		eigen.compressedMatrix.setZero();
         eigen.compressedMatrix.reserve( rows );
 		
-        for( unsigned i = 0; i < rowsBlock; ++i) {
-            for( unsigned j = 0; j < NOut; ++j) {
-                eigen.compressedMatrix.startVec( i*NOut+j );
-                eigen.compressedMatrix.insertBack( i*NOut+j, i*NIn+j ) = 1.0;
-            }
+		for(unsigned i = 0 ; i < n; ++i) {
+
+			for(unsigned r = 0; r < std::min<unsigned>(NIn, NOut); ++r) {
+				const unsigned row = NOut * i + r;
+
+				eigen.compressedMatrix.startVec( row );
+
+				const unsigned col = NIn * i + r;
+				eigen.compressedMatrix.insertBack( row, col ) = 1;
+			}
+			
 		}
 		
 		eigen.compressedMatrix.finalize();
     }
+
+	// std::cout << eigen.compressedMatrix << std::endl;
 	
 	js.resize( 1 );
 	js[0] = &eigen;
