@@ -474,13 +474,12 @@ protected:
             // flood fill from the exterior point (0,0,0) with the color outsideColor so every voxel==outsideColor are outside
             if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: "<<this->getName()<<":  Filling object (mesh "<<meshId<<")..."<<std::endl;
 
-
             imCurrent.draw_fill(0,0,0,&outsideColor);
             cimg_foroff(imCurrent,off)
             {
                 if( imCurrent[off]!=outsideColor ) // not outside
                 {
-                    if( !imCurrent[off] || imCurrent[off]==fillColor ) im[off]=trueFillColor; // inside or rasterized
+                    if( imCurrent[off]==defaultColor || imCurrent[off]==fillColor ) im[off]=trueFillColor; // inside or rasterized
                     else if( imCurrent[off]==closingColor ) im[off]=trueClosingColor; // closing
                     else if( imCurrent[off]==roiColor ) {
                         im[off]=trueRoiColor; // Roi
@@ -492,7 +491,7 @@ protected:
         {
             cimg_foroff(imCurrent,off)
             {
-                if( imCurrent[off]!=defaultColor ) // not outside and not inside
+                if( imCurrent[off]!=defaultColor) // not outside and not inside
                 {
                     if( imCurrent[off]==fillColor ) im[off]=trueFillColor; // rasterized
                     else if( imCurrent[off]==closingColor ) im[off]=trueClosingColor; // closing
