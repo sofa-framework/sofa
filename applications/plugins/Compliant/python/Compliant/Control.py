@@ -11,7 +11,7 @@ from Vec import Proxy as vec
 # 1-dimensional PID, for a Rigid joint. *EXPLICIT* pid
 class PID:
     
-    def __init__(self, dofs):
+    def __init__(self, dofs, **args):
         # self.dofs = dofs
 
         # gains
@@ -26,6 +26,10 @@ class PID:
         self.basis = [0, 0, 0, 0, 0, 0]
         
         self.name = 'pid'
+
+        # overrides stuff
+        for k in args:
+            setattr(self, k, args[k])
 
         # insert starts here
         node = dofs.getContext().createChild( self.name )
@@ -81,8 +85,10 @@ class PID:
 
     # hop
     def pre_step(self, dt):
+        
         # update mapping just in case
         self.map.set = Tools.cat([0] + self.basis)
+        self.map.offset = str(self.pos)
         self.map.init()
 
         self.update(dt)
