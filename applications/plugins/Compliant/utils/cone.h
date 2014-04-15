@@ -53,6 +53,39 @@ Eigen::Matrix<U, 3, 1> cone(const Eigen::Matrix<U, 3, 1>& f,
 }
 
 
+template<class U>
+Eigen::Matrix<U, 3, 1> cone_horizontal(const Eigen::Matrix<U, 3, 1>& f,
+									   const Eigen::Matrix<U, 3, 1>& normal,
+									   U mu = 1.0) {
+	typedef Eigen::Matrix<U, 3, 1> vec3;
+	
+	assert( std::abs(normal.norm() - 1) < std::numeric_limits<U>::epsilon() );
+	
+	// normal norm
+	U theta_n = f.dot(normal); 
+
+	// normal / tangent forces
+	vec3 f_n = normal * theta_n;
+	vec3 f_t = f - f_n;
+
+	// tangent norm
+	U theta_t = f_t.norm();
+	
+	bool inside_cone = theta_n >= 0 && (theta_t <= mu * theta_n);
+	
+	// projection
+	if( !inside_cone ) {
+		if( theta_n < 0 ) return vec3::Zero();
+		
+		return f_n + f_t / theta_t * mu * theta_n;
+	} else {
+		return f;
+	}
+}
+
+
+
+
 
 // with normal=(1,0,0), so f[0] is aligned with the normal
 // coulomb law => normT<=mu*f[0]
