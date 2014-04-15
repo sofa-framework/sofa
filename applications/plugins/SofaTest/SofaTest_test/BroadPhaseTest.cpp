@@ -54,8 +54,6 @@
 #include <stdlib.h>
 
 
-SReal extent = 1.2;
-
 struct MyBox{
 
     MyBox(){}
@@ -94,7 +92,7 @@ struct MyBox{
 
 template <class BroadPhase>
 struct BroadPhaseTest: public ::testing::Test{
-    static double getExtent(){return extent;}
+    static double getExtent(){return 1.2;}
 
     static bool randSparse();
     static bool randDense();
