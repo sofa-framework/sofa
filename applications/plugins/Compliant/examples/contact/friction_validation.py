@@ -63,21 +63,14 @@ def createScene(node):
 
     # ground-plane joint
     frame = Rigid.Frame()
-    frame.translation = [5, 0, 0]
+    frame.translation = [8, 0, 0]
 
     joint = Rigid.RevoluteJoint(2)
     joint.absolute(frame, ground.node, plane.node)
+    joint.upper_limit = 0
 
     joint.node = joint.insert( scene )
 
-    # joint limit 
-    limit = joint.node.createChild("limit")
-    limit.createObject('MechanicalObject', template = 'Vec1d', position = '0')
-    projection = limit.createObject('ProjectionMapping', template = 'Vec6d, Vec1d' )
-    projection.set = '0   0 0 0 0 0 -1'
-    limit.createObject('UniformCompliance', template = 'Vec1d', compliance = '0' )
-    limit.createObject('UnilateralConstraint');
-    limit.createObject('Stabilization');
     
     # box
     box = Rigid.Body('box')
@@ -94,14 +87,15 @@ def createScene(node):
     # pid
     shared.pid = Control.PID(shared.joint)
     shared.pid.pos = -math.atan( shared.mu ) # target should trigger slide
-
     shared.pid.basis = [0, 0, 0, 0, 0, 1]
+
+    # shared.pid.dofs.externalForce = '-1e7'
 
     scale = 1e6
 
-    shared.pid.kp = - 1 * scale
+    shared.pid.kp = - 1.2 * scale
     shared.pid.kd =  - 5 * scale
-    shared.pid.ki = - 0.05 * scale
+    shared.pid.ki = - 1 * scale
 
 # scene controller
 class Controller(Sofa.PythonScriptController):
@@ -112,11 +106,15 @@ class Controller(Sofa.PythonScriptController):
     def reset(self):
         shared.pid.reset()
         return 0
-          
+
+    def onEndAnimationStep(self, dt):
+        shared.pid.post_step( dt )
+        return 0
+    
     def onBeginAnimationStep(self, dt):
 
         # pid update
-        shared.pid.update( dt )
+        shared.pid.pre_step( dt )
 
         # info display
         relative = Rigid.Frame( shared.plane.position[0] ).inv() * Rigid.Frame( shared.box.position[0] )
