@@ -64,6 +64,7 @@ public :
     ///In this method we  create the widgets and perform the signal / slots
     ///connections.
     virtual bool createWidgets();
+    virtual void setDataReadOnly(bool readOnly);
 protected slots:
     void change();
 protected:

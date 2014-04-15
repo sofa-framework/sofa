@@ -8,7 +8,7 @@ using namespace sofa;
 namespace sofa{
 namespace newgui{
 
-Interactor::Interactor(const PickedPoint &picked)
+Interactor::Interactor(const PickedPoint& /*picked*/)
 {
     interactionNode = sofa::simulation::getSimulation()->createNewNode("picked point interaction node");
 }

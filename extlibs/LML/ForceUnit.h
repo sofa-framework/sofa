@@ -39,7 +39,7 @@ public:
 
 private:
   /// private constructor
-  ForceUnit(char * n) {unitString = n;}
+  ForceUnit(const char * n) {unitString = n;}
 };
 
 

@@ -206,7 +206,7 @@ void PhysicalModel::xmlRead(const char * n){
     clear();
 
     //static const char* xmlFile = 0;
-    static bool isInit = false;
+    // static bool isInit = false;
 
     //if (!isInit) {
 
@@ -247,7 +247,7 @@ void PhysicalModel::xmlRead(const char * n){
 
     //}
 
-    isInit = true;
+    // isInit = true;
 }
 
 

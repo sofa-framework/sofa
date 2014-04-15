@@ -45,8 +45,6 @@ bool MyDataWidgetUnsigned::createWidgets()
 {
     unsigned myData_value = getData()->virtualGetValue();
 
-
-
     qslider = new QSlider(Qt::Horizontal, this);
     qslider->setTickmarks(QSlider::Below);
     qslider->setRange(0,100);
@@ -73,9 +71,12 @@ bool MyDataWidgetUnsigned::createWidgets()
     connect(qslider,SIGNAL( sliderReleased() ), this, SLOT( change() ) );
     connect(qslider,SIGNAL( valueChanged(int) ), this, SLOT( change() ) );
 
-
-
     return true;
+}
+
+void MyDataWidgetUnsigned::setDataReadOnly(bool readOnly)
+{
+  qslider->setEnabled(!readOnly);
 }
 
 void MyDataWidgetUnsigned::readFromData()

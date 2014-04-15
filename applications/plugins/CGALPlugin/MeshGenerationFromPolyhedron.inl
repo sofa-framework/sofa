@@ -192,10 +192,10 @@ void MeshGenerationFromPolyhedron<DataTypes>::update()
 
     // Mesh Criteria
     typedef typename CGAL::Mesh_criteria_3<Tr> Mesh_criteria;
-    typedef typename Mesh_criteria::Facet_criteria Facet_criteria;
-    typedef typename Mesh_criteria::Cell_criteria Cell_criteria;
+    // typedef typename Mesh_criteria::Facet_criteria Facet_criteria;
+    // typedef typename Mesh_criteria::Cell_criteria Cell_criteria;
 
-    typedef typename C3t3::Facet_iterator Facet_iterator;
+    // typedef typename C3t3::Facet_iterator Facet_iterator;
     typedef typename C3t3::Cell_iterator Cell_iterator;
 
     typedef typename Tr::Finite_vertices_iterator Finite_vertices_iterator;

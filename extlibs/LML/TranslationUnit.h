@@ -39,7 +39,7 @@ public:
   static TranslationUnit NM;
   
 private:
-  TranslationUnit(char * n) {unitString = n;}
+  TranslationUnit(const char * n) {unitString = n;}
 };
 
 

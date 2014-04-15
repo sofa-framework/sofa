@@ -27,19 +27,22 @@
 #include <fstream>
 
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/CategoryLibrary.h>
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/simulation/common/Colors.h>
+
+using namespace sofa::core;
 
 namespace projects
 {
 
 bool generateFactoryHTMLDoc(const std::string& filename)
 {
-    //sofa::core::ObjectFactory::getInstance()->dump();
+    //ObjectFactory::getInstance()->dump();
     std::ofstream ofile(filename.c_str());
     ofile << "<html><body>\n";
-    sofa::core::ObjectFactory::getInstance()->dumpHTML(ofile);
+    ObjectFactory::getInstance()->dumpHTML(ofile);
     ofile << "</body></html>\n";
 
     return true;
@@ -63,7 +66,7 @@ static std::string xmlencode(const std::string& str)
     return res;
 }
 
-//bool generateClassPHPDoc(const std::string& filename, sofa::core::ObjectFactory::ClassEntry::SPtr entry)
+//bool generateClassPHPDoc(const std::string& filename, ObjectFactory::ClassEntry::SPtr entry)
 //{
 //    return true;
 //}
@@ -92,12 +95,12 @@ static const char* baseClasses[] =
 };
 
 #if 0
-class DummyObjectDescription : public sofa::core::objectmodel::BaseObjectDescription
+class DummyObjectDescription : public objectmodel::BaseObjectDescription
 {
 protected:
     std::string name;
     AttributeMap attributes;
-    sofa::core::objectmodel::BaseObjectDescription* parent;
+    objectmodel::BaseObjectDescription* parent;
 public:
     DummyObjectDescription()
         : name ("dummy")
@@ -106,31 +109,31 @@ public:
     }
 
     /// Get the associated object
-    virtual sofa::core::objectmodel::Base* getObject() { return NULL; }
+    virtual objectmodel::Base* getObject() { return NULL; }
 
     /// Get the node instance name
     virtual const std::string& getName() const { return name; }
 
     /// Get the parent node
-    virtual sofa::core::objectmodel::BaseObjectDescription* getParent() const { return parent; }
+    virtual objectmodel::BaseObjectDescription* getParent() const { return parent; }
 
     /// Get all attribute data, read-only
     virtual const AttributeMap& getAttributeMap() const { return attributes; }
 
     /// Find a node given its name
-    virtual sofa::core::objectmodel::BaseObjectDescription* find(const char* /*nodeName*/, bool /*absolute*/=false) { return this; }
+    virtual objectmodel::BaseObjectDescription* find(const char* /*nodeName*/, bool /*absolute*/=false) { return this; }
 
     virtual std::string getFullName() { return name; }
 
     /// Find an object given its name
-    virtual sofa::core::objectmodel::Base* findObject(const char* /*nodeName*/) { return NULL; }
+    virtual objectmodel::Base* findObject(const char* /*nodeName*/) { return NULL; }
 
 };
 #endif
 
 bool generateFactoryPHPDoc(const std::string& filename, const std::string& url)
 {
-    //sofa::core::ObjectFactory::getInstance()->dump();
+    //ObjectFactory::getInstance()->dump();
     std::ofstream out(filename.c_str());
 
     //out << "<html><body>\n";
@@ -138,29 +141,26 @@ bool generateFactoryPHPDoc(const std::string& filename, const std::string& url)
     std::vector<std::string> templates;
     std::set<std::string> templateSet;
 
-    sofa::core::ObjectFactory::ClassEntry::SPtr mobject = sofa::core::ObjectFactory::getInstance()->getEntry("MechanicalObject");
-    if (mobject)
-    {
-        for (std::list< std::pair< std::string, sofa::core::ObjectFactory::Creator::SPtr > >::iterator itc = mobject->creatorList.begin(), itcend = mobject->creatorList.end(); itc != itcend; ++itc)
-        {
-            if (itc->first.length() < 10) // only put short templates
-            {
-                templates.push_back(itc->first);
-                templateSet.insert(itc->first);
-            }
-        }
-    }
+    ObjectFactory::ClassEntry& mobject = ObjectFactory::getInstance()->getEntry("MechanicalObject");
+    for (ObjectFactory::CreatorMap::iterator itc = mobject.creatorMap.begin(), itcend = mobject.creatorMap.end(); itc != itcend; ++itc)
+      {
+	if (itc->first.length() < 10) // only put short templates
+	  {
+	    templates.push_back(itc->first);
+	    templateSet.insert(itc->first);
+	  }
+      }
 
-    std::vector<sofa::core::ObjectFactory::ClassEntry::SPtr> classes;
-    sofa::core::ObjectFactory::getInstance()->getAllEntries(classes);
+    std::vector<ObjectFactory::ClassEntry::SPtr> classes;
+    ObjectFactory::getInstance()->getAllEntries(classes);
 
     // re-order classes depending on namespaces
 
-    std::map<std::string, std::vector<sofa::core::ObjectFactory::ClassEntry::SPtr> > sortedClasses;
-    for (std::vector<sofa::core::ObjectFactory::ClassEntry::SPtr>::iterator it = classes.begin(), itend = classes.end(); it != itend; ++it)
+    std::map<std::string, std::vector<ObjectFactory::ClassEntry::SPtr> > sortedClasses;
+    for (std::vector<ObjectFactory::ClassEntry::SPtr>::iterator it = classes.begin(), itend = classes.end(); it != itend; ++it)
     {
-        sofa::core::ObjectFactory::ClassEntry::SPtr entry = *it;
-        std::string nameSpace = sofa::core::objectmodel::BaseClass::decodeNamespaceName(entry->creatorList.begin()->second->type());
+        ObjectFactory::ClassEntry::SPtr entry = *it;
+        std::string nameSpace = objectmodel::BaseClass::decodeNamespaceName(entry->creatorMap.begin()->second->type());
         sortedClasses[nameSpace].push_back(entry);
     }
 
@@ -208,22 +208,30 @@ bool generateFactoryPHPDoc(const std::string& filename, const std::string& url)
     out << "<td class=\"sofa-namespace-header\">Namespace</td>";
     out << "</tr>\n";
 
-    for (std::map< std::string, std::vector<sofa::core::ObjectFactory::ClassEntry::SPtr> >::iterator it1 = sortedClasses.begin(), it1end = sortedClasses.end(); it1 != it1end; ++it1)
-        for (std::vector<sofa::core::ObjectFactory::ClassEntry::SPtr>::iterator it = it1->second.begin(), itend = it1->second.end(); it != itend; ++it)
+    for (std::map< std::string, std::vector<ObjectFactory::ClassEntry::SPtr> >::iterator it1 = sortedClasses.begin(), it1end = sortedClasses.end(); it1 != it1end; ++it1)
+        for (std::vector<ObjectFactory::ClassEntry::SPtr>::iterator it = it1->second.begin(), itend = it1->second.end(); it != itend; ++it)
         {
-            sofa::core::ObjectFactory::ClassEntry::SPtr entry = *it;
+            ObjectFactory::ClassEntry::SPtr entry = *it;
 
             out << "<?php if (!$show || $show=='"<<xmlencode(entry->className)<<"'";
-            for (std::set<std::string>::iterator it = entry->baseClasses.begin(), itend = entry->baseClasses.end(); it != itend; ++it)
-                if (entry->baseClasses.size()==1 || *it != "VisualModel") // VisualModel matters only if it is the only base class
-                    out << " || $show == '"<<xmlencode(*it)<<"'";
+
+	    std::vector<std::string> categories;
+	    if (! entry->creatorMap.empty())
+	        CategoryLibrary::getCategories(entry->creatorMap.begin()->second->getClass(), categories);
+
+	    for (std::vector<std::string>::iterator it = categories.begin(), itend = categories.end(); it != itend; ++it)
+  	        if (categories.size()==1 || *it != "VisualModel") // VisualModel matters only if it is the only base class
+		    out << " || $show == '"<<xmlencode(*it)<<"'";
+
             out << ") { ?>\n";
 
 
             out << "<tr class=\"sofa-class\">";
             out << "<td class=\"sofa-base\" valign=\"top\">";
-            for (std::set<std::string>::iterator it = entry->baseClasses.begin(), itend = entry->baseClasses.end(); it != itend; ++it)
-                out << "<span class=\"class-base\" style=\"background-color: " << sofa::simulation::Colors::getColor((*it).c_str()) << ";\" alt=\"" << xmlencode(*it) << "\" title=\"" << xmlencode(*it) << "\">&nbsp;</span>";
+
+	    for (std::vector<std::string>::iterator it = categories.begin(), itend = categories.end(); it != itend; ++it)
+	        out << "<span class=\"class-base\" style=\"background-color: " << sofa::simulation::Colors::getColor((*it).c_str()) << ";\" alt=\"" << xmlencode(*it) << "\" title=\"" << xmlencode(*it) << "\">&nbsp;</span>";
+
             out << "</td>";
 
             out << "<td class=\"sofa-name\" valign=\"top\"><?php if ($base) echo '<a href=\""<<url<<"?show="<<xmlencode(entry->className)<<"'.($desc?'&desc='.$desc:'').'\" class=\"class-name\">'; else echo '<span class=\"class-name\">'; ?>" << xmlencode(entry->className) <<"<?php if ($base) echo '</a>'; else echo '</span>'; ?>\n";
@@ -248,7 +256,7 @@ bool generateFactoryPHPDoc(const std::string& filename, const std::string& url)
                 out << "</td>";
             }
             std::string others;
-            for (std::list< std::pair< std::string, sofa::core::ObjectFactory::Creator::SPtr > >::iterator itc = entry->creatorList.begin(), itcend = entry->creatorList.end(); itc != itcend; ++itc)
+            for (ObjectFactory::CreatorMap::iterator itc = entry->creatorMap.begin(), itcend = entry->creatorMap.end(); itc != itcend; ++itc)
             {
                 if (!itc->first.empty() && templateSet.find(itc->first)==templateSet.end())
                 {
@@ -266,7 +274,7 @@ bool generateFactoryPHPDoc(const std::string& filename, const std::string& url)
             else
                 out << "<span class=\"class-no-template\">&nbsp;<span>";
             out << "</td>";
-            std::string nameSpace = it1->first; //sofa::core::objectmodel::BaseClass::decodeNamespaceName(entry->creatorList.begin()->second->type());
+            std::string nameSpace = it1->first; //objectmodel::BaseClass::decodeNamespaceName(entry->creatorMap.begin()->second->type());
             out << "<td class=\"sofa-namespace\" valign=\"top\">";
             out << "<span class=\"class-namespace\">"<< xmlencode(nameSpace) <<"</span>";
             out << "</td>";
@@ -301,20 +309,20 @@ bool generateFactoryPHPDoc(const std::string& filename, const std::string& url)
             try
             {
                 std::cerr << "Trying to instantiate "<<entry->className<<std::endl;
-                sofa::core::ObjectFactory::Creator::SPtr creator = entry->creatorList.begin()->second;
+                ObjectFactory::Creator::SPtr creator = entry->creatorMap.begin()->second;
                 //DummyObjectDescription arg;
-                //sofa::core::objectmodel::Context ctx;
-                sofa::core::objectmodel::BaseObject::SPtr object = creator->createInstance(NULL, NULL); //&ctx, &arg);
+                //objectmodel::Context ctx;
+                objectmodel::BaseObject::SPtr object = creator->createInstance(NULL, NULL); //&ctx, &arg);
                 if (object == NULL)
                 {
                     std::cerr << "ERROR: Failed to instantiate "<<entry->className<<std::endl;
                 }
                 else
                 {
-                    const sofa::core::objectmodel::Base::VecData& fields = object->getDataFields();
-                    for (sofa::core::objectmodel::Base::VecData::const_iterator itf = fields.begin(), itfend = fields.end(); itf != itfend; ++itf)
+                    const objectmodel::Base::VecData& fields = object->getDataFields();
+                    for (objectmodel::Base::VecData::const_iterator itf = fields.begin(), itfend = fields.end(); itf != itfend; ++itf)
                     {
-                        sofa::core::objectmodel::BaseData* f = *itf;
+                        objectmodel::BaseData* f = *itf;
                         out << "<tr class=\"sofa-field\">";
                         out << "<td></td>";
                         out << "<td class=\"sofa-field-name\">";

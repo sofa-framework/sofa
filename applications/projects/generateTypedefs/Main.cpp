@@ -43,6 +43,7 @@
 using sofa::core::SofaLibrary;
 using sofa::core::CategoryLibrary;
 using sofa::core::ComponentLibrary;
+using sofa::core::ObjectFactory;
 
 
 const std::string headerFile(
@@ -78,11 +79,8 @@ const std::string headerFile(
 
 enum TYPES {TYPE_DOUBLE, TYPE_FLOAT, TYPE_COMBINATION};
 
-typedef sofa::core::ObjectFactory::Creator Creator;
-
 static std::map< std::string, std::string >               templateExtension;
 static std::map< TYPES, std::string >                     fileExtension;
-
 
 static std::map< std::string, std::string >               includeComponents;
 static std::multimap< std::string, std::string >          typedefComponents;
@@ -304,9 +302,9 @@ void printIncludes( const CategoryLibrary &category)
 
         if ( belongToBannedComponents(category.getName(), component.getName() ) )continue;
 
-        const std::type_info& defaultTypeInfo=component.getEntry()->creatorList.begin()->second->type();
+        const std::type_info& defaultTypeInfo=component.getEntry()->creatorMap.begin()->second->type();
 
-        std::string namespaceComponent = sofa::core::objectmodel::BaseClass::decodeNamespaceName(component.getEntry()->creatorList.begin()->second->type());
+        std::string namespaceComponent = sofa::core::objectmodel::BaseClass::decodeNamespaceName(component.getEntry()->creatorMap.begin()->second->type());
 
         std::size_t positionDoublePoints = namespaceComponent.find("::");
         while (positionDoublePoints != std::string::npos)
@@ -338,13 +336,13 @@ void printFullTypedefs( const CategoryLibrary &category, TYPES t)
     for (CategoryLibrary::VecComponentIterator itComp=components.begin(); itComp != components.end(); ++itComp)
     {
         const ComponentLibrary &component = *(*itComp);
-        const std::list< std::pair<std::string, Creator::SPtr> > &creatorList=component.getEntry()->creatorList;
-        std::list< std::pair<std::string, Creator::SPtr> >::const_iterator itCreator;
+        const ObjectFactory::CreatorMap& creatorMap=component.getEntry()->creatorMap;
+        ObjectFactory::CreatorMap::const_iterator itCreator;
 
         if ( belongToBannedComponents(category.getName(), component.getName() ) ) continue;
 
         //Iterate on all the possible creation of templates
-        for (itCreator=creatorList.begin(); itCreator!=creatorList.end(); ++itCreator)
+        for (itCreator=creatorMap.begin(); itCreator!=creatorMap.end(); ++itCreator)
         {
             const std::type_info& typeInfo=itCreator->second->type();
 
