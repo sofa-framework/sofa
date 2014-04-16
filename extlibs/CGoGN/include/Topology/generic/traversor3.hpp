@@ -206,7 +206,7 @@ Dart Traversor3XY<MAP, ORBX, ORBY>::next()
 		{
 			m_cmark->mark(m_current);
 			m_current = m_tradoo.next();
-			if(ORBY == VOLUME)
+            if(ORBY == VOLUME && m_current != NIL)
 			{
 				if(m_map.isBoundaryMarked3(m_current))
 					m_cmark->mark(m_current);

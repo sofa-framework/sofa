@@ -46,6 +46,16 @@ public:
     inline const Dart& end() {return NIL;}
 
     inline Dart next() ;
+
+    bool applyFunctor(FunctorType& f)
+    {
+        for (Dart d = begin(); d != end(); d = next())
+        {
+                if (f(d))
+                    return true;
+        }
+        return false;
+    }
 } ;
 
 
