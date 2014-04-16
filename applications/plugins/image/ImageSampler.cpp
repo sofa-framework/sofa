@@ -54,10 +54,6 @@ int ImageSamplerClass = core::RegisterObject("Samples an object represented by a
 .add<ImageSampler<ImageUL> >()
 .add<ImageSampler<ImageF> >()
 #endif
-        .add<ImageSampler<BranchingImageB> >()
-        .add<ImageSampler<BranchingImageUC> >()
-        .add<ImageSampler<BranchingImageD> >()
-        .add<ImageSampler<BranchingImageUS> >()
         ;
 
 template class SOFA_IMAGE_API ImageSampler<ImageB>;
@@ -73,10 +69,6 @@ template class SOFA_IMAGE_API ImageSampler<ImageL>;
 template class SOFA_IMAGE_API ImageSampler<ImageUL>;
 template class SOFA_IMAGE_API ImageSampler<ImageF>;
 #endif
-template class SOFA_IMAGE_API ImageSampler<BranchingImageB>;
-template class SOFA_IMAGE_API ImageSampler<BranchingImageUC>;
-template class SOFA_IMAGE_API ImageSampler<BranchingImageD>;
-template class SOFA_IMAGE_API ImageSampler<BranchingImageUS>;
 
 
 

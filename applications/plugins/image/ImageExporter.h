@@ -28,7 +28,6 @@
 
 #include "initImage.h"
 #include "ImageTypes.h"
-#include "BranchingImage.h"
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -210,60 +209,6 @@ struct ImageExporterSpecialization<defaulttype::IMAGELABEL_IMAGE>
         return true;
     }
 
-};
-
-
-/// Specialization for BranchingImage
-template <>
-struct ImageExporterSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
-{
-    template<class ImageExporter>
-    static void init( ImageExporter& exporter )
-    {
-        exporter.addAlias( &exporter.image, "outputBranchingImage" );
-        exporter.addAlias( &exporter.image, "branchingImage" );
-    }
-
-    template<class ImageExporter>
-    static bool write( ImageExporter& exporter )
-    {
-        typedef typename ImageExporter::ImageTypes ImageTypes;
-        typedef typename ImageExporter::Real Real;
-        typedef typename ImageExporter::T T;
-
-        if (!exporter.m_filename.isSet()) { exporter.serr << "ImageExporter: file not set"<<exporter.name<<exporter.sendl; return false; }
-        std::string fname(exporter.m_filename.getFullPath());
-
-        typename ImageExporter::raImage rimage(exporter.image);
-        typename ImageExporter::raTransform rtransform(exporter.transform);
-        if (!rimage->getDimension()[ImageTypes::DIMENSION_T]) { exporter.serr << "ImageExporter: no image "<<exporter.name<<exporter.sendl; return false; }
-
-        // .BIA is for BranchingImageAscii (maybe some day there will be a .BIB, BranchingImageBinary)
-
-        if(fname.find(".mhd")!=std::string::npos || fname.find(".MHD")!=std::string::npos || fname.find(".Mhd")!=std::string::npos
-           || fname.find(".bia")!=std::string::npos || fname.find(".BIA")!=std::string::npos || fname.find(".Bia")!=std::string::npos)
-        {
-            if(fname.find(".bia")!=std::string::npos || fname.find(".BIA")!=std::string::npos || fname.find(".Bia")!=std::string::npos)      fname.replace(fname.find_last_of('.')+1,fname.size(),"mhd");
-
-            double scale[3]; for(unsigned int i=0; i<3; i++) scale[i]=(double)rtransform->getScale()[i];
-            double translation[3]; for(unsigned int i=0; i<3; i++) translation[i]=(double)rtransform->getTranslation()[i];
-            Vec<3,Real> rotation = rtransform->getRotation() * (Real)M_PI / (Real)180.0;
-            helper::Quater< Real > q = helper::Quater< Real >::createQuaterFromEuler(rotation);
-            Mat<3,3,Real> R;  q.toMatrix(R);
-            double affine[9]; for(unsigned int i=0; i<3; i++) for(unsigned int j=0; j<3; j++) affine[3*i+j]=(double)R[i][j];
-            double offsetT=(double)rtransform->getOffsetT();
-            double scaleT=(double)rtransform->getScaleT();
-            bool isPerspective=rtransform->isPerspective();
-
-            exporter.image.getValue().save( fname.c_str(), scale, translation, affine, offsetT, scaleT, isPerspective );
-
-            exporter.sout << "Saved image " << fname << exporter.sendl;
-
-            return true;
-        }
-
-        return false;
-    }
 };
 
 

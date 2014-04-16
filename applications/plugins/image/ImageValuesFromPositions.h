@@ -27,7 +27,6 @@
 
 #include "initImage.h"
 #include "ImageTypes.h"
-#include "BranchingImage.h"
 #include <sofa/component/component.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
@@ -125,78 +124,6 @@ struct ImageValuesFromPositionsSpecialization<defaulttype::IMAGELABEL_IMAGE>
 };
 
 
-/// Specialization for branching Image
-template <>
-struct ImageValuesFromPositionsSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
-{
-
-    template<class ImageValuesFromPositions>
-    static void update(ImageValuesFromPositions& This)
-    {
-        typedef typename ImageValuesFromPositions::Real Real;
-        typedef typename ImageValuesFromPositions::Coord Coord;
-        typedef typename ImageValuesFromPositions::T T;
-        typedef typename ImageValuesFromPositions::ImageTypes::VoxelIndex VoxelIndex;
-
-        typename ImageValuesFromPositions::raTransform inT(This.transform);
-        typename ImageValuesFromPositions::raPositions pos(This.position);
-
-        typename ImageValuesFromPositions::raImage in(This.image);
-        if(in->isEmpty()) return;
-        const typename ImageValuesFromPositions::ImageTypes& img = in.ref();
-
-        typename ImageValuesFromPositions::waValues val(This.values);
-        Real outval=This.outValue.getValue();
-        val.resize(pos.size());
-
-
-        switch(This.Interpolation.getValue().getSelectedId())
-        {
-        case INTERPOLATION_CUBIC :
-            This.serr<<"Cubic Interpolation not implemented for branching images -> nearest interpolation"<<This.sendl;
-//        {
-//            for(unsigned int i=0; i<pos.size(); i++)
-//            {
-//                Coord Tp = inT->toImage(pos[i]);
-//                if(!in->isInside(Tp[0],Tp[1],Tp[2]))  val[i] = outval;
-//                else val[i] = (Real)img.cubic_atXYZ(Tp[0],Tp[1],Tp[2],0,(T)outval,cimg_library::cimg::type<T>::min(),cimg_library::cimg::type<T>::max());
-//            }
-//        }
-//            break;
-
-        case INTERPOLATION_LINEAR :
-            This.serr<<"Linear Interpolation not implemented for branching images -> nearest interpolation"<<This.sendl;
-//        {
-//            for(unsigned int i=0; i<pos.size(); i++)
-//            {
-//                Coord Tp = inT->toImage(pos[i]);
-//                if(!in->isInside(Tp[0],Tp[1],Tp[2])) val[i] = outval;
-//                else val[i] = (Real)img.linear_atXYZ(Tp[0],Tp[1],Tp[2],0,(T)outval);
-//            }
-//        }
-//            break;
-
-        default : // NEAREST
-        {
-            for(unsigned int i=0; i<pos.size(); i++)
-            {
-                Coord Tp = inT->toImageInt(pos[i]);
-                if(!in->isInside((int)Tp[0],(int)Tp[1],(int)Tp[2]))  val[i] = outval;
-                else
-                {
-                    const VoxelIndex vi (in->index3Dto1D(Tp[0],Tp[1],Tp[2]), 0);  // take first superimposed voxel
-                    if(in->Nb_superimposed(vi.index1d, This.time)) val[i] = (Real)img(vi,0,This.time);  // take first channel
-                    else val[i] = outval;
-                }
-            }
-        }
-            break;
-        }
-
-    }
-
-};
-
 
 
 template <class _ImageTypes>
@@ -204,6 +131,7 @@ class ImageValuesFromPositions : public core::DataEngine
 {
     friend struct ImageValuesFromPositionsSpecialization<defaulttype::IMAGELABEL_IMAGE>;
     friend struct ImageValuesFromPositionsSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>;
+
 public:
     typedef core::DataEngine Inherited;
     SOFA_CLASS(SOFA_TEMPLATE(ImageValuesFromPositions,_ImageTypes),Inherited);

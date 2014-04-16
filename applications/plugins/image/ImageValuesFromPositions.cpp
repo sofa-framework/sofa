@@ -54,19 +54,6 @@ int ImageValuesFromPositionsClass = core::RegisterObject("Get image intensities 
         .add<ImageValuesFromPositions<ImageF> >()
         .add<ImageValuesFromPositions<ImageB> >()
 #endif
-        .add<ImageValuesFromPositions<BranchingImageD> >()
-        .add<ImageValuesFromPositions<BranchingImageUC> >()
-#ifdef BUILD_ALL_IMAGE_TYPES
-        .add<ImageValuesFromPositions<BranchingImageC> >()
-        .add<ImageValuesFromPositions<BranchingImageI> >()
-        .add<ImageValuesFromPositions<BranchingImageUI> >()
-        .add<ImageValuesFromPositions<BranchingImageS> >()
-        .add<ImageValuesFromPositions<BranchingImageUS> >()
-        .add<ImageValuesFromPositions<BranchingImageL> >()
-        .add<ImageValuesFromPositions<BranchingImageUL> >()
-        .add<ImageValuesFromPositions<BranchingImageF> >()
-        .add<ImageValuesFromPositions<BranchingImageB> >()
-#endif
         ;
 
 template class SOFA_IMAGE_API ImageValuesFromPositions<ImageD>;
@@ -83,19 +70,6 @@ template class SOFA_IMAGE_API ImageValuesFromPositions<ImageF>;
 template class SOFA_IMAGE_API ImageValuesFromPositions<ImageB>;
 #endif
 
-template class SOFA_IMAGE_API ImageValuesFromPositions<BranchingImageD>;
-template class SOFA_IMAGE_API ImageValuesFromPositions<BranchingImageUC>;
-#ifdef BUILD_ALL_IMAGE_TYPES
-template class SOFA_IMAGE_API ImageValuesFromPositions<BranchingImageC>;
-template class SOFA_IMAGE_API ImageValuesFromPositions<BranchingImageI>;
-template class SOFA_IMAGE_API ImageValuesFromPositions<BranchingImageUI>;
-template class SOFA_IMAGE_API ImageValuesFromPositions<BranchingImageS>;
-template class SOFA_IMAGE_API ImageValuesFromPositions<BranchingImageUS>;
-template class SOFA_IMAGE_API ImageValuesFromPositions<BranchingImageL>;
-template class SOFA_IMAGE_API ImageValuesFromPositions<BranchingImageUL>;
-template class SOFA_IMAGE_API ImageValuesFromPositions<BranchingImageF>;
-template class SOFA_IMAGE_API ImageValuesFromPositions<BranchingImageB>;
-#endif
 
 } //
 } // namespace component
