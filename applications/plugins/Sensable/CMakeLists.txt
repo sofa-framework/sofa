@@ -1,26 +1,19 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
-
     NewOmniDriver.h 
     OmniDriver.h
-    EnslavementForceFeedback.h
-	)
+    EnslavementForceFeedback.h)
 
 set(SOURCE_FILES
-
     initSensable.cpp 
     NewOmniDriver.cpp 
     OmniDriver.cpp 
-	EnslavementForceFeedback.cpp
-	)
+	EnslavementForceFeedback.cpp)
 
-set(README_FILES
+set(README_FILES PluginSensable.txt)
 
-	PluginSensable.txt
-	)
-
-find_package(OPENHAPTICS REQUIRED)
+find_package(OpenHaptics REQUIRED)
 include_directories(${OPENHAPTICS_INCLUDE_DIR})
 include_directories(${OPENHAPTICS_UTIL_INCLUDE_DIR})
 

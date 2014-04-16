@@ -83,7 +83,7 @@ void FixedConstraintInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,T
     data.minIndex = -1;
     data.maxIndex = -1;
     data.OpenCLIndices.clear();
-    m->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
+    m->core::behavior::template ProjectiveConstraintSet<DataTypes>::init();
     const SetIndexArray& indices = m->f_indices.getValue();
     if (!indices.empty())
     {
