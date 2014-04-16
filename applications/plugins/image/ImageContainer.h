@@ -27,7 +27,6 @@
 
 #include "initImage.h"
 #include "ImageTypes.h"
-#include "BranchingImage.h"
 #include <limits.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -312,76 +311,6 @@ struct ImageContainerSpecialization<defaulttype::IMAGELABEL_IMAGE>
 
         fclose(file);
     }
-};
-
-
-/// Specialization for regular Image
-template <>
-struct ImageContainerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
-{
-    template<class ImageContainer>
-    static void constructor( ImageContainer* container )
-    {
-        container->addAlias( &container->image, "inputBranchingImage" );
-        container->addAlias( &container->image, "branchingImage" );
-    }
-
-    template<class ImageContainer>
-    static void init( ImageContainer* container )
-    {
-        if( !container->image.getValue().getDimension()[ImageContainer::ImageTypes::DIMENSION_T] && !container->load() )
-            container->serr << "no input image " << container->sendl;
-    }
-
-    template<class ImageContainer>
-    static bool load( ImageContainer* container, std::string fname )
-    {
-        typedef typename ImageContainer::Real Real;
-
-        if( fname.find(".mhd")!=std::string::npos || fname.find(".MHD")!=std::string::npos || fname.find(".Mhd")!=std::string::npos
-                || fname.find(".bia")!=std::string::npos || fname.find(".BIA")!=std::string::npos || fname.find(".Bia")!=std::string::npos)
-        {
-            if(fname.find(".bia")!=std::string::npos || fname.find(".BIA")!=std::string::npos || fname.find(".Bia")!=std::string::npos)      fname.replace(fname.find_last_of('.')+1,fname.size(),"mhd");
-
-            double scale[3]={1.,1.,1.},translation[3]={0.,0.,0.},affine[9]={1.,0.,0.,0.,1.,0.,0.,0.,1.},offsetT=0.,scaleT=1.;
-            bool isPerspective=false;
-
-            if( typename ImageContainer::waImage( container->image )->load( fname.c_str(), scale, translation, affine, &offsetT, &scaleT, &isPerspective ) )
-            {
-                typename ImageContainer::waTransform wtransform( container->transform );
-
-                for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)scale[i];
-                for(unsigned int i=0;i<3;i++) wtransform->getTranslation()[i]=(Real)translation[i];
-                Mat<3,3,Real> R; for(unsigned int i=0;i<3;i++) for(unsigned int j=0;j<3;j++) R[i][j]=(Real)affine[3*i+j];
-                helper::Quater< Real > q; q.fromMatrix(R);
-                // wtransform->getRotation()=q.toEulerVector() * (Real)180.0 / (Real)M_PI ;  //  container does not convert quaternion to euler angles
-                if(q[0]*q[0]+q[1]*q[1]==0.5 || q[1]*q[1]+q[2]*q[2]==0.5) {q[3]+=10-3; q.normalize();} // hack to avoid singularities
-                if (!container->transform.isSet()) {
-                    wtransform->getRotation()[0]=atan2(2*(q[3]*q[0]+q[1]*q[2]),1-2*(q[0]*q[0]+q[1]*q[1])) * (Real)180.0 / (Real)M_PI;
-                    wtransform->getRotation()[1]=asin(2*(q[3]*q[1]-q[2]*q[0])) * (Real)180.0 / (Real)M_PI;
-                    wtransform->getRotation()[2]=atan2(2*(q[3]*q[2]+q[0]*q[1]),1-2*(q[1]*q[1]+q[2]*q[2])) * (Real)180.0 / (Real)M_PI;
-                    wtransform->getOffsetT()=(Real)offsetT;
-                    wtransform->getScaleT()=(Real)scaleT;
-                    wtransform->isPerspective()=isPerspective;
-                }
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    //    template<class ImageContainer>
-    //    static bool load( ImageContainer* container, std::FILE* const file, std::string fname)
-    //    {
-    //    }
-
-    template<class ImageContainer>
-    static bool loadCamera( ImageContainer* )
-    {
-        return false;
-    }
-
 };
 
 

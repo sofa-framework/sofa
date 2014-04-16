@@ -27,7 +27,6 @@
 #define IMAGE_IMAGEALGORITHMS_H
 
 #include "ImageTypes.h"
-#include "BranchingImage.h"
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/defaulttype/Mat.h>
@@ -92,69 +91,6 @@ bool Lloyd (std::vector<sofa::defaulttype::Vec<3,real> >& pos,const std::vector<
         }
 
         if(pos[i][0]!=p[0] || pos[i][1]!=p[1] || pos[i][2]!=p[2]) // set new position if different
-        {
-            pos[i] = p;
-            moved=true;
-        }
-stop: ;
-    }
-
-    return moved;
-}
-
-
-
-template<typename real>
-bool Lloyd (std::vector<typename sofa::defaulttype::BranchingImage<real>::VoxelIndex> &pos,const std::vector<unsigned int>& voronoiIndex, sofa::defaulttype::BranchingImage<unsigned int>& voronoi)
-{
-    typedef typename sofa::defaulttype::BranchingImage<real>::VoxelIndex VoxelIndex;
-    typedef sofa::defaulttype::Vec<3,real> Coord;
-    unsigned int nbp=pos.size();
-    bool moved=false;
-
-#ifdef USING_OMP_PRAGMAS
-#pragma omp parallel for
-#endif
-    for (unsigned int i=0; i<nbp; i++)
-    {
-        // compute centroid
-        Coord C;
-        VoxelIndex p;
-        unsigned int count=0;
-        bool valid=false;
-
-        bimg_forCVoffT(voronoi,c,v,off1D,t) if(voronoi(off1D,v,c,t)==voronoiIndex[i])
-        {
-            unsigned x,y,z; voronoi.index1Dto3D(off1D,x,y,z);
-            C+=Coord(x,y,z);;
-            count++;
-        }
-        if(!count) goto stop;
-        C/=(real)count;
-
-        // check validity
-        p.index1d = voronoi.index3Dto1D(sofa::helper::round(C[0]),sofa::helper::round(C[1]),sofa::helper::round(C[2]));
-        p.offset=0;
-
-        while(!valid && p.offset<voronoi.imgList[0][p.index1d].size()) if (voronoi(p)==voronoiIndex[i]) valid=true; else p.offset++;
-        for (unsigned int j=0; j<nbp; j++) if(i!=j) if(pos[j].index1d==p.index1d && pos[j].offset==p.offset)  valid=false; // check occupancy
-
-        while(!valid)  // get closest unoccupied point in voronoi
-        {
-            real dmin=cimg_library::cimg::type<real>::max();
-            bimg_forCVoffT(voronoi,c,v,off1D,t) if(voronoi(off1D,v,c,t)==voronoiIndex[i])
-            {
-                unsigned x,y,z; voronoi.index1Dto3D(off1D,x,y,z);
-                real d2=(C-Coord(x,y,z)).norm2();
-                if(dmin>d2) { dmin=d2; p=VoxelIndex(off1D,v); }
-            }
-            if(dmin==cimg_library::cimg::type<real>::max()) goto stop;// no point found
-            bool val2=true;  for (unsigned int j=0; j<nbp; j++) if(i!=j) if(pos[j].index1d==p.index1d && pos[j].offset==p.offset)  val2=false;  // check occupancy
-            if(val2) valid=true;
-            else voronoi(p.index1d,p.offset,0,0)=0;  // discard voxel if already occupied
-        }
-
-        if(p.index1d!=pos[i].index1d || p.offset!=pos[i].offset) // set new position if different
         {
             pos[i] = p;
             moved=true;
@@ -280,12 +216,6 @@ void fastMarching (std::set<std::pair<real,sofa::defaulttype::Vec<3,int> > > &tr
     }
 }
 
-template<typename real,typename T>
-void fastMarching (std::set<std::pair<real,typename sofa::defaulttype::BranchingImage<real>::VoxelIndex> > &/*trial*/, sofa::defaulttype::BranchingImage<real>& /*distances*/, sofa::defaulttype::BranchingImage<unsigned int>& /*voronoi*/, const sofa::defaulttype::Vec<3,real>& /*voxelsize*/, const sofa::defaulttype::BranchingImage<T>* /*biasFactor*/=NULL)
-{
-    std::cout<<"fastMarching not implemented for branching images"<<std::endl;
-}
-
 
 /**
 * Update geodesic distances in the image given a bias distance function b(x).
@@ -351,47 +281,6 @@ void dijkstra (std::set<std::pair<real,sofa::defaulttype::Vec<3,int> > > &trial,
 
 
 
-template<typename real,typename T>
-void dijkstra (std::set<std::pair<real,typename sofa::defaulttype::BranchingImage<real>::VoxelIndex> > &trial, sofa::defaulttype::BranchingImage<real>& distances, sofa::defaulttype::BranchingImage<unsigned int>& voronoi, const sofa::defaulttype::Vec<3,real>& voxelsize, const sofa::defaulttype::BranchingImage<T>* biasFactor=NULL)
-{
-    typedef typename sofa::defaulttype::BranchingImage<real>::VoxelIndex VoxelIndex;
-    typedef std::pair<real,VoxelIndex> DistanceToPoint;
-    //std::map<VoxelIndex,bool> alive;
-
-    // dijkstra
-    while( !trial.empty() )
-    {
-        DistanceToPoint top = *trial.begin();
-        trial.erase(trial.begin());
-        VoxelIndex v = top.second;
-        //alive(v)=true;
-
-        const unsigned int vor = voronoi(v);
-
-        std::vector< real > nDist;
-        const typename sofa::defaulttype::BranchingImage<real>::Neighbours& nList = ( biasFactor ? biasFactor->getNeighboursAndDistances(nDist, top.second, voxelsize, 0, true) : voronoi.getNeighboursAndDistances(nDist, top.second, voxelsize, 0, false) );
-
-        for (unsigned int i=0; i<nList.size(); i++)
-        {
-            VoxelIndex v2 = nList[i];
-            //if(!alive(v2))
-            {
-                const real newDist = distances(v) + nDist[i];
-                const real oldDist = distances(v2);
-                if(oldDist>newDist)
-                {
-                    typename std::set<DistanceToPoint>::iterator it=trial.find(DistanceToPoint(oldDist,v2)); if(it!=trial.end()) trial.erase(it);
-                    voronoi(v2) = vor;
-                    distances(v2) = newDist;
-                    trial.insert( DistanceToPoint(newDist,v2) );
-                }
-            }
-        }
-    }
-}
-
-
-
 /**
 * Initialize null distances and voronoi value (=point index) from a position in image coordinates
 * and returns list of seed (=trial) points to be used in dijkstra or fast marching algorithms
@@ -413,20 +302,6 @@ void AddSeedPoint (std::set<std::pair<real,sofa::defaulttype::Vec<3,int> > >& tr
         }
 }
 
-template<typename real>
-void AddSeedPoint (std::set<std::pair<real,typename sofa::defaulttype::BranchingImage<real>::VoxelIndex> >& trial, sofa::defaulttype::BranchingImage<real>& distances, sofa::defaulttype::BranchingImage<unsigned int>& voronoi, const typename sofa::defaulttype::BranchingImage<real>::VoxelIndex& pos, const unsigned int index)
-{
-    typedef typename sofa::defaulttype::BranchingImage<real>::VoxelIndex VoxelIndex;
-    typedef std::pair<real,VoxelIndex > DistanceToPoint;
-
-    if(distances.imgList[0][pos.index1d].size()) // time 0
-        if(distances.imgList[0][pos.index1d][pos.offset][0]>=0) // first channel
-        {
-            distances.imgList[0][pos.index1d][pos.offset][0]=0;
-            voronoi.imgList[0][pos.index1d][pos.offset][0]=index;
-            trial.insert( DistanceToPoint(0.,pos) );
-        }
-}
 
 
 

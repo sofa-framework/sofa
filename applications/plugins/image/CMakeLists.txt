@@ -13,14 +13,9 @@ set(SOURCE_FILES
     ImageAccumulator.cpp
     DepthMapToMeshEngine.cpp
     MeshToImageEngine.cpp
-    MarchingCubesEngine.cpp
-    ImageSampler.cpp
-    ImageExporter.cpp
-    BranchingImageConverter.cpp
-    BranchingCellIndicesFromPositions.cpp
-    BranchingCellOffsetsFromPositions.cpp
-    BranchingCellVolumes.cpp
-    MergeBranchingImages.cpp
+    MarchingCubesEngine.cpp 
+    ImageSampler.cpp 
+    ImageExporter.cpp 
     ImageDataDisplay.cpp)
 
 set(HEADER_FILES
@@ -39,15 +34,9 @@ set(HEADER_FILES
     MarchingCubesEngine.h
     ImageSampler.h
     ImageExporter.h
-    VectorVis.h
-    ImageAlgorithms.h
-    Containers.h
-    BranchingImage.h
-    BranchingImageConverter.h
-    BranchingCellIndicesFromPositions.h
-    BranchingCellOffsetsFromPositions.h
-    BranchingCellVolumes.h
-    MergeBranchingImages.h
+    VectorVis.h 
+    ImageAlgorithms.h 
+    Containers.h 
     ImageDataDisplay.h)
 
 set(README_FILES image.txt)

@@ -27,7 +27,6 @@
 
 #include "initImage.h"
 #include "ImageTypes.h"
-#include "BranchingImage.h"
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec.h>
@@ -100,45 +99,6 @@ struct TransferFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
 
 };
 
-
-/// Specialization for branching Image
-template <>
-struct TransferFunctionSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
-{
-
-    template<class TransferFunction>
-    static void update(TransferFunction& This)
-    {
-        typedef typename TransferFunction::Ti Ti;
-        typedef typename TransferFunction::To To;
-
-        typename TransferFunction::raParam p(This.param);
-        typename TransferFunction::raImagei in(This.inputImage);
-        if(in->isEmpty()) return;
-        const typename TransferFunction::InImageTypes& inimg = in.ref();
-
-        typename TransferFunction::waImageo out(This.outputImage);
-        typename TransferFunction::imCoord dim=in->getDimensions();
-        typename TransferFunction::OutImageTypes& img = out.wref();
-        img.setDimensions(dim);
-        img.cloneTopology (inimg,0);
-
-        switch(This.filter.getValue().getSelectedId())
-        {
-        case LINEAR:
-        {
-            typename TransferFunction::iomap mp; for(unsigned int i=0; i<p.size(); i+=2) mp[(Ti)p[i]]=(To)p[i+1];
-            bimg_forCVoffT(inimg,c,v,off1D,t) img(off1D,v,c,t)=This.Linear_TransferFunction(inimg(off1D,v,c,t),mp);
-        }
-            break;
-
-        default:
-            bimg_forCVoffT(inimg,c,v,off1D,t) img(off1D,v,c,t)=(Ti)inimg(off1D,v,c,t); // copy
-            break;
-        }
-    }
-
-};
 
 
 template <class _InImageTypes,class _OutImageTypes>

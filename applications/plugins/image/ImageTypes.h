@@ -61,6 +61,7 @@ using helper::vector;
 
 /// type identifier, must be unique
 static const int IMAGELABEL_IMAGE = 0;
+static const int IMAGELABEL_BRANCHINGIMAGE = 1;
 
 //-----------------------------------------------------------------------------------------------//
 // 5d-image structure on top of a shared memory CImgList
