@@ -61,7 +61,7 @@ public:
     {}
 
     virtual void processObject(simulation::Node* /*node*/, core::objectmodel::BaseObject* o) {
-        cout <<"object " << o->getName() << " of type " << o->getTypeName() << " traversed" << endl;
+        cout <<"object " << o->getName() << " of  type " << o->getTypeName() << " traversed" << endl;
     }
 
     virtual Result processNodeTopDown( simulation::Node* node)
