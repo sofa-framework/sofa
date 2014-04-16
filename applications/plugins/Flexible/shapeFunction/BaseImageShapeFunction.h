@@ -30,7 +30,6 @@
 #include "../types/PolynomialBasis.h"
 
 #include <image/ImageTypes.h>
-#include <image/BranchingImage.h>
 #include <image/ImageAlgorithms.h>
 
 #include <sofa/helper/rmath.h>
@@ -166,127 +165,6 @@ struct BaseImageShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
         if(ddw) ddw->resize(index);
     }
 };
-
-
-/// Specialization for Branching Image
-template <>
-struct BaseImageShapeFunctionSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
-{
-    typedef SReal DistT;
-    typedef defaulttype::BranchingImage<DistT> DistTypes;
-    typedef unsigned int IndT;
-    typedef defaulttype::BranchingImage<IndT> IndTypes;
-
-    typedef IndTypes::ConnectionVoxel ConnectionVoxel;
-    typedef IndTypes::VoxelIndex VoxelIndex;
-    typedef IndTypes::Neighbours Neighbours;
-
-    template<class BaseImageShapeFunction>
-    static void constructor( BaseImageShapeFunction* This )
-    {
-        This->addAlias( &This->image, "branchingImage" );
-    }
-
-
-    /// interpolate weights and their derivatives at a spatial position
-    template<class BaseImageShapeFunction>
-    static void computeShapeFunction( BaseImageShapeFunction* This, const typename BaseImageShapeFunction::Coord& childPosition, typename BaseImageShapeFunction::MaterialToSpatial& /*M*/, typename BaseImageShapeFunction::VRef& ref, typename BaseImageShapeFunction::VReal& w, typename BaseImageShapeFunction::VGradient* dw=NULL, typename BaseImageShapeFunction::VHessian* ddw=NULL, const int cell=-1)
-    {
-        typedef typename BaseImageShapeFunction::Real Real;
-        typedef typename BaseImageShapeFunction::IndT IndT;
-        typedef typename BaseImageShapeFunction::DistT DistT;
-        typedef typename BaseImageShapeFunction::Coord Coord;
-
-        // get transform
-        typename BaseImageShapeFunction::raTransform inT(This->transform);
-
-        // get precomputed indices and weights
-        typename BaseImageShapeFunction::raInd indData(This->f_index);
-        typename BaseImageShapeFunction::raDist weightData(This->f_w);
-        if(indData->isEmpty() || weightData->isEmpty()) { This->serr<<"Weights not available"<<This->sendl; return; }
-
-        const typename BaseImageShapeFunction::IndTypes::BranchingImage3D& indices = indData->imgList[0];
-        const typename BaseImageShapeFunction::DistTypes::BranchingImage3D& weights = weightData->imgList[0];
-
-        // interpolate weights in neighborhood
-        Coord p = inT->toImage( childPosition );
-        Coord P;  for (unsigned int j=0; j<3; j++)  P[j]=sofa::helper::round(p[j]);
-        VoxelIndex voxelIndex (indData->index3Dto1D( P[0], P[1], P[2] ) , 0);
-        if(cell>0) voxelIndex.offset=cell-1;
-        unsigned int order=0;
-        /*if(ddw) order=2; else */  // do not use order 2 for local weight interpolation. Order two is used only in weight fitting over regions
-        if(dw) order=1;
-
-        // get closest voxel with non zero weights
-        if( !indData.ref().isInside((int)P[0],(int)p[1],(int)P[2]) ||
-                voxelIndex.offset>=indices[voxelIndex.index1d].size() )
-        {
-            Real dmin=cimg::type<Real>::max();
-            bimg_forXYZ(indData.ref(),x,y,z) if(indices[indData->index3Dto1D(x,y,z)].size()) {Real d=(Coord(x,y,z)-p).norm2(); if(d<dmin) { P.set(x,y,z); dmin=d;  voxelIndex.index1d=indData->index3Dto1D( P[0], P[1], P[2] );   } }
-            if(dmin==cimg::type<Real>::max()) return;
-        }
-        if(voxelIndex.offset>=indices[voxelIndex.index1d].size()) voxelIndex.offset=0;
-
-        // prepare neighborood
-        const ConnectionVoxel& indV = indices[voxelIndex.index1d][voxelIndex.offset];
-        const Neighbours& indN = indV.neighbours;
-        vector< Coord > lpos;
-        lpos.push_back ( inT->fromImage(P) - childPosition ); // add central voxel
-        for (unsigned int n=0; n<indN.size(); n++) // add neighbors
-        {
-            Vec<3,unsigned int> P2;  indData->index1Dto3D( indN[n].index1d, P2[0], P2[1], P2[2] );
-            lpos.push_back ( inT->fromImage(P2) - childPosition );
-        }
-
-        // get indices at P
-        int index=0;
-        const unsigned int nbRef = This->f_nbRef.getValue();
-        for (unsigned int r=0; r<nbRef; r++)
-        {
-            IndT ind=indV[r];
-            if(ind>0)
-            {
-                vector<DistT> val; val.reserve(lpos.size());
-                vector<Coord> pos; pos.reserve(lpos.size());
-
-                val.push_back(weights[voxelIndex.index1d][voxelIndex.offset][r]);
-                pos.push_back(lpos[0]);
-
-                // add neighbors with same index
-                for (unsigned int n=0; n<indN.size(); n++)
-                    for (unsigned int r2=0;r2<nbRef;r2++)
-                        if(indices[indN[n].index1d][indN[n].offset][r2]==ind)
-                        {
-                            val.push_back(weights[indN[n].index1d][indN[n].offset][r2]);
-                            pos.push_back(lpos[n+1]);
-                        }
-                // fit weights
-                vector<Real> coeff;
-                defaulttype::PolynomialFit(coeff,val,pos, order);
-                //std::cout<<ind<<":"<<coeff[0]<<", err= "<<getPolynomialFit_Error(coeff,val,pos)<< std::endl;
-                if(!dw) defaulttype::getPolynomialFit_differential(coeff,w[index]);
-                else if(!ddw) defaulttype::getPolynomialFit_differential(coeff,w[index],&(*dw)[index]);
-                else defaulttype::getPolynomialFit_differential(coeff,w[index],&(*dw)[index],&(*ddw)[index]);
-                ref[index]=ind-1;  // remove offset from indices image
-                if(w[index]<=0) // clamp negative weights
-                {
-                    w[index]=0;
-                    if(dw) (*dw)[index].fill(0);
-                    if(ddw) (*ddw)[index].fill(0);
-                    index--;
-                }
-                index++;
-            }
-        }
-        // remove unecessary weights
-        ref.resize(index);
-        w.resize(index);
-        if(dw)  dw->resize(index);
-        if(ddw) ddw->resize(index);
-    }
-};
-
-
 
 
 

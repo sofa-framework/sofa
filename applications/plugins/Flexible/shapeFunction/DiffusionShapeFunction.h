@@ -299,47 +299,6 @@ struct DiffusionShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
 };
 
 
-/// Specialization for branching Image
-template <>
-struct DiffusionShapeFunctionSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
-{
-    template<class DiffusionShapeFunction>
-    static void init(DiffusionShapeFunction* This)
-    {
-        typedef typename DiffusionShapeFunction::ImageTypes ImageTypes;
-        typedef typename DiffusionShapeFunction::raImage raImage;
-        typedef typename DiffusionShapeFunction::DistTypes DistTypes;
-        typedef typename DiffusionShapeFunction::waDist waDist;
-        typedef typename DiffusionShapeFunction::DistT DistT;
-        typedef typename DiffusionShapeFunction::IndTypes IndTypes;
-        typedef typename DiffusionShapeFunction::waInd waInd;
-
-        // retrieve data
-        raImage inData(This->image);    const ImageTypes& in = inData.ref();
-        if(in.isEmpty())  { This->serr<<"Image not found"<<This->sendl; return; }
-
-        // init distances
-        typename DiffusionShapeFunction::imCoord dim = in.getDimensions(); dim[ImageTypes::DIMENSION_S]=dim[ImageTypes::DIMENSION_T]=1;
-
-        waDist distData(This->f_distances);        DistTypes& dist = distData.wref();
-        dist.setDimensions(dim);
-        dist.cloneTopology (in,-1.0);
-        bimg_forCVoffT(in,c,v,off1D,t) if(t==0 && c==0) if(in(off1D,v,c,t)) dist(off1D,v,c,0)=cimg::type<DistT>::max();
-
-        // init indices and weights images
-        unsigned int nbref=This->f_nbRef.getValue();        dim[ImageTypes::DIMENSION_S]=nbref;
-
-        waInd indData(This->f_index); IndTypes& indices = indData.wref();
-        indices.setDimensions(dim);
-        indices.cloneTopology (in,0);
-
-        waDist weightData(This->f_w);    DistTypes& weights = weightData.wref();
-        weights.setDimensions(dim);
-        weights.cloneTopology (in,0);
-    }
-};
-
-
 template <class ShapeFunctionTypes_,class ImageTypes_>
 class DiffusionShapeFunction : public BaseImageShapeFunction<ShapeFunctionTypes_,ImageTypes_>
 {
