@@ -74,6 +74,16 @@ public:
 	inline Dart next() ;
 
 	inline void skip(Dart d);
+
+    bool applyFunctor(FunctorType& f)
+    {
+        for (Dart d = begin(); d != end(); d = next())
+        {
+                if (f(d))
+                    return true;
+        }
+        return false;
+    }
 } ;
 
 
@@ -105,6 +115,16 @@ public:
 	inline Dart next() ;
 
 	inline void skip(Dart d);
+
+    bool applyFunctor(FunctorType& f)
+    {
+        for (Dart d = begin(); d != end(); d = next())
+        {
+                if (f(d))
+                    return true;
+        }
+        return false;
+    }
 } ;
 
 

@@ -907,10 +907,10 @@ bool importMesh(typename PFP::MAP& map, MeshTablesVolume<PFP>& mtv) {
                 }
                 if ( map.phi3(d) != d || map.phi3(good_dart) != good_dart ) {
                     //debugging
-                    SHOW(d);
-                    SHOW(map.phi3(d));
-                    SHOW(good_dart);
-                    SHOW(map.phi3(good_dart));
+//                    SHOW(d);
+//                    SHOW(map.phi3(d));
+//                    SHOW(good_dart);
+//                    SHOW(map.phi3(good_dart));
 
 
                 }
@@ -922,14 +922,14 @@ bool importMesh(typename PFP::MAP& map, MeshTablesVolume<PFP>& mtv) {
             }
         }
     }
-    //    map.saveMapBin("MAP.mapbin");
-    //    std::exit(20);
+       
+//        std::exit(20);
     if (nbBoundaryFaces > 0)
     {
         unsigned int nbH =  map.closeMap();
         CGoGNout << "Map closed (" << nbBoundaryFaces << " boundary faces / " << nbH << " holes)" << CGoGNendl;
     }
-
+    map.saveMapBin("MAP.mapbin");
     return true;
 }
 

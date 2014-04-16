@@ -549,6 +549,11 @@ public:
 	{
 		return m_markedDarts;
 	}
+
+    inline std::vector<Dart> const & get_markedCells() const
+    {
+        return m_markedDarts;
+    }
 };
 
 /**
