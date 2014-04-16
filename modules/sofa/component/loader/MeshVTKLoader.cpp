@@ -237,6 +237,8 @@ bool MeshVTKLoader::setInputsMesh()
 
             switch (t)
             {
+            case 0: // EMPTY_CELL
+                break;
             case 1: // VERTEX
                 break;
             case 2: // POLY_VERTEX
@@ -282,6 +284,7 @@ bool MeshVTKLoader::setInputsMesh()
                 addHexahedron(&my_hexahedra, inFP[i+0], inFP[i+1], inFP[i+2], inFP[i+3],
                         inFP[i+4], inFP[i+5], inFP[i+6], inFP[i+7]);
                 break;
+            // more types are defined in vtkCellType.h in libvtk
             default:
                 serr << "ERROR: unsupported cell type " << t << sendl;
             }
