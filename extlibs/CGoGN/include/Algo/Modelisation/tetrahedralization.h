@@ -43,6 +43,75 @@ namespace Modelisation
 namespace Tetrahedralization
 {
 
+
+template <typename PFP>
+class EarTriangulation
+{
+    typedef typename PFP::MAP MAP ;
+    typedef typename PFP::VEC3 VEC3 ;
+
+protected:
+    // forward declaration
+    class VertexPoly;
+
+    // multiset typedef for simple writing
+    typedef std::multiset< VertexPoly,VertexPoly> VPMS;
+    typedef typename VPMS::iterator VMPSITER;
+    typedef NoTypeNameAttribute<VMPSITER> EarAttr ;
+
+    class VertexPoly
+    {
+    public:
+        Dart dart;
+        float angle;
+        float length;
+
+        VertexPoly()
+        {}
+
+        VertexPoly(Dart d, float v, float l) : dart(d), angle(v), length(l)
+        {}
+
+        bool operator()(const VertexPoly& vp1, const VertexPoly& vp2)
+        {
+            if (fabs(vp1.angle - vp2.angle) < 0.2f)
+                return vp1.length < vp2.length;
+            return vp1.angle < vp2.angle;
+        }
+    };
+
+protected:
+    typename PFP::MAP& m_map;
+
+    VertexAutoAttribute<EarAttr> m_dartEars;
+
+    VertexAttribute<VEC3> m_position;
+
+    std::vector<Dart> m_resTets;
+
+    VPMS m_ears;
+
+    bool inTriangle(const VEC3& P, const VEC3& normal, const VEC3& Ta, const VEC3& Tb, const VEC3& Tc);
+
+    void recompute2Ears(Dart d, const VEC3& normalPoly, bool convex);
+
+    float computeEarInit(Dart d, const VEC3& normalPoly, float& val);
+
+public:
+
+    EarTriangulation(MAP& map) : m_map(map), m_dartEars(map)
+    {
+        m_position = map.template getAttribute<VEC3, VERTEX>("position");
+    }
+
+//	void trianguleFace(Dart d, DartMarker& mark);
+    void trianguleFace(Dart d);
+
+    void triangule(unsigned int thread = 0);
+
+    std::vector<Dart> getResultingTets() { return m_resTets; }
+};
+
 ///**
 //* subdivide a hexahedron into 5 tetrahedron
 //*/
@@ -135,6 +204,16 @@ Dart swap5To4(typename PFP::MAP& map, Dart d);
  */
 template <typename PFP>
 Dart swapGen3To2(typename PFP::MAP& map, Dart d);
+
+
+//!
+/*!
+ * Edge removal
+ * Optimized version : do an ear cutting on the sandwiched polygonal face
+ * @return : A dart of each tetrahedra created during the swap
+ */
+template <typename PFP>
+std::vector<Dart> swapGen3To2Optimized(typename PFP::MAP& map, Dart d);
 
 //!
 /*!
