@@ -59,16 +59,16 @@ public:
 
     virtual ~CellMarkerGen() {}
 
-	unsigned int getThread() { return m_thread ; }
-	unsigned int getCell() { return m_cell ; }
+    inline unsigned int getThread() { return m_thread ; }
+    inline unsigned int getCell() { return m_cell ; }
 
-	void updateMarkVector(AttributeMultiVector<Mark>* amv) { m_markVector = amv ; }
+    inline void updateMarkVector(AttributeMultiVector<Mark>* amv) { m_markVector = amv ; }
 
 	/**
 	 * set if the mark has to be release on destruction or not
 	 */
-	void setReleaseOnDestruct(bool b) { releaseOnDestruct = b ; }
-
+    inline void setReleaseOnDestruct(bool b) { releaseOnDestruct = b ; }
+    inline bool getReleaseOnDestruct() const {return releaseOnDestruct;}
 //	virtual void mark(Dart d) = 0 ;
 //	virtual void unmark(Dart d) = 0 ;
 //	virtual bool isMarked(Dart d) const = 0 ;
@@ -514,7 +514,8 @@ public:
 
 	~CellMarkerMemo()
 	{
-        unmarkAll() ;
+        if (this->getReleaseOnDestruct())
+            unmarkAll() ;
 //		assert(isAllUnmarked);
 //		CGoGN_ASSERT(this->isAllUnmarked())
 	}
@@ -545,10 +546,10 @@ public:
 
 	}
 
-	inline std::vector<Dart> get_markedCells()
-	{
-		return m_markedDarts;
-	}
+//	inline std::vector<Dart> get_markedCells()
+//	{
+//		return m_markedDarts;
+//	}
 
     inline std::vector<Dart> const & get_markedCells() const
     {
