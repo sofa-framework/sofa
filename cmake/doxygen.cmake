@@ -84,7 +84,8 @@ if(DOXYGEN_FOUND)
         add_custom_target("doc-${name}"
             COMMAND ${DOXYGEN_EXECUTABLE} "${SOFA_BUILD_DIR}/misc/doxyfiles/Doxyfile-${name}"
             DEPENDS ${dependencies_targets})
-
+        # Put the target in a folder 'Documentation' (for IDEs)
+        set_target_properties("doc-${name}" PROPERTIES FOLDER "Documentation")
     endfunction()
 
 
@@ -147,7 +148,9 @@ if(DOXYGEN_FOUND)
 
     # Create the target for the main page
     add_doc_target("SOFA" "${SOFA_BUILD_DIR}/misc/doc.h" "")
+    set_target_properties("doc-SOFA" PROPERTIES FOLDER "Documentation") # IDE Folder
     # Create the 'doc' target, to build every documentation
-    add_custom_target(doc DEPENDS ${SOFA_DOC_TARGETS} doc-SOFA)
+    add_custom_target("doc" DEPENDS ${SOFA_DOC_TARGETS} "doc-SOFA")
+    set_target_properties("doc" PROPERTIES FOLDER "Documentation") # IDE Folder
 
 endif()

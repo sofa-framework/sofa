@@ -3,10 +3,10 @@ cmake_minimum_required(VERSION 2.8.8)
 set(SOLUTION_NAME "Sofa")
 project(${SOLUTION_NAME})
 
-# MSVC: Use solution folders.
-if(MSVC)
-    set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-endif()
+# Enable the organisation in folders for generators that support
+# it. (E.g. some versions of Visual Studio have 'solution folders')
+set_property(GLOBAL
+PROPERTY USE_FOLDERS ON)
 
 include(cmake/utils.cmake)
 include(cmake/environment.cmake)
@@ -26,7 +26,8 @@ else()
     include(cmake/dependencies.cmake)
 
     # Generate config.h header
-    configure_file("${SOFA_FRAMEWORK_DIR}/sofa/config.h.in" "${SOFA_BUILD_DIR}/misc/include/sofa/config.h")
+    configure_file("${SOFA_FRAMEWORK_DIR}/sofa/config.h.in"
+                   "${SOFA_BUILD_DIR}/misc/include/sofa/config.h")
 
     sofa_save_option_list("misc/options.txt")
     sofa_save_compiler_definitions("misc/compiler-definitions.txt")
