@@ -256,7 +256,7 @@ void SparsePARDISOSolver<TMatrix,TVector>::invert(Matrix& M)
 
     M.compress();    
 
-    SparsePARDISOSolverInvertData * data = (SparsePARDISOSolverInvertData *) getMatrixInvertData(&M);
+    SparsePARDISOSolverInvertData * data = (SparsePARDISOSolverInvertData *) this->getMatrixInvertData(&M);
 
     if (data->pardiso_initerr) return;
     data->Mfiltered.clear();
@@ -320,7 +320,7 @@ void SparsePARDISOSolver<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector& 
     }
 
     sofa::helper::AdvancedTimer::stepBegin("PardisoSolve");
-    SparsePARDISOSolverInvertData * data = (SparsePARDISOSolverInvertData *) getMatrixInvertData(&M);
+    SparsePARDISOSolverInvertData * data = (SparsePARDISOSolverInvertData *) this->getMatrixInvertData(&M);
 
     if (data->pardiso_initerr) return;
     if (!data->factorized) return;
