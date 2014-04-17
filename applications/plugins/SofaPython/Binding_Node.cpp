@@ -209,7 +209,9 @@ extern "C" PyObject * Node_removeObject(PyObject *self, PyObject * args)
         Py_RETURN_NONE;
     }
     node->removeObject(object);
-    node->init(sofa::core::ExecParams::defaultInstance());
+
+    // no init, if you need to init, you can call it yourself!
+//    node->init(sofa::core::ExecParams::defaultInstance());
 
     Py_RETURN_NONE;
 }
