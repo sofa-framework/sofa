@@ -89,7 +89,7 @@ public:
 
     virtual double finish() = 0;
 
-    virtual void print( core::ConstMultiVecId v, std::ostream& out ) = 0;
+    virtual void print( core::ConstMultiVecId v, std::ostream& out, std::string prefix="", std::string suffix="" ) = 0;
 
     virtual size_t v_size(core::MultiVecId v) = 0;
 
