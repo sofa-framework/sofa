@@ -165,17 +165,15 @@ using namespace sofa::core::objectmodel;
 
 
 #define SP_CALL_OBJECTFUNC(func, ...) { \
-    PyObject *res=PyObject_CallMethod(m_ScriptControllerInstance,func,__VA_ARGS__); \
+    PyObject *res = PyObject_CallMethod(m_ScriptControllerInstance,func,__VA_ARGS__); \
     if (!res) \
     { \
         SP_MESSAGE_EXCEPTION( "in " << m_classname.getValueString() << "." << func ) \
         PyErr_Print(); \
     } \
+    else \
+        Py_DECREF(res); \
 }
-
-//#define SP_CALL_OBJECTFUNC_NOPARAM(func) { if (func) { if (!PyObject_CallObject(func,0)) { SP_MESSAGE_EXCEPTION("") PyErr_Print(); } } }
-
-
 
 
 void PythonScriptController::script_onLoaded(sofa::simulation::Node *node)

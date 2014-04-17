@@ -39,6 +39,10 @@ class SofaVisitor(object):
 
 	def processNodeBottomUp(self,node):
 		print 'SofaVisitor "'+self.name+'" processNodeBottomUp node='+node.findData('name').value
+		
+	def treeTraversal(self):
+		print 'SofaVisitor "'+self.name+'" treeTraversal'
+		return -1 # dag
  
   
 
