@@ -194,9 +194,11 @@ void VectorOperations::v_threshold(sofa::core::MultiVecId a, double threshold)
     executeVisitor( VelocityThresholdVisitor(params /* PARAMS FIRST */, a,threshold) );
 }
 
-void VectorOperations::print(sofa::core::ConstMultiVecId v, std::ostream &out)
+void VectorOperations::print(sofa::core::ConstMultiVecId v, std::ostream &out, std::string prefix, std::string suffix)
 {
+    out << prefix;
     executeVisitor( MechanicalVPrintVisitor( params /* PARAMS FIRST */, v, out ) );
+    out << suffix;
 }
 
 size_t VectorOperations::v_size(core::MultiVecId v)

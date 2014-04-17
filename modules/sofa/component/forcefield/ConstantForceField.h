@@ -91,7 +91,7 @@ public:
         mparams->setKFactorUsed(true);
         sofa::helper::WriteAccessor< core::objectmodel::Data< VecDeriv > > _f1 = d_df;
         _f1.resize(d_dx.getValue().size());
-    };
+    }
 
     /// Constant force has null variation
     virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *m, SReal kFactor, unsigned int &offset);

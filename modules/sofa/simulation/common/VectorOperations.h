@@ -81,7 +81,7 @@ public:
     void v_threshold(core::MultiVecId a, double threshold); ///< nullify the values below the given threshold
 
     double finish();
-    void print(ConstMultiVecId v, std::ostream& out );
+    void print(ConstMultiVecId v, std::ostream& out, std::string prefix="", std::string suffix="" );
 
     virtual size_t v_size(core::MultiVecId v);
 
