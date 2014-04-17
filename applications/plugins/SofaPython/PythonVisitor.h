@@ -45,6 +45,14 @@ public:
     virtual Result processNodeTopDown(simulation::Node* node);
     virtual void processNodeBottomUp(simulation::Node* node);
 
+    /// It seems no possible to pass a reference variable to a python function, so repeat cannot be modified in python
+    /// The python function must returns a code:
+    /// -1 -> dag / NO_REPETITION
+    ///  0 -> tree / NO_REPETITION
+    ///  1 -> tree / REPEAT_ONCE
+    ///  2 -> tree / REPEAT_ALL
+    virtual bool treeTraversal(TreeTraversalRepetition& repeat);
+
 protected:
     PyObject *m_PyVisitor;
 };
