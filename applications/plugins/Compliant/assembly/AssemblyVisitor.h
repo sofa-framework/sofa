@@ -67,41 +67,47 @@ public:
 
 };
 
-/// compute compliant forces fc, stiffness forces fk and sum of both f (after reseting the mapped dof forces and accumulate them toward the independant dofs)
-class MechanicalComputeForcesVisitor : public MechanicalVisitor
-{
 
-    MultiVecDerivId fk,fc,f;
+/// res += lambdas, only for mechanical object linked to a compliance
+class MechanicalAddLambdas : public MechanicalVisitor
+{
+    MultiVecDerivId res, lambdas;
+
 
 public:
-
-    MechanicalComputeForcesVisitor(const sofa::core::MechanicalParams* mparams, MultiVecDerivId fk, MultiVecDerivId fc, MultiVecDerivId f )
-        : MechanicalVisitor(mparams), fk(fk),fc(fc),f(f)
+    MechanicalAddLambdas(const sofa::core::MechanicalParams* mparams, MultiVecDerivId res, MultiVecDerivId lambdas )
+        : MechanicalVisitor(mparams), res(res), lambdas(lambdas)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
-    {
-        mm->resetForce(this->mparams, fk.getId(mm));
-        mm->resetForce(this->mparams, fc.getId(mm));
-        mm->accumulateForce(this->mparams, fk.getId(mm));
-        return RESULT_CONTINUE;
-    }
 
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
     {
-        mm->resetForce(this->mparams, fk.getId(mm));
-        mm->resetForce(this->mparams, fc.getId(mm));
-//        mm->resetForce(this->params, f.getId(mm));
-        mm->accumulateForce(this->mparams, fk.getId(mm));
+        mm->resetForce(this->params, res.getId(mm));
         return RESULT_CONTINUE;
     }
+
+
     virtual Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff)
     {
-        if( ff->isCompliance.getValue() ) ff->addForce(this->mparams, fc);
-        else ff->addForce(this->mparams, fk);
+        if( ff->isCompliance.getValue() )
+        {
+            core::behavior::BaseMechanicalState* mm = ff->getContext()->getMechanicalState();
+            mm->vOp( this->params, res.getId(mm), res.getId(mm), lambdas.getId(mm) );
+        }
+
+        if( ff->isCompliance.getValue() )
+        {
+            core::behavior::BaseMechanicalState* mm = ff->getContext()->getMechanicalState();
+            const VecDerivId& lambdasid = lambdas.getId(mm);
+            if( !lambdasid.isNull() ) // previously allocated
+            {
+                const VecDerivId& resid = res.getId(mm);
+                mm->vOp( this->params, resid, resid, lambdasid );
+            }
+        }
         return RESULT_CONTINUE;
     }
 
@@ -110,37 +116,27 @@ public:
     {
         ForceMaskActivate( map->getMechFrom() );
         ForceMaskActivate( map->getMechTo() );
-        map->applyJT( this->mparams, fk, fk );
-        map->applyJT( this->mparams, fc, fc );
+        map->applyJT( this->mparams, res, res );
         ForceMaskDeactivate( map->getMechTo() );
     }
 
     virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
     {
         mm->forceMask.activate(false);
-        mm->vOp(this->mparams,f.getId(mm),fk.getId(mm),fc.getId(mm));
     }
 
-    virtual void bwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
+    virtual void bwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c)
     {
-        mm->vOp(this->mparams,f.getId(mm),fk.getId(mm),fc.getId(mm));
+        c->projectResponse( this->mparams, res );
     }
-
-    // not necessary, projection matrix is applied later in flat vector representation
-//    virtual void bwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c)
-//    {
-//        c->projectResponse( this->mparams, fk );
-//        c->projectResponse( this->mparams, fc );
-//        c->projectResponse( this->mparams, f );
-//    }
 
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const {return "MechanicalComputeForcesVisitor";}
+    virtual const char* getClassName() const {return "MechanicalAddLambdas";}
     virtual std::string getInfos() const
     {
-        std::string name=std::string("[")+fk.getName()+","+fc.getName()+","+f.getName()+std::string("]");
+        std::string name=std::string("[")+res.getName()+","+lambdas.getName()+std::string("]");
         return name;
     }
 
@@ -153,20 +149,18 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
-        addWriteVector(fk);
-        addWriteVector(fc);
-        addWriteVector(f);
+        addWriteVector(res);
+        addWriteVector(lambdas);
     }
 #endif
 };
-
 
 
 /// compute compliant forces fc and stiffness forces fk (after reseting the mapped dof forces and accumulate them toward the independant dofs)
 class MechanicalComputeStiffnessAndComplianceForcesVisitor : public MechanicalVisitor
 {
 
-    MultiVecDerivId fk,fc,f;
+    MultiVecDerivId fk,fc;
 
 public:
 
@@ -228,10 +222,110 @@ public:
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const {return "MechanicalComputeForcesVisitor";}
+    virtual const char* getClassName() const {return "MechanicalComputeStiffnessAndComplianceForcesVisitor";}
     virtual std::string getInfos() const
     {
         std::string name=std::string("[")+fk.getName()+","+fc.getName()+std::string("]");
+        return name;
+    }
+
+    /// Specify whether this action can be parallelized.
+    virtual bool isThreadSafe() const
+    {
+        return true;
+    }
+
+#ifdef SOFA_DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+        addWriteVector(fk);
+        addWriteVector(fc);
+    }
+#endif
+};
+
+
+
+class MechanicalComputeStiffnessForcesAndAddingPreviousLambdasVisitor : public MechanicalVisitor
+{
+
+    MultiVecDerivId f,fk,fc;
+
+public:
+
+    MechanicalComputeStiffnessForcesAndAddingPreviousLambdasVisitor(const sofa::core::MechanicalParams* mparams, MultiVecDerivId f, MultiVecDerivId fk, MultiVecDerivId fc )
+        : MechanicalVisitor(mparams), f(f), fk(fk),fc(fc)
+    {
+#ifdef SOFA_DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
+    {
+        mm->resetForce(this->mparams, f.getId(mm));
+        mm->resetForce(this->mparams, fk.getId(mm));
+        mm->accumulateForce(this->mparams, fk.getId(mm));
+        return RESULT_CONTINUE;
+    }
+
+    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
+    {
+        mm->resetForce(this->mparams, f.getId(mm));
+        mm->resetForce(this->mparams, fk.getId(mm));
+        mm->accumulateForce(this->mparams, fk.getId(mm));
+        return RESULT_CONTINUE;
+    }
+    virtual Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff)
+    {
+        if( ff->isCompliance.getValue() )
+        {
+            core::behavior::BaseMechanicalState* mm = ff->getContext()->getMechanicalState();
+            const VecDerivId& fcid = fc.getId(mm);
+            if( !fcid.isNull() ) // previously allocated
+            {
+                const VecDerivId& fid = f.getId(mm);
+                mm->vOp( this->params, fid, fid, fcid );
+            }
+        }
+        else
+        {
+            ff->addForce(this->mparams, fk);
+        }
+        return RESULT_CONTINUE;
+    }
+
+
+    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
+    {
+        ForceMaskActivate( map->getMechFrom() );
+        ForceMaskActivate( map->getMechTo() );
+        map->applyJT( this->mparams, fk, fk );
+        map->applyJT( this->mparams, f, f );
+        ForceMaskDeactivate( map->getMechTo() );
+    }
+
+    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
+    {
+        mm->forceMask.activate(false);
+    }
+
+    virtual void bwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
+    {
+    }
+
+    virtual void bwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c)
+    {
+        c->projectResponse( this->mparams, fk );
+        c->projectResponse( this->mparams, f );
+    }
+
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const {return "MechanicalComputeForcesVisitor";}
+    virtual std::string getInfos() const
+    {
+        std::string name=std::string("[")+f.getName()+","+fk.getName()+","+fc.getName()+std::string("]");
         return name;
     }
 
