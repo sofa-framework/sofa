@@ -7,7 +7,7 @@
 #include "Algo/MC/image.h"
 
 #include "Topology/map/embeddedMap2.h"
-
+#include "Topology/generic/parameters.h"
 #include <vector>
 #include <stack>
 #include <map>
