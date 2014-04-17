@@ -26,7 +26,7 @@
 #include "Algo/Modelisation/subdivision.h"
 //#include "Algo/Modelisation/extrusion.h"
 #include "Geometry/intersection.h"
-#include "NL/nl.h"
+//#include "NL/nl.h"
 //#include "Algo/LinearSolving/basic.h"
 #include "Algo/Geometry/laplacian.h"
 
@@ -887,92 +887,92 @@ void sqrt3Vol(typename PFP::MAP& map, VertexAttribute<typename PFP::VEC3>& posit
 
 // solving Ax = b
 
-template <typename PFP>
-void relaxation(typename PFP::MAP& map, VertexAttribute<typename PFP::VEC3>& position)
-{
-	VertexAttribute<unsigned int> indexV = map.template getAttribute<unsigned int, VERTEX>("indexV");
-	if(!indexV.isValid())
-		indexV = map.template addAttribute<unsigned int, VERTEX>("indexV");
+//template <typename PFP>
+//void relaxation(typename PFP::MAP& map, VertexAttribute<typename PFP::VEC3>& position)
+//{
+//	VertexAttribute<unsigned int> indexV = map.template getAttribute<unsigned int, VERTEX>("indexV");
+//	if(!indexV.isValid())
+//		indexV = map.template addAttribute<unsigned int, VERTEX>("indexV");
 
-	unsigned int nb_vertices = map.template computeIndexCells<VERTEX>(indexV);
+//	unsigned int nb_vertices = map.template computeIndexCells<VERTEX>(indexV);
 
-	//uniform weight
-	float weight = 1.0;
+//	//uniform weight
+//	float weight = 1.0;
 
-	NLContext nlContext = nlNewContext();
-	nlSolverParameteri(NL_NB_VARIABLES, nb_vertices);
-	nlSolverParameteri(NL_LEAST_SQUARES, NL_TRUE);
-	nlSolverParameteri(NL_SOLVER, NL_CHOLMOD_EXT);
+//	NLContext nlContext = nlNewContext();
+//	nlSolverParameteri(NL_NB_VARIABLES, nb_vertices);
+//	nlSolverParameteri(NL_LEAST_SQUARES, NL_TRUE);
+//	nlSolverParameteri(NL_SOLVER, NL_CHOLMOD_EXT);
 
-//	nlMakeCurrent(nlContext);
-	if(nlGetCurrentState() == NL_STATE_INITIAL)
-		nlBegin(NL_SYSTEM) ;
+////	nlMakeCurrent(nlContext);
+//	if(nlGetCurrentState() == NL_STATE_INITIAL)
+//		nlBegin(NL_SYSTEM) ;
 
-	for(unsigned int coord = 0; coord < 3; ++coord)
-	{
-		std::cout << "coord " << coord << std::flush;
-		//setup variables
-		TraversorV<typename PFP::MAP> tv(map);
-		for(Dart dit = tv.begin() ; dit != tv.end() ; dit = tv.next())
-		{
-			nlSetVariable(indexV[dit], (position[dit])[coord]);
+//	for(unsigned int coord = 0; coord < 3; ++coord)
+//	{
+//		std::cout << "coord " << coord << std::flush;
+//		//setup variables
+//		TraversorV<typename PFP::MAP> tv(map);
+//		for(Dart dit = tv.begin() ; dit != tv.end() ; dit = tv.next())
+//		{
+//			nlSetVariable(indexV[dit], (position[dit])[coord]);
 
-			if(map.isBoundaryVertex(dit))
-				nlLockVariable(indexV[dit]);
-		}
+//			if(map.isBoundaryVertex(dit))
+//				nlLockVariable(indexV[dit]);
+//		}
 
-		std::cout << "... variables set... " << std::flush;
+//		std::cout << "... variables set... " << std::flush;
 
-		nlBegin(NL_MATRIX) ;
+//		nlBegin(NL_MATRIX) ;
 
-		nlEnable(NL_NORMALIZE_ROWS) ;
+//		nlEnable(NL_NORMALIZE_ROWS) ;
 
-		TraversorV<typename PFP::MAP> tv2(map);
-		for(Dart dit = tv2.begin() ; dit != tv2.end() ; dit = tv2.next())
-		{
-			if(!map.isBoundaryVertex(dit))
-			{
-				nlRowParameterd(NL_RIGHT_HAND_SIDE, 0) ; //b[i]
-				//nlRowParameterd(NL_ROW_SCALING, weight) ;
+//		TraversorV<typename PFP::MAP> tv2(map);
+//		for(Dart dit = tv2.begin() ; dit != tv2.end() ; dit = tv2.next())
+//		{
+//			if(!map.isBoundaryVertex(dit))
+//			{
+//				nlRowParameterd(NL_RIGHT_HAND_SIDE, 0) ; //b[i]
+//				//nlRowParameterd(NL_ROW_SCALING, weight) ;
 
-				nlBegin(NL_ROW) ;
+//				nlBegin(NL_ROW) ;
 
-				float sum = 0;
-				Traversor3VVaE<typename PFP::MAP> tvvae(map, dit);
-				for(Dart ditvvae = tvvae.begin() ; ditvvae != tvvae.end() ; ditvvae = tvvae.next())
-				{
-					nlCoefficient(indexV[ditvvae], weight);
-					sum += weight;
-				}
+//				float sum = 0;
+//				Traversor3VVaE<typename PFP::MAP> tvvae(map, dit);
+//				for(Dart ditvvae = tvvae.begin() ; ditvvae != tvvae.end() ; ditvvae = tvvae.next())
+//				{
+//					nlCoefficient(indexV[ditvvae], weight);
+//					sum += weight;
+//				}
 
-				nlCoefficient(indexV[dit], -sum) ;
-				nlEnd(NL_ROW) ;
-			}
-		}
+//				nlCoefficient(indexV[dit], -sum) ;
+//				nlEnd(NL_ROW) ;
+//			}
+//		}
 
-		nlDisable(NL_NORMALIZE_ROWS) ;
+//		nlDisable(NL_NORMALIZE_ROWS) ;
 
-		nlEnd(NL_MATRIX) ;
+//		nlEnd(NL_MATRIX) ;
 
-		nlEnd(NL_SYSTEM) ;
-		std::cout << "... system built... " << std::flush;
+//		nlEnd(NL_SYSTEM) ;
+//		std::cout << "... system built... " << std::flush;
 
-		nlSolve();
-		std::cout << "... system solved... " << std::flush;
+//		nlSolve();
+//		std::cout << "... system solved... " << std::flush;
 
-		//results
-		TraversorV<typename PFP::MAP> tv3(map);
-		for(Dart dit = tv3.begin() ; dit != tv3.end() ; dit = tv3.next())
-		{
-			position[dit][coord] = nlGetVariable(indexV[dit]);
-		}
+//		//results
+//		TraversorV<typename PFP::MAP> tv3(map);
+//		for(Dart dit = tv3.begin() ; dit != tv3.end() ; dit = tv3.next())
+//		{
+//			position[dit][coord] = nlGetVariable(indexV[dit]);
+//		}
 
-		nlReset(NL_TRUE) ;
-		std::cout << "... done" << std::endl;
-	}
+//		nlReset(NL_TRUE) ;
+//		std::cout << "... done" << std::endl;
+//	}
 
-	nlDeleteContext(nlContext);
-}
+//	nlDeleteContext(nlContext);
+//}
 
 template <typename PFP>
 void computeDual(typename PFP::MAP& map, VertexAttribute<typename PFP::VEC3>& position)
