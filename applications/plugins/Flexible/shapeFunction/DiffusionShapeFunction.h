@@ -40,7 +40,7 @@
 #include <string>
 
 #include <Eigen/SparseCore>
-#include <Eigen/SparseCholesky>
+//#include <Eigen/SparseCholesky>
 #include <Eigen/IterativeLinearSolvers>
 
 #define HARMONIC 0
@@ -345,7 +345,7 @@ public:
     Data<Real> tolerance;
     Data<bool> biasDistances;
 
-    static const DistT MAXTEMP = (DistT)1.0;
+    static const DistT MAXTEMP;
     //@}
 
     virtual std::string getTemplateName() const    { return templateName(this); }
