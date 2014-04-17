@@ -63,7 +63,7 @@ SSORPreconditioner<TMatrix,TVector,TThreadManager>::SSORPreconditioner()
 template<class TMatrix, class TVector, class TThreadManager>
 void SSORPreconditioner<TMatrix,TVector,TThreadManager>::solve (Matrix& M, Vector& z, Vector& r)
 {
-    SSORPreconditionerInvertData * data = (SSORPreconditionerInvertData *) getMatrixInvertData(&M);
+    SSORPreconditionerInvertData * data = (SSORPreconditionerInvertData *) this->getMatrixInvertData(&M);
 
     const int n = M.rowSize();
     const Real w = (Real)f_omega.getValue();
@@ -99,7 +99,7 @@ void SSORPreconditioner<TMatrix,TVector,TThreadManager>::solve (Matrix& M, Vecto
 template<>
 void SSORPreconditioner<SparseMatrix<double>, FullVector<double> >::solve (Matrix& M, Vector& z, Vector& r)
 {
-    SSORPreconditionerInvertData * data = (SSORPreconditionerInvertData *) getMatrixInvertData(&M);
+    SSORPreconditionerInvertData * data = (SSORPreconditionerInvertData *) this->getMatrixInvertData(&M);
 
     const int n = M.rowSize();
     const Real w = (Real)f_omega.getValue();
@@ -139,7 +139,7 @@ void SSORPreconditioner<SparseMatrix<double>, FullVector<double> >::solve (Matri
 template<>
 void SSORPreconditioner<CompressedRowSparseMatrix<double>, FullVector<double> >::solve (Matrix& M, Vector& z, Vector& r)
 {
-    SSORPreconditionerInvertData * data = (SSORPreconditionerInvertData *) getMatrixInvertData(&M);
+    SSORPreconditionerInvertData * data = (SSORPreconditionerInvertData *) this->getMatrixInvertData(&M);
 
     const int n = M.rowSize();
     const Real w = (Real)f_omega.getValue();
@@ -191,7 +191,7 @@ void SSORPreconditioner<CompressedRowSparseMatrix<double>, FullVector<double> >:
 template<>
 void SSORPreconditioner< CompressedRowSparseMatrix< defaulttype::Mat<B,B,Real> >, FullVector<Real> >::solve(Matrix& M, Vector& z, Vector& r)
 {
-    SSORPreconditionerInvertData * data = (SSORPreconditionerInvertData *) getMatrixInvertData(&M);
+    SSORPreconditionerInvertData * data = (SSORPreconditionerInvertData *) this->getMatrixInvertData(&M);
 
     //const int n = M.rowSize();
     const int nb = M.rowBSize();
