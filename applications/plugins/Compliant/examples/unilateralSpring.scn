@@ -1,46 +1,54 @@
 <?xml version="1.0"?>
-<Node 	 name="Root"  printLog="1"  dt="0.0005"  >
-	<VisualStyle name="visualStyle0"  displayFlags="showVisual showBehaviorModels hideForceFields hideInteractionForceFields showCollision hideMapping hideOptions" />
+<Node name="Root"  printLog="1"  dt="0.01" gravity="0 -10 0" >
+	<VisualStyle name="visualStyle"  displayFlags="showVisual showBehaviorModels hideForceFields hideInteractionForceFields showCollision hideMapping hideOptions" />
 	
-	<RequiredPlugin pluginName="Flexible"/>
-      	<RequiredPlugin pluginName="Compliant"/>
+	<RequiredPlugin pluginName="Compliant"/>
+	<CompliantAttachButtonSetting compliance="0.001"/>
 	
-	<Node 	 name="scene"   >
-		<!-- euler implicit solver -->
-	<!--	<Stabilization />-->
-		<AssembledSolver stabilization="false" warm_start="true"/>
-		
-		<!-- numerical solver -->
-		<SequentialSolver precision="0" relative="true" iterations="100" />
-		<CompliantAttachButtonSetting compliance="0.001"/>
-		
-		<!-- main dofs -->
-		<MechanicalObject template="Vec3d" name="dofs"  position="0 0 0  1 0 0" />
+	
+	<!-- euler implicit solver -->
+	<AssembledSolver stabilization_damping="0"/>
+	
+	<!-- numerical solver -->
+	<SequentialSolver precision="1e-10" iterations="100" />
+	<LDLTResponse />
 
-		<!-- second is fixed -->
-		<FixedConstraint indices="0" />
-		
-		<!-- mass properties (same for all the dofs as we don't care about the second one)-->
-		<UniformMass   mass = "2" />
+	<!-- main dofs -->
+	<MechanicalObject template="Vec3d" name="dofs"  position="0 0 0  1 0 0" />
 
-		<!-- extension between two points -->
-		    <Node name="extensionsNode" >
-			<MechanicalObject template="Vec1d"  name="extensionsDOF" />
-			<EdgeSetTopologyContainer edges="0 1" />
-			<DistanceMapping  />
-			<UniformCompliance name="ucomp" template="Vec1d" compliance="1e-2" isCompliance="1" />
-		<!--	<DampingCompliance template="Vec1d" damping="50" />-->
-		<!--	<DampingValue />-->
-		<!--	<Stabilization />-->
+	<!-- one is fixed -->
+	<FixedConstraint indices="0" />
+<!-- 	<ConstantForceField points="1" force="1e5 0 0" /> -->
+	
+	<!-- mass properties (same for all the dofs as we don't care about the fixed one)-->
+	<UniformMass mass="2" />
 
-			<!-- negative extension above limit -->
-			 <Node name="limits" >
-				<MechanicalObject template="Vec1d"  name="extensionsDOF" />
-				<DifferenceFromTargetMapping template="Vec1d" targets="1" inverted="1"/>
-				<UniformCompliance name="ucomp" template="Vec1d" compliance="1e-5" isCompliance="1" />
-				<UnilateralConstraint />
-			<!--	<Stabilization />-->
-			</Node>
-		    </Node>
+	<!-- extension between two points -->
+	<Node name="extensionsNode" >
+	  
+	    <MechanicalObject template="Vec1d"  name="extensionsDOF" />
+	    <EdgeSetTopologyContainer edges="0 1" />
+	    <DistanceMapping  />
+	    
+	    <!-- soft spring in stiffness -->
+	    <UniformCompliance name="ucomp" template="Vec1d" compliance="1e-2" isCompliance="false" />
+
+
+	    <!-- negative extension above limit, two ways to implement the same unilateral constraint -->
+	    <Node name="limits" >
+		    <MechanicalObject template="Vec1d"  name="extensionsDOF" />
+		    
+<!-- 		    - first way -->
+<!-- 		    <DifferenceFromTargetMapping template="Vec1d" targets="1" inverted="1"/> -->
+<!--                - second way-->
+		    <OffsetMapping offsets="1" inverted="1"/>
+		    
+		    <UniformCompliance name="ucomp" template="Vec1d" compliance="0" />
+		    <ConstraintValue />
+		    <UnilateralConstraint />
+	    </Node>
+	    
 	</Node>
+	
+	
 </Node>

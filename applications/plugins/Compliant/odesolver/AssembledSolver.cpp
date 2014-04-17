@@ -100,6 +100,10 @@ using namespace core::behavior;
 									   SReal(1e-7),
 									   "stabilization_damping",
 									   "stabilization damping hint to relax infeasible problems"))
+          , neglecting_compliance_forces_in_geometric_stiffness(initData(&neglecting_compliance_forces_in_geometric_stiffness,
+            true,
+            "neglecting_compliance_forces_in_geometric_stiffness",
+            "isn't the name clear enough?"))
     {
         storeDSol = false;
         assemblyVisitor = NULL;
@@ -161,40 +165,56 @@ using namespace core::behavior;
                                          core::behavior::MultiVecDeriv& f,
                                          core::behavior::MultiVecDeriv& c )
     {
+
         scoped::timer step("implicit rhs computation");
 
-#if 1 // NEW IMPLEMENTATION
-
-        {
-            scoped::timer substep("forces computation");
-
-            simulation::MechanicalComputeStiffnessAndComplianceForcesVisitor fvis( &params, c, f ); // c = fk, f = fc
-            send( fvis );
-        }
-
-
-        // f = fc + fk including mapped dofs
-        {
-            scoped::timer substep("force sum computation");
-
-            simulation::MechanicalVOpVisitor eqvis( &params, f, f, c );
-            eqvis.setMapped( true );
-            send( eqvis );
-        }
-
-        scoped::timer substep("c_k computation");
 
         const SReal h = params.dt();
 
+        if( neglecting_compliance_forces_in_geometric_stiffness.getValue() )
         {
-            scoped::timer subsubstep("c_k=h.fk");
+            {
+                scoped::timer substep("forces computation");
 
-            // c_k = h fk
-            c.teq( h );
+                mop.computeForce( f ); // f = fk
+            }
+
+            {
+                scoped::timer substep("c_k=h.fk");
+
+                c.eq( f, h );
+            }
+        }
+        else
+        {
+            {
+                scoped::timer substep("forces computation");
+
+                simulation::MechanicalComputeStiffnessAndComplianceForcesVisitor fvis( &params, c, f ); // c = fk, f = fc
+                send( fvis );
+            }
+
+
+            // f = fc + fk including mapped dofs
+            {
+                scoped::timer substep("force sum computation");
+
+                simulation::MechanicalVOpVisitor eqvis( &params, f, f, c );
+                eqvis.setMapped( true );
+                send( eqvis );
+            }
+
+            {
+                scoped::timer substep("c_k=h.fk");
+
+                // c_k = h fk
+                c.teq( h );
+            }
         }
 
+
         {
-            scoped::timer subsubstep("c_k+=MBKv");
+            scoped::timer substep("c_k+=MBKv");
 
             // M v_k
             const SReal mfactor = 1;
@@ -209,70 +229,6 @@ using namespace core::behavior;
             mop.addMBKv( c, mfactor, bfactor, kfactor );
         }
 
-
-#else // OLD implementation, kept for a bit for comparison purpose
-
-
-        MultiVecDeriv fk( &vop ); fk.realloc( &vop, false, true ); // only stiffness force (neglecting compliance)
-
-        mop.computeForce(fk); // computing only stiffness force (neglecting compliance)
-
-//        cerr<<SOFA_CLASS_METHOD<<"fk "<< fk << endl;
-
-        // f = fk including mapped dofs
-        {
-            simulation::MechanicalVOpVisitor eqvis( &params, f, fk );
-            eqvis.setMapped( true );
-            send( eqvis );
-        }
-
-        SReal h = params.dt();
-
-        // b = h fk
-        c.eq( fk, h ); // copying only independant dofs
-
-        // M v_k
-        SReal mfactor = 1;
-
-        // h (1-alpha) B v_k
-        SReal bfactor = h * (1 - alpha.getValue());
-
-        // h^2 alpha (1 - beta ) K v_k
-        SReal kfactor = h * h * alpha.getValue() * (1 - beta.getValue());
-
-        // note: K v_k factor only for stiffness dofs
-        mop.addMBKv( c,
-                     mfactor,
-                     bfactor,
-                     kfactor//,
-//                     false // not necessary to clear mapped dofs, they are already null since only independant dofs have been copied
-                     );
-
-        vop.v_free( fk.id(), false, true );
-
-        // computing fc (neglecting stiffness)
-        MultiVecDeriv fc( &vop ); // only compliance force (neglecting stiffness)
-        fc.realloc( &vop, false, true );
-        {
-            // adding compliance force to f
-            simulation::MechanicalComputeComplianceForceVisitor mccfv( &params, fc );
-            send( mccfv );
-        }
-
-//        cerr<<SOFA_CLASS_METHOD<<"fc "<< fc << endl;
-
-        // f += fc including mapped dofs
-        {
-            simulation::MechanicalVOpVisitor peqvis(&params, f, f, fc, 1.0);
-            peqvis.setMapped( true );
-            send( peqvis );
-        }
-
-//        cerr<<SOFA_CLASS_METHOD<<"f "<< f << endl;
-
-        vop.v_free( fc.id(), false, true );
-
-#endif
     }
 
 
