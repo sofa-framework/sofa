@@ -32,6 +32,14 @@ void CoulombConstraint::project( SReal* out, unsigned n, bool correct ) const
 		if( direction < 0 ) {
 			// only project normal
 			view = view - normal * normal.dot( view );
+
+            // un bazooka pour tuer une mouche
+            // ca ne revient pas exactement à :
+            // if( view[O] < 0 ) view[O] = 0;
+            // ?
+            // et quid des forces tangentielles ?
+            // il ne faut pas les "unilatéraliser" aussi ?
+            // pour les empecher d'attirer.
 		}
 		
     } else {

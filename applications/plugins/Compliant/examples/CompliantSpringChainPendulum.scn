@@ -1,0 +1,223 @@
+<?xml version="1.0"?>
+<!-- Compare the different natures of a forcefield (stiffness / compliance w/ geometric stiffness / compliance w/o geometric stiffness) -->
+
+<Node 	name="Root" gravity="0 -10 0" time="0" animate="0"  dt="0.01" >
+<VisualStyle displayFlags="hideVisualModels showBehaviorModels showMappings showForceFields" />
+<CompliantAttachButtonSetting />
+
+      <RequiredPlugin pluginName="Compliant"/>
+
+      
+<Node 	name="CONSTRAINT 0" activated="1">
+  
+    <AssembledSolver/>
+<!--     <LDLTSolver/> -->
+<MinresSolver precision="0" iterations="100"/>
+
+    <StringMeshCreator name="loader" resolution="10" scale="2 1 0" translation="3 0 0"/>
+    <MeshTopology name="mesh" src="@loader" />
+    <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" showObject="1" showObjectScale="10" />
+    
+    <FixedConstraint indices="0" />
+
+    <UniformMass  name="mass" totalMass="1"/>
+    <Node name="extensionsNode" >
+        <MechanicalObject template="Vec1d"  name="extensionsDOF" />
+        <EdgeSetTopologyContainer edges="@../mesh.edges" />
+        <DistanceMapping  />
+        <UniformCompliance name="ucomp" template="Vec1d" compliance="0"  />
+    </Node>
+    
+</Node>
+
+
+<Node 	name="CONSTRAINT 1e-15" activated="1">
+  
+    <AssembledSolver/>
+<!--     <LDLTSolver/> -->
+<MinresSolver precision="0" iterations="100"/>
+
+    <StringMeshCreator name="loader" resolution="10" scale="2 1 0" translation="3 3 0"/>
+    <MeshTopology name="mesh" src="@loader" />
+    <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" showObject="1" showObjectScale="10" />
+    
+    <FixedConstraint indices="0" />
+
+    <UniformMass  name="mass" totalMass="1"/>
+    <Node name="extensionsNode" >
+        <MechanicalObject template="Vec1d"  name="extensionsDOF" />
+        <EdgeSetTopologyContainer edges="@../mesh.edges" />
+        <DistanceMapping  />
+        <UniformCompliance name="ucomp" template="Vec1d" compliance="1e-15"  />
+    </Node>
+    
+</Node>
+
+<Node 	name="CONSTRAINT 1e-5" activated="1">
+  
+    <AssembledSolver/>
+<!--     <LDLTSolver/> -->
+<MinresSolver precision="0" iterations="100"/>
+
+    <StringMeshCreator name="loader" resolution="10" scale="2 1 0" translation="3 6 0"/>
+    <MeshTopology name="mesh" src="@loader" />
+    <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" showObject="1" showObjectScale="10" />
+    
+    <FixedConstraint indices="0" />
+
+    <UniformMass  name="mass" totalMass="1"/>
+    <Node name="extensionsNode" >
+        <MechanicalObject template="Vec1d"  name="extensionsDOF" />
+        <EdgeSetTopologyContainer edges="@../mesh.edges" />
+        <DistanceMapping  />
+        <UniformCompliance name="ucomp" template="Vec1d" compliance="1e-5"  />
+    </Node>
+    
+</Node>
+
+
+      
+      
+<Node 	name="COMPLIANCE 0" activated="1">
+  
+    <AssembledSolver neglecting_compliance_forces_in_geometric_stiffness="false"/>
+<!--     <LDLTSolver/> -->
+    <MinresSolver precision="0" iterations="100"/>
+
+    <StringMeshCreator name="loader" resolution="10" scale="2 1 0" translation="0 0 0"/>
+    <MeshTopology name="mesh" src="@loader" />
+    <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" showObject="1" showObjectScale="10" />
+    
+    <FixedConstraint indices="0" />
+
+    <UniformMass  name="mass" totalMass="1"/>
+    <Node name="extensionsNode" >
+        <MechanicalObject template="Vec1d"  name="extensionsDOF" />
+        <EdgeSetTopologyContainer edges="@../mesh.edges" />
+        <DistanceMapping  />
+        <UniformCompliance name="ucomp" template="Vec1d" compliance="0"  />
+    </Node>
+    
+</Node>
+
+<Node 	name="COMPLIANCE 1e-15" >
+  
+    <AssembledSolver neglecting_compliance_forces_in_geometric_stiffness="false"/>
+<!--     <LDLTSolver/> -->
+<MinresSolver precision="0" iterations="100"/>
+
+    <StringMeshCreator name="loader" resolution="10" scale="2 1 0" translation="0 3 0"/>
+    <MeshTopology name="mesh" src="@loader" />
+    <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" showObject="1" showObjectScale="10" />
+    
+    <FixedConstraint indices="0" />
+
+    <UniformMass  name="mass" totalMass="1"/>
+    <Node name="extensionsNode" >
+        <MechanicalObject template="Vec1d"  name="extensionsDOF" />
+        <EdgeSetTopologyContainer edges="@../mesh.edges" />
+        <DistanceMapping  />
+<!-- 	<Stabilization/> -->
+        <UniformCompliance name="ucomp" template="Vec1d" compliance="1e-15"  />
+    </Node>
+    
+</Node>
+
+<Node 	name="COMPLIANCE 1e-5" activated="1">
+  
+    <AssembledSolver neglecting_compliance_forces_in_geometric_stiffness="false"/>
+<!--     <LDLTSolver/> -->
+<MinresSolver precision="0" iterations="100"/>
+
+    <StringMeshCreator name="loader" resolution="10" scale="2 1 0" translation="0 6 0"/>
+    <MeshTopology name="mesh" src="@loader" />
+    <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" showObject="1" showObjectScale="10" />
+    
+    <FixedConstraint indices="0" />
+
+    <UniformMass  name="mass" totalMass="1"/>
+    <Node name="extensionsNode" >
+        <MechanicalObject template="Vec1d"  name="extensionsDOF" />
+        <EdgeSetTopologyContainer edges="@../mesh.edges" />
+        <DistanceMapping  />
+        <UniformCompliance name="ucomp" template="Vec1d" compliance="1e-5"  />
+    </Node>
+    
+</Node>
+
+
+
+
+
+
+<Node 	name="STIFFNESS 0" activated="1">
+  
+    <AssembledSolver/>
+<!--     <LDLTSolver/> -->
+<MinresSolver precision="0" iterations="100"/>
+
+    <StringMeshCreator name="loader" resolution="10" scale="2 1 0" translation="-3 0 0"/>
+    <MeshTopology name="mesh" src="@loader" />
+    <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" showObject="1" showObjectScale="10" />
+    
+    <FixedConstraint indices="0" />
+
+    <UniformMass  name="mass" totalMass="1"/>
+    <Node name="extensionsNode" >
+        <MechanicalObject template="Vec1d"  name="extensionsDOF" />
+        <EdgeSetTopologyContainer edges="@../mesh.edges" />
+        <DistanceMapping  />
+        <UniformCompliance name="ucomp" template="Vec1d" compliance="0" isCompliance="0" />
+    </Node>
+    
+</Node>
+
+<Node 	name="STIFFNESS 1e-15" activated="1">
+  
+    <AssembledSolver/>
+<!--     <LDLTSolver/> -->
+<MinresSolver precision="0" iterations="100"/>
+
+    <StringMeshCreator name="loader" resolution="10" scale="2 1 0" translation="-3 3 0"/>
+    <MeshTopology name="mesh" src="@loader" />
+    <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" showObject="1" showObjectScale="10" />
+    
+    <FixedConstraint indices="0" />
+
+    <UniformMass  name="mass" totalMass="1"/>
+    <Node name="extensionsNode" >
+        <MechanicalObject template="Vec1d"  name="extensionsDOF" />
+        <EdgeSetTopologyContainer edges="@../mesh.edges" />
+        <DistanceMapping  />
+        <UniformCompliance name="ucomp" template="Vec1d" compliance="1e-15" isCompliance="0" />
+    </Node>
+    
+</Node>
+
+<Node 	name="STIFFNESS 1e-5" activated="1">
+  
+    <AssembledSolver/>
+<!--     <LDLTSolver/> -->
+<MinresSolver precision="0" iterations="100"/>
+
+    <StringMeshCreator name="loader" resolution="10" scale="2 1 0" translation="-3 6 0"/>
+    <MeshTopology name="mesh" src="@loader" />
+    <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" showObject="1" showObjectScale="10" />
+    
+    <FixedConstraint indices="0" />
+
+    <UniformMass  name="mass" totalMass="1"/>
+    <Node name="extensionsNode" >
+        <MechanicalObject template="Vec1d"  name="extensionsDOF" />
+        <EdgeSetTopologyContainer edges="@../mesh.edges" />
+        <DistanceMapping  />
+        <UniformCompliance name="ucomp" template="Vec1d" compliance="1e-5" isCompliance="0" />
+    </Node>
+    
+</Node>
+
+
+
+
+
+</Node>

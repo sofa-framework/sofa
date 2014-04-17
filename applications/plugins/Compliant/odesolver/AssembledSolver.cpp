@@ -171,8 +171,7 @@ using namespace core::behavior;
 
         const SReal h = params.dt();
 
-        if( neglecting_compliance_forces_in_geometric_stiffness.getValue() )
-        {
+
             {
                 scoped::timer substep("forces computation");
 
@@ -184,33 +183,61 @@ using namespace core::behavior;
 
                 c.eq( f, h );
             }
-        }
-        else
-        {
-            {
-                scoped::timer substep("forces computation");
 
-                simulation::MechanicalComputeStiffnessAndComplianceForcesVisitor fvis( &params, c, f ); // c = fk, f = fc
-                send( fvis );
-            }
+        if( !neglecting_compliance_forces_in_geometric_stiffness.getValue() )
+        {
+            scoped::timer substep("f += fc");
+
+            simulation::MechanicalAddLambdas lvis( &params, f, lagrange ); // f += fc
+            send( lvis );
+        }
+
+
+//        {
+
+
+////            simulation::MechanicalPeqOnlyForCompliance lvis( &params, f, lagrange ); // f = fk + fc (for geometric stiffness)
+////            send( lvis );
+//        }
+//        else
+//        {
+
+////            simulation::MechanicalComputeStiffnessForcesAndAddingPreviousLambdasVisitor lvis( &params, f, c, lagrange ); // c = fk, f = fc
+////            send( lvis );
+
+//            {
+//                scoped::timer substep("forces computation");
+
+//                mop.computeForce( f ); // f = fk
+//            }
+
+
+
+//            {
+//                scoped::timer substep("forces computation");
+
+//                simulation::MechanicalComputeStiffnessAndComplianceForcesVisitor fvis( &params, c, f ); // c = fk, f = fc
+//                send( fvis );
+//            }
 
 
             // f = fc + fk including mapped dofs
-            {
-                scoped::timer substep("force sum computation");
+//            {
+//                scoped::timer substep("force sum computation");
 
-                simulation::MechanicalVOpVisitor eqvis( &params, f, f, c );
-                eqvis.setMapped( true );
-                send( eqvis );
-            }
+//                simulation::MechanicalVOpVisitor eqvis( &params, f, f, c );
+//                eqvis.setMapped( true );
+//                send( eqvis );
+//            }
 
-            {
-                scoped::timer substep("c_k=h.fk");
+//            {
+//                scoped::timer substep("c_k=h.fk");
 
-                // c_k = h fk
-                c.teq( h );
-            }
-        }
+//                // c_k = h fk
+//                c.teq( h );
+//            }
+
+
 
 
         {
@@ -464,6 +491,11 @@ using namespace core::behavior;
         MultiVecDeriv f( &vop, core::VecDerivId::force() ); // total force (stiffness + compliance) (f_k term)
         _ck.realloc( &vop, false, true ); // the right part of the implicit system (c_k term)
 
+        {
+            scoped::timer step("lambdas alloc");
+            lagrange.realloc( &vop, false, true );
+        }
+
         // compute forces and implicit right part warning: must be
         // call before assemblyVisitor since the mapping's geometric
         // stiffness depends on its child force
@@ -479,12 +511,6 @@ using namespace core::behavior;
         {
             scoped::timer step("system factor");
             kkt->factor( sys );
-        }
-
-        if( sys.n )
-        {
-            scoped::timer step("lambdas alloc");
-            lagrange.realloc( &vop, false, true );
         }
 
         // backup current state as correction might erase it, if any
@@ -560,6 +586,9 @@ using namespace core::behavior;
 
             send( prop );
         }
+
+
+//        vop.print( lagrange,std::cout, "END: ", "\n" );
 
 
     }
