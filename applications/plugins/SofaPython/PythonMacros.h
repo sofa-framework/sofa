@@ -343,8 +343,28 @@ static PyTypeObject DummyChild_PyTypeObject = {
 // =============================================================================
 // PYTHON SCRIPT METHOD CALL
 // =============================================================================
-#define SP_CALL_MODULEFUNC(func, ...) { if (func) { if (!PyObject_CallObject(func,Py_BuildValue(__VA_ARGS__))) { SP_MESSAGE_EXCEPTION("") PyErr_Print(); } } }
-#define SP_CALL_MODULEFUNC_NOPARAM(func) { if (func) { if (!PyObject_CallObject(func,0)) { SP_MESSAGE_EXCEPTION("") PyErr_Print(); } } }
+#define SP_CALL_MODULEFUNC(func, ...) \
+{ \
+    if (func) { \
+        PyObject *res = PyObject_CallObject(func,Py_BuildValue(__VA_ARGS__)); \
+        if (!res) { \
+            SP_MESSAGE_EXCEPTION("") PyErr_Print(); \
+        } \
+        else Py_DECREF(res); \
+    } \
+}
+
+
+#define SP_CALL_MODULEFUNC_NOPARAM(func) \
+{ \
+    if (func) { \
+        PyObject *res = PyObject_CallObject(func,0); \
+        if (!res) { \
+            SP_MESSAGE_EXCEPTION("") PyErr_Print(); \
+         } \
+        else Py_DECREF(res); \
+    } \
+}
 
 
 
