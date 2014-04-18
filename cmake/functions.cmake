@@ -524,7 +524,7 @@ unset(SOFA_ERROR_MESSAGES CACHE) # Clear error list
 function(sofa_print_list title message_list)
     if(message_list)
         message("> ${title}:")
-        foreach(message "${message_list}")
+        foreach(message ${message_list})
             message("  - ${message}")
         endforeach()
     endif()

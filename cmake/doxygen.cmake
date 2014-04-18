@@ -26,12 +26,10 @@
 # tree of the projects to generate the documentation of the different
 # projects in a correct order, and link them together.
 
-
-find_package(Doxygen)
-if(DOXYGEN_FOUND)
+if (SOFA-MISC_DOXYGEN)
+    find_package(Doxygen REQUIRED)
 
     file(MAKE_DIRECTORY "${SOFA_BUILD_DIR}/doc")
-    file(MAKE_DIRECTORY "${SOFA_BUILD_DIR}/misc/")
     file(MAKE_DIRECTORY "${SOFA_BUILD_DIR}/misc/doxygen-tags")
     file(MAKE_DIRECTORY "${SOFA_BUILD_DIR}/misc/doxyfiles")
 

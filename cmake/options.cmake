@@ -153,6 +153,8 @@ sofa_option(SOFA-MISC_CMAKE_VERBOSE BOOL OFF "")
 
 sofa_option(SOFA-MISC_SMP BOOL OFF "Use SMP")
 
+sofa_option(SOFA-MISC_DOXYGEN BOOL ON "Create targets to generate documentation with doxygen.")
+
 ## no opengl
 sofa_option(SOFA-MISC_NO_OPENGL BOOL OFF "Disable OpenGL")
 if(SOFA-MISC_NO_OPENGL)
@@ -168,12 +170,12 @@ if(SOFA-MISC_NO_UPDATE_BBOX)
     list(APPEND compilerDefines SOFA_NO_UPDATE_BBOX)
 endif()
 
-option(SOFA-MISC_DEV "Compiling SOFA_DEV code" OFF)
+sofa_option(SOFA-MISC_DEV BOOL OFF "Compiling SOFA_DEV code")
 if(SOFA-MISC_DEV)
     list(APPEND compilerDefines SOFA_DEV)
 endif()
 
-option(SOFA-MISC_DUMP_VISITOR_INFO "Compiling with performance analysis" OFF)
+sofa_option(SOFA-MISC_DUMP_VISITOR_INFO BOOL OFF "Compiling with performance analysis")
 if(SOFA-MISC_DUMP_VISITOR_INFO)
     list(APPEND compilerDefines SOFA_DUMP_VISITOR_INFO)
 endif()
