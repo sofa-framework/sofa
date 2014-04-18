@@ -33,6 +33,7 @@
 #include "imagetoolboxbasicactionwidget.h"
 #include "imagetoolboxlabelactionwidget.h"
 #include "initImage_gui.h"
+#include <typeinfo>
 
 namespace sofa
 {
@@ -120,36 +121,14 @@ public:
         labelTB->connectCentralW(central);
         labelTB->setGraphScene(central->graphXY->graphscene(),central->graphXZ->graphscene(),central->graphZY->graphscene());
         labelTB->setLabels(d.getLabels());
-        //connect(labelTB,SIGNAL(updateImage()),this,SIGNAL(updateImage()));
-        //connect(this,SIGNAL(updateImage()),this,SLOT(draw()));;
-        //connect(this,SIGNAL(updateImage()),central,SLOT(update()));
-        //connect(this,SIGNAL(updateImage()),this,SLOT(testsignal()));
 
-        //std::cout << "c" << std::endl;
-        
         main->setCentralWidget(central);//central);
-        
         main->addToolBar(Qt::TopToolBarArea,basicTB);
 
         QDockWidget *dw = new QDockWidget("Label Tools");
         dw->setWidget(labelTB);
         main->addDockWidget(Qt::RightDockWidgetArea,dw);
         
-    /*
-        setting = new Setting(parent);
-        setting->readFromData(d);
-
-
-        graph = new Graph(setting,parent);
-
-        if(setting->getChannelMax())
-        {
-            options = new Options(setting,graph,parent);
-            options->setRange(0,setting->getChannelMax());
-        }
-        else options=NULL;*/
-
-        //std::cout << "~imagetoolbox_data_widget_container::createWidgets" << std::endl;
         return true;
     }
 
@@ -184,7 +163,14 @@ public:
         assert(container_layout);
         //if(label) container_layout->add(label);
         
-        if(main)container_layout->add(main);
+        if(main)
+        {
+            QPushButton *button=new QPushButton("ToolBox");
+            //connect(button,SIGNAL(clicked()),main,SLOT(show()));
+            connect(button,SIGNAL(clicked()),main,SLOT(showMaximized()));
+
+            container_layout->add(button);
+        }
         
        // if(setting) container_layout->add(setting->getWidget());
        // if(options) container_layout->add(options);
