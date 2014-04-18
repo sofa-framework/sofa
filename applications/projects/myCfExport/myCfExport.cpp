@@ -36,13 +36,12 @@
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 
-
-
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/BackTrace.h>
 #include <sofa/component/misc/WriteState.h>
 
-
+#include <sofa/core/objectmodel/Data.h>
+#include <sofa/core/objectmodel/Base.h>
 
 using std::cerr;
 using std::endl;
@@ -56,12 +55,29 @@ namespace sofa {
 class MyCfExportVisitor : public sofa::simulation::Visitor
 {
 public:
+	// type def
+	typedef helper::vector<BaseData*> VecData;
+
     MyCfExportVisitor(const sofa::core::ExecParams* params)
         : Visitor(params)
     {}
 
-    virtual void processObject(simulation::Node* /*node*/, core::objectmodel::BaseObject* o) {
-        cout <<"object " << o->getName() << " of  type " << o->getTypeName() << " traversed" << endl;
+    virtual void processObject(simulation::Node* /*node*/, core::objectmodel::BaseObject* o) 
+	{
+		// Test
+        cout <<"object --> " << o->getName() << " || of  type --> " << o->getTypeName() << " traversed" << endl;
+
+		// Parent node
+		cout << "Parent node --> " << o->getContext()->getName() << endl;
+
+		// Get the object with its list of attributes
+		const VecData data(o->getDataFields());
+		cout << "Attributes --> " << endl;
+		for(unsigned int i=0; i<data.size(); ++i)
+		{
+			cout << "dataName --> " <<  data[i]->getName() << endl;
+			cout << "dataValue --> " <<  data[i]->getValueString() << endl;
+		}
     }
 
     virtual Result processNodeTopDown( simulation::Node* node)
