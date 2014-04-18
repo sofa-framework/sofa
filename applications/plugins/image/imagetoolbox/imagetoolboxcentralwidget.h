@@ -159,6 +159,7 @@ public slots:
     virtual void setVisibleXZ(bool)=0;
     virtual void setVisibleZY(bool)=0;
     virtual void setVisualModel(bool)=0;
+
     virtual void setSliders(sofa::defaulttype::Vec3i v)=0;
     virtual void changeSlider()=0;
     
@@ -166,6 +167,7 @@ signals:
     void setCheckedXY(bool);
     void setCheckedXZ(bool);
     void setCheckedZY(bool);
+
     
     void mousedoubleclickevent();
     void mousepressevent();

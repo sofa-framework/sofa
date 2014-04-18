@@ -19,6 +19,7 @@ Q_OBJECT
     QAction *graphXZ_Visible;
     QAction *graphZY_Visible;
     QAction *visualModel;
+    QAction *help;
 
 public:
     ImageToolBoxBasicActionWidget():QToolBar("BasicAction")
@@ -42,6 +43,10 @@ public:
         visualModel = this->addAction("VisualModel");
         visualModel->setCheckable(true);
         visualModel->setChecked(true);
+
+        this->addSeparator();
+
+        help = this->addAction("?");
     }
     
     void connectCentralW(ImageToolBoxCentralWidget* cw)
@@ -57,6 +62,13 @@ public:
         
         //connect(cw,SIGNAL(setCheckedZY(bool)),graphZY_Visible,SLOT(setChecked(bool)));
         connect(visualModel,SIGNAL(toggled(bool)),cw,SLOT(setVisualModel(bool)));
+
+        connect(help,SIGNAL(triggered()),this,SLOT(helpme()));
+    }
+public slots:
+    void helpme()
+    {
+        QMessageBox::information(this,"HelpMe","Zoom In: ctrl + Drag with mousse left click.\n Zoom Out: ctrl + mouse left double click.");
     }
     
     
