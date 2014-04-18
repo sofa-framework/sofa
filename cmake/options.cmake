@@ -153,7 +153,7 @@ sofa_option(SOFA-MISC_CMAKE_VERBOSE BOOL OFF "")
 
 sofa_option(SOFA-MISC_SMP BOOL OFF "Use SMP")
 
-sofa_option(SOFA-MISC_DOXYGEN BOOL ON "Create targets to generate documentation with doxygen.")
+sofa_option(SOFA-MISC_DOXYGEN BOOL OFF "Create targets to generate documentation with doxygen.")
 
 ## no opengl
 sofa_option(SOFA-MISC_NO_OPENGL BOOL OFF "Disable OpenGL")
