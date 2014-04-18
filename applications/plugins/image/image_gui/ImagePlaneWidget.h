@@ -739,6 +739,9 @@ public:
         layout->setColStretch(0, 50);
         layout->setColStretch(1, 50);
 
+        layout->setRowStretch(0,50);
+        layout->setRowStretch(2,50);
+
         if(graphXY) layout->addWidget(graphXY,0,0);
         if(optionsXY) layout->addWidget(optionsXY,1,0);
 
