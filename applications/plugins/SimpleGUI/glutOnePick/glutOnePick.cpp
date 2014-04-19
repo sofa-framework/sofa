@@ -39,7 +39,7 @@ using std::endl;
 using std::cout;
 
 #include <sofa/helper/ArgumentParser.h>
-#include "SofaGlInterface.h"
+#include <SimpleGUI/SofaGlInterface.h>
 
 // Sofa interface
 using namespace sofa::newgui;
