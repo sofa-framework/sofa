@@ -52,6 +52,10 @@ Task::Task(const Task::Status* pStatus)
 {
 }
 
+Task::~Task()
+{
+}
+
 bool Task::runTask(WorkerThread* thread)
 {
     execThreadIndex = thread->getThreadIndex();

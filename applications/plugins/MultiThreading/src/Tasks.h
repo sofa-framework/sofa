@@ -102,6 +102,8 @@ protected:
 
     Task(const Task::Status* status);
 
+    virtual ~Task();
+
     inline Task::Status* getStatus(void) const;
 
     const Task::Status*	m_Status;

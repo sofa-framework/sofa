@@ -69,12 +69,10 @@ TaskScheduler::~TaskScheduler()
     if ( mIsInitialized ) 
     {
         //stop();
-        mThread;
     }
     if ( mThread[0] != 0 )
     {
         //delete mThread[0]; 
-        mThread;
     }
 }
 
