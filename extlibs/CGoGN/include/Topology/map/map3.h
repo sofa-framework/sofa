@@ -105,7 +105,6 @@ public:
 
 	Dart alpha_2(Dart d) const;
 
-protected:
 	//! Link dart d with dart e by an involution
 	/*! @param d,e the darts to link
 	 *	- Before:	d->d and e->e

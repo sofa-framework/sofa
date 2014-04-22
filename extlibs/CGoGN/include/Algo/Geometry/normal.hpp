@@ -144,7 +144,7 @@ namespace Geometry
 template<typename PFP, typename V_ATT>
 typename V_ATT::DATA_TYPE triangleNormal(typename PFP::MAP& map, Dart d, const V_ATT& position)
 {
-	typename V_ATT::DATA_TYPE N = Geom::triangleNormal(position[d], position[map.phi1(d)], position[map.phi_1(d)]) ;
+    typename V_ATT::DATA_TYPE N = Geom::triangleNormal(position[d], position[map.phi1(d)], position[map.phi_1(d)]) ;
 	N.normalize() ;
 	return N ;
 }
@@ -152,8 +152,9 @@ typename V_ATT::DATA_TYPE triangleNormal(typename PFP::MAP& map, Dart d, const V
 template<typename PFP, typename V_ATT>
 typename V_ATT::DATA_TYPE newellNormal(typename PFP::MAP& map, Dart d, const V_ATT& position)
 {
-	typedef typename V_ATT::DATA_TYPE VEC3;
-    VEC3 N(0);
+    typedef typename PFP::VEC3 VEC3;
+    typedef typename VEC3::value_type T;
+    VEC3 N(T(0), T(0), T(0));
 
     Traversor2FV<typename PFP::MAP> t(map, d) ;
     for(Dart it = t.begin(); it != t.end(); it = t.next())

@@ -59,15 +59,15 @@ class BoundingBox
 
 		const VEC& max() const ;
 
-		typename VEC::DATA_TYPE size(unsigned int coord) const ;
+        typename VEC::value_type size(unsigned int coord) const ;
 
-		typename VEC::DATA_TYPE maxSize() const ;
+        typename VEC::value_type maxSize() const ;
 
-		typename VEC::DATA_TYPE minSize() const ;
+        typename VEC::value_type minSize() const ;
 
 		VEC diag() const ;
 
-		typename VEC::DATA_TYPE diagSize() const ;
+        typename VEC::value_type diagSize() const ;
 
 		VEC center() const ;
 
@@ -99,10 +99,10 @@ class BoundingBox
 		bool contains(const BoundingBox<VEC> & bb);
 
 		// scale the bounding box
-		void scale(typename VEC::DATA_TYPE size);
+        void scale(typename VEC::value_type size);
 
 		// 0-centered scale of the bounding box
-		void centeredScale(typename VEC::DATA_TYPE size);
+        void centeredScale(typename VEC::value_type size);
 
 		/// test if bb is intersected by a ray
 		bool rayIntersect(const VEC& P, const VEC& V) const;

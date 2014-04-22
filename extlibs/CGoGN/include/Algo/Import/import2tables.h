@@ -61,7 +61,7 @@ class MeshTablesSurface
 {
 public:
     typedef typename PFP::VEC3 VEC3 ;
-    typedef typename VEC3::DATA_TYPE DATA_TYPE ;
+    typedef typename VEC3::value_type DATA_TYPE ;
 
 protected:
 	typename PFP::MAP& m_map;
@@ -151,7 +151,7 @@ class MeshTablesVolume
 {
 public:
     typedef typename PFP::VEC3 VEC3 ;
-    typedef typename VEC3::DATA_TYPE DATA_TYPE ;
+    typedef typename VEC3::value_type DATA_TYPE ;
     typedef typename PFP::REAL REAL;
 
     enum VOLUME_TYPE {

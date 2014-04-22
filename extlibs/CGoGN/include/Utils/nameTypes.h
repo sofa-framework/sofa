@@ -25,7 +25,7 @@
 #define NAMETYPES_H_
 
 #include <string>
-
+#include <sofa/defaulttype/Vec.h>
 namespace CGoGN
 {
 
@@ -37,6 +37,14 @@ std::string nameOfType(const T& v)
 {
 	return v.CGoGNnameOfType();
 }
+
+
+template <> inline std::string nameOfType(const sofa::defaulttype::Vec2f& /*v*/) { return "sofaVec2f"; }
+template <> inline std::string nameOfType(const sofa::defaulttype::Vec2d& /*v*/) { return "sofaVec2d"; }
+template <> inline std::string nameOfType(const sofa::defaulttype::Vec3f& /*v*/) { return "sofaVec3f"; }
+template <> inline std::string nameOfType(const sofa::defaulttype::Vec3d& /*v*/) { return "sofaVec3d"; }
+template <> inline std::string nameOfType(const sofa::defaulttype::Vec4f& /*v*/) { return "sofaVec4f"; }
+template <> inline std::string nameOfType(const sofa::defaulttype::Vec4d& /*v*/) { return "sofaVec4d"; }
 
 template <> inline std::string nameOfType(const char& /*v*/) { return "char"; }
 

@@ -55,21 +55,21 @@ Plane3D<T>::Plane3D(const Plane3D<T>& p)
 }
 
 template <typename T>
-Plane3D<T>::Plane3D(const Vector<3,T>& n, T d) : m_normal(n), m_d(d)
+Plane3D<T>::Plane3D(const sofa::defaulttype::Vec<3,T>& n, T d) : m_normal(n), m_d(d)
 {
 	m_normal.normalize();
 }
 
 template <typename T>
-Plane3D<T>::Plane3D(const Vector<3,T>& n, const Vector<3,T>& p) : m_normal(n), m_d(-(p*n))
+Plane3D<T>::Plane3D(const sofa::defaulttype::Vec<3,T>& n, const sofa::defaulttype::Vec<3,T>& p) : m_normal(n), m_d(-(p*n))
 {
 	m_normal.normalize();
 }
 
 template <typename T>
-Plane3D<T>::Plane3D(const Vector<3,T>& p1, const Vector<3,T>& p2, const Vector<3,T>& p3)
+Plane3D<T>::Plane3D(const sofa::defaulttype::Vec<3,T>& p1, const sofa::defaulttype::Vec<3,T>& p2, const sofa::defaulttype::Vec<3,T>& p3)
 {
-	m_normal = (p2-p1) ^ (p3-p1) ;
+    m_normal = (p2-p1).cross(p3-p1) ;
 	m_normal.normalize() ;
 	m_d = -(p1 * m_normal) ;
 }
@@ -78,13 +78,13 @@ Plane3D<T>::Plane3D(const Vector<3,T>& p1, const Vector<3,T>& p2, const Vector<3
 /*                 ACCESSORS                  */
 /**********************************************/
 template <typename T>
-Vector<3,T>& Plane3D<T>::normal()
+sofa::defaulttype::Vec<3,T>& Plane3D<T>::normal()
 {
 	return m_normal ;
 }
 
 template <typename T>
-const Vector<3,T>& Plane3D<T>::normal() const
+const sofa::defaulttype::Vec<3,T>& Plane3D<T>::normal() const
 {
 	return m_normal ;
 }
@@ -106,27 +106,27 @@ const T& Plane3D<T>::d() const
 /**********************************************/
 
 template <typename T>
-T Plane3D<T>::distance(const Vector<3,T>& p) const
+T Plane3D<T>::distance(const sofa::defaulttype::Vec<3,T>& p) const
 {
 	T k = m_normal * p ;
 	return k + m_d ;
 }
 
 template <typename T>
-void Plane3D<T>::project(Vector<3,T>& p) const
+void Plane3D<T>::project(sofa::defaulttype::Vec<3,T>& p) const
 {
 #define PRECISION 1e-10
 	T d = -distance(p) ;
 	if(fabs(d) > PRECISION)
 	{
-		Vector<3,T> v = m_normal * d ;
+        sofa::defaulttype::Vec<3,T> v = m_normal * d ;
 		p += v ;
 	}
 #undef PRECISION
 }
 
 template <typename T>
-Orientation3D Plane3D<T>::orient(const Vector<3,T>& p) const
+Orientation3D Plane3D<T>::orient(const sofa::defaulttype::Vec<3,T>& p) const
 {
 #define PRECISION 1e-6
 	T dist = distance(p) ;
@@ -141,7 +141,7 @@ Orientation3D Plane3D<T>::orient(const Vector<3,T>& p) const
 
 
 template <typename T>
-Orientation3D Plane3D<T>::orient(const Vector<3,T>& p, T& dist) const
+Orientation3D Plane3D<T>::orient(const sofa::defaulttype::Vec<3,T>& p, T& dist) const
 {
 #define PRECISION 1e-6
 	dist = distance(p) ;
