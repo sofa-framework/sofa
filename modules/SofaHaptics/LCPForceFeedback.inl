@@ -297,8 +297,6 @@ void LCPForceFeedback<DataTypes>::computeForce(const VecCoord& state,  VecDeriv&
             forces[i] = tempForces[i] * forceCoef.getValue();
         }
     }
-
-    mIsCuBufferInUse = false;
 }
 
 
