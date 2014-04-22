@@ -49,8 +49,8 @@ public:
     LPtrFullMatrix<double> W;
     FullVector<double> dFree, f;
 
-    ConstraintProblem() : tolerance(0.00001), maxIterations(1000), dimension(0) {}
-    virtual ~ConstraintProblem() {};
+    ConstraintProblem();
+    virtual ~ConstraintProblem();
 
     double tolerance;
     int maxIterations;
@@ -63,8 +63,11 @@ public:
 
     virtual void solveTimed(double tolerance, int maxIt, double timeout) = 0;
 
+    unsigned int getProblemId();
+
 protected:
     int dimension;
+    unsigned int problemId;
 };
 
 
