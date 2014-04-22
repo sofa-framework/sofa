@@ -46,15 +46,14 @@ template<typename PFP>
 bool EarTriangulation<PFP>::inTriangle(const typename PFP::VEC3& P, const typename PFP::VEC3& normal, const typename PFP::VEC3& Ta,  const typename PFP::VEC3& Tb, const typename PFP::VEC3& Tc)
 {
     typedef typename PFP::VEC3 VECT ;
-    typedef typename VECT::DATA_TYPE T ;
-
-    if (Geom::tripleProduct(P-Ta, (Tb-Ta), normal) >= T(0))
+    typedef typename VECT::value_type T ;
+    if (Geom::tripleProduct<3,T>(P-Ta, Tb-Ta, normal) >= T(0))
         return false;
 
-    if (Geom::tripleProduct(P-Tb, (Tc-Tb), normal) >= T(0))
+    if (Geom::tripleProduct<3,T>(P-Tb, (Tc-Tb), normal) >= T(0))
         return false;
 
-    if (Geom::tripleProduct(P-Tc, (Ta-Tc), normal) >= T(0))
+    if (Geom::tripleProduct<3,T>(P-Tc, (Ta-Tc), normal) >= T(0))
         return false;
 
     return true;
@@ -88,8 +87,8 @@ void EarTriangulation<PFP>::recompute2Ears( Dart d, const typename PFP::VEC3& no
 
     if (!convex)	// if convex no need to test if vertex is an ear (yes)
     {
-        typename PFP::VEC3 nv1 = v1^v2;
-        typename PFP::VEC3 nv2 = v1^v3;
+        typename PFP::VEC3 nv1 = v1.cross(v2);
+        typename PFP::VEC3 nv2 = v1.cross(v3);
 
         if (nv1*normalPoly < 0.0)
             dotpr1 = 10.0f - dotpr1;// not an ears  (concave)
@@ -139,7 +138,7 @@ float EarTriangulation<PFP>::computeEarInit(Dart d, const typename PFP::VEC3& no
 //	val = 1.0f - (v1*v2);
     val = acos(v1*v2) / (M_PI/2.0f);
 
-    typename PFP::VEC3 vn = v1^v2;
+    typename PFP::VEC3 vn = v1.cross(v2);
     if (vn*normalPoly > 0.0f)
         val = 10.0f - val; 		// not an ears  (concave, store at the end for optimized use for intersections)
 
@@ -166,7 +165,7 @@ template<typename PFP>
 void EarTriangulation<PFP>::trianguleFace(Dart d)
 {
     // compute normal to polygon
-    typename PFP::VEC3 normalPoly = Algo::Surface::Geometry::newellNormal<PFP>(m_map, d, m_position);
+    typename PFP::VEC3 normalPoly = Algo::Surface::Geometry::newellNormal<PFP, VertexAttribute<VEC3> >(m_map, d, m_position);
 
     // first pass create polygon in chained list witht angle computation
     unsigned int nbv = 0;

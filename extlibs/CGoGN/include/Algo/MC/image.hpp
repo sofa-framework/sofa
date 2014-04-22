@@ -1090,18 +1090,18 @@ bool Image<DataType>::checkSaddlecomputeNormal(const Geom::Vec3f& P, const Geom:
 	Geom::Vec3f V1;
 	if ( (fabs(normal[0]) <fabs(normal[1])) && (fabs(normal[0]) <fabs(normal[2])) )
 	{
-		V1 = normal ^ Geom::Vec3f(1.0f,0.0f,0.0);
+        V1 = normal.cross( Geom::Vec3f(1.0f,0.0f,0.0));
 	}
 	else if (fabs(normal[1]) <fabs(normal[2]))
 	{
-		V1 = normal ^ Geom::Vec3f(0.0f,1.0f,0.0);
+        V1 = normal.cross(  Geom::Vec3f(0.0f,1.0f,0.0));
 	}
 	else
 	{
-		V1 = normal ^ Geom::Vec3f(0.0f,0.0f,1.0);
+        V1 = normal.cross(  Geom::Vec3f(0.0f,0.0f,1.0));
 	}
 
-	Geom::Vec3f V2 = normal ^ V1;
+    Geom::Vec3f V2 = normal.cross(  V1);
 
 	Geom::Vec3f Q = P + (0.5f * radius)*normal;
 

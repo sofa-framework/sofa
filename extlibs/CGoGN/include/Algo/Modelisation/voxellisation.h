@@ -43,20 +43,17 @@ void swapMax(T& min, T& max)
 }
 
 template <unsigned int DIM, typename T>
-void swapVectorMax(Geom::Vector<DIM, T>& min, Geom::Vector<DIM, T>& max)
+inline void swapVectorMax(sofa::defaulttype::Vec<DIM, T>& min, sofa::defaulttype::Vec<DIM, T>& max)
 {
-	if(min.dimension()==max.dimension())
-	{
-		for(unsigned int i=0; i<min.dimension(); i++)
+        for(unsigned int i=0; i<min.total_size; i++)
 		{
-			swapMax(min[i], max[i]);
+            swapMax<T>(min[i], max[i]);
 		}
-	}
 }
 
 class Voxellisation {
    public:
-	Voxellisation(Geom::Vec3i resolutions = Geom::Vec3i(), Geom::BoundingBox<Geom::Vec3f> bb = Geom::BoundingBox<PFP::VEC3>(Geom::Vec3f()))
+    Voxellisation(Geom::Vec3i resolutions = Geom::Vec3i(), Geom::BoundingBox<Geom::Vec3f> bb = Geom::BoundingBox<Geom::Vec3f>(Geom::Vec3f()))
 			:   m_taille_x(resolutions[0]+2), m_taille_y(resolutions[1]+2), m_taille_z(resolutions[2]+2),
 			  m_bb_min(bb.min()), m_bb_max(bb.max()), m_data(m_taille_x*m_taille_y*m_taille_z, 0),
 			m_indexes(), m_sommets(), m_faces(), m_transfo()
@@ -67,7 +64,7 @@ class Voxellisation {
 			m_transfo[1] = (m_bb_max[1]-m_bb_min[1])/(m_taille_y-2);
 			m_transfo[2] = (m_bb_max[2]-m_bb_min[2])/(m_taille_z-2);
 
-			swapVectorMax(m_bb_min, m_bb_max);
+            swapVectorMax<3,float>(m_bb_min, m_bb_max);
 		}
 
 		void removeVoxel(int x, int y, int z)

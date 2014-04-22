@@ -208,7 +208,6 @@ ELSE(WIN32)
 	ENDIF (ONELIB)
 ENDIF(WIN32)
 
-AddLinkerDependencies(${CGoGN_EXT_LIBS})
-
+AddLinkerDependencies(${CGoGN_EXT_LIBS} SofaDefaultType)
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

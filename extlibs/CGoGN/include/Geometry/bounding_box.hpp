@@ -71,21 +71,21 @@ const VEC& BoundingBox<VEC>::max() const
 }
 
 template <typename VEC>
-typename VEC::DATA_TYPE BoundingBox<VEC>::size(unsigned int coord) const
+typename VEC::value_type BoundingBox<VEC>::size(unsigned int coord) const
 {
 	assert(m_initialized && coord < m_pMax.dimension()) ;
 	return m_pMax[coord] - m_pMin[coord] ;
 }
 
 template <typename VEC>
-typename VEC::DATA_TYPE BoundingBox<VEC>::maxSize() const
+typename VEC::value_type BoundingBox<VEC>::maxSize() const
 {
 	assert(m_initialized || !"Bounding box not initialized");
 
-	typename VEC::DATA_TYPE max = m_pMax[0] - m_pMin[0] ;
+    typename VEC::value_type max = m_pMax[0] - m_pMin[0] ;
 	for(unsigned int i = 1; i < m_pMax.dimension(); ++i)
 	{
-		typename VEC::DATA_TYPE size = m_pMax[i] - m_pMin[i] ;
+        typename VEC::value_type size = m_pMax[i] - m_pMin[i] ;
 		if(size > max)
 			max = size ;
 	}
@@ -93,14 +93,14 @@ typename VEC::DATA_TYPE BoundingBox<VEC>::maxSize() const
 }
 
 template <typename VEC>
-typename VEC::DATA_TYPE BoundingBox<VEC>::minSize() const
+typename VEC::value_type BoundingBox<VEC>::minSize() const
 {
 	assert(m_initialized || !"Bounding box not initialized");
 
-	typename VEC::DATA_TYPE min = m_pMax[0] - m_pMin[0] ;
+    typename VEC::value_type min = m_pMax[0] - m_pMin[0] ;
 	for(unsigned int i = 1; i < m_pMax.dimension(); ++i)
 	{
-		typename VEC::DATA_TYPE size = m_pMax[i] - m_pMin[i] ;
+        typename VEC::value_type size = m_pMax[i] - m_pMin[i] ;
 		if(size < min)
 			min = size ;
 	}
@@ -115,7 +115,7 @@ VEC BoundingBox<VEC>::diag() const
 }
 
 template <typename VEC>
-typename VEC::DATA_TYPE BoundingBox<VEC>::diagSize() const
+typename VEC::value_type BoundingBox<VEC>::diagSize() const
 {
 	assert(m_initialized || !"Bounding box not initialized");
 	return (m_pMax - m_pMin).norm() ;
@@ -125,7 +125,7 @@ template <typename VEC>
 VEC BoundingBox<VEC>::center() const
 {
 	assert(m_initialized || !"Bounding box not initialized");
-	VEC center = (m_pMax + m_pMin) / typename VEC::DATA_TYPE(2) ;
+    VEC center = (m_pMax + m_pMin) / typename VEC::value_type(2) ;
 	return center ;
 }
 
@@ -156,7 +156,7 @@ void BoundingBox<VEC>::addPoint(const VEC& p)
 	}
 	else
 	{
-		for(unsigned int i = 0; i < p.dimension(); ++i)
+        for(unsigned int i = 0; i < p.total_size; ++i)
 		{
 			if(p[i] < m_pMin[i])
 				m_pMin[i] = p[i] ;
@@ -303,7 +303,7 @@ bool BoundingBox<VEC>::contains(const BoundingBox<VEC>& bb)
 }
 
 template <typename VEC>
-void BoundingBox<VEC>::scale(typename VEC::DATA_TYPE size)
+void BoundingBox<VEC>::scale(typename VEC::value_type size)
 {
 	assert(m_initialized || !"Bounding box not initialized");
 	m_pMin *= size ;
@@ -311,9 +311,9 @@ void BoundingBox<VEC>::scale(typename VEC::DATA_TYPE size)
 }
 
 template <typename VEC>
-void BoundingBox<VEC>::centeredScale(typename VEC::DATA_TYPE size)
+void BoundingBox<VEC>::centeredScale(typename VEC::value_type size)
 {
-	VEC center = (m_pMin + m_pMax) / typename VEC::DATA_TYPE(2) ;
+    VEC center = (m_pMin + m_pMax) / typename VEC::value_type(2) ;
 	m_pMin = ((m_pMin - center) * size) + center ;
 	m_pMax = ((m_pMax - center) * size) + center ;
 }

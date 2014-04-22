@@ -67,7 +67,7 @@ OrientationLine testOrientationLines(const VEC3& a, const VEC3& b, const VEC3& c
 template <typename VEC3>
 Orientation3D testOrientation3D(const VEC3& P, const VEC3& A, const VEC3& B, const VEC3& C)
 {
-	typedef typename VEC3::DATA_TYPE T ;
+    typedef typename VEC3::value_type T ;
 	Geom::Plane3D<T> plane(A, B, C) ;
 	return plane.orient(P) ;
 }

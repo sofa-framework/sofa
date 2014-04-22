@@ -419,9 +419,9 @@ inline Vector<DIM, T> operator/(T a, const Vector<DIM, T>& v)
 }
 
 template <unsigned int DIM, typename T>
-inline T tripleProduct(const Vector<DIM, T>& v1, const Vector<DIM, T>& v2, const Vector<DIM, T>& v3)
+inline T tripleProduct(const sofa::defaulttype::Vec<DIM, T>& v1, const  sofa::defaulttype::Vec<DIM, T>& v2, const  sofa::defaulttype::Vec<DIM, T>& v3)
 {
-	return v1 * (v2 ^ v3) ;
+    return static_cast<T>(v1 * (v2.cross(v3))) ;
 }
 
 template <unsigned int DIM, typename T>
