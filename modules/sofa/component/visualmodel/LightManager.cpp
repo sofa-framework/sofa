@@ -205,7 +205,6 @@ void LightManager::makeShadowMatrix(unsigned int i)
 
 void LightManager::fwdDraw(core::visual::VisualParams* vp)
 {
-
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient.getValue().ptr());
     unsigned int id = 0;
     for (std::vector<Light*>::iterator itl = lights.begin(); itl != lights.end() ; itl++)
@@ -265,9 +264,9 @@ void LightManager::fwdDraw(core::visual::VisualParams* vp)
                 lightFlag[i] = 0;
                 shadowTextureID[i] = 0;
 
-                /*for(unsigned int j=0 ; j<4; j++)
-                    for(unsigned int k=0 ; k<4; k++)
-                        lightModelViewProjectionMatrices[16*i+j*4+k] = 0.0;*/
+                //for(unsigned int j=0 ; j<4; j++)
+                //    for(unsigned int k=0 ; k<4; k++)
+                //        lightModelViewProjectionMatrices[16*i+j*4+k] = 0.0;
             }
 
             for(unsigned int i=0 ; i<shadowShaders.size() ; i++)
@@ -305,8 +304,6 @@ void LightManager::bwdDraw(core::visual::VisualParams* )
     glMatrixMode(GL_TEXTURE);
     glLoadIdentity();
     glMatrixMode(GL_MODELVIEW);
-
-
 }
 
 void LightManager::draw(const core::visual::VisualParams* )
@@ -374,22 +371,22 @@ void LightManager::reinit()
 void LightManager::preDrawScene(VisualParams* vp)
 {
 #ifdef SOFA_HAVE_GLEW
-    for (std::vector<Light*>::iterator itl = lights.begin(); itl != lights.end() ; itl++)
-    {
-        if(shadowsEnabled.getValue())
-        {
-            (*itl)->preDrawShadow(vp);
-            vp->pass() = core::visual::VisualParams::Shadow;
-            simulation::VisualDrawVisitor vdv(vp);
+	if(shadowsEnabled.getValue())
+	{
+		for (std::vector<Light*>::iterator itl = lights.begin(); itl != lights.end() ; itl++)
+		{
+			(*itl)->preDrawShadow(vp);
+			vp->pass() = core::visual::VisualParams::Shadow;
+			simulation::VisualDrawVisitor vdv(vp);
 
-            vdv.execute ( getContext() );
+			vdv.execute ( getContext() );
 
-            (*itl)->postDrawShadow();
-        }
-    }
-    const core::visual::VisualParams::Viewport& viewport = vp->viewport();
-    //restore viewport
-    glViewport(viewport[0], viewport[1], viewport[2] , viewport[3]);
+			(*itl)->postDrawShadow();
+		}
+		const core::visual::VisualParams::Viewport& viewport = vp->viewport();
+		//restore viewport
+		glViewport(viewport[0], viewport[1], viewport[2] , viewport[3]);
+	}
 #endif
 }
 
@@ -405,6 +402,7 @@ void LightManager::postDrawScene(VisualParams* /*vp*/)
 
 void LightManager::restoreDefaultLight()
 {
+	/*
     //restore default light
     GLfloat	ambientLight[4];
     GLfloat	diffuseLight[4];
@@ -438,12 +436,12 @@ void LightManager::restoreDefaultLight()
     glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
     glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, 180);
 
-    glEnable(GL_LIGHT0);
+    glEnable(GL_LIGHT0);*/
 }
 
 void LightManager::handleEvent(sofa::core::objectmodel::Event* event)
 {
-    if (sofa::core::objectmodel::KeypressedEvent* ev = dynamic_cast<sofa::core::objectmodel::KeypressedEvent*>(event))
+    /*if (sofa::core::objectmodel::KeypressedEvent* ev = dynamic_cast<sofa::core::objectmodel::KeypressedEvent*>(event))
     {
         switch(ev->getKey())
         {
@@ -466,7 +464,7 @@ void LightManager::handleEvent(sofa::core::objectmodel::Event* event)
 #endif
             break;
         }
-    }
+    }*/
 
 }
 
