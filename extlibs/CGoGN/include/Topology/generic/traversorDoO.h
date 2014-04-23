@@ -40,6 +40,7 @@ private:
 
 public:
 	TraversorDartsOfOrbit(const MAP& map, Dart d, unsigned int thread = 0) ;
+    TraversorDartsOfOrbit(const TraversorDartsOfOrbit& tradoo);
 
     inline Dart begin() ;
 

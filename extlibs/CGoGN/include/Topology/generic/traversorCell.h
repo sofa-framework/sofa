@@ -37,30 +37,30 @@ template <typename MAP, unsigned int ORBIT>
 class TraversorCell //: public Traversor<MAP>
 {
 private:
-	const MAP& m ;
+    const MAP& m ;
 
-	const AttributeContainer* cont ;
-	unsigned int qCurrent ;
+    const AttributeContainer* cont ;
+    unsigned int qCurrent ;
 
-	DartMarker* dmark ;
-	CellMarker<ORBIT>* cmark ;
-	const AttributeMultiVector<Dart>* quickTraversal ;
+    DartMarker* dmark ;
+    CellMarker<ORBIT>* cmark ;
+    const AttributeMultiVector<Dart>* quickTraversal ;
 
-	Dart current ;
-	bool firstTraversal ;
+    Dart current ;
+    bool firstTraversal ;
 
 public:
-	TraversorCell(const MAP& map, bool forceDartMarker = false, unsigned int thread = 0) ;
+    TraversorCell(const MAP& map, bool forceDartMarker = false, unsigned int thread = 0) ;
+    TraversorCell(const TraversorCell& tracell);
+    ~TraversorCell() ;
 
-	~TraversorCell() ;
+    inline Dart begin() ;
 
-	inline Dart begin() ;
+    inline Dart end() ;
 
-	inline Dart end() ;
+    inline Dart next() ;
 
-	inline Dart next() ;
-
-	inline void skip(Dart d);
+    inline void skip(Dart d);
 } ;
 
 
@@ -68,30 +68,30 @@ template <unsigned int ORBIT>
 class TraversorCell<GenericMap, ORBIT> //: public Traversor<GenericMap>
 {
 private:
-	const GenericMap& m ;
+    const GenericMap& m ;
 
-	const AttributeContainer* cont ;
-	unsigned int qCurrent ;
+    const AttributeContainer* cont ;
+    unsigned int qCurrent ;
 
-	DartMarker* dmark ;
-	CellMarker<ORBIT>* cmark ;
-	const AttributeMultiVector<Dart>* quickTraversal ;
+    DartMarker* dmark ;
+    CellMarker<ORBIT>* cmark ;
+    const AttributeMultiVector<Dart>* quickTraversal ;
 
-	Dart current ;
-	bool firstTraversal ;
+    Dart current ;
+    bool firstTraversal ;
 
 public:
-	TraversorCell(const GenericMap& map, bool forceDartMarker = false, unsigned int thread = 0) ;
+    TraversorCell(const GenericMap& map, bool forceDartMarker = false, unsigned int thread = 0) ;
+    TraversorCell(const TraversorCell& tracell);
+    ~TraversorCell() ;
 
-	~TraversorCell() ;
+    inline Dart begin() ;
 
-	inline Dart begin() ;
+    inline Dart end() ;
 
-	inline Dart end() ;
+    inline Dart next() ;
 
-	inline Dart next() ;
-
-	inline void skip(Dart d);
+    inline void skip(Dart d);
 } ;
 
 
@@ -99,32 +99,32 @@ template <typename MAP>
 class TraversorV : public TraversorCell<MAP, VERTEX>
 {
 public:
-	TraversorV(const MAP& m, unsigned int thread = 0) : TraversorCell<MAP, VERTEX>(m, false, thread)
-	{}
+    TraversorV(const MAP& m, unsigned int thread = 0) : TraversorCell<MAP, VERTEX>(m, false, thread)
+    {}
 };
 
 template <typename MAP>
 class TraversorE : public TraversorCell<MAP, EDGE>
 {
 public:
-	TraversorE(const MAP& m, unsigned int thread = 0) : TraversorCell<MAP, EDGE>(m, false, thread)
-	{}
+    TraversorE(const MAP& m, unsigned int thread = 0) : TraversorCell<MAP, EDGE>(m, false, thread)
+    {}
 };
 
 template <typename MAP>
 class TraversorF : public TraversorCell<MAP, FACE>
 {
 public:
-	TraversorF(const MAP& m, unsigned int thread = 0) : TraversorCell<MAP, FACE>(m, false, thread)
-	{}
+    TraversorF(const MAP& m, unsigned int thread = 0) : TraversorCell<MAP, FACE>(m, false, thread)
+    {}
 };
 
 template <typename MAP>
 class TraversorW : public TraversorCell<MAP, VOLUME>
 {
 public:
-	TraversorW(const MAP& m, unsigned int thread = 0) : TraversorCell<MAP, VOLUME>(m, false, thread)
-	{}
+    TraversorW(const MAP& m, unsigned int thread = 0) : TraversorCell<MAP, VOLUME>(m, false, thread)
+    {}
 };
 
 } // namespace CGoGN
