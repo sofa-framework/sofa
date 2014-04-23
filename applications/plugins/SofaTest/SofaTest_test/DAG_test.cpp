@@ -115,7 +115,7 @@ struct DAG_test : public Sofa_test<>
             ADD_FAILURE() << "Dag_test::traverse_test treeTraverseRepeatAll: wrong traversal order, expected "<<treeTraverseRepeatAll<<", got " << t.visited;
         }
         t.clear();
-        t.repeat = simulation::Visitor::REPEAT_ONCE; // visitor as TREE traversal with repetitions
+        t.repeat = simulation::Visitor::REPEAT_ONCE; // visitor as TREE traversal with first repetition
         t.execute( node.get() );
         //        cout<<"traverse_simple_tree: visited = " << t.visited << endl;
         if( t.visited != treeTraverseRepeatOnce ){
@@ -216,6 +216,37 @@ Expected output: RABCDEEDCBAR
         traverse_test( root, "RACDEEDCABBR", "RACDEEDCABCDEEDCBDEEDR", "RACDEEDCABCCBDDR", "RABCDE" );
     }
 
+
+/**
+  * @brief Even more complex graph:
+
+  R__
+ / \ |
+ A B C
+ \/ \|
+  D  E
+  |  |
+  F  G
+
+Expected output: RABCDEEDCBAR
+     */
+    void traverse_morecomplex()
+    {
+        Node::SPtr root = clearScene();
+        root->setName("R");
+        Node::SPtr A = root->createChild("A");
+        Node::SPtr B = root->createChild("B");
+        Node::SPtr C = root->createChild("C");
+        Node::SPtr D = A->createChild("D");
+        B->addChild(D);
+        Node::SPtr E = B->createChild("E");
+        C->addChild(E);
+        Node::SPtr F = D->createChild("F");
+        Node::SPtr G = E->createChild("G");
+
+        traverse_test( root, "RADFFDABEGGEBCCR", "RADFFDABDFFDEGGEBCEGGECR", "RADFFDABDDEGGEBCEECR", "RABDFCEG" );
+    }
+
 };
 
 
@@ -224,6 +255,7 @@ TEST_F( DAG_test,  )
     traverse_simple_tree();
     traverse_simple_diamond();
     traverse_complex();
+    traverse_morecomplex();
 }
 
 }// namespace sofa
