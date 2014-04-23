@@ -147,8 +147,8 @@ void DistanceFromTargetMapping<TIn, TOut>::apply(const core::MechanicalParams * 
     for(unsigned i=0; i<indices.size(); i++ )
     {
         InDeriv& gap = directions[i];
-        gap = in[indices[i]] - targetPositions[i];
-        Real gapNorm = gap.norm();
+        gap = TIn::coordDifference(in[indices[i]],targetPositions[i]);
+        Real gapNorm = TIn::getDPos(gap).norm();
 //        cerr<<"DistanceFromTargetMapping<TIn, TOut>::apply, gap = " << gap <<", norm = " << gapNorm << endl;
         out[i] = gapNorm - restDistances[i];  // output
 
@@ -233,7 +233,15 @@ void DistanceFromTargetMapping<TIn, TOut>::applyDJT(const core::MechanicalParams
         // note that computing a block is not efficient here, but it would makes sense for storing a stiffness matrix
 
         InDeriv dx = parentDisplacement[indices[i]];
-        InDeriv df = b*dx;
+        InDeriv df;
+        for(unsigned j=0; j<Nin; j++)
+        {
+            for(unsigned k=0; k<Nin; k++)
+            {
+                df[j]+=b[j][k]*dx[k];
+            }
+        }
+       // InDeriv df = b*dx;
         parentForce[indices[i]] += df;
 //        cerr<<"DistanceFromTargetMapping<TIn, TOut>::applyDJT, df = " << df << endl;
     }
@@ -306,8 +314,8 @@ void DistanceFromTargetMapping<TIn, TOut>::draw(const core::visual::VisualParams
 
     for(unsigned i=0; i<indices.size(); i++ )
     {
-        points.push_back( Vector3(targetPositions[i]) );
-        points.push_back( Vector3(pos[indices[i]]) );
+        points.push_back( Vector3(TIn::getCPos(targetPositions[i]) ) );
+        points.push_back( Vector3(TIn::getCPos(pos[indices[i]]) ) );
     }
 
     if( !_arrowSize )

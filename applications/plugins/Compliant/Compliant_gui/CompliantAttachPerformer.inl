@@ -136,14 +136,15 @@ void CompliantAttachPerformer<DataTypes>::start()
         mapper = MouseContactMapper::Create(picked.body);
         if (!mapper)
         {
-            this->interactor->serr << "Problem with Mouse Mapper creation : " << this->interactor->sendl;
+            this->interactor->serr << "Problem with Mouse Mapper creation : "   << this->interactor->sendl;
             return;
         }
         std::string name = "contactMouse";
         mstateCollision = mapper->createMapping(name.c_str());
         mapper->resize(1);
 
-        const typename DataTypes::Coord pointPicked=picked.point;
+        typename DataTypes::Coord pointPicked;
+        DataTypes::set(pointPicked, picked.point[0], picked.point[1], picked.point[2]);
         const int idx=picked.indexCollisionElement;
         typename DataTypes::Real r=0.0;
 
@@ -206,7 +207,7 @@ void CompliantAttachPerformer<DataTypes>::start()
     this->interactor->setDistanceFromMouse(distanceFromMouse);
 
 
-    initialMousePos = mouseState->readPositions()[0];
+    initialMousePos = DataTypes::getCPos(mouseState->readPositions()[0]);
 
 //    cerr<<"CompliantAttachPerformer<DataTypes>::start() "<<mouseState->readPositions()[0]<<" "<<pointOnRay<< endl;
 
@@ -228,7 +229,9 @@ void CompliantAttachPerformer<DataTypes>::start()
     distanceMapping->setModels(mstateCollision,extensions.get());
     interactionNode->addObject( distanceMapping );
     distanceMapping->setName(distanceMappingName.c_str());
-    distanceMapping->createTarget(/*picked.indexCollisionElement*/ pickedParticleIndex, pointOnRay, /*(picked.point-pointOnRay).norm()*/ 0);
+    typename DataTypes::Coord pointOnRayPosition;
+    DataTypes::set(pointOnRayPosition, pointOnRay[0], pointOnRay[1], pointOnRay[2]);
+    distanceMapping->createTarget(/*picked.indexCollisionElement*/ pickedParticleIndex, pointOnRayPosition, /*(picked.point-pointOnRay).norm()*/ 0);
     distanceMapping->_arrowSize = _arrowSize;
     distanceMapping->_color = _color;
 
@@ -254,7 +257,7 @@ void CompliantAttachPerformer<DataTypes>::execute()
     typename Point3dState::ReadVecCoord xmouse = mouseState->readPositions();
 
     // hack, while the mouse did not move, we do not update anything
-    if( xmouse[0] == initialMousePos ) return;
+    if( DataTypes::getCPos(xmouse[0]) == initialMousePos ) return;
 
     distanceMapping->updateTarget(pickedParticleIndex,xmouse[0]);
 
