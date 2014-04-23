@@ -75,9 +75,12 @@ private:
 
 	bool m_allocated;
 	bool m_first;
+
+
 public:
 	Traversor3XY(const MAP& map, Dart dart, bool forceDartMarker = false, unsigned int thread = 0) ;
 	Traversor3XY(const MAP& map, Dart dart, MarkerForTraversor<MAP, ORBY>& tmo, bool forceDartMarker = false, unsigned int thread = 0) ;
+    Traversor3XY(const Traversor3XY& tra3xy);
 	~Traversor3XY();
 	Dart begin() ;
 	Dart end() ;

@@ -38,6 +38,12 @@ TraversorDartsOfOrbit<MAP, ORBIT>::TraversorDartsOfOrbit(const MAP& map, Dart d,
 }
 
 template <typename MAP, unsigned int ORBIT>
+TraversorDartsOfOrbit<MAP, ORBIT>::TraversorDartsOfOrbit(const TraversorDartsOfOrbit& tradoo)
+    : m_current(tradoo.m_current)
+      ,m_vd(tradoo.m_vd) {}
+
+
+template <typename MAP, unsigned int ORBIT>
 inline Dart TraversorDartsOfOrbit<MAP, ORBIT>::begin()
 {
     return *(m_current = m_vd.begin());
