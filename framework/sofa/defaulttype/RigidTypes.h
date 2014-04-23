@@ -872,7 +872,7 @@ public:
         defaulttype::Quat quat, quat1(c1.getOrientation()), quat0(c2.getOrientation());
         quat = quat1.quatDiff(quat1, quat0);
         quat.normalize();
-        defaulttype::Vector3 axis; double angle; quat.quatToAxis(axis, angle);
+        defaulttype::Vector3 axis; defaulttype::Quat::value_type angle; quat.quatToAxis(axis, angle);
         axis*=angle;
         return Deriv(vCenter, axis);
     }
