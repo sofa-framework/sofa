@@ -466,7 +466,9 @@ bool WorkerThread::pushTask(Task* task, Task* taskArray[], unsigned* taskCount )
 
         if (*taskCount >= Max_TasksPerThread )
             return false;
-
+        if( task->getStatus()==NULL ) {
+          return false;
+        }
         task->getStatus()->MarkBusy(true);
         taskArray[*taskCount] = task;
         ++*taskCount;
