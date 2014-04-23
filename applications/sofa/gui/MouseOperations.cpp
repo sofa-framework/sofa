@@ -33,12 +33,6 @@
 #include <sofa/component/collision/InciseAlongPathPerformer.h>
 #include <sofa/component/collision/AddRecordedCameraPerformer.h>
 #include <sofa/component/collision/StartNavigationPerformer.h>
-#ifdef SOFA_DEV
-#include <sofa/component/collision/AddFramePerformer.h>
-#if defined(WIN32) && defined(SOFA_HAVE_PLUGIN_Compliant)
-#include <plugins/Compliant/CompliantAttachPerformer.h>
-#endif
-#endif
 #include <sofa/component/collision/SuturePointPerformer.h>
 #ifdef SOFA_HAVE_ARPLUGIN
 #include "./../../../applications-dev/plugins/ARPlugin/ARPSAttachPerformer.h"

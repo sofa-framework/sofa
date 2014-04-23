@@ -31,12 +31,6 @@ namespace sofa
 {
 
 
-//simulation::Node::SPtr compliantAttachNode( simulation::Node* pickedNode, simulation::Node* mouseNode ){
-
-//}
-
-
-
 namespace component
 {
 
