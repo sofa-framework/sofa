@@ -29,6 +29,10 @@ set(HEADER_FILES
     ../forcefield/TrianglePressureForceField.inl 
     ../forcefield/VaccumSphereForceField.h 
     ../forcefield/VaccumSphereForceField.inl 
+	../forcefield/UniformVelocityDampingForceField.h
+	../forcefield/UniformVelocityDampingForceField.inl
+	../forcefield/DiagonalVelocityDampingForceField.h
+	../forcefield/DiagonalVelocityDampingForceField.inl
     ../projectiveconstraintset/AffineMovementConstraint.inl 
     ../projectiveconstraintset/AffineMovementConstraint.h 
     ../projectiveconstraintset/BilinearMovementConstraint.inl 
@@ -79,6 +83,8 @@ set(SOURCE_FILES
     ../forcefield/TaitSurfacePressureForceField.cpp 
     ../forcefield/TrianglePressureForceField.cpp 
     ../forcefield/VaccumSphereForceField.cpp 
+	../forcefield/UniformVelocityDampingForceField.cpp
+	../forcefield/DiagonalVelocityDampingForceField.cpp
     ../projectiveconstraintset/AffineMovementConstraint.cpp 
     ../projectiveconstraintset/BilinearMovementConstraint.cpp 
     ../projectiveconstraintset/FixedConstraint.cpp 
