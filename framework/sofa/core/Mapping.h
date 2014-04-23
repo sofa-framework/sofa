@@ -417,8 +417,8 @@ extern template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec3dTypes, sofa
 extern template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::Vec3dTypes > ;
 extern template class SOFA_CORE_API Mapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Vec3fTypes >;
 extern template class SOFA_CORE_API Mapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Vec3dTypes >;
-extern template class SOFA_CORE_API Mapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Vec1dTypes >;
-extern template class SOFA_CORE_API Mapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Vec1fTypes >;
+extern template class SOFA_CORE_API Mapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Vec1fTypes >;
+extern template class SOFA_CORE_API Mapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Vec1dTypes >;
 extern template class SOFA_CORE_API Mapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Rigid3fTypes >;
 extern template class SOFA_CORE_API Mapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Rigid3dTypes >;
 extern template class SOFA_CORE_API Mapping< sofa::defaulttype::Rigid2dTypes, sofa::defaulttype::Vec2fTypes >;
