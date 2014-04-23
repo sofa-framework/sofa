@@ -298,6 +298,8 @@ public:
     static const SpatialCoord& getDPos(const Deriv& d) { return d.getVCenter(); }
     static void setDPos(Deriv& d, const SpatialCoord& v) { d.getVCenter() = v; }
 
+    static Deriv coordDifference(const Coord& c1, const Coord& c2) {return (Deriv)(c1-c2);}
+
     template<typename T>
     static void set ( Deriv& c, T x, T y, T z )
     {
