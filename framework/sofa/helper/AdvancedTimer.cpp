@@ -33,6 +33,9 @@
 #include <stdlib.h>
 #include <stack>
 
+#define DEFAULT_INTERVAL 100
+
+
 namespace sofa
 {
 
@@ -192,7 +195,7 @@ public:
     helper::vector<AdvancedTimer::IdVal> vals;
 
     TimerData()
-        : nbIter(-1), interval(0), defaultInterval(10)
+        : nbIter(-1), interval(0), defaultInterval(DEFAULT_INTERVAL)
     {
     }
 
@@ -207,7 +210,7 @@ public:
             interval = atoi(val);
         else
             interval = 0;
-        defaultInterval = (interval != 0) ? interval : 100;
+        defaultInterval = (interval != 0) ? interval : DEFAULT_INTERVAL;
     }
     void clear();
     void process();
