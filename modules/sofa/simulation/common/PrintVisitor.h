@@ -41,13 +41,24 @@ class SOFA_SIMULATION_COMMON_API PrintVisitor : public Visitor
 protected:
     int verbose;
     int level;
+    bool visitingOrder; ///< by default print the graph organisation but can print the graph visiting by setting visitingOrder at true
 public:
-    PrintVisitor(const sofa::core::ExecParams* params) : Visitor(params), verbose(0), level(0) {}
+    PrintVisitor(const sofa::core::ExecParams* params, bool visitingOrder=false) : Visitor(params), verbose(0), level(0), visitingOrder(visitingOrder) {}
 
     void setVerbose(int v) { verbose = v; }
     int getVerbose() const { return verbose; }
 
-    bool treeTraversal( TreeTraversalRepetition&repeat ) { repeat=REPEAT_ONCE; return true; }
+    bool treeTraversal( TreeTraversalRepetition& repeat )
+    {
+        if( visitingOrder )
+            return Visitor::treeTraversal( repeat ); // run the visitor with a regular traversal
+        else
+        {
+             // run the visitor with a tree traversal
+            repeat=REPEAT_ONCE;
+            return true;
+        }
+    }
 
     template<class T>
     void processObject(T obj);
