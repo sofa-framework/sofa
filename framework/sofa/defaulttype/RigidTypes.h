@@ -866,6 +866,17 @@ public:
         return result;
     }
 
+    static Deriv coordDifference(const Coord& c1, const Coord& c2)
+    {
+        defaulttype::Vector3 vCenter = c1.getCenter() - c2.getCenter();
+        defaulttype::Quat quat, quat1(c1.getOrientation()), quat0(c2.getOrientation());
+        quat = quat1.quatDiff(quat1, quat0);
+        quat.normalize();
+        defaulttype::Vector3 axis; double angle; quat.quatToAxis(axis, angle);
+        axis*=angle;
+        return Deriv(vCenter, axis);
+    }
+
     static Coord interpolate(const helper::vector< Coord > & ancestors, const helper::vector< Real > & coefs)
     {
         assert(ancestors.size() == coefs.size());

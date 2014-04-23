@@ -95,6 +95,11 @@ public:
         return result;
     }
 
+    static Deriv coordDifference(const Coord& c1, const Coord& c2)
+    {
+        return (Deriv)(c1-c2);
+    }
+
     template<typename T>
     static void add(Coord& c, T x, T y, T z)
     {
