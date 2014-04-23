@@ -33,19 +33,6 @@
 namespace CGoGN
 {
 
-/// Macro for simple syntax traversal (can be nested)
-/// parameters:
-///   - cell type
-///   - name of iterator variable (automatically declared)
-///   - map type
-///   - map used
-///
-/// Ex: FOR_ALL_CELLS(VERTEX, di, myMap) { ... }
-///
-#define FOR_ALL_CELLS(ORBIT, NAME_ITER, MAP_TYPE, MAP_PARAM) TraversorCell<MAP_TYPE, (ORBIT)>  NAME_ITER_TraversalMacroLocalLoop(MAP_PARAM); \
-	for (Dart NAME_ITER = NAME_ITER_TraversalMacroLocalLoop.begin(); NAME_ITER != NAME_ITER_TraversalMacroLocalLoop.end(); NAME_ITER = NAME_ITER_TraversalMacroLocalLoop.next())
-
-
 template <typename MAP, unsigned int ORBIT>
 class TraversorCell //: public Traversor<MAP>
 {
@@ -74,16 +61,6 @@ public:
 	inline Dart next() ;
 
 	inline void skip(Dart d);
-
-    bool applyFunctor(FunctorType& f)
-    {
-        for (Dart d = begin(); d != end(); d = next())
-        {
-                if (f(d))
-                    return true;
-        }
-        return false;
-    }
 } ;
 
 
@@ -115,16 +92,6 @@ public:
 	inline Dart next() ;
 
 	inline void skip(Dart d);
-
-    bool applyFunctor(FunctorType& f)
-    {
-        for (Dart d = begin(); d != end(); d = next())
-        {
-                if (f(d))
-                    return true;
-        }
-        return false;
-    }
 } ;
 
 

@@ -54,7 +54,7 @@ public:
 	}
 
 	//! Constructor
-	Mark() : m_bits(0) {}
+    Mark() : m_bits(0u) {}
 
 	Mark(unsigned int a) : m_bits(a) {}
 

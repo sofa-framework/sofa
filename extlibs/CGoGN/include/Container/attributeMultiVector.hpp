@@ -243,13 +243,6 @@ inline void AttributeMultiVector<T>::clear()
 }
 
 template <typename T>
-void AttributeMultiVector<T>::memset(unsigned char ch) {
-    static const T TAB[_BLOCKSIZE_ ];
-    for (typename std::vector< T* >::iterator it = m_tableData.begin(); it != m_tableData.end(); ++it)
-        std::memcpy(*it, TAB,_BLOCKSIZE_ *sizeof(T));
-}
-
-template <typename T>
 inline int AttributeMultiVector<T>::getSizeOfType() const
 {
 	return sizeof(T);
