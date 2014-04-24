@@ -86,7 +86,9 @@ OglModel::OglModel()
     , vbo(0), iboEdges(0), iboTriangles(0), iboQuads(0)
     , canUseVBO(false), VBOGenDone(false), initDone(false), useEdges(false), useTriangles(false), useQuads(false), canUsePatches(false)
     , oldEdgesSize(0), oldTrianglesSize(0), oldQuadsSize(0)
+    , isToPrint( initData(&isToPrint, false, "isToPrint", "suppress somes data before using save as function"))
 {
+
     textures.clear();
 
     sofa::helper::OptionsGroup* blendEquationOptions = blendEquation.beginEdit();
@@ -404,6 +406,12 @@ void OglModel::drawGroup(int ig, bool transparent)
 
 void OglModel::drawGroups(bool transparent)
 {
+    if(isToPrint.getValue()==true) {
+    m_positions.setPersistent(false);
+    m_vnormals.setPersistent(false);
+    m_vtexcoords.setPersistent(false);
+    m_triangles.setPersistent(false);}
+
     helper::ReadAccessor< Data< helper::vector<FaceGroup> > > groups = this->groups;
 
     //for (unsigned int i=0; i<xforms.size(); i++)

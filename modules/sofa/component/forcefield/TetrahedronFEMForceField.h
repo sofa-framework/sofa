@@ -285,6 +285,8 @@ public:
     Data<std::string> _showStressColorMap;
     Data<float> _showStressAlpha;
     Data<bool> _showVonMisesStressPerNode;
+    /// Suppress field for save as function
+    Data < bool > isToPrint;
 
     helper::vector<Vec<6,Real> > elemDisplacements;
 
@@ -320,7 +322,10 @@ protected:
         , _showStressColorMap(initData(&_showStressColorMap,"showStressColorMap", "Color map used to show stress values"))
         , _showStressAlpha(initData(&_showStressAlpha, 1.0f, "showStressAlpha", "Alpha for vonMises visualisation"))
         , _showVonMisesStressPerNode(initData(&_showVonMisesStressPerNode,false,"showVonMisesStressPerNode","draw points  showing vonMises stress interpolated in nodes"))
+        , isToPrint( initData(&isToPrint, false, "isToPrint", "suppress somes data before using save as function"))
     {
+
+
         data.initPtrData(this);
         this->addAlias(&_assembling, "assembling");
         minYoung = 0.0;

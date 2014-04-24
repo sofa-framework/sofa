@@ -118,7 +118,11 @@ MechanicalObject<DataTypes>::MechanicalObject()
     , vsize(0)
     , m_gnuplotFileX(NULL)
     , m_gnuplotFileV(NULL)
+    , isToPrint( initData(&isToPrint, false, "isToPrint", "suppress somes data before using save as function"))
 {
+
+
+
     // HACK
     if (!restScale.isSet())
     {
@@ -1150,6 +1154,17 @@ void MechanicalObject<DataTypes>::init()
 
     if (f_reserve.getValue() > 0)
         reserve(f_reserve.getValue());
+
+    if(isToPrint.getValue()==true) {
+        x.setPersistent(false);
+        v.setPersistent(false);
+        f.setPersistent(false);
+        externalForces.setPersistent(false);
+        dx.setPersistent(false);
+        xfree.setPersistent(false);
+        vfree.setPersistent(false);
+        x0.setPersistent(false);
+        reset_position.setPersistent(false);}
 }
 
 template <class DataTypes>

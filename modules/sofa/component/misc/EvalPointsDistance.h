@@ -66,7 +66,9 @@ public:
 
     /// Rendering of lines between associated points (activation)
     Data < bool > f_draw;
-    /// Output file name
+    /// Suppress field for save as function
+    Data < bool > isToPrint;
+    /// Output file name    
     sofa::core::objectmodel::DataFileName f_filename;
     /// Period between outputs
     Data < double > f_period;

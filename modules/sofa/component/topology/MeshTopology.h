@@ -287,6 +287,8 @@ public:
     Data<SeqTriangles> seqTriangles;
     Data<SeqQuads>       seqQuads;
     Data<SeqTetrahedra>      seqTetrahedra;
+    /// Suppress field for save as function
+    Data < bool > isToPrint;
 #ifdef SOFA_NEW_HEXA
     //SeqHexahedra	   seqHexahedra;
     Data<SeqHexahedra>	   seqHexahedra;
