@@ -11,7 +11,7 @@
 
 #include "../labelimagetoolbox.h"
 
-#include "initImage.h"
+#include "initImage_gui.h"
 
 namespace sofa
 {
@@ -28,7 +28,7 @@ using defaulttype::Vector3;
 using namespace sofa::defaulttype;
 
 
-class SOFA_IMAGE_API ZoneGeneratorImageToolBoxNoTemplated: public LabelImageToolBox
+class SOFA_IMAGE_GUI_API ZoneGeneratorImageToolBoxNoTemplated: public LabelImageToolBox
 {
 public:
     SOFA_CLASS(ZoneGeneratorImageToolBoxNoTemplated,LabelImageToolBox);
@@ -97,7 +97,7 @@ public:
 
 
 template<class _ImageTypes>
-class SOFA_IMAGE_API ZoneGeneratorImageToolBox: public ZoneGeneratorImageToolBoxNoTemplated
+class SOFA_IMAGE_GUI_API ZoneGeneratorImageToolBox: public ZoneGeneratorImageToolBoxNoTemplated
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(ZoneGeneratorImageToolBox,_ImageTypes),ZoneGeneratorImageToolBoxNoTemplated);
@@ -296,11 +296,12 @@ public:
         for(unsigned int i=0;i<dimX;i++)
         for(unsigned int j=0;j<dimY;j++)
         {
-            T pColor[dimS];// = {0};//(unsigned short)(((float)i/(float)dimX)*(float)USHRT_MAX)};
+            T* pColor = new T[dimS];// = {0};//(unsigned short)(((float)i/(float)dimX)*(float)USHRT_MAX)};
             for(int c=0;c<dimS;c++)pColor[c]=color(0,1);
             //std::cout <<pColor[0]<<std::endl;
 
             im_out->getCImg().draw_point(i, j, 0, pColor);
+            delete [] pColor;
         }
 
         // list position of area
@@ -332,13 +333,14 @@ public:
         {
             listPosition[i].color = color(i+1,sizemax+1);
 
-            T pColor[dimS];// = {0};//(unsigned short)(((float)i/(float)dimX)*(float)USHRT_MAX)};
+            T* pColor = new T[dimS];// = {0};//(unsigned short)(((float)i/(float)dimX)*(float)USHRT_MAX)};
             for(unsigned int c=0;c<dimS;c++)pColor[c]=listPosition[i].color;
             //std::cout <<pColor[0]<<std::endl;
 
             //std::cout << listPosition[i].color <<std::endl;
 
             im_out->getCImg().draw_point(listPosition[i].position.x() , listPosition[i].position.y(), 0, pColor);
+            delete [] pColor;
         }
 
         unsigned int probcount = sizemax+sizemax/2;
@@ -379,7 +381,7 @@ public:
                 {
                     if(im_out->getCImg()(v.x()-1,v.y(),0,0)==0)
                     {
-                        T pColor[dimS];// = {0};//(unsigned short)(((float)i/(float)dimX)*(float)USHRT_MAX)};
+                        T* pColor = new T[dimS];// = {0};//(unsigned short)(((float)i/(float)dimX)*(float)USHRT_MAX)};
                         for(unsigned int c=0;c<dimS;c++)pColor[c]=p.color;
 
                         im_out->getCImg().draw_point(v.x()-1 , v.y(), 0, pColor);
@@ -387,6 +389,7 @@ public:
                         p.counter++;
                         if(random!=0)p.last.push_back(Vec2i(v.x()-1,v.y()));
                         else p.last.push_front(Vec2i(v.x()-1,v.y()));
+                        delete [] pColor;
                     }
                 }
 
@@ -394,7 +397,7 @@ public:
                 {
                     if(im_out->getCImg()(v.x(),v.y()-1,0,0)==0)
                     {
-                        T pColor[dimS];// = {0};//(unsigned short)(((float)i/(float)dimX)*(float)USHRT_MAX)};
+                        T* pColor = new T[dimS]; // = {0};//(unsigned short)(((float)i/(float)dimX)*(float)USHRT_MAX)};
                         for(unsigned int c=0;c<dimS;c++)pColor[c]=p.color;
 
                         im_out->getCImg().draw_point(v.x() , v.y()-1, 0, pColor);
@@ -402,6 +405,7 @@ public:
                         p.counter++;
                         if(random!=1)p.last.push_back(Vec2i(v.x(),v.y()-1));
                         else p.last.push_front(Vec2i(v.x(),v.y()-1));
+                        delete [] pColor;
                     }
                 }
 
@@ -409,7 +413,7 @@ public:
                 {
                     if(im_out->getCImg()(v.x()+1,v.y(),0,0)==0)
                     {
-                        T pColor[dimS];// = {0};//(unsigned short)(((float)i/(float)dimX)*(float)USHRT_MAX)};
+                        T* pColor = new T[dimS];// = {0};//(unsigned short)(((float)i/(float)dimX)*(float)USHRT_MAX)};
                         for(unsigned int c=0;c<dimS;c++)pColor[c]=p.color;
 
                         im_out->getCImg().draw_point(v.x()+1 , v.y(), 0, pColor);
@@ -417,6 +421,7 @@ public:
                         p.counter++;
                         if(random!=2)p.last.push_back(Vec2i(v.x()+1,v.y()));
                         else p.last.push_front(Vec2i(v.x()+1,v.y()));
+                        delete [] pColor;
                     }
                 }
 
@@ -424,7 +429,7 @@ public:
                 {
                     if(im_out->getCImg()(v.x(),v.y()+1,0,0)==0)
                     {
-                        T pColor[dimS];// = {0};//(unsigned short)(((float)i/(float)dimX)*(float)USHRT_MAX)};
+                        T* pColor = new T[dimS];// = {0};//(unsigned short)(((float)i/(float)dimX)*(float)USHRT_MAX)};
                         for(unsigned int c=0;c<dimS;c++)pColor[c]=p.color;
 
                         im_out->getCImg().draw_point(v.x() , v.y()+1, 0, pColor);
@@ -432,6 +437,7 @@ public:
                         p.counter++;
                         if(random!=3)p.last.push_back(Vec2i(v.x(),v.y()+1));
                         else p.last.push_front(Vec2i(v.x(),v.y()+1));
+                        delete [] pColor;
                     }
                 }
 

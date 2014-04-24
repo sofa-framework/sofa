@@ -11,7 +11,7 @@
 
 #include "../labelimagetoolbox.h"
 
-#include "initImage.h"
+#include "initImage_gui.h"
 
 namespace sofa
 {
@@ -28,7 +28,7 @@ using defaulttype::Vector3;
 using namespace sofa::defaulttype;
 
 
-class SOFA_IMAGE_API ContourImageToolBoxNoTemplated: public LabelImageToolBox
+class SOFA_IMAGE_GUI_API ContourImageToolBoxNoTemplated: public LabelImageToolBox
 {
 public:
     SOFA_CLASS(ContourImageToolBoxNoTemplated,LabelImageToolBox);
@@ -88,7 +88,7 @@ public:
 
 
 template<class _ImageTypes>
-class SOFA_IMAGE_API ContourImageToolBox: public ContourImageToolBoxNoTemplated
+class SOFA_IMAGE_GUI_API ContourImageToolBox: public ContourImageToolBoxNoTemplated
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(ContourImageToolBox,_ImageTypes),ContourImageToolBoxNoTemplated);

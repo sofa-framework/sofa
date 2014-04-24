@@ -7,7 +7,7 @@
 #include "../labelimagetoolboxaction.h"
 //#include "labelpointimagetoolbox.h"
 
-#include "initImage.h"
+#include "initImage_gui.h"
 
 namespace sofa
 {
@@ -17,7 +17,7 @@ namespace component
 
 namespace engine
 {
-class LabelPointImageToolBox;
+class SOFA_IMAGE_GUI_API LabelPointImageToolBox;
 }}}
 
 namespace sofa
@@ -27,7 +27,7 @@ namespace gui
 namespace qt
 {
 
-class SOFA_IMAGE_API LabelPointImageToolBoxAction : public LabelImageToolBoxAction
+class SOFA_IMAGE_GUI_API LabelPointImageToolBoxAction : public LabelImageToolBoxAction
 {
 Q_OBJECT
 

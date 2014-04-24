@@ -55,19 +55,19 @@ int CatchAllVectorClass = core::RegisterObject("CatchAllVector")
         .add<CatchAllVector<sofa::defaulttype::Vec3d> >()
         ;
 
-template class SOFA_IMAGE_API CatchAllVector<float >;
-//template class SOFA_IMAGE_API CatchAllVector<unsigned float >;
-template class SOFA_IMAGE_API CatchAllVector<short >;
-template class SOFA_IMAGE_API CatchAllVector<unsigned short >;
-template class SOFA_IMAGE_API CatchAllVector<int >;
-template class SOFA_IMAGE_API CatchAllVector<unsigned int >;
-template class SOFA_IMAGE_API CatchAllVector<double >;
-//template class SOFA_IMAGE_API CatchAllVector<unsigned double >;
-template class SOFA_IMAGE_API CatchAllVector<long >;
-template class SOFA_IMAGE_API CatchAllVector<unsigned long >;
-template class SOFA_IMAGE_API CatchAllVector<bool >;
-template class SOFA_IMAGE_API CatchAllVector<sofa::defaulttype::Vec3f >;
-template class SOFA_IMAGE_API CatchAllVector<sofa::defaulttype::Vec3d >;
+template class SOFA_IMAGE_GUI_API CatchAllVector<float >;
+//template class SOFA_IMAGE_GUI_API CatchAllVector<unsigned float >;
+template class SOFA_IMAGE_GUI_API CatchAllVector<short >;
+template class SOFA_IMAGE_GUI_API CatchAllVector<unsigned short >;
+template class SOFA_IMAGE_GUI_API CatchAllVector<int >;
+template class SOFA_IMAGE_GUI_API CatchAllVector<unsigned int >;
+template class SOFA_IMAGE_GUI_API CatchAllVector<double >;
+//template class SOFA_IMAGE_GUI_API CatchAllVector<unsigned double >;
+template class SOFA_IMAGE_GUI_API CatchAllVector<long >;
+template class SOFA_IMAGE_GUI_API CatchAllVector<unsigned long >;
+template class SOFA_IMAGE_GUI_API CatchAllVector<bool >;
+template class SOFA_IMAGE_GUI_API CatchAllVector<sofa::defaulttype::Vec3f >;
+template class SOFA_IMAGE_GUI_API CatchAllVector<sofa::defaulttype::Vec3d >;
 
 
 

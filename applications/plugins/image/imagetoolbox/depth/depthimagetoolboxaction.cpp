@@ -13,9 +13,6 @@ namespace qt
 
 int DepthRowImageToolBoxAction::numindex=0;
 
-
-
-
 DepthImageToolBoxAction::DepthImageToolBoxAction(sofa::component::engine::LabelImageToolBox* lba,QObject *parent):
     LabelImageToolBoxAction(lba,parent)
 {

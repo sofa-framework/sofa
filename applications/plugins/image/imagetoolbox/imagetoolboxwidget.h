@@ -47,7 +47,7 @@ using namespace cimg_library;
 using defaulttype::Vec;
 
 
-class imagetoolbox_data_widget_container: public QObject
+class SOFA_IMAGE_GUI_API imagetoolbox_data_widget_container: public QObject
 {
     Q_OBJECT;
 
@@ -192,7 +192,7 @@ public:
 
 
 template<class T>
-class SOFA_IMAGE_API ImageToolBoxWidget : public SimpleDataWidget<T, Timagetoolbox_data_widget_container< T > >
+class SOFA_IMAGE_GUI_API ImageToolBoxWidget : public SimpleDataWidget<T, Timagetoolbox_data_widget_container< T > >
 {
     typedef SimpleDataWidget<T, Timagetoolbox_data_widget_container< T > > Inherit;
     typedef sofa::core::objectmodel::Data<T> MyData;

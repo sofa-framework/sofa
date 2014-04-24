@@ -37,21 +37,21 @@ int DistanceZoneImageToolBox_Class = core::RegisterObject("DistanceZoneImageTool
 
 
 
-template class SOFA_IMAGE_API DistanceZoneImageToolBox<ImageUC>;
-template class SOFA_IMAGE_API DistanceZoneImageToolBox<ImageD>;
+template class SOFA_IMAGE_GUI_API DistanceZoneImageToolBox<ImageUC>;
+template class SOFA_IMAGE_GUI_API DistanceZoneImageToolBox<ImageD>;
 
 
 
 #ifdef BUILD_ALL_IMAGE_TYPES
-template class SOFA_IMAGE_API DistanceZoneImageToolBox<ImageC>;
-template class SOFA_IMAGE_API DistanceZoneImageToolBox<ImageI>;
-template class SOFA_IMAGE_API DistanceZoneImageToolBox<ImageUI>;
-template class SOFA_IMAGE_API DistanceZoneImageToolBox<ImageS>;
-template class SOFA_IMAGE_API DistanceZoneImageToolBox<ImageUS>;
-template class SOFA_IMAGE_API DistanceZoneImageToolBox<ImageL>;
-template class SOFA_IMAGE_API DistanceZoneImageToolBox<ImageUL>;
-template class SOFA_IMAGE_API DistanceZoneImageToolBox<ImageF>;
-template class SOFA_IMAGE_API DistanceZoneImageToolBox<ImageB>;
+template class SOFA_IMAGE_GUI_API DistanceZoneImageToolBox<ImageC>;
+template class SOFA_IMAGE_GUI_API DistanceZoneImageToolBox<ImageI>;
+template class SOFA_IMAGE_GUI_API DistanceZoneImageToolBox<ImageUI>;
+template class SOFA_IMAGE_GUI_API DistanceZoneImageToolBox<ImageS>;
+template class SOFA_IMAGE_GUI_API DistanceZoneImageToolBox<ImageUS>;
+template class SOFA_IMAGE_GUI_API DistanceZoneImageToolBox<ImageL>;
+template class SOFA_IMAGE_GUI_API DistanceZoneImageToolBox<ImageUL>;
+template class SOFA_IMAGE_GUI_API DistanceZoneImageToolBox<ImageF>;
+template class SOFA_IMAGE_GUI_API DistanceZoneImageToolBox<ImageB>;
 
 #endif
 

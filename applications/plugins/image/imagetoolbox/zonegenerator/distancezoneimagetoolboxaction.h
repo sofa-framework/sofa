@@ -10,7 +10,7 @@
 #include "../labelimagetoolboxaction.h"
 //#include "zonegeneratorimagetoolbox.h"
 
-#include "initImage.h"
+#include "initImage_gui.h"
 
 namespace sofa
 {
@@ -20,7 +20,7 @@ namespace component
 
 namespace engine
 {
-class ZoneGeneratorImageToolBoxNoTemplated;
+class SOFA_IMAGE_GUI_API ZoneGeneratorImageToolBoxNoTemplated;
 }}}
 
 namespace sofa
@@ -30,7 +30,7 @@ namespace gui
 namespace qt
 {
 
-class SOFA_IMAGE_API DistanceZoneImageToolBoxAction : public LabelImageToolBoxAction
+class SOFA_IMAGE_GUI_API DistanceZoneImageToolBoxAction : public LabelImageToolBoxAction
 {
 Q_OBJECT
 

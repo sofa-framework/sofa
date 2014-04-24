@@ -12,7 +12,7 @@
 
 #include "../labelimagetoolbox.h"
 
-#include "initImage.h"
+#include "initImage_gui.h"
 
 namespace sofa
 {
@@ -29,7 +29,7 @@ using defaulttype::Vector3;
 using namespace sofa::defaulttype;
 
 
-class SOFA_IMAGE_API DistanceZoneImageToolBoxNoTemplated: public LabelImageToolBox
+class SOFA_IMAGE_GUI_API DistanceZoneImageToolBoxNoTemplated: public LabelImageToolBox
 {
 public:
     SOFA_CLASS(DistanceZoneImageToolBoxNoTemplated,LabelImageToolBox);
@@ -98,7 +98,7 @@ public:
 
 
 template<class _ImageTypes>
-class SOFA_IMAGE_API DistanceZoneImageToolBox: public DistanceZoneImageToolBoxNoTemplated
+class SOFA_IMAGE_GUI_API DistanceZoneImageToolBox: public DistanceZoneImageToolBoxNoTemplated
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(DistanceZoneImageToolBox,_ImageTypes),DistanceZoneImageToolBoxNoTemplated);
@@ -202,11 +202,13 @@ public:
             }
 
 
-            T pColor[dimS];// = {0};//(unsigned short)(((float)i/(float)dimX)*(float)USHRT_MAX)};
+            //T pColor[dimS];// = {0};//(unsigned short)(((float)i/(float)dimX)*(float)USHRT_MAX)};
+            T* pColor = new T[dimS];
             T colorr = (currentDistance * (double) std::numeric_limits<T>::max());
             for(unsigned int c=0;c<dimS;c++)pColor[c]=colorr;
 
             im_out->getCImg().draw_point(i, j, 0, pColor);
+            delete [] pColor; 
         }
 
         //for(unsigned int i=0;i<sizemax;i++)std::cout << "test " << i << " :" << test[i]<<std::endl;

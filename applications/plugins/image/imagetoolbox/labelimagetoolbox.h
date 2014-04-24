@@ -51,7 +51,7 @@ namespace gui
 {
 namespace qt
 {
-class LabelImageToolBoxAction;
+class SOFA_IMAGE_GUI_API LabelImageToolBoxAction;
 }
 }
 }
@@ -74,7 +74,7 @@ using namespace cimg_library;
  * This class coorespond to a label visualized by imagetoolbox
  */
 
-class LabelImageToolBox : public core::DataEngine
+class SOFA_IMAGE_GUI_API LabelImageToolBox : public core::DataEngine
 {
 public:
     typedef core::DataEngine Inherited;

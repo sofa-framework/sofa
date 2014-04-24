@@ -17,7 +17,8 @@
 #include "ImageTypes.h"
 
 
-#include "initImage.h"
+#include "initImage_gui.h"
+#include <sofa/helper/rmath.h>
 
 
 
@@ -31,7 +32,7 @@ namespace component
 namespace engine
 {
 
-class SOFA_IMAGE_API LabelGridImageToolBoxNoTemplated: public LabelImageToolBox
+class SOFA_IMAGE_GUI_API LabelGridImageToolBoxNoTemplated: public LabelImageToolBox
 {
 public:
     SOFA_CLASS(LabelGridImageToolBoxNoTemplated,LabelImageToolBox);
@@ -371,9 +372,10 @@ public:
         bool currentSectionNeeded = false;
         for(unsigned int i=0;i<vec.size();i++)
         {
-            if(currentSection != round((vec[i])[axis]))
+            
+            if(currentSection != helper::round((vec[i])[axis]))
             {
-                currentSection = round((vec[i])[axis]);
+                currentSection = helper::round((vec[i])[axis]);
 
                 currentSectionNeeded=false;
                 for(unsigned int j=0;j<used.size();j++)
@@ -862,7 +864,7 @@ public:
 };
 
 template<class _ImageTypes>
-class SOFA_IMAGE_API LabelGridImageToolBox: public LabelGridImageToolBoxNoTemplated
+class SOFA_IMAGE_GUI_API LabelGridImageToolBox: public LabelGridImageToolBoxNoTemplated
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(LabelGridImageToolBox,_ImageTypes),LabelGridImageToolBoxNoTemplated);
