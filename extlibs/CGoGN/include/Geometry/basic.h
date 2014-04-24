@@ -90,7 +90,7 @@ typename VEC::DATA_TYPE angle(const VEC& a, const VEC& b)
 
 // area of the triangle formed by 3 points in 3D
 template <typename VEC3>
-typename VEC3::DATA_TYPE triangleArea(const VEC3& p1, const VEC3& p2, const VEC3& p3)
+typename VEC3::value_type triangleArea(const VEC3& p1, const VEC3& p2, const VEC3& p3)
 {
 	return 0.5 * ((p2 - p1) ^ (p3 - p1)).norm() ;
 }
@@ -106,10 +106,10 @@ VEC3 triangleNormal(const VEC3& p1, const VEC3& p2, const VEC3& p3)
 template <typename VEC3>
 bool isTriangleObtuse(const VEC3& p1, const VEC3& p2, const VEC3& p3)
 {
-	typename VEC3::DATA_TYPE a1 = angle(p2 - p1, p3 - p1) ;
+    typename VEC3::value_type a1 = angle(p2 - p1, p3 - p1) ;
 	if(a1 > M_PI / 2)
 		return true ;
-	typename VEC3::DATA_TYPE a2 = angle(p3 - p2, p1 - p2) ;
+    typename VEC3::value_type a2 = angle(p3 - p2, p1 - p2) ;
 	if(a2 > M_PI / 2 || a1 + a2 < M_PI / 2)
 		return true ;
 	return false ;
@@ -117,21 +117,22 @@ bool isTriangleObtuse(const VEC3& p1, const VEC3& p2, const VEC3& p3)
 
 // signed volume of the tetrahedron formed by 4 points in 3D
 template <typename VEC3>
-typename VEC3::DATA_TYPE tetraSignedVolume(const VEC3& p1, const VEC3& p2, const VEC3& p3, const VEC3& p4)
+typename VEC3::value_type tetraSignedVolume(const VEC3& p1, const VEC3& p2, const VEC3& p3, const VEC3& p4)
 {
-    return tripleProduct(p2 - p1, p3 - p1, p4 - p1) / typename VEC3::value_type(6) ;
+    typedef typename VEC3::value_type T;
+    return tripleProduct<3,T>(p2 - p1, p3 - p1, p4 - p1) / T(6) ;
 }
 
 // volume of the tetrahedron formed by 4 points in 3D
 template <typename VEC3>
-typename VEC3::DATA_TYPE tetraVolume(const VEC3& p1, const VEC3& p2, const VEC3& p3, const VEC3& p4)
+typename VEC3::value_type tetraVolume(const VEC3& p1, const VEC3& p2, const VEC3& p3, const VEC3& p4)
 {
 	return fabs(tetraSignedVolume(p1,p2,p3,p4)) ;
 }
 
 // volume of the parallelepiped spanned by three 3D vectors
 template <typename VEC3>
-typename VEC3::DATA_TYPE parallelepipedVolume(const VEC3& v1, const VEC3& v2, const VEC3& v3)
+typename VEC3::value_type parallelepipedVolume(const VEC3& v1, const VEC3& v2, const VEC3& v3)
 {
 	return tripleProduct(v1, v2, v3) ;
 }

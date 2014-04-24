@@ -110,13 +110,13 @@ bool isBetween(const VEC3& u, const VEC3& v, const VEC3& w)
 template <typename VEC3>
 bool isTetrahedronWellOriented(const VEC3 points[4], bool CCW)
 {
-	typedef typename VEC3::DATA_TYPE T ;
+    typedef typename VEC3::value_type T ;
 
 	VEC3 AB = points[1] - points[0] ;
 	VEC3 AC = points[2] - points[0] ;
 	VEC3 AD = points[3] - points[0] ;
 
-	VEC3 N = AB ^ AC ;
+    VEC3 N = AB.cross( AC) ;
 
 	T dot = N * AD ;
 	if (CCW)

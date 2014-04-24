@@ -30,10 +30,11 @@ namespace Geom
 
 template <typename VEC>
 BoundingBox<VEC>::BoundingBox() :
-	m_initialized(false),
-	m_pMin(0),
-	m_pMax(0)
-{}
+    m_initialized(false)
+{
+    m_pMin.fill(0);
+    m_pMax.fill(0);
+}
 
 template <typename VEC>
 BoundingBox<VEC>::BoundingBox(const VEC& p) :
@@ -73,7 +74,7 @@ const VEC& BoundingBox<VEC>::max() const
 template <typename VEC>
 typename VEC::value_type BoundingBox<VEC>::size(unsigned int coord) const
 {
-	assert(m_initialized && coord < m_pMax.dimension()) ;
+//	assert(m_initialized && coord < m_pMax.dimension()) ;
 	return m_pMax[coord] - m_pMin[coord] ;
 }
 
