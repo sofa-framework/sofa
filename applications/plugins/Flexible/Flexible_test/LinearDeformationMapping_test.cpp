@@ -69,6 +69,7 @@ namespace sofa {
         typedef component::container::MechanicalObject<Out> OutDOFs;
         typedef defaulttype::Quat Quat;
         typedef defaulttype::Vector3 Vec3;
+        typedef projectiveconstraintset::AffineMovementConstraint<In> InAffineMovementConstraint;
 
         /// Tested Rotation: random rotation matrix  
         defaulttype::Mat<3,3,Real> testedRotation;
@@ -82,18 +83,16 @@ namespace sofa {
         // Constructor: call the constructor of the base class which loads the scene to test
         LinearDeformationMappings_test() : Inherited::Mapping_test(std::string(FLEXIBLE_TEST_SCENES_DIR) + "/" + "LinearDeformationMappingPoint.scn")
         {   
-            std::cout << "constructor begin " << std::endl;
             seed=1;
             // rotation and translation
             randomGenerator.initSeed(seed);
             this->SetRandomTestedRotationAndTranslation(seed);
 
             // Get rotation from affine constraint
-            typedef projectiveconstraintset::AffineMovementConstraint<In> AffineMovementConstraint;
-            typename AffineMovementConstraint::SPtr affineConstraint  = Inherited::root->get<AffineMovementConstraint>(Inherited::root->SearchDown);
+            simulation::Node::SPtr rootNode =  Inherited::root;
+            typename InAffineMovementConstraint::SPtr affineConstraint = rootNode->get<InAffineMovementConstraint>(rootNode->SearchDown);
             affineConstraint->m_rotation.setValue(testedRotation);
             affineConstraint->m_translation.setValue(testedTranslation);
-            std::cout << "constructor end " << std::endl;
         }
              
         void SetRandomTestedRotationAndTranslation(int seedValue)
