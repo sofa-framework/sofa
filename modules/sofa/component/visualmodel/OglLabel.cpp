@@ -28,6 +28,9 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
 
+#include <sofa/core/objectmodel/Event.h>
+#include <sofa/simulation/common/AnimateBeginEvent.h>
+
 #include <string>
 #include <iostream>
 
@@ -47,29 +50,70 @@ int OglLabelClass = core::RegisterObject("A simple visualization for 2D text.")
         .add< OglLabel >()
         ;
 
-OglLabel::OglLabel()
-: label(initData(&label, std::string(""), "label", "The text to display")), 
-  x(initData(&x, (unsigned int)10, "x", "The x position of the text on the screen")), 
-  y(initData(&y, (unsigned int)10, "y", "The y position of the text on the screen")), 
-  fontsize(initData(&fontsize, (unsigned int)14, "fontsize", "The size of the font used to display the text on the screen")),   
-  color(initData(&color, std::string("red"), "color", "The color of the text to display"))
-  , f_visible(initData(&f_visible,true,"visible","Is label displayed"))
+OglLabel::OglLabel(): stepCounter(0)
+  ,prefix(initData(&prefix, std::string(""), "prefix", "The prefix of the text to display"))
+  ,label(initData(&label, std::string(""), "label", "The text to display"))
+  ,suffix(initData(&suffix, std::string(""), "suffix", "The suffix of the text to display"))
+  ,x(initData(&x, (unsigned int)10, "x", "The x position of the text on the screen"))
+  ,y(initData(&y, (unsigned int)10, "y", "The y position of the text on the screen"))
+  ,fontsize(initData(&fontsize, (unsigned int)14, "fontsize", "The size of the font used to display the text on the screen"))
+  ,color(initData(&color, std::string("contrast"), "color", "The color of the text to display"))
+  ,updateLabelEveryNbSteps(initData(&updateLabelEveryNbSteps, (unsigned int)0, "updateLabelEveryNbSteps", "Update the display of the label every nb of time steps"))
+  ,f_visible(initData(&f_visible,true,"visible","Is label displayed"))
 {
+    f_listening.setValue(true);
 }
 
+void OglLabel::init()
+{
+    this->getContext()->getRootContext()->get(backgroundSetting, sofa::core::objectmodel::BaseContext::SearchRoot);
+    if (color.getValue() == "contrast")
+    {
+        if (!backgroundSetting)
+        {
+            color.setValue("white");
+        }
+        else
+        {
+            if (f_printLog.getValue()) sout << "Background color is " << backgroundSetting->color.getValue() << sendl;
+        }
+    }
 
+    reinit();
+}
 
 
 void OglLabel::reinit()
 {
+    internalLabel = label.getValue();
     setColor(color.getValue());
 }
 
+void OglLabel::updateVisual()
+{
+    if (!updateLabelEveryNbSteps.getValue()) internalLabel = label.getValue();
+}
+
+void OglLabel::handleEvent(sofa::core::objectmodel::Event *event)
+{
+    if ( /*simulation::AnimateEndEvent* ev =*/  dynamic_cast<sofa::simulation::AnimateBeginEvent*>(event))
+    {
+        if (updateLabelEveryNbSteps.getValue())
+        {
+            stepCounter++;
+            if(stepCounter > updateLabelEveryNbSteps.getValue())
+            {
+                stepCounter = 0;
+                internalLabel = label.getValue();
+            }
+        }
+    }
+}
 
 void OglLabel::drawVisual(const core::visual::VisualParams* vparams)
 {
 
-	if ((!vparams->displayFlags().getShowVisualModels()) || (!f_visible.getValue())) return;
+    if (!f_visible.getValue() ) return;
 
     // Save state and disable clipping plane
     glPushAttrib(GL_ENABLE_BIT);
@@ -84,7 +128,7 @@ void OglLabel::drawVisual(const core::visual::VisualParams* vparams)
 	// vparams->drawTool()->setPolygonMode(1,true);
 
 	// color of the text
-	Color color( 0.0f, 0.0f, 0.0f, 0.0f ) ; // r, g, b, a);
+    Color color( r, g, b, a);
 	glColor4f( r, g, b, a );
 
     glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, &color[0]);
@@ -94,10 +138,12 @@ void OglLabel::drawVisual(const core::visual::VisualParams* vparams)
     glMaterialfv (GL_FRONT_AND_BACK, GL_SPECULAR, specular);
     glMaterialf  (GL_FRONT_AND_BACK, GL_SHININESS, 20);
 
+    std::string text = prefix.getValue() + internalLabel.c_str() + suffix.getValue();
+
     vparams->drawTool()->writeOverlayText(
         x.getValue(), y.getValue(), fontsize.getValue(),  // x, y, size
         color,
-        label.getValue().c_str());
+        text.c_str());
 
 
     // Restore state
@@ -111,6 +157,8 @@ void OglLabel::setColor(float r, float g, float b, float a)
     this->g = g;
     this->b = b;
     this->a = a;
+
+    if (f_printLog.getValue()) sout << "Set color to: " << r << ", " << g << ", " << b << ", " << a << sendl;
 }
 
 static int hexval(char c)
@@ -157,6 +205,32 @@ void OglLabel::setColor(std::string color)
     else if (color == "magenta")  { r = 1.0f; g = 0.0f; b = 1.0f; }
     else if (color == "yellow")   { r = 1.0f; g = 1.0f; b = 0.0f; }
     else if (color == "gray")     { r = 0.5f; g = 0.5f; b = 0.5f; }
+    else if (color == "contrast")
+    {
+        if (backgroundSetting)
+        {
+            //in contrast mode, the text color is selected between black or white depending on the background color
+            defaulttype::Vector3 backgroundColor = backgroundSetting->color.getValue();
+            backgroundColor *= 255;
+            float yiq = backgroundColor[0]*299 + backgroundColor[1]*587 + backgroundColor[2]*114;
+            yiq /= 1000;
+            if (yiq >= 128)
+            {
+                if (f_printLog.getValue()) sout << "Black is selected to display text on this background" << sendl;
+                r = 0.0f; g = 0.0f; b = 0.0f;
+            }
+            else
+            {
+                if (f_printLog.getValue()) sout << "White is selected to display text on this background" << sendl;
+                r = 1.0f; g = 1.0f; b = 1.0f;
+            }
+        }
+        else
+        {
+            serr << "Background setting not found, cannot use contrast on color data (set white instead)" << sendl;
+            r = 1.0f; g = 1.0f; b = 1.0f;
+        }
+    }
     else
     {
         serr << "Unknown color "<<color<<sendl;

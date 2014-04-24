@@ -34,6 +34,7 @@
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/Vec.h>
 #include <string>
+#include <sofa/component/configurationsetting/BackgroundSetting.h>
 
 namespace sofa
 {
@@ -54,19 +55,26 @@ protected:
     virtual ~OglLabel() {
     }
 
+    unsigned int stepCounter;
+
 public:
 
-
+    Data<std::string> prefix;
     Data<std::string> label;
+    Data<std::string> suffix;
     Data<unsigned int> x;
     Data<unsigned int> y;
     Data<unsigned int> fontsize;
     Data<std::string> color;
+    Data<unsigned int> updateLabelEveryNbSteps;
 	Data<bool> f_visible;
 
-
+    void init();
     void reinit();
+    void updateVisual();
     void drawVisual(const core::visual::VisualParams* vparams);
+
+    void handleEvent(sofa::core::objectmodel::Event *);
 
 private:
     void setColor(float r, float g, float b, float a);
@@ -75,6 +83,11 @@ private:
 
     float r,g,b,a;
     typedef defaulttype::Vec4f Color;   // Color with alpha value
+
+    std::string internalLabel;
+
+    sofa::component::configurationsetting::BackgroundSetting* backgroundSetting;
+
 
 };
 
