@@ -32,6 +32,8 @@
 #include "AverageCoord.h"
 #include <sofa/helper/gl/template.h>
 #include <iostream>
+#include <sofa/core/objectmodel/Event.h>
+#include <sofa/simulation/common/AnimateBeginEvent.h>
 using std::cerr;
 using std::endl;
 
@@ -81,20 +83,31 @@ void AverageCoord<DataTypes>::update()
     const VecIndex& indices = f_indices.getValue();
 
     Coord c;
+    unsigned int n = (indices.empty()) ? coord.size() : indices.size();
 
-    if( !indices.empty() )
+    for( unsigned i=0; i< n; ++i )
     {
-        for( unsigned i=0; i<indices.size(); ++i )
-        {
-            c += coord[indices[i]];
+        c += coord[ (indices.empty()) ? i : indices[i]];
 //        cerr<<"AverageCoord<DataTypes>::update, coord = "<< coord[indices[i]] << ", new average = " << c << endl;
-        }
-        c *= 1./indices.size();
+    }
+    c *= 1./n;
 
 //    cerr<<"AverageCoord<DataTypes>::update, c= "<< c << endl;
-    }
 
     f_average.setValue(c);
+}
+
+template<class DataTypes>
+void AverageCoord<DataTypes>::handleEvent(core::objectmodel::Event *event)
+{
+    if (dynamic_cast<sofa::simulation::AnimateBeginEvent *>(event))
+        this->onBeginAnimationStep(this->getContext()->getDt());
+}
+
+template <class DataTypes>
+void AverageCoord<DataTypes>::onBeginAnimationStep(const double /*dt*/)
+{
+    update();
 }
 
 } // namespace engine
