@@ -2,7 +2,7 @@
 #define LABELIMAGETOOLBOXACTION_H
 
 #include <QtGui>
-
+#include "initImage_gui.h"
 #include <sofa/defaulttype/VecTypes.h>
 //#include "labelimagetoolbox.h"
 
@@ -15,7 +15,7 @@ namespace component
 
 namespace engine
 {
-class LabelImageToolBox;
+class SOFA_IMAGE_GUI_API LabelImageToolBox;
 }}}
 
 namespace sofa
@@ -26,7 +26,7 @@ namespace qt
 {
 
 
-class LabelImageToolBoxAction : public QObject//QGroupBox//QWidget
+class SOFA_IMAGE_GUI_API LabelImageToolBoxAction : public QObject//QGroupBox//QWidget
 {
     Q_OBJECT
     

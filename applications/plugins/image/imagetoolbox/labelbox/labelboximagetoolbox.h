@@ -13,7 +13,7 @@
 
 
 
-#include "initImage.h"
+#include "initImage_gui.h"
 
 
 
@@ -27,7 +27,7 @@ namespace component
 namespace engine
 {
 
-class SOFA_IMAGE_API LabelBoxImageToolBox: public LabelImageToolBox
+class SOFA_IMAGE_GUI_API LabelBoxImageToolBox: public LabelImageToolBox
 {
 public:
     SOFA_CLASS(LabelBoxImageToolBox,LabelImageToolBox);

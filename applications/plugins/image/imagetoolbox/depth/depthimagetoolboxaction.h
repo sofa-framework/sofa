@@ -8,7 +8,7 @@
 #include "../labelgrid/labelgridimagetoolbox.h"
 //#include "depthimagetoolbox.h"
 
-#include "initImage.h"
+#include "initImage_gui.h"
 
 namespace sofa
 {
@@ -28,7 +28,7 @@ namespace gui
 namespace qt
 {
 
-class SOFA_IMAGE_API DepthRowImageToolBoxAction:public QObject
+class SOFA_IMAGE_GUI_API DepthRowImageToolBoxAction:public QObject
 {
     Q_OBJECT
 
@@ -175,7 +175,7 @@ signals:
 };
 
 
-class SOFA_IMAGE_API DepthImageToolBoxAction : public LabelImageToolBoxAction
+class SOFA_IMAGE_GUI_API DepthImageToolBoxAction : public LabelImageToolBoxAction
 {
 Q_OBJECT
 

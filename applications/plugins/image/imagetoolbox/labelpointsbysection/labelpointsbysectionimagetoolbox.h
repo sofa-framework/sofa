@@ -15,7 +15,7 @@
 #include <cstring>
 
 
-#include "initImage.h"
+#include "initImage_gui.h"
 
 
 
@@ -29,7 +29,7 @@ namespace component
 namespace engine
 {
 
-class SOFA_IMAGE_API LabelPointsBySectionImageToolBox: public LabelImageToolBox
+class SOFA_IMAGE_GUI_API LabelPointsBySectionImageToolBox: public LabelImageToolBox
 {
 public:
     SOFA_CLASS(LabelPointsBySectionImageToolBox,LabelImageToolBox);

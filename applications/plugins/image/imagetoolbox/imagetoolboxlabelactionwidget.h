@@ -13,7 +13,7 @@ namespace gui
 namespace qt
 {
 
-class ImageToolBoxLabelActionWidget: public QWidget
+class SOFA_IMAGE_GUI_API ImageToolBoxLabelActionWidget: public QWidget
 {
 Q_OBJECT
 

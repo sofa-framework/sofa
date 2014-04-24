@@ -7,6 +7,7 @@
 #include "labelpointsbysectionimagetoolboxaction.h"
 
 #include "labelpointsbysectionimagetoolbox.h"
+#include <sofa/helper/rmath.h>
 
 
 namespace sofa
@@ -382,13 +383,13 @@ void LabelPointsBySectionImageToolBoxAction::mouseMove(const unsigned int axis,c
     switch(axis)
     {
         case 0:
-            current_slide = round(imageposition.x());
+            current_slide = helper::round(imageposition.x());
             break;
         case 1:
-            current_slide = round(imageposition.y());
+            current_slide = helper::round(imageposition.y());
             break;
         case 2:
-            current_slide = round(imageposition.z());
+            current_slide = helper::round(imageposition.z());
             break;
         default:
             return;
@@ -447,15 +448,15 @@ void LabelPointsBySectionImageToolBoxAction::optionChangeSection(sofa::defaultty
     {
         case 0:
             this->changeSection2(v.x());
-            tablewidget->setSection(round(v.x()));
+            tablewidget->setSection(helper::round(v.x()));
             break;
         case 1:
             this->changeSection2(v.y());
-            tablewidget->setSection(round(v.y()));
+            tablewidget->setSection(helper::round(v.y()));
             break;
         case 2:
             this->changeSection2(v.z());
-            tablewidget->setSection(round(v.z()));
+            tablewidget->setSection(helper::round(v.z()));
             break;
         default:
             break;
@@ -518,7 +519,7 @@ void LabelPointsBySectionImageToolBoxAction::reloadData()
         p.ip = vip[i];
         p.p = vp[i];
 
-        mapsection[round(p.ip[axis])].push_back(p);
+        mapsection[helper::round(p.ip[axis])].push_back(p);
     }
 
     l->d_ip.endEdit();

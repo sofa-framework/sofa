@@ -25,7 +25,7 @@
 #ifndef SOFA_IMAGE_AVERAGECATCHALLVECTOR_H
 #define SOFA_IMAGE_AVERAGECATCHALLVECTOR_H
 
-#include "initImage.h"
+#include "initImage_gui.h"
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec.h>
@@ -43,7 +43,7 @@ namespace engine
 {
 
 template <class _Type>
-class AverageCatchAllVector : public core::DataEngine
+class SOFA_IMAGE_GUI_API AverageCatchAllVector : public core::DataEngine
 {
 public:
     typedef core::DataEngine Inherited;

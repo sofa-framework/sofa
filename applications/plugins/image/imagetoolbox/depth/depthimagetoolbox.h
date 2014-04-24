@@ -17,7 +17,7 @@
 #include "ImageTypes.h"
 #include "meshData.h"
 
-#include "initImage.h"
+#include "initImage_gui.h"
 
 
 
@@ -31,7 +31,7 @@ namespace component
 namespace engine
 {
 
-class SOFA_IMAGE_API DepthImageToolBox: public LabelImageToolBox
+class SOFA_IMAGE_GUI_API DepthImageToolBox: public LabelImageToolBox
 {
 public:
     SOFA_CLASS(DepthImageToolBox,LabelImageToolBox);

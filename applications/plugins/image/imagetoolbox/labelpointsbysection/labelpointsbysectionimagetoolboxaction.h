@@ -12,7 +12,7 @@
 
 
 
-#include "initImage.h"
+#include "initImage_gui.h"
 
 namespace sofa
 {
@@ -22,7 +22,7 @@ namespace component
 
 namespace engine
 {
-class LabelPointsBySectionImageToolBox;
+class SOFA_IMAGE_GUI_API LabelPointsBySectionImageToolBox;
 }}}
 
 namespace sofa
@@ -32,7 +32,7 @@ namespace gui
 namespace qt
 {
 
-class SOFA_IMAGE_API LabelPointsBySectionImageToolBoxAction : public LabelImageToolBoxAction
+class SOFA_IMAGE_GUI_API LabelPointsBySectionImageToolBoxAction : public LabelImageToolBoxAction
 {
 Q_OBJECT
 public:

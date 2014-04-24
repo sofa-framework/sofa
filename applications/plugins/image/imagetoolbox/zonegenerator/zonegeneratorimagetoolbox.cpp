@@ -41,21 +41,21 @@ double ZoneGeneratorImageToolBox<ImageD>::color(int index,int max)
 }
 
 
-template class SOFA_IMAGE_API ZoneGeneratorImageToolBox<ImageUC>;
-template class SOFA_IMAGE_API ZoneGeneratorImageToolBox<ImageD>;
+template class SOFA_IMAGE_GUI_API ZoneGeneratorImageToolBox<ImageUC>;
+template class SOFA_IMAGE_GUI_API ZoneGeneratorImageToolBox<ImageD>;
 
 
 
 #ifdef BUILD_ALL_IMAGE_TYPES
-template class SOFA_IMAGE_API ZoneGeneratorImageToolBox<ImageC>;
-template class SOFA_IMAGE_API ZoneGeneratorImageToolBox<ImageI>;
-template class SOFA_IMAGE_API ZoneGeneratorImageToolBox<ImageUI>;
-template class SOFA_IMAGE_API ZoneGeneratorImageToolBox<ImageS>;
-template class SOFA_IMAGE_API ZoneGeneratorImageToolBox<ImageUS>;
-template class SOFA_IMAGE_API ZoneGeneratorImageToolBox<ImageL>;
-template class SOFA_IMAGE_API ZoneGeneratorImageToolBox<ImageUL>;
-template class SOFA_IMAGE_API ZoneGeneratorImageToolBox<ImageF>;
-template class SOFA_IMAGE_API ZoneGeneratorImageToolBox<ImageB>;
+template class SOFA_IMAGE_GUI_API ZoneGeneratorImageToolBox<ImageC>;
+template class SOFA_IMAGE_GUI_API ZoneGeneratorImageToolBox<ImageI>;
+template class SOFA_IMAGE_GUI_API ZoneGeneratorImageToolBox<ImageUI>;
+template class SOFA_IMAGE_GUI_API ZoneGeneratorImageToolBox<ImageS>;
+template class SOFA_IMAGE_GUI_API ZoneGeneratorImageToolBox<ImageUS>;
+template class SOFA_IMAGE_GUI_API ZoneGeneratorImageToolBox<ImageL>;
+template class SOFA_IMAGE_GUI_API ZoneGeneratorImageToolBox<ImageUL>;
+template class SOFA_IMAGE_GUI_API ZoneGeneratorImageToolBox<ImageF>;
+template class SOFA_IMAGE_GUI_API ZoneGeneratorImageToolBox<ImageB>;
 
 #endif
 
