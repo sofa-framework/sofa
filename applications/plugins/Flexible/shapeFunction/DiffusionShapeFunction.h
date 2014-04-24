@@ -344,7 +344,6 @@ public:
     Data<unsigned int> iterations;
     Data<Real> tolerance;
     Data<bool> biasDistances;
-
     static const DistT MAXTEMP;
     //@}
 
@@ -463,7 +462,6 @@ protected:
 
     }
 };
-
 
 }
 }

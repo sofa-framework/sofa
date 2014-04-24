@@ -175,6 +175,9 @@ private:
 
      /// Initialize final positions
     void initializeFinalPositions (const SetIndexArray & indices, DataVecCoord& xData, VecCoord& x0 , VecCoord& xf);
+
+    /// Apply affine transform
+    void transform(const SetIndexArray & indices, VecCoord& x0 , VecCoord& xf);
 };
 
 

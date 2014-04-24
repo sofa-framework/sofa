@@ -126,7 +126,31 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         mapping->setModels(inDofs.get(),outDofs.get());
     }
 
+    Mapping_test(std::string sceneName):deltaMax(1000),errorMax(100)
+    {
+        sofa::component::init();
+        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
+        /// Load the scene
+        root = simulation->createNewGraph("root");
+        std::string fileName = std::string(FLEXIBLE_TEST_SCENES_DIR) + "/" + sceneName;
+        root = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()));
+
+        // InDofs
+         inDofs = root->get<InDOFs>(root->SearchDown);
+
+         // Get child nodes
+         simulation::Node::SPtr patchNode = root->getChild("Patch");
+         simulation::Node::SPtr elasticityNode = patchNode->getChild("Elasticity");
+
+         // Add OutDofs
+         outDofs = addNew<OutDOFs>(elasticityNode);
+
+         // Add mapping to the scene
+         mapping = addNew<Mapping>(elasticityNode).get();
+         mapping->setModels(inDofs.get(),outDofs.get());
+        
+    }
 
 
     /** Returns OutCoord substraction a-b (should return a OutDeriv, but???)
@@ -173,7 +197,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         outDofs->resize(childInit.size());
         WriteOutVecCoord xout = outDofs->writePositions();
         copyToData(xout,childInit);
-
+   
         /// Init based on parentInit
         sofa::simulation::getSimulation()->init(root.get());
 
@@ -181,8 +205,6 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         copyToData(xin,parentNew);
         mapping->apply(&mparams, core::VecCoordId::position(), core::VecCoordId::position());
         mapping->applyJ(&mparams, core::VecDerivId::velocity(), core::VecDerivId::velocity());
-
-
 
         /// test apply: check if the child positions are the expected ones
         bool succeed=true;

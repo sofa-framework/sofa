@@ -6,7 +6,7 @@
 
   <Node name="Patch" >
     <AssembledSolver/>
-    <LDLTSolver projectH="1"/> 
+    <LDLTSolver/> 
 
     <!--Nodes-->
     <MechanicalObject name="defoDOF" showObject="1"  showObjectScale="5"  showIndices="1"  showIndicesScale="0.0001" />
@@ -15,7 +15,7 @@
     <!--Constraint and roi-->
     <BoxROI name="Box" box="-0.1 -0.1 -0.1  1.1 1.1 1.1"/>
     <PairBoxROI name="PairBox" inclusiveBox="-0.1 -0.1 -0.1  1.1 1.1 1.1" includedBox="0.1 0.1 0.1 0.9 0.9 0.9"/>
-    <AffineMovementConstraint name="bilinearConstraint" indices="@PairBox.indices" meshIndices = "@Box.indices" translation="0.1 0 -0.3" rotation="[1 0 0,0 1 0,1 0 1]"  drawConstrainedPoints="1"/>
+    <AffineMovementConstraint name="affineConstraint" indices="@PairBox.indices" meshIndices = "@Box.indices" translation="0.1 0 -0.3" rotation="[1 0 0,0 1 0,1 0 1]"  drawConstrainedPoints="1"/>
    
     <!--Mass-->
     <UniformMass  name="mass" totalMass="1"/>
