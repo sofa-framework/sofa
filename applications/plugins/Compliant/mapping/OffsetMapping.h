@@ -55,6 +55,9 @@ class SOFA_Compliant_API OffsetMapping : public AssembledMapping<TIn, TOut>
 
         if( o.empty() ) return;
 
+        // automatic output resize
+        this->getToModel()->resize( in.size() );
+
         if( inverted.getValue() )
             for( size_t j = 0 ; j < in.size() ; ++j )
             {
