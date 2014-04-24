@@ -29,25 +29,25 @@ namespace Geom
 {
 
 template <typename VEC3>
-inline typename VEC3::DATA_TYPE squaredDistancePoint2TrianglePlane(const VEC3& P, const VEC3& A, const VEC3& B, const VEC3& C)
+inline typename VEC3::value_type squaredDistancePoint2TrianglePlane(const VEC3& P, const VEC3& A, const VEC3& B, const VEC3& C)
 {
     VEC3 vAB = B - A ;
     VEC3 vAC = C - A ;
 	VEC3 N = vAB ^ vAC ;
 
-	typename VEC3::DATA_TYPE x = (P * N) - (A * N) ;
+    typename VEC3::value_type x = (P * N) - (A * N) ;
 	return (x * x) / (N.norm2());
 }
 
 template <typename VEC3>
-inline typename VEC3::DATA_TYPE distancePoint2TrianglePlane(const VEC3& P, const VEC3& A, const VEC3& B, const VEC3& C)
+inline typename VEC3::value_type distancePoint2TrianglePlane(const VEC3& P, const VEC3& A, const VEC3& B, const VEC3& C)
 {
-	Geom::Plane3D<typename VEC3::DATA_TYPE> plane(A,B,C) ;
+    Geom::Plane3D<typename VEC3::value_type> plane(A,B,C) ;
 	return plane.distance(P) ;
 }
 
 template <typename VEC3>
-typename VEC3::DATA_TYPE squaredDistancePoint2Triangle(const VEC3& P, const VEC3& A, const VEC3& B, const VEC3& C)
+typename VEC3::value_type squaredDistancePoint2Triangle(const VEC3& P, const VEC3& A, const VEC3& B, const VEC3& C)
 {
     VEC3 vPA = A - P ;
     VEC3 vAB = B - A ;
@@ -170,24 +170,24 @@ typename VEC3::DATA_TYPE squaredDistancePoint2Triangle(const VEC3& P, const VEC3
 }
 
 template <typename VEC3>
-typename VEC3::DATA_TYPE squaredDistanceLine2Point(const VEC3& A, const VEC3& AB, typename VEC3::DATA_TYPE AB2, const VEC3& P)
+typename VEC3::value_type squaredDistanceLine2Point(const VEC3& A, const VEC3& AB, typename VEC3::value_type AB2, const VEC3& P)
 {
 	VEC3 V = A - P ;
-	VEC3 W = AB ^ V ;
+    VEC3 W = AB.cross( V) ;
 	return W.norm2() / AB2 ;
 }
 
 template <typename VEC3>
-typename VEC3::DATA_TYPE squaredDistanceLine2Point(const VEC3& A, const VEC3& B, const VEC3& P)
+typename VEC3::value_type squaredDistanceLine2Point(const VEC3& A, const VEC3& B, const VEC3& P)
 {
 	VEC3 AB = B - A ;
 	return squaredDistanceLine2Point(A, AB, AB.norm2(), P) ;
 }
 
 template <typename VEC3>
-typename VEC3::DATA_TYPE squaredDistanceLine2Line(const VEC3& A, const VEC3& AB, typename VEC3::DATA_TYPE AB2, const VEC3& P, const VEC3& Q)
+typename VEC3::value_type squaredDistanceLine2Line(const VEC3& A, const VEC3& AB, typename VEC3::value_type AB2, const VEC3& P, const VEC3& Q)
 {
-	typedef typename VEC3::DATA_TYPE T ;
+    typedef typename VEC3::value_type T ;
 
 	VEC3 PQ = Q - P ;
 	VEC3 temp = AB ^ PQ ;
@@ -208,9 +208,9 @@ typename VEC3::DATA_TYPE squaredDistanceLine2Line(const VEC3& A, const VEC3& AB,
 }
 
 template <typename VEC3>
-typename VEC3::DATA_TYPE squaredDistanceLine2Seg(const VEC3& A, const VEC3& AB, typename VEC3::DATA_TYPE AB2, const VEC3& P, const VEC3& Q)
+typename VEC3::value_type squaredDistanceLine2Seg(const VEC3& A, const VEC3& AB, typename VEC3::value_type AB2, const VEC3& P, const VEC3& Q)
 {
-	typedef typename VEC3::DATA_TYPE T ;
+    typedef typename VEC3::value_type T ;
 
 	VEC3 PQ = Q - P ;
 	T X = AB * PQ ;
@@ -220,18 +220,18 @@ typename VEC3::DATA_TYPE squaredDistanceLine2Seg(const VEC3& A, const VEC3& AB, 
 
 	if(beta < T(0))
 	{
-		VEC3 W = AB ^ AP ;
+        VEC3 W = AB.cross( AP) ;
 		return W.norm2() / AB2 ;
 	}
 
 	if(beta > T(1))
 	{
 		VEC3 AQ = Q - A ;
-		VEC3 W = AB ^ AQ ;
+        VEC3 W = AB.cross( AQ) ;
 		return W.norm2() / AB2 ;
 	}
 
-	VEC3 temp = AB ^ PQ ;
+    VEC3 temp = AB.cross( PQ) ;
 	T num = AP * temp ;
 	T den = temp.norm2() ;
 
@@ -239,9 +239,9 @@ typename VEC3::DATA_TYPE squaredDistanceLine2Seg(const VEC3& A, const VEC3& AB, 
 }
 
 template <typename VEC3>
-typename VEC3::DATA_TYPE squaredDistanceSeg2Point(const VEC3& A, const VEC3& AB, typename VEC3::DATA_TYPE AB2, const VEC3& P)
+typename VEC3::value_type squaredDistanceSeg2Point(const VEC3& A, const VEC3& AB, typename VEC3::value_type AB2, const VEC3& P)
 {
-	typedef typename VEC3::DATA_TYPE T ;
+    typedef typename VEC3::value_type T ;
 
 	VEC3 AP = P - A ;
 

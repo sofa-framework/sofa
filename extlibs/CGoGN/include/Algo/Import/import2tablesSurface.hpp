@@ -1421,82 +1421,82 @@ bool MeshTablesSurface<PFP>::importAHEM(const std::string& filename, std::vector
 }
 
 #ifdef WITH_ASSIMP
-template<typename PFP>
-void MeshTablesSurface<PFP>::extractMeshRec(AttributeContainer& container, VertexAttribute<typename PFP::VEC3>& positions, const struct aiScene* scene, const struct aiNode* nd, struct aiMatrix4x4* trafo)
-{
-    struct aiMatrix4x4 prev;
+//template<typename PFP>
+//void MeshTablesSurface<PFP>::extractMeshRec(AttributeContainer& container, VertexAttribute<typename PFP::VEC3>& positions, const struct aiScene* scene, const struct aiNode* nd, struct aiMatrix4x4* trafo)
+//{
+//    struct aiMatrix4x4 prev;
 
-    prev = *trafo;
-    aiMultiplyMatrix4(trafo,&nd->mTransformation);
+//    prev = *trafo;
+//    aiMultiplyMatrix4(trafo,&nd->mTransformation);
 
-    std::vector<unsigned int> verticesID;
+//    std::vector<unsigned int> verticesID;
 
-    // foreach mesh of node
-    for (unsigned int n = 0; n < nd->mNumMeshes; ++n)
-    {
-        const struct aiMesh* mesh = scene->mMeshes[nd->mMeshes[n]];
+//    // foreach mesh of node
+//    for (unsigned int n = 0; n < nd->mNumMeshes; ++n)
+//    {
+//        const struct aiMesh* mesh = scene->mMeshes[nd->mMeshes[n]];
 
-        verticesID.clear();
-        verticesID.reserve(mesh->mNumVertices);
-        //read positions
-        for (unsigned int t = 0; t < mesh->mNumVertices; ++t)
-        {
-            // transform position
-            struct aiVector3D tmp = mesh->mVertices[t];
-            aiTransformVecByMatrix4(&tmp, trafo);
-            // now store it
-            unsigned int id = container.insertLine();
-            positions[id] = VEC3(tmp[0], tmp[1], tmp[2]);
-            verticesID.push_back(id);
-        }
-        m_nbVertices += mesh->mNumVertices;
+//        verticesID.clear();
+//        verticesID.reserve(mesh->mNumVertices);
+//        //read positions
+//        for (unsigned int t = 0; t < mesh->mNumVertices; ++t)
+//        {
+//            // transform position
+//            struct aiVector3D tmp = mesh->mVertices[t];
+//            aiTransformVecByMatrix4(&tmp, trafo);
+//            // now store it
+//            unsigned int id = container.insertLine();
+//            positions[id] = VEC3(tmp[0], tmp[1], tmp[2]);
+//            verticesID.push_back(id);
+//        }
+//        m_nbVertices += mesh->mNumVertices;
 
-        // read faces indices
-        for (unsigned int t = 0; t < mesh->mNumFaces; ++t)
-        {
-            const struct aiFace* face = &mesh->mFaces[t];
-            m_nbEdges.push_back(face->mNumIndices);
-            for(unsigned int i = 0; i < face->mNumIndices; i++)
-            {
-                unsigned int pt = face->mIndices[i];
-                m_emb.push_back(verticesID[pt]);
-            }
-        }
-        m_nbFaces += mesh->mNumFaces;
-    }
+//        // read faces indices
+//        for (unsigned int t = 0; t < mesh->mNumFaces; ++t)
+//        {
+//            const struct aiFace* face = &mesh->mFaces[t];
+//            m_nbEdges.push_back(face->mNumIndices);
+//            for(unsigned int i = 0; i < face->mNumIndices; i++)
+//            {
+//                unsigned int pt = face->mIndices[i];
+//                m_emb.push_back(verticesID[pt]);
+//            }
+//        }
+//        m_nbFaces += mesh->mNumFaces;
+//    }
 
-    // recurse on all children of node
-    for (unsigned int n = 0; n < nd->mNumChildren; ++n)
-    {
-//		CGoGNout << "Children "<<n<< CGoGNendl;
-        extractMeshRec(container, positions, scene, nd->mChildren[n], trafo);
-    }
-    *trafo = prev;
-}
+//    // recurse on all children of node
+//    for (unsigned int n = 0; n < nd->mNumChildren; ++n)
+//    {
+////		CGoGNout << "Children "<<n<< CGoGNendl;
+//        extractMeshRec(container, positions, scene, nd->mChildren[n], trafo);
+//    }
+//    *trafo = prev;
+//}
 
 
-template <typename PFP>
-bool MeshTablesSurface<PFP>::importASSIMP(const std::string& filename, std::vector<std::string>& attrNames)
-{
-    AttributeContainer& container = m_map.template getAttributeContainer<VERTEX>() ;
-    VertexAttribute<typename PFP::VEC3> positions = m_map.template addAttribute<typename PFP::VEC3, VERTEX>("position") ;
-    attrNames.push_back(positions.name()) ;
+//template <typename PFP>
+//bool MeshTablesSurface<PFP>::importASSIMP(const std::string& filename, std::vector<std::string>& attrNames)
+//{
+//    AttributeContainer& container = m_map.template getAttributeContainer<VERTEX>() ;
+//    VertexAttribute<typename PFP::VEC3> positions = m_map.template addAttribute<typename PFP::VEC3, VERTEX>("position") ;
+//    attrNames.push_back(positions.name()) ;
 
-    m_nbVertices = 0;
-    m_nbFaces = 0;
+//    m_nbVertices = 0;
+//    m_nbFaces = 0;
 
-    m_nbEdges.reserve(5000);
-    m_emb.reserve(15000);
+//    m_nbEdges.reserve(5000);
+//    m_emb.reserve(15000);
 
-    struct aiMatrix4x4 trafo;
-    aiIdentityMatrix4(&trafo);
+//    struct aiMatrix4x4 trafo;
+//    aiIdentityMatrix4(&trafo);
 
-    m_lab = 0;
-    const struct aiScene* scene = aiImportFile(filename.c_str(), aiProcess_FindDegenerates | aiProcess_JoinIdenticalVertices);
-    extractMeshRec(container, positions, scene, scene->mRootNode, &trafo);
+//    m_lab = 0;
+//    const struct aiScene* scene = aiImportFile(filename.c_str(), aiProcess_FindDegenerates | aiProcess_JoinIdenticalVertices);
+//    extractMeshRec(container, positions, scene, scene->mRootNode, &trafo);
 
-    return true;
-}
+//    return true;
+//}
 #endif
 
 template<typename PFP>

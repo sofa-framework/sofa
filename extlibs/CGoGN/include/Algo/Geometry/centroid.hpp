@@ -45,7 +45,8 @@ namespace Geometry
 template <typename PFP, typename V_ATT>
 typename V_ATT::DATA_TYPE volumeCentroid(typename PFP::MAP& map, Dart d, const V_ATT& attributs, unsigned int thread)
 {
-	typename V_ATT::DATA_TYPE center(0.0);
+    typename V_ATT::DATA_TYPE center;
+    center.fill(0);
 	unsigned int count = 0 ;
 	Traversor3WV<typename PFP::MAP> tra(map,d,false,thread);
 	for (Dart d = tra.begin(); d != tra.end(); d = tra.next())
@@ -63,7 +64,8 @@ template <typename PFP, typename V_ATT>
 typename V_ATT::DATA_TYPE volumeCentroidELW(typename PFP::MAP& map, Dart d, const V_ATT& attributs, unsigned int thread)
 {
 	typedef typename V_ATT::DATA_TYPE EMB;
-	EMB center(0.0);
+    EMB center;
+    center.fill(0);
 
 	double count=0.0;
 	Traversor3WE<typename PFP::MAP> t(map, d,false,thread) ;
@@ -83,7 +85,8 @@ typename V_ATT::DATA_TYPE volumeCentroidELW(typename PFP::MAP& map, Dart d, cons
 template <typename PFP, typename V_ATT>
 typename V_ATT::DATA_TYPE faceCentroid(typename PFP::MAP& map, Dart d, const V_ATT& attributs)
 {
-	typename V_ATT::DATA_TYPE center(0.0);
+    typename V_ATT::DATA_TYPE center;
+    center.fill(0);
 	unsigned int count = 0 ;
 	Traversor2FV<typename PFP::MAP> t(map, d) ;
 	for(Dart it = t.begin(); it != t.end(); it = t.next())
@@ -102,7 +105,8 @@ typename V_ATT::DATA_TYPE faceCentroidELW(typename PFP::MAP& map, Dart d, const 
 {
 	typedef typename V_ATT::DATA_TYPE EMB;
 
-	EMB center(0.0);
+    EMB center;
+    center.fill(0);
 	double count=0.0;
 	Traversor2FE<typename PFP::MAP> t(map, d) ;
 	for(Dart it = t.begin(); it != t.end(); it = t.next())
@@ -121,7 +125,8 @@ typename V_ATT::DATA_TYPE faceCentroidELW(typename PFP::MAP& map, Dart d, const 
 template <typename PFP, typename V_ATT>
 typename V_ATT::DATA_TYPE vertexNeighborhoodCentroid(typename PFP::MAP& map, Dart d, const V_ATT& attributs)
 {
-	typename V_ATT::DATA_TYPE center(0.0);
+    typename V_ATT::DATA_TYPE center;
+    center.fill(0);
 
 	unsigned int count = 0 ;
 	Traversor2VVaE<typename PFP::MAP> t(map, d) ;

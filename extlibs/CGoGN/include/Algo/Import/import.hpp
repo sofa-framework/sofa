@@ -28,7 +28,7 @@
 #include "Algo/Modelisation/polyhedron.h"
 #include "Algo/Export/exportVol.h"
 #include "Geometry/orientation.h"
-
+#include "utils.h"
 namespace CGoGN
 {
 

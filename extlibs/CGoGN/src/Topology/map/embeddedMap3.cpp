@@ -379,6 +379,7 @@ void EmbeddedMap3::unsewVolumes(Dart d, bool withBoundary)
 		// embed the unsewn vertex orbit with the vertex embedding if it is deconnected
 		if(isOrbitEmbedded<VERTEX>())
 		{
+            std::cerr << __FILE__ << " " << __LINE__ << std::endl;
 			if(!sameVertex(dit, dd))
 			{
 				setOrbitEmbedding<VERTEX>(dit, getEmbedding<VERTEX>(dit)) ;

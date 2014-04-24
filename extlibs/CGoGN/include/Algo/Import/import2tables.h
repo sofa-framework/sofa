@@ -38,11 +38,11 @@
 #include "Algo/Import/importFileTypes.h"
 #include "Algo/Modelisation/voxellisation.h"
 
-#ifdef WITH_ASSIMP
-#include "Assimp/assimp.h"
-#include "Assimp/aiPostProcess.h"
-#include "Assimp/aiScene.h"
-#endif
+// #ifdef WITH_ASSIMP
+// #include "Assimp/assimp.h"
+// #include "Assimp/aiPostProcess.h"
+// #include "Assimp/aiScene.h"
+// #endif
 
 namespace CGoGN
 {

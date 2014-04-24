@@ -42,7 +42,7 @@ namespace Geom
 * @return the squared distance
 */
 template <typename VEC3>
-typename VEC3::DATA_TYPE squaredDistancePoint2TrianglePlane(const VEC3& P, const VEC3& A, const VEC3& B, const VEC3& C) ;
+typename VEC3::value_type squaredDistancePoint2TrianglePlane(const VEC3& P, const VEC3& A, const VEC3& B, const VEC3& C) ;
 
 /**
 * compute distance from point to triangle plane
@@ -53,7 +53,7 @@ typename VEC3::DATA_TYPE squaredDistancePoint2TrianglePlane(const VEC3& P, const
 * @return the distance
 */
 template <typename VEC3>
-typename VEC3::DATA_TYPE distancePoint2TrianglePlane(const VEC3& P, const VEC3& A, const VEC3& B, const VEC3& C) ;
+typename VEC3::value_type distancePoint2TrianglePlane(const VEC3& P, const VEC3& A, const VEC3& B, const VEC3& C) ;
 
 /**
 * compute squared distance from point to triangle
@@ -64,7 +64,7 @@ typename VEC3::DATA_TYPE distancePoint2TrianglePlane(const VEC3& P, const VEC3& 
 * @return the squared distance
 */
 template <typename VEC3>
-typename VEC3::DATA_TYPE squaredDistancePoint2Triangle(const VEC3& P, const VEC3& A, const VEC3& B, const VEC3& C) ;
+typename VEC3::value_type squaredDistancePoint2Triangle(const VEC3& P, const VEC3& A, const VEC3& B, const VEC3& C) ;
 
 /**
 * compute squared distance from point to line
@@ -75,7 +75,7 @@ typename VEC3::DATA_TYPE squaredDistancePoint2Triangle(const VEC3& P, const VEC3
 * @return the squared distance
 */
 template <typename VEC3>
-typename VEC3::DATA_TYPE squaredDistanceLine2Point(const VEC3& A, const VEC3& AB, typename VEC3::DATA_TYPE AB2, const VEC3& P) ;
+typename VEC3::value_type squaredDistanceLine2Point(const VEC3& A, const VEC3& AB, typename VEC3::DATA_TYPE AB2, const VEC3& P) ;
 
 /**
 * compute squared distance from point to line
@@ -85,7 +85,7 @@ typename VEC3::DATA_TYPE squaredDistanceLine2Point(const VEC3& A, const VEC3& AB
 * @return the squared distance
 */
 template <typename VEC3>
-typename VEC3::DATA_TYPE squaredDistanceLine2Point(const VEC3& A, const VEC3& B, const VEC3& P) ;
+typename VEC3::value_type squaredDistanceLine2Point(const VEC3& A, const VEC3& B, const VEC3& P) ;
 
 /**
 * compute squared distance from line to line
@@ -97,7 +97,7 @@ typename VEC3::DATA_TYPE squaredDistanceLine2Point(const VEC3& A, const VEC3& B,
 * @return the squared distance
 */
 template <typename VEC3>
-typename VEC3::DATA_TYPE squaredDistanceLine2Line(const VEC3& A, const VEC3& AB, typename VEC3::DATA_TYPE AB2, const VEC3& P, const VEC3& Q) ;
+typename VEC3::value_type squaredDistanceLine2Line(const VEC3& A, const VEC3& AB, typename VEC3::DATA_TYPE AB2, const VEC3& P, const VEC3& Q) ;
 
 /**
 * compute squared distance from line to segment
@@ -109,7 +109,7 @@ typename VEC3::DATA_TYPE squaredDistanceLine2Line(const VEC3& A, const VEC3& AB,
 * @return the squared distance
 */
 template <typename VEC3>
-typename VEC3::DATA_TYPE squaredDistanceLine2Seg(const VEC3& A, const VEC3& AB, typename VEC3::DATA_TYPE AB2, const VEC3& P, const VEC3& Q) ;
+typename VEC3::value_type squaredDistanceLine2Seg(const VEC3& A, const VEC3& AB, typename VEC3::DATA_TYPE AB2, const VEC3& P, const VEC3& Q) ;
 
 /**
 * compute squared distance from segment to point
@@ -119,7 +119,7 @@ typename VEC3::DATA_TYPE squaredDistanceLine2Seg(const VEC3& A, const VEC3& AB, 
 * @return the squared distance
 */
 template <typename VEC3>
-typename VEC3::DATA_TYPE squaredDistanceSeg2Point(const VEC3& A, const VEC3& AB, typename VEC3::DATA_TYPE AB2, const VEC3& P) ;
+typename VEC3::value_type squaredDistanceSeg2Point(const VEC3& A, const VEC3& AB, typename VEC3::DATA_TYPE AB2, const VEC3& P) ;
 
 
 /**
