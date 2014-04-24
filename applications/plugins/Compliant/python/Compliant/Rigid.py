@@ -276,13 +276,13 @@ class Joint:
                 pass
         
         def insert(self, parent):
-                node = parent.createChild(self.name)
+                self.node = parent.createChild(self.name)
                 
                 # build input data for multimapping
                 input = []
                 for b, o in zip(self.body, self.offset):
                         if o is None:
-                                input.append( '@' + Tools.node_path_rel(node, b) + '/dofs' )
+                                input.append( '@' + Tools.node_path_rel(self.node, b) + '/dofs' )
                         else:
                                 joint = b.createChild( self.name + '-offset' )
                                 
@@ -294,26 +294,26 @@ class Joint:
                                                    template = "Rigid,Rigid",
                                                    source = '0 ' + str( o ) )
                                 
-                                input.append( '@' + Tools.node_path_rel(node, b) + '/' + joint.name + '/dofs' )
+                                input.append( '@' + Tools.node_path_rel(self.node, b) + '/' + joint.name + '/dofs' )
                              
                 if len(input) == 0:
                         print 'warning: empty joint'
                         return None
    
                 
-                dofs = node.createObject('MechanicalObject', 
+                dofs = self.node.createObject('MechanicalObject', 
                                          template = 'Vec6d', 
                                          name = 'dofs', 
                                          position = '0 0 0 0 0 0' )
 
-                map = node.createObject('RigidJointMultiMapping',
+                map = self.node.createObject('RigidJointMultiMapping',
                                         name = 'mapping', 
                                         template = 'Rigid,Vec6d', 
                                         input = concat(input),
                                         output = '@dofs',
                                         pairs = "0 0")
                 
-		sub = node.createChild("constraints")
+		sub = self.node.createChild("constraints")
 
 		sub.createObject('MechanicalObject', 
 				 template = 'Vec1d', 
@@ -335,7 +335,7 @@ class Joint:
 
                 stab = sub.createObject('Stabilization')
                 
-		return node
+		return self.node
 
 
 # and now for more specific joints:
