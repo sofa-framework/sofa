@@ -402,7 +402,6 @@ void LightManager::postDrawScene(VisualParams* /*vp*/)
 
 void LightManager::restoreDefaultLight()
 {
-	/*
     //restore default light
     GLfloat	ambientLight[4];
     GLfloat	diffuseLight[4];
@@ -436,12 +435,12 @@ void LightManager::restoreDefaultLight()
     glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
     glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, 180);
 
-    glEnable(GL_LIGHT0);*/
+    glEnable(GL_LIGHT0);
 }
 
 void LightManager::handleEvent(sofa::core::objectmodel::Event* event)
 {
-    /*if (sofa::core::objectmodel::KeypressedEvent* ev = dynamic_cast<sofa::core::objectmodel::KeypressedEvent*>(event))
+    if (sofa::core::objectmodel::KeypressedEvent* ev = dynamic_cast<sofa::core::objectmodel::KeypressedEvent*>(event))
     {
         switch(ev->getKey())
         {
@@ -464,7 +463,7 @@ void LightManager::handleEvent(sofa::core::objectmodel::Event* event)
 #endif
             break;
         }
-    }*/
+    }
 
 }
 
