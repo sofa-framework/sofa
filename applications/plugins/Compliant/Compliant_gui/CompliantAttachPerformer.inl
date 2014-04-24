@@ -122,16 +122,14 @@ void CompliantAttachPerformer<DataTypes>::start()
     BodyPicked picked=this->interactor->getBodyPicked();
     if (!picked.body && !picked.mstate) return;
 
-    core::behavior::MechanicalState<DataTypes>* pickedState=dynamic_cast< core::behavior::MechanicalState<DataTypes>*  >(picked.mstate);
-    pickedNode = dynamic_cast<simulation::Node*> (pickedState->getContext());
-    assert(pickedNode);
-
 
     // get a picked state and a particle index
     core::behavior::MechanicalState<DataTypes>* mstateCollision=NULL;
     if (picked.body)  // picked a collision element: create a MechanicalState mapped under the collision model, to store the picked point - NOT TESTED YET !!!!
     {
 //        std::cerr<<"mapped\n";
+
+        pickedNode = dynamic_cast<simulation::Node*> (picked.body->getContext());
 
         mapper = MouseContactMapper::Create(picked.body);
         if (!mapper)
@@ -156,8 +154,6 @@ void CompliantAttachPerformer<DataTypes>::start()
                                  );
         mapper->update();
 
-        cerr<<"CompliantAttachPerformer<DataTypes>::start() IAMREALLYGOINGHERE" << endl;
-
         // copy the tags of the collision model to the mapped state
         if (mstateCollision->getContext() != picked.body->getContext())
         {
@@ -179,8 +175,9 @@ void CompliantAttachPerformer<DataTypes>::start()
     {
 //        std::cerr<<"Already\n";
 
+        pickedNode = dynamic_cast<simulation::Node*> (picked.mstate->getContext());
+
         mstateCollision = dynamic_cast< core::behavior::MechanicalState<DataTypes>*  >(picked.mstate);
-        pickedParticleIndex = picked.indexCollisionElement;
         //        cerr<<"CompliantAttachPerformer<DataTypes>::attach, pickedParticleIndex = " << pickedParticleIndex << endl;
         if (!mstateCollision)
         {
@@ -189,7 +186,8 @@ void CompliantAttachPerformer<DataTypes>::start()
         }
     }
 
-
+    assert(pickedNode);
+    pickedParticleIndex = picked.indexCollisionElement;
 
     //-------- Mouse manipulator
     mouseMapping = this->interactor->core::objectmodel::BaseObject::template searchUp<sofa::core::BaseMapping>();
