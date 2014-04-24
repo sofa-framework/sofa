@@ -337,6 +337,26 @@ class Joint:
                 
 		return self.node
 
+        def setTargetPose(self, targetPose, compliance="1e-3", damping="1e3"):
+            """ Set the target pose of the joint - 
+            targetPose vector is filtered out according to free dofs of the joint
+            """
+            target = self.node.createChild("target")
+
+            maskedTargetPose=[]
+            print "dofs", self.dofs
+            for i,d in enumerate(self.dofs):
+                if d is 1:
+                    maskedTargetPose.append(targetPose[i])
+            print "maskedTargetPose", maskedTargetPose
+
+            target.createObject('MechanicalObject', template = 'Vec1d', name = 'dofs')
+            target.createObject('MaskMapping', name = 'mapping', template = 'Vec6d,Vec1d', input = '@../', output = '@dofs', dofs = "0 0 0 1 1 1" )
+            
+            target_constraint = target.createChild("target_constraint")
+            target_constraint.createObject('MechanicalObject', template = 'Vec1d', name = 'dofs')
+            target_constraint.createObject('OffsetMapping', name = 'mapping', template = 'Vec1d,Vec1d', input = '@../', output = '@dofs', offsets = concat(maskedTargetPose) )
+            target_constraint.createObject('UniformCompliance', name = 'compliance', template = 'Vec1d', compliance = compliance, damping=damping)
 
 # and now for more specific joints:
 
