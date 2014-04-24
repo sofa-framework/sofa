@@ -26,23 +26,11 @@
 #include <sofa/helper/Quater.h>
 #include <sofa/helper/RandomGenerator.h>
 
-//Including Simulation
-/*#include <sofa/simulation/common/Simulation.h>
-#include <sofa/simulation/graph/DAGSimulation.h>*/
-//#include <sofa/simulation/common/Node.h>
-
 // Including component
-//#include <sofa/core/MechanicalParams.h>
+
 #include <sofa/component/projectiveconstraintset/AffineMovementConstraint.h>
-//#include <sofa/component/container/MechanicalObject.h>
 #include "../deformationMapping/LinearMapping.h"
 #include "../shapeFunction/BarycentricShapeFunction.h"
-//#include "../shapeFunction/BaseShapeFunction.h"
-//#include "../quadrature/TopologyGaussPointSampler.h"
-
-/*#include <plugins/SceneCreator/SceneCreator.h>
-#include <plugins/Compliant/odesolver/AssembledSolver.h>
-#include <plugins/Compliant/numericalsolver/LDLTSolver.h>*/
 
 #include <Mapping_test.h>
 
@@ -92,7 +80,7 @@ namespace sofa {
         sofa::helper::RandomGenerator randomGenerator;
 
         // Constructor: call the constructor of the base class which loads the scene to test
-        LinearDeformationMappings_test() : Mapping_test("LinearDeformationMappingPoint.scn")
+        LinearDeformationMappings_test() : Inherited::Mapping_test(std::string(FLEXIBLE_TEST_SCENES_DIR) + "/" + "LinearDeformationMappingPoint.scn")
         {   
             std::cout << "constructor begin " << std::endl;
             seed=1;
@@ -102,11 +90,9 @@ namespace sofa {
 
             // Get rotation from affine constraint
             typedef projectiveconstraintset::AffineMovementConstraint<In> AffineMovementConstraint;
-            AffineMovementConstraint::SPtr affineConstraint  = root->get<AffineMovementConstraint>(root->SearchDown);
-            //testedRotation = affineConstraint->m_rotation.getValue();
-            // Set data values of affine movement constraint
+            typename AffineMovementConstraint::SPtr affineConstraint  = Inherited::root->get<AffineMovementConstraint>(Inherited::root->SearchDown);
             affineConstraint->m_rotation.setValue(testedRotation);
-            //affineConstraint->m_translation.setValue(testedTranslation);
+            affineConstraint->m_translation.setValue(testedTranslation);
             std::cout << "constructor end " << std::endl;
         }
              
@@ -126,7 +112,6 @@ namespace sofa {
             w = randomGenerator.random<SReal>(0.0,360.0);
             Quat quat(x,y,z,w);
             quat.normalize();
-            //testedRotation = patchStruct.affineConstraint->m_rotation.getValue();
             quat.toMatrix(testedRotation);
 
             // Random Translation
@@ -137,40 +122,20 @@ namespace sofa {
 
         }
 
-        /// After simulation compare the positions of points to the theoretical positions.
         bool runTest(double convergenceAccuracy, double tolerance)
         {
-            // Set random rotation and translation for affine constraint
-           // randomGenerator.initSeed(seed);
-           // this->SetRandomTestedRotationAndTranslation(seed);
-
-            // Get rotation from affine constraint
-            /*typedef projectiveconstraintset::AffineMovementConstraint<Vec3Types> AffineMovementConstraint;
-            AffineMovementConstraint::SPtr affineConstraint  = root->get<AffineMovementConstraint>(root->SearchDown);
-            testedRotation = affineConstraint->m_rotation.getValue();*/
-            // Set data values of affine movement constraint
-            //affineConstraint->m_rotation.setValue(testedRotation);
-            //affineConstraint->m_translation.setValue(testedTranslation);
-
             // Init simulation
-            sofa::simulation::getSimulation()->init(root.get());
-
-            // Get mechanical object
-            //typedef container::MechanicalObject<In> InMechanicalObject;
-            //InDOFs::SPtr mecaDofs = root->get<InDOFs>(root->SearchDown);
-
-            // Get deformation gradients
-            //OutDOFs::SPtr elasticityDofs = root->get<OutDOFs>(root->SearchDown);
+            sofa::simulation::getSimulation()->init(Inherited::root.get());
 
             // Get dofs positions
-            ReadInVecCoord x = inDofs->readPositions();
+            ReadInVecCoord x = Inherited::inDofs->readPositions();
             
             // xin 
             InVecCoord parentInit(x.size());
             copyFromData(parentInit,x);
     
             // xout
-            ReadOutVecCoord xelasticityDofs = outDofs->readPositions();
+            ReadOutVecCoord xelasticityDofs = Inherited::outDofs->readPositions();
             OutVecCoord childInit(xelasticityDofs.size());
             copyFromData(childInit,xelasticityDofs);
 
@@ -186,12 +151,11 @@ namespace sofa {
             }
 
             // Animate
-            int i = 0;
             do
             {
-                //hasConverged = true;
-                sofa::simulation::getSimulation()->animate(root.get(),0.05);
-               /* ReadInVecCoord xCurrent = inDofs->readPositions();
+                hasConverged = true;
+                sofa::simulation::getSimulation()->animate(Inherited::root.get(),0.05);
+                ReadInVecCoord xCurrent = Inherited::inDofs->readPositions();
 
                 // Compute dx
                 for (size_t i=0; i<xCurrent.size(); i++)
@@ -205,13 +169,13 @@ namespace sofa {
                 for (size_t i=0; i<numNodes; i++)
                 {
                     xPrev[i]=xCurrent[i];
-                }*/
-                i++;
+                }
+         
             }
-            while(i<10); // not converged
+            while(!hasConverged); // not converged
 
             // Parent new : Get simulated positions
-            WriteInVecCoord xinNew = inDofs->writePositions();
+            WriteInVecCoord xinNew = Inherited::inDofs->writePositions();
      
             // New position of parents
             InVecCoord parentNew(xinNew.size());
@@ -221,7 +185,7 @@ namespace sofa {
             }
    
             // Expected children positions: rotation from affine constraint
-            WriteOutVecCoord xoutNew = outDofs->writePositions();
+            WriteOutVecCoord xoutNew = Inherited::outDofs->writePositions();
             OutVecCoord expectedChildCoords(xoutNew.size());
   
             for(size_t i=0;i<xoutNew.size();++i)
@@ -235,22 +199,6 @@ namespace sofa {
                return true;
 
         }
-
-        bool randomTest(double convergenceAccuracy, double tolerance)
-        {
-            for(int i=0;i<100;i++)
-            {
-                seed = i;
-                if(!runTest(convergenceAccuracy,tolerance))
-                {std::cout << "SEED NUMBER = " << seed << std::endl;
-                std::cout << "Translation = " << testedTranslation << std::endl;
-                 std::cout << "Rotation = " << testedRotation << std::endl;
-                    return false;}
-  
-            }
-            return true;
-            
-        }
         
     };
 
@@ -260,18 +208,16 @@ namespace sofa {
        LinearMapping<Vec3Types, F321Types>,
        LinearMapping<Vec3Types, F331Types>,
        LinearMapping<Vec3Types, F332Types>,
-       LinearMapping<Vec3Types, F311Types>//,
-       //LinearMapping< Rigid3Types, F331Types >
+       LinearMapping<Vec3Types, F311Types>
     > DataTypes; // the types to instantiate.
 
     // Test suite for all the instantiations
     TYPED_TEST_CASE(LinearDeformationMappings_test, DataTypes);
 
     // test case: polarcorotationalStrainMapping 
-    TYPED_TEST( LinearDeformationMappings_test , StrainDeformationPatchTest)
+    TYPED_TEST( LinearDeformationMappings_test , VecDeformationMappingTest)
     {
         ASSERT_TRUE( this->runTest(1e-10,1e-10));
-        //ASSERT_TRUE( this->randomTest(1e-10,1e-10));
     }
 
 } // namespace sofa
