@@ -63,7 +63,10 @@ EvalPointsDistance<DataTypes>::EvalPointsDistance()
     , mstate2(initLink("object2", "Mechanical state 2"))
     , outfile(NULL)
     , lastTime(0)
+    , isToPrint( initData(&isToPrint, false, "isToPrint", "suppress somes data before using save as function"))
 {
+
+
     mstate1.setPath("@./"); // default path: state in the same node
     mstate2.setPath("@./"); // default path: state in the same node
     box1 = sofa::defaulttype::BoundingBox(0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
@@ -82,6 +85,7 @@ EvalPointsDistance<DataTypes>::~EvalPointsDistance()
 template<class DataTypes>
 void EvalPointsDistance<DataTypes>::init()
 {
+    if(isToPrint.getValue()==true) dist.setPersistent(false);
     if (!mstate1 )
     {
         mstate1 = dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(this->getContext()->getMechanicalState());
@@ -255,6 +259,7 @@ void EvalPointsDistance<DataTypes>::doDraw(const VecCoord& x1, const VecCoord& x
 template<class DataTypes>
 void EvalPointsDistance<DataTypes>::handleEvent(sofa::core::objectmodel::Event* event)
 {
+
     if (!mstate1 || !mstate2)
             return;
     // std::ostream *out = (outfile==NULL)? (std::ostream *)(&sout) : outfile;
@@ -264,6 +269,7 @@ void EvalPointsDistance<DataTypes>::handleEvent(sofa::core::objectmodel::Event* 
         // write the state using a period
         if (time+getContext()->getDt()/2 >= (lastTime + f_period.getValue()))
         {
+
             eval();
             if (outfile==NULL)
             {

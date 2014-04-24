@@ -67,6 +67,8 @@ protected:
     Data<GLfloat> pointSize;
     Data<bool> lineSmooth;
     Data<bool> pointSmooth;
+    /// Suppress field for save as function
+    Data < bool > isToPrint;
 
     // primitive types
     Data<sofa::helper::OptionsGroup> primitiveType;

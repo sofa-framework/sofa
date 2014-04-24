@@ -169,6 +169,7 @@ public:
     Data< bool >  showVectors;
     Data< float > showVectorsScale;
     Data< int > drawMode;
+    Data < bool > isToPrint;
 
     virtual void init();
     virtual void reinit();

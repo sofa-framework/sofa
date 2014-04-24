@@ -538,15 +538,20 @@ MeshTopology::MeshTopology()
     , _drawTetra(initData(&_drawTetra, false, "drawTetrahedra","if true, draw the topology Tetrahedra"))
     , _drawHexa(initData(&_drawHexa, false, "drawHexahedra","if true, draw the topology hexahedra"))
     , UpperTopology(sofa::core::topology::EDGE)
+    , isToPrint( initData(&isToPrint, false, "isToPrint", "suppress somes data before using save as function"))
 {
     addAlias(&seqPoints,"points");
     addAlias(&seqEdges,"lines");
     addAlias(&seqTetrahedra,"tetras");
     addAlias(&seqHexahedra,"hexas");
+
+
+
 }
 
 void MeshTopology::init()
 {
+    if(isToPrint.getValue()==true) seqEdges.setPersistent(false);
     BaseMeshTopology::init();
     if (nbPoints==0)
     {
