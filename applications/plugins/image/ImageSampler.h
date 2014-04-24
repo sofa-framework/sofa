@@ -73,6 +73,7 @@ template <>
 struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
 {
     typedef defaulttype::Image<SReal> DistTypes;
+    typedef defaulttype::Image<unsigned int> VorTypes;
 
     template<class ImageSampler>
     static void init( ImageSampler* )
@@ -183,7 +184,9 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
 
         // init voronoi and distances
         dim[3]=dim[4]=1;
-        CImg<unsigned int>  voronoi(dim[0],dim[1],dim[2],1,0);
+        typename ImageSampler::waVor vorData(sampler->voronoi);
+        vorData->setDimensions(dim);
+        CImg<unsigned int>& voronoi = vorData->getCImg(); voronoi.fill(0);
         typename ImageSampler::waDist distData(sampler->distances);
         distData->setDimensions(dim);
         CImg<Real>& dist = distData->getCImg(); dist.fill(-1);
@@ -285,7 +288,9 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
 
         // init voronoi and distances
         dim[3]=dim[4]=1;
-        CImg<unsigned int>  voronoi(dim[0],dim[1],dim[2],1,0);
+        typename ImageSampler::waVor vorData(sampler->voronoi);
+        vorData->setDimensions(dim);
+        CImg<unsigned int>& voronoi = vorData->getCImg(); voronoi.fill(0);
         typename ImageSampler::waDist distData(sampler->distances);
         distData->setDimensions(dim);
         CImg<Real>& dist = distData->getCImg(); dist.fill(-1);
@@ -476,6 +481,13 @@ public:
     Data< DistTypes > distances;
     /**@}*/
 
+    //@name voronoi
+    /**@{*/
+    typedef typename ImageSamplerSpecialization<ImageTypes::label>::VorTypes VorTypes;
+    typedef helper::ReadAccessor<Data< VorTypes > > raVor;
+    typedef helper::WriteAccessor<Data< VorTypes > > waVor;
+    Data< VorTypes > voronoi;
+    /**@}*/
 
     //@name visu data
     /**@{*/
@@ -500,6 +512,7 @@ public:
         , graphEdges(initData(&graphEdges,SeqEdges(),"graphEdges","oriented graph connecting parent to child nodes"))
         , hexahedra(initData(&hexahedra,SeqHexahedra(),"hexahedra","output hexahedra"))
         , distances(initData(&distances,DistTypes(),"distances",""))
+        , voronoi(initData(&voronoi,VorTypes(),"voronoi",""))
         , f_clearData(initData(&f_clearData,true,"clearData","clear distance image after computation"))
         , showSamplesScale(initData(&showSamplesScale,0.0f,"showSamplesScale","show samples"))
         , drawMode(initData(&drawMode,0,"drawMode",""))
@@ -530,6 +543,7 @@ public:
         addOutput(&graphEdges);
         addOutput(&hexahedra);
         addOutput(&distances);
+        addOutput(&voronoi);
         setDirtyValue();
     }
 
@@ -571,6 +585,7 @@ protected:
         if(this->f_clearData.getValue())
         {
             waDist dist(this->distances); dist->clear();
+            waVor vor(this->voronoi); vor->clear();
         }
 
         if(this->f_printLog.getValue())
