@@ -126,14 +126,13 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         mapping->setModels(inDofs.get(),outDofs.get());
     }
 
-    Mapping_test(std::string sceneName):deltaMax(1000),errorMax(100)
+    Mapping_test(std::string fileName):deltaMax(1000),errorMax(100)
     {
         sofa::component::init();
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
         /// Load the scene
         root = simulation->createNewGraph("root");
-        std::string fileName = std::string(FLEXIBLE_TEST_SCENES_DIR) + "/" + sceneName;
         root = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()));
 
         // InDofs
