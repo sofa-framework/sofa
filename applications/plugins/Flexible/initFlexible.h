@@ -34,7 +34,7 @@
 #endif
 
 /** \mainpage
-  The Flexible plugin provides a unified approach to the simulation of deformable solids. It uses a three-level kinematic structure:
+   Flexible plugin provides a unified approach to the simulation of deformable solids. It uses a three-level kinematic structure:
   control nodes, deformation gradients,  strain measures, and new mappings between these. 
   * \image html threeLevels.png 
   * This approach maximizes the modularity of the implementation.
@@ -51,7 +51,7 @@
   * Plastic Strain (sofa#component#mapping#PlasticStrainMapping), Invariants of deformation tensor(sofa#component#mapping#InvariantMapping).
   * \li \b The \b constitutive \b law of the object material computes stress based on strain.
   * \n The different constitutive laws are: Hooke force field(sofa#component#forcefield#HookeForceField), Mooney Rivlin force field(sofa#component#forcefield#MooneyRivlinForceField), Volume preservation force field (sofa#component#forcefield#VolumePreservationForceField).
-  *\section section2 The Flexible contains a test suite FlexibleTest. 
+  *\section section2 Flexible plugin contains a test suite FlexibleTest. 
   *\li This tests are tests for flexible components like strain mapping (sofa#StrainMappingTest) or higher level tests like patch test (sofa#AffinePatch_test and sofa#Patch_test)
   */
     

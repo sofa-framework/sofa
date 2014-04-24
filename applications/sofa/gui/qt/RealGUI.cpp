@@ -377,7 +377,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
 	createSimulationGraph();
 
     //disable widget, can be bothersome with objects with a lot of data
-    //createPropertyWidget();
+    createPropertyWidget();
 
     //viewer
     informationOnPickCallBack = InformationOnPickCallBack(this);

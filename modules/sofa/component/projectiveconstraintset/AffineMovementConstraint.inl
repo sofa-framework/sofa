@@ -265,6 +265,42 @@ void AffineMovementConstraint<DataTypes>::initializeInitialPositions (const SetI
 }
 
 template <class DataTypes>
+void AffineMovementConstraint<DataTypes>::transform(const SetIndexArray & indices, VecCoord& x0, VecCoord& xf)
+{
+    for (size_t i=0; i < indices.size() ; ++i)
+    {
+        xf[indices[i]] = (m_rotation.getValue())*DataTypes::getCPos(x0[indices[i]])+DataTypes::getCPos(m_translation.getValue());
+    }
+}
+
+
+template <>
+void AffineMovementConstraint<Rigid3Types>::transform(const SetIndexArray & indices, Rigid3Types::VecCoord& x0, Rigid3Types::VecCoord& xf)
+{
+   std::cout << "transform from Affine Movement Rigid3Types specialization" << std::endl;
+    for (size_t i=0; i < indices.size() ; ++i)
+    {
+        // Translation
+        Coord translation = m_translation.getValue();
+        xf[indices[i]].getCenter() = x0[indices[i]].getCenter() + translation.getCenter();
+
+        // Rotation
+        RotationMatrix rotationMat = m_rotation.getValue();
+        Quat quat (0,0,0,0);
+        quat.fromMatrix(rotationMat);
+        //std::cout << "quat = " << quat << std::endl;
+        xf[indices[i]].getOrientation() = (quat)+x0[indices[i]].getOrientation();
+        //xf[indices[i]].getOrientation().normalize();
+        //std::cout << "normalize" << std::endl;
+        //std::cout << "x0[indices[i]].getOrientation()" << x0[indices[i]].getOrientation() << std::endl;
+        //std::cout << "xf[indices[i]].getOrientation()" << xf[indices[i]].getOrientation() << std::endl;
+
+    }
+
+}
+
+
+template <class DataTypes>
 void AffineMovementConstraint<DataTypes>::initializeFinalPositions (const SetIndexArray & indices, DataVecCoord& xData, VecCoord& x0, VecCoord& xf)
 {
      Deriv displacement; 
@@ -275,12 +311,8 @@ void AffineMovementConstraint<DataTypes>::initializeFinalPositions (const SetInd
     // if the positions were not initialized
     if(x0.size() == 0)
         this->initializeInitialPositions(indices,xData,x0);
-
-    for (size_t i=0; i < indices.size() ; ++i)
-    {
-        xf[indices[i]] = (m_rotation.getValue())*DataTypes::getCPos(x0[indices[i]])+DataTypes::getCPos(m_translation.getValue());
-    }
     
+    transform(indices,x0,xf);
 }
 
 template <class DataTypes>

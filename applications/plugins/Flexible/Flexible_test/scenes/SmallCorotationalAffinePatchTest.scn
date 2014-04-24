@@ -6,7 +6,7 @@
 
   <Node name="Patch" >
     <AssembledSolver/>
-    <LDLTSolver projectH="1"/> 
+    <LDLTSolver/> 
 
     <!--Nodes-->
     <MechanicalObject name="defoDOF" showObject="1"  showObjectScale="5"  showIndices="1"  showIndicesScale="0.0001" />

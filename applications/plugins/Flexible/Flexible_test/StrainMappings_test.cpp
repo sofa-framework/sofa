@@ -1,9 +1,3 @@
-// I do not know why extern template needs to be desactivated, but for now it does the job
-#define SOFA_NO_EXTERN_TEMPLATE
-#ifdef SOFA_EXTERN_TEMPLATE
-#undef SOFA_EXTERN_TEMPLATE
-#endif
-
 #include <sofa/helper/Quater.h>
 
 #include "../types/DeformationGradientTypes.h"

@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<Node 	name="sceneRoot" gravity="0 0 0" time="0" animate="0"  dt="0.02" >
+  <RequiredPlugin pluginName="Flexible"/>
+  <RequiredPlugin pluginName="Compliant"/>
+  <VisualStyle displayFlags="showVisualModels showBehaviorModels showForceFields" />
+
+  <Node name="Patch" >
+    <AssembledSolver/>
+    <LDLTSolver/> 
+
+    <!--Nodes-->
+    <MechanicalObject template="Rigid"  position="0 0 0 0 0 0 1 20 0 0 0 0 0 1" name="DOFs" showObject="1"  showObjectScale="5" showIndices="1"/>
+    <MeshTopology name="mesh" lines="0 1" position="0 0 0 20 0 0"  drawEdges="true"/>
+    
+    <!--Constraint and roi-->
+    <BoxROI name="Box" box="-10 -10 -10 30 30 30"/>
+    <AffineMovementConstraint template="Rigid" name="affineConstraint" endConstraintTime="0.02" indices="@Box.indices" meshIndices = "@Box.indices" rotation="[1 0 0,0 1 0,1 0 1]"/>
+    <!--translation="0 1 0 0 0 0 1" rotation="[1 0 0,0 1 0,1 0 1]"  drawConstrainedPoints="1" rotation="[1 0 0,0 0.7 -0.7,0 0.7 0.7]"-->
+    
+    <!--Mass-->
+    <UniformMass name="mass" totalMass="1"/>
+    
+    <!--Shape function-->
+    <BarycentricShapeFunction name="baryShapeFunction" template="ShapeFunctiond"/> 
+    
+    <!--Elasticity-->
+    <Node 	name="Elasticity" >
+      <TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamplesScale="0" method="0" order="1" />
+      <MechanicalObject template="F331" name="MoElasticity" showObject="1" showObjectScale="5"/>
+      <LinearMapping name="linearMapping" template="Mapping&lt;Rigid,F331&gt;" shapeFunction="baryShapeFunction" showDeformationGradientScale="1"  showDeformationGradientStyle="0 - All axis"  showColorOnTopology="2 - sqrt(det(F^T.F))-1"/>
+    </Node> 
+
+    <!--Visualisation-->
+    <Node 	name="Visualisation" >
+    </Node>
+ 
+  </Node>
+
+</Node>
+
+
