@@ -58,12 +58,14 @@ namespace sofa
                 const VecDeriv& velocity = v.getValue();
                 unsigned nbDampingCoeff = dampingCoefficients.getValue().size();
                 if(nbDampingCoeff>0)
+                {
                     for(unsigned i=0; i<velocity.size();i++)
                         for(unsigned j=0; j<Deriv::total_size; j++)
                             if(nbDampingCoeff>=i)
                                 force[i][j] -= velocity[i][j]*dampingCoefficients.getValue()[i][j];
                             else
                                 force[i][j] -= velocity[i][j]*dampingCoefficients.getValue()[nbDampingCoeff-1][j];
+                }
             }
 
             template<class DataTypes>
