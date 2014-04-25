@@ -11,7 +11,8 @@ namespace sofa{
 namespace newgui{
 
 /**
- * @brief The PickedPoint struct represents a vertex of a State, typically picked using the mouse
+ * @brief The PickedPoint struct represents a vertex of a State, typically picked using the mouse.
+ * It is returned by the Sofa interface to the user application to set up an interaction.
  * @author Francois Faure, 2014
  */
 struct PickedPoint

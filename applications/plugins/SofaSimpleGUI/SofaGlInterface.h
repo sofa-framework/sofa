@@ -1,3 +1,4 @@
+#include <sofa/config.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/core/visual/DrawToolGL.h>
 
@@ -22,12 +23,16 @@ typedef sofa::component::container::MechanicalObject< defaulttype::Vec3Types > V
 
 
 
-/** Prototype used to completely encapsulate the use of Sofa in an OpenGL application, without any standard Sofa GUI.
+/** @brief Simple Sofa interface to integrate in a graphics application.
+ *
+ * The API corresponds to the typical graphics callbacks: init, draw, animate, pick…
  *
  * @author Francois Faure, 2014
  * */
 class SofaGlInterface : public ParentSimulation
 {
+protected:
+
     // sofa types should not be exposed
     typedef sofa::defaulttype::Vector3 Vec3;
     typedef sofa::component::container::MechanicalObject< defaulttype::Vec3Types > Vec3DOF;
@@ -39,15 +44,16 @@ class SofaGlInterface : public ParentSimulation
     GLint viewport[4];
     GLdouble mvmatrix[16], projmatrix[16];
 
+    sofa::core::visual::DrawToolGL   drawToolGL;
+    sofa::core::visual::VisualParams* vparams;
+    Node::SPtr getRoot();
 
 
 public:
 
-    typedef sofa::newgui::Interactor Anchor;
-
-    bool debug;
-
     SofaGlInterface();
+
+    // standard callback-level interface
 
     /**
      * @brief Initialize Sofa and load a scene file
@@ -55,10 +61,6 @@ public:
      * @param fileName Scene file to load
      */
     void init( std::vector<std::string>& plugins, const std::string& fileName );
-
-    void printScene();
-
-    void reshape(int,int);
 
     /**
      * @brief glDraw Draw the Sofa scene using OpenGL.
@@ -71,21 +73,23 @@ public:
      */
     void animate();
 
-    Node::SPtr getRoot();
 
-    PickedPoint glRayPick( GLdouble ox, GLdouble oy, GLdouble oz, int x, int y );
+    // user interaction
 
-    void attach( Anchor* anchor );
+    PickedPoint pick( GLdouble ox, GLdouble oy, GLdouble oz, int x, int y );
 
-    void move( Anchor* anchor, int x, int y);
+    void attach( Interactor*  );
 
-    void detach( Anchor* anchor);
+    void move( Interactor*, int x, int y);
+
+    void detach(Interactor*);
 
 
-protected:
-    sofa::core::visual::DrawToolGL   drawToolGL;
-    sofa::core::visual::VisualParams* vparams;
+    // debugging
 
+    bool debug;
+
+    void printScene();
 
 };
 
