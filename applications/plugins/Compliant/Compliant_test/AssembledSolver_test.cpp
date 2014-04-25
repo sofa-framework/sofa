@@ -289,15 +289,38 @@ struct AssembledSolver_test : public CompliantSolver_test
         sofa::simulation::getSimulation()->animate(root.get(),dt);
         //**************************************************
 
+        // state at the end of the step
         Vector x1 = modeling::getVector( core::VecId::position() );
         Vector v1 = modeling::getVector( core::VecId::velocity() );
+
+
+
+        // ******* testing lambda propagation *******
+        // ie checking force at the end of the time step
+        // 1- no lambda propagation -> force must be null
+        Vector f1 = modeling::getVector( core::VecId::force() );
+        ASSERT_TRUE( f1.sum() == 0 );
+        // 2- with lambda propagation -> force must be NOT null
+        odeSolver->propagate_lambdas.setValue(true);
+        {
+        MechanicalObject3::WriteVecCoord x = string1.DOF->writePositions();
+        x[1] = Vec3(2,0,0);
+        MechanicalObject3::WriteVecCoord v = string1.DOF->writeVelocities();
+        v.clear();
+        }
+        sofa::simulation::getSimulation()->init(root.get());
+        sofa::simulation::getSimulation()->animate(root.get(),dt);
+        f1 = modeling::getVector( core::VecId::force() );
+        ASSERT_TRUE( f1.sum() != 0 );
+        // **************
+
 
         // We check the explicit step backward without a solver, because it would not accumulate compliance forces
         string1.compliance->isCompliance.setValue(false); string1.compliance->reinit(); // switch the spring as stiffness
         core::MechanicalParams mparams;
         simulation::common::MechanicalOperations mop (&mparams,getRoot()->getContext());
         mop.computeForce( 0+dt, core::VecId::force(), core::VecId::position(), core::VecId::velocity(), false );
-        Vector f1 = modeling::getVector( core::VecId::force() );
+        f1 = modeling::getVector( core::VecId::force() );
 
         // backward step
         Vector v2 = v1 - f1 * dt;
