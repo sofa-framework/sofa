@@ -16,6 +16,7 @@ using simulation::Node;
 
 /** @brief Base class for all interactors.
  * Interactors are sofa subgraphs used to apply actions to the scene, typically through user interaction.
+ *
  * Note that they are not necessarily moved using the mouse, since there is no mouse or window coordinates in the API.
  * @author Francois Faure, 2014
 */

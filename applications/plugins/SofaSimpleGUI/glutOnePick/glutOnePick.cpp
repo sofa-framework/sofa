@@ -22,6 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+/** \example glutOnePick.cpp
+ * Basic glut application with picking
+ */
 
 /**
   A simple glut application featuring a Sofa simulation.
@@ -41,16 +44,15 @@ using std::cout;
 #include <sofa/helper/ArgumentParser.h>
 #include <SimpleGUI/SofaGlInterface.h>
 
+// ---------------------------------------------------------------------
 // Sofa interface
+// ---------------------------------------------------------------------
 using namespace sofa::newgui;
 SofaGlInterface sofaScene;     ///< The interface of the application with Sofa
 SpringInteractor* drag = NULL; ///< Mouse interactor
 
 
 // ---------------------------------------------------------------------
-// --- A basic glut application featuring a Sofa simulation
-// ---------------------------------------------------------------------
-
 // Various shared variables for glut
 GLfloat light_position[] = { 0.0, 0.0, 25.0, 0.0 };
 GLfloat light_ambient[] = { 0.0, 0.0, 0.0, 0.0 };
@@ -61,9 +63,9 @@ GLfloat camera_position[] = { 0.0, 0.0, 25.0, 0.0 };
 GLfloat znear = camera_position[2]-10;
 GLfloat zfar = camera_position[2]+10;
 
-bool _isControlPressed = false; bool isControlPressed(){ return _isControlPressed; }
-bool _isShiftPressed = false; bool isShiftPressed(){ return _isShiftPressed; }
-bool _isAltPressed = false; bool isAltPressed(){ return _isAltPressed; }
+bool isControlPressed(){ return glutGetModifiers()&GLUT_ACTIVE_CTRL; }
+bool isShiftPressed(){ return glutGetModifiers()&GLUT_ACTIVE_SHIFT; }
+bool isAltPressed(){ return glutGetModifiers()&GLUT_ACTIVE_ALT; }
 
 bool animating = true;
 bool interacting = false;
@@ -112,9 +114,6 @@ void reshape (int w, int h)
     glLoadIdentity ();
     gluPerspective (55.0, (GLfloat) w/(GLfloat) h, znear, zfar );
     glMatrixMode (GL_MODELVIEW);
-    //    cout<<"reshape"<<endl;
-
-    sofaScene.reshape(w,h);
 }
 
 void keyboard(unsigned char key, int /*x*/, int /*y*/)
@@ -129,7 +128,6 @@ void keyboard(unsigned char key, int /*x*/, int /*y*/)
     if( key == ' ' ){
         animating = !animating;
     }
-
 
 }
 
@@ -151,7 +149,7 @@ void mouseButton(int button, int state, int x, int y)
     case GLUT_LEFT_BUTTON:
         if (state == GLUT_DOWN)
         {
-            PickedPoint glpicked = sofaScene.glRayPick(camera_position[0],camera_position[1],camera_position[2], x,y);
+            PickedPoint glpicked = sofaScene.pick(camera_position[0],camera_position[1],camera_position[2], x,y);
             if( glpicked )
             {
                 interacting = true;
@@ -199,21 +197,6 @@ void mouseMotion(int x, int y)
 }
 
 
-void update_modifiers()
-{
-    _isControlPressed =  (glutGetModifiers()&GLUT_ACTIVE_CTRL )!=0;
-    _isShiftPressed   =  (glutGetModifiers()&GLUT_ACTIVE_SHIFT)!=0; if( _isShiftPressed ) cout <<"shift pressed" <<endl; else cout<<"shift not pressed" << endl;
-    _isAltPressed     =  (glutGetModifiers()&GLUT_ACTIVE_ALT  )!=0;
-}
-void specialKey(int k, int /*x*/, int /*y*/)
-{
-    cout<<"special key " << k << endl;
-    cout<<"modifiers = " << glutGetModifiers() << endl; // looks like freeglut is currently buggy, since this is always null
-    update_modifiers();
-}
-
-#include <sofa/config.h>
-
 int main(int argc, char** argv)
 {
     glutInit(&argc,argv);
@@ -228,9 +211,6 @@ int main(int argc, char** argv)
     glutIdleFunc(idle);
     glutMotionFunc(mouseMotion);
     glutMouseFunc(mouseButton);
-    glutSpecialFunc( specialKey );
-
-    cout << "SOFA_BUILD_DIR = " << SOFA_BUILD_DIR << endl;
 
     // --- Parameter initialisation ---
     std::string fileName ;

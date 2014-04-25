@@ -64,7 +64,7 @@ void SofaGlInterface::printScene()
     sofa::simulation::getSimulation()->print(groot.get());
 }
 
-void SofaGlInterface::reshape(int,int){}
+//void SofaGlInterface::reshape(int,int){}
 
 void SofaGlInterface::glDraw()
 {
@@ -85,7 +85,7 @@ void SofaGlInterface::animate()
 
 Node::SPtr SofaGlInterface::getRoot() { return groot; }
 
-PickedPoint SofaGlInterface::glRayPick( GLdouble ox, GLdouble oy, GLdouble oz, int x, int y )
+PickedPoint SofaGlInterface::pick( GLdouble ox, GLdouble oy, GLdouble oz, int x, int y )
 {
     PickedPoint pickedPoint;
 
@@ -121,18 +121,18 @@ PickedPoint SofaGlInterface::glRayPick( GLdouble ox, GLdouble oy, GLdouble oz, i
     return pickedPoint;
 }
 
-void SofaGlInterface::attach( Anchor* anchor )
+void SofaGlInterface::attach( Interactor* interactor )
 {
-    anchor->attach(groot);
+    interactor->attach(groot);
 }
 
-void SofaGlInterface::move( Anchor* anchor, int x, int y)
+void SofaGlInterface::move( Interactor* interactor, int x, int y)
 {
-    if( !anchor )
+    if( !interactor )
         return;
 
     // get the distance to the current point
-    Vec3 current = anchor->getPoint();
+    Vec3 current = interactor->getPoint();
     GLdouble wcur[3]; // window coordinates of the current point
     gluProject(current[0],current[1],current[2],mvmatrix,projmatrix,viewport,wcur,wcur+1,wcur+2);
     //        cout << "current point = " << current << endl;
@@ -142,15 +142,15 @@ void SofaGlInterface::move( Anchor* anchor, int x, int y)
     GLdouble p[3];
     gluUnProject ( x, viewport[3]-y-1, wcur[2], mvmatrix, projmatrix, viewport, &p[0], &p[1], &p[2]); // new position of the picked point
     //        cout<<"x="<< x <<", y="<< y <<", X="<<p[0]<<", Y="<<p[1]<<", Z="<<p[2]<<endl;
-    anchor->setPoint(Vec3(p[0], p[1], p[2]));
+    interactor->setPoint(Vec3(p[0], p[1], p[2]));
 }
 
-void SofaGlInterface::detach( Anchor* anchor)
+void SofaGlInterface::detach( Interactor* interactor)
 {
-    if( !anchor )
+    if( !interactor )
         return;
 
-    anchor->detach();
+    interactor->detach();
 }
 
 
