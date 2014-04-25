@@ -35,6 +35,7 @@
 #include <sofa/core/behavior/RotationMatrix.h>
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/component/visualmodel/ColorMap.h>
+#include <sofa/simulation/common/AnimateBeginEvent.h>
 
 // corotational tetrahedron from
 // @InProceedings{NPF05,
@@ -287,6 +288,7 @@ public:
     Data<bool> _showVonMisesStressPerNode;
     /// Suppress field for save as function
     Data < bool > isToPrint;
+    Data<bool>  _updateStiffness;
 
     helper::vector<Vec<6,Real> > elemDisplacements;
 
@@ -323,6 +325,7 @@ protected:
         , _showStressAlpha(initData(&_showStressAlpha, 1.0f, "showStressAlpha", "Alpha for vonMises visualisation"))
         , _showVonMisesStressPerNode(initData(&_showVonMisesStressPerNode,false,"showVonMisesStressPerNode","draw points  showing vonMises stress interpolated in nodes"))
         , isToPrint( initData(&isToPrint, false, "isToPrint", "suppress somes data before using save as function"))
+        , _updateStiffness(initData(&_updateStiffness,false,"updateStiffness","udpate structures (precomputed in init) using stiffness parameters in each iteration (set listening=1)"))
     {
 
 
@@ -459,6 +462,9 @@ protected:
     }
 
     void computeVonMisesStress();
+
+    void handleEvent(core::objectmodel::Event *event);
+
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONFEMFORCEFIELD_CPP)
