@@ -7,8 +7,13 @@ namespace component
 namespace collision
 {
 
+
+
 template <class DataTypes1,class DataTypes2>
 int CapsuleIntTool::computeIntersection(TCapsule<DataTypes1> & e1,TCapsule<DataTypes2> & e2,SReal alarmDist,SReal contactDist,OutputVector * contacts){
+    if(shareSameVertex(e1,e2))
+        return 0;
+
     SReal contact_exists = e1.radius() + e2.radius() + alarmDist;
 
     Vector3 A = e1.point1();

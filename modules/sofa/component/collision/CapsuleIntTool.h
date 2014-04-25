@@ -27,7 +27,18 @@ public:
 
     template <class DataTypes>
     static int computeIntersection(TCapsule<DataTypes>&, OBB&,SReal alarmDist,SReal contactDist,OutputVector* contacts);
+
+    template <class DataTypes1,class DataTypes2>
+    static bool shareSameVertex(const TCapsule<DataTypes1>& c1, const TCapsule<DataTypes2>& c2);
+
+    static bool shareSameVertex(const Capsule & c1, const Capsule & c2);
+
 };
+
+template <class DataTypes1,class DataTypes2>
+bool CapsuleIntTool::shareSameVertex(const TCapsule<DataTypes1>&, const TCapsule<DataTypes2>&){
+    return false;
+}
 
 template <class DataTypes1,class DataTypes2>
 int CapsuleIntTool::computeIntersection(TCapsule<DataTypes1> & cap, TSphere<DataTypes2> & sph,SReal alarmDist,SReal contactDist,OutputVector* contacts){

@@ -52,6 +52,7 @@
 #include <sofa/component/collision/IncrSAP.h>
 #include <sofa/core/CollisionModel.h>
 #include <stdlib.h>
+#include <sofa/component/collision/TeschnerSpatialHashing.h>
 
 
 struct MyBox{
@@ -85,6 +86,11 @@ struct MyBox{
         }
 
         return dist2;
+    }
+
+    void show()const{
+        std::cout<<"\tminBBox "<<cube.minVect()<<std::endl;
+        std::cout<<"\tmaxBBox "<<cube.maxVect()<<std::endl;
     }
 
     sofa::component::collision::Cube cube;
@@ -223,9 +229,9 @@ bool GENTest(sofa::core::CollisionModel * cm1,sofa::core::CollisionModel * cm2,D
 
     col_detection.setIntersectionMethod(proxIntersection.get());
 
-    col_detection.addCollisionModel(cm1);
-    if(cm2 != 0x0)
-        col_detection.addCollisionModel(cm2);
+//    col_detection.addCollisionModel(cm1);
+//    if(cm2 != 0x0)
+//        col_detection.addCollisionModel(cm2);
 
     std::vector<MyBox> boxes;
     std::vector<std::pair<sofa::core::CollisionElementIterator,sofa::core::CollisionElementIterator> > brutInter;
@@ -240,8 +246,8 @@ bool GENTest(sofa::core::CollisionModel * cm1,sofa::core::CollisionModel * cm2,D
 //            std::cout<<"colliding models "<<boxes[i].cube.getCollisionModel()->getLast()<<" "<<boxes[j].cube.getCollisionModel()->getLast()<<std::endl;
 //            std::cout<<"colliding indices "<<boxes[i].cube.getIndex()<<" "<<boxes[j].cube.getIndex()<<std::endl;
 //            std::cout<<"min/max vect"<<std::endl;
-//            boxes[i].show();
-//            boxes[j].show();
+            boxes[i].show();
+            boxes[j].show();
             if(boxes[i].squaredDistance(boxes[j]) <= alarmDist * alarmDist){
                 brutInter.push_back(std::make_pair((sofa::core::CollisionElementIterator)(boxes[i].cube),(sofa::core::CollisionElementIterator)(boxes[j].cube)));
 //                std::cout<<"\tCOLLIDING"<<std::endl;
@@ -273,6 +279,8 @@ bool GENTest(sofa::core::CollisionModel * cm1,sofa::core::CollisionModel * cm2,D
 
     col_detection.endBroadPhase();
     col_detection.beginNarrowPhase();
+    col_detection.addCollisionPairs(col_detection.getCollisionModelPairs());
+    col_detection.endNarrowPhase();
 
     std::vector<std::pair<sofa::core::CollisionElementIterator,sofa::core::CollisionElementIterator> > broadPhaseInter;
 
@@ -413,6 +421,10 @@ bool BroadPhaseTest<BroadPhase>::randTest(int seed,int nb1,int nb2,const Vector3
 
     obbm1->setSelfCollision(true);
     obbm2->setSelfCollision(true);
+    std::cout<<"obbm1 pointer "<<obbm1.get()<<std::endl;
+    std::cout<<"obbm1->getFirst() pointer "<<obbm1->getFirst()<<std::endl;
+    std::cout<<"obbm2 pointer "<<obbm2.get()<<std::endl;
+    std::cout<<"obbm2->getFirst() pointer "<<obbm2->getFirst()<<std::endl;
     typename BroadPhase::SPtr pbroadphase = New<BroadPhase>();
     BroadPhase & broadphase = *pbroadphase;
 
@@ -453,6 +465,14 @@ bool BroadPhaseTest<BroadPhase>::randSparse(){
     return true;
 }
 
+//typedef BroadPhaseTest<sofa::component::collision::TeschnerSpatialHashing> Teschner;
+//TEST_F(Teschner, rand_sparse_test ) { ASSERT_TRUE( randSparse()); }
+//TEST_F(Teschner, rand_dense_test ) { ASSERT_TRUE( randDense()); }
+
+
+
 typedef BroadPhaseTest<sofa::component::collision::IncrSAP> IncrSAPTest;
 TEST_F(IncrSAPTest, rand_sparse_test ) { ASSERT_TRUE( randSparse()); }
+TEST_F(IncrSAPTest, rand_dense_test ) { ASSERT_TRUE( randDense()); }
+
 

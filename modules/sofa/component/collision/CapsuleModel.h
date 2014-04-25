@@ -83,6 +83,8 @@ public:
     Real radius() const;
 
     Coord v()const;
+
+    bool shareSameVertex(const TCapsule<TDataTypes> & other)const;
 };
 
 /**
@@ -176,6 +178,11 @@ public:
     {
         return DataTypes::Name();
     }
+
+    /**
+      *Returns true if capsules at indexes i1 and i2 share the same vertex.
+      */
+    bool shareSameVertex(int i1,int i2)const;
 
     Data<VecReal > & writeRadii();
 protected:

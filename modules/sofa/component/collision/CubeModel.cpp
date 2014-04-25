@@ -272,8 +272,8 @@ bool CubeModel::isLeaf( int index ) const
 
 void CubeModel::computeBoundingTree(int maxDepth)
 {
-    if(maxDepth <= 0)
-        return;
+//    if(maxDepth <= 0)
+//        return;
 
     //sout << ">CubeModel::computeBoundingTree("<<maxDepth<<")"<<sendl;
     std::list<CubeModel*> levels;

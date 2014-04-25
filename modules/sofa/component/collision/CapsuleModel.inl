@@ -262,6 +262,17 @@ typename TCapsuleModel<DataTypes>::Coord TCapsuleModel<DataTypes>::axis(int inde
 }
 
 template<class DataTypes>
+bool TCapsuleModel<DataTypes>::shareSameVertex(int i1,int i2)const{
+    return _capsule_points[i1].first == _capsule_points[i2].first || _capsule_points[i1].first == _capsule_points[i2].second ||
+            _capsule_points[i1].second == _capsule_points[i2].first || _capsule_points[i1].second == _capsule_points[i2].second;
+}
+
+template<class DataTypes>
+bool TCapsule<DataTypes>::shareSameVertex(const TCapsule<DataTypes> & other)const{
+    return (this->model == other.model) && this->model->shareSameVertex(this->index,other.index);
+}
+
+template<class DataTypes>
 Quaternion TCapsuleModel<DataTypes>::orientation(int index) const {
     Coord ax(point2(index) - point1(index));
     ax.normalize();

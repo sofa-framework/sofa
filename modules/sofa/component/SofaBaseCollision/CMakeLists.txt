@@ -66,7 +66,7 @@ set(SOURCE_FILES
     ../collision/IntrSphereOBB.cpp
     ../collision/BaseIntTool.cpp
     ../collision/ContactListener.cpp
-
+	../collision/TeschnerHashTable.cpp
     )
 
 set(GROUP_BASE_DIR "..")
