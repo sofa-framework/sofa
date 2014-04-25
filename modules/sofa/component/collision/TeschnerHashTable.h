@@ -8,60 +8,34 @@
 #include <sofa/component/collision/CubeModel.h>
 
 
+#define CHECK_IF_ELLEMENT_EXISTS
 namespace sofa{
-
-//class MirrorIntersector : public core::collision::ElementIntersector
-//{
-//public:
-//    core::collision::ElementIntersector* intersector;
-
-//    /// Test if 2 elements can collide. Note that this can be conservative (i.e. return true even when no collision is present)
-//    virtual bool canIntersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2)
-//    {
-//        return intersector->canIntersect(elem2, elem1);
-//    }
-
-//    /// Begin intersection tests between two collision models. Return the number of contacts written in the contacts vector.
-//    /// If the given contacts vector is NULL, then this method should allocate it.
-//    virtual int beginIntersect(core::CollisionModel* model1, core::CollisionModel* model2, core::collision::DetectionOutputVector*& contacts)
-//    {
-//        return intersector->beginIntersect(model2, model1, contacts);
-//    }
-
-//    /// Compute the intersection between 2 elements. Return the number of contacts written in the contacts vector.
-//    virtual int intersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2, core::collision::DetectionOutputVector* contacts)
-//    {
-//        return intersector->intersect(elem2, elem1, contacts);
-//    }
-
-//    /// End intersection tests between two collision models. Return the number of contacts written in the contacts vector.
-//    virtual int endIntersect(core::CollisionModel* model1, core::CollisionModel* model2, core::collision::DetectionOutputVector* contacts)
-//    {
-//        return intersector->endIntersect(model2, model1, contacts);
-//    }
-
-//    virtual std::string name() const
-//    {
-//        return intersector->name() + std::string("<SWAP>");
-//    }
-
-//};
-
 
 class TeschnerCollisionSet{
 public:
     TeschnerCollisionSet() : _timeStamp(SReal(-1.0)){}
 
-    void add(core::CollisionElementIterator elem,SReal timeStamp){
+    inline void add(core::CollisionElementIterator elem,SReal timeStamp){
         if(_timeStamp < timeStamp){
             _timeStamp = timeStamp;
             _coll_elems.clear();
         }
-
+#ifndef CHECK_IF_ELLEMENT_EXISTS
         _coll_elems.push_back(elem);
+#else
+        int i;
+        for(i = 0 ; i < _coll_elems.size() ; ++i){
+            if(_coll_elems[i].getIndex() == elem.getIndex())
+                break;
+        }
+
+        if(i == _coll_elems.size()){
+            _coll_elems.push_back(elem);
+        }
+#endif
     }
 
-    void clearAndAdd(core::CollisionElementIterator elem,SReal timeStamp){
+    inline void clearAndAdd(core::CollisionElementIterator elem,SReal timeStamp){
         if(_timeStamp != -1)
             _coll_elems.clear();
 
@@ -69,7 +43,7 @@ public:
         _timeStamp = timeStamp;
     }
 
-    bool needsCollision(SReal timestamp){
+    inline bool needsCollision(SReal timestamp){
         if(_timeStamp < timestamp)
             return false;
 
@@ -83,11 +57,11 @@ public:
         return _timeStamp >= timeStamp;
     }
 
-    std::vector<core::CollisionElementIterator> & getCollisionElems(){
+    inline std::vector<core::CollisionElementIterator> & getCollisionElems(){
         return _coll_elems;
     }
 
-    const std::vector<core::CollisionElementIterator> & getCollisionElems()const {
+    inline const std::vector<core::CollisionElementIterator> & getCollisionElems()const {
         return _coll_elems;
     }
 
@@ -101,30 +75,31 @@ private:
     std::vector<core::CollisionElementIterator> _coll_elems;
 };
 
+#undef CHECK_IF_ELLEMENT_EXISTS
+
 class TeschnerHashTable{
 public:
-    TeschnerHashTable(){
+    TeschnerHashTable() : _cm(0x0),_timeStamp(-1.0){
         _p1 = 73856093;
         _p2 = 19349663;
         _p3 = 83492791;
     }
 
-    TeschnerHashTable(int size){
+    TeschnerHashTable(int hashTableSize,sofa::core::CollisionModel * cm,SReal timeStamp) : _cm(cm),_timeStamp(-1.0){
         _p1 = 73856093;
         _p2 = 19349663;
         _p3 = 83492791;
 
-        resize(size);
+        init(hashTableSize,cm,timeStamp);
     }
 
-    void resize(int size){
+    inline void resize(int size){
         _size = size;
         _prime_size = boost::unordered::detail::next_prime(size);
-        std::cout<<"PRIM SIZE "<<_prime_size<<std::endl;
         _table.resize(_prime_size);
     }
 
-    void clear(){
+    inline void clear(){
         _size = 0;
         _table.clear();
     }
@@ -140,17 +115,6 @@ public:
         return index;
     }
 
-    inline TeschnerCollisionSet & operator()(long int i,long int j,long int k){
-        //int index = (i * _p1 ^ j * _p2 ^ k * _p3) % _prime_size;
-        long int index = ((i * _p1) ^ (j * _p2) ^ (k * _p3)) % _prime_size;
-//        long int index = i*j*k % _prime_size;
-
-        if(index < 0)
-            index += _prime_size;
-
-        return _table[index];
-    }
-
     inline const TeschnerCollisionSet & operator()(long int i,long int j,long int k)const{
         //int index = (i * _p1 ^ j * _p2 ^ k * _p3) % _prime_size;
         long int index = ((i * _p1) ^ (j * _p2) ^ (k * _p3)) % _prime_size;
@@ -162,133 +126,18 @@ public:
         return _table[index];
     }
 
-    void addAndCollide(long int i,long int j,long int k,core::CollisionElementIterator elem,SReal timeStamp,core::collision::NarrowPhaseDetection * phase,sofa::core::collision::Intersection * interMehtod){
-        TeschnerCollisionSet & tset = (*this)(i,j,k);
-        std::vector<core::CollisionElementIterator> & vec_elems = tset.getCollisionElems();
+    void autoCollide(core::collision::NarrowPhaseDetection * phase,sofa::core::collision::Intersection * interMethod,SReal timeStamp);
 
-        if(tset.updated(timeStamp)){
-            int size = vec_elems.size();
-            bool swap;
-            core::collision::ElementIntersector* ei;
-            sofa::core::CollisionModel* cm1,*cm2;
+    void collide(TeschnerHashTable & other,sofa::core::collision::NarrowPhaseDetection * phase,sofa::core::collision::Intersection * interMehtod,SReal timeStamp);
 
-            cm1 = elem.getCollisionModel();
-
-            for(int ii = 0 ; ii < size ; ++ii){
-                cm2 = vec_elems[ii].getCollisionModel();
-
-                if(!(cm1->canCollideWith(cm2)))
-                    continue;
-
-                sofa::helper::AdvancedTimer::stepBegin("TeschnerHashTable : find intersector and intersect");
-
-//                sofa::helper::AdvancedTimer::stepBegin("TeschnerHashTable::performCollision : findIntersector");
-                ei = interMehtod->findIntersector(cm1,cm2,swap);
-//                sofa::helper::AdvancedTimer::stepEnd("TeschnerHashTable::performCollision : findIntersector");
-
-                if(ei){
-                    if(swap){
-//                        sofa::helper::AdvancedTimer::stepBegin("TeschnerHashTable::performCollision : find output vector");
-                        core::collision::DetectionOutputVector*& output = phase->getDetectionOutputs(cm2,cm1);
-                        ei->beginIntersect(cm2,cm1,output);
-//                        sofa::helper::AdvancedTimer::stepEnd("TeschnerHashTable::performCollision : find output vector");
-
-                        ei->intersect(vec_elems[ii],elem,output);
-                    }
-                    else{
-//                        sofa::helper::AdvancedTimer::stepBegin("TeschnerHashTable::performCollision : find output vector");
-                        core::collision::DetectionOutputVector*& output = phase->getDetectionOutputs(cm1,cm2);
-                        ei->beginIntersect(cm1,cm2,output);
-//                        sofa::helper::AdvancedTimer::stepEnd("TeschnerHashTable::performCollision : find output vector");
-
-                        ei->intersect(elem,vec_elems[ii],output);
-                    }
-                }
-
-                sofa::helper::AdvancedTimer::stepEnd("TeschnerHashTable : find intersector and intersect");
-
-            }
-
-            vec_elems.push_back(elem);
-            //std::cout<<"=====adding elem, final size "<<vec_elems.size()<<std::endl;
-        }
-        else{
-            tset.clearAndAdd(elem,timeStamp);
-        }
-
-//        if(vec_elems.size() > 18){
-//            std::cout<<"size of cell superior to 18========================================="<<std::endl;
-//            for(int ii = 0 ; ii < vec_elems.size() ; ++ii){
-//                std::cout<<"\tcollision model : "<<vec_elems[ii].getCollisionModel()<<" index : "<<vec_elems[ii].getIndex()<<std::endl;
-////                sofa::component::collision::Cube c();
-////                c.getVIterator()
-//            }
-//        }
-    }
-
-    void performCollision(core::collision::NarrowPhaseDetection * phase,sofa::core::collision::Intersection * interMehtod,SReal timeStamp){
-        int sizem1;
-        int size;
-        bool swap;
-        core::collision::ElementIntersector* ei;
-        sofa::core::CollisionModel* cm1,*cm2;
-        for(int i = 0 ; i < _prime_size ; ++i){
-            if(_table[i].needsCollision(timeStamp)){
-                std::vector<core::CollisionElementIterator> & vec_elems = _table[i].getCollisionElems();
-
-                size = vec_elems.size();
-                sizem1 = size - 1;
-
-                for(int j = 0 ; j < sizem1 ; ++j){
-                    cm1 = vec_elems[j].getCollisionModel();
-
-                    for(int k = j + 1 ; k < size ; ++k){
-                        cm2 = vec_elems[k].getCollisionModel();
-
-                        if(!(cm1->canCollideWith(cm2)))
-                            continue;
-
-                        //sofa::helper::AdvancedTimer::stepBegin("TeschnerHashTable::performCollision : findIntersector");
-                        ei = interMehtod->findIntersector(cm1,cm2,swap);
-                        //sofa::helper::AdvancedTimer::stepEnd("TeschnerHashTable::performCollision : findIntersector");
-                        if(ei){
-
-                            if(swap){
-                                //sofa::helper::AdvancedTimer::stepBegin("TeschnerHashTable::performCollision : find output vector");
-                                core::collision::DetectionOutputVector*& output = phase->getDetectionOutputs(cm2,cm1);
-                                ei->beginIntersect(cm2,cm1,output);
-                                //sofa::helper::AdvancedTimer::stepEnd("TeschnerHashTable::performCollision : find output vector");
-
-                                ei->intersect(vec_elems[k],vec_elems[j],output);
-                            }
-                            else{
-                                //sofa::helper::AdvancedTimer::stepBegin("TeschnerHashTable::performCollision : find output vector");
-                                core::collision::DetectionOutputVector*& output = phase->getDetectionOutputs(cm1,cm2);
-                                ei->beginIntersect(cm1,cm2,output);
-                                //sofa::helper::AdvancedTimer::stepEnd("TeschnerHashTable::performCollision : find output vector");
-
-                                ei->intersect(vec_elems[j],vec_elems[k],output);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-
-
-    virtual ~TeschnerHashTable(){
-//        for(int i = 0 ; i < _intersector_garbage.size() ; ++i)
-//            delete _intersector_garbage[i];
-    }
+    virtual ~TeschnerHashTable(){}
 
     void showStats(SReal timeStamp)const{
-        std::size_t nb_full_cell = 0;
-        std::size_t nb_elems = 0;
-        std::size_t max_elems_in_cell = 0;
+        int nb_full_cell = 0;
+        int nb_elems = 0;
+        unsigned int max_elems_in_cell = 0;
 
-        for(std::size_t i = 0 ; i < _table.size() ; ++i){
+        for(unsigned int i = 0 ; i < _table.size() ; ++i){
             if(_table[i].updated(timeStamp)){
                 ++nb_full_cell;
                 nb_elems += _table[i].getCollisionElems().size();
@@ -308,8 +157,42 @@ public:
         std::cout<<"===================================================="<<std::endl;
     }
 
-    SReal cell_size;
+    void init(int hashTableSize, core::CollisionModel *cm, SReal timeStamp);
+
+    void refersh(SReal timeStamp);
+
+    inline bool initialized()const{
+        return _cm != 0x0;
+    }
+
+    inline core::CollisionModel* getCollisionModel()const{
+        return _cm;
+    }
+
+    static SReal cell_size;
+
+    inline TeschnerCollisionSet & operator()(long int i,long int j,long int k){
+        //int index = (i * _p1 ^ j * _p2 ^ k * _p3) % _prime_size;
+        long int index = ((i * _p1) ^ (j * _p2) ^ (k * _p3)) % _prime_size;
+//        long int index = i*j*k % _prime_size;
+
+        if(index < 0)
+            index += _prime_size;
+
+        return _table[index];
+    }
+
+    inline static void setAlarmDistance(SReal alarmDist){
+        _alarmDist = alarmDist;
+        _alarmDistd2 = alarmDist/2.0;
+    }
+
 protected:
+
+    static void doCollision(TeschnerHashTable &me, TeschnerHashTable &other, core::collision::NarrowPhaseDetection *phase, SReal timeStamp, core::collision::ElementIntersector *ei, bool swap);
+
+
+    sofa::core::CollisionModel * _cm;
     boost::hash<std::pair<long int,long int> > _hash_func;
     long int _p1;
     long int _p2;
@@ -319,6 +202,9 @@ protected:
     std::vector<TeschnerCollisionSet> _table;
     //core::collision::ElementIntersector* _intersectors[sofa::core::CollisionModel::ENUM_TYPE_SIZE][sofa::core::CollisionModel::ENUM_TYPE_SIZE];
     //std::vector<MirrorIntersector*> _intersector_garbage;
+    static SReal _alarmDist;
+    static SReal _alarmDistd2;
+    SReal _timeStamp;
 };
 
 }

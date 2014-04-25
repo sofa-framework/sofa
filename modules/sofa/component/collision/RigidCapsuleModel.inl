@@ -226,6 +226,11 @@ typename TCapsule<StdRigidTypes<3,MyReal> >::Coord TCapsule<StdRigidTypes<3,MyRe
     return this->model->point1(this->index);
 }
 
+template<class MyReal>
+bool TCapsule<StdRigidTypes<3,MyReal> >::shareSameVertex(const TCapsule<StdRigidTypes<3,MyReal> > & )const{
+    return false;
+}
+
 template <class MyReal>
 typename TCapsule<StdRigidTypes<3,MyReal> >::Coord TCapsule<StdRigidTypes<3,MyReal> >::point2() const
 {

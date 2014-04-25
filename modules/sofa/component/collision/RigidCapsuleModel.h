@@ -90,6 +90,8 @@ public:
     void displayIndex()const{
         std::cout<<"index "<<this->index<<std::endl;
     }
+
+    bool shareSameVertex(const TCapsule<StdRigidTypes<3,MyReal> > & other)const;
 };
 
 

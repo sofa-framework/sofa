@@ -97,8 +97,8 @@ bool TestTeschnerHashTable::test2(){
 }
 
 
-TEST_F(TestTeschnerHashTable, test_1 ) { ASSERT_TRUE( test1()); }
-TEST_F(TestTeschnerHashTable, test_2 ) { ASSERT_TRUE( test2()); }
+//TEST_F(TestTeschnerHashTable, test_1 ) { ASSERT_TRUE( test1()); }
+//TEST_F(TestTeschnerHashTable, test_2 ) { ASSERT_TRUE( test2()); }
 
 //    sofa::component::collision::OBB movingOBB;
 //    sofa::component::collision::OBB staticOBB;

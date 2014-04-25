@@ -39,6 +39,7 @@
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/simulation/common/ResetVisitor.h>
+#include <boost/unordered_map.hpp>
 
 namespace sofa
 {
@@ -80,13 +81,15 @@ protected:
     SReal _nb_edges;
     SReal _nb_elems;
     SReal _total_edges_length;
+    int _max_cm_size;
+    std::vector<core::CollisionModel*> _collisionModels;
+    boost::unordered::unordered_map<sofa::core::CollisionModel*,TeschnerHashTable> _hash_tables;
 public:
     inline virtual void beginBroadPhase()
     {
         core::collision::BroadPhaseDetection::beginBroadPhase();
-        cubeModels.clear();
         _timeStamp += this->getContext()->getDt();
-        //collisionModels.clear();
+        _collisionModels.clear();
     }
 
 
@@ -100,8 +103,7 @@ public:
     /**
       *Unuseful methods because all is done in addCollisionModel
       */
-    void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& ){}
-    void addCollisionPairs (std::vector<std::pair<core::CollisionModel*, core::CollisionModel*> >&){}
+    void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& );
 
     virtual void beginNarrowPhase();
 
