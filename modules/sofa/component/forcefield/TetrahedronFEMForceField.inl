@@ -1295,6 +1295,9 @@ void TetrahedronFEMForceField<DataTypes>::init()
         if (youngModulus[i]>maxYoung) maxYoung=youngModulus[i];
     }
 
+    if (_updateStiffness.getValue())
+        this->f_listening.setValue(true);
+
     // ParallelDataThrd is used to build the matrix asynchronusly (when listening = true)
     // This feature is activated when callin handleEvent with ParallelizeBuildEvent
     // At init parallelDataSimu == parallelDataThrd (and it's the case since handleEvent is called)
@@ -2276,6 +2279,36 @@ void TetrahedronFEMForceField<DataTypes>::addSubKToMatrix(sofa::defaulttype::Bas
         }
 
     }
+}
+
+template<class DataTypes>
+void TetrahedronFEMForceField<DataTypes>::handleEvent(core::objectmodel::Event *event)
+{
+    if (dynamic_cast< sofa::simulation::AnimateBeginEvent *>(event)) {
+        if (_updateStiffness.getValue()) {
+            //std::cout << this->getName() << " HANDLE EVENT " << std::endl;
+            const VecReal& youngModulus = _youngModulus.getValue();
+            minYoung=youngModulus[0];
+            maxYoung=youngModulus[0];
+            for (unsigned i=0; i<youngModulus.size(); i++)
+            {
+                if (youngModulus[i]<minYoung) minYoung=youngModulus[i];
+                if (youngModulus[i]>maxYoung) maxYoung=youngModulus[i];
+            }
+
+            unsigned int i;
+            typename VecElement::const_iterator it;
+            for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
+            {
+                Index a = (*it)[0];
+                Index b = (*it)[1];
+                Index c = (*it)[2];
+                Index d = (*it)[3];
+                this->computeMaterialStiffness(i,a,b,c,d);
+            }
+        }
+    }
+
 }
 
 template<class DataTypes>
