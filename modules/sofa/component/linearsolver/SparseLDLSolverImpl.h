@@ -266,7 +266,8 @@ protected :
 
     template<class VecInt,class VecReal>
     void factorize(int n,int * M_colptr, int * M_rowind, Real * M_values, SpaseLDLImplInvertData<VecInt,VecReal> * data,int group = 1) {
-        bool new_factorization_needed = CSPARSE_need_symbolic_factorization(n, M_colptr, M_rowind, data->n, (int *) &data->P_colptr[0],(int *) &data->P_rowind[0]);
+        bool new_factorization_needed = data->P_colptr.size() == 0 || data->P_rowind.size() == 0 
+			|| CSPARSE_need_symbolic_factorization(n, M_colptr, M_rowind, data->n, (int *) &data->P_colptr[0],(int *) &data->P_rowind[0]);
 
         data->n = n;
         data->P_nnz = M_colptr[data->n];
