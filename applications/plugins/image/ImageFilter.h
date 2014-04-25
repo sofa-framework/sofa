@@ -60,6 +60,8 @@
 #define SKELETON 22
 #define MEANDIFFUSION 23
 #define FILLHOLES 24
+#define CONNECTEDCOMPONENTS 25
+#define LARGESTCONNECTEDCOMPONENT 26
 
 
 namespace sofa
@@ -133,7 +135,7 @@ public:
         inputTransform.setReadOnly(true);
         outputImage.setReadOnly(true);
         outputTransform.setReadOnly(true);
-        helper::OptionsGroup filterOptions(25	,"0 - None"
+        helper::OptionsGroup filterOptions(27	,"0 - None"
                                            ,"1 - Blur ( sigma )"
                                            ,"2 - Blur Median ( n )"
                                            ,"3 - Blur Bilateral ( sigma_s, sigma_r)"
@@ -158,6 +160,8 @@ public:
                                            ,"22 - Skeleton from distance map"
                                            ,"23 - Mean Diffusion ( max iterations=0 (0->until convergence), fixed boundaries=1, exclude outside=1, threshold=eps )"
                                            ,"24 - Fill Holes (inval=0, outval=1)"
+                                           ,"25 - Label connected components (tolerance=0)"
+                                           ,"26 - Largest connected component (tolerance=0)"
                                            );
         filterOptions.setSelectedItem(NONE);
         filter.setValue(filterOptions);
@@ -584,8 +588,41 @@ protected:
                     CImg<unsigned char> im = inimg(l);
                     cimg_foroff(im,off) if( im[off]!=0 ) im[off]=1;
                     unsigned char fillColor = (unsigned char)2;
-                    im.draw_fill(0,0,0,&fillColor);
+                    im.draw_fill(0,0,0,&fillColor); // flood fill from voxel (0,0,0)
                     cimg_foroff(im,off) if( im[off]==2 ) img(l)[off]=outval; else img(l)[off]=inval;
+                }
+            }
+            break;
+
+        case CONNECTEDCOMPONENTS:
+            if(updateImage)
+            {
+                float tol=0;    if(p.size()) tol=(float)p[0];
+
+                cimglist_for(img,l)
+                {
+                    img(l).label(false,tol);
+                }
+            }
+            break;
+
+
+        case LARGESTCONNECTEDCOMPONENT:
+            if(updateImage)
+            {
+                float tol=0;    if(p.size()) tol=(float)p[0];
+
+                cimglist_for(img,l)
+                {
+                    img(l).label(false,tol);
+                    //histo
+                    std::map<To,unsigned int> histo;
+                    cimg_foroff(img(l),off) histo[img(l)[off]]++;
+                    To val=0; unsigned int mx=0;
+                    // get max size
+                    for (typename std::map<To,unsigned int>::iterator it=histo.begin(); it!=histo.end(); ++it) if(it->second>=mx && it->first!=(To)0.) { mx=it->second; val=it->first; }
+                    // mask input
+                    cimg_foroff(img(l),off) if(img(l)[off]==val) img(l)[off]=(To)inimg(l)[off]; else     img(l)[off]=(To)0.;
                 }
             }
             break;
