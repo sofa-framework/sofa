@@ -37,11 +37,18 @@ namespace odesolver {
 
 
 // this class must be outside AssembledSolver in order to be dll exported on Windows
-struct SOFA_Compliant_API propagate_visitor : simulation::MechanicalVisitor {
+/// propagate constraint *forces* (lambdas/dt) toward independent dofs
+class SOFA_Compliant_API propagate_constraint_force_visitor : public simulation::MechanicalVisitor {
 
-    core::MultiVecDerivId out, in;
+    core::MultiVecDerivId force, lambda;
+    SReal invdt;
 
-    propagate_visitor(const sofa::core::MechanicalParams* mparams);
+public:
+
+    propagate_constraint_force_visitor(const sofa::core::MechanicalParams* mparams,
+                      const core::MultiVecDerivId& out,
+                      const core::MultiVecDerivId& in,
+                      SReal dt);
 
     Result fwdMappedMechanicalState(simulation::Node* node,
                                     core::behavior::BaseMechanicalState* state);
@@ -50,6 +57,9 @@ struct SOFA_Compliant_API propagate_visitor : simulation::MechanicalVisitor {
                             core::behavior::BaseMechanicalState* state);
 
     void bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map);
+
+    void bwdProjectiveConstraintSet(simulation::Node* /*node*/,
+                                    core::behavior::BaseProjectiveConstraintSet* c);
 
 };
 
@@ -178,9 +188,12 @@ public:
 
 	// set v, lambda
     virtual void set_state(const system_type& sys, const vec& data, const core::MultiVecDerivId& multiVecId) const;
+    // set v
+    virtual void set_state_v(const system_type& sys, const vec& data, const core::MultiVecDerivId& multiVecId) const;
+    // set lambda
+    virtual void set_state_lambda(const system_type& sys, const vec& data) const;
 
 
-	// TODO does this work yo ?
 	// this is for warm start and returning constraint forces
     core::behavior::MultiVecDeriv lagrange;
 

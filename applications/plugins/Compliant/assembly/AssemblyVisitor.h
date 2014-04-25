@@ -68,15 +68,16 @@ public:
 };
 
 
-/// res += lambdas, only for mechanical object linked to a compliance
-class MechanicalAddLambdas : public MechanicalVisitor
+/// res += constraint forces (== lambda/dt), only for mechanical object linked to a compliance
+class MechanicalAddComplianceForce : public MechanicalVisitor
 {
     MultiVecDerivId res, lambdas;
+    SReal invdt;
 
 
 public:
-    MechanicalAddLambdas(const sofa::core::MechanicalParams* mparams, MultiVecDerivId res, MultiVecDerivId lambdas )
-        : MechanicalVisitor(mparams), res(res), lambdas(lambdas)
+    MechanicalAddComplianceForce(const sofa::core::MechanicalParams* mparams, MultiVecDerivId res, MultiVecDerivId lambdas, SReal dt )
+        : MechanicalVisitor(mparams), res(res), lambdas(lambdas), invdt(1.0/dt)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
@@ -92,11 +93,12 @@ public:
 
     virtual Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff)
     {
-        if( ff->isCompliance.getValue() )
-        {
-            core::behavior::BaseMechanicalState* mm = ff->getContext()->getMechanicalState();
-            mm->vOp( this->params, res.getId(mm), res.getId(mm), lambdas.getId(mm) );
-        }
+//        if( ff->isCompliance.getValue() )
+//        {
+//            core::behavior::BaseMechanicalState* mm = ff->getContext()->getMechanicalState();
+//            mm->vOp( this->params, res.getId(mm), res.getId(mm), lambdas.getId(mm), invdt );
+//            // lambdas should always be allocated through realloc (null values for new constraints)
+//        }
 
         if( ff->isCompliance.getValue() )
         {
@@ -105,7 +107,19 @@ public:
             if( !lambdasid.isNull() ) // previously allocated
             {
                 const VecDerivId& resid = res.getId(mm);
-                mm->vOp( this->params, resid, resid, lambdasid );
+
+                // hack that improve a lot stability and energy preserving
+                // TO BE STUDIED: only keep negative lambda to generate geometric stiffness
+                // TODO find a way to make it cleaner
+                const size_t dim = mm->getMatrixSize();
+                component::linearsolver::AssembledSystem::vec buffer( dim );
+                mm->copyToBuffer( &buffer(0), lambdasid, dim );
+                for( size_t i=0 ; i<dim ; ++i )
+                    if( buffer[i] > 0 ) buffer[i] = 0;
+                    else buffer[i] *= invdt; // constraint force = lambda / dt
+                mm->copyFromBuffer( resid, &buffer(0), dim );
+
+//                mm->vOp( this->params, resid, resid, lambdasid, invdt );
             }
         }
         return RESULT_CONTINUE;
