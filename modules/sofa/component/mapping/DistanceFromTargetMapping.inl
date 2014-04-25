@@ -147,7 +147,7 @@ void DistanceFromTargetMapping<TIn, TOut>::apply(const core::MechanicalParams * 
     for(unsigned i=0; i<indices.size(); i++ )
     {
         InDeriv& gap = directions[i];
-        gap = TIn::coordDifference(in[indices[i]],targetPositions[i]);
+        TIn::setDPos(gap, TIn::getDPos(TIn::coordDifference(in[indices[i]],targetPositions[i]))); //Hack for Rigid template, TODO: create a specialized function.
         Real gapNorm = TIn::getDPos(gap).norm();
 //        cerr<<"DistanceFromTargetMapping<TIn, TOut>::apply, gap = " << gap <<", norm = " << gapNorm << endl;
         out[i] = gapNorm - restDistances[i];  // output
