@@ -12,7 +12,7 @@ UseQt()
 	
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES})
 
-AddLinkerDependencies(SimpleGui)
+AddLinkerDependencies(SofaSimpleGui)
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
 
