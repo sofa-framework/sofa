@@ -1,3 +1,6 @@
+#ifndef SOFA_NEWGUI_SofaGlInterface_H
+#define SOFA_NEWGUI_SofaGlInterface_H
+
 #include <sofa/config.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/core/visual/DrawToolGL.h>
@@ -60,7 +63,9 @@ public:
      * @param plugins List of plugins to load
      * @param fileName Scene file to load
      */
-    void init( std::vector<std::string>& plugins, const std::string& fileName );
+    void init( /*std::vector<std::string>& plugins,*/ const std::string& fileName );
+
+    std::vector<std::string> plugins; ///< list of plugins to load
 
     /**
      * @brief glDraw Draw the Sofa scene using OpenGL.
@@ -76,12 +81,25 @@ public:
 
     // user interaction
 
+    /**
+     * @brief Try to pick a particle.
+     * ox, oy, oz are the camera center in world coordinates.
+     * x,y in image coordinates (origin on top left).
+     * If a point is picked, the application may create an Interactor based on it.
+     * @return a valid PickedPoint if succeeded.
+     */
     PickedPoint pick( GLdouble ox, GLdouble oy, GLdouble oz, int x, int y );
 
+    /// Insert the interactor in the scene
     void attach( Interactor*  );
 
+    /**
+     * @brief move the interactor according to the mouse pointer.
+     * x,y in image coordinates (origin on top left).
+     */
     void move( Interactor*, int x, int y);
 
+    /// Remove the interactor from the scene, without deleting it.
     void detach(Interactor*);
 
 
@@ -98,3 +116,5 @@ public:
 }// newgui
 }// sofa
 
+
+#endif

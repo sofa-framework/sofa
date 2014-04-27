@@ -43,13 +43,13 @@ using std::cout;
 
 #include <sofa/helper/ArgumentParser.h>
 #include <SofaSimpleGUI/SofaGlInterface.h>
+using namespace sofa::newgui;
 
 // ---------------------------------------------------------------------
 // Sofa interface
 // ---------------------------------------------------------------------
-using namespace sofa::newgui;
-SofaGlInterface sofaScene;     ///< The interface of the application with Sofa
-SpringInteractor* drag = NULL; ///< Mouse interactor
+sofa::newgui::SofaGlInterface sofaScene;     ///< The interface of the application with Sofa
+sofa::newgui::SpringInteractor* drag = NULL; ///< Mouse interactor
 
 
 // ---------------------------------------------------------------------
@@ -143,7 +143,7 @@ void idle()
 
 void mouseButton(int button, int state, int x, int y)
 {
-    cout<<"mousebutton, modifiers = " << glutGetModifiers() << endl;
+//    cout<<"mousebutton, modifiers = " << glutGetModifiers() << endl;
 
     switch (button) {
     case GLUT_LEFT_BUTTON:
@@ -214,16 +214,16 @@ int main(int argc, char** argv)
 
     // --- Parameter initialisation ---
     std::string fileName ;
-    std::vector<std::string> plugins;
+//    std::vector<std::string> plugins;
 
     sofa::helper::parse("Simple glut application featuring a Sofa scene.")
-            .option(&plugins,'l',"load","load given plugins")
+            .option(&sofaScene.plugins,'l',"load","load given plugins")
             .parameter(&fileName,'f',"file","scene file to load")
             (argc,argv);
 
     // --- Init sofa ---
     sofaScene.debug = false;
-    sofaScene.init(plugins,fileName);
+    sofaScene.init(fileName);
 
     glutMainLoop();
 
