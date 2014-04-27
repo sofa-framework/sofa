@@ -27,7 +27,7 @@ SofaGlInterface::SofaGlInterface()
     groot->setName("theRoot");
 }
 
-void SofaGlInterface::init( std::vector<std::string>& plugins, const std::string& fileName )
+void SofaGlInterface::init(const std::string& fileName )
 {
 
     // --- plugins ---
@@ -40,6 +40,8 @@ void SofaGlInterface::init( std::vector<std::string>& plugins, const std::string
 
 
     // --- Create simulation graph ---
+    if(fileName.empty())
+        cout << "SofaGlInterface::init, no file to load" << endl;
     sroot = sofa::simulation::getSimulation()->load(fileName.c_str());
     if (sroot!=NULL)
     {
@@ -47,7 +49,7 @@ void SofaGlInterface::init( std::vector<std::string>& plugins, const std::string
         groot->addChild(sroot);
     }
     else {
-        serr << "SofaScene::init, could not load scene " << fileName << sendl;
+        serr << "SofaScene::init, could not load scene " << fileName << ", is the path ok ?" << sendl;
     }
 
     ParentSimulation::init(groot.get());
