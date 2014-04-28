@@ -14,5 +14,7 @@ add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES})
 
 AddLinkerDependencies(SofaSimpleGui)
 
+AddLinkerDependencies(glut GL GLU)
+
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
 
