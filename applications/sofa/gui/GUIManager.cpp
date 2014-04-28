@@ -275,7 +275,29 @@ int GUIManager::MainLoop(sofa::simulation::Node::SPtr groot, const char* filenam
 }
 void GUIManager::SetDimension(int  width , int  height )
 {
-    if (currentGUI) currentGUI->setViewerResolution(width,height);
+    if (currentGUI)
+    {
+        std::string viewerFileName;
+        std::string path = sofa::helper::system::DataRepository.getFirstPath();
+        viewerFileName = path.append("/share/config/sofaviewer.ini");
+
+        if(sofa::helper::system::DataRepository.findFile(viewerFileName))
+        {
+            std::string configPath = sofa::helper::system::DataRepository.getFile(viewerFileName);
+            std::string w, h;
+            std::ifstream viewerStream(configPath.c_str());
+            std::getline(viewerStream,w);
+            std::getline(viewerStream,h);
+            viewerStream.close();
+
+            std::stringstream convertW(w);
+            convertW >> width;
+
+            std::stringstream convertH(h);
+            convertH >> height;
+        }
+        currentGUI->setViewerResolution(width,height);
+    }
 }
 void GUIManager::SetFullScreen()
 {
