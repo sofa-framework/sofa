@@ -203,40 +203,38 @@ void TriangleSetTopologyModifier::addTriangleProcess(Triangle t)
         }
     }
 
-    if(m_container->hasEdges())
+    for(unsigned int j=0; j<3; ++j)
     {
-        for(unsigned int j=0; j<3; ++j)
+        int edgeIndex = m_container->getEdgeIndex(t[(j+1)%3], t[(j+2)%3]);
+
+        if(edgeIndex == -1)
         {
-            int edgeIndex = m_container->getEdgeIndex(t[(j+1)%3], t[(j+2)%3]);
+            // first create the edges
+            sofa::helper::vector< Edge > v(1);
+            Edge e1 (t[(j+1)%3], t[(j+2)%3]);
+            v[0] = e1;
 
-            if(edgeIndex == -1)
-            {
-                // first create the edges
-                sofa::helper::vector< Edge > v(1);
-                Edge e1 (t[(j+1)%3], t[(j+2)%3]);
-                v[0] = e1;
+            addEdgesProcess((const sofa::helper::vector< Edge > &) v);
 
-                addEdgesProcess((const sofa::helper::vector< Edge > &) v);
+            edgeIndex = m_container->getEdgeIndex(t[(j+1)%3],t[(j+2)%3]);
+            sofa::helper::vector< unsigned int > edgeIndexList;
+            edgeIndexList.push_back((unsigned int) edgeIndex);
+            addEdgesWarning( v.size(), v, edgeIndexList);
+        }
 
-                edgeIndex = m_container->getEdgeIndex(t[(j+1)%3],t[(j+2)%3]);
-                sofa::helper::vector< unsigned int > edgeIndexList;
-                edgeIndexList.push_back((unsigned int) edgeIndex);
-                addEdgesWarning( v.size(), v, edgeIndexList);
-            }
+        if(m_container->hasEdgesInTriangle())
+        {
+            m_container->m_edgesInTriangle.resize(triangleIndex+1);
+            m_container->m_edgesInTriangle[triangleIndex][j]= edgeIndex;
+        }
 
-            if(m_container->hasEdgesInTriangle())
-            {
-                m_container->m_edgesInTriangle.resize(triangleIndex+1);
-                m_container->m_edgesInTriangle[triangleIndex][j]= edgeIndex;
-            }
-
-            if(m_container->hasTrianglesAroundEdge())
-            {
-                sofa::helper::vector< unsigned int > &shell = m_container->m_trianglesAroundEdge[m_container->m_edgesInTriangle[triangleIndex][j]];
-                shell.push_back( triangleIndex );
-            }
+        if(m_container->hasTrianglesAroundEdge())
+        {
+            sofa::helper::vector< unsigned int > &shell = m_container->m_trianglesAroundEdge[m_container->m_edgesInTriangle[triangleIndex][j]];
+            shell.push_back( triangleIndex );
         }
     }
+
 
     m_triangle.push_back(t);
 }
