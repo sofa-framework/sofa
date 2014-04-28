@@ -48,6 +48,7 @@ namespace misc
 template<class DataTypes>
 EvalPointsDistance<DataTypes>::EvalPointsDistance()
     : f_draw( initData(&f_draw, true, "draw", "activate rendering of lines between associated points"))
+    , isToPrint( initData(&isToPrint, false, "isToPrint", "suppress somes data before using save as function"))
     , f_filename( initData(&f_filename, "filename", "output file name"))
     , f_period( initData(&f_period, 0.0, "period", "period between outputs"))
     , dist( initData(&dist, "distance", "distances (OUTPUT)"))
@@ -63,7 +64,6 @@ EvalPointsDistance<DataTypes>::EvalPointsDistance()
     , mstate2(initLink("object2", "Mechanical state 2"))
     , outfile(NULL)
     , lastTime(0)
-    , isToPrint( initData(&isToPrint, false, "isToPrint", "suppress somes data before using save as function"))
 {
 
 
