@@ -107,6 +107,7 @@ MechanicalObject<DataTypes>::MechanicalObject()
     , showVectors(initData(&showVectors, (bool) false, "showVectors", "Show velocity"))
     , showVectorsScale(initData(&showVectorsScale, (float) 0.0001, "showVectorsScale", "Scale for vectors display"))
     , drawMode(initData(&drawMode,0,"drawMode","The way vectors will be drawn:\n- 0: Line\n- 1:Cylinder\n- 2: Arrow.\n\nThe DOFS will be drawn:\n- 0: point\n- >1: sphere"))
+    , isToPrint( initData(&isToPrint, false, "isToPrint", "suppress somes data before using save as function"))
     , translation(initData(&translation, Vector3(), "translation", "Translation of the DOFs"))
     , rotation(initData(&rotation, Vector3(), "rotation", "Rotation of the DOFs"))
     , scale(initData(&scale, Vector3(1.0,1.0,1.0), "scale3d", "Scale of the DOFs in 3 dimensions"))
@@ -118,7 +119,6 @@ MechanicalObject<DataTypes>::MechanicalObject()
     , vsize(0)
     , m_gnuplotFileX(NULL)
     , m_gnuplotFileV(NULL)
-    , isToPrint( initData(&isToPrint, false, "isToPrint", "suppress somes data before using save as function"))
 {
 
 

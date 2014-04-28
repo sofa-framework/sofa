@@ -527,6 +527,7 @@ MeshTopology::MeshTopology()
     , seqTriangles(initData(&seqTriangles,"triangles","List of triangle indices"))
     , seqQuads(initData(&seqQuads,"quads","List of quad indices"))
     , seqTetrahedra(initData(&seqTetrahedra,"tetrahedra","List of tetrahedron indices"))
+    , isToPrint( initData(&isToPrint, false, "isToPrint", "suppress somes data before using save as function"))
     , seqHexahedra(initData(&seqHexahedra,"hexahedra","List of hexahedron indices"))
     , seqUVs(initData(&seqUVs,"uv","List of uv coordinates"))
     , nbPoints(0)
@@ -538,7 +539,6 @@ MeshTopology::MeshTopology()
     , _drawTetra(initData(&_drawTetra, false, "drawTetrahedra","if true, draw the topology Tetrahedra"))
     , _drawHexa(initData(&_drawHexa, false, "drawHexahedra","if true, draw the topology hexahedra"))
     , UpperTopology(sofa::core::topology::EDGE)
-    , isToPrint( initData(&isToPrint, false, "isToPrint", "suppress somes data before using save as function"))
 {
     addAlias(&seqPoints,"points");
     addAlias(&seqEdges,"lines");
