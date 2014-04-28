@@ -80,6 +80,7 @@
 #   include <QDesktopWidget>
 #   include <QStatusBar>
 #   include <Q3DockArea>
+#   include <QSettings>
 //#   include <QSlider>
 //#   include <QLibrary>
 //#   include <QDockWidget>
@@ -109,6 +110,7 @@
 #   include <qdesktopwidget.h>
 #   include <qstatusbar.h>
 #   include <qdockarea.h>
+#   include <qsettings.h>
 //#   include <qmime.h>
 //#   include <qslider.h>
 //#   include <qlibrary.h>
@@ -398,8 +400,21 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
     SofaVideoRecorderManager::getInstance()->hide();
 
     //Center the application
-    const QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->primaryScreen());
-    this->move(  ( screen.width()- this->width()  ) / 2 - 200,  ( screen.height() - this->height()) / 2 - 50  );
+    QSettings settings;
+    settings.beginGroup("viewer");
+    int screenNumber = settings.value("screenNumber", QApplication::desktop()->primaryScreen()).toInt();
+    settings.endGroup();
+
+    if (screenNumber >= QApplication::desktop()->screenCount())
+        screenNumber = QApplication::desktop()->primaryScreen();
+
+    int offset = 0;
+    if (screenNumber > 0)
+        for (int i = 0 ; i < screenNumber; i++)
+            offset = QApplication::desktop()->availableGeometry(i).width();
+
+    const QRect screen = QApplication::desktop()->availableGeometry(screenNumber);
+    this->move( offset + ( screen.width()- this->width()  ) / 2 - 200,  ( screen.height() - this->height()) / 2 - 50  );
 
 #ifdef SOFA_QT4
     tabs->removeTab(tabs->indexOf(TabVisualGraph));
@@ -703,6 +718,19 @@ int RealGUI::mainLoop()
 
 int RealGUI::closeGUI()
 {
+    QSettings settings;
+    settings.beginGroup("viewer");
+    settings.setValue("screenNumber", QApplication::desktop()->screenNumber(this));
+    settings.endGroup();
+
+    std::string viewerFileName;
+    std::string path = sofa::helper::system::DataRepository.getFirstPath();
+    viewerFileName = path.append("/share/config/sofaviewer.ini");
+
+    std::ofstream out(viewerFileName.c_str(),std::ios::out);
+    out << sizeW->value() << std::endl << sizeH->value() << std::endl;
+    out.close();
+
     delete this;
     return 0;
 }
