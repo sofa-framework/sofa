@@ -27,43 +27,45 @@
 #include <sofa/helper/system/thread/CircularQueue.inl>
 #include <boost/thread/thread.hpp>
 #include <boost/bind.hpp>
-#include <boost/test/auto_unit_test.hpp>
+#include <gtest/gtest.h>
 #include <memory>
-#include <stdio.h>
+#include <cstdio>
 
 using namespace sofa::helper::system::thread;
 using sofa::helper::system::atomic;
 
-struct CircularQueue_Single
+class CircularQueue_SingleTest : public ::testing::Test
 {
-    CircularQueue_Single()
+protected:
+    CircularQueue_SingleTest()
     {
-        BOOST_CHECK(queue.isEmpty());
+        EXPECT_TRUE(queue.isEmpty());
 
         queue.push(1);
         queue.push(2);
         queue.push(3);
     }
-    ~CircularQueue_Single()
+    ~CircularQueue_SingleTest()
     {
     }
     CircularQueue<int, FixedSize<6>::type, OneThreadPerEnd> queue;
 };
 
-struct SingleProdSingleCons
+class CircularQueue_SingleProdSingleConsTest : public ::testing::Test
 {
-    SingleProdSingleCons()
+protected:
+    CircularQueue_SingleProdSingleConsTest()
         : counter(0)
     {
     }
-    ~SingleProdSingleCons()
+    ~CircularQueue_SingleProdSingleConsTest()
     {
         waitCompletion();
     }
     void start()
     {
-        producer.reset(new boost::thread(boost::bind(&SingleProdSingleCons::produce, this)));
-        consumer.reset(new boost::thread(boost::bind(&SingleProdSingleCons::consume, this)));
+        producer.reset(new boost::thread(boost::bind(&CircularQueue_SingleProdSingleConsTest::produce, this)));
+        consumer.reset(new boost::thread(boost::bind(&CircularQueue_SingleProdSingleConsTest::consume, this)));
     }
     void waitCompletion()
     {
@@ -72,7 +74,7 @@ struct SingleProdSingleCons
     }
     void check()
     {
-        BOOST_CHECK_EQUAL(counter, 100);
+        EXPECT_EQ(counter, 100);
     }
     void produce()
     {
@@ -86,7 +88,7 @@ struct SingleProdSingleCons
         for(int value = 0, lastValue = -1; value != 99; ++counter)
         {
             while(!queue.pop(value)) consumer->yield();
-            BOOST_CHECK(lastValue < value);
+            EXPECT_TRUE(lastValue < value);
             lastValue = value;
         }
     }
@@ -97,25 +99,26 @@ struct SingleProdSingleCons
     int counter;
 };
 
-struct ManyProdManyCons
+class CircularQueue_ManyProdManyConsTest : public ::testing::Test
 {
+protected:
     enum { Capacity = 10, ConsumerCount = 3, ProducerCount = 3, TokenCount = 100, ExitToken = 999 };
 
-    ManyProdManyCons() : counter(0), emptyFault(0), fullFault(0)
+    CircularQueue_ManyProdManyConsTest() : counter(0), emptyFault(0), fullFault(0)
     {
     }
-    ~ManyProdManyCons()
+    ~CircularQueue_ManyProdManyConsTest()
     {
     }
     void start()
     {
         for(int i = 0; i < ProducerCount; ++i)
         {
-            prod[i].reset(new boost::thread(boost::bind(&ManyProdManyCons::produce, this, i)));
+            prod[i].reset(new boost::thread(boost::bind(&CircularQueue_ManyProdManyConsTest::produce, this, i)));
         }
         for(int i = 0; i < ConsumerCount; ++i)
         {
-            cons[i].reset(new boost::thread(boost::bind(&ManyProdManyCons::consume, this, i)));
+            cons[i].reset(new boost::thread(boost::bind(&CircularQueue_ManyProdManyConsTest::consume, this, i)));
         }
     }
     void waitCompletion()
@@ -126,39 +129,39 @@ struct ManyProdManyCons
     }
     void check()
     {
-        BOOST_CHECK_EQUAL(counter, ProducerCount * TokenCount + ConsumerCount);
-        BOOST_CHECK_EQUAL(emptyFault, 0);
-        BOOST_CHECK_EQUAL(fullFault, 0);
+        EXPECT_EQ(counter, ProducerCount * TokenCount + ConsumerCount);
+        EXPECT_EQ(emptyFault, 0);
+        EXPECT_EQ(fullFault, 0);
     }
     void produce(int n)
     {
-        fprintf(stderr, "Starting producer %d\n", n); // using fprintf because it is thread-safe on Unix.
+        // fprintf(stderr, "Starting producer %d\n", n); // using fprintf because it is thread-safe on Unix.
 
         for(int i = 0; i < TokenCount; ++i)
         {
             int token = i + n * TokenCount;
-            while(!queue.push(token)) fprintf(stderr, "producer %d yield\n", n);
+            while(!queue.push(token));// fprintf(stderr, "producer %d yield\n", n);
 
             int queueSize = queue.size();
             if(queueSize < 0)        emptyFault++;
             if(queueSize > Capacity) fullFault++;
 
-            fprintf(stderr, "producer %d push %d size %d\n", n, token, queueSize);
+            // fprintf(stderr, "producer %d push %d size %d\n", n, token, queueSize);
         }
     }
     void consume(int n)
     {
-        fprintf(stderr, "Starting consumer %d\n", n);
+        // fprintf(stderr, "Starting consumer %d\n", n);
 
         for(atomic<int> value = 0; value != ExitToken; ++counter)
         {
-            while(!queue.pop(value)) fprintf(stderr, "consumer %d yield\n", n);
+            while(!queue.pop(value));// fprintf(stderr, "consumer %d yield\n", n);
 
             int queueSize = queue.size();
             if(queueSize < 0)        emptyFault++;
             if(queueSize > Capacity) fullFault++;
 
-            fprintf(stderr, "consumer %d pop %d size %d\n", n, value.operator int(), queueSize);
+            // fprintf(stderr, "consumer %d pop %d size %d\n", n, value.operator int(), queueSize);
         }
     }
     std::auto_ptr<boost::thread> prod[ProducerCount];
@@ -169,59 +172,59 @@ struct ManyProdManyCons
     atomic<int> fullFault;
 };
 
-BOOST_FIXTURE_TEST_CASE(pop, CircularQueue_Single)
+TEST_F(CircularQueue_SingleTest, pop)
 {
     int value;
     bool result;
 
     result = queue.pop(value);
-    BOOST_CHECK_EQUAL(result, true);
-    BOOST_CHECK_EQUAL(value, 1);
+    EXPECT_EQ(result, true);
+    EXPECT_EQ(value, 1);
 
     result = queue.pop(value);
-    BOOST_CHECK_EQUAL(result, true);
-    BOOST_CHECK_EQUAL(value, 2);
+    EXPECT_EQ(result, true);
+    EXPECT_EQ(value, 2);
 
     result = queue.pop(value);
-    BOOST_CHECK_EQUAL(result, true);
-    BOOST_CHECK_EQUAL(value, 3);
+    EXPECT_EQ(result, true);
+    EXPECT_EQ(value, 3);
 
-    BOOST_CHECK(queue.isEmpty());
+    EXPECT_TRUE(queue.isEmpty());
 
     value = 999;
     result = queue.pop(value);
-    BOOST_CHECK_EQUAL(result, false);
-    BOOST_CHECK_EQUAL(value, 999); // value not modified
+    EXPECT_EQ(result, false);
+    EXPECT_EQ(value, 999); // value not modified
 
-    BOOST_CHECK(queue.isEmpty());
+    EXPECT_TRUE(queue.isEmpty());
 }
 
-BOOST_FIXTURE_TEST_CASE(push, CircularQueue_Single)
+TEST_F(CircularQueue_SingleTest, push)
 {
     bool result;
 
     result = queue.push(4);
-    BOOST_CHECK_EQUAL(result, true);
+    EXPECT_EQ(result, true);
 
     result = queue.push(5);
-    BOOST_CHECK_EQUAL(result, true);
+    EXPECT_EQ(result, true);
 
-    BOOST_CHECK(queue.isFull());
+    EXPECT_TRUE(queue.isFull());
 
     result = queue.push(6);
-    BOOST_CHECK_EQUAL(result, false);
+    EXPECT_EQ(result, false);
 
-    BOOST_CHECK(queue.isFull());
+    EXPECT_TRUE(queue.isFull());
 }
 
-BOOST_FIXTURE_TEST_CASE(mt_1prod_1cons, SingleProdSingleCons)
+TEST_F(CircularQueue_SingleProdSingleConsTest, mt_1prod_1cons)
 {
     start();
     waitCompletion();
     check();
 }
 
-BOOST_FIXTURE_TEST_CASE(mt_3prod_3cons, ManyProdManyCons)
+TEST_F(CircularQueue_ManyProdManyConsTest, mt_3prod_3cons)
 {
     start();
     waitCompletion();

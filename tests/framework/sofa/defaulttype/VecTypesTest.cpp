@@ -24,14 +24,15 @@
 ******************************************************************************/
 
 #include <sofa/defaulttype/VecTypes.h>
-#include <boost/test/auto_unit_test.hpp>
+#include <gtest/gtest.h>
 
 using sofa::defaulttype::ResizableExtVector;
 using sofa::defaulttype::DefaultAllocator;
 
-struct ResizableExtVectorFixture
+class ResizableExtVectorTest : public ::testing::Test
 {
-    ResizableExtVectorFixture()
+protected:
+    ResizableExtVectorTest()
     {
         v.resize(10);
         int i = 0;
@@ -40,105 +41,105 @@ struct ResizableExtVectorFixture
             *elem = i;
         }
     }
-    ~ResizableExtVectorFixture()
+    virtual ~ResizableExtVectorTest()
     {
     }
     ResizableExtVector<int> v;
 };
 
 
-BOOST_AUTO_TEST_CASE(testDefaultConstructor)
+TEST(VecTypesTest, testDefaultConstructor)
 {
     ResizableExtVector<int> v;
-    BOOST_CHECK_EQUAL(v.empty(), true);
-    BOOST_CHECK_EQUAL(v.size(), 0);
-    BOOST_CHECK_EQUAL(v.getData(), (int*)0);
-    BOOST_CHECK_EQUAL(v.begin(), v.end());
+    EXPECT_EQ(v.empty(), true);
+    EXPECT_EQ(v.size(), 0);
+    EXPECT_EQ(v.getData(), (int*)0);
+    EXPECT_EQ(v.begin(), v.end());
 }
 
-BOOST_FIXTURE_TEST_CASE(testSizing, ResizableExtVectorFixture)
+TEST_F(ResizableExtVectorTest, testSizing)
 {
-    BOOST_CHECK_EQUAL(v.empty(), false);
-    BOOST_CHECK_EQUAL(v.size(), 10);
+    EXPECT_EQ(v.empty(), false);
+    EXPECT_EQ(v.size(), 10);
 }
 
-BOOST_FIXTURE_TEST_CASE(testClear, ResizableExtVectorFixture)
+TEST_F(ResizableExtVectorTest, testClear)
 {
     v.clear();
-    BOOST_CHECK_EQUAL(v.empty(), true);
-    BOOST_CHECK_EQUAL(v.size(), 0);
+    EXPECT_EQ(v.empty(), true);
+    EXPECT_EQ(v.size(), 0);
 }
 
-BOOST_FIXTURE_TEST_CASE(testIterators, ResizableExtVectorFixture)
+TEST_F(ResizableExtVectorTest, testIterators)
 {
     for(int i = 0; i < 10; ++i)
     {
-        BOOST_CHECK_EQUAL(v[i], i);
+        EXPECT_EQ(v[i], i);
     }
 }
 
-BOOST_FIXTURE_TEST_CASE(testIncreaseSize, ResizableExtVectorFixture)
+TEST_F(ResizableExtVectorTest, testIncreaseSize)
 {
     v.resize(20);
-    BOOST_CHECK_EQUAL(v.size(), 20);
+    EXPECT_EQ(v.size(), 20);
     for(int i = 0; i < 10; ++i)
     {
-        BOOST_CHECK_EQUAL(v[i], i);
+        EXPECT_EQ(v[i], i);
     }
 }
 
-BOOST_FIXTURE_TEST_CASE(testReduceSize, ResizableExtVectorFixture)
+TEST_F(ResizableExtVectorTest, testReduceSize)
 {
     v.resize(5);
-    BOOST_CHECK_EQUAL(v.size(), 5);
+    EXPECT_EQ(v.size(), 5);
     for(int i = 0; i < 5; ++i)
     {
-        BOOST_CHECK_EQUAL(v[i], i);
+        EXPECT_EQ(v[i], i);
     }
 }
 
-BOOST_FIXTURE_TEST_CASE(testSetNullAllocator, ResizableExtVectorFixture)
+TEST_F(ResizableExtVectorTest, testSetNullAllocator)
 {
     v.setAllocator(0);
-    BOOST_CHECK_EQUAL(v.empty(), true);
-    BOOST_CHECK_EQUAL(v.size(), 0);
-    BOOST_CHECK_EQUAL(v.getData(), (int*)0);
+    EXPECT_EQ(v.empty(), true);
+    EXPECT_EQ(v.size(), 0);
+    EXPECT_EQ(v.getData(), (int*)0);
 }
 
-BOOST_FIXTURE_TEST_CASE(testSetOtherAllocator, ResizableExtVectorFixture)
+TEST_F(ResizableExtVectorTest, testSetOtherAllocator)
 {
     v.setAllocator(new DefaultAllocator<int>);
-    BOOST_CHECK_EQUAL(v.empty(), false);
-    BOOST_CHECK_EQUAL(v.size(), 10);
-    BOOST_CHECK(v.getData() != 0);
+    EXPECT_EQ(v.empty(), false);
+    EXPECT_EQ(v.size(), 10);
+    EXPECT_TRUE(v.getData() != 0);
 
     for(int i = 0; i < 10; ++i)
     {
-        BOOST_CHECK_EQUAL(v[i], i);
+        EXPECT_EQ(v[i], i);
     }
 }
 
-BOOST_FIXTURE_TEST_CASE(testCopyConstructor_Sizing, ResizableExtVectorFixture)
+TEST_F(ResizableExtVectorTest, testCopyConstructor_Sizing)
 {
     ResizableExtVector<int> v2 = v;
-    BOOST_CHECK_EQUAL(v2.empty(), false);
-    BOOST_CHECK_EQUAL(v2.size(), 10);
+    EXPECT_EQ(v2.empty(), false);
+    EXPECT_EQ(v2.size(), 10);
 }
 
-BOOST_FIXTURE_TEST_CASE(testCopyConstructor_Separation, ResizableExtVectorFixture)
+TEST_F(ResizableExtVectorTest, testCopyConstructor_Separation)
 {
     ResizableExtVector<int> v2 = v;
     v.resize(0);
-    BOOST_CHECK_EQUAL(v2.empty(), false);
-    BOOST_CHECK_EQUAL(v2.size(), 10);
+    EXPECT_EQ(v2.empty(), false);
+    EXPECT_EQ(v2.size(), 10);
 }
 
 
-BOOST_FIXTURE_TEST_CASE(testCopyConstructor_Data, ResizableExtVectorFixture)
+TEST_F(ResizableExtVectorTest, testCopyConstructor_Data)
 {
     ResizableExtVector<int> v2 = v;
     for(int i = 0; i < 10; ++i)
     {
-        BOOST_CHECK_EQUAL(v2[i], i);
+        EXPECT_EQ(v2[i], i);
     }
 }

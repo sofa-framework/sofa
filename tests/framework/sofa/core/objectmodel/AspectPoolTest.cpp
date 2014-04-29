@@ -26,12 +26,12 @@
 ******************************************************************************/
 
 #include <sofa/core/objectmodel/AspectPool.h>
-#include <boost/test/auto_unit_test.hpp>
+#include <gtest/gtest.h>
 
 using namespace sofa::core::objectmodel;
 using sofa::core::SOFA_DATA_MAX_ASPECTS;
 
-BOOST_AUTO_TEST_CASE(AspectPool_allocate)
+TEST(AspectPoolTest, allocate)
 {
     AspectPool p;
     {
@@ -40,27 +40,27 @@ BOOST_AUTO_TEST_CASE(AspectPool_allocate)
         for(int i = 0; i < SOFA_DATA_MAX_ASPECTS; ++i)
         {
             refs[i] = p.allocate();
-            BOOST_CHECK(refs[i] != 0);
-            BOOST_CHECK_EQUAL(refs[i]->aspectID(), i);
+            EXPECT_TRUE(refs[i] != 0);
+            EXPECT_EQ(refs[i]->aspectID(), i);
         }
         AspectRef extraRef = p.allocate(); // try to allocate one more aspect
-        BOOST_CHECK(extraRef == 0); // it should have returned a null pointer
+        EXPECT_TRUE(extraRef == 0); // it should have returned a null pointer
 
         refs[SOFA_DATA_MAX_ASPECTS/2].reset(); // release an aspect
         extraRef = p.allocate(); // allocate a new one: it should return the ID of the previously released one.
-        BOOST_CHECK(extraRef != 0);
-        BOOST_CHECK_EQUAL(extraRef->aspectID(), SOFA_DATA_MAX_ASPECTS/2);
+        EXPECT_TRUE(extraRef != 0);
+        EXPECT_EQ(extraRef->aspectID(), SOFA_DATA_MAX_ASPECTS/2);
     }
 
     AspectRef newRef = p.allocate(); // allocate an aspect after all have been released.
-    BOOST_CHECK(newRef != 0);
-    BOOST_CHECK_EQUAL(newRef->aspectID(), SOFA_DATA_MAX_ASPECTS/2); // it should return the 0 aspect
+    EXPECT_TRUE(newRef != 0);
+    EXPECT_EQ(newRef->aspectID(), SOFA_DATA_MAX_ASPECTS/2); // it should return the 0 aspect
 
     if(SOFA_DATA_MAX_ASPECTS > 1)
     {
         AspectRef extraRef = p.allocate();
-        BOOST_CHECK(extraRef != 0);
-        BOOST_CHECK_EQUAL(extraRef->aspectID(), SOFA_DATA_MAX_ASPECTS-1); // it should return the last aspect
+        EXPECT_TRUE(extraRef != 0);
+        EXPECT_EQ(extraRef->aspectID(), SOFA_DATA_MAX_ASPECTS-1); // it should return the last aspect
     }
 }
 
