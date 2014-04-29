@@ -83,7 +83,7 @@ void intrusive_ptr_release(Aspect* a)
 AspectPool::AspectPool()
 {
     // Create all aspects and fill the list of free aspects.
-    std::cout << "AspectPool"<<this<<": filling " << SOFA_DATA_MAX_ASPECTS << " aspects" << std::endl;
+    // std::cout << "AspectPool"<<this<<": filling " << SOFA_DATA_MAX_ASPECTS << " aspects" << std::endl;
     aspects.resize(SOFA_DATA_MAX_ASPECTS);
     for(int i = 0; i < SOFA_DATA_MAX_ASPECTS; ++i)
     {
@@ -121,15 +121,15 @@ AspectRef AspectPool::allocate()
 {
     AspectRef ref;
     AtomicInt aspectID;
-    std::cout << "AspectPool"<<this<<": allocate" << std::endl;
-    std::cout << "AspectPool"<<this<<": " << freeAspects.size() << " aspects available" << std::endl;
+    // std::cout << "AspectPool"<<this<<": allocate" << std::endl;
+    // std::cout << "AspectPool"<<this<<": " << freeAspects.size() << " aspects available" << std::endl;
     if(freeAspects.pop(aspectID))
     {
-        std::cout << "AspectPool"<<this<<": aspect " << aspectID << " allocated" << std::endl;
+        // std::cout << "AspectPool"<<this<<": aspect " << aspectID << " allocated" << std::endl;
         ref = aspects[aspectID];
     }
-    else
-        std::cout << "AspectPool"<<this<<": no aspect available" << std::endl;
+    // else
+        // std::cout << "AspectPool"<<this<<": no aspect available" << std::endl;
     return ref;
 }
 
@@ -140,7 +140,7 @@ AspectRef AspectPool::allocate()
  */
 void AspectPool::release(int id)
 {
-    std::cout << "AspectPool"<<this<<": release aspect " << id << std::endl;
+    // std::cout << "AspectPool"<<this<<": release aspect " << id << std::endl;
     if(releaseCallback != 0)
     {
         releaseCallback(id);

@@ -345,6 +345,7 @@ endif()
 # unit tests
 sofa_option(SOFA-MISC_TESTS BOOL OFF "Build and use all the unit tests, including the tests of the activated plugins")
 if(SOFA-MISC_TESTS)
+    add_subdirectory(tests)
     sofa_option(SOFA-MISC_BUILD_GTEST BOOL ON "Build google test framework")
 endif()
 
