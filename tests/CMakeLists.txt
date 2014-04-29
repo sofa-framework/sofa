@@ -8,15 +8,6 @@ set(SOURCE_FILES
     framework/sofa/helper/system/atomicTest.cpp
     framework/sofa/core/objectmodel/AspectPoolTest.cpp)
 
-if(SOFA-EXTERNAL_BOOST)
-    list(APPEND SOURCE_FILES
-         framework/sofa/helper/system/thread/CircularQueueTest.cpp)
-endif()
-
 add_executable(framework_test ${SOURCE_FILES})
 target_link_libraries(framework_test gtest_main SofaCore)
 
-if(SOFA-EXTERNAL_BOOST)
-    find_package(Boost COMPONENTS thread REQUIRED)
-    target_link_libraries(framework_test ${Boost_THREAD_LIBRARY})
-endif()
