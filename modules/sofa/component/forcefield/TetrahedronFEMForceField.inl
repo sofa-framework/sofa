@@ -1757,9 +1757,9 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
     }
 
     vparams->drawTool()->setLightingEnabled(false);
-    glEnable(GL_BLEND) ;
-    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-    glDepthMask(0);
+    //glEnable(GL_BLEND) ;
+    //glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+    //glDepthMask(0);
 
     if (_showVonMisesStressPerNode.getValue()) {
         std::vector<Vec4f> nodeColors(x.size());
@@ -1908,7 +1908,7 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
                     visualmodel::ColorMap::evaluator<Real> evalColor = _showStressColorMapReal->getEvaluator(minVM, maxVM);
                     Vec4f col = evalColor(vM[i]); //*vM[i]);
 
-                    col[3] = 0.8f;
+                    col[3] = 1.0f;
                     vparams->drawTool()->drawTriangles(points[0],col);
                     vparams->drawTool()->drawTriangles(points[1],col);
                     vparams->drawTool()->drawTriangles(points[2],col);
@@ -2520,19 +2520,21 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
         visualmodel::ColorMap::evaluator<Real> evalColor = _showStressColorMapReal->getEvaluator(minVM, maxVM);
         Vec4f col = evalColor(vME[i]); //*vM[i]);
         Vec3f col3(col[0], col[1], col[2]);
-        Tetrahedron tetra = _mesh->getTetra(i);
+        Tetrahedron tetra = (*_indexedElements)[i];//_mesh->getTetra(i);
 
         for(unsigned int j=0 ; j<4 ; j++)
         {
-            vonMisesStressColors[tetra[j]] += (col3)*2;
+            vonMisesStressColors[tetra[j]] += (col3);
             vonMisesStressColorsCoeff[tetra[j]] ++;
         }
     }
 
     for(unsigned int i=0 ; i<vonMisesStressColors.size() ; i++)
     {
-        if(vonMisesStressColorsCoeff[i] > 0)
+        if(vonMisesStressColorsCoeff[i] != 0)
+        {
             vonMisesStressColors[i] /= vonMisesStressColorsCoeff[i];
+        }
     }
 
 }
