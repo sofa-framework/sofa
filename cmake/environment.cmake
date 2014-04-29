@@ -1,16 +1,8 @@
 
 # Path variables
 set(SOFA_CMAKE_DIR "${CMAKE_CURRENT_LIST_DIR}" CACHE INTERNAL "Path to the Sofa cmake directory")
-
-set(SOFA_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE INTERNAL "Path to the Sofa source directory")
-set(SOFA_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR} CACHE INTERNAL "Path to the Sofa build directory")
-#message(STATUS "CMAKE_CURRENT_LIST_DIR = ${CMAKE_CURRENT_LIST_DIR}")
-#message(STATUS "CMAKE_CURRENT_SOURCE_DIR = ${CMAKE_CURRENT_SOURCE_DIR}")
-#message(STATUS "CMAKE_CURRENT_BINARY_DIR = ${CMAKE_CURRENT_BINARY_DIR}")
-#message(STATUS "SOFA_CMAKE_DIR = ${SOFA_CMAKE_DIR}")
-#message(STATUS "SOFA_SRC_DIR = ${SOFA_SRC_DIR}")
-#message(STATUS "SOFA_BUILD_DIR = ${SOFA_BUILD_DIR}")
-
+set(SOFA_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}" CACHE INTERNAL "Path to the Sofa source directory")
+set(SOFA_BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}" CACHE INTERNAL "Path to the Sofa build directory")
 set(SOFA_BIN_DIR "${SOFA_BUILD_DIR}/bin" CACHE INTERNAL "Path to the Sofa bin directory")
 if(WIN32)
     set(SOFA_INC_DIR "${SOFA_SRC_DIR}/include" CACHE INTERNAL "Path to the Sofa include directory")
@@ -26,7 +18,6 @@ set(SOFA_APPLICATIONS_PLUGINS_DIR "${SOFA_APPLICATIONS_DIR}/plugins" CACHE INTER
 set(SOFA_APPLICATIONS_DEV_PLUGINS_DIR "${SOFA_APPLICATIONS_DEV_DIR}/plugins" CACHE INTERNAL "Path to the Sofa applications-dev plugins directory")
 set(SOFA_APPLICATIONS_PROJECTS_DIR "${SOFA_APPLICATIONS_DIR}/projects" CACHE INTERNAL "Path to the Sofa applications projects directory")
 set(SOFA_APPLICATIONS_DEV_PROJECTS_DIR "${SOFA_APPLICATIONS_DEV_DIR}/projects" CACHE INTERNAL "Path to the Sofa applications-dev projects directory")
-set(SOFA_TOOLS_DIR "${SOFA_SRC_DIR}/tools" CACHE INTERNAL "Path to the Sofa tools directory")
 set(SOFA_CUDA_DIR "${SOFA_APPLICATIONS_DIR}/plugins/SofaCUDA" CACHE INTERNAL "Path to the SofaCuda directory")
 
 # CMake modules path, for our FindXXX.cmake modules
@@ -62,3 +53,21 @@ endforeach()
 unset(GLOBAL_DEPENDENCIES CACHE)        # dependency database
 unset(GLOBAL_COMPILER_DEFINES CACHE)    #
 unset(GLOBAL_INCLUDE_DIRECTORIES CACHE) #
+
+## Output directories
+# This macro sets the output directory for each build type
+macro(sofa_set_output_directory target_type directory)
+    set(CMAKE_${target_type}_OUTPUT_DIRECTORY "${directory}")
+    set(CMAKE_${target_type}_OUTPUT_DIRECTORY_DEBUG "${directory}")
+    set(CMAKE_${target_type}_OUTPUT_DIRECTORY_RELEASE "${directory}")
+    set(CMAKE_${target_type}_OUTPUT_DIRECTORY_RELWITHDEBINFO "${directory}")
+    set(CMAKE_${target_type}_OUTPUT_DIRECTORY_MINSIZEREL "${directory}")
+endmacro()
+# Set the output directory for each target type
+sofa_set_output_directory(RUNTIME "${SOFA_BIN_DIR}") # Executables
+if(UNIX)
+    sofa_set_output_directory(LIBRARY "${SOFA_LIB_DIR}") # Dynamic libraries
+else()
+    sofa_set_output_directory(LIBRARY "${SOFA_BIN_DIR}") # Dynamic libraries
+    sofa_set_output_directory(ARCHIVE "${SOFA_LIB_DIR}") # Static libraries
+endif()
