@@ -17,5 +17,6 @@ add_executable(framework_test ${SOURCE_FILES})
 target_link_libraries(framework_test gtest_main SofaCore)
 
 if(SOFA-EXTERNAL_BOOST)
+    find_package(Boost COMPONENTS thread REQUIRED)
     target_link_libraries(framework_test ${Boost_THREAD_LIBRARY})
 endif()
