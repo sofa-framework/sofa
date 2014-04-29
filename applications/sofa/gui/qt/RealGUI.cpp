@@ -723,13 +723,13 @@ int RealGUI::closeGUI()
     settings.setValue("screenNumber", QApplication::desktop()->screenNumber(this));
     settings.endGroup();
 
-    std::string viewerFileName;
-    std::string path = sofa::helper::system::DataRepository.getFirstPath();
-    viewerFileName = path.append("/share/config/sofaviewer.ini");
+//    std::string viewerFileName;
+//    std::string path = sofa::helper::system::DataRepository.getFirstPath();
+//    viewerFileName = path.append("/share/config/sofaviewer.ini");
 
-    std::ofstream out(viewerFileName.c_str(),std::ios::out);
-    out << sizeW->value() << std::endl << sizeH->value() << std::endl;
-    out.close();
+//    std::ofstream out(viewerFileName.c_str(),std::ios::out);
+//    out << sizeW->value() << std::endl << sizeH->value() << std::endl;
+//    out.close();
 
     delete this;
     return 0;
@@ -1107,7 +1107,11 @@ void RealGUI::setViewerResolution ( int w, int h )
         layout()->update();
 #endif
 
-        resize(winSize.width() - viewSize.width() + w, winSize.height() - viewSize.height() + h);
+        const QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->screenNumber(this));
+        QSize newWinSize(winSize.width() - viewSize.width() + w, winSize.height() - viewSize.height() + h);
+        if (newWinSize.width() > screen.width()) newWinSize.setWidth(screen.width()-20);
+        if (newWinSize.height() > screen.height()) newWinSize.setHeight(screen.height()-20);
+        this->resize(newWinSize);
         //std::cout<<"winSize.width() - viewSize.width() + w = "<< winSize.width()<<"-"<< viewSize.width()<<"+"<<w<<std::endl;
         //std::cout<<"winSize.height() - viewSize.height() + h = "<< winSize.height()<<"-"<< viewSize.height()<<"+"<<h<<std::endl;
         //std::cout << "Setting windows dimension to " << size().width() << " x " << size().height() << std::endl;
