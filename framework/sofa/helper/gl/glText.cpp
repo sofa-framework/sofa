@@ -44,13 +44,13 @@ GlText::GlText ( const string& text )
     this->text = text;
 }
 
-GlText::GlText ( const string& text, const Vector3& position )
+GlText::GlText ( const string& text, const defaulttype::Vector3& position )
 {
     this->text = text;
     this->position = position;
 }
 
-GlText::GlText ( const string& text, const Vector3& position, const double& scale )
+GlText::GlText ( const string& text, const defaulttype::Vector3& position, const double& scale )
 {
     this->text = text;
     this->position = position;
@@ -67,7 +67,7 @@ void GlText::setText ( const string& text )
     this->text = text;
 }
 
-void GlText::update ( const Vector3& position )
+void GlText::update ( const defaulttype::Vector3& position )
 {
     this->position = position;
 }

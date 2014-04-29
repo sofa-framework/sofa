@@ -120,9 +120,13 @@ public:
     ///
     /// @param result the variable where the result will be added
     /// @param J the matrix J to use
+    /// @param fact integrator parameter
     /// @return false if the solver does not support this operation, of it the system matrix is not invertible
-    virtual bool addMInvJt(defaulttype::BaseMatrix* /*result*/, defaulttype::BaseMatrix* /*J*/, double /*fact*/)
+    virtual bool addMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact)
     {
+        SOFA_UNUSED(result);
+        SOFA_UNUSED(J);
+        SOFA_UNUSED(fact);
         return false;
     }
 
@@ -131,8 +135,10 @@ public:
     /// @param result the variable where the result will be added
     /// @param fact integrator parameter
     /// @return false if the solver does not support this operation, of it the system matrix is not invertible
-    virtual bool buildComplianceMatrix(defaulttype::BaseMatrix* /*result*/, double /*fact*/)
+    virtual bool buildComplianceMatrix(defaulttype::BaseMatrix* result, double fact)
     {
+        SOFA_UNUSED(result);
+        SOFA_UNUSED(fact);
         serr << "Error buildComplianceMatrix has not been implemented" << sendl;
         return false;
     }
@@ -154,9 +160,13 @@ public:
     ///
     /// @param result the variable where the result will be added
     /// @param J the matrix J to use
+    /// @param fact integrator parameter
     /// @return false if the solver does not support this operation, of it the system matrix is not invertible
-    virtual bool addJMInvJt(defaulttype::BaseMatrix* /*result*/, defaulttype::BaseMatrix* /*J*/, double /*fact*/)
+    virtual bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact)
     {
+        SOFA_UNUSED(result);
+        SOFA_UNUSED(J);
+        SOFA_UNUSED(fact);
         return false;
     }
 

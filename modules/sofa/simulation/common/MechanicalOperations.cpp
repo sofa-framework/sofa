@@ -358,10 +358,6 @@ void MechanicalOperations::computeContactAcc(double t, core::MultiVecDerivId a, 
 
 
 
-/// @}
-
-/// @name Matrix operations using LinearSolver components
-/// @{
 
 using sofa::core::behavior::LinearSolver;
 using sofa::core::objectmodel::BaseContext;
@@ -490,10 +486,6 @@ void MechanicalOperations::m_print( std::ostream& out )
     out << "]";
 }
 
-/// @}
-
-/// @name Matrix operations
-/// @{
 
 // BaseMatrix & BaseVector Computations
 void MechanicalOperations::getMatrixDimension(unsigned int *  const nbRow, unsigned int * const nbCol, sofa::core::behavior::MultiMatrixAccessor* matrix)
@@ -546,10 +538,6 @@ void MechanicalOperations::multiVectorPeqBaseVector(core::MultiVecDerivId dest, 
 
 
 
-/// @}
-
-/// @name Debug operations
-/// @{
 
 /// Dump the content of the given vector.
 void MechanicalOperations::print( core::ConstMultiVecId /*v*/, std::ostream& /*out*/ )
@@ -560,8 +548,6 @@ void MechanicalOperations::print( core::ConstMultiVecId /*v*/, std::ostream& /*o
 void MechanicalOperations::printWithElapsedTime( core::ConstMultiVecId /*v*/, unsigned /*time*/, std::ostream& /*out*/ )
 {
 }
-
-/// @}
 
 }
 

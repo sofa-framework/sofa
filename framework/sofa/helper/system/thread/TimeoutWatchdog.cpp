@@ -26,6 +26,8 @@
 #include "TimeoutWatchdog.h"
 #include <iostream>
 
+#ifdef SOFA_HAVE_BOOST
+
 namespace sofa
 {
 namespace helper
@@ -34,17 +36,11 @@ namespace system
 {
 namespace thread
 {
-/**
- * Default constructor.
- */
 TimeoutWatchdog::TimeoutWatchdog()
     : timeout_sec(0)
 {
 }
 
-/**
- * Destructor: interrupts the watchdog and cleans-up.
- */
 TimeoutWatchdog::~TimeoutWatchdog()
 {
     if(timeout_sec > 0)
@@ -56,9 +52,6 @@ TimeoutWatchdog::~TimeoutWatchdog()
     }
 }
 
-/**
- * Starts a thread that will terminate the program after the specified duration elapses.
- */
 void TimeoutWatchdog::start(unsigned timeout_sec)
 {
     this->timeout_sec = timeout_sec;
@@ -69,9 +62,6 @@ void TimeoutWatchdog::start(unsigned timeout_sec)
     }
 }
 
-/**
- * The thread "main" procedure: waits until the program lifespan has elapsed.
- */
 void TimeoutWatchdog::threadProc()
 {
     //std::cout << "Entering watchdog thread" << std::endl;
@@ -94,4 +84,4 @@ void TimeoutWatchdog::threadProc()
 }
 }
 
-
+#endif
