@@ -55,6 +55,8 @@ if(SOFA-MISC_BUILD_GTEST)
         get_target_property(gtestMainCompilerDefines gtest_main COMPILE_DEFINITIONS)
         set_target_properties(gtest_main PROPERTIES COMPILE_DEFINITIONS "${gtestMainCompilerDefines};_VARIADIC_MAX=10")
     endif()
+
+    add_subdirectory(tests)
 endif()
 
 # framework
