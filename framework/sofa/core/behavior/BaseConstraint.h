@@ -142,8 +142,9 @@ public:
 
 	/// Get information for each constraint: pointer to parent BaseConstraint, unique persistent ID, 3D position
 	/// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC) and resolution parameters (smoothness, ...)
-	virtual void getConstraintInfo(const ConstraintParams* /*cParams*/, VecConstraintBlockInfo& blocks, VecPersistentID& ids, VecConstCoord& positions, VecConstDeriv& directions, VecConstArea& areas)
+	virtual void getConstraintInfo(const ConstraintParams* cParams, VecConstraintBlockInfo& blocks, VecPersistentID& ids, VecConstCoord& positions, VecConstDeriv& directions, VecConstArea& areas)
 	{
+		SOFA_UNUSED(cParams);
 		getConstraintInfo(blocks, ids, positions, directions, areas);
 	}
 

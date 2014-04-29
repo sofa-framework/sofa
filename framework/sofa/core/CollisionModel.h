@@ -412,7 +412,7 @@ public:
 
 
 
-    /// @deperecated "group" is now a set of IDs, please use getGroups instead
+    /// @deprecated "group" is now a set of IDs, please use getGroups instead
     /// @warning returns only the first group ID
     /// @warning return 0 when group is empty
     int getGroup() const {
@@ -473,8 +473,8 @@ protected:
     Data<SReal> contactFriction;
     /// Default contact coefficient of restitution
     Data<SReal> contactRestitution;
-    /// contactResponse", "if set, indicate to the ContactManager that this model should use the
-    /// given class of contacts.\nNote that this is only indicative, and in particular if both
+    /// If non-empty, indicate to the ContactManager that this model should use the
+    /// given class of contacts. Note that this is only indicative, and in particular if both
     /// collision models specify a different class it is up to the manager to choose.
     Data<std::string> contactResponse;
 

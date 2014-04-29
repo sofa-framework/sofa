@@ -46,12 +46,16 @@ namespace thread
 class SOFA_HELPER_API TimeoutWatchdog
 {
 public:
+    /// Default constructor.
     TimeoutWatchdog();
+    /// Destructor: interrupts the watchdog and cleans-up.
     ~TimeoutWatchdog();
 
+    /// Starts a thread that will terminate the program after the specified duration elapses.
     void start(unsigned timeout_sec);
 
 private:
+    /// The thread "main" procedure: waits until the program lifespan has elapsed.
     void threadProc();
 
     unsigned timeout_sec;

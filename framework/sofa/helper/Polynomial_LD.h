@@ -27,7 +27,6 @@
 
 #include <sofa/helper/helper.h>
 
-//#include <sofa/component/component.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/vector.h>
@@ -49,7 +48,7 @@ using namespace sofa::defaulttype;
 using namespace std;
 
 /**
- * \brief A generic monomial with <N> variable of type <Real>. A monomial is one term in the polynomial.
+ * \brief A generic monomial with *N* variables of type *Real*. A monomial is one term of a polynomial.
  *
  * Todo this first version of polynomial is a linear presentation.
  * This presentation is efficient for arithmetic operator like +,-,\*,/ and derivative.
@@ -127,7 +126,7 @@ protected :
 
 
 /**
- * \brief A generic polynomial with <N> variable of type <Real>. A polynomial is a list composed several term of monomial
+ * \brief A generic polynomial with *N* variables of type *Real*. A polynomial is a list composed of several monomials.
  *
  */
 

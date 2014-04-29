@@ -124,7 +124,7 @@ public:
     /// applyJ(out, in) should be equivalent to $out = J in$.
     /// applyJT(out, in) should be equivalent to $out = J^T in$.
     ///
-    /// @TODO Note that if the mapping provides this matrix, then a default implementation
+    /// @todo Note that if the mapping provides this matrix, then a default implementation
     /// of all other related methods could be provided, or optionally used to verify the
     /// provided implementations for debugging.
     virtual const sofa::defaulttype::BaseMatrix* getJ(const MechanicalParams* /*mparams*/);
