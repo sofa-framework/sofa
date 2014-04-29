@@ -963,7 +963,17 @@ void SparseGridRamificationTopology::buildVirtualFinerLevels()
     _virtualFinerLevels[0]->_fillWeighted.setValue( _fillWeighted.getValue() );
     _virtualFinerLevels[0]->setMin( _min.getValue() );
     _virtualFinerLevels[0]->setMax( _max.getValue() );
-    _virtualFinerLevels[0]->load(this->fileTopology.getValue().c_str());
+
+    if(this->fileTopology.getValue().empty() )
+    {
+        _virtualFinerLevels[0]->vertices.setValue( this->vertices.getValue() );
+        _virtualFinerLevels[0]->input_triangles.setValue( this->input_triangles.getValue() );
+        _virtualFinerLevels[0]->input_quads.setValue( this->input_quads.getValue() );
+    }
+    else
+    {
+        _virtualFinerLevels[0]->load(this->fileTopology.getValue().c_str());
+    }
     _virtualFinerLevels[0]->init();
 
     sout<<"buildVirtualFinerLevels : ";
