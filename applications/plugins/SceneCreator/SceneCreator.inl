@@ -63,6 +63,7 @@ template<class DataTypes> PatchTestStruct<DataTypes> createRegularGridScene(simu
 {
     // Definitions
     PatchTestStruct<DataTypes> patchStruct;
+    typedef typename DataTypes::Real Real;
     typedef typename component::container::MechanicalObject<DataTypes> MechanicalObject;
     typedef typename sofa::component::mass::UniformMass <DataTypes, SReal> UniformMass;
     typedef component::topology::RegularGridTopology RegularGridTopology;
@@ -99,7 +100,7 @@ template<class DataTypes> PatchTestStruct<DataTypes> createRegularGridScene(simu
     patchStruct.dofs->setSrc("@"+gridMesh->getName(), gridMesh.get());
 
     //BoxRoi to find all mesh points
-    helper::vector < defaulttype::Vec<6,SReal> > vecBox;
+    helper::vector < defaulttype::Vec<6,Real> > vecBox;
     vecBox.push_back(entireBoxRoi);
     typename BoxRoi::SPtr boxRoi = addNew<BoxRoi>(SquareNode,"boxRoi");
     boxRoi->boxes.setValue(vecBox);
@@ -121,7 +122,8 @@ template<class DataTypes> PatchTestStruct<DataTypes> createRegularGridScene(simu
 template<class DataTypes> CylinderTractionStruct<DataTypes>  createCylinderTractionScene(size_t resolutionCircumferential,size_t  resolutionRadial,  size_t  resolutionHeight,size_t maxIter)
 {
     // Definitions
-	 typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::Real Real;
     typedef typename component::container::MechanicalObject<DataTypes> MechanicalObject;
     typedef typename component::engine::BoxROI<DataTypes> BoxRoi;
     typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
@@ -168,8 +170,8 @@ template<class DataTypes> CylinderTractionStruct<DataTypes>  createCylinderTract
 	mass->m_massDensity=1.0;
 	mass->lumping=false;
 	/// box fixed
-	helper::vector < defaulttype::Vec<6,SReal> > vecBox;
-	defaulttype::Vec<6,SReal> box;
+	helper::vector < defaulttype::Vec<6,Real> > vecBox;
+	defaulttype::Vec<6,Real> box;
 	box[0]= -0.01;box[1]= -0.01;box[2]= -0.01;box[3]= 0.01;box[4]= 0.01;box[5]= 0.01;
     vecBox.push_back(box);
     typename BoxRoi::SPtr boxRoi1 = addNew<BoxRoi>(root,"boxRoiFix");
