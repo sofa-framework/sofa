@@ -3,9 +3,10 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 set(SOURCE_FILES
 
    AffinePatch_test.cpp
-   LinearDeformationMapping_test.cpp
+   PointDeformationMapping_test.cpp
    Patch_test.cpp
    StrainMappings_test.cpp
+   RigidDeformationMapping_test.cpp
         )
 
 if(APPLE)

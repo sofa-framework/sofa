@@ -48,7 +48,7 @@ namespace sofa {
     */
 
     template <typename _Mapping>
-    struct LinearDeformationMappings_test : public Mapping_test<_Mapping>
+    struct PointsDeformationMapping_test : public Mapping_test<_Mapping>
     {
         typedef Mapping_test<_Mapping> Inherited;
         typedef typename Inherited::In In;
@@ -81,7 +81,7 @@ namespace sofa {
         sofa::helper::RandomGenerator randomGenerator;
 
         // Constructor: call the constructor of the base class which loads the scene to test
-        LinearDeformationMappings_test() : Inherited::Mapping_test(std::string(FLEXIBLE_TEST_SCENES_DIR) + "/" + "LinearDeformationMappingPoint.scn")
+        PointsDeformationMapping_test() : Inherited::Mapping_test(std::string(FLEXIBLE_TEST_SCENES_DIR) + "/" + "LinearDeformationMappingPoint.scn")
         {   
             seed=1;
             // rotation and translation
@@ -211,10 +211,10 @@ namespace sofa {
     > DataTypes; // the types to instantiate.
 
     // Test suite for all the instantiations
-    TYPED_TEST_CASE(LinearDeformationMappings_test, DataTypes);
+    TYPED_TEST_CASE(PointsDeformationMapping_test, DataTypes);
 
     // test case: polarcorotationalStrainMapping 
-    TYPED_TEST( LinearDeformationMappings_test , VecDeformationMappingTest)
+    TYPED_TEST( PointsDeformationMapping_test , VecDeformationMappingTest)
     {
         ASSERT_TRUE( this->runTest(1e-10,1e-10));
     }

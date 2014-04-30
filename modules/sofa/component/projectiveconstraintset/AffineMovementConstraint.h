@@ -31,6 +31,7 @@
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/vector.h>
+#include <sofa/helper/Quater.h>
 #include <sofa/component/topology/TopologySubsetData.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -77,6 +78,7 @@ public:
     typedef Data<VecDeriv> DataVecDeriv;
     typedef helper::vector<unsigned int> SetIndexArray;
     typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
+    typedef defaulttype::Quat Quat;
    
     static const unsigned int CoordSize = Coord::total_size;
     typedef Mat<3,3,Real> RotationMatrix;
@@ -97,6 +99,8 @@ public :
     Data <double> m_endConstraintTime;
     /// Rotation Matrix of affine transformation
     Data<RotationMatrix> m_rotation;
+    /// Quaternion of affine transformation (for rigid)
+    Data<Quat> m_quaternion;
     /// Translation Matrix of affine transformation
     Data<Coord> m_translation;
     /// Draw constrained points

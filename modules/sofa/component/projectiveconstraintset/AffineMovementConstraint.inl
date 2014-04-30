@@ -77,6 +77,7 @@ AffineMovementConstraint<DataTypes>::AffineMovementConstraint()
     , m_beginConstraintTime( initData(&m_beginConstraintTime,"beginConstraintTime","Begin time of the bilinear constraint") )
     , m_endConstraintTime( initData(&m_endConstraintTime,"endConstraintTime","End time of the bilinear constraint") )
     , m_rotation(  initData(&m_rotation,"rotation","rotation applied to border points") )
+    , m_quaternion( initData(&m_quaternion,"quaternion","quaternion applied to border points") )
     , m_translation(  initData(&m_translation,"translation","translation applied to border points") )
     , m_drawConstrainedPoints(  initData(&m_drawConstrainedPoints,"drawConstrainedPoints","draw constrained points") )
 {
@@ -277,23 +278,19 @@ void AffineMovementConstraint<DataTypes>::transform(const SetIndexArray & indice
 template <>
 void AffineMovementConstraint<Rigid3Types>::transform(const SetIndexArray & indices, Rigid3Types::VecCoord& x0, Rigid3Types::VecCoord& xf)
 {
-   std::cout << "transform from Affine Movement Rigid3Types specialization" << std::endl;
     for (size_t i=0; i < indices.size() ; ++i)
     {
+        // Get quaternion value
+        RotationMatrix rotationMat(0);
+        Quat quat =  m_quaternion.getValue(); 
+        quat.toMatrix(rotationMat);
+
         // Translation
         Coord translation = m_translation.getValue();
-        xf[indices[i]].getCenter() = x0[indices[i]].getCenter() + translation.getCenter();
+        xf[indices[i]].getCenter() = rotationMat*(x0[indices[i]].getCenter()) + translation.getCenter();
 
         // Rotation
-        RotationMatrix rotationMat = m_rotation.getValue();
-        Quat quat (0,0,0,0);
-        quat.fromMatrix(rotationMat);
-        //std::cout << "quat = " << quat << std::endl;
         xf[indices[i]].getOrientation() = (quat)+x0[indices[i]].getOrientation();
-        //xf[indices[i]].getOrientation().normalize();
-        //std::cout << "normalize" << std::endl;
-        //std::cout << "x0[indices[i]].getOrientation()" << x0[indices[i]].getOrientation() << std::endl;
-        //std::cout << "xf[indices[i]].getOrientation()" << xf[indices[i]].getOrientation() << std::endl;
 
     }
 

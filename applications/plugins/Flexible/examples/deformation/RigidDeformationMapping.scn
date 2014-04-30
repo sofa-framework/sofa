@@ -14,8 +14,8 @@
     
     <!--Constraint and roi-->
     <BoxROI name="Box" box="-10 -10 -10 30 30 30"/>
-    <AffineMovementConstraint template="Rigid" name="affineConstraint" endConstraintTime="0.02" indices="@Box.indices" meshIndices = "@Box.indices"/>
-  
+    <AffineMovementConstraint template="Rigid" name="affineConstraint" indices="@Box.indices" meshIndices = "@Box.indices" quaternion="-0.690728 -0.0685764 0.504544 -0.513446" />
+    
     <!--Mass-->
     <UniformMass name="mass" totalMass="1"/>
     
@@ -25,6 +25,8 @@
     <!--Elasticity-->
     <Node 	name="Elasticity" >
       <TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamplesScale="0" method="0" order="1" />
+      <MechanicalObject template="F331" name="MoElasticity" showObject="1" showObjectScale="5"/>
+      <LinearMapping name="linearMapping" template="Mapping&lt;Rigid,F331&gt;" shapeFunction="baryShapeFunction" showDeformationGradientScale="1"  showDeformationGradientStyle="0 - All axis"  showColorOnTopology="2 - sqrt(det(F^T.F))-1"/>
     </Node> 
 
     <!--Visualisation-->
@@ -34,5 +36,3 @@
   </Node>
 
 </Node>
-
-
