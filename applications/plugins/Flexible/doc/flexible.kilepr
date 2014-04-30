@@ -16,6 +16,16 @@ src_extensions=.tex .ltx .latex .dtx .ins
 MakeIndex=
 QuickBuild=
 
+[document-settings,item:Flexible.bib]
+Bookmarks=
+Encoding=UTF-8
+FoldedColumns=
+FoldedLines=
+Highlighting=BibTeX
+Indentation Mode=
+Mode=BibTeX
+ReadWrite=true
+
 [document-settings,item:Flexible.tex]
 Bookmarks=
 Encoding=UTF-8
@@ -35,6 +45,16 @@ Highlighting=LaTeX
 Indentation Mode=normal
 Mode=LaTeX
 ReadWrite=true
+
+[item:Flexible.bib]
+archive=true
+column=18
+encoding=UTF-8
+highlight=BibTeX
+line=11
+mode=BibTeX
+open=true
+order=1
 
 [item:Flexible.tex]
 archive=true
@@ -58,13 +78,19 @@ order=-1
 
 [item:flexible_body.tex]
 archive=true
-column=59
+column=0
 encoding=UTF-8
 highlight=LaTeX
-line=46
+line=144
 mode=LaTeX
 open=true
-order=1
+order=2
+
+[view-settings,view=0,item:Flexible.bib]
+CursorColumn=18
+CursorLine=11
+JumpList=
+ViMarks=
 
 [view-settings,view=0,item:Flexible.tex]
 CursorColumn=7
@@ -73,7 +99,7 @@ JumpList=
 ViMarks=
 
 [view-settings,view=0,item:flexible_body.tex]
-CursorColumn=59
-CursorLine=46
+CursorColumn=0
+CursorLine=144
 JumpList=
 ViMarks=
