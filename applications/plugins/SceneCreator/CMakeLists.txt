@@ -4,18 +4,17 @@ set(HEADER_FILES
 
     initSceneCreator.h
     SceneCreator.h
-        GetVectorVisitor.h
-        GetAssembledSizeVisitor.h
-
+    GetVectorVisitor.h
+    GetAssembledSizeVisitor.h
+	SceneCreator.inl
 	)
 
 set(SOURCE_FILES
 
     initSceneCreator.cpp
     SceneCreator.cpp
-        GetVectorVisitor.cpp
-        GetAssembledSizeVisitor.cpp
-
+    GetVectorVisitor.cpp
+    GetAssembledSizeVisitor.cpp
 	)
 
 AddCompilerDefinitions("SOFA_BUILD_SCENECREATOR")
