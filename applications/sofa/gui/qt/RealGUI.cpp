@@ -400,6 +400,8 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
     SofaVideoRecorderManager::getInstance()->hide();
 
     //Center the application
+	/** This code doesn't work for all the multi screen config, so i comment and replace it by the previous code **/
+	/*
     QSettings settings;
     settings.beginGroup("viewer");
     int screenNumber = settings.value("screenNumber", QApplication::desktop()->primaryScreen()).toInt();
@@ -415,6 +417,11 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
 
     const QRect screen = QApplication::desktop()->availableGeometry(screenNumber);
     this->move( offset + ( screen.width()- this->width()  ) / 2 - 200,  ( screen.height() - this->height()) / 2 - 50  );
+	*/
+
+	//Center the application
+	const QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->primaryScreen());
+	this->move(  ( screen.width()- this->width()  ) / 2 - 200,  ( screen.height() - this->height()) / 2 - 50  );
 
 #ifdef SOFA_QT4
     tabs->removeTab(tabs->indexOf(TabVisualGraph));
