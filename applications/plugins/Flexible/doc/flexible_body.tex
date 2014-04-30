@@ -142,8 +142,17 @@ More detail is given in sec.\ref{sec materials}.
 The vector of stresses $\vect \stress$ is mapped upward to generalized forces $\vect \fdefograd$ homogeneous to deformation gradients, which are multiplied by the sample size and possibly other volume moments to integrate across the object volume.
 These generalized forces are then mapped upward to node forces.
 
-
 Mass can be integrated at the middle level using volume samples, or set at the top level.
+
+This flexible architecture allows us to easily create models by re-using available parts. In the example shown in fig.\ref{fig tree levels frame}, the frame-based meshless model~\cite{gilles:frame:TOG11,faure:framesteak:11} can be modeled using the same type of deformation gradients, strains and material laws as the FEM model in fig.\ref{fig tree levels}.
+Only the top layer (independent DOFs and associated shape functions), the mapping to the deformation gradients and the sampling method differ.
+\begin{figure}
+ \centering
+ \includegraphics[page=2,height=0.3\linewidth]{threeLevels.pdf}
+ \caption{A frame-based meshless model}\label{fig tree levels frame}
+\end{figure}
+
+
 
 
 
@@ -435,3 +444,5 @@ Force variations are updated at each mapping by combining material and geometric
 \end{itemize}
 
 
+\bibliographystyle{plain}
+\bibliography{Flexible}
