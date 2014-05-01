@@ -24,7 +24,7 @@
 ******************************************************************************/
 
 
-#include "Sofa_test.h"
+#include "Elasticity_test.h"
 #include <sofa/helper/Quater.h>
 #include <sofa/helper/RandomGenerator.h>
 #include <sofa/component/init.h>
@@ -55,10 +55,10 @@ using namespace defaulttype;
 using namespace modeling;
 
 /**  AFfine Patch test.
-An affine movement (rotation and translation) is applied to the borders of a mesh. Test if the points within have the same affine movement.*/
+An affine movement (rotation and translation) is applied to the borders of a mesh. Test if the points inside have the same affine movement.*/
 
 template <typename _DataTypes>
-struct AffinePatch_test : public Sofa_test<typename _DataTypes::Real>
+struct AffinePatch_test : public Elasticity_test<_DataTypes>
 {
     typedef _DataTypes DataTypes;
     typedef typename DataTypes::CPos CPos;
@@ -107,7 +107,7 @@ struct AffinePatch_test : public Sofa_test<typename _DataTypes::Real>
     void createScene2DRegularGrid(bool randomRotation = true, bool randomTranslation=true)
     { 
         // Create a scene with a regular grid
-        patchStruct = createRegularGridScene<DataTypes>(
+        patchStruct = this->createRegularGridScene(
                         root,  // attached to the root node
                         Vec<3,SReal>(0,0,0), // Start point of regular grid
                         Vec<3,SReal>(1,1,0), // End point of regular grid
@@ -158,7 +158,7 @@ struct AffinePatch_test : public Sofa_test<typename _DataTypes::Real>
     void createScene3DRegularGrid(bool randomRotation = true, bool randomTranslation=true)
     {
         // Create a scene with a regular grid
-        patchStruct = createRegularGridScene<DataTypes>(
+        patchStruct = this->createRegularGridScene(
                         root,  // attached to the root node
                         Vec<3,SReal>(0,0,0), // Start point of regular grid
                         Vec<3,SReal>(1,1,1), // End point of regular grid

@@ -32,14 +32,6 @@
 #include <sofa/simulation/common/Node.h>
 #include <sofa/core/objectmodel/BaseData.h>
 
-// Constraint
-
-#include <sofa/component/projectiveconstraintset/AffineMovementConstraint.h>
-
-
-// ForceField
-#include <sofa/component/forcefield/TrianglePressureForceField.h>
-
 //Using double by default, if you have SOFA_FLOAT in use in you sofa-default.cfg, then it will be FLOAT.
 #include <sofa/component/typedef/Sofa_typedef.h>
 
@@ -118,7 +110,7 @@ SOFA_SceneCreator_API Node::SPtr massSpringString(
 
 /** Helper class to create a component and add it as a child of a given Node */
 template<class T>
-class addNew : public objectmodel::New<T>
+class addNew : public core::objectmodel::New<T>
 {
 	typedef typename T::SPtr SPtr;
 public:
@@ -149,28 +141,6 @@ SOFA_SceneCreator_API simulation::Node::SPtr clearScene();
 /// Create a link from source to target.  
 SOFA_SceneCreator_API void setDataLink(core::objectmodel::BaseData* source, core::objectmodel::BaseData* target);
 
-/// Structure which contains the nodes and the pointers useful for the patch test
-template<class T> 
-struct  PatchTestStruct
-{
-   simulation::Node::SPtr SquareNode;
-   typename component::projectiveconstraintset::AffineMovementConstraint<T>::SPtr affineConstraint;
-   typename component::container::MechanicalObject<T>::SPtr dofs;
-};
-
-/// Create a scene with a regular grid and an affine constraint for patch test
-template<class T>  SOFA_SceneCreator_API PatchTestStruct<T> createRegularGridScene(simulation::Node::SPtr root ,Vec<3,SReal> startPoint, Vec<3,SReal> endPoint, unsigned numX, unsigned numY, unsigned numZ, Vec<6,SReal> entireBoxRoi, Vec<6,SReal> inclusiveBox, Vec<6,SReal> includedBox);
-
-/// Structure which contains the nodes and the pointers useful for the patch test
-template<class T> 
-struct   CylinderTractionStruct
-{
-   simulation::Node::SPtr root;
-   typename component::container::MechanicalObject<T>::SPtr dofs;
-   typename component::forcefield::TrianglePressureForceField<T>::SPtr forceField; 
-};
-
-template<class DataTypes> SOFA_SceneCreator_API CylinderTractionStruct<DataTypes>  createCylinderTractionScene(size_t resolutionCircumferential=10,size_t  resolutionRadial=4,  size_t  resolutionHeight=10,size_t maxIter=1500);
 
 
 }// modeling
