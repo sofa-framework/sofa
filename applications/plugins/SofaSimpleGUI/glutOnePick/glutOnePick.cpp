@@ -79,7 +79,6 @@ void initGL(void)
     glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
     glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
-    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
@@ -93,6 +92,7 @@ void display(void)
     glLoadIdentity ();
 
 
+    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
     gluLookAt ( camera_position[0],camera_position[1],camera_position[2], 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
     sofaScene.glDraw();
