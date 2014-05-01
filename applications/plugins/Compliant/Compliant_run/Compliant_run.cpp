@@ -58,7 +58,7 @@
 
 //Using double by default, if you have SOFA_FLOAT in use in you sofa-default.cfg, then it will be FLOAT.
 #include <sofa/component/typedef/Sofa_typedef.h>
-#include "../../../applications/tutorials/objectCreator/ObjectCreator.h"
+#include <plugins/SceneCreator/SceneCreator.h>
 
 #include <plugins/Compliant/odesolver/AssembledSolver.h>
 #include <plugins/Compliant/numericalsolver/LDLTSolver.h>
@@ -68,7 +68,7 @@
 using sofa::component::configurationsetting::CompliantAttachButtonSetting;
 
 #include <sofa/simulation/common/Simulation.h>
-#include <tutorials/objectCreator/ObjectCreator.h>
+#include <plugins/SceneCreator/SceneCreator.h>
 
 using namespace sofa;
 using namespace sofa::helper;

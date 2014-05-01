@@ -82,7 +82,7 @@ using namespace component::forcefield;
 
 typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
 
-simulation::Node::SPtr CreateRootWithCollisionPipeline(const std::string& responseType)
+simulation::Node::SPtr createRootWithCollisionPipeline(const std::string& responseType)
 {
 
     simulation::Node::SPtr root = simulation::getSimulation()->createNewGraph("root");
@@ -120,7 +120,7 @@ simulation::Node::SPtr CreateRootWithCollisionPipeline(const std::string& respon
     return root;
 }
 
-simulation::Node::SPtr  CreateEulerSolverNode(simulation::Node::SPtr parent, const std::string& name, const std::string &scheme)
+simulation::Node::SPtr  createEulerSolverNode(simulation::Node::SPtr parent, const std::string& name, const std::string &scheme)
 {
     simulation::Node::SPtr  node = parent->createChild(name.c_str());
 
@@ -156,7 +156,7 @@ simulation::Node::SPtr  CreateEulerSolverNode(simulation::Node::SPtr parent, con
 }
 
 
-simulation::Node::SPtr CreateObstacle(simulation::Node::SPtr  parent, const std::string &filenameCollision, const std::string filenameVisual,  const std::string& color,
+simulation::Node::SPtr createObstacle(simulation::Node::SPtr  parent, const std::string &filenameCollision, const std::string filenameVisual,  const std::string& color,
                                                            const Deriv3& translation, const Deriv3 &rotation)
 {
     simulation::Node::SPtr  nodeFixed = parent->createChild("Fixed");
@@ -201,7 +201,7 @@ simulation::Node::SPtr CreateObstacle(simulation::Node::SPtr  parent, const std:
 }
 
 
-simulation::Node::SPtr CreateCollisionNodeVec3(simulation::Node::SPtr  parent, MechanicalObject3::SPtr  dof, const std::string &filename, const std::vector<std::string> &elements,
+simulation::Node::SPtr createCollisionNodeVec3(simulation::Node::SPtr  parent, MechanicalObject3::SPtr  dof, const std::string &filename, const std::vector<std::string> &elements,
                                                                     const Deriv3& translation, const Deriv3 &rotation)
 {
     //Node COLLISION
@@ -223,7 +223,7 @@ simulation::Node::SPtr CreateCollisionNodeVec3(simulation::Node::SPtr  parent, M
     dof_surf->setRotation(rotation[0],rotation[1],rotation[2]);
     CollisionNode->addObject(dof_surf);
 
-    AddCollisionModels(CollisionNode, elements);
+    addCollisionModels(CollisionNode, elements);
 
     BarycentricMapping3_to_3::SPtr mechaMapping = sofa::core::objectmodel::New<BarycentricMapping3_to_3>();
     mechaMapping->setModels(dof.get(), dof_surf.get());
@@ -234,7 +234,7 @@ simulation::Node::SPtr CreateCollisionNodeVec3(simulation::Node::SPtr  parent, M
     return CollisionNode;
 }
 
-simulation::Node::SPtr CreateVisualNodeVec3(simulation::Node::SPtr  parent, MechanicalObject3::SPtr  dof,  const std::string &filename, const std::string& color,
+simulation::Node::SPtr createVisualNodeVec3(simulation::Node::SPtr  parent, MechanicalObject3::SPtr  dof,  const std::string &filename, const std::string& color,
                                                                  const Deriv3& translation, const Deriv3 &rotation)
 {
     simulation::Node::SPtr  VisualNode =parent->createChild("Visu");
@@ -262,7 +262,7 @@ simulation::Node::SPtr CreateVisualNodeVec3(simulation::Node::SPtr  parent, Mech
 
 
 
-simulation::Node::SPtr CreateCollisionNodeRigid(simulation::Node::SPtr  parent, MechanicalObjectRigid3::SPtr  dofRigid,  const std::string &filename, const std::vector<std::string> &elements,
+simulation::Node::SPtr createCollisionNodeRigid(simulation::Node::SPtr  parent, MechanicalObjectRigid3::SPtr  dofRigid,  const std::string &filename, const std::vector<std::string> &elements,
                                                                      const Deriv3& translation, const Deriv3 &rotation)
 {
     const std::string refdofRigid = "@../" + dofRigid->getName();
@@ -288,7 +288,7 @@ simulation::Node::SPtr CreateCollisionNodeRigid(simulation::Node::SPtr  parent, 
     dof_surf->setRotation(rotation[0],rotation[1],rotation[2]);
     CollisionNode->addObject(dof_surf);
 
-    AddCollisionModels(CollisionNode, elements);
+    addCollisionModels(CollisionNode, elements);
 
     RigidMappingRigid3_to_3::SPtr mechaMapping = sofa::core::objectmodel::New<RigidMappingRigid3_to_3>();
     mechaMapping->setModels(dofRigid.get(), dof_surf.get());
@@ -299,7 +299,7 @@ simulation::Node::SPtr CreateCollisionNodeRigid(simulation::Node::SPtr  parent, 
     return CollisionNode;
 }
 
-simulation::Node::SPtr CreateVisualNodeRigid(simulation::Node::SPtr  parent, MechanicalObjectRigid3::SPtr  dofRigid,  const std::string &filename, const std::string& color,
+simulation::Node::SPtr createVisualNodeRigid(simulation::Node::SPtr  parent, MechanicalObjectRigid3::SPtr  dofRigid,  const std::string &filename, const std::string& color,
                                                                   const Deriv3& translation, const Deriv3 &rotation)
 {
     simulation::Node::SPtr  RigidVisualNode =parent->createChild("Visu");
@@ -325,7 +325,7 @@ simulation::Node::SPtr CreateVisualNodeRigid(simulation::Node::SPtr  parent, Mec
 }
 
 
-void AddCollisionModels(simulation::Node::SPtr CollisionNode, const std::vector<std::string> &elements)
+void addCollisionModels(simulation::Node::SPtr CollisionNode, const std::vector<std::string> &elements)
 {
     for (unsigned int i=0; i<elements.size(); ++i)
     {
