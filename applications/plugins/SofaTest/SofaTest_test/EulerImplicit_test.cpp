@@ -108,7 +108,7 @@ struct EulerImplicit_test_2_particles_to_equilibrium : public Sofa_test<>
 
         // test position of the second particle
         Vec3d actual( x0[3],x0[4],x0[5]); // position of second particle after relaxation
-        if( vectorCompare(expected,actual)>precision )
+        if( vectorMaxDiff(expected,actual)>precision )
             ADD_FAILURE() << "Solver test has not converged to the expected position" <<
                              " expected: " << expected << endl <<
                              " actual " << actual << endl;

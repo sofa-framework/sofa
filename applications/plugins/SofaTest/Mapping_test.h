@@ -280,13 +280,13 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         // ================ test applyJT()
         InVecDeriv jfc( (long)Np,InDeriv());
         J->addMultTranspose(jfc,fc);
-        if( this->maxDiff(jfc,fp)>this->epsilon()*errorMax ){
+        if( this->vectorMaxDiff(jfc,fp)>this->epsilon()*errorMax ){
             succeed = false;
             ADD_FAILURE() << "applyJT test failed"<<endl<<"jfc = " << jfc << endl<<" fp = " << fp << endl;
         }
         // ================ test getJs()
         // check that J.vp = vc
-        if( this->maxDiff(Jv,vc)>this->epsilon()*errorMax ){
+        if( this->vectorMaxDiff(Jv,vc)>this->epsilon()*errorMax ){
             succeed = false;
                     cout<<"vp = " << vp << endl;
                     cout<<"Jvp = " << Jv << endl;
@@ -323,7 +323,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
             dxc[i] = difference( xc1[i], xc[i] );
             dxcv[i] = vc[i]; // convert VecDeriv to VecCoord for comparison. Because strangely enough, Coord-Coord substraction returns a Coord (should be a Deriv)
         }
-        if( this->maxDiff(dxc,dxcv)>this->epsilon()*errorMax ){
+        if( this->vectorMaxDiff(dxc,dxcv)>this->epsilon()*errorMax ){
             succeed = false;
             ADD_FAILURE() << "applyJ test failed " << std::endl << "dxc = " << dxc << endl <<"dxcv = " << dxcv << endl;
         }
@@ -346,7 +346,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
 
         // ================ test applyDJT()
-        if( this->maxDiff(dfp,fp12)>this->epsilon()*errorMax ){
+        if( this->vectorMaxDiff(dfp,fp12)>this->epsilon()*errorMax ){
             succeed = false;
             ADD_FAILURE() << "applyDJT test failed" << endl <<
                              "dfp    = " << dfp << endl <<

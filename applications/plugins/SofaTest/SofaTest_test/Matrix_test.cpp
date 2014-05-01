@@ -273,7 +273,7 @@ struct TestSparseMatrices : public Sofa_test<_Real>
         }
         b.compress();
         //    cerr<<"MatrixTest<Real,RN,CN>::checkEigenMatrixUpdate, b complete = " << b << endl;
-        return Sofa_test<_Real>::matricesAreEqual(a,b);
+        return Sofa_test<_Real>::matrixMaxDiff(a,b) < 100 * Sofa_test<_Real>::epsilon();
     }
 
     /** Check the filling of EigenMatrix per rows of blocks. Return true if the test succeeds.*/
@@ -307,7 +307,7 @@ struct TestSparseMatrices : public Sofa_test<_Real>
         mb.compress();
         //    serr()<<"MatrixTest<Real,RN,CN>::checkEigenMatrixBlockRowFilling, ma = " << ma << endl;
         //    serr()<<"MatrixTest<Real,RN,CN>::checkEigenMatrixBlockRowFilling, mb = " << mb << endl;
-        return Sofa_test<_Real>::matricesAreEqual(ma,mb);
+        return Sofa_test<_Real>::matrixMaxDiff(ma,mb) < 100*Sofa_test<_Real>::epsilon();
     }
 
     bool checkEigenMatrixBlockFromCompressedRowSparseMatrix()
@@ -316,7 +316,7 @@ struct TestSparseMatrices : public Sofa_test<_Real>
 //            cout<<"heckEigenMatrixBlockFromCompressedRowSparseMatrix, crs1 = " << crs1 << endl;
 //            cout<<"heckEigenMatrixBlockFromCompressedRowSparseMatrix, eiBlock3 = " << eiBlock3 << endl;
 //        }
-        return Sofa_test<_Real>::matricesAreEqual(crs1,eiBlock3);
+        return Sofa_test<_Real>::matrixMaxDiff(crs1,eiBlock3) < 100*Sofa_test<_Real>::epsilon();
     }
 
     bool checkEigenDenseMatrix()
