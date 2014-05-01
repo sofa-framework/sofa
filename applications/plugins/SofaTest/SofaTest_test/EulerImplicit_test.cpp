@@ -25,6 +25,7 @@
 
 
 #include "Sofa_test.h"
+#include <plugins/SceneCreator/SceneCreator.h>
 #include <sofa/component/odesolver/EulerImplicitSolver.h>
 #include <sofa/component/linearsolver/CGLinearSolver.h>
 #include <sofa/simulation/common/Simulation.h>
@@ -45,7 +46,7 @@ struct EulerImplicit_test_2_particles_to_equilibrium : public Sofa_test<>
     EulerImplicit_test_2_particles_to_equilibrium()
     {
         //*******
-        initSofa();
+        modeling::initSofa();
         //*******
         // begin create scene under the root node
 

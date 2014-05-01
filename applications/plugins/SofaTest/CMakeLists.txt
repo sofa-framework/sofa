@@ -11,6 +11,7 @@ set(HEADER_FILES
 set(SOURCE_FILES
 
     initTestPlugin.cpp
+    Sofa_test.cpp
     Elasticity_test.cpp
 
 	)
