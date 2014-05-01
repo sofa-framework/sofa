@@ -72,7 +72,7 @@ Node::SPtr createCard(Node::SPtr  parent, const Coord3& position, const Coord3& 
     modelTypes.push_back("Line");
     modelTypes.push_back("Point");
 
-    Node::SPtr  card = sofa::modeling::CreateEulerSolverNode(parent,"Rigid","Implicit");
+    Node::SPtr  card = sofa::modeling::createEulerSolverNode(parent,"Rigid","Implicit");
 
     sofa::component::odesolver::EulerImplicitSolver *odeSolver; card->get(odeSolver);
     odeSolver->f_rayleighStiffness.setValue(0.1);
@@ -102,10 +102,10 @@ Node::SPtr createCard(Node::SPtr  parent, const Coord3& position, const Coord3& 
     card->addObject(uniMassRigid);
 
     //Node VISUAL
-    Node::SPtr  RigidVisualNode = sofa::modeling::CreateVisualNodeRigid(card, dofRigid.get(), visualModel,colors[(colorIdx++)%7]);
+    Node::SPtr  RigidVisualNode = sofa::modeling::createVisualNodeRigid(card, dofRigid.get(), visualModel,colors[(colorIdx++)%7]);
 
     //Node COLLISION
-    Node::SPtr  RigidCollisionNode = sofa::modeling::CreateCollisionNodeRigid(card, dofRigid.get(),collisionModel,modelTypes);
+    Node::SPtr  RigidCollisionNode = sofa::modeling::createCollisionNodeRigid(card, dofRigid.get(),collisionModel,modelTypes);
 
     return card;
 }
@@ -223,7 +223,7 @@ int main(int argc, char** argv)
     sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
 
     // The graph root node
-    Node::SPtr root = sofa::modeling::CreateRootWithCollisionPipeline("distanceLMConstraint");
+    Node::SPtr root = sofa::modeling::createRootWithCollisionPipeline("distanceLMConstraint");
     root->setGravity( Coord3(0,-10,0) );
     root->setDt(0.001);
 
@@ -234,7 +234,7 @@ int main(int argc, char** argv)
 
     //************************************
     //Floor
-    Node::SPtr  torusFixed = sofa::modeling::CreateObstacle(root.get(),"mesh/floor.obj", "mesh/floor.obj", "gray");
+    Node::SPtr  torusFixed = sofa::modeling::createObstacle(root.get(),"mesh/floor.obj", "mesh/floor.obj", "gray");
 
     //Add the objects
     createHouseOfCards(root.get(),sizeHouseOfCards,distanceInBetween, angle);
