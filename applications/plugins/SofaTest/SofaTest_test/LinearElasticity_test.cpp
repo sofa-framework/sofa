@@ -22,17 +22,23 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "Sofa_test.h"
+#include "Elasticity_test.h"
 #include <plugins/SceneCreator/SceneCreator.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 //Including Simulation
 #include <sofa/component/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
-// ForceField
+
 #include <sofa/component/forcefield/TetrahedralTensorMassForceField.h>
 #include <sofa/component/forcefield/TetrahedralCorotationalFEMForceField.h>
 #include <sofa/component/topology/TopologySparseData.inl>
+#include <sofa/component/forcefield/TrianglePressureForceField.h>
+#include <sofa/component/projectiveconstraintset/AffineMovementConstraint.h>
+#include <sofa/component/linearsolver/CGLinearSolver.h>
+#include <sofa/component/engine/PairBoxRoi.h>
+#include <sofa/component/odesolver/StaticSolver.h>
+#include <sofa/component/projectiveconstraintset/ProjectToLineConstraint.h>
 
 namespace sofa {
 
@@ -42,7 +48,6 @@ using std::endl;
 using namespace component;
 using namespace defaulttype;
 using namespace modeling;
-
 
 const double pressureArray[] = {0.6, 0.2, -0.2, -0.6};
 const size_t sizePressureArray = sizeof(pressureArray)/sizeof(pressureArray[0]);
@@ -59,7 +64,7 @@ Implement traction applied on the top part of a cylinder and test that the defor
 is simply related with the Young Modulus and Poisson Ratio of the isotropc linear elastic material */
 
 template <typename _DataTypes>
-struct LinearElasticity_test : public Sofa_test<typename _DataTypes::Real>
+struct LinearElasticity_test : public Elasticity_test<_DataTypes>
 {
     typedef _DataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -94,7 +99,7 @@ struct LinearElasticity_test : public Sofa_test<typename _DataTypes::Real>
 		size_t  resolutionHeight=7;
 		size_t maxIteration=3000; // maximum iteration for the CG.
 
-		tractionStruct=createCylinderTractionScene<DataTypes>(resolutionCircumferential,resolutionRadial,
+        tractionStruct= this->createCylinderTractionScene(resolutionCircumferential,resolutionRadial,
 			resolutionHeight,maxIteration);
 		/// take the vertex at mid height and on the surface of the cylinder
 		vIndex=(resolutionCircumferential*(resolutionRadial-1)+1)*resolutionHeight/2;
