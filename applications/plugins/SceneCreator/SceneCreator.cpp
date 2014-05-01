@@ -66,6 +66,7 @@
 
 namespace sofa
 {
+namespace modeling {
 
 using namespace helper;
 using helper::vector;
@@ -81,7 +82,7 @@ using namespace component::forcefield;
 
 typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
 
-simulation::Node::SPtr SimpleSceneCreator::CreateRootWithCollisionPipeline(const std::string& responseType)
+simulation::Node::SPtr CreateRootWithCollisionPipeline(const std::string& responseType)
 {
 
     simulation::Node::SPtr root = simulation::getSimulation()->createNewGraph("root");
@@ -119,7 +120,7 @@ simulation::Node::SPtr SimpleSceneCreator::CreateRootWithCollisionPipeline(const
     return root;
 }
 
-simulation::Node::SPtr  SimpleSceneCreator::CreateEulerSolverNode(simulation::Node::SPtr parent, const std::string& name, const std::string &scheme)
+simulation::Node::SPtr  CreateEulerSolverNode(simulation::Node::SPtr parent, const std::string& name, const std::string &scheme)
 {
     simulation::Node::SPtr  node = parent->createChild(name.c_str());
 
@@ -155,7 +156,7 @@ simulation::Node::SPtr  SimpleSceneCreator::CreateEulerSolverNode(simulation::No
 }
 
 
-simulation::Node::SPtr SimpleSceneCreator::CreateObstacle(simulation::Node::SPtr  parent, const std::string &filenameCollision, const std::string filenameVisual,  const std::string& color,
+simulation::Node::SPtr CreateObstacle(simulation::Node::SPtr  parent, const std::string &filenameCollision, const std::string filenameVisual,  const std::string& color,
                                                            const Deriv3& translation, const Deriv3 &rotation)
 {
     simulation::Node::SPtr  nodeFixed = parent->createChild("Fixed");
@@ -200,7 +201,7 @@ simulation::Node::SPtr SimpleSceneCreator::CreateObstacle(simulation::Node::SPtr
 }
 
 
-simulation::Node::SPtr SimpleSceneCreator::CreateCollisionNodeVec3(simulation::Node::SPtr  parent, MechanicalObject3::SPtr  dof, const std::string &filename, const std::vector<std::string> &elements,
+simulation::Node::SPtr CreateCollisionNodeVec3(simulation::Node::SPtr  parent, MechanicalObject3::SPtr  dof, const std::string &filename, const std::vector<std::string> &elements,
                                                                     const Deriv3& translation, const Deriv3 &rotation)
 {
     //Node COLLISION
@@ -233,7 +234,7 @@ simulation::Node::SPtr SimpleSceneCreator::CreateCollisionNodeVec3(simulation::N
     return CollisionNode;
 }
 
-simulation::Node::SPtr SimpleSceneCreator::CreateVisualNodeVec3(simulation::Node::SPtr  parent, MechanicalObject3::SPtr  dof,  const std::string &filename, const std::string& color,
+simulation::Node::SPtr CreateVisualNodeVec3(simulation::Node::SPtr  parent, MechanicalObject3::SPtr  dof,  const std::string &filename, const std::string& color,
                                                                  const Deriv3& translation, const Deriv3 &rotation)
 {
     simulation::Node::SPtr  VisualNode =parent->createChild("Visu");
@@ -261,7 +262,7 @@ simulation::Node::SPtr SimpleSceneCreator::CreateVisualNodeVec3(simulation::Node
 
 
 
-simulation::Node::SPtr SimpleSceneCreator::CreateCollisionNodeRigid(simulation::Node::SPtr  parent, MechanicalObjectRigid3::SPtr  dofRigid,  const std::string &filename, const std::vector<std::string> &elements,
+simulation::Node::SPtr CreateCollisionNodeRigid(simulation::Node::SPtr  parent, MechanicalObjectRigid3::SPtr  dofRigid,  const std::string &filename, const std::vector<std::string> &elements,
                                                                      const Deriv3& translation, const Deriv3 &rotation)
 {
     const std::string refdofRigid = "@../" + dofRigid->getName();
@@ -298,7 +299,7 @@ simulation::Node::SPtr SimpleSceneCreator::CreateCollisionNodeRigid(simulation::
     return CollisionNode;
 }
 
-simulation::Node::SPtr SimpleSceneCreator::CreateVisualNodeRigid(simulation::Node::SPtr  parent, MechanicalObjectRigid3::SPtr  dofRigid,  const std::string &filename, const std::string& color,
+simulation::Node::SPtr CreateVisualNodeRigid(simulation::Node::SPtr  parent, MechanicalObjectRigid3::SPtr  dofRigid,  const std::string &filename, const std::string& color,
                                                                   const Deriv3& translation, const Deriv3 &rotation)
 {
     simulation::Node::SPtr  RigidVisualNode =parent->createChild("Visu");
@@ -324,7 +325,7 @@ simulation::Node::SPtr SimpleSceneCreator::CreateVisualNodeRigid(simulation::Nod
 }
 
 
-void SimpleSceneCreator::AddCollisionModels(simulation::Node::SPtr CollisionNode, const std::vector<std::string> &elements)
+void AddCollisionModels(simulation::Node::SPtr CollisionNode, const std::vector<std::string> &elements)
 {
     for (unsigned int i=0; i<elements.size(); ++i)
     {
@@ -359,18 +360,15 @@ void SimpleSceneCreator::AddCollisionModels(simulation::Node::SPtr CollisionNode
     }
 }
 
-template<class Component>
-typename Component::SPtr addNew( Node::SPtr parentNode, std::string name="")
-{
-    typename Component::SPtr component = New<Component>();
-    parentNode->addObject(component);
-    component->setName(parentNode->getName()+"_"+name);
-    return component;
-}
+//template<class Component>
+//typename Component::SPtr addNew( Node::SPtr parentNode, std::string name="")
+//{
+//    typename Component::SPtr component = New<Component>();
+//    parentNode->addObject(component);
+//    component->setName(parentNode->getName()+"_"+name);
+//    return component;
+//}
 
-
-
-namespace modeling {
 
 
 /// Create a stiff string

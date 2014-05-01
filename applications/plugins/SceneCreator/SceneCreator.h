@@ -38,30 +38,25 @@
 namespace sofa
 {
 
-/// BUGFIX: this SceneCreator class was renamed to SimpleSceneCreator,
-/// in order to remove ambiguity with sofa::core::SceneCreator
-
-class SOFA_SceneCreator_API SimpleSceneCreator
-{
-public:
+namespace modeling {
 
     typedef SReal Scalar;
     typedef Vec<3,SReal> Vec3;
     typedef Vec<1,SReal> Vec1;
 
-    static simulation::Node::SPtr CreateRootWithCollisionPipeline(const std::string &responseType=std::string("default"));
-    static simulation::Node::SPtr CreateEulerSolverNode(simulation::Node::SPtr parent, const std::string& name, const std::string &integrationScheme=std::string("Implicit"));
+    simulation::Node::SPtr CreateRootWithCollisionPipeline(const std::string &responseType=std::string("default"));
+    simulation::Node::SPtr CreateEulerSolverNode(simulation::Node::SPtr parent, const std::string& name, const std::string &integrationScheme=std::string("Implicit"));
 
 
-    static simulation::Node::SPtr CreateObstacle(simulation::Node::SPtr parent, const std::string &filenameCollision, const std::string filenameVisual, const std::string& color,
+    simulation::Node::SPtr CreateObstacle(simulation::Node::SPtr parent, const std::string &filenameCollision, const std::string filenameVisual, const std::string& color,
             const Deriv3& translation=Deriv3(), const Deriv3 &rotation=Deriv3());
 
     //Create a collision node using Barycentric Mapping, using a 3d model specified by filename.
     //elements is a vector of type of collision models (Triangle, Line, Point, Sphere)
     //an initial transformation can be performed
-    static simulation::Node::SPtr CreateCollisionNodeVec3(simulation::Node::SPtr parent, MechanicalObject3::SPtr dof, const std::string &filename, const std::vector<std::string> &elements,
+    simulation::Node::SPtr CreateCollisionNodeVec3(simulation::Node::SPtr parent, MechanicalObject3::SPtr dof, const std::string &filename, const std::vector<std::string> &elements,
             const Deriv3& translation=Deriv3(), const Deriv3 &rotation=Deriv3());
-    static simulation::Node::SPtr CreateVisualNodeVec3(simulation::Node::SPtr parent, MechanicalObject3::SPtr dof,  const std::string &filename, const std::string& color,
+    simulation::Node::SPtr CreateVisualNodeVec3(simulation::Node::SPtr parent, MechanicalObject3::SPtr dof,  const std::string &filename, const std::string& color,
             const Deriv3& translation=Deriv3(), const Deriv3 &rotation=Deriv3());
 
 
@@ -69,19 +64,16 @@ public:
     //Create a collision node using Rigid Mapping, using a 3d model specified by filename.
     //elements is a vector of type of collision models (Triangle, Line, Point, Sphere)
     //an initial transformation can be performed
-    static simulation::Node::SPtr CreateCollisionNodeRigid(simulation::Node::SPtr parent, MechanicalObjectRigid3::SPtr dofRigid,  const std::string &filename, const std::vector<std::string> &elements,
+    simulation::Node::SPtr CreateCollisionNodeRigid(simulation::Node::SPtr parent, MechanicalObjectRigid3::SPtr dofRigid,  const std::string &filename, const std::vector<std::string> &elements,
             const Deriv3& translation=Deriv3(), const Deriv3 &rotation=Deriv3());
-    static simulation::Node::SPtr CreateVisualNodeRigid(simulation::Node::SPtr parent, MechanicalObjectRigid3::SPtr  dofRigid,  const std::string &filename, const std::string& color,
+    simulation::Node::SPtr CreateVisualNodeRigid(simulation::Node::SPtr parent, MechanicalObjectRigid3::SPtr  dofRigid,  const std::string &filename, const std::string& color,
             const Deriv3& translation=Deriv3(), const Deriv3 &rotation=Deriv3());
 
-    static simulation::Node::SPtr createGridScene(Vec3 startPoint, Vec3 endPoint, unsigned numX, unsigned numY, unsigned numZ, double totalMass, double stiffnessValue=1.0, double dampingRatio=0 );
+    simulation::Node::SPtr createGridScene(Vec3 startPoint, Vec3 endPoint, unsigned numX, unsigned numY, unsigned numZ, double totalMass, double stiffnessValue=1.0, double dampingRatio=0 );
 
 
-private:
-    static void AddCollisionModels(simulation::Node::SPtr CollisionNode, const std::vector<std::string> &elements);
-};
+    void AddCollisionModels(simulation::Node::SPtr CollisionNode, const std::vector<std::string> &elements);
 
-namespace modeling {
 
 using namespace simulation;
 
