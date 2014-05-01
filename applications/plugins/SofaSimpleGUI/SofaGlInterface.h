@@ -29,6 +29,8 @@ typedef sofa::component::container::MechanicalObject< defaulttype::Vec3Types > V
 /** @brief Simple Sofa interface to integrate in a graphics application.
  *
  * The API corresponds to the typical graphics callbacks: init, draw, animate, pick…
+ * Picking returns a PickedPoint which describes a particle.
+ * It is up to the application to create the appropriate Interactor, which can then be inserted in the Sofa scene.
  *
  * @author Francois Faure, 2014
  * */
