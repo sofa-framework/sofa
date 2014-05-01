@@ -40,39 +40,39 @@ namespace sofa
 
 namespace modeling {
 
-    typedef SReal Scalar;
-    typedef Vec<3,SReal> Vec3;
-    typedef Vec<1,SReal> Vec1;
+typedef SReal Scalar;
+typedef Vec<3,SReal> Vec3;
+typedef Vec<1,SReal> Vec1;
 
-    simulation::Node::SPtr CreateRootWithCollisionPipeline(const std::string &responseType=std::string("default"));
-    simulation::Node::SPtr CreateEulerSolverNode(simulation::Node::SPtr parent, const std::string& name, const std::string &integrationScheme=std::string("Implicit"));
-
-
-    simulation::Node::SPtr CreateObstacle(simulation::Node::SPtr parent, const std::string &filenameCollision, const std::string filenameVisual, const std::string& color,
-            const Deriv3& translation=Deriv3(), const Deriv3 &rotation=Deriv3());
-
-    //Create a collision node using Barycentric Mapping, using a 3d model specified by filename.
-    //elements is a vector of type of collision models (Triangle, Line, Point, Sphere)
-    //an initial transformation can be performed
-    simulation::Node::SPtr CreateCollisionNodeVec3(simulation::Node::SPtr parent, MechanicalObject3::SPtr dof, const std::string &filename, const std::vector<std::string> &elements,
-            const Deriv3& translation=Deriv3(), const Deriv3 &rotation=Deriv3());
-    simulation::Node::SPtr CreateVisualNodeVec3(simulation::Node::SPtr parent, MechanicalObject3::SPtr dof,  const std::string &filename, const std::string& color,
-            const Deriv3& translation=Deriv3(), const Deriv3 &rotation=Deriv3());
+SOFA_SceneCreator_API simulation::Node::SPtr createRootWithCollisionPipeline(const std::string &responseType=std::string("default"));
+SOFA_SceneCreator_API simulation::Node::SPtr createEulerSolverNode(simulation::Node::SPtr parent, const std::string& name, const std::string &integrationScheme=std::string("Implicit"));
 
 
+SOFA_SceneCreator_API simulation::Node::SPtr createObstacle(simulation::Node::SPtr parent, const std::string &filenameCollision, const std::string filenameVisual, const std::string& color,
+                                                            const Deriv3& translation=Deriv3(), const Deriv3 &rotation=Deriv3());
 
-    //Create a collision node using Rigid Mapping, using a 3d model specified by filename.
-    //elements is a vector of type of collision models (Triangle, Line, Point, Sphere)
-    //an initial transformation can be performed
-    simulation::Node::SPtr CreateCollisionNodeRigid(simulation::Node::SPtr parent, MechanicalObjectRigid3::SPtr dofRigid,  const std::string &filename, const std::vector<std::string> &elements,
-            const Deriv3& translation=Deriv3(), const Deriv3 &rotation=Deriv3());
-    simulation::Node::SPtr CreateVisualNodeRigid(simulation::Node::SPtr parent, MechanicalObjectRigid3::SPtr  dofRigid,  const std::string &filename, const std::string& color,
-            const Deriv3& translation=Deriv3(), const Deriv3 &rotation=Deriv3());
-
-    simulation::Node::SPtr createGridScene(Vec3 startPoint, Vec3 endPoint, unsigned numX, unsigned numY, unsigned numZ, double totalMass, double stiffnessValue=1.0, double dampingRatio=0 );
+//Create a collision node using Barycentric Mapping, using a 3d model specified by filename.
+//elements is a vector of type of collision models (Triangle, Line, Point, Sphere)
+//an initial transformation can be performed
+SOFA_SceneCreator_API simulation::Node::SPtr createCollisionNodeVec3(simulation::Node::SPtr parent, MechanicalObject3::SPtr dof, const std::string &filename, const std::vector<std::string> &elements,
+                                                                     const Deriv3& translation=Deriv3(), const Deriv3 &rotation=Deriv3());
+SOFA_SceneCreator_API simulation::Node::SPtr createVisualNodeVec3(simulation::Node::SPtr parent, MechanicalObject3::SPtr dof,  const std::string &filename, const std::string& color,
+                                                                  const Deriv3& translation=Deriv3(), const Deriv3 &rotation=Deriv3());
 
 
-    void AddCollisionModels(simulation::Node::SPtr CollisionNode, const std::vector<std::string> &elements);
+
+//Create a collision node using Rigid Mapping, using a 3d model specified by filename.
+//elements is a vector of type of collision models (Triangle, Line, Point, Sphere)
+//an initial transformation can be performed
+SOFA_SceneCreator_API simulation::Node::SPtr createCollisionNodeRigid(simulation::Node::SPtr parent, MechanicalObjectRigid3::SPtr dofRigid,  const std::string &filename, const std::vector<std::string> &elements,
+                                                                      const Deriv3& translation=Deriv3(), const Deriv3 &rotation=Deriv3());
+SOFA_SceneCreator_API simulation::Node::SPtr createVisualNodeRigid(simulation::Node::SPtr parent, MechanicalObjectRigid3::SPtr  dofRigid,  const std::string &filename, const std::string& color,
+                                                                   const Deriv3& translation=Deriv3(), const Deriv3 &rotation=Deriv3());
+
+SOFA_SceneCreator_API simulation::Node::SPtr createGridScene(Vec3 startPoint, Vec3 endPoint, unsigned numX, unsigned numY, unsigned numZ, double totalMass, double stiffnessValue=1.0, double dampingRatio=0 );
+
+
+SOFA_SceneCreator_API void addCollisionModels(simulation::Node::SPtr CollisionNode, const std::vector<std::string> &elements);
 
 
 using namespace simulation;
@@ -104,9 +104,9 @@ SOFA_SceneCreator_API Node::SPtr massSpringString(
 template<class T>
 class addNew : public core::objectmodel::New<T>
 {
-	typedef typename T::SPtr SPtr;
+    typedef typename T::SPtr SPtr;
 public:
-	addNew( Node::SPtr parent, const char* name="")
+    addNew( Node::SPtr parent, const char* name="")
     {
         parent->addObject(*this);
         (*this)->setName(name);
