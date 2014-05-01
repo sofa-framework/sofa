@@ -1,5 +1,5 @@
 
-RegisterProjects("ObjectCreator" PATH "${CMAKE_CURRENT_SOURCE_DIR}/objectCreator")
+#RegisterProjects("ObjectCreator" PATH "${CMAKE_CURRENT_SOURCE_DIR}/objectCreator")
 
 RegisterProjects("ChainHybrid" OPTION "SOFA-TUTORIAL_CHAIN_HYBRID" COMPILE_DEFINITIONS "SOFA_HAVE_TUTORIALS" PATH "${CMAKE_CURRENT_SOURCE_DIR}/chainHybrid")
 RegisterProjects("CompositeObject" OPTION "SOFA-TUTORIAL_COMPOSITE_OBJECT" COMPILE_DEFINITIONS "SOFA_HAVE_TUTORIALS" PATH "${CMAKE_CURRENT_SOURCE_DIR}/compositeObject")
