@@ -635,7 +635,6 @@ void setDataLink(core::objectmodel::BaseData* source, core::objectmodel::BaseDat
 
 
 #ifndef SOFA_FLOAT
-template class SOFA_SceneCreator_API sofa::component::mass::MeshMatrixMass<Vec3dTypes,SReal>;
 template  struct  SOFA_SceneCreator_API PatchTestStruct<Vec3dTypes>;
 template struct  SOFA_SceneCreator_API CylinderTractionStruct<Vec3dTypes>;
 template  class SOFA_SceneCreator_API PatchTestStruct<Vec3dTypes> createRegularGridScene<Vec3dTypes>(simulation::Node::SPtr root ,Vec<3,SReal> , Vec<3,SReal> , unsigned , unsigned , unsigned , Vec<6,SReal> , Vec<6,SReal> , Vec<6,SReal> );
@@ -644,7 +643,6 @@ template  class SOFA_SceneCreator_API  CylinderTractionStruct<Vec3dTypes>  creat
 
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_SceneCreator_API sofa::component::mass::MeshMatrixMass<Vec3fTypes,SReal>;
 template class SOFA_SceneCreator_API PatchTestStruct<Vec3fTypes>;
 template class SOFA_SceneCreator_API CylinderTractionStruct<Vec3fTypes>;
 template class SOFA_SceneCreator_API  PatchTestStruct<Vec3fTypes> createRegularGridScene<Vec3fTypes>(simulation::Node::SPtr root ,Vec<3,SReal> , Vec<3,SReal> , unsigned , unsigned , unsigned , Vec<6,SReal> , Vec<6,SReal> , Vec<6,SReal> );
@@ -652,5 +650,7 @@ template class SOFA_SceneCreator_API  CylinderTractionStruct<Vec3fTypes>  create
 #endif
 
 } // modeling
+
+
 
 } // sofa
