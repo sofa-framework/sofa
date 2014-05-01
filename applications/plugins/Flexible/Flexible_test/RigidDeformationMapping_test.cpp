@@ -94,7 +94,7 @@ namespace sofa {
         sofa::helper::RandomGenerator randomGenerator;
 
         // Constructor: call the constructor of the base class which loads the scene to test
-        RigidLinearDeformationMappings_test() : Mapping_test(std::string(FLEXIBLE_TEST_SCENES_DIR) + "/" + "RigidLineDeformationMapping.scn")
+        RigidLinearDeformationMappings_test() : Mapping_test<_Mapping>(std::string(FLEXIBLE_TEST_SCENES_DIR) + "/" + "RigidLineDeformationMapping.scn")
         {   
             Inherited::errorMax = 5000;
          
@@ -103,7 +103,7 @@ namespace sofa {
             randomGenerator.initSeed(seed);
             this->SetRandomTestedRotationAndTranslation(seed);
             typedef projectiveconstraintset::AffineMovementConstraint<In> AffineMovementConstraint;
-            AffineMovementConstraint::SPtr affineConstraint  = root->get<AffineMovementConstraint>(root->SearchDown);
+            typename AffineMovementConstraint::SPtr affineConstraint  = this->root->template get<AffineMovementConstraint>(this->root->SearchDown);
             affineConstraint->m_quaternion.setValue(testedQuaternion);
             affineConstraint->m_translation.setValue(testedTranslation);
             testedQuaternion.toMatrix(testedRotation);
@@ -145,17 +145,17 @@ namespace sofa {
         bool runTest(double convergenceAccuracy)
         {
             // Init simulation
-            sofa::simulation::getSimulation()->init(root.get());
+            sofa::simulation::getSimulation()->init(this->root.get());
 
             // Get dofs positions
-            typename  InDOFs::ReadVecCoord x = inDofs->readPositions();
+            typename  InDOFs::ReadVecCoord x = this->inDofs->readPositions();
             
             // xin 
             InVecCoord xin(x.size());
             copyFromData(xin,x);
     
             // xout
-            typename  OutDOFs::ReadVecCoord xelasticityDofs = outDofs->readPositions();
+            typename  OutDOFs::ReadVecCoord xelasticityDofs = this->outDofs->readPositions();
             OutVecCoord xout(xelasticityDofs.size());
             copyFromData(xout,xelasticityDofs);
 
@@ -174,8 +174,8 @@ namespace sofa {
             do
             { 
                 hasConverged = true;
-                sofa::simulation::getSimulation()->animate(root.get(),0.05);
-                typename InDOFs::ReadVecCoord xCurrent = inDofs->readPositions();
+                sofa::simulation::getSimulation()->animate(this->root.get(),0.05);
+                typename InDOFs::ReadVecCoord xCurrent = this->inDofs->readPositions();
 
                 // Compute dx
                 for (size_t i=0; i<xCurrent.size(); i++)
@@ -197,7 +197,7 @@ namespace sofa {
             while(!hasConverged); // not converged
 
             // Parent new : Get simulated positions
-            typename InDOFs::WriteVecCoord xinNew = inDofs->writePositions();
+            typename InDOFs::WriteVecCoord xinNew = this->inDofs->writePositions();
      
             // New position of parents
             InVecCoord parentNew(xinNew.size());
@@ -207,7 +207,7 @@ namespace sofa {
             }
    
             // Expected children positions: rotation from affine constraint
-            typename OutDOFs::WriteVecCoord xoutNew = outDofs->writePositions();
+            typename OutDOFs::WriteVecCoord xoutNew = this->outDofs->writePositions();
             OutVecCoord expectedChildCoords(xoutNew.size());
   
             for(size_t i=0;i<xoutNew.size();++i)

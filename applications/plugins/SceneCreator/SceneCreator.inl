@@ -27,6 +27,9 @@
 #define SOFA_SIMPLEOBJECTCREATOR_INL
 
 #include "SceneCreator.h"
+#include <sofa/component/mass/MeshMatrixMass.inl>
+#include <sofa/component/topology/TopologySparseData.inl>
+#include <sofa/component/mass/UniformMass.inl>
 
 // Solvers
 #include <sofa/component/odesolver/EulerImplicitSolver.h>
