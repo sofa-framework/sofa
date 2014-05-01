@@ -22,15 +22,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+// Francois Faure, 2013
+
 #ifndef SOFA_STANDARDTEST_Sofa_test_H
 #define SOFA_STANDARDTEST_Sofa_test_H
-
-
 
 #include <gtest/gtest.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/simulation/common/Node.h>
-//#include <plugins/SceneCreator/SceneCreator.h>
 #include <time.h>
 #include <iostream>
 using std::cout;
@@ -39,26 +38,32 @@ using std::endl;
 
 namespace sofa {
 
-/// Initialize the sofa library and create the root of the scene graph
-void initSofa();
 
-/// Clear the scene graph
-void clearSceneGraph();
-
-/** @brief Base class for Sofa test fixtures, to provide helper functions to compare vectors, matrices, etc.
+/** @brief Base class for Sofa test fixtures.
   */
-template <typename _Real=SReal>
-struct Sofa_test : public ::testing::Test
+struct BaseSofa_test : public ::testing::Test
 {
     /// Initialize Sofa and the random number generator
-    Sofa_test()
-    {
-        srand (time(NULL)); // comment out if you want to generate always the same sequence of pseudo-random numbers
-        initSofa();
-    }
+    BaseSofa_test();
 
-    virtual ~Sofa_test() { clearSceneGraph(); }
+    /// Clear the scene graph
+    virtual ~BaseSofa_test();
 
+    /// Clear the scene graph
+    void clearSceneGraph();
+};
+
+
+/** @brief Helper functions to compare scalars, vectors, matrices, etc.
+  */
+template <typename _Real=SReal>
+struct Sofa_test : public BaseSofa_test
+{
+
+    /** @name Scalars
+     *  Type and functions to manipulate real numbers.
+     */
+    ///@{
     typedef _Real Real; ///< Scalar type
 
     /// the smallest real number
@@ -72,82 +77,12 @@ struct Sofa_test : public ::testing::Test
         return fabs(r) < ratio * std::numeric_limits<Real>::epsilon();
     }
 
-    /// return the maximum difference between corresponding entries, or the infinity if the matrices have different sizes
-    template<typename Matrix1, typename Matrix2>
-    static Real matrixCompare( const Matrix1& m1, const Matrix2& m2 )
-    {
-        Real result = 0;
-        if(m1.rowSize()!=m2.rowSize() || m2.colSize()!=m1.colSize()){
-            ADD_FAILURE() << "Comparison between matrices of different sizes";
-            return infinity();
-        }
-        for(unsigned i=0; i<m1.rowSize(); i++)
-            for(unsigned j=0; j<m1.colSize(); j++){
-                Real diff = abs(m1.element(i,j)-m2.element(i,j));
-                if(diff>result)
-                    result = diff;
-            }
-        return result;
-    }
+    ///@}
 
-    /// Return the maximum difference between corresponding entries, or the infinity if the matrices have different sizes
-    template<int M, int N, typename Real, typename Matrix2>
-    static Real matrixCompare( const sofa::defaulttype::Mat<M,N,Real>& m1, const Matrix2& m2 )
-    {
-        Real result = 0;
-        if(M!=m2.rowSize() || m2.colSize()!=N){
-            ADD_FAILURE() << "Comparison between matrices of different sizes";
-            return std::numeric_limits<Real>::infinity();
-        }
-        for(unsigned i=0; i<M; i++)
-            for(unsigned j=0; j<N; j++){
-                Real diff = abs(m1.element(i,j)-m2.element(i,j));
-                if(diff>result)
-                    result = diff;
-            }
-        return result;
-    }
-
-    /// return true if the matrices have same size and all their entries are equal within the given tolerance
-    template<typename Matrix1, typename Matrix2>
-    static bool matricesAreEqual( const Matrix1& m1, const Matrix2& m2, double tolerance=std::numeric_limits<Real>::epsilon()*100)
-    {
-        bool result = true;
-        if(m1.rows()!=m2.rows() || m2.cols()!=m1.cols()) result = false;
-        for(unsigned i=0; i<m1.rows(); i++)
-            for(unsigned j=0; j<m1.cols(); j++)
-                if(abs(m1(i,j)-m2(i,j))>tolerance) {
-                    cout<<"SofaTest::matricesAreEqual1 is false, difference = "<< abs(m1.element(i,j)-m2.element(i,j)) << " is larger than " << tolerance << endl;
-                    result = false;
-                }
-
-        if( result == false ){
-            cout<<"SofaTest::matricesAreEqual1 is false, matrix 1 = "<< m1 <<endl;
-            cout<<"SofaTest::matricesAreEqual1, matrix 2 = "<< m2 <<endl;
-        }
-        return result;
-    }
-
-    /// return true if the matrices have same size and all their entries are equal within the given tolerance
-    template<int M, int N, typename Real, typename Matrix2>
-    static bool matricesAreEqual( const sofa::defaulttype::Mat<M,N,Real>& m1, const Matrix2& m2, double tolerance=std::numeric_limits<Real>::epsilon()*100 )
-    {
-        bool result = true;
-        if(M!=m2.rows() || N!=m2.cols()) result= false;
-        for( unsigned i=0; i<M; i++ )
-            for( unsigned j=0; j<N; j++ )
-                if( fabs(m1(i,j)-m2(i,j))>tolerance  ) {
-                    cout<<"SofaTest::matricesAreEqual2 is false, difference = "<< fabs(m1(i,j)-m2(i,j)) << " is larger than " << tolerance << endl;
-                    result= false;
-                }
-
-        if( result == false ){
-            cout<<"SofaTest::matricesAreEqual2 is false, matrix 1 = "<< m1 <<endl;
-            cout<<"SofaTest::matricesAreEqual2 is false, matrix 2 = "<< m2 <<endl;
-        }
-        return result;
-    }
-
+    /** @name Vectors
+     *  Functions to compare vectors
+     */
+    ///@{
 
     /// return true if the vectors have same size and all their entries are equal within the given tolerance
     template< typename Vector1, typename Vector2>
@@ -238,19 +173,93 @@ struct Sofa_test : public ::testing::Test
         return maxdiff;
     }
 
+    ///@}
 
+    /** @name Matrices
+     *  Functions to compare matrices
+     */
+    ///@{
+
+    /// return the maximum difference between corresponding entries, or the infinity if the matrices have different sizes
+    template<typename Matrix1, typename Matrix2>
+    static Real matrixCompare( const Matrix1& m1, const Matrix2& m2 )
+    {
+        Real result = 0;
+        if(m1.rowSize()!=m2.rowSize() || m2.colSize()!=m1.colSize()){
+            ADD_FAILURE() << "Comparison between matrices of different sizes";
+            return infinity();
+        }
+        for(unsigned i=0; i<m1.rowSize(); i++)
+            for(unsigned j=0; j<m1.colSize(); j++){
+                Real diff = abs(m1.element(i,j)-m2.element(i,j));
+                if(diff>result)
+                    result = diff;
+            }
+        return result;
+    }
+
+    /// Return the maximum difference between corresponding entries, or the infinity if the matrices have different sizes
+    template<int M, int N, typename Real, typename Matrix2>
+    static Real matrixCompare( const sofa::defaulttype::Mat<M,N,Real>& m1, const Matrix2& m2 )
+    {
+        Real result = 0;
+        if(M!=m2.rowSize() || m2.colSize()!=N){
+            ADD_FAILURE() << "Comparison between matrices of different sizes";
+            return std::numeric_limits<Real>::infinity();
+        }
+        for(unsigned i=0; i<M; i++)
+            for(unsigned j=0; j<N; j++){
+                Real diff = abs(m1.element(i,j)-m2.element(i,j));
+                if(diff>result)
+                    result = diff;
+            }
+        return result;
+    }
+
+    /// return true if the matrices have same size and all their entries are equal within the given tolerance
+    template<typename Matrix1, typename Matrix2>
+    static bool matricesAreEqual( const Matrix1& m1, const Matrix2& m2, double tolerance=std::numeric_limits<Real>::epsilon()*100)
+    {
+        bool result = true;
+        if(m1.rows()!=m2.rows() || m2.cols()!=m1.cols()) result = false;
+        for(unsigned i=0; i<m1.rows(); i++)
+            for(unsigned j=0; j<m1.cols(); j++)
+                if(abs(m1(i,j)-m2(i,j))>tolerance) {
+                    cout<<"SofaTest::matricesAreEqual1 is false, difference = "<< abs(m1.element(i,j)-m2.element(i,j)) << " is larger than " << tolerance << endl;
+                    result = false;
+                }
+
+        if( result == false ){
+            cout<<"SofaTest::matricesAreEqual1 is false, matrix 1 = "<< m1 <<endl;
+            cout<<"SofaTest::matricesAreEqual1, matrix 2 = "<< m2 <<endl;
+        }
+        return result;
+    }
+
+    /// return true if the matrices have same size and all their entries are equal within the given tolerance
+    template<int M, int N, typename Real, typename Matrix2>
+    static bool matricesAreEqual( const sofa::defaulttype::Mat<M,N,Real>& m1, const Matrix2& m2, double tolerance=std::numeric_limits<Real>::epsilon()*100 )
+    {
+        bool result = true;
+        if(M!=m2.rows() || N!=m2.cols()) result= false;
+        for( unsigned i=0; i<M; i++ )
+            for( unsigned j=0; j<N; j++ )
+                if( fabs(m1(i,j)-m2(i,j))>tolerance  ) {
+                    cout<<"SofaTest::matricesAreEqual2 is false, difference = "<< fabs(m1(i,j)-m2(i,j)) << " is larger than " << tolerance << endl;
+                    result= false;
+                }
+
+        if( result == false ){
+            cout<<"SofaTest::matricesAreEqual2 is false, matrix 1 = "<< m1 <<endl;
+            cout<<"SofaTest::matricesAreEqual2 is false, matrix 2 = "<< m2 <<endl;
+        }
+        return result;
+    }
+
+    ///@}
 
 };
 
-///// helper for more compact component creation
-//template<class Component>
-//typename Component::SPtr addNew( sofa::simulation::Node::SPtr parentNode, const char* name="component" )
-//{
-//    typename Component::SPtr component = sofa::core::objectmodel::New<Component>();
-//    parentNode->addObject(component);
-//    component->setName(parentNode->getName()+"_"+std::string(name));
-//    return component;
-//}
 
 /// Resize the Vector and copy it from the Data
 template<class Vector, class ReadData>

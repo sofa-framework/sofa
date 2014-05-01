@@ -28,8 +28,14 @@
 
 namespace sofa {
 
-void initSofa(){ modeling::initSofa(); }
-void clearSceneGraph(){ modeling::clearScene(); }
+BaseSofa_test::BaseSofa_test(){
+    modeling::initSofa();
+    srand (time(NULL)); // comment out if you want to generate always the same sequence of pseudo-random numbers
+}
+
+BaseSofa_test::~BaseSofa_test(){ clearSceneGraph(); }
+
+void BaseSofa_test::clearSceneGraph(){ modeling::clearScene(); }
 
 
 }
