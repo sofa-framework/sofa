@@ -213,7 +213,7 @@ public:
     }
     virtual void applyJT(const core::ConstraintParams */*cparams*/, Data<MatrixDeriv>& /*dIn*/, const Data<MatrixDeriv>& /*dOut*/) {}
 
-    virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId )
+    virtual void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*parentDfId*/, core::ConstMultiVecDerivId )
     {
         //        Data<InVecDeriv>& parentForceData = *parentDfId[this->fromModel.get(mparams)].write();
         //        const Data<InVecDeriv>& parentDisplacementData = *mparams->readDx(this->fromModel);
