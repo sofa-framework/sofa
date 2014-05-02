@@ -32,7 +32,7 @@
 #include <sofa/helper/system/glu.h>
 
 #ifdef USING_OMP_PRAGMAS
-    #include <omp.h>
+#include <omp.h>
 #endif
 
 #include <limits>
@@ -67,7 +67,7 @@ BaseDeformationMappingT<JacobianBlockType>::BaseDeformationMappingT (core::State
     , f_pos0 ( initData ( &f_pos0,"restPosition","initial spatial positions of children" ) )
     , missingInformationDirty(true)
     , KdTreeDirty(true)
-//    , maskFrom(NULL)
+    //    , maskFrom(NULL)
     , maskTo(NULL)
     , triangles(0)
     , extTriangles(0)
@@ -78,17 +78,17 @@ BaseDeformationMappingT<JacobianBlockType>::BaseDeformationMappingT (core::State
     , showColorScale(initData(&showColorScale, (float)1.0, "showColorScale", "Color mapping scale"))
 {
     helper::OptionsGroup methodOptions(3,"0 - None"
-            ,"1 - trace(F^T.F)-3"
-            ,"2 - sqrt(det(F^T.F))-1");
+                                       ,"1 - trace(F^T.F)-3"
+                                       ,"2 - sqrt(det(F^T.F))-1");
     methodOptions.setSelectedItem(0);
     showColorOnTopology.setValue(methodOptions);
 
     helper::OptionsGroup styleOptions(6,"0 - All axis"
-            ,"1 - First axis"
-            ,"2 - Second axis"
-            ,"3 - Third axis"
-            ,"4 - deformation"
-            ,"5 - 1st piola stress" );
+                                      ,"1 - First axis"
+                                      ,"2 - Second axis"
+                                      ,"3 - Third axis"
+                                      ,"4 - deformation"
+                                      ,"5 - 1st piola stress" );
     styleOptions.setSelectedItem(0);
     showDeformationGradientStyle.setValue(styleOptions);
 }
@@ -155,41 +155,41 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
             if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : "<<rest.size()<<" rest positions imported "<<std::endl;
         }
     }
-	else if(0 != f_index.getValue().size() && pos0.size() == f_index.getValue().size() && f_w.getValue().size() == f_index.getValue().size()) // if we do not have a shape function but we already have the needed data, we directly use them
-	{
-		if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : using filled data" <<std::endl;
+    else if(0 != f_index.getValue().size() && pos0.size() == f_index.getValue().size() && f_w.getValue().size() == f_index.getValue().size()) // if we do not have a shape function but we already have the needed data, we directly use them
+    {
+        if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : using filled data" <<std::endl;
 
-		VMaterialToSpatial& F0	= *f_F0.beginEdit();
-		vector<VReal>& w		= *f_w.beginEdit();
-		vector<VGradient>& dw	= *f_dw.beginEdit();
-		vector<VHessian>& ddw	= *f_ddw.beginEdit();
+        VMaterialToSpatial& F0	= *f_F0.beginEdit();
+        vector<VReal>& w		= *f_w.beginEdit();
+        vector<VGradient>& dw	= *f_dw.beginEdit();
+        vector<VHessian>& ddw	= *f_ddw.beginEdit();
 
-		F0.assign(pos0.size(), MaterialToSpatial());
-		dw.assign(pos0.size(), VGradient());
-		ddw.assign(pos0.size(), VHessian());
+        F0.assign(pos0.size(), MaterialToSpatial());
+        dw.assign(pos0.size(), VGradient());
+        ddw.assign(pos0.size(), VHessian());
 
-		for(size_t i = 0; i < pos0.size(); ++i)
-		{
-			dw[i].assign(w.size(), Gradient());
-			ddw[i].assign(w.size(), Hessian());
-		}
+        for(size_t i = 0; i < pos0.size(); ++i)
+        {
+            dw[i].assign(w.size(), Gradient());
+            ddw[i].assign(w.size(), Hessian());
+        }
 
-		f_ddw.endEdit();
-		f_dw.endEdit();
-		f_F0.endEdit();
+        f_ddw.endEdit();
+        f_dw.endEdit();
+        f_F0.endEdit();
 
-		// use custom rest positions (to set material directions or set residual deformations)
-		if(restPositionSet)
-		{
-			helper::WriteAccessor<Data< VMaterialToSpatial > >  F0(this->f_F0);
-			for(size_t i=0; i<rest.size(); ++i) F0[i]=OutDataTypesInfo<Out>::getF(rest[i]);
-			if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : "<<rest.size()<<" rest positions imported "<<std::endl;
-		}
-	}
-	else // if the prerequisites are not fulfilled we print an error
-	{
-		serr << "ShapeFunction<"<<ShapeFunctionType::Name()<<"> component not found" << sendl;
-	}
+        // use custom rest positions (to set material directions or set residual deformations)
+        if(restPositionSet)
+        {
+            helper::WriteAccessor<Data< VMaterialToSpatial > >  F0(this->f_F0);
+            for(size_t i=0; i<rest.size(); ++i) F0[i]=OutDataTypesInfo<Out>::getF(rest[i]);
+            if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : "<<rest.size()<<" rest positions imported "<<std::endl;
+        }
+    }
+    else // if the prerequisites are not fulfilled we print an error
+    {
+        serr << "ShapeFunction<"<<ShapeFunctionType::Name()<<"> component not found" << sendl;
+    }
 
     // init jacobians
     initJacobianBlocks();
@@ -202,10 +202,11 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
     //Apply mapping to init child positions
     reinit();
 
-    if(restPositionSet == false && this->toModel->read(core::VecCoordId::restPosition())->getValue().size()==size ) // not for states that do not have restpos (like visualmodel)
+    if(sampler && restPositionSet == false && this->toModel->read(core::VecCoordId::restPosition())->getValue().size()==size ) // not for states that do not have restpos (like visualmodel)
     {
-        //Init child rest positions from parent rest positions
-        apply(NULL, *this->toModel->write(core::VecCoordId::restPosition()), *this->fromModel->read(core::ConstVecCoordId::restPosition()));
+        helper::ReadAccessor<Data< VMaterialToSpatial > >  F0(this->f_F0);
+        helper::WriteAccessor<Data< OutVecCoord > >  rest(*this->toModel->write(core::VecCoordId::restPosition()));
+        for(int i=0; i<rest.size(); ++i) for(int j=0; j<spatial_dimensions; ++j) for(int k=0; k<material_dimensions; ++k) rest[i][j*material_dimensions+k] = F0[i][j][k];
     }
 }
 
@@ -243,14 +244,24 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut(const vector<Coord>& 
 
     //Apply mapping to init child positions
     reinit();
+
+    //Test to reinit deformation gradient using imageGaussPointSampler
+    engine::BaseGaussPointSampler* sampler;
+    this->getContext()->get(sampler,core::objectmodel::BaseContext::Local);
+    if(sampler && this->toModel->read(core::VecCoordId::restPosition())->getValue().size()==size ) // not for states that do not have restpos (like visualmodel)
+    {
+        helper::ReadAccessor<Data< VMaterialToSpatial > >  F0(this->f_F0);
+        helper::WriteAccessor<Data< OutVecCoord > >  rest(*this->toModel->write(core::VecCoordId::restPosition()));
+        for(int i=0; i<rest.size(); ++i) for(int j=0; j<spatial_dimensions; ++j) for(int k=0; k<material_dimensions; ++k) rest[i][j*material_dimensions+k] = F0[i][j][k];
+    }
 }
 
 
 template <class JacobianBlockType>
 void BaseDeformationMappingT<JacobianBlockType>::init()
 {
-//    if (core::behavior::BaseMechanicalState* stateFrom = dynamic_cast<core::behavior::BaseMechanicalState*>(this->fromModel.get()))
-//        maskFrom = &stateFrom->forceMask;
+    //    if (core::behavior::BaseMechanicalState* stateFrom = dynamic_cast<core::behavior::BaseMechanicalState*>(this->fromModel.get()))
+    //        maskFrom = &stateFrom->forceMask;
     if (core::behavior::BaseMechanicalState* stateTo = dynamic_cast<core::behavior::BaseMechanicalState*>(this->toModel.get()))
         maskTo = &stateTo->forceMask;
 
@@ -279,7 +290,7 @@ void BaseDeformationMappingT<JacobianBlockType>::init()
 template <class JacobianBlockType>
 void BaseDeformationMappingT<JacobianBlockType>::reinit()
 {
-//    if(this->assemble.getValue()) updateJ();
+    //    if(this->assemble.getValue()) updateJ();
 
     apply(NULL, *this->toModel->write(core::VecCoordId::position()), *this->fromModel->read(core::ConstVecCoordId::position()));
 
@@ -392,13 +403,13 @@ void BaseDeformationMappingT<JacobianBlockType>::apply(const core::MechanicalPar
     if(this->f_printLog.getValue()) std::cout<<this->getName()<<":apply"<<std::endl;
 
     helper::ReadAccessor<Data<OutVecCoord> > outpos (*this->toModel->read(core::ConstVecCoordId::position()));
-//    if(_sampler) if(_sampler->getNbSamples()!=outpos.size()) resizeOut();
+    //    if(_sampler) if(_sampler->getNbSamples()!=outpos.size()) resizeOut();
 
     OutVecCoord&  out = *dOut.beginEdit();
     const InVecCoord&  in = dIn.getValue();
 
 #ifdef USING_OMP_PRAGMAS
-        #pragma omp parallel for
+#pragma omp parallel for
 #endif
     for(unsigned int i=0; i<jacobian.size(); i++)
     {
@@ -448,7 +459,7 @@ void BaseDeformationMappingT<JacobianBlockType>::applyJ(const core::MechanicalPa
         if( !this->maskTo || !this->maskTo->isInUse() )
         {
 #ifdef USING_OMP_PRAGMAS
-        #pragma omp parallel for
+#pragma omp parallel for
 #endif
             for(unsigned int i=0; i<jacobian.size(); i++)
             {
@@ -499,7 +510,7 @@ void BaseDeformationMappingT<JacobianBlockType>::applyJT(const core::MechanicalP
             }
 
 #ifdef USING_OMP_PRAGMAS
-            #pragma omp parallel for
+#pragma omp parallel for
 #endif
             for(unsigned int i=0; i<this->f_index_parentToChild.size(); i++)
             {
@@ -552,7 +563,7 @@ void BaseDeformationMappingT<JacobianBlockType>::applyDJT(const core::Mechanical
         if( !this->maskTo || !this->maskTo->isInUse() )
         {
 #ifdef USING_OMP_PRAGMAS
-        #pragma omp parallel for
+#pragma omp parallel for
 #endif
             for(unsigned int i=0; i<this->f_index_parentToChild.size(); i++)
             {
@@ -648,9 +659,9 @@ void BaseDeformationMappingT<JacobianBlockType>::ForwardMapping(Coord& p,const C
 template <int L,typename Real>
 inline static void invert(defaulttype::Mat<L,L,Real> &Minv, const defaulttype::Mat<L,L,Real> &M)
 {
-//    Eigen::Map<const Eigen::Matrix<Real,L,L,Eigen::RowMajor> >  eM(&M[0][0]);
-//    Eigen::Map<Eigen::Matrix<Real,L,L,Eigen::RowMajor> >  eMinv(&Minv[0][0]);
-//    eMinv=eM.inverse();
+    //    Eigen::Map<const Eigen::Matrix<Real,L,L,Eigen::RowMajor> >  eM(&M[0][0]);
+    //    Eigen::Map<Eigen::Matrix<Real,L,L,Eigen::RowMajor> >  eMinv(&Minv[0][0]);
+    //    eMinv=eM.inverse();
     Minv.invert(M);
 }
 
@@ -829,31 +840,31 @@ void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::Visual
             if(OutDataTypesInfo<Out>::positionMapped) Out::get(p[0],p[1],p[2],out[i]); else p=f_pos[i];
 
             if(showDeformationGradientStyle.getValue().getSelectedId()==0)
-            for(int j=0; j<material_dimensions; j++)
+                for(int j=0; j<material_dimensions; j++)
+                {
+                    Vec<3,float> u=F.transposed()(j)*0.5*scale;
+                    vparams->drawTool()->drawCylinder(p-u,p+u,0.05*scale,col,subdiv);
+                }
+            else if(showDeformationGradientStyle.getValue().getSelectedId()==1)
             {
-                Vec<3,float> u=F.transposed()(j)*0.5*scale;
+                Vec<3,float> u=F.transposed()(0)*0.5*scale;
                 vparams->drawTool()->drawCylinder(p-u,p+u,0.05*scale,col,subdiv);
             }
-            else if(showDeformationGradientStyle.getValue().getSelectedId()==1)
-                {
-                    Vec<3,float> u=F.transposed()(0)*0.5*scale;
-                    vparams->drawTool()->drawCylinder(p-u,p+u,0.05*scale,col,subdiv);
-                }
             else if(showDeformationGradientStyle.getValue().getSelectedId()==2)
-                {
-                    Vec<3,float> u=F.transposed()(1)*0.5*scale;
-                    vparams->drawTool()->drawCylinder(p-u,p+u,0.05*scale,col,subdiv);
-                }
+            {
+                Vec<3,float> u=F.transposed()(1)*0.5*scale;
+                vparams->drawTool()->drawCylinder(p-u,p+u,0.05*scale,col,subdiv);
+            }
             else if(showDeformationGradientStyle.getValue().getSelectedId()==3)
-                {
-                    Vec<3,float> u=F.transposed()(2)*0.5*scale;
-                    vparams->drawTool()->drawCylinder(p-u,p+u,0.05*scale,col,subdiv);
-                }
+            {
+                Vec<3,float> u=F.transposed()(2)*0.5*scale;
+                vparams->drawTool()->drawCylinder(p-u,p+u,0.05*scale,col,subdiv);
+            }
             else if(showDeformationGradientStyle.getValue().getSelectedId()==4) // strain
-                {
-                    vparams->drawTool()->setMaterial(col);
-                    drawEllipsoid(F,p,0.5*scale);
-                }
+            {
+                vparams->drawTool()->setMaterial(col);
+                drawEllipsoid(F,p,0.5*scale);
+            }
             else if(showDeformationGradientStyle.getValue().getSelectedId()==5 && outf) // stress
                 if(OutDataTypesInfo<Out>::FMapped)
                 {

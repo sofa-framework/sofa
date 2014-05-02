@@ -86,7 +86,7 @@ struct DiffusionShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
         typedef typename DiffusionShapeFunction::raImage raImage;
         typedef typename DiffusionShapeFunction::DistTypes DistTypes;
         typedef typename DiffusionShapeFunction::waDist waDist;
-        typedef typename DiffusionShapeFunction::DistT DistT;
+        //typedef typename DiffusionShapeFunction::DistT DistT;
         typedef typename DiffusionShapeFunction::IndTypes IndTypes;
         typedef typename DiffusionShapeFunction::waInd waInd;
 
@@ -190,7 +190,7 @@ struct DiffusionShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
     template<class DiffusionShapeFunction>
     static void initTemp(DiffusionShapeFunction* This, const unsigned index)
     {
-        typedef typename DiffusionShapeFunction::DistT DistT;
+        //typedef typename DiffusionShapeFunction::DistT DistT;
 
         // retrieve data
         typename DiffusionShapeFunction::raImage in(This->image);
