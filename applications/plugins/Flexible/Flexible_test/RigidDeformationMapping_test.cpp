@@ -104,13 +104,13 @@ namespace sofa {
             this->SetRandomTestedRotationAndTranslation(seed);
             typedef projectiveconstraintset::AffineMovementConstraint<In> AffineMovementConstraint;
             typename AffineMovementConstraint::SPtr affineConstraint  = this->root->template get<AffineMovementConstraint>(this->root->SearchDown);
-            affineConstraint->m_quaternion.setValue(testedQuaternion);
+            //affineConstraint->m_quaternion.setValue(testedQuaternion);
             affineConstraint->m_translation.setValue(testedTranslation);
             testedQuaternion.toMatrix(testedRotation);
 
         }
              
-        void SetRandomTestedRotationAndTranslation(int seedValue)
+        void SetRandomTestedRotationAndTranslation(int /*seedValue*/)
         {
             // Random Rotation
             SReal x,y,z,w;
