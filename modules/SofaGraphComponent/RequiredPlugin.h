@@ -26,10 +26,17 @@
 #define REQUIREDPLUGIN_H_
 #include "config.h"
 
-#include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-
-
+#include <sofa/core/objectmodel/DataFileName.h>
+#include <sofa/core/core.h>
+#include <sofa/core/behavior/BaseForceField.h>
+#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/objectmodel/Data.h>
+#include <sofa/core/MechanicalParams.h>
+#include <sofa/defaulttype/BaseVector.h>
+#include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
 {
@@ -44,7 +51,14 @@ class SOFA_GRAPH_COMPONENT_API RequiredPlugin : public core::objectmodel::BaseOb
 {
 public:
     SOFA_CLASS(RequiredPlugin,core::objectmodel::BaseObject);
-    sofa::core::objectmodel::Data<std::string> pluginName;
+    sofa::core::objectmodel::Data<helper::vector<std::string> > pluginName;
+    sofa::core::objectmodel::Data<helper::vector<helper::fixed_array<std::string,2> > > suffixMap;
+
+    sofa::core::objectmodel::Data<bool> stopAfterFirstNameFound;
+    sofa::core::objectmodel::Data<bool> stopAfterFirstSuffixFound;
+    sofa::core::objectmodel::Data<bool> requireOne;
+    sofa::core::objectmodel::Data<bool> requireAll;
+
 protected:
     RequiredPlugin();
     virtual ~RequiredPlugin() {}

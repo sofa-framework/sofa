@@ -112,6 +112,17 @@ void PluginManager::writeToIniFile(const std::string& path)
     outstream.close();
 }
 
+/// Get the default suffix applied to plugin names to find the actual lib to load
+/// (depends on platform, version, debug/release build)
+std::string PluginManager::getDefaultSuffix()
+{
+#ifdef SOFA_LIBSUFFIX
+    return sofa_tostring(SOFA_LIBSUFFIX);
+#else
+    return "";
+#endif
+}
+
 bool PluginManager::loadPluginByPath(const std::string& pluginPath, std::ostream* errlog)
 {
     if (pluginIsLoaded(pluginPath))
@@ -163,9 +174,9 @@ bool PluginManager::loadPluginByPath(const std::string& pluginPath, std::ostream
     return true;
 }
 
-bool PluginManager::loadPluginByName(const std::string& pluginName, std::ostream* errlog)
+bool PluginManager::loadPluginByName(const std::string& pluginName, const std::string& suffix, std::ostream* errlog)
 {
-    std::string pluginPath = findPlugin(pluginName);
+    std::string pluginPath = findPlugin(pluginName, suffix);
 
     if (pluginPath != "")
     {
@@ -181,14 +192,14 @@ bool PluginManager::loadPluginByName(const std::string& pluginName, std::ostream
     }
 }
 
-bool PluginManager::loadPlugin(const std::string& plugin, std::ostream* errlog)
+bool PluginManager::loadPlugin(const std::string& plugin, std::ostream* errlog, const std::string& suffix)
 {
     // If 'plugin' ends with ".so", ".dll" or ".dylib", this is a path
     const std::string dotExt = "." + DynamicLibrary::extension;
     if (std::equal(dotExt.rbegin(), dotExt.rend(), plugin.rbegin()))
         return loadPluginByPath(plugin, errlog);
     else
-        return loadPluginByName(plugin, errlog);
+        return loadPluginByName(plugin, suffix, errlog);
 }
 
 bool PluginManager::unloadPlugin(const std::string &pluginPath, std::ostream* errlog)
@@ -250,12 +261,11 @@ void PluginManager::init(const std::string& pluginPath)
 
 
 
-std::string PluginManager::findPlugin(const std::string& pluginName, bool ignoreCase)
+std::string PluginManager::findPlugin(const std::string& pluginName, const std::string& suffix, bool ignoreCase)
 {
     std::string name(pluginName);
-#ifdef SOFA_LIBSUFFIX
-    name += sofa_tostring(SOFA_LIBSUFFIX);
-#endif
+    name  += suffix;
+
     const std::string libName = DynamicLibrary::prefix + name + "." + DynamicLibrary::extension;
 
     // First try: case sensitive
@@ -279,8 +289,10 @@ std::string PluginManager::findPlugin(const std::string& pluginName, bool ignore
             {
                 const std::string& filename = *j;
                 const std::string downcaseFilename = Utils::downcaseString(filename);
-                if (downcaseFilename == downcaseLibName)
+                if (downcaseFilename == downcaseLibName) {
                     return dir + "/" + filename;
+                    std::cout<<"dir : "<<dir + "/" + filename<<std::endl;
+                }
             }
         }
     }

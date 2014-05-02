@@ -139,15 +139,18 @@ public:
     typedef PluginMap::iterator PluginIterator;
 
     static PluginManager& getInstance();
-    bool loadPlugin(const std::string& plugin, std::ostream* errlog=NULL);
+    /// Get the default suffix applied to plugin names to find the actual lib to load
+    /// (depends on platform, version, debug/release build)
+    static std::string getDefaultSuffix();
+    bool loadPlugin(const std::string& plugin, std::ostream* errlog=NULL, const std::string& suffix = getDefaultSuffix());
     bool loadPluginByPath(const std::string& path, std::ostream* errlog=NULL);
-    bool loadPluginByName(const std::string& pluginName, std::ostream* errlog=NULL);
+    bool loadPluginByName(const std::string& pluginName, const std::string& suffix = getDefaultSuffix(), std::ostream* errlog=NULL);
     bool unloadPlugin(const std::string& path, std::ostream* errlog=NULL);
 
     void init();
 	void init(const std::string& pluginPath);
 
-    std::string findPlugin(const std::string& pluginName, bool ignoreCase = true);
+    std::string findPlugin(const std::string& pluginName, const std::string& suffix = getDefaultSuffix(), bool ignoreCase = true);
     bool pluginIsLoaded(const std::string& pluginPath);
 
     inline friend std::ostream& operator<< ( std::ostream& os, const PluginManager& pluginManager )
