@@ -95,7 +95,7 @@ namespace sofa {
             affineConstraint->m_translation.setValue(testedTranslation);
         }
              
-        void SetRandomTestedRotationAndTranslation(int seedValue)
+        void SetRandomTestedRotationAndTranslation(int /*seedValue*/)
         {
             // Random Rotation
             SReal x,y,z,w;
@@ -121,7 +121,7 @@ namespace sofa {
 
         }
 
-        bool runTest(double convergenceAccuracy, double tolerance)
+        bool runTest(double convergenceAccuracy, double /*tolerance*/)
         {
             // Init simulation
             sofa::simulation::getSimulation()->init(Inherited::root.get());
