@@ -50,65 +50,119 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 using namespace helper;
 
-inline int MeshNewProximityIntersection::doIntersectionLineLine(SReal dist2, const Vector3& p1, const Vector3& p2, const Vector3& q1, const Vector3& q2, OutputVector* contacts, int id)
+inline int MeshNewProximityIntersection::doIntersectionLineLine(double dist2, const Vector3& p1, const Vector3& p2, const Vector3& q1, const Vector3& q2, OutputVector* contacts, int id)
 {  
-    Vector3 p,q;
+//    const Vector3 AB = p2-p1;
+//    const Vector3 CD = q2-q1;
+//    const Vector3 AC = q1-p1;
+//    Matrix2 A;
+//    Vector2 b;
+//    A[0][0] = AB*AB;
+//    A[1][1] = CD*CD;
+//    A[0][1] = A[1][0] = -CD*AB;
+//    b[0] = AB*AC;
+//    b[1] = -CD*AC;
+//    const double det = determinant(A);
+
+//    double alpha = 0.5;
+//    double beta = 0.5;
+
+//    if (det < -0.000000000001 || det > 0.000000000001)
+//    {
+//        alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
+//        beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
+
+//        if (alpha < 0.000001 || alpha > 0.999999 || beta < 0.000001 || beta > 0.999999 )
+//            return 0;
+//    }
+
+//    Vector3 p,q,pq;
+//    p = p1 + AB * alpha;
+//    q = q1 + CD * beta;
+//    pq = q-p;
+//    if (pq.norm2() >= dist2)
+//        return 0;
+
+    Vector3 p,q,pq;
     IntrUtil<SReal>::segNearestPoints(p1,p2,q1,q2,p,q);
 
-    Vector3 pq = p-q;
-    SReal norm2 = pq.norm2();
-
-    if (norm2 >= dist2)
+    if ((p-q).norm2() >= dist2)
         return 0;
 
-    //const SReal contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
+    //const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
     //detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
     detection->id = id;
     detection->point[0]=p;
     detection->point[1]=q;
-    detection->value = helper::rsqrt(norm2);
-    detection->normal = pq / detection->value;
+    detection->normal=pq;
+    detection->value = detection->normal.norm();
+    detection->normal /= detection->value;
     //detection->value -= contactDist;
     return 1;
 }
 
-inline int MeshNewProximityIntersection::doIntersectionLinePoint(SReal dist2, const Vector3& p1, const Vector3& p2, const Vector3& q, OutputVector* contacts, int id, bool swapElems)
+inline int MeshNewProximityIntersection::doIntersectionLinePoint(double dist2, const Vector3& p1, const Vector3& p2, const Vector3& q, OutputVector* contacts, int id, bool swapElems)
 {
-    Vector3 p;
-    p = IntrUtil<SReal>::nearestPointOnSeg(p1,p2,q);
+    const Vector3 AB = p2-p1;
+    const Vector3 AQ = q -p1;
+    double A;
+    double b;
+    A = AB*AB;
+    b = AQ*AB;
 
-    Vector3 pq = q-p;
-    SReal norm2 = pq.norm2();
-    if (norm2 >= dist2)
+    double alpha = 0.5;
+    Vector3 p,pq;
+
+    //if (A < -0.000001 || A > 0.000001)
+    {
+        alpha = b/A;
+        //if (alpha < 0.000001 || alpha > 0.999999)
+        //        return 0;
+        if (alpha <= 0.0){
+            p = p1;
+        }
+        else if (alpha >= 1.0){
+            p = p2;
+            alpha = 1.0;
+        }
+        else{
+            p = p1 + AB * alpha;
+        }
+    }
+
+    pq = q-p;
+    if (pq.norm2() >= dist2)
         return 0;
 
-    //const SReal contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
+    //const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
 
     //detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
     detection->id = id;
-    detection->value = helper::rsqrt(norm2);
     if (swapElems)
     {
         detection->point[0]=q;
         detection->point[1]=p;
-        detection->normal = -pq / detection->value;
+        detection->baryCoords[1] = Vector3(alpha,0,0);
+        detection->normal = -pq;
     }
     else
     {
         detection->point[0]=p;
         detection->point[1]=q;
-        detection->normal = pq / detection->value;
+        detection->baryCoords[0] = Vector3(alpha,0,0);
+        detection->normal = pq;
     }
-
+    detection->value = detection->normal.norm();
+    detection->normal /= detection->value;
     //detection->value -= contactDist;
     return 1;
 }
 
-inline int MeshNewProximityIntersection::doIntersectionTrianglePoint2(SReal dist2, int flags, const Vector3& p1, const Vector3& p2, const Vector3& p3, const Vector3& /*n*/, const Vector3& q, OutputVector* contacts, int id, bool swapElems)
+inline int MeshNewProximityIntersection::doIntersectionTrianglePoint(double dist2, int flags, const Vector3& p1, const Vector3& p2, const Vector3& p3, const Vector3& /*n*/, const Vector3& q, OutputVector* contacts, int id, bool swapElems)
 {
     const Vector3 AB = p2-p1;
     const Vector3 AC = p3-p1;
@@ -120,10 +174,10 @@ inline int MeshNewProximityIntersection::doIntersectionTrianglePoint2(SReal dist
     A[0][1] = A[1][0] = AB*AC;
     b[0] = AQ*AB;
     b[1] = AQ*AC;
-    const SReal det = determinant(A);
+    const double det = determinant(A);
 
-    SReal alpha = 0.5;
-    SReal beta = 0.5;
+    double alpha = 0.5;
+    double beta = 0.5;
 
     //if (det < -0.000000000001 || det > 0.000000000001)
     {
@@ -137,129 +191,9 @@ inline int MeshNewProximityIntersection::doIntersectionTrianglePoint2(SReal dist
         {
             // nearest point is on an edge or corner
             // barycentric coordinate on AB
-            SReal pAB = b[0] / A[0][0]; // AQ*AB / AB*AB
+            double pAB = b[0] / A[0][0]; // AQ*AB / AB*AB
             // barycentric coordinate on AC
-            SReal pAC = b[1] / A[1][1]; // AQ*AB / AB*AB
-            if (pAB < 0.000001 && pAC < 0.0000001)
-            {
-                // closest point is A
-                if (!(flags&TriangleModel::FLAG_P1)) return 0; // this corner is not considered
-                alpha = 0.0;
-                beta = 0.0;
-            }
-            else if (pAB < 0.999999 && beta < 0.000001)
-            {
-                // closest point is on AB
-                if (!(flags&TriangleModel::FLAG_E12)) return 0; // this edge is not considered
-                alpha = pAB;
-                beta = 0.0;
-            }
-            else if (pAC < 0.999999 && alpha < 0.000001)
-            {
-                // closest point is on AC
-                if (!(flags&TriangleModel::FLAG_E12)) return 0; // this edge is not considered
-                alpha = 0.0;
-                beta = pAC;
-            }
-            else
-            {
-                // barycentric coordinate on BC
-                // BQ*BC / BC*BC = (AQ-AB)*(AC-AB) / (AC-AB)*(AC-AB) = (AQ*AC-AQ*AB + AB*AB-AB*AC) / (AB*AB+AC*AC-2AB*AC)
-                SReal pBC = (b[1] - b[0] + A[0][0] - A[0][1]) / (A[0][0] + A[1][1] - 2*A[0][1]); // BQ*BC / BC*BC
-                if (pBC < 0.000001)
-                {
-                    // closest point is B
-                    if (!(flags&TriangleModel::FLAG_P2)) return 0; // this edge is not considered
-                    alpha = 1.0;
-                    beta = 0.0;
-                }
-                else if (pBC > 0.999999)
-                {
-                    // closest point is C
-                    if (!(flags&TriangleModel::FLAG_P3)) return 0; // this edge is not considered
-                    alpha = 0.0;
-                    beta = 1.0;
-                }
-                else
-                {
-                    // closest point is on BC
-                    if (!(flags&TriangleModel::FLAG_E31)) return 0; // this edge is not considered
-                    alpha = 1.0-pBC;
-                    beta = pBC;
-                }
-            }
-        }
-    }
-
-    Vector3 p, pq;
-    p = p1 + AB * alpha + AC * beta;
-    pq = q-p;
-    SReal norm2 = pq.norm2();
-    if (pq.norm2() >= dist2)
-        return 0;
-
-    //const SReal contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
-    contacts->resize(contacts->size()+1);
-    DetectionOutput *detection = &*(contacts->end()-1);
-    //detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
-    detection->id = id;
-    detection->value = helper::rsqrt(norm2);
-    if (swapElems)
-    {
-        //detection->point[0]=q;//the ONLY difference with doIntersectionTrianglePoint
-        detection->point[1]=p;
-        detection->normal = -pq / detection->value;
-    }
-    else
-    {
-        detection->point[0]=p;
-        //detection->point[1]=q;//the ONLY difference with doIntersectionTrianglePoint
-        detection->normal = pq / detection->value;
-    }
-    //printf("\n normale : x = %f , y = %f, z = %f",detection->normal.x(),detection->normal.y(),detection->normal.z());
-    //if (e2.getCollisionModel()->isStatic() && detection->normal * e2.n() < -0.95)
-    //{ // The elements are interpenetrating
-    //	detection->normal = -detection->normal;
-    //	detection->value = -detection->value;
-    //}
-    //detection->value -= contactDist;
-    return 1;
-}
-
-
-
-inline int MeshNewProximityIntersection::doIntersectionTrianglePoint(SReal dist2, int flags, const Vector3& p1, const Vector3& p2, const Vector3& p3, const Vector3& /*n*/, const Vector3& q, OutputVector* contacts, int id, bool swapElems)
-{
-    const Vector3 AB = p2-p1;
-    const Vector3 AC = p3-p1;
-    const Vector3 AQ = q -p1;
-    Matrix2 A;
-    Vector2 b;
-    A[0][0] = AB*AB;
-    A[1][1] = AC*AC;
-    A[0][1] = A[1][0] = AB*AC;
-    b[0] = AQ*AB;
-    b[1] = AQ*AC;
-    const SReal det = determinant(A);
-
-    SReal alpha = 0.5;
-    SReal beta = 0.5;
-
-    //if (det < -0.000000000001 || det > 0.000000000001)
-    {
-        alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
-        beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
-        //if (alpha < 0.000001 ||
-        //    beta  < 0.000001 ||
-        //    alpha + beta  > 0.999999)
-        //        return 0;
-        if (alpha < 0.000001 || beta < 0.000001 || alpha + beta > 0.999999)
-        {
-            // nearest point is on an edge or corner
-            // barycentric coordinate on AB
-            SReal pAB = b[0] / A[0][0]; // AQ*AB / AB*AB
-            // barycentric coordinate on AC
-            SReal pAC = b[1] / A[1][1]; // AQ*AB / AB*AB
+            double pAC = b[1] / A[1][1]; // AQ*AB / AB*AB
             if (pAB < 0.000001 && pAC < 0.0000001)
             {
                 // closest point is A
@@ -285,7 +219,7 @@ inline int MeshNewProximityIntersection::doIntersectionTrianglePoint(SReal dist2
             {
                 // barycentric coordinate on BC
                 // BQ*BC / BC*BC = (AQ-AB)*(AC-AB) / (AC-AB)*(AC-AB) = (AQ*AC-AQ*AB + AB*AB-AB*AC) / (AB*AB+AC*AC-2AB*AC)
-                SReal pBC = (b[1] - b[0] + A[0][0] - A[0][1]) / (A[0][0] + A[1][1] - 2*A[0][1]); // BQ*BC / BC*BC
+                double pBC = (b[1] - b[0] + A[0][0] - A[1][1]) / (A[0][0] + A[1][1] - 2*A[0][1]); // BQ*BC / BC*BC
                 if (pBC < 0.000001)
                 {
                     // closest point is B
@@ -314,28 +248,31 @@ inline int MeshNewProximityIntersection::doIntersectionTrianglePoint(SReal dist2
     Vector3 p, pq;
     p = p1 + AB * alpha + AC * beta;
     pq = q-p;
-    SReal norm2 = pq.norm2();
     if (pq.norm2() >= dist2)
         return 0;
 
-    //const SReal contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
+    //const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
     //detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
     detection->id = id;
-    detection->value = helper::rsqrt(norm2);
     if (swapElems)
     {
         detection->point[0]=q;
         detection->point[1]=p;
-        detection->normal = -pq / detection->value;
+        detection->baryCoords[1] = Vector3(alpha,beta,0); 
+        detection->normal = -pq;
     }
     else
     {
         detection->point[0]=p;
         detection->point[1]=q;
-        detection->normal = pq / detection->value;
+        detection->baryCoords[0] = Vector3(alpha,beta,0); 
+        detection->normal = pq;
     }
+    detection->value = detection->normal.norm();
+    detection->normal /= detection->value;
+
     //printf("\n normale : x = %f , y = %f, z = %f",detection->normal.x(),detection->normal.y(),detection->normal.z());
     //if (e2.getCollisionModel()->isStatic() && detection->normal * e2.n() < -0.95)
     //{ // The elements are interpenetrating
@@ -346,14 +283,14 @@ inline int MeshNewProximityIntersection::doIntersectionTrianglePoint(SReal dist2
     return 1;
 }
 
-template<class T>
-int MeshNewProximityIntersection::computeIntersection(TSphere<T>& e1, Point& e2, OutputVector* contacts)
+template <class Sphere>
+int MeshNewProximityIntersection::computeIntersection(Sphere& e1, Point& e2, OutputVector* contacts)
 {
-    const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity() + e1.r();
+    const double alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity() + e1.r();
     int n = intersection->doIntersectionPointPoint(alarmDist*alarmDist, e1.center(), e2.p(), contacts, (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex());
     if (n>0)
     {
-        const SReal contactDist = intersection->getContactDistance() + e1.getProximity() + e2.getProximity() + e1.r();
+        const double contactDist = intersection->getContactDistance() + e1.getProximity() + e2.getProximity() + e1.r();
         for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
         {
             detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
@@ -363,14 +300,14 @@ int MeshNewProximityIntersection::computeIntersection(TSphere<T>& e1, Point& e2,
     return n;
 }
 
-template<class T>
-int MeshNewProximityIntersection::computeIntersection(Line& e1, TSphere<T>& e2, OutputVector* contacts)
+template <class Sphere>
+int MeshNewProximityIntersection::computeIntersection(Line& e1, Sphere& e2, OutputVector* contacts)
 {
-    const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity() + e2.r();
+    const double alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity() + e2.r();
     int n = doIntersectionLinePoint(alarmDist*alarmDist, e1.p1(),e1.p2(), e2.center(), contacts, e2.getIndex());
     if (n>0)
     {
-        const SReal contactDist = intersection->getContactDistance() + e1.getProximity() + e2.getProximity() + e2.r();
+        const double contactDist = intersection->getContactDistance() + e1.getProximity() + e2.getProximity() + e2.r();
         for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
         {
             detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
@@ -380,123 +317,53 @@ int MeshNewProximityIntersection::computeIntersection(Line& e1, TSphere<T>& e2, 
     return n;
 }
 
-template<class T>
-int MeshNewProximityIntersection::computeIntersection(Triangle& e1, TSphere<T>& e2, OutputVector* contacts)
+template <class Sphere>
+int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Sphere& e2, OutputVector* contacts)
 {
-    int flags = e1.flags();
-    const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity() + e2.r();
-    const SReal dist2 = alarmDist*alarmDist;
-
-    const Vector3 AB = e1.p2() - e1.p1();
-    const Vector3 AC = e1.p3() - e1.p1();
-    const Vector3 AQ = e2.center() - e1.p1();
-    Matrix2 A;
-    Vector2 b;
-    A[0][0] = AB*AB;
-    A[1][1] = AC*AC;
-    A[0][1] = A[1][0] = AB*AC;
-    b[0] = AQ*AB;
-    b[1] = AQ*AC;
-    const SReal det = determinant(A);
-
-    SReal alpha = 0.5;
-    SReal beta = 0.5;
-
-    //if (det < -0.000000000001 || det > 0.000000000001)
+    const double alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity() + e2.r();
+    const double dist2 = alarmDist*alarmDist;
+    int n = doIntersectionTrianglePoint(dist2, e1.flags(),e1.p1(),e1.p2(),e1.p3(),e1.n(), e2.center(), contacts, e2.getIndex());
+    if (n>0)
     {
-        alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
-        beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
-        //if (alpha < 0.000001 ||
-        //    beta  < 0.000001 ||
-        //    alpha + beta  > 0.999999)
-        //        return 0;
-        if (alpha < 0.000001 || beta < 0.000001 || alpha + beta > 0.999999)
+        const double contactDist = intersection->getContactDistance() + e1.getProximity() + e2.getProximity() + e2.r();
+        for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
         {
-            // nearest point is on an edge or corner
-            // barycentric coordinate on AB
-            SReal pAB = b[0] / A[0][0]; // AQ*AB / AB*AB
-            // barycentric coordinate on AC
-            SReal pAC = b[1] / A[1][1]; // AQ*AB / AB*AB
-            if (pAB < 0.000001 && pAC < 0.0000001)
-            {
-                // closest point is A
-                if (!(flags&TriangleModel::FLAG_P1)) return 0; // this corner is not considered
-                alpha = 0.0;
-                beta = 0.0;
-            }
-            else if (pAB < 0.999999 && beta < 0.000001)
-            {
-                // closest point is on AB
-                if (!(flags&TriangleModel::FLAG_E12)) return 0; // this edge is not considered
-                alpha = pAB;
-                beta = 0.0;
-            }
-            else if (pAC < 0.999999 && alpha < 0.000001)
-            {
-                // closest point is on AC
-                if (!(flags&TriangleModel::FLAG_E12)) return 0; // this edge is not considered
-                alpha = 0.0;
-                beta = pAC;
-            }
-            else
-            {
-                // barycentric coordinate on BC
-                // BQ*BC / BC*BC = (AQ-AB)*(AC-AB) / (AC-AB)*(AC-AB) = (AQ*AC-AQ*AB + AB*AB-AB*AC) / (AB*AB+AC*AC-2AB*AC)
-                SReal pBC = (b[1] - b[0] + A[0][0] - A[0][1]) / (A[0][0] + A[1][1] - 2*A[0][1]); // BQ*BC / BC*BC
-                if (pBC < 0.000001)
-                {
-                    // closest point is B
-                    if (!(flags&TriangleModel::FLAG_P2)) return 0; // this edge is not considered
-                    alpha = 1.0;
-                    beta = 0.0;
-                }
-                else if (pBC > 0.999999)
-                {
-                    // closest point is C
-                    if (!(flags&TriangleModel::FLAG_P3)) return 0; // this edge is not considered
-                    alpha = 0.0;
-                    beta = 1.0;
-                }
-                else
-                {
-                    // closest point is on BC
-                    if (!(flags&TriangleModel::FLAG_E31)) return 0; // this edge is not considered
-                    alpha = 1.0-pBC;
-                    beta = pBC;
-                }
-            }
+            detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+            detection->value -= contactDist;
         }
     }
+    return n;
+}
 
-    Vector3 p, pq;
-    p = e1.p1() + AB * alpha + AC * beta;
-    pq = e2.center() - p;
-    SReal norm2 = pq.norm2();
-    if (pq.norm2() >= dist2)
-        return 0;
+template <class Sphere>
+bool MeshNewProximityIntersection::testIntersection(Sphere& e1, Point& e2)
+{
+    OutputVector contacts;
+    const double alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity() + e1.r();
+    int n = intersection->doIntersectionPointPoint(alarmDist*alarmDist, e1.center(), e2.p(), &contacts, -1);
+    return n>0;
+}
 
-    //const SReal contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
-    contacts->resize(contacts->size()+1);
-    DetectionOutput *detection = &*(contacts->end()-1);
-    detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
-    detection->id = e2.getIndex();
-    detection->value = helper::rsqrt(norm2) ;
+template <class Sphere>
+bool MeshNewProximityIntersection::testIntersection(Line&, Sphere&)
+{
+    intersection->serr << "Unnecessary call to NewProximityIntersection::testIntersection(Line,Sphere)."<<intersection->sendl;
+    return true;
+}
 
-    if(detection->value>1e-15)
-    {
-        detection->normal = pq / detection->value;
-    }
-    else
-    {
-        intersection->serr<<"WARNING: null distance between contact detected"<<intersection->sendl;
-        detection->normal= Vector3(1,0,0);
-    }
+template <class Sphere>
+bool MeshNewProximityIntersection::testIntersection(Triangle&, Sphere&)
+{
+    intersection->serr << "Unnecessary call to NewProximityIntersection::testIntersection(Triangle,Sphere)."<<intersection->sendl;
+    return true;
+}
 
-    detection->value -= (intersection->getContactDistance() + e1.getProximity() + e2.getProximity() + e2.r());
-    detection->point[0]=p;
-    detection->point[1]= e2.getContactPointByNormal(detection->normal);
+inline int MeshNewProximityIntersection::computeIntersection(Capsule & cap,Triangle & tri,OutputVector* contacts){
+    return MeshIntTool::computeIntersection(cap,tri,intersection->getAlarmDistance(),intersection->getContactDistance(),contacts);
+}
 
-    return 1;
+inline int MeshNewProximityIntersection::computeIntersection(Capsule & cap,Line & lin,OutputVector* contacts){
+    return MeshIntTool::computeIntersection(cap,lin,intersection->getAlarmDistance(),intersection->getContactDistance(),contacts);
 }
 
 } // namespace collision
