@@ -84,7 +84,7 @@ if(SOFA-MISC_OPENMP)
     endif()
 endif()
 
-# SSE Flags on Win32
+# SSE2 Flags on Win32
 if(SOFA-MISC_VECTORIZE)
     if(MSVC)
 	set(ARCH_FLAGS "/arch:SSE2 /fp:fast")

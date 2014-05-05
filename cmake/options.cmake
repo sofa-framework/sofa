@@ -14,7 +14,6 @@ if(NOT PRECONFIGURE_DONE)
     endif()
 endif()
 
-# hide unused default cmake variables
 # CHG: disable as this breaks build of external applications
 # set(CMAKE_INSTALL_PREFIX "${SOFA_BUILD_DIR}" CACHE INTERNAL "Sofa install path (not used yet)")
 
@@ -39,7 +38,7 @@ sofa_option(SOFA-EXTERNAL_METIS_PATH PATH "${SOFA_EXTLIBS_DIR}/metis-5.1.0" "Pat
 ## verdandi
 sofa_option(SOFA-EXTERNAL_VERDANDI_PATH PATH "${SOFA_EXTLIBS_DIR}/verdandi-1.5" "Path to the Verdandi library sources")
 
-## qt
+## Qt
 set(QTDIR "$ENV{QTDIR}")
 if(WIN32 AND QTDIR STREQUAL "")
     set(QTDIR "${SOFA_TOOLS_DIR}/qt4win")
@@ -57,7 +56,7 @@ list(APPEND compilerDefines SOFA_QT4)
 
 ## boost
 set(MINIBOOST_PATH "${SOFA_EXTLIBS_DIR}/miniBoost")
-sofa_option(SOFA-EXTERNAL_BOOST_PATH PATH "${MINIBOOST_PATH}" "Boost path, set to blank if you want to use the boost you built on your system or set a path if you want to use a compiled boost")
+sofa_option(SOFA-EXTERNAL_BOOST_PATH PATH "${MINIBOOST_PATH}" "Boost path, set to blank if you want to use the boost installed on your system or set a path if you want to use a compiled boost")
 if(SOFA-EXTERNAL_BOOST_PATH STREQUAL "${MINIBOOST_PATH}")
     unset(SOFA-EXTERNAL_BOOST CACHE)
 else()
@@ -96,7 +95,7 @@ endif()
 #mark_as_advanced(SOFA-EXTERNAL_TINYXML_DEBUG_LIBRARY)
 
 ## CGoGN
-sofa_option(SOFA-LIB_CGOGN BOOL OFF "Use the CGoGN library")
+sofa_option(SOFA-EXTERNAL_CGOGN BOOL OFF "Use the CGoGN library")
 
 ## zlib
 sofa_option(SOFA-EXTERNAL_ZLIB BOOL ON "Use the ZLib library")
@@ -149,7 +148,7 @@ set(SOFA-EXTERNAL_OPENCASCADE_PATH "${OPENCASCADE_PATH}" CACHE PATH "OpenCascade
 
 # Miscellaneous features
 
-sofa_option(SOFA-MISC_CMAKE_VERBOSE BOOL OFF "")
+sofa_option(SOFA-MISC_CMAKE_VERBOSE BOOL OFF "Print more information during the cmake configuration step.")
 
 sofa_option(SOFA-MISC_SMP BOOL OFF "Use SMP")
 
@@ -165,17 +164,17 @@ else()
 endif()
 
 ## SOFA_NO_UPDATE_BBOX
-sofa_option(SOFA-MISC_NO_UPDATE_BBOX BOOL OFF "No BBOX update") # SOFA_NO_UPDATE_BBOX
+sofa_option(SOFA-MISC_NO_UPDATE_BBOX BOOL OFF "No BBOX update")
 if(SOFA-MISC_NO_UPDATE_BBOX)
     list(APPEND compilerDefines SOFA_NO_UPDATE_BBOX)
 endif()
 
-sofa_option(SOFA-MISC_DEV BOOL OFF "Compiling SOFA_DEV code")
+sofa_option(SOFA-MISC_DEV BOOL OFF "Compile SOFA_DEV code")
 if(SOFA-MISC_DEV)
     list(APPEND compilerDefines SOFA_DEV)
 endif()
 
-sofa_option(SOFA-MISC_DUMP_VISITOR_INFO BOOL OFF "Compiling with performance analysis")
+sofa_option(SOFA-MISC_DUMP_VISITOR_INFO BOOL OFF "Compile with performance analysis")
 if(SOFA-MISC_DUMP_VISITOR_INFO)
     list(APPEND compilerDefines SOFA_DUMP_VISITOR_INFO)
 endif()
@@ -363,9 +362,6 @@ elseif(SOFA-MISC_USE_DOUBLE AND NOT SOFA-MISC_USE_FLOAT)
     list(APPEND compilerDefines SOFA_DOUBLE)
 endif()
 
-# SSE
-sofa_option(SOFA-MISC_VECTORIZE BOOL OFF "Enable SSE2 instructions (only on Windows for now)")
-
 # use OpenMP multithreading
 sofa_option(SOFA-MISC_OPENMP BOOL OFF "Use OpenMP multithreading")
 if(SOFA-MISC_OPENMP )
@@ -374,7 +370,7 @@ if(SOFA-MISC_OPENMP )
 endif()
 
 
-# os-specific
+# OS-specific
 if(XBOX)
     if(SOFA-EXTERNAL_BOOST)
         # we use SOFA-EXTERNAL_BOOST_PATH but don't have the full boost and thus can't compile the code this normally enables.
@@ -384,6 +380,9 @@ if(XBOX)
 
     # eigen - cpuid identification code does not exist on the platform, it's cleaner to disable it here.
     list(APPEND compilerDefines EIGEN_NO_CPUID)
+endif()
+if(MSVC)
+    sofa_option(SOFA-MISC_VECTORIZE BOOL OFF "Enable the use of SSE2 instructions by the compiler. (MSVC only)")
 endif()
 
 
