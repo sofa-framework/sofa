@@ -1,5 +1,7 @@
 #ifndef GLPICKEDPOINT_H
 #define GLPICKEDPOINT_H
+
+#include "initSimpleGUI.h"
 #include <iostream>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 
@@ -15,7 +17,7 @@ namespace newgui{
  * It is returned by the Sofa interface to the user application to set up an interaction.
  * @author Francois Faure, 2014
  */
-struct PickedPoint
+struct SOFA_SOFASIMPLEGUI_API PickedPoint
 {
     BaseMechanicalState::SPtr state; ///< the DOF of the picked object
     nat index;                       ///< index of the particle picked

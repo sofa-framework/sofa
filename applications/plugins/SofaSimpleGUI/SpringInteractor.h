@@ -1,6 +1,7 @@
 #ifndef SOFA_SpringInteractor_H
 #define SOFA_SpringInteractor_H
 
+#include "initSimpleGUI.h"
 #include "Interactor.h"
 
 namespace sofa{
@@ -10,7 +11,7 @@ namespace newgui{
  * @brief Interaction using a spring.
  * @author Francois Faure, 2014
  */
-class SpringInteractor: public Interactor
+class SOFA_SOFASIMPLEGUI_API SpringInteractor: public Interactor
 {
 protected:
     MechanicalObject3::SPtr anchorDof;
