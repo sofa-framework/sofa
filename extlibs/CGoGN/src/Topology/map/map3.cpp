@@ -1054,24 +1054,24 @@ bool Map3::hasBoundaryEdge(Dart d) const
 
 bool Map3::check() const
 {
-    std::cout << "Check: topology begin" << std::endl;
+    std::cerr << "Check: topology begin" << std::endl;
     DartMarkerStore m(*this);
     for(Dart d = Map3::begin(); d != Map3::end(); Map3::next(d))
     {
         Dart d3 = phi3(d);
         if (phi3(d3) != d) // phi3 involution ?
 		{
-            std::cout << "Check: phi3 is not an involution" << std::endl;
+            std::cerr << "Check: phi3 is not an involution" << std::endl;
             return false;
         }
 
 		if(phi1(d3) != phi3(phi_1(d)))
 		{
 			if(isBoundaryMarked3(d))
-				std::cout << "Boundary case - Check: phi3 , faces are not entirely sewn" << std::endl;
+                std::cerr << "Boundary case - Check: phi3 , faces are not entirely sewn" << std::endl;
 			else
-				std::cout << "Check: phi3 , faces are not entirely sewn" << std::endl;
-            std::cout << "face : " << phi1(d3) << " and face = " << phi3(phi_1(d)) << std::endl;
+                std::cerr << "Check: phi3 , faces are not entirely sewn" << std::endl;
+            std::cerr << "face : " << phi1(d3) << " and face = " << phi3(phi_1(d)) << std::endl;
 			return false;
 		}
 
@@ -1079,9 +1079,9 @@ bool Map3::check() const
         if (phi2(d2) != d) // phi2 involution ?
 		{
         	if(isBoundaryMarked3(d))
-        		std::cout << "Boundary case - ";
+                std::cerr << "Boundary case - ";
 
-        	std::cout << "Check: phi2 is not an involution" << std::endl;
+            std::cerr << "Check: phi2 is not an involution" << std::endl;
             return false;
         }
 
@@ -1089,18 +1089,18 @@ bool Map3::check() const
         if (phi_1(d1) != d) // phi1 a une image correcte ?
 		{
         	if(isBoundaryMarked3(d))
-        		std::cout << "Boundary case - ";
+                std::cerr << "Boundary case - ";
 
-            std::cout << "Check: unconsistent phi_1 link" << std::endl;
+            std::cerr << "Check: unconsistent phi_1 link" << std::endl;
             return false;
         }
 
         if (m.isMarked(d1)) // phi1 a un seul antécédent ?
 		{
         	if(isBoundaryMarked3(d))
-        		std::cout << "Boundary case - ";
+                std::cerr << "Boundary case - ";
 
-            std::cout << "Check: dart with two phi1 predecessors" << std::endl;
+            std::cerr << "Check: dart with two phi1 predecessors" << std::endl;
             return false;
         }
         m.mark(d1);
@@ -1108,33 +1108,33 @@ bool Map3::check() const
         if (d1 == d)
         {
         	if(isBoundaryMarked3(d))
-        		std::cout << "Boundary case - ";
+                std::cerr << "Boundary case - ";
 
-            std::cout << "Check: (warning) face loop (one edge)" << std::endl;
+            std::cerr << "Check: (warning) face loop (one edge)" << std::endl;
         }
 
         if (phi1(d1) == d)
         {
         	if(isBoundaryMarked3(d))
-        		std::cout << "Boundary case - ";
+                std::cerr << "Boundary case - ";
 
-            std::cout << "Check: (warning) face with only two edges" << std::endl;
+            std::cerr << "Check: (warning) face with only two edges" << std::endl;
         }
 
         if (phi2(d1) == d)
         {
         	if(isBoundaryMarked3(d))
-        		std::cout << "Boundary case - ";
+                std::cerr << "Boundary case - ";
 
-        	std::cout << "Check: (warning) dandling edge (phi2)" << std::endl;
+            std::cerr << "Check: (warning) dandling edge (phi2)" << std::endl;
         }
 
         if (phi3(d1) == d)
         {
         	if(isBoundaryMarked3(d))
-        		std::cout << "Boundary case - ";
+                std::cerr << "Boundary case - ";
 
-            std::cout << "Check: (warning) dandling edge (phi3)" << std::endl;
+            std::cerr << "Check: (warning) dandling edge (phi3)" << std::endl;
         }
     }
 
@@ -1143,14 +1143,14 @@ bool Map3::check() const
         if (!m.isMarked(d)) // phi1 a au moins un antécédent ?
 		{
         	if(isBoundaryMarked3(d))
-        		std::cout << "Boundary case - ";
+                std::cerr << "Boundary case - ";
 
-            std::cout << "Check: dart with no phi1 predecessor" << std::endl;
+            std::cerr << "Check: dart with no phi1 predecessor" << std::endl;
             return false;
         }
     }
 
-    std::cout << "Check: topology ok" << std::endl;
+    std::cerr << "Check: topology ok" << std::endl;
 
     return true;
 }

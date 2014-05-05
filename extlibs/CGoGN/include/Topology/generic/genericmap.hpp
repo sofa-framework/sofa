@@ -496,6 +496,13 @@ inline void GenericMap::updateQuickTraversal()
 }
 
 template <unsigned int ORBIT>
+inline AttributeMultiVector<Dart>* GenericMap::getQuickTraversal()
+{
+    return m_quickTraversal[ORBIT] ;
+}
+
+
+template <unsigned int ORBIT>
 inline const AttributeMultiVector<Dart>* GenericMap::getQuickTraversal() const
 {
 	return m_quickTraversal[ORBIT] ;

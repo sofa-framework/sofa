@@ -236,10 +236,10 @@ void EmbeddedMap3::splitFace(Dart d, Dart e)
 		setDartEmbedding<VERTEX>(phi_1(dd), vEmb2);
 	}
 
-//	if(isOrbitEmbedded<EDGE>())
-//	{
-//		initOrbitEmbeddingNewCell<EDGE>(phi_1(d)) ;
-//	}
+//    if(isOrbitEmbedded<EDGE>())
+//    {
+//        initOrbitEmbeddingNewCell<EDGE>(phi_1(d)) ;
+//    }
 
 	if(isOrbitEmbedded<FACE2>())
 	{
@@ -379,7 +379,6 @@ void EmbeddedMap3::unsewVolumes(Dart d, bool withBoundary)
 		// embed the unsewn vertex orbit with the vertex embedding if it is deconnected
 		if(isOrbitEmbedded<VERTEX>())
 		{
-            std::cerr << __FILE__ << " " << __LINE__ << std::endl;
 			if(!sameVertex(dit, dd))
 			{
 				setOrbitEmbedding<VERTEX>(dit, getEmbedding<VERTEX>(dit)) ;
@@ -624,7 +623,7 @@ bool EmbeddedMap3::check()
 	if (!topo)
 		return false ;
 
-	std::cout << "Check: embedding begin" << std::endl ;
+    std::cerr << "Check: embedding begin" << std::endl ;
 
 	for(Dart d = begin(); d != end(); next(d))
 	{
@@ -632,12 +631,12 @@ bool EmbeddedMap3::check()
 		{
 			if( getEmbedding<VERTEX>(d) != getEmbedding<VERTEX>(alpha1(d)))
 			{
-				std::cout << "Embedding Check : different embeddings on vertex (alpha1(d) != d)" << std::endl ;
+                std::cerr << "Embedding Check : different embeddings on vertex (alpha1(d) != d)" << std::endl ;
 				return false ;
 			}
 			if(getEmbedding<VERTEX>(d) != getEmbedding<VERTEX>(alpha2(d)) )
 			{
-				std::cout << "Embedding Check : different embeddings on vertex (alpha2(d) != d)" << std::endl ;
+                std::cerr << "Embedding Check : different embeddings on vertex (alpha2(d) != d)" << std::endl ;
 				return false ;
 			}
 		}
@@ -647,8 +646,8 @@ bool EmbeddedMap3::check()
 			if( getEmbedding<EDGE>(d) != getEmbedding<EDGE>(phi2(d)) ||
 					getEmbedding<EDGE>(d) != getEmbedding<EDGE>(phi3(d)) )
 			{
-				std::cout << "Embedding Check : different embeddings on edge" << std::endl ;
-				return false ;
+                std::cerr << "Embedding Check : different embeddings on edge" << std::endl ;
+                return false ;
 			}
 		}
 
@@ -656,7 +655,7 @@ bool EmbeddedMap3::check()
 		{
 			if (getEmbedding<FACE2>(d) != getEmbedding<FACE2>(phi1(d)))
 			{
-				CGoGNout << "Check: different embeddings on oriented face" << CGoGNendl ;
+                std::cerr << "Check: different embeddings on oriented face" << std::endl ;
 				return false ;
 			}
 		}
@@ -666,7 +665,7 @@ bool EmbeddedMap3::check()
 			if( getEmbedding<FACE>(d) != getEmbedding<FACE>(phi1(d)) ||
 					getEmbedding<FACE>(d) != getEmbedding<FACE>(phi3(d)) )
 			{
-				CGoGNout << "Check: different embeddings on face" << CGoGNendl ;
+                std::cerr << "Check: different embeddings on face" << std::endl ;
 				return false ;
 			}
 		}
@@ -676,13 +675,13 @@ bool EmbeddedMap3::check()
 			if( getEmbedding<VOLUME>(d) != getEmbedding<VOLUME>(phi1(d)) ||
 					getEmbedding<VOLUME>(d) != getEmbedding<VOLUME>(phi2(d)) )
 			{
-				CGoGNout << "Check: different embeddings on volume" << CGoGNendl ;
+                std::cerr << "Check: different embeddings on volume" << std::endl ;
 				return false ;
 			}
 		}
 	}
 
-	std::cout << "Check: embedding ok" << std::endl ;
+    std::cerr << "Check: embedding ok" << std::endl ;
 
 	return true ;
 }

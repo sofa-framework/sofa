@@ -733,7 +733,7 @@ Dart swap2To3(typename PFP::MAP& map, Dart d)
     std::vector<Dart> edges;
 
     Dart d2_1 = map.phi_1(map.phi2(d));
-    map.mergeVolumes(d);
+    map.mergeVolumes(d, true);
 
     //
     // Cut the 1st tetrahedron
@@ -793,47 +793,117 @@ Dart swap5To4(typename PFP::MAP& map, Dart d)
 template <typename PFP>
 Dart swapGen3To2(typename PFP::MAP& map, Dart d)
 {
-       Dart stop = map.phi1(map.phi2(map.phi_1(d)));
-       map.deleteEdge(d);
+    Dart stop = map.phi1(map.phi2(map.phi_1(d)));
+    if(map.deleteEdge(d) == NIL)
+    {
+        std::cout << "boundary" << std::endl;
 
-       std::vector<Dart> edges;
-       Dart dit = stop;
-       do
-       {
-               edges.push_back(dit);
-               dit = map.phi1(map.phi2(map.phi1(dit)));
-       }
-       while(dit != stop);
-       map.splitVolume(edges);
+        std::vector<Dart> edges;
+        Dart dbegin = map.findBoundaryFaceOfEdge(d);
+        Traversor3EW<typename PFP::MAP> t(map, d);
+        for(Dart dit = t.begin() ; dit != t.end() ; dit = t.next())
+            edges.push_back(dit);
 
-       Dart v = map.phi1(map.phi2(stop));
-       dit = map.phi_1(map.phi_1(v));
-       do
-       {
-               Dart save = map.phi_1(dit);
-               map.splitFace(v,dit);
+        for(unsigned int i = 0 ; i < edges.size() ; ++i)
+            map.mergeVolumes(edges[i]);
 
-               //decoupe des tetraedres d'un cote du plan
-               Dart d_1 = map.phi_1(v);
-               std::vector<Dart> edges;
-               edges.push_back(d_1);
-               edges.push_back(map.phi1(map.phi2(map.phi1(d_1))));
-               edges.push_back(map.phi_1(map.phi2(map.phi_1(d_1))));
-               map.splitVolume(edges);
+        Dart d  = dbegin;
+        Dart e = map.phi2(d);
+        map.flipBackEdge(d);
+        map.template copyDartEmbedding<VERTEX>(d, map.phi1(e)) ;
+        map.template copyDartEmbedding<VERTEX>(e, map.phi1(d)) ;
 
-               //decoupe des tetraedres d'un cote du plan
-               d_1 = map.phi3(map.phi_1(v));
-               edges.clear();
-               edges.push_back(d_1);
-               edges.push_back(map.phi1(map.phi2(map.phi1(d_1))));
-               edges.push_back(map.phi_1(map.phi2(map.phi_1(d_1))));
-               map.splitVolume(edges);
+        d  = map.phi3(dbegin);
+        e = map.phi2(d);
+        map.flipEdge(d);
+        map.template copyDartEmbedding<VERTEX>(d, map.phi1(e)) ;
+        map.template copyDartEmbedding<VERTEX>(e, map.phi1(d)) ;
+    }
 
-               dit = save;
-       }
-       while(map.phi_1(dit) != v);
+    std::vector<Dart> edges;
+    Dart dit = stop;
+    do
+    {
+        edges.push_back(dit);
+        dit = map.phi1(map.phi2(map.phi1(dit)));
+    }
+    while(dit != stop);
+    map.splitVolume(edges);
 
-       return stop;
+    Dart v = map.phi1(map.phi2(stop));
+    dit = map.phi_1(map.phi_1(v));
+    do
+    {
+        Dart save = map.phi_1(dit);
+        map.splitFace(v,dit);
+
+        //decoupe des tetraedres d'un cote du plan
+        Dart d_1 = map.phi_1(v);
+        std::vector<Dart> edges;
+        edges.push_back(d_1);
+        edges.push_back(map.phi1(map.phi2(map.phi1(d_1))));
+        edges.push_back(map.phi_1(map.phi2(map.phi_1(d_1))));
+        map.splitVolume(edges);
+
+        //decoupe des tetraedres d'un cote du plan
+        d_1 = map.phi3(map.phi_1(v));
+        edges.clear();
+        edges.push_back(d_1);
+        edges.push_back(map.phi1(map.phi2(map.phi1(d_1))));
+        edges.push_back(map.phi_1(map.phi2(map.phi_1(d_1))));
+        map.splitVolume(edges);
+
+        dit = save;
+    }
+    while(map.phi_1(dit) != v);
+
+    return stop;
+}
+
+template <typename PFP>
+std::vector<Dart> swapGen3To2Optimized(typename PFP::MAP& map, Dart d)
+{
+    Dart stop = map.phi1(map.phi2(map.phi_1(d)));
+    if(map.deleteEdge(d) == NIL)
+    {
+        std::cout << "boundary" << std::endl;
+
+        std::vector<Dart> edges;
+        Dart dbegin = map.findBoundaryFaceOfEdge(d);
+        Traversor3EW<typename PFP::MAP> t(map, d);
+        for(Dart dit = t.begin() ; dit != t.end() ; dit = t.next())
+            edges.push_back(dit);
+
+        for(unsigned int i = 0 ; i < edges.size() ; ++i)
+            map.mergeVolumes(edges[i]);
+
+        Dart d  = dbegin;
+        Dart e = map.phi2(d);
+        map.flipBackEdge(d);
+        map.template copyDartEmbedding<VERTEX>(d, map.phi1(e)) ;
+        map.template copyDartEmbedding<VERTEX>(e, map.phi1(d)) ;
+
+        d  = map.phi3(dbegin);
+        e = map.phi2(d);
+        map.flipEdge(d);
+        map.template copyDartEmbedding<VERTEX>(d, map.phi1(e)) ;
+        map.template copyDartEmbedding<VERTEX>(e, map.phi1(d)) ;
+    }
+
+    std::vector<Dart> edges;
+    Dart dit = stop;
+    do
+    {
+        edges.push_back(dit);
+        dit = map.phi1(map.phi2(map.phi1(dit)));
+    }
+    while(dit != stop);
+    map.splitVolume(edges);
+
+    Tetrahedralization::EarTriangulation<PFP> triangulation(map);
+    triangulation.trianguleFace(map.phi1(map.phi2(stop)));
+
+    return triangulation.getResultingTets();
 }
 
 template <typename PFP>
@@ -949,7 +1019,11 @@ template <typename PFP>
 Dart edgeBisection(typename PFP::MAP& map, Dart d)
 {
     //coupe l'arete en 2
-    map.cutEdge(d);
+    Dart dV = map.cutEdge(d);
+    if (map.template isOrbitEmbedded<CGoGN::VERTEX>()) {
+        map.template setOrbitEmbeddingOnNewCell<VERTEX>(dV);
+    }
+
     Dart e = map.phi1(d);
 
     Dart dit = e;
@@ -959,6 +1033,7 @@ Dart edgeBisection(typename PFP::MAP& map, Dart d)
         dit = map.alpha2(dit);
     }
     while(dit != e);
+
 
     dit = e;
     std::vector<Dart> edges;
@@ -978,35 +1053,6 @@ Dart edgeBisection(typename PFP::MAP& map, Dart d)
 
     return e;
 }
-
-
-
-
-
-template <typename PFP>
-std::vector<Dart> swapGen3To2Optimized(typename PFP::MAP& map, Dart d)
-{
-    std::vector<Dart> resTets;
-
-    Dart stop = map.phi1(map.phi2(map.phi_1(d)));
-    map.deleteEdge(d);
-
-    std::vector<Dart> edges;
-    Dart dit = stop;
-    do
-    {
-        edges.push_back(dit);
-        dit = map.phi1(map.phi2(map.phi1(dit)));
-    }
-    while(dit != stop);
-    map.splitVolume(edges);
-
-    Tetrahedralization::EarTriangulation<PFP> triangulation(map);
-    triangulation.trianguleFace(map.phi1(map.phi2(stop)));
-
-    return triangulation.getResultingTets();
-}
-
 
 
 

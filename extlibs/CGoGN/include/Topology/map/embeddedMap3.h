@@ -42,10 +42,15 @@ public:
 
     EmbeddedMap3() : Map3() {
         std::cerr << "EMAP3  creation" << std::endl;
-        this->initAllOrbitsEmbedding<VERTEX>(true);
-        this->initAllOrbitsEmbedding<EDGE>(true);
-        this->initAllOrbitsEmbedding<FACE>(true);
-        this->initAllOrbitsEmbedding<VOLUME>(true);
+        if(!isOrbitEmbedded<VERTEX>())
+            addEmbedding<VERTEX>() ;
+        if(!isOrbitEmbedded<EDGE>())
+            addEmbedding<EDGE>() ;
+        if(!isOrbitEmbedded<FACE>())
+            addEmbedding<FACE>() ;
+        if(!isOrbitEmbedded<VOLUME>())
+            addEmbedding<VOLUME>() ;
+
     }
 
 	//!
