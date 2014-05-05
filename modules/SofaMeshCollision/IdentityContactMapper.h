@@ -111,6 +111,14 @@ public:
             mapping->apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::freePosition(), core::ConstVecCoordId::freePosition());
         }
     }
+
+    void updateX0()
+    {
+        if(mapping!=NULL)
+        {
+             mapping->apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::restPosition(), core::ConstVecCoordId::restPosition());
+        }
+    }
 };
 
 /// Specialization of IdentityContactMapper when mapping to the same DataTypes, as no mapping is required in this case
@@ -163,6 +171,11 @@ public:
     void updateXfree()
     {
     }
+
+    void updateX0()
+    {
+    }
+
 };
 
 /// Mapper for PointModel
