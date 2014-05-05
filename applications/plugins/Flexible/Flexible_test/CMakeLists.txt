@@ -7,6 +7,7 @@ set(SOURCE_FILES
    Patch_test.cpp
    StrainMappings_test.cpp
    RigidDeformationMapping_test.cpp
+   InitLinearMapping.cpp
         )
 
 if(APPLE)
@@ -18,5 +19,6 @@ include_directories("${SOFA_APPLICATIONS_PROJECTS_DIR}/Standard_test")
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${RC_FILES})
 AddCompilerDefinitions("FLEXIBLE_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
 AddLinkerDependencies(Flexible SofaTest)
+AddLinkerDependencies(SofaPython)
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

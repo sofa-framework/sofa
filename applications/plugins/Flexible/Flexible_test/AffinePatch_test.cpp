@@ -104,7 +104,7 @@ namespace sofa {
             root = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()));
         }
 
-        void SetRandomTestedRotationAndTranslation(int seedValue)
+        void SetRandomTestedRotationAndTranslation(int /*seedValue*/)
         {
             // Random Rotation
             SReal x,y,z,w;
