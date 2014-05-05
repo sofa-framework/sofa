@@ -72,7 +72,7 @@ public:
 
     unsigned int getIndex() const {return index;};
     bool isFull() const;
-    void setFull() {size+=maxSize;};
+    void setFull() {pixelSize=pixelMaxSize;};
     bool isEmpty() const;
     bool isDirty() const;
 
@@ -94,7 +94,9 @@ protected:
 
     const unsigned int index;
     unsigned int size;
-    const unsigned int maxSize;
+
+    unsigned int pixelSize;
+    unsigned int pixelMaxSize;
 
     bool dirty;
 };

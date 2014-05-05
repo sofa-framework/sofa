@@ -28,7 +28,9 @@
 #include "QDisplayLinkWidget.h"
 
 #include "ModifyObject.h"
-
+#include <QDebug>
+#include <QApplication>
+#include <QDesktopWidget>
 // uncomment to show traces of GUI operations in this file
 //#define DEBUG_GUI
 
@@ -44,9 +46,13 @@ namespace qt
 QTabulationModifyObject::QTabulationModifyObject(QWidget* parent,
         core::objectmodel::Base *o, Q3ListViewItem* i,
         unsigned int idx):
-    QWidget(parent), object(o), item(i), index(idx), size(0), maxSize(24), dirty(false)
+    QWidget(parent), object(o), item(i), index(idx), size(0), dirty(false), pixelSize(0), pixelMaxSize(600)
 {
     new QVBoxLayout( this, 0, 1, "tabVisualizationLayout");
+
+    //find correct maxPixelSize according to the current screen resolution
+    const int screenHeight = QApplication::desktop()->height();
+    pixelMaxSize = screenHeight - 300;
 }
 
 void QTabulationModifyObject::addData(sofa::core::objectmodel::BaseData *data, const ModifyObjectFlags& flags)
@@ -71,6 +77,8 @@ void QTabulationModifyObject::addData(sofa::core::objectmodel::BaseData *data, c
     this->layout()->add(displaydatawidget);
 
     size += displaydatawidget->getNumWidgets();
+    pixelSize += displaydatawidget->sizeHint().height();
+
 
     connect(displaydatawidget, SIGNAL( WidgetDirty(bool) ), this, SLOT( setTabDirty(bool) ) );
     connect(displaydatawidget, SIGNAL( DataOwnerDirty(bool)),  this, SLOT( updateListViewItem() ) );
@@ -94,6 +102,7 @@ void QTabulationModifyObject::addLink(sofa::core::objectmodel::BaseLink *link, c
     this->layout()->add(displaylinkwidget);
 
     size += displaylinkwidget->getNumWidgets();
+    pixelSize += displaylinkwidget->sizeHint().height();
 
     connect(displaylinkwidget, SIGNAL( WidgetDirty(bool) ), this, SLOT( setTabDirty(bool) ) );
     connect(displaylinkwidget, SIGNAL( LinkOwnerDirty(bool)),  this, SLOT( updateListViewItem() ) );
@@ -137,7 +146,8 @@ bool QTabulationModifyObject::isDirty() const
 
 bool QTabulationModifyObject::isFull() const
 {
-    return size >= maxSize;
+    return pixelSize >= pixelMaxSize;
+    //return size >= maxSize;
 }
 
 bool QTabulationModifyObject::isEmpty() const
