@@ -155,14 +155,16 @@ if(SOFA-PLUGIN_IMAGE)
    	list(APPEND HEADER_FILES "deformationMapping/ImageDeformation.h")
    	list(APPEND HEADER_FILES "mass/ImageDensityMass.h")
    	list(APPEND HEADER_FILES "mass/ImageDensityMass.inl")
-    
+        list(APPEND SOURCE_FILES "shapeFunction/ImageShapeFunctionContainer.h")
+
    	list(APPEND SOURCE_FILES "quadrature/ImageGaussPointSampler.cpp")
    	list(APPEND SOURCE_FILES "shapeFunction/VoronoiShapeFunction.cpp")
    	list(APPEND SOURCE_FILES "shapeFunction/DiffusionShapeFunction.cpp")
    	list(APPEND SOURCE_FILES "shapeFunction/ShapeFunctionDiscretizer.cpp")
    	list(APPEND SOURCE_FILES "deformationMapping/ImageDeformation.cpp")
    	list(APPEND SOURCE_FILES "mass/ImageDensityMass.cpp")
-    
+        list(APPEND SOURCE_FILES "shapeFunction/ImageShapeFunctionContainer.cpp")
+
         AddLinkerDependencies(image)
         AddCompilerDefinitions("SOFA_HAVE_IMAGE" )
 endif()
