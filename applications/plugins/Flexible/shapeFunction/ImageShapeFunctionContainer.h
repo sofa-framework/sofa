@@ -1,0 +1,88 @@
+/******************************************************************************
+*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
+*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+*                                                                             *
+* This library is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This library is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this library; if not, write to the Free Software Foundation,     *
+* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+*******************************************************************************
+*                               SOFA :: Modules                               *
+*                                                                             *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
+#ifndef FLEXIBLE_ImageShapeFunctionContainer_H
+#define FLEXIBLE_ImageShapeFunctionContainer_H
+
+#include "../initFlexible.h"
+#include "../shapeFunction/BaseShapeFunction.h"
+#include "../shapeFunction/BaseImageShapeFunction.h"
+
+#include <image/ImageTypes.h>
+
+namespace sofa
+{
+namespace component
+{
+namespace shapefunction
+{
+
+using core::behavior::BaseShapeFunction;
+
+/**
+Provides interface to mapping from precomputed shape functions
+  */
+
+
+template <class ShapeFunctionTypes_,class ImageTypes_>
+class ImageShapeFunctionContainer : public BaseImageShapeFunction<ShapeFunctionTypes_,ImageTypes_>
+{
+public:
+    SOFA_CLASS(SOFA_TEMPLATE2(ImageShapeFunctionContainer, ShapeFunctionTypes_,ImageTypes_) , SOFA_TEMPLATE2(BaseImageShapeFunction, ShapeFunctionTypes_,ImageTypes_));
+    typedef BaseImageShapeFunction<ShapeFunctionTypes_,ImageTypes_> Inherit;
+
+
+    virtual std::string getTemplateName() const    { return templateName(this); }
+    static std::string templateName(const ImageShapeFunctionContainer<ShapeFunctionTypes_,ImageTypes_>* = NULL) { return ShapeFunctionTypes_::Name()+std::string(",")+ImageTypes_::Name(); }
+
+
+    virtual void init()    { Inherit::init(); }
+
+
+protected:
+    ImageShapeFunctionContainer()
+        :Inherit()
+    {
+        this->image.setDisplayed(false);
+        this->transform.setReadOnly(true);
+        this->f_w.setReadOnly(true);
+        this->f_index.setReadOnly(true);
+        this->f_w.setGroup("input");
+        this->f_index.setGroup("input");
+    }
+
+    virtual ~ImageShapeFunctionContainer()
+    {
+
+    }
+
+};
+
+
+}
+}
+}
+
+
+#endif

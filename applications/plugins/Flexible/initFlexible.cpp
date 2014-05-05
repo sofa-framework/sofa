@@ -81,12 +81,13 @@ const char* getModuleComponentList()
 
 /// Use the SOFA_LINK_CLASS macro for each class, to enable linking on all platforms
 
-SOFA_LINK_CLASS(TopologyGaussPointSampler)
-
 #ifdef SOFA_HAVE_IMAGE
 SOFA_LINK_CLASS(VoronoiShapeFunction)
 SOFA_LINK_CLASS(ImageGaussPointSampler)
 SOFA_LINK_CLASS(ImageDensityMass)
+SOFA_LINK_CLASS(ImageShapeFunctionContainer)
+SOFA_LINK_CLASS(ShapeFunctionDiscretizer)
+SOFA_LINK_CLASS(DiffusionShapeFunction)
 #endif
 
 SOFA_LINK_CLASS(ShepardShapeFunction)
@@ -115,9 +116,12 @@ SOFA_LINK_CLASS(OgdenForceField)
 SOFA_LINK_CLASS(PolynomialMaterialForceField)
 SOFA_LINK_CLASS(VolumePreservationForceField)
 SOFA_LINK_CLASS(MuscleMaterialForceField)
+SOFA_LINK_CLASS(TopologyGaussPointSampler)
+SOFA_LINK_CLASS(GaussPointContainer)
 SOFA_LINK_CLASS(AffineMechanicalObject)
 SOFA_LINK_CLASS(QuadraticMechanicalObject)
 SOFA_LINK_CLASS(AffineUniformMass)
 SOFA_LINK_CLASS(RigidConstraint)
+
 
 

@@ -55,7 +55,8 @@ public:
     typedef Inherited::waVolume waVolume;
     //@}
 
-    Data< Real> f_defaultVolume;
+    Data< unsigned int > f_volumeDim;
+    Data< vector<Real> > f_inputVolume;
 
     virtual std::string getTemplateName() const    { return templateName(this);    }
     static std::string templateName(const GaussPointContainer* = NULL) { return std::string();    }
@@ -63,7 +64,7 @@ public:
     virtual void init()
     {
         Inherited::init();
-        addInput(&f_defaultVolume);
+        addInput(&f_inputVolume);
         setDirtyValue();
         update();
     }
@@ -72,8 +73,10 @@ public:
 
 protected:
     GaussPointContainer()    :   Inherited()
-      , f_defaultVolume(initData(&f_defaultVolume,(Real)1.0,"defaultVolume","default weighted Volume"))
+      , f_volumeDim(initData(&f_volumeDim,(unsigned int)1,"volumeDim","dimension of quadrature weight vectors"))
+      , f_inputVolume(initData(&f_inputVolume,"inputVolume","weighted volumes (=quadrature weights)"))
     {
+
     }
 
     virtual ~GaussPointContainer()
@@ -83,9 +86,24 @@ protected:
     virtual void update()
     {
         cleanDirty();
+
+        helper::ReadAccessor< Data< vector<Real> > > invol(f_inputVolume);
+        if(!invol.size()) serr<<"no volume provided -> use unit default volume"<<sendl;
         waVolume vol(this->f_volume);
+        unsigned int dim = this->f_volumeDim.getValue();
+
         vol.resize(this->f_position.getValue().size());
-        for(unsigned int i=0;i<vol.size();i++) {vol[i].resize(1); vol[i][0]=f_defaultVolume.getValue(); }
+        for(unsigned int i=0;i<vol.size();i++)
+        {
+            vol[i].resize(dim);
+            for(unsigned int j=0;j<dim;j++)
+            {
+                if(!invol.size()) vol[i][j]=(j==0)?1.:0.;
+                else if(invol.size()==dim) vol[i][j] = invol[j]; // the same quadrature weights are repeated
+                else vol[i][j] = invol[i*dim + j];
+            }
+        }
+
     }
 
 };
