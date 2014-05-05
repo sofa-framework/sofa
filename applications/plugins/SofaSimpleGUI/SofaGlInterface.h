@@ -1,6 +1,7 @@
 #ifndef SOFA_NEWGUI_SofaGlInterface_H
 #define SOFA_NEWGUI_SofaGlInterface_H
 
+#include "initSimpleGUI.h"
 #include <sofa/config.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/core/visual/DrawToolGL.h>
@@ -34,7 +35,7 @@ typedef sofa::component::container::MechanicalObject< defaulttype::Vec3Types > V
  *
  * @author Francois Faure, 2014
  * */
-class SofaGlInterface : public ParentSimulation
+class SOFA_SOFASIMPLEGUI_API SofaGlInterface : public ParentSimulation
 {
 protected:
 

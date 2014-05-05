@@ -1,6 +1,7 @@
 #ifndef SOFA_Interactor_H
 #define SOFA_Interactor_H
 
+#include "initSimpleGUI.h"
 #include <sofa/simulation/common/Node.h>
 #include <sofa/component/typedef/Sofa_typedef.h>
 #include "PickedPoint.h"
@@ -20,7 +21,7 @@ using simulation::Node;
  * Note that they are not necessarily moved using the mouse, since there is no mouse or window coordinates in the API.
  * @author Francois Faure, 2014
 */
-class Interactor
+class SOFA_SOFASIMPLEGUI_API Interactor
 {
 protected:
     Node::SPtr interactionNode;  ///< node representing this, set as child to a scene node

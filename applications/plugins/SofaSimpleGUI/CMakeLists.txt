@@ -13,6 +13,8 @@ set(SOURCE_FILES
 	)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+
+AddCompilerDefinitions("SOFA_BUILD_SOFASIMPLEGUI")
 AddLinkerDependencies(SofaSimulationGraph SofaComponentMain)
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
