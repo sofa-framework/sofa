@@ -929,6 +929,7 @@ bool importMesh(typename PFP::MAP& map, MeshTablesVolume<PFP>& mtv) {
         unsigned int nbH =  map.closeMap();
         CGoGNout << "Map closed (" << nbBoundaryFaces << " boundary faces / " << nbH << " holes)" << CGoGNendl;
     }
+    map.check();
     map.saveMapBin("MAP.mapbin");
     return true;
 }

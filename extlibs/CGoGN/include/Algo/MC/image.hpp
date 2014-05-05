@@ -1039,6 +1039,7 @@ void Image<DataType>::createNormalSphere(std::vector<Geom::Vec3f>& table, int _i
 			{
 				Geom::Vec3f v((float)x,(float)y,(float)z);
                 float fLength = v.norm(); // float fLength = v.normalize();
+                v.normalize();
 				// if inside the sphere
 				if (fLength<=_i32radius)
 					table.push_back(v);

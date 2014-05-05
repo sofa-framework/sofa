@@ -27,6 +27,8 @@
 
 //#include "tetgen/tetgen.h"
 //#include <Topology/generic/parameters.h>
+#include "Algo/Geometry/normal.h"
+
 namespace CGoGN
 {
 

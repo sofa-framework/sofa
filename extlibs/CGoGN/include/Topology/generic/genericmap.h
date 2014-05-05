@@ -488,6 +488,9 @@ public:
 	template <unsigned int ORBIT>
 	void updateQuickTraversal() ;
 
+    template <unsigned int ORBIT>
+    AttributeMultiVector<Dart>* getQuickTraversal() ;
+
 	template <unsigned int ORBIT>
 	const AttributeMultiVector<Dart>* getQuickTraversal() const;
 
