@@ -177,13 +177,13 @@ public:
     }
 
     /// \returns the number of row blocs
-    unsigned int rowBSize() const
+    Index rowBSize() const
     {
         return nBlocRow;
     }
 
     /// \returns the number of col blocs
-    unsigned int colBSize() const
+    Index colBSize() const
     {
         return nBlocCol;
     }
@@ -671,13 +671,13 @@ public:
     }
 
     ///< Mathematical size of the matrix
-    unsigned int rowSize() const
+    Index rowSize() const
     {
         return nRow;
     }
 
     ///< Mathematical size of the matrix
-    unsigned int colSize() const
+    Index colSize() const
     {
         return nCol;
     }

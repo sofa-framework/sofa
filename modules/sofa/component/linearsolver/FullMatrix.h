@@ -51,6 +51,7 @@ public:
     typedef T Real;
     typedef typename defaulttype::BaseMatrix::Index Index;
     typedef FullVector<Real> Line;
+
     class LineConstIterator
     {
     public:
@@ -171,12 +172,12 @@ public:
     }
 
 
-    unsigned int rowSize(void) const
+    Index rowSize(void) const
     {
         return nRow;
     }
 
-    unsigned int colSize(void) const
+    Index colSize(void) const
     {
         return nCol;
     }
@@ -417,6 +418,7 @@ template<> inline const char* FullMatrix<float>::Name() { return "FullMatrixf"; 
 template<typename T>
 class LPtrFullMatrix : public FullMatrix<T>
 {
+public:
     typedef typename FullMatrix<T>::Index Index;
 protected:
     T** ldata;

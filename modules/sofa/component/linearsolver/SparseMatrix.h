@@ -111,12 +111,12 @@ public:
         nCol = nbCol;
     }
 
-    unsigned int rowSize(void) const
+    Index rowSize(void) const
     {
         return nRow;
     }
 
-    unsigned colSize(void) const
+    Index colSize(void) const
     {
         return nCol;
     }

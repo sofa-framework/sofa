@@ -46,7 +46,7 @@ public:
     virtual ~BaseVector() {}
 
     /// Number of elements
-    virtual unsigned int size(void) const = 0;
+    virtual Index size(void) const = 0;
     /// Read the value of element i
     virtual SReal element(Index i) const = 0;
 

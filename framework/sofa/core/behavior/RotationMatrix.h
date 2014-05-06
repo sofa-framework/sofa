@@ -43,15 +43,15 @@ class RotationMatrix : public defaulttype::BaseMatrix
 public:
     typedef TReal Real;
 
-    virtual unsigned int rowSize(void) const
+    virtual Index rowSize(void) const
     {
-        return (unsigned int) data.size()/3;
+        return (Index)data.size()/3;
     }
 
     /// Number of columns
-    virtual unsigned int colSize(void) const
+    virtual Index colSize(void) const
     {
-        return (unsigned int) data.size()/3;
+        return (Index)data.size()/3;
     }
 
     /// Read the value of the element at row i, column j (using 0-based indices)

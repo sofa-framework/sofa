@@ -67,12 +67,12 @@ public:
         (*this) = 0.0;
     }
 
-    unsigned int rowSize(void) const
+    Index rowSize(void) const
     {
         return M::Nrows();
     }
 
-    unsigned int colSize(void) const
+    Index colSize(void) const
     {
         return M::Ncols();
     }

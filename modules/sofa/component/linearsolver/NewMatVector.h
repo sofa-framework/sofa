@@ -86,7 +86,7 @@ public:
         return NEWMAT::ColumnVector::element(i);
     }
 
-    unsigned int size() const
+    Index size() const
     {
         return Nrows();
     }

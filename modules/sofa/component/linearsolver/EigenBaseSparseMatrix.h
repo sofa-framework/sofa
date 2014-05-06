@@ -168,13 +168,13 @@ public:
 
 
     /// number of rows
-    unsigned int rowSize(void) const
+    Index rowSize(void) const
     {
         return compressedMatrix.rows();
     }
 
     /// number of columns
-    unsigned int colSize(void) const
+    Index colSize(void) const
     {
         return compressedMatrix.cols();
     }
@@ -383,7 +383,7 @@ public:
 
 
     /// add this EigenBaseSparseMatrix to a BaseMatrix at the offset and multiplied by factor
-    void addToBaseMatrix( BaseMatrix *matrix, SReal factor, unsigned int &offset )
+    void addToBaseMatrix( BaseMatrix *matrix, SReal factor, Index &offset )
     {
         for( Index j=0 ; j<compressedMatrix.outerSize() ; ++j )
             for( typename CompressedMatrix::InnerIterator it(compressedMatrix,j) ; it ; ++it )

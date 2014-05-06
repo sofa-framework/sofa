@@ -185,7 +185,7 @@ public:
 
     static const char* Name() { return "f"; }
     static sofa::defaulttype::BaseMatrix::ElementType getElementType() { return sofa::defaulttype::BaseMatrix::ELEMENT_FLOAT; }
-    static unsigned int getElementSize() { return sizeof(Real); }
+    static std::size_t getElementSize() { return sizeof(Real); }
 };
 
 template <>

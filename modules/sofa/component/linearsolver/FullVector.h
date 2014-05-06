@@ -207,7 +207,7 @@ public:
         data[i] +=  (Real)v;
     }
 
-    unsigned int size() const
+    Index size() const
     {
         return cursize;
     }
