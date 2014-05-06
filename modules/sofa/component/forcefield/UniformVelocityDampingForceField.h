@@ -66,11 +66,11 @@ namespace sofa
 
             public:
 
-                virtual void addForce (const core::MechanicalParams*, DataVecDeriv&, const DataVecCoord&, const DataVecDeriv&) {}
+                virtual void addForce (const core::MechanicalParams*, DataVecDeriv&, const DataVecCoord&, const DataVecDeriv&);
 
                 virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df , const DataVecDeriv& d_dx);
 
-                virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *m, double kFactor, unsigned int &offset){}
+                virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *, double, unsigned int &){}
 
                 virtual void addBToMatrix(sofa::defaulttype::BaseMatrix * mat, double bFact, unsigned int& offset);
 

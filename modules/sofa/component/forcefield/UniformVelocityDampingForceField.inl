@@ -44,31 +44,40 @@ UniformVelocityDampingForceField<DataTypes>::UniformVelocityDampingForceField()
     core::objectmodel::Base::addAlias( &dampingCoefficient, "damping" );
 }
 
+template<class DataTypes>
+void UniformVelocityDampingForceField<DataTypes>::addForce (const core::MechanicalParams*, DataVecDeriv&_f, const DataVecCoord&, const DataVecDeriv&_v)
+{
+    sofa::helper::WriteAccessor<DataVecDeriv> f(_f);
+    const VecDeriv& v = _v.getValue();
+
+    for(unsigned int i=0; i<v.size(); i++)
+        f[i] -= v[i]*dampingCoefficient.getValue();
+}
 
 template<class DataTypes>
 void UniformVelocityDampingForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df , const DataVecDeriv& d_dx)
 {
-    Real bfactor = (Real)mparams->bFactor();
+//    Real bfactor = (Real)mparams->bFactor();
 
-    if( bfactor )
-    {
-        sofa::helper::WriteAccessor<DataVecDeriv> df(d_df);
-        const VecDeriv& dx = d_dx.getValue();
+//    if( bfactor )
+//    {
+//        sofa::helper::WriteAccessor<DataVecDeriv> df(d_df);
+//        const VecDeriv& dx = d_dx.getValue();
 
-        bfactor *= dampingCoefficient.getValue();
+//        bfactor *= dampingCoefficient.getValue();
 
-        for(unsigned int i=0; i<dx.size(); i++)
-            df[i] -= dx[i]*bfactor;
-    }
+//        for(unsigned int i=0; i<dx.size(); i++)
+//            df[i] -= dx[i]*bfactor;
+//    }
 }
 
 template<class DataTypes>
 void UniformVelocityDampingForceField<DataTypes>::addBToMatrix(sofa::defaulttype::BaseMatrix *mat, double bFact, unsigned int& offset)
 {
-    const unsigned int size = this->mstate->getMatrixSize();
+//    const unsigned int size = this->mstate->getMatrixSize();
 
-    for( unsigned i=0 ; i<size ; i++ )
-        mat->add( offset+i, offset+i, -dampingCoefficient.getValue()*bFact );
+//    for( unsigned i=0 ; i<size ; i++ )
+//        mat->add( offset+i, offset+i, -dampingCoefficient.getValue()*bFact );
 }
 
 template <class DataTypes>
