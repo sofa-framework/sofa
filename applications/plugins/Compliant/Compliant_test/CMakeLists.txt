@@ -10,7 +10,6 @@ set(SOURCE_FILES
 
     Assembly_test.cpp
     AssembledSolver_test.cpp
-	python_test_list.cpp
 
 	)
 
@@ -22,15 +21,19 @@ if(WIN32)
 	link_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Lib")
 endif()
 
+if(SOFA-PLUGIN_SOFAPYTHON)
+    AddCompilerDefinitions("COMPLIANT_TEST_PYTHON_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/python\"")
+    list(APPEND SOURCE_FILES "python_test_list.cpp")
+    AddLinkerDependencies(SofaPython)
+endif()
+
 add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES} ${RC_FILES})
 
 AddLinkerDependencies(Compliant SofaTest)
 
-AddCompilerDefinitions("COMPLIANT_TEST_PYTHON_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/python\"")
 
 # needed by python tests
 AddCompilerDefinitions("SOFA_SRC_DIR=${SOFA_SRC_DIR}")
-AddLinkerDependencies(SofaPython)
 
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
