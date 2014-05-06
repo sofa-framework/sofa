@@ -541,10 +541,10 @@ void LMConstraintSolver::buildInverseMassMatrix( const sofa::core::behavior::Bas
     FullMatrix<SReal> computationInvM;
     constraintCorrection->getComplianceMatrix(&computationInvM);
     //Then convert it into a Sparse Matrix: as it is done only at the init, or when topological changes occur, this should not be a burden for the framerate
-    for (unsigned int i=0; i<computationInvM.rowSize(); ++i)
+    for (Index i=0; i<computationInvM.rowSize(); ++i)
     {
         invMass.startVec(i);
-        for (unsigned int j=0; j<computationInvM.colSize(); ++j)
+        for (Index j=0; j<computationInvM.colSize(); ++j)
         {
             SReal value=computationInvM.element(i,j);
             if (value != 0)
@@ -609,7 +609,7 @@ void LMConstraintSolver::buildLMatrix( const sofa::core::behavior::BaseMechanica
             const defaulttype::BaseMatrix &m=b.getMatrix();
             const unsigned int column=b.getColumn()*dimensionDofs;
 
-            for (unsigned int j=0; j<m.colSize(); ++j)
+            for (Index j=0; j<m.colSize(); ++j)
             {
                 SReal value=m.element(eq,j);
                 if (value!=0)

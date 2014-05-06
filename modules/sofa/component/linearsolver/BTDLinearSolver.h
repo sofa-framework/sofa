@@ -582,7 +582,7 @@ public:
         Index bi = i / BSIZE; i = i % BSIZE;
         Index bj = j / BSIZE; j = j % BSIZE;
         Index bindex = bj - bi + 1;
-        if ((unsigned)bindex >= 3) return (SReal)0;
+        if (bindex >= 3) return (SReal)0;
         return data[bi*3+bindex][i][j];
     }
 
@@ -590,7 +590,7 @@ public:
     {
         static Bloc b;
         Index bindex = bj - bi + 1;
-        if ((unsigned)bindex >= 3) return b;
+        if (bindex >= 3) return b;
         return data[bi*3+bindex];
     }
 
@@ -603,7 +603,7 @@ public:
     {
         static Bloc b;
         Index bindex = bj - bi + 1;
-        if ((unsigned)bindex >= 3) return b;
+        if (bindex >= 3) return b;
         return data[bi*3+bindex];
     }
 
@@ -641,7 +641,7 @@ public:
         Index bi = i / BSIZE; i = i % BSIZE;
         Index bj = j / BSIZE; j = j % BSIZE;
         Index bindex = bj - bi + 1;
-        if ((unsigned)bindex >= 3) return;
+        if (bindex >= 3) return;
         data[bi*3+bindex][i][j] = (Real)v;
     }
 
@@ -650,7 +650,7 @@ public:
         Index bi = i / BSIZE; i = i % BSIZE;
         Index bj = j / BSIZE; j = j % BSIZE;
         Index bindex = bj - bi + 1;
-        if ((unsigned)bindex >= 3) return;
+        if (bindex >= 3) return;
         data[bi*3+bindex][i][j] += (Real)v;
     }
 
@@ -659,7 +659,7 @@ public:
         Index bi = i / BSIZE; i = i % BSIZE;
         Index bj = j / BSIZE; j = j % BSIZE;
         Index bindex = bj - bi + 1;
-        if ((unsigned)bindex >= 3) return;
+        if (bindex >= 3) return;
         data[bi*3+bindex][i][j] = (Real)0;
     }
 

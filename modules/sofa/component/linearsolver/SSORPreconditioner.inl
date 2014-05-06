@@ -65,13 +65,13 @@ void SSORPreconditioner<TMatrix,TVector,TThreadManager>::solve (Matrix& M, Vecto
 {
     SSORPreconditionerInvertData * data = (SSORPreconditionerInvertData *) this->getMatrixInvertData(&M);
 
-    const int n = M.rowSize();
+    const Index n = M.rowSize();
     const Real w = (Real)f_omega.getValue();
     //Solve (D/w+u) * u3 = r;
-    for (int j=n-1; j>=0; j--)
+    for (Index j=n-1; j>=0; j--)
     {
         double temp = 0.0;
-        for (int i=j+1; i<n; i++)
+        for (Index i=j+1; i<n; i++)
         {
             temp += z[i] * M.element(i,j);
         }
@@ -79,10 +79,10 @@ void SSORPreconditioner<TMatrix,TVector,TThreadManager>::solve (Matrix& M, Vecto
     }
 
     //Solve (I + w D^-1 * L) * z = u3
-    for (int j=0; j<n; j++)
+    for (Index j=0; j<n; j++)
     {
         double temp = 0.0;
-        for (int i=0; i<j; i++)
+        for (Index i=0; i<j; i++)
         {
             temp += z[i] * M.element(i,j);
         }
@@ -91,7 +91,7 @@ void SSORPreconditioner<TMatrix,TVector,TThreadManager>::solve (Matrix& M, Vecto
     }
 
     if (w != (Real)1.0)
-        for (unsigned j=0; j<M.rowSize(); j++)
+        for (Index j=0; j<M.rowSize(); j++)
             z[j] *= 2-w;
 
 }
@@ -101,16 +101,16 @@ void SSORPreconditioner<SparseMatrix<double>, FullVector<double> >::solve (Matri
 {
     SSORPreconditionerInvertData * data = (SSORPreconditionerInvertData *) this->getMatrixInvertData(&M);
 
-    const int n = M.rowSize();
+    const Index n = M.rowSize();
     const Real w = (Real)f_omega.getValue();
 
     //Solve (D/w+U) * t = r;
-    for (int j=n-1; j>=0; j--)
+    for (Index j=n-1; j>=0; j--)
     {
         double temp = 0.0;
         for (Matrix::LElementConstIterator it = ++M[j].find(j), end = M[j].end(); it != end; ++it)
         {
-            int i = it->first;
+            Index i = it->first;
             double e = it->second;
             temp += z[i] * e;
         }
@@ -118,12 +118,12 @@ void SSORPreconditioner<SparseMatrix<double>, FullVector<double> >::solve (Matri
     }
 
     //Solve (I + w * D^-1 * L) * z = t
-    for (int j=0; j<n; j++)
+    for (Index j=0; j<n; j++)
     {
         double temp = 0.0;
         for (Matrix::LElementConstIterator it = M[j].begin(), end = M[j].find(j); it != end; ++it)
         {
-            int i = it->first;
+            Index i = it->first;
             double e = it->second;
             temp += z[i] * e;
         }
@@ -132,7 +132,7 @@ void SSORPreconditioner<SparseMatrix<double>, FullVector<double> >::solve (Matri
     }
 
     if (w != (Real)1.0)
-        for (unsigned j=0; j<M.rowSize(); j++)
+        for (Index j=0; j<M.rowSize(); j++)
             z[j] *= 2-w;
 }
 
@@ -141,22 +141,22 @@ void SSORPreconditioner<CompressedRowSparseMatrix<double>, FullVector<double> >:
 {
     SSORPreconditionerInvertData * data = (SSORPreconditionerInvertData *) this->getMatrixInvertData(&M);
 
-    const int n = M.rowSize();
+    const Index n = M.rowSize();
     const Real w = (Real)f_omega.getValue();
 
     //const Matrix::VecIndex& rowIndex = M.getRowIndex();
     const Matrix::VecIndex& colsIndex = M.getColsIndex();
     const Matrix::VecBloc& colsValue = M.getColsValue();
     //Solve (D/w+U) * t = r;
-    for (int j=n-1; j>=0; j--)
+    for (Index j=n-1; j>=0; j--)
     {
         double temp = 0.0;
         Matrix::Range rowRange = M.getRowRange(j);
-        int xi = rowRange.begin();
+        Index xi = rowRange.begin();
         while (xi < rowRange.end() && colsIndex[xi] <= j) ++xi;
         for (; xi < rowRange.end(); ++xi)
         {
-            int i = colsIndex[xi];
+            Index i = colsIndex[xi];
             double e = colsValue[xi];
             temp += z[i] * e;
         }
@@ -164,14 +164,14 @@ void SSORPreconditioner<CompressedRowSparseMatrix<double>, FullVector<double> >:
     }
 
     //Solve (I + w D^-1 * L) * z = t
-    for (int j=0; j<n; j++)
+    for (Index j=0; j<n; j++)
     {
         double temp = 0.0;
         Matrix::Range rowRange = M.getRowRange(j);
-        int xi = rowRange.begin();
+        Index xi = rowRange.begin();
         for (; xi < rowRange.end() && colsIndex[xi] < j; ++xi)
         {
-            int i = colsIndex[xi];
+            Index i = colsIndex[xi];
             double e = colsValue[xi];
             temp += z[i] * e;
         }
@@ -180,7 +180,7 @@ void SSORPreconditioner<CompressedRowSparseMatrix<double>, FullVector<double> >:
     }
 
     if (w != (Real)1.0)
-        for (unsigned j=0; j<M.rowSize(); j++)
+        for (Index j=0; j<M.rowSize(); j++)
             z[j] *= 2-w;
 }
 
@@ -193,34 +193,34 @@ void SSORPreconditioner< CompressedRowSparseMatrix< defaulttype::Mat<B,B,Real> >
 {
     SSORPreconditionerInvertData * data = (SSORPreconditionerInvertData *) this->getMatrixInvertData(&M);
 
-    //const int n = M.rowSize();
-    const int nb = M.rowBSize();
+    //const Index n = M.rowSize();
+    const Index nb = M.rowBSize();
     const Real w = (Real)f_omega.getValue();
 
     //const Matrix::VecIndex& rowIndex = M.getRowIndex();
     const typename Matrix::VecIndex& colsIndex = M.getColsIndex();
     const typename Matrix::VecBloc& colsValue = M.getColsValue();
     //Solve (D+U) * t = r;
-    for (int jb=nb-1; jb>=0; jb--)
+    for (Index jb=nb-1; jb>=0; jb--)
     {
-        int j0 = jb*B;
+        Index j0 = jb*B;
         defaulttype::Vec<B,Real> temp;
         typename Matrix::Range rowRange = M.getRowRange(jb);
-        int xi = rowRange.begin();
+        Index xi = rowRange.begin();
         while (xi < rowRange.end() && colsIndex[xi] < jb) ++xi;
         // bloc on the diagonal
         const typename Matrix::Bloc& bdiag = colsValue[xi];
         // upper triangle matrix
         for (++xi; xi < rowRange.end(); ++xi)
         {
-            int i0 = colsIndex[xi]*B;
+            Index i0 = colsIndex[xi]*B;
             const typename Matrix::Bloc& b = colsValue[xi];
-            for (int j1=0; j1<B; ++j1)
+            for (Index j1=0; j1<B; ++j1)
             {
-                //int j = j0+j1;
-                for (int i1=0; i1<B; ++i1)
+                //Index j = j0+j1;
+                for (Index i1=0; i1<B; ++i1)
                 {
-                    int i = i0+i1;
+                    Index i = i0+i1;
                     temp[j1] += z[i] * b[j1][i1];
                 }
             }
@@ -228,12 +228,12 @@ void SSORPreconditioner< CompressedRowSparseMatrix< defaulttype::Mat<B,B,Real> >
         // then the diagonal
         {
             const typename Matrix::Bloc& b = bdiag;
-            for (int j1=B-1; j1>=0; j1--)
+            for (Index j1=B-1; j1>=0; j1--)
             {
-                int j = j0+j1;
-                for (int i1=j1+1; i1<B; ++i1)
+                Index j = j0+j1;
+                for (Index i1=j1+1; i1<B; ++i1)
                 {
-                    int i = j0+i1;
+                    Index i = j0+i1;
                     temp[j1]+= z[i] * b[j1][i1];
                 }
                 z[j] = (r[j] - temp[j1]) * w * data->inv_diag[j];
@@ -242,23 +242,23 @@ void SSORPreconditioner< CompressedRowSparseMatrix< defaulttype::Mat<B,B,Real> >
     }
 
     //Solve (I + D^-1 * L) * z = t
-    for (int jb=0; jb<nb; jb++)
+    for (Index jb=0; jb<nb; jb++)
     {
-        int j0 = jb*B;
+        Index j0 = jb*B;
         defaulttype::Vec<B,Real> temp;
         typename Matrix::Range rowRange = M.getRowRange(jb);
-        int xi = rowRange.begin();
+        Index xi = rowRange.begin();
         // lower triangle matrix
         for (; xi < rowRange.end() && colsIndex[xi] < jb; ++xi)
         {
-            int i0 = colsIndex[xi]*B;
+            Index i0 = colsIndex[xi]*B;
             const typename Matrix::Bloc& b = colsValue[xi];
-            for (int j1=0; j1<B; ++j1)
+            for (Index j1=0; j1<B; ++j1)
             {
-                //int j = j0+j1;
-                for (int i1=0; i1<B; ++i1)
+                //Index j = j0+j1;
+                for (Index i1=0; i1<B; ++i1)
                 {
-                    int i = i0+i1;
+                    Index i = i0+i1;
                     temp[j1] += z[i] * b[j1][i1];
                 }
             }
@@ -266,12 +266,12 @@ void SSORPreconditioner< CompressedRowSparseMatrix< defaulttype::Mat<B,B,Real> >
         // then the diagonal
         {
             const typename Matrix::Bloc& b = colsValue[xi];
-            for (int j1=0; j1<B; ++j1)
+            for (Index j1=0; j1<B; ++j1)
             {
-                int j = j0+j1;
-                for (int i1=0; i1<j1; ++i1)
+                Index j = j0+j1;
+                for (Index i1=0; i1<j1; ++i1)
                 {
-                    int i = j0+i1;
+                    Index i = j0+i1;
                     temp[j1] += z[i] * b[j1][i1];
                 }
                 // we can reuse z because all values that we read are updated
@@ -291,9 +291,9 @@ void SSORPreconditioner<TMatrix,TVector,TThreadManager>::invert(Matrix& M)
 {
     SSORPreconditionerInvertData * data = (SSORPreconditionerInvertData *) this->getMatrixInvertData(&M);
 
-    int n = M.rowSize();
+    Index n = M.rowSize();
     data->inv_diag.resize(n);
-    for (int j=0; j<n; j++) data->inv_diag[j] = 1.0 / M.element(j,j);
+    for (Index j=0; j<n; j++) data->inv_diag[j] = 1.0 / M.element(j,j);
 }
 
 } // namespace linearsolver

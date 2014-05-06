@@ -185,7 +185,7 @@ public:
     SReal element(Index i, Index j) const
     {
 #ifdef FULLMATRIX_CHECK
-        if ((unsigned)i >= (unsigned)rowSize() || (unsigned)j >= (unsigned)colSize())
+        if (i >= rowSize() || j >= colSize())
         {
             std::cerr << "ERROR: invalid read access to element ("<<i<<","<<j<<") in "<</*this->Name()<<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
             return 0.0;
@@ -200,7 +200,7 @@ public:
         std::cout << /*this->Name() <<*/ "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = "<<v<<std::endl;
 #endif
 #ifdef FULLMATRIX_CHECK
-        if ((unsigned)i >= (unsigned)rowSize() || (unsigned)j >= (unsigned)colSize())
+        if (i >= rowSize() || j >= colSize())
         {
             std::cerr << "ERROR: invalid write access to element ("<<i<<","<<j<<") in "<</*this->Name()<<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
             return;
@@ -215,7 +215,7 @@ public:
         std::cout << /*this->Name() << */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") += "<<v<<std::endl;
 #endif
 #ifdef FULLMATRIX_CHECK
-        if ((unsigned)i >= (unsigned)rowSize() || (unsigned)j >= (unsigned)colSize())
+        if (i >= rowSize() || j >= colSize())
         {
             std::cerr << "ERROR: invalid write access to element ("<<i<<","<<j<<") in "/*<<this->Name()*/<<" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
             return;
@@ -230,7 +230,7 @@ public:
         std::cout << /*this->Name() <<*/ "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = 0"<<std::endl;
 #endif
 #ifdef FULLMATRIX_CHECK
-        if ((unsigned)i >= (unsigned)rowSize() || (unsigned)j >= (unsigned)colSize())
+        if (i >= rowSize() || j >= colSize())
         {
             std::cerr << "ERROR: invalid write access to element ("<<i<<","<<j<<") in "<</*this->Name()<<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
             return;
@@ -245,7 +245,7 @@ public:
         std::cout << /*this->Name() <<*/ "("<<rowSize()<<","<<colSize()<<"): row("<<i<<") = 0"<<std::endl;
 #endif
 #ifdef FULLMATRIX_CHECK
-        if ((unsigned)i >= (unsigned)rowSize())
+        if (i >= rowSize())
         {
             std::cerr << "ERROR: invalid write access to row "<<i<<" in "<</*this->Name()<<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
             return;
@@ -261,7 +261,7 @@ public:
         std::cout <</* this->Name() << */"("<<rowSize()<<","<<colSize()<<"): col("<<j<<") = 0"<<std::endl;
 #endif
 #ifdef FULLMATRIX_CHECK
-        if ((unsigned)j >= (unsigned)colSize())
+        if (j >= colSize())
         {
             std::cerr << "ERROR: invalid write access to column "<<j<<" in "<</*this->Name()<<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
             return;
@@ -277,7 +277,7 @@ public:
         std::cout << /*this->Name() << */"("<<rowSize()<<","<<colSize()<<"): row("<<i<<") = 0 and col("<<i<<") = 0"<<std::endl;
 #endif
 #ifdef FULLMATRIX_CHECK
-        if ((unsigned)i >= (unsigned)rowSize() || (unsigned)i >= (unsigned)colSize())
+        if (i >= rowSize() || i >= colSize())
         {
             std::cerr << "ERROR: invalid write access to row and column "<<i<<" in "<</*this->Name()<<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
             return;
@@ -353,7 +353,7 @@ public:
     template<class Real2>
     void mul( FullMatrix<Real2>& res, const FullMatrix<Real2>& m ) const
     {
-        assert( m.rowSize() == (unsigned)nCol );
+        assert( m.rowSize() == nCol );
 
         res.resize( nRow, m.colSize() );
         for( Index i=0 ; i<nRow ; ++i )
@@ -372,7 +372,7 @@ public:
     template<class Real2>
     void mulT( FullMatrix<Real2>& res, const FullMatrix<Real2>& m ) const
     {
-        assert( m.rowSize() == (unsigned)nRow );
+        assert( m.rowSize() == nRow );
 
         res.resize( nCol, m.colSize() );
         for( Index i=0 ; i<nCol ; ++i )
