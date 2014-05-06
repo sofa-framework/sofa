@@ -1,6 +1,12 @@
+
+// Keep first! Fun fact: this header indirectly includes headers files
+// from libeigen, which must be included before X11 header file X.h
+// (If you're curious why: X.h defines a preprocessor symbol
+// 'Success', which is used as an enum value in eigen)
+#include <plugins/Flexible/deformationMapping/BaseDeformationMapping.h>
+
 #include "InitLinearMapping.h"
 #include <plugins/Flexible/shapeFunction/VoronoiShapeFunction.h>
-#include <plugins/Flexible/deformationMapping/BaseDeformationMapping.h>
 
 
 namespace sofa
