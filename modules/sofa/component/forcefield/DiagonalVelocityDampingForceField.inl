@@ -40,58 +40,59 @@ namespace sofa
 
             template<class DataTypes>
             DiagonalVelocityDampingForceField<DataTypes>::DiagonalVelocityDampingForceField()
-                : dampingCoefficients(initData(&dampingCoefficients, VecDeriv(1), "dampingCoefficient", "velocity damping coefficient"))
+                : dampingCoefficients(initData(&dampingCoefficients, "dampingCoefficient", "velocity damping coefficients (by cinematic dof)"))
             {
             }
 
 
             template<class DataTypes>
-            void DiagonalVelocityDampingForceField<DataTypes>::init()
+            void DiagonalVelocityDampingForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df , const DataVecDeriv& d_dx)
             {
-                Inherit::init();
-            }
-
-            template<class DataTypes>
-            void DiagonalVelocityDampingForceField<DataTypes>::addForce(const core::MechanicalParams* /*params*/ /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& p, const DataVecDeriv& v)
-            {
-                sofa::helper::WriteAccessor<DataVecDeriv> force(f);
-                const VecDeriv& velocity = v.getValue();
                 unsigned nbDampingCoeff = dampingCoefficients.getValue().size();
-                if(nbDampingCoeff>0)
+                Real bfactor = (Real)mparams->bFactor();
+
+                if( nbDampingCoeff && bfactor )
                 {
-                    for(unsigned i=0; i<velocity.size();i++)
+                    sofa::helper::WriteAccessor<DataVecDeriv> df(d_df);
+                    const VecDeriv& dx = d_dx.getValue();
+
+                    for(unsigned i=0; i<dx.size();i++)
                         for(unsigned j=0; j<Deriv::total_size; j++)
-                            if(nbDampingCoeff>=i)
-                                force[i][j] -= velocity[i][j]*dampingCoefficients.getValue()[i][j];
+                            if( i<nbDampingCoeff )
+                                df[i][j] -= dx[i][j]*dampingCoefficients.getValue()[i][j]*bfactor;
                             else
-                                force[i][j] -= velocity[i][j]*dampingCoefficients.getValue()[nbDampingCoeff-1][j];
+                                df[i][j] -= dx[i][j]*dampingCoefficients.getValue().back()[j]*bfactor;
                 }
             }
 
             template<class DataTypes>
-            void DiagonalVelocityDampingForceField<DataTypes>::addBToMatrix(sofa::defaulttype::BaseMatrix * mat, double bFact, unsigned int& offset)
+            void DiagonalVelocityDampingForceField<DataTypes>::addBToMatrix(sofa::defaulttype::BaseMatrix *mat, double bFact, unsigned int& offset)
             {
+                const unsigned int size = this->mstate->getSize();
                 unsigned nbDampingCoeff = dampingCoefficients.getValue().size();
-                for(unsigned i=0; i<mat->rowSize()/Deriv::total_size; i++)
-                    for(unsigned j=0; j<Deriv::total_size; j++)
-                        if(nbDampingCoeff<i)
-                            mat->add(i*Deriv::total_size+j,i*Deriv::total_size+j,-dampingCoefficients.getValue()[i][j]*bFact);
+
+                if( !nbDampingCoeff ) return;
+
+                for( unsigned i=0 ; i<size ; i++ )
+                {
+                    unsigned blockrow = offset+i*Deriv::total_size;
+                    for( unsigned j=0 ; j<Deriv::total_size ; j++ )
+                    {
+                        unsigned row = blockrow+j;
+                        if( i<nbDampingCoeff )
+                            mat->add( row, row, -dampingCoefficients.getValue()[i][j]*bFact );
                         else
-                            mat->add(i*Deriv::total_size+j,i*Deriv::total_size+j,-dampingCoefficients.getValue()[nbDampingCoeff-1][j]*bFact);
+                            mat->add( row, row, -dampingCoefficients.getValue().back()[j]*bFact );
+                    }
+                }
             }
 
             template <class DataTypes>
-            double DiagonalVelocityDampingForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /*params*/ /* PARAMS FIRST */, const DataVecCoord& x) const
+            double DiagonalVelocityDampingForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&) const
             {
                 return 0;
             }
 
-
-            template<class DataTypes>
-            void DiagonalVelocityDampingForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
-            {
-                //                sofa::helper::WriteAccessor<Inherit::getMState()> force(f);
-            }
 
         } // namespace forcefield
 

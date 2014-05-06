@@ -38,11 +38,13 @@ namespace sofa
         namespace forcefield
         {
 
-            /// Apply air drag forces to given degrees of freedom.
+            /// Apply damping forces to given degrees of freedom.
             template<class DataTypes>
             class UniformVelocityDampingForceField : public core::behavior::ForceField<DataTypes>
             {
+
             public:
+
                 SOFA_CLASS(SOFA_TEMPLATE(UniformVelocityDampingForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
 
                 typedef core::behavior::ForceField<DataTypes> Inherit;
@@ -55,69 +57,46 @@ namespace sofa
                 typedef core::objectmodel::Data<VecCoord> DataVecCoord;
                 typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
-
-            public:
                 /// air drag coefficient.
-                Data< double > dampingCoefficient;
+                Data< Real > dampingCoefficient;
 
             protected:
+
                 UniformVelocityDampingForceField();
+
             public:
-                /// Init function
-                void init();
 
-                /// Add the forces
-                virtual void addForce (const core::MechanicalParams* params /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
+                virtual void addForce (const core::MechanicalParams*, DataVecDeriv&, const DataVecCoord&, const DataVecDeriv&) {}
 
-                virtual void addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df , const DataVecDeriv& d_dx){}
+                virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df , const DataVecDeriv& d_dx);
 
                 virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *m, double kFactor, unsigned int &offset){}
 
-                virtual void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/, double /*kFact*/){}
-
                 virtual void addBToMatrix(sofa::defaulttype::BaseMatrix * mat, double bFact, unsigned int& offset);
 
-                virtual double getPotentialEnergy(const core::MechanicalParams* params /* PARAMS FIRST */, const DataVecCoord& x) const;
+                virtual double getPotentialEnergy(const core::MechanicalParams* params, const DataVecCoord& x) const;
 
-                void draw(const core::visual::VisualParams* vparams);
 
             };
 
-#ifndef SOFA_FLOAT
-            using sofa::defaulttype::Vec1dTypes;
-            using sofa::defaulttype::Vec2dTypes;
-            using sofa::defaulttype::Vec3dTypes;
-            using sofa::defaulttype::Vec6dTypes;
-            using sofa::defaulttype::Rigid2dTypes;
-            using sofa::defaulttype::Rigid3dTypes;
-#endif
-
-#ifndef SOFA_DOUBLE
-            using sofa::defaulttype::Vec1fTypes;
-            using sofa::defaulttype::Vec2fTypes;
-            using sofa::defaulttype::Vec3fTypes;
-            using sofa::defaulttype::Vec6fTypes;
-            using sofa::defaulttype::Rigid2fTypes;
-            using sofa::defaulttype::Rigid3fTypes;
-#endif
 
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_UNIFORMVELOCITYDAMPINGFORCEFIELD_CPP)
 #ifndef SOFA_FLOAT
-            extern template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<Vec3dTypes>;
-            extern template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<Vec2dTypes>;
-            extern template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<Vec1dTypes>;
-            extern template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<Vec6dTypes>;
-            extern template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<Rigid3dTypes>;
-            extern template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<Rigid2dTypes>;
+            extern template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<defaulttype::Vec3dTypes>;
+            extern template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<defaulttype::Vec2dTypes>;
+            extern template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<defaulttype::Vec1dTypes>;
+            extern template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<defaulttype::Vec6dTypes>;
+            extern template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<defaulttype::Rigid3dTypes>;
+            extern template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<defaulttype::Rigid2dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-            extern template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<Vec3fTypes>;
-            extern template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<Vec2fTypes>;
-            extern template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<Vec1fTypes>;
-            extern template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<Vec6fTypes>;
-            extern template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<Rigid3fTypes>;
-            extern template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<Rigid2fTypes>;
+            extern template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<defaulttype::Vec3fTypes>;
+            extern template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<defaulttype::Vec2fTypes>;
+            extern template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<defaulttype::Vec1fTypes>;
+            extern template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<defaulttype::Vec6fTypes>;
+            extern template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<defaulttype::Rigid3fTypes>;
+            extern template class SOFA_BOUNDARY_CONDITION_API UniformVelocityDampingForceField<defaulttype::Rigid2fTypes>;
 #endif
 #endif
 
@@ -127,4 +106,4 @@ namespace sofa
 
 } // namespace sofa
 
-#endif // SOFA_COMPONENT_FORCEFIELD_CONSTANTFORCEFIELD_H
+#endif
