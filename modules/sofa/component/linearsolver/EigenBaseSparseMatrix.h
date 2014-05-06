@@ -383,7 +383,7 @@ public:
 
 
     /// add this EigenBaseSparseMatrix to a BaseMatrix at the offset and multiplied by factor
-    void addToBaseMatrix( BaseMatrix *matrix, SReal factor, Index &offset )
+    void addToBaseMatrix( BaseMatrix *matrix, SReal factor, Index offset )
     {
         for( Index j=0 ; j<compressedMatrix.outerSize() ; ++j )
             for( typename CompressedMatrix::InnerIterator it(compressedMatrix,j) ; it ; ++it )
