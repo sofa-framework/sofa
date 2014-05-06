@@ -56,6 +56,7 @@ public:
 
     typedef TMatrix Matrix;
     typedef TVector Vector;
+    typedef typename Matrix::Index Index;
     typedef TThreadManager ThreadManager;
     typedef SReal Real;
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector,TThreadManager> Inherit;

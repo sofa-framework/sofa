@@ -64,7 +64,7 @@ public:
 
     EigenVectorWrapper( VectorEigen& ve ): eigenVector(ve) {}
 
-    unsigned size() const { return eigenVector.size(); }
+    Index size() const { return eigenVector.size(); }
 
     /// Resize the matrix without preserving the data (the matrix is set to zero)
     void resize(Index nbRow)
@@ -77,7 +77,7 @@ public:
     SReal element(Index i) const
     {
 #ifdef EigenVector_CHECK
-        if ((unsigned)i >= (unsigned)rowSize() || (unsigned)j >= (unsigned)colSize())
+        if (i >= rowSize() || j >= colSize())
         {
             std::cerr << "ERROR: invalid read access to element ("<<i<<","<<j<<") in "<</*this->Name()<<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
             return 0.0;
@@ -92,7 +92,7 @@ public:
         std::cout << /*this->Name() <<*/ "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = "<<v<<std::endl;
 #endif
 #ifdef EigenVector_CHECK
-        if ((unsigned)i >= (unsigned)rowSize() || (unsigned)j >= (unsigned)colSize())
+        if (i >= rowSize() || j >= colSize())
         {
             std::cerr << "ERROR: invalid write access to element ("<<i<<","<<j<<") in "<</*this->Name()<<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
             return;
@@ -111,7 +111,7 @@ public:
         std::cout << /*this->Name() << */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") += "<<v<<std::endl;
 #endif
 #ifdef EigenVector_CHECK
-        if ((unsigned)i >= (unsigned)rowSize() || (unsigned)j >= (unsigned)colSize())
+        if (i >= rowSize() || j >= colSize())
         {
             std::cerr << "ERROR: invalid write access to element ("<<i<<","<<j<<") in "/*<<this->Name()*/<<" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
             return;
@@ -126,7 +126,7 @@ public:
         std::cout << /*this->Name() <<*/ "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = 0"<<std::endl;
 #endif
 #ifdef EigenVector_CHECK
-        if ((unsigned)i >= (unsigned)rowSize() || (unsigned)j >= (unsigned)colSize())
+        if (i >= rowSize() || j >= colSize())
         {
             std::cerr << "ERROR: invalid write access to element ("<<i<<","<<j<<") in "<</*this->Name()<<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
             return;
