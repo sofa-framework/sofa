@@ -30,63 +30,61 @@
 namespace sofa
 {
 
-    namespace component
+namespace component
+{
+
+namespace forcefield
+{
+
+
+template<class DataTypes>
+UniformVelocityDampingForceField<DataTypes>::UniformVelocityDampingForceField()
+    : dampingCoefficient(initData(&dampingCoefficient, Real(0.1), "dampingCoefficient", "velocity damping coefficient"))
+{
+    core::objectmodel::Base::addAlias( &dampingCoefficient, "damping" );
+}
+
+
+template<class DataTypes>
+void UniformVelocityDampingForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df , const DataVecDeriv& d_dx)
+{
+    Real bfactor = (Real)mparams->bFactor();
+
+    if( bfactor )
     {
+        sofa::helper::WriteAccessor<DataVecDeriv> df(d_df);
+        const VecDeriv& dx = d_dx.getValue();
 
-        namespace forcefield
-        {
+        bfactor *= dampingCoefficient.getValue();
 
+        for(unsigned int i=0; i<dx.size(); i++)
+            df[i] -= dx[i]*bfactor;
+    }
+}
 
-            template<class DataTypes>
-            UniformVelocityDampingForceField<DataTypes>::UniformVelocityDampingForceField()
-                : dampingCoefficient(initData(&dampingCoefficient, 0.1, "dampingCoefficient", "velocity damping coefficient"))
-            {
-            }
+template<class DataTypes>
+void UniformVelocityDampingForceField<DataTypes>::addBToMatrix(sofa::defaulttype::BaseMatrix *mat, double bFact, unsigned int& offset)
+{
+    const unsigned int size = this->mstate->getMatrixSize();
 
+    for( unsigned i=0 ; i<size ; i++ )
+        mat->add( offset+i, offset+i, -dampingCoefficient.getValue()*bFact );
+}
 
-            template<class DataTypes>
-            void UniformVelocityDampingForceField<DataTypes>::init()
-            {
-                Inherit::init();
-            }
-
-            template<class DataTypes>
-            void UniformVelocityDampingForceField<DataTypes>::addForce(const core::MechanicalParams* /*params*/ /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& p, const DataVecDeriv& v)
-            {
-                sofa::helper::WriteAccessor<DataVecDeriv> force(f);
-                const VecDeriv& velocity = v.getValue();
-
-                 for(unsigned int i=0; i<velocity.size(); i++)
-                     force[i] -= velocity[i]*dampingCoefficient.getValue();
-            }
-
-            template<class DataTypes>
-            void UniformVelocityDampingForceField<DataTypes>::addBToMatrix(sofa::defaulttype::BaseMatrix * mat, double bFact, unsigned int& offset)
-            {
-                for(unsigned i=0; i<mat->rowSize(); i++)
-                    mat->add(i,i,-dampingCoefficient.getValue()*bFact);
-            }
-
-            template <class DataTypes>
-            double UniformVelocityDampingForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /*params*/ /* PARAMS FIRST */, const DataVecCoord& x) const
-            {
-               return 0;
-            }
+template <class DataTypes>
+double UniformVelocityDampingForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&) const
+{
+    return 0;
+}
 
 
-            template<class DataTypes>
-            void UniformVelocityDampingForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
-            {
-//                sofa::helper::WriteAccessor<Inherit::getMState()> force(f);
-            }
+} // namespace forcefield
 
-        } // namespace forcefield
-
-    } // namespace component
+} // namespace component
 
 } // namespace sofa
 
-#endif // SOFA_COMPONENT_FORCEFIELD_AIRDRAGFORCEFIELD_INL
+#endif
 
 
 
