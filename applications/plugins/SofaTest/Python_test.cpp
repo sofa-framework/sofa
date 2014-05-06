@@ -10,8 +10,6 @@
 
 #include <fstream>
 
-#include "../utils/edit.h"
-
 namespace sofa {
 
 Python_test::Python_test() 
@@ -52,8 +50,8 @@ struct Listener : core::objectmodel::BaseObject {
 
 
 void Python_test::run(const char* filename) {
-	std::string filepath = std::string(COMPLIANT_TEST_PYTHON_DIR) + "/" + filename;
-        std::cout << filepath << std::endl;
+    std::string filepath = filename;
+        std::cout << "Python_test::run "<< filepath << std::endl;
         // Check the file exists
         std::ifstream file(filepath.c_str());
 	bool scriptFound = file.good();

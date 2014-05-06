@@ -1,6 +1,6 @@
 import Sofa
 
-import Test
+import SofaTest
 
 def createScene(node):
 
@@ -14,7 +14,7 @@ def createScene(node):
 
 
  
-class Controller(Test.Controller):
+class Controller(SofaTest.Controller):
 
     def onLoaded(self, node):
         self.node = node

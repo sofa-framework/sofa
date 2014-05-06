@@ -9,6 +9,11 @@ namespace simulation {
 class SceneLoader;
 }
 
+
+
+#define SOFA_INTERNAL_VARIABLE_VALUE(name) name
+#define ADD_PYTHON_TEST_DIR(path,filename) SOFA_INTERNAL_VARIABLE_VALUE(path) "/" filename
+
 class Python_test : public ::testing::TestWithParam<const char*> {
 
 protected:
@@ -30,7 +35,6 @@ public:
 	~Python_test();
 
 };
-
 
 
 }
