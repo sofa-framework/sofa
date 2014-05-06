@@ -1,15 +1,17 @@
-#include "Python_test.h"
+#include <SofaTest/Python_test.h>
 
 // TODO build a list of .py files by static
 // initialization in a std::vector, then launch tests on them
 
 // in the meantime, this:
 
+
+
 const char* test_files[] = {
-	"Example.py",
-	"LambdaPropagation.py",
-	"UniformCompliance.py",
-	"AffineMultiMapping.py"
+    ADD_PYTHON_TEST_DIR(COMPLIANT_TEST_PYTHON_DIR,"Example.py"),
+    ADD_PYTHON_TEST_DIR(COMPLIANT_TEST_PYTHON_DIR,"LambdaPropagation.py"),
+    ADD_PYTHON_TEST_DIR(COMPLIANT_TEST_PYTHON_DIR,"UniformCompliance.py"),
+    ADD_PYTHON_TEST_DIR(COMPLIANT_TEST_PYTHON_DIR,"AffineMultiMapping.py")
 
 	// add yours here
 };

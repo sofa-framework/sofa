@@ -7,7 +7,7 @@ import Compliant
 from Compliant.Vec import Proxy as vec
 from Compliant import Rigid, Tools
 
-import Test
+import SofaTest
 
 
 # shared data
@@ -97,7 +97,7 @@ def createScene(node):
     shared.p2 = p2.getObject('dofs')
 
 
-class Controller(Test.Controller):
+class Controller(SofaTest.Controller):
 
     def onEndAnimationStep(self, dt):
         if self.node.getTime() > 0.5:

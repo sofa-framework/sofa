@@ -4,7 +4,7 @@ import inspect
 import os
 
 
-# some helpers
+# a controller to return a test result directly from a python script
 class Controller(Sofa.PythonScriptController):
 
     def onLoaded(self, node):
@@ -30,4 +30,6 @@ class Controller(Sofa.PythonScriptController):
             # print #lines[ info.lineno - 1 ]
 
             self.node.sendScriptEvent('failure', 0)
+        self.root.findData('animate').value = 0
             
+

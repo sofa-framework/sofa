@@ -6,7 +6,7 @@ import Compliant
 from Compliant.Vec import Proxy as vec
 from Compliant import Rigid, Tools
 
-import Test
+import SofaTest
 
 # helper
 def insert_point(node, name, position, mass = 1.0):
@@ -99,7 +99,7 @@ def createScene(node):
     return node
 
 
-class Controller(Test.Controller):
+class Controller(SofaTest.Controller):
 
 
     def onBeginAnimationStep(self, dt):
