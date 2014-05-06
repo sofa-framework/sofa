@@ -4,12 +4,24 @@ import os
 import SofaTest
 
 #--------------------------------------------------------------------------------------------	
+# manual
 
-DAMPING_COEF = 0.5
-INITIAL_VELOCITY = 10
-INERTIA = 5
-ACCEPTABLE_ERROR = 2e-3
 
+# the error is increasing with both the damping coef and the initial velocity
+DAMPING_COEF = .1
+INITIAL_VELOCITY = 1
+DT = 0.01
+
+ACCEPTABLE_ERROR = 1e-3
+
+# a ball
+MASS = 1.0  # the error is decreasing when the mass (-> inertia) increases
+RADIUS = 1.0 # the error is decreasing when the radius (-> inertia) increases
+
+#--------------------------------------------------------------------------------------------	
+# auto
+INERTIA = 2.0*MASS*RADIUS*RADIUS/5.0
+VOLUME = 4.0/3.0*math.pi*RADIUS*RADIUS*RADIUS
 #--------------------------------------------------------------------------------------------	
 
 
@@ -17,25 +29,46 @@ ACCEPTABLE_ERROR = 2e-3
 class VerifController(SofaTest.Controller):
 
 	def initGraph(self,node):
-		self.dof = node.getObject( "/dofs" )
+		self.translationdof = node.getObject( "/translation/dofs" )
+		self.rotationdof = node.getObject( "/rotation/dofs" )
 		self.t = 0
-		self.max = 0
+		self.rotationmax = 0
+		self.translationmax = 0
 		return 0
 
 		
 	def onEndAnimationStep(self,dt):
 		self.t += dt
-		measure = self.dof.velocity[0][3] # simulated velocity
-		theory = INITIAL_VELOCITY*math.exp(-DAMPING_COEF*self.t/INERTIA) # theoretical velocity
-		error = abs(measure-theory)
-		if error>self.max :
-		  self.max = error
 		
-		#print str(measure)+" "+str(theory)+" "+str(error)+" "+str(self.max)
 		
-		if self.t >= 10 :
-		  self.should( self.max < ACCEPTABLE_ERROR )
+		rotationtheory = INITIAL_VELOCITY*math.exp(-DAMPING_COEF*self.t/INERTIA) # theoretical velocity
+		translationtheory = INITIAL_VELOCITY*math.exp(-DAMPING_COEF*self.t/MASS) # theoretical velocity
+		
+		
+		# test check
+		if self.t >= 2 or rotationtheory<1e-10 or translationtheory<1e-10:
+		  #print str(rotationtheory)+" "+str(translationtheory)
+		  #print str(self.rotationmax)+" "+str(self.translationmax)+" "+str(ACCEPTABLE_ERROR)
+		  self.should( self.rotationmax < ACCEPTABLE_ERROR and self.translationmax < ACCEPTABLE_ERROR, "angular damping error: "+str(self.rotationmax)+" translation damping error: "+str(self.translationmax) )
 		  
+		
+		#rotation error
+		rotationmeasure = self.rotationdof.velocity[0][3] # simulated velocity
+		rotationerror = abs(rotationmeasure-rotationtheory)/rotationtheory
+		if rotationerror>self.rotationmax :
+		  self.rotationmax = rotationerror
+		  
+		#translation error
+		translationmeasure = self.translationdof.velocity[0][0] # simulated velocity
+		translationerror = abs(translationmeasure-translationtheory)/translationtheory
+		if translationerror>self.translationmax :
+		  self.translationmax = translationerror
+		
+		#print str(translationmeasure)+" "+str(translationtheory)+" "+str(translationerror)+" "+str(self.translationmax)
+		
+		#print str(rotationmeasure)+" "+str(rotationtheory)+" "+str(rotationerror)+" "+str(self.rotationmax)
+		
+		
 		
             	return 0
 		
@@ -47,30 +80,51 @@ class VerifController(SofaTest.Controller):
 		
 #------------------------------------------------------------------------------------------------------------------------------------------------
 def createScene(node):
+  
+    if DAMPING_COEF > MASS / DT :
+      print "WARNING too large damping coefficient compared to time step\n"
 
-    node.findData('dt').value=0.01
+    node.findData('dt').value=DT
     node.findData('gravity').value='0 0 0'
-
-    node.createObject('EulerImplicit',name='odesolver',rayleighStiffness=0,rayleighMass=0)
-    node.createObject('CGLinearSolver',name = 'numsolver',precision=1e-10,threshold=1e-10,iterations=100)
+    
+    node.createObject('VisualStyle', displayFlags='showBehaviorModels')
+    node.createObject('PythonScriptController', filename=__file__, classname='VerifController')
     
     
     # create a rigid file to give a correct inertia matrix
     path = os.path.dirname( os.path.abspath( __file__ ) )
     rigidFile = open(path+"/damping_mass.rigid", "wb")
-    rigidFile.write( 'mass 1\n' )
-    rigidFile.write( 'volm 1\n' )
-    rigidFile.write( 'inrt '+str(INERTIA) + ' 0 0   0 1 0  0 0 1\n' )
+    rigidFile.write( 'Xsp 3.0\n' )
+    rigidFile.write( 'mass '+str(MASS)+'\n' )
+    rigidFile.write( 'volm '+str(VOLUME)+'\n' )
+    rigidFile.write( 'inrt '+str(INERTIA/MASS) + ' 0 0   0 '+str(INERTIA/MASS) + ' 0  0 0 '+str(INERTIA/MASS) + '\n' )
     rigidFile.write( 'cntr 0 0 0\n' )
     rigidFile.close()
     
-    dof = node.createObject('MechanicalObject', template="Rigid", name="dofs", position="0 0 0 0 0 0 1", velocity="0 0 0 "+str(INITIAL_VELOCITY)+" 0 0")
-    #node.createObject('RigidMass', mass="1", inertia=str(INERTIA)+" "+str(INERTIA)+" "+str(INERTIA))
-    node.createObject('UniformMass', filename=path+"/damping_mass.rigid")
-    node.createObject('UniformVelocityDampingForceField', dampingCoefficient=DAMPING_COEF)
-    node.createObject('PartialFixedConstraint', indices='0', fixedDirections="1 1 1 0 1 1")
+    #node.createObject('EulerSolver',name='odesolver')
+    #node.createObject('RequiredPlugin', pluginName = 'Compliant')
+    #node.createObject('AssembledSolver',name='odesolver',stabilization='0')
+    #node.createObject('LDLTSolver',name = 'numsolver')
     
-    node.createObject('PythonScriptController', filename=__file__, classname='VerifController')
+    # angular damping test
+    angularNode = node.createChild('rotation')
+    angularNode.createObject('EulerImplicit',name='odesolver',rayleighStiffness=0,rayleighMass=0)
+    angularNode.createObject('CGLinearSolver',name = 'numsolver',precision=1e-10,threshold=1e-10,iterations=1000)
+    angularNode.createObject('MechanicalObject', template="Rigid", name="dofs", position="0 0 0 0 0 0 1", velocity="0 0 0 "+str(INITIAL_VELOCITY)+" 0 0")
+    angularNode.createObject('UniformMass', filename=path+"/damping_mass.rigid")
+    angularNode.createObject('UniformVelocityDampingForceField', dampingCoefficient=DAMPING_COEF)
+    #angularNode.createObject('PartialFixedConstraint', indices='0', fixedDirections="1 1 1 0 1 1")
+    
+    
+    # translation damping test
+    translationNode = node.createChild('translation')
+    translationNode.createObject('EulerImplicit',name='odesolver',rayleighStiffness=0,rayleighMass=0)
+    translationNode.createObject('CGLinearSolver',name = 'numsolver',precision=1e-10,threshold=1e-10,iterations=1000)
+    translationNode.createObject('MechanicalObject', template="Rigid", name="dofs", position="0 0 0 0 0 0 1", velocity=str(INITIAL_VELOCITY)+" 0 0  0 0 0")
+    translationNode.createObject('UniformMass', filename=path+"/damping_mass.rigid")
+    translationNode.createObject('UniformVelocityDampingForceField', dampingCoefficient=DAMPING_COEF)
+    #translationNode.createObject('PartialFixedConstraint', indices='0', fixedDirections="0 1 1 1 1 1")
+    
     
     return node
 
