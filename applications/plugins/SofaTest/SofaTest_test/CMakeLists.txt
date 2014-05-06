@@ -30,6 +30,11 @@ if(WIN32)
     link_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Lib")
 endif()
 
+if(SOFA-PLUGIN_SOFAPYTHON)
+    list(APPEND SOURCE_FILES "python_test_list.cpp")
+    AddLinkerDependencies(SofaPython)
+endif()
+
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${RC_FILES})
 
 # Define a macro to get the absolute path to a directory;
