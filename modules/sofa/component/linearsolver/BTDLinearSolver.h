@@ -187,12 +187,12 @@ public:
         clear();
     }
 
-    unsigned int rowSize(void) const
+    Index rowSize(void) const
     {
         return nTRow;
     }
 
-    unsigned int colSize(void) const
+    Index colSize(void) const
     {
         return nTCol;
     }
@@ -414,6 +414,7 @@ class BTDMatrix : public defaulttype::BaseMatrix
 public:
     enum { BSIZE = N };
     typedef T Real;
+    typedef typename defaulttype::BaseMatrix::Index Index;
 
     class TransposedBloc
     {
@@ -566,12 +567,12 @@ public:
         clear();
     }
 
-    unsigned int rowSize(void) const
+    Index rowSize(void) const
     {
         return nTRow;
     }
 
-    unsigned int colSize(void) const
+    Index colSize(void) const
     {
         return nTCol;
     }

@@ -89,12 +89,12 @@ public:
         data.resize(nbRow);
     }
 
-    unsigned int rowSize(void) const
+    Index rowSize(void) const
     {
         return data.size();
     }
 
-    unsigned int colSize(void) const
+    Index colSize(void) const
     {
         return data.size();
     }
@@ -147,7 +147,7 @@ public:
         data.resize(nbRow);
     }
 
-    unsigned int size() const
+    Index size() const
     {
         return data.size();
     }
@@ -365,22 +365,22 @@ public:
         //for (Index i=0;i<data.size();i++) data[i].ReSize(LC,LC);
     }
 
-    unsigned rowSize(void) const
+    Index rowSize(void) const
     {
         return cSize;
     }
 
-    unsigned colSize(void) const
+    Index colSize(void) const
     {
         return cSize;
     }
 
-    unsigned rowBSize(void) const
+    Index rowBSize(void) const
     {
         return data.size();
     }
 
-    unsigned colBSize(void) const
+    Index colBSize(void) const
     {
         return data.size();
     }
@@ -576,7 +576,7 @@ protected:
         const DiagonalMatrix<R1>& m1;
         Dest* d;
         MyDest(const DiagonalMatrix<R1>& m1, Dest* d) : m1(m1), d(d) {}
-        void add(int l, int c, double v) { d->add(l,c,m1.element(l)*v); }
+        void add(Index l, Index c, double v) { d->add(l,c,m1.element(l)*v); }
     };
 public:
     typedef typename M2::matrix_type matrix_type;
@@ -594,6 +594,7 @@ public:
 template<class M1, class R2>
 class MatrixProductOp<M1, DiagonalMatrix<R2> >
 {
+    typedef typename M1::Index Index;
 protected:
     template<class Dest>
     class MyDest
@@ -602,7 +603,7 @@ protected:
         const DiagonalMatrix<R2>& m2;
         Dest* d;
         MyDest(const DiagonalMatrix<R2>& m2, Dest* d) : m2(m2), d(d) {}
-        void add(int l, int c, double v) { d->add(l,c,v*m2.element(c)); }
+        void add(Index l, Index c, double v) { d->add(l,c,v*m2.element(c)); }
     };
 public:
     typedef typename M1::matrix_type matrix_type;
