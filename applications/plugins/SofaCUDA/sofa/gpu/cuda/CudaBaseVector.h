@@ -104,20 +104,21 @@ template<class T>
 class CudaBaseVectorType : public BaseVector {
 public :
     typedef T Real;
+    typedef typename BaseVector::Index Index;
 
-    virtual void resize(int nbRow) = 0;
-    virtual unsigned int size() const = 0;
-    virtual SReal element(int i) const = 0;
+    virtual void resize(Index nbRow) = 0;
+    virtual Index size() const = 0;
+    virtual SReal element(Index i) const = 0;
     virtual void clear() = 0;
-    virtual void set(int i, SReal val) = 0;
-    virtual void add(int i, SReal val) = 0;
-    virtual const void* deviceRead(int off=0) const = 0;
-    virtual void * deviceWrite(int off=0) = 0;
-    virtual const T* hostRead(int off=0) const = 0;
-    virtual T * hostWrite(int off=0) = 0;
+    virtual void set(Index i, SReal val) = 0;
+    virtual void add(Index i, SReal val) = 0;
+    virtual const void* deviceRead(Index off=0) const = 0;
+    virtual void * deviceWrite(Index off=0) = 0;
+    virtual const T* hostRead(Index off=0) const = 0;
+    virtual T * hostWrite(Index off=0) = 0;
     virtual void invalidateDevice() = 0;
     virtual void invalidateHost() = 0;
-    virtual T getSingle(int off=0) = 0;
+    virtual T getSingle(Index off=0) = 0;
 
     /// this += a*f
     template<typename Real>
@@ -144,6 +145,7 @@ class CudaBaseVector : public CudaBaseVectorType<T>
 {
 public :
     typedef T Real;
+    typedef typename CudaBaseVectorType<T>::Index Index;
 
     CudaVector<T>& getCudaVector()
     {
@@ -155,66 +157,66 @@ public :
         return v;
     }
 
-    T& operator[](int i)
+    T& operator[](Index i)
     {
         return v[i];
     }
 
-    const T& operator[](int i) const
+    const T& operator[](Index i) const
     {
         return v[i];
     }
 
-    void fastResize(int nbRow)
+    void fastResize(Index nbRow)
     {
         v.fastResize(nbRow);
     }
 
-    void fastResize(int nbRow,int warp_size)
+    void fastResize(Index nbRow,Index warp_size)
     {
         v.fastResize(nbRow,warp_size);
     }
 
-    void resize(int nbRow)
+    void resize(Index nbRow)
     {
         v.resize(nbRow);
     }
 
-    void recreate(int nbRow)
+    void recreate(Index nbRow)
     {
         v.recreate(nbRow);
     }
 
-    void resize(int nbRow,int warp_size)
+    void resize(Index nbRow,Index warp_size)
     {
         v.resize(nbRow,warp_size);
     }
 
-    unsigned int size() const
+    Index size() const
     {
         return v.size();
     }
 
-    SReal element(int i) const
+    SReal element(Index i) const
     {
         return v[i];
     }
 
     void clear()
     {
-        //for (unsigned int i=0; i<size(); i++) v[i]=(T)(0.0);
+        //for (unsigned Index i=0; i<size(); i++) v[i]=(T)(0.0);
 //		  v.memsetHost();
-//                    unsigned int size = v.size();
+//                    Index size = v.size();
         v.clear();
 //                    v.resize(size);
     }
 
-    void set(int i, SReal val)
+    void set(Index i, SReal val)
     {
         v[i] = (T) val;
     }
 
-    void add(int i, SReal val)
+    void add(Index i, SReal val)
     {
         v[i] += (T)val;
     }
@@ -229,12 +231,12 @@ public :
         v = e.v;
     }
 
-    const void* deviceRead(int off=0) const
+    const void* deviceRead(Index off=0) const
     {
         return v.deviceReadAt(off);
     }
 
-    void * deviceWrite(int off=0)
+    void * deviceWrite(Index off=0)
     {
         return v.deviceWriteAt(off);
     }
@@ -254,17 +256,17 @@ public :
         v.memsetDevice();
     }
 
-    const T* hostRead(int off=0) const
+    const T* hostRead(Index off=0) const
     {
         return v.hostReadAt(off);
     }
 
-    T * hostWrite(int off=0)
+    T * hostWrite(Index off=0)
     {
         return v.hostWriteAt(off);
     }
 
-    T getSingle(int off)
+    T getSingle(Index off)
     {
         return v.getSingle(off);
     }
