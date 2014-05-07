@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+
 #ifndef SOFA_DEFAULTTYPE_MAPMAPSPARSEMATRIX_H
 #define SOFA_DEFAULTTYPE_MAPMAPSPARSEMATRIX_H
 
@@ -63,7 +64,7 @@ public:
     }
 
     /// @return the number of rows
-    std::size_t size() const
+    unsigned int size() const
     {
         return m_data.size();
     }
@@ -602,7 +603,7 @@ public:
             }
             else
             {
-                row.insert(std::make_pair(id, value));
+                row.insert(std::make_pair(id, value) );
             }
         }
 
@@ -678,6 +679,7 @@ public:
         }
 
         std::pair< typename SparseMatrix::iterator, bool > res = m_data.insert(std::make_pair(lIndex, row));
+
         return std::make_pair(RowIterator(res.first), res.second);
     }
 
@@ -692,6 +694,7 @@ public:
         if (it == this->end())
         {
             std::pair< typename SparseMatrix::iterator, bool > res = m_data.insert(std::make_pair(lIndex, row));
+
             return std::make_pair(RowIterator(res.first), res.second);
         }
         else
