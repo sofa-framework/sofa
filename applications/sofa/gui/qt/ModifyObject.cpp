@@ -112,7 +112,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
 
 
 
-//    bool isNode = (dynamic_cast< simulation::Node *>(node) != NULL);
+    bool isNode = (dynamic_cast< simulation::Node *>(node) != NULL);
 
     buttonUpdate = new QPushButton( this, "buttonUpdate" );
     buttonUpdate->setText("&Update");
@@ -132,23 +132,23 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
         std::map< std::string, std::vector<QTabulationModifyObject* > > groupTabulation;
 
         //If we operate on a Node, we have to ...
-        /*if(isNode)
+        if(isNode)
         {
             if (dialogFlags_.REINIT_FLAG)
             {
                 //add the widgets to apply some basic transformations
-                std::vector<QTabulationModifyObject* > &tabs=groupTabulation[std::string("Property")];
-                tabs.push_back(new QTabulationModifyObject(this,node, item_,1));
+                
+                m_tabs.push_back(new QTabulationModifyObject(this,node, item_,1));
+                groupTabulation[std::string("Property")].push_back(m_tabs.back() );
+                connect(m_tabs.back(), SIGNAL(nodeNameModification(simulation::Node *)), this, SIGNAL(nodeNameModification(simulation::Node *)));
 
-                connect(tabs.back(), SIGNAL(nodeNameModification(simulation::Node *)), this, SIGNAL(nodeNameModification(simulation::Node *)));
-
-                transformation = new QTransformationWidget(tabs.back(), QString("Transformation"));
-                tabs.back()->layout()->add( transformation );
-                tabs.back()->externalWidgetAddition(transformation->getNumWidgets());
+                transformation = new QTransformationWidget(m_tabs.back(), QString("Transformation"));
+                m_tabs.back()->layout()->add( transformation );
+                m_tabs.back()->externalWidgetAddition(transformation->getNumWidgets());
                 connect( transformation, SIGNAL(TransformationDirty(bool)), buttonUpdate, SLOT( setEnabled(bool) ) );
                 connect( transformation, SIGNAL(TransformationDirty(bool)), this, SIGNAL( componentDirty(bool) ) );
             }
-        }*/
+        }
 
         std::vector<std::string> tabNames;
         //Put first the Property Tab
@@ -188,7 +188,8 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
             if (tabs.empty() || tabs.back()->isFull())
             {
                 newTab = true;
-                tabs.push_back(new QTabulationModifyObject(this,node, item_,tabs.size()+1));
+                m_tabs.push_back( new QTabulationModifyObject(this,node, item_,tabs.size()+1) );
+                tabs.push_back( m_tabs.back() );
             }
             currentTab = tabs.back();
             currentTab->addData(data, getFlags());
@@ -229,7 +230,11 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
 
             std::vector<QTabulationModifyObject* > &tabs=groupTabulation[currentGroup];
             if (tabs.empty()) tabNames.push_back(currentGroup);
-            if (tabs.empty() || tabs.back()->isFull()) tabs.push_back(new QTabulationModifyObject(this,node, item_,tabs.size()+1));
+            if (tabs.empty() || tabs.back()->isFull())
+            {
+                m_tabs.push_back( new QTabulationModifyObject(this,node, item_,tabs.size()+1) );
+                tabs.push_back(m_tabs.back() );
+            }
             currentTab = tabs.back();
 
             currentTab->addLink(link, getFlags());
@@ -558,6 +563,14 @@ void ModifyObject::reject   ()
         std::cout << "GUI<emit endObjectModification(" << node->getName() << ")" << std::endl;
 #endif
     }
+
+    QString dataModifiedString = parseDataModified();
+
+    if( !dataModifiedString.isEmpty() )
+    {
+        emit  dataModified( dataModifiedString  );
+    }
+
 //          else if (data) emit endDataModification(data);
     emit(dialogClosed(Id_));
     deleteLater();
@@ -567,6 +580,13 @@ void ModifyObject::reject   ()
 void ModifyObject::accept   ()
 {
     updateValues();
+
+    QString dataModifiedString = parseDataModified();
+
+    if( !dataModifiedString.isEmpty() )
+    {
+        emit  dataModified( dataModifiedString  );
+    }
 
     if (node)
     {
@@ -584,7 +604,24 @@ void ModifyObject::accept   ()
     QDialog::accept();
 } //if closing by using Ok button, update the values
 
+QString ModifyObject::parseDataModified()
+{
+    QString cat;
 
+    for(std::size_t i =0;i<m_tabs.size();++i)
+    {
+        QString tabString = m_tabs[i]->getDataModifiedString();
+        if( tabString.isEmpty() ) continue;
+
+        cat += tabString;
+        if( i != (m_tabs.size() -1) )
+        {
+            cat+= "\n";
+        }
+    }
+
+    return cat;
+}
 
 } // namespace qt
 

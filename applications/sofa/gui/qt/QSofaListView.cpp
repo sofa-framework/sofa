@@ -521,6 +521,7 @@ void QSofaListView::Modify()
         connect ( this, SIGNAL( Close() ), dialogModifyObject, SLOT( closeNow() ) );
         connect ( dialogModifyObject, SIGNAL( dialogClosed(void *) ) , this, SLOT( modifyUnlock(void *)));
         connect ( dialogModifyObject, SIGNAL( nodeNameModification(simulation::Node*) ) , this, SLOT( nodeNameModification(simulation::Node*) ));
+        connect ( dialogModifyObject, SIGNAL( dataModified(QString) ), this, SIGNAL( dataModified(QString) ) );
         dialogModifyObject->show();
         dialogModifyObject->raise();
     }
