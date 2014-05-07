@@ -400,28 +400,8 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
     SofaVideoRecorderManager::getInstance()->hide();
 
     //Center the application
-	/** This code doesn't work for all the multi screen config, so i comment and replace it by the previous code **/
-	/*
-    QSettings settings;
-    settings.beginGroup("viewer");
-    int screenNumber = settings.value("screenNumber", QApplication::desktop()->primaryScreen()).toInt();
-    settings.endGroup();
-
-    if (screenNumber >= QApplication::desktop()->screenCount())
-        screenNumber = QApplication::desktop()->primaryScreen();
-
-    int offset = 0;
-    if (screenNumber > 0)
-        for (int i = 0 ; i < screenNumber; i++)
-            offset = QApplication::desktop()->availableGeometry(i).width();
-
-    const QRect screen = QApplication::desktop()->availableGeometry(screenNumber);
-    this->move( offset + ( screen.width()- this->width()  ) / 2 - 200,  ( screen.height() - this->height()) / 2 - 50  );
-	*/
-
-	//Center the application
-	const QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->primaryScreen());
-	this->move(  ( screen.width()- this->width()  ) / 2 - 200,  ( screen.height() - this->height()) / 2 - 50  );
+    const QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->primaryScreen());
+    this->move(  ( screen.width()- this->width()  ) / 2 - 200,  ( screen.height() - this->height()) / 2 - 50  );
 
 #ifdef SOFA_QT4
     tabs->removeTab(tabs->indexOf(TabVisualGraph));
@@ -730,14 +710,6 @@ int RealGUI::closeGUI()
     settings.setValue("screenNumber", QApplication::desktop()->screenNumber(this));
     settings.endGroup();
 
-//    std::string viewerFileName;
-//    std::string path = sofa::helper::system::DataRepository.getFirstPath();
-//    viewerFileName = path.append("/share/config/sofaviewer.ini");
-
-//    std::ofstream out(viewerFileName.c_str(),std::ios::out);
-//    out << sizeW->value() << std::endl << sizeH->value() << std::endl;
-//    out.close();
-
     delete this;
     return 0;
 }
@@ -836,6 +808,7 @@ void RealGUI::fileOpen()
             filter.c_str(),
             "open file dialog",  "Choose a file to open", &selectedFilter
                                 );
+
     if ( s.length() >0 )
     {
 #ifdef SOFA_PML
@@ -1276,6 +1249,7 @@ void RealGUI::setRecordPath(const std::string & path)
 #else
 void RealGUI::setRecordPath(const std::string&) {}
 #endif
+}
 
 //------------------------------------
 
@@ -1817,6 +1791,7 @@ void RealGUI::createSimulationGraph()
     connect(simulationGraph, SIGNAL( RequestActivation(sofa::simulation::Node*, bool) ), this, SLOT( ActivateNode(sofa::simulation::Node*, bool) ) );
     connect(simulationGraph, SIGNAL( Updated() ), this, SLOT( redraw() ) );
     connect(simulationGraph, SIGNAL( NodeAdded() ), this, SLOT( Update() ) );
+    connect(simulationGraph, SIGNAL( dataModified( QString ) ), this, SLOT( appendToDataLogFile(QString ) ) );
     connect(this, SIGNAL( newScene() ), simulationGraph, SLOT( CloseAllDialogs() ) );
     connect(this, SIGNAL( newStep() ), simulationGraph, SLOT( UpdateOpenedDialogs() ) );
 }
@@ -2463,6 +2438,20 @@ void RealGUI::propertyDockMoved(Q3DockWindow::Place p)
 
 	if(Q3DockWindow::OutsideDock == p)
 		dockWindow->resize(500, 700);
+}
+
+//------------------------------------
+void RealGUI::appendToDataLogFile(QString dataModifiedString)
+{
+    std::string filename(this->windowFilePath ().ascii());
+    filename += ".log";
+
+    std::ofstream ofs( filename, std::ofstream::out | std::ofstream::app );
+
+    ofs << dataModifiedString.toStdString();
+
+
+    ofs.close();
 }
 
 //======================= SIGNALS-SLOTS ========================= }

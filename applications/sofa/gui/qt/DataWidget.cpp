@@ -46,6 +46,122 @@ namespace gui
 {
 namespace qt
 {
+
+DataWidget::DataWidget(QWidget* parent,const char* name, MyData* d) 
+:QWidget(parent,name), baseData(d), dirty(false), counter(-1)
+{
+}
+
+DataWidget::~DataWidget()
+{
+}
+
+void 
+DataWidget::setData( MyData* d)
+{
+    baseData = d;
+    readFromData();
+}
+
+void
+DataWidget::updateVisibility()
+{
+    parentWidget()->setShown(baseData->isDisplayed());
+}
+
+void
+DataWidget::updateDataValue()
+{
+    if(dirty)
+    {
+        const bool hasOwner = baseData->getOwner();
+        std::string previousName;
+        if ( hasOwner ) previousName = baseData->getOwner()->getName();
+        writeToData();
+
+        if(hasOwner)
+        {
+
+            QString dataString;
+            std::string path;
+            sofa::core::objectmodel::BaseNode* ownerAsNode = dynamic_cast<sofa::core::objectmodel::BaseNode*>(baseData->getOwner() );
+            sofa::core::objectmodel::BaseObject* ownerAsObject = dynamic_cast<sofa::core::objectmodel::BaseObject*>(baseData->getOwner() );
+
+            if( ownerAsNode )
+            {
+                BaseNode* n = dynamic_cast<BaseNode*>(ownerAsNode);
+                path = n->getPathName() + std::string(".") + baseData->getName();
+
+            }
+            else if( ownerAsObject )
+            {
+                std::string objectPath = ownerAsObject->getName();
+                sofa::core::objectmodel::BaseObject* master = ownerAsObject->getMaster();
+                while (master)
+                {
+                    objectPath = master->getName() + std::string("/") + objectPath;
+                    master = master->getMaster();
+                }
+                BaseNode* n = dynamic_cast<BaseNode*>(ownerAsObject->getContext());
+                if(n)
+                {
+                    path = n->getPathName() + std::string("/") + objectPath + std::string(".") + baseData->getName(); // TODO: compute relative path
+                }
+                else
+                {
+                    if(ownerAsObject->getContext() )
+                    {
+                        std::cout<<__FUNCTION__<<": "<<ownerAsObject->getContext()->getName() << std::endl; 
+                    }
+                    else
+                    {
+                        std::cerr<<__FUNCTION__<<": NULL context for data "<< baseData->getName() <<  std::endl;  
+                    }
+                    path =  objectPath + std::string(".") + baseData->getName();
+                }
+            }
+            else
+            {
+                std::cerr << __FUNCTION__ << " " << __LINE__<< " something went awfully wrong..." <<std::endl;
+            }
+
+            dataString = QString(path.c_str() ) + " = " + QString( baseData->getValueString().c_str() );
+
+            Q_EMIT dataValueChanged(dataString);
+
+        }
+
+        updateVisibility();
+        if(hasOwner && baseData->getOwner()->getName() != previousName)
+        {
+            Q_EMIT DataOwnerDirty(true);
+        }
+    }
+
+    dirty = false;
+    counter = baseData->getCounter();
+
+}
+
+void
+DataWidget::updateWidgetValue()
+{
+    if(!dirty)
+    {
+        if(counter != baseData->getCounter())
+        {
+            readFromData();
+            this->update();
+        }
+    }
+}
+
+void
+DataWidget::setWidgetDirty(bool b)
+{
+    dirty = b;
+    Q_EMIT WidgetDirty(b);
+}
 /*QDisplayDataInfoWidget definitions */
 
 QDisplayDataInfoWidget::QDisplayDataInfoWidget(QWidget* parent, const std::string& helper,
