@@ -100,7 +100,11 @@ set(SOURCE_FILES
     ScriptEnvironment.cpp
 	)
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+set(PYTHON_FILES
+    SofaPython.py
+)
+
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
 
 # Python's implementation deliberately breaks strict-aliasing rules, so we
 # compile with -fno-strict-aliasing to prevent the compiler from relying on
