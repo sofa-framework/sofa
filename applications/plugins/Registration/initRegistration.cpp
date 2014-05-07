@@ -86,6 +86,7 @@ SOFA_LINK_CLASS(RegistrationContact)
 SOFA_LINK_CLASS(RegistrationContactForceField)
 SOFA_LINK_CLASS(ClosestPointRegistrationForceField)
 SOFA_LINK_CLASS(RegistrationExporter)
+SOFA_LINK_CLASS(GroupwiseRegistrationEngine)
 #ifdef SOFA_HAVE_IMAGE
     SOFA_LINK_CLASS(IntensityProfileRegistrationForceField)
 #endif
