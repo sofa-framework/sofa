@@ -42,7 +42,7 @@ class Controller(Test.Controller):
 
     def onBeginAnimationStep(self,dt):
         self.count+=1
-        if(self.count == 1):
+        if(self.count == 2):
 
             barycentricMapping = self.rootNode.getChild("barycentricFrame").getChild("behavior").getObject("mapping")
             self.initAndCheckMapping(barycentricMapping)
@@ -68,6 +68,9 @@ def createBarycentricFrame( parentNode, name ):
     dofPosition="0 1.0 -0.999 1 0 0 0 1 0 0 0 1 " + "0 1.0 0.999 1 0 0 0 1 0 0 0 1 "
     node.createObject('MechanicalObject', template='Affine', name='dofs', position=dofPosition, useMask="0", showObject='true,', showObjectScale='0.5')
     node.createObject('UniformMass', template='Affine3d,AffineMass3d',totalMass='0.01')
+    #Constraint
+    node.createObject('BoxROI', name='roi', template='Vec3d', box="-1 -2 -1.2 1 2 -0.8", drawBoxes='true', drawSize=1)
+    node.createObject('FixedConstraint', indices="@[-1].indices")
 
     #Shape function
     node.createObject('MeshTopology', edges="0 0 0 1 1 1")
@@ -78,6 +81,12 @@ def createBarycentricFrame( parentNode, name ):
     behaviorNode.createObject("TopologyGaussPointSampler", name="sampler", inPosition="@../dofs.rest_position", showSamplesScale="0.1", drawMode="0")
     behaviorNode.createObject('MechanicalObject', name="intePts", template='F332', useMask="0", showObject="true", showObjectScale="0.05")
     behaviorNode.createObject('LinearMapping', name="mapping", template='Mapping&lt;Affine,F332&gt;', showDeformationGradientScale='0.2', showSampleScale="0", printLog="false")
+
+    #Behavior
+    eNode = behaviorNode.createChild('E')
+    eNode.createObject( 'MechanicalObject', name='E', template='E332' )
+    eNode.createObject( 'CorotationalStrainMapping', template='Mapping&lt;F332,E332&gt;', printLog='false' )
+    eNode.createObject( 'HookeForceField', template='E332', youngModulus='100', poissonRatio='0', viscosity='0' )
 
 	#Visu child node
     visuNode = node.createChild('Visu')
@@ -100,12 +109,23 @@ def createVoronoiFrame( parentNode, name ):
     node.createObject('MechanicalObject', template='Affine', name='dofs', src="@merged", useMask="0", showObject='true,', showObjectScale='0.5')
     #Shape function
     node.createObject('VoronoiShapeFunction', name="shapeFunc", position='@dofs.rest_position', src='@image', useDijkstra="true", method="0", nbRef="4")
+    #Uniform Mass
+    node.createObject('UniformMass', template='Affine3d,AffineMass3d',totalMass='0.01')
+    #Constraint
+    node.createObject('BoxROI', name='roi', template='Vec3d', box="-1 -2.0 -1.2 1 2.0 -0.8", drawBoxes='true', drawSize=1)
+    node.createObject('FixedConstraint', indices="@[-1].indices")
 
     #Gauss point sampling
     behaviorNode = node.createChild('behavior')
     behaviorNode.createObject('ImageGaussPointSampler', name='sampler', indices='@../shapeFunc.indices', weights='@../shapeFunc.weights', transform='@../shapeFunc.transform', method='2', order='4', targetNumber='1', printLog='false', showSamplesScale=0.1, drawMode=0)
     behaviorNode.createObject('MechanicalObject', name="intePts", template='F332', useMask="0", showObject="false", showObjectScale="0.05")
     behaviorNode.createObject('LinearMapping', name="mapping", template='Mapping&lt;Affine,F333&gt;', assembleJ='true', showDeformationGradientScale='0.2', printLog="false")
+
+    #Behavior
+    eNode = behaviorNode.createChild('E')
+    eNode.createObject( 'MechanicalObject', name='E', template='E332' )
+    eNode.createObject( 'CorotationalStrainMapping', template='Mapping&lt;F332,E332&gt;', printLog='false' )
+    eNode.createObject( 'HookeForceField', template='E332', youngModulus='100', poissonRatio='0', viscosity='0' )
 
 	#Visu child node
     visuNode = node.createChild('Visu')
@@ -116,8 +136,8 @@ def createVoronoiFrame( parentNode, name ):
 
 def createScene( root ) :
     #Root node data
-    root.findData('dt').value=1
-    root.findData('gravity').value='0 0 0'
+    root.findData('dt').value=0.001
+    root.findData('gravity').value='0 -10 0'
 
     #Required setting
     root.createObject('RequiredPlugin', name="flexible", pluginName='Flexible')
