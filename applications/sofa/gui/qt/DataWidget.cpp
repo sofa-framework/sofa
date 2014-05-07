@@ -41,11 +41,13 @@ namespace helper
 {
 template class SOFA_SOFAGUIQT_API Factory<std::string, sofa::gui::qt::DataWidget, sofa::gui::qt::DataWidget::CreatorArgument>;
 }
-using namespace core::objectmodel;
+
 namespace gui
 {
 namespace qt
 {
+
+using namespace core::objectmodel;
 
 DataWidget::DataWidget(QWidget* parent,const char* name, MyData* d) 
 :QWidget(parent,name), baseData(d), dirty(false), counter(-1)
@@ -72,61 +74,56 @@ DataWidget::updateVisibility()
 void
 DataWidget::updateDataValue()
 {
-    if(dirty)
+    if (dirty)
     {
         const bool hasOwner = baseData->getOwner();
         std::string previousName;
         if ( hasOwner ) previousName = baseData->getOwner()->getName();
         writeToData();
 
-        if(hasOwner)
+        if (hasOwner)
         {
-
-            QString dataString;
             std::string path;
-            sofa::core::objectmodel::BaseNode* ownerAsNode = dynamic_cast<sofa::core::objectmodel::BaseNode*>(baseData->getOwner() );
-            sofa::core::objectmodel::BaseObject* ownerAsObject = dynamic_cast<sofa::core::objectmodel::BaseObject*>(baseData->getOwner() );
+            BaseNode* ownerAsNode = dynamic_cast<BaseNode*>(baseData->getOwner() );
+            BaseObject* ownerAsObject = dynamic_cast<BaseObject*>(baseData->getOwner() );
 
-            if( ownerAsNode )
+            if (ownerAsNode)
             {
-                BaseNode* n = dynamic_cast<BaseNode*>(ownerAsNode);
-                path = n->getPathName() + std::string(".") + baseData->getName();
-
+                path = ownerAsNode->getPathName() + "." + baseData->getName();
             }
-            else if( ownerAsObject )
+            else if (ownerAsObject)
             {
                 std::string objectPath = ownerAsObject->getName();
                 sofa::core::objectmodel::BaseObject* master = ownerAsObject->getMaster();
                 while (master)
                 {
-                    objectPath = master->getName() + std::string("/") + objectPath;
+                    objectPath = master->getName() + "/" + objectPath;
                     master = master->getMaster();
                 }
                 BaseNode* n = dynamic_cast<BaseNode*>(ownerAsObject->getContext());
-                if(n)
+                if (n)
                 {
                     path = n->getPathName() + std::string("/") + objectPath + std::string(".") + baseData->getName(); // TODO: compute relative path
                 }
                 else
                 {
-                    if(ownerAsObject->getContext() )
+                    if (ownerAsObject->getContext())
                     {
-                        std::cout<<__FUNCTION__<<": "<<ownerAsObject->getContext()->getName() << std::endl; 
+                        std::cout << __FUNCTION__ << ": " << ownerAsObject->getContext()->getName() << std::endl; 
                     }
                     else
                     {
-                        std::cerr<<__FUNCTION__<<": NULL context for data "<< baseData->getName() <<  std::endl;  
+                        std::cerr << __FUNCTION__ << ": NULL context for data " << baseData->getName() << std::endl;  
                     }
-                    path =  objectPath + std::string(".") + baseData->getName();
+                    path = objectPath + "." + baseData->getName();
                 }
             }
             else
             {
-                std::cerr << __FUNCTION__ << " " << __LINE__<< " something went awfully wrong..." <<std::endl;
+                std::cerr << __FUNCTION__ << " " << __LINE__ << " something went awfully wrong..." << std::endl;
             }
 
-            dataString = QString(path.c_str() ) + " = " + QString( baseData->getValueString().c_str() );
-
+            const QString dataString = (path + " = " + baseData->getValueString()).c_str();
             Q_EMIT dataValueChanged(dataString);
 
         }

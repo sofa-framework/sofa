@@ -139,20 +139,21 @@ void QTabulationModifyObject::updateListViewItem()
 
 QString QTabulationModifyObject::getDataModifiedString() const
 {
-    if( m_dataValueModified.empty() )
+    if (m_dataValueModified.empty())
     {
        return QString();
     }
+
     QString dataModifiedString;
     std::map< QObject*, QString>::const_iterator it_map;
     std::map< QObject*, QString>::const_iterator it_last = m_dataValueModified.end();
     --it_last;
 
-    for(it_map = m_dataValueModified.begin(); it_map != m_dataValueModified.end(); ++it_map)
+    for (it_map = m_dataValueModified.begin(); it_map != m_dataValueModified.end(); ++it_map)
     {
         const QString& lastDataValue = it_map->second;
         dataModifiedString += lastDataValue;
-        if( it_map != it_last )
+        if (it_map != it_last)
         {
             dataModifiedString += "\n";
         }
