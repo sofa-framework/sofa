@@ -25,9 +25,11 @@ if(SOFA-PLUGIN_SOFAPYTHON)
     AddCompilerDefinitions("COMPLIANT_TEST_PYTHON_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/python\"")
     list(APPEND SOURCE_FILES "python_test_list.cpp")
     AddLinkerDependencies(SofaPython)
+    # include python files
+    include(./python/python.cmake)
 endif()
 
-add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES} ${RC_FILES})
+add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES} ${RC_FILES} ${PYTHON_FILES})
 
 AddLinkerDependencies(Compliant SofaTest)
 
