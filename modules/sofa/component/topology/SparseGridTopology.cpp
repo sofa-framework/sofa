@@ -102,6 +102,7 @@ const int SparseGridTopology::cornerIndicesFromFineToCoarse[8][8]=
 SparseGridTopology::SparseGridTopology(bool _isVirtual)
     :
     _fillWeighted(initData(&_fillWeighted, true, "fillWeighted", "Is quantity of matter inside a cell taken into account? (.5 for boundary, 1 for inside)")),
+    d_bOnlyInsideCells(initData(&d_bOnlyInsideCells, false, "onlyInsideCells", "Select only inside cells (exclude boundary cells)")),
     n(initData(&n, Vec3i(2,2,2), "n", "grid resolution")),
     _min(initData(&_min, Vector3(0,0,0), "min","Min")),
     _max(initData(&_max, Vector3(0,0,0), "max","Max")),
@@ -133,6 +134,7 @@ SparseGridTopology::SparseGridTopology(bool _isVirtual)
 SparseGridTopology::SparseGridTopology(Vec3i numVertices, BoundingBox box, bool _isVirtual)
     :
     _fillWeighted(initData(&_fillWeighted, true, "fillWeighted", "Is quantity of matter inside a cell taken into account? (.5 for boundary, 1 for inside)")),
+    d_bOnlyInsideCells(initData(&d_bOnlyInsideCells, false, "onlyInsideCells", "Select only inside cells (exclude boundary cells)")),
     n(initData(&n, Vec3i(2,2,2), "n", "grid resolution")),
     _min(initData(&_min, Vector3(0,0,0), "min","Min")),
     _max(initData(&_max, Vector3(0,0,0), "max","Max")),
@@ -1015,7 +1017,7 @@ void SparseGridTopology::buildFromRegularGridTypes(RegularGridTopology::SPtr reg
     // add BOUNDARY cubes to valid cells
     for(int w=0; w<regularGrid->getNbHexahedra(); ++w)
     {
-        if( regularGridTypes[w] == BOUNDARY )
+        if( regularGridTypes[w] == BOUNDARY && !d_bOnlyInsideCells.getValue())
         {
             _types.push_back(BOUNDARY);
             _indicesOfRegularCubeInSparseGrid[w] = cubeCntr++;
