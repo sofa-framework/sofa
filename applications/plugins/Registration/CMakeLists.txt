@@ -9,14 +9,16 @@ set(HEADER_FILES
     RegistrationContactForceField.inl
     ClosestPointRegistrationForceField.h
     ClosestPointRegistrationForceField.inl
-    RegistrationExporter.h)
+    RegistrationExporter.h
+    GroupwiseRegistrationEngine.h)
 
 set(SOURCE_FILES
     initRegistration.cpp
     RegistrationContact.cpp
     RegistrationContactForceField.cpp
     ClosestPointRegistrationForceField.cpp
-    RegistrationExporter.cpp)
+    RegistrationExporter.cpp
+    GroupwiseRegistrationEngine.cpp)
 
 set(README_FILES registration.txt)
 
