@@ -4,11 +4,12 @@
 namespace sofa {
 
 
-struct Tests : public Python_test_list
+// static build of the test list
+static struct Tests : public Python_test_list
 {
     Tests()
     {
-        const std::string scenePath = std::string(SOFATEST_SCENES_DIR);
+        static const std::string scenePath = std::string(SOFATEST_SCENES_DIR);
 
         // TODO create more test with several (random?) arguments
 
@@ -23,11 +24,8 @@ struct Tests : public Python_test_list
 
         // add python tests here
     }
-};
+} tests;
 
-
-// static build of the test list
-static const Tests tests;
 
 // run test list
 INSTANTIATE_TEST_CASE_P(Batch,
