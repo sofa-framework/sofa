@@ -75,6 +75,8 @@ void SofaGlInterface::glDraw()
     glGetIntegerv (GL_VIEWPORT, viewport);
     glGetDoublev (GL_MODELVIEW_MATRIX, mvmatrix);
     glGetDoublev (GL_PROJECTION_MATRIX, projmatrix);
+
+	sofa::simulation::getSimulation()->updateVisual(groot.get()); // needed to update normals ! (i think it should be better if updateVisual() was called from draw(), why it is not already the case ?)
     sofa::simulation::getSimulation()->draw(vparams,groot.get());
 }
 

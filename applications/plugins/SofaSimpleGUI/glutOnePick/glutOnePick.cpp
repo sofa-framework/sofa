@@ -54,7 +54,7 @@ sofa::newgui::SpringInteractor* drag = NULL; ///< Mouse interactor
 
 // ---------------------------------------------------------------------
 // Various shared variables for glut
-GLfloat light_position[] = { 0.0, 0.0, 25.0, 0.0 };
+GLfloat light_position[] = { 25.0, 0.0, 25.0, 1.0 }; // w = 0.0 => directional light ; w = 1.0 => point light (hemi) or spot light
 GLfloat light_ambient[] = { 0.0, 0.0, 0.0, 0.0 };
 GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 0.0 };
 GLfloat light_specular[] = { 1.0, 1.0, 1.0, 0.0 };
@@ -91,8 +91,7 @@ void display(void)
     glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity ();
 
-
-    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+    glLightfv(GL_LIGHT0, GL_POSITION, light_position); // WARNING: positioning light before camera imply that the light will follow the camera
     gluLookAt ( camera_position[0],camera_position[1],camera_position[2], 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
     sofaScene.glDraw();
