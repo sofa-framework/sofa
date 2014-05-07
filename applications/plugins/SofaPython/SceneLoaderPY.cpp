@@ -62,7 +62,14 @@ void SceneLoaderPY::getExtensionList(ExtensionList* list)
 
 sofa::simulation::Node::SPtr SceneLoaderPY::load(const char *filename)
 {
-    PyObject *script = PythonEnvironment::importScript(filename);
+    return loadWithArguments( filename );
+}
+
+
+
+sofa::simulation::Node::SPtr SceneLoaderPY::loadWithArguments(const char *filename, const std::vector<std::string>& arguments)
+{
+    PyObject *script = PythonEnvironment::importScript(filename,arguments);
     if (!script)
     {
         // LOAD ERROR
@@ -96,7 +103,6 @@ sofa::simulation::Node::SPtr SceneLoaderPY::load(const char *filename)
 
     return NULL;
 }
-
 
 
 } // namespace simulation
