@@ -197,6 +197,8 @@ public:
     Data< vector< unsigned char > >     dataVoxels;
     Data<bool> _fillWeighted; // is quantity of matter inside a cell taken into account?
 
+    Data<bool> d_bOnlyInsideCells;
+
 
 protected:
     bool isVirtual;
