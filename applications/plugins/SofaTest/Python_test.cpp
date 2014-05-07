@@ -13,8 +13,7 @@ namespace sofa {
 Python_test::Python_test() 
 {
     std::string plugin = "SofaPython";
-    if( !sofa::helper::system::PluginManager::getInstance().loadPlugin(plugin) )
-        throw std::logic_error("Cannot load needed SofaPython plugin");
+    sofa::helper::system::PluginManager::getInstance().loadPlugin(plugin);
 }
 
 
