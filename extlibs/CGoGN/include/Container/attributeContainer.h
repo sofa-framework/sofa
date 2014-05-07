@@ -324,6 +324,7 @@ public:
 	 *          LINES MANAGEMENT          *
 	 **************************************/
 
+    void updateHole(unsigned int index);
 	/**
 	* insert a line in the container
 	* @return index of the line

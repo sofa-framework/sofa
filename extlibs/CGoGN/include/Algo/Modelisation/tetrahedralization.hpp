@@ -80,8 +80,8 @@ void EarTriangulation<PFP>::recompute2Ears( Dart d, const typename PFP::VEC3& no
     v2.normalize();
     v3.normalize();
 
-//	float dotpr1 = 1.0f - (v1*v2);
-//	float dotpr2 = 1.0f + (v1*v3);
+    //	float dotpr1 = 1.0f - (v1*v2);
+    //	float dotpr2 = 1.0f + (v1*v3);
     float dotpr1 = acos(v1*v2) / (M_PI/2.0f);
     float dotpr2 = acos(-(v1*v3)) / (M_PI/2.0f);
 
@@ -135,7 +135,7 @@ float EarTriangulation<PFP>::computeEarInit(Dart d, const typename PFP::VEC3& no
     v1.normalize();
     v2.normalize();
 
-//	val = 1.0f - (v1*v2);
+    //	val = 1.0f - (v1*v2);
     val = acos(v1*v2) / (M_PI/2.0f);
 
     typename PFP::VEC3 vn = v1.cross(v2);
@@ -174,7 +174,7 @@ void EarTriangulation<PFP>::trianguleFace(Dart d)
 
     if (m_map.template phi<111>(d) ==d)
     {
-//		mark.markOrbit<FACE>(d);	// mark the face
+        //		mark.markOrbit<FACE>(d);	// mark the face
         return;
     }
 
@@ -221,7 +221,7 @@ void EarTriangulation<PFP>::trianguleFace(Dart d)
         m_resTets.push_back(d_e);
         m_resTets.push_back(m_map.phi3(d_e));
 
-//		mark.markOrbit<FACE>(d_e);
+        //		mark.markOrbit<FACE>(d_e);
         nbv--;
 
         if (nbv>3)	// do not recompute if only one triangle left
@@ -241,8 +241,8 @@ void EarTriangulation<PFP>::trianguleFace(Dart d)
             m_resTets.push_back(e1);
             m_resTets.push_back(m_map.phi3(e1));
         }
-//		else
-//			mark.markOrbit<FACE>(e1);	// mark last face
+        //		else
+        //			mark.markOrbit<FACE>(e1);	// mark last face
     }
     m_ears.clear();
 }
@@ -250,18 +250,18 @@ void EarTriangulation<PFP>::trianguleFace(Dart d)
 template<typename PFP>
 void EarTriangulation<PFP>::triangule(unsigned int thread)
 {
-//	DartMarker m(m_map, thread);
-//
-//	for(Dart d = m_map.begin(); d != m_map.end(); m_map.next(d))
-//	{
-//		if(!m.isMarked(d))
-//		{
-//			Dart e = m_map.template phi<111>(d);
-//			if (e!=d)
-//				trianguleFace(d, m);
-//		}
-//	}
-//	m.unmarkAll();
+    //	DartMarker m(m_map, thread);
+    //
+    //	for(Dart d = m_map.begin(); d != m_map.end(); m_map.next(d))
+    //	{
+    //		if(!m.isMarked(d))
+    //		{
+    //			Dart e = m_map.template phi<111>(d);
+    //			if (e!=d)
+    //				trianguleFace(d, m);
+    //		}
+    //	}
+    //	m.unmarkAll();
 
     TraversorF<typename PFP::MAP> trav(m_map,thread);
 
@@ -668,16 +668,16 @@ Dart swap2To2(typename PFP::MAP& map, Dart d)
     map.mergeFaces(map.phi1(d2_1));
     map.splitFace(d2_1, map.phi1(map.phi1(d2_1)));
 
-        Dart stop = map.phi_1(d2_1);
-        Dart dit = stop;
-        do
-        {
-            edges.push_back(dit);
-            dit = map.phi1(map.phi2(map.phi1(dit)));
-        }
-        while(dit != stop);
+    Dart stop = map.phi_1(d2_1);
+    Dart dit = stop;
+    do
+    {
+        edges.push_back(dit);
+        dit = map.phi1(map.phi2(map.phi1(dit)));
+    }
+    while(dit != stop);
 
-        map.splitVolume(edges);
+    map.splitVolume(edges);
 
     return map.phi2(stop);
 }
@@ -883,11 +883,24 @@ std::vector<Dart> swapGen3To2Optimized(typename PFP::MAP& map, Dart d)
         map.template copyDartEmbedding<VERTEX>(d, map.phi1(e)) ;
         map.template copyDartEmbedding<VERTEX>(e, map.phi1(d)) ;
 
+
+        if (map.template isOrbitEmbedded<FACE>()) {
+            map.template copyDartEmbedding<FACE>(map.phi1(d), d) ;
+            map.template copyDartEmbedding<FACE>(map.phi1(e), e) ;
+        }
+
+
         d  = map.phi3(dbegin);
         e = map.phi2(d);
         map.flipEdge(d);
         map.template copyDartEmbedding<VERTEX>(d, map.phi1(e)) ;
         map.template copyDartEmbedding<VERTEX>(e, map.phi1(d)) ;
+
+
+        if (map.template isOrbitEmbedded<FACE>()) {
+            map.template copyDartEmbedding<FACE>(map.phi_1(d), d) ;
+            map.template copyDartEmbedding<FACE>(map.phi_1(e), e) ;
+        }
     }
 
     std::vector<Dart> edges;
@@ -909,10 +922,10 @@ std::vector<Dart> swapGen3To2Optimized(typename PFP::MAP& map, Dart d)
 template <typename PFP>
 void swapGen2To3(typename PFP::MAP& map, Dart d)
 {
-//	unsigned int n = map.edgeDegree(d);
+    //	unsigned int n = map.edgeDegree(d);
 
-//- a single 2-3 swap, followed by n − 3 3-2 swaps, or
-//- a single 4-4 swap, followed by n − 4 3-2 swaps.
+    //- a single 2-3 swap, followed by n − 3 3-2 swaps, or
+    //- a single 4-4 swap, followed by n − 4 3-2 swaps.
 }
 
 
@@ -1020,10 +1033,6 @@ Dart edgeBisection(typename PFP::MAP& map, Dart d)
 {
     //coupe l'arete en 2
     Dart dV = map.cutEdge(d);
-    if (map.template isOrbitEmbedded<CGoGN::VERTEX>()) {
-        map.template setOrbitEmbeddingOnNewCell<VERTEX>(dV);
-    }
-
     Dart e = map.phi1(d);
 
     Dart dit = e;

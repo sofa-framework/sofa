@@ -153,6 +153,16 @@ bool HoleBlockRef::updateHoles(unsigned int nb)
 	return notfull;
 }
 
+
+bool HoleBlockRef::updateHole(unsigned int indx) {
+    if (m_refCount[indx] == 0u) {
+        m_tableFree[m_nbfree++] = indx ;
+        return true;
+    }
+    return false;
+}
+
+
 void HoleBlockRef::saveBin(CGoGNostream& fs)
 {
 //	CGoGNout << "save bf "<< m_nb<< " / "<< m_nbref<< " / "<< m_nbfree << CGoGNendl;
