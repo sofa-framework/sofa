@@ -57,6 +57,7 @@ void UniformVelocityDampingForceField<DataTypes>::addForce (const core::Mechanic
 template<class DataTypes>
 void UniformVelocityDampingForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df , const DataVecDeriv& d_dx)
 {
+    (void)mparams->kFactor(); // get rid of warning message
 //    Real bfactor = (Real)mparams->bFactor();
 
 //    if( bfactor )

@@ -68,6 +68,7 @@ namespace sofa
             template<class DataTypes>
             void DiagonalVelocityDampingForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df , const DataVecDeriv& d_dx)
             {
+                (void)mparams->kFactor(); // get rid of warning message
 //                unsigned nbDampingCoeff = dampingCoefficients.getValue().size();
 //                Real bfactor = (Real)mparams->bFactor();
 
