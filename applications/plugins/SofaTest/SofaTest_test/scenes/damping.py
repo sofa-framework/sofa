@@ -2,21 +2,25 @@ import Sofa
 import math
 import os
 import SofaTest
+import sys
 
+if len(sys.argv) != 7 :
+  print "ERROR: wrong number of arguments"
+ 
 #--------------------------------------------------------------------------------------------	
 # manual
 
 
 # the error is increasing with both the damping coef and the initial velocity
-DAMPING_COEF = .1
-INITIAL_VELOCITY = 1
-DT = 0.01
+DAMPING_COEF = float( sys.argv[1] )
+INITIAL_VELOCITY = float( sys.argv[2] )
+DT = float( sys.argv[3] )
 
-ACCEPTABLE_ERROR = 1e-3
+ACCEPTABLE_ERROR = float( sys.argv[4] )
 
 # a ball
-MASS = 1.0  # the error is decreasing when the mass (-> inertia) increases
-RADIUS = 1.0 # the error is decreasing when the radius (-> inertia) increases
+MASS = float( sys.argv[5] )  # the error is decreasing when the mass (-> inertia) increases
+RADIUS = float( sys.argv[6] ) # the error is decreasing when the radius (-> inertia) increases
 
 #--------------------------------------------------------------------------------------------	
 # auto

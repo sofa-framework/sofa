@@ -1,9 +1,7 @@
-#include <plugins/SofaPython/PythonScriptController.h>
 #include <plugins/SofaPython/ScriptEvent.h>
 
 #include "Python_test.h"
 
-#include <sofa/simulation/common/SceneLoaderFactory.h>
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
@@ -14,13 +12,9 @@ namespace sofa {
 
 Python_test::Python_test() 
 {
-	std::string plugin = "SofaPython";
-	sofa::helper::system::PluginManager::getInstance().loadPlugin(plugin);
-
-	
-	loader = simulation::SceneLoaderFactory::getInstance()->getEntryFileExtension("py");
-	
-	if( !loader ) throw std::logic_error("can't get scene loader, is SofaPython available ?");
+    std::string plugin = "SofaPython";
+    if( !sofa::helper::system::PluginManager::getInstance().loadPlugin(plugin) )
+        throw std::logic_error("Cannot load needed SofaPython plugin");
 }
 
 
@@ -49,15 +43,18 @@ struct Listener : core::objectmodel::BaseObject {
 
 
 
-void Python_test::run(const char* filename) {
-    std::string filepath = filename;
-        std::cout << "Python_test::run "<< filepath << std::endl;
-        // Check the file exists
-        std::ifstream file(filepath.c_str());
-	bool scriptFound = file.good();
-	ASSERT_TRUE(scriptFound);
+void Python_test::run( const Python_test_data& data ) {
 
-	simulation::Node::SPtr root = loader->load(filepath.c_str());
+    std::cout << "Python_test::run "<< data.filepath << std::endl;
+
+    {
+        // Check the file exists
+        std::ifstream file(data.filepath.c_str());
+        bool scriptFound = file.good();
+        ASSERT_TRUE(scriptFound);
+    }
+
+    simulation::Node::SPtr root = loader.loadWithArguments(data.filepath.c_str(),data.arguments);
 	
 	root->addObject( new Listener );
 
