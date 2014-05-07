@@ -4,11 +4,12 @@
 namespace sofa {
 
 
-struct Tests : public Python_test_list
+// static build of the test list
+static struct Tests : public Python_test_list
 {
     Tests()
     {
-        const std::string scenePath = std::string(COMPLIANT_TEST_PYTHON_DIR);
+        static const std::string scenePath = std::string(COMPLIANT_TEST_PYTHON_DIR);
 
         addTest( "Example.py", scenePath );
         addTest( "LambdaPropagation.py", scenePath );
@@ -17,11 +18,7 @@ struct Tests : public Python_test_list
 
         // add python tests here
     }
-};
-
-
-// static build of the test list
-static const Tests tests;
+} tests;
 
 
 // run test list
