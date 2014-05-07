@@ -80,7 +80,8 @@ DefaultAnimationLoop::DefaultAnimationLoop(simulation::Node* _gnode)
     , gnode(_gnode)
 {
     firstIteration = true;
-    dtValue = this->gnode->getDt();
+    realTimeAnimation = false;
+    previousDt = 0;
     //assert(gnode);
 }
 
@@ -102,38 +103,41 @@ void DefaultAnimationLoop::setNode( simulation::Node* n )
 
 void DefaultAnimationLoop::step(const core::ExecParams* params, double dt)
 {
-    // If there is a pause during real time animation 
-    if(this->gnode->getDt() < 0)
+    // Begin of real time animation
+    if(dt <= 0)
     {
+        dt = 0 ;
+        previousDt = dt;
         this->gnode->setDt(0);
         firstIteration = true;
+        realTimeAnimation = true;
     }
 
-	// If dt value changes
-    if(dtValue != this->gnode->getDt())
+    // End of real time animation if dt is changed
+    else if(previousDt!=dt)
     {
-        dtValue = this->gnode->getDt();
-        firstIteration = true;
+        realTimeAnimation = false;
     }
 
     // Real time animation
-    if (dt == 0)
+    if(realTimeAnimation)
     {
         if(firstIteration)
         {
         	dt = 0.04;
         	firstIteration = false;
-            m_previousTime = clock();
+            m_previousTime = clock();     
         }
         else
         {
             clock_t stepDuration = clock() - m_previousTime;
-            // dt is equal to the computation time
-            dt=((double)stepDuration)/CLOCKS_PER_SEC;
+            // dt is equal to the computation time 
+            if ( ((double)stepDuration/CLOCKS_PER_SEC) > 1) { dt = previousDt;}
+            else dt=((double)stepDuration)/CLOCKS_PER_SEC;
             m_previousTime = clock();
         }
+       previousDt = dt;
     }
-
     sofa::helper::AdvancedTimer::stepBegin("AnimationStep");
 
     sofa::helper::AdvancedTimer::begin("Animate");

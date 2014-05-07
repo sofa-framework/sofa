@@ -82,7 +82,8 @@ private :
 
     simulation::Node* gnode;  ///< the node controlled by the loop
     bool firstIteration;
-    double dtValue;
+    bool realTimeAnimation;
+    double previousDt;
     clock_t m_previousTime;
 };
 
