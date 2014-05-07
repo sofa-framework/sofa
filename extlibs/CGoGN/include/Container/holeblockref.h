@@ -178,6 +178,8 @@ public:
 
 	bool updateHoles(unsigned int nb);
 
+    bool updateHole(unsigned int indx);
+
 	void saveBin(CGoGNostream& fs);
 
 	bool loadBin(CGoGNistream& fs);

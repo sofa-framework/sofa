@@ -303,8 +303,10 @@ void AttributeContainer::compact(std::vector<unsigned int>& mapOldNew)
 			m_tableAttribs[j]->setNbBlocks(m_holesBlocks.size());
 	}
 
-	m_maxSize = (m_holesBlocks.back())->sizeTable() + (m_holesBlocks.size() - 1) * _BLOCKSIZE_;
+    m_maxSize = (m_holesBlocks.back())->sizeTable() + (m_holesBlocks.size() - 1) * _BLOCKSIZE_;
 }
+
+
 
 /**************************************
  *          LINES MANAGEMENT          *
@@ -346,6 +348,19 @@ void AttributeContainer::compact(std::vector<unsigned int>& mapOldNew)
 //	return index;
 //}
 
+void AttributeContainer::updateHole(unsigned int index) {
+    unsigned int bi = index / _BLOCKSIZE_;
+    unsigned int j = index % _BLOCKSIZE_;
+
+    HoleBlockRef* block = m_holesBlocks[bi];
+    bool lineRemoved = block->updateHole(j);
+    if (lineRemoved) {
+        if (std::find(m_tableBlocksWithFree.begin(), m_tableBlocksWithFree.end(), bi) == m_tableBlocksWithFree.end())
+        m_tableBlocksWithFree.push_back(bi);
+    } else {
+        std::cerr << "WARNING !! UpdateHole failed " << std::endl;
+    }
+}
 
 unsigned int AttributeContainer::insertLine()
 {
