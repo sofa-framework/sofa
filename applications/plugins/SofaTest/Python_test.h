@@ -1,6 +1,5 @@
 
 #include <gtest/gtest.h>
-#include <sofa/simulation/common/Node.h>
 #include <string>
 #include <plugins/SofaPython/SceneLoaderPY.h>
 
@@ -62,11 +61,9 @@ public:
 /// A test written as a sofa scene in python
 class Python_scene_test : public Python_test {
 
-
 public:
 
     void run( const Python_test_data& );
-
 
 };
 
