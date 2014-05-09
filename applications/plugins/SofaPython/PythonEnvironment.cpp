@@ -55,7 +55,7 @@ static bool m_Initialized = false;
 
 
 
-void PythonEnvironment::Init( const std::vector<std::string>& arguments )
+void PythonEnvironment::Init()
 {
     if (m_Initialized) return;
     // Initialize the Python Interpreter
@@ -82,30 +82,6 @@ void PythonEnvironment::Init( const std::vector<std::string>& arguments )
 
     // load a python script which search for python packages defined in the modules
     std::string scriptPy = std::string(SOFA_SRC_DIR) + "/applications/plugins/SofaPython/SofaPython.py";
-
-
-
-        if( !arguments.empty() )
-        {
-            char**argv = new char*[arguments.size()+1];
-            argv[0] = new char[scriptPy.size()+1];
-            strcpy( argv[0], scriptPy.c_str() );
-            for( size_t i=0 ; i<arguments.size() ; ++i )
-            {
-                argv[i+1] = new char[arguments[i].size()+1];
-                strcpy( argv[i+1], arguments[i].c_str() );
-            }
-
-            Py_SetProgramName(argv[0]); // TODO check what it is doing exactly
-
-            PySys_SetArgv(arguments.size()+1, argv);
-
-            for( size_t i=0 ; i<arguments.size()+1 ; ++i )
-            {
-                delete [] argv[i];
-            }
-            delete [] argv;
-        }
 
 
 #ifdef WIN32
@@ -164,7 +140,7 @@ sofa::simulation::tree::GNode::SPtr PythonEnvironment::initGraphFromScript( cons
 // basic script functions
 PyObject* PythonEnvironment::importScript( const char *filename, const std::vector<std::string>& arguments )
 {
-    Init( arguments ); // MUST be called at least once; so let's call it each time we load a python script
+    Init(); // MUST be called at least once; so let's call it each time we load a python script
 
 //    SP_MESSAGE_INFO( "Loading python script \""<<filename<<"\"" )
     std::string dir = sofa::helper::system::SetDirectory::GetParentDir(filename);
@@ -178,6 +154,28 @@ PyObject* PythonEnvironment::importScript( const char *filename, const std::vect
     std::string commandString = "sys.path.append(\""+dir+"\")";
 
 //    SP_MESSAGE_INFO( commandString.c_str() )
+
+    if( !arguments.empty() )
+    {
+        char**argv = new char*[arguments.size()+1];
+        argv[0] = new char[bareFilename.size()+1];
+        strcpy( argv[0], bareFilename.c_str() );
+        for( size_t i=0 ; i<arguments.size() ; ++i )
+        {
+            argv[i+1] = new char[arguments[i].size()+1];
+            strcpy( argv[i+1], arguments[i].c_str() );
+        }
+
+        Py_SetProgramName(argv[0]); // TODO check what it is doing exactly
+
+        PySys_SetArgv(arguments.size()+1, argv);
+
+        for( size_t i=0 ; i<arguments.size()+1 ; ++i )
+        {
+            delete [] argv[i];
+        }
+        delete [] argv;
+    }
 
     PyObject *pModule = 0;
 

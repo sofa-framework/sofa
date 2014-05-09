@@ -43,7 +43,7 @@ namespace simulation
 class SOFA_SOFAPYTHON_API PythonEnvironment
 {
 public:
-    static void     Init( const std::vector<std::string>& arguments=std::vector<std::string>(0) );
+    static void     Init();
     static void     Release();
 
     // helper functions

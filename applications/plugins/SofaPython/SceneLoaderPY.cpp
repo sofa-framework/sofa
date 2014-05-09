@@ -62,12 +62,12 @@ void SceneLoaderPY::getExtensionList(ExtensionList* list)
 
 sofa::simulation::Node::SPtr SceneLoaderPY::load(const char *filename)
 {
-    return loadWithArguments( filename );
+    return loadSceneWithArguments( filename );
 }
 
 
 
-sofa::simulation::Node::SPtr SceneLoaderPY::loadWithArguments(const char *filename, const std::vector<std::string>& arguments)
+sofa::simulation::Node::SPtr SceneLoaderPY::loadSceneWithArguments(const char *filename, const std::vector<std::string>& arguments)
 {
     PyObject *script = PythonEnvironment::importScript(filename,arguments);
     if (!script)
@@ -102,6 +102,60 @@ sofa::simulation::Node::SPtr SceneLoaderPY::loadWithArguments(const char *filena
     }
 
     return NULL;
+}
+
+
+bool SceneLoaderPY::loadTestWithArguments(const char *filename, const std::vector<std::string>& arguments)
+{
+    // it runs the unecessary SofaPython script but it is not a big deal
+    PyObject *script = PythonEnvironment::importScript(filename,arguments);
+    if (!script)
+    {
+        // LOAD ERROR
+        SP_MESSAGE_ERROR( "scene script load error." )
+        return false;
+    }
+
+    // pDict is a borrowed reference
+    PyObject *pDict = PyModule_GetDict(script);
+    if (!pDict)
+    {
+        // DICT ERROR
+        SP_MESSAGE_ERROR( "script dictionnary load error." )
+        return false;
+    }
+
+    // pFunc is also a borrowed reference
+    PyObject *pFunc = PyDict_GetItemString(pDict, "run");
+    if (PyCallable_Check(pFunc))
+    {
+        ScriptEnvironment::enableNodeQueuedInit(false);
+
+        PyObject *res = PyObject_CallObject(pFunc,0);
+        if( !res )
+        {
+            SP_MESSAGE_ERROR( "Python test has no 'run'' function" )
+            return false;
+        }
+        else if( !PyBool_Check(res) )
+        {
+            SP_MESSAGE_ERROR( "Python test 'run' function does not return a boolean" )
+            Py_DECREF(res);
+            return false;
+        }
+
+        bool result = ( res == Py_True );
+        Py_DECREF(res);
+
+
+        ScriptEnvironment::enableNodeQueuedInit(true);
+        return result;
+    }
+    else
+    {
+        SP_MESSAGE_ERROR( "cannot create Scene, no \"createScene(rootNode)\" module method found." )
+        return false;
+    }
 }
 
 

@@ -8,37 +8,28 @@
 
 #include <fstream>
 
+
+#include <plugins/SofaPython/PythonEnvironment.h>
+#include <plugins/SofaPython/ScriptEnvironment.h>
+#include <plugins/SofaPython/PythonMacros.h>
+
+
 namespace sofa {
 
-Python_test::Python_test() 
+
+
+
+
+
+//////////////////////////
+
+
+
+Python_test::Python_test()
 {
     std::string plugin = "SofaPython";
     sofa::helper::system::PluginManager::getInstance().loadPlugin(plugin);
 }
-
-
-struct Listener : core::objectmodel::BaseObject {
-	
-	Listener() {
-		f_listening = true;
-	}
-
-	virtual void handleEvent(core::objectmodel::Event * event) {
-		typedef core::objectmodel::ScriptEvent event_type;
-		
-		if (event_type* e = dynamic_cast<event_type *>(event)) {
-
-			std::string name = e->getEventName();
-			if( name == "success" ) {
-				throw Python_test::result(true);
-			} else if (name == "failure") {
-				throw Python_test::result(false);
-			} 
-		}
-	}
-	
-};
-
 
 
 
@@ -53,7 +44,53 @@ void Python_test::run( const Python_test_data& data ) {
         ASSERT_TRUE(scriptFound);
     }
 
-    simulation::Node::SPtr root = loader.loadWithArguments(data.filepath.c_str(),data.arguments);
+    ASSERT_TRUE( loader.loadTestWithArguments(data.filepath.c_str(),data.arguments) );
+
+}
+
+
+TEST_P(Python_test, Run) {
+    run( GetParam() );
+}
+
+
+
+//////////////////////////
+
+struct Listener : core::objectmodel::BaseObject {
+
+    Listener() {
+        f_listening = true;
+    }
+
+    virtual void handleEvent(core::objectmodel::Event * event) {
+        typedef core::objectmodel::ScriptEvent event_type;
+
+        if (event_type* e = dynamic_cast<event_type *>(event)) {
+
+            std::string name = e->getEventName();
+            if( name == "success" ) {
+                throw Python_scene_test::result(true);
+            } else if (name == "failure") {
+                throw Python_scene_test::result(false);
+            }
+        }
+    }
+
+};
+
+void Python_scene_test::run( const Python_test_data& data ) {
+
+    std::cout << "Python_test::run "<< data.filepath << std::endl;
+
+    {
+        // Check the file exists
+        std::ifstream file(data.filepath.c_str());
+        bool scriptFound = file.good();
+        ASSERT_TRUE(scriptFound);
+    }
+
+    simulation::Node::SPtr root = loader.loadSceneWithArguments(data.filepath.c_str(),data.arguments);
 	
 	root->addObject( new Listener );
 
@@ -69,13 +106,13 @@ void Python_test::run( const Python_test_data& data ) {
 }
 
 
-TEST_P(Python_test, Run) {
-	run( GetParam() );
+TEST_P(Python_scene_test, Run) {
+    run( GetParam() );
 }
 
-Python_test::~Python_test() {
 
-}
+
+
 
 
 
