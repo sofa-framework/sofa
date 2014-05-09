@@ -49,14 +49,17 @@ public:
 	Data<mass_type> mass;
 	Data<inertia_type> inertia;
 	Data<bool> inertia_forces;
+    Data<bool> _draw;
 	
 	typedef SE3<real> se3;
 
 	RigidMass() 
 		: mass(initData(&mass, "mass", "mass of each rigid body")),
 		  inertia(initData(&inertia, "inertia", "inertia of each rigid body")),
-		  inertia_forces(initData(&inertia_forces, false, "inertia_forces", "compute (explicit) inertia forces")) {
-		
+          inertia_forces(initData(&inertia_forces, false, "inertia_forces", "compute (explicit) inertia forces")),
+          _draw(initData(&_draw, false, "draw", "debug drawing of the inertia matrix"))
+    {
+        _draw.setGroup("Visualization");
 	}
 	
 protected:
@@ -89,27 +92,27 @@ public:
 #ifndef SOFA_NO_OPENGL
 	void draw(const core::visual::VisualParams* vparams) {
 		
-		if ( !vparams->displayFlags().getShowBehaviorModels() )
-			return;
-		helper::ReadAccessor<VecCoord> x = *this->mstate->getX();
+        if ( !vparams->displayFlags().getShowBehaviorModels() || !_draw.getValue() )
+            return;
+        helper::ReadAccessor<VecCoord> x = *this->mstate->getX();
 
 
-		for(unsigned i = 0, n = x.size(); i < n; ++i) {
-			const unsigned index = clamp(i);
+        for(unsigned i = 0, n = x.size(); i < n; ++i) {
+            const unsigned index = clamp(i);
 
-			double m00 = inertia.getValue()[index][0];
-			double m11 = inertia.getValue()[index][1];
-			double m22 = inertia.getValue()[index][2];
+            double m00 = inertia.getValue()[index][0];
+            double m11 = inertia.getValue()[index][1];
+            double m22 = inertia.getValue()[index][2];
 			
-			defaulttype::Vec3d len;
-			len[0] = sqrt(m11+m22-m00);
-			len[1] = sqrt(m00+m22-m11);
-			len[2] = sqrt(m00+m11-m22);
+            defaulttype::Vec3d len;
+            len[0] = sqrt(m11+m22-m00);
+            len[1] = sqrt(m00+m22-m11);
+            len[2] = sqrt(m00+m11-m22);
 
-#ifndef SOFA_NO_OPENGL 
-			helper::gl::Axis::draw(x[i].getCenter(), x[i].getOrientation(), len);
-#endif 
-		}
+#ifndef SOFA_NO_OPENGL
+            helper::gl::Axis::draw(x[i].getCenter(), x[i].getOrientation(), len);
+#endif
+        }
 		
 	}
 #endif
