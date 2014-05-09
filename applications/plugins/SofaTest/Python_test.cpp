@@ -3,25 +3,11 @@
 #include "Python_test.h"
 
 #include <sofa/helper/system/PluginManager.h>
-#include <sofa/helper/system/FileRepository.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/simulation/common/Simulation.h>
 
-#include <fstream>
-
-
-#include <plugins/SofaPython/PythonEnvironment.h>
-#include <plugins/SofaPython/ScriptEnvironment.h>
-#include <plugins/SofaPython/PythonMacros.h>
 
 
 namespace sofa {
-
-
-
-
-
-
-//////////////////////////
 
 
 
@@ -55,7 +41,10 @@ TEST_P(Python_test, Run) {
 
 
 
-//////////////////////////
+////////////////////////////////////////////////////
+////////////////////////////////////////////////////
+////////////////////////////////////////////////////
+
 
 struct Listener : core::objectmodel::BaseObject {
 
@@ -81,7 +70,7 @@ struct Listener : core::objectmodel::BaseObject {
 
 void Python_scene_test::run( const Python_test_data& data ) {
 
-    std::cout << "Python_test::run "<< data.filepath << std::endl;
+    std::cout << "Python_scene_test::run "<< data.filepath << std::endl;
 
     {
         // Check the file exists
@@ -113,8 +102,4 @@ TEST_P(Python_scene_test, Run) {
 
 
 
-
-
-
-
-}
+} // namespace sofa
