@@ -27,7 +27,7 @@ set(SOFA-EXTERNAL_LIBRARY_DIR ${SOFA-EXTERNAL_LIBRARY_DIR} CACHE PATH "Library p
 sofa_option(SOFA-EXTERNAL_CGOGN_PATH PATH "${SOFA_EXTLIBS_DIR}/CGoGN" "Path to the CGoGN library")
 
 ## eigen
-sofa_option(SOFA-EXTERNAL_EIGEN_PATH PATH "${SOFA_EXTLIBS_DIR}/eigen-3.2.0" "Path to the eigen header-only library")
+sofa_option(SOFA-EXTERNAL_EIGEN_PATH PATH "${SOFA_EXTLIBS_DIR}/eigen-3.2.1" "Path to the eigen header-only library")
 
 ## lua
 sofa_option(SOFA-EXTERNAL_LUA_PATH PATH "${SOFA_EXTLIBS_DIR}/lua" "Path to the Lua library sources")
