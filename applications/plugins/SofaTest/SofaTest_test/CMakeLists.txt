@@ -40,6 +40,7 @@ add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${RC_FILES})
 # Define a macro to get the absolute path to a directory;
 # absolute paths are perfectly OK for test resources.
 AddCompilerDefinitions("SOFATEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
+AddCompilerDefinitions("SOFATEST_PYTHONTESTS_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/python_tests\"")
 
 AddLinkerDependencies(
     SofaTest

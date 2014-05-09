@@ -348,7 +348,7 @@ static PyTypeObject DummyChild_PyTypeObject = {
     if (func) { \
         PyObject *res = PyObject_CallObject(func,Py_BuildValue(__VA_ARGS__)); \
         if (!res) { \
-            SP_MESSAGE_EXCEPTION("") PyErr_Print(); \
+            SP_MESSAGE_EXCEPTION("SP_CALL_MODULEFUNC") PyErr_Print(); \
         } \
         else Py_DECREF(res); \
     } \
@@ -360,7 +360,7 @@ static PyTypeObject DummyChild_PyTypeObject = {
     if (func) { \
         PyObject *res = PyObject_CallObject(func,0); \
         if (!res) { \
-            SP_MESSAGE_EXCEPTION("") PyErr_Print(); \
+            SP_MESSAGE_EXCEPTION("SP_CALL_MODULEFUNC_NOPARAM") PyErr_Print(); \
          } \
         else Py_DECREF(res); \
     } \

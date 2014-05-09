@@ -41,7 +41,8 @@ public:
 
     /// load the file
     virtual Node::SPtr load(const char *filename);
-    Node::SPtr loadWithArguments(const char *filename, const std::vector<std::string>& arguments=std::vector<std::string>(0));
+    Node::SPtr loadSceneWithArguments(const char *filename, const std::vector<std::string>& arguments=std::vector<std::string>(0));
+    bool loadTestWithArguments(const char *filename, const std::vector<std::string>& arguments=std::vector<std::string>(0));
 
     /// get the file type description
     virtual std::string getFileTypeDesc();

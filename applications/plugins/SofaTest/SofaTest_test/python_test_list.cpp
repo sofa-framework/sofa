@@ -3,11 +3,14 @@
 
 namespace sofa {
 
+//////////////////////////////////
+////////// SOFA PYTHON SCENE TESTS
+//////////////////////////////////
 
 // static build of the test list
-static struct Tests : public Python_test_list
+static struct SceneTests : public Python_test_list
 {
-    Tests()
+    SceneTests()
     {
         static const std::string scenePath = std::string(SOFATEST_SCENES_DIR);
 
@@ -22,14 +25,48 @@ static struct Tests : public Python_test_list
         arguments[5] = "1.0"; // radius
         addTest( "damping.py", scenePath, arguments );
 
-        // add python tests here
+        // add python scene tests here
+    }
+} sceneTests;
+
+
+// run test list
+INSTANTIATE_TEST_CASE_P(Batch,
+						Python_scene_test,
+                        ::testing::ValuesIn(sceneTests.list));
+
+
+
+
+///////////
+
+
+//////////////////////////////////
+////////// PURE PYTHON TESTS
+//////////////////////////////////
+
+// static build of the test list
+static struct Tests : public Python_test_list
+{
+    Tests()
+    {
+        static const std::string testPath = std::string(SOFATEST_PYTHONTESTS_DIR);
+
+        std::vector<std::string> arguments(2);
+        arguments[0] = "0"; // null
+        arguments[1] = "1"; // not null
+        addTest( "python_test_test.py", testPath, arguments );
+
+        // add pure python tests here
     }
 } tests;
 
 
 // run test list
 INSTANTIATE_TEST_CASE_P(Batch,
-						Python_test,
+                        Python_test,
                         ::testing::ValuesIn(tests.list));
 
-}
+
+
+} // namespace sofa

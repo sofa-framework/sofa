@@ -38,6 +38,7 @@ private:
 
 
 
+/// A test written in python (but not as a sofa class to perform unitary testing on python functions)
 class Python_test : public ::testing::TestWithParam<Python_test_data> {
 
 protected:
@@ -46,15 +47,25 @@ protected:
 
 public:
 
-	struct result {
-		result(bool value) : value( value ) { }
-		bool value;
-	};
-	
+    struct result {
+        result(bool value) : value( value ) { }
+        bool value;
+    };
+
     void run( const Python_test_data& );
 
-	Python_test();
-	~Python_test();
+    Python_test();
+
+};
+
+
+/// A test written as a sofa scene in python
+class Python_scene_test : public Python_test {
+
+
+public:
+
+    void run( const Python_test_data& );
 
 
 };
