@@ -9,14 +9,28 @@ namespace newgui{
 
 /**
  * @brief Interaction using a spring.
+ * An interactor, typically attached to the mouse pointer, pulls a control point using a spring.
  * @author Francois Faure, 2014
  */
 class SOFA_SOFASIMPLEGUI_API SpringInteractor: public Interactor
 {
+    typedef Interactor Inherited;
 protected:
-    MechanicalObject3::SPtr anchorDof;
+    MechanicalObject3::SPtr interactorDof;
+    StiffSpringForceField3::SPtr spring;
 public:
-    SpringInteractor(const PickedPoint&  picked);
+    /**
+     * @brief SpringInteractor
+     * @param picked The picked point.
+     * @param stiffness The stiffness of the spring attached to the picked point.
+     */
+    SpringInteractor(const PickedPoint&  picked, SReal stiffness=(SReal) 100.);
+
+    /// Insert this in the scene as a child of the given node
+    virtual void attach( Node::SPtr parent );
+
+    /// Remove this from the scene, without destroying it.
+    virtual void detach();
 
     /// current interaction point
     Vec3 getPoint();

@@ -7,38 +7,53 @@ using namespace std;
 namespace sofa{
 namespace newgui{
 
-SpringInteractor::SpringInteractor(const PickedPoint &picked)
+SpringInteractor::SpringInteractor(const PickedPoint &picked, SReal stiffness)
     : Interactor(picked)
 {
     // get the DOF of the picked object
     MechanicalObject3* pickedDof=dynamic_cast<MechanicalObject3*>(picked.state.get()); assert(pickedDof);
 
     // create DOF to represent the actuator
-    anchorDof = New<MechanicalObject3>();
-    interactionNode->addObject(anchorDof);
-    MechanicalObject3::WriteVecCoord xanchor = anchorDof->writePositions();
+    interactorDof = New<MechanicalObject3>();
+    interactionNode->addObject(interactorDof);
+    MechanicalObject3::WriteVecCoord xanchor = interactorDof->writePositions();
     xanchor[0] = picked.point;
 
     // create spring to drag the picked object
-    StiffSpringForceField3::SPtr spring = New<StiffSpringForceField3>(anchorDof.get(),pickedDof);
+    spring = New<StiffSpringForceField3>(interactorDof.get(),pickedDof);
     interactionNode->addObject(spring);
-    spring->addSpring(0,picked.index,100,0.1,0.);
+    spring->addSpring(0,picked.index,stiffness,0.1,0.);
 
-//    cout << "DragAnchor::DragAnchor, set spring to " << pickedDof->getName() << ", " << picked.index << endl;
+//    cout << "SpringInteractor set spring to " << pickedDof->getName() << ", " << picked.index << endl;
 }
 
 Vec3 SpringInteractor::getPoint()
 {
-    MechanicalObject3::ReadVecCoord xanchor = anchorDof->readPositions();
+    MechanicalObject3::ReadVecCoord xanchor = interactorDof->readPositions();
     return xanchor[0];
 }
 
 void SpringInteractor::setPoint( const Vec3& p )
 {
-    MechanicalObject3::WriteVecCoord xanchor = anchorDof->writePositions();
+    MechanicalObject3::WriteVecCoord xanchor = interactorDof->writePositions();
     xanchor[0] = p;
-//    cout<<"DragAnchor::move to " << p << endl;
 }
 
+void SpringInteractor::attach( Node::SPtr parent)
+{
+    Inherited::attach(parent);
+    interactionNode->removeObject(spring);
+    Node* targetParent = dynamic_cast<Node*>(spring->getMState2()->getContext());
+    targetParent->addObject(spring);
 }
+
+void SpringInteractor::detach()
+{
+    Inherited::detach();
+    Node* parent = dynamic_cast<Node*>(spring->getMState2()->getContext());
+    parent->removeObject(spring);
+    interactionNode->addObject(spring);
 }
+
+}//newgui
+}//sofa

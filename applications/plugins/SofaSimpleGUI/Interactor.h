@@ -31,16 +31,16 @@ public:
     virtual ~Interactor();
 
     /// Insert this in the scene as a child of the given node
-    void attach( Node::SPtr parent );
+    virtual void attach( Node::SPtr parent );
+
+    /// Remove this from the scene, without destroying it.
+    virtual void detach();
 
     /// Current interaction point
     virtual Vec3 getPoint()=0;
 
     /// Displace the interaction to the given point
     virtual void setPoint( const Vec3& p ) = 0;
-
-    /// Remove this from the scene, without destroying it.
-    void detach();
 };
 
 }
