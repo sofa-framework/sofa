@@ -68,7 +68,10 @@ public:
 
     /** @name quadrature method */
     //@{
-    Data<helper::OptionsGroup> f_method;
+    Data<helper::OptionsGroup> f_method;    ///< Quadrature method
+                                            ///< 0. Gauss-Legendre http://en.wikipedia.org/wiki/Gaussian_quadrature
+                                            ///< 1. Newton-Cotes http://en.wikipedia.org/wiki/Newton%E2%80%93Cotes_formulas
+                                            ///< 2. Elaston [Martin-2010] http://graphics.ethz.ch/publications/papers/paperMar10.php
     //@}
 
     /** @name position data */
@@ -77,21 +80,23 @@ public:
     typedef vector<Coord> SeqPositions;
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
     typedef helper::WriteAccessor<Data< SeqPositions > > waPositions;
-    Data< SeqPositions > f_position;
+    Data< SeqPositions > f_position; ///< Samples position
     //@}
 
     /** @name volume integral data */
     //@{
-    Data< unsigned int > f_order;
+    Data< unsigned int > f_order; ///< Order of quadrature method
     typedef vector<Real> volumeIntegralType;
-    Data< vector<volumeIntegralType> > f_volume;
+    Data< vector<volumeIntegralType> > f_volume; ///< Weighted volumes associated to samples
     typedef helper::WriteAccessor< Data< vector<volumeIntegralType> > > waVolume;
     //@}
 
     /** @name visu data */
     //@{
-    Data< float > showSamplesScale;
-    Data< int > drawMode;
+    Data< float > showSamplesScale; ///< Samples scale
+    Data< int > drawMode; ///< Drawing mode
+                          ///< 0. Green points
+                          ///< 1. Green spheres
     //@}
 
     virtual std::string getTemplateName() const    { return templateName(this);    }
@@ -120,10 +125,13 @@ public:
         setDirtyValue();
     }
 
-    /** retrieve samples for mapping or state init */
-    unsigned int getNbSamples() {return this->f_position.getValue().size(); }
-    const Coord& getSample(unsigned int index) {return this->f_position.getValue()[index]; }
 
+    ///@brief Get the number of samples
+    unsigned int getNbSamples() {return this->f_position.getValue().size(); }
+    ///@brief Get the sample at index i as a const reference
+    const Coord& getSample(unsigned int i) {return this->f_position.getValue()[i]; }
+    ///@brief Get all samples as a const reference
+    const SeqPositions& getSamples(){return this->f_position.getValue();}
 
 protected:
 

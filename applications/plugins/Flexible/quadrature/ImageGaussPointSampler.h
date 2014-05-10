@@ -512,7 +512,9 @@ public:
     Data<unsigned int> targetNumber;
     Data<bool> useDijkstra;
     Data<unsigned int> iterations;
-    Data<bool> evaluateShapeFunction;
+    Data<bool> evaluateShapeFunction;   ///< If true, ImageGaussPointSampler::bwdInit() is called to evaluate shape functions over integration regions
+                                        ///< and writes over values computed by sofa::component::mapping::LinearMapping.
+                                        ///< Otherwise shape functions are interpolated only at sample locations using finite differencies in sofa::component::mapping::LinearMapping.
     Data<bool> sampleRigidParts;
     //@}
 
