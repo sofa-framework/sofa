@@ -70,23 +70,25 @@ struct AssembledSolver_test : public CompliantSolver_test
         Vector x1 = getVector( core::VecId::position() );
         Vector v1 = getVector( core::VecId::velocity() );
 
-        // Replace the backward (i.e. implicit) Euler solver with a forward (i.e. explicit) Euler solver.
-        // An integration step using the opposite dt should bring us back to the initial state
-        getRoot()->removeObject(complianceSolver);
-        odesolver::EulerSolver::SPtr eulerSolver = New<odesolver::EulerSolver>();
-        getRoot()->addObject(eulerSolver);
-        eulerSolver->symplectic.setValue(false);
-        sofa::simulation::getSimulation()->animate(root.get(),-dt);
+        // An explicit integration step using the opposite dt should bring us back to the initial state
+        string1.compliance->isCompliance.setValue(false); string1.compliance->reinit(); // switch the spring as stiffness
+        core::MechanicalParams mparams;
+        simulation::common::MechanicalOperations mop (&mparams,getRoot()->getContext());
+        mop.computeForce( 0+dt, core::VecId::force(), core::VecId::position(), core::VecId::velocity(), false );
+        Vector f1 = modeling::getVector( core::VecId::force() );
+        Vector v2 = v1 - f1 * dt;
+        Vector x2 = x1 - v1 * dt;
 
-        Vector x2 = getVector( core::VecId::position() );
-        Vector v2 = getVector( core::VecId::velocity() );
-
-//        cerr<<"AssembledSolver_test, initial positions : " << x0.transpose() << endl;
-//        cerr<<"AssembledSolver_test, initial velocities: " << v0.transpose() << endl;
-//        cerr<<"AssembledSolver_test, new positions : " << x1.transpose() << endl;
-//        cerr<<"AssembledSolver_test, new velocities: " << v1.transpose() << endl;
-//        cerr<<"AssembledSolver_test, new positions  after backward integration: " << x2.transpose() << endl;
-//        cerr<<"AssembledSolver_test, new velocities after backward integration: " << v2.transpose() << endl;
+        if( debug ){
+            cerr<<"AssembledSolver_test::testLinearOneFixedOneStiffnessSpringV100, time step : " << dt << endl;
+            cerr<<"AssembledSolver_test::testLinearOneFixedOneStiffnessSpringV100, initial positions : " << x0.transpose() << endl;
+            cerr<<"AssembledSolver_test::testLinearOneFixedOneStiffnessSpringV100, initial velocities: " << v0.transpose() << endl;
+            cerr<<"AssembledSolver_test::testLinearOneFixedOneStiffnessSpringV100, new positions : " << x1.transpose() << endl;
+            cerr<<"AssembledSolver_test::testLinearOneFixedOneStiffnessSpringV100, new velocities: " << v1.transpose() << endl;
+            cerr<<"AssembledSolver_test::testLinearOneFixedOneStiffnessSpringV100, new forces: " << f1.transpose() << endl;
+            cerr<<"AssembledSolver_test::testLinearOneFixedOneStiffnessSpringV100, new positions  after backward integration: " << x2.transpose() << endl;
+            cerr<<"AssembledSolver_test::testLinearOneFixedOneStiffnessSpringV100, new velocities after backward integration: " << v2.transpose() << endl;
+        }
 
         ASSERT_TRUE( (x2-x0).lpNorm<Eigen::Infinity>() < precision );
         ASSERT_TRUE( (v2-v0).lpNorm<Eigen::Infinity>() < precision );
