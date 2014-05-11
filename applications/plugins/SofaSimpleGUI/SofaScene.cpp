@@ -1,4 +1,7 @@
 #include "SofaScene.h"
+#include <iostream>
+using std::cerr;
+using std::endl;
 
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/component/init.h>
@@ -53,26 +56,37 @@ void SofaScene::init(std::vector<std::string> plugins, const std::string& fileNa
     // --- Create simulation graph ---
     if(fileName.empty())
         sout << "SofaGLScene::init, no file to load" << sendl;
-    _sroot = sofa::simulation::getSimulation()->load(fileName.c_str());
-    if (_sroot!=NULL)
-    {
-        _sroot->setName("sceneRoot");
-        _groot->addChild(_sroot);
-    }
-    else {
-        serr << "SofaScene::init, could not load scene " << fileName << ", is the path ok ?" << sendl;
-    }
-
-    SofaSimulation::init(_groot.get());
-
-//    if( debug ){
-//        cout<<"SofaScene::init, scene loaded" << endl;
-//        sofa::simulation::getSimulation()->print(groot.get());
-//    }
+    else open(fileName.c_str() );
 
 }
 
+void SofaScene::reset()
+{
+    SofaSimulation::reset(_groot.get());
+}
 
+void SofaScene::open(const char *filename)
+{
+    if(_groot)
+        unload(_groot);
+    Node::SPtr sroot = load( filename );
+    if( !sroot ){
+        cerr << "loading failed" << endl;
+        return;
+    }
+    _currentFileName = filename;
+
+    // WARNING
+    // For some reason, it is necessary to put the loaded scene under a child node. Otherwise, interacting with picked nodes does not work
+    _groot->addChild(sroot);
+
+
+    SofaSimulation::init(_groot.get());
+    //    if( debug ){
+    //        cout<<"SofaScene::init, scene loaded" << endl;
+    //        sofa::simulation::getSimulation()->print(groot.get());
+    //    }
+}
 
 }// newgui
 }// sofa

@@ -27,7 +27,7 @@ protected:
     typedef sofa::component::container::MechanicalObject< defaulttype::Vec3Types > Vec3DOF;
 
     Node::SPtr _groot; ///< root of the graph
-    Node::SPtr _sroot; ///< root of the scene, child of groot
+    std::string _currentFileName; ///< Name of the current scene
 
 public:
     /**
@@ -49,11 +49,20 @@ public:
      * @param plugins List of plugins to load
      * @param fileName Scene file to load
      */
-    void init( std::vector<std::string> plugins, const std::string& fileName );
+    void init( std::vector<std::string> plugins, const std::string& fileName="" );
     /**
      * @brief Integrate time by one step and update the Sofa scene.
      */
     void step( SReal dt );
+    /**
+     * @brief restart from the beginning
+     */
+    void reset();
+    /**
+     * @brief Clear the current scene and load the given one
+     * @param filename Scene description file
+     */
+    void open( const char* filename );
 };
 
 }

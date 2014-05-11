@@ -22,11 +22,9 @@ GLfloat zfar = camera_position[2]+10;
 QSofaViewer::QSofaViewer(newgui::QSofaScene *sofaScene, QWidget *parent) :
     QGLWidget(parent), sofaGL(sofaScene)
 {
-    // sofa
     drag = NULL;
-    connect(sofaScene, SIGNAL(stepEnd(SReal)), this, SLOT(draw()));
-
-
+    connect(sofaScene, SIGNAL(stepEnd()), this, SLOT(draw()));
+    connect(sofaScene, SIGNAL(opened()), this, SLOT(draw()));
 }
 
 void QSofaViewer::initializeGL()
