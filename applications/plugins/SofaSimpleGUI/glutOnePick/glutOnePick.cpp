@@ -42,13 +42,13 @@ using std::endl;
 using std::cout;
 
 #include <sofa/helper/ArgumentParser.h>
-#include <SofaSimpleGUI/SofaGlInterface.h>
+#include <SofaSimpleGUI/SofaGLScene.h>
 using namespace sofa::newgui;
 
 // ---------------------------------------------------------------------
 // Sofa interface
 // ---------------------------------------------------------------------
-sofa::newgui::SofaGlInterface sofaScene;     ///< The interface of the application with Sofa
+sofa::newgui::SofaGLScene sofaScene;     ///< The interface of the application with Sofa
 sofa::newgui::SpringInteractor* drag = NULL; ///< Mouse interactor
 
 
@@ -156,7 +156,7 @@ void mouseButton(int button, int state, int x, int y)
                 drag = new SpringInteractor(glpicked);
                 sofaScene.attach(drag);
 //                cout << "Particle glpicked: " << glpicked << endl;
-//                sofaScene.printScene();
+                sofaScene.printScene();
             }
             else {
                 cout << "no particle glpicked" << endl;
@@ -213,7 +213,6 @@ int main(int argc, char** argv)
 
     // --- Parameter initialisation ---
     std::string fileName ;
-//    std::vector<std::string> plugins;
 
     sofa::helper::parse("Simple glut application featuring a Sofa scene.")
             .option(&sofaScene.plugins,'l',"load","load given plugins")
@@ -221,7 +220,6 @@ int main(int argc, char** argv)
             (argc,argv);
 
     // --- Init sofa ---
-    sofaScene.debug = false;
     sofaScene.init(fileName);
 
     glutMainLoop();

@@ -231,7 +231,7 @@ void Simulation::animate ( Node* root, double dt )
     }
     else
     {
-        serr<<"ERROR in animate(): AnimationLoop expected at the root node"<<sendl;
+        serr<<"ERROR in Simulation::animate(): AnimationLoop expected at the root node"<<sendl;
         return;
     }
 
