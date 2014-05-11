@@ -1,4 +1,4 @@
-#include "QtMViewer.h"
+#include "QSofaViewer.h"
 #include <QApplication>
 #include <QKeyEvent>
 #include <QMouseEvent>
@@ -19,20 +19,17 @@ GLfloat znear = camera_position[2]-10;
 GLfloat zfar = camera_position[2]+10;
 
 
-QtMViewer::QtMViewer(newgui::SofaGlInterface *s, QGLWidget *parent) :
-    QGLWidget(parent), sofaScene(s)
+QSofaViewer::QSofaViewer(newgui::QSofaScene *sofaScene, QWidget *parent) :
+    QGLWidget(parent), sofaGL(sofaScene)
 {
-    QTimer *timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(animate()));
-    timer->start(40);
-
     // sofa
     drag = NULL;
+    connect(sofaScene, SIGNAL(stepEnd(SReal)), this, SLOT(draw()));
 
-    QMessageBox::information( this, tr("Tip"), tr("Shift-Click and drag the control points to interact.\nRelease button before Shift to release the control point.\nRelease Shift before button to keep it attached where it is.") );
+
 }
 
-void QtMViewer::initializeGL()
+void QSofaViewer::initializeGL()
 {
     glClearColor (0.0, 0.0, 0.0, 0.0);
 
@@ -48,13 +45,13 @@ void QtMViewer::initializeGL()
 
 }
 
-void QtMViewer::paintGL()
+void QSofaViewer::paintGL()
 {
     glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity ();
     gluLookAt ( camera_position[0],camera_position[1],camera_position[2], 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
-    sofaScene->glDraw();
+    sofaGL.draw();
 
     // display a box, for debug
     glColor3f (1.0, 0.0, 0.0);
@@ -62,13 +59,13 @@ void QtMViewer::paintGL()
 
 }
 
-void QtMViewer::animate()
+void QSofaViewer::draw()
 {
-    sofaScene->animate();
+//    sofaGL.sofaScene->step(0.04);
     update();
 }
 
-void QtMViewer::resizeGL(int w, int h)
+void QSofaViewer::resizeGL(int w, int h)
 {
     glViewport (0, 0, (GLsizei) w, (GLsizei) h);
     glMatrixMode (GL_PROJECTION);
@@ -77,7 +74,7 @@ void QtMViewer::resizeGL(int w, int h)
     glMatrixMode (GL_MODELVIEW);
 }
 
-void QtMViewer::keyPressEvent ( QKeyEvent * event )
+void QSofaViewer::keyPressEvent ( QKeyEvent * event )
 {
 //    if( event->key() == Qt::Key_Shift ) cout << "Shift ";
 //    else if( event->key() == Qt::Key_Control ) cout << "Control ";
@@ -85,16 +82,16 @@ void QtMViewer::keyPressEvent ( QKeyEvent * event )
 //    cout << event->text().toStdString();
 }
 
-void QtMViewer::keyReleaseEvent ( QKeyEvent * /*event*/ )
+void QSofaViewer::keyReleaseEvent ( QKeyEvent * /*event*/ )
 {
 //    cout << endl;
 }
 
-void QtMViewer::mousePressEvent ( QMouseEvent * event )
+void QSofaViewer::mousePressEvent ( QMouseEvent * event )
 {
     if(QApplication::keyboardModifiers() & Qt::ShiftModifier )
     {
-        sofa::newgui::PickedPoint glpicked = sofaScene->pick(camera_position[0],camera_position[1],camera_position[2], event->x(), event->y() );
+        sofa::newgui::PickedPoint glpicked = sofaGL.pick(camera_position[0],camera_position[1],camera_position[2], event->x(), event->y() );
         if( glpicked )
         {
 //            cout << "Picked: " << glpicked << endl;
@@ -105,7 +102,7 @@ void QtMViewer::mousePressEvent ( QMouseEvent * event )
             }
             else {                                             // new interactor
                 drag = picked_to_interactor[glpicked] = new sofa::newgui::SpringInteractor(glpicked,10000);
-                sofaScene->attach(drag);
+                sofaGL.attach(drag);
 //                cout << "Create new interactor" << endl;
             }
 //                sofaScene.printScene();
@@ -117,21 +114,21 @@ void QtMViewer::mousePressEvent ( QMouseEvent * event )
 
 }
 
-void QtMViewer::mouseMoveEvent ( QMouseEvent * event )
+void QSofaViewer::mouseMoveEvent ( QMouseEvent * event )
 {
     if( drag != NULL )
     {
-        sofaScene->move(drag, event->x(), event->y());
+        sofaGL.move(drag, event->x(), event->y());
     }
 }
 
-void QtMViewer::mouseReleaseEvent ( QMouseEvent * /*event*/ )
+void QSofaViewer::mouseReleaseEvent ( QMouseEvent * /*event*/ )
 {
     if( drag != NULL )
     {
         if(QApplication::keyboardModifiers() & Qt::ShiftModifier )
         {
-            sofaScene->detach(drag);
+            sofaGL.detach(drag);
             delete drag;
 
             // remove it from the map
@@ -143,7 +140,7 @@ void QtMViewer::mouseReleaseEvent ( QMouseEvent * /*event*/ )
                 picked_to_interactor.erase(i);
 //                cout << "new count of interactors: " << picked_to_interactor.size() << endl;
             }
-            else assert( NULL && "Active interactor not found in the map" );
+            else assert( false && "Active interactor not found in the map" );
 
         }
         drag = NULL;

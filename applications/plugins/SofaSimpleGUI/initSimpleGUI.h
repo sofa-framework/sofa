@@ -36,7 +36,7 @@
 
 /** \mainpage SimpleGUI - a simplified GUI for Sofa
  * This plugin proposes a simple API for including Sofa in a graphics interface:
- * - class sofa::newgui::SofaGlInterface provides a callback-level API: init, draw, animate, pick
+ * - class sofa::newgui::SofaGLScene provides a callback-level API: init, draw, animate, pick
  * - a set of Interactor objects allows the user to manipulate the simulation.
  *
  * The main differences with the standard Sofa GUI are:
@@ -44,6 +44,10 @@
  * - no viewer nor camera are provided (but helpers may become available)
  * - picking simply returns basic information about the particle under the cursor (see sofa::newgui::PickedPoint). It is the application's job to create, manage and delete the interactors (see sofa::newgui::Interactor).
  *
+ * Examples:
+ * - glutOnePick: A Sofa simulation within a basic Glut interface. The user can click and drag one point at a time to interact with the simulaton
+ * - qtMultiPick: A Sofa simulation within a basic Qt interface. The user can click and drag multiple points.
+ * - SofaQtExternal.zip: A graphics application including a Sofa simulation, in a project which is not a sub-project of Sofa.
  *
  *
   This is a the starting page of the plugin documentation, defined in file initSimpleGUI.h

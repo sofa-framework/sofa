@@ -2,13 +2,24 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
 
-    initSimpleGUI.h SofaGlInterface.h Interactor.h SpringInteractor.h PickedPoint.h
+initSimpleGUI.h
+SofaGLScene.h
+Interactor.h
+SpringInteractor.h
+PickedPoint.h
+SofaScene.h
+SofaGL.h
 
 	)
 
 set(SOURCE_FILES
 
-    initSimpleGUI.cpp SofaGlInterface.cpp Interactor.cpp SpringInteractor.cpp
+initSimpleGUI.cpp
+SofaGLScene.cpp
+Interactor.cpp
+SpringInteractor.cpp
+SofaScene.cpp
+SofaGL.cpp
 
 	)
 
