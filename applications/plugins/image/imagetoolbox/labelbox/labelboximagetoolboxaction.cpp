@@ -73,7 +73,7 @@ sofa::component::engine::LabelBoxImageToolBox* LabelBoxImageToolBoxAction::LBITB
     return dynamic_cast<sofa::component::engine::LabelBoxImageToolBox*>(this->p_label);
 }
 
-void LabelBoxImageToolBoxAction::selectionPointEvent(int mouseevent, const unsigned int /*axis*/,const sofa::defaulttype::Vec3d& imageposition,const sofa::defaulttype::Vec3d& position3D,const QString& value)
+void LabelBoxImageToolBoxAction::selectionPointEvent(int mouseevent, const unsigned int /*axis*/,const sofa::defaulttype::Vec3d& imageposition,const sofa::defaulttype::Vec3d& position3D,const QString& /*value*/)
 {
     if(mouseevent != 0)return;
 //    select->setChecked(false);

@@ -1,10 +1,10 @@
 import Sofa
-import Test
+import SofaTest
 
 flexible_path = Sofa.src_dir() + '/applications/plugins/Flexible'
 mesh_path = flexible_path+ '/examples/beam/'
 
-class Controller(Test.Controller):
+class Controller(SofaTest.Controller):
     def initGraph(self,node):
         self.success = 1
         self.count = 0
@@ -48,6 +48,7 @@ class Controller(Test.Controller):
             self.initAndCheckMapping(barycentricMapping)
             if(self.success == 0):
                 self.sendFailure("(Barycentric Shape Function) calling init once again changed linearMapping weights for no reason")
+
 
             voronoiMapping = self.rootNode.getChild("voronoiFrame").getChild("behavior").getObject("mapping")
             self.initAndCheckMapping(voronoiMapping)
@@ -117,7 +118,7 @@ def createVoronoiFrame( parentNode, name ):
 
     #Gauss point sampling
     behaviorNode = node.createChild('behavior')
-    behaviorNode.createObject('ImageGaussPointSampler', name='sampler', indices='@../shapeFunc.indices', weights='@../shapeFunc.weights', transform='@../shapeFunc.transform', method='2', order='4', targetNumber='1', printLog='false', showSamplesScale=0.1, drawMode=0)
+    behaviorNode.createObject('ImageGaussPointSampler', name='sampler', indices='@../shapeFunc.indices', weights='@../shapeFunc.weights', transform='@../shapeFunc.transform', method='2', order='4', targetNumber='1', printLog='false', showSamplesScale=0.1, drawMode=0, evaluateShapeFunction="false")
     behaviorNode.createObject('MechanicalObject', name="intePts", template='F332', useMask="0", showObject="false", showObjectScale="0.05")
     behaviorNode.createObject('LinearMapping', name="mapping", template='Mapping&lt;Affine,F333&gt;', assembleJ='true', showDeformationGradientScale='0.2', printLog="false")
 

@@ -222,7 +222,7 @@ void AffineMovementConstraint<DataTypes>::projectPosition(const core::Mechanical
 }
 
 template <class DataTypes>
-void AffineMovementConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseMatrix* M, unsigned offset )
+void AffineMovementConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseMatrix* M, unsigned /*offset*/ )
 {
     // clears the rows and columns associated with constrained particles
     unsigned blockSize = DataTypes::deriv_total_size;

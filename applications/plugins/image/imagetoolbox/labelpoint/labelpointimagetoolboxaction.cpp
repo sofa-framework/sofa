@@ -107,7 +107,7 @@ void LabelPointImageToolBoxAction::updateGraphs()
 {
     sofa::defaulttype::Vec3d pos = LPITB()->d_ip.getValue();
     
-    QRectF boundaryXY = GraphXY->itemsBoundingRect();
+    //QRectF boundaryXY = GraphXY->itemsBoundingRect();
     
 //    std::cout << "updateOnGraphs"<<std::endl;
     
