@@ -1,0 +1,8 @@
+<!DOCTYPE RCC><RCC version="1.0">
+ <qresource>
+     <file>icons/start.svg</file>
+     <file>icons/reset.svg</file>
+     <file>icons/reload.svg</file>
+     <file>icons/file.svg</file>
+ </qresource>
+ </RCC>

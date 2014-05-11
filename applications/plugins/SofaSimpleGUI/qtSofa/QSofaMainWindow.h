@@ -2,7 +2,6 @@
 #define QTSOFAMAINWINDOW_H
 
 #include <QMainWindow>
-#include <QTimer>
 #include <string>
 using std::string;
 #include <vector>
@@ -28,17 +27,22 @@ public:
      */
     void initSofa(const std::vector<string> &plugins, string filename );
 
-    void start();
+    sofa::newgui::QSofaScene sofaScene;
+    QSofaViewer* sofaViewer1;
 
 signals:
 
 public slots:
-
+    /**
+     * @brief used to change the play/pause icon
+     */
+    void isPlaying(bool);
+    /**
+     * @brief Select a new scene file using the menu, clear the current scene and replace it with the new one
+     */
+    void open();
 protected:
-    sofa::newgui::QSofaScene sofaScene;
-    QSofaViewer* sofaViewer1;
-    QTimer *timer;
-
+    QAction* startAct;
 };
 
 #endif // QTSOFAMAINWINDOW_H

@@ -21,6 +21,8 @@ ToRelativePath(MOC_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${MOC_FILES}")
 
 set(MOC_FILES_GROUP "Generated")
 	
+AddCompilerDefinitions("QTSOFA_SRC_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}\"")
+
 add_executable(${PROJECT_NAME} ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES})
 
 AddLinkerDependencies(SofaSimpleGUI ${GLUT_LIBRARIES})
