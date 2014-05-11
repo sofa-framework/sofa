@@ -23,7 +23,7 @@ public:
 #ifndef CHECK_IF_ELLEMENT_EXISTS
         _coll_elems.push_back(elem);
 #else
-        int i;
+        unsigned int i;
         for(i = 0 ; i < _coll_elems.size() ; ++i){
             if(_coll_elems[i].getIndex() == elem.getIndex())
                 break;

@@ -55,7 +55,7 @@ void UniformVelocityDampingForceField<DataTypes>::addForce (const core::Mechanic
 }
 
 template<class DataTypes>
-void UniformVelocityDampingForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df , const DataVecDeriv& d_dx)
+void UniformVelocityDampingForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& /*d_df*/ , const DataVecDeriv& /*d_dx*/)
 {
     (void)mparams->kFactor(); // get rid of warning message
 //    Real bfactor = (Real)mparams->bFactor();
@@ -73,7 +73,7 @@ void UniformVelocityDampingForceField<DataTypes>::addDForce(const core::Mechanic
 }
 
 template<class DataTypes>
-void UniformVelocityDampingForceField<DataTypes>::addBToMatrix(sofa::defaulttype::BaseMatrix *mat, double bFact, unsigned int& offset)
+void UniformVelocityDampingForceField<DataTypes>::addBToMatrix(sofa::defaulttype::BaseMatrix */*mat*/, double /*bFact*/, unsigned int& /*offset*/)
 {
 //    const unsigned int size = this->mstate->getMatrixSize();
 

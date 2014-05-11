@@ -162,7 +162,6 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
     bool isString = PyString_Check(args);
     bool isList = PyList_Check(args);
     const AbstractTypeInfo *typeinfo = data->getValueTypeInfo(); // info about the data value
-    const void* valueVoidPtr = data->getValueVoidPtr();
     int rowWidth = (typeinfo && typeinfo->ValidInfo()) ? typeinfo->size() : 1;
     int nbRows = (typeinfo && typeinfo->ValidInfo()) ? typeinfo->size(data->getValueVoidPtr()) / typeinfo->size() : 1;
 
