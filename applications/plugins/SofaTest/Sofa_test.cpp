@@ -37,5 +37,10 @@ BaseSofa_test::~BaseSofa_test(){ clearSceneGraph(); }
 
 void BaseSofa_test::clearSceneGraph(){ modeling::clearScene(); }
 
-
+#ifndef SOFA_FLOAT
+template struct SOFA_TestPlugin_API Sofa_test<double>;
+#endif
+#ifndef SOFA_DOUBLE
+template struct SOFA_TestPlugin_API Sofa_test<float>;
+#endif
 }

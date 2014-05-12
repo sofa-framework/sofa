@@ -27,6 +27,11 @@
 #ifndef SOFA_STANDARDTEST_Sofa_test_H
 #define SOFA_STANDARDTEST_Sofa_test_H
 
+#if (_MSC_VER == 1700) 
+#define _VARIADIC_MAX 10 
+#endif
+
+#include "initTestPlugin.h"
 #include <gtest/gtest.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/simulation/common/Node.h>
@@ -41,7 +46,7 @@ namespace sofa {
 
 /** @brief Base class for Sofa test fixtures.
   */
-struct BaseSofa_test : public ::testing::Test
+  struct SOFA_TestPlugin_API BaseSofa_test : public ::testing::Test
 {
     /// Initialize Sofa and the random number generator
     BaseSofa_test();
@@ -57,7 +62,7 @@ struct BaseSofa_test : public ::testing::Test
 /** @brief Helper functions to compare scalars, vectors, matrices, etc.
   */
 template <typename _Real=SReal>
-struct Sofa_test : public BaseSofa_test
+struct SOFA_TestPlugin_API  Sofa_test : public BaseSofa_test
 {
 
     /** @name Scalars

@@ -72,7 +72,7 @@ struct   CylinderTractionStruct
 
 
 template< class DataTypes>
-struct Elasticity_test: public Sofa_test<typename DataTypes::Real>
+ struct SOFA_TestPlugin_API Elasticity_test: public Sofa_test<typename DataTypes::Real>
 {
     typedef component::container::MechanicalObject<DataTypes> DOFs;
     typedef typename DOFs::Real  Real;
