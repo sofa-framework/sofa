@@ -53,7 +53,6 @@ AddLinkerDependencies(
     SofaSimulationGraph
     SofaBoundaryCondition
     SofaEngine
-	gtest
 )
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
