@@ -325,7 +325,9 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         }
         if( this->vectorMaxDiff(dxc,dxcv)>this->epsilon()*errorMax ){
             succeed = false;
-            ADD_FAILURE() << "applyJ test failed " << std::endl << "dxc = " << dxc << endl <<"dxcv = " << dxcv << endl;
+            ADD_FAILURE() << "applyJ test failed: the difference between child position change and child velocity (dt=1) should be less than  " << this->epsilon()*errorMax  << endl
+                          << "position change = " << dxc << endl
+                          << "velocity        = " << dxcv << endl;
         }
 
 

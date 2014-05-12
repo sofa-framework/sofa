@@ -9,6 +9,7 @@
 #include <QFileDialog>
 #include <QString>
 #include <iostream>
+#include <QSpinBox>
 using std::cout;
 using std::endl;
 
@@ -16,7 +17,7 @@ using std::endl;
 QSofaMainWindow::QSofaMainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
-    setAcceptDrops(true);
+    setFocusPolicy(Qt::ClickFocus);
 
     sofaViewer1 = new QSofaViewer(&sofaScene,this);
     setCentralWidget(sofaViewer1);
@@ -30,6 +31,7 @@ QSofaMainWindow::QSofaMainWindow(QWidget *parent) :
     startAct->setIcon(this->style()->standardIcon(QStyle::SP_MediaPlay));
     startAct->setShortcut(QKeySequence(Qt::Key_Space));
     startAct->setStatusTip(tr("Start simulation"));
+    startAct->setToolTip(tr("Play/Pause simulation"));
     connect(startAct, SIGNAL(triggered()), &sofaScene, SLOT(playpause()));
     connect(&sofaScene, SIGNAL(sigPlaying(bool)), this, SLOT(isPlaying(bool)) );
     this->addAction(startAct);
@@ -41,6 +43,7 @@ QSofaMainWindow::QSofaMainWindow(QWidget *parent) :
     resetAct->setIcon(this->style()->standardIcon(QStyle::SP_MediaSkipBackward));
     resetAct->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_R));
     resetAct->setStatusTip(tr("Reset simulation"));
+    resetAct->setToolTip(tr("Restart from the beginning, without reloading"));
     connect(resetAct, SIGNAL(triggered()), &sofaScene, SLOT(reset()));
     this->addAction(resetAct);
     simulationMenu->addAction(resetAct);
@@ -50,21 +53,34 @@ QSofaMainWindow::QSofaMainWindow(QWidget *parent) :
     QAction* openAct = new QAction(QIcon(":/icons/reset.svg"), tr("&Open..."), this);
     openAct->setIcon(this->style()->standardIcon(QStyle::SP_FileIcon));
     openAct->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_O));
-    openAct->setStatusTip(tr("Open simulation"));
+    openAct->setToolTip(tr("Open new simulation"));
     connect(openAct, SIGNAL(triggered()), this, SLOT(open()));
     this->addAction(openAct);
     fileMenu->addAction(openAct);
     toolbar->addAction(openAct);
+
+    // time step
+    QSpinBox* spinBox = new QSpinBox(this);
+    toolbar->addWidget(spinBox);
+    spinBox->setValue(40);
+    spinBox->setMaxValue(40000);
+    spinBox->setToolTip(tr("dt (ms)"));
+    connect(spinBox,SIGNAL(valueChanged(int)), this, SLOT(setDt(int)));
 
     // reload
     QAction* reloadAct = new QAction(QIcon(":/icons/reload.svg"), tr("&Reload..."), this);
     reloadAct->setIcon(this->style()->standardIcon(QStyle::SP_BrowserReload));
     reloadAct->setShortcut(QKeySequence(Qt::CTRL+Qt::SHIFT+Qt::Key_R));
     reloadAct->setStatusTip(tr("Reload simulation"));
+    reloadAct->setToolTip(tr("Reload file and restart from the beginning"));
     connect(reloadAct, SIGNAL(triggered()), &sofaScene, SLOT(reload()));
     this->addAction(reloadAct);
     fileMenu->addAction(reloadAct);
     toolbar->addAction(reloadAct);
+
+
+    //
+    sofaViewer1->setFocus();
 
 }
 
@@ -91,6 +107,9 @@ void QSofaMainWindow::open()
 {
     sofaScene.pause();
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open scene file"), ".", tr("Scene Files (*.scn *.xml *.py)"));
-    sofaScene.open(fileName.toStdString().c_str());
+    if( fileName.size()>0 )
+        sofaScene.open(fileName.toStdString().c_str());
 }
+
+void QSofaMainWindow::setDt( int milis ) { sofaScene.setTimeStep( milis/1000.0 ); }
 

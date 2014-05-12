@@ -41,6 +41,7 @@ public slots:
      * @brief Select a new scene file using the menu, clear the current scene and replace it with the new one
      */
     void open();
+    void setDt( int ms );
 protected:
     QAction* startAct;
 };
