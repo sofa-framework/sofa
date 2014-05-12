@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file>resource/composition.fs</file>
+        <file>resource/composition.vs</file>
+        <file>resource/main.qml</file>
+        <file>resource/render.fs</file>
+        <file>resource/render.vs</file>
+    </qresource>
+</RCC>
