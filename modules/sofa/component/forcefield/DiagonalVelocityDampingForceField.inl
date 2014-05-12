@@ -66,7 +66,7 @@ namespace sofa
             }
 
             template<class DataTypes>
-            void DiagonalVelocityDampingForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df , const DataVecDeriv& d_dx)
+            void DiagonalVelocityDampingForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& /*d_df*/ , const DataVecDeriv& /*d_dx*/)
             {
                 (void)mparams->kFactor(); // get rid of warning message
 //                unsigned nbDampingCoeff = dampingCoefficients.getValue().size();
@@ -87,7 +87,7 @@ namespace sofa
             }
 
             template<class DataTypes>
-            void DiagonalVelocityDampingForceField<DataTypes>::addBToMatrix(sofa::defaulttype::BaseMatrix *mat, double bFact, unsigned int& offset)
+            void DiagonalVelocityDampingForceField<DataTypes>::addBToMatrix(sofa::defaulttype::BaseMatrix */*mat*/, double /*bFact*/, unsigned int& /*offset*/)
             {
 //                const unsigned int size = this->mstate->getSize();
 //                unsigned nbDampingCoeff = dampingCoefficients.getValue().size();

@@ -58,7 +58,7 @@ bool TestTeschnerHashTable::test1(){
 
     bool e0found = false;
     bool e1found = false;
-    for(int i = 0 ; i < collisionelems.size() ; ++i){
+    for(unsigned int i = 0 ; i < collisionelems.size() ; ++i){
         if(collisionelems[i].getIndex() == 0)
             e0found = true;
         if(collisionelems[i].getIndex() == 1)
@@ -86,7 +86,7 @@ bool TestTeschnerHashTable::test2(){
 
     bool e0found = false;
     bool e1found = false;
-    for(int i = 0 ; i < collisionelems.size() ; ++i){
+    for(unsigned int i = 0 ; i < collisionelems.size() ; ++i){
         if(collisionelems[i].getIndex() == 0)
             e0found = true;
         if(collisionelems[i].getIndex() == 1)
