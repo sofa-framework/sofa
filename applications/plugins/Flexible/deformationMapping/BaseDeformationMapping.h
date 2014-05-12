@@ -274,9 +274,14 @@ public:
 
     //@}
 
+    ///@brief Get parent state size
     virtual size_t getFromSize() const { return this->fromModel->getSize(); }
+    ///@brief Get child state size
     virtual size_t getToSize()  const { return this->toModel->getSize(); }
-
+    ///@brief Get child to parent indices as a const reference
+    virtual const vector<VRef>& getChildToParentIndex() { return  f_index.getValue(); }
+    ///@brief Get parent to child indices as a const reference
+    virtual const vector<VRef>& getParentToChildIndex() { return f_index_parentToChild; }
 
     /** @name PointMapper functions */
     //@{
@@ -304,9 +309,9 @@ public:
     BaseShapeFunction* _shapeFunction;        ///< where the weights are computed
     Data<vector<VRef> > f_index;            ///< The numChildren * numRefs column indices. index[i][j] is the index of the j-th parent influencing child i.
     vector<VRef> f_index_parentToChild;            ///< Constructed at init from f_index to parallelize applyJT. index_parentToChild[i][j] is the index of the j-th children influenced by parent i.
-    Data<vector<VReal> >       f_w;
-    Data<vector<VGradient> >   f_dw;
-    Data<vector<VHessian> >    f_ddw;
+    Data<vector<VReal> >       f_w;         ///< Influence weights of the parents for each child
+    Data<vector<VGradient> >   f_dw;        ///< Influence weight gradients
+    Data<vector<VHessian> >    f_ddw;       ///< Influence weight hessians
     Data<VMaterialToSpatial>    f_F0;
     Data< vector<int> > f_cell;    ///< indices required by shape function in case of overlapping elements
 
