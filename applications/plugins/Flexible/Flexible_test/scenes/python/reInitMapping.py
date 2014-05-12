@@ -14,10 +14,6 @@ class Controller(SofaTest.Controller):
         self.node = node
         return 0
 
-    def onLoaded(self,node):
-        self.rootNode = node
-        return 0
-
     def initAndCheckMapping(self, node):
         mapping = node
 
@@ -44,18 +40,18 @@ class Controller(SofaTest.Controller):
         self.count+=1
         if(self.count == 2):
 
-            barycentricMapping = self.rootNode.getChild("barycentricFrame").getChild("behavior").getObject("mapping")
+            barycentricMapping = self.root.getChild("barycentricFrame").getChild("behavior").getObject("mapping")
             self.initAndCheckMapping(barycentricMapping)
             if(self.success == 0):
                 self.sendFailure("(Barycentric Shape Function) calling init once again changed linearMapping weights for no reason")
 
 
-            voronoiMapping = self.rootNode.getChild("voronoiFrame").getChild("behavior").getObject("mapping")
+            voronoiMapping = self.root.getChild("voronoiFrame").getChild("behavior").getObject("mapping")
             self.initAndCheckMapping(voronoiMapping)
             if(self.success == 0):
                 self.sendFailure("(Voronoi Shape Function) calling init once again changed linearMapping weights for no reason")
 
-            self.sendSuccess("");
+            self.sendSuccess();
         return 0
 
 def createBarycentricFrame( parentNode, name ):
