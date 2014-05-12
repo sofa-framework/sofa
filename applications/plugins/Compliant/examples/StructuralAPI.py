@@ -2,6 +2,26 @@ import Sofa
 
 from Compliant import StructuralAPI
 
+def createFixedRigidBody(node,name,pos):
+    body = StructuralAPI.RigidBody( node, name )
+    body.setManually( [pos,0,0,0,0,0,1], 1, [1,1,1] )
+    body.node.createObject('FixedConstraint')
+    return body
+  
+def createRigidBody(node,name,pos):
+    body = StructuralAPI.RigidBody( node, name )
+    body.setManually( [pos,0,0,0,0,0,1], 1, [1,1,1] )
+    # enforce rigid visualization
+    body.dofs.showObject=True
+    body.dofs.showObjectScale=1
+    # add initial velocity to make it move!
+    body.dofs.velocity = "10 10 10 10 10 10"
+    # add a collision model to be able to rotate it with the mouse
+    collisionModel = body.addCollisionMesh( "mesh/cube.obj" )
+    return body
+    
+    
+    
 def createScene(root):
   
     ##### global parameters
@@ -23,18 +43,8 @@ def createScene(root):
     ##### SIMPLE KINETIC JOINTS
     # HINGE
     hingeNode = root.createChild('hinge')
-    
-    hinge_body1 = StructuralAPI.RigidBody( hingeNode, "hinge_body1" )
-    hinge_body1.setManually( [-5,0,0,0,0,0,1], 1, [1,1,1] )
-    hinge_body1.node.createObject('FixedConstraint')
-    
-    hinge_body2 = StructuralAPI.RigidBody( hingeNode, "hinge_body2" )
-    hinge_body2.setManually( [-5,0,0,0,0,0,1], 1, [1,1,1] )
-    hinge_body2.dofs.showObject=True
-    hinge_body2.dofs.showObjectScale=1
-    hinge_body2.dofs.velocity = "10 10 10 10 10 10"
-    hinge_body2_collisionModel = hinge_body2.addCollisionMesh( "mesh/cube.obj" )
-    
+    hinge_body1 = createFixedRigidBody(hingeNode, "hinge_body1", -25 )
+    hinge_body2 = createRigidBody(hingeNode, "hinge_body2", -25 )
     hinge = StructuralAPI.HingeRigidJoint( 2, hingeNode, "joint", hinge_body1.node, hinge_body2.node )
     hinge.addLimits(-1,0.75)
     hinge.addSpring(100)
@@ -43,18 +53,8 @@ def createScene(root):
     
     # SLIDER
     sliderNode = root.createChild('slider')
-    
-    slider_body1 = StructuralAPI.RigidBody( sliderNode, "slider_body1" )
-    slider_body1.setManually( [-10,0,0,0,0,0,1], 1, [1,1,1] )
-    slider_body1.node.createObject('FixedConstraint')
-    
-    slider_body2 = StructuralAPI.RigidBody( sliderNode, "slider_body2" )
-    slider_body2.setManually( [-10,0,0,0,0,0,1], 1, [1,1,1] )
-    slider_body2.dofs.showObject=True
-    slider_body2.dofs.showObjectScale=1
-    slider_body2.dofs.velocity = "10 10 10 10 10 10"
-    slider_body2_collisionModel = slider_body2.addCollisionMesh( "mesh/cube.obj" )
-    
+    slider_body1 = createFixedRigidBody(hingeNode, "slider_body1", -20 )
+    slider_body2 = createRigidBody(hingeNode, "slider_body2", -20 )
     slider = StructuralAPI.SliderRigidJoint( 1, sliderNode, "joint", slider_body1.node, slider_body2.node )
     slider.addLimits(-1,5)
     slider.addSpring(100)
@@ -62,18 +62,8 @@ def createScene(root):
     
     # CYLINDRICAL
     cylindricalNode = root.createChild('cylindrical')
-    
-    cylindrical_body1 = StructuralAPI.RigidBody( cylindricalNode, "cylindrical_body1" )
-    cylindrical_body1.setManually( [-15,0,0,0,0,0,1], 1, [1,1,1] )
-    cylindrical_body1.node.createObject('FixedConstraint')
-    
-    cylindrical_body2 = StructuralAPI.RigidBody( cylindricalNode, "cylindrical_body2" )
-    cylindrical_body2.setManually( [-15,0,0,0,0,0,1], 1, [1,1,1] )
-    cylindrical_body2.dofs.showObject=True
-    cylindrical_body2.dofs.showObjectScale=1
-    cylindrical_body2.dofs.velocity = "10 10 10 10 10 10"
-    cylindrical_body2_collisionModel = cylindrical_body2.addCollisionMesh( "mesh/cube.obj" )
-    
+    cylindrical_body1 = createFixedRigidBody(hingeNode, "cylindrical_body1", -15 )
+    cylindrical_body2 = createRigidBody(hingeNode, "cylindrical_body2", -15 )
     cylindrical = StructuralAPI.CylindricalRigidJoint( 1, cylindricalNode, "joint", cylindrical_body1.node, cylindrical_body2.node )
     cylindrical.addLimits(-1,5,-1,0.75)
     cylindrical.addSpring(100,100)
@@ -82,18 +72,8 @@ def createScene(root):
     
     # BALL AND SOCKET
     ballandsocketNode = root.createChild('ballandsocket')
-    
-    ballandsocket_body1 = StructuralAPI.RigidBody( ballandsocketNode, "ballandsocket_body1" )
-    ballandsocket_body1.setManually( [-20,0,0,0,0,0,1], 1, [1,1,1] )
-    ballandsocket_body1.node.createObject('FixedConstraint')
-    
-    ballandsocket_body2 = StructuralAPI.RigidBody( ballandsocketNode, "ballandsocket_body2" )
-    ballandsocket_body2.setManually( [-20,0,0,0,0,0,1], 1, [1,1,1] )
-    ballandsocket_body2.dofs.showObject=True
-    ballandsocket_body2.dofs.showObjectScale=1
-    ballandsocket_body2.dofs.velocity = "10 10 10 10 10 10"
-    ballandsocket_body2_collisionModel = ballandsocket_body2.addCollisionMesh( "mesh/cube.obj" )
-    
+    ballandsocket_body1 = createFixedRigidBody(hingeNode, "ballandsocket_body1", -10 )
+    ballandsocket_body2 = createRigidBody(hingeNode, "ballandsocket_body2", -10 )
     ballandsocket = StructuralAPI.BallAndSocketRigidJoint( ballandsocketNode, "joint", ballandsocket_body1.node, ballandsocket_body2.node )
     ballandsocket.addLimits( -1,1,-0.5,0.5,-0.75,0.75 )
     ballandsocket.addSpring( 100,100,100 )
@@ -101,24 +81,17 @@ def createScene(root):
     
     # PLANAR
     planarNode = root.createChild('planar')
-    
-    planar_body1 = StructuralAPI.RigidBody( planarNode, "planar_body1" )
-    planar_body1.setManually( [-25,0,0,0,0,0,1], 1, [1,1,1] )
-    planar_body1.node.createObject('FixedConstraint')
-    
-    planar_body2 = StructuralAPI.RigidBody( planarNode, "planar_body2" )
-    planar_body2.setManually( [-25,0,0,0,0,0,1], 1, [1,1,1] )
-    planar_body2.dofs.showObject=True
-    planar_body2.dofs.showObjectScale=1
-    planar_body2.dofs.velocity = "10 10 10 10 10 10"
-    planar_body2_collisionModel = planar_body2.addCollisionMesh( "mesh/cube.obj" )
-    
+    planar_body1 = createFixedRigidBody(hingeNode, "planar_body1", -5 )
+    planar_body2 = createRigidBody(hingeNode, "planar_body2", -5 )
     planar = StructuralAPI.PlanarRigidJoint( 0, 1, planarNode, "joint", planar_body1.node, planar_body2.node )
     planar.addLimits(-0.5,1,-3,3)
     planar.addSpring( 100,100 )
     
             
-    
+
+            
+            
+            
     ##### MORE COMPLEX EXAMPLE
     complexNode = root.createChild('complex')
     # rigid body
