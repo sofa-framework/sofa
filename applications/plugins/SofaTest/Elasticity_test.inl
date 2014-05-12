@@ -63,8 +63,8 @@ typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphSc
 template<class DataTypes> PatchTestStruct<DataTypes>
 Elasticity_test<DataTypes>::createRegularGridScene(
         Node::SPtr root,
-        Elasticity_test<DataTypes>::Coord startPoint,
-        Elasticity_test<DataTypes>::Coord endPoint,
+        Coord startPoint,
+        Coord endPoint,
         int numX,
         int numY,
         int numZ,
@@ -229,8 +229,8 @@ CylinderTractionStruct<DataTypes>  Elasticity_test<DataTypes>::createCylinderTra
 /// Create an assembly of a siff hexahedral grid with other objects
 template<typename DT>
 simulation::Node::SPtr Elasticity_test<DT>::createGridScene(
-        Elasticity_test<DT>::Coord  startPoint,
-        Elasticity_test<DT>::Coord endPoint,
+        Coord  startPoint,
+        Coord endPoint,
         int numX,
         int numY,
         int numZ,

@@ -16,7 +16,8 @@ set(SOURCE_FILES
     Elasticity_test.cpp
     
 	)
-	
+AddCompilerDefinitions("SOFA_BUILD_TEST")	
+AddCompilerDefinitions("GTEST_LINKED_AS_SHARED_LIBRARY")	
 set(PYTHON_FILES "")
 
 if(SOFA-PLUGIN_SOFAPYTHON)
@@ -37,5 +38,5 @@ AddLinkerDependencies(SofaSimulationGraph)
 AddLinkerDependencies(SceneCreator)
 
 include_directories("${SOFA_EXTLIBS_DIR}/gtest/include")
-
+AddLinkerDependencies(gtest)
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
