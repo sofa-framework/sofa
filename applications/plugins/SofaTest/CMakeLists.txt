@@ -39,5 +39,9 @@ AddLinkerDependencies(SofaSimulationGraph)
 AddLinkerDependencies(SceneCreator)
 
 include_directories("${SOFA_EXTLIBS_DIR}/gtest/include")
-AddLinkerDependencies(gtest)
+
+if(CMAKE_SYSTEM MATCHES "Windows")
+    AddLinkerDependencies(gtest)
+endif(CMAKE_SYSTEM MATCHES "Windows")
+
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
