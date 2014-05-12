@@ -25,6 +25,7 @@
 #ifndef SCENELOADERPY_H
 #define SCENELOADERPY_H
 
+#include "initSofaPython.h"
 #include <sofa/simulation/common/SceneLoaderFactory.h>
 
 namespace sofa
@@ -37,18 +38,18 @@ class SceneLoaderPY : public SceneLoader
 {
 public:
     /// Pre-loading check
-    virtual bool canLoadFileExtension(const char *extension);
+    SOFA_SOFAPYTHON_API virtual bool canLoadFileExtension(const char *extension);
 
     /// load the file
-    virtual Node::SPtr load(const char *filename);
-    Node::SPtr loadSceneWithArguments(const char *filename, const std::vector<std::string>& arguments=std::vector<std::string>(0));
-    bool loadTestWithArguments(const char *filename, const std::vector<std::string>& arguments=std::vector<std::string>(0));
+    SOFA_SOFAPYTHON_API virtual Node::SPtr load(const char *filename);
+    SOFA_SOFAPYTHON_API Node::SPtr loadSceneWithArguments(const char *filename, const std::vector<std::string>& arguments=std::vector<std::string>(0));
+    SOFA_SOFAPYTHON_API bool loadTestWithArguments(const char *filename, const std::vector<std::string>& arguments=std::vector<std::string>(0));
 
     /// get the file type description
-    virtual std::string getFileTypeDesc();
+    SOFA_SOFAPYTHON_API virtual std::string getFileTypeDesc();
 
     /// get the list of file extensions
-    virtual void getExtensionList(ExtensionList* list);
+    SOFA_SOFAPYTHON_API virtual void getExtensionList(ExtensionList* list);
 };
 
 } // namespace simulation
