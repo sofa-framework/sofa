@@ -24,6 +24,7 @@ class RigidBody:
                 self.node = node.createChild( name )  # node
                 self.dofs = 0   # dofs
                 self.mass = 0   # mass
+                self.com = [0,0,0]
 
         def setFromMesh(self, filepath, density = 1000.0, offset = [0,0,0,0,0,0,1], inertia_forces = False ):
                 ## create the rigid body from a mesh (inertia and com are automatically computed)
@@ -32,6 +33,7 @@ class RigidBody:
 
                 frame = Rigid.Frame()
                 frame.translation = info.com
+                self.com = info.com
 
                 frameoffset = Rigid.Frame(offset)
 
@@ -54,35 +56,36 @@ class RigidBody:
                                         inertia = concat(inertia),
                                         inertia_forces = inertia_forces )
 
-        def addCollisionMesh(self, filepath, scale3d=[1,1,1]):
+        def addCollisionMesh(self, filepath, scale3d=[1,1,1], translation=[0,0,0]):
             ## adding a collision mesh to the rigid body
             # (only a Triangle collision model is created, more models can be added manually)
 
-            return RigidBody.CollisionMesh( self.node, filepath, scale3d )
+            return RigidBody.CollisionMesh( self.node, filepath, scale3d, vec.diff(translation,self.com) )
 
-        def addVisualModel(self, filepath, scale3d=[1,1,1]):
+        def addVisualModel(self, filepath, scale3d=[1,1,1], translation=[0,0,0]):
             ## adding a visual model to the rigid body
-            return RigidBody.VisualModel( self.node, filepath, scale3d )
+            return RigidBody.VisualModel( self.node, filepath, scale3d, vec.diff(translation,self.com) )
 
         def addOffset(self, name, offset=[0,0,0,0,0,0,1], index=0):
             ## adding an offset rgid frame the rigid body (e.g. used as a joint location)
             return RigidBody.Offset( self.node, name, offset, index )
 
-
+        def addMotor( self, forces=[0,0,0,0,0,0] ):
+                return self.node.createObject('ConstantForceField', template='Rigid', name='motor', points='0', forces=concat(forces))
 
         class CollisionMesh:
-            def __init__(self, node, filepath, scale3d):
+            def __init__(self, node, filepath, scale3d, translation):
                     self.node = node.createChild( "collision" )  # node
-                    self.loader = self.node.createObject("MeshObjLoader", name = 'loader', filename = filepath, scale3d = concat(scale3d) )
+                    self.loader = self.node.createObject("MeshObjLoader", name = 'loader', filename = filepath, scale3d = concat(scale3d), translation=concat(translation) )
                     self.topology = self.node.createObject('MeshTopology', name = 'topology', triangles = '@loader.triangles' )
                     self.dofs = self.node.createObject('MechanicalObject', name = 'dofs', position = '@loader.position')
                     self.triangles = self.node.createObject('TriangleModel', name = 'model', template = 'Vec3d')
                     self.mapping = self.node.createObject('RigidMapping')
 
         class VisualModel:
-            def __init__(self, node, filepath, scale3d):
+            def __init__(self, node, filepath, scale3d, translation):
                     self.node = node.createChild( "visual" )  # node
-                    self.model = self.node.createObject('OglModel', template='ExtVec3f', name='model', fileMesh=filepath, scale3d=concat(scale3d))
+                    self.model = self.node.createObject('OglModel', template='ExtVec3f', name='model', fileMesh=filepath, scale3d=concat(scale3d), translation=concat(translation))
                     self.mapping = self.node.createObject('RigidMapping')
 
         class Offset:
@@ -93,9 +96,8 @@ class RigidBody:
                     self.mapping = self.node.createObject('AssembledRigidRigidMapping', source = '0 '+str(frame))
 
 
-#            def addMotor( self, force=0 ):
-#                    self.motor = self.constraint.node.createObject('ConstantForceField', template='Rigid', points='0', forces='0 0 0 -15 0 0', name='cstForceField')
-#                    return self.motor
+            def addMotor( self, forces=[0,0,0,0,0,0] ):
+                    return self.node.createObject('ConstantForceField', template='Rigid', name='motor', points='0', forces=concat(forces))
 
 
 
