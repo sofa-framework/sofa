@@ -9,10 +9,6 @@ import os
 ## A controller to return a test result directly from a python script.
 class Controller(Sofa.PythonScriptController):
 
-    # to ensure member variables are declared and accessible
-    node = 0
-    root = 0
-
     ## @internal storing node pointers
     # @warning must be called manually if your own Controller::onLoaded is surcharged
     def onLoaded(self, node):
