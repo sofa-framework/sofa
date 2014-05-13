@@ -49,8 +49,8 @@ namespace engine
 using helper::vector;
 using defaulttype::Vec;
 
+///Abstract class for sampling integration points according to a specific quadrature method.
 /**
- * Abstract class for sampling integration points according to a specific quadrature method
  * Samplers provide:
  * - Sample positions according to integration method of order @param order
  * - Weighted volume associated to each sample (for elastons, this is a vector of volume moments)
@@ -68,10 +68,11 @@ public:
 
     /** @name quadrature method */
     //@{
-    Data<helper::OptionsGroup> f_method;    ///< Quadrature method
-                                            ///< 0. Gauss-Legendre http://en.wikipedia.org/wiki/Gaussian_quadrature
-                                            ///< 1. Newton-Cotes http://en.wikipedia.org/wiki/Newton%E2%80%93Cotes_formulas
-                                            ///< 2. Elaston [Martin-2010] http://graphics.ethz.ch/publications/papers/paperMar10.php
+    Data<helper::OptionsGroup> f_method;    ///< Quadrature method <br>
+                                            /**< \arg \c 0 Gauss-Legendre http://en.wikipedia.org/wiki/Gaussian_quadrature
+                                                 \arg \c 1 Newton-Cotes http://en.wikipedia.org/wiki/Newton%E2%80%93Cotes_formulas
+                                                 \arg \c 2 Elaston [Martin-2010] http://graphics.ethz.ch/publications/papers/paperMar10.php
+                                            */
     //@}
 
     /** @name position data */

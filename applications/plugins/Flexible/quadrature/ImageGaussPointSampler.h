@@ -451,7 +451,7 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
 
 };
 
-
+///Samples an object represented by an image with gauss points
 template <class ImageTypes_, class MaskTypes_>
 class ImageGaussPointSampler : public BaseGaussPointSampler
 {
