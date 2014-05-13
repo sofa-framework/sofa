@@ -24,7 +24,7 @@ class RigidBody:
                 self.node = node.createChild( name )  # node
                 self.dofs = 0   # dofs
                 self.mass = 0   # mass
-                self.com = [0,0,0]
+                self.com = [0,0,0] # todo handle complete frame and not only translation
 
         def setFromMesh(self, filepath, density = 1000.0, offset = [0,0,0,0,0,0,1], inertia_forces = False ):
                 ## create the rigid body from a mesh (inertia and com are automatically computed)
@@ -67,8 +67,14 @@ class RigidBody:
             return RigidBody.VisualModel( self.node, filepath, scale3d, vec.diff(translation,self.com) )
 
         def addOffset(self, name, offset=[0,0,0,0,0,0,1], index=0):
-            ## adding an offset rgid frame the rigid body (e.g. used as a joint location)
+            ## adding a relative offset to the rigid body (e.g. used as a joint location)
             return RigidBody.Offset( self.node, name, offset, index )
+
+        def addAbsoluteOffset(self, name, offset=[0,0,0,0,0,0,1], index=0):
+            ## adding a offset given in absolute coordinates to the rigid body
+            frame = Rigid.Frame( offset )
+            frame.translation = vec.diff(frame.translation,self.com)
+            return RigidBody.Offset( self.node, name, frame.offset(), index )
 
         def addMotor( self, forces=[0,0,0,0,0,0] ):
                 return self.node.createObject('ConstantForceField', template='Rigid', name='motor', points='0', forces=concat(forces))
@@ -95,6 +101,9 @@ class RigidBody:
                     self.dofs = frame.insert( self.node, name='dofs' )
                     self.mapping = self.node.createObject('AssembledRigidRigidMapping', source = '0 '+str(frame))
 
+            def addOffset(self, name, offset=[0,0,0,0,0,0,1], index=0):
+                ## adding a relative offset to the offset
+                return RigidBody.Offset( self.node, name, offset, index )
 
             def addMotor( self, forces=[0,0,0,0,0,0] ):
                     return self.node.createObject('ConstantForceField', template='Rigid', name='motor', points='0', forces=concat(forces))
