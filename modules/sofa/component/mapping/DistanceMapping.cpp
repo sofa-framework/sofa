@@ -45,18 +45,22 @@ using namespace defaulttype;
 int DistanceMappingClass = core::RegisterObject("Compute edge extensions")
 #ifndef SOFA_FLOAT
         .add< DistanceMapping< Vec3dTypes, Vec1dTypes > >()
+        .add< DistanceMapping< Rigid3dTypes, Vec1dTypes > >()
 #endif
 #ifndef SOFA_DOUBLE
         .add< DistanceMapping< Vec3fTypes, Vec1fTypes > >()
+        .add< DistanceMapping< Rigid3fTypes, Vec1fTypes > >()
 #endif
         ;
 
 #ifndef SOFA_FLOAT
 template class SOFA_MISC_MAPPING_API DistanceMapping< Vec3dTypes, Vec1dTypes >;
+template class SOFA_MISC_MAPPING_API DistanceMapping< Rigid3dTypes, Vec1dTypes >;
 #endif
 
 #ifndef SOFA_DOUBLE
 template class SOFA_MISC_MAPPING_API DistanceMapping< Vec3fTypes, Vec1fTypes >;
+template class SOFA_MISC_MAPPING_API DistanceMapping< Rigid3fTypes, Vec1dTypes >;
 #endif
 
 

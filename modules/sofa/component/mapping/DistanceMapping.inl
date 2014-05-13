@@ -111,7 +111,9 @@ void DistanceMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*
 //        typename Block::Line& gap = block[0];
         InDeriv& gap = directions[i];
 
-        gap = in[links[i][1]] - in[links[i][0]];
+        TIn::setDPos(gap, TIn::getDPos(TIn::coordDifference(in[links[i][1]],in[links[i][0]]))); //Generic code  working also for type!=particles, TODO: optimize by creating specialized functions
+//        gap = in[links[i][1]] - in[links[i][0]]; // only ok for particles
+
         Real gapNorm = gap.norm();
         out[i] = gapNorm - restLengths[i];  // output
 
@@ -215,7 +217,14 @@ void DistanceMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams,
         // note that computing a block is not efficient here, but it would makes sense for storing a stiffness matrix
 
         InDeriv dx = parentDisplacement[links[i][1]] - parentDisplacement[links[i][0]];
-        InDeriv df = b*dx;
+        InDeriv df;
+        for(unsigned j=0; j<Nin; j++)
+        {
+            for(unsigned k=0; k<Nin; k++)
+            {
+                df[j]+=b[j][k]*dx[k];
+            }
+        }
         parentForce[links[i][0]] -= df;
         parentForce[links[i][1]] += df;
 //        cerr<<"DistanceMapping<TIn, TOut>::applyDJT, df = " << df << endl;
@@ -290,8 +299,8 @@ void DistanceMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 
     for(unsigned i=0; i<links.size(); i++ )
     {
-        points.push_back(pos[links[i][0]]);
-        points.push_back(pos[links[i][1]]);
+        points.push_back( Vector3( TIn::getCPos(pos[links[i][0]]) ) );
+        points.push_back( Vector3( TIn::getCPos(pos[links[i][1]]) ));
     }
     vparams->drawTool()->drawLines ( points, 1, Vec<4,float> ( 1,1,0,1 ) );
 }
