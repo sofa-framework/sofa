@@ -102,7 +102,7 @@ def createScene(node):
     # create offsets
     for o in joint_offsets:
       
-	o = rigids[o[1]].addAbsoluteOffset( o[0], o[2] )
+	o = rigids[o[1]].addOffset( o[0], o[2] )
 	
 	#o.dofs.showObject=True
 	#o.dofs.showObjectScale=0.25
