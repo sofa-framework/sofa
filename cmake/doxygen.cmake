@@ -30,7 +30,7 @@ if (SOFA-MISC_DOXYGEN)
     find_package(Doxygen REQUIRED)
 
     file(MAKE_DIRECTORY "${SOFA_BUILD_DIR}/doc")
-    file(MAKE_DIRECTORY "${SOFA_BUILD_DIR}/misc/doxygen-tags")
+    file(MAKE_DIRECTORY "${SOFA_BUILD_DIR}/misc/doxygen-tagfiles")
     file(MAKE_DIRECTORY "${SOFA_BUILD_DIR}/misc/doxyfiles")
 
 
@@ -41,8 +41,7 @@ if (SOFA-MISC_DOXYGEN)
     foreach(project ${GLOBAL_DEPENDENCIES})
         if(TARGET ${project})
             if((${GLOBAL_PROJECT_PATH_${project}} MATCHES ".*/plugins/.*") OR
-                    (${GLOBAL_PROJECT_PATH_${project}} MATCHES ".*/modules/.*") OR
-                    (${GLOBAL_PROJECT_PATH_${project}} MATCHES ".*/framework/.*"))
+                    (${GLOBAL_PROJECT_PATH_${project}} MATCHES ".*/modules/.*"))
                 list(APPEND SOFA_DOCUMENTABLE_PROJECTS ${project})
                 list(APPEND SOFA_DOC_TARGETS doc-${project})
             endif()
@@ -75,7 +74,7 @@ if (SOFA-MISC_DOXYGEN)
         endif()
         set(HTML_STYLESHEET_FILE "${SOFA_CMAKE_DIR}/doxygen/stylesheet.css")
         set(HTML_OUTPUT "${name}")
-        set(GENERATE_TAGFILE "misc/doxygen-tags/${name}")
+        set(GENERATE_TAGFILE "misc/doxygen-tagfiles/${name}")
         configure_file("${SOFA_CMAKE_DIR}/doxygen/Doxyfile.in" "${SOFA_BUILD_DIR}/misc/doxyfiles/Doxyfile-${name}")
 
         # Create the 'doc-${name}' target, which calls doxygen with the Doxyfile we generated
@@ -85,7 +84,6 @@ if (SOFA-MISC_DOXYGEN)
         # Put the target in a folder 'Documentation' (for IDEs)
         set_target_properties("doc-${name}" PROPERTIES FOLDER "Documentation")
     endfunction()
-
 
     # Create documentation targets for all the projects we choose to document
     foreach(project ${SOFA_DOCUMENTABLE_PROJECTS})
@@ -101,9 +99,8 @@ if (SOFA-MISC_DOXYGEN)
             endif()
         endif()
 
-        add_doc_target("${project}" "${input}" "${documentable_dependencies}")
+        add_doc_target("${project}" "${input}" "${documentable_dependencies};SOFA")
     endforeach()
-
 
     # Use configure_file() to generate the source for the main page of
     # the documentation, which lists all the other documentations.
@@ -137,18 +134,44 @@ if (SOFA-MISC_DOXYGEN)
     endmacro()
 
     doc_append("<ul>")
-    doc_append_list("Framework" ".*/framework/.*")
     doc_append_list("Modules" ".*/modules/.*")
     doc_append_list("Plugins" ".*/plugins/.*")
     doc_append("</ul>")
 
-    configure_file("${SOFA_CMAKE_DIR}/doxygen/doc.h.in" "${SOFA_BUILD_DIR}/misc/doc.h")
+    set(LINK_TO_COMPONENT_LIST_PAGE "")
+    if(SOFA-MISC_DOXYGEN_COMPONENT_LIST)
+        set(LINK_TO_COMPONENT_LIST_PAGE "If you are looking for the documentation of a specific component, check out <a href=\"component_list.html\">this page</a>, which lists all the components available in modules.")
+    endif()
+    configure_file("${SOFA_FRAMEWORK_DIR}/doc.h" "${SOFA_BUILD_DIR}/misc/doc.h")
+
+    if(SOFA-MISC_DOXYGEN_COMPONENT_LIST)
+        add_subdirectory(cmake/doxygen)
+    endif()
 
     # Create the target for the main page
-    add_doc_target("SOFA" "${SOFA_BUILD_DIR}/misc/doc.h" "")
+    if(SOFA-MISC_DOXYGEN_COMPONENT_LIST)
+        add_doc_target("SOFA" "${SOFA_FRAMEWORK_DIR}/sofa ${SOFA_BUILD_DIR}/misc/doc.h ${SOFA_BUILD_DIR}/misc/component_list.h" "")
+        add_dependencies("doc-SOFA" generateComponentList)
+    else()
+        add_doc_target("SOFA" "${SOFA_FRAMEWORK_DIR}/sofa ${SOFA_BUILD_DIR}/misc/doc.h" "")
+    endif()
     set_target_properties("doc-SOFA" PROPERTIES FOLDER "Documentation") # IDE Folder
+
     # Create the 'doc' target, to build every documentation
-    add_custom_target("doc" DEPENDS ${SOFA_DOC_TARGETS} "doc-SOFA")
+    if(SOFA-MISC_DOXYGEN_COMPONENT_LIST)
+        add_custom_target("doc"
+            COMMAND bin/generateComponentList > misc/component_list.h
+            DEPENDS ${SOFA_DOC_TARGETS} "doc-SOFA")
+    else()
+        add_custom_target("doc" DEPENDS ${SOFA_DOC_TARGETS} "doc-SOFA")
+    endif()
     set_target_properties("doc" PROPERTIES FOLDER "Documentation") # IDE Folder
+
+    # Create a convenient shortcut to the main page
+    if(NOT WIN32)
+        execute_process(COMMAND ln -sf doc/SOFA/index.html doc/index.html)
+    else()
+        # ?
+    endif()
 
 endif()

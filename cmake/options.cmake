@@ -153,6 +153,10 @@ sofa_option(SOFA-MISC_CMAKE_VERBOSE BOOL OFF "Print more information during the 
 sofa_option(SOFA-MISC_SMP BOOL OFF "Use SMP")
 
 sofa_option(SOFA-MISC_DOXYGEN BOOL OFF "Create targets to generate documentation with doxygen.")
+sofa_option(SOFA-MISC_DOXYGEN_COMPONENT_LIST BOOL OFF "When generating the documentation of SOFA, generate a page with the list of the available components. This is a separate option because it requires compiling SOFA.")
+if(SOFA-MISC_DOXYGEN_COMPONENT_LIST)
+    set(SOFA-LIB_COMPONENT_COMPONENT_MAIN ON CACHE BOOL "" FORCE)
+endif()
 
 ## no opengl
 sofa_option(SOFA-MISC_NO_OPENGL BOOL OFF "Disable OpenGL")

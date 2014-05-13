@@ -22,19 +22,24 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_DOC_H
 
-// This file is only used to provide contents to the doxygen-generated documentation
-// It should not be included by any external code
-
-// * \version SVN trunk HEAD
+// This file is used to generate the main page of the doxygen documentation of SOFA.
+// It should not be included by any external code.
+#error doc.h is not meant to be included, it should be read only by doxygen.
 
 /** \mainpage SOFA API Documentation
  *
- * \TODO TODO: Write main intro page...
+ * You are on the main page of the SOFA API Documentation.
  *
- * A good starting point to browse this documentation is the <a href="namespaces.html">Namespace List</a>.
+ * It is the starting point of the documentation of the classes of the
+ * framework itself.
  *
+ * This page also lists the individual documentation of most modules
+ * and plugins below.
+ *
+ * @LINK_TO_COMPONENT_LIST_PAGE@
+ *
+ * @DOCUMENTATION_LIST@
  */
 
 /** \namespace sofa
@@ -169,5 +174,3 @@
  */
 
 /** \} */
-
-#endif
