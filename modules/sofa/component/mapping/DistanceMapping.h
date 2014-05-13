@@ -104,8 +104,6 @@ public:
 
     virtual void applyJT(const core::ConstraintParams *cparams, Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in);
 
-//    virtual void computeGeometricStiffness(const core::MechanicalParams *mparams);
-
     virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForce, core::ConstMultiVecDerivId  childForce );
 
     virtual const sofa::defaulttype::BaseMatrix* getJ();
@@ -126,6 +124,9 @@ protected:
     vector<defaulttype::BaseMatrix*> stiffnessBaseMatrices;      ///< Vector of geometric stiffness matrices, for the Compliant plugin API
     vector<InDeriv> directions;                         ///< Unit vectors in the directions of the lines
     vector< Real > invlengths;                          ///< inverse of current distances. Null represents the infinity (null distance)
+
+    /// r=b-a only for position (eventual rotation, affine transform... remains null)
+    void computeCoordPositionDifference( InDeriv& r, const InCoord& a, const InCoord& b );
 };
 
 

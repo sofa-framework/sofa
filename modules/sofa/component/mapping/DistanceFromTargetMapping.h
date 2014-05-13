@@ -132,6 +132,8 @@ protected:
     vector<InDeriv> directions;                         ///< Unit vectors in the directions of the lines
     vector< Real > invlengths;                          ///< inverse of current distances. Null represents the infinity (null distance)
 
+    /// r=b-a only for position (eventual rotation, affine transform... remains null)
+    void computeCoordPositionDifference( InDeriv& r, const InCoord& a, const InCoord& b );
 };
 
 

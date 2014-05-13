@@ -129,7 +129,12 @@ void DistanceFromTargetMapping<TIn, TOut>::init()
     this->Inherit::init();  // applies the mapping, so after the Data init
 }
 
-
+template <class TIn, class TOut>
+void DistanceFromTargetMapping<TIn, TOut>::computeCoordPositionDifference( InDeriv& r, const InCoord& a, const InCoord& b )
+{
+    // default implementation
+    TIn::setDPos(r, TIn::getDPos(TIn::coordDifference(b,a))); //Generic code working also for type!=particles but not optimize for particles
+}
 
 template <class TIn, class TOut>
 void DistanceFromTargetMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*/ , Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
@@ -147,7 +152,10 @@ void DistanceFromTargetMapping<TIn, TOut>::apply(const core::MechanicalParams * 
     for(unsigned i=0; i<indices.size(); i++ )
     {
         InDeriv& gap = directions[i];
-        TIn::setDPos(gap, TIn::getDPos(TIn::coordDifference(in[indices[i]],targetPositions[i]))); //Hack for Rigid template, TODO: create a specialized function.
+
+        // gap = in[links[i][1]] - in[links[i][0]] (only for position)
+        computeCoordPositionDifference( gap, targetPositions[i], in[indices[i]] );
+
         Real gapNorm = TIn::getDPos(gap).norm();
 //        cerr<<"DistanceFromTargetMapping<TIn, TOut>::apply, gap = " << gap <<", norm = " << gapNorm << endl;
         out[i] = gapNorm - restDistances[i];  // output
