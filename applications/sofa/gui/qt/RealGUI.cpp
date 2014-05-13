@@ -798,7 +798,7 @@ void RealGUI::fileOpen()
     std::string filename(this->windowFilePath().ascii());
 
     // build the filter with the SceneLoaderFactory
-    std::string filter;
+    std::string filter, allKnownFilters = "All known (";
     SceneLoaderFactory::SceneLoaderList* loaders = SceneLoaderFactory::getInstance()->getEntries();
     for (SceneLoaderFactory::SceneLoaderList::iterator it=loaders->begin(); it!=loaders->end(); it++)
     {
@@ -812,23 +812,30 @@ void RealGUI::fileOpen()
             if (itExt!=extensions.begin()) filter +=" ";
             filter+="*.";
             filter+=(*itExt);       
+
+            allKnownFilters+="*."+(*itExt);
+            if (*it!=loaders->back()) allKnownFilters += " ";
         }
         filter+=")";
     }
+    allKnownFilters+=")";
 #ifdef SOFA_PML
 //            "Scenes (*.scn *.xml);;Simulation (*.simu);;Php Scenes (*.pscn);;Pml Lml (*.pml *.lml);;All (*)",
-    filter += ";;Simulation (*.simu);;Pml Lml (*.pml *.lml);;All (*)";
+    filter += ";;Simulation (*.simu);;Pml Lml (*.pml *.lml)";
 #else
 //            "Scenes (*.scn *.xml);;Simulation (*.simu);;Php Scenes (*.pscn);;All (*)",
-    filter += ";;Simulation (*.simu);;All (*)";
+    filter += ";;Simulation (*.simu)";
 #endif
 
-    QString selectedFilter = "Scenes (*.xml *.scn)"; 
+
+    filter = allKnownFilters+";;"+filter+";;All (*)"; // the first filter is selected by default
+
+    QString selectedFilter( tr(allKnownFilters.c_str()) ); // this does not select the desired filter
+
     QString s = getOpenFileName ( this, filename.empty() ?NULL:filename.c_str(),
             filter.c_str(),
             "open file dialog",  "Choose a file to open", &selectedFilter
                                 );
-
     if ( s.length() >0 )
     {
 #ifdef SOFA_PML
