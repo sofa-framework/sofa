@@ -1779,7 +1779,7 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params /* PARAMS F
         if(v.isNull())
         {
             // ERROR
-            serr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")" << sendl;
+            serr << "Invalid vOp operation 1 ("<<v<<','<<a<<','<<b<<','<<f<<")" << sendl;
             return;
         }
         if (a.isNull())
@@ -1807,7 +1807,7 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params /* PARAMS F
                 if (b.type != v.type)
                 {
                     // ERROR
-                    serr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")" << sendl;
+                    serr << "Invalid vOp operation 2 ("<<v<<','<<a<<','<<b<<','<<f<<")" << sendl;
                     return;
                 }
                 if (v == b)
@@ -1853,7 +1853,7 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params /* PARAMS F
             if (a.type != v.type)
             {
                 // ERROR
-                serr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")" << sendl;
+                serr << "Invalid vOp operation 3 ("<<v<<','<<a<<','<<b<<','<<f<<")" << sendl;
                 return;
             }
             if (b.isNull())
@@ -1921,7 +1921,7 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params /* PARAMS F
                         else
                         {
                             // ERROR
-                            serr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")" << sendl;
+                            serr << "Invalid vOp operation 4 ("<<v<<','<<a<<','<<b<<','<<f<<")" << sendl;
                             return;
                         }
                     }
@@ -1966,7 +1966,7 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params /* PARAMS F
                         else
                         {
                             // ERROR
-                            serr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")" << sendl;
+                            serr << "Invalid vOp operation 5 ("<<v<<','<<a<<','<<b<<','<<f<<")" << sendl;
                             return;
                         }
                     }
@@ -2014,7 +2014,7 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params /* PARAMS F
                         else
                         {
                             // ERROR
-                            serr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")" << sendl;
+                            serr << "Invalid vOp operation 6 ("<<v<<','<<a<<','<<b<<','<<f<<")" << sendl;
                             return;
                         }
                     }
@@ -2089,7 +2089,7 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params /* PARAMS F
                         else
                         {
                             // ERROR
-                            serr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")" << sendl;
+                            serr << "Invalid vOp operation 7 ("<<v<<','<<a<<','<<b<<','<<f<<")" << sendl;
                             return;
                         }
                     }
@@ -2135,7 +2135,7 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params /* PARAMS F
                         else
                         {
                             // ERROR
-                            serr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")" << sendl;
+                            serr << "Invalid vOp operation 8 ("<<v<<','<<a<<','<<b<<','<<f<<")" << sendl;
                             return;
                         }
                     }
@@ -2255,7 +2255,7 @@ template<> inline void clear( double& t )
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::vThreshold(VecId v, double t)
+void MechanicalObject<DataTypes>::vThreshold(VecId v, SReal t)
 {
     if( v.type==sofa::core::V_DERIV)
     {
@@ -2386,6 +2386,9 @@ size_t MechanicalObject<DataTypes>::vSize(const core::ExecParams* params /* PARA
         return 0;
     }
 }
+
+
+
 
 #ifndef SOFA_SMP
 template <class DataTypes>

@@ -367,7 +367,7 @@ public:
 
     virtual void vMultiOp(const core::ExecParams* params /* PARAMS FIRST */, const VMultiOp& ops);
 
-    virtual void vThreshold(core::VecId a, double threshold );
+    virtual void vThreshold(core::VecId a, SReal threshold );
 
     virtual double vDot(const core::ExecParams* params /* PARAMS FIRST */, core::ConstVecId a, core::ConstVecId b);
 
