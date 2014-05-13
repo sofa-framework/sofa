@@ -95,7 +95,7 @@ if (SOFA-MISC_DOXYGEN)
         # we extract the list of source files from the CMakeLists.txt files.
         if("${input}" MATCHES ".*/modules/sofa/component/.*")
             if(NOT WIN32)
-                execute_process(COMMAND bash -c "sed -e 's/#.*//' ${input}/CMakeLists.txt | sed -e ':foo;N;$!bfoo;s/\\n/ /g' | sed -e 's/  */ /g;s/.*( *HEADER_FILES\\([^)]\\+\\)).*( *SOURCE_FILES\\([^)]\\+\\)).*/\\1 \\2/;s:\\.\\.:${SOFA_SRC_DIR}/modules/sofa/component:g'" OUTPUT_VARIABLE input)
+                execute_process(COMMAND bash -c "sed -e 's/#.*//' ${input}/CMakeLists.txt | sed -ne '/\\.\\.\\/.*\\(h\\|cpp\\|inl\\)/s/.*\\(\\.\\.\\/.*\\(h\\|cpp\\|inl\\)\\).*/\\1/p' | sed -e ':foo;N;$!bfoo;s/\\n/ /g' | sed -e 's:\\.\\.:${SOFA_SRC_DIR}/modules/sofa/component:g'" OUTPUT_VARIABLE input)
             endif()
         endif()
 
@@ -169,9 +169,7 @@ if (SOFA-MISC_DOXYGEN)
 
     # Create a convenient shortcut to the main page
     if(NOT WIN32)
-        execute_process(COMMAND ln -sf doc/SOFA/index.html doc/index.html)
-    else()
-        # ?
+        execute_process(COMMAND ln -sf SOFA/index.html doc/index.html)
     endif()
 
 endif()
