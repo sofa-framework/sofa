@@ -46,10 +46,10 @@ links = [
 
 
 def createScene(node):
-    node.createObject('RequiredPlugin', pluginName = 'Compliant' )
+    node.createObject('RequiredPlugin', name = 'Compliant' )
+    node.createObject('CompliantAttachButtonSetting' )
 
     node.createObject('VisualStyle', displayFlags='hideBehaviorModels hideCollisionModels hideMappings hideForceFields')
-    node.createObject('Stabilization', name='Group')
     node.findData('dt').value=0.01
     
     node.findData('gravity').value='0 -9.81 0'
@@ -61,7 +61,7 @@ def createScene(node):
                       name = 'numsolver',
                       iterations = '250',
                       precision = '1e-14')
-        
+
     scene = node.createChild('scene') 
         
     rigid = []
@@ -88,7 +88,6 @@ def createScene(node):
     for i in links:
         j = i[2]
         j.compliance = 0
-        j.damping = 5
         
         p = offset[i[0]][0]
         off_p = offset[i[0]][1]

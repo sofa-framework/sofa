@@ -55,6 +55,9 @@ class Frame:
                 self.rotation = num[3:]
                 return self
 
+        def offset(self):
+            return self.translation + self.rotation
+
 	def __mul__(self, other):
 		res = Frame()
 		res.translation = vec.sum(self.translation,
