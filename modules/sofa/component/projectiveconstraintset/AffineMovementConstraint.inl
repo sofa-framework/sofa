@@ -278,13 +278,14 @@ void AffineMovementConstraint<DataTypes>::transform(const SetIndexArray & indice
 template <>
 void AffineMovementConstraint<Rigid3Types>::transform(const SetIndexArray & indices, Rigid3Types::VecCoord& x0, Rigid3Types::VecCoord& xf)
 {
+    // Get quaternion value
+    RotationMatrix rotationMat(0);
+    Quat quat =  m_quaternion.getValue(); 
+    quat.toMatrix(rotationMat);
+
+    // Apply transformation
     for (size_t i=0; i < indices.size() ; ++i)
     {
-        // Get quaternion value
-        RotationMatrix rotationMat(0);
-        Quat quat =  m_quaternion.getValue(); 
-        quat.toMatrix(rotationMat);
-
         // Translation
         Coord translation = m_translation.getValue();
         xf[indices[i]].getCenter() = rotationMat*(x0[indices[i]].getCenter()) + translation.getCenter();
