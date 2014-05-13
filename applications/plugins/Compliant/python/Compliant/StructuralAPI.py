@@ -24,20 +24,20 @@ class RigidBody:
                 self.node = node.createChild( name )  # node
                 self.dofs = 0   # dofs
                 self.mass = 0   # mass
-                self.com = [0,0,0] # todo handle complete frame and not only translation
+                self.frame = Rigid.Frame()
+                self.framecom = Rigid.Frame() # todo handle complete frame and not only translation
 
         def setFromMesh(self, filepath, density = 1000.0, offset = [0,0,0,0,0,0,1], inertia_forces = False ):
                 ## create the rigid body from a mesh (inertia and com are automatically computed)
                 info = Rigid.generate_rigid(filepath, density)
                 inertia = [info.inertia[0], info.inertia[3 + 1], info.inertia[6 + 2]]
 
-                frame = Rigid.Frame()
-                frame.translation = info.com
-                self.com = info.com
+                self.framecom = Rigid.Frame()
+                self.framecom.translation = info.com
 
-                frameoffset = Rigid.Frame(offset)
+                self.frame = Rigid.Frame(offset) * self.framecom
 
-                self.dofs = (frame*frameoffset).insert( self.node, name = 'dofs' )
+                self.dofs = self.frame.insert( self.node, name = 'dofs' )
                 self.mass = self.node.createObject('RigidMass',
                                         template = 'Rigid',
                                         name = 'mass',
@@ -47,8 +47,8 @@ class RigidBody:
 
         def setManually(self, offset = [0,0,0,0,0,0,1], mass = 1, inertia = [1,1,1], inertia_forces = False ):
                 ## create the rigid body by manually giving its inertia
-                frame = Rigid.Frame( offset )
-                self.dofs = frame.insert( self.node, name='dofs' )
+                self.frame = Rigid.Frame( offset )
+                self.dofs = self.frame.insert( self.node, name='dofs' )
                 self.mass = self.node.createObject('RigidMass',
                                         template = 'Rigid',
                                         name = 'mass',
@@ -56,25 +56,22 @@ class RigidBody:
                                         inertia = concat(inertia),
                                         inertia_forces = inertia_forces )
 
-        def addCollisionMesh(self, filepath, scale3d=[1,1,1], translation=[0,0,0]):
-            ## adding a collision mesh to the rigid body
+        def addCollisionMesh(self, filepath, scale3d=[1,1,1], offset=[0,0,0,0,0,0,1]):
+            ## adding a collision mesh to the rigid body with a relative offset
             # (only a Triangle collision model is created, more models can be added manually)
+            return RigidBody.CollisionMesh( self.node, filepath, scale3d, ( Rigid.Frame(offset) * self.framecom.inv() ).offset() )
 
-            return RigidBody.CollisionMesh( self.node, filepath, scale3d, vec.diff(translation,self.com) )
-
-        def addVisualModel(self, filepath, scale3d=[1,1,1], translation=[0,0,0]):
-            ## adding a visual model to the rigid body
-            return RigidBody.VisualModel( self.node, filepath, scale3d, vec.diff(translation,self.com) )
+        def addVisualModel(self, filepath, scale3d=[1,1,1], offset=[0,0,0,0,0,0,1]):
+            ## adding a visual model to the rigid body with a relative offset
+            return RigidBody.VisualModel( self.node, filepath, scale3d, ( Rigid.Frame(offset) * self.framecom.inv() ).offset() )
 
         def addOffset(self, name, offset=[0,0,0,0,0,0,1], index=0):
             ## adding a relative offset to the rigid body (e.g. used as a joint location)
-            return RigidBody.Offset( self.node, name, offset, index )
+            return RigidBody.Offset( self.node, name, ( Rigid.Frame(offset) * self.framecom.inv() ).offset(), index )
 
         def addAbsoluteOffset(self, name, offset=[0,0,0,0,0,0,1], index=0):
             ## adding a offset given in absolute coordinates to the rigid body
-            frame = Rigid.Frame( offset )
-            frame.translation = vec.diff(frame.translation,self.com)
-            return RigidBody.Offset( self.node, name, frame.offset(), index )
+            return RigidBody.Offset( self.node, name, (Rigid.Frame(offset) * self.frame.inv()).offset(), index )
 
         def addMotor( self, forces=[0,0,0,0,0,0] ):
                 return self.node.createObject('ConstantForceField', template='Rigid', name='motor', points='0', forces=concat(forces))
