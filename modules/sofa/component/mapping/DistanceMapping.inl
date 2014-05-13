@@ -90,7 +90,12 @@ void DistanceMapping<TIn, TOut>::init()
     this->Inherit::init();  // applies the mapping, so after the Data init
 }
 
-
+template <class TIn, class TOut>
+void DistanceMapping<TIn, TOut>::computeCoordPositionDifference( InDeriv& r, const InCoord& a, const InCoord& b )
+{
+    // default implementation
+    TIn::setDPos(r, TIn::getDPos(TIn::coordDifference(b,a))); //Generic code working also for type!=particles but not optimize for particles
+}
 
 template <class TIn, class TOut>
 void DistanceMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*/ , Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
@@ -111,8 +116,8 @@ void DistanceMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*
 //        typename Block::Line& gap = block[0];
         InDeriv& gap = directions[i];
 
-        TIn::setDPos(gap, TIn::getDPos(TIn::coordDifference(in[links[i][1]],in[links[i][0]]))); //Generic code  working also for type!=particles, TODO: optimize by creating specialized functions
-//        gap = in[links[i][1]] - in[links[i][0]]; // only ok for particles
+        // gap = in[links[i][1]] - in[links[i][0]] (only for position)
+        computeCoordPositionDifference( gap, in[links[i][0]], in[links[i][1]] );
 
         Real gapNorm = gap.norm();
         out[i] = gapNorm - restLengths[i];  // output
@@ -171,11 +176,6 @@ void DistanceMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*
 
 }
 
-//template <class TIn, class TOut>
-//void DistanceMapping<TIn, TOut>::computeGeometricStiffness(const core::MechanicalParams *mparams)
-//{
-
-//}
 
 template <class TIn, class TOut>
 void DistanceMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams*/ , Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)

@@ -24,7 +24,6 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_DistanceMapping_CPP
 
-//#include "../initFlexible.h"
 #include "DistanceMapping.inl"
 #include <sofa/core/ObjectFactory.h>
 
@@ -40,6 +39,23 @@ namespace mapping
 SOFA_DECL_CLASS(DistanceMapping)
 
 using namespace defaulttype;
+
+
+
+#ifndef SOFA_FLOAT
+template <>
+void DistanceMapping<Vec3dTypes, Vec1dTypes>::computeCoordPositionDifference( InDeriv& r, const InCoord& a, const InCoord& b )
+{
+    r = b - a;
+}
+#endif
+#ifndef SOFA_DOUBLE
+template <>
+void DistanceMapping<Vec3fTypes, Vec1fTypes>::computeCoordPositionDifference( InDeriv& r, const InCoord& a, const InCoord& b )
+{
+    r = b - a;
+}
+#endif
 
 // Register in the Factory
 int DistanceMappingClass = core::RegisterObject("Compute edge extensions")
