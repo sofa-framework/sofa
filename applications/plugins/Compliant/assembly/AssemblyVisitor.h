@@ -222,7 +222,7 @@ public:
         mm->forceMask.activate(false);
     }
 
-    virtual void bwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
+    virtual void bwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
     {
     }
 
@@ -323,7 +323,7 @@ public:
         mm->forceMask.activate(false);
     }
 
-    virtual void bwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
+    virtual void bwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
     {
     }
 

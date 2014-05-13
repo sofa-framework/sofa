@@ -54,9 +54,8 @@ struct ShapeFunctionInternalData
 {
 };
 
-
-/** Compute interpolation weights, their spatial derivatives, and a local orthonormal frame to map material to spatial coordinates.
-  Interpolation is defined across space as \f$ x_j = \sum_i w_{ij} x_i \f$
+///Compute interpolation weights, their spatial derivatives, and a local orthonormal frame to map material to spatial coordinates.
+/** Interpolation is defined across space as \f$ x_j = \sum_i w_{ij} x_i \f$
   It is used to map displacements/velocities/forces, but any other quantities in general.
   Shape function \f$ w_{ij}(x_j) \f$ encodes the influence of a parent node at \f$ x_i \f$ an a child node at \f$ x_j \f$.
   For efficiency, child nodes depend at most on nbRef parents.

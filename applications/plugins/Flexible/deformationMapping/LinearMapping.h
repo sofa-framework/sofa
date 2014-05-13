@@ -43,11 +43,7 @@ namespace mapping
 
 using helper::vector;
 
-
-/** Generic linear mapping, from a variety of input types to a variety of output types.
-*/
-
-
+///Generic linear mapping, from a variety of input types to a variety of output types.
 template <class TIn, class TOut>
 class LinearMapping : public BaseDeformationMappingT<defaulttype::LinearJacobianBlock<TIn,TOut> >
 {

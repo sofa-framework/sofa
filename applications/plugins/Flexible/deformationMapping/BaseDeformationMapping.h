@@ -48,8 +48,7 @@ namespace sofa
 {
 
 
-/** OutDataTypesInfo: used to provide material_dimensions and tells if position/defo gradients are mapped or not **/
-
+///Class used to provide material_dimensions and tells if position/defo gradients are mapped or not
 template< class OutDataTypes>
 class OutDataTypesInfo
 {
@@ -109,8 +108,7 @@ public:
 };
 
 
-/** Abstract interface to allow forward/backward mapping of arbitrary points (no need to know exact in/output types)
-*/
+///Abstract interface to allow forward/backward mapping of arbitrary points (no need to know exact in/output types)
 template <int spatial_dimensions,typename Real>
 class BasePointMapper : public virtual core::objectmodel::BaseObject
 {
@@ -142,9 +140,8 @@ public:
 
 
 
-/** Abstract mapping (one parent->several children with different influence) using JacobianBlocks or sparse eigen matrix
-*/
 
+///Abstract mapping (one parent->several children with different influence) using JacobianBlocks or sparse eigen matrix
 template <class JacobianBlockType>
 class BaseDeformationMappingT : public BaseDeformationMapping, public core::Mapping<typename JacobianBlockType::In,typename JacobianBlockType::Out>, public BasePointMapper<JacobianBlockType::Out::spatial_dimensions,typename JacobianBlockType::In::Real>
 {
@@ -280,9 +277,11 @@ public:
     virtual size_t getToSize()  const { return this->toModel->getSize(); }
     ///@brief Get child to parent indices as a const reference
     virtual const vector<VRef>& getChildToParentIndex() { return  f_index.getValue(); }
-    ///@brief Get parent to child indices as a const reference
+    ///@brief Get a structure storing parent to child indices as a const reference
+    ///@see f_index_parentToChild to know how to properly use it
     virtual const vector<VRef>& getParentToChildIndex() { return f_index_parentToChild; }
-
+    ///@brief Get a pointer to the shape function where the weights are computed
+    virtual BaseShapeFunction* getShapeFunction() { return _shapeFunction; }
     /** @name PointMapper functions */
     //@{
     virtual void ForwardMapping(Coord& p,const Coord& p0);
@@ -305,10 +304,13 @@ public:
         f_w = weights;
     }
 
-    Data<std::string> f_shapeFunction_name; ///< name of the shape function component (optional: if not specified, will searchup)
-    BaseShapeFunction* _shapeFunction;        ///< where the weights are computed
-    Data<vector<VRef> > f_index;            ///< The numChildren * numRefs column indices. index[i][j] is the index of the j-th parent influencing child i.
-    vector<VRef> f_index_parentToChild;            ///< Constructed at init from f_index to parallelize applyJT. index_parentToChild[i][j] is the index of the j-th children influenced by parent i.
+    Data<std::string> f_shapeFunction_name; ///< Name of the shape function component (optional: if not specified, will searchup)
+    BaseShapeFunction* _shapeFunction;      ///< Where the weights are computed
+    Data<vector<VRef> > f_index;            ///< Store child to parent relationship. index[i][j] is the index of the j-th parent influencing child i.
+    vector<VRef> f_index_parentToChild;     ///< Store parent to child relationship.
+                                            /**< @warning For each parent i, child index <b>and parent index (again)</b> are stored.
+                                                 @warning Therefore to get access to parent's child index only you have to perform a loop over index[i] with an offset of size 2.
+                                             */
     Data<vector<VReal> >       f_w;         ///< Influence weights of the parents for each child
     Data<vector<VGradient> >   f_dw;        ///< Influence weight gradients
     Data<vector<VHessian> >    f_ddw;       ///< Influence weight hessians
