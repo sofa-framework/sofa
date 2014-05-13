@@ -177,8 +177,9 @@ public:
     /// Get vector size
     virtual size_t vSize( const ExecParams* params, ConstVecId v ) = 0;
 
-    /// Apply a threshold to all entries
-    virtual void vThreshold( VecId a, double threshold ) = 0;
+
+    /// Apply a threshold (lower bound) to all entries
+    virtual void vThreshold( VecId a, SReal threshold ) = 0;
 
     /// @}
 
