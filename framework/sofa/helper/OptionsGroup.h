@@ -42,7 +42,6 @@ namespace helper
 ///////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////
 /**
- * \namespace sofa::helper
  * \brief OptionsGroup is a kind of data for a radio button. It has a list of text
  * representing a list of choices, and a interger number indicating the choice
  * selected.
