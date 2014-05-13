@@ -76,7 +76,7 @@ template class SOFA_MISC_MAPPING_API DistanceMapping< Rigid3dTypes, Vec1dTypes >
 
 #ifndef SOFA_DOUBLE
 template class SOFA_MISC_MAPPING_API DistanceMapping< Vec3fTypes, Vec1fTypes >;
-template class SOFA_MISC_MAPPING_API DistanceMapping< Rigid3fTypes, Vec1dTypes >;
+template class SOFA_MISC_MAPPING_API DistanceMapping< Rigid3fTypes, Vec1fTypes >;
 #endif
 
 
