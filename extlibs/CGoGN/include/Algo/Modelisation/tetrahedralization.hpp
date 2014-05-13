@@ -731,9 +731,11 @@ template <typename PFP>
 Dart swap2To3(typename PFP::MAP& map, Dart d)
 {
     std::vector<Dart> edges;
-
+//    map.check();
     Dart d2_1 = map.phi_1(map.phi2(d));
     map.mergeVolumes(d, true);
+//    std::cerr << __FILE__ << std::endl;
+//    map.check();
 
     //
     // Cut the 1st tetrahedron
@@ -877,6 +879,7 @@ std::vector<Dart> swapGen3To2Optimized(typename PFP::MAP& map, Dart d)
         for(unsigned int i = 0 ; i < edges.size() ; ++i)
             map.mergeVolumes(edges[i]);
 
+        map.check();
         Dart d  = dbegin;
         Dart e = map.phi2(d);
         map.flipBackEdge(d);

@@ -183,6 +183,7 @@ public:
 	void saveBin(CGoGNostream& fs);
 
 	bool loadBin(CGoGNistream& fs);
+    void printTableFree();
 };
 
 } // namespace CGoGN

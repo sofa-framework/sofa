@@ -435,12 +435,15 @@ bool EmbeddedMap3::mergeVolumes(Dart d, bool deleteFace)
 {
     Dart d2 = phi2(d);
     const unsigned int deletedFaceID = getEmbedding<FACE>(d);
+    const unsigned deleteVolumeID = getEmbedding<VOLUME>(phi3(d));
+//    std::cerr << "mergeVolumes deletedFaceID = " << deletedFaceID << std::endl;
 
     if(Map3::mergeVolumes(d, deleteFace))
     {
         if (isOrbitEmbedded<VOLUME>())
         {
             setOrbitEmbedding<VOLUME>(d2, getEmbedding<VOLUME>(d2)) ;
+            getAttributeContainer(VOLUME).updateHole(deleteVolumeID);
         }
         if (deleteFace && (deletedFaceID != EMBNULL)) {
             getAttributeContainer(FACE).updateHole(deletedFaceID);
@@ -493,14 +496,15 @@ void EmbeddedMap3::splitVolume(std::vector<Dart>& vd)
 
     if (isOrbitEmbedded<FACE>()) {
         Dart v = vd.front() ;
-        initOrbitEmbeddingNewCell<FACE>(phi2(v));
+//        std::cerr << __FILE__ << " "  << << std::endl;
+        initOrbitEmbeddingNewCell<FACE>(phi2(v)) ;
     }
 
     if(isOrbitEmbedded<VOLUME>())
     {
         Dart v = vd.front() ;
         Dart v23 = phi3(phi2(v));
-        setOrbitEmbeddingOnNewCell<VOLUME>(v23) ;
+        std::cerr << __FILE__ << " EmbeddedMap3::splitVolume : " <<          setOrbitEmbeddingOnNewCell<VOLUME>(v23) << std::endl;
         copyCell<VOLUME>(v23, v) ;
     }
 }

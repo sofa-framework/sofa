@@ -35,31 +35,31 @@ namespace CGoGN
 {
 
 AttributeContainer::AttributeContainer() :
-	m_currentBrowser(NULL),
-	m_orbit(0),
-	m_nbAttributes(0),
-	m_nbUnknown(0),
-	m_size(0),
-	m_maxSize(0),
-	m_lineCost(0),
-	m_attributes_registry_map(NULL)
+    m_currentBrowser(NULL),
+    m_orbit(0),
+    m_nbAttributes(0),
+    m_nbUnknown(0),
+    m_size(0),
+    m_maxSize(0),
+    m_lineCost(0),
+    m_attributes_registry_map(NULL)
 {
-	m_holesBlocks.reserve(512);
+    m_holesBlocks.reserve(512);
 }
 
 AttributeContainer::~AttributeContainer()
 {
-	for (unsigned int index = 0; index < m_tableAttribs.size(); ++index)
-	{
-		if (m_tableAttribs[index] != NULL)
-			delete m_tableAttribs[index];
-	}
+    for (unsigned int index = 0; index < m_tableAttribs.size(); ++index)
+    {
+        if (m_tableAttribs[index] != NULL)
+            delete m_tableAttribs[index];
+    }
 
-	for (unsigned int index = 0; index < m_holesBlocks.size(); ++index)
-	{
-		if (m_holesBlocks[index] != NULL)
-			delete m_holesBlocks[index];
-	}
+    for (unsigned int index = 0; index < m_holesBlocks.size(); ++index)
+    {
+        if (m_holesBlocks[index] != NULL)
+            delete m_holesBlocks[index];
+    }
 
 }
 
@@ -69,65 +69,65 @@ AttributeContainer::~AttributeContainer()
 
 unsigned int AttributeContainer::getAttributeIndex(const std::string& attribName)
 {
-	unsigned int index ;
-	bool found = false ;
-	for (index = 0; index < m_tableAttribs.size() && !found; ++index)
-	{
-		if(m_tableAttribs[index] != NULL && m_tableAttribs[index]->getName() == attribName)
-			found = true ;
-	}
+    unsigned int index ;
+    bool found = false ;
+    for (index = 0; index < m_tableAttribs.size() && !found; ++index)
+    {
+        if(m_tableAttribs[index] != NULL && m_tableAttribs[index]->getName() == attribName)
+            found = true ;
+    }
 
-	if (!found)
-		return UNKNOWN;
-	else
-		return index - 1 ;
+    if (!found)
+        return UNKNOWN;
+    else
+        return index - 1 ;
 }
 
 const std::string& AttributeContainer::getAttributeName(unsigned int index)
 {
-	assert(index < m_tableAttribs.size() || !"getAttributeName: attribute index out of bounds");
-	assert(m_tableAttribs[index] != NULL || !"getAttributeName: attribute does not exist");
+    assert(index < m_tableAttribs.size() || !"getAttributeName: attribute index out of bounds");
+    assert(m_tableAttribs[index] != NULL || !"getAttributeName: attribute does not exist");
 
-	return m_tableAttribs[index]->getName() ;
+    return m_tableAttribs[index]->getName() ;
 }
 
 template <typename T>
 unsigned int AttributeContainer::getAttributeBlocksPointers(unsigned int attrIndex, std::vector<T*>& vect_ptr, unsigned int& byteBlockSize)
 {
-	assert(attrIndex < m_tableAttribs.size() || !"getAttributeBlocksPointers: attribute index out of bounds");
-	assert(m_tableAttribs[attrIndex] != NULL || !"getAttributeBlocksPointers: attribute does not exist");
+    assert(attrIndex < m_tableAttribs.size() || !"getAttributeBlocksPointers: attribute index out of bounds");
+    assert(m_tableAttribs[attrIndex] != NULL || !"getAttributeBlocksPointers: attribute does not exist");
 
-	AttributeMultiVector<T>* atm = dynamic_cast<AttributeMultiVector<T>*>(m_tableAttribs[attrIndex]);
-	assert((atm != NULL) || !"getAttributeBlocksPointers: wrong type");
-	return atm->getBlocksPointers(vect_ptr, byteBlockSize);
+    AttributeMultiVector<T>* atm = dynamic_cast<AttributeMultiVector<T>*>(m_tableAttribs[attrIndex]);
+    assert((atm != NULL) || !"getAttributeBlocksPointers: wrong type");
+    return atm->getBlocksPointers(vect_ptr, byteBlockSize);
 }
 
 unsigned int AttributeContainer::getAttributesNames(std::vector<std::string>& names)
 {
-	names.clear() ;
-	names.reserve(m_nbAttributes) ;
+    names.clear() ;
+    names.reserve(m_nbAttributes) ;
 
-	for (unsigned int i = 0; i < m_tableAttribs.size(); ++i)
-	{
-		if(m_tableAttribs[i] != NULL)
-			names.push_back(m_tableAttribs[i]->getName()) ;
-	}
+    for (unsigned int i = 0; i < m_tableAttribs.size(); ++i)
+    {
+        if(m_tableAttribs[i] != NULL)
+            names.push_back(m_tableAttribs[i]->getName()) ;
+    }
 
-	return m_nbAttributes ;
+    return m_nbAttributes ;
 }
 
 unsigned int AttributeContainer::getAttributesTypes(std::vector<std::string>& types)
 {
-	types.clear() ;
-	types.reserve(m_nbAttributes) ;
+    types.clear() ;
+    types.reserve(m_nbAttributes) ;
 
-	for (unsigned int i = 0; i < m_tableAttribs.size(); ++i)
-	{
-		if(m_tableAttribs[i] != NULL)
-			types.push_back(m_tableAttribs[i]->getTypeName()) ;
-	}
+    for (unsigned int i = 0; i < m_tableAttribs.size(); ++i)
+    {
+        if(m_tableAttribs[i] != NULL)
+            types.push_back(m_tableAttribs[i]->getTypeName()) ;
+    }
 
-	return m_nbAttributes ;
+    return m_nbAttributes ;
 }
 
 /**************************************
@@ -136,172 +136,172 @@ unsigned int AttributeContainer::getAttributesTypes(std::vector<std::string>& ty
 
 void AttributeContainer::swap(AttributeContainer& cont)
 {
-	// swap everything but the orbit
+    // swap everything but the orbit
 
-	m_tableAttribs.swap(cont.m_tableAttribs);
-	m_freeIndices.swap(cont.m_freeIndices);
-	m_holesBlocks.swap(cont.m_holesBlocks);
-	m_tableBlocksWithFree.swap(cont.m_tableBlocksWithFree);
-	m_tableBlocksEmpty.swap(cont.m_tableBlocksEmpty);
+    m_tableAttribs.swap(cont.m_tableAttribs);
+    m_freeIndices.swap(cont.m_freeIndices);
+    m_holesBlocks.swap(cont.m_holesBlocks);
+    m_tableBlocksWithFree.swap(cont.m_tableBlocksWithFree);
+    m_tableBlocksEmpty.swap(cont.m_tableBlocksEmpty);
 
-	unsigned int temp = m_nbAttributes;
-	m_nbAttributes = cont.m_nbAttributes;
-	cont.m_nbAttributes = temp;
+    unsigned int temp = m_nbAttributes;
+    m_nbAttributes = cont.m_nbAttributes;
+    cont.m_nbAttributes = temp;
 
-	temp = m_nbUnknown ;
-	m_nbUnknown = cont.m_nbUnknown ;
-	cont.m_nbUnknown = temp ;
+    temp = m_nbUnknown ;
+    m_nbUnknown = cont.m_nbUnknown ;
+    cont.m_nbUnknown = temp ;
 
-	temp = m_size;
-	m_size = cont.m_size;
-	cont.m_size = temp;
+    temp = m_size;
+    m_size = cont.m_size;
+    cont.m_size = temp;
 
-	temp = m_maxSize;
-	m_maxSize = cont.m_maxSize;
-	cont.m_maxSize = temp;
+    temp = m_maxSize;
+    m_maxSize = cont.m_maxSize;
+    cont.m_maxSize = temp;
 
-	temp = m_lineCost;
-	m_lineCost = cont.m_lineCost;
-	cont.m_lineCost = temp;
+    temp = m_lineCost;
+    m_lineCost = cont.m_lineCost;
+    cont.m_lineCost = temp;
 }
 
 void AttributeContainer::clear(bool removeAttrib)
 {
-	m_size = 0;
- 	m_maxSize = 0;
+    m_size = 0;
+    m_maxSize = 0;
 
-		// raz des cases libres
-	for (std::vector<HoleBlockRef*>::iterator it = m_holesBlocks.begin(); it != m_holesBlocks.end(); ++it)
-		delete (*it);
+    // raz des cases libres
+    for (std::vector<HoleBlockRef*>::iterator it = m_holesBlocks.begin(); it != m_holesBlocks.end(); ++it)
+        delete (*it);
 
-	{ // add bracket just for scope of temporary vectors
-		std::vector<HoleBlockRef*> bf;
-		m_holesBlocks.swap(bf);
+    { // add bracket just for scope of temporary vectors
+        std::vector<HoleBlockRef*> bf;
+        m_holesBlocks.swap(bf);
 
-		std::vector<unsigned int> bwf;
-		m_tableBlocksWithFree.swap(bwf);
-	}
+        std::vector<unsigned int> bwf;
+        m_tableBlocksWithFree.swap(bwf);
+    }
 
-	// detruit les données
-	for (std::vector<AttributeMultiVectorGen*>::iterator it = m_tableAttribs.begin(); it != m_tableAttribs.end(); ++it)
-	{
-		if ((*it) != NULL)
-			(*it)->clear();
-	}
+    // detruit les données
+    for (std::vector<AttributeMultiVectorGen*>::iterator it = m_tableAttribs.begin(); it != m_tableAttribs.end(); ++it)
+    {
+        if ((*it) != NULL)
+            (*it)->clear();
+    }
 
-	// on enleve les attributs ?
-	if (removeAttrib)
-	{
-		// nb a zero
-		m_nbAttributes = 0;
+    // on enleve les attributs ?
+    if (removeAttrib)
+    {
+        // nb a zero
+        m_nbAttributes = 0;
 
-		// detruit tous les attributs
-		for (std::vector<AttributeMultiVectorGen*>::iterator it = m_tableAttribs.begin(); it != m_tableAttribs.end(); ++it)
-		{
-			if ((*it) != NULL)
-				delete (*it);
-		}
+        // detruit tous les attributs
+        for (std::vector<AttributeMultiVectorGen*>::iterator it = m_tableAttribs.begin(); it != m_tableAttribs.end(); ++it)
+        {
+            if ((*it) != NULL)
+                delete (*it);
+        }
 
-		std::vector<AttributeMultiVectorGen*> amg;
-		m_tableAttribs.swap(amg);
+        std::vector<AttributeMultiVectorGen*> amg;
+        m_tableAttribs.swap(amg);
 
-		std::vector<unsigned int> fi;
-		m_freeIndices.swap(fi);
-	}
+        std::vector<unsigned int> fi;
+        m_freeIndices.swap(fi);
+    }
 }
 
 void AttributeContainer::compact(std::vector<unsigned int>& mapOldNew)
 {
-	unsigned int nbe = _BLOCKSIZE_ * m_holesBlocks.size();
+    unsigned int nbe = _BLOCKSIZE_ * m_holesBlocks.size();
 
-	unsigned int nbb = m_holesBlocks.size() - 1;
-	while ((m_holesBlocks[nbb])->empty())
-	{
-		--nbb;
-		nbe -= _BLOCKSIZE_;
-	}
-	++nbb;
+    unsigned int nbb = m_holesBlocks.size() - 1;
+    while ((m_holesBlocks[nbb])->empty())
+    {
+        --nbb;
+        nbe -= _BLOCKSIZE_;
+    }
+    ++nbb;
 
-	mapOldNew.clear();
-	mapOldNew.reserve(nbe);
+    mapOldNew.clear();
+    mapOldNew.reserve(nbe);
 
-	// now get the holes
-	unsigned int baseAdr = 0;
-	for (unsigned int i = 0; i < nbb; ++i)
-	{
-		HoleBlockRef* block = m_holesBlocks[i];
+    // now get the holes
+    unsigned int baseAdr = 0;
+    for (unsigned int i = 0; i < nbb; ++i)
+    {
+        HoleBlockRef* block = m_holesBlocks[i];
 
-		for (unsigned int j = 0; j < _BLOCKSIZE_; ++j)
-		{
-			if (j < block->sizeTable())
-			{
-				if (block->used(j))
-					mapOldNew.push_back(baseAdr);
-				else
-					mapOldNew.push_back(0xffffffff);
-			}
-			else
-				mapOldNew.push_back(0xffffffff);
-			baseAdr++;
-		}
-	}
+        for (unsigned int j = 0; j < _BLOCKSIZE_; ++j)
+        {
+            if (j < block->sizeTable())
+            {
+                if (block->used(j))
+                    mapOldNew.push_back(baseAdr);
+                else
+                    mapOldNew.push_back(0xffffffff);
+            }
+            else
+                mapOldNew.push_back(0xffffffff);
+            baseAdr++;
+        }
+    }
 
-	unsigned int last = mapOldNew.size() - 1;
+    unsigned int last = mapOldNew.size() - 1;
 
- 	for (unsigned int i = 0 ; i < last; ++i)
-	{
-		unsigned int val = mapOldNew[i];
-		if (val == 0xffffffff)
-		{
-			// first find last element
-			while (mapOldNew[last] == 0xffffffff)
-				--last;
+    for (unsigned int i = 0 ; i < last; ++i)
+    {
+        unsigned int val = mapOldNew[i];
+        if (val == 0xffffffff)
+        {
+            // first find last element
+            while (mapOldNew[last] == 0xffffffff)
+                --last;
 
-			// store it in the hole
-			// find the blocks and indices
-			unsigned int bi = i / _BLOCKSIZE_;
-			unsigned int ib = i % _BLOCKSIZE_;
-			unsigned int bj = last / _BLOCKSIZE_;
-			unsigned int jb = last % _BLOCKSIZE_;
+            // store it in the hole
+            // find the blocks and indices
+            unsigned int bi = i / _BLOCKSIZE_;
+            unsigned int ib = i % _BLOCKSIZE_;
+            unsigned int bj = last / _BLOCKSIZE_;
+            unsigned int jb = last % _BLOCKSIZE_;
 
-			//overwrite attributes
-			for(unsigned int j = 0; j < m_tableAttribs.size(); ++j)
-			{
-				if (m_tableAttribs[j] != NULL)
-					m_tableAttribs[j]->overwrite(bj, jb, bi, ib);
-			}
+            //overwrite attributes
+            for(unsigned int j = 0; j < m_tableAttribs.size(); ++j)
+            {
+                if (m_tableAttribs[j] != NULL)
+                    m_tableAttribs[j]->overwrite(bj, jb, bi, ib);
+            }
 
-			// overwrite emptyLine with last line in free blocks
-			m_holesBlocks[bi]->overwrite(ib, m_holesBlocks[bj], jb);
+            // overwrite emptyLine with last line in free blocks
+            m_holesBlocks[bi]->overwrite(ib, m_holesBlocks[bj], jb);
 
-			// set the map value
-			mapOldNew[last] = i;
-			--last;
-		}
-	}
+            // set the map value
+            mapOldNew[last] = i;
+            --last;
+        }
+    }
 
-	for (int i = m_holesBlocks.size() - 1; i >= 0; --i)
-	{
-		HoleBlockRef* ptr = m_holesBlocks[i];
-		if (ptr->compressFree())
-		{
-			delete ptr;
-			m_holesBlocks.pop_back();
-		}
-	}
+    for (int i = m_holesBlocks.size() - 1; i >= 0; --i)
+    {
+        HoleBlockRef* ptr = m_holesBlocks[i];
+        if (ptr->compressFree())
+        {
+            delete ptr;
+            m_holesBlocks.pop_back();
+        }
+    }
 
-	// maj de la table de block libre
-	m_tableBlocksWithFree.clear();
-	HoleBlockRef* block = m_holesBlocks.back();
-	if (!block->full())
-		m_tableBlocksWithFree.push_back(m_holesBlocks.size() - 1);
+    // maj de la table de block libre
+    m_tableBlocksWithFree.clear();
+    HoleBlockRef* block = m_holesBlocks.back();
+    if (!block->full())
+        m_tableBlocksWithFree.push_back(m_holesBlocks.size() - 1);
 
-	// detruit les blocks de donnees inutiles
-	for(unsigned int j = 0; j < m_tableAttribs.size(); ++j)
-	{
-		if (m_tableAttribs[j] != NULL)
-			m_tableAttribs[j]->setNbBlocks(m_holesBlocks.size());
-	}
+    // detruit les blocks de donnees inutiles
+    for(unsigned int j = 0; j < m_tableAttribs.size(); ++j)
+    {
+        if (m_tableAttribs[j] != NULL)
+            m_tableAttribs[j]->setNbBlocks(m_holesBlocks.size());
+    }
 
     m_maxSize = (m_holesBlocks.back())->sizeTable() + (m_holesBlocks.size() - 1) * _BLOCKSIZE_;
 }
@@ -349,103 +349,127 @@ void AttributeContainer::compact(std::vector<unsigned int>& mapOldNew)
 //}
 
 void AttributeContainer::updateHole(unsigned int index) {
-    unsigned int bi = index / _BLOCKSIZE_;
-    unsigned int j = index % _BLOCKSIZE_;
+    std::cerr << "updateHole called for orbit " << m_orbit << ", with index = " << index << std::endl;
+    std::cerr << "###############################################################" << std::endl;
+    std::cerr << "m_tableBlocksWithFree :";
+    for (int i = 0 ; i < m_tableBlocksWithFree.size() ; ++i) {
+        std::cerr << " " << m_tableBlocksWithFree[i] ;
+    }
+    std::cerr << std::endl;
+    std::cerr << "###############################################################" << std::endl;
 
-    HoleBlockRef* block = m_holesBlocks[bi];
-    bool lineRemoved = block->updateHole(j);
+    const unsigned int bi = index / _BLOCKSIZE_;
+    const unsigned int j = index % _BLOCKSIZE_;
+    HoleBlockRef* const block = m_holesBlocks[bi];
+    const bool  blockWasFull = std::find(m_tableBlocksWithFree.begin(), m_tableBlocksWithFree.end(),bi) == m_tableBlocksWithFree.end();
+    //    std::cerr << "update hole called  on index " << index << " bi = " << bi << " j = " << j << std::endl;
+    const bool lineRemoved = block->updateHole(j);
     if (lineRemoved) {
-        if (std::find(m_tableBlocksWithFree.begin(), m_tableBlocksWithFree.end(), bi) == m_tableBlocksWithFree.end())
-        m_tableBlocksWithFree.push_back(bi);
-    } else {
-        std::cerr << "WARNING !! UpdateHole failed " << std::endl;
+        if (blockWasFull) {
+            m_tableBlocksWithFree.push_back(bi);
+        } else {
+            if (block->empty())		// block is empty after removal
+                m_tableBlocksEmpty.push_back(bi);
+        }
+
+        std::sort(m_tableBlocksWithFree.begin(), m_tableBlocksWithFree.end(), std::greater<unsigned int>());
+
+        //        DEBUG
+        std::cerr << "###############################################################" << std::endl;
+        std::cerr << "m_tableBlocksWithFree :";
+        for (int i = 0 ; i < m_tableBlocksWithFree.size() ; ++i) {
+            std::cerr << " " << m_tableBlocksWithFree[i] ;
+        }
+        std::cerr << std::endl;
+        std::cerr << "###############################################################" << std::endl;
+        //        END DEBUG
     }
 }
 
 unsigned int AttributeContainer::insertLine()
 {
-	// if no more rooms
-	if (m_tableBlocksWithFree.empty())
-	{
-		HoleBlockRef* ptr = new HoleBlockRef();					// new block
-		unsigned int numBlock = m_holesBlocks.size();
-		m_tableBlocksWithFree.push_back(numBlock);	// add its future position to block_free
-		m_holesBlocks.push_back(ptr);							// and add it to block table
+    // if no more rooms
+    if (m_tableBlocksWithFree.empty())
+    {
+        HoleBlockRef* ptr = new HoleBlockRef();					// new block
+        unsigned int numBlock = m_holesBlocks.size();
+        m_tableBlocksWithFree.push_back(numBlock);	// add its future position to block_free
+        m_holesBlocks.push_back(ptr);							// and add it to block table
 
-		for(unsigned int i = 0; i < m_tableAttribs.size(); ++i)
-		{
-			if (m_tableAttribs[i] != NULL)
-				m_tableAttribs[i]->addBlock();					// add a block to every attribute
-		}
+        for(unsigned int i = 0; i < m_tableAttribs.size(); ++i)
+        {
+            if (m_tableAttribs[i] != NULL)
+                m_tableAttribs[i]->addBlock();					// add a block to every attribute
+        }
 
-		// inc nb of elements
-		++m_size;
+        // inc nb of elements
+        ++m_size;
 
-		// add new element in block and compute index
+        // add new element in block and compute index
 
-		unsigned int ne = ptr->newRefElt(m_maxSize);
-		return _BLOCKSIZE_ * numBlock + ne;
-	}
-	// else
+        unsigned int ne = ptr->newRefElt(m_maxSize);
+        return _BLOCKSIZE_ * numBlock + ne;
+    }
+    // else
 
-	// get the first free block index (last in vector)
-	unsigned int bf = m_tableBlocksWithFree.back();
-	// get the block
-	HoleBlockRef* block = m_holesBlocks[bf];
+    // get the first free block index (last in vector)
+    unsigned int bf = m_tableBlocksWithFree.back();
+    // get the block
+    HoleBlockRef* block = m_holesBlocks[bf];
 
-	// add new element in block and compute index
-	unsigned int ne = block->newRefElt(m_maxSize);
-	unsigned int index = _BLOCKSIZE_ * bf + ne;
+    // add new element in block and compute index
+    unsigned int ne = block->newRefElt(m_maxSize);
+    unsigned int index = _BLOCKSIZE_ * bf + ne;
 
-	if (ne == _BLOCKSIZE_-1)
-	{
-		if (bf == (m_holesBlocks.size()-1))
-		{
-			// we are filling the last line of capacity
-			HoleBlockRef* ptr = new HoleBlockRef();					// new block
-			unsigned int numBlock = m_holesBlocks.size();
-			m_tableBlocksWithFree.back() = numBlock;
-			m_tableBlocksWithFree.push_back(bf);
-			m_holesBlocks.push_back(ptr);
+    if (ne == _BLOCKSIZE_-1)
+    {
+        if (bf == (m_holesBlocks.size()-1))
+        {
+            // we are filling the last line of capacity
+            HoleBlockRef* ptr = new HoleBlockRef();					// new block
+            unsigned int numBlock = m_holesBlocks.size();
+            m_tableBlocksWithFree.back() = numBlock;
+            m_tableBlocksWithFree.push_back(bf);
+            m_holesBlocks.push_back(ptr);
 
-			for(unsigned int i = 0; i < m_tableAttribs.size(); ++i)
-			{
-				if (m_tableAttribs[i] != NULL)
-					m_tableAttribs[i]->addBlock();					// add a block to every attribute
-			}
-		}
-	}
+            for(unsigned int i = 0; i < m_tableAttribs.size(); ++i)
+            {
+                if (m_tableAttribs[i] != NULL)
+                    m_tableAttribs[i]->addBlock();					// add a block to every attribute
+            }
+        }
+    }
 
-	// if no more room in block remove it from free_blocks
-	if (block->full())
-		m_tableBlocksWithFree.pop_back();
+    // if no more room in block remove it from free_blocks
+    if (block->full())
+        m_tableBlocksWithFree.pop_back();
 
-	++m_size;
-	return index;
+    ++m_size;
+    return index;
 }
 
 
 void AttributeContainer::removeLine(unsigned int index)
 {
-	unsigned int bi = index / _BLOCKSIZE_;
-	unsigned int j = index % _BLOCKSIZE_;
+    unsigned int bi = index / _BLOCKSIZE_;
+    unsigned int j = index % _BLOCKSIZE_;
 
-	HoleBlockRef* block = m_holesBlocks[bi];
+    HoleBlockRef* block = m_holesBlocks[bi];
 
-	if (block->used(j))
-	{
-		if (block->full())		// block has no free elements before removal
-			m_tableBlocksWithFree.push_back(bi);
+    if (block->used(j))
+    {
+        if (block->full())		// block has no free elements before removal
+            m_tableBlocksWithFree.push_back(bi);
 
-		block->removeElt(j);
+        block->removeElt(j);
 
-		--m_size;
+        --m_size;
 
-		if (block->empty())		// block is empty after removal
-			m_tableBlocksEmpty.push_back(bi);
-	}
-	else
-		CGoGNerr << "Error removing non existing index " << index << CGoGNendl;
+        if (block->empty())		// block is empty after removal
+            m_tableBlocksEmpty.push_back(bi);
+    }
+    else
+        std::cerr << "Error removing non existing index " << index << std::endl;
 }
 
 /**************************************
@@ -675,168 +699,168 @@ void AttributeContainer::removeLine(unsigned int index)
 
 void AttributeContainer::saveBin(CGoGNostream& fs, unsigned int id) const
 {
-	// en ascii id et taille les tailles
+    // en ascii id et taille les tailles
 
-	std::vector<unsigned int> bufferui;
-	bufferui.reserve(10);
+    std::vector<unsigned int> bufferui;
+    bufferui.reserve(10);
 
-	bufferui.push_back(id);
-	bufferui.push_back(_BLOCKSIZE_);
-	bufferui.push_back(m_holesBlocks.size());
-	bufferui.push_back(m_tableBlocksWithFree.size());
-	bufferui.push_back(m_nbAttributes);
-	bufferui.push_back(m_size);
-	bufferui.push_back(m_maxSize);
-	bufferui.push_back(m_orbit);
-	bufferui.push_back(m_nbUnknown);
+    bufferui.push_back(id);
+    bufferui.push_back(_BLOCKSIZE_);
+    bufferui.push_back(m_holesBlocks.size());
+    bufferui.push_back(m_tableBlocksWithFree.size());
+    bufferui.push_back(m_nbAttributes);
+    bufferui.push_back(m_size);
+    bufferui.push_back(m_maxSize);
+    bufferui.push_back(m_orbit);
+    bufferui.push_back(m_nbUnknown);
 
-	fs.write(reinterpret_cast<const char*>(&bufferui[0]), bufferui.size()*sizeof(unsigned int));
+    fs.write(reinterpret_cast<const char*>(&bufferui[0]), bufferui.size()*sizeof(unsigned int));
 
-	unsigned int i = 0;
+    unsigned int i = 0;
 
-	for(std::vector<AttributeMultiVectorGen*>::const_iterator it = m_tableAttribs.begin(); it != m_tableAttribs.end(); ++it)
-	{
-		if (*it != NULL)
-			(*it)->saveBin(fs, i++);
-		else
-		{
-			CGoGNerr << "PB saving, NULL ptr in m_tableAttribs" <<  CGoGNendl;
-			i++;
-		}
-	}
+    for(std::vector<AttributeMultiVectorGen*>::const_iterator it = m_tableAttribs.begin(); it != m_tableAttribs.end(); ++it)
+    {
+        if (*it != NULL)
+            (*it)->saveBin(fs, i++);
+        else
+        {
+            CGoGNerr << "PB saving, NULL ptr in m_tableAttribs" <<  CGoGNendl;
+            i++;
+        }
+    }
 
-	//en binaire les blocks de ref
-	for (std::vector<HoleBlockRef*>::const_iterator it = m_holesBlocks.begin(); it != m_holesBlocks.end(); ++it)
-		(*it)->saveBin(fs);
+    //en binaire les blocks de ref
+    for (std::vector<HoleBlockRef*>::const_iterator it = m_holesBlocks.begin(); it != m_holesBlocks.end(); ++it)
+        (*it)->saveBin(fs);
 
-	// les indices des blocks libres
-	fs.write(reinterpret_cast<const char*>(&m_tableBlocksWithFree[0]), m_tableBlocksWithFree.size() * sizeof(unsigned int));
+    // les indices des blocks libres
+    fs.write(reinterpret_cast<const char*>(&m_tableBlocksWithFree[0]), m_tableBlocksWithFree.size() * sizeof(unsigned int));
 }
 
 unsigned int AttributeContainer::loadBinId(CGoGNistream& fs)
 {
-	unsigned int id;
-	fs.read(reinterpret_cast<char*>(&id), sizeof(unsigned int));
-	return id;
+    unsigned int id;
+    fs.read(reinterpret_cast<char*>(&id), sizeof(unsigned int));
+    return id;
 }
 
 bool AttributeContainer::loadBin(CGoGNistream& fs)
 {
-	if (m_attributes_registry_map == NULL)
-	{
-		CGoGNerr << "Attribute Registry non initialized"<< CGoGNendl;
-		return false;
-	}
+    if (m_attributes_registry_map == NULL)
+    {
+        CGoGNerr << "Attribute Registry non initialized"<< CGoGNendl;
+        return false;
+    }
 
-	std::vector<unsigned int> bufferui;
-	bufferui.resize(256);
+    std::vector<unsigned int> bufferui;
+    bufferui.resize(256);
 
-	fs.read(reinterpret_cast<char*>(&(bufferui[0])), 8*sizeof(unsigned int));	//WARNING 9 hard coded
+    fs.read(reinterpret_cast<char*>(&(bufferui[0])), 8*sizeof(unsigned int));	//WARNING 9 hard coded
 
-	unsigned int bs, szHB, szBWF, nbAtt;
-	bs = bufferui[0];
-	szHB = bufferui[1];
-	szBWF = bufferui[2];
-	nbAtt = bufferui[3];
-	m_size = bufferui[4];
-	m_maxSize = bufferui[5];
-	m_orbit = bufferui[6];
-	m_nbUnknown = bufferui[7];
-
-
-	if (bs != _BLOCKSIZE_)
-	{
-		CGoGNerr << "Loading unavailable, different block sizes: "<<_BLOCKSIZE_<<" / " << bs << CGoGNendl;
-		return false;
-	}
+    unsigned int bs, szHB, szBWF, nbAtt;
+    bs = bufferui[0];
+    szHB = bufferui[1];
+    szBWF = bufferui[2];
+    nbAtt = bufferui[3];
+    m_size = bufferui[4];
+    m_maxSize = bufferui[5];
+    m_orbit = bufferui[6];
+    m_nbUnknown = bufferui[7];
 
 
-	for (unsigned int j = 0; j < nbAtt; ++j)
-	{
-		std::string nameAtt;
-		std::string typeAtt;
-		/*unsigned int id = */AttributeMultiVectorGen::loadBinInfos(fs,nameAtt, typeAtt);
+    if (bs != _BLOCKSIZE_)
+    {
+        CGoGNerr << "Loading unavailable, different block sizes: "<<_BLOCKSIZE_<<" / " << bs << CGoGNendl;
+        return false;
+    }
 
-		std::map<std::string, RegisteredBaseAttribute*>::iterator itAtt = m_attributes_registry_map->find(typeAtt);
-		if (itAtt == m_attributes_registry_map->end())
-		{
-			CGoGNout << "Skipping non registred attribute of type name"<< typeAtt <<CGoGNendl;
-			AttributeMultiVectorGen::skipLoadBin(fs);
-		}
-		else
-		{
-			RegisteredBaseAttribute* ra = itAtt->second;
-			AttributeMultiVectorGen* amvg = ra->addAttribute(*this, nameAtt);
-//			CGoGNout << "loading attribute " << nameAtt << " : " << typeAtt << CGoGNendl;
-			amvg->loadBin(fs);
-		}
-	}
 
-	m_holesBlocks.resize(szHB);
+    for (unsigned int j = 0; j < nbAtt; ++j)
+    {
+        std::string nameAtt;
+        std::string typeAtt;
+        /*unsigned int id = */AttributeMultiVectorGen::loadBinInfos(fs,nameAtt, typeAtt);
 
-	// blocks
-	for (unsigned int i = 0; i < szHB; ++i)
-	{
-		m_holesBlocks[i] = new HoleBlockRef;
-		m_holesBlocks[i]->loadBin(fs);
-	}
+        std::map<std::string, RegisteredBaseAttribute*>::iterator itAtt = m_attributes_registry_map->find(typeAtt);
+        if (itAtt == m_attributes_registry_map->end())
+        {
+            CGoGNout << "Skipping non registred attribute of type name"<< typeAtt <<CGoGNendl;
+            AttributeMultiVectorGen::skipLoadBin(fs);
+        }
+        else
+        {
+            RegisteredBaseAttribute* ra = itAtt->second;
+            AttributeMultiVectorGen* amvg = ra->addAttribute(*this, nameAtt);
+            //			CGoGNout << "loading attribute " << nameAtt << " : " << typeAtt << CGoGNendl;
+            amvg->loadBin(fs);
+        }
+    }
 
-	// les indices des blocks libres
-	m_tableBlocksWithFree.resize(szBWF);
-	fs.read(reinterpret_cast<char*>(&(m_tableBlocksWithFree[0])), szBWF*sizeof(unsigned int));
+    m_holesBlocks.resize(szHB);
 
-	return true;
+    // blocks
+    for (unsigned int i = 0; i < szHB; ++i)
+    {
+        m_holesBlocks[i] = new HoleBlockRef;
+        m_holesBlocks[i]->loadBin(fs);
+    }
+
+    // les indices des blocks libres
+    m_tableBlocksWithFree.resize(szBWF);
+    fs.read(reinterpret_cast<char*>(&(m_tableBlocksWithFree[0])), szBWF*sizeof(unsigned int));
+
+    return true;
 }
 
 void  AttributeContainer::copyFrom(const AttributeContainer& cont)
 {
-// 	clear is done from the map
+    // 	clear is done from the map
 
-	m_size = cont.m_size;
-	m_maxSize = cont.m_maxSize;
-	m_orbit = cont.m_orbit;
-	m_nbUnknown = cont.m_nbUnknown;
-	m_nbAttributes = cont.m_nbAttributes;
-	m_lineCost = cont.m_lineCost;
+    m_size = cont.m_size;
+    m_maxSize = cont.m_maxSize;
+    m_orbit = cont.m_orbit;
+    m_nbUnknown = cont.m_nbUnknown;
+    m_nbAttributes = cont.m_nbAttributes;
+    m_lineCost = cont.m_lineCost;
 
-	// blocks
-	unsigned int sz = cont.m_holesBlocks.size();
-	m_holesBlocks.resize(sz);
-	for (unsigned int i = 0; i < sz; ++i)
-		m_holesBlocks[i] = new HoleBlockRef(*(cont.m_holesBlocks[i]));
+    // blocks
+    unsigned int sz = cont.m_holesBlocks.size();
+    m_holesBlocks.resize(sz);
+    for (unsigned int i = 0; i < sz; ++i)
+        m_holesBlocks[i] = new HoleBlockRef(*(cont.m_holesBlocks[i]));
 
-	// blocks with free
-	sz = cont.m_tableBlocksWithFree.size();
-	m_tableBlocksWithFree.resize(sz);
-	for (unsigned int i = 0; i < sz; ++i)
-		m_tableBlocksWithFree[i] = cont.m_tableBlocksWithFree[i];
+    // blocks with free
+    sz = cont.m_tableBlocksWithFree.size();
+    m_tableBlocksWithFree.resize(sz);
+    for (unsigned int i = 0; i < sz; ++i)
+        m_tableBlocksWithFree[i] = cont.m_tableBlocksWithFree[i];
 
-	// empty blocks
-	sz = cont.m_tableBlocksEmpty.size();
-	m_tableBlocksEmpty.resize(sz);
-	for (unsigned int i = 0; i < sz; ++i)
-		m_tableBlocksEmpty[i] = cont.m_tableBlocksEmpty[i];
+    // empty blocks
+    sz = cont.m_tableBlocksEmpty.size();
+    m_tableBlocksEmpty.resize(sz);
+    for (unsigned int i = 0; i < sz; ++i)
+        m_tableBlocksEmpty[i] = cont.m_tableBlocksEmpty[i];
 
-	//attributes (warning attribute can have different numbers than in original)
-	m_tableAttribs.reserve(m_nbAttributes);
-	sz = cont.m_tableAttribs.size();
-	for (unsigned int i = 0; i < sz; ++i)
-	{
-		if (cont.m_tableAttribs[i] != NULL)
-		{
-			AttributeMultiVectorGen* ptr = cont.m_tableAttribs[i]->new_obj();
-			ptr->setName(cont.m_tableAttribs[i]->getName());
-			ptr->setOrbit(cont.m_tableAttribs[i]->getOrbit());
-			ptr->setIndex(m_tableAttribs.size());
-			ptr->setNbBlocks(cont.m_tableAttribs[i]->getNbBlocks());
-			ptr->copy(cont.m_tableAttribs[i]);
-	//			if (cont.m_tableAttribs[i]->toProcess())
-	//				ptr->toggleProcess();
-	//			else
-	//				ptr->toggleNoProcess();
-			m_tableAttribs.push_back(ptr);
-		}
-	}
+    //attributes (warning attribute can have different numbers than in original)
+    m_tableAttribs.reserve(m_nbAttributes);
+    sz = cont.m_tableAttribs.size();
+    for (unsigned int i = 0; i < sz; ++i)
+    {
+        if (cont.m_tableAttribs[i] != NULL)
+        {
+            AttributeMultiVectorGen* ptr = cont.m_tableAttribs[i]->new_obj();
+            ptr->setName(cont.m_tableAttribs[i]->getName());
+            ptr->setOrbit(cont.m_tableAttribs[i]->getOrbit());
+            ptr->setIndex(m_tableAttribs.size());
+            ptr->setNbBlocks(cont.m_tableAttribs[i]->getNbBlocks());
+            ptr->copy(cont.m_tableAttribs[i]);
+            //			if (cont.m_tableAttribs[i]->toProcess())
+            //				ptr->toggleProcess();
+            //			else
+            //				ptr->toggleNoProcess();
+            m_tableAttribs.push_back(ptr);
+        }
+    }
 }
 
 }
