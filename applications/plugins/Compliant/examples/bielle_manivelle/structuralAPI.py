@@ -15,7 +15,7 @@ parts = [
 ]
 
 
-# joint offsets
+# joint offsets: name, rigid body, offset
 joint_offsets = [
     ["offset0", 0, [0, 0, 0, 0, 0, 0, 1]],
     ["offset0", 1, [0, 0, 0.148, 0, 0, 0, 1]],
@@ -30,7 +30,7 @@ joint_offsets = [
     ["offset3", 0, [2.2, 0, 0.33, 0, 0, 0, 1]]    
 ]
 
-# joints: parent offset, child offset, joint def
+# joints: name, frame1, frame2, joint type, joint axis
 links = [ 
 
     #revolute joint around z
