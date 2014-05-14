@@ -115,6 +115,7 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
     :  useTopology(false)
     , lastMeshRev(-1)
     , castShadow(true)
+    , m_initRestPositions(initData  (&m_initRestPositions, false, "initRestPositions", "True if rest positions must be initialized with initial positions"))
     , m_useNormals		(initData	(&m_useNormals, true, "useNormals", "True if normal smoothing groups should be read from file"))
     , m_updateNormals   (initData   (&m_updateNormals, true, "updateNormals", "True if normals should be updated at each iteration"))
     , m_computeTangents (initData   (&m_computeTangents, false, "computeTangents", "True if tangents should be computed at startup"))
@@ -338,6 +339,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
         vsplit = true;
 
     // Then we can create the final arrays
+    VecCoord& restPositions = *(m_restPositions.beginEdit());
     VecCoord& positions = *(m_positions.beginEdit());
     VecCoord& vertices2 = *(m_vertices2.beginEdit());
     ResizableExtVector<Deriv>& vnormals = *(m_vnormals.beginEdit());
@@ -346,6 +348,9 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
     ResizableExtVector<int>& vertNormIdx = (*m_vertNormIdx.beginEdit());;
 
     positions.resize(nbVIn);
+
+    if (m_initRestPositions.getValue())
+        restPositions.resize(nbVIn);
 
     if (vsplit)
     {
@@ -366,6 +371,9 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
     for (int i = 0, j = 0; i < nbVIn; i++)
     {
         positions[i] = verticesImport[i];
+
+        if (m_initRestPositions.getValue())
+            restPositions[i] = verticesImport[i];
 
         std::map<int, int> normMap;
         for (std::map<std::pair<int, int>, int>::iterator it = vertTexNormMap[i].begin();
@@ -404,6 +412,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
     m_vnormals.endEdit();
     m_vtexcoords.endEdit();
     m_positions.endEdit();
+    m_restPositions.endEdit();
     m_vertPosIdx.endEdit();
     m_vertNormIdx.endEdit();
 
