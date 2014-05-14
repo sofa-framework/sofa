@@ -26,7 +26,6 @@
 #include <sofa/helper/RandomGenerator.h>
 
 // Including component
-#include <sofa/component/projectiveconstraintset/AffineMovementConstraint.h>
 #include "../deformationMapping/LinearMapping.h"
 
 #include <Mapping_test.h>
@@ -45,7 +44,7 @@ namespace sofa {
    */
 
     template <typename _Mapping>
-    struct RigidLinearDeformationMappings_test : public Mapping_test<_Mapping>
+    struct AffineLinearDeformationMappings_test : public Mapping_test<_Mapping>
     {
         typedef Mapping_test<_Mapping> Inherited;
         typedef typename Inherited::In In;
@@ -54,16 +53,17 @@ namespace sofa {
         typedef typename Inherited::Out Out;
         typedef typename Inherited::Real Real;
         typedef typename Inherited::OutVecCoord OutVecCoord;
-        typedef typename Inherited::InVecCoord InVecCoord; 
+        typedef typename Inherited::InVecCoord InVecCoord;
         typedef typename Out::Frame OutFrame;
         typedef component::container::MechanicalObject<In> InDOFs;
         typedef component::container::MechanicalObject<Out> OutDOFs;
         typedef defaulttype::Quat Quat;
         typedef defaulttype::Vector3 Vec3;
 
-        /// Tested Rotation: random rotation matrix  
-        defaulttype::Mat<3,3,Real> testedRotation; 
+        /// Tested quaternion: random quaternion
         Quat testedQuaternion;
+        /// Tested Rotation: matrix from testedQuaternion 
+        defaulttype::Mat<3,3,Real> testedRotation; 
         /// Tested Translation: random translation
         Coord testedTranslation;
         /// Seed for random value
@@ -72,23 +72,16 @@ namespace sofa {
         sofa::helper::RandomGenerator randomGenerator;
 
         // Constructor: call the constructor of the base class which loads the scene to test
-        RigidLinearDeformationMappings_test() : Mapping_test<_Mapping>(std::string(FLEXIBLE_TEST_SCENES_DIR) + "/" + "RigidLineDeformationMapping.scn")
+        AffineLinearDeformationMappings_test() : Mapping_test<_Mapping>(std::string(FLEXIBLE_TEST_SCENES_DIR) + "/" + "AffineLineDeformationMapping.scn")
         {   
             Inherited::errorMax = 5000;
-         
             seed=2;
-            // rotation and translation
+            // Set random rotation and translation
             randomGenerator.initSeed(seed);
             this->SetRandomTestedRotationAndTranslation(seed);
-            typedef projectiveconstraintset::AffineMovementConstraint<In> AffineMovementConstraint;
-            typename AffineMovementConstraint::SPtr affineConstraint  = this->root->template get<AffineMovementConstraint>(this->root->SearchDown);
-            affineConstraint->m_quaternion.setValue(testedQuaternion);
-            affineConstraint->m_translation.setValue(testedTranslation);
-            testedQuaternion.toMatrix(testedRotation);
-
         }
              
-        void SetRandomTestedRotationAndTranslation(int /*seedValue*/)
+        void SetRandomTestedRotationAndTranslation(int)
         {
             // Random Rotation
             SReal x,y,z,w;
@@ -107,28 +100,41 @@ namespace sofa {
             w = randomGenerator.random<SReal>(0.0, M_PI);
             // Quat = (rotationAxis*sin(angle/2) , cos(angle/2)) angle = 2*w
             testedQuaternion = Quat(sin(w)*rotationAxis[0],rotationAxis[1]*sin(w),rotationAxis[2]*sin(w),cos(w));
-   
+            testedQuaternion.toMatrix(testedRotation);
+
             // Translation
-           for(size_t i=0;i<Coord::total_size;++i)
-           {
-               if(i<3)
-               testedTranslation[i]=randomGenerator.random<SReal>(-2.0,2.0);
-               else
-               testedTranslation[i]=testedQuaternion[i]; 
-           }
+            for(size_t i=0;i<Coord::total_size;++i)
+            {
+                if(i<3)
+                    testedTranslation[i]=randomGenerator.random<SReal>(-2.0,2.0);
+                else
+                    testedTranslation[i]=testedQuaternion[i]; 
+            }
 
         }
 
-        /// After simulation compare the positions of deformation gradients to the theoretical positions.
+        // Apply affine transform to each dof
+        void applyAffineTransform(InVecCoord& x0, InVecCoord& xf)
+        {
+            for (size_t i=0; i < x0.size() ; ++i)
+            {
+                // Translation
+                xf[i].getCenter() = testedRotation*(x0[i].getCenter()) + testedTranslation.getCenter();
+     
+                // Rotation
+                xf[i].getAffine() = testedRotation*x0[i].getAffine();
+
+            }
+        }
+        
+        /// After simulation compare the positions of points to the theoretical positions.
         bool runTest(double convergenceAccuracy)
         {
             // Init simulation
             sofa::simulation::getSimulation()->init(this->root.get());
-
-            // Get dofs positions
+     
+            // xin
             typename  InDOFs::ReadVecCoord x = this->inDofs->readPositions();
-            
-            // xin 
             InVecCoord xin(x.size());
             copyFromData(xin,x);
     
@@ -137,58 +143,14 @@ namespace sofa {
             OutVecCoord xout(xelasticityDofs.size());
             copyFromData(xout,xelasticityDofs);
 
-            // Initialize parameters to test convergence
-            size_t numNodes = xin.size();
-            InVecCoord xPrev(numNodes);
-            InVecCoord dx(numNodes); 
-            bool hasConverged = true;
+            // Apply affine transform to each dof
+            InVecCoord parentNew(xin.size());
+            this->applyAffineTransform(xin,parentNew);
 
-            for (size_t i=0; i<numNodes; i++)
-            {
-                xPrev[i] = CPos(0,0,0);
-            }
-
-            // Animate
-            do
-            { 
-                hasConverged = true;
-                sofa::simulation::getSimulation()->animate(this->root.get(),0.05);
-                typename InDOFs::ReadVecCoord xCurrent = this->inDofs->readPositions();
-
-                // Compute dx
-                for (size_t i=0; i<xCurrent.size(); i++)
-                {
-                    // Translation
-                    dx[i].getCenter() = xCurrent[i].getCenter()-xPrev[i].getCenter();
-                    //Rotation
-                    dx[i].getOrientation() = xCurrent[i].getOrientation().inverse()*xPrev[i].getOrientation();
-                    // Test convergence
-                    if(dx[i].norm()>convergenceAccuracy) hasConverged = false;
-                }
-
-                // xprev = xCurrent
-                for (size_t i=0; i<numNodes; i++)
-                {
-                    xPrev[i]=xCurrent[i];
-                }
-            }
-            while(!hasConverged); // not converged
-
-            // Parent new : Get simulated positions
-            typename InDOFs::WriteVecCoord xinNew = this->inDofs->writePositions();
-     
-            // New position of parents
-            InVecCoord parentNew(xinNew.size());
-            for(size_t i=0; i<xinNew.size();++i)
-            {
-                parentNew[i] = xinNew[i];
-            }
-   
             // Expected children positions: rotation from affine constraint
-            typename OutDOFs::WriteVecCoord xoutNew = this->outDofs->writePositions();
-            OutVecCoord expectedChildCoords(xoutNew.size());
+            OutVecCoord expectedChildCoords(xout.size());
   
-            for(size_t i=0;i<xoutNew.size();++i)
+            for(size_t i=0;i<xout.size();++i)
             {
                 OutFrame &f = expectedChildCoords[i].getF();
                 f = testedRotation;
@@ -198,21 +160,21 @@ namespace sofa {
            return Inherited::runTest(xin,xout,parentNew,expectedChildCoords);
 
         }
-
+        
     };
 
       // Define the list of DataTypes to instantiate
     using testing::Types;
     typedef Types<
-        LinearMapping<Rigid3Types, F331Types>,
-        LinearMapping<Rigid3Types, F332Types>
+        LinearMapping<Affine3Types, F331Types>,
+        LinearMapping<Affine3Types, F332Types>
     > DataTypes; // the types to instantiate.
 
     // Test suite for all the instantiations
-    TYPED_TEST_CASE(RigidLinearDeformationMappings_test, DataTypes);
+    TYPED_TEST_CASE(AffineLinearDeformationMappings_test, DataTypes);
 
     // test case: polarcorotationalStrainMapping 
-    TYPED_TEST( RigidLinearDeformationMappings_test , RigidStrainDeformationPatchTest)
+    TYPED_TEST( AffineLinearDeformationMappings_test , AffineStrainDeformationPatchTest)
     {
         ASSERT_TRUE( this->runTest(1e-15));
     }
