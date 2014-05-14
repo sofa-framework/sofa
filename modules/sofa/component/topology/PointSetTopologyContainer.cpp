@@ -269,9 +269,9 @@ void PointSetTopologyContainer::updateDataEngineGraph(sofa::core::objectmodel::B
         for ( it_engines = my_enginesList.begin(); it_engines!=my_enginesList.end(); ++it_engines)
         {
 #ifndef NDEBUG
-            std::string nameStored = (*it_engines)->getName();
-            std::cout << "DEBUG: engine name stored: " << nameStored << std::endl;
-            std::cout << "DEBUG: engine name stored: " << (*it_engines) << std::endl;
+            // std::string nameStored = (*it_engines)->getName();
+            // std::cout << "DEBUG: engine name stored: " << nameStored << std::endl;
+            // std::cout << "DEBUG: engine name stored: " << (*it_engines) << std::endl;
 #endif
             if ((*it_engines_rev) == (*it_engines))
             {

@@ -1082,10 +1082,10 @@ void TriangleSetTopologyContainer::updateTopologyEngineGraph()
     EdgeSetTopologyContainer::updateTopologyEngineGraph();
 
 #ifndef NDEBUG
-    std::cout << "TriangleSetTopologyContainer::updateTopologyEngineGraph()" << std::endl;
-    std::cout << "point m_enginesList.size(): " << PointSetTopologyContainer::m_enginesList.size() << std::endl;
-    std::cout << "edge m_enginesList.size(): " << EdgeSetTopologyContainer::m_enginesList.size() << std::endl;
-    std::cout << "triangle m_enginesList.size(): " << this->m_enginesList.size() << std::endl;
+    // std::cout << "TriangleSetTopologyContainer::updateTopologyEngineGraph()" << std::endl;
+    // std::cout << "point m_enginesList.size(): " << PointSetTopologyContainer::m_enginesList.size() << std::endl;
+    // std::cout << "edge m_enginesList.size(): " << EdgeSetTopologyContainer::m_enginesList.size() << std::endl;
+    // std::cout << "triangle m_enginesList.size(): " << this->m_enginesList.size() << std::endl;
 #endif
 }
 
