@@ -63,9 +63,21 @@ if(SOFA-EXTERNAL_BOOST)
 				endif()
 		endif()
 	endif()
-    set(Boost_USE_STATIC_LIBS OFF)
+
+	if(SOFA-MISC_STATIC_LINK_BOOST)
+		set(Boost_USE_STATIC_LIBS ON)
+		set(Boost_USE_STATIC_RUNTIME ON)
+	else()
+		set(Boost_USE_STATIC_LIBS OFF)
+		set(Boost_USE_STATIC_RUNTIME OFF)
+	endif()
+	
+	if(WIN32)
+		  # Setting some more suffixes for the library
+		set(Boost_LIB_PREFIX "lib") #if you compile BOOST yourself then the lib is appended to the name
+	endif()
+
     set(Boost_USE_MULTITHREADED ON)
-    set(Boost_USE_STATIC_RUNTIME OFF)
     find_package("Boost" REQUIRED COMPONENTS thread graph system)
     set(Boost_LIB_DIAGNOSTIC_DEFINITIONS ${Boost_LIB_DIAGNOSTIC_DEFINITIONS} CACHE INTERNAL "Boost lib diagnostic definitions" FORCE)
     set(GLOBAL_COMPILER_DEFINES ${GLOBAL_COMPILER_DEFINES} BOOST_ALL_NO_LIB CACHE INTERNAL "Global Compiler Defines" FORCE)

@@ -385,13 +385,13 @@ if(XBOX)
     # eigen - cpuid identification code does not exist on the platform, it's cleaner to disable it here.
     list(APPEND compilerDefines EIGEN_NO_CPUID)
 endif()
+
 if(MSVC)
     sofa_option(SOFA-MISC_VECTORIZE BOOL OFF "Enable the use of SSE2 instructions by the compiler. (MSVC only)")
 endif()
 
-
-
-
+sofa_option(SOFA-MISC_NO_EXCEPTIONS BOOL OFF "Disable the use of exceptions")
+sofa_option(SOFA-MISC_STATIC_LINK_BOOST BOOL OFF "Use static library version of boost")
 
 ##############
 #### CUDA ####
