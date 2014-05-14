@@ -60,21 +60,21 @@ class RigidBody:
             ## adding a collision mesh to the rigid body with a relative offset
             # (only a Triangle collision model is created, more models can be added manually)
             # @warning the translation due to the center of mass offset is automatically removed. If necessary a function without this mecanism could be added
-            return RigidBody.CollisionMesh( self.node, filepath, scale3d, ( Rigid.Frame(offset) * self.framecom.inv() ).offset() )
+            return RigidBody.CollisionMesh( self.node, filepath, scale3d, ( self.framecom.inv() * Rigid.Frame(offset) ).offset() )
 
         def addVisualModel(self, filepath, scale3d=[1,1,1], offset=[0,0,0,0,0,0,1]):
             ## adding a visual model to the rigid body with a relative offset
             # @warning the translation due to the center of mass offset is automatically removed. If necessary a function without this mecanism could be added
-            return RigidBody.VisualModel( self.node, filepath, scale3d, ( Rigid.Frame(offset) * self.framecom.inv() ).offset() )
+            return RigidBody.VisualModel( self.node, filepath, scale3d, ( self.framecom.inv() * Rigid.Frame(offset) ).offset() )
 
         def addOffset(self, name, offset=[0,0,0,0,0,0,1], index=0):
             ## adding a relative offset to the rigid body (e.g. used as a joint location)
             # @warning the translation due to the center of mass offset is automatically removed. If necessary a function without this mecanism could be added
-            return RigidBody.Offset( self.node, name, ( Rigid.Frame(offset) * self.framecom.inv() ).offset(), index )
+            return RigidBody.Offset( self.node, name, ( self.framecom.inv() * Rigid.Frame(offset) ).offset(), index )
 
         def addAbsoluteOffset(self, name, offset=[0,0,0,0,0,0,1], index=0):
             ## adding a offset given in absolute coordinates to the rigid body
-            return RigidBody.Offset( self.node, name, (Rigid.Frame(offset) * self.frame.inv()).offset(), index )
+            return RigidBody.Offset( self.node, name, (self.frame.inv()*Rigid.Frame(offset)).offset(), index )
 
         def addMotor( self, forces=[0,0,0,0,0,0] ):
             ## adding a constant force/torque to the rigid body (that could be driven by a controller to simulate a motor)
@@ -83,16 +83,27 @@ class RigidBody:
         class CollisionMesh:
             def __init__(self, node, filepath, scale3d, translation):
                 self.node = node.createChild( "collision" )  # node
-                self.loader = self.node.createObject("MeshObjLoader", name = 'loader', filename = filepath, scale3d = concat(scale3d), translation=concat(translation) )
-                self.topology = self.node.createObject('MeshTopology', name = 'topology', triangles = '@loader.triangles' )
-                self.dofs = self.node.createObject('MechanicalObject', name = 'dofs', position = '@loader.position')
-                self.triangles = self.node.createObject('TriangleModel', name = 'model', template = 'Vec3d')
+                self.loader = self.node.createObject("MeshObjLoader", name='loader', filename=filepath, scale3d=concat(scale3d), translation=concat(translation), triangulate=1 )
+                self.topology = self.node.createObject('MeshTopology', name='topology', src="@loader" )
+                self.dofs = self.node.createObject('MechanicalObject', name='dofs')
+                self.triangles = self.node.createObject('TriangleModel', template='Vec3d', name='model')
                 self.mapping = self.node.createObject('RigidMapping')
+
+            def addVisualModel(self):
+                ## add a visual model identical to the collision model
+                return RigidBody.CollisionMesh.VisualModel( self.node )
+
+            class VisualModel:
+                def __init__(self, node ):
+                    self.node = node.createChild( "visual" )  # node
+                    self.model = self.node.createObject('VisualModel')
+                    self.mapping = self.node.createObject('IdentityMapping')
+
 
         class VisualModel:
             def __init__(self, node, filepath, scale3d, translation):
                 self.node = node.createChild( "visual" )  # node
-                self.model = self.node.createObject('OglModel', template='ExtVec3f', name='model', fileMesh=filepath, scale3d=concat(scale3d), translation=concat(translation))
+                self.model = self.node.createObject('VisualModel', template='ExtVec3f', name='model', fileMesh=filepath, scale3d=concat(scale3d), translation=concat(translation))
                 self.mapping = self.node.createObject('RigidMapping')
 
         class Offset:
@@ -123,10 +134,10 @@ class GenericRigidJoint:
     def __init__(self, node, name, node1, node2, mask, compliance=0, index1=0, index2=0):
             self.node = node.createChild( name )
             self.dofs = self.node.createObject('MechanicalObject', template = 'Vec6d', name = 'dofs', position = '0 0 0 0 0 0' )
-            self.input = [] # @internal
-            self.input.append( '@' + Tools.node_path_rel(self.node,node1) + '/dofs' )
-            self.input.append( '@' + Tools.node_path_rel(self.node,node2) + '/dofs' )
-            self.mapping = self.node.createObject('RigidJointMultiMapping', template = 'Rigid,Vec6d', name = 'mapping', input = concat(self.input), output = '@dofs', pairs = str(index1)+" "+str(index2))
+            input = [] # @internal
+            input.append( '@' + Tools.node_path_rel(self.node,node1) + '/dofs' )
+            input.append( '@' + Tools.node_path_rel(self.node,node2) + '/dofs' )
+            self.mapping = self.node.createObject('RigidJointMultiMapping', template = 'Rigid,Vec6d', name = 'mapping', input = concat(input), output = '@dofs', pairs = str(index1)+" "+str(index2))
             self.constraint = GenericRigidJoint.Constraint( self.node, mask, compliance )
 
     class Constraint:
@@ -165,13 +176,14 @@ class CompleteRigidJoint:
 
     def __init__(self, node, name, node1, node2, compliance=[0,0,0,0,0,0], index1=0, index2=0):
             self.node = node.createChild( name )
-            self.dofs = self.node.createObject('MechanicalObject', template = 'Vec6d', name = 'dofs', position = '0 0 0 0 0 0' )
-            self.input = [] # @internal
-            self.input.append( '@' + Tools.node_path_rel(self.node,node1) + '/dofs' )
-            self.input.append( '@' + Tools.node_path_rel(self.node,node2) + '/dofs' )
-            self.mapping = self.node.createObject('RigidJointMultiMapping', template = 'Rigid,Vec6d', name = 'mapping', input = concat(self.input), output = '@dofs', pairs = str(index1)+" "+str(index2))
-            self.compliance = self.node.createObject('DiagonalCompliance', name='compliance', compliance=compliance)
+            self.dofs = self.node.createObject('MechanicalObject', template='Vec6d', name='dofs', position='0 0 0 0 0 0' )
+            input = [] # @internal
+            input.append( '@' + Tools.node_path_rel(self.node,node1) + '/dofs' )
+            input.append( '@' + Tools.node_path_rel(self.node,node2) + '/dofs' )
+            self.mapping = self.node.createObject('RigidJointMultiMapping', template='Rigid,Vec6d', name='mapping', input=concat(input), output='@dofs', pairs=str(index1)+" "+str(index2))
+            self.compliance = self.node.createObject('DiagonalCompliance', template="Vec6d", name='compliance', compliance=concat(compliance))
             self.type = self.node.createObject('Stabilization')
+
 
     class Limits:
         def __init__(self, node, masks, limits, compliances):
@@ -336,10 +348,10 @@ class DistanceRigidJoint:
     def __init__(self, node, name, node1, node2, compliance=0, index1=0, index2=0, rest_lenght=-1 ):
         self.node = node.createChild( name )
         self.dofs = self.node.createObject('MechanicalObject', template='Rigid', name='dofs' )
-        self.input = [] # @internal
-        self.input.append( '@' + Tools.node_path_rel(self.node,node1) + '/dofs' )
-        self.input.append( '@' + Tools.node_path_rel(self.node,node2) + '/dofs' )
-        self.mapping = self.node.createObject('SubsetMultiMapping', template='Rigid,Rigid', name='mapping', input = concat(self.input), output = '@dofs', indexPairs="0 "+str(index1)+" 1 "+str(index2) )
+        input = [] # @internal
+        input.append( '@' + Tools.node_path_rel(self.node,node1) + '/dofs' )
+        input.append( '@' + Tools.node_path_rel(self.node,node2) + '/dofs' )
+        self.mapping = self.node.createObject('SubsetMultiMapping', template='Rigid,Rigid', name='mapping', input = concat(input), output = '@dofs', indexPairs="0 "+str(index1)+" 1 "+str(index2) )
         self.constraint = DistanceRigidJoint.Constraint(self.node, compliance, rest_lenght)
 
 
