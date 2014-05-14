@@ -167,17 +167,24 @@ int main(int argc, char** argv)
 
 
     // --- Perform task list ---
-    std::ifstream end(fileName.c_str());
+    //std::ifstream end(fileName.c_str());
+
     std::string input;
     int nbsteps;
     std::string output;
 
-    while( end >> input && end >>nbsteps && end >> output  )
-    {
-        sofa::helper::system::DataRepository.findFile(input);
-        apply(input, nbsteps, output);
-    }
-    end.close();
+//    while( end >> input && end >>nbsteps && end >> output  )
+//    {
+//        std::cout<<"input "<<input<<std::endl;
+//        sofa::helper::system::DataRepository.findFile(input);
+//        apply(input, nbsteps, output);
+//    }
+//    end.close();
+
+    std::string strfilename(argv[1]);
+    std::string stroutput(argv[3]);
+    sofa::helper::system::DataRepository.findFile(strfilename);
+    apply(strfilename, atoi(argv[2]), stroutput);
 
     return 0;
 }

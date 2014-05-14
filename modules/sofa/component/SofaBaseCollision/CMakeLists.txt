@@ -27,6 +27,8 @@ set(HEADER_FILES
     ../collision/OBBModel.h
 	../collision/RigidCapsuleModel.h
 	../collision/RigidCapsuleModel.inl
+	../collision/CylinderModel.h
+	../collision/CylinderModel.inl
     ../collision/OBBIntTool.h
     ../collision/IntrOBBOBB.h
     ../collision/IntrOBBOBB.inl
@@ -59,6 +61,7 @@ set(SOURCE_FILES
     ../collision/CapsuleIntTool.cpp
     ../collision/OBBModel.cpp
 	../collision/RigidCapsuleModel.cpp
+	../collision/CylinderModel.cpp
     ../collision/OBBIntTool.cpp
     ../collision/IntrOBBOBB.cpp
     ../collision/IntrUtility3.cpp

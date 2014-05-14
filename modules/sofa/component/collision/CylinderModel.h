@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_RIGIDCAPSULEMODEL_H
-#define SOFA_COMPONENT_COLLISION_RIGIDCAPSULEMODEL_H
+#ifndef SOFA_COMPONENT_COLLISION_CYLINDERMODEL_H
+#define SOFA_COMPONENT_COLLISION_CYLINDERMODEL_H
 
 #include <sofa/core/CollisionModel.h>
 #include <sofa/component/container/MechanicalObject.h>
@@ -46,17 +46,17 @@ namespace collision
 using namespace sofa::defaulttype;
 
 template<class DataTypes>
-class TCapsuleModel;
+class TCylinderModel;
 
 template<class DataTypes>
-class TCapsule;
+class TCylinder;
 
 /**
-  *A capsule can be viewed as a segment with a radius, here the segment is
+  *A Cylinder can be viewed as a segment with a radius, here the segment is
   *defined by its apexes.
   */
 template< class MyReal>
-class TCapsule<StdRigidTypes<3,MyReal> > : public core::TCollisionElementIterator< TCapsuleModel<StdRigidTypes<3,MyReal> > >
+class TCylinder<StdRigidTypes<3,MyReal> > : public core::TCollisionElementIterator< TCylinderModel<StdRigidTypes<3,MyReal> > >
 {
 public:
     typedef StdRigidTypes<3,MyReal> DataTypes;
@@ -65,44 +65,31 @@ public:
     typedef typename DataTypes::CPos Coord;
     typedef typename DataTypes::VecCoord VecCoord;
 
-    typedef TCapsuleModel<DataTypes> ParentModel;
+    typedef TCylinderModel<DataTypes> ParentModel;
 
-    TCapsule(ParentModel* model, int index);
+    TCylinder(ParentModel* model, int index);
 
-    explicit TCapsule(const core::CollisionElementIterator& i);
-
-    /**
-      *Gives one apex of the capsule segment.
-      */
-    Coord point1()const;
-
-    /**
-      *Gives other apex of the capsule segment.
-      */
-    Coord point2()const;
+    explicit TCylinder(const core::CollisionElementIterator& i);
 
     Coord axis()const;
 
     Real radius() const;
 
+    Coord point1() const;
+    Coord point2() const;
+
     const Coord & v()const;
-
-    void displayIndex()const{
-        std::cout<<"index "<<this->index<<std::endl;
-    }
-
-    bool shareSameVertex(const TCapsule<StdRigidTypes<3,MyReal> > & other)const;
 };
 
 
 /**
-  *CapsuleModel templated by RigidTypes (frames), direction is given by Y direction of the frame.
+  *CylinderModel templated by RigidTypes (frames), direction is given by Y direction of the frame.
   */
 template< class MyReal>
-class TCapsuleModel<StdRigidTypes<3,MyReal> > : public core::CollisionModel
+class TCylinderModel<StdRigidTypes<3,MyReal> > : public core::CollisionModel
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(TCapsuleModel, SOFA_TEMPLATE2(StdRigidTypes, 3, MyReal)), core::CollisionModel);
+    SOFA_CLASS(SOFA_TEMPLATE(TCylinderModel, SOFA_TEMPLATE2(StdRigidTypes, 3, MyReal)), core::CollisionModel);
 
 
     typedef StdRigidTypes<3,MyReal> DataTypes;
@@ -113,19 +100,17 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::VecReal VecReal;
-    typedef TCapsule<DataTypes> Element;
-    friend class TCapsule<DataTypes>;
+    typedef TCylinder<DataTypes> Element;
+    friend class TCylinder<DataTypes>;
 protected:
-    Data<VecReal > _capsule_radii;
-    Data<VecReal > _capsule_heights;
+    Data<VecReal > _cylinder_radii;
+    Data<VecReal > _cylinder_heights;
 
     Data<Real> _default_radius;
     Data<Real> _default_height;
 
-    sofa::helper::vector<std::pair<int,int> > _capsule_points;
-
-    TCapsuleModel();
-    TCapsuleModel(core::behavior::MechanicalState<DataTypes>* mstate );
+    TCylinderModel();
+    TCylinderModel(core::behavior::MechanicalState<DataTypes>* mstate );
 public:
     virtual void init();
 
@@ -148,22 +133,16 @@ public:
 
     const Coord & center(int i)const;
 
-    Coord point1(int index)const;
-
-    Coord point2(int index)const;
-
-    //Returns the point1-point2 normalized vector
+    //Returns the direction of the cylinder at index index
     Coord axis(int index)const;
 
     const Quaternion orientation(int index)const;
 
-    int point1Index(int index)const;
-
-    int point2Index(int index)const;
-
     Real height(int index)const;
 
-    inline unsigned int nbCap()const;
+    Coord point1(int i) const;
+
+    Coord point2(int i) const;
 
     Real defaultRadius()const;
 
@@ -185,7 +164,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const TCapsuleModel<DataTypes>* = NULL)
+    static std::string templateName(const TCylinderModel<DataTypes>* = NULL)
     {
         return DataTypes::Name();
     }
@@ -197,27 +176,27 @@ protected:
 
 
 template<class MyReal>
-inline TCapsule<StdRigidTypes<3,MyReal> >::TCapsule(ParentModel* model, int index)
+inline TCylinder<StdRigidTypes<3,MyReal> >::TCylinder(ParentModel* model, int index)
     : core::TCollisionElementIterator<ParentModel>(model, index)
 {}
 
 template<class MyReal>
-inline TCapsule<StdRigidTypes<3,MyReal> >::TCapsule(const core::CollisionElementIterator& i)
+inline TCylinder<StdRigidTypes<3,MyReal> >::TCylinder(const core::CollisionElementIterator& i)
     : core::TCollisionElementIterator<ParentModel>(static_cast<ParentModel*>(i.getCollisionModel()), i.getIndex())
 {
 }
 
-typedef TCapsuleModel<Rigid3Types> RigidCapsuleModel;
-typedef TCapsule<Rigid3Types> RigidCapsule;
+typedef TCylinderModel<Rigid3Types> CylinderModel;
+typedef TCylinder<Rigid3Types> Cylinder;
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_BASE_COLLISION)
 #ifndef SOFA_FLOAT
-extern template class SOFA_BASE_COLLISION_API TCapsule<defaulttype::Rigid3dTypes>;
-extern template class SOFA_BASE_COLLISION_API TCapsuleModel<defaulttype::Rigid3dTypes>;
+extern template class SOFA_BASE_COLLISION_API TCylinder<defaulttype::Rigid3dTypes>;
+extern template class SOFA_BASE_COLLISION_API TCylinderModel<defaulttype::Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_BASE_COLLISION_API TCapsule<defaulttype::Rigid3fTypes>;
-extern template class SOFA_BASE_COLLISION_API TCapsuleModel<defaulttype::Rigid3fTypes>;
+extern template class SOFA_BASE_COLLISION_API TCylinder<defaulttype::Rigid3fTypes>;
+extern template class SOFA_BASE_COLLISION_API TCylinderModel<defaulttype::Rigid3fTypes>;
 #endif
 #endif
 

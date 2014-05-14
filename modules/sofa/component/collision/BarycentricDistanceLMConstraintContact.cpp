@@ -65,6 +65,23 @@ Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<SphereModel, OB
 Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<RigidSphereModel, OBBModel> > RigidSphereOBBLMConstraintContactClass("distanceLMConstraint",true);
 Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<TriangleModel, OBBModel> > TriangleOBBLMConstraintContactClass("distanceLMConstraint",true);
 
+
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<RigidCapsuleModel, TriangleModel> > RigidCapsuleTriangleLMConstraintContactClassClass("distanceLMConstraint",true);
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<RigidCapsuleModel, RigidCapsuleModel> > RigidCapsuleRigidCapsuleLMConstraintContactClassClass("distanceLMConstraint",true);
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<CapsuleModel, RigidCapsuleModel> > CapsuleRigidCapsuleLMConstraintContactClassClass("distanceLMConstraint",true);
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<RigidCapsuleModel, SphereModel> > RigidCapsuleSphereLMConstraintContactClassClass("distanceLMConstraint",true);
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<RigidCapsuleModel, RigidSphereModel> > RigidCapsuleRigidSphereLMConstraintContactClassClass("distanceLMConstraint",true);
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<RigidCapsuleModel, OBBModel> > RigidCapsuleOBBLMConstraintContactClassClass("distanceLMConstraint",true);
+
+
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<CylinderModel, CylinderModel> > CylinderCylinderLMConstraintContactClassClass("distanceLMConstraint",true);
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<CylinderModel, TriangleModel> > CylinderTriangleLMConstraintContactClassClass("distanceLMConstraint",true);
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<CylinderModel, RigidCapsuleModel> > CylinderRigidCapsuleLMConstraintContactClassClass("distanceLMConstraint",true);
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<CapsuleModel, CylinderModel> > CapsuleCylinderLMConstraintContactClassClass("distanceLMConstraint",true);
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<CylinderModel, SphereModel> > CylinderSphereLMConstraintContactClassClass("distanceLMConstraint",true);
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<CylinderModel, RigidSphereModel> > CylinderRigidSphereLMConstraintContactClassClass("distanceLMConstraint",true);
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<CylinderModel, OBBModel> > CylinderOBBLMConstraintContactClassClass("distanceLMConstraint",true);
+
 } // namespace collision
 
 } // namespace component

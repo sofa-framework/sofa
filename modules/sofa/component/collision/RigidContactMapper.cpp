@@ -39,11 +39,13 @@ using namespace defaulttype;
 
 SOFA_DECL_CLASS(RigidContactMapper)
 
+ContactMapperCreator< ContactMapper<CylinderModel,Vec3Types> > CylinderModelContactMapperClass("default", true);
 ContactMapperCreator< ContactMapper<RigidSphereModel,Vec3Types> > RigidSphereContactMapperClass("default", true);
 ContactMapperCreator< ContactMapper<OBBModel,Vec3Types> > OBBContactMapperClass("default", true);
 ContactMapperCreator< ContactMapper<RigidCapsuleModel,Vec3Types> > RigidCapsuleContactMapperClass("default", true);
 
 
+template class SOFA_MESH_COLLISION_API ContactMapper<CylinderModel,Vec3Types>;
 template class SOFA_MESH_COLLISION_API ContactMapper<RigidSphereModel,Vec3Types>;
 template class SOFA_MESH_COLLISION_API ContactMapper<OBBModel,Vec3Types>;
 template class SOFA_MESH_COLLISION_API ContactMapper<RigidCapsuleModel,Vec3Types>;

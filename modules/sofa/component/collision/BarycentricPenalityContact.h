@@ -39,6 +39,7 @@
 #include <sofa/component/collision/IdentityContactMapper.h>
 #include <sofa/component/collision/RigidContactMapper.inl>
 #include <sofa/component/collision/OBBModel.h>
+#include <sofa/component/collision/CylinderModel.h>
 
 
 namespace sofa
