@@ -2,6 +2,7 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(SOURCE_FILES
    AffinePatch_test.cpp
+   AffineDeformationMapping_test.cpp
    PointDeformationMapping_test.cpp
    Patch_test.cpp
    StrainMappings_test.cpp

@@ -325,6 +325,14 @@ public:
         c.getVCenter() [2] += ( Real ) z;
     }
 
+    /// Return a Deriv with random value. Each entry with magnitude smaller than the given value.
+    static Deriv randomDeriv( Real maxValue )
+    {
+        Deriv result;
+        set( result, rand()*maxValue/RAND_MAX, rand()*maxValue/RAND_MAX, rand()*maxValue/RAND_MAX);
+        return result;
+    }
+
     template<typename T>
     static void set ( Coord& c, T x, T y, T z )
     {

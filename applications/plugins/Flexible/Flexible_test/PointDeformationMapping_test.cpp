@@ -30,7 +30,6 @@
 
 #include <sofa/component/projectiveconstraintset/AffineMovementConstraint.h>
 #include "../deformationMapping/LinearMapping.h"
-#include "../shapeFunction/BarycentricShapeFunction.h"
 
 #include <Mapping_test.h>
 
