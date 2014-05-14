@@ -1,6 +1,8 @@
 # helper functions for treating float lists as quaternions
 # author: maxime.tournier@inria.fr
 
+import sys
+
 import Vec
 import math
 
@@ -41,3 +43,26 @@ def exp(v):
              v[2] / theta * s,
              c ]
              
+def axisToQuat(axis, phi):
+    """ return the quaternion corresponding to rotation around vector axis with angle phi
+    """
+    axis_norm = Vec.norm(axis)
+    if axis_norm < sys.float_info.epsilon:
+        return id()
+    axis = Vec.scal(1./axis_norm, axis)
+    return [ axis[0]*math.sin(phi/2),
+             axis[1]*math.sin(phi/2),
+             axis[2]*math.sin(phi/2),
+             math.cos(phi/2) ]
+
+def quatToAxis(q):
+    """ Return rotation vector corresponding to unit quaternion q in the form of [axis, angle]
+    """
+    sine  = math.sin( math.acos(q[3]) );
+
+    if (math.fabs(sine) < sys.float_info.epsilon) :
+        axis = [0.0,1.0,0.0]
+    else :
+        axis = Vec.scal(1/sine, q[0:3])
+    phi =  math.acos(q[3]) * 2.0
+    return [axis, phi]
