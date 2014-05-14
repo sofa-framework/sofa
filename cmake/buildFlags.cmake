@@ -93,4 +93,21 @@ if(SOFA-MISC_VECTORIZE)
     endif(MSVC)
 endif()
 
+# Exception deactivation
+if(SOFA-MISC_NO_EXCEPTIONS)
+	list(APPEND compilerDefines "BOOST_NO_EXCEPTIONS")
+	
+	if(MSVC)
+	STRING(REPLACE "/EHsc" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
+	endif()
+
+	if(XBOX)
+	STRING(REPLACE "/EHsc" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
+	endif()
+	
+	if(PS3)
+	STRING(REPLACE "-fexceptions" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
+	endif()
+endif()
+
 set(GLOBAL_COMPILER_DEFINES ${compilerDefines} CACHE INTERNAL "Global Compiler Defines" FORCE)
