@@ -67,6 +67,24 @@ inline void ISAPBox::updateMax(int dim,double alarmDist){
     _max[dim]->value = cube.maxVect()[dim] + alarmDist;
 }
 
+inline bool ISAPBox::endPointsAreAlright(int ID){
+    for(int i = 0 ; i < 3 ; ++i){
+        if(!_min[i]->min())
+            return false;
+
+        if(!_max[i]->max())
+            return false;
+
+        if(_min[i]->boxID() != ID)
+            return false;
+
+        if(_max[i]->boxID() != ID)
+            return false;
+    }
+
+    return true;
+}
+
 
 inline void ISAPBox::init(int boxID,EndPointID ** endPts){
     for(int i = 0 ; i < 3 ; ++i){
@@ -75,10 +93,12 @@ inline void ISAPBox::init(int boxID,EndPointID ** endPts){
     }
 
     for(int i = 0 ; i < 3 ; ++i){
-        _min[i]->setBoxID(boxID);
-        _max[i]->setBoxID(boxID);
-        _min[i]->setMin();
-        _max[i]->setMax();
+        _min[i]->setMinAndBoxID(boxID);
+        _max[i]->setMaxAndBoxID(boxID);
+//        _min[i]->setBoxID(boxID);
+//        _max[i]->setBoxID(boxID);
+//        _min[i]->setMin();
+//        _max[i]->setMax();
     }    
 
     //update();
@@ -260,6 +280,7 @@ inline void TIncrSAP<List,Allocator>::addCollisionModel(core::CollisionModel *cm
         _nothing_added = false;
 
         CubeModel * cube_model = dynamic_cast<CubeModel *>(cm->getLast()->getPrevious());
+        assert(cube_model->getPrevious() == cm->getFirst());
 
         int old_size = _boxes.size();
         int cube_model_size = cube_model->getSize();
@@ -278,6 +299,8 @@ inline void TIncrSAP<List,Allocator>::addCollisionModel(core::CollisionModel *cm
                 _end_points[j].push_back(&(new_box.min(j)));
                 _end_points[j].push_back(&(new_box.max(j)));
             }
+
+            assert(new_box.endPointsAreAlright(i + old_size));
         }
     }
 }
@@ -319,8 +342,10 @@ int TIncrSAP<List,Allocator>::greatestVarianceAxis()const{
 
 template <template<class T,class Allocator> class List,template <class T> class Allocator>
 void TIncrSAP<List,Allocator>::updateEndPoints(){
-    for(unsigned int i = 0 ; i < _boxes.size() ; ++i)
+    for(unsigned int i = 0 ; i < _boxes.size() ; ++i){
         _boxes[i].update(_alarmDist_d2);
+        assert(_boxes[i].endPointsAreAlright(i));
+    }
 }
 
 template <template<class T,class Allocator> class List,template <class T> class Allocator>
@@ -344,6 +369,37 @@ void TIncrSAP<List,Allocator>::reinitDetection(){
     setEndPointsID();
 }
 
+
+template <template<class T,class Allocator> class List,template <class T> class Allocator>
+void TIncrSAP<List,Allocator>::showEndPoints()const{
+    for(int j = 0 ; j < 3 ; ++j){
+        std::cout<<"dimension "<<j<<"==========="<<std::endl;
+        for(typename EndPointList::const_iterator it = _end_points[j].begin() ; it != _end_points[j].end() ; ++it){
+            const EndPointID & end_pt = (**it);
+            end_pt.show();
+        }
+    }
+}
+
+template <template<class T,class Allocator> class List,template <class T> class Allocator>
+void TIncrSAP<List,Allocator>::showBoxes()const{
+    for(int i = 0 ; i < _boxes.size() ; ++i){
+        const ISAPBox & box = _boxes[i];
+        std::cout<<"collision model "<<box.cube.getCollisionModel()->getLast()<<" index "<<box.cube.getExternalChildren().first.getIndex()<<std::endl;
+
+        std::cout<<"minBBox ";
+        for(int j = 0 ; j < 3 ; ++j){
+            std::cout<<" "<<box.min(j).value;
+        }
+        std::cout<<std::endl;
+
+        std::cout<<"maxBBox ";
+        for(int j = 0 ; j < 3 ; ++j){
+            std::cout<<" "<<box.max(j).value;
+        }
+        std::cout<<std::endl;
+    }
+}
 
 template <template<class T,class Allocator> class List,template <class T> class Allocator>
 void TIncrSAP<List,Allocator>::addIfCollide(int boxID1,int boxID2){

@@ -80,6 +80,7 @@ public:
         TETRAHEDRON_TYPE,
         RDISTANCE_GRIDE_TYPE,
         FFDDISTANCE_GRIDE_TYPE,
+        CYLINDER_TYPE,
         ENUM_TYPE_SIZE
     };
 

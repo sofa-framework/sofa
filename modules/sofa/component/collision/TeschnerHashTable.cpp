@@ -1,4 +1,5 @@
 #include "TeschnerHashTable.h"
+#include "BaseIntTool.h"
 
 using namespace sofa;
 using namespace sofa::component::collision;
@@ -30,7 +31,7 @@ void TeschnerHashTable::refersh(SReal timeStamp){
     int movingcell[3];
     //SReal alarmDistd2 = intersectionMethod->getAlarmDistance()/((SReal)(2.0));
 
-    sofa::helper::AdvancedTimer::stepBegin("TeschnerSpatialHashing : Hashing");
+    //sofa::helper::AdvancedTimer::stepBegin("TeschnerSpatialHashing : Hashing");
 
     Cube c(cube_model);
 
@@ -50,13 +51,22 @@ void TeschnerHashTable::refersh(SReal timeStamp){
         for(movingcell[0] = mincell[0] ; movingcell[0] <= maxcell[0] ; ++movingcell[0]){
             for(movingcell[1] = mincell[1] ; movingcell[1] <= maxcell[1] ; ++movingcell[1]){
                 for(movingcell[2] = mincell[2] ; movingcell[2] <= maxcell[2] ; ++movingcell[2]){
-                    sofa::helper::AdvancedTimer::stepBegin("TeschnerSpatialHashing : addAndCollide");
-                    (*this)(movingcell[0],movingcell[1],movingcell[2]).add(c.getExternalChildren().first,timeStamp);
-                    sofa::helper::AdvancedTimer::stepEnd("TeschnerSpatialHashing : addAndCollide");
+                    //sofa::helper::AdvancedTimer::stepBegin("TeschnerSpatialHashing : addAndCollide");
+                    (*this)(movingcell[0],movingcell[1],movingcell[2]).add(c/*.getExternalChildren().first*/,timeStamp);
+                    //sofa::helper::AdvancedTimer::stepEnd("TeschnerSpatialHashing : addAndCollide");
                 }
             }
         }
     }
+}
+
+static bool checkIfCollisionIsDone(int i,int j,std::vector<int> * tab){
+    for(unsigned int ii = 0 ; ii < tab[i].size() ; ++ii){
+        if(tab[i][ii] == j)
+            return true;
+    }
+
+    return false;
 }
 
 void TeschnerHashTable::doCollision(TeschnerHashTable & me,TeschnerHashTable & other,sofa::core::collision::NarrowPhaseDetection * phase,SReal timeStamp,core::collision::ElementIntersector* ei,bool swap){
@@ -68,44 +78,59 @@ void TeschnerHashTable::doCollision(TeschnerHashTable & me,TeschnerHashTable & o
 
     int size1,size2;
     if(swap){
+        std::vector<int> * done_collisions = new std::vector<int>[cm2->getSize()];
         core::collision::DetectionOutputVector*& output = phase->getDetectionOutputs(cm2,cm1);
         ei->beginIntersect(cm2,cm1,output);
 
         for(int i = 0 ; i < me._prime_size ; ++i){
             if(me._table[i].updated(timeStamp) && other._table[i].updated(timeStamp)){
-                std::vector<core::CollisionElementIterator> & vec_elems1 = me._table[i].getCollisionElems();
-                std::vector<core::CollisionElementIterator> & vec_elems2 = other._table[i].getCollisionElems();
+                std::vector<Cube> & vec_elems1 = me._table[i].getCollisionElems();
+                std::vector<Cube> & vec_elems2 = other._table[i].getCollisionElems();
 
                 size1 = vec_elems1.size();
                 size2 = vec_elems2.size();
 
                 for(int j = 0 ; j < size1 ; ++j){
                     for(int k = 0 ; k < size2 ; ++k){
-                        ei->intersect(vec_elems2[k],vec_elems1[j],output);
+                        if(!checkIfCollisionIsDone(vec_elems2[k].getIndex(),vec_elems1[j].getIndex(),done_collisions) && BaseIntTool::testIntersection(vec_elems2[k],vec_elems1[j],_alarmDist)){
+                            ei->intersect(vec_elems2[k].getExternalChildren().first,vec_elems1[j].getExternalChildren().first,output);
+
+                            done_collisions[vec_elems2[k].getIndex()].push_back(vec_elems1[j].getIndex());
+                        }
                     }
                 }
             }
         }
+
+        delete[] done_collisions;
     }
     else{
+        std::vector<int> * done_collisions = new std::vector<int>[cm1->getSize()];
+
         core::collision::DetectionOutputVector*& output = phase->getDetectionOutputs(cm1,cm2);
         ei->beginIntersect(cm1,cm2,output);
 
         for(int i = 0 ; i < me._prime_size ; ++i){
             if(me._table[i].updated(timeStamp) && other._table[i].updated(timeStamp)){
-                std::vector<core::CollisionElementIterator> & vec_elems1 = me._table[i].getCollisionElems();
-                std::vector<core::CollisionElementIterator> & vec_elems2 = other._table[i].getCollisionElems();
+                std::vector<Cube> & vec_elems1 = me._table[i].getCollisionElems();
+                std::vector<Cube> & vec_elems2 = other._table[i].getCollisionElems();
 
                 size1 = vec_elems1.size();
                 size2 = vec_elems2.size();
 
                 for(int j = 0 ; j < size1 ; ++j){
                     for(int k = 0 ; k < size2 ; ++k){
-                        ei->intersect(vec_elems1[j],vec_elems2[k],output);
+                        if((!checkIfCollisionIsDone(vec_elems1[j].getIndex(),vec_elems2[k].getIndex(),done_collisions)) && BaseIntTool::testIntersection(vec_elems1[j],vec_elems2[k],_alarmDist)){
+                            ei->intersect(vec_elems1[j].getExternalChildren().first,vec_elems2[k].getExternalChildren().first,output);
+
+                            done_collisions[vec_elems1[j].getIndex()].push_back(vec_elems2[k].getIndex());
+                        }
                     }
                 }
             }
         }
+
+        delete[] done_collisions;
     }
 }
 
@@ -115,6 +140,7 @@ void TeschnerHashTable::autoCollide(core::collision::NarrowPhaseDetection * phas
 
     int size,sizem1;
 
+    std::vector<int> * done_collisions = new std::vector<int>[cm->getSize()];
     core::collision::DetectionOutputVector*& output = phase->getDetectionOutputs(cm,cm);
     bool swap;
     sofa::core::collision::ElementIntersector * ei = interMethod->findIntersector(cm,cm,swap);
@@ -122,18 +148,27 @@ void TeschnerHashTable::autoCollide(core::collision::NarrowPhaseDetection * phas
 
     for(int i = 0 ; i < _prime_size ; ++i){
         if(_table[i].needsCollision(timeStamp)){
-            std::vector<core::CollisionElementIterator> & vec_elems = _table[i].getCollisionElems();
+            std::vector<Cube> & vec_elems = _table[i].getCollisionElems();
 
             size = vec_elems.size();
             sizem1 = size - 1;
 
             for(int j = 0 ; j < sizem1 ; ++j){
                 for(int k = j + 1 ; k < size ; ++k){
-                    ei->intersect(vec_elems[j],vec_elems[k],output);
+                    if(!checkIfCollisionIsDone(vec_elems[j].getIndex(),vec_elems[k].getIndex(),done_collisions) && BaseIntTool::testIntersection(vec_elems[j],vec_elems[k],_alarmDist)){
+                        ei->intersect(vec_elems[j].getExternalChildren().first,vec_elems[k].getExternalChildren().first,output);
+
+                        done_collisions[vec_elems[j].getIndex()].push_back(vec_elems[k].getIndex());
+                        //WARNING : we don't add the symetric done_collisions[vec_elems[k].getIndex()].push_back(vec_elems[j].getIndex()); because
+                        //elements are added first in all cells they belong to, then next elements are added, so that if two elements share two same
+                        //cells, one element will be first encountered in the both cells.
+                    }
                 }
             }
         }
     }
+
+    delete[] done_collisions;
 }
 
 

@@ -15,7 +15,9 @@ class TeschnerCollisionSet{
 public:
     TeschnerCollisionSet() : _timeStamp(SReal(-1.0)){}
 
-    inline void add(core::CollisionElementIterator elem,SReal timeStamp){
+    inline void add(sofa::component::collision::Cube elem,SReal timeStamp){
+        //sofa::helper::AdvancedTimer::stepBegin("TeschnerCollisionSet : add");
+
         if(_timeStamp < timeStamp){
             _timeStamp = timeStamp;
             _coll_elems.clear();
@@ -33,9 +35,10 @@ public:
             _coll_elems.push_back(elem);
         }
 #endif
+        //sofa::helper::AdvancedTimer::stepEnd("TeschnerCollisionSet : add");
     }
 
-    inline void clearAndAdd(core::CollisionElementIterator elem,SReal timeStamp){
+    inline void clearAndAdd(sofa::component::collision::Cube elem,SReal timeStamp){
         if(_timeStamp != -1)
             _coll_elems.clear();
 
@@ -57,11 +60,11 @@ public:
         return _timeStamp >= timeStamp;
     }
 
-    inline std::vector<core::CollisionElementIterator> & getCollisionElems(){
+    inline std::vector<sofa::component::collision::Cube> & getCollisionElems(){
         return _coll_elems;
     }
 
-    inline const std::vector<core::CollisionElementIterator> & getCollisionElems()const {
+    inline const std::vector<sofa::component::collision::Cube> & getCollisionElems()const {
         return _coll_elems;
     }
 
@@ -72,12 +75,66 @@ public:
 
 private:
     SReal _timeStamp;
-    std::vector<core::CollisionElementIterator> _coll_elems;
+    std::vector<sofa::component::collision::Cube> _coll_elems;
 };
 
 #undef CHECK_IF_ELLEMENT_EXISTS
 
 class TeschnerHashTable{
+protected:
+
+//    struct CollisionElementPair{
+//        CollisionElementPair(sofa::core::CollisionElementIterator & e1,sofa::core::CollisionElementIterator & e2){
+//            if(e1.getCollisionModel() < e2.getCollisionModel()){
+//                _e1 = e1;
+//                _e2 = e2;
+//            }
+//            else if(e1.getCollisionModel() > e2.getCollisionModel()){
+//                _e1 = e2;
+//                _e2 = e1;
+//            }
+//            else if(e1.getIndex() < e2.getIndex()){
+//                _e1 = e1;
+//                _e2 = e2;
+//            }
+//            else{
+//                _e1 = e2;
+//                _e2 = e1;
+//            }
+//        }
+
+//        bool operator<(const CollisionElementPair & other){
+//            if(_e1.getCollisionModel() < other._e1.getCollisionModel()){
+//                return true;
+//            }
+//            else if(_e1.getCollisionModel() > other._e1.getCollisionModel()){
+//                return false;
+//            }
+//            else if(_e2.getCollisionModel() < other._e2.getCollisionModel()){
+//                return true;
+//            }
+//            else if(_e2.getCollisionModel() > other._e2.getCollisionModel()){
+//                return false;
+//            }
+//            else if(_e1.getIndex() < other._e1.getIndex()){
+//                return true;
+//            }
+//            else if(_e1.getIndex() > other._e1.getIndex()){
+//                return false;
+//            }
+//            else if(_e2.getIndex() < other._e2.getIndex()){
+//                return true;
+//            }
+//            else{
+//                return false;
+//            }
+//        }
+
+//    private:
+//        sofa::core::CollisionElementIterator _e1;
+//        sofa::core::CollisionElementIterator _e2;
+//    };
+
 public:
     TeschnerHashTable() : _cm(0x0),_timeStamp(-1.0){
         _p1 = 73856093;
@@ -105,9 +162,7 @@ public:
     }
 
     inline long int getIndex(long int i,long int j,long int k)const{
-        //int index = (i * _p1 ^ j * _p2 ^ k * _p3) % _prime_size;
         long int index = ((i * _p1) ^ (j * _p2) ^ (k * _p3)) % _prime_size;
-
 
         if(index < 0)
             index += _prime_size;
@@ -116,9 +171,7 @@ public:
     }
 
     inline const TeschnerCollisionSet & operator()(long int i,long int j,long int k)const{
-        //int index = (i * _p1 ^ j * _p2 ^ k * _p3) % _prime_size;
         long int index = ((i * _p1) ^ (j * _p2) ^ (k * _p3)) % _prime_size;
-//        long int index = i*j*k % _prime_size;
 
         if(index < 0)
             index += _prime_size;
@@ -172,9 +225,7 @@ public:
     static SReal cell_size;
 
     inline TeschnerCollisionSet & operator()(long int i,long int j,long int k){
-        //int index = (i * _p1 ^ j * _p2 ^ k * _p3) % _prime_size;
         long int index = ((i * _p1) ^ (j * _p2) ^ (k * _p3)) % _prime_size;
-//        long int index = i*j*k % _prime_size;
 
         if(index < 0)
             index += _prime_size;
@@ -200,8 +251,6 @@ protected:
     long int _size;
     long int _prime_size;
     std::vector<TeschnerCollisionSet> _table;
-    //core::collision::ElementIntersector* _intersectors[sofa::core::CollisionModel::ENUM_TYPE_SIZE][sofa::core::CollisionModel::ENUM_TYPE_SIZE];
-    //std::vector<MirrorIntersector*> _intersector_garbage;
     static SReal _alarmDist;
     static SReal _alarmDistd2;
     SReal _timeStamp;

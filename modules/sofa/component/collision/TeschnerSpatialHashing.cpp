@@ -120,8 +120,8 @@ void TeschnerSpatialHashing::endBroadPhase(){
         TeschnerHashTable::setAlarmDistance(intersectionMethod->getAlarmDistance());
         _params_initialized = true;
 
-        std::cout<<"cell size "<<_cell_size<<std::endl;
-        std::cout<<"nb elems "<<_nb_elems<<std::endl;
+//        std::cout<<"cell size "<<_cell_size<<std::endl;
+//        std::cout<<"nb elems "<<_nb_elems<<std::endl;
     }
 }
 
@@ -131,6 +131,8 @@ void TeschnerSpatialHashing::beginNarrowPhase(){
 
 void TeschnerSpatialHashing::addCollisionModel(core::CollisionModel *cm)
 {
+   //sofa::helper::AdvancedTimer::stepBegin("TeschnerSpatialHashing::addCollisionModel");
+
     if(!_params_initialized){
         sumEdgeLength(cm->getLast());
         _nb_elems += cm->getLast()->getSize();
@@ -200,6 +202,8 @@ void TeschnerSpatialHashing::addCollisionModel(core::CollisionModel *cm)
         }
     }
     _collisionModels.push_back(cm);
+
+    //sofa::helper::AdvancedTimer::stepEnd("TeschnerSpatialHashing::addCollisionModel");
 }
 
 bool TeschnerSpatialHashing::keepCollisionBetween(core::CollisionModel *cm1, core::CollisionModel *cm2)
@@ -213,6 +217,8 @@ bool TeschnerSpatialHashing::keepCollisionBetween(core::CollisionModel *cm1, cor
 }
 
 void TeschnerSpatialHashing::addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& coll_pair){
+    //sofa::helper::AdvancedTimer::stepBegin("TeschnerSpatialHashing::addCollisionPair");
+
     core::CollisionModel* cm1 = coll_pair.first->getLast();
     core::CollisionModel* cm2 = coll_pair.second->getLast();
 
@@ -222,8 +228,11 @@ void TeschnerSpatialHashing::addCollisionPair (const std::pair<core::CollisionMo
     else
         t1.refersh(_timeStamp);
 
+    //t1.showStats(_timeStamp);
     if(cm1 == cm2){
         t1.autoCollide(this,intersectionMethod,_timeStamp);
+        //sofa::helper::AdvancedTimer::stepEnd("TeschnerSpatialHashing::addCollisionPair");
+
         return;
     }
 
@@ -234,6 +243,8 @@ void TeschnerSpatialHashing::addCollisionPair (const std::pair<core::CollisionMo
         t2.refersh(_timeStamp);
 
     t1.collide(t2,this,intersectionMethod,_timeStamp);
+    //t2.showStats(_timeStamp);
+    //sofa::helper::AdvancedTimer::stepEnd("TeschnerSpatialHashing::addCollisionPair");
 }
 
 }

@@ -7,7 +7,6 @@ set(SOURCE_FILES
     PrimitiveCreation.cpp
     RigidMapping_test.cpp
     EulerImplicit_test.cpp
-    SAPTest.cpp
     Matrix_test.inl
     Matrix_test.cpp
     OBBTest.cpp
@@ -17,9 +16,8 @@ set(SOURCE_FILES
     ProjectToLineConstraint_test.cpp
     BaryMapperTest.cpp
     LoadScene_test.cpp
-    TeschnerSpatialHashing_test.cpp
     DAG_test.cpp
-    #BroadPhaseTest.cpp
+    BroadPhaseTest.cpp
         )
 
 if(APPLE)

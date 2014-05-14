@@ -42,6 +42,7 @@
 #include <sofa/component/collision/PointModel.h>
 #include <sofa/component/collision/OBBModel.h>
 #include <sofa/component/collision/RigidCapsuleModel.h>
+#include <sofa/component/collision/CylinderModel.h>
 #include <sofa/component/mapping/IdentityMapping.h>
 #include <sofa/core/VecId.h>
 #include <iostream>
@@ -186,7 +187,20 @@ class ContactMapper<RigidCapsuleModel,TVec3Types > : public RigidContactMapper<R
         }
 };
 
+template <class TVec3Types>
+class ContactMapper<CylinderModel,TVec3Types > : public RigidContactMapper<CylinderModel, TVec3Types >{
+    public:
+        int addPoint(const typename TVec3Types::Coord & P, int index,typename TVec3Types::Real & r)
+        {
+            const typename TVec3Types::Coord & cP = P - this->model->center(index);
+            const Quaternion & ori = this->model->orientation(index);
+
+            return RigidContactMapper<CylinderModel,TVec3Types >::addPoint(ori.inverseRotate(cP),index,r);
+        }
+};
+
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_MESH_COLLISION)
+extern template class SOFA_MESH_COLLISION_API ContactMapper<CylinderModel,Vec3Types>;
 extern template class SOFA_MESH_COLLISION_API ContactMapper<RigidCapsuleModel,Vec3Types>;
 extern template class SOFA_MESH_COLLISION_API ContactMapper<RigidSphereModel,Vec3Types>;
 extern template class SOFA_MESH_COLLISION_API ContactMapper<OBBModel,Vec3Types>;

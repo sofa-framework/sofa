@@ -143,6 +143,10 @@ public:
     double curMin(int dim) const;
     double curMax(int dim)const;
 
+    // Returns true if the endpoints have id ID and if min end points are min and max are max.
+    // It checks only the field data.
+    bool endPointsAreAlright(int ID);
+
     Cube cube;
     EndPointID * _min[3];
     EndPointID * _max[3];
@@ -283,6 +287,10 @@ public:
     inline void draw(const core::visual::VisualParams*){}
 
     inline virtual bool needsDeepBoundingTree()const{return false;}
+
+    void showEndPoints()const;
+
+    void showBoxes()const;
 };
 
 typedef TIncrSAP<std::vector,std::allocator> IncrSAP;

@@ -89,6 +89,7 @@ struct MyBox{
     }
 
     void show()const{
+        std::cout<<"collision model "<<cube.getCollisionModel()->getLast()<<" index "<<cube.getExternalChildren().first.getIndex()<<std::endl;
         std::cout<<"\tminBBox "<<cube.minVect()<<std::endl;
         std::cout<<"\tmaxBBox "<<cube.maxVect()<<std::endl;
     }
@@ -107,8 +108,38 @@ struct BroadPhaseTest: public ::testing::Test{
     static bool randTest(int seed,int nb1,int nb2,const Vector3 & min,const Vector3 & max);
 };
 
+struct InitIntersection{
+    InitIntersection(sofa::component::collision::NewProximityIntersection::SPtr & prox,SReal alarmDist_){
+        prox->setAlarmDistance(alarmDist_);
+    }
+};
+
+static bool goodBoundingTree(sofa::core::CollisionModel * cm){
+    sofa::component::collision::CubeModel * cbm = dynamic_cast<sofa::component::collision::CubeModel *>(cm->getFirst());
+    sofa::component::collision::Cube c(cbm);
+    const Vector3 & min = c.minVect();
+    const Vector3 & max = c.maxVect();
+
+    cbm = dynamic_cast<sofa::component::collision::CubeModel* >(cm->getFirst()->getNext());
+    sofa::component::collision::Cube c2(cbm);
+    while(c2.getIndex() < cbm->getSize()){
+        const Vector3 & min2 = c2.minVect();
+        const Vector3 & max2 = c2.maxVect();
+
+        for(int i = 0 ; i < 3 ; ++i){
+            if(min2[i] < min[i] || max2[i] > max[i])
+                return false;
+        }
+
+        ++c2;
+    }
+
+    return true;
+}
+
 //intersection method used for the narrow phase
 sofa::component::collision::NewProximityIntersection::SPtr proxIntersection = New<sofa::component::collision::NewProximityIntersection>();
+InitIntersection initIntersection(proxIntersection,0);
 double alarmDist = proxIntersection->getAlarmDistance();
 
 
@@ -119,7 +150,7 @@ bool genTest(sofa::core::CollisionModel * cm1,sofa::core::CollisionModel * cm2,D
 static Vector3 randVect(const Vector3 & min,const Vector3 & max);
 
 void getMyBoxes(sofa::core::CollisionModel * cm,std::vector<MyBox> & my_boxes){
-    sofa::component::collision::CubeModel * cbm = dynamic_cast<sofa::component::collision::CubeModel*>(cm->getFirst());
+    sofa::component::collision::CubeModel * cbm = dynamic_cast<sofa::component::collision::CubeModel*>(cm->getLast()->getPrevious());
     assert(cbm != 0x0);
 
     for(int i = 0 ; i < cbm->getSize() ; ++i)
@@ -224,6 +255,8 @@ struct CItCompare{
 
 template<class Detection>
 bool GENTest(sofa::core::CollisionModel * cm1,sofa::core::CollisionModel * cm2,Detection & col_detection){
+    assert(goodBoundingTree((cm1)));
+    assert(goodBoundingTree((cm2)));
     cm1->setSelfCollision(true);
     cm2->setSelfCollision(true);
 
@@ -246,8 +279,8 @@ bool GENTest(sofa::core::CollisionModel * cm1,sofa::core::CollisionModel * cm2,D
 //            std::cout<<"colliding models "<<boxes[i].cube.getCollisionModel()->getLast()<<" "<<boxes[j].cube.getCollisionModel()->getLast()<<std::endl;
 //            std::cout<<"colliding indices "<<boxes[i].cube.getIndex()<<" "<<boxes[j].cube.getIndex()<<std::endl;
 //            std::cout<<"min/max vect"<<std::endl;
-            boxes[i].show();
-            boxes[j].show();
+//            boxes[i].show();
+//            boxes[j].show();
             if(boxes[i].squaredDistance(boxes[j]) <= alarmDist * alarmDist){
                 brutInter.push_back(std::make_pair((sofa::core::CollisionElementIterator)(boxes[i].cube),(sofa::core::CollisionElementIterator)(boxes[j].cube)));
 //                std::cout<<"\tCOLLIDING"<<std::endl;
@@ -273,9 +306,9 @@ bool GENTest(sofa::core::CollisionModel * cm1,sofa::core::CollisionModel * cm2,D
 //    std::cout<<"========SORTED BRUTE"<<std::endl;
 
     col_detection.beginBroadPhase();
-    col_detection.addCollisionModel(cm1);
+    col_detection.addCollisionModel(cm1->getFirst());
     if(cm2)
-        col_detection.addCollisionModel(cm2);
+        col_detection.addCollisionModel(cm2->getFirst());
 
     col_detection.endBroadPhase();
     col_detection.beginNarrowPhase();
@@ -311,8 +344,29 @@ bool GENTest(sofa::core::CollisionModel * cm1,sofa::core::CollisionModel * cm2,D
 
     col_detection.endNarrowPhase();
 
-    if(brutInter.size() != broadPhaseInter.size())
+    if(brutInter.size() != broadPhaseInter.size()){
+        std::cout<<"BRUT FORCE PAIRS"<<std::endl;
+        for(unsigned int j = 0 ; j < brutInter.size() ; ++j){
+            std::cout<<brutInter[j].first.getCollisionModel()->getLast()<<" "<<brutInter[j].second.getCollisionModel()->getLast()<<std::endl;
+            std::cout<<brutInter[j].first.getIndex()<<" "<<brutInter[j].second.getIndex()<<std::endl;
+            std::cout<<"=="<<std::endl;
+        }
+
+        std::cout<<"=========BROAD PHASE PAIRS"<<std::endl;
+        for(unsigned int j = 0 ; j < broadPhaseInter.size() ; ++j){
+            std::cout<<"alarmDist "<<alarmDist<<std::endl;
+            std::cout<<broadPhaseInter[j].first.getCollisionModel()->getLast()<<" "<<broadPhaseInter[j].second.getCollisionModel()->getLast()<<std::endl;
+            std::cout<<broadPhaseInter[j].first.getIndex()<<" "<<broadPhaseInter[j].second.getIndex()<<std::endl;
+        }
+
+        std::cout<<"want to show::::::::::"<<std::endl;
+        for(int i = 0 ; i < boxes.size() ; ++i){
+            boxes[i].show();
+        }
+        std::cout<<"=="<<std::endl;
+
         return false;
+    }
 
     unsigned int i;
     for(i = 0 ; i < brutInter.size() ; ++i)
@@ -333,6 +387,12 @@ bool GENTest(sofa::core::CollisionModel * cm1,sofa::core::CollisionModel * cm2,D
             std::cout<<broadPhaseInter[j].first.getIndex()<<" "<<broadPhaseInter[j].second.getIndex()<<std::endl;
             std::cout<<"=="<<std::endl;
         }
+
+        std::cout<<"want to show::::::::::"<<std::endl;
+        for(int i = 0 ; i < boxes.size() ; ++i){
+            boxes[i].show();
+        }
+        std::cout<<"=="<<std::endl;
 
         return false;
     }
@@ -386,6 +446,7 @@ sofa::component::collision::OBBModel::SPtr makeOBBModel(const std::vector<Vector
 //dVecCoord.endEdit();
     obbCollisionModel->computeBoundingTree(0);
 
+    //std::cout<<"the proximity "<<obbCollisionModel->getProximity()<<std::endl;
     return obbCollisionModel;
 }
 
@@ -421,10 +482,7 @@ bool BroadPhaseTest<BroadPhase>::randTest(int seed,int nb1,int nb2,const Vector3
 
     obbm1->setSelfCollision(true);
     obbm2->setSelfCollision(true);
-    std::cout<<"obbm1 pointer "<<obbm1.get()<<std::endl;
-    std::cout<<"obbm1->getFirst() pointer "<<obbm1->getFirst()<<std::endl;
-    std::cout<<"obbm2 pointer "<<obbm2.get()<<std::endl;
-    std::cout<<"obbm2->getFirst() pointer "<<obbm2->getFirst()<<std::endl;
+
     typename BroadPhase::SPtr pbroadphase = New<BroadPhase>();
     BroadPhase & broadphase = *pbroadphase;
 
@@ -455,8 +513,8 @@ bool BroadPhaseTest<BroadPhase>::randDense(){
 
 template <class BroadPhase>
 bool BroadPhaseTest<BroadPhase>::randSparse(){
-    for(int i = 0 ; i < 100 ; ++i){
-        if(/*!randTest(i,1,1,Vector3(-2,-2,-2),Vector3(2,2,2))*/!randTest(i,1,1,Vector3(-5,-5,-5),Vector3(5,5,5))){
+    for(int i = 0 ; i < 1000 ; ++i){
+        if(/*!randTest(i,1,1,Vector3(-2,-2,-2),Vector3(2,2,2))*/!randTest(i,2,1,Vector3(-5,-5,-5),Vector3(5,5,5))){
             std::cout<<"FAIL seed number "<<i<<std::endl;
             return false;
         }
@@ -465,14 +523,21 @@ bool BroadPhaseTest<BroadPhase>::randSparse(){
     return true;
 }
 
-//typedef BroadPhaseTest<sofa::component::collision::TeschnerSpatialHashing> Teschner;
-//TEST_F(Teschner, rand_sparse_test ) { ASSERT_TRUE( randSparse()); }
-//TEST_F(Teschner, rand_dense_test ) { ASSERT_TRUE( randDense()); }
+typedef BroadPhaseTest<sofa::component::collision::TeschnerSpatialHashing> Teschner;
+TEST_F(Teschner, rand_sparse_test ) { ASSERT_TRUE( randSparse()); }
+TEST_F(Teschner, rand_dense_test ) { ASSERT_TRUE( randDense()); }
 
 
+typedef BroadPhaseTest<sofa::component::collision::BruteForceDetection> Brut;
+TEST_F(Brut, rand_sparse_test ) { ASSERT_TRUE( randSparse()); }
+TEST_F(Brut, rand_dense_test ) { ASSERT_TRUE( randDense()); }
 
 typedef BroadPhaseTest<sofa::component::collision::IncrSAP> IncrSAPTest;
 TEST_F(IncrSAPTest, rand_sparse_test ) { ASSERT_TRUE( randSparse()); }
 TEST_F(IncrSAPTest, rand_dense_test ) { ASSERT_TRUE( randDense()); }
+
+typedef BroadPhaseTest<sofa::component::collision::DirectSAP> DirectSAPTest;
+TEST_F(DirectSAPTest, rand_sparse_test ) { ASSERT_TRUE( randSparse()); }
+TEST_F(DirectSAPTest, rand_dense_test ) { ASSERT_TRUE( randDense()); }
 
 

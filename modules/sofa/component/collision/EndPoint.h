@@ -53,9 +53,22 @@ public:
     bool min()const;
     void show()const;
 
+    void setMinAndBoxID(int ID);
+    void setMaxAndBoxID(int ID);
 private:
     int data;//box ID | MinMax flag;
 };
+
+inline void EndPoint::setMinAndBoxID(int ID){
+    data = 0;
+    data = ID<<1;
+}
+
+inline void EndPoint::setMaxAndBoxID(int ID){
+    data = 0;
+    data = ID<<1;
+    ++data;
+}
 
 inline void EndPoint::setBoxID(int ID){
     data = ID<<1;

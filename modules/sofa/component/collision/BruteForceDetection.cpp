@@ -34,6 +34,7 @@
 #include <map>
 #include <queue>
 #include <stack>
+#include <sofa/helper/AdvancedTimer.h>
 
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glut.h>
@@ -225,6 +226,7 @@ public:
 
 void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*, core::CollisionModel*>& cmPair)
 {
+    sofa::helper::AdvancedTimer::stepBegin("BruteForceDetection::addCollisionPair");
     typedef std::pair< std::pair<core::CollisionElementIterator,core::CollisionElementIterator>, std::pair<core::CollisionElementIterator,core::CollisionElementIterator> > TestPair;
 
     core::CollisionModel *cm1 = cmPair.first; //->getNext();
@@ -447,6 +449,8 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
             }
         }
     }
+
+    //sofa::helper::AdvancedTimer::stepEnd("BruteForceDetection::addCollisionPair");
     //sout << "Narrow phase "<<cm1->getLast()->getName()<<"("<<gettypename(typeid(*cm1->getLast()))<<") - "<<cm2->getLast()->getName()<<"("<<gettypename(typeid(*cm2->getLast()))<<"): "<<elemPairs.size()-size0<<" contacts."<<sendl;
 }
 
