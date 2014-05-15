@@ -39,18 +39,39 @@ namespace component
 namespace configurationsetting
 {
 
-class SOFA_GRAPH_COMPONENT_API ViewerSetting: public core::objectmodel::ConfigurationSetting
+using namespace sofa::core::objectmodel;
+using namespace sofa::defaulttype;
+using namespace sofa::helper;
+
+///Class for the configuration of viewer settings.
+class SOFA_GRAPH_COMPONENT_API ViewerSetting: public ConfigurationSetting
 {
 public:
-    SOFA_CLASS(ViewerSetting,core::objectmodel::ConfigurationSetting);
+    SOFA_CLASS(ViewerSetting,ConfigurationSetting); ///< Sofa macro to define typedef.
 protected:
+
+    /**
+     * @brief Default constructor.
+     *
+     * By default :
+     *  - @ref resolution is set to 800x600.
+     *  - @ref fullscreen is set to false.
+     *  - @ref cameraMode is set to projective.
+     *  - @ref objectPickingMethod is set to ray casting.
+     */
     ViewerSetting();
 public:
-    Data<defaulttype::Vec<2,int> > resolution;
-    Data<bool> fullscreen;
-    Data<sofa::helper::OptionsGroup> cameraMode;
-    Data<sofa::helper::OptionsGroup> objectPickingMethod;
 
+    Data<Vec<2,int> > resolution;                           ///< Screen resolution (width, height).
+    Data<bool> fullscreen;                                  ///< True if viewer should be fullscreen.
+    Data<OptionsGroup> cameraMode;                          ///< Camera mode.
+                                                            /**<    \arg Perspective.
+                                                             *      \arg Orthographic.
+                                                             */
+    Data<OptionsGroup> objectPickingMethod;                 ///< Picking Method.
+                                                            /**<    \arg Ray casting.
+                                                             *      \arg Selection Buffer.
+                                                             */
 };
 
 }
