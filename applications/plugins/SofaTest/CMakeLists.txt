@@ -40,8 +40,15 @@ AddLinkerDependencies(SceneCreator)
 
 include_directories("${SOFA_EXTLIBS_DIR}/gtest/include")
 
+# TODO: shouldn't this be on for everyone ?
+
 if(CMAKE_SYSTEM MATCHES "Windows")
     AddLinkerDependencies(gtest)
 endif(CMAKE_SYSTEM MATCHES "Windows")
+
+if(APPLE)
+    AddLinkerDependencies(gtest)
+endif()
+
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
