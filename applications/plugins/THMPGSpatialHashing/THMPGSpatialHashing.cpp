@@ -1,6 +1,6 @@
-#include <sofa/component/collision/TeschnerSpatialHashing.h>
+#include "THMPGSpatialHashing.h"
+#include <sofa/component/collision/SphereModel.h>
 #include <sofa/component/collision/TriangleModel.h>
-#include <sofa/component/collision/TetrahedronModel.h>
 #include <sofa/component/collision/LineModel.h>
 #include <sofa/component/collision/OBBModel.h>
 
@@ -17,7 +17,7 @@ namespace collision
 {
 
 struct CannotInitializeCellSize : std::exception {
-    virtual const char* what() const throw(){return "Cannot initialize cell size in TeschnerSpatialHashing";}
+    virtual const char* what() const throw(){return "Cannot initialize cell size in THMPGSpatialHashing";}
 };
 
 
@@ -25,13 +25,13 @@ using namespace sofa::defaulttype;
 using namespace sofa::helper;
 using namespace collision;
 
-SOFA_DECL_CLASS(TeschnerSpatialHashing)
+SOFA_DECL_CLASS(THMPGSpatialHashing)
 
-int TeschnerSpatialHashingClass = core::RegisterObject("Collision detection using Teschner spatial hashing.")
-        .add< TeschnerSpatialHashing >()
+int THMPGSpatialHashingClass = core::RegisterObject("Collision detection using THMPG spatial hashing.")
+        .add< THMPGSpatialHashing >()
         ;
 
-TeschnerSpatialHashing::TeschnerSpatialHashing(){
+THMPGSpatialHashing::THMPGSpatialHashing(){
     _max_cm_size = 0;
     _timeStamp = 0;
     _total_edges_length = 0.0;
@@ -40,12 +40,12 @@ TeschnerSpatialHashing::TeschnerSpatialHashing(){
     _params_initialized = false;
 }
 
-void TeschnerSpatialHashing::init(){
+void THMPGSpatialHashing::init(){
     reinit();
 }
 
 
-void TeschnerSpatialHashing::reinit(){
+void THMPGSpatialHashing::reinit(){
     _timeStamp = 0;
     _total_edges_length = 0.0;
     _nb_elems = 0;
@@ -56,7 +56,7 @@ void TeschnerSpatialHashing::reinit(){
 
 
 template <class DataTypes>
-void TeschnerSpatialHashing::sumEdgeLength_template(core::CollisionModel *cm){
+void THMPGSpatialHashing::sumEdgeLength_template(core::CollisionModel *cm){
     sofa::core::topology::BaseMeshTopology * bmt = cm->getContext()->get<sofa::core::topology::BaseMeshTopology>(sofa::core::objectmodel::BaseContext::Local);
 
     if(bmt == 0x0)
@@ -66,7 +66,7 @@ void TeschnerSpatialHashing::sumEdgeLength_template(core::CollisionModel *cm){
     if(mec == 0)
         return;
 
-    const typename MechanicalState<DataTypes>::VecCoord & coords = *(mec->getX());
+    const typename sofa::core::behavior::MechanicalState<DataTypes>::VecCoord & coords = *(mec->getX());
 
     const sofa::core::topology::BaseMeshTopology::SeqEdges & seq_edges = bmt->getEdges();
 
@@ -79,15 +79,15 @@ void TeschnerSpatialHashing::sumEdgeLength_template(core::CollisionModel *cm){
 }
 
 
-void TeschnerSpatialHashing::sumEdgeLength(core::CollisionModel *cm){
+void THMPGSpatialHashing::sumEdgeLength(core::CollisionModel *cm){
     if(cm->getEnumType() == sofa::core::CollisionModel::TRIANGLE_TYPE)
         sumEdgeLength_template<sofa::component::collision::TriangleModel::DataTypes>(cm);
-    else if(cm->getEnumType() == sofa::core::CollisionModel::TETRAHEDRON_TYPE)
-        sumEdgeLength_template<sofa::component::collision::TetrahedronModel::DataTypes>(cm);
+//    else if(cm->getEnumType() == sofa::core::CollisionModel::TETRAHEDRON_TYPE)
+//        sumEdgeLength_template<sofa::component::collision::TetrahedronModel::DataTypes>(cm);
     else if(cm->getEnumType() == sofa::core::CollisionModel::LINE_TYPE)
         sumEdgeLength_template<sofa::component::collision::LineModel::DataTypes>(cm);
     else if(cm->getEnumType() == sofa::core::CollisionModel::SPHERE_TYPE){
-        const SphereModel * sphm = static_cast<SphereModel *>(cm);
+        const sofa::component::collision::SphereModel * sphm = static_cast<SphereModel *>(cm);
         for(int i = 0 ; i < sphm->getSize() ; ++i){
             _total_edges_length += (SReal)(2) * sphm->getRadius(i);
         }
@@ -106,7 +106,7 @@ void TeschnerSpatialHashing::sumEdgeLength(core::CollisionModel *cm){
 }
 
 
-void TeschnerSpatialHashing::endBroadPhase(){
+void THMPGSpatialHashing::endBroadPhase(){
     BroadPhaseDetection::endBroadPhase();
 
     if(!_params_initialized){
@@ -116,8 +116,8 @@ void TeschnerSpatialHashing::endBroadPhase(){
         }
 
         _cell_size = /*0.2 **/ _total_edges_length/_nb_edges;
-        TeschnerHashTable::cell_size = _cell_size;
-        TeschnerHashTable::setAlarmDistance(intersectionMethod->getAlarmDistance());
+        THMPGHashTable::cell_size = _cell_size;
+        THMPGHashTable::setAlarmDistance(intersectionMethod->getAlarmDistance());
         _params_initialized = true;
 
 //        std::cout<<"cell size "<<_cell_size<<std::endl;
@@ -125,13 +125,13 @@ void TeschnerSpatialHashing::endBroadPhase(){
     }
 }
 
-void TeschnerSpatialHashing::beginNarrowPhase(){
+void THMPGSpatialHashing::beginNarrowPhase(){
     NarrowPhaseDetection::beginNarrowPhase();
 }
 
-void TeschnerSpatialHashing::addCollisionModel(core::CollisionModel *cm)
+void THMPGSpatialHashing::addCollisionModel(core::CollisionModel *cm)
 {
-   //sofa::helper::AdvancedTimer::stepBegin("TeschnerSpatialHashing::addCollisionModel");
+   //sofa::helper::AdvancedTimer::stepBegin("THMPGSpatialHashing::addCollisionModel");
 
     if(!_params_initialized){
         sumEdgeLength(cm->getLast());
@@ -203,10 +203,10 @@ void TeschnerSpatialHashing::addCollisionModel(core::CollisionModel *cm)
     }
     _collisionModels.push_back(cm);
 
-    //sofa::helper::AdvancedTimer::stepEnd("TeschnerSpatialHashing::addCollisionModel");
+    //sofa::helper::AdvancedTimer::stepEnd("THMPGSpatialHashing::addCollisionModel");
 }
 
-bool TeschnerSpatialHashing::keepCollisionBetween(core::CollisionModel *cm1, core::CollisionModel *cm2)
+bool THMPGSpatialHashing::keepCollisionBetween(core::CollisionModel *cm1, core::CollisionModel *cm2)
 {
     if (!cm1->canCollideWith(cm2) || !cm2->canCollideWith(cm1))
     {
@@ -216,13 +216,13 @@ bool TeschnerSpatialHashing::keepCollisionBetween(core::CollisionModel *cm1, cor
     return true;
 }
 
-void TeschnerSpatialHashing::addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& coll_pair){
-    //sofa::helper::AdvancedTimer::stepBegin("TeschnerSpatialHashing::addCollisionPair");
+void THMPGSpatialHashing::addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& coll_pair){
+    //sofa::helper::AdvancedTimer::stepBegin("THMPGSpatialHashing::addCollisionPair");
 
     core::CollisionModel* cm1 = coll_pair.first->getLast();
     core::CollisionModel* cm2 = coll_pair.second->getLast();
 
-    TeschnerHashTable & t1 = _hash_tables[cm1];
+    THMPGHashTable & t1 = _hash_tables[cm1];
     if(!t1.initialized())
         t1.init(_max_cm_size * 3 ,cm1,_timeStamp);
     else
@@ -231,12 +231,12 @@ void TeschnerSpatialHashing::addCollisionPair (const std::pair<core::CollisionMo
     //t1.showStats(_timeStamp);
     if(cm1 == cm2){
         t1.autoCollide(this,intersectionMethod,_timeStamp);
-        //sofa::helper::AdvancedTimer::stepEnd("TeschnerSpatialHashing::addCollisionPair");
+        //sofa::helper::AdvancedTimer::stepEnd("THMPGSpatialHashing::addCollisionPair");
 
         return;
     }
 
-    TeschnerHashTable & t2 = _hash_tables[cm2];
+    THMPGHashTable & t2 = _hash_tables[cm2];
     if(!t2.initialized())
         t2.init(_max_cm_size * 3,cm2,_timeStamp);
     else
@@ -244,7 +244,7 @@ void TeschnerSpatialHashing::addCollisionPair (const std::pair<core::CollisionMo
 
     t1.collide(t2,this,intersectionMethod,_timeStamp);
     //t2.showStats(_timeStamp);
-    //sofa::helper::AdvancedTimer::stepEnd("TeschnerSpatialHashing::addCollisionPair");
+    //sofa::helper::AdvancedTimer::stepEnd("THMPGSpatialHashing::addCollisionPair");
 }
 
 }
