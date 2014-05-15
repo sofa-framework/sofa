@@ -35,7 +35,12 @@ def rotate(q, x):
 
 
 def exp(v):
+    """Quaterion exponential."""
     theta = Vec.norm(v)
+
+    if math.fabs(theta) < sys.float_info.epsilon:
+        return id()
+
     s = math.sin(theta / 2)
     c = math.cos(theta / 2)
 
@@ -43,7 +48,33 @@ def exp(v):
              v[1] / theta * s,
              v[2] / theta * s,
              c ]
-             
+
+def flip(q):
+    """Flip a quaternion to the real positive hemisphere if needed."""
+    
+    if re(q) < 0:
+        return Vec.minus(q)
+    else return q
+
+    
+def log(q):
+
+    """Quaterion (principal) logarithm. 
+
+    You might want to flip q first to ensure theta is in the [-0, pi]
+    range, yielding the equivalent rotation (principal) logarithm.
+
+    """
+
+    half_theta = math.acos( sign * re(q) )
+
+    if math.fabs( half_theta ) < sys.float_info.epsilon:
+        return [0, 0, 0]
+
+    return Vec.scal(2 * half_theta / math.sin(half_theta),
+                    im(q))
+
+
 
 def from_matrix(matrix, isprecise=False):
     """Return quaternion from rotation matrix.
