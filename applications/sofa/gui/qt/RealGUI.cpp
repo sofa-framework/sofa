@@ -2469,9 +2469,9 @@ std::string getFormattedLocalTime()
 //------------------------------------
 void RealGUI::appendToDataLogFile(QString dataModifiedString)
 {
-    const std::string filename = (this->windowFilePath() + ".log");
+    const std::string filename = std::string(this->windowFilePath()) + std::string(".log");
 
-    std::ofstream ofs( filename, std::ofstream::out | std::ofstream::app );
+    std::ofstream ofs( filename.c_str(), std::ofstream::out | std::ofstream::app );
 
     if (ofs.good())
     {
