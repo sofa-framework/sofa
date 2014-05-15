@@ -8,34 +8,51 @@ import math
 import numpy
 
 def id():
+    """identity"""
     return [0, 0, 0, 1]
 
 def conj(q):
+    """conjugate"""
     return [-q[0], -q[1], -q[2], q[3]]
 
 def inv(q):
+    """
+    inverse 
+
+    If you're dealing with unit quaternions, use conj instead.
+    """
     return Vec.scal(1 / Vec.norm2(q), conj(q) )
 
 def re(q):
+    """real part"""
     return q[3]
 
 def im(q):
+    """imaginary part"""
     return q[:3]
 
 # TODO optimize
 def prod(a, b):
+    """product"""
     return Vec.sum( Vec.sum( Vec.scal( re(a), im(b) ),
                              Vec.scal( re(b), im(a) )),
                     Vec.cross( im(a), im(b) ) ) + [ re(a) * re(b) - Vec.dot( im(a), im(b) ) ]
 
 # TODO optimize
 def rotate(q, x):
+    """vector rotation
+
+    rotates x by the rotation represented by q. this is also the
+    adjoint map for S^3.
+
+    """
+    
     # TODO assert q is unit
     return im( prod(q, prod( x + [0], conj(q))) )
 
 
 def exp(v):
-    """Quaterion exponential."""
+    """exponential"""
     theta = Vec.norm(v)
 
     if math.fabs(theta) < sys.float_info.epsilon:
@@ -59,7 +76,7 @@ def flip(q):
     
 def log(q):
 
-    """Quaterion (principal) logarithm. 
+    """(principal) logarithm. 
 
     You might want to flip q first to ensure theta is in the [-0, pi]
     range, yielding the equivalent rotation (principal) logarithm.
