@@ -12,8 +12,6 @@ set(HEADER_FILES
     ../collision/CubeModel.h
     ../collision/DiscreteIntersection.h
     ../collision/BruteForceDetection.h
-    ../collision/TeschnerSpatialHashing.h
-    ../collision/TeschnerHashTable.h
     ../collision/DefaultContactManager.h
     ../collision/MinProximityIntersection.h
     ../collision/NewProximityIntersection.h
@@ -53,7 +51,6 @@ set(SOURCE_FILES
     ../collision/CapsuleModel.cpp
     ../collision/DiscreteIntersection.cpp
     ../collision/BruteForceDetection.cpp
-    ../collision/TeschnerSpatialHashing.cpp
     ../collision/DefaultContactManager.cpp
     ../collision/MinProximityIntersection.cpp
     ../collision/NewProximityIntersection.cpp
@@ -69,7 +66,6 @@ set(SOURCE_FILES
     ../collision/IntrSphereOBB.cpp
     ../collision/BaseIntTool.cpp
     ../collision/ContactListener.cpp
-	../collision/TeschnerHashTable.cpp
     )
 
 set(GROUP_BASE_DIR "..")

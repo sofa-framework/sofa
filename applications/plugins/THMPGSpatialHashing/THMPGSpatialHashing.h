@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_TESCHNERSPATIALHASHING_H
-#define SOFA_COMPONENT_COLLISION_TESCHNERSPATIALHASHING_H
+#ifndef SOFA_COMPONENT_COLLISION_THMPGSPATIALHASHING_H
+#define SOFA_COMPONENT_COLLISION_THMPGSPATIALHASHING_H
 
 #include <sofa/core/collision/BroadPhaseDetection.h>
 #include <sofa/core/collision/NarrowPhaseDetection.h>
@@ -34,7 +34,7 @@
 #include <set>
 #include <boost/unordered_map.hpp>
 #include <sofa/core/CollisionModel.h>
-#include <sofa/component/collision/TeschnerHashTable.h>
+#include "THMPGHashTable.h"
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -52,20 +52,20 @@ namespace collision
 
 using namespace sofa::defaulttype;
 
-class SOFA_BASE_COLLISION_API TeschnerSpatialHashing :
+class SOFA_BASE_COLLISION_API THMPGSpatialHashing :
     public core::collision::BroadPhaseDetection,
     public core::collision::NarrowPhaseDetection
 {
 public:
-    SOFA_CLASS2(TeschnerSpatialHashing, core::collision::BroadPhaseDetection, core::collision::NarrowPhaseDetection);
+    SOFA_CLASS2(THMPGSpatialHashing, core::collision::BroadPhaseDetection, core::collision::NarrowPhaseDetection);
 
 private:
     template <class DataTypes>
     void sumEdgeLength_template(core::CollisionModel *cm);
 protected:
-    TeschnerSpatialHashing();
+    THMPGSpatialHashing();
 
-    virtual ~TeschnerSpatialHashing(){}
+    virtual ~THMPGSpatialHashing(){}
 
     virtual bool keepCollisionBetween(core::CollisionModel *cm1, core::CollisionModel *cm2);
 
@@ -74,7 +74,7 @@ protected:
     //boost::unordered_map<std::pair<core::CollisionModel*,core::CollisionModel*>,CollidingPair> _qsdf;
 
     sofa::helper::vector<sofa::component::collision::CubeModel*> cubeModels;//AABBs containing the final collision model
-    TeschnerHashTable _grid;
+    THMPGHashTable _grid;
     SReal _timeStamp;
     SReal _cell_size;
     bool _params_initialized;
@@ -83,7 +83,7 @@ protected:
     SReal _total_edges_length;
     int _max_cm_size;
     std::vector<core::CollisionModel*> _collisionModels;
-    boost::unordered::unordered_map<sofa::core::CollisionModel*,TeschnerHashTable> _hash_tables;
+    boost::unordered::unordered_map<sofa::core::CollisionModel*,THMPGHashTable> _hash_tables;
 public:
     inline virtual void beginBroadPhase()
     {

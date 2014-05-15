@@ -11,12 +11,12 @@
 #define CHECK_IF_ELLEMENT_EXISTS
 namespace sofa{
 
-class TeschnerCollisionSet{
+class THMPGCollisionSet{
 public:
-    TeschnerCollisionSet() : _timeStamp(SReal(-1.0)){}
+    THMPGCollisionSet() : _timeStamp(SReal(-1.0)){}
 
     inline void add(sofa::component::collision::Cube elem,SReal timeStamp){
-        //sofa::helper::AdvancedTimer::stepBegin("TeschnerCollisionSet : add");
+        //sofa::helper::AdvancedTimer::stepBegin("THMPGCollisionSet : add");
 
         if(_timeStamp < timeStamp){
             _timeStamp = timeStamp;
@@ -35,7 +35,7 @@ public:
             _coll_elems.push_back(elem);
         }
 #endif
-        //sofa::helper::AdvancedTimer::stepEnd("TeschnerCollisionSet : add");
+        //sofa::helper::AdvancedTimer::stepEnd("THMPGCollisionSet : add");
     }
 
     inline void clearAndAdd(sofa::component::collision::Cube elem,SReal timeStamp){
@@ -80,7 +80,7 @@ private:
 
 #undef CHECK_IF_ELLEMENT_EXISTS
 
-class TeschnerHashTable{
+class THMPGHashTable{
 protected:
 
 //    struct CollisionElementPair{
@@ -136,13 +136,13 @@ protected:
 //    };
 
 public:
-    TeschnerHashTable() : _cm(0x0),_timeStamp(-1.0){
+    THMPGHashTable() : _cm(0x0),_timeStamp(-1.0){
         _p1 = 73856093;
         _p2 = 19349663;
         _p3 = 83492791;
     }
 
-    TeschnerHashTable(int hashTableSize,sofa::core::CollisionModel * cm,SReal timeStamp) : _cm(cm),_timeStamp(-1.0){
+    THMPGHashTable(int hashTableSize,sofa::core::CollisionModel * cm,SReal timeStamp) : _cm(cm),_timeStamp(-1.0){
         _p1 = 73856093;
         _p2 = 19349663;
         _p3 = 83492791;
@@ -170,7 +170,7 @@ public:
         return index;
     }
 
-    inline const TeschnerCollisionSet & operator()(long int i,long int j,long int k)const{
+    inline const THMPGCollisionSet & operator()(long int i,long int j,long int k)const{
         long int index = ((i * _p1) ^ (j * _p2) ^ (k * _p3)) % _prime_size;
 
         if(index < 0)
@@ -181,9 +181,9 @@ public:
 
     void autoCollide(core::collision::NarrowPhaseDetection * phase,sofa::core::collision::Intersection * interMethod,SReal timeStamp);
 
-    void collide(TeschnerHashTable & other,sofa::core::collision::NarrowPhaseDetection * phase,sofa::core::collision::Intersection * interMehtod,SReal timeStamp);
+    void collide(THMPGHashTable & other,sofa::core::collision::NarrowPhaseDetection * phase,sofa::core::collision::Intersection * interMehtod,SReal timeStamp);
 
-    virtual ~TeschnerHashTable(){}
+    virtual ~THMPGHashTable(){}
 
     void showStats(SReal timeStamp)const{
         int nb_full_cell = 0;
@@ -201,7 +201,7 @@ public:
 
         SReal nb_elems_per_cell = (SReal)(nb_elems)/nb_full_cell;
 
-        std::cout<<"TeschnerHashTableStats ============================="<<std::endl;
+        std::cout<<"THMPGHashTableStats ============================="<<std::endl;
         std::cout<<"\tnb full cells "<<nb_full_cell<<std::endl;
         std::cout<<"\tnb elems per cell "<<nb_elems_per_cell<<std::endl;
         std::cout<<"\tmax exems found in a single cell "<<max_elems_in_cell<<std::endl;
@@ -224,7 +224,7 @@ public:
 
     static SReal cell_size;
 
-    inline TeschnerCollisionSet & operator()(long int i,long int j,long int k){
+    inline THMPGCollisionSet & operator()(long int i,long int j,long int k){
         long int index = ((i * _p1) ^ (j * _p2) ^ (k * _p3)) % _prime_size;
 
         if(index < 0)
@@ -240,7 +240,7 @@ public:
 
 protected:
 
-    static void doCollision(TeschnerHashTable &me, TeschnerHashTable &other, core::collision::NarrowPhaseDetection *phase, SReal timeStamp, core::collision::ElementIntersector *ei, bool swap);
+    static void doCollision(THMPGHashTable &me, THMPGHashTable &other, core::collision::NarrowPhaseDetection *phase, SReal timeStamp, core::collision::ElementIntersector *ei, bool swap);
 
 
     sofa::core::CollisionModel * _cm;
@@ -250,7 +250,7 @@ protected:
     long int _p3;
     long int _size;
     long int _prime_size;
-    std::vector<TeschnerCollisionSet> _table;
+    std::vector<THMPGCollisionSet> _table;
     static SReal _alarmDist;
     static SReal _alarmDistd2;
     SReal _timeStamp;

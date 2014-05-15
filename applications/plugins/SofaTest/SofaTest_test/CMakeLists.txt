@@ -1,5 +1,9 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
+set(HEEADER_FILES
+    BroadPhaseTest.h
+)
+
 set(SOURCE_FILES
     LinearElasticity_test.cpp
     BezierTetrahedronTopology_test.cpp

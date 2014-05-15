@@ -1,15 +1,15 @@
-#include "TeschnerHashTable.h"
-#include "BaseIntTool.h"
+#include "THMPGHashTable.h"
+#include <sofa/component/collision/BaseIntTool.h>
 
 using namespace sofa;
 using namespace sofa::component::collision;
 
-SReal TeschnerHashTable::cell_size = (SReal)(0);
-SReal TeschnerHashTable::_alarmDist = (SReal)(0);
-SReal TeschnerHashTable::_alarmDistd2 = (SReal)(0);
+SReal THMPGHashTable::cell_size = (SReal)(0);
+SReal THMPGHashTable::_alarmDist = (SReal)(0);
+SReal THMPGHashTable::_alarmDistd2 = (SReal)(0);
 
 
-void TeschnerHashTable::init(int hashTableSize,core::CollisionModel *cm,SReal timeStamp){
+void THMPGHashTable::init(int hashTableSize,core::CollisionModel *cm,SReal timeStamp){
     _cm = cm->getLast();
     resize(0);
     resize(hashTableSize);
@@ -17,7 +17,7 @@ void TeschnerHashTable::init(int hashTableSize,core::CollisionModel *cm,SReal ti
     refersh(timeStamp);
 }
 
-void TeschnerHashTable::refersh(SReal timeStamp){
+void THMPGHashTable::refersh(SReal timeStamp){
     if(_timeStamp >= timeStamp)
         return;
 
@@ -31,7 +31,7 @@ void TeschnerHashTable::refersh(SReal timeStamp){
     int movingcell[3];
     //SReal alarmDistd2 = intersectionMethod->getAlarmDistance()/((SReal)(2.0));
 
-    //sofa::helper::AdvancedTimer::stepBegin("TeschnerSpatialHashing : Hashing");
+    //sofa::helper::AdvancedTimer::stepBegin("THMPGSpatialHashing : Hashing");
 
     Cube c(cube_model);
 
@@ -51,9 +51,9 @@ void TeschnerHashTable::refersh(SReal timeStamp){
         for(movingcell[0] = mincell[0] ; movingcell[0] <= maxcell[0] ; ++movingcell[0]){
             for(movingcell[1] = mincell[1] ; movingcell[1] <= maxcell[1] ; ++movingcell[1]){
                 for(movingcell[2] = mincell[2] ; movingcell[2] <= maxcell[2] ; ++movingcell[2]){
-                    //sofa::helper::AdvancedTimer::stepBegin("TeschnerSpatialHashing : addAndCollide");
+                    //sofa::helper::AdvancedTimer::stepBegin("THMPGSpatialHashing : addAndCollide");
                     (*this)(movingcell[0],movingcell[1],movingcell[2]).add(c/*.getExternalChildren().first*/,timeStamp);
-                    //sofa::helper::AdvancedTimer::stepEnd("TeschnerSpatialHashing : addAndCollide");
+                    //sofa::helper::AdvancedTimer::stepEnd("THMPGSpatialHashing : addAndCollide");
                 }
             }
         }
@@ -69,7 +69,7 @@ static bool checkIfCollisionIsDone(int i,int j,std::vector<int> * tab){
     return false;
 }
 
-void TeschnerHashTable::doCollision(TeschnerHashTable & me,TeschnerHashTable & other,sofa::core::collision::NarrowPhaseDetection * phase,SReal timeStamp,core::collision::ElementIntersector* ei,bool swap){
+void THMPGHashTable::doCollision(THMPGHashTable & me,THMPGHashTable & other,sofa::core::collision::NarrowPhaseDetection * phase,SReal timeStamp,core::collision::ElementIntersector* ei,bool swap){
     sofa::core::CollisionModel* cm1,*cm2;
     cm1 = me.getCollisionModel();
     cm2 = other.getCollisionModel();
@@ -135,7 +135,7 @@ void TeschnerHashTable::doCollision(TeschnerHashTable & me,TeschnerHashTable & o
 }
 
 
-void TeschnerHashTable::autoCollide(core::collision::NarrowPhaseDetection * phase,sofa::core::collision::Intersection * interMethod,SReal timeStamp){
+void THMPGHashTable::autoCollide(core::collision::NarrowPhaseDetection * phase,sofa::core::collision::Intersection * interMethod,SReal timeStamp){
     sofa::core::CollisionModel* cm = getCollisionModel();
 
     int size,sizem1;
@@ -172,7 +172,7 @@ void TeschnerHashTable::autoCollide(core::collision::NarrowPhaseDetection * phas
 }
 
 
-void TeschnerHashTable::collide(TeschnerHashTable & other,sofa::core::collision::NarrowPhaseDetection * phase,sofa::core::collision::Intersection * interMehtod,SReal timeStamp){
+void THMPGHashTable::collide(THMPGHashTable & other,sofa::core::collision::NarrowPhaseDetection * phase,sofa::core::collision::Intersection * interMehtod,SReal timeStamp){
     sofa::core::CollisionModel* cm1,*cm2;
     cm1 = getCollisionModel();
     cm2 = other.getCollisionModel();
@@ -180,7 +180,7 @@ void TeschnerHashTable::collide(TeschnerHashTable & other,sofa::core::collision:
     if(!(cm1->canCollideWith(cm2)))
         return;
 
-    TeschnerHashTable * ptable1,*ptable2;
+    THMPGHashTable * ptable1,*ptable2;
 
     if(cm1->getSize() <= cm2->getSize()){
         ptable1 = this;

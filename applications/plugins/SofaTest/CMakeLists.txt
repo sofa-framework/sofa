@@ -6,7 +6,7 @@ set(HEADER_FILES
     Sofa_test.h
     Mapping_test.h
     Elasticity_test.h
-    
+    BroadPhaseTest.h
 	)
 
 set(SOURCE_FILES
