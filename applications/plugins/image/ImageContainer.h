@@ -113,15 +113,17 @@ struct ImageContainerSpecialization<defaulttype::IMAGELABEL_IMAGE>
             CImg<T> img = cimg_library::_load_gz_inr<T>(NULL, fname.c_str(), voxsize, translation, rotation);
             wimage->getCImgList().push_back(img);
 
-            for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)voxsize[i];
-            for(unsigned int i=0;i<3;i++) wtransform->getTranslation()[i]= (Real)translation[i];
+            if (!container->transformIsSet)
+            {
 
-            Mat<3,3,Real> R;
-            R = container->RotVec3DToRotMat3D(rotation);
-            helper::Quater< float > q; q.fromMatrix(R);
-            // wtransform->getRotation()=q.toEulerVector() * (Real)180.0 / (Real)M_PI ;  //  this does not convert quaternion to euler angles
-            if(q[0]*q[0]+q[1]*q[1]==0.5 || q[1]*q[1]+q[2]*q[2]==0.5) {q[3]+=10-3; q.normalize();} // hack to avoid singularities
-            if (!container->transform.isSet()) {
+                for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)voxsize[i];
+                for(unsigned int i=0;i<3;i++) wtransform->getTranslation()[i]= (Real)translation[i];
+
+                Mat<3,3,Real> R;
+                R = container->RotVec3DToRotMat3D(rotation);
+                helper::Quater< float > q; q.fromMatrix(R);
+                // wtransform->getRotation()=q.toEulerVector() * (Real)180.0 / (Real)M_PI ;  //  this does not convert quaternion to euler angles
+                if(q[0]*q[0]+q[1]*q[1]==0.5 || q[1]*q[1]+q[2]*q[2]==0.5) {q[3]+=10-3; q.normalize();} // hack to avoid singularities
                 wtransform->getRotation()[0]=atan2(2*(q[3]*q[0]+q[1]*q[2]),1-2*(q[0]*q[0]+q[1]*q[1])) * (Real)180.0 / (Real)M_PI;
                 wtransform->getRotation()[1]=asin(2*(q[3]*q[1]-q[2]*q[0])) * (Real)180.0 / (Real)M_PI;
                 wtransform->getRotation()[2]=atan2(2*(q[3]*q[2]+q[0]*q[1]),1-2*(q[1]*q[1]+q[2]*q[2])) * (Real)180.0 / (Real)M_PI;
@@ -134,64 +136,70 @@ struct ImageContainerSpecialization<defaulttype::IMAGELABEL_IMAGE>
         else
 #endif // SOFA_HAVE_ZLIB
             if(fname.find(".mhd")!=std::string::npos || fname.find(".MHD")!=std::string::npos || fname.find(".Mhd")!=std::string::npos
-                || fname.find(".raw")!=std::string::npos || fname.find(".RAW")!=std::string::npos || fname.find(".Raw")!=std::string::npos)
-        {
-            if(fname.find(".raw")!=std::string::npos || fname.find(".RAW")!=std::string::npos || fname.find(".Raw")!=std::string::npos)      fname.replace(fname.find_last_of('.')+1,fname.size(),"mhd");
+                    || fname.find(".raw")!=std::string::npos || fname.find(".RAW")!=std::string::npos || fname.find(".Raw")!=std::string::npos)
+            {
+                if(fname.find(".raw")!=std::string::npos || fname.find(".RAW")!=std::string::npos || fname.find(".Raw")!=std::string::npos)      fname.replace(fname.find_last_of('.')+1,fname.size(),"mhd");
 
-            double scale[3]={1.,1.,1.},translation[3]={0.,0.,0.},affine[9]={1.,0.,0.,0.,1.,0.,0.,0.,1.},offsetT=0.,scaleT=1.;
-            bool isPerspective=false;
-            wimage->getCImgList().assign(cimg_library::load_metaimage<T,double>(fname.c_str(),scale,translation,affine,&offsetT,&scaleT,&isPerspective));
-            for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)scale[i];
-            for(unsigned int i=0;i<3;i++) wtransform->getTranslation()[i]=(Real)translation[i];
-            Mat<3,3,Real> R; for(unsigned int i=0;i<3;i++) for(unsigned int j=0;j<3;j++) R[i][j]=(Real)affine[3*i+j];
-            helper::Quater< Real > q; q.fromMatrix(R);
-            // wtransform->getRotation()=q.toEulerVector() * (Real)180.0 / (Real)M_PI ;  //  container does not convert quaternion to euler angles
-            if(q[0]*q[0]+q[1]*q[1]==0.5 || q[1]*q[1]+q[2]*q[2]==0.5) {q[3]+=10-3; q.normalize();} // hack to avoid singularities
-            if (!container->transform.isSet()) {
-                wtransform->getRotation()[0]=atan2(2*(q[3]*q[0]+q[1]*q[2]),1-2*(q[0]*q[0]+q[1]*q[1])) * (Real)180.0 / (Real)M_PI;
-                wtransform->getRotation()[1]=asin(2*(q[3]*q[1]-q[2]*q[0])) * (Real)180.0 / (Real)M_PI;
-                wtransform->getRotation()[2]=atan2(2*(q[3]*q[2]+q[0]*q[1]),1-2*(q[1]*q[1]+q[2]*q[2])) * (Real)180.0 / (Real)M_PI;
-                wtransform->getOffsetT()=(Real)offsetT;
-                wtransform->getScaleT()=(Real)scaleT;
-                wtransform->isPerspective()=isPerspective;
+                double scale[3]={1.,1.,1.},translation[3]={0.,0.,0.},affine[9]={1.,0.,0.,0.,1.,0.,0.,0.,1.},offsetT=0.,scaleT=1.;
+                bool isPerspective=false;
+                wimage->getCImgList().assign(cimg_library::load_metaimage<T,double>(fname.c_str(),scale,translation,affine,&offsetT,&scaleT,&isPerspective));
+                if (!container->transformIsSet)
+                {
+                    for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)scale[i];
+                    for(unsigned int i=0;i<3;i++) wtransform->getTranslation()[i]=(Real)translation[i];
+                    Mat<3,3,Real> R; for(unsigned int i=0;i<3;i++) for(unsigned int j=0;j<3;j++) R[i][j]=(Real)affine[3*i+j];
+                    helper::Quater< Real > q; q.fromMatrix(R);
+                    // wtransform->getRotation()=q.toEulerVector() * (Real)180.0 / (Real)M_PI ;  //  container does not convert quaternion to euler angles
+                    if(q[0]*q[0]+q[1]*q[1]==0.5 || q[1]*q[1]+q[2]*q[2]==0.5) {q[3]+=10-3; q.normalize();} // hack to avoid singularities
+                    wtransform->getRotation()[0]=atan2(2*(q[3]*q[0]+q[1]*q[2]),1-2*(q[0]*q[0]+q[1]*q[1])) * (Real)180.0 / (Real)M_PI;
+                    wtransform->getRotation()[1]=asin(2*(q[3]*q[1]-q[2]*q[0])) * (Real)180.0 / (Real)M_PI;
+                    wtransform->getRotation()[2]=atan2(2*(q[3]*q[2]+q[0]*q[1]),1-2*(q[1]*q[1]+q[2]*q[2])) * (Real)180.0 / (Real)M_PI;
+                    wtransform->getOffsetT()=(Real)offsetT;
+                    wtransform->getScaleT()=(Real)scaleT;
+                    wtransform->isPerspective()=isPerspective;
+                }
             }
-        }
-        else if(fname.find(".nfo")!=std::string::npos || fname.find(".NFO")!=std::string::npos || fname.find(".Nfo")!=std::string::npos)
-        {
-            // nfo files are used for compatibility with gridmaterial of frame and voxelize rplugins
-            std::ifstream fileStream (fname.c_str(), std::ifstream::in);
-            if (!fileStream.is_open()) { container->serr << "Cannot open " << fname << container->sendl; return false; }
-            std::string str;
-            fileStream >> str;	char vtype[32]; fileStream.getline(vtype,32);
-            Vec<3,unsigned int> dim;  fileStream >> str; fileStream >> dim;
-            Vec<3,double> translation; fileStream >> str; fileStream >> translation;        for(unsigned int i=0;i<3;i++) wtransform->getTranslation()[i]=(Real)translation[i];
-            Vec<3,double> scale; fileStream >> str; fileStream >> scale;     for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)scale[i];
-            fileStream.close();
-            std::string imgName (fname);  imgName.replace(imgName.find_last_of('.')+1,imgName.size(),"raw");
-            wimage->getCImgList().push_back(CImg<T>().load_raw(imgName.c_str(),dim[0],dim[1],dim[2]));
-        }
-        else if(fname.find(".cimg")!=std::string::npos || fname.find(".CIMG")!=std::string::npos || fname.find(".Cimg")!=std::string::npos || fname.find(".CImg")!=std::string::npos)
-            wimage->getCImgList().load_cimg(fname.c_str());
-        else if(fname.find(".par")!=std::string::npos || fname.find(".rec")!=std::string::npos)
-            wimage->getCImgList().load_parrec(fname.c_str());
-        else if(fname.find(".avi")!=std::string::npos || fname.find(".mov")!=std::string::npos || fname.find(".asf")!=std::string::npos || fname.find(".divx")!=std::string::npos || fname.find(".flv")!=std::string::npos || fname.find(".mpg")!=std::string::npos || fname.find(".m1v")!=std::string::npos || fname.find(".m2v")!=std::string::npos || fname.find(".m4v")!=std::string::npos || fname.find(".mjp")!=std::string::npos || fname.find(".mkv")!=std::string::npos || fname.find(".mpe")!=std::string::npos || fname.find(".movie")!=std::string::npos || fname.find(".ogm")!=std::string::npos || fname.find(".ogg")!=std::string::npos || fname.find(".qt")!=std::string::npos || fname.find(".rm")!=std::string::npos || fname.find(".vob")!=std::string::npos || fname.find(".wmv")!=std::string::npos || fname.find(".xvid")!=std::string::npos || fname.find(".mpeg")!=std::string::npos )
-            wimage->getCImgList().load_ffmpeg(fname.c_str());
-        else if (fname.find(".hdr")!=std::string::npos || fname.find(".nii")!=std::string::npos)
-        {
-            float voxsize[3];
-            wimage->getCImgList().push_back(CImg<T>().load_analyze(fname.c_str(),voxsize));
-            if (!container->transform.isSet())
-                for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)voxsize[i];
-            readNiftiHeader(container, fname);
-        }
-        else if (fname.find(".inr")!=std::string::npos)
-        {
-            float voxsize[3];
-            wimage->getCImgList().push_back(CImg<T>().load_inr(fname.c_str(),voxsize));
-            if (!container->transform.isSet())
-                for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)voxsize[i];
-        }
-        else wimage->getCImgList().push_back(CImg<T>().load(fname.c_str()));
+            else if(fname.find(".nfo")!=std::string::npos || fname.find(".NFO")!=std::string::npos || fname.find(".Nfo")!=std::string::npos)
+            {
+                // nfo files are used for compatibility with gridmaterial of frame and voxelize rplugins
+
+                std::ifstream fileStream (fname.c_str(), std::ifstream::in);
+                if (!fileStream.is_open()) { container->serr << "Cannot open " << fname << container->sendl; return false; }
+                std::string str;
+                fileStream >> str;	char vtype[32]; fileStream.getline(vtype,32);
+                Vec<3,unsigned int> dim;  fileStream >> str; fileStream >> dim;
+                if (!container->transformIsSet)
+                {
+                    Vec<3,double> translation; fileStream >> str; fileStream >> translation;        for(unsigned int i=0;i<3;i++) wtransform->getTranslation()[i]=(Real)translation[i];
+                    Vec<3,double> scale; fileStream >> str; fileStream >> scale;     for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)scale[i];
+                }
+                fileStream.close();
+
+                std::string imgName (fname);  imgName.replace(imgName.find_last_of('.')+1,imgName.size(),"raw");
+                wimage->getCImgList().push_back(CImg<T>().load_raw(imgName.c_str(),dim[0],dim[1],dim[2]));
+            }
+            else if(fname.find(".cimg")!=std::string::npos || fname.find(".CIMG")!=std::string::npos || fname.find(".Cimg")!=std::string::npos || fname.find(".CImg")!=std::string::npos)
+                wimage->getCImgList().load_cimg(fname.c_str());
+            else if(fname.find(".par")!=std::string::npos || fname.find(".rec")!=std::string::npos)
+                wimage->getCImgList().load_parrec(fname.c_str());
+            else if(fname.find(".avi")!=std::string::npos || fname.find(".mov")!=std::string::npos || fname.find(".asf")!=std::string::npos || fname.find(".divx")!=std::string::npos || fname.find(".flv")!=std::string::npos || fname.find(".mpg")!=std::string::npos || fname.find(".m1v")!=std::string::npos || fname.find(".m2v")!=std::string::npos || fname.find(".m4v")!=std::string::npos || fname.find(".mjp")!=std::string::npos || fname.find(".mkv")!=std::string::npos || fname.find(".mpe")!=std::string::npos || fname.find(".movie")!=std::string::npos || fname.find(".ogm")!=std::string::npos || fname.find(".ogg")!=std::string::npos || fname.find(".qt")!=std::string::npos || fname.find(".rm")!=std::string::npos || fname.find(".vob")!=std::string::npos || fname.find(".wmv")!=std::string::npos || fname.find(".xvid")!=std::string::npos || fname.find(".mpeg")!=std::string::npos )
+                wimage->getCImgList().load_ffmpeg(fname.c_str());
+            else if (fname.find(".hdr")!=std::string::npos || fname.find(".nii")!=std::string::npos)
+            {
+                float voxsize[3];
+                wimage->getCImgList().push_back(CImg<T>().load_analyze(fname.c_str(),voxsize));
+                if (!container->transformIsSet)
+                    for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)voxsize[i];
+                readNiftiHeader(container, fname);
+            }
+            else if (fname.find(".inr")!=std::string::npos)
+            {
+                float voxsize[3];
+                wimage->getCImgList().push_back(CImg<T>().load_inr(fname.c_str(),voxsize));
+                if (!container->transformIsSet)
+                    for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)voxsize[i];
+            }
+            else wimage->getCImgList().push_back(CImg<T>().load(fname.c_str()));
 
         if(!wimage->isEmpty()) container->sout << "Loaded image " << fname <<" ("<< wimage->getCImg().pixel_type() <<")"  << container->sendl;
         else return false;
@@ -236,7 +244,7 @@ struct ImageContainerSpecialization<defaulttype::IMAGELABEL_IMAGE>
     template<class ImageContainer>
     static bool loadCamera( ImageContainer* container )
     {
-//        typedef typename ImageContainer::T T;
+        //        typedef typename ImageContainer::T T;
 
         if( container->m_filename.isSet() ) return false;
         if( container->name.getValue().find("CAMERA") == std::string::npos ) return false;
@@ -290,9 +298,9 @@ struct ImageContainerSpecialization<defaulttype::IMAGELABEL_IMAGE>
             Real d = (Real)data.d;
             Real a = sqrt(1.0 - (b*b+c*c+d*d));
             helper::Quater<Real> q(a,b,c,d);
-//            wtransform->getRotation()=q.toEulerVector() * (Real)180.0 / (Real)M_PI ; //  this does not convert quaternion to euler angles
+            //            wtransform->getRotation()=q.toEulerVector() * (Real)180.0 / (Real)M_PI ; //  this does not convert quaternion to euler angles
             if(q[0]*q[0]+q[1]*q[1]==0.5 || q[1]*q[1]+q[2]*q[2]==0.5) {q[3]+=10-3; q.normalize();} // hack to avoid singularities
-            if (!container->transform.isSet())
+            if (!container->transformIsSet)
             {
                 wtransform->getRotation()[0]=atan2(2*(q[3]*q[0]+q[1]*q[2]),1-2*(q[0]*q[0]+q[1]*q[1])) * (Real)180.0 / (Real)M_PI;
                 wtransform->getRotation()[1]=asin(2*(q[3]*q[1]-q[2]*q[0])) * (Real)180.0 / (Real)M_PI;
@@ -379,6 +387,7 @@ public:
       , drawBB(initData(&drawBB,true,"drawBB","draw bounding box"))
       , sequence(initData(&sequence, false, "sequence", "load a sequence of images"))
       , nFrames (initData(&nFrames, "numberOfFrames", "The number of frames of the sequence to be loaded. Default is the entire sequence."))
+      , transformIsSet (false)
     {
         this->addAlias(&image, "inputImage");
         this->addAlias(&transform, "inputTransform");
@@ -398,17 +407,15 @@ public:
 
     virtual ~ImageContainer() {clear();}
 
+    bool transformIsSet;
+
     virtual void init()
     {
-        bool set = false;
-        waImage wimage(this->image);
-        if (this->transform.isSet())
-            set = true;
-        waTransform wtransform(this->transform);
-        if (!set)
-            this->transform.unset();
+        this->transformIsSet = false;
+        if (this->transform.isSet()) this->transformIsSet = true;
+        if (!this->transformIsSet) this->transform.unset();
 
-        if (this->transform.isSet())
+        if (this->transformIsSet)
             sout << "Transform is set" << sendl;
         else
             sout << "Transform is NOT set" << sendl;
@@ -416,6 +423,8 @@ public:
 
         ImageContainerSpecialization<ImageTypes::label>::init( this );
 
+        waImage wimage(this->image);
+        waTransform wtransform(this->transform);
         wtransform->setCamPos((Real)(wimage->getDimensions()[0]-1)/2.0,(Real)(wimage->getDimensions()[1]-1)/2.0); // for perspective transforms
         wtransform->update(); // update of internal data
     }
@@ -424,6 +433,7 @@ public:
 
 
 protected:
+
 
     Mat<3,3,Real> RotVec3DToRotMat3D(float *rotVec)
     {
