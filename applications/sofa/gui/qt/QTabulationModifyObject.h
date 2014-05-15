@@ -95,10 +95,11 @@ protected:
     const unsigned int index;
     unsigned int size;
 
+    bool dirty;
+
     unsigned int pixelSize;
     unsigned int pixelMaxSize;
 
-    bool dirty;
 };
 
 

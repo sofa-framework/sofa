@@ -36,6 +36,9 @@ namespace component
 namespace configurationsetting
 {
 
+using namespace sofa::defaulttype;
+using namespace sofa::helper;
+
 SOFA_DECL_CLASS(ViewerSetting)
 int ViewerSettingClass = core::RegisterObject("Configuration for the Viewer of your application")
         .add< ViewerSetting >()
@@ -43,14 +46,14 @@ int ViewerSettingClass = core::RegisterObject("Configuration for the Viewer of y
         ;
 
 ViewerSetting::ViewerSetting():
-    resolution(initData(&resolution, defaulttype::Vec<2,int>(800,600), "resolution", "resolution of the Viewer"))
-    ,fullscreen(initData(&fullscreen, false, "fullscreen", "Fullscreen mode"))
-    ,cameraMode(initData(&cameraMode, "cameraMode", "Camera mode"))
-    ,objectPickingMethod(initData(&objectPickingMethod, "objectPickingMethod","The method used to pick objects"))
+    resolution(initData(&resolution, Vec<2,int>(800,600), "resolution", "resolution of the Viewer"))
+  ,fullscreen(initData(&fullscreen, false, "fullscreen", "Fullscreen mode"))
+  ,cameraMode(initData(&cameraMode, "cameraMode", "Camera mode"))
+  ,objectPickingMethod(initData(&objectPickingMethod, "objectPickingMethod","The method used to pick objects"))
 {
-    sofa::helper::OptionsGroup mode(2,"Perspective","Orthographic");
+    OptionsGroup mode(2,"Perspective","Orthographic");
     cameraMode.setValue(mode);
-    sofa::helper::OptionsGroup pickmethod(2,"Ray casting","Selection buffer");
+    OptionsGroup pickmethod(2,"Ray casting","Selection buffer");
     objectPickingMethod.setValue(pickmethod);
 }
 

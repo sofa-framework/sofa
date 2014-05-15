@@ -46,7 +46,7 @@ class SOFA_CORE_API ConfigurationSetting: public BaseObject
 public:
     SOFA_CLASS(ConfigurationSetting, BaseObject);
 protected:
-    ConfigurationSetting();
+    ConfigurationSetting(); ///< Default constructor.
 
     virtual ~ConfigurationSetting();
 public:

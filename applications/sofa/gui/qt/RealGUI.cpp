@@ -2202,7 +2202,7 @@ void RealGUI::Update()
 void RealGUI::updateBackgroundColour()
 {
     if(getViewer())
-        getViewer()->setBackgroundColour(atof(background[0]->text().ascii()),atof(background[1]->text().ascii()),atof(background[2]->text().ascii()));
+        getViewer()->setBackgroundColour(background[0]->text().toFloat(),background[1]->text().toFloat(),background[2]->text().toFloat());
     if(isEmbeddedViewer())
         getQtViewer()->getQWidget()->update();;
 }

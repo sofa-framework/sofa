@@ -32,7 +32,7 @@ class SOFA_Compliant_API Benchmark : public core::objectmodel::BaseObject {
 	Data<SReal> factor;
 	
 	// convergence
-	Data< vector<SReal> > dual, primal, complementarity, optimality, duration;
+    Data< vector<SReal> > primal, dual, complementarity, optimality, duration;
 	
 	typedef SReal real;
 	typedef Eigen::Matrix<real, Eigen::Dynamic, 1> vec;

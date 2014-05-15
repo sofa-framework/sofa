@@ -38,15 +38,16 @@ namespace component
 namespace configurationsetting
 {
 
+///Class for the configuration of default path for sofa application.
 class SOFA_GRAPH_COMPONENT_API SofaDefaultPathSetting: public core::objectmodel::ConfigurationSetting
 {
 public:
-    SOFA_CLASS(SofaDefaultPathSetting,core::objectmodel::ConfigurationSetting);
+    SOFA_CLASS(SofaDefaultPathSetting,core::objectmodel::ConfigurationSetting); ///< Sofa macro to define typedef.
 protected:
-    SofaDefaultPathSetting();
+    SofaDefaultPathSetting();   ///<Default constructor.
 public:
-    sofa::core::objectmodel::Data<std::string> recordPath;
-    sofa::core::objectmodel::Data<std::string> gnuplotPath;
+    sofa::core::objectmodel::Data<std::string> recordPath;  ///<Path where will be saved the data of the recorded simulation.
+    sofa::core::objectmodel::Data<std::string> gnuplotPath; ///<Path where will be saved the gnuplot files.
 };
 
 }
