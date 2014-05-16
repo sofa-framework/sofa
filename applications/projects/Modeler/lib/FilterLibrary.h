@@ -29,13 +29,7 @@
 #include <sofa/core/ComponentLibrary.h>
 
 
-#ifdef SOFA_QT4
-#include <Q3Header>
 #include <QLineEdit>
-#else
-#include <qheader.h>
-#include <qlineedit.h>
-#endif
 
 
 namespace sofa

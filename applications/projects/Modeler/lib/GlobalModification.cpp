@@ -30,7 +30,6 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 
-#ifdef SOFA_QT4
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -38,13 +37,6 @@
 #include <QPushButton>
 #include <QSpacerItem>
 #include <QGroupBox>
-#else
-#include <qlayout.h>
-#include <qlabel.h>
-#include <qpushbutton.h>
-#include <qsizepolicy.h>
-#include <qgroupbox.h>
-#endif
 
 namespace sofa
 {
@@ -104,9 +96,7 @@ GlobalModification::GlobalModification(const InternalStorage &c, GraphHistoryMan
     dataNameSelector->setAutoCompletion(true);
 
     dataNameSelector->insertStringList(listDataName);
-#ifdef SOFA_QT4
     dataNameSelector->setCompleter(new QCompleter(listDataName,dataNameSelector));
-#endif
 
     nameLayout->addWidget(new QLabel(QString("Select the Data to modify"),dataNameWidget));
     nameLayout->addWidget(dataNameSelector);
@@ -249,10 +239,8 @@ void GlobalModification::useAliases(bool b)
     else   list = &listDataName;
 
 
-#ifdef SOFA_QT4
     if (dataNameSelector->completer()) delete dataNameSelector->completer();
     dataNameSelector->setCompleter(new QCompleter(*list,dataNameSelector));
-#endif
     dataNameSelector->insertStringList(*list);
 
     dataNameSelector->setCurrentText(currentText);

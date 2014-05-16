@@ -25,7 +25,7 @@
 #include <iostream>
 #include <fstream>
 
-#include <qapplication.h>
+#include <QtGui/QApplication>
 #include <sofa/simulation/tree/TreeSimulation.h>
 
 #include "../lib/SofaModeler.h"
@@ -34,9 +34,6 @@
 
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/PluginManager.h>
-#ifndef SOFA_QT4
-#include <qpixmap.h>
-#endif
 
 // ---------------------------------------------------------------------
 // ---
@@ -65,11 +62,7 @@ int main(int argc, char** argv)
     if (!binaryName.empty() && binaryName[binaryName.size()-1] == 'd') sofaModeler->setDebugBinary(true);
 
     QString pathIcon=(sofa::helper::system::DataRepository.getFirstPath() + std::string( "/icons/MODELER.png" )).c_str();
-#ifdef SOFA_QT4
     application->setWindowIcon(QIcon(pathIcon));
-#else
-    sofaModeler->setIcon(QPixmap(pathIcon));
-#endif
 
     for (int i=1; i<argc; ++i)
     {

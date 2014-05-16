@@ -25,13 +25,7 @@
 
 #include "FilterLibrary.h"
 
-#ifdef SOFA_QT4
 #include <QToolTip>
-#else
-#include <qlineedit.h>
-#include <qevent.h>
-#include <qtooltip.h>
-#endif
 
 namespace sofa
 {

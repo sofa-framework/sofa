@@ -30,19 +30,10 @@
 #include "ModifierCondition.h"
 #include "GraphHistoryManager.h"
 
-#ifdef SOFA_QT4
-#include <Q3Header>
 #include <QComboBox>
 #include <QLineEdit>
 #include <QStringList>
 #include <QCheckBox>
-#else
-#include <qstringlist.h>
-#include <qheader.h>
-#include <qlineedit.h>
-#include <qcombobox.h>
-#include <qcheckbox.h>
-#endif
 
 
 namespace sofa

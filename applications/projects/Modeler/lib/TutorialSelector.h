@@ -25,16 +25,9 @@
 #ifndef SOFA_TUTORIALSELECTOR_H
 #define SOFA_TUTORIALSELECTOR_H
 
-#ifdef SOFA_QT4
 #include <Q3ListView>
 #include <Q3ListViewItem>
 #include <QKeyEvent>
-#else
-#include <qlistview.h>
-#include <qevent.h>
-typedef QListView Q3ListView;
-typedef QListViewItem Q3ListViewItem;
-#endif
 
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
@@ -108,11 +101,7 @@ public:
 public  slots:
     void openCategory(const QString&);
 
-#ifdef SOFA_QT4
     void changeRequested( Q3ListViewItem * );
-#else
-    void changeRequested( QListViewItem * );
-#endif
 signals:
     void openCategory(const std::string &name);
     void openTutorial(const std::string &filename);

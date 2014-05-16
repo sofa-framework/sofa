@@ -27,17 +27,10 @@
 
 #include <sofa/core/objectmodel/Base.h>
 
-#ifdef SOFA_QT4
 #include <QCheckBox>
 #include <QLineEdit>
 #include <QComboBox>
 #include <QStringList>
-#else
-#include <qcheckbox.h>
-#include <qlineedit.h>
-#include <qcombobox.h>
-#include <qstringlist.h>
-#endif
 
 namespace sofa
 {

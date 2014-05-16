@@ -28,15 +28,9 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
 
-#ifdef SOFA_QT4
 #include <QHBoxLayout>
 #include <QUrl>
-#include <Q3ToolBar>
-#else
-#include <qlayout.h>
-#include <qurl.h>
-typedef QToolBar Q3ToolBar;
-#endif
+#include <QToolBar>
 
 namespace sofa
 {
@@ -47,7 +41,7 @@ namespace gui
 namespace qt
 {
 
-SofaTutorialManager::SofaTutorialManager(QWidget* parent, const char* name):Q3MainWindow(parent, name), tutorialList(0)
+SofaTutorialManager::SofaTutorialManager(QWidget* parent, const char* name):QMainWindow(parent, name), tutorialList(0)
 {
 
     QWidget *mainWidget = new QWidget(this);
@@ -70,13 +64,7 @@ SofaTutorialManager::SofaTutorialManager(QWidget* parent, const char* name):Q3Ma
 
     //Create the HTML Browser to display the information
     descriptionPage = new QTextBrowser(mainWidget);
-#ifdef SOFA_QT4
     connect(descriptionPage, SIGNAL(anchorClicked(const QUrl&)), this, SLOT(dynamicChangeOfScene(const QUrl&)));
-#else
-    // QMimeSourceFactory::defaultFactory()->setExtensionType("html", "text/utf8");
-    descriptionPage->mimeSourceFactory()->setExtensionType("html", "text/utf8");;
-    connect(descriptionPage, SIGNAL(linkClicked(const QString&)), this, SLOT(dynamicChangeOfScene(const QString&)));
-#endif
     descriptionPage->setMinimumWidth(400);
     //Create the Graph
     graph = new GraphModeler(mainWidget);
@@ -91,7 +79,7 @@ SofaTutorialManager::SofaTutorialManager(QWidget* parent, const char* name):Q3Ma
     connect(this, SIGNAL(redo()), graph, SIGNAL(redo()));
 
     //Creation of a Tool Bar
-    Q3ToolBar *toolBar = new Q3ToolBar( this );
+    QToolBar *toolBar = new QToolBar( this );
     toolBar->setLabel(QString("Tools"));
 
     //Add list of tutorials
@@ -121,11 +109,7 @@ SofaTutorialManager::SofaTutorialManager(QWidget* parent, const char* name):Q3Ma
     this->resize(1000,600);
     this->setPaletteBackgroundColor(QColor(255,180,120));
     QString pathIcon=(sofa::helper::system::DataRepository.getFirstPath() + std::string( "/icons/SOFATUTORIALS.png" )).c_str();
-#ifdef SOFA_QT4
     this->setWindowIcon(QIcon(pathIcon));
-#else
-    this->setIcon(QPixmap(pathIcon));
-#endif
 }
 
 void SofaTutorialManager::editScene()
@@ -176,41 +160,24 @@ void SofaTutorialManager::openHTML(const std::string &filename)
         return;
     }
 
-#ifdef SOFA_QT4
 #ifdef WIN32
     descriptionPage->setSource(QUrl(QString("file:///")+QString(filename.c_str())));
 #else
     descriptionPage->setSource(QUrl(QString(filename.c_str())));
 #endif
-#else
-    descriptionPage->mimeSourceFactory()->setFilePath(QString(filename.c_str()));
-    descriptionPage->setSource(QString(filename.c_str()));
-#endif
 }
 
-void SofaTutorialManager::openCategory(const std::string&
-#ifdef SOFA_QT4
-        filename
-#endif
-                                      )
+void SofaTutorialManager::openCategory(const std::string& filename)
 {
-
-#ifdef SOFA_QT4
-    if (tutorialList) tutorialList->setCurrentIndex(tutorialList->findText(QString(filename.c_str())));
-#endif
+    if (tutorialList)
+        tutorialList->setCurrentIndex(tutorialList->findText(QString(filename.c_str())));
 }
 
-#ifdef SOFA_QT4
 void SofaTutorialManager::dynamicChangeOfScene( const QUrl& u)
 {
     std::string path=u.path().ascii();
 #ifdef WIN32
     path = path.substr(1);
-#endif
-#else
-void SofaTutorialManager::dynamicChangeOfScene( const QString& u)
-{
-    std::string path=u.ascii();
 #endif
     path  = sofa::helper::system::DataRepository.getFile(path);
     std::string extension=sofa::helper::system::SetDirectory::GetExtension(path.c_str());

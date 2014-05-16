@@ -32,7 +32,6 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 
-#ifdef SOFA_QT4
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -40,13 +39,6 @@
 #include <QPushButton>
 #include <QSpacerItem>
 #include <QGroupBox>
-#else
-#include <qlayout.h>
-#include <qlabel.h>
-#include <qpushbutton.h>
-#include <qsizepolicy.h>
-#include <qgroupbox.h>
-#endif
 
 namespace sofa
 {

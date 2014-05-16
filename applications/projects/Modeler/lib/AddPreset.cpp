@@ -32,23 +32,13 @@
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileRepository.h>
 
-#ifdef SOFA_QT4
-#include <Q3FileDialog>
-#include <QLineEdit>
-#include <QLabel>
-#include <QRadioButton>
-#include <QPushButton>
-#include <Q3ButtonGroup>
-#include <QGridLayout>
-#else
-#include <qfiledialog.h>
-#include <qlineedit.h>
-#include <qlabel.h>
-#include <qradiobutton.h>
-#include <qpushbutton.h>
-#include <qbuttongroup.h>
-#include <qlayout.h>
-#endif
+#include <QtGui/QLabel>
+#include <QtGui/QLineEdit>
+#include <QtGui/QPushButton>
+#include <QtGui/QSpacerItem>
+#include <QtGui/QGridLayout>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QVBoxLayout>
 
 namespace sofa
 {
@@ -60,20 +50,82 @@ namespace qt
 {
 
 
-#ifndef SOFA_QT4
-typedef QFileDialog  Q3FileDialog;
-typedef QButtonGroup Q3ButtonGroup;
-#endif
-
-
-AddPreset::AddPreset(  QWidget* parent , const char* name,bool , Qt::WFlags ):	Ui_DialogAddPreset()
+AddPreset::AddPreset(QWidget* parent):
+    QDialog(parent)
 {
-    setupUi(this);
-    this->setCaption(QString(sofa::helper::system::SetDirectory::GetFileName(name).c_str()));
+    QGridLayout * fileFormGridLayout = new QGridLayout();
+    openFileText0 = new QLabel("Path to the Mesh File", this);
+    fileFormGridLayout->addWidget(openFileText0, 0, 0);
+    openFilePath0 = new QLineEdit(this);
+    fileFormGridLayout->addWidget(openFilePath0, 0, 1);
+    openFileButton0 = new QPushButton("Browse", this);
+    fileFormGridLayout->addWidget(openFileButton0, 0, 2);
+    connect(openFileButton0, SIGNAL(clicked()), this, SLOT(fileOpen()));
+
+    fileFormGridLayout->setSpacing(6);
+    openFileText1 = new QLabel("Path to the VisualModel", this);
+    fileFormGridLayout->addWidget(openFileText1, 1, 0);
+    openFilePath1 = new QLineEdit(this);
+    fileFormGridLayout->addWidget(openFilePath1, 1, 1);
+    openFileButton1 = new QPushButton("Browse", this);
+    fileFormGridLayout->addWidget(openFileButton1, 1, 2);
+    connect(openFileButton1, SIGNAL(clicked()), this, SLOT(fileOpen()));
+
+    fileFormGridLayout->setSpacing(6);
+    openFileText2 = new QLabel("Path to the CollisionModel", this);
+    fileFormGridLayout->addWidget(openFileText2, 2, 0);
+    openFilePath2 = new QLineEdit(this);
+    fileFormGridLayout->addWidget(openFilePath2, 2, 1);
+    openFileButton2 = new QPushButton("Browse", this);
+    fileFormGridLayout->addWidget(openFileButton2, 2, 2);
+    connect(openFileButton2, SIGNAL(clicked()), this, SLOT(fileOpen()));
+
+    QGridLayout * gridLayoutTwo = new QGridLayout(3, 4);
+    gridLayoutTwo->addWidget(new QLabel("Initial Position", this));
+    positionX = new QLineEdit(this);
+    gridLayoutTwo->addWidget(positionX);
+    positionY = new QLineEdit(this);
+    gridLayoutTwo->addWidget(positionY);
+    positionZ = new QLineEdit(this);
+    gridLayoutTwo->addWidget(positionZ);
+
+    gridLayoutTwo->addWidget(new QLabel("Initial Rotation", this));
+    rotationX = new QLineEdit(this);
+    gridLayoutTwo->addWidget(rotationX);
+    rotationY = new QLineEdit(this);
+    gridLayoutTwo->addWidget(rotationY);
+    rotationZ = new QLineEdit(this);
+    gridLayoutTwo->addWidget(rotationZ);
+
+    gridLayoutTwo->addWidget(new QLabel("Initial Scale", this));
+    scaleX = new QLineEdit(this);
+    gridLayoutTwo->addWidget(scaleX);
+    scaleY = new QLineEdit(this);
+    gridLayoutTwo->addWidget(scaleY);
+    scaleZ = new QLineEdit(this);
+    gridLayoutTwo->addWidget(scaleZ);
+
+    QHBoxLayout *buttonHLayout = new QHBoxLayout();
+    buttonHLayout->addItem(new QSpacerItem(20, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
+    buttonOk = new QPushButton("&OK", this);
+    buttonOk->setDefault(true);
+    buttonHLayout->addWidget(buttonOk);
+    connect(buttonOk, SIGNAL(clicked()), this, SLOT(accept()));
+
+    buttonCancel = new QPushButton("&Cancel", this);
+    buttonHLayout->addWidget(buttonCancel);
+    connect(buttonCancel, SIGNAL(clicked()), this, SLOT(reject()));
+
+    QVBoxLayout *verticalLayout = new QVBoxLayout(this);
+    verticalLayout->addLayout(fileFormGridLayout);
+    verticalLayout->addLayout(gridLayoutTwo);
+    verticalLayout->addLayout(buttonHLayout);
+
+    setWindowTitle("Add a scene or an object");
     clear();
 
     //Make the connection between this widget and the parent
-    connect( this, SIGNAL(loadPreset(Node*,std::string,std::string*, std::string,std::string,std::string)),
+    connect(this, SIGNAL(loadPreset(Node*,std::string,std::string*, std::string,std::string,std::string)),
             parent, SLOT(loadPreset(Node*,std::string,std::string*, std::string,std::string,std::string)));
 }
 
@@ -122,27 +174,25 @@ void AddPreset::setElementPresent(bool *elementPresent)
 //Clear the dialoag
 void AddPreset::clear()
 {
-    positionX->setText("0");
-    positionY->setText("0");
-    positionZ->setText("0");
+    positionX->setText("0.0");
+    positionY->setText("0.0");
+    positionZ->setText("0.0");
 
-    rotationX->setText("0");
-    rotationY->setText("0");
-    rotationZ->setText("0");
+    rotationX->setText("0.0");
+    rotationY->setText("0.0");
+    rotationZ->setText("0.0");
 
-    scaleX->setText("1");
-    scaleY->setText("1");
-    scaleZ->setText("1");
-
+    scaleX->setText("1.0");
+    scaleY->setText("1.0");
+    scaleZ->setText("1.0");
 
     openFilePath0->setText(NULL);
     openFilePath1->setText(NULL);
     openFilePath2->setText(NULL);
-
 }
 
-//**************************************************************************************
-//When the Ok Button is clicked, this method is called: we just have to emit a signal to the parent, with the information on the object
+// When the Ok Button is clicked, this method is called: we just have
+// to emit a signal to the parent, with the information on the object
 void AddPreset::accept()
 {
     std::string position;
