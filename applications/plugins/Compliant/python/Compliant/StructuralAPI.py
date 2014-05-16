@@ -378,7 +378,7 @@ class RigidJointSpring:
             input.append( '@' + Tools.node_path_rel(self.node,node2) + '/dofs' )
             self.mapping = self.node.createObject('RigidJointMultiMapping', template = 'Rigid,Vec6d', name = 'mapping', input = concat(input), output = '@dofs', pairs = str(index1)+" "+str(index2))
             compliances = vec.inv(stiffnesses);
-            self.compliance = self.node.createObject('DiagonalCompliance', template="Vec6d", name='compliance', compliance=concat(compliances))
+            self.compliance = self.node.createObject('DiagonalCompliance', template="Vec6d", name='compliance', compliance=concat(compliances), isCompliance=0)
 
 ## @TODO handle joints with diagonalcompliance / diagonaldamper...
 ## @TODO add mappings for more complex joints (eg with coupled dofs ie skrew, winch...)
