@@ -29,7 +29,7 @@
 
 	<!--linear weights-->
 	<Mesh name="edges" position="@parent.rest_position" edges="0 1 1 2 2 3 3 4 4 5 5 6 6 7 7 8 8 9 9 10"/>
-	<BarycentricShapeFunction  position="@parent.rest_position" nbRef="2" />
+	<BarycentricShapeFunction  position="@parent.rest_position" nbRef="2" tolerance="-10000"/>
 	<ShapeFunctionDiscretizer name="SF" src="@image" />
 
 	<!-- <VoronoiShapeFunction name="SF" position="@parent.rest_position" src="@image" useDijkstra="true" method="0" nbRef="5" />-->
@@ -54,7 +54,7 @@
 	    	<ImageSampler template="ImageUC" name="sampler" src="@image" method="0" param="" fixedPosition="0" showSamplesScale="0"/>
 
 	    	<MechanicalObject template="F331" name="F"  />
-	    	<GaussPointContainer position="@sampler.position" defaultVolume="1e-3" showSamplesScale="0"/>
+	    	<GaussPointContainer position="@sampler.position"  showSamplesScale="0"/>
 	    	<LinearMapping template="Mapping&lt;Affine,F331&gt;"  restPosition="@sampler.position" showDeformationGradientScale="0" mapForces="0"/>
 		<Node 	name="E"   >
 			<MechanicalObject  template="E331" name="E"  />
@@ -64,7 +64,8 @@
 
 	    	<ImageDataDisplay name="disp" template="ImageUC,ImageD"  inputImage="@image.image" />
 	    	<ImageViewer template="ImageD" image="@disp.outputImage" transform="@image.transform" plane="10 10 10"/>
-	    	<PythonScriptController filename="../data/visualization/StrainImage.py" classname="ColorMap" /> 
+		<PythonScriptController filename="../../python/Flexible/StressVisu" classname="ColorMap_Image" /> 
+
     	</Node>
 
 
@@ -133,7 +134,7 @@
 	    	<ImageSampler template="ImageUC" name="sampler" src="@image" method="0" param="" fixedPosition="0" showSamplesScale="0"/>
 
 	    	<MechanicalObject template="F331" name="F"  />
-	    	<GaussPointContainer position="@sampler.position" defaultVolume="1e-3" showSamplesScale="0"/>
+	    	<GaussPointContainer position="@sampler.position"  showSamplesScale="0"/>
 	    	<LinearMapping template="Mapping&lt;Affine,F331&gt;" restPosition="@sampler.position" showDeformationGradientScale="0" mapForces="0"/>
 
 	      	<Node 	name="E"   >
@@ -143,7 +144,7 @@
 
 	    	<ImageDataDisplay name="disp" template="ImageUC,ImageD"  inputImage="@image.image" />
 	    	<ImageViewer template="ImageD" image="@disp.outputImage" transform="@image.transform" plane="10 10 10"/>
-	    	<PythonScriptController filename="../data/visualization/StrainImage.py" classname="ColorMap" /> 
+		<PythonScriptController filename="../../python/Flexible/StressVisu" classname="ColorMap_Image" /> 
     	</Node>
 
 

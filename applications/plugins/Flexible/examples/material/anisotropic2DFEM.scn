@@ -31,7 +31,7 @@
                 <MechanicalObject template="E321" name="E"/>
                 <GreenStrainMapping template="Mapping&lt;F321,E321&gt;" />
 	        <HookeOrthotropicForceField  template="E321" youngModulusX="200" youngModulusY="20" poissonRatioXY="0.4" shearModulusXY="3.6" viscosity="0"/>	        
-		<PythonScriptController filename="../data/visualization/VonMisesStressTri" classname="ColorMap" /> 
+		<PythonScriptController filename="../../python/Flexible/StressVisu" classname="ColorMap_Tri" /> 
 	    </Node>
         </Node>
 
@@ -70,7 +70,7 @@
                 <MechanicalObject template="E321" name="E"/>
                 <GreenStrainMapping template="Mapping&lt;F321,E321&gt;" />
 	        <HookeOrthotropicForceField  template="E321" youngModulusX="200" youngModulusY="20" poissonRatioXY="0.4" shearModulusXY="3.6" viscosity="0" />	        
- 	        <PythonScriptController filename="../data/VonMisesStressQuad" classname="ColorMap" /> 
+		<PythonScriptController filename="../../python/Flexible/StressVisu" classname="ColorMap_Quad" /> 
 	    </Node>
         </Node>
 
