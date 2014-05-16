@@ -71,7 +71,8 @@ def flip(q):
     
     if re(q) < 0:
         return Vec.minus(q)
-    else return q
+    else :
+        return q
 
     
 def log(q):
