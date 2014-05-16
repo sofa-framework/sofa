@@ -442,9 +442,9 @@ int main(int argc, char** argv)
     .option(&simulationType,'s',"simu","select the type of simulation (bgl, tree)")
     .option(&verbose,'v',"verbose","print debug info")
     (argc,argv);
-
+#ifndef SOFA_NO_OPENGL
     glutInit(&argc,argv);
-
+#endif
 //#ifdef SOFA_DEV
 //    if (simulationType == "bgl")
 //        sofa::simulation::setSimulation(new sofa::simulation::bgl::BglSimulation());

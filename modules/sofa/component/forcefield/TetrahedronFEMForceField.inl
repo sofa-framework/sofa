@@ -1978,11 +1978,10 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
         vparams->drawTool()->drawLines(points[2], 5, Vec<4,float>(0,0,1,1));
 
     }
-#endif /* SOFA_NO_OPENGL */
 
         glDisable(GL_BLEND);
         glDepthMask(1);
-
+#endif /* SOFA_NO_OPENGL */
 }
 
 template<class DataTypes>
@@ -2514,7 +2513,7 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
     vonMisesStressColors.resize(_mesh->getNbPoints());
     vonMisesStressColorsCoeff.resize(_mesh->getNbPoints());
     std::fill(vonMisesStressColorsCoeff.begin(), vonMisesStressColorsCoeff.end(), 0);
-
+#ifndef SOFA_NO_OPENGL
     for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
     {
         visualmodel::ColorMap::evaluator<Real> evalColor = _showStressColorMapReal->getEvaluator(minVM, maxVM);
@@ -2536,7 +2535,7 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
             vonMisesStressColors[i] /= vonMisesStressColorsCoeff[i];
         }
     }
-
+#endif
 }
 
 
