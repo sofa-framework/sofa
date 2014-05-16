@@ -138,9 +138,9 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
     , m_scale           (initData   (&m_scale, Vec3Real(1.0,1.0,1.0), "scale3d", "Initial Scale of the object"))
     , m_scaleTex        (initData   (&m_scaleTex, TexCoord(1.0,1.0), "scaleTex", "Scale of the texture"))
     , m_translationTex  (initData   (&m_translationTex, TexCoord(0.0,0.0), "translationTex", "Translation of the texture"))
-#ifdef SOFA_SMP
+    #ifdef SOFA_SMP
     , previousProcessorColor(false)
-#endif
+    #endif
     , material			(initData	(&material, "material", "Material")) // tex(NULL)
     , putOnlyTexCoords	(initData	(&putOnlyTexCoords, (bool) false, "putOnlyTexCoords", "Give Texture Coordinates without the texture binding"))
     , srgbTexturing		(initData	(&srgbTexturing, (bool) false, "srgbTexturing", "When sRGB rendering is enabled, is the texture in sRGB colorspace?"))
@@ -377,7 +377,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
 
         std::map<int, int> normMap;
         for (std::map<std::pair<int, int>, int>::iterator it = vertTexNormMap[i].begin();
-                it != vertTexNormMap[i].end(); ++it)
+             it != vertTexNormMap[i].end(); ++it)
         {
             int t = it->first.first;
             int n = it->first.second;
@@ -596,6 +596,19 @@ void VisualModelImpl::applyTranslation(const Real dx, const Real dy, const Real 
 
     d_x->endEdit();
 
+    if(m_initRestPositions.getValue())
+    {
+        VecCoord& restPositions = *(m_restPositions.beginEdit());
+
+        for (unsigned int i = 0; i < restPositions.size(); i++)
+        {
+            restPositions[i] += d;
+        }
+
+        m_restPositions.endEdit();
+    }
+
+
     updateVisual();
 }
 
@@ -617,6 +630,18 @@ void VisualModelImpl::applyRotation(const Quat q)
 
     d_x->endEdit();
 
+    if(m_initRestPositions.getValue())
+    {
+        VecCoord& restPositions = *(m_restPositions.beginEdit());
+
+        for (unsigned int i = 0; i < restPositions.size(); i++)
+        {
+            restPositions[i] = q.rotate(restPositions[i]);
+        }
+
+        m_restPositions.endEdit();
+    }
+
     updateVisual();
 }
 
@@ -627,12 +652,26 @@ void VisualModelImpl::applyScale(const Real sx, const Real sy, const Real sz)
 
     for (unsigned int i = 0; i < x.size(); i++)
     {
-		x[i][0] *=  sx;
-		x[i][1] *=  sy;
-		x[i][2] *=  sz;
+        x[i][0] *=  sx;
+        x[i][1] *=  sy;
+        x[i][2] *=  sz;
     }
 
     d_x->endEdit();
+
+    if(m_initRestPositions.getValue())
+    {
+        VecCoord& restPositions = *(m_restPositions.beginEdit());
+
+        for (unsigned int i = 0; i < restPositions.size(); i++)
+        {
+            restPositions[i][0] *=  sx;
+            restPositions[i][1] *=  sy;
+            restPositions[i][2] *=  sz;
+        }
+
+        m_restPositions.endEdit();
+    }
 
     updateVisual();
 }
@@ -642,8 +681,8 @@ void VisualModelImpl::applyUVTranslation(const Real dU, const Real dV)
     VecTexCoord& vtexcoords = *(m_vtexcoords.beginEdit());
     for (unsigned int i = 0; i < vtexcoords.size(); i++)
     {
-		vtexcoords[i][0] += dU;
-		vtexcoords[i][1] += dV;
+        vtexcoords[i][0] += dU;
+        vtexcoords[i][1] += dV;
     }
     m_vtexcoords.endEdit();
 }
@@ -653,8 +692,8 @@ void VisualModelImpl::applyUVScale(const Real scaleU, const Real scaleV)
     VecTexCoord& vtexcoords = *(m_vtexcoords.beginEdit());
     for (unsigned int i = 0; i < vtexcoords.size(); i++)
     {
-		vtexcoords[i][0] *= scaleU;
-		vtexcoords[i][1] *= scaleV;
+        vtexcoords[i][0] *= scaleU;
+        vtexcoords[i][1] *= scaleV;
     }
     m_vtexcoords.endEdit();
 }
@@ -670,8 +709,8 @@ public:
         : sofa::component::topology::TopologyDataHandler<sofa::core::topology::Point, VecCoord >(data), obj(obj), algo(algo) {}
 
     void applyCreateFunction(unsigned int pointIndex, Coord& dest, const sofa::core::topology::Point &,
-            const sofa::helper::vector< unsigned int > &ancestors,
-            const sofa::helper::vector< double > &coefs)
+                             const sofa::helper::vector< unsigned int > &ancestors,
+                             const sofa::helper::vector< double > &coefs)
     {
         const VecCoord& x = this->m_topologyData->getValue();
         std::cout << "VisualModelPointHandler: new point " << pointIndex << "/" << x.size() << " on " << this->m_topologyData->getName() << " : ancestors = " << ancestors << " , coefs = " << coefs << std::endl;
@@ -878,7 +917,7 @@ void VisualModelImpl::computeNormals()
 }
 
 VisualModelImpl::Coord VisualModelImpl::computeTangent(const Coord &v1, const Coord &v2, const Coord &v3,
-        const TexCoord &t1, const TexCoord &t2, const TexCoord &t3)
+                                                       const TexCoord &t1, const TexCoord &t2, const TexCoord &t3)
 {
     Coord v = (v2 - v1) * (t3.y() - t1.y()) + (v3 - v1) * (t1.y() - t2.y());
     v.normalize();
@@ -886,7 +925,7 @@ VisualModelImpl::Coord VisualModelImpl::computeTangent(const Coord &v1, const Co
 }
 
 VisualModelImpl::Coord VisualModelImpl::computeBitangent(const Coord &v1, const Coord &v2, const Coord &v3,
-        const TexCoord &t1, const TexCoord &t2, const TexCoord &t3)
+                                                         const TexCoord &t1, const TexCoord &t2, const TexCoord &t3)
 {
     Coord v = (v2 - v1) * (t3.x() - t1.x()) + (v3 - v1) * (t1.x() - t2.x());
     v.normalize();
@@ -1321,7 +1360,7 @@ void VisualModelImpl::handleTopologyChange()
     if (!m_topology) return;
     //if (!m_vertPosIdx.getValue().empty()) return;
 
-//    std::cout << "> " << m_vtexcoords.getValue().size() << std::endl;
+    //    std::cout << "> " << m_vtexcoords.getValue().size() << std::endl;
 
     bool debug_mode = false;
 
@@ -1745,7 +1784,7 @@ void VisualModelImpl::handleTopologyChange()
     m_quads.endEdit();
     m_positions.endEdit();
 
-//    std::cout << "< " << m_vtexcoords.getValue().size() << std::endl;
+    //    std::cout << "< " << m_vtexcoords.getValue().size() << std::endl;
 }
 
 void VisualModelImpl::initVisual()
