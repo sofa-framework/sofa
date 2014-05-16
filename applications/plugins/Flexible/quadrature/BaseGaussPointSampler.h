@@ -136,6 +136,7 @@ public:
 
 protected:
 
+#ifndef SOFA_NO_OPENGL
     virtual void draw(const core::visual::VisualParams* vparams)
     {
 
@@ -158,7 +159,7 @@ protected:
 
 #endif /* SOFA_NO_OPENGL */
     }
-
+#endif
 
 
 };

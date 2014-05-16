@@ -41,10 +41,12 @@
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
 #include <sofa/helper/gl/template.h>
+#ifndef SOFA_NO_OPENGL
 #if defined (__APPLE__)
 #include <OpenGL/gl.h>
 #else
 #include <GL/gl.h>
+#endif
 #endif
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/component/topology/TopologyData.inl>

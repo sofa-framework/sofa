@@ -31,9 +31,13 @@
 #ifdef SOFA_GUI_GLUT
 #include "glut/SimpleGUI.h"
 #endif
+
+#ifdef SOFA_GUI_GLUT
 #ifdef SOFA_HAVE_BOOST
 #include "glut/MultithreadGUI.h"
 #endif
+#endif
+
 using std::cerr;
 using std::endl;
 

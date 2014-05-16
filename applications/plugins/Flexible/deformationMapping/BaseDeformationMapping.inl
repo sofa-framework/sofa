@@ -756,6 +756,7 @@ unsigned int BaseDeformationMappingT<JacobianBlockType>::getClosestMappedPoint(c
 template<int matdim,typename Real>
 void drawEllipsoid(const Mat<3,matdim,Real> & F, const Vec<3,Real> &p, const float& scale)
 {
+#ifndef SOFA_NO_OPENGL
     glPushMatrix();
 
     GLdouble transformMatrix[16];
@@ -780,6 +781,7 @@ void drawEllipsoid(const Mat<3,matdim,Real> & F, const Vec<3,Real> &p, const flo
     gluDeleteQuadric(ellipsoid);
 
     glPopMatrix();
+#endif
 }
 
 
