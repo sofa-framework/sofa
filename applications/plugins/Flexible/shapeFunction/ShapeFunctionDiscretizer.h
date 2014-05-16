@@ -153,10 +153,10 @@ protected:
         waDist weightData(this->f_w);         weightData->setDimensions(dim);
         CImg<DistT>& weights = weightData->getCImg(); weights.fill(0);
 
-        // fill indices and weights images
-#ifdef USING_OMP_PRAGMAS
-#pragma omp parallel for
-#endif
+//        // fill indices and weights images
+//#ifdef USING_OMP_PRAGMAS
+//#pragma omp parallel for
+//#endif
         for(int z=0; z<inimg.depth(); z++)
             for(int y=0; y<inimg.height(); y++)
                 for(int x=0; x<inimg.width(); x++)
