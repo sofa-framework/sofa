@@ -140,6 +140,8 @@ public:
 	 */
 	virtual Dart collapseVolume(Dart d, bool delDegenerateVolumes = true);
 
+    virtual void deleteVolume(Dart d, bool withBoundary = true);
+
 	//!
 	/*! No attribute is attached to the new volume
 	 */

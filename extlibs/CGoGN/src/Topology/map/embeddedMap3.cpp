@@ -436,7 +436,7 @@ bool EmbeddedMap3::mergeVolumes(Dart d, bool deleteFace)
     Dart d2 = phi2(d);
     const unsigned int deletedFaceID = getEmbedding<FACE>(d);
     const unsigned deleteVolumeID = getEmbedding<VOLUME>(phi3(d));
-//    std::cerr << "mergeVolumes deletedFaceID = " << deletedFaceID << std::endl;
+    //    std::cerr << "mergeVolumes deletedFaceID = " << deletedFaceID << std::endl;
 
     if(Map3::mergeVolumes(d, deleteFace))
     {
@@ -496,7 +496,7 @@ void EmbeddedMap3::splitVolume(std::vector<Dart>& vd)
 
     if (isOrbitEmbedded<FACE>()) {
         Dart v = vd.front() ;
-//        std::cerr << __FILE__ << " "  << << std::endl;
+        //        std::cerr << __FILE__ << " "  << << std::endl;
         initOrbitEmbeddingNewCell<FACE>(phi2(v)) ;
     }
 
@@ -576,6 +576,69 @@ Dart EmbeddedMap3::collapseVolume(Dart d, bool delDegenerateVolumes)
 
     return resV;
 }
+
+
+void EmbeddedMap3::deleteVolume(Dart d, bool withBoundary) {
+    const unsigned int wEmb = getEmbedding<VOLUME>(d) ;
+
+    std::vector<unsigned int> verticesToRemove, edgeToRemove, facesToRemove;
+    verticesToRemove.reserve(2);
+    edgeToRemove.reserve(4);
+    facesToRemove.reserve(3);
+
+    Traversor3WV<EmbeddedMap3> traV(*this, d);
+    for (Dart dv = traV.begin() ; dv != traV.end() ; dv = traV.next() ) {
+        Traversor3VW<EmbeddedMap3> traW(*this, dv);
+        unsigned int i = 0u;
+        for (Dart dW = traW.begin() ; (dW != traW.end()) && ( i<= 1 ) ; dW = traW.next() )
+            ++i;
+        if ( i == 1u )
+            verticesToRemove.push_back(getEmbedding<VERTEX>(dv));
+    }
+
+    Traversor3WE<EmbeddedMap3> traE(*this, d);
+    for (Dart de = traE.begin() ; de != traE.end() ; de = traE.next() ) {
+        Traversor3EW<EmbeddedMap3> traW(*this, de);
+        unsigned int i = 0u;
+        for (Dart dW = traW.begin() ; (dW != traW.end()) && ( i<= 1 ) ; dW = traW.next() )
+            ++i;
+        if ( i == 1u )
+            edgeToRemove.push_back(getEmbedding<EDGE>(de));
+    }
+
+    Traversor3WF<EmbeddedMap3> traF(*this, d);
+    for (Dart df = traF.begin() ; df != traF.end() ; df = traF.next()) {
+        Traversor3FW<EmbeddedMap3> traW(*this, df);
+        unsigned int i = 0u;
+        for (Dart dW = traW.begin() ; (dW != traW.end()) && ( i<= 1 ) ; dW = traW.next() )
+            ++i;
+        if ( i == 1u )
+            facesToRemove.push_back(getEmbedding<FACE>(df));
+    }
+
+    Map3::deleteVolume(d,withBoundary) ;
+
+
+    if (isOrbitEmbedded<VERTEX>()) {
+        for (unsigned int i = 0u ; i < verticesToRemove.size() ; ++i)
+            getAttributeContainer(VERTEX).updateHole(verticesToRemove[i]);
+    }
+
+    if (isOrbitEmbedded<EDGE>()) {
+        for (unsigned int i = 0u ; i < edgeToRemove.size() ; ++i)
+            getAttributeContainer(EDGE).updateHole(edgeToRemove[i]);
+    }
+
+    if (isOrbitEmbedded<FACE>()) {
+        for (unsigned int i = 0u ; i < facesToRemove.size() ; ++i)
+            getAttributeContainer(FACE).updateHole(facesToRemove[i]);
+    }
+
+    if(isOrbitEmbedded<VOLUME>()) {
+        getAttributeContainer(VOLUME).updateHole(wEmb);
+    }
+}
+
 
 unsigned int EmbeddedMap3::closeHole(Dart d, bool forboundary)
 {
