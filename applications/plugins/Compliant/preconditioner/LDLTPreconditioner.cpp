@@ -33,7 +33,7 @@ void LDLTPreconditioner::compute( const AssembledSystem::mat& H )
             // if singular, try to regularize by adding a tiny diagonal matrix
             AssembledSystem::mat identity(H.rows(),H.cols());
             identity.setIdentity();
-            preconditioner.compute( H + identity * std::numeric_limits<SReal>::epsilon() );
+            preconditioner.compute( (H + identity * std::numeric_limits<SReal>::epsilon()).selfadjointView<Eigen::Lower>() );
 
             if( preconditioner.info() != Eigen::Success )
             {
