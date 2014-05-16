@@ -48,10 +48,10 @@ void LDLTSolver::factor(const AssembledSystem& sys) {
         {
             system_type::cmat identity(sys.m,sys.m);
             identity.setIdentity();
-            pimpl->Hinv.compute( sys.P.transpose() * sys.H * sys.P + identity * regularize.getValue() );
+            pimpl->Hinv.compute( (sys.P.transpose() * sys.H * sys.P + identity * regularize.getValue()).selfadjointView<Eigen::Upper>() );
         }
         else
-            pimpl->Hinv.compute( sys.P.transpose() * sys.H * sys.P );
+            pimpl->Hinv.compute( (sys.P.transpose() * sys.H * sys.P).selfadjointView<Eigen::Upper>() );
     }
     else
     {
@@ -59,16 +59,18 @@ void LDLTSolver::factor(const AssembledSystem& sys) {
         {
             system_type::rmat identity(sys.m,sys.m);
             identity.setIdentity();
-            pimpl->Hinv.compute( sys.H + identity * regularize.getValue() );
+            pimpl->Hinv.compute( (sys.H + identity * regularize.getValue()).selfadjointView<Eigen::Upper>() );
         }
         else
-            pimpl->Hinv.compute( sys.H );
+            pimpl->Hinv.compute( sys.H.selfadjointView<Eigen::Upper>() );
     }
 
     if( pimpl->Hinv.info() == Eigen::NumericalIssue ) {
         std::cerr << "LDLTSolver::factor: H is not psd. System solution will be wrong. P is identity=" << sys.isPIdentity << " regularize=" << regularize.getValue() << std::endl;
 
-        std::cerr << pimpl->H << std::endl;
+        if( debug.getValue() ){
+            cerr<<"LDLTSolver::factor, H = " << endl << dmat(sys.H) << endl;
+        }
     }
 
     pimpl->dt = sys.dt;
@@ -101,8 +103,6 @@ void LDLTSolver::factor(const AssembledSystem& sys) {
             std::cerr << "LDLTSolver::factor: schur is not psd. System solution will be wrong." << std::endl;
             std::cerr << schur << std::endl;
         }
-    } else {
-        // nothing lol
     }
 
 
