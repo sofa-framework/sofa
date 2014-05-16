@@ -43,19 +43,10 @@
 #include <sofa/gui/qt/GraphListenerQListView.h>
 
 
-#ifdef SOFA_QT4
 #include <Q3ListView>
 #include <Q3ListViewItem>
 #include <Q3TextDrag>
 #include <Q3PopupMenu>
-#include <Q3Header>
-#else
-#include <qheader.h>
-#include <qlistview.h>
-#include <qdragobject.h>
-#include <qpopupmenu.h>
-typedef QListViewItemIterator Q3ListViewItemIterator;
-#endif
 
 #include <iostream>
 
@@ -71,13 +62,6 @@ namespace qt
 
 typedef sofa::core::ObjectFactory::ClassEntry ClassEntry;
 typedef sofa::core::ObjectFactory::Creator    Creator;
-
-#ifndef SOFA_QT4
-typedef QListView Q3ListView;
-typedef QListViewItem Q3ListViewItem;
-typedef QTextDrag Q3TextDrag;
-typedef QPopupMenu Q3PopupMenu;
-#endif
 
 using sofa::simulation::Node;
 using namespace sofa::core::objectmodel;
@@ -197,8 +181,6 @@ signals:
     void fileOpen(const QString&);
 
     void operationPerformed(GraphHistoryManager::Operation &);
-    void undo();
-    void redo();
     void graphClean();
 
     void undoEnabled(bool);
@@ -207,23 +189,17 @@ signals:
     void displayMessage(const std::string &);
 
 public slots:
-    void editUndo() {emit undo();}
-    void editRedo() {emit redo();};
+    void undo() {historyManager->undo();}
+    void redo() {historyManager->redo();}
 
-    bool editCut(std::string path);
-    bool editCopy(std::string path);
-    bool editPaste(std::string path);
+    bool cut(std::string path);
+    bool copy(std::string path);
+    bool paste(std::string path);
 
     //Right Click Menu
-#ifdef SOFA_QT4
     void doubleClick(Q3ListViewItem *);
     void leftClick(Q3ListViewItem *, const QPoint &, int );
     void rightClick(Q3ListViewItem *, const QPoint &, int );
-#else
-    void doubleClick(QListViewItem *);
-    void leftClick(Q3ListViewItem *, const QPoint &, int );
-    void rightClick(QListViewItem *, const QPoint &, int );
-#endif
     /// Context Menu Operation: collasping all the nodes below the current one
     void collapseNode();
     /// Context Menu Operation: expanding all the nodes below the current one

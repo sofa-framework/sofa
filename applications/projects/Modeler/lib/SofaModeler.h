@@ -27,7 +27,19 @@
 #define SOFA_MODELER_H
 
 
-#include "ui_Modeler.h"
+
+#include <QMainWindow>
+#include <QToolBar>
+#include <QtCore/QVariant>
+#include <QtGui/QAction>
+#include <QtGui/QApplication>
+#include <QtGui/QButtonGroup>
+#include <QtGui/QHeaderView>
+#include <QtGui/QMenu>
+#include <QtGui/QMenuBar>
+#include <QtGui/QWidget>
+
+
 #include "GraphModeler.h"
 #include "FilterLibrary.h"
 #include "SofaTutorialManager.h"
@@ -36,7 +48,6 @@
 #include <sofa/gui/qt/SofaPluginManager.h>
 #include <sofa/helper/Factory.h>
 
-#ifdef SOFA_QT4
 #include "QSofaTreeLibrary.h"
 #include <Q3ListView>
 #include <Q3TextDrag>
@@ -49,23 +60,6 @@
 #include <Q3Process>
 #include <QTextBrowser>
 #include <QUrl>
-#else
-#include "QSofaLibrary.h"
-#include <qheader.h>
-#include <qlabel.h>
-#include <qlistview.h>
-#include <qdragobject.h>
-#include <qpushbutton.h>
-#include <qtabwidget.h>
-#include <qtabbar.h>
-#include <qpopupmenu.h>
-#include <qaction.h>
-#include <qcombobox.h>
-#include <qprocess.h>
-#include <qtextbrowser.h>
-#include <qurl.h>
-typedef QProcess Q3Process;
-#endif
 
 
 namespace sofa
@@ -77,24 +71,14 @@ namespace gui
 namespace qt
 {
 
-#ifndef SOFA_QT4
-typedef QListView Q3ListView;
-typedef QPopupMenu Q3PopupMenu;
-#endif
-
-typedef sofa::core::ObjectFactory::ClassEntry ClassEntry;
-typedef sofa::core::ObjectFactory::Creator    Creator;
-
 using sofa::simulation::Node;
 
 
 
-class SofaModeler: public Q3MainWindow, public Ui_Modeler
+class SofaModeler: public QMainWindow
 {
-
-    Q_OBJECT
-public :
-
+    Q_OBJECT;
+public:
     SofaModeler();
     ~SofaModeler() {};
 
@@ -119,9 +103,9 @@ signals:
 
 public slots:
     /// Change the state of the Undo button
-    void setUndoEnabled(bool v) {this->editUndoAction->setEnabled(v);}
+    void setUndoEnabled(bool v) {this->undoAction->setEnabled(v);}
     /// Change the state of the Redo button
-    void setRedoEnabled(bool v) {this->editRedoAction->setEnabled(v);}
+    void setRedoEnabled(bool v) {this->redoAction->setEnabled(v);}
     /// Each time a graph component is modified, or is cleaned
     void graphModifiedNotification(bool);
     ///Each time a message must be displayed in the status bar (undo/redo, ...)
@@ -130,16 +114,15 @@ public slots:
 
 
     /// Change the content of the description box. Happens when the user has clicked on a component
-#ifdef SOFA_QT4
     void changeInformation(Q3ListViewItem *);
-#else
-    void changeInformation(QListViewItem *);
-#endif
     /// Dropping a Node in the Graph
     void newGNode();
 
     /// Reception of a click on the Sofa library
-    void componentDraggedReception( std::string description, std::string categoryName, std::string templateName, ClassEntry::SPtr componentEntry);
+    void componentDraggedReception( std::string description,
+                                    std::string categoryName,
+                                    std::string templateName,
+                                    ClassEntry::SPtr componentEntry);
     /// Build from scratch the Sofa Library
     void rebuildLibrary();
     /// when the GNodeButton is pressed
@@ -154,9 +137,7 @@ public slots:
     /// Open an existing simulation (new tab will be created)
     void fileOpen();
     void fileOpen(const QString &filename) {fileOpen(std::string(filename.ascii()));}
-#ifdef SOFA_QT4
     void fileOpen(const QUrl &filename);
-#endif
 
     /// Save the current simulation
     void fileSave();
@@ -174,7 +155,7 @@ public slots:
     void newTab();
 
     /// Quit the Modeler
-    void fileExit() {close();};
+    void exit() {close();};
 
     void openTutorial();
     /// Launch the current simulation into Sofa
@@ -189,14 +170,14 @@ public slots:
     void changeCurrentScene( int n);
 
     /// Propagate the action Undo to the graph
-    void editUndo() {graph->editUndo();}
+    void undo() {graph->undo();}
     /// Propagate the action Redo to the graph
-    void editRedo() {graph->editRedo();}
+    void redo() {graph->redo();}
 
 
-    void editCut();
-    void editCopy();
-    void editPaste();
+    void cut();
+    void copy();
+    void paste();
 
     /// Load a preset stored in the menu preset: add a node to the current simulation
     void loadPreset(int);
@@ -289,7 +270,38 @@ protected:
 protected slots:
     void editTutorial(const std::string& );
 
-	void propertyDockMoved(Q3DockWindow::Place p);
+	// void propertyDockMoved(Q3DockWindow::Place p);
+
+
+private:
+    QWidget *widget;
+    QToolBar *toolBar;
+    QMenu *fileMenu;
+    QMenu *editMenu;
+
+    QAction *newTabAction;
+    QAction *closeTabAction;
+    QAction *clearTabAction;
+    QAction *openAction;
+    QAction *saveAction;
+    QAction *saveAsAction;
+    QAction *reloadAction;
+    QAction *exitAction;
+    QAction *undoAction;
+    QAction *redoAction;
+    QAction *cutAction;
+    QAction *copyAction;
+    QAction *pasteAction;
+    QAction *openTutorialsAction;
+    QAction *runInSofaAction;
+    QAction *openPluginManagerAction;
+    QAction *fooAction;
+    QAction *exportSofaClassesAction;
+
+    void createActions();
+    void createMenu();
+    void createToolbar();
+
 
 private:
     std::string sofaBinary;

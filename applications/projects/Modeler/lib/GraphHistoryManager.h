@@ -29,7 +29,7 @@
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/simulation/common/Node.h>
 
-#include <qobject.h>
+#include <QObject>
 #include <vector>
 
 namespace sofa

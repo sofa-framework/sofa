@@ -28,23 +28,12 @@
 #include "TutorialSelector.h"
 #include "GraphModeler.h"
 
-#ifdef SOFA_QT4
-#include <Q3MainWindow>
+#include <QMainWindow>
 #include <QTextBrowser>
 #include <QAction>
 #include <QKeyEvent>
 #include <QUrl>
 #include <QComboBox>
-#else
-#include <qmainwindow.h>
-#include <qtextbrowser.h>
-#include <qaction.h>
-#include <qurl.h>
-#include <qpushbutton.h>
-#include <qevent.h>
-#include <qcombobox.h>
-typedef QMainWindow Q3MainWindow;
-#endif
 
 
 namespace sofa
@@ -58,7 +47,7 @@ namespace qt
 
 
 
-class SofaTutorialManager : public Q3MainWindow
+class SofaTutorialManager : public QMainWindow
 {
     Q_OBJECT
 public:
@@ -73,11 +62,7 @@ public slots:
     void openHTML(const std::string &filename);
     void launchScene();
     void editScene();
-#ifdef SOFA_QT4
     void dynamicChangeOfScene( const QUrl&);
-#else
-    void dynamicChangeOfScene( const QString&);
-#endif
 signals:
     void runInSofa(const std::string& sceneFilename, Node *root);
     void undo();

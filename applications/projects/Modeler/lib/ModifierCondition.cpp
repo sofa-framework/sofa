@@ -26,11 +26,7 @@
 #include "ModifierCondition.h"
 
 
-#ifdef SOFA_QT4
 #include <QHBoxLayout>
-#else
-#include <qlayout.h>
-#endif
 
 
 namespace sofa

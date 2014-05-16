@@ -43,16 +43,9 @@
 
 
 
-#ifdef SOFA_QT4
-#include <Q3Header>
 #include <Q3PopupMenu>
 #include <QMessageBox>
 #include <Q3PtrList>
-#else
-#include <qheader.h>
-#include <qpopupmenu.h>
-#include <qmessagebox.h>
-#endif
 
 using sofa::core::ComponentLibrary;
 
@@ -70,10 +63,6 @@ int numNode= 0;
 int numComponent= 0;
 }
 
-#ifndef SOFA_QT4
-typedef QPopupMenu Q3PopupMenu;
-#endif
-
 GraphModeler::GraphModeler( QWidget* parent, const char* name, Qt::WFlags f): Q3ListView(parent, name, f), graphListener(NULL), propertyWidget(NULL)
 {
     graphListener = new GraphListenerQListView(this);
@@ -85,8 +74,6 @@ GraphModeler::GraphModeler( QWidget* parent, const char* name, Qt::WFlags f): Q3
     historyManager=new GraphHistoryManager(this);
     //Make the connections
     connect(this, SIGNAL(operationPerformed(GraphHistoryManager::Operation&)), historyManager, SLOT(operationPerformed(GraphHistoryManager::Operation&)));
-    connect(this, SIGNAL(undo()), historyManager, SLOT(undo()));
-    connect(this, SIGNAL(redo()), historyManager, SLOT(redo()));
     connect(this, SIGNAL(graphClean()), historyManager, SLOT(graphClean()));
 
     connect(historyManager, SIGNAL(undoEnabled(bool)),   this, SIGNAL(undoEnabled(bool)));
@@ -94,15 +81,9 @@ GraphModeler::GraphModeler( QWidget* parent, const char* name, Qt::WFlags f): Q3
     connect(historyManager, SIGNAL(graphModified(bool)), this, SIGNAL(graphModified(bool)));
     connect(historyManager, SIGNAL(displayMessage(const std::string&)), this, SIGNAL(displayMessage(const std::string&)));
 
-#ifdef SOFA_QT4
     connect(this, SIGNAL(doubleClicked ( Q3ListViewItem *)), this, SLOT( doubleClick(Q3ListViewItem *)));
     connect(this, SIGNAL(selectionChanged()),  this, SLOT( addInPropertyWidget()));
     connect(this, SIGNAL(rightButtonClicked ( Q3ListViewItem *, const QPoint &, int )),  this, SLOT( rightClick(Q3ListViewItem *, const QPoint &, int )));
-#else
-    connect(this, SIGNAL(doubleClicked ( QListViewItem * )), this, SLOT( doubleClick(QListViewItem *)));
-    connect(this, SIGNAL(clicked ( QListViewItem *, const QPoint &, int )),  this, SLOT( leftClick(QListViewItem *, const QPoint &, int )));
-    connect(this, SIGNAL(rightButtonClicked ( QListViewItem *, const QPoint &, int )),  this, SLOT( rightClick(QListViewItem *, const QPoint &, int )));
-#endif
     DialogAdd=NULL;
 }
 
@@ -800,7 +781,7 @@ void GraphModeler::loadPreset(std::string presetName)
 
     if (!DialogAdd)
     {
-        DialogAdd = new AddPreset(this,"AddPreset");
+        DialogAdd = new AddPreset(this);
         DialogAdd->setPath(sofa::helper::system::DataRepository.getFirstPath());
     }
 
@@ -1210,9 +1191,9 @@ void GraphModeler::closeDialogs()
 /*****************************************************************************************************************/
 //History of operations management
 //TODO: not use the factory to create the elements!
-bool GraphModeler::editCut(std::string path)
+bool GraphModeler::cut(std::string path)
 {
-    bool resultCopy=editCopy(path);
+    bool resultCopy=copy(path);
     if (resultCopy)
     {
         deleteComponent();
@@ -1221,7 +1202,7 @@ bool GraphModeler::editCut(std::string path)
     return false;
 }
 
-bool GraphModeler::editCopy(std::string path)
+bool GraphModeler::copy(std::string path)
 {
     helper::vector< Q3ListViewItem*> items; getSelectedItems(items);
 
@@ -1233,7 +1214,7 @@ bool GraphModeler::editCopy(std::string path)
     return false;
 }
 
-bool GraphModeler::editPaste(std::string path)
+bool GraphModeler::paste(std::string path)
 {
     helper::vector< Q3ListViewItem*> items; getSelectedItems(items);
     if (!items.empty())

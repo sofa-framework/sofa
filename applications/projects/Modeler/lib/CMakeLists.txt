@@ -32,12 +32,7 @@ set(SOURCE_FILES
 
     )
 	
-set(UI_FILES
-
-	Modeler.ui
-	DialogAddPreset.ui
-	../../../sofa/gui/qt/PluginManager.ui
-	)
+set(UI_FILES ../../../sofa/gui/qt/PluginManager.ui)
 
 UseQt()
 

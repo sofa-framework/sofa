@@ -25,8 +25,13 @@
 #ifndef ADDPRESET_H
 #define ADDPRESET_H
 
-#include "ui_DialogAddPreset.h"
 #include <sofa/simulation/common/Node.h>
+
+#include <QtGui/QDialog>
+
+class QLabel;
+class QLineEdit;
+class QPushButton;
 
 namespace sofa
 {
@@ -38,12 +43,12 @@ namespace qt
 {
 using sofa::simulation::Node;
 
-class AddPreset: public QDialog, public Ui_DialogAddPreset
+class AddPreset: public QDialog
 {
-    Q_OBJECT
+    Q_OBJECT;
 public:
 
-    AddPreset(  QWidget* parent, const char* name= 0, bool  modal= FALSE, Qt::WFlags f= 0 );
+    AddPreset(QWidget* parent);
     void setElementPresent(bool *elementPresent);
     void setParentNode(Node* parentNode) {node=parentNode;}
     void setPresetFile(std::string p) {presetFile=p;}
@@ -58,13 +63,33 @@ public slots:
 signals:
     void loadPreset(Node*,std::string,std::string*, std::string,std::string,std::string);
 
-
-
 protected:
     std::string fileName;
     std::string relative;
     std::string presetFile;
     Node *node;
+
+private:
+    QLabel *openFileText0;
+    QLineEdit *openFilePath0;
+    QPushButton *openFileButton0;
+    QLabel *openFileText1;
+    QLineEdit *openFilePath1;
+    QPushButton *openFileButton1;
+    QLabel *openFileText2;
+    QLineEdit *openFilePath2;
+    QPushButton *openFileButton2;
+    QLineEdit *positionX;
+    QLineEdit *positionY;
+    QLineEdit *positionZ;
+    QLineEdit *rotationX;
+    QLineEdit *rotationY;
+    QLineEdit *rotationZ;
+    QLineEdit *scaleX;
+    QLineEdit *scaleY;
+    QLineEdit *scaleZ;
+    QPushButton *buttonOk;
+    QPushButton *buttonCancel;
 };
 
 } // namespace qt

@@ -33,8 +33,6 @@
 #include "ModifierCondition.h"
 #include "GraphModeler.h"
 
-#ifdef SOFA_QT4
-#include <Q3Header>
 #include <QComboBox>
 #include <QLineEdit>
 #include <QStringList>
@@ -43,18 +41,6 @@
 #include <Q3ListViewItem>
 #include <Q3TextDrag>
 #include <Q3PopupMenu>
-#include <Q3Header>
-#else
-#include <qstringlist.h>
-#include <qheader.h>
-#include <qlineedit.h>
-#include <qcombobox.h>
-#include <qcheckbox.h>
-#include <qlistview.h>
-#include <qdragobject.h>
-#include <qpopupmenu.h>
-typedef QListViewItemIterator Q3ListViewItemIterator;
-#endif
 
 
 namespace sofa
