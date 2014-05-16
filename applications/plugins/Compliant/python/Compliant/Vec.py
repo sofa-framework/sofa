@@ -25,6 +25,9 @@ def scal( scalar, x ):
 def minus(x):
     return scal(-1, x)
 
+def inv(x):
+    return [1.0/xi for xi in x ]
+
 def sum(x, y):
     return [xi + yi for xi, yi in zip(x, y) ]
 

@@ -109,7 +109,11 @@ def createScene(root):
     distance_body2 = createRigidBody(distanceNode, "distance_body2", 10, 4 )
     distance = StructuralAPI.DistanceRigidJoint( distanceNode, "joint", distance_body1.node, distance_body2.node )
   
-  
+    # 6D spring
+    springNode = root.createChild('6Dspring')
+    spring_body1 = createFixedRigidBody(springNode, "spring_body1", 15 )
+    spring_body2 = createRigidBody(springNode, "spring_body2", 15 )
+    spring = StructuralAPI.RigidJointSpring( springNode, "joint", spring_body1.node, spring_body2.node, [100000,100000,100000,100000,100000,10000] )
   
   
             
