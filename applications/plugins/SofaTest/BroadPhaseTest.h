@@ -255,8 +255,8 @@ struct CItCompare{
 
 template<class Detection>
 bool GENTest(sofa::core::CollisionModel * cm1,sofa::core::CollisionModel * cm2,Detection & col_detection){
-    assert(goodBoundingTree((cm1)));
-    assert(goodBoundingTree((cm2)));
+//    assert(goodBoundingTree((cm1)));
+//    assert(goodBoundingTree((cm2)));
     cm1->setSelfCollision(true);
     cm2->setSelfCollision(true);
 
