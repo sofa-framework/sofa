@@ -22,7 +22,9 @@ get-tests()
 {
     test_files=$(ls bin/*_test 2> /dev/null)
     testd_files=$(ls bin/*_testd 2> /dev/null)
-    echo $test_files $testd_files
+    test_exe_files=$(ls bin/*_test.exe 2> /dev/null)
+    testd_exe_files=$(ls bin/*_testd.exe 2> /dev/null)
+    echo $test_files $testd_files $test_exe_files $testd_exe_files
 }
 
 run-tests ()
@@ -41,7 +43,7 @@ run-tests ()
     fi
     # Run each test
     for test in $(get-tests); do
-        output_file=test-reports/`basename "$test"`.xml
+        output_file=test-reports/`basename "$test" .exe`.xml
         "$test" --gtest_output=xml:"$output_file"
         exit_code="$?"
         # Check the test executable didn't crash
@@ -85,26 +87,6 @@ case "$1" in
     --run )
         run-tests
         ;;
-    # Those we be removed eventually,
-    --get-test-count )
-        sum-attribute-from-testsuites tests
-        ;;
-    --get-failure-count )
-        sum-attribute-from-testsuites failures
-        ;;
-    --get-disabled-count )
-        sum-attribute-from-testsuites disabled
-        ;;
-    --get-error-count )
-        sum-attribute-from-testsuites errors
-        ;;
-    --get-test-executable-count )
-        get-tests | wc -w
-        ;;
-    --get-test-report-count )
-        ls test-reports/*.xml 2> /dev/null | wc -l | tr -d ' '
-        ;;
-    # because I prefer those names:
     --count-tests )
         sum-attribute-from-testsuites tests
         ;;
