@@ -17,7 +17,7 @@ endif()
 	
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${RC_FILES})
 
-AddLinkerDependencies(SofaSimulationTree SofaGuiMain SofaComponentMain profiler)
+AddLinkerDependencies(SofaSimulationTree SofaGuiMain SofaComponentMain)
 
 
 if(SOFA-LIB_SIMULATION_GRAPH_DAG)
