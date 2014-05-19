@@ -216,7 +216,7 @@ void OglShader::drawVisual(const core::visual::VisualParams* )
 
 void OglShader::stop()
 {
-    if(turnOn.getValue())
+    if(turnOn.getValue() && shaderVector[indexActiveShader.getValue()]->IsReady())
     {
         if ( backfaceWriting.getValue() )
             glDisable(GL_VERTEX_PROGRAM_TWO_SIDE);
@@ -228,7 +228,7 @@ void OglShader::stop()
 
 void OglShader::start()
 {
-    if(turnOn.getValue())
+    if(turnOn.getValue() && shaderVector[indexActiveShader.getValue()]->IsReady())
     {
         shaderVector[indexActiveShader.getValue()]->TurnOn();
         if ( !clampVertexColor.getValue() )
