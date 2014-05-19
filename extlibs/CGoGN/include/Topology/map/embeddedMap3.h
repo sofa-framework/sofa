@@ -140,7 +140,8 @@ public:
 	 */
 	virtual Dart collapseVolume(Dart d, bool delDegenerateVolumes = true);
 
-    virtual void deleteVolume(Dart d, bool withBoundary = true);
+//    virtual void deleteVolume(Dart d, bool withBoundary = true) { this->deleteVolume(d, withBoundary); }
+    virtual void deleteVolume(Dart d, bool withBoundary = true, std::vector<Dart>* removedVertices = NULL);
 
 	//!
 	/*! No attribute is attached to the new volume
