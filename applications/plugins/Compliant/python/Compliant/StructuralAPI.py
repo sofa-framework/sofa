@@ -151,14 +151,12 @@ class GenericRigidJoint:
             self.node = node.createChild( "limits" )
 
             set = []
-            position = [0] * len(masks)*2
+            position = [0] * len(masks)
             offset = []
 
             for i in range(len(masks)):
                 set = set + [0] + masks[i]
-                set = set + [0] + vec.minus(masks[i])
-                offset.append(limits[i*2])
-                offset.append(limits[i*2+1])
+                offset.append(limits[i])
 
             self.dofs = self.node.createObject('MechanicalObject', template='Vec1d', name='dofs', position=concat(position))
             self.mapping = self.node.createObject('ProjectionMapping', set=concat(set), offset=concat(offset))
@@ -197,14 +195,12 @@ class CompleteRigidJoint:
             self.node = node.createChild( "limits" )
 
             set = []
-            position = [0] * len(masks)*2
+            position = [0] * len(masks)
             offset = []
 
             for i in range(len(masks)):
                 set = set + [0] + masks[i]
-                set = set + [0] + vec.minus(masks[i])
-                offset.append(limits[i*2])
-                offset.append(limits[i*2+1])
+                offset.append(limits[i])
 
             self.dofs = self.node.createObject('MechanicalObject', template='Vec1d', name='dofs', position=concat(position))
             self.mapping = self.node.createObject('ProjectionMapping', set=concat(set), offset=concat(offset))
@@ -231,7 +227,7 @@ class HingeRigidJoint(GenericRigidJoint):
 
     def addLimits( self, lower, upper, compliance=0 ):
         mask = [ (1 - d) for d in self.mask ]
-        return GenericRigidJoint.Limits( self.node, [mask], [lower,-upper], compliance )
+        return GenericRigidJoint.Limits( self.node, [mask,vec.minus(mask)], [lower,-upper], compliance )
 
     def addSpring( self, stiffness ):
         mask = [ (1 - d) for d in self.mask ]
@@ -247,7 +243,7 @@ class SliderRigidJoint(GenericRigidJoint):
 
     def addLimits( self, lower, upper, compliance=0 ):
         mask = [ (1 - d) for d in self.mask ]
-        return GenericRigidJoint.Limits( self.node, [mask], [lower,-upper], compliance )
+        return GenericRigidJoint.Limits( self.node, [mask,vec.minus(mask)], [lower,-upper], compliance )
 
     def addSpring( self, stiffness ):
         mask = [ (1 - d) for d in self.mask ]
@@ -265,9 +261,11 @@ class CylindricalRigidJoint(GenericRigidJoint):
         GenericRigidJoint.__init__(self,node, name, node1, node2, mask, compliance, index1, index2)
 
     def addLimits( self, translation_lower, translation_upper, rotation_lower, rotation_upper, compliance=0 ):
-        mask_t = [0]*6; mask_t[self.axis]=1;
-        mask_r = [0]*6; mask_r[3+self.axis]=1;
-        return GenericRigidJoint.Limits( self.node, [mask_t,mask_r], [translation_lower,-translation_upper,rotation_lower,-rotation_upper], compliance )
+        mask_t_l = [0]*6; mask_t_l[self.axis]=1;
+        mask_t_u = [0]*6; mask_t_u[self.axis]=-1;
+        mask_r_l = [0]*6; mask_r_l[3+self.axis]=1;
+        mask_r_u = [0]*6; mask_r_u[3+self.axis]=-1;
+        return GenericRigidJoint.Limits( self.node, [mask_t_l,mask_t_u,mask_r_l,mask_r_u], [translation_lower,-translation_upper,rotation_lower,-rotation_upper], compliance )
 
     def addSpring( self, translation_stiffness, rotation_stiffness ):
         mask = [0]*6; mask[self.axis]=1.0/translation_stiffness; mask[3+self.axis]=1.0/rotation_stiffness;
@@ -280,10 +278,13 @@ class BallAndSocketRigidJoint(GenericRigidJoint):
         GenericRigidJoint.__init__(self, node, name, node1, node2, [1,1,1,0,0,0], compliance, index1, index2)
 
     def addLimits( self, rotationX_lower, rotationX_upper, rotationY_lower, rotationY_upper, rotationZ_lower, rotationZ_upper, compliance=0 ):
-        mask_x = [0]*6; mask_x[3]=1;
-        mask_y = [0]*6; mask_y[4]=1;
-        mask_z = [0]*6; mask_z[5]=1;
-        return GenericRigidJoint.Limits( self.node, [mask_x,mask_y,mask_z], [rotationX_lower,-rotationX_upper,rotationY_lower,-rotationY_upper,rotationZ_lower,-rotationZ_upper], compliance )
+        mask_x_l = [0]*6; mask_x_l[3]=1;
+        mask_x_u = [0]*6; mask_x_u[3]=-1;
+        mask_y_l = [0]*6; mask_y_l[4]=1;
+        mask_y_u = [0]*6; mask_y_u[4]=-1;
+        mask_z_l = [0]*6; mask_z_l[5]=1;
+        mask_z_u = [0]*6; mask_z_u[5]=-1;
+        return GenericRigidJoint.Limits( self.node, [mask_x_l,mask_x_u,mask_y_l,mask_y_u,mask_z_l,mask_z_u], [rotationX_lower,-rotationX_upper,rotationY_lower,-rotationY_upper,rotationZ_lower,-rotationZ_upper], compliance )
 
     def addSpring( self, stiffnessX, stiffnessY, stiffnessZ ):
         mask = [0, 0, 0, 1.0/stiffnessX, 1.0/stiffnessY, 1.0/stiffnessZ ]
@@ -301,9 +302,11 @@ class PlanarRigidJoint(GenericRigidJoint):
         axis1 = (self.normal+1)%3; axis2 = (self.normal+2)%3
         if axis1 > axis2 :
             axis1, axis2 = axis2, axis1
-        mask_t1 = [0]*6; mask_t1[axis1]=1;
-        mask_t2 = [0]*6; mask_t2[axis2]=1;
-        return GenericRigidJoint.Limits( self.node, [mask_t1,mask_t2], [translation1_lower,-translation1_upper,translation2_lower,-translation2_upper], compliance )
+        mask_t1_l = [0]*6; mask_t1_l[axis1]=1;
+        mask_t1_u = [0]*6; mask_t1_u[axis1]=-1;
+        mask_t2_l = [0]*6; mask_t2_l[axis2]=1;
+        mask_t2_u = [0]*6; mask_t2_u[axis2]=-1;
+        return GenericRigidJoint.Limits( self.node, [mask_t1_l,mask_t1_u,mask_t2_l,mask_t2_u], [translation1_lower,-translation1_upper,translation2_lower,-translation2_upper], compliance )
 
     def addSpring( self, stiffness1, stiffness2 ):
         axis1 = (self.normal+1)%3; axis2 = (self.normal+2)%3
@@ -325,9 +328,11 @@ class GimbalRigidJoint(GenericRigidJoint):
         index1 = 3+(self.axis+1)%3; index2 = 3+(self.axis+2)%3
         if index1 > index2 :
             index1, index2 = index2, index1
-        mask_1 = [0]*6; mask_1[index1]=1;
-        mask_2 = [0]*6; mask_2[index2]=1;
-        return GenericRigidJoint.Limits( self.node, [mask_1,mask_2], [rotation1_lower,-rotation1_upper,rotation2_lower,-rotation2_upper], compliance )
+        mask_1_l = [0]*6; mask_1_l[index1]=1;
+        mask_1_u = [0]*6; mask_1_u[index1]=-1;
+        mask_2_l = [0]*6; mask_2_l[index2]=1;
+        mask_2_u = [0]*6; mask_2_u[index2]=-1;
+        return GenericRigidJoint.Limits( self.node, [mask_1_l,mask_1_u,mask_2_l,mask_2_u], [rotation1_lower,-rotation1_upper,rotation2_lower,-rotation2_upper], compliance )
 
     def addSpring( self, stiffness1, stiffness2 ):
         index1 = 3+(self.axis+1)%3; index2 = 3+(self.axis+2)%3
