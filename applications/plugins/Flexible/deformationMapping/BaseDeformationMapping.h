@@ -282,6 +282,9 @@ public:
     virtual const vector<VRef>& getParentToChildIndex() { return f_index_parentToChild; }
     ///@brief Get a pointer to the shape function where the weights are computed
     virtual BaseShapeFunction* getShapeFunction() { return _shapeFunction; }
+    ///@brief Get parent's influence weights on each child
+    virtual vector<VReal> getWeights(){ return f_w.getValue(); }
+
     /** @name PointMapper functions */
     //@{
     virtual void ForwardMapping(Coord& p,const Coord& p0);
