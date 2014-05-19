@@ -578,7 +578,8 @@ Dart EmbeddedMap3::collapseVolume(Dart d, bool delDegenerateVolumes)
 }
 
 
-void EmbeddedMap3::deleteVolume(Dart d, bool withBoundary) {
+void EmbeddedMap3::deleteVolume(Dart d, bool withBoundary, std::vector<Dart> *removedVertices) {
+    std::cerr << "Calling EmbeddedMap3::deleteVolume..." << std::endl;
     const unsigned int wEmb = getEmbedding<VOLUME>(d) ;
 
     std::vector<unsigned int> verticesToRemove, edgeToRemove, facesToRemove;
@@ -590,17 +591,21 @@ void EmbeddedMap3::deleteVolume(Dart d, bool withBoundary) {
     for (Dart dv = traV.begin() ; dv != traV.end() ; dv = traV.next() ) {
         Traversor3VW<EmbeddedMap3> traW(*this, dv);
         unsigned int i = 0u;
-        for (Dart dW = traW.begin() ; (dW != traW.end()) && ( i<= 1 ) ; dW = traW.next() )
+        for (Dart dW = traW.begin() ; (dW != traW.end()) && ( i<= 1u ) ; dW = traW.next() )
             ++i;
-        if ( i == 1u )
-            verticesToRemove.push_back(getEmbedding<VERTEX>(dv));
+        if ( i == 1u ) {
+            const unsigned int vertexIdx = getEmbedding<VERTEX>(dv) ;
+            verticesToRemove.push_back(vertexIdx);
+            if ( removedVertices != NULL )
+                removedVertices->push_back(dv);
+        }
     }
 
     Traversor3WE<EmbeddedMap3> traE(*this, d);
     for (Dart de = traE.begin() ; de != traE.end() ; de = traE.next() ) {
         Traversor3EW<EmbeddedMap3> traW(*this, de);
         unsigned int i = 0u;
-        for (Dart dW = traW.begin() ; (dW != traW.end()) && ( i<= 1 ) ; dW = traW.next() )
+        for (Dart dW = traW.begin() ; (dW != traW.end()) && ( i<= 1u ) ; dW = traW.next() )
             ++i;
         if ( i == 1u )
             edgeToRemove.push_back(getEmbedding<EDGE>(de));
@@ -610,7 +615,7 @@ void EmbeddedMap3::deleteVolume(Dart d, bool withBoundary) {
     for (Dart df = traF.begin() ; df != traF.end() ; df = traF.next()) {
         Traversor3FW<EmbeddedMap3> traW(*this, df);
         unsigned int i = 0u;
-        for (Dart dW = traW.begin() ; (dW != traW.end()) && ( i<= 1 ) ; dW = traW.next() )
+        for (Dart dW = traW.begin() ; (dW != traW.end()) && ( i<= 1u ) ; dW = traW.next() )
             ++i;
         if ( i == 1u )
             facesToRemove.push_back(getEmbedding<FACE>(df));
@@ -637,6 +642,8 @@ void EmbeddedMap3::deleteVolume(Dart d, bool withBoundary) {
     if(isOrbitEmbedded<VOLUME>()) {
         getAttributeContainer(VOLUME).updateHole(wEmb);
     }
+
+//    return verticesToRemove;
 }
 
 
