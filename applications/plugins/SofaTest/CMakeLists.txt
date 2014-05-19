@@ -41,6 +41,7 @@ AddLinkerDependencies(SceneCreator)
 include_directories("${SOFA_EXTLIBS_DIR}/gtest/include")
 
 # TODO: shouldn't this be on for everyone ?
+# FF: it seems that it is not needed, and even problematic, on Linux (?)
 
 if(CMAKE_SYSTEM MATCHES "Windows")
     AddLinkerDependencies(gtest)
