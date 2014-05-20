@@ -29,4 +29,3 @@ INSTALLATION
 
 For up-to-date instructions, please refer to the SOFA Wiki:
   http://wiki.sofa-framework.org/wiki/Main_Page
- 
