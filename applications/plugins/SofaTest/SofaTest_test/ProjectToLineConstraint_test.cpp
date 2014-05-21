@@ -233,7 +233,6 @@ struct ProjectToLineConstraint_test : public Sofa_test<typename _DataTypes::Real
 // Define the list of DataTypes to instanciate
 using testing::Types;
 typedef Types<
-    Vec3Types,
     Vec3Types
 > DataTypes; // the types to instanciate.
 
