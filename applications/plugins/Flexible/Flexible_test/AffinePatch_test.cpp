@@ -48,7 +48,7 @@ namespace sofa {
 
    /// Affine patch test in 3D
   /**  
-    * An affine movement (rotation and translation) is applied to the borders of a mesh. Test if the points within have the same affine movement.
+    * An affine movement is applied to the borders of a mesh. Test if the points within have the same affine movement.
     * This screenshot explains how the patch test works:
     * \image html AffinePatchTest.png 
     * The affine patch test runs with the Assembled Solver of compliant. The table above shows the different test cases achieved:
@@ -76,7 +76,7 @@ namespace sofa {
         /// Tested Rotation: random rotation matrix
         defaulttype::Mat<3,3,Real> testedRotation;
         /// Tested Translation: random translation
-        Coord testedTranslation;
+        Vec3 testedTranslation;
         /// Seed for random value
         long seed;
         /// Random generator
@@ -104,31 +104,24 @@ namespace sofa {
             root = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()));
         }
 
-        void SetRandomTestedRotationAndTranslation(int /*seedValue*/)
+        void SetRandomAffineTransform (int seed)
         {
-            // Random Rotation
-            SReal x,y,z,w;
-            x = randomGenerator.random<SReal>(-1.0,1.0);
-            y = randomGenerator.random<SReal>(-1.0,1.0);
-            z = randomGenerator.random<SReal>(-1.0,1.0);
-            // If the rotation axis is null
-            Vec3 rotationAxis(x,y,z);
-            if(rotationAxis.norm() < 1e-7)
+            // Random Matrix 3*3
+            for( int j=0; j<testedRotation.nbCols; j++)
             {
-                rotationAxis = Vec3(0,0,1);
+                for( int i=0; i<testedRotation.nbLines; i++)
+                {
+                    Real random = randomGenerator.random<Real>( (Real) -1, (Real) 1 );
+                    testedRotation(i,j)=random;
+                }
             }
-            w = randomGenerator.random<SReal>(0.0,360.0);
-            Quat quat(x,y,z,w);
-            quat.normalize();
-            //testedRotation = patchStruct.affineConstraint->m_rotation.getValue();
-            quat.toMatrix(testedRotation);
-     
+
             // Random Translation
-            for(size_t i=0;i<Coord::total_size;++i)
+            for(size_t i=0;i<testedTranslation.size();++i)
             {
                 testedTranslation[i]=randomGenerator.random<SReal>(-2.0,2.0);
             }
-            
+
         }
         
         /// After simulation compare the positions of points to the theoretical positions.
@@ -146,7 +139,7 @@ namespace sofa {
             
             // Set random rotation and translation for affine constraint
             randomGenerator.initSeed(seed);
-            this->SetRandomTestedRotationAndTranslation(seed);
+            this->SetRandomAffineTransform(seed);
             // Set data values of affine movement constraint
             affineConstraint->m_rotation.setValue(testedRotation);
             affineConstraint->m_translation.setValue(testedTranslation);

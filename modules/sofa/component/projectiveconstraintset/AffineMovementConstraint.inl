@@ -268,27 +268,30 @@ void AffineMovementConstraint<DataTypes>::initializeInitialPositions (const SetI
 template <class DataTypes>
 void AffineMovementConstraint<DataTypes>::transform(const SetIndexArray & indices, VecCoord& x0, VecCoord& xf)
 {
+    Vector3 translation = m_translation.getValue();
+ 
     for (size_t i=0; i < indices.size() ; ++i)
     {
-        xf[indices[i]] = (m_rotation.getValue())*DataTypes::getCPos(x0[indices[i]])+DataTypes::getCPos(m_translation.getValue());
+         DataTypes::setCPos(xf[indices[i]], (m_rotation.getValue())*DataTypes::getCPos(x0[indices[i]]) + translation);
     }
+  
 }
 
 
 template <>
 void AffineMovementConstraint<Rigid3Types>::transform(const SetIndexArray & indices, Rigid3Types::VecCoord& x0, Rigid3Types::VecCoord& xf)
 {
-    // Get quaternion value
+    // Get quaternion and translation values
     RotationMatrix rotationMat(0);
     Quat quat =  m_quaternion.getValue(); 
     quat.toMatrix(rotationMat);
+    Vector3 translation = m_translation.getValue();
 
     // Apply transformation
     for (size_t i=0; i < indices.size() ; ++i)
     {
-        // Translation
-        Coord translation = m_translation.getValue();
-        xf[indices[i]].getCenter() = rotationMat*(x0[indices[i]].getCenter()) + translation.getCenter();
+        // Translation 
+        xf[indices[i]].getCenter() = rotationMat*(x0[indices[i]].getCenter()) + translation;
 
         // Rotation
         xf[indices[i]].getOrientation() = (quat)+x0[indices[i]].getOrientation();

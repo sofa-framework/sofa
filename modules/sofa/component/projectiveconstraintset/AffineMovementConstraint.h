@@ -79,10 +79,10 @@ public:
     typedef helper::vector<unsigned int> SetIndexArray;
     typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
     typedef defaulttype::Quat Quat;
-   
+    typedef defaulttype::Vector3 Vector3;
+
     static const unsigned int CoordSize = Coord::total_size;
     typedef Mat<3,3,Real> RotationMatrix;
-   
 
 protected:
     AffineMovementConstraintInternalData<DataTypes> *data;
@@ -102,7 +102,7 @@ public :
     /// Quaternion of affine transformation (for rigid)
     Data<Quat> m_quaternion;
     /// Translation Matrix of affine transformation
-    Data<Coord> m_translation;
+    Data<Vector3> m_translation;
     /// Draw constrained points
     Data <bool> m_drawConstrainedPoints;
     /// initial constrained DOFs position

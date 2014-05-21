@@ -14,7 +14,7 @@
     
     <!--Constraint and roi-->
     <BoxROI name="Box" box="-10 -10 -10 30 30 30"/>
-    <AffineMovementConstraint template="Rigid" name="affineConstraint" indices="@Box.indices" meshIndices = "@Box.indices" quaternion="-0.690728 -0.0685764 0.504544 -0.513446" />
+    <AffineMovementConstraint template="Rigid" name="affineConstraint" indices="@Box.indices" meshIndices = "@Box.indices" quaternion="-0.690728 -0.0685764 0.504544 -0.513446" translation="2 5 -3"/>
     
     <!--Mass-->
     <UniformMass name="mass" totalMass="1"/>
