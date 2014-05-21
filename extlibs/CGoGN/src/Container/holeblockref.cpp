@@ -155,12 +155,29 @@ bool HoleBlockRef::updateHoles(unsigned int nb)
 }
 
 
+bool  HoleBlockRef::removeFromFreeElts(unsigned int nb) {
+    unsigned int* end = m_tableFree + m_nbfree ;
+    unsigned int * elt = NULL;
+    elt = std::find(m_tableFree, end, nb);
+    if (elt == end) {
+        std::cerr << "WARNING : " << __FILE__ << ":" << __LINE__ << std::endl;
+        return false;
+    }
+    else {
+        ++m_nb ;
+        std::swap(*elt, m_tableFree[--m_nbfree]);
+        return true;
+    }
+}
+
 void HoleBlockRef::printTableFree()
 {
-    std::cerr << "m_tableFree : " ;
-    for (int i = 0 ; i < m_nbfree ; ++i)
-        std::cerr << m_tableFree[i] << " " ;
-    std::cerr << std::endl;
+    if (m_nbfree > 0u) {
+        std::cerr << "m_tableFree : " ;
+        for (int i = 0 ; i < m_nbfree ; ++i)
+            std::cerr << m_tableFree[i] << " " ;
+        std::cerr << std::endl;
+    }
 }
 
 bool HoleBlockRef::updateHole(unsigned int indx) {

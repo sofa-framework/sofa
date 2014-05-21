@@ -96,7 +96,7 @@ public:
 	* is the block full
 	*/
 	inline bool full() const { return m_nb == _BLOCKSIZE_;  }
-
+//    inline bool hasFreeIndices() const { return m_nbfree > 0u ;}
 	/**
 	*  is the block empty
 	*/
@@ -184,6 +184,7 @@ public:
 
 	bool loadBin(CGoGNistream& fs);
     void printTableFree();
+    bool removeFromFreeElts(unsigned int nb);
 };
 
 } // namespace CGoGN

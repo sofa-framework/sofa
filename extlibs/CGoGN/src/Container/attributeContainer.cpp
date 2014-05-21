@@ -306,6 +306,16 @@ void AttributeContainer::compact(std::vector<unsigned int>& mapOldNew)
     m_maxSize = (m_holesBlocks.back())->sizeTable() + (m_holesBlocks.size() - 1) * _BLOCKSIZE_;
 }
 
+void AttributeContainer::printFreeIndices() {
+    std::cerr << "begin printFreeIndices()" << std::endl;
+    for (unsigned i = 0u ; i < m_tableBlocksWithFree.size() ; ++i) {
+        std::cerr << "tableBlock number " << m_tableBlocksWithFree[i] << std::endl;
+        HoleBlockRef* const block = m_holesBlocks[m_tableBlocksWithFree[i]];
+        block->printTableFree();
+    }
+    std::cerr << "end printFreeIndices()" << std::endl;
+}
+
 
 
 /**************************************
@@ -347,6 +357,23 @@ void AttributeContainer::compact(std::vector<unsigned int>& mapOldNew)
 
 //	return index;
 //}
+
+void AttributeContainer::removeFromFreeIndices(unsigned int index) {
+    const unsigned int bi = index / _BLOCKSIZE_;
+    const unsigned int j = index % _BLOCKSIZE_;
+    HoleBlockRef* const block = m_holesBlocks[bi];
+    const bool res = block->removeFromFreeElts(j) ;
+    if (res )
+        if (block->full()) {
+            // should be the front index
+            unsigned int i = 0u;
+            while (m_tableBlocksWithFree[i] != bi) { ++i; }
+            std::swap(m_tableBlocksWithFree[i], m_tableBlocksWithFree.back());
+            m_tableBlocksWithFree.pop_back();
+        }
+    //        ++m_size;
+}
+
 
 void AttributeContainer::updateHole(unsigned int index) {
     std::cerr << "updateHole called for orbit " << m_orbit << ", with index = " << index << std::endl;
