@@ -1,14 +1,15 @@
 <RCC>
     <qresource prefix="/">
-        <file>resource/composition.fs</file>
-        <file>resource/composition.vs</file>
+        <file>resource/shaders/composition.fs</file>
+        <file>resource/shaders/composition.vs</file>
         <file>resource/Main.qml</file>
-        <file>resource/render.fs</file>
-        <file>resource/render.vs</file>
-        <file>resource/tools/FileBrowser.qml</file>
-        <file>resource/tools/Footer.qml</file>
-        <file>resource/tools/Header.qml</file>
-        <file>resource/tools/SceneGraph.qml</file>
-        <file>resource/tools/Viewer.qml</file>
+        <file>resource/shaders/render.fs</file>
+        <file>resource/shaders/render.vs</file>
+        <file>resource/gui/FileBrowser.qml</file>
+        <file>resource/gui/Footer.qml</file>
+        <file>resource/gui/Header.qml</file>
+        <file>resource/gui/SceneGraph.qml</file>
+        <file>resource/gui/Viewer.qml</file>
+        <file>resource/gui/Scene.qml</file>
     </qresource>
 </RCC>

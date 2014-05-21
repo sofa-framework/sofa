@@ -46,22 +46,29 @@
 #include <QtGui/QOpenGLShaderProgram>
 #include <QtGui/QOpenGLFramebufferObject>
 
+class Scene;
+
+namespace sofa
+{
+	namespace newgui
+	{
+		class SofaGL;
+	}
+}
+
 class Viewer : public QQuickItem
 {
     Q_OBJECT
 
-    Q_PROPERTY(qreal t READ t WRITE setT NOTIFY tChanged)
+	Q_PROPERTY(Scene* scene READ scene WRITE setScene)
 
 public:
     Viewer();
 
-    qreal t() const { return m_t; }
-    void setT(qreal t);
+	Scene* scene() const {return myScene;}
+	void setScene(Scene* scene);
 
     Q_INVOKABLE void saveScreenshot(const QString& imagePath = QString());
-
-signals:
-    void tChanged();
 
 public slots:
     void paint();
@@ -77,8 +84,8 @@ private:
     QOpenGLShaderProgram*       myCompositionShaderProgram;
     QOpenGLFramebufferObject*   myFramebuffer;
 
-    qreal m_t;
-    qreal m_thread_t;
+	Scene*						myScene;
+	sofa::newgui::SofaGL*		mySofaGL; // draw tools for Sofa
 };
 
 #endif // VIEWER_H

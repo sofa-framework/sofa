@@ -4,7 +4,7 @@ import QtQuick.Layouts 1.0
 import QtQuick.Dialogs 1.0
 
 import Window 1.0
-import "tools"
+import "gui"
 
 Window {
     id: window
@@ -13,6 +13,11 @@ Window {
     width: 1280
     height: 720    
     property string filePath: ""
+
+	// sofa scene
+	Scene {
+		id: scene
+	}
 
     // dialog
     FileDialog {
@@ -105,6 +110,8 @@ Window {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 width: 70
+
+				scene: scene
             }
         }
 
