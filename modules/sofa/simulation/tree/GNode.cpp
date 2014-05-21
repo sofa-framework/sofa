@@ -370,24 +370,6 @@ void GNode::doExecuteVisitor(simulation::Visitor* action)
 #endif
 }
 
-
-/// Return the full path name of this node
-std::string GNode::getPathName() const
-{
-    std::string str;
-
-    if (parent() != NULL)
-    {
-        str = parent()->getPathName();
-        str += '/';
-        str += getName();
-    }
-
-    return str;
-}
-
-
-
 void GNode::initVisualContext()
 {
     if (getParent() != NULL)

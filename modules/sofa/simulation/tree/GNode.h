@@ -138,10 +138,6 @@ public:
     /// Update the simulation context values(gravity, time...), based on parent and local ContextObjects
     virtual void updateSimulationContext();
 
-
-    /// Return the full path name of this node
-    std::string getPathName() const;
-
     static GNode::SPtr create(GNode*, xml::Element<core::objectmodel::BaseNode>* arg)
     {
         GNode::SPtr obj = GNode::SPtr();

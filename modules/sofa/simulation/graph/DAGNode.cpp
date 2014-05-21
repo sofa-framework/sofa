@@ -602,26 +602,6 @@ void DAGNode::executeVisitorTreeTraversal( simulation::Visitor* action, StatusMa
 }
 
 
-
-/// Return the full path name of this node
-std::string DAGNode::getPathName() const
-{
-    std::string str;
-    Parents parents = getParents();
-    if (!parents.empty())
-    {
-        // for the full path name, we arbitrarily take the first parent of the list...
-        // no smarter choice without breaking the "Node" heritage
-        str = parents[0]->getPathName();
-        str += '/';
-        str += getName();
-    }
-
-    return str;
-}
-
-
-
 void DAGNode::initVisualContext()
 {
     if (!getParents().empty())

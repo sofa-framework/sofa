@@ -119,7 +119,7 @@ public:
     virtual const BaseContext* getContext() const = 0;
 
     /// Return the full path name of this node
-    virtual std::string getPathName() const=0;
+    virtual std::string getPathName() const;
 
     virtual void* findLinkDestClass(const BaseClass* destType, const std::string& path, const BaseLink* link) = 0;
 
