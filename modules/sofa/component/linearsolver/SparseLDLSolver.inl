@@ -44,7 +44,10 @@ namespace component {
 namespace linearsolver {
 
 template<class TMatrix, class TVector, class TThreadManager>
-SparseLDLSolver<TMatrix,TVector,TThreadManager>::SparseLDLSolver() {}
+SparseLDLSolver<TMatrix,TVector,TThreadManager>::SparseLDLSolver()
+    : f_saveMatrixToFile( initData(&f_saveMatrixToFile, false, "saveMatrixToFile", "save matrix to a text file (can be very slow, as full matrix is stored"))
+    , numStep(0)
+{}
 
 template<class TMatrix, class TVector, class TThreadManager>
 void SparseLDLSolver<TMatrix,TVector,TThreadManager>::solve (Matrix& M, Vector& z, Vector& r) {
@@ -53,6 +56,15 @@ void SparseLDLSolver<TMatrix,TVector,TThreadManager>::solve (Matrix& M, Vector& 
 
 template<class TMatrix, class TVector, class TThreadManager>
 void SparseLDLSolver<TMatrix,TVector,TThreadManager>::invert(Matrix& M) {
+    if (f_saveMatrixToFile.getValue()) {
+        std::ofstream f;
+        char name[100];
+        sprintf(name, "matrixInLDLInvert_%04d.txt", numStep);
+        f.open(name);
+        f << M;
+        f.close();
+    }
+
     Mfiltered.copyNonZeros(M);
     Mfiltered.compress();
 
@@ -63,6 +75,8 @@ void SparseLDLSolver<TMatrix,TVector,TThreadManager>::invert(Matrix& M) {
     Real * M_values = (Real *) &Mfiltered.getColsValue()[0];
 
     Inherit::factorize(n,M_colptr,M_rowind,M_values,(InvertData *) this->getMatrixInvertData(&M));
+
+    numStep++;
 }
 
 /// Default implementation of Multiply the inverse of the system matrix by the transpose of the given matrix, and multiply the result with the given matrix J
