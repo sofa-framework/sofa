@@ -1,9 +1,14 @@
-attribute highp vec4 vertices;
+#version 430 core
 
-varying highp vec2 coords;
+// in
+attribute vec4                  vPosition;
+
+// out
+layout(location = 0) out vec2   TexCoords;
 
 void main()
 {
-    gl_Position = vertices;
-    coords = vertices.xy;
+    TexCoords = vPosition.xy;
+
+    gl_Position = vPosition;
 }

@@ -39,15 +39,16 @@
 **
 ****************************************************************************/
 
-#include "QSofaViewer.h"
+#include "Viewer.h"
 
 #include <QtQuick/qquickwindow.h>
 #include <QtGui/QOpenGLShaderProgram>
 #include <QtGui/QOpenGLContext>
 #include <QVector>
 #include <QVector4D>
+#include <QTime>
 
-QSofaViewer::QSofaViewer() :
+Viewer::Viewer() :
     myRenderShaderProgram(0),
     myCompositionShaderProgram(0),
     myFramebuffer(0),
@@ -57,7 +58,7 @@ QSofaViewer::QSofaViewer() :
     connect(this, SIGNAL(windowChanged(QQuickWindow*)), this, SLOT(handleWindowChanged(QQuickWindow*)));
 }
 
-void QSofaViewer::setT(qreal t)
+void Viewer::setT(qreal t)
 {
     if (t == m_t)
         return;
@@ -67,7 +68,7 @@ void QSofaViewer::setT(qreal t)
         window()->update();
 }
 
-void QSofaViewer::handleWindowChanged(QQuickWindow *win)
+void Viewer::handleWindowChanged(QQuickWindow *win)
 {
     if(win)
     {
@@ -84,7 +85,7 @@ void QSofaViewer::handleWindowChanged(QQuickWindow *win)
     }
 }
 
-void QSofaViewer::paint()
+void Viewer::paint()
 {
     if(!myRenderShaderProgram)
     {
@@ -99,11 +100,11 @@ void QSofaViewer::paint()
                 this, SLOT(cleanup()), Qt::DirectConnection);
     }
 
-    if(!myFramebuffer)
+    QSize size = QSize(width(), height());
+    if(!myFramebuffer || size != myFramebuffer->size())
     {
-        myFramebuffer = new QOpenGLFramebufferObject(window()->size(), QOpenGLFramebufferObject::CombinedDepthStencil);
-
-        window()->setRenderTarget(myFramebuffer);
+        delete myFramebuffer;
+        myFramebuffer = new QOpenGLFramebufferObject(size, QOpenGLFramebufferObject::CombinedDepthStencil);
     }
 
     myFramebuffer->bind();
@@ -119,45 +120,50 @@ void QSofaViewer::paint()
         1, 1
     };
     myRenderShaderProgram->setAttributeArray(0, GL_FLOAT, values, 2);
-    myRenderShaderProgram->setUniformValue("t", (float) m_thread_t);
+    myRenderShaderProgram->setUniformValue("Time", (float) m_thread_t);
 
-    glViewport(0, 0, window()->width(), window()->height());
+    // compute the correct viewer position
+    //QPointF pos = mapToScene(QPointF(0.0, 0.0));
+    //pos.setY(window()->height() - height() - pos.y()); // opengl has its Y coordinate inverted compared to qt
+
+    // clear the viewer rectangle and just its area, not the whole OpenGL buffer
+    //glScissor(pos.x(), pos.y(), width(), height());
+    //glEnable(GL_SCISSOR_TEST);
+    glClearColor(0, 0, 0, 1);
+    glClear(GL_COLOR_BUFFER_BIT);
+    //glDisable(GL_SCISSOR_TEST);
+
+    // set the viewer viewport
+    //glViewport(pos.x(), pos.y(), width(), height());
+    glViewport(0, 0, width(), height());
 
     glDisable(GL_DEPTH_TEST);
 
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-
-    glClearColor(0, 0, 0, 1);
-    glClear(GL_COLOR_BUFFER_BIT);
+    //glEnable(GL_BLEND);
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
     myRenderShaderProgram->disableAttributeArray(0);
     myRenderShaderProgram->release();
-}
-
-void QSofaViewer::grab()
-{
-    static bool init = false;
 
     myFramebuffer->release();
 
-    if(!init)
-    {
-        init = true;
+    if(window()->renderTarget())
+        window()->renderTarget()->bind();
+}
 
-        /*QVector<uchar> frame(window()->width() * window()->height() * 4);
-        glReadPixels(0, 0, window()->width(), window()->height(), GL_RGBA, GL_UNSIGNED_BYTE, frame.data());
-
-        QImage image(frame.constData(), window()->width(), window()->height(), QImage::Format_ARGB32);
-        image = image.mirrored(false, true);*/
-        QImage&& image = myFramebuffer->toImage();
-        if(image.save("output.png"))
-            qDebug() << "SAVED";
-        else
-            qDebug() << "NOT SAVED";
-    }
+void Viewer::grab()
+{
+//    static int init = 0;
+//    if(1 == init++)
+//    {
+//        QImage&& image = myFramebuffer->toImage();
+//        if(image.save("viewer_output.png"))
+//            qDebug() << "SAVED";
+//        else
+//            qDebug() << "NOT SAVED";
+//    }
 
     // draw the grabbed scene
     if(!myCompositionShaderProgram)
@@ -188,7 +194,9 @@ void QSofaViewer::grab()
     myCompositionShaderProgram->setAttributeArray(0, GL_FLOAT, values, 2);
     glBindTexture(GL_TEXTURE_2D, myFramebuffer->texture());
 
-    glViewport(0, 0, window()->width(), window()->height());
+    QPointF pos = mapToScene(QPointF(0.0, 0.0));
+    pos.setY(window()->height() - height() - pos.y()); // OpenGL has its Y coordinate inverted compared to qt
+    glViewport(pos.x(), pos.y(), width(), height());
 
     glDisable(GL_DEPTH_TEST);
 
@@ -199,7 +207,20 @@ void QSofaViewer::grab()
     myCompositionShaderProgram->release();
 }
 
-void QSofaViewer::cleanup()
+void Viewer::saveScreenshot(const QString& imagePath)
+{
+    QString finalImagePath = imagePath;
+    if(finalImagePath.isEmpty())
+        finalImagePath = QString("screenshot_") + QDate::currentDate().toString("yyyy-MM-dd_") + QTime::currentTime().toString("hh.mm.ss") + QString(".png");
+
+    QImage&& image = myFramebuffer->toImage();
+    if(image.save(finalImagePath))
+        qDebug() << "SAVED";
+    else
+        qDebug() << "NOT SAVED";
+}
+
+void Viewer::cleanup()
 {
     if (myCompositionShaderProgram)
     {
@@ -214,7 +235,7 @@ void QSofaViewer::cleanup()
     }
 }
 
-void QSofaViewer::sync()
+void Viewer::sync()
 {
     m_thread_t = m_t;
 }

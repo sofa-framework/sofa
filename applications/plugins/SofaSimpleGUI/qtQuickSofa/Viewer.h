@@ -39,25 +39,26 @@
 **
 ****************************************************************************/
 
-#ifndef QSOFAVIEWER_H
-#define QSOFAVIEWER_H
+#ifndef VIEWER_H
+#define VIEWER_H
 
 #include <QtQuick/QQuickItem>
 #include <QtGui/QOpenGLShaderProgram>
 #include <QtGui/QOpenGLFramebufferObject>
 
-//! [1]
-class QSofaViewer : public QQuickItem
+class Viewer : public QQuickItem
 {
     Q_OBJECT
 
     Q_PROPERTY(qreal t READ t WRITE setT NOTIFY tChanged)
 
 public:
-    QSofaViewer();
+    Viewer();
 
     qreal t() const { return m_t; }
     void setT(qreal t);
+
+    Q_INVOKABLE void saveScreenshot(const QString& imagePath = QString());
 
 signals:
     void tChanged();
@@ -79,6 +80,5 @@ private:
     qreal m_t;
     qreal m_thread_t;
 };
-//! [1]
 
-#endif // QSOFAVIEWER_H
+#endif // VIEWER_H
