@@ -160,6 +160,14 @@ extern "C" PyObject * Node_getParents(PyObject * self, PyObject * /*args*/)
     return list;
 }
 
+extern "C" PyObject * Node_getPathName(PyObject * self, PyObject * /*args*/)
+{
+    // BaseNode is not binded in SofaPython, so getPathName is binded in Node instead
+    Node* node=dynamic_cast<Node*>(((PySPtr<Base>*)self)->object.get());
+
+    return PyString_FromString(node->getPathName().c_str());
+}
+
 extern "C" PyObject * Node_createChild(PyObject *self, PyObject * args)
 {
     Node* obj=dynamic_cast<Node*>(((PySPtr<Base>*)self)->object.get());
@@ -323,6 +331,7 @@ SP_CLASS_METHOD(Node,init)
 SP_CLASS_METHOD(Node,getChild)
 SP_CLASS_METHOD(Node,getChildren)
 SP_CLASS_METHOD(Node,getParents)
+SP_CLASS_METHOD(Node,getPathName)
 SP_CLASS_METHOD(Node,createChild)
 SP_CLASS_METHOD(Node,addObject)
 SP_CLASS_METHOD(Node,removeObject)
