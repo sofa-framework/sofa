@@ -35,20 +35,11 @@ namespace scoped {
     };
 
 
-    // use this to "log time" of a given scope
-    struct timer {
-        typedef std::string message_type;
-        const message_type message;
 
-        timer( const message_type& message)
-        : message(message) {
-            sofa::helper::AdvancedTimer::stepBegin( message );
-        }
 
-        ~timer() {
-            sofa::helper::AdvancedTimer::stepEnd( message );
-        }
-    };
+    /// @ deprecated, use sofa::helper::ScopedAdvancedTimer instead
+    ////// the code has been MOVED to AdvancedTimer.h
+    typedef sofa::helper::ScopedAdvancedTimer timer;
 
 }
 
