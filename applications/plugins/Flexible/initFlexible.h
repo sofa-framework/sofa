@@ -53,6 +53,8 @@
   * \n The different constitutive laws are: Hooke force field(sofa#component#forcefield#HookeForceField), Mooney Rivlin force field(sofa#component#forcefield#MooneyRivlinForceField), Volume preservation force field (sofa#component#forcefield#VolumePreservationForceField).
   *\section section2 Flexible plugin contains a test suite FlexibleTest. 
   *\li This tests are tests for flexible components like strain mapping (sofa#StrainMappingTest) or higher level tests like patch test (sofa#AffinePatch_test and sofa#Patch_test)
+  *
+  * @author Benjamin Gilles, Francois Faure, Matthieu Nesme
   */
     
 #endif // INITFlexible_H
