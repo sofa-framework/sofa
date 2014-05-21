@@ -324,6 +324,7 @@ public:
 	 *          LINES MANAGEMENT          *
 	 **************************************/
 
+    void printFreeIndices();
     void updateHole(unsigned int index);
 	/**
 	* insert a line in the container
@@ -474,6 +475,7 @@ public:
 	 */
 	void copyFrom(const AttributeContainer& cont);
 
+    void removeFromFreeIndices(unsigned int index);
 };
 
 } // namespace CGoGN

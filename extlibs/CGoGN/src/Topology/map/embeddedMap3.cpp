@@ -30,6 +30,30 @@ namespace CGoGN
 {
 
 //TODO
+std::string EmbeddedMap3::orbitName(unsigned int ORBIT) {
+    if (ORBIT == DART)
+        return "Dart";
+    else {
+        if (ORBIT == VERTEX)
+            return "Vertex";
+        else {
+            if (ORBIT == EDGE)
+                return "Edge";
+            else {
+                if (ORBIT == FACE)
+                    return "Face";
+                else {
+                    if (ORBIT == VOLUME)
+                        return "Volume";
+                }
+            }
+        }
+    }
+    return "other";
+}
+
+
+
 Dart EmbeddedMap3::splitVertex(std::vector<Dart>& vd)
 {
     Dart d = vd.front();
@@ -369,65 +393,66 @@ void EmbeddedMap3::unsewVolumes(Dart d, bool withBoundary)
         Map3::unsewVolumes(d, false) ;
         return ;
     }
-
-    Dart dd = alpha1(d);
-
-    unsigned int fEmb = EMBNULL ;
-    if(isOrbitEmbedded<FACE>())
-        fEmb = getEmbedding<FACE>(d) ;
-
-    Map3::unsewVolumes(d);
-
-    Dart dit = d;
-    do
     {
-        // embed the unsewn vertex orbit with the vertex embedding if it is deconnected
-        if(isOrbitEmbedded<VERTEX>())
-        {
-            if(!sameVertex(dit, dd))
-            {
-                setOrbitEmbedding<VERTEX>(dit, getEmbedding<VERTEX>(dit)) ;
-                setOrbitEmbeddingOnNewCell<VERTEX>(dd);
-                copyCell<VERTEX>(dd, dit);
-            }
-            else
-            {
-                setOrbitEmbedding<VERTEX>(dit, getEmbedding<VERTEX>(dit)) ;
-            }
-        }
+        Dart dd = alpha1(d);
 
-        dd = phi_1(dd);
-
-        // embed the unsewn edge with the edge embedding if it is deconnected
-        if(isOrbitEmbedded<EDGE>())
-        {
-            if(!sameEdge(dit, dd))
-            {
-                setOrbitEmbeddingOnNewCell<EDGE>(dd);
-                copyCell<EDGE>(dd, dit);
-                copyDartEmbedding<EDGE>(phi3(dit), dit) ;
-            }
-            else
-            {
-                unsigned int eEmb = getEmbedding<EDGE>(dit) ;
-                setDartEmbedding<EDGE>(phi3(dit), eEmb) ;
-                setDartEmbedding<EDGE>(alpha_2(dit), eEmb) ;
-            }
-        }
-
+        unsigned int fEmb = EMBNULL ;
         if(isOrbitEmbedded<FACE>())
+            fEmb = getEmbedding<FACE>(d) ;
+
+        Map3::unsewVolumes(d);
+
+        Dart dit = d;
+        do
         {
-            setDartEmbedding<FACE>(phi3(dit), fEmb) ;
+            // embed the unsewn vertex orbit with the vertex embedding if it is deconnected
+            if(isOrbitEmbedded<VERTEX>())
+            {
+                if(!sameVertex(dit, dd))
+                {
+                    setOrbitEmbedding<VERTEX>(dit, getEmbedding<VERTEX>(dit)) ;
+                    setOrbitEmbeddingOnNewCell<VERTEX>(dd);
+                    copyCell<VERTEX>(dd, dit);
+                }
+                else
+                {
+                    setOrbitEmbedding<VERTEX>(dit, getEmbedding<VERTEX>(dit)) ;
+                }
+            }
+
+            dd = phi_1(dd);
+
+            // embed the unsewn edge with the edge embedding if it is deconnected
+            if(isOrbitEmbedded<EDGE>())
+            {
+                if(!sameEdge(dit, dd))
+                {
+                    setOrbitEmbeddingOnNewCell<EDGE>(dd);
+                    copyCell<EDGE>(dd, dit);
+                    copyDartEmbedding<EDGE>(phi3(dit), dit) ;
+                }
+                else
+                {
+                    unsigned int eEmb = getEmbedding<EDGE>(dit) ;
+                    setDartEmbedding<EDGE>(phi3(dit), eEmb) ;
+                    setDartEmbedding<EDGE>(alpha_2(dit), eEmb) ;
+                }
+            }
+
+            if(isOrbitEmbedded<FACE>())
+            {
+                setDartEmbedding<FACE>(phi3(dit), fEmb) ;
+            }
+
+            dit = phi1(dit);
+        } while(dit != d);
+
+        // embed the unsewn face with the face embedding
+        if (isOrbitEmbedded<FACE>())
+        {
+            setOrbitEmbeddingOnNewCell<FACE>(dd);
+            copyCell<FACE>(dd, d);
         }
-
-        dit = phi1(dit);
-    } while(dit != d);
-
-    // embed the unsewn face with the face embedding
-    if (isOrbitEmbedded<FACE>())
-    {
-        setOrbitEmbeddingOnNewCell<FACE>(dd);
-        copyCell<FACE>(dd, d);
     }
 }
 
@@ -451,6 +476,14 @@ bool EmbeddedMap3::mergeVolumes(Dart d, bool deleteFace)
         return true;
     }
     return false;
+}
+
+void EmbeddedMap3::deleteVolume(Dart d, bool withBoundary) {
+
+    if (withBoundary) {
+        Map3::deleteVolume(d, withBoundary) ;
+
+    }
 }
 
 void EmbeddedMap3::splitVolume(std::vector<Dart>& vd)
