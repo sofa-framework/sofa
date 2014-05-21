@@ -10,6 +10,8 @@ namespace sofa {
 namespace component {
 namespace linearsolver {
 
+
+/// Base class to solve the linear ode/dynamics equation
 struct Response : core::objectmodel::BaseObject {
 
 	SOFA_CLASS(Response, core::objectmodel::BaseObject);
@@ -23,7 +25,8 @@ struct Response : core::objectmodel::BaseObject {
 	typedef system_type::cmat cmat;
 
 
-	virtual void factor(const mat& ) = 0;
+    /// @param semidefinite indicates if the matrix is semi-definite
+    virtual void factor(const mat&, bool semidefinite=false ) = 0;
 	
 	virtual void solve(cmat&, const cmat& ) const = 0;
 	virtual void solve(vec&, const vec& ) const = 0;

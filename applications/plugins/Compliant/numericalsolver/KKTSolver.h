@@ -11,12 +11,10 @@ namespace sofa {
 namespace component {
 namespace linearsolver {
 
-// Solver for an AssembledSystem (could be non-linear in case of
-// inequalities). This will eventually serve as a base class for
-// all kinds of derived solver (sparse cholesky, minres, qp)
-
-			
-// TODO: base + derived classes (minres/cholesky/unilateral)
+/// Base class to solve a KKT system (Karush–Kuhn–Tucker conditions)
+/// Solver for an AssembledSystem (could be non-linear in case of
+/// inequalities). This will eventually serve as a base class for
+/// all kinds of derived solver (sparse cholesky, minres, qp)
 class SOFA_Compliant_API KKTSolver : public core::behavior::BaseLinearSolver {
   public:
 	SOFA_CLASS(KKTSolver, core::objectmodel::BaseObject);
