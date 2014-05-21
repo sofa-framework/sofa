@@ -62,6 +62,9 @@ public :
     void solve (Matrix& M, Vector& x, Vector& b);
     void invert(Matrix& M);
     bool addJMInvJtLocal(TMatrix * M, ResMatrixType * result,const JMatrixType * J, double fact);
+    int numStep;
+
+    Data<bool> f_saveMatrixToFile;
 
     MatrixInvertData * createInvertData() {
         return new InvertData();
