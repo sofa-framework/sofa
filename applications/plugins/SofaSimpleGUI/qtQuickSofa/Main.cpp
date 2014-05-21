@@ -39,23 +39,55 @@
 **
 ****************************************************************************/
 
-#include <QGuiApplication>
-
+#ifdef OPENGL_ONLY
+#include <QtGui/QGuiApplication>
+#define Application QGuiApplication
+#else
+#include <QtWidgets/QApplication>
+#define Application QApplication
+#endif
 #include <QQuickWindow>
 #include <QQmlApplicationEngine>
 
-#include "QSofaViewer.h"
+#include <iostream>
+
+#include "Window.h"
+#include "Viewer.h"
 
 int main(int argc, char **argv)
 {
-    QGuiApplication app(argc, argv);
+    Application app(argc, argv);
 
-    qmlRegisterType<QSofaViewer>("QSofaViewer", 1, 0, "QSofaViewer");
+    qmlRegisterType<Window>("Window", 1, 0, "Window");
+    qmlRegisterType<Viewer>("Viewer", 1, 0, "Viewer");
 
-    QQmlApplicationEngine engine(QUrl("qrc:///resource/main.qml"));
-    QObject *topLevel = engine.rootObjects().value(0);
-    QQuickWindow *window = qobject_cast<QQuickWindow *>(topLevel);
+    QUrl mainScriptUrl = QString("qrc:///resource/Main.qml");
+/*#ifdef OPENGL_ONLY
+    mainScriptUrl = "qrc:///resource/mainOpenGLOnlyGUI.qml";
+#endif*/
+
+    QQmlApplicationEngine engine(mainScriptUrl);
+    QObject* topLevel = engine.rootObjects().value(0);
+    QQuickWindow* window = qobject_cast<QQuickWindow *>(topLevel);
+    if(0 == window)
+    {
+        qDebug() << "Your QML root object should be a window";
+        return 1;
+    }
+
     window->show();
 
     return app.exec();
+
+//    // Example if you cannot use the blocking app.exec() function
+//    QEventLoop eventLoop;
+
+//    std::cout << "Start" << app.quitOnLastWindowClosed() << std::endl;
+//    while(window->isVisible())
+//    {
+//        eventLoop.processEvents();
+//    }
+//    std::cout << "Exit" << std::endl;
+
+//    return 0;
 }

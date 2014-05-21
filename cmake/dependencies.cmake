@@ -130,9 +130,17 @@ if(WIN32)
         file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
     endforeach()
 
-    ## qt dlls
+    ## qt4 dlls
     if(NOT SOFA-EXTERNAL_QT_PATH STREQUAL "")
         file(GLOB sharedObjects "${SOFA-EXTERNAL_QT_PATH}/bin/*.dll")
+        foreach(sharedObject ${sharedObjects})
+            file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
+        endforeach()
+    endif()
+	
+	## qt5 dlls
+    if(NOT SOFA-EXTERNAL_QT5_PATH STREQUAL "")
+        file(GLOB sharedObjects "${SOFA-EXTERNAL_QT5_PATH}/bin/*.dll")
         foreach(sharedObject ${sharedObjects})
             file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
         endforeach()

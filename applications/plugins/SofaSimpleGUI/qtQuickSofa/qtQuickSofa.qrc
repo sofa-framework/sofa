@@ -2,8 +2,13 @@
     <qresource prefix="/">
         <file>resource/composition.fs</file>
         <file>resource/composition.vs</file>
-        <file>resource/main.qml</file>
+        <file>resource/Main.qml</file>
         <file>resource/render.fs</file>
         <file>resource/render.vs</file>
+        <file>resource/tools/FileBrowser.qml</file>
+        <file>resource/tools/Footer.qml</file>
+        <file>resource/tools/Header.qml</file>
+        <file>resource/tools/SceneGraph.qml</file>
+        <file>resource/tools/Viewer.qml</file>
     </qresource>
 </RCC>

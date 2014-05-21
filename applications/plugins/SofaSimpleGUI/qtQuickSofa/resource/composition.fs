@@ -1,8 +1,16 @@
-uniform sampler2D   uTexture;
+#version 430 core
 
-varying highp vec2 coords;
+// in
+layout(location = 0) in vec2 TexCoords;
+
+// out
+layout(location = 0) out vec4 Color;
+
+// uniform
+uniform sampler2D   uTexture;
 
 void main()
 {
-    gl_FragColor = texture(uTexture, coords);
+    Color = texture(uTexture, TexCoords);
+    // Color = vec4(1.0, 0.0, 0.0, 1.0);
 }
