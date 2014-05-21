@@ -21,6 +21,7 @@ set(SOURCE_FILES
     BaryMapperTest.cpp
     LoadScene_test.cpp
     DAG_test.cpp
+    Node_test.cpp
     BroadPhaseTest.cpp
         )
 
