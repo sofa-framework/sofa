@@ -21,7 +21,7 @@ namespace sofa {
 namespace component {
 namespace linearsolver {
 
-// sequential impulse/projected block gauss-seidel kkt solver
+/// Sequential impulse/projected block gauss-seidel kkt solver
 class SOFA_Compliant_API SequentialSolver : public IterativeSolver {
   public:
 

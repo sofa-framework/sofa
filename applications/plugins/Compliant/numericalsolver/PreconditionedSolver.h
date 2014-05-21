@@ -13,7 +13,7 @@ struct AssembledSystem;
 
 
 
-// base class for preconditioned solvers
+/// Base class for preconditioned solvers
 class SOFA_Compliant_API PreconditionedSolver {
   public:
 

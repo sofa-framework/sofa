@@ -9,7 +9,7 @@ namespace component {
 namespace linearsolver {
 
 
-// base class for iterative solvers
+/// Base class for iterative solvers
 class SOFA_Compliant_API IterativeSolver : public KKTSolver {
   public:
 

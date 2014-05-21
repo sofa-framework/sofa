@@ -21,14 +21,15 @@ LDLTResponse::LDLTResponse()
 						 "reuse first factorization"))
 {}
 
-void LDLTResponse::factor(const mat& H ) {
+void LDLTResponse::factor(const mat& H, bool semidefinite ) {
 
 	bool first = (response.cols() != H.cols() );
 
     if( constant.getValue() && !first ) return;
 
-    if( regularize.getValue() ) {
+    if( regularize.getValue() && semidefinite ) {
 		// add a tiny diagonal matrix to make H psd.
+        // TODO add epsilon only on the empty diagonal entries?
         system_type::rmat identity(H.rows(),H.cols());
         identity.setIdentity();
         response.compute( ( H + identity * regularize.getValue() ).selfadjointView<Eigen::Upper>() );
@@ -46,21 +47,16 @@ void LDLTResponse::factor(const mat& H ) {
 
 	assert( response.info() == Eigen::Success );
 
-
-
-
 }
 
 void LDLTResponse::solve(cmat& res, const cmat& M) const {
 	assert( response.rows() );
-	assert( &res != &M );
 	res = response.solve( M );
 }
 
 
 void LDLTResponse::solve(vec& res, const vec& x) const {
 	assert( response.rows() );
-	assert( &res != &x );
 	res = response.solve( x );
 }
 

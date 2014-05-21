@@ -9,6 +9,7 @@ namespace sofa {
 namespace component {
 namespace linearsolver {
 			
+/// Minimal Residual Method (iterative, linear solver for symmetric, semidefinite matrix)
 // TODO add back schur solves
 class SOFA_Compliant_API MinresSolver : public KrylovSolver {
   public:

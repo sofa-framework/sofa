@@ -3,32 +3,32 @@
 <!-- François Faure, 2012 -->
 
 <Node 	name="Root" gravity="0 -1 0" time="0" animate="0"  dt="0.01" >
-<VisualStyle displayFlags="hideVisualModels showBehaviorModels showMappings showForceFields" />
-<CompliantAttachButtonSetting button="Left" />
+      <VisualStyle displayFlags="hideVisualModels showBehaviorModels showMappings showForceFields" />
 
-      <RequiredPlugin pluginName="Flexible"/>
       <RequiredPlugin pluginName="Compliant"/>
+      <CompliantAttachButtonSetting/>
 
-<Node 	name="complianceSolverScene" >
-    <AssembledSolver use_velocity="false" implicitVelocity="0.5" implicitPosition="1"/>
-      <LDLTSolver/>
+      <Node 	name="complianceSolverScene" >
+	
+	  <AssembledSolver implicitVelocity="0.5" implicitPosition="1"/>
+	  <LDLTSolver/>
 
-    <!-- resolution = number of particles (including the fixed one) -->
-    <!-- scale = total length of the pendulum -->
-    <StringMeshCreator name="loader" resolution="3" scale="2 1 0" />
-    <MeshTopology name="mesh" src="@loader" />
-    <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" />
-    <BoxConstraint box="-0.005 -0.005 -0.005    0.005 0.005 0.005  " />
+	  <!-- resolution = number of particles (including the fixed one) -->
+	  <!-- scale = total length of the pendulum -->
+	  <StringMeshCreator name="loader" resolution="3" scale="2 1 0" />
+	  <MeshTopology name="mesh" src="@loader" />
+	  <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" />
+	  <BoxConstraint box="-0.005 -0.005 -0.005    0.005 0.005 0.005  " />
 
-    <!-- mass of one particle = total mass/number of particles (including the fixed one) -->
-    <UniformMass  name="mass" totalMass="3"/>
-    <Node name="extensionsNode" >
-        <MechanicalObject template="Vec1d"  name="extensionsDOF" />
-        <EdgeSetTopologyContainer edges="@../mesh.edges" />
-        <DistanceMapping  />
+	  <!-- mass of one particle = total mass/number of particles (including the fixed one) -->
+	  <UniformMass  name="mass" totalMass="3"/>
+	  <Node name="extensionsNode" >
+	      <MechanicalObject template="Vec1d"  name="extensionsDOF" />
+	      <EdgeSetTopologyContainer edges="@../mesh.edges" />
+	      <DistanceMapping  />
 
-        <!-- Null compliance for perfect rigidity -->
-        <UniformCompliance name="ucomp" template="Vec1d" compliance="0" dampingRatio="0.0"  isCompliance="1" />
-    </Node>
-</Node>
+	      <!-- Null compliance for perfect rigidity -->
+	      <UniformCompliance name="ucomp" template="Vec1d" compliance="0" />
+	  </Node>
+      </Node>
 </Node>

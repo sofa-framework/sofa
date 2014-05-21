@@ -64,8 +64,8 @@
 					<MechanicalObject  template="E331" name="E"  />
 	    		<CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" assemble="true" method="svd" geometricStiffness="1"/>
 					<HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="2" assemble="true" isCompliance="true"/>
-<!-- 					<Stabilization/> -->
-  <ConstraintValue/>
+					<Stabilization/>
+<!--   <ConstraintValue/> -->
 				</Node>
 			</Node>
 			<Node 	name="mass"   >

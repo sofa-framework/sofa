@@ -9,7 +9,6 @@
 #include "assembly/AssemblyVisitor.h"
 #include "constraint/ConstraintValue.h"
 
-#include "utils/minres.h"
 #include "utils/scoped.h"
 
 

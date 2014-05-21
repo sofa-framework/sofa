@@ -5,14 +5,15 @@
 <VisualStyle displayFlags="hideVisualModels showBehaviorModels showMappings showForceFields" />
 <CompliantAttachButtonSetting />
 
-      <RequiredPlugin pluginName="Compliant"/>
+      <RequiredPlugin name="Compliant"/>
+      <RequiredPlugin name="CompliantDev"/>
 
       
 <Node 	name="CONSTRAINT 0" activated="1">
   
     <AssembledSolver/>
-<!--     <LDLTSolver/> -->
-<MinresSolver precision="0" iterations="100"/>
+<LDLTSolver/>
+<!--<MinresSolver precision="0" iterations="100"/>-->
 
     <StringMeshCreator name="loader" resolution="10" scale="2 1 0" translation="3 0 0"/>
     <MeshTopology name="mesh" src="@loader" />
@@ -34,8 +35,8 @@
 <Node 	name="CONSTRAINT 1e-15" activated="1">
   
     <AssembledSolver/>
-<!--     <LDLTSolver/> -->
-<MinresSolver precision="0" iterations="100"/>
+<LDLTSolver/>
+<!--<MinresSolver precision="0" iterations="100"/>-->
 
     <StringMeshCreator name="loader" resolution="10" scale="2 1 0" translation="3 3 0"/>
     <MeshTopology name="mesh" src="@loader" />
@@ -56,8 +57,8 @@
 <Node 	name="CONSTRAINT 1e-5" activated="1">
   
     <AssembledSolver/>
-<!--     <LDLTSolver/> -->
-<MinresSolver precision="0" iterations="100"/>
+<LDLTSolver/>
+<!--<MinresSolver precision="0" iterations="100"/>-->
 
     <StringMeshCreator name="loader" resolution="10" scale="2 1 0" translation="3 6 0"/>
     <MeshTopology name="mesh" src="@loader" />
@@ -81,8 +82,8 @@
 <Node 	name="COMPLIANCE 0" activated="1">
   
     <AssembledSolver neglecting_compliance_forces_in_geometric_stiffness="false"/>
-<!--     <LDLTSolver/> -->
-    <MinresSolver precision="0" iterations="100"/>
+<LDLTSolver/>
+    <!--<MinresSolver precision="0" iterations="100"/>-->
 
     <StringMeshCreator name="loader" resolution="10" scale="2 1 0" translation="0 0 0"/>
     <MeshTopology name="mesh" src="@loader" />
@@ -103,8 +104,8 @@
 <Node 	name="COMPLIANCE 1e-15" >
   
     <AssembledSolver neglecting_compliance_forces_in_geometric_stiffness="false"/>
-<!--     <LDLTSolver/> -->
-<MinresSolver precision="0" iterations="100"/>
+<LDLTSolver/>
+<!--<MinresSolver precision="0" iterations="100"/>-->
 
     <StringMeshCreator name="loader" resolution="10" scale="2 1 0" translation="0 3 0"/>
     <MeshTopology name="mesh" src="@loader" />
@@ -126,8 +127,8 @@
 <Node 	name="COMPLIANCE 1e-5" activated="1">
   
     <AssembledSolver neglecting_compliance_forces_in_geometric_stiffness="false"/>
-<!--     <LDLTSolver/> -->
-<MinresSolver precision="0" iterations="100"/>
+<LDLTSolver/>
+<!--<MinresSolver precision="0" iterations="100"/>-->
 
     <StringMeshCreator name="loader" resolution="10" scale="2 1 0" translation="0 6 0"/>
     <MeshTopology name="mesh" src="@loader" />
@@ -153,8 +154,8 @@
 <Node 	name="STIFFNESS 0" activated="1">
   
     <AssembledSolver/>
-<!--     <LDLTSolver/> -->
-<MinresSolver precision="0" iterations="100"/>
+<LDLTSolver/>
+<!--<MinresSolver precision="0" iterations="100"/>-->
 
     <StringMeshCreator name="loader" resolution="10" scale="2 1 0" translation="-3 0 0"/>
     <MeshTopology name="mesh" src="@loader" />
@@ -175,8 +176,8 @@
 <Node 	name="STIFFNESS 1e-15" activated="1">
   
     <AssembledSolver/>
-<!--     <LDLTSolver/> -->
-<MinresSolver precision="0" iterations="100"/>
+<LDLTSolver/>
+<!--<MinresSolver precision="0" iterations="100"/>-->
 
     <StringMeshCreator name="loader" resolution="10" scale="2 1 0" translation="-3 3 0"/>
     <MeshTopology name="mesh" src="@loader" />
@@ -197,8 +198,8 @@
 <Node 	name="STIFFNESS 1e-5" activated="1">
   
     <AssembledSolver/>
-<!--     <LDLTSolver/> -->
-<MinresSolver precision="0" iterations="100"/>
+<LDLTSolver/>
+<!--<MinresSolver precision="0" iterations="100"/>-->
 
     <StringMeshCreator name="loader" resolution="10" scale="2 1 0" translation="-3 6 0"/>
     <MeshTopology name="mesh" src="@loader" />

@@ -8,7 +8,7 @@ namespace sofa {
 namespace component {
 namespace linearsolver {
 
-
+/// Preconditioned Conjugate Gradient (iterative, linear solver for symmetric, definite matrix)
 class SOFA_Compliant_API PreconditionedCgSolver : public CgSolver, public PreconditionedSolver
 {
 

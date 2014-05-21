@@ -17,7 +17,7 @@ namespace component {
 namespace linearsolver {
 
 
-// should be IterativeSolver -> KrylovSolver -> ...
+/// Base class for iterative solvers in the Krylov family (CG, Minres, ...)
 class SOFA_Compliant_API KrylovSolver : public IterativeSolver {
   public:
 	

@@ -8,22 +8,22 @@ namespace sofa {
 namespace component {
 namespace linearsolver {
 
+/// Solving the dynamics equation when the matrix is diagonal
+/// It is generally the case for Rigids, where the matrix is the constant, diagonal inertia matrix.
+/// @warning with "constant" set to true, mass and stiffness cannot be added dynamically (like a mouse-spring or penalities)
 class SOFA_Compliant_API DiagonalResponse : public Response {
 public:
 	SOFA_CLASS(DiagonalResponse, Response);
 	
 	DiagonalResponse();
 
-	virtual void factor(const mat& sys);
+    virtual void factor(const mat& sys, bool semidefinite=false);
 	virtual void solve(cmat& lval, const cmat& rval) const;
 	virtual void solve(vec& lval,  const vec& rval) const;
 
 	const vec& diagonal() const { return diag; }
 
-    /// Add identity*regularize to matrix H to make it definite (this
-    /// is useful with a projective contraint)
-    Data<SReal> regularize;
-
+    /// reuse first inversion
     Data<bool> constant;
 	
 protected:

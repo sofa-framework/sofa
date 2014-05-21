@@ -12,24 +12,20 @@ int DiagonalResponseClass = core::RegisterObject("A diagonal factorization of th
 
 
 DiagonalResponse::DiagonalResponse() 
-    : regularize( initData(&regularize,
-                           std::numeric_limits<real>::epsilon(),
-                           "regularize",
-                           "add identity*regularize to matrix H to make it definite."))
-    , constant(initData(&constant, false, "constant", "reuse first factorization"))
+    : constant(initData(&constant, false, "constant", "reuse first factorization"))
 {
 
 }
 
-void DiagonalResponse::factor(const mat& H ) {
+void DiagonalResponse::factor( const mat& H, bool semidefinite ) {
 	
     if( constant.getValue() && diag.size() == H.rows() ) return;
 
-    if( regularize.getValue() )
+    if( semidefinite )
     {
         diag = H.diagonal();
         for( unsigned i=0 ; i<H.rows() ; ++i )
-            diag.coeffRef(i) = real(1) / ( diag.coeff(i) + regularize.getValue() );
+            diag.coeffRef(i) = std::abs(diag.coeff(i)) < std::numeric_limits<real>::epsilon() ? real(0) : real(1) / diag.coeff(i);
     }
     else
     {

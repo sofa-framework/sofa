@@ -3,11 +3,11 @@
 	<VisualStyle name="visualStyle"  displayFlags="showVisual showBehaviorModels hideForceFields hideInteractionForceFields showCollision hideMapping hideOptions" />
 	
 	<RequiredPlugin pluginName="Compliant"/>
-	<CompliantAttachButtonSetting compliance="0.001"/>
+	<CompliantAttachButtonSetting compliance="0.001" isCompliance="1"/>
 	
 	
 	<!-- euler implicit solver -->
-	<AssembledSolver stabilization_damping="0"/>
+	<AssembledSolver stabilization_damping="0" neglecting_compliance_forces_in_geometric_stiffness="false"/>
 	
 	<!-- numerical solver -->
 	<SequentialSolver precision="1e-10" iterations="100" />
