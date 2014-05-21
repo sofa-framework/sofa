@@ -46,7 +46,7 @@ class SOFA_HELPER_API DynamicLibrary
 public:
 
     /// A handle to a dynamic library.
-    class Handle {
+    class SOFA_HELPER_API Handle {
         friend class DynamicLibrary;
     public:
         /// Default constructor: invalid handle.

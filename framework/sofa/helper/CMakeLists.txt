@@ -65,6 +65,8 @@ set(HEADER_FILES
     system/thread/thread_specific_ptr.h
     system/PipeProcess.h
     system/SofaOStream.h
+    system/FileSystem.h
+    system/Utils.h
     system/DynamicLibrary.h
     system/PluginManager.h
     TagFactory.h
@@ -124,6 +126,8 @@ set(SOURCE_FILES
     system/thread/CircularQueue.cpp
     system/PipeProcess.cpp
     system/SofaOStream.cpp
+    system/FileSystem.cpp
+    system/Utils.cpp
     system/DynamicLibrary.cpp
     system/PluginManager.cpp
     TagFactory.cpp
@@ -190,6 +194,11 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_HELPER")
 AddLinkerDependencies(${GLEW_LIBRARIES} ${GLUT_LIBRARIES} ${OPENGL_LIBRARIES} ${PNG_LIBRARIES})
+
+if(WIN32)
+    # Windows lib, used in system::FileSystem
+    AddLinkerDependencies(Shlwapi)
+endif()
 
 if(PS3)
 	AddLinkerDependencies("$(SCE_PS3_ROOT)/target/ppu/lib/libsysmodule_stub.a")
