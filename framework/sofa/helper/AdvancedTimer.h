@@ -320,6 +320,27 @@ extern template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Obj>;
 extern template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Val>;
 #endif
 
+
+
+
+/// Scoped (RAII) AdvancedTimer to simplify a basic usage
+struct ScopedAdvancedTimer {
+
+    const std::string message;
+
+    ScopedAdvancedTimer( const std::string& message )
+    : message( message )
+    {
+        AdvancedTimer::stepBegin( message );
+    }
+
+    ~ScopedAdvancedTimer()
+    {
+        AdvancedTimer::stepEnd( message );
+    }
+};
+
+
 }
 
 }
