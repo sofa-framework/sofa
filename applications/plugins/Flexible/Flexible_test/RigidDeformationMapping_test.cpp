@@ -40,8 +40,10 @@ namespace sofa {
 
    /// Linear Deformation mappings test
    /**  
-    * Test the deformation mappings by applying an affine transformation (translation and rotation) 
-    * to all control nodes and checks if the resulting deformation mapping is equal to rotation.
+    * Test the deformation mappings by applying a rigid transformation (translation and rotation) 
+    * to all rigid nodes and checks if the resulting deformation gradient is equal to rotation.
+    * This screenshot explains how this test works:
+    * \image html RigidDeformationMapping.png
    */
 
     template <typename _Mapping>
@@ -65,7 +67,7 @@ namespace sofa {
         defaulttype::Mat<3,3,Real> testedRotation; 
         Quat testedQuaternion;
         /// Tested Translation: random translation
-        Coord testedTranslation;
+        Vec3 testedTranslation;
         /// Seed for random value
         long seed;
         /// Random generator
@@ -75,7 +77,6 @@ namespace sofa {
         RigidLinearDeformationMappings_test() : Mapping_test<_Mapping>(std::string(FLEXIBLE_TEST_SCENES_DIR) + "/" + "RigidLineDeformationMapping.scn")
         {   
             Inherited::errorMax = 5000;
-         
             seed=2;
             // rotation and translation
             randomGenerator.initSeed(seed);
@@ -109,12 +110,9 @@ namespace sofa {
             testedQuaternion = Quat(sin(w)*rotationAxis[0],rotationAxis[1]*sin(w),rotationAxis[2]*sin(w),cos(w));
    
             // Translation
-           for(size_t i=0;i<Coord::total_size;++i)
+           for(size_t i=0;i<testedTranslation.size();++i)
            {
-               if(i<3)
                testedTranslation[i]=randomGenerator.random<SReal>(-2.0,2.0);
-               else
-               testedTranslation[i]=testedQuaternion[i]; 
            }
 
         }

@@ -39,8 +39,8 @@ namespace sofa {
 
    /// Linear Deformation mappings test
    /**  
-    * Test the deformation mappings by applying an affine transformation (translation and rotation) 
-    * to all control nodes and checks if the resulting deformation mapping is equal to rotation.
+    * Test the deformation mappings by applying any affine transformation  
+    * to all dofs and checks if the resulting deformation gradient is equal to the affine transformation.
    */
 
     template <typename _Mapping>
@@ -65,7 +65,7 @@ namespace sofa {
         /// Tested Rotation: matrix from testedQuaternion 
         defaulttype::Mat<3,3,Real> testedRotation; 
         /// Tested Translation: random translation
-        Coord testedTranslation;
+        Vec3 testedTranslation;
         /// Seed for random value
         long seed;
         /// Random generator
@@ -78,37 +78,25 @@ namespace sofa {
             seed=2;
             // Set random rotation and translation
             randomGenerator.initSeed(seed);
-            this->SetRandomTestedRotationAndTranslation(seed);
+            this->SetRandomAffineTransform(seed);
         }
              
-        void SetRandomTestedRotationAndTranslation(int)
+        void SetRandomAffineTransform (int seed)
         {
-            // Random Rotation
-            SReal x,y,z,w;
-            // Random axis
-            x = randomGenerator.random<SReal>(-1.0,1.0);
-            y = randomGenerator.random<SReal>(-1.0,1.0);
-            z = randomGenerator.random<SReal>(-1.0,1.0);   
-            // If the rotation axis is null
-            Vec3 rotationAxis(x,y,z);
-            if(rotationAxis.norm() < 1e-7)
+            // Matrix 3*3
+            for( int j=0; j<testedRotation.nbCols; j++)
             {
-                rotationAxis = Vec3(0,0,1);
+                for( int i=0; i<testedRotation.nbLines; i++)
+                {
+                    Real random = randomGenerator.random<Real>( (Real) -1, (Real) 1 );
+                    testedRotation(i,j)=random;
+                }
             }
-            rotationAxis.normalize();
-            // Random angle
-            w = randomGenerator.random<SReal>(0.0, M_PI);
-            // Quat = (rotationAxis*sin(angle/2) , cos(angle/2)) angle = 2*w
-            testedQuaternion = Quat(sin(w)*rotationAxis[0],rotationAxis[1]*sin(w),rotationAxis[2]*sin(w),cos(w));
-            testedQuaternion.toMatrix(testedRotation);
 
             // Translation
-            for(size_t i=0;i<Coord::total_size;++i)
+            for(size_t i=0;i<testedTranslation.size();++i)
             {
-                if(i<3)
-                    testedTranslation[i]=randomGenerator.random<SReal>(-2.0,2.0);
-                else
-                    testedTranslation[i]=testedQuaternion[i]; 
+                testedTranslation[i]=randomGenerator.random<SReal>(-2.0,2.0);
             }
 
         }
@@ -119,7 +107,7 @@ namespace sofa {
             for (size_t i=0; i < x0.size() ; ++i)
             {
                 // Translation
-                xf[i].getCenter() = testedRotation*(x0[i].getCenter()) + testedTranslation.getCenter();
+                xf[i].getCenter() = testedRotation*(x0[i].getCenter()) + testedTranslation;
      
                 // Rotation
                 xf[i].getAffine() = testedRotation*x0[i].getAffine();

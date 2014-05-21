@@ -42,8 +42,10 @@ namespace sofa {
 
    /// Linear Deformation mappings test
   /**  
-    * Test the deformation mappings by applying an affine transformation (translation and rotation) 
-    * to all control nodes and checks if the resulting deformation mapping is equal to rotation.
+    * Test the deformation mappings by applying an affine transformation 
+    * to all dofs and checks if the resulting deformation gradient is equal to the transformation.
+    * This screenshot explains how this test works:
+    * \image html PointDeformationMapping.png
     */
 
     template <typename _Mapping>
@@ -85,7 +87,7 @@ namespace sofa {
             seed=1;
             // rotation and translation
             randomGenerator.initSeed(seed);
-            this->SetRandomTestedRotationAndTranslation(seed);
+            this->SetRandomAffineTransform(seed);
 
             // Get rotation from affine constraint
             simulation::Node::SPtr rootNode =  Inherited::root;
@@ -94,32 +96,26 @@ namespace sofa {
             affineConstraint->m_translation.setValue(testedTranslation);
         }
              
-        void SetRandomTestedRotationAndTranslation(int /*seedValue*/)
+        void SetRandomAffineTransform (int seed)
         {
-            // Random Rotation
-            SReal x,y,z,w;
-            x = randomGenerator.random<SReal>(-1.0,1.0);
-            y = randomGenerator.random<SReal>(-1.0,1.0);
-            z = randomGenerator.random<SReal>(-1.0,1.0);
-            // If the rotation axis is null
-            Vec3 rotationAxis(x,y,z);
-            if(rotationAxis.norm() < 1e-7)
+            // Matrix 3*3
+            for( int j=0; j<testedRotation.nbCols; j++)
             {
-                rotationAxis = Vec3(0,0,1);
+                for( int i=0; i<testedRotation.nbLines; i++)
+                {
+                    Real random = randomGenerator.random<Real>( (Real) -1, (Real) 1 );
+                    testedRotation(i,j)=random;
+                }
             }
-            w = randomGenerator.random<SReal>(0.0,360.0);
-            Quat quat(x,y,z,w);
-            quat.normalize();
-            quat.toMatrix(testedRotation);
 
-            // Random Translation
-            for(size_t i=0;i<Coord::total_size;++i)
+            // Translation
+            for(size_t i=0;i<testedTranslation.size();++i)
             {
                 testedTranslation[i]=randomGenerator.random<SReal>(-2.0,2.0);
             }
 
         }
-
+      
         bool runTest(double convergenceAccuracy, double /*tolerance*/)
         {
             // Init simulation
