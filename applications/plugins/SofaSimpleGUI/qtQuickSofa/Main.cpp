@@ -53,6 +53,7 @@
 
 #include "Window.h"
 #include "Viewer.h"
+#include "Scene.h"
 
 int main(int argc, char **argv)
 {
@@ -60,6 +61,7 @@ int main(int argc, char **argv)
 
     qmlRegisterType<Window>("Window", 1, 0, "Window");
     qmlRegisterType<Viewer>("Viewer", 1, 0, "Viewer");
+	qmlRegisterType<Scene>("Scene", 1, 0, "Scene");
 
     QUrl mainScriptUrl = QString("qrc:///resource/Main.qml");
 /*#ifdef OPENGL_ONLY

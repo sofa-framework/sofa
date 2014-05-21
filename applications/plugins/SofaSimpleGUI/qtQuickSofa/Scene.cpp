@@ -1,6 +1,6 @@
-#ifdef FALSE
-
 #include "Scene.h"
+
+#include <QTimer>
 
 Scene::Scene(QObject *parent) :
     QObject(parent)
@@ -17,8 +17,10 @@ void Scene::open(const char *filename )
     emit opened();
 }
 
-void Scene::reload() { open(_currentFileName.c_str()); }
-
+void Scene::reload()
+{
+	open(_currentFileName.c_str());
+}
 
 void Scene::step()
 {
@@ -30,9 +32,15 @@ void Scene::setTimeStep( SReal dt ){
     _dt = dt;
 }
 
-SReal Scene::dt() const { return _dt; }
+SReal Scene::dt() const
+{
+	return _dt;
+}
 
-bool Scene::isPlaying() const { return _timer->isActive(); }
+bool Scene::isPlaying() const
+{
+	return _timer->isActive();
+}
 
 void Scene::play( bool p )
 {
@@ -46,7 +54,10 @@ void Scene::play( bool p )
     }
 }
 
-void Scene::pause() { play(false); }
+void Scene::pause()
+{
+	play(false);
+}
 
 void Scene::playpause()
 {
@@ -58,5 +69,3 @@ void Scene::reset()
     SofaScene::reset();
     emit stepEnd();
 }
-
-#endif

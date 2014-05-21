@@ -39,7 +39,9 @@
 **
 ****************************************************************************/
 
+#include "../SofaGL.h"
 #include "Viewer.h"
+#include "Scene.h"
 
 #include <QtQuick/qquickwindow.h>
 #include <QtGui/QOpenGLShaderProgram>
@@ -52,20 +54,28 @@ Viewer::Viewer() :
     myRenderShaderProgram(0),
     myCompositionShaderProgram(0),
     myFramebuffer(0),
-    m_t(0),
-    m_thread_t(0)
+	myScene(0),
+	mySofaGL(0)
 {
     connect(this, SIGNAL(windowChanged(QQuickWindow*)), this, SLOT(handleWindowChanged(QQuickWindow*)));
 }
 
-void Viewer::setT(qreal t)
+void Viewer::setScene(Scene* scene)
 {
-    if (t == m_t)
-        return;
-    m_t = t;
-    emit tChanged();
-    if (window())
-        window()->update();
+	if(scene == myScene)
+		return;
+
+	myScene = scene;
+
+	delete mySofaGL;
+	mySofaGL = 0;
+
+	sofa::newgui::SofaScene* sofaScene = dynamic_cast<sofa::newgui::SofaScene*>(myScene);
+	if(sofaScene)
+		mySofaGL = new sofa::newgui::SofaGL(sofaScene);
+
+	if(window())
+		window()->update();
 }
 
 void Viewer::handleWindowChanged(QQuickWindow *win)
@@ -90,8 +100,8 @@ void Viewer::paint()
     if(!myRenderShaderProgram)
     {
         myRenderShaderProgram = new QOpenGLShaderProgram();
-        myRenderShaderProgram->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/resource/render.vs");
-        myRenderShaderProgram->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/resource/render.fs");
+        myRenderShaderProgram->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/resource/shaders/render.vs");
+        myRenderShaderProgram->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/resource/shaders/render.fs");
 
         myRenderShaderProgram->bindAttributeLocation("vertices", 0);
         myRenderShaderProgram->link();
@@ -120,7 +130,7 @@ void Viewer::paint()
         1, 1
     };
     myRenderShaderProgram->setAttributeArray(0, GL_FLOAT, values, 2);
-    myRenderShaderProgram->setUniformValue("Time", (float) m_thread_t);
+    myRenderShaderProgram->setUniformValue("Time", 0.0f);
 
     // compute the correct viewer position
     //QPointF pos = mapToScene(QPointF(0.0, 0.0));
@@ -169,8 +179,8 @@ void Viewer::grab()
     if(!myCompositionShaderProgram)
     {
         myCompositionShaderProgram = new QOpenGLShaderProgram();
-        myCompositionShaderProgram->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/resource/composition.vs");
-        myCompositionShaderProgram->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/resource/composition.fs");
+        myCompositionShaderProgram->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/resource/shaders/composition.vs");
+        myCompositionShaderProgram->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/resource/shaders/composition.fs");
 
         myCompositionShaderProgram->bindAttributeLocation("vertices", 0);
         myCompositionShaderProgram->link();
@@ -237,5 +247,5 @@ void Viewer::cleanup()
 
 void Viewer::sync()
 {
-    m_thread_t = m_t;
+    
 }

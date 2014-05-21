@@ -54,8 +54,8 @@ void Window::grab()
     if(!myCompositionShaderProgram)
     {
         myCompositionShaderProgram = new QOpenGLShaderProgram();
-        myCompositionShaderProgram->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/resource/composition.vs");
-        myCompositionShaderProgram->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/resource/composition.fs");
+        myCompositionShaderProgram->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/resource/shaders/composition.vs");
+        myCompositionShaderProgram->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/resource/shaders/composition.fs");
 
         myCompositionShaderProgram->bindAttributeLocation("vertices", 0);
         myCompositionShaderProgram->link();
