@@ -140,10 +140,6 @@ public:
     /// Update the simulation context values(gravity, time...), based on parent and local ContextObjects
     virtual void updateSimulationContext();
 
-
-    /// Return the full path name of this node
-    std::string getPathName() const;
-
     static DAGNode::SPtr create(DAGNode*, xml::Element<core::objectmodel::BaseNode>* arg)
     {
         DAGNode::SPtr obj = DAGNode::SPtr();

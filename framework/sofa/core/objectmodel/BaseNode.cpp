@@ -87,6 +87,21 @@ void BaseNode::clearObjectContext(BaseObject::SPtr obj)
         obj->l_context.reset();
 }
 
+std::string BaseNode::getPathName() const {
+    std::string str;
+    Parents parents = getParents();
+    if (!parents.empty())
+    {
+        // for the full path name, we arbitrarily take the first parent of the list...
+        // no smarter choice without breaking the "Node" heritage
+        str = parents[0]->getPathName();
+        str += '/';
+        str += getName();
+    }
+
+    return str;
+}
+
 } // namespace objectmodel
 
 } // namespace core
