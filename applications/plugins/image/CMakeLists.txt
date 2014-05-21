@@ -16,7 +16,8 @@ set(SOURCE_FILES
     MarchingCubesEngine.cpp 
     ImageSampler.cpp 
     ImageExporter.cpp 
-    ImageDataDisplay.cpp)
+    ImageDataDisplay.cpp
+    VoronoiToMeshEngine.cpp)
 
 set(HEADER_FILES
     initImage.h
@@ -37,7 +38,8 @@ set(HEADER_FILES
     VectorVis.h 
     ImageAlgorithms.h 
     Containers.h 
-    ImageDataDisplay.h)
+    ImageDataDisplay.h
+    VoronoiToMeshEngine.h)
 
 set(README_FILES image.txt)
 
