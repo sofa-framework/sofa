@@ -798,7 +798,7 @@ Dart swapGen3To2(typename PFP::MAP& map, Dart d)
     Dart stop = map.phi1(map.phi2(map.phi_1(d)));
     if(map.deleteEdge(d) == NIL)
     {
-        std::cout << "boundary" << std::endl;
+//        std::cout << "boundary" << std::endl;
 
         std::vector<Dart> edges;
         Dart dbegin = map.findBoundaryFaceOfEdge(d);
@@ -868,7 +868,7 @@ std::vector<Dart> swapGen3To2Optimized(typename PFP::MAP& map, Dart d)
     Dart stop = map.phi1(map.phi2(map.phi_1(d)));
     if(map.deleteEdge(d) == NIL)
     {
-        std::cout << "boundary" << std::endl;
+//        std::cout << "boundary" << std::endl;
 
         std::vector<Dart> edges;
         Dart dbegin = map.findBoundaryFaceOfEdge(d);
@@ -879,7 +879,7 @@ std::vector<Dart> swapGen3To2Optimized(typename PFP::MAP& map, Dart d)
         for(unsigned int i = 0 ; i < edges.size() ; ++i)
             map.mergeVolumes(edges[i]);
 
-        map.check();
+//        map.check();
         Dart d  = dbegin;
         Dart e = map.phi2(d);
         map.flipBackEdge(d);

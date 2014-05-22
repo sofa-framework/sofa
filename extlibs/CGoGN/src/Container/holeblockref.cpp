@@ -182,7 +182,7 @@ void HoleBlockRef::printTableFree()
 
 bool HoleBlockRef::updateHole(unsigned int indx) {
     if (!used(indx)) {
-        std::cerr << "updateHole working : index " << indx << std::endl;
+//        std::cerr << "updateHole working : index " << indx << std::endl;
         unsigned int* end = m_tableFree + m_nbfree ;
         // first check if the index is already present
 //        printTableFree();

@@ -31,23 +31,19 @@ namespace CGoGN
 
 //TODO
 std::string EmbeddedMap3::orbitName(unsigned int ORBIT) {
-    if (ORBIT == DART)
+    switch (ORBIT) {
+    case DART:
         return "Dart";
-    else {
-        if (ORBIT == VERTEX)
-            return "Vertex";
-        else {
-            if (ORBIT == EDGE)
-                return "Edge";
-            else {
-                if (ORBIT == FACE)
-                    return "Face";
-                else {
-                    if (ORBIT == VOLUME)
-                        return "Volume";
-                }
-            }
-        }
+    case VERTEX:
+        return "Vertex";
+    case EDGE:
+        return "Edge";
+    case FACE:
+        return "Face";
+    case VOLUME:
+        return "Volume";
+    default:
+        break;
     }
     return "other";
 }
@@ -537,7 +533,7 @@ void EmbeddedMap3::splitVolume(std::vector<Dart>& vd)
     {
         Dart v = vd.front() ;
         Dart v23 = phi3(phi2(v));
-//        std::cerr << __FILE__ << " EmbeddedMap3::splitVolume : " <<          setOrbitEmbeddingOnNewCell<VOLUME>(v23) << std::endl;
+        //        std::cerr << __FILE__ << " EmbeddedMap3::splitVolume : " <<          setOrbitEmbeddingOnNewCell<VOLUME>(v23) << std::endl;
         copyCell<VOLUME>(v23, v) ;
     }
 }
