@@ -388,6 +388,7 @@ protected:
 
         // triangulate by inserting a face centroid
         waTriangles tri(this->triangles);
+        tri.clear();
         for(unsigned int i=0;i<faces.size();i++)
         {
             Coord p;   for(unsigned int j=0;j<faces[i].size();j++) p+=pos[indexmap[faces[i][j]]];            p/=(Real)faces[i].size();
