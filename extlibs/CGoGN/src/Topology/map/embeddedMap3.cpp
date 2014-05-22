@@ -537,7 +537,7 @@ void EmbeddedMap3::splitVolume(std::vector<Dart>& vd)
     {
         Dart v = vd.front() ;
         Dart v23 = phi3(phi2(v));
-        std::cerr << __FILE__ << " EmbeddedMap3::splitVolume : " <<          setOrbitEmbeddingOnNewCell<VOLUME>(v23) << std::endl;
+//        std::cerr << __FILE__ << " EmbeddedMap3::splitVolume : " <<          setOrbitEmbeddingOnNewCell<VOLUME>(v23) << std::endl;
         copyCell<VOLUME>(v23, v) ;
     }
 }
