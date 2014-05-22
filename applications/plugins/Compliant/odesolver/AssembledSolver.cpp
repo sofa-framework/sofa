@@ -231,7 +231,9 @@ using namespace core::behavior;
 
 
 
-    void AssembledSolver::rhs_dynamics(vec& res, const system_type& sys, const vec& v, const MultiVecDeriv& b) const {
+    void AssembledSolver::rhs_dynamics(vec& res, const system_type& sys, const vec& v, const MultiVecDeriv& b,
+                                       core::MultiVecCoordId posId,
+                                       core::MultiVecDerivId velId) const {
         assert( res.size() == sys.size() );
 
         unsigned off = 0;
@@ -270,7 +272,7 @@ using namespace core::behavior;
 
             }
 
-            value->dynamics(&res(off), dim, stabilization.getValue());
+            value->dynamics(&res(off), dim, stabilization.getValue(), posId, velId );
             off += dim;
         }
         assert( off == sys.size() );
@@ -289,7 +291,9 @@ using namespace core::behavior;
         }
     }
 
-    void AssembledSolver::rhs_correction(vec& res, const system_type& sys) const {
+    void AssembledSolver::rhs_correction(vec& res, const system_type& sys,
+                                         core::MultiVecCoordId posId,
+                                         core::MultiVecDerivId velId) const {
         assert( res.size() == sys.size() );
 
         // master dofs
@@ -314,7 +318,7 @@ using namespace core::behavior;
                 value->init();
             }
 
-            value->correction(&res(off), dim);
+            value->correction(&res(off), dim, posId, velId );
 
             off += dim;
         }
@@ -485,7 +489,7 @@ using namespace core::behavior;
                 scoped::timer step("correction");
 
                 x = vec::Zero( sys.size() );
-                rhs_correction(rhs, sys);
+                rhs_correction(rhs, sys, posId, velId);
 				
                 kkt->correct(x, sys, rhs, stabilization_damping.getValue() );
 				
@@ -507,7 +511,7 @@ using namespace core::behavior;
                 if( warm_start.getValue() ) x = current;
                 else x = vec::Zero( sys.size() );
 
-                rhs_dynamics(rhs, sys, current.head(sys.m), _ck );
+                rhs_dynamics(rhs, sys, current.head(sys.m), _ck, posId, velId );
 
                 kkt->solve(x, sys, rhs);
 				

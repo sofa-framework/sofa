@@ -128,7 +128,6 @@ protected:
         // constraint value
         this->addConstraintValue( contact_node.get(), contact_dofs.get(), restitutionCoefficient );
 
-
         return delta.node;
     }
 

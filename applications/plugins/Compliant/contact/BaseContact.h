@@ -118,19 +118,22 @@ public:
     {
         assert( contacts );
 
-        // create mappers, get mstates
-        if( !node )
+        if( node )
         {
-            // fancy names
-            std::string name1 = this->model1->getClassName() + " contact points";
-            std::string name2 = this->model2->getClassName() + " contact points";
-
-            // obtain point mechanical models from mappers
-            mstate1 = mapper1.createMapping( name1.c_str() );
-
-            mstate2 = this->selfCollision ? mstate1 : mapper2.createMapping( name2.c_str() );
-            mstate2->setName("dofs");
+            mapper1.cleanup();
+            mapper2.cleanup();
         }
+
+        // fancy names
+        std::string name1 = this->model1->getClassName() + " contact points";
+        std::string name2 = this->model2->getClassName() + " contact points";
+
+        // obtain point mechanical models from mappers
+        mstate1 = mapper1.createMapping( name1.c_str() );
+
+        mstate2 = this->selfCollision ? mstate1 : mapper2.createMapping( name2.c_str() );
+        mstate2->setName("dofs");
+
 
         // resize mappers
         unsigned size = contacts->size();
@@ -328,6 +331,7 @@ protected:
             static_cast< node_type* >(this->mstate2->getContext())->addChild( delta_node.get() );
 
             map->init();
+
         }
 
         delta_type res;

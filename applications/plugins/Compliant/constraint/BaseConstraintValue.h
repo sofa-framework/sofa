@@ -50,11 +50,11 @@ class SOFA_Compliant_API BaseConstraintValue : public core::objectmodel::BaseObj
     }
 
     /// Value for stabilization: right-hand term for velocity correction
-    virtual void correction(SReal* dst, unsigned n) const = 0;
+    virtual void correction(SReal* dst, unsigned n, const core::MultiVecCoordId& posId = core::VecCoordId::position(), const core::MultiVecDerivId& velId = core::VecDerivId::velocity()) const = 0;
 	
     /// Value for dynamics: right-hand term for time integration.
     /// @stabilization tells if the solver is performing the correction pass (ie if the correction value is used). Otherwise the constraint must be fully corrected by the dynamics (not stabilized constraint)
-    virtual void dynamics(SReal* dst, unsigned n, bool stabilization) const = 0;
+    virtual void dynamics(SReal* dst, unsigned n, bool stabilization, const core::MultiVecCoordId& posId = core::VecCoordId::position(), const core::MultiVecDerivId& velId = core::VecDerivId::velocity()) const = 0;
 
 };
 
