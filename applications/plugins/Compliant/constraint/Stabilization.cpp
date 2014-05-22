@@ -20,11 +20,11 @@ Stabilization::Stabilization( mstate_type* mstate )
 	
 }
 
-void Stabilization::correction(SReal* dst, unsigned n) const {
+void Stabilization::correction(SReal* dst, unsigned n, const core::MultiVecCoordId& posId, const core::MultiVecDerivId&) const {
 	assert( mstate );
     assert( mask.getValue().empty() || mask.getValue().size() == n );
 	
-	mstate->copyToBuffer(dst, core::VecCoordId::position(), n);
+    mstate->copyToBuffer(dst, posId.getId(mstate.get()), n);
 	
 	// TODO needed ?
     map(dst, n) = -map(dst, n) / this->getContext()->getDt();
@@ -40,11 +40,11 @@ void Stabilization::correction(SReal* dst, unsigned n) const {
 }
 
 
-void Stabilization::dynamics(SReal* dst, unsigned n, bool stabilization) const {
+void Stabilization::dynamics(SReal* dst, unsigned n, bool stabilization, const core::MultiVecCoordId& posId, const core::MultiVecDerivId&) const {
 	assert( mstate );
     assert( mask.getValue().empty() || mask.getValue().size() == n );
 
-    mstate->copyToBuffer(dst, core::VecCoordId::position(), n);
+    mstate->copyToBuffer(dst, posId.getId(mstate.get()), n);
     map(dst, n) = -map(dst, n) / this->getContext()->getDt();
 
     // if there is no stabilization, the constraint must be corrected by the dynamics pass

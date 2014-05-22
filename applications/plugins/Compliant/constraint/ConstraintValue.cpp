@@ -20,7 +20,7 @@ ConstraintValue::ConstraintValue( mstate_type* mstate )
 {
 }
 
-void ConstraintValue::correction(SReal* dst, unsigned n) const {
+void ConstraintValue::correction(SReal* dst, unsigned n, const core::MultiVecCoordId&, const core::MultiVecDerivId&) const {
 	
 //	for(SReal* last = dst + n; dst < last; ++dst) {
 //		*dst = 0;
@@ -30,10 +30,10 @@ void ConstraintValue::correction(SReal* dst, unsigned n) const {
 }
 
 
-void ConstraintValue::dynamics(SReal* dst, unsigned n, bool) const {
+void ConstraintValue::dynamics(SReal* dst, unsigned n, bool, const core::MultiVecCoordId& posId, const core::MultiVecDerivId&) const {
     assert( mstate );
 
-	mstate->copyToBuffer(dst, core::VecCoordId::position(), n);
+    mstate->copyToBuffer(dst, posId.getId(mstate.get()), n);
 
 	using namespace utils;
     map(dst, n) = -map(dst, n) / this->getContext()->getDt();

@@ -180,8 +180,12 @@ public:
                                core::behavior::MultiVecDeriv& c );
 
 	// linear rhs for dynamics/correction steps
-    virtual void rhs_dynamics(vec& res, const system_type& sys, const vec& v, const core::behavior::MultiVecDeriv& b ) const;
-	virtual void rhs_correction(vec& res, const system_type& sys) const;
+    virtual void rhs_dynamics(vec& res, const system_type& sys, const vec& v, const core::behavior::MultiVecDeriv& b,
+                              core::MultiVecCoordId posId,
+                              core::MultiVecDerivId velId ) const;
+    virtual void rhs_correction(vec& res, const system_type& sys,
+                                core::MultiVecCoordId posId,
+                                core::MultiVecDerivId velId) const;
 	
 	// current v, lambda
     virtual void get_state(vec& res, const system_type& sys, const core::MultiVecDerivId& multiVecId) const;
