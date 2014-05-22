@@ -720,7 +720,7 @@ protected:
         , f_tolerance(initData(&f_tolerance,(Real)-1.0,"tolerance","minimum weight (allows for mapping outside elements)"))
         , cellIndex(-1)
         , f_orientation(initData(&f_orientation,"orientation","input orientation (Euler angles) inside each cell"))
-        , f_useLocalOrientation(initData(&f_useLocalOrientation,false,"useLocalOrientation","tells if orientations are defined in the local basis on each cell"))
+        , f_useLocalOrientation(initData(&f_useLocalOrientation,true,"useLocalOrientation","tells if orientations are defined in the local basis on each cell"))
     {
     }
 
