@@ -26,6 +26,8 @@
 
 #include <string>
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/helper/vector.h>
+#include <Topology/generic/dart.h>
 namespace CGoGN
 {
 
@@ -38,7 +40,10 @@ std::string nameOfType(const T& v)
 	return v.CGoGNnameOfType();
 }
 
-
+template <> inline std::string nameOfType(const std::vector<SReal> & /*v*/) { return "SRealVector"; }
+template <> inline std::string nameOfType(const std::vector<Dart> & /*v*/) { return "dartVector"; }
+template <> inline std::string nameOfType(const sofa::helper::vector<unsigned int>& /*v*/) { return "sofaUnsignedHelperVector"; }
+template <> inline std::string nameOfType(const sofa::helper::vector<sofa::defaulttype::Vector3> & /*v*/) { return "sofavec3HelperVector"; }
 template <> inline std::string nameOfType(const sofa::defaulttype::Vec2f& /*v*/) { return "sofaVec2f"; }
 template <> inline std::string nameOfType(const sofa::defaulttype::Vec2d& /*v*/) { return "sofaVec2d"; }
 template <> inline std::string nameOfType(const sofa::defaulttype::Vec3f& /*v*/) { return "sofaVec3f"; }
