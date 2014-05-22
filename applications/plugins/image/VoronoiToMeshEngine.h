@@ -37,7 +37,6 @@
 #include <sofa/simulation/common/AnimateEndEvent.h>
 
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/helper/gl/Texture.h>
 
 namespace sofa
 {
@@ -145,6 +144,7 @@ protected:
     typedef typename indtoInd::iterator indtoIndIt;
     typedef std::map<unsigned int, Coord > IDtoCoord;  ///< map from point index to a 3D coordinate
     typedef typename IDtoCoord::iterator IDtoCoordIt;
+    typedef std::map<unsigned int, std::pair<Coord,unsigned int> > IDtoCoordAndUI;
 
 
     // count the number of identical values in two sets
@@ -183,7 +183,7 @@ protected:
     }
 
     // remove edges bellow a certain length
-    inline bool removeSmallEdges(IDtoInd& neighbors,IDtoInd& regions,IDtoCoord& coords, const Real& tol) const
+    inline bool removeSmallEdges(IDtoInd& neighbors,IDtoInd& regions,IDtoCoord& coords, IDtoCoordAndUI& sums,const Real& tol) const
     {
         Real tol2=tol*tol;
         for(IDtoIndIt p=neighbors.begin();p!=neighbors.end();++p)
@@ -198,8 +198,9 @@ protected:
                         neighbors.erase(*n);
                         for(indSetIt r=regions[*n].begin();r!=regions[*n].end();++r) regions[p->first].insert(*r);
                         regions.erase(*n);
-                        Coord P = (coords[p->first] + coords[*n])*0.5;
-                        coords[p->first] = P;
+                        // accumulate position for a further averaging
+                        sums[p->first].first += sums[*n].first;
+                        sums[p->first].second += sums[*n].second;
                         return false;
                     }
                 }
@@ -308,7 +309,10 @@ protected:
 
         // merge points close to each other
         count = 0;
-        while(!removeSmallEdges(neighbors,regions,coords,minLength.getValue())) count++;
+        IDtoCoordAndUI coordsum;
+        for(IDtoCoordIt p=coords.begin();p!=coords.end();++p) coordsum[p->first]=std::pair<Coord,unsigned int>(p->second,1);        // intitialize accumulator of coords
+        while(!removeSmallEdges(neighbors,regions,coords,coordsum,minLength.getValue())) count++;
+        for(IDtoCoordIt p=coords.begin();p!=coords.end();++p) p->second = coordsum[p->first].first/(Real)coordsum[p->first].second;        // average to get mean of merged points
         if(this->f_printLog.getValue()) std::cout<<this->name<<": removed "<<count<<" edges"<<std::endl;
 
         // reclean
