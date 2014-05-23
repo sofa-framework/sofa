@@ -255,12 +255,12 @@ protected:
                     minScale[k] = this->getScale(j)[k];
         }
 
-
         // transform = translated version of inputTransforms[0] with minimum voxel size
         raTransform inT0(this->inputTransforms[0]);
         waTransform outT(this->transform);
         outT->operator=(inT0);
-        outT->getTranslation()=BB[0];
+        outT->getTranslation()=inT0->fromImage(Coord());
+
         outT->getScale()=minScale;
 
         // set image
@@ -268,9 +268,9 @@ protected:
         if(in0->isEmpty()) return;
         imCoord dim=in0->getDimensions();
         Coord MaxP=outT->toImage(BB[1]); // corner pixel = dim-1
-        dim[ImageTypes::DIMENSION_X]=ceil(MaxP[0])+1;
-        dim[ImageTypes::DIMENSION_Y]=ceil(MaxP[1])+1;
-        dim[ImageTypes::DIMENSION_Z]=ceil(MaxP[2])+1;
+        dim[ImageTypes::DIMENSION_X]=ceil(fabs(MaxP[0]))+1;
+        dim[ImageTypes::DIMENSION_Y]=ceil(fabs(MaxP[1]))+1;
+        dim[ImageTypes::DIMENSION_Z]=ceil(fabs(MaxP[2]))+1;
 
         waImage out(this->image);
         out->clear();
