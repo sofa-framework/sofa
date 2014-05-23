@@ -185,28 +185,23 @@ if(SOFA-MISC_DUMP_VISITOR_INFO)
 endif()
 
 
-## tutorial
+## tutorials
 if(PS3)
-    sofa_option(SOFA-TUTORIAL_CHAIN_HYBRID BOOL OFF "Build Chain hybrid tutorial")
-    sofa_option(SOFA-TUTORIAL_COMPOSITE_OBJECT BOOL OFF "Build Composite object tutorial")
-    sofa_option(SOFA-TUTORIAL_HOUSE_OF_CARDS BOOL OFF "Build House of cards tutorial")
-    sofa_option(SOFA-TUTORIAL_MIXED_PENDULUM BOOL OFF "Build Mixed Pendulum tutorial")
-    sofa_option(SOFA-TUTORIAL_ONE_PARTICLE BOOL OFF "Build One particle tutorial")
-    #sofa_option(SOFA-TUTORIAL_ONE_PARTICLE_WITH_SOFA_TYPEDEFS BOOL OFF "Build One particle with sofa typedefs tutorial")
-    sofa_option(SOFA-TUTORIAL_ONE_TETRAHEDRON BOOL OFF "Build One tetrahedron tutorial")
-    #sofa_option(SOFA-TUTORIAL_ANATOMY_MODELLING BOOL OFF "Build Anatomy modelling tutorial")
+    set(tutorial_option_default_value OFF)
 else()
-    sofa_option(SOFA-TUTORIAL_CHAIN_HYBRID BOOL ON "Build Chain hybrid tutorial")
-    sofa_option(SOFA-TUTORIAL_COMPOSITE_OBJECT BOOL ON "Build Composite object tutorial")
-    sofa_option(SOFA-TUTORIAL_HOUSE_OF_CARDS BOOL OFF "Build House of cards tutorial")
-    sofa_option(SOFA-TUTORIAL_MIXED_PENDULUM BOOL ON "Build Mixed Pendulum tutorial")
-    sofa_option(SOFA-TUTORIAL_ONE_PARTICLE BOOL ON "Build One particle tutorial")
-    #sofa_option(SOFA-TUTORIAL_ONE_PARTICLE_WITH_SOFA_TYPEDEFS BOOL OFF "Build One particle with sofa typedefs tutorial")
-    sofa_option(SOFA-TUTORIAL_ONE_TETRAHEDRON BOOL ON "Build One tetrahedron tutorial")
-    #sofa_option(SOFA-TUTORIAL_ANATOMY_MODELLING BOOL OFF "Build Anatomy modelling tutorial")
+    set(tutorial_option_default_value ON)
 endif()
+# Disabled by default because it depends on the SceneCreator plugin - Marc
+sofa_option(SOFA-TUTORIAL_CHAIN_HYBRID BOOL OFF "Build the \"Chain Hybrid\" tutorial")
+sofa_option(SOFA-TUTORIAL_COMPOSITE_OBJECT BOOL ${tutorial_option_default_value} "Build the \"Composite Object\" tutorial")
+sofa_option(SOFA-TUTORIAL_HOUSE_OF_CARDS BOOL ${tutorial_option_default_value} "Build the \"House of Cards\" tutorial")
+sofa_option(SOFA-TUTORIAL_MIXED_PENDULUM BOOL ${tutorial_option_default_value} "Build the \"Mixed Pendulum\" tutorial")
+sofa_option(SOFA-TUTORIAL_ONE_PARTICLE BOOL ${tutorial_option_default_value} "Build the \"One Particle\" tutorial")
+#sofa_option(SOFA-TUTORIAL_ONE_PARTICLE_WITH_SOFA_TYPEDEFS BOOL ${tutorial_option_default_value} "Build the \"One Particle with sofa typedefs\" tutorial")
+sofa_option(SOFA-TUTORIAL_ONE_TETRAHEDRON BOOL ${tutorial_option_default_value} "Build the \"One Tetrahedron\" tutorial")
+#sofa_option(SOFA-TUTORIAL_ANATOMY_MODELLING BOOL ${tutorial_option_default_value} "Build the \"Anatomy Modelling\" tutorial")
 
-# core
+## framework
 sofa_option(SOFA-LIB_CORE BOOL ON "")
 sofa_option(SOFA-LIB_DEFAULTTYPE BOOL ON "")
 sofa_option(SOFA-LIB_HELPER BOOL ON "")
@@ -365,6 +360,8 @@ if(SOFA-MISC_USE_FLOAT AND NOT SOFA-MISC_USE_DOUBLE)
     list(APPEND compilerDefines SOFA_FLOAT)
 elseif(SOFA-MISC_USE_DOUBLE AND NOT SOFA-MISC_USE_FLOAT)
     list(APPEND compilerDefines SOFA_DOUBLE)
+elseif(SOFA-MISC_USE_DOUBLE AND SOFA-MISC_USE_FLOAT)
+    message(FATAL_ERROR "You can't enable both SOFA-MISC_USE_FLOAT and SOFA-MISC_USE_DOUBLE")
 endif()
 
 # use OpenMP multithreading
