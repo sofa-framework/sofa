@@ -25,6 +25,7 @@
 #ifndef CGALPLUGIN_MESHGENERATIONFROMIMAGE_INL
 #define CGALPLUGIN_MESHGENERATIONFROMIMAGE_INL
 #include "MeshGenerationFromImage.h"
+#include <sofa/defaulttype/Quat.h>
 
 using namespace sofa;
 
@@ -301,9 +302,14 @@ void MeshGenerationFromImage<DataTypes, _ImageTypes>::update()
                 bbmin = bbmax = p;
             else
                 for (unsigned int c=0; c<p.size(); c++)
-                            if (p[c] < bbmin[c]) bbmin[c] = p[c]; else if (p[c] > bbmax[c]) bbmax[c] = p[c];
+                    if (p[c] < bbmin[c]) bbmin[c] = p[c]; else if (p[c] > bbmax[c]) bbmax[c] = p[c];
+
+            Vector3 rotation = Vector3(image3.image()->rx, image3.image()->ry, image3.image()->rz);
+            defaulttype::Quaternion q = helper::Quater<Real>::createQuaterFromEuler(rotation*M_PI/180.0);
+            p= q.rotate(p);
+
             Vector3 translation = Vector3(image3.image()->tx, image3.image()->ty, image3.image()->tz);
-			newPoints.push_back(p+translation);
+            newPoints.push_back(p+translation);
         }
     }
     if (notconnected > 0) serr << notconnected << " points are not connected to the mesh."<<sendl;
