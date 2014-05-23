@@ -64,7 +64,7 @@ QSofaMainWindow::QSofaMainWindow(QWidget *parent) :
     toolbar->addWidget(spinBox);
     spinBox->setValue(40);
     spinBox->setMaxValue(40000);
-    spinBox->setToolTip(tr("dt (ms)"));
+    spinBox->setToolTip(tr("Simulation time step (ms)"));
     connect(spinBox,SIGNAL(valueChanged(int)), this, SLOT(setDt(int)));
 
     // reload
@@ -77,6 +77,15 @@ QSofaMainWindow::QSofaMainWindow(QWidget *parent) :
     this->addAction(reloadAct);
     fileMenu->addAction(reloadAct);
     toolbar->addAction(reloadAct);
+
+    // viewAll
+    QAction* viewAllAct = new QAction(QIcon(":/icons/eye.svg"), tr("&ViewAll..."), this);
+    viewAllAct->setShortcut(QKeySequence(Qt::CTRL+Qt::SHIFT+Qt::Key_V));
+    viewAllAct->setToolTip(tr("Adjust camera to view all"));
+    connect(viewAllAct, SIGNAL(triggered()), sofaViewer1, SLOT(viewAll()));
+    this->addAction(viewAllAct);
+    simulationMenu->addAction(viewAllAct);
+    toolbar->addAction(viewAllAct);
 
 
     //

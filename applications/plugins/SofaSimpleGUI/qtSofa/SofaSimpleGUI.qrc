@@ -4,5 +4,6 @@
      <file>icons/reset.svg</file>
      <file>icons/reload.svg</file>
      <file>icons/file.svg</file>
+     <file>icons/eye.svg</file>
  </qresource>
  </RCC>

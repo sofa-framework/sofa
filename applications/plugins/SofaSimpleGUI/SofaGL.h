@@ -61,6 +61,9 @@ public:
     /// Remove the interactor from the scene, without deleting it.
     void detach(Interactor*);
 
+    void viewAll( SReal* xcam, SReal* ycam, SReal* zcam, SReal* xcen, SReal* ycen, SReal* zcen, SReal a, SReal* near, SReal* far);
+
+
 protected:
     SofaScene* sofaScene;
 

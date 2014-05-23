@@ -37,6 +37,8 @@ signals:
 public slots:
     /// update the display
     void draw();
+    /// adjust camera center and orientation to see the entire scene
+    void viewAll();
 
 protected:
     SofaGL sofaGL; ///< interface with the scene to display and pick in.

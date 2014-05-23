@@ -95,6 +95,33 @@ void SofaGL::detach( Interactor* interactor)
     interactor->detach();
 }
 
+template <typename T> inline T sqr(const T& t){ return t*t; }
+
+void SofaGL::viewAll( SReal* xcam, SReal* ycam, SReal* zcam, SReal* xcen, SReal* ycen, SReal* zcen, SReal a, SReal* near, SReal* far)
+{
+    // scene center and radius
+    SReal xmin, xmax, ymin, ymax, zmin, zmax;
+    sofaScene->getBoundingBox(&xmin,&xmax,&ymin,&ymax,&zmin,&zmax);
+    *xcen = (xmin+xmax)*0.5;
+    *ycen = (ymin+ymax)*0.5;
+    *zcen = (zmin+zmax)*0.5;
+    SReal radius = sqrt( sqr(xmin-xmax) + sqr(ymin-ymax) + sqr(zmin-zmax) )*0.5;
+
+    // Desired distance:  distance * tan(a) = radius
+    SReal distance = radius / tan(a);
+
+    // move the camera along the current camera-center line, at the right distance
+    // cam = cen + distance * (cam-cen)/|cam-cen|
+    SReal curdist = sqrt( sqr(*xcam-*xcen)+sqr(*ycam-*ycen)+sqr(*zcam-*zcen) );
+    *xcam = *xcen + distance * (*xcam-*xcen) / curdist;
+    *ycam = *ycen + distance * (*ycam-*ycen) / curdist;
+    *zcam = *zcen + distance * (*zcam-*zcen) / curdist;
+
+    // update the depth bounds
+    *near = distance - radius*1.5;
+    *far  = distance + radius*1.5;
+}
+
 
 }//newgui
 }//sofa

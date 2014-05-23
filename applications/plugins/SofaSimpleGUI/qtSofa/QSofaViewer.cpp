@@ -14,9 +14,11 @@ GLfloat light_ambient[] = { 0.0, 0.0, 0.0, 0.0 };
 GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 0.0 };
 GLfloat light_specular[] = { 1.0, 1.0, 1.0, 0.0 };
 
-GLfloat camera_position[] = { 0.0, 0.0, 25.0, 0.0 };
-GLfloat znear = camera_position[2]-10;
-GLfloat zfar = camera_position[2]+10;
+GLfloat cp[] = { 0.0, 0.0, 25.0, 0.0 };
+GLfloat camera_target[] = { 2.0, 0.0, 0.0 };
+GLfloat camera_angle = 55;
+GLfloat znear = cp[2]-10;
+GLfloat zfar = cp[2]+10;
 
 
 QSofaViewer::QSofaViewer(newgui::QSofaScene *sofaScene, QWidget *parent) :
@@ -47,7 +49,11 @@ void QSofaViewer::paintGL()
 {
     glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity ();
-    gluLookAt ( camera_position[0],camera_position[1],camera_position[2], 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    gluLookAt (
+            cp[0],cp[1],cp[2],
+            camera_target[0],camera_target[1],camera_target[2],
+            0.0, 1.0, 0.0 // up vector
+            );
 
     sofaGL.draw();
 
@@ -63,12 +69,29 @@ void QSofaViewer::draw()
     update();
 }
 
+void QSofaViewer::viewAll()
+{
+    SReal cp[3], ct[3], zn, zf;
+    sofaGL.viewAll(
+            &cp[0],&cp[1],&cp[2],
+            &ct[0],&ct[1],&ct[2],
+            camera_angle, &zn, &zf
+            );
+    for( int i=0; i<3; i++ )
+    {
+        cp[i] = cp[i];
+        camera_target[i] = ct[i];
+    }
+    znear = zn;
+    zfar = zf;
+}
+
 void QSofaViewer::resizeGL(int w, int h)
 {
     glViewport (0, 0, (GLsizei) w, (GLsizei) h);
     glMatrixMode (GL_PROJECTION);
     glLoadIdentity ();
-    gluPerspective (55.0, (GLfloat) w/(GLfloat) h, znear, zfar );
+    gluPerspective (camera_angle, (GLfloat) w/(GLfloat) h, znear, zfar );
     glMatrixMode (GL_MODELVIEW);
 }
 
@@ -89,7 +112,7 @@ void QSofaViewer::mousePressEvent ( QMouseEvent * event )
 {
     if(QApplication::keyboardModifiers() & Qt::ShiftModifier )
     {
-        sofa::newgui::PickedPoint glpicked = sofaGL.pick(camera_position[0],camera_position[1],camera_position[2], event->x(), event->y() );
+        sofa::newgui::PickedPoint glpicked = sofaGL.pick(cp[0],cp[1],cp[2], event->x(), event->y() );
         if( glpicked )
         {
 //            cout << "Picked: " << glpicked << endl;

@@ -43,7 +43,8 @@ public slots:
     void open();
     void setDt( int ms );
 protected:
-    QAction* startAct;
+    QAction* startAct;  // play/pause
+//    QAction* viewAll;
 };
 
 #endif // QTSOFAMAINWINDOW_H
