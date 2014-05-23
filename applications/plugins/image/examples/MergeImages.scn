@@ -3,6 +3,9 @@
     <RequiredPlugin pluginName="image"/>
 
     <VisualStyle displayFlags="showVisual showBehaviorModels" />
+    <OglGrid size="50"/>
+    <OglLineAxis size="50"/>
+    <OglSceneFrame/>
     
     <Node name="Average">
       <MeshObjLoader name="mesh1" filename="mesh/sphere.obj" triangulate="1" scale="2 2 2"/>
