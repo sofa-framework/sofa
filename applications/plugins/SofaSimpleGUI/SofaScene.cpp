@@ -88,5 +88,16 @@ void SofaScene::open(const char *filename)
     //    }
 }
 
+void SofaScene::getBoundingBox( SReal* xmin, SReal* xmax, SReal* ymin, SReal* ymax, SReal* zmin, SReal* zmax )
+{
+    SReal pmin[3], pmax[3];
+    computeBBox( _groot.get(), pmin, pmax );
+    *xmin = pmin[0]; *xmax = pmax[0];
+    *ymin = pmin[1]; *ymax = pmax[1];
+    *zmin = pmin[2]; *zmax = pmax[2];
+}
+
+
+
 }// newgui
 }// sofa

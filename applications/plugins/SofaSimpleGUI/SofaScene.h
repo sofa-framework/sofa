@@ -63,6 +63,16 @@ public:
      * @param filename Scene description file
      */
     void open( const char* filename );
+    /**
+     * @brief Compute the bounding box of the simulated objects
+     * @param xmin min coordinate in the X direction
+     * @param xmax max coordinate in the X direction
+     * @param ymin etc.
+     * @param ymax
+     * @param zmin
+     * @param zmax
+     */
+    void getBoundingBox( SReal* xmin, SReal* xmax, SReal* ymin, SReal* ymax, SReal* zmin, SReal* zmax );
 };
 
 }
