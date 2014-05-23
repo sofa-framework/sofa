@@ -41,7 +41,7 @@ namespace sofa
 
 namespace helper
 {
-#if defined(_XBOX) || defined(PS3)
+#if defined(_XBOX) || defined(__PS3__)
 char* getenv(const char* varname) { return NULL; } // NOT IMPLEMENTED
 #endif
 
@@ -67,7 +67,7 @@ public:
        @return : the Id corresponding to the name of the id given in parameter
        If the name isn't found in the list, it is added to it and return the new id.
     */
-    static unsigned int getID(std::string name)
+    static unsigned int getID(const std::string& name)
     {
         if (name.empty()) return 0;
         IdFactory<Base> * idfac = getInstance();
