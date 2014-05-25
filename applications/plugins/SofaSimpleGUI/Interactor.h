@@ -26,7 +26,8 @@ using simulation::Node;
 class SOFA_SOFASIMPLEGUI_API Interactor
 {
 protected:
-    Node::SPtr interactionNode;  ///< node representing this, set as child to a scene node
+    Node::SPtr _interactionNode;  ///< Scene node used to implement this
+    PickedPoint _pickedPoint;     ///< The point attached to this
 
 public:
     Interactor( const PickedPoint&  picked );
@@ -45,7 +46,10 @@ public:
     virtual void setPoint( const Vec3& p ) = 0;
 
     /// Root of the interactor graph
-    Node::SPtr getNode() { return interactionNode; }
+    Node::SPtr getNode() { return _interactionNode; }
+
+    /// Simulated point attached to this
+    const PickedPoint& getPickedPoint() const { return _pickedPoint; }
 };
 
 }

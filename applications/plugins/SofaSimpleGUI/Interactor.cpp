@@ -9,14 +9,15 @@ using namespace sofa;
 namespace sofa{
 namespace newgui{
 
-Interactor::Interactor(const PickedPoint& /*picked*/)
+Interactor::Interactor(const PickedPoint& picked)
+    : _pickedPoint( picked )
 {
-    interactionNode = sofa::simulation::getSimulation()->createNewNode("picked point interaction node");
+    _interactionNode = sofa::simulation::getSimulation()->createNewNode("picked point interaction node");
 }
 
 Interactor::~Interactor()
 {
-    interactionNode->execute<simulation::DeleteVisitor>(core::ExecParams::defaultInstance());
+    _interactionNode->execute<simulation::DeleteVisitor>(core::ExecParams::defaultInstance());
 }
 
 void Interactor::attach(SofaScene *scene)
@@ -26,7 +27,7 @@ void Interactor::attach(SofaScene *scene)
 
 void Interactor::detach()
 {
-    interactionNode->detachFromGraph();
+    _interactionNode->detachFromGraph();
 }
 
 }

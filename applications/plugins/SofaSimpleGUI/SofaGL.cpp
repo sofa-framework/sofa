@@ -7,9 +7,9 @@ namespace newgui {
 
 SofaGL::SofaGL(SofaScene *s)
 {
-    vparams = sofa::core::visual::VisualParams::defaultInstance();
-    vparams->drawTool() = &drawToolGL;
-    sofaScene = s;
+    _vparams = sofa::core::visual::VisualParams::defaultInstance();
+    _vparams->drawTool() = &_drawToolGL;
+    _sofaScene = s;
 }
 
 void SofaGL::init(){}
@@ -18,12 +18,12 @@ void SofaGL::draw()
 {
 //                cout<<"SofaGL::draw" << endl;
 //                sofaScene->printScene();
-    glGetIntegerv (GL_VIEWPORT, viewport);
-    glGetDoublev (GL_MODELVIEW_MATRIX, mvmatrix);
-    glGetDoublev (GL_PROJECTION_MATRIX, projmatrix);
+    glGetIntegerv (GL_VIEWPORT, _viewport);
+    glGetDoublev (GL_MODELVIEW_MATRIX, _mvmatrix);
+    glGetDoublev (GL_PROJECTION_MATRIX, _projmatrix);
 
-    sofa::simulation::getSimulation()->updateVisual(sofaScene->sroot().get()); // needed to update normals ! (i think it should be better if updateVisual() was called from draw(), why it is not already the case ?)
-    sofa::simulation::getSimulation()->draw(vparams,sofaScene->sroot().get());
+    sofa::simulation::getSimulation()->updateVisual(_sofaScene->sroot().get()); // needed to update normals ! (i think it should be better if updateVisual() was called from draw(), why it is not already the case ?)
+    sofa::simulation::getSimulation()->draw(_vparams,_sofaScene->sroot().get());
 }
 
 PickedPoint SofaGL::pick( GLdouble ox, GLdouble oy, GLdouble oz, int x, int y )
@@ -31,12 +31,12 @@ PickedPoint SofaGL::pick( GLdouble ox, GLdouble oy, GLdouble oz, int x, int y )
     PickedPoint pickedPoint;
 
     // Intersection of the ray with the near and far planes
-    GLint realy = viewport[3] - (GLint) y - 1; // convert coordinates from image space (y downward) to window space (y upward)
+    GLint realy = _viewport[3] - (GLint) y - 1; // convert coordinates from image space (y downward) to window space (y upward)
     GLdouble wx, wy, wz;  /*  returned world x, y, z coords  */
-    gluUnProject ((GLdouble) x, (GLdouble) realy, 0.0, mvmatrix, projmatrix, viewport, &wx, &wy, &wz); // z=0: near plane
+    gluUnProject ((GLdouble) x, (GLdouble) realy, 0.0, _mvmatrix, _projmatrix, _viewport, &wx, &wy, &wz); // z=0: near plane
     //cout<<"World coords at z=0.0 are ("<<wx<<","<<wy<<","<<wz<<")"<<endl;
     GLdouble wx1, wy1, wz1;
-    gluUnProject ((GLdouble) x, (GLdouble) realy, 1.0, mvmatrix, projmatrix, viewport, &wx1, &wy1, &wz1); // z=1: far plane
+    gluUnProject ((GLdouble) x, (GLdouble) realy, 1.0, _mvmatrix, _projmatrix, _viewport, &wx1, &wy1, &wz1); // z=1: far plane
 
 
     // Search for a particle in this direction
@@ -45,7 +45,7 @@ PickedPoint SofaGL::pick( GLdouble ox, GLdouble oy, GLdouble oz, int x, int y )
     double distance = 10.5, distanceGrowth = 0.1; // cone around the ray ????
 //    cout<< "SofaScene::rayPick from origin " << origin << ", in direction " << direction << endl;
     sofa::simulation::MechanicalPickParticlesVisitor picker(sofa::core::ExecParams::defaultInstance(), origin, direction, distance, distanceGrowth );
-    picker.execute(sofaScene->sroot()->getContext());
+    picker.execute(_sofaScene->sroot()->getContext());
 
     if (!picker.particles.empty())
     {
@@ -59,6 +59,24 @@ PickedPoint SofaGL::pick( GLdouble ox, GLdouble oy, GLdouble oz, int x, int y )
 
     return pickedPoint;
 }
+
+//void SofaGL::setInteractor( const PickedPoint* picked, Interactor* interactor )
+//{
+//    picked_to_interactor[picked] = interactor;
+//}
+
+Interactor* SofaGL::getInteractor( const PickedPoint& glpicked )
+{
+    if( _picked_to_interactor.find(glpicked)!=_picked_to_interactor.end() ) // there is already an interactor on this particle
+    {
+        return _picked_to_interactor[glpicked];
+    }
+    else {                                             // new interactor
+        return NULL;
+    }
+}
+
+
 
 //Interactor* SofaGL::pickInteractor( GLdouble ox, GLdouble oy, GLdouble oz, int x, int y )
 //{
@@ -96,7 +114,10 @@ PickedPoint SofaGL::pick( GLdouble ox, GLdouble oy, GLdouble oz, int x, int y )
 
 void SofaGL::attach( Interactor* interactor )
 {
-    interactor->attach( sofaScene );
+    interactor->attach( _sofaScene );
+    _picked_to_interactor[interactor->getPickedPoint()] = interactor;
+    cout<<"SofaGL::attach "<< endl; _sofaScene->printGraph();
+
 //    sofaScene->insertInteractor( interactor );
 }
 
@@ -108,23 +129,35 @@ void SofaGL::move( Interactor* interactor, int x, int y)
     // get the distance to the current point
     Vec3 current = interactor->getPoint();
     GLdouble wcur[3]; // window coordinates of the current point
-    gluProject(current[0],current[1],current[2],mvmatrix,projmatrix,viewport,wcur,wcur+1,wcur+2);
+    gluProject(current[0],current[1],current[2],_mvmatrix,_projmatrix,_viewport,wcur,wcur+1,wcur+2);
     //        cout << "current point = " << current << endl;
     //        cout<<"move anchor, distance = " << wcur[2] << endl;
 
     // compute and set the position of the new point
     GLdouble p[3];
-    gluUnProject ( x, viewport[3]-y-1, wcur[2], mvmatrix, projmatrix, viewport, &p[0], &p[1], &p[2]); // new position of the picked point
+    gluUnProject ( x, _viewport[3]-y-1, wcur[2], _mvmatrix, _projmatrix, _viewport, &p[0], &p[1], &p[2]); // new position of the picked point
     //        cout<<"x="<< x <<", y="<< y <<", X="<<p[0]<<", Y="<<p[1]<<", Z="<<p[2]<<endl;
     interactor->setPoint(Vec3(p[0], p[1], p[2]));
 }
 
-void SofaGL::detach( Interactor* interactor)
+void SofaGL::detach( Interactor* drag)
 {
-    if( !interactor )
+    if( !drag )
         return;
 
-    interactor->detach();
+                // remove it from the map
+                Picked_to_Interactor::iterator i=_picked_to_interactor.begin();
+                while( i!=_picked_to_interactor.end() && (*i).second != drag )
+                    i++;
+                if( i!=_picked_to_interactor.end() ){
+    //                cout << "Deleted interactor at " << (*i).first << endl;
+                    _picked_to_interactor.erase(i);
+    //                cout << "new count of interactors: " << picked_to_interactor.size() << endl;
+                }
+                else assert( false && "Active interactor not found in the map" );
+
+    drag->detach();
+    cout<<"SofaGL::detach "<< endl; _sofaScene->printGraph();
 }
 
 template <typename T> inline T sqr(const T& t){ return t*t; }
@@ -133,7 +166,7 @@ void SofaGL::viewAll( SReal* xcam, SReal* ycam, SReal* zcam, SReal* xcen, SReal*
 {
     // scene center and radius
     SReal xmin, xmax, ymin, ymax, zmin, zmax;
-    sofaScene->getBoundingBox(&xmin,&xmax,&ymin,&ymax,&zmin,&zmax);
+    _sofaScene->getBoundingBox(&xmin,&xmax,&ymin,&ymax,&zmin,&zmax);
     *xcen = (xmin+xmax)*0.5;
     *ycen = (ymin+ymax)*0.5;
     *zcen = (zmin+zmax)*0.5;

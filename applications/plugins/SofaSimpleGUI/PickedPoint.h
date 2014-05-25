@@ -42,6 +42,18 @@ struct SOFA_SOFASIMPLEGUI_API PickedPoint
         return state < p.state || index < p.index;
     }
 
+    /// Comparison operator used in maps
+    bool operator != (const PickedPoint& p ) const {
+        return *this<p || p<*this;
+    }
+
+    /// Comparison operator used in maps
+    bool operator == (const PickedPoint& p ) const {
+        return ! *this!=p;
+    }
+
+
+
 
 };
 

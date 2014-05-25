@@ -18,6 +18,7 @@ namespace newgui {
  *
  * Picking returns a PickedPoint which describes a particle.
  * It is up to the application to create the appropriate Interactor, which can then be inserted in the Sofa scene.
+ * This class provides the functions to attach/detach an interactor and move it.
  *
  * @author Francois Faure, 2014
 
@@ -40,6 +41,22 @@ public:
      * This requires an OpenGL context. It is supposed to be used by the drawing method of a viewer, after setting the modelview matrix.
      */
     void draw();
+    /**
+     * @brief Compute the parameters to pass to gluPerspective to make the whole scene visible.
+     * The new camera center is set on the line from the current camera center to the scene center, at the appropriate distance.
+     * @param xcam Camera center (input-output)
+     * @param ycam Camera center (input-output)
+     * @param zcam Camera center (input-output)
+     * @param xcen Center of the scene (output)
+     * @param ycen Center of the scene (output)
+     * @param zcen Center of the scene (output)
+     * @param a Camera vertical angle (input)
+     * @param near Smaller than the nearest distance from the new camera center to the scene (output)
+     * @param far Larger than the nearest distance from the new camera center to the scene (output)
+     */
+    void viewAll( SReal* xcam, SReal* ycam, SReal* zcam, SReal* xcen, SReal* ycen, SReal* zcen, SReal a, SReal* near, SReal* far);
+
+
 
     /** @brief Try to pick a particle along a ray.
      * The ray starts at the camera center and passes through point with coordinates x,y
@@ -50,8 +67,17 @@ public:
      */
     PickedPoint pick( GLdouble ox, GLdouble oy, GLdouble oz, int x, int y );
 
-    /// Insert the interactor in the scene
+    /** @brief Insert an interactor in the scene
+     * Does not check if it is already there, so be careful not to insert the same twice
+     */
     void attach( Interactor*  );
+
+    /**
+     * @brief getInteractor
+     * @param picked
+     * @return Interactor acting on the given picked point, or NULL if none
+     */
+    Interactor* getInteractor( const PickedPoint& picked );
 
 
 //    /** @brief Try to pick an Interactor along a ray.
@@ -71,32 +97,26 @@ public:
     /// Remove the interactor from the scene, without deleting it.
     void detach(Interactor*);
 
-    /**
-     * @brief Compute the parameters to pass to gluPerspective to make the whole scene visible.
-     * The new camera center is set on the line from the current camera center to the scene center, at the appropriate distance.
-     * @param xcam Camera center (input-output)
-     * @param ycam Camera center (input-output)
-     * @param zcam Camera center (input-output)
-     * @param xcen Center of the scene (output)
-     * @param ycen Center of the scene (output)
-     * @param zcen Center of the scene (output)
-     * @param a Camera vertical angle (input)
-     * @param near Smaller than the nearest distance from the new camera center to the scene (output)
-     * @param far Larger than the nearest distance from the new camera center to the scene (output)
-     */
-    void viewAll( SReal* xcam, SReal* ycam, SReal* zcam, SReal* xcen, SReal* ycen, SReal* zcen, SReal a, SReal* near, SReal* far);
-
 
 protected:
-    SofaScene* sofaScene;
+    SofaScene* _sofaScene;
 
     // matrices used for picking
-    GLint viewport[4];
-    GLdouble mvmatrix[16], projmatrix[16];
+    GLint _viewport[4];
+    GLdouble _mvmatrix[16], _projmatrix[16];
 
     // rendering tools
-    sofa::core::visual::DrawToolGL   drawToolGL;
-    sofa::core::visual::VisualParams* vparams;
+    sofa::core::visual::DrawToolGL   _drawToolGL;
+    sofa::core::visual::VisualParams* _vparams;
+
+    // Interaction tools
+    typedef map< PickedPoint, Interactor*> Picked_to_Interactor;
+    /** Currently available interactors, associated with picked points.
+     *  The interactors are not necessarily being manipulated. Only one can be manipulated at at time.
+     */
+    Picked_to_Interactor _picked_to_interactor;
+    Interactor* _drag;                            ///< The currently active interactor
+
 
 };
 
