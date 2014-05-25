@@ -56,7 +56,15 @@ public:
      */
     void viewAll( SReal* xcam, SReal* ycam, SReal* zcam, SReal* xcen, SReal* ycen, SReal* zcen, SReal a, SReal* near, SReal* far);
 
-
+    /**
+     * @brief getPickDirection Compute the direction of a button click, returned as a unit vector
+     * @param dx normalized direction
+     * @param dy normalized direction
+     * @param dz normalized direction
+     * @param x x-coordinate of the click
+     * @param y y-coordinate of the click (origin on top)
+     */
+    void getPickDirection( GLdouble* dx, GLdouble* dy, GLdouble* dz, int x, int y );
 
     /** @brief Try to pick a particle along a ray.
      * The ray starts at the camera center and passes through point with coordinates x,y
@@ -65,7 +73,7 @@ public:
      * If a point is picked, the application may create an Interactor based on it.
      * @return a valid PickedPoint if succeeded, an invalid PickedPoint if not.
      */
-    PickedPoint pick( GLdouble ox, GLdouble oy, GLdouble oz, int x, int y );
+    PickedPoint pick(GLdouble ox, GLdouble oy, GLdouble oz, int x, int y);
 
     /** @brief Insert an interactor in the scene
      * Does not check if it is already there, so be careful not to insert the same twice
@@ -80,13 +88,13 @@ public:
     Interactor* getInteractor( const PickedPoint& picked );
 
 
-//    /** @brief Try to pick an Interactor along a ray.
-//     * The ray starts at the camera center and passes through point with coordinates x,y
-//     * ox, oy, oz are the camera center in world coordinates.
-//     * x,y in image coordinates (origin on top left).
-//     * @return Pointer if an Interactor is found, NULL if not.
-//     */
-//    Interactor* pickInteractor(GLdouble ox, GLdouble oy, GLdouble oz, int x, int y);
+    /** @brief Try to pick an Interactor along a ray.
+     * The ray starts at the camera center and passes through point with coordinates x,y
+     * ox, oy, oz are the camera center in world coordinates.
+     * x,y in image coordinates (origin on top left).
+     * @return Pointer if an Interactor is found, NULL if not.
+     */
+    Interactor* pickInteractor(GLdouble ox, GLdouble oy, GLdouble oz, int x, int y);
 
     /**
      * @brief move the interactor according to the mouse pointer.

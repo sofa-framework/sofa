@@ -18,8 +18,8 @@ class Interactor;
 
 
 /** @brief A sofa scene graph with simulation functions.
- * Node _groot is the root of the scene. Scene files are loaded under its child node _sroot.
- * Node _groot contains _sroot as well as control nodes (VisualLoop, Interactors, etc. )
+ * Node _groot is the root of the scene.
+ * Scene files are loaded under its child node _sroot, while Interactors are set under its child node _iroot.
  *
  * @author Francois Faure, 2014
  */
@@ -30,6 +30,7 @@ protected:
 
     Node::SPtr _groot; ///< root of the graph.
     Node::SPtr _sroot; ///< root of the loaded scenes, child of _groot
+    Node::SPtr _iroot; ///< root of the interactors, child of _groot
     std::string _currentFileName; ///< Name of the current scene
 
 public:
@@ -40,9 +41,13 @@ public:
     SofaScene();
     virtual ~SofaScene(){}
     /**
-     * @return The root of the loaded scene. The real root is higher, and it contains sroot as well as control nodes (VisualLoop, Interactors, etc.)
+     * @return The root of the loaded scene.
      */
     Node::SPtr sroot(){ return _sroot; }
+    /**
+     * @return The root of the interactors.
+     */
+    Node::SPtr iroot(){ return _iroot; }
     /**
      * @brief Print the scene graph on the standard ouput, for debugging.
      */

@@ -121,7 +121,7 @@ void QSofaMainWindow::initSofa( const std::vector<std::string> &plugins, string 
     // --- Init sofa ---
     sofaScene.init(plugins,fileName);
     QMessageBox::information( this, tr("Tip"), tr("Space to start/stop,\n\n"
-                                                  "Shift-Click and drag the control points to interact.\n"
+                                                  "Shift-Click and drag the control points to interact. Use Ctrl-Shift-Click to select Interactors only\n"
                                                   "Release button before Shift to release the control point.\n"
                                                   "Release Shift before button to keep it attached where it is.") );
 

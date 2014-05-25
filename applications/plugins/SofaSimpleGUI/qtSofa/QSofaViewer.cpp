@@ -65,7 +65,6 @@ void QSofaViewer::paintGL()
 
 void QSofaViewer::draw()
 {
-//    sofaGL.sofaScene->step(0.04);
     update();
 }
 
@@ -95,7 +94,7 @@ void QSofaViewer::resizeGL(int w, int h)
     glMatrixMode (GL_MODELVIEW);
 }
 
-void QSofaViewer::keyPressEvent ( QKeyEvent * event )
+void QSofaViewer::keyPressEvent ( QKeyEvent * /*event*/ )
 {
 //    if( event->key() == Qt::Key_Shift ) cout << "Shift ";
 //    else if( event->key() == Qt::Key_Control ) cout << "Control ";
@@ -110,12 +109,15 @@ void QSofaViewer::keyReleaseEvent ( QKeyEvent * /*event*/ )
 
 void QSofaViewer::mousePressEvent ( QMouseEvent * event )
 {
-    if(QApplication::keyboardModifiers() & Qt::ShiftModifier )
+    if( isShiftPressed() )
     {
-        sofa::newgui::PickedPoint glpicked = _sofaGL.pick(cp[0],cp[1],cp[2], event->x(), event->y() );
-        if( glpicked )
+        if( isControlPressed() ) // pick an existing interactor
         {
-            cout << "Picked: " << glpicked <<  endl;
+            _drag = _sofaGL.pickInteractor(cp[0],cp[1],cp[2], event->x(), event->y());
+        }
+        else if( sofa::newgui::PickedPoint glpicked = _sofaGL.pick(cp[0],cp[1],cp[2], event->x(),event->y() )  ) // create new interactor
+        {
+//            cout << "Picked: " << glpicked <<  endl;
             _drag = _sofaGL.getInteractor(glpicked);
             if( _drag == NULL )
             {
@@ -123,18 +125,7 @@ void QSofaViewer::mousePressEvent ( QMouseEvent * event )
                 _drag = new sofa::newgui::SpringInteractor(glpicked,10000);
                 _sofaGL.attach(_drag);
             }
-////            cout << "Picked: " << glpicked <<  endl;
-//            if( picked_to_interactor.find(glpicked)!=picked_to_interactor.end() ) // there is already an interactor on this particle
-//            {
-//                drag = picked_to_interactor[glpicked];
-////                cout << "Re-use available interactor " << endl;
-//            }
-//            else {                                             // new interactor
-//                drag = picked_to_interactor[glpicked] = new sofa::newgui::SpringInteractor(glpicked,10000);
-//                sofaGL.attach(drag);
-////                cout << "Create new interactor" << endl;
-//            }
-  //              sofaScene.printScene();
+            else cout << "reuse interactor" << endl;
         }
         else {
             cout << "no particle glpicked" << endl;
@@ -159,33 +150,9 @@ void QSofaViewer::mouseReleaseEvent ( QMouseEvent * /*event*/ )
             {
                 _sofaGL.detach(_drag);
                 delete _drag;
-                cout << "delete interactor " << endl;
+//                cout << "delete interactor " << endl;
             }
             _drag = NULL;
         }
-
-
-//    if( drag != NULL )
-//    {
-//        if(QApplication::keyboardModifiers() & Qt::ShiftModifier )
-//        {
-//            sofaGL.detach(drag);
-//            delete drag;
-
-//            // remove it from the map
-//            Picked_to_Interactor::iterator i=picked_to_interactor.begin();
-//            while( i!=picked_to_interactor.end() && (*i).second != drag )
-//                i++;
-//            if( i!=picked_to_interactor.end() ){
-////                cout << "Deleted interactor at " << (*i).first << endl;
-//                picked_to_interactor.erase(i);
-////                cout << "new count of interactors: " << picked_to_interactor.size() << endl;
-//            }
-//            else assert( false && "Active interactor not found in the map" );
-
-//        }
-//        drag = NULL;
-//    }
-
 }
 
