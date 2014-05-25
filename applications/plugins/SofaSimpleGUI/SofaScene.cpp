@@ -73,8 +73,10 @@ void SofaScene::open(const char *filename)
 {
     if(_sroot){
         unload(_sroot);
+        unload(_iroot);
     }
     _sroot = _groot->createChild("sroot");
+    _iroot = _groot->createChild("iroot");
 
     Node::SPtr loadroot = load( filename );
     if( !loadroot ){
@@ -103,7 +105,7 @@ void SofaScene::getBoundingBox( SReal* xmin, SReal* xmax, SReal* ymin, SReal* ym
 
 void SofaScene::insertInteractor( Interactor * interactor )
 {
-    _groot->addChild(interactor->getNode());
+    _iroot->addChild(interactor->getNode());
 }
 
 

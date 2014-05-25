@@ -1,6 +1,7 @@
 #ifndef QTMVIEWER_H
 #define QTMVIEWER_H
 #include <GL/glew.h>
+#include <QApplication>
 #include <QGLWidget>
 #include <SofaSimpleGUI/SofaGL.h>
 #include "QSofaScene.h"
@@ -42,6 +43,11 @@ protected:
     SofaGL _sofaGL; ///< interface with the scene to display and pick in.
 
     Interactor* _drag; ///< current active interactor, NULL if none
+
+    /// @return true iff SHIFT key is currently pressed
+    inline bool isShiftPressed() const { return QApplication::keyboardModifiers() & Qt::ShiftModifier; }
+    /// @return true iff CONTROL key is currently pressed
+    inline bool isControlPressed() const { return QApplication::keyboardModifiers() & Qt::ControlModifier; }
 
 };
 

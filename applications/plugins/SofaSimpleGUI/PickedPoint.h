@@ -27,10 +27,10 @@ struct SOFA_SOFASIMPLEGUI_API PickedPoint
     /// Conversion to boolean for easier test writing. True iff the PickedPoint is valid. Default value is converted to false.
     operator bool() const { return state != NULL; }
 
-    PickedPoint()
-    {
-        state=0;    // default value is converted to false
-    }
+    PickedPoint(BaseMechanicalState::SPtr state=0, nat index=0)
+        : state(state)
+        , index(index)
+    {    }
 
     inline friend std::ostream& operator << ( std::ostream& out, const PickedPoint p){
         out << "state: " << p.state->getName() << ", index: " << p.index << ", point: " << p.point;

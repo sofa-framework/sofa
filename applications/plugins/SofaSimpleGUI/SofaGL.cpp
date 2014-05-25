@@ -3,6 +3,7 @@
 namespace sofa {
 namespace newgui {
 
+template <typename T> inline T sqr(const T& t){ return t*t; }
 
 
 SofaGL::SofaGL(SofaScene *s)
@@ -16,8 +17,8 @@ void SofaGL::init(){}
 
 void SofaGL::draw()
 {
-//                cout<<"SofaGL::draw" << endl;
-//                sofaScene->printScene();
+    //                cout<<"SofaGL::draw" << endl;
+    //                sofaScene->printScene();
     glGetIntegerv (GL_VIEWPORT, _viewport);
     glGetDoublev (GL_MODELVIEW_MATRIX, _mvmatrix);
     glGetDoublev (GL_PROJECTION_MATRIX, _projmatrix);
@@ -26,10 +27,8 @@ void SofaGL::draw()
     sofa::simulation::getSimulation()->draw(_vparams,_sofaScene->sroot().get());
 }
 
-PickedPoint SofaGL::pick( GLdouble ox, GLdouble oy, GLdouble oz, int x, int y )
+void SofaGL::getPickDirection( GLdouble* dx, GLdouble* dy, GLdouble* dz, int x, int y )
 {
-    PickedPoint pickedPoint;
-
     // Intersection of the ray with the near and far planes
     GLint realy = _viewport[3] - (GLint) y - 1; // convert coordinates from image space (y downward) to window space (y upward)
     GLdouble wx, wy, wz;  /*  returned world x, y, z coords  */
@@ -38,15 +37,25 @@ PickedPoint SofaGL::pick( GLdouble ox, GLdouble oy, GLdouble oz, int x, int y )
     GLdouble wx1, wy1, wz1;
     gluUnProject ((GLdouble) x, (GLdouble) realy, 1.0, _mvmatrix, _projmatrix, _viewport, &wx1, &wy1, &wz1); // z=1: far plane
 
+    GLdouble nrm = sqrt( sqr(wx1-wx) + sqr(wy1-wy) + sqr(wz1-wz) );
+    *dx = (wx1-wx)/nrm;
+    *dy = (wy1-wy)/nrm;
+    *dz = (wz1-wz)/nrm;
 
-    // Search for a particle in this direction
-    Vec3 origin(ox,oy,oz), direction(wx1-wx, wy1-wy, wz1-wz);
-    direction.normalize();
+}
+
+
+PickedPoint SofaGL::pick(GLdouble ox, GLdouble oy, GLdouble oz, int x, int y )
+{
+    Vec3 origin(ox,oy,oz), direction;
+    getPickDirection(&direction[0],&direction[1],&direction[2],x,y);
+
     double distance = 10.5, distanceGrowth = 0.1; // cone around the ray ????
-//    cout<< "SofaScene::rayPick from origin " << origin << ", in direction " << direction << endl;
+    //    cout<< "SofaScene::rayPick from origin " << origin << ", in direction " << direction << endl;
     sofa::simulation::MechanicalPickParticlesVisitor picker(sofa::core::ExecParams::defaultInstance(), origin, direction, distance, distanceGrowth );
-    picker.execute(_sofaScene->sroot()->getContext());
+    picker.execute( _sofaScene->sroot()->getContext() );
 
+    PickedPoint pickedPoint;
     if (!picker.particles.empty())
     {
         sofa::core::behavior::BaseMechanicalState *mstate = picker.particles.begin()->second.first;
@@ -60,13 +69,14 @@ PickedPoint SofaGL::pick( GLdouble ox, GLdouble oy, GLdouble oz, int x, int y )
     return pickedPoint;
 }
 
-//void SofaGL::setInteractor( const PickedPoint* picked, Interactor* interactor )
-//{
-//    picked_to_interactor[picked] = interactor;
-//}
 
 Interactor* SofaGL::getInteractor( const PickedPoint& glpicked )
 {
+    cout << "SofaGL::getInteractor, looking for " << glpicked << endl;
+    for( Picked_to_Interactor::iterator i=_picked_to_interactor.begin(); i!=_picked_to_interactor.end(); i++ )
+    {
+        cout << "SofaGL::getInteractor, map contains " << (*i).first << endl;
+    }
     if( _picked_to_interactor.find(glpicked)!=_picked_to_interactor.end() ) // there is already an interactor on this particle
     {
         return _picked_to_interactor[glpicked];
@@ -78,47 +88,32 @@ Interactor* SofaGL::getInteractor( const PickedPoint& glpicked )
 
 
 
-//Interactor* SofaGL::pickInteractor( GLdouble ox, GLdouble oy, GLdouble oz, int x, int y )
-//{
-//    PickedPoint pickedPoint;
+Interactor* SofaGL::pickInteractor( GLdouble ox, GLdouble oy, GLdouble oz, int x, int y )
+{
 
-//    // Intersection of the ray with the near and far planes
-//    GLint realy = viewport[3] - (GLint) y - 1; // convert coordinates from image space (y downward) to window space (y upward)
-//    GLdouble wx, wy, wz;  /*  returned world x, y, z coords  */
-//    gluUnProject ((GLdouble) x, (GLdouble) realy, 0.0, mvmatrix, projmatrix, viewport, &wx, &wy, &wz); // z=0: near plane
-//    //cout<<"World coords at z=0.0 are ("<<wx<<","<<wy<<","<<wz<<")"<<endl;
-//    GLdouble wx1, wy1, wz1;
-//    gluUnProject ((GLdouble) x, (GLdouble) realy, 1.0, mvmatrix, projmatrix, viewport, &wx1, &wy1, &wz1); // z=1: far plane
+    Vec3 origin(ox,oy,oz), direction;
+    getPickDirection(&direction[0],&direction[1],&direction[2],x,y);
+    double distance = 10.5, distanceGrowth = 0.1; // cone around the ray ????
+//    cout<< "SofaScene::rayPick from origin " << origin << ", in direction " << direction << endl;
+    sofa::simulation::MechanicalPickParticlesVisitor picker(sofa::core::ExecParams::defaultInstance(), origin, direction, distance, distanceGrowth, Tag("!NoPicking") );
+    picker.execute(_sofaScene->sroot()->getContext());
 
+    if (!picker.particles.empty())
+    {
+        PickedPoint pickedPoint(picker.particles.begin()->second.first, picker.particles.begin()->second.second);
+        if( _picked_to_interactor.find(pickedPoint)!=_picked_to_interactor.end() )
+            return _picked_to_interactor[pickedPoint];
+    }
 
-//    // Search for a particle in this direction
-//    Vec3 origin(ox,oy,oz), direction(wx1-wx, wy1-wy, wz1-wz);
-//    direction.normalize();
-//    double distance = 10.5, distanceGrowth = 0.1; // cone around the ray ????
-////    cout<< "SofaScene::rayPick from origin " << origin << ", in direction " << direction << endl;
-//    sofa::simulation::MechanicalPickParticlesVisitor picker(sofa::core::ExecParams::defaultInstance(), origin, direction, distance, distanceGrowth, Tag("!NoPicking") );
-//    picker.execute(sofaScene->groot()->getContext());
+    return NULL;
+}
 
-//    if (!picker.particles.empty())
-//    {
-//        sofa::core::behavior::BaseMechanicalState *mstate = picker.particles.begin()->second.first;
-//        unsigned index = picker.particles.begin()->second.second;
-
-//        pickedPoint.state = mstate;
-//        pickedPoint.index = index;
-//        pickedPoint.point = Vec3(mstate->getPX(index), mstate->getPY(index), mstate->getPZ(index));
-//    }
-
-//    return pickedPoint;
-//}
 
 void SofaGL::attach( Interactor* interactor )
 {
     interactor->attach( _sofaScene );
     _picked_to_interactor[interactor->getPickedPoint()] = interactor;
-    cout<<"SofaGL::attach "<< endl; _sofaScene->printGraph();
-
-//    sofaScene->insertInteractor( interactor );
+    //    cout<<"SofaGL::attach "<< endl; _sofaScene->printGraph();
 }
 
 void SofaGL::move( Interactor* interactor, int x, int y)
@@ -145,22 +140,21 @@ void SofaGL::detach( Interactor* drag)
     if( !drag )
         return;
 
-                // remove it from the map
-                Picked_to_Interactor::iterator i=_picked_to_interactor.begin();
-                while( i!=_picked_to_interactor.end() && (*i).second != drag )
-                    i++;
-                if( i!=_picked_to_interactor.end() ){
-    //                cout << "Deleted interactor at " << (*i).first << endl;
-                    _picked_to_interactor.erase(i);
-    //                cout << "new count of interactors: " << picked_to_interactor.size() << endl;
-                }
-                else assert( false && "Active interactor not found in the map" );
+    // remove it from the map
+    Picked_to_Interactor::iterator i=_picked_to_interactor.begin();
+    while( i!=_picked_to_interactor.end() && (*i).second != drag )
+        i++;
+    if( i!=_picked_to_interactor.end() ){
+        //                cout << "Deleted interactor at " << (*i).first << endl;
+        _picked_to_interactor.erase(i);
+        //                cout << "new count of interactors: " << picked_to_interactor.size() << endl;
+    }
+    else assert( false && "Active interactor not found in the map" );
 
     drag->detach();
-    cout<<"SofaGL::detach "<< endl; _sofaScene->printGraph();
+    //    cout<<"SofaGL::detach "<< endl; _sofaScene->printGraph();
 }
 
-template <typename T> inline T sqr(const T& t){ return t*t; }
 
 void SofaGL::viewAll( SReal* xcam, SReal* ycam, SReal* zcam, SReal* xcen, SReal* ycen, SReal* zcen, SReal a, SReal* near, SReal* far)
 {

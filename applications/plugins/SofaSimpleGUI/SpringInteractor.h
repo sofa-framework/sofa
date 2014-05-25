@@ -16,8 +16,8 @@ class SOFA_SOFASIMPLEGUI_API SpringInteractor: public Interactor
 {
     typedef Interactor Inherited;
 protected:
-    MechanicalObject3::SPtr interactorDof;
-    StiffSpringForceField3::SPtr spring;
+    MechanicalObject3::SPtr _interactorDof;
+    StiffSpringForceField3::SPtr _spring;
 public:
     /**
      * @brief SpringInteractor
