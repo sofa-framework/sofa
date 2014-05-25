@@ -115,7 +115,7 @@ void QSofaViewer::mousePressEvent ( QMouseEvent * event )
         sofa::newgui::PickedPoint glpicked = sofaGL.pick(cp[0],cp[1],cp[2], event->x(), event->y() );
         if( glpicked )
         {
-//            cout << "Picked: " << glpicked << endl;
+//            cout << "Picked: " << glpicked <<  endl;
             if( picked_to_interactor.find(glpicked)!=picked_to_interactor.end() ) // there is already an interactor on this particle
             {
                 drag = picked_to_interactor[glpicked];

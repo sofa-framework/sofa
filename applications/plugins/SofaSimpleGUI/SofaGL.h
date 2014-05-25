@@ -41,16 +41,26 @@ public:
      */
     void draw();
 
-    /** @brief Try to pick a particle.
+    /** @brief Try to pick a particle along a ray.
+     * The ray starts at the camera center and passes through point with coordinates x,y
      * ox, oy, oz are the camera center in world coordinates.
      * x,y in image coordinates (origin on top left).
      * If a point is picked, the application may create an Interactor based on it.
-     * @return a valid PickedPoint if succeeded.
+     * @return a valid PickedPoint if succeeded, an invalid PickedPoint if not.
      */
     PickedPoint pick( GLdouble ox, GLdouble oy, GLdouble oz, int x, int y );
 
     /// Insert the interactor in the scene
     void attach( Interactor*  );
+
+
+//    /** @brief Try to pick an Interactor along a ray.
+//     * The ray starts at the camera center and passes through point with coordinates x,y
+//     * ox, oy, oz are the camera center in world coordinates.
+//     * x,y in image coordinates (origin on top left).
+//     * @return Pointer if an Interactor is found, NULL if not.
+//     */
+//    Interactor* pickInteractor(GLdouble ox, GLdouble oy, GLdouble oz, int x, int y);
 
     /**
      * @brief move the interactor according to the mouse pointer.
@@ -61,6 +71,19 @@ public:
     /// Remove the interactor from the scene, without deleting it.
     void detach(Interactor*);
 
+    /**
+     * @brief Compute the parameters to pass to gluPerspective to make the whole scene visible.
+     * The new camera center is set on the line from the current camera center to the scene center, at the appropriate distance.
+     * @param xcam Camera center (input-output)
+     * @param ycam Camera center (input-output)
+     * @param zcam Camera center (input-output)
+     * @param xcen Center of the scene (output)
+     * @param ycen Center of the scene (output)
+     * @param zcen Center of the scene (output)
+     * @param a Camera vertical angle (input)
+     * @param near Smaller than the nearest distance from the new camera center to the scene (output)
+     * @param far Larger than the nearest distance from the new camera center to the scene (output)
+     */
     void viewAll( SReal* xcam, SReal* ycam, SReal* zcam, SReal* xcen, SReal* ycen, SReal* zcen, SReal a, SReal* near, SReal* far);
 
 

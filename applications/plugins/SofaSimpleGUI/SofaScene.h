@@ -4,17 +4,22 @@
 #include "initSimpleGUI.h"
 #include <sofa/config.h>
 #include <sofa/component/container/MechanicalObject.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
-typedef sofa::simulation::graph::DAGSimulation SofaSimulation;
+//#include <sofa/simulation/graph/DAGSimulation.h>
+//typedef sofa::simulation::graph::DAGSimulation SofaSimulation;
+#include <sofa/simulation/tree/TreeSimulation.h>
+typedef sofa::simulation::tree::TreeSimulation SofaSimulation;
 
 namespace sofa {
 using simulation::Node;
 
 namespace newgui {
 
+class Interactor;
+
 
 /** @brief A sofa scene graph with simulation functions.
  * Node _groot is the root of the scene. Scene files are loaded under its child node _sroot.
+ * Node _groot contains _sroot as well as control nodes (VisualLoop, Interactors, etc. )
  *
  * @author Francois Faure, 2014
  */
@@ -22,11 +27,9 @@ class SOFA_SOFASIMPLEGUI_API  SofaScene : public SofaSimulation
 {
 protected:
 
-    // sofa types should not be exposed
-    typedef sofa::defaulttype::Vector3 Vec3;
-    typedef sofa::component::container::MechanicalObject< defaulttype::Vec3Types > Vec3DOF;
 
-    Node::SPtr _groot; ///< root of the graph
+    Node::SPtr _groot; ///< root of the graph.
+    Node::SPtr _sroot; ///< root of the loaded scenes, child of _groot
     std::string _currentFileName; ///< Name of the current scene
 
 public:
@@ -37,13 +40,13 @@ public:
     SofaScene();
     virtual ~SofaScene(){}
     /**
-     * @return the root of the scene graph
+     * @return The root of the loaded scene. The real root is higher, and it contains sroot as well as control nodes (VisualLoop, Interactors, etc.)
      */
-    Node::SPtr groot();
+    Node::SPtr sroot(){ return _sroot; }
     /**
      * @brief Print the scene graph on the standard ouput, for debugging.
      */
-    void printScene();
+    void printGraph();
     /**
      * @brief Initialize Sofa and load a scene file
      * @param plugins List of plugins to load
@@ -73,6 +76,9 @@ public:
      * @param zmax
      */
     void getBoundingBox( SReal* xmin, SReal* xmax, SReal* ymin, SReal* ymax, SReal* zmin, SReal* zmax );
+
+    /// Do not use this directly. Use Interactor::attach, which calls this.
+    void insertInteractor( Interactor* );
 };
 
 }

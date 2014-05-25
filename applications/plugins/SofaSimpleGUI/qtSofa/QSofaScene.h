@@ -5,9 +5,6 @@
 #include <QTimer>
 
 #include "../SofaGLScene.h"
-#include <sofa/simulation/graph/DAGSimulation.h>
-typedef sofa::simulation::graph::DAGSimulation SofaSimulation;
-//typedef sofa::simulation::tree::TreeSimulation ParentSimulation;
 
 namespace sofa {
 namespace newgui {
@@ -52,6 +49,9 @@ public slots:
     void pause();
     /// restart at the beginning, without reloading the file
     void reset();
+    /// print the graph on the standard output
+    void printGraph();
+
 public:
     /// Length of the simulation time step
     SReal dt() const;

@@ -156,7 +156,7 @@ void mouseButton(int button, int state, int x, int y)
                 drag = new SpringInteractor(glpicked);
                 sofaScene.attach(drag);
 //                cout << "Particle glpicked: " << glpicked << endl;
-                sofaScene.printScene();
+                sofaScene.printGraph();
             }
             else {
                 cout << "no particle glpicked" << endl;

@@ -12,6 +12,8 @@ typedef sofa::defaulttype::Vector3 Vec3;
 namespace sofa{
 namespace newgui{
 
+class SofaScene;
+
 using simulation::Node;
 
 
@@ -30,10 +32,10 @@ public:
     Interactor( const PickedPoint&  picked );
     virtual ~Interactor();
 
-    /// Insert this in the scene as a child of the given node
-    virtual void attach( Node::SPtr parent );
+    /// Insert this in the scene as a child of the given node. If overloaded, this function should be called at the beginning of the overloaded function.
+    virtual void attach( SofaScene* );
 
-    /// Remove this from the scene, without destroying it.
+    /// Remove this from the scene, without destroying it. If overloaded, this function should be called at the end of the overloaded function.
     virtual void detach();
 
     /// Current interaction point
@@ -41,6 +43,9 @@ public:
 
     /// Displace the interaction to the given point
     virtual void setPoint( const Vec3& p ) = 0;
+
+    /// Root of the interactor graph
+    Node::SPtr getNode() { return interactionNode; }
 };
 
 }

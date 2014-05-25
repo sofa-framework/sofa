@@ -1,11 +1,18 @@
 #include "SofaScene.h"
+#include "Interactor.h"
 #include <iostream>
 using std::cerr;
+using std::cout;
 using std::endl;
 
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/component/init.h>
 #include <sofa/simulation/common/xml/initXml.h>
+
+// sofa types should not be exposed
+//typedef sofa::defaulttype::Vector3 Vec3;
+//typedef sofa::component::container::MechanicalObject< defaulttype::Vec3Types > Vec3DOF;
+
 
 namespace sofa {
 namespace newgui {
@@ -24,18 +31,15 @@ SofaScene::SofaScene()
 
     _groot = sofa::simulation::getSimulation()->createNewGraph("");
     _groot->setName("theRoot");
+
 }
 
 void SofaScene::step( SReal dt)
 {
-    //        if( debug )
-//                cout<<"SofaScene::step" << endl;
     sofa::simulation::getSimulation()->animate(_groot.get(),dt);
 }
 
-Node::SPtr SofaScene::groot() { return _groot; }
-
-void SofaScene::printScene()
+void SofaScene::printGraph()
 {
     sofa::simulation::getSimulation()->print(_groot.get());
 }
@@ -67,25 +71,25 @@ void SofaScene::reset()
 
 void SofaScene::open(const char *filename)
 {
-    if(_groot)
-        unload(_groot);
-    Node::SPtr sroot = load( filename );
-    if( !sroot ){
+    if(_sroot){
+        unload(_sroot);
+    }
+    _sroot = _groot->createChild("sroot");
+
+    Node::SPtr loadroot = load( filename );
+    if( !loadroot ){
         cerr << "loading failed" << endl;
         return;
     }
     _currentFileName = filename;
 
-    // WARNING
-    // For some reason, it is necessary to put the loaded scene under a child node. Otherwise, interacting with picked nodes does not work
-    _groot->addChild(sroot);
+
+    _sroot->addChild(loadroot);
 
 
     SofaSimulation::init(_groot.get());
-    //    if( debug ){
-    //        cout<<"SofaScene::init, scene loaded" << endl;
-    //        sofa::simulation::getSimulation()->print(groot.get());
-    //    }
+//    cout<<"SofaScene::init, scene loaded" << endl;
+//    printGraph();
 }
 
 void SofaScene::getBoundingBox( SReal* xmin, SReal* xmax, SReal* ymin, SReal* ymax, SReal* zmin, SReal* zmax )
@@ -96,6 +100,12 @@ void SofaScene::getBoundingBox( SReal* xmin, SReal* xmax, SReal* ymin, SReal* ym
     *ymin = pmin[1]; *ymax = pmax[1];
     *zmin = pmin[2]; *zmax = pmax[2];
 }
+
+void SofaScene::insertInteractor( Interactor * interactor )
+{
+    _groot->addChild(interactor->getNode());
+}
+
 
 
 

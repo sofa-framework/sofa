@@ -1,5 +1,6 @@
 #include "Interactor.h"
 #include "PickedPoint.h"
+#include "SofaScene.h"
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/simulation/common/DeleteVisitor.h>
 
@@ -18,9 +19,9 @@ Interactor::~Interactor()
     interactionNode->execute<simulation::DeleteVisitor>(core::ExecParams::defaultInstance());
 }
 
-void Interactor::attach(Node::SPtr parent)
+void Interactor::attach(SofaScene *scene)
 {
-    parent->addChild(interactionNode);
+    scene->insertInteractor(this);
 }
 
 void Interactor::detach()

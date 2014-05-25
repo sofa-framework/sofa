@@ -16,6 +16,7 @@ SpringInteractor::SpringInteractor(const PickedPoint &picked, SReal stiffness)
     // create DOF to represent the actuator
     interactorDof = New<MechanicalObject3>();
     interactionNode->addObject(interactorDof);
+    interactorDof->setName("interactorDOF");
     MechanicalObject3::WriteVecCoord xanchor = interactorDof->writePositions();
     xanchor[0] = picked.point;
 
@@ -39,9 +40,9 @@ void SpringInteractor::setPoint( const Vec3& p )
     xanchor[0] = p;
 }
 
-void SpringInteractor::attach( Node::SPtr parent)
+void SpringInteractor::attach(SofaScene *scene)
 {
-    Inherited::attach(parent);
+    Inherited::attach(scene);
     interactionNode->removeObject(spring);
     Node* targetParent = dynamic_cast<Node*>(spring->getMState2()->getContext());
     targetParent->addObject(spring);
