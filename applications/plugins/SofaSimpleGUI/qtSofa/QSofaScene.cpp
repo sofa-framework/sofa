@@ -62,5 +62,9 @@ void QSofaScene::reset()
     emit stepEnd();
 }
 
+void QSofaScene::printGraph(){
+    SofaScene::printGraph();
+}
+
 }//newgui
 }//sofa

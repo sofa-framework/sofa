@@ -16,15 +16,14 @@ void SofaGL::init(){}
 
 void SofaGL::draw()
 {
-    //        if(debug)
 //                cout<<"SofaGL::draw" << endl;
 //                sofaScene->printScene();
     glGetIntegerv (GL_VIEWPORT, viewport);
     glGetDoublev (GL_MODELVIEW_MATRIX, mvmatrix);
     glGetDoublev (GL_PROJECTION_MATRIX, projmatrix);
 
-    sofa::simulation::getSimulation()->updateVisual(sofaScene->groot().get()); // needed to update normals ! (i think it should be better if updateVisual() was called from draw(), why it is not already the case ?)
-    sofa::simulation::getSimulation()->draw(vparams,sofaScene->groot().get());
+    sofa::simulation::getSimulation()->updateVisual(sofaScene->sroot().get()); // needed to update normals ! (i think it should be better if updateVisual() was called from draw(), why it is not already the case ?)
+    sofa::simulation::getSimulation()->draw(vparams,sofaScene->sroot().get());
 }
 
 PickedPoint SofaGL::pick( GLdouble ox, GLdouble oy, GLdouble oz, int x, int y )
@@ -44,11 +43,9 @@ PickedPoint SofaGL::pick( GLdouble ox, GLdouble oy, GLdouble oz, int x, int y )
     Vec3 origin(ox,oy,oz), direction(wx1-wx, wy1-wy, wz1-wz);
     direction.normalize();
     double distance = 10.5, distanceGrowth = 0.1; // cone around the ray ????
-//    if( debug ){
-//        cout<< "SofaScene::rayPick from origin " << origin << ", in direction " << direction << endl;
-//    }
+//    cout<< "SofaScene::rayPick from origin " << origin << ", in direction " << direction << endl;
     sofa::simulation::MechanicalPickParticlesVisitor picker(sofa::core::ExecParams::defaultInstance(), origin, direction, distance, distanceGrowth );
-    picker.execute(sofaScene->groot()->getContext());
+    picker.execute(sofaScene->sroot()->getContext());
 
     if (!picker.particles.empty())
     {
@@ -63,9 +60,44 @@ PickedPoint SofaGL::pick( GLdouble ox, GLdouble oy, GLdouble oz, int x, int y )
     return pickedPoint;
 }
 
+//Interactor* SofaGL::pickInteractor( GLdouble ox, GLdouble oy, GLdouble oz, int x, int y )
+//{
+//    PickedPoint pickedPoint;
+
+//    // Intersection of the ray with the near and far planes
+//    GLint realy = viewport[3] - (GLint) y - 1; // convert coordinates from image space (y downward) to window space (y upward)
+//    GLdouble wx, wy, wz;  /*  returned world x, y, z coords  */
+//    gluUnProject ((GLdouble) x, (GLdouble) realy, 0.0, mvmatrix, projmatrix, viewport, &wx, &wy, &wz); // z=0: near plane
+//    //cout<<"World coords at z=0.0 are ("<<wx<<","<<wy<<","<<wz<<")"<<endl;
+//    GLdouble wx1, wy1, wz1;
+//    gluUnProject ((GLdouble) x, (GLdouble) realy, 1.0, mvmatrix, projmatrix, viewport, &wx1, &wy1, &wz1); // z=1: far plane
+
+
+//    // Search for a particle in this direction
+//    Vec3 origin(ox,oy,oz), direction(wx1-wx, wy1-wy, wz1-wz);
+//    direction.normalize();
+//    double distance = 10.5, distanceGrowth = 0.1; // cone around the ray ????
+////    cout<< "SofaScene::rayPick from origin " << origin << ", in direction " << direction << endl;
+//    sofa::simulation::MechanicalPickParticlesVisitor picker(sofa::core::ExecParams::defaultInstance(), origin, direction, distance, distanceGrowth, Tag("!NoPicking") );
+//    picker.execute(sofaScene->groot()->getContext());
+
+//    if (!picker.particles.empty())
+//    {
+//        sofa::core::behavior::BaseMechanicalState *mstate = picker.particles.begin()->second.first;
+//        unsigned index = picker.particles.begin()->second.second;
+
+//        pickedPoint.state = mstate;
+//        pickedPoint.index = index;
+//        pickedPoint.point = Vec3(mstate->getPX(index), mstate->getPY(index), mstate->getPZ(index));
+//    }
+
+//    return pickedPoint;
+//}
+
 void SofaGL::attach( Interactor* interactor )
 {
-    interactor->attach( sofaScene->groot() );
+    interactor->attach( sofaScene );
+//    sofaScene->insertInteractor( interactor );
 }
 
 void SofaGL::move( Interactor* interactor, int x, int y)

@@ -27,7 +27,7 @@ public:
     SpringInteractor(const PickedPoint&  picked, SReal stiffness=(SReal) 100.);
 
     /// Insert this in the scene as a child of the given node
-    virtual void attach( Node::SPtr parent );
+    virtual void attach( SofaScene* scene );
 
     /// Remove this from the scene, without destroying it.
     virtual void detach();

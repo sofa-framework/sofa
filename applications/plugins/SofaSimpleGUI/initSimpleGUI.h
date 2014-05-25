@@ -34,24 +34,38 @@
 #define SOFA_SOFASIMPLEGUI_API  SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
+namespace sofa {
+namespace newgui {
+
 /** \mainpage SimpleGUI - a simplified GUI for Sofa
  * This plugin proposes a simple API for including Sofa in a graphics interface:
- * - class sofa::newgui::SofaGLScene provides a callback-level API: init, draw, animate, pick
- * - a set of Interactor objects allows the user to manipulate the simulation.
+ * - class SofaScene provides a callback-level API: init, draw, animate
+ * - class SofaGL allows drawing and picking in OpenGL viewers
+ * - a choice of Interactor objects allow the user to manipulate the simulation.
+ * - for single-viewer applications, class SofaGLScene combines SofaScene with SofaGL
  *
  * The main differences with the standard Sofa GUI are:
- * - the main loop is controled by the user application
- * - no viewer nor camera are provided (but helpers may become available)
- * - picking simply returns basic information about the particle under the cursor (see sofa::newgui::PickedPoint). It is the application's job to create, manage and delete the interactors (see sofa::newgui::Interactor).
+ * - The main loop is controled by the user application
+ * - No viewer nor camera are provided, but helpers are available in SofaGL
+ * - Picking simply returns basic information about the particle under the cursor: PickedPoint. Based on this, it is the application's job to create, manage and delete Interactor objects.
  *
  * Examples:
  * - glutOnePick: A Sofa simulation within a basic Glut interface. The user can click and drag one point at a time to interact with the simulaton
- * - qtMultiPick: A Sofa simulation within a basic Qt interface. The user can click and drag multiple points.
+ * - qtSofa: A Sofa simulation within a basic Qt interface. The user can click and drag multiple points.
+ * - qtQuickSofa: A Sofa simulation within a QtQuick interface.
  * - SofaQtExternal.zip: A graphics application including a Sofa simulation, in a project which is not a sub-project of Sofa.
  *
+ * Dependencies:
+ * - Qt > 5.0 is necessary for qtQuickSofa
+ *
+ * Issues:
+ * - Currently there is no way to create interactors in plugins. They are created by the user application.
  *
   This is a the starting page of the plugin documentation, defined in file initSimpleGUI.h
   */
+
+}
+}
 
 
 #endif // INITSimpleGUI_H

@@ -2,14 +2,7 @@
 ************************************
 *         SimpleGUI plugin         *
 ************************************
-
+A new design for Sofa GUI.
+Authors: Francois Faure, Olivier Carre
 Documentation: See doc/index.html
-
-AUTHOR :
- - Michael Adam
-
-LICENCE :
-
-
-
-OTHER COMMENTS :
+License: Same as the core of Sofa
