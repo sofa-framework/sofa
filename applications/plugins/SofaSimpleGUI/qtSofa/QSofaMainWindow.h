@@ -20,6 +20,9 @@ class QSofaMainWindow : public QMainWindow
 public:
     explicit QSofaMainWindow(QWidget *parent = 0);
 
+    sofa::newgui::QSofaScene sofaScene;
+    QSofaViewer* sofaViewer1;
+
     /**
      * @brief initSofa
      * @param plugins list of plugin (names) to load
@@ -27,8 +30,6 @@ public:
      */
     void initSofa(const std::vector<string> &plugins, string filename );
 
-    sofa::newgui::QSofaScene sofaScene;
-    QSofaViewer* sofaViewer1;
 
 signals:
 
@@ -43,8 +44,7 @@ public slots:
     void open();
     void setDt( int ms );
 protected:
-    QAction* startAct;  // play/pause
-//    QAction* viewAll;
+    QAction* _playPauseAct;  // play/pause
 };
 
 #endif // QTSOFAMAINWINDOW_H

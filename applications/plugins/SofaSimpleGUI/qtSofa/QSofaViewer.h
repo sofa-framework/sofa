@@ -2,14 +2,12 @@
 #define QTMVIEWER_H
 #include <GL/glew.h>
 #include <QGLWidget>
-#include <SofaSimpleGUI/SofaGLScene.h>
+#include <SofaSimpleGUI/SofaGL.h>
 #include "QSofaScene.h"
 using sofa::newgui::SofaGL;
 using sofa::newgui::Interactor;
 using sofa::newgui::SpringInteractor;
 using sofa::newgui::PickedPoint;
-#include <map>
-using std::map;
 
 /**
  * @brief The QSofaViewer class is a Qt OpenGL viewer with a SofaGL interface to display and interact with a Sofa simulation.
@@ -41,15 +39,9 @@ public slots:
     void viewAll();
 
 protected:
-    SofaGL sofaGL; ///< interface with the scene to display and pick in.
+    SofaGL _sofaGL; ///< interface with the scene to display and pick in.
 
-    typedef map< PickedPoint, Interactor*> Picked_to_Interactor;
-    /** Currently available interactors, associated with picked points.
-     *  The interactors are not necessarily being manipulated. Only one can be manipulated at at time.
-     */
-    Picked_to_Interactor picked_to_interactor;
-    Interactor* drag;                            ///< The currently active interactor
-
+    Interactor* _drag; ///< current active interactor, NULL if none
 
 };
 

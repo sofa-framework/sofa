@@ -30,15 +30,15 @@ QSofaMainWindow::QSofaMainWindow(QWidget *parent) :
 
     // start/stop
     {
-    startAct = new QAction(QIcon(":/icons/start.svg"), tr("&Play..."), this);
-    startAct->setIcon(this->style()->standardIcon(QStyle::SP_MediaPlay));
-    startAct->setShortcut(QKeySequence(Qt::Key_Space));
-    startAct->setToolTip(tr("Play/Pause simulation"));
-    connect(startAct, SIGNAL(triggered()), &sofaScene, SLOT(playpause()));
+    _playPauseAct = new QAction(QIcon(":/icons/start.svg"), tr("&Play..."), this);
+    _playPauseAct->setIcon(this->style()->standardIcon(QStyle::SP_MediaPlay));
+    _playPauseAct->setShortcut(QKeySequence(Qt::Key_Space));
+    _playPauseAct->setToolTip(tr("Play/Pause simulation"));
+    connect(_playPauseAct, SIGNAL(triggered()), &sofaScene, SLOT(playpause()));
     connect(&sofaScene, SIGNAL(sigPlaying(bool)), this, SLOT(isPlaying(bool)) );
-    this->addAction(startAct);
-    simulationMenu->addAction(startAct);
-    toolbar->addAction(startAct);
+    this->addAction(_playPauseAct);
+    simulationMenu->addAction(_playPauseAct);
+    toolbar->addAction(_playPauseAct);
     }
 
     // reset
@@ -130,9 +130,9 @@ void QSofaMainWindow::initSofa( const std::vector<std::string> &plugins, string 
 void QSofaMainWindow::isPlaying( bool playing )
 {
     if( playing ) // propose to pause
-        startAct->setIcon(this->style()->standardIcon(QStyle::SP_MediaPause));
+        _playPauseAct->setIcon(this->style()->standardIcon(QStyle::SP_MediaPause));
     else // propose to play
-        startAct->setIcon(this->style()->standardIcon(QStyle::SP_MediaPlay));
+        _playPauseAct->setIcon(this->style()->standardIcon(QStyle::SP_MediaPlay));
 }
 
 void QSofaMainWindow::open()
