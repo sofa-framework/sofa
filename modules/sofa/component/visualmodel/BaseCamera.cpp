@@ -57,6 +57,7 @@ BaseCamera::BaseCamera()
     ,p_heightViewport(initData(&p_heightViewport,(unsigned int) 600 , "heightViewport", "heightViewport"))
     ,p_type(initData(&p_type, (int) core::visual::VisualParams::PERSPECTIVE_TYPE, "projectionType", "Camera Type (0 = Perspective, 1 = Orthographic)"))
     ,p_activated(initData(&p_activated, true , "activated", "Camera activated ?"))
+	,p_fixedLookAtPoint(initData(&p_fixedLookAtPoint, false, "fixedLookAt", "keep the lookAt point always fixed"))
 {
 
 }
@@ -165,7 +166,10 @@ void BaseCamera::rotate(const Quat& r)
 void BaseCamera::moveCamera(const Vec3 &p, const Quat &q)
 {
     translate(p);
-    translateLookAt(p);
+	if ( !p_fixedLookAtPoint.getValue() )
+	{
+		translateLookAt(p);
+	}
     rotate(q);
 }
 
@@ -311,8 +315,11 @@ void BaseCamera::rotateWorldAroundPoint(Quat &rotation, const Vec3 &point, Quat 
     positionCam = camera_H_WorldAfter.inversed().getOrigin();
     orientationCam = camera_H_WorldAfter.inversed().getOrientation();
 
-    p_lookAt.setValue(getLookAtFromOrientation(positionCam, p_distance.getValue(), orientationCam));
-    currentLookAt = p_lookAt.getValue();
+	if ( !p_fixedLookAtPoint.getValue() )
+	{
+		p_lookAt.setValue(getLookAtFromOrientation(positionCam, p_distance.getValue(), orientationCam));
+		currentLookAt = p_lookAt.getValue();
+	}
 
     p_orientation.setValue(orientationCam);
     p_position.endEdit();
@@ -572,7 +579,7 @@ bool BaseCamera::importParametersFromFile(const std::string& viewFilename)
         std::ifstream in(viewFilename.c_str());
         Vec3 translation;
         Quat& orientation = *p_orientation.beginEdit();
-        p_position.setValue(Vec3(0.0,0.0,0.0));
+        //p_position.setValue(Vec3(0.0,0.0,0.0));
 
         if(in.good())
         {

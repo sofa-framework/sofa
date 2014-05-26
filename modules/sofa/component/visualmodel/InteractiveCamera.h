@@ -47,6 +47,7 @@ public:
     Data<double> p_zoomSpeed;
     Data<double> p_panSpeed;
     Data<int> p_pivot;
+
 protected:
     InteractiveCamera();
     virtual ~InteractiveCamera();

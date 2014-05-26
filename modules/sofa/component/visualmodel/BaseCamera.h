@@ -71,6 +71,7 @@ public:
 
 
     Data<bool> p_activated;
+	Data<bool> p_fixedLookAtPoint;
 
     BaseCamera();
     virtual ~BaseCamera();
