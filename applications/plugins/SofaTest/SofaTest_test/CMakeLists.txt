@@ -1,6 +1,6 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
-set(HEEADER_FILES
+set(HEADER_FILES
     BroadPhaseTest.h
 )
 
