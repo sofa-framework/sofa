@@ -251,7 +251,7 @@ Expected output: RABCDEEDCBAR
 };
 
 
-TEST_F( DAG_test,  )
+TEST_F( DAG_test, traverse )
 {
     traverse_simple_tree();
     traverse_simple_diamond();
