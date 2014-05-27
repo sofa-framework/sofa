@@ -84,11 +84,12 @@ public:
 #endif
     }
 
-    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
-    {
-        mm->resetForce(this->params, res.getId(mm));
-        return RESULT_CONTINUE;
-    }
+    // TODO how to propagate lambdas without invalidating forces on mapped dofs?
+//    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
+//    {
+//        mm->resetForce(this->params, res.getId(mm));
+//        return RESULT_CONTINUE;
+//    }
 
 
     virtual Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff)
