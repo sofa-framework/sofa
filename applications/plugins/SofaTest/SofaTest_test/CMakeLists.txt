@@ -36,9 +36,11 @@ endif()
 if(SOFA-PLUGIN_SOFAPYTHON)
     list(APPEND SOURCE_FILES "python_test_list.cpp")
     AddLinkerDependencies(SofaPython)
+    # include python test files
+    include(./python_tests/python.cmake)
 endif()
 
-add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${RC_FILES})
+add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${RC_FILES} ${PYTHON_FILES})
 
 # Define a macro to get the absolute path to a directory;
 # absolute paths are perfectly OK for test resources.
