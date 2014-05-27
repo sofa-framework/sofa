@@ -11,7 +11,8 @@
   
   <NewProximityIntersection alarmDistance=".1" contactDistance="0.1" />
 
-  <DefaultContactManager responseParams="restitution=0" response="FrictionCompliantContact" />
+	<!-- e = 0.5, the box should bounce to e^2 = 0.25 of the previous height -->
+  <DefaultContactManager responseParams="mu=1&amp;restitution=0" response="FrictionCompliantContact" />
 	
   <AssembledSolver stabilization="1" warm_start="1" />
 
@@ -24,7 +25,7 @@
       <MeshObjLoader name="loader" filename="mesh/cube.obj" />
       <MeshTopology tetrahedra="@loader.tetras" name="topology" position="@loader.position" hexahedra="@loader.hexas" edges="@loader.edges" quads="@loader.quads" triangles="@loader.triangles" />
       <MechanicalObject name="vertices" template="Vec3d" position="@loader.position" />
-      <TTriangleModel template="Vec3d" contactRestitution="1"/>
+      <TTriangleModel template="Vec3d" contactFriction="0" contactRestitution="1"/>
       <RigidMapping input="@../" template="Rigid,Vec3d" output="@./" />
     </Node>
   </Node>
@@ -36,7 +37,7 @@
       <MeshObjLoader name="loader" filename="mesh/cube.obj" />
       <MeshTopology tetrahedra="@loader.tetras" name="topology" position="@loader.position" hexahedra="@loader.hexas" edges="@loader.edges" quads="@loader.quads" triangles="@loader.triangles" />
       <MechanicalObject name="vertices" template="Vec3d" position="@loader.position" />
-      <TTriangleModel template="Vec3d" contactRestitution="0.75"/>
+      <TTriangleModel template="Vec3d" contactFriction="0" contactRestitution="0.75"/>
       <RigidMapping input="@../" template="Rigid,Vec3d" output="@./" />
     </Node>
   </Node>
@@ -48,7 +49,7 @@
       <MeshObjLoader name="loader" filename="mesh/cube.obj" />
       <MeshTopology tetrahedra="@loader.tetras" name="topology" position="@loader.position" hexahedra="@loader.hexas" edges="@loader.edges" quads="@loader.quads" triangles="@loader.triangles" />
       <MechanicalObject name="vertices" template="Vec3d" position="@loader.position" />
-      <TTriangleModel template="Vec3d" contactRestitution="0.5"/>
+      <TTriangleModel template="Vec3d" contactFriction="0" contactRestitution="0.5"/>
       <RigidMapping input="@../" template="Rigid,Vec3d" output="@./" />
     </Node>
   </Node>
@@ -60,7 +61,7 @@
       <MeshObjLoader name="loader" filename="mesh/cube.obj" />
       <MeshTopology tetrahedra="@loader.tetras" name="topology" position="@loader.position" hexahedra="@loader.hexas" edges="@loader.edges" quads="@loader.quads" triangles="@loader.triangles" />
       <MechanicalObject name="vertices" template="Vec3d" position="@loader.position" />
-      <TTriangleModel template="Vec3d" contactRestitution="0.25"/>
+      <TTriangleModel template="Vec3d" contactFriction="0" contactRestitution="0.25"/>
       <RigidMapping input="@../" template="Rigid,Vec3d" output="@./" />
     </Node>
   </Node> 
@@ -72,7 +73,7 @@
       <MeshObjLoader name="loader" filename="mesh/cube.obj" />
       <MeshTopology tetrahedra="@loader.tetras" name="topology" position="@loader.position" hexahedra="@loader.hexas" edges="@loader.edges" quads="@loader.quads" triangles="@loader.triangles" />
       <MechanicalObject name="vertices" template="Vec3d" position="@loader.position" />
-      <TTriangleModel template="Vec3d" contactRestitution="0"/>
+      <TTriangleModel template="Vec3d" contactFriction="0" contactRestitution="0"/>
       <RigidMapping input="@../" template="Rigid,Vec3d" output="@./" />
     </Node>
   </Node> 
@@ -81,31 +82,31 @@
     <Node name="Ball 1">
     <MechanicalObject name="dofs" template="Rigid" position="0 3 -10 0 0 0 1" velocity="10 -10 0 0 0 0" showObject="1" showObjectScale="1" />
     <RigidMass mass="1" inertia="1 1 1" />
-    <Sphere radius="1" contactRestitution="1" />
+    <Sphere radius="1" contactFriction="0" contactRestitution="1" />
   </Node>
   
      <Node name="Ball 0.75">
     <MechanicalObject name="dofs" template="Rigid" position="0 3 -5 0 0 0 1" velocity="10 -10 0 0 0 0" showObject="1" showObjectScale="1" />
     <RigidMass mass="1" inertia="1 1 1" />
-    <Sphere radius="1" contactRestitution="0.75" />
+    <Sphere radius="1" contactFriction="0" contactRestitution="0.75" />
   </Node>
    -
      <Node name="Ball 0.5">
     <MechanicalObject name="dofs" template="Rigid" position="0 3 0 0 0 0 1" velocity="10 -10 0 0 0 0" showObject="1" showObjectScale="1" />
     <RigidMass mass="1" inertia="1 1 1" />
-    <Sphere radius="1" contactRestitution="0.5" />
+    <Sphere radius="1" contactFriction="0" contactRestitution="0.5" />
   </Node>
  
      <Node name="Ball 0.25">
     <MechanicalObject name="dofs" template="Rigid" position="0 3 5 0 0 0 1" velocity="10 -10 0 0 0 0" showObject="1" showObjectScale="1" />
     <RigidMass mass="1" inertia="1 1 1" />
-    <Sphere radius="1" contactRestitution="0.25" />
+    <Sphere radius="1" contactFriction="0" contactRestitution="0.25" />
   </Node>
  
    <Node name="Ball 0">
     <MechanicalObject name="dofs" template="Rigid" position="0 3 10 0 0 0 1" velocity="10 -10 0 0 0 0" showObject="1" showObjectScale="1" />
     <RigidMass mass="1" inertia="1 1 1" />
-    <Sphere radius="1" contactRestitution="0" />
+    <Sphere radius="1" contactFriction="0" contactRestitution="0" />
   </Node>
   
   
@@ -121,7 +122,7 @@
       <MeshObjLoader filename="mesh/cube.obj" name="loader" scale3d="20 2 20" />
       <MeshTopology tetrahedra="@loader.tetras" name="topology" position="@loader.position" hexahedra="@loader.hexas" edges="@loader.edges" quads="@loader.quads" triangles="@loader.triangles" />
       <MechanicalObject name="vertices" template="Vec3d" position="@loader.position" />
-      <TTriangleModel template="Vec3d" simulated="0" moving="0" contactRestitution="1"/>
+      <TTriangleModel template="Vec3d" simulated="0" moving="0" contactFriction="0" contactRestitution="1"/>
       <RigidMapping input="@../" template="Rigid,Vec3d" output="@./" />
     </Node>
     <FixedConstraint indices="0" />

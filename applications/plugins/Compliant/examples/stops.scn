@@ -11,7 +11,7 @@
 
   
   
-  <Node name="SlindingVec3">
+  <Node name="SlindingVec3 V1">
     
     <MechanicalObject template="Vec3d" position="0 0 0" showObject="1" showObjectScale="1" drawMode="1"/>
     <UniformMass mass="1"/>
@@ -39,6 +39,7 @@
 		<DifferenceFromTargetMapping targets="-3"/>
 		<UniformCompliance/>
 		<UnilateralConstraint/>
+                <Stabilization/>
 	</Node> 
 	
 	<Node name="right">
@@ -46,6 +47,7 @@
 		<DifferenceFromTargetMapping targets="9" inverted="1"/>
 		<UniformCompliance/>
 		<UnilateralConstraint/>
+                <Stabilization/>
 	</Node>
 	
     </Node> 
@@ -55,7 +57,7 @@
   
   
   
-    <Node name="SlindingVec3">
+    <Node name="SlindingVec3 V2">
       
 	<MechanicalObject template="Vec3d" position="0 3 0" showObject="1" showObjectScale="1" drawMode="1"/>
 	<UniformMass mass="1"/>
@@ -87,6 +89,7 @@
 			  <OffsetMapping offsets="6" inverted="1"/>
 			  <UniformCompliance/>
 			  <UnilateralConstraint />
+                          <Stabilization/>
 		    </Node> 
 		    
 	    </Node> 
@@ -96,6 +99,50 @@
   </Node>
   
   
+  
+  
+    <Node name="SlindingVec3 V1 with restitution">
+    
+    <MechanicalObject template="Vec3d" position="0 -3 0" showObject="1" showObjectScale="1" drawMode="1"/>
+    <UniformMass mass="1"/>
+    
+    <Node name="yz">
+      
+        <MechanicalObject template="Vec1d"/>
+        <MaskMapping dofs="0 1 1"/>
+
+        <Node name="sliding">
+                <MechanicalObject template="Vec1d" position="0 0"/>
+                <DifferenceFromTargetMapping targets="-3 0"/>
+                <UniformCompliance/>
+                <Stabilization/>
+        </Node> 
+    </Node> 
+    
+    <Node name="stops">
+      
+        <MechanicalObject template="Vec1d"/>
+        <MaskMapping dofs="1 0 0"/>
+
+        <Node name="left">
+                <MechanicalObject template="Vec1d" position="0"/>
+                <DifferenceFromTargetMapping targets="-3"/>
+                <UniformCompliance/>
+                <UnilateralConstraint/>
+                <Restitution restitution="0.5"/>
+        </Node> 
+        
+        <Node name="right">
+                <MechanicalObject template="Vec1d" position="0"/>
+                <DifferenceFromTargetMapping targets="9" inverted="1"/>
+                <UniformCompliance/>
+                <UnilateralConstraint/>
+                <Restitution restitution="0.5"/>
+        </Node>
+        
+    </Node> 
+    
+  </Node>
   
   
   
