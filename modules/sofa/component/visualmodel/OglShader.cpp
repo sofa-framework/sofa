@@ -522,7 +522,10 @@ void OglShaderElement::init()
     isMultipass= mycontext->core::objectmodel::BaseContext::get<sofa::component::visualmodel::CompositingVisualLoop>();
     if(isMultipass==NULL)
     {
-        shaders.insert(mycontext->core::objectmodel::BaseContext::get<OglShader>());
+		if ( OglShader* shader = mycontext->core::objectmodel::BaseContext::get<OglShader>() )
+		{
+			shaders.insert(mycontext->core::objectmodel::BaseContext::get<OglShader>());
+		}
         return;
     }
 
