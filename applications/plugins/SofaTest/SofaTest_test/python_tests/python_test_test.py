@@ -1,5 +1,7 @@
 import sys
 
+from SofaTest.Macro import *
+
 # arguments are an option in python tests
 if len(sys.argv) != 3 :
   print "ERROR: wrong number of arguments"
@@ -11,4 +13,4 @@ def isNull( x ):
 # the python test MUST have a "run" function with no arguments that returns the test result
 def run():
   # here it tests if the first argument is null and the second is not
-  return isNull( int(sys.argv[1]) ) and not isNull( int(sys.argv[2]) )
+  return EXPECT_TRUE(isNull( int(sys.argv[1]) ), "isNull") and EXPECT_FALSE(isNull( int(sys.argv[2]) ), "isNull" )
