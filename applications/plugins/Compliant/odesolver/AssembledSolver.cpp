@@ -517,6 +517,10 @@ using namespace core::behavior;
         // debugging
         if( debug.getValue() ) sys.debug();
 
+        // look for violated and active constraints
+        // must be performed after assembly and before system factorization
+        filter_constraints( posId );
+
         // system factor
         {
             scoped::timer step("system factor");
@@ -538,8 +542,6 @@ using namespace core::behavior;
             // constraint stabilization
             if( sys.n )
             {
-                filter_constraints( posId ); // look for violated and active constaints
-
                 if( stabilization.getValue() ) {
                     scoped::timer step("correction");
 
