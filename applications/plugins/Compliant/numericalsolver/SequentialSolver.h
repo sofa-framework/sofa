@@ -72,6 +72,7 @@ class SOFA_Compliant_API SequentialSolver : public IterativeSolver {
 		block();
 		unsigned offset, size;
         Constraint* projector;
+        bool activated; // is the constraint activated, otherwise its lambda is enforce to be 0
 	};
 	
 	typedef std::vector<block> blocks_type;

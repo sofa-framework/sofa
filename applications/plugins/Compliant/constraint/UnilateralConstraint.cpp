@@ -13,16 +13,10 @@ int UnilateralConstraintClass = core::RegisterObject("Unilateral constraint")
         .addAlias("UnilateralProjector"); // eheh :p
 
 
-void UnilateralConstraint::project(SReal* out, unsigned n, bool) const {
-    //Eigen::Map< Eigen::Matrix<SReal, Eigen::Dynamic, 1> > view(out, n);
-
-	// std::cerr << "before: " << view.transpose() << std::endl;
-        for(unsigned i = 0; i < n; ++i)
-        {
-            out[i] = std::max( (SReal)0.0, out[i] );
-        }
-	// std::cerr << "after: " << view.transpose() << std::endl;
-	
+void UnilateralConstraint::project(SReal* out, unsigned n, bool) const
+{
+    for(unsigned i = 0; i < n; ++i)
+        out[i] = std::max( (SReal)0.0, out[i] );
 }
 
 

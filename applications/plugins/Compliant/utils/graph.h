@@ -1,5 +1,5 @@
-#ifndef UTILS_GRAPH_H
-#define UTILS_GRAPH_H
+#ifndef COMPLIANT_UTILS_GRAPH_H
+#define COMPLIANT_UTILS_GRAPH_H
 
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/depth_first_search.hpp>

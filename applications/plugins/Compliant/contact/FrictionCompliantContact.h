@@ -101,17 +101,24 @@ protected:
         // approximate current mu between the 2 objects as the product of both friction coefficients
         const SReal frictionCoefficient = mu.getValue() ? mu.getValue() : this->model1->getContactFriction(0)*this->model2->getContactFriction(0);
 
-        // projector
-        typedef linearsolver::CoulombConstraint proj_type;
-        proj_type::SPtr proj = sofa::core::objectmodel::New<proj_type>( frictionCoefficient );
-        contact_node->addObject( proj.get() );
-        
-
         // approximate restitution coefficient between the 2 objects as the product of both coefficients
         const SReal restitutionCoefficient = this->restitution_coef.getValue() ? this->restitution_coef.getValue() : this->model1->getContactRestitution(0) * this->model2->getContactRestitution(0);
 
         // constraint value
-        this->addConstraintValue( contact_node.get(), contact_dofs.get(), restitutionCoefficient, 3);
+        this->addConstraintValue( contact_node.get(), contact_dofs.get(), restitutionCoefficient, 3 );
+
+        // projector
+        typedef linearsolver::CoulombConstraint proj_type;
+        proj_type::SPtr projector = sofa::core::objectmodel::New<proj_type>( frictionCoefficient );
+        contact_node->addObject( projector.get() );
+        if( restitutionCoefficient )
+        {
+            // for restitution, only activate violated constraints
+            // todo, mutualize code with mask in addConstraintValue
+            projector->mask.resize( this->mappedContacts.size() );
+            for(unsigned i = 0; i < this->mappedContacts.size(); ++i)
+                projector->mask[i] = ( (*this->contacts)[i].value <= 0 );
+        }
 
         return delta.node;
     }

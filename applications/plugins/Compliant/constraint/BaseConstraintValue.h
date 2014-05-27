@@ -47,14 +47,32 @@ class SOFA_Compliant_API BaseConstraintValue : public core::objectmodel::BaseObj
             mstate = this->getContext()->get<mstate_type>(core::objectmodel::BaseContext::Local);
             assert( mstate );
         }
+
     }
 
     /// Value for stabilization: right-hand term for velocity correction
-    virtual void correction(SReal* dst, unsigned n, const core::MultiVecCoordId& posId = core::VecCoordId::position(), const core::MultiVecDerivId& velId = core::VecDerivId::velocity()) const = 0;
+    /// @param n nb constraint blocks
+    /// @param dim nb lines per constraint
+    virtual void correction(SReal* dst, unsigned n, unsigned dim, const core::MultiVecCoordId& posId = core::VecCoordId::position(), const core::MultiVecDerivId& velId = core::VecDerivId::velocity()) const = 0;
 	
     /// Value for dynamics: right-hand term for time integration.
-    /// @stabilization tells if the solver is performing the correction pass (ie if the correction value is used). Otherwise the constraint must be fully corrected by the dynamics (not stabilized constraint)
-    virtual void dynamics(SReal* dst, unsigned n, bool stabilization, const core::MultiVecCoordId& posId = core::VecCoordId::position(), const core::MultiVecDerivId& velId = core::VecDerivId::velocity()) const = 0;
+    /// @param n nb constraint blocks
+    /// @param dim nb lines per constraint
+    /// @param stabilization tells if the solver is performing the correction pass (ie if the correction value is used). Otherwise the constraint must be fully corrected by the dynamics (not stabilized constraint)
+    virtual void dynamics(SReal* dst, unsigned n, unsigned dim, bool stabilization, const core::MultiVecCoordId& posId = core::VecCoordId::position(), const core::MultiVecDerivId& velId = core::VecDerivId::velocity()) const = 0;
+
+    /// Testing which constraint is violated based on the violation @param posId
+    /// Should NOT be called for bilateral constraints that can always be considered as violated.
+    /// @param activateMask is a per constraint block mask, flagging active constraint
+    /// In general even non-violated constraints remain active,
+    /// but in some case (eg Restitution), they must be deactivated
+    /// @param n nb constraint blocks
+    /// @param dim nb lines per constraint
+    virtual void filterConstraints( std::vector<bool>& /*activateMask*/, const core::MultiVecCoordId& /*posId*/, unsigned /*n*/, unsigned /*dim*/ ) { /*all constraints are active by default*/ }
+
+    /// clear an eventual violated mask
+    virtual void clear() {}
+
 
 };
 

@@ -172,17 +172,17 @@ public:
             // Create mapping for first point
             mappedContacts[i].index1 = mapper1.addPoint(o.point[0], index1, r1);
 
-			// TODO local contact coords (o.baryCoords) are broken !!
+            // TODO local contact coords (o.baryCoords) are broken !!
 
-			// max: this one is broken :-/
-			// mappedContacts[i].index1 = mapper1.addPointB(o.point[0], index1, r1, o.baryCoords[0]);
+            // max: this one is broken :-/
+            // mappedContacts[i].index1 = mapper1.addPointB(o.point[0], index1, r1, o.baryCoords[0]);
 
             // Create mapping for second point
             mappedContacts[i].index2 = this->selfCollision ?
-				mapper1.addPoint(o.point[1], index2, r2):
-				mapper2.addPoint(o.point[1], index2, r2);
+                mapper1.addPoint(o.point[1], index2, r2):
+                mapper2.addPoint(o.point[1], index2, r2);
 
-				// max: same here :-/
+                // max: same here :-/
                         // mapper1.addPointB(o.point[1], index2, r2, o.baryCoords[1]) :
                         // mapper2.addPointB(o.point[1], index2, r2, o.baryCoords[1]);
 
@@ -440,6 +440,15 @@ protected:
     }
 
 };
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////
+
+
 
 
 /// a base class for compliant constraint based contact

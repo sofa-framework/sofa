@@ -20,11 +20,16 @@ class SOFA_Compliant_API Stabilization : public BaseConstraintValue {
 	Data<mask_type> mask;
 	
 	// value for stabilization
-    virtual void correction(SReal* dst, unsigned n, const core::MultiVecCoordId& posId = core::VecCoordId::position(), const core::MultiVecDerivId& velId = core::VecDerivId::velocity()) const;
+    virtual void correction(SReal* dst, unsigned n, unsigned dim, const core::MultiVecCoordId& posId = core::VecCoordId::position(), const core::MultiVecDerivId& velId = core::VecDerivId::velocity()) const;
 	
 	// value for dynamics
-    virtual void dynamics(SReal* dst, unsigned n, bool stabilization, const core::MultiVecCoordId& posId = core::VecCoordId::position(), const core::MultiVecDerivId& velId = core::VecDerivId::velocity()) const;
+    virtual void dynamics(SReal* dst, unsigned n, unsigned dim, bool stabilization, const core::MultiVecCoordId& posId = core::VecCoordId::position(), const core::MultiVecDerivId& velId = core::VecDerivId::velocity()) const;
 	
+    // flag violated constraints
+    virtual void filterConstraints( std::vector<bool>& activateMask, const core::MultiVecCoordId& posId, unsigned n, unsigned dim );
+
+    // clear violated mask
+    virtual void clear() { mask.beginEdit()->clear(); mask.endEdit(); }
 };
 
 }

@@ -19,14 +19,13 @@ class SOFA_Compliant_API ConstraintValue : public BaseConstraintValue {
 
     SOFA_CLASS(ConstraintValue, BaseConstraintValue);
 
-    ConstraintValue() {}
-    ConstraintValue( mstate_type* mstate );
+    ConstraintValue( mstate_type* mstate = 0 );
 
 	// value for stabilization
-    virtual void correction(SReal* dst, unsigned n, const core::MultiVecCoordId& posId = core::VecCoordId::position(), const core::MultiVecDerivId& velId = core::VecDerivId::velocity()) const;
+    virtual void correction(SReal* dst, unsigned n, unsigned dim, const core::MultiVecCoordId& posId = core::VecCoordId::position(), const core::MultiVecDerivId& velId = core::VecDerivId::velocity()) const;
 	
 	// value for dynamics
-    virtual void dynamics(SReal* dst, unsigned n, bool, const core::MultiVecCoordId& posId = core::VecCoordId::position(), const core::MultiVecDerivId& velId = core::VecDerivId::velocity()) const;
+    virtual void dynamics(SReal* dst, unsigned n, unsigned dim, bool, const core::MultiVecCoordId& posId = core::VecCoordId::position(), const core::MultiVecDerivId& velId = core::VecDerivId::velocity()) const;
 
 
 //    Data< SReal > dampingRatio;  ///< Same damping ratio applied to all the constraints

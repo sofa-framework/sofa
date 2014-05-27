@@ -15,6 +15,7 @@ struct SOFA_Compliant_API UnilateralConstraint : Constraint {
 	
 };
 
+
 }
 }
 }

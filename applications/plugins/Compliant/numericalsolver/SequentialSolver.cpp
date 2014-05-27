@@ -50,6 +50,9 @@ void SequentialSolver::fetch_blocks(const system_type& system) {
 			b.size = dim;
 			b.projector = projector;
 
+            assert( !projector || projector->mask.empty() || projector->mask.size() == max );
+            b.activated = !projector || projector->mask.empty() || projector->mask[k];
+
 			blocks.push_back( b );
 
 			off += dim;
@@ -251,36 +254,47 @@ SReal SequentialSolver::step(vec& lambda,
 			
 		const block& b = blocks[i];
 			 
-		// data chunks
-		chunk_type error_chunk(&error(b.offset), b.size);
+        // data chunks
 		chunk_type lambda_chunk(&lambda(b.offset), b.size);
 		chunk_type delta_chunk(&delta(b.offset), b.size);
-			
-		// update rhs TODO track and remove possible allocs
-		error_chunk.noalias() = rhs.segment(b.offset, b.size);
-		error_chunk.noalias() = error_chunk	- JP.middleRows(b.offset, b.size) * net;
-		error_chunk.noalias() = error_chunk - sys.C.middleRows(b.offset, b.size) * lambda;
-		
-		// error estimate update, we sum current chunk errors
-		// estimate += error_chunk.squaredNorm();
-			
-		// solve for lambda changes
-		solve_block(delta_chunk, blocks_inv[i], error_chunk);
-			
-		// backup old lambdas
-		error_chunk = lambda_chunk;
 
-		// update lambdas
-		lambda_chunk = lambda_chunk + omega.getValue() * delta_chunk;
-		
-		// project new lambdas if needed
-		if( b.projector ) {
-            b.projector->project( lambda_chunk.data(), lambda_chunk.size(), correct );
-			assert( !has_nan(lambda_chunk.eval()) );
-		}
+        // if the constraint is activated, solve it
+        if( b.activated )
+        {
+            chunk_type error_chunk(&error(b.offset), b.size);
 
-		// correct lambda differences based on projection
-		delta_chunk = lambda_chunk - error_chunk;
+            // update rhs TODO track and remove possible allocs
+            error_chunk.noalias() = rhs.segment(b.offset, b.size);
+            error_chunk.noalias() = error_chunk	- JP.middleRows(b.offset, b.size) * net;
+            error_chunk.noalias() = error_chunk - sys.C.middleRows(b.offset, b.size) * lambda;
+
+            // error estimate update, we sum current chunk errors
+            // estimate += error_chunk.squaredNorm();
+
+            // solve for lambda changes
+            solve_block(delta_chunk, blocks_inv[i], error_chunk);
+
+            // backup old lambdas
+            error_chunk = lambda_chunk;
+
+            // update lambdas
+            lambda_chunk = lambda_chunk + omega.getValue() * delta_chunk;
+
+            // project new lambdas if needed
+            if( b.projector ) {
+                b.projector->project( lambda_chunk.data(), lambda_chunk.size(), correct );
+                assert( !has_nan(lambda_chunk.eval()) );
+            }
+
+            // correct lambda differences based on projection
+            delta_chunk = lambda_chunk - error_chunk;
+        }
+        else // deactivated constraint
+        {
+            // force lambda to be 0
+            delta_chunk = -lambda_chunk;
+            lambda_chunk.setZero();
+        }
 
 		// we estimate the total lambda change. since GS convergence
 		// is linear, this can give an idea about current precision.

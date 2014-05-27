@@ -20,23 +20,25 @@ ConstraintValue::ConstraintValue( mstate_type* mstate )
 {
 }
 
-void ConstraintValue::correction(SReal* dst, unsigned n, const core::MultiVecCoordId&, const core::MultiVecDerivId&) const {
+void ConstraintValue::correction(SReal* dst, unsigned n, unsigned dim, const core::MultiVecCoordId&, const core::MultiVecDerivId&) const {
 	
-//	for(SReal* last = dst + n; dst < last; ++dst) {
+//	for(SReal* last = dst + n*dim; dst < last; ++dst) {
 //		*dst = 0;
 //	}
 	
-    memset( dst, 0, n*sizeof(SReal) );
+    memset( dst, 0, n*dim*sizeof(SReal) );
 }
 
 
-void ConstraintValue::dynamics(SReal* dst, unsigned n, bool, const core::MultiVecCoordId& posId, const core::MultiVecDerivId&) const {
+void ConstraintValue::dynamics(SReal* dst, unsigned n, unsigned dim, bool, const core::MultiVecCoordId& posId, const core::MultiVecDerivId&) const {
     assert( mstate );
 
-    mstate->copyToBuffer(dst, posId.getId(mstate.get()), n);
+    unsigned size = n*dim;
+
+    mstate->copyToBuffer(dst, posId.getId(mstate.get()), size);
 
 	using namespace utils;
-    map(dst, n) = -map(dst, n) / this->getContext()->getDt();
+    map(dst, size) = -map(dst, size) / this->getContext()->getDt();
 
     // TODO damping
 	
