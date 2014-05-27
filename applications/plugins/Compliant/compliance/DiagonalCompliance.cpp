@@ -15,13 +15,13 @@ using namespace sofa::defaulttype;
 int DiagonalComplianceClass = core::RegisterObject("Diagonal compliance")
 #ifndef SOFA_FLOAT
         .add< DiagonalCompliance< Vec1dTypes > >(true)
-        .add< DiagonalCompliance< Vec3dTypes > >(true)
-        .add< DiagonalCompliance< Vec6dTypes > >(true)
+        .add< DiagonalCompliance< Vec3dTypes > >()
+        .add< DiagonalCompliance< Vec6dTypes > >()
 #endif
 #ifndef SOFA_DOUBLE
-        .add< DiagonalCompliance< Vec1fTypes > >(true)
-        .add< DiagonalCompliance< Vec3fTypes > >(true)
-        .add< DiagonalCompliance< Vec6fTypes > >(true)
+        .add< DiagonalCompliance< Vec1fTypes > >()
+        .add< DiagonalCompliance< Vec3fTypes > >()
+        .add< DiagonalCompliance< Vec6fTypes > >()
 #endif
         ;
 

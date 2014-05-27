@@ -179,6 +179,14 @@ public:
                                core::behavior::MultiVecDeriv& f,
                                core::behavior::MultiVecDeriv& c );
 
+
+    /// evaluate violated and active constraints
+    void filter_constraints(core::MultiVecCoordId posId) const;
+    /// reset violated and active constraints
+    void clear_constraints() const;
+
+
+
 	// linear rhs for dynamics/correction steps
     virtual void rhs_dynamics(vec& res, const system_type& sys, const vec& v, const core::behavior::MultiVecDeriv& b,
                               core::MultiVecCoordId posId,

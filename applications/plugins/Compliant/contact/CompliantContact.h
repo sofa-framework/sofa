@@ -117,16 +117,25 @@ protected:
         compliance->damping.setValue( this->damping_ratio.getValue() );
         compliance->init();
 
-        // projector
-        typedef linearsolver::UnilateralConstraint projector_type;
-        projector_type::SPtr projector = sofa::core::objectmodel::New<projector_type>();
-        contact_node->addObject( projector.get() );
 
         // approximate restitution coefficient between the 2 objects as the product of both coefficients
         const SReal restitutionCoefficient = this->restitution_coef.getValue() ? this->restitution_coef.getValue() : this->model1->getContactRestitution(0) * this->model2->getContactRestitution(0);
 
         // constraint value
         this->addConstraintValue( contact_node.get(), contact_dofs.get(), restitutionCoefficient );
+
+        // projector
+        typedef linearsolver::UnilateralConstraint projector_type;
+        projector_type::SPtr projector = sofa::core::objectmodel::New<projector_type>();
+        contact_node->addObject( projector.get() );
+        if( restitutionCoefficient )
+        {
+            // for restitution, only activate violated constraints
+            // todo, mutualize code with mask in addConstraintValue
+            projector->mask.resize( this->mappedContacts.size() );
+            for(unsigned i = 0; i < this->mappedContacts.size(); ++i)
+                projector->mask[i] = ( (*this->contacts)[i].value <= 0 );
+        }
 
         return delta.node;
     }

@@ -8,6 +8,7 @@
 
 #include "assembly/AssemblyVisitor.h"
 #include "constraint/ConstraintValue.h"
+#include "constraint/Constraint.h"
 
 #include "utils/scoped.h"
 
@@ -229,6 +230,54 @@ using namespace core::behavior;
         send( bob );
     }
 
+    void AssembledSolver::filter_constraints(core::MultiVecCoordId posId) const {
+
+        // compliant dofs
+        for(unsigned i = 0, end = sys.compliant.size(); i < end; ++i) {
+
+            system_type::dofs_type* dofs = sys.compliant[i];
+
+            linearsolver::Constraint::SPtr projector = dofs->getContext()->get<linearsolver::Constraint>( core::objectmodel::BaseContext::Local );
+
+            if( !projector ) continue; // if bilateral nothing to filter
+
+
+            const unsigned dim = dofs->getSize(); // nb lines per constraint
+            const unsigned constraint_dim = dofs->getDerivDimension(); // nb lines per constraint
+            const unsigned matrix_size = dim * constraint_dim;
+
+            // fetch constraint value if any
+            BaseConstraintValue::SPtr value = dofs->getContext()->get<BaseConstraintValue>( core::objectmodel::BaseContext::Local );
+
+            // fallback TODO optimize ?
+            if( !value ) {
+                value = new ConstraintValue( dofs );
+                dofs->getContext()->addObject( value );
+                value->init();
+            }
+
+            value->filterConstraints( projector->mask, posId, dim, constraint_dim );
+        }
+    }
+
+    void AssembledSolver::clear_constraints() const {
+        // compliant dofs
+        for(unsigned i = 0, end = sys.compliant.size(); i < end; ++i) {
+
+            system_type::dofs_type* dofs = sys.compliant[i];
+
+            linearsolver::Constraint::SPtr projector = dofs->getContext()->get<linearsolver::Constraint>( core::objectmodel::BaseContext::Local );
+
+            if( !projector ) continue; // if bilateral nothing to filter
+
+            projector->mask.clear();
+
+            // fetch constraint value if any
+            BaseConstraintValue::SPtr value = dofs->getContext()->get<BaseConstraintValue>( core::objectmodel::BaseContext::Local );
+
+            value->clear();
+        }
+    }
 
 
     void AssembledSolver::rhs_dynamics(vec& res, const system_type& sys, const vec& v, const MultiVecDeriv& b,
@@ -258,22 +307,22 @@ using namespace core::behavior;
         for(unsigned i = 0, end = sys.compliant.size(); i < end; ++i) {
             system_type::dofs_type* dofs = sys.compliant[i];
 
-            unsigned dim = dofs->getMatrixSize();
+            const unsigned dim = dofs->getSize(); // nb lines per constraint
+            const unsigned constraint_dim = dofs->getDerivDimension(); // nb lines per constraint
 
             // fetch constraint value if any
             BaseConstraintValue::SPtr value =
                     dofs->getContext()->get<BaseConstraintValue>( core::objectmodel::BaseContext::Local );
 
             // fallback TODO optimize ?
-            if( !value ) {
-                value = new ConstraintValue( dofs );
-                dofs->getContext()->addObject( value );
-                value->init();
+//            if( !value ) {
+//                value = new ConstraintValue( dofs );
+//                dofs->getContext()->addObject( value );
+//                value->init();
+//            }
 
-            }
-
-            value->dynamics(&res(off), dim, stabilization.getValue(), posId, velId );
-            off += dim;
+            value->dynamics(&res(off), dim, constraint_dim, stabilization.getValue(), posId, velId );
+            off += dim * constraint_dim;
         }
         assert( off == sys.size() );
 
@@ -305,22 +354,23 @@ using namespace core::behavior;
         for(unsigned i = 0, end = sys.compliant.size(); i < end; ++i) {
             system_type::dofs_type* dofs = sys.compliant[i];
 
-            unsigned dim = dofs->getMatrixSize();
+            const unsigned dim = dofs->getSize(); // nb lines per constraint
+            const unsigned constraint_dim = dofs->getDerivDimension(); // nb lines per constraint
 
             // fetch constraint value if any
             BaseConstraintValue::SPtr value =
                     dofs->getContext()->get<BaseConstraintValue>( core::objectmodel::BaseContext::Local );
 
             // fallback TODO optimize ?
-            if(!value ) {
-                value = new ConstraintValue( dofs );
-                dofs->getContext()->addObject( value );
-                value->init();
-            }
+//            if(!value ) {
+//                value = new ConstraintValue( dofs );
+//                dofs->getContext()->addObject( value );
+//                value->init();
+//            }
 
-            value->correction(&res(off), dim, posId, velId );
+            value->correction(&res(off), dim, constraint_dim, posId, velId );
 
-            off += dim;
+            off += dim * constraint_dim;
         }
 
     }
@@ -455,6 +505,8 @@ using namespace core::behavior;
 //            vop.print( lagrange,std::cerr, "BEGIN lambda: ", "\n" );
         }
 
+        filter_constraints( posId ); // look for violated and active constaints
+
         // compute forces and implicit right part warning: must be
         // call before assemblyVisitor since the mapping's geometric
         // stiffness depends on its child force
@@ -485,23 +537,28 @@ using namespace core::behavior;
             scoped::timer step("system solve");
 
             // constraint stabilization
-            if( sys.n && stabilization.getValue() ) {
-                scoped::timer step("correction");
+            if( sys.n )
+            {
+                filter_constraints( posId ); // look for violated and active constaints
 
-                x = vec::Zero( sys.size() );
-                rhs_correction(rhs, sys, posId, velId);
-				
-                kkt->correct(x, sys, rhs, stabilization_damping.getValue() );
-				
-                if( debug.getValue() ) {
-                    std::cerr << "correction rhs:" << std::endl
-                              << rhs.transpose() << std::endl
-                              << "solution:" << std::endl
-                              << x.transpose() << std::endl;
+                if( stabilization.getValue() ) {
+                    scoped::timer step("correction");
+
+                    x = vec::Zero( sys.size() );
+                    rhs_correction(rhs, sys, posId, velId);
+
+                    kkt->correct(x, sys, rhs, stabilization_damping.getValue() );
+
+                    if( debug.getValue() ) {
+                        std::cerr << "correction rhs:" << std::endl
+                                  << rhs.transpose() << std::endl
+                                  << "solution:" << std::endl
+                                  << x.transpose() << std::endl;
+                    }
+
+                    set_state_v( sys, x, velId ); // set v (no need to set lambda)
+                    integrate( &mparams, posId, velId );
                 }
-
-                set_state_v( sys, x, velId ); // set v (no need to set lambda)
-                integrate( &mparams, posId, velId );
             }
 
             // actual dynamics
@@ -542,6 +599,8 @@ using namespace core::behavior;
             propagate_constraint_force_visitor prop( &mparams, core::VecId::force(), lagrange.id(), sys.dt );
             send( prop );
         }
+
+        clear_constraints();
 
 
 //        vop.print( lagrange,std::cerr, "END lambda: ", "\n" );

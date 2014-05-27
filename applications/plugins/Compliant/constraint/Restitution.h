@@ -2,24 +2,29 @@
 #define COMPLIANT_RESTITUTION_H
 
 #include "ConstraintValue.h"
+#include "Constraint.h"
 
 namespace sofa {
 namespace component {
 namespace odesolver {
 
-// a constraint value for elastic contact (with restitution)
-class SOFA_Compliant_API Restitution : public ConstraintValue {
+/// a constraint value for elastic contact (with restitution)
+class SOFA_Compliant_API Restitution : public ConstraintValue
+{
   public:
 
     SOFA_CLASS(Restitution, ConstraintValue);
 
-    Restitution() {}
-    Restitution( mstate_type* mstate );
+    Restitution( mstate_type* mstate = 0 );
 
     // value for stabilization
-    virtual void correction(SReal* dst, unsigned n, const core::MultiVecCoordId& posId = core::VecCoordId::position(), const core::MultiVecDerivId& velId = core::VecDerivId::velocity()) const;
+    virtual void correction(SReal* dst, unsigned n, unsigned dim, const core::MultiVecCoordId& posId = core::VecCoordId::position(), const core::MultiVecDerivId& velId = core::VecDerivId::velocity()) const;
     // value for dynamics
-    virtual void dynamics(SReal* dst, unsigned n, bool, const core::MultiVecCoordId& posId = core::VecCoordId::position(), const core::MultiVecDerivId& velId = core::VecDerivId::velocity()) const;
+    virtual void dynamics(SReal* dst, unsigned n, unsigned dim, bool, const core::MultiVecCoordId& posId = core::VecCoordId::position(), const core::MultiVecDerivId& velId = core::VecDerivId::velocity()) const;
+    // flag violated constraints
+    virtual void filterConstraints( std::vector<bool>& activateMask, const core::MultiVecCoordId& posId, unsigned n, unsigned dim );
+    // clear violated mask
+    virtual void clear() { mask.beginEdit()->clear(); mask.endEdit(); }
 
     /// flagging which constraint lines must be activated
     // warning: the constraint can be created before intersection (alarm distance), in that case penetration depth is positive, and no constraint should be applied
@@ -27,6 +32,7 @@ class SOFA_Compliant_API Restitution : public ConstraintValue {
     Data<mask_type> mask;
 
     Data<SReal> restitution;
+
 };
 
 }
