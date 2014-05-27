@@ -15,6 +15,7 @@ static struct Tests : public Python_test_list
         addTest( "LambdaPropagation.py", scenePath );
         addTest( "UniformCompliance.py", scenePath );
         addTest( "AffineMultiMapping.py", scenePath );
+        addTest( "restitution.py", scenePath );
 
         // add python tests here
     }
