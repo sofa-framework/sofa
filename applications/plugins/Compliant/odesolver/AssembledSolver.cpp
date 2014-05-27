@@ -131,8 +131,8 @@ using namespace core::behavior;
 
 
     void AssembledSolver::integrate( const core::MechanicalParams* params,
-                                     core::MultiVecCoordId posId,
-                                     core::MultiVecDerivId velId ) {
+                                     const core::MultiVecCoordId& posId,
+                                     const core::MultiVecDerivId& velId ) {
         scoped::timer step("position integration");
         SReal dt = params->dt();
 
@@ -201,6 +201,8 @@ using namespace core::behavior;
             // to geometric sitffness generation for this step.
             simulation::MechanicalAddComplianceForce lvis( &params, f, lagrange, h ); // f += fc   f += lambda / dt
             send( lvis );
+
+            // TODO have a look about reseting or not forces of mapped dofs
         }
 
 
@@ -230,7 +232,7 @@ using namespace core::behavior;
         send( bob );
     }
 
-    void AssembledSolver::filter_constraints(core::MultiVecCoordId posId) const {
+    void AssembledSolver::filter_constraints( const core::MultiVecCoordId& posId) const {
 
         // compliant dofs
         for(unsigned i = 0, end = sys.compliant.size(); i < end; ++i) {

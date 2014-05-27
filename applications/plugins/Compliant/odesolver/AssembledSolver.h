@@ -157,8 +157,8 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
 			  
 	// integrate positions
     void integrate( const core::MechanicalParams* params, 
-					core::MultiVecCoordId posId, 
-					core::MultiVecDerivId velId );
+                    const core::MultiVecCoordId& posId,
+                    const core::MultiVecDerivId& velId );
 
 	// propagate velocities
     void propagate(const core::MechanicalParams* params);
@@ -181,7 +181,7 @@ public:
 
 
     /// evaluate violated and active constraints
-    void filter_constraints(core::MultiVecCoordId posId) const;
+    void filter_constraints(const core::MultiVecCoordId& posId) const;
     /// reset violated and active constraints
     void clear_constraints() const;
 
