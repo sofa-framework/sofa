@@ -112,7 +112,7 @@ bool SceneLoaderPY::loadTestWithArguments(const char *filename, const std::vecto
     if (!script)
     {
         // LOAD ERROR
-        SP_MESSAGE_ERROR( "scene script load error." )
+        SP_MESSAGE_ERROR( "script load error." )
         return false;
     }
 
@@ -134,7 +134,7 @@ bool SceneLoaderPY::loadTestWithArguments(const char *filename, const std::vecto
         PyObject *res = PyObject_CallObject(pFunc,0);
         if( !res )
         {
-            SP_MESSAGE_ERROR( "Python test has no 'run'' function" )
+            SP_MESSAGE_ERROR( "Python test 'run' function does not return any value" )
             return false;
         }
         else if( !PyBool_Check(res) )
@@ -153,7 +153,7 @@ bool SceneLoaderPY::loadTestWithArguments(const char *filename, const std::vecto
     }
     else
     {
-        SP_MESSAGE_ERROR( "cannot create Scene, no \"createScene(rootNode)\" module method found." )
+        SP_MESSAGE_ERROR( "Python test has no 'run'' function" )
         return false;
     }
 }
