@@ -244,7 +244,7 @@ using namespace core::behavior;
 
             const unsigned dim = dofs->getSize(); // nb lines per constraint
             const unsigned constraint_dim = dofs->getDerivDimension(); // nb lines per constraint
-            const unsigned matrix_size = dim * constraint_dim;
+//            const unsigned matrix_size = dim * constraint_dim;
 
             // fetch constraint value if any
             BaseConstraintValue::SPtr value = dofs->getContext()->get<BaseConstraintValue>( core::objectmodel::BaseContext::Local );
@@ -272,7 +272,7 @@ using namespace core::behavior;
 
             projector->mask.clear();
 
-            // fetch constraint value if any
+            // fetch constraint value
             BaseConstraintValue::SPtr value = dofs->getContext()->get<BaseConstraintValue>( core::objectmodel::BaseContext::Local );
 
             value->clear();
@@ -315,11 +315,11 @@ using namespace core::behavior;
                     dofs->getContext()->get<BaseConstraintValue>( core::objectmodel::BaseContext::Local );
 
             // fallback TODO optimize ?
-//            if( !value ) {
-//                value = new ConstraintValue( dofs );
-//                dofs->getContext()->addObject( value );
-//                value->init();
-//            }
+            if( !value ) {
+                value = new ConstraintValue( dofs );
+                dofs->getContext()->addObject( value );
+                value->init();
+            }
 
             value->dynamics(&res(off), dim, constraint_dim, stabilization.getValue(), posId, velId );
             off += dim * constraint_dim;
@@ -362,6 +362,7 @@ using namespace core::behavior;
                     dofs->getContext()->get<BaseConstraintValue>( core::objectmodel::BaseContext::Local );
 
             // fallback TODO optimize ?
+            // should have be created in filter_constraints
 //            if(!value ) {
 //                value = new ConstraintValue( dofs );
 //                dofs->getContext()->addObject( value );
@@ -504,8 +505,6 @@ using namespace core::behavior;
             lagrange.realloc( &vop, false, true );
 //            vop.print( lagrange,std::cerr, "BEGIN lambda: ", "\n" );
         }
-
-        filter_constraints( posId ); // look for violated and active constaints
 
         // compute forces and implicit right part warning: must be
         // call before assemblyVisitor since the mapping's geometric
