@@ -7,6 +7,9 @@
 #include <sofa/helper/system/config.h>
 #include <sofa/simulation/common/VectorOperations.h>
 
+#include "../constraint/BaseConstraintValue.h"
+#include "../constraint/Constraint.h"
+
 namespace sofa {
 namespace core {
 namespace behavior {
@@ -66,6 +69,14 @@ public:
 	// master/compliant dofs, sorted consistently with the above
 	typedef core::behavior::BaseMechanicalState dofs_type;
 	std::vector< dofs_type* > master, compliant;
+
+    // constraint components (projector and value)
+    struct constraint_type {
+        constraint_type() : projector(0), value(0) {}
+        linearsolver::Constraint::SPtr projector;
+        odesolver::BaseConstraintValue::SPtr value;
+    };
+    std::vector< constraint_type > constraints; // of the size of compliant dof
 	
 	void debug(SReal threshold = 0) const;
 

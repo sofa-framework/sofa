@@ -8,9 +8,6 @@
 #include "IterativeSolver.h"
 #include "Response.h"
 
-#include "../constraint/Constraint.h"
-
-
 #include <Eigen/Sparse>
 #include <Eigen/SparseCholesky>
 #include <Eigen/Cholesky>
@@ -70,7 +67,7 @@ class SOFA_Compliant_API SequentialSolver : public IterativeSolver {
 	// data blocks 
 	struct block {
 		block();
-		unsigned offset, size;
+        unsigned offset, size;
         Constraint* projector;
         bool activated; // is the constraint activated, otherwise its lambda is enforce to be 0
 	};
