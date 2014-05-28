@@ -30,7 +30,7 @@ def EXPECT_FLOAT_EQ(expected, actual, message=""):
         print "Value:", actual, "Expected:", expected, "-", message
     return test
 
-def EXPECT_VECT_EQ(expected, actual, message=""):
+def EXPECT_VEC_EQ(expected, actual, message=""):
     test = numpy.linalg.norm(numpy.array(expected)-numpy.array(actual))<EPSILON
     if not test:
         print "Value:", actual, "Expected:", expected, "-", message
