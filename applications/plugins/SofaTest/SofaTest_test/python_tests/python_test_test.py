@@ -24,9 +24,4 @@ def run():
     e = 1e-8
     ok &= EXPECT_FLOAT_EQ(1.0, 1.0+e, "EXPECT_FLOAT_EQ")
     ok &= EXPECT_VEC_EQ([1., 2., 3.], [1., 2., 3.], "EXPECT_VEC_EQ")
-    # FIXME: I don't know why I need this - thomas.lemaire 27/05/2014
-    if ok:
-        return True
-    else:
-        return False
-#    return ok
+    return ok

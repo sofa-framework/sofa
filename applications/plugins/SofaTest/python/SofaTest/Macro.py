@@ -25,13 +25,13 @@ def EXPECT_EQ(expected, actual, message=""):
     return expected==actual
 
 def EXPECT_FLOAT_EQ(expected, actual, message=""):
-    test = math.fabs(expected-actual)<EPSILON
+    test = bool(math.fabs(expected-actual)<EPSILON)
     if not test:
         print "Value:", actual, "Expected:", expected, "-", message
     return test
 
 def EXPECT_VEC_EQ(expected, actual, message=""):
-    test = numpy.linalg.norm(numpy.array(expected)-numpy.array(actual))<EPSILON
+    test = bool(numpy.linalg.norm(numpy.array(expected)-numpy.array(actual))<EPSILON)
     if not test:
         print "Value:", actual, "Expected:", expected, "-", message
     return test
