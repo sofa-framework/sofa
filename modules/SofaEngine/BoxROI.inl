@@ -115,7 +115,7 @@ void BoxROI<DataTypes>::init()
     if (!f_X0.isSet())
     {
         //cerr<<"BoxROI<DataTypes>::init() f_X0 is not set "<<endl;
-        BaseMechanicalState* mstate;
+        BaseMechanicalState* mstate = NULL;
         this->getContext()->get(mstate,BaseContext::Local);
         if (mstate)
         {
