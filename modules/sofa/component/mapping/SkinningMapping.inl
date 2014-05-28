@@ -168,6 +168,7 @@ void SkinningMapping<TIn, TOut>::reinit()
     else
 #endif
     {
+        _J.resizeBlocks(out.size(), xfrom.size());
         f_localPos.resize(out.size());
         f_rotatedPos.resize(out.size());
 
@@ -257,6 +258,7 @@ void SkinningMapping<TIn, TOut>::apply ( typename Out::VecCoord& out, const type
     unsigned int nbref=nbRef.getValue()[0];
     ReadAccessor<Data<vector<SVector<InReal> > > > m_weights  ( this->weight );
     ReadAccessor<Data<vector<SVector<unsigned int> > > > index ( f_index );
+    MatBlock matblock;
 
 #ifdef SOFA_DEV
     if(this->useDQ.getValue())
@@ -308,6 +310,7 @@ void SkinningMapping<TIn, TOut>::apply ( typename Out::VecCoord& out, const type
     else
 #endif
     {
+        _J.clear();
         for ( unsigned int i = 0 ; i < out.size(); i++ )
         {
             out[i] = OutCoord ();
@@ -315,12 +318,25 @@ void SkinningMapping<TIn, TOut>::apply ( typename Out::VecCoord& out, const type
             if(nbRef.getValue().size() == m_weights.size())
                 nbref = nbRef.getValue()[i];
 
+            _J.beginBlockRow(i);
             for ( unsigned int j=0; j<nbref && m_weights[i][j]>0.; j++ )
             {
                 f_rotatedPos[i][j]=in[index[i][j]].rotate(f_localPos[i][j]);
                 out[i] += in[index[i][j]].getCenter() * m_weights[i][j] + f_rotatedPos[i][j];
+
+                // update the Jacobian Matrix
+                Real w=m_weights[i][j];
+                matblock[0][0] = (Real) m_weights[i][j];        ;    matblock[1][0] = (Real) 0                      ;    matblock[2][0] = (Real) 0                      ;
+                matblock[0][1] = (Real) 0                       ;    matblock[1][1] = (Real) m_weights[i][j]        ;    matblock[2][1] = (Real) 0                      ;
+                matblock[0][2] = (Real) 0                       ;    matblock[1][2] = (Real) 0                      ;    matblock[2][2] = (Real) m_weights[i][j];       ;
+                matblock[0][3] = (Real) 0                       ;    matblock[1][3] = (Real)-f_rotatedPos[i][j][2]  ;    matblock[2][3] = (Real) f_rotatedPos[i][j][1]  ;
+                matblock[0][4] = (Real) f_rotatedPos[i][j][2]   ;    matblock[1][4] = (Real) 0                      ;    matblock[2][4] = (Real)-f_rotatedPos[i][j][0]  ;
+                matblock[0][5] = (Real)-f_rotatedPos[i][j][1]   ;    matblock[1][5] = (Real) f_rotatedPos[i][j][0]  ;    matblock[2][5] = (Real) 0                      ;
+                _J.createBlock(index[i][j],matblock);
             }
+            _J.endBlockRow();
         }
+         _J.compress();
     }
 }
 
@@ -551,7 +567,17 @@ void SkinningMapping<TIn, TOut>::applyJT ( typename In::MatrixDeriv& parentJacob
         }
 }
 
+template <class TIn, class TOut>
+const helper::vector<defaulttype::BaseMatrix*>* SkinningMapping<TIn, TOut>::getJs()
+{
+    return new helper::vector<BaseMatrix*>(1, (BaseMatrix*)&_J);
+}
 
+template <class TIn, class TOut>
+const  defaulttype::BaseMatrix* SkinningMapping<TIn, TOut>::getJ()
+{
+    return (BaseMatrix*)&_J;
+}
 
 template <class TIn, class TOut>
 void SkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)

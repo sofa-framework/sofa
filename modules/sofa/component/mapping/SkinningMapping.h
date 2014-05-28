@@ -33,6 +33,7 @@
 #include <sofa/component/component.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Mat.h>
+#include <sofa/component/linearsolver/EigenSparseMatrix.h>
 
 #ifdef SOFA_DEV
 #include <sofa/helper/DualQuat.h>
@@ -58,6 +59,7 @@ public:
 
     typedef core::Mapping<TIn, TOut> Inherit;
     typedef sofa::core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
+    typedef SReal Real;
 
     // Input types
     typedef TIn In;
@@ -77,6 +79,9 @@ public:
     typedef typename Out::MatrixDeriv OutMatrixDeriv;
     typedef typename Out::Real OutReal;
 
+    typedef defaulttype::Mat<OutDeriv::total_size,InDeriv::total_size,Real>     MatBlock;
+    typedef component::linearsolver::EigenSparseMatrix<In, Out> SparseJMatrixEigen;
+
 #ifdef SOFA_DEV
     typedef helper::DualQuatCoord3<OutReal> DQCoord;
     typedef defaulttype::Mat<4,4,OutReal> Mat44;
@@ -95,6 +100,7 @@ protected:
     // data for linear blending
     vector<vector<OutCoord> > f_localPos; /// initial child coordinates in local frame x weight :   dp = dMa_i (w_i \bar M_i f_localPos)
     vector<vector<OutCoord> > f_rotatedPos;  /// rotated child coordinates :  dp = Omega_i x f_rotatedPos  :
+    SparseJMatrixEigen   _J; /// jacobian matrix for compliant API
 
     // data for dual quat blending
 #ifdef SOFA_DEV
@@ -119,6 +125,7 @@ public:
 protected:
     SkinningMapping ();
     virtual ~SkinningMapping();
+    
 public:
     void init();
     void reinit();
@@ -127,6 +134,10 @@ public:
     void applyJ(typename Out::VecDeriv& out, const typename In::VecDeriv& in);
     void applyJT(typename In::VecDeriv& out, const typename Out::VecDeriv& in);
     void applyJT(typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in);
+
+    // additional Compliant methods
+    const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs();
+    const sofa::defaulttype::BaseMatrix* getJ();
 
     SeqTriangles triangles; // Topology of toModel (used for weight display)
     void draw(const core::visual::VisualParams* vparams);
