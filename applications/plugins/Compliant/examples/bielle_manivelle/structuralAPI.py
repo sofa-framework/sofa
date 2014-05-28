@@ -30,7 +30,7 @@ joint_offsets = [
     ["offset3", 0, [2.2, 0, 0.33, 0, 0, 0, 1]]    
 ]
 
-# joints: name, frame1, frame2, joint type, joint axis
+# joints: name, offset1, offset2, joint type, joint axis
 links = [ 
 
     #revolute joint around z
@@ -61,10 +61,11 @@ def createScene(node):
     
     
     # solvers
+    compliance = 0
     
     node.createObject('AssembledSolver', name='odesolver',stabilization=1)
-    node.createObject('MinresSolver', name='numsolver', iterations='250', precision='1e-14')
-    #node.createObject('LDLTSolver', name='numsolver')
+    node.createObject('MinresSolver', name='numsolver', iterations='250', precision='1e-14');
+    #node.createObject('LDLTSolver', name='numsolver'); compliance = 1e-10 #need to relax the system a bit
         
         
         
@@ -75,6 +76,9 @@ def createScene(node):
     rigids  = []
     offsets = []
     joints  = []
+    
+    
+    
         
     # create rigid bodies
     for p in parts:
@@ -90,22 +94,25 @@ def createScene(node):
 	r.addCollisionMesh( mesh )
 	r.addVisualModel( mesh )
 	
-	#r.dofs.showObject=True
-	#r.dofs.showObjectScale=0.5
+	r.dofs.showObject=True
+	r.dofs.showObjectScale=0.5
 	
 	rigids.append(r)
       
       
     # fix first body
     rigids[0].node.createObject('FixedConstraint')
+    
+   
+    
       
     # create offsets
     for o in joint_offsets:
       
 	o = rigids[o[1]].addOffset( o[0], o[2] )
 	
-	#o.dofs.showObject=True
-	#o.dofs.showObjectScale=0.25
+	o.dofs.showObject=True
+	o.dofs.showObjectScale=0.25
 	
 	offsets.append( o )
 	
@@ -114,12 +121,13 @@ def createScene(node):
     for l in links:
       
       j = l[3] (l[4], scene, l[0], offsets[l[1]].node, offsets[l[2]].node )
+      j.constraint.compliance.compliance = compliance
       
       joints.append( j )
     
           
     # just for fun!
-    #rigids[1].addMotor([0,0,0,0,0,100000])
+    #rigids[1].addMotor([0,0,0,0,0,1000])
             
     return node
 
