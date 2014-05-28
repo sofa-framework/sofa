@@ -568,15 +568,15 @@ void SkinningMapping<TIn, TOut>::applyJT ( typename In::MatrixDeriv& parentJacob
 }
 
 template <class TIn, class TOut>
-const helper::vector<defaulttype::BaseMatrix*>* SkinningMapping<TIn, TOut>::getJs()
+const sofa::helper::vector<sofa::defaulttype::BaseMatrix*>* SkinningMapping<TIn, TOut>::getJs()
 {
-    return new helper::vector<BaseMatrix*>(1, (BaseMatrix*)&_J);
+    return new sofa::helper::vector<sofa::defaulttype::BaseMatrix*>(1, (sofa::defaulttype::BaseMatrix*)&_J);
 }
 
 template <class TIn, class TOut>
-const  defaulttype::BaseMatrix* SkinningMapping<TIn, TOut>::getJ()
+const  sofa::defaulttype::BaseMatrix* SkinningMapping<TIn, TOut>::getJ()
 {
-    return (BaseMatrix*)&_J;
+    return (sofa::defaulttype::BaseMatrix*)&_J;
 }
 
 template <class TIn, class TOut>

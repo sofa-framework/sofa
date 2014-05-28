@@ -79,8 +79,8 @@ public:
     typedef typename Out::MatrixDeriv OutMatrixDeriv;
     typedef typename Out::Real OutReal;
 
-    typedef defaulttype::Mat<OutDeriv::total_size,InDeriv::total_size,Real>     MatBlock;
-    typedef component::linearsolver::EigenSparseMatrix<In, Out> SparseJMatrixEigen;
+    typedef sofa::defaulttype::Mat<OutDeriv::total_size,InDeriv::total_size,Real>     MatBlock;
+    typedef sofa::component::linearsolver::EigenSparseMatrix<In, Out> SparseJMatrixEigen;
 
 #ifdef SOFA_DEV
     typedef helper::DualQuatCoord3<OutReal> DQCoord;
