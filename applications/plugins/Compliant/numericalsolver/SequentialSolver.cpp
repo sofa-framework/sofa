@@ -25,7 +25,7 @@ SequentialSolver::SequentialSolver()
 }
 
 
-SequentialSolver::block::block() : offset(0), size(0), projector(0) { }
+SequentialSolver::block::block() : offset(0), size(0), projector(0), activated(false) { }
 
 void SequentialSolver::fetch_blocks(const system_type& system) {
 	
@@ -36,10 +36,8 @@ void SequentialSolver::fetch_blocks(const system_type& system) {
 
 	for(unsigned i = 0, n = system.compliant.size(); i < n; ++i) {
 		system_type::dofs_type* const dofs = system.compliant[i];
-		
-        Constraint* const projector =
-            dofs->getContext()->get<Constraint>(core::objectmodel::BaseContext::Local);
-		
+        const system_type::constraint_type& constraint = system.constraints[i];
+
 		const unsigned dim = dofs->getDerivDimension();
 		
 		for(unsigned k = 0, max = dofs->getSize(); k < max; ++k) {
@@ -48,10 +46,10 @@ void SequentialSolver::fetch_blocks(const system_type& system) {
 
 			b.offset = off;
 			b.size = dim;
-			b.projector = projector;
+            b.projector = constraint.projector.get(); // TODO remove this pointer copy
 
-            assert( !projector || projector->mask.empty() || projector->mask.size() == max );
-            b.activated = !projector || projector->mask.empty() || projector->mask[k];
+            assert( !b.projector || b.projector->mask.empty() || b.projector->mask.size() == max );
+            b.activated = !b.projector || b.projector->mask.empty() || b.projector->mask[k];
 
 			blocks.push_back( b );
 

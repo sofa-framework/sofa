@@ -8,6 +8,8 @@
 #include "./utils/cast.h"
 #include "./utils/sparse.h"
 
+#include "../constraint/Stabilization.h"
+
 using std::cerr;
 using std::endl;
 
@@ -554,6 +556,23 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
 				res.compliant.push_back( c.dofs );
 				// scoped::timer step("compliant dofs");
 				assert( !zero(Jc) );
+
+
+                // fetch projector and constraint value if any
+                AssembledSystem::constraint_type constraint;
+                constraint.projector = c.dofs->getContext()->get<component::linearsolver::Constraint>( core::objectmodel::BaseContext::Local );
+                constraint.value = c.dofs->getContext()->get<component::odesolver::BaseConstraintValue>( core::objectmodel::BaseContext::Local );
+                // fallback -> stabilized constraint value
+                if( !constraint.value ) {
+                    constraint.value = new component::odesolver::Stabilization( c.dofs );
+                    c.dofs->getContext()->addObject( constraint.value );
+                    constraint.value->init();
+                }
+                res.constraints.push_back( constraint );
+
+
+
+
 
 				// mapping
 				res.J.middleRows(off_c, c.size) = Jc;

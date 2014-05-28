@@ -12,6 +12,8 @@
 // TODO forward instead ?
 #include "numericalsolver/KKTSolver.h"
 
+
+
 namespace sofa {
 
 namespace simulation {
@@ -166,6 +168,9 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
 	// linear solver: TODO hide in pimpl ?
 	typedef linearsolver::KKTSolver kkt_type;
 	kkt_type::SPtr kkt;
+
+
+
 
 	// TODO: hide 
 public:

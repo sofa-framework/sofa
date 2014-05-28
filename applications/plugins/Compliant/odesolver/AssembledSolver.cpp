@@ -7,11 +7,7 @@
 #include <sofa/simulation/common/VectorOperations.h>
 
 #include "assembly/AssemblyVisitor.h"
-#include "constraint/ConstraintValue.h"
-#include "constraint/Constraint.h"
-
 #include "utils/scoped.h"
-
 
 using std::cerr;
 using std::endl;
@@ -236,29 +232,14 @@ using namespace core::behavior;
 
         // compliant dofs
         for(unsigned i = 0, end = sys.compliant.size(); i < end; ++i) {
-
             system_type::dofs_type* dofs = sys.compliant[i];
+            const system_type::constraint_type& constraint = sys.constraints[i];
 
-            linearsolver::Constraint::SPtr projector = dofs->getContext()->get<linearsolver::Constraint>( core::objectmodel::BaseContext::Local );
-
-            if( !projector ) continue; // if bilateral nothing to filter
-
+            if( !constraint.projector ) continue; // if bilateral nothing to filter
 
             const unsigned dim = dofs->getSize(); // nb lines per constraint
             const unsigned constraint_dim = dofs->getDerivDimension(); // nb lines per constraint
-//            const unsigned matrix_size = dim * constraint_dim;
-
-            // fetch constraint value if any
-            BaseConstraintValue::SPtr value = dofs->getContext()->get<BaseConstraintValue>( core::objectmodel::BaseContext::Local );
-
-            // fallback TODO optimize ?
-            if( !value ) {
-                value = new ConstraintValue( dofs );
-                dofs->getContext()->addObject( value );
-                value->init();
-            }
-
-            value->filterConstraints( projector->mask, posId, dim, constraint_dim );
+            constraint.value->filterConstraints( constraint.projector->mask, posId, dim, constraint_dim );
         }
     }
 
@@ -266,18 +247,12 @@ using namespace core::behavior;
         // compliant dofs
         for(unsigned i = 0, end = sys.compliant.size(); i < end; ++i) {
 
-            system_type::dofs_type* dofs = sys.compliant[i];
+            const system_type::constraint_type& constraint = sys.constraints[i];
 
-            linearsolver::Constraint::SPtr projector = dofs->getContext()->get<linearsolver::Constraint>( core::objectmodel::BaseContext::Local );
+            if( !constraint.projector ) continue; // if bilateral nothing to filter
 
-            if( !projector ) continue; // if bilateral nothing to filter
-
-            projector->mask.clear();
-
-            // fetch constraint value
-            BaseConstraintValue::SPtr value = dofs->getContext()->get<BaseConstraintValue>( core::objectmodel::BaseContext::Local );
-
-            value->clear();
+            constraint.projector->mask.clear();
+            constraint.value->clear();
         }
     }
 
@@ -308,22 +283,14 @@ using namespace core::behavior;
         // compliant dofs
         for(unsigned i = 0, end = sys.compliant.size(); i < end; ++i) {
             system_type::dofs_type* dofs = sys.compliant[i];
+            const system_type::constraint_type& constraint = sys.constraints[i];
 
             const unsigned dim = dofs->getSize(); // nb lines per constraint
             const unsigned constraint_dim = dofs->getDerivDimension(); // nb lines per constraint
 
-            // fetch constraint value if any
-            BaseConstraintValue::SPtr value =
-                    dofs->getContext()->get<BaseConstraintValue>( core::objectmodel::BaseContext::Local );
+            assert( constraint.value ); // at least a fallback must be added in filter_constraints
 
-            // fallback TODO optimize ?
-            if( !value ) {
-                value = new ConstraintValue( dofs );
-                dofs->getContext()->addObject( value );
-                value->init();
-            }
-
-            value->dynamics(&res(off), dim, constraint_dim, stabilization.getValue(), posId, velId );
+            constraint.value->dynamics( &res(off), dim, constraint_dim, stabilization.getValue(), posId, velId );
             off += dim * constraint_dim;
         }
         assert( off == sys.size() );
@@ -355,23 +322,14 @@ using namespace core::behavior;
 
         for(unsigned i = 0, end = sys.compliant.size(); i < end; ++i) {
             system_type::dofs_type* dofs = sys.compliant[i];
+            const system_type::constraint_type& constraint = sys.constraints[i];
 
             const unsigned dim = dofs->getSize(); // nb lines per constraint
             const unsigned constraint_dim = dofs->getDerivDimension(); // nb lines per constraint
 
-            // fetch constraint value if any
-            BaseConstraintValue::SPtr value =
-                    dofs->getContext()->get<BaseConstraintValue>( core::objectmodel::BaseContext::Local );
+            assert( constraint.value ); // at least a fallback must be added in filter_constraints
 
-            // fallback TODO optimize ?
-            // should have be created in filter_constraints
-//            if(!value ) {
-//                value = new ConstraintValue( dofs );
-//                dofs->getContext()->addObject( value );
-//                value->init();
-//            }
-
-            value->correction(&res(off), dim, constraint_dim, posId, velId );
+            constraint.value->correction( &res(off), dim, constraint_dim, posId, velId );
 
             off += dim * constraint_dim;
         }
