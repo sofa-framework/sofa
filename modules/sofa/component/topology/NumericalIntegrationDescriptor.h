@@ -44,7 +44,7 @@ using namespace sofa::defaulttype;
 
 /// Cross product for 3-elements vectors.
 template< typename Real, int N>
-class  SOFA_BASE_TOPOLOGY_API NumericalIntegrationDescriptor {
+class NumericalIntegrationDescriptor {
  
 public:
 	typedef Vec<N, Real> BarycentricCoordinatesType;
