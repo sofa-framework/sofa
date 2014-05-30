@@ -6,6 +6,8 @@
 #include <plugins/SceneCreator/SceneCreator.h>
 using namespace sofa::modeling;
 
+namespace sofa
+{
 
 struct AssembledSolver_test : public CompliantSolver_test
 {
@@ -358,6 +360,7 @@ TEST_F(AssembledSolver_test, OneFixedOneStiffnessSpringV100 ){     testLinearOne
 TEST_F(AssembledSolver_test, OneFixedOneStiffnessSpringX200 ){     testLinearOneFixedOneStiffnessSpringX200(false);  }
 TEST_F(AssembledSolver_test, OneFixedOneComplianceSpringX200 ){    testLinearOneFixedOneComplianceSpringX200(false);  }
 
+}// sofa
 
 
 

@@ -38,9 +38,15 @@
 /** \mainpage
   Simulation of deformable object using a formulation similar to the KKT system for hard constraints, regularized using a compliance matrix.
 
-  See sofa::component::odesolver::ComplianceSolver and sofa::core::behavior::BaseCompliance for more detail.
+  Provides implicit time integration combined with constraint stabilization.
+
+  See Compliant/doc/compliant.pdf and Compliant/doc/compliant-reference.pdf for more detail.
+
+  See also class sofa::component::odesolver::AssembledSolver
 
   A test suite is available, see page \ref Page_CompliantTestSuite
+
+  @author Francois Faure, Maxime Tournier, Matthieu Nesme, Benjamin Gilles
 
   */
 

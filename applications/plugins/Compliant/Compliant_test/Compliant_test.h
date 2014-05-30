@@ -25,8 +25,6 @@
 /** \file Compliant test suite main file */
 // Francois Faure,
 
-/** \page Page_CompliantTestSuite Compliant plugin test suite
-  */
 
 
 #include <plugins/SofaTest/Sofa_test.h>
@@ -76,6 +74,18 @@ using namespace sofa;
 using namespace sofa::component;
 using namespace modeling;
 using sofa::helper::vector;
+
+namespace sofa
+{
+/** \page Page_CompliantTestSuite Compliant plugin test suite
+ *
+ * Class CompliantSolver_test provides helpers.
+ *
+ * Class Assembly_test checks the assembly of system matrices: mass, constraint Jacobian, etc.
+ *
+ * Class AssembledSolver_test checks the accuracy of the Implicit Euler integration in simple linear cases.
+  */
+
 
 
 /** Base class for tests of the Compliance plugin. Contains typedefs and helpers */
@@ -331,3 +341,4 @@ protected:
 
 };
 
+}//sofa

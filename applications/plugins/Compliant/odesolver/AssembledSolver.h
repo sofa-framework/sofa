@@ -71,16 +71,11 @@ public:
 
 
 
-/** Solver using a regularized KKT matrix.
-  The compliance values are used to regularize the system.
-
- simple example compliance solver using system assembly,
- integration using velocity implicit euler. needs a KKTSolver
- at the same level in the scene graph.
-
+/** DAE Solver combining implicit time integration and constraint stabilization.
+ * The system matrix is assembled in a regularized KKT form.
+  Constraint compliance is used to regularize the equation, so that the Schur complement is always positive definite.
 
   Inspired from Servin,Lacoursiere,Melin, Interactive Simulation of Elastic Deformable Materials,  http://www.ep.liu.se/ecp/019/005/ecp01905.pdf
-
   We generalize it to a tunable implicit integration scheme:
       \f[ \begin{array}{ccc}
     \Delta v &=& h.M^{-1}.(\alpha f_{n+1} + (1-\alpha) f_n)  \\
@@ -110,9 +105,12 @@ public:
 
 
   A word on Rayleigh damping:
-  It is not handled at the solver level (contrarly to ImplicitEulerSolver) in order not to pollutate. It can be added directly from the ForceFields and Masses components.
+  It is not handled at the solver level (contrarly to ImplicitEulerSolver) in order not to bias the equation.
+  It can be added directly from the ForceFields and Masses components.
   Note that in that case, the Rayleigh damping does NOT consider the geometric stiffnesses.
   It could be possible to bias the child force used to compute the geometric stiffness but it would imposed to each forcefield to compute a weighted "rayleigh force" in addition to the regular force. It is neglicted for now.
+
+ @author Francois Faure, Maxime Tournier, Matthieu Nesme
 */
 class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolver {
   public:
