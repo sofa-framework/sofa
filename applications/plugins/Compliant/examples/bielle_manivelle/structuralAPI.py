@@ -83,21 +83,21 @@ def createScene(node):
     # create rigid bodies
     for p in parts:
       
-	r = StructuralAPI.RigidBody( scene, p[0] )
-	
+        r = StructuralAPI.RigidBody( scene, p[0] )
+        
         mesh = mesh_path + '/' + p[15]
         density = float(p[7])
         offset = p[3]
-	
-	r.setFromMesh( mesh, density, offset )
-	
-	r.addCollisionMesh( mesh )
-	r.addVisualModel( mesh )
-	
-	r.dofs.showObject=True
-	r.dofs.showObjectScale=0.5
-	
-	rigids.append(r)
+        
+        r.setFromMesh( mesh, density, offset )
+        
+        r.addCollisionMesh( mesh )
+        r.addVisualModel( mesh )
+        
+        r.dofs.showObject=True
+        r.dofs.showObjectScale=0.5
+        
+        rigids.append(r)
       
       
     # fix first body
@@ -109,13 +109,13 @@ def createScene(node):
     # create offsets
     for o in joint_offsets:
       
-	o = rigids[o[1]].addOffset( o[0], o[2] )
-	
-	o.dofs.showObject=True
-	o.dofs.showObjectScale=0.25
-	
-	offsets.append( o )
-	
+        o = rigids[o[1]].addOffset( o[0], o[2] )
+        
+        o.dofs.showObject=True
+        o.dofs.showObjectScale=0.25
+        
+        offsets.append( o )
+        
         
     ## create joints
     for l in links:
