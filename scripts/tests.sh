@@ -51,7 +51,7 @@ run-tests ()
             # Little fix: Googletest marks skipped tests with a 'status="notrun"' attribute,
             # but the JUnit XML understood by Jenkins requires a '<skipped/>' element instead.
             # source: http://stackoverflow.com/a/14074664
-            sed -i 's:\(<testcase [^>]*status="notrun".*\)/>:\1><skipped/></testcase>:' "$output_file"
+            sed -i'.bak' 's:\(<testcase [^>]*status="notrun".*\)/>:\1><skipped/></testcase>:' "$output_file"
         else
             echo "$0: $output_file was not created; $test ended with code $exit_code" >&2
         fi
