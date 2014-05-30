@@ -14,7 +14,7 @@ namespace newgui {
 
 /** OpenGL interface to a SofaScene.
  * This is not a viewer, this is an object used by a viewer to display a Sofa scene and to pick objects in it.
- * It does not contain the Sofa scene. Several viewers can be connected to a single scene through such interfaces.
+ * It contains a pointer to the Sofa scene. Several viewers can be connected to a single scene through such interfaces.
  *
  * Picking returns a PickedPoint which describes a particle.
  * It is up to the application to create the appropriate Interactor, which can then be inserted in the Sofa scene.
