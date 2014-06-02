@@ -20,8 +20,16 @@ class QSofaMainWindow : public QMainWindow
 public:
     explicit QSofaMainWindow(QWidget *parent = 0);
 
+    /**
+     * @brief The simulated scene
+     */
     sofa::newgui::QSofaScene sofaScene;
-    QSofaViewer* sofaViewer1;
+
+    /**
+     * @brief Default viewer, set as central widget.
+     * Additional viewers can be created during the session
+     */
+    QSofaViewer* mainViewer;
 
     /**
      * @brief initSofa
@@ -42,9 +50,23 @@ public slots:
      * @brief Select a new scene file using the menu, clear the current scene and replace it with the new one
      */
     void open();
+    /**
+     * @brief Set the simulation time step
+     * @param ms Value of the time step, in milliseconds.
+     */
     void setDt( int ms );
+    /**
+     * @brief Toggle the application betwenn full screen/normal mode
+     */
+    void toggleFullScreen();
+    /**
+     * @brief Create an additional viewer in a dock widget
+     */
+    void createAdditionalViewer();
 protected:
     QAction* _playPauseAct;  // play/pause
+    bool _fullScreen; ///< true if currently displaying in full screen mode
+
 };
 
 #endif // QTSOFAMAINWINDOW_H

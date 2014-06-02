@@ -4,6 +4,7 @@
 #include <QMouseEvent>
 #include <QTimer>
 #include <QMessageBox>
+#include <QAction>
 #include <GL/glut.h>
 #include <iostream>
 using std::cout;
@@ -27,7 +28,29 @@ QSofaViewer::QSofaViewer(newgui::QSofaScene *sofaScene, QWidget *parent) :
     _drag = NULL;
     connect(sofaScene, SIGNAL(stepEnd()), this, SLOT(draw()));
     connect(sofaScene, SIGNAL(opened()), this, SLOT(draw()));
+
+    {
+        QAction* toggleFullScreenAct = new QAction( tr("&FullScreen"), this );
+        toggleFullScreenAct->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_F));
+        toggleFullScreenAct->setShortcutContext(Qt::ApplicationShortcut);
+        toggleFullScreenAct->setToolTip(tr("Show full screen"));
+        connect(toggleFullScreenAct, SIGNAL(triggered()), this, SLOT(toggleFullScreen()));
+        this->addAction(toggleFullScreenAct);
+    }
+
 }
+
+void QSofaViewer::toggleFullScreen()
+{
+    cerr<<"QSofaViewer::toggleFullScreen()" << endl;
+    if( this->isFullScreen() ){
+        this->showNormal();
+    }
+    else {
+        this->showFullScreen();
+    }
+}
+
 
 void QSofaViewer::initializeGL()
 {

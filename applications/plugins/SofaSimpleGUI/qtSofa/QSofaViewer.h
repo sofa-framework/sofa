@@ -38,6 +38,7 @@ public slots:
     void draw();
     /// adjust camera center and orientation to see the entire scene
     void viewAll();
+    void toggleFullScreen();
 
 protected:
     SofaGL _sofaGL; ///< interface with the scene to display and pick in.
