@@ -194,7 +194,7 @@ void PlaneForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowForceFields()) return;
 	//if (!vparams->isSupported(core::visual::API_OpenGL)) return;
-    drawPlane(vparams);
+    if (bDraw.getValue()) drawPlane(vparams);
 }
 
 
