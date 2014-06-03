@@ -212,8 +212,8 @@ void MeshGenerationFromImage<DataTypes, _ImageTypes>::update()
 	}
 	else
 	{
-		serr << "ERROR : lable and labelCellSize must have the same size... otherwise cellSize " 
-			<< cellSize.getValue() << " will be apply for all layers" << sendl;
+        serr << "ERROR : label and labelCellSize must have the same size... otherwise cellSize "
+            << cellSize.getValue() << " will be apply for all layers" << sendl;
 	}
 
 #if CGAL_VERSION_NR >= CGAL_VERSION_NUMBER(3,6,0)
@@ -303,6 +303,9 @@ void MeshGenerationFromImage<DataTypes, _ImageTypes>::update()
             else
                 for (unsigned int c=0; c<p.size(); c++)
                     if (p[c] < bbmin[c]) bbmin[c] = p[c]; else if (p[c] > bbmax[c]) bbmax[c] = p[c];
+
+//            Vector3 scale = Vector3(image3.image()->vx, image3.image()->vy, image3.image()->vz);
+//            p = p.linearProduct(scale);
 
             Vector3 rotation = Vector3(image3.image()->rx, image3.image()->ry, image3.image()->rz);
             defaulttype::Quaternion q = helper::Quater<Real>::createQuaterFromEuler(rotation*M_PI/180.0);
