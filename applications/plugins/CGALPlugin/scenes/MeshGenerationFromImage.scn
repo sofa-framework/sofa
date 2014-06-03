@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<Node name="root" gravity="0 0 0" dt="1"  >
+
+	<RequiredPlugin pluginName="CGALPlugin"/>
+	<RequiredPlugin pluginName="image"/>
+	<BackgroundSetting color="0 0.16862745098 0.21176470588"/>
+	<VisualStyle displayFlags="showVisual" />
+	<OglGrid/>
+	<OglSceneFrame/>
+	<OglLineAxis/>
+
+	<ImageContainer name="image" template="ImageUC" filename="data/image/image-cube.inr"/>
+	<!-- <ImageViewer template="ImageUC" src="@image"/> -->
+		
+	<MeshGenerationFromImage template="Vec3d" name="generator" printLog="true" drawTetras="true" 
+	image="@image.image" transform="@image.transform"
+	cellSize="0.1" facetAngle="30" facetSize="1" cellRatio="3" facetApproximation="1" ordering="0"
+	label="1 2 3" labelCellSize="0.1 0.5 0.05"/>
+		
+	<Mesh name="volume" points="@generator.outputPoints" tetras="@generator.outputTetras"/> 
+	<VTKExporter name="exporter" filename="data/output.vtu"  XMLformat="1" edges="0" tetras="1"  listening="true" exportAtBegin="true" cellsDataFields="generator.outputCellData" overwrite="true"/>
+
+</Node>
+
