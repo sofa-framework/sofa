@@ -17,7 +17,7 @@ namespace sofa
 		Task::~Task()
 		{
 			//m_Status;
-			delete this;
+			//delete this;
 		}
 
 

@@ -86,6 +86,7 @@ namespace mapping
 
 		}
 
+
 		return result;
 	}
 
@@ -139,6 +140,7 @@ namespace mapping
 			(*_out)[i] = out0 * (1-fact) + out1 * (fact);
 
 		}
+
 
 		return true;
 	}
@@ -197,6 +199,7 @@ namespace mapping
 			getVOrientation(_out1) += cross( rotatedPoint1, f) * (fact);
 
 		}
+
 
 		return true;
 	}
