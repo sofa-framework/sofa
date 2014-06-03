@@ -240,37 +240,41 @@ protected:
         unsigned int nb = nbImages.getValue();
         if(!nb) return;
 
-        Vec<2,Coord> BB = this->getBB(0);
-        Coord minScale = this->getScale(0);
+        Vec<2,Coord> BB = this->getBB(0);//bounding box of the output image
+        Coord minScale;
+        for (unsigned int j = 0 ; j < this->getScale(0).size(); j++)
+            minScale[j] = fabs(this->getScale(0)[j]);
         for(unsigned int j=1; j<nb; j++)
         {
             Vec<2,Coord> bb = this->getBB(j);
             for(unsigned int k=0; k<bb[0].size(); k++)
             {
+                //BB is axis-aligned
                 if(BB[0][k]>bb[0][k]) BB[0][k]=bb[0][k];
                 if(BB[1][k]<bb[1][k]) BB[1][k]=bb[1][k];
             }
             for(unsigned int k=0; k<3; k++)
-                if( minScale[k] > this->getScale(j)[k] )
-                    minScale[k] = this->getScale(j)[k];
+                if( minScale[k] > fabs(this->getScale(j)[k]) )
+                    minScale[k] = fabs(this->getScale(j)[k]);
         }
 
         // transform = translated version of inputTransforms[0] with minimum voxel size
         raTransform inT0(this->inputTransforms[0]);
         waTransform outT(this->transform);
         outT->operator=(inT0);
-        outT->getTranslation()=inT0->fromImage(Coord());
-
+        outT->getRotation()=Coord(); //reset rotation because output image is axis aligned
+        outT->getTranslation()=BB[0];
         outT->getScale()=minScale;
+        outT->update(); //update internal quaternion depending on the rotation
 
         // set image
         raImage in0(this->inputImages[0]);
         if(in0->isEmpty()) return;
+
         imCoord dim=in0->getDimensions();
-        Coord MaxP=outT->toImage(BB[1]); // corner pixel = dim-1
-        dim[ImageTypes::DIMENSION_X]=ceil(fabs(MaxP[0]))+1;
-        dim[ImageTypes::DIMENSION_Y]=ceil(fabs(MaxP[1]))+1;
-        dim[ImageTypes::DIMENSION_Z]=ceil(fabs(MaxP[2]))+1;
+        dim[ImageTypes::DIMENSION_X]=fabs(BB[1][0] - BB[0][0]) / fabs(outT->getScale()[0]);
+        dim[ImageTypes::DIMENSION_Y]=fabs(BB[1][1] - BB[0][1]) / fabs(outT->getScale()[1]);
+        dim[ImageTypes::DIMENSION_Z]=fabs(BB[1][2] - BB[0][2]) / fabs(outT->getScale()[2]);
 
         waImage out(this->image);
         out->clear();
@@ -288,7 +292,7 @@ protected:
         {
             for(unsigned int t=0; t<dim[4]; t++) for(unsigned int k=0; k<dim[3]; k++) img(t)(x,y,z,k) = (T)0;
 
-            Coord p=outT->fromImage(Coord(x,y,z));
+            Coord p = outT->fromImage(Coord(x,y,z)); //coordinate of voxel (x,y,z) in world space
             vector<struct pttype> pts;
             for(unsigned int j=0; j<nb; j++) // store values at p from input images
             {
@@ -297,7 +301,7 @@ protected:
                 const imCoord indim=in->getDimensions();
 
                 raTransform inT(this->inputTransforms[j]);
-                Coord inp=inT->toImage(p);
+                Coord inp=inT->toImage(p); //corresponding voxel in image j
                 if(inp[0]>=0 && inp[1]>=0 && inp[2]>=0 && inp[0]<=indim[0]-1 && inp[1]<=indim[1]-1 && inp[2]<=indim[2]-1)
                 {
                     struct pttype pt;
