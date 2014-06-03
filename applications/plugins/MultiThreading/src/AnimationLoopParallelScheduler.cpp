@@ -182,8 +182,7 @@ namespace simulation
 	void AnimationLoopParallelScheduler::initThreadLocalData()
 	{
 
-
-		static boost::pool<> task_pool(sizeof(InitPerThreadDataTask));
+		boost::pool<> task_pool(sizeof(InitPerThreadDataTask));
 
 		//volatile long atomicCounter = TaskScheduler::getInstance().size();// mNbThread;
 		helper::system::atomic<int> atomicCounter( TaskScheduler::getInstance().size() );
