@@ -12,10 +12,10 @@ namespace linearsolver {
 
 
 /// Base class to solve the linear ode/dynamics equation
-struct Response : core::objectmodel::BaseObject {
-
+class Response : public core::objectmodel::BaseObject {
+public:
 	SOFA_CLASS(Response, core::objectmodel::BaseObject);
-	
+
 	typedef AssembledSystem system_type;
 	
 	typedef system_type::real real;
