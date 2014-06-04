@@ -78,6 +78,7 @@ SceneColladaLoader::SceneColladaLoader() : SceneLoader()
 	, importer()
 	, animationSpeed(initData(&animationSpeed, 1.0f, "animationSpeed", "animation speed"))
 	, generateCollisionModels(initData(&generateCollisionModels, true, "generateCollisionModels", "generate point/line/triangle collision models for imported meshes"))
+	, useFlexible(initData(&useFlexible, false, "useFlexible", "Use the Flexible plugin if available (it will replace the SkinningMapping with a LinearMapping)"))
 {
 	
 }
@@ -559,51 +560,110 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
 
 					if(currentAiMesh->HasBones())
                     {
-						
-						SkinningMapping<Rigid3dTypes, Vec3dTypes>::SPtr currentSkinningMapping = sofa::core::objectmodel::New<SkinningMapping<Rigid3dTypes, Vec3dTypes> >();
+						bool generateSkinningMapping = true;
+
+#ifdef SOFA_HAVE_PLUGIN_FLEXIBLE
+						if(useFlexible.getValue())
 						{
-							// adding the generated SkinningMapping to its parent Node
-							currentSubNode->addObject(currentSkinningMapping);
+							generateSkinningMapping = false;
 
-							std::stringstream nameStream(meshName);
-							if(meshName.empty())
-								nameStream << componentIndex++;
-							currentSkinningMapping->setName(nameStream.str());
-
-							currentSkinningMapping->setModels(currentBoneMechanicalObject.get(), currentMechanicalObject.get());
-
-							vector<SVector<SkinningMapping<Rigid3dTypes, Vec3dTypes>::InReal> > weights;
-							vector<SVector<unsigned int> > indices;
-							vector<unsigned int> nbref;
-
-							indices.resize(currentAiMesh->mNumVertices);
-							weights.resize(currentAiMesh->mNumVertices);
-							nbref.resize(currentAiMesh->mNumVertices);
-							for(unsigned int k = 0; k < nbref.size(); ++k)
-								nbref[k] = 0;
-
-							for(unsigned int k = 0; k < currentAiMesh->mNumBones; ++k)
+							LinearMapping<Rigid3dTypes, Vec3dTypes>::SPtr currentLinearMapping = sofa::core::objectmodel::New<LinearMapping<Rigid3dTypes, Vec3dTypes> >();
 							{
-								aiBone*& bone = currentAiMesh->mBones[k];
+								// adding the generated LinearMapping to its parent Node
+								currentSubNode->addObject(currentLinearMapping);
 
-								for(unsigned int l = 0; l < bone->mNumWeights; ++l)
+								std::stringstream nameStream(meshName);
+								if(meshName.empty())
+									nameStream << componentIndex++;
+								currentLinearMapping->setName(nameStream.str());
+
+								currentLinearMapping->setModels(currentBoneMechanicalObject.get(), currentMechanicalObject.get());
+
+								vector<LinearMapping<Rigid3dTypes, Vec3dTypes>::VReal> weights;
+								vector<LinearMapping<Rigid3dTypes, Vec3dTypes>::VRef> indices;
+
+								indices.resize(currentAiMesh->mNumVertices);
+								weights.resize(currentAiMesh->mNumVertices);
+							
+								size_t nbref = currentAiMesh->mNumBones;
+
+								for(std::size_t i = 0; i < indices.size(); ++i)
 								{
-									unsigned int id = bone->mWeights[l].mVertexId;
-									float weight = bone->mWeights[l].mWeight;
-
-									if(id >= currentAiMesh->mNumVertices)
-									{
-										sout << "Error: SceneColladaLoader::readDAE, a mesh could not be load : " << nameStream.str() << " - in node : " << currentNode->getName() << sendl;
-										return false;
-									}
-
-									weights[id].push_back(weight);
-									indices[id].push_back(k);
-									++nbref[id];
+									indices[i].reserve(nbref);
+									weights[i].reserve(nbref);
 								}
-							}
 
-							currentSkinningMapping->setWeights(weights, indices, nbref);
+								for(unsigned int k = 0; k < currentAiMesh->mNumBones; ++k)
+								{
+									aiBone*& bone = currentAiMesh->mBones[k];
+
+									for(unsigned int l = 0; l < bone->mNumWeights; ++l)
+									{
+										unsigned int id = bone->mWeights[l].mVertexId;
+										float weight = bone->mWeights[l].mWeight;
+
+										if(id >= currentAiMesh->mNumVertices)
+										{
+											sout << "Error: SceneColladaLoader::readDAE, a mesh could not be load : " << nameStream.str() << " - in node : " << currentNode->getName() << sendl;
+											return false;
+										}
+
+										indices[id].push_back(k);
+										weights[id].push_back(weight);
+									}
+								}
+
+								currentLinearMapping->setWeights(weights, indices);
+							}
+						}
+#endif
+						if(generateSkinningMapping)
+						{
+							SkinningMapping<Rigid3dTypes, Vec3dTypes>::SPtr currentSkinningMapping = sofa::core::objectmodel::New<SkinningMapping<Rigid3dTypes, Vec3dTypes> >();
+							{
+								// adding the generated SkinningMapping to its parent Node
+								currentSubNode->addObject(currentSkinningMapping);
+
+								std::stringstream nameStream(meshName);
+								if(meshName.empty())
+									nameStream << componentIndex++;
+								currentSkinningMapping->setName(nameStream.str());
+
+								currentSkinningMapping->setModels(currentBoneMechanicalObject.get(), currentMechanicalObject.get());
+
+								vector<SVector<SkinningMapping<Rigid3dTypes, Vec3dTypes>::InReal> > weights;
+								vector<SVector<unsigned int> > indices;
+								vector<unsigned int> nbref;
+
+								indices.resize(currentAiMesh->mNumVertices);
+								weights.resize(currentAiMesh->mNumVertices);
+								nbref.resize(currentAiMesh->mNumVertices);
+								for(unsigned int k = 0; k < nbref.size(); ++k)
+									nbref[k] = 0;
+
+								for(unsigned int k = 0; k < currentAiMesh->mNumBones; ++k)
+								{
+									aiBone*& bone = currentAiMesh->mBones[k];
+
+									for(unsigned int l = 0; l < bone->mNumWeights; ++l)
+									{
+										unsigned int id = bone->mWeights[l].mVertexId;
+										float weight = bone->mWeights[l].mWeight;
+
+										if(id >= currentAiMesh->mNumVertices)
+										{
+											sout << "Error: SceneColladaLoader::readDAE, a mesh could not be load : " << nameStream.str() << " - in node : " << currentNode->getName() << sendl;
+											return false;
+										}
+
+										weights[id].push_back(weight);
+										indices[id].push_back(k);
+										++nbref[id];
+									}
+								}
+
+								currentSkinningMapping->setWeights(weights, indices, nbref);
+							}
 						}
                     }
 					else
