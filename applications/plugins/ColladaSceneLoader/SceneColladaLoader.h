@@ -158,6 +158,7 @@ private:
 
 	Data<float> animationSpeed;
 	Data<bool> generateCollisionModels;
+	Data<bool> useFlexible;
 
 };
 
