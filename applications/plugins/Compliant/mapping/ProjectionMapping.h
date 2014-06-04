@@ -90,8 +90,7 @@ protected:
 			
 			SReal delta = off.empty() ? 0 : off[ std::min<int>(off.size() - 1, i) ];
 			
-			using namespace utils;
-            map(out[i])(0) = map(in[s[i].pair.first]).dot( map(s[i].pair.second ) ) - delta;
+            utils::map(out[i])(0) = utils::map(in[s[i].pair.first]).dot( utils::map(s[i].pair.second ) ) - delta;
 		}
 		
 	}
