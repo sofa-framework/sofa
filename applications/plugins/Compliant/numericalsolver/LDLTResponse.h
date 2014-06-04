@@ -23,7 +23,7 @@ namespace linearsolver {
 ///     -> LDLTResponse is the right component!
 ///
 /// @warning with "constant" set to true, mass and stiffness cannot be added dynamically (like a mouse-spring or penalities)
-class LDLTResponse : public Response {
+class SOFA_Compliant_API LDLTResponse : public Response {
 public:
 	SOFA_CLASS(LDLTResponse, Response);
 
