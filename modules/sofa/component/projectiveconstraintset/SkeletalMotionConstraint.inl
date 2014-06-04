@@ -120,7 +120,9 @@ template <class DataTypes>
 template <class DataDeriv>
 void SkeletalMotionConstraint<DataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataDeriv& dx)
 {
-    Real cT = (Real) this->getContext()->getTime() * animationSpeed.getValue();
+    for(unsigned int i = 0; i < dx.size(); ++i)
+        dx[i] = Deriv();
+    /*Real cT = (Real) this->getContext()->getTime() * animationSpeed.getValue();
 
     if(0.0 != cT)
     {
@@ -132,7 +134,7 @@ void SkeletalMotionConstraint<DataTypes>::projectResponseT(const core::Mechanica
             for(unsigned int i = 0; i < dx.size(); ++i)
                 dx[i] = Deriv();
         }
-    }
+    }*/
 }
 
 template <class DataTypes>
