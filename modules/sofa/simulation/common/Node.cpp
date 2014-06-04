@@ -549,7 +549,7 @@ void Node::doAddObject(BaseObject::SPtr sobj)
     int inserted=0;
     inserted+= animationManager.add(dynamic_cast< core::behavior::BaseAnimationLoop* >(obj));
     inserted+= solver.add(dynamic_cast< core::behavior::OdeSolver* >(obj));
-    inserted+= linearSolver.add(dynamic_cast< core::behavior::BaseLinearSolver* >(obj));
+    inserted+= linearSolver.add(dynamic_cast< core::behavior::LinearSolver* >(obj));
     inserted+= constraintSolver.add(dynamic_cast< core::behavior::ConstraintSolver* >(obj));
     inserted+= visualLoop.add(dynamic_cast< core::visual::VisualLoop* >(obj));
     inserted+= state.add(dynamic_cast< core::BaseState* >(obj));
@@ -604,7 +604,7 @@ void Node::doRemoveObject(BaseObject::SPtr sobj)
     BaseObject* obj = sobj.get();
     animationManager.remove(dynamic_cast< core::behavior::BaseAnimationLoop* >(obj));
     solver.remove(dynamic_cast< core::behavior::OdeSolver* >(obj));
-    linearSolver.remove(dynamic_cast< core::behavior::BaseLinearSolver* >(obj));
+    linearSolver.remove(dynamic_cast< core::behavior::LinearSolver* >(obj));
     constraintSolver.remove(dynamic_cast< core::behavior::ConstraintSolver* >(obj));
     visualLoop.remove(dynamic_cast< core::visual::VisualLoop* >(obj));
     state.remove(dynamic_cast< core::BaseState* >(obj));
@@ -688,7 +688,7 @@ core::visual::Shader* Node::getShader(const sofa::core::objectmodel::TagSet& t) 
         return getShader();
     else // if getShader is Tag filtered
     {
-        for(Sequence<core::visual::Shader>::iterator it = shaders.begin(), iend=shaders.end(); it!=iend; it++)
+        for(Sequence<core::visual::Shader>::iterator it = shaders.begin(), iend=shaders.end(); it!=iend; ++it)
         {
             if ( (*it)->getTags().includes(t) )
                 return (*it);
@@ -781,7 +781,7 @@ void Node::removeControllers()
     removeObject(*animationManager.begin());
     typedef Sequence<core::behavior::OdeSolver> Solvers;
     Solvers solverRemove = solver;
-    for ( Solvers::iterator i=solverRemove.begin(), iend=solverRemove.end(); i!=iend; i++ )
+    for ( Solvers::iterator i=solverRemove.begin(), iend=solverRemove.end(); i!=iend; ++i )
         removeObject( *i );
 }
 
@@ -962,70 +962,70 @@ void Node::printComponents()
     using core::BaseState;
 
     serr<<"BaseAnimationLoop: ";
-    for ( Single<BaseAnimationLoop>::iterator i=animationManager.begin(), iend=animationManager.end(); i!=iend; i++ )
+    for ( Single<BaseAnimationLoop>::iterator i=animationManager.begin(), iend=animationManager.end(); i!=iend; ++i )
         serr<<(*i)->getName()<<" ";
     serr<<sendl<<"OdeSolver: ";
-    for ( Sequence<OdeSolver>::iterator i=solver.begin(), iend=solver.end(); i!=iend; i++ )
+    for ( Sequence<OdeSolver>::iterator i=solver.begin(), iend=solver.end(); i!=iend; ++i )
         serr<<(*i)->getName()<<" ";
     serr<<sendl<<"LinearSolver: ";
-    for ( Sequence<BaseLinearSolver>::iterator i=linearSolver.begin(), iend=linearSolver.end(); i!=iend; i++ )
+    for ( Sequence<LinearSolver>::iterator i=linearSolver.begin(), iend=linearSolver.end(); i!=iend; i++ )
         serr<<(*i)->getName()<<" ";
     serr<<sendl<<"ConstraintSolver: ";
-    for ( Sequence<ConstraintSolver>::iterator i=constraintSolver.begin(), iend=constraintSolver.end(); i!=iend; i++ )
+    for ( Sequence<ConstraintSolver>::iterator i=constraintSolver.begin(), iend=constraintSolver.end(); i!=iend; ++i )
         serr<<(*i)->getName()<<" ";
     serr<<"VisualLoop: ";
-    for ( Single<VisualLoop>::iterator i=visualLoop.begin(), iend=visualLoop.end(); i!=iend; i++ )
+    for ( Single<VisualLoop>::iterator i=visualLoop.begin(), iend=visualLoop.end(); i!=iend; ++i )
         serr<<(*i)->getName()<<" ";
     serr<<sendl<<"InteractionForceField: ";
-    for ( Sequence<BaseInteractionForceField>::iterator i=interactionForceField.begin(), iend=interactionForceField.end(); i!=iend; i++ )
+    for ( Sequence<BaseInteractionForceField>::iterator i=interactionForceField.begin(), iend=interactionForceField.end(); i!=iend; ++i )
         serr<<(*i)->getName()<<" ";
     serr<<sendl<<"ForceField: ";
-    for ( Sequence<BaseForceField>::iterator i=forceField.begin(), iend=forceField.end(); i!=iend; i++ )
+    for ( Sequence<BaseForceField>::iterator i=forceField.begin(), iend=forceField.end(); i!=iend; ++i )
         serr<<(*i)->getName()<<" ";
     serr<<sendl<<"State: ";
-    for ( Single<BaseState>::iterator i=state.begin(), iend=state.end(); i!=iend; i++ )
+    for ( Single<BaseState>::iterator i=state.begin(), iend=state.end(); i!=iend; ++i )
         serr<<(*i)->getName()<<" ";
     serr<<sendl<<"MechanicalState: ";
-    for ( Single<BaseMechanicalState>::iterator i=mechanicalState.begin(), iend=mechanicalState.end(); i!=iend; i++ )
+    for ( Single<BaseMechanicalState>::iterator i=mechanicalState.begin(), iend=mechanicalState.end(); i!=iend; ++i )
         serr<<(*i)->getName()<<" ";
     serr<<sendl<<"Mechanical Mapping: ";
-    for ( Single<BaseMapping>::iterator i=mechanicalMapping.begin(), iend=mechanicalMapping.end(); i!=iend; i++ )
+    for ( Single<BaseMapping>::iterator i=mechanicalMapping.begin(), iend=mechanicalMapping.end(); i!=iend; ++i )
         serr<<(*i)->getName()<<" ";
     serr<<sendl<<"Mapping: ";
-    for ( Sequence<BaseMapping>::iterator i=mapping.begin(), iend=mapping.end(); i!=iend; i++ )
+    for ( Sequence<BaseMapping>::iterator i=mapping.begin(), iend=mapping.end(); i!=iend; ++i )
         serr<<(*i)->getName()<<" ";
     serr<<sendl<<"Topology: ";
-    for ( Single<Topology>::iterator i=topology.begin(), iend=topology.end(); i!=iend; i++ )
+    for ( Single<Topology>::iterator i=topology.begin(), iend=topology.end(); i!=iend; ++i )
         serr<<(*i)->getName()<<" ";
     serr<<sendl<<"MeshTopology: ";
-    for ( Single<BaseMeshTopology>::iterator i=meshTopology.begin(), iend=meshTopology.end(); i!=iend; i++ )
+    for ( Single<BaseMeshTopology>::iterator i=meshTopology.begin(), iend=meshTopology.end(); i!=iend; ++i )
         serr<<(*i)->getName()<<" ";
     serr<<sendl<<"Shader: ";
-    for ( Sequence<Shader>::iterator i=shaders.begin(), iend=shaders.end(); i!=iend; i++ )
+    for ( Sequence<Shader>::iterator i=shaders.begin(), iend=shaders.end(); i!=iend; ++i )
         serr<<(*i)->getName()<<" ";
     serr<<sendl<<"ProjectiveConstraintSet: ";
-    for ( Sequence<BaseProjectiveConstraintSet>::iterator i=projectiveConstraintSet.begin(), iend=projectiveConstraintSet.end(); i!=iend; i++ )
+    for ( Sequence<BaseProjectiveConstraintSet>::iterator i=projectiveConstraintSet.begin(), iend=projectiveConstraintSet.end(); i!=iend; ++i )
         serr<<(*i)->getName()<<" ";
     serr<<sendl<<"ConstraintSet: ";
-    for ( Sequence<BaseConstraintSet>::iterator i=constraintSet.begin(), iend=constraintSet.end(); i!=iend; i++ )
+    for ( Sequence<BaseConstraintSet>::iterator i=constraintSet.begin(), iend=constraintSet.end(); i!=iend; ++i )
         serr<<(*i)->getName()<<" ";
     serr<<sendl<<"BehaviorModel: ";
-    for ( Sequence<BehaviorModel>::iterator i=behaviorModel.begin(), iend=behaviorModel.end(); i!=iend; i++ )
+    for ( Sequence<BehaviorModel>::iterator i=behaviorModel.begin(), iend=behaviorModel.end(); i!=iend; ++i )
         serr<<(*i)->getName()<<" ";
     serr<<sendl<<"VisualModel: ";
-    for ( Sequence<VisualModel>::iterator i=visualModel.begin(), iend=visualModel.end(); i!=iend; i++ )
+    for ( Sequence<VisualModel>::iterator i=visualModel.begin(), iend=visualModel.end(); i!=iend; ++i )
         serr<<(*i)->getName()<<" ";
     serr<<sendl<<"CollisionModel: ";
-    for ( Sequence<CollisionModel>::iterator i=collisionModel.begin(), iend=collisionModel.end(); i!=iend; i++ )
+    for ( Sequence<CollisionModel>::iterator i=collisionModel.begin(), iend=collisionModel.end(); i!=iend; ++i )
         serr<<(*i)->getName()<<" ";
     serr<<sendl<<"ContextObject: ";
-    for ( Sequence<ContextObject>::iterator i=contextObject.begin(), iend=contextObject.end(); i!=iend; i++ )
+    for ( Sequence<ContextObject>::iterator i=contextObject.begin(), iend=contextObject.end(); i!=iend; ++i )
         serr<<(*i)->getName()<<" ";
     serr<<sendl<<"Pipeline: ";
-    for ( Single<Pipeline>::iterator i=collisionPipeline.begin(), iend=collisionPipeline.end(); i!=iend; i++ )
+    for ( Single<Pipeline>::iterator i=collisionPipeline.begin(), iend=collisionPipeline.end(); i!=iend; ++i )
         serr<<(*i)->getName()<<" ";
     serr<<sendl<<"VisitorScheduler: ";
-    for ( Single<VisitorScheduler>::iterator i=actionScheduler.begin(), iend=actionScheduler.end(); i!=iend; i++ )
+    for ( Single<VisitorScheduler>::iterator i=actionScheduler.begin(), iend=actionScheduler.end(); i!=iend; ++i )
         serr<<(*i)->getName()<<" ";
     serr<<sendl;
 }
