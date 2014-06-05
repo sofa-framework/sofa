@@ -41,23 +41,23 @@ namespace opencl
 extern "C"
 {
     extern void FixedConstraintOpenCL3f_projectResponseContiguous(unsigned int size, _device_pointer dx);
-    extern void FixedConstraintOpenCL3f_projectResponseIndexed(unsigned int size, const _device_pointer indices, _device_pointer dx);
+    extern void FixedConstraintOpenCL3f_projectResponseIndexed(unsigned int size, const _device_pointer& indices, _device_pointer dx);
     extern void FixedConstraintOpenCL3f1_projectResponseContiguous(unsigned int size, _device_pointer dx);
-    extern void FixedConstraintOpenCL3f1_projectResponseIndexed(unsigned int size, const _device_pointer indices, _device_pointer dx);
+    extern void FixedConstraintOpenCL3f1_projectResponseIndexed(unsigned int size, const _device_pointer& indices, _device_pointer dx);
 #ifdef SOFA_DEV
     extern void FixedConstraintOpenCLRigid3f_projectResponseContiguous(unsigned int size, _device_pointer dx);
-    extern void FixedConstraintOpenCLRigid3f_projectResponseIndexed(unsigned int size, const _device_pointer indices, _device_pointer dx);
+    extern void FixedConstraintOpenCLRigid3f_projectResponseIndexed(unsigned int size, const _device_pointer& indices, _device_pointer dx);
 #endif // SOFA_DEV
 
 
 
     extern void FixedConstraintOpenCL3d_projectResponseContiguous(unsigned int size, _device_pointer dx);
-    extern void FixedConstraintOpenCL3d_projectResponseIndexed(unsigned int size, const _device_pointer indices, _device_pointer dx);
+    extern void FixedConstraintOpenCL3d_projectResponseIndexed(unsigned int size, const _device_pointer& indices, _device_pointer dx);
     extern void FixedConstraintOpenCL3d1_projectResponseContiguous(unsigned int size, _device_pointer dx);
-    extern void FixedConstraintOpenCL3d1_projectResponseIndexed(unsigned int size, const _device_pointer indices, _device_pointer dx);
+    extern void FixedConstraintOpenCL3d1_projectResponseIndexed(unsigned int size, const _device_pointer& indices, _device_pointer dx);
 #ifdef SOFA_DEV
     extern void FixedConstraintOpenCLRigid3d_projectResponseContiguous(unsigned int size, _device_pointer dx);
-    extern void FixedConstraintOpenCLRigid3d_projectResponseIndexed(unsigned int size, const _device_pointer indices, _device_pointer dx);
+    extern void FixedConstraintOpenCLRigid3d_projectResponseIndexed(unsigned int size, const _device_pointer& indices, _device_pointer dx);
 #endif // SOFA_DEV
 
 
