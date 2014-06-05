@@ -30,6 +30,7 @@
 namespace CGoGN
 {
 
+const unsigned int INVALID_INDEX = 0xffffffff ;
 const unsigned int EMBNULL = 0xffffffff;
 const unsigned int MRNULL = 0xffffffff;
 
@@ -57,59 +58,51 @@ const unsigned int FACE2		= 10;
 
 struct Dart
 {
-	unsigned int index;
+    Dart(): index(INVALID_INDEX) {}
+    inline static Dart create(unsigned int i) { return Dart(i); }
+    static std::string CGoGNnameOfType()  { return "Dart"; }
+private:
+    Dart(unsigned int v): index(v) {}
 
-	Dart(): index(0xffffffff) {}
+public:
+    static const Dart& nil() { const static Dart nullDart(INVALID_INDEX);  return nullDart; }
 
-	static Dart nil() { Dart d; d.index = 0xffffffff; return d; }
+    bool isNil() const { return index == INVALID_INDEX ; }
 
-	static Dart create(unsigned int i) { Dart d; d.index = i; return d; }
+    /**
+     * affectation operator
+     * @param d the dart to store in this
+     */
+    Dart operator=(Dart d) { index = d.index; return *this; }
 
-	Dart(unsigned int v): index(v) {}
+    /**
+     * equality operator
+     * @param d the dart to compare with
+     */
+    bool operator==(Dart d) const { return d.index == index; }
 
-	bool isNil() { return index == 0xffffffff ; }
+    /**
+     * different operator
+     * @param d the dart to compare with
+     */
+    bool operator!=(Dart d) const { return d.index != index; }
 
-	/**
-	 * affectation operator
-	 * @param d the dart to store in this
-	 */
-	Dart operator=(Dart d) { index = d.index; return *this; }
+    /**
+     * less operator, can be used for sorting
+     * @param d the dart to compare with
+     */
+    bool operator<(Dart d) const { return index < d.index; }
 
-	/**
-	 * equality operator
-	 * @param d the dart to compare with
-	 */
-	bool operator==(Dart d) const { return d.index == index; }
+    /**
+     * label is the index (cleaner that use d.index outside of maps
+     */
+    unsigned int label() const { return index; }
 
-	/**
-	 * different operator
-	 * @param d the dart to compare with
-	 */
-	bool operator!=(Dart d) const { return d.index != index; }
 
-	/**
-	 * less operator, can be used for sorting
-	 * @param d the dart to compare with
-	 */
-	bool operator<(Dart d) const { return index < d.index; }
+    unsigned int index;
 
-	friend std::ostream& operator<<( std::ostream &out, const Dart& fa ) { return out << fa.index; }
-	friend std::istream& operator>>( std::istream &in, Dart& fa ) { in >> fa.index; return in; }
-
-	void operator += (const Dart& /*fa*/) {}
-	void operator -= (const Dart& /*fa*/) {}
-	void operator *= (double /*v*/) {}
-	void operator /= (double /*v*/) {}
-
-	/**
-	 * CGoGN name
-	 */
-	static std::string CGoGNnameOfType() { return "Dart"; }
-
-	/**
-	 * label is the index (cleaner that use d.index outside of maps
-	 */
-	unsigned int label() { return index; }
+    friend std::ostream& operator<<( std::ostream &out, const Dart& fa ) { return out << fa.index; }
+    friend std::istream& operator>>( std::istream &in, Dart& fa ) { in >> fa.index; return in; }
 };
 
 const Dart NIL = Dart::nil();

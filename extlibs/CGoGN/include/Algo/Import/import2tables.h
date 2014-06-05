@@ -62,57 +62,62 @@ class MeshTablesSurface
 public:
     typedef typename PFP::VEC3 VEC3 ;
     typedef typename VEC3::value_type DATA_TYPE ;
-
+    enum VOLUME_TYPE {
+        TETRAHEDRON = 0,
+        HEXAHEDRON,
+        SQUARE_PYRAMID,
+        TRIANGULAR_PRISM
+    };
 protected:
-	typename PFP::MAP& m_map;
+    typename PFP::MAP& m_map;
 
-	unsigned int m_nbVertices;
+    unsigned int m_nbVertices;
 
-	unsigned int m_nbFaces;
+    unsigned int m_nbFaces;
 
-	unsigned int m_lab;
-
-	/**
-	* number of edges per face
-	*/
-	std::vector<short> m_nbEdges;
-
-	/**
-	* table of emb indice (for each edge, first vertex)
-	*/
-	std::vector<unsigned int> m_emb;
+    unsigned int m_lab;
+    std::vector<VOLUME_TYPE> m_volumeType;
+    /**
+    * number of edges per face
+    */
+    std::vector<unsigned> m_nbEdges;
+    std::vector<unsigned>    m_nbVerticesPerVolume;
+    /**
+    * table of emb indice (for each edge, first vertex)
+    */
+    std::vector<unsigned int> m_emb;
 
 #ifdef WITH_ASSIMP
-	void extractMeshRec(AttributeContainer& container, VertexAttribute<typename PFP::VEC3>& positions, const struct aiScene* scene, const struct aiNode* nd, struct aiMatrix4x4* trafo);
+    void extractMeshRec(AttributeContainer& container, VertexAttribute<typename PFP::VEC3>& positions, const struct aiScene* scene, const struct aiNode* nd, struct aiMatrix4x4* trafo);
 #endif
 
-	bool importTrian(const std::string& filename, std::vector<std::string>& attrNames);
+    bool importTrian(const std::string& filename, std::vector<std::string>& attrNames);
 
-	bool importTrianBinGz(const std::string& filename, std::vector<std::string>& attrNames);
+    bool importTrianBinGz(const std::string& filename, std::vector<std::string>& attrNames);
 
-	bool importOff(const std::string& filename, std::vector<std::string>& attrNames);
+    bool importOff(const std::string& filename, std::vector<std::string>& attrNames);
 
-	bool importMeshBin(const std::string& filename, std::vector<std::string>& attrNames);
+    bool importMeshBin(const std::string& filename, std::vector<std::string>& attrNames);
 
     bool importObj(const std::string& filename, std::vector<std::string>& attrNames);
 
-	bool importPly(const std::string& filename, std::vector<std::string>& attrNames);
+    bool importPly(const std::string& filename, std::vector<std::string>& attrNames);
 
     //bool importPlyPTM(const std::string& filename, std::vector<std::string>& attrNames);
 
-	bool importPlySLFgeneric(const std::string& filename, std::vector<std::string>& attrNames);
+    bool importPlySLFgeneric(const std::string& filename, std::vector<std::string>& attrNames);
 
-	bool importPlySLFgenericBin(const std::string& filename, std::vector<std::string>& attrNames);
+    bool importPlySLFgenericBin(const std::string& filename, std::vector<std::string>& attrNames);
 
 #ifdef WITH_ASSIMP
-	bool importASSIMP(const std::string& filename, std::vector<std::string>& attrNames);
+    bool importASSIMP(const std::string& filename, std::vector<std::string>& attrNames);
 #endif	
 
-	bool importAHEM(const std::string& filename, std::vector<std::string>& attrNames);
+    bool importAHEM(const std::string& filename, std::vector<std::string>& attrNames);
 
-	bool importSTLAscii(const std::string& filename, std::vector<std::string>& attrNames);
+    bool importSTLAscii(const std::string& filename, std::vector<std::string>& attrNames);
 
-	bool importSTLBin(const std::string& filename, std::vector<std::string>& attrNames);
+    bool importSTLBin(const std::string& filename, std::vector<std::string>& attrNames);
 
 public:
     //static ImportType getFileType(const std::string& filename);
@@ -131,8 +136,8 @@ public:
 
     bool importVoxellisation(Algo::Surface::Modelisation::Voxellisation& voxellisation, std::vector<std::string>& attrNames);
 
-	MeshTablesSurface(typename PFP::MAP& map):
-		m_map(map)
+    MeshTablesSurface(typename PFP::MAP& map):
+        m_map(map)
     { }
 };
 
@@ -162,20 +167,21 @@ public:
     };
 
 protected:
-	typename PFP::MAP& m_map;
+    typename PFP::MAP& m_map;
 
-	unsigned int m_nbVertices;
+    unsigned int m_nbVertices;
 
     unsigned int m_nbVolumes;
+    unsigned int m_nbFaces;
+    std::vector<unsigned> m_nbEdges;
 
-
-    std::vector<short> m_nbVerticesPerVolume;
+    std::vector<unsigned>    m_nbVerticesPerVolume;
     std::vector<VOLUME_TYPE> m_volumeType;
 
-	/**
-	* table of emb ptr (for each face, first vertex)
-	*/
-	std::vector<unsigned int> m_emb;
+    /**
+    * table of emb ptr (for each face, first vertex)
+    */
+    std::vector<unsigned int> m_emb;
 
     //Tetrahedra
 
@@ -224,6 +230,8 @@ public:
         return 0xFFFFFF;
     }
 
+    static bool mergeCloseVertices() { return true;}
+
     inline unsigned getNbVertices() const { return m_nbVertices; }
 
     inline unsigned getNbVolumes() const { return m_nbVolumes; }
@@ -236,8 +244,8 @@ public:
 
     bool importMesh(const std::string& filename, std::vector<std::string>& attrNames);
 
-	MeshTablesVolume(typename PFP::MAP& map):
-		m_map(map)
+    MeshTablesVolume(typename PFP::MAP& map):
+        m_map(map)
     { }
 };
 

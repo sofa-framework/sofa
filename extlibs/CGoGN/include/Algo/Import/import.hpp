@@ -41,6 +41,13 @@ namespace Surface
 namespace Import
 {
 
+
+
+template <typename PFP>
+bool importMesh(typename PFP::MAP& map, CGoGN::Algo::Volume::Import::MeshTablesVolume<PFP>& mtv ) {
+    return false;
+}
+
 template <typename PFP>
 bool importMesh(typename PFP::MAP& map, MeshTablesSurface<PFP>& mts)
 {

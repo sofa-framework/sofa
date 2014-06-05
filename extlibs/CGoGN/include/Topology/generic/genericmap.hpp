@@ -231,16 +231,16 @@ inline void GenericMap::duplicateDartAtOneLevel(Dart d, unsigned int level)
 
 inline unsigned int GenericMap::dartIndex(Dart d) const
 {
-	if (m_isMultiRes)
-		return (*m_mrDarts[m_mrCurrentLevel])[d.index] ;
+//	if (m_isMultiRes)
+//		return (*m_mrDarts[m_mrCurrentLevel])[d.index] ;
 	return d.index;
 }
 
 inline Dart GenericMap::indexDart(unsigned int index) const
 {
 	if (m_isMultiRes)
-		return Dart( (*m_mrDarts[m_mrCurrentLevel])[index]) ;
-	return Dart(index);
+        return Dart::create( (*m_mrDarts[m_mrCurrentLevel])[index]) ;
+    return Dart::create(index);
 }
 
 
@@ -309,12 +309,10 @@ inline unsigned int GenericMap::getEmbedding(Dart d) const
 {
 	assert(isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
 
-	unsigned int d_index = dartIndex(d);
-
 	if (ORBIT == DART)
-		return d_index;
+        return dartIndex(d);
 
-	return (*m_embeddings[ORBIT])[d_index] ;
+    return (*m_embeddings[ORBIT])[dartIndex(d)] ;
 }
 
 
@@ -646,7 +644,7 @@ inline void GenericMap::disableQuickAdjacentTraversal()
  *        ATTRIBUTES MANAGEMENT         *
  ****************************************/
 
-inline unsigned int GenericMap::getNbCells(unsigned int orbit)
+inline unsigned int GenericMap::getNbCells(unsigned int orbit) const
 {
 	return m_attribs[orbit].size() ;
 }
@@ -752,7 +750,7 @@ inline Dart GenericMap::begin() const
 		unsigned int d = m_mrattribs.begin() ;
 		if(d != m_mrattribs.end())
 		{
-			while (getDartLevel(d) > m_mrCurrentLevel)
+            while (getDartLevel(Dart::create(d)) > m_mrCurrentLevel)
 				m_mrattribs.next(d) ;
 		}
 		return Dart::create(d) ;
@@ -960,7 +958,7 @@ inline AttributeMultiVector<Dart>* GenericMap::addRelation(const std::string& na
 
 	// set new relation to fix point for all the darts of the map
 	for(unsigned int i = cont.begin(); i < cont.end(); cont.next(i))
-		(*amv)[i] = i ;
+        (*amv)[i] = Dart::create(i) ;
 
 	return amv ;
 }

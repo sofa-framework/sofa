@@ -81,8 +81,7 @@ inline Dart Map3::newDart()
 
 inline Dart Map3::phi3(Dart d) const
 {
-	unsigned int d_index = dartIndex(d);
-	return (*m_phi3)[d_index] ;
+    return (*m_phi3)[dartIndex(d)] ;
 }
 
 template <int N>
