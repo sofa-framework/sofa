@@ -138,6 +138,18 @@ void FixedPlaneConstraint<DataTypes>::projectPosition(const core::MechanicalPara
 }
 
 template <class DataTypes>
+void FixedPlaneConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseMatrix* M, unsigned /*offset*/ )
+{
+    // clears the rows and columns associated with constrained particles
+    unsigned blockSize = DataTypes::deriv_total_size;
+
+    for(SetIndexArray::const_iterator it= indices.getValue().begin(), iend=indices.getValue().end(); it!=iend; it++ )
+    {
+        M->clearRowsCols((*it) * blockSize,(*it+1) * (blockSize) );
+    }
+
+}
+template <class DataTypes>
 void FixedPlaneConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataMatrixDeriv& cData)
 {
     helper::WriteAccessor<DataMatrixDeriv> c = cData;
