@@ -142,8 +142,9 @@ public:
     //Outputs
     Data<VecCoord> f_newX0;
     Data<SeqTetrahedra> f_tetrahedra;
-    Data<vector<int> > f_tetraDomain;
+    Data<sofa::helper::vector<int> > f_tetraDomain;
     vector<int> tetraDomainLabels;
+    Data<sofa::helper::vector<double> > output_cellData;
 
     Data<bool> frozen;
 
@@ -153,6 +154,7 @@ public:
     Data<double> cellSize;
     Data< sofa::helper::vector<int> > label;
     Data< sofa::helper::vector<double> > labelCellSize;
+    Data< sofa::helper::vector<double> > labelCellData;
     Data<bool> odt, lloyd, perturb, exude;
     Data<int> odt_max_it, lloyd_max_it;
     Data<double> perturb_max_time, exude_max_time;

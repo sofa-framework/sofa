@@ -44,6 +44,7 @@ MeshGenerationFromImage<DataTypes, _ImageTypes>::MeshGenerationFromImage()
     , f_newX0( initData (&f_newX0, "outputPoints", "New Rest position coordinates from the tetrahedral generation"))
     , f_tetrahedra(initData(&f_tetrahedra, "outputTetras", "List of tetrahedra"))
     , f_tetraDomain(initData(&f_tetraDomain, "outputTetrasDomains", "domain of each tetrahedron"))
+    , output_cellData(initData(&output_cellData, "outputCellData", "Output cell data"))
     , frozen(initData(&frozen, false, "frozen", "true to prohibit recomputations of the mesh"))
     , facetAngle(initData(&facetAngle, 25.0, "facetAngle", "Lower bound for the angle in degrees of the surface mesh facets"))
     , facetSize(initData(&facetSize, 0.15, "facetSize", "Uniform upper bound for the radius of the surface Delaunay balls"))
@@ -52,6 +53,7 @@ MeshGenerationFromImage<DataTypes, _ImageTypes>::MeshGenerationFromImage()
     , cellSize(initData(&cellSize, 1.0, "cellSize", "Uniform upper bound for the circumradii of the tetrahedra in the mesh"))
     , label(initData(&label, "label", "label to be resized to a specific cellSize"))
     , labelCellSize(initData(&labelCellSize, "labelCellSize", "Uniform upper bound for the circumradii of the tetrahedra in the mesh by label"))
+    , labelCellData(initData(&labelCellData, "labelCellData", "1D cell data by label"))
     , odt(initData(&odt, false, "odt", "activate odt optimization"))
     , lloyd(initData(&lloyd, false, "lloyd", "activate lloyd optimization"))
     , perturb(initData(&perturb, false, "perturb", "activate perturb optimization"))
@@ -77,6 +79,7 @@ void MeshGenerationFromImage<DataTypes, _ImageTypes>::init()
     addOutput(&f_newX0);
     addOutput(&f_tetrahedra);
     addOutput(&f_tetraDomain);
+    addOutput(&output_cellData);
     addInput(&frozen);
     addInput(&facetAngle);
     addInput(&facetSize);
@@ -382,6 +385,26 @@ void MeshGenerationFromImage<DataTypes, _ImageTypes>::update()
     }
     default: break;
     }
+
+    helper::WriteAccessor< Data<sofa::helper::vector<Real> > > data(output_cellData);
+    data.clear();
+    if (label.getValue().size() != labelCellData.getValue().size())
+    {
+        helper::WriteAccessor< Data<sofa::helper::vector<Real> > > labeldata(labelCellData);
+        labeldata.resize(label.getValue().size());
+        serr << "ERROR : label and labelCellData must have the same size... otherwise 0.0 will be apply for all layers" << sendl;
+    }
+
+//    const vector<int> labels = label.getValue();
+//    for( Cell_iterator cit = c3t3.cells_begin() ; cit != c3t3.cells_end() ; ++cit )
+//    {
+//        vector<int>::const_iterator f = std::find(labels.begin(),labels.end(),c3t3.subdomain_index(cit));
+//        if (f!=labels.end()) data.push_back(labelCellData.getValue()[f-labels.begin()]);
+//        else data.push_back(0.0);
+//    }
+
+    for (unsigned int i = 0 ; i < tetraDomain.size(); i++)
+        data.push_back(labelCellData.getValue()[tetraDomain[i]-1]);
 
     sout << "Generated mesh: " << nbp << " points, " << nbe << " tetrahedra." << sendl;
 
