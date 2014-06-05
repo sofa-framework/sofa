@@ -114,15 +114,15 @@ void SmoothMeshEngine<DataTypes>::update()
             for (unsigned int i = 0; i < out.size(); i++)
             {
                 
-                t[i] = in[i];
+                t[i] = out[i];
             }            
             for(unsigned int i = 0; i < indices.size(); i++)
             {
-                BaseMeshTopology::VerticesAroundVertex v = m_topo->getVerticesAroundVertex(i);
+                BaseMeshTopology::VerticesAroundVertex v = m_topo->getVerticesAroundVertex(indices[i]);
                 Coord p = Coord();
                 for (unsigned int j = 0; j < v.size(); j++)
                     p += out[v[j]];                        
-                t[i] = p / v.size();
+                t[indices[i]] = p / v.size();
             }
         }
         for (unsigned int i = 0; i < out.size(); i++) out[i] = t[i];
