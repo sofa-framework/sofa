@@ -10,6 +10,7 @@ set(SOURCE_FILES
 
     Assembly_test.cpp
     AssembledSolver_test.cpp
+    DampedOscillator_test.cpp
 
 	)
 
