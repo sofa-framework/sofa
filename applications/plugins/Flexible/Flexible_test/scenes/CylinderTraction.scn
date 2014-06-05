@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+
+<Node 	name="Root" gravity="0 0 0" time="0" animate="0"  dt="5" showAxis="true">
+<RequiredPlugin pluginName="Flexible"/>
+  
+  <!--Solver-->
+  <StaticSolver/>
+  <CGLinearSolver template="GraphScattered" name="linear solver" iterations="25" tolerance="1e-9" threshold="1e-9" />
+ 
+  <!--Generate Cylinder-->
+  <GenerateCylinder template="Vec3d" name="cylinder" radius="0.2" height="1.0" resCircumferential="7" resRadial="3" resHeight="7"/>
+  <!--TetrahedronSetTopologyContainer-->
+  <TetrahedronSetTopologyContainer tetrahedra="@cylinder.tetrahedra" createTriangleArray="true" position="@cylinder.output_position"/>
+  <!--TetrahedronSetGeometryAlgorithms-->
+  <TetrahedronSetGeometryAlgorithms/>
+  
+  <!--MechanicalObject-->
+  <MechanicalObject position="@cylinder.output_position" name="DOFs" showObject="1"  showObjectScale="5" showIndices="1"/>
+
+  <!--MeshMatrixMass-->
+  <MeshMatrixMass massDensity="1.0" lumping="false"/>
+  
+  <!--BoxFixed-->
+  <BoxROI name="boxRoiFix" box="-0.01 -0.01 -0.01 0.01 0.01 0.01" drawBoxes="1" drawSize="1"/>
+  <FixedConstraint name="FixedConstraint" indices="@boxRoiFix.indices"/>
+  
+  <!--FixedPlaneConstraint-->
+  <FixedPlaneConstraint direction="0 0 1" dmin="-0.01" dmax="0.01" />
+
+  <!-- Box pressure -->
+  <BoxROI name="boxPressure" box="-0.2 -0.2 0.99 0.2 0.2 1.01" computeTriangles="true" drawBoxes="1" drawSize="1"/>
+  
+  <!--TrianglePressureForceField-->
+  <TrianglePressureForceField template="Vec3d" triangleList="@boxPressure.triangleIndices"/>
+  
+  <!--ProjectToLineConstraint-->
+  <ProjectToLineConstraint direction="1 0 0" origin="0 0 0" indices="15" drawSize="0.03"/>
+
+  <BarycentricShapeFunction  />
+  
+  <!--Elasticity-->
+  <Node name="behavior"   >
+	  <TopologyGaussPointSampler name="sampler" inPosition="@../cylinder.output_position" showSamplesScale="0" method="0" order="1" />
+	  <MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
+    <LinearMapping template="Mapping&lt;Vec3d,F331&gt;" showDeformationGradientScale="0.05"  showDeformationGradientStyle="0 - All axis"  showColorOnTopology="2 - sqrt(det(F^T.F))-1"  />
+
+    <!--Material-->
+	  <Node name="Strain">
+		  <MechanicalObject  template="E331" name="E"  />
+	    <CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;"   method="svd" geometricStiffness="false"/>
+	  </Node>   
+  </Node>
+
+</Node>
