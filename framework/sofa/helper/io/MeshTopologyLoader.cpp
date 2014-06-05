@@ -158,7 +158,6 @@ bool MeshTopologyLoader::loadGmsh(std::ifstream &file, const int gmshFormat)
     int ncubes = 0;
 
     std::string cmd;
-    std::string line;
 
     file >> npoints; //nb points
     setNbPoints(npoints);
