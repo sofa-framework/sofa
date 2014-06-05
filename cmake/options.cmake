@@ -187,19 +187,19 @@ endif()
 
 ## tutorials
 if(PS3)
-    set(tutorial_option_default_value OFF)
+    set(tutorial_default OFF)
 else()
-    set(tutorial_option_default_value ON)
+    set(tutorial_default ON)
 endif()
-# Disabled by default because it depends on the SceneCreator plugin - Marc
+# The first ones are disabled by default because they depend on the SceneCreator plugin - Marc
 sofa_option(SOFA-TUTORIAL_CHAIN_HYBRID BOOL OFF "Build the \"Chain Hybrid\" tutorial")
-sofa_option(SOFA-TUTORIAL_COMPOSITE_OBJECT BOOL ${tutorial_option_default_value} "Build the \"Composite Object\" tutorial")
-sofa_option(SOFA-TUTORIAL_HOUSE_OF_CARDS BOOL ${tutorial_option_default_value} "Build the \"House of Cards\" tutorial")
-sofa_option(SOFA-TUTORIAL_MIXED_PENDULUM BOOL ${tutorial_option_default_value} "Build the \"Mixed Pendulum\" tutorial")
-sofa_option(SOFA-TUTORIAL_ONE_PARTICLE BOOL ${tutorial_option_default_value} "Build the \"One Particle\" tutorial")
-#sofa_option(SOFA-TUTORIAL_ONE_PARTICLE_WITH_SOFA_TYPEDEFS BOOL ${tutorial_option_default_value} "Build the \"One Particle with sofa typedefs\" tutorial")
-sofa_option(SOFA-TUTORIAL_ONE_TETRAHEDRON BOOL ${tutorial_option_default_value} "Build the \"One Tetrahedron\" tutorial")
-#sofa_option(SOFA-TUTORIAL_ANATOMY_MODELLING BOOL ${tutorial_option_default_value} "Build the \"Anatomy Modelling\" tutorial")
+sofa_option(SOFA-TUTORIAL_HOUSE_OF_CARDS BOOL OFF "Build the \"House of Cards\" tutorial")
+sofa_option(SOFA-TUTORIAL_COMPOSITE_OBJECT BOOL ${tutorial_default} "Build the \"Composite Object\" tutorial")
+sofa_option(SOFA-TUTORIAL_MIXED_PENDULUM BOOL ${tutorial_default} "Build the \"Mixed Pendulum\" tutorial")
+sofa_option(SOFA-TUTORIAL_ONE_PARTICLE BOOL ${tutorial_default} "Build the \"One Particle\" tutorial")
+#sofa_option(SOFA-TUTORIAL_ONE_PARTICLE_WITH_SOFA_TYPEDEFS BOOL ${tutorial_default} "Build the \"One Particle with sofa typedefs\" tutorial")
+sofa_option(SOFA-TUTORIAL_ONE_TETRAHEDRON BOOL ${tutorial_default} "Build the \"One Tetrahedron\" tutorial")
+#sofa_option(SOFA-TUTORIAL_ANATOMY_MODELLING BOOL ${tutorial_default} "Build the \"Anatomy Modelling\" tutorial")
 
 ## framework
 sofa_option(SOFA-LIB_CORE BOOL ON "")
