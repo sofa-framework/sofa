@@ -72,6 +72,7 @@ public:
 
     Data<VecCoord> input_position;
     Data<VecCoord> output_position;
+    Data<helper::vector <unsigned int> > input_indices;
 
     Data<unsigned int> nb_iterations;
 

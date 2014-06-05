@@ -50,6 +50,7 @@ using namespace core::objectmodel;
 template <class DataTypes>
 SmoothMeshEngine<DataTypes>::SmoothMeshEngine()
     : input_position( initData (&input_position, "input_position", "Input position") )
+    , input_indices( initData (&input_indices, "input_indices", "Position indices that need to be smoothed") )
     , output_position( initData (&output_position, "output_position", "Output position") )
     , nb_iterations( initData (&nb_iterations, (unsigned int)1, "nb_iterations", "Number of iterations of laplacian smoothing") )
     , showInput( initData (&showInput, false, "showInput", "showInput") )
@@ -85,26 +86,48 @@ void SmoothMeshEngine<DataTypes>::update()
     if (!m_topo) return;
 
     helper::ReadAccessor< Data<VecCoord> > in(input_position);
+    helper::ReadAccessor< Data<helper::vector <unsigned int > > > indices(input_indices);
     helper::WriteAccessor< Data<VecCoord> > out(output_position);
 
     out.resize(in.size());
     for (unsigned int i =0; i<in.size();i++) out[i] = in[i];
-
+    
     for (unsigned int n=0; n < nb_iterations.getValue(); n++)
     {
         VecCoord t;
         t.resize(out.size());
 
-        for (unsigned int i = 0; i < out.size(); i++)
+        if(!indices.size())
         {
-            BaseMeshTopology::VerticesAroundVertex v = m_topo->getVerticesAroundVertex(i);
-            Coord p = Coord();
-            for (unsigned int j = 0; j < v.size(); j++)
-                p += out[v[j]];
-            t[i] = p / v.size();
+            for (unsigned int i = 0; i < out.size(); i++)
+            {
+                BaseMeshTopology::VerticesAroundVertex v = m_topo->getVerticesAroundVertex(i);
+                Coord p = Coord();
+                for (unsigned int j = 0; j < v.size(); j++)
+                    p += out[v[j]];                        
+                t[i] = p / v.size();
+            }
+        }
+        else
+        {
+            // init
+            for (unsigned int i = 0; i < out.size(); i++)
+            {
+                
+                t[i] = in[i];
+            }            
+            for(unsigned int i = 0; i < indices.size(); i++)
+            {
+                BaseMeshTopology::VerticesAroundVertex v = m_topo->getVerticesAroundVertex(i);
+                Coord p = Coord();
+                for (unsigned int j = 0; j < v.size(); j++)
+                    p += out[v[j]];                        
+                t[i] = p / v.size();
+            }
         }
         for (unsigned int i = 0; i < out.size(); i++) out[i] = t[i];
     }
+
 }
 
 template <class DataTypes>
