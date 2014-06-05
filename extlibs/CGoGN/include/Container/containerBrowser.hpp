@@ -60,7 +60,7 @@ inline unsigned int DartContainerBrowserSelector::begin() const
 	else
 	{
 		unsigned int it = m_cont->realBegin() ;
-		while ( (it != m_cont->realEnd()) && !m_selector->operator()(Dart(it)) )
+        while ( (it != m_cont->realEnd()) && !m_selector->operator()(Dart::create(it)) )
 			m_cont->realNext(it);
 		return it;
 	}
@@ -77,7 +77,7 @@ inline void DartContainerBrowserSelector::next(unsigned int& it) const
 	{
 		m_cont->realNext(it) ;
 	}
-	while ( (it != m_cont->realEnd()) && !m_selector->operator()(Dart(it)) ) ;
+    while ( (it != m_cont->realEnd()) && !m_selector->operator()(Dart::create(it)) ) ;
 }
 
 

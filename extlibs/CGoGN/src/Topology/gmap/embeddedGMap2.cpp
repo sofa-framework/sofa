@@ -101,11 +101,11 @@ void EmbeddedGMap2::splitVertex(Dart d, Dart e)
 	if(isOrbitEmbedded<FACE>())
 	{
 		unsigned int f1Emb = getEmbedding<FACE>(dd) ;
-		copyDartEmbedding<FACE>(phi1(dd), f1Emb) ;
-		copyDartEmbedding<FACE>(beta0(phi1(dd)), f1Emb) ;
+        copyDartEmbedding<FACE>(phi1(dd), Dart::create(f1Emb)) ;
+        copyDartEmbedding<FACE>(beta0(phi1(dd)), Dart::create(f1Emb)) ;
 		unsigned int f2Emb = getEmbedding<FACE>(ee) ;
-		copyDartEmbedding<FACE>(phi1(ee), f2Emb) ;
-		copyDartEmbedding<FACE>(beta0(phi1(ee)), f2Emb) ;
+        copyDartEmbedding<FACE>(phi1(ee), Dart::create(f2Emb)) ;
+        copyDartEmbedding<FACE>(beta0(phi1(ee)), Dart::create(f2Emb)) ;
 	}
 }
 

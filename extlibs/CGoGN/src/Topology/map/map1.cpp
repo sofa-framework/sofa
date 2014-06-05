@@ -33,11 +33,11 @@ void Map1::compactTopoRelations(const std::vector<unsigned int>& oldnew)
 	{
 		unsigned int d_index = dartIndex(m_phi1->operator [](i));
 		if (d_index != oldnew[d_index])
-			m_phi1->operator [](i) = Dart(oldnew[d_index]);
+            m_phi1->operator [](i) = Dart::create(oldnew[d_index]);
 
 		d_index = dartIndex(m_phi_1->operator [](i));
 		if (d_index != oldnew[d_index])
-			m_phi_1->operator [](i) = Dart(oldnew[d_index]);
+            m_phi_1->operator [](i) = Dart::create(oldnew[d_index]);
 //		{
 //			Dart d = m_phi1->operator [](i);
 //				unsigned int d_index = dartIndex(m_phi1->operator [](i));

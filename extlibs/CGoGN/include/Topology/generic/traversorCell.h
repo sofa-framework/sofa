@@ -114,6 +114,7 @@ public:
 template <typename MAP>
 class TraversorF : public TraversorCell<MAP, FACE>
 {
+    BOOST_STATIC_ASSERT(MAP::DIMENSION >= 2u) ;
 public:
     TraversorF(const MAP& m, unsigned int thread = 0) : TraversorCell<MAP, FACE>(m, false, thread)
     {}
@@ -122,6 +123,7 @@ public:
 template <typename MAP>
 class TraversorW : public TraversorCell<MAP, VOLUME>
 {
+    BOOST_STATIC_ASSERT(MAP::DIMENSION >= 3u) ;
 public:
     TraversorW(const MAP& m, unsigned int thread = 0) : TraversorCell<MAP, VOLUME>(m, false, thread)
     {}

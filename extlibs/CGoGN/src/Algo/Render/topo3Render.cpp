@@ -324,7 +324,7 @@ Dart Topo3Render::colToDart(float* color)
 
 	if (id == 0)
 		return NIL;
-	return Dart(id-1);
+    return Dart::create(id-1);
 }
 
 

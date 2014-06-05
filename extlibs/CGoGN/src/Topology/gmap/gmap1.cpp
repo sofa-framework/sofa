@@ -33,13 +33,13 @@ void GMap1::compactTopoRelations(const std::vector<unsigned int>& oldnew)
 	{
 		{
 			Dart& d = m_beta0->operator [](i);
-			Dart e = Dart(oldnew[d.index]);
+            Dart e = Dart::create(oldnew[d.index]);
 			if (d != e)
 				d = e;
 		}
 		{
 			Dart& d = m_beta1->operator [](i);
-			Dart e = Dart(oldnew[d.index]);
+            Dart e = Dart::create(oldnew[d.index]);
 			if (d != e)
 				d = e;
 		}

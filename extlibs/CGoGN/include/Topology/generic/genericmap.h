@@ -530,7 +530,7 @@ public:
 	 * get the number of cell in the attribute container of an orbit
 	 * @param orb the orbit to get number of cells
 	 */
-	unsigned int getNbCells(unsigned int orbit);
+    unsigned int getNbCells(unsigned int orbit) const ;
 
 	/**
 	 * get the attrib container of a given orbit

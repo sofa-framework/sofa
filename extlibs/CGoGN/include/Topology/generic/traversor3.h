@@ -63,6 +63,7 @@ public:
 template <typename MAP, unsigned int ORBX, unsigned int ORBY>
 class Traversor3XY//: public Traversor<MAP>
 {
+    BOOST_STATIC_ASSERT(MAP::DIMENSION >= 3u) ;
 private:
 	const MAP& m_map ;
 	DartMarkerStore* m_dmark ;
@@ -94,6 +95,7 @@ public:
 template <typename MAP, unsigned int ORBX, unsigned int ORBY>
 class Traversor3XXaY//: public Traversor<MAP>
 {
+    BOOST_STATIC_ASSERT(MAP::DIMENSION >= 3u) ;
 private:
 	const MAP& m_map ;
 	std::vector<Dart> m_vecDarts;
