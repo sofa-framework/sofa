@@ -86,12 +86,6 @@ namespace sofa
  * Class AssembledSolver_test checks the accuracy of the Implicit Euler integration in simple linear cases.
   */
 
-
-
-/** Base class for tests of the Compliance plugin. Contains typedefs and helpers */
-class CompliantSolver_test : public Sofa_test<>
-{
-protected:
     typedef linearsolver::AssembledSystem::rmat SMatrix;
 
     typedef component::topology::EdgeSetTopologyContainer EdgeSetTopologyContainer;
@@ -101,6 +95,11 @@ protected:
     // Vec3-Vec1
     typedef mapping::DistanceMapping<MechanicalObject3::DataTypes, MechanicalObject1::DataTypes> DistanceMapping31;
     typedef mapping::DistanceFromTargetMapping<MechanicalObject3::DataTypes, MechanicalObject1::DataTypes> DistanceFromTargetMapping31;
+
+
+/** Base class for tests of the Compliance plugin. Contains typedefs and helpers */
+class CompliantSolver_test : public Sofa_test<>
+{
 
 
 protected:
