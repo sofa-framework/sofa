@@ -83,6 +83,8 @@ struct DampedOscillator_test : public CompliantSolver_test
         sofa::simulation::getSimulation()->init(node.get());
         //**************************************************
 
+        if(debug) simulation::getSimulation()->exportXML ( simulation::getSimulation()->GetRoot().get(), "/tmp/oscilator.scn" );
+
 
         //**************************************************
         // Simulation loop
@@ -240,15 +242,56 @@ TEST_F(DampedOscillator_test, stiffness_second_degree )
 TEST_F(DampedOscillator_test, compliance_second_degree )
 {
     // === Physical parameters and initial conditions
-    setup( 1.0, 1.0, 1.0, 1.0, 0.0 );// mass, stiffness, damping, x0, v0
+//    setup( 1.0, 1.0, 1.0, 1.0, 0.0 );// mass, stiffness, damping, x0, v0
+//    compliance->isCompliance.setValue(true);
 
+    // TODO CLEAN THIS
+
+    // for a constraint the scene is different
+    // a dof cannot be both independent and constrained
+
+
+    mass = 1;
+    stiffness = 1;
+    damping = 1;
+    x0=1; v0=0;
+
+    node = clearScene();
+    node->setGravity( Vec3(0,0,0) );
+
+    // The oscillator
+    Node::SPtr oscillator = node->createChild("oscillator");
+
+    DOF = addNew<MechanicalObject1>(oscillator,"DOF");
+    DOF->resize(1);
+    DOF->writePositions()[0]  = Vec1(x0);
+    DOF->writeVelocities()[0] = Vec1(v0);
+
+    UniformMass1::SPtr Mass = addNew<UniformMass1>(oscillator,"mass");
+    Mass->mass.setValue( mass );
+
+    Node::SPtr constraint = oscillator->createChild( "constraint" );
+
+    MechanicalObject1::SPtr constraintDOF = addNew<MechanicalObject1>(constraint,"DOF");
+    constraintDOF->resize(1);
+
+    typedef component::mapping::IdentityMapping<defaulttype::StdVectorTypes<defaulttype::Vec<1, SReal>, defaulttype::Vec<1, SReal>, SReal>,defaulttype::StdVectorTypes<defaulttype::Vec<1, SReal>, defaulttype::Vec<1, SReal>, SReal> > IdentityMapping11;
+    IdentityMapping11::SPtr mapping = addNew< IdentityMapping11 >(constraint,"mapping");
+    mapping->setModels(DOF.get(), constraintDOF.get());
+    compliance = addNew<UniformCompliance1>(constraint,"compliance");
     compliance->isCompliance.setValue(true);
+    compliance->compliance.setValue(1.0/stiffness);
+    compliance->damping.setValue(damping);
+
+
+
 
     // === Numerical integrators
     odesolver::AssembledSolver::SPtr complianceSolver = addNew<odesolver::AssembledSolver>(node);
     complianceSolver->debug.setValue( false );
     complianceSolver->alpha.setValue(0.5);
     complianceSolver->beta.setValue(1.0);
+//    complianceSolver->stabilization.setValue( false ); // what about regularization?
     //
     linearsolver::LDLTSolver::SPtr linearSolver = addNew<linearsolver::LDLTSolver>(node);
     linearSolver->debug.setValue(false);
@@ -257,7 +300,7 @@ TEST_F(DampedOscillator_test, compliance_second_degree )
 
     // === Run the test
     SReal moreThanOneCycle = 7 * sqrt( 1.0/1.0 ); // 2*M_PI*sqrt(m/k)
-    testTimeIntegration( moreThanOneCycle, 0.01, 0.003, true );      // dt, numIter, tolerance, debug info
+    testTimeIntegration( moreThanOneCycle, 0.01, 0.003, false );      // dt, numIter, tolerance, debug info
 
 }
 
