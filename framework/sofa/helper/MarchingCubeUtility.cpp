@@ -785,8 +785,6 @@ void MarchingCubeUtility::findSeeds ( vector<Vec3i>& seeds, const float isoValue
         data = _data;
     }
 
-    std::map< Vector3, PointID> map_vertices;
-
     Vec3i bboxMin = Vec3i ( bbox.min / cubeStep );
     Vec3i bboxMax = Vec3i ( bbox.max / cubeStep );
     Vec3i gridSize = Vec3i ( dataResolution /cubeStep );
