@@ -270,6 +270,8 @@ void CudaHexahedronTLEDForceField::reinit()
                 Ai[2*i]   = timestep.getValue()*Visco_iso[2*i]/(timestep.getValue() + Visco_iso[2*i+1]);    // Denoted A in Taylor et al.
                 Ai[2*i+1] = Visco_iso[2*i+1]/(timestep.getValue() + Visco_iso[2*i+1]);                      // Denoted B in Taylor et al.
             }
+
+            delete[] Visco_iso;
         }
 
         if (Nv != 0)
@@ -287,6 +289,8 @@ void CudaHexahedronTLEDForceField::reinit()
                 Av[2*i]   = timestep.getValue()*Visco_vol[2*i]/(timestep.getValue() + Visco_vol[2*i+1]);
                 Av[2*i+1] = Visco_vol[2*i+1]/(timestep.getValue() + Visco_vol[2*i+1]);
             }
+
+            delete[] Visco_vol;
         }
 
         InitGPU_Visco(Ai, Av, Ni, Nv);
