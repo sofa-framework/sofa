@@ -2001,7 +2001,7 @@ int nlcp_multiGrid(int dim, double *dfree, double**W, double *f, double mu, doub
             {
                 std::cerr<<"ERROR in nlcp_multiGrid: no projection found for group" << g << std::endl;
                 free(d_free_coarse);
-                free(F_coarse_1)
+                free(F_coarse_1);
                 free(F_coarse);
                 free(d_coarse);
                 return 0;
@@ -2179,7 +2179,7 @@ int nlcp_multiGrid(int dim, double *dfree, double**W, double *f, double mu, doub
     }
 
     free(d_free_coarse);
-    free(F_coarse_1)
+    free(F_coarse_1);
     free(F_coarse);
     free(d_coarse);
 
