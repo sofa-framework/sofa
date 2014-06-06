@@ -162,7 +162,7 @@ void MechanicalObject_CreateProgramWithFloat()
 // vOp (2/4)
 
 
-void MechanicalObjectOpenCLVec3f_vOp(size_t size, _device_pointer res, const _device_pointer& a, const _device_pointer& b, float f)
+void MechanicalObjectOpenCLVec3f_vOp(size_t size, _device_pointer res, const _device_pointer a, const _device_pointer b, float f)
 {
     DEBUG_TEXT( "MechanicalObjectOpenCLVec3f_vOp\t");
     BARRIER(a,__FILE__,__LINE__);
@@ -282,7 +282,7 @@ void MechanicalObjectOpenCLVec3d1_vClear(size_t size, _device_pointer res)
 
 // vAssign (4/4)
 
-void MechanicalObjectOpenCLVec3f_vAssign(size_t size, _device_pointer res, const _device_pointer& a)
+void MechanicalObjectOpenCLVec3f_vAssign(size_t size, _device_pointer res, const _device_pointer a)
 {
     DEBUG_TEXT("MechanicalObjectOpenCLVec3f_vAssign");
     BARRIER(res,__FILE__,__LINE__);
@@ -292,7 +292,7 @@ void MechanicalObjectOpenCLVec3f_vAssign(size_t size, _device_pointer res, const
     BARRIER(res,__FILE__,__LINE__);
 }
 
-void MechanicalObjectOpenCLVec3f1_vAssign(size_t size, _device_pointer res, const _device_pointer& a)
+void MechanicalObjectOpenCLVec3f1_vAssign(size_t size, _device_pointer res, const _device_pointer a)
 {
     DEBUG_TEXT("MechanicalObjectOpenCLVec3f1_vAssign");
     ERROR_OFFSET(res)
@@ -300,7 +300,7 @@ void MechanicalObjectOpenCLVec3f1_vAssign(size_t size, _device_pointer res, cons
     OpenCLMemoryManager<float>::memcpyDeviceToDevice(0,res,a,size*4*sizeof(float));
 }
 
-void MechanicalObjectOpenCLVec3d_vAssign(size_t size, _device_pointer res, const _device_pointer& a)
+void MechanicalObjectOpenCLVec3d_vAssign(size_t size, _device_pointer res, const _device_pointer a)
 {
     DEBUG_TEXT("MechanicalObjectOpenCLVec3d_vAssign");
     ERROR_OFFSET(res)
@@ -308,7 +308,7 @@ void MechanicalObjectOpenCLVec3d_vAssign(size_t size, _device_pointer res, const
     OpenCLMemoryManager<double>::memcpyDeviceToDevice(0,res,a,size*3*sizeof(double));
 }
 
-void MechanicalObjectOpenCLVec3d1_vAssign(size_t size, _device_pointer res, const _device_pointer& a)
+void MechanicalObjectOpenCLVec3d1_vAssign(size_t size, _device_pointer res, const _device_pointer a)
 {
     DEBUG_TEXT("MechanicalObjectOpenCLVec3d1_vAssign");
     ERROR_OFFSET(res)
@@ -318,7 +318,7 @@ void MechanicalObjectOpenCLVec3d1_vAssign(size_t size, _device_pointer res, cons
 
 // vEqBF
 
-void MechanicalObjectOpenCLVec3f_vEqBF(size_t size, _device_pointer res, const _device_pointer& b, float f)
+void MechanicalObjectOpenCLVec3f_vEqBF(size_t size, _device_pointer res, const _device_pointer b, float f)
 {
     DEBUG_TEXT("MechanicalObjectOpenCLVec3f_vEqBF");
     BARRIER(res,__FILE__,__LINE__);
@@ -346,7 +346,7 @@ void MechanicalObjectOpenCLVec3f_vEqBF(size_t size, _device_pointer res, const _
 
 // vPEqBF
 
-void MechanicalObjectOpenCLVec3f_vPEqBF(size_t size, _device_pointer res, const _device_pointer& b, float f)
+void MechanicalObjectOpenCLVec3f_vPEqBF(size_t size, _device_pointer res, const _device_pointer b, float f)
 {
     DEBUG_TEXT("MechanicalObjectOpenCLVec3f_vPEqBF");
     ERROR_OFFSET(res);
@@ -378,7 +378,7 @@ void MechanicalObjectOpenCLVec3f_vPEqBF(size_t size, _device_pointer res, const 
 // vDot (1/4)
 #define RED_SIZE 512
 
-void MechanicalObjectOpenCLVec3f_vDot(size_t size, float* res, const _device_pointer& a, const _device_pointer& b, _device_pointer tmp, float* cputmp)
+void MechanicalObjectOpenCLVec3f_vDot(size_t size, float* res, const _device_pointer a, const _device_pointer b, _device_pointer tmp, float* cputmp)
 {
     DEBUG_TEXT("MechanicalObjectOpenCLVec3f_vDot");
     BARRIER(a,__FILE__,__LINE__);
@@ -425,7 +425,7 @@ int MechanicalObjectOpenCLVec3f_vDotTmpSize(size_t size)
 // vAdd Vec1t_vAdd
 
 
-void MechanicalObjectOpenCLVec3f_vAdd(size_t size, _device_pointer res, const _device_pointer& a, const _device_pointer& b)
+void MechanicalObjectOpenCLVec3f_vAdd(size_t size, _device_pointer res, const _device_pointer a, const _device_pointer b)
 {
     DEBUG_TEXT("MechanicalObjectOpenCLVec3f_vAdd");
     BARRIER(res,__FILE__,__LINE__);
@@ -454,7 +454,7 @@ void MechanicalObjectOpenCLVec3f_vAdd(size_t size, _device_pointer res, const _d
 }
 
 
-void MechanicalObjectOpenCLVec3f_vPEq(size_t size, _device_pointer res, const _device_pointer& a)
+void MechanicalObjectOpenCLVec3f_vPEq(size_t size, _device_pointer res, const _device_pointer a)
 {
     DEBUG_TEXT("MechanicalObjectOpenCLVec3f_vPEq") ;
     BARRIER(res,__FILE__,__LINE__);
@@ -483,7 +483,7 @@ void MechanicalObjectOpenCLVec3f_vPEq(size_t size, _device_pointer res, const _d
 
 
 
-void MechanicalObjectOpenCLVec3f_vPEqBF2(size_t size, _device_pointer res1, const _device_pointer& b1, float f1, _device_pointer res2, const _device_pointer& b2, float f2)
+void MechanicalObjectOpenCLVec3f_vPEqBF2(size_t size, _device_pointer res1, const _device_pointer b1, float f1, _device_pointer res2, const _device_pointer b2, float f2)
 {
     DEBUG_TEXT("MechanicalObjectOpenCLVec3f_vPEqBF2");
     BARRIER(res1,__FILE__,__LINE__);
@@ -520,7 +520,7 @@ void MechanicalObjectOpenCLVec3f_vPEqBF2(size_t size, _device_pointer res1, cons
     BARRIER(res1,__FILE__,__LINE__);
 }
 
-void MechanicalObjectOpenCLVec3f_vIntegrate(size_t size, const _device_pointer& a, _device_pointer v, _device_pointer x, float f_v_v, float f_v_a, float f_x_x, float f_x_v)
+void MechanicalObjectOpenCLVec3f_vIntegrate(size_t size, const _device_pointer a, _device_pointer v, _device_pointer x, float f_v_v, float f_v_a, float f_x_x, float f_x_v)
 {
     DEBUG_TEXT("MechanicalObjectOpenCLVec3f_vIntegrate");
     BARRIER(a,__FILE__,__LINE__);
@@ -554,7 +554,7 @@ void MechanicalObjectOpenCLVec3f_vIntegrate(size_t size, const _device_pointer& 
 
 
 
-void MechanicalObjectOpenCLVec3f_vOp2(size_t size, _device_pointer res1, const _device_pointer& a1, const _device_pointer& b1, float f1, _device_pointer res2, const _device_pointer& a2, const _device_pointer& b2, float f2)
+void MechanicalObjectOpenCLVec3f_vOp2(size_t size, _device_pointer res1, const _device_pointer a1, const _device_pointer b1, float f1, _device_pointer res2, const _device_pointer a2, const _device_pointer b2, float f2)
 {
     DEBUG_TEXT("MechanicalObjectOpenCLVec3f_vOp2");
     BARRIER(res1,__FILE__,__LINE__);
@@ -592,8 +592,8 @@ void MechanicalObjectOpenCLVec3f_vOp2(size_t size, _device_pointer res1, const _
 }
 
 //MechanicalObjectOpenCLVec3f_vPEq4BF2_kernel
-void MechanicalObjectOpenCLVec3f_vPEq4BF2(size_t size, _device_pointer res1, const _device_pointer& b11, float f11, const _device_pointer& b12, float f12, const _device_pointer& b13, float f13, const _device_pointer& b14, float f14,
-        _device_pointer res2, const _device_pointer& b21, float f21, const _device_pointer& b22, float f22, const _device_pointer& b23, float f23, const _device_pointer& b24, float f24)
+void MechanicalObjectOpenCLVec3f_vPEq4BF2(size_t size, _device_pointer res1, const _device_pointer b11, float f11, const _device_pointer b12, float f12, const _device_pointer b13, float f13, const _device_pointer b14, float f14,
+        _device_pointer res2, const _device_pointer b21, float f21, const _device_pointer b22, float f22, const _device_pointer b23, float f23, const _device_pointer b24, float f24)
 {
     DEBUG_TEXT("MechanicalObjectOpenCLVec3f_vPEq4BF2");
     BARRIER(res1,__FILE__,__LINE__);
@@ -676,7 +676,7 @@ void MechanicalObject_CreateProgramWithDouble()
 
 
 OpenCLKernel * MechanicalObjectOpenCLVec3d_vOp_kernel = NULL;
-void MechanicalObjectOpenCLVec3d_vOp(size_t size, _device_pointer res, const _device_pointer& a, const _device_pointer& b, double f)
+void MechanicalObjectOpenCLVec3d_vOp(size_t size, _device_pointer res, const _device_pointer a, const _device_pointer b, double f)
 {
     NOT_IMPLEMENTED();
     DEBUG_TEXT( "MechanicalObjectOpenCLVec3d_vOp\t");
@@ -746,48 +746,48 @@ void MechanicalObjectOpenCLVec3d_vMEq(size_t size, _device_pointer res, double f
 
 
 void MechanicalObjectOpenCLVec3f1_vMEq(size_t /*size*/, _device_pointer /*res*/, float /*f*/) {NOT_IMPLEMENTED();}
-void MechanicalObjectOpenCLVec3f1_vEqBF(size_t /*size*/, _device_pointer /*res*/, const _device_pointer& /*b*/, float /*f*/) {NOT_IMPLEMENTED();}
-void MechanicalObjectOpenCLVec3f1_vPEq(size_t /*size*/, _device_pointer /*res*/, const _device_pointer& /*a*/) {NOT_IMPLEMENTED();}
-void MechanicalObjectOpenCLVec3f1_vPEqBF(size_t /*size*/, _device_pointer /*res*/, const _device_pointer& /*b*/, float /*f*/) {NOT_IMPLEMENTED();}
-void MechanicalObjectOpenCLVec3f1_vAdd(size_t /*size*/, _device_pointer /*res*/, const _device_pointer& /*a*/, const _device_pointer& /*b*/) {NOT_IMPLEMENTED();}
-void MechanicalObjectOpenCLVec3f1_vOp(size_t /*size*/, _device_pointer /*res*/, const _device_pointer& /*a*/, const _device_pointer& /*b*/, float /*f*/) {NOT_IMPLEMENTED();}
-void MechanicalObjectOpenCLVec3f1_vIntegrate(size_t /*size*/, const _device_pointer& /*a*/, _device_pointer /*v*/, _device_pointer /*x*/, float /*f_v_v*/, float /*f_v_a*/, float /*f_x_x*/, float /*f_x_v*/) {NOT_IMPLEMENTED();}
-void MechanicalObjectOpenCLVec3f1_vPEqBF2(size_t /*size*/, _device_pointer /*res1*/, const _device_pointer& /*b1*/, float /*f1*/, _device_pointer /*res2*/, const _device_pointer& /*b2*/, float /*f2*/) {NOT_IMPLEMENTED();}
-void MechanicalObjectOpenCLVec3f1_vPEq4BF2(size_t /*size*/, _device_pointer /*res1*/, const _device_pointer& /*b11*/, float /*f11*/, const _device_pointer& /*b12*/, float /*f12*/, const _device_pointer& /*b13*/, float /*f13*/, const _device_pointer& /*b14*/, float /*f14*/,
-        _device_pointer /*res2*/, const _device_pointer& /*b21*/, float /*f21*/, const _device_pointer& /*b22*/, float /*f22*/, const _device_pointer& /*b23*/, float /*f23*/, const _device_pointer& /*b24*/, float /*f24*/) {NOT_IMPLEMENTED();}
-void MechanicalObjectOpenCLVec3f1_vOp2(size_t /*size*/, _device_pointer /*res1*/, const _device_pointer& /*a1*/, const _device_pointer& /*b1*/, float /*f1*/, _device_pointer /*res2*/, const _device_pointer& /*a2*/, const _device_pointer& /*b2*/, float /*f2*/) {NOT_IMPLEMENTED();}
+void MechanicalObjectOpenCLVec3f1_vEqBF(size_t /*size*/, _device_pointer /*res*/, const _device_pointer /*b*/, float /*f*/) {NOT_IMPLEMENTED();}
+void MechanicalObjectOpenCLVec3f1_vPEq(size_t /*size*/, _device_pointer /*res*/, const _device_pointer /*a*/) {NOT_IMPLEMENTED();}
+void MechanicalObjectOpenCLVec3f1_vPEqBF(size_t /*size*/, _device_pointer /*res*/, const _device_pointer /*b*/, float /*f*/) {NOT_IMPLEMENTED();}
+void MechanicalObjectOpenCLVec3f1_vAdd(size_t /*size*/, _device_pointer /*res*/, const _device_pointer /*a*/, const _device_pointer /*b*/) {NOT_IMPLEMENTED();}
+void MechanicalObjectOpenCLVec3f1_vOp(size_t /*size*/, _device_pointer /*res*/, const _device_pointer /*a*/, const _device_pointer /*b*/, float /*f*/) {NOT_IMPLEMENTED();}
+void MechanicalObjectOpenCLVec3f1_vIntegrate(size_t /*size*/, const _device_pointer /*a*/, _device_pointer /*v*/, _device_pointer /*x*/, float /*f_v_v*/, float /*f_v_a*/, float /*f_x_x*/, float /*f_x_v*/) {NOT_IMPLEMENTED();}
+void MechanicalObjectOpenCLVec3f1_vPEqBF2(size_t /*size*/, _device_pointer /*res1*/, const _device_pointer /*b1*/, float /*f1*/, _device_pointer /*res2*/, const _device_pointer /*b2*/, float /*f2*/) {NOT_IMPLEMENTED();}
+void MechanicalObjectOpenCLVec3f1_vPEq4BF2(size_t /*size*/, _device_pointer /*res1*/, const _device_pointer /*b11*/, float /*f11*/, const _device_pointer /*b12*/, float /*f12*/, const _device_pointer /*b13*/, float /*f13*/, const _device_pointer /*b14*/, float /*f14*/,
+        _device_pointer /*res2*/, const _device_pointer /*b21*/, float /*f21*/, const _device_pointer /*b22*/, float /*f22*/, const _device_pointer /*b23*/, float /*f23*/, const _device_pointer /*b24*/, float /*f24*/) {NOT_IMPLEMENTED();}
+void MechanicalObjectOpenCLVec3f1_vOp2(size_t /*size*/, _device_pointer /*res1*/, const _device_pointer /*a1*/, const _device_pointer /*b1*/, float /*f1*/, _device_pointer /*res2*/, const _device_pointer /*a2*/, const _device_pointer /*b2*/, float /*f2*/) {NOT_IMPLEMENTED();}
 int MechanicalObjectOpenCLVec3f1_vDotTmpSize(size_t /*size*/) {NOT_IMPLEMENTED(); return 0;}
-void MechanicalObjectOpenCLVec3f1_vDot(size_t /*size*/, float* /*res*/, const _device_pointer& /*a*/, const _device_pointer& /*b*/, _device_pointer /*tmp*/, float*  /*cputmp*/) {NOT_IMPLEMENTED();}
+void MechanicalObjectOpenCLVec3f1_vDot(size_t /*size*/, float* /*res*/, const _device_pointer /*a*/, const _device_pointer /*b*/, _device_pointer /*tmp*/, float*  /*cputmp*/) {NOT_IMPLEMENTED();}
 
 
 
 
 
-void MechanicalObjectOpenCLVec3d_vEqBF(size_t /*size*/, _device_pointer /*res*/, const _device_pointer& /*b*/, double /*f*/) {NOT_IMPLEMENTED();}
-void MechanicalObjectOpenCLVec3d_vPEq(size_t /*size*/, _device_pointer /*res*/, const _device_pointer& /*a*/) {NOT_IMPLEMENTED();}
-void MechanicalObjectOpenCLVec3d_vPEqBF(size_t /*size*/, _device_pointer /*res*/, const _device_pointer& /*b*/, double /*f*/) {NOT_IMPLEMENTED();}
-void MechanicalObjectOpenCLVec3d_vAdd(size_t /*size*/, _device_pointer /*res*/, const _device_pointer& /*a*/, const _device_pointer& /*b*/) {NOT_IMPLEMENTED();}
-void MechanicalObjectOpenCLVec3d_vIntegrate(size_t /*size*/, const _device_pointer& /*a*/, _device_pointer /*v*/, _device_pointer /*x*/, double /*f_v_v*/, double /*f_v_a*/, double /*f_x_x*/, double /*f_x_v*/) {NOT_IMPLEMENTED();}
-void MechanicalObjectOpenCLVec3d_vPEqBF2(size_t /*size*/, _device_pointer /*res1*/, const _device_pointer& /*b1*/, double /*f1*/, _device_pointer /*res2*/, const _device_pointer& /*b2*/, double /*f2*/) {NOT_IMPLEMENTED();}
-void MechanicalObjectOpenCLVec3d_vPEq4BF2(size_t /*size*/, _device_pointer /*res1*/, const _device_pointer& /*b11*/, double /*f11*/, const _device_pointer& /*b12*/, double /*f12*/, const _device_pointer& /*b13*/, double /*f13*/, const _device_pointer& /*b14*/, double /*f14*/,
-        _device_pointer /*res2*/, const _device_pointer& /*b21*/, double /*f21*/, const _device_pointer& /*b22*/, double /*f22*/, const _device_pointer& /*b23*/, double /*f23*/, const _device_pointer& /*b24*/, double /*f24*/) {NOT_IMPLEMENTED();}
-void MechanicalObjectOpenCLVec3d_vOp2(size_t /*size*/, _device_pointer /*res1*/, const _device_pointer& /*a1*/, const _device_pointer& /*b1*/, double /*f1*/, _device_pointer /*res2*/, const _device_pointer& /*a2*/, const _device_pointer& /*b2*/, double /*f2*/) {NOT_IMPLEMENTED();}
+void MechanicalObjectOpenCLVec3d_vEqBF(size_t /*size*/, _device_pointer /*res*/, const _device_pointer /*b*/, double /*f*/) {NOT_IMPLEMENTED();}
+void MechanicalObjectOpenCLVec3d_vPEq(size_t /*size*/, _device_pointer /*res*/, const _device_pointer /*a*/) {NOT_IMPLEMENTED();}
+void MechanicalObjectOpenCLVec3d_vPEqBF(size_t /*size*/, _device_pointer /*res*/, const _device_pointer /*b*/, double /*f*/) {NOT_IMPLEMENTED();}
+void MechanicalObjectOpenCLVec3d_vAdd(size_t /*size*/, _device_pointer /*res*/, const _device_pointer /*a*/, const _device_pointer /*b*/) {NOT_IMPLEMENTED();}
+void MechanicalObjectOpenCLVec3d_vIntegrate(size_t /*size*/, const _device_pointer /*a*/, _device_pointer /*v*/, _device_pointer /*x*/, double /*f_v_v*/, double /*f_v_a*/, double /*f_x_x*/, double /*f_x_v*/) {NOT_IMPLEMENTED();}
+void MechanicalObjectOpenCLVec3d_vPEqBF2(size_t /*size*/, _device_pointer /*res1*/, const _device_pointer /*b1*/, double /*f1*/, _device_pointer /*res2*/, const _device_pointer /*b2*/, double /*f2*/) {NOT_IMPLEMENTED();}
+void MechanicalObjectOpenCLVec3d_vPEq4BF2(size_t /*size*/, _device_pointer /*res1*/, const _device_pointer /*b11*/, double /*f11*/, const _device_pointer /*b12*/, double /*f12*/, const _device_pointer /*b13*/, double /*f13*/, const _device_pointer /*b14*/, double /*f14*/,
+        _device_pointer /*res2*/, const _device_pointer /*b21*/, double /*f21*/, const _device_pointer /*b22*/, double /*f22*/, const _device_pointer /*b23*/, double /*f23*/, const _device_pointer /*b24*/, double /*f24*/) {NOT_IMPLEMENTED();}
+void MechanicalObjectOpenCLVec3d_vOp2(size_t /*size*/, _device_pointer /*res1*/, const _device_pointer /*a1*/, const _device_pointer /*b1*/, double /*f1*/, _device_pointer /*res2*/, const _device_pointer /*a2*/, const _device_pointer /*b2*/, double /*f2*/) {NOT_IMPLEMENTED();}
 int MechanicalObjectOpenCLVec3d_vDotTmpSize(size_t /*size*/) {NOT_IMPLEMENTED(); return 0;}
-void MechanicalObjectOpenCLVec3d_vDot(size_t /*size*/, double* /*res*/, const _device_pointer& /*a*/, const _device_pointer& /*b*/, _device_pointer /*tmp*/, double*  /*cputmp*/) {NOT_IMPLEMENTED();}
+void MechanicalObjectOpenCLVec3d_vDot(size_t /*size*/, double* /*res*/, const _device_pointer /*a*/, const _device_pointer /*b*/, _device_pointer /*tmp*/, double*  /*cputmp*/) {NOT_IMPLEMENTED();}
 
 void MechanicalObjectOpenCLVec3d1_vMEq(size_t /*size*/, _device_pointer /*res*/, double /*f*/) {NOT_IMPLEMENTED();}
-void MechanicalObjectOpenCLVec3d1_vEqBF(size_t /*size*/, _device_pointer /*res*/, const _device_pointer& /*b*/, double /*f*/) {NOT_IMPLEMENTED();}
-void MechanicalObjectOpenCLVec3d1_vPEq(size_t /*size*/, _device_pointer /*res*/, const _device_pointer& /*a*/) {NOT_IMPLEMENTED();}
-void MechanicalObjectOpenCLVec3d1_vPEqBF(size_t /*size*/, _device_pointer /*res*/, const _device_pointer& /*b*/, double /*f*/) {NOT_IMPLEMENTED();}
-void MechanicalObjectOpenCLVec3d1_vAdd(size_t /*size*/, _device_pointer /*res*/, const _device_pointer& /*a*/, const _device_pointer& /*b*/) {NOT_IMPLEMENTED();}
-void MechanicalObjectOpenCLVec3d1_vOp(size_t /*size*/, _device_pointer /*res*/, const _device_pointer& /*a*/, const _device_pointer& /*b*/, double /*f*/) {NOT_IMPLEMENTED();}
-void MechanicalObjectOpenCLVec3d1_vIntegrate(size_t /*size*/, const _device_pointer& /*a*/, _device_pointer /*v*/, _device_pointer /*x*/, double /*f_v_v*/, double /*f_v_a*/, double /*f_x_x*/, double /*f_x_v*/) {NOT_IMPLEMENTED();}
-void MechanicalObjectOpenCLVec3d1_vPEqBF2(size_t /*size*/, _device_pointer /*res1*/, const _device_pointer& /*b1*/, double /*f1*/, _device_pointer /*res2*/, const _device_pointer& /*b2*/, double /*f2*/) {NOT_IMPLEMENTED();}
-void MechanicalObjectOpenCLVec3d1_vPEq4BF2(size_t /*size*/, _device_pointer /*res1*/, const _device_pointer& /*b11*/, double /*f11*/, const _device_pointer& /*b12*/, double /*f12*/, const _device_pointer& /*b13*/, double /*f13*/, const _device_pointer& /*b14*/, double /*f14*/,
-        _device_pointer /*res2*/, const _device_pointer& /*b21*/, double /*f21*/, const _device_pointer& /*b22*/, double /*f22*/, const _device_pointer& /*b23*/, double /*f23*/, const _device_pointer& /*b24*/, double /*f24*/) {NOT_IMPLEMENTED();}
-void MechanicalObjectOpenCLVec3d1_vOp2(size_t /*size*/, _device_pointer /*res1*/, const _device_pointer& /*a1*/, const _device_pointer& /*b1*/, double /*f1*/, _device_pointer /*res2*/, const _device_pointer& /*a2*/, const _device_pointer& /*b2*/, double /*f2*/) {NOT_IMPLEMENTED();}
+void MechanicalObjectOpenCLVec3d1_vEqBF(size_t /*size*/, _device_pointer /*res*/, const _device_pointer /*b*/, double /*f*/) {NOT_IMPLEMENTED();}
+void MechanicalObjectOpenCLVec3d1_vPEq(size_t /*size*/, _device_pointer /*res*/, const _device_pointer /*a*/) {NOT_IMPLEMENTED();}
+void MechanicalObjectOpenCLVec3d1_vPEqBF(size_t /*size*/, _device_pointer /*res*/, const _device_pointer /*b*/, double /*f*/) {NOT_IMPLEMENTED();}
+void MechanicalObjectOpenCLVec3d1_vAdd(size_t /*size*/, _device_pointer /*res*/, const _device_pointer /*a*/, const _device_pointer /*b*/) {NOT_IMPLEMENTED();}
+void MechanicalObjectOpenCLVec3d1_vOp(size_t /*size*/, _device_pointer /*res*/, const _device_pointer /*a*/, const _device_pointer /*b*/, double /*f*/) {NOT_IMPLEMENTED();}
+void MechanicalObjectOpenCLVec3d1_vIntegrate(size_t /*size*/, const _device_pointer /*a*/, _device_pointer /*v*/, _device_pointer /*x*/, double /*f_v_v*/, double /*f_v_a*/, double /*f_x_x*/, double /*f_x_v*/) {NOT_IMPLEMENTED();}
+void MechanicalObjectOpenCLVec3d1_vPEqBF2(size_t /*size*/, _device_pointer /*res1*/, const _device_pointer /*b1*/, double /*f1*/, _device_pointer /*res2*/, const _device_pointer /*b2*/, double /*f2*/) {NOT_IMPLEMENTED();}
+void MechanicalObjectOpenCLVec3d1_vPEq4BF2(size_t /*size*/, _device_pointer /*res1*/, const _device_pointer /*b11*/, double /*f11*/, const _device_pointer /*b12*/, double /*f12*/, const _device_pointer /*b13*/, double /*f13*/, const _device_pointer /*b14*/, double /*f14*/,
+        _device_pointer /*res2*/, const _device_pointer /*b21*/, double /*f21*/, const _device_pointer /*b22*/, double /*f22*/, const _device_pointer /*b23*/, double /*f23*/, const _device_pointer /*b24*/, double /*f24*/) {NOT_IMPLEMENTED();}
+void MechanicalObjectOpenCLVec3d1_vOp2(size_t /*size*/, _device_pointer /*res1*/, const _device_pointer /*a1*/, const _device_pointer /*b1*/, double /*f1*/, _device_pointer /*res2*/, const _device_pointer /*a2*/, const _device_pointer /*b2*/, double /*f2*/) {NOT_IMPLEMENTED();}
 int MechanicalObjectOpenCLVec3d1_vDotTmpSize(size_t /*size*/) {NOT_IMPLEMENTED(); return 0;}
-void MechanicalObjectOpenCLVec3d1_vDot(size_t /*size*/, double* /*res*/, const _device_pointer& /*a*/, const _device_pointer& /*b*/, _device_pointer /*tmp*/, double*  /*cputmp*/) {NOT_IMPLEMENTED();}
+void MechanicalObjectOpenCLVec3d1_vDot(size_t /*size*/, double* /*res*/, const _device_pointer /*a*/, const _device_pointer /*b*/, _device_pointer /*tmp*/, double*  /*cputmp*/) {NOT_IMPLEMENTED();}
 
 
 
