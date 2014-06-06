@@ -171,7 +171,14 @@ void VTKExporter::writeData(const helper::vector<std::string>& objects, const he
 
         if (!obj || !field)
         {
-            serr << "VTKExporter : error while fetching data field, check object name or field name " << sendl;
+            if (!obj)
+                serr << "VTKExporter : error while fetching data field '"
+                     << fields[i] << "' of object '" << objects[i]
+                     << "', check object name" << sendl;
+            else if (!field)
+                serr << "VTKExporter : error while fetching data field "
+                     << fields[i] << " of object '" << objects[i]
+                     << "', check field name " << sendl;
         }
         else
         {
@@ -254,7 +261,14 @@ void VTKExporter::writeDataArray(const helper::vector<std::string>& objects, con
 
         if (!obj || !field)
         {
-            serr << "VTKExporter : error while fetching data field, check object name or field name " << sendl;
+            if (!obj)
+                serr << "VTKExporter : error while fetching data field '"
+                     << fields[i] << "' of object '" << objects[i]
+                     << "', check object name" << sendl;
+            else if (!field)
+                serr << "VTKExporter : error while fetching data field "
+                     << fields[i] << " of object '" << objects[i]
+                     << "', check field name " << sendl;
         }
         else
         {
@@ -782,7 +796,14 @@ void VTKExporter::writeParallelFile()
 
             if (!obj || !field)
             {
-                serr << "VTKExporter : error while fetching data field, check object name or field name " << sendl;
+                if (!obj)
+                    serr << "VTKExporter : error while fetching data field '"
+                         << pointsDataField[i] << "' of object '" << pointsDataObject[i]
+                         << "', check object name" << sendl;
+                else if (!field)
+                    serr << "VTKExporter : error while fetching data field '"
+                         << pointsDataField[i] << "' of object '" << pointsDataObject[i]
+                         << "', check field name " << sendl;
             }
             else
             {
@@ -857,7 +878,14 @@ void VTKExporter::writeParallelFile()
 
             if (!obj || !field)
             {
-                serr << "VTKExporter : error while fetching data field, check object name or field name " << sendl;
+                if (!obj)
+                    serr << "VTKExporter : error while fetching data field '"
+                         << cellsDataField[i] << "' of object '" << cellsDataObject[i]
+                         << "', check object name" << sendl;
+                else if (!field)
+                    serr << "VTKExporter : error while fetching data field '"
+                         << cellsDataField[i] << "' of object '" << cellsDataObject[i]
+                         << "', check field name " << sendl;
             }
             else
             {
