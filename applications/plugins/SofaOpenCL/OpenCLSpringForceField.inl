@@ -45,35 +45,35 @@ namespace opencl
 
 extern "C"
 {
-    extern void SpringForceFieldOpenCL3f_addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer& springs, _device_pointer f, const _device_pointer& x, const _device_pointer& v);
-    extern void SpringForceFieldOpenCL3f_addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer& springs, unsigned int offset1, _device_pointer f1, const _device_pointer& x1, const _device_pointer& v1, unsigned int offset2, const _device_pointer& x2, const _device_pointer& v2);
-    extern void StiffSpringForceFieldOpenCL3f_addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer& springs, _device_pointer f, const _device_pointer& x, const _device_pointer& v, _device_pointer dfdx);
-    extern void StiffSpringForceFieldOpenCL3f_addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer& springs, unsigned int offset1, _device_pointer f1, const _device_pointer& x1, const _device_pointer& v1, unsigned int offset2, const _device_pointer& x2, const _device_pointer& v2, _device_pointer dfdx);
-    extern void StiffSpringForceFieldOpenCL3f_addDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer& springs, _device_pointer f, const _device_pointer& dx, const _device_pointer& x, const _device_pointer& dfdx, float factor);
-    extern void StiffSpringForceFieldOpenCL3f_addExternalDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer& springs, unsigned int offset1, _device_pointer f1, const _device_pointer& dx1, const _device_pointer& x1, unsigned int offset2, const _device_pointer& dx2, const _device_pointer& x2, const _device_pointer& dfdx, float factor);
+    extern void SpringForceFieldOpenCL3f_addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, _device_pointer f, const _device_pointer x, const _device_pointer v);
+    extern void SpringForceFieldOpenCL3f_addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, unsigned int offset1, _device_pointer f1, const _device_pointer x1, const _device_pointer v1, unsigned int offset2, const _device_pointer x2, const _device_pointer v2);
+    extern void StiffSpringForceFieldOpenCL3f_addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, _device_pointer f, const _device_pointer x, const _device_pointer v, _device_pointer dfdx);
+    extern void StiffSpringForceFieldOpenCL3f_addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, unsigned int offset1, _device_pointer f1, const _device_pointer x1, const _device_pointer v1, unsigned int offset2, const _device_pointer x2, const _device_pointer v2, _device_pointer dfdx);
+    extern void StiffSpringForceFieldOpenCL3f_addDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, _device_pointer f, const _device_pointer dx, const _device_pointer x, const _device_pointer dfdx, float factor);
+    extern void StiffSpringForceFieldOpenCL3f_addExternalDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, unsigned int offset1, _device_pointer f1, const _device_pointer dx1, const _device_pointer x1, unsigned int offset2, const _device_pointer dx2, const _device_pointer x2, const _device_pointer dfdx, float factor);
 
-    extern void SpringForceFieldOpenCL3f1_addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer& springs, _device_pointer f, const _device_pointer& x, const _device_pointer& v);
-    extern void SpringForceFieldOpenCL3f1_addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer& springs, unsigned int offset1, _device_pointer f1, const _device_pointer& x1, const _device_pointer& v1, unsigned int offset2, const _device_pointer& x2, const _device_pointer& v2);
-    extern void StiffSpringForceFieldOpenCL3f1_addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer& springs, _device_pointer f, const _device_pointer& x, const _device_pointer& v, _device_pointer dfdx);
-    extern void StiffSpringForceFieldOpenCL3f1_addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer& springs, unsigned int offset1, _device_pointer f1, const _device_pointer& x1, const _device_pointer& v1, unsigned int offset2, const _device_pointer& x2, const _device_pointer& v2, _device_pointer dfdx);
-    extern void StiffSpringForceFieldOpenCL3f1_addDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer& springs, _device_pointer f, const _device_pointer& dx, const _device_pointer& x, const _device_pointer& dfdx, double factor);
-    extern void StiffSpringForceFieldOpenCL3f1_addExternalDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer& springs, unsigned int offset1, _device_pointer f1, const _device_pointer& dx1, const _device_pointer& x1, unsigned int offset2, const _device_pointer& dx2, const _device_pointer& x2, const _device_pointer& dfdx, double factor);
+    extern void SpringForceFieldOpenCL3f1_addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, _device_pointer f, const _device_pointer x, const _device_pointer v);
+    extern void SpringForceFieldOpenCL3f1_addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, unsigned int offset1, _device_pointer f1, const _device_pointer x1, const _device_pointer v1, unsigned int offset2, const _device_pointer x2, const _device_pointer v2);
+    extern void StiffSpringForceFieldOpenCL3f1_addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, _device_pointer f, const _device_pointer x, const _device_pointer v, _device_pointer dfdx);
+    extern void StiffSpringForceFieldOpenCL3f1_addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, unsigned int offset1, _device_pointer f1, const _device_pointer x1, const _device_pointer v1, unsigned int offset2, const _device_pointer x2, const _device_pointer v2, _device_pointer dfdx);
+    extern void StiffSpringForceFieldOpenCL3f1_addDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, _device_pointer f, const _device_pointer dx, const _device_pointer x, const _device_pointer dfdx, double factor);
+    extern void StiffSpringForceFieldOpenCL3f1_addExternalDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, unsigned int offset1, _device_pointer f1, const _device_pointer dx1, const _device_pointer x1, unsigned int offset2, const _device_pointer dx2, const _device_pointer x2, const _device_pointer dfdx, double factor);
 
 
 
-    extern void SpringForceFieldOpenCL3d_addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer& springs, _device_pointer f, const _device_pointer& x, const _device_pointer& v);
-    extern void SpringForceFieldOpenCL3d_addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer& springs, unsigned int offset1, _device_pointer f1, const _device_pointer& x1, const _device_pointer& v1, unsigned int offset2, const _device_pointer& x2, const _device_pointer& v2);
-    extern void StiffSpringForceFieldOpenCL3d_addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer& springs, _device_pointer f, const _device_pointer& x, const _device_pointer& v, _device_pointer dfdx);
-    extern void StiffSpringForceFieldOpenCL3d_addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer& springs, unsigned int offset1, _device_pointer f1, const _device_pointer& x1, const _device_pointer& v1, unsigned int offset2, const _device_pointer& x2, const _device_pointer& v2, _device_pointer dfdx);
-    extern void StiffSpringForceFieldOpenCL3d_addDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer& springs, _device_pointer f, const _device_pointer& dx, const _device_pointer& x, const _device_pointer& dfdx, double factor);
-    extern void StiffSpringForceFieldOpenCL3d_addExternalDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer& springs, unsigned int offset1, _device_pointer f1, const _device_pointer& dx1, const _device_pointer& x1, unsigned int offset2, const _device_pointer& dx2, const _device_pointer& x2, const _device_pointer& dfdx, double factor);
+    extern void SpringForceFieldOpenCL3d_addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, _device_pointer f, const _device_pointer x, const _device_pointer v);
+    extern void SpringForceFieldOpenCL3d_addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, unsigned int offset1, _device_pointer f1, const _device_pointer x1, const _device_pointer v1, unsigned int offset2, const _device_pointer x2, const _device_pointer v2);
+    extern void StiffSpringForceFieldOpenCL3d_addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, _device_pointer f, const _device_pointer x, const _device_pointer v, _device_pointer dfdx);
+    extern void StiffSpringForceFieldOpenCL3d_addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, unsigned int offset1, _device_pointer f1, const _device_pointer x1, const _device_pointer v1, unsigned int offset2, const _device_pointer x2, const _device_pointer v2, _device_pointer dfdx);
+    extern void StiffSpringForceFieldOpenCL3d_addDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, _device_pointer f, const _device_pointer dx, const _device_pointer x, const _device_pointer dfdx, double factor);
+    extern void StiffSpringForceFieldOpenCL3d_addExternalDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, unsigned int offset1, _device_pointer f1, const _device_pointer dx1, const _device_pointer x1, unsigned int offset2, const _device_pointer dx2, const _device_pointer x2, const _device_pointer dfdx, double factor);
 
-    extern void SpringForceFieldOpenCL3d1_addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer& springs, _device_pointer f, const _device_pointer& x, const _device_pointer& v);
-    extern void SpringForceFieldOpenCL3d1_addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer& springs, unsigned int offset1, _device_pointer f1, const _device_pointer& x1, const _device_pointer& v1, unsigned int offset2, const _device_pointer& x2, const _device_pointer& v2);
-    extern void StiffSpringForceFieldOpenCL3d1_addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer& springs, _device_pointer f, const _device_pointer& x, const _device_pointer& v, _device_pointer dfdx);
-    extern void StiffSpringForceFieldOpenCL3d1_addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer& springs, unsigned int offset1, _device_pointer f1, const _device_pointer& x1, const _device_pointer& v1, unsigned int offset2, const _device_pointer& x2, const _device_pointer& v2, _device_pointer dfdx);
-    extern void StiffSpringForceFieldOpenCL3d1_addDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer& springs, _device_pointer f, const _device_pointer& dx, const _device_pointer& x, const _device_pointer& dfdx, double factor);
-    extern void StiffSpringForceFieldOpenCL3d1_addExternalDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer& springs, unsigned int offset1, _device_pointer f1, const _device_pointer& dx1, const _device_pointer& x1, unsigned int offset2, const _device_pointer& dx2, const _device_pointer& x2, const _device_pointer& dfdx, double factor);
+    extern void SpringForceFieldOpenCL3d1_addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, _device_pointer f, const _device_pointer x, const _device_pointer v);
+    extern void SpringForceFieldOpenCL3d1_addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, unsigned int offset1, _device_pointer f1, const _device_pointer x1, const _device_pointer v1, unsigned int offset2, const _device_pointer x2, const _device_pointer v2);
+    extern void StiffSpringForceFieldOpenCL3d1_addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, _device_pointer f, const _device_pointer x, const _device_pointer v, _device_pointer dfdx);
+    extern void StiffSpringForceFieldOpenCL3d1_addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, unsigned int offset1, _device_pointer f1, const _device_pointer x1, const _device_pointer v1, unsigned int offset2, const _device_pointer x2, const _device_pointer v2, _device_pointer dfdx);
+    extern void StiffSpringForceFieldOpenCL3d1_addDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, _device_pointer f, const _device_pointer dx, const _device_pointer x, const _device_pointer dfdx, double factor);
+    extern void StiffSpringForceFieldOpenCL3d1_addExternalDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, unsigned int offset1, _device_pointer f1, const _device_pointer dx1, const _device_pointer x1, unsigned int offset2, const _device_pointer dx2, const _device_pointer x2, const _device_pointer dfdx, double factor);
 
 } // extern "C"
 
@@ -82,17 +82,17 @@ template<>
 class OpenCLKernelsSpringForceField<OpenCLVec3fTypes>
 {
 public:
-    static void addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer& springs, _device_pointer f, const _device_pointer& x, const _device_pointer& v)
+    static void addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, _device_pointer f, const _device_pointer x, const _device_pointer v)
     {   SpringForceFieldOpenCL3f_addForce(nbVertex, nbSpringPerVertex, springs, f, x, v); }
-    static void addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer& springs, unsigned int offset1, _device_pointer f1, const _device_pointer& x1, const _device_pointer& v1, unsigned int offset2, const _device_pointer& x2, const _device_pointer& v2)
+    static void addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, unsigned int offset1, _device_pointer f1, const _device_pointer x1, const _device_pointer v1, unsigned int offset2, const _device_pointer x2, const _device_pointer v2)
     {   SpringForceFieldOpenCL3f_addExternalForce(nbVertex, nbSpringPerVertex, springs, offset1, f1, x1, v1, offset2, x2, v2); }
-    static void addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer& springs, _device_pointer f, const _device_pointer& x, const _device_pointer& v, _device_pointer dfdx)
+    static void addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, _device_pointer f, const _device_pointer x, const _device_pointer v, _device_pointer dfdx)
     {   StiffSpringForceFieldOpenCL3f_addForce(nbVertex, nbSpringPerVertex, springs, f, x, v, dfdx); }
-    static void addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer& springs, unsigned int offset1, _device_pointer f1, const _device_pointer& x1, const _device_pointer& v1, unsigned int offset2, const _device_pointer& x2, const _device_pointer& v2, _device_pointer dfdx)
+    static void addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, unsigned int offset1, _device_pointer f1, const _device_pointer x1, const _device_pointer v1, unsigned int offset2, const _device_pointer x2, const _device_pointer v2, _device_pointer dfdx)
     {   StiffSpringForceFieldOpenCL3f_addExternalForce(nbVertex, nbSpringPerVertex, springs, offset1, f1, x1, v1, offset2, x2, v2, dfdx); }
-    static void addDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer& springs, _device_pointer f, const _device_pointer& dx, const _device_pointer& x, const _device_pointer& dfdx, double factor)
+    static void addDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, _device_pointer f, const _device_pointer dx, const _device_pointer x, const _device_pointer dfdx, double factor)
     {   StiffSpringForceFieldOpenCL3f_addDForce(nbVertex, nbSpringPerVertex, springs, f, dx, x, dfdx, (float)factor); }
-    static void addExternalDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer& springs, unsigned int offset1, _device_pointer f1, const _device_pointer& dx1, const _device_pointer& x1, unsigned int offset2, const _device_pointer& dx2, const _device_pointer& x2, const _device_pointer& dfdx, double factor)
+    static void addExternalDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, unsigned int offset1, _device_pointer f1, const _device_pointer dx1, const _device_pointer x1, unsigned int offset2, const _device_pointer dx2, const _device_pointer x2, const _device_pointer dfdx, double factor)
     {   StiffSpringForceFieldOpenCL3f_addExternalDForce(nbVertex, nbSpringPerVertex, springs, offset1, f1, dx1, x1, offset2, dx2, x2, dfdx, (float)factor); }
 };
 
@@ -100,17 +100,17 @@ template<>
 class OpenCLKernelsSpringForceField<OpenCLVec3f1Types>
 {
 public:
-    static void addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer& springs, _device_pointer f, const _device_pointer& x, const _device_pointer& v)
+    static void addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, _device_pointer f, const _device_pointer x, const _device_pointer v)
     {   SpringForceFieldOpenCL3f1_addForce(nbVertex, nbSpringPerVertex, springs, f, x, v); }
-    static void addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer& springs, unsigned int offset1, _device_pointer f1, const _device_pointer& x1, const _device_pointer& v1, unsigned int offset2, const _device_pointer& x2, const _device_pointer& v2)
+    static void addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, unsigned int offset1, _device_pointer f1, const _device_pointer x1, const _device_pointer v1, unsigned int offset2, const _device_pointer x2, const _device_pointer v2)
     {   SpringForceFieldOpenCL3f1_addExternalForce(nbVertex, nbSpringPerVertex, springs, offset1, f1, x1, v1, offset2, x2, v2); }
-    static void addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer& springs, _device_pointer f, const _device_pointer& x, const _device_pointer& v, _device_pointer dfdx)
+    static void addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, _device_pointer f, const _device_pointer x, const _device_pointer v, _device_pointer dfdx)
     {   StiffSpringForceFieldOpenCL3f1_addForce(nbVertex, nbSpringPerVertex, springs, f, x, v, dfdx); }
-    static void addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer& springs, unsigned int offset1, _device_pointer f1, const _device_pointer& x1, const _device_pointer& v1, unsigned int offset2, const _device_pointer& x2, const _device_pointer& v2, _device_pointer dfdx)
+    static void addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, unsigned int offset1, _device_pointer f1, const _device_pointer x1, const _device_pointer v1, unsigned int offset2, const _device_pointer x2, const _device_pointer v2, _device_pointer dfdx)
     {   StiffSpringForceFieldOpenCL3f1_addExternalForce(nbVertex, nbSpringPerVertex, springs, offset1, f1, x1, v1, offset2, x2, v2, dfdx); }
-    static void addDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer& springs, _device_pointer f, const _device_pointer& dx, const _device_pointer& x, const _device_pointer& dfdx, double factor)
+    static void addDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, _device_pointer f, const _device_pointer dx, const _device_pointer x, const _device_pointer dfdx, double factor)
     {   StiffSpringForceFieldOpenCL3f1_addDForce(nbVertex, nbSpringPerVertex, springs, f, dx, x, dfdx, factor); }
-    static void addExternalDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer& springs, unsigned int offset1, _device_pointer f1, const _device_pointer& dx1, const _device_pointer& x1, unsigned int offset2, const _device_pointer& dx2, const _device_pointer& x2, const _device_pointer& dfdx, double factor)
+    static void addExternalDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, unsigned int offset1, _device_pointer f1, const _device_pointer dx1, const _device_pointer x1, unsigned int offset2, const _device_pointer dx2, const _device_pointer x2, const _device_pointer dfdx, double factor)
     {   StiffSpringForceFieldOpenCL3f1_addExternalDForce(nbVertex, nbSpringPerVertex, springs, offset1, f1, dx1, x1, offset2, dx2, x2, dfdx, factor); }
 };
 
@@ -120,17 +120,17 @@ template<>
 class OpenCLKernelsSpringForceField<OpenCLVec3dTypes>
 {
 public:
-    static void addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer& springs, _device_pointer f, const _device_pointer& x, const _device_pointer& v)
+    static void addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, _device_pointer f, const _device_pointer x, const _device_pointer v)
     {   SpringForceFieldOpenCL3d_addForce(nbVertex, nbSpringPerVertex, springs, f, x, v); }
-    static void addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer& springs, unsigned int offset1, _device_pointer f1, const _device_pointer& x1, const _device_pointer& v1, unsigned int offset2, const _device_pointer& x2, const _device_pointer& v2)
+    static void addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, unsigned int offset1, _device_pointer f1, const _device_pointer x1, const _device_pointer v1, unsigned int offset2, const _device_pointer x2, const _device_pointer v2)
     {   SpringForceFieldOpenCL3d_addExternalForce(nbVertex, nbSpringPerVertex, springs, offset1, f1, x1, v1, offset2, x2, v2); }
-    static void addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer& springs, _device_pointer f, const _device_pointer& x, const _device_pointer& v, _device_pointer dfdx)
+    static void addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, _device_pointer f, const _device_pointer x, const _device_pointer v, _device_pointer dfdx)
     {   StiffSpringForceFieldOpenCL3d_addForce(nbVertex, nbSpringPerVertex, springs, f, x, v, dfdx); }
-    static void addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer& springs, unsigned int offset1, _device_pointer f1, const _device_pointer& x1, const _device_pointer& v1, unsigned int offset2, const _device_pointer& x2, const _device_pointer& v2, _device_pointer dfdx)
+    static void addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, unsigned int offset1, _device_pointer f1, const _device_pointer x1, const _device_pointer v1, unsigned int offset2, const _device_pointer x2, const _device_pointer v2, _device_pointer dfdx)
     {   StiffSpringForceFieldOpenCL3d_addExternalForce(nbVertex, nbSpringPerVertex, springs, offset1, f1, x1, v1, offset2, x2, v2, dfdx); }
-    static void addDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer& springs, _device_pointer f, const _device_pointer& dx, const _device_pointer& x, const _device_pointer& dfdx, double factor)
+    static void addDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, _device_pointer f, const _device_pointer dx, const _device_pointer x, const _device_pointer dfdx, double factor)
     {   StiffSpringForceFieldOpenCL3d_addDForce(nbVertex, nbSpringPerVertex, springs, f, dx, x, dfdx, factor); }
-    static void addExternalDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer& springs, unsigned int offset1, _device_pointer f1, const _device_pointer& dx1, const _device_pointer& x1, unsigned int offset2, const _device_pointer& dx2, const _device_pointer& x2, const _device_pointer& dfdx, double factor)
+    static void addExternalDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, unsigned int offset1, _device_pointer f1, const _device_pointer dx1, const _device_pointer x1, unsigned int offset2, const _device_pointer dx2, const _device_pointer x2, const _device_pointer dfdx, double factor)
     {   StiffSpringForceFieldOpenCL3d_addExternalDForce(nbVertex, nbSpringPerVertex, springs, offset1, f1, dx1, x1, offset2, dx2, x2, dfdx, factor); }
 };
 
@@ -138,17 +138,17 @@ template<>
 class OpenCLKernelsSpringForceField<OpenCLVec3d1Types>
 {
 public:
-    static void addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer& springs, _device_pointer f, const _device_pointer& x, const _device_pointer& v)
+    static void addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, _device_pointer f, const _device_pointer x, const _device_pointer v)
     {   SpringForceFieldOpenCL3d1_addForce(nbVertex, nbSpringPerVertex, springs, f, x, v); }
-    static void addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer& springs, unsigned int offset1, _device_pointer f1, const _device_pointer& x1, const _device_pointer& v1, unsigned int offset2, const _device_pointer& x2, const _device_pointer& v2)
+    static void addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, unsigned int offset1, _device_pointer f1, const _device_pointer x1, const _device_pointer v1, unsigned int offset2, const _device_pointer x2, const _device_pointer v2)
     {   SpringForceFieldOpenCL3d1_addExternalForce(nbVertex, nbSpringPerVertex, springs, offset1, f1, x1, v1, offset2, x2, v2); }
-    static void addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer& springs, _device_pointer f, const _device_pointer& x, const _device_pointer& v, _device_pointer dfdx)
+    static void addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, _device_pointer f, const _device_pointer x, const _device_pointer v, _device_pointer dfdx)
     {   StiffSpringForceFieldOpenCL3d1_addForce(nbVertex, nbSpringPerVertex, springs, f, x, v, dfdx); }
-    static void addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer& springs, unsigned int offset1, _device_pointer f1, const _device_pointer& x1, const _device_pointer& v1, unsigned int offset2, const _device_pointer& x2, const _device_pointer& v2, _device_pointer dfdx)
+    static void addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, unsigned int offset1, _device_pointer f1, const _device_pointer x1, const _device_pointer v1, unsigned int offset2, const _device_pointer x2, const _device_pointer v2, _device_pointer dfdx)
     {   StiffSpringForceFieldOpenCL3d1_addExternalForce(nbVertex, nbSpringPerVertex, springs, offset1, f1, x1, v1, offset2, x2, v2, dfdx); }
-    static void addDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer& springs, _device_pointer f, const _device_pointer& dx, const _device_pointer& x, const _device_pointer& dfdx, double factor)
+    static void addDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, _device_pointer f, const _device_pointer dx, const _device_pointer x, const _device_pointer dfdx, double factor)
     {   StiffSpringForceFieldOpenCL3d1_addDForce(nbVertex, nbSpringPerVertex, springs, f, dx, x, dfdx, factor); }
-    static void addExternalDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer& springs, unsigned int offset1, _device_pointer f1, const _device_pointer& dx1, const _device_pointer& x1, unsigned int offset2, const _device_pointer& dx2, const _device_pointer& x2, const _device_pointer& dfdx, double factor)
+    static void addExternalDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, unsigned int offset1, _device_pointer f1, const _device_pointer dx1, const _device_pointer x1, unsigned int offset2, const _device_pointer dx2, const _device_pointer x2, const _device_pointer dfdx, double factor)
     {   StiffSpringForceFieldOpenCL3d1_addExternalDForce(nbVertex, nbSpringPerVertex, springs, offset1, f1, dx1, x1, offset2, dx2, x2, dfdx, factor); }
 };
 
