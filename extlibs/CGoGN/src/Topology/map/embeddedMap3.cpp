@@ -535,6 +535,10 @@ void EmbeddedMap3::splitVolume(std::vector<Dart>& vd)
         Dart v23 = phi3(phi2(v));
         //        std::cerr << __FILE__ << " EmbeddedMap3::splitVolume : " <<          setOrbitEmbeddingOnNewCell<VOLUME>(v23) << std::endl;
         copyCell<VOLUME>(v23, v) ;
+//        AttributeMultiVector<Dart>* QT = getQuickTraversal<VOLUME>();
+//        if (QT != NULL) {
+//            QT->operator [](getEmbedding<VOLUME>(v23)) = v23 ;
+//        }
     }
 }
 

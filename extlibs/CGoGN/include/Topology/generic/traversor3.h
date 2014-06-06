@@ -65,6 +65,7 @@ class Traversor3XY//: public Traversor<MAP>
 {
     BOOST_STATIC_ASSERT(MAP::DIMENSION >= 3u) ;
 private:
+    Traversor3XY();
 	const MAP& m_map ;
 	DartMarkerStore* m_dmark ;
 	CellMarkerStore<ORBY>* m_cmark ;

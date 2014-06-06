@@ -107,6 +107,33 @@ public:
 
 const Dart NIL = Dart::nil();
 
+template <unsigned int ORBIT>
+class Cell
+{
+public:
+    Cell(): dart() {}
+    inline Cell(Dart d): dart(d) {}
+    inline Cell(const Cell& c): dart(c.dart) {}
+    Cell operator=(Cell c) { this->dart = c.dart; }
+    inline unsigned int index() const { return dart.index ;}
+    inline operator Dart() const { return dart; }
+
+    inline bool valid() const { return !dart.isNil(); }
+    inline bool operator==(Cell c) const { return dart == c.dart; }
+    inline bool operator!=(Cell c) const { return dart != c.dart; }
+    static unsigned int dimension() {return ORBIT;}
+    friend std::ostream& operator<<( std::ostream &out, const Cell<ORBIT>& fa ) { return out << fa.dart; }
+private:
+    Dart dart;
+
+};
+
+typedef Cell<VERTEX> VertexCell;
+typedef Cell<EDGE>   EdgeCell;
+typedef Cell<FACE>   FaceCell;
+typedef Cell<VOLUME> VolumeCell;
+
+
 }
 
 #endif /* DART_H_ */
