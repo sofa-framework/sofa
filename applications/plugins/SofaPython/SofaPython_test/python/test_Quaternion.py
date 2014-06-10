@@ -4,8 +4,6 @@ from SofaTest.Macro import *
 
 def test_inv(q):
     q_inv=Quaternion.inv(q)
-    print "inv_ok"
-    print q, q_inv
     return EXPECT_VEC_EQ(Quaternion.id(), Quaternion.prod(q,q_inv), "test_inv")
 
 def run():
