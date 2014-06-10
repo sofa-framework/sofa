@@ -12,6 +12,8 @@ static struct Tests : public Python_test_list
         static const std::string scenePath = std::string(SOFAPYTHON_TEST_PYTHON_DIR);
 
         addTest( "test_Quaternion.py", scenePath );
+        addTest( "test_Tools.py", scenePath );
+
 
         // add python tests here
     }
