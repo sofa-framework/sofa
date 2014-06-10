@@ -69,7 +69,7 @@ private:
 	const MAP& m_map ;
 	DartMarkerStore* m_dmark ;
 	CellMarkerStore<ORBY>* m_cmark ;
-	Dart m_current ;
+    Cell<ORBY> m_current ;
 	TraversorDartsOfOrbit<MAP, ORBX> m_tradoo;
 
 	const std::vector<Dart>* m_QLT;
@@ -80,13 +80,13 @@ private:
 
 
 public:
-	Traversor3XY(const MAP& map, Dart dart, bool forceDartMarker = false, unsigned int thread = 0) ;
-	Traversor3XY(const MAP& map, Dart dart, MarkerForTraversor<MAP, ORBY>& tmo, bool forceDartMarker = false, unsigned int thread = 0) ;
+    Traversor3XY(const MAP& map, Cell<ORBX> cell, bool forceDartMarker = false, unsigned int thread = 0) ;
+    Traversor3XY(const MAP& map, Cell<ORBX> cell, MarkerForTraversor<MAP, ORBY>& tmo, bool forceDartMarker = false, unsigned int thread = 0) ;
     Traversor3XY(const Traversor3XY& tra3xy);
 	~Traversor3XY();
-	Dart begin() ;
-	Dart end() ;
-	Dart next() ;
+    Cell<ORBY> begin() ;
+    inline static Cell<ORBY> end() ;
+    Cell<ORBY> next() ;
 } ;
 
 /**
@@ -99,19 +99,19 @@ class Traversor3XXaY//: public Traversor<MAP>
     BOOST_STATIC_ASSERT(MAP::DIMENSION >= 3u) ;
 private:
 	const MAP& m_map ;
-	std::vector<Dart> m_vecDarts;
-	std::vector<Dart>::iterator m_iter;
+    std::vector< Cell<ORBX> > m_vecDarts;
+    typename std::vector< Cell<ORBX> >::iterator m_iter;
 
 	const std::vector<Dart>* m_QLT;
 	std::vector<Dart>::const_iterator m_ItDarts;
 public:
-	Traversor3XXaY(const MAP& map, Dart dart, bool forceDartMarker = false, unsigned int thread = 0);
+    Traversor3XXaY(const MAP& map, Cell<ORBX> cell, bool forceDartMarker = false, unsigned int thread = 0);
 
-	Dart begin();
+    Cell<ORBX> begin();
 
-	Dart end();
+    inline static Cell<ORBX> end();
 
-	Dart next();
+    Cell<ORBX> next();
 };
 
 

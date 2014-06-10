@@ -114,7 +114,9 @@ public:
     Cell(): dart() {}
     inline Cell(Dart d): dart(d) {}
     inline Cell(const Cell& c): dart(c.dart) {}
-    Cell operator=(Cell c) { this->dart = c.dart; }
+    Cell operator=(Cell c) { this->dart = c.dart; return *this; }
+    inline ~Cell() {}
+
     inline unsigned int index() const { return dart.index ;}
     inline operator Dart() const { return dart; }
 
