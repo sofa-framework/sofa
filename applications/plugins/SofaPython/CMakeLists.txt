@@ -104,6 +104,9 @@ set(PYTHON_FILES
     SofaPython.py
 )
 
+# include python files
+include(./python/python.cmake)
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
 
 # Python's implementation deliberately breaks strict-aliasing rules, so we
