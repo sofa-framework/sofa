@@ -382,7 +382,10 @@ public:
 	template<unsigned int ORBIT>
 	unsigned int getEmbedding(Dart d) const;
 
-	/**
+
+    template<unsigned ORBIT>
+    inline unsigned getEmbedding(Cell<ORBIT> c) const ;
+    /**
 	 * Set the cell index of the given dimension associated to dart d
 	 */
 	template <unsigned int ORBIT>

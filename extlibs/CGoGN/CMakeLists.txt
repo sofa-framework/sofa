@@ -93,7 +93,7 @@ ELSE (ONELIB)
 ENDIF (ONELIB)
 
 add_definitions(-DSHADERPATH="${CGoGN_ROOT_DIR}/lib/Shaders/")
-
+add_definitions("-Werror=return-type")
 
 # define includes of external libs 
 SET (CGoGN_EXT_INCLUDES
@@ -236,6 +236,8 @@ IF(WITH_QT)
         QT4_WRAP_CPP(UTILS_QT_HEADERS_MOC ${utils_qt_headers})
         SET (files_utils_withQt ${files_utils} ${files_utils_qt} ${UTILS_QT_HEADERS_MOC})
 ENDIF (WITH_QT)
+
+
 
 	add_executable( shader_to_h ${CGoGN_ROOT_DIR}/ThirdParty/Tools/shader_to_h.cpp )
 	add_custom_target(shader_target shader_to_h ${shaders_src}

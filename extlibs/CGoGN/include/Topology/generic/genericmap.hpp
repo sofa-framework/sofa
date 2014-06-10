@@ -315,6 +315,15 @@ inline unsigned int GenericMap::getEmbedding(Dart d) const
     return (*m_embeddings[ORBIT])[dartIndex(d)] ;
 }
 
+template <unsigned int ORBIT>
+inline unsigned int GenericMap::getEmbedding(Cell<ORBIT> c) const
+{
+    assert(isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
+    if (ORBIT == DART)
+        return c.index();
+
+    return (*m_embeddings[ORBIT])[c.index()] ;
+}
 
 template <unsigned int ORBIT>
 void GenericMap::setDartEmbedding(Dart d, unsigned int emb)
