@@ -26,6 +26,7 @@
 
 #include <string>
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/vector.h>
 #include <Topology/generic/dart.h>
 namespace CGoGN
@@ -40,6 +41,8 @@ std::string nameOfType(const T& v)
 	return v.CGoGNnameOfType();
 }
 
+template <> inline std::string nameOfType(const sofa::defaulttype::Mat4x4f& /*v*/) { return "Mat4x4f"; }
+template <> inline std::string nameOfType(const sofa::defaulttype::Mat4x4d& /*v*/) { return "Mat4x4d"; }
 template <> inline std::string nameOfType(const sofa::helper::fixed_array<unsigned int, 4>& /*v*/) { return "sofa4UnsignedArray"; }
 template <> inline std::string nameOfType(const sofa::helper::fixed_array<unsigned int, 8>& /*v*/) { return "sofa8UnsignedArray"; }
 template <> inline std::string nameOfType(const std::vector<SReal> & /*v*/) { return "SRealVector"; }
