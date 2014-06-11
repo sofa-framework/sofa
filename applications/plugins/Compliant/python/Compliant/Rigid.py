@@ -12,7 +12,8 @@ import Sofa
 
 from subprocess import Popen, PIPE
 
-import Quaternion as quat
+from numpy import *
+import SofaPython.Quaternion as quat
 import Vec as vec
 
 import Tools
@@ -56,7 +57,7 @@ class Frame:
                 return self
 
         def offset(self):
-            return self.translation + self.rotation
+            return hstack((self.translation, self.rotation))
 
 	def __mul__(self, other):
 		res = Frame()
