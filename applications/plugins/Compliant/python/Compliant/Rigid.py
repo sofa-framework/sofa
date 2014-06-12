@@ -110,7 +110,7 @@ def generate_rigid(filename, density = 1000.0, scale=[1,1,1]):
 
         except OSError:
             # try the debug version
-            cmd += 'd'
+            cmd[0] += 'd'
 
             try:
                     output = Popen(cmd, stdout=PIPE)
@@ -118,7 +118,7 @@ def generate_rigid(filename, density = 1000.0, scale=[1,1,1]):
                     print 'error when calling GenerateRigid, do you have GenerateRigid built in SOFA?'
                     raise
 
-        output.communicate() # wait until Popen command id finished!!!
+        output.communicate() # wait until Popen command is finished!!!
 
         # GenerateRigid output is stored in the file tmpfilename
         rigidFile = open( tmpfilename, "r" )
