@@ -23,6 +23,7 @@ set(HEADER_FILES
     io/MassSpringLoader.h
     io/Mesh.h
     io/MeshOBJ.h
+    io/MeshVTK.h
     io/MeshSTL.h
     io/MeshTopologyLoader.h
     io/MeshTrian.h
@@ -106,6 +107,7 @@ set(SOURCE_FILES
     io/MassSpringLoader.cpp
     io/Mesh.cpp
     io/MeshOBJ.cpp
+    io/MeshVTK.cpp
     io/MeshSTL.cpp
     io/MeshTopologyLoader.cpp
     io/MeshTrian.cpp
@@ -193,7 +195,7 @@ endif()
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_HELPER")
-AddLinkerDependencies(${GLEW_LIBRARIES} ${GLUT_LIBRARIES} ${OPENGL_LIBRARIES} ${PNG_LIBRARIES})
+AddLinkerDependencies(${GLEW_LIBRARIES} ${GLUT_LIBRARIES} ${OPENGL_LIBRARIES} ${PNG_LIBRARIES} tinyxml)
 
 if(WIN32)
     # Windows lib, used in system::FileSystem
