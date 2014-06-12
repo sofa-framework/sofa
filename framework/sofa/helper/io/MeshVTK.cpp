@@ -122,12 +122,6 @@ void MeshVTK::readVTU(const std::string &filename)
         vertNormTexIndices.push_back (tIndices);
         facets.push_back(vertNormTexIndices);
     }
-
-    // announce the model statistics
-     std::cout << " Vertices: " << vertices.size() << std::endl;
-     std::cout << " Normals: " << normals.size() << std::endl;
-     std::cout << " Texcoords: " << texCoords.size() << std::endl;
-     std::cout << " Triangles: " << facets.size() << std::endl;
 }
 
 } // namespace io
