@@ -19,6 +19,8 @@ import Vec as vec
 import Tools
 from Tools import cat as concat
 
+import os
+
 
 class Frame:
         # a rigid frame, group operations are available.
@@ -89,42 +91,57 @@ class MassInfo:
         pass
 
 # front-end to sofa GenerateRigid tool. density unit is kg/m^3
-def generate_rigid(filename, density = 1000.0):
-        cmd = Sofa.build_dir() + '/bin/GenerateRigid'
-        args = filename
-	try:
-		output = Popen([cmd, args], stdout=PIPE)
-		line = output.stdout.read().split('\n')
-	except OSError:
-                # try the debug version
-                cmd += 'd'
-                
-                try:
-                        output = Popen([cmd, args], stdout=PIPE)
-                        line = output.stdout.read().split('\n')
-                except OSError:
-                        print 'error when calling GenerateRigid, do you have GenerateRigid built in SOFA ?'
-                        raise
+def generate_rigid(filename, density = 1000.0, scale=[1,1,1]):
 
-        start = 2
+        # TODO bind GenerateRigid
+        # - faster than writing in a file
+        # - more robust (if several processes try to work in the same file)
+
+
+        tmpfilename = Tools.path( __file__ ) +"/tmp.rigid"
+
+        cmd = [ Sofa.build_dir() + '/bin/GenerateRigid', filename, tmpfilename, str(density), str(scale[0]), str(scale[1]), str(scale[2]) ]
+
+#        print cmd
+                         
+        try:
+
+            output = Popen(cmd, stdout=PIPE)
+
+        except OSError:
+            # try the debug version
+            cmd += 'd'
+
+            try:
+                    output = Popen(cmd, stdout=PIPE)
+            except OSError:
+                    print 'error when calling GenerateRigid, do you have GenerateRigid built in SOFA?'
+                    raise
+
+        output.communicate() # wait until Popen command id finished!!!
+
+        # GenerateRigid output is stored in the file tmpfilename
+        rigidFile = open( tmpfilename, "r" )
+        line = list( rigidFile )
+        rigidFile.close()
         
-        # print line 
+#        for i in xrange(len(line)):
+#            print str(i) + str(line[i])
+                    
+        start = 1
         
-        mass = float( line[start].split(' ')[1] )
-        volm = float( line[start + 1].split(' ')[1] )
-        inrt = map(float, line[start + 2].split(' ')[1:] )
-        com = map(float, line[start + 3].split(' ')[1:] )
+        res = MassInfo()
+        
+        res.mass = float( line[start].split(' ')[1] )
+        #volm = float( line[start + 1].split(' ')[1] )
+        res.inertia = map(float, line[start + 2].split(' ')[1:] ); res.inertia = [res.mass * x for x in res.inertia]
+        res.com = map(float, line[start + 3].split(' ')[1:] )
         
         # TODO extract principal axes basis if needed
         # or at least say that we screwd up
         
-        res = MassInfo()
 
-        # by default, GenerateRigid assumes 1000 kg/m^3 already
-        res.mass = (density / 1000.0) * mass
-
-        res.inertia = [mass * x for x in inrt]
-        res.com = com
+#        print "generate_rigid " + str(res.mass) + " " + str( res.inertia )
 
         return res
 

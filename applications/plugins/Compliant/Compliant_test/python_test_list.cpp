@@ -27,4 +27,30 @@ INSTANTIATE_TEST_CASE_P(Batch,
                         Python_scene_test,
                         ::testing::ValuesIn(tests.list));
 
-}
+
+
+
+////////////////////////
+
+
+// static build of the test list
+static struct Tests2 : public Python_test_list
+{
+    Tests2()
+    {
+        static const std::string testPath = std::string(COMPLIANT_TEST_PYTHON_DIR);
+
+        addTest( "GenerateRigid.py", testPath );
+
+        // add pure python tests here
+    }
+} tests2;
+
+
+// run test list
+INSTANTIATE_TEST_CASE_P(Batch,
+                        Python_test,
+                        ::testing::ValuesIn(tests2.list));
+
+
+} // namespace sofa
