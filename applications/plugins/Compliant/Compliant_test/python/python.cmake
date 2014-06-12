@@ -3,4 +3,5 @@ set(PYTHON_FILES
     python/Example.py
     python/LambdaPropagation.py
     python/UniformCompliance.py
+    python/GenerateRigid.py
 )
