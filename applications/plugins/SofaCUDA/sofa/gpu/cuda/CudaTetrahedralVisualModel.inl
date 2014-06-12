@@ -148,9 +148,9 @@ bool OglTetrahedralModel< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::add
     const VecCoord& x = *nodes->getX();
     Coord v;
 
-    for(it = vec.begin() ; it != vec.end() ; it++)
+    for(it = vec.begin() ; it != vec.end() ; ++it)
     {
-        for (unsigned int i=0 ; i< 4 ; i++)
+        for (unsigned int i=0 ; i< 4 ; ++i)
         {
             v = x[(*it)[i]];
 
