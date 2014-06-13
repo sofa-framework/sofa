@@ -378,7 +378,7 @@ void CubeModel::computeBoundingTree(int maxDepth)
     {
         // Simply update the existing tree, starting from the bottom
         int lvl = 0;
-        for (std::list<CubeModel*>::reverse_iterator it = levels.rbegin(); it != levels.rend(); it++)
+        for (std::list<CubeModel*>::reverse_iterator it = levels.rbegin(); it != levels.rend(); ++it)
         {
             //sout << "CubeModel: update level "<<lvl<<sendl;
             (*it)->updateCubes();

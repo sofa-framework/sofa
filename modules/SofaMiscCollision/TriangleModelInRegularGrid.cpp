@@ -90,7 +90,7 @@ void TriangleModelInRegularGrid::init()
     while ( found )
     {
         found = false;
-        for ( vector<TopologicalMapping*>::iterator it = topoVec.begin(); it != topoVec.end(); it++ )
+        for ( vector<TopologicalMapping*>::iterator it = topoVec.begin(); it != topoVec.end(); ++it )
         {
             if ( ( *it )->getTo() == _higher_topo )
             {
@@ -128,7 +128,7 @@ void TriangleModelInRegularGrid::computeBoundingTree ( int )
         cubeModel->resize ( 1 );
         minElem = xHigh[0];
         maxElem = xHigh[0];
-        for ( unsigned i=1; i<xHigh.size(); i++ )
+        for ( unsigned i=1; i<xHigh.size(); ++i )
         {
             const Vector3& pt1 = xHigh[i];
             if ( pt1[0] > maxElem[0] ) maxElem[0] = pt1[0];
@@ -139,7 +139,7 @@ void TriangleModelInRegularGrid::computeBoundingTree ( int )
             else if ( pt1[2] < minElem[2] ) minElem[2] = pt1[2];
         }
 
-        for (int i=0; i<getSize(); i++)
+        for (int i=0; i<getSize(); ++i)
         {
             Triangle t(this,i);
             const Vector3& pt1 = x[t.p1Index()];

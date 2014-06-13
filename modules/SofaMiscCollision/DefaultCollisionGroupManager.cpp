@@ -71,7 +71,7 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
     sofa::helper::vector< simulation::Node::SPtr > contactGroup;
     sofa::helper::vector< simulation::Node::SPtr > removedGroup;
     contactGroup.reserve(contacts.size());
-    for(sofa::helper::vector<Contact::SPtr>::const_iterator cit = contacts.begin(); cit != contacts.end(); cit++)
+    for(sofa::helper::vector<Contact::SPtr>::const_iterator cit = contacts.begin(); cit != contacts.end(); ++cit)
     {
         Contact* contact = cit->get();
         simulation::Node* group1 = getIntegrationNode(contact->getCollisionModels().first);
