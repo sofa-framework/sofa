@@ -123,6 +123,7 @@ public:
     inline bool valid() const { return !dart.isNil(); }
     inline bool operator==(Cell c) const { return dart == c.dart; }
     inline bool operator!=(Cell c) const { return dart != c.dart; }
+    inline bool operator<(Cell c) const {return this->index() < c.index(); }
     static unsigned int dimension() {return ORBIT;}
     friend std::ostream& operator<<( std::ostream &out, const Cell<ORBIT>& fa ) { return out << fa.dart; }
 private:
