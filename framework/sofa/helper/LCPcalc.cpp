@@ -2004,6 +2004,11 @@ int nlcp_multiGrid(int dim, double *dfree, double**W, double *f, double mu, doub
                 free(F_coarse_1);
                 free(F_coarse);
                 free(d_coarse);
+
+                for (int i = 0; i < numContacts; i++)
+                    delete W33[i];
+                free(W33);
+                
                 return 0;
             }
 
@@ -2182,6 +2187,10 @@ int nlcp_multiGrid(int dim, double *dfree, double**W, double *f, double mu, doub
     free(F_coarse_1);
     free(F_coarse);
     free(d_coarse);
+
+    for (int i = 0; i < numContacts; i++)
+        delete W33[i];
+    free(W33);
 
     return result;
 
