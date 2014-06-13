@@ -362,7 +362,7 @@ void GridModel::computeBoundingTree(int maxDepth)
     {
         // Simply update the existing tree, starting from the bottom
         int lvl = 0;
-        for (std::list<GridModel*>::reverse_iterator it = levels.rbegin(); it != levels.rend(); it++)
+        for (std::list<GridModel*>::reverse_iterator it = levels.rbegin(); it != levels.rend(); ++it)
         {
             //std::cout << "GridModel: update level "<<lvl<<std::endl;
             (*it)->updateGrids();

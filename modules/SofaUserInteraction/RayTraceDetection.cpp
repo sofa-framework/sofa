@@ -317,7 +317,7 @@ void RayTraceDetection::draw (const core::visual::VisualParams* vparams)
     const DetectionOutputMap& outputsMap = this->getDetectionOutputs();
 
     for (DetectionOutputMap::const_iterator it = outputsMap.begin ();
-            it != outputsMap.end (); it++)
+            it != outputsMap.end (); ++it)
     {
         TDetectionOutputVector < TriangleOctreeModel,
                                TriangleOctreeModel > *outputs =
@@ -326,7 +326,7 @@ void RayTraceDetection::draw (const core::visual::VisualParams* vparams)
                                        TriangleOctreeModel, TriangleOctreeModel > *>(it->second);
         for (TDetectionOutputVector < TriangleOctreeModel,
                 TriangleOctreeModel >::iterator it2 = (outputs)->begin ();
-                it2 != outputs->end (); it2++)
+                it2 != outputs->end (); ++it2)
         {
             glBegin (GL_LINES);
             glVertex3d (it2->point[0][0], it2->point[0][1],
