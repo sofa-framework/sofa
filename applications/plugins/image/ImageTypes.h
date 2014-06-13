@@ -498,7 +498,7 @@ public:
     //internal data
     helper::Quater<Real> qrotation; Coord axisrotation; Real phirotation; // "rotation" in other formats
 
-    void setCamPos(const Real cx,const Real cy) {this->camx=cx;  this->camy=cy; }
+    void setCamPos(const Real& cx,const Real& cy) {this->camx=cx;  this->camy=cy; }
 
     //internal data update
     virtual void update()
