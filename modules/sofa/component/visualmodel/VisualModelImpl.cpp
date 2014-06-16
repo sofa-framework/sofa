@@ -518,7 +518,7 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
             else
             {
                 //if( MeshSTL *Loader = dynamic_cast< MeshSTL *>(objLoader.get()) )
-                if(objLoader.get()->loaderType == "stl")
+                if(objLoader.get()->loaderType == "stl" || objLoader.get()->loaderType == "vtu")
                 {
                     setMesh(*objLoader, false);
                 }
