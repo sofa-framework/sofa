@@ -49,6 +49,7 @@ void MeshOBJ::init (std::string filename)
         std::cerr << "File " << filename << " not found " << std::endl;
         return;
     }
+    loaderType = "obj";
     std::ifstream file(filename.c_str());
     readOBJ(file, filename);
     file.close();

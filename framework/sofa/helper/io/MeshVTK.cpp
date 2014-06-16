@@ -55,6 +55,7 @@ void MeshVTK::init(std::string filename)
         std::cerr << "File " << filename << " not found " << std::endl;
         return;
     }
+    loaderType = "vtu";
     readVTU(filename);
 }
 
