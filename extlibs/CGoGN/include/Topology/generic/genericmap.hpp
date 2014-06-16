@@ -448,7 +448,7 @@ void GenericMap::initAllOrbitsEmbedding(bool realloc)
 		if(!mark.isMarked(d))
 		{
 			mark.markOrbit<ORBIT>(d) ;
-			if(realloc || getEmbedding<ORBIT>(d) == EMBNULL)
+            if((realloc || getEmbedding<ORBIT>(d) == EMBNULL)&& (!isBoundaryMarkedCurrent(d)) )
 				setOrbitEmbeddingOnNewCell<ORBIT>(d) ;
 		}
 	}
