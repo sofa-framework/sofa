@@ -103,7 +103,7 @@ void MeshVTK::readVTU(const std::string &filename)
 
     int cellType;
     vector< vector<int> > vertNormTexIndices;
-    vector<int> vIndices, nIndices, tIndices;
+    vector<int> vIndices, nIndices(3,0), tIndices(3,0);
     for (std::size_t i = 0 ; i < nbCells ; ++i)
     {
         vIndices.clear();
