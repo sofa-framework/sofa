@@ -42,6 +42,7 @@ std::string nameOfType(const T& v)
 	return v.CGoGNnameOfType();
 }
 
+template <> inline std::string nameOfType(const Eigen::Matrix3d& /*v*/) { return "EigenMat3d"; }
 template <> inline std::string nameOfType(const Eigen::Matrix4d& /*v*/) { return "EigenMat4d"; }
 template <> inline std::string nameOfType(const bool& /*v*/) { return "bool"; }
 template <> inline std::string nameOfType(const sofa::defaulttype::Mat4x4f& /*v*/) { return "Mat4x4f"; }
