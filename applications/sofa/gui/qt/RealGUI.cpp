@@ -774,14 +774,14 @@ void RealGUI::fileOpen()
     // build the filter with the SceneLoaderFactory
     std::string filter, allKnownFilters = "All known (";
     SceneLoaderFactory::SceneLoaderList* loaders = SceneLoaderFactory::getInstance()->getEntries();
-    for (SceneLoaderFactory::SceneLoaderList::iterator it=loaders->begin(); it!=loaders->end(); it++)
+    for (SceneLoaderFactory::SceneLoaderList::iterator it=loaders->begin(); it!=loaders->end(); ++it)
     {
         if (it!=loaders->begin()) filter +=";;";
         filter += (*it)->getFileTypeDesc();
         filter += " (";
         SceneLoader::ExtensionList extensions;
         (*it)->getExtensionList(&extensions);
-        for (SceneLoader::ExtensionList::iterator itExt=extensions.begin(); itExt!=extensions.end(); itExt++)
+        for (SceneLoader::ExtensionList::iterator itExt=extensions.begin(); itExt!=extensions.end(); ++itExt)
         {
             if (itExt!=extensions.begin()) filter +=" ";
             filter+="*.";
