@@ -712,11 +712,11 @@ bool OglModel::loadTextures()
 
     //count the total number of activated textures
     std::vector<unsigned int> activatedTextures;
-    for (unsigned int i = 0 ; i < this->materials.getValue().size() ; i++)
+    for (unsigned int i = 0 ; i < this->materials.getValue().size() ; ++i)
         if (this->materials.getValue()[i].useTexture && this->materials.getValue()[i].activated)
             activatedTextures.push_back(i);
 
-    for (std::vector< unsigned int>::iterator i = activatedTextures.begin() ; i < activatedTextures.end(); i++)
+    for (std::vector< unsigned int>::iterator i = activatedTextures.begin() ; i < activatedTextures.end(); ++i)
     {
         std::string textureFile(this->materials.getValue()[*i].textureFilename);
 

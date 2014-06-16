@@ -436,7 +436,7 @@ void SparseGridTopology::buildFromData( Vec3i numPoints, BoundingBox box, const 
                 {
                     setVoxel(x + (int)numVoxels[0] * (y + (int)numVoxels[1] * z),1);
                 }
-                f++;
+                ++f;
             }
         }
     }
