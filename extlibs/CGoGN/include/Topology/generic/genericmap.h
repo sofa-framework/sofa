@@ -423,6 +423,8 @@ public:
 	*/
 	template <unsigned int ORBIT>
 	void setOrbitEmbedding(Dart d, unsigned int em) ;
+    template <unsigned int ORBIT>
+    void setOrbitEmbedding(Cell<ORBIT> c, unsigned int em) ;
 
 	/**
 	 * Set the index of the associated cell to all the darts of an orbit
@@ -439,6 +441,9 @@ public:
 	*/
 	template <unsigned int ORBIT>
 	unsigned int setOrbitEmbeddingOnNewCell(Dart d) ;
+
+    template <unsigned int ORBIT>
+    unsigned int setOrbitEmbeddingOnNewCell(Cell<ORBIT> c) ;
 
 	/**
 	 * Associate an new cell to all darts of an orbit
@@ -758,7 +763,7 @@ public:
 //	template <unsigned int ORBIT>
 //	bool foreach_dart_of_orbit(Dart d, FunctorType& f, unsigned int thread = 0) ;
 	template <unsigned int ORBIT>
-	bool foreach_dart_of_orbit(Dart d, FunctorType& f, unsigned int thread = 0) const;
+    bool foreach_dart_of_orbit(Cell<ORBIT> d, FunctorType& f, unsigned int thread = 0) const;
 
 
 	virtual bool foreach_dart_of_vertex(Dart d, FunctorType& f, unsigned int thread = 0) const = 0 ;

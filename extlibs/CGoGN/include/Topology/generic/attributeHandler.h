@@ -93,6 +93,11 @@ protected:
 
 	void registerInMap() ;
 	void unregisterFromMap() ;
+private:
+    template <unsigned int ORBIT2>
+    AttributeHandler(const AttributeHandler<T, ORBIT2>& h) ;
+    template <unsigned int ORBIT2>
+    AttributeHandler<T, ORBIT>& operator=(const AttributeHandler<T, ORBIT2>& ta) ;
 
 public:
 	typedef T DATA_TYPE ;
@@ -114,28 +119,28 @@ public:
 	 * Copy constructor
 	 * @param ta the table attribute
 	 */
-	AttributeHandler(const AttributeHandler<T, ORBIT>& ta) ;
+    AttributeHandler(const AttributeHandler& ta) ;
 
 	/**
 	 * Transmute Constructor
 	 * Construct an attribute of Orbit from Orbit2
 	 * @param h the table attribute
 	 */
-	template <unsigned int ORBIT2>
-	AttributeHandler(const AttributeHandler<T, ORBIT2>& h) ;
+//	template <unsigned int ORBIT2>
+//	AttributeHandler(const AttributeHandler<T, ORBIT2>& h) ;
 
 	/**
 	 * affectation operator
 	 * @param ta the table attribute to affect to this
 	 */
-	AttributeHandler<T, ORBIT>& operator=(const AttributeHandler<T, ORBIT>& ta) ;
+    AttributeHandler<T, ORBIT>& operator=(const AttributeHandler& ta) ;
 
 	/**
 	 * transmuted affectation operator
 	 * @param ta the table attribute to affect to this
 	 */
-	template <unsigned int ORBIT2>
-	AttributeHandler<T, ORBIT>& operator=(const AttributeHandler<T, ORBIT2>& ta) ;
+//	template <unsigned int ORBIT2>
+//	AttributeHandler<T, ORBIT>& operator=(const AttributeHandler<T, ORBIT2>& ta) ;
 
 	/**
 	 * Destructor (empty & virtual)
@@ -186,11 +191,13 @@ public:
 	 * [] operator with dart parameter
 	 */
 	T& operator[](Dart d) ;
+    T& operator[](Cell<ORBIT> c);
 
 	/**
 	 * const [] operator with dart parameter
 	 */
 	const T& operator[](Dart d) const ;
+    const T& operator[](Cell<ORBIT> c) const;
 
 	/**
 	 * at operator (same as [] but with index parameter)

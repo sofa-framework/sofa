@@ -82,20 +82,20 @@ AttributeHandler<T, ORBIT>::AttributeHandler(const AttributeHandler<T, ORBIT>& t
 
 //template <typename T, unsigned int ORBIT>
 //template <unsigned int ORBIT2>
-template <typename T, unsigned int ORBIT>
-template <unsigned int ORBIT2>
-AttributeHandler<T, ORBIT>::AttributeHandler(const AttributeHandler<T, ORBIT2>& h) :
-	AttributeHandlerGen(h.m_map, h.valid)
-{
-	m_attrib = h.m_attrib;
-	if(m_attrib->getOrbit() == ORBIT2)
-	{
-		if(valid)
-			registerInMap() ;
-	}
-	else
-		valid = false;
-}
+//template <typename T, unsigned int ORBIT>
+//template <unsigned int ORBIT2>
+//AttributeHandler<T, ORBIT>::AttributeHandler(const AttributeHandler<T, ORBIT2>& h) :
+//	AttributeHandlerGen(h.m_map, h.valid)
+//{
+//	m_attrib = h.m_attrib;
+//	if(m_attrib->getOrbit() == ORBIT2)
+//	{
+//		if(valid)
+//			registerInMap() ;
+//	}
+//	else
+//		valid = false;
+//}
 
 template <typename T, unsigned int ORBIT>
 inline AttributeHandler<T, ORBIT>& AttributeHandler<T, ORBIT>::operator=(const AttributeHandler<T, ORBIT>& ta)
@@ -110,19 +110,19 @@ inline AttributeHandler<T, ORBIT>& AttributeHandler<T, ORBIT>::operator=(const A
 	return *this ;
 }
 
-template <typename T, unsigned int ORBIT>
-template <unsigned int ORBIT2>
-inline AttributeHandler<T, ORBIT>& AttributeHandler<T, ORBIT>::operator=(const AttributeHandler<T, ORBIT2>& ta)
-{
-	if(valid)
-		unregisterFromMap() ;
-	m_map = ta.map() ;
-	m_attrib = ta.getDataVector() ;
-	valid = ta.isValid() ;
-	if(valid)
-		registerInMap() ;
-	return *this ;
-}
+//template <typename T, unsigned int ORBIT>
+//template <unsigned int ORBIT2>
+//inline AttributeHandler<T, ORBIT>& AttributeHandler<T, ORBIT>::operator=(const AttributeHandler<T, ORBIT2>& ta)
+//{
+//	if(valid)
+//		unregisterFromMap() ;
+//	m_map = ta.map() ;
+//	m_attrib = ta.getDataVector() ;
+//	valid = ta.isValid() ;
+//	if(valid)
+//		registerInMap() ;
+//	return *this ;
+//}
 
 
 template <typename T, unsigned int ORBIT>
@@ -194,11 +194,31 @@ inline T& AttributeHandler<T, ORBIT>::operator[](Dart d)
 }
 
 template <typename T, unsigned int ORBIT>
+inline T& AttributeHandler<T, ORBIT>::operator[](Cell<ORBIT> c)
+{
+    assert(valid || !"Invalid AttributeHandler") ;
+    unsigned int a = m_map->getEmbedding(c) ;
+
+    if (a == EMBNULL)
+        a = m_map->setOrbitEmbeddingOnNewCell(c) ;
+
+    return m_attrib->operator[](a) ;
+}
+
+template <typename T, unsigned int ORBIT>
 inline const T& AttributeHandler<T, ORBIT>::operator[](Dart d) const
 {
 	assert(valid || !"Invalid AttributeHandler") ;
 	unsigned int a = m_map->getEmbedding<ORBIT>(d) ;
 	return m_attrib->operator[](a) ;
+}
+
+template <typename T, unsigned int ORBIT>
+inline const T& AttributeHandler<T, ORBIT>::operator[](Cell<ORBIT> c) const
+{
+    assert(valid || !"Invalid AttributeHandler") ;
+    unsigned int a = m_map->getEmbedding(c) ;
+    return m_attrib->operator[](a) ;
 }
 
 template <typename T, unsigned int ORBIT>
