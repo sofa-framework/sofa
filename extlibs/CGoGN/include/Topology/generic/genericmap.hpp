@@ -383,6 +383,14 @@ inline void GenericMap::setOrbitEmbedding(Dart d, unsigned int em)
 }
 
 template <unsigned int ORBIT>
+inline void GenericMap::setOrbitEmbedding(Cell<ORBIT> c, unsigned int em)
+{
+    assert(isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
+    FunctorSetEmb<GenericMap, ORBIT> fsetemb(*this, em);
+    foreach_dart_of_orbit<ORBIT>(c, fsetemb);
+}
+
+template <unsigned int ORBIT>
 inline void GenericMap::initOrbitEmbedding(Dart d, unsigned int em)
 {
 	assert(isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
@@ -397,6 +405,15 @@ inline unsigned int GenericMap::setOrbitEmbeddingOnNewCell(Dart d)
 	unsigned int em = newCell<ORBIT>();
 	setOrbitEmbedding<ORBIT>(d, em);
 	return em;
+}
+
+template <unsigned int ORBIT>
+inline unsigned int GenericMap::setOrbitEmbeddingOnNewCell(Cell<ORBIT> c)
+{
+    assert(isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
+    unsigned int em = newCell<ORBIT>();
+    setOrbitEmbedding(c, em);
+    return em;
 }
 
 template <unsigned int ORBIT>
@@ -866,7 +883,7 @@ inline void GenericMap::next(Dart& d) const
 //}
 
 template <unsigned int ORBIT>
-bool GenericMap::foreach_dart_of_orbit(Dart d, FunctorType& f, unsigned int thread) const
+bool GenericMap::foreach_dart_of_orbit(Cell<ORBIT> d, FunctorType& f, unsigned int thread) const
 {
 	switch(ORBIT)
 	{

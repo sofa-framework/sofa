@@ -280,6 +280,11 @@ public:
 		this->m_map.template setDartEmbedding<ORBIT>(d, emb);
 		return false;
 	}
+    bool operator()(Cell<ORBIT> c)
+    {
+        this->m_map.template setDartEmbedding(c, emb);
+        return false;
+    }
 	void changeEmb(unsigned int e) { emb = e; }
 };
 
