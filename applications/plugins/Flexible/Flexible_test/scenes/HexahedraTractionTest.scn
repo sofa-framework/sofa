@@ -1,18 +1,18 @@
 <?xml version="1.0"?>
 
-<Node 	name="Root" gravity="0 0 0" time="0" animate="0"  dt="1" showAxis="true">
+<Node 	name="Root" gravity="0 0 0" time="0" animate="0"  dt="0.5" showAxis="true">
   <RequiredPlugin pluginName="Flexible"/>
-  
+
     <!--Solver-->
-    <EulerImplicitSolver name="cg_odesolver" printLog="0" />
-    <CGLinearSolver template="GraphScattered" name="linear solver" iterations="25" tolerance="1e-12" threshold="1e-12" />
-  
+    <StaticSolver/>
+    <CGLinearSolver template="GraphScattered" name="linear solver" iterations="1000" tolerance="1e-12" threshold="1e-12" />
+
     <!--Topology Hexahedra-->
-    <RegularGridTopology name="hexahedra" n="2 5 5" min="0 0 0" max="1 1 1"  />
+    <RegularGridTopology name="hexahedra" n="2 5 5" min="0 0 0" max="1 1 1"/>
 
     <!--MechanicalObject-->
     <MechanicalObject name="DOFs" template="Vec3d"  showObject="1"  showObjectScale="5"  showIndices="1"  showIndicesScale="0.0003" />
-
+  
     <!--MeshMatrixMass-->
     <UniformMass totalMass="1" />
 
@@ -30,7 +30,7 @@
 
     <BarycentricShapeFunction template="ShapeFunctiond" />
     
-    <!--Decomposition of the cubes in tetrahedra, with tetrahedral FEM -->
+    <!--Decomposition of the cubes in tetrahedra -->
     <Node name="Tetra" >
       <TetrahedronSetTopologyContainer name="TetraContainer" />
       <TetrahedronSetTopologyModifier />
@@ -38,15 +38,15 @@
       <TetrahedronSetGeometryAlgorithms template="Vec3d" />
       <Hexa2TetraTopologicalMapping name="default28" object1="../hexahedra" object2="TetraContainer" />
       
-       <!--Quads-->
+      <!--Quads for QuadPressureForceField-->
       <QuadSetTopologyContainer name="QuadContainer" />
       <QuadSetTopologyModifier />
       <QuadSetTopologyAlgorithms template="Vec3d" />
       <QuadSetGeometryAlgorithms template="Vec3d" />
       <Hexa2QuadTopologicalMapping name="default28" object1="../hexahedra" object2="QuadContainer" />
-      <QuadPressureForceField normal="1 0 0" dmin="0.99" dmax="1.01" showForces="1" pressure="0.2 0 0"/>
-
-      <Node name="behavior"   >
+      <QuadPressureForceField normal="1 0 0" dmin="0.99" dmax="1.01" showForces="1" />
+     
+      <Node name="behavior">
         <TopologyGaussPointSampler name="sampler" inPosition="@../../hexahedra.position" showSamplesScale="0" method="0" order="1" />
         <MechanicalObject  template="F332" name="F"  showObject="0" showObjectScale="0.05" />
         <LinearMapping template="Mapping&lt;Vec3d,F332&gt;" showDeformationGradientScale="0.05"  showDeformationGradientStyle="0 - All axis"  showColorOnTopology="2 - sqrt(det(F^T.F))-1"  />
@@ -55,11 +55,10 @@
          <Node name="Strain"   >
             <MechanicalObject  template="E332" name="E"  />
             <CorotationalStrainMapping template="Mapping&lt;F332,E332&gt;"   method="svd" geometricStiffness="true"/>
-            <HookeForceField  template="E332" name="ff" youngModulus="1" poissonRatio="0.1" viscosity="0.1"/>
-        </Node>
+          </Node>
 
       </Node>
-  
+      
     </Node>
 
 </Node>
