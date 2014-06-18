@@ -91,7 +91,7 @@ class MassInfo:
         pass
 
 # front-end to sofa GenerateRigid tool. density unit is kg/m^3
-def generate_rigid(filename, density = 1000.0, scale=[1,1,1]):
+def generate_rigid(filename, density = 1000.0, scale=[1,1,1], rotation=[0,0,0]):
 
         # TODO bind GenerateRigid
         # - faster than writing in a file
@@ -100,7 +100,7 @@ def generate_rigid(filename, density = 1000.0, scale=[1,1,1]):
 
         tmpfilename = Tools.path( __file__ ) +"/tmp.rigid"
 
-        cmd = [ Sofa.build_dir() + '/bin/GenerateRigid', filename, tmpfilename, str(density), str(scale[0]), str(scale[1]), str(scale[2]) ]
+        cmd = [ Sofa.build_dir() + '/bin/GenerateRigid', filename, tmpfilename, str(density), str(scale[0]), str(scale[1]), str(scale[2]), str(rotation[0]), str(rotation[1]), str(rotation[2]) ]
 
 #        print cmd
                          
@@ -134,14 +134,34 @@ def generate_rigid(filename, density = 1000.0, scale=[1,1,1]):
         
         res.mass = float( line[start].split(' ')[1] )
         #volm = float( line[start + 1].split(' ')[1] )
-        res.inertia = map(float, line[start + 2].split(' ')[1:] ); res.inertia = [res.mass * x for x in res.inertia]
         res.com = map(float, line[start + 3].split(' ')[1:] )
-        
-        # TODO extract principal axes basis if needed
-        # or at least say that we screwd up
+
+
+        inertia = map(float, line[start + 2].split(' ')[1:] ) # pick inertia matrix from file
+        res.inertia = array( [res.mass * x for x in inertia] ).reshape( 3, 3 ) # convert it in numpy 3x3 matrix
+
+
+        # extracting principal axes basis and corresponding rotation and diagonal inertia
+
+        if inertia[1]>1e-5 or inertia[2]>1e-5 or inertia[5]>1e-5 : # if !diagonal (1e-5 seems big but the precision from a mesh is poor)
+#            print res.inertia
+            U, res.diagonal_inertia, V = linalg.svd(res.inertia)
+            # det should be 1->rotation or -1->reflexion
+            if linalg.det(U) < 0 : # reflexion
+                # made it a rotation by negating a column
+#                print "REFLEXION"
+                U[:,0] = -U[:,0]
+            res.inertia_rotation = quat.from_matrix( U )
+#            print "generate_rigid not diagonal U" +str(U)
+#            print "generate_rigid not diagonal V" +str(V)
+#            print "generate_rigid not diagonal d" +str(res.diagonal_inertia)
+        else :
+            res.diagonal_inertia = res.inertia.diagonal()
+            res.inertia_rotation = [0,0,0,1]
+
         
 
-#        print "generate_rigid " + str(res.mass) + " " + str( res.inertia )
+#        print "generate_rigid " + str(res.mass) + " " + str( res.inertia ) + " " + str( res.diagonal_inertia )
 
         return res
 
@@ -173,9 +193,9 @@ class Body:
                 
                 # TODO svd inertia tensor, extract rotation quaternion
                 
-                self.inertia = [info.inertia[0], 
-                                info.inertia[3 + 1],
-                                info.inertia[6 + 2]]
+                self.inertia = [info.inertia[0,0],
+                                info.inertia[1,1],
+                                info.inertia[2,2]]
                 
                 self.offset = Frame()
                 self.offset.translation = info.com

@@ -5,6 +5,7 @@
 
 from SofaTest.Macro import *
 from Compliant import Rigid, Tools
+from SofaPython import Quaternion
 
 path = Tools.path( __file__ ) + "/geometric_primitives/"
 
@@ -17,6 +18,7 @@ path = Tools.path( __file__ ) + "/geometric_primitives/"
 meshes = ['cube.obj', 'sphere.obj', 'cylinder.obj']
 scales = [[1,1,1],[1,1,10],[3.3,3.3,10],[10,5,2]]
 densities = [1, 1000, 7.7]
+rotations = [[90,0,0],[22.456,0,0],[0,90,0],[0,23.546,0],[0,0,90],[0,0,-63.2],[90,90,0],[90,12.152,0],[25.645,12.36,0],[90,90,90],[-12.356,124.33,-56.1]]
 
 # prepare multi-dimensional structure
 masses = []
@@ -79,12 +81,12 @@ for s in xrange(len(scales)):
 
 
 def almostEqualReal( a, b, epsilon = 1e-1 ): # really poor precision for mesh-based
-    ## compre two reals for a given relative precision
-    epsilon = epsilon * a # relative precision...
+    ## compare two reals for a given relative precision
+    epsilon = math.fabs( epsilon * a ) # relative precision...
     return math.fabs( a - b ) < epsilon
 
 def almostEqualLists( a, b, epsilon = 1e-1 ):
-    ## compre two lists of reals for a given relative precision
+    ## compare two lists of reals for a given relative precision
     if len(a)!=len(b):
         return False
     for x in xrange(len(a)):
@@ -99,6 +101,7 @@ def run():
 
     ok = True
 
+# testing axis-aligned known geometric shapes
     for m in xrange(len(meshes)):
         mesh = meshes[m]
         mesh_path = path + meshes[m]
@@ -118,7 +121,51 @@ def run():
 
                 ok &= EXPECT_TRUE( almostEqualReal(info.mass, masses[m][s][d]), "mass"+error+" "+str(info.mass)+"!="+str(masses[m][s][d]) )
                 ok &= EXPECT_TRUE( almostEqualLists(info.com,[x*0.5 for x in scale]), "com"+error+" "+Tools.cat(info.com)+"!="+Tools.cat([x*0.5 for x in scale]) )
-                ok &= EXPECT_TRUE( almostEqualReal(info.inertia[0],inertia[m][s][d][0]) and almostEqualReal(info.inertia[4], inertia[m][s][d][1]) and almostEqualReal(info.inertia[8], inertia[m][s][d][2]), "inertia"+error+" "+str([info.inertia[0],info.inertia[4],info.inertia[8]])+"!="+str(inertia[m][s][d]) )
+                ok &= EXPECT_TRUE( almostEqualLists(info.diagonal_inertia.tolist(),inertia[m][s][d]), "inertia"+error+" "+str(info.diagonal_inertia)+"!="+str(inertia[m][s][d])+" "+str(info.inertia) )
+
+# testing diagonal inertia extraction from a rotated cuboid
+    mesh = "cube.obj"
+    mesh_path = path + mesh
+    scale = scales[3]
+    density = 1
+    theory = sorted(inertia[0][3][0])
+    for r in rotations:
+        info = Rigid.generate_rigid( mesh_path, density, scale, r )
+        local = sorted(info.diagonal_inertia.tolist())
+        ok &= EXPECT_TRUE( almostEqualLists(local,theory), "inertia "+str(local)+"!="+str(theory)+" (rotation="+str(r)+")" )
+
+# testing extracted inertia rotation
+    mesh = "rotated_cuboid_12_35_-27.obj"
+    mesh_path = path + mesh
+    density = 1
+    info = Rigid.generate_rigid( mesh_path, density  )
+
+    # theoretical results
+    scale = [2,3,1]
+    mass = density * scale[0]*scale[1]*scale[2]
+    inertiat = numpy.empty(3)
+    inertiat[0] = 1.0/12.0 * mass * (scale[1]*scale[1]+scale[2]*scale[2]) # x
+    inertiat[1] = 1.0/12.0 * mass * (scale[0]*scale[0]+scale[2]*scale[2]) # y
+    inertiat[2] = 1.0/12.0 * mass * (scale[0]*scale[0]+scale[1]*scale[1]) # z
+
+    # used quaternion in mesh
+    q = Quaternion.normalized( Quaternion.from_euler_xyz( 12*math.pi/180.0, 35*math.pi/180.0, -27*math.pi/180.0 ) )
+
+    # corresponding rotation matrices (ie frame defined by columns)
+    mt = Quaternion.to_matrix( q )
+    m  = Quaternion.to_matrix( info.inertia_rotation )
+
+    # matching inertia
+    idxt = numpy.argsort(inertiat)
+    idx  = numpy.argsort(info.diagonal_inertia)
+
+    # checking if each axis/column are parallel (same or opposite for unitary vectors)
+    for i in xrange(3):
+        ok &= EXPECT_TRUE( almostEqualLists(mt[:,idxt[i]].tolist(),m[:,idx[i]].tolist(),1e-5) or almostEqualLists(mt[:,idxt[i]].tolist(),(-m[:,idx[i]]).tolist(),1e-5), "wrong inertia rotation" )
+
+
+#    print mt[:,idxt]
+#    print m [:,idx ]
 
 
     return ok
