@@ -132,6 +132,8 @@ bool SceneLoaderPY::loadTestWithArguments(const char *filename, const std::vecto
         ScriptEnvironment::enableNodeQueuedInit(false);
 
         PyObject *res = PyObject_CallObject(pFunc,0);
+        printPythonExceptions();
+
         if( !res )
         {
             SP_MESSAGE_ERROR( "Python test 'run' function does not return any value" )

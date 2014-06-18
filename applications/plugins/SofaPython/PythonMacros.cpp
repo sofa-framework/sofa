@@ -96,3 +96,14 @@ PyObject* SP_BUILD_PYSPTR(Base* obj)
     // par défaut...
     return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(Base));
 }
+
+
+
+void printPythonExceptions()
+{
+    PyObject *ptype, *pvalue /* error msg */, *ptraceback /*stack snapshot and many other informations (see python traceback structure)*/;
+    PyErr_Fetch(&ptype, &pvalue, &ptraceback);
+    if( pvalue ) SP_MESSAGE_EXCEPTION( PyString_AsString(pvalue) )
+
+    // TODO improve the error message by using ptraceback
+}

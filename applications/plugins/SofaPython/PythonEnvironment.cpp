@@ -71,6 +71,10 @@ void PythonEnvironment::Init()
     dlopen( pythonLibraryName.c_str(), RTLD_LAZY|RTLD_GLOBAL );
 #endif
 
+    // force python terminal no to be buffered not to miss or mix-up traces
+    if( putenv((char*)"PYTHONUNBUFFERED=1") )
+        SP_MESSAGE_WARNING( "failed to define environment variable PYTHONUNBUFFERED" )
+
 
     //SP_MESSAGE_INFO( "Py_Initialize()" )
     Py_Initialize();
