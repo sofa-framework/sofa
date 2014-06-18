@@ -7,6 +7,9 @@ import Vec
 import math
 import numpy
 
+print "WARNING Compliant's Quaternion.py is no deprecated (and will be deleted soon), please use SofaPython's one instead"
+
+
 def id():
     """identity"""
     return [0, 0, 0, 1]
