@@ -32,9 +32,9 @@ using namespace sofa::defaulttype;
 
 int main(int argc, char** argv)
 {
-    if (argc < 2 || argc > 7)
+    if (argc < 2 || argc > 10)
     {
-        std::cout <<"USAGE: "<<argv[0]<<" inputfile.obj [outputfile.rigid] [density] [scaleX] [scaleY] [scaleZ]\n";
+        std::cout <<"USAGE: "<<argv[0]<<" inputfile.obj [outputfile.rigid] [density] [scaleX] [scaleY] [scaleZ] [rotationX] [rotationY] [rotationZ]\n";
         return 1;
     }
 
@@ -51,6 +51,9 @@ int main(int argc, char** argv)
 
     Vec3d center;
     Rigid3Mass mass;
+
+
+//////// SCALE //////
 	Vec3d scale(1, 1, 1);
 
 	for( unsigned i = 0; i < 3; ++i) {
@@ -62,6 +65,24 @@ int main(int argc, char** argv)
 			mesh->getVertices()[i] = mesh->getVertices()[i].linearProduct(scale);
 		}
 	}
+
+//////// ROTATION from euler angles in degrees //////
+    Vec3d rotation(0,0,0);
+
+    for( unsigned i = 0; i < 3; ++i) {
+        if( argc > 7 + i ) rotation[i] = std::atof(argv[7 + i]);
+    }
+
+    if( rotation != Vec3d(0,0,0) ) {
+
+        Quaternion q = sofa::helper::Quater<SReal>::createQuaterFromEuler( rotation*M_PI/180.0 );
+
+        for(unsigned i = 0, n = mesh->getVertices().size(); i < n; ++i) {
+            mesh->getVertices()[i] = q.rotate( mesh->getVertices()[i] );
+        }
+    }
+
+
 	
     projects::GenerateRigid(mass, center, mesh);
 
