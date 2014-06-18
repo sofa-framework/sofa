@@ -340,6 +340,10 @@ static PyTypeObject DummyChild_PyTypeObject = {
 #define SP_MESSAGE_EXCEPTION( msg ) std::cerr << "<SofaPython> EXCEPTION " << msg << std::endl;
 
 
+// get python exceptions and print their error message
+void printPythonExceptions();
+
+
 // =============================================================================
 // PYTHON SCRIPT METHOD CALL
 // =============================================================================
