@@ -19,6 +19,8 @@ set(HEADER_FILES
     ../forcefield/OscillatingTorsionPressureForceField.inl 
     ../forcefield/PlaneForceField.h 
     ../forcefield/PlaneForceField.inl 
+    ../forcefield/QuadPressureForceField.h 
+    ../forcefield/QuadPressureForceField.inl 
     ../forcefield/SphereForceField.h 
     ../forcefield/SphereForceField.inl 
     ../forcefield/SurfacePressureForceField.h 
@@ -78,6 +80,7 @@ set(SOURCE_FILES
     ../forcefield/LinearForceField.cpp 
     ../forcefield/OscillatingTorsionPressureForceField.cpp 
     ../forcefield/PlaneForceField.cpp 
+    ../forcefield/QuadPressureForceField.cpp 
     ../forcefield/SphereForceField.cpp 
     ../forcefield/SurfacePressureForceField.cpp 
     ../forcefield/TaitSurfacePressureForceField.cpp 
