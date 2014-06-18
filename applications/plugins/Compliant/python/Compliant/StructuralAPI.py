@@ -16,6 +16,7 @@ import Rigid
 import Tools
 from Tools import cat as concat
 import Vec as vec
+import numpy as np
 
 class RigidBody:
         ## Generic Rigid Body
@@ -30,19 +31,22 @@ class RigidBody:
         def setFromMesh(self, filepath, density = 1000.0, offset = [0,0,0,0,0,0,1], inertia_forces = False ):
                 ## create the rigid body from a mesh (inertia and com are automatically computed)
                 info = Rigid.generate_rigid(filepath, density)
-                inertia = [info.inertia[0], info.inertia[3 + 1], info.inertia[6 + 2]]
 
                 self.framecom = Rigid.Frame()
                 self.framecom.translation = info.com
 
                 self.frame = Rigid.Frame(offset) * self.framecom
 
+                # !!!! TODO !!! use info.inertia_rotation to rotate the rigid dof so the inertia axis are aligned to the rigid axis
+                if( info.inertia_rotation != [0,0,0,1] ):
+                    print "WARNING: inertia matrix of "+filepath+" is not diagonal, its inertia is then WRONG (the rigid dof should be rotated to be aligned with inertia axis)"
+
                 self.dofs = self.frame.insert( self.node, name = 'dofs' )
                 self.mass = self.node.createObject('RigidMass',
                                         template = 'Rigid',
                                         name = 'mass',
                                         mass = info.mass,
-                                        inertia = concat(inertia),
+                                        inertia = concat(info.diagonal_inertia.tolist()),
                                         inertia_forces = inertia_forces )
 
         def setManually(self, offset = [0,0,0,0,0,0,1], mass = 1, inertia = [1,1,1], inertia_forces = False ):
