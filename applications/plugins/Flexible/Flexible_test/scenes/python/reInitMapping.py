@@ -4,6 +4,11 @@ import SofaTest
 flexible_path = Sofa.src_dir() + '/applications/plugins/Flexible'
 mesh_path = flexible_path+ '/examples/beam/'
 
+##Check if calling Mapping::init() change anything
+#
+#The trick is to know that if the option evaluateShapeFunction is activated
+#in the ImageGaussPointSampler then a sampler::bwdInit() must be called
+#to update weights using gauss points.
 class Controller(SofaTest.Controller):
     def initGraph(self,node):
         self.success = 1
@@ -137,8 +142,8 @@ def createScene( root ) :
     root.findData('gravity').value='0 -10 0'
 
     #Required setting
-    root.createObject('RequiredPlugin', name="flexible", pluginName='Flexible')
-    root.createObject('RequiredPlugin', name="image", pluginName='image')
+    root.createObject('RequiredPlugin', name="flexible", pluginName='Flexible', printLog="false")
+    root.createObject('RequiredPlugin', name="image", pluginName='image', printLog="false")
 
     #VisuStyle
     root.createObject('VisualStyle', name='visuStyle', displayFlags='showWireframe showBehaviorModels')
