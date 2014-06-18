@@ -43,6 +43,19 @@ Motivation and detail about activation is given in http://wiki.sofa-framework.or
 
 The tests are based on the googletest framework http://code.google.com/p/googletest/wiki/Documentation
 
+<h3> Data files</h3>
+Some tests require to open data files. These are typically located in the same directory as the test code.
+The path to the current directory can be defined in the CMakeLists.txt, and passed by the compiler as a predefined symbol.
+For instance, if you set the following line in CMakeLists.txt:
+
+AddCompilerDefinitions("THIS_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}\\"")
+
+then the following instruction creates a complete, absolute path to fileName:
+
+std::string fileName = std::string(THIS_DIR) + "/" + fileName;
+
+See e.g. SofaTest_test/CMakeLists.txt and SofaTest_test/LoadScene_test.cpp
+
 
 @author François Faure, Aurélie Dégletagne, and hopefully lots of others !
 @date Started in 2013

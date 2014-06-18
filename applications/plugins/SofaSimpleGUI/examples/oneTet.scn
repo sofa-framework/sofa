@@ -8,7 +8,7 @@
 	<MeshTopology name="mesh topology"  edges="0 1  0 2  0 3  1 2  1 3  2 3 "  triangles="1 3 2  0 2 3  0 3 1  0 1 2 "  tetrahedra="0 1 2 3 " />
 	<FixedConstraint template="Vec3d" name="constraints"  indices="0 0" />
 	<TetrahedronFEMForceField template="Vec3d" name="FEM"  initialPoints="0 10 0 10 0 0 -5 0 8.66 -5 0 -8.66"  method="polar"  youngModulus="6"  updateStiffnessMatrix="1"  gatherPt=" "  gatherBsize=" " />
-	<VisualStyle displayFlags="showVisual showBehaviorModels showForceFields hideInteractionForceFields hideCollision hideMapping showWireframe hideNormals" />
+        <VisualStyle displayFlags="showVisual showBehaviorModels showForceFields showInteractionForceFields hideCollision hideMapping showWireframe hideNormals" />
 	<DefaultAnimationLoop name="defaultAnimationLoop" />
 	<DefaultVisualManagerLoop name="defaultVisualManagerLoop" />
 	<InteractiveCamera name="baseCamera"  position="2.5 5 37.4995"  orientation="-0 -0 0 1"  lookAt="2.5 5 0"  distance="37.4995"  minBBox="-5 0 -8.66"  maxBBox="10 10 8.66"  widthViewport="190"  heightViewport="552" />

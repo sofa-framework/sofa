@@ -71,7 +71,7 @@ struct DampedOscillator_test : public CompliantSolver_test
      * @brief Perform the time integration over several time steps and compare with the theoretical solution
      * @param endTime Simulation stops when time is higher than this
      * @param dt Time step
-     * @param tolerance  Admissible error factor
+     * @param tolerance  Admissible absolute error
      * @param debug Print debug info
      */
     void testTimeIntegration( SReal endTime, SReal dt, SReal tolerance, bool debug )
