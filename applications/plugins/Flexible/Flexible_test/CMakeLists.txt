@@ -28,4 +28,7 @@ add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${RC_FILES} ${PYTHON_FILES})
 AddCompilerDefinitions("FLEXIBLE_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
 AddLinkerDependencies(Flexible SofaTest)
 
+#Needed by python test
+AddCompilerDefinitions("SOFA_SRC_DIR=${SOFA_SRC_DIR}")
+
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

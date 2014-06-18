@@ -284,6 +284,10 @@ public:
     virtual BaseShapeFunction* getShapeFunction() { return _shapeFunction; }
     ///@brief Get parent's influence weights on each child
     virtual vector<VReal> getWeights(){ return f_w.getValue(); }
+    ///@brief Get parent's influence weights gradient on each child
+    virtual vector<VGradient> getWeightsGradient(){ return f_dw.getValue(); }
+    ///@brief Get parent's influence weights hessian on each child
+    virtual vector<VHessian> getWeightsHessian(){ return f_ddw.getValue(); }
 
     /** @name PointMapper functions */
     //@{
