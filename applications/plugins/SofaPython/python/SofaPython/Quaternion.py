@@ -89,14 +89,16 @@ def log(q):
 
     return (2 * half_theta / math.sin(half_theta)) * im(q)
 
+def normalized(q):
+    ## returning the normalized quaternion (without checking for a null norm...)
+    return q / numpy.linalg.norm(q)
 
-
-def from_matrix(matrix, isprecise=False):
+def from_matrix(M, isprecise=False):
     """Return quaternion from rotation matrix.
     If isprecise is True, the input matrix is assumed to be a precise rotation
     matrix and a faster algorithm is used.
     """
-    M = numpy.array(matrix, dtype=numpy.float64, copy=False)[:4, :4]
+
     if isprecise:
         q = numpy.empty((4, ))
         t = numpy.trace(M)
@@ -143,6 +145,43 @@ def from_matrix(matrix, isprecise=False):
     #return q.tolist()
     return [ q[1], q[2], q[3], q[0] ] # sofa order
 
+
+def to_matrix(quat):
+    """Convert a quaternion into rotation matrix form.
+
+    @param quat:    The quaternion.
+    @type quat:     numpy 4D, rank-1 array
+    """
+
+    # Repetitive calculations.
+    q4_2 = quat[3]**2
+    q12 = quat[0] * quat[1]
+    q13 = quat[0] * quat[2]
+    q14 = quat[0] * quat[3]
+    q23 = quat[1] * quat[2]
+    q24 = quat[1] * quat[3]
+    q34 = quat[2] * quat[3]
+
+    matrix = numpy.empty((3,3))
+
+    # The diagonal.
+    matrix[0, 0] = 2.0 * (quat[0]**2 + q4_2) - 1.0
+    matrix[1, 1] = 2.0 * (quat[1]**2 + q4_2) - 1.0
+    matrix[2, 2] = 2.0 * (quat[2]**2 + q4_2) - 1.0
+
+    # Off-diagonal.
+    matrix[0, 1] = 2.0 * (q12 - q34)
+    matrix[0, 2] = 2.0 * (q13 + q24)
+    matrix[1, 2] = 2.0 * (q23 - q14)
+
+    matrix[1, 0] = 2.0 * (q12 + q34)
+    matrix[2, 0] = 2.0 * (q13 - q24)
+    matrix[2, 1] = 2.0 * (q23 + q14)
+
+    return matrix
+
+
+
 def axisToQuat(axis, phi):
     """ return the quaternion corresponding to rotation around vector axis with angle phi
     """
@@ -166,3 +205,13 @@ def quatToAxis(q):
         axis = q[0:3]/sine
     phi =  math.acos(q[3]) * 2.0
     return [axis, phi]
+
+
+
+def from_euler_xyz(a0,a1,a2):
+    q = numpy.empty((4, ))
+    q[3] = cos(a0/2.0)*cos(a1/2.0)*cos(a2/2.0) + sin(a0/2.0)*sin(a1/2.0)*sin(a2/2.0);
+    q[0] = sin(a0/2.0)*cos(a1/2.0)*cos(a2/2.0) - cos(a0/2.0)*sin(a1/2.0)*sin(a2/2.0);
+    q[1] = cos(a0/2.0)*sin(a1/2.0)*cos(a2/2.0) + sin(a0/2.0)*cos(a1/2.0)*sin(a2/2.0);
+    q[2] = cos(a0/2.0)*cos(a1/2.0)*sin(a2/2.0) - sin(a0/2.0)*sin(a1/2.0)*cos(a2/2.0);
+    return q
