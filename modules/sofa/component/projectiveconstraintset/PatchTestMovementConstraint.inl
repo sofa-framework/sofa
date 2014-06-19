@@ -22,10 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_BILINEARMOVEMENTCONSTRAINT_INL
-#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_BILINEARMOVEMENTCONSTRAINT_INL
+#ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PATCHTESTMOVEMENTCONSTRAINT_INL
+#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PATCHTESTMOVEMENTCONSTRAINT_INL
 
-#include <sofa/component/projectiveconstraintset/BilinearMovementConstraint.h>
+#include <sofa/component/projectiveconstraintset/PatchTestMovementConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/ProjectiveConstraintSet.inl>
 #include <sofa/component/topology/TopologySubsetData.inl>
@@ -52,7 +52,7 @@ using namespace sofa::core::behavior;
 
 // Define TestFunction
 template< class DataTypes>
-bool BilinearMovementConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(unsigned int, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
+bool PatchTestMovementConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(unsigned int, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
 {
     return fc != 0;
 }
@@ -60,7 +60,7 @@ bool BilinearMovementConstraint<DataTypes>::FCPointHandler::applyTestCreateFunct
 
 // Define RemovalFunction
 template< class DataTypes>
-void BilinearMovementConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(unsigned int pointIndex, value_type &)
+void PatchTestMovementConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(unsigned int pointIndex, value_type &)
 {
     if (fc)
     {
@@ -70,9 +70,9 @@ void BilinearMovementConstraint<DataTypes>::FCPointHandler::applyDestroyFunction
 
 
 template <class DataTypes>
-BilinearMovementConstraint<DataTypes>::BilinearMovementConstraint()
+PatchTestMovementConstraint<DataTypes>::PatchTestMovementConstraint()
     : core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
-    , data(new BilinearMovementConstraintInternalData<DataTypes>)
+    , data(new PatchTestMovementConstraintInternalData<DataTypes>)
     , m_meshIndices( initData(&m_meshIndices,"meshIndices","Indices of the mesh") )
     , m_indices( initData(&m_indices,"indices","Indices of the constrained points") )
     , m_beginConstraintTime( initData(&m_beginConstraintTime,"beginConstraintTime","Begin time of the bilinear constraint") )
@@ -94,28 +94,28 @@ BilinearMovementConstraint<DataTypes>::BilinearMovementConstraint()
 
 
 template <class DataTypes>
-BilinearMovementConstraint<DataTypes>::~BilinearMovementConstraint()
+PatchTestMovementConstraint<DataTypes>::~PatchTestMovementConstraint()
 {
     if (pointHandler)
         delete pointHandler;
 }
 
 template <class DataTypes>
-void BilinearMovementConstraint<DataTypes>::clearConstraints()
+void PatchTestMovementConstraint<DataTypes>::clearConstraints()
 {
     m_indices.beginEdit()->clear();
     m_indices.endEdit();
 }
 
 template <class DataTypes>
-void BilinearMovementConstraint<DataTypes>::addConstraint(unsigned int index)
+void PatchTestMovementConstraint<DataTypes>::addConstraint(unsigned int index)
 {
     m_indices.beginEdit()->push_back(index);
     m_indices.endEdit();
 }
 
 template <class DataTypes>
-void BilinearMovementConstraint<DataTypes>::removeConstraint(unsigned int index)
+void PatchTestMovementConstraint<DataTypes>::removeConstraint(unsigned int index)
 {
     removeValue(*m_indices.beginEdit(),index);
     m_indices.endEdit();
@@ -125,7 +125,7 @@ void BilinearMovementConstraint<DataTypes>::removeConstraint(unsigned int index)
 
 
 template <class DataTypes>
-void BilinearMovementConstraint<DataTypes>::init()
+void PatchTestMovementConstraint<DataTypes>::init()
 {
     this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
 
@@ -153,7 +153,7 @@ void BilinearMovementConstraint<DataTypes>::init()
 }
 
 template <class DataTypes>
-void BilinearMovementConstraint<DataTypes>::findCornerPoints()
+void PatchTestMovementConstraint<DataTypes>::findCornerPoints()
 {
     Coord corner0, corner1, corner2, corner3,corner4,corner5,corner6,corner7, point;
     // Write accessor 
@@ -243,7 +243,7 @@ void BilinearMovementConstraint<DataTypes>::findCornerPoints()
 
 template <class DataTypes>
 template <class DataDeriv>
-void BilinearMovementConstraint<DataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataDeriv& dx)
+void PatchTestMovementConstraint<DataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataDeriv& dx)
 {
     const SetIndexArray & indices = m_indices.getValue();
     for (size_t i = 0; i< indices.size(); ++i)
@@ -253,7 +253,7 @@ void BilinearMovementConstraint<DataTypes>::projectResponseT(const core::Mechani
 }
 
 template <class DataTypes>
-void BilinearMovementConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& resData)
+void PatchTestMovementConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& resData)
 {
     helper::WriteAccessor<DataVecDeriv> res = resData;
     projectResponseT<VecDeriv>(mparams /* PARAMS FIRST */, res.wref());
@@ -262,14 +262,14 @@ void BilinearMovementConstraint<DataTypes>::projectResponse(const core::Mechanic
 
 
 template <class DataTypes>
-void BilinearMovementConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData)
+void PatchTestMovementConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData)
 {
     helper::WriteAccessor<DataVecDeriv> res = vData;
     projectResponseT<VecDeriv>(mparams /* PARAMS FIRST */, res.wref());
 }
 
 template <class DataTypes>
-void BilinearMovementConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecCoord& xData)
+void PatchTestMovementConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecCoord& xData)
 {
     sofa::simulation::Node::SPtr root =sofa::simulation::getSimulation()->GetRoot();
     helper::WriteAccessor<DataVecCoord> x = xData;
@@ -315,7 +315,7 @@ void BilinearMovementConstraint<DataTypes>::projectPosition(const core::Mechanic
 }
 
 template <class DataTypes>
-void BilinearMovementConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseMatrix* M, unsigned offset )
+void PatchTestMovementConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseMatrix* M, unsigned offset )
 {
     // clears the rows and columns associated with constrained particles
     unsigned blockSize = DataTypes::deriv_total_size;
@@ -328,7 +328,7 @@ void BilinearMovementConstraint<DataTypes>::projectMatrix( sofa::defaulttype::Ba
 }
 
 template <class DataTypes>
-void BilinearMovementConstraint<DataTypes>::getFinalPositions( VecCoord& finalPos,DataVecCoord& xData)
+void PatchTestMovementConstraint<DataTypes>::getFinalPositions( VecCoord& finalPos,DataVecCoord& xData)
 {
     // Indices of mesh points
     const SetIndexArray & meshIndices = m_meshIndices.getValue();
@@ -346,7 +346,7 @@ void BilinearMovementConstraint<DataTypes>::getFinalPositions( VecCoord& finalPo
 }
 
 template <class DataTypes>
-void BilinearMovementConstraint<DataTypes>::initializeInitialPositions (const SetIndexArray & indices, DataVecCoord& xData, VecCoord& x0)
+void PatchTestMovementConstraint<DataTypes>::initializeInitialPositions (const SetIndexArray & indices, DataVecCoord& xData, VecCoord& x0)
 {
     helper::WriteAccessor<DataVecCoord> x = xData;
 
@@ -359,7 +359,7 @@ void BilinearMovementConstraint<DataTypes>::initializeInitialPositions (const Se
 }
 
 template <class DataTypes>
-void BilinearMovementConstraint<DataTypes>::initializeFinalPositions (const SetIndexArray & indices, DataVecCoord& xData, VecCoord& x0, VecCoord& xf)
+void PatchTestMovementConstraint<DataTypes>::initializeFinalPositions (const SetIndexArray & indices, DataVecCoord& xData, VecCoord& x0, VecCoord& xf)
 {
      Deriv displacement; 
      helper::WriteAccessor<DataVecCoord> x = xData;
@@ -379,7 +379,7 @@ void BilinearMovementConstraint<DataTypes>::initializeFinalPositions (const SetI
 }
 
 template <class DataTypes>
-void BilinearMovementConstraint<DataTypes>::computeInterpolatedDisplacement(int pointIndice,const DataVecCoord& xData, Deriv& displacement)
+void PatchTestMovementConstraint<DataTypes>::computeInterpolatedDisplacement(int pointIndice,const DataVecCoord& xData, Deriv& displacement)
 {
     // For each mesh point compute the associated displacement
 
@@ -452,7 +452,7 @@ void BilinearMovementConstraint<DataTypes>::computeInterpolatedDisplacement(int 
 }
 
 template <class DataTypes>
-void BilinearMovementConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
+void PatchTestMovementConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     const SetIndexArray & indices = m_indices.getValue();
     std::vector< Vector3 > points;

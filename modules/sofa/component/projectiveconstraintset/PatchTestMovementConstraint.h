@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_BILINEARMOVEMENTCONSTRAINT_H
-#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_BILINEARMOVEMENTCONSTRAINT_H
+#ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PATCHTESTMOVEMENTCONSTRAINT_H
+#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PATCHTESTMOVEMENTCONSTRAINT_H
 
 #include <sofa/component/topology/TopologySubsetData.h>
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
@@ -55,7 +55,7 @@ using namespace sofa::defaulttype;
 using namespace sofa::component::topology;
 
 template<class DataTypes>
-class BilinearMovementConstraintInternalData
+class PatchTestMovementConstraintInternalData
 {
 };
 
@@ -63,10 +63,10 @@ class BilinearMovementConstraintInternalData
     Impose a motion to all the boundary points of a mesh. The motion of the 4 corners are given in the data m_cornerMovements and the movements of the edge points are computed by linear interpolation. 
 */
 template <class TDataTypes>
-class BilinearMovementConstraint : public core::behavior::ProjectiveConstraintSet<TDataTypes>
+class PatchTestMovementConstraint : public core::behavior::ProjectiveConstraintSet<TDataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(BilinearMovementConstraint,TDataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, TDataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(PatchTestMovementConstraint,TDataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, TDataTypes));
 
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -82,8 +82,8 @@ public:
     static const unsigned int CoordSize = Coord::total_size;
 
 protected:
-    BilinearMovementConstraintInternalData<DataTypes> *data;
-    friend class BilinearMovementConstraintInternalData<DataTypes>;
+    PatchTestMovementConstraintInternalData<DataTypes> *data;
+    friend class PatchTestMovementConstraintInternalData<DataTypes>;
 
 public :
     /// indices of the DOFs of the mesh
@@ -112,9 +112,9 @@ public :
     VecCoord meshPointsXf;
  
 protected:
-    BilinearMovementConstraint();
+    PatchTestMovementConstraint();
 
-    virtual ~BilinearMovementConstraint();
+    virtual ~PatchTestMovementConstraint();
 
 public:
     //Add or clear constraints
@@ -143,9 +143,9 @@ public:
     class FCPointHandler : public TopologySubsetDataHandler<Point, SetIndexArray >
     {
     public:
-        typedef typename BilinearMovementConstraint<DataTypes>::SetIndexArray SetIndexArray;
+        typedef typename PatchTestMovementConstraint<DataTypes>::SetIndexArray SetIndexArray;
 
-        FCPointHandler(BilinearMovementConstraint<DataTypes>* _fc, PointSubsetData<SetIndexArray>* _data)
+        FCPointHandler(PatchTestMovementConstraint<DataTypes>* _fc, PointSubsetData<SetIndexArray>* _data)
             : sofa::component::topology::TopologySubsetDataHandler<Point, SetIndexArray >(_data), fc(_fc) {}
 
         void applyDestroyFunction(unsigned int /*index*/, value_type& /*T*/);
@@ -154,7 +154,7 @@ public:
                 const sofa::helper::vector< unsigned int > & /*ancestors*/,
                 const sofa::helper::vector< double > & /*coefs*/);
     protected:
-        BilinearMovementConstraint<DataTypes> *fc;
+        PatchTestMovementConstraint<DataTypes> *fc;
     };
 
 protected:
@@ -184,14 +184,14 @@ private:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_BILINEARMOVEMENTCONSTRAINT_CPP)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PATCHTESTMOVEMENTCONSTRAINT_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_BOUNDARY_CONDITION_API BilinearMovementConstraint<defaulttype::Vec3dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API BilinearMovementConstraint<defaulttype::Rigid3dTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API PatchTestMovementConstraint<defaulttype::Vec3dTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API PatchTestMovementConstraint<defaulttype::Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_BOUNDARY_CONDITION_API BilinearMovementConstraint<defaulttype::Vec3fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API BilinearMovementConstraint<defaulttype::Rigid3fTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API PatchTestMovementConstraint<defaulttype::Vec3fTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API PatchTestMovementConstraint<defaulttype::Rigid3fTypes>;
 #endif
 #endif
 

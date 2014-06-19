@@ -35,7 +35,7 @@
 #include <sofa/simulation/common/Node.h>
 
 // Including component
-#include <sofa/component/projectiveconstraintset/BilinearMovementConstraint.h>
+#include <sofa/component/projectiveconstraintset/PatchTestMovementConstraint.h>
 #include <sofa/component/container/MechanicalObject.h>
 
 
@@ -60,7 +60,7 @@ namespace sofa {
         typedef typename DataTypes::CPos CPos;
         typedef typename DataTypes::VecCoord VecCoord;
         typedef typename DataTypes::VecDeriv VecDeriv;
-        typedef projectiveconstraintset::BilinearMovementConstraint<DataTypes> BilinearMovementConstraint;
+        typedef projectiveconstraintset::PatchTestMovementConstraint<DataTypes> PatchTestMovementConstraint;
         typedef container::MechanicalObject<DataTypes> MechanicalObject;
 
         /// Root of the scene graph
@@ -94,7 +94,7 @@ namespace sofa {
 
             // Compute the theoretical final positions    
             VecCoord finalPos;
-            typename BilinearMovementConstraint::SPtr bilinearConstraint  = root->get<BilinearMovementConstraint>(root->SearchDown);
+            typename PatchTestMovementConstraint::SPtr bilinearConstraint  = root->get<PatchTestMovementConstraint>(root->SearchDown);
             typename MechanicalObject::SPtr dofs = root->get<MechanicalObject>(root->SearchDown);
             typename MechanicalObject::WriteVecCoord x = dofs->writePositions();
             bilinearConstraint->getFinalPositions( finalPos,*dofs->write(core::VecCoordId::position()) );

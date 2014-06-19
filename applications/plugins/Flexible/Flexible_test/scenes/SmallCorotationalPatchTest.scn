@@ -15,7 +15,7 @@
     <!--Constraint and roi-->
     <BoxROI name="Box" box="-0.1 -0.1 -0.1  1.1 1.1 1.1"/>
     <PairBoxROI name="PairBox" inclusiveBox="-0.1 -0.1 -0.1  1.1 1.1 1.1" includedBox="0.1 0.1 0.1 0.9 0.9 0.9"/>
-    <BilinearMovementConstraint name="bilinearConstraint" indices="@PairBox.indices" meshIndices = "@Box.indices" constrainedPoints="@PairBox.pointsInROI" drawConstrainedPoints="1" cornerMovements=" 0 0 -0.2
+    <PatchTestMovementConstraint name="patchTestConstraint" indices="@PairBox.indices" meshIndices = "@Box.indices" constrainedPoints="@PairBox.pointsInROI" drawConstrainedPoints="1" cornerMovements=" 0 0 -0.2
        0.1 -0.1 -0.6
        0.1 0.1 -0.1
        0 0 0
