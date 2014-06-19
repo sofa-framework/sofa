@@ -388,6 +388,7 @@ DiagonalMass<DataTypes, MassType>::DiagonalMass()
     : f_mass( initData(&f_mass, "mass", "values of the particles masses") )
     , pointHandler(NULL)
     , m_massDensity( initData(&m_massDensity, (Real)1.0,"massDensity", "mass density that allows to compute the  particles masses from a mesh topology and geometry.\nOnly used if > 0") )
+    , m_computeMassOnRest(initData(&m_computeMassOnRest, false, "computeMassOnRest", "if true, the mass of every element is computed based on the rest position rather than the position"))
     , showCenterOfGravity( initData(&showCenterOfGravity, false, "showGravityCenter", "display the center of gravity of the system" ) )
     , showAxisSize( initData(&showAxisSize, 1.0f, "showAxisSizeFactor", "factor length of the axis displayed (only used for rigids)" ) )
     , fileMass( initData(&fileMass,  "fileMass", "File to specify the mass" ) )
@@ -572,7 +573,10 @@ void DiagonalMass<DataTypes, MassType>::reinit()
                 const Tetrahedron &t=_topology->getTetrahedron(i);
                 if(tetraGeo)
                 {
-                    mass=(md*tetraGeo->computeRestTetrahedronVolume(i))/(Real)4.0;
+                    if (m_computeMassOnRest.getValue())
+                        mass=(md*tetraGeo->computeRestTetrahedronVolume(i))/(Real)4.0;
+                    else
+                        mass=(md*tetraGeo->computeTetrahedronVolume(i))/(Real)4.0;
                 }
                 masses[t[0]]+=mass;
                 masses[t[1]]+=mass;
@@ -601,7 +605,10 @@ void DiagonalMass<DataTypes, MassType>::reinit()
                 const Triangle &t=_topology->getTriangle(i);
                 if(triangleGeo)
                 {
-                    mass=(md*triangleGeo->computeRestTriangleArea(i))/(Real)3.0;
+                    if (m_computeMassOnRest.getValue())
+                        mass=(md*triangleGeo->computeRestTriangleArea(i))/(Real)3.0;
+                    else
+                        mass=(md*triangleGeo->computeTriangleArea(i))/(Real)3.0;
                 }
                 masses[t[0]]+=mass;
                 masses[t[1]]+=mass;
@@ -642,7 +649,10 @@ void DiagonalMass<DataTypes, MassType>::reinit()
                 const Edge &e=_topology->getEdge(i);
                 if(edgeGeo)
                 {
-                    mass=(md*edgeGeo->computeEdgeLength(i))/(Real)2.0;
+                    if (m_computeMassOnRest.getValue())
+                        mass=(md*edgeGeo->computeRestEdgeLength(i))/(Real)2.0;
+                    else
+                        mass=(md*edgeGeo->computeEdgeLength(i))/(Real)2.0;
                 }
                 masses[e[0]]+=mass;
                 masses[e[1]]+=mass;
