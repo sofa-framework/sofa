@@ -182,6 +182,9 @@ public:
     /// the mass density used to compute the mass from a mesh topology and geometry
     Data< Real > m_massDensity;
 
+    /// if true, the mass of every element is computed based on the rest position rather than the position
+    Data< bool > m_computeMassOnRest;
+
     /// to display the center of gravity of the system
     Data< bool > showCenterOfGravity;
     Data< float > showAxisSize;
