@@ -185,6 +185,9 @@ public:
     /// if true, the mass of every element is computed based on the rest position rather than the position
     Data< bool > m_computeMassOnRest;
 
+    /// total mass of the object
+    Data< Real > m_totalMass;
+
     /// to display the center of gravity of the system
     Data< bool > showCenterOfGravity;
     Data< float > showAxisSize;

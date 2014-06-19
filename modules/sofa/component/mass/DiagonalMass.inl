@@ -389,12 +389,15 @@ DiagonalMass<DataTypes, MassType>::DiagonalMass()
     , pointHandler(NULL)
     , m_massDensity( initData(&m_massDensity, (Real)1.0,"massDensity", "mass density that allows to compute the  particles masses from a mesh topology and geometry.\nOnly used if > 0") )
     , m_computeMassOnRest(initData(&m_computeMassOnRest, false, "computeMassOnRest", "if true, the mass of every element is computed based on the rest position rather than the position"))
+    , m_totalMass(initData(&m_totalMass, "totalMass", "Total mass of the object (read only)"))
     , showCenterOfGravity( initData(&showCenterOfGravity, false, "showGravityCenter", "display the center of gravity of the system" ) )
     , showAxisSize( initData(&showAxisSize, 1.0f, "showAxisSizeFactor", "factor length of the axis displayed (only used for rigids)" ) )
     , fileMass( initData(&fileMass,  "fileMass", "File to specify the mass" ) )
     , topologyType(TOPOLOGY_UNKNOWN)
 {
     this->addAlias(&fileMass,"filename");
+
+    m_totalMass.setReadOnly(true);
 }
 
 
@@ -566,6 +569,7 @@ void DiagonalMass<DataTypes, MassType>::reinit()
 
             Real md=m_massDensity.getValue();
             Real mass=(Real)0;
+            Real total_mass=(Real)0;
 
             for (int i=0; i<_topology->getNbTetrahedra(); ++i)
             {
@@ -578,11 +582,13 @@ void DiagonalMass<DataTypes, MassType>::reinit()
                     else
                         mass=(md*tetraGeo->computeTetrahedronVolume(i))/(Real)4.0;
                 }
-                masses[t[0]]+=mass;
-                masses[t[1]]+=mass;
-                masses[t[2]]+=mass;
-                masses[t[3]]+=mass;
+                for (unsigned int j = 0 ; j < t.size(); j++)
+                {
+                    masses[t[j]] += mass;
+                    total_mass += mass;
+                }
             }
+            m_totalMass.setValue(total_mass);
             f_mass.endEdit();
         }
         else if (_topology->getNbTriangles()>0 && triangleGeo)
@@ -599,6 +605,7 @@ void DiagonalMass<DataTypes, MassType>::reinit()
 
             Real md=m_massDensity.getValue();
             Real mass=(Real)0;
+            Real total_mass=(Real)0;
 
             for (int i=0; i<_topology->getNbTriangles(); ++i)
             {
@@ -610,10 +617,13 @@ void DiagonalMass<DataTypes, MassType>::reinit()
                     else
                         mass=(md*triangleGeo->computeTriangleArea(i))/(Real)3.0;
                 }
-                masses[t[0]]+=mass;
-                masses[t[1]]+=mass;
-                masses[t[2]]+=mass;
+                for (unsigned int j = 0 ; j < t.size(); j++)
+                {
+                    masses[t[j]] += mass;
+                    total_mass += mass;
+                }
             }
+            m_totalMass.setValue(total_mass);
             f_mass.endEdit();
         }
         /*
@@ -643,6 +653,7 @@ void DiagonalMass<DataTypes, MassType>::reinit()
 
             Real md=m_massDensity.getValue();
             Real mass=(Real)0;
+            Real total_mass=(Real)0;
 
             for (int i=0; i<_topology->getNbEdges(); ++i)
             {
@@ -654,9 +665,13 @@ void DiagonalMass<DataTypes, MassType>::reinit()
                     else
                         mass=(md*edgeGeo->computeEdgeLength(i))/(Real)2.0;
                 }
-                masses[e[0]]+=mass;
-                masses[e[1]]+=mass;
+                for (unsigned int j = 0 ; j < e.size(); j++)
+                {
+                    masses[e[j]] += mass;
+                    total_mass += mass;
+                }
             }
+            m_totalMass.setValue(total_mass);
             f_mass.endEdit();
         }
     }
