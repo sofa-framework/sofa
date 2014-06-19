@@ -85,11 +85,11 @@ struct LoadScene_test: public Sofa_test<double>
 
 };
 
-TEST_F( LoadScene_test,BilinearConstraint)
+TEST_F( LoadScene_test,PatchTestConstraint)
 {
-     ASSERT_TRUE(this->LoadScene("BilinearConstraint.scn"));
-     ASSERT_TRUE(this->initScene("BilinearConstraint.scn"));
-     ASSERT_NO_THROW(this->initScene("BilinearConstraint.scn"));
+     ASSERT_TRUE(this->LoadScene("PatchTestConstraint.scn"));
+     ASSERT_TRUE(this->initScene("PatchTestConstraint.scn"));
+     ASSERT_NO_THROW(this->initScene("PatchTestConstraint.scn"));
 }
 
 }// namespace sofa

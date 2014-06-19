@@ -37,8 +37,6 @@ set(HEADER_FILES
 	../forcefield/DiagonalVelocityDampingForceField.inl
     ../projectiveconstraintset/AffineMovementConstraint.inl 
     ../projectiveconstraintset/AffineMovementConstraint.h 
-    ../projectiveconstraintset/BilinearMovementConstraint.inl 
-    ../projectiveconstraintset/BilinearMovementConstraint.h 
     ../projectiveconstraintset/FixedConstraint.h 
     ../projectiveconstraintset/FixedConstraint.inl 
     ../projectiveconstraintset/FixedPlaneConstraint.h 
@@ -61,6 +59,8 @@ set(HEADER_FILES
     ../projectiveconstraintset/PartialFixedConstraint.inl 
     ../projectiveconstraintset/PartialLinearMovementConstraint.h 
     ../projectiveconstraintset/PartialLinearMovementConstraint.inl 
+    ../projectiveconstraintset/PatchTestMovementConstraint.inl 
+    ../projectiveconstraintset/PatchTestMovementConstraint.h 
     ../projectiveconstraintset/PointConstraint.h 
     ../projectiveconstraintset/PointConstraint.inl 
     ../projectiveconstraintset/PositionBasedDynamicsConstraint.h 
@@ -89,7 +89,6 @@ set(SOURCE_FILES
 	../forcefield/UniformVelocityDampingForceField.cpp
 	../forcefield/DiagonalVelocityDampingForceField.cpp
     ../projectiveconstraintset/AffineMovementConstraint.cpp 
-    ../projectiveconstraintset/BilinearMovementConstraint.cpp 
     ../projectiveconstraintset/FixedConstraint.cpp 
     ../projectiveconstraintset/FixedPlaneConstraint.cpp 
     ../projectiveconstraintset/FixedRotationConstraint.cpp 
@@ -101,6 +100,7 @@ set(SOURCE_FILES
     ../projectiveconstraintset/ParabolicConstraint.cpp 
     ../projectiveconstraintset/PartialFixedConstraint.cpp 
     ../projectiveconstraintset/PartialLinearMovementConstraint.cpp 
+    ../projectiveconstraintset/PatchTestMovementConstraint.cpp 
     ../projectiveconstraintset/PointConstraint.cpp 
     ../projectiveconstraintset/PositionBasedDynamicsConstraint.cpp 
     ../projectiveconstraintset/SkeletalMotionConstraint.cpp
