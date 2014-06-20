@@ -40,11 +40,6 @@ namespace component
 
 namespace topology
 {
-SOFA_DECL_CLASS(ManifoldTriangleSetTopologyModifier)
-int ManifoldTriangleSetTopologyModifierClass = core::RegisterObject("Triangle set topology manifold modifier")
-        .add< ManifoldTriangleSetTopologyModifier >()
-        ;
-
 using namespace std;
 using namespace sofa::defaulttype;
 
