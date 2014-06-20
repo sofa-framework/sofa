@@ -16,69 +16,55 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Modules                               *
+*                               SOFA :: Plugins                               *
 *                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_MAPPING_MANUALLINEARMAPPING_CPP
+#include "ManualMapping.h"
+#include <sofa/core/Plugin.h>
+
 #include "ManualLinearMapping.inl"
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
-{
-
+using sofa::component::mapping::ManualLinearMapping;
 using namespace sofa::defaulttype;
-using namespace core;
-using namespace core::behavior;
 
 
-SOFA_DECL_CLASS(ManualLinearMapping)
+class ManualMappingPlugin: public sofa::core::Plugin {
+public:
+    ManualMappingPlugin(): Plugin("ManualMapping") {
+        setDescription("Quick implementation of mapping where everything is manually given.");
+        setVersion("0.1");
+        setLicense("LGPL");
 
-// Register in the Factory
-int ManualLinearMappingClass = core::RegisterObject("Maps displacement from subspace with basis given by J")
-#ifndef SOFA_FLOAT
-        .add< ManualLinearMapping< Vec3dTypes, Vec3dTypes > >()
+#ifdef SOFA_FLOAT
+        addComponent< ManualLinearMapping< Vec3fTypes, Vec3fTypes > >();
+#else
+        addComponent< ManualLinearMapping< Vec3dTypes, Vec3dTypes > >();
 #endif
-#ifndef SOFA_DOUBLE
-        .add< ManualLinearMapping< Vec3fTypes, Vec3fTypes > >()
+        setDescription("ManualLinearMapping", "Maps displacement from subspace with basis given by J.");
+
+#if !defined(SOFA_DOUBLE) && !defined(SOFA_FLOAT)
+        addTemplateInstance< ManualLinearMapping< Vec3fTypes, Vec3fTypes > >();
+        addTemplateInstance< ManualLinearMapping< Vec3fTypes, Vec3dTypes > >();
+        addTemplateInstance< ManualLinearMapping< Vec3dTypes, Vec3fTypes > >();
 #endif
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< ManualLinearMapping< Vec3fTypes, Vec3dTypes > >()
-        .add< ManualLinearMapping< Vec3dTypes, Vec3fTypes > >()
-#endif
-#endif
-;
+    }
+};
+
+SOFA_PLUGIN(ManualMappingPlugin);
 
 
-
-#ifndef SOFA_FLOAT
+#ifdef SOFA_FLOAT
+template class SOFA_ManualMapping_API ManualLinearMapping< Vec3fTypes, Vec3fTypes >;
+#else
 template class SOFA_ManualMapping_API ManualLinearMapping< Vec3dTypes, Vec3dTypes >;
 #endif
-#ifndef SOFA_DOUBLE
-template class SOFA_ManualMapping_API ManualLinearMapping< Vec3fTypes, Vec3fTypes >;
-#endif
 
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
+#if !defined(SOFA_DOUBLE) && !defined(SOFA_FLOAT)
+template class SOFA_ManualMapping_API ManualLinearMapping< Vec3fTypes, Vec3fTypes >;
 template class SOFA_ManualMapping_API ManualLinearMapping< Vec3dTypes, Vec3fTypes >;
 template class SOFA_ManualMapping_API ManualLinearMapping< Vec3fTypes, Vec3dTypes >;
 #endif
-#endif
-
-
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-

@@ -22,64 +22,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "initManualMapping.h"
-
-namespace sofa
-{
-
-namespace component
-{
-
-	//Here are just several convenient functions to help user to know what contains the plugin
-
-	extern "C" {
-                SOFA_ManualMapping_API void initExternalModule();
-                SOFA_ManualMapping_API const char* getModuleName();
-                SOFA_ManualMapping_API const char* getModuleVersion();
-                SOFA_ManualMapping_API const char* getModuleLicense();
-                SOFA_ManualMapping_API const char* getModuleDescription();
-                SOFA_ManualMapping_API const char* getModuleComponentList();
-	}
-	
-	void initExternalModule()
-	{
-		static bool first = true;
-		if (first)
-		{
-			first = false;
-		}
-	}
-
-	const char* getModuleName()
-	{
-      return "ManualMapping";
-	}
-
-	const char* getModuleVersion()
-	{
-		return "0.1";
-	}
-
-	const char* getModuleLicense()
-	{
-		return "LGPL";
-	}
+#ifndef INITManualMapping_H
+#define INITManualMapping_H
 
 
-	const char* getModuleDescription()
-	{
-        return "Quick implementation of mapping where everything is manually given";
-	}
+#include <sofa/helper/system/config.h>
 
-	const char* getModuleComponentList()
-	{
-        /// string containing the names of the classes provided by the plugin
-        return  "ManualLinearMapping";
-	}
-} 
-} 
+#ifdef SOFA_BUILD_ManualMapping
+#define SOFA_ManualMapping_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#define SOFA_ManualMapping_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
 
+/** \mainpage
+  This is a the starting page of the plugin documentation, defined in file ManualMapping.h
+  */
 
-/// Use the SOFA_LINK_CLASS macro for each class, to enable linking on all platforms
-
-SOFA_LINK_CLASS(ManualLinearMapping)
+#endif // INITModalSubspace_H
