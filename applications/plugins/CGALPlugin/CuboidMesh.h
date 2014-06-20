@@ -39,7 +39,7 @@
 #include <sofa/helper/gl/template.h>
 
 #include <math.h>
-#include   <algorithm>
+#include <algorithm>
 
 namespace cgal
 {
@@ -57,7 +57,7 @@ public:
     typedef sofa::helper::fixed_array<int, 3> Index;
     //    typedef sofa::helper::vector<Real> VecReal;
 
-    //        typedef sofa::core::topology::BaseMeshTopology::PointID PointID;
+    //    typedef sofa::core::topology::BaseMeshTopology::PointID PointID;
     //    typedef sofa::core::topology::BaseMeshTopology::Edge Edge;
     //    typedef sofa::core::topology::BaseMeshTopology::Triangle Triangle;
     //    typedef sofa::core::topology::BaseMeshTopology::Quad Quad;
@@ -94,17 +94,17 @@ public:
     }
 
     //Inputs
-    Data<unsigned> m_debug;
-    Data<double> m_radius;
-    Data<double> m_height;
-    Data<int> m_number;
-    Data<bool> m_convex;
-    Data<bool> m_viewPoints;
-    Data<bool> m_viewTetras;
+    sofa::core::objectmodel::Data<unsigned> m_debug;
+    sofa::core::objectmodel::Data<double> m_radius;
+    sofa::core::objectmodel::Data<double> m_height;
+    sofa::core::objectmodel::Data<int> m_number;
+    sofa::core::objectmodel::Data<bool> m_convex;
+    sofa::core::objectmodel::Data<bool> m_viewPoints;
+    sofa::core::objectmodel::Data<bool> m_viewTetras;
 
     //Outputs
-    Data<VecCoord> m_points;
-    Data<SeqTetrahedra> m_tetras;
+    sofa::core::objectmodel::Data<VecCoord> m_points;
+    sofa::core::objectmodel::Data<SeqTetrahedra> m_tetras;
 
     //Parameters
     unsigned m_nbVertices, m_nbBdVertices, m_nbCenters, m_nbBdCenters;
@@ -119,11 +119,11 @@ public:
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(CGALPLUGIN_CUBOIDMESH_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_CGALPLUGIN_API CuboidMesh<defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
+extern template class SOFA_CGALPLUGIN_API CuboidMesh<sofa::defaulttype::Vec3dTypes>;
+#endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_CGALPLUGIN_API CuboidMesh<defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
+extern template class SOFA_CGALPLUGIN_API CuboidMesh<sofa::defaulttype::Vec3fTypes>;
+#endif
 #endif
 
 } //cgal

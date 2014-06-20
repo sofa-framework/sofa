@@ -30,7 +30,7 @@
  */
 #ifndef CGALPLUGIN_TRIANGULARCONVEXHULL3D_INL
 #define CGALPLUGIN_TRIANGULARCONVEXHULL3D_INL
-#include "TriangularConvexHull3D.h"
+#include <CGALPlugin/TriangularConvexHull3D.h>
 
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
 #include <CGAL/point_generators_3.h>
