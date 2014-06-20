@@ -1,5 +1,4 @@
 #include "STEPShapeMapping.h"
-#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
@@ -10,12 +9,6 @@ namespace engine
 using namespace sofa::component::topology;
 using namespace sofa::component::engine;
 using namespace sofa::component::loader;
-
-int STEPShapeExtractorClass = core::RegisterObject("Extract a shape from a MeshSTEPLoader according to a shape number.")
-        .add< STEPShapeExtractor>(true);
-
-
-SOFA_DECL_CLASS(STEPShapeExtractor)
 
 STEPShapeExtractor::STEPShapeExtractor(MeshSTEPLoader* loader, MeshTopology* topology):
     shapeNumber(initData(&shapeNumber,"shapeNumber", "Shape number to be loaded" ) )
