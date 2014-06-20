@@ -63,6 +63,13 @@ void SequentialSolver::fetch_blocks(const system_type& system) {
 // TODO optimize remaining allocs
 void SequentialSolver::factor_block(inverse_type& inv, const schur_type& schur) {
 	inv.compute( schur );
+
+#ifndef NDEBUG
+    if( inv.info() == Eigen::NumericalIssue ){
+        std::cerr << SOFA_CLASS_METHOD<<"block Schur is not psd. System solution will be wrong." << std::endl;
+        std::cerr << schur << std::endl;
+    }
+#endif
 }
 
 
@@ -152,8 +159,7 @@ void SequentialSolver::factor(const system_type& system) {
 
 	this->JP = system.J * system.P;
 
-	cmat tmp; tmp.resize( mapping_response.rows(),
-						  mapping_response.cols());
+    cmat tmp( mapping_response.rows(), mapping_response.cols());
 	
 
 	// TODO: temporary :-/
@@ -241,6 +247,7 @@ SReal SequentialSolver::step(vec& lambda,
                              const vec& rhs,
                              vec& error, vec& delta,
 							 bool correct ) const {
+
 	// TODO size asserts
 	
 	// error norm2 estimate (seems conservative and much cheaper to
@@ -380,7 +387,7 @@ void SequentialSolver::solve_impl(vec& res,
 
 	// outer loop
 	unsigned k = 0, max = iterations.getValue();
-	vec primal;
+//	vec primal;
 	for(k = 0; k < max; ++k) {
 
         real estimate2 = step( lambda, net, sys, constant, error, delta, correct );
