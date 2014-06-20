@@ -22,25 +22,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_MANIFOLDEDGESETGEOMETRYALGORITHMS_INL
-#define SOFA_COMPONENT_TOPOLOGY_MANIFOLDEDGESETGEOMETRYALGORITHMS_INL
+#ifndef INITMANIFOLDTOPOLOGIES_H
+#define INITMANIFOLDTOPOLOGIES_H
 
-#include "ManifoldEdgeSetGeometryAlgorithms.h"
-#include <sofa/core/visual/VisualParams.h>
+#include <sofa/helper/system/config.h>
 
-namespace sofa
-{
+#ifdef SOFA_BUILD_MANIFOLDTOPOLOGIES
+#define SOFA_MANIFOLD_TOPOLOGIES_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#define SOFA_MANIFOLD_TOPOLOGIES_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
 
-namespace component
-{
+/** \mainpage
+    This is a the starting page of the plugin documentation.
+*/
 
-namespace topology
-{
-
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENTS_MANIFOLDEDGESETGEOMETRYALGORITHMS_INL
+#endif
