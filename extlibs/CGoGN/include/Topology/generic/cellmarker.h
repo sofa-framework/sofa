@@ -26,12 +26,13 @@
 #define __CELL_MARKER__
 
 #include "Topology/generic/marker.h"
-#include "Topology/generic/genericmap.h"
 #include "Topology/generic/functor.h"
 #include "Utils/static_assert.h"
+#include "Topology/generic/genericmap.h"
 
 namespace CGoGN
 {
+
 /**
  * @brief The CellMarkerGen class
  * @warning CellMarkerGen is no polymorphic version of CellMarker
@@ -94,43 +95,12 @@ public:
 	 * constructor
 	 * @param map the map on which we work
 	 */
-	CellMarkerBase(GenericMap& map, unsigned int thread = 0) : CellMarkerGen(map, CELL, thread)
-	{
-		if(!m_map.isOrbitEmbedded<CELL>())
-			m_map.addEmbedding<CELL>() ;
-		m_mark = m_map.getMarkerSet<CELL>(m_thread).getNewMark() ;
-		m_markVector = m_map.getMarkVector<CELL>(m_thread) ;
-		m_map.cellMarkers[m_thread].push_back(this) ;
-	}
+    CellMarkerBase(GenericMap& map, unsigned int thread = 0) ;
 
-	CellMarkerBase(const GenericMap& map, unsigned int thread = 0) :
-		CellMarkerGen(const_cast<GenericMap&>(map), CELL, thread)
-	{
-		if(!m_map.isOrbitEmbedded<CELL>())
-			m_map.addEmbedding<CELL>() ;
-		m_mark = m_map.getMarkerSet<CELL>(m_thread).getNewMark() ;
-		m_markVector = m_map.getMarkVector<CELL>(m_thread) ;
-		m_map.cellMarkers[m_thread].push_back(this) ;
-	}
+    CellMarkerBase(const GenericMap& map, unsigned int thread = 0) ;
 
-	/*virtual */~CellMarkerBase()
-	{
-		if(releaseOnDestruct)
-		{
-			m_map.getMarkerSet<CELL>(m_thread).releaseMark(m_mark) ;
+    /*virtual */~CellMarkerBase() ;
 
-			std::vector<CellMarkerGen*>& cmg = m_map.cellMarkers[m_thread];
-			for(std::vector<CellMarkerGen*>::iterator it = cmg.begin(); it != cmg.end(); ++it)
-			{
-				if(*it == this)
-				{
-					*it = cmg.back();
-					cmg.pop_back();
-					return;
-				}
-			}
-		}
-	}
 
 protected:
 	// protected copy constructor to forbid its usage
@@ -141,66 +111,27 @@ public:
 	/**
 	 * mark the cell of dart
 	 */
-	inline void mark(Dart d)
-	{
-		assert(m_map.getMarkerSet<CELL>(m_thread).testMark(m_mark));
-		assert(m_markVector != NULL);
-
-		unsigned int a = m_map.getEmbedding<CELL>(d) ;
-		if (a == EMBNULL)
-			a = m_map.setOrbitEmbeddingOnNewCell<CELL>(d) ;
-		m_markVector->operator[](a).setMark(m_mark) ;
-	}
+    inline void mark(Dart d) ;
 
 	/**
 	 * unmark the cell of dart
 	 */
-	inline void unmark(Dart d)
-	{
-		assert(m_map.getMarkerSet<CELL>(m_thread).testMark(m_mark));
-		assert(m_markVector != NULL);
-
-		unsigned int a = m_map.getEmbedding<CELL>(d) ;
-		if (a == EMBNULL)
-			a = m_map.setOrbitEmbeddingOnNewCell<CELL>(d) ;
-		m_markVector->operator[](a).unsetMark(m_mark) ;
-	}
+    inline void unmark(Dart d) ;
 
 	/**
 	 * test if cell of dart is marked
 	 */
-	inline bool isMarked(Dart d) const
-	{
-		assert(m_map.getMarkerSet<CELL>(m_thread).testMark(m_mark));
-		assert(m_markVector != NULL);
-
-		unsigned int a = m_map.getEmbedding<CELL>(d) ;
-		if (a == EMBNULL)
-			return false ;
-		return m_markVector->operator[](a).testMark(m_mark) ;
-	}
+    inline bool isMarked(Dart d) const ;
 
 	/**
 	 * mark the cell
 	 */
-	inline void mark(unsigned int em)
-	{
-		assert(m_map.getMarkerSet<CELL>(m_thread).testMark(m_mark));
-		assert(m_markVector != NULL);
-
-		m_markVector->operator[](em).setMark(m_mark) ;
-	}
+    inline void mark(unsigned int em) ;
 
 	/**
 	 * unmark the cell
 	 */
-	inline void unmark(unsigned int em)
-	{
-		assert(m_map.getMarkerSet<CELL>(m_thread).testMark(m_mark));
-		assert(m_markVector != NULL);
-
-		m_markVector->operator[](em).unsetMark(m_mark) ;
-	}
+    inline void unmark(unsigned int em) ;
 
 	/**
 	 * test if cell is marked
@@ -495,4 +426,5 @@ public:
 
 } // namespace CGoGN
 
+#include "cellmarker.hpp"
 #endif
