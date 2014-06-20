@@ -1,5 +1,15 @@
 #!/usr/bin/python
 
+# This tool parses all C++ files and replaces pathes in #include directives following matches described in an input file.
+#
+# Arguments
+# -i <pathes_file>: a file with matching between pathes
+#                   Each line must be of the form:
+#
+#                           <path1> : <path2>
+#
+#-d <directory_to_parse>: the path of the parent directory that will be browsed recursively for files to process
+
 import sys, getopt
 import string, re
 import fileinput
