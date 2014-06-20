@@ -1,28 +1,24 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
-
-    initCGALPlugin.h
-	MeshGenerationFromPolyhedron.h
+    CGALPlugin.h
+    MeshGenerationFromPolyhedron.h
     MeshGenerationFromPolyhedron.inl
     TriangularConvexHull3D.h
     TriangularConvexHull3D.inl
+    CuboidMesh.h
+    CuboidMesh.inl
     DecimateMesh.h
-    DecimateMesh.inl
-	)
+    DecimateMesh.inl)
 
 set(SOURCE_FILES
-
-    initCGALPlugin.cpp
+    CGALPlugin.cpp
     MeshGenerationFromPolyhedron.cpp
     TriangularConvexHull3D.cpp
-    DecimateMesh.cpp
-	)
+    CuboidMesh.cpp
+    DecimateMesh.cpp)
 
-set(README_FILES
-
-	CGALPlugin.txt
-	)
+set(README_FILES CGALPlugin.txt)
 
 if(WIN32)
 
@@ -52,11 +48,12 @@ if(SOFA-PLUGIN_IMAGE)
     list(APPEND HEADER_FILES MeshGenerationFromImage.inl)
     list(APPEND SOURCE_FILES MeshGenerationFromImage.cpp)
     AddLinkerDependencies(${CGAL_ImageIO_LIBRARY} image)
+    AddCompilerDefinitions("CGALPLUGIN_SOFA_HAVE_PLUGIN_IMAGE")
 endif()
 
 AddCompilerDefinitions("SOFA_BUILD_CGALPLUGIN")
 AddLinkerDependencies(SofaGuiQt ${Boost_LIBRARIES} ${GMP_LIBRARIES} ${MPFR_LIBRARIES} ${CGAL_LIBRARY})
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
+sofa_add_plugin(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
