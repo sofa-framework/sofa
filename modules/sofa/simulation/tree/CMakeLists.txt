@@ -1,6 +1,7 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8)
+project(SofaSimulationTree)
 
-set(HEADER_FILES
+set(SOFASIMULATIONTREE_HEADERS
 
 	tree.h
 	ExportDotVisitor.h
@@ -10,7 +11,7 @@ set(HEADER_FILES
 	TreeSimulation.h
 	)
 
-set(SOURCE_FILES
+set(SOFASIMULATIONTREE_SOURCES
 
 	ExportDotVisitor.cpp
 	GNode.cpp
@@ -20,14 +21,33 @@ set(SOURCE_FILES
 	)
 
 if(SOFA-MISC_SMP)
-	list(APPEND HEADER_FILES "SMPSimulation.h")
-	list(APPEND SOURCE_FILES "SMPSimulation.cpp")
+	list(APPEND SOFASIMULATIONTREE_HEADERS "SMPSimulation.h")
+	list(APPEND SOFASIMULATIONTREE_SOURCES "SMPSimulation.cpp")
 endif()
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+add_library(${PROJECT_NAME} SHARED ${SOFASIMULATIONTREE_HEADERS} ${SOFASIMULATIONTREE_SOURCES})
+target_link_libraries( ${PROJECT_NAME} SofaSimulationCommon )
 
-AddCompilerDefinitions("SOFA_BUILD_SIMULATION_TREE")
-AddLinkerDependencies(SofaSimulationCommon)
+set( SOFASIMULATIONTREE_COMPILER_FLAGS "-DSOFA_BUILD_SIMULATION_TREE")
 
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+set_target_properties( ${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d" )
+set_target_properties( ${PROJECT_NAME} PROPERTIES VERSION ${SOFASIMULATION_VERSION} )
+set_target_properties( ${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFASIMULATIONTREE_COMPILER_FLAGS}"  )
 
+
+install(TARGETS ${PROJECT_NAME}
+        COMPONENT SofaSimulation_libraries
+        EXPORT    SofaSimulationTargets
+        RUNTIME DESTINATION "${SOFASIMULATION_INSTALL_BIN_DIR}"
+        LIBRARY DESTINATION "${SOFASIMULATION_INSTALL_LIB_DIR}"
+        ARCHIVE DESTINATION "${SOFASIMULATION_INSTALL_LIB_DIR}"
+)
+
+install(DIRECTORY ${SofaSimulationTree_SOURCE_DIR}/ DESTINATION "${SOFASIMULATION_INSTALL_INCLUDE_DIR}/sofa/simulation/tree"
+        COMPONENT SofaSimulation_headers
+        FILES_MATCHING 
+            PATTERN "*.h"
+            PATTERN "*.inl"
+            PATTERN "*.hxx"
+            PATTERN "*.hpp"
+        )

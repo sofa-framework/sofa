@@ -34,3 +34,6 @@ add_subdirectory(${SOFA_EXTLIBS_DIR}/tinyxml)
 set(SOFA_PROJECT_FOLDER "SofaFramework")
 add_subdirectory("${SOFA_FRAMEWORK_DIR}")
 
+# simulation
+add_subdirectory("${SOFA_SIMULATION_DIR}")
+
