@@ -371,7 +371,7 @@ double ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::getPotential
     DataTypes::set ( theGravity, g[0], g[1], g[2] );
     for( unsigned int i=0 ; i<_x.size() ; i++ )
     {
-        e -= theGravity*Mx[i];
+        e -= Mx[i]*theGravity;
     }
     return e;
 }

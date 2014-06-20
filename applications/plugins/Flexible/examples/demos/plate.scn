@@ -41,7 +41,7 @@
       <Node 	name="E"   >
         <ImageValuesFromPositions name="youngM" position="@../sampler.position" image="@../../../youngM.outputImage" transform="@../../../extruder.outputTransform" />
         <MechanicalObject  template="E332" name="E"  />
-        <CorotationalStrainMapping template="Mapping&lt;F332,E332&gt;"  />
+        <CorotationalStrainMapping template="Mapping&lt;F332,E332&gt;" geometricStiffness="true" />
         <!-- <DiagonalStrainMapping template="Mapping&lt;F332,E332&gt;"  /> -->
         <HookeForceField  template="E332" name="ff" youngModulus="@youngM.values" poissonRatio="0" viscosity="100"/>
       </Node>

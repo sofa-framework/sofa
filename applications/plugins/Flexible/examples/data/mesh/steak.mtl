@@ -1,13 +1,14 @@
-# Blender3D MTL File: steak.blend
-# Material Count: 1
-newmtl Material_steak.png
-Ns 96.078431
-Ka 0.500000 0.500000 0.500000
-Kd 0.640000 0.640000 0.640000
-Ks 0.500000 0.500000 0.500000
-Ni 1.000000
-d 1.000000
-illum 2
-map_Kd steak.png
-
-
+newmtl Material_steak
+illum 4
+Kd 1.00 1.00 1.00
+Ka 1.00 1.00 1.00
+Tf 1.00 1.00 1.00
+map_Kd ./steak.png
+Ni 1.00
+Ks 0.50 0.50 0.50
+newmtl initialShadingGroup
+illum 4
+Kd 0.50 0.50 0.50
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
