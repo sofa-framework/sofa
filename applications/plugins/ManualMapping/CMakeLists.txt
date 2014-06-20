@@ -1,21 +1,14 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
-
-    initManualMapping.h
+    ManualMapping.h
     ManualLinearMapping.h
-    ManualLinearMapping.inl
-
-	)
+    ManualLinearMapping.inl)
 
 set(SOURCE_FILES
+    ManualMapping.cpp)
 
-    initManualMapping.cpp
-    ManualLinearMapping.cpp
-
-	)
-
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
+sofa_add_plugin(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
 AddLinkerDependencies(SofaComponentBase)
 
