@@ -22,39 +22,42 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef INITSOFAPYTHON_H
-#define INITSOFAPYTHON_H
+#include "SofaPython.h"
+#include <sofa/core/Plugin.h>
+
+#include "SceneLoaderPY.h"
+#include "PythonScriptController.h"
+
+using sofa::component::controller::PythonScriptController;
+using sofa::simulation::SceneLoaderFactory;
 
 
-#include <sofa/helper/system/config.h>
+class SofaPythonPlugin: public sofa::core::Plugin {
+public:
+    SofaPythonPlugin(): Plugin("SofaPython") {
+        setDescription("Imbeds Python scripts in Sofa.");
+        setVersion(SOFAPYTHON_VERSION);
+        setLicense("LGPL");
+        setAuthors("Bruno Carrez");
 
-#ifdef SOFA_BUILD_SOFAPYTHON
-#define SOFA_SOFAPYTHON_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#define SOFA_SOFAPYTHON_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+        addComponent<PythonScriptController>("A Sofa controller scripted in python.");
+    }
 
-namespace sofa
-{
+    virtual bool init() {
+        // register the scene loader
+        SceneLoaderFactory::getInstance()->addEntry(new sofa::simulation::SceneLoaderPY());
+        std::cout << "SofaPython: registered scene loader" << std::endl;
+        return true;
+    }
 
-namespace component
-{
+    virtual bool canBeUnloaded() {
+        return false;
+    }
 
-extern "C" {
-    SOFA_SOFAPYTHON_API void initExternalModule();
-    SOFA_SOFAPYTHON_API const char* getModuleName();
-    SOFA_SOFAPYTHON_API const char* getModuleVersion();
-    SOFA_SOFAPYTHON_API const char* getModuleLicense();
-    SOFA_SOFAPYTHON_API const char* getModuleDescription();
-    SOFA_SOFAPYTHON_API const char* getModuleComponentList();
-}
+    virtual bool exit() {
+        // TODO: remove the scene loader registered at init()
+        return false;
+    }
+};
 
-}
-
-}
-
-/** \mainpage
-  This is a the starting page of the plugin documentation, defined in file initEmptyPlugin.h
-  */
-
-#endif // INITEmptyPlugin_H
+SOFA_PLUGIN(SofaPythonPlugin);

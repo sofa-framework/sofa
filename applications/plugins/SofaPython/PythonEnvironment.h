@@ -29,7 +29,7 @@
 
 //#include <sofa/simulation/tree/GNode.h>
 #include "Binding.h"
-#include "initSofaPython.h"
+#include "SofaPython.h"
 #include <vector>
 #include <string>
 

@@ -17,8 +17,7 @@ endif()
 include_directories(${PYTHON_INCLUDE_DIRS})
 
 set(HEADER_FILES
-
-    initSofaPython.h
+    SofaPython.h
     ScriptController.h
     PythonScriptController.h
     PythonMacros.h
@@ -55,12 +54,10 @@ set(HEADER_FILES
     Binding_LinearSpring.h
     Binding_VisualModel.h
     SceneLoaderPY.h
-    ScriptEnvironment.h
-	)
+    ScriptEnvironment.h)
 
 set(SOURCE_FILES
-
-    initSofaPython.cpp
+    SofaPython.cpp
     ScriptController.cpp
     PythonScriptController.cpp
     PythonEnvironment.cpp
@@ -97,17 +94,15 @@ set(SOURCE_FILES
     Binding_LinearSpring.cpp
     Binding_VisualModel.cpp
     SceneLoaderPY.cpp
-    ScriptEnvironment.cpp
-	)
+    ScriptEnvironment.cpp)
 
 set(PYTHON_FILES
-    SofaPython.py
-)
+    SofaPython.py)
 
 # include python files
 include(./python/python.cmake)
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
+sofa_add_plugin(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
 
 # Python's implementation deliberately breaks strict-aliasing rules, so we
 # compile with -fno-strict-aliasing to prevent the compiler from relying on

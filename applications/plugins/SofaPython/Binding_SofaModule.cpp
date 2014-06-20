@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "PythonMacros.h"
-#include "initSofaPython.h"
+#include "SofaPython.h"
 
 #include "Binding_SofaModule.h"
 #include "Binding_BaseObject.h"
@@ -49,7 +49,7 @@ using namespace sofa::simulation;
 // set the viewer resolution
 extern "C" PyObject * Sofa_getSofaPythonVersion(PyObject * /*self*/, PyObject *)
 {
-    return Py_BuildValue("s", getModuleVersion());
+    return Py_BuildValue("s", SOFAPYTHON_VERSION);
 }
 
 
