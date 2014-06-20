@@ -43,11 +43,9 @@ add_definitions("-DTIXML_USE_STL -DTI")
 add_library(tinyxml SHARED ${tinyxml_SRCS} ${tinyxml_HDRS})
 
 set_target_properties( tinyxml  PROPERTIES DEBUG_POSTFIX "_d" )
-set_target_properties( tinyxml   PROPERTIES VERSION ${TINYXML_VERSION} )
-
-#target_include_directories(tinyxml PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
-                                          #"$<INSTALL_INTERFACE:${TINYXML_INSTALL_INCLUDE_DIR}>")
-                                          
+set_target_properties( tinyxml  PROPERTIES VERSION ${TINYXML_VERSION} )
+set_target_properties( tinyxml  PROPERTIES PUBLIC_HEADER "${tinyxml_HDRS}" )
+		  
 install(TARGETS tinyxml
         EXPORT  TinyXMLTargets
         RUNTIME DESTINATION "${TINYXML_INSTALL_BIN_DIR}" 
