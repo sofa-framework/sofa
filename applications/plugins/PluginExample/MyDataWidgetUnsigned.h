@@ -25,7 +25,7 @@
 #ifndef SOFA_GUI_QT_MyDataWidgetUnsigned_H
 #define SOFA_GUI_QT_MyDataWidgetUnsigned_H
 
-#include "initPlugin.h"
+#include "PluginExample.h"
 #include <sofa/gui/qt/DataWidget.h>
 
 #ifdef SOFA_QT4

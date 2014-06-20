@@ -26,7 +26,7 @@
 #ifndef SOFA_COMPONENT_BEHAVIORMODEL_MyBehaviorModel_H
 #define SOFA_COMPONENT_BEHAVIORMODEL_MyBehaviorModel_H
 
-#include "initPlugin.h"
+#include "PluginExample.h"
 #include <sofa/core/BehaviorModel.h>
 
 namespace sofa
