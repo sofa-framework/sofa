@@ -17,16 +17,16 @@ set( SOFASIMULATION_VERSION ${SOFASIMULATION_MAJOR_VERSION}.${SOFASIMULATION_MIN
 set(SOFASIMULATION_BUILD_LIB_DIR     ${CMAKE_CURRENT_BINARY_DIR})
 set(SOFASIMULATION_BUILD_BIN_DIR     ${CMAKE_CURRENT_BINARY_DIR})
 set(SOFASIMULATION_BUILD_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-set(SOFASIMULATION_BUILD_CMAKE_DIR   ${CMAKE_CURRENT_BINARY_DIR}/cmake)
+set(SOFASIMULATION_BUILD_CMAKE_DIR   ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulation)
 
 
 message("Build dir : ${CMAKE_CURRENT_BINARY_DIR}")
 
 # Offer the user the choice of overriding the installation directories
-set(SOFASIMULATION_INSTALL_LIB_DIR     lib     CACHE PATH "Installation directory for libraries")
-set(SOFASIMULATION_INSTALL_BIN_DIR     bin     CACHE PATH "Installation directory for executables")
-set(SOFASIMULATION_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files")
-set(SOFASIMULATION_INSTALL_CMAKE_DIR   cmake   CACHE PATH "Installation directory for CMake files")
+set(SOFASIMULATION_INSTALL_LIB_DIR     lib     					  CACHE PATH "Installation directory for libraries")
+set(SOFASIMULATION_INSTALL_BIN_DIR     bin     					  CACHE PATH "Installation directory for executables")
+set(SOFASIMULATION_INSTALL_INCLUDE_DIR include 					  CACHE PATH "Installation directory for header files")
+set(SOFASIMULATION_INSTALL_CMAKE_DIR   lib/cmake/SofaSimulation   CACHE PATH "Installation directory for CMake files")
 
 ## SofaSimulation dependencies  
 ##
@@ -51,34 +51,34 @@ list(APPEND SOFASIMULATION_TARGETS SofaSimulationCommon SofaSimulationTree SofaS
 include(CMakePackageConfigHelpers)
 
 # SofaSimulationConfigVersion.cmake file (same for build tree and intall)
-write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationConfigVersion.cmake
+write_basic_package_version_file(${SOFASIMULATION_BUILD_CMAKE_DIR}/SofaSimulationConfigVersion.cmake
                                  VERSION ${SOFASIMULATION_VERSION}
                                  COMPATIBILITY AnyNewerVersion)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationConfigVersion.cmake
+install(FILES ${SOFASIMULATION_BUILD_CMAKE_DIR}/SofaSimulationConfigVersion.cmake
         DESTINATION ${SOFASIMULATION_INSTALL_CMAKE_DIR})
                                                           
 
 # SofaSimulationConfig.cmake (build tree)
 set(SOFASIMULATION_INCLUDE_DIR "${SOFASIMULATION_BUILD_INCLUDE_DIR}")
 configure_package_config_file(SofaSimulationConfig.cmake.in 
-                              ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationConfig.cmake
+                              ${SOFASIMULATION_BUILD_CMAKE_DIR}/SofaSimulationConfig.cmake
                               INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
                               PATH_VARS SOFASIMULATION_INCLUDE_DIR)
 
 # SofaSimulationConfig.cmake (installed)
 set(SOFASIMULATION_INCLUDE_DIR "${SOFASIMULATION_INSTALL_INCLUDE_DIR}")
 configure_package_config_file(SofaSimulationConfig.cmake.in 
-                              ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationConfigInstall.cmake
+                              ${SOFASIMULATION_BUILD_CMAKE_DIR}/SofaSimulationConfigInstall.cmake
                               INSTALL_DESTINATION ${SOFASIMULATION_INSTALL_CMAKE_DIR}
                               PATH_VARS SOFASIMULATION_INCLUDE_DIR )
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationConfigInstall.cmake
+install(FILES ${SOFASIMULATION_BUILD_CMAKE_DIR}/SofaSimulationConfigInstall.cmake
         DESTINATION ${SOFASIMULATION_INSTALL_CMAKE_DIR}
         RENAME SofaSimulationConfig.cmake)
 
 # SofaSimulationTargets.cmake (build tree)        
 export(TARGETS ${SOFASIMULATION_TARGETS}
-       FILE ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationTargets.cmake )                                        
+       FILE ${SOFASIMULATION_BUILD_CMAKE_DIR}/SofaSimulationTargets.cmake )                                        
                                                           
 # SofaSimulationTargets.cmake (installed)
 install(EXPORT SofaSimulationTargets
