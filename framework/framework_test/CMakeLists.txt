@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 
-project("SofaFramework_test")
+project(SofaFramework_test)
 
 set(SOURCE_FILES
     helper/system/atomicTest.cpp
