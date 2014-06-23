@@ -3,6 +3,8 @@ cmake_minimum_required(VERSION 2.8.8)
 set(SOLUTION_NAME "Sofa")
 project(${SOLUTION_NAME})
 
+enable_testing()
+
 # MSVC: Use solution folders.
 if(MSVC)
     set_property(GLOBAL PROPERTY USE_FOLDERS ON)

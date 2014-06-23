@@ -17,9 +17,10 @@ include_directories(${gtest_SOURCE_DIR}/include)
 add_definitions("-DFRAMEWORK_TEST_RESOURCES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/resources\"")
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-add_test(${PROJECT_NAME} COMMAND ${PROJECT_NAME})
-
 target_link_libraries(${PROJECT_NAME} gtest_main SofaCore)
+
+add_test(NAME ${PROJECT_NAME}
+         COMMAND ${PROJECT_NAME})
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND ${PROJECT_NAME} COMMENT "-> Running unit tests..." VERBATIM)
 
