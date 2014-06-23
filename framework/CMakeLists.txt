@@ -31,10 +31,10 @@ set(SOFAFRAMEWORK_BUILD_CMAKE_DIR   ${CMAKE_CURRENT_BINARY_DIR}/SofaFramework)
 message("Build dir : ${CMAKE_CURRENT_BINARY_DIR}")
 
 # Offer the user the choice of overriding the installation directories
-set(SOFAFRAMEWORK_INSTALL_LIB_DIR     lib                      CACHE PATH "Installation directory for libraries")
-set(SOFAFRAMEWORK_INSTALL_BIN_DIR     bin                      CACHE PATH "Installation directory for executables")
-set(SOFAFRAMEWORK_INSTALL_INCLUDE_DIR include                  CACHE PATH "Installation directory for header files")
-set(SOFAFRAMEWORK_INSTALL_CMAKE_DIR   lib/cmake/SofaFramework  CACHE PATH "Installation directory for CMake files")
+set(SOFAFRAMEWORK_INSTALL_LIB_DIR     lib                      CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
+set(SOFAFRAMEWORK_INSTALL_BIN_DIR     bin                      CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
+set(SOFAFRAMEWORK_INSTALL_INCLUDE_DIR include                  CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
+set(SOFAFRAMEWORK_INSTALL_CMAKE_DIR   lib/cmake/SofaFramework  CACHE PATH "Installation directory for CMake files relative to CMAKE_INSTALL_PREFIX variable")
 
 if( CMAKE_CL_64 )
   set( LIB "lib/win64" )
@@ -266,18 +266,14 @@ list(REMOVE_DUPLICATES SOFAFRAMEWORK_EXTERNAL_INCLUDE_DIRS)
 ##
 set(SOFAFRAMEWORK_TARGETS)
 #tinyxml
-if( NOT TARGET tinyxml ) # test if TARGET tinyxml does not belong to the current build tree
-	find_package(TinyXML REQUIRED)
-	include_directories(  ${TinyXML_INCLUDE_DIRS} )
-else()
-	list(APPEND SOFAFRAMEWORK_TARGETS tinyxml )
+find_package(TinyXML  REQUIRED)
+if( TinyXML_TARGETS )  # if defined TinyXML belongs to current build tree
+	list(APPEND SOFAFRAMEWORK_TARGETS tinyxml ) # if so add TinyXML to the export target list for transitive dependency management within the build tree.
 endif()
 set(SOFA_HAVE_TINYXML 1)
 ##
 ##
 ##
-
-
 
 configure_file( ${SofaFramework_SOURCE_DIR}/SofaFramework.config.in 
                 ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaFramework.h )
@@ -290,7 +286,6 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 list(APPEND SOFAFRAMEWORK_TARGETS SofaCore SofaHelper SofaDefaultType)
 set(SOFAFRAMEWORK_EXPORT_FILE SofaFrameworkTargets.cmake)
 
-include_directories( ${SofaFramework_SOURCE_DIR}/ )
 add_subdirectory( ${SofaFramework_SOURCE_DIR}/sofa/helper      ${CMAKE_CURRENT_BINARY_DIR}/SofaHelper )
 add_subdirectory( ${SofaFramework_SOURCE_DIR}/sofa/defaulttype ${CMAKE_CURRENT_BINARY_DIR}/SofaDefaultType )
 add_subdirectory( ${SofaFramework_SOURCE_DIR}/sofa/core        ${CMAKE_CURRENT_BINARY_DIR}/SofaCore )
