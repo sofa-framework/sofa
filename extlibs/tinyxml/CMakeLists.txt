@@ -16,7 +16,7 @@ set(TINYXML_VERSION ${TINYXML_MAJOR_VERSION}.${TINYXML_MINOR_VERSION}.${TINYXML_
 set(TINYXML_BUILD_LIB_DIR ${CMAKE_CURRENT_BINARY_DIR})
 set(TINYXML_BUILD_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR})
 set(TINYXML_BUILD_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-set(TINYXML_BUILD_CMAKE_DIR ${CMAKE_CURRENT_BINARY_DIR}/TinyXML/)
+set(TINYXML_BUILD_CMAKE_DIR ${CMAKE_BINARY_DIR}/TinyXML/)
 
 # Offer the user the choice of overriding the installation directories
 set(TINYXML_INSTALL_LIB_DIR     lib                 CACHE PATH "Installation directory for libraries")
@@ -36,11 +36,10 @@ set(tinyxml_HDRS
     tinyxml.h
 )
 
-add_definitions("-DTIXML_USE_STL -DTI")
 
 add_library(tinyxml SHARED ${tinyxml_SRCS} ${tinyxml_HDRS})
 target_include_directories(tinyxml PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
-
+target_compile_options(tinyxml PUBLIC "-DTIXML_USE_STL" "-DTI")
 
 set_target_properties( tinyxml  PROPERTIES DEBUG_POSTFIX "_d" )
 set_target_properties( tinyxml  PROPERTIES VERSION ${TINYXML_VERSION} )
@@ -53,10 +52,7 @@ install(TARGETS tinyxml
         ARCHIVE DESTINATION "${TINYXML_INSTALL_LIB_DIR}" 
         PUBLIC_HEADER DESTINATION "${TINYXML_INSTALL_INCLUDE_DIR}" )
 
-set(TinyXML_TARGETS tinyxml)
-
 include(CMakePackageConfigHelpers)
-
 
 # TinyXMLConfigVersion.cmake file (same for build tree and intall)
 write_basic_package_version_file(${TINYXML_BUILD_CMAKE_DIR}/TinyXMLConfigVersion.cmake
@@ -84,16 +80,7 @@ configure_package_config_file(TinyXMLConfig.cmake.in
 install(FILES ${TINYXML_BUILD_CMAKE_DIR}/TinyXMLConfigInstall.cmake
         DESTINATION ${TINYXML_INSTALL_CMAKE_DIR}
         RENAME TinyXMLConfig.cmake)
-
-
-# TinyXMLTargets.cmake (build tree)
-export(TARGETS ${TinyXML_TARGETS}
-       FILE ${TINYXML_BUILD_CMAKE_DIR}/TinyXMLTargets.cmake)
 	   
 # TinyXMLTargets.cmake (installed)
 install(EXPORT TinyXMLTargets
         DESTINATION ${TINYXML_INSTALL_CMAKE_DIR})
-
-# Export the package for use from the build-tree
-# (this registers the build-tree with a global CMake-registry)        
-export(PACKAGE TinyXML)
