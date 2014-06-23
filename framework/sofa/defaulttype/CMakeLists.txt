@@ -41,8 +41,8 @@ set(SOFADEFAULTTYPE_SOURCES
 	)
   
 add_library(${PROJECT_NAME} SHARED ${SOFADEFAULTTYPE_HEADERS} ${SOFADEFAULTTYPE_SOURCES})
-target_link_libraries( ${PROJECT_NAME} SofaHelper )
-
+target_link_libraries( ${PROJECT_NAME} PUBLIC SofaHelper )
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>/../../")
 set( SOFADEFAULTTYPE_COMPILER_FLAGS "-DSOFA_BUILD_DEFAULTTYPE")
 
 # make the name of debug libraries end in _d.
