@@ -1,10 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
 
-set(PROJECT_NAME "SofaFramework_test")
-project(${PROJECT_NAME})
+project("SofaFramework_test")
 
 set(SOURCE_FILES
-    defaulttype/VecTypesTest.cpp
     helper/system/atomicTest.cpp
     helper/system/FileSystemTest.cpp
     helper/system/UtilsTest.cpp
@@ -19,8 +17,7 @@ add_definitions("-DFRAMEWORK_TEST_RESOURCES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/re
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} gtest_main SofaCore)
 
-add_test(NAME ${PROJECT_NAME}
-         COMMAND ${PROJECT_NAME})
-
+add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND ${PROJECT_NAME} COMMENT "-> Running unit tests..." VERBATIM)
 
+add_subdirectory(defaulttype)
