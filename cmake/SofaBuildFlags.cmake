@@ -87,3 +87,6 @@ if(SOFA-MISC_VECTORIZE)
 	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${ARCH_FLAGS}")
     endif(MSVC)
 endif()
+
+# Unit tests activation
+enable_testing()
