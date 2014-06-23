@@ -26,15 +26,15 @@ set( SOFAFRAMEWORK_INCLUDE_DIR "${SofaFramework_SOURCE_DIR}")
 set(SOFAFRAMEWORK_BUILD_LIB_DIR     ${CMAKE_CURRENT_BINARY_DIR})
 set(SOFAFRAMEWORK_BUILD_BIN_DIR     ${CMAKE_CURRENT_BINARY_DIR})
 set(SOFAFRAMEWORK_BUILD_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-set(SOFAFRAMEWORK_BUILD_CMAKE_DIR   ${CMAKE_CURRENT_BINARY_DIR}/cmake)
+set(SOFAFRAMEWORK_BUILD_CMAKE_DIR   ${CMAKE_CURRENT_BINARY_DIR}/SofaFramework)
 
 message("Build dir : ${CMAKE_CURRENT_BINARY_DIR}")
 
 # Offer the user the choice of overriding the installation directories
-set(SOFAFRAMEWORK_INSTALL_LIB_DIR     lib     CACHE PATH "Installation directory for libraries")
-set(SOFAFRAMEWORK_INSTALL_BIN_DIR     bin     CACHE PATH "Installation directory for executables")
-set(SOFAFRAMEWORK_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files")
-set(SOFAFRAMEWORK_INSTALL_CMAKE_DIR   cmake   CACHE PATH "Installation directory for CMake files")
+set(SOFAFRAMEWORK_INSTALL_LIB_DIR     lib                      CACHE PATH "Installation directory for libraries")
+set(SOFAFRAMEWORK_INSTALL_BIN_DIR     bin                      CACHE PATH "Installation directory for executables")
+set(SOFAFRAMEWORK_INSTALL_INCLUDE_DIR include                  CACHE PATH "Installation directory for header files")
+set(SOFAFRAMEWORK_INSTALL_CMAKE_DIR   lib/cmake/SofaFramework  CACHE PATH "Installation directory for CMake files")
 
 if( CMAKE_CL_64 )
   set( LIB "lib/win64" )
@@ -42,20 +42,10 @@ else( CMAKE_CL_64 )
   set( LIB "lib/win32" )
 endif( CMAKE_CL_64 )
 
-set( SOFA_SEARCHES_INCLUDE "${SofaFramework_SOURCE_DIR}/../include")
-set( SOFA_SEARCHES_LIB     "${SofaFramework_SOURCE_DIR}/../${LIB}") 
-set( SOFA_SEARCHES "${SOFA_SEARCHES_LIB} ${SOFA_SEARCHES_INCLUDE}" CACHE INTERNAL "Set to internal so it can be changed by sub directories.")
-
 ##
-## Dependencies lookup 
+## System Dependencies lookup 
 ##
-set(SOFAFRAMEWORK_EXTERNAL_LIBS)
 set(SOFAFRAMEWORK_EXTERNAL_INCLUDE_DIRS)
-
-# tinyxml
-find_package(TinyXML REQUIRED)
-include_directories(  ${TinyXML_INCLUDE_DIRS} )
-set(SOFA_HAVE_TINYXML 1)
 
 # zlib
 if(WIN32)
@@ -90,9 +80,9 @@ if( SOFAFRAMEWORK_USE_IMPORTED_ZLIB )
     set_property(TARGET zlib PROPERTY IMPORTED_LOCATION ${SOFAFRAMEWORK_ZLIB_IMPORTED_LOCATION}) 
     set_property(TARGET zlib PROPERTY IMPORTED_IMPLIB   ${SOFAFRAMEWORK_ZLIB_IMPORTED_IMPLIB}  )
     include_directories(${SOFAFRAMEWORK_ZLIB_INCLUDE_DIRS})
-    list(APPEND SOFAFRAMEWORK_EXTERNAL_INCLUDE_DIRS     ${SOFAFRAMEWORK_ZLIB_INCLUDE_DIRS}     )
-    list(APPEND SOFAFRAMEWORK_EXTERNAL_LIBS             zlib)
-    
+    set(ZLIB_INCLUDE_DIR ${SOFAFRAMEWORK_ZLIB_IMPORTED_LOCATION} )
+	set(ZLIB_LIBRARIES zlib)
+	
     install(DIRECTORY ${SOFAFRAMEWORK_ZLIB_INCLUDE_DIRS}/ 
         COMPONENT SofaFramework_headers
         DESTINATION "${SOFAFRAMEWORK_INSTALL_INCLUDE_DIR}"
@@ -113,9 +103,8 @@ if( SOFAFRAMEWORK_USE_IMPORTED_ZLIB )
 else()
     find_package(ZLIB REQUIRED)
     include_directories(${ZLIB_INCLUDE_DIR})
-    list(APPEND SOFAFRAMEWORK_EXTERNAL_LIBS ${ZLIB_LIBRARIES})
-    list(APPEND SOFAFRAMEWORK_EXTERNAL_INCLUDE_DIRS ${ZLIB_INCLUDE_DIR})
 endif()
+list(APPEND SOFAFRAMEWORK_EXTERNAL_INCLUDE_DIRS ${ZLIB_INCLUDE_DIR})
 set(SOFA_HAVE_ZLIB 1)
 
 # PNG
@@ -124,9 +113,8 @@ if( SOFAFRAMEWORK_USE_IMPORTED_PNG )
     set_property(TARGET png PROPERTY IMPORTED_LOCATION ${SOFAFRAMEWORK_PNG_IMPORTED_LOCATION}) 
     set_property(TARGET png PROPERTY IMPORTED_IMPLIB   ${SOFAFRAMEWORK_PNG_IMPORTED_IMPLIB}  )
     include_directories(${SOFAFRAMEWORK_PNG_INCLUDE_DIRS} )
-    list(APPEND SOFAFRAMEWORK_EXTERNAL_INCLUDE_DIRS    ${SOFAFRAMEWORK_PNG_INCLUDE_DIRS}     )
-    list(APPEND SOFAFRAMEWORK_EXTERNAL_LIBS            png)
-    
+    set(PNG_INCLUDE_DIRS ${SOFAFRAMEWORK_PNG_IMPORTED_LOCATION} )
+	set(PNG_LIBRARIES png)
     install(DIRECTORY ${SOFAFRAMEWORK_PNG_INCLUDE_DIRS}/ 
         COMPONENT SofaFramework_headers
         DESTINATION "${SOFAFRAMEWORK_INSTALL_INCLUDE_DIR}"
@@ -147,9 +135,8 @@ if( SOFAFRAMEWORK_USE_IMPORTED_PNG )
 else() 
     find_package(PNG  REQUIRED)
     include_directories(${PNG_INCLUDE_DIRS})
-    list(APPEND SOFAFRAMEWORK_EXTERNAL_LIBS ${PNG_LIBRARIES})
-    list(APPEND SOFAFRAMEWORK_EXTERNAL_INCLUDE_DIRS ${PNG_INCLUDE_DIRS})
 endif()
+list(APPEND SOFAFRAMEWORK_EXTERNAL_INCLUDE_DIRS ${PNG_INCLUDE_DIRS})
 set(SOFA_HAVE_PNG 1)
 
 # GLEW 
@@ -158,9 +145,8 @@ if( SOFAFRAMEWORK_USE_IMPORTED_GLEW )
     set_property(TARGET glew PROPERTY IMPORTED_LOCATION ${SOFAFRAMEWORK_GLEW_IMPORTED_LOCATION}) 
     set_property(TARGET glew PROPERTY IMPORTED_IMPLIB   ${SOFAFRAMEWORK_GLEW_IMPORTED_IMPLIB}  )
     include_directories(${SOFAFRAMEWORK_GLEW_INCLUDE_DIRS} )
-    list(APPEND SOFAFRAMEWORK_EXTERNAL_INCLUDE_DIRS    ${SOFAFRAMEWORK_GLEW_INCLUDE_DIRS}     )
-    list(APPEND SOFAFRAMEWORK_EXTERNAL_LIBS            glew)
-    
+    set(GLEW_INCLUDE_DIRS {SOFAFRAMEWORK_GLEW_IMPORTED_LOCATION} )
+	set(GLEW_LIBRARIES glew)
     install(DIRECTORY ${SOFAFRAMEWORK_GLEW_INCLUDE_DIRS}/ 
         COMPONENT SofaFramework_headers
         DESTINATION "${SOFAFRAMEWORK_INSTALL_INCLUDE_DIR}"
@@ -182,9 +168,8 @@ else()
     find_package(GLEW REQUIRED)
     set(SOFA_HAVE_GLEW 1)
     include_directories(${GLEW_INCLUDE_DIRS})
-    list(APPEND SOFAFRAMEWORK_EXTERNAL_LIBS ${GLEW_LIBRARIES})
-    list(APPEND SOFAFRAMEWORK_EXTERNAL_INCLUDE_DIRS ${GLEW_INCLUDE_DIRS})
 endif()
+list(APPEND SOFAFRAMEWORK_EXTERNAL_INCLUDE_DIRS ${GLEW_INCLUDE_DIRS})
 set(SOFA_HAVE_GLEW 1)
 
 # GLUT 
@@ -193,9 +178,8 @@ if( SOFAFRAMEWORK_USE_IMPORTED_GLUT )
     set_property(TARGET glut PROPERTY IMPORTED_LOCATION ${SOFAFRAMEWORK_GLUT_IMPORTED_LOCATION}) 
     set_property(TARGET glut PROPERTY IMPORTED_IMPLIB   ${SOFAFRAMEWORK_GLUT_IMPORTED_IMPLIB}  )
     include_directories(${SOFAFRAMEWORK_GLUT_INCLUDE_DIRS} )
-    list(APPEND SOFAFRAMEWORK_EXTERNAL_INCLUDE_DIRS    ${SOFAFRAMEWORK_GLUT_INCLUDE_DIRS}     )
-    list(APPEND SOFAFRAMEWORK_EXTERNAL_LIBS            glut)
-    
+    set(GLUT_INCLUDE_DIR ${SOFAFRAMEWORK_GLUT_IMPORTED_LOCATION} )
+	set(GLUT_LIBRARIES glut )
     install(DIRECTORY ${SOFAFRAMEWORK_GLUT_INCLUDE_DIRS}/ 
         COMPONENT SofaFramework_headers
         DESTINATION "${SOFAFRAMEWORK_INSTALL_INCLUDE_DIR}"
@@ -216,9 +200,8 @@ if( SOFAFRAMEWORK_USE_IMPORTED_GLUT )
 else() 
     find_package(GLUT REQUIRED)
     include_directories(${GLUT_INCLUDE_DIR})
-    list(APPEND SOFAFRAMEWORK_EXTERNAL_LIBS  ${GLUT_LIBRARIES})
-    list(APPEND SOFAFRAMEWORK_EXTERNAL_INCLUDE_DIRS ${GLUT_INCLUDE_DIR})
 endif()
+list(APPEND SOFAFRAMEWORK_EXTERNAL_INCLUDE_DIRS ${GLUT_INCLUDE_DIR})
 set(SOFA_HAVE_GLUT 1)
 
 # OpenGL ( glu )
@@ -236,10 +219,8 @@ if(PS3)
 else()
     find_package(OpenGL REQUIRED)
     include_directories(${OPENGL_INCLUDE_DIR})
-    list(APPEND SOFAFRAMEWORK_EXTERNAL_LIBS ${OPENGL_LIBRARIES})
-    list(APPEND SOFAFRAMEWORK_EXTERNAL_INCLUDE_DIRS ${OPENGL_INCLUDE_DIR})
 endif(PS3)
-
+list(APPEND SOFAFRAMEWORK_EXTERNAL_INCLUDE_DIRS ${OPENGL_INCLUDE_DIR})
 # Boost
 set(Boost_USE_STATIC_LIBS OFF)
 set(Boost_USE_MULTITHREADED ON)
@@ -250,7 +231,6 @@ find_package(Boost COMPONENTS thread system)
 if(Boost_FOUND)
     if(Boost_thread_FOUND AND Boost_system_FOUND)
         include_directories(${Boost_INCLUDE_DIRS})
-        list(APPEND SOFAFRAMEWORK_EXTERNAL_LIBS ${Boost_LIBRARIES})
         set(SOFA_HAVE_BOOST_SYSTEM 1)
         set(SOFA_HAVE_BOOST_THREAD 1)
     else(Boost_thread_FOUND AND Boost_system_FOUND)
@@ -265,7 +245,6 @@ if(SOFA_USE_MINIBOOST)
     set(BOOST_ROOT "${SOFAFRAMEWORK_EXTLIBS_DIR}/miniBoost")
     find_package(Boost REQUIRED)
     include_directories(${Boost_INCLUDE_DIRS})
-    
     install(DIRECTORY ${Boost_INCLUDE_DIRS}/ 
             COMPONENT SofaFramework_headers
             DESTINATION "${SOFAFRAMEWORK_INSTALL_INCLUDE_DIR}"
@@ -276,13 +255,29 @@ if(SOFA_USE_MINIBOOST)
                 PATTERN "*.hpp"
            )
 endif(SOFA_USE_MINIBOOST)
-
 list(APPEND SOFAFRAMEWORK_EXTERNAL_INCLUDE_DIRS ${Boost_INCLUDE_DIRS})
-link_libraries(${SOFAFRAMEWORK_EXTERNAL_LIBS})
 ##
 ##
 ##
 list(REMOVE_DUPLICATES SOFAFRAMEWORK_EXTERNAL_INCLUDE_DIRS)
+
+##
+## Build/Install tree dependencies 
+##
+set(SOFAFRAMEWORK_TARGETS)
+#tinyxml
+if( NOT TARGET tinyxml ) # test if TARGET tinyxml does not belong to the current build tree
+	find_package(TinyXML REQUIRED)
+	include_directories(  ${TinyXML_INCLUDE_DIRS} )
+else()
+	list(APPEND SOFAFRAMEWORK_TARGETS tinyxml )
+endif()
+set(SOFA_HAVE_TINYXML 1)
+##
+##
+##
+
+
 
 configure_file( ${SofaFramework_SOURCE_DIR}/SofaFramework.config.in 
                 ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaFramework.h )
@@ -292,7 +287,7 @@ install( FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaFramework.h
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 
-set(SOFAFRAMEWORK_TARGETS SofaCore SofaHelper SofaDefaultType tinyxml)
+list(APPEND SOFAFRAMEWORK_TARGETS SofaCore SofaHelper SofaDefaultType)
 set(SOFAFRAMEWORK_EXPORT_FILE SofaFrameworkTargets.cmake)
 
 include_directories( ${SofaFramework_SOURCE_DIR}/ )

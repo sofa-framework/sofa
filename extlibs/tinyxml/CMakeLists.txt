@@ -24,8 +24,6 @@ set(TINYXML_INSTALL_BIN_DIR     bin                 CACHE PATH "Installation dir
 set(TINYXML_INSTALL_INCLUDE_DIR include             CACHE PATH "Installation directory for header files")
 set(TINYXML_INSTALL_CMAKE_DIR   lib/cmake/TinyXML   CACHE PATH "Installation directory for CMake files")
 
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
-
 set(tinyxml_SRCS
     tinystr.cpp
     tinyxml.cpp
