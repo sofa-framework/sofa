@@ -52,7 +52,8 @@ install(TARGETS tinyxml
         LIBRARY DESTINATION "${TINYXML_INSTALL_LIB_DIR}" 
         ARCHIVE DESTINATION "${TINYXML_INSTALL_LIB_DIR}" 
         PUBLIC_HEADER DESTINATION "${TINYXML_INSTALL_INCLUDE_DIR}" )
-set(TINYXML_TARGETS tinyxml)
+
+set(TinyXML_TARGETS tinyxml)
 
 include(CMakePackageConfigHelpers)
 
@@ -86,7 +87,7 @@ install(FILES ${TINYXML_BUILD_CMAKE_DIR}/TinyXMLConfigInstall.cmake
 
 
 # TinyXMLTargets.cmake (build tree)
-export(TARGETS ${TINYXML_TARGETS}
+export(TARGETS ${TinyXML_TARGETS}
        FILE ${TINYXML_BUILD_CMAKE_DIR}/TinyXMLTargets.cmake)
 	   
 # TinyXMLTargets.cmake (installed)
