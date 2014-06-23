@@ -267,7 +267,7 @@ set(SOFAFRAMEWORK_TARGETS)
 #tinyxml
 find_package(TinyXML  REQUIRED)
 if( TinyXML_TARGETS )  # if defined TinyXML belongs to current build tree
-	list(APPEND SOFAFRAMEWORK_TARGETS tinyxml ) # if so add TinyXML to the export target list for transitive dependency management within the build tree.
+	list(APPEND SOFAFRAMEWORK_TARGETS ${TinyXML_TARGETS} ) # if so add TinyXML to the export target list for transitive dependency management within the build tree.
 endif()
 set(SOFA_HAVE_TINYXML 1)
 ##
