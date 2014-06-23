@@ -17,10 +17,7 @@ set( SOFASIMULATION_VERSION ${SOFASIMULATION_MAJOR_VERSION}.${SOFASIMULATION_MIN
 set(SOFASIMULATION_BUILD_LIB_DIR     ${CMAKE_CURRENT_BINARY_DIR})
 set(SOFASIMULATION_BUILD_BIN_DIR     ${CMAKE_CURRENT_BINARY_DIR})
 set(SOFASIMULATION_BUILD_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-set(SOFASIMULATION_BUILD_CMAKE_DIR   ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulation)
-
-
-message("Build dir : ${CMAKE_CURRENT_BINARY_DIR}")
+set(SOFASIMULATION_BUILD_CMAKE_DIR   ${CMAKE_BINARY_DIR}/SofaSimulation)
 
 # Offer the user the choice of overriding the installation directories
 set(SOFASIMULATION_INSTALL_LIB_DIR     lib     					  CACHE PATH "Installation directory for libraries")
@@ -45,9 +42,6 @@ add_subdirectory(${SofaSimulation_SOURCE_DIR}/common ${CMAKE_CURRENT_BINARY_DIR}
 add_subdirectory(${SofaSimulation_SOURCE_DIR}/tree   ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationTree   )
 add_subdirectory(${SofaSimulation_SOURCE_DIR}/graph  ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationGraph  ) 
 
-message( "SofaFramework_TARGETS : ${SofaFramework_TARGETS}")
-list(APPEND SOFASIMULATION_TARGETS SofaSimulationCommon SofaSimulationTree SofaSimulationGraph ${SofaFramework_TARGETS} )
-
 include(CMakePackageConfigHelpers)
 
 # SofaSimulationConfigVersion.cmake file (same for build tree and intall)
@@ -57,7 +51,6 @@ write_basic_package_version_file(${SOFASIMULATION_BUILD_CMAKE_DIR}/SofaSimulatio
 install(FILES ${SOFASIMULATION_BUILD_CMAKE_DIR}/SofaSimulationConfigVersion.cmake
         DESTINATION ${SOFASIMULATION_INSTALL_CMAKE_DIR})
                                                           
-
 # SofaSimulationConfig.cmake (build tree)
 set(SOFASIMULATION_INCLUDE_DIR "${SOFASIMULATION_BUILD_INCLUDE_DIR}")
 configure_package_config_file(SofaSimulationConfig.cmake.in 
@@ -76,17 +69,6 @@ install(FILES ${SOFASIMULATION_BUILD_CMAKE_DIR}/SofaSimulationConfigInstall.cmak
         DESTINATION ${SOFASIMULATION_INSTALL_CMAKE_DIR}
         RENAME SofaSimulationConfig.cmake)
 
-# SofaSimulationTargets.cmake (build tree)        
-export(TARGETS ${SOFASIMULATION_TARGETS}
-       FILE ${SOFASIMULATION_BUILD_CMAKE_DIR}/SofaSimulationTargets.cmake )                                        
-                                                          
 # SofaSimulationTargets.cmake (installed)
 install(EXPORT SofaSimulationTargets
         DESTINATION ${SOFASIMULATION_INSTALL_CMAKE_DIR} )
-
-
-# Export the package for use from the build-tree
-# (this registers the build-tree with a global CMake-registry)
-export(PACKAGE SofaSimulation)
-
-#include(SofaSimulationCPack.cmake)
