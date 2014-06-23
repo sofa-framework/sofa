@@ -2,19 +2,26 @@
 # It defines the following variables
 #  SofaSimulation_INCLUDE_DIRS - include directories for FooBar
 #  SofaSimulation_LIBRARIES    - libraries to link against
- 
+#  SofaSimulation_TARGETS      - targets that must be transitively exported by packages when imported SofaSimulation within the same build tree 
+#                                Variable is empty if using an installed version of SofaSimulation.
 
 @PACKAGE_INIT@
 
 set(SOFASIMULATION_INCLUDE_DIR "@PACKAGE_SOFASIMULATION_INCLUDE_DIR@")
 check_required_components(SofaSimulation)
 
+set(SofaSimulation_TARGETS)
+
 # required for transitive dependencies
 find_package(SofaFramework REQUIRED)
-find_package(TinyXML       REQUIRED)
+list(APPEND SofaSimulation_TARGETS ${SofaFramework_TARGETS} )
 
-include("${CMAKE_CURRENT_LIST_DIR}/SofaSimulationTargets.cmake")
-
+if( NOT TARGET SofaSimulationCommon )
+	include("${CMAKE_CURRENT_LIST_DIR}/SofaSimulationTargets.cmake")
+else()
+	list(APPEND SofaSimulation_TARGETS SofaSimulationCommon SofaSimulationTree SofaSimulationGraph)
+endif()
+ 
 # These are IMPORTED targets created by SofaFrameworkTargets.cmake
 set(SofaSimulation_LIBRARIES SofaSimulationCommon SofaSimulationTree SofaSimulationGraph)
 set(SofaSimulation_INCLUDE_DIRS ${SOFASIMULATION_INCLUDE_DIR} )

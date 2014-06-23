@@ -28,16 +28,10 @@ set(SOFASIMULATION_INSTALL_BIN_DIR     bin     CACHE PATH "Installation director
 set(SOFASIMULATION_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files")
 set(SOFASIMULATION_INSTALL_CMAKE_DIR   cmake   CACHE PATH "Installation directory for CMake files")
 
-
-
-# SofaSimulation external libraries 
+## SofaSimulation dependencies  
 ##
-
 find_package(SofaFramework REQUIRED)
 include_directories( ${SofaFramework_INCLUDE_DIRS} )
-find_package(TinyXML REQUIRED)
-include_directories(  ${TinyXML_INCLUDE_DIRS} )
-set(SOFA_HAVE_TINYXML 1)
 
 configure_file( ${SofaSimulation_SOURCE_DIR}/SofaSimulation.config.in 
                 ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaSimulation.h )
@@ -51,7 +45,8 @@ add_subdirectory(${SofaSimulation_SOURCE_DIR}/common ${CMAKE_CURRENT_BINARY_DIR}
 add_subdirectory(${SofaSimulation_SOURCE_DIR}/tree   ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationTree   )
 add_subdirectory(${SofaSimulation_SOURCE_DIR}/graph  ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationGraph  ) 
 
-set(SOFASIMULATIONTARGETS SofaSimulationCommon SofaSimulationTree SofaSimulationGraph)
+message( "SofaFramework_TARGETS : ${SofaFramework_TARGETS}")
+list(APPEND SOFASIMULATION_TARGETS SofaSimulationCommon SofaSimulationTree SofaSimulationGraph ${SofaFramework_TARGETS} )
 
 include(CMakePackageConfigHelpers)
 
