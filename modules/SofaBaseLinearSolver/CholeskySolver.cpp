@@ -27,8 +27,6 @@
 // Copyright: See COPYING file that comes with this distribution
 #include <SofaBaseLinearSolver/CholeskySolver.inl>
 
-#include <sofa/core/ObjectFactory.h>
-
 namespace sofa
 {
 
@@ -41,12 +39,6 @@ namespace linearsolver
 using namespace sofa::defaulttype;
 
 SOFA_DECL_CLASS(CholeskySolver)
-
-int CholeskySolverClass = core::RegisterObject("Direct linear solver based on Cholesky factorization, for dense matrices")
-        .add< CholeskySolver< SparseMatrix<double>, FullVector<double> > >(true)
-        .add< CholeskySolver< FullMatrix<double>, FullVector<double> > >()
-        .add< CholeskySolver< FullMatrix<float>, FullVector<float> > >()
-        ;
 
 template class SOFA_BASE_LINEAR_SOLVER_API CholeskySolver< SparseMatrix<double>, FullVector<double> >;
 template class SOFA_BASE_LINEAR_SOLVER_API CholeskySolver< FullMatrix<double>, FullVector<double> >;

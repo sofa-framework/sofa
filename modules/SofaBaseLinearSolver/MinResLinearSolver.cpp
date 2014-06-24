@@ -27,7 +27,6 @@
 // Copyright: See COPYING file that comes with this distribution
 #include <SofaBaseLinearSolver/MinResLinearSolver.inl>
 
-#include <sofa/core/ObjectFactory.h>
 #include <iostream>
 
 namespace sofa
@@ -43,26 +42,6 @@ using namespace sofa::defaulttype;
 
 
 SOFA_DECL_CLASS(MinResLinearSolver)
-
-int MinResLinearSolverClass = core::RegisterObject("Linear system solver using the MINRES iterative algorithm")
-        .add< MinResLinearSolver< GraphScatteredMatrix, GraphScatteredVector > >(true)
-        .add< MinResLinearSolver< FullMatrix<double>, FullVector<double> > >()
-        .add< MinResLinearSolver< SparseMatrix<double>, FullVector<double> > >()
-        .add< MinResLinearSolver< CompressedRowSparseMatrix<double>, FullVector<double> > >()
-        .add< MinResLinearSolver< CompressedRowSparseMatrix<float>, FullVector<float> > >()
-        .add< MinResLinearSolver< CompressedRowSparseMatrix<Mat<2,2,double> >, FullVector<double> > >()
-        .add< MinResLinearSolver< CompressedRowSparseMatrix<Mat<2,2,float> >, FullVector<float> > >()
-        .add< MinResLinearSolver< CompressedRowSparseMatrix<Mat<3,3,double> >, FullVector<double> > >()
-        .add< MinResLinearSolver< CompressedRowSparseMatrix<Mat<3,3,float> >, FullVector<float> > >()
-        .add< MinResLinearSolver< CompressedRowSparseMatrix<Mat<4,4,double> >, FullVector<double> > >()
-        .add< MinResLinearSolver< CompressedRowSparseMatrix<Mat<4,4,float> >, FullVector<float> > >()
-        .add< MinResLinearSolver< CompressedRowSparseMatrix<Mat<6,6,double> >, FullVector<double> > >()
-        .add< MinResLinearSolver< CompressedRowSparseMatrix<Mat<6,6,float> >, FullVector<float> > >()
-        .add< MinResLinearSolver< CompressedRowSparseMatrix<Mat<8,8,double> >, FullVector<double> > >()
-        .add< MinResLinearSolver< CompressedRowSparseMatrix<Mat<8,8,float> >, FullVector<float> > >()
-        .addAlias("MINRESSolver")
-        .addAlias("MinResSolver")
-        ;
 
 template class SOFA_BASE_LINEAR_SOLVER_API MinResLinearSolver< GraphScatteredMatrix, GraphScatteredVector >;
 template class SOFA_BASE_LINEAR_SOLVER_API MinResLinearSolver< FullMatrix<double>, FullVector<double> >;

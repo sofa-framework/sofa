@@ -35,7 +35,6 @@
 #include <sofa/helper/AdvancedTimer.h>
 #include <SofaBaseLinearSolver/MatrixLinearSolver.inl>
 
-#include <sofa/core/ObjectFactory.h>
 #include <iostream>
 
 namespace sofa

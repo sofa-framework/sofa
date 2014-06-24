@@ -868,18 +868,48 @@ private:
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 };
+
+
+#ifndef SOFA_FLOAT
+template<> const char* BTDMatrix<1,double>::Name();
+template<> const char* BTDMatrix<2,double>::Name();
+template<> const char* BTDMatrix<3,double>::Name();
+template<> const char* BTDMatrix<4,double>::Name();
+template<> const char* BTDMatrix<5,double>::Name();
+template<> const char* BTDMatrix<6,double>::Name();
+#endif
+
+#ifndef SOFA_DOUBLE
+template<> const char* BTDMatrix<1,float>::Name();
+template<> const char* BTDMatrix<2,float>::Name();
+template<> const char* BTDMatrix<3,float>::Name();
+template<> const char* BTDMatrix<4,float>::Name();
+template<> const char* BTDMatrix<5,float>::Name();
+template<> const char* BTDMatrix<6,float>::Name();
+#endif
+
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_LINEARSOLVER_BTDLINEARSOLVER_CPP)
+#ifndef SOFA_FLOAT
+extern template class SOFA_BASE_LINEAR_SOLVER_API BTDLinearSolver<BTDMatrix<6,double>,BlockVector<6,double> >;
+extern template class BTDMatrix<1, double>;
+extern template class BTDMatrix<2, double>;
+extern template class BTDMatrix<3, double>;
+extern template class BTDMatrix<4, double>;
+extern template class BTDMatrix<5, double>;
+extern template class BTDMatrix<6, double>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_BASE_LINEAR_SOLVER_API BTDLinearSolver<BTDMatrix<6,float>,BlockVector<6,float> >;
+extern template class BTDMatrix<1, float>;
+extern template class BTDMatrix<2, float>;
+extern template class BTDMatrix<3, float>;
+extern template class BTDMatrix<4, float>;
+extern template class BTDMatrix<5, float>;
+extern template class BTDMatrix<6, float>;
+#endif
+#endif
+
 
 } // namespace linearsolver
 
