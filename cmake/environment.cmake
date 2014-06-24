@@ -4,6 +4,7 @@ set(SOFA_CMAKE_DIR "${CMAKE_CURRENT_LIST_DIR}" CACHE INTERNAL "Path to the Sofa 
 set(SOFA_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}" CACHE INTERNAL "Path to the Sofa source directory")
 set(SOFA_BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}" CACHE INTERNAL "Path to the Sofa build directory")
 set(SOFA_BIN_DIR "${SOFA_BUILD_DIR}/bin" CACHE INTERNAL "Path to the Sofa bin directory")
+set(SOFA_BIN_PLUGINS_DIR "${SOFA_BUILD_DIR}/bin/plugins" CACHE INTERNAL "Path to the plugins directory")
 if(WIN32)
     set(SOFA_INC_DIR "${SOFA_SRC_DIR}/include" CACHE INTERNAL "Path to the Sofa include directory")
 endif()

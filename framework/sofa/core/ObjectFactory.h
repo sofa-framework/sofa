@@ -29,6 +29,7 @@
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/PluginManager.h>
 
 #include <map>
 #include <memory>
@@ -102,7 +103,7 @@ public:
         std::string description;
         std::string authors;
         std::string license;
-        std::string defaultTemplate;
+        std::string defaultTemplateParameters;
         CreatorMap creatorMap;
     };
     typedef std::map<std::string, ClassEntry::SPtr> ClassEntryMap;
@@ -110,13 +111,29 @@ public:
 protected:
     /// Main class registry
     ClassEntryMap registry;
+    sofa::core::PluginManager m_pluginManager;
+
+    Creator::SPtr getCreator(objectmodel::BaseContext* context,
+                             objectmodel::BaseObjectDescription* arg);
 
 public:
+
+    ObjectFactory();
 
     ~ObjectFactory();
 
     /// Get an entry given a class name (or alias)
     ClassEntry& getEntry(std::string classname);
+
+    bool hasEntry(std::string componentName);
+
+    void addEntry(const std::string& componentName, const std::string& description,
+                  const std::string& authors, const std::string& license);
+    
+    void addCreator(const std::string& componentName, const std::string& templateParameters,
+                    Creator::SPtr creator, bool defaultTemplateParameters = false);
+
+    void removeCreator(const std::string& className, const std::string& templateParameters);
 
     /// Test if a creator exists for a given classname
     bool hasCreator(std::string classname);
@@ -124,6 +141,9 @@ public:
     /// Return the shortname for this classname. Empty string if
     /// no creator exists for this classname.
     std::string shortName(std::string classname);
+
+    /// Get the PluginManager of this ObjectFactory.
+    sofa::core::PluginManager& getPluginManager();
 
     /// Fill the given vector with all the registered classes
     void getAllEntries(std::vector<ClassEntry::SPtr>& result);
@@ -141,7 +161,7 @@ public:
     /// \param force    set to true if this method should override any entry already registered for this name
     /// \param previous (output) previous ClassEntry registered for this name
     bool addAlias(std::string name, std::string result, bool force=false,
-		  ClassEntry::SPtr* previous = NULL);
+                  ClassEntry::SPtr* previous = NULL);
 
     /// Reset an alias to a previous state
     ///
@@ -295,13 +315,14 @@ public:
     RegisterObject& add(bool defaultTemplate=false)
     {
         RealObject* p = NULL;
-        std::string classname = RealObject::className(p);
-        std::string templatename = RealObject::templateName(p);
+        std::string className = RealObject::className(p);
+        std::string templateParameters = RealObject::templateName(p);
 
         if (defaultTemplate)
-            entry.defaultTemplate = templatename;
+            entry.defaultTemplateParameters = templateParameters;
 
-        return addCreator(classname, templatename, ObjectFactory::Creator::SPtr(new ObjectCreator<RealObject>));
+        return addCreator(className, templateParameters,
+                          ObjectFactory::Creator::SPtr(new ObjectCreator<RealObject>));
     }
 
     /// This is the final operation that will actually commit the additions to the ObjectFactory.

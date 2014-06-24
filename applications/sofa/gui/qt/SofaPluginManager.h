@@ -26,13 +26,8 @@
 #define SOFA_PLUGINMANAGER_H
 
 #include "ui_PluginManager.h"
-#include "SofaGUIQt.h"
-#ifdef SOFA_QT4
-#include <Q3ListViewItem>
-#else
-#include <qlistview.h>
-#endif
-#include <set>
+
+#include <sofa/core/PluginManager.h>
 
 
 namespace sofa
@@ -42,38 +37,33 @@ namespace gui
 namespace qt
 {
 
-#ifndef SOFA_QT4
-typedef QListViewItem Q3ListViewItem;
-#endif
 
 class SofaPluginManager: public QDialog, public Ui_PluginManager
 {
     Q_OBJECT
+
 public:
-
-    SofaPluginManager();
-
+    SofaPluginManager(sofa::core::PluginManager& pluginManager);
 
 signals:
-
     void libraryAdded();
     void libraryRemoved();
 
 public slots:
-
+    /// Ask the user to select a plugin file through a dialog box, and load it.
     void addLibrary();
+    /// Unload the currently selected plugin.
     void removeLibrary();
-#ifdef SOFA_QT4
+    /// Update the 'component list' widget with the currently selected plugin
     void updateComponentList(Q3ListViewItem*);
+    /// Update the 'plugin description' widget with the currently selected plugin
     void updateDescription(Q3ListViewItem*);
-#else
-    void updateComponentList(QListViewItem*);
-    void updateDescription(QListViewItem*);
-#endif
-private :
-    void updatePluginsListView();
-    void initPluginListView();
 
+private :
+    sofa::core::PluginManager& m_pluginManager;
+
+    void initPluginListView();
+    std::string getSelectedPluginName();
 };
 
 
