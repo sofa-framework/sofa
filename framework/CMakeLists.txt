@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.12)
 
 set(SOLUTION_NAME "SofaFramework")
 project(${SOLUTION_NAME})
@@ -42,171 +42,11 @@ else( CMAKE_CL_64 )
   set( LIB "lib/win32" )
 endif( CMAKE_CL_64 )
 
+set(SOFAFRAMEWORK_DEPENDENCY_LINK)
+set(SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES)
 ##
-## System Dependencies lookup 
+## System Dependencies lookup (mandatory)
 ##
-set(SOFAFRAMEWORK_EXTERNAL_INCLUDE_DIRS)
-
-#tinyxml
-find_package(TinyXML  REQUIRED)
-set(SOFA_HAVE_TINYXML 1)
-# zlib
-if(WIN32)
-    set(SOFAFRAMEWORK_USE_IMPORTED_ZLIB TRUE CACHE BOOL "")
-    set(SOFAFRAMEWORK_ZLIB_IMPORTED_LOCATION "${SofaFramework_SOURCE_DIR}/../${LIB}/zlib1.dll" CACHE PATH "" )
-    set(SOFAFRAMEWORK_ZLIB_IMPORTED_IMPLIB   "${SofaFramework_SOURCE_DIR}/../${LIB}/zlib.lib" CACHE PATH "" )
-    set(SOFAFRAMEWORK_ZLIB_INCLUDE_DIRS      "${SofaFramework_SOURCE_DIR}/../include" CACHE PATH ""         )
-    
-    set(SOFAFRAMEWORK_USE_IMPORTED_PNG TRUE CACHE BOOL "" )
-    set(SOFAFRAMEWORK_PNG_IMPORTED_LOCATION "${SofaFramework_SOURCE_DIR}/../${LIB}/libpng15.dll" CACHE PATH "" )
-    set(SOFAFRAMEWORK_PNG_IMPORTED_IMPLIB   "${SofaFramework_SOURCE_DIR}/../${LIB}/libpng.lib" CACHE PATH ""   )
-    set(SOFAFRAMEWORK_PNG_INCLUDE_DIRS      "${SofaFramework_SOURCE_DIR}/../include" CACHE PATH ""             )
-    
-    set(SOFAFRAMEWORK_USE_IMPORTED_GLEW TRUE CACHE BOOL "" )
-    set(SOFAFRAMEWORK_GLEW_IMPORTED_LOCATION "${SofaFramework_SOURCE_DIR}/../${LIB}/glew32.dll" CACHE PATH ""   )
-    set(SOFAFRAMEWORK_GLEW_IMPORTED_IMPLIB   "${SofaFramework_SOURCE_DIR}/../${LIB}/glew32.lib" CACHE PATH ""   )
-    set(SOFAFRAMEWORK_GLEW_INCLUDE_DIRS      "${SofaFramework_SOURCE_DIR}/../include" CACHE PATH ""             )
-    
-    set(SOFAFRAMEWORK_USE_IMPORTED_GLUT TRUE CACHE BOOL "" )
-    if(CMAKE_CL_64)
-        set(SOFAFRAMEWORK_GLUT_IMPORTED_LOCATION "${SofaFramework_SOURCE_DIR}/../${LIB}/glut64.dll" CACHE PATH "" FORCE)
-    else( CMAKE_CL_64 )
-        set(SOFAFRAMEWORK_GLUT_IMPORTED_LOCATION "${SofaFramework_SOURCE_DIR}/../${LIB}/glut32.dll" CACHE PATH "" FORCE)
-    endif( CMAKE_CL_64 )
-    set(SOFAFRAMEWORK_GLUT_IMPORTED_IMPLIB   "${SofaFramework_SOURCE_DIR}/../${LIB}/glut32.lib" CACHE PATH ""   )
-    set(SOFAFRAMEWORK_GLUT_INCLUDE_DIRS      "${SofaFramework_SOURCE_DIR}/../include" CACHE PATH ""             )
-endif()
-
-# Zlib
-if( SOFAFRAMEWORK_USE_IMPORTED_ZLIB )
-    add_library(zlib SHARED IMPORTED )
-    set_property(TARGET zlib PROPERTY IMPORTED_LOCATION ${SOFAFRAMEWORK_ZLIB_IMPORTED_LOCATION}) 
-    set_property(TARGET zlib PROPERTY IMPORTED_IMPLIB   ${SOFAFRAMEWORK_ZLIB_IMPORTED_IMPLIB}  )
-    include_directories(${SOFAFRAMEWORK_ZLIB_INCLUDE_DIRS})
-    set(ZLIB_INCLUDE_DIR ${SOFAFRAMEWORK_ZLIB_INCLUDE_DIRS} )
-	set(ZLIB_LIBRARIES zlib)
-	
-    install(DIRECTORY ${SOFAFRAMEWORK_ZLIB_INCLUDE_DIRS}/ 
-        COMPONENT SofaFramework_headers
-        DESTINATION "${SOFAFRAMEWORK_INSTALL_INCLUDE_DIR}"
-        FILES_MATCHING 
-            PATTERN "*.h"
-            PATTERN "*.inl"
-            PATTERN "*.hxx"
-            PATTERN "*.hpp"
-    )
-    install(FILES ${SOFAFRAMEWORK_ZLIB_IMPORTED_LOCATION}
-        COMPONENT SofaFramework_libraries
-        DESTINATION "${SOFAFRAMEWORK_INSTALL_BIN_DIR}"
-    )
-    install(FILES ${SOFAFRAMEWORK_ZLIB_IMPORTED_IMPLIB}
-        COMPONENT SofaFramework_libraries
-        DESTINATION "${SOFAFRAMEWORK_INSTALL_LIB_DIR}"
-    )
-else()
-    find_package(ZLIB REQUIRED)
-    include_directories(${ZLIB_INCLUDE_DIR})
-endif()
-list(APPEND SOFAFRAMEWORK_EXTERNAL_INCLUDE_DIRS ${ZLIB_INCLUDE_DIR})
-set(SOFA_HAVE_ZLIB 1)
-
-# PNG
-if( SOFAFRAMEWORK_USE_IMPORTED_PNG )
-    add_library(png SHARED IMPORTED )
-    set_property(TARGET png PROPERTY IMPORTED_LOCATION ${SOFAFRAMEWORK_PNG_IMPORTED_LOCATION}) 
-    set_property(TARGET png PROPERTY IMPORTED_IMPLIB   ${SOFAFRAMEWORK_PNG_IMPORTED_IMPLIB}  )
-    include_directories(${SOFAFRAMEWORK_PNG_INCLUDE_DIRS} )
-    set(PNG_INCLUDE_DIRS ${SOFAFRAMEWORK_PNG_INCLUDE_DIRS} )
-	set(PNG_LIBRARIES png)
-    install(DIRECTORY ${SOFAFRAMEWORK_PNG_INCLUDE_DIRS}/ 
-        COMPONENT SofaFramework_headers
-        DESTINATION "${SOFAFRAMEWORK_INSTALL_INCLUDE_DIR}"
-        FILES_MATCHING 
-            PATTERN "*.h"
-            PATTERN "*.inl"
-            PATTERN "*.hxx"
-            PATTERN "*.hpp"
-    )
-    install(FILES ${SOFAFRAMEWORK_PNG_IMPORTED_LOCATION}
-        COMPONENT SofaFramework_libraries
-        DESTINATION "${SOFAFRAMEWORK_INSTALL_BIN_DIR}"
-    )
-    install(FILES ${SOFAFRAMEWORK_PNG_IMPORTED_IMPLIB}
-        COMPONENT SofaFramework_libraries
-        DESTINATION "${SOFAFRAMEWORK_INSTALL_LIB_DIR}"
-    )
-else() 
-    find_package(PNG  REQUIRED)
-    include_directories(${PNG_INCLUDE_DIRS})
-endif()
-list(APPEND SOFAFRAMEWORK_EXTERNAL_INCLUDE_DIRS ${PNG_INCLUDE_DIRS})
-set(SOFA_HAVE_PNG 1)
-
-# GLEW 
-if( SOFAFRAMEWORK_USE_IMPORTED_GLEW )
-    add_library(glew SHARED IMPORTED )
-    set_property(TARGET glew PROPERTY IMPORTED_LOCATION ${SOFAFRAMEWORK_GLEW_IMPORTED_LOCATION}) 
-    set_property(TARGET glew PROPERTY IMPORTED_IMPLIB   ${SOFAFRAMEWORK_GLEW_IMPORTED_IMPLIB}  )
-    include_directories(${SOFAFRAMEWORK_GLEW_INCLUDE_DIRS} )
-    set(GLEW_INCLUDE_DIRS ${SOFAFRAMEWORK_GLEW_INCLUDE_DIRS} )
-	set(GLEW_LIBRARIES glew)
-    install(DIRECTORY ${SOFAFRAMEWORK_GLEW_INCLUDE_DIRS}/ 
-        COMPONENT SofaFramework_headers
-        DESTINATION "${SOFAFRAMEWORK_INSTALL_INCLUDE_DIR}"
-        FILES_MATCHING 
-            PATTERN "*.h"
-            PATTERN "*.inl"
-            PATTERN "*.hxx"
-            PATTERN "*.hpp"
-    )
-    install(FILES ${SOFAFRAMEWORK_GLEW_IMPORTED_LOCATION}
-        COMPONENT SofaFramework_libraries
-        DESTINATION "${SOFAFRAMEWORK_INSTALL_BIN_DIR}"
-    )
-    install(FILES ${SOFAFRAMEWORK_GLEW_IMPORTED_IMPLIB}
-        COMPONENT SofaFramework_libraries
-        DESTINATION "${SOFAFRAMEWORK_INSTALL_LIB_DIR}"
-    )
-else() 
-    find_package(GLEW REQUIRED)
-    set(SOFA_HAVE_GLEW 1)
-    include_directories(${GLEW_INCLUDE_DIRS})
-endif()
-list(APPEND SOFAFRAMEWORK_EXTERNAL_INCLUDE_DIRS ${GLEW_INCLUDE_DIRS})
-set(SOFA_HAVE_GLEW 1)
-
-# GLUT 
-if( SOFAFRAMEWORK_USE_IMPORTED_GLUT )
-    add_library(glut SHARED IMPORTED )
-    set_property(TARGET glut PROPERTY IMPORTED_LOCATION ${SOFAFRAMEWORK_GLUT_IMPORTED_LOCATION}) 
-    set_property(TARGET glut PROPERTY IMPORTED_IMPLIB   ${SOFAFRAMEWORK_GLUT_IMPORTED_IMPLIB}  )
-    include_directories(${SOFAFRAMEWORK_GLUT_INCLUDE_DIRS} )
-    set(GLUT_INCLUDE_DIR ${SOFAFRAMEWORK_GLUT_INCLUDE_DIRS} )
-	set(GLUT_LIBRARIES glut )
-    install(DIRECTORY ${SOFAFRAMEWORK_GLUT_INCLUDE_DIRS}/ 
-        COMPONENT SofaFramework_headers
-        DESTINATION "${SOFAFRAMEWORK_INSTALL_INCLUDE_DIR}"
-        FILES_MATCHING 
-            PATTERN "*.h"
-            PATTERN "*.inl"
-            PATTERN "*.hxx"
-            PATTERN "*.hpp"
-    )
-    install(FILES ${SOFAFRAMEWORK_GLUT_IMPORTED_LOCATION}
-        COMPONENT SofaFramework_libraries
-        DESTINATION "${SOFAFRAMEWORK_INSTALL_BIN_DIR}"
-    )
-    install(FILES ${SOFAFRAMEWORK_GLUT_IMPORTED_IMPLIB}
-        COMPONENT SofaFramework_libraries
-        DESTINATION "${SOFAFRAMEWORK_INSTALL_LIB_DIR}"
-    )
-else() 
-    find_package(GLUT REQUIRED)
-    include_directories(${GLUT_INCLUDE_DIR})
-endif()
-list(APPEND SOFAFRAMEWORK_EXTERNAL_INCLUDE_DIRS ${GLUT_INCLUDE_DIR})
-set(SOFA_HAVE_GLUT 1)
-
 # OpenGL ( glu )
 if(PS3)
     set(OPENGL_LIBRARIES "$(SCE_PS3_ROOT)/target/ppu/lib/PSGL/RSX/ultra-opt/libPSGL.a")
@@ -218,11 +58,24 @@ if(PS3)
     list (APPEND OPENGL_LIBRARIES "$(SCE_PS3_ROOT)/target/ppu/lib/libresc_stub.a")
     list (APPEND OPENGL_LIBRARIES "$(SCE_PS3_ROOT)/target/ppu/lib/libsysutil_stub.a")
     message( "OPENGL PS3 LIBS" ${OPENGL_LIBRARIES} )
+	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${OPENGL_LIBRARIES} )
 else()
     find_package(OpenGL REQUIRED)
-    include_directories(${OPENGL_INCLUDE_DIR})
+    list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${OPENGL_INCLUDE_DIR})
+	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${OPENGL_LIBRARIES} )
 endif(PS3)
-list(APPEND SOFAFRAMEWORK_EXTERNAL_INCLUDE_DIRS ${OPENGL_INCLUDE_DIR})
+
+##
+##
+##
+
+##
+## Sofa Extlibs dependencies lookup (mandatory)
+##
+#tinyxml 
+find_package(TinyXML  REQUIRED)
+list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${TinyXML_LIBRARIES} )
+set(SOFA_HAVE_TINYXML 1)
 # Boost
 set(Boost_USE_STATIC_LIBS OFF)
 set(Boost_USE_MULTITHREADED ON)
@@ -232,7 +85,9 @@ set(Boost_FIND_QUIETLY 1)
 find_package(Boost COMPONENTS thread system)
 if(Boost_FOUND)
     if(Boost_thread_FOUND AND Boost_system_FOUND)
-        include_directories(${Boost_INCLUDE_DIRS})
+        list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIRS})
+		list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIR})
+		list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${Boost_LIBRARIES} )
         set(SOFA_HAVE_BOOST_SYSTEM 1)
         set(SOFA_HAVE_BOOST_THREAD 1)
     else(Boost_thread_FOUND AND Boost_system_FOUND)
@@ -246,8 +101,9 @@ if(SOFA_USE_MINIBOOST)
     message(STATUS "No boost install directory found use ${SOFAFRAMEWORK_EXTLIBS_DIR}/miniBoost instead")
     set(BOOST_ROOT "${SOFAFRAMEWORK_EXTLIBS_DIR}/miniBoost")
     find_package(Boost REQUIRED)
-    include_directories(${Boost_INCLUDE_DIRS})
-    install(DIRECTORY ${Boost_INCLUDE_DIRS}/ 
+    #list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIRS})
+    list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIR})
+	install(DIRECTORY ${Boost_INCLUDE_DIRS}/ 
             COMPONENT SofaFramework_headers
             DESTINATION "${SOFAFRAMEWORK_INSTALL_INCLUDE_DIR}"
             FILES_MATCHING 
@@ -257,18 +113,52 @@ if(SOFA_USE_MINIBOOST)
                 PATTERN "*.hpp"
            )
 endif(SOFA_USE_MINIBOOST)
-list(APPEND SOFAFRAMEWORK_EXTERNAL_INCLUDE_DIRS ${Boost_INCLUDE_DIRS})
 ##
 ##
 ##
-list(REMOVE_DUPLICATES SOFAFRAMEWORK_EXTERNAL_INCLUDE_DIRS)
+
+##
+## Optional Dependencies lookup 
+##
+set(SOFAFRAMEWORK_EXTERNAL_INCLUDE_DIRS)
+#zlib
+find_package(ZLIB)
+if(ZLIB_FOUND)
+	list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${ZLIB_INCLUDE_DIR})
+	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${ZLIB_LIBRARIES})
+endif()
+set(SOFA_HAVE_ZLIB ${ZLIB_FOUND})
+# PNG
+find_package(PNG)
+if( PNG_FOUND)
+	list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${PNG_INCLUDE_DIRS})
+	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${PNG_LIBRARIES})
+endif()
+set(SOFA_HAVE_PNG ${PNG_FOUND})
+# GLEW
+find_package(GLEW)
+if( GLEW_FOUND)
+	list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${GLEW_INCLUDE_DIRS})
+	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${GLEW_LIBRARIES})
+endif()
+set(SOFA_HAVE_GLEW ${GLEW_FOUND})
+# GLUT 
+find_package(GLUT)
+if( GLUT_FOUND )
+	list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${GLUT_INCLUDE_DIR})
+	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${GLUT_LIBRARIES})
+endif()
+set(SOFA_HAVE_GLUT ${GLUT_FOUND})
+##
+##
+##
 
 configure_file( ${SofaFramework_SOURCE_DIR}/SofaFramework.config.in 
                 ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaFramework.h )
 install( FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaFramework.h 
          DESTINATION "${SOFAFRAMEWORK_INSTALL_INCLUDE_DIR}/sofa")
 # make sure everyone in the build tree can see <sofa/SofaFramework.h>
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
+list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_BINARY_DIR})
 
 add_subdirectory( ${SofaFramework_SOURCE_DIR}/sofa/helper      ${CMAKE_CURRENT_BINARY_DIR}/SofaHelper )
 add_subdirectory( ${SofaFramework_SOURCE_DIR}/sofa/defaulttype ${CMAKE_CURRENT_BINARY_DIR}/SofaDefaultType )

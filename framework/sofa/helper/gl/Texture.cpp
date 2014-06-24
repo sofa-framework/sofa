@@ -22,9 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/SofaFramework.h>
 #include <sofa/helper/gl/Texture.h>
 #include <assert.h>
 #include <stdio.h>
+#include <sofa/helper/system/glu.h>
 
 namespace sofa
 {
@@ -509,26 +511,23 @@ void Texture::init()
 
     if (repeat && textureType != io::Image::TEXTURE_CUBE)
     {
+#if defined(SOFA_HAVE_GLEW) && defined(GLEW_VERSION_1_2)
         glTexParameteri( target, GL_TEXTURE_WRAP_S, GL_REPEAT );
         glTexParameteri( target, GL_TEXTURE_WRAP_T, GL_REPEAT );
         glTexParameteri( target, GL_TEXTURE_WRAP_R, GL_REPEAT );
+#else
+        std::cerr << __FUNCTION__<< " GLEW_VERSION_1_2 required for cubic texture." << std::endl;
+#endif
     }
     else
     {
 #if defined(SOFA_HAVE_GLEW) && defined(GLEW_VERSION_1_2)
-        if (GLEW_VERSION_1_2)
-        {
             glTexParameteri( target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
             glTexParameteri( target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
             glTexParameteri( target, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE );
-        }
-        else
+#else
+        std::cerr << __FUNCTION__<< " GLEW_VERSION_1_2 required for cubic texture." << std::endl;
 #endif
-        {
-            glTexParameteri( target, GL_TEXTURE_WRAP_S, GL_CLAMP );
-            glTexParameteri( target, GL_TEXTURE_WRAP_T, GL_CLAMP );
-            glTexParameteri( target, GL_TEXTURE_WRAP_R, GL_CLAMP );
-        }
     }
 
 #if defined(SOFA_HAVE_GLEW) && defined(GLEW_ARB_seamless_cube_map)
