@@ -24,6 +24,8 @@
 ******************************************************************************/
 #include "ObjectFactory.h"
 
+#include <sofa/defaulttype/TemplatesAliases.h>
+
 
 namespace sofa
 {
@@ -114,6 +116,8 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
     std::vector< std::pair<std::string, Creator::SPtr> > creators;
     std::string classname = arg->getAttribute( "type", "");
     std::string templatename = arg->getAttribute( "template", "");
+	templatename = sofa::defaulttype::TemplateAliases::resolveAlias(templatename); // Resolve template aliases
+
     ClassEntryMap::iterator it = registry.find(classname);
     if (it == registry.end())
     {
