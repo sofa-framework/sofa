@@ -29,7 +29,6 @@
 #include <SofaBaseCollision/initBaseCollision.h>
 #include <SofaBaseLinearSolver/initBaseLinearSolver.h>
 #include <SofaBaseAnimationLoop/initBaseAnimationLoop.h>
-#include <SofaBaseVisual/initBaseVisual.h>
 
 namespace sofa
 {
@@ -48,7 +47,6 @@ void initComponentBase()
         initBaseCollision();
         initBaseLinearSolver();
         initBaseAnimationLoop();
-        initBaseVisual();
         first = false;
     }
 }

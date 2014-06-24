@@ -25,7 +25,6 @@
 #include <SofaBaseVisual/VisualTransform.h>
 #include <sofa/core/visual/VisualParams.h>
 //#include <sofa/core/objectmodel/Context.h>
-#include <sofa/core/ObjectFactory.h>
 //#include <sofa/simulation/common/UpdateContextVisitor.h>
 
 #include <sofa/core/visual/DrawTool.h>
@@ -37,8 +36,6 @@ namespace component
 namespace visualmodel
 {
 
-int VisualTransformClass = sofa::core::RegisterObject("TODO")
-        .add<VisualTransform>();
 
 VisualTransform::VisualTransform()
     : transform(initData(&transform,"transform","Transformation to apply"))
