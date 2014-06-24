@@ -26,7 +26,7 @@
 #define SOFA_GPU_CUDA_CUDATRIANGULARFEMFORCEFIELDOPTIM_INL
 
 #include "CudaTriangularFEMForceFieldOptim.h"
-#include <SofaSimpleFem/forcefield/TriangularFEMForceFieldOptim.inl>
+#include <SofaSimpleFem/TriangularFEMForceFieldOptim.inl>
 
 namespace sofa
 {
