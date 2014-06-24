@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_TEXTUREINTERPOLATION_CPP
-#include <sofa/component/engine/TextureInterpolation.inl>
+#include <SofaEngine/TextureInterpolation.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
 

@@ -22,12 +22,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/misc/MeshTetraStuffing.h>
+#include <SofaMisc/MeshTetraStuffing.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/common/Simulation.h>
-#include <sofa/component/collision/TriangleOctree.h>
-#include <sofa/component/collision/RayTriangleIntersection.h>
+#include <SofaMeshCollision/TriangleOctree.h>
+#include <SofaMeshCollision/RayTriangleIntersection.h>
 
 #include <iostream>
 #include <algorithm>

@@ -2,7 +2,7 @@
 #define SOFAPHYSICSDATAMONITOR_IMPL_H
 
 #include "SofaPhysicsAPI.h"
-#include <sofa/component/misc/DataMonitor.h>
+#include <SofaValidation/DataMonitor.h>
 
 class SofaPhysicsDataMonitor::Impl
 {

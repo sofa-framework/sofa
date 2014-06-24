@@ -34,7 +34,7 @@
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/vector.h>
-#include <sofa/component/topology/TopologySubsetData.h>
+#include <SofaBaseTopology/TopologySubsetData.h>
 #include <set>
 
 namespace sofa

@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <iostream>
-#include <sofa/component/behaviormodel/eulerianfluid/Grid2D.h>
+#include <SofaEulerianFluid/Grid2D.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <cstring>
 

@@ -22,13 +22,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/topology/Edge2QuadTopologicalMapping.h>
+#include <SofaTopologyMapping/Edge2QuadTopologicalMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/component/topology/QuadSetTopologyModifier.h>
-#include <sofa/component/topology/QuadSetTopologyContainer.h>
+#include <SofaBaseTopology/QuadSetTopologyModifier.h>
+#include <SofaBaseTopology/QuadSetTopologyContainer.h>
 
 #include <sofa/core/topology/TopologyChange.h>
 
@@ -37,7 +37,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 
 #include <math.h>
 #include <sofa/defaulttype/Vec.h>

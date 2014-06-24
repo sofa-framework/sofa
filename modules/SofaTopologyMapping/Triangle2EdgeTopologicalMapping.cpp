@@ -22,16 +22,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/topology/Triangle2EdgeTopologicalMapping.h>
+#include <SofaTopologyMapping/Triangle2EdgeTopologicalMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/component/topology/EdgeSetTopologyContainer.h>
-#include <sofa/component/topology/EdgeSetTopologyModifier.h>
+#include <SofaBaseTopology/EdgeSetTopologyContainer.h>
+#include <SofaBaseTopology/EdgeSetTopologyModifier.h>
 
-#include <sofa/component/topology/TriangleSetTopologyContainer.h>
-#include <sofa/component/topology/TriangleSetTopologyModifier.h>
+#include <SofaBaseTopology/TriangleSetTopologyContainer.h>
+#include <SofaBaseTopology/TriangleSetTopologyModifier.h>
 
 #include <sofa/core/topology/TopologyChange.h>
 #include <sofa/defaulttype/Vec.h>

@@ -30,7 +30,7 @@
 
 #include <sofa/component/component.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/component/topology/EdgeSetTopologyModifier.h>
+#include <SofaBaseTopology/EdgeSetTopologyModifier.h>
 
 #include <vector>
 

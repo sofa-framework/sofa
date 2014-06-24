@@ -34,9 +34,9 @@
 #include <sofa/core/VecId.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/component/topology/TriangleSetTopologyContainer.h>
-#include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
-#include <sofa/component/topology/TriangleSetGeometryAlgorithms.inl>
+#include <SofaBaseTopology/TriangleSetTopologyContainer.h>
+#include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/TriangleSetGeometryAlgorithms.inl>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/SVector.h>
 

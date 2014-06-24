@@ -1,4 +1,4 @@
-#include <sofa/component/collision/RigidCapsuleModel.h>
+#include <SofaBaseCollision/RigidCapsuleModel.h>
 
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/proximity.h>
@@ -10,7 +10,7 @@
 
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/collision/CubeModel.h>
+#include <SofaBaseCollision/CubeModel.h>
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/core/topology/BaseMeshTopology.h>

@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_MESHBARYCENTRICMAPPERENGINE_CPP
-#include <sofa/component/engine/MeshBarycentricMapperEngine.inl>
+#include <SofaEngine/MeshBarycentricMapperEngine.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>

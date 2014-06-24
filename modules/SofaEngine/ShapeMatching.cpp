@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_SHAPEMATCHING_CPP
 
-#include <sofa/component/engine/ShapeMatching.inl>
+#include <SofaEngine/ShapeMatching.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>

@@ -29,8 +29,8 @@
 //#include <sofa/core/objectmodel/XitactEvent.h>
 //
 ////force feedback
-#include <sofa/component/controller/ForceFeedback.h>
-#include <sofa/component/controller/NullForceFeedback.h>
+#include <SofaHaptics/ForceFeedback.h>
+#include <SofaHaptics/NullForceFeedback.h>
 //
 #include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>

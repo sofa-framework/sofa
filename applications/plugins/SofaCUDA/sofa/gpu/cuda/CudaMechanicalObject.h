@@ -26,7 +26,7 @@
 #define SOFA_GPU_CUDA_CUDAMECHANICALOBJECT_H
 
 #include "CudaTypes.h"
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/gpu/cuda/CudaBaseVector.h>
 
 namespace sofa

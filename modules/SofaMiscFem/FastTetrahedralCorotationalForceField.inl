@@ -25,12 +25,12 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_FASTTETRAHEDRALCOROTATIONALFORCEFIELD_INL
 #define SOFA_COMPONENT_FORCEFIELD_FASTTETRAHEDRALCOROTATIONALFORCEFIELD_INL
 
-#include <sofa/component/forcefield/FastTetrahedralCorotationalForceField.h>
+#include <SofaMiscFem/FastTetrahedralCorotationalForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
 #include <sofa/helper/gl/template.h>
-#include <sofa/component/topology/TopologyData.inl>
+#include <SofaBaseTopology/TopologyData.inl>
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/helper/decompose.h>
 

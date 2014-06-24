@@ -27,15 +27,15 @@
 
 #include "MeshGenerator.h"
 
-#include <sofa/component/topology/PointSetTopologyContainer.h>
-#include <sofa/component/topology/PointSetTopologyModifier.h>
-#include <sofa/component/topology/PointSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/PointSetTopologyContainer.h>
+#include <SofaBaseTopology/PointSetTopologyModifier.h>
+#include <SofaBaseTopology/PointSetGeometryAlgorithms.h>
 
-#include <sofa/component/topology/TopologyData.inl>
+#include <SofaBaseTopology/TopologyData.inl>
 
-#include <sofa/component/container/MechanicalObject.inl>
-#include <sofa/component/loader/VoxelGridLoader.h>
-#include <sofa/component/visualmodel/OglAttribute.inl>
+#include <SofaBaseMechanics/MechanicalObject.inl>
+#include <SofaLoader/VoxelGridLoader.h>
+#include <SofaOpenglVisual/OglAttribute.inl>
 
 #include <sofa/simulation/common/AnimateEndEvent.h>
 #include <sofa/simulation/common/Visitor.h>

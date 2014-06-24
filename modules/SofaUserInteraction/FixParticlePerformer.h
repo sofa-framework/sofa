@@ -25,10 +25,10 @@
 #ifndef SOFA_COMPONENT_COLLISION_FIXPARTICLEPERFORMER_H
 #define SOFA_COMPONENT_COLLISION_FIXPARTICLEPERFORMER_H
 
-#include <sofa/component/collision/InteractionPerformer.h>
+#include <SofaUserInteraction/InteractionPerformer.h>
 
-#include <sofa/component/interactionforcefield/StiffSpringForceField.h>
-#include <sofa/component/collision/MouseInteractor.h>
+#include <SofaDeformable/StiffSpringForceField.h>
+#include <SofaUserInteraction/MouseInteractor.h>
 
 namespace sofa
 {

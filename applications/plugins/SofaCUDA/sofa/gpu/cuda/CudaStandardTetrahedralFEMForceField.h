@@ -26,7 +26,7 @@
 #define SOFA_GPU_CUDA_CUDASTANDARDTETRAHEDRALFEMFORCEFIELD_H
 
 #include <sofa/gpu/cuda/CudaTypes.h>
-#include <sofa/component/forcefield/StandardTetrahedralFEMForceField.h>
+#include <SofaMiscFem/StandardTetrahedralFEMForceField.h>
 
 
 namespace sofa

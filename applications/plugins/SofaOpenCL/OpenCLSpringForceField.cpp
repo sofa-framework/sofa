@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include "OpenCLTypes.h"
 #include "OpenCLSpringForceField.inl"
-#include <sofa/component/interactionforcefield/BoxStiffSpringForceField.inl>
+#include <SofaObjectInteraction/BoxStiffSpringForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 
 #include "OpenCLProgram.h"

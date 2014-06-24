@@ -40,7 +40,7 @@
 
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/BackTrace.h>
-#include <sofa/component/misc/WriteState.h>
+#include <SofaExporter/WriteState.h>
 
 
 

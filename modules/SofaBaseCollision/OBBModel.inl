@@ -1,7 +1,7 @@
 #ifndef OBBMODEL_INL
 #define OBBMODEL_INL
 
-#include <sofa/component/collision/OBBModel.h>
+#include <SofaBaseCollision/OBBModel.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/collision/Intersection.inl>
 
@@ -13,7 +13,7 @@
 #include <algorithm>
 
 #include <sofa/helper/system/FileRepository.h>
-#include <sofa/component/collision/CubeModel.h>
+#include <SofaBaseCollision/CubeModel.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glut.h>

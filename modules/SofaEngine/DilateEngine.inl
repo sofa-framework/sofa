@@ -25,9 +25,9 @@
 #ifndef SOFA_COMPONENT_ENGINE_DILATEENGINE_INL
 #define SOFA_COMPONENT_ENGINE_DILATEENGINE_INL
 
-#include <sofa/component/engine/DilateEngine.h>
-#include <sofa/component/collision/TriangleOctree.h>
-#include <sofa/component/collision/RayTriangleIntersection.h>
+#include <SofaEngine/DilateEngine.h>
+#include <SofaMeshCollision/TriangleOctree.h>
+#include <SofaMeshCollision/RayTriangleIntersection.h>
 #include <sofa/helper/rmath.h> //M_PI
 
 namespace sofa

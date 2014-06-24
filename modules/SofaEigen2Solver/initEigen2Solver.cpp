@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/helper/system/config.h>
-#include <sofa/component/initEigen2Solver.h>
+#include <SofaEigen2Solver/initEigen2Solver.h>
 
 
 namespace sofa

@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_GENERATERIGIDMASS_CPP
-#include <sofa/component/engine/GenerateRigidMass.inl>
+#include <SofaEngine/GenerateRigidMass.inl>
 
 #include <sofa/core/ObjectFactory.h>
 

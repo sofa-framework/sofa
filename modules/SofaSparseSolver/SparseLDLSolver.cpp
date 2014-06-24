@@ -24,7 +24,7 @@
 ******************************************************************************/
 // Author: Hadrien Courtecuisse
 
-#include <sofa/component/linearsolver/SparseLDLSolver.inl>
+#include <SofaSparseSolver/SparseLDLSolver.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

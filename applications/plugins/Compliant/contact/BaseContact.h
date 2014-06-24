@@ -1,10 +1,10 @@
 #ifndef BASECONTACT_H
 #define BASECONTACT_H
 
-#include <sofa/component/collision/DefaultContactManager.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBaseCollision/DefaultContactManager.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/collision/DetectionOutput.h>
-#include <sofa/component/collision/BaseContactMapper.h>
+#include <SofaBaseCollision/BaseContactMapper.h>
 
 #include "../initCompliant.h"
 

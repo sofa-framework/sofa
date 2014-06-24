@@ -28,8 +28,8 @@
 #include <sofa/helper/map.h>
 
 #include <sofa/core/topology/BaseTopologyData.h>
-#include <sofa/component/topology/TopologyEngine.h>
-#include <sofa/component/topology/TopologySparseDataHandler.h>
+#include <SofaBaseTopology/TopologyEngine.h>
+#include <SofaBaseTopology/TopologySparseDataHandler.h>
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <map>

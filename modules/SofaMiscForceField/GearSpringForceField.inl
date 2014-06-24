@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_GEARSPRINGFORCEFIELD_INL
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_GEARSPRINGFORCEFIELD_INL
 
-#include <sofa/component/interactionforcefield/GearSpringForceField.h>
+#include <SofaMiscForceField/GearSpringForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/PairInteractionForceField.inl>
 #include <sofa/core/topology/BaseMeshTopology.h>

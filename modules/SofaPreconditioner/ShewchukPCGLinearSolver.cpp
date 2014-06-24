@@ -27,15 +27,15 @@
 // Copyright: See COPYING file that comes with this distribution
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/behavior/LinearSolver.h>
-#include <sofa/component/linearsolver/ShewchukPCGLinearSolver.h>
+#include <SofaPreconditioner/ShewchukPCGLinearSolver.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/linearsolver/NewMatMatrix.h>
-#include <sofa/component/linearsolver/FullMatrix.h>
-#include <sofa/component/linearsolver/SparseMatrix.h>
+#include <SofaDenseSolver/NewMatMatrix.h>
+#include <SofaBaseLinearSolver/FullMatrix.h>
+#include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/AdvancedTimer.h>
-#include <sofa/component/linearsolver/MatrixLinearSolver.h>
+#include <SofaBaseLinearSolver/MatrixLinearSolver.h>
 #include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/core/ObjectFactory.h>
 #include <iostream>

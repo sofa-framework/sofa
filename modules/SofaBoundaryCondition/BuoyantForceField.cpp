@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_BUOYANTFORCEFIELD_CPP
-#include <sofa/component/forcefield/BuoyantForceField.inl>
+#include <SofaBoundaryCondition/BuoyantForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
 

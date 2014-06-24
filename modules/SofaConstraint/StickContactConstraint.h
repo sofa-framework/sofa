@@ -27,11 +27,11 @@
 
 #include <sofa/core/collision/Contact.h>
 #include <sofa/core/collision/Intersection.h>
-#include <sofa/component/mapping/BarycentricMapping.h>
-#include <sofa/component/constraintset/BilateralInteractionConstraint.h>
+#include <SofaBaseMechanics/BarycentricMapping.h>
+#include <SofaConstraint/BilateralInteractionConstraint.h>
 #include <sofa/helper/Factory.h>
-#include <sofa/component/collision/BaseContactMapper.h>
-#include <sofa/component/collision/FrictionContact.h>
+#include <SofaBaseCollision/BaseContactMapper.h>
+#include <SofaConstraint/FrictionContact.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/BaseMapping.h>
 

@@ -29,7 +29,7 @@
 #pragma once
 #endif
 
-#include <sofa/component/engine/TextureInterpolation.h>
+#include <SofaEngine/TextureInterpolation.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/glut.h>
 #include <sofa/simulation/common/Node.h>

@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/interactionforcefield/RepulsiveSpringForceField.inl>
+#include <SofaObjectInteraction/RepulsiveSpringForceField.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 

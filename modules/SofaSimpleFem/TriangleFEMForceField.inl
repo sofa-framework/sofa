@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_TRIANGLEFEMFORCEFIELD_INL
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGLEFEMFORCEFIELD_INL
 
-#include <sofa/component/forcefield/TriangleFEMForceField.h>
+#include "TriangleFEMForceField.h"
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/topology/BaseMeshTopology.h>

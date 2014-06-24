@@ -25,14 +25,14 @@
 #ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_LINEARVELOCITYCONSTRAINT_INL
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_LINEARVELOCITYCONSTRAINT_INL
 
-#include <sofa/component/projectiveconstraintset/LinearVelocityConstraint.h>
+#include <SofaBoundaryCondition/LinearVelocityConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/ProjectiveConstraintSet.inl>
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
-#include <sofa/component/topology/TopologySubsetData.inl>
+#include <SofaBaseTopology/TopologySubsetData.inl>
 
 
 namespace sofa

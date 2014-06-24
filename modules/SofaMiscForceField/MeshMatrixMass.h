@@ -33,7 +33,7 @@
 #include <sofa/core/behavior/Mass.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Event.h>
-#include <sofa/component/topology/TopologyData.h>
+#include <SofaBaseTopology/TopologyData.h>
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/RigidTypes.h>
 //VERY IMPORTANT FOR GRAPHS

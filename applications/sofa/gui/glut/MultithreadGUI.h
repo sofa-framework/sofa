@@ -42,7 +42,7 @@
 #include <sofa/helper/system/glut.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/visual/DrawToolGL.h>
-#include <sofa/component/visualmodel/InteractiveCamera.h>
+#include <SofaBaseVisual/InteractiveCamera.h>
 #ifdef SOFA_SMP
 #include <Multigraph.h>
 #endif

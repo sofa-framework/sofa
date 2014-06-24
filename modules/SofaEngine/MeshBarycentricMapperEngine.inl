@@ -29,7 +29,7 @@
 #pragma once
 #endif
 
-#include <sofa/component/engine/MeshBarycentricMapperEngine.h>
+#include <SofaEngine/MeshBarycentricMapperEngine.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/BasicShapes.h>

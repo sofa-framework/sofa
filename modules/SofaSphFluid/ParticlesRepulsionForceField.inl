@@ -26,9 +26,9 @@
 #define SOFA_COMPONENT_FORCEFIELD_PARTICLESREPULSIONFORCEFIELD_INL
 
 #include <sofa/core/behavior/ForceField.inl>
-#include <sofa/component/forcefield/ParticlesRepulsionForceField.h>
+#include <SofaSphFluid/ParticlesRepulsionForceField.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/container/SpatialGridContainer.inl>
+#include <SofaSphFluid/SpatialGridContainer.inl>
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/gl/template.h>
 #include <math.h>

@@ -23,13 +23,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/helper/system/config.h>
-#include <sofa/component/initComponentBase.h>
-#include <sofa/component/initBaseTopology.h>
-#include <sofa/component/initBaseMechanics.h>
-#include <sofa/component/initBaseCollision.h>
-#include <sofa/component/initBaseLinearSolver.h>
-#include <sofa/component/initBaseAnimationLoop.h>
-#include <sofa/component/initBaseVisual.h>
+#include <SofaComponentBase/initComponentBase.h>
+#include <SofaBaseTopology/initBaseTopology.h>
+#include <SofaBaseMechanics/initBaseMechanics.h>
+#include <SofaBaseCollision/initBaseCollision.h>
+#include <SofaBaseLinearSolver/initBaseLinearSolver.h>
+#include <SofaBaseAnimationLoop/initBaseAnimationLoop.h>
+#include <SofaBaseVisual/initBaseVisual.h>
 
 namespace sofa
 {

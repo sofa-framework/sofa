@@ -25,9 +25,9 @@
 // Author: Hadrien Courtecuisse
 //
 // Copyright: See COPYING file that comes with this distribution
-#include <sofa/component/linearsolver/WarpPreconditioner.inl>
-#include <sofa/component/linearsolver/FullMatrix.h>
-#include <sofa/component/linearsolver/SparseMatrix.h>
+#include <SofaPreconditioner/WarpPreconditioner.inl>
+#include <SofaBaseLinearSolver/FullMatrix.h>
+#include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/helper/accessor.h>

@@ -1,4 +1,4 @@
-#include <sofa/component/collision/OBBModel.inl>
+#include <SofaBaseCollision/OBBModel.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

@@ -25,11 +25,11 @@
 #ifndef SOFA_COMPONENT_CONSTRAINTSET_FIXEDLMCONSTRAINT_INL
 #define SOFA_COMPONENT_CONSTRAINTSET_FIXEDLMCONSTRAINT_INL
 
-#include <sofa/component/constraintset/FixedLMConstraint.h>
+#include <SofaConstraint/FixedLMConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/helper/gl/template.h>
-#include <sofa/component/topology/TopologySubsetData.inl>
+#include <SofaBaseTopology/TopologySubsetData.inl>
 
 
 namespace sofa

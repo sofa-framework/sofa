@@ -25,13 +25,13 @@
 #ifndef SOFA_COMPONENT_COLLISION_ADDRECORDEDCAMERAPERFORMER_H
 #define SOFA_COMPONENT_COLLISION_ADDRECORDEDCAMERAPERFORMER_H
 
-#include <sofa/component/collision/MouseInteractor.h>
-#include <sofa/component/collision/InteractionPerformer.h>
-#include <sofa/component/collision/BaseContactMapper.h>
+#include <SofaUserInteraction/MouseInteractor.h>
+#include <SofaUserInteraction/InteractionPerformer.h>
+#include <SofaBaseCollision/BaseContactMapper.h>
 #include <sofa/core/behavior/BaseForceField.h>
-#include <sofa/component/interactionforcefield/SpringForceField.h>
-#include <sofa/component/interactionforcefield/StiffSpringForceField.h>
-#include <sofa/component/configurationsetting/AddRecordedCameraButtonSetting.h>
+#include <SofaDeformable/SpringForceField.h>
+#include <SofaDeformable/StiffSpringForceField.h>
+#include <SofaGraphComponent/AddRecordedCameraButtonSetting.h>
 #include <sofa/core/visual/DisplayFlags.h>
 
 namespace sofa

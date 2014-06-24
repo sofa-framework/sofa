@@ -26,9 +26,9 @@
 #define SOFA_COMPONENT_LINEARSOLVER_LULINEARSOLVER_H
 
 #include <sofa/core/behavior/LinearSolver.h>
-#include <sofa/component/linearsolver/MatrixLinearSolver.inl>
-#include <sofa/component/linearsolver/SparseMatrix.h>
-#include <sofa/component/linearsolver/FullMatrix.h>
+#include <SofaBaseLinearSolver/MatrixLinearSolver.inl>
+#include <SofaBaseLinearSolver/SparseMatrix.h>
+#include <SofaBaseLinearSolver/FullMatrix.h>
 #include <math.h>
 
 namespace sofa

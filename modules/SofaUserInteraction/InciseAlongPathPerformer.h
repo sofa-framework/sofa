@@ -25,10 +25,10 @@
 #ifndef SOFA_COMPONENT_COLLISION_INCISEALONGPATHPERFORMER_H
 #define SOFA_COMPONENT_COLLISION_INCISEALONGPATHPERFORMER_H
 
-#include <sofa/component/collision/InteractionPerformer.h>
+#include <SofaUserInteraction/InteractionPerformer.h>
 
-#include <sofa/component/collision/TopologicalChangeManager.h>
-#include <sofa/component/collision/MouseInteractor.h>
+#include <SofaUserInteraction/TopologicalChangeManager.h>
+#include <SofaUserInteraction/MouseInteractor.h>
 
 namespace sofa
 {

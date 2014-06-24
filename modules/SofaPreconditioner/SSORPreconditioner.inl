@@ -27,11 +27,11 @@
 // Copyright: See COPYING file that comes with this distribution
 #ifndef SOFA_COMPONENT_LINEARSOLVER_SSORPRECONDITIONER_INL
 #define SOFA_COMPONENT_LINEARSOLVER_SSORPRECONDITIONER_INL
-#include <sofa/component/linearsolver/SSORPreconditioner.h>
+#include <SofaPreconditioner/SSORPreconditioner.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/linearsolver/FullMatrix.h>
-#include <sofa/component/linearsolver/SparseMatrix.h>
-#include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
+#include <SofaBaseLinearSolver/FullMatrix.h>
+#include <SofaBaseLinearSolver/SparseMatrix.h>
+#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 #include <iostream>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/behavior/LinearSolver.h>

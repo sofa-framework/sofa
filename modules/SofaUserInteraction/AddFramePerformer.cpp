@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_COLLISION_ADDFRAMEPERFORMER_CPP
 #define SOFA_COMPONENT_COLLISION_ADDFRAMEPERFORMER_CPP
 #include <sofa/component/component.h>
-#include <sofa/component/collision/AddFramePerformer.inl>
+#include <SofaUserInteraction/AddFramePerformer.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/helper/Factory.inl>
 

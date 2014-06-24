@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_MAPPING_DEFORMABLEONRIGIDFRAME_INL
 #define SOFA_COMPONENT_MAPPING_DEFORMABLEONRIGIDFRAME_INL
 
-#include <sofa/component/mapping/DeformableOnRigidFrameMapping.h>
+#include <SofaMiscMapping/DeformableOnRigidFrameMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/Multi2Mapping.inl>

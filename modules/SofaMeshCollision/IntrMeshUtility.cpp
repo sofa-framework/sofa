@@ -1,4 +1,4 @@
-#include <sofa/component/collision/IntrMeshUtility.inl>
+#include <SofaMeshCollision/IntrMeshUtility.inl>
 
 namespace sofa{
 namespace component{

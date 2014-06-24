@@ -29,8 +29,8 @@
 #include <sofa/component/component.h>
 
 #include <sofa/core/topology/BaseTopologyData.h>
-#include <sofa/component/topology/TopologyEngine.h>
-#include <sofa/component/topology/TopologySubsetDataHandler.h>
+#include <SofaBaseTopology/TopologyEngine.h>
+#include <SofaBaseTopology/TopologySubsetDataHandler.h>
 
 namespace sofa
 {

@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_MERGEVECTORS_CPP
-#include <sofa/component/engine/MergeVectors.inl>
+#include <SofaEngine/MergeVectors.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

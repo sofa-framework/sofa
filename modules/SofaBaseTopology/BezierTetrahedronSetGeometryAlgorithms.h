@@ -25,8 +25,8 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_BEZIERTETRAHEDRONSETGEOMETRYALGORITHMS_H
 #define SOFA_COMPONENT_TOPOLOGY_BEZIERTETRAHEDRONSETGEOMETRYALGORITHMS_H
 
-#include <sofa/component/topology/TetrahedronSetGeometryAlgorithms.h>
-#include <sofa/component/topology/BezierTetrahedronSetTopologyContainer.h>
+#include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/BezierTetrahedronSetTopologyContainer.h>
 
 
 namespace sofa

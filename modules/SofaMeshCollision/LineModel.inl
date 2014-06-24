@@ -26,11 +26,11 @@
 #ifndef SOFA_COMPONENT_COLLISION_LINEMODEL_INL
 #define SOFA_COMPONENT_COLLISION_LINEMODEL_INL
 
-#include <sofa/component/collision/LineModel.h>
+#include <SofaMeshCollision/LineModel.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/collision/LineLocalMinDistanceFilter.h>
-#include <sofa/component/collision/CubeModel.h>
-#include <sofa/component/collision/Line.h>
+#include <SofaMeshCollision/LineLocalMinDistanceFilter.h>
+#include <SofaBaseCollision/CubeModel.h>
+#include <SofaMeshCollision/Line.h>
 #include <sofa/core/CollisionElement.h>
 #include <vector>
 #include <sofa/helper/gl/template.h>

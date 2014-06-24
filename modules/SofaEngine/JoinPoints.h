@@ -30,7 +30,7 @@
 #endif
 
 #include <sofa/core/DataEngine.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/helper/vector.h>
 
 namespace sofa

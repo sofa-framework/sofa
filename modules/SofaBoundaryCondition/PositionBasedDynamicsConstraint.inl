@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_POSITIONBASEDDYNAMICSCONSTRAINT_INL
 
 #include <sofa/core/behavior/ProjectiveConstraintSet.inl>
-#include <sofa/component/projectiveconstraintset/PositionBasedDynamicsConstraint.h>
+#include <SofaBoundaryCondition/PositionBasedDynamicsConstraint.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>

@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MISC_MONITOR_CPP
 
-#include <sofa/component/misc/Monitor.inl>
+#include <SofaValidation/Monitor.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>

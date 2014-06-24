@@ -37,16 +37,16 @@
 #ifndef SOFA_COMPONENT_CONTAINER_SPATIALGRIDCONTAINER_INL
 #define SOFA_COMPONENT_CONTAINER_SPATIALGRIDCONTAINER_INL
 
-#include <sofa/component/container/SpatialGridContainer.h>
+#include <SofaSphFluid/SpatialGridContainer.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/topology/TopologyChange.h>
-#include <sofa/component/topology/PointSetTopologyModifier.h>
+#include <SofaBaseTopology/PointSetTopologyModifier.h>
 
 #include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
 #include <sofa/helper/system/gl.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 
 
 namespace sofa

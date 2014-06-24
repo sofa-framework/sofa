@@ -25,10 +25,10 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_OSCILLATINGTORSIONPRESSUREFORCEFIELD_INL
 #define SOFA_COMPONENT_FORCEFIELD_OSCILLATINGTORSIONPRESSUREFORCEFIELD_INL
 
-#include <sofa/component/forcefield/OscillatingTorsionPressureForceField.h>
-#include <sofa/component/topology/TopologySparseData.inl>
+#include <SofaBoundaryCondition/OscillatingTorsionPressureForceField.h>
+#include <SofaBaseTopology/TopologySparseData.inl>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
 #include <sofa/helper/gl/template.h>
 #include <vector>
 #include <set>

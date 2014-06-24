@@ -33,7 +33,7 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#include <sofa/component/visualmodel/OglRenderingSRGB.h>
+#include <SofaOpenglVisual/OglRenderingSRGB.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 

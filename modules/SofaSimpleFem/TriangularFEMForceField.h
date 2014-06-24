@@ -34,7 +34,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Mat.h>
-#include <sofa/component/topology/TopologyData.h>
+#include <SofaBaseTopology/TopologyData.h>
 
 #include <map>
 #include <sofa/helper/map.h>

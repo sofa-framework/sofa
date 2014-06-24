@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_TETRAHEDRALCOROTATIONALFEMFORCEFIELD_H
 
 #include <sofa/core/behavior/ForceField.h>
-#include <sofa/component/topology/TopologyData.h>
+#include <SofaBaseTopology/TopologyData.h>
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>

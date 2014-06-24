@@ -25,9 +25,9 @@
 #ifndef SOFA_COMPONENT_COLLISION_ATTACHBODYPERFORMER_INL
 #define SOFA_COMPONENT_COLLISION_ATTACHBODYPERFORMER_INL
 
-#include <sofa/component/collision/AttachBodyPerformer.h>
+#include <SofaUserInteraction/AttachBodyPerformer.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/collision/MouseInteractor.h>
+#include <SofaUserInteraction/MouseInteractor.h>
 
 
 

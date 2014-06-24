@@ -34,7 +34,7 @@
 //
 //
 #define SOFA_COMPONENT_CONTROLLER_EDGESETCONTROLLER_CPP
-#include <sofa/component/controller/EdgeSetController.inl>
+#include <SofaUserInteraction/EdgeSetController.inl>
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>

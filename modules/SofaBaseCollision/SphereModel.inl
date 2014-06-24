@@ -32,9 +32,9 @@
 
 #include <sofa/helper/io/SphereLoader.h>
 #include <sofa/helper/system/FileRepository.h>
-#include <sofa/component/collision/SphereModel.h>
+#include <SofaBaseCollision/SphereModel.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/collision/CubeModel.h>
+#include <SofaBaseCollision/CubeModel.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glut.h>

@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETTOPOLOGYCONTAINER_H
 #define SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETTOPOLOGYCONTAINER_H
 
-#include <sofa/component/topology/TriangleSetTopologyContainer.h>
+#include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 
 namespace sofa
 {

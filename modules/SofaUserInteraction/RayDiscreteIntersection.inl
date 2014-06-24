@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_COLLISION_RAYDISCRETEINTERSECTION_INL
 #define SOFA_COMPONENT_COLLISION_RAYDISCRETEINTERSECTION_INL
 #include <sofa/helper/system/config.h>
-#include <sofa/component/collision/RayDiscreteIntersection.h>
+#include <SofaUserInteraction/RayDiscreteIntersection.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/collision/Intersection.inl>

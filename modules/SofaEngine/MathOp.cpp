@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_MATHOP_CPP
-#include <sofa/component/engine/MathOp.inl>
+#include <SofaEngine/MathOp.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

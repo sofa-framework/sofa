@@ -30,12 +30,12 @@
 #endif
 
 #include <sofa/core/behavior/ForceField.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/helper/fixed_array.h>
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
-#include <sofa/component/topology/TopologyData.h>
+#include <SofaBaseTopology/TopologyData.h>
 
 
 namespace sofa

@@ -11,7 +11,7 @@
 #include "../types/DeformationGradientTypes.h"
 #include "../types/StrainTypes.h"
 
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 
 namespace sofa
 {

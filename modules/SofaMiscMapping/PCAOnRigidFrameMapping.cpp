@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_PCAONRIGIDFRAME_CPP
-#include <sofa/component/mapping/PCAOnRigidFrameMapping.inl>
+#include <SofaMiscMapping/PCAOnRigidFrameMapping.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

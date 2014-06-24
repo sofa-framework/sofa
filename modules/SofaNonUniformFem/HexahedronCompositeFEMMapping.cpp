@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/mapping/HexahedronCompositeFEMMapping.inl>
+#include <SofaNonUniformFem/HexahedronCompositeFEMMapping.inl>
 #include <sofa/core/ObjectFactory.h>
 //#include <sofa/core/behavior/MappedModel.h>
 #include <sofa/core/behavior/MechanicalState.h>

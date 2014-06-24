@@ -24,14 +24,14 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_COLLISION_STARTNAVIGATIONPERFORMER_CPP
 
-#include <sofa/component/collision/StartNavigationPerformer.h>
-#include <sofa/component/visualmodel/RecordedCamera.h>
+#include <SofaUserInteraction/StartNavigationPerformer.h>
+#include <SofaBaseVisual/RecordedCamera.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/Factory.inl>
-#include <sofa/component/interactionforcefield/JointSpringForceField.inl>
-#include <sofa/component/interactionforcefield/SpringForceField.inl>
-#include <sofa/component/interactionforcefield/StiffSpringForceField.inl>
+#include <SofaRigid/JointSpringForceField.inl>
+#include <SofaDeformable/SpringForceField.inl>
+#include <SofaDeformable/StiffSpringForceField.inl>
 
 
 using namespace sofa::component::interactionforcefield;

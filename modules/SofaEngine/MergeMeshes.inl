@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_ENGINE_MERGEMESHES_INL
 #define SOFA_COMPONENT_ENGINE_MERGEMESHES_INL
 
-#include <sofa/component/engine/MergeMeshes.h>
+#include <SofaEngine/MergeMeshes.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
 

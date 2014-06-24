@@ -27,12 +27,12 @@
 
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
-#include <sofa/component/linearsolver/FullMatrix.h>
-#include <sofa/component/linearsolver/SparseMatrix.h>
-#include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
+#include <SofaBaseLinearSolver/FullMatrix.h>
+#include <SofaBaseLinearSolver/SparseMatrix.h>
+#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 #include <sofa/helper/map.h>
 #include <math.h>
-#include <sofa/component/linearsolver/SparseLDLSolverImpl.h>
+#include <SofaSparseSolver/SparseLDLSolverImpl.h>
 #include <sofa/defaulttype/BaseMatrix.h>
 
 namespace sofa

@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_H
 #define SOFA_COMPONENT_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_H
 
-#include <sofa/component/topology/PointSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/PointSetGeometryAlgorithms.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa

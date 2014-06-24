@@ -39,9 +39,9 @@
 
 
 
-#include <sofa/component/controller/EdgeSetController.h>
-#include <sofa/component/controller/LCPForceFeedback.h>
-#include <sofa/component/controller/MechanicalStateController.h>
+#include <SofaUserInteraction/EdgeSetController.h>
+#include <SofaHaptics/LCPForceFeedback.h>
+#include <SofaUserInteraction/MechanicalStateController.h>
 
 
 

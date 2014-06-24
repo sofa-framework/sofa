@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/controller/NullForceFeedbackT.h>
+#include <SofaHaptics/NullForceFeedbackT.h>
 #include <sofa/core/ObjectFactory.h>
 
 using namespace std;

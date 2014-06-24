@@ -31,9 +31,9 @@
 
 //#define DEBUG_DRAW
 
-#include <sofa/component/visualmodel/CompositingVisualLoop.h>
+#include <SofaOpenglVisual/CompositingVisualLoop.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/component/visualmodel/VisualStyle.h>
+#include <SofaBaseVisual/VisualStyle.h>
 #include <sofa/core/visual/DisplayFlags.h>
 #include <sofa/simulation/common/VisualVisitor.h>
 #include <sofa/simulation/common/UpdateContextVisitor.h>

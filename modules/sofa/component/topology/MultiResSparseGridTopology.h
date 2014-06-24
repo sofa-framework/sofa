@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_MULTIRESSPARSEGRIDTOPOLOGY_H
 #define SOFA_COMPONENT_TOPOLOGY_MULTIRESSPARSEGRIDTOPOLOGY_H
 
-#include <sofa/component/topology/GridTopology.h>
+#include <SofaBaseTopology/GridTopology.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/vector.h>
 #include <cstdio>

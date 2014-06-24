@@ -24,7 +24,7 @@
 ******************************************************************************/
 #ifndef INCRSAP_INL
 #define INCRSAP_INL
-#include <sofa/component/collision/IncrSAP.h>
+#include <SofaMeshCollision/IncrSAP.h>
 
 namespace sofa
 {

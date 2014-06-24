@@ -25,10 +25,10 @@
 #ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_HERMITESPLINECONSTRAINT_INL
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_HERMITESPLINECONSTRAINT_INL
 
-#include <sofa/component/projectiveconstraintset/HermiteSplineConstraint.h>
+#include <SofaBoundaryCondition/HermiteSplineConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
-#include <sofa/component/topology/TopologySubsetData.inl>
+#include <SofaBaseTopology/TopologySubsetData.inl>
 
 namespace sofa
 {

@@ -22,14 +22,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/collision/DisabledContact.h>
+#include <SofaUserInteraction/DisabledContact.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/collision/SphereModel.h>
-#include <sofa/component/collision/PointModel.h>
-#include <sofa/component/collision/LineModel.h>
-#include <sofa/component/collision/TriangleModel.h>
-#include <sofa/component/collision/OBBModel.h>
-#include <sofa/component/collision/CapsuleModel.h>
+#include <SofaBaseCollision/SphereModel.h>
+#include <SofaMeshCollision/PointModel.h>
+#include <SofaMeshCollision/LineModel.h>
+#include <SofaMeshCollision/TriangleModel.h>
+#include <SofaBaseCollision/OBBModel.h>
+#include <SofaBaseCollision/CapsuleModel.h>
 
 
 

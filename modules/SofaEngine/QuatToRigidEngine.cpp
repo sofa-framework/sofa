@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define QUATTORIGIDENGINE_CPP
 
-#include <sofa/component/engine/QuatToRigidEngine.inl>
+#include <SofaEngine/QuatToRigidEngine.inl>
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>

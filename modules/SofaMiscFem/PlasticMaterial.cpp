@@ -22,7 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/fem/material/PlasticMaterial.h>
+#include <SofaMiscFem/initMiscFEM.h>
+#include <SofaMiscFem/PlasticMaterial.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <fstream> // for reading the file

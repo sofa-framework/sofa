@@ -33,17 +33,17 @@
 #include <sofa/core/behavior/Mass.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Event.h>
-#include <sofa/component/topology/TopologyData.h>
+#include <SofaBaseTopology/TopologyData.h>
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/Vec.h>
 
-#include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
-#include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
-#include <sofa/component/topology/TetrahedronSetGeometryAlgorithms.h>
-#include <sofa/component/topology/QuadSetGeometryAlgorithms.h>
-#include <sofa/component/topology/HexahedronSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/EdgeSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/QuadSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.h>
 
 #include <sofa/core/objectmodel/DataFileName.h>
 

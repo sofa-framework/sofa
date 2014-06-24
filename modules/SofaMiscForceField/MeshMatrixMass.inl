@@ -25,23 +25,23 @@
 #ifndef SOFA_COMPONENT_MASS_MESHMATRIXMASS_INL
 #define SOFA_COMPONENT_MASS_MESHMATRIXMASS_INL
 
-#include <sofa/component/mass/MeshMatrixMass.h>
+#include <SofaMiscForceField/MeshMatrixMass.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
-#include <sofa/component/topology/TopologyData.inl>
-#include <sofa/component/topology/RegularGridTopology.h>
-#include <sofa/component/mass/AddMToMatrixFunctor.h>
+#include <SofaBaseTopology/TopologyData.inl>
+#include <SofaBaseTopology/RegularGridTopology.h>
+#include <SofaBaseMechanics/AddMToMatrixFunctor.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/vector.h>
-#include <sofa/component/topology/CommonAlgorithms.h>
-#include <sofa/component/topology/BezierTetrahedronSetGeometryAlgorithms.h>
-#include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
-#include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
-#include <sofa/component/topology/TetrahedronSetGeometryAlgorithms.h>
-#include <sofa/component/topology/QuadSetGeometryAlgorithms.h>
-#include <sofa/component/topology/HexahedronSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/CommonAlgorithms.h>
+#include <SofaBaseTopology/BezierTetrahedronSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/EdgeSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/QuadSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.h>
 
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
 #include <sofa/core/behavior/InertiaForce.h>

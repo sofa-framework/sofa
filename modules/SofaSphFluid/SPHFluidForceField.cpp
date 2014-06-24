@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_SPHFLUIDFORCEFIELD_CPP
 
-#include <sofa/component/forcefield/SPHFluidForceField.inl>
+#include <SofaSphFluid/SPHFluidForceField.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>
 

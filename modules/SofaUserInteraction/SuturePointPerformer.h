@@ -25,12 +25,12 @@
 #ifndef SOFA_COMPONENT_COLLISION_SUTUREPOINTPERFORMER_H
 #define SOFA_COMPONENT_COLLISION_SUTUREPOINTPERFORMER_H
 
-#include <sofa/component/collision/InteractionPerformer.h>
-#include <sofa/component/interactionforcefield/StiffSpringForceField.h>
-#include <sofa/component/interactionforcefield/SpringForceField.h>
-#include <sofa/component/projectiveconstraintset/FixedConstraint.h>
+#include <SofaUserInteraction/InteractionPerformer.h>
+#include <SofaDeformable/StiffSpringForceField.h>
+#include <SofaDeformable/SpringForceField.h>
+#include <SofaBoundaryCondition/FixedConstraint.h>
 
-#include <sofa/component/collision/MouseInteractor.h>
+#include <SofaUserInteraction/MouseInteractor.h>
 
 namespace sofa
 {

@@ -1,4 +1,4 @@
-#include<sofa/component/collision/IntrTriangleOBB.h>
+#include <SofaMeshCollision/IntrTriangleOBB.h>
 
 namespace sofa{
 namespace component{

@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PATCHTESTMOVEMENTCONSTRAINT_H
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PATCHTESTMOVEMENTCONSTRAINT_H
 
-#include <sofa/component/topology/TopologySubsetData.h>
+#include <SofaBaseTopology/TopologySubsetData.h>
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>

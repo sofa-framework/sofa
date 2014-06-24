@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELDOPTIM_CPP
 
-#include <sofa/component/forcefield/TriangularFEMForceFieldOptim.inl>
+#include "TriangularFEMForceFieldOptim.inl"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
 

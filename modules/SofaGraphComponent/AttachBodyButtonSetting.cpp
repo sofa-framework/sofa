@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/component/configurationsetting/AttachBodyButtonSetting.h>
+#include <SofaGraphComponent/AttachBodyButtonSetting.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 

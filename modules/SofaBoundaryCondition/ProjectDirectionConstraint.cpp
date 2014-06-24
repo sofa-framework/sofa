@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectDirectionConstraint_CPP
-#include <sofa/component/projectiveconstraintset/ProjectDirectionConstraint.inl>
+#include <SofaBoundaryCondition/ProjectDirectionConstraint.inl>
 #include <sofa/core/behavior/ProjectiveConstraintSet.inl>
 #include <sofa/core/ObjectFactory.h>
 

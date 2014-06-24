@@ -24,8 +24,8 @@
 ******************************************************************************/
 #include <sofa/gui/PickHandler.h>
 
-#include <sofa/component/collision/ComponentMouseInteraction.h>
-#include <sofa/component/collision/RayContact.h>
+#include <SofaUserInteraction/ComponentMouseInteraction.h>
+#include <SofaUserInteraction/RayContact.h>
 
 #include <sofa/simulation/common/InitVisitor.h>
 #include <sofa/simulation/common/DeleteVisitor.h>
@@ -33,8 +33,8 @@
 #include <sofa/helper/system/gl.h>
 #include <sofa/simulation/common/Simulation.h>
 
-#include <sofa/component/collision/TriangleModel.h>
-#include <sofa/component/collision/SphereModel.h>
+#include <SofaMeshCollision/TriangleModel.h>
+#include <SofaBaseCollision/SphereModel.h>
 
 #include <iostream>
 #include <limits>

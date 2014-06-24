@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_CONSTRAINTSET_BILATERALINTERACTIONCONSTRAINT_INL
 #define SOFA_COMPONENT_CONSTRAINTSET_BILATERALINTERACTIONCONSTRAINT_INL
 
-#include <sofa/component/constraintset/BilateralInteractionConstraint.h>
+#include <SofaConstraint/BilateralInteractionConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/Constraint.inl>
 

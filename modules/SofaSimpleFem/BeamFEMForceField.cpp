@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_BEAMFEMFORCEFIELD_CPP
-#include <sofa/component/forcefield/BeamFEMForceField.inl>
+#include "BeamFEMForceField.inl"
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
 

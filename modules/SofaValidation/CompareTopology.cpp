@@ -26,7 +26,7 @@
 #ifndef SOFA_COMPONENT_MISC_COMPARETOPOLOGY_INL
 #define SOFA_COMPONENT_MISC_COMPARETOPOLOGY_INL
 
-#include <sofa/component/misc/CompareTopology.h>
+#include <SofaValidation/CompareTopology.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/UpdateMappingVisitor.h>

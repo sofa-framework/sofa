@@ -26,7 +26,7 @@
 #include "Binding_MeshTopology.h"
 #include "Binding_BaseMeshTopology.h"
 
-#include <sofa/component/topology/MeshTopology.h>
+#include <SofaBaseTopology/MeshTopology.h>
 using namespace sofa::component::topology;
 
 SP_CLASS_METHODS_BEGIN(MeshTopology)

@@ -36,7 +36,7 @@
 #ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_LINEBENDINGSPRINGS_INL
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_LINEBENDINGSPRINGS_INL
 
-#include <sofa/component/interactionforcefield/LineBendingSprings.h>
+#include <SofaMiscForceField/LineBendingSprings.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <iostream>
 

@@ -25,9 +25,9 @@
 #ifndef SOFA_COMPONENT_MAPPING_CATMULLROMSPLINEMAPPING_INL
 #define SOFA_COMPONENT_MAPPING_CATMULLROMSPLINEMAPPING_INL
 
-#include <sofa/component/mapping/CatmullRomSplineMapping.h>
+#include <SofaMiscMapping/CatmullRomSplineMapping.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/topology/TriangleSetTopologyContainer.h>
+#include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 #include <sofa/core/Mapping.inl>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/helper/gl/Axis.h>

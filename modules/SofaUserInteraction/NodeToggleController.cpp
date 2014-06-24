@@ -33,7 +33,7 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#include <sofa/component/controller/NodeToggleController.h>
+#include <SofaUserInteraction/NodeToggleController.h>
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>

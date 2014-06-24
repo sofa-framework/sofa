@@ -24,11 +24,11 @@
 ******************************************************************************/
 
 #include "SculptBodyPerformer.h"
-#include <sofa/component/collision/CubeModel.h>
-#include <sofa/component/mapping/BarycentricMapping.h>
-#include <sofa/component/mapping/IdentityMapping.h>
-#include <sofa/component/mapping/SubsetMapping.h>
-#include <sofa/component/engine/MergePoints.h>
+#include <SofaBaseCollision/CubeModel.h>
+#include <SofaBaseMechanics/BarycentricMapping.h>
+#include <SofaBaseMechanics/IdentityMapping.h>
+#include <SofaBaseMechanics/SubsetMapping.h>
+#include <SofaEngine/MergePoints.h>
 #include <sofa/component/container/MeshLoader.h>
 
 namespace plugins

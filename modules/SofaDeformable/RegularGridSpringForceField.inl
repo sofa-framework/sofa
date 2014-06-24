@@ -25,9 +25,9 @@
 #ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_REGULARGRIDSPRINGFORCEFIELD_INL
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_REGULARGRIDSPRINGFORCEFIELD_INL
 
-#include <sofa/component/interactionforcefield/RegularGridSpringForceField.h>
+#include <SofaDeformable/RegularGridSpringForceField.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/interactionforcefield/StiffSpringForceField.inl>
+#include <SofaDeformable/StiffSpringForceField.inl>
 #include <sofa/helper/gl/template.h>
 using std::cerr;
 using std::endl;

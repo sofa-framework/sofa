@@ -33,11 +33,11 @@
 #define SOFA_COMPONENT_VISUALMANAGERPASS_H
 
 #include <sofa/component/component.h>
-#include <sofa/component/visualmodel/CompositingVisualLoop.h>
+#include <SofaOpenglVisual/CompositingVisualLoop.h>
 #include <sofa/core/visual/VisualManager.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/FrameBufferObject.h>
-#include <sofa/component/visualmodel/OglShader.h>
+#include <SofaOpenglVisual/OglShader.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/defaulttype/Vec3Types.h>

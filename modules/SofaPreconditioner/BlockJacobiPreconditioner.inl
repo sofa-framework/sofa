@@ -28,10 +28,10 @@
 #ifndef SOFA_COMPONENT_LINEARSOLVER_BLOCKJACOBIPRECONDITIONER_INL
 #define SOFA_COMPONENT_LINEARSOLVER_BLOCKJACOBIPRECONDITIONER_INL
 
-#include <sofa/component/linearsolver/BlockJacobiPreconditioner.h>
+#include <SofaPreconditioner/BlockJacobiPreconditioner.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/linearsolver/FullMatrix.h>
-#include <sofa/component/linearsolver/SparseMatrix.h>
+#include <SofaBaseLinearSolver/FullMatrix.h>
+#include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <sofa/core/ObjectFactory.h>
 #include <iostream>
 #include "sofa/helper/system/thread/CTime.h"

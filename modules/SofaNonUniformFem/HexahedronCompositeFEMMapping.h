@@ -29,8 +29,8 @@
 
 #include <sofa/core/Mapping.h>
 #include <sofa/core/State.h>
-#include <sofa/component/topology/SparseGridTopology.h>
-#include <sofa/component/forcefield/HexahedronCompositeFEMForceFieldAndMass.h>
+#include <SofaBaseTopology/SparseGridTopology.h>
+#include <SofaNonUniformFem/HexahedronCompositeFEMForceFieldAndMass.h>
 
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Mat.h>

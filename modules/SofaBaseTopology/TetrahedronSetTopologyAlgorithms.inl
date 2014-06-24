@@ -25,11 +25,11 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETTOPOLOGYALGORITHMS_INL
 #define SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETTOPOLOGYALGORITHMS_INL
 
-#include <sofa/component/topology/TetrahedronSetTopologyContainer.h>
-#include <sofa/component/topology/TetrahedronSetTopologyModifier.h>
-#include <sofa/component/topology/TetrahedronSetTopologyAlgorithms.h>
+#include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
+#include <SofaBaseTopology/TetrahedronSetTopologyModifier.h>
+#include <SofaBaseTopology/TetrahedronSetTopologyAlgorithms.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/topology/TetrahedronSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>
 #include <algorithm>
 #include <functional>
 

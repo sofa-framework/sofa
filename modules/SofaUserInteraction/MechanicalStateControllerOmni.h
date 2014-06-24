@@ -37,7 +37,7 @@
 #ifndef SOFA_COMPONENT_CONTROLLER_MECHANICALSTATECONTROLLEROMNI_H
 #define SOFA_COMPONENT_CONTROLLER_MECHANICALSTATECONTROLLEROMNI_H
 
-#include <sofa/component/controller/Controller.h>
+#include <SofaUserInteraction/Controller.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/behavior/MechanicalState.h>

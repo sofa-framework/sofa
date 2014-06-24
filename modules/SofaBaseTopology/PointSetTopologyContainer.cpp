@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/topology/PointSetTopologyContainer.h>
+#include <SofaBaseTopology/PointSetTopologyContainer.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/simulation/common/Node.h>

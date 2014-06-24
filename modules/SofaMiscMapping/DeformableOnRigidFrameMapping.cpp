@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_DEFORMABLEONRIGIDFRAME_CPP
-#include <sofa/component/mapping/DeformableOnRigidFrameMapping.inl>
+#include <SofaMiscMapping/DeformableOnRigidFrameMapping.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

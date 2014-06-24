@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/component/loader/MeshOffLoader.h>
+#include <SofaLoader/MeshOffLoader.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/SetDirectory.h>
 

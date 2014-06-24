@@ -25,10 +25,10 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETGEOMETRYALGORITHMS_INL
 #define SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETGEOMETRYALGORITHMS_INL
 
-#include <sofa/component/topology/TetrahedronSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/topology/CommonAlgorithms.h>
-#include <sofa/component/topology/NumericalIntegrationDescriptor.inl>
+#include <SofaBaseTopology/CommonAlgorithms.h>
+#include <SofaBaseTopology/NumericalIntegrationDescriptor.inl>
 namespace sofa
 {
 

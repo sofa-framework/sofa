@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_MAPPING_CENTEROFMASSMULTI2MAPPING_INL
 #define SOFA_COMPONENT_MAPPING_CENTEROFMASSMULTI2MAPPING_INL
 
-#include <sofa/component/mapping/CenterOfMassMulti2Mapping.h>
+#include <SofaMiscMapping/CenterOfMassMulti2Mapping.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/Multi2Mapping.inl>

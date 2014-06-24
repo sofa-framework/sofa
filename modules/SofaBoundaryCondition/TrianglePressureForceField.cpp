@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGLEPRESSUREFORCEFIELD_CPP
 
-#include <sofa/component/forcefield/TrianglePressureForceField.inl>
+#include <SofaBoundaryCondition/TrianglePressureForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
 

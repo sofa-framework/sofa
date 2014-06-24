@@ -24,16 +24,16 @@
 ******************************************************************************/
 #include <sofa/gui/MouseOperations.h>
 #include <sofa/gui/PickHandler.h>
-#include <sofa/component/collision/InteractionPerformer.h>
+#include <SofaUserInteraction/InteractionPerformer.h>
 
-#include <sofa/component/collision/ComponentMouseInteraction.h>
-#include <sofa/component/collision/AttachBodyPerformer.h>
-#include <sofa/component/collision/FixParticlePerformer.h>
-#include <sofa/component/collision/RemovePrimitivePerformer.h>
-#include <sofa/component/collision/InciseAlongPathPerformer.h>
-#include <sofa/component/collision/AddRecordedCameraPerformer.h>
-#include <sofa/component/collision/StartNavigationPerformer.h>
-#include <sofa/component/collision/SuturePointPerformer.h>
+#include <SofaUserInteraction/ComponentMouseInteraction.h>
+#include <SofaUserInteraction/AttachBodyPerformer.h>
+#include <SofaUserInteraction/FixParticlePerformer.h>
+#include <SofaUserInteraction/RemovePrimitivePerformer.h>
+#include <SofaUserInteraction/InciseAlongPathPerformer.h>
+#include <SofaUserInteraction/AddRecordedCameraPerformer.h>
+#include <SofaUserInteraction/StartNavigationPerformer.h>
+#include <SofaUserInteraction/SuturePointPerformer.h>
 #ifdef SOFA_HAVE_ARPLUGIN
 #include "./../../../applications-dev/plugins/ARPlugin/ARPSAttachPerformer.h"
 #endif

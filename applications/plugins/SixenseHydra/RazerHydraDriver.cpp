@@ -28,7 +28,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/objectmodel/HapticDeviceEvent.h>
 
-#include <sofa/component/visualmodel/VisualTransform.h>
+#include <SofaBaseVisual/VisualTransform.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
 

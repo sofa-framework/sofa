@@ -3,8 +3,8 @@
 
 #include "SofaPhysicsAPI.h"
 
-#include <sofa/component/visualmodel/VisualModelImpl.h>
-#include <sofa/component/visualmodel/OglTetrahedralModel.h>
+#include <SofaBaseVisual/VisualModelImpl.h>
+#include <SofaOpenglVisual/OglTetrahedralModel.h>
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/visual/Shader.h>
 

@@ -22,19 +22,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/collision/SolverMerger.h>
+#include <SofaMiscCollision/SolverMerger.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/helper/FnDispatcher.h>
 #include <sofa/helper/FnDispatcher.inl>
-#include <sofa/component/odesolver/EulerSolver.h>
-#include <sofa/component/odesolver/RungeKutta4Solver.h>
-#include <sofa/component/odesolver/StaticSolver.h>
-#include <sofa/component/odesolver/EulerImplicitSolver.h>
-#include <sofa/component/linearsolver/CGLinearSolver.h>
-#include <sofa/component/constraintset/LCPConstraintSolver.h>
+#include <SofaExplicitOdeSolver/EulerSolver.h>
+#include <SofaExplicitOdeSolver/RungeKutta4Solver.h>
+#include <SofaImplicitOdeSolver/StaticSolver.h>
+#include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
+#include <SofaBaseLinearSolver/CGLinearSolver.h>
+#include <SofaConstraint/LCPConstraintSolver.h>
 #ifdef SOFA_HAVE_EIGEN2
-#include <sofa/component/constraintset/LMConstraintSolver.h>
+#include <SofaConstraint/LMConstraintSolver.h>
 #endif
 namespace sofa
 {

@@ -26,9 +26,9 @@
 #define SOFA_COMPONENT_MAPPING_SUBSETMULTIMAPPING_INL
 
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/mapping/SubsetMultiMapping.h>
+#include <SofaMiscMapping/SubsetMultiMapping.h>
 #ifdef SOFA_HAVE_EIGEN2
-#include <sofa/component/linearsolver/EigenSparseMatrix.h>
+#include <SofaEigen2Solver/EigenSparseMatrix.h>
 #endif
 #include <sofa/core/MultiMapping.inl>
 #include <iostream>

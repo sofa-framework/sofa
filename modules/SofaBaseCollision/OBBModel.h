@@ -27,15 +27,15 @@
 #define OBBMODEL_H
 
 #include <sofa/core/CollisionModel.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/component/component.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/accessor.h>
 #include <sofa/core/visual/DrawToolGL.h>
-#include <sofa/component/collision/CubeModel.h>
-//#include <sofa/component/collision/Intersector.h>
+#include <SofaBaseCollision/CubeModel.h>
+//#include <SofaBaseCollision/Intersector.h>
 
 namespace sofa
 {

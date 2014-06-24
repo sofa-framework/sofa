@@ -25,9 +25,9 @@
 #ifndef SOFA_COMPONENT_CONTROLLER_LCPFORCEFEEDBACK_INL
 #define SOFA_COMPONENT_CONTROLLER_LCPFORCEFEEDBACK_INL
 
-#include <sofa/component/controller/LCPForceFeedback.h>
+#include <SofaHaptics/LCPForceFeedback.h>
 
-#include <sofa/component/constraintset/ConstraintSolverImpl.h>
+#include <SofaConstraint/ConstraintSolverImpl.h>
 
 #include <sofa/simulation/common/AnimateEndEvent.h>
 

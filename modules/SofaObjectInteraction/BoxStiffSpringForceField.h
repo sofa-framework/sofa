@@ -29,7 +29,7 @@
 #pragma once
 #endif
 
-#include <sofa/component/interactionforcefield/StiffSpringForceField.h>
+#include <SofaDeformable/StiffSpringForceField.h>
 #include <sofa/defaulttype/Vec.h>
 
 namespace sofa

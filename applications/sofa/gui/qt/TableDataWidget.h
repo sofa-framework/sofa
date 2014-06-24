@@ -27,7 +27,7 @@
 
 #include "SimpleDataWidget.h"
 #include "StructDataWidget.h"
-#include <sofa/component/topology/TopologyData.h>
+#include <SofaBaseTopology/TopologyData.h>
 
 #ifdef SOFA_QT4
 #include "QModelViewTableDataContainer.h"

@@ -28,7 +28,7 @@
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/collision/DetectionOutput.h>
 #include <sofa/defaulttype/RigidTypes.h>
-//#include <sofa/component/container/MechanicalObject.h>
+//#include <SofaBaseMechanics/MechanicalObject.h>
 
 #include <sofa/helper/Factory.h>
 

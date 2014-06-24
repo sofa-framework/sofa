@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_MASS_UNIFORMMASS_CPP
-#include <sofa/component/mass/UniformMass.inl>
+#include <SofaBaseMechanics/UniformMass.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/gl/Axis.h>

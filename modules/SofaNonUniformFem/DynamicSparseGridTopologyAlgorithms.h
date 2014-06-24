@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_DYNAMICSPARSEGRIDTOPOLOGYALGORITHMS_H
 #define SOFA_COMPONENT_TOPOLOGY_DYNAMICSPARSEGRIDTOPOLOGYALGORITHMS_H
 
-#include <sofa/component/topology/HexahedronSetTopologyAlgorithms.h>
+#include <SofaBaseTopology/HexahedronSetTopologyAlgorithms.h>
 
 namespace sofa
 {

@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_SPHFLUIDSURFACEMAPPING_CPP
-#include <sofa/component/mapping/SPHFluidSurfaceMapping.inl>
+#include <SofaSphFluid/SPHFluidSurfaceMapping.inl>
 
 #include <sofa/core/ObjectFactory.h>
 

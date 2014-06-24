@@ -39,7 +39,7 @@
 
 #include <sofa/gpu/cuda/CudaSpatialGridContainer.h>
 #include <sofa/gpu/cuda/CudaSort.h>
-#include <sofa/component/container/SpatialGridContainer.inl>
+#include <SofaSphFluid/SpatialGridContainer.inl>
 #include <sofa/helper/gl/template.h>
 
 namespace sofa

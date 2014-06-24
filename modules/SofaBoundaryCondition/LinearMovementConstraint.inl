@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_LINEARMOVEMENTCONSTRAINT_INL
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_LINEARMOVEMENTCONSTRAINT_INL
 
-#include <sofa/component/projectiveconstraintset/LinearMovementConstraint.h>
+#include <SofaBoundaryCondition/LinearMovementConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/ProjectiveConstraintSet.inl>
@@ -33,7 +33,7 @@
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
-#include <sofa/component/topology/TopologySubsetData.inl>
+#include <SofaBaseTopology/TopologySubsetData.inl>
 
 
 

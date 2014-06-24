@@ -41,7 +41,7 @@
 #include <vector>
 #include <fstream>
 
-#include <sofa/component/topology/TopologyData.h>
+#include <SofaBaseTopology/TopologyData.h>
 
 namespace sofa
 {

@@ -25,14 +25,14 @@
 #ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_SKELETALMOTIONCONSTRAINT_INL
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_SKELETALMOTIONCONSTRAINT_INL
 
-#include <sofa/component/projectiveconstraintset/SkeletalMotionConstraint.h>
+#include <SofaBoundaryCondition/SkeletalMotionConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/ProjectiveConstraintSet.inl>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/component/topology/TopologySubsetData.inl>
+#include <SofaBaseTopology/TopologySubsetData.inl>
 
 #include <iostream>
 

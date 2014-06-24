@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FixedRotationConstraint_INL
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FixedRotationConstraint_INL
 
-#include <sofa/component/projectiveconstraintset/FixedRotationConstraint.h>
+#include <SofaBoundaryCondition/FixedRotationConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 
 

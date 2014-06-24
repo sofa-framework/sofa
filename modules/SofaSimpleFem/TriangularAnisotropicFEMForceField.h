@@ -33,8 +33,8 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
-#include <sofa/component/forcefield/TriangularFEMForceField.h>
-#include <sofa/component/topology/TopologyData.h>
+#include "TriangularFEMForceField.h"
+#include <SofaBaseTopology/TopologyData.h>
 #include <newmat/newmat.h>
 #include <newmat/newmatap.h>
 

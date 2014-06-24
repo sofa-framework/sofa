@@ -27,7 +27,7 @@
 
 #include "MatrixExpr.h"
 //#include "NewMatMatrix.h"
-#include <sofa/component/linearsolver/matrix_bloc_traits.h>
+#include <SofaBaseLinearSolver/matrix_bloc_traits.h>
 
 namespace sofa
 {

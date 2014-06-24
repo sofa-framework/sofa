@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_VALUESFROMPOSITIONS_CPP
-#include <sofa/component/engine/ValuesFromPositions.inl>
+#include <SofaEngine/ValuesFromPositions.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
 

@@ -29,8 +29,8 @@
 #include <sofa/component/component.h>
 
 #include <sofa/core/topology/BaseTopologyData.h>
-#include <sofa/component/topology/TopologyEngine.h>
-#include <sofa/component/topology/TopologyDataHandler.h>
+#include <SofaBaseTopology/TopologyEngine.h>
+#include <SofaBaseTopology/TopologyDataHandler.h>
 
 
 

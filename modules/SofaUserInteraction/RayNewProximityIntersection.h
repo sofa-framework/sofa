@@ -25,14 +25,14 @@
 #ifndef SOFA_COMPONENT_COLLISION_RAYNEWPROXIMITYINTERSECTION_H
 #define SOFA_COMPONENT_COLLISION_RAYNEWPROXIMITYINTERSECTION_H
 
-#include <sofa/component/collision/NewProximityIntersection.h>
+#include <SofaBaseCollision/NewProximityIntersection.h>
 #include <sofa/helper/FnDispatcher.h>
-#include <sofa/component/collision/SphereModel.h>
-#include <sofa/component/collision/TriangleModel.h>
-#include <sofa/component/collision/LineModel.h>
-#include <sofa/component/collision/PointModel.h>
-#include <sofa/component/collision/CubeModel.h>
-#include <sofa/component/collision/RayModel.h>
+#include <SofaBaseCollision/SphereModel.h>
+#include <SofaMeshCollision/TriangleModel.h>
+#include <SofaMeshCollision/LineModel.h>
+#include <SofaMeshCollision/PointModel.h>
+#include <SofaBaseCollision/CubeModel.h>
+#include <SofaUserInteraction/RayModel.h>
 
 namespace sofa
 {

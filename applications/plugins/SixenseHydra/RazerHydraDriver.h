@@ -36,8 +36,8 @@
 
 
 #include <sofa/core/behavior/BaseController.h>
-#include <sofa/component/visualmodel/OglModel.h>
-#include <sofa/component/controller/Controller.h>
+#include <SofaOpenglVisual/OglModel.h>
+#include <SofaUserInteraction/Controller.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/defaulttype/VecTypes.h>

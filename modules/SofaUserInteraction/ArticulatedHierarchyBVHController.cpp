@@ -33,7 +33,7 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#include <sofa/component/controller/ArticulatedHierarchyBVHController.h>
+#include <SofaUserInteraction/ArticulatedHierarchyBVHController.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/core/ObjectFactory.h>

@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_RAYTRIANGLEINTERSECTION_H
 #define SOFA_COMPONENT_RAYTRIANGLEINTERSECTION_H
 
-#include <sofa/component/collision/Triangle.h>
+#include <SofaMeshCollision/Triangle.h>
 
 namespace sofa
 {

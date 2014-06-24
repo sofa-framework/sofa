@@ -22,14 +22,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/collision/RemovePrimitivePerformer.h>
+#include <SofaUserInteraction/RemovePrimitivePerformer.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/TopologicalMapping.h>
 #include <sofa/helper/Factory.inl>
 #include <sofa/helper/system/glut.h>
 
 #if 0
-#include <sofa/component/collision/TetrahedronModel.h>
+#include <SofaMiscCollision/TetrahedronModel.h>
 #endif
 #include <sofa/simulation/common/Simulation.h>
 

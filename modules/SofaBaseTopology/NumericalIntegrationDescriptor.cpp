@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_TOPOLOGY_NUMERICALINTEGRATIONDESCRIPTOR_CPP
-#include <sofa/component/topology/NumericalIntegrationDescriptor.inl>
+#include <SofaBaseTopology/NumericalIntegrationDescriptor.inl>
 namespace sofa
 {
 

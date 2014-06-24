@@ -22,10 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/collision/InciseAlongPathPerformer.h>
+#include <SofaUserInteraction/InciseAlongPathPerformer.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
-#include <sofa/component/topology/TriangleSetTopologyContainer.h>
+#include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 
 #include <sofa/helper/Factory.inl>
 #include <sofa/helper/system/glut.h>

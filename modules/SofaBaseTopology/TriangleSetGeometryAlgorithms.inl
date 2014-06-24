@@ -25,10 +25,10 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_TRIANGLESETGEOMETRYALGORITHMS_INL
 #define SOFA_COMPONENT_TOPOLOGY_TRIANGLESETGEOMETRYALGORITHMS_INL
 
-#include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
-#include <sofa/component/topology/EdgeSetGeometryAlgorithms.inl>
+#include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/EdgeSetGeometryAlgorithms.inl>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/topology/CommonAlgorithms.h>
+#include <SofaBaseTopology/CommonAlgorithms.h>
 
 namespace sofa
 {

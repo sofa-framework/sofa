@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_SPHEREFORCEFIELD_CPP
-#include <sofa/component/forcefield/SphereForceField.inl>
+#include <SofaBoundaryCondition/SphereForceField.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>
 

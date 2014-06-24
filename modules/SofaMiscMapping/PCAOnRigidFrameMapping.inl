@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_MAPPING_PCAONRIGIDFRAME_INL
 #define SOFA_COMPONENT_MAPPING_PCAONRIGIDFRAME_INL
 
-#include <sofa/component/mapping/PCAOnRigidFrameMapping.h>
+#include <SofaMiscMapping/PCAOnRigidFrameMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/Multi2Mapping.inl>

@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/visualmodel/VisualStyle.h>
+#include <SofaBaseVisual/VisualStyle.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/core/ObjectFactory.h>

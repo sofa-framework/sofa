@@ -35,7 +35,7 @@
 //
 #define SOFA_COMPONENT_MAPPING_CURVEMAPPING_CPP
 
-#include <sofa/component/mapping/CurveMapping.inl>
+#include <SofaMiscMapping/CurveMapping.inl>
 
 #include <sofa/core/ObjectFactory.h>
 

@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_NONUNIFORMHEXAHEDRONFEMFORCEFIELDDENSITY_CPP
 
-#include <sofa/component/forcefield/NonUniformHexahedronFEMForceFieldDensity.inl>
+#include <SofaNonUniformFem/NonUniformHexahedronFEMForceFieldDensity.inl>
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>

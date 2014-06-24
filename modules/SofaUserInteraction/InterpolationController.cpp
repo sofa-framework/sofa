@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_INTERPOLATIONCONTROLLER_CPP
 
-#include <sofa/component/controller/InterpolationController.inl>
+#include <SofaUserInteraction/InterpolationController.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

@@ -32,7 +32,7 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/Quater.h>
-#include <sofa/component/topology/TopologySubsetData.h>
+#include <SofaBaseTopology/TopologySubsetData.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <boost/type_traits/is_same.hpp>

@@ -34,7 +34,7 @@
 #include <vector>
 #include <limits>
 
-#include <sofa/component/engine/ProximityROI.h>
+#include <SofaEngine/ProximityROI.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/BasicShapes.h>

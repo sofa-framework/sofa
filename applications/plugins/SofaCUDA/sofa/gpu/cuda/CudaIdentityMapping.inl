@@ -26,7 +26,7 @@
 #define SOFA_GPU_CUDA_CUDAIDENTITYMAPPING_INL
 
 #include "CudaIdentityMapping.h"
-#include <sofa/component/mapping/IdentityMapping.inl>
+#include <SofaBaseMechanics/IdentityMapping.inl>
 
 namespace sofa
 {

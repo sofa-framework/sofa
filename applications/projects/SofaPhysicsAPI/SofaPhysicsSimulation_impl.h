@@ -10,7 +10,7 @@
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/visual/DrawToolGL.h>
-#include <sofa/component/visualmodel/InteractiveCamera.h>
+#include <SofaBaseVisual/InteractiveCamera.h>
 #include <sofa/helper/gl/Texture.h>
 
 #include <map>

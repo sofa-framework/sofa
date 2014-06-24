@@ -24,7 +24,7 @@
 ******************************************************************************/
 
 
-#include <sofa/component/collision/SphereModel.inl>
+#include <SofaBaseCollision/SphereModel.inl>
 #include <sofa/core/ObjectFactory.h>
 
 

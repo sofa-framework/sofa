@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include "CudaTypes.h"
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/component/engine/BoxROI.inl>
+#include <SofaEngine/BoxROI.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 

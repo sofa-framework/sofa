@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGULARANISOTROPICFEMFORCEFIELD_CPP
-#include <sofa/component/forcefield/TriangularAnisotropicFEMForceField.inl>
+#include "TriangularAnisotropicFEMForceField.inl"
 #include <sofa/core/ObjectFactory.h>
 
 // #define DEBUG_TRIANGLEFEM

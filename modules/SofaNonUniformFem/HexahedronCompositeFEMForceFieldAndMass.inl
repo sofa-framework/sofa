@@ -25,12 +25,12 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONCOMPOSITEFEMFORCEFIELD_INL
 #define SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONCOMPOSITEFEMFORCEFIELD_INL
 
-#include <sofa/component/forcefield/HexahedronCompositeFEMForceFieldAndMass.h>
+#include <SofaNonUniformFem/HexahedronCompositeFEMForceFieldAndMass.h>
 #include <sofa/core/visual/VisualParams.h>
 
 
-#include <sofa/component/linearsolver/NewMatMatrix.h>
-#include <sofa/component/topology/SparseGridMultipleTopology.h>
+#include <SofaDenseSolver/NewMatMatrix.h>
+#include <SofaNonUniformFem/SparseGridMultipleTopology.h>
 
 
 

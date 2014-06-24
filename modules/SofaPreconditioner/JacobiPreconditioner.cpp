@@ -25,7 +25,7 @@
 // Author: Hadrien Courtecuisse
 //
 // Copyright: See COPYING file that comes with this distribution
-#include <sofa/component/linearsolver/JacobiPreconditioner.inl>
+#include <SofaPreconditioner/JacobiPreconditioner.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

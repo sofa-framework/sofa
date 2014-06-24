@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_MAPPING_IDENTITYMAPPING_H
 
 #include <sofa/core/Mapping.h>
-#include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
+#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 #include <sofa/component/component.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -34,7 +34,7 @@
 #include <memory>
 
 #ifdef SOFA_HAVE_EIGEN2
-#include <sofa/component/linearsolver/EigenSparseMatrix.h>
+#include <SofaEigen2Solver/EigenSparseMatrix.h>
 #endif
 
 

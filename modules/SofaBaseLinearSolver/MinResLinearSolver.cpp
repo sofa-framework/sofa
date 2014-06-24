@@ -25,7 +25,7 @@
 // Author: Matthieu Nesme, INRIA, (C) 2012
 //
 // Copyright: See COPYING file that comes with this distribution
-#include <sofa/component/linearsolver/MinResLinearSolver.inl>
+#include <SofaBaseLinearSolver/MinResLinearSolver.inl>
 
 #include <sofa/core/ObjectFactory.h>
 #include <iostream>

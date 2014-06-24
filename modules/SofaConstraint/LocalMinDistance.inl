@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_COLLISION_LOCALMINDISTANCE_INL
 
 #include <sofa/helper/system/config.h>
-#include <sofa/component/collision/LocalMinDistance.h>
+#include <SofaConstraint/LocalMinDistance.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/ObjectFactory.h>

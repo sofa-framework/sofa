@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_TRIANGLESETTOPOLOGYALGORITHMS_H
 #define SOFA_COMPONENT_TOPOLOGY_TRIANGLESETTOPOLOGYALGORITHMS_H
 
-#include <sofa/component/topology/EdgeSetTopologyAlgorithms.h>
+#include <SofaBaseTopology/EdgeSetTopologyAlgorithms.h>
 
 namespace sofa
 {

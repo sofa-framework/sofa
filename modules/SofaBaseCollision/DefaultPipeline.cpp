@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/collision/DefaultPipeline.h>
+#include <SofaBaseCollision/DefaultPipeline.h>
 
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/ObjectFactory.h>
@@ -32,7 +32,7 @@
 #include <sofa/core/collision/ContactManager.h>
 #include <sofa/core/visual/VisualParams.h>
 
-#include <sofa/component/collision/RayModel.h>
+#include <SofaUserInteraction/RayModel.h>
 #include <sofa/simulation/common/Node.h>
 
 #ifdef SOFA_DUMP_VISITOR_INFO

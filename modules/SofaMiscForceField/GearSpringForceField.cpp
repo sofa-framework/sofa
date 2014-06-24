@@ -26,7 +26,7 @@
 //
 // Copyright: See COPYING file that comes with this distribution
 #define SOFA_COMPONENT_FORCEFIELD_GEARSPRINGFORCEFIELD_CPP
-#include <sofa/component/interactionforcefield/GearSpringForceField.inl>
+#include <SofaMiscForceField/GearSpringForceField.inl>
 #include <sofa/core/behavior/PairInteractionForceField.inl>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/behavior/MechanicalState.h>

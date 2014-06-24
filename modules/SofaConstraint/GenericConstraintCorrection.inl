@@ -31,8 +31,8 @@
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/linearsolver/GraphScatteredTypes.h>
-#include <sofa/component/linearsolver/MatrixLinearSolver.inl>
+#include <SofaBaseLinearSolver/GraphScatteredTypes.h>
+#include <SofaBaseLinearSolver/MatrixLinearSolver.inl>
 
 #include <sstream>
 #include <list>

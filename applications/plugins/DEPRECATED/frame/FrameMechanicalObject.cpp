@@ -25,7 +25,7 @@
 #define FRAME_FRAMEMECHANICALOBJECT_CPP
 
 #include "FrameMechanicalObject.h"
-#include <sofa/component/container/MechanicalObject.inl>
+#include <SofaBaseMechanics/MechanicalObject.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/gl/template.h>
 #include <iostream>

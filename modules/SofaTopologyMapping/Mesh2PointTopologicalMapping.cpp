@@ -22,14 +22,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/topology/Mesh2PointTopologicalMapping.h>
+#include <SofaTopologyMapping/Mesh2PointTopologicalMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/component/topology/TetrahedronSetTopologyContainer.h>
-#include <sofa/component/topology/TetrahedronSetTopologyModifier.h>
-#include <sofa/component/topology/PointSetTopologyModifier.h>
+#include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
+#include <SofaBaseTopology/TetrahedronSetTopologyModifier.h>
+#include <SofaBaseTopology/PointSetTopologyModifier.h>
 #include <sofa/core/topology/TopologyChange.h>
 
 #include <sofa/defaulttype/Vec.h>

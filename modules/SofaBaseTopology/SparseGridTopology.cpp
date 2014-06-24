@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/simulation/common/Node.h>
-#include <sofa/component/topology/SparseGridTopology.h>
+#include <SofaBaseTopology/SparseGridTopology.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/ObjectFactory.h>

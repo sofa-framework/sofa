@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDCONSTRAINT_CPP
-#include <sofa/component/projectiveconstraintset/FixedConstraint.inl>
+#include <SofaBoundaryCondition/FixedConstraint.inl>
 #include <sofa/core/behavior/ProjectiveConstraintSet.inl>
 #include <sofa/core/ObjectFactory.h>
 

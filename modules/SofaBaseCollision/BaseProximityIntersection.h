@@ -1,8 +1,8 @@
 #ifndef SOFA_COMPONENT_COLLISION_BASEPROXIMITYINTERSECTION_H
 #define SOFA_COMPONENT_COLLISION_BASEPROXIMITYINTERSECTION_H
 
-#include <sofa/component/collision/DiscreteIntersection.h>
-#include <sofa/component/collision/BaseIntTool.h>
+#include <SofaBaseCollision/DiscreteIntersection.h>
+#include <SofaBaseCollision/BaseIntTool.h>
 #include <sofa/helper/FnDispatcher.h>
 
 namespace sofa

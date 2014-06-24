@@ -26,7 +26,7 @@
 #define SOFA_GPU_CUDA_CUDARIGIDMAPPING_INL
 
 #include "CudaRigidMapping.h"
-#include <sofa/component/mapping/RigidMapping.inl>
+#include <SofaRigid/RigidMapping.inl>
 #include <sofa/helper/accessor.h>
 
 namespace sofa

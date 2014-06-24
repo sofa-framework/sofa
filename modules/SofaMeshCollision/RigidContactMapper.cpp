@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_COLLISION_RIGIDCONTACTMAPPER_CPP
-#include <sofa/component/collision/RigidContactMapper.inl>
+#include <SofaMeshCollision/RigidContactMapper.inl>
 #include <sofa/helper/Factory.inl>
 
 namespace sofa

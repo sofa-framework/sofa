@@ -29,7 +29,7 @@
 #pragma once
 #endif
 
-#include <sofa/component/engine/MergeSets.h>
+#include <SofaEngine/MergeSets.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
 

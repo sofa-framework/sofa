@@ -23,9 +23,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/component/constraintset/LMConstraintDirectSolver.h>
+#include <SofaConstraint/LMConstraintDirectSolver.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/constraintset/ContactDescription.h>
+#include <SofaConstraint/ContactDescription.h>
 #include <sofa/core/ObjectFactory.h>
 #include <Eigen/QR>
 #include <Eigen/SVD>

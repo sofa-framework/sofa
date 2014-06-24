@@ -25,7 +25,7 @@
 // Author: François Faure, INRIA-UJF, (C) 2006
 //
 // Copyright: See COPYING file that comes with this distribution
-#include <sofa/component/odesolver/StaticSolver.h>
+#include <SofaImplicitOdeSolver/StaticSolver.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/MechanicalOperations.h>

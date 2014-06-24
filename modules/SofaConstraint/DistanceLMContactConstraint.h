@@ -31,7 +31,7 @@
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/LMConstraint.h>
-#include <sofa/component/constraintset/ContactDescription.h>
+#include <SofaConstraint/ContactDescription.h>
 #include <sofa/simulation/common/Node.h>
 
 

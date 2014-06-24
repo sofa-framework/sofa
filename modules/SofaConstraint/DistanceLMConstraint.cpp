@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_CONSTRAINTSET_DISTANCELMCONSTRAINT_CPP
 #include <sofa/component/component.h>
-#include <sofa/component/constraintset/DistanceLMConstraint.inl>
+#include <SofaConstraint/DistanceLMConstraint.inl>
 #include <sofa/core/behavior/LMConstraint.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>

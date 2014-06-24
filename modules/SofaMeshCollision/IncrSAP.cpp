@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/collision/IncrSAP.inl>
+#include <SofaMeshCollision/IncrSAP.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

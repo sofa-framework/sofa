@@ -25,13 +25,13 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_TRIANGULARQUADRATICSPRINGSFORCEFIELD_INL
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGULARQUADRATICSPRINGSFORCEFIELD_INL
 
-#include <sofa/component/forcefield/TriangularQuadraticSpringsForceField.h>
+#include <SofaDeformable/TriangularQuadraticSpringsForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
 #include <sofa/helper/gl/template.h>
-#include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
-#include <sofa/component/topology/TopologyData.inl>
+#include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/TopologyData.inl>
 #include <sofa/core/behavior/ForceField.inl>
 
 namespace sofa

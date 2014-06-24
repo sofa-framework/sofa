@@ -25,26 +25,26 @@
 #ifndef SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPING_INL
 #define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPING_INL
 
-#include <sofa/component/mapping/BarycentricMapping.h>
+#include <SofaBaseMechanics/BarycentricMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/Mapping.inl>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/MechanicalState.h>
 
-#include <sofa/component/topology/RegularGridTopology.h>
-#include <sofa/component/topology/SparseGridTopology.h>
-#include <sofa/component/topology/EdgeSetTopologyContainer.h>
-#include <sofa/component/topology/TriangleSetTopologyContainer.h>
-#include <sofa/component/topology/QuadSetTopologyContainer.h>
-#include <sofa/component/topology/TetrahedronSetTopologyContainer.h>
-#include <sofa/component/topology/HexahedronSetTopologyContainer.h>
-#include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
-#include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
-#include <sofa/component/topology/QuadSetGeometryAlgorithms.h>
-#include <sofa/component/topology/TetrahedronSetGeometryAlgorithms.h>
-#include <sofa/component/topology/HexahedronSetGeometryAlgorithms.h>
-#include <sofa/component/topology/TopologyData.inl>
+#include <SofaBaseTopology/RegularGridTopology.h>
+#include <SofaBaseTopology/SparseGridTopology.h>
+#include <SofaBaseTopology/EdgeSetTopologyContainer.h>
+#include <SofaBaseTopology/TriangleSetTopologyContainer.h>
+#include <SofaBaseTopology/QuadSetTopologyContainer.h>
+#include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
+#include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
+#include <SofaBaseTopology/EdgeSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/QuadSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/TopologyData.inl>
 
 #include <sofa/helper/vector.h>
 #include <sofa/helper/gl/template.h>
@@ -55,7 +55,7 @@
 #include <algorithm>
 #include <iostream>
 
-//#include <sofa/component/collision/MeshIntTool.h>
+//#include <SofaMeshCollision/MeshIntTool.h>
 
 
 namespace sofa

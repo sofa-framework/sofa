@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_EXTRUDEQUADSANDGENERATEHEXAS_CPP
-#include <sofa/component/engine/ExtrudeQuadsAndGenerateHexas.inl>
+#include <SofaEngine/ExtrudeQuadsAndGenerateHexas.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
 

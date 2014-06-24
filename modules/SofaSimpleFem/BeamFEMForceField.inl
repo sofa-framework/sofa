@@ -26,11 +26,11 @@
 #define SOFA_COMPONENT_FORCEFIELD_BEAMFEMFORCEFIELD_INL
 
 #include <sofa/core/behavior/ForceField.inl>
-#include <sofa/component/topology/TopologyData.inl>
-#include <sofa/component/forcefield/BeamFEMForceField.h>
+#include <SofaBaseTopology/TopologyData.inl>
+#include "BeamFEMForceField.h"
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/component/topology/GridTopology.h>
+#include <SofaBaseTopology/GridTopology.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/Axis.h>
@@ -44,8 +44,8 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/simulation/common/Node.h>
 
-#include <sofa/component/container/StiffnessContainer.h>
-#include <sofa/component/container/PoissonContainer.h>
+#include "StiffnessContainer.h"
+#include "PoissonContainer.h"
 
 
 

@@ -36,7 +36,7 @@
 #ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_LINEBENDINGSPRINGS_H
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_LINEBENDINGSPRINGS_H
 
-#include <sofa/component/interactionforcefield/StiffSpringForceField.h>
+#include <SofaDeformable/StiffSpringForceField.h>
 #include <map>
 
 namespace sofa

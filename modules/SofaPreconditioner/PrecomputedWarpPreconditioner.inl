@@ -30,9 +30,9 @@
 #define SOFA_COMPONENT_LINEARSOLVER_PPRECOMPUTEDWARPPRECONDITIONER_INL
 
 #include "PrecomputedWarpPreconditioner.h"
-#include <sofa/component/linearsolver/NewMatMatrix.h>
-#include <sofa/component/linearsolver/FullMatrix.h>
-#include <sofa/component/linearsolver/SparseMatrix.h>
+#include <SofaDenseSolver/NewMatMatrix.h>
+#include <SofaBaseLinearSolver/FullMatrix.h>
+#include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <iostream>
 #include "sofa/helper/system/thread/CTime.h"
 #include <sofa/core/objectmodel/BaseContext.h>
@@ -40,9 +40,9 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <math.h>
 #include <sofa/helper/system/thread/CTime.h>
-#include <sofa/component/forcefield/TetrahedronFEMForceField.h>
+#include <SofaSimpleFem/TetrahedronFEMForceField.h>
 #include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/component/linearsolver/MatrixLinearSolver.h>
+#include <SofaBaseLinearSolver/MatrixLinearSolver.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/core/behavior/RotationFinder.h>
 #include <sofa/core/behavior/LinearSolver.h>
@@ -50,14 +50,14 @@
 #include <sofa/helper/gl/Axis.h>
 #include <sofa/helper/Quater.h>
 
-#include <sofa/component/odesolver/EulerImplicitSolver.h>
-#include <sofa/component/linearsolver/CGLinearSolver.h>
+#include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
+#include <SofaBaseLinearSolver/CGLinearSolver.h>
 
 #ifdef SOFA_HAVE_CSPARSE
-#include <sofa/component/linearsolver/SparseCholeskySolver.h>
-#include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
+#include <SofaSparseSolver/SparseCholeskySolver.h>
+#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 #else
-#include <sofa/component/linearsolver/CholeskySolver.h>
+#include <SofaBaseLinearSolver/CholeskySolver.h>
 #endif
 
 

@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/loader/SphereLoader.h>
+#include <SofaLoader/SphereLoader.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/core/ObjectFactory.h>
 

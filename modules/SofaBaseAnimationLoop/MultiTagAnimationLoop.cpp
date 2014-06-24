@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/animationloop/MultiTagAnimationLoop.h>
+#include <SofaBaseAnimationLoop/MultiTagAnimationLoop.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>

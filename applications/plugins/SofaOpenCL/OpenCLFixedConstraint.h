@@ -26,7 +26,7 @@
 #define SOFAOPENCL_OPENCLFIXEDCONSTRAINT_H
 
 #include "OpenCLTypes.h"
-#include <sofa/component/projectiveconstraintset/FixedConstraint.h>
+#include <SofaBoundaryCondition/FixedConstraint.h>
 
 namespace sofa
 {

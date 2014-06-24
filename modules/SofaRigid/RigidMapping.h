@@ -28,9 +28,9 @@
 #include <sofa/core/Mapping.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
-#include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
+#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 #ifdef SOFA_HAVE_EIGEN2
-#include <sofa/component/linearsolver/EigenSparseMatrix.h>
+#include <SofaEigen2Solver/EigenSparseMatrix.h>
 #endif
 #include <sofa/component/component.h>
 

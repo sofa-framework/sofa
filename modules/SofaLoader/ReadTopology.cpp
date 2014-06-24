@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/misc/ReadTopology.inl>
+#include <SofaLoader/ReadTopology.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_TOPOLOGY_POINTSETGEOMETRYALGORITHMS_CPP
-#include <sofa/component/topology/PointSetGeometryAlgorithms.inl>
+#include <SofaBaseTopology/PointSetGeometryAlgorithms.inl>
 #include <sofa/core/ObjectFactory.h>
 namespace sofa
 {

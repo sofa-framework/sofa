@@ -34,7 +34,7 @@
 #include <sofa/component/component.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/component/visualmodel/VisualModelImpl.h>
+#include <SofaBaseVisual/VisualModelImpl.h>
 
 #define   NB_MAX_TEXTURES 16
 

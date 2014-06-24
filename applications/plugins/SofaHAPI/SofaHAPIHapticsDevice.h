@@ -37,8 +37,8 @@
 #include <sofa/defaulttype/SolidTypes.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/behavior/BaseController.h>
-#include <sofa/component/controller/Controller.h>
-#include <sofa/component/controller/ForceFeedback.h>
+#include <SofaUserInteraction/Controller.h>
+#include <SofaHaptics/ForceFeedback.h>
 
 namespace SofaHAPI
 {

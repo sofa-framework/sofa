@@ -25,15 +25,15 @@
 #ifndef SOFA_COMPONENT_COLLISION_CONSTRAINTATTACHBODYPERFORMER_H
 #define SOFA_COMPONENT_COLLISION_CONSTRAINTATTACHBODYPERFORMER_H
 
-#include <sofa/component/collision/InteractionPerformer.h>
-#include <sofa/component/collision/BaseContactMapper.h>
+#include <SofaUserInteraction/InteractionPerformer.h>
+#include <SofaBaseCollision/BaseContactMapper.h>
 #include <sofa/core/behavior/BaseForceField.h>
-#include <sofa/component/interactionforcefield/SpringForceField.h>
-#include <sofa/component/interactionforcefield/StiffSpringForceField.h>
-#include <sofa/component/configurationsetting/AttachBodyButtonSetting.h>
+#include <SofaDeformable/SpringForceField.h>
+#include <SofaDeformable/StiffSpringForceField.h>
+#include <SofaGraphComponent/AttachBodyButtonSetting.h>
 #include <sofa/core/visual/DisplayFlags.h>
-#include <sofa/component/constraintset/BilateralInteractionConstraint.h>
-#include <sofa/component/configurationsetting/AttachBodyButtonSetting.h>
+#include <SofaConstraint/BilateralInteractionConstraint.h>
+#include <SofaGraphComponent/AttachBodyButtonSetting.h>
 
 namespace sofa
 {

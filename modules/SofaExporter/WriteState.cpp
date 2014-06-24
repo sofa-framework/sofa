@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/misc/WriteState.inl>
+#include <SofaExporter/WriteState.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

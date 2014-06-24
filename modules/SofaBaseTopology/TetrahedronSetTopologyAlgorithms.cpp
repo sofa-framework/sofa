@@ -23,8 +23,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETTOPOLOGYALGORITHMS_CPP
-#include <sofa/component/topology/TetrahedronSetTopologyAlgorithms.h>
-#include <sofa/component/topology/TetrahedronSetTopologyAlgorithms.inl>
+#include <SofaBaseTopology/TetrahedronSetTopologyAlgorithms.h>
+#include <SofaBaseTopology/TetrahedronSetTopologyAlgorithms.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>
 

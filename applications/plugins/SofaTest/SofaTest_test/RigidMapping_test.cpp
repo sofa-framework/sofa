@@ -30,8 +30,8 @@
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/component/mapping/RigidMapping.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaRigid/RigidMapping.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 
 
 namespace sofa {

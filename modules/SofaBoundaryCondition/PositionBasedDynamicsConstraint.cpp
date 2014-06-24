@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_POSITIONBASEDDYNAMICSCONSTRAINT_CPP
-#include <sofa/component/projectiveconstraintset/PositionBasedDynamicsConstraint.inl>
+#include <SofaBoundaryCondition/PositionBasedDynamicsConstraint.inl>
 #include <sofa/core/behavior/ProjectiveConstraintSet.inl>
 #include <sofa/core/ObjectFactory.h>
 

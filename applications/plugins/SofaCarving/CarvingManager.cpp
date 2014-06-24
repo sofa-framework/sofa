@@ -33,7 +33,7 @@
 
 #include <sofa/core/topology/TopologicalMapping.h>
 #include <sofa/helper/gl/template.h>
-#include <sofa/component/collision/TopologicalChangeManager.h>
+#include <SofaUserInteraction/TopologicalChangeManager.h>
 #include <sofa/helper/AdvancedTimer.h>
 
 namespace sofa

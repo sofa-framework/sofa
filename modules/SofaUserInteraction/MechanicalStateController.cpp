@@ -34,7 +34,7 @@
 //
 //
 #define SOFA_COMPONENT_CONTROLLER_MECHANICALSTATECONTROLLER_CPP
-#include <sofa/component/controller/MechanicalStateController.inl>
+#include <SofaUserInteraction/MechanicalStateController.inl>
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>

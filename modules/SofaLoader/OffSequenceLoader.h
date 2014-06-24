@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_LOADER_OFFSEQUENCELOADER_H
 #define SOFA_COMPONENT_LOADER_OFFSEQUENCELOADER_H
 
-#include <sofa/component/loader/MeshOffLoader.h>
+#include <SofaLoader/MeshOffLoader.h>
 #include <sofa/component/component.h>
 
 namespace sofa

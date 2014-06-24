@@ -28,14 +28,14 @@
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/component/forcefield/TetrahedronFEMForceField.h>
+#include <SofaSimpleFem/TetrahedronFEMForceField.h>
 #include <sofa/defaulttype/Mat.h>
-#include <sofa/component/linearsolver/FullVector.h>
+#include <SofaBaseLinearSolver/FullVector.h>
 #include <math.h>
 #include <sofa/core/behavior/RotationMatrix.h>
 #include <sofa/core/behavior/BaseRotationFinder.h>
 #include <sofa/core/behavior/RotationMatrix.h>
-#include <sofa/component/linearsolver/MatrixLinearSolver.h>
+#include <SofaBaseLinearSolver/MatrixLinearSolver.h>
 
 #include <map>
 

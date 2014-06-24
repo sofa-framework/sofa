@@ -22,13 +22,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/topology/SimpleTesselatedHexaTopologicalMapping.h>
+#include <SofaTopologyMapping/SimpleTesselatedHexaTopologicalMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/component/topology/HexahedronSetTopologyContainer.h>
-#include <sofa/component/topology/HexahedronSetTopologyModifier.h>
+#include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
+#include <SofaBaseTopology/HexahedronSetTopologyModifier.h>
 #include <sofa/core/topology/TopologyChange.h>
 
 

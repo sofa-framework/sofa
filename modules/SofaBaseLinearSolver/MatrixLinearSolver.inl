@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_LINEARSOLVER_MATRIXLINEARSOLVER_INL
 #define SOFA_COMPONENT_LINEARSOLVER_MATRIXLINEARSOLVER_INL
 
-#include <sofa/component/linearsolver/MatrixLinearSolver.h>
+#include <SofaBaseLinearSolver/MatrixLinearSolver.h>
 
 namespace sofa {
 

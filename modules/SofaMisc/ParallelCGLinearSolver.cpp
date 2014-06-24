@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/linearsolver/ParallelCGLinearSolver.inl>
+#include <SofaMisc/ParallelCGLinearSolver.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <math.h>
 #include <iostream>

@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/helper/system/config.h>
-#include <sofa/component/initNonUniformFEM.h>
+#include <SofaNonUniformFem/initNonUniformFEM.h>
 
 
 namespace sofa

@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_PLANEROI_CPP
-#include <sofa/component/engine/PlaneROI.inl>
+#include <SofaEngine/PlaneROI.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/RigidTypes.h>
 

@@ -37,7 +37,7 @@
 #include <sofa/simulation/common/Visitor.h>
 #include <sofa/component/component.h>
 
-#include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
 #include <sofa/defaulttype/Vec.h>
 
 #ifdef SOFA_HAVE_ZLIB

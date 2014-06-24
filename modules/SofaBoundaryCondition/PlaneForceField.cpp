@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_PLANEFORCEFIELD_CPP
 
-#include <sofa/component/forcefield/PlaneForceField.inl>
+#include <SofaBoundaryCondition/PlaneForceField.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>
 #include <limits>

@@ -1,4 +1,4 @@
-#include <sofa/component/collision/MeshIntTool.inl>
+#include <SofaMeshCollision/MeshIntTool.inl>
 
 namespace sofa
 {

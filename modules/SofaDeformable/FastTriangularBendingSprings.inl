@@ -36,14 +36,14 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_FastTriangularBendingSprings_INL
 #define SOFA_COMPONENT_FORCEFIELD_FastTriangularBendingSprings_INL
 
-#include <sofa/component/forcefield/FastTriangularBendingSprings.h>
+#include <SofaDeformable/FastTriangularBendingSprings.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/TopologyChange.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
 
 #include <sofa/helper/gl/template.h>
-#include <sofa/component/topology/TopologyData.inl>
+#include <SofaBaseTopology/TopologyData.inl>
 
 namespace sofa
 {

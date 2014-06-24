@@ -25,13 +25,13 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_QUADULARBENDINGSPRINGS_INL
 #define SOFA_COMPONENT_FORCEFIELD_QUADULARBENDINGSPRINGS_INL
 
-#include <sofa/component/forcefield/QuadularBendingSprings.h>
+#include <SofaDeformable/QuadularBendingSprings.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <iostream>
 
 #include <sofa/helper/gl/template.h>
 
-#include <sofa/component/topology/TopologyData.inl>
+#include <SofaBaseTopology/TopologyData.inl>
 
 #include <sofa/core/topology/TopologyChange.h>
 

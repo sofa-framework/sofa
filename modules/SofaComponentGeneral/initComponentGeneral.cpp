@@ -23,29 +23,29 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/helper/system/config.h>
-#include <sofa/component/initComponentGeneral.h>
-#include <sofa/component/initValidation.h>
-#include <sofa/component/initExporter.h>
-#include <sofa/component/initEngine.h>
-#include <sofa/component/initGraphComponent.h>
-#include <sofa/component/initTopologyMapping.h>
-#include <sofa/component/initBoundaryCondition.h>
-#include <sofa/component/initUserInteraction.h>
-#include <sofa/component/initConstraint.h>
-#include <sofa/component/initHaptics.h>
-#include <sofa/component/initDenseSolver.h>
+#include <SofaComponentGeneral/initComponentGeneral.h>
+#include <SofaValidation/initValidation.h>
+#include <SofaExporter/initExporter.h>
+#include <SofaEngine/initEngine.h>
+#include <SofaGraphComponent/initGraphComponent.h>
+#include <SofaTopologyMapping/initTopologyMapping.h>
+#include <SofaBoundaryCondition/initBoundaryCondition.h>
+#include <SofaUserInteraction/initUserInteraction.h>
+#include <SofaConstraint/initConstraint.h>
+#include <SofaHaptics/initHaptics.h>
+#include <SofaDenseSolver/initDenseSolver.h>
 #ifdef SOFA_HAVE_CSPARSE
-#include <sofa/component/initSparseSolver.h>
+#include <SofaSparseSolver/initSparseSolver.h>
 #endif
 #ifdef SOFA_HAVE_TAUCS
-#include <sofa/component/initTaucsSolver.h>
+#include <SofaTaucsSolver/initTaucsSolver.h>
 #endif
 #ifdef SOFA_HAVE_PARDISO
-#include <sofa/component/initPardisoSolver.h>
+#include <SofaPardisoSolver/initPardisoSolver.h>
 #endif
 
-#include <sofa/component/initPreconditioner.h>
-#include <sofa/component/initOpenGLVisual.h>
+#include <SofaPreconditioner/initPreconditioner.h>
+#include <SofaOpenglVisual/initOpenGLVisual.h>
 
 
 namespace sofa

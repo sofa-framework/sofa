@@ -29,7 +29,7 @@
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_AdaptativeSpringForceField_INL
 
 #include <sofa/component/interactionforcefield/AdaptativeSpringForceField.h>
-#include <sofa/component/interactionforcefield/SpringForceField.inl>
+#include <SofaDeformable/SpringForceField.inl>
 #include <sofa/helper/AdvancedTimer.h>
 
 #include <sofa/core/visual/VisualParams.h>

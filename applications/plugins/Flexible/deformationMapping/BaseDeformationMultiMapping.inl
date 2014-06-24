@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_MAPPING_BaseDeformationMultiMapping_INL
 
 #include "../deformationMapping/BaseDeformationMultiMapping.h"
-#include <sofa/component/visualmodel/VisualModelImpl.h>
+#include <SofaBaseVisual/VisualModelImpl.h>
 #include "../quadrature/BaseGaussPointSampler.h"
 #include <sofa/helper/gl/Color.h>
 #include <sofa/helper/system/glu.h>

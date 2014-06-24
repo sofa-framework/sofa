@@ -23,9 +23,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_CONSTRAINTSET_UNILATERALINTERACTIONCONSTRAINT_CPP
-#include <sofa/component/constraintset/UnilateralInteractionConstraint.inl>
+#include <SofaConstraint/UnilateralInteractionConstraint.inl>
 #include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

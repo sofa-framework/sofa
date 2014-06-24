@@ -37,7 +37,7 @@
 #ifndef SOFA_COMPONENT_CONTROLLER_MECHANICALSTATECONTROLLEROMNI_INL
 #define SOFA_COMPONENT_CONTROLLER_MECHANICALSTATECONTROLLEROMNI_INL
 
-#include <sofa/component/controller/MechanicalStateControllerOmni.h>
+#include <SofaUserInteraction/MechanicalStateControllerOmni.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/MouseEvent.h>

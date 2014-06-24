@@ -25,9 +25,9 @@
 #ifndef SOFA_COMPONENT_COLLISION_BARYCENTRICPENALITYCONTACT_INL
 #define SOFA_COMPONENT_COLLISION_BARYCENTRICPENALITYCONTACT_INL
 
-#include <sofa/component/collision/BarycentricPenalityContact.h>
+#include <SofaMeshCollision/BarycentricPenalityContact.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/collision/RigidContactMapper.inl>
+#include <SofaMeshCollision/RigidContactMapper.inl>
 
 namespace sofa
 {

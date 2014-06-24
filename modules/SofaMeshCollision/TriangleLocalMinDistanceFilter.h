@@ -25,11 +25,11 @@
 #ifndef SOFA_COMPONENT_COLLISION_TRIANGLELOCALMINDISTANCEFILTER_H
 #define SOFA_COMPONENT_COLLISION_TRIANGLELOCALMINDISTANCEFILTER_H
 
-#include <sofa/component/collision/LocalMinDistanceFilter.h>
-#include <sofa/component/collision/LineLocalMinDistanceFilter.h>
-#include <sofa/component/collision/PointLocalMinDistanceFilter.h>
-#include <sofa/component/collision/TriangleModel.h>
-#include <sofa/component/topology/TopologyData.h>
+#include <SofaMeshCollision/LocalMinDistanceFilter.h>
+#include <SofaMeshCollision/LineLocalMinDistanceFilter.h>
+#include <SofaMeshCollision/PointLocalMinDistanceFilter.h>
+#include <SofaMeshCollision/TriangleModel.h>
+#include <SofaBaseTopology/TopologyData.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/AdvancedTimer.h>

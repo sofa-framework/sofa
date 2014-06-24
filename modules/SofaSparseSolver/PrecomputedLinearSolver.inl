@@ -29,8 +29,8 @@
 #define SOFA_COMPONENT_COLLISION_PRECOMPUTEDLINEARSOLVER_INL
 
 #include "PrecomputedLinearSolver.h"
-#include <sofa/component/linearsolver/FullMatrix.h>
-#include <sofa/component/linearsolver/SparseMatrix.h>
+#include <SofaBaseLinearSolver/FullMatrix.h>
+#include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <sofa/core/ObjectFactory.h>
 #include <iostream>
 #include "sofa/helper/system/thread/CTime.h"
@@ -38,18 +38,18 @@
 #include <sofa/core/behavior/LinearSolver.h>
 #include <math.h>
 #include <sofa/helper/system/thread/CTime.h>
-#include <sofa/component/forcefield/TetrahedronFEMForceField.h>
+#include <SofaSimpleFem/forcefield/TetrahedronFEMForceField.h>
 #include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/component/linearsolver/MatrixLinearSolver.h>
+#include <SofaBaseLinearSolver/MatrixLinearSolver.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/core/behavior/LinearSolver.h>
 
-#include <sofa/component/odesolver/EulerImplicitSolver.h>
-#include <sofa/component/linearsolver/CGLinearSolver.h>
+#include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
+#include <SofaBaseLinearSolver/CGLinearSolver.h>
 
-#include <sofa/component/linearsolver/SparseCholeskySolver.h>
-#include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
-#include <sofa/component/linearsolver/CholeskySolver.h>
+#include <SofaSparseSolver/SparseCholeskySolver.h>
+#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
+#include <SofaBaseLinearSolver/CholeskySolver.h>
 
 namespace sofa
 {

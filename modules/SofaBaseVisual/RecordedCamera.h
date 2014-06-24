@@ -25,7 +25,7 @@
 #ifndef RECORDEDCAMERA_H
 #define RECORDEDCAMERA_H
 
-#include <sofa/component/visualmodel/BaseCamera.h>
+#include <SofaBaseVisual/BaseCamera.h>
 
 namespace sofa
 {

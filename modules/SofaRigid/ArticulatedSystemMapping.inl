@@ -26,7 +26,7 @@
 #ifndef SOFA_COMPONENT_MAPPING_ARTICULATEDSYSTEMMAPPING_INL
 #define SOFA_COMPONENT_MAPPING_ARTICULATEDSYSTEMMAPPING_INL
 
-#include <sofa/component/mapping/ArticulatedSystemMapping.h>
+#include <SofaRigid/ArticulatedSystemMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/Multi2Mapping.inl>

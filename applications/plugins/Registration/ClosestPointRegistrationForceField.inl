@@ -39,8 +39,8 @@
     #include <omp.h>
 #endif
 
-#include <sofa/component/loader/MeshObjLoader.h>
-#include <sofa/component/engine/NormalsFromPoints.h>
+#include <SofaLoader/MeshObjLoader.h>
+#include <SofaEngine/NormalsFromPoints.h>
 #include <limits>
 #include <set>
 #include <iterator>

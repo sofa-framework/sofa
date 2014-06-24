@@ -26,7 +26,7 @@
 #define SOFA_GPU_CUDA_CUDACOLLISIONDETECTION_H
 
 #include <sofa/core/collision/DetectionOutput.h>
-#include <sofa/component/collision/BruteForceDetection.h>
+#include <SofaBaseCollision/BruteForceDetection.h>
 #include <sofa/gpu/cuda/CudaDistanceGridCollisionModel.h>
 #include <sofa/gpu/cuda/CudaSphereModel.h>
 #include <sofa/gpu/cuda/CudaPointModel.h>

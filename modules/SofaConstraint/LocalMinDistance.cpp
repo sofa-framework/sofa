@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/collision/LocalMinDistance.h>
+#include <SofaConstraint/LocalMinDistance.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/proximity.h>
 #include <sofa/simulation/common/Node.h>

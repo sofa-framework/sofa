@@ -3,8 +3,8 @@
 
 #include "initCompliant.h"
 #include <sofa/simulation/common/MechanicalVisitor.h>
-#include <sofa/component/linearsolver/EigenSparseMatrix.h>
-#include <sofa/component/linearsolver/EigenVector.h>
+#include <SofaEigen2Solver/EigenSparseMatrix.h>
+#include <SofaEigen2Solver/EigenVector.h>
 #include <map>
 
 #include "AssembledSystem.h"

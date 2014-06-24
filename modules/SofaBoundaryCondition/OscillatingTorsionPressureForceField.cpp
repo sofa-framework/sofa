@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_OSCILLATINGTORSIONPRESSUREFORCEFIELD_CPP
 
-#include <sofa/component/forcefield/OscillatingTorsionPressureForceField.inl>
+#include <SofaBoundaryCondition/OscillatingTorsionPressureForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
 

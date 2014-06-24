@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/mass/MatrixMass.inl>
+#include <SofaMiscForceField/MatrixMass.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec3Types.h>

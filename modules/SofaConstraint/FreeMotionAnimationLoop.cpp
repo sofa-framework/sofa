@@ -22,10 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/animationloop/FreeMotionAnimationLoop.h>
+#include <SofaConstraint/FreeMotionAnimationLoop.h>
 #include <sofa/core/visual/VisualParams.h>
 
-#include <sofa/component/constraintset/LCPConstraintSolver.h>
+#include <SofaConstraint/LCPConstraintSolver.h>
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/VecId.h>

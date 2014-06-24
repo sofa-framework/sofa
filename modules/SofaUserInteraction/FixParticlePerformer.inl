@@ -23,19 +23,19 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/component/collision/FixParticlePerformer.h>
+#include <SofaUserInteraction/FixParticlePerformer.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/projectiveconstraintset/FixedConstraint.h>
+#include <SofaBoundaryCondition/FixedConstraint.h>
 
 #include <sofa/simulation/common/Simulation.h>
 
 #include <sofa/simulation/common/InitVisitor.h>
 #include <sofa/simulation/common/DeleteVisitor.h>
 
-#include <sofa/component/collision/SphereModel.h>
-#include <sofa/component/collision/TriangleModel.h>
-#include <sofa/component/collision/OBBModel.h>
-#include <sofa/component/collision/CapsuleModel.h>
+#include <SofaBaseCollision/SphereModel.h>
+#include <SofaMeshCollision/TriangleModel.h>
+#include <SofaBaseCollision/OBBModel.h>
+#include <SofaBaseCollision/CapsuleModel.h>
 
 
 namespace sofa

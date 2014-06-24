@@ -13,7 +13,7 @@
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Vec.h>
 
-#include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
+#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 
 #include "../shapeFunction/BaseShapeFunction.h"
 //#include "../deformationMapping/LinearJacobianBlock.h"

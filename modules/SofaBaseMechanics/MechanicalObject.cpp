@@ -23,10 +23,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #ifdef SOFA_SMP
-#include <sofa/component/container/MechanicalObjectTasks.inl>
+#include <SofaBaseMechanics/MechanicalObjectTasks.inl>
 #endif
 #define SOFA_COMPONENT_CONTAINER_MECHANICALOBJECT_CPP
-#include <sofa/component/container/MechanicalObject.inl>
+#include <SofaBaseMechanics/MechanicalObject.inl>
 #include <sofa/helper/Quater.h>
 #include <sofa/core/ObjectFactory.h>
 

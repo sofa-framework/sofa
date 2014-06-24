@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONFEMFORCEFIELD_CPP
-#include <sofa/component/forcefield/TetrahedronFEMForceField.inl>
+#include "TetrahedronFEMForceField.inl"
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>

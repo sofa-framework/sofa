@@ -25,10 +25,10 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_TRIANGLEPRESSUREFORCEFIELD_INL
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGLEPRESSUREFORCEFIELD_INL
 
-#include <sofa/component/forcefield/TrianglePressureForceField.h>
-#include <sofa/component/topology/TopologySparseData.inl>
+#include <SofaBoundaryCondition/TrianglePressureForceField.h>
+#include <SofaBaseTopology/TopologySparseData.inl>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
 #include <sofa/helper/gl/template.h>
 #include <vector>
 #include <set>

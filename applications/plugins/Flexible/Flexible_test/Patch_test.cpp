@@ -36,7 +36,7 @@
 
 // Including component
 #include <sofa/component/projectiveconstraintset/PatchTestMovementConstraint.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 
 
 namespace sofa {

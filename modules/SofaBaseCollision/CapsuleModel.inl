@@ -8,12 +8,12 @@
 
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/collision/CubeModel.h>
+#include <SofaBaseCollision/CubeModel.h>
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/simulation/common/Simulation.h>
-#include <sofa/component/collision/CapsuleModel.h>
+#include <SofaBaseCollision/CapsuleModel.h>
 namespace sofa
 {
 

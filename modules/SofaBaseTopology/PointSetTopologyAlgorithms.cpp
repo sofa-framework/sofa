@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include <sofa/core/ObjectFactory.h>
 #define SOFA_COMPONENT_TOPOLOGY_POINTSETTOPOLOGYALGORITHMS_CPP
-#include <sofa/component/topology/PointSetTopologyAlgorithms.inl>
+#include <SofaBaseTopology/PointSetTopologyAlgorithms.inl>
 
 
 namespace sofa

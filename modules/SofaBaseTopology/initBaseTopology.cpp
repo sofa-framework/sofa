@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/helper/system/config.h>
-#include <sofa/component/initBaseTopology.h>
+#include <SofaBaseTopology/initBaseTopology.h>
 
 
 namespace sofa

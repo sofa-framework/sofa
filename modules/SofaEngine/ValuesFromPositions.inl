@@ -29,7 +29,7 @@
 #pragma once
 #endif
 
-#include <sofa/component/engine/ValuesFromPositions.h>
+#include <SofaEngine/ValuesFromPositions.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
 

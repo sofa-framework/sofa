@@ -25,13 +25,13 @@
 #ifndef SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_INL
 #define SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_INL
 
-#include <sofa/component/collision/ComponentMouseInteraction.h>
+#include <SofaUserInteraction/ComponentMouseInteraction.h>
 #include <sofa/core/visual/VisualParams.h>
 
-#include <sofa/component/container/MechanicalObject.h>
-#include <sofa/component/collision/RayModel.h>
-#include <sofa/component/collision/MouseInteractor.inl>
-#include <sofa/component/mapping/IdentityMapping.inl>
+#include <SofaBaseMechanics/MechanicalObject.h>
+#include <SofaUserInteraction/RayModel.h>
+#include <SofaUserInteraction/MouseInteractor.inl>
+#include <SofaBaseMechanics/IdentityMapping.inl>
 
 #include <sofa/simulation/common/InitVisitor.h>
 

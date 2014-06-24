@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/component/container/ArticulatedHierarchyContainer.inl>
+#include <SofaRigid/ArticulatedHierarchyContainer.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

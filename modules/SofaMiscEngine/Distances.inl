@@ -29,10 +29,10 @@
 #pragma once
 #endif
 
-#include <sofa/component/engine/Distances.h>
+#include <SofaMiscEngine/Distances.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/topology/DynamicSparseGridGeometryAlgorithms.inl>
-#include <sofa/component/topology/HexahedronSetGeometryAlgorithms.inl>
+#include <SofaNonUniformFem/DynamicSparseGridGeometryAlgorithms.inl>
+#include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.inl>
 #include <sofa/core/loader/VoxelLoader.h>
 #include <sofa/helper/gl/glText.inl>
 #include <algorithm>

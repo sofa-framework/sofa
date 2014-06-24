@@ -25,10 +25,10 @@
 #ifndef SOFA_COMPONENT_MAPPING_SKINNINGMAPPING_INL
 #define SOFA_COMPONENT_MAPPING_SKINNINGMAPPING_INL
 
-#include <sofa/component/mapping/SkinningMapping.h>
+#include <SofaRigid/SkinningMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 
-#include <sofa/component/topology/TriangleSetTopologyContainer.h>
+#include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 #include <sofa/core/Mapping.inl>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/helper/gl/Axis.h>

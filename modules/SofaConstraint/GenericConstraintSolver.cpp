@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/component/constraintset/GenericConstraintSolver.h>
+#include <SofaConstraint/GenericConstraintSolver.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/simulation/common/AnimateVisitor.h>

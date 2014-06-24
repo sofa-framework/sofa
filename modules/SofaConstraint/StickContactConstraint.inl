@@ -25,12 +25,12 @@
 #ifndef SOFA_COMPONENT_COLLISION_STICKCONTACTCONSTRAINT_INL
 #define SOFA_COMPONENT_COLLISION_STICKCONTACTCONSTRAINT_INL
 
-#include <sofa/component/collision/StickContactConstraint.h>
+#include <SofaConstraint/StickContactConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/collision/DefaultContactManager.h>
-#include <sofa/component/collision/BarycentricContactMapper.h>
-#include <sofa/component/collision/IdentityContactMapper.h>
-#include <sofa/component/collision/RigidContactMapper.h>
+#include <SofaBaseCollision/DefaultContactManager.h>
+#include <SofaMeshCollision/BarycentricContactMapper.h>
+#include <SofaMeshCollision/IdentityContactMapper.h>
+#include <SofaMeshCollision/RigidContactMapper.h>
 #include <sofa/simulation/common/Node.h>
 #include <iostream>
 

@@ -34,8 +34,8 @@
 #include <sofa/defaulttype/VecTypes.h>
 //#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/vector.h>
-#include <sofa/component/topology/TopologySubsetData.h>
-#include <sofa/component/linearsolver/EigenBaseSparseMatrix.h>
+#include <SofaBaseTopology/TopologySubsetData.h>
+#include <SofaEigen2Solver/EigenBaseSparseMatrix.h>
 #include <set>
 
 namespace sofa

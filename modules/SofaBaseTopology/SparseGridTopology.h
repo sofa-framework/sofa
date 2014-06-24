@@ -28,10 +28,10 @@
 #include <string>
 
 
-#include <sofa/component/topology/MeshTopology.h>
+#include <SofaBaseTopology/MeshTopology.h>
 #include <sofa/helper/MarchingCubeUtility.h>
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/component/topology/RegularGridTopology.h>
+#include <SofaBaseTopology/RegularGridTopology.h>
 
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/core/loader/VoxelLoader.h>

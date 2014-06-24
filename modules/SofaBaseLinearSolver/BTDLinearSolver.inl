@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_LINEARSOLVER_BTDLINEARSOLVER_INL
 
 #include "BTDLinearSolver.h"
-#include <sofa/component/linearsolver/MatrixLinearSolver.inl>
+#include <SofaBaseLinearSolver/MatrixLinearSolver.inl>
 
 
 namespace sofa

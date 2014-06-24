@@ -28,7 +28,7 @@
 #include <sofa/core/behavior/ConstraintCorrection.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
-#include <sofa/component/linearsolver/FullMatrix.h>
+#include <SofaBaseLinearSolver/FullMatrix.h>
 
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>

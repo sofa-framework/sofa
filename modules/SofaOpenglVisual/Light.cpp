@@ -34,9 +34,9 @@
 //
 //
 
-#include <sofa/component/visualmodel/Light.h>
+#include <SofaOpenglVisual/Light.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/visualmodel/LightManager.h>
+#include <SofaOpenglVisual/LightManager.h>
 #include <sofa/helper/system/glu.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/common/Simulation.h>

@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_HEXAHEDRONSETTOPOLOGYMODIFIER_H
 #define SOFA_COMPONENT_TOPOLOGY_HEXAHEDRONSETTOPOLOGYMODIFIER_H
 
-#include <sofa/component/topology/QuadSetTopologyModifier.h>
+#include <SofaBaseTopology/QuadSetTopologyModifier.h>
 
 namespace sofa
 {

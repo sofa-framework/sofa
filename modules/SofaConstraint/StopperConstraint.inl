@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_CONSTRAINTSET_STOPPERCONSTRAINT_INL
 #define SOFA_COMPONENT_CONSTRAINTSET_STOPPERCONSTRAINT_INL
 
-#include <sofa/component/constraintset/StopperConstraint.h>
+#include <SofaConstraint/StopperConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/defaulttype/Vec.h>

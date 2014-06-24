@@ -42,8 +42,8 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
-#include <sofa/component/topology/TopologySubsetData.inl>
-#include <sofa/component/topology/PointSetTopologyModifier.h>
+#include <SofaBaseTopology/TopologySubsetData.inl>
+#include <SofaBaseTopology/PointSetTopologyModifier.h>
 #include <sofa/core/topology/TopologyChange.h>
 #include <vector>
 #include <iterator>

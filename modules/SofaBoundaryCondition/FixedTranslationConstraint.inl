@@ -26,11 +26,11 @@
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDTRANSLATIONCONSTRAINT_INL
 
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/component/projectiveconstraintset/FixedTranslationConstraint.h>
+#include <SofaBoundaryCondition/FixedTranslationConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/core/behavior/ProjectiveConstraintSet.inl>
-#include <sofa/component/topology/TopologySubsetData.inl>
+#include <SofaBaseTopology/TopologySubsetData.inl>
 
 namespace sofa
 {

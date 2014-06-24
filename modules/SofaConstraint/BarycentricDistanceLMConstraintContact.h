@@ -27,13 +27,13 @@
 
 #include <sofa/core/collision/Contact.h>
 #include <sofa/core/collision/Intersection.h>
-#include <sofa/component/mapping/BarycentricMapping.h>
-#include <sofa/component/constraintset/DistanceLMContactConstraint.h>
+#include <SofaBaseMechanics/BarycentricMapping.h>
+#include <SofaConstraint/DistanceLMContactConstraint.h>
 #include <sofa/helper/Factory.h>
 
-#include <sofa/component/collision/BarycentricContactMapper.h>
-#include <sofa/component/collision/IdentityContactMapper.h>
-#include <sofa/component/collision/RigidContactMapper.inl>
+#include <SofaMeshCollision/BarycentricContactMapper.h>
+#include <SofaMeshCollision/IdentityContactMapper.h>
+#include <SofaMeshCollision/RigidContactMapper.inl>
 
 
 namespace sofa

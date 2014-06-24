@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGLEFEMFORCEFIELD_CPP
 
-#include <sofa/component/forcefield/TriangleFEMForceField.inl>
+#include "TriangleFEMForceField.inl"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/component/component.h>

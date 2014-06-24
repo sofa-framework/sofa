@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/behaviormodel/eulerianfluid/Fluid2D.h>
+#include <SofaEulerianFluid/Fluid2D.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/core/ObjectFactory.h>

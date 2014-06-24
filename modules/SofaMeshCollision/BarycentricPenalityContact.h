@@ -27,19 +27,19 @@
 
 #include <sofa/core/collision/Contact.h>
 #include <sofa/core/collision/Intersection.h>
-#include <sofa/component/mapping/BarycentricMapping.h>
+#include <SofaBaseMechanics/BarycentricMapping.h>
 //#ifdef SOFA_TEST_FRICTION
 //#include <sofa/component/forcefield/PenalityContactFrictionForceField.h>
 //#else
-#include <sofa/component/interactionforcefield/PenalityContactForceField.h>
+#include <SofaObjectInteraction/PenalityContactForceField.h>
 //#endif
 #include <sofa/helper/Factory.h>
 
-#include <sofa/component/collision/BarycentricContactMapper.h>
-#include <sofa/component/collision/IdentityContactMapper.h>
-#include <sofa/component/collision/RigidContactMapper.inl>
-#include <sofa/component/collision/OBBModel.h>
-#include <sofa/component/collision/CylinderModel.h>
+#include <SofaMeshCollision/BarycentricContactMapper.h>
+#include <SofaMeshCollision/IdentityContactMapper.h>
+#include <SofaMeshCollision/RigidContactMapper.inl>
+#include <SofaBaseCollision/OBBModel.h>
+#include <SofaBaseCollision/CylinderModel.h>
 
 
 namespace sofa

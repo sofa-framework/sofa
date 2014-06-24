@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_COLLISION_ADDFRAMEPERFORMER_H
 #define SOFA_COMPONENT_COLLISION_ADDFRAMEPERFORMER_H
 
-#include <sofa/component/collision/InteractionPerformer.h>
+#include <SofaUserInteraction/InteractionPerformer.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <../applications/plugins/frame/Blending.h>
 

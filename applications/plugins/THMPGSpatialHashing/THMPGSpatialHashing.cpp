@@ -1,8 +1,8 @@
 #include "THMPGSpatialHashing.h"
-#include <sofa/component/collision/SphereModel.h>
-#include <sofa/component/collision/TriangleModel.h>
-#include <sofa/component/collision/LineModel.h>
-#include <sofa/component/collision/OBBModel.h>
+#include <SofaBaseCollision/SphereModel.h>
+#include <SofaMeshCollision/TriangleModel.h>
+#include <SofaMeshCollision/LineModel.h>
+#include <SofaBaseCollision/OBBModel.h>
 
 #include <sofa/helper/FnDispatcher.h>
 #include <sofa/core/ObjectFactory.h>

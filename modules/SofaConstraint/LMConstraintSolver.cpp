@@ -23,11 +23,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/component/constraintset/LMConstraintSolver.h>
+#include <SofaConstraint/LMConstraintSolver.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/LinearSolver.h>
-#include <sofa/component/linearsolver/FullMatrix.h>
-#include <sofa/component/linearsolver/FullVector.h>
+#include <SofaBaseLinearSolver/FullMatrix.h>
+#include <SofaBaseLinearSolver/FullVector.h>
 #include <sofa/simulation/common/AnimateBeginEvent.h>
 
 #include <sofa/defaulttype/Quat.h>

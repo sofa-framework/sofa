@@ -30,7 +30,7 @@
 #include <sofa/helper/gl/GLSLShader.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/BoundingBox.h>
-#include <sofa/component/topology/TetrahedronSetTopologyContainer.h>
+#include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
 #include <limits>
 
 namespace sofa

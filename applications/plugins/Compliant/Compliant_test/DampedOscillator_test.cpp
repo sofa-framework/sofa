@@ -3,7 +3,7 @@
 #include <plugins/Compliant/numericalsolver/LDLTResponse.h>
 #include <plugins/Compliant/Compliant_test/Compliant_test.h>
 #include <plugins/Compliant/odesolver/AssembledSolver.h>
-#include <sofa/component/odesolver/EulerSolver.h>
+#include <SofaExplicitOdeSolver/EulerSolver.h>
 #include <plugins/SceneCreator/SceneCreator.h>
 
 

@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/misc/PauseAnimationOnEvent.h>
+#include <SofaGraphComponent/PauseAnimationOnEvent.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/common/PauseEvent.h>
 #include <sofa/core/ObjectFactory.h>

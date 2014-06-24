@@ -25,7 +25,7 @@
 #ifndef SCRIPTCONTROLLER_H
 #define SCRIPTCONTROLLER_H
 
-#include <sofa/component/controller/Controller.h>
+#include <SofaUserInteraction/Controller.h>
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/simulation/common/Node.h>

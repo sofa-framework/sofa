@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_VECTORSPRINGFORCEFIELD_CPP
-#include <sofa/component/interactionforcefield/VectorSpringForceField.inl>
+#include <SofaDeformable/VectorSpringForceField.inl>
 #include <sofa/core/behavior/PairInteractionForceField.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>

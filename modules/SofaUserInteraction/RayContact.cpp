@@ -22,11 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/collision/RayContact.h>
+#include <SofaUserInteraction/RayContact.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/collision/RayModel.h>
-#include <sofa/component/collision/SphereModel.h>
-#include <sofa/component/collision/TriangleModel.h>
+#include <SofaUserInteraction/RayModel.h>
+#include <SofaBaseCollision/SphereModel.h>
+#include <SofaMeshCollision/TriangleModel.h>
 
 namespace sofa
 {

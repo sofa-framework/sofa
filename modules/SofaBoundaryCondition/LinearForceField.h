@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_LINEARFORCEFIELD_H
 
 #include <sofa/core/behavior/ForceField.h>
-#include <sofa/component/topology/TopologySubsetData.h>
+#include <SofaBaseTopology/TopologySubsetData.h>
 
 namespace sofa
 {

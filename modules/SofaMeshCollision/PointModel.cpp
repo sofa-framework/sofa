@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/component/collision/PointModel.inl>
+#include <SofaMeshCollision/PointModel.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

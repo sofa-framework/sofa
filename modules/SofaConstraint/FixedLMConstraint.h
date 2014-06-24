@@ -27,7 +27,7 @@
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/LMConstraint.h>
-#include <sofa/component/topology/TopologySubsetData.h>
+#include <SofaBaseTopology/TopologySubsetData.h>
 #include <sofa/simulation/common/Node.h>
 
 

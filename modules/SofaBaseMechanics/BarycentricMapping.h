@@ -25,12 +25,12 @@
 #ifndef SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPING_H
 #define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPING_H
 
-#include <sofa/component/topology/TopologyData.h>
-#include <sofa/component/topology/RegularGridTopology.h>
-#include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
+#include <SofaBaseTopology/TopologyData.h>
+#include <SofaBaseTopology/RegularGridTopology.h>
+#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 
 #ifdef SOFA_HAVE_EIGEN2
-#include <sofa/component/linearsolver/EigenSparseMatrix.h>
+#include <SofaEigen2Solver/EigenSparseMatrix.h>
 #endif
 
 #include <sofa/core/Mapping.h>

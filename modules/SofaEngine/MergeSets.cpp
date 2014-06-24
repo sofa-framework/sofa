@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_MERGESETS_CPP
-#include <sofa/component/engine/MergeSets.inl>
+#include <SofaEngine/MergeSets.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

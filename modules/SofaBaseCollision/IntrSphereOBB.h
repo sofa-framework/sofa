@@ -1,9 +1,9 @@
 #ifndef INTRSPHEREOBB_H
 #define INTRSPHEREOBB_H
-#include <sofa/component/collision/OBBModel.h>
-#include <sofa/component/collision/SphereModel.h>
-#include <sofa/component/collision/IntrUtility3.h>
-#include <sofa/component/collision/Intersector.h>
+#include <SofaBaseCollision/OBBModel.h>
+#include <SofaBaseCollision/SphereModel.h>
+#include <SofaBaseCollision/IntrUtility3.h>
+#include <SofaBaseCollision/Intersector.h>
 
 namespace sofa{
 namespace component{

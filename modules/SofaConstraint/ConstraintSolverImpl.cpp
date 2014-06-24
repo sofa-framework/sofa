@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/component/constraintset/ConstraintSolverImpl.h>
+#include <SofaConstraint/ConstraintSolverImpl.h>
 #include <sofa/core/visual/VisualParams.h>
 
 namespace sofa

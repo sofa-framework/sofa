@@ -11,9 +11,9 @@
 #include <sofa/core/loader/MeshLoader.h>
 #include <sofa/core/topology/Topology.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/component/topology/MeshTopology.h>
-#include <sofa/component/topology/GridTopology.h>
-#include <sofa/component/topology/RegularGridTopology.h>
+#include <SofaBaseTopology/MeshTopology.h>
+#include <SofaBaseTopology/GridTopology.h>
+#include <SofaBaseTopology/RegularGridTopology.h>
 #include <sofa/component/typedef/Sofa_typedef.h>
 #include <sofa/component/typedef/Mapping_double.h>
 #include <sofa/core/BaseMapping.h>

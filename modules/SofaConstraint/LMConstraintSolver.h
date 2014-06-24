@@ -33,7 +33,7 @@
 #include <sofa/component/component.h>
 
 
-#include <sofa/component/linearsolver/EigenMatrixManipulator.h>
+#include <SofaEigen2Solver/EigenMatrixManipulator.h>
 
 
 namespace sofa

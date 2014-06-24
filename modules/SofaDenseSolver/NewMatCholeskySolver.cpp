@@ -25,8 +25,8 @@
 // Author: Hadrien Courtecuisse
 //
 // Copyright: See COPYING file that comes with this distribution
-#include <sofa/component/linearsolver/CholeskySolver.inl>
-#include <sofa/component/linearsolver/NewMatMatrix.h>
+#include <SofaBaseLinearSolver/CholeskySolver.inl>
+#include <SofaDenseSolver/NewMatMatrix.h>
 
 #include <sofa/core/ObjectFactory.h>
 

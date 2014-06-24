@@ -28,14 +28,14 @@
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/core/collision/IntersectorFactory.h>
 #include <sofa/helper/FnDispatcher.h>
-#include <sofa/component/collision/SphereModel.h>
-#include <sofa/component/collision/CubeModel.h>
-#include <sofa/component/collision/CapsuleModel.h>
-#include <sofa/component/collision/CapsuleIntTool.h>
-#include <sofa/component/collision/OBBModel.h>
-#include <sofa/component/collision/OBBIntTool.h>
-#include <sofa/component/collision/BaseIntTool.h>
-#include <sofa/component/collision/RigidCapsuleModel.h>
+#include <SofaBaseCollision/SphereModel.h>
+#include <SofaBaseCollision/CubeModel.h>
+#include <SofaBaseCollision/CapsuleModel.h>
+#include <SofaBaseCollision/CapsuleIntTool.h>
+#include <SofaBaseCollision/OBBModel.h>
+#include <SofaBaseCollision/OBBIntTool.h>
+#include <SofaBaseCollision/BaseIntTool.h>
+#include <SofaBaseCollision/RigidCapsuleModel.h>
 
 namespace sofa
 {

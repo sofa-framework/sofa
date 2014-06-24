@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_LINEARSOLVER_ROTATIONMATRIX_H
 #define SOFA_COMPONENT_LINEARSOLVER_ROTATIONMATRIX_H
 
-#include <sofa/component/linearsolver/SparseMatrix.h>
+#include <SofaBaseLinearSolver/SparseMatrix.h>
 
 namespace sofa
 {

@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_MASS_DIAGONALMASS_CPP
-#include <sofa/component/mass/DiagonalMass.inl>
+#include <SofaBaseMechanics/DiagonalMass.inl>
 #include <sofa/core/behavior/Mass.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/gl/Axis.h>

@@ -23,18 +23,18 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/component/collision/RayTriangleIntersection.h>
+#include <SofaMeshCollision/RayTriangleIntersection.h>
 
-#include <sofa/component/collision/Sphere.h>
-#include <sofa/component/collision/TriangleModel.inl>
-#include <sofa/component/collision/TriangleOctreeModel.h>
-#include <sofa/component/collision/CubeModel.h>
-#include <sofa/component/collision/Line.h>
-#include <sofa/component/collision/Point.h>
+#include <SofaBaseCollision/Sphere.h>
+#include <SofaMeshCollision/TriangleModel.inl>
+#include <SofaMeshCollision/TriangleOctreeModel.h>
+#include <SofaBaseCollision/CubeModel.h>
+#include <SofaMeshCollision/Line.h>
+#include <SofaMeshCollision/Point.h>
 #include <sofa/helper/FnDispatcher.h>
 #include <sofa/core/collision/DetectionOutput.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/component/collision/RayTraceDetection.h>
+#include <SofaUserInteraction/RayTraceDetection.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/common/Node.h>
 #include <map>

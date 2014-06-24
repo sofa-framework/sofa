@@ -25,12 +25,12 @@
 // Author: François Faure, INRIA-UJF, (C) 2011
 //
 // Copyright: See COPYING file that comes with this distribution
-#include <sofa/component/linearsolver/SVDLinearSolver.h>
+#include <SofaEigen2Solver/SVDLinearSolver.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/linearsolver/NewMatMatrix.h>
-#include <sofa/component/linearsolver/FullMatrix.h>
-#include <sofa/component/linearsolver/SparseMatrix.h>
-#include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
+#include <SofaDenseSolver/NewMatMatrix.h>
+#include <SofaBaseLinearSolver/FullMatrix.h>
+#include <SofaBaseLinearSolver/SparseMatrix.h>
+#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/AdvancedTimer.h>

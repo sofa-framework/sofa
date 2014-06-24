@@ -25,7 +25,7 @@
 // Author: Hadrien Courtecuisse
 //
 // Copyright: See COPYING file that comes with this distribution
-#include <sofa/component/linearsolver/BlockJacobiPreconditioner.inl>
+#include <SofaPreconditioner/BlockJacobiPreconditioner.inl>
 
 namespace sofa
 {

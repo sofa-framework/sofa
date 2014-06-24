@@ -27,22 +27,22 @@
 
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/Factory.h>
-#include <sofa/component/mapping/BarycentricMapping.h>
-#include <sofa/component/mapping/IdentityMapping.h>
-#include <sofa/component/mapping/RigidMapping.h>
-#include <sofa/component/mapping/SubsetMapping.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBaseMechanics/BarycentricMapping.h>
+#include <SofaBaseMechanics/IdentityMapping.h>
+#include <SofaRigid/RigidMapping.h>
+#include <SofaBaseMechanics/SubsetMapping.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/Simulation.h>
-#include <sofa/component/collision/BaseContactMapper.h>
-#include <sofa/component/collision/CapsuleModel.h>
-#include <sofa/component/collision/SphereModel.h>
-#include <sofa/component/collision/TriangleModel.h>
-//#include <sofa/component/collision/TetrahedronModel.h>
-#include <sofa/component/collision/LineModel.h>
-#include <sofa/component/collision/PointModel.h>
-//#include <sofa/component/collision/DistanceGridCollisionModel.h>
-#include <sofa/component/mapping/IdentityMapping.h>
+#include <SofaBaseCollision/BaseContactMapper.h>
+#include <SofaBaseCollision/CapsuleModel.h>
+#include <SofaBaseCollision/SphereModel.h>
+#include <SofaMeshCollision/TriangleModel.h>
+//#include <SofaMiscCollision/TetrahedronModel.h>
+#include <SofaMeshCollision/LineModel.h>
+#include <SofaMeshCollision/PointModel.h>
+//#include <SofaVolumetricData/DistanceGridCollisionModel.h>
+#include <SofaBaseMechanics/IdentityMapping.h>
 #include <iostream>
 
 

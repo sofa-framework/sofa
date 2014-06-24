@@ -4,12 +4,12 @@
 
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/helper/FnDispatcher.h>
-#include <sofa/component/collision/CapsuleModel.h>
-#include <sofa/component/collision/SphereModel.h>
-#include <sofa/component/collision/OBBModel.h>
-#include <sofa/component/collision/IntrCapsuleOBB.h>
-#include <sofa/component/collision/CapsuleIntTool.h>
-#include <sofa/component/collision/OBBIntTool.h>
+#include <SofaBaseCollision/CapsuleModel.h>
+#include <SofaBaseCollision/SphereModel.h>
+#include <SofaBaseCollision/OBBModel.h>
+#include <SofaBaseCollision/IntrCapsuleOBB.h>
+#include <SofaBaseCollision/CapsuleIntTool.h>
+#include <SofaBaseCollision/OBBIntTool.h>
 #include <cmath>
 
 namespace sofa

@@ -26,7 +26,7 @@
 #define SOFA_GPU_CUDA_CUDATETRAHEDRALTENSORMASSFORCEFIELD_H
 
 #include <sofa/gpu/cuda/CudaTypes.h>
-#include <sofa/component/forcefield/TetrahedralTensorMassForceField.h>
+#include <SofaMiscFem/TetrahedralTensorMassForceField.h>
 
 namespace sofa
 {

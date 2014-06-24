@@ -29,8 +29,8 @@
 #include <sofa/core/behavior/MultiVec.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/component/component.h>
-#include <sofa/component/linearsolver/SparseMatrix.h>
-#include <sofa/component/linearsolver/FullMatrix.h>
+#include <SofaBaseLinearSolver/SparseMatrix.h>
+#include <SofaBaseLinearSolver/FullMatrix.h>
 #ifdef SOFA_SMP
 #include <sofa/core/behavior/ParallelMultiVec.h>
 #endif

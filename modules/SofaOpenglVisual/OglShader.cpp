@@ -33,8 +33,8 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#include <sofa/component/visualmodel/OglShader.h>
-#include <sofa/component/visualmodel/CompositingVisualLoop.h>
+#include <SofaOpenglVisual/OglShader.h>
+#include <SofaOpenglVisual/CompositingVisualLoop.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/FileRepository.h>

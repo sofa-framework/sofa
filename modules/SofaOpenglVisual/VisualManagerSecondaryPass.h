@@ -32,9 +32,9 @@
 #define SOFA_COMPONENT_VISUALMANAGER_SECONDARY_PASS_H
 
 #include <sofa/component/component.h>
-#include <sofa/component/visualmodel/VisualManagerPass.h>
+#include <SofaOpenglVisual/VisualManagerPass.h>
 #include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/component/visualmodel/OglShader.h>
+#include <SofaOpenglVisual/OglShader.h>
 
 namespace sofa
 {

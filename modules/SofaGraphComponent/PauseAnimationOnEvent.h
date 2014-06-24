@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_MISC_PAUSEANIMATIONONEVENT_H
 #define SOFA_COMPONENT_MISC_PAUSEANIMATIONONEVENT_H
 
-#include <sofa/component/misc/PauseAnimation.h>
+#include <SofaGraphComponent/PauseAnimation.h>
 
 #include <fstream>
 

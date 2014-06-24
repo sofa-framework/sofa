@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_NUMERICALINTEGRATIONDESCRIPTOR_INL
 #define SOFA_COMPONENT_TOPOLOGY_NUMERICALINTEGRATIONDESCRIPTOR_INL
 
-#include <sofa/component/topology/NumericalIntegrationDescriptor.h>
+#include <SofaBaseTopology/NumericalIntegrationDescriptor.h>
 #include <map>
 
 namespace sofa

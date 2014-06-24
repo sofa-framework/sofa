@@ -26,7 +26,7 @@
 #define SOFA_GPU_CUDA_CUDALINEMODEL_H
 
 #include "CudaTypes.h"
-#include <sofa/component/collision/LineModel.h>
+#include <SofaMeshCollision/LineModel.h>
 
 namespace sofa
 {

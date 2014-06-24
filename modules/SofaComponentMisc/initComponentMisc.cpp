@@ -23,15 +23,15 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/helper/system/config.h>
-#include <sofa/component/initComponentMisc.h>
-#include <sofa/component/initMiscTopology.h>
-#include <sofa/component/initMiscMapping.h>
-#include <sofa/component/initMiscForcefield.h>
-#include <sofa/component/initMiscFEM.h>
-#include <sofa/component/initMiscEngine.h>
-#include <sofa/component/initMiscCollision.h>
-#include <sofa/component/initMiscSolver.h>
-#include <sofa/component/initMisc.h>
+#include <SofaComponentMisc/initComponentMisc.h>
+#include <SofaMiscTopology/initMiscTopology.h>
+#include <SofaMiscMapping/initMiscMapping.h>
+#include <SofaMiscForceField/initMiscForcefield.h>
+#include <SofaMiscFem/initMiscFEM.h>
+#include <SofaMiscEngine/initMiscEngine.h>
+#include <SofaMiscCollision/initMiscCollision.h>
+#include <SofaMiscSolver/initMiscSolver.h>
+#include <SofaMisc/initMisc.h>
 
 namespace sofa
 {

@@ -30,14 +30,14 @@
 #pragma once
 #endif
 
-#include <sofa/component/forcefield/TriangularFEMForceFieldOptim.h>
+#include "TriangularFEMForceFieldOptim.h"
 #include <sofa/core/behavior/ForceField.inl>
 
-#include <sofa/component/linearsolver/BlocMatrixWriter.h>
+#include <SofaBaseLinearSolver/BlocMatrixWriter.h>
 
 #include <sofa/core/visual/VisualParams.h>
 
-#include <sofa/component/topology/TopologyData.inl>
+#include <SofaBaseTopology/TopologyData.inl>
 
 #include <limits>
 

@@ -31,10 +31,10 @@
 #include <sofa/component/misc/DevMonitor.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/component/collision/PointModel.h>
-#include <sofa/component/collision/TriangleModel.h>
-#include <sofa/component/collision/NewProximityIntersection.h>
-#include <sofa/component/collision/BruteForceDetection.h>
+#include <SofaMeshCollision/PointModel.h>
+#include <SofaMeshCollision/TriangleModel.h>
+#include <SofaBaseCollision/NewProximityIntersection.h>
+#include <SofaBaseCollision/BruteForceDetection.h>
 
 namespace sofa
 {

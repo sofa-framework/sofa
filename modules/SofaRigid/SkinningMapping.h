@@ -33,7 +33,7 @@
 #include <sofa/component/component.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Mat.h>
-#include <sofa/component/linearsolver/EigenSparseMatrix.h>
+#include <SofaEigen2Solver/EigenSparseMatrix.h>
 
 #ifdef SOFA_DEV
 #include <sofa/helper/DualQuat.h>

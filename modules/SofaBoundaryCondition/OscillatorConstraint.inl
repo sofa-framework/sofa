@@ -25,8 +25,8 @@
 #ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_OSCILLATORCONSTRAINT_INL
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_OSCILLATORCONSTRAINT_INL
 
-#include <sofa/component/projectiveconstraintset/FixedConstraint.inl>
-#include <sofa/component/projectiveconstraintset/OscillatorConstraint.h>
+#include <SofaBoundaryCondition/FixedConstraint.inl>
+#include <SofaBoundaryCondition/OscillatorConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <math.h>
 

@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGULARQUADRATICSPRINGSFORCEFIELD_CPP
 
-#include <sofa/component/forcefield/TriangularQuadraticSpringsForceField.inl>
+#include <SofaDeformable/TriangularQuadraticSpringsForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <fstream> // for reading the file

@@ -22,10 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/topology/QuadSetTopologyModifier.h>
+#include <SofaBaseTopology/QuadSetTopologyModifier.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/TopologyChange.h>
-#include <sofa/component/topology/QuadSetTopologyContainer.h>
+#include <SofaBaseTopology/QuadSetTopologyContainer.h>
 #include <algorithm>
 #include <functional>
 #include <iostream>

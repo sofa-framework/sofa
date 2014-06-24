@@ -33,7 +33,7 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#include <sofa/component/visualmodel/LightManager.h>
+#include <SofaOpenglVisual/LightManager.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/common/VisualVisitor.h>
 #include <sofa/core/ObjectFactory.h>

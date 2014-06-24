@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_MAPPING_LAPAROSCOPICRIGIDMAPPING_INL
 #define SOFA_COMPONENT_MAPPING_LAPAROSCOPICRIGIDMAPPING_INL
 
-#include <sofa/component/mapping/LaparoscopicRigidMapping.h>
+#include <SofaRigid/LaparoscopicRigidMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/Mapping.inl>
