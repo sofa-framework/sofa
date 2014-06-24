@@ -25,9 +25,9 @@
 // Author: François Faure, INRIA-UJF, (C) 2006
 //
 // Copyright: See COPYING file that comes with this distribution
+#define SOFA_COMPONENT_LINEARSOLVER_CGLINEARSOLVER_CPP
 #include <SofaBaseLinearSolver/CGLinearSolver.inl>
 
-#include <sofa/core/ObjectFactory.h>
 #include <iostream>
 
 namespace sofa
@@ -68,26 +68,6 @@ inline void CGLinearSolver<component::linearsolver::GraphScatteredMatrix,compone
 }
 
 SOFA_DECL_CLASS(CGLinearSolver)
-
-int CGLinearSolverClass = core::RegisterObject("Linear system solver using the conjugate gradient iterative algorithm")
-        .add< CGLinearSolver< GraphScatteredMatrix, GraphScatteredVector > >(true)
-        .add< CGLinearSolver< FullMatrix<double>, FullVector<double> > >()
-        .add< CGLinearSolver< SparseMatrix<double>, FullVector<double> > >()
-        .add< CGLinearSolver< CompressedRowSparseMatrix<double>, FullVector<double> > >()
-        .add< CGLinearSolver< CompressedRowSparseMatrix<float>, FullVector<float> > >()
-        .add< CGLinearSolver< CompressedRowSparseMatrix<Mat<2,2,double> >, FullVector<double> > >()
-        .add< CGLinearSolver< CompressedRowSparseMatrix<Mat<2,2,float> >, FullVector<float> > >()
-        .add< CGLinearSolver< CompressedRowSparseMatrix<Mat<3,3,double> >, FullVector<double> > >()
-        .add< CGLinearSolver< CompressedRowSparseMatrix<Mat<3,3,float> >, FullVector<float> > >()
-        .add< CGLinearSolver< CompressedRowSparseMatrix<Mat<4,4,double> >, FullVector<double> > >()
-        .add< CGLinearSolver< CompressedRowSparseMatrix<Mat<4,4,float> >, FullVector<float> > >()
-        .add< CGLinearSolver< CompressedRowSparseMatrix<Mat<6,6,double> >, FullVector<double> > >()
-        .add< CGLinearSolver< CompressedRowSparseMatrix<Mat<6,6,float> >, FullVector<float> > >()
-        .add< CGLinearSolver< CompressedRowSparseMatrix<Mat<8,8,double> >, FullVector<double> > >()
-        .add< CGLinearSolver< CompressedRowSparseMatrix<Mat<8,8,float> >, FullVector<float> > >()
-        .addAlias("CGSolver")
-        .addAlias("ConjugateGradient")
-        ;
 
 template class SOFA_BASE_LINEAR_SOLVER_API CGLinearSolver< GraphScatteredMatrix, GraphScatteredVector >;
 #ifndef SOFA_FLOAT

@@ -25,9 +25,8 @@
 // Author: François Faure, INRIA-UJF, (C) 2006
 //
 // Copyright: See COPYING file that comes with this distribution
-
+#define SOFA_COMPONENT_LINEARSOLVER_BTDLINEARSOLVER_CPP
 #include <SofaBaseLinearSolver/BTDLinearSolver.inl>
-#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
@@ -40,13 +39,6 @@ namespace linearsolver
 
 SOFA_DECL_CLASS(BTDLinearSolver)
 
-int BTDLinearSolverClass = core::RegisterObject("Linear system solver using Thomas Algorithm for Block Tridiagonal matrices")
-#ifndef SOFA_FLOAT
-.add< BTDLinearSolver<BTDMatrix<6,double>,BlockVector<6,double> > >(true)
-#endif
-#ifndef SOFA_DOUBLE
-        .add< BTDLinearSolver<BTDMatrix<6,float>,BlockVector<6,float> > >()
-#endif
 //.add< BTDLinearSolver<BTDMatrix<3,double>,BlockVector<3,double> > >()
 //.add< BTDLinearSolver<BTDMatrix<3,float>,BlockVector<3,float> > >()
 //.add< BTDLinearSolver<BTDMatrix<2,double>,BlockVector<2,double> > >()
@@ -58,6 +50,31 @@ int BTDLinearSolverClass = core::RegisterObject("Linear system solver using Thom
 //.add< BTDLinearSolver<NewMatBandMatrix,NewMatVector> >(true)
 //.add< BTDLinearSolver<NewMatSymmetricBandMatrix,NewMatVector> >()
         ;
+
+#ifndef SOFA_FLOAT
+template<> const char* BTDMatrix<1,double>::Name() { return "BTDMatrix1d"; }
+template<> const char* BTDMatrix<2,double>::Name() { return "BTDMatrix2d"; }
+template<> const char* BTDMatrix<3,double>::Name() { return "BTDMatrix3d"; }
+template<> const char* BTDMatrix<4,double>::Name() { return "BTDMatrix4d"; }
+template<> const char* BTDMatrix<5,double>::Name() { return "BTDMatrix5d"; }
+template<> const char* BTDMatrix<6,double>::Name() { return "BTDMatrix6d"; }
+#endif
+
+#ifndef SOFA_DOUBLE
+template<> const char* BTDMatrix<1,float>::Name() { return "BTDMatrix1f"; }
+template<> const char* BTDMatrix<2,float>::Name() { return "BTDMatrix2f"; }
+template<> const char* BTDMatrix<3,float>::Name() { return "BTDMatrix3f"; }
+template<> const char* BTDMatrix<4,float>::Name() { return "BTDMatrix4f"; }
+template<> const char* BTDMatrix<5,float>::Name() { return "BTDMatrix5f"; }
+template<> const char* BTDMatrix<6,float>::Name() { return "BTDMatrix6f"; }
+#endif
+
+#ifndef SOFA_FLOAT
+template class SOFA_BASE_LINEAR_SOLVER_API BTDLinearSolver<BTDMatrix<6,float>,BlockVector<6,float> >;
+#endif
+#ifndef SOFA_DOUBLE
+template class SOFA_BASE_LINEAR_SOLVER_API BTDLinearSolver<BTDMatrix<6,double>,BlockVector<6,double> >;
+#endif
 
 } // namespace linearsolver
 
