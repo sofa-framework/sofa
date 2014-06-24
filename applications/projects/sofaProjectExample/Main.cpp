@@ -30,7 +30,7 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaBaseMechanics/UniformMass.h>
 #include <SofaBoundaryCondition/ConstantForceField.h>
-#include <SofaSimpleFem/forcefield/HexahedronFEMForceField.h>
+#include <SofaSimpleFem/HexahedronFEMForceField.h>
 #include <SofaDeformable/QuadBendingSprings.h>
 #include <sofa/component/container/MeshLoader.h>
 #include <SofaBoundaryCondition/FixedConstraint.h>

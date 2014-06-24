@@ -37,7 +37,7 @@
 #include <sofa/simulation/common/Node.h>
 
 // Including component
-#include <sofa/component/projectiveconstraintset/AffineMovementConstraint.h>
+#include <SofaBoundaryCondition/AffineMovementConstraint.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 
 
