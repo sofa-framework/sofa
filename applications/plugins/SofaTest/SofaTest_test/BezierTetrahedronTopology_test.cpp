@@ -42,7 +42,7 @@
 #include <sofa/core/MechanicalParams.h>
 #include <plugins/SceneCreator/SceneCreator.h>
 #include <SofaMiscForceField/MeshMatrixMass.h>
-#include <sofa/component/engine/GenerateCylinder.h>
+#include <SofaEngine/GenerateCylinder.h>
 #include <SofaTopologyMapping/Mesh2BezierTopologicalMapping.h>
 #include <sofa/defaulttype/VecTypes.h>
 
