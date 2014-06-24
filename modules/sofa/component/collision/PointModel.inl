@@ -110,7 +110,7 @@ void TPointModel<DataTypes>::init()
     if (path.size()==0)
     {
 
-        myActiver = new PointActiver();
+        myActiver = PointActiver::getDefaultActiver();
         sout<<"path = "<<path<<" no Point Activer found for PointModel "<<this->getName()<<sendl;
     }
     else
@@ -131,7 +131,7 @@ void TPointModel<DataTypes>::init()
 
         if (myActiver==NULL)
         {
-            myActiver = new PointActiver();
+            myActiver = PointActiver::getDefaultActiver();
 
 
             serr<<"no dynamic cast possible for Point Activer for PointModel "<< this->getName() <<sendl;
