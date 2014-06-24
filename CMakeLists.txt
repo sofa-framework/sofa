@@ -32,7 +32,10 @@ set(SOFA_EXTLIBS_DIR   "${CMAKE_CURRENT_SOURCE_DIR}/extlibs")
 # extlibs
 set(SOFA_PROJECT_FOLDER "Extlibs")
 add_subdirectory(${SOFA_EXTLIBS_DIR}/tinyxml)
+
+set(gtest_force_shared_crt ON CACHE BOOL "Use shared (DLL) run-time lib even when Google Test is built as static lib.")
 add_subdirectory(${SOFA_EXTLIBS_DIR}/gtest)
+
 
 # framework
 set(SOFA_PROJECT_FOLDER "SofaFramework")
