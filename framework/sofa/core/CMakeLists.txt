@@ -4,6 +4,8 @@ set(HEADER_FILES
 
 	core.h
 	VecId.h
+	Plugin.h
+	PluginManager.h
 	ConstraintParams.h
 	ExecParams.h
 	MechanicalParams.h
@@ -163,6 +165,8 @@ set(SOURCE_FILES
 	ObjectFactory.cpp
 	ExecParams.cpp
 	MechanicalParams.cpp
+	Plugin.cpp
+	PluginManager.cpp
 	ConstraintParams.cpp
 	SofaLibrary.cpp
 	CategoryLibrary.cpp

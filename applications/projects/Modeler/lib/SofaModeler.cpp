@@ -33,7 +33,7 @@
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/Main.h>
 #include <sofa/gui/qt/FileManagement.h>
-#include <sofa/helper/system/PluginManager.h>
+// #include <sofa/helper/system/PluginManager.h>
 
 
 #define MAX_RECENTLY_OPENED 10
@@ -333,7 +333,7 @@ SofaModeler::SofaModeler():recentlyOpenedFilesManager("share/config/Modeler.ini"
 
     //----------------------------------------------------------------------
     //Add plugin manager window. ->load external libs
-    plugin_dialog = new SofaPluginManager();
+    plugin_dialog = new SofaPluginManager(sofa::core::ObjectFactory::getInstance()->getPluginManager());
     plugin_dialog->hide();
 
 
@@ -488,7 +488,6 @@ void SofaModeler::rebuildLibrary()
 {
     library->clear();
     library->build(exampleFiles);
-
 }
 
 void SofaModeler::closeEvent( QCloseEvent *e)
@@ -1161,15 +1160,15 @@ void SofaModeler::runInSofa(	const std::string &sceneFilename, Node* root)
     }
 
     //retrive plugins
-    typedef sofa::helper::system::PluginManager::PluginMap PluginMap;
-    PluginMap& pluginMap = PluginManager::getInstance().getPluginMap();
-    PluginManager::PluginIterator it;
+    // typedef sofa::helper::system::PluginManager::PluginMap PluginMap;
+    // PluginMap& pluginMap = PluginManager::getInstance().getPluginMap();
+    // PluginManager::PluginIterator it;
 
-    for( it = pluginMap.begin(); it != pluginMap.end(); ++it )
-    {
-        argv << "-l" << QString((it->first).c_str()) << " ";
-        messageLaunch += QString("-l ") + QString((it->first).c_str());
-    }
+    // for( it = pluginMap.begin(); it != pluginMap.end(); ++it )
+    // {
+    //     argv << "-l" << QString((it->first).c_str()) << " ";
+    //     messageLaunch += QString("-l ") + QString((it->first).c_str());
+    // }
 
 
     argv << "-t";
