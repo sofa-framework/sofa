@@ -403,7 +403,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 #endif
     }
 
-    std::cout << "appCompliance = invM->data\n";
+    //std::cout << "appCompliance = invM->data\n";
     appCompliance = invM->data;
 
     // Optimisation for the computation of W
