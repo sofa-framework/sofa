@@ -35,7 +35,7 @@ namespace system
 
 namespace
 {
-#ifdef NDEBUG
+#ifndef _DEBUG
 const std::string pluginsIniFile = "share/config/sofaplugins_release.ini";
 #else
 const std::string pluginsIniFile = "share/config/sofaplugins_debug.ini";
