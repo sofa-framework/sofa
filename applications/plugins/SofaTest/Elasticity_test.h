@@ -35,13 +35,13 @@
 #include <sofa/simulation/graph/DAGSimulation.h>
 
 #include <SofaMiscFem/TetrahedralTensorMassForceField.h>
-#include <SofaSimpleFem/forcefield/TetrahedralCorotationalFEMForceField.h>
+#include <SofaSimpleFem/TetrahedralCorotationalFEMForceField.h>
 #include <SofaBaseTopology/TopologySparseData.inl>
 #include <SofaBoundaryCondition/TrianglePressureForceField.h>
-#include <sofa/component/projectiveconstraintset/AffineMovementConstraint.h>
+#include <SofaBoundaryCondition/AffineMovementConstraint.h>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
 #include <SofaEngine/PairBoxRoi.h>
-#include <sofa/component/engine/GenerateCylinder.h>
+#include <SofaEngine/GenerateCylinder.h>
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
 #include <SofaImplicitOdeSolver/StaticSolver.h>
 #include <SofaBoundaryCondition/ProjectToLineConstraint.h>

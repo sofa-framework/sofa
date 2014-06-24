@@ -52,7 +52,7 @@
 #include <SofaLoader/GridMeshCreator.h>
 #include <SofaBoundaryCondition/BilinearMovementConstraint.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
-#include <SofaSimpleFem/forcefield/TriangularFEMForceField.h>
+#include <SofaSimpleFem/TriangularFEMForceField.h>
 #include <SofaBaseMechanics/UniformMass.h>
 #include <sofa/core/MechanicalParams.h>
 
