@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.8)
+cmake_minimum_required(VERSION 2.8.12)
 project(SofaHelper)
 
 set(SOFAHELPER_HEADERS
@@ -19,7 +19,6 @@ set(SOFAHELPER_HEADERS
 	integer_id.h
     io/Image.h
     io/ImageBMP.h
-    io/ImagePNG.h
     io/ImageRAW.h
     io/MassSpringLoader.h
     io/Mesh.h
@@ -56,7 +55,6 @@ set(SOFAHELPER_HEADERS
     system/config.h
     system/gl.h
     system/glu.h
-    system/glut.h
     system/SetDirectory.h
     system/FileRepository.h
     system/atomic.h
@@ -94,7 +92,6 @@ set(SOFAHELPER_HEADERS
 	)
 
 set(SOFAHELPER_SOURCES
-
 	ArgumentParser.cpp
     BackTrace.cpp
     DualQuat.cpp
@@ -103,7 +100,6 @@ set(SOFAHELPER_SOURCES
     gl/Transformation.cpp
     io/Image.cpp
     io/ImageBMP.cpp
-    io/ImagePNG.cpp
     io/ImageRAW.cpp
     io/MassSpringLoader.cpp
     io/Mesh.cpp
@@ -122,6 +118,7 @@ set(SOFAHELPER_SOURCES
     decompose.cpp
     Quater.cpp
     RandomGenerator.cpp
+	system/gl.cpp
     system/SetDirectory.cpp
     system/FileRepository.cpp
     system/thread/CTime.cpp
@@ -156,38 +153,46 @@ if(Boost_thread_FOUND )
 endif()
 
 if(NOT SOFA-MISC_NO_OPENGL)
-	list(APPEND SOFAHELPER_HEADERS
+	if(SOFA_HAVE_GLUT)
+		list(APPEND SOFAHELPER_HEADERS
+		system/glut.h
 		gl/Axis.h
 		gl/BasicShapes.h
-		gl/Capture.h
-		gl/Color.h
 		gl/Cylinder.h
-		gl/glfont.h
 		gl/glText.inl
 		gl/glText.h
-		gl/RAII.h
-		gl/template.h
-		gl/Texture.h)
+		)
+		list(APPEND SOFAHELPER_SOURCES
+		gl/Axis.cpp
+		gl/Cylinder.cpp
+		gl/glText.cpp
+		)
+	endif(SOFA_HAVE_GLUT)
+	
+	list(APPEND SOFAHELPER_HEADERS
+	gl/Capture.h
+	gl/Color.h
+	gl/glfont.h
+	gl/RAII.h
+	gl/template.h)
 			
-  list(APPEND SOFAHELPER_SOURCES
-    gl/Axis.cpp
-    gl/Capture.cpp
-    gl/Color.cpp
-    gl/Cylinder.cpp
-    gl/glfont.cpp
-    gl/glText.cpp
-    gl/Texture.cpp
-    system/gl.cpp)
-
-  if(SOFA_HAVE_GLEW)
-	list(APPEND SOFAHELPER_HEADERS   
-		 gl/FrameBufferObject.h
-	     gl/GLSLShader.h)
 	list(APPEND SOFAHELPER_SOURCES
-		 gl/FrameBufferObject.cpp
-         gl/GLSLShader.cpp)
-  endif()
-endif()
+	gl/Capture.cpp
+	gl/Color.cpp
+	gl/glfont.cpp
+	)
+	
+	if(SOFA_HAVE_GLEW)
+		list(APPEND SOFAHELPER_HEADERS
+			gl/Texture.h
+			gl/FrameBufferObject.h
+			gl/GLSLShader.h)
+		list(APPEND SOFAHELPER_SOURCES
+			gl/Texture.cpp
+			gl/FrameBufferObject.cpp
+			gl/GLSLShader.cpp)
+	endif(SOFA_HAVE_GLEW)
+endif(NOT SOFA-MISC_NO_OPENGL)
 
 if(SOFA-EXTERNAL_HAVE_FFMPEG)
 	list(APPEND SOFAHELPER_HEADERS "gl/VideoRecorder.h")
@@ -199,21 +204,17 @@ if(PS3)
 	list(APPEND SOFAHELPER_SOURCES "gl/ps3gl_compat.cpp")
 endif()
 
-set( SOFA_HELPER_LINK_PUBLIC_DEPENDENCIES ${GLEW_LIBRARIES} ${GLUT_LIBRARIES} ${OPENGL_LIBRARIES} ${TinyXML_LIBRARIES} ) 
-set( SOFA_HELPER_LINK_PRIVATE_DEPENDENCIES ${ZLIB_LIBRARIES} ${PNG_LIBRARIES} )
 if(WIN32)
     # Windows lib, used in system::FileSystem
 	list(APPEND SOFA_HELPER_LINK_PRIVATE_DEPENDENCIES Shlwapi)
 endif()
-if(Boost_thread_FOUND)
-	list(APPEND SOFA_HELPER_LINK_PUBLIC_DEPENDENCIES ${Boost_LIBRARIES} )
-endif()
 
 
 add_library(${PROJECT_NAME} SHARED ${SOFAHELPER_HEADERS} ${SOFAHELPER_SOURCES})
-target_link_libraries(${PROJECT_NAME} LINK_PUBLIC ${SOFA_HELPER_LINK_PUBLIC_DEPENDENCIES} )
+target_link_libraries(${PROJECT_NAME} LINK_PUBLIC ${SOFAFRAMEWORK_DEPENDENCY_LINK} )
 target_link_libraries(${PROJECT_NAME} LINK_PRIVATE ${SOFA_HELPER_LINK_PRIVATE_DEPENDENCIES})
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>/../../")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../>" 
+												  "$<BUILD_INTERFACE:${SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES}>")
 
 # make the name of debug libraries end in _d.
 set_target_properties( ${PROJECT_NAME}  PROPERTIES DEBUG_POSTFIX "_d" )

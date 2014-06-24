@@ -215,8 +215,10 @@ set(SOFACORE_SOURCES
 	)
 
 if(NOT SOFA-MISC_NO_OPENGL)
-    list(APPEND SOFACORE_HEADERS "visual/DrawToolGL.h")
-	list(APPEND SOFACORE_SOURCES "visual/DrawToolGL.cpp")
+	if(SOFA_HAVE_GLUT)
+		list(APPEND SOFACORE_HEADERS "visual/DrawToolGL.h")
+		list(APPEND SOFACORE_SOURCES "visual/DrawToolGL.cpp")
+	endif()
 endif()  
   
 if(Boost_thread_FOUND)
