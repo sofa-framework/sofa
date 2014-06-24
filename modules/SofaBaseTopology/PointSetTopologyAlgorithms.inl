@@ -28,11 +28,11 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 
-#include <sofa/component/topology/PointSetTopologyContainer.h>
-#include <sofa/component/topology/PointSetTopologyModifier.h>
-#include <sofa/component/topology/PointSetTopologyAlgorithms.h>
+#include <SofaBaseTopology/PointSetTopologyContainer.h>
+#include <SofaBaseTopology/PointSetTopologyModifier.h>
+#include <SofaBaseTopology/PointSetTopologyAlgorithms.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/topology/PointSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/PointSetGeometryAlgorithms.h>
 
 namespace sofa
 {

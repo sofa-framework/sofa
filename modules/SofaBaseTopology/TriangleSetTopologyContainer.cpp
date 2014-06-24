@@ -22,11 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/topology/TriangleSetTopologyContainer.h>
+#include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/ObjectFactory.h>
-//#include <sofa/component/container/MechanicalObject.inl>
+//#include <SofaBaseMechanics/MechanicalObject.inl>
 //#include <sofa/helper/gl/glText.inl>
 
 #include <sofa/helper/system/glut.h>

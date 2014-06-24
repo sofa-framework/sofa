@@ -25,7 +25,7 @@
 // Author: Hadrien Courtecuisse
 //
 // Copyright: See COPYING file that comes with this distribution
-#include <sofa/component/linearsolver/IncompleteTAUCSSolver.h>
+#include <SofaTaucsSolver/IncompleteTAUCSSolver.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <iostream>
@@ -34,8 +34,8 @@
 #include <sofa/core/behavior/LinearSolver.h>
 #include <math.h>
 #include <sofa/helper/system/thread/CTime.h>
-#include <sofa/component/linearsolver/MatrixLinearSolver.cpp>
-#include <sofa/component/linearsolver/CompressedRowSparseMatrix.inl>
+#include <SofaBaseLinearSolver/MatrixLinearSolver.cpp>
+#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.inl>
 
 namespace sofa
 {

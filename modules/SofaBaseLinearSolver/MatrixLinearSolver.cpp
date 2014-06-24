@@ -23,14 +23,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_LINEARSOLVER_MATRIXLINEARSOLVER_CPP
-#include <sofa/component/linearsolver/MatrixLinearSolver.inl>
+#include <SofaBaseLinearSolver/MatrixLinearSolver.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/MechanicalMatrixVisitor.h>
 #include <sofa/simulation/common/MechanicalVPrintVisitor.h>
 #include <sofa/simulation/common/VelocityThresholdVisitor.h>
 #include <sofa/core/behavior/LinearSolver.h>
-#include <sofa/component/linearsolver/CompressedRowSparseMatrix.inl>
+#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.inl>
 
 #include <stdlib.h>
 #include <math.h>

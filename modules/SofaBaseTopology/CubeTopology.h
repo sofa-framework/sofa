@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_CUBETOPOLOGY_H
 #define SOFA_COMPONENT_TOPOLOGY_CUBETOPOLOGY_H
 
-#include <sofa/component/topology/MeshTopology.h>
+#include <SofaBaseTopology/MeshTopology.h>
 #include <sofa/defaulttype/Vec.h>
 
 namespace sofa

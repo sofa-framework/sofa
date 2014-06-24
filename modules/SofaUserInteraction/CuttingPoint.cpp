@@ -22,13 +22,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/collision/CuttingPoint.h>
+#include <SofaUserInteraction/CuttingPoint.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/collision/DetectionOutput.h>
-#include <sofa/component/topology/TetrahedronSetTopologyContainer.h>
-#include <sofa/component/topology/TetrahedronSetTopologyModifier.h>
+#include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
+#include <SofaBaseTopology/TetrahedronSetTopologyModifier.h>
 #include <sofa/helper/gl/template.h>
-#include <sofa/component/topology/TopologySubsetData.inl>
+#include <SofaBaseTopology/TopologySubsetData.inl>
 
 namespace sofa
 {

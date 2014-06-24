@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_ENGINE_QUATTORIGIDENGINE_INL
 #define SOFA_COMPONENT_ENGINE_QUATTORIGIDENGINE_INL
 
-#include <sofa/component/engine/QuatToRigidEngine.h>
+#include <SofaEngine/QuatToRigidEngine.h>
 #include <sofa/core/visual/VisualParams.h>
 
 namespace sofa

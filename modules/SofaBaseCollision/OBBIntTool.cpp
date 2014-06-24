@@ -1,4 +1,4 @@
-#include <sofa/component/collision/OBBIntTool.h>
+#include <SofaBaseCollision/OBBIntTool.h>
 
 namespace sofa{
 namespace component{

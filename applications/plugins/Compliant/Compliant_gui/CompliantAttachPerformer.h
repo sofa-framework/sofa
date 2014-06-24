@@ -26,10 +26,10 @@
 #define SOFA_COMPONENT_COLLISION_CompliantAttachPerformer_H
 
 #include "initCompliant_gui.h"
-#include <sofa/component/collision/InteractionPerformer.h>
-#include <sofa/component/collision/BaseContactMapper.h>
-#include <sofa/component/mapping/DistanceFromTargetMapping.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaUserInteraction/InteractionPerformer.h>
+#include <SofaBaseCollision/BaseContactMapper.h>
+#include <SofaMiscMapping/DistanceFromTargetMapping.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/gui/MouseOperations.h>

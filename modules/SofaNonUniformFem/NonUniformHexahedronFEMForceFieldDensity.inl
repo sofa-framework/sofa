@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_NONUNIFORMHEXAHEDRONFEMFORCEFIELDDENSITY_INL
 
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/component/forcefield/NonUniformHexahedronFEMForceFieldDensity.h>
+#include <SofaNonUniformFem/NonUniformHexahedronFEMForceFieldDensity.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/FileRepository.h>
 

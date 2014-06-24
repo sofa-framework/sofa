@@ -29,7 +29,7 @@
 #pragma once
 #endif
 
-#include <sofa/component/engine/Vertex2Frame.h>
+#include <SofaEngine/Vertex2Frame.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/Quat.h>
 

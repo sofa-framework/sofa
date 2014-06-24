@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_MISC_EXTRAMONITOR_INL
 #define SOFA_COMPONENT_MISC_EXTRAMONITOR_INL
 
-#include <sofa/component/misc/ExtraMonitor.h>
+#include <SofaValidation/ExtraMonitor.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
 #include <sofa/simulation/common/Simulation.h>

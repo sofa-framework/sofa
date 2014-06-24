@@ -25,14 +25,14 @@
 //#ifndef SOFA_COMPONENT_COLLISION_TRIANGLEMODEL_INL
 //#define SOFA_COMPONENT_COLLISION_TRIANGLEMODEL_INL
 
-#include <sofa/component/collision/TriangleModel.h>
+#include <SofaMeshCollision/TriangleModel.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/collision/TriangleLocalMinDistanceFilter.h>
-#include <sofa/component/collision/CubeModel.h>
-#include <sofa/component/collision/Triangle.h>
-#include <sofa/component/topology/TopologyData.inl>
+#include <SofaMeshCollision/TriangleLocalMinDistanceFilter.h>
+#include <SofaBaseCollision/CubeModel.h>
+#include <SofaMeshCollision/Triangle.h>
+#include <SofaBaseTopology/TopologyData.inl>
 #include <sofa/simulation/common/Node.h>
-#include <sofa/component/topology/RegularGridTopology.h>
+#include <SofaBaseTopology/RegularGridTopology.h>
 #include <sofa/core/CollisionElement.h>
 #include <vector>
 #include <sofa/helper/gl/template.h>

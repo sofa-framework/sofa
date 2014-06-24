@@ -25,18 +25,18 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_STANDARDTETRAHEDRALFEMFORCEFIELD_INL
 #define SOFA_COMPONENT_FORCEFIELD_STANDARDTETRAHEDRALFEMFORCEFIELD_INL
 
-#include <sofa/component/fem/material/BoyceAndArruda.h>
+#include <SofaMiscFem/BoyceAndArruda.h>
 #include <sofa/component/fem/material/NeoHookean.h>
-#include <sofa/component/fem/material/MooneyRivlin.h>
-#include <sofa/component/fem/material/VerondaWestman.h>
-#include <sofa/component/fem/material/STVenantKirchhoff.h>
-#include <sofa/component/fem/material/HyperelasticMaterial.h>
-#include <sofa/component/fem/material/Costa.h>
+#include <SofaMiscFem/MooneyRivlin.h>
+#include <SofaMiscFem/VerondaWestman.h>
+#include <SofaMiscFem/STVenantKirchhoff.h>
+#include <SofaMiscFem/HyperelasticMaterial.h>
+#include <SofaMiscFem/Costa.h>
 #include <sofa/component/fem/material/Ogden.h>
 #include "StandardTetrahedralFEMForceField.h"
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/ObjectFactory.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
@@ -49,7 +49,7 @@
 #endif
 #endif
 #include <sofa/core/behavior/ForceField.inl>
-#include <sofa/component/topology/TopologyData.inl>
+#include <SofaBaseTopology/TopologyData.inl>
 #include <algorithm>
 #include <iterator>
 #include <sofa/helper/AdvancedTimer.h>

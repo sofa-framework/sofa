@@ -31,7 +31,7 @@
 #include <sofa/core/behavior/BaseConstraintCorrection.h>
 #include <sofa/core/behavior/OdeSolver.h>
 
-#include <sofa/component/linearsolver/FullMatrix.h>
+#include <SofaBaseLinearSolver/FullMatrix.h>
 
 #include <sofa/simulation/common/CollisionAnimationLoop.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>

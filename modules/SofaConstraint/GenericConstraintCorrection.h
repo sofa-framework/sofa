@@ -33,8 +33,8 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
 
-#include <sofa/component/linearsolver/SparseMatrix.h>
-#include <sofa/component/linearsolver/FullMatrix.h>
+#include <SofaBaseLinearSolver/SparseMatrix.h>
+#include <SofaBaseLinearSolver/FullMatrix.h>
 
 namespace sofa {
 

@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_COLLISION_BARYCENTRICSTICKCONTACT_INL
 #define SOFA_COMPONENT_COLLISION_BARYCENTRICSTICKCONTACT_INL
 
-#include <sofa/component/collision/BarycentricStickContact.h>
+#include <SofaMiscCollision/BarycentricStickContact.h>
 #include <sofa/core/visual/VisualParams.h>
 
 namespace sofa

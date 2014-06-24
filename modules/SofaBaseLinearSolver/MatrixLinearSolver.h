@@ -31,11 +31,11 @@
 #include <sofa/simulation/common/VectorOperations.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/component/component.h>
-#include <sofa/component/linearsolver/DefaultMultiMatrixAccessor.h>
-#include <sofa/component/linearsolver/GraphScatteredTypes.h>
-#include <sofa/component/linearsolver/FullMatrix.h>
-#include <sofa/component/linearsolver/SparseMatrix.h>
-#include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
+#include <SofaBaseLinearSolver/DefaultMultiMatrixAccessor.h>
+#include <SofaBaseLinearSolver/GraphScatteredTypes.h>
+#include <SofaBaseLinearSolver/FullMatrix.h>
+#include <SofaBaseLinearSolver/SparseMatrix.h>
+#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 
 namespace sofa
 {

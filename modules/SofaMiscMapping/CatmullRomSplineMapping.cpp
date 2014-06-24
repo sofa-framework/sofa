@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_CATMULLROMSPLINEMAPPING_CPP
 
-#include <sofa/component/mapping/CatmullRomSplineMapping.inl>
+#include <SofaMiscMapping/CatmullRomSplineMapping.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

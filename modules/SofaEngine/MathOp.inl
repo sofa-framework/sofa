@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_ENGINE_MATHOP_INL
 #define SOFA_COMPONENT_ENGINE_MATHOP_INL
 
-#include <sofa/component/engine/MathOp.h>
+#include <SofaEngine/MathOp.h>
 
 namespace sofa
 {

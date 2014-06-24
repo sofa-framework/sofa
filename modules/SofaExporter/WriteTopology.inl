@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_MISC_WRITETOPOLOGY_INL
 #define SOFA_COMPONENT_MISC_WRITETOPOLOGY_INL
 
-#include <sofa/component/misc/WriteTopology.h>
+#include <SofaExporter/WriteTopology.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/core/objectmodel/DataFileName.h>

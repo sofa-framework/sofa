@@ -22,9 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/collision/StickContactConstraint.inl>
-#include <sofa/component/collision/BarycentricContactMapper.h>
-#include <sofa/component/collision/RigidContactMapper.h>
+#include <SofaConstraint/StickContactConstraint.inl>
+#include <SofaMeshCollision/BarycentricContactMapper.h>
+#include <SofaMeshCollision/RigidContactMapper.h>
 
 
 namespace sofa

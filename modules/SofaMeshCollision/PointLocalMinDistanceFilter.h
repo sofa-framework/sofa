@@ -25,9 +25,9 @@
 #ifndef SOFA_COMPONENT_COLLISION_POINTLOCALMINDISTANCEFILTER_H
 #define SOFA_COMPONENT_COLLISION_POINTLOCALMINDISTANCEFILTER_H
 
-#include <sofa/component/collision/LocalMinDistanceFilter.h>
-#include <sofa/component/collision/PointModel.h>
-#include <sofa/component/topology/TopologyData.h>
+#include <SofaMeshCollision/LocalMinDistanceFilter.h>
+#include <SofaMeshCollision/PointModel.h>
+#include <SofaBaseTopology/TopologyData.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 

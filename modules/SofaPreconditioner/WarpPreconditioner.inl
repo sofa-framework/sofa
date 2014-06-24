@@ -30,10 +30,10 @@
 #ifndef SOFA_COMPONENT_LINEARSOLVER_WARPPRECONDITIONER_INL
 #define SOFA_COMPONENT_LINEARSOLVER_WARPPRECONDITIONER_INL
 
-#include <sofa/component/linearsolver/WarpPreconditioner.h>
+#include <SofaPreconditioner/WarpPreconditioner.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/linearsolver/FullMatrix.h>
-#include <sofa/component/linearsolver/SparseMatrix.h>
+#include <SofaBaseLinearSolver/FullMatrix.h>
+#include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/helper/accessor.h>
@@ -41,7 +41,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/simulation/common/MechanicalMatrixVisitor.h>
-#include <sofa/component/linearsolver/MatrixLinearSolver.inl>
+#include <SofaBaseLinearSolver/MatrixLinearSolver.inl>
 
 #include <iostream>
 #include <math.h>

@@ -26,8 +26,8 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/component/topology/PointSetTopologyModifier.h>
-#include <sofa/component/topology/PointSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/PointSetTopologyModifier.h>
+#include <SofaBaseTopology/PointSetGeometryAlgorithms.h>
 #include <sofa/core/topology/TopologyChange.h>
 
 #include <sofa/defaulttype/Vec.h>

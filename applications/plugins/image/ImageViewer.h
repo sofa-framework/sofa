@@ -35,8 +35,8 @@
 #include <sofa/helper/gl/Texture.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/Event.h>
-#include <sofa/component/visualmodel/VisualModelImpl.h>
-#include <sofa/component/visualmodel/RecordedCamera.h>
+#include <SofaBaseVisual/VisualModelImpl.h>
+#include <SofaBaseVisual/RecordedCamera.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/simulation/common/AnimateBeginEvent.h>

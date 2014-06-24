@@ -37,9 +37,9 @@
 #include <sofa/core/visual/VisualParams.h>
 
 #ifdef SOFA_HAVE_GLEW
-#include <sofa/component/visualmodel/OglShader.h>
+#include <SofaOpenglVisual/OglShader.h>
 #include <sofa/helper/gl/FrameBufferObject.h>
-#include <sofa/component/visualmodel/VisualManagerPass.h>
+#include <SofaOpenglVisual/VisualManagerPass.h>
 #endif
 
 #include <sofa/core/objectmodel/DataFileName.h>

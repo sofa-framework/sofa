@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_COLLISION_BARYCENTRICCONTACTMAPPER_CPP
-#include <sofa/component/collision/BarycentricContactMapper.inl>
+#include <SofaMeshCollision/BarycentricContactMapper.inl>
 #include <sofa/helper/Factory.inl>
 
 namespace sofa

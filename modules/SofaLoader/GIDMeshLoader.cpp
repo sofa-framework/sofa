@@ -2,7 +2,7 @@
 #include <string>
 
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/component/loader/GIDMeshLoader.h>
+#include <SofaLoader/GIDMeshLoader.h>
 
 namespace sofa
 {

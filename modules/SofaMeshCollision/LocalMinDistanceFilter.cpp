@@ -23,10 +23,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/component/collision/LocalMinDistanceFilter.h>
+#include <SofaMeshCollision/LocalMinDistanceFilter.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/component/mapping/RigidMapping.h>
+#include <SofaRigid/RigidMapping.h>
 #include <limits>
 
 

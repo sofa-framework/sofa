@@ -25,12 +25,12 @@
 #ifndef SOFA_COMPONENT_COLLISION_MINPROXIMITYINTERSECTION_H
 #define SOFA_COMPONENT_COLLISION_MINPROXIMITYINTERSECTION_H
 
-#include <sofa/component/collision/BaseProximityIntersection.h>
+#include <SofaBaseCollision/BaseProximityIntersection.h>
 #include <sofa/helper/FnDispatcher.h>
-#include <sofa/component/collision/CapsuleModel.h>
-#include <sofa/component/collision/SphereModel.h>
-#include <sofa/component/collision/CubeModel.h>
-#include <sofa/component/collision/BaseIntTool.h>
+#include <SofaBaseCollision/CapsuleModel.h>
+#include <SofaBaseCollision/SphereModel.h>
+#include <SofaBaseCollision/CubeModel.h>
+#include <SofaBaseCollision/BaseIntTool.h>
 
 namespace sofa
 {

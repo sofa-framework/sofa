@@ -28,7 +28,7 @@
 
 #include <sofa/core/Multi2Mapping.h>
 
-#include <sofa/component/container/ArticulatedHierarchyContainer.h>
+#include <SofaRigid/ArticulatedHierarchyContainer.h>
 
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>

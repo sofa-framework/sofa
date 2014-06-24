@@ -30,7 +30,7 @@
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/gl/template.h>
-#include <sofa/component/visualmodel/OglShader.h>
+#include <SofaOpenglVisual/OglShader.h>
 
 namespace sofa
 {

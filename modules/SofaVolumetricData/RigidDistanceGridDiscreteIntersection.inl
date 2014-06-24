@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_COLLISION_RIGIDDISTANCEGRIDDISCRETEINTERSECTION_INL
 #define SOFA_COMPONENT_COLLISION_RIGIDDISTANCEGRIDDISCRETEINTERSECTION_INL
 #include <sofa/helper/system/config.h>
-#include <sofa/component/collision/RigidDistanceGridDiscreteIntersection.h>
+#include <SofaVolumetricData/RigidDistanceGridDiscreteIntersection.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/collision/Intersection.inl>

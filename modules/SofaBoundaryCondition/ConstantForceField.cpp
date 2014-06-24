@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_CONSTANTFORCEFIELD_CPP
 
-#include <sofa/component/forcefield/ConstantForceField.inl>
+#include <SofaBoundaryCondition/ConstantForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/defaulttype/VecTypes.h>

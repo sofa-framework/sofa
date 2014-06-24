@@ -29,8 +29,8 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/core/collision/NarrowPhaseDetection.h>
-#include <sofa/component/collision/TriangleModel.h>
-#include <sofa/component/topology/TopologySubsetData.h>
+#include <SofaMeshCollision/TriangleModel.h>
+#include <SofaBaseTopology/TopologySubsetData.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
@@ -38,8 +38,8 @@
 #include <sofa/core/behavior/BaseController.h>
 #include <fstream>
 
-#include <sofa/component/topology/TriangleSetTopologyAlgorithms.h>
-#include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/TriangleSetTopologyAlgorithms.h>
+#include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
 
 namespace sofa
 {

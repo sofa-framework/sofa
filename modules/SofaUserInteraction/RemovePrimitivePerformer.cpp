@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_COLLISION_REMOVEPRIMITIVEPERFORMER_CPP
 #define SOFA_COMPONENT_COLLISION_REMOVEPRIMITIVEPERFORMER_CPP
 
-#include <sofa/component/collision/RemovePrimitivePerformer.inl>
+#include <SofaUserInteraction/RemovePrimitivePerformer.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/helper/Factory.inl>
 

@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_JOINTSPRINGFORCEFIELD_INL
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_JOINTSPRINGFORCEFIELD_INL
 
-#include <sofa/component/interactionforcefield/JointSpringForceField.h>
+#include <SofaRigid/JointSpringForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/PairInteractionForceField.inl>
 #include <sofa/core/topology/BaseMeshTopology.h>

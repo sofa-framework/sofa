@@ -24,10 +24,10 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_CONSTRAINTSET_BILATERALINTERACTIONCONSTRAINT_CPP
 
-#include <sofa/component/constraintset/BilateralInteractionConstraint.inl>
+#include <SofaConstraint/BilateralInteractionConstraint.inl>
 
 #include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

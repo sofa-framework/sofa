@@ -25,9 +25,9 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_TOPOLOGYDATA_INL
 #define SOFA_COMPONENT_TOPOLOGY_TOPOLOGYDATA_INL
 
-#include <sofa/component/topology/TopologyData.h>
-#include <sofa/component/topology/TopologyEngine.inl>
-#include <sofa/component/topology/TopologyDataHandler.inl>
+#include <SofaBaseTopology/TopologyData.h>
+#include <SofaBaseTopology/TopologyEngine.inl>
+#include <SofaBaseTopology/TopologyDataHandler.inl>
 
 namespace sofa
 {

@@ -27,11 +27,11 @@
 
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/component/collision/LocalMinDistanceFilter.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaMeshCollision/LocalMinDistanceFilter.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/component/collision/PointModel.h>
+#include <SofaMeshCollision/PointModel.h>
 
 namespace sofa
 {

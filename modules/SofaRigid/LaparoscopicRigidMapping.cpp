@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_LAPAROSCOPICRIGIDMAPPING_CPP
-#include <sofa/component/mapping/LaparoscopicRigidMapping.inl>
+#include <SofaRigid/LaparoscopicRigidMapping.inl>
 
 #include <sofa/core/ObjectFactory.h>
 

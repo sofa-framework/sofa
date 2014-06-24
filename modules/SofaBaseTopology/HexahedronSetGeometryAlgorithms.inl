@@ -25,9 +25,9 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_HEXAHEDRONSETGEOMETRYALGORITHMS_INL
 #define SOFA_COMPONENT_TOPOLOGY_HEXAHEDRONSETGEOMETRYALGORITHMS_INL
 
-#include <sofa/component/topology/HexahedronSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/topology/CommonAlgorithms.h>
+#include <SofaBaseTopology/CommonAlgorithms.h>
 
 namespace sofa
 {

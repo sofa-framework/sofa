@@ -27,15 +27,15 @@
 
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/helper/FnDispatcher.h>
-#include <sofa/component/collision/SphereModel.h>
-#include <sofa/component/collision/PointModel.h>
-#include <sofa/component/collision/LineModel.h>
-#include <sofa/component/collision/TriangleModel.h>
-#include <sofa/component/collision/CubeModel.h>
-#include <sofa/component/collision/RayModel.h>
-#include <sofa/component/collision/DistanceGridCollisionModel.h>
-#include <sofa/component/collision/TetrahedronModel.h>
-#include <sofa/component/collision/DiscreteIntersection.h>
+#include <SofaBaseCollision/SphereModel.h>
+#include <SofaMeshCollision/PointModel.h>
+#include <SofaMeshCollision/LineModel.h>
+#include <SofaMeshCollision/TriangleModel.h>
+#include <SofaBaseCollision/CubeModel.h>
+#include <SofaUserInteraction/RayModel.h>
+#include <SofaVolumetricData/DistanceGridCollisionModel.h>
+#include <SofaMiscCollision/TetrahedronModel.h>
+#include <SofaBaseCollision/DiscreteIntersection.h>
 
 namespace sofa
 {

@@ -24,30 +24,30 @@
 ******************************************************************************/
 #include "TopologicalChangeManager.h"
 
-#include <sofa/component/collision/TriangleModel.h>
+#include <SofaMeshCollision/TriangleModel.h>
 #if 0
-#include <sofa/component/collision/TetrahedronModel.h>
+#include <SofaMiscCollision/TetrahedronModel.h>
 #endif
-#include <sofa/component/collision/SphereModel.h>
+#include <SofaBaseCollision/SphereModel.h>
 
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/simulation/common/Node.h>
 
 #include <sofa/core/topology/TopologicalMapping.h>
 
-#include <sofa/component/topology/PointSetTopologyContainer.h>
-#include <sofa/component/topology/EdgeSetTopologyContainer.h>
-#include <sofa/component/topology/TriangleSetTopologyContainer.h>
-#include <sofa/component/topology/TriangleSetTopologyModifier.h>
-#include <sofa/component/topology/TriangleSetTopologyAlgorithms.h>
-#include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
-#include <sofa/component/topology/TetrahedronSetTopologyContainer.h>
-#include <sofa/component/topology/QuadSetTopologyContainer.h>
-#include <sofa/component/topology/HexahedronSetTopologyContainer.h>
+#include <SofaBaseTopology/PointSetTopologyContainer.h>
+#include <SofaBaseTopology/EdgeSetTopologyContainer.h>
+#include <SofaBaseTopology/TriangleSetTopologyContainer.h>
+#include <SofaBaseTopology/TriangleSetTopologyModifier.h>
+#include <SofaBaseTopology/TriangleSetTopologyAlgorithms.h>
+#include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
+#include <SofaBaseTopology/QuadSetTopologyContainer.h>
+#include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 
-#include <sofa/component/topology/Hexa2TetraTopologicalMapping.h>
+#include <SofaTopologyMapping/Hexa2TetraTopologicalMapping.h>
 
 namespace sofa
 {

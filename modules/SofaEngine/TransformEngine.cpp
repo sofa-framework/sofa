@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_TRANSFORMENGINE_CPP
-#include <sofa/component/engine/TransformEngine.inl>
+#include <SofaEngine/TransformEngine.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

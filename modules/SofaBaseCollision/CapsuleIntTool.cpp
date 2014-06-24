@@ -1,4 +1,4 @@
-#include <sofa/component/collision/CapsuleIntTool.inl>
+#include <SofaBaseCollision/CapsuleIntTool.inl>
 
 namespace sofa
 {

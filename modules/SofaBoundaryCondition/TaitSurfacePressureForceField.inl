@@ -25,8 +25,8 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_TAITSURFACEPRESSUREFORCEFIELD_INL
 #define SOFA_COMPONENT_FORCEFIELD_TAITSURFACEPRESSUREFORCEFIELD_INL
 
-#include <sofa/component/forcefield/TaitSurfacePressureForceField.h>
-#include <sofa/component/linearsolver/BlocMatrixWriter.h>
+#include <SofaBoundaryCondition/TaitSurfacePressureForceField.h>
+#include <SofaBaseLinearSolver/BlocMatrixWriter.h>
 #include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>

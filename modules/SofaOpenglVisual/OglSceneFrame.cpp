@@ -25,7 +25,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/component/visualmodel/OglSceneFrame.h>
+#include "OglSceneFrame.h"
 
 namespace sofa
 {

@@ -36,15 +36,15 @@
 #include <sofa/helper/vector.h>
 
 #include <sofa/component/init.h>
-#include <sofa/component/mass/UniformMass.h>
-#include <sofa/component/forcefield/ConstantForceField.h>
-#include <sofa/component/mapping/SubsetMultiMapping.h>
-#include <sofa/component/mapping/RigidMapping.h>
-#include <sofa/component/mapping/DistanceMapping.h>
-#include <sofa/component/mapping/DistanceFromTargetMapping.h>
-#include <sofa/component/container/MechanicalObject.h>
-#include <sofa/component/topology/EdgeSetTopologyContainer.h>
-#include <sofa/component/projectiveconstraintset/FixedConstraint.h>
+#include <SofaBaseMechanics/UniformMass.h>
+#include <SofaBoundaryCondition/ConstantForceField.h>
+#include <SofaMiscMapping/SubsetMultiMapping.h>
+#include <SofaRigid/RigidMapping.h>
+#include <SofaMiscMapping/DistanceMapping.h>
+#include <SofaMiscMapping/DistanceFromTargetMapping.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
+#include <SofaBaseTopology/EdgeSetTopologyContainer.h>
+#include <SofaBoundaryCondition/FixedConstraint.h>
 
 #include "../odesolver/AssembledSolver.h"
 #include "../numericalsolver/LDLTSolver.h"
@@ -54,8 +54,8 @@
 #include <sofa/simulation/common/xml/initXml.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/helper/system/PluginManager.h>
-#include <sofa/component/misc/ReadState.h>
-#include <sofa/component/misc/CompareState.h>
+#include <SofaLoader/ReadState.h>
+#include <SofaValidation/CompareState.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/system/FileRepository.h>

@@ -1,7 +1,7 @@
 #ifndef INTRMESHUTIL_H
 #define INTRMESHUTIL_H
 
-#include <sofa/component/collision/IntrUtility3.h>
+#include <SofaBaseCollision/IntrUtility3.h>
 
 namespace sofa{
 namespace component{

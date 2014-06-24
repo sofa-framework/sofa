@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/FnDispatcher.inl>
-#include <sofa/component/collision/DiscreteIntersection.h>
+#include <SofaBaseCollision/DiscreteIntersection.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/collision/Intersection.inl>
 #include <sofa/helper/proximity.h>

@@ -28,7 +28,7 @@
 #include <string>
 
 
-#include <sofa/component/topology/SparseGridRamificationTopology.h>
+#include <SofaNonUniformFem/SparseGridRamificationTopology.h>
 
 
 namespace sofa

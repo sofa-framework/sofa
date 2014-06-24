@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/misc/PauseAnimation.h>
+#include <SofaGraphComponent/PauseAnimation.h>
 #include <sofa/core/visual/VisualParams.h>
 
 namespace sofa

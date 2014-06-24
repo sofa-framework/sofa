@@ -29,7 +29,7 @@
 
 #include <sofa/simulation/common/MechanicalVisitor.h>
 
-#include <sofa/component/linearsolver/FullMatrix.h>
+#include <SofaBaseLinearSolver/FullMatrix.h>
 
 namespace sofa
 {

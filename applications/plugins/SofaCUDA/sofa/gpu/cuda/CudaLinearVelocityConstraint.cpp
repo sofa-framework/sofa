@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "CudaTypes.h"
-#include <sofa/component/projectiveconstraintset/LinearVelocityConstraint.inl>
+#include <SofaBoundaryCondition/LinearVelocityConstraint.inl>
 
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>

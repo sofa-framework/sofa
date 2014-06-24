@@ -24,7 +24,7 @@
  ******************************************************************************/
 
 
-#include <sofa/component/linearsolver/EigenVector.h>
+#include <SofaEigen2Solver/EigenVector.h>
 
 
 namespace sofa

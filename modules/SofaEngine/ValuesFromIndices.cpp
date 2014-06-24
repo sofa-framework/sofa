@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_VALUESFROMINDICES_CPP
-#include <sofa/component/engine/ValuesFromIndices.inl>
+#include <SofaEngine/ValuesFromIndices.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>

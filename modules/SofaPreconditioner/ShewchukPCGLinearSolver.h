@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_LINEARSOLVER_ShewchukPCGLinearSolver_H
 
 #include <sofa/core/behavior/LinearSolver.h>
-#include <sofa/component/linearsolver/MatrixLinearSolver.h>
+#include <SofaBaseLinearSolver/MatrixLinearSolver.h>
 #include <sofa/helper/map.h>
 
 #include <math.h>

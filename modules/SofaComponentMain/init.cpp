@@ -24,12 +24,12 @@
 ******************************************************************************/
 #include <sofa/helper/system/config.h>
 
-#include <sofa/component/init.h>
-#include <sofa/component/initComponentBase.h>
-#include <sofa/component/initComponentCommon.h>
-#include <sofa/component/initComponentGeneral.h>
-#include <sofa/component/initComponentAdvanced.h>
-#include <sofa/component/initComponentMisc.h>
+#include <SofaComponentMain/init.h>
+#include <SofaComponentBase/initComponentBase.h>
+#include <SofaComponentCommon/initComponentCommon.h>
+#include <SofaComponentGeneral/initComponentGeneral.h>
+#include <SofaComponentAdvanced/initComponentAdvanced.h>
+#include <SofaComponentMisc/initComponentMisc.h>
 
 namespace sofa
 {

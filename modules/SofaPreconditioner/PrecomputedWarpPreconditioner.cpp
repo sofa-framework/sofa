@@ -26,7 +26,7 @@
 //
 // Copyright: See COPYING file that comes with this distribution
 
-#include <sofa/component/linearsolver/PrecomputedWarpPreconditioner.inl>
+#include <SofaPreconditioner/PrecomputedWarpPreconditioner.inl>
 
 namespace sofa
 {

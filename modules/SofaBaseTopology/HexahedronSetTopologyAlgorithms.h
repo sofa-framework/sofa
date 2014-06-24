@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_HEXAHEDRONSETTOPOLOGYALGORITHMS_H
 #define SOFA_COMPONENT_TOPOLOGY_HEXAHEDRONSETTOPOLOGYALGORITHMS_H
 
-#include <sofa/component/topology/QuadSetTopologyAlgorithms.h>
+#include <SofaBaseTopology/QuadSetTopologyAlgorithms.h>
 
 namespace sofa
 {

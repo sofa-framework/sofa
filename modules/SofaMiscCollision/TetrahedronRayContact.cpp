@@ -22,10 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/collision/RayContact.h>
+#include <SofaUserInteraction/RayContact.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/collision/RayModel.h>
-#include <sofa/component/collision/TetrahedronModel.h>
+#include <SofaUserInteraction/RayModel.h>
+#include <SofaMiscCollision/TetrahedronModel.h>
 
 namespace sofa
 {

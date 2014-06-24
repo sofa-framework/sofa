@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_ENGINE_CLUSTERING_INL
 #define SOFA_COMPONENT_ENGINE_CLUSTERING_INL
 
-#include <sofa/component/engine/ClusteringEngine.h>
+#include <SofaEngine/ClusteringEngine.h>
 #include <sofa/helper/gl/template.h>
 #include <iostream>
 using std::cerr;

@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/projectiveconstraintset/FixedRotationConstraint.inl>
+#include <SofaBoundaryCondition/FixedRotationConstraint.inl>
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/defaulttype/RigidTypes.h>

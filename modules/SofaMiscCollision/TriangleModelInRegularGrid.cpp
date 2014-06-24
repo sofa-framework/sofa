@@ -22,13 +22,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/collision/TriangleModelInRegularGrid.h>
+#include <SofaMiscCollision/TriangleModelInRegularGrid.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/collision/CubeModel.h>
-#include <sofa/component/collision/TriangleModel.inl>
-#include <sofa/component/topology/TopologyData.inl>
+#include <SofaBaseCollision/CubeModel.h>
+#include <SofaMeshCollision/TriangleModel.inl>
+#include <SofaBaseTopology/TopologyData.inl>
 #include <sofa/simulation/common/Node.h>
-#include <sofa/component/topology/RegularGridTopology.h>
+#include <SofaBaseTopology/RegularGridTopology.h>
 #include <sofa/core/CollisionElement.h>
 #include <sofa/core/ObjectFactory.h>
 #include <vector>

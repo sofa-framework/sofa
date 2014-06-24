@@ -39,13 +39,13 @@
 
 #include <sofa/defaulttype/SolidTypes.h>
 #include <sofa/component/component.h>
-#include <sofa/component/visualmodel/Light.h>
+#include <SofaOpenglVisual/Light.h>
 #include <sofa/core/visual/VisualManager.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/defaulttype/Mat.h>
 
 #ifdef SOFA_HAVE_GLEW
-#include <sofa/component/visualmodel/OglShadowShader.h>
+#include <SofaOpenglVisual/OglShadowShader.h>
 #endif
 
 namespace sofa

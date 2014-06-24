@@ -37,7 +37,7 @@
 #ifndef SOFAOPENCL_OPENCLSPATIALGRIDCONTAINER_H
 #define SOFAOPENCL_OPENCLSPATIALGRIDCONTAINER_H
 
-#include <sofa/component/container/SpatialGridContainer.h>
+#include <SofaSphFluid/SpatialGridContainer.h>
 #include "OpenCLTypes.h"
 #include <sofa/defaulttype/Vec.h>
 #include "oclRadixSort/RadixSort.h"

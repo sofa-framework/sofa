@@ -22,9 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/collision/DefaultCollisionGroupManager.h>
+#include <SofaMiscCollision/DefaultCollisionGroupManager.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/collision/SolverMerger.h>
+#include <SofaMiscCollision/SolverMerger.h>
 #include <sofa/core/CollisionModel.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/Simulation.h>

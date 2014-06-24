@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_VERTEX2FRAME_CPP
-#include <sofa/component/engine/Vertex2Frame.inl>
+#include <SofaEngine/Vertex2Frame.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/component/component.h>

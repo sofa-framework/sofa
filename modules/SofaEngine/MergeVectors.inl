@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_ENGINE_MERGEVECTORS_INL
 #define SOFA_COMPONENT_ENGINE_MERGEVECTORS_INL
 
-#include <sofa/component/engine/MergeVectors.h>
+#include <SofaEngine/MergeVectors.h>
 
 namespace sofa
 {

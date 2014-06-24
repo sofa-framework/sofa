@@ -25,13 +25,13 @@
 #ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ATTACHCONSTRAINT_INL
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ATTACHCONSTRAINT_INL
 
-#include <sofa/component/projectiveconstraintset/AttachConstraint.h>
+#include <SofaObjectInteraction/AttachConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/PairInteractionProjectiveConstraintSet.inl>
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
-#include <sofa/component/topology/TopologySubsetData.inl>
+#include <SofaBaseTopology/TopologySubsetData.inl>
 
 namespace sofa
 {

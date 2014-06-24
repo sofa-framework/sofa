@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/misc/TopologicalChangeProcessor.h>
+#include <SofaMiscTopology/TopologicalChangeProcessor.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 
@@ -30,15 +30,15 @@
 #include <sofa/simulation/common/Node.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
-#include <sofa/component/topology/TriangleSetTopologyModifier.h>
-#include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
-#include <sofa/component/topology/TriangleSetTopologyAlgorithms.h>
-#include <sofa/component/topology/QuadSetTopologyModifier.h>
-#include <sofa/component/topology/EdgeSetTopologyModifier.h>
-#include <sofa/component/topology/TetrahedronSetTopologyModifier.h>
-#include <sofa/component/topology/HexahedronSetTopologyModifier.h>
-#include <sofa/component/topology/EdgeSetTopologyModifier.h>
-#include <sofa/component/topology/PointSetTopologyModifier.h>
+#include <SofaBaseTopology/TriangleSetTopologyModifier.h>
+#include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/TriangleSetTopologyAlgorithms.h>
+#include <SofaBaseTopology/QuadSetTopologyModifier.h>
+#include <SofaBaseTopology/EdgeSetTopologyModifier.h>
+#include <SofaBaseTopology/TetrahedronSetTopologyModifier.h>
+#include <SofaBaseTopology/HexahedronSetTopologyModifier.h>
+#include <SofaBaseTopology/EdgeSetTopologyModifier.h>
+#include <SofaBaseTopology/PointSetTopologyModifier.h>
 #include <sofa/simulation/common/Simulation.h>
 
 #include <time.h>

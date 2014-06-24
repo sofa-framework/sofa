@@ -26,7 +26,7 @@
 #define SOFA_GPU_CUDA_CUDARIGIDMAPPING_H
 
 #include "CudaTypes.h"
-#include <sofa/component/mapping/RigidMapping.h>
+#include <SofaRigid/RigidMapping.h>
 #include <sofa/core/behavior/MechanicalState.h>
 
 namespace sofa

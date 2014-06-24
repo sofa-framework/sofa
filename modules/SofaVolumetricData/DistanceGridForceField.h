@@ -29,7 +29,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/component/container/DistanceGrid.h>
+#include <SofaVolumetricData/DistanceGrid.h>
 #include <sofa/component/component.h>
 
 namespace sofa

@@ -23,8 +23,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_TOPOLOGY_BEZIERTETRAHEDRONSETGEOMETRYALGORITHMS_CPP
-#include <sofa/component/topology/BezierTetrahedronSetGeometryAlgorithms.h>
-#include <sofa/component/topology/BezierTetrahedronSetGeometryAlgorithms.inl>
+#include <SofaBaseTopology/BezierTetrahedronSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/BezierTetrahedronSetGeometryAlgorithms.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>
 namespace sofa

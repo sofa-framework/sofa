@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDTRANSLATIONCONSTRAINT_H
 
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
-#include <sofa/component/topology/TopologySubsetData.h>
+#include <SofaBaseTopology/TopologySubsetData.h>
 #include <sofa/helper/vector.h>
 
 namespace sofa

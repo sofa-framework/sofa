@@ -36,7 +36,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 
 #include <sofa/core/topology/TopologyChange.h>
-#include <sofa/component/topology/PointSetTopologyContainer.h>
+#include <SofaBaseTopology/PointSetTopologyContainer.h>
 
 
 namespace sofa

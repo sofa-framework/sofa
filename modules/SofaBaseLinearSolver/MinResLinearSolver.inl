@@ -25,12 +25,12 @@
 #ifndef SOFA_COMPONENT_LINEARSOLVER_MinResLinearSolver_INL
 #define SOFA_COMPONENT_LINEARSOLVER_MinResLinearSolver_INL
 
-#include <sofa/component/linearsolver/MinResLinearSolver.h>
-#include <sofa/component/linearsolver/MatrixLinearSolver.inl>
+#include <SofaBaseLinearSolver/MinResLinearSolver.h>
+#include <SofaBaseLinearSolver/MatrixLinearSolver.inl>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/linearsolver/FullMatrix.h>
-#include <sofa/component/linearsolver/SparseMatrix.h>
-#include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
+#include <SofaBaseLinearSolver/FullMatrix.h>
+#include <SofaBaseLinearSolver/SparseMatrix.h>
+#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/AdvancedTimer.h>

@@ -5,10 +5,10 @@
 #ifndef WM5INTRSEGMENT3BOX3_H
 #define WM5INTRSEGMENT3BOX3_H
 
-#include <sofa/component/collision/Intersector.h>
-#include <sofa/component/collision/CapsuleModel.h>
-#include <sofa/component/collision/RigidCapsuleModel.h>
-#include <sofa/component/collision/OBBModel.h>
+#include <SofaBaseCollision/Intersector.h>
+#include <SofaBaseCollision/CapsuleModel.h>
+#include <SofaBaseCollision/RigidCapsuleModel.h>
+#include <SofaBaseCollision/OBBModel.h>
 
 namespace sofa{
 namespace component{

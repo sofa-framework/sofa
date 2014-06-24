@@ -25,11 +25,11 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_DYNAMICSPARSEGRIDTOPOLOGYALGORITHMS_INL
 #define SOFA_COMPONENT_TOPOLOGY_DYNAMICSPARSEGRIDTOPOLOGYALGORITHMS_INL
 
-#include <sofa/component/topology/DynamicSparseGridTopologyContainer.h>
-#include <sofa/component/topology/DynamicSparseGridTopologyModifier.h>
-#include <sofa/component/topology/DynamicSparseGridTopologyAlgorithms.h>
+#include <SofaNonUniformFem/DynamicSparseGridTopologyContainer.h>
+#include <SofaNonUniformFem/DynamicSparseGridTopologyModifier.h>
+#include <SofaNonUniformFem/DynamicSparseGridTopologyAlgorithms.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/topology/DynamicSparseGridGeometryAlgorithms.h>
+#include <SofaNonUniformFem/DynamicSparseGridGeometryAlgorithms.h>
 #include <algorithm>
 #include <functional>
 

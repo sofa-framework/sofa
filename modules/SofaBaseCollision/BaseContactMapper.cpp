@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_COLLISION_BASECONTACTMAPPER_CPP
 
-#include <sofa/component/collision/BaseContactMapper.h>
+#include <SofaBaseCollision/BaseContactMapper.h>
 
 #include <sofa/helper/Factory.inl>
 

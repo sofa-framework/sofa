@@ -26,14 +26,14 @@
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDPLANECONSTRAINT_INL
 
 #include <sofa/core/behavior/ProjectiveConstraintSet.inl>
-#include <sofa/component/projectiveconstraintset/FixedPlaneConstraint.h>
+#include <SofaBoundaryCondition/FixedPlaneConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-#include <sofa/component/topology/TopologySubsetData.inl>
+#include <SofaBaseTopology/TopologySubsetData.inl>
 
 namespace sofa
 {

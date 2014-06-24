@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/component/container/InterpolatedImplicitSurface.inl>
+#include <SofaVolumetricData/InterpolatedImplicitSurface.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

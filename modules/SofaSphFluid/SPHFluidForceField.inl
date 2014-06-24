@@ -25,10 +25,10 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_SPHFLUIDFORCEFIELD_INL
 #define SOFA_COMPONENT_FORCEFIELD_SPHFLUIDFORCEFIELD_INL
 
-#include <sofa/component/forcefield/SPHFluidForceField.h>
+#include <SofaSphFluid/SPHFluidForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/ForceField.inl>
-#include <sofa/component/container/SpatialGridContainer.inl>
+#include <SofaSphFluid/SpatialGridContainer.inl>
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/gl/template.h>
 #include <math.h>

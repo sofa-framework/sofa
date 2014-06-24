@@ -36,7 +36,7 @@
 #ifndef SOFA_COMPONENT_MAPPING_CURVEMAPPING_INL
 #define SOFA_COMPONENT_MAPPING_CURVEMAPPING_INL
 
-#include <sofa/component/mapping/CurveMapping.h>
+#include <SofaMiscMapping/CurveMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/Mapping.inl>

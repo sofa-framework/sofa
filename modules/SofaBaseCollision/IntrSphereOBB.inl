@@ -1,6 +1,6 @@
 #ifndef INTRSPHEREOBB_INL
 #define INTRSPHEREOBB_INL
-#include <sofa/component/collision/IntrSphereOBB.h>
+#include <SofaBaseCollision/IntrSphereOBB.h>
 
 namespace sofa{
 namespace component{

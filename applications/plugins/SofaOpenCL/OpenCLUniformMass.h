@@ -26,7 +26,7 @@
 #define SOFAOPENCL_OPENCLUNIFORMMASS_H
 
 #include "OpenCLTypes.h"
-#include <sofa/component/mass/UniformMass.h>
+#include <SofaBaseMechanics/UniformMass.h>
 
 namespace sofa
 {

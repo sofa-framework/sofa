@@ -29,9 +29,9 @@
 #include <iostream>
 #include <vector>
 
-#include <sofa/component/configurationsetting/AddRecordedCameraButtonSetting.h>
-#include <sofa/component/configurationsetting/AttachBodyButtonSetting.h>
-#include <sofa/component/configurationsetting/FixPickedParticleButtonSetting.h>
+#include <SofaGraphComponent/AddRecordedCameraButtonSetting.h>
+#include <SofaGraphComponent/AttachBodyButtonSetting.h>
+#include <SofaGraphComponent/FixPickedParticleButtonSetting.h>
 #include <sofa/gui/SofaGUI.h>
 
 namespace sofa

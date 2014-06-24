@@ -26,16 +26,16 @@
 #define SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONFEMFORCEFIELD_INL
 
 #include <sofa/core/behavior/ForceField.inl>
-#include <sofa/component/forcefield/TetrahedronFEMForceField.h>
+#include "TetrahedronFEMForceField.h"
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/topology/GridTopology.h>
+#include <SofaBaseTopology/GridTopology.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/helper/decompose.h>
 #include <sofa/helper/gl/template.h>
 #include <assert.h>
 #include <iostream>
 #include <set>
-#include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
+#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 
 
 namespace sofa

@@ -26,7 +26,7 @@
 #ifndef SOFA_COMPONENT_MISC_COMPARETOPOLOGY_H
 #define SOFA_COMPONENT_MISC_COMPARETOPOLOGY_H
 
-#include <sofa/component/misc/ReadTopology.h>
+#include <SofaLoader/ReadTopology.h>
 #include <sofa/simulation/common/Visitor.h>
 
 #include <fstream>

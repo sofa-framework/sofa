@@ -25,9 +25,9 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_TOPOLOGYSPARSEDATA_INL
 #define SOFA_COMPONENT_TOPOLOGY_TOPOLOGYSPARSEDATA_INL
 
-#include <sofa/component/topology/TopologySparseData.h>
-#include <sofa/component/topology/TopologyEngine.inl>
-#include <sofa/component/topology/TopologySparseDataHandler.inl>
+#include <SofaBaseTopology/TopologySparseData.h>
+#include <SofaBaseTopology/TopologyEngine.inl>
+#include <SofaBaseTopology/TopologySparseDataHandler.inl>
 
 namespace sofa
 {

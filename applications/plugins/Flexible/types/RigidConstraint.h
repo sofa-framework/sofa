@@ -30,7 +30,7 @@
 #include "QuadraticTypes.h"
 
 #include <sofa/core/behavior/ProjectiveConstraintSet.inl>
-#include <sofa/component/linearsolver/EigenSparseMatrix.h>
+#include <SofaEigen2Solver/EigenSparseMatrix.h>
 
 #include <sofa/core/visual/VisualParams.h>
 

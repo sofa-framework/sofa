@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_COLLISION_INTERACTIONPERFORMER_H
 
 #include <sofa/component/component.h>
-#include <sofa/component/configurationsetting/MouseButtonSetting.h>
+#include <SofaGraphComponent/MouseButtonSetting.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/core/visual/VisualParams.h>

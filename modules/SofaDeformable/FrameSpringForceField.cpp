@@ -25,7 +25,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/PairInteractionForceField.inl>
-#include <sofa/component/interactionforcefield/FrameSpringForceField.inl>
+#include <SofaDeformable/FrameSpringForceField.inl>
 #include <sofa/defaulttype/RigidTypes.h>
 
 

@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_RIGIDMAPPING_CPP
-#include <sofa/component/mapping/RigidMapping.inl>
+#include <SofaRigid/RigidMapping.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

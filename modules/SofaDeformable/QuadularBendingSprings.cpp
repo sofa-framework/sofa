@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_QUADULARBENDINGSPRINGS_CPP
 
-#include <sofa/component/forcefield/QuadularBendingSprings.inl>
+#include <SofaDeformable/QuadularBendingSprings.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>
 

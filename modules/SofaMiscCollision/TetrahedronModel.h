@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_COLLISION_TETRAHEDRONMODEL_H
 #define SOFA_COMPONENT_COLLISION_TETRAHEDRONMODEL_H
 
-#include <sofa/component/collision/BarycentricContactMapper.h>
+#include <SofaMeshCollision/BarycentricContactMapper.h>
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>

@@ -34,13 +34,13 @@
 
 #include "PMLFemForceField.h"
 
-#include <sofa/component/container/MechanicalObject.h>
-#include <sofa/component/forcefield/TetrahedronFEMForceField.h>
-#include <sofa/component/interactionforcefield/StiffSpringForceField.h>
-#include <sofa/component/mass/UniformMass.h>
-#include <sofa/component/mass/DiagonalMass.h>
-#include <sofa/component/mapping/IdentityMapping.h>
-#include <sofa/component/topology/MeshTopology.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
+#include <SofaSimpleFem/forcefield/TetrahedronFEMForceField.h>
+#include <SofaDeformable/StiffSpringForceField.h>
+#include <SofaBaseMechanics/UniformMass.h>
+#include <SofaBaseMechanics/DiagonalMass.h>
+#include <SofaBaseMechanics/IdentityMapping.h>
+#include <SofaBaseTopology/MeshTopology.h>
 #include <PhysicalModel.h>
 #include <MultiComponent.h>
 #include <PhysicalProperties/CellProperties.h>

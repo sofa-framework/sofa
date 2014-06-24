@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_CONFIGURATIONSETTING_FIXPICKEDPARTICLEBUTTON_H
 
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
-#include <sofa/component/configurationsetting/MouseButtonSetting.h>
+#include <SofaGraphComponent/MouseButtonSetting.h>
 #include <sofa/component/component.h>
 
 namespace sofa

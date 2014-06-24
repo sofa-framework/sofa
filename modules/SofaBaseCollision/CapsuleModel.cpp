@@ -24,7 +24,7 @@
 ******************************************************************************/
 
 
-#include <sofa/component/collision/CapsuleModel.inl>
+#include <SofaBaseCollision/CapsuleModel.inl>
 #include <sofa/core/ObjectFactory.h>
 
 

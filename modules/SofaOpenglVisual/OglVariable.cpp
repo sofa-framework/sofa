@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/visualmodel/OglVariable.inl>
+#include <SofaOpenglVisual/OglVariable.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

@@ -26,9 +26,9 @@
 #define SOFA_COMPONENT_LINEARSOLVER_BTDLINEARSOLVER_H
 
 #include <sofa/core/behavior/LinearSolver.h>
-#include <sofa/component/linearsolver/MatrixLinearSolver.h>
-#include <sofa/component/linearsolver/SparseMatrix.h>
-#include <sofa/component/linearsolver/FullMatrix.h>
+#include <SofaBaseLinearSolver/MatrixLinearSolver.h>
+#include <SofaBaseLinearSolver/SparseMatrix.h>
+#include <SofaBaseLinearSolver/FullMatrix.h>
 #include <math.h>
 #include <sofa/defaulttype/Mat.h>
 

@@ -29,8 +29,8 @@
 #pragma once
 #endif
 
-#include <sofa/component/forcefield/SPHFluidForceField.h>
-#include <sofa/component/topology/MeshTopology.h>
+#include <SofaSphFluid/SPHFluidForceField.h>
+#include <SofaBaseTopology/MeshTopology.h>
 
 #include <sofa/core/Mapping.h>
 

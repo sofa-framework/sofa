@@ -25,14 +25,14 @@
 #ifndef PLUGINS_PIM_SCULPTBODYPERFORMER_H
 #define PLUGINS_PIM_SCULPTBODYPERFORMER_H
 
-#include <sofa/component/topology/TetrahedronSetTopologyContainer.h>
-#include <sofa/component/misc/MeshTetraStuffing.h>
-#include <sofa/component/collision/TriangleModel.h>
-#include <sofa/component/forcefield/TetrahedralCorotationalFEMForceField.h>
-#include <sofa/component/odesolver/EulerImplicitSolver.h>
-#include <sofa/component/linearsolver/CGLinearSolver.h>
-#include <sofa/component/mass/UniformMass.h>
-#include <sofa/component/mass/DiagonalMass.h>
+#include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
+#include <SofaMisc/MeshTetraStuffing.h>
+#include <SofaMeshCollision/TriangleModel.h>
+#include <SofaSimpleFem/forcefield/TetrahedralCorotationalFEMForceField.h>
+#include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
+#include <SofaBaseLinearSolver/CGLinearSolver.h>
+#include <SofaBaseMechanics/UniformMass.h>
+#include <SofaBaseMechanics/DiagonalMass.h>
 #include <sofa/component/constraint/FixedConstraint.h>
 #include <plugins/CGALPlugin/MeshGenerationFromPolyhedron.h>
 #include <sofa/gui/PickHandler.h>
@@ -41,7 +41,7 @@
 //#include "EventManager.h"
 #include "ComputeMeshIntersection.h"
 #include <sofa/component/forcefield/StiffSpringForceField.h>
-#include <sofa/component/visualmodel/OglModel.h>
+#include <SofaOpenglVisual/OglModel.h>
 
 namespace plugins
 {

@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_EXTRUDESURFACE_CPP
-#include <sofa/component/engine/ExtrudeSurface.inl>
+#include <SofaEngine/ExtrudeSurface.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>

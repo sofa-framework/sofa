@@ -26,7 +26,7 @@
 #define SOFA_GPU_CUDA_CUDAPLANEFORCEFIELD_INL
 
 #include "CudaPlaneForceField.h"
-#include <sofa/component/forcefield/PlaneForceField.inl>
+#include <SofaBoundaryCondition/PlaneForceField.inl>
 
 namespace sofa
 {

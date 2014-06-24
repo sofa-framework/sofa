@@ -27,7 +27,7 @@
 
 #include <sofa/core/Mapping.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/component/topology/SimpleTesselatedTetraTopologicalMapping.h>
+#include <SofaTopologyMapping/SimpleTesselatedTetraTopologicalMapping.h>
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>

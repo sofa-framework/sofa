@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_RIGIDRIGIDMAPPING_CPP
 
-#include <sofa/component/mapping/RigidRigidMapping.inl>
+#include <SofaRigid/RigidRigidMapping.inl>
 
 #include <sofa/core/ObjectFactory.h>
 

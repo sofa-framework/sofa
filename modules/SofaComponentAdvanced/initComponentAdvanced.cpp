@@ -23,12 +23,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/helper/system/config.h>
-#include <sofa/component/initComponentAdvanced.h>
-#include <sofa/component/initEulerianFluid.h>
-#include <sofa/component/initSPHFluid.h>
-#include <sofa/component/initVolumetricData.h>
-#include <sofa/component/initNonUniformFEM.h>
-#include <sofa/component/initEigen2Solver.h>
+#include <SofaComponentAdvanced/initComponentAdvanced.h>
+#include <SofaEulerianFluid/initEulerianFluid.h>
+#include <SofaSphFluid/initSPHFluid.h>
+#include <SofaVolumetricData/initVolumetricData.h>
+#include <SofaNonUniformFem/initNonUniformFEM.h>
+#include <SofaEigen2Solver/initEigen2Solver.h>
 
 namespace sofa
 {

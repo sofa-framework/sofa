@@ -25,7 +25,7 @@
 #ifndef FRAME_FRAMELINEARMOVEMENTCONSTRAINT_H
 #define FRAME_FRAMELINEARMOVEMENTCONSTRAINT_H
 
-#include <sofa/component/projectiveconstraintset/LinearMovementConstraint.h>
+#include <SofaBoundaryCondition/LinearMovementConstraint.h>
 #include "QuadraticTypes.h"
 #include "AffineTypes.h"
 #include "initFrame.h"

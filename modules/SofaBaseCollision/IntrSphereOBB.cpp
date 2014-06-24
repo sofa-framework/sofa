@@ -1,4 +1,4 @@
-#include <sofa/component/collision/IntrSphereOBB.inl>
+#include <SofaBaseCollision/IntrSphereOBB.inl>
 
 
 namespace sofa{

@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "BarycentricDistanceLMConstraintContact.inl"
-#include <sofa/component/collision/BarycentricContactMapper.h>
+#include <SofaMeshCollision/BarycentricContactMapper.h>
 
 namespace sofa
 {

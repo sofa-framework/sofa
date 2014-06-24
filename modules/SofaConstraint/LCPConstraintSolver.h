@@ -25,14 +25,14 @@
 #ifndef SOFA_COMPONENT_CONSTRAINTSET_LCPCONSTRAINTSOLVER_H
 #define SOFA_COMPONENT_CONSTRAINTSET_LCPCONSTRAINTSOLVER_H
 
-#include <sofa/component/constraintset/ConstraintSolverImpl.h>
+#include <SofaConstraint/ConstraintSolverImpl.h>
 #include <sofa/core/behavior/BaseConstraintCorrection.h>
 
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 
-#include <sofa/component/linearsolver/FullMatrix.h>
-#include <sofa/component/linearsolver/SparseMatrix.h>
+#include <SofaBaseLinearSolver/FullMatrix.h>
+#include <SofaBaseLinearSolver/SparseMatrix.h>
 
 #include <sofa/helper/set.h>
 #include <sofa/helper/map.h>

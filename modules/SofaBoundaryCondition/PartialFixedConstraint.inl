@@ -27,13 +27,13 @@
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/ProjectiveConstraintSet.inl>
-#include <sofa/component/projectiveconstraintset/PartialFixedConstraint.h>
+#include <SofaBoundaryCondition/PartialFixedConstraint.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/BasicShapes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
-#include <sofa/component/topology/TopologySubsetData.inl>
+#include <SofaBaseTopology/TopologySubsetData.inl>
 
 #include <sofa/core/visual/VisualParams.h>
 

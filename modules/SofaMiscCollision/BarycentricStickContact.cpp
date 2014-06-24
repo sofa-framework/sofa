@@ -22,10 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/collision/BarycentricStickContact.inl>
-#include <sofa/component/collision/BarycentricContactMapper.h>
-#include <sofa/component/collision/IdentityContactMapper.h>
-#include <sofa/component/collision/DistanceGridCollisionModel.h>
+#include <SofaMiscCollision/BarycentricStickContact.inl>
+#include <SofaMeshCollision/BarycentricContactMapper.h>
+#include <SofaMeshCollision/IdentityContactMapper.h>
+#include <SofaVolumetricData/DistanceGridCollisionModel.h>
 
 namespace sofa
 {

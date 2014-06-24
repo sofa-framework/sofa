@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/component/linearsolver/DefaultMultiMatrixAccessor.h>
+#include <SofaBaseLinearSolver/DefaultMultiMatrixAccessor.h>
 #include <sofa/core/visual/VisualParams.h>
 
 

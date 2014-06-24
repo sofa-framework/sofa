@@ -38,7 +38,7 @@
 
 // Including component
 #include <sofa/component/projectiveconstraintset/AffineMovementConstraint.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 
 
 namespace sofa {

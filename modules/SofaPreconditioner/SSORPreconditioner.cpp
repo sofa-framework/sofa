@@ -25,8 +25,8 @@
 // Author: François Faure, INRIA-UJF, (C) 2006
 //
 // Copyright: See COPYING file that comes with this distribution
-#include <sofa/component/linearsolver/SSORPreconditioner.inl>
-#include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
+#include <SofaPreconditioner/SSORPreconditioner.inl>
+#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 #include <sofa/core/ObjectFactory.h>
 
 

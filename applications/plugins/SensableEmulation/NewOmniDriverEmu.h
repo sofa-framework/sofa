@@ -34,8 +34,8 @@
 #include <sofa/defaulttype/SolidTypes.h>
 
 #include <sofa/core/behavior/BaseController.h>
-#include <sofa/component/visualmodel/OglModel.h>
-#include <sofa/component/controller/Controller.h>
+#include <SofaOpenglVisual/OglModel.h>
+#include <SofaUserInteraction/Controller.h>
 
 #include <sofa/helper/system/thread/CTime.h>
 

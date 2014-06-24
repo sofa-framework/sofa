@@ -32,12 +32,12 @@
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 
-#include <sofa/component/odesolver/EulerImplicitSolver.h>
+#include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
 
-#include <sofa/component/linearsolver/SparseMatrix.h>
-#include <sofa/component/linearsolver/CGLinearSolver.h>
+#include <SofaBaseLinearSolver/SparseMatrix.h>
+#include <SofaBaseLinearSolver/CGLinearSolver.h>
 
-#include <sofa/component/forcefield/TetrahedronFEMForceField.inl>
+#include <SofaSimpleFem/TetrahedronFEMForceField.inl>
 
 #include <sofa/core/behavior/RotationFinder.h>
 
@@ -45,7 +45,7 @@
 #include <sofa/helper/Quater.h>
 
 #ifdef SOFA_HAVE_EIGEN2
-#include <sofa/component/constraintset/LMConstraintSolver.h>
+#include <SofaConstraint/LMConstraintSolver.h>
 #include <sofa/simulation/common/Node.h>
 #endif
 

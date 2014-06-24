@@ -26,9 +26,9 @@
 #define SOFAOPENCL_OPENCLSPRINGFORCEFIELD_H
 
 #include "OpenCLTypes.h"
-#include <sofa/component/interactionforcefield/SpringForceField.h>
-#include <sofa/component/interactionforcefield/StiffSpringForceField.h>
-#include <sofa/component/interactionforcefield/MeshSpringForceField.h>
+#include <SofaDeformable/SpringForceField.h>
+#include <SofaDeformable/StiffSpringForceField.h>
+#include <SofaDeformable/MeshSpringForceField.h>
 
 
 namespace sofa

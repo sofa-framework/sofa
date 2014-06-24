@@ -47,7 +47,7 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_HEXAHEDRONSETTOPOLOGYCONTAINER_H
 #define SOFA_COMPONENT_TOPOLOGY_HEXAHEDRONSETTOPOLOGYCONTAINER_H
 
-#include <sofa/component/topology/QuadSetTopologyContainer.h>
+#include <SofaBaseTopology/QuadSetTopologyContainer.h>
 
 
 namespace sofa

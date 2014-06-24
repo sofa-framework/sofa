@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_CYLINDERGRIDTOPOLOGY_H
 #define SOFA_COMPONENT_TOPOLOGY_CYLINDERGRIDTOPOLOGY_H
 
-#include <sofa/component/topology/GridTopology.h>
+#include <SofaBaseTopology/GridTopology.h>
 #include <sofa/defaulttype/Vec.h>
 
 namespace sofa

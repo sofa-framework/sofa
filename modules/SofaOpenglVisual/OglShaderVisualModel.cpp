@@ -29,15 +29,15 @@
  *      Author: froy
  */
 
-#include <sofa/component/visualmodel/OglShaderVisualModel.h>
+#include <SofaOpenglVisual/OglShaderVisualModel.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/core/topology/TopologyChange.h>
-#include <sofa/component/topology/PointSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/PointSetGeometryAlgorithms.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/component/visualmodel/OglAttribute.inl>
+#include <SofaOpenglVisual/OglAttribute.inl>
 
 namespace sofa
 {

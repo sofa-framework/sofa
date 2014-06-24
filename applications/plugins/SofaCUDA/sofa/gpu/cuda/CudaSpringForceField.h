@@ -26,9 +26,9 @@
 #define SOFA_GPU_CUDA_CUDASPRINGFORCEFIELD_H
 
 #include "CudaTypes.h"
-#include <sofa/component/interactionforcefield/SpringForceField.h>
-#include <sofa/component/interactionforcefield/StiffSpringForceField.h>
-#include <sofa/component/interactionforcefield/MeshSpringForceField.h>
+#include <SofaDeformable/SpringForceField.h>
+#include <SofaDeformable/StiffSpringForceField.h>
+#include <SofaDeformable/MeshSpringForceField.h>
 
 
 namespace sofa

@@ -29,7 +29,7 @@
 #include "CudaTypes.h"
 #include "CudaMechanicalObject.inl"
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/component/container/MappedObject.inl>
+#include <SofaBaseMechanics/MappedObject.inl>
 
 namespace sofa
 {

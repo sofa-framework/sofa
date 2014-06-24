@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_CONTROLLER_NULLFORCEFEEDBACK_H
 #define SOFA_COMPONENT_CONTROLLER_NULLFORCEFEEDBACK_H
 
-#include <sofa/component/controller/ForceFeedback.h>
+#include <SofaHaptics/ForceFeedback.h>
 
 namespace sofa
 {

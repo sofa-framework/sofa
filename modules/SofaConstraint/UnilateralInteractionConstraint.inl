@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_CONSTRAINTSET_UNILATERALINTERACTIONCONSTRAINT_INL
 #define SOFA_COMPONENT_CONSTRAINTSET_UNILATERALINTERACTIONCONSTRAINT_INL
 
-#include <sofa/component/constraintset/UnilateralInteractionConstraint.h>
+#include <SofaConstraint/UnilateralInteractionConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/PairInteractionConstraint.inl>
 #include <sofa/defaulttype/Vec.h>

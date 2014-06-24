@@ -30,9 +30,9 @@
 #include <sofa/component/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 
-#include <sofa/component/forcefield/TrianglePressureForceField.h>
+#include <SofaBoundaryCondition/TrianglePressureForceField.h>
 #include "../material/HookeForceField.h"
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 
 namespace sofa {
 

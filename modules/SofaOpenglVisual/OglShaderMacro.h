@@ -25,7 +25,7 @@
 #ifndef OGLSHADERMACRO_H_
 #define OGLSHADERMACRO_H_
 
-#include <sofa/component/visualmodel/OglShader.h>
+#include <SofaOpenglVisual/OglShader.h>
 
 namespace sofa
 {

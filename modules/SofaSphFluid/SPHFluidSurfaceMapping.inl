@@ -25,9 +25,9 @@
 #ifndef SOFA_COMPONENT_MAPPING_SPHFLUIDSURFACEMAPPING_INL
 #define SOFA_COMPONENT_MAPPING_SPHFLUIDSURFACEMAPPING_INL
 
-#include <sofa/component/mapping/SPHFluidSurfaceMapping.h>
+#include <SofaSphFluid/SPHFluidSurfaceMapping.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/container/SpatialGridContainer.inl>
+#include <SofaSphFluid/SpatialGridContainer.inl>
 
 #include <sofa/core/Mapping.inl>
 
@@ -42,7 +42,7 @@
 #include <list>
 
 //#ifdef SOFA_HAVE_GLEW
-//#include <sofa/component/visualmodel/OglShaderVisualModel.h>
+//#include <SofaOpenglVisual/OglShaderVisualModel.h>
 //#endif
 
 namespace sofa

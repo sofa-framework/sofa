@@ -38,7 +38,7 @@
 #define SOFAOPENCL_OPENCLSPATIALGRIDCONTAINER_INL
 
 #include "OpenCLSpatialGridContainer.h"
-#include <sofa/component/container/SpatialGridContainer.inl>
+#include <SofaSphFluid/SpatialGridContainer.inl>
 #include <sofa/helper/gl/template.h>
 
 

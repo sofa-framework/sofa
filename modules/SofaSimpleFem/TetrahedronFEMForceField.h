@@ -34,7 +34,7 @@
 #include <sofa/core/behavior/BaseRotationFinder.h>
 #include <sofa/core/behavior/RotationMatrix.h>
 #include <sofa/helper/OptionsGroup.h>
-#include <sofa/component/visualmodel/ColorMap.h>
+#include <SofaOpenglVisual/ColorMap.h>
 #include <sofa/simulation/common/AnimateBeginEvent.h>
 
 // corotational tetrahedron from

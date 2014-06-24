@@ -25,8 +25,8 @@
 #ifndef SOFA_COMPONENT_MAPPING_SIMPLETESSELATEDTETRAMAPPING_INL
 #define SOFA_COMPONENT_MAPPING_SIMPLETESSELATEDTETRAMAPPING_INL
 
-#include <sofa/component/mapping/SimpleTesselatedTetraMechanicalMapping.h>
-#include <sofa/component/topology/TopologyData.inl>
+#include <SofaTopologyMapping/SimpleTesselatedTetraMechanicalMapping.h>
+#include <SofaBaseTopology/TopologyData.inl>
 
 namespace sofa
 {

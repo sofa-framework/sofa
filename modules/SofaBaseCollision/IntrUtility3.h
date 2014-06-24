@@ -5,8 +5,8 @@
 #ifndef WM5INTRUTILITY3_H
 #define WM5INTRUTILITY3_H
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/component/collision/OBBModel.h>
-#include <sofa/component/collision/TriangleModel.h>
+#include <SofaBaseCollision/OBBModel.h>
+#include <SofaMeshCollision/TriangleModel.h>
 
 
 namespace sofa{
@@ -339,7 +339,7 @@ extern template SOFA_BASE_COLLISION_API class CapIntrConfiguration<float>;
 }
 
 #ifndef SOFA_EXTERN_TEMPLATE
-#include <sofa/component/collision/IntrUtility3.inl>
+#include <SofaBaseCollision/IntrUtility3.inl>
 #endif
 
 #endif

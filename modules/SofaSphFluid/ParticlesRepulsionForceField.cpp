@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_PARTICLESREPULSIONFORCEFIELD_CPP
 
-#include <sofa/component/forcefield/ParticlesRepulsionForceField.inl>
+#include <SofaSphFluid/ParticlesRepulsionForceField.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>
 

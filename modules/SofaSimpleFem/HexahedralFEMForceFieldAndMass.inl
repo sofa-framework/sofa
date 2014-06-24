@@ -26,11 +26,11 @@
 #define SOFA_COMPONENT_FORCEFIELD_HEXAHEDRALFEMFORCEFIELDANDMASS_INL
 
 
-#include <sofa/component/forcefield/HexahedralFEMForceFieldAndMass.h>
+#include "HexahedralFEMForceFieldAndMass.h"
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/forcefield/HexahedralFEMForceField.inl>
+#include "HexahedralFEMForceField.inl"
 
-#include <sofa/component/topology/TopologyData.inl>
+#include <SofaBaseTopology/TopologyData.inl>
 
 namespace sofa
 {

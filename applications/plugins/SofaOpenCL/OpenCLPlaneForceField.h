@@ -26,7 +26,7 @@
 #define SOFAOPENCL_OPENCLPLANEFORCEFIELD_H
 
 #include "OpenCLTypes.h"
-#include <sofa/component/forcefield/PlaneForceField.h>
+#include <SofaBoundaryCondition/PlaneForceField.h>
 
 namespace sofa
 {

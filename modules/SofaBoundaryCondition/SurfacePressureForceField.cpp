@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_SURFACEPRESSUREFORCEFIELD_CPP
-#include <sofa/component/forcefield/SurfacePressureForceField.inl>
+#include <SofaBoundaryCondition/SurfacePressureForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
 

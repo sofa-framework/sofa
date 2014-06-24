@@ -38,27 +38,27 @@
 
 
 #include <sofa/core/behavior/BaseController.h>
-#include <sofa/component/visualmodel/OglModel.h>
-#include <sofa/component/mapping/RigidMapping.h>
-#include <sofa/component/controller/Controller.h>
+#include <SofaOpenglVisual/OglModel.h>
+#include <SofaRigid/RigidMapping.h>
+#include <SofaUserInteraction/Controller.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/Simulation.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 
 
 //force feedback
-#include <sofa/component/controller/ForceFeedback.h>
-#include <sofa/component/controller/MechanicalStateForceFeedback.h>
-#include <sofa/component/controller/LCPForceFeedback.h>
-#include <sofa/component/controller/NullForceFeedbackT.h>
+#include <SofaHaptics/ForceFeedback.h>
+#include <SofaHaptics/MechanicalStateForceFeedback.h>
+#include <SofaHaptics/LCPForceFeedback.h>
+#include <SofaHaptics/NullForceFeedbackT.h>
 
 #include <sofa/simulation/common/Node.h>
 #include <cstring>
 
-#include <sofa/component/visualmodel/OglModel.h>
+#include <SofaOpenglVisual/OglModel.h>
 #include <sofa/simulation/tree/GNode.h>
-#include <sofa/component/topology/TopologyData.h>
-#include <sofa/component/visualmodel/InteractiveCamera.h>
+#include <SofaBaseTopology/TopologyData.h>
+#include <SofaBaseVisual/InteractiveCamera.h>
 
 #include <math.h>
 

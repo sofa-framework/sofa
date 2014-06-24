@@ -31,7 +31,7 @@
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/component/topology/DynamicSparseGridTopologyContainer.h>
+#include <SofaNonUniformFem/DynamicSparseGridTopologyContainer.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/helper/SVector.h>
 #include <sofa/helper/set.h>

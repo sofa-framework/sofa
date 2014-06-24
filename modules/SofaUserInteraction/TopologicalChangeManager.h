@@ -31,15 +31,15 @@
 #include <sofa/core/BehaviorModel.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
-#include <sofa/component/collision/TriangleModel.h>
-#include <sofa/component/collision/SphereModel.h>
-#include <sofa/component/collision/CuttingPoint.h>
+#include <SofaMeshCollision/TriangleModel.h>
+#include <SofaBaseCollision/SphereModel.h>
+#include <SofaUserInteraction/CuttingPoint.h>
 
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Vec3Types.h>
 
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/simulation/common/Node.h>
 
 

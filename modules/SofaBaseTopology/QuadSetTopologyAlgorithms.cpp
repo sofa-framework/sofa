@@ -23,8 +23,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_TOPOLOGY_QUADSETTOPOLOGYALGORITHMS_CPP
-#include <sofa/component/topology/QuadSetTopologyAlgorithms.h>
-#include <sofa/component/topology/QuadSetTopologyAlgorithms.inl>
+#include <SofaBaseTopology/QuadSetTopologyAlgorithms.h>
+#include <SofaBaseTopology/QuadSetTopologyAlgorithms.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>
 

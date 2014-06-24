@@ -1,4 +1,4 @@
-#include <sofa/component/collision/IntrUtility3.inl>
+#include <SofaBaseCollision/IntrUtility3.inl>
 
 namespace sofa{
 namespace component{

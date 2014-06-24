@@ -37,10 +37,10 @@
 
 
 
-#include <sofa/component/collision/PointModel.h>
+#include <SofaMeshCollision/PointModel.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/collision/PointLocalMinDistanceFilter.h>
-#include <sofa/component/collision/CubeModel.h>
+#include <SofaMeshCollision/PointLocalMinDistanceFilter.h>
+#include <SofaBaseCollision/CubeModel.h>
 #include <sofa/core/ObjectFactory.h>
 #include <vector>
 #include <sofa/helper/system/gl.h>

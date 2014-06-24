@@ -1,4 +1,4 @@
-#include <sofa/component/collision/BaseIntTool.h>
+#include <SofaBaseCollision/BaseIntTool.h>
 
 namespace sofa{namespace component{namespace collision{
 

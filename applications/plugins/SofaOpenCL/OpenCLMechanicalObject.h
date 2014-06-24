@@ -26,7 +26,7 @@
 #define SOFAOPENCL_OPENCLMECHANICALOBJECT_H
 
 #include "OpenCLTypes.h"
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 
 namespace sofa
 {

@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/helper/system/config.h>
-#include <sofa/component/collision/MinProximityIntersection.h>
+#include <SofaBaseCollision/MinProximityIntersection.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/proximity.h>
@@ -33,7 +33,7 @@
 #include <iostream>
 #include <algorithm>
 #include <sofa/helper/gl/template.h>
-#include <sofa/component/collision/BaseIntTool.h>
+#include <SofaBaseCollision/BaseIntTool.h>
 
 #define DYNAMIC_CONE_ANGLE_COMPUTATION
 

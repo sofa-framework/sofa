@@ -3,7 +3,7 @@
 
 #include "initSimpleGUI.h"
 #include <sofa/config.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 //#include <sofa/simulation/graph/DAGSimulation.h>
 //typedef sofa::simulation::graph::DAGSimulation SofaSimulation;
 #include <sofa/simulation/tree/TreeSimulation.h>

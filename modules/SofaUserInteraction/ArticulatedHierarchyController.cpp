@@ -34,7 +34,7 @@
 //
 //
 
-#include <sofa/component/controller/ArticulatedHierarchyController.h>
+#include <SofaUserInteraction/ArticulatedHierarchyController.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/VecTypes.h>
 

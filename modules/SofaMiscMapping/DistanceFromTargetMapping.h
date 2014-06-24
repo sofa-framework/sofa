@@ -26,8 +26,8 @@
 #define SOFA_COMPONENT_MAPPING_DistanceFromTargetMapping_H
 
 #include <sofa/core/Mapping.h>
-#include <sofa/component/linearsolver/EigenSparseMatrix.h>
-#include <sofa/component/topology/PointSetTopologyContainer.h>
+#include <SofaEigen2Solver/EigenSparseMatrix.h>
+#include <SofaBaseTopology/PointSetTopologyContainer.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/RigidTypes.h>

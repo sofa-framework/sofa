@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/component/visualmodel/OglViewport.h>
+#include <SofaOpenglVisual/OglViewport.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/common/VisualVisitor.h>
 #include <sofa/core/ObjectFactory.h>
@@ -31,7 +31,7 @@
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/fixed_array.h>
 #include <sofa/helper/system/glu.h>
-#include <sofa/component/visualmodel/VisualStyle.h>
+#include <SofaBaseVisual/VisualStyle.h>
 
 namespace sofa
 {

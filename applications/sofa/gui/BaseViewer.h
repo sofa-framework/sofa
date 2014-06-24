@@ -48,17 +48,17 @@
 #include <sofa/core/objectmodel/MouseEvent.h>
 #include <sofa/core/collision/Pipeline.h>
 
-#include <sofa/component/configurationsetting/ViewerSetting.h>
+#include <SofaGraphComponent/ViewerSetting.h>
 
 //instruments handling
-#include <sofa/component/controller/Controller.h>
+#include <SofaUserInteraction/Controller.h>
 #include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 //#include <sofa/simulation/common/GrabVisitor.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/UpdateMappingVisitor.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/simulation/common/Node.h>
-#include <sofa/component/visualmodel/InteractiveCamera.h>
+#include <SofaBaseVisual/InteractiveCamera.h>
 
 #include <sofa/helper/io/Image.h>
 

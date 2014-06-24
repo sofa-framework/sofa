@@ -25,8 +25,8 @@
 #ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_REGULARGRIDSPRINGFORCEFIELD_H
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_REGULARGRIDSPRINGFORCEFIELD_H
 
-#include <sofa/component/interactionforcefield/StiffSpringForceField.h>
-#include <sofa/component/topology/RegularGridTopology.h>
+#include <SofaDeformable/StiffSpringForceField.h>
+#include <SofaBaseTopology/RegularGridTopology.h>
 #include <sofa/core/MechanicalParams.h>
 
 

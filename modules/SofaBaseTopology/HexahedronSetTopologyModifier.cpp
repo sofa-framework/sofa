@@ -22,10 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/topology/HexahedronSetTopologyModifier.h>
+#include <SofaBaseTopology/HexahedronSetTopologyModifier.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/TopologyChange.h>
-#include <sofa/component/topology/HexahedronSetTopologyContainer.h>
+#include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
 #include <algorithm>
 #include <functional>
 #include <iostream>

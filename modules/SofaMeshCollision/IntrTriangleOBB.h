@@ -1,10 +1,10 @@
 #ifndef INTROBBTRIANGLE_H
 #define INTROBBTRIANGLE_H
 #include <sofa/core/collision/Intersection.h>
-#include <sofa/component/collision/OBBModel.h>
-#include <sofa/component/collision/TriangleModel.h>
-#include <sofa/component/collision/IntrMeshUtility.h>
-#include <sofa/component/collision/Intersector.h>
+#include <SofaBaseCollision/OBBModel.h>
+#include <SofaMeshCollision/TriangleModel.h>
+#include <SofaMeshCollision/IntrMeshUtility.h>
+#include <SofaBaseCollision/Intersector.h>
 
 namespace sofa{
 namespace component{

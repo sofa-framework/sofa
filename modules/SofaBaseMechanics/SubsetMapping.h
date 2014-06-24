@@ -28,8 +28,8 @@
 
 #include <sofa/core/Mapping.h>
 
-#include <sofa/component/topology/TopologySubsetData.h>
-#include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
+#include <SofaBaseTopology/TopologySubsetData.h>
+#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 
 #include <sofa/helper/vector.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -37,7 +37,7 @@
 #include <memory>
 
 #ifdef SOFA_HAVE_EIGEN2
-#include <sofa/component/linearsolver/EigenSparseMatrix.h>
+#include <SofaEigen2Solver/EigenSparseMatrix.h>
 #endif
 
 namespace sofa

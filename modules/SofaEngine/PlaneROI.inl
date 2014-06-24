@@ -29,7 +29,7 @@
 #pragma once
 #endif
 
-#include <sofa/component/engine/PlaneROI.h>
+#include <SofaEngine/PlaneROI.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/BasicShapes.h>

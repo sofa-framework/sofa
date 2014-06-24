@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_COLLISION_CAPSULEMODEL_H
 
 #include <sofa/core/CollisionModel.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/component/component.h>

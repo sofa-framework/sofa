@@ -33,12 +33,12 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#include <sofa/component/visualmodel/OglShadowShader.h>
+#include <SofaOpenglVisual/OglShadowShader.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/FileRepository.h>
 
-#include <sofa/component/visualmodel/LightManager.h>
+#include <SofaOpenglVisual/LightManager.h>
 
 namespace sofa
 {

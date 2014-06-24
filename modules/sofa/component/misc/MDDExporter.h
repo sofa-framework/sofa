@@ -37,7 +37,7 @@
 #include <sofa/core/topology/TopologyChange.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
-#include <sofa/component/visualmodel/VisualModelImpl.h>
+#include <SofaBaseVisual/VisualModelImpl.h>
 #include <sofa/core/topology/Topology.h>
 #include <sofa/helper/list.h>
 

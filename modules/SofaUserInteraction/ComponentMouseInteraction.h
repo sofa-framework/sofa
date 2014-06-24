@@ -27,8 +27,8 @@
 
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/simulation/common/DeleteVisitor.h>
-#include <sofa/component/collision/MouseInteractor.h>
-#include <sofa/component/mapping/IdentityMapping.h>
+#include <SofaUserInteraction/MouseInteractor.h>
+#include <SofaBaseMechanics/IdentityMapping.h>
 #include <sofa/component/component.h>
 #include <sofa/core/Mapping.h>
 

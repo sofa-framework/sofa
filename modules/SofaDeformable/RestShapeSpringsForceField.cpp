@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_RESTSHAPESPRINGFORCEFIELD_CPP
 
-#include <sofa/component/forcefield/RestShapeSpringsForceField.inl>
+#include <SofaDeformable/RestShapeSpringsForceField.inl>
 
 #include <sofa/core/visual/DrawTool.h>
 #include <sofa/core/ObjectFactory.h>

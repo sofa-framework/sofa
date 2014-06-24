@@ -34,7 +34,7 @@
 #include "../material/BaseMaterial.h"
 #include "../quadrature/BaseGaussPointSampler.h"
 
-#include <sofa/component/linearsolver/EigenSparseMatrix.h>
+#include <SofaEigen2Solver/EigenSparseMatrix.h>
 
 namespace sofa
 {

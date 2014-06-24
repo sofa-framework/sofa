@@ -49,10 +49,10 @@
 #include <sofa/defaulttype/Mat.h>
 
 #include <sofa/defaulttype/Mat.h>
-#include <sofa/component/topology/TopologyData.h>
+#include <SofaBaseTopology/TopologyData.h>
 
 #ifdef SOFA_HAVE_EIGEN2
-#include <sofa/component/linearsolver/EigenSparseMatrix.h>
+#include <SofaEigen2Solver/EigenSparseMatrix.h>
 #endif
 
 #define LOCAL_OPTIM

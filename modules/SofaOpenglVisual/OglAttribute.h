@@ -28,8 +28,8 @@
 
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/component/visualmodel/OglModel.h>
-#include <sofa/component/visualmodel/OglShader.h>
+#include <SofaOpenglVisual/OglModel.h>
+#include <SofaOpenglVisual/OglShader.h>
 
 
 namespace sofa

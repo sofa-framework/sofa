@@ -36,7 +36,7 @@
 #ifndef SOFA_COMPONENT_OGLSHADOWSHADER
 #define SOFA_COMPONENT_OGLSHADOWSHADER
 
-#include <sofa/component/visualmodel/OglShader.h>
+#include <SofaOpenglVisual/OglShader.h>
 
 namespace sofa
 {

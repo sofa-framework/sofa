@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_QUADPRESSUREFORCEFIELD_CPP
 
-#include <sofa/component/forcefield/QuadPressureForceField.inl>
+#include <SofaBoundaryCondition/QuadPressureForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
 

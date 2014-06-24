@@ -30,7 +30,7 @@
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/GLSLShader.h>
-#include <sofa/component/visualmodel/OglShader.h>
+#include <SofaOpenglVisual/OglShader.h>
 #include <sofa/helper/gl/Texture.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 

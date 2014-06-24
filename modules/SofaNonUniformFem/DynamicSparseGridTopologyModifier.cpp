@@ -22,10 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/topology/DynamicSparseGridTopologyModifier.h>
+#include <SofaNonUniformFem/DynamicSparseGridTopologyModifier.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/TopologyChange.h>
-#include <sofa/component/topology/DynamicSparseGridTopologyContainer.h>
+#include <SofaNonUniformFem/DynamicSparseGridTopologyContainer.h>
 #include <algorithm>
 #include <functional>
 #include <iostream>

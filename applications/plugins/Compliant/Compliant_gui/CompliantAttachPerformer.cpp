@@ -29,7 +29,7 @@
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/helper/Factory.inl>
 #include <sofa/gui/PickHandler.h>
-#include <sofa/component/collision/ComponentMouseInteraction.h>
+#include <SofaUserInteraction/ComponentMouseInteraction.h>
 
 namespace sofa
 {

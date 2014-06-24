@@ -25,12 +25,12 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_INL
 #define SOFA_COMPONENT_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_INL
 
-#include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/EdgeSetGeometryAlgorithms.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/MatEigen.h>
 #include <sofa/defaulttype/Mat_solve_Cholesky.h>
-#include <sofa/component/topology/CommonAlgorithms.h>
-#include <sofa/component/topology/PointSetGeometryAlgorithms.inl>
+#include <SofaBaseTopology/CommonAlgorithms.h>
+#include <SofaBaseTopology/PointSetGeometryAlgorithms.inl>
 
 namespace sofa
 {

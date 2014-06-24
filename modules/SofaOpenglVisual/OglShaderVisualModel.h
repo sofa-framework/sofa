@@ -32,10 +32,10 @@
 #ifndef OGLSHADERVISUALMODEL_H_
 #define OGLSHADERVISUALMODEL_H_
 
-#include <sofa/component/visualmodel/OglModel.h>
-#include <sofa/component/visualmodel/OglShader.h>
-#include <sofa/component/visualmodel/OglAttribute.h>
-#include <sofa/component/visualmodel/OglVariable.h>
+#include <SofaOpenglVisual/OglModel.h>
+#include <SofaOpenglVisual/OglShader.h>
+#include <SofaOpenglVisual/OglAttribute.h>
+#include <SofaOpenglVisual/OglVariable.h>
 
 namespace sofa
 {

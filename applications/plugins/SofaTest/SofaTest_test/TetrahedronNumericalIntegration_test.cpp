@@ -33,8 +33,8 @@
 #include <sofa/simulation/common/Node.h>
 #include <sofa/helper/set.h>
 // Including constraint, force and mass
-#include <sofa/component/topology/TetrahedronSetGeometryAlgorithms.h>
-#include <sofa/component/topology/CommonAlgorithms.h>
+#include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/CommonAlgorithms.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <ctime>
 #include <plugins/SceneCreator/SceneCreator.h>

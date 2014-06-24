@@ -22,25 +22,25 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/topology/IdentityTopologicalMapping.h>
+#include <SofaTopologyMapping/IdentityTopologicalMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/component/topology/EdgeSetTopologyContainer.h>
-#include <sofa/component/topology/EdgeSetTopologyModifier.h>
+#include <SofaBaseTopology/EdgeSetTopologyContainer.h>
+#include <SofaBaseTopology/EdgeSetTopologyModifier.h>
 
-#include <sofa/component/topology/TriangleSetTopologyContainer.h>
-#include <sofa/component/topology/TriangleSetTopologyModifier.h>
+#include <SofaBaseTopology/TriangleSetTopologyContainer.h>
+#include <SofaBaseTopology/TriangleSetTopologyModifier.h>
 
-#include <sofa/component/topology/QuadSetTopologyContainer.h>
-#include <sofa/component/topology/QuadSetTopologyModifier.h>
+#include <SofaBaseTopology/QuadSetTopologyContainer.h>
+#include <SofaBaseTopology/QuadSetTopologyModifier.h>
 
-#include <sofa/component/topology/TetrahedronSetTopologyContainer.h>
-#include <sofa/component/topology/TetrahedronSetTopologyModifier.h>
+#include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
+#include <SofaBaseTopology/TetrahedronSetTopologyModifier.h>
 
-#include <sofa/component/topology/HexahedronSetTopologyContainer.h>
-#include <sofa/component/topology/HexahedronSetTopologyModifier.h>
+#include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
+#include <SofaBaseTopology/HexahedronSetTopologyModifier.h>
 
 #include <sofa/core/topology/TopologyChange.h>
 #include <sofa/defaulttype/Vec.h>

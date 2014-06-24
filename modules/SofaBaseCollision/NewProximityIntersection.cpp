@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/helper/system/config.h>
-#include <sofa/component/collision/NewProximityIntersection.inl>
+#include <SofaBaseCollision/NewProximityIntersection.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>

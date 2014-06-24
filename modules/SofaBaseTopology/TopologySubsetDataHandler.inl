@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_TOPOLOGYSUBSETDATAHANDLER_INL
 #define SOFA_COMPONENT_TOPOLOGY_TOPOLOGYSUBSETDATAHANDLER_INL
 
-#include <sofa/component/topology/TopologySubsetDataHandler.h>
+#include <SofaBaseTopology/TopologySubsetDataHandler.h>
 
 namespace sofa
 {

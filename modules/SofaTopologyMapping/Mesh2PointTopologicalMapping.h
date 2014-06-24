@@ -26,14 +26,14 @@
 #define SOFA_COMPONENT_TOPOLOGY_MESH2POINTTOPOLOGICALMAPPING_H
 
 #include <sofa/core/topology/TopologicalMapping.h>
-#include <sofa/component/topology/PointSetTopologyModifier.h>
+#include <SofaBaseTopology/PointSetTopologyModifier.h>
 
 #include <sofa/defaulttype/Vec.h>
 #include <map>
 #include <set>
 
 #include <sofa/core/BaseMapping.h>
-#include <sofa/component/topology/TopologyData.h>
+#include <SofaBaseTopology/TopologyData.h>
 
 
 namespace sofa

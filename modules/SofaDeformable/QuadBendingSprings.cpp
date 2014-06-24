@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/interactionforcefield/QuadBendingSprings.inl>
-#include <sofa/component/interactionforcefield/StiffSpringForceField.inl>
+#include <SofaDeformable/QuadBendingSprings.inl>
+#include <SofaDeformable/StiffSpringForceField.inl>
 #include <sofa/component/component.h>
 #include <sofa/core/behavior/PairInteractionForceField.inl>
 #include <sofa/defaulttype/Vec3Types.h>

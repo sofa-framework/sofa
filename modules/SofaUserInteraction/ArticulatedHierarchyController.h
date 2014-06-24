@@ -37,9 +37,9 @@
 #ifndef SOFA_COMPONENT_CONTROLLER_ARTICULATEDHIERARCHYCONTROLLER_H
 #define SOFA_COMPONENT_CONTROLLER_ARTICULATEDHIERARCHYCONTROLLER_H
 
-#include <sofa/component/controller/Controller.h>
+#include <SofaUserInteraction/Controller.h>
 
-#include <sofa/component/container/ArticulatedHierarchyContainer.h>
+#include <SofaRigid/ArticulatedHierarchyContainer.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/helper/vector.h>
 

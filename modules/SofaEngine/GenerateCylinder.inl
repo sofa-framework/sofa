@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_ENGINE_GENERATECYLINDER_INL
 #define SOFA_COMPONENT_ENGINE_GENERATECYLINDER_INL
 
-#include <sofa/component/engine/GenerateCylinder.h>
+#include "GenerateCylinder.h"
 #include <sofa/helper/rmath.h> //M_PI
 
 namespace sofa

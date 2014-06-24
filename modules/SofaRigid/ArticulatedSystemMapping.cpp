@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_ARTICULATEDSYSTEMMAPPING_CPP
 
-#include <sofa/component/mapping/ArticulatedSystemMapping.inl>
+#include <SofaRigid/ArticulatedSystemMapping.inl>
 
 #include <sofa/core/ObjectFactory.h>
 

@@ -36,7 +36,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include "sofa/defaulttype/Vec3Types.h"
 #include "sofa/defaulttype/RigidTypes.h"
-#include "sofa/component/container/MechanicalObject.h"
+#include <SofaBaseMechanics/MechanicalObject.h>
 
 namespace sofa
 {

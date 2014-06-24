@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_BEHAVIORMODEL_EULERIANFLUID_FLUID2D_H
 #define SOFA_COMPONENT_BEHAVIORMODEL_EULERIANFLUID_FLUID2D_H
 
-#include <sofa/component/behaviormodel/eulerianfluid/Grid2D.h>
+#include <SofaEulerianFluid/Grid2D.h>
 #include <sofa/core/BehaviorModel.h>
 #include <sofa/core/objectmodel/Data.h>
 

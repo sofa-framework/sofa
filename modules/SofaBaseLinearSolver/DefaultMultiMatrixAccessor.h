@@ -29,10 +29,10 @@
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/component/component.h>
-#include <sofa/component/linearsolver/SparseMatrix.h>
-#include <sofa/component/linearsolver/FullMatrix.h>
-#include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
-#include <sofa/component/linearsolver/GraphScatteredTypes.h>
+#include <SofaBaseLinearSolver/SparseMatrix.h>
+#include <SofaBaseLinearSolver/FullMatrix.h>
+#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
+#include <SofaBaseLinearSolver/GraphScatteredTypes.h>
 #include <vector>
 
 

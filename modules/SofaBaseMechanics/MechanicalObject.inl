@@ -25,15 +25,15 @@
 #ifndef SOFA_COMPONENT_MECHANICALOBJECT_INL
 #define SOFA_COMPONENT_MECHANICALOBJECT_INL
 
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/State.inl>
 #include <sofa/core/visual/VisualParams.h>
 #ifdef SOFA_SMP
-#include <sofa/component/container/MechanicalObjectTasks.inl>
+#include <SofaBaseMechanics/MechanicalObjectTasks.inl>
 #endif
-#include <sofa/component/linearsolver/SparseMatrix.h>
+#include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <sofa/core/topology/TopologyChange.h>
-#include <sofa/component/topology/RegularGridTopology.h>
+#include <SofaBaseTopology/RegularGridTopology.h>
 
 #include <sofa/defaulttype/DataTypeInfo.h>
 
@@ -51,7 +51,7 @@
 using std::cerr;
 using std::endl;
 
-#include <sofa/component/topology/TopologyData.inl>
+#include <SofaBaseTopology/TopologyData.inl>
 
 namespace
 {

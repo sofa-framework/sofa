@@ -32,7 +32,7 @@
 #include "DevMonitorManager.h"
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/component/misc/DevTensionMonitor.h>
+#include <SofaValidation/DevTensionMonitor.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa

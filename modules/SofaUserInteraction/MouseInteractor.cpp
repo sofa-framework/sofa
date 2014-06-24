@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_COLLISION_MOUSEINTERACTOR_CPP
-#include <sofa/component/collision/MouseInteractor.inl>
+#include <SofaUserInteraction/MouseInteractor.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>

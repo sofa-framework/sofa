@@ -26,13 +26,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/collision/DirectSAP.h>
+#include <SofaMeshCollision/DirectSAP.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/collision/CapsuleModel.h>
-#include <sofa/component/collision/Sphere.h>
-#include <sofa/component/collision/Triangle.h>
-#include <sofa/component/collision/Line.h>
-#include <sofa/component/collision/Point.h>
+#include <SofaBaseCollision/CapsuleModel.h>
+#include <SofaBaseCollision/Sphere.h>
+#include <SofaMeshCollision/Triangle.h>
+#include <SofaMeshCollision/Line.h>
+#include <SofaMeshCollision/Point.h>
 #include <sofa/helper/FnDispatcher.h>
 #include <sofa/core/ObjectFactory.h>
 #include <map>

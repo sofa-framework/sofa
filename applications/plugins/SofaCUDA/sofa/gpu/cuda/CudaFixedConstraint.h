@@ -26,7 +26,7 @@
 #define SOFA_GPU_CUDA_CUDAFIXEDCONSTRAINT_H
 
 #include "CudaTypes.h"
-#include <sofa/component/projectiveconstraintset/FixedConstraint.h>
+#include <SofaBoundaryCondition/FixedConstraint.h>
 
 namespace sofa
 {

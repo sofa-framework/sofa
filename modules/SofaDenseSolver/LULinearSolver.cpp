@@ -25,9 +25,9 @@
 // Author: François Faure, INRIA-UJF, (C) 2006
 //
 // Copyright: See COPYING file that comes with this distribution
-#include <sofa/component/linearsolver/LULinearSolver.h>
+#include <SofaDenseSolver/LULinearSolver.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/linearsolver/NewMatMatrix.h>
+#include <SofaDenseSolver/NewMatMatrix.h>
 #include <sofa/core/ObjectFactory.h>
 #include <iostream>
 #include "sofa/helper/system/thread/CTime.h"

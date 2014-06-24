@@ -3,11 +3,11 @@
 #include "../initFlexible.h"
 
 
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 
 
-#include <sofa/component/mass/AddMToMatrixFunctor.h>
-#include <sofa/component/mass/UniformMass.h>
+#include <SofaBaseMechanics/AddMToMatrixFunctor.h>
+#include <SofaBaseMechanics/UniformMass.h>
 
 #include <sofa/core/behavior/ForceField.h>
 

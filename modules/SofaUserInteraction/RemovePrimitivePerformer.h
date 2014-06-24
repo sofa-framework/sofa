@@ -26,9 +26,9 @@
 #define SOFA_COMPONENT_COLLISION_REMOVEPRIMITIVEPERFORMER_H
 
 
-#include <sofa/component/collision/InteractionPerformer.h>
-#include <sofa/component/collision/TopologicalChangeManager.h>
-#include <sofa/component/collision/MouseInteractor.h>
+#include <SofaUserInteraction/InteractionPerformer.h>
+#include <SofaUserInteraction/TopologicalChangeManager.h>
+#include <SofaUserInteraction/MouseInteractor.h>
 /*
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/CollisionElement.h>

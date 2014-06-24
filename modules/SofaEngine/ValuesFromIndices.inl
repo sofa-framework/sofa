@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_ENGINE_VALUESFROMINDICES_INL
 #define SOFA_COMPONENT_ENGINE_VALUESFROMINDICES_INL
 
-#include <sofa/component/engine/ValuesFromIndices.h>
+#include <SofaEngine/ValuesFromIndices.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
 

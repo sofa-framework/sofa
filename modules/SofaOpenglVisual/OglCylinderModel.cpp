@@ -34,10 +34,10 @@
 
 #include <sofa/core/loader/VoxelLoader.h>
 
-#include <sofa/component/visualmodel/OglCylinderModel.h>
+#include <SofaOpenglVisual/OglCylinderModel.h>
 #include <sofa/core/visual/VisualParams.h>
 
-#include <sofa/component/topology/TopologyData.inl>
+#include <SofaBaseTopology/TopologyData.inl>
 
 namespace sofa
 {

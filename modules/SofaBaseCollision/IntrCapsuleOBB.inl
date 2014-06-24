@@ -6,8 +6,8 @@
 //
 // File Version: 5.0.1 (2010/10/01)
 
-#include <sofa/component/collision/IntrUtility3.h>
-#include <sofa/component/collision/IntrCapsuleOBB.h>
+#include <SofaBaseCollision/IntrUtility3.h>
+#include <SofaBaseCollision/IntrCapsuleOBB.h>
 
 namespace sofa{
 namespace component{

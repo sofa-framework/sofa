@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/collision/MeshDiscreteIntersection.inl>
+#include <SofaMeshCollision/MeshDiscreteIntersection.inl>
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/FnDispatcher.inl>
 #include <sofa/core/collision/Intersection.inl>

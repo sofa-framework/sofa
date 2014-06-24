@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_ELLIPSOIDFORCEFIELD_CPP
 
-#include <sofa/component/forcefield/EllipsoidForceField.inl>
+#include <SofaBoundaryCondition/EllipsoidForceField.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>
 

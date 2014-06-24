@@ -27,7 +27,7 @@
 
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/behavior/Constraint.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/helper/vector.h>
 
 

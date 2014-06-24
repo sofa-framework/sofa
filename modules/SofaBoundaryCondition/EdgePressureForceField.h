@@ -27,9 +27,9 @@
 
 
 #include <sofa/core/behavior/ForceField.h>
-#include <sofa/component/topology/TopologySparseData.h>
-#include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
-#include <sofa/component/topology/TriangleSetTopologyContainer.h>
+#include <SofaBaseTopology/TopologySparseData.h>
+#include <SofaBaseTopology/EdgeSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 
 namespace sofa
 {

@@ -25,16 +25,16 @@
 #ifndef SOFA_COMPONENT_MASS_DIAGONALMASS_INL
 #define SOFA_COMPONENT_MASS_DIAGONALMASS_INL
 
-#include <sofa/component/mass/DiagonalMass.h>
+#include <SofaBaseMechanics/DiagonalMass.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/Mass.inl>
 #include <sofa/helper/io/MassSpringLoader.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
-#include <sofa/component/topology/TopologyData.inl>
-#include <sofa/component/topology/RegularGridTopology.h>
-#include <sofa/component/mass/AddMToMatrixFunctor.h>
+#include <SofaBaseTopology/TopologyData.inl>
+#include <SofaBaseTopology/RegularGridTopology.h>
+#include <SofaBaseMechanics/AddMToMatrixFunctor.h>
 #include <sofa/simulation/common/Simulation.h>
 
 #ifdef SOFA_SUPPORT_MOVING_FRAMES

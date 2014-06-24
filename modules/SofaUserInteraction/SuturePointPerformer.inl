@@ -22,11 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/collision/SuturePointPerformer.h>
+#include <SofaUserInteraction/SuturePointPerformer.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/container/MechanicalObject.h>
-#include <sofa/component/topology/TriangleSetTopologyContainer.h>
-#include <sofa/component/collision/TriangleModel.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
+#include <SofaBaseTopology/TriangleSetTopologyContainer.h>
+#include <SofaMeshCollision/TriangleModel.h>
 #include <sofa/defaulttype/Vec3Types.h>
 
 

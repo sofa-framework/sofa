@@ -27,7 +27,7 @@
 #ifndef SOFA_COMPONENT_LINEARSOLVER_SparseLDLSolver_INL
 #define SOFA_COMPONENT_LINEARSOLVER_SparseLDLSolver_INL
 
-#include <sofa/component/linearsolver/SparseLDLSolver.h>
+#include <SofaSparseSolver/SparseLDLSolver.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include "sofa/helper/system/thread/CTime.h"
@@ -35,7 +35,7 @@
 #include <sofa/core/behavior/LinearSolver.h>
 #include <math.h>
 #include <sofa/helper/system/thread/CTime.h>
-#include <sofa/component/linearsolver/CompressedRowSparseMatrix.inl>
+#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.inl>
 
 namespace sofa {
 

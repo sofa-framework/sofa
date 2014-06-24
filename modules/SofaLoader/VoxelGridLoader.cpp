@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/component/loader/VoxelGridLoader.h>
+#include <SofaLoader/VoxelGridLoader.h>
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/io/Image.h>

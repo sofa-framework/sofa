@@ -27,8 +27,8 @@
 
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/collision/ContactManager.h>
-#include <sofa/component/collision/SphereModel.h>
-#include <sofa/component/collision/TriangleModel.h>
+#include <SofaBaseCollision/SphereModel.h>
+#include <SofaMeshCollision/TriangleModel.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/Event.h>
 

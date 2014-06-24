@@ -29,7 +29,7 @@
  *      Author: Jeremy Ringard
  */
 
-#include <sofa/component/visualmodel/VisualManagerPass.h>
+#include <SofaOpenglVisual/VisualManagerPass.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/common/VisualVisitor.h>
 #include <sofa/core/ObjectFactory.h>

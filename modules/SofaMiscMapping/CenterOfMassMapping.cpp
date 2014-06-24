@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_CENTEROFMASSMAPPING_CPP
 
-#include <sofa/component/mapping/CenterOfMassMapping.inl>
+#include <SofaMiscMapping/CenterOfMassMapping.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>

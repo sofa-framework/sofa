@@ -29,7 +29,7 @@
 #pragma once
 #endif
 
-#include <sofa/component/engine/MeshROI.h>
+#include <SofaEngine/MeshROI.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/BasicShapes.h>
 #include <sofa/core/visual/VisualParams.h>

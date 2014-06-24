@@ -26,12 +26,12 @@
 #define SOFA_COMPONENT_COLLISION_TRIANGLEMODEL_H
 
 #include <sofa/core/CollisionModel.h>
-#include <sofa/component/collision/LocalMinDistanceFilter.h>
-#include <sofa/component/container/MechanicalObject.h>
-#include <sofa/component/topology/TopologyData.h>
+#include <SofaMeshCollision/LocalMinDistanceFilter.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
+#include <SofaBaseTopology/TopologyData.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/component/collision/PointModel.h>
+#include <SofaMeshCollision/PointModel.h>
 #include <map>
 
 namespace sofa

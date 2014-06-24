@@ -25,10 +25,10 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_QUADPRESSUREFORCEFIELD_INL
 #define SOFA_COMPONENT_FORCEFIELD_QUADPRESSUREFORCEFIELD_INL
 
-#include <sofa/component/forcefield/QuadPressureForceField.h>
-#include <sofa/component/topology/TopologySparseData.inl>
+#include <SofaBoundaryCondition/QuadPressureForceField.h>
+#include <SofaBaseTopology/TopologySparseData.inl>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/topology/QuadSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/QuadSetGeometryAlgorithms.h>
 #include <sofa/helper/gl/template.h>
 #include <vector>
 #include <set>

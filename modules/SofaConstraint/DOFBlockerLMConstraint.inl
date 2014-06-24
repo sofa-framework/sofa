@@ -25,12 +25,12 @@
 #ifndef SOFA_COMPONENT_CONSTRAINTSET_DOFBLOCKERLMCONSTRAINT_INL
 #define SOFA_COMPONENT_CONSTRAINTSET_DOFBLOCKERLMCONSTRAINT_INL
 
-#include <sofa/component/constraintset/DOFBlockerLMConstraint.h>
+#include <SofaConstraint/DOFBlockerLMConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/helper/gl/Axis.h>
 #include <sofa/helper/gl/template.h>
-#include <sofa/component/topology/TopologySubsetData.inl>
+#include <SofaBaseTopology/TopologySubsetData.inl>
 
 
 namespace sofa

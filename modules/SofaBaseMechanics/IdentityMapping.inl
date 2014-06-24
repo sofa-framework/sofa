@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_MAPPING_IDENTITYMAPPING_INL
 #define SOFA_COMPONENT_MAPPING_IDENTITYMAPPING_INL
 
-#include <sofa/component/mapping/IdentityMapping.h>
+#include <SofaBaseMechanics/IdentityMapping.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
 

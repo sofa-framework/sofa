@@ -25,10 +25,10 @@
 #ifndef SOFA_COMPONENT_CONSTRAINTSET_SLIDINGCONSTRAINT_INL
 #define SOFA_COMPONENT_CONSTRAINTSET_SLIDINGCONSTRAINT_INL
 
-#include <sofa/component/constraintset/SlidingConstraint.h>
+#include <SofaConstraint/SlidingConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/constraintset/BilateralInteractionConstraint.h>
-#include <sofa/component/constraintset/UnilateralInteractionConstraint.h>
+#include <SofaConstraint/BilateralInteractionConstraint.h>
+#include <SofaConstraint/UnilateralInteractionConstraint.h>
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/gl/template.h>

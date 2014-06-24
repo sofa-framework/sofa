@@ -27,7 +27,7 @@
 
 #include "Mesh2PointMechanicalMapping.h"
 
-#include <sofa/component/topology/Mesh2PointTopologicalMapping.h>
+#include <SofaTopologyMapping/Mesh2PointTopologicalMapping.h>
 
 #include <sofa/core/Mapping.inl>
 

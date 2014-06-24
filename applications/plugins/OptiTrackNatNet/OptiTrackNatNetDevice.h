@@ -31,7 +31,7 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/component/controller/Controller.h>
+#include <SofaUserInteraction/Controller.h>
 //#include <sofa/core/behavior/BaseController.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/objectmodel/DataFileName.h>

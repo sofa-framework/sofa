@@ -27,26 +27,26 @@
 #include "Elasticity_test.h"
 
 // Solvers
-#include <sofa/component/odesolver/EulerImplicitSolver.h>
-#include <sofa/component/odesolver/StaticSolver.h>
-#include <sofa/component/linearsolver/CGLinearSolver.h>
+#include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
+#include <SofaImplicitOdeSolver/StaticSolver.h>
+#include <SofaBaseLinearSolver/CGLinearSolver.h>
 
 // Box roi
-#include <sofa/component/engine/PairBoxRoi.h>
-#include <sofa/component/engine/BoxROI.h>
+#include <SofaEngine/PairBoxRoi.h>
+#include <SofaEngine/BoxROI.h>
 #include <sofa/component/engine/GenerateCylinder.h>
 
 // Constraint
-#include <sofa/component/projectiveconstraintset/ProjectToLineConstraint.h>
-#include <sofa/component/projectiveconstraintset/FixedConstraint.h>
+#include <SofaBoundaryCondition/ProjectToLineConstraint.h>
+#include <SofaBoundaryCondition/FixedConstraint.h>
 #include <sofa/component/projectiveconstraintset/AffineMovementConstraint.h>
-#include <sofa/component/projectiveconstraintset/FixedPlaneConstraint.h>
+#include <SofaBoundaryCondition/FixedPlaneConstraint.h>
 
 // ForceField
-#include <sofa/component/forcefield/TrianglePressureForceField.h>
+#include <SofaBoundaryCondition/TrianglePressureForceField.h>
 
-#include <sofa/component/visualmodel/VisualStyle.h>
-#include <sofa/component/topology/RegularGridTopology.h>
+#include <SofaBaseVisual/VisualStyle.h>
+#include <SofaBaseTopology/RegularGridTopology.h>
 
 //Using double by default, if you have SOFA_FLOAT in use in you sofa-default.cfg, then it will be FLOAT.
 #include <sofa/component/typedef/Sofa_typedef.h>

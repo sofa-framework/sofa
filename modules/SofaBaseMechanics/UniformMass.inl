@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_MASS_UNIFORMMASS_INL
 #define SOFA_COMPONENT_MASS_UNIFORMMASS_INL
 
-#include <sofa/component/mass/UniformMass.h>
+#include <SofaBaseMechanics/UniformMass.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/Mass.inl>
 #include <sofa/core/topology/Topology.h>
@@ -34,7 +34,7 @@
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
-#include <sofa/component/mass/AddMToMatrixFunctor.h>
+#include <SofaBaseMechanics/AddMToMatrixFunctor.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <iostream>
 #include <string.h>

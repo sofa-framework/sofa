@@ -30,11 +30,11 @@
 #pragma once
 #endif
 
-#include <sofa/component/forcefield/TriangularFEMForceField.h>
+#include "TriangularFEMForceField.h"
 #include <sofa/core/behavior/ForceField.inl>
 
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/visualmodel/ColorMap.h>
+#include <SofaOpenglVisual/ColorMap.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/system/gl.h>
 
@@ -42,7 +42,7 @@
 //#include <sofa/component/topology/EdgeData.inl>
 //#include <sofa/component/topology/PointData.inl>
 
-#include <sofa/component/topology/TopologyData.inl>
+#include <SofaBaseTopology/TopologyData.inl>
 
 #include <sofa/helper/system/thread/debug.h>
 #include <newmat/newmat.h>

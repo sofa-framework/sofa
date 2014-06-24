@@ -24,10 +24,10 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_CONSTRAINTSET_SLIDINGCONSTRAINT_CPP
 
-#include <sofa/component/constraintset/SlidingConstraint.inl>
+#include <SofaConstraint/SlidingConstraint.inl>
 
 #include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

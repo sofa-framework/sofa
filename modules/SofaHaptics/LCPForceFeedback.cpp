@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_CONTROLLER_LCPFORCEFEEDBACK_CPP
 
-#include <sofa/component/controller/LCPForceFeedback.inl>
+#include <SofaHaptics/LCPForceFeedback.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/RigidTypes.h>
 /*

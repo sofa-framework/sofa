@@ -26,11 +26,11 @@
 #define SOFA_COMPONENT_COLLISION_TRIANGLEOCTREEMODEL_H
 
 #include <sofa/core/CollisionModel.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/component/collision/TriangleModel.h>
-#include <sofa/component/collision/TriangleOctree.h>
+#include <SofaMeshCollision/TriangleModel.h>
+#include <SofaMeshCollision/TriangleOctree.h>
 
 
 namespace sofa

@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_ENGINE_RIGIDTOQUATENGINE_INL
 #define SOFA_COMPONENT_ENGINE_RIGIDTOQUATENGINE_INL
 
-#include <sofa/component/engine/RigidToQuatEngine.h>
+#include <SofaEngine/RigidToQuatEngine.h>
 #include <sofa/core/visual/VisualParams.h>
 
 namespace sofa

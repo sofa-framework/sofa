@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_TETRAHEDRALTENSORMASSFORCEFIELD_CPP
 
-#include <sofa/component/forcefield/TetrahedralTensorMassForceField.inl>
+#include <SofaMiscFem/TetrahedralTensorMassForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
 

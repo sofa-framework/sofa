@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_VACCUMSPHEREFORCEFIELD_CPP
 
-#include <sofa/component/forcefield/VaccumSphereForceField.inl>
+#include <SofaBoundaryCondition/VaccumSphereForceField.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>
 

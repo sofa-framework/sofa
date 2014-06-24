@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_LINEARSOLVER_SPARSELDLSOLVERIMPL_H
 
 #include <sofa/core/behavior/LinearSolver.h>
-#include <sofa/component/linearsolver/MatrixLinearSolver.h>
+#include <SofaBaseLinearSolver/MatrixLinearSolver.h>
 
 #ifdef SOFA_HAVE_METIS
 extern "C" {

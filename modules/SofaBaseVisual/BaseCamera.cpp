@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/visualmodel/BaseCamera.h>
+#include <SofaBaseVisual/BaseCamera.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/defaulttype/Mat.h>

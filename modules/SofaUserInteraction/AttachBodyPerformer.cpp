@@ -24,13 +24,13 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_COLLISION_ATTACHBODYPERFORMER_CPP
 
-#include <sofa/component/collision/AttachBodyPerformer.inl>
+#include <SofaUserInteraction/AttachBodyPerformer.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/Factory.inl>
-#include <sofa/component/interactionforcefield/JointSpringForceField.inl>
-#include <sofa/component/interactionforcefield/SpringForceField.inl>
-#include <sofa/component/interactionforcefield/StiffSpringForceField.inl>
+#include <SofaRigid/JointSpringForceField.inl>
+#include <SofaDeformable/SpringForceField.inl>
+#include <SofaDeformable/StiffSpringForceField.inl>
 
 
 using namespace sofa::component::interactionforcefield;

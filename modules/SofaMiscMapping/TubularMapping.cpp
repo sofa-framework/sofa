@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_TUBULARMAPPING_CPP
 
-#include <sofa/component/mapping/TubularMapping.inl>
+#include <SofaMiscMapping/TubularMapping.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/Mapping.inl>

@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_SKINNINGMAPPING_CPP
 
-#include <sofa/component/mapping/SkinningMapping.inl>
+#include <SofaRigid/SkinningMapping.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

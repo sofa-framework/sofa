@@ -25,10 +25,10 @@
 #ifndef SOFA_COMPONENT_COLLISION_TRIANGLEOCTREE_H
 #define SOFA_COMPONENT_COLLISION_TRIANGLEOCTREE_H
 
-//#include <sofa/component/collision/TriangleOctreeModel.h>
+//#include <SofaMeshCollision/TriangleOctreeModel.h>
 
 #include <sofa/core/CollisionModel.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Vec3Types.h>
 /*THIS STATIC CUBE SIZE MUST BE CHANGE, it represents the size of the occtree cube*/

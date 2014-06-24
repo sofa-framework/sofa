@@ -28,7 +28,7 @@
 #include "SubsetMapping.h"
 
 #include <sofa/core/Mapping.inl>
-#include <sofa/component/topology/TopologySubsetData.inl>
+#include <SofaBaseTopology/TopologySubsetData.inl>
 
 namespace sofa
 {

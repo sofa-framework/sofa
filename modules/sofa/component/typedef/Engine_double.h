@@ -39,33 +39,33 @@
 
 
 
-#include <sofa/component/engine/AverageCoord.h>
-#include <sofa/component/engine/BoxROI.h>
-#include <sofa/component/engine/DilateEngine.h>
-#include <sofa/component/engine/Distances.h>
-#include <sofa/component/engine/ExtrudeQuadsAndGenerateHexas.h>
-#include <sofa/component/engine/ExtrudeSurface.h>
-#include <sofa/component/engine/GenerateRigidMass.h>
-#include <sofa/component/engine/GroupFilterYoungModulus.h>
-#include <sofa/component/engine/IndexValueMapper.h>
-#include <sofa/component/engine/JoinPoints.h>
-#include <sofa/component/engine/MergeMeshes.h>
-#include <sofa/component/engine/MergePoints.h>
-#include <sofa/component/engine/MeshBarycentricMapperEngine.h>
-#include <sofa/component/engine/NormalsFromPoints.h>
-#include <sofa/component/engine/PlaneROI.h>
-#include <sofa/component/engine/PointsFromIndices.h>
-#include <sofa/component/engine/QuatToRigidEngine.h>
-#include <sofa/component/engine/RandomPointDistributionInSurface.h>
-#include <sofa/component/engine/RigidToQuatEngine.h>
-#include <sofa/component/engine/SphereROI.h>
-#include <sofa/component/engine/Spiral.h>
-#include <sofa/component/engine/SubsetTopology.h>
-#include <sofa/component/engine/TextureInterpolation.h>
-#include <sofa/component/engine/TransformEngine.h>
-#include <sofa/component/engine/TransformPosition.h>
-#include <sofa/component/engine/ValuesFromPositions.h>
-#include <sofa/component/engine/Vertex2Frame.h>
+#include <SofaEngine/AverageCoord.h>
+#include <SofaEngine/BoxROI.h>
+#include <SofaEngine/DilateEngine.h>
+#include <SofaMiscEngine/Distances.h>
+#include <SofaEngine/ExtrudeQuadsAndGenerateHexas.h>
+#include <SofaEngine/ExtrudeSurface.h>
+#include <SofaEngine/GenerateRigidMass.h>
+#include <SofaEngine/GroupFilterYoungModulus.h>
+#include <SofaEngine/IndexValueMapper.h>
+#include <SofaEngine/JoinPoints.h>
+#include <SofaEngine/MergeMeshes.h>
+#include <SofaEngine/MergePoints.h>
+#include <SofaEngine/MeshBarycentricMapperEngine.h>
+#include <SofaEngine/NormalsFromPoints.h>
+#include <SofaEngine/PlaneROI.h>
+#include <SofaEngine/PointsFromIndices.h>
+#include <SofaEngine/QuatToRigidEngine.h>
+#include <SofaEngine/RandomPointDistributionInSurface.h>
+#include <SofaEngine/RigidToQuatEngine.h>
+#include <SofaEngine/SphereROI.h>
+#include <SofaEngine/Spiral.h>
+#include <SofaEngine/SubsetTopology.h>
+#include <SofaEngine/TextureInterpolation.h>
+#include <SofaEngine/TransformEngine.h>
+#include <SofaEngine/TransformPosition.h>
+#include <SofaEngine/ValuesFromPositions.h>
+#include <SofaEngine/Vertex2Frame.h>
 
 
 

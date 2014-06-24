@@ -36,29 +36,29 @@
 #include <sofa/simulation/common/Node.h>
 
 //Including Solvers
-#include <sofa/component/odesolver/EulerSolver.h>
-#include <sofa/component/odesolver/EulerImplicitSolver.h>
-#include <sofa/component/linearsolver/CGLinearSolver.h>
+#include <SofaExplicitOdeSolver/EulerSolver.h>
+#include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
+#include <SofaBaseLinearSolver/CGLinearSolver.h>
 
 // Including topology
 #include <sofa/component/topology//RegularGridTopology.h>
-#include <sofa/component/topology/PointSetTopologyContainer.h>
-#include <sofa/component/topology/TriangleSetTopologyContainer.h>
-#include <sofa/component/topology/TriangleSetTopologyModifier.h>
-#include <sofa/component/topology/TriangleSetTopologyAlgorithms.h>
-#include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/PointSetTopologyContainer.h>
+#include <SofaBaseTopology/TriangleSetTopologyContainer.h>
+#include <SofaBaseTopology/TriangleSetTopologyModifier.h>
+#include <SofaBaseTopology/TriangleSetTopologyAlgorithms.h>
+#include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
 
 // Including constraint, force and mass
-#include <sofa/component/loader/GridMeshCreator.h>
-#include <sofa/component/projectiveconstraintset/BilinearMovementConstraint.h>
-#include <sofa/component/container/MechanicalObject.h>
-#include <sofa/component/forcefield/TriangularFEMForceField.h>
-#include <sofa/component/mass/UniformMass.h>
+#include <SofaLoader/GridMeshCreator.h>
+#include <SofaBoundaryCondition/BilinearMovementConstraint.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
+#include <SofaSimpleFem/forcefield/TriangularFEMForceField.h>
+#include <SofaBaseMechanics/UniformMass.h>
 #include <sofa/core/MechanicalParams.h>
 
 // Including engine
-#include <sofa/component/engine/BoxROI.h>
-#include <sofa/component/engine/PairBoxRoi.h>
+#include <SofaEngine/BoxROI.h>
+#include <SofaEngine/PairBoxRoi.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 

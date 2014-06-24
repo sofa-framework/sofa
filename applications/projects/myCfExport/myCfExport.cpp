@@ -38,7 +38,7 @@
 
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/BackTrace.h>
-#include <sofa/component/misc/WriteState.h>
+#include <SofaExporter/WriteState.h>
 
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/objectmodel/Base.h>

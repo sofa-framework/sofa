@@ -44,17 +44,17 @@
 #include <sofa/helper/system/FileRepository.h>
 
 #include <sofa/component/init.h>
-#include <sofa/component/mapping/SubsetMultiMapping.h>
-#include <sofa/component/mapping/DistanceMapping.h>
-#include <sofa/component/mapping/DistanceFromTargetMapping.h>
-#include <sofa/component/topology/MeshTopology.h>
-#include <sofa/component/topology/EdgeSetTopologyContainer.h>
-#include <sofa/component/topology/RegularGridTopology.h>
-#include <sofa/component/collision/SphereModel.h>
-#include <sofa/component/topology/CubeTopology.h>
-#include <sofa/component/visualmodel/VisualStyle.h>
-#include <sofa/component/odesolver/EulerImplicitSolver.h>
-#include <sofa/component/linearsolver/CGLinearSolver.h>
+#include <SofaMiscMapping/SubsetMultiMapping.h>
+#include <SofaMiscMapping/DistanceMapping.h>
+#include <SofaMiscMapping/DistanceFromTargetMapping.h>
+#include <SofaBaseTopology/MeshTopology.h>
+#include <SofaBaseTopology/EdgeSetTopologyContainer.h>
+#include <SofaBaseTopology/RegularGridTopology.h>
+#include <SofaBaseCollision/SphereModel.h>
+#include <SofaBaseTopology/CubeTopology.h>
+#include <SofaBaseVisual/VisualStyle.h>
+#include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
+#include <SofaBaseLinearSolver/CGLinearSolver.h>
 
 //Using double by default, if you have SOFA_FLOAT in use in you sofa-default.cfg, then it will be FLOAT.
 #include <sofa/component/typedef/Sofa_typedef.h>

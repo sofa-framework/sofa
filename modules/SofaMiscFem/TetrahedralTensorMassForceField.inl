@@ -25,12 +25,12 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_TETRAHEDRALTENSORMASSFORCEFIELD_INL
 #define SOFA_COMPONENT_FORCEFIELD_TETRAHEDRALTENSORMASSFORCEFIELD_INL
 
-#include <sofa/component/forcefield/TetrahedralTensorMassForceField.h>
+#include <SofaMiscFem/TetrahedralTensorMassForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
 #include <sofa/helper/gl/template.h>
-#include <sofa/component/topology/TopologyData.inl>
+#include <SofaBaseTopology/TopologyData.inl>
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/helper/AdvancedTimer.h>
 

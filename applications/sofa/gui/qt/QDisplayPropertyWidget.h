@@ -33,7 +33,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/fixed_array.h>
 #include <sofa/simulation/common/Node.h>
-#include <sofa/component/misc/Monitor.h>
+#include <SofaValidation/Monitor.h>
 #include <sofa/gui/qt/QTransformationWidget.h>
 #include <sofa/gui/qt/QEnergyStatWidget.h>
 #include <sofa/gui/qt/WDoubleLineEdit.h>

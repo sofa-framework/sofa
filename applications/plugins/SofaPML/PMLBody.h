@@ -49,7 +49,7 @@
 #include "sofa/core/topology/Topology.h"
 #include "sofa/core/behavior/BaseMass.h"
 #include "sofa/core/behavior/ForceField.h"
-#include "sofa/component/visualmodel/OglModel.h"
+#include <SofaOpenglVisual/OglModel.h>
 #include "sofa/core/CollisionModel.h"
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/behavior/LinearSolver.h>

@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_ENGINE_PROJECTIVETRANSFORMENGINE_INL
 #define SOFA_COMPONENT_ENGINE_PROJECTIVETRANSFORMENGINE_INL
 
-#include <sofa/component/engine/ProjectiveTransformEngine.h>
+#include <SofaMiscEngine/ProjectiveTransformEngine.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/rmath.h> //M_PI
 

@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_MAPPING_RIGIDMAPPING_INL
 #define SOFA_COMPONENT_MAPPING_RIGIDMAPPING_INL
 
-#include <sofa/component/mapping/RigidMapping.h>
+#include <SofaRigid/RigidMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/behavior/MechanicalState.h>

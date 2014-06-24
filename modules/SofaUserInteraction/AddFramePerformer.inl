@@ -23,10 +23,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/component/collision/AddFramePerformer.h>
+#include <SofaUserInteraction/AddFramePerformer.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/collision/MouseInteractor.h>
-#include <sofa/component/mapping/SkinningMapping.inl>
+#include <SofaUserInteraction/MouseInteractor.h>
+#include <SofaRigid/SkinningMapping.inl>
 #include <sofa/helper/Quater.h>
 
 namespace sofa

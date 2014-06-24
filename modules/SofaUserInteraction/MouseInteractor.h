@@ -26,8 +26,8 @@
 #define SOFA_COMPONENT_COLLISION_MOUSEINTERACTOR_H
 
 
-#include <sofa/component/collision/InteractionPerformer.h>
-#include <sofa/component/collision/RayModel.h>
+#include <SofaUserInteraction/InteractionPerformer.h>
+#include <SofaUserInteraction/RayModel.h>
 #include <sofa/core/collision/DetectionOutput.h>
 #include <sofa/simulation/common/Node.h>
 

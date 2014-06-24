@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_IMPLICITSURFACEMAPPING_CPP
-#include <sofa/component/mapping/ImplicitSurfaceMapping.inl>
+#include <SofaVolumetricData/ImplicitSurfaceMapping.inl>
 
 #include <sofa/core/ObjectFactory.h>
 

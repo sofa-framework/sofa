@@ -25,13 +25,13 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_NONUNIFORMHEXAHEDRONFEMFORCEFIELD_INL
 #define SOFA_COMPONENT_FORCEFIELD_NONUNIFORMHEXAHEDRONFEMFORCEFIELD_INL
 
-#include <sofa/component/forcefield/NonUniformHexahedronFEMForceFieldAndMass.h>
+#include <SofaNonUniformFem/NonUniformHexahedronFEMForceFieldAndMass.h>
 #include <sofa/core/visual/VisualParams.h>
 
 
 
 
-#include <sofa/component/topology/SparseGridMultipleTopology.h>
+#include <SofaNonUniformFem/SparseGridMultipleTopology.h>
 
 namespace sofa
 {

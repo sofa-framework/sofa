@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/container/DistanceGrid.h>
+#include <SofaVolumetricData/DistanceGrid.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <fstream>
 #include <sofa/helper/system/gl.h>

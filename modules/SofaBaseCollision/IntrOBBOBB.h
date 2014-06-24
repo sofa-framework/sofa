@@ -4,8 +4,8 @@
 #ifndef WM5INTRBOX3BOX3_H
 #define WM5INTRBOX3BOX3_H
 
-#include <sofa/component/collision/Intersector.h>
-#include <sofa/component/collision/OBBModel.h>
+#include <SofaBaseCollision/Intersector.h>
+#include <SofaBaseCollision/OBBModel.h>
 
 namespace sofa{
 namespace component{

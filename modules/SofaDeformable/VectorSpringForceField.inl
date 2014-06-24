@@ -25,11 +25,11 @@
 #ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_VECTORSPRINGFORCEFIELD_INL
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_VECTORSPRINGFORCEFIELD_INL
 
-#include <sofa/component/interactionforcefield/VectorSpringForceField.h>
+#include <SofaDeformable/VectorSpringForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/io/MassSpringLoader.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
-#include <sofa/component/topology/TopologyData.inl>
+#include <SofaBaseTopology/TopologyData.inl>
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/simulation/common/Simulation.h>

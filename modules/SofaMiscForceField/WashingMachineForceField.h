@@ -39,7 +39,7 @@
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/component/forcefield/PlaneForceField.h>
+#include <SofaBoundaryCondition/PlaneForceField.h>
 #include <vector>
 
 namespace sofa

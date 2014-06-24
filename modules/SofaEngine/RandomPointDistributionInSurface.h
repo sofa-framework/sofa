@@ -35,7 +35,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/component/collision/TriangleOctree.h>
+#include <SofaMeshCollision/TriangleOctree.h>
 #include <sofa/helper/RandomGenerator.h>
 
 namespace sofa

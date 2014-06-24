@@ -29,7 +29,7 @@
 #pragma once
 #endif
 
-#include <sofa/component/engine/ExtrudeSurface.h>
+#include <SofaEngine/ExtrudeSurface.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/BasicShapes.h>

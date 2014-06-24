@@ -25,11 +25,11 @@
 #ifndef SOFA_COMPONENT_MASS_MATRIXMASS_INL
 #define SOFA_COMPONENT_MASS_MATRIXMASS_INL
 
-#include <sofa/component/mass/MatrixMass.h>
+#include <SofaMiscForceField/MatrixMass.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
-#include <sofa/component/mass/AddMToMatrixFunctor.h>
+#include <SofaBaseMechanics/AddMToMatrixFunctor.h>
 
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
 #include <sofa/core/behavior/InertiaForce.h>

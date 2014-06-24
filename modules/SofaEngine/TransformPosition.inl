@@ -29,7 +29,7 @@
 #pragma once
 #endif
 
-#include <sofa/component/engine/TransformPosition.h>
+#include <SofaEngine/TransformPosition.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
 #include <math.h>

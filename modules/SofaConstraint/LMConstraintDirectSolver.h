@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_CONSTRAINTSET_LMCONSTRAINTDIRECTSOLVER_H
 #define SOFA_COMPONENT_CONSTRAINTSET_LMCONSTRAINTDIRECTSOLVER_H
 
-#include <sofa/component/constraintset/LMConstraintSolver.h>
+#include <SofaConstraint/LMConstraintSolver.h>
 #include <sofa/helper/OptionsGroup.h>
 
 namespace sofa

@@ -22,10 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/collision/DistanceGridCollisionModel.h>
+#include <SofaVolumetricData/DistanceGridCollisionModel.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/component/collision/CubeModel.h>
+#include <SofaBaseCollision/CubeModel.h>
 #include <fstream>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/gl/template.h>
@@ -34,8 +34,8 @@
 #include <flowvr/render/mesh.h>
 //#endif
 
-#include <sofa/component/collision/BarycentricContactMapper.inl>
-#include <sofa/component/collision/RigidContactMapper.inl>
+#include <SofaMeshCollision/BarycentricContactMapper.inl>
+#include <SofaMeshCollision/RigidContactMapper.inl>
 #include <sofa/helper/Factory.inl>
 
 #include <fstream>

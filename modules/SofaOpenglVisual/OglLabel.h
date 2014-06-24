@@ -34,7 +34,7 @@
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/Vec.h>
 #include <string>
-#include <sofa/component/configurationsetting/BackgroundSetting.h>
+#include <SofaGraphComponent/BackgroundSetting.h>
 
 namespace sofa
 {

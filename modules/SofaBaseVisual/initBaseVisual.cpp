@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/helper/system/config.h>
-#include <sofa/component/initBaseVisual.h>
+#include <SofaBaseVisual/initBaseVisual.h>
 
 
 namespace sofa

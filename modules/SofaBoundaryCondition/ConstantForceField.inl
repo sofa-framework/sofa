@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_CONSTANTFORCEFIELD_INL
 #define SOFA_COMPONENT_FORCEFIELD_CONSTANTFORCEFIELD_INL
 
-#include <sofa/component/forcefield/ConstantForceField.h>
+#include <SofaBoundaryCondition/ConstantForceField.h>
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/gl/template.h>
 #include <assert.h>
@@ -34,7 +34,7 @@
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/topology/TopologySubsetData.inl>
+#include <SofaBaseTopology/TopologySubsetData.inl>
 
 
 

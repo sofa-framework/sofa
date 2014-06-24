@@ -25,8 +25,8 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_EDGEPRESSUREFORCEFIELD_INL
 #define SOFA_COMPONENT_FORCEFIELD_EDGEPRESSUREFORCEFIELD_INL
 
-#include <sofa/component/forcefield/EdgePressureForceField.h>
-#include <sofa/component/topology/TopologySparseData.inl>
+#include <SofaBoundaryCondition/EdgePressureForceField.h>
+#include <SofaBaseTopology/TopologySparseData.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
 #include <vector>

@@ -1,5 +1,5 @@
-#include <sofa/component/collision/IntrMeshUtility.h>
-#include <sofa/component/collision/IntrUtility3.inl>
+#include <SofaMeshCollision/IntrMeshUtility.h>
+#include <SofaBaseCollision/IntrUtility3.inl>
 
 
 namespace sofa{

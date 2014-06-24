@@ -33,8 +33,8 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#include <sofa/component/interactionforcefield/LineBendingSprings.inl>
-#include <sofa/component/interactionforcefield/StiffSpringForceField.inl>
+#include <SofaMiscForceField/LineBendingSprings.inl>
+#include <SofaDeformable/StiffSpringForceField.inl>
 #include <sofa/core/behavior/PairInteractionForceField.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>

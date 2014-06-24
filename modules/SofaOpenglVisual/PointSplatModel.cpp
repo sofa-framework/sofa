@@ -34,10 +34,10 @@
 
 #include <sofa/core/loader/VoxelLoader.h>
 
-#include <sofa/component/visualmodel/PointSplatModel.h>
+#include <SofaOpenglVisual/PointSplatModel.h>
 #include <sofa/core/visual/VisualParams.h>
 
-#include <sofa/component/topology/TopologyData.inl>
+#include <SofaBaseTopology/TopologyData.inl>
 
 namespace sofa
 {

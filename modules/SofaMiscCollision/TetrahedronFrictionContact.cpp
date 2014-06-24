@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/collision/FrictionContact.inl>
+#include <SofaConstraint/FrictionContact.inl>
 
 namespace sofa
 {

@@ -34,9 +34,9 @@
 #include <sofa/helper/system/FileRepository.h>
 
 
-#include <sofa/component/loader/MeshGmshLoader.h>
-#include <sofa/component/topology/MeshTopology.h>
-#include <sofa/component/topology/RegularGridTopology.h>
+#include <SofaLoader/MeshGmshLoader.h>
+#include <SofaBaseTopology/MeshTopology.h>
+#include <SofaBaseTopology/RegularGridTopology.h>
 
 // ---------------------------------------------------------------------
 // ---

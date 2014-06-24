@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_COLLISION_IDENTITYCONTACTMAPPER_CPP
-#include <sofa/component/collision/IdentityContactMapper.inl>
+#include <SofaMeshCollision/IdentityContactMapper.inl>
 
 namespace sofa
 {

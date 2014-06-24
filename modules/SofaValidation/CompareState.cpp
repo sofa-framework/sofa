@@ -26,7 +26,7 @@
 #ifndef SOFA_COMPONENT_MISC_COMPARESTATE_INL
 #define SOFA_COMPONENT_MISC_COMPARESTATE_INL
 
-#include <sofa/component/misc/CompareState.h>
+#include <SofaValidation/CompareState.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/UpdateMappingVisitor.h>

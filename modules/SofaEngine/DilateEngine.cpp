@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_DILATEENGINE_CPP
-#include <sofa/component/engine/DilateEngine.inl>
+#include <SofaEngine/DilateEngine.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

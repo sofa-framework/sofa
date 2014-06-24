@@ -25,10 +25,10 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_POINTSETTOPOLOGYENGINE_INL
 #define SOFA_COMPONENT_TOPOLOGY_POINTSETTOPOLOGYENGINE_INL
 
-#include <sofa/component/topology/TopologyEngine.h>
+#include <SofaBaseTopology/TopologyEngine.h>
 
-#include <sofa/component/topology/TetrahedronSetTopologyContainer.h>
-#include <sofa/component/topology/HexahedronSetTopologyContainer.h>
+#include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
+#include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
 
 
 namespace sofa

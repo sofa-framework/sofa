@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_SURFACEPRESSUREFORCEFIELD_INL
 #define SOFA_COMPONENT_FORCEFIELD_SURFACEPRESSUREFORCEFIELD_INL
 
-#include <sofa/component/forcefield/SurfacePressureForceField.h>
+#include <SofaBoundaryCondition/SurfacePressureForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/helper/gl/template.h>

@@ -30,7 +30,7 @@
 #endif
 
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/engine/ShapeMatching.h>
+#include <SofaEngine/ShapeMatching.h>
 #include <sofa/helper/decompose.h>
 #include <sofa/helper/gl/template.h>
 #include <iostream>

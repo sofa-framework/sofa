@@ -26,15 +26,15 @@
 #define SOFA_COMPONENT_COLLISION_DISTANCEGRIDCOLLISIONMODEL_H
 
 #include <sofa/core/CollisionModel.h>
-#include <sofa/component/container/DistanceGrid.h>
-#include <sofa/component/container/MechanicalObject.h>
-#include <sofa/component/collision/RigidContactMapper.h>
+#include <SofaVolumetricData/DistanceGrid.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
+#include <SofaMeshCollision/RigidContactMapper.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/component/topology/RegularGridTopology.h>
+#include <SofaBaseTopology/RegularGridTopology.h>
 #include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/component/topology/SparseGridTopology.h>
-#include <sofa/component/collision/BarycentricContactMapper.h>
+#include <SofaBaseTopology/SparseGridTopology.h>
+#include <SofaMeshCollision/BarycentricContactMapper.h>
 
 
 namespace sofa

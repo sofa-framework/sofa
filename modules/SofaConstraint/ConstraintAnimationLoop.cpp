@@ -22,10 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/animationloop/ConstraintAnimationLoop.h>
+#include <SofaConstraint/ConstraintAnimationLoop.h>
 #include <sofa/core/visual/VisualParams.h>
 
-#include <sofa/component/constraintset/ConstraintSolverImpl.h>
+#include <SofaConstraint/ConstraintSolverImpl.h>
 
 #include <sofa/simulation/common/BehaviorUpdatePositionVisitor.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>

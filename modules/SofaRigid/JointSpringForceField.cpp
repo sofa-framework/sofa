@@ -26,7 +26,7 @@
 //
 // Copyright: See COPYING file that comes with this distribution
 #define SOFA_COMPONENT_FORCEFIELD_JOINTSPRINGFORCEFIELD_CPP
-#include <sofa/component/interactionforcefield/JointSpringForceField.inl>
+#include <SofaRigid/JointSpringForceField.inl>
 #include <sofa/core/behavior/PairInteractionForceField.inl>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/behavior/MechanicalState.h>

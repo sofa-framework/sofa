@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/misc/DevAngleCollisionMonitor.h>
+#include <SofaValidation/DevAngleCollisionMonitor.h>
 #include <sofa/core/visual/VisualParams.h>
 
 namespace sofa

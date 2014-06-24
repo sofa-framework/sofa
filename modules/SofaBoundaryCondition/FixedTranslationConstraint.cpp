@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDTRANSLATIONCONSTRAINT_CPP
-#include <sofa/component/projectiveconstraintset/FixedTranslationConstraint.inl>
+#include <SofaBoundaryCondition/FixedTranslationConstraint.inl>
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/defaulttype/RigidTypes.h>

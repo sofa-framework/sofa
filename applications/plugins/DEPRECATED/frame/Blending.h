@@ -29,7 +29,7 @@
 #include "LinearBlending.h"
 #include "DualQuatBlending.h"
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/component/topology/TopologyData.h>
+#include <SofaBaseTopology/TopologyData.h>
 #include <limits>
 
 namespace sofa

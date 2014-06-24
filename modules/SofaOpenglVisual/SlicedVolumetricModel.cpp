@@ -31,11 +31,11 @@
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
-#include <sofa/component/topology/SparseGridTopology.h>
+#include <SofaBaseTopology/SparseGridTopology.h>
 
 #include <sofa/core/loader/VoxelLoader.h>
 
-#include <sofa/component/visualmodel/SlicedVolumetricModel.h>
+#include <SofaOpenglVisual/SlicedVolumetricModel.h>
 #include <sofa/core/visual/VisualParams.h>
 
 
