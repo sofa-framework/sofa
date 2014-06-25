@@ -190,7 +190,7 @@ void Mapping<In,Out>::applyJ(const MechanicalParams* mparams /* PARAMS FIRST */,
         {
             if (this->isMechanical() && this->f_checkJacobian.getValue(mparams))
             {
-                checkApplyJ(*out->beginEdit(mparams), in->getValue(mparams), this->getJ(mparams));
+                checkApplyJ(mparams, *out, *in, this->getJ(mparams));
                 out->endEdit(mparams);
             }
             else
@@ -220,7 +220,7 @@ void Mapping<In,Out>::applyJT(const MechanicalParams *mparams /* PARAMS FIRST */
         {
             if (this->isMechanical() && this->f_checkJacobian.getValue(mparams))
             {
-                checkApplyJT(*out->beginEdit(mparams), in->getValue(mparams), this->getJ(mparams));
+                checkApplyJT(mparams, *out, *in, this->getJ(mparams));
                 out->endEdit(mparams);
             }
             else
@@ -243,7 +243,7 @@ void Mapping<In,Out>::applyJT(const ConstraintParams* cparams /* PARAMS FIRST  =
         {
             if (this->isMechanical() && this->f_checkJacobian.getValue())
             {
-                checkApplyJT(*out->beginEdit(cparams), in->getValue(cparams), this->getJ());
+                checkApplyJT(cparams, *out, *in, this->getJ());
                 out->endEdit(cparams);
             }
             else
@@ -310,9 +310,10 @@ std::string Mapping<In,Out>::templateName(const Mapping<In, Out>* /*mapping*/)
 
 
 template <class In, class Out>
-bool Mapping<In,Out>::checkApplyJ( OutVecDeriv& out, const InVecDeriv& in, const sofa::defaulttype::BaseMatrix* J )
+bool Mapping<In,Out>::checkApplyJ( const MechanicalParams* mparams, OutDataVecDeriv& outData, const InDataVecDeriv& inData, const sofa::defaulttype::BaseMatrix* J )
 {
-    applyJ(out, in);
+
+    applyJ(mparams, outData, inData);
     if (!J)
     {
         serr << "CheckApplyJ: getJ returned a NULL matrix" << sendl;
@@ -330,6 +331,9 @@ bool Mapping<In,Out>::checkApplyJ( OutVecDeriv& out, const InVecDeriv& in, const
         serr << "Mask in use in mapped model. Disabled because of checkApplyJ." << sendl;
         toMechaModel->forceMask.setInUse(false);
     }
+
+    OutVecDeriv& out = *outData.beginEdit(mparams);
+    const InVecDeriv& in = inData.getValue(mparams);
 
     OutVecDeriv out2;
     out2.resize(out.size());
@@ -368,6 +372,9 @@ bool Mapping<In,Out>::checkApplyJ( OutVecDeriv& out, const InVecDeriv& in, const
         sout << "Result from applyJ : " << out << sendl;
         sout << "Result from matrix : " << out2 << sendl;
     }
+
+    outData.endEdit(mparams);
+
     return true;
 }
 
@@ -431,12 +438,12 @@ void Mapping<In,Out>::matrixApplyJ( OutVecDeriv& out, const InVecDeriv& in, cons
 }
 
 template <class In, class Out>
-bool Mapping<In,Out>::checkApplyJT( InVecDeriv& out, const OutVecDeriv& in, const sofa::defaulttype::BaseMatrix* J )
+bool Mapping<In,Out>::checkApplyJT(const MechanicalParams* mparams, InDataVecDeriv& outData, const OutDataVecDeriv& inData, const sofa::defaulttype::BaseMatrix* J )
 {
     if (!J)
     {
         serr << "CheckApplyJT: getJ returned a NULL matrix" << sendl;
-        applyJT(out, in);
+        applyJT(mparams, outData, inData);
         return false;
     }
 
@@ -452,9 +459,17 @@ bool Mapping<In,Out>::checkApplyJT( InVecDeriv& out, const OutVecDeriv& in, cons
         toMechaModel->forceMask.setInUse(false);
     }
 
-    InVecDeriv tmp;
+    InVecDeriv& out = *outData.beginEdit(mparams);
+    const OutVecDeriv& in = inData.getValue(mparams);
+
+    InDataVecDeriv tmpData;
+    InVecDeriv& tmp = *tmpData.beginEdit(mparams);
     tmp.resize(out.size());
-    applyJT(tmp, in);
+    tmpData.endEdit(mparams);
+
+    applyJT(mparams, tmpData, inData);
+
+    tmp = *tmpData.beginEdit(mparams);
     if (tmp.size() > out.size())
         out.resize(tmp.size());
     for (unsigned int i=0; i<tmp.size(); ++i)
@@ -497,6 +512,10 @@ bool Mapping<In,Out>::checkApplyJT( InVecDeriv& out, const OutVecDeriv& in, cons
         sout << "Result from applyJT : " << tmp << sendl;
         sout << "Result from matrixT : " << tmp2 << sendl;
     }
+
+    tmpData.beginEdit(mparams);
+    outData.beginEdit(mparams);
+
     return true;
 }
 
@@ -560,9 +579,9 @@ void Mapping<In,Out>::matrixApplyJT( InVecDeriv& out, const OutVecDeriv& in, con
 }
 
 template <class In, class Out>
-bool Mapping<In,Out>::checkApplyJT( InMatrixDeriv& out, const OutMatrixDeriv& in, const sofa::defaulttype::BaseMatrix* J )
+bool Mapping<In,Out>::checkApplyJT(const ConstraintParams* cparams, InDataMatrixDeriv& out, const OutDataMatrixDeriv& in, const sofa::defaulttype::BaseMatrix* J )
 {
-    applyJT(out, in);
+    applyJT(cparams, out, in);
     if (!J)
     {
         serr << "CheckApplyJT: getJ returned a NULL matrix" << sendl;
