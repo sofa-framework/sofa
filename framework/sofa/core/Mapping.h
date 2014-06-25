@@ -298,7 +298,7 @@ public:
 
         if (stout == NULL)
         {
-//            This warning seems irrelevant, as it is raised multiple times while the creation works fine (Francois Faure, Feb. 2012)
+//            This warning seems irrelevant, as it is raised multiple times OutDataVecCoord& out, const InDataVecCoord& in)while the creation works fine (Francois Faure, Feb. 2012)
 //            context->serr << "Cannot create "<<className(obj)<<" as output model "<< outPath << " is missing or invalid." << context->sendl;
             return false;
         }
@@ -377,9 +377,9 @@ protected:
     void matrixApplyJ( OutVecDeriv& /* out */, const InVecDeriv& /* in */, const sofa::defaulttype::BaseMatrix* /* J */);
     void matrixApplyJT( InVecDeriv& /* out */, const OutVecDeriv& /* in */, const sofa::defaulttype::BaseMatrix* /* J */);
     void matrixApplyJT( InMatrixDeriv& /* out */, const OutMatrixDeriv& /* in */, const sofa::defaulttype::BaseMatrix* /* J */);
-    bool checkApplyJ( OutVecDeriv& /* out */, const InVecDeriv& /* in */, const sofa::defaulttype::BaseMatrix* /* J */);
-    bool checkApplyJT( InVecDeriv& /* out */, const OutVecDeriv& /* in */, const sofa::defaulttype::BaseMatrix* /* J */);
-    bool checkApplyJT( InMatrixDeriv& /* out */, const OutMatrixDeriv& /* in */, const sofa::defaulttype::BaseMatrix* /* J */);
+    bool checkApplyJ( const MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecDeriv& out, const InDataVecDeriv& in, const sofa::defaulttype::BaseMatrix* /* J */);
+    bool checkApplyJT( const MechanicalParams* mparams /* PARAMS FIRST */, InDataVecDeriv& /* out */, const OutDataVecDeriv& /* in */, const sofa::defaulttype::BaseMatrix* /* J */);
+    bool checkApplyJT( const ConstraintParams* cparams /* PARAMS FIRST */, InDataMatrixDeriv& /* out */, const OutDataMatrixDeriv& /* in */, const sofa::defaulttype::BaseMatrix* /* J */);
 
 };
 
