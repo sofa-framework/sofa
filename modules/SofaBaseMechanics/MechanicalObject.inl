@@ -288,7 +288,7 @@ MechanicalObject<DataTypes> &MechanicalObject<DataTypes>::operator = (const Mech
 
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::parse ( BaseObjectDescription* arg )
+void MechanicalObject<DataTypes>::parse ( sofa::core::objectmodel::BaseObjectDescription* arg )
 {
     Inherited::parse(arg);
     
@@ -1172,7 +1172,7 @@ void MechanicalObject<DataTypes>::reinit()
 {
     Vector3 p0;
     sofa::component::topology::RegularGridTopology *grid;
-    this->getContext()->get(grid, BaseContext::Local);
+    this->getContext()->get(grid, sofa::core::objectmodel::BaseContext::Local);
     if (grid) p0 = grid->getP0();
 
     if (scale.getValue() != Vector3(1.0,1.0,1.0))

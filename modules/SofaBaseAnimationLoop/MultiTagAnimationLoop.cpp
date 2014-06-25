@@ -26,8 +26,19 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
+#include <sofa/simulation/common/AnimateBeginEvent.h>
+#include <sofa/simulation/common/AnimateEndEvent.h>
+#include <sofa/simulation/common/PropagateEventVisitor.h>
+#include <sofa/simulation/common/BehaviorUpdatePositionVisitor.h>
+#include <sofa/simulation/common/UpdateContextVisitor.h>
+#include <sofa/simulation/common/UpdateMappingVisitor.h>
+#include <sofa/simulation/common/UpdateMappingEndEvent.h>
+#include <sofa/simulation/common/UpdateBoundingBoxVisitor.h>
 #include <math.h>
 #include <iostream>
+
+
+using namespace sofa::simulation;
 
 namespace sofa
 {
