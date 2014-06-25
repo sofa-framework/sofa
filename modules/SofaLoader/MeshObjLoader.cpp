@@ -58,7 +58,6 @@ MeshObjLoader::MeshObjLoader()
     , normalsIndexList(initData(&normalsIndexList,"normalsIndex","List of normals of elements of the mesh loaded."))
     , normalsList(initData(&normalsList,"normalsDefinition","Normals definition"))
     , texCoords(initData(&texCoords,"texcoords","Texture coordinates of all faces, to be used as the parent data of a VisualModel texcoords data"))
-//  , vertices(initData(&vertices,"vertices","List of vertices. Different from position when more than one texcoord normal pair is attached to a vertex." ) )
     , computeMaterialFaces(initData(&computeMaterialFaces, false, "computeMaterialFaces", "True to activate export of Data instances containing list of face indices for each material"))
 {
     faceList.setGroup("OBJ");
@@ -163,6 +162,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
     my_positions.clear();
     my_texCoords.clear();
     my_normals.clear();
+    my_materials.clear();
     my_faceList.clear();
     my_normalsList.clear();
     my_texturesList.clear();
