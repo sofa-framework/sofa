@@ -7,7 +7,7 @@
 		<UniformMass template="Vec1d" name="mass" />
 		<Node 	name="child node with DOFs mapped from the parent" >
 			<MechanicalObject template="Vec3d" name="endpoint coordinates" position="1 -0.1 0" />
-			<MyMappingPendulumInPlane template="Vec1d,Vec3d" name="angle->coord mapping" input="@.." output="@."/>
+			<MyMappingPendulumInPlane name="angle->coord mapping" input="@.." output="@."/>
 			<ConstantForceField force="1 -1 0" points="0" />
 			<MyBehaviorModel name="dummy component" />
 			<MyProjectiveConstraintSet name="dummy component" />

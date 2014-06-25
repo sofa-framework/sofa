@@ -26,7 +26,7 @@
 #ifndef SOFA_COMPONENT_CONSTRAINT_MyProjectiveConstraintSet_H
 #define SOFA_COMPONENT_CONSTRAINT_MyProjectiveConstraintSet_H
 
-#include "PluginExample.h"
+#include "initPlugin.h"
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
