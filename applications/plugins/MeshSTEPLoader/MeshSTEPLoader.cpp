@@ -24,6 +24,7 @@
 ******************************************************************************/
 
 #include "MeshSTEPLoader.h"
+#include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/SetDirectory.h>
 
 namespace sofa
@@ -38,6 +39,10 @@ namespace loader
 using namespace sofa::defaulttype;
 using namespace sofa::core::loader;
 
+SOFA_DECL_CLASS(MeshSTEPLoader)
+
+int MeshSTEPLoaderClass = core::RegisterObject("Specific mesh loader for STEP file format (see PluginMeshSTEPLoader.txt for further information).")
+        .add< MeshSTEPLoader >();
 
 MeshSTEPLoader::MeshSTEPLoader():MeshLoader()
     , _uv(initData(&_uv, "uv", "UV coordinates"))
