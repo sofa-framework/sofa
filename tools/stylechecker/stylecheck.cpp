@@ -63,6 +63,7 @@ bool isInExcludedPath(const std::string& path){
         }
         return false ;
     }
+    return false ;
 }
 
 class StyleChecker : public RecursiveASTVisitor<StyleChecker> {
@@ -83,6 +84,8 @@ public:
             return true ;
 
         FullSourceLoc FullLocation = Context->getFullLoc(record->getLocStart());
+
+
         // Check this declaration is not in the system headers...
         if ( FullLocation.isValid() && !exclude(FullLocation.getManager() , record) )
         {
@@ -92,6 +95,7 @@ public:
             RecordDecl::field_iterator it=record->field_begin() ;
             for(;it!=record->field_end();it++){
                 clang::FieldDecl* ff=*it;
+                ff->isTemplateDecl();
 
                 SourceRange declsr=ff->getMostRecentDecl()->getSourceRange() ;
                 SourceLocation sl=declsr.getBegin();
@@ -148,6 +152,7 @@ public:
 
                 CXXRecordDecl* rd=ff->getType()->getAsCXXRecordDecl() ;
                 if(rd){
+
                     std::string type=rd->getNameAsString() ;
                     if(type.find("Data")!=std::string::npos){
                         if(name.find("d_")==0){
