@@ -90,7 +90,6 @@ public:
 
     typedef sofa::defaulttype::Vector3 Vector3;
 
-    using Inherited::getX;
     using Inherited::getV;
     using Inherited::getF;
     using Inherited::getX0;
@@ -206,9 +205,9 @@ public:
 
     int getSize() const { return vsize; }
 
-    double getPX(int i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(*getX())[i]); return (SReal)x; }
-    double getPY(int i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(*getX())[i]); return (SReal)y; }
-    double getPZ(int i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(*getX())[i]); return (SReal)z; }
+    double getPX(int i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(read(core::ConstVecCoordId::position())->getValue())[i]); return (SReal)x; }
+    double getPY(int i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(read(core::ConstVecCoordId::position())->getValue())[i]); return (SReal)y; }
+    double getPZ(int i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(read(core::ConstVecCoordId::position())->getValue())[i]); return (SReal)z; }
 
     double getVX(int i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(*getV())[i]); return (SReal)x; }
     double getVY(int i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(*getV())[i]); return (SReal)y; }

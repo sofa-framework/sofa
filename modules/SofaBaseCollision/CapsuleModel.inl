@@ -195,7 +195,7 @@ typename TCapsuleModel<DataTypes>::Real TCapsuleModel<DataTypes>::defaultRadius(
 
 template <class DataTypes>
 inline const typename TCapsuleModel<DataTypes>::Coord & TCapsuleModel<DataTypes>::point(int i)const{
-    return (*(_mstate->getX()))[i];
+    return this->_mstate->read(core::ConstVecCoordId::position())->getValue()[i];
 }
 
 template <class DataTypes>

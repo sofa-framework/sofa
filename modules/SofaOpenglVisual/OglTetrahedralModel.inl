@@ -175,7 +175,7 @@ void OglTetrahedralModel<DataTypes>::drawTransparent(const core::visual::VisualP
     const core::topology::BaseMeshTopology::SeqTetrahedra& vec = m_topology->getTetrahedra();
 
 
-    //const VecCoord& x = *nodes->getX();
+    //const VecCoord& x =nodes->read(core::ConstVecCoordId::position())->getValue();
     Coord v;
 
     glBegin(GL_LINES_ADJACENCY_EXT);
@@ -209,7 +209,7 @@ void OglTetrahedralModel<DataTypes>::drawTransparent(const core::visual::VisualP
     /*
     	const core::topology::BaseMeshTopology::SeqHexahedra& vec = topo->getHexahedra();
 
-    	VecCoord& x = *nodes->getX();
+    	VecCoord& x =nodes->read(core::ConstVecCoordId::position())->getValue();
     	Coord v;
 
 

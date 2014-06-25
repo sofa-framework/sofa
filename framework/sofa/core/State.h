@@ -142,11 +142,11 @@ public:
 
     /// Return the current position vector.
     /// @deprecated use read(ConstVecCoordId::position()) instead.
-    virtual const VecCoord* getX()  const
-    {
-        const Data<VecCoord>* v = read(ConstVecCoordId::position());
-        return (v == NULL) ? NULL : &(v->getValue());
-    }
+//    virtual const VecCoord* getX()  const
+//    {
+//        const Data<VecCoord>* v = read(ConstVecCoordId::position());
+//        return (v == NULL) ? NULL : &(v->getValue());
+//    }
 
     /// Return the current velocity vector.
     /// @deprecated use read(ConstVecDerivId::velocity()) instead.

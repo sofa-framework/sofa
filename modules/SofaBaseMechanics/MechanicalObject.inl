@@ -269,7 +269,7 @@ void MechanicalObject<DataTypes>::exportGnuplot(Real time)
 {
     if( m_gnuplotFileX!=NULL )
     {
-        (*m_gnuplotFileX) << time <<"\t"<< *getX() << std::endl;
+        (*m_gnuplotFileX) << time <<"\t"<< read(core::ConstVecCoordId::position())->getValue() << std::endl;
     }
 
     if( m_gnuplotFileV!=NULL )
@@ -3386,7 +3386,7 @@ bool MechanicalObject<DataTypes>::pickParticles(const core::ExecParams* /* param
             || (DataTypeInfo<Coord>::size() == 7 && DataTypeInfo<Deriv>::size() == 6))
     {
         // seems to be valid DOFs
-        const VecCoord& x = *this->getX();
+        const VecCoord& x =this->read(core::ConstVecCoordId::position())->getValue();
         Vec<3,Real> origin((Real)rayOx, (Real)rayOy, (Real)rayOz);
         Vec<3,Real> direction((Real)rayDx, (Real)rayDy, (Real)rayDz);
 //                            cerr<<"MechanicalObject<DataTypes>::pickParticles, ray point = " << rayOx << ", " << rayOy << ", " << rayOz << endl;

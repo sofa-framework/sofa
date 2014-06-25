@@ -130,7 +130,7 @@ template<class DataTypes>
 void TTriangleModel<DataTypes>::updateFromTopology()
 {
     //    needsUpdate = false;
-    const unsigned npoints = mstate->getX()->size();
+    const unsigned npoints = mstate->read(core::ConstVecCoordId::position())->getValue().size();
     const unsigned ntris = _topology->getNbTriangles();
     const unsigned nquads = _topology->getNbQuads();
     const unsigned newsize = ntris+2*nquads;
@@ -197,7 +197,7 @@ void TTriangleModel<DataTypes>::updateFlags(int /*ntri*/)
 {
 #if 0
     if (ntri < 0) ntri = triangles->size();
-    //VecCoord& x = *mstate->getX();
+    //VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
     //VecDeriv& v = *mstate->getV();
     vector<bool> pflags(mstate->getSize());
     std::set<std::pair<int,int> > eflags;

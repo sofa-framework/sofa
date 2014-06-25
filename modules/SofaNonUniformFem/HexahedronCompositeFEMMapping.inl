@@ -80,13 +80,13 @@ void HexahedronCompositeFEMMapping<BasicMapping>::init()
     _finestSparseGrid = _sparseGrid->_virtualFinerLevels[_sparseGrid->getNbVirtualFinerLevels() -_forcefield->_nbVirtualFinerLevels.getValue()];
 
 
-    for(unsigned i=0; i<this->toModel->getX()->size(); ++i)
-        _p0.push_back( (*this->toModel->getX())[i] );
+    for(unsigned i=0; i<this->toModel->read(core::ConstVecCoordId::position())->getValue().size(); ++i)
+        _p0.push_back( this->toModel->read(core::ConstVecCoordId::position())->getValue()[i] );
 
-    for(unsigned i=0; i<this->fromModel->getX()->size(); ++i) // par construction de la sparse grid, pas de rotation initiale
-        _qCoarse0.push_back( (*this->fromModel->getX())[i] );
+    for(unsigned i=0; i<this->fromModel->read(core::ConstVecCoordId::position())->getValue().size(); ++i) // par construction de la sparse grid, pas de rotation initiale
+        _qCoarse0.push_back( this->fromModel->read(core::ConstVecCoordId::position())->getValue()[i] );
 
-    InCoord translation0 = (*this->fromModel->getX())[0] - _sparseGrid->getPointPos(0);
+    InCoord translation0 = this->fromModel->read(core::ConstVecCoordId::position())->getValue()[0] - _sparseGrid->getPointPos(0);
 
     for(int i=0; i<_finestSparseGrid->getNbPoints(); ++i)
         _qFine0.push_back( _finestSparseGrid->getPointPos(i)+translation0 );

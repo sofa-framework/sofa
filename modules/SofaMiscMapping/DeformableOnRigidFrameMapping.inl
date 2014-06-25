@@ -680,7 +680,7 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::handleTopologyChange(cor
 //void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::propagateX()
 //{
 //	if (m_fromModel!=NULL && m_toModel->getX()!=NULL && m_fromModel->getX()!=NULL)
-//		apply(*m_toModel->getX(), *m_fromModel->getX(), (m_fromRootModel==NULL ? NULL : m_fromRootModel->getX()));
+//		apply(*m_toModel->getX(),m_fromModel->getX(), (m_fromRootModel==NULL ? NULL : m_fromRootModel->read(core::ConstVecCoordId::position())->getValue()));
 //
 //
 //	if( this->f_printLog.getValue())	{

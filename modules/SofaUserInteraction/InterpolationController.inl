@@ -150,7 +150,7 @@ void InterpolationController<DataTypes>::draw(const core::visual::VisualParams* 
     
     sofa::helper::ReadAccessor< DataVecCoord > interpValues = f_interpValues;
     if(interpValues.size() != this->fromXs[0].size()) return;
-    //const VecCoord *interpXs = interpModel->getX();
+    //const VecCoordinterpXs = interpModel->read(core::ConstVecCoordId::position())->getValue();
 
     defaulttype::Vec<4,float> color;
     switch (static_cast<Evolution_Type>(f_evolution.getValue()))
