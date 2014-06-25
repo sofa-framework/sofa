@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include <SofaBaseVisual/RecordedCamera.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/ObjectFactory.h>
+#include <SofaBaseVisual/BaseVisual.h>
 #include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
@@ -46,7 +46,8 @@ namespace visualmodel
 
 SOFA_DECL_CLASS(RecordedCamera)
 
-int RecordedCameraClass = core::RegisterObject("Camera moving along a predetermined path (currently only a rotation)")
+int RecordedCameraClass =
+    BaseVisualPlugin::registerObject("Camera moving along a predetermined path (currently only a rotation)")
         .add< RecordedCamera >()
         ;
 
