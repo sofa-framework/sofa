@@ -22,36 +22,75 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "MeshSTEPLoaderPlugin.h"
-#include <sofa/core/Plugin.h>
+#include <sofa/helper/system/config.h>
 
-#include "MeshSTEPLoader.h"
-#include "SingleComponent.inl"
-#include "STEPShapeMapping.h"
-#include "ParametricTriangleTopologyContainer.h"
+#ifndef WIN32
+#define SOFA_EXPORT_DYNAMIC_LIBRARY
+#define SOFA_IMPORT_DYNAMIC_LIBRARY
+#define SOFA_MESHSTEPLOADERPLUGIN_API
+#else
+#ifdef SOFA_BUILD_MESHSTEPLOADERPLUGIN
+#define SOFA_EXPORT_DYNAMIC_LIBRARY __declspec( dllexport )
+#define SOFA_MESHSTEPLOADERPLUGIN_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#define SOFA_IMPORT_DYNAMIC_LIBRARY __declspec( dllimport )
+#define SOFA_MESHSTEPLOADERPLUGIN_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+#endif
 
-using sofa::component::loader::MeshSTEPLoader;
-using sofa::component::engine::SingleComponent;
-using sofa::component::engine::STEPShapeExtractor;
-using sofa::component::topology::ParametricTriangleTopologyContainer;
+namespace sofa
+{
 
-class MeshSTEPLoaderPlugin: public sofa::core::Plugin {
-public:
-    MeshSTEPLoaderPlugin(): Plugin("MeshSTEPLoader") {
-        setDescription("Load STEP files into SOFA Framework.");
-        setVersion("0.5");
-        setLicense("LGPL");
+namespace component
+{
+//Here are just several convenient functions to help user to know what contains the plugin
 
-        addComponent<MeshSTEPLoader>("Specific mesh loader for STEP file format (see PluginMeshSTEPLoader.txt for further information).");
+extern "C" {
+    SOFA_MESHSTEPLOADERPLUGIN_API void initExternalModule();
+    SOFA_MESHSTEPLOADERPLUGIN_API const char* getModuleName();
+    SOFA_MESHSTEPLOADERPLUGIN_API const char* getModuleLicense();
+    SOFA_MESHSTEPLOADERPLUGIN_API const char* getModuleVersion();
+    SOFA_MESHSTEPLOADERPLUGIN_API const char* getModuleDescription();
+    SOFA_MESHSTEPLOADERPLUGIN_API const char* getModuleComponentList();
+}
 
-        addComponent<ParametricTriangleTopologyContainer>("Topology container for triangles with parametric coordinates.");
-
-        addComponent<STEPShapeExtractor>("Extract a shape from a MeshSTEPLoader according to a shape number.");
-
-        addComponent< SingleComponent<int> >("Load mesh of one shape, in the case there are several components.");
+void initExternalModule()
+{
+    static bool first = true;
+    if (first)
+    {
+        first = false;
     }
-};
+}
 
-SOFA_PLUGIN(MeshSTEPLoaderPlugin);
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
 
-template class SOFA_MESHSTEPLOADER_API SingleComponent<int>;
+const char* getModuleName()
+{
+    return "Plugin MeshSTEPLoader";
+}
+
+const char* getModuleVersion()
+{
+    return "0.5";
+}
+
+const char* getModuleDescription()
+{
+    return "Load STEP files into SOFA Framework";
+}
+
+const char* getModuleComponentList()
+{
+    return "MeshSTEPLoader";
+}
+}
+
+}
+
+SOFA_LINK_CLASS(MeshSTEPLoader)
+SOFA_LINK_CLASS(SingleComponent)
+

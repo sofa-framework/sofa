@@ -6,13 +6,14 @@ set(HEADER_FILES
     SingleComponent.inl
     SingleComponent.h 
     STEPShapeMapping.h 
-    MeshSTEPLoaderPlugin.h)
+    initMeshSTEPLoader.h)
 
 set(SOURCE_FILES
     MeshSTEPLoader.cpp 
     ParametricTriangleTopologyContainer.cpp 
+    SingleComponent.cpp 
     STEPShapeMapping.cpp 
-    MeshSTEPLoaderPlugin.cpp)
+    initMeshSTEPLoader.cpp)
 
 set(README_FILES PluginMeshSTEPLoader.txt)
 
@@ -38,7 +39,7 @@ if(WIN32)
 endif()
 
 
-sofa_add_plugin(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_MESHSTEPLOADERPLUGIN")
 AddLinkerDependencies(SofaBaseTopology)
