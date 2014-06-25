@@ -35,6 +35,7 @@
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/AdvancedTimer.h>
 
+#include <sofa/core/ObjectFactory.h>
 #include <iostream>
 
 namespace sofa

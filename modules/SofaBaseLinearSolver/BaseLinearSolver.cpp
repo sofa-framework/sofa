@@ -25,14 +25,6 @@
 #include <SofaBaseLinearSolver/BaseLinearSolver.h>
 #include <sofa/core/Plugin.h>
 
-#include <SofaBaseLinearSolver/BTDLinearSolver.inl>
-#include <SofaBaseLinearSolver/CGLinearSolver.inl>
-#include <SofaBaseLinearSolver/CholeskySolver.inl>
-#include <SofaBaseLinearSolver/MinResLinearSolver.inl>
-
-using namespace sofa::component::linearsolver;
-using namespace sofa::defaulttype;
-
 class BaseLinearSolverPlugin: public sofa::core::Plugin {
 public:
     BaseLinearSolverPlugin(): Plugin("BaseLinearSolver") {
@@ -40,60 +32,6 @@ public:
         setVersion("");
         setLicense("LGPL");
         setAuthors("The SOFA Team");
-
-        // Default template instance for BTDLinearSolver
-#ifdef SOFA_FLOAT
-        addComponent< BTDLinearSolver<BTDMatrix<6,float>,BlockVector<6,float> > >();
-#else
-        addComponent< BTDLinearSolver<BTDMatrix<6,double>,BlockVector<6,double> > >();
-#endif
-        setDescription("BTDLinearSolver", "Linear system solver using Thomas Algorithm for Block Tridiagonal matrices");
-        // Other template instances for BTDLinearSolver
-#if !defined(SOFA_DOUBLE) && !defined(SOFA_FLOAT)
-        addTemplateInstance< BTDLinearSolver<BTDMatrix<6,float>,BlockVector<6,float> > >();
-#endif
-
-        addComponent< CGLinearSolver< GraphScatteredMatrix, GraphScatteredVector > >("Linear system solver using the conjugate gradient iterative algorithm");
-        addTemplateInstance< CGLinearSolver< FullMatrix<double>, FullVector<double> > >();
-        addTemplateInstance< CGLinearSolver< SparseMatrix<double>, FullVector<double> > >();
-        addTemplateInstance< CGLinearSolver< CompressedRowSparseMatrix<double>, FullVector<double> > >();
-        addTemplateInstance< CGLinearSolver< CompressedRowSparseMatrix<float>, FullVector<float> > >();
-        addTemplateInstance< CGLinearSolver< CompressedRowSparseMatrix<Mat<2,2,double> >, FullVector<double> > >();
-        addTemplateInstance< CGLinearSolver< CompressedRowSparseMatrix<Mat<2,2,float> >, FullVector<float> > >();
-        addTemplateInstance< CGLinearSolver< CompressedRowSparseMatrix<Mat<3,3,double> >, FullVector<double> > >();
-        addTemplateInstance< CGLinearSolver< CompressedRowSparseMatrix<Mat<3,3,float> >, FullVector<float> > >();
-        addTemplateInstance< CGLinearSolver< CompressedRowSparseMatrix<Mat<4,4,double> >, FullVector<double> > >();
-        addTemplateInstance< CGLinearSolver< CompressedRowSparseMatrix<Mat<4,4,float> >, FullVector<float> > >();
-        addTemplateInstance< CGLinearSolver< CompressedRowSparseMatrix<Mat<6,6,double> >, FullVector<double> > >();
-        addTemplateInstance< CGLinearSolver< CompressedRowSparseMatrix<Mat<6,6,float> >, FullVector<float> > >();
-        addTemplateInstance< CGLinearSolver< CompressedRowSparseMatrix<Mat<8,8,double> >, FullVector<double> > >();
-        addTemplateInstance< CGLinearSolver< CompressedRowSparseMatrix<Mat<8,8,float> >, FullVector<float> > >();
-        addAlias("CGLinearSolver", "CGSolver");
-        addAlias("CGLinearSolver", "ConjugateGradient");
-
-        addComponent< CholeskySolver< SparseMatrix<double>, FullVector<double> > >("Direct linear solver based on Cholesky factorization, for dense matrices");
-        addTemplateInstance< CholeskySolver< FullMatrix<double>, FullVector<double> > >();
-        addTemplateInstance< CholeskySolver< FullMatrix<float>, FullVector<float> > >();
-
-
-        addComponent< MinResLinearSolver< GraphScatteredMatrix, GraphScatteredVector > >("Linear system solver using the MINRES iterative algorithm");
-        addTemplateInstance< MinResLinearSolver< FullMatrix<double>, FullVector<double> > >();
-        addTemplateInstance< MinResLinearSolver< SparseMatrix<double>, FullVector<double> > >();
-        addTemplateInstance< MinResLinearSolver< CompressedRowSparseMatrix<double>, FullVector<double> > >();
-        addTemplateInstance< MinResLinearSolver< CompressedRowSparseMatrix<float>, FullVector<float> > >();
-        addTemplateInstance< MinResLinearSolver< CompressedRowSparseMatrix<Mat<2,2,double> >, FullVector<double> > >();
-        addTemplateInstance< MinResLinearSolver< CompressedRowSparseMatrix<Mat<2,2,float> >, FullVector<float> > >();
-        addTemplateInstance< MinResLinearSolver< CompressedRowSparseMatrix<Mat<3,3,double> >, FullVector<double> > >();
-        addTemplateInstance< MinResLinearSolver< CompressedRowSparseMatrix<Mat<3,3,float> >, FullVector<float> > >();
-        addTemplateInstance< MinResLinearSolver< CompressedRowSparseMatrix<Mat<4,4,double> >, FullVector<double> > >();
-        addTemplateInstance< MinResLinearSolver< CompressedRowSparseMatrix<Mat<4,4,float> >, FullVector<float> > >();
-        addTemplateInstance< MinResLinearSolver< CompressedRowSparseMatrix<Mat<6,6,double> >, FullVector<double> > >();
-        addTemplateInstance< MinResLinearSolver< CompressedRowSparseMatrix<Mat<6,6,float> >, FullVector<float> > >();
-        addTemplateInstance< MinResLinearSolver< CompressedRowSparseMatrix<Mat<8,8,double> >, FullVector<double> > >();
-        addTemplateInstance< MinResLinearSolver< CompressedRowSparseMatrix<Mat<8,8,float> >, FullVector<float> > >();
-        addAlias("MinResLinearSolver", "MINRESSolver");
-        addAlias("MinResLinearSolver", "MinResSolver");
-
     }
 };
 

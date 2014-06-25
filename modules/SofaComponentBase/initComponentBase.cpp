@@ -27,6 +27,7 @@
 #include <SofaBaseTopology/initBaseTopology.h>
 #include <SofaBaseMechanics/initBaseMechanics.h>
 #include <SofaBaseCollision/initBaseCollision.h>
+#include <SofaBaseLinearSolver/initBaseLinearSolver.h>
 #include <SofaBaseAnimationLoop/initBaseAnimationLoop.h>
 
 namespace sofa
@@ -44,6 +45,7 @@ void initComponentBase()
         initBaseTopology();
         initBaseMechanics();
         initBaseCollision();
+        initBaseLinearSolver();
         initBaseAnimationLoop();
         first = false;
     }

@@ -2,7 +2,7 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
 
-    BaseLinearSolver.h
+    initBaseLinearSolver.h
     CGLinearSolver.h
     CGLinearSolver.inl
     CholeskySolver.h
@@ -30,7 +30,7 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
 
-    BaseLinearSolver.cpp
+    initBaseLinearSolver.cpp
     CGLinearSolver.cpp
     CholeskySolver.cpp
     BTDLinearSolver.cpp
@@ -45,7 +45,7 @@ set(SOURCE_FILES
 
 set(GROUP_BASE_DIR "..")
 
-sofa_add_plugin(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_BASE_LINEAR_SOLVER")
 AddLinkerDependencies(SofaSimulationTree)
