@@ -1,6 +1,8 @@
 #!/bin/bash
-# use: ./rm-ObjectType.sh directoryPath
-# This script removes in all the scenes the deprecated structure <Object type="MyComponent"
+# use: ./replace-object12-IO.sh directoryPath
+# This script changes in all the scenes the deprecated structure for mapping:
+# object1 --> input
+# object2 --> output
 
 # WARNING: this script may modify your scene
 # make sure you saved/commited all local changes before apply this script
@@ -22,7 +24,7 @@ do
   if [ -s "$g" ]
   then
     # apply the scrit sed
-    "$SCRIPTS/rm-ObjectType.sed" < "$g" > "$g".tmp
+    "$SCRIPTS/replace-object12-IO.sed" < "$g" > "$g".tmp
     if [ -s "$g".tmp ]
     then
       cat "$g".tmp > "$g"
