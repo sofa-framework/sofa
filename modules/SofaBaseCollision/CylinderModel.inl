@@ -250,7 +250,7 @@ typename TCylinder<StdRigidTypes<3,MyReal> >::Real TCylinder<StdRigidTypes<3,MyR
 
 template<class MyReal>
 const typename TCylinderModel<StdRigidTypes<3,MyReal> >::Coord & TCylinderModel<StdRigidTypes<3,MyReal> >::velocity(int index) const {
-    return DataTypes::getDPos(((*(_mstate->getV())))[index]);
+    return DataTypes::getDPos(((_mstate->read(core::ConstVecDerivId::velocity())->getValue()))[index]);
 }
 
 

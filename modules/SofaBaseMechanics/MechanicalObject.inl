@@ -274,7 +274,7 @@ void MechanicalObject<DataTypes>::exportGnuplot(Real time)
 
     if( m_gnuplotFileV!=NULL )
     {
-        (*m_gnuplotFileV) << time <<"\t"<< *getV() << std::endl;
+        (*m_gnuplotFileV) << time <<"\t"<< read(core::ConstVecDerivId::velocity())->getValue() << std::endl;
     }
 }
 
