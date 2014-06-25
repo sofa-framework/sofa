@@ -26,7 +26,7 @@
 #define SOFA_GPU_CUDA_CUDATETRAHEDRONFEMFORCEFIELD_INL
 
 #include "CudaTetrahedronFEMForceField.h"
-#include <SofaSimpleFem/forcefield/TetrahedronFEMForceField.inl>
+#include <SofaSimpleFem/TetrahedronFEMForceField.inl>
 #if 0 //defined(SOFA_DEV)
 #include <sofa/gpu/cuda/CudaDiagonalMatrix.h>
 #include <sofa/gpu/cuda/CudaRotationMatrix.h>
