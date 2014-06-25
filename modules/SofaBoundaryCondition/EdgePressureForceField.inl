@@ -290,7 +290,7 @@ void EdgePressureForceField<DataTypes>::updateEdgeInformation()
 template <class DataTypes>
 void EdgePressureForceField<DataTypes>::selectEdgesAlongPlane()
 {
-    const VecCoord& x = *this->mstate->getX0();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
     std::vector<bool> vArray;
     unsigned int i;
 

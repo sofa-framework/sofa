@@ -114,7 +114,7 @@ void TriangleFEMForceField<DataTypes>::init()
 
     if (_initialPoints.getValue().size() == 0)
     {
-        const VecCoord& p = *this->mstate->getX0();
+        const VecCoord& p = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
         _initialPoints.setValue(p);
     }
 

@@ -79,7 +79,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::GHTetrahedronHandler::applyCre
                 int k/*,l*/;
 		typename DataTypes::Real volume;
 		typename DataTypes::Coord point[4];
-		const typename DataTypes::VecCoord *restPosition=ff->mstate->getX0();
+        const typename DataTypes::VecCoord restPosition=ff->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
 		///describe the indices of the 4 tetrahedron vertices  
 		const Tetrahedron &t= tetrahedronArray[tetrahedronIndex];
@@ -101,7 +101,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::GHTetrahedronHandler::applyCre
         // store the point position
 		for(j=0;j<4;++j)
         {
-			point[j]=(*restPosition)[t[j]];
+            point[j]=(restPosition)[t[j]];
         }
 		/// compute 6 times the rest volume
 		volume=dot(cross(point[2]-point[0],point[3]-point[0]),point[1]-point[0]);
@@ -251,7 +251,7 @@ template <class DataTypes> void StandardTetrahedralFEMForceField<DataTypes>::ini
 	// get restPosition
 	if (_initialPoints.size() == 0)
 	{
-		const VecCoord& p = *this->mstate->getX0();
+		const VecCoord& p = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 		_initialPoints=p;
 	}
 	int i;

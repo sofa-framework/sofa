@@ -157,7 +157,7 @@ void TriangularAnisotropicFEMForceField<DataTypes>::getFiberDir(int element, Der
 template <class DataTypes>
 void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int i, Index& v1, Index& v2, Index& v3)
 {
-    const  VecCoord* initialPoints = (this->mstate->getX0());
+    const  VecCoord& initialPoints = (this->mstate->read(core::ConstVecCoordId::restPosition())->getValue());
 
     Real Q11, Q12, Q22, Q66;
     Coord fiberDirGlobal;  // orientation of the fiber in the global frame of reference
@@ -193,8 +193,8 @@ void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int
     //if (i >= (int) localFiberDirection.size())
     //	localFiberDirection.resize(i+1);
 
-    T[0] = (*initialPoints)[v2]-(*initialPoints)[v1];
-    T[1] = (*initialPoints)[v3]-(*initialPoints)[v1];
+    T[0] = (initialPoints)[v2]-(initialPoints)[v1];
+    T[1] = (initialPoints)[v3]-(initialPoints)[v1];
     T[2] = cross(T[0], T[1]);
 
     if (T[2] == Coord())
@@ -205,7 +205,7 @@ void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int
 
     if (!f_fiberCenter.getValue().empty()) // in case we have concentric fibers
     {
-        Coord tcenter = ((*initialPoints)[v1]+(*initialPoints)[v2]+(*initialPoints)[v3])*(Real)(1.0/3.0);
+        Coord tcenter = ((initialPoints)[v1]+(initialPoints)[v2]+(initialPoints)[v3])*(Real)(1.0/3.0);
         Coord fcenter = f_fiberCenter.getValue()[0];
         fiberDirGlobal = cross(T[2], fcenter-tcenter);  // was fiberDir
     }
@@ -245,8 +245,8 @@ void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int
         fiberDirLocal.normalize();
     }
 
-    T[0] = (*initialPoints)[v2]-(*initialPoints)[v1];
-    T[1] = (*initialPoints)[v3]-(*initialPoints)[v1];
+    T[0] = (initialPoints)[v2]-(initialPoints)[v1];
+    T[1] = (initialPoints)[v3]-(initialPoints)[v1];
     T[2] = cross(T[0], T[1]);
     T[1] = cross(T[2], T[0]);
     T[0].normalize();

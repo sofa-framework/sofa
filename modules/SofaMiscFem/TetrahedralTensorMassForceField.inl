@@ -94,7 +94,7 @@ void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::apply
         typename DataTypes::Real lambdastar, mustar;
         typename DataTypes::Coord point[4],shapeVector[4];
 
-        const typename DataTypes::VecCoord *restPosition=ff->mstate->getX0();
+        const typename DataTypes::VecCoord restPosition=ff->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
         edgeRestInfoVector& edgeData = *(ff->edgeInfo.beginEdit());
 
@@ -107,7 +107,7 @@ void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::apply
             const Tetrahedron &t= ff->_topology->getTetrahedron(tetrahedronAdded[i]);
             // store points
             for(j=0; j<4; ++j)
-                point[j]=(*restPosition)[t[j]];
+                point[j]=(restPosition)[t[j]];
             /// compute 6 times the rest volume
             volume=dot(cross(point[1]-point[0],point[2]-point[0]),point[0]-point[3]);
             // store shape vectors
@@ -183,7 +183,7 @@ void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::apply
         typename DataTypes::Real lambdastar, mustar;
         typename DataTypes::Coord point[4],shapeVector[4];
 
-        const typename DataTypes::VecCoord *restPosition=ff->mstate->getX0();
+        const typename DataTypes::VecCoord restPosition=ff->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
         edgeRestInfoVector& edgeData = *(ff->edgeInfo.beginEdit());
 
@@ -196,7 +196,7 @@ void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::apply
             const Tetrahedron &t= ff->_topology->getTetrahedron(tetrahedronRemoved[i]);
             // store points
             for(j=0; j<4; ++j)
-                point[j]=(*restPosition)[t[j]];
+                point[j]=(restPosition)[t[j]];
             /// compute 6 times the rest volume
             volume=dot(cross(point[1]-point[0],point[2]-point[0]),point[0]-point[3]);
             // store shape vectors
@@ -324,7 +324,7 @@ template <class DataTypes> void TetrahedralTensorMassForceField<DataTypes>::init
     if (_initialPoints.size() == 0)
     {
         // get restPosition
-        const VecCoord& p = *this->mstate->getX0();
+        const VecCoord& p = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
         _initialPoints=p;
     }
 

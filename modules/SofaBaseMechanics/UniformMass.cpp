@@ -251,7 +251,7 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::draw(const core::visual::VisualPara
 
     if (showInitialCenterOfGravity.getValue())
     {
-        const VecCoord& x0 = *mstate->getX0();
+        const VecCoord& x0 = mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
         for (unsigned int i=0; i<x0.size(); i++)
         {
@@ -335,7 +335,7 @@ void UniformMass<Vec6dTypes, double>::draw(const core::visual::VisualParams* vpa
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
     const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
-    const VecCoord& x0 = *mstate->getX0();
+    const VecCoord& x0 = mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
     Mat3x3d R; R.identity();
     glBegin(GL_LINES);
@@ -695,7 +695,7 @@ void UniformMass<Vec6fTypes, float>::draw(const core::visual::VisualParams* vpar
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
     const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
-    const VecCoord& x0 = *mstate->getX0();
+    const VecCoord& x0 = mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
     Mat3x3d R;
     glBegin(GL_LINES);

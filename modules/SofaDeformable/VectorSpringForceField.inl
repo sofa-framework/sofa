@@ -58,7 +58,7 @@ void VectorSpringForceField<DataTypes>::EdgeDataHandler::applyCreateFunction(uns
 
         //EdgeSetGeometryAlgorithms<DataTypes> *ga=topology->getEdgeSetGeometryAlgorithms();
         //t.restLength=ga->computeRestEdgeLength(index);
-        const typename DataTypes::VecCoord& x0 = *ff->getObject1()->getX0();
+        const typename DataTypes::VecCoord& x0 = ff->getObject1()->read(core::ConstVecCoordId::restPosition())->getValue();
         t.restVector = x0[e[1]] - x0[e[0]];
         if (ancestors.size()>0)
         {
@@ -242,7 +242,7 @@ void VectorSpringForceField<DataTypes>::createDefaultSprings()
     springArrayData.resize(_topology->getNbEdges());
     //EdgeLengthArrayInterface<Real,DataTypes> elai(springArray);
     //edgeGEO->computeEdgeLength(elai);
-    const VecCoord& x0 = *this->mstate1->getX0();
+    const VecCoord& x0 = this->mstate1->read(core::ConstVecCoordId::restPosition())->getValue();
     int i;
     for (i=0; i<_topology->getNbEdges(); ++i)
     {

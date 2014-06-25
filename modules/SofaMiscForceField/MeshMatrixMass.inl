@@ -186,7 +186,7 @@ void MeshMatrixMass<DataTypes, MassType>::TetrahedronMassHandler::applyCreateFun
 				my_vertexMassInfo[indexArray[j]]+=lumpedVertexMass[j];
 			}
 		} else if ((MMM->integrationMethod==MeshMatrixMass<DataTypes, MassType>::AFFINE_ELEMENT_INTEGRATION) || 
-			(MMM->bezierTetraGeo->isBezierTetrahedronAffine(tetra,*(MMM->bezierTetraGeo->getDOF()->getX0()) ))) 
+            (MMM->bezierTetraGeo->isBezierTetrahedronAffine(tetra,(MMM->bezierTetraGeo->getDOF()->read(core::ConstVecCoordId::restPosition())->getValue()) )))
 		{
 			/// affine mass simple computation
 			
@@ -216,7 +216,7 @@ void MeshMatrixMass<DataTypes, MassType>::TetrahedronMassHandler::applyCreateFun
 			sofa::helper::vector<TetrahedronBezierIndex> tbiArray,tbiDerivArray,multinomialArray;
 			sofa::helper::vector<unsigned char> multinomialScalarArray;
 			/// use the rest configuration
-//			const typename DataTypes::VecCoord &p=*(MMM->bezierTetraGeo->getDOF()->getX0());
+//			const typename DataTypes::VecCoord &p=(MMM->bezierTetraGeo->getDOF()->read(core::ConstVecCoordId::restPosition())->getValue());
 
 			Real factor;
 			MassType tmpMass;

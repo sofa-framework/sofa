@@ -1138,7 +1138,7 @@ void BarycentricMapping<TIn, TOut>::init()
     if ( mapper != NULL )
     {
         if (useRestPosition.getValue())
-            mapper->init ( *((const core::State<Out> *)this->toModel)->getX0(), *((const core::State<In> *)this->fromModel)->getX0() );
+            mapper->init ( ((const core::State<Out> *)this->toModel)->read(core::ConstVecCoordId::restPosition())->getValue(), ((const core::State<In> *)this->fromModel)->read(core::ConstVecCoordId::restPosition())->getValue() );
         else
             mapper->init (((const core::State<Out> *)this->toModel)->read(core::ConstVecCoordId::position())->getValue(), ((const core::State<In> *)this->fromModel)->read(core::ConstVecCoordId::position())->getValue() );
     }
@@ -4229,7 +4229,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange(core::
                             }
                             else
                             {
-                                const typename MechanicalStateT::VecCoord& xto0 = *(mState->getX0());
+                                const typename MechanicalStateT::VecCoord& xto0 = (mState->read(core::ConstVecCoordId::restPosition())->getValue());
                                 index = _fromGeomAlgo->findNearestElementInRestPos ( Out::getCPos(xto0[j]), coefs, distance );
                                 //_fromGeomAlgo->findNearestElementInRestPos ( pos, coefs, distance );
                                 coefs = _fromGeomAlgo->computeHexahedronRestBarycentricCoeficients(index, pos);

@@ -123,7 +123,7 @@ template <class DataTypes>
 void EdgeSetController<DataTypes>::computeVertexT()
 {
     int n = this->mState->getSize();
-    const VecCoord& x0 = * this->mState->getX0();
+    const VecCoord& x0 =  this->mState->read(core::ConstVecCoordId::restPosition())->getValue();
 
     vertexT.resize(n);
 

@@ -195,7 +195,7 @@ template <class DataTypes> void TriangularQuadraticSpringsForceField<DataTypes>:
     if (_initialPoints.getValue().size() == 0)
     {
         // get restPosition
-        const VecCoord& p = *this->mstate->getX0();
+        const VecCoord& p = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
         _initialPoints.setValue(p);
     }
     int i;

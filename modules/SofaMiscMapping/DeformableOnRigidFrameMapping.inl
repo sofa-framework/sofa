@@ -152,13 +152,13 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::setRepartition(sofa::hel
 }
 
 template<class DataTypes>
-const typename DataTypes::VecCoord* M_getX0(core::behavior::MechanicalState<DataTypes>* model)
+const typename DataTypes::VecCoord& M_getX0(core::behavior::MechanicalState<DataTypes>* model)
 {
-    return model->getX0();
+    return model->read(core::ConstVecCoordId::restPosition())->getValue();
 }
 
 template<class DataTypes>
-const typename DataTypes::VecCoord* M_getX0(core::State<DataTypes>* /*model*/)
+const typename DataTypes::VecCoord& M_getX0(core::State<DataTypes>* /*model*/)
 {
     return NULL;
 }
@@ -713,13 +713,13 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::handleTopologyChange(cor
 //void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::propagateV()
 //{
 //	if (m_fromModel!=NULL && m_toModel->getV()!=NULL && m_fromModel->getV()!=NULL)
-//		applyJ(*m_toModel->getV(), *m_fromModel->getV(), (m_fromRootModel==NULL ? NULL : m_fromRootModel->getV()));
+//		applyJ(m_toModel->read(core::ConstVecCoordId::velocity())->getValue(), m_fromModel->read(core::ConstVecCoordId::velocity())->getValue(), (m_fromRootModel==NULL ? NULL : m_fromRootModel->getV()));
 //
 //	if( this->f_printLog.getValue()){
 //		serr<<"DeformableOnRigidFrameMapping::propagateV processed"<<sendl;
 //		if (m_fromRootModel!=NULL)
-//			serr<<"V input root: "<<*m_fromRootModel->getV();
-//		serr<<"  - V input: "<<*m_fromModel->getV()<<"   V output : "<<*m_toModel->getV()<<sendl;
+//			serr<<"V input root: "<<m_fromRootModel->read(core::ConstVecCoordId::velocity())->getValue();
+//		serr<<"  - V input: "<<m_fromModel->read(core::ConstVecCoordId::velocity())->getValue()<<"   V output : "<<m_toModel->read(core::ConstVecCoordId::velocity())->getValue()<<sendl;
 //	}
 //
 //}

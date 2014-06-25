@@ -157,7 +157,7 @@ void TrianglePressureForceField<DataTypes>::updateTriangleInformation()
 template <class DataTypes>
 void TrianglePressureForceField<DataTypes>::selectTrianglesAlongPlane()
 {
-    const VecCoord& x = *this->mstate->getX0();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
     std::vector<bool> vArray;
     unsigned int i;
 
