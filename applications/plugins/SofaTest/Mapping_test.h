@@ -26,7 +26,7 @@
 /* Francois Faure, 2013 */
 
 #include "Sofa_test.h"
-#include <sofa/component/init.h>
+#include <SofaComponentMain/init.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/simulation/common/VectorOperations.h>
 #include <SofaBaseLinearSolver/FullVector.h>
