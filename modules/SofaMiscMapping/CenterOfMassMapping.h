@@ -54,23 +54,51 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE2(CenterOfMassMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
 
     typedef core::Mapping<TIn, TOut> Inherit;
+
+    // Input types
     typedef TIn In;
-    typedef TOut Out;
-    typedef Out OutDataTypes;
-    typedef typename Out::Coord OutCoord;
-    typedef typename Out::Deriv OutDeriv;
-    typedef In InDataTypes;
+    typedef typename In::Real Real;
     typedef typename In::Coord InCoord;
     typedef typename In::Deriv InDeriv;
-    typedef typename OutCoord::value_type Real;
+    typedef typename In::VecCoord InVecCoord;
+    typedef typename In::VecDeriv InVecDeriv;
+    typedef typename In::MatrixDeriv InMatrixDeriv;
+    typedef typename In::Real InReal;
+
+    typedef Data<InVecCoord> InDataVecCoord;
+    typedef Data<InVecDeriv> InDataVecDeriv;
+    typedef Data<InMatrixDeriv> InDataMatrixDeriv;
+
+    // Output types
+    typedef TOut Out;
+    typedef typename Out::VecCoord OutVecCoord;
+    typedef typename Out::VecDeriv OutVecDeriv;
+    typedef typename Out::Coord OutCoord;
+    typedef typename Out::Deriv OutDeriv;
+    typedef typename Out::MatrixDeriv OutMatrixDeriv;
+    typedef typename Out::Real OutReal;
+
+    typedef Data<OutVecCoord> OutDataVecCoord;
+    typedef Data<OutVecDeriv> OutDataVecDeriv;
+    typedef Data<OutMatrixDeriv> OutDataMatrixDeriv;
 
     void init();
 
-    virtual void apply ( typename Out::VecCoord& childPositions, const typename In::VecCoord& parentPositions );
+    virtual void apply( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecCoord& out, const InDataVecCoord& in);
+    //void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
 
-    virtual void applyJ ( typename Out::VecDeriv& childForces, const typename In::VecDeriv& parentForces );
+    virtual void applyJ( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecDeriv& out, const InDataVecDeriv& in);
+    //void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
 
-    virtual void applyJT ( typename In::VecDeriv& parentForces, const typename Out::VecDeriv& childForces );
+    virtual void applyJT( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, InDataVecDeriv& out, const OutDataVecDeriv& in);
+    //void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
+
+    virtual void applyJT( const sofa::core::ConstraintParams* cparams /* PARAMS FIRST */, InDataMatrixDeriv& out, const OutDataMatrixDeriv& in)
+    {
+        serr << "applyJT(constraint ) not implemented" << sendl;
+    }
+
+    //void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
 
     void draw(const core::visual::VisualParams* vparams);
 

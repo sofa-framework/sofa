@@ -525,9 +525,9 @@ void SkinningMapping<TIn, TOut>::applyJT( const sofa::core::MechanicalParams* mp
 
 
 template <class TIn, class TOut>
-void SkinningMapping<TIn, TOut>::applyJT ( const sofa::core::ConstraintParams* mparams /* PARAMS FIRST */, InDataMatrixDeriv& outData, const OutDataMatrixDeriv& inData)
+void SkinningMapping<TIn, TOut>::applyJT ( const sofa::core::ConstraintParams* cparams /* PARAMS FIRST */, InDataMatrixDeriv& outData, const OutDataMatrixDeriv& inData)
 {
-    InMatrixDeriv& parentJacobians = *outData.beginEdit(mparams);
+    InMatrixDeriv& parentJacobians = *outData.beginEdit(cparams);
     const OutMatrixDeriv& childJacobians = inData.getValue();
 
     unsigned int nbref=nbRef.getValue()[0];
@@ -580,7 +580,7 @@ void SkinningMapping<TIn, TOut>::applyJT ( const sofa::core::ConstraintParams* m
             }
         }
     }
-    outData.endEdit(mparams);
+    outData.endEdit(cparams);
 }
 
 template <class TIn, class TOut>

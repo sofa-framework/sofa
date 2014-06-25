@@ -67,6 +67,15 @@ public:
     typedef typename InCoord::value_type Real;
     typedef typename helper::vector <const InVecCoord*> vecConstInVecCoord;
     typedef typename helper::vector<OutVecCoord*> vecOutVecCoord;
+
+    typedef Data<InVecCoord> InDataVecCoord;
+    typedef Data<InVecDeriv> InDataVecDeriv;
+    typedef Data<InMatrixDeriv> InDataMatrixDeriv;
+
+    typedef Data<OutVecCoord> OutDataVecCoord;
+    typedef Data<OutVecDeriv> OutDataVecDeriv;
+    typedef Data<OutMatrixDeriv> OutDataMatrixDeriv;
+
     /// Correspondance array
     typedef core::topology::BaseMeshTopology::SetIndex IndexArray;
 
@@ -74,13 +83,20 @@ public:
 
     void addPoint(const core::BaseState* fromModel, int index);
 
-    virtual void apply(const helper::vector<OutVecCoord*>& outPos, const vecConstInVecCoord& inPos);
-    virtual void applyJ(const helper::vector<OutVecDeriv*>& outDeriv, const helper::vector<const  InVecDeriv*>& inDeriv);
-    virtual void applyJT(const helper::vector< InVecDeriv*>& outDeriv, const helper::vector<const OutVecDeriv*>& inDeriv);
+    virtual void apply(const core::MechanicalParams* mparams /* PARAMS FIRST */, const helper::vector<OutDataVecCoord*>& dataVecOutPos, const helper::vector<const InDataVecCoord*>& dataVecInPos);
+    //virtual void apply(const helper::vector<OutVecCoord*>& outPos, const vecConstInVecCoord& inPos);
+
+    virtual void applyJ(const core::MechanicalParams* mparams /* PARAMS FIRST */, const helper::vector<OutDataVecDeriv*>& dataVecOutVel, const helper::vector<const InDataVecDeriv*>& dataVecInVel);
+    //virtual void applyJ(const helper::vector<OutVecDeriv*>& outDeriv, const helper::vector<const  InVecDeriv*>& inDeriv);
+
+    virtual void applyJT(const core::MechanicalParams* mparams /* PARAMS FIRST */, const helper::vector<InDataVecDeriv*>& dataVecOutForce, const helper::vector<const OutDataVecDeriv*>& dataVecInForce);
+    //virtual void applyJT(const helper::vector< InVecDeriv*>& outDeriv, const helper::vector<const OutVecDeriv*>& inDeriv);
+
     virtual void applyDJT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, core::MultiVecDerivId /*inForce*/, core::ConstMultiVecDerivId /*outForce*/) {}
 
     /// @todo implement this
-    virtual void applyJT( const helper::vector<InMatrixDeriv* >& , const helper::vector<OutMatrixDeriv* >& );
+    virtual void applyJT( const core::ConstraintParams* cparams /* PARAMS FIRST */, const helper::vector< InDataMatrixDeriv* >& dataMatOutConst, const helper::vector< const OutDataMatrixDeriv* >& dataMatInConst );
+    //virtual void applyJT( const helper::vector<InMatrixDeriv* >& , const helper::vector<OutMatrixDeriv* >& );
 
 #ifdef SOFA_HAVE_EIGEN2
     /// Experimental API used to handle multimappings in matrix assembly. Returns pointers to matrices associated with parent states, consistently with  getFrom().
