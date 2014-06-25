@@ -25,11 +25,13 @@
 #include <sofa/simulation/common/MechanicalVPrintVisitor.h>
 #include <sofa/simulation/common/Node.h>
 
+using namespace sofa::core;
 namespace sofa
 {
 
 namespace simulation
 {
+
 
 MechanicalVPrintVisitor::MechanicalVPrintVisitor(const core::ExecParams* params /* PARAMS FIRST */, ConstMultiVecId v, std::ostream& out )
     : Visitor(params)
