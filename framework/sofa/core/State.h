@@ -150,15 +150,6 @@ public:
         return (v == NULL) ? NULL : &(v->getValue());
     }
 
-    /// Return the current normal vector
-    /// (return NULL if the state does not store normal).
-    /// @deprecated use read(ConstVecDerivId::velocity()) instead.
-    virtual const VecDeriv* getN() const
-    {
-        const Data<VecDeriv>* v = read(ConstVecDerivId::normal());
-        return (v == NULL) ? NULL : &(v->getValue());
-    }
-
     /// @}
 
     virtual std::string getTemplateName() const
