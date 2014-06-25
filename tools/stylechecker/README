@@ -1,22 +1,22 @@
 =========== Installer llvm+clang ==================
-First you need to get the svn revision 211571 
+Currently stylecheck has been tested for compilation with llvm/clang svn revision 211571 
 
-En suivant la procédure d'install: 
-...TO BE DONE....
+installer llvm/clang en utilisant la méthode suivante: s
+http://clang.llvm.org/
 
-Après il faut faire un:
+penser à faire:
 make install
 
 ========== Compiler stylecheck ====================
-make dans le répertoire de stylecheck
-
+# cd tools/stylecheck
+# make 
 
 ========== Tester stylecheck ====================
-./stylecheck.exe test1.cpp  --
+# stylecheck.exe test1.cpp  --
 
 ========== Wrapper stylecheck dans  un script de build ====================
 
----------- dans un script .sh mettre ----------
+---------- dans un script fakegcc.sh mettre ----------
 #!/bin/bash
 
 FILENAME_SRC=${BASH_ARGV[0]}
@@ -28,5 +28,7 @@ g++ $@
 ------------------------------------------------
 
 
-Et après il faut faire une nouveau répertoire build sofa. 
-CXX=pathtoscript CC=pathtoscript cmake ../sofa2
+Et après il faut faire une nouveau répertoire de build sofa.
+mkdir build-stylecheck
+cd build-stylecheck  
+CXX=pathto/fakegcc.sh CC=pathto/fakegcc.sh cmake pathto/sofa-src
