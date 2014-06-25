@@ -40,11 +40,12 @@ namespace sofa
 namespace simulation
 {
 
-using namespace sofa::defaulttype;
 
 class SOFA_SIMULATION_COMMON_API TransformationVisitor : public Visitor
 {
 public:
+    typedef sofa::defaulttype::Vector3 Vector3;
+
     TransformationVisitor(const sofa::core::ExecParams* params)
         : Visitor(params)
     {
