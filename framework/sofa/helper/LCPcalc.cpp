@@ -38,7 +38,7 @@ namespace helper
 {
 
 using namespace std;
-
+using namespace sofa::helper::system::thread;
 
 LCP::LCP() : maxConst(0), tol(0.00001), numItMax(1000), useInitialF(true), mu(0.0), dim(0)
 {
