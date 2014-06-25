@@ -22,12 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-#ifndef SOFA_COMPONENT_BEHAVIORMODEL_MyBehaviorModel_H
-#define SOFA_COMPONENT_BEHAVIORMODEL_MyBehaviorModel_H
-
 #include "initPlugin.h"
-#include <sofa/core/BehaviorModel.h>
 
 namespace sofa
 {
@@ -35,43 +30,60 @@ namespace sofa
 namespace component
 {
 
-namespace behaviormodel
+//Here are just several convenient functions to help user to know what contains the plugin
+
+extern "C" {
+    SOFA_MyPluginExample_API void initExternalModule();
+    SOFA_MyPluginExample_API const char* getModuleName();
+    SOFA_MyPluginExample_API const char* getModuleVersion();
+    SOFA_MyPluginExample_API const char* getModuleLicense();
+    SOFA_MyPluginExample_API const char* getModuleDescription();
+    SOFA_MyPluginExample_API const char* getModuleComponentList();
+}
+
+void initExternalModule()
 {
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
 
-/**
-  This BehaviorModel does nothing but contain a custom data widget.
-  */
-
-class SOFA_MyPluginExample_API MyBehaviorModel : public sofa::core::BehaviorModel
+const char* getModuleName()
 {
-public:
-    SOFA_CLASS(MyBehaviorModel,sofa::core::BehaviorModel);
-protected:
-    MyBehaviorModel();
-    ~MyBehaviorModel();
-public:
-    virtual void init();
+    return "MyPluginExample";
+}
 
-    virtual void reinit();
+const char* getModuleVersion()
+{
+    return "0.2";
+}
 
-    virtual void updatePosition(double dt);
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
 
 
-protected:
+const char* getModuleDescription()
+{
+    return "a simple example of a plugin component module";
+}
 
-    Data<unsigned> customUnsignedData;
-    Data<unsigned> regularUnsignedData;
-private:
+const char* getModuleComponentList()
+{
+    return "MyMappingPendulumInPlane, MyBehaviorModel, MyProjectiveConstraintSet";
+}
 
-};
 
 
 }
 
 }
 
-}
 
+SOFA_LINK_CLASS(MyMappingPendulumInPlane)
+SOFA_LINK_CLASS(MyBehaviorModel)
+SOFA_LINK_CLASS(MyProjectiveConstraintSet)
 
-
-#endif

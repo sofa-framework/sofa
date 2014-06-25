@@ -27,7 +27,7 @@
 #define SOFA_COMPONENT_CONSTRAINT_MyMappingPendulumInPlane_H
 
 
-#include <sofa/core/Mapping.inl>
+#include <sofa/core/Mapping.h>
 #include <sofa/component/component.h>
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/defaulttype/Vec.h>

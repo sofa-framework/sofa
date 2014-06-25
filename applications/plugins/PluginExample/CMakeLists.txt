@@ -1,14 +1,26 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
-    MyDataWidgetUnsigned.h)
+
+    MyDataWidgetUnsigned.h 
+
+	)
 
 set(SOURCE_FILES
+
     MyBehaviorModel.cpp 
     MyDataWidgetUnsigned.cpp 
-    PluginExample.cpp)
+    MyProjectiveConstraintSet.cpp 
+    MyMappingPendulumInPlane.cpp 
+    initPlugin.cpp
 
-set(README_FILES PluginExample.txt)
+	)
+
+set(README_FILES
+
+	PluginExample.txt
+
+	)
 
 UseQt()
 
@@ -19,16 +31,19 @@ ToRelativePath(MOC_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${MOC_FILES}")
 
 # these header files do not need MOCcing
 list(APPEND HEADER_FILES
-    MyBehaviorModel.h 
+
+	MyBehaviorModel.h 
     MyMappingPendulumInPlane.h 
     MyMappingPendulumInPlane.inl 
     MyProjectiveConstraintSet.h 
     MyProjectiveConstraintSet.inl 
-    PluginExample.h)
+	initPlugin.h
+
+	)
 
 set(MOC_FILES_GROUP "Generated")
 
-sofa_add_plugin(${PROJECT_NAME} ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES} ${README_FILES})
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES} ${README_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_PLUGINEXAMPLE")
 AddLinkerDependencies(SofaGuiQt)

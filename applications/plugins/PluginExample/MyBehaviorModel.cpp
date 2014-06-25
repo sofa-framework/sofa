@@ -38,6 +38,7 @@ namespace behaviormodel
 {
 
 
+
 MyBehaviorModel::MyBehaviorModel()
     : customUnsignedData( initData(&customUnsignedData,(unsigned)1,"Custom Unsigned Data","Example of unsigned data with custom widget") ),
       regularUnsignedData( initData(&regularUnsignedData,(unsigned)1,"Unsigned Data","Example of unsigned data with standard widget") )
@@ -62,6 +63,14 @@ void MyBehaviorModel::updatePosition(double /*dt*/)
 {
 }
 
+
+
+
+SOFA_DECL_CLASS(MyBehaviorModel)
+
+int MyBehaviorModelClass = core::RegisterObject("just an example of component")
+        .add< MyBehaviorModel >()
+        ;
 
 }	//behaviormodel
 

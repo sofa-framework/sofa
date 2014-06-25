@@ -23,11 +23,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#ifndef SOFA_COMPONENT_BEHAVIORMODEL_MyBehaviorModel_H
-#define SOFA_COMPONENT_BEHAVIORMODEL_MyBehaviorModel_H
-
-#include "initPlugin.h"
-#include <sofa/core/BehaviorModel.h>
+#include "MyProjectiveConstraintSet.inl"
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
@@ -35,43 +32,42 @@ namespace sofa
 namespace component
 {
 
-namespace behaviormodel
+namespace projectiveconstraintset
 {
 
-/**
-  This BehaviorModel does nothing but contain a custom data widget.
-  */
-
-class SOFA_MyPluginExample_API MyBehaviorModel : public sofa::core::BehaviorModel
-{
-public:
-    SOFA_CLASS(MyBehaviorModel,sofa::core::BehaviorModel);
-protected:
-    MyBehaviorModel();
-    ~MyBehaviorModel();
-public:
-    virtual void init();
-
-    virtual void reinit();
-
-    virtual void updatePosition(double dt);
-
-
-protected:
-
-    Data<unsigned> customUnsignedData;
-    Data<unsigned> regularUnsignedData;
-private:
-
-};
-
-
-}
-
-}
-
-}
+using namespace sofa::defaulttype;
 
 
 
+SOFA_DECL_CLASS(MyProjectiveConstraintSet)
+
+
+int MyProjectiveConstraintSetClass = core::RegisterObject("just an example of templated component")
+#ifndef SOFA_FLOAT
+        .add< MyProjectiveConstraintSet<Vec3dTypes> >()
+        .add< MyProjectiveConstraintSet<Vec1dTypes> >()
+        .add< MyProjectiveConstraintSet<Rigid3dTypes> >()
 #endif
+#ifndef SOFA_DOUBLE
+        .add< MyProjectiveConstraintSet<Vec3fTypes> >()
+        .add< MyProjectiveConstraintSet<Rigid3fTypes> >()
+#endif
+        ;
+
+#ifndef SOFA_FLOAT
+template class SOFA_MyPluginExample_API MyProjectiveConstraintSet<Rigid3dTypes>;
+template class SOFA_MyPluginExample_API MyProjectiveConstraintSet<Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+template class SOFA_MyPluginExample_API MyProjectiveConstraintSet<Rigid3fTypes>;
+template class SOFA_MyPluginExample_API MyProjectiveConstraintSet<Vec3fTypes>;
+#endif
+
+
+
+}	//constraint
+
+}	//component
+
+}	//sofa
+
