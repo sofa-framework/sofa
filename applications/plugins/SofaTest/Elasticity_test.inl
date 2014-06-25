@@ -34,12 +34,12 @@
 // Box roi
 #include <SofaEngine/PairBoxRoi.h>
 #include <SofaEngine/BoxROI.h>
-#include <sofa/component/engine/GenerateCylinder.h>
+#include <SofaEngine/GenerateCylinder.h>
 
 // Constraint
 #include <SofaBoundaryCondition/ProjectToLineConstraint.h>
 #include <SofaBoundaryCondition/FixedConstraint.h>
-#include <sofa/component/projectiveconstraintset/AffineMovementConstraint.h>
+#include <SofaBoundaryCondition/AffineMovementConstraint.h>
 #include <SofaBoundaryCondition/FixedPlaneConstraint.h>
 
 // ForceField
