@@ -40,15 +40,13 @@ namespace sofa
 namespace helper
 {
 
-using namespace defaulttype;
-
 template<class real>
 class SOFA_HELPER_API DualQuatCoord3
 {
     typedef real value_type;
-    typedef Vec<3,real> Pos;
-    typedef Vec<3,real> Vec3;
-    typedef Vec<4,real> Quat;
+    typedef sofa::defaulttype::Vec<3,real> Pos;
+    typedef sofa::defaulttype::Vec<3,real> Vec3;
+    typedef sofa::defaulttype::Vec<4,real> Quat;
     enum { total_size = 8 };
     enum { spatial_dimensions = 3 };
 
@@ -66,7 +64,7 @@ public:
         : dual(c.getDual()), orientation(c.getOrientation()) {}
 
     template<typename real2>
-    DualQuatCoord3(const RigidCoord<3,real2>& c)
+    DualQuatCoord3(const sofa::defaulttype::RigidCoord<3,real2>& c)
     {
         for(unsigned int i=0; i<4; i++) orientation[i] =  (real)c.getOrientation()[i];
         setTranslation(c.getCenter());
@@ -123,9 +121,9 @@ public:
     void invert() ;
 
     template<typename real2>
-    void toMatrix( Mat<3,4,real2>& m) const;
+    void toMatrix( sofa::defaulttype::Mat<3,4,real2>& m) const;
     template<typename  real2>
-    void toRotationMatrix( Mat<3,3,real2>& m) const
+    void toRotationMatrix( sofa::defaulttype::Mat<3,3,real2>& m) const
     {
         m[0][0] = (real2) (1.0f - 2.0f * (orientation[1] * orientation[1] + orientation[2] * orientation[2]));
         m[0][1] = (real2) (2.0f * (orientation[0] * orientation[1] - orientation[2] * orientation[3]));
@@ -175,7 +173,7 @@ public:
     void operator =(const DualQuatCoord3<real2>& c) { dual = c.getDual(); orientation = c.getOrientation(); }
 
     template<typename real2>
-    void operator =(const RigidCoord<3,real2>& c)        { for(unsigned int i=0; i<4; i++) orientation[i] =  (real)c.getOrientation()[i]; setTranslation(c.getCenter()); }
+    void operator =(const sofa::defaulttype::RigidCoord<3,real2>& c)        { for(unsigned int i=0; i<4; i++) orientation[i] =  (real)c.getOrientation()[i]; setTranslation(c.getCenter()); }
 
     void operator =(const Vec3& p)     { setTranslation(p); }
 
@@ -197,7 +195,7 @@ public:
                 +orientation[2]*a.orientation[2]+orientation[3]*a.orientation[3];
     }
 
-    DualQuatCoord3<real> operator + (const Vec<6,real>& a)
+    DualQuatCoord3<real> operator + (const sofa::defaulttype::Vec<6,real>& a)
     {
         DualQuatCoord3 r;
 
@@ -231,41 +229,41 @@ public:
 
     // Jacobian functions
     // get velocity/quaternion change mapping : dq = J(q) v
-    void velocity_getJ( Mat<4,3,real>& J0, Mat<4,3,real>& JE);
+    void velocity_getJ( sofa::defaulttype::Mat<4,3,real>& J0, sofa::defaulttype::Mat<4,3,real>& JE);
     // get quaternion change: dq = J(q) v
-    DualQuatCoord3<real> velocity_applyJ( const Vec<6,real>& a );
+    DualQuatCoord3<real> velocity_applyJ( const sofa::defaulttype::Vec<6,real>& a );
     // get velocity : v = JT(q) dq
-    Vec<6,real> velocity_applyJT( const DualQuatCoord3<real>& dq );
+    sofa::defaulttype::Vec<6,real> velocity_applyJT( const DualQuatCoord3<real>& dq );
     // get jacobian of the normalization : dqn = J(q) dq
-    void normalize_getJ( Mat<4,4,real>& J0, Mat<4,4,real>& JE) ;
+    void normalize_getJ( sofa::defaulttype::Mat<4,4,real>& J0, sofa::defaulttype::Mat<4,4,real>& JE) ;
     // get normalized quaternion change: dqn = J(q) dq
     DualQuatCoord3<real> normalize_applyJ( const DualQuatCoord3<real>& dq ) ;
     // get unnormalized quaternion change: dq = JT(q) dqn
     DualQuatCoord3<real> normalize_applyJT( const DualQuatCoord3<real>& dqn ) ;
     // get Jacobian change: dJ = H(p) dq
-    void  normalize_getdJ( Mat<4,4,real>& dJ0, Mat<4,4,real>& dJE, const DualQuatCoord3<real>& dq ) ;
+    void  normalize_getdJ( sofa::defaulttype::Mat<4,4,real>& dJ0, sofa::defaulttype::Mat<4,4,real>& dJE, const DualQuatCoord3<real>& dq ) ;
     // get jacobian of the product with another frame f on the right : d(q*f) = J(q) f
-    void multRight_getJ( Mat<4,4,real>& J0,Mat<4,4,real>& JE)  ;
+    void multRight_getJ( sofa::defaulttype::Mat<4,4,real>& J0, sofa::defaulttype::Mat<4,4,real>& JE)  ;
     // get jacobian of the product with another frame f on the left : d(f*q) = J(q) f
-    void multLeft_getJ( Mat<4,4,real>& J0,Mat<4,4,real>& JE)  ;
+    void multLeft_getJ( sofa::defaulttype::Mat<4,4,real>& J0, sofa::defaulttype::Mat<4,4,real>& JE)  ;
     // get jacobian of the transformation : dP = J(p,q) dq
-    void pointToParent_getJ( Mat<3,4,real>& J0,Mat<3,4,real>& JE,const Vec3& p) ;
+    void pointToParent_getJ( sofa::defaulttype::Mat<3,4,real>& J0, sofa::defaulttype::Mat<3,4,real>& JE,const Vec3& p) ;
     // get transformed position change: dP = J(p,q) dq
     Vec3 pointToParent_applyJ( const DualQuatCoord3<real>& dq ,const Vec3& p) ;
     // get quaternion change: dq = JT(p,q) dP
     DualQuatCoord3<real> pointToParent_applyJT( const Vec3& dP ,const Vec3& p) ;
     // get rigid transformation change: d(R,t) = H(q) dq
-    Mat<3,4,real> rigid_applyH( const DualQuatCoord3<real>& dq ) ;
+    sofa::defaulttype::Mat<3,4,real> rigid_applyH( const DualQuatCoord3<real>& dq ) ;
     // get rotation change: dR = H(q) dq
-    Mat<3,3,real> rotation_applyH( const DualQuatCoord3<real>& dq ) ;
+    sofa::defaulttype::Mat<3,3,real> rotation_applyH( const DualQuatCoord3<real>& dq ) ;
     // get quaternion change: dq = H^T(q) d(R,t)
-    DualQuatCoord3<real> rigid_applyHT( const Mat<3,4,real>& dR ) ;
+    DualQuatCoord3<real> rigid_applyHT( const sofa::defaulttype::Mat<3,4,real>& dR ) ;
     // get quaternion change: dq = H^T(q) dR
-    DualQuatCoord3<real> rotation_applyHT( const Mat<3,3,real>& dR ) ;
+    DualQuatCoord3<real> rotation_applyHT( const sofa::defaulttype::Mat<3,3,real>& dR ) ;
     // get Jacobian change: dJ = H(p) dq
-    Mat<3,8,real> pointToParent_applyH( const DualQuatCoord3<real>& dq ,const Vec3& p) ;
+    sofa::defaulttype::Mat<3,8,real> pointToParent_applyH( const DualQuatCoord3<real>& dq ,const Vec3& p) ;
     // get quaternion change: dq = H^T(p) dJ
-    DualQuatCoord3<real> pointToParent_applyHT( const Mat<3,8,real>& dJ ,const Vec3& p) ;
+    DualQuatCoord3<real> pointToParent_applyHT( const sofa::defaulttype::Mat<3,8,real>& dJ ,const Vec3& p) ;
 
 };
 
