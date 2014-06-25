@@ -22,83 +22,30 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseVisual/VisualTransform.h>
-#include <sofa/core/visual/VisualParams.h>
-//#include <sofa/core/objectmodel/Context.h>
-#include <sofa/core/ObjectFactory.h>
-//#include <sofa/simulation/common/UpdateContextVisitor.h>
+#include <sofa/helper/system/config.h>
+#include <SofaBaseVisual/initBaseVisual.h>
 
-#include <sofa/core/visual/DrawTool.h>
 
 namespace sofa
 {
+
 namespace component
 {
-namespace visualmodel
+
+
+void initBaseVisual()
 {
-
-int VisualTransformClass = sofa::core::RegisterObject("TODO")
-        .add<VisualTransform>();
-
-VisualTransform::VisualTransform()
-    : transform(initData(&transform,"transform","Transformation to apply"))
-    , recursive(initData(&recursive,false,"recursive","True to apply transform to all nodes below"))
-    , nbpush(0)
-{
-}
-
-VisualTransform::~VisualTransform()
-{
-}
-
-void VisualTransform::push(const sofa::core::visual::VisualParams* vparams)
-{
-    Coord xform = transform.getValue();
-    vparams->drawTool()->pushMatrix();
-    ++nbpush;
-    float glTransform[16];
-    xform.writeOpenGlMatrix ( glTransform );
-    vparams->drawTool()->multMatrix( glTransform );
-
-}
-
-void VisualTransform::pop(const sofa::core::visual::VisualParams* vparams)
-{
-    if (nbpush > 0)
+    static bool first = true;
+    if (first)
     {
-        vparams->drawTool()->popMatrix();
-        --nbpush;
+        first = false;
     }
 }
 
-void VisualTransform::fwdDraw(sofa::core::visual::VisualParams* vparams)
-{
-    push(vparams);
-}
+SOFA_LINK_CLASS(VisualModelImpl)
+SOFA_LINK_CLASS(InteractiveCamera)
+SOFA_LINK_CLASS(RecordedCamera)
 
-void VisualTransform::draw(const sofa::core::visual::VisualParams* /*vparams*/)
-{
-    //pop(vparams);
-}
+} // namespace component
 
-void VisualTransform::drawVisual(const sofa::core::visual::VisualParams* vparams)
-{
-    if (!recursive.getValue())
-        pop(vparams);
-}
-
-void VisualTransform::drawTransparent(const sofa::core::visual::VisualParams* vparams)
-{
-    if (!recursive.getValue())
-        pop(vparams);
-}
-
-void VisualTransform::bwdDraw(sofa::core::visual::VisualParams* vparams)
-{
-    pop(vparams);
-}
-
-}
-}
-}
-
+} // namespace sofa

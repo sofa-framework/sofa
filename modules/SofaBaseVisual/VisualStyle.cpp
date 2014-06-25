@@ -25,6 +25,7 @@
 #include <SofaBaseVisual/VisualStyle.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/objectmodel/Context.h>
+#include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/common/UpdateContextVisitor.h>
 
 namespace sofa
@@ -38,7 +39,24 @@ using namespace sofa::core::visual;
 using namespace sofa::core::objectmodel;
 using namespace sofa::simulation;
 
-
+int VisualStyleClass = core::RegisterObject("Edit the visual style.\n Allowed values for displayFlags data are a combination of the following:\n\
+showAll, hideAll,\n\
+    showVisual, hideVisual,\n\
+        showVisualModels, hideVisualModels,\n\
+    showBehavior, hideBehavior,\n\
+        showBehaviorModels, hideBehaviorModels,\n\
+        showForceFields, hideForceFields,\n\
+        showInteractionForceFields, hideInteractionForceFields\n\
+    showMapping, hideMapping\n\
+        showMappings, hideMappings\n\
+        showMechanicalMappings, hideMechanicalMappings\n\
+    showCollision, hideCollision\n\
+        showCollisionModels, hideCollisionModels\n\
+        showBoundingCollisionModels, hideBoundingCollisionModels\n\
+    showOptions hideOptions\n\
+        showRendering hideRendering\n\
+        showNormals hideNormals\n\
+        showWireframe hideWireframe").add<VisualStyle>();
 
 VisualStyle::VisualStyle()
     :displayFlags(initData(&displayFlags,"displayFlags","Display Flags"))
