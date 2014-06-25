@@ -1140,7 +1140,7 @@ void BarycentricMapping<TIn, TOut>::init()
         if (useRestPosition.getValue())
             mapper->init ( *((const core::State<Out> *)this->toModel)->getX0(), *((const core::State<In> *)this->fromModel)->getX0() );
         else
-            mapper->init ( *((const core::State<Out> *)this->toModel)->getX(), *((const core::State<In> *)this->fromModel)->getX() );
+            mapper->init (((const core::State<Out> *)this->toModel)->read(core::ConstVecCoordId::position())->getValue(), ((const core::State<In> *)this->fromModel)->read(core::ConstVecCoordId::position())->getValue() );
     }
     else
     {
@@ -1156,7 +1156,7 @@ void BarycentricMapping<TIn, TOut>::reinit()
     if ( mapper != NULL )
     {
         mapper->clear();
-        mapper->init ( *((const core::State<Out> *)this->toModel)->getX(), *((const core::State<In> *)this->fromModel)->getX() );
+        mapper->init (((const core::State<Out> *)this->toModel)->read(core::ConstVecCoordId::position())->getValue(), ((const core::State<In> *)this->fromModel)->read(core::ConstVecCoordId::position())->getValue() );
     }
 }
 

@@ -121,7 +121,7 @@ inline Ray::Ray(const core::CollisionElementIterator& i)
 
 inline const Vector3& Ray::origin() const
 {
-    return (*model->getMechanicalState()->getX())[index];
+    return model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue()[index];
 }
 
 inline const Vector3& Ray::direction() const

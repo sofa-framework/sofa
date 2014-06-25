@@ -241,14 +241,14 @@ template<class DataTypes>
 inline unsigned TLine<DataTypes>::i2() const { return this->model->elems[this->index].p[1]; }
 
 template<class DataTypes>
-inline const typename DataTypes::Coord& TLine<DataTypes>::p1() const { return (*this->model->mstate->getX())[this->model->elems[this->index].p[0]]; }
+inline const typename DataTypes::Coord& TLine<DataTypes>::p1() const { return this->model->mstate->read(core::ConstVecCoordId::position())->getValue()[this->model->elems[this->index].p[0]]; }
 
 template<class DataTypes>
-inline const typename DataTypes::Coord& TLine<DataTypes>::p2() const { return (*this->model->mstate->getX())[this->model->elems[this->index].p[1]]; }
+inline const typename DataTypes::Coord& TLine<DataTypes>::p2() const { return this->model->mstate->read(core::ConstVecCoordId::position())->getValue()[this->model->elems[this->index].p[1]]; }
 
 template<class DataTypes>
 inline const typename DataTypes::Coord& TLine<DataTypes>::p(int i) const {
-    return (*this->model->mstate->getX())[this->model->elems[this->index].p[i]];
+    return this->model->mstate->read(core::ConstVecCoordId::position())->getValue()[this->model->elems[this->index].p[i]];
 }
 
 template<class DataTypes>

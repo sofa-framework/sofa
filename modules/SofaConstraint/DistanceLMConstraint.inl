@@ -81,8 +81,8 @@ double DistanceLMConstraint<DataTypes>::lengthEdge(const Edge &e, const VecCoord
 template <class DataTypes>
 void DistanceLMConstraint<DataTypes>::updateRestLength()
 {
-    const VecCoord &x0_1=*this->constrainedObject1->getX();
-    const VecCoord &x0_2=*this->constrainedObject2->getX();
+    const VecCoord &x0_1= this->constrainedObject1->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord &x0_2= this->constrainedObject2->read(core::ConstVecCoordId::position())->getValue();
     const SeqEdges &edges =  vecConstraint.getValue();
     this->l0.resize(edges.size());
     for (unsigned int i=0; i<edges.size(); ++i)
@@ -193,8 +193,8 @@ void DistanceLMConstraint<DataTypes>::draw(const core::visual::VisualParams* vpa
 
     if (vparams->displayFlags().getShowBehaviorModels())
     {
-        const VecCoord &x1=*(this->constrainedObject1->getX());
-        const VecCoord &x2=*(this->constrainedObject2->getX());
+        const VecCoord &x1= this->constrainedObject1->read(core::ConstVecCoordId::position())->getValue();
+        const VecCoord &x2= this->constrainedObject2->read(core::ConstVecCoordId::position())->getValue();
 
         std::vector< Vector3 > points;
         const SeqEdges &edges =  vecConstraint.getValue();

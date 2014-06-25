@@ -100,7 +100,7 @@ void TPointModel<DataTypes>::init()
         m_lmdFilter = node->getNodeObject< PointLocalMinDistanceFilter >();
     }
 
-    const int npoints = mstate->getX()->size();
+    const int npoints = mstate->read(core::ConstVecCoordId::position())->getValue().size();
     resize(npoints);
     if (computeNormals.getValue()) updateNormals();
 
@@ -172,7 +172,7 @@ void TPointModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
             vparams->drawTool()->setPolygonMode(0,true);
 
         // Check topological modifications
-        const int npoints = mstate->getX()->size();
+        const int npoints = mstate->read(core::ConstVecCoordId::position())->getValue().size();
         if (npoints != size)
         {
             resize(npoints);
@@ -277,7 +277,7 @@ template<class DataTypes>
 void TPointModel<DataTypes>::computeBoundingTree(int maxDepth)
 {
     CubeModel* cubeModel = createPrevious<CubeModel>();
-    const int npoints = mstate->getX()->size();
+    const int npoints = mstate->read(core::ConstVecCoordId::position())->getValue().size();
     bool updated = false;
     if (npoints != size)
     {
@@ -292,7 +292,7 @@ void TPointModel<DataTypes>::computeBoundingTree(int maxDepth)
     cubeModel->resize(size);
     if (!empty())
     {
-        //VecCoord& x = *mstate->getX();
+        //VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
         const SReal distance = this->proximity.getValue();
         for (int i=0; i<size; i++)
         {
@@ -313,7 +313,7 @@ template<class DataTypes>
 void TPointModel<DataTypes>::computeContinuousBoundingTree(double dt, int maxDepth)
 {
     CubeModel* cubeModel = createPrevious<CubeModel>();
-    const int npoints = mstate->getX()->size();
+    const int npoints = mstate->read(core::ConstVecCoordId::position())->getValue().size();
     bool updated = false;
     if (npoints != size)
     {
@@ -329,7 +329,7 @@ void TPointModel<DataTypes>::computeContinuousBoundingTree(double dt, int maxDep
     cubeModel->resize(size);
     if (!empty())
     {
-        //VecCoord& x = *mstate->getX();
+        //VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
         //VecDeriv& v = *mstate->getV();
         const SReal distance = (SReal)this->proximity.getValue();
         for (int i=0; i<size; i++)

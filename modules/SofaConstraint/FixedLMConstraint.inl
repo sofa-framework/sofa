@@ -95,7 +95,7 @@ template <class DataTypes>
 void FixedLMConstraint<DataTypes>::initFixedPosition()
 {
     this->restPosition.clear();
-    const VecCoord& x = *this->constrainedObject1->getX();
+    const VecCoord& x =this->constrainedObject1->read(core::ConstVecCoordId::position())->getValue();
     const SetIndexArray & indices = this->f_indices.getValue();
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
     {
@@ -215,7 +215,7 @@ template <class DataTypes>
 void FixedLMConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
-    const VecCoord& x = *this->constrainedObject1->getX();
+    const VecCoord& x =this->constrainedObject1->read(core::ConstVecCoordId::position())->getValue();
     //serr<<"FixedLMConstraint<DataTypes>::draw(), x.size() = "<<x.size()<<sendl;
 
     const SetIndexArray & indices = f_indices.getValue();

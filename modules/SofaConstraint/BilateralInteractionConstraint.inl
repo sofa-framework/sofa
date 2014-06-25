@@ -454,8 +454,8 @@ void BilateralInteractionConstraint<DataTypes>::draw(const core::visual::VisualP
     unsigned minp = std::min(m1.getValue().size(),m2.getValue().size());
     for (unsigned i=0; i<minp; i++)
     {
-        helper::gl::glVertexT((*this->mstate1->getX())[m1.getValue()[i]]);
-        helper::gl::glVertexT((*this->mstate2->getX())[m2.getValue()[i]]);
+        helper::gl::glVertexT(this->mstate1->read(core::ConstVecCoordId::position())->getValue()[m1.getValue()[i]]);
+        helper::gl::glVertexT(this->mstate2->read(core::ConstVecCoordId::position())->getValue()[m2.getValue()[i]]);
     }
     glEnd();
     glPointSize(1);

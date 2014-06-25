@@ -96,7 +96,7 @@ void TCylinderModel<StdRigidTypes<3,MyReal> >::init()
         return;
     }
 
-    resize(_mstate->getX()->size());
+    resize(_mstate->read(core::ConstVecCoordId::position())->getValue().size());
 }
 
 
@@ -104,7 +104,7 @@ template <class MyReal>
 void TCylinderModel<StdRigidTypes<3,MyReal> >::computeBoundingTree(int maxDepth)
 {
     CubeModel* cubeModel = createPrevious<CubeModel>();
-    const int ncyl = _mstate->getX()->size();
+    const int ncyl = _mstate->read(core::ConstVecCoordId::position())->getValue().size();
 
     bool updated = false;
     if (ncyl != size)
@@ -208,7 +208,7 @@ typename TCylinderModel<StdRigidTypes<3,MyReal> >::Real TCylinderModel<StdRigidT
 
 template <class MyReal>
 const typename TCylinderModel<StdRigidTypes<3,MyReal> >::Coord & TCylinderModel<StdRigidTypes<3,MyReal> >::center(int i)const{
-    return DataTypes::getCPos((*(_mstate->getX()))[i]);
+    return DataTypes::getCPos((_mstate->read(core::ConstVecCoordId::position())->getValue())[i]);
 }
 
 template <class MyReal>
@@ -259,7 +259,7 @@ const typename TCylinder<StdRigidTypes<3,MyReal> >::Coord & TCylinder<StdRigidTy
 
 template<class MyReal>
 const Quaternion TCylinderModel<StdRigidTypes<3,MyReal> >::orientation(int index)const{
-    return (*_mstate->getX())[index].getOrientation();
+    return _mstate->read(core::ConstVecCoordId::position())->getValue()[index].getOrientation();
 }
 
 template<class MyReal>

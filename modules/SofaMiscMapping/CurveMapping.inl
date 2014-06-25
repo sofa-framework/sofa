@@ -169,7 +169,7 @@ void CurveMapping<TIn, TOut>::init()
     old_angle.resize(nout);
     fill(old_angle.begin(), old_angle.end(), 0.0);
 
-    //apply(*this->toModel->getX(), *this->fromModel->getX());
+    //apply(*this->toModel->getX(),this->fromModel->read(core::ConstVecCoordId::position())->getValue());
     //apply(*this->toModel->getXfree(), *this->fromModel->getXfree());
 
     Inherit::apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::position(),     core::ConstVecCoordId::position());
@@ -177,8 +177,8 @@ void CurveMapping<TIn, TOut>::init()
 
     /*
 
-     	VecCoord& xto = *this->toModel->getX();
-     	InVecCoord& xfrom = *this->fromModel->getX();
+        VecCoord& xto =this->toModel->read(core::ConstVecCoordId::position())->getValue();
+        InVecCoord& xfrom =this->fromModel->read(core::ConstVecCoordId::position())->getValue();
 
     	std::ofstream catheterDataFile("/media/data/sofa-dev/trunk/Sofa/applications/projects/runSofa/rest_position.dat", std::fstream::out | std::fstream::binary);
 

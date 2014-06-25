@@ -531,7 +531,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( InMatrixDeriv& out, 
 
     //std::cout << "applyJT (constraints) : \n";
     //std::cout << "xto = " << xto << std::endl;
-    //std::cout << "xfrom = " << *m_fromModel->getX() << std::endl;
+    //std::cout << "xfrom = " <<m_fromModel->read(core::ConstVecCoordId::position())->getValue() << std::endl;
     //std::cout << "xfromFree = " << m_fromModel->read(core::VecCoordId::freePosition())->getValue() << std::endl;
 
     typename OutMatrixDeriv::RowConstIterator rowItEnd = in.end();
@@ -658,7 +658,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::draw(const core::visual::Visu
     vparams->drawTool()->drawLines(pointsLine, 1, Vec<4,float>(0,0,1,1));
 
     //
-    //OutVecCoord& xto = *m_toModel->getX();
+    //OutVecCoord& xto =m_toModel->read(core::ConstVecCoordId::position())->getValue();
     //glDisable (GL_LIGHTING);
     //glPointSize(2);
 }

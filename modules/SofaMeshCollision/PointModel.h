@@ -197,7 +197,7 @@ inline TPoint<DataTypes>::TPoint(const core::CollisionElementIterator& i)
 }
 
 template<class DataTypes>
-inline const typename DataTypes::Coord& TPoint<DataTypes>::p() const { return (*this->model->mstate->getX())[this->index]; }
+inline const typename DataTypes::Coord& TPoint<DataTypes>::p() const { return this->model->mstate->read(core::ConstVecCoordId::position())->getValue()[this->index]; }
 
 template<class DataTypes>
 inline const typename DataTypes::Coord& TPoint<DataTypes>::pFree() const

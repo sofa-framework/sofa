@@ -82,7 +82,7 @@ void DiagonalMass<Rigid3dTypes, Rigid3dMass>::draw(const core::visual::VisualPar
 #ifndef SOFA_NO_OPENGL
     const MassVector &masses= f_mass.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
-    const VecCoord& x = *mstate->getX();
+    const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
     Real totalMass=0;
     RigidTypes::Vec3 gravityCenter;
     for (unsigned int i=0; i<x.size(); i++)
@@ -183,7 +183,7 @@ void DiagonalMass<Rigid2dTypes, Rigid2dMass>::draw(const core::visual::VisualPar
 {
     const MassVector &masses= f_mass.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
-    const VecCoord& x = *mstate->getX();
+    const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
     for (unsigned int i=0; i<x.size(); i++)
     {
         if (masses[i].mass == 0) continue;
@@ -293,7 +293,7 @@ void DiagonalMass<Rigid3fTypes, Rigid3fMass>::draw(const core::visual::VisualPar
 #ifndef SOFA_NO_OPENGL
     const MassVector &masses= f_mass.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
-    const VecCoord& x = *mstate->getX();
+    const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
     Real totalMass=0;
     RigidTypes::Vec3 gravityCenter;
     for (unsigned int i=0; i<x.size(); i++)
@@ -368,7 +368,7 @@ void DiagonalMass<Rigid2fTypes, Rigid2fMass>::draw(const core::visual::VisualPar
 {
     const MassVector &masses= f_mass.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
-    const VecCoord& x = *mstate->getX();
+    const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
     for (unsigned int i=0; i<x.size(); i++)
     {
         if (masses[i].mass == 0) continue;
