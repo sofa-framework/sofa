@@ -22,21 +22,78 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef INITSOFAPYTHON_H
-#define INITSOFAPYTHON_H
+#include "SceneLoaderPY.h"
+#include "initSofaPython.h"
 
-#include <sofa/helper/system/config.h>
+namespace sofa
+{
 
-#ifdef SOFA_BUILD_SOFAPYTHON
-#define SOFA_SOFAPYTHON_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#define SOFA_SOFAPYTHON_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+namespace component
+{
 
-#define SOFAPYTHON_VERSION "0.1"
-
-/** \mainpage
-    This is a the starting page of the SofaPython documentation.
+//Here are just several convenient functions to help user to know what contains the plugin
+/*
+extern "C" {
+    SOFA_SOFAPYTHON_API void initExternalModule();
+    SOFA_SOFAPYTHON_API const char* getModuleName();
+    SOFA_SOFAPYTHON_API const char* getModuleVersion();
+    SOFA_SOFAPYTHON_API const char* getModuleLicense();
+    SOFA_SOFAPYTHON_API const char* getModuleDescription();
+    SOFA_SOFAPYTHON_API const char* getModuleComponentList();
+}
 */
 
-#endif
+void initExternalModule()
+{
+    static bool first = true;
+    if (first)
+    {
+        first = false;        
+    }
+}
+
+const char* getModuleName()
+{
+    return "SofaPython";
+}
+
+const char* getModuleVersion()
+{
+    return "0.2";
+}
+
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
+
+
+const char* getModuleDescription()
+{
+    return "Imbeds Python scripts in Sofa";
+}
+
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    return "PythonScriptController";
+}
+
+
+
+}
+
+}
+
+/// Use the SOFA_LINK_CLASS macro for each class, to enable linking on all platforms
+//SOFA_LINK_CLASS(MyMappingPendulumInPlane)
+//SOFA_LINK_CLASS(MyBehaviorModel)
+//SOFA_LINK_CLASS(MyProjectiveConstraintSet)
+SOFA_LINK_CLASS(PythonController)
+
+
+// register the loader in the factory
+static sofa::simulation::SceneLoader* loaderPY = sofa::simulation::SceneLoaderFactory::getInstance()->addEntry(new sofa::simulation::SceneLoaderPY());
+
+
+
