@@ -31,7 +31,12 @@ using namespace clang::ast_matchers;
 using namespace clang::tooling;
 using namespace llvm;
 
-std::vector<std::string> excludedPathPatterns={"extlibs/", "/usr/include/qt4/", "framework/sofa/helper", "framework/sofa/defaulttype", "framework/sofa/core"};
+std::vector<std::string> excludedPathPatterns={"extlibs/",
+                                               "/usr/include/qt4/",
+                                               "framework/sofa/helper",
+                                               "framework/sofa/defaulttype",
+                                               "framework/sofa/core",
+                                               "simulation/common"};
 
 bool isInExcludedPath(const std::string& path){
     for(auto pattern : excludedPathPatterns)
@@ -98,7 +103,7 @@ public:
                             std::cerr << smanager.getFileEntryForID(smanager.getFileID(sl))->getName()
                                       << ":" << smanager.getPresumedLineNumber(sl)
                                       << ":" << smanager.getPresumedColumnNumber(sl)
-                                      << ": warning: variable [" << record->getNameAsString() << ":" <<name << "] is violating the sofa coding style http://www.sofa.../codingstyle.html...all Data attributes should start with d_ " << std::endl;
+                                      << ": warning: variable [" << record->getNameAsString() << ":" <<name << "] is violating the sofa coding style http://www.sofa.../codingstyle.html...all Data<> attributes should start with d_ " << std::endl;
                         }
                     }
                     else if(type.find("SingleLink")!=std::string::npos || type.find("DualLink")!=std::string::npos){
@@ -107,7 +112,7 @@ public:
                             std::cerr << smanager.getFileEntryForID(smanager.getFileID(sl))->getName()
                                       << ":" << smanager.getPresumedLineNumber(sl)
                                       << ":" << smanager.getPresumedColumnNumber(sl)
-                                      << ": warning: variable [" << record->getNameAsString() << ":" <<name << "] is violating the sofa coding style http://www.sofa.../codingstyle.html...all Link attributes should start with l_ " << std::endl;
+                                      << ": warning: variable [" << record->getNameAsString() << ":" <<name << "] is violating the sofa coding style http://www.sofa.../codingstyle.html...all Link<> attributes should start with l_ " << std::endl;
                         }
                     }
                 }else{
@@ -116,7 +121,7 @@ public:
                         std::cerr << smanager.getFileEntryForID(smanager.getFileID(sl))->getName()
                                   << ":" << smanager.getPresumedLineNumber(sl)
                                   << ":" << smanager.getPresumedColumnNumber(sl)
-                                  << ": warning: variable [" << record->getNameAsString() << ":" << name << "] is violating the sofa coding style http://www.sofa.../codingstyle.html...all private attributes should start with m_ " << std::endl;
+                                  << ": warning: variable [" << record->getNameAsString() << ":" << name << "] is violating the sofa coding style http://www.sofa.../codingstyle.html...all non public attributes should start with m_ " << std::endl;
                     }
                 }
             }
