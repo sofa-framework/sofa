@@ -44,6 +44,10 @@ endif()
 
 ## google test
 if(SOFA-MISC_BUILD_GTEST)
+	if(NOT gtest_inited)
+		set(gtest_inited ON CACHE INTERNAL "" FORCE)
+		set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+	endif()
     add_subdirectory("${SOFA_EXTLIBS_DIR}/gtest")
     # try to replace with :
     # RegisterProjects("gtest" "gtest_main" PATH "${SOFA_EXTLIBS_DIR}/gtest")
