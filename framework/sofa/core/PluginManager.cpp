@@ -134,8 +134,6 @@ PluginManager::LoadedPlugin PluginManager::openPlugin(const std::string& filenam
 
 void PluginManager::closePlugin(LoadedPlugin pluginEntry)
 {
-    // Delete the instance of Plugin
-    delete pluginEntry.plugin;
     // Close the library
     DynamicLibrary::unload(pluginEntry.handle);
 }
