@@ -193,7 +193,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 {
     Inherit::init();
 
-    const VecDeriv& v0 = *this->mstate->getV();
+    const VecDeriv& v0 = this->mstate->read(core::ConstVecDerivId::velocity())->getValue();
 
     nbNodes = v0.size();
 

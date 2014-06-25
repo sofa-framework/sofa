@@ -246,7 +246,7 @@ typename TCapsule<StdRigidTypes<3,MyReal> >::Real TCapsule<StdRigidTypes<3,MyRea
 
 template<class MyReal>
 const typename TCapsuleModel<StdRigidTypes<3,MyReal> >::Coord & TCapsuleModel<StdRigidTypes<3,MyReal> >::velocity(int index) const {
-    return DataTypes::getDPos(((*(_mstate->getV())))[index]);
+    return DataTypes::getDPos(((_mstate->read(core::ConstVecDerivId::velocity())->getValue()))[index]);
 }
 
 

@@ -256,7 +256,7 @@ inline typename TOBB<DataTypes>::Coord TOBB<DataTypes>::localCoordinates(const C
 
 template <class DataTypes>
 inline const typename TOBBModel<DataTypes>::Coord & TOBBModel<DataTypes>::lvelocity(int index)const{
-    return (*(_mstate->getV()))[index].getLinear();
+    return (_mstate->read(core::ConstVecDerivId::velocity())->getValue())[index].getLinear();
 }
 
 template <class DataTypes>

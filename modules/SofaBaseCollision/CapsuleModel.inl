@@ -248,8 +248,8 @@ typename TCapsule<DataTypes>::Real TCapsule<DataTypes>::radius() const
 
 
 template<class DataTypes>
-typename TCapsuleModel<DataTypes>::Deriv TCapsuleModel<DataTypes>::velocity(int index) const { return ((*(_mstate->getV()))[_capsule_points[index].first] +
-                                                                                       (*(_mstate->getV()))[_capsule_points[index].second])/2.0;}
+typename TCapsuleModel<DataTypes>::Deriv TCapsuleModel<DataTypes>::velocity(int index) const { return ((_mstate->read(core::ConstVecDerivId::velocity())->getValue())[_capsule_points[index].first] +
+                                                                                       (_mstate->read(core::ConstVecDerivId::velocity())->getValue())[_capsule_points[index].second])/2.0;}
 
 template<class DataTypes>
 typename TCapsule<DataTypes>::Coord TCapsule<DataTypes>::v() const {return this->model->velocity(this->index);}
