@@ -74,7 +74,7 @@ RegisterProjects("SofaImplicitOdeSolver" OPTION "SOFA-LIB_COMPONENT_IMPLICIT_ODE
 #RegisterProjects("SofaImplicitOdeSolver_test" OPTION "SOFA-LIB_COMPONENT_IMPLICIT_ODE_SOLVER" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaImplicitOdeSolver/SofaImplicitOdeSolver_test")
 
 RegisterProjects("SofaLoader" OPTION "SOFA-LIB_COMPONENT_LOADER" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaLoader")
-#RegisterProjects("SofaLoader_test" OPTION "SOFA-LIB_COMPONENT_LOADER" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaLoader/SofaLoader_test")
+RegisterProjects("SofaLoader_test" OPTION "SOFA-LIB_COMPONENT_LOADER" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaLoader/SofaLoader_test")
 
 RegisterProjects("SofaMeshCollision" OPTION "SOFA-LIB_COMPONENT_MESH_COLLISION" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaMeshCollision")
 #RegisterProjects("SofaMeshCollision_test" OPTION "SOFA-LIB_COMPONENT_MESH_COLLISION" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaMeshCollision/SofaMeshCollision_test")
