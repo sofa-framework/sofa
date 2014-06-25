@@ -30,7 +30,7 @@
 #include <SofaLoader/ReadTopology.h>
 #include <SofaExporter/WriteTopology.h>
 #include <SofaValidation/CompareTopology.h>
-#include <sofa/component/init.h>
+#include <SofaComponentMain/init.h>
 #include <sofa/helper/system/thread/TimeoutWatchdog.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
