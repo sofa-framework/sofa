@@ -25,7 +25,7 @@
 
 
 #include "Sofa_test.h"
-#include <sofa/component/init.h>
+#include <SofaComponentMain/init.h>
 //#include <plugins/SceneCreator/SceneCreator.h>
 //Including Simulation
 #include <sofa/simulation/common/Simulation.h>

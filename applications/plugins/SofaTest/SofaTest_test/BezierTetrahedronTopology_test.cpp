@@ -27,7 +27,7 @@
 #include "Sofa_test.h"
 #include<sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileRepository.h>
-#include <sofa/component/init.h>
+#include <SofaComponentMain/init.h>
 #include <sofa/core/ExecParams.h>
 
 //Including Simulation

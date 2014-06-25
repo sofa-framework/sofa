@@ -25,7 +25,7 @@
 
 
 #include "Sofa_test.h"
-#include <sofa/component/init.h>
+#include <SofaComponentMain/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseTopology/PointSetTopologyContainer.h>
