@@ -35,7 +35,7 @@
 
 // internal stuff, here it is using SOFA components that could be replaced by any library
 #include <SofaBaseTopology/MeshTopology.h>
-#include <SofaSimpleFem/forcefield/HexahedronFEMForceField.h>
+#include <SofaSimpleFem/HexahedronFEMForceField.h>
 #include <SofaBaseMechanics/UniformMass.h>
 #include <SofaBaseTopology/RegularGridTopology.h>
 #include <sofa/simulation/common/Node.h>
