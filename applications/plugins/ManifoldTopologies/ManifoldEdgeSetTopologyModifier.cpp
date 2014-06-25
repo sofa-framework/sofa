@@ -38,6 +38,11 @@ namespace component
 
 namespace topology
 {
+using namespace sofa::defaulttype;
+SOFA_DECL_CLASS(ManifoldEdgeSetTopologyModifier)
+int ManifoldEdgeSetTopologyModifierClass = core::RegisterObject("ManifoldEdge set topology modifier")
+        .add< ManifoldEdgeSetTopologyModifier >();
+
 using namespace std;
 using namespace sofa::defaulttype;
 

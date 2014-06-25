@@ -38,7 +38,29 @@ namespace topology
 {
 
 using namespace sofa::defaulttype;
-
+SOFA_DECL_CLASS(ManifoldEdgeSetTopologyAlgorithms)
+int ManifoldEdgeSetTopologyAlgorithmsClass = core::RegisterObject("ManifoldEdge set topology algorithms")
+#ifdef SOFA_FLOAT
+        .add< ManifoldEdgeSetTopologyAlgorithms<Vec3fTypes> >(true) // default template
+#else
+        .add< ManifoldEdgeSetTopologyAlgorithms<Vec3dTypes> >(true) // default template
+#ifndef SOFA_DOUBLE
+        .add< ManifoldEdgeSetTopologyAlgorithms<Vec3fTypes> >() // default template
+#endif
+#endif
+#ifndef SOFA_FLOAT
+        .add< ManifoldEdgeSetTopologyAlgorithms<Vec2dTypes> >()
+        .add< ManifoldEdgeSetTopologyAlgorithms<Vec1dTypes> >()
+        .add< ManifoldEdgeSetTopologyAlgorithms<Rigid3dTypes> >()
+        .add< ManifoldEdgeSetTopologyAlgorithms<Rigid2dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< ManifoldEdgeSetTopologyAlgorithms<Vec2fTypes> >()
+        .add< ManifoldEdgeSetTopologyAlgorithms<Vec1fTypes> >()
+        .add< ManifoldEdgeSetTopologyAlgorithms<Rigid3fTypes> >()
+        .add< ManifoldEdgeSetTopologyAlgorithms<Rigid2fTypes> >()
+#endif
+        ;
 #ifndef SOFA_FLOAT
 template class ManifoldEdgeSetTopologyAlgorithms<Vec3dTypes>;
 template class ManifoldEdgeSetTopologyAlgorithms<Vec2dTypes>;

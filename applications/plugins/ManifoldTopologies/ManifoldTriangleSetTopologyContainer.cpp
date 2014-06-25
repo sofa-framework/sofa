@@ -38,6 +38,12 @@ using namespace std;
 using namespace sofa::defaulttype;
 
 
+SOFA_DECL_CLASS(ManifoldTriangleSetTopologyContainer)
+int ManifoldTriangleSetTopologyContainerClass = core::RegisterObject("Manifold Triangle set topology container")
+        .add< ManifoldTriangleSetTopologyContainer >()
+        ;
+
+
 
 ManifoldTriangleSetTopologyContainer::ManifoldTriangleSetTopologyContainer()
     : TriangleSetTopologyContainer()
