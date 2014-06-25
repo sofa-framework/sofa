@@ -27,12 +27,25 @@
 
 #include <sofa/helper/system/config.h>
 
-#define SOFA_PLUGIN(PluginClass)                                    \
+#define SOFA_DECL_PLUGIN(PluginClass)                                   \
+    class PluginClass: public sofa::core::Plugin {                      \
+    public:                                                             \
+    PluginClass();                                                      \
+    static sofa::core::Plugin::RegisterObject                           \
+    registerObject(const std::string& description) {                    \
+        return RegisterObject(getInstance(), description);              \
+    }                                                                   \
+    static sofa::core::Plugin& getInstance() {                          \
+        static PluginClass instance;                                    \
+        return instance;                                                \
+    }                                                                   \
+    };
+
+#define SOFA_PLUGIN_ENTRY_POINT(PluginClass)                        \
     extern "C" SOFA_EXPORT_DYNAMIC_LIBRARY void * create_plugin()   \
     {                                                               \
-        return new PluginClass();                                   \
+        return &PluginClass::getInstance();                         \
     }
-
 
 
 #include <sofa/core/core.h>
@@ -77,6 +90,83 @@ public:
             name(name), isATemplate(isATemplate) {};
     };
     typedef std::map<std::string, ComponentEntry> ComponentEntryMap;
+
+
+    class SOFA_CORE_API RegisterObject
+    {
+    private:
+        sofa::core::Plugin& m_plugin;
+        std::string m_description;
+        bool m_firstAddDone;
+        ComponentEntry *m_entry;
+    public:
+
+        /// Start the registration by giving the description of this class.
+        RegisterObject(sofa::core::Plugin& plugin,
+                       const std::string& description):
+            m_plugin(plugin), m_description(description),
+            m_firstAddDone(false), m_entry(NULL) {
+        }
+
+        /// Add an alias name for this class
+        RegisterObject& addAlias(std::string val)
+        {
+            if (m_firstAddDone) {
+                m_entry->aliases.insert(val);
+            }
+            return *this;
+        }
+
+        /// Add more descriptive text about this class
+        RegisterObject& addDescription(std::string val)
+        {
+            (void)(val);
+            return *this;
+        }
+
+        /// Specify a list of authors (separated with spaces)
+        RegisterObject& addAuthor(std::string val)
+        {
+            (void)(val);
+            return *this;
+        }
+
+        /// Specify a license (LGPL, GPL, ...)
+        RegisterObject& addLicense(std::string val)
+        {
+            (void)(val);
+            return *this;
+        }
+
+        /// Add a template instanciation of this class.
+        ///
+        /// \param isDefault    set to true if this should be the default instance when no template name is given.
+        template<class Component>
+            RegisterObject& add(bool isDefault=false)
+        {
+            Component* p = NULL;
+            const std::string name = Component::className(p);
+            const std::string templateParameters = Component::templateName(p);
+
+            if (!m_firstAddDone) {
+                m_entry = &m_plugin.m_components[name];
+                *m_entry = ComponentEntry(name, !templateParameters.empty());
+                m_entry->description = m_description;
+            }
+
+            m_plugin.m_components[name].creators[templateParameters] =
+                ObjectFactory::Creator::SPtr(new ObjectCreator<Component>);
+
+            if (isDefault)
+                m_entry->defaultTemplateParameters =
+                    templateParameters;
+
+            return *this;
+        }
+
+        operator int() { return 0; }
+    };
+    // friend class RegisterObject;
 
     Plugin(std::string name, bool isLegacy=false):
         m_name(name), m_isLegacy(isLegacy) {}

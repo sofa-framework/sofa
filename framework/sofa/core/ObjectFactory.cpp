@@ -451,8 +451,8 @@ RegisterObject& RegisterObject::addCreator(std::string classname,
 					   std::string templatename,
 					   ObjectFactory::Creator::SPtr creator)
 {
-  std::cout << "ObjectFactory: warning: RegisterObject called for ("
-            << classname << ", " << templatename << ")" << std::endl;
+  // std::cout << "ObjectFactory: warning: RegisterObject called for ("
+  //           << classname << ", " << templatename << ")" << std::endl;
     if (!entry.className.empty() && entry.className != classname)
     {
         std::cerr << "ERROR: ObjectFactory: all templated class should have the same base classname ("<<entry.className<<"!="<<classname<<")\n";
