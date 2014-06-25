@@ -2542,7 +2542,7 @@ void MechanicalObject<DataTypes>::getConstraintJacobian(const core::ExecParams* 
 {
     // Compute J
     const size_t N = Deriv::size();
-    const MatrixDeriv& c = *this->getC();
+    const MatrixDeriv& c = this->read(ConstMatrixDerivId::holonomicC())->getValue();
 
     MatrixDerivRowConstIterator rowItEnd = c.end();
 

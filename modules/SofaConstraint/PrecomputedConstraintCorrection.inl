@@ -465,7 +465,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 template< class DataTypes >
 void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpace(const ConstraintParams *cparams, defaulttype::BaseMatrix* W)
 {
-    const MatrixDeriv& c = *this->mstate->getC();
+    const MatrixDeriv& c = this->mstate->read(ConstMatrixDerivId::holonomicC())->getValue();
 
     double factor = 1.0;
 
@@ -1070,7 +1070,7 @@ template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(double * f, std::list<unsigned int>& /*renumbering*/)
 {
     constraint_force = f;
-    const MatrixDeriv& c = *this->mstate->getC();
+    const MatrixDeriv& c = this->mstate->read(ConstMatrixDerivId::holonomicC())->getValue();
 
 #ifdef NEW_METHOD_UNBUILT
     constraint_D.clear();

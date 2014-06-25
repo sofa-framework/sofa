@@ -137,12 +137,6 @@ public:
 
     /// @}
 
-    /// @name Old specific vectors access API (now limited to read-only accesses)
-    /// @{
-
-
-
-    /// @}
 
     virtual std::string getTemplateName() const
     {
