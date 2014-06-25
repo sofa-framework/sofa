@@ -36,20 +36,11 @@ struct PlaneForceField_test : public Sofa_test<typename _DataTypes::Real>
 	typedef sofa::component::forcefield::PlaneForceField<DataTypes> PlaneForceFieldType;
 	typename PlaneForceFieldType::SPtr planeForceFieldSPtr;
 
-	bool test()
+	PlaneForceField_test()
 	{
 		//Init
 		planeForceFieldSPtr = sofa::core::objectmodel::New<PlaneForceFieldType>();
 		planeForceFieldSPtr->setStiffness(500);
-
-		// Test if the stiffness value is set correctly
-		if(planeForceFieldSPtr->stiffness.getValue()!=500)
-        {  
-           ADD_FAILURE() << "Error stiffness expected: " << 500 << endl <<
-                             " actual " << planeForceFieldSPtr->stiffness.getValue() << endl;
-           return false;   
-        }
-		return true;
 	}
 
 };
@@ -65,7 +56,7 @@ TYPED_TEST_CASE(PlaneForceField_test, DataTypes);
 // first test case
 TYPED_TEST( PlaneForceField_test , testValue )
 {
-    ASSERT_TRUE(  this->test() );
+    ASSERT_EQ (planeForceFieldSPtr->stiffness.getValue(),500);
 }
 }// namespace sofa
 
