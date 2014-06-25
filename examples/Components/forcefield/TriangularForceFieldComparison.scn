@@ -19,7 +19,7 @@
         <TriangularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="300" damping="1" />
         <TriangleSet />
         <VisualModel name="Visual" color="black" />
-        <IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="default8" object1=".." object2="Visual" />
+        <IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="default8" object1=".." output="@Visual" />
     </Node>
 
     <Node name="TriangularBiquadratic">
@@ -33,7 +33,7 @@
         <TriangularBiquadraticSpringsForceField name="BQS" youngModulus="15" poissonRatio="0.9" useAngularSprings="1" dampingRatio="0.00" />
         <TriangleSet />
         <VisualModel name="Visual" color="white" />
-        <IdentityMapping object1=".." object2="Visual" />
+        <IdentityMapping object1=".." output="@Visual" />
     </Node>
 
 
@@ -48,7 +48,7 @@
         <TriangularQuadraticSpringsForceField name="QS" youngModulus="15" poissonRatio="0.9" useAngularSprings="1" dampingRatio="0.00" />
         <TriangleSet />
         <VisualModel name="Visual" color="yellow" />
-        <IdentityMapping object1=".." object2="Visual" />
+        <IdentityMapping object1=".." output="@Visual" />
     </Node>
 
     <Node name="TriangularFEM">
@@ -63,7 +63,7 @@
         <TriangularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="300" damping="1" />
         <TriangleSet />
         <VisualModel name="Visual" color="red" />
-        <IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="default8" object1=".." object2="Visual" />
+        <IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="default8" object1=".." output="@Visual" />
     </Node>
 
     <Node name="TriangularTensorMass">
@@ -77,7 +77,7 @@
         <TriangularTensorMassForceField name="TM" youngModulus="15" poissonRatio="0.9" />
         <TriangleSet />
         <OglModel name="Visual" color="green" />
-        <IdentityMapping object1=".." object2="Visual" />
+        <IdentityMapping object1=".." output="@Visual" />
     </Node>
 
     <Node name="TrianglePressureForceField">
@@ -91,7 +91,7 @@
         <TrianglePressureForceField name="PFF" normal="0 0 1" dmin="0.9" dmax="1.1" pressure="0 1 0" />
         <TriangleSet />
         <OglModel name="Visual" color="blue" />
-        <IdentityMapping object1=".." object2="Visual" />
+        <IdentityMapping object1=".." output="@Visual" />
     </Node>
 
 </Node>

@@ -12,7 +12,7 @@
         <StiffSpringForceField name="Springs" filename="BehaviorModels/smCube27.xs3" />
         <Node name="Visu">
             <OglModel name="Visual" filename="mesh/smCube27.obj" color="yellow" />
-            <IdentityMapping object1="../.." object2="Visual" />
+            <IdentityMapping input="@.." output="@Visual" />
         </Node>
         <MeshLoader filename="mesh/smCube27.mesh" name="loader" />
         <Mesh src="@loader" />
@@ -40,7 +40,7 @@
         </Node>
         <Node name="Visu">
             <OglModel name="Visual" filename="mesh/smCube27.obj" />
-            <RigidMapping object1="../.." object2="Visual" />
+            <RigidMapping input="@.." output="@Visual" />
         </Node>
     </Node>
     <Node name="M3">
@@ -51,7 +51,7 @@
         <StiffSpringForceField name="Springs" filename="BehaviorModels/smCube27.xs3" />
         <Node name="Visu">
             <OglModel name="Visual" filename="mesh/smCube27.obj" color="red" />
-            <IdentityMapping object1="../.." object2="Visual" />
+            <IdentityMapping input="@.." output="@Visual" />
         </Node>
         <MeshLoader filename="mesh/smCube27.mesh" name="loader" />
         <Mesh src="@loader" />
@@ -72,7 +72,7 @@
             <RigidMapping />
             <Node name="Visu">
                 <OglModel name="Visual" filename="mesh/smCube27.obj" />
-                <IdentityMapping object1="../.." object2="Visual" />
+                <IdentityMapping input="@.." output="@Visual" />
             </Node>
         </Node>
         <Node name="Surf">
@@ -90,7 +90,7 @@
         <StiffSpringForceField name="Springs" filename="BehaviorModels/smCube27.xs3" />
         <Node name="Visu">
             <OglModel name="Visual" filename="mesh/smCube27.obj" color="cyan" />
-            <IdentityMapping object1="../.." object2="Visual" />
+            <IdentityMapping input="@.." output="@Visual" />
         </Node>
         <MeshLoader filename="mesh/smCube27.mesh" name="loader" />
         <Mesh src="@loader" />
@@ -112,7 +112,7 @@
         </Node>
         <Node name="Visu">
             <OglModel name="Visual" filename="mesh/dragon.obj" color="gray" />
-            <RigidMapping object1="../.." object2="Visual" />
+            <RigidMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
             <SphereLoader filename="mesh/dragon.sph" />

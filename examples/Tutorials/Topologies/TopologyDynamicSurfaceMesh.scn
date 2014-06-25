@@ -24,7 +24,7 @@
         <TriangleModel name="models" />
         <Node>
             <OglModel name="Visual" color="green" src="@../tloader" />
-            <IdentityMapping name="Mapping" object1="../.." object2="Visual" />
+            <IdentityMapping name="Mapping" input="@.." output="@Visual" />
         </Node>
     </Node>
     <Node name="Quads Mesh">
@@ -41,14 +41,14 @@
         <QuadularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="3000" damping="1" />
         <Node name="Visu">
             <OglModel template="ExtVec3f" name="Visual" src="@../qloader" />
-            <IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="default5" object1="../../DOFs" object2="Visual" />
+            <IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="default5" input="@../DOFs" output="@Visual" />
         </Node>
         <Node name="Triangles">
             <TriangleSetTopologyContainer name="Container" />
             <TriangleSetTopologyModifier name="Modifier" />
             <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
             <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
-            <Quad2TriangleTopologicalMapping name="default6" object1="../../Container" object2="Container" />
+            <Quad2TriangleTopologicalMapping name="default6" input="@../Container" output="@Container" />
             <TriangularFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="1000" />
             <TriangularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="3000" damping="1" />
             <TriangleModel name="default7" />

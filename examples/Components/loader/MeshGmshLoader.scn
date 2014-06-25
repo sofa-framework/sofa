@@ -23,7 +23,7 @@
         <TriangleModel />
         <Node>
             <OglModel src="@../GmshLoader" name="VisualModel" color="blue" />
-            <IdentityMapping name="mapping" object1="../.." object2="VisualModel" />
+            <IdentityMapping name="mapping" input="@.." output="@VisualModel" />
         </Node>
     </Node>
 </Node>

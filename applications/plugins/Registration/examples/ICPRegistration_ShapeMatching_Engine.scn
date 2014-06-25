@@ -33,7 +33,7 @@
 					stiffness="1" damping="0" />
 		<Node name="Visu">
 			<OglModel name="Visual" fileMesh="data/femur_m.obj" normals="0"   color="1 .4 0.5 1" />
-			<BarycentricMapping object1="../.." object2="Visual" />
+			<BarycentricMapping input="@.." output="@Visual" />
 		</Node>			
 	</Node>
 

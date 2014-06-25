@@ -18,13 +18,13 @@
         <BoxConstraint box="0 3 0 0 3 0 3 3 0 3 3 0" />
         <Node name="T">
             <include href="Objects/TriangleSetTopology.xml" src="@" tags=" " />
-            <Quad2TriangleTopologicalMapping object1="../../Container" object2="Container" />
+            <Quad2TriangleTopologicalMapping input="@../Container" output="@Container" />
             <TriangularFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" method="large" />
             <TriangularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0" />
             <TriangleSet />
             <Node name="Visu">
                 <OglModel name="Visual" color="red" />
-                <IdentityMapping object1="../../../Quads" object2="Visual" />
+                <IdentityMapping input="@../../Quads" output="@Visual" />
             </Node>
         </Node>
     </Node>

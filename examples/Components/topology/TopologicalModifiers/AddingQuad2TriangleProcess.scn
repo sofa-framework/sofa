@@ -25,13 +25,13 @@
             <TriangleSetTopologyModifier name="Modifier" />
             <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
             <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawTriangles="1" />
-            <Quad2TriangleTopologicalMapping object1="../../Quad_topo" object2="Triangle_topo" />
+            <Quad2TriangleTopologicalMapping input="@../Quad_topo" output="@Triangle_topo" />
             <!--      		<TriangularFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" method="large" />
 			<TriangularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0"/>		-->
             <TriangleSet />
             <!--			<Node name="Visu">
 				<VisualModel name="Visual" color="red" />
-				<IdentityMapping object1="../../../Quads" object2="Visual" />
+				<IdentityMapping input="@../../Quads" output="@Visual" />
 			</Node>	-->
         </Node>
     </Node>

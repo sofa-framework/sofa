@@ -21,7 +21,7 @@
             <UniformMass />
             <Node name="Visu">
                 <OglModel name="Visual" fileMesh="mesh/torus.obj" color="gray" />
-                <RigidMapping object1="../.." object2="Visual" />
+                <RigidMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
@@ -38,7 +38,7 @@
             <UniformMass />
             <Node name="Visu">
                 <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="gray" />
-                <RigidMapping object1="../.." object2="Visual" />
+                <RigidMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
@@ -55,7 +55,7 @@
             <UniformMass />
             <Node name="Visu">
                 <OglModel name="Visual" fileMesh="mesh/torus.obj" color="gray" />
-                <RigidMapping object1="../.." object2="Visual" />
+                <RigidMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
@@ -72,7 +72,7 @@
             <UniformMass />
             <Node name="Visu">
                 <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="gray" />
-                <RigidMapping object1="../.." object2="Visual" />
+                <RigidMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />

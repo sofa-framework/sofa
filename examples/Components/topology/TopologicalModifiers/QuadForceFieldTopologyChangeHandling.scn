@@ -20,13 +20,13 @@
 
         <Node name="Surf">
             <include href="Objects/TriangleSetTopology.xml" />
-            <Quad2TriangleTopologicalMapping object1="../../Container" object2="Container" />
+            <Quad2TriangleTopologicalMapping input="@../Container" output="@Container" />
             <TriangularFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" method="large" />
             <TriangleSet />
 
 	    <Node name="Visu">
 		<OglModel name="Visual" color="green" />
-		<IdentityMapping object1="../.." object2="Visual" />
+		<IdentityMapping input="@.." output="@Visual" />
 	    </Node>
         </Node>
 
@@ -46,13 +46,13 @@
 
         <Node name="Surf">
             <include href="Objects/TriangleSetTopology.xml" />
-            <Quad2TriangleTopologicalMapping object1="../../Container" object2="Container" />
+            <Quad2TriangleTopologicalMapping input="@../Container" output="@Container" />
             <TriangularFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" method="large" />
             <TriangleSet />
 
 	    <Node name="Visu">
 		<OglModel name="Visual" color="green" />
-		<IdentityMapping object1="../.." object2="Visual" />
+		<IdentityMapping input="@.." output="@Visual" />
 	    </Node>
         </Node>
 

@@ -11,7 +11,7 @@
             <FixedConstraint indices="0 3 6 9 12 15 18 21 24" />
             <Node name="Visu">
                 <OglModel name="Visual" filename="mesh/smCube27.obj" color="yellow" />
-                <IdentityMapping object1="../.." object2="Visual" />
+                <IdentityMapping input="@.." output="@Visual" />
             </Node>
         </Node>
         <Node name="M2">
@@ -23,7 +23,7 @@
             </Node>
             <Node name="Visu">
                 <OglModel name="Visual" filename="mesh/smCube27.obj" />
-                <RigidMapping object1="../.." object2="Visual" />
+                <RigidMapping input="@.." output="@Visual" />
             </Node>
         </Node>
         <Node name="M3">
@@ -32,7 +32,7 @@
             <StiffSpringForceField name="Springs" filename="BehaviorModels/smCube27.xs3" />
             <Node name="Visu">
                 <OglModel name="Visual" filename="mesh/smCube27.obj" color="red" />
-                <IdentityMapping object1="../.." object2="Visual" />
+                <IdentityMapping input="@.." output="@Visual" />
             </Node>
         </Node>
         <Node name="M4">
@@ -43,7 +43,7 @@
                 <RigidMapping />
                 <Node name="Visu">
                     <OglModel name="Visual" filename="mesh/smCube27.obj" />
-                    <IdentityMapping object1="../.." object2="Visual" />
+                    <IdentityMapping input="@.." output="@Visual" />
                 </Node>
             </Node>
         </Node>
@@ -53,7 +53,7 @@
             <StiffSpringForceField name="Springs" filename="BehaviorModels/smCube27.xs3" />
             <Node name="Visu">
                 <OglModel name="Visual" filename="mesh/smCube27.obj" color="cyan" />
-                <IdentityMapping object1="../.." object2="Visual" />
+                <IdentityMapping input="@.." output="@Visual" />
             </Node>
         </Node>
         <Node name="M6">
@@ -65,7 +65,7 @@
             </Node>
             <Node name="Visu">
                 <OglModel name="Visual" filename="mesh/dragon.obj" color="gray" />
-                <RigidMapping object1="../.." object2="Visual" />
+                <RigidMapping input="@.." output="@Visual" />
             </Node>
         </Node>
         <StiffSpringForceField name="ExternalSprings1" filename="BehaviorModels/linkSmCube27.xs3" object1="M1" object2="M2/Points" />
