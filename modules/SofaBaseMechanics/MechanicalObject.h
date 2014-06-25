@@ -90,9 +90,7 @@ public:
 
     typedef sofa::defaulttype::Vector3 Vector3;
 
-    using Inherited::getF;
     using Inherited::getX0;
-    using Inherited::getN;
     using Inherited::getDx;
 protected:
     MechanicalObject();

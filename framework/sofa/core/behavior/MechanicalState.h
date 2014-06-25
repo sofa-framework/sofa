@@ -109,13 +109,6 @@ public:
         return (v == NULL) ? NULL : &(v->getValue());
     }
 
-    /// Return the force vector.
-    /// @deprecated use readVecDeriv(ConstVecDerivId::force()) instead.
-    virtual const VecDeriv* getF() const
-    {
-        const Data<VecDeriv>* v = this->read(ConstVecDerivId::force());
-        return (v == NULL) ? NULL : &(v->getValue());
-    }
 
     /// Return the external forces vector.
     /// @deprecated use readVecDeriv(ConstVecDerivId::externalForce()) instead.
