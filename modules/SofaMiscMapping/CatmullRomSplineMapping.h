@@ -63,19 +63,27 @@ public:
     typedef TIn In;
     typedef typename In::Coord InCoord;
     typedef typename In::Deriv InDeriv;
-    typedef typename In::VecCoord VecInCoord;
-    typedef typename In::VecDeriv VecInDeriv;
+    typedef typename In::VecCoord InVecCoord;
+    typedef typename In::VecDeriv InVecDeriv;
     typedef typename In::MatrixDeriv InMatrixDeriv;
     typedef typename In::Real InReal;
 
     // Output types
     typedef TOut Out;
-    typedef typename Out::VecCoord VecOutCoord;
-    typedef typename Out::VecDeriv VecOutDeriv;
+    typedef typename Out::VecCoord OutVecCoord;
+    typedef typename Out::VecDeriv OutVecDeriv;
     typedef typename Out::Coord OutCoord;
     typedef typename Out::Deriv OutDeriv;
     typedef typename Out::MatrixDeriv OutMatrixDeriv;
     typedef typename Out::Real OutReal;
+
+    typedef Data<InVecCoord> InDataVecCoord;
+    typedef Data<InVecDeriv> InDataVecDeriv;
+    typedef Data<InMatrixDeriv> InDataMatrixDeriv;
+
+    typedef Data<OutVecCoord> OutDataVecCoord;
+    typedef Data<OutVecDeriv> OutDataVecDeriv;
+    typedef Data<OutMatrixDeriv> OutDataMatrixDeriv;
 
     typedef BaseMeshTopology::Edge       Edge;
     typedef BaseMeshTopology::SeqEdges   SeqEdges;
@@ -104,10 +112,17 @@ protected:
 public:
     void init();
 
-    void apply(typename Out::VecCoord& out, const typename In::VecCoord& in);
-    void applyJ(typename Out::VecDeriv& out, const typename In::VecDeriv& in);
-    void applyJT(typename In::VecDeriv& out, const typename Out::VecDeriv& in);
-    void applyJT(typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in);
+    virtual void apply( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecCoord& out, const InDataVecCoord& in);
+    //void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
+
+    virtual void applyJ( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecDeriv& out, const InDataVecDeriv& in);
+    //void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
+
+    virtual void applyJT( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, InDataVecDeriv& out, const OutDataVecDeriv& in);
+    //void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
+
+    virtual void applyJT( const sofa::core::ConstraintParams* cparams /* PARAMS FIRST */, InDataMatrixDeriv& out, const OutDataMatrixDeriv& in);
+    //void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
 
     void draw(const core::visual::VisualParams* vparams);
 
