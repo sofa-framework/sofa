@@ -18,7 +18,7 @@
             <Point />
             <Node name="Visu">
                 <OglModel name="VisualModel" color="blue" />
-                <IdentityMapping object1="../.." object2="VisualModel" />
+                <IdentityMapping input="@.." output="@VisualModel" />
             </Node>
         </Node>
     </Node>
@@ -40,7 +40,7 @@
 						
 			<Node name="Visu">
 				<OglModel name="VisualModel" color="green" />
-				<IdentityMapping object1="../.." object2="VisualModel" />
+				<IdentityMapping input="@.." output="@VisualModel" />
 			</Node>
 		</Node> 
    </Node>  -->

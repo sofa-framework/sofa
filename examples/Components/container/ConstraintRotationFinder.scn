@@ -12,7 +12,7 @@
         <Point simulated="0" moving="0" group="1" />
         <Node name="Visu">
             <OglModel name="Visual" color="red" />
-            <IdentityMapping object1="../.." object2="Visual" />
+            <IdentityMapping input="@.." output="@Visual" />
         </Node>
     </Node>
     <Node name="Sphere">
@@ -24,7 +24,7 @@
         <Point simulated="0" moving="0" group="1" />
         <Node name="Visu">
             <OglModel name="Visual" color="blue" />
-            <IdentityMapping object1="../.." object2="Visual" />
+            <IdentityMapping input="@.." output="@Visual" />
         </Node>
     </Node>
     <Node name="SquareCloth1">
@@ -40,7 +40,7 @@
         <PrecomputedConstraintCorrection rotations="1" />
         <Node name="Visu">
             <OglModel name="Visual" color="green" />
-            <IdentityMapping object1="../.." object2="Visual" />
+            <IdentityMapping input="@.." output="@Visual" />
         </Node>
         <Point group="2" />
     </Node>

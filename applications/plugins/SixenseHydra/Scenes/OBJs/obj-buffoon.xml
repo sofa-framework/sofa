@@ -30,23 +30,23 @@
 
 	<Node name="VisuSpring">
 		<VisualModel name="Visual" filename="BuffoonSpring.obj" scale="1.0" />
-		<BarycentricMapping object1="../.." object2="Visual" />
+		<BarycentricMapping input="@.." output="@Visual" />
 	</Node>
 	<Node name="VisuSkin">
 		<VisualModel name="Visual" filename="BuffoonHeadSkin.obj" scale="1.0" texturename="Buffoon.png" />
-		<BarycentricMapping object1="../.." object2="Visual" />
+		<BarycentricMapping input="@.." output="@Visual" />
 	</Node>
 	<Node name="VisuRed">
 		<VisualModel name="Visual" filename="BuffoonHeadRed.obj" scale="1.0" />
-		<BarycentricMapping object1="../.." object2="Visual" />
+		<BarycentricMapping input="@.." output="@Visual" />
 	</Node>
 	<Node name="VisuPurple">
 		<VisualModel name="Visual" filename="BuffoonHeadPurple.obj" scale="1.0" />
-		<BarycentricMapping object1="../.." object2="Visual" />
+		<BarycentricMapping input="@.." output="@Visual" />
 	</Node>
 	<Node name="VisuYellow">
 		<VisualModel name="Visual" filename="BuffoonHeadYellow.obj" scale="1.0" />
-		<BarycentricMapping object1="../.." object2="Visual" />
+		<BarycentricMapping input="@.." output="@Visual" />
 	</Node>
 	<Node name="BoxRed">
 		<VisualModel name="Visual" filename="BoxRed.obj" scale="1.0" dz="0.0" dy="0.0" dx="0.0" />

@@ -23,7 +23,7 @@
         <TetrahedronFEMForceField computeGlobalMatrix="false" method="polar" name="FEM" poissonRatio="0.3" youngModulus="5000" />
         <Node name="Visu">
             <OglModel color="1.000 0.000 0.000" dx="7.6871" dy="0.0000" dz="0.9632" fileMesh="mesh/torus.obj" name="Visual" rx="10.0000" ry="-15.0000" rz="0.0000" />
-            <BarycentricMapping object1="../.." object2="Visual" />
+            <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf2">
             <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
@@ -45,7 +45,7 @@
         <MeshSpringForceField name="Springs" tetrasDamping="4" tetrasStiffness="1000" />
         <Node name="Visu">
             <OglModel color="0.000 1.000 0.000" dx="10.0309" dy="0.0000" dz="2.1145" fileMesh="mesh/torus2.obj" name="Visual" rx="15.0000" ry="-25.0000" rz="0.0000" />
-            <BarycentricMapping object1="../.." object2="Visual" />
+            <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf2">
             <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
@@ -66,7 +66,7 @@
         <RegularGridSpringForceField damping="2" name="Springs" stiffness="200" />
         <Node name="Visu">
             <OglModel color="1.000 1.000 0.000" dx="12.3521" dy="0.0000" dz="3.2783" fileMesh="mesh/torus.obj" name="Visual" />
-            <BarycentricMapping object1="../.." object2="Visual" />
+            <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf2">
             <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
@@ -85,7 +85,7 @@
         <UniformMass />
         <Node name="Visu">
             <OglModel color="0.500 0.500 0.500" fileMesh="mesh/torus2.obj" name="Visual" />
-            <RigidMapping object1="../.." object2="Visual" />
+            <RigidMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf2">
             <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
@@ -107,7 +107,7 @@
         <TetrahedronFEMForceField computeGlobalMatrix="false" method="polar" name="FEM" poissonRatio="0.3" youngModulus="5000" />
         <Node name="Visu">
             <OglModel color="1.000 0.000 0.000" dx="20.7850" dy="0.1285" dz="15.4381" fileMesh="mesh/torus.obj" name="Visual" rx="-36.1968" ry="38.9599" rz="6.3146" />
-            <BarycentricMapping object1="../.." object2="Visual" />
+            <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf2">
             <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
@@ -129,7 +129,7 @@
         <TetrahedronFEMForceField computeGlobalMatrix="false" method="polar" name="FEM" poissonRatio="0.3" youngModulus="5000" />
         <Node name="Visu">
             <OglModel color="1.000 0.000 0.000" dx="22.1025" dy="-0.1037" dz="13.4780" fileMesh="mesh/torus2.obj" name="Visual" rx="-26.3682" ry="62.5274" rz="-0.8890" />
-            <BarycentricMapping object1="../.." object2="Visual" />
+            <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf2">
             <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
@@ -151,7 +151,7 @@
         <TetrahedronFEMForceField computeGlobalMatrix="false" method="polar" name="FEM" poissonRatio="0.3" youngModulus="5000" />
         <Node name="Visu">
             <OglModel color="1.000 0.000 0.000" dx="2.5428" dy="0.0000" dz="0.0195" fileMesh="mesh/torus.obj" name="Visual" rx="-0.0000" ry="-5.0000" rz="0.0000" />
-            <BarycentricMapping object1="../.." object2="Visual" />
+            <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf2">
             <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
@@ -173,7 +173,7 @@
         <TetrahedronFEMForceField computeGlobalMatrix="false" method="polar" name="FEM" poissonRatio="0.3" youngModulus="5000" />
         <Node name="Visu">
             <OglModel color="1.000 0.000 0.000" dx="5.1472" dy="0.0000" dz="0.3725" fileMesh="mesh/torus2.obj" name="Visual" rx="5.0000" ry="-10.0000" rz="0.0000" />
-            <BarycentricMapping object1="../.." object2="Visual" />
+            <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf2">
             <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
@@ -195,7 +195,7 @@
         <MeshSpringForceField name="Springs" tetrasDamping="4" tetrasStiffness="1000" />
         <Node name="Visu">
             <OglModel color="0.000 1.000 0.000" dx="16.6441" dy="0.0000" dz="6.3875" fileMesh="mesh/torus.obj" name="Visual" rx="30.0000" ry="-40.0000" rz="0.0000" />
-            <BarycentricMapping object1="../.." object2="Visual" />
+            <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf2">
             <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
@@ -217,7 +217,7 @@
         <MeshSpringForceField name="Springs" tetrasDamping="4" tetrasStiffness="1000" />
         <Node name="Visu">
             <OglModel color="0.000 1.000 0.000" dx="18.5592" dy="0.0000" dz="7.9944" fileMesh="mesh/torus2.obj" name="Visual" rx="48.8686" ry="-40.0000" rz="0.0000" />
-            <BarycentricMapping object1="../.." object2="Visual" />
+            <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf2">
             <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
@@ -239,7 +239,7 @@
         <MeshSpringForceField name="Springs" tetrasDamping="4" tetrasStiffness="1000" />
         <Node name="Visu">
             <OglModel color="0.000 1.000 0.000" dx="20.4743" dy="0.0000" dz="9.6014" fileMesh="mesh/torus.obj" name="Visual" rx="56.6532" ry="-40.0000" rz="-0.0000" />
-            <BarycentricMapping object1="../.." object2="Visual" />
+            <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf2">
             <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
@@ -261,7 +261,7 @@
         <MeshSpringForceField name="Springs" tetrasDamping="4" tetrasStiffness="1000" />
         <Node name="Visu">
             <OglModel color="0.000 1.000 0.000" dx="22.4849" dy="-0.1005" dz="11.2034" fileMesh="mesh/torus2.obj" name="Visual" rx="85.4976" ry="-41.5228" rz="4.1695" />
-            <BarycentricMapping object1="../.." object2="Visual" />
+            <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf2">
             <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
@@ -282,7 +282,7 @@
         <RegularGridSpringForceField damping="2" name="Springs" stiffness="200" />
         <Node name="Visu">
             <OglModel color="1.000 1.000 0.000" dx="12.2149" dy="0.0000" dz="21.0581" fileMesh="mesh/torus.obj" name="Visual" />
-            <BarycentricMapping object1="../.." object2="Visual" />
+            <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf2">
             <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
@@ -303,7 +303,7 @@
         <RegularGridSpringForceField damping="2" name="Springs" stiffness="200" />
         <Node name="Visu">
             <OglModel color="1.000 1.000 0.000" dx="14.5348" dy="0.0000" dz="19.7939" fileMesh="mesh/torus2.obj" name="Visual" />
-            <BarycentricMapping object1="../.." object2="Visual" />
+            <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf2">
             <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
@@ -324,7 +324,7 @@
         <RegularGridSpringForceField damping="2" name="Springs" stiffness="200" />
         <Node name="Visu">
             <OglModel color="1.000 1.000 0.000" dx="16.7666" dy="0.0000" dz="18.3835" fileMesh="mesh/torus.obj" name="Visual" />
-            <BarycentricMapping object1="../.." object2="Visual" />
+            <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf2">
             <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
@@ -345,7 +345,7 @@
         <RegularGridSpringForceField damping="2" name="Springs" stiffness="200" />
         <Node name="Visu">
             <OglModel color="1.000 1.000 0.000" dx="18.8145" dy="0.0000" dz="16.9496" fileMesh="mesh/torus2.obj" name="Visual" />
-            <BarycentricMapping object1="../.." object2="Visual" />
+            <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf2">
             <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
@@ -373,7 +373,7 @@
         <UniformMass />
         <Node name="Visu">
             <OglModel color="0.500 0.500 0.500" fileMesh="mesh/torus.obj" name="Visual" />
-            <RigidMapping object1="../.." object2="Visual" />
+            <RigidMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf2">
             <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
@@ -392,7 +392,7 @@
         <UniformMass />
         <Node name="Visu">
             <OglModel color="0.500 0.500 0.500" fileMesh="mesh/torus2.obj" name="Visual" />
-            <RigidMapping object1="../.." object2="Visual" />
+            <RigidMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf2">
             <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
@@ -411,7 +411,7 @@
         <UniformMass />
         <Node name="Visu">
             <OglModel color="0.500 0.500 0.500" fileMesh="mesh/torus.obj" name="Visual" />
-            <RigidMapping object1="../.." object2="Visual" />
+            <RigidMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf2">
             <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
@@ -430,7 +430,7 @@
         <UniformMass />
         <Node name="Visu">
             <OglModel color="0.500 0.500 0.500" fileMesh="mesh/torus2.obj" name="Visual" />
-            <RigidMapping object1="../.." object2="Visual" />
+            <RigidMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf2">
             <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />

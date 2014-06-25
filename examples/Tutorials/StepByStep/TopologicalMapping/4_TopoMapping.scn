@@ -20,7 +20,7 @@
             <TriangleSetTopologyModifier name="Modifier" />
             <TriangleSetTopologyAlgorithms  name="TopoAlgo" />
             <TriangleSetGeometryAlgorithms  name="GeomAlgo" />
-            <Tetra2TriangleTopologicalMapping name="Mapping" object1="../../Container" object2="Container" />
+            <Tetra2TriangleTopologicalMapping name="Mapping" input="@../Container" output="@Container" />
             <TriangularBendingSprings  name="FEM-Bend" stiffness="10" damping="1" />
             <TriangleModel name="Models" />
             <Node name="Visu">

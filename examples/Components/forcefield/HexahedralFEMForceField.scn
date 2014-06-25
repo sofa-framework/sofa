@@ -17,14 +17,14 @@
         <FixedConstraint indices="12 15 28 31" />
         <Node name="Q">
             <include href="Objects/QuadSetTopology.xml" src="@" />
-            <Hexa2QuadTopologicalMapping object1="../../Container" object2="Container" />
+            <Hexa2QuadTopologicalMapping input="@../Container" output="@Container" />
             <Node name="Visu">
                 <OglModel name="Visual" color="yellow" />
-                <IdentityMapping object1="../../../Hexa" object2="Visual" />
+                <IdentityMapping input="@../../Hexa" output="@Visual" />
             </Node>
             <Node name="T">
                 <include href="Objects/TriangleSetTopology.xml" src="@" />
-                <Quad2TriangleTopologicalMapping object1="../../Container" object2="Container" />
+                <Quad2TriangleTopologicalMapping input="@../Container" output="@Container" />
                 <TriangleSet />
             </Node>
         </Node>

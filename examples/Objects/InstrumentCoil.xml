@@ -26,12 +26,12 @@
     <Node name="VM">
         <MechanicalObject name="TubularDOFs" />
         <include href="Objects/QuadSetTopology.xml"/>
-        <Edge2QuadTopologicalMapping name="TopoMapping" nbPointsOnEachCircle="10" radius="0.3" object1="../../Container" object2="Container"/>
-        <TubularMapping name="TubularMapping"  nbPointsOnEachCircle="10" radius="0.3" object1="../../MechanicalDOFs" object2="../TubularDOFs" />
+        <Edge2QuadTopologicalMapping name="TopoMapping" nbPointsOnEachCircle="10" radius="0.3" input="@../Container" output="@Container"/>
+        <TubularMapping name="TubularMapping"  nbPointsOnEachCircle="10" radius="0.3" input="@../MechanicalDOFs" output="@TubularDOFs" />
         
         <Node name="Visu">
             <OglModel name="Visual" color="1.0 0.0 0.0 1.0" />
-            <IdentityMapping object1="../../TubularDOFs" object2="Visual" />
+            <IdentityMapping input="@../TubularDOFs" output="@Visual" />
         </Node>			
     </Node>
     

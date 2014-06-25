@@ -26,18 +26,18 @@
         <!--
         <Node name="Surface">
 	  <include href="Objects/TriangleSetTopology.xml" />
-	  <Tetra2TriangleTopologicalMapping object1="../../volume" object2="Container"/>
+	  <Tetra2TriangleTopologicalMapping input="@../volume" output="@Container"/>
           <TriangularFEMForceField name="FEM" youngModulus="60" poissonRatio="0.3" method="large" /> 
         </Node>
 -->
         <Node name="VM">
             <OglModel name="visual" filename="mesh/liver-smooth.obj" />
-            <BarycentricMapping object2="visual" />
+            <BarycentricMapping output="@visual" />
         </Node>
         <Node name="Circumcenters">
             <PointSetTopologyContainer name="Container2" />
             <PointSetTopologyModifier />
-            <Mesh2PointTopologicalMapping object1="volume" object2="Container2" tetraBaryCoords="0.25 0.25 0.25" />
+            <Mesh2PointTopologicalMapping input="@volume" output="@Container2" tetraBaryCoords="0.25 0.25 0.25" />
             <MechanicalObject />
             <!--<BarycentricMapping />-->
             <!--<CircumcenterMapping/>-->
@@ -55,7 +55,7 @@
         <BoxConstraint box="-6 0 -2 -2 1.5 3" />
         <Node name="VM">
             <OglModel name="visual" filename="mesh/liver-smooth.obj" />
-            <BarycentricMapping object2="visual" />
+            <BarycentricMapping output="@visual" />
         </Node>
     </Node>
 -->

@@ -18,7 +18,7 @@
 			<TetrahedronSetTopologyModifier/>
 			<TetrahedronSetTopologyAlgorithms template="Vec3d" />
 			<TetrahedronSetGeometryAlgorithms template="Vec3d" />
-			<SimpleTesselatedTetraTopologicalMapping object1="Container1" object2="Container2"/>
+			<SimpleTesselatedTetraTopologicalMapping input="@Container1" output="@Container2"/>
 			<MechanicalObject/>
 			<SimpleTesselatedTetraMechanicalMapping/>
 			<Triangle />

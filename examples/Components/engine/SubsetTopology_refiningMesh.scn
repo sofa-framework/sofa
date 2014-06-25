@@ -24,7 +24,7 @@
                 <TriangleSetTopologyModifier name="Modifier" />
                 <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
                 <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
-                <Tetra2TriangleTopologicalMapping name="Mapping" object1="../../Container" object2="ContainerTri" />
+                <Tetra2TriangleTopologicalMapping name="Mapping" input="@../Container" output="@ContainerTri" />
                 <VisualModel name="Visual" color="red" dx="60" />
                 <IdentityMapping input="@.." output="@Visual" />
             </Node>
@@ -40,13 +40,13 @@
                 <TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
                 <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawTetrahedra="0" />
                 <MechanicalObject name="mecaObj3" />
-                <BarycentricMapping object1="../.." object2=".." />
+                <BarycentricMapping input="@.." object2=".." />
                 <Node>
                     <TriangleSetTopologyContainer name="ContainerTri" />
                     <TriangleSetTopologyModifier name="Modifier" />
                     <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
                     <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
-                    <Tetra2TriangleTopologicalMapping name="Mapping" object1="../../Container" object2="ContainerTri" />
+                    <Tetra2TriangleTopologicalMapping name="Mapping" input="@../Container" output="@ContainerTri" />
                     <TriangleModel template="Vec3d" name="default7" />
                     <VisualModel name="Visual" color="blue" dx="60" />
                     <IdentityMapping input="@.." output="@Visual" />

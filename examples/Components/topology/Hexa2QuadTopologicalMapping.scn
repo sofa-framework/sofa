@@ -18,13 +18,13 @@
         <BoxConstraint box="0 3 0 0 3 1 3 3 0 3 3 1" />
         <Node name="Q">
             <include href="Objects/QuadSetTopology.xml" src="@" tags=" " />
-            <Hexa2QuadTopologicalMapping object1="../../Container" object2="Container" />
+            <Hexa2QuadTopologicalMapping input="@../Container" output="@Container" />
             <QuadularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0" />
             <TriangleSet />
             <Node name="Visu">
                 <OglModel name="Visual" color="blue" quads="@../Container.quads" />
                 <!-- 				<OglModel name="Visual" color="blue" /> -->
-                <IdentityMapping object1="../../../Hexa" object2="Visual" />
+                <IdentityMapping input="@../../Hexa" output="@Visual" />
             </Node>
         </Node>
     </Node>

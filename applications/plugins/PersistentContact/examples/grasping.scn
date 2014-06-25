@@ -29,7 +29,7 @@
             <TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo"/>
             <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"/>
 			
-            <Hexa2TetraTopologicalMapping name="default28" object1="../../grid" object2="Container"/>
+            <Hexa2TetraTopologicalMapping name="default28" input="@../grid" output="@Container"/>
 			<MechanicalObject name="TetraMO"/>
 			<IdentityMapping/>
 			<ConstantForceField forces="0 0 0"/>
@@ -62,7 +62,7 @@
             <TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo"/>
             <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"/>
 			
-            <Hexa2TetraTopologicalMapping name="default28" object1="../../grid" object2="Container"/>
+            <Hexa2TetraTopologicalMapping name="default28" input="@../grid" output="@Container"/>
 			
 			<MechanicalObject name="TetraMO"/>
 			<ConstantForceField forces="0 0 0"/>

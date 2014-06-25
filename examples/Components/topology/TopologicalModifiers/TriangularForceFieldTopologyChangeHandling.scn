@@ -19,7 +19,7 @@
         <TriangularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="300" damping="1" />
         <TriangleSet />
         <VisualModel name="Visual" material="Default Diffuse 1 0 0 1 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
-        <IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="default8" object1=".." object2="Visual" />
+        <IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="default8" object1=".." output="@Visual" />
         <TopologicalChangeProcessor listening="1" filename="RemovingTrianglesProcess.txt" />
     </Node>
 
@@ -34,7 +34,7 @@
         <TriangularBiquadraticSpringsForceField name="BQS" youngModulus="15" poissonRatio="0.9" useAngularSprings="1" dampingRatio="0.00" />
         <TriangleSet />
         <VisualModel name="Visual" material="Default Diffuse 1 0 0.5 1 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
-        <IdentityMapping object1=".." object2="Visual" />
+        <IdentityMapping object1=".." output="@Visual" />
         <TopologicalChangeProcessor listening="1" filename="RemovingTrianglesProcess.txt" />
     </Node>
 
@@ -50,7 +50,7 @@
         <TriangularQuadraticSpringsForceField name="QS" youngModulus="15" poissonRatio="0.9" useAngularSprings="1" dampingRatio="0.00" />
         <TriangleSet />
         <VisualModel name="Visual" material="Default Diffuse 1 0 1 1 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
-	<IdentityMapping object1=".." object2="Visual" />
+	<IdentityMapping object1=".." output="@Visual" />
 	<TopologicalChangeProcessor listening="1" filename="RemovingTrianglesProcess.txt" />
     </Node>
 
@@ -66,7 +66,7 @@
         <TriangularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="300" damping="1" />
         <TriangleSet />
         <VisualModel name="Visual" material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
-        <IdentityMapping object1=".." object2="Visual" />
+        <IdentityMapping object1=".." output="@Visual" />
         <TopologicalChangeProcessor listening="1" filename="RemovingTrianglesProcess.txt" />
     </Node>
 
@@ -81,7 +81,7 @@
         <TriangularTensorMassForceField name="TM" youngModulus="15" poissonRatio="0.9" />
         <TriangleSet />
         <VisualModel name="Visual" material="Default Diffuse 1 1 0.5 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
-        <IdentityMapping object1=".." object2="Visual" />
+        <IdentityMapping object1=".." output="@Visual" />
 <!-- 	<TopologicalChangeProcessor listening="1" filename="RemovingTrianglesProcess.txt" /> -->
     </Node>
 
@@ -96,7 +96,7 @@
         <TrianglePressureForceField name="PFF" normal="0 0 1" dmin="0.9" dmax="1.1" pressure="1 0 0" />
         <TriangleSet />
         <VisualModel name="Visual" material="Default Diffuse 1 1 1 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
-        <IdentityMapping object1=".." object2="Visual" />
+        <IdentityMapping object1=".." output="@Visual" />
 	<TopologicalChangeProcessor listening="1" filename="RemovingTrianglesProcess.txt" />
     </Node>
 

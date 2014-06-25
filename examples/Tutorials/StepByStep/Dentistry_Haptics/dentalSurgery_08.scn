@@ -75,7 +75,7 @@ Using LCP contact detection and resolution:
         <UncoupledConstraintCorrection />
         <Node name="VisualModel">
             <OglModel name="InstrumentVisualModel" fileMesh="data/mesh/dental_instrument.obj" color="0.8 0.8 0.8 1.0" dz="-10" />
-            <RigidMapping name="MM-&gt;VM mapping" object1="instrumentState" object2="InstrumentVisualModel" />
+            <RigidMapping name="MM-&gt;VM mapping" input="@instrumentState" output="@InstrumentVisualModel" />
         </Node>
         <Node name="CollisionModel">
             <MeshObjLoader filename="data/mesh/dental_instrument_centerline.obj" name="loader" />
@@ -84,7 +84,7 @@ Using LCP contact detection and resolution:
             <Triangle name="instrument" contactStiffness="10" />
             <Line name="instrument" contactStiffness="10" />
             <Point name="instrument" contactStiffness="10" />
-            <RigidMapping name="MM-&gt;CM mapping" object1="instrumentState" object2="instrumentCollisionState" />
+            <RigidMapping name="MM-&gt;CM mapping" input="@instrumentState" output="@instrumentCollisionState" />
         </Node>
         <VectorSpringForceField object1="Omni/RefModel/instrumentCollisionState" object2="Instrument/CollisionModel/instrumentCollisionState" stiffness="10" viscosity="0" />
         <JointSpringForceField template="Rigid" name="joint springs" object1="Omni" object2="instrumentState" spring="BEGIN_SPRING 0 0 KS_T 50 50  KS_R 500.0 500.0  KS_B 500.0  KD 0.0 END_SPRING" />

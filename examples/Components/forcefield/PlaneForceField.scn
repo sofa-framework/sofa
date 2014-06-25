@@ -14,14 +14,14 @@
         <PlaneForceField normal="0 1 0" d="-10" stiffness="100000" />
         <Node name="Visu">
             <OglModel name="Visual" fileMesh="mesh/smCube125.obj" color="blue" />
-            <BarycentricMapping object1="../.." object2="Visual" />
+            <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Collis">
             <MeshObjLoader name="loader" filename="mesh/smCube125.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" />
             <Triangle />
-            <BarycentricMapping object1="../.." object2="Collis" />
+            <BarycentricMapping input="@.." output="@Collis" />
         </Node>
     </Node>
 </Node>

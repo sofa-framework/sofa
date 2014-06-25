@@ -19,7 +19,7 @@
         <UncoupledConstraintCorrection />
         <Node name="Visu">
             <OglModel name="Visual" filename="mesh/cube.obj" color="1 1 0 1.0" />
-            <RigidMapping object1="../.." object2="Visual" />
+            <RigidMapping input="@.." output="@Visual" />
         </Node>
         <Node name="ColliCube">
             <Mesh filename="mesh/cube.obj" />
@@ -46,7 +46,7 @@
         <UncoupledConstraintCorrection />
         <Node name="Visu">
             <OglModel name="Visual" filename="mesh/cube.obj" color="1 1 0 1.0" />
-            <RigidMapping object1="../.." object2="Visual" />
+            <RigidMapping input="@.." output="@Visual" />
         </Node>
         <Node name="ColliCube">
             <Mesh filename="mesh/cube.obj" />

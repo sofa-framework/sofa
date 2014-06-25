@@ -16,7 +16,7 @@
         <Triangle />
         <Node name="Visu">
             <OglModel name="Visual" color="green" />
-            <IdentityMapping object1="../.." object2="Visual" />
+            <IdentityMapping input="@.." output="@Visual" />
         </Node>
     </Node>
     <Node name="M2">
@@ -30,7 +30,7 @@
         <Triangle />
         <Node name="Visu">
             <OglModel name="Visual" color="blue" />
-            <IdentityMapping object1="../.." object2="Visual" />
+            <IdentityMapping input="@.." output="@Visual" />
         </Node>
     </Node>
     <Node name="M3">
@@ -44,7 +44,7 @@
         <Triangle />
         <Node name="Visu">
             <OglModel name="Visual" color="yellow" />
-            <IdentityMapping object1="../.." object2="Visual" />
+            <IdentityMapping input="@.." output="@Visual" />
         </Node>
     </Node>
 </Node>

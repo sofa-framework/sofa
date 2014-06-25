@@ -12,7 +12,7 @@
         <UniformMass mass="0" />
         <Node name="Visu">
             <OglModel color="0.500 0.500 0.500" fileMesh="mesh/sphere.obj" name="Visual" scale="50" />
-            <RigidMapping object1="../.." object2="Visual" />
+            <RigidMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf2">
             <MeshObjLoader name="loader" filename="mesh/sphere.obj" />

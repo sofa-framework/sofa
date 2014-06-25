@@ -14,7 +14,7 @@
         <TetrahedronFEMForceField name="FEM" youngModulus="25" poissonRatio="0.3" computeGlobalMatrix="false" updateStiffnessMatrix="false" method="large" />
         <Node name="Visu">
             <OglModel name="Visual" fileMesh="mesh/smCube125.obj" color="red" />
-            <SubsetMapping object1="../.." object2="Visual" />
+            <SubsetMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
             <MeshObjLoader name="loader" filename="mesh/smCube125.obj" />

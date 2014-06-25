@@ -23,7 +23,7 @@
             <MeshSpringForceField name="Springs" tetrasStiffness="400" tetrasDamping="0" />
             <Node name="Visu">
                 <OglModel name="Visual" fileMesh="mesh/torus.obj" dx="2.5" color="green" />
-                <BarycentricMapping object1="../.." object2="Visual" />
+                <BarycentricMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
@@ -43,7 +43,7 @@
             <MeshSpringForceField name="Springs" tetrasStiffness="400" tetrasDamping="0" />
             <Node name="Visu">
                 <OglModel name="Visual" fileMesh="mesh/torus2.obj" dx="5" color="green" />
-                <BarycentricMapping object1="../.." object2="Visual" />
+                <BarycentricMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
@@ -63,7 +63,7 @@
             <MeshSpringForceField name="Springs" tetrasStiffness="400" tetrasDamping="0" />
             <Node name="Visu">
                 <OglModel name="Visual" fileMesh="mesh/torus.obj" dx="7.5" color="green" />
-                <BarycentricMapping object1="../.." object2="Visual" />
+                <BarycentricMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
@@ -83,7 +83,7 @@
             <MeshSpringForceField name="Springs" tetrasStiffness="400" tetrasDamping="0" />
             <Node name="Visu">
                 <OglModel name="Visual" fileMesh="mesh/torus2.obj" dx="10" color="green" />
-                <BarycentricMapping object1="../.." object2="Visual" />
+                <BarycentricMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
