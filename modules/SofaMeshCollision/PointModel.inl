@@ -356,7 +356,7 @@ void TPointModel<DataTypes>::computeContinuousBoundingTree(double dt, int maxDep
 template<class DataTypes>
 void TPointModel<DataTypes>::updateNormals()
 {
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     int n = x.size();
     normals.resize(n);
     for (int i=0; i<n; ++i)

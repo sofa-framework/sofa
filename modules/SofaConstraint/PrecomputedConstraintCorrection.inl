@@ -916,7 +916,7 @@ void PrecomputedConstraintCorrection< DataTypes >::draw(const core::visual::Visu
         }
     }
 
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     for (unsigned int i=0; i< x.size(); i++)
     {
         Transformation Ri;

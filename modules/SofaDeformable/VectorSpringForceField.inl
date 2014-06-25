@@ -399,7 +399,7 @@ void VectorSpringForceField<DataTypes>::draw(const core::visual::VisualParams* v
 {
     if (!((this->mstate1 == this->mstate2)?vparams->displayFlags().getShowForceFields():vparams->displayFlags().getShowInteractionForceFields()))
         return;
-    //const VecCoord& p = *this->mstate->getX();
+    //const VecCoord& p = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     const VecCoord& x1 = *this->mstate1->getX();
     const VecCoord& x2 = *this->mstate2->getX();
 

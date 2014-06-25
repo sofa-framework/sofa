@@ -1487,7 +1487,7 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
         vME.resize(_indexedElements->size());
 
         helper::WriteAccessor<Data<helper::vector<Real> > > vMN =  _vonMisesPerNode;
-        vMN.resize(this->mstate->getX()->size());
+        vMN.resize(this->mstate->read(core::ConstVecCoordId::position())->getValue().size());
 
 
 #ifndef SOFA_NO_OPENGL
@@ -1721,7 +1721,7 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
         needUpdateTopology = false;
     }
 
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     const bool edges = (drawAsEdges.getValue() || vparams->displayFlags().getShowWireFrame());
     const bool heterogeneous = (drawHeterogeneousTetra.getValue() && minYoung!=maxYoung);
@@ -2316,7 +2316,7 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
 
     typename core::behavior::MechanicalState<DataTypes>* mechanicalObject;
     this->getContext()->get(mechanicalObject);
-    const VecCoord& X = *mechanicalObject->getX();
+    const VecCoord& X = mechanicalObject->read(core::ConstVecCoordId::position())->getValue();
 
     helper::ReadAccessor<Data<VecCoord> > X0 =  _initialPoints;
 
@@ -2477,7 +2477,7 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
         //std::cout << "VMStress: " << vM[el] << std::endl;
     }
 
-    const VecCoord& dofs = *this->mstate->getX();
+    const VecCoord& dofs = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     helper::WriteAccessor<Data<helper::vector<Real> > > vMN =  _vonMisesPerNode;
 
     /// compute the values of vonMises stress in nodes

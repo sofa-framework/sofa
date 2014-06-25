@@ -337,7 +337,7 @@ void FixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     if (!this->isActive()) return;
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     //serr<<"FixedConstraint<DataTypes>::draw(), x.size() = "<<x.size()<<sendl;
 
 

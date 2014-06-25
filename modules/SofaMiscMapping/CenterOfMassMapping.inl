@@ -63,7 +63,7 @@ void CenterOfMassMapping<TIn, TOut>::init()
     totalMass = 0.0;
 
     //compute the total mass of the object
-    for (unsigned int i=0 ; i<this->fromModel->getX()->size() ; i++)
+    for (unsigned int i=0, size = this->fromModel->read(core::ConstVecCoordId::position())->getValue().size() ; i< size; i++)
         totalMass += masses->getElementMass(i);
 }
 
@@ -132,7 +132,7 @@ void CenterOfMassMapping<TIn, TOut>::applyJT ( typename In::VecDeriv& parentForc
 template <class TIn, class TOut>
 void CenterOfMassMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
-    const typename Out::VecCoord &X = *this->toModel->getX();
+    const typename Out::VecCoord &X = this->toModel->read(core::ConstVecCoordId::position())->getValue();
 
     std::vector< Vector3 > points;
     Vector3 point1,point2;

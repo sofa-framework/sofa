@@ -143,7 +143,7 @@ void TriangularAnisotropicFEMForceField<DataTypes>::getFiberDir(int element, Der
     if ((unsigned)element < lfd.size())
     {
         const Deriv& ref = lfd[element];
-        const VecCoord& x = *this->mstate->getX();
+        const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
         topology::Triangle t = _topology->getTriangle(element);
         dir = (x[t[1]]-x[t[0]])*ref[0] + (x[t[2]]-x[t[0]])*ref[1];
     }
@@ -325,7 +325,7 @@ void TriangularAnisotropicFEMForceField<DataTypes>::draw(const core::visual::Vis
 
     if (showFiber.getValue() && lfd.size() >= (unsigned)_topology->getNbTriangles())
     {
-        const VecCoord& x = *this->mstate->getX();
+        const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
         int nbTriangles=_topology->getNbTriangles();
         glColor3f(0,0,0);
         glBegin(GL_LINES);

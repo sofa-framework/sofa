@@ -452,7 +452,7 @@ void TetrahedralTensorMassForceField<DataTypes>::draw(const core::visual::Visual
     if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-// 	VecCoord& x = *this->mstate->getX();
+// 	VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 // 	int nbTriangles=_topology->getNbTriangles();
 
     /*

@@ -442,7 +442,7 @@ void SPHFluidSurfaceMapping<In,Out>::draw(const core::visual::VisualParams* vpar
 
 
     std::vector< Vector3 > points2;
-    const OutVecCoord& out = *this->toModel->getX();
+    const OutVecCoord& out = this->toModel->read(core::ConstVecCoordId::position())->getValue();
     for (unsigned int i=0; i<out.size(); ++i)
     {
         points2.push_back(out[i]);

@@ -210,9 +210,9 @@ void SPHFluidForceField<DataTypes>::init()
     this->getContext()->get(grid); //new Grid(particleRadius.getValue());
     if (grid==NULL)
         serr<<"SpatialGridContainer not found by SPHFluidForceField, slow O(n2) method will be used !!!" << sendl;
-    int n = (*this->mstate->getX()).size();
+    const unsigned n = this->mstate->read(core::ConstVecCoordId::position())->getValue().size();
     particles.resize(n);
-    for (int i=0; i<n; i++)
+    for (unsigned i=0u; i<n; i++)
     {
         particles[i].neighbors.clear();
 #ifdef SOFA_DEBUG_SPATIALGRIDCONTAINER
@@ -524,7 +524,7 @@ void SPHFluidForceField<DataTypes>::addDForce(const core::MechanicalParams* mpar
     const VecDeriv& dx1 = d_dx.getValue();
     Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
-    const VecCoord& p1 = *this->mstate->getX();
+    const VecCoord& p1 = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     f1.resize(dx1.size());
     for (unsigned int i=0; i<this->dforces.size(); i++)
     {
@@ -548,7 +548,7 @@ void SPHFluidForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
     if (!vparams->displayFlags().getShowForceFields()) return;
     //if (grid != NULL)
     //	grid->draw(vparams);
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     glDisable(GL_LIGHTING);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

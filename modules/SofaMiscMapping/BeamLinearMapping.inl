@@ -88,7 +88,7 @@ void BeamLinearMapping<TIn, TOut>::init()
     bool local = localCoord.getValue();
     if (this->points.empty() && this->toModel!=NULL)
     {
-        const typename In::VecCoord& xfrom = *this->fromModel->getX();
+        const typename In::VecCoord& xfrom = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
         beamLength.resize(xfrom.size());
 
         for (unsigned int i=0; i<xfrom.size()-1; i++)
@@ -99,7 +99,7 @@ void BeamLinearMapping<TIn, TOut>::init()
         if (xfrom.size()>=2)
             beamLength[xfrom.size()-1] = beamLength[xfrom.size()-2];
 
-        const VecCoord& x = *this->toModel->getX();
+        const VecCoord& x = this->toModel->read(core::ConstVecCoordId::position())->getValue();
         sout << "BeamLinearMapping: init "<<x.size()<<" points."<<sendl;
         points.resize(x.size());
 
@@ -229,7 +229,7 @@ void BeamLinearMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cpar
     typename In::MatrixDeriv* out = _out.beginEdit();
     const typename Out::MatrixDeriv& in = _in.getValue();
 
-    const typename In::VecCoord& x = *this->fromModel->getX();
+    const typename In::VecCoord& x = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
 
     typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
 
@@ -285,7 +285,7 @@ void BeamLinearMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparam
     std::vector< Vector3 > points;
     Vector3 point;
 
-    const typename Out::VecCoord& x = *this->toModel->getX();
+    const typename Out::VecCoord& x = this->toModel->read(core::ConstVecCoordId::position())->getValue();
     for (unsigned int i=0; i<x.size(); i++)
     {
         point = OutDataTypes::getCPos(x[i]);
@@ -300,7 +300,7 @@ template <class TIn, class TOut>
 const sofa::defaulttype::BaseMatrix* BeamLinearMapping<TIn, TOut>::getJ()
 {
 
-    const unsigned int  inStateSize = this->fromModel->getX()->size();
+    const unsigned int  inStateSize = this->fromModel->read(core::ConstVecCoordId::position())->getValue().size();
     const unsigned int outStateSize = points.size();
 
     if (matrixJ.get() == 0 || updateJ)

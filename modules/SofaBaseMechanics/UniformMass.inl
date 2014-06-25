@@ -92,12 +92,12 @@ void UniformMass<DataTypes, MassType>::reinit()
     if ( this->totalMass.getValue() >0 && this->mstate!=NULL )
     {
         MassType* m = this->mass.beginEdit();
-        *m = ( ( typename DataTypes::Real ) this->totalMass.getValue() / this->mstate->getX()->size() );
+        *m = ( ( typename DataTypes::Real ) this->totalMass.getValue() / this->mstate->read(core::ConstVecCoordId::position())->getValue().size() );
         this->mass.endEdit();
     }
     else
     {
-        this->totalMass.setValue ( this->mstate->getX()->size() * (Real)this->mass.getValue() );
+        this->totalMass.setValue ( this->mstate->read(core::ConstVecCoordId::position())->getValue().size() * (Real)this->mass.getValue() );
     }
 }
 
@@ -134,7 +134,7 @@ void UniformMass<DataTypes, MassType>::handleTopologyChange()
                 if ( m_handleTopoChange.getValue() )
                 {
                     MassType* m = this->mass.beginEdit();
-                    *m = ( ( typename DataTypes::Real ) this->totalMass.getValue() / this->mstate->getX()->size() );
+                    *m = ( ( typename DataTypes::Real ) this->totalMass.getValue() / this->mstate->read(core::ConstVecCoordId::position())->getValue().size() );
                     this->mass.endEdit();
                 }
                 break;
@@ -142,7 +142,7 @@ void UniformMass<DataTypes, MassType>::handleTopologyChange()
             case core::topology::POINTSREMOVED:
                 if ( m_handleTopoChange.getValue() )
                 {
-                    this->totalMass.setValue ( this->mstate->getX()->size() * (Real)this->mass.getValue() );
+                    this->totalMass.setValue (this->mstate->read(core::ConstVecCoordId::position())->getValue().size() * (Real)this->mass.getValue() );
                 }
                 break;
 
@@ -436,7 +436,7 @@ void UniformMass<DataTypes, MassType>::draw(const core::visual::VisualParams* vp
 #ifndef SOFA_NO_OPENGL
     if ( !vparams->displayFlags().getShowBehaviorModels() )
         return;
-    helper::ReadAccessor<VecCoord> x = *this->mstate->getX();
+    helper::ReadAccessor<VecCoord> x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     unsigned int ibegin = 0;
     unsigned int iend = x.size();

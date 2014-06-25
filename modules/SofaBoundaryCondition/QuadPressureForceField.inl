@@ -221,7 +221,7 @@ void QuadPressureForceField<DataTypes>::draw(const core::visual::VisualParams* v
     if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     glDisable(GL_LIGHTING);
 

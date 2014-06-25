@@ -89,7 +89,7 @@ void CuttingPoint::draw(const core::visual::VisualParams* )
         helper::gl::glVertexT(newPos);
         glEnd();
     }
-    const VecCoord& x = *mstate->getX();
+    const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
     const SetIndexArray& points = getPointSubSet();
     if (!points.empty())
     {

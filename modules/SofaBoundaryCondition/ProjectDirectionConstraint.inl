@@ -227,7 +227,7 @@ void  ProjectDirectionConstraint<DataTypes>::reinit()
 //    cerr<<"ProjectDirectionConstraint<DataTypes>::reinit(), jacobian = " << jacobian << endl;
 
 
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     const Indices &indices = f_indices.getValue();
     for( Indices::const_iterator it = indices.begin() ; it != indices.end() ; ++it )
     {
@@ -307,7 +307,7 @@ void ProjectDirectionConstraint<DataTypes>::draw(const core::visual::VisualParam
 #ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     if (!this->isActive()) return;
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     const Indices & indices = f_indices.getValue();
 

@@ -720,7 +720,7 @@ template<class DataTypes>
 bool SpatialGridContainer<DataTypes>::sortPoints()
 {
     if (mstate)
-        updateGrid(*mstate->getX());
+        updateGrid(mstate->read(core::ConstVecCoordId::position())->getValue());
     if (this->f_printLog.getValue())
         std::cout << "SpatialGridContainer::sortPoints(): sorting..."<<std::endl;
     helper::vector<unsigned int> old2new, new2old;
@@ -790,7 +790,7 @@ void SpatialGridContainer<DataTypes>::handleEvent(sofa::core::objectmodel::Event
         else if (d_autoUpdate.getValue())
         {
             if (mstate)
-                updateGrid(*mstate->getX());
+                updateGrid(mstate->read(core::ConstVecCoordId::position())->getValue());
         }
     }
 }

@@ -676,7 +676,7 @@ void HexahedralFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
     if (!this->mstate) return;
     if (!f_drawing.getValue()) return;
 
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);

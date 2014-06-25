@@ -128,9 +128,9 @@ void JointSpringForceField<DataTypes>::bwdInit()
 {
     //   this->Inherit::bwdInit();
 
-    const VecCoord& x1= *this->mstate1->getX();
+    const VecCoord& x1= this->mstate1->read(core::ConstVecCoordId::position())->getValue();
 
-    const VecCoord& x2= *this->mstate2->getX();
+    const VecCoord& x2= this->mstate2->read(core::ConstVecCoordId::position())->getValue();
     sofa::helper::vector<Spring> &springsVector=*(springs.beginEdit());
     for (unsigned int i=0; i<springs.getValue().size(); ++i)
     {
@@ -390,8 +390,8 @@ void JointSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vp
 {
 #ifndef SOFA_NO_OPENGL
     if (!((this->mstate1 == this->mstate2)?vparams->displayFlags().getShowForceFields():vparams->displayFlags().getShowInteractionForceFields())) return;
-    const VecCoord& p1 = *this->mstate1->getX();
-    const VecCoord& p2 = *this->mstate2->getX();
+    const VecCoord& p1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& p2 = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
 
     glDisable(GL_LIGHTING);
     bool external = (this->mstate1!=this->mstate2);

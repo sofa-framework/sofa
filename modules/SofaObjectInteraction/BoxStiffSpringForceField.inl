@@ -89,8 +89,8 @@ void BoxStiffSpringForceField<DataTypes>::bwdInit()
     this->mstate2->getIndicesInSpace( indices2, b2[0],b2[3],b2[1],b2[4],b2[2],b2[5] );
 
 
-    const VecCoord& x1 = *this->mstate1->getX();
-    const VecCoord& x2 = *this->mstate2->getX();
+    const VecCoord& x1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x2 = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
 
     //Attach springs using with priority the shortest distance between points
     Real min_dist=0;
@@ -162,7 +162,7 @@ void BoxStiffSpringForceField<DataTypes>::draw(const core::visual::VisualParams*
         return;
 
     Inherit::draw(vparams);
-    //     const VecCoord& x = *this->mstate->getX();
+    //     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     //     glDisable (GL_LIGHTING);
     //     glPointSize(10);
     //     glColor4f (1,0.5,0.5,1);

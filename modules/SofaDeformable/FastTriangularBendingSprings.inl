@@ -491,7 +491,7 @@ void FastTriangularBendingSprings<DataTypes>::draw(const core::visual::VisualPar
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
 
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     //VecCoord& x_rest = *this->mstate->getX0();
     //int nbTriangles=_topology->getNbTriangles();
 

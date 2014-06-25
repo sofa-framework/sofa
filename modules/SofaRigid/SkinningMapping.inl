@@ -583,8 +583,8 @@ template <class TIn, class TOut>
 void SkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
 #ifndef SOFA_NO_OPENGL
-    const typename Out::VecCoord& xto = *this->toModel->getX();
-    const typename In::VecCoord& xfrom = *this->fromModel->getX();
+    const typename Out::VecCoord& xto = this->toModel->read(core::ConstVecCoordId::position())->getValue();
+    const typename In::VecCoord& xfrom = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
     unsigned int nbref = this->nbRef.getValue()[0];
 
     ReadAccessor<Data<vector<SVector<InReal> > > > m_weights  ( weight );

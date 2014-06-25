@@ -130,7 +130,7 @@ void EdgePressureForceField<DataTypes>::addForce(const sofa::core::MechanicalPar
 template<class DataTypes>
 void EdgePressureForceField<DataTypes>::initEdgeInformation()
 {
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     if (x.empty())
     {
@@ -247,7 +247,7 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
 template<class DataTypes>
 void EdgePressureForceField<DataTypes>::updateEdgeInformation()
 {
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     if (x.empty())
     {
@@ -384,7 +384,7 @@ void EdgePressureForceField<DataTypes>::draw(const core::visual::VisualParams*)
 
     double aSC = arrowSizeCoef.getValue();
 
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     glDisable(GL_LIGHTING);
 
     glBegin(GL_LINES);

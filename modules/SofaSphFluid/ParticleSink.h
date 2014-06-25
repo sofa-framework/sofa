@@ -130,7 +130,7 @@ public:
     {
         //sout << "ParticleSink: animate begin time="<<time<<sendl;
         if (!this->mstate) return;
-        const VecCoord& x = *this->mstate->getX();
+        const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
         const VecDeriv& v = *this->mstate->getV();
         int n = x.size();
         helper::vector<unsigned int> remove;

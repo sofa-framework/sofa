@@ -64,8 +64,8 @@ void InterpolationController<DataTypes>::bwdInit() {
         return;
     }
 
-    fromXs = fromModel->getX();
-    toXs = toModel->getX();
+    fromXs = &fromModel->read(core::ConstVecCoordId::position())->getValue();
+    toXs = &toModel->read(core::ConstVecCoordId::position())->getValue();
 
     if (fromXs->size() != toXs->size())
     {
