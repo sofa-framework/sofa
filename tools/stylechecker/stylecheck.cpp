@@ -58,10 +58,10 @@ public:
     // and
     // http://clang.llvm.org/doxygen/classclang_1_1RecursiveASTVisitor.html
     bool VisitCXXRecordDecl(CXXRecordDecl *record) {
-        return true;
+        if(Context==NULL)
+            return true ;
+
         FullSourceLoc FullLocation = Context->getFullLoc(record->getLocStart());
-
-
         // Check this declaration is not in the system headers...
         if ( FullLocation.isValid() && !exclude(FullLocation.getManager() , record) )
         {
@@ -71,21 +71,24 @@ public:
             RecordDecl::field_iterator it=record->field_begin() ;
             for(;it!=record->field_end();it++){
                 clang::FieldDecl* ff=*it;
-                ff->isTemplateDecl();
 
-                SourceRange declsr=(*it)->getMostRecentDecl()->getSourceRange() ;
+                SourceRange declsr=ff->getMostRecentDecl()->getSourceRange() ;
                 SourceLocation sl=declsr.getBegin();
-                std::string name=(*it)->getName() ;
+                std::string name=ff->getName() ;
+
+                if( smanager.getFileEntryForID(smanager.getFileID(sl)) == NULL ){
+                    continue ;
+                }
 
                 if(isInExcludedPath(smanager.getFileEntryForID(smanager.getFileID(sl))->getName())){
                     continue ;
                 }
 
-                if((*it)->getAccess()==AS_public)
+                if(ff->getAccess()==AS_public){
                     continue ;
+                }
 
-
-                CXXRecordDecl* rd=(*it)->getType()->getAsCXXRecordDecl() ;
+                CXXRecordDecl* rd=ff->getType()->getAsCXXRecordDecl() ;
                 if(rd){
 
                     std::string type=rd->getNameAsString() ;
