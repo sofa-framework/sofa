@@ -13,7 +13,7 @@
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/helper/BackTrace.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/component/init.h>
+#include <SofaComponentMain/init.h>
 #include <sofa/core/objectmodel/GUIEvent.h>
 
 #include <sofa/gui/GUIManager.h>
