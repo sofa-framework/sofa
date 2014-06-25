@@ -40,8 +40,6 @@ namespace core
 namespace collision
 {
 
-using sofa::defaulttype::Vector3;
-
 // uncomment if you want to use the freePoint information
 // #define DETECTIONOUTPUT_FREEMOTION
 //#define DETECTIONOUTPUT_BARYCENTRICINFO
@@ -89,6 +87,7 @@ public:
 class DetectionOutput
 {
 public:
+    typedef sofa::defaulttype::Vector3 Vector3;
     /// Pair of colliding elements.
     std::pair<core::CollisionElementIterator, core::CollisionElementIterator> elem;
     typedef int64_t ContactId;
