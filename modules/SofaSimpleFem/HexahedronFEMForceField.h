@@ -248,6 +248,12 @@ public:
 
     virtual void addDForce (const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& df, const DataVecDeriv& dx);
 
+    virtual double getPotentialEnergy(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecCoord&  /* x */) const
+    {
+        serr << "Get potentialEnergy not implemented" << sendl;
+        return 0.0;
+    }
+
     const Transformation& getElementRotation(const unsigned elemidx);
 
     void getNodeRotation(Transformation& R, unsigned int nodeIdx)
