@@ -184,6 +184,7 @@ public:
     template<class T>
     static bool canCreate(T* obj, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
     {
+#ifndef SOFA_DEPRECATE_OLD_API
         MechanicalState<DataTypes>* mstate1 = NULL;
         MechanicalState<DataTypes>* mstate2 = NULL;
         std::string object1 = arg->getAttribute("object1","@./");
@@ -199,7 +200,7 @@ public:
 
         if (!mstate1 || !mstate2)
             return false;
-
+#endif // SOFA_DEPRECATE_OLD_API
         return BaseInteractionProjectiveConstraintSet::canCreate(obj, context, arg);
     }
 
@@ -214,6 +215,7 @@ public:
 
         if (arg)
         {
+#ifndef SOFA_DEPRECATE_OLD_API
             std::string object1 = arg->getAttribute("object1","");
             std::string object2 = arg->getAttribute("object2","");
             if (!object1.empty() && object1[0] != '@')
@@ -226,7 +228,7 @@ public:
                 object2 = BaseLink::ConvertOldPath(object2, "object2", "object2", context, false);
                 arg->setAttribute("object2", object2.c_str());
             }
-
+#endif // SOFA_DEPRECATE_OLD_API
             obj->parse(arg);
         }
 
