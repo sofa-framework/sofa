@@ -37,9 +37,6 @@
 #include <sofa/core/behavior/BaseAnimationLoop.h>
 #include <sofa/core/collision/Pipeline.h>
 
-using namespace sofa::core;
-
-
 namespace sofa
 {
 
@@ -55,7 +52,7 @@ protected :
     bool firstNodeVisited;
 #endif
 public:
-    AnimateVisitor(const core::ExecParams* params = ExecParams::defaultInstance());
+    AnimateVisitor(const core::ExecParams* params = core::ExecParams::defaultInstance());
     AnimateVisitor(const core::ExecParams* params /* PARAMS FIRST  = ExecParams::defaultInstance()*/, double dt);
 
     void setDt(double v) { dt = v; }
