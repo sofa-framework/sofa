@@ -64,7 +64,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::TFEMFFOTriangleInfoHandler::applyC
 {
     if (ff)
     {
-        ff->initTriangleInfo(triangleIndex,ti,t, *ff->mstate->getX0());
+        ff->initTriangleInfo(triangleIndex,ti,t, ff->mstate->read(core::ConstVecCoordId::restPosition())->getValue());
     }
 }
 
@@ -228,7 +228,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::reinit()
     const unsigned int nbTriangles = _topology->getNbTriangles();
     const VecElement& triangles = _topology->getTriangles();
     const  VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    const  VecCoord& x0 = *this->mstate->getX0();
+    const  VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
     VecTriangleInfo& triangleInf = *(triangleInfo.beginEdit());
     VecTriangleState& triangleSta = *(triangleState.beginEdit());
     triangleInf.resize(nbTriangles);

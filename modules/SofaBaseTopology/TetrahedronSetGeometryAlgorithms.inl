@@ -422,7 +422,7 @@ template< class DataTypes>
 void TetrahedronSetGeometryAlgorithms< DataTypes >::getRestTetrahedronVertexCoordinates(const TetraID i, Coord pnt[4]) const
 {
     const Tetrahedron t = this->m_topology->getTetrahedron(i);
-    const typename DataTypes::VecCoord& p = *(this->object->getX0());
+    const typename DataTypes::VecCoord& p = (this->object->read(core::ConstVecCoordId::restPosition())->getValue());
 
     for(unsigned int i=0; i<4; ++i)
     {
@@ -445,7 +445,7 @@ template< class DataTypes>
 typename DataTypes::Real TetrahedronSetGeometryAlgorithms< DataTypes >::computeRestTetrahedronVolume( const TetraID i) const
 {
     const Tetrahedron t=this->m_topology->getTetrahedron(i);
-    const typename DataTypes::VecCoord& p = *(this->object->getX0());
+    const typename DataTypes::VecCoord& p = (this->object->read(core::ConstVecCoordId::restPosition())->getValue());
     Real volume = (Real)(tripleProduct(p[t[1]]-p[t[0]],p[t[2]]-p[t[0]],p[t[3]]-p[t[0]])/6.0);
     if(volume<0)
         volume=-volume;
@@ -455,7 +455,7 @@ typename DataTypes::Real TetrahedronSetGeometryAlgorithms< DataTypes >::computeR
 template< class DataTypes>
 typename DataTypes::Real TetrahedronSetGeometryAlgorithms< DataTypes >::computeRestTetrahedronVolume( const Tetrahedron t) const
 {
-    const typename DataTypes::VecCoord& p = *(this->object->getX0());
+    const typename DataTypes::VecCoord& p = (this->object->read(core::ConstVecCoordId::restPosition())->getValue());
     Real volume = (Real)(tripleProduct(p[t[1]]-p[t[0]],p[t[2]]-p[t[0]],p[t[3]]-p[t[0]])/6.0);
     if(volume<0)
         volume=-volume;
@@ -688,7 +688,7 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const Coord& 
 template <typename DataTypes>
 void TetrahedronSetGeometryAlgorithms<DataTypes>::getIntersectionPointWithPlane(const TetraID ind_ta, sofa::defaulttype::Vec<3,Real>& c, sofa::defaulttype::Vec<3,Real>& normal, sofa::helper::vector< sofa::defaulttype::Vec<3,Real> >& intersectedPoint, SeqEdges& intersectedEdge)
 {
-    const typename DataTypes::VecCoord& vect_c = *(this->object->getX0());
+    const typename DataTypes::VecCoord& vect_c = (this->object->read(core::ConstVecCoordId::restPosition())->getValue());
     const Tetrahedron ta=this->m_topology->getTetrahedron(ind_ta);
     const EdgesInTetrahedron edgesInTetra=this->m_topology->getEdgesInTetrahedron(ind_ta);
     const SeqEdges edges=this->m_topology->getEdges();
@@ -748,7 +748,7 @@ bool TetrahedronSetGeometryAlgorithms<DataTypes>::computeIntersectionEdgeWithPla
 template <typename DataTypes>
 bool TetrahedronSetGeometryAlgorithms<DataTypes>::checkNodeSequence(Tetra& tetra)
 {
-    const typename DataTypes::VecCoord& vect_c = *(this->object->getX0());
+    const typename DataTypes::VecCoord& vect_c = (this->object->read(core::ConstVecCoordId::restPosition())->getValue());
     sofa::defaulttype::Vec<3,Real> vec[3];
     for(int i=1; i<4; i++)
     {

@@ -208,23 +208,23 @@ inline void TetrahedronFEMForceField<DataTypes>::getElementStiffnessMatrix(Real*
         reinit();
         needUpdateTopology = false;
     }
-    const VecCoord *X0=this->mstate->getX0();
+    const VecCoord X0=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
     Index a = te[0];
     Index b = te[1];
     Index c = te[2];
     Index d = te[3];
 
     Transformation R_0_1;
-    computeRotationLarge( R_0_1, (*X0), a, b, c);
+    computeRotationLarge( R_0_1, (X0), a, b, c);
 
     MaterialStiffness	materialMatrix;
     StrainDisplacement	strainMatrix;
     helper::fixed_array<Coord,4> rotatedInitialElements;
 
-    rotatedInitialElements[0] = R_0_1*(*X0)[a];
-    rotatedInitialElements[1] = R_0_1*(*X0)[b];
-    rotatedInitialElements[2] = R_0_1*(*X0)[c];
-    rotatedInitialElements[3] = R_0_1*(*X0)[d];
+    rotatedInitialElements[0] = R_0_1*(X0)[a];
+    rotatedInitialElements[1] = R_0_1*(X0)[b];
+    rotatedInitialElements[2] = R_0_1*(X0)[c];
+    rotatedInitialElements[3] = R_0_1*(X0)[d];
 
     rotatedInitialElements[1] -= rotatedInitialElements[0];
     rotatedInitialElements[2] -= rotatedInitialElements[0];
@@ -334,11 +334,11 @@ void TetrahedronFEMForceField<DataTypes>::computeMaterialStiffness(MaterialStiff
     materialMatrix *= (youngModulus*(1-poissonRatio))/((1+poissonRatio)*(1-2*poissonRatio));
 
     // divide by 36 times volumes of the element
-    const VecCoord *X0=this->mstate->getX0();
+    const VecCoord X0=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
-    Coord A = (*X0)[b] - (*X0)[a];
-    Coord B = (*X0)[c] - (*X0)[a];
-    Coord C = (*X0)[d] - (*X0)[a];
+    Coord A = (X0)[b] - (X0)[a];
+    Coord B = (X0)[c] - (X0)[a];
+    Coord C = (X0)[d] - (X0)[a];
     Coord AB = cross(A, B);
     Real volumes6 = fabs( dot( AB, C ) );
     if (volumes6<0)
@@ -1432,7 +1432,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
     {
     if (f_initialPoints.getValue().size() == 0)
     {
-          VecCoord& p = *this->mstate->getX0();
+          VecCoord& p = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
           (*f_initialPoints.beginEdit()) = p;
         }
     }*/
@@ -1468,7 +1468,7 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
     //serr<<"TetrahedronFEMForceField<DataTypes>::reinit"<<sendl;
 
     setMethod(f_method.getValue() );
-    const VecCoord& p = *this->mstate->getX0();
+    const VecCoord& p = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
     _initialPoints.setValue(p);
     strainDisplacements.resize( _indexedElements->size() );
     materialsStiffnesses.resize(_indexedElements->size() );

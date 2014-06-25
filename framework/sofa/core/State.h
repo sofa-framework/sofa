@@ -141,14 +141,6 @@ public:
     /// @{
 
 
-    /// Return the current rest position vector
-    /// (return NULL if the state does not store rest position).
-    /// @deprecated use read(ConstVecCoordId::restPosition()) instead.
-    virtual const VecCoord* getX0() const
-    {
-        const Data<VecCoord>* v = read(ConstVecCoordId::restPosition());
-        return (v == NULL) ? NULL : &(v->getValue());
-    }
 
     /// @}
 

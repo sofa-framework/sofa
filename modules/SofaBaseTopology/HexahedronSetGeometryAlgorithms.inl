@@ -58,7 +58,7 @@ template< class DataTypes>
 void HexahedronSetGeometryAlgorithms< DataTypes >::computeHexahedronRestAABB(const HexaID h, Coord& minCoord, Coord& maxCoord) const
 {
     const Hexahedron &t = this->m_topology->getHexahedron(h);
-    const typename DataTypes::VecCoord& p = *(this->object->getX0());
+    const typename DataTypes::VecCoord& p = (this->object->read(core::ConstVecCoordId::restPosition())->getValue());
 
     for(unsigned int i=0; i<3; ++i)
     {
@@ -83,7 +83,7 @@ template<class DataTypes>
 typename DataTypes::Coord HexahedronSetGeometryAlgorithms<DataTypes>::computeHexahedronRestCenter(const HexaID h) const
 {
     const Hexahedron &t = this->m_topology->getHexahedron(h);
-    const typename DataTypes::VecCoord& p = *(this->object->getX0());
+    const typename DataTypes::VecCoord& p = (this->object->read(core::ConstVecCoordId::restPosition())->getValue());
 
     return (p[t[0]] + p[t[1]] + p[t[2]] + p[t[3]] + p[t[4]] + p[t[5]] + p[t[6]] + p[t[7]]) * (Real) 0.125;
 }
@@ -104,7 +104,7 @@ template< class DataTypes>
 void HexahedronSetGeometryAlgorithms< DataTypes >::getRestHexahedronVertexCoordinates(const HexaID h, Coord pnt[8]) const
 {
     const Hexahedron &t = this->m_topology->getHexahedron(h);
-    const typename DataTypes::VecCoord& p = *(this->object->getX0());
+    const typename DataTypes::VecCoord& p = (this->object->read(core::ConstVecCoordId::restPosition())->getValue());
 
     for(unsigned int i=0; i<8; ++i)
     {
@@ -376,7 +376,7 @@ template< class DataTypes>
 typename DataTypes::Real HexahedronSetGeometryAlgorithms< DataTypes >::computeRestHexahedronVolume( const HexaID /*h*/) const
 {
     //const Hexahedron &t = this->m_topology->getHexahedron(h);
-    //const VecCoord& p = *(this->object->getX0());
+    //const VecCoord& p = (this->object->read(core::ConstVecCoordId::restPosition())->getValue());
     Real volume=(Real)(0.0); /// @todo : implementation of computeRestHexahedronVolume
     return volume;
 }

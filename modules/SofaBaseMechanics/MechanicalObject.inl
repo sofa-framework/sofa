@@ -1049,7 +1049,7 @@ void MechanicalObject<DataTypes>::init()
     VecDeriv& v_wA = *v_wAData->beginEdit();
 
     //case if X0 has been set but not X
-    if (getX0()->size() > x_wA.size())
+    if (read(core::ConstVecCoordId::restPosition())->getValue().size() > x_wA.size())
     {
         vOp(core::ExecParams::defaultInstance(), VecId::position(), VecId::restPosition());
     }

@@ -56,7 +56,7 @@ void RestShapeSpringsForceField<Rigid3dTypes>::addForce(const core::MechanicalPa
 
     sofa::helper::ReadAccessor< DataVecCoord > p0 = *getExtPosition();
 
-    //std::cout<<"addForce with p_0 ="<<p_0<<" getX0"<<(*this->mstate->getX0())<<std::endl;
+    //std::cout<<"addForce with p_0 ="<<p_0<<" read(core::ConstVecCoordId::restPosition())->getValue()"<<(this->mstate->read(core::ConstVecCoordId::restPosition())->getValue())<<std::endl;
 
     f1.resize(p1.size());
     //std::cout<<" size p1:"<<p1.size()<<std::endl;

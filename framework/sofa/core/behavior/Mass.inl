@@ -85,7 +85,7 @@ public:
 //     if (mFactor != 0.0)
 //     {
 //         if (this->mstate)
-//               Task<ParallelMassAddMDx < DataTypes > >(this,**this->mstate->getF(), **this->mstate->getV(),mFactor);
+//               Task<ParallelMassAddMDx < DataTypes > >(this,**this->mstate->getF(), *this->mstate->read(core::ConstVecCoordId::velocity())->getValue(),mFactor);
 //     }
 // }
 #endif /* SOFA_SMP */

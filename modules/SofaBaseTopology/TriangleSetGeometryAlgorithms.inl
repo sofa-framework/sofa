@@ -82,7 +82,7 @@ template<class DataTypes>
 typename DataTypes::Coord TriangleSetGeometryAlgorithms<DataTypes>::computeRestTriangleCenter(const TriangleID i) const
 {
     const Triangle &t = this->m_topology->getTriangle(i);
-    const typename DataTypes::VecCoord& p = *(this->object->getX0());
+    const typename DataTypes::VecCoord& p = (this->object->read(core::ConstVecCoordId::restPosition())->getValue());
 
     return (p[t[0]] + p[t[1]] + p[t[2]]) / (Real) 3.0;
 }
@@ -135,7 +135,7 @@ template< class DataTypes>
 void TriangleSetGeometryAlgorithms< DataTypes >::getRestTriangleVertexCoordinates(const TriangleID i, Coord pnt[3]) const
 {
     const Triangle &t = this->m_topology->getTriangle(i);
-    const typename DataTypes::VecCoord& p = *(this->object->getX0());
+    const typename DataTypes::VecCoord& p = (this->object->read(core::ConstVecCoordId::restPosition())->getValue());
 
     for(unsigned int i=0; i<3; ++i)
     {
@@ -156,7 +156,7 @@ template< class DataTypes>
 typename DataTypes::Real TriangleSetGeometryAlgorithms< DataTypes >::computeRestTriangleArea( const TriangleID i) const
 {
     const Triangle &t = this->m_topology->getTriangle(i);
-    const typename DataTypes::VecCoord& p = *(this->object->getX0());
+    const typename DataTypes::VecCoord& p = (this->object->read(core::ConstVecCoordId::restPosition())->getValue());
     Real area = (Real) (areaProduct(p[t[1]]-p[t[0]],p[t[2]]-p[t[0]]) * 0.5);
     return area;
 }
@@ -287,7 +287,7 @@ sofa::helper::vector< double > TriangleSetGeometryAlgorithms< DataTypes >::compu
     const double ZERO = 1e-12;
     sofa::helper::vector< double > baryCoefs;
 
-    const typename DataTypes::VecCoord& vect_c = (bRest ? *(this->object->getX0()) : (this->object->read(core::ConstVecCoordId::position())->getValue()));
+    const typename DataTypes::VecCoord& vect_c = (bRest ? (this->object->read(core::ConstVecCoordId::restPosition())->getValue()) : (this->object->read(core::ConstVecCoordId::position())->getValue()));
 
     const typename DataTypes::Coord& c0 = vect_c[ind_p1];
     const typename DataTypes::Coord& c1 = vect_c[ind_p2];
@@ -396,7 +396,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isPointInsideTriangle(const Tri
 {
     const double ZERO = -1e-12;
     const typename DataTypes::VecCoord& vect_c = bRest
-        ? *(this->object->getX0())
+        ? (this->object->read(core::ConstVecCoordId::restPosition())->getValue())
         :(this->object->read(core::ConstVecCoordId::position())->getValue());
     const Triangle &t=this->m_topology->getTriangle(ind_t);
 

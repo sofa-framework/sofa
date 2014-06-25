@@ -196,7 +196,7 @@ void BeamFEMForceField<DataTypes>::reinitBeam(unsigned int i)
     Index a = (*_indexedElements)[i][0];
     Index b = (*_indexedElements)[i][1];
 
-    const VecCoord& x0 = *this->mstate->getX0();
+    const VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
     //    sout << "Beam "<<i<<" : ("<<a<<' '<<b<<") : beamsData size = "<<beamsData.size()<<" mstate size = "<<this->mstate->getSize()<<" x0 size = "<<x0.size()<<sendl;
     //if (needInit)
     if (stiffnessContainer)
@@ -464,7 +464,7 @@ void BeamFEMForceField<DataTypes>::initLarge(int i, Index a, Index b)
 template<class DataTypes>
 void BeamFEMForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const VecCoord & x, int i, Index a, Index b )
 {
-    const VecCoord& x0 = *this->mstate->getX0();
+    const VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
     beamQuat(i)= x[a].getOrientation();
     beamQuat(i).normalize();

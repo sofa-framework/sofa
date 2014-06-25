@@ -120,7 +120,7 @@ void CurveMapping<TIn, TOut>::init()
     this->toModel->resize(nout);
 
     lengthElements.resize(nin-1);
-//	const InVecCoord& x0 = *this->fromModel->getX0();
+    //	const InVecCoord& x0 = this->fromModel->read(core::ConstVecCoordId::restPosition())->getValue();
     const InVecCoord& x0 = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
 
     for (int i=0; i<nin-1; i++)
@@ -238,7 +238,7 @@ void CurveMapping<TIn, TOut>::rotateElements()
 {
     int nin = this->fromModel->getSize();
     rotatedQuatElements.resize(nin-1);
-    //const InVecCoord& x0 = *this->fromModel->getX0();
+    //const InVecCoord& x0 = this->fromModel->read(core::ConstVecCoordId::restPosition())->getValue();
     Real a = angle.getValue()[0];
     for (int i=0; i<nin-1; i++)
     {

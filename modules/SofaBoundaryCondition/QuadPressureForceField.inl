@@ -158,7 +158,7 @@ void QuadPressureForceField<DataTypes>::updateQuadInformation()
 template <class DataTypes>
 void QuadPressureForceField<DataTypes>::selectQuadsAlongPlane()
 {
-    const VecCoord& x = *this->mstate->getX0();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
     std::vector<bool> vArray;
     unsigned int i;
 

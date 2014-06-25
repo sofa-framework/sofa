@@ -120,7 +120,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::handleTopologyChange(core::topol
 				const VecElement& hexahedra = this->_topology->getHexahedra();
 				const sofa::helper::vector<unsigned int> &hexaModif = (static_cast< const HexahedraAdded *> (*iter))->hexahedronIndexArray;
 
-				const VecCoord& initialPoints = *this->mstate->getX0();
+				const VecCoord& initialPoints = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
 				helper::vector<ElementMass>& elementMasses = *this->_elementMasses.beginEdit();
 				helper::vector<Real>& elementTotalMass = *this->_elementTotalMass.beginEdit();
@@ -292,7 +292,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::computeLumpedMasses(  )
 template<class DataTypes>
 void HexahedralFEMForceFieldAndMass<DataTypes>::computeElementMasses(  )
 {
-    const VecCoord& initialPoints = *this->mstate->getX0();
+    const VecCoord& initialPoints = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
     const VecElement& hexahedra = this->_topology->getHexahedra();
 

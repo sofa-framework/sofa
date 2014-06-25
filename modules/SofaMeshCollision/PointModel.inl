@@ -330,7 +330,7 @@ void TPointModel<DataTypes>::computeContinuousBoundingTree(double dt, int maxDep
     if (!empty())
     {
         //VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
-        //VecDeriv& v = *mstate->getV();
+        //VecDeriv& v = mstate->read(core::ConstVecCoordId::velocity())->getValue();
         const SReal distance = (SReal)this->proximity.getValue();
         for (int i=0; i<size; i++)
         {

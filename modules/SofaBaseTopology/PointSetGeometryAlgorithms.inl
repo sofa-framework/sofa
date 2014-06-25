@@ -151,7 +151,7 @@ template<class DataTypes>
 const typename DataTypes::Coord& PointSetGeometryAlgorithms<DataTypes>::getPointRestPosition(const PointID pointId) const
 {
     // get rest positions
-    const typename DataTypes::VecCoord& p = *(object->getX0());
+    const typename DataTypes::VecCoord& p = (object->read(core::ConstVecCoordId::restPosition())->getValue());
 
     return p[pointId];
 }

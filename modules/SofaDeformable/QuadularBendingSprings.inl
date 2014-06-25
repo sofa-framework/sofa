@@ -99,7 +99,7 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyQuadCreation(const s
 
         unsigned int nb_activated = 0;
 
-        const typename DataTypes::VecCoord *restPosition=ff->mstate->getX0();
+        const typename DataTypes::VecCoord& restPosition=ff->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
         helper::vector<EdgeInformation>& edgeData = *(ff->edgeInfo.beginEdit());
 
@@ -166,11 +166,11 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyQuadCreation(const s
                         ei.ks=m_ks; //(fftest->ks).getValue();
                         ei.kd=m_kd; //(fftest->kd).getValue();
 
-                        Coord u1 = (*restPosition)[ei.m1] - (*restPosition)[ei.m2];
+                        Coord u1 = (restPosition)[ei.m1] - (restPosition)[ei.m2];
                         Real d1 = u1.norm();
                         ei.restlength1=(double) d1;
 
-                        Coord u2 = (*restPosition)[ei.m3] - (*restPosition)[ei.m4];
+                        Coord u2 = (restPosition)[ei.m3] - (restPosition)[ei.m4];
                         Real d2 = u2.norm();
                         ei.restlength2=(double) d2;
 
@@ -205,7 +205,7 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyQuadDestruction(cons
 
         //unsigned int u,v;
 
-        const typename DataTypes::VecCoord *restPosition=ff->mstate->getX0();
+        const typename DataTypes::VecCoord& restPosition=ff->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
         helper::vector<EdgeInformation>& edgeData = *(ff->edgeInfo.beginEdit());
 
         for (unsigned int i=0; i<quadRemoved.size(); ++i)
@@ -279,11 +279,11 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyQuadDestruction(cons
                         ei.ks=m_ks; //(fftest->ks).getValue();
                         ei.kd=m_kd; //(fftest->kd).getValue();
 
-                        Coord u1 = (*restPosition)[ei.m1] - (*restPosition)[ei.m2];
+                        Coord u1 = (restPosition)[ei.m1] - (restPosition)[ei.m2];
                         Real d1 = u1.norm();
                         ei.restlength1=(double) d1;
 
-                        Coord u2 = (*restPosition)[ei.m3] - (*restPosition)[ei.m4];
+                        Coord u2 = (restPosition)[ei.m3] - (restPosition)[ei.m4];
                         Real d2 = u2.norm();
                         ei.restlength2=(double) d2;
 
