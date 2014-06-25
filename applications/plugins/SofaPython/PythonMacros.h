@@ -41,7 +41,7 @@
 
 
 
-#include "SofaPython.h"
+#include "initSofaPython.h"
 
 
 

@@ -41,6 +41,15 @@ namespace controller
 {
 
 
+int PythonScriptControllerClass = core::RegisterObject("A Sofa controller scripted in python")
+        .add< PythonScriptController >()
+        //.addAlias("PythonController")
+        ;
+
+SOFA_DECL_CLASS(PythonController)
+
+
+
 PythonScriptController::PythonScriptController()
     : ScriptController()
     , m_filename(initData(&m_filename, "filename","Python script filename"))

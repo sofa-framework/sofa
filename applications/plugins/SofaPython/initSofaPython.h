@@ -22,42 +22,39 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "SofaPython.h"
-#include <sofa/core/Plugin.h>
-
-#include "SceneLoaderPY.h"
-#include "PythonScriptController.h"
-
-using sofa::component::controller::PythonScriptController;
-using sofa::simulation::SceneLoaderFactory;
+#ifndef INITSOFAPYTHON_H
+#define INITSOFAPYTHON_H
 
 
-class SofaPythonPlugin: public sofa::core::Plugin {
-public:
-    SofaPythonPlugin(): Plugin("SofaPython") {
-        setDescription("Imbeds Python scripts in Sofa.");
-        setVersion(SOFAPYTHON_VERSION);
-        setLicense("LGPL");
-        setAuthors("Bruno Carrez");
+#include <sofa/helper/system/config.h>
 
-        addComponent<PythonScriptController>("A Sofa controller scripted in python.");
-    }
+#ifdef SOFA_BUILD_SOFAPYTHON
+#define SOFA_SOFAPYTHON_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#define SOFA_SOFAPYTHON_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
 
-    virtual bool init() {
-        // register the scene loader
-        SceneLoaderFactory::getInstance()->addEntry(new sofa::simulation::SceneLoaderPY());
-        std::cout << "SofaPython: registered scene loader" << std::endl;
-        return true;
-    }
+namespace sofa
+{
 
-    virtual bool canBeUnloaded() {
-        return false;
-    }
+namespace component
+{
 
-    virtual bool exit() {
-        // TODO: remove the scene loader registered at init()
-        return false;
-    }
-};
+extern "C" {
+    SOFA_SOFAPYTHON_API void initExternalModule();
+    SOFA_SOFAPYTHON_API const char* getModuleName();
+    SOFA_SOFAPYTHON_API const char* getModuleVersion();
+    SOFA_SOFAPYTHON_API const char* getModuleLicense();
+    SOFA_SOFAPYTHON_API const char* getModuleDescription();
+    SOFA_SOFAPYTHON_API const char* getModuleComponentList();
+}
 
-SOFA_PLUGIN(SofaPythonPlugin);
+}
+
+}
+
+/** \mainpage
+  This is a the starting page of the plugin documentation, defined in file initEmptyPlugin.h
+  */
+
+#endif // INITEmptyPlugin_H
