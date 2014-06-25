@@ -24,6 +24,7 @@
 
 #include <iostream>
 #include <vector>
+#include <string>
 
 using namespace clang;
 using namespace clang::ast_matchers;
@@ -39,9 +40,20 @@ using namespace llvm;
 #define BLUE "\33[33m"
 #define DEFAULT "\33[39m"
 
+std::vector<std::string> excludedPathPatterns={"extlibs/", "/usr/include/qt4/", "framework/sofa/helper", "framework/sofa/defaulttype", "framework/sofa/core"};
 
-class StyleChecker
-        : public RecursiveASTVisitor<StyleChecker> {
+bool isInExcludedPath(const std::string& path){
+    for(auto pattern : excludedPathPatterns)
+    {
+        if( path.find(pattern) != std::string::npos )
+        {
+            return true ;
+        }
+    }
+    return false ;
+}
+
+class StyleChecker : public RecursiveASTVisitor<StyleChecker> {
 public:
 
     void setContext(const ASTContext* ctx){
@@ -99,6 +111,15 @@ public:
                 SourceLocation sl=declsr.getBegin();
                 std::string name=(*it)->getName() ;
 
+
+
+
+
+
+                if(isInExcludedPath(smanager.getFileEntryForID(smanager.getFileID(sl))->getName())){
+                    continue ;
+                }
+
                 std::cout << "Name: " << name << std::endl;
                 if((*it)->isImplicit())
                 {
@@ -124,10 +145,8 @@ public:
                     continue ;
                 }
 
-
                 if((*it)->getAccess()==AS_public)
                     continue ;
-
 
 
                 CXXRecordDecl* rd=(*it)->getType()->getAsCXXRecordDecl() ;
