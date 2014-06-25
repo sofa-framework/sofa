@@ -37,7 +37,7 @@
 
 #include <sstream>
 #include <algorithm>
-
+using namespace sofa::defaulttype;
 
 namespace sofa
 {
