@@ -35,7 +35,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/vector.h>
 
-#include <sofa/component/init.h>
+#include <SofaComponentMain/init.h>
 #include <SofaBaseMechanics/UniformMass.h>
 #include <SofaBoundaryCondition/ConstantForceField.h>
 #include <SofaMiscMapping/SubsetMultiMapping.h>
