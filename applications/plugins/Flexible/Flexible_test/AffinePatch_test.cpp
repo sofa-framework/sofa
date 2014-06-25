@@ -28,7 +28,7 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/Quater.h>
 #include <sofa/helper/RandomGenerator.h>
-#include <sofa/component/init.h>
+#include <SofaComponentMain/init.h>
 #include <sofa/core/ExecParams.h>
 
 //Including Simulation

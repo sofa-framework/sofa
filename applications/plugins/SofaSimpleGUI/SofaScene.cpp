@@ -6,7 +6,7 @@ using std::cout;
 using std::endl;
 
 #include <sofa/helper/system/PluginManager.h>
-#include <sofa/component/init.h>
+#include <SofaComponentMain/init.h>
 #include <sofa/simulation/common/xml/initXml.h>
 
 // sofa types should not be exposed

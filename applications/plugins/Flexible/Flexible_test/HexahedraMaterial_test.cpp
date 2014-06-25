@@ -26,7 +26,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 
 //Including Simulation
-#include <sofa/component/init.h>
+#include <SofaComponentMain/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 
 #include <SofaBoundaryCondition/QuadPressureForceField.h>
