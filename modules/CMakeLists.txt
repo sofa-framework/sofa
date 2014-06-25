@@ -41,7 +41,7 @@ RegisterProjects("SofaBoundaryCondition" OPTION "SOFA-LIB_COMPONENT_BOUNDARY_CON
 RegisterProjects("SofaBoundaryCondition_test" OPTION "SOFA-LIB_COMPONENT_BOUNDARY_CONDITION" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaBoundaryCondition/SofaBoundaryCondition_test")
 
 RegisterProjects("SofaConstraint" OPTION "SOFA-LIB_COMPONENT_CONSTRAINT" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaConstraint")
-#RegisterProjects("SofaConstraint_test" OPTION "SOFA-LIB_COMPONENT_CONSTRAINT" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaConstraint/SofaConstraint_test")
+RegisterProjects("SofaConstraint_test" OPTION "SOFA-LIB_COMPONENT_CONSTRAINT" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaConstraint/SofaConstraint_test")
 
 RegisterProjects("SofaDeformable" OPTION "SOFA-LIB_COMPONENT_DEFORMABLE" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaDeformable")
 #RegisterProjects("SofaDeformable_test" OPTION "SOFA-LIB_COMPONENT_DEFORMABLE" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaDeformable/SofaDeformable_test")
