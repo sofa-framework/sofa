@@ -78,6 +78,10 @@ public:
     typedef typename DataTypes::MatrixDeriv::RowType MatrixDerivRowType;
     typedef helper::vector<Real> VecDensity;
 
+    typedef Data<VecCoord> DataVecCoord;
+    typedef Data<VecDeriv> DataVecDeriv;
+    typedef Data<MatrixDeriv> DataMatrixDeriv;
+
     typedef core::behavior::MechanicalState<DataTypes> MechanicalModel;
 
     Data< Coord > f_translation;
@@ -394,16 +398,27 @@ public:
         projectResponseT(dx);
     }
 
+    virtual void projectResponse(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& dxData) ///< project dx to constrained space
+    {
+        VecDeriv& dx = *dxData.beginEdit(mparams);
+        projectResponseT(dx);
+        dxData.endEdit(mparams);
+    }
+
+/*
     void projectResponse(MatrixDerivRowType& dx)
     {
         projectResponseT(dx);
     }
+*/
 
-
-    virtual void projectVelocity(VecDeriv& res) ///< project dx to constrained space (dx models a velocity)
+    virtual void projectVelocity(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv&  vData ) ///< project dx to constrained space (dx models a velocity)
     {
         if (!this->mstate) return;
         if (lastparticles.getValue().empty()) return;
+
+        VecDeriv& res = *vData.beginEdit(mparams);
+
         double time = this->getContext()->getTime();
         if (time < f_start.getValue() || time > f_stop.getValue()) return;
         // constraint the most recent particles
@@ -416,12 +431,16 @@ public:
             if ( _lastparticles[s] >= res.size() ) continue;
             res[_lastparticles[s]] = v0;
         }
+        vData.endEdit(mparams);
     }
 
-    virtual void projectPosition(VecCoord& x) ///< project x to constrained space (x models a position)
+    virtual void projectPosition(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecCoord& xData) ///< project x to constrained space (x models a position)
     {
         if (!this->mstate) return;
         if (lastparticles.getValue().empty()) return;
+
+        VecCoord& x = *xData.beginEdit(mparams);
+
         double time = this->getContext()->getTime();
         if (time < f_start.getValue() || time > f_stop.getValue()) return;
         Deriv dpos = f_velocity.getValue()*(time - lasttime);
@@ -435,6 +454,12 @@ public:
             x[_lastparticles[s]] = lastpos[s];
             x[_lastparticles[s]] += dpos; // account for particle initial motion
         }
+        xData.endEdit(mparams);
+    }
+
+    virtual void projectJacobianMatrix(const sofa::core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataMatrixDeriv& /* cData */)
+    {
+
     }
 
     virtual void animateEnd(double /*dt*/, double /*time*/)
