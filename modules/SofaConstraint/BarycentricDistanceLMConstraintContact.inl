@@ -248,9 +248,9 @@ void BarycentricDistanceLMConstraintContact<TCollisionModel1,TCollisionModel2,Re
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
 void BarycentricDistanceLMConstraintContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::setInteractionTags(MechanicalState1* mstate1, MechanicalState2* mstate2)
 {
-    TagSet tagsm1 = mstate1->getTags();
-    TagSet tagsm2 = mstate2->getTags();
-    TagSet::iterator it;
+    sofa::core::objectmodel::TagSet tagsm1 = mstate1->getTags();
+    sofa::core::objectmodel::TagSet tagsm2 = mstate2->getTags();
+    sofa::core::objectmodel::TagSet::iterator it;
     for(it=tagsm1.begin(); it != tagsm1.end(); it++)
         ff->addTag(*it);
     for(it=tagsm2.begin(); it!=tagsm2.end(); it++)
