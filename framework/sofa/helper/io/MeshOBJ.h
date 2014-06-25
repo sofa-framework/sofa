@@ -38,8 +38,6 @@ namespace helper
 namespace io
 {
 
-using namespace sofa::defaulttype;
-
 class SOFA_HELPER_API MeshOBJ : public Mesh
 {
 public:
