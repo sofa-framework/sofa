@@ -82,12 +82,12 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::reinit()
     if (this->totalMass.getValue()>0 && this->mstate!=NULL)
     {
         MassType* m = this->mass.beginEdit();
-        *m = ((Real)this->totalMass.getValue() / this->mstate->getX()->size());
+        *m = ((Real)this->totalMass.getValue() / mstate->read(core::ConstVecCoordId::position())->getValue().size());
         this->mass.endEdit();
     }
     else
     {
-        this->totalMass.setValue(  this->mstate->getX()->size()*this->mass.getValue());
+        this->totalMass.setValue(  this->mstate->read(core::ConstVecCoordId::position())->getValue().size()*this->mass.getValue());
     }
 
     this->mass.beginEdit()->recalc();
@@ -214,7 +214,7 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::loadRigidMass(std::string filename)
         }
         this->setMass(m);
     }
-    else if (this->totalMass.getValue()>0 && this->mstate!=NULL) this->mass.setValue((Real)this->totalMass.getValue() / this->mstate->getX()->size());
+    else if (this->totalMass.getValue()>0 && this->mstate!=NULL) this->mass.setValue((Real)this->totalMass.getValue() / mstate->read(core::ConstVecCoordId::position())->getValue().size());
 
 }
 
@@ -456,12 +456,12 @@ void UniformMass<Rigid3fTypes, Rigid3fMass>::reinit()
     if (this->totalMass.getValue()>0 && this->mstate!=NULL)
     {
         MassType* m = this->mass.beginEdit();
-        *m = ((Real)this->totalMass.getValue() / this->mstate->getX()->size());
+        *m = ((Real)this->totalMass.getValue() / mstate->read(core::ConstVecCoordId::position())->getValue().size());
         this->mass.endEdit();
     }
     else
     {
-        this->totalMass.setValue(  this->mstate->getX()->size()*this->mass.getValue());
+        this->totalMass.setValue(  this->mstate->read(core::ConstVecCoordId::position())->getValue().size()*this->mass.getValue());
     }
 
     this->mass.beginEdit()->recalc();

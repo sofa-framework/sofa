@@ -2458,7 +2458,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::draw(const core::visual::Visual
     if( _drawType.getValue() == -1 ) return HexahedronFEMForceFieldAndMassT::draw(vparams);
 
 
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
 
     Vec<4,float> colour;

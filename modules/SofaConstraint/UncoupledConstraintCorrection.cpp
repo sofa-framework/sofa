@@ -353,7 +353,7 @@ SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types
 
     const VecReal& usedComp = compliance.getValue();
 
-    force.resize((*this->mstate->getX()).size());
+    force.resize((this->mstate->read(core::ConstVecCoordId::position())->getValue()).size());
 
     MatrixDerivRowConstIterator rowIt = constraints.begin();
     MatrixDerivRowConstIterator rowItEnd = constraints.end();

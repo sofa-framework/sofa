@@ -121,7 +121,7 @@ void CurveMapping<TIn, TOut>::init()
 
     lengthElements.resize(nin-1);
 //	const InVecCoord& x0 = *this->fromModel->getX0();
-    const InVecCoord& x0 = *this->fromModel->getX();
+    const InVecCoord& x0 = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
 
     for (int i=0; i<nin-1; i++)
     {
@@ -484,7 +484,7 @@ void CurveMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
     std::vector< Vector3 > points;
     Vector3 point;
 
-    const VecCoord& x = *this->toModel->getX();
+    const VecCoord& x = this->toModel->read(core::ConstVecCoordId::position())->getValue();
     for (unsigned int i=0; i<x.size(); i++)
     {
         point = DataTypes::getCPos(x[i]);

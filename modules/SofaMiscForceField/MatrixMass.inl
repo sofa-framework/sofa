@@ -279,7 +279,7 @@ void MatrixMass<DataTypes, MassType>::init()
         _usingDefaultDiagonalMatrices=true;
     }
 
-    assert( f_mass.getValue().size() == this->mstate->getX()->size() );
+    assert( f_mass.getValue().size() == this->mstate->read(core::ConstVecCoordId::position())->getValue().size() );
 
     if( this->_lumped.getValue() )
     {
@@ -346,7 +346,7 @@ template <class DataTypes, class MassType>
 void MatrixMass<DataTypes, MassType>::defaultDiagonalMatrices( )
 {
     VecMass& masses = *f_mass.beginEdit();
-    masses.resize(this->mstate->getX()->size());
+    masses.resize(this->mstate->read(core::ConstVecCoordId::position())->getValue().size());
     MassType diagonalMatrixMass = diagonalMass( _defaultValue.getValue() );
     for (unsigned i=0; i<masses.size(); ++i)
     {

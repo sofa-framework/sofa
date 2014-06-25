@@ -837,7 +837,7 @@ void TriangularFEMForceField<DataTypes>::computePrincipalStrain(Index elementInd
     //	Index b = _topology->getTriangle(elementIndex)[1];
     //	Index c = _topology->getTriangle(elementIndex)[2];
 
-    //	const VecCoord& x = *this->mstate->getX();
+    //	const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     helper::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
 
@@ -1133,7 +1133,7 @@ void TriangularFEMForceField<DataTypes>::computeStress(Vec<3,Real> &stress, Inde
     StrainDisplacement J;
     Vec<3,Real> strain;
     Transformation R_0_2, R_2_0;
-    const VecCoord& p = *this->mstate->getX();
+    const VecCoord& p = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     Index a = _topology->getTriangle(elementIndex)[0];
     Index b = _topology->getTriangle(elementIndex)[1];
     Index c = _topology->getTriangle(elementIndex)[2];
@@ -1212,7 +1212,7 @@ void TriangularFEMForceField<DataTypes>::computeStressAcrossDirection(Real &stre
     Index a = _topology->getTriangle(elementIndex)[0];
     Index b = _topology->getTriangle(elementIndex)[1];
     Index c = _topology->getTriangle(elementIndex)[2];
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     Coord n = cross(x[b]-x[a],x[c]-x[a]);
     Coord dir_t = cross(dir,n);
     this->computeStressAlongDirection(stress_across_dir, elementIndex, dir_t, stress);
@@ -1224,7 +1224,7 @@ void TriangularFEMForceField<DataTypes>::computeStressAcrossDirection(Real &stre
     Index a = _topology->getTriangle(elementIndex)[0];
     Index b = _topology->getTriangle(elementIndex)[1];
     Index c = _topology->getTriangle(elementIndex)[2];
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     Coord n = cross(x[b]-x[a],x[c]-x[a]);
     Coord dir_t = cross(dir,n);
     this->computeStressAlongDirection(stress_across_dir, elementIndex, dir_t);
@@ -1756,7 +1756,7 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
     if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     unsigned int nbTriangles=_topology->getNbTriangles();
 
     glDisable(GL_LIGHTING);

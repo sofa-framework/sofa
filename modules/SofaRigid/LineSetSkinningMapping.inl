@@ -84,8 +84,8 @@ double LineSetSkinningMapping<TIn, TOut>::convolutionSegment(const Vec<3,Real>& 
 template <class TIn, class TOut>
 void LineSetSkinningMapping<TIn, TOut>::init()
 {
-    const OutVecCoord& xto = *this->toModel->getX();
-    const InVecCoord& xfrom = *this->fromModel->getX();
+    const OutVecCoord& xto = this->toModel->read(core::ConstVecCoordId::position())->getValue();
+    const InVecCoord& xfrom = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
     t = this->fromModel->getContext()->getMeshTopology();
     linesInfluencedByVertice.resize(xto.size());
 
@@ -206,8 +206,8 @@ void LineSetSkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* v
 
     glBegin (GL_LINES);
 
-    const OutVecCoord& xto = *this->toModel->getX();
-    const InVecCoord& xfrom = *this->fromModel->getX();
+    const OutVecCoord& xto = this->toModel->read(core::ConstVecCoordId::position())->getValue();
+    const InVecCoord& xfrom = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
 
     for (unsigned int verticeIndex=0; verticeIndex<xto.size(); verticeIndex++)
     {
@@ -250,7 +250,7 @@ void LineSetSkinningMapping<TIn, TOut>::apply( typename Out::VecCoord& out, cons
 template <class TIn, class TOut>
 void LineSetSkinningMapping<TIn, TOut>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
-    const InVecCoord& xfrom = *this->fromModel->getX();
+    const InVecCoord& xfrom = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
 
     for (unsigned int verticeIndex=0; verticeIndex<out.size(); verticeIndex++)
     {
@@ -268,7 +268,7 @@ void LineSetSkinningMapping<TIn, TOut>::applyJ( typename Out::VecDeriv& out, con
 template <class TIn, class TOut>
 void LineSetSkinningMapping<TIn, TOut>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
 {
-    const InVecCoord& xfrom = *this->fromModel->getX();
+    const InVecCoord& xfrom = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
     out.clear();
     out.resize(xfrom.size());
 
@@ -309,7 +309,7 @@ void LineSetSkinningMapping<TIn, TOut>::applyJT( typename In::VecDeriv& out, con
 template <class TIn, class TOut>
 void LineSetSkinningMapping<TIn, TOut>::applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in )
 {
-    const InVecCoord& xfrom = *this->fromModel->getX();
+    const InVecCoord& xfrom = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
 
     typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
 

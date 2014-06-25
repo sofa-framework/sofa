@@ -484,8 +484,8 @@ void AttachConstraint<DataTypes>::init()
     if (f_radius.getValue() >= 0 && f_indices1.getValue().size()==0 && f_indices2.getValue().size()==0 && this->mstate1 && this->mstate2)
     {
         const Real maxR = f_radius.getValue();
-        const VecCoord& x1 = *this->mstate1->getX();
-        const VecCoord& x2 = *this->mstate2->getX();
+        const VecCoord& x1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
+        const VecCoord& x2 = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
         for (unsigned int i2=0; i2<x2.size(); ++i2)
         {
             int best = -1;
@@ -801,8 +801,8 @@ void AttachConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams
 
     const SetIndexArray & indices1 = f_indices1.getValue();
     const SetIndexArray & indices2 = f_indices2.getValue();
-    const VecCoord& x1 = *this->mstate1->getX();
-    const VecCoord& x2 = *this->mstate2->getX();
+    const VecCoord& x1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x2 = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
     glDisable (GL_LIGHTING);
     glPointSize(10);
     glColor4f (1,0.5,0.5,1);

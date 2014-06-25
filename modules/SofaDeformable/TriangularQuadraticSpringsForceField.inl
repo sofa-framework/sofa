@@ -325,7 +325,7 @@ void TriangularQuadraticSpringsForceField<DataTypes>::addDForce(const core::Mech
     helper::vector<typename TriangularQuadraticSpringsForceField<DataTypes>::EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
 
     assert(this->mstate);
-    const VecDeriv& x = *this->mstate->getX();
+    const VecDeriv& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
 
     Deriv deltax,res;
@@ -452,7 +452,7 @@ void TriangularQuadraticSpringsForceField<DataTypes>::draw(const core::visual::V
     if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     int nbTriangles=_topology->getNbTriangles();
 
     glDisable(GL_LIGHTING);

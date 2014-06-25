@@ -735,7 +735,7 @@ void TriangularBendingSprings<DataTypes>::draw(const core::visual::VisualParams*
     if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     //VecCoord& x_rest = *this->mstate->getX0();
     //int nbTriangles=_topology->getNbTriangles();
 

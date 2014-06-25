@@ -42,7 +42,7 @@ namespace constraintset
 template<>
 SOFA_CONSTRAINT_API void PrecomputedConstraintCorrection< defaulttype::Rigid3dTypes >::rotateConstraints(bool back)
 {
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     const VecCoord& x0 = *this->mstate->getX0();
     helper::WriteAccessor<Data<MatrixDeriv> > cData = *this->mstate->write(core::MatrixDerivId::holonomicC());
     MatrixDeriv& c = cData.wref();
@@ -96,7 +96,7 @@ SOFA_CONSTRAINT_API void PrecomputedConstraintCorrection<defaulttype::Rigid3dTyp
 {
     helper::WriteAccessor<Data<VecDeriv> > dxData = *this->mstate->write(core::VecDerivId::dx());
     VecDeriv& dx = dxData.wref();
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     const VecCoord& x0 = *this->mstate->getX0();
     for(unsigned int j = 0; j < dx.size(); j++)
     {
@@ -139,7 +139,7 @@ SOFA_CONSTRAINT_API void PrecomputedConstraintCorrection<defaulttype::Rigid3dTyp
 template<>
 SOFA_CONSTRAINT_API void PrecomputedConstraintCorrection< defaulttype::Rigid3fTypes >::rotateConstraints(bool back)
 {
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     const VecCoord& x0 = *this->mstate->getX0();
     helper::WriteAccessor<Data<MatrixDeriv> > cData = *this->mstate->write(core::MatrixDerivId::holonomicC());
     MatrixDeriv& c = cData.wref();
@@ -192,7 +192,7 @@ SOFA_CONSTRAINT_API void PrecomputedConstraintCorrection<defaulttype::Rigid3fTyp
 {
     helper::WriteAccessor<Data<VecDeriv> > dxData = *this->mstate->write(core::VecDerivId::dx());
     VecDeriv& dx = dxData.wref();
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     const VecCoord& x0 = *this->mstate->getX0();
     for(unsigned int j = 0; j < dx.size(); j++)
     {

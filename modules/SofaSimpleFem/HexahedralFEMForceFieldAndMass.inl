@@ -644,7 +644,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::draw(const core::visual::VisualP
 
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     glDisable (GL_LIGHTING);
     glPointSize(2);
     glColor4f (1,1,1,1);

@@ -557,7 +557,7 @@ void PCAOnRigidFrameMapping<TIn, TInRoot, TOut>::draw(const core::visual::Visual
     std::vector< Vector3 > points;
     Vector3 point;
 
-    const typename Out::VecCoord& x = *m_toModel->getX();
+    const typename Out::VecCoord& x = m_toModel->read(core::ConstVecCoordId::position())->getValue();
     for (unsigned int i=0; i<x.size(); i++)
     {
         point = Out::getCPos(x[i]);

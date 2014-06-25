@@ -428,7 +428,7 @@ void DistanceGridForceField<DataTypes>::drawDistanceGrid(const core::visual::Vis
     if (!grid) return;
     if (size == 0.0f) size = (float)drawSize.getValue();
 
-    const VecCoord& p1 = *this->mstate->getX();
+    const VecCoord& p1 = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     std::vector< defaulttype::Vector3 > pointsLineIn;
     std::vector< defaulttype::Vector3 > pointsLineOut;

@@ -562,7 +562,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::testDerivatives()
 {
 	DataVecCoord d_pos;
 	VecCoord &pos = *d_pos.beginEdit();
-	pos =  *this->mstate->getX();
+	pos =  this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
 	// perturbate original state:
 	srand( 0 );
@@ -685,7 +685,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::testDerivatives()
 template<class DataTypes>
 void StandardTetrahedralFEMForceField<DataTypes>::saveMesh( const char *filename )
 {
-	VecCoord pos( *this->mstate->getX() );
+	VecCoord pos( this->mstate->read(core::ConstVecCoordId::position())->getValue() );
 	core::topology::BaseMeshTopology::SeqTriangles triangles = _topology->getTriangles();
 	FILE *file = fopen( filename, "wb" );
 	if (!file) return;

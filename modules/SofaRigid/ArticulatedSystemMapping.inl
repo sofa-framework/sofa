@@ -83,7 +83,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::init()
     context->getNodeObject(ahc);
     articulationCenters = ahc->getArticulationCenters();
 
-    const InVecCoord& xfrom = *m_fromModel->getX();
+    const InVecCoord& xfrom = m_fromModel->read(core::ConstVecCoordId::position())->getValue();
 
     ArticulationPos.clear();
     ArticulationAxis.clear();
@@ -527,7 +527,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( typename In::VecDeri
 template <class TIn, class TInRoot, class TOut>
 void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( InMatrixDeriv& out, const OutMatrixDeriv& in, InRootMatrixDeriv* outRoot )
 {
-    const OutVecCoord& xto = *m_toModel->getX();
+    const OutVecCoord& xto = m_toModel->read(core::ConstVecCoordId::position())->getValue();
 
     //std::cout << "applyJT (constraints) : \n";
     //std::cout << "xto = " << xto << std::endl;

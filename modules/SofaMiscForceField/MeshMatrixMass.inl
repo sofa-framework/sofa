@@ -1681,7 +1681,7 @@ void MeshMatrixMass<DataTypes, MassType>::draw(const core::visual::VisualParams*
 
     const MassVector &vertexMass= vertexMassInfo.getValue();
 
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     Coord gravityCenter;
     Real totalMass=0.0;
 

@@ -204,7 +204,7 @@ void ConstantForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
     const VecIndex& indices = points.getValue();
     const VecDeriv& f = forces.getValue();
     const Deriv f_end = (f.empty()? singleForce : f[f.size()-1]);
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
 
 

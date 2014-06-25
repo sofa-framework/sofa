@@ -1312,7 +1312,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::draw(const core::visual::V
     if (!this->mstate) return;
     if (!f_drawing.getValue()) return;
 
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0,true);

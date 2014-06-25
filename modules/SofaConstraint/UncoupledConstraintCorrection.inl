@@ -69,7 +69,7 @@ void UncoupledConstraintCorrection<DataTypes>::init()
 {
     Inherit::init();
 
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     if (compliance.getValue().size() == 1 && defaultCompliance.isSet() && defaultCompliance.getValue() == compliance.getValue()[0])
     {
@@ -495,7 +495,7 @@ void UncoupledConstraintCorrection<DataTypes>::applyContactForce(const defaultty
     const VecReal& comp = compliance.getValue();
     const Real comp0 = defaultCompliance.getValue();
 
-    force.resize((*this->mstate->getX()).size());
+    force.resize((this->mstate->read(core::ConstVecCoordId::position())->getValue()).size());
 
     MatrixDerivRowConstIterator rowItEnd = constraints.end();
 

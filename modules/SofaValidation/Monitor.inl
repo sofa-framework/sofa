@@ -110,7 +110,7 @@ void Monitor<DataTypes>::init()
         return;
     }
 
-    X = mmodel->getX();
+    X = &mmodel->read(core::ConstVecCoordId::position())->getValue();
     V = mmodel->getV();
     F = mmodel->getF();
 
