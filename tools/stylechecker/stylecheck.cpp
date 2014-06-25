@@ -31,6 +31,8 @@ using namespace clang::ast_matchers;
 using namespace clang::tooling;
 using namespace llvm;
 
+using namespace std;
+
 std::vector<std::string> excludedPathPatterns={"extlibs/",
                                                "/usr/include/qt4/",
                                                "framework/sofa/helper",
@@ -38,15 +40,28 @@ std::vector<std::string> excludedPathPatterns={"extlibs/",
                                                "framework/sofa/core",
                                                "simulation/common"};
 
+cl::list<string> listofpath("L", cl::Prefix, cl::desc("Specify path pattern"), cl::value_desc("directory")) ;
+
 bool isInExcludedPath(const std::string& path){
-    for(auto pattern : excludedPathPatterns)
-    {
-        if( path.find(pattern) != std::string::npos )
+    if(listofpath.size()!=0){
+        for(auto pattern : listofpath)
         {
-            return true ;
+            if( path.find(pattern) != std::string::npos )
+            {
+                return false ;
+            }
         }
+        return true;
+    }else{
+        for(auto pattern : excludedPathPatterns)
+        {
+            if( path.find(pattern) != std::string::npos )
+            {
+                return true ;
+            }
+        }
+        return false ;
     }
-    return false ;
 }
 
 class StyleChecker : public RecursiveASTVisitor<StyleChecker> {
