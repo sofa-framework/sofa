@@ -31,7 +31,6 @@
 
 #include <SofaComponentMain/init.h>
 
-
 //Including Simulation
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
