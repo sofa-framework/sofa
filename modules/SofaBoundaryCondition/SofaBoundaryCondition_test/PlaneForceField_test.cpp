@@ -35,7 +35,7 @@ struct PlaneForceField_test : public Sofa_test<typename _DataTypes::Real>
     typedef _DataTypes DataTypes;
 	typedef sofa::component::forcefield::PlaneForceField<DataTypes> PlaneForceFieldType;
 	typename PlaneForceFieldType::SPtr planeForceFieldSPtr;
-
+    
 	PlaneForceField_test()
 	{
 		//Init
@@ -56,7 +56,7 @@ TYPED_TEST_CASE(PlaneForceField_test, DataTypes);
 // first test case
 TYPED_TEST( PlaneForceField_test , testValue )
 {
-    ASSERT_EQ (planeForceFieldSPtr->stiffness.getValue(),500);
+    ASSERT_EQ (this->planeForceFieldSPtr->stiffness.getValue(),500);
 }
 }// namespace sofa
 
