@@ -83,7 +83,7 @@ void Constraint<DataTypes>::getConstraintViolation(const ConstraintParams* /*cPa
     {
         bool freePos = false;
 
-        if (&x.getValue() == mstate->getXfree())
+        if (&x.getValue() == &mstate->read(core::ConstVecCoordId::freePosition())->getValue())
             freePos = true;
 
         getConstraintValue(resV, freePos);
