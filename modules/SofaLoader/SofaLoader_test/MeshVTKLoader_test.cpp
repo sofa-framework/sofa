@@ -33,15 +33,37 @@ struct MeshVTKLoader_test : public Sofa_test<>, public component::loader::MeshVT
 {
 
     MeshVTKLoader_test()
+    {}
+
+    void test_load(std::string const& filename, unsigned nbPoints, unsigned nbEdges, unsigned nbTriangles, unsigned nbQuads, unsigned nbPolygons, unsigned nbTetrahedra, unsigned nbHexahedra)
     {
+        setFilename(filename);
+        load();
+        EXPECT_EQ(nbPoints, positions.getValue().size());
+        EXPECT_EQ(nbEdges, edges.getValue().size());
+        EXPECT_EQ(nbTriangles, triangles.getValue().size());
+        EXPECT_EQ(nbQuads, quads.getValue().size());
+        EXPECT_EQ(nbPolygons, polygons.getValue().size());
+        EXPECT_EQ(nbTetrahedra, tetrahedra.getValue().size());
+        EXPECT_EQ(nbHexahedra, hexahedra.getValue().size());
     }
 
 };
 
 TEST_F(MeshVTKLoader_test, detectFileType)
 {
-    ASSERT_EQ(component::loader::MeshVTKLoader::LEGACY, this->detectFileType(sofa::helper::system::DataRepository.getFile("mesh/liver.vtk").c_str()));
-    ASSERT_EQ(component::loader::MeshVTKLoader::XML, this->detectFileType(sofa::helper::system::DataRepository.getFile("mesh/Armadillo_Tetra_4406.vtu").c_str()));
+    ASSERT_EQ(component::loader::MeshVTKLoader::LEGACY, detectFileType(sofa::helper::system::DataRepository.getFile("mesh/liver.vtk").c_str()));
+    ASSERT_EQ(component::loader::MeshVTKLoader::XML, detectFileType(sofa::helper::system::DataRepository.getFile("mesh/Armadillo_Tetra_4406.vtu").c_str()));
+}
+
+TEST_F(MeshVTKLoader_test, loadLegacy)
+{
+    test_load(sofa::helper::system::DataRepository.getFile("mesh/liver.vtk"), 5008, 0, 10000, 0, 0, 0, 0);
+}
+
+TEST_F(MeshVTKLoader_test, loadXML)
+{
+    test_load(sofa::helper::system::DataRepository.getFile("mesh/Armadillo_Tetra_4406.vtu"), 1446, 0, 0, 0, 0, 4406, 0);
 }
 
 }// namespace sofa
