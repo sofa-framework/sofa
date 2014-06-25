@@ -2,7 +2,7 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
 
-    BaseVisual.h
+    initBaseVisual.h
     BaseCamera.h
     InteractiveCamera.h
     RecordedCamera.h
@@ -14,7 +14,7 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
 
-    BaseVisual.cpp
+    initBaseVisual.cpp
     BaseCamera.cpp
     InteractiveCamera.cpp
     RecordedCamera.cpp
@@ -26,7 +26,7 @@ set(SOURCE_FILES
 
 set(GROUP_BASE_DIR "..")
 
-sofa_add_plugin(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_BASE_VISUAL")
 AddLinkerDependencies(SofaBaseTopology tinyxml)
