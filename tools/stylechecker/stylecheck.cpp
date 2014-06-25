@@ -31,15 +31,6 @@ using namespace clang::ast_matchers;
 using namespace clang::tooling;
 using namespace llvm;
 
-
-
-#define BLACK "\33[30m"
-#define RED "\33[31m"
-#define GREEN "\33[32m"
-#define YELLOW "\33[33m"
-#define BLUE "\33[33m"
-#define DEFAULT "\33[39m"
-
 std::vector<std::string> excludedPathPatterns={"extlibs/", "/usr/include/qt4/", "framework/sofa/helper", "framework/sofa/defaulttype", "framework/sofa/core"};
 
 bool isInExcludedPath(const std::string& path){
@@ -60,8 +51,6 @@ public:
         Context=ctx;
     }
 
-
-
     // http://clang.llvm.org/doxygen/classclang_1_1Stmt.html
     // For each declaration
     // http://clang.llvm.org/doxygen/classclang_1_1Decl.html
@@ -69,37 +58,14 @@ public:
     // and
     // http://clang.llvm.org/doxygen/classclang_1_1RecursiveASTVisitor.html
     bool VisitCXXRecordDecl(CXXRecordDecl *record) {
-
+        return true;
         FullSourceLoc FullLocation = Context->getFullLoc(record->getLocStart());
 
 
         // Check this declaration is not in the system headers...
         if ( FullLocation.isValid() && !exclude(FullLocation.getManager() , record) )
         {
-            //if(record->isPOD())
-            //    return true;
-
-
             const SourceManager& smanager=Context->getSourceManager();
-
-
-            //llvm::outs() << "found an object: " << record->getNameAsString() << "\n";
-
-            // get an iterator to the list of method.
-            /*
-            clang::CXXRecordDecl::method_iterator m=record->method_begin() ;
-            for(;m!=record->method_end();m++)
-            {
-
-                llvm::outs() << "   + " << m->getNameAsString() << " (" ;
-                // For each of the parameters...
-                for(unsigned int i=0;i<(*m)->getNumParams();i++){
-                    ParmVarDecl* param=(*m)->getParamDecl(i);
-                    QualType t=param->getOriginalType();
-                    llvm::outs() << ", " << t.getAsString() << "";
-                }
-                llvm::outs() << ")\n";
-            }*/
 
             // Now check the attributes...
             RecordDecl::field_iterator it=record->field_begin() ;
@@ -111,37 +77,7 @@ public:
                 SourceLocation sl=declsr.getBegin();
                 std::string name=(*it)->getName() ;
 
-
-
-
-
-
                 if(isInExcludedPath(smanager.getFileEntryForID(smanager.getFileID(sl))->getName())){
-                    continue ;
-                }
-
-                std::cout << "Name: " << name << std::endl;
-                if((*it)->isImplicit())
-                {
-                    std::cout << "Is implicit()" << std::endl ;
-                    continue ;
-                }
-
-                if((*it)->isTemplateDecl())
-                {
-                    std::cout << "Is TEmplate()" << std::endl ;
-                    continue ;
-                }
-
-                if((*it)->isTemplateParameter())
-                {
-                    std::cout << "Is TEmplate()" << std::endl ;
-                    continue ;
-                }
-
-                if((*it)->isTemplateParameterPack())
-                {
-                    std::cout << "Is TEmplate()" << std::endl ;
                     continue ;
                 }
 
@@ -153,37 +89,31 @@ public:
                 if(rd){
 
                     std::string type=rd->getNameAsString() ;
-                    std::cout << "RD for " << name << " type: " << type <<std::endl;
                     if(type.find("Data")!=std::string::npos){
                         if(name.find("d_")==0){
-                            std::cout << "VALID NAME " << std::endl ;
                         }else{
                             std::cerr << smanager.getFileEntryForID(smanager.getFileID(sl))->getName()
                                       << ":" << smanager.getPresumedLineNumber(sl)
                                       << ":" << smanager.getPresumedColumnNumber(sl)
-                                      << ": variable [" << record->getNameAsString() << ":" <<name << "] is violating the sofa coding style http://www.sofa.../codingstyle.html...all Data attributes should start with d_ " << std::endl;
+                                      << ": warning: variable [" << record->getNameAsString() << ":" <<name << "] is violating the sofa coding style http://www.sofa.../codingstyle.html...all Data attributes should start with d_ " << std::endl;
                         }
                     }
                     else if(type.find("SingleLink")!=std::string::npos || type.find("DualLink")!=std::string::npos){
                         if(name.find("d_")==0){
-                            std::cout << "VALID NAME " << std::endl ;
                         }else{
                             std::cerr << smanager.getFileEntryForID(smanager.getFileID(sl))->getName()
                                       << ":" << smanager.getPresumedLineNumber(sl)
                                       << ":" << smanager.getPresumedColumnNumber(sl)
-                                      << ": variable [" << record->getNameAsString() << ":" <<name << "] is violating the sofa coding style http://www.sofa.../codingstyle.html...all Link attributes should start with l_ " << std::endl;
+                                      << ": warning: variable [" << record->getNameAsString() << ":" <<name << "] is violating the sofa coding style http://www.sofa.../codingstyle.html...all Link attributes should start with l_ " << std::endl;
                         }
                     }
                 }else{
-                    std::cout << "NOT RD for " << name << std::endl;
-
                     if(name.find("m_")==0){
-                        //std::cout << "VALID NAME " << std::endl ;
                     }else{
                         std::cerr << smanager.getFileEntryForID(smanager.getFileID(sl))->getName()
                                   << ":" << smanager.getPresumedLineNumber(sl)
                                   << ":" << smanager.getPresumedColumnNumber(sl)
-                                  << ": variable [" << record->getNameAsString() << ":" << name << "] is violating the sofa coding style http://www.sofa.../codingstyle.html...all private attributes should start with m_ " << std::endl;
+                                  << ": warning: variable [" << record->getNameAsString() << ":" << name << "] is violating the sofa coding style http://www.sofa.../codingstyle.html...all private attributes should start with m_ " << std::endl;
                     }
                 }
             }
@@ -197,7 +127,7 @@ private:
 
 
 int main(int argc, const char** argv){
-    static cl::OptionCategory MyToolCategory("My tool options");
+    static cl::OptionCategory MyToolCategory("StyleChecker");
     CommonOptionsParser OptionsParser(argc, argv, MyToolCategory);
 
 
