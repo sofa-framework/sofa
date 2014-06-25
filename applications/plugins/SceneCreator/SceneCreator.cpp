@@ -29,7 +29,7 @@
 
 #include <sofa/helper/system/SetDirectory.h>
 
-#include <sofa/component/init.h>
+#include <SofaComponentMain/init.h>
 
 
 //Including Simulation
