@@ -25,14 +25,12 @@
 #include <SofaBaseVisual/BaseVisual.h>
 #include <sofa/core/Plugin.h>
 
-class BaseVisualPlugin: public sofa::core::Plugin {
-public:
-    BaseVisualPlugin(): Plugin("BaseVisual") {
-        setDescription("");
-        setVersion("");
-        setLicense("LGPL");
-        setAuthors("The SOFA Team");
-    }
-};
+BaseVisualPlugin::BaseVisualPlugin():
+    Plugin("BaseVisual") {
+    setDescription("");
+    setVersion("");
+    setLicense("LGPL");
+    setAuthors("The SOFA Team");
+}
 
-SOFA_PLUGIN(BaseVisualPlugin);
+SOFA_PLUGIN_ENTRY_POINT(BaseVisualPlugin);

@@ -48,7 +48,6 @@ void initComponentBase()
         initBaseCollision();
         initBaseLinearSolver();
         initBaseAnimationLoop();
-        initBaseVisual();
         first = false;
     }
 }
