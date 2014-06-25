@@ -22,37 +22,69 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*
- * TriangularConvexHull3D.cpp
- *
- *  Created on: 27 oct. 2009
- *      Author: froy
- */
-#define CGALPLUGIN_TRIANGULARCONVEXHULL3D_CPP
-
 #include <initCGALPlugin.h>
-#include "TriangularConvexHull3D.inl"
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/defaulttype/RigidTypes.h>
 
-SOFA_DECL_CLASS(TriangularConvexHull3D)
+#include <MeshGenerationFromPolyhedron.h>
 
-using namespace sofa::defaulttype;
-using namespace cgal;
+namespace sofa
+{
 
-int TriangularConvexHull3DClass = sofa::core::RegisterObject("Generate triangular convex hull around points")
-#ifndef SOFA_FLOAT
-        .add< TriangularConvexHull3D<Vec3dTypes> >()
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< TriangularConvexHull3D<Vec3fTypes> >()
-#endif //SOFA_DOUBLE
-        ;
+namespace component
+{
 
-#ifndef SOFA_FLOAT
-template class SOFA_CGALPLUGIN_API TriangularConvexHull3D<Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_CGALPLUGIN_API TriangularConvexHull3D<Vec3fTypes>;
-#endif //SOFA_DOUBLE
+//Here are just several convenient functions to help user to know what contains the plugin
+
+extern "C" {
+    SOFA_CGALPLUGIN_API void initExternalModule();
+    SOFA_CGALPLUGIN_API const char* getModuleName();
+    SOFA_CGALPLUGIN_API const char* getModuleVersion();
+    SOFA_CGALPLUGIN_API const char* getModuleLicense();
+    SOFA_CGALPLUGIN_API const char* getModuleDescription();
+    SOFA_CGALPLUGIN_API const char* getModuleComponentList();
+}
+
+void initExternalModule()
+{
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
+
+const char* getModuleName()
+{
+    return "CGAL Plugin";
+}
+
+const char* getModuleVersion()
+{
+    return "0.2";
+}
+
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
+
+
+const char* getModuleDescription()
+{
+    return "Use CGAL functionnalities into SOFA";
+}
+
+const char* getModuleComponentList()
+{
+    return "MeshGenerationFromPolyhedron, TriangularConvexHull3D";
+}
+
+
+
+}
+
+}
+
+
+SOFA_LINK_CLASS(MeshGenerationFromPolyhedron)
+SOFA_LINK_CLASS(TriangularConvexHull3D)
+
