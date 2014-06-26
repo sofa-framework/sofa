@@ -4,6 +4,8 @@
 #include <SofaMeshCollision/BarycentricContactMapper.h>
 #include <SofaBaseMechanics/BarycentricMapping.h>
 
+using sofa::core::objectmodel::New;
+
 namespace sofa {
 
 typedef sofa::component::topology::MeshTopology MeshTopology;
