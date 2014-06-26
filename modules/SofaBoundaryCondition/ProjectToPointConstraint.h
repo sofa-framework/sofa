@@ -128,7 +128,7 @@ public:
         typedef typename ProjectToPointConstraint<DataTypes>::SetIndexArray SetIndexArray;
 
         FCPointHandler(ProjectToPointConstraint<DataTypes>* _fc, component::topology::PointSubsetData<SetIndexArray>* _data)
-            : component::topology::TopologySubsetDataHandler<Point, SetIndexArray >(_data), fc(_fc) {}
+            : component::topology::TopologySubsetDataHandler<sofa::core::topology::Point, SetIndexArray >(_data), fc(_fc) {}
 
 
 

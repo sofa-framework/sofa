@@ -377,8 +377,8 @@ void ProjectToPointConstraint<DataTypes>::draw(const core::visual::VisualParams*
 
     if( f_drawSize.getValue() == 0) // old classical drawing by points
     {
-        std::vector< Vector3 > points;
-        Vector3 point;
+        std::vector< sofa::defaulttype::Vector3 > points;
+        sofa::defaulttype::Vector3 point;
         //serr<<"ProjectToPointConstraint<DataTypes>::draw(), indices = "<<indices<<sendl;
         if( f_fixAll.getValue() )
             for (unsigned i=0; i<x.size(); i++ )
@@ -394,12 +394,12 @@ void ProjectToPointConstraint<DataTypes>::draw(const core::visual::VisualParams*
                 point = DataTypes::getCPos(x[*it]);
                 points.push_back(point);
             }
-        vparams->drawTool()->drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
+        vparams->drawTool()->drawPoints(points, 10, sofa::defaulttype::Vec<4,float>(1,0.5,0.5,1));
     }
     else // new drawing by spheres
     {
-        std::vector< Vector3 > points;
-        Vector3 point;
+        std::vector< sofa::defaulttype::Vector3 > points;
+        sofa::defaulttype::Vector3 point;
         glColor4f (1.0f,0.35f,0.35f,1.0f);
         if( f_fixAll.getValue()==true )
             for (unsigned i=0; i<x.size(); i++ )
@@ -415,7 +415,7 @@ void ProjectToPointConstraint<DataTypes>::draw(const core::visual::VisualParams*
                 point = DataTypes::getCPos(x[*it]);
                 points.push_back(point);
             }
-        vparams->drawTool()->drawSpheres(points, (float)f_drawSize.getValue(), Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
+        vparams->drawTool()->drawSpheres(points, (float)f_drawSize.getValue(), sofa::defaulttype::Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
     }
 #endif /* SOFA_NO_OPENGL */
 }

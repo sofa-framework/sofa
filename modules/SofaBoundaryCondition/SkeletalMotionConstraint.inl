@@ -46,7 +46,7 @@ namespace projectiveconstraintset
 {
 
 template <class DataTypes>
-SkeletalMotionConstraint<DataTypes>::SkeletalMotionConstraint() : ProjectiveConstraintSet<DataTypes>()
+SkeletalMotionConstraint<DataTypes>::SkeletalMotionConstraint() : sofa::core::behavior::ProjectiveConstraintSet<DataTypes>()
     , skeletonJoints(initData(&skeletonJoints, "joints", "skeleton joints"))
     , skeletonBones(initData(&skeletonBones, "bones", "skeleton bones"))
 	, animationSpeed(initData(&animationSpeed, 1.0f, "animationSpeed", "animation speed"))
@@ -63,13 +63,13 @@ SkeletalMotionConstraint<DataTypes>::~SkeletalMotionConstraint()
 template <class DataTypes>
 void SkeletalMotionConstraint<DataTypes>::init()
 {
-    ProjectiveConstraintSet<DataTypes>::init();
+    sofa::core::behavior::ProjectiveConstraintSet<DataTypes>::init();
 }
 
 template <class DataTypes>
 void SkeletalMotionConstraint<DataTypes>::reset()
 {
-    ProjectiveConstraintSet<DataTypes>::reset();
+    sofa::core::behavior::ProjectiveConstraintSet<DataTypes>::reset();
 }
 
 template <class DataTypes>
