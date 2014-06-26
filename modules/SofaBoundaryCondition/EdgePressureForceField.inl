@@ -32,12 +32,6 @@
 #include <vector>
 #include <set>
 
-using std::cout;
-using std::cerr;
-using std::endl;
-
-// #define DEBUG_TRIANGLEFEM
-
 namespace sofa
 {
 

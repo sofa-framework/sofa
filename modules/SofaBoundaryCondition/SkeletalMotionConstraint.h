@@ -39,8 +39,6 @@ namespace component
 namespace projectiveconstraintset
 {
 
-using core::objectmodel::Data;
-
 // a joint of the skeletal hierarchy, it participates in the skeletal animation chain and may be animated
 template <class DataTypes>
 struct SkeletonJoint;
