@@ -97,9 +97,9 @@ PatchTestStruct<DataTypes> createRegularGridScene(
         int numX,
         int numY,
         int numZ,
-        Vec<6,SReal> entireBoxRoi,
-        Vec<6,SReal> inclusiveBox,
-        Vec<6,SReal> includedBox);
+        sofa::defaulttype::Vec<6,SReal> entireBoxRoi,
+        sofa::defaulttype::Vec<6,SReal> inclusiveBox,
+        sofa::defaulttype::Vec<6,SReal> includedBox);
 
 CylinderTractionStruct<DataTypes>  createCylinderTractionScene(
         int resolutionCircumferential,

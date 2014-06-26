@@ -29,6 +29,8 @@
 #include <SofaBoundaryCondition/AffineMovementConstraint.h>
 #include <sofa/defaulttype/VecTypes.h>
 
+using namespace sofa::defaulttype;
+
 namespace sofa {
 
 template <typename _DataTypes>
