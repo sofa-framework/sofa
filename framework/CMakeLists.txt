@@ -26,7 +26,7 @@ set( SOFAFRAMEWORK_INCLUDE_DIR "${SofaFramework_SOURCE_DIR}")
 set(SOFAFRAMEWORK_BUILD_LIB_DIR     ${CMAKE_CURRENT_BINARY_DIR})
 set(SOFAFRAMEWORK_BUILD_BIN_DIR     ${CMAKE_CURRENT_BINARY_DIR})
 set(SOFAFRAMEWORK_BUILD_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-set(SOFAFRAMEWORK_BUILD_CMAKE_DIR   ${CMAKE_CURRENT_BINARY_DIR}/SofaFramework)
+set(SOFAFRAMEWORK_BUILD_CMAKE_DIR   ${CMAKE_BINARY_DIR}/SofaFramework)
 
 message("Build dir : ${CMAKE_CURRENT_BINARY_DIR}")
 
@@ -47,6 +47,9 @@ endif( CMAKE_CL_64 )
 ##
 set(SOFAFRAMEWORK_EXTERNAL_INCLUDE_DIRS)
 
+#tinyxml
+find_package(TinyXML  REQUIRED)
+set(SOFA_HAVE_TINYXML 1)
 # zlib
 if(WIN32)
     set(SOFAFRAMEWORK_USE_IMPORTED_ZLIB TRUE CACHE BOOL "")
@@ -260,20 +263,6 @@ list(APPEND SOFAFRAMEWORK_EXTERNAL_INCLUDE_DIRS ${Boost_INCLUDE_DIRS})
 ##
 list(REMOVE_DUPLICATES SOFAFRAMEWORK_EXTERNAL_INCLUDE_DIRS)
 
-##
-## Build/Install tree dependencies 
-##
-set(SOFAFRAMEWORK_TARGETS)
-#tinyxml
-find_package(TinyXML  REQUIRED)
-if( TinyXML_TARGETS )  # if defined TinyXML belongs to current build tree
-	list(APPEND SOFAFRAMEWORK_TARGETS ${TinyXML_TARGETS} ) # if so add TinyXML to the export target list for transitive dependency management within the build tree.
-endif()
-set(SOFA_HAVE_TINYXML 1)
-##
-##
-##
-
 configure_file( ${SofaFramework_SOURCE_DIR}/SofaFramework.config.in 
                 ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaFramework.h )
 install( FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaFramework.h 
@@ -281,14 +270,9 @@ install( FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaFramework.h
 # make sure everyone in the build tree can see <sofa/SofaFramework.h>
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
-
-list(APPEND SOFAFRAMEWORK_TARGETS SofaCore SofaHelper SofaDefaultType)
-set(SOFAFRAMEWORK_EXPORT_FILE SofaFrameworkTargets.cmake)
-
 add_subdirectory( ${SofaFramework_SOURCE_DIR}/sofa/helper      ${CMAKE_CURRENT_BINARY_DIR}/SofaHelper )
 add_subdirectory( ${SofaFramework_SOURCE_DIR}/sofa/defaulttype ${CMAKE_CURRENT_BINARY_DIR}/SofaDefaultType )
 add_subdirectory( ${SofaFramework_SOURCE_DIR}/sofa/core        ${CMAKE_CURRENT_BINARY_DIR}/SofaCore )
-
  
 include(CMakePackageConfigHelpers)
 
@@ -325,20 +309,10 @@ configure_package_config_file(SofaFrameworkConfig.cmake.in
 install(FILES ${SOFAFRAMEWORK_BUILD_CMAKE_DIR}/SofaFrameworkConfigInstall.cmake
         DESTINATION ${SOFAFRAMEWORK_INSTALL_CMAKE_DIR}
         RENAME SofaFrameworkConfig.cmake)
-
-# SofaFrameworkTargets.cmake (build tree)        
-export(TARGETS ${SOFAFRAMEWORK_TARGETS}
-       FILE ${SOFAFRAMEWORK_BUILD_CMAKE_DIR}/SofaFrameworkTargets.cmake )                                        
-                                                          
+          
 # SofaFrameworkTargets.cmake (installed)
 install(EXPORT SofaFrameworkTargets 
         DESTINATION ${SOFAFRAMEWORK_INSTALL_CMAKE_DIR} )
-
-# Export the package for use from the build-tree
-# (this registers the build-tree with a global CMake-registry)
-export(PACKAGE SofaFramework)
-
-#include(SofaFrameworkCPack.cmake)
 
 # Tests
 add_subdirectory(framework_test)
