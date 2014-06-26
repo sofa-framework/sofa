@@ -171,46 +171,31 @@ void Mass<DataTypes>::addMBKdx(const MechanicalParams* mparams /* PARAMS FIRST *
 }
 
 template<class DataTypes>
-double Mass<DataTypes>::getKineticEnergy(const MechanicalParams* mparams) const
+double Mass<DataTypes>::getKineticEnergy(const MechanicalParams* /*mparams*/) const
 {
-    if (this->mstate)
-        return getKineticEnergy(mparams /* PARAMS FIRST */, *mparams->readV(this->mstate));
-    return 0;
-}
-
-template<class DataTypes>
-double Mass<DataTypes>::getKineticEnergy(const MechanicalParams* mparams /* PARAMS FIRST */, const DataVecDeriv& v) const
-{
-    return getKineticEnergy(v.getValue(mparams));
-}
-
-template<class DataTypes>
-double Mass<DataTypes>::getKineticEnergy(const VecDeriv& /*v*/ ) const
-{
-    serr << "ERROR("<<getClassName()<<"): getKineticEnergy( const VecDeriv& ) not implemented." << sendl;
+    serr << "ERROR("<<getClassName()<<"): getKineticEnergy(const MechanicalParams*) not implemented." << sendl;
     return 0.0;
 }
 
 template<class DataTypes>
-double Mass<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams) const
+double Mass<DataTypes>::getKineticEnergy(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecDeriv& /*v*/) const
 {
-    if (this->mstate)
-    {
-        return getPotentialEnergy(mparams /* PARAMS FIRST */, *mparams->readX(this->mstate));
-    }
-    return 0;
+    serr << "ERROR("<<getClassName()<<"): getKineticEnergy(const MechanicalParams*, const DataVecDeriv& ) not implemented." << sendl;
+    return 0.0;
+}
+
+
+template<class DataTypes>
+double Mass<DataTypes>::getPotentialEnergy(const MechanicalParams*) const
+{
+    serr << "ERROR("<<getClassName()<<"): getPotentialEnergy( const MechanicalParams* ) not implemented." << sendl;
+    return 0.0;
 }
 
 template<class DataTypes>
-double Mass<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams /* PARAMS FIRST */, const DataVecCoord& x) const
+double Mass<DataTypes>::getPotentialEnergy(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecCoord& /*x*/) const
 {   
-    return getPotentialEnergy(x.getValue(mparams));
-}
-
-template<class DataTypes>
-double Mass<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/ ) const
-{
-    serr << "ERROR("<<getClassName()<<"): getPotentialEnergy( const VecCoord& ) not implemented." << sendl;
+    serr << "ERROR("<<getClassName()<<"): getPotentialEnergy( const MechanicalParams*, const DataVecCoord& ) not implemented." << sendl;
     return 0.0;
 }
 
@@ -234,28 +219,21 @@ defaulttype::Vec6d Mass<DataTypes>::getMomentum( const MechanicalParams* /*mpara
 template<class DataTypes>
 void Mass<DataTypes>::addKToMatrix(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
 {
-    //    serr << "ERROR("<<getClassName()<<"): addKToMatrix not implemented." << sendl;
+        serr << "ERROR("<<getClassName()<<"): addKToMatrix(const MechanicalParams*, const sofa::core::behavior::MultiMatrixAccessor*) not implemented." << sendl;
 }
 
 template<class DataTypes>
 void Mass<DataTypes>::addBToMatrix(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
 {
-    //	serr << "ERROR("<<getClassName()<<"): addBToMatrix not implemented." << sendl;
+        serr << "ERROR("<<getClassName()<<"): addBToMatrix(const MechanicalParams*, const sofa::core::behavior::MultiMatrixAccessor*) not implemented." << sendl;
 }
 
 template<class DataTypes>
-void Mass<DataTypes>::addMToMatrix(const MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void Mass<DataTypes>::addMToMatrix(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
 {
-    sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
-    if (r)
-        addMToMatrix(r.matrix, mparams->mFactorIncludingRayleighDamping(rayleighMass.getValue()), r.offset);
+    serr << "ERROR("<<getClassName()<<"): addMToMatrix(const MechanicalParams*, const sofa::core::behavior::MultiMatrixAccessor*) not implemented." << sendl;
 }
 
-template<class DataTypes>
-void Mass<DataTypes>::addMToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, double /*mFact*/, unsigned int &/*offset*/)
-{
-    serr << "ERROR("<<getClassName()<<"): addMToMatrix not implemented." << sendl;
-}
 
 template<class DataTypes>
 void Mass<DataTypes>::addMBKToMatrix(const MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix)
