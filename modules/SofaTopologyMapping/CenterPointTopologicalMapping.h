@@ -35,10 +35,6 @@ namespace component
 {
 namespace topology
 {
-using namespace sofa::defaulttype;
-using namespace sofa::component::topology;
-using namespace sofa::core::topology;
-using namespace sofa::core;
 
 /**
  * This class, called CenterPointTopologicalMapping, is a specific implementation of the interface TopologicalMapping where :
@@ -52,10 +48,10 @@ using namespace sofa::core;
  *
 */
 
-class SOFA_TOPOLOGY_MAPPING_API CenterPointTopologicalMapping : public TopologicalMapping
+class SOFA_TOPOLOGY_MAPPING_API CenterPointTopologicalMapping : public sofa::core::topology::TopologicalMapping
 {
 public:
-    SOFA_CLASS(CenterPointTopologicalMapping,TopologicalMapping);
+    SOFA_CLASS(CenterPointTopologicalMapping,sofa::core::topology::TopologicalMapping);
 protected:
     /** \brief Constructor.
      *

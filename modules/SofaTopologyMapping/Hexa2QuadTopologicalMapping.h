@@ -41,12 +41,6 @@ namespace component
 
 namespace topology
 {
-using namespace sofa::defaulttype;
-
-using namespace sofa::component::topology;
-using namespace sofa::core::topology;
-
-using namespace sofa::core;
 
 /**
 * This class, called Hexa2QuadTopologicalMapping, is a specific implementation of the interface TopologicalMapping where :
@@ -58,10 +52,10 @@ using namespace sofa::core;
 *
 */
 
-class SOFA_TOPOLOGY_MAPPING_API Hexa2QuadTopologicalMapping : public TopologicalMapping
+class SOFA_TOPOLOGY_MAPPING_API Hexa2QuadTopologicalMapping : public sofa::core::topology::TopologicalMapping
 {
 public:
-    SOFA_CLASS(Hexa2QuadTopologicalMapping,TopologicalMapping);
+    SOFA_CLASS(Hexa2QuadTopologicalMapping,sofa::core::topology::TopologicalMapping);
 protected:
     /** \brief Constructor.
     *
