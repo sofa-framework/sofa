@@ -105,7 +105,7 @@ PluginManager::LoadedPlugin PluginManager::openPlugin(const std::string& filenam
     void * get_plugin = DynamicLibrary::getSymbolAddress(handle, "get_plugin");
     if (get_plugin != NULL) {
         // Call the 'get_plugin' function to create an instance of Plugin
-        plugin = (Plugin*) ((void*(*)(void))create_plugin)();
+        plugin = (Plugin*) ((void*(*)(void))get_plugin)();
     } else {
         void * initExternalModule = DynamicLibrary::getSymbolAddress(handle, "initExternalModule");
         void * getModuleName = DynamicLibrary::getSymbolAddress(handle, "getModuleName");

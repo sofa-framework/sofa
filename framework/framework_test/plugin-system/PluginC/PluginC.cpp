@@ -13,12 +13,13 @@ static struct PluginCMonitor {
 } PluginCMonitor_;
 
 class PluginC: public sofa::core::Plugin {
+  SOFA_PLUGIN(PluginC);
 public:
     PluginC(): Plugin("PluginC") {
     }
 };
 
-SOFA_PLUGIN(PluginC);
+SOFA_PLUGIN_ENTRY_POINT(PluginC);
 
 
 void SOFA_PluginC_API PluginC_function()

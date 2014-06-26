@@ -156,6 +156,7 @@ public:
                 m_entry = &m_plugin.m_components[name];
                 *m_entry = ComponentEntry(name, !templateParameters.empty());
                 m_entry->description = m_description;
+		m_firstAddDone = true;
             }
 
             m_plugin.m_components[name].creators[templateParameters] =

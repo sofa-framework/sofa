@@ -24,13 +24,20 @@ class VecD {
 
 
 class PluginD: public sofa::core::Plugin {
+  SOFA_PLUGIN(PluginD);
 public:
     PluginD(): Plugin("PluginD") {
-        addComponent<FooD>("Component Foo");
-        addTemplateInstance< Bar<VecD> >();
-        addComponent< BazD<float> >();
-        addTemplateInstance< BazD<double> >();
     }
 };
 
-SOFA_PLUGIN(PluginD);
+int FooDClass = PluginD::registerObject("Component FooD")
+  .add<FooD>();
+
+int BarClass = PluginD::registerObject("")
+.add< Bar<VecD> >();
+
+int BazDClass = PluginD::registerObject("Component BazD")
+.add< BazD<float> >(true)
+.add< BazD<double> >();
+
+SOFA_PLUGIN_ENTRY_POINT(PluginD);
