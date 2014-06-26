@@ -97,9 +97,6 @@ public:
 
     virtual void accFromF(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& a, const DataVecDeriv& f);
 
-    /// @deprecated
-    virtual void accFromF(VecDeriv& a, const VecDeriv& f);
-
 
     /// Mass forces (gravity) often have null derivative
     virtual void addDForce(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv & /*df*/, const DataVecDeriv & /*dx*/ );

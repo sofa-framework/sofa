@@ -128,22 +128,11 @@ void Mass<DataTypes>::accFromF(const MechanicalParams* mparams /* PARAMS FIRST *
 }
 
 template<class DataTypes>
-void Mass<DataTypes>::accFromF(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& a, const DataVecDeriv& f)
+void Mass<DataTypes>::accFromF(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& /*a*/, const DataVecDeriv& /*f*/)
 {
-    if (this->mstate)
-    {
-        this->mstate->forceMask.setInUse(this->useMask());
-        accFromF( *a.beginEdit(mparams) , f.getValue(mparams));
-        a.endEdit(mparams);
-    }
-    else serr<< "Mass<DataTypes>::accFromF, " << getName() << "has no mechanical state" << sendl;
+    serr << "ERROR("<<getClassName()<<"): accFromF(const MechanicalParams* , DataVecDeriv& , const DataVecDeriv& ) not implemented." << sendl;
 }
 
-template<class DataTypes>
-void Mass<DataTypes>::accFromF(VecDeriv& /*a*/, const VecDeriv& /*f*/)
-{
-    serr << "ERROR("<<getClassName()<<"): accFromF(VecDeriv& /*a*/, const VecDeriv& /*f*/) not implemented." << sendl;
-}
 
 template<class DataTypes>
 void Mass<DataTypes>::addDForce(const MechanicalParams*
