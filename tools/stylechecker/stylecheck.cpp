@@ -152,7 +152,6 @@ public:
 
                 CXXRecordDecl* rd=ff->getType()->getAsCXXRecordDecl() ;
                 if(rd){
-
                     std::string type=rd->getNameAsString() ;
                     if(type.find("Data")!=std::string::npos){
                         if(name.find("d_")==0){
