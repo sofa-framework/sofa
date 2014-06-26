@@ -112,58 +112,13 @@ public:
     virtual void projectPosition(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecCoordId xId);
 
     /// Project dx to constrained space (dx models an acceleration).
-    virtual void projectResponse(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& dx1, DataVecDeriv& dx2)
-#ifdef SOFA_DEPRECATE_OLD_API
-        = 0;
-#else
-    {
-        projectResponse(*dx1.beginEdit(), *dx2.beginEdit());
-        dx1.endEdit();
-        dx2.endEdit();
-    }
-
-    /// Project dx to constrained space (dx models an acceleration).
-    ///
-    /// This method must be implemented by the component, and is usually called
-    /// by the generic Constraint::projectResponse() method.
-    virtual void projectResponse(VecDeriv& /*dx1*/, VecDeriv& /*dx2*/) {};
-#endif
+    virtual void projectResponse(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& dx1, DataVecDeriv& dx2) = 0;
 
     /// Project v to constrained space (v models a velocity).
-    virtual void projectVelocity(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& v1, DataVecDeriv& v2)
-#ifdef SOFA_DEPRECATE_OLD_API
-        = 0;
-#else
-    {
-        projectVelocity(*v1.beginEdit(), *v2.beginEdit());
-        v1.endEdit();
-        v2.endEdit();
-    }
-
-    /// Project v to constrained space (v models a velocity).
-    ///
-    /// This method must be implemented by the component, and is usually called
-    /// by the generic Constraint::projectVelocity() method.
-    virtual void projectVelocity(VecDeriv& /*v1*/, VecDeriv& /*v2*/) {};
-#endif
+    virtual void projectVelocity(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& v1, DataVecDeriv& v2) = 0;
 
     /// Project x to constrained space (x models a position).
-    virtual void projectPosition(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecCoord& x1, DataVecCoord& x2)
-#ifdef SOFA_DEPRECATE_OLD_API
-        = 0;
-#else
-    {
-        projectPosition(*x1.beginEdit(), *x2.beginEdit());
-        x1.endEdit();
-        x2.endEdit();
-    }
-
-    /// Project x to constrained space (x models a position).
-    ///
-    /// This method must be implemented by the component, and is usually called
-    /// by the generic Constraint::projectPosition() method.
-    virtual void projectPosition(VecCoord& /*x1*/, VecCoord& /*x2*/) {};
-#endif
+    virtual void projectPosition(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecCoord& x1, DataVecCoord& x2) = 0;
 
     /// @}
 
