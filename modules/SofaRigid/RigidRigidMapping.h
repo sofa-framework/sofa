@@ -44,8 +44,6 @@ namespace component
 namespace mapping
 {
 
-using namespace sofa::defaulttype;
-
 template <class TIn, class TOut>
 class RigidRigidMapping : public core::Mapping<TIn, TOut>
 {
@@ -69,7 +67,7 @@ public:
     typedef typename Out::Coord::value_type Real;
     enum { N=OutDataTypes::spatial_dimensions };
     typedef defaulttype::Mat<N,N,Real> Mat;
-    typedef Vec<N,Real> Vector ;
+    typedef defaulttype::Vec<N,Real> Vector ;
 
 protected:
     Data < OutVecCoord > points;

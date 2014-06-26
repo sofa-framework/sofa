@@ -42,8 +42,6 @@ namespace component
 namespace mapping
 {
 
-using namespace sofa::defaulttype;
-
 template <class TIn, class TOut>
 class LaparoscopicRigidMapping : public core::Mapping<TIn, TOut>
 {
@@ -63,13 +61,13 @@ public:
     typedef typename Out::MatrixDeriv OutMatrixDeriv;
 
 public:
-    Data< Vector3 > pivot;
-    Data< Quat > rotation;
+    Data< defaulttype::Vector3 > pivot;
+    Data< defaulttype::Quat > rotation;
 protected:
     LaparoscopicRigidMapping()
         : Inherit()
-        , pivot(initData(&pivot, Vector3(0,0,0), "pivot","Pivot point position"))
-        , rotation(initData(&rotation, Quat(0,0,0,1), "rotation", "TODO-rotation"))
+        , pivot(initData(&pivot, defaulttype::Vector3(0,0,0), "pivot","Pivot point position"))
+        , rotation(initData(&rotation, defaulttype::Quat(0,0,0,1), "rotation", "TODO-rotation"))
     {
     }
 
@@ -96,7 +94,7 @@ public:
     virtual void applyJT( InMatrixDeriv& /*out*/, const OutMatrixDeriv& /*in*/ ) {}
 
 protected:
-    Quat currentRotation;
+    sofa::defaulttype::Quat currentRotation;
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_LAPAROSCOPICRIGIDMAPPING_CPP)

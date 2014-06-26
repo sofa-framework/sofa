@@ -45,9 +45,6 @@
 #include <string.h>
 #include <iostream>
 #include <cassert>
-using std::cout;
-using std::endl;
-using std::cerr;
 
 namespace sofa
 {
@@ -57,8 +54,6 @@ namespace component
 
 namespace mapping
 {
-
-using namespace sofa::defaulttype;
 
 extern void rigidMappingDummyFunction(); ///< Used for setting breakpoints, since gdb sometimes fails at breaking within template methods. Implemented in RigidMapping.C
 
@@ -1144,8 +1139,8 @@ void RigidMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowMappings() || this->toModel==NULL )
         return;
-    std::vector<Vector3> points;
-    Vector3 point;
+    std::vector<defaulttype::Vector3> points;
+    defaulttype::Vector3 point;
 
     const VecCoord& x = *this->toModel->getX();
     for (unsigned int i = 0; i < x.size(); i++)
@@ -1154,7 +1149,7 @@ void RigidMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
         points.push_back(point);
     }
     vparams->drawTool()->drawPoints(points, 7,
-                                    Vec<4, float>(1, 1, 0,1));
+                                    defaulttype::Vec<4, float>(1, 1, 0,1));
 }
 
 } // namespace mapping

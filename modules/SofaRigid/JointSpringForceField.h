@@ -43,7 +43,6 @@ namespace component
 
 namespace interactionforcefield
 {
-using namespace sofa::defaulttype;
 
 
 template<typename DataTypes>
@@ -59,7 +58,7 @@ public:
 
     enum { N=DataTypes::spatial_dimensions };
     typedef defaulttype::Mat<N,N,Real> Mat;
-    typedef Vec<N,Real> Vector;
+    typedef defaulttype::Vec<N,Real> Vector;
 
     int  m1, m2;			/// the two extremities of the spring: masses m1 and m2
     Real kd;				/// damping factor
@@ -67,10 +66,10 @@ public:
     Vector lawfulTorsion;	/// projected torsion in allowed angles
     Vector KT;	// linear stiffness
     Vector KR;	// angular stiffness
-    Quat ref; // referential of the spring (p1) to use it in addSpringDForce()
+    defaulttype::Quat ref; // referential of the spring (p1) to use it in addSpringDForce()
 
     Vector  initTrans;		/// offset length of the spring
-    Quat initRot;			/// offset orientation of the spring
+    defaulttype::Quat initRot;			/// offset orientation of the spring
 
     sofa::defaulttype::Vec<6,bool> freeMovements;	///defines the axis where the movements is free. (0,1,2)--> translation axis (3,4,5)-->rotation axis
     Real softStiffnessTrans;	///stiffness to apply on axis where the translations are free (default 0.0)
@@ -92,7 +91,7 @@ public:
         freeMovements = sofa::defaulttype::Vec<6,bool>(0,0,0,1,1,1);
         limitAngles = sofa::defaulttype::Vec<6,Real>(-100000, 100000, -100000, 100000, -100000, 100000);
         initTrans = Vector(0,0,0);
-        initRot = Quat(0,0,0,1);
+        initRot = defaulttype::Quat(0,0,0,1);
     }
 
     JointSpring(int m1, int m2)
@@ -103,7 +102,7 @@ public:
         freeMovements = sofa::defaulttype::Vec<6,bool>(0,0,0,1,1,1);
         limitAngles = sofa::defaulttype::Vec<6,Real>(-100000, 100000, -100000, 100000, -100000, 100000);
         initTrans = Vector(0,0,0);
-        initRot = Quat(0,0,0,1);
+        initRot = defaulttype::Quat(0,0,0,1);
     }
 
     JointSpring(int m1, int m2, Real softKst, Real hardKst, Real softKsr, Real hardKsr, Real blocKsr, Real axmin, Real axmax, Real aymin, Real aymax, Real azmin, Real azmax, Real kd)
@@ -119,7 +118,7 @@ public:
                 freeMovements[3+i] = false;
         }
         initTrans = Vector(0,0,0);
-        initRot = Quat(0,0,0,1);
+        initRot = defaulttype::Quat(0,0,0,1);
     }
 
     //accessors
@@ -131,7 +130,7 @@ public:
     sofa::defaulttype::Vec<6,Real> getLimitAngles() { return limitAngles;}
     sofa::defaulttype::Vec<6,bool> getFreeAxis() { return freeMovements;}
     Vector getInitLength() { return initTrans; }
-    Quat getInitOrientation() { return initRot; }
+    defaulttype::Quat getInitOrientation() { return initRot; }
 
     //affectors
     void setHardStiffnessRotation(Real ksr) {	  hardStiffnessRot = ksr;  }
@@ -154,8 +153,8 @@ public:
         if(minz==maxz) freeMovements[5]=false;
     }
     void setInitLength( const Vector& l) { initTrans=l; }
-    void setInitOrientation( const Quat& o) { initRot=o; }
-    void setInitOrientation( const Vector& o) { initRot=Quat::createFromRotationVector(o); }
+    void setInitOrientation( const defaulttype::Quat& o) { initRot=o; }
+    void setInitOrientation( const Vector& o) { initRot=defaulttype::Quat::createFromRotationVector(o); }
     void setFreeAxis(const sofa::defaulttype::Vec<6,bool>& axis) { freeMovements = axis; }
     void setFreeAxis(bool isFreeTx, bool isFreeTy, bool isFreeTz, bool isFreeRx, bool isFreeRy, bool isFreeRz)
     {
@@ -169,7 +168,7 @@ public:
         //default joint is a free rotation joint --> translation is bloqued, rotation is free
         s.freeMovements = sofa::defaulttype::Vec<6,bool>(false, false, false, true, true, true);
         s.initTrans = Vector(0,0,0);
-        s.initRot = Quat(0,0,0,1);
+        s.initRot = defaulttype::Quat(0,0,0,1);
         s.blocStiffnessRot = 0.0;
         //by default no angle limitation is set (bi values for initialisation)
         s.limitAngles = sofa::defaulttype::Vec<6,Real>(-100000., 100000., -100000., 100000., -100000., 100000.);
@@ -299,7 +298,7 @@ public:
     typedef core::behavior::MechanicalState<DataTypes> MechanicalState;
     enum { N=DataTypes::spatial_dimensions };
     typedef defaulttype::Mat<N,N,Real> Mat;
-    typedef Vec<N,Real> Vector;
+    typedef defaulttype::Vec<N,Real> Vector;
 
     typedef JointSpring<DataTypes> Spring;
 

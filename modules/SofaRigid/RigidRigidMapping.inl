@@ -51,8 +51,6 @@ namespace component
 namespace mapping
 {
 
-using namespace sofa::defaulttype;
-
 template <class TIn, class TOut>
 class RigidRigidMapping<TIn, TOut>::Loader : public helper::io::MassSpringLoader, public helper::io::SphereLoader
 {
