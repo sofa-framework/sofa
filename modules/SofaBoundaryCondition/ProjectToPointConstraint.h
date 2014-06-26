@@ -76,6 +76,7 @@ public:
     typedef Data<MatrixDeriv> DataMatrixDeriv;
     typedef helper::vector<unsigned int> SetIndexArray;
     typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
+    typedef sofa::defaulttype::Vector3 Vector3;
 
 protected:
     ProjectToPointConstraint();
@@ -126,7 +127,7 @@ public:
     {
     public:
         typedef typename ProjectToPointConstraint<DataTypes>::SetIndexArray SetIndexArray;
-
+        typedef sofa::core::topology::Point Point;
         FCPointHandler(ProjectToPointConstraint<DataTypes>* _fc, component::topology::PointSubsetData<SetIndexArray>* _data)
             : component::topology::TopologySubsetDataHandler<sofa::core::topology::Point, SetIndexArray >(_data), fc(_fc) {}
 

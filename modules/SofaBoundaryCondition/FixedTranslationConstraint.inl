@@ -63,10 +63,10 @@ void FixedTranslationConstraint<DataTypes>::FCPointHandler::applyDestroyFunction
 template< class DataTypes>
 FixedTranslationConstraint<DataTypes>::FixedTranslationConstraint()
     : core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
-    , f_indices( sofa::core::objectmodel::BaseObject::initData(&f_indices,"indices","Indices of the fixed points") )
-    , f_fixAll( sofa::core::objectmodel::BaseObject::initData(&f_fixAll,false,"fixAll","filter all the DOF to implement a fixed object") )
-    , _drawSize( sofa::core::objectmodel::BaseObject::initData(&_drawSize,0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
-    , f_coordinates( sofa::core::objectmodel::BaseObject::initData(&f_coordinates,"coordinates","Coordinates of the fixed points") )
+    , f_indices( initData(&f_indices,"indices","Indices of the fixed points") )
+    , f_fixAll( initData(&f_fixAll,false,"fixAll","filter all the DOF to implement a fixed object") )
+    , _drawSize( initData(&_drawSize,0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
+    , f_coordinates( initData(&f_coordinates,"coordinates","Coordinates of the fixed points") )
 {
     // default to indice 0
     f_indices.beginEdit()->push_back(0);

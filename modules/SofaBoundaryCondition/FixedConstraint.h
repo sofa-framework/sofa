@@ -79,7 +79,8 @@ public:
     typedef Data<MatrixDeriv> DataMatrixDeriv;
     typedef helper::vector<unsigned int> SetIndexArray;
     typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
-
+    typedef sofa::core::topology::Point Point;
+    typedef sofa::defaulttype::Vector3 Vector3;
 protected:
     FixedConstraint();
 
