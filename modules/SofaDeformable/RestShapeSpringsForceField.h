@@ -139,8 +139,6 @@ private :
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_RESTSHAPESPRINGFORCEFIELD_CPP)
 
-using namespace sofa::defaulttype;
-
 #ifndef SOFA_FLOAT
 extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<Vec3dTypes>;
 //extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<Vec2dTypes>;

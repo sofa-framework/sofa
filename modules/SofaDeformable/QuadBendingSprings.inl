@@ -39,8 +39,6 @@ namespace component
 namespace interactionforcefield
 {
 
-using namespace core::behavior;
-
 template<class DataTypes>
 QuadBendingSprings<DataTypes>::QuadBendingSprings()
     : sofa::component::interactionforcefield::StiffSpringForceField<DataTypes>()

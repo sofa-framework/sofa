@@ -43,12 +43,8 @@ namespace component
 namespace forcefield
 {
 
-using namespace sofa::defaulttype;
-using namespace	sofa::component::topology;
-using namespace core::topology;
-
 template< class DataTypes>
-void TriangularQuadraticSpringsForceField<DataTypes>::TRQSEdgeHandler::applyCreateFunction(unsigned int edgeIndex, EdgeRestInformation &ei, const Edge &, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
+void TriangularQuadraticSpringsForceField<DataTypes>::TRQSEdgeHandler::applyCreateFunction(unsigned int edgeIndex, EdgeRestInformation &ei, const core::topology::Edge &, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
 {
     if (ff)
     {
@@ -66,9 +62,11 @@ void TriangularQuadraticSpringsForceField<DataTypes>::TRQSEdgeHandler::applyCrea
 
 template< class DataTypes>
 void TriangularQuadraticSpringsForceField<DataTypes>::TRQSTriangleHandler::applyCreateFunction(unsigned int triangleIndex, TriangleRestInformation &tinfo,
-        const Triangle &, const sofa::helper::vector<unsigned int> &,
+        const core::topology::Triangle &, const sofa::helper::vector<unsigned int> &,
         const sofa::helper::vector<double> &)
 {
+    using namespace	sofa::component::topology;
+
     if (ff)
     {
         unsigned int j,k,l;
@@ -122,6 +120,8 @@ void TriangularQuadraticSpringsForceField<DataTypes>::TRQSTriangleHandler::apply
 template< class DataTypes>
 void TriangularQuadraticSpringsForceField<DataTypes>::TRQSTriangleHandler::applyDestroyFunction(unsigned int triangleIndex, TriangleRestInformation &tinfo)
 {
+    using namespace	sofa::component::topology;
+
     if (ff)
     {
         unsigned int j;
@@ -234,6 +234,8 @@ template <class DataTypes> void TriangularQuadraticSpringsForceField<DataTypes>:
 template <class DataTypes>
 void TriangularQuadraticSpringsForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
 {
+    using namespace	sofa::component::topology;
+
     VecDeriv& f = *d_f.beginEdit();
     const VecCoord& x = d_x.getValue();
     const VecDeriv& v = d_v.getValue();
@@ -310,6 +312,8 @@ void TriangularQuadraticSpringsForceField<DataTypes>::addForce(const core::Mecha
 template <class DataTypes>
 void TriangularQuadraticSpringsForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
+    using namespace	sofa::component::topology;
+
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
     Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());

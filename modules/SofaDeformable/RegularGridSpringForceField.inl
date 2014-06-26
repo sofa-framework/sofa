@@ -57,7 +57,7 @@ void RegularGridSpringForceField<DataTypes>::init()
 }
 
 template<class DataTypes>
-void RegularGridSpringForceField<DataTypes>::addForce(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 )
+void RegularGridSpringForceField<DataTypes>::addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 )
 //addForce(VecDeriv& vf1, VecDeriv& vf2, const VecCoord& vx1, const VecCoord& vx2, const VecDeriv& vv1, const VecDeriv& vv2)
 {
     // Calc any custom springs
@@ -424,6 +424,8 @@ void RegularGridSpringForceField<DataTypes>::addDForce(const core::MechanicalPar
 template<class DataTypes>
 void RegularGridSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+    using namespace sofa::defaulttype;
+
     if (!((this->mstate1 == this->mstate2)?vparams->displayFlags().getShowForceFields():vparams->displayFlags().getShowInteractionForceFields())) return;
     assert(this->mstate1);
     assert(this->mstate2);

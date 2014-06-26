@@ -397,6 +397,8 @@ void VectorSpringForceField<DataTypes>::addDForce(const core::MechanicalParams* 
 template<class DataTypes>
 void VectorSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+    using namespace sofa::defaulttype;
+
     if (!((this->mstate1 == this->mstate2)?vparams->displayFlags().getShowForceFields():vparams->displayFlags().getShowInteractionForceFields()))
         return;
     //const VecCoord& p = *this->mstate->getX();

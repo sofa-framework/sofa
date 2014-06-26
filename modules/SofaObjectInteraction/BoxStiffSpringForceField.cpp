@@ -42,29 +42,29 @@ SOFA_DECL_CLASS(BoxStiffSpringForceField)
 
 int BoxStiffSpringForceFieldClass = core::RegisterObject("Set Spring between the points inside a given box")
 #ifndef SOFA_FLOAT
-        .add< BoxStiffSpringForceField<Vec3dTypes> >()
-        .add< BoxStiffSpringForceField<Vec2dTypes> >()
-        .add< BoxStiffSpringForceField<Vec1dTypes> >()
-        .add< BoxStiffSpringForceField<Vec6dTypes> >()
+        .add< BoxStiffSpringForceField<sofa::defaulttype::Vec3dTypes> >()
+        .add< BoxStiffSpringForceField<sofa::defaulttype::Vec2dTypes> >()
+        .add< BoxStiffSpringForceField<sofa::defaulttype::Vec1dTypes> >()
+        .add< BoxStiffSpringForceField<sofa::defaulttype::Vec6dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
-        .add< BoxStiffSpringForceField<Vec3fTypes> >()
-        .add< BoxStiffSpringForceField<Vec2fTypes> >()
-        .add< BoxStiffSpringForceField<Vec1fTypes> >()
-        .add< BoxStiffSpringForceField<Vec6fTypes> >()
+        .add< BoxStiffSpringForceField<sofa::defaulttype::Vec3fTypes> >()
+        .add< BoxStiffSpringForceField<sofa::defaulttype::Vec2fTypes> >()
+        .add< BoxStiffSpringForceField<sofa::defaulttype::Vec1fTypes> >()
+        .add< BoxStiffSpringForceField<sofa::defaulttype::Vec6fTypes> >()
 #endif
         ;
 #ifndef SOFA_FLOAT
-template class SOFA_OBJECT_INTERACTION_API BoxStiffSpringForceField<Vec3dTypes>;
-template class SOFA_OBJECT_INTERACTION_API BoxStiffSpringForceField<Vec2dTypes>;
-template class SOFA_OBJECT_INTERACTION_API BoxStiffSpringForceField<Vec1dTypes>;
-template class SOFA_OBJECT_INTERACTION_API BoxStiffSpringForceField<Vec6dTypes>;
+template class SOFA_OBJECT_INTERACTION_API BoxStiffSpringForceField<sofa::defaulttype::Vec3dTypes>;
+template class SOFA_OBJECT_INTERACTION_API BoxStiffSpringForceField<sofa::defaulttype::Vec2dTypes>;
+template class SOFA_OBJECT_INTERACTION_API BoxStiffSpringForceField<sofa::defaulttype::Vec1dTypes>;
+template class SOFA_OBJECT_INTERACTION_API BoxStiffSpringForceField<sofa::defaulttype::Vec6dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_OBJECT_INTERACTION_API BoxStiffSpringForceField<Vec3fTypes>;
-template class SOFA_OBJECT_INTERACTION_API BoxStiffSpringForceField<Vec2fTypes>;
-template class SOFA_OBJECT_INTERACTION_API BoxStiffSpringForceField<Vec1fTypes>;
-template class SOFA_OBJECT_INTERACTION_API BoxStiffSpringForceField<Vec6fTypes>;
+template class SOFA_OBJECT_INTERACTION_API BoxStiffSpringForceField<sofa::defaulttype::Vec3fTypes>;
+template class SOFA_OBJECT_INTERACTION_API BoxStiffSpringForceField<sofa::defaulttype::Vec2fTypes>;
+template class SOFA_OBJECT_INTERACTION_API BoxStiffSpringForceField<sofa::defaulttype::Vec1fTypes>;
+template class SOFA_OBJECT_INTERACTION_API BoxStiffSpringForceField<sofa::defaulttype::Vec6fTypes>;
 #endif
 } // namespace interactionforcefield
 

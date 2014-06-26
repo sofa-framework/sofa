@@ -47,7 +47,6 @@ namespace component
 namespace interactionforcefield
 {
 
-using namespace sofa::defaulttype;
 using sofa::core::objectmodel::Event;
 using namespace sofa::core;
 

@@ -44,22 +44,11 @@ namespace component
 namespace forcefield
 {
 
-using namespace sofa::defaulttype;
-using namespace	sofa::component::topology;
-using namespace core::topology;
-
-
-
-
-
-using namespace core::behavior;
-using core::topology::BaseMeshTopology;
-
-typedef BaseMeshTopology::Quad				Quad;
-typedef BaseMeshTopology::EdgesInQuad			EdgesInQuad;
+typedef core::topology::BaseMeshTopology::Quad				Quad;
+typedef core::topology::BaseMeshTopology::EdgesInQuad			EdgesInQuad;
 
 template< class DataTypes>
-void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyCreateFunction(unsigned int /*edgeIndex*/, EdgeInformation &ei, const Edge &,
+void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyCreateFunction(unsigned int /*edgeIndex*/, EdgeInformation &ei, const core::topology::Edge &,
         const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
 {
     if (ff)

@@ -42,18 +42,12 @@ namespace component
 namespace forcefield
 {
 
-using namespace sofa::defaulttype;
-using namespace	sofa::component::topology;
-using namespace core::topology;
-
-
-using core::topology::BaseMeshTopology;
-typedef BaseMeshTopology::EdgesInTriangle EdgesInTriangle;
+typedef core::topology::BaseMeshTopology::EdgesInTriangle EdgesInTriangle;
 
 template< class DataTypes >
 void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::applyCreateFunction(unsigned int /*edgeIndex*/,
         EdgeRestInformation & ei,
-        const Edge &/*e*/,
+        const core::topology::Edge &/*e*/,
         const sofa::helper::vector<unsigned int> &,
         const sofa::helper::vector<double> &)
 {
@@ -73,10 +67,11 @@ void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::applyCr
 
 template< class DataTypes >
 void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::applyTriangleCreation(const sofa::helper::vector<unsigned int> &triangleAdded,
-        const sofa::helper::vector<Triangle> &,
+        const sofa::helper::vector<core::topology::Triangle> &,
         const sofa::helper::vector<sofa::helper::vector<unsigned int> > &,
         const sofa::helper::vector<sofa::helper::vector<double> > &)
 {
+    using namespace core::topology;
     if(ff)
     {
 
@@ -165,6 +160,7 @@ void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::applyTr
 template< class DataTypes>
 void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::applyTriangleDestruction(const sofa::helper::vector<unsigned int> &triangleRemoved)
 {
+    using namespace core::topology;
     if (ff)
     {
 
@@ -255,7 +251,7 @@ template<class DataTypes>
 void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::ApplyTopologyChange(const core::topology::TrianglesAdded* e)
 {
     const sofa::helper::vector<unsigned int> &triangleAdded = e->getIndexArray();
-    const sofa::helper::vector<Triangle> &elems = e->getElementArray();
+    const sofa::helper::vector<core::topology::Triangle> &elems = e->getElementArray();
     const sofa::helper::vector<sofa::helper::vector<unsigned int> > & ancestors = e->ancestorsList;
     const sofa::helper::vector<sofa::helper::vector<double> > & coefs = e->coefs;
 
@@ -331,7 +327,7 @@ template <class DataTypes> void TriangularTensorMassForceField<DataTypes>::init(
         triangleAdded.push_back(i);
 
     edgeHandler->applyTriangleCreation(triangleAdded,
-            (const sofa::helper::vector<Triangle>)0,
+            (const sofa::helper::vector<core::topology::Triangle>)0,
             (const sofa::helper::vector<sofa::helper::vector<unsigned int> >)0,
             (const sofa::helper::vector<sofa::helper::vector<double> >)0
                                       );

@@ -53,21 +53,10 @@ namespace component
 
 namespace forcefield
 {
-
-using namespace sofa::defaulttype;
-using namespace	sofa::component::topology;
-using namespace core::topology;
-
-
-
-
-
-using namespace core::behavior;
-using core::topology::BaseMeshTopology;
-typedef BaseMeshTopology::EdgesInTriangle EdgesInTriangle;
+typedef core::topology::BaseMeshTopology::BaseMeshTopology::EdgesInTriangle EdgesInTriangle;
 
 template< class DataTypes>
-void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyCreateFunction(unsigned int /*edgeIndex*/, EdgeSpring &ei, const Edge &, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
+void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyCreateFunction(unsigned int /*edgeIndex*/, EdgeSpring &ei, const sofa::component::topology::Edge &, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
 {
     if (ff)
     {
@@ -79,8 +68,9 @@ void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyCrea
 
 
 template< class DataTypes>
-void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTriangleCreation(const sofa::helper::vector<unsigned int> &triangleAdded, const sofa::helper::vector<Triangle> &, const sofa::helper::vector<sofa::helper::vector<unsigned int> > &, const sofa::helper::vector<sofa::helper::vector<double> > &)
+void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTriangleCreation(const sofa::helper::vector<unsigned int> &triangleAdded, const sofa::helper::vector<sofa::component::topology::Triangle> &, const sofa::helper::vector<sofa::helper::vector<unsigned int> > &, const sofa::helper::vector<sofa::helper::vector<double> > &)
 {
+    using namespace sofa::component::topology;
     if (ff)
     {
         typename MechanicalState::ReadVecCoord restPosition = ff->mstate->readRestPositions();
@@ -152,6 +142,7 @@ void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTria
 template< class DataTypes>
 void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTriangleDestruction(const sofa::helper::vector<unsigned int> &triangleRemoved)
 {
+    using namespace sofa::component::topology;
     if (ff)
     {
         typename MechanicalState::ReadVecCoord restPosition = ff->mstate->readRestPositions();
@@ -257,6 +248,7 @@ void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTria
 template<class DataTypes>
 void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::ApplyTopologyChange(const core::topology::TrianglesAdded* e)
 {
+    using namespace sofa::component::topology;
     const sofa::helper::vector<unsigned int> &triangleAdded = e->getIndexArray();
     const sofa::helper::vector<Triangle> &elems = e->getElementArray();
     const sofa::helper::vector<sofa::helper::vector<unsigned int> > & ancestors = e->ancestorsList;
@@ -307,7 +299,7 @@ void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyPoin
             const sofa::helper::vector<unsigned int> &shell= ff->_topology->getTrianglesAroundVertex(lastIndexVec[i]);
             for (j=0; j<shell.size(); ++j)
             {
-                EdgesInTriangle tej = ff->_topology->getEdgesInTriangle(shell[j]);
+                core::topology::BaseMeshTopology::EdgesInTriangle tej = ff->_topology->getEdgesInTriangle(shell[j]);
                 for(unsigned int k=0; k < 3 ; ++k)
                 {
                     unsigned int ind_j = tej[k];
@@ -406,6 +398,7 @@ void FastTriangularBendingSprings<DataTypes>::init()
 template<class DataTypes>
 void FastTriangularBendingSprings<DataTypes>::reinit()
 {
+    using namespace sofa::component::topology;
     /// prepare to store info in the edge array
     helper::vector<EdgeSpring>& edgeInf = *(edgeSprings.beginEdit());
     edgeInf.resize(_topology->getNbEdges());
