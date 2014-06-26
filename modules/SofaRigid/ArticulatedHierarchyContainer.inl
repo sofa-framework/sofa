@@ -41,7 +41,7 @@ namespace container
 {
 
 Articulation::Articulation():
-    axis(initData(&axis, (Vector3) Vector3(1,0,0), "axis", "Set the rotation axis for the articulation")),
+    axis(initData(&axis, defaulttype::Vector3(1,0,0), "axis", "Set the rotation axis for the articulation")),
     rotation(initData(&rotation, (bool) false, "rotation", "Rotation")),
     translation(initData(&translation, (bool) false, "translation", "Translation")),
     articulationIndex(initData(&articulationIndex, (int) 0, "articulationIndex", "Articulation index"))
@@ -111,8 +111,8 @@ void ArticulatedHierarchyContainer::buildCenterArticulationsTree(sofa::helper::i
     nodeOfArticulationCenters->addObject(ac);
     articulationCenters.push_back(ac.get());
 
-    ac->posOnParent.setValue(Vector3(bvhjoint->getOffset()->x,bvhjoint->getOffset()->y,bvhjoint->getOffset()->z)); //
-    ac->posOnChild.setValue(Vector3(0,0,0));
+    ac->posOnParent.setValue(defaulttype::Vector3(bvhjoint->getOffset()->x,bvhjoint->getOffset()->y,bvhjoint->getOffset()->z)); //
+    ac->posOnChild.setValue(defaulttype::Vector3(0,0,0));
     ac->parentIndex.setValue(id_buf);
     ac->childIndex.setValue(bvhjoint->getId()+1);
 
@@ -135,7 +135,7 @@ void ArticulatedHierarchyContainer::buildCenterArticulationsTree(sofa::helper::i
             a = sofa::core::objectmodel::New<Articulation>();
             nodeOfArticulations->addObject(a);
             ac->articulations.push_back(a.get());
-            a->axis.setValue(Vector3(1,0,0));
+            a->axis.setValue(defaulttype::Vector3(1,0,0));
             a->translation.setValue(true);
             a->articulationIndex.setValue(id);
             for (int k=0; k<motion->frameCount; k++)
@@ -146,7 +146,7 @@ void ArticulatedHierarchyContainer::buildCenterArticulationsTree(sofa::helper::i
             a = sofa::core::objectmodel::New<Articulation>();
             nodeOfArticulations->addObject(a);
             ac->articulations.push_back(a.get());
-            a->axis.setValue(Vector3(0,1,0));
+            a->axis.setValue(defaulttype::Vector3(0,1,0));
             a->translation.setValue(true);
             a->articulationIndex.setValue(id);
             for (int k=0; k<motion->frameCount; k++)
@@ -157,7 +157,7 @@ void ArticulatedHierarchyContainer::buildCenterArticulationsTree(sofa::helper::i
             a = sofa::core::objectmodel::New<Articulation>();
             nodeOfArticulations->addObject(a);
             ac->articulations.push_back(a.get());
-            a->axis.setValue(Vector3(0,0,1));
+            a->axis.setValue(defaulttype::Vector3(0,0,1));
             a->translation.setValue(true);
             a->articulationIndex.setValue(id);
             for (int k=0; k<motion->frameCount; k++)
@@ -168,7 +168,7 @@ void ArticulatedHierarchyContainer::buildCenterArticulationsTree(sofa::helper::i
             a = sofa::core::objectmodel::New<Articulation>();
             nodeOfArticulations->addObject(a);
             ac->articulations.push_back(a.get());
-            a->axis.setValue(Vector3(1,0,0));
+            a->axis.setValue(defaulttype::Vector3(1,0,0));
             a->rotation.setValue(true);
             a->articulationIndex.setValue(id);
             for (int k=0; k<motion->frameCount; k++)
@@ -179,7 +179,7 @@ void ArticulatedHierarchyContainer::buildCenterArticulationsTree(sofa::helper::i
             a = sofa::core::objectmodel::New<Articulation>();
             nodeOfArticulations->addObject(a);
             ac->articulations.push_back(a.get());
-            a->axis.setValue(Vector3(0,1,0));
+            a->axis.setValue(defaulttype::Vector3(0,1,0));
             a->rotation.setValue(true);
             a->articulationIndex.setValue(id);
             for (int k=0; k<motion->frameCount; k++)
@@ -190,7 +190,7 @@ void ArticulatedHierarchyContainer::buildCenterArticulationsTree(sofa::helper::i
             a = sofa::core::objectmodel::New<Articulation>();
             nodeOfArticulations->addObject(a);
             ac->articulations.push_back(a.get());
-            a->axis.setValue(Vector3(0,0,1));
+            a->axis.setValue(defaulttype::Vector3(0,0,1));
             a->rotation.setValue(true);
             a->articulationIndex.setValue(id);
             for (int k=0; k<motion->frameCount; k++)
@@ -227,11 +227,11 @@ void ArticulatedHierarchyContainer::init ()
 
         buildCenterArticulationsTree(joint, 0, "Root", articulationCenters.get());
 
-        component::container::MechanicalObject<Vec1Types>* mm1 = dynamic_cast<component::container::MechanicalObject<Vec1Types>*>(context->getMechanicalState());
+        component::container::MechanicalObject<defaulttype::Vec1Types>* mm1 = dynamic_cast<component::container::MechanicalObject<defaulttype::Vec1Types>*>(context->getMechanicalState());
         mm1->resize(id);
 
         context = (context->child.begin())->get();
-        component::container::MechanicalObject<RigidTypes>* mm2 = dynamic_cast<component::container::MechanicalObject<RigidTypes>*>(context->getMechanicalState());
+        component::container::MechanicalObject<defaulttype::RigidTypes>* mm2 = dynamic_cast<component::container::MechanicalObject<defaulttype::RigidTypes>*>(context->getMechanicalState());
         mm2->resize(joint->getNumJoints()+1);
     }
     else
@@ -249,7 +249,7 @@ void ArticulatedHierarchyContainer::init ()
             }
 
             // for Arboris Mapping, init the transformation for each articulation center
-            Quat q; // TODO: add a rotation component to the positionning on the ArticulatedHierarchyContainer
+            defaulttype::Quat q; // TODO: add a rotation component to the positionning on the ArticulatedHierarchyContainer
             (*ac)->H_p_pLc.set((*ac)->posOnParent.getValue(),q);
             (*ac)->H_c_cLp.set((*ac)->posOnChild.getValue(), q);
             (*ac)->H_pLc_cLp.identity();
