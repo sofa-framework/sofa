@@ -16,7 +16,7 @@ cd -
 #while read filename
 #(taking into account spaces in the name)
 
-find ${1:-.} '(' -name '*.scn' -o -name '*.pscn' -o -name '*.xml' ')' -print0 | while read -rd $'\0' g;
+find ${1:-.} '(' -name '*.scn' -o -name '*.pscn' -o -name '*.xml' -o -name '*.php' -o -name '*.tex' ')' -print0 | while read -rd $'\0' g;
 do
 #to visualize all file read: echo "$g"
 
