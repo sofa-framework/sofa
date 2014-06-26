@@ -379,7 +379,7 @@ Our new class can now be used to add a 3D spring force field to our 1D masses by
 		<MechanicalModel type="Vec3d" name="Points">
 		<ForceField type="StiffSpringForceField" filename="test2.xs3"/>
 		</MechanicalModel>
-		<Mapping type="LineMapping" object1=".." object2="Points" />
+		<Mapping type="LineMapping" input="@." output="@Points" />
 		</DynamicModel>
 	</Group>
 </Scene>
@@ -405,9 +405,9 @@ The same mapping can also be used to attach a collision model:
 		<MechanicalModel type="Vec3d" name="Points">
 		<ForceField type="StiffSpringForceField" filename="test2.xs3"/>
 		</MechanicalModel>
-		<Mapping type="LineMapping" object1=".." object2="Points" />
+		<Mapping type="LineMapping" input="@." output="@Points" />
 		<CollisionModel type="Sphere" name="Spheres" filename="test3.sph"/>
-		<Mapping type="LineMapping" object1=".." object2="Spheres" />
+		<Mapping type="LineMapping" input="@." output="@Spheres" />
 		</DynamicModel>
 	</Group>
 </Scene>

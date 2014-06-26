@@ -21,7 +21,7 @@
 		<TriangularBendingSprings name="FEM-Bend" stiffness="300" damping="1.0"/>
 		<TriangleSet/>
 		<OglModel name="Visual" color="red"/>
-		<IdentityMapping object1=".." output="@Visual"/>
+		<IdentityMapping input="@." output="@Visual"/>
 	</Node>
 </Node>
 

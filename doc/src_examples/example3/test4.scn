@@ -10,9 +10,9 @@
 			<MechanicalModel type="Vec3d" name="Points">
 				<ForceField type="RepulsiveSpringForceField" filename="test4b.xs3"/>
 			</MechanicalModel>
-			<Mapping type="LineMapping" dx="1.0" dz="0.01" object1=".." output="@Points" />
+			<Mapping type="LineMapping" dx="1.0" dz="0.01" input="@." output="@Points" />
 			<CollisionModel type="Sphere" name="Spheres" filename="test4.sph"/>
-			<Mapping type="LineMapping" object1=".." output="@Spheres" />
+			<Mapping type="LineMapping" input="@." output="@Spheres" />
 		</DynamicModel>
 		<DynamicModel type="MassObject3d" name="M2" mass="0.25">
 			<Topology type="RegularGrid"

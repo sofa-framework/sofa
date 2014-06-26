@@ -20,7 +20,7 @@ def createCube(parentNode,name,x,y,z,vx,vy,vz,color):
 	VisuNode.createObject("OglModel", name='Visual', fileMesh='mesh/PokeCube.obj', color=color, dx=x, dy=y, dz=z)
 	#desc.setAttribute('object1','@..')
 	#desc.setAttribute('object2','@Visual')
-	VisuNode.createObject('RigidMapping', object1='@..', object2='@Visual')
+	VisuNode.createObject('RigidMapping', input='@..', output='@Visual')
 	
 
 	return node
