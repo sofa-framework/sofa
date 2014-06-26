@@ -3,37 +3,34 @@ cmake_minimum_required(VERSION 2.8.8)
 set(SOLUTION_NAME "Sofa")
 project(${SOLUTION_NAME})
 
-# Enable the organisation in folders for generators that support
-# it. (E.g. some versions of Visual Studio have 'solution folders')
-set_property(GLOBAL
-PROPERTY USE_FOLDERS ON)
-
-include(cmake/utils.cmake)
-include(cmake/environment.cmake)
-include(cmake/functions.cmake)
-include(cmake/options.cmake)
-
-
-if(NOT PRECONFIGURE_DONE)
-    message("")
-    message(">>> SOFA framework pre-configuration complete")
-    message(">>> Select your options and launch 'configure' or re-run cmake")
-    message("")
-    set(PRECONFIGURE_DONE 1 CACHE INTERNAL "")
-else()
-    include(cmake/externals.cmake)
-    include(cmake/buildFlags.cmake)
-    include(cmake/dependencies.cmake)
-
-    # Generate config.h header
-    configure_file("${SOFA_FRAMEWORK_DIR}/sofa/config.h.in"
-                   "${SOFA_BUILD_DIR}/misc/include/sofa/config.h")
-
-    sofa_save_option_list("misc/options.txt")
-    sofa_save_compiler_definitions("misc/compiler-definitions.txt")
-    sofa_save_dependencies("misc/dependencies.txt")
-    sofa_save_complete_dependencies("misc/full-dependencies.txt")
-    sofa_print_configuration_report()
-
-    include(cmake/doxygen.cmake)
+# MSVC: Use solution folders.
+if(MSVC)
+    set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 endif()
+if( CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT )
+  set( CMAKE_INSTALL_PREFIX ${Sofa_SOURCE_DIR}/install CACHE PATH "Install path prefix, prepended onto install directories." FORCE )
+endif (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT )
+
+# Set the output directories globally
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
+# Environment
+set(SOFA_CMAKE_DIR "${Sofa_SOURCE_DIR}/cmake" )
+list(APPEND CMAKE_MODULE_PATH "${SOFA_CMAKE_DIR}/Modules")
+include("${SOFA_CMAKE_DIR}/SofaBuildFlags.cmake")
+
+set(SOFA_FRAMEWORK_DIR "${CMAKE_CURRENT_SOURCE_DIR}/framework")
+set(SOFA_MODULES_DIR   "${CMAKE_CURRENT_SOURCE_DIR}/modules")
+set(SOFA_SIMULATION_DIR "${SOFA_MODULES_DIR}/sofa/simulation")
+set(SOFA_EXTLIBS_DIR   "${CMAKE_CURRENT_SOURCE_DIR}/extlibs")
+
+# extlibs
+set(SOFA_PROJECT_FOLDER "Extlibs")
+add_subdirectory(${SOFA_EXTLIBS_DIR}/tinyxml)
+
+# framework
+set(SOFA_PROJECT_FOLDER "SofaFramework")
+add_subdirectory("${SOFA_FRAMEWORK_DIR}")
+

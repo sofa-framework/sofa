@@ -24,7 +24,6 @@
 ******************************************************************************/
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
-#include <sofa/config.h>
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -73,33 +72,19 @@ static std::string pluginSubdir("/bin");
 static std::string pluginSubdir("/lib");
 #endif
 
-FileRepository PluginRepository("SOFA_PLUGIN_PATH", (std::string(SOFA_BUILD_DIR)+pluginSubdir).c_str());
-
-static FileRepository createSofaDataPath()
-{
-    FileRepository repository("SOFA_DATA_PATH");
-
-    repository.addLastPath(std::string(SOFA_BUILD_DIR));
-    repository.addLastPath(std::string(SOFA_SRC_DIR) + "/share");
-    repository.addLastPath(std::string(SOFA_SRC_DIR) + "/examples");
-
+#if defined (WIN32) || defined (_XBOX)
+FileRepository PluginRepository("SOFA_PLUGIN_PATH","../bin");
+#else
+FileRepository PluginRepository("SOFA_PLUGIN_PATH","../lib");
+#endif
 #if defined (WIN32) || defined (_XBOX) || defined(PS3)
+FileRepository DataRepository("SOFA_DATA_PATH", "../share;../examples");
 #elif defined (__APPLE__)
-    repository.addLastPath(std::string(SOFA_SRC_DIR) + "/Resources/examples");
-    repository.addLastPath(std::string(SOFA_SRC_DIR) + "/Resources");
-    repository.addLastPath(std::string(SOFA_SRC_DIR) + "/../../../examples");
-    repository.addLastPath(std::string(SOFA_SRC_DIR) + "/../../../share");
-#else // LINUX
-    repository.addLastPath(std::string(SOFA_SRC_DIR) + "/../Verification/data");
-    repository.addLastPath(std::string(SOFA_SRC_DIR) + "/../Verification/simulation");
+FileRepository DataRepository("SOFA_DATA_PATH", "../share:../examples:../Resources/examples:../Resources:../../../../examples:../../../../share");
+#else
+FileRepository DataRepository("SOFA_DATA_PATH", "../share:../examples:../../Verification/data:../../Verification/simulation");
 #endif
 
-    repository.addLastPath(std::string(SOFA_SRC_DIR));
-
-    return repository;
-}
-
-FileRepository DataRepository = createSofaDataPath();
 
 #if defined (_XBOX) || defined(PS3)
 char* getenv(const char* varname) { return NULL; } // NOT IMPLEMENTED
