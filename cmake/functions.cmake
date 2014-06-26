@@ -655,3 +655,18 @@ function(sofa_save_complete_dependencies filename)
     file(WRITE "${SOFA_BUILD_DIR}/${filename}" "For debugging purposes, here is the list of ALL dependencies for each project.\n\n${text}")
     message(STATUS "The list of complete dependencies was saved to: ${filename}")
 endfunction()
+
+function(sofa_add_plugin plugin_name)
+    add_library("${plugin_name}" SHARED ${ARGN})
+    set_target_properties("${plugin_name}" PROPERTIES
+        LIBRARY_OUTPUT_DIRECTORY "${SOFA_BIN_PLUGINS_DIR}"
+        LIBRARY_OUTPUT_DIRECTORY_DEBUG "${SOFA_BIN_PLUGINS_DIR}"
+        LIBRARY_OUTPUT_DIRECTORY_RELEASE "${SOFA_BIN_PLUGINS_DIR}"
+        LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO "${SOFA_BIN_PLUGINS_DIR}"
+        LIBRARY_OUTPUT_DIRECTORY_MINSIZEREL "${SOFA_BIN_PLUGINS_DIR}"
+        RUNTIME_OUTPUT_DIRECTORY "${SOFA_BIN_PLUGINS_DIR}"
+        RUNTIME_OUTPUT_DIRECTORY_DEBUG "${SOFA_BIN_PLUGINS_DIR}"
+        RUNTIME_OUTPUT_DIRECTORY_RELEASE "${SOFA_BIN_PLUGINS_DIR}"
+        RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO "${SOFA_BIN_PLUGINS_DIR}"
+        RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL "${SOFA_BIN_PLUGINS_DIR}")
+endfunction()

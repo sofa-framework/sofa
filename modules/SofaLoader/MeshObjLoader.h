@@ -37,8 +37,6 @@ namespace component
 namespace loader
 {
 
-//  using namespace sofa::defaulttype;
-//  using namespace sofa::helper::io;
 using sofa::defaulttype::Vec4f;
 
 class SOFA_LOADER_API MeshObjLoader : public sofa::core::loader::MeshLoader
@@ -60,7 +58,6 @@ public:
     }
 
 protected:
-
     bool readOBJ (std::ifstream &file, const char* filename);
     bool readMTL (const char* filename, helper::vector <sofa::core::loader::Material>& materials);
     void addGroup (const sofa::core::loader::PrimitiveGroup& g);
@@ -70,30 +67,18 @@ protected:
     std::string textureName;
     FaceType faceType;
 
-
 public:
-
     Data <helper::vector <sofa::core::loader::Material> > materials;
-
     Data <helper::SVector <helper::SVector <int> > > faceList;
-
-
-
     Data <helper::SVector <helper::SVector <int> > > texIndexList;
     Data< helper::vector<sofa::defaulttype::Vector2> > texCoordsList;
     Data <helper::SVector<helper::SVector<int> > > normalsIndexList;
     Data <helper::vector<sofa::defaulttype::Vector3> > normalsList;
-    //Data <helper::vector<sofa::defaulttype::Vector3> > vertices;
     Data< helper::vector<sofa::defaulttype::Vector2> > texCoords;
-
     Data< bool > computeMaterialFaces;
-
     helper::vector< Data <helper::vector <unsigned int> >* > subsets_indices;
 
     virtual std::string type() { return "The format of this mesh is OBJ."; }
-
-    //    vector<Material>& getMaterialsArray() { return m_materials; }
-
 };
 
 

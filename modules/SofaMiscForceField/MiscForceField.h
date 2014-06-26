@@ -16,45 +16,21 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Plugins                               *
+*                               SOFA :: Modules                               *
 *                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef INITSOFAPYTHON_H
-#define INITSOFAPYTHON_H
-
+#ifndef SOFA_MISC_FORCE_FIELD_MISC_FORCE_FIELD_H
+#define SOFA_MISC_FORCE_FIELD_MISC_FORCE_FIELD_H
 
 #include <sofa/helper/system/config.h>
 
-#ifdef SOFA_BUILD_SOFAPYTHON
-#define SOFA_SOFAPYTHON_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#ifdef SOFA_BUILD_MISC_FORCE_FIELD
+#  define SOFA_MISC_FORCE_FIELD_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#define SOFA_SOFAPYTHON_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#  define SOFA_MISC_FORCE_FIELD_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-namespace sofa
-{
-
-namespace component
-{
-
-extern "C" {
-    SOFA_SOFAPYTHON_API void initExternalModule();
-    SOFA_SOFAPYTHON_API const char* getModuleName();
-    SOFA_SOFAPYTHON_API const char* getModuleVersion();
-    SOFA_SOFAPYTHON_API const char* getModuleLicense();
-    SOFA_SOFAPYTHON_API const char* getModuleDescription();
-    SOFA_SOFAPYTHON_API const char* getModuleComponentList();
-}
-
-}
-
-}
-
-/** \mainpage
-  This is a the starting page of the plugin documentation, defined in file initEmptyPlugin.h
-  */
-
-#endif // INITEmptyPlugin_H
+#endif

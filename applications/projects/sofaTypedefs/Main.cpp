@@ -1,6 +1,6 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/PluginManager.h>
-#include <sofa/component/init.h>
+#include <SofaComponentMain/init.h>
 #include <sofa/helper/vector.h>
 
 #include <sofa/helper/ArgumentParser.h>

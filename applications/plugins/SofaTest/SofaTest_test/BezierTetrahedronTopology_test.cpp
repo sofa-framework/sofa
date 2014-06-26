@@ -27,7 +27,7 @@
 #include "Sofa_test.h"
 #include<sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileRepository.h>
-#include <sofa/component/init.h>
+#include <SofaComponentMain/init.h>
 #include <sofa/core/ExecParams.h>
 
 //Including Simulation
@@ -42,7 +42,7 @@
 #include <sofa/core/MechanicalParams.h>
 #include <plugins/SceneCreator/SceneCreator.h>
 #include <SofaMiscForceField/MeshMatrixMass.h>
-#include <sofa/component/engine/GenerateCylinder.h>
+#include <SofaEngine/GenerateCylinder.h>
 #include <SofaTopologyMapping/Mesh2BezierTopologicalMapping.h>
 #include <sofa/defaulttype/VecTypes.h>
 

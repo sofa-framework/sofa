@@ -97,7 +97,7 @@ ComponentLibrary *CategoryLibrary::addComponent(const std::string &componentName
         }
         componentCreationPossible=true;
         //component->addTemplate(itTemplate->first);
-        if (templateName == (entry->defaultTemplate.empty() ? std::string("Vec3d") : entry->defaultTemplate))
+        if (templateName == (entry->defaultTemplateParameters.empty() ? std::string("Vec3d") : entry->defaultTemplateParameters))
             templates.push_front(templateName); // make sure the default template is first
         else
             templates.push_back(templateName);
