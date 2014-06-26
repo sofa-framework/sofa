@@ -100,7 +100,7 @@ public:
         typedef typename FixedTranslationConstraint<DataTypes>::SetIndexArray SetIndexArray;
 
         FCPointHandler(FixedTranslationConstraint<DataTypes>* _fc, sofa::component::topology::PointSubsetData<SetIndexArray>* _data)
-            : sofa::component::topology::TopologySubsetDataHandler<Point, SetIndexArray >(_data), fc(_fc) {}
+            : sofa::component::topology::TopologySubsetDataHandler<sofa::core::topology::Point, SetIndexArray >(_data), fc(_fc) {}
 
 
 

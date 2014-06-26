@@ -130,7 +130,7 @@ public:
         typedef typename FixedConstraint<DataTypes>::SetIndexArray SetIndexArray;
 
         FCPointHandler(FixedConstraint<DataTypes>* _fc, sofa::component::topology::PointSubsetData<SetIndexArray>* _data)
-            : sofa::component::topology::TopologySubsetDataHandler<Point, SetIndexArray >(_data), fc(_fc) {}
+            : sofa::component::topology::TopologySubsetDataHandler<sofa::core::topology::Point, SetIndexArray >(_data), fc(_fc) {}
 
 
         void applyDestroyFunction(unsigned int /*index*/, value_type& /*T*/);

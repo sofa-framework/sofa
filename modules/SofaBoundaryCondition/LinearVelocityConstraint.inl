@@ -65,10 +65,10 @@ void LinearVelocityConstraint<TDataTypes>::FCPointHandler::applyDestroyFunction(
 template <class TDataTypes>
 LinearVelocityConstraint<TDataTypes>::LinearVelocityConstraint()
     : core::behavior::ProjectiveConstraintSet<TDataTypes>(NULL)
-    , m_indices( BaseObject::initData(&m_indices,"indices","Indices of the constrained points") )
-    , m_keyTimes(  BaseObject::initData(&m_keyTimes,"keyTimes","key times for the movements") )
-    , m_keyVelocities(  BaseObject::initData(&m_keyVelocities,"velocities","velocities corresponding to the key times") )
-    , m_coordinates( BaseObject::initData(&m_coordinates, "coordinates", "coordinates on which to apply velocities") )
+    , m_indices( sofa::core::objectmodel::BaseObject::initData(&m_indices,"indices","Indices of the constrained points") )
+    , m_keyTimes(  sofa::core::objectmodel::BaseObject::initData(&m_keyTimes,"keyTimes","key times for the movements") )
+    , m_keyVelocities(  sofa::core::objectmodel::BaseObject::initData(&m_keyVelocities,"velocities","velocities corresponding to the key times") )
+    , m_coordinates( sofa::core::objectmodel::BaseObject::initData(&m_coordinates, "coordinates", "coordinates on which to apply velocities") )
 {
     // default to indice 0
     m_indices.beginEdit()->push_back(0);
@@ -348,8 +348,8 @@ void LinearVelocityConstraint<TDataTypes>::draw(const core::visual::VisualParams
     {
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
-            gl::glVertexT(x0[*it]+m_keyVelocities.getValue()[i]);
-            gl::glVertexT(x0[*it]+m_keyVelocities.getValue()[i+1]);
+            sofa::helper::gl::glVertexT(x0[*it]+m_keyVelocities.getValue()[i]);
+            sofa::helper::gl::glVertexT(x0[*it]+m_keyVelocities.getValue()[i+1]);
         }
     }
     glEnd();

@@ -127,6 +127,8 @@ void EdgePressureForceField<DataTypes>::addForce(const sofa::core::MechanicalPar
 template<class DataTypes>
 void EdgePressureForceField<DataTypes>::initEdgeInformation()
 {
+    typedef sofa::defaulttype::Vec3d Vec3d;
+
     const VecCoord& x = *this->mstate->getX();
 
     if (x.empty())
@@ -256,11 +258,11 @@ void EdgePressureForceField<DataTypes>::updateEdgeInformation()
     sofa::helper::vector<EdgePressureInformation>& my_subset = *(edgePressureMap).beginEdit();
     for (unsigned int i=0; i<my_map.size(); ++i)
     {
-        Vec3d p1 = x[_topology->getEdge(my_map[i])[0]];
-        Vec3d p2 = x[_topology->getEdge(my_map[i])[1]];
-        Vec3d orig(0,0,0);
+        sofa::defaulttype::Vec3d p1 = x[_topology->getEdge(my_map[i])[0]];
+        sofa::defaulttype::Vec3d p2 = x[_topology->getEdge(my_map[i])[1]];
+        sofa::defaulttype::Vec3d orig(0,0,0);
 
-        Vec3d tang = p2 - p1;
+        sofa::defaulttype::Vec3d tang = p2 - p1;
         tang.norm(); /// @todo: shouldn't this be normalize() ?
 
         Deriv myPressure;
@@ -392,10 +394,10 @@ void EdgePressureForceField<DataTypes>::draw(const core::visual::VisualParams*)
 
     for (unsigned int i=0; i<my_map.size(); ++i)
     {
-        Vec3d p = (x[_topology->getEdge(my_map[i])[0]] + x[_topology->getEdge(my_map[i])[1]]) / 2.0;
-        helper::gl::glVertexT(p);
+        sofa::defaulttype::Vec3d p = (x[_topology->getEdge(my_map[i])[0]] + x[_topology->getEdge(my_map[i])[1]]) / 2.0;
+        sofa::helper::gl::glVertexT(p);
 
-        Vec3d f = my_subset[i].force;
+        sofa::defaulttype::Vec3d f = my_subset[i].force;
         //f.normalize();
         f *= aSC;
         helper::gl::glVertexT(p + f);

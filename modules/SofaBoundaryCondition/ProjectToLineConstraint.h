@@ -132,7 +132,7 @@ public:
         typedef typename ProjectToLineConstraint<DataTypes>::Indices Indices;
 
         FCPointHandler(ProjectToLineConstraint<DataTypes>* _fc, sofa::component::topology::PointSubsetData<Indices>* _data)
-            : sofa::component::topology::TopologySubsetDataHandler<Point, Indices >(_data), fc(_fc) {}
+            : sofa::component::topology::TopologySubsetDataHandler<sofa::core::topology::Point, Indices >(_data), fc(_fc) {}
 
 
         void applyDestroyFunction(unsigned int /*index*/, core::objectmodel::Data<value_type>& /*T*/);

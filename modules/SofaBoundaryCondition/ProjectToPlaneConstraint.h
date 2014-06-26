@@ -134,7 +134,7 @@ public:
         typedef typename ProjectToPlaneConstraint<DataTypes>::Indices Indices;
 
         FCPointHandler(ProjectToPlaneConstraint<DataTypes>* _fc, component::topology::PointSubsetData<Indices>* _data)
-            : sofa::component::topology::TopologySubsetDataHandler<Point, Indices >(_data), fc(_fc) {}
+            : sofa::component::topology::TopologySubsetDataHandler<sofa::core::topology::Point, Indices >(_data), fc(_fc) {}
 
 
 
