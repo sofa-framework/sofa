@@ -559,7 +559,7 @@ bool BaseCamera::importParametersFromFile(const std::string& viewFilename)
     TiXmlHandle hDoc(&doc);
     TiXmlElement* root;
 
-    root = hDoc.FirstChildElement().Element();
+    root = hDoc.FirstChildElement().ToElement();
 
     if (!root)
         return false;
