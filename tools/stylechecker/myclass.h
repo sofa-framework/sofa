@@ -41,18 +41,29 @@ class MyClass
 		int use(){return 0; }
         int publicposition ;
 
-        Data<int> public_datafield ;
-        SingleLink<int> public_singlelink ;
+        Data<int> public_datafieldVALID ;
+        SingleLink<int> public_singlelinkVALID ;
 
-        DualLink<int> public_duallink ;
-        OtherType<int> public_othertype ;
+        DualLink<int> public_duallinkVALID ;
+        OtherType<int> public_othertypeVALID ;
+
+	void* public_voidpointerVALID ;
+	int* public_intpointerVALID ;
+
+	int othercodingstyleINVALID_;
     private:
-        int privateposition ;
-        int m_privateposition ;
-        Data<int> private_datafield ;
-        SingleLink<int> private_singlelink ;
-        DualLink<int> private_duallink ;
-        OtherType<int> private_othertype ;
+        int privatepositionINVALID ;
+        int m_privatepositionVALID ;
+        Data<int> private_datafieldINVALID ;
+        SingleLink<int> private_singlelinkINVALID ;
+        DualLink<int> private_duallinkINVALID ;
+        OtherType<int> private_othertypeINVALID ;
+
+	void* private_voidpointerINVALID;
+	int* private_intpointerINVALID;
+
+	bool invalidBooleanINVALID;
+	bool bValidBooleanVALID;
 };
 
 
