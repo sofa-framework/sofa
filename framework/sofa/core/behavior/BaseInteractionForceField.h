@@ -63,17 +63,9 @@ public:
 
     virtual void addKToMatrix(const MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix)
     {
-        sofa::core::behavior::MultiMatrixAccessor::MatrixRef r1 = matrix->getMatrix(getMechModel1());
-        sofa::core::behavior::MultiMatrixAccessor::MatrixRef r2 = matrix->getMatrix(getMechModel2());
-        if (r1) addKToMatrix(r1.matrix, mparams->kFactorIncludingRayleighDamping(rayleighStiffness.getValue()), r1.offset);
-        if (r2) addKToMatrix(r2.matrix, mparams->kFactorIncludingRayleighDamping(rayleighStiffness.getValue()), r2.offset);
-    }
-
-    /// @deprecated
-    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * /*matrix*/, double /*kFact*/, unsigned int &/*offset*/)
-    {
         serr << "ERROR("<<getClassName()<<"): addKToMatrix not implemented." << sendl;
     }
+
 
     /// initialization to export potential energy to gnuplot files format
     virtual void initGnuplot(const std::string path){

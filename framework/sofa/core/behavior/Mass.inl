@@ -108,19 +108,9 @@ void Mass<DataTypes>::addMDx(const MechanicalParams* mparams /* PARAMS FIRST */,
 template<class DataTypes>
 void Mass<DataTypes>::addMDx(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecDeriv& dx , double factor )
 {
-    if (this->mstate)
-    {
-        this->mstate->forceMask.setInUse(this->useMask());
-        addMDx( *f.beginEdit(mparams) , dx.getValue(mparams), factor);
-        f.endEdit(mparams);
-    }
+    serr << "ERROR("<<getClassName()<< "): addMDx(const MechanicalParams* , DataVecDeriv& , const DataVecDeriv&  , double  ) not implemented." << sendl;
 }
 
-template<class DataTypes>
-void Mass<DataTypes>::addMDx(VecDeriv& /*f*/, const VecDeriv& /*dx*/, double /*factor*/)
-{
-    serr << "ERROR("<<getClassName()<<"): addMDx(VecDeriv& , const VecDeriv& , double ) not implemented." << sendl;
-}
 
 template<class DataTypes>
 void Mass<DataTypes>::accFromF(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId aid)
