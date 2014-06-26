@@ -223,7 +223,7 @@ sofa::defaulttype::Vector3 HexahedronSetGeometryAlgorithms<DataTypes>::computeHe
         pnt[w] = pos[w];
     }
 
-    Mat3x3d		m, mt, base;
+    sofa::defaulttype::Mat3x3d		m, mt, base;
     m[0] = p1-origin;
     m[1] = p3-origin;
     m[2] = p4-origin;
@@ -256,7 +256,7 @@ sofa::defaulttype::Vector3 HexahedronSetGeometryAlgorithms<DataTypes>::computeHe
         pnt[w] = pos[w];
     }
 
-    Mat3x3d		m, mt, base;
+    sofa::defaulttype::Mat3x3d		m, mt, base;
     m[0] = p1-origin;
     m[1] = p3-origin;
     m[2] = p4-origin;
@@ -445,7 +445,7 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visual
     // Draw Hexa indices
     if (showHexaIndices.getValue())
     {
-        Mat<4,4, GLfloat> modelviewM;
+        sofa::defaulttype::Mat<4,4, GLfloat> modelviewM;
         const VecCoord& coords = *(this->object->getX());
         const sofa::defaulttype::Vec3f& color = _drawColor.getValue();
         glColor3f(color[0], color[1], color[2]);

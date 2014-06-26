@@ -64,6 +64,7 @@ public:
     typedef sofa::core::topology::BaseMeshTopology::EdgesAroundVertex EdgesAroundVertex;
 
     typedef sofa::defaulttype::Vec3d Vec3d;
+    typedef sofa::defaulttype::Vector3 Vector3;
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;

@@ -123,7 +123,11 @@ public:
     void getIntersectionPointWithPlane(const TetraID ind_ta, sofa::defaulttype::Vec<3,Real>& c, sofa::defaulttype::Vec<3,Real>& normal, sofa::helper::vector< sofa::defaulttype::Vec<3,Real> >& intersectedPoint, SeqEdges& intersectedEdge);
 
     /// finds the intersection point between edge and plane
-    bool computeIntersectionEdgeWithPlane(Vec<3,Real>& p1, sofa::defaulttype::Vec<3,Real>& p2, sofa::defaulttype::Vec<3,Real>& c, sofa::defaulttype::Vec<3,Real>& normal, sofa::defaulttype::Vec<3,Real>& intersection);
+    bool computeIntersectionEdgeWithPlane(sofa::defaulttype::Vec<3,Real>& p1,
+                                          sofa::defaulttype::Vec<3,Real>& p2,
+                                          sofa::defaulttype::Vec<3,Real>& c,
+                                          sofa::defaulttype::Vec<3,Real>& normal,
+                                          sofa::defaulttype::Vec<3,Real>& intersection);
 
     bool checkNodeSequence(Tetra& tetra);
 

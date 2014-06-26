@@ -43,10 +43,6 @@ namespace component
 namespace topology
 {
 
-using  sofa::component::container::MechanicalObject;
-using namespace sofa::defaulttype;
-
-
 template<class DataTypes>
 void TriangleSetTopologyAlgorithms< DataTypes >::init()
 {
@@ -109,7 +105,7 @@ bool TriangleSetTopologyAlgorithms< DataTypes >::Suture2Points(unsigned int ind_
     //this->sout << "INFO_print : ind1 = " << ind1 << this->sendl;
     //this->sout << "INFO_print : ind2 = " << ind2 << this->sendl;
 
-    Vec<3,double> point_created = m_geometryAlgorithms->computeBaryEdgePoint(ind1, ind2, 0.5);
+    sofa::defaulttype::Vec<3,double> point_created = m_geometryAlgorithms->computeBaryEdgePoint(ind1, ind2, 0.5);
 
     sofa::helper::vector< double > x_created;
     x_created.push_back((double) point_created[0]);
@@ -133,8 +129,8 @@ bool TriangleSetTopologyAlgorithms< DataTypes >::Suture2Points(unsigned int ind_
 // Removes triangles along the list of points (ind_edge,coord) intersected by the segment from point a to point b and the triangular mesh
 
 template<class DataTypes>
-void TriangleSetTopologyAlgorithms< DataTypes >::RemoveAlongTrianglesList(const Vec<3,double>& a,
-        const Vec<3,double>& b,
+void TriangleSetTopologyAlgorithms< DataTypes >::RemoveAlongTrianglesList(const sofa::defaulttype::Vec<3,double>& a,
+        const sofa::defaulttype::Vec<3,double>& b,
         const unsigned int ind_ta,
         const unsigned int ind_tb)
 {
@@ -167,7 +163,8 @@ void TriangleSetTopologyAlgorithms< DataTypes >::RemoveAlongTrianglesList(const 
 // Incises along the list of points (ind_edge,coord) intersected by the sequence of input segments (list of input points) and the triangular mesh
 
 template<class DataTypes>
-void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongLinesList(const sofa::helper::vector< Vec<3,double> >& input_points,
+void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongLinesList(
+        const sofa::helper::vector< sofa::defaulttype::Vec<3,double> >& input_points,
         const sofa::helper::vector< unsigned int > &input_triangles)
 {
     // HYP : input_points.size() == input_triangles.size()
@@ -183,15 +180,15 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongLinesList(const sofa
 
     bool is_on_boundary;
 
-    const Vec<3,double> a = input_points[0];
+    const sofa::defaulttype::Vec<3,double> a = input_points[0];
     unsigned int ind_ta = input_triangles[0];
 
     unsigned int j = 0;
     bool is_validated=true;
     for(j = 0; is_validated && j < points_size - 1; ++j)
     {
-        const Vec<3,double> pa = input_points[j];
-        const Vec<3,double> pb = input_points[j+1];
+        const sofa::defaulttype::Vec<3,double> pa = input_points[j];
+        const sofa::defaulttype::Vec<3,double> pb = input_points[j+1];
         unsigned int ind_tpa = input_triangles[j];
         unsigned int ind_tpb = input_triangles[j+1];
 
@@ -210,7 +207,7 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongLinesList(const sofa
         }
     }
 
-    const Vec<3,double> b = input_points[j];
+    const sofa::defaulttype::Vec<3,double> b = input_points[j];
     unsigned int ind_tb = input_triangles[j];
 
     const Triangle &ta=m_container->getTriangle(ind_ta);
@@ -248,13 +245,15 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongLinesList(const sofa
 
     double epsilon = 0.2; // INFO : epsilon is a threshold in [0,1] to control the snapping of the extremities to the closest vertex
 
-    sofa::helper::vector< double > a_baryCoefs = m_geometryAlgorithms->computeTriangleBarycoefs(ind_ta, (const Vec<3,double> &) a);
+    sofa::helper::vector< double > a_baryCoefs =
+            m_geometryAlgorithms->computeTriangleBarycoefs(ind_ta, (const sofa::defaulttype::Vec<3,double> &) a);
     snapping_test_triangle(epsilon, a_baryCoefs[0], a_baryCoefs[1], a_baryCoefs[2],
             is_snap_a0, is_snap_a1, is_snap_a2);
 
     double is_snapping_a = is_snap_a0 || is_snap_a1 || is_snap_a2;
 
-    sofa::helper::vector< double > b_baryCoefs = m_geometryAlgorithms->computeTriangleBarycoefs(ind_tb, (const Vec<3,double> &) b);
+    sofa::helper::vector< double > b_baryCoefs =
+            m_geometryAlgorithms->computeTriangleBarycoefs(ind_tb, (const sofa::defaulttype::Vec<3,double> &) b);
     snapping_test_triangle(epsilon, b_baryCoefs[0], b_baryCoefs[1], b_baryCoefs[2],
             is_snap_b0, is_snap_b1, is_snap_b2);
 
@@ -1097,7 +1096,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
             PointID p1 = new_edge_points[i];
             EdgeID edgeIDFirst = firstObject;
             Edge theEdgeFirst = m_container->getEdge(firstObject);
-            Vec<3,double> pos1 = m_geometryAlgorithms->computeBaryEdgePoint(theEdgeFirst, coords_list[i][0]);
+            sofa::defaulttype::Vec<3,double> pos1 = m_geometryAlgorithms->computeBaryEdgePoint(theEdgeFirst, coords_list[i][0]);
 
             switch ( topoPath_list[i+1] )
             {
@@ -1157,7 +1156,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
                 PointID p2 = new_edge_points[i+1];
                 EdgeID edgeIDSecond = indices_list[i+1];
                 Edge theEdgeSecond = m_container->getEdge(edgeIDSecond);
-                Vec<3,double> pos2 = m_geometryAlgorithms->computeBaryEdgePoint(theEdgeSecond, coords_list[i+1][0]);
+                sofa::defaulttype::Vec<3,double> pos2 = m_geometryAlgorithms->computeBaryEdgePoint(theEdgeSecond, coords_list[i+1][0]);
 
                 TriangleID triId;
                 Triangle tri;
@@ -1691,7 +1690,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
         for (unsigned int i = 0; i<points2Snap.size(); i++)
         {
 
-            Vec<3,double> SnapedCoord;
+            sofa::defaulttype::Vec<3,double> SnapedCoord;
             unsigned int firstAncestor = (unsigned int)points2Snap[i][4];
             unsigned int secondAncestor = (unsigned int)points2Snap[i][5];
 
@@ -1749,7 +1748,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
 
 template<class DataTypes>
 void TriangleSetTopologyAlgorithms<DataTypes>::SnapAlongPath (sofa::helper::vector< sofa::core::topology::TopologyObjectType>& topoPath_list,
-        sofa::helper::vector<unsigned int>& indices_list, sofa::helper::vector< Vec<3, double> >& coords_list,
+        sofa::helper::vector<unsigned int>& indices_list, sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& coords_list,
         sofa::helper::vector< sofa::helper::vector<double> >& points2Snap,
         double epsilonSnapPath)
 {
@@ -1764,7 +1763,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapAlongPath (sofa::helper::vect
     */
     std::map <PointID, sofa::helper::vector<unsigned int> > map_point2snap;
     std::map <PointID, sofa::helper::vector<unsigned int> >::iterator it;
-    std::map <PointID, Vec<3,double> > map_point2bary;
+    std::map <PointID, sofa::defaulttype::Vec<3,double> > map_point2bary;
     double epsilon = epsilonSnapPath;
 
     //// STEP 1 - First loop to find concerned points
@@ -1801,7 +1800,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapAlongPath (sofa::helper::vect
             {
                 //std::cout << "Edge: vertex: " << Vertex2Snap<<std::endl;
                 map_point2snap[Vertex2Snap] = sofa::helper::vector <unsigned int> ();
-                map_point2bary[Vertex2Snap] = Vec<3,double> ();
+                map_point2bary[Vertex2Snap] = sofa::defaulttype::Vec<3,double> ();
             }
 
             break;
@@ -1809,7 +1808,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapAlongPath (sofa::helper::vect
         case core::topology::TRIANGLE:
         {
             PointID Vertex2Snap;
-            Vec<3, double>& barycoord = coords_list[i];
+            sofa::defaulttype::Vec<3, double>& barycoord = coords_list[i];
             bool TriFind = false;
 
             for (unsigned int j = 0; j < 3; j++)
@@ -1828,7 +1827,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapAlongPath (sofa::helper::vect
                 //std::cout << "Triangle: vertex: " << Vertex2Snap<<std::endl;
 
                 map_point2snap[Vertex2Snap] = sofa::helper::vector <unsigned int> ();
-                map_point2bary[Vertex2Snap] = Vec<3,double> ();
+                map_point2bary[Vertex2Snap] = sofa::defaulttype::Vec<3,double> ();
             }
 
             break;
@@ -1884,7 +1883,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapAlongPath (sofa::helper::vect
                     map_point2snap[ thePoint ].push_back(i);
                     // Compute new position.
                     // Step 1/3: Compute real coord of incision point on the edge
-                    const Vec<3,double>& coord_bary = m_geometryAlgorithms->computeBaryEdgePoint (theEdge, coords_list[i][0]);
+                    const sofa::defaulttype::Vec<3,double>& coord_bary = m_geometryAlgorithms->computeBaryEdgePoint (theEdge, coords_list[i][0]);
 
                     // Step 2/3: Sum the different incision point position.
                     for (unsigned int j = 0; j<3; j++)
@@ -1910,7 +1909,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapAlongPath (sofa::helper::vect
                     PointFind = true;
                     map_point2snap[ thePoint ].push_back(i);
 
-                    const Vec<3,double>& coord_bary = m_geometryAlgorithms->computeBaryTrianglePoint (theTriangle, coords_list[i]);
+                    const sofa::defaulttype::Vec<3,double>& coord_bary = m_geometryAlgorithms->computeBaryTrianglePoint (theTriangle, coords_list[i]);
 
                     for (unsigned int j = 0; j<3; j++)
                         map_point2bary[ thePoint ][j] += coord_bary[j];
@@ -1969,7 +1968,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapAlongPath (sofa::helper::vect
         }
 
         points2Snap[ cpt ].push_back ((*it).first); // points2Snap[X][0] => id point to snap
-        Vec<3,double> newCoords;
+        sofa::defaulttype::Vec<3,double> newCoords;
 
         // Step 3/3: Compute mean value of all incision point position.
         for (unsigned int j = 0; j<3; j++)
@@ -2132,7 +2131,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapBorderPath (unsigned int pa, 
                     coords_list[0][2] = 0.0;
 
                     Edge theEdgeFirst = m_container->getEdge(theEdge);
-                    Vec<3,double> pos1 = m_geometryAlgorithms->computeBaryEdgePoint(theEdgeFirst, new_coord[1]);
+                    sofa::defaulttype::Vec<3,double> pos1 = m_geometryAlgorithms->computeBaryEdgePoint(theEdgeFirst, new_coord[1]);
                     for (unsigned int j = 0; j<3; j++)
                         a[j]=(float)pos1[j];
 
@@ -2237,7 +2236,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapBorderPath (unsigned int pa, 
                     coords_list.back()[2] = 0.0;
 
                     Edge theEdgeLast = m_container->getEdge(theEdge);
-                    Vec<3,double> pos1 = m_geometryAlgorithms->computeBaryEdgePoint(theEdgeLast, new_coord[1]);
+                    sofa::defaulttype::Vec<3,double> pos1 = m_geometryAlgorithms->computeBaryEdgePoint(theEdgeLast, new_coord[1]);
                     for (unsigned int j = 0; j<3; j++)
                         a[j]=(float)pos1[j];
 
