@@ -32,8 +32,6 @@
 #endif
 #include <sofa/core/MultiMapping.inl>
 #include <iostream>
-using std::cerr;
-using std::endl;
 
 namespace sofa
 {
@@ -43,9 +41,6 @@ namespace component
 
 namespace mapping
 {
-
-using namespace sofa::core;
-
 
 template <class TIn, class TOut>
 void SubsetMultiMapping<TIn, TOut>::init()
@@ -182,7 +177,7 @@ void SubsetMultiMapping<TIn, TOut>::applyJ(const helper::vector< typename Subset
 template <class TIn, class TOut>
 void SubsetMultiMapping<TIn, TOut>::applyJT( const helper::vector<InMatrixDeriv* >& , const helper::vector<OutMatrixDeriv* >& )
 {
-    cerr<<"WARNING ! SubsetMultiMapping<TIn, TOut>::applyJT not implemented for MatrixDeriv ! " << endl;
+    std::cerr<<"WARNING ! SubsetMultiMapping<TIn, TOut>::applyJT not implemented for MatrixDeriv ! " << std::endl;
 }
 
 

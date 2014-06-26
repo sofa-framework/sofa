@@ -49,9 +49,6 @@ namespace component
 namespace mapping
 {
 
-using namespace sofa::defaulttype;
-
-
 template <class TIn, class TOut>
 void CenterOfMassMapping<TIn, TOut>::init()
 {

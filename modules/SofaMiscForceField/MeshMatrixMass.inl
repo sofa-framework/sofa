@@ -56,14 +56,6 @@ namespace component
 namespace mass
 {
 
-
-using namespace	sofa::component::topology;
-using namespace core::topology;
-
-using namespace sofa::defaulttype;
-using namespace sofa::core::behavior;
-
-
 template <class DataTypes, class MassType>
 MeshMatrixMass<DataTypes, MassType>::MeshMatrixMass()
     : vertexMassInfo( initData(&vertexMassInfo, "vertexMass", "values of the particles masses on vertices") )

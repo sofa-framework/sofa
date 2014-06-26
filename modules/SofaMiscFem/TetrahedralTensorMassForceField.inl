@@ -43,12 +43,6 @@ namespace component
 namespace forcefield
 {
 
-using namespace sofa::defaulttype;
-using namespace	sofa::component::topology;
-using namespace core::topology;
-
-using core::topology::BaseMeshTopology;
-
 typedef BaseMeshTopology::Tetra				Tetra;
 typedef BaseMeshTopology::EdgesInTetrahedron		EdgesInTetrahedron;
 

@@ -46,18 +46,6 @@ namespace component
 namespace mass
 {
 
-using namespace	sofa::component::topology;
-using namespace core::topology;
-using namespace sofa::defaulttype;
-using namespace sofa::core::behavior;
-
-
-
-
-
-
-
-
 template <class DataTypes, class MassType>
 MatrixMass<DataTypes, MassType>::~MatrixMass()
 {
@@ -136,10 +124,10 @@ double MatrixMass<DataTypes, MassType>::getPotentialEnergy( const core::Mechanic
 
 // does nothing by default, need to be specialized in .cpp
 template <class DataTypes, class MassType>
-Vec6d MatrixMass<DataTypes, MassType>::getMomentum ( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& /*vx*/, const DataVecDeriv& /*vv*/  ) const
+sofa::defaulttype::Vec6d MatrixMass<DataTypes, MassType>::getMomentum ( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& /*vx*/, const DataVecDeriv& /*vv*/  ) const
 {
     serr<<"void MatrixMass<DataTypes, MassType>::getMomentum not yet implemented"<<sendl;
-    return Vec6d();
+    return sofa::defaulttype::Vec6d();
 }
 
 
@@ -151,7 +139,7 @@ void MatrixMass<DataTypes, MassType>::addGravityToV(const core::MechanicalParams
         VecDeriv& v = *d_v.beginEdit();
 
         // gravity
-        Vec3d g ( this->getContext()->getGravity() * (mparams->dt()) );
+        sofa::defaulttype::Vec3d g ( this->getContext()->getGravity() * (mparams->dt()) );
         Deriv theGravity;
         DataTypes::set ( theGravity, g[0], g[1], g[2]);
         Deriv hg = theGravity * (mparams->dt());
@@ -211,7 +199,7 @@ void MatrixMass<DataTypes, MassType>::addForce(const core::MechanicalParams* /*m
     helper::WriteAccessor< DataVecDeriv > _f = f;
 
     // gravity
-    Vec3d g ( this->getContext()->getGravity() );
+    sofa::defaulttype::Vec3d g ( this->getContext()->getGravity() );
     Deriv theGravity;
     DataTypes::set ( theGravity, g[0], g[1], g[2]);
 

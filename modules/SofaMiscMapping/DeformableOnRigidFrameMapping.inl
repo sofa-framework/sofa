@@ -56,8 +56,6 @@ namespace component
 namespace mapping
 {
 
-using namespace sofa::defaulttype;
-
 template <class TIn, class TInRoot, class TOut>
 DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::DeformableOnRigidFrameMapping()
     : index ( initData ( &index, ( unsigned ) 0,"index","input DOF index" ) )
@@ -844,8 +842,8 @@ template <class TIn, class TInRoot, class TOut>
 void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::draw(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowMappings()) return;
-    std::vector< Vector3 > points;
-    Vector3 point;
+    std::vector< sofa::defaulttype::Vector3 > points;
+    sofa::defaulttype::Vector3 point;
 
     const typename Out::VecCoord& x = *m_toModel->getX();
     for (unsigned int i=0; i<x.size(); i++)
@@ -853,7 +851,7 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::draw(const core::visual:
         point = Out::getCPos(x[i]);
         points.push_back(point);
     }
-    vparams->drawTool()->drawPoints(points, 7, Vec<4,float>(1,1,0,1));
+    vparams->drawTool()->drawPoints(points, 7, sofa::defaulttype::Vec<4,float>(1,1,0,1));
 }
 
 } // namespace mapping
