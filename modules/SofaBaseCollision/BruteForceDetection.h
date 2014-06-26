@@ -43,8 +43,6 @@ namespace component
 namespace collision
 {
 
-using namespace sofa::defaulttype;
-
 class SOFA_BASE_COLLISION_API BruteForceDetection :
     public core::collision::BroadPhaseDetection,
     public core::collision::NarrowPhaseDetection
@@ -57,7 +55,7 @@ private:
     sofa::helper::vector<core::CollisionModel*> collisionModels;
     Data<bool> bDraw;
 
-    Data< helper::fixed_array<Vector3,2> > box;
+    Data< helper::fixed_array<sofa::defaulttype::Vector3,2> > box;
 
     CubeModel::SPtr boxModel;
 

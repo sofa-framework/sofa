@@ -45,10 +45,6 @@ namespace component
 namespace collision
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::core::collision;
-using namespace helper;
-
 inline int NewProximityIntersection::doIntersectionPointPoint(SReal dist2, const Vector3& p, const Vector3& q, OutputVector* contacts, int id)
 {
     Vector3 pq = q-p;
@@ -60,7 +56,7 @@ inline int NewProximityIntersection::doIntersectionPointPoint(SReal dist2, const
 
     //const SReal contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
     contacts->resize(contacts->size()+1);
-    DetectionOutput *detection = &*(contacts->end()-1);
+    sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
     //detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
     detection->id = id;
     detection->point[0]=p;

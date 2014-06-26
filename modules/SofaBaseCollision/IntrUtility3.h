@@ -13,8 +13,6 @@ namespace sofa{
 namespace component{
 namespace collision{
 
-using namespace sofa::defaulttype;
-
 template <class TReal>
 struct MyBox{
     Vec<3,TReal> Extent;

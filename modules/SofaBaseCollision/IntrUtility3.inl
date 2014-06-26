@@ -9,9 +9,6 @@ namespace sofa{
 namespace component{
 namespace collision{
 
-using namespace sofa::defaulttype;
-
-
 template <typename Real>
 IntrConfiguration<Real> & IntrConfiguration<Real>::operator=(const IntrConfiguration & other){
     this->mMap = other.mMap;

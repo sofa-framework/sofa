@@ -38,8 +38,6 @@ namespace component
 namespace collision
 {
 
-using namespace sofa::defaulttype;
-
 class CubeModel;
 
 class Cube : public core::TCollisionElementIterator<CubeModel>
@@ -49,9 +47,9 @@ public:
 
     explicit Cube(const core::CollisionElementIterator& i);
 
-    const Vector3& minVect() const;
+    const sofa::defaulttype::Vector3& minVect() const;
 
-    const Vector3& maxVect() const;
+    const sofa::defaulttype::Vector3& maxVect() const;
 
     const std::pair<Cube,Cube>& subcells() const;
 };
@@ -63,7 +61,7 @@ public:
 
     struct CubeData
     {
-        Vector3 minBBox, maxBBox;
+        sofa::defaulttype::Vector3 minBBox, maxBBox;
         std::pair<Cube,Cube> subcells;
         std::pair<core::CollisionElementIterator,core::CollisionElementIterator> children; ///< Note that children is only meaningfull if subcells in empty
     };
@@ -105,7 +103,7 @@ protected:
 
 public:
     typedef core::CollisionElementIterator ChildIterator;
-    typedef Vec3Types DataTypes;
+    typedef sofa::defaulttype::Vec3Types DataTypes;
     typedef Cube Element;
     friend class Cube;
 protected:
@@ -113,14 +111,14 @@ protected:
 public:
     virtual void resize(int size);
 
-    void setParentOf(int childIndex, const Vector3& min, const Vector3& max);
+    void setParentOf(int childIndex, const sofa::defaulttype::Vector3& min, const sofa::defaulttype::Vector3& max);
     void setLeafCube(int cubeIndex, int childIndex);
-    void setLeafCube(int cubeIndex, std::pair<core::CollisionElementIterator,core::CollisionElementIterator> children, const Vector3& min, const Vector3& max);
+    void setLeafCube(int cubeIndex, std::pair<core::CollisionElementIterator,core::CollisionElementIterator> children, const sofa::defaulttype::Vector3& min, const sofa::defaulttype::Vector3& max);
 
 
     unsigned int getNumberCells() { return elems.size();}
 
-    void getBoundingTree ( sofa::helper::vector< std::pair< Vector3, Vector3> > &bounding )
+    void getBoundingTree ( sofa::helper::vector< std::pair< sofa::defaulttype::Vector3, sofa::defaulttype::Vector3> > &bounding )
     {
         bounding.resize(elems.size());
         for (unsigned int index=0; index<elems.size(); index++)
@@ -178,12 +176,12 @@ inline Cube::Cube(const core::CollisionElementIterator& i)
 {
 }
 
-inline const Vector3& Cube::minVect() const
+inline const sofa::defaulttype::Vector3& Cube::minVect() const
 {
     return model->elems[index].minBBox;
 }
 
-inline const Vector3& Cube::maxVect() const
+inline const sofa::defaulttype::Vector3& Cube::maxVect() const
 {
     return model->elems[index].maxBBox;
 }

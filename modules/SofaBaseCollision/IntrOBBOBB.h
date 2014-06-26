@@ -31,8 +31,8 @@ public:
 
     // Dynamic test-intersection query.  The first time of contact (if any)
     // is computed, but not any information about the contact set.
-    virtual bool Test (Real tmax, const Vec<3,Real>& velocity0,
-        const Vec<3,Real>& velocity1);
+    virtual bool Test (Real tmax, const sofa::defaulttype::Vec<3,Real>& velocity0,
+        const sofa::defaulttype::Vec<3,Real>& velocity1);
 
     // Dynamic find-intersection query.  The contact set is computed.
     bool Find (Real dmax);
@@ -66,7 +66,7 @@ private:
     using Intersector<Real>::_sep_axis;
 };
 
-typedef TIntrOBBOBB<RigidTypes> IntrOBBOBB;
+typedef TIntrOBBOBB<sofa::defaulttype::RigidTypes> IntrOBBOBB;
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_BASE_COLLISION)
 #ifndef SOFA_FLOAT

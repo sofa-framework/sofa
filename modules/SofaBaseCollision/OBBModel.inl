@@ -30,11 +30,6 @@ namespace component
 namespace collision
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::core::collision;
-using namespace helper;
-
-
 template<class DataTypes>
 TOBBModel<DataTypes>::TOBBModel():
     ext(initData(&ext,"extents","Extents in x,y and z directions")),
@@ -143,6 +138,9 @@ void TOBBModel<DataTypes>::computeBoundingTree(int maxDepth){
 
 template<class DataTypes>
 void TOBBModel<DataTypes>::draw(const core::visual::VisualParams* vparams,int index){
+
+    using namespace sofa::defaulttype;
+
     std::vector<Coord> p;
     vertices(index,p);
 
