@@ -54,8 +54,6 @@ namespace component
 namespace mass
 {
 
-using namespace sofa::defaulttype;
-
 template <class DataTypes, class MassType>
 UniformMass<DataTypes, MassType>::UniformMass()
     : mass ( initData ( &mass, MassType ( 1.0f ), "mass", "Mass of each particle" ) )
@@ -376,7 +374,7 @@ double UniformMass<DataTypes, MassType>::getPotentialEnergy ( const core::Mechan
     double e = 0;
     const MassType& m = mass.getValue();
     // gravity
-    Vec3d g ( this->getContext()->getGravity() );
+    sofa::defaulttype::Vec3d g ( this->getContext()->getGravity() );
     Deriv theGravity;
     DataTypes::set
     ( theGravity, g[0], g[1], g[2] );
@@ -394,9 +392,10 @@ double UniformMass<DataTypes, MassType>::getPotentialEnergy ( const core::Mechan
 
 // does nothing by default, need to be specialized in .cpp
 template <class DataTypes, class MassType>
-Vec6d UniformMass<DataTypes, MassType>::getMomentum ( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& /*vx*/, const DataVecDeriv& /*vv*/  ) const
+sofa::defaulttype::Vec6d
+UniformMass<DataTypes, MassType>::getMomentum ( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& /*vx*/, const DataVecDeriv& /*vv*/  ) const
 {
-    return Vec6d();
+    return sofa::defaulttype::Vec6d();
 }
 
 /// Add Mass contribution to global Matrix assembling
@@ -451,19 +450,19 @@ void UniformMass<DataTypes, MassType>::draw(const core::visual::VisualParams* vp
     //serr<<"UniformMass<DataTypes, MassType>::draw() "<<x<<sendl;
 
 
-    std::vector<  Vector3 > points;
-    std::vector< Vec<2,int> > indices;
+    std::vector<  sofa::defaulttype::Vector3 > points;
+    std::vector<  sofa::defaulttype::Vec<2,int> > indices;
 
     Coord gravityCenter;
     for ( unsigned int i=ibegin; i<iend; i++ )
     {
-        Vector3 p;
+        sofa::defaulttype::Vector3 p;
         p = DataTypes::getCPos(x[i]);
 
         points.push_back ( p );
         gravityCenter += x[i];
     }
-    Vec4f color(1,1,1,1);
+    sofa::defaulttype::Vec4f color(1,1,1,1);
 
 #ifdef SOFA_SMP
     static float colorTab[][4]=

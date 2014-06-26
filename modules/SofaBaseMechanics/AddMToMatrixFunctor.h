@@ -34,7 +34,6 @@ using std::endl;
 namespace sofa
 {
 
-using namespace sofa::helper;
 namespace component
 {
 

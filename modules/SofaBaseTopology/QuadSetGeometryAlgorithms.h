@@ -34,14 +34,6 @@ namespace component
 {
 namespace topology
 {
-using core::topology::BaseMeshTopology;
-typedef BaseMeshTopology::QuadID QuadID;
-typedef BaseMeshTopology::Quad Quad;
-typedef BaseMeshTopology::SeqQuads SeqQuads;
-typedef BaseMeshTopology::QuadsAroundVertex QuadsAroundVertex;
-typedef BaseMeshTopology::QuadsAroundEdge QuadsAroundEdge;
-typedef BaseMeshTopology::EdgesInQuad EdgesInQuad;
-
 /**
 * A class that provides geometry information on an QuadSet.
 */
@@ -50,6 +42,19 @@ class QuadSetGeometryAlgorithms : public EdgeSetGeometryAlgorithms<DataTypes>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(QuadSetGeometryAlgorithms,DataTypes),SOFA_TEMPLATE(EdgeSetGeometryAlgorithms,DataTypes));
+
+    typedef sofa::core::topology::BaseMeshTopology::EdgeID EdgeID;
+    typedef sofa::core::topology::BaseMeshTopology::Edge Edge;
+    typedef sofa::core::topology::BaseMeshTopology::SeqEdges SeqEdges;
+    typedef sofa::core::topology::BaseMeshTopology::EdgesAroundVertex EdgesAroundVertex;
+
+    typedef sofa::core::topology::BaseMeshTopology::QuadID QuadID;
+    typedef sofa::core::topology::BaseMeshTopology::Quad Quad;
+    typedef sofa::core::topology::BaseMeshTopology::SeqQuads SeqQuads;
+    typedef sofa::core::topology::BaseMeshTopology::QuadsAroundVertex QuadsAroundVertex;
+    typedef sofa::core::topology::BaseMeshTopology::QuadsAroundEdge QuadsAroundEdge;
+    typedef sofa::core::topology::BaseMeshTopology::EdgesInQuad EdgesInQuad;
+
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
