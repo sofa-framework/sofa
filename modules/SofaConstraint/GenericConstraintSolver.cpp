@@ -95,6 +95,9 @@ GenericConstraintSolver::GenericConstraintSolver()
 	currentIterations.setGroup("Stats");
 	currentError.setReadOnly(true);
 	currentError.setGroup("Stats");
+
+	maxIt.setRequired(true);
+	tolerance.setRequired(true);
 }
 
 GenericConstraintSolver::~GenericConstraintSolver()
