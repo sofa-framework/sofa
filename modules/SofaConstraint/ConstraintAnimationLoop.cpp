@@ -465,8 +465,11 @@ void ConstraintAnimationLoop::getIndividualConstraintSolvingProcess(const core::
     /// calling getConstraintResolution: each constraint provides a method that is used to solve it during GS iterations
     //if (debug)
     //    sout<<"   3. get resolution method for each constraint"<<sendl;
+    core::ConstraintParams cparams = core::ConstraintParams(*params);
+    cparams.setX(core::ConstVecCoordId::freePosition());
+    cparams.setV(core::ConstVecDerivId::freeVelocity());
 
-    MechanicalGetConstraintResolutionVisitor(params, getCP()->getConstraintResolutions(), 0).execute(context);
+    MechanicalGetConstraintResolutionVisitor(&cparams, getCP()->getConstraintResolutions(), 0).execute(context);
 }
 
 void ConstraintAnimationLoop::computeComplianceInConstraintSpace()
