@@ -138,8 +138,6 @@ public:
     /// by the generic ForceField::addForce() method.
 
     virtual void addForce(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv1& f1, DataVecDeriv2& f2, const DataVecCoord1& x1, const DataVecCoord2& x2, const DataVecDeriv1& v1, const DataVecDeriv2& v2)=0;
-    /// @deprecated
-    //virtual void addForce(VecDeriv1& f1, VecDeriv2& f2, const VecCoord1& x1, const VecCoord2& x2, const VecDeriv1& v1, const VecDeriv2& v2);
 
     /// Compute the force derivative given a small displacement from the
     /// position and velocity used in the previous call to addForce().
@@ -159,29 +157,6 @@ public:
     ///   coefficients for the stiffness and damping terms should now be used.
     virtual void addDForce(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv1& df1, DataVecDeriv2& df2, const DataVecDeriv1& dx1, const DataVecDeriv2& dx2)=0;
 
-    /// @deprecated
-    //virtual void addDForce(VecDeriv1& df1, VecDeriv2& df2, const VecDeriv1& dx1, const VecDeriv2& dx2, double kFactor, double /*bFactor*/);
-    //virtual void addDForce(VecDeriv1& df1, VecDeriv2& df2, const VecDeriv1& dx1, const VecDeriv2& dx2);
-
-
-    /// Compute the force derivative given a small displacement from the
-    /// position and velocity used in the previous call to addForce().
-    ///
-    /// The derivative should be directly derived from the computations
-    /// done by addForce. Any forces neglected in addDForce will be integrated
-    /// explicitly (i.e. using its value at the beginning of the timestep).
-    ///
-    /// If the ForceField can be represented as a matrix, this method computes
-    /// $ df += kFactor K dx + bFactor B dx $
-    ///
-    /// This method must be implemented by the component, and is usually called
-    /// by the generic MixedInteractionForceField::addDForce() method.
-    ///
-    /// To support old components that implement the deprecated addForce method
-    /// without scalar coefficients, it defaults to using a temporaty vector to
-    /// compute $ K dx $ and then manually scaling all values by kFactor.
-    /// @deprecated
-
     /// Get the potential energy associated to this ForceField.
     ///
     /// Used to extimate the total energy of the system by some
@@ -191,11 +166,6 @@ public:
     /// by the generic ForceField::getPotentialEnergy() method.
     virtual double getPotentialEnergy(const MechanicalParams* mparams /* PARAMS FIRST */, const DataVecCoord1& x1, const DataVecCoord2& x2) const =0;
 
-    /// @deprecated
-    //virtual double getPotentialEnergy(const VecCoord1& x1, const VecCoord2& x2) const;
-
-
-    /// @}
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
