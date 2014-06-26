@@ -288,44 +288,55 @@ void FixedConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /
 
 }
 
+
 // Matrix Integration interface
 template <class DataTypes>
-void FixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset)
+void FixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
-    //sout << "applyConstraint in Matrix with offset = " << offset << sendl;
-    //cerr<<"FixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset) is called "<<endl;
-    const unsigned int N = Deriv::size();
-    const SetIndexArray & indices = f_indices.getValue();
-
-    //TODO take f_fixAll into account
-
-
-    for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+    MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate.get(mparams));
+    if(r)
     {
-        // Reset Fixed Row and Col
-        for (unsigned int c=0; c<N; ++c)
-            mat->clearRowCol(offset + N * (*it) + c);
-        // Set Fixed Vertex
-        for (unsigned int c=0; c<N; ++c)
-            mat->set(offset + N * (*it) + c, offset + N * (*it) + c, 1.0);
+        //sout << "applyConstraint in Matrix with offset = " << offset << sendl;
+        //cerr<<"FixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset) is called "<<endl;
+        const unsigned int N = Deriv::size();
+        const SetIndexArray & indices = f_indices.getValue();
+
+        //TODO take f_fixAll into account
+
+
+        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        {
+            // Reset Fixed Row and Col
+            for (unsigned int c=0; c<N; ++c)
+                r.matrix->clearRowCol(r.offset + N * (*it) + c);
+            // Set Fixed Vertex
+            for (unsigned int c=0; c<N; ++c)
+                r.matrix->set(r.offset + N * (*it) + c, r.offset + N * (*it) + c, 1.0);
+        }
     }
 }
 
 template <class DataTypes>
-void FixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset)
+void FixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams /* PARAMS FIRST */, defaulttype::BaseVector* vect, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
-    //cerr<<"FixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset) is called "<<endl;
-    //sout << "applyConstraint in Vector with offset = " << offset << sendl;
-    const unsigned int N = Deriv::size();
-
-    //TODO take f_fixAll into account
-
-
-    const SetIndexArray & indices = f_indices.getValue();
-    for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+    int o = matrix->getGlobalOffset(this->mstate.get(mparams));
+    if (o >= 0)
     {
-        for (unsigned int c=0; c<N; ++c)
-            vect->clear(offset + N * (*it) + c);
+        unsigned int offset = (unsigned int)o;
+
+        //cerr<<"FixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset) is called "<<endl;
+        //sout << "applyConstraint in Vector with offset = " << offset << sendl;
+        const unsigned int N = Deriv::size();
+
+        //TODO take f_fixAll into account
+
+
+        const SetIndexArray & indices = f_indices.getValue();
+        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        {
+            for (unsigned int c=0; c<N; ++c)
+                vect->clear(offset + N * (*it) + c);
+        }
     }
 }
 
