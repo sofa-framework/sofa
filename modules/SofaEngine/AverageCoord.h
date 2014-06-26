@@ -43,10 +43,6 @@ namespace component
 namespace engine
 {
 
-using namespace core::behavior;
-using namespace core::topology;
-using namespace core::objectmodel;
-
 /**
  * This class computes the average of a set of Coordinates
  */
@@ -93,7 +89,7 @@ public:
 
 
 protected:
-    MechanicalState<DataTypes> *mstate;
+    sofa::core::behavior::MechanicalState<DataTypes> *mstate;
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_AverageCoord_CPP)

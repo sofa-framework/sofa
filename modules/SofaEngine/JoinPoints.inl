@@ -40,9 +40,6 @@ namespace component
 namespace engine
 {
 
-using namespace sofa;
-using namespace sofa::core::topology;
-
 template <class DataTypes>
 JoinPoints<DataTypes>::JoinPoints()
     : f_points(initData(&f_points, "points", "Points"))

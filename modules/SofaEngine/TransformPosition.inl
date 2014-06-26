@@ -49,10 +49,6 @@ namespace component
 namespace engine
 {
 
-using namespace sofa::helper;
-using namespace sofa::defaulttype;
-using namespace core::objectmodel;
-
 template <class DataTypes>
 TransformPosition<DataTypes>::TransformPosition()
     : f_origin( initData(&f_origin, "origin", "A 3d point on the plane/Center of the scale") )
@@ -445,7 +441,7 @@ void TransformPosition<DataTypes>::update()
         break;
     case ROTATION :
     {
-        Quaternion q=helper::Quater<Real>::createQuaterFromEuler( rotation.ref()*M_PI/180.0);
+        sofa::defaulttype::Quaternion q=helper::Quater<Real>::createQuaterFromEuler( rotation.ref()*M_PI/180.0);
 
         for (i=0; i< in.size(); ++i)
         {
@@ -455,7 +451,7 @@ void TransformPosition<DataTypes>::update()
     break;
     case SCALE_ROTATION_TRANSLATION :
     {
-        Quaternion q=helper::Quater<Real>::createQuaterFromEuler( rotation.ref()*M_PI/180.0);
+        sofa::defaulttype::Quaternion q=helper::Quater<Real>::createQuaterFromEuler( rotation.ref()*M_PI/180.0);
 
         for (i=0; i< in.size(); ++i)
         {
@@ -487,19 +483,19 @@ void TransformPosition<DataTypes>::draw(const core::visual::VisualParams* vparam
     if (f_drawInput.getValue())
     {
         helper::ReadAccessor< Data<VecCoord> > in = f_inputX;
-        std::vector<Vector3> points;
+        std::vector<sofa::defaulttype::Vector3> points;
         for (unsigned int i=0; i < in.size(); i++)
             points.push_back(in[i]);
-        vparams->drawTool()->drawPoints(points, f_pointSize.getValue(), Vec4f(0.8, 0.2, 0.2, 1.0));
+        vparams->drawTool()->drawPoints(points, f_pointSize.getValue(), sofa::defaulttype::Vec4f(0.8, 0.2, 0.2, 1.0));
     }
 
     if (f_drawOutput.getValue())
     {
         helper::ReadAccessor< Data<VecCoord> > out = f_outputX;
-        std::vector<Vector3> points;
+        std::vector<sofa::defaulttype::Vector3> points;
         for (unsigned int i=0; i < out.size(); i++)
             points.push_back(out[i]);
-        vparams->drawTool()->drawPoints(points, f_pointSize.getValue(), Vec4f(0.2, 0.8, 0.2, 1.0));
+        vparams->drawTool()->drawPoints(points, f_pointSize.getValue(), sofa::defaulttype::Vec4f(0.2, 0.8, 0.2, 1.0));
     }
 }
 

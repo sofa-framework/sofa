@@ -28,8 +28,6 @@
 #include <SofaEngine/ClusteringEngine.h>
 #include <sofa/helper/gl/template.h>
 #include <iostream>
-using std::cerr;
-using std::endl;
 
 namespace sofa
 {
@@ -39,11 +37,6 @@ namespace component
 
 namespace engine
 {
-
-
-using namespace sofa::helper;
-using namespace sofa::defaulttype;
-using namespace core::objectmodel;
 
 template <class DataTypes>
 ClusteringEngine<DataTypes>::ClusteringEngine()
@@ -64,7 +57,7 @@ ClusteringEngine<DataTypes>::ClusteringEngine()
 template <class DataTypes>
 void ClusteringEngine<DataTypes>::init()
 {
-    this->mstate = dynamic_cast< MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
+    this->mstate = dynamic_cast< sofa::core::behavior::MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
     addInput(&radius);
     addInput(&fixedRadius);
     addInput(&number);
@@ -320,7 +313,7 @@ bool ClusteringEngine<DataTypes>::load()
     loadedFilename = fname;
     sout << "ClusteringEngine: loaded clusters from "<<fname<<sendl;
     //if (this->f_printLog.getValue())
-    std::cout << "ClusteringEngine: loaded clusters from "<<fname<<endl;
+    std::cout << "ClusteringEngine: loaded clusters from "<<fname<<std::endl;
     return true;
 }
 
@@ -342,18 +335,18 @@ bool ClusteringEngine<DataTypes>::save()
     fileStream << this->fixedRadius.getValue() << " ";
     fileStream << clust.size() << " ";
     fileStream << this->number.getValue() << " ";
-    fileStream << endl;
+    fileStream << std::endl;
 
     for (unsigned int i=0; i<clust.size(); ++i)
     {
         fileStream << clust[i].size() << " ";
         for (unsigned int j=0; j< clust[i].size(); ++j) fileStream << clust[i][j] << " ";
-        fileStream << endl;
+        fileStream << std::endl;
     }
 
     sout << "ClusteringEngine: saved clusters in "<<fname<<sendl;
     //if (this->f_printLog.getValue())
-    std::cout << "ClusteringEngine: saved clusters in "<<fname<<endl;
+    std::cout << "ClusteringEngine: saved clusters in "<<fname<<std::endl;
 
     return true;
 }

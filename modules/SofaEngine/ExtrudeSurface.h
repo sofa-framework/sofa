@@ -46,10 +46,6 @@ namespace component
 namespace engine
 {
 
-using namespace core::behavior;
-using namespace core::topology;
-using namespace core::objectmodel;
-
 /**
  * This class extrudes a surface
  */
@@ -89,11 +85,11 @@ public:
     bool initialized;
     Data<bool> isVisible;
     Data<Real> heightFactor;
-    Data< helper::vector<BaseMeshTopology::Triangle> > f_triangles;
+    Data< helper::vector<sofa::core::topology::BaseMeshTopology::Triangle> > f_triangles;
     Data<VecCoord> f_extrusionVertices;
     Data<VecCoord> f_surfaceVertices;
-    Data< helper::vector<BaseMeshTopology::Triangle> > f_extrusionTriangles;
-    Data< helper::vector<BaseMeshTopology::TriangleID> > f_surfaceTriangles;
+    Data< helper::vector<sofa::core::topology::BaseMeshTopology::Triangle> > f_extrusionTriangles;
+    Data< helper::vector<sofa::core::topology::BaseMeshTopology::TriangleID> > f_surfaceTriangles;
 
 
 };

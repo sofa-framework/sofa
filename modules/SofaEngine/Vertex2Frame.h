@@ -42,8 +42,6 @@ namespace component
 namespace engine
 {
 
-using namespace core::behavior;
-
 /**
  * This class gets as inputs the vertices, texCoords, normals and facets of any mesh and returns as output a rigid position
  */
@@ -78,7 +76,7 @@ public:
     }
 
 protected:
-    MechanicalState<DataTypes>* mstate;
+    sofa::core::behavior::MechanicalState<DataTypes>* mstate;
     Data< helper::vector<sofa::defaulttype::Vector3> > vertices;
     Data< helper::vector<sofa::defaulttype::Vector3> > texCoords; // for the moment, we suppose that texCoords is order 2 (2 texCoords for a vertex)
     Data< helper::vector<sofa::defaulttype::Vector3> > normals;

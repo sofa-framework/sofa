@@ -46,10 +46,6 @@ namespace component
 namespace engine
 {
 
-using namespace core::behavior;
-using namespace core::topology;
-using namespace core::objectmodel;
-
 /**
  * This class extrudes a surface
  */
@@ -115,7 +111,7 @@ private:
     void clear2d ( int reserve );
     void clear3d ( int reserve );
 
-    BaseMeshTopology* TopoInput ;
+    sofa::core::topology::BaseMeshTopology* TopoInput ;
 
     VecCoord* baryPos ;
     VecIndices* tableElts;

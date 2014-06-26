@@ -46,10 +46,6 @@ namespace component
 namespace engine
 {
 
-using namespace sofa::helper;
-using namespace sofa::defaulttype;
-using namespace core::objectmodel;
-
 template <class DataTypes>
 Spiral<DataTypes>::Spiral()
     : f_X0( initData (&f_X0, "rest_position", "Rest position coordinates of the degrees of freedom") )
@@ -111,8 +107,8 @@ void Spiral<DataTypes>::update()
         if (t0 > 0) { r = A*t; }
         else        { r = -A*t; }
 
-        Vec<3, Real> v(r*cos(a), r*sin(a), x0[i].z());
-        Vec<3, Real> n(- A*sin(t) - A*t*cos(t), A*cos(t) - A*t*sin(t), 0);
+        sofa::defaulttype::Vec<3, Real> v(r*cos(a), r*sin(a), x0[i].z());
+        sofa::defaulttype::Vec<3, Real> n(- A*sin(t) - A*t*cos(t), A*cos(t) - A*t*sin(t), 0);
         n.normalize();
         if (a > - M_PI/2 && a < M_PI_2 && n.y() > 0.8f)
         {

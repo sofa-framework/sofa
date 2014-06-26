@@ -38,10 +38,6 @@ namespace component
 namespace engine
 {
 
-using namespace sofa::helper;
-using namespace sofa::defaulttype;
-using namespace core::objectmodel;
-
 template <class DataTypes>
 MergeMeshes<DataTypes>::MergeMeshes()
     : f_nbMeshes( initData (&f_nbMeshes, (unsigned)2, "nbMeshes", "number of meshes to merge") )

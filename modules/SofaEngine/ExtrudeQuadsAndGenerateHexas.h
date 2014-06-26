@@ -46,10 +46,6 @@ namespace component
 namespace engine
 {
 
-using namespace core::behavior;
-using namespace core::topology;
-using namespace core::objectmodel;
-
 /**
  * This class extrudes a quad surface into a set of hexahedra
  */
@@ -96,11 +92,11 @@ public:
     Data<Real>                                       f_thicknessOut;
     Data<int>                                        f_numberOfSlices;
     Data<VecCoord>                                   f_surfaceVertices;
-    Data< helper::vector<BaseMeshTopology::Quad> >   f_surfaceQuads;
+    Data< helper::vector<sofa::core::topology::BaseMeshTopology::Quad> >   f_surfaceQuads;
     Data<VecCoord>                                   f_extrudedVertices;
-    Data< helper::vector<BaseMeshTopology::Quad> >   f_extrudedSurfaceQuads;
-    Data< helper::vector<BaseMeshTopology::Quad> >   f_extrudedQuads;
-    Data< helper::vector<BaseMeshTopology::Hexa> >   f_extrudedHexas;
+    Data< helper::vector<sofa::core::topology::BaseMeshTopology::Quad> >   f_extrudedSurfaceQuads;
+    Data< helper::vector<sofa::core::topology::BaseMeshTopology::Quad> >   f_extrudedQuads;
+    Data< helper::vector<sofa::core::topology::BaseMeshTopology::Hexa> >   f_extrudedHexas;
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_EXTRUDEQUADSANDGENERATEHEXAS_CPP)

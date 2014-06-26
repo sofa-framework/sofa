@@ -36,6 +36,8 @@ namespace component
 namespace engine
 {
 
+using namespace sofa::defaulttype;
+
 SOFA_DECL_CLASS(MeshROI)
 
 int MeshROIClass = core::RegisterObject("Find the primitives (vertex/edge/triangle/tetrahedron) inside a given mesh")
