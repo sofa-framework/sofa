@@ -4,6 +4,7 @@ set(SOURCE_FILES
     PlaneForceField_test.cpp
     AffineMovementConstraint_test.cpp
     ProjectToPointConstraint_test.cpp
+    FixedConstraint_test.cpp
         )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
