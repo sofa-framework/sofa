@@ -133,21 +133,18 @@ public:
     };
     typedef helper::vector<ConstraintBlockInfo> VecConstraintBlockInfo;
 
-//    /// Get information for each constraint: pointer to parent BaseConstraint, unique persistent ID, 3D position
-//	/// @deprecated
-//    virtual void getConstraintInfo(VecConstraintBlockInfo& /*blocks*/, VecPersistentID& /*ids*/, VecConstCoord& /*positions*/, VecConstDeriv& /*directions*/, VecConstArea& /*areas*/) {}
-
 	/// Get information for each constraint: pointer to parent BaseConstraint, unique persistent ID, 3D position
 	/// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC) and resolution parameters (smoothness, ...)
 	virtual void getConstraintInfo(const ConstraintParams* cParams, VecConstraintBlockInfo& blocks, VecPersistentID& ids, VecConstCoord& positions, VecConstDeriv& directions, VecConstArea& areas)
 	{
-		SOFA_UNUSED(cParams);
-//		getConstraintInfo(blocks, ids, positions, directions, areas);
-	}
+        SOFA_UNUSED(cParams);
+        SOFA_UNUSED(blocks);
+        SOFA_UNUSED(ids);
+        SOFA_UNUSED(positions);
+        SOFA_UNUSED(directions);
+        SOFA_UNUSED(areas);
 
-//    /// Add the corresponding ConstraintResolution using the offset parameter
-//	/// @deprecated
-//    virtual void getConstraintResolution(std::vector<ConstraintResolution*>& /*resTab*/, unsigned int& /*offset*/) {};
+	}
 
 	/// Add the corresponding ConstraintResolution using the offset parameter
 	/// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC) and resolution parameters (smoothness, ...)
@@ -157,8 +154,7 @@ public:
 		SOFA_UNUSED(cParams);
         SOFA_UNUSED(resTab);
         SOFA_UNUSED(offset);
-//		getConstraintResolution(resTab, offset);
-	};
+    }
 };
 
 } // namespace behavior
