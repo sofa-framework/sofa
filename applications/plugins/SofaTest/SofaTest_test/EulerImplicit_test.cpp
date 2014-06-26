@@ -30,6 +30,8 @@
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
 #include <sofa/simulation/common/Simulation.h>
 
+using namespace sofa::defaulttype;
+
 namespace sofa {
 
 using namespace modeling;

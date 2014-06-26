@@ -39,7 +39,6 @@ namespace topology
 {
 
 // Define topology elements
-using namespace sofa::core::topology;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////   Generic Topology Data Implementation   /////////////////////////////////////
@@ -73,12 +72,13 @@ public:
     typedef typename Inherit::AncestorElem AncestorElem;
 
 protected:
-    BaseTopologyData <VecT>* m_topologyData;
+    sofa::core::topology::BaseTopologyData <VecT>* m_topologyData;
 	value_type m_defaultValue; // default value when adding an element (by set as value_type() by default)
 
 public:
     // constructor
-    TopologySparseDataHandler(BaseTopologyData <VecT>* _topologyData,value_type defaultValue=value_type()): sofa::core::topology::TopologyElementHandler < TopologyElementType >()
+    TopologySparseDataHandler(sofa::core::topology::BaseTopologyData <VecT>* _topologyData,value_type defaultValue=value_type())
+        : sofa::core::topology::TopologyElementHandler < TopologyElementType >()
         , m_topologyData(_topologyData), m_defaultValue(defaultValue) {}
 
     bool isTopologyDataRegistered() {return m_topologyData != 0;}

@@ -46,22 +46,22 @@ SOFA_DECL_CLASS(PatchTestMovementConstraint)
 
 int PatchTestMovementConstraintClass = core::RegisterObject("bilinear constraint")
 #ifndef SOFA_FLOAT
-        .add< PatchTestMovementConstraint<Vec3dTypes> >()
-        .add< PatchTestMovementConstraint<Rigid3dTypes> >()
+        .add< PatchTestMovementConstraint<defaulttype::Vec3dTypes> >()
+        .add< PatchTestMovementConstraint<defaulttype::Rigid3dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
-        .add< PatchTestMovementConstraint<Vec3fTypes> >()
-        .add< PatchTestMovementConstraint<Rigid3fTypes> >()
+        .add< PatchTestMovementConstraint<defaulttype::Vec3fTypes> >()
+        .add< PatchTestMovementConstraint<defaulttype::Rigid3fTypes> >()
 #endif
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_BOUNDARY_CONDITION_API PatchTestMovementConstraint<Vec3dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API PatchTestMovementConstraint<Rigid3dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API PatchTestMovementConstraint<defaulttype::Vec3dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API PatchTestMovementConstraint<defaulttype::Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_BOUNDARY_CONDITION_API PatchTestMovementConstraint<Vec3fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API PatchTestMovementConstraint<Rigid3fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API PatchTestMovementConstraint<defaulttype::Vec3fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API PatchTestMovementConstraint<defaulttype::Rigid3fTypes>;
 #endif
 
 } // namespace projectiveconstraintset

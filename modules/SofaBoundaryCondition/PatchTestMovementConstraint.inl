@@ -44,12 +44,6 @@ namespace component
 namespace projectiveconstraintset
 {
 
-using namespace core::topology;
-
-using namespace sofa::defaulttype;
-using namespace sofa::helper;
-using namespace sofa::core::behavior;
-
 // Define TestFunction
 template< class DataTypes>
 bool PatchTestMovementConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(unsigned int, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
@@ -455,9 +449,9 @@ template <class DataTypes>
 void PatchTestMovementConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     const SetIndexArray & indices = m_indices.getValue();
-    std::vector< Vector3 > points;
+    std::vector< defaulttype::Vector3 > points;
     const VecCoord& x = *this->mstate->getX();
-    Vector3 point;
+    defaulttype::Vector3 point;
 
     if(m_drawConstrainedPoints.getValue())
     {
@@ -466,7 +460,7 @@ void PatchTestMovementConstraint<DataTypes>::draw(const core::visual::VisualPara
             point = DataTypes::getCPos(x[*it]);
             points.push_back(point);
         }
-        vparams->drawTool()->drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
+        vparams->drawTool()->drawPoints(points, 10, defaulttype::Vec<4,float>(1,0.5,0.5,1));
     }  
 }
 

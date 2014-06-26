@@ -52,7 +52,7 @@
 
 namespace sofa{
 
-typedef Vector3 Vec3;
+typedef sofa::defaulttype::Vector3 Vec3;
 
 /**
   *\brief Makes up an OBBModel containing just one OBB. angles and order are the rotations used to make up this OBB.

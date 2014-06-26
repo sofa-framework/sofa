@@ -54,6 +54,7 @@
 #include <stdlib.h>
 //#include <sofa/component/collision/TeschnerSpatialHashing.h>
 
+using namespace sofa::defaulttype;
 
 struct MyBox{
 

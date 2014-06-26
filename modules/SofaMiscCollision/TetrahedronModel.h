@@ -43,8 +43,6 @@ namespace component
 namespace collision
 {
 
-using namespace sofa::defaulttype;
-
 class TetrahedronModel;
 
 class Tetrahedron : public core::TCollisionElementIterator<TetrahedronModel>

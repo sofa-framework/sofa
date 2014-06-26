@@ -36,7 +36,7 @@ struct PlaneForceField_test : public Sofa_test<typename _DataTypes::Real>
 	typedef sofa::component::forcefield::PlaneForceField<DataTypes> PlaneForceFieldType;
 	typename PlaneForceFieldType::SPtr planeForceFieldSPtr;
     
-	PlaneForceField_test()
+    PlaneForceField_test()
 	{
 		//Init
 		planeForceFieldSPtr = sofa::core::objectmodel::New<PlaneForceFieldType>();

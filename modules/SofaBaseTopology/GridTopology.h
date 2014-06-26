@@ -36,16 +36,15 @@ namespace component
 namespace topology
 {
 
-using namespace sofa::defaulttype;
-
 /** Define a regular grid topology, with no spatial information.
   */
-
 class SOFA_BASE_TOPOLOGY_API GridTopology : public MeshTopology
 {
 public:
     SOFA_CLASS(GridTopology,MeshTopology);
-    typedef ResizableExtVector <Vector2>      TextCoords2D;
+    typedef sofa::defaulttype::Vec3i Vec3i;
+    typedef sofa::defaulttype::Vector2 Vector2;
+    typedef sofa::defaulttype::ResizableExtVector<Vector2> TextCoords2D;
     friend class GridUpdate;
 private:
     class GridUpdate : public sofa::core::DataEngine
@@ -90,7 +89,7 @@ public:
             const char* nx = arg->getAttribute("nx");
             const char* ny = arg->getAttribute("ny");
             const char* nz = arg->getAttribute("nz");
-            n.setValue(Vec<3,int>(atoi(nx),atoi(ny),atoi(nz)));
+            n.setValue(Vec3i(atoi(nx),atoi(ny),atoi(nz)));
         }
 
         this->setSize();

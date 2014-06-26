@@ -41,10 +41,6 @@ namespace component
 namespace projectiveconstraintset
 {
 
-using namespace sofa::core::objectmodel;
-using namespace sofa::core::behavior;
-using namespace sofa::helper;
-
 using namespace sofa::core::topology;
 
 // Define TestNewPointFunction

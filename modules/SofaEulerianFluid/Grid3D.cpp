@@ -39,6 +39,8 @@ namespace behaviormodel
 namespace eulerianfluid
 {
 
+using namespace sofa::helper;
+
 const unsigned long* Grid3D::obstacles = NULL;
 
 #define LEVELSET_MARGIN 0.01f

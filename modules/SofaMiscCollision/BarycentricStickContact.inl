@@ -37,8 +37,8 @@ namespace component
 namespace collision
 {
 
-using namespace sofa::defaulttype;
-using namespace core::collision;
+
+
 
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
 BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::BarycentricStickContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)
@@ -97,13 +97,13 @@ void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes
 
     for (int i=0; i<insize; i++)
     {
-        DetectionOutput* o = &outputs[i];
+        sofa::core::collision::DetectionOutput* o = &outputs[i];
         // find this contact in contactIndex, possibly creating a new entry initialized by 0
         int& index = contactIndex[o->id];
         if (index < 0) // duplicate contact
         {
             int i2 = -1-index;
-            DetectionOutput* o2 = &outputs[i2];
+            sofa::core::collision::DetectionOutput* o2 = &outputs[i2];
             if (o2->value <= o->value)
             {
                 // current contact is ignored
@@ -174,7 +174,7 @@ void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes
     {
         int index = oldIndex[i];
         if (index < 0) continue; // this contact is ignored
-        DetectionOutput* o = &outputs[i];
+        sofa::core::collision::DetectionOutput* o = &outputs[i];
         CollisionElement1 elem1(o->elem.first);
         CollisionElement2 elem2(o->elem.second);
         int index1 = elem1.getIndex();

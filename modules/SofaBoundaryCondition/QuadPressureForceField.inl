@@ -43,10 +43,6 @@ namespace component
 namespace forcefield
 {
 
-using namespace sofa::defaulttype;
-using namespace core::topology;
-
-
 
 template <class DataTypes> QuadPressureForceField<DataTypes>::~QuadPressureForceField()
 {

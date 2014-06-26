@@ -39,10 +39,6 @@ namespace component
 namespace projectiveconstraintset
 {
 
-using namespace core::topology;
-
-using namespace sofa::defaulttype;
-
 
 template <class DataTypes>
 FixedRotationConstraint<DataTypes>::FixedRotationConstraint()
