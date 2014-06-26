@@ -18,7 +18,7 @@ include_directories(${PYTHON_INCLUDE_DIRS})
 
 set(HEADER_FILES
 
-    initSofaPython.h
+    SofaPython.h
     ScriptController.h
     PythonScriptController.h
     PythonMacros.h
@@ -60,7 +60,7 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
 
-    initSofaPython.cpp
+    SofaPython.cpp
     ScriptController.cpp
     PythonScriptController.cpp
     PythonEnvironment.cpp
@@ -107,7 +107,7 @@ set(PYTHON_FILES
 # include python files
 include(./python/python.cmake)
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
+sofa_add_plugin(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
 
 # Python's implementation deliberately breaks strict-aliasing rules, so we
 # compile with -fno-strict-aliasing to prevent the compiler from relying on

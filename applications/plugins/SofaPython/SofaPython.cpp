@@ -22,39 +22,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef INITSOFAPYTHON_H
-#define INITSOFAPYTHON_H
+#include "SceneLoaderPY.h"
+#include "SofaPython.h"
 
-
-#include <sofa/helper/system/config.h>
-
-#ifdef SOFA_BUILD_SOFAPYTHON
-#define SOFA_SOFAPYTHON_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#define SOFA_SOFAPYTHON_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
-namespace sofa
+PythonPlugin::PythonPlugin() : sofa::core::Plugin("Python")
 {
+    setDescription("Imbeds Python scripts in Sofa");
+    setVersion(SOFAPYTHON_VERSION);
+    setLicense("LGPL");
+    setAuthors("The SOFA Team");
 
-namespace component
+}
+
+bool PythonPlugin::init()
 {
+    // register the loader in the factory
+    static sofa::simulation::SceneLoader* loaderPY = sofa::simulation::SceneLoaderFactory::getInstance()->addEntry(new sofa::simulation::SceneLoaderPY());
 
-extern "C" {
-    SOFA_SOFAPYTHON_API void initExternalModule();
-    SOFA_SOFAPYTHON_API const char* getModuleName();
-    SOFA_SOFAPYTHON_API const char* getModuleVersion();
-    SOFA_SOFAPYTHON_API const char* getModuleLicense();
-    SOFA_SOFAPYTHON_API const char* getModuleDescription();
-    SOFA_SOFAPYTHON_API const char* getModuleComponentList();
+    return true;
 }
 
-}
 
-}
 
-/** \mainpage
-  This is a the starting page of the plugin documentation, defined in file initEmptyPlugin.h
-  */
-
-#endif // INITEmptyPlugin_H
+SOFA_PLUGIN_ENTRY_POINT(PythonPlugin);
