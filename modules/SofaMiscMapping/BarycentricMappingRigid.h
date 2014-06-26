@@ -102,7 +102,7 @@ public:
     void clear(int reserve=0);
 
     int addPointInTetra(const int index, const SReal* baryCoords);
-    int addPointOrientationInTetra( const int tetraIndex, const Matrix3 baryCoorsOrient );
+    int addPointOrientationInTetra( const int tetraIndex, const sofa::defaulttype::Matrix3 baryCoorsOrient );
 
     void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);
 

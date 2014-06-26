@@ -46,14 +46,6 @@ namespace component
 
 namespace linearsolver
 {
-using core::VecId;
-using namespace sofa::defaulttype;
-using namespace sofa::core::behavior;
-using namespace sofa::simulation;
-#ifdef DISPLAY_TIME
-using sofa::helper::system::thread::CTime;
-#endif
-
 
 /// Linear system solver using the conjugate gradient iterative algorithm
 template<class TMatrix, class TVector>
@@ -68,7 +60,7 @@ CGLinearSolver<TMatrix,TVector>::CGLinearSolver()
     f_graph.setWidget("graph");
 //    f_graph.setReadOnly(true);
 #ifdef DISPLAY_TIME
-    timeStamp = 1.0 / (double)CTime::getRefTicksPerSec();
+    timeStamp = 1.0 / (double)sofa::helper::system::thread::CTime::getRefTicksPerSec();
 #endif
 }
 
@@ -85,7 +77,7 @@ template<class TMatrix, class TVector>
 void CGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(const sofa::core::MechanicalParams* mparams)
 {
 #ifdef DISPLAY_TIME
-    CTime * timer;
+    sofa::helper::system::thread::CTime * timer;
     time2 = (double) timer->getTime();
 #endif
 
@@ -144,7 +136,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
     const char* endcond = "iterations";
 
 #ifdef DISPLAY_TIME
-    CTime * timer;
+    sofa::helper::system::thread::CTime * timer;
     time1 = (double) timer->getTime();
 #endif
 
