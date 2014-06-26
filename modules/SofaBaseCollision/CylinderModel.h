@@ -43,8 +43,6 @@ namespace component
 namespace collision
 {
 
-using namespace sofa::defaulttype;
-
 template<class DataTypes>
 class TCylinderModel;
 
@@ -56,10 +54,10 @@ class TCylinder;
   *defined by its apexes.
   */
 template< class MyReal>
-class TCylinder<StdRigidTypes<3,MyReal> > : public core::TCollisionElementIterator< TCylinderModel<StdRigidTypes<3,MyReal> > >
+class TCylinder<sofa::defaulttype::StdRigidTypes<3,MyReal> > : public core::TCollisionElementIterator< TCylinderModel<sofa::defaulttype::StdRigidTypes<3,MyReal> > >
 {
 public:
-    typedef StdRigidTypes<3,MyReal> DataTypes;
+    typedef sofa::defaulttype::StdRigidTypes<3,MyReal> DataTypes;
     typedef typename DataTypes::Real   Real;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::CPos Coord;
@@ -86,13 +84,13 @@ public:
   *CylinderModel templated by RigidTypes (frames), direction is given by Y direction of the frame.
   */
 template< class MyReal>
-class TCylinderModel<StdRigidTypes<3,MyReal> > : public core::CollisionModel
+class TCylinderModel<sofa::defaulttype::StdRigidTypes<3,MyReal> > : public core::CollisionModel
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(TCylinderModel, SOFA_TEMPLATE2(StdRigidTypes, 3, MyReal)), core::CollisionModel);
+    SOFA_CLASS(SOFA_TEMPLATE(TCylinderModel, SOFA_TEMPLATE2(sofa::defaulttype::StdRigidTypes, 3, MyReal)), core::CollisionModel);
 
 
-    typedef StdRigidTypes<3,MyReal> DataTypes;
+    typedef sofa::defaulttype::StdRigidTypes<3,MyReal> DataTypes;
     typedef DataTypes InDataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename  DataTypes::VecDeriv VecDeriv;
@@ -136,7 +134,7 @@ public:
     //Returns the direction of the cylinder at index index
     Coord axis(int index)const;
 
-    const Quaternion orientation(int index)const;
+    const sofa::defaulttype::Quaternion orientation(int index)const;
 
     Real height(int index)const;
 
@@ -176,18 +174,18 @@ protected:
 
 
 template<class MyReal>
-inline TCylinder<StdRigidTypes<3,MyReal> >::TCylinder(ParentModel* model, int index)
+inline TCylinder<sofa::defaulttype::StdRigidTypes<3,MyReal> >::TCylinder(ParentModel* model, int index)
     : core::TCollisionElementIterator<ParentModel>(model, index)
 {}
 
 template<class MyReal>
-inline TCylinder<StdRigidTypes<3,MyReal> >::TCylinder(const core::CollisionElementIterator& i)
+inline TCylinder<sofa::defaulttype::StdRigidTypes<3,MyReal> >::TCylinder(const core::CollisionElementIterator& i)
     : core::TCollisionElementIterator<ParentModel>(static_cast<ParentModel*>(i.getCollisionModel()), i.getIndex())
 {
 }
 
-typedef TCylinderModel<Rigid3Types> CylinderModel;
-typedef TCylinder<Rigid3Types> Cylinder;
+typedef TCylinderModel<sofa::defaulttype::Rigid3Types> CylinderModel;
+typedef TCylinder<sofa::defaulttype::Rigid3Types> Cylinder;
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_BASE_COLLISION)
 #ifndef SOFA_FLOAT

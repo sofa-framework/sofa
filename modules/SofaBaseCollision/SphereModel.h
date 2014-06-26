@@ -43,8 +43,6 @@ namespace component
 namespace collision
 {
 
-using namespace sofa::defaulttype;
-
 
 template<class DataTypes>
 class TSphereModel;
@@ -77,12 +75,12 @@ public:
 
     Real r() const;
 
-    Vector3 getContactPointByNormal( const Vector3& contactNormal )
+    sofa::defaulttype::Vector3 getContactPointByNormal( const sofa::defaulttype::Vector3& contactNormal )
     {
         return center() - contactNormal * r();
     }
 
-    Vector3 getContactPointWithSurfacePoint( const Vector3& surfacePoint )
+    sofa::defaulttype::Vector3 getContactPointWithSurfacePoint( const sofa::defaulttype::Vector3& surfacePoint )
     {
         return surfacePoint;
     }
@@ -92,15 +90,15 @@ public:
 // Specializations
 #ifndef SOFA_FLOAT
 template <> SOFA_BASE_COLLISION_API
-Vector3 TSphere<defaulttype::Vec3dTypes >::getContactPointByNormal( const Vector3& /*contactNormal*/ );
+sofa::defaulttype::Vector3 TSphere<defaulttype::Vec3dTypes >::getContactPointByNormal( const sofa::defaulttype::Vector3& /*contactNormal*/ );
 template <> SOFA_BASE_COLLISION_API
-Vector3 TSphere<defaulttype::Vec3dTypes >::getContactPointWithSurfacePoint( const Vector3& );
+sofa::defaulttype::Vector3 TSphere<defaulttype::Vec3dTypes >::getContactPointWithSurfacePoint( const sofa::defaulttype::Vector3& );
 #endif
 #ifndef SOFA_DOUBLE
 template <> SOFA_BASE_COLLISION_API
-Vector3 TSphere<defaulttype::Vec3fTypes >::getContactPointByNormal( const Vector3& /*contactNormal*/ );
+sofa::defaulttype::Vector3 TSphere<defaulttype::Vec3fTypes >::getContactPointByNormal( const sofa::defaulttype::Vector3& /*contactNormal*/ );
 template <> SOFA_BASE_COLLISION_API
-Vector3 TSphere<defaulttype::Vec3fTypes >::getContactPointWithSurfacePoint( const Vector3& );
+sofa::defaulttype::Vector3 TSphere<defaulttype::Vec3fTypes >::getContactPointWithSurfacePoint( const sofa::defaulttype::Vector3& );
 #endif
 
 template< class TDataTypes>
@@ -235,11 +233,11 @@ template<class DataTypes>
 inline bool TSphere<DataTypes>::hasFreePosition() const { return this->model->mstate->read(core::ConstVecCoordId::freePosition())->isSet(); }
 
 
-typedef TSphereModel<Vec3Types> SphereModel;
-typedef TSphere<Vec3Types> Sphere;
+typedef TSphereModel<sofa::defaulttype::Vec3Types> SphereModel;
+typedef TSphere<sofa::defaulttype::Vec3Types> Sphere;
 
-typedef TSphereModel<Rigid3Types> RigidSphereModel;
-typedef TSphere<Rigid3Types> RigidSphere;
+typedef TSphereModel<sofa::defaulttype::Rigid3Types> RigidSphereModel;
+typedef TSphere<sofa::defaulttype::Rigid3Types> RigidSphere;
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_BASE_COLLISION)
 #ifndef SOFA_FLOAT

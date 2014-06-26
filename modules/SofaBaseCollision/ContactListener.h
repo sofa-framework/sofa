@@ -44,8 +44,6 @@ namespace sofa
 		namespace collision
 		{
 
-			using namespace sofa;
-
 			// forward declaration
 			class NarrowPhaseDetection;
 			
