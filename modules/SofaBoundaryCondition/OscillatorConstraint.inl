@@ -39,7 +39,6 @@ namespace component
 namespace projectiveconstraintset
 {
 
-using namespace sofa::defaulttype;
 
 template <class TDataTypes>
 OscillatorConstraint<TDataTypes>::OscillatorConstraint()

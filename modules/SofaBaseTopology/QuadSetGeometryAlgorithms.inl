@@ -145,7 +145,7 @@ sofa::defaulttype::Vec<3,double> QuadSetGeometryAlgorithms< DataTypes >::compute
 
     sofa::defaulttype::Vec<3,Real> normal_q=(p1-p0).cross( p2-p0);
 
-    return ((Vec<3,double>) normal_q);
+    return ((sofa::defaulttype::Vec<3,double>) normal_q);
 }
 
 
@@ -356,7 +356,7 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
     // Draw Quads indices
     if (showQuadIndices.getValue())
     {
-        Mat<4,4, GLfloat> modelviewM;
+        sofa::defaulttype::Mat<4,4, GLfloat> modelviewM;
         const VecCoord& coords = *(this->object->getX());
         const sofa::defaulttype::Vec3f& color = _drawColor.getValue();
         glColor3f(color[0]-0.2f, color[1]-0.2f, color[2]-0.2f);

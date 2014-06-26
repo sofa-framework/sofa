@@ -40,7 +40,6 @@ namespace component
 
 namespace topology
 {
-using namespace sofa::defaulttype;
 
 /*template<class DataTypes>
     void EdgeSetGeometryAlgorithms< DataTypes>::reinit()
@@ -507,7 +506,7 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
     // Draw Edges indices
     if (showEdgeIndices.getValue())
     {
-        Mat<4,4, GLfloat> modelviewM;
+        sofa::defaulttype::Mat<4,4, GLfloat> modelviewM;
         const VecCoord& coords = *(this->object->getX());
         const sofa::defaulttype::Vec3f& color = _drawColor.getValue();
         glColor3f(color[0], color[1], color[2]);
@@ -600,10 +599,12 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
 
 
 template< class DataTypes>
-void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( vector<unsigned>& numEdges, vector<Edge>& vertexEdges, vector<Vec3d>& weights ) const
+void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( sofa::helper::vector<unsigned>& numEdges,
+                                                                           sofa::helper::vector<Edge>& vertexEdges,
+                                                                           sofa::helper::vector<Vec3d>& weights ) const
 {
     const VecCoord& pos = *(this->object->getX()); // point positions
-    vector<Vector3> edgeVec;                  // 3D edges
+    sofa::helper::vector<Vector3> edgeVec;                  // 3D edges
 
     numEdges.clear();
     vertexEdges.clear();
@@ -617,7 +618,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( vecto
         EdgesAroundVertex ve = this->m_topology->getEdgesAroundVertex(pointId);
         edgeVec.resize(ve.size());
         numEdges.push_back(ve.size());            // number of edges attached to this point
-        Matrix3 EEt,L;
+        sofa::defaulttype::Matrix3 EEt,L;
 
         // Solve E.W = I , where each column of E is an adjacent edge vector, W are the desired weights, and I is the 3x3 identity
         // Each row of W corresponds to an edge, and encode the contribution of the edge to the basis vectors x,y,z

@@ -115,9 +115,9 @@ void LCPForceFeedback< Rigid3dTypes >::computeForce(double x, double y, double z
 
 
 template <>
-void LCPForceFeedback< Rigid3dTypes >::computeWrench(const SolidTypes<double>::Transform &world_H_tool,
-        const SolidTypes<double>::SpatialVector &/*V_tool_world*/,
-        SolidTypes<double>::SpatialVector &W_tool_world )
+void LCPForceFeedback< Rigid3dTypes >::computeWrench(const sofa::defaulttype::SolidTypes<double>::Transform &world_H_tool,
+        const sofa::defaulttype::SolidTypes<double>::SpatialVector &/*V_tool_world*/,
+        sofa::defaulttype::SolidTypes<double>::SpatialVector &W_tool_world )
 {
     //std::cerr<<"WARNING : LCPForceFeedback::computeWrench is not implemented"<<std::endl;
 

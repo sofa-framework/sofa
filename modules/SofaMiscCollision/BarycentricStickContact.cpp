@@ -27,6 +27,8 @@
 #include <SofaMeshCollision/IdentityContactMapper.h>
 #include <SofaVolumetricData/DistanceGridCollisionModel.h>
 
+using namespace sofa::core::collision ;
+
 namespace sofa
 {
 

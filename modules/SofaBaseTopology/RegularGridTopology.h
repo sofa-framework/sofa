@@ -37,8 +37,6 @@ namespace component
 namespace topology
 {
 
-using namespace sofa::defaulttype;
-
 /**
   Regular grid in space.
   In c++, resolution is set in the constructor or using method setSize of the parent class, while the spatial extent is set using method setPos.
@@ -47,8 +45,10 @@ using namespace sofa::defaulttype;
 class SOFA_BASE_TOPOLOGY_API RegularGridTopology : public GridTopology
 {
 public:
-    typedef Vec<3, int> Vec3i;
-    typedef Vec<3, unsigned int> Vec3ui;
+    typedef sofa::defaulttype::Vec<3, int> Vec3i;
+    typedef sofa::defaulttype::Vec<3, unsigned int> Vec3ui;
+    typedef sofa::defaulttype::Vector3 Vector3;
+    typedef sofa::defaulttype::BoundingBox BoundingBox;
     SOFA_CLASS(RegularGridTopology,GridTopology);
 protected:
     RegularGridTopology();

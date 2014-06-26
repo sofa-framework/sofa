@@ -63,6 +63,7 @@ bool isInExcludedPath(const std::string& path){
         }
         return false ;
     }
+    return false ;
 }
 
 class StyleChecker : public RecursiveASTVisitor<StyleChecker> {
@@ -83,6 +84,8 @@ public:
             return true ;
 
         FullSourceLoc FullLocation = Context->getFullLoc(record->getLocStart());
+
+
         // Check this declaration is not in the system headers...
         if ( FullLocation.isValid() && !exclude(FullLocation.getManager() , record) )
         {
@@ -92,6 +95,7 @@ public:
             RecordDecl::field_iterator it=record->field_begin() ;
             for(;it!=record->field_end();it++){
                 clang::FieldDecl* ff=*it;
+                ff->isTemplateDecl();
 
                 SourceRange declsr=ff->getMostRecentDecl()->getSourceRange() ;
                 SourceLocation sl=declsr.getBegin();
@@ -215,12 +219,12 @@ int main(int argc, const char** argv){
             j++ ;
         }
         auto& smanager=ctx.getSourceManager();
-        std::cerr << smanager.getFileEntryForID(smanager.getMainFileID())->getName()
-                  << ":1:1: info: number of loaded include files: " << j << std::endl ;
+        //std::cerr << smanager.getFileEntryForID(smanager.getMainFileID())->getName()
+        //          << ":1:1: info: number of loaded include files: " << j << std::endl ;
 
 
-        //ésr->setContext(&ctx);
-        //sr->TraverseDecl(ctx.getTranslationUnitDecl());
+        sr->setContext(&ctx);
+        sr->TraverseDecl(ctx.getTranslationUnitDecl());
     }
 
 }

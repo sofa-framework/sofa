@@ -4276,7 +4276,8 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange(core::
             // std::cout << "BarycentricMapperHexahedronSetTopology() HEXAHEDRAREMOVED" << std::endl;
             const unsigned int nbHexahedra = this->fromTopology->getNbHexahedra();
 
-            const sofa::helper::vector<unsigned int> &hexahedra = ( static_cast< const component::topology::HexahedraRemoved *> ( *changeIt ) )->getArray();
+            const sofa::helper::vector<unsigned int> &hexahedra =
+                    ( static_cast< const core::topology::HexahedraRemoved *> ( *changeIt ) )->getArray();
             //        sofa::helper::vector<unsigned int> hexahedra(tab);
 
             for ( unsigned int i=0; i<hexahedra.size(); ++i )

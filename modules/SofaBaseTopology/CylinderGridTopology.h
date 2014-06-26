@@ -37,12 +37,11 @@ namespace component
 namespace topology
 {
 
-using namespace sofa::defaulttype;
-
 class SOFA_BASE_TOPOLOGY_API CylinderGridTopology : public GridTopology
 {
 public:
     SOFA_CLASS(CylinderGridTopology,GridTopology);
+    typedef sofa::defaulttype::Vector3 Vector3;
 protected:
     CylinderGridTopology(int nx, int ny, int nz);
     CylinderGridTopology();

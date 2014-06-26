@@ -48,8 +48,6 @@ namespace projectiveconstraintset
 
 using helper::vector;
 using core::objectmodel::Data;
-using namespace sofa::core::objectmodel;
-using namespace sofa::component::topology;
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template <class DataTypes>
@@ -126,14 +124,13 @@ public:
 
     bool fixAllDOFs() const { return f_fixAll.getValue(); }
 
-    class FCPointHandler : public TopologySubsetDataHandler<Point, SetIndexArray >
+    class FCPointHandler : public sofa::component::topology::TopologySubsetDataHandler<sofa::component::topology::Point, SetIndexArray >
     {
     public:
         typedef typename FixedConstraint<DataTypes>::SetIndexArray SetIndexArray;
 
-        FCPointHandler(FixedConstraint<DataTypes>* _fc, PointSubsetData<SetIndexArray>* _data)
+        FCPointHandler(FixedConstraint<DataTypes>* _fc, sofa::component::topology::PointSubsetData<SetIndexArray>* _data)
             : sofa::component::topology::TopologySubsetDataHandler<Point, SetIndexArray >(_data), fc(_fc) {}
-
 
 
         void applyDestroyFunction(unsigned int /*index*/, value_type& /*T*/);

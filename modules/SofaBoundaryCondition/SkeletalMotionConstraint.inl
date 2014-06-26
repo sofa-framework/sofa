@@ -45,12 +45,6 @@ namespace component
 namespace projectiveconstraintset
 {
 
-using namespace core::topology;
-
-using namespace sofa::defaulttype;
-using namespace sofa::helper;
-using namespace sofa::core::behavior;
-
 template <class DataTypes>
 SkeletalMotionConstraint<DataTypes>::SkeletalMotionConstraint() : ProjectiveConstraintSet<DataTypes>()
     , skeletonJoints(initData(&skeletonJoints, "joints", "skeleton joints"))
@@ -98,14 +92,14 @@ void SkeletalMotionConstraint<DataTypes>::findKeyTimes()
             {
                 prevT = keyTime;
 
-                const RigidCoord<3, Real>& motion = skeletonJoint.mChannels[j];
+                const defaulttype::RigidCoord<3, Real>& motion = skeletonJoint.mChannels[j];
                 skeletonJoint.mPreviousMotion = motion;
             }
             else
             {
                 nextT = keyTime;
 
-                const RigidCoord<3, Real>& motion = skeletonJoint.mChannels[j];
+                const defaulttype::RigidCoord<3, Real>& motion = skeletonJoint.mChannels[j];
                 skeletonJoint.mNextMotion = motion;
 
                 finished = true;
@@ -171,9 +165,9 @@ void SkeletalMotionConstraint<DataTypes>::projectVelocity(const core::Mechanical
                 {
                     dx[i].getVCenter() = (skeletonJoint.mNextMotion.getCenter() - skeletonJoint.mPreviousMotion.getCenter()) * (1.0 / (nextT - prevT));
 
-                    Quat previousOrientation = skeletonJoint.mPreviousMotion.getOrientation();
-                    Quat nextOrientation = skeletonJoint.mNextMotion.getOrientation();
-                    Vec<3, Real> diff = nextOrientation.angularDisplacement(previousOrientation, nextOrientation);
+                    defaulttype::Quat previousOrientation = skeletonJoint.mPreviousMotion.getOrientation();
+                    defaulttype::Quat nextOrientation = skeletonJoint.mNextMotion.getOrientation();
+                    defaulttype::Vec<3, Real> diff = nextOrientation.angularDisplacement(previousOrientation, nextOrientation);
                     dx[i].getVOrientation() = diff * (1.0 / (nextT - prevT));
                 }
             }
@@ -203,7 +197,7 @@ void SkeletalMotionConstraint<DataTypes>::projectPosition(const core::Mechanical
 
 template <class DataTypes>
 template <class MyCoord>
-void SkeletalMotionConstraint<DataTypes>::interpolatePosition(Real cT, typename boost::enable_if<boost::is_same<MyCoord, RigidCoord<3, Real> >, VecCoord>::type& x)
+void SkeletalMotionConstraint<DataTypes>::interpolatePosition(Real cT, typename boost::enable_if<boost::is_same<MyCoord, defaulttype::RigidCoord<3, Real> >, VecCoord>::type& x)
 {
     // set the motion to the SkeletonJoint corresponding rigid
     if(finished && nextT != prevT)
@@ -214,7 +208,7 @@ void SkeletalMotionConstraint<DataTypes>::interpolatePosition(Real cT, typename 
         {
             SkeletonJoint<DataTypes>& skeletonJoint = (*skeletonJoints.beginEdit())[i];
 
-            const helper::vector<RigidCoord<3, Real> >& channels = skeletonJoint.mChannels;
+            const helper::vector<defaulttype::RigidCoord<3, Real> >& channels = skeletonJoint.mChannels;
 
             if(channels.empty())
                 continue;
@@ -231,7 +225,7 @@ void SkeletalMotionConstraint<DataTypes>::interpolatePosition(Real cT, typename 
         {
             SkeletonJoint<DataTypes>& skeletonJoint = (*skeletonJoints.beginEdit())[i];
 
-            const helper::vector<RigidCoord<3, Real> >& channels = skeletonJoint.mChannels;
+            const helper::vector<defaulttype::RigidCoord<3, Real> >& channels = skeletonJoint.mChannels;
 
             if(channels.empty())
                 continue;
@@ -264,18 +258,18 @@ void SkeletalMotionConstraint<DataTypes>::projectJacobianMatrix(const core::Mech
 
 template <class DataTypes>
 template <class MyCoord>
-void SkeletalMotionConstraint<DataTypes>::localToGlobal(typename boost::enable_if<boost::is_same<MyCoord, RigidCoord<3, Real> >, VecCoord>::type& x)
+void SkeletalMotionConstraint<DataTypes>::localToGlobal(typename boost::enable_if<boost::is_same<MyCoord, defaulttype::RigidCoord<3, Real> >, VecCoord>::type& x)
 {
     for(unsigned int i = 0; i < skeletonJoints.getValue().size(); ++i)
     {
         SkeletonJoint<DataTypes>& skeletonJoint = (*skeletonJoints.beginEdit())[i];
 
-        RigidCoord< 3, Real> worldRigid = skeletonJoint.mLocalRigid;
+        defaulttype::RigidCoord< 3, Real> worldRigid = skeletonJoint.mLocalRigid;
 
         // break if the parent joint is the root
         for(int parentIndex = skeletonJoint.mParentIndex; -1 != parentIndex; parentIndex = skeletonJoints.getValue()[parentIndex].mParentIndex)
         {
-            RigidCoord< 3, Real> parentLocalRigid = skeletonJoints.getValue()[parentIndex].mLocalRigid;
+            defaulttype::RigidCoord< 3, Real> parentLocalRigid = skeletonJoints.getValue()[parentIndex].mLocalRigid;
             worldRigid = parentLocalRigid.mult(worldRigid);
         }
 
@@ -342,20 +336,20 @@ void SkeletalMotionConstraint<DataTypes>::draw(const core::visual::VisualParams*
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
 
-    sofa::helper::vector<Vector3> points;
-    sofa::helper::vector<Vector3> linesX;
-    sofa::helper::vector<Vector3> linesY;
-    sofa::helper::vector<Vector3> linesZ;
-    sofa::helper::vector<Vector3> colorFalloff;
+    sofa::helper::vector<defaulttype::Vector3> points;
+    sofa::helper::vector<defaulttype::Vector3> linesX;
+    sofa::helper::vector<defaulttype::Vector3> linesY;
+    sofa::helper::vector<defaulttype::Vector3> linesZ;
+    sofa::helper::vector<defaulttype::Vector3> colorFalloff;
 
-    Vector3 point;
-    Vector3 line;
+    defaulttype::Vector3 point;
+    defaulttype::Vector3 line;
 
     // draw joints (not bones we draw them differently later)
     {
         for(unsigned int i = 0; i < skeletonJoints.getValue().size(); ++i)
         {
-            RigidCoord< 3, Real> jointWorldRigid = skeletonJoints.getValue()[i].mWorldRigid;
+            defaulttype::RigidCoord< 3, Real> jointWorldRigid = skeletonJoints.getValue()[i].mWorldRigid;
 
             unsigned int j;
             for(j = 0; j < skeletonBones.getValue().size(); ++j)
@@ -369,21 +363,21 @@ void SkeletalMotionConstraint<DataTypes>::draw(const core::visual::VisualParams*
             points.push_back(point);
 
             linesX.push_back(point);
-            line = point + DataTypes::getCRot(jointWorldRigid).rotate(Vec3f(0.1f, 0.0f, 0.0f));
+            line = point + DataTypes::getCRot(jointWorldRigid).rotate(defaulttype::Vec3f(0.1f, 0.0f, 0.0f));
             linesX.push_back(line);
 
             linesY.push_back(point);
-            line = point + DataTypes::getCRot(jointWorldRigid).rotate(Vec3f(0.0f, 0.1f, 0.0f));
+            line = point + DataTypes::getCRot(jointWorldRigid).rotate(defaulttype::Vec3f(0.0f, 0.1f, 0.0f));
             linesY.push_back(line);
 
             linesZ.push_back(point);
-            line = point + DataTypes::getCRot(jointWorldRigid).rotate(Vec3f(0.0f, 0.0f, 0.1f));
+            line = point + DataTypes::getCRot(jointWorldRigid).rotate(defaulttype::Vec3f(0.0f, 0.0f, 0.1f));
             linesZ.push_back(line);
         }
-        vparams->drawTool()->drawPoints(points, 10, Vec<4, float> (1.0f , 0.5f , 0.5f , 1.0f));
-        vparams->drawTool()->drawLines (linesX,  2, Vec<4, float> (0.75f, 0.0f , 0.0f , 1.0f));
-        vparams->drawTool()->drawLines (linesY,  2, Vec<4, float> (0.0f , 0.75f, 0.0f , 1.0f));
-        vparams->drawTool()->drawLines (linesZ,  2, Vec<4, float> (0.0f , 0.0f , 0.75f, 1.0f));
+        vparams->drawTool()->drawPoints(points, 10, defaulttype::Vec<4, float> (1.0f , 0.5f , 0.5f , 1.0f));
+        vparams->drawTool()->drawLines (linesX,  2, defaulttype::Vec<4, float> (0.75f, 0.0f , 0.0f , 1.0f));
+        vparams->drawTool()->drawLines (linesY,  2, defaulttype::Vec<4, float> (0.0f , 0.75f, 0.0f , 1.0f));
+        vparams->drawTool()->drawLines (linesZ,  2, defaulttype::Vec<4, float> (0.0f , 0.0f , 0.75f, 1.0f));
     }
 
     points.clear();
@@ -395,27 +389,27 @@ void SkeletalMotionConstraint<DataTypes>::draw(const core::visual::VisualParams*
     {
         for(unsigned int i = 0; i < skeletonBones.getValue().size(); ++i)
         {
-            RigidCoord< 3, Real> boneWorldRigid = skeletonJoints.getValue()[skeletonBones.getValue()[i]].mWorldRigid;
+            defaulttype::RigidCoord< 3, Real> boneWorldRigid = skeletonJoints.getValue()[skeletonBones.getValue()[i]].mWorldRigid;
 
             point = DataTypes::getCPos(boneWorldRigid);
             points.push_back(point);
 
             linesX.push_back(point);
-            line = point + DataTypes::getCRot(boneWorldRigid).rotate(Vec3f(0.1f, 0.0f, 0.0f));
+            line = point + DataTypes::getCRot(boneWorldRigid).rotate(defaulttype::Vec3f(0.1f, 0.0f, 0.0f));
             linesX.push_back(line);
 
             linesY.push_back(point);
-            line = point + DataTypes::getCRot(boneWorldRigid).rotate(Vec3f(0.0f, 0.1f, 0.0f));
+            line = point + DataTypes::getCRot(boneWorldRigid).rotate(defaulttype::Vec3f(0.0f, 0.1f, 0.0f));
             linesY.push_back(line);
 
             linesZ.push_back(point);
-            line = point + DataTypes::getCRot(boneWorldRigid).rotate(Vec3f(0.0f, 0.0f, 0.1f));
+            line = point + DataTypes::getCRot(boneWorldRigid).rotate(defaulttype::Vec3f(0.0f, 0.0f, 0.1f));
             linesZ.push_back(line);
         }
-        vparams->drawTool()->drawPoints(points, 10, Vec<4, float> (1.0f, 0.5f, 0.5f, 1.0f));
-        vparams->drawTool()->drawLines (linesX, 2 , Vec<4, float> (1.0f, 0.0f, 0.0f, 1.0f));
-        vparams->drawTool()->drawLines (linesY, 2 , Vec<4, float> (0.0f, 1.0f, 0.0f, 1.0f));
-        vparams->drawTool()->drawLines (linesZ, 2 , Vec<4, float> (0.0f, 0.0f, 1.0f, 1.0f));
+        vparams->drawTool()->drawPoints(points, 10, defaulttype::Vec<4, float> (1.0f, 0.5f, 0.5f, 1.0f));
+        vparams->drawTool()->drawLines (linesX, 2 , defaulttype::Vec<4, float> (1.0f, 0.0f, 0.0f, 1.0f));
+        vparams->drawTool()->drawLines (linesY, 2 , defaulttype::Vec<4, float> (0.0f, 1.0f, 0.0f, 1.0f));
+        vparams->drawTool()->drawLines (linesZ, 2 , defaulttype::Vec<4, float> (0.0f, 0.0f, 1.0f, 1.0f));
     }
 }
 

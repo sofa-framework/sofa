@@ -39,8 +39,6 @@
 
 
 
-using std::cerr;
-using std::endl;
 
 namespace sofa
 {
@@ -50,7 +48,6 @@ namespace component
 
 namespace linearsolver
 {
-using helper::vector;
 
 //#define EigenBaseSparseMatrix_CHECK
 //#define EigenBaseSparseMatrix_VERBOSE

@@ -46,34 +46,34 @@ SOFA_DECL_CLASS(PartialLinearMovementConstraint)
 
 int PartialLinearMovementConstraintClass = core::RegisterObject("translate given particles")
 #ifndef SOFA_FLOAT
-        .add< PartialLinearMovementConstraint<Vec3dTypes> >()
-        .add< PartialLinearMovementConstraint<Vec2dTypes> >()
-        .add< PartialLinearMovementConstraint<Vec1dTypes> >()
-        .add< PartialLinearMovementConstraint<Vec6dTypes> >()
-        .add< PartialLinearMovementConstraint<Rigid3dTypes> >()
+        .add< PartialLinearMovementConstraint<defaulttype::Vec3dTypes> >()
+        .add< PartialLinearMovementConstraint<defaulttype::Vec2dTypes> >()
+        .add< PartialLinearMovementConstraint<defaulttype::Vec1dTypes> >()
+        .add< PartialLinearMovementConstraint<defaulttype::Vec6dTypes> >()
+        .add< PartialLinearMovementConstraint<defaulttype::Rigid3dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
-        .add< PartialLinearMovementConstraint<Vec3fTypes> >()
-        .add< PartialLinearMovementConstraint<Vec2fTypes> >()
-        .add< PartialLinearMovementConstraint<Vec1fTypes> >()
-        .add< PartialLinearMovementConstraint<Vec6fTypes> >()
-        .add< PartialLinearMovementConstraint<Rigid3fTypes> >()
+        .add< PartialLinearMovementConstraint<defaulttype::Vec3fTypes> >()
+        .add< PartialLinearMovementConstraint<defaulttype::Vec2fTypes> >()
+        .add< PartialLinearMovementConstraint<defaulttype::Vec1fTypes> >()
+        .add< PartialLinearMovementConstraint<defaulttype::Vec6fTypes> >()
+        .add< PartialLinearMovementConstraint<defaulttype::Rigid3fTypes> >()
 #endif
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<Vec3dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<Vec2dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<Vec1dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<Vec6dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<Rigid3dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Vec3dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Vec2dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Vec1dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Vec6dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<Vec3fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<Vec2fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<Vec1fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<Vec6fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<Rigid3fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Vec3fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Vec2fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Vec1fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Vec6fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Rigid3fTypes>;
 #endif
 
 } // namespace projectiveconstraintset

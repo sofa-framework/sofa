@@ -44,8 +44,7 @@ namespace component
 
 namespace topology
 {
-using namespace sofa::defaulttype;
-using namespace sofa::core::behavior;
+
 
 template<class DataTypes>
 void EdgeSetTopologyAlgorithms< DataTypes >::init()

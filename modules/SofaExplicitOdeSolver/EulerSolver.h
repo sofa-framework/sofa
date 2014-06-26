@@ -36,7 +36,7 @@ namespace component
 
 namespace odesolver
 {
-//using namespace sofa::component::linearsolver;
+
 /** The simplest time integration.
  Two variants are available, depending on the value of field "symplectic".
  If true (the default), the symplectic variant of Euler's method is applied:

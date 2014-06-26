@@ -42,6 +42,9 @@ namespace behaviormodel
 namespace eulerianfluid
 {
 
+using namespace sofa::helper;
+using namespace sofa::defaulttype;
+
 SOFA_DECL_CLASS(Fluid3D)
 
 int Fluid3DClass = core::RegisterObject("Eulerian 3D fluid")

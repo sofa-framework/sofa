@@ -28,7 +28,7 @@
 #include <SofaBaseTopology/BezierTetrahedronSetGeometryAlgorithms.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/CommonAlgorithms.h>
-
+#include <sofa/helper/rmath.h>
 namespace sofa
 {
 
@@ -37,11 +37,6 @@ namespace component
 
 namespace topology
 {
-using namespace sofa::defaulttype;
-
-
-
-
 
 double multinomial(const size_t n,const TetrahedronBezierIndex tbiIn)
  {
@@ -53,7 +48,7 @@ double multinomial(const size_t n,const TetrahedronBezierIndex tbiIn)
 	for (i=n;i>tbi[3];--i){
 		ival*=i;
 	}
-	return(((double)ival)/(factorial(tbi[0])*factorial(tbi[1])*factorial(tbi[2])));
+    return(((double)ival)/(sofa::helper::factorial(tbi[0])*sofa::helper::factorial(tbi[1])*sofa::helper::factorial(tbi[2])));
  }
 template< class DataTypes>
  BezierTetrahedronSetGeometryAlgorithms< DataTypes >::BezierTetrahedronSetGeometryAlgorithms() : 

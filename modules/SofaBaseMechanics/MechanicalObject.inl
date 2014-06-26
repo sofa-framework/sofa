@@ -379,7 +379,11 @@ void MechanicalObject<DataTypes>::handleStateChange()
     //    std::cout << "WARNING MechanicalObject<DataTypes>::handleStateChange()" << std::endl;
     //#else
     using sofa::core::topology::TopologyChange;
-
+    using sofa::core::topology::TopologyChangeType;
+    using sofa::core::topology::PointsAdded;
+    using sofa::core::topology::PointsMoved;
+    using sofa::core::topology::PointsRemoved;
+    using sofa::core::topology::PointsRenumbering;
     sofa::core::topology::GeometryAlgorithms *geoAlgo = NULL;
     this->getContext()->get(geoAlgo, sofa::core::objectmodel::BaseContext::Local);
 

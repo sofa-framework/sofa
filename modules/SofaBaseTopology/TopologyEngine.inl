@@ -38,8 +38,6 @@ namespace component
 namespace topology
 {
 
-using namespace sofa::component::topology;
-
 template <typename VecT>
 TopologyEngineImpl< VecT>::TopologyEngineImpl(t_topologicalData *_topologicalData,
         sofa::core::topology::BaseMeshTopology *_topology,

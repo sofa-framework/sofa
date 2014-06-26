@@ -37,8 +37,6 @@ namespace component
 namespace odesolver
 {
 
-using namespace sofa::defaulttype;
-
 /** Explicit time integrator using central difference (also known as Verlet of Leap-frop).
  *
  * @see http://www.dynasupport.com/support/tutorial/users.guide/time.integration

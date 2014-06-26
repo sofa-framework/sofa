@@ -52,6 +52,7 @@
 #include "PrimitiveCreation.h"
 
 using namespace sofa::core::objectmodel;
+using namespace sofa::defaulttype;
 
 namespace sofa {
 
