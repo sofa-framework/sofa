@@ -37,7 +37,7 @@
 namespace sofa {
 
 template <class T>
-class SOFA_TestPlugin_API DiagonalMass_test : public ::testing::Test
+class DiagonalMass_test : public ::testing::Test
 {
 public :
 
