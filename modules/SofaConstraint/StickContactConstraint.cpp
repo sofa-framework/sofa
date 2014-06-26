@@ -39,6 +39,7 @@ namespace collision
 using namespace defaulttype;
 using namespace sofa::helper;
 using simulation::Node;
+using namespace sofa::core::collision;
 
 SOFA_DECL_CLASS(StickContactConstraint)
 

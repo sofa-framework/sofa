@@ -68,10 +68,6 @@ namespace constraintset
 //#define	MAX_NUM_CONSTRAINT_PER_NODE 10000
 //#define EPS_UNITARY_FORCE 0.01
 
-using namespace sofa::component::odesolver;
-using namespace sofa::component::linearsolver;
-using namespace sofa::simulation;
-
 template<class DataTypes>
 PrecomputedConstraintCorrection<DataTypes>::PrecomputedConstraintCorrection(behavior::MechanicalState<DataTypes> *mm)
     : Inherit(mm)
@@ -225,8 +221,8 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         const Vec3d gravity_zero(0.0,0.0,0.0);
         this->getContext()->setGravity(gravity_zero);
 
-        EulerImplicitSolver* eulerSolver;
-        CGLinearSolver< GraphScatteredMatrix, GraphScatteredVector >* cgLinearSolver;
+        sofa::component::odesolver::EulerImplicitSolver* eulerSolver;
+        sofa::component::linearsolver::CGLinearSolver< sofa::component::linearsolver::GraphScatteredMatrix, sofa::component::linearsolver::GraphScatteredVector >* cgLinearSolver;
         core::behavior::LinearSolver* linearSolver;
 
         this->getContext()->get(eulerSolver);

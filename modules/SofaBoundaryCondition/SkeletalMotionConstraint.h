@@ -39,8 +39,6 @@ namespace component
 namespace projectiveconstraintset
 {
 
-using core::objectmodel::Data;
-
 // a joint of the skeletal hierarchy, it participates in the skeletal animation chain and may be animated
 template <class DataTypes>
 struct SkeletonJoint;
@@ -55,6 +53,7 @@ class SkeletalMotionConstraint : public sofa::core::behavior::ProjectiveConstrai
 public:
     SOFA_CLASS(SOFA_TEMPLATE(SkeletalMotionConstraint,TDataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, TDataTypes));
     typedef TDataTypes DataTypes;
+    typedef sofa::core::behavior::ProjectiveConstraintSet<TDataTypes> TProjectiveConstraintSet;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
