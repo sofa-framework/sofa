@@ -53,6 +53,7 @@
 #include <PrimitiveCreation.h>
 #include "Sofa_test.h"
 
+using namespace sofa::core::objectmodel;
 
 namespace sofa {
 
