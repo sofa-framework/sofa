@@ -32,12 +32,14 @@
 #include <SofaConstraint/BilateralInteractionConstraint.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/MechanicalParams.h>
-#include <sofa/defaulttype/VecTypes.h>
 
 #include <sofa/simulation/common/SceneLoaderXML.h>
 
 
 namespace sofa {
+
+namespace {
+
 
 using std::cout;
 using std::cerr;
@@ -70,7 +72,6 @@ struct BilateralInteractionConstraint_test : public Sofa_test<typename _DataType
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
         /// Load the scene
-        //std::string sceneName = "scenes_test/BilateralInteractionConstraint_" + type + ".scn";
         std::string sceneName = "BilateralInteractionConstraint.scn";
         std::string fileName  = std::string(SOFATEST_SCENES_DIR) + "/" + sceneName;
         root = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()));
@@ -136,7 +137,7 @@ TYPED_TEST( BilateralInteractionConstraint_test , constrainedPositions )
     ASSERT_TRUE(  this->test_constrainedPositions() );
 }
 
-
+}
 
 } // namespace sofa
 
