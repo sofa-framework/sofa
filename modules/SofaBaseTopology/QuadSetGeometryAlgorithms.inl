@@ -37,7 +37,6 @@ namespace component
 
 namespace topology
 {
-using namespace sofa::defaulttype;
 
 template< class DataTypes>
 void QuadSetGeometryAlgorithms< DataTypes >::computeQuadAABB(const QuadID i, Coord& minCoord, Coord& maxCoord) const

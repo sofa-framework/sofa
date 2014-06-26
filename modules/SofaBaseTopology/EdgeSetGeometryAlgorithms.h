@@ -48,12 +48,6 @@ public:
     virtual ~BasicArrayInterface() {}
 
 };
-using namespace sofa::defaulttype;
-using core::topology::BaseMeshTopology;
-typedef BaseMeshTopology::EdgeID EdgeID;
-typedef BaseMeshTopology::Edge Edge;
-typedef BaseMeshTopology::SeqEdges SeqEdges;
-typedef BaseMeshTopology::EdgesAroundVertex EdgesAroundVertex;
 
 /**
  * A class that provides geometry information on an EdgeSet.
@@ -63,6 +57,13 @@ class EdgeSetGeometryAlgorithms : public PointSetGeometryAlgorithms<DataTypes>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(EdgeSetGeometryAlgorithms,DataTypes),SOFA_TEMPLATE(PointSetGeometryAlgorithms,DataTypes));
+
+    typedef sofa::core::topology::BaseMeshTopology::EdgeID EdgeID;
+    typedef sofa::core::topology::BaseMeshTopology::Edge Edge;
+    typedef sofa::core::topology::BaseMeshTopology::SeqEdges SeqEdges;
+    typedef sofa::core::topology::BaseMeshTopology::EdgesAroundVertex EdgesAroundVertex;
+
+    typedef sofa::defaulttype::Vec3d Vec3d;
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -149,7 +150,7 @@ public:
       \param edges attached to the vertices
       \param weights associated with the edges. Each Vec3d represents the contribution of the associated edge to x,y and z of the deformed basis.
       */
-    void computeLocalFrameEdgeWeights( vector<unsigned>& numEdges, vector<Edge>& edges, vector<Vec3d>& weights ) const;
+    void computeLocalFrameEdgeWeights( helper::vector<unsigned>& numEdges, helper::vector<Edge>& edges, helper::vector<Vec3d>& weights ) const;
 
     /** \brief Process the added point initialization according to the topology and local coordinates.
     */
