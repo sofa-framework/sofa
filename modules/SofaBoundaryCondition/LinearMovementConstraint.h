@@ -49,9 +49,6 @@ namespace projectiveconstraintset
 {
 
 using core::objectmodel::Data;
-using namespace sofa::core::objectmodel;
-using namespace sofa::defaulttype;
-using namespace sofa::component::topology;
 
 template<class DataTypes>
 class LinearMovementConstraintInternalData
@@ -137,13 +134,13 @@ public:
 
     virtual void draw(const core::visual::VisualParams* vparams);
 
-    class FCPointHandler : public TopologySubsetDataHandler<Point, SetIndexArray >
+    class FCPointHandler : public sofa::component::topology::TopologySubsetDataHandler<sofa::component::topology::Point, SetIndexArray >
     {
     public:
         typedef typename LinearMovementConstraint<DataTypes>::SetIndexArray SetIndexArray;
 
-        FCPointHandler(LinearMovementConstraint<DataTypes>* _lc, PointSubsetData<SetIndexArray>* _data)
-            : sofa::component::topology::TopologySubsetDataHandler<Point, SetIndexArray >(_data), lc(_lc) {}
+        FCPointHandler(LinearMovementConstraint<DataTypes>* _lc, sofa::component::topology::PointSubsetData<SetIndexArray>* _data)
+            : sofa::component::topology::TopologySubsetDataHandler<sofa::component::topology::Point, SetIndexArray >(_data), lc(_lc) {}
 
 
 
@@ -162,9 +159,9 @@ protected:
     void projectResponseT(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataDeriv& dx);
 
     template <class MyCoord>
-    void interpolatePosition(Real cT, typename boost::disable_if<boost::is_same<MyCoord, RigidCoord<3, Real> >, VecCoord>::type& x);
+    void interpolatePosition(Real cT, typename boost::disable_if<boost::is_same<MyCoord, defaulttype::RigidCoord<3, Real> >, VecCoord>::type& x);
     template <class MyCoord>
-    void interpolatePosition(Real cT, typename boost::enable_if<boost::is_same<MyCoord, RigidCoord<3, Real> >, VecCoord>::type& x);
+    void interpolatePosition(Real cT, typename boost::enable_if<boost::is_same<MyCoord, defaulttype::RigidCoord<3, Real> >, VecCoord>::type& x);
 
     /// Pointer to the current topology
     sofa::core::topology::BaseMeshTopology* topology;

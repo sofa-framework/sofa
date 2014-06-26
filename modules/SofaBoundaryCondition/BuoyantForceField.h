@@ -40,9 +40,6 @@ namespace component
 namespace forcefield
 {
 
-using namespace sofa::defaulttype;
-
-
 /**
  * @brief BuoyantForceField Class
  *

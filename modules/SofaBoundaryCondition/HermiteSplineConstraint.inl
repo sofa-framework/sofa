@@ -39,8 +39,6 @@ namespace component
 namespace projectiveconstraintset
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::helper;
 
 template <class DataTypes>
 HermiteSplineConstraint<DataTypes>::HermiteSplineConstraint()
@@ -258,7 +256,7 @@ void HermiteSplineConstraint<DataTypes>::draw(const core::visual::VisualParams* 
         computeHermiteCoefs( u, H00, H10, H01, H11);
 
         Vec3R p = m_x0.getValue()*H00 + m_dx0.getValue()*H10 + m_x1.getValue()*H01 + m_dx1.getValue()*H11;
-        gl::glVertexT(p);
+        helper::gl::glVertexT(p);
     }
     glEnd();
 
@@ -267,15 +265,15 @@ void HermiteSplineConstraint<DataTypes>::draw(const core::visual::VisualParams* 
     glPointSize(5);
     //display control point
     glBegin(GL_POINTS);
-    gl::glVertexT(m_x0.getValue());
-    gl::glVertexT(m_x1.getValue());
+    helper::gl::glVertexT(m_x0.getValue());
+    helper::gl::glVertexT(m_x1.getValue());
     glEnd();
     //display control tangeantes
     glBegin(GL_LINES);
-    gl::glVertexT(m_x0.getValue());
-    gl::glVertexT(m_x0.getValue()+m_dx0.getValue()*0.1);
-    gl::glVertexT(m_x1.getValue());
-    gl::glVertexT(m_x1.getValue()+m_dx1.getValue()*0.1);
+    helper::gl::glVertexT(m_x0.getValue());
+    helper::gl::glVertexT(m_x0.getValue()+m_dx0.getValue()*0.1);
+    helper::gl::glVertexT(m_x1.getValue());
+    helper::gl::glVertexT(m_x1.getValue()+m_dx1.getValue()*0.1);
     glEnd();
 #endif /* SOFA_NO_OPENGL */
 }

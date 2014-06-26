@@ -40,9 +40,6 @@ namespace component
 namespace forcefield
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::component::topology;
-
 template<class DataTypes>
 class EdgePressureForceField : public core::behavior::ForceField<DataTypes>
 {
@@ -85,7 +82,7 @@ protected:
         }
     };
 
-    EdgeSparseData<sofa::helper::vector< EdgePressureInformation> > edgePressureMap;
+    sofa::component::topology::EdgeSparseData<sofa::helper::vector< EdgePressureInformation> > edgePressureMap;
 
     sofa::core::topology::BaseMeshTopology* _topology;
     sofa::component::topology::TriangleSetTopologyContainer* _completeTopology;
@@ -93,7 +90,7 @@ protected:
 
     Data<Deriv> pressure;
     Data<helper::vector<unsigned int> > edgeIndices;
-    Data<helper::vector<Edge> > edges;
+    Data<helper::vector<sofa::core::topology::Edge> > edges;
     Data<Deriv> normal; // the normal used to define the edge subjected to the pressure force
     Data<Real> dmin; // coordinates min of the plane for the vertex selection
     Data<Real> dmax;// coordinates max of the plane for the vertex selection

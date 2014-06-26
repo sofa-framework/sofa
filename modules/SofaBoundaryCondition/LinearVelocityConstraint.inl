@@ -44,13 +44,6 @@ namespace component
 namespace projectiveconstraintset
 {
 
-using namespace core::topology;
-
-using namespace sofa::defaulttype;
-using namespace sofa::helper;
-using namespace sofa::core::behavior;
-using namespace sofa::core::objectmodel;
-
 
 // Define TestNewPointFunction
 template< class TDataTypes>

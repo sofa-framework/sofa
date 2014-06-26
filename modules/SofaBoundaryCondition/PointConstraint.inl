@@ -53,12 +53,6 @@ namespace component
 namespace projectiveconstraintset
 {
 
-using namespace core::topology;
-
-using namespace sofa::defaulttype;
-using namespace sofa::helper;
-using namespace sofa::core::behavior;
-
 
 
 template <class DataTypes>
@@ -249,15 +243,15 @@ void PointConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 // Specialization for rigids
 #ifndef SOFA_FLOAT
 template <>
-void PointConstraint<Rigid3dTypes >::draw(const core::visual::VisualParams* vparams);
+void PointConstraint<defaulttype::Rigid3dTypes >::draw(const core::visual::VisualParams* vparams);
 template <>
-void PointConstraint<Rigid2dTypes >::draw(const core::visual::VisualParams* vparams);
+void PointConstraint<defaulttype::Rigid2dTypes >::draw(const core::visual::VisualParams* vparams);
 #endif
 #ifndef SOFA_DOUBLE
 template <>
-void PointConstraint<Rigid3fTypes >::draw(const core::visual::VisualParams* vparams);
+void PointConstraint<defaulttype::Rigid3fTypes >::draw(const core::visual::VisualParams* vparams);
 template <>
-void PointConstraint<Rigid2fTypes >::draw(const core::visual::VisualParams* vparams);
+void PointConstraint<defaulttype::Rigid2fTypes >::draw(const core::visual::VisualParams* vparams);
 #endif
 
 

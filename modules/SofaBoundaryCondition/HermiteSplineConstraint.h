@@ -41,8 +41,6 @@ namespace projectiveconstraintset
 {
 
 using core::objectmodel::Data;
-using namespace sofa::core::objectmodel;
-using namespace sofa::defaulttype;
 
 /**
 	Impose a trajectory to given Dofs following a Hermite cubic spline constraint.

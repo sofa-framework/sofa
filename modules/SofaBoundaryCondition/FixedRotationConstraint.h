@@ -37,11 +37,6 @@ namespace component
 namespace projectiveconstraintset
 {
 
-
-using namespace sofa::helper;
-using namespace sofa::defaulttype;
-
-
 /**
  * Prevents rotation around X or Y or Z axis
  */
@@ -61,7 +56,7 @@ public:
     typedef Data<VecCoord> DataVecCoord;
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
-    typedef Vec<3,Real> Vec3;
+    typedef defaulttype::Vec<3,Real> Vec3;
 
 
 protected:
@@ -82,7 +77,7 @@ protected :
     Data< bool > FixedXRotation;
     Data< bool > FixedYRotation;
     Data< bool > FixedZRotation;
-    vector<Quat> previousOrientation;
+    vector<defaulttype::Quat> previousOrientation;
 };
 
 } // namespace projectiveconstraintset

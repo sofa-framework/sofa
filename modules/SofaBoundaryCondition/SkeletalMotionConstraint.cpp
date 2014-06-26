@@ -44,18 +44,18 @@ SOFA_DECL_CLASS(SkeletalMotionConstraint)
 
 int SkeletalMotionConstraintClass = core::RegisterObject("animate a skeleton")
 #ifndef SOFA_FLOAT
-        .add< SkeletalMotionConstraint<Rigid3dTypes> >()
+        .add< SkeletalMotionConstraint<defaulttype::Rigid3dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
-        .add< SkeletalMotionConstraint<Rigid3fTypes> >()
+        .add< SkeletalMotionConstraint<defaulttype::Rigid3fTypes> >()
 #endif
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_BOUNDARY_CONDITION_API SkeletalMotionConstraint<Rigid3dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API SkeletalMotionConstraint<defaulttype::Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_BOUNDARY_CONDITION_API SkeletalMotionConstraint<Rigid3fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API SkeletalMotionConstraint<defaulttype::Rigid3fTypes>;
 #endif
 
 } // namespace projectiveconstraintset
