@@ -53,8 +53,6 @@ namespace component
 namespace collision
 {
 
-using sofa::defaulttype::Vector3;
-
 /// This class will be specialized to whatever mapper is required
 template < class TCollisionModel, class DataTypes = typename TCollisionModel::DataTypes >
 class ContactMapper;
@@ -84,14 +82,14 @@ public:
     }
     /// Adding a point of the local referentiel(barycentric coordinate) to the mapping
     //TODO use this functions for barycentric contact mapper
-    virtual int addBaryPoint(const Vector3& /*baryP*/, int /*elementId*/, Real& /*r*/)
+    virtual int addBaryPoint(const sofa::defaulttype::Vector3& /*baryP*/, int /*elementId*/, Real& /*r*/)
     {
         std::cout << "WARNING[BaseContactMapper] addBaryPoint is called but not implemented" << std::endl; return -1;
     }
 
     /// Adding a point of the global referentiel to the mapping, also giving the local referentiel
     /// Note that it cannot have the same name as addPoint otherwise it creates errors when a subclass only implement the version without barycoords
-    virtual int addPointB(const Coord& P, int elementId, Real& r, const Vector3& /*baryP*/)
+    virtual int addPointB(const Coord& P, int elementId, Real& r, const sofa::defaulttype::Vector3& /*baryP*/)
     {
         return addPoint(P, elementId, r);
     }

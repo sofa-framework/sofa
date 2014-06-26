@@ -212,7 +212,7 @@ public:
     /**
     *	Stores al the articulation centers
     */
-    std::vector< container::ArticulationCenter* > articulationCenters;
+    std::vector< sofa::component::container::ArticulationCenter* > articulationCenters;
 
     container::ArticulatedHierarchyContainer* ahc;
 private:

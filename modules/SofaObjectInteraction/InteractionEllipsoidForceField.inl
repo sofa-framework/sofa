@@ -175,7 +175,7 @@ bool InteractionEllipsoidForceField<DataTypes1, DataTypes2>::calcF(const Coord1&
 
 template<class DataTypes1, class DataTypes2>
 void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::addForce(
-    const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv1& dataf1, DataVecDeriv2& dataf2,
+    const sofa::core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv1& dataf1, DataVecDeriv2& dataf2,
     const DataVecCoord1& datax1, const DataVecCoord2& datax2,
     const DataVecDeriv1& datav1, const DataVecDeriv2& datav2)
 {
@@ -191,11 +191,11 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::addForce(
     if(object2_invert.getValue())
         vars.pos6D = DataTypes2::inverse(vars.pos6D);
 
-    Quat Cq = vars.pos6D.getOrientation();
-    Vec3d Cx = (Coord1) vars.pos6D.getCenter();
+    sofa::defaulttype::Quat Cq = vars.pos6D.getOrientation();
+    sofa::defaulttype::Vec3d Cx = (Coord1) vars.pos6D.getCenter();
     //std::cout << "Cx= " << Cx << "    Cq= " << Cq << std::endl;
     Deriv2 V6D = v2[object2_dof_index.getValue()];
-    Vec3d Cv = (Vec3d) getVCenter(V6D);
+    sofa::defaulttype::Vec3d Cv = (sofa::defaulttype::Vec3d) getVCenter(V6D);
     Cv.clear();
 
     initCalcF();
@@ -220,7 +220,7 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::addForce(
             c.index = i;
             c.m = dfdx;
 
-            Vec3d contactForce =  Cq.rotate(f1Xform);
+            sofa::defaulttype::Vec3d contactForce =  Cq.rotate(f1Xform);
             c.force = contactForce;
             f1[i]+=contactForce;
             f2.getVCenter() -= contactForce;
@@ -276,8 +276,8 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::addForce2(DataVecDe
         C = DataTypes2::inverse(C);
     }
 
-    Quat Cq = C.getOrientation();
-    Vec3d Cx = (Vec3d) C.getCenter();
+    sofa::defaulttype::Quat Cq = C.getOrientation();
+    sofa::defaulttype::Vec3d Cx = (sofa::defaulttype::Vec3d) C.getCenter();
 
     f1.clear();
     f2.clear();
@@ -295,8 +295,8 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::addForce2(DataVecDe
         {
 
 
-            Vec3d contactForce =  Cq.rotate(f1Xform);
-            Vec3d bras_levier;
+            sofa::defaulttype::Vec3d contactForce =  Cq.rotate(f1Xform);
+            sofa::defaulttype::Vec3d bras_levier;
             bras_levier = p1[i] - Cx;
             f1[i]+=contactForce;
             getVCenter(f2[object2_dof_index.getValue()]) -= contactForce;
@@ -313,7 +313,7 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::addForce2(DataVecDe
 
 template<class DataTypes1, class DataTypes2>
 void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::addDForce(
-    const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv1& datadf1, DataVecDeriv2& datadf2,
+    const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv1& datadf1, DataVecDeriv2& datadf2,
     const DataVecDeriv1& datadx1, const DataVecDeriv2& datadx2)
 
 {
@@ -328,7 +328,7 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::addDForce(
         dx2i = dx2[object2_dof_index.getValue()];
     }
 
-    const Quat Cq = vars.pos6D.getOrientation();
+    const sofa::defaulttype::Quat Cq = vars.pos6D.getOrientation();
 
     df1.resize(dx1.size());
     const sofa::helper::vector<Contact>& contacts = this->contacts.getValue();
@@ -337,8 +337,8 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::addDForce(
     {
         const Contact& c = contacts[i];
         assert((unsigned)c.index<dx1.size());
-        Vec3d du;
-        du = (Vec3d) dx1[c.index] - (Vec3d) getVCenter(dx2i); //- c.bras_levier.cross(dx2i.getVOrientation());
+        sofa::defaulttype::Vec3d du;
+        du = (sofa::defaulttype::Vec3d) dx1[c.index] - (sofa::defaulttype::Vec3d) getVCenter(dx2i); //- c.bras_levier.cross(dx2i.getVOrientation());
         Deriv1 dforce = c.m * Cq.inverseRotate(du);
         dforce *= kFactor;
         Deriv1 DF = Cq.rotate(dforce);
@@ -358,7 +358,7 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::addDForce(
 }
 
 template <class DataTypes1, class DataTypes2>
-double InteractionEllipsoidForceField<DataTypes1, DataTypes2>::getPotentialEnergy(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecCoord1& /*x1*/, const DataVecCoord2& /*x2*/) const
+double InteractionEllipsoidForceField<DataTypes1, DataTypes2>::getPotentialEnergy(const sofa::core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecCoord1& /*x1*/, const DataVecCoord2& /*x2*/) const
 {
     serr<<"InteractionEllipsoidForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;
@@ -389,7 +389,7 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::draw(const core::vi
         glEnable(GL_COLOR_MATERIAL);
         glColor3f(color.getValue()[0],color.getValue()[1],color.getValue()[2]);
 
-        Quat q=vars.pos6D.getOrientation();
+        sofa::defaulttype::Quat q=vars.pos6D.getOrientation();
 #ifdef SOFA_FLOAT
         GLfloat R[4][4];
 #elif PS3
@@ -401,7 +401,7 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::draw(const core::vi
         glPushMatrix();
         //if(!object2_invert.getValue())
         {
-            Quat q1=q.inverse();
+            sofa::defaulttype::Quat q1=q.inverse();
             q1.buildRotationMatrix(R);
             helper::gl::glTranslate(cx2, cy2, cz2);
             helper::gl::glMultMatrix( &(R[0][0]) );

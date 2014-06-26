@@ -580,7 +580,6 @@ void RigidMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/
 
 }
 
-//            using defaulttype::Vec;
 //
 //            /** Symmetric cross cross product.
 //              Let [a×(.×c)] be the linear operator such that: a×(b×c) = [a×(.×c)]b, where × denotes the cross product.

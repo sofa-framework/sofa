@@ -42,13 +42,9 @@ namespace component {
 
 namespace constraintset {
 
-using namespace sofa::core;
-using namespace sofa::core::behavior;
-using namespace sofa::defaulttype;
-
-class GenericConstraintCorrection : public BaseConstraintCorrection {
+class GenericConstraintCorrection : public sofa::core::behavior::BaseConstraintCorrection {
 public:
-    SOFA_CLASS(GenericConstraintCorrection, BaseConstraintCorrection);
+    SOFA_CLASS(GenericConstraintCorrection, sofa::core::behavior::BaseConstraintCorrection);
 
 protected:
     GenericConstraintCorrection();
@@ -57,17 +53,17 @@ protected:
 public:
     virtual void bwdInit();
 
-    virtual void addComplianceInConstraintSpace(const ConstraintParams *cparams, defaulttype::BaseMatrix* W);
+    virtual void addComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, defaulttype::BaseMatrix* W);
 
     virtual void getComplianceMatrix(defaulttype::BaseMatrix* ) const;
 
-    virtual void computeAndApplyMotionCorrection(const ConstraintParams *cparams, MultiVecCoordId x, MultiVecDerivId v, MultiVecDerivId f, const BaseVector * lambda);
+    virtual void computeAndApplyMotionCorrection(const sofa::core::ConstraintParams *cparams, sofa::core::MultiVecCoordId x, sofa::core::MultiVecDerivId v, sofa::core::MultiVecDerivId f, const defaulttype::BaseVector * lambda);
 
-    virtual void computeAndApplyPositionCorrection(const ConstraintParams *cparams, MultiVecCoordId x, MultiVecDerivId f, const BaseVector *lambda);
+    virtual void computeAndApplyPositionCorrection(const sofa::core::ConstraintParams *cparams, sofa::core::MultiVecCoordId x, sofa::core::MultiVecDerivId f, const defaulttype::BaseVector *lambda);
 
-    virtual void computeAndApplyVelocityCorrection(const ConstraintParams *cparams, MultiVecDerivId v, MultiVecDerivId f, const BaseVector *lambda);
+    virtual void computeAndApplyVelocityCorrection(const sofa::core::ConstraintParams *cparams, sofa::core::MultiVecDerivId v, sofa::core::MultiVecDerivId f, const sofa::defaulttype::BaseVector *lambda);
 
-    virtual void applyPredictiveConstraintForce(const core::ConstraintParams * /*cparams*/, core::MultiVecDerivId /*f*/, const defaulttype::BaseVector *lambda);
+    virtual void applyPredictiveConstraintForce(const sofa::core::ConstraintParams * /*cparams*/, sofa::core::MultiVecDerivId /*f*/, const defaulttype::BaseVector *lambda);
 
     virtual void rebuildSystem(double massFactor, double forceFactor);
 
@@ -75,19 +71,19 @@ public:
 
     virtual void resetContactForce();
 
-    virtual void computeResidual(const core::ExecParams* /*params*/ /* PARAMS FIRST */, BaseVector *lambda);
+    virtual void computeResidual(const sofa::core::ExecParams* /*params*/ /* PARAMS FIRST */, sofa::defaulttype::BaseVector *lambda);
 
     Data< helper::vector< std::string > >  solverName;
 
     /// Pre-construction check method called by ObjectFactory.
     template<class T>
-    static bool canCreate(T*& obj, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg) {
+    static bool canCreate(T*& obj, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg) {
         return BaseConstraintCorrection::canCreate(obj, context, arg);
     }
 
 protected:
 
-    behavior::OdeSolver* odesolver;
+    sofa::core::behavior::OdeSolver* odesolver;
     std::vector<sofa::core::behavior::LinearSolver*> linearsolvers;
 };
 

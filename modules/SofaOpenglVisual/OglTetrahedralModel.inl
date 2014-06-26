@@ -40,8 +40,6 @@ namespace component
 namespace visualmodel
 {
 
-using namespace sofa::defaulttype;
-
 template<class DataTypes>
 OglTetrahedralModel<DataTypes>::OglTetrahedralModel()
     : m_topology(NULL)

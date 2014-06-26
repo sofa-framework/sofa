@@ -49,7 +49,7 @@ namespace constraintset
 {
 
 template<class DataTypes>
-UncoupledConstraintCorrection<DataTypes>::UncoupledConstraintCorrection(behavior::MechanicalState<DataTypes> *mm)
+UncoupledConstraintCorrection<DataTypes>::UncoupledConstraintCorrection(sofa::core::behavior::MechanicalState<DataTypes> *mm)
     : Inherit(mm)
     , compliance(initData(&compliance, "compliance", "compliance value on each dof"))
     , defaultCompliance(initData(&defaultCompliance, (Real)0.00001, "defaultCompliance", "Default compliance value for new dof or if all should have the same (in which case compliance vector should be empty)"))
@@ -224,7 +224,7 @@ void UncoupledConstraintCorrection<DataTypes>::getComplianceWithConstraintMerge(
     }
 
     //////////// compliance computation call //////////
-    this->addComplianceInConstraintSpace(ConstraintParams::defaultInstance(), Wmerged);
+    this->addComplianceInConstraintSpace(sofa::core::ConstraintParams::defaultInstance(), Wmerged);
 
     /////////// BACK TO THE INITIAL CONSTRAINT SET//////////////
 
@@ -244,7 +244,7 @@ void UncoupledConstraintCorrection<DataTypes>::getComplianceWithConstraintMerge(
 
 #ifndef NEW_VERSION
 template<class DataTypes>
-void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(const ConstraintParams * /*cparams*/, defaulttype::BaseMatrix *W)
+void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(const sofa::core::ConstraintParams * /*cparams*/, sofa::defaulttype::BaseMatrix *W)
 {
     const MatrixDeriv& constraints = *this->mstate->getC();
     const VecReal& comp = compliance.getValue();

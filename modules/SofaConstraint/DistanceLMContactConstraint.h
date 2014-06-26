@@ -44,9 +44,6 @@ namespace component
 namespace constraintset
 {
 
-using helper::vector;
-using core::objectmodel::Data;
-
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template <class DataTypes>
 class DistanceLMContactConstraintInternalData
