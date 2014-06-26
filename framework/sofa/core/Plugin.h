@@ -27,22 +27,26 @@
 
 #include <sofa/helper/system/config.h>
 
-#define SOFA_DECL_PLUGIN(PluginClass)                                   \
-    class PluginClass: public sofa::core::Plugin {                      \
-    public:                                                             \
-    PluginClass();                                                      \
-    static sofa::core::Plugin::RegisterObject                           \
-    registerObject(const std::string& description) {                    \
-        return RegisterObject(getInstance(), description);              \
-    }                                                                   \
-    static sofa::core::Plugin& getInstance() {                          \
-        static PluginClass instance;                                    \
-        return instance;                                                \
-    }                                                                   \
+#define SOFA_PLUGIN(PluginClass)				\
+public: 							\
+    static sofa::core::Plugin::RegisterObject			\
+    registerObject(const std::string& description) {		\
+      return RegisterObject(getInstance(), description);	\
+    }								\
+    static sofa::core::Plugin& getInstance() {			\
+        static PluginClass instance;				\
+	return instance;					\
+    }
+
+#define SOFA_DECL_PLUGIN(PluginClass)				\
+    class PluginClass: public sofa::core::Plugin {		\
+        SOFA_PLUGIN(PluginClass);				\
+    public:							\
+	PluginClass();						\
     };
 
 #define SOFA_PLUGIN_ENTRY_POINT(PluginClass)                        \
-    extern "C" SOFA_EXPORT_DYNAMIC_LIBRARY void * create_plugin()   \
+    extern "C" SOFA_EXPORT_DYNAMIC_LIBRARY void * get_plugin()	    \
     {                                                               \
         return &PluginClass::getInstance();                         \
     }
