@@ -25,6 +25,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <locale>
 
 using namespace clang;
 using namespace clang::ast_matchers;
@@ -104,13 +105,49 @@ public:
                     continue ;
                 }
 
+
+                if(name.size()==0){
+                    continue ;
+                }
+
+                // RULES NUMBER 1: The name of members cannot be terminated by an underscore.
+                if(name.rfind("_")!=name.size()-1){
+                }else{
+                    std::cerr << smanager.getFileEntryForID(smanager.getFileID(sl))->getName()
+                              << ":" << smanager.getPresumedLineNumber(sl)
+                              << ":" << smanager.getPresumedColumnNumber(sl)
+                              << ": warning: member [" << record->getNameAsString() << ":" <<name << "] is violating the sofa coding style http://www.sofa.../codingstyle.html...member's name cannot be terminated with an underscore.' " << std::endl;
+                }
+
+                // THE FOLLOWING RULES ARE ONLY CHECK ON PRIVATE & PROTECTED FIELDS
                 if(ff->getAccess()==AS_public){
+                    continue ;
+                }
+
+                if(ff->getType()->isPointerType()){
+                    if(name.size() > 2 && name[0] == 'p' && isupper(name[1]) ){}
+                    else{
+                        std::cerr << smanager.getFileEntryForID(smanager.getFileID(sl))->getName()
+                                  << ":" << smanager.getPresumedLineNumber(sl)
+                                  << ":" << smanager.getPresumedColumnNumber(sl)
+                                  << ": warning: member [" << record->getNameAsString() << ":" <<name << "] is violating the sofa coding style http://www.sofa.../codingstyle.html... it should prefixed with pUpperCased " << std::endl;
+                    }
+                    continue ;
+                }
+
+                if(ff->getType()->isBooleanType()){
+                    if(name.size() > 2 && name[0] == 'b' && isupper(name[1]) ){}
+                    else{
+                        std::cerr << smanager.getFileEntryForID(smanager.getFileID(sl))->getName()
+                                  << ":" << smanager.getPresumedLineNumber(sl)
+                                  << ":" << smanager.getPresumedColumnNumber(sl)
+                                  << ": warning: member [" << record->getNameAsString() << ":" <<name << "] is violating the sofa coding style http://www.sofa.../codingstyle.html... it should prefixed with bUpperCased " << std::endl;
+                    }
                     continue ;
                 }
 
                 CXXRecordDecl* rd=ff->getType()->getAsCXXRecordDecl() ;
                 if(rd){
-
                     std::string type=rd->getNameAsString() ;
                     if(type.find("Data")!=std::string::npos){
                         if(name.find("d_")==0){
@@ -118,16 +155,15 @@ public:
                             std::cerr << smanager.getFileEntryForID(smanager.getFileID(sl))->getName()
                                       << ":" << smanager.getPresumedLineNumber(sl)
                                       << ":" << smanager.getPresumedColumnNumber(sl)
-                                      << ": warning: variable [" << record->getNameAsString() << ":" <<name << "] is violating the sofa coding style http://www.sofa.../codingstyle.html...all Data<> attributes should start with d_ " << std::endl;
+                                      << ": warning: member [" << record->getNameAsString() << ":" <<name << "] is violating the sofa coding style http://www.sofa.../codingstyle.html...all Data<> members should start with d_ " << std::endl;
                         }
-                    }
-                    else if(type.find("SingleLink")!=std::string::npos || type.find("DualLink")!=std::string::npos){
+                    }else if(type.find("SingleLink")!=std::string::npos || type.find("DualLink")!=std::string::npos){
                         if(name.find("d_")==0){
                         }else{
                             std::cerr << smanager.getFileEntryForID(smanager.getFileID(sl))->getName()
                                       << ":" << smanager.getPresumedLineNumber(sl)
                                       << ":" << smanager.getPresumedColumnNumber(sl)
-                                      << ": warning: variable [" << record->getNameAsString() << ":" <<name << "] is violating the sofa coding style http://www.sofa.../codingstyle.html...all Link<> attributes should start with l_ " << std::endl;
+                                      << ": warning: member [" << record->getNameAsString() << ":" <<name << "] is violating the sofa coding style http://www.sofa.../codingstyle.html...all Link<> members should start with l_ " << std::endl;
                         }
                     }
                 }else{
@@ -136,7 +172,7 @@ public:
                         std::cerr << smanager.getFileEntryForID(smanager.getFileID(sl))->getName()
                                   << ":" << smanager.getPresumedLineNumber(sl)
                                   << ":" << smanager.getPresumedColumnNumber(sl)
-                                  << ": warning: variable [" << record->getNameAsString() << ":" << name << "] is violating the sofa coding style http://www.sofa.../codingstyle.html...all non public attributes should start with m_ " << std::endl;
+                                  << ": warning: member [" << record->getNameAsString() << ":" << name << "] is violating the sofa coding style http://www.sofa.../codingstyle.html...all non public attributes should start with m_ " << std::endl;
                     }
                 }
             }
@@ -173,8 +209,18 @@ int main(int argc, const char** argv){
     for(unsigned int i=0;i<asts.size();i++){
         ASTContext& ctx=asts[i]->getASTContext();
 
-        sr->setContext(&ctx);
-        sr->TraverseDecl(ctx.getTranslationUnitDecl());
+        int j=0;
+        auto it=ctx.getSourceManager().fileinfo_begin() ;
+        for(;it!=ctx.getSourceManager().fileinfo_end();++it){
+            j++ ;
+        }
+        auto& smanager=ctx.getSourceManager();
+        std::cerr << smanager.getFileEntryForID(smanager.getMainFileID())->getName()
+                  << ":1:1: info: number of loaded include files: " << j << std::endl ;
+
+
+        //ésr->setContext(&ctx);
+        //sr->TraverseDecl(ctx.getTranslationUnitDecl());
     }
 
 }
