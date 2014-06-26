@@ -340,3 +340,6 @@ install(EXPORT SofaFrameworkTargets
 export(PACKAGE SofaFramework)
 
 #include(SofaFrameworkCPack.cmake)
+
+# Tests
+add_subdirectory(framework_test)
