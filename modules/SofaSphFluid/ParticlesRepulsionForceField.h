@@ -45,8 +45,6 @@ namespace component
 namespace forcefield
 {
 
-using namespace sofa::component::container;
-
 template<class DataTypes>
 class ParticlesRepulsionForceField : public sofa::core::behavior::ForceField<DataTypes>
 {
@@ -68,7 +66,7 @@ public:
     Data< Real > stiffness;
     Data< Real > damping;
 
-    typedef SpatialGridContainer<DataTypes> Grid;
+    typedef sofa::component::container::SpatialGridContainer<DataTypes> Grid;
 
     Grid* grid;
 
