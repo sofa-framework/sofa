@@ -54,10 +54,10 @@ namespace topology
  *
 */
 
-class SOFA_TOPOLOGY_MAPPING_API Mesh2PointTopologicalMapping : public TopologicalMapping
+class SOFA_TOPOLOGY_MAPPING_API Mesh2PointTopologicalMapping : public sofa::core::topology::TopologicalMapping
 {
 public:
-    SOFA_CLASS(Mesh2PointTopologicalMapping,TopologicalMapping);
+    SOFA_CLASS(Mesh2PointTopologicalMapping,sofa::core::topology::TopologicalMapping);
     typedef sofa::defaulttype::Vec3d Vec3d;
 
 protected:

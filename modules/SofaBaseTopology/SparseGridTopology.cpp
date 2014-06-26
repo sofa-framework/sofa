@@ -40,7 +40,9 @@
 
 
 using std::pair;
-
+using sofa::core::loader::VoxelLoader;
+using namespace sofa::defaulttype;
+using namespace sofa::helper;
 namespace sofa
 {
 
@@ -247,7 +249,7 @@ void SparseGridTopology::buildAsFinest(  )
 {
     //	serr<<"SparseGridTopology::buildAsFinest(  )"<<sendl;
     
-    VoxelLoader *loader;
+    sofa::core::loader::VoxelLoader *loader;
     getContext()->get(loader);
     if( loader )
     {
@@ -626,11 +628,11 @@ void SparseGridTopology::updateMesh()
     // 	    using sofa::simulation::Node;
 
     sofa::helper::vector< sofa::core::topology::BaseMeshTopology * > list_meshf;
-    sofa::helper::vector< Data< Vec3fTypes::VecCoord >* > list_Xf;
+    sofa::helper::vector< Data< sofa::defaulttype::Vec3fTypes::VecCoord >* > list_Xf;
 
 #ifndef SOFA_FLOAT
 	sofa::helper::vector< sofa::core::topology::BaseMeshTopology * > list_meshd;
-    sofa::helper::vector< Data< Vec3dTypes::VecCoord >* > list_Xd;
+    sofa::helper::vector< Data< sofa::defaulttype::Vec3dTypes::VecCoord >* > list_Xd;
 #endif
 
     //Get Collision Model
@@ -647,7 +649,8 @@ void SparseGridTopology::updateMesh()
     if ( collisionTopology != NULL && collisionTopology->getNbTriangles() == 0)
     {
 #ifndef SOFA_FLOAT
-        core::behavior::MechanicalState< Vec3dTypes > *mecha_tempd = collisionTopology->getContext()->get< core::behavior::MechanicalState< Vec3dTypes > >();
+        core::behavior::MechanicalState< sofa::defaulttype::Vec3dTypes > *mecha_tempd =
+                collisionTopology->getContext()->get< core::behavior::MechanicalState< sofa::defaulttype::Vec3dTypes > >();
         if (mecha_tempd != NULL && mecha_tempd->getX()->size() < 2) //a triangle mesh has minimum 3elements
         {
             list_meshd.push_back(collisionTopology);
@@ -655,7 +658,8 @@ void SparseGridTopology::updateMesh()
         }
 #endif
 #ifndef SOFA_DOUBLE
-        core::behavior::MechanicalState< Vec3fTypes > *mecha_tempf = collisionTopology->getContext()->get< core::behavior::MechanicalState< Vec3fTypes > >();
+        core::behavior::MechanicalState< sofa::defaulttype::Vec3fTypes > *mecha_tempf =
+                collisionTopology->getContext()->get< core::behavior::MechanicalState< sofa::defaulttype::Vec3fTypes > >();
         if (mecha_tempf != NULL && mecha_tempf->getX()->size() < 2) //a triangle mesh has minimum 3elements
         {
 

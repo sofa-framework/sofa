@@ -37,26 +37,24 @@ namespace component
 namespace topology
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::helper;
 
-/// Cross product for 3-elements vectors.
+/// Cross product for 3-elements Vectors.
 template< class Real>
-inline Real areaProduct(const Vec<3,Real>& a, const Vec<3,Real>& b)
+inline Real areaProduct(const sofa::defaulttype::Vec<3,Real>& a, const sofa::defaulttype::Vec<3,Real>& b)
 {
-    return Vec<3,Real>(a.y()*b.z() - a.z()*b.y(),
+    return sofa::defaulttype::Vec<3,Real>(a.y()*b.z() - a.z()*b.y(),
             a.z()*b.x() - a.x()*b.z(),
             a.x()*b.y() - a.y()*b.x()).norm();
 }
 
-/// area for 2-elements vectors.
+/// area for 2-elements sofa::helper::vectors.
 template< class Real>
 inline Real areaProduct(const defaulttype::Vec<2,Real>& a, const defaulttype::Vec<2,Real>& b )
 {
     return a[0]*b[1] - a[1]*b[0];
 }
 
-/// area invalid for 1-elements vectors.
+/// area invalid for 1-elements sofa::helper::vectors.
 template< class Real>
 inline Real areaProduct(const defaulttype::Vec<1,Real>&, const defaulttype::Vec<1,Real>&)
 {
@@ -64,40 +62,40 @@ inline Real areaProduct(const defaulttype::Vec<1,Real>&, const defaulttype::Vec<
     return (Real)0;
 }
 
-/// cross product  for 2-elements vectors.
+/// cross product  for 2-elements sofa::helper::vectors.
 template< class Real>
 defaulttype::Vec<2,Real> cross(const defaulttype::Vec<2,Real>&, const defaulttype::Vec<2,Real>&)
 {
 	assert(false);
-	return(Vec<2,Real>());
+    return(sofa::defaulttype::Vec<2,Real>());
 }
 
-/// cross product  for 1-elements vectors.
+/// cross product  for 1-elements sofa::helper::vectors.
 template< class Real>
 defaulttype::Vec<1,Real> cross(const defaulttype::Vec<1,Real>&, const defaulttype::Vec<1,Real>&)
 {
 	assert(false);
-	return(Vec<1,Real>());
+    return(sofa::defaulttype::Vec<1,Real>());
 }
 
-/// Volume (triple product) for 3-elements vectors.
+/// Volume (triple product) for 3-elements sofa::helper::vectors.
 template<typename real>
-inline real tripleProduct(const Vec<3,real>& a, const Vec<3,real>& b,const Vec<3,real> &c)
+inline real tripleProduct(const sofa::defaulttype::Vec<3,real>& a, const sofa::defaulttype::Vec<3,real>& b,const sofa::defaulttype::Vec<3,real> &c)
 {
     return dot(a,cross(b,c));
 }
 
-/// Volume invalid for 2-elements vectors.
+/// Volume invalid for 2-elements sofa::helper::vectors.
 template <typename real>
-inline real tripleProduct(const Vec<2,real>&, const Vec<2,real>&, const Vec<2,real> &)
+inline real tripleProduct(const sofa::defaulttype::Vec<2,real>&, const sofa::defaulttype::Vec<2,real>&, const sofa::defaulttype::Vec<2,real> &)
 {
     assert(false);
     return (real)0;
 }
 
-/// Volume invalid for 1-elements vectors.
+/// Volume invalid for 1-elements sofa::helper::vectors.
 template <typename real>
-inline real tripleProduct(const Vec<1,real>&, const Vec<1,real>&, const Vec<1,real> &)
+inline real tripleProduct(const sofa::defaulttype::Vec<1,real>&, const sofa::defaulttype::Vec<1,real>&, const sofa::defaulttype::Vec<1,real> &)
 {
     assert(false);
     return (real)0;
@@ -144,9 +142,9 @@ Real multinomial(const size_t n,vector<unsigned char> valArray)
 	return((Real)ival)/(val);
  }
 template <size_t N, class Real>
-Real multinomial(const size_t n,const Vec<N,unsigned char> tbi)
+Real multinomial(const size_t n,const sofa::defaulttype::Vec<N,unsigned char> tbi)
  {
-	 vector<unsigned char> valArray;
+     sofa::helper::vector<unsigned char> valArray;
 	 for (size_t j=0;j<N;++j) {
 		 valArray.push_back(tbi[j]);
 	 }
@@ -154,7 +152,7 @@ Real multinomial(const size_t n,const Vec<N,unsigned char> tbi)
 }
 
 template <size_t N, class Real>
-Real multinomialVector(const vector<Vec<N,unsigned char> > tbiArray)
+Real multinomialVector(const sofa::helper::vector< sofa::defaulttype::Vec<N,unsigned char> > tbiArray)
 {
 	size_t i,j;
 	Real result=(Real)1;
@@ -173,7 +171,7 @@ Real multinomialVector(const vector<Vec<N,unsigned char> > tbiArray)
 	return(result);
 }
 template <size_t N, class Real>
-Real binomialVector(const Vec<N,unsigned char>  tbi1,const Vec<N,unsigned char>  tbi2)
+Real binomialVector(const sofa::defaulttype::Vec<N,unsigned char>  tbi1,const sofa::defaulttype::Vec<N,unsigned char>  tbi2)
 {
 	size_t j;
 	Real result=(Real)1;

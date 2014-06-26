@@ -40,18 +40,18 @@ namespace component
 namespace topology
 {
 
-using namespace sofa::defaulttype;
-
 /// Cross product for 3-elements vectors.
 template< typename Real, int N>
-class NumericalIntegrationDescriptor {
+class NumericalIntegrationDescriptor
+{
  
 public:
-	typedef Vec<N, Real> BarycentricCoordinatesType;
+    typedef sofa::defaulttype::Vec<N, Real> BarycentricCoordinatesType;
 	typedef std::pair<BarycentricCoordinatesType,Real> QuadraturePoint;
 	typedef sofa::helper::vector<QuadraturePoint> QuadraturePointArray;
 	
-	typedef enum {
+    typedef enum
+    {
 		GAUSS_METHOD =0,
 		GAUSS_LOBATO_METHOD=1
 	} QuadratureMethod; 
