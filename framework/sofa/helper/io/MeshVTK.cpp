@@ -25,8 +25,6 @@
 #include <sofa/helper/io/MeshVTK.h>
 
 #include <sstream>
-
-#define TIXML_USE_STL
 #include <tinyxml.h>
 
 #include <sofa/helper/system/FileRepository.h>
