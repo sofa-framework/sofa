@@ -123,23 +123,6 @@ public:
     template<class T>
     static bool canCreate(T*& obj, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
     {
-#ifndef SOFA_DEPRECATE_OLD_API
-        MechanicalState<DataTypes>* mstate1 = NULL;
-        MechanicalState<DataTypes>* mstate2 = NULL;
-        std::string object1 = arg->getAttribute("object1","@./");
-        std::string object2 = arg->getAttribute("object2","@./");
-        if (object1.empty()) object1 = "@./";
-        if (object2.empty()) object2 = "@./";
-        if (object1[0] != '@')
-            object1 = BaseLink::ConvertOldPath(object1, "object1", "object1", context, false);
-        if (object2[0] != '@')
-            object2 = BaseLink::ConvertOldPath(object2, "object2", "object2", context, false);
-        context->findLinkDest(mstate1, object1, NULL);
-        context->findLinkDest(mstate2, object2, NULL);
-
-        if (!mstate1 || !mstate2)
-            return false;
-#endif // SOFA_DEPRECATE_OLD_API
         return BaseInteractionConstraint::canCreate(obj, context, arg);
     }
 
@@ -151,21 +134,6 @@ public:
 
         if (arg)
         {
-#ifndef SOFA_DEPRECATE_OLD_API
-            std::string object1 = arg->getAttribute("object1","");
-            std::string object2 = arg->getAttribute("object2","");
-            if (!object1.empty() && object1[0] != '@')
-            {
-                object1 = BaseLink::ConvertOldPath(object1, "object1", "object1", context, false);
-                arg->setAttribute("object1", object1.c_str());
-            }
-            if (!object2.empty() && object2[0] != '@')
-            {
-                object2 = BaseLink::ConvertOldPath(object2, "object2", "object2", context, false);
-                arg->setAttribute("object2", object2.c_str());
-            }
-#endif // SOFA_DEPRECATE_OLD_API
-
             obj->parse(arg);
         }
 

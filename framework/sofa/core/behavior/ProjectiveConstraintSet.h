@@ -69,10 +69,6 @@ public:
     typedef Data<VecCoord> DataVecCoord;
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
-#ifndef SOFA_DEPRECATE_OLD_API
-    typedef typename MatrixDeriv::RowIterator MatrixDerivRowIterator;
-    typedef typename MatrixDeriv::RowType MatrixDerivRowType;
-#endif
 protected:
     ProjectiveConstraintSet(MechanicalState<DataTypes> *mm = NULL);
 
