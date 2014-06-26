@@ -135,7 +135,7 @@ public:
     /// $ f += B v + K x $
     ///
     /// This method must be implemented by the component, and is usually called
-    /// by the generic MixedInteractionForceField::addForce() method.
+    /// by the generic ForceField::addForce() method.
 
     virtual void addForce(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv1& f1, DataVecDeriv2& f2, const DataVecCoord1& x1, const DataVecCoord2& x2, const DataVecDeriv1& v1, const DataVecDeriv2& v2)=0;
 
@@ -153,15 +153,6 @@ public:
     /// by the generic MixedInteractionForceField::addDForce() method.
 
     virtual void addDForce(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv1& df1, DataVecDeriv2& df2, const DataVecDeriv1& dx1, const DataVecDeriv2& dx2)=0;
-
-    /// Get the potential energy associated to this ForceField.
-    ///
-    /// Used to extimate the total energy of the system by some
-    /// post-stabilization techniques.
-    ///
-    /// This method must be implemented by the component, and is usually called
-    /// by the generic MixedInteractionForceField::getPotentialEnergy() method.
-    virtual double getPotentialEnergy(const MechanicalParams* mparams /* PARAMS FIRST */, const DataVecCoord1& x1, const DataVecCoord2& x2) const =0;
 
 
     /// Pre-construction check method called by ObjectFactory.
