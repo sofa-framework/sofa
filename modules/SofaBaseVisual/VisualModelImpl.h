@@ -50,11 +50,7 @@ namespace component
 namespace visualmodel
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::core::loader;
-
-
-class SOFA_BASE_VISUAL_API RigidState : public core::State< Rigid3fTypes >
+class SOFA_BASE_VISUAL_API RigidState : public core::State< sofa::defaulttype::Rigid3fTypes >
 {
 public:
     VecCoord xforms;
@@ -87,12 +83,12 @@ public:
     virtual const Data<MatrixDeriv>*  read(core::ConstMatrixDerivId /* v */) const {  return NULL; }
 };
 
-class SOFA_BASE_VISUAL_API ExtVec3fState : public core::State< ExtVec3fTypes >
+class SOFA_BASE_VISUAL_API ExtVec3fState : public core::State< sofa::defaulttype::ExtVec3fTypes >
 {
 public:
-    topology::PointData< ResizableExtVector<Coord> > m_positions;
-    topology::PointData< ResizableExtVector<Coord> > m_restPositions;
-    topology::PointData< ResizableExtVector<Deriv> > m_vnormals;
+    topology::PointData< sofa::defaulttype::ResizableExtVector<Coord> > m_positions;
+    topology::PointData< sofa::defaulttype::ResizableExtVector<Coord> > m_restPositions;
+    topology::PointData< sofa::defaulttype::ResizableExtVector<Deriv> > m_vnormals;
     bool modified; ///< True if input vertices modified since last rendering
 
     ExtVec3fState()
@@ -109,9 +105,9 @@ public:
     virtual void resize(int vsize)
     {
         modified = true;
-        helper::WriteAccessor< Data<ResizableExtVector<Coord> > > positions = m_positions;
-        helper::WriteAccessor< Data<ResizableExtVector<Coord> > > restPositions = m_restPositions;
-        helper::WriteAccessor< Data<ResizableExtVector<Deriv> > > normals = m_vnormals;
+        helper::WriteAccessor< Data<sofa::defaulttype::ResizableExtVector<Coord> > > positions = m_positions;
+        helper::WriteAccessor< Data<sofa::defaulttype::ResizableExtVector<Coord> > > restPositions = m_restPositions;
+        helper::WriteAccessor< Data<sofa::defaulttype::ResizableExtVector<Deriv> > > normals = m_vnormals;
 
         positions.resize(vsize);
         restPositions.resize(vsize);
@@ -178,9 +174,9 @@ public:
     SOFA_CLASS2(VisualModelImpl, core::visual::VisualModel, ExtVec3fState);
 //    SOFA_CLASS3(VisualModelImpl, core::visual::VisualModel, ExtVec3fState , RigidState);
 
-    typedef Vec<2, float> TexCoord;
+    typedef sofa::defaulttype::Vec<2, float> TexCoord;
     //typedef helper::vector<TexCoord> VecTexCoord;
-    typedef ResizableExtVector<TexCoord> VecTexCoord;
+    typedef sofa::defaulttype::ResizableExtVector<TexCoord> VecTexCoord;
     
     typedef sofa::core::topology::BaseMeshTopology::Edge Edge;
     typedef sofa::core::topology::BaseMeshTopology::Triangle Triangle;
@@ -188,7 +184,7 @@ public:
 
 //protected:
 
-    typedef ExtVec3fTypes DataTypes;
+    typedef sofa::defaulttype::ExtVec3fTypes DataTypes;
     typedef DataTypes::Real Real;
     typedef DataTypes::Coord Coord;
     typedef DataTypes::VecCoord VecCoord;
@@ -215,18 +211,18 @@ public:
     topology::PointData< VecTexCoord > m_vtexcoords;
     topology::PointData< VecCoord > m_vtangents;
     topology::PointData< VecCoord > m_vbitangents;
-    Data< ResizableExtVector< Edge > > m_edges;
-    Data< ResizableExtVector< Triangle > > m_triangles;
-    Data< ResizableExtVector< Quad > > m_quads;
+    Data< sofa::defaulttype::ResizableExtVector< Edge > > m_edges;
+    Data< sofa::defaulttype::ResizableExtVector< Triangle > > m_triangles;
+    Data< sofa::defaulttype::ResizableExtVector< Quad > > m_quads;
 
     /// If vertices have multiple normals/texcoords, then we need to separate them
     /// This vector store which input position is used for each vertice
     /// If it is empty then each vertex correspond to one position
-    Data< ResizableExtVector<int> > m_vertPosIdx;
+    Data< sofa::defaulttype::ResizableExtVector<int> > m_vertPosIdx;
 
     /// Similarly this vector store which input normal is used for each vertice
     /// If it is empty then each vertex correspond to one normal
-    Data< ResizableExtVector<int> > m_vertNormIdx;
+    Data< sofa::defaulttype::ResizableExtVector<int> > m_vertNormIdx;
 
     /// Rendering method.
     virtual void internalDraw(const core::visual::VisualParams* /*vparams*/, bool /*transparent*/) {}
@@ -241,7 +237,7 @@ public:
 
     /// @name Initial transformation attributes
     /// @{
-    typedef Vec<3,Real> Vec3Real;
+    typedef sofa::defaulttype::Vec<3,Real> Vec3Real;
     Data< Vec3Real > m_translation;
     Data< Vec3Real > m_rotation;
     Data< Vec3Real > m_scale;
@@ -254,7 +250,7 @@ public:
     /// Apply Rotation from Euler angles (in degree!)
     void applyRotation (const Real rx, const Real ry, const Real rz);
 
-    void applyRotation(const Quat q);
+    void applyRotation(const sofa::defaulttype::Quat q);
 
     void applyScale(const Real sx, const Real sy, const Real sz);
 
@@ -280,8 +276,8 @@ public:
     };
     /// @}
 
-    Vec3f bbox[2];
-    Data< Material > material;
+    sofa::defaulttype::Vec3f bbox[2];
+    Data< sofa::core::loader::Material > material;
 #ifdef SOFA_SMP
     sofa::core::loader::Material originalMaterial;
     bool previousProcessorColor;
@@ -321,7 +317,7 @@ public:
         }
     };
 
-    Data< helper::vector<Material> > materials;
+    Data< helper::vector<sofa::core::loader::Material> > materials;
     Data< helper::vector<FaceGroup> > groups;
 protected:
     /// Default constructor.
@@ -384,7 +380,7 @@ public:
         return useTopology;
     };
 
-    const ResizableExtVector<Coord>& getVertices() const
+    const sofa::defaulttype::ResizableExtVector<Coord>& getVertices() const
     {
         if (!m_vertPosIdx.getValue().empty())
         {
@@ -395,7 +391,7 @@ public:
         return m_positions.getValue();
     };
 
-    const ResizableExtVector<Deriv>& getVnormals() const
+    const sofa::defaulttype::ResizableExtVector<Deriv>& getVnormals() const
     {
         return m_vnormals.getValue();
     };
@@ -405,38 +401,38 @@ public:
         return m_vtexcoords.getValue();
     };
 
-    const ResizableExtVector<Coord>& getVtangents() const
+    const sofa::defaulttype::ResizableExtVector<Coord>& getVtangents() const
     {
         return m_vtangents.getValue();
     };
 
-    const ResizableExtVector<Coord>& getVbitangents() const
+    const sofa::defaulttype::ResizableExtVector<Coord>& getVbitangents() const
     {
         return m_vbitangents.getValue();
     };
 
-    const ResizableExtVector<Triangle>& getTriangles() const
+    const sofa::defaulttype::ResizableExtVector<Triangle>& getTriangles() const
     {
         return m_triangles.getValue();
     };
 
-    const ResizableExtVector<Quad>& getQuads() const
+    const sofa::defaulttype::ResizableExtVector<Quad>& getQuads() const
     {
         return m_quads.getValue();
     };
     
-    const ResizableExtVector<Edge>& getEdges() const
+    const sofa::defaulttype::ResizableExtVector<Edge>& getEdges() const
     {
         return m_edges.getValue();
     };
 
-    void setVertices(ResizableExtVector<Coord> * x)
+    void setVertices(sofa::defaulttype::ResizableExtVector<Coord> * x)
     {
         //m_vertices2.setValue(*x);
         this->m_positions.setValue(*x);
     };
 
-    void setVnormals(ResizableExtVector<Deriv> * vn)
+    void setVnormals(sofa::defaulttype::ResizableExtVector<Deriv> * vn)
     {
         m_vnormals.setValue(*vn);
     };
@@ -446,27 +442,27 @@ public:
         m_vtexcoords.setValue(*vt);
     };
 
-    void setVtangents(ResizableExtVector<Coord> * v)
+    void setVtangents(sofa::defaulttype::ResizableExtVector<Coord> * v)
     {
         m_vtangents.setValue(*v);
     };
 
-    void setVbitangents(ResizableExtVector<Coord> * v)
+    void setVbitangents(sofa::defaulttype::ResizableExtVector<Coord> * v)
     {
         m_vbitangents.setValue(*v);
     };
 
-    void setTriangles(ResizableExtVector<Triangle> * t)
+    void setTriangles(sofa::defaulttype::ResizableExtVector<Triangle> * t)
     {
         m_triangles.setValue(*t);
     };
 
-    void setQuads(ResizableExtVector<Quad> * q)
+    void setQuads(sofa::defaulttype::ResizableExtVector<Quad> * q)
     {
         m_quads.setValue(*q);
     };
     
-    void setEdges(ResizableExtVector<Edge> * e)
+    void setEdges(sofa::defaulttype::ResizableExtVector<Edge> * e)
     {
         m_edges.setValue(*e);
     };
@@ -512,7 +508,7 @@ public:
             const TexCoord &t1, const TexCoord &t2, const TexCoord &t3);
 
     /// Temporary added here from RigidState deprecated inheritance
-    Rigid3fTypes::VecCoord xforms;
+    sofa::defaulttype::Rigid3fTypes::VecCoord xforms;
     bool xformsModified;
 };
 

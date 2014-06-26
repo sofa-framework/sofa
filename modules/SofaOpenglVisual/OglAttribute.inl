@@ -56,7 +56,7 @@ OglAttribute< size, type, DataTypes>::OglAttribute() :
 template < int size, unsigned int type, class DataTypes>
 int OglAttribute< size, type, DataTypes >::getSETotolSize()
 {
-    const ResizableExtVector<DataTypes>& data = value.getValue();
+    const sofa::defaulttype::ResizableExtVector<DataTypes>& data = value.getValue();
     unsigned int totalSize = data.size() *sizeof ( data[0] );
     return totalSize;
 }
@@ -79,7 +79,7 @@ template < int size, unsigned int type, class DataTypes>
 void OglAttribute< size, type, DataTypes>::initVisual ()
 {
     if ( _abo == GLuint(-1) ) glGenBuffers ( 1, &_abo );
-    const ResizableExtVector<DataTypes>& data = value.getValue();
+    const sofa::defaulttype::ResizableExtVector<DataTypes>& data = value.getValue();
     unsigned int totalSize = data.size() *sizeof ( data[0] );
     _aboSize = totalSize;
     glBindBufferARB ( GL_ARRAY_BUFFER, _abo );
@@ -113,7 +113,7 @@ void OglAttribute< size, type, DataTypes>::updateVisual()
 {
      if ( _abo == GLuint(-1) )
          return; // initVisual not yet called
-    const ResizableExtVector<DataTypes>& data = value.getValue();
+    const sofa::defaulttype::ResizableExtVector<DataTypes>& data = value.getValue();
     unsigned int totalSize = data.size() *sizeof ( data[0] );
     int dataCounter = value.getCounter();
     if (!_needUpdate && totalSize == _aboSize && dataCounter == _lastUpdateDataCounter)
@@ -140,7 +140,7 @@ void OglAttribute< size, type, DataTypes>::updateVisual()
 }
 
 template < int size, unsigned int type, class DataTypes>
-ResizableExtVector<DataTypes>* OglAttribute< size, type, DataTypes>::beginEdit()
+sofa::defaulttype::ResizableExtVector<DataTypes>* OglAttribute< size, type, DataTypes>::beginEdit()
 {
     return value.beginEdit();
 }
@@ -154,16 +154,16 @@ void OglAttribute< size, type, DataTypes>::endEdit()
 
 
 template < int size, unsigned int type, class DataTypes>
-const ResizableExtVector<DataTypes>& OglAttribute< size, type, DataTypes>::getValue() const
+const sofa::defaulttype::ResizableExtVector<DataTypes>& OglAttribute< size, type, DataTypes>::getValue() const
 {
     return value.getValue();
 }
 
 
 template < int size, unsigned int type, class DataTypes>
-void OglAttribute< size, type, DataTypes>::setValue ( const ResizableExtVector<DataTypes>& value )
+void OglAttribute< size, type, DataTypes>::setValue ( const sofa::defaulttype::ResizableExtVector<DataTypes>& value )
 {
-    ResizableExtVector<DataTypes>& val = * ( this->value.beginEdit() );
+    sofa::defaulttype::ResizableExtVector<DataTypes>& val = * ( this->value.beginEdit() );
     val = value;
     this->value.endEdit();
 }
@@ -263,7 +263,7 @@ void OglAttribute< size, type, DataTypes>::handleTopologyChange()
                 //sout << "INFO_print : Vis - POINTSADDED" << sendl;
 
                 unsigned int nbPoints = ( static_cast< const PointsAdded * >( *itBegin ) )->getNbAddedVertices();
-                ResizableExtVector<DataTypes>& data = *value.beginEdit();
+                sofa::defaulttype::ResizableExtVector<DataTypes>& data = *value.beginEdit();
                 data.resize( data.size() + nbPoints);
                 value.endEdit();
                 break;
@@ -276,7 +276,7 @@ void OglAttribute< size, type, DataTypes>::handleTopologyChange()
                 //sout << "INFO_print : Vis - POINTSREMOVED" << sendl;
 
                 const sofa::helper::vector<unsigned int> tab = ( static_cast< const PointsRemoved * >( *itBegin ) )->getArray();
-                ResizableExtVector<DataTypes>& data = *value.beginEdit();
+                sofa::defaulttype::ResizableExtVector<DataTypes>& data = *value.beginEdit();
                 unsigned int last = data.size();
 
                 for ( unsigned int i = 0; i < tab.size(); ++i)
@@ -297,7 +297,7 @@ void OglAttribute< size, type, DataTypes>::handleTopologyChange()
                 //sout << "INFO_print : Vis - POINTSRENUMBERING" << sendl;
 
                 const sofa::helper::vector<unsigned int> tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
-                ResizableExtVector<DataTypes>& data = *value.beginEdit();
+                sofa::defaulttype::ResizableExtVector<DataTypes>& data = *value.beginEdit();
                 vector<DataTypes> tmp;
                 for ( unsigned int i = 0; i < tab.size(); ++i)
                 {
