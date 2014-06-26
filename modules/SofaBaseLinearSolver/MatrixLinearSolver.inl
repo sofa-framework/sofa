@@ -183,7 +183,7 @@ void MatrixLinearSolver<Matrix,Vector>::setSystemMBKMatrix(const core::Mechanica
 template<class Matrix, class Vector>
 void MatrixLinearSolver<Matrix,Vector>::rebuildSystem(double massFactor, double forceFactor)
 {
-    MechanicalParams mparams;
+    sofa::core::MechanicalParams mparams;
     mparams.setMFactor(this->currentMFactor*massFactor);
     mparams.setBFactor(this->currentBFactor*forceFactor);
     mparams.setKFactor(this->currentKFactor*forceFactor);
@@ -430,7 +430,7 @@ void MatrixLinearSolver<Matrix,Vector>::computeResidual(const core::ExecParams* 
     internalData.projectForceInConstraintSpace(currentGroup->systemRHVector,f);
 
     sofa::simulation::common::VectorOperations vop( params, this->getContext() );
-    MultiVecDeriv force(&vop, core::VecDerivId::force() );
+    sofa::core::behavior::MultiVecDeriv force(&vop, core::VecDerivId::force() );
 
     executeVisitor( simulation::MechanicalMultiVectorPeqBaseVectorVisitor(core::ExecParams::defaultInstance(), force, currentGroup->systemRHVector, &(currentGroup->matrixAccessor)) );
 }

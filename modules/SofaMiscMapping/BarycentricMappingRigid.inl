@@ -67,7 +67,7 @@ int BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::addPointInTetra ( cons
 }
 
 template<class In, class Out>
-int BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::addPointOrientationInTetra( const int tetraIndex, const Matrix3 baryCoorsOrient )
+int BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::addPointOrientationInTetra( const int tetraIndex, const sofa::defaulttype::Matrix3 baryCoorsOrient )
 {
     //storing the frame in 3 maps: one direction vector in one map  (3 coor. elements inside a map)
     // IPTR_BARCPP_ADDOR("addPointOrientation BEGIN" << endl);
@@ -224,7 +224,7 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::apply( typename Out::
         }
 
         orientationMatrix.transpose();
-        helper::Decompose<Matrix3::Real>::polarDecomposition(orientationMatrix, polarMatrixQ);
+        helper::Decompose<sofa::defaulttype::Matrix3::Real>::polarDecomposition(orientationMatrix, polarMatrixQ);
         sofa::defaulttype::Quat quatA;
         quatA.fromMatrix(polarMatrixQ);
         Out::setCRot(out[point], quatA);

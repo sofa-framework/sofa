@@ -40,6 +40,7 @@ namespace linearsolver
 {
 
 using namespace sofa::defaulttype;
+using sofa::core::MultiVecDerivId;
 
 template<> SOFA_BASE_LINEAR_SOLVER_API
 inline void CGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_beta(const core::ExecParams* /*params*/ /* PARAMS FIRST */, Vector& p, Vector& r, double beta)
@@ -54,7 +55,7 @@ inline void CGLinearSolver<component::linearsolver::GraphScatteredMatrix,compone
     x.peq(p,alpha);                 // x = x + alpha p
     r.peq(q,-alpha);                // r = r - alpha q
 #else // single-operation optimization
-    typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
+    typedef sofa::core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
     VMultiOp ops;
     ops.resize(2);
     ops[0].first = (MultiVecDerivId)x;

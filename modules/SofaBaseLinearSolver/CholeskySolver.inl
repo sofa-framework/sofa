@@ -46,13 +46,6 @@ namespace component
 namespace linearsolver
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::core::behavior;
-using namespace sofa::simulation;
-using namespace sofa::core::objectmodel;
-using std::cerr;
-using std::endl;
-
 template<class TMatrix, class TVector>
 CholeskySolver<TMatrix,TVector>::CholeskySolver()
     : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
