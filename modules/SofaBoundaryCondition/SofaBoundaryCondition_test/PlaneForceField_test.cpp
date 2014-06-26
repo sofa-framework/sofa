@@ -44,6 +44,7 @@ namespace {
 
 using namespace component;
 using namespace defaulttype;
+using namespace core::objectmodel;
 
 template <typename _DataTypes>
 struct PlaneForceField_test : public Sofa_test<typename _DataTypes::Real>

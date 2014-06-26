@@ -41,6 +41,7 @@ using std::cerr;
 using std::endl;
 using namespace component;
 using namespace defaulttype;
+using namespace core::objectmodel;
 
 /**  Test suite for ProjectDirectionConstraint.
 The test cases are defined in the #Test_Cases member group.
@@ -144,7 +145,7 @@ struct ProjectDirectionConstraint_test : public Sofa_test<typename _DataTypes::R
      
        // particle original position
        const VecCoord& xOrigin = *projection->getMState()->getX();
-        for( Indices::const_iterator it = indices.begin() ; it != indices.end() ; ++it )
+        for( typename Indices::const_iterator it = indices.begin() ; it != indices.end() ; ++it )
         {
              m_origin.push_back( DataTypes::getCPos(xOrigin[*it]) );
         }
