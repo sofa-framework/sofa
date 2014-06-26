@@ -56,8 +56,6 @@ namespace collision
 class TetrahedronModel;
 #endif
 
-using namespace sofa::defaulttype;
-using namespace sofa::core::topology;
 
 /// a class to manage the handling of topological changes which have been requested from the Collision Model
 class SOFA_USER_INTERACTION_API TopologicalChangeManager
@@ -155,13 +153,13 @@ private:
     struct Incision
     {
         /// Temporary point index for successive incisions
-        BaseMeshTopology::PointID indexPoint;
+        sofa::core::topology::BaseMeshTopology::PointID indexPoint;
 
         /// Temporary point coordinate for successive incisions
         Vector3 coordPoint;
 
         /// Temporary triangle index for successive incisions
-        BaseMeshTopology::TriangleID indexTriangle;
+        sofa::core::topology::BaseMeshTopology::TriangleID indexTriangle;
 
         /// Information of first incision for successive incisions
         bool firstCut;

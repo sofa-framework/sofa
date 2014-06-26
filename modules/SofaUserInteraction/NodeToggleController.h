@@ -54,8 +54,6 @@ namespace component
 namespace controller
 {
 
-//using namespace sofa::defaulttype;
-
 /**
  * @brief NodeToggleController Class
  *

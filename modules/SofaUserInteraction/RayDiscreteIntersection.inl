@@ -44,8 +44,6 @@ namespace component
 namespace collision
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::core::collision;
 
 template<class T>
 bool RayDiscreteIntersection::testIntersection(Ray& ray1, TSphere<T>& sph2)
@@ -87,7 +85,7 @@ int RayDiscreteIntersection::computeIntersection(Ray& ray1, TSphere<T>& sph2, Ou
     const SReal dist = sqrt(dist2);
 
     contacts->resize(contacts->size()+1);
-    DetectionOutput *detection = &*(contacts->end()-1);
+    sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
 
     detection->point[0] = ray1Origin + ray1Direction*rayPosInside;
     detection->normal = sph2Pos - detection->point[0];
