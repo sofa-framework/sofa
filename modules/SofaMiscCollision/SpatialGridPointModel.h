@@ -39,7 +39,6 @@ namespace component
 namespace collision
 {
 
-using namespace sofa::defaulttype;
 
 class SOFA_MISC_COLLISION_API SpatialGridPointModel : public PointModel
 {

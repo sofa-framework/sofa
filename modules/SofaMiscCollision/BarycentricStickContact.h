@@ -40,7 +40,6 @@ namespace component
 namespace collision
 {
 
-using namespace sofa::defaulttype;
 
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes = sofa::defaulttype::Vec3Types >
 class BarycentricStickContact : public core::collision::Contact
