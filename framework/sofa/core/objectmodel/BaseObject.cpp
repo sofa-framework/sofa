@@ -167,7 +167,7 @@ void BaseObject::setSrc(const std::string &valueString, const BaseObject *loader
 
     for (it_map = dataLoaderMap.begin(); it_map != dataLoaderMap.end(); ++it_map)
     {
-        BaseData* data = obj->findField( (*it_map).first );
+        BaseData* data = obj->findData( (*it_map).first );
         if (data != NULL)
         {
             if (!(*it_map).second->isAutoLink())

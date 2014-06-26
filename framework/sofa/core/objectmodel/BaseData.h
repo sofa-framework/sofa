@@ -150,9 +150,6 @@ public:
     /// Set help message
     void setHelp(const char* val) { help = val; }
 
-    /// @deprecated Set help message
-    void setHelpMsg(const char* val) { help = val; }
-
     /// Get owner class
     const char* getOwnerClass() const { return ownerClass; }
 

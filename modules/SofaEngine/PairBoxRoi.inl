@@ -81,7 +81,7 @@ void PairBoxROI<DataTypes>::init()
         this->getContext()->get(mstate,BaseContext::Local);
         if (mstate)
         {
-            BaseData* parent = mstate->findField("rest_position");
+            BaseData* parent = mstate->findData("rest_position");
             if (parent)
             {
                 f_X0.setParent(parent);
@@ -94,7 +94,7 @@ void PairBoxROI<DataTypes>::init()
             this->getContext()->get(loader,BaseContext::Local);
             if (loader)
             {
-                BaseData* parent = loader->findField("position");
+                BaseData* parent = loader->findData("position");
                 if (parent)
                 {
                     f_X0.setParent(parent);
@@ -105,7 +105,7 @@ void PairBoxROI<DataTypes>::init()
             {
                 this->getContext()->get(mstate,BaseContext::SearchUp);
                 assert(mstate && "PairBoxROI needs a mstate");
-                BaseData* parent = mstate->findField("rest_position");
+                BaseData* parent = mstate->findData("rest_position");
                 assert(parent && "PairBoxROI needs a state with a rest_position Data");
                 f_X0.setParent(parent);
                 f_X0.setReadOnly(true);

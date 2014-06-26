@@ -106,7 +106,7 @@ void SubsetTopology<DataTypes>::init()
         this->getContext()->get(mstate);
         if (mstate)
         {
-            BaseData* parent = mstate->findField("position");
+            BaseData* parent = mstate->findData("position");
             if (parent)
             {
                 f_X0.setParent(parent);
@@ -119,7 +119,7 @@ void SubsetTopology<DataTypes>::init()
             this->getContext()->get(loader);
             if (loader)
             {
-                BaseData* parent = loader->findField("rest_position");
+                BaseData* parent = loader->findData("rest_position");
                 if (parent)
                 {
                     f_X0.setParent(parent);
@@ -136,7 +136,7 @@ void SubsetTopology<DataTypes>::init()
         {
             if (!f_edges.isSet())
             {
-                BaseData* eparent = topology->findField("edges");
+                BaseData* eparent = topology->findData("edges");
                 if (eparent)
                 {
                     f_edges.setParent(eparent);
@@ -145,7 +145,7 @@ void SubsetTopology<DataTypes>::init()
             }
             if (!f_triangles.isSet())
             {
-                BaseData* tparent = topology->findField("triangles");
+                BaseData* tparent = topology->findData("triangles");
                 if (tparent)
                 {
                     f_triangles.setParent(tparent);
@@ -154,7 +154,7 @@ void SubsetTopology<DataTypes>::init()
             }
             if (!f_tetrahedra.isSet())
             {
-                BaseData* tparent = topology->findField("tetrahedra");
+                BaseData* tparent = topology->findData("tetrahedra");
                 if (tparent)
                 {
                     f_tetrahedra.setParent(tparent);
