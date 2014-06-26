@@ -194,34 +194,16 @@ public:
 
 
     /// Project the global Mechanical Matrix to constrained space using offset parameter
-    /// @deprecated
-    virtual void applyConstraint(defaulttype::BaseMatrix* /*matrix*/, unsigned int /*offset*/)
+    virtual void applyConstraint(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
     {
+        serr << "applyConstaint(mparams, matrix) not implemented" << sendl;
     }
 
-    /// Project the global Mechanical Matrix to constrained space using offset parameter
-    virtual void applyConstraint(const MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix)
-    {
-        MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate.get(mparams));
-        if (r)
-            applyConstraint(r.matrix, r.offset);
-    }
 
     /// Project the global Mechanical Vector to constrained space using offset parameter
-    /// @deprecated
-    virtual void applyConstraint(defaulttype::BaseVector* /*vector*/, unsigned int /*offset*/)
+    virtual void applyConstraint(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, defaulttype::BaseVector* /*vector*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
     {
-    }
-
-    /// Project the global Mechanical Vector to constrained space using offset parameter
-    virtual void applyConstraint(const MechanicalParams* mparams /* PARAMS FIRST */, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix)
-    {
-        int o = matrix->getGlobalOffset(this->mstate.get(mparams));
-        if (o >= 0)
-        {
-            unsigned int offset = (unsigned int)o;
-            applyConstraint(vector, offset);
-        }
+        serr << "applyConstaint(mparams, vector, matrix) not implemented" << sendl;
     }
 
     /// Pre-construction check method called by ObjectFactory.
