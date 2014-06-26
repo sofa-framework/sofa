@@ -73,7 +73,7 @@ $xmax=($distance*$i*$dx)+$dx;
 			<OglModel name="Visual" color="blue"/>
 			<IdentityMapping input="@.." output="@Visual"/>
 	  </Node>
-	<AttachConstraint object1="Bar<?=$i?>M<?=($j-1)?>" object2="Bar<?=$i?>M<?=$j?>" twoWay="true" radius="0.1" indices1="<?=$indices1?>" indices2="<?=$indices2?>" />
+	<AttachConstraint object1="@Bar<?=$i?>M<?=($j-1)?>" object2="@Bar<?=$i?>M<?=$j?>" twoWay="true" radius="0.1" indices1="<?=$indices1?>" indices2="<?=$indices2?>" />
 	</Node>
 	<?php } ?>
 

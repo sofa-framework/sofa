@@ -37,6 +37,6 @@
                 <Sphere radius="0.01" />
             </Node>
         </Node>
-        <VectorSpringForceField object1="Mesh/Barycenters/Points" object2="Mesh/Circumcenters/Points" stiffness="1000" viscosity="1" />
+        <VectorSpringForceField object1="@Mesh/Barycenters/Points" object2="@Mesh/Circumcenters/Points" stiffness="1000" viscosity="1" />
     </Node>
 </Node>

@@ -27,5 +27,5 @@
         <BeamFEMForceField name="FEM" radius="0.1" youngModulus="20000000" />
         <LinearSolverConstraintCorrection />
     </Node>
-    <BilateralInteractionConstraint template="Rigid" object1="Beam1/ConstraintPoint/dof1" object2="Beam2/DOFs2" first_point="0" second_point="0" />
+    <BilateralInteractionConstraint template="Rigid" object1="@Beam1/ConstraintPoint/dof1" object2="@Beam2/DOFs2" first_point="0" second_point="0" />
 </Node>

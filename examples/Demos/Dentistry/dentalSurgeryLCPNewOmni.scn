@@ -37,8 +37,8 @@
 			<PointModel name="instrument"  contactStiffness="10" />
 			<RigidMapping template="MechanicalMapping&lt;Rigid,Vec3d&gt;" name="MM->CM mapping"  input="@instrumentState"  output="@instrumentCollisionState" />
 		</Node>
-		<VectorSpringForceField template="Vec3d" name="default47"  object1="Omni/RefModel/instrumentCollisionState"  object2="Instrument/CollisionModel/instrumentCollisionState"  stiffness="10"  viscosity="0" />
-		<JointSpringForceField template="Rigid" name="joint springs"  object1="Omni"  object2="instrumentState"  spring="BEGIN_SPRING  0 0  KS_T 50 50  KS_R 500 500  KS_B 500  END_SPRING
+		<VectorSpringForceField template="Vec3d" name="default47"  object1="@Omni/RefModel/instrumentCollisionState"  object2="@Instrument/CollisionModel/instrumentCollisionState"  stiffness="10"  viscosity="0" />
+		<JointSpringForceField template="Rigid" name="joint springs"  object1="@Omni"  object2="@instrumentState"  spring="BEGIN_SPRING  0 0  KS_T 50 50  KS_R 500 500  KS_B 500  END_SPRING
 " />
 	</Node>
 	<Node 	name="Tooth" gravity="0 -9.81 0" showVisualModels="1" showBehaviorModels="1" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="1" showInteractionForceFields="1" showWireFrame="0" showNormals="0"  >
