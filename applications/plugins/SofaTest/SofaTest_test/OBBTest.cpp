@@ -51,6 +51,8 @@
 #include "Sofa_test.h"
 #include "PrimitiveCreation.h"
 
+using namespace sofa::core::objectmodel;
+
 namespace sofa {
 
 struct TestOBB : public Sofa_test<double>{
