@@ -38,7 +38,6 @@ struct AffineMovementConstraint_test : public Elasticity_test<_DataTypes>
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::CPos CPos;
     typedef typename Coord::value_type Real;
