@@ -23,7 +23,7 @@ do
   # check if file is not empty
   if [ -s "$g" ]
   then
-    # apply the scrit sed
+    # apply the script sed: including input/output format
     "$SCRIPTS/replace-object12-IO.sed" < "$g" > "$g".tmp
     if [ -s "$g".tmp ]
     then
@@ -31,6 +31,16 @@ do
       rm -f "$g".tmp
     else
       echo "Error in $g"
+    fi
+
+    # apply the script sed: only adding the @-path
+    "$SCRIPTS/replace-object12-IO-pathOnly.sed" < "$g" > "$g".tmp
+    if [ -s "$g".tmp ]
+    then
+      cat "$g".tmp > "$g"
+      rm -f "$g".tmp
+    else
+      echo "Error(2) in $g"
     fi
 
   # if file is empty
