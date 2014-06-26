@@ -114,19 +114,12 @@ public:
     /**
      *  \brief used to update the model if necessary.
      */
-    virtual void updateVisual() { update(); }
+    virtual void updateVisual() {  }
     /**
     *  \brief used to update the model if necessary.
     */
     virtual void parallelUpdateVisual() { }
 
-
-    /**
-     *  \brief used to update the model if necessary.
-     *
-     *  @deprecated Use updateVisual() instead.
-     */
-    virtual void update() {}
 
     /**
      *  \brief used to add the bounding-box of this visual model to the

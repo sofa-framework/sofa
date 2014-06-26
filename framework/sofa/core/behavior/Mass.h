@@ -89,10 +89,6 @@ public:
 
     virtual void addMDx(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecDeriv& dx, double factor);
 
-    /// @deprecated
-    virtual void addMDx(VecDeriv& f, const VecDeriv& dx, double factor = 1.0);
-
-
     ///                            $ dx = M^-1 f $
     ///
     /// This method retrieves the force and dx vector and call the internal

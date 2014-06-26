@@ -102,7 +102,7 @@ public:
     virtual void drawLight();
     virtual void draw() {}
     virtual void reinit();
-    virtual void update();
+    virtual void updateVisual();
 
     //CastShadowModel
     virtual void preDrawShadow(core::visual::VisualParams* vp);
