@@ -115,18 +115,7 @@ public:
     virtual void apply (const MechanicalParams* mparams /* PARAMS FIRST  = MechanicalParams::defaultInstance()*/, MultiVecCoordId outPos, ConstMultiVecCoordId inPos ) ;
 
     /// This method must be reimplemented by all mappings.
-    virtual void apply( const MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecCoord& out, const InDataVecCoord& in)
-#ifdef SOFA_DEPRECATE_OLD_API
-        = 0;
-#else
-    {
-        this->apply(*out.beginEdit(mparams), in.getValue(mparams));
-        out.endEdit(mparams);
-    }
-    /// Compat Method
-    /// @deprecated
-    virtual void apply( OutVecCoord& /* out */, const InVecCoord& /* in */) { };
-#endif //SOFA_DEPRECATE_OLD_API
+    virtual void apply( const MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecCoord& out, const InDataVecCoord& in)= 0;
 
     /// ApplyJ ///
     /// Apply the mapping to derived (velocity, displacement) vectors.
@@ -135,18 +124,7 @@ public:
     virtual void applyJ(const MechanicalParams* mparams /* PARAMS FIRST  = MechanicalParams::defaultInstance()*/, MultiVecDerivId outVel, ConstMultiVecDerivId inVel );
 
     /// This method must be reimplemented by all mappings.
-    virtual void applyJ( const MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecDeriv& out, const InDataVecDeriv& in)
-#ifdef SOFA_DEPRECATE_OLD_API
-        = 0;
-#else
-    {
-        this->applyJ(*out.beginEdit(mparams), in.getValue(mparams));
-        out.endEdit(mparams);
-    }
-    /// Compat Method
-    /// @deprecated
-    virtual void applyJ( OutVecDeriv& /* out */, const InVecDeriv& /* in */) { }
-#endif //SOFA_DEPRECATE_OLD_API
+    virtual void applyJ( const MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecDeriv& out, const InDataVecDeriv& in) = 0;
 
     /// ApplyJT (Force)///
     /// Apply the reverse mapping to force vectors.
@@ -155,18 +133,7 @@ public:
     virtual void applyJT(const MechanicalParams* mparams /* PARAMS FIRST  = MechanicalParams::defaultInstance()*/, MultiVecDerivId inForce, ConstMultiVecDerivId outForce );
 
     /// This method must be reimplemented by all mappings.
-    virtual void applyJT( const MechanicalParams* mparams /* PARAMS FIRST */, InDataVecDeriv& out, const OutDataVecDeriv& in)
-#ifdef SOFA_DEPRECATE_OLD_API
-        = 0;
-#else
-    {
-        this->applyJT(*out.beginEdit(mparams), in.getValue(mparams));
-        out.endEdit(mparams);
-    }
-    /// Compat Method
-    /// @deprecated
-    virtual void applyJT( InVecDeriv& /* out */, const OutVecDeriv& /* in */) { }
-#endif //SOFA_DEPRECATE_OLD_API
+    virtual void applyJT( const MechanicalParams* mparams /* PARAMS FIRST */, InDataVecDeriv& out, const OutDataVecDeriv& in) = 0;
 
     /// ApplyDJT (Force)///
     /// Apply the change of force due to the nonlinearity of the mapping and the last propagated displacement. Also called geometric stiffness.
@@ -185,23 +152,10 @@ public:
     virtual void applyJT(const ConstraintParams* cparams /* PARAMS FIRST  = ConstraintParams::defaultInstance()*/, MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst );
 
     /// This method must be reimplemented by all mappings if they need to support constraints.
-    virtual void applyJT( const ConstraintParams* mparams /* PARAMS FIRST */, InDataMatrixDeriv& out, const OutDataMatrixDeriv& in)
-#ifdef SOFA_DEPRECATE_OLD_API
+    virtual void applyJT( const ConstraintParams* /* mparams */ /* PARAMS FIRST */, InDataMatrixDeriv& /* out */, const OutDataMatrixDeriv& /* in */)
     {
         serr << "This mapping does not support constraints because Mapping::applyJT( const ConstraintParams* , InDataMatrixDeriv&, const OutDataMatrixDeriv&) is not overloaded." << sendl;
     }
-#else
-    {
-        this->applyJT(*out.beginEdit(mparams), in.getValue(mparams));
-        out.endEdit(mparams);
-    }
-    /// Compat Method
-    /// @deprecated
-    virtual void applyJT( InMatrixDeriv& /*out*/, const OutMatrixDeriv& /*in*/ )
-    {
-        serr << "This mapping does not support constraints because Mapping::applyJT( InMatrixDeriv&, const OutMatrixDeriv& ) is not overloaded. " << sendl;
-    }
-#endif //SOFA_DEPRECATE_OLD_API
 
     /// computeAccFromMapping
     /// Compute the acceleration of the child, based on the acceleration and the velocity of the parent.
@@ -211,20 +165,9 @@ public:
     virtual void computeAccFromMapping(const MechanicalParams* mparams /* PARAMS FIRST  = MechanicalParams::defaultInstance()*/, MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc );
 
     /// This method must be reimplemented by all mappings if they need to support composite accelerations
-    virtual void computeAccFromMapping(const MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecDeriv& accOut, const InDataVecDeriv& vIn, const InDataVecDeriv& accIn)
-#ifdef SOFA_DEPRECATE_OLD_API
+    virtual void computeAccFromMapping(const MechanicalParams* /* mparams */ /* PARAMS FIRST */, OutDataVecDeriv& /* accOut */, const InDataVecDeriv& /* vIn */, const InDataVecDeriv& /* accIn */)
     {
     }
-#else
-    {
-        this->computeAccFromMapping(*accOut.beginEdit(mparams), vIn.getValue(mparams), accIn.getValue(mparams));
-        accOut.endEdit(mparams);
-    }
-    /// Compat Method
-    /// @deprecated
-    virtual void computeAccFromMapping( OutVecDeriv& /*acc_out*/, const InVecDeriv& /*v_in*/, const InVecDeriv& /*acc_in*/)
-    {}
-#endif //SOFA_DEPRECATE_OLD_API
 
     /// Propagate positions and velocities to the output
     virtual void init();
@@ -241,13 +184,6 @@ public:
     //If the two mechanical objects is identical, create a new stiffness matrix for this mapped objects
     //If the two mechanical objects is different, create a new interaction matrix
     virtual sofa::defaulttype::BaseMatrix* createMappedMatrix(const behavior::BaseMechanicalState* state1, const behavior::BaseMechanicalState* state2, func_createMappedMatrix);
-
-    ///<TO REMOVE>
-    /// Apply the mapping to position and velocity vectors.
-    ///
-    /// This method call the internal apply(Out::VecCoord&,const In::VecCoord&)
-    /// and applyJ(Out::VecDeriv&,const In::VecDeriv&) methods.
-    //virtual void updateMapping();
 
     /// Disable the mapping to get the original coordinates of the mapped model.
     ///
@@ -269,10 +205,6 @@ public:
 
         if (arg->getAttribute("input"))
             inPath = arg->getAttribute("input");
-#ifndef SOFA_DEPRECATE_OLD_API
-        else if (arg->getAttribute("object1"))
-            inPath = BaseLink::ConvertOldPath(arg->getAttribute("object1"), "object1", "input", context, false);
-#endif
         else
             inPath = "@../";
 
@@ -280,10 +212,6 @@ public:
 
         if (arg->getAttribute("output"))
             outPath = arg->getAttribute("output");
-#ifndef SOFA_DEPRECATE_OLD_API
-        else if (arg->getAttribute("object2"))
-            outPath = BaseLink::ConvertOldPath(arg->getAttribute("object2"), "object2", "output", context, false);
-#endif
         else
             outPath = "@./";
 
@@ -331,19 +259,11 @@ public:
             std::string inPath, outPath;
             if (arg->getAttribute("input"))
                 inPath = arg->getAttribute("input");
-#ifndef SOFA_DEPRECATE_OLD_API
-            else if (arg->getAttribute("object1"))
-                inPath = BaseLink::ConvertOldPath(arg->getAttribute("object1"), "object1", "input", obj.get());
-#endif
             else
                 inPath = "@../";
 
             if (arg->getAttribute("output"))
                 outPath = arg->getAttribute("output");
-#ifndef SOFA_DEPRECATE_OLD_API
-            else if (arg->getAttribute("object2"))
-                outPath = BaseLink::ConvertOldPath(arg->getAttribute("object2"), "object2", "output", obj.get());
-#endif
             else
                 outPath = "@./";
 

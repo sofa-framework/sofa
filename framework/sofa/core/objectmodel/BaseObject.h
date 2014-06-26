@@ -137,14 +137,8 @@ public:
     /// Render internal data of this object, for debugging purposes.
     virtual void draw(const core::visual::VisualParams*)
     {
-#ifndef SOFA_DEPRECATE_OLD_API
-        draw();
-#endif
     }
     ///@}
-#ifndef SOFA_DEPRECATE_OLD_API
-    virtual void draw() {}
-#endif
 
     /// @name Context accessors
     /// @{

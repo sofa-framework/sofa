@@ -323,16 +323,9 @@ public:
     /// Render the whole collision model.
     virtual void draw(const core::visual::VisualParams* )
     {
-#ifndef SOFA_DEPRECATE_OLD_API
-        draw();
-#endif
+
     }
 
-#ifndef SOFA_DEPRECATE_OLD_API
-    virtual void draw() {}
-
-    virtual void draw(int /*index*/) {}
-#endif
 
     /// Return the first (i.e. root) CollisionModel in the hierarchy.
     CollisionModel* getFirst()
