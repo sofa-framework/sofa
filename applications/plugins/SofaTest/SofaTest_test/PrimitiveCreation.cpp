@@ -1,6 +1,7 @@
 #include "PrimitiveCreation.h"
 
 using sofa::core::objectmodel::New;
+using namespace sofa::defaulttype;
 
 namespace sofa{
 
