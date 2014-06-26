@@ -34,8 +34,6 @@
 #include <sofa/helper/gl/template.h>
 //#include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
-using std::cerr;
-using std::endl;
 #include <SofaBaseTopology/TopologySubsetData.inl>
 
 
@@ -53,13 +51,6 @@ namespace component
 namespace projectiveconstraintset
 {
 
-using namespace core::topology;
-
-using namespace sofa::defaulttype;
-using namespace sofa::helper;
-using namespace sofa::core::behavior;
-
-
 // Define TestNewPointFunction
 template< class DataTypes>
 bool ProjectDirectionConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(unsigned int, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
@@ -76,7 +67,7 @@ bool ProjectDirectionConstraint<DataTypes>::FCPointHandler::applyTestCreateFunct
 
 // Define RemovalFunction
 template< class DataTypes>
-void ProjectDirectionConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(unsigned int pointIndex, value_type &)
+void ProjectDirectionConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(unsigned int pointIndex, core::objectmodel::Data<value_type> &)
 {
     if (fc)
     {

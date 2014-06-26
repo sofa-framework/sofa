@@ -40,9 +40,6 @@ namespace component
 namespace forcefield
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::component::topology;
-
 template<class DataTypes>
 class TrianglePressureForceField : public core::behavior::ForceField<DataTypes>
 {
@@ -95,7 +92,7 @@ protected:
         }
     };
 
-    TriangleSparseData<sofa::helper::vector<TrianglePressureInformation> > trianglePressureMap;
+    component::topology::TriangleSparseData<sofa::helper::vector<TrianglePressureInformation> > trianglePressureMap;
 
     sofa::core::topology::BaseMeshTopology* _topology;
 

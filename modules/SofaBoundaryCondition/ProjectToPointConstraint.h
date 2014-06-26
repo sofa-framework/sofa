@@ -47,11 +47,6 @@ namespace component
 namespace projectiveconstraintset
 {
 
-using helper::vector;
-using core::objectmodel::Data;
-using namespace sofa::core::objectmodel;
-using namespace sofa::component::topology;
-
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template <class DataTypes>
 class ProjectToPointConstraintInternalData
@@ -127,17 +122,17 @@ public:
 
     bool fixAllDOFs() const { return f_fixAll.getValue(); }
 
-    class FCPointHandler : public TopologySubsetDataHandler<Point, SetIndexArray >
+    class FCPointHandler : public component::topology::TopologySubsetDataHandler<component::topology::Point, SetIndexArray >
     {
     public:
         typedef typename ProjectToPointConstraint<DataTypes>::SetIndexArray SetIndexArray;
 
-        FCPointHandler(ProjectToPointConstraint<DataTypes>* _fc, PointSubsetData<SetIndexArray>* _data)
-            : sofa::component::topology::TopologySubsetDataHandler<Point, SetIndexArray >(_data), fc(_fc) {}
+        FCPointHandler(ProjectToPointConstraint<DataTypes>* _fc, component::topology::PointSubsetData<SetIndexArray>* _data)
+            : component::topology::TopologySubsetDataHandler<Point, SetIndexArray >(_data), fc(_fc) {}
 
 
 
-        void applyDestroyFunction(unsigned int /*index*/, value_type& /*T*/);
+        void applyDestroyFunction(unsigned int /*index*/, core::objectmodel::Data<value_type>& /*T*/);
 
 
         bool applyTestCreateFunction(unsigned int /*index*/,
