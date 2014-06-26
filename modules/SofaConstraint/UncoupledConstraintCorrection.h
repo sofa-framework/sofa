@@ -38,17 +38,14 @@ namespace component
 namespace constraintset
 {
 
-using namespace sofa::core;
-using namespace sofa::defaulttype;
-
 /**
  *  \brief Component computing contact forces within a simulated body using the compliance method.
  */
 template<class TDataTypes>
-class UncoupledConstraintCorrection : public behavior::ConstraintCorrection< TDataTypes >
+class UncoupledConstraintCorrection : public sofa::core::behavior::ConstraintCorrection< TDataTypes >
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(UncoupledConstraintCorrection,TDataTypes), SOFA_TEMPLATE(core::behavior::ConstraintCorrection, TDataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(UncoupledConstraintCorrection,TDataTypes), SOFA_TEMPLATE(sofa::core::behavior::ConstraintCorrection, TDataTypes));
 
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -64,9 +61,9 @@ public:
 
     typedef helper::vector<Real> VecReal;
 
-    typedef behavior::ConstraintCorrection< TDataTypes > Inherit;
+    typedef sofa::core::behavior::ConstraintCorrection< TDataTypes > Inherit;
 protected:
-    UncoupledConstraintCorrection(behavior::MechanicalState<DataTypes> *mm = NULL);
+    UncoupledConstraintCorrection(sofa::core::behavior::MechanicalState<DataTypes> *mm = NULL);
 
     virtual ~UncoupledConstraintCorrection();
 public:
@@ -77,7 +74,7 @@ public:
     /// Handle Topological Changes.
     void handleTopologyChange();
 
-    virtual void addComplianceInConstraintSpace(const ConstraintParams *cparams, defaulttype::BaseMatrix *W);
+    virtual void addComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, sofa::defaulttype::BaseMatrix *W);
 
     virtual void getComplianceMatrix(defaulttype::BaseMatrix* ) const;
 
@@ -88,13 +85,13 @@ public:
     /// @name Correction API
     /// @{
 
-    virtual void computeAndApplyMotionCorrection(const ConstraintParams *cparams, Data< VecCoord > &x, Data< VecDeriv > &v, Data< VecDeriv > &f, const BaseVector *lambda);
+    virtual void computeAndApplyMotionCorrection(const sofa::core::ConstraintParams *cparams, Data< VecCoord > &x, Data< VecDeriv > &v, Data< VecDeriv > &f, const sofa::defaulttype::BaseVector *lambda);
 
-    virtual void computeAndApplyPositionCorrection(const ConstraintParams *cparams, Data< VecCoord > &x, Data< VecDeriv > &f, const BaseVector *lambda);
+    virtual void computeAndApplyPositionCorrection(const sofa::core::ConstraintParams *cparams, Data< VecCoord > &x, Data< VecDeriv > &f, const sofa::defaulttype::BaseVector *lambda);
 
-    virtual void computeAndApplyVelocityCorrection(const ConstraintParams *cparams, Data< VecDeriv > &v, Data< VecDeriv > &f, const BaseVector *lambda);
+    virtual void computeAndApplyVelocityCorrection(const sofa::core::ConstraintParams *cparams, Data< VecDeriv > &v, Data< VecDeriv > &f, const sofa::defaulttype::BaseVector *lambda);
 
-    virtual void applyPredictiveConstraintForce(const ConstraintParams *cparams, Data< VecDeriv > &f, const BaseVector *lambda);
+    virtual void applyPredictiveConstraintForce(const sofa::core::ConstraintParams *cparams, Data< VecDeriv > &f, const sofa::defaulttype::BaseVector *lambda);
 
     /// @}
 
@@ -145,22 +142,22 @@ protected:
 };
 
 template<>
-UncoupledConstraintCorrection< defaulttype::Rigid3Types >::UncoupledConstraintCorrection(behavior::MechanicalState<defaulttype::Rigid3Types> *mm);
+UncoupledConstraintCorrection< sofa::defaulttype::Rigid3Types >::UncoupledConstraintCorrection(sofa::core::behavior::MechanicalState<sofa::defaulttype::Rigid3Types> *mm);
 
 template<>
-void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::init();
+void UncoupledConstraintCorrection< sofa::defaulttype::Rigid3Types >::init();
 
 template<>
-void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::addComplianceInConstraintSpace(const ConstraintParams *cparams, defaulttype::BaseMatrix * /*W*/);
+void UncoupledConstraintCorrection< sofa::defaulttype::Rigid3Types >::addComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, sofa::defaulttype::BaseMatrix * /*W*/);
 
 template<>
-void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::getComplianceMatrix(defaulttype::BaseMatrix * /*m*/) const;
+void UncoupledConstraintCorrection< sofa::defaulttype::Rigid3Types >::getComplianceMatrix(sofa::defaulttype::BaseMatrix * /*m*/) const;
 
 template<>
-void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::computeDx(const Data< VecDeriv > &/*f*/);
+void UncoupledConstraintCorrection< sofa::defaulttype::Rigid3Types >::computeDx(const sofa::core::objectmodel::Data< VecDeriv > &/*f*/);
 
 template<>
-void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::applyContactForce(const defaulttype::BaseVector * /*f*/);
+void UncoupledConstraintCorrection< sofa::defaulttype::Rigid3Types >::applyContactForce(const sofa::defaulttype::BaseVector * /*f*/);
 
 template<>
 void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::setConstraintDForce(double * /*df*/, int /*begin*/, int /*end*/, bool /*update*/);

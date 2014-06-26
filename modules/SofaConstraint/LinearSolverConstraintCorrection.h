@@ -45,24 +45,20 @@ namespace component
 namespace constraintset
 {
 
-using namespace sofa::core;
-using namespace sofa::defaulttype;
-
-
 /// to avoid compilation problem under gcc3.3
-extern inline behavior::OdeSolver* getOdeSolver(objectmodel::BaseContext* context)
+extern inline sofa::core::behavior::OdeSolver* getOdeSolver(sofa::core::objectmodel::BaseContext* context)
 {
-    return context->get<behavior::OdeSolver>();
+    return context->get<sofa::core::behavior::OdeSolver>();
 }
 
 /**
  *  \brief Component computing contact forces within a simulated body using the compliance method.
  */
 template<class TDataTypes>
-class LinearSolverConstraintCorrection : public behavior::ConstraintCorrection< TDataTypes >
+class LinearSolverConstraintCorrection : public sofa::core::behavior::ConstraintCorrection< TDataTypes >
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(LinearSolverConstraintCorrection, TDataTypes), SOFA_TEMPLATE(behavior::ConstraintCorrection, TDataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(LinearSolverConstraintCorrection, TDataTypes), SOFA_TEMPLATE(sofa::core::behavior::ConstraintCorrection, TDataTypes));
 
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::Real Real;
@@ -77,31 +73,31 @@ public:
     typedef typename DataTypes::Deriv Deriv;
 
     typedef std::list<int> ListIndex;
-    typedef behavior::ConstraintCorrection< TDataTypes > Inherit;
+    typedef sofa::core::behavior::ConstraintCorrection< TDataTypes > Inherit;
 protected:
-    LinearSolverConstraintCorrection(behavior::MechanicalState<DataTypes> *mm = NULL);
+    LinearSolverConstraintCorrection(sofa::core::behavior::MechanicalState<DataTypes> *mm = NULL);
 
     virtual ~LinearSolverConstraintCorrection();
 public:
     virtual void init();
 
-    virtual void addComplianceInConstraintSpace(const ConstraintParams *cparams, defaulttype::BaseMatrix* W);
+    virtual void addComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, defaulttype::BaseMatrix* W);
 
     virtual void getComplianceMatrix(defaulttype::BaseMatrix* ) const;
 
-    virtual void computeAndApplyMotionCorrection(const ConstraintParams *cparams, MultiVecCoordId x, MultiVecDerivId v, MultiVecDerivId f, const BaseVector * lambda);
+    virtual void computeAndApplyMotionCorrection(const sofa::core::ConstraintParams *cparams, sofa::core::MultiVecCoordId x, sofa::core::MultiVecDerivId v, sofa::core::MultiVecDerivId f, const sofa::defaulttype::BaseVector * lambda);
 
-    virtual void computeAndApplyPositionCorrection(const ConstraintParams *cparams, MultiVecCoordId x, MultiVecDerivId f, const BaseVector *lambda);
+    virtual void computeAndApplyPositionCorrection(const sofa::core::ConstraintParams *cparams, sofa::core::MultiVecCoordId x, sofa::core::MultiVecDerivId f, const sofa::defaulttype::BaseVector *lambda);
 
-    virtual void computeAndApplyVelocityCorrection(const ConstraintParams *cparams, MultiVecDerivId v, MultiVecDerivId f, const BaseVector *lambda);
+    virtual void computeAndApplyVelocityCorrection(const sofa::core::ConstraintParams *cparams, sofa::core::MultiVecDerivId v, sofa::core::MultiVecDerivId f, const sofa::defaulttype::BaseVector *lambda);
 
-    virtual void computeAndApplyMotionCorrection(const ConstraintParams * /*cparams*/, Data< VecCoord > &/*x*/, Data< VecDeriv > &/*v*/, Data< VecDeriv > &/*f*/, const BaseVector * /*lambda*/) {};
+    virtual void computeAndApplyMotionCorrection(const sofa::core::ConstraintParams * /*cparams*/, sofa::core::objectmodel::Data< VecCoord > &/*x*/, sofa::core::objectmodel::Data< VecDeriv > &/*v*/, sofa::core::objectmodel::Data< VecDeriv > &/*f*/, const sofa::defaulttype::BaseVector * /*lambda*/) {};
 
-    virtual void computeAndApplyPositionCorrection(const ConstraintParams * /*cparams*/, Data< VecCoord > &/*x*/, Data< VecDeriv > &/*f*/, const BaseVector * /*lambda*/) {};
+    virtual void computeAndApplyPositionCorrection(const sofa::core::ConstraintParams * /*cparams*/, sofa::core::objectmodel::Data< VecCoord > &/*x*/, sofa::core::objectmodel::Data< VecDeriv > &/*f*/, const sofa::defaulttype::BaseVector * /*lambda*/) {};
 
-    virtual void computeAndApplyVelocityCorrection(const ConstraintParams * /*cparams*/, Data< VecDeriv > &/*v*/, Data< VecDeriv > &/*f*/, const BaseVector * /*lambda*/) {};
+    virtual void computeAndApplyVelocityCorrection(const sofa::core::ConstraintParams * /*cparams*/, sofa::core::objectmodel::Data< VecDeriv > &/*v*/, sofa::core::objectmodel::Data< VecDeriv > &/*f*/, const sofa::defaulttype::BaseVector * /*lambda*/) {};
 
-    virtual void applyPredictiveConstraintForce(const ConstraintParams *cparams, Data< VecDeriv > &f, const defaulttype::BaseVector *lambda);
+    virtual void applyPredictiveConstraintForce(const sofa::core::ConstraintParams *cparams, sofa::core::objectmodel::Data< VecDeriv > &f, const defaulttype::BaseVector *lambda);
 
     virtual void rebuildSystem(double massFactor, double forceFactor);
 
@@ -134,7 +130,7 @@ public:
 
     /// Pre-construction check method called by ObjectFactory.
     template<class T>
-    static bool canCreate(T*& obj, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
+    static bool canCreate(T*& obj, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg)
     {
         if (getOdeSolver(context) == NULL)
             return false;
@@ -144,7 +140,7 @@ public:
 
 protected:
 
-    behavior::OdeSolver* odesolver;
+    sofa::core::behavior::OdeSolver* odesolver;
     std::vector<sofa::core::behavior::LinearSolver*> linearsolvers;
 
     linearsolver::SparseMatrix<SReal> J; ///< constraint matrix
@@ -156,7 +152,7 @@ protected:
     /**
      * @brief Compute dx correction from motion space force vector.
      */
-    void computeDx(MultiVecDerivId f);
+    void computeDx(sofa::core::MultiVecDerivId f);
 
 private:
     // new :  for non building the constraint system during solving process //
@@ -176,14 +172,14 @@ private:
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_CONSTRAINT_LINEARSOLVERCONSTRAINTCORRECTION_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<Vec3dTypes>;
-extern template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<Vec1dTypes>;
-extern template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<Rigid3dTypes>;
+extern template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<sofa::defaulttype::Vec3dTypes>;
+extern template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<sofa::defaulttype::Vec1dTypes>;
+extern template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<sofa::defaulttype::Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<Vec3fTypes>;
-extern template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<Vec1fTypes>;
-extern template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<Rigid3fTypes>;
+extern template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<sofa::defaulttype::Vec3fTypes>;
+extern template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<sofa::defaulttype::Vec1fTypes>;
+extern template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<sofa::defaulttype::Rigid3fTypes>;
 #endif
 #endif
 

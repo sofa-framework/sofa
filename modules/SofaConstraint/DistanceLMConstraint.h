@@ -41,10 +41,6 @@ namespace component
 namespace constraintset
 {
 
-//using helper::vector;
-//using core::objectmodel::Data;
-//using namespace sofa::core::objectmodel;
-
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template <class DataTypes>
 class DistanceLMConstraintInternalData

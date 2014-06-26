@@ -262,12 +262,12 @@ bool LMConstraintSolver::buildSystem(const core::ConstraintParams *cParams, Mult
 //    cerr<<"-----------LMConstraintSolver::buildSystem " <<  endl;
 
     sofa::helper::AdvancedTimer::stepBegin("SolveConstraints "  + id.getName() + " BuildSystem Prepare");
-    const helper::vector< BaseLMConstraint* > &LMConstraints=LMConstraintVisitor.getConstraints();
+    const helper::vector< sofa::core::behavior::BaseLMConstraint* > &LMConstraints=LMConstraintVisitor.getConstraints();
     //Informations to build the matrices
     //Dofs to be constrained
     for (unsigned int mat=0; mat<LMConstraints.size(); ++mat)
     {
-        BaseLMConstraint *constraint=LMConstraints[mat];
+        sofa::core::behavior::BaseLMConstraint *constraint=LMConstraints[mat];
         if (constraint->getNumConstraint(cParams->constOrder()))
         {
             setDofs.insert(constraint->getSimulatedMechModel1());
@@ -385,7 +385,7 @@ bool LMConstraintSolver::solveSystem(const core::ConstraintParams* cParams, Mult
         cerr << "\n" << c << endl;
     }
 
-    const helper::vector< BaseLMConstraint* > &LMConstraints=LMConstraintVisitor.getConstraints();
+    const helper::vector< sofa::core::behavior::BaseLMConstraint* > &LMConstraints=LMConstraintVisitor.getConstraints();
 
     //"Cold" start
     Lambda=VectorEigen::Zero(numConstraint);
@@ -676,9 +676,9 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( MultiVecId id, C
         unsigned int idxConstraint=0;
         for (unsigned int componentConstraint=0; componentConstraint<LMConstraints.size(); ++componentConstraint)
         {
-            const BaseLMConstraint *constraint=LMConstraints[componentConstraint];
+            const sofa::core::behavior::BaseLMConstraint *constraint=LMConstraints[componentConstraint];
             //Get the vector containing all the constraint stored in one component
-            const helper::vector< ConstraintGroup* > &constraintOrder=constraint->getConstraintsOrder(Order);
+            const helper::vector< sofa::core::behavior::ConstraintGroup* > &constraintOrder=constraint->getConstraintsOrder(Order);
 
             unsigned int numConstraintToProcess=0;
             for (unsigned int constraintEntry=0; constraintEntry<constraintOrder.size(); ++constraintEntry, idxConstraint += numConstraintToProcess)
@@ -717,9 +717,9 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( MultiVecId id, C
 
         for (unsigned int componentConstraint=0; componentConstraint<numLMConstraintComponents; ++componentConstraint)
         {
-            BaseLMConstraint *constraint=LMConstraints[componentConstraint];
+            sofa::core::behavior::BaseLMConstraint *constraint=LMConstraints[componentConstraint];
             //Get the vector containing all the constraint stored in one component
-            const helper::vector< ConstraintGroup* > &constraintOrder=constraint->getConstraintsOrder(Order);
+            const helper::vector< sofa::core::behavior::ConstraintGroup* > &constraintOrder=constraint->getConstraintsOrder(Order);
 
             unsigned int numConstraintToProcess=0;
             for (unsigned int constraintEntry=0; constraintEntry<constraintOrder.size(); ++constraintEntry, idxConstraint += numConstraintToProcess, ++idxBlocks)

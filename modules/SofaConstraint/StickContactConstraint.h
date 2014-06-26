@@ -46,9 +46,6 @@ namespace component
 namespace collision
 {
 
-using namespace sofa::defaulttype;
-
-
 template <class TCollisionModel1, class TCollisionModel2>
 class StickContactConstraint : public core::collision::Contact, public Identifier
 {
@@ -73,7 +70,7 @@ protected:
     ContactMapper<CollisionModel1,DataTypes1> mapper1;
     ContactMapper<CollisionModel2,DataTypes2> mapper2;
 
-    constraintset::BilateralInteractionConstraint<Vec3Types>::SPtr m_constraint;
+    constraintset::BilateralInteractionConstraint<sofa::defaulttype::Vec3Types>::SPtr m_constraint;
     core::objectmodel::BaseContext* parent;
 
     std::vector< sofa::core::collision::DetectionOutput* > contacts;
