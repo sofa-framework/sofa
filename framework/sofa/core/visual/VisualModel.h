@@ -67,20 +67,13 @@ public:
      *  Called once before the first frame is drawn, and if the graphical
      *  context has been recreated.
      */
-    virtual void initVisual() { initTextures(); }
+    virtual void initVisual() {  }
 
     /**
      *  \brief clear some graphical resources (generaly called before the deleteVisitor).
      *  \note: for more general usage you can use the cleanup visitor
      */
     virtual void clearVisual() { }
-
-    /**
-     *  \brief Initialize the textures, or other graphical resources.
-     *
-     *  @deprecated Use initVisual() instead.
-     */
-    virtual void initTextures() {}
 
     /**
      *  \brief Called before objects in the current branch are displayed
