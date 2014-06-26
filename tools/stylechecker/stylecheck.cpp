@@ -219,12 +219,12 @@ int main(int argc, const char** argv){
             j++ ;
         }
         auto& smanager=ctx.getSourceManager();
-        std::cerr << smanager.getFileEntryForID(smanager.getMainFileID())->getName()
-                  << ":1:1: info: number of loaded include files: " << j << std::endl ;
+        //std::cerr << smanager.getFileEntryForID(smanager.getMainFileID())->getName()
+        //          << ":1:1: info: number of loaded include files: " << j << std::endl ;
 
 
-        //ésr->setContext(&ctx);
-        //sr->TraverseDecl(ctx.getTranslationUnitDecl());
+        sr->setContext(&ctx);
+        sr->TraverseDecl(ctx.getTranslationUnitDecl());
     }
 
 }
