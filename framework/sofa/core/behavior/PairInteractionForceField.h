@@ -145,10 +145,6 @@ public:
 
     virtual void addForce(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f1, DataVecDeriv& f2, const DataVecCoord& x1, const DataVecCoord& x2, const DataVecDeriv& v1, const DataVecDeriv& v2 )=0;
 
-    /// @deprecated
-    //virtual void addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2);
-
-
     /// Compute the force derivative given a small displacement from the
     /// position and velocity used in the previous call to addForce().
     ///
@@ -168,28 +164,6 @@ public:
 
     virtual void addDForce(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& df1, DataVecDeriv& df2, const DataVecDeriv& dx1, const DataVecDeriv& dx2)=0;
 
-    /// @deprecated
-    //virtual void addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2, double kFactor, double /*bFactor*/);
-
-    /// Compute the force derivative given a small displacement from the
-    /// position and velocity used in the previous call to addForce().
-    ///
-    /// The derivative should be directly derived from the computations
-    /// done by addForce. Any forces neglected in addDForce will be integrated
-    /// explicitly (i.e. using its value at the beginning of the timestep).
-    ///
-    /// If the ForceField can be represented as a matrix, this method computes
-    /// $ df += K dx $
-    ///
-    /// This method must be implemented by the component, and is usually called
-    /// by the generic PairInteractionForceField::addDForce() method.
-    ///
-    /// @deprecated to more efficiently accumulate contributions from all terms
-    ///   of the system equation, a new addDForce method allowing to pass two
-    ///   coefficients for the stiffness and damping terms should now be used.
-    /// @deprecated
-    //virtual void addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2);
-
     /// Get the potential energy associated to this ForceField.
     ///
     /// Used to extimate the total energy of the system by some
@@ -200,8 +174,6 @@ public:
 
     virtual double getPotentialEnergy(const MechanicalParams* mparams /* PARAMS FIRST */, const DataVecCoord& x1, const DataVecCoord& x2) const=0;
 
-    /// @deprecated
-    //virtual double getPotentialEnergy(const VecCoord& x1, const VecCoord& x2) const;
 
     /// @}
 
@@ -210,22 +182,6 @@ public:
     template<class T>
     static bool canCreate(T* obj, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
     {
-        MechanicalState<DataTypes>* mstate1 = NULL;
-        MechanicalState<DataTypes>* mstate2 = NULL;
-        std::string object1 = arg->getAttribute("object1","@./");
-        std::string object2 = arg->getAttribute("object2","@./");
-        if (object1.empty()) object1 = "@./";
-        if (object2.empty()) object2 = "@./";
-        if (object1[0] != '@')
-            object1 = BaseLink::ConvertOldPath(object1, "object1", "object1", context, false);
-        if (object2[0] != '@')
-            object2 = BaseLink::ConvertOldPath(object2, "object2", "object2", context, false);
-        context->findLinkDest(mstate1, object1, NULL);
-        context->findLinkDest(mstate2, object2, NULL);
-
-        if (!mstate1 || !mstate2)
-            return false;
-
         return BaseInteractionForceField::canCreate(obj, context, arg);
     }
 
@@ -240,19 +196,6 @@ public:
 
         if (arg)
         {
-            std::string object1 = arg->getAttribute("object1","");
-            std::string object2 = arg->getAttribute("object2","");
-            if (!object1.empty() && object1[0] != '@')
-            {
-                object1 = BaseLink::ConvertOldPath(object1, "object1", "object1", context, false);
-                arg->setAttribute("object1", object1.c_str());
-            }
-            if (!object2.empty() && object2[0] != '@')
-            {
-                object2 = BaseLink::ConvertOldPath(object2, "object2", "object2", context, false);
-                arg->setAttribute("object2", object2.c_str());
-            }
-
             obj->parse(arg);
         }
 

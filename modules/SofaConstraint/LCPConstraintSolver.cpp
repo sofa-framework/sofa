@@ -42,6 +42,8 @@
 
 #include <sofa/core/ObjectFactory.h>
 
+using sofa::core::VecId;
+
 namespace sofa
 {
 

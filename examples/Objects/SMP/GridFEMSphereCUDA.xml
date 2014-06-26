@@ -12,7 +12,7 @@
                 <Mesh src="@loader"/>
                 <MappedObject name="Mapped" template="CudaVec3f" />
 		<CudaVisualModel computeNormals="true"   template="CudaVec3f"   name="Visual"   diffuse="0.8 0.8 0.8 1.0"    />
-		<BarycentricMapping   object1="../.." object2="Mapped" />
+		<BarycentricMapping   input="@.." output="@Mapped" />
 	</Node>
 
 	<Node name="CollisionNode">

@@ -14,7 +14,7 @@
         <RegularGridSpringForceField name="Springs" stiffness="200" damping="1" />
         <Node name="Visu">
             <OglModel name="Visual" filename="mesh/smCube125.obj" color="green" dx="18" dy="17" dz="29" />
-            <BarycentricMapping object1="../.." object2="Visual" />
+            <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
             <MeshObjLoader filename="mesh/smCube125.obj" name="loader" />
@@ -35,7 +35,7 @@
         <TetrahedronFEMForceField name="FEM" youngModulus="300" poissonRatio="0.3" method="polar" />
         <Node name="Visu">
             <OglModel name="Visual" filename="mesh/smCube125.obj" color="cyan" dx="0" dy="17" dz="29" />
-            <BarycentricMapping object1="../.." object2="Visual" />
+            <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
             <MeshObjLoader filename="mesh/smCube125.obj" name="loader" />
@@ -58,7 +58,7 @@
         <UniformMass filename="BehaviorModels/smCube125.rigid" />
         <Node name="Visu">
             <OglModel name="Visual" filename="mesh/smCube125.obj" color="white" />
-            <RigidMapping object1="../.." object2="Visual" />
+            <RigidMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
             <MeshObjLoader filename="mesh/smCube125.obj" name="loader" />

@@ -15,7 +15,7 @@
             <UncoupledConstraintCorrection />
             <Node name="Visu">
                 <OglModel name="Visual" fileMesh="mesh/torus.obj" color="1.0 0.5 0.25 1.0" scale="1.0" />
-                <RigidMapping object1="../.." object2="Visual" />
+                <RigidMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" triangulate="true" />
@@ -34,7 +34,7 @@
             <UncoupledConstraintCorrection />
             <Node name="Visu">
                 <OglModel name="Visual" fileMesh="mesh/man.obj" color="0.8 0.8 0.8 1.0" scale="10" dy="-3.0" />
-                <RigidMapping object1="../.." object2="Visual" />
+                <RigidMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/man.obj" triangulate="true" />
@@ -52,7 +52,7 @@
             <UncoupledConstraintCorrection />
             <Node name="Visu">
                 <OglModel name="Visual" fileMesh="mesh/smCube27.obj" color="0.0 0.5 0.5 1.0" scale="0.3" />
-                <RigidMapping object1="../.." object2="Visual" />
+                <RigidMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/smCube27.obj" triangulate="true" />
@@ -71,7 +71,7 @@
             <UncoupledConstraintCorrection />
             <Node name="Visu">
                 <OglModel name="Visual" fileMesh="mesh/dragon_clean.obj" color="0.2 0.2 0.8 1.0" scale="0.25" />
-                <RigidMapping object1="../.." object2="Visual" />
+                <RigidMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/dragon_clean.obj" triangulate="true" />

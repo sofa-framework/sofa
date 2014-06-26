@@ -42,6 +42,8 @@ namespace helper
 namespace io
 {
 
+#ifdef SOFA_HAVE_PNG
+
 class SOFA_HELPER_API ImagePNG : public Image
 {
 public:
@@ -69,4 +71,4 @@ public:
 
 } // namespace sofa
 
-
+#endif

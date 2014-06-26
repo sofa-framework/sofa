@@ -62,14 +62,15 @@ public:
     virtual void initForce(int /*line*/, double* /*force*/) {}
 
     /// Resolution of the constraint for one Gauss-Seidel iteration
-    virtual void resolution(int line, double** w, double* d, double* force, double * /*dFree*/)
+    virtual void resolution(int line, double** w, double* d, double* force, double * dFree)
     {
-        resolution(line, w, d, force);
+        SOFA_UNUSED(line);
+        SOFA_UNUSED(w);
+        SOFA_UNUSED(d);
+        SOFA_UNUSED(force);
+        SOFA_UNUSED(dFree);
+        std::cerr << "ERROR(" << "ConstraintResolution" << ")::resolution(int , double** , double* , double* , double * ) not implemented." << std::endl;
     };
-
-    /// Resolution of the constraint for one Gauss-Seidel iteration
-    /// @deprecated
-    virtual void resolution(int /*line*/, double** /*w*/, double* /*d*/, double* /*force*/) {};
 
     /// Called after Gauss-Seidel last iteration, in order to store last computed forces for the inital guess
     virtual void store(int /*line*/, double* /*force*/, bool /*convergence*/) {}
@@ -136,21 +137,18 @@ public:
     };
     typedef helper::vector<ConstraintBlockInfo> VecConstraintBlockInfo;
 
-    /// Get information for each constraint: pointer to parent BaseConstraint, unique persistent ID, 3D position
-	/// @deprecated
-    virtual void getConstraintInfo(VecConstraintBlockInfo& /*blocks*/, VecPersistentID& /*ids*/, VecConstCoord& /*positions*/, VecConstDeriv& /*directions*/, VecConstArea& /*areas*/) {}
-
 	/// Get information for each constraint: pointer to parent BaseConstraint, unique persistent ID, 3D position
 	/// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC) and resolution parameters (smoothness, ...)
 	virtual void getConstraintInfo(const ConstraintParams* cParams, VecConstraintBlockInfo& blocks, VecPersistentID& ids, VecConstCoord& positions, VecConstDeriv& directions, VecConstArea& areas)
 	{
-		SOFA_UNUSED(cParams);
-		getConstraintInfo(blocks, ids, positions, directions, areas);
-	}
+        SOFA_UNUSED(cParams);
+        SOFA_UNUSED(blocks);
+        SOFA_UNUSED(ids);
+        SOFA_UNUSED(positions);
+        SOFA_UNUSED(directions);
+        SOFA_UNUSED(areas);
 
-    /// Add the corresponding ConstraintResolution using the offset parameter
-	/// @deprecated
-    virtual void getConstraintResolution(std::vector<ConstraintResolution*>& /*resTab*/, unsigned int& /*offset*/) {};
+	}
 
 	/// Add the corresponding ConstraintResolution using the offset parameter
 	/// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC) and resolution parameters (smoothness, ...)
@@ -158,8 +156,9 @@ public:
     virtual void getConstraintResolution(const ConstraintParams* cParams, std::vector<ConstraintResolution*> &resTab, unsigned int &offset)
 	{
 		SOFA_UNUSED(cParams);
-		getConstraintResolution(resTab, offset);
-	};
+        SOFA_UNUSED(resTab);
+        SOFA_UNUSED(offset);
+    }
 };
 
 } // namespace behavior

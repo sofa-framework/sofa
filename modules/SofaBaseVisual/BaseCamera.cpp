@@ -553,63 +553,13 @@ bool BaseCamera::importParametersFromFile(const std::string& viewFilename)
     TiXmlDocument doc(viewFilename.c_str());
     if (!doc.LoadFile())
     {
-#ifndef SOFA_DEPRECATE_OLD_API
-        ////qglviewer-type view parameters
-        //std::ifstream in(viewFilename.c_str());
-        //Vec3& position = *p_position.beginEdit();
-        //Quat& orientation = *p_orientation.beginEdit();
-
-        //if(in.good())
-        //{
-        //	in >> position[0];
-        //	in >> position[1];
-        //	in >> position[2];
-        //	in >> orientation[0];
-        //	in >> orientation[1];
-        //	in >> orientation[2];
-        //	in >> orientation[3];
-        //	orientation.normalize();
-        //	p_position.endEdit();
-        //	p_orientation.endEdit();
-        //	in.close();
-
-        //	return true;
-        //}
-        //oldqtviewer-type view parameters
-        std::ifstream in(viewFilename.c_str());
-        Vec3 translation;
-        Quat& orientation = *p_orientation.beginEdit();
-        //p_position.setValue(Vec3(0.0,0.0,0.0));
-
-        if(in.good())
-        {
-            serr << "Deprecated View File " << viewFilename << sendl;
-            in >> translation[0];
-            in >> translation[1];
-            in >> translation[2];
-            in >> orientation[0];
-            in >> orientation[1];
-            in >> orientation[2];
-            in >> orientation[3];
-
-            orientation.normalize();
-            p_orientation.endEdit();
-            translate(translation);
-            in.close();
-
-            setDefaultView(this->getContext()->getGravity());
-
-            return true;
-        }
-        else
-#endif // SOFA_DEPRECATE_OLD_API
-            return false;
+        return false;
     }
 
     TiXmlHandle hDoc(&doc);
     TiXmlElement* root;
 
-    root = hDoc.FirstChildElement().Element();
+    root = hDoc.FirstChildElement().ToElement();
 
     if (!root)
         return false;

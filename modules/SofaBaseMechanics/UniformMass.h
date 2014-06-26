@@ -41,8 +41,6 @@ namespace component
 namespace mass
 {
 
-using namespace sofa::defaulttype;
-
 template <class DataTypes, class TMassType>
 class UniformMass : public core::behavior::Mass<DataTypes>
 {

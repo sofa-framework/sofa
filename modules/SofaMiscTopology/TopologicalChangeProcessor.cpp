@@ -704,7 +704,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                     core::behavior::MechanicalState<Vec3Types> * mstate =
                         m_topology->getContext()->get< core::behavior::MechanicalState<Vec3Types> > ();
                     //get the coordinates of the mechanical state
-                    const helper::vector<Vector3> &v_coords = *mstate->getX();
+                    const helper::vector<Vector3> &v_coords = mstate->read(core::ConstVecCoordId::position())->getValue();
                     a = v_coords[a_last];
                 }
 
@@ -1345,7 +1345,7 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
         {
             core::behavior::MechanicalState<Vec3Types>* mstate = m_topology->getContext()->get<core::behavior::MechanicalState<Vec3Types> >();
             //get the coordinates of the mechanical state
-            const helper::vector<Vector3> &v_coords =  *mstate->getX();
+            const helper::vector<Vector3> &v_coords =  mstate->read(core::ConstVecCoordId::position())->getValue();
             a = v_coords[a_last];
         }
 

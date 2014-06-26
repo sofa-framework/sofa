@@ -154,14 +154,14 @@ sofa::component::container::MechanicalObject< DataTypes >* FixParticlePerformer<
         }
         else if(dynamic_cast<RigidSphereModel*>(b.body)||dynamic_cast<OBBModel*>(b.body)){
             collisionState = dynamic_cast<MouseContainer*>(b.mstate);
-            fixPoint = (*(collisionState->getX()))[idx];
+            fixPoint = (collisionState->read(core::ConstVecCoordId::position())->getValue())[idx];
             points.push_back(idx);
         }
     }
     else if (b.mstate)
     {
         collisionState = dynamic_cast<MouseContainer*>(b.mstate);
-        fixPoint = (*(collisionState->getX()))[idx];
+        fixPoint = (collisionState->read(core::ConstVecCoordId::position())->getValue())[idx];
         points.push_back(idx);
     }
 

@@ -78,18 +78,6 @@ public:
 
     void initSeed(long seed);
 
-
-
-    /// @deprecated for backward compatibility
-    /// use random<long>(min,max)
-    long int randomInteger(long min, long max);
-    /// @deprecated for backward compatibility
-    /// use random<double>(min,max)
-    double randomDouble(double min, double max);
-
-
-
-
     /// number between [min, max)  (max has less chance to appear)
     /// note that "only" 2^32 different values can be generated
     /// @warning min < max

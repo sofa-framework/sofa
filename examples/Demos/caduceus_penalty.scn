@@ -40,12 +40,12 @@
 
         <Node name="VisuCornea" tags="Visual" >
 			<VisualModel  name="VisualCornea" fileMesh="mesh/snake_cornea.obj"   />
-			<BarycentricMapping object1="../.." object2="VisualCornea" />
+			<BarycentricMapping input="@.." output="@VisualCornea" />
         </Node>	
 		
         <Node name="VisuEye" tags="Visual" >
 			<VisualModel  name="VisualEye" fileMesh="mesh/snake_yellowEye.obj"   />
-			<BarycentricMapping object1="../.." object2="VisualEye" />
+			<BarycentricMapping input="@.." output="@VisualEye" />
         </Node>				
     </Node>
 

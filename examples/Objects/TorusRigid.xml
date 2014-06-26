@@ -5,7 +5,7 @@
 	<UniformMass />
 	<Node name="Visu">
 		<OglModel name="Visual" fileMesh="mesh/torus.obj" color="gray" scale="1.0"/>
-		<RigidMapping object1="../.." object2="Visual" />
+		<RigidMapping input="@.." output="@Visual" />
 	</Node>
 	<Node name="Surf2">
 		<MeshObjLoader name="meshLoader" filename="mesh/torus_for_collision.obj"/>

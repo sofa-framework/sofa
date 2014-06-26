@@ -405,6 +405,11 @@ void SPHFluidSurfaceMapping<In,Out>::applyJ(const core::MechanicalParams * /*mpa
 }
 
 template <class In, class Out>
+void SPHFluidSurfaceMapping<In,Out>::applyJT(const core::MechanicalParams * /*mparams*/ /* PARAMS FIRST */, Data<InVecDeriv>& /*dOut*/, const Data<OutVecDeriv>& /*dIn*/)
+{
+}
+
+template <class In, class Out>
 void SPHFluidSurfaceMapping<In,Out>::draw(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowMappings()) return;
@@ -442,7 +447,7 @@ void SPHFluidSurfaceMapping<In,Out>::draw(const core::visual::VisualParams* vpar
 
 
     std::vector< Vector3 > points2;
-    const OutVecCoord& out = *this->toModel->getX();
+    const OutVecCoord& out = this->toModel->read(core::ConstVecCoordId::position())->getValue();
     for (unsigned int i=0; i<out.size(); ++i)
     {
         points2.push_back(out[i]);

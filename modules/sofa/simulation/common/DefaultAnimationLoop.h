@@ -32,9 +32,6 @@
 #include <sofa/simulation/common/Node.h>
 #include <sofa/helper/AdvancedTimer.h>
 
-using namespace sofa::core::objectmodel;
-using namespace sofa::core::behavior;
-
 namespace sofa
 {
 
@@ -51,6 +48,8 @@ class SOFA_SIMULATION_COMMON_API DefaultAnimationLoop : public sofa::core::behav
 {
 public:
     typedef sofa::core::behavior::BaseAnimationLoop Inherit;
+    typedef sofa::core::objectmodel::BaseContext BaseContext;
+    typedef sofa::core::objectmodel::BaseObjectDescription BaseObjectDescription;
     SOFA_CLASS(DefaultAnimationLoop,sofa::core::behavior::BaseAnimationLoop);
 protected:
     DefaultAnimationLoop(simulation::Node* gnode = NULL);

@@ -30,14 +30,14 @@
 			<Mesh filename="mesh/raptor_35kp.obj"/>
 			<MechanicalObject name="Visual" template="CudaVec3f" />
 			<CudaVisualModel template="CudaVec3f" diffuse="0.2 0.8 0.1 1.0" computeNormals="true" />			
-			<BarycentricMapping object2="Visual" isMechanical="0" />
+			<BarycentricMapping output="@Visual" isMechanical="0" />
 		</Node>
 
 		<Node name="Surf">
 			<Mesh filename="mesh/raptorProps_25kp.obj"/>
 			<MechanicalObject name="Visual" template="CudaVec3f" />
 			<CudaVisualModel template="CudaVec3f" diffuse="0.2 0.2 0.2 1.0" computeNormals="true" />
-			<BarycentricMapping object2="Visual" isMechanical="0" />
+			<BarycentricMapping output="@Visual" isMechanical="0" />
 		</Node>
 -->
   </Node>

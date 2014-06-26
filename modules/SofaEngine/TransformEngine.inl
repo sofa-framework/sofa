@@ -109,10 +109,10 @@ private:
 
 //*****************************************************************
 //Rotation Operation
-template <class DataTypes>
-struct Rotation : public TransformOperation<DataTypes>
+template <class DataTypes, int N, bool isVector>
+struct RotationSpecialized : public TransformOperation<DataTypes>
 {
-    typedef typename DataTypes::Real Real;
+	typedef typename DataTypes::Real Real;
 
     void execute(typename DataTypes::Coord &p) const
     {
@@ -132,24 +132,57 @@ private:
     defaulttype::Quaternion q;
 };
 
-#ifndef SOFA_DOUBLE
-template<>
-void Rotation<defaulttype::Rigid3fTypes>::execute(defaulttype::Rigid3fTypes::Coord &p) const
+template <class DataTypes>
+struct RotationSpecialized<DataTypes, 2, false> : public TransformOperation<DataTypes>
 {
-    p.getCenter() = q.rotate(p.getCenter());
-    p.getOrientation() = q*p.getOrientation();
-}
+    typedef typename DataTypes::Real Real;
 
-#endif
-#ifndef SOFA_FLOAT
-template<>
-void Rotation<defaulttype::Rigid3dTypes>::execute(defaulttype::Rigid3dTypes::Coord &p) const
+    void execute(typename DataTypes::Coord &p) const
+    {
+        defaulttype::Vector3 pos;
+        DataTypes::get(pos[0],pos[1],pos[2],p);
+        pos=q.rotate(pos);
+        DataTypes::set(p,pos[0],pos[1],pos[2]);
+
+		p.getOrientation() += rotZ;
+    }
+
+    void configure(const defaulttype::Vector3 &r, bool inverse)
+    {
+        q=helper::Quater<Real>::createQuaterFromEuler( r*(M_PI/180.0));
+		rotZ = static_cast<Real>(r.z() * (M_PI/180.0f));
+        if (inverse)
+            rotZ = -rotZ;
+    }
+private:
+    Real rotZ;
+	defaulttype::Quaternion q;
+};
+
+template <class DataTypes>
+struct RotationSpecialized<DataTypes, 3, false> : public TransformOperation<DataTypes>
 {
-    p.getCenter() = q.rotate(p.getCenter());
-    p.getOrientation() = q*p.getOrientation();
-}
-#endif
+    typedef typename DataTypes::Real Real;
 
+    void execute(typename DataTypes::Coord &p) const
+    {
+		p.getCenter() = q.rotate(p.getCenter());
+		p.getOrientation() = q*p.getOrientation();
+    }
+
+    void configure(const defaulttype::Vector3 &r, bool inverse)
+    {
+        q=helper::Quater<Real>::createQuaterFromEuler( r*(M_PI/180.0));
+        if (inverse)
+            q = q.inverse();
+    }
+private:
+	defaulttype::Quaternion q;
+};
+
+template <class DataTypes>
+struct Rotation : public RotationSpecialized<DataTypes, DataTypes::spatial_dimensions, DataTypes::coord_total_size == DataTypes::spatial_dimensions>
+{ };
 
 //*****************************************************************
 //Translation Operation

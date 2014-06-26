@@ -32,6 +32,7 @@
 #include <SofaConstraint/BilateralInteractionConstraint.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/MechanicalParams.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 #include <sofa/simulation/common/SceneLoaderXML.h>
 
@@ -102,7 +103,7 @@ struct BilateralInteractionConstraint_test : public Sofa_test<typename _DataType
         if(meca.size()==2)
         {
             for(int i=0; i<meca.size(); i++)
-                points[i]=(*meca[i]->getX())[0];
+                points[i]=(meca[i]->read(core::ConstVecCoordId::position())->getValue())[0];
         }
         else
         {

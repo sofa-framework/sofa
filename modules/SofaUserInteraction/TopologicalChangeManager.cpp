@@ -503,7 +503,7 @@ bool TopologicalChangeManager::incisionTriangleModel(TriangleModel *firstModel ,
         if(!incision.firstCut) //Not the first cut, look for new coord of a
         {
             core::behavior::MechanicalState<Vec3Types>* mstate = currentTopology->getContext()->get<core::behavior::MechanicalState<Vec3Types> >();
-            const helper::vector<Vector3> &v_coords =  *mstate->getX();
+            const helper::vector<Vector3> &v_coords =  mstate->read(core::ConstVecCoordId::position())->getValue();
             coord_a = v_coords[last_indexPoint];
         }
 

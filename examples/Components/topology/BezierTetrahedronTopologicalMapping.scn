@@ -16,7 +16,7 @@
         <Node name="PointSetTopology">
 	        <TetrahedronSetTopologyModifier />
         	<BezierTetrahedronSetTopologyContainer name="ContainerBezier"/>	
-			<Mesh2BezierTopologicalMapping object1="Container1" object2="ContainerBezier" bezierTetrahedronDegree="3" />
+			<Mesh2BezierTopologicalMapping input="@Container1" output="@ContainerBezier" bezierTetrahedronDegree="3" />
 			<MechanicalObject />	
 	
 			<BezierTetrahedronSetGeometryAlgorithms name="GeomAlgo" drawControlPointsEdges="true"/>

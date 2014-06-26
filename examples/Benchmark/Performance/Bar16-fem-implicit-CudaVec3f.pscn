@@ -1,7 +1,9 @@
 <Node name="root" dt="0.04" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="1">
 <?php $size=$_ENV["s"]; if (!$size) $size=10; ?>
 	<Node name="M1">
-		<!--<CGImplicit iterations="10" tolerance="1e-15" threshold="1e-15" />-->                <Object type="EulerImplicit" />                <Object type="CGLinearSolver" iterations="10" tolerance="1e-15" threshold="1e-15"/>
+		<!--<CGImplicit iterations="10" tolerance="1e-15" threshold="1e-15" />-->
+		<EulerImplicit />
+		<CGLinearSolver iterations="10" tolerance="1e-15" threshold="1e-15"/>
 		<MechanicalObject template="CudaVec3f" />
 <!--		<UniformMass totalmass="20" /> -->
 <?php echo '<UniformMass totalmass="'.(20*$size).'" />'."\n"; ?>

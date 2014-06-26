@@ -50,6 +50,8 @@
 #include <QDesktopServices>
 #include <QSettings>
 
+using namespace sofa::core;
+
 namespace sofa
 {
 

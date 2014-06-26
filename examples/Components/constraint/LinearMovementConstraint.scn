@@ -18,7 +18,7 @@
         </Node>
         <Node name="Visu">
             <OglModel name="Visual" fileMesh="mesh/liver.obj" color="red" />
-            <RigidMapping template="Mapping&lt;State&lt;StdRigidTypes&lt;3,double&gt; &gt;,MappedModel&lt;ExtVectorTypes&lt;Vec&lt;3,float&gt;,Vec&lt;3,float&gt;,float&gt; &gt; &gt; &gt;" name="default161" object1="../.." object2="Visual" />
+            <RigidMapping template="Mapping&lt;State&lt;StdRigidTypes&lt;3,double&gt; &gt;,MappedModel&lt;ExtVectorTypes&lt;Vec&lt;3,float&gt;,Vec&lt;3,float&gt;,float&gt; &gt; &gt; &gt;" name="default161" input="@.." output="@Visual" />
         </Node>
     </Node>
     <Node name="Spoon2">
@@ -39,7 +39,7 @@
         </Node>
         <Node name="Visu">
             <OglModel name="Visual" fileMesh="mesh/liver.obj" color="green" />
-            <RigidMapping template="Mapping&lt;State&lt;StdRigidTypes&lt;3,double&gt; &gt;,MappedModel&lt;ExtVectorTypes&lt;Vec&lt;3,float&gt;,Vec&lt;3,float&gt;,float&gt; &gt; &gt; &gt;" name="default161" object1="../.." object2="Visual"/>
+            <RigidMapping template="Mapping&lt;State&lt;StdRigidTypes&lt;3,double&gt; &gt;,MappedModel&lt;ExtVectorTypes&lt;Vec&lt;3,float&gt;,Vec&lt;3,float&gt;,float&gt; &gt; &gt; &gt;" name="default161" input="@.." output="@Visual"/>
         </Node>
     </Node>
     <Node name="Spoon3">
@@ -60,7 +60,7 @@
         </Node>
         <Node name="Visu">
             <OglModel name="Visual" fileMesh="mesh/liver.obj" color="blue" />
-            <RigidMapping template="Mapping&lt;State&lt;StdRigidTypes&lt;3,double&gt; &gt;,MappedModel&lt;ExtVectorTypes&lt;Vec&lt;3,float&gt;,Vec&lt;3,float&gt;,float&gt; &gt; &gt; &gt;" name="default161" object1="../.." object2="Visual" />
+            <RigidMapping template="Mapping&lt;State&lt;StdRigidTypes&lt;3,double&gt; &gt;,MappedModel&lt;ExtVectorTypes&lt;Vec&lt;3,float&gt;,Vec&lt;3,float&gt;,float&gt; &gt; &gt; &gt;" name="default161" input="@.." output="@Visual" />
         </Node>
     </Node>
 </Node>

@@ -13,13 +13,13 @@
 			/>
 		<MechanicalObject name="surface" dx="10" scale="0.01"/>
 		<Node name="victoria_tetra" >
-			<Object type="EulerImplicit" />
+			<EulerImplicit />
 			<CGLinearSolver iterations="5" />
 			<TetrahedronSetTopologyContainer name="Container"/>
 			<TetrahedronSetTopologyModifier name="Modifier"/>
 			<TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo"/>
 			<TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"/>
-			<Hexa2TetraTopologicalMapping object1="../.." object2="Container" />
+			<Hexa2TetraTopologicalMapping input="@.." output="@Container" />
 			<MechanicalObject rest_position="@../surface.rest_position" position="@../surface.position" />
 			<UniformMass totalmass="1" />
 			<TetrahedralCorotationalFEMForceField name="FEM" youngModulus="100" poissonRatio="0.3" computeGlobalMatrix="false" method="large"  />
@@ -33,11 +33,11 @@
 				<Triangle />
 				<Line />
 				<Point />
-				<BarycentricMapping object1="../.." object2="Collision"/> 
+				<BarycentricMapping input="@.." output="@Collision"/> 
 			</Node>
 <!--			<Node name="Visual">
 				<OglModel name="VisualModel" fileMesh="mesh/victoria.obj" color="0.8 0.8 1 1" dx="-10" scale="0.01"/>
-				<BarycentricMapping object1="../.." object2="VisualModel" name="visual mapping"/>
+				<BarycentricMapping input="@.." output="@VisualModel" name="visual mapping"/>
 			</Node>-->
 		</Node>
 	</Node>

@@ -31,6 +31,7 @@
 #include <sofa/simulation/tree/TreeSimulation.h>
 
 namespace sofa {
+namespace {
 
 using namespace modeling;
 
@@ -259,7 +260,10 @@ TEST_F( DAG_test, traverse )
     traverse_morecomplex();
 }
 
-}// namespace sofa
+
+
+} // namespace
+} // namespace sofa
 
 
 

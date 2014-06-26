@@ -73,7 +73,6 @@ public:
     void init() ;
     void reinit() { };
     void initVisual();
-    void update() { };
 
     void preDrawScene(core::visual::VisualParams* vp);
     bool drawScene(core::visual::VisualParams* vp);

@@ -104,10 +104,10 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::reinit()
         return;
     }
 
-    const VecCoord *X0=this->mstate->getX0();
+    const VecCoord& X0=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
     Vec<8,Coord> nodesCoarse;
     for(int w=0; w<8; ++w)
-        nodesCoarse[w] = (*X0)[this->_topology->getHexahedron(0)[w]];
+        nodesCoarse[w] = (X0)[this->_topology->getHexahedron(0)[w]];
 
     Vec<8,Coord> nodesFine;
     for(int w=0; w<8; ++w)
@@ -456,11 +456,11 @@ template<class T>
 void NonUniformHexahedralFEMForceFieldAndMass<T>::initLarge( const int i)
 
 {
-    const VecCoord *X0=this->mstate->getX0();
+    const VecCoord& X0=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
     Vec<8,Coord> nodes;
     for(int w=0; w<8; ++w)
-        nodes[w] = (*X0)[this->_topology->getHexahedron(i)[w]];
+        nodes[w] = (X0)[this->_topology->getHexahedron(i)[w]];
 
     // compute initial configuration in order to compute corotationnal deformations
     Coord horizontal;
@@ -491,11 +491,11 @@ template<class T>
 void NonUniformHexahedralFEMForceFieldAndMass<T>::initPolar( const int i)
 
 {
-    const VecCoord *X0=this->mstate->getX0();
+    const VecCoord& X0=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
     Vec<8,Coord> nodes;
     for(int j=0; j<8; ++j)
-        nodes[j] = (*X0)[this->_topology->getHexahedron(i)[j]];
+        nodes[j] = (X0)[this->_topology->getHexahedron(i)[j]];
 
     typename HexahedralFEMForceFieldT::Transformation R_0_1; // Rotation matrix (deformed and displaced Hexahedron/world)
     this->computeRotationPolar( R_0_1, nodes );

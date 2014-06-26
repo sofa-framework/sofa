@@ -33,15 +33,18 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/ObjectFactory.h>
+
 
 namespace sofa {
+namespace {
+
 using std::cout;
 using std::cerr;
 using std::endl;
 using namespace component;
 using namespace defaulttype;
-
-
+using core::objectmodel::New;
 
 /**  Test suite for ProjectToPlaneConstraint.
 The test cases are defined in the #Test_Cases member group.
@@ -249,7 +252,7 @@ TYPED_TEST( ProjectToPlaneConstraint_test , allParticlesConstrained )
     ASSERT_TRUE(  this->test_projectVelocity() );
 }
 
-
+} // namespace
 } // namespace sofa
 
 

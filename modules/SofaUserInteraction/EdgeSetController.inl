@@ -123,7 +123,7 @@ template <class DataTypes>
 void EdgeSetController<DataTypes>::computeVertexT()
 {
     int n = this->mState->getSize();
-    const VecCoord& x0 = * this->mState->getX0();
+    const VecCoord& x0 =  this->mState->read(core::ConstVecCoordId::restPosition())->getValue();
 
     vertexT.resize(n);
 
@@ -615,8 +615,8 @@ void EdgeSetController<DataTypes>::draw(const core::visual::VisualParams* vparam
         		for (int i=0; i<_topology->getNbEdges(); i++)
         		{
         			glColor4f(1.0,0.0,0.0,1.0);
-        			helper::gl::glVertexT((*this->mState->getX())[_topology->getEdge(i)[0]]);
-        			helper::gl::glVertexT((*this->mState->getX())[_topology->getEdge(i)[1]]);
+        			helper::gl::glVertexT((this->mstate->read(core::ConstVecCoordId::position())->getValue())[_topology->getEdge(i)[0]]);
+        			helper::gl::glVertexT((this->mstate->read(core::ConstVecCoordId::position())->getValue())[_topology->getEdge(i)[1]]);
         		}
         		glEnd();
         		glPointSize(1);

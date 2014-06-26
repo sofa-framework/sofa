@@ -34,9 +34,28 @@
 #include <plugins/SceneCreator/SceneCreator.h>
 #include <SofaBoundaryCondition/ConstantForceField.h>
 
-
-namespace sofa {
+namespace sofa{
+namespace {
 using namespace modeling;
+using namespace core::objectmodel;
+
+template<typename DataTypes>
+void createUniformMass(simulation::Node::SPtr node, component::container::MechanicalObject<DataTypes>& dofs)
+{
+    node->addObject(New<component::mass::UniformMass<DataTypes, typename DataTypes::Real> >());
+}
+
+template<>
+void createUniformMass(simulation::Node::SPtr node, component::container::MechanicalObject<defaulttype::Rigid3Types>& dofs)
+{
+    node->addObject(New<component::mass::UniformMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass> >());
+}
+
+template<>
+void createUniformMass(simulation::Node::SPtr node, component::container::MechanicalObject<defaulttype::Rigid2Types>& dofs)
+{
+    node->addObject(New<component::mass::UniformMass<defaulttype::Rigid2Types, defaulttype::Rigid2Mass> >());
+}
 
 template <typename _DataTypes>
 struct FixedConstraint_test : public Sofa_test<typename _DataTypes::Real>
@@ -53,7 +72,7 @@ struct FixedConstraint_test : public Sofa_test<typename _DataTypes::Real>
     typedef typename MechanicalObject::Deriv  Deriv;
     typedef typename DataTypes::Real  Real;
 
-    typedef component::mass::UniformMass<DataTypes, Real> UniformMass;
+   
 
 
 	bool test(double epsilon)
@@ -76,7 +95,7 @@ struct FixedConstraint_test : public Sofa_test<typename _DataTypes::Real>
         typename MechanicalObject::SPtr dofs = addNew<MechanicalObject>(node);
         dofs->resize(1);
 
-        node->addObject(sofa::core::objectmodel::New<UniformMass>());
+        createUniformMass<DataTypes>(node, *dofs.get());
 
         typename ForceField::SPtr forceField = addNew<ForceField>(node);
         forceField->setForce( 0, force );
@@ -107,7 +126,9 @@ typedef Types<
     defaulttype::Vec1Types,
     defaulttype::Vec2Types,
     defaulttype::Vec3Types,
-    defaulttype::Vec6Types
+    defaulttype::Vec6Types,
+    defaulttype::Rigid2Types,
+    defaulttype::Rigid3Types
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
@@ -117,6 +138,8 @@ TYPED_TEST( FixedConstraint_test , testValue )
 {
     EXPECT_TRUE(  this->test(1e-8) );
 }
+
+}// namespace 
 }// namespace sofa
 
 

@@ -13,7 +13,7 @@
         <RegularGridSpringForceField name="Springs" stiffness="800" damping="8" />
         <Node name="Visu">
             <OglModel name="Visual" filename="mesh/smCube27.obj" color="yellow" dx="0" dy="-10.5" dz="0" />
-            <BarycentricMapping object1="../.." object2="Visual" />
+            <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
             <SphereLoader filename="mesh/smCube27b.sph" />
@@ -31,7 +31,7 @@
         <RegularGridSpringForceField name="Springs" stiffness="560" damping="5.6" />
         <Node name="Visu">
             <OglModel name="Visual" filename="mesh/smCube27.obj" color="#ff8000" dx="0" dy="0" dz="0" />
-            <BarycentricMapping object1="../.." object2="Visual" />
+            <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
             <SphereLoader filename="mesh/smCube27b.sph" />
@@ -49,7 +49,7 @@
         <RegularGridSpringForceField name="Springs" stiffness="400" damping="4" />
         <Node name="Visu">
             <OglModel name="Visual" filename="mesh/smCube27.obj" color="red" dx="0" dy="10.5" dz="-4" />
-            <BarycentricMapping object1="../.." object2="Visual" />
+            <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
             <SphereLoader filename="mesh/smCube27b.sph" />
@@ -67,7 +67,7 @@
         <RegularGridSpringForceField name="Springs" stiffness="280" damping="2.8" />
         <Node name="Visu">
             <OglModel name="Visual" filename="mesh/smCube27.obj" color="#801080" dx="0" dy="21" dz="0" />
-            <BarycentricMapping object1="../.." object2="Visual" />
+            <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
             <SphereLoader filename="mesh/smCube27b.sph" />
@@ -91,7 +91,7 @@
 		<RegularGridSpringForceField name="Springs" stiffness="200" damping="2" />
 		<Node name="Visu">
 			<OglModel name="Visual" filename="mesh/smCube27.obj" color="cyan" />
-			<BarycentricMapping object1="../.." object2="Visual" />
+			<BarycentricMapping input="@.." output="@Visual" />
 		</Node>
 		<Node name="Surf">
 			<SphereLoader filename="mesh/smCube27b.sph" />

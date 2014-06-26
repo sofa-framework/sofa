@@ -49,7 +49,7 @@ namespace defaulttype
 {
 namespace SharedTypes=Iterative;
 
-using sofa::helper::vector;
+
 template<class T>
 struct sparseCumul
 {

@@ -344,7 +344,7 @@ void PartialFixedConstraint<DataTypes>::draw(const core::visual::VisualParams* v
         return;
     if (!this->isActive())
         return;
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     //serr<<"PartialFixedConstraint<DataTypes>::draw(), x.size() = "<<x.size()<<sendl;
 
 
