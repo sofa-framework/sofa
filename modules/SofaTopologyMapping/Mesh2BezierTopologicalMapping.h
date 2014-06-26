@@ -36,10 +36,6 @@ namespace component
 {
 namespace topology
 {
-using namespace sofa::defaulttype;
-using namespace sofa::component::topology;
-using namespace sofa::core::topology;
-using namespace sofa::core;
 
 /**
  * This class, called Mesh2BezierTopologicalMapping, is a specific implementation of the interface TopologicalMapping where :
@@ -53,10 +49,10 @@ using namespace sofa::core;
  *
 */
 
-class SOFA_TOPOLOGY_MAPPING_API Mesh2BezierTopologicalMapping : public Mesh2PointTopologicalMapping
+    class SOFA_TOPOLOGY_MAPPING_API Mesh2BezierTopologicalMapping : public sofa::component::topology::Mesh2PointTopologicalMapping
 {
 public:
-    SOFA_CLASS(Mesh2BezierTopologicalMapping,Mesh2PointTopologicalMapping);
+    SOFA_CLASS(Mesh2BezierTopologicalMapping,sofa::component::topology::Mesh2PointTopologicalMapping);
 protected:
     /** \brief Constructor.
      *
