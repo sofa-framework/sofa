@@ -6,7 +6,7 @@ set(SOURCE_FILES
     helper/system/atomicTest.cpp
     helper/system/FileSystemTest.cpp
     helper/system/UtilsTest.cpp
-    core/PluginTest.cpp
+#    core/PluginTest.cpp
     core/objectmodel/AspectPoolTest.cpp
 )
 
