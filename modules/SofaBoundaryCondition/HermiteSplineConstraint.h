@@ -40,8 +40,6 @@ namespace component
 namespace projectiveconstraintset
 {
 
-using core::objectmodel::Data;
-
 /**
 	Impose a trajectory to given Dofs following a Hermite cubic spline constraint.
 	Control parameters are :

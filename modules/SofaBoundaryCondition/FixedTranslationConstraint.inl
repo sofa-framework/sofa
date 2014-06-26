@@ -41,8 +41,6 @@ namespace component
 namespace projectiveconstraintset
 {
 
-using namespace sofa::core::topology;
-
 // Define TestNewPointFunction
 template< class DataTypes>
 bool FixedTranslationConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(unsigned int, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)

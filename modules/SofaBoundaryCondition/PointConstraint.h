@@ -47,11 +47,6 @@ namespace component
 namespace projectiveconstraintset
 {
 
-using helper::vector;
-using core::objectmodel::Data;
-
-
-
 /** Attach given particles to their initial positions. This is a temporary class, somehow redundant with FixedConstraint, simplified to avoid the memory leak issue. @todo Remove one of the two classes
 */
 template <class DataTypes>

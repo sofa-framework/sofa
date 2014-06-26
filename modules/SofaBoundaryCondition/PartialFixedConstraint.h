@@ -46,9 +46,6 @@ namespace component
 namespace projectiveconstraintset
 {
 
-
-using core::objectmodel::Data;
-
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template <class DataTypes>
 class PartialFixedConstraintInternalData

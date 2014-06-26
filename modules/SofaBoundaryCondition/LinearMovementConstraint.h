@@ -48,8 +48,6 @@ namespace component
 namespace projectiveconstraintset
 {
 
-using core::objectmodel::Data;
-
 template<class DataTypes>
 class LinearMovementConstraintInternalData
 {
