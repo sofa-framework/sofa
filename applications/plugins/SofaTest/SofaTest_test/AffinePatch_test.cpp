@@ -46,6 +46,7 @@
 #include <plugins/SceneCreator/SceneCreator.h>
 
 namespace sofa {
+namespace {
 
 using std::cout;
 using std::cerr;
@@ -314,4 +315,6 @@ TYPED_TEST( AffinePatch_test , patchTest3D )
     ASSERT_TRUE( this->compareSimulatedToTheoreticalPositions(9e-6,9e-5));
 }
 
+
+} // namespace
 } // namespace sofa

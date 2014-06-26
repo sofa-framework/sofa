@@ -28,6 +28,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa {
+namespace {
 
 template <typename _DataTypes>
 struct PlaneForceField_test : public Sofa_test<typename _DataTypes::Real>
@@ -58,6 +59,8 @@ TYPED_TEST( PlaneForceField_test , testValue )
 {
     ASSERT_EQ (this->planeForceFieldSPtr->stiffness.getValue(),500);
 }
+
+}// namespace
 }// namespace sofa
 
 

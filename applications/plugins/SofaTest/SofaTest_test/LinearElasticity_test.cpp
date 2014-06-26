@@ -41,6 +41,7 @@
 #include <SofaBoundaryCondition/ProjectToLineConstraint.h>
 
 namespace sofa {
+namespace {
 
 using std::cout;
 using std::cerr;
@@ -208,4 +209,6 @@ TYPED_TEST( LinearElasticity_test , testTractionCorotational )
     ASSERT_TRUE( this->testLinearElasticityInTraction(&sofa::LinearElasticity_test<TypeParam>::addTetrahedralCorotationalFEMLinearElastic));
 }
 
+
+} // namespace
 } // namespace sofa

@@ -31,6 +31,7 @@
 #include <sofa/simulation/common/Node.h>
 
 namespace sofa {
+namespace {
 
 using namespace modeling;
 
@@ -67,7 +68,8 @@ TEST_F( Node_test, getPathName)
     EXPECT_EQ("/A/B", B->getPathName());
 }
 
-}// namespace sofa
+} // namespace
+} // namespace sofa
 
 
 
