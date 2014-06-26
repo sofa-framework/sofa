@@ -37,7 +37,6 @@ namespace component
 
 namespace topology
 {
-using namespace sofa::defaulttype;
 
 template< class DataTypes>
 void HexahedronSetGeometryAlgorithms< DataTypes >::computeHexahedronAABB(const HexaID h, Coord& minCoord, Coord& maxCoord) const
