@@ -48,11 +48,6 @@ namespace component
 namespace projectiveconstraintset
 {
 
-using helper::vector;
-using core::objectmodel::Data;
-using namespace sofa::core::objectmodel;
-using namespace sofa::component::topology;
-
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template <class DataTypes>
 class ProjectToPlaneConstraintInternalData
@@ -133,17 +128,17 @@ public:
     virtual void draw(const core::visual::VisualParams* vparams);
 
 
-    class FCPointHandler : public TopologySubsetDataHandler<Point, Indices >
+    class FCPointHandler : public component::topology::TopologySubsetDataHandler<component::topology::Point, Indices >
     {
     public:
         typedef typename ProjectToPlaneConstraint<DataTypes>::Indices Indices;
 
-        FCPointHandler(ProjectToPlaneConstraint<DataTypes>* _fc, PointSubsetData<Indices>* _data)
+        FCPointHandler(ProjectToPlaneConstraint<DataTypes>* _fc, component::topology::PointSubsetData<Indices>* _data)
             : sofa::component::topology::TopologySubsetDataHandler<Point, Indices >(_data), fc(_fc) {}
 
 
 
-        void applyDestroyFunction(unsigned int /*index*/, value_type& /*T*/);
+        void applyDestroyFunction(unsigned int /*index*/, core::objectmodel::Data<value_type>& /*T*/);
 
 
         bool applyTestCreateFunction(unsigned int /*index*/,

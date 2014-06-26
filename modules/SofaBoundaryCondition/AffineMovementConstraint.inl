@@ -43,11 +43,6 @@ namespace component
 namespace projectiveconstraintset
 {
 
-using namespace core::topology;
-
-using namespace sofa::defaulttype;
-using namespace sofa::helper;
-using namespace sofa::core::behavior;
 
 // Define TestFunction
 template< class DataTypes>
@@ -59,7 +54,7 @@ bool AffineMovementConstraint<DataTypes>::FCPointHandler::applyTestCreateFunctio
 
 // Define RemovalFunction
 template< class DataTypes>
-void AffineMovementConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(unsigned int pointIndex, value_type &)
+void AffineMovementConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(unsigned int pointIndex, core::objectmodel::Data<value_type>&)
 {
     if (fc)
     {
@@ -279,7 +274,7 @@ void AffineMovementConstraint<DataTypes>::transform(const SetIndexArray & indice
 
 
 template <>
-void AffineMovementConstraint<Rigid3Types>::transform(const SetIndexArray & indices, Rigid3Types::VecCoord& x0, Rigid3Types::VecCoord& xf)
+void AffineMovementConstraint<defaulttype::Rigid3Types>::transform(const SetIndexArray & indices, defaulttype::Rigid3Types::VecCoord& x0, defaulttype::Rigid3Types::VecCoord& xf)
 {
     // Get quaternion and translation values
     RotationMatrix rotationMat(0);
@@ -331,7 +326,7 @@ void AffineMovementConstraint<DataTypes>::draw(const core::visual::VisualParams*
             point = DataTypes::getCPos(x[*it]);
             points.push_back(point);
         }
-        vparams->drawTool()->drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
+        vparams->drawTool()->drawPoints(points, 10, defaulttype::Vec<4,float>(1,0.5,0.5,1));
     }  
 }
 
