@@ -37,23 +37,24 @@
 namespace sofa{
 namespace {
 using namespace modeling;
+using namespace core::objectmodel;
 
 template<typename DataTypes>
 void createUniformMass(simulation::Node::SPtr node, component::container::MechanicalObject<DataTypes>& dofs)
 {
-    node->addObject(sofa::core::objectmodel::New<component::mass::UniformMass<DataTypes, typename DataTypes::Real>>());
+    node->addObject(New<component::mass::UniformMass<DataTypes, typename DataTypes::Real> >());
 }
 
 template<>
 void createUniformMass(simulation::Node::SPtr node, component::container::MechanicalObject<defaulttype::Rigid3Types>& dofs)
 {
-    node->addObject(sofa::core::objectmodel::New<component::mass::UniformMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass>>());
+    node->addObject(New<component::mass::UniformMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass> >());
 }
 
 template<>
 void createUniformMass(simulation::Node::SPtr node, component::container::MechanicalObject<defaulttype::Rigid2Types>& dofs)
 {
-    node->addObject(sofa::core::objectmodel::New<component::mass::UniformMass<defaulttype::Rigid2Types, defaulttype::Rigid2Mass>>());
+    node->addObject(New<component::mass::UniformMass<defaulttype::Rigid2Types, defaulttype::Rigid2Mass> >());
 }
 
 template <typename _DataTypes>

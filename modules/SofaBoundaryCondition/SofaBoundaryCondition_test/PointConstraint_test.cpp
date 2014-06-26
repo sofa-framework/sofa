@@ -83,10 +83,7 @@ struct PointConstraint_test : public Sofa_test<typename _DataTypes::Real>
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
         Deriv force;
         for(unsigned i=0; i<force.size(); i++)
-            force[i]=10;
-        VecBool fixed;
-        for(unsigned i=0; i<fixed.size(); i++)
-            fixed[i]=false;
+            force[i]=50;
 
         /// Scene creation
         simulation::Node::SPtr root = simulation->createNewGraph("root");
@@ -95,7 +92,7 @@ struct PointConstraint_test : public Sofa_test<typename _DataTypes::Real>
         simulation::Node::SPtr node = createEulerSolverNode(root,"test");
 
         typename MechanicalObject::SPtr dofs = addNew<MechanicalObject>(node);
-        dofs->resize(1);
+        dofs->resize(2);
 
         createUniformMass<DataTypes>(node, *dofs.get());
 
@@ -108,31 +105,34 @@ struct PointConstraint_test : public Sofa_test<typename _DataTypes::Real>
         // Init simulation
         sofa::simulation::getSimulation()->init(root.get());
 
-        for(unsigned i=0; i<fixed.size(); i++)
-        {
-            fixed[i] = true;
-            helper::vector<unsigned int> fixed_indices;
-            fixed_indices.push_back(0);
-            constraint->f_indices.setValue(fixed_indices);
+        unsigned int dofsNbr = dofs->read(core::ConstVecCoordId::position())->getValue().size();
+        helper::vector<unsigned int> fixed_indices;
 
+        for(unsigned i=0; i<dofsNbr; i++)
+        {
+            fixed_indices.push_back(i);
+        }
+
+        constraint->f_indices.setValue(fixed_indices);
+        for(unsigned i=0; i<dofsNbr; i++)
+        {
             // Perform one time step
             sofa::simulation::getSimulation()->animate(root.get(),0.5);
 
             // Check if the particle moved in a fixed direction
             typename MechanicalObject::ReadVecDeriv readV = dofs->readVelocities();
-            if( readV[0][i]>epsilon )
-            {
-                ADD_FAILURE() << "Error: non null velocity in direction " << i << endl;
-                return false;
+            for (int j = 0; j < readV[i].size(); ++j) {
+                if( readV[i][j]>epsilon )
+                {
+                    ADD_FAILURE() << "Error: non null velocity in direction " << j << endl;
+                    return false;
+                }
             }
 
             sofa::simulation::getSimulation()->reset(root.get());
-            fixed[i] = false;
         }
 
-
         return true;
-
     }
 };
 
