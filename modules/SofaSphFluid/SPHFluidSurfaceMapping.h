@@ -47,11 +47,10 @@ namespace component
 namespace mapping
 {
 
-using namespace sofa::component::container;
 
 
 template <class InDataTypes, class OutDataTypes>
-class SPHFluidSurfaceMappingGridTypes : public SpatialGridTypes<InDataTypes>
+class SPHFluidSurfaceMappingGridTypes : public sofa::component::container::SpatialGridTypes<InDataTypes>
 {
 public:
     typedef forcefield::SPHFluidForceField<InDataTypes> ParticleField;
@@ -182,7 +181,7 @@ protected:
 
     typedef SPHFluidSurfaceMappingGridTypes<In, Out> GridTypes;
 
-    typedef SpatialGrid<GridTypes> Grid;
+    typedef sofa::component::container::SpatialGrid<GridTypes> Grid;
     typedef typename Grid::Cell Cell;
     typedef typename Grid::Grid SubGrid;
     typedef typename Grid::Key SubKey;
