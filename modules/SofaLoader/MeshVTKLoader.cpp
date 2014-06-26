@@ -592,7 +592,7 @@ bool MeshVTKLoader::XMLVTKReader::readFile(const char* filename)
     TiXmlHandle hVTKDocRoot(0);
 
     //block VTKFile
-    pElem = hVTKDoc.FirstChildElement().Element();
+    pElem = hVTKDoc.FirstChildElement().ToElement();
     checkErrorMsg(pElem, "VTKFile Node not found");
 
     hVTKDocRoot = TiXmlHandle(pElem);
@@ -621,7 +621,7 @@ bool MeshVTKLoader::XMLVTKReader::readFile(const char* filename)
         datasetFormat = IMAGE_DATA;
     else checkErrorMsg(false, "Dataset format " << datasetFormatStr << " not recognized");
 
-    TiXmlHandle datasetFormatHandle = TiXmlHandle(hVTKDocRoot.FirstChild( datasetFormatStr.c_str() ).Element());
+    TiXmlHandle datasetFormatHandle = TiXmlHandle(hVTKDocRoot.FirstChild( datasetFormatStr.c_str() ).ToElement());
 
     bool stateLoading = false;
     switch (datasetFormat)
@@ -715,7 +715,7 @@ MeshVTKLoader::BaseVTKReader::BaseVTKDataIO* MeshVTKLoader::XMLVTKReader::loadDa
 
 bool MeshVTKLoader::XMLVTKReader::loadUnstructuredGrid(TiXmlHandle datasetFormatHandle)
 {
-    TiXmlElement* pieceElem = datasetFormatHandle.FirstChild( "Piece" ).Element();
+    TiXmlElement* pieceElem = datasetFormatHandle.FirstChild( "Piece" ).ToElement();
 
     checkError(pieceElem);
     //for each "Piece" Node

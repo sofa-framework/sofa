@@ -62,11 +62,15 @@ public:
     virtual void initForce(int /*line*/, double* /*force*/) {}
 
     /// Resolution of the constraint for one Gauss-Seidel iteration
-    virtual void resolution(int /*line*/, double** /*w*/, double* /*d*/, double* /*force*/, double * /*dFree*/)
+    virtual void resolution(int line, double** w, double* d, double* force, double * dFree)
     {
-
-        std::cerr << "resolution(line, w, d, force, dFree) not implemented" << std::endl;
-    }
+        SOFA_UNUSED(line);
+        SOFA_UNUSED(w);
+        SOFA_UNUSED(d);
+        SOFA_UNUSED(force);
+        SOFA_UNUSED(dFree);
+        std::cerr << "ERROR(" << "ConstraintResolution" << ")::resolution(int , double** , double* , double* , double * ) not implemented." << std::endl;
+    };
 
     /// Called after Gauss-Seidel last iteration, in order to store last computed forces for the inital guess
     virtual void store(int /*line*/, double* /*force*/, bool /*convergence*/) {}
