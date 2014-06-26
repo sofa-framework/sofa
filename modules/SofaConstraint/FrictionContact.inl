@@ -43,8 +43,7 @@ namespace component
 namespace collision
 {
 
-using namespace sofa::defaulttype;
-using namespace core::collision;
+
 using simulation::Node;
 
 
@@ -118,12 +117,12 @@ void FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::setDe
     // the following procedure cancels the duplicated detection outputs
     for (int cpt=0; cpt<SIZE; cpt++)
     {
-        DetectionOutput* o = &outputs[cpt];
+        sofa::core::collision::DetectionOutput* o = &outputs[cpt];
 
         bool found = false;
         for (unsigned int i=0; i<contacts.size() && !found; i++)
         {
-            DetectionOutput* p = contacts[i];
+            sofa::core::collision::DetectionOutput* p = contacts[i];
             if ((o->point[0]-p->point[0]).norm2()+(o->point[1]-p->point[1]).norm2() < minDist2)
                 found = true;
         }
@@ -170,9 +169,9 @@ void FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::activ
     //std::cout<<" d0 = "<<d0<<std::endl;
 
     mappedContacts.resize(contacts.size());
-    for (std::vector<DetectionOutput*>::const_iterator it = contacts.begin(); it!=contacts.end(); it++, i++)
+    for (std::vector<sofa::core::collision::DetectionOutput*>::const_iterator it = contacts.begin(); it!=contacts.end(); it++, i++)
     {
-        DetectionOutput* o = *it;
+        sofa::core::collision::DetectionOutput* o = *it;
         //std::cout<<" collisionElements :"<<o->elem.first<<" - "<<o->elem.second<<std::endl;
         CollisionElement1 elem1(o->elem.first);
         CollisionElement2 elem2(o->elem.second);
@@ -238,9 +237,9 @@ void FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::creat
     int i=0;
     if (m_constraint)
     {
-        for (std::vector<DetectionOutput*>::const_iterator it = contacts.begin(); it!=contacts.end(); it++, i++)
+        for (std::vector<sofa::core::collision::DetectionOutput*>::const_iterator it = contacts.begin(); it!=contacts.end(); it++, i++)
         {
-            DetectionOutput* o = *it;
+            sofa::core::collision::DetectionOutput* o = *it;
             int index1 = mappedContacts[i].first.first;
             int index2 = mappedContacts[i].first.second;
             double distance = mappedContacts[i].second;

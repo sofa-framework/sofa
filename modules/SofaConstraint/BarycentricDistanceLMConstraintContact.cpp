@@ -25,6 +25,9 @@
 #include "BarycentricDistanceLMConstraintContact.inl"
 #include <SofaMeshCollision/BarycentricContactMapper.h>
 
+using namespace sofa::defaulttype;
+using namespace sofa::core::collision;
+
 namespace sofa
 {
 
@@ -34,7 +37,6 @@ namespace component
 namespace collision
 {
 
-using namespace defaulttype;
 using simulation::Node;
 
 SOFA_DECL_CLASS(BarycentricDistanceLMConstraintContact)
