@@ -7,6 +7,7 @@
 using sofa::core::objectmodel::New;
 
 namespace sofa {
+namespace {
 
 typedef sofa::component::topology::MeshTopology MeshTopology;
 typedef sofa::simulation::Node::SPtr NodePtr;
@@ -112,5 +113,6 @@ TEST_F(BaryMapperTest, out_1 ) { ASSERT_TRUE( test_outside(1)); }
 TEST_F(BaryMapperTest, out_2 ) { ASSERT_TRUE( test_outside(2)); }
 
 
-}
+} // namespace
+} // namespace sofa
 

@@ -37,6 +37,8 @@
 
 
 namespace sofa {
+namespace {
+
 using std::cout;
 using std::cerr;
 using std::endl;
@@ -250,7 +252,7 @@ TYPED_TEST( ProjectToPlaneConstraint_test , allParticlesConstrained )
     ASSERT_TRUE(  this->test_projectVelocity() );
 }
 
-
+} // namespace
 } // namespace sofa
 
 

@@ -54,6 +54,8 @@ double get_time() {
 
 
 namespace sofa {
+namespace {
+
 using std::cout;
 using std::cerr;
 using std::endl;
@@ -529,6 +531,6 @@ typedef TestSparseMatrices<float,4,8,2,2> Ts4822f;
 
 
 
-
-}// namespace sofa
+} // namespace
+} // namespace sofa
 
