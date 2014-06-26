@@ -27,6 +27,13 @@ TEST(PluginManagerTest, refreshPluginInfo)
     EXPECT_EQ(1, PluginD_loaded);
     EXPECT_EQ(1, PluginE_loaded);
 
+    EXPECT_EQ(1, PluginA_unloaded);
+    EXPECT_EQ(0, PluginB_unloaded);
+    // PluginE is linked against PluginC, it should be opened twice.
+    EXPECT_EQ(2, PluginC_unloaded);
+    EXPECT_EQ(1, PluginD_unloaded);
+    EXPECT_EQ(1, PluginE_unloaded);
+
     // Content of PluginA
     EXPECT_TRUE(pluginManager.canFindComponent("Foo"));
     EXPECT_TRUE(pluginManager.canFindComponent("Bar"));
@@ -66,7 +73,7 @@ TEST(PluginManagerTest, load_legacy_PluginB)
 #else
     std::string dir(SOFA_LIB_DIR);
 #endif
-    std::string possibleNames[] = {"libPluginB.so", "PluginB.dll"};
+    std::string possibleNames[] = {"libPluginB.so", "libPluginB.dylib", "PluginB.dll"};
     std::string PluginB_file;
     for (size_t i=0 ; i<2 ; i++) {
         std::string file(dir + "/" + possibleNames[i]);

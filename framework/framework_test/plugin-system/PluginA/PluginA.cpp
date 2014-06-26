@@ -9,12 +9,18 @@ static struct PluginAMonitor {
 } PluginAMonitor_;
 
 class PluginA: public sofa::core::Plugin {
+  SOFA_PLUGIN(PluginA);
 public:
     PluginA(): Plugin("PluginA") {
         addComponent<Foo>("Component Foo");
-        addComponent< Bar<float> >("Component Bar");
-        addTemplateInstance< Bar<double> >();
     }
 };
 
-SOFA_PLUGIN(PluginA);
+int FooClass = PluginA::registerObject("Component Foo")
+.add<Foo>();
+
+int BarClass = PluginA::registerObject("Component Bar")
+.add< Bar<float> >(true)
+.add< Bar<double> >();
+
+SOFA_PLUGIN_ENTRY_POINT(PluginA);
