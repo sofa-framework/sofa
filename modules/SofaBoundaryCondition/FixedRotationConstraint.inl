@@ -171,8 +171,8 @@ void FixedRotationConstraint<DataTypes>::projectPosition(const core::MechanicalP
 
             edgez = Q.rotate(Vec3(0.0, 0.0, 1.0));
             edgex_prev = Q_prev.rotate(Vec3(1.0, 0.0, 0.0));
-            edgey = cross(edgez, edgex_prev);
-            edgex = cross(edgey, edgez);
+            edgey = defaulttype::cross(edgez, edgex_prev);
+            edgex = defaulttype::cross(edgey, edgez);
             R[0][0] = edgex[0];    R[0][1] = edgex[1];    R[0][2] = edgex[2];
             R[1][0] = edgey[0];    R[1][1] = edgey[1];    R[1][2] = edgey[2];
             R[2][0] = edgez[0];    R[2][1] = edgez[1];    R[2][2] = edgez[2];

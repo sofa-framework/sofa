@@ -47,7 +47,6 @@ namespace component
 
 namespace constraintset
 {
-using namespace sofa::core::topology;
 
 template<class DataTypes>
 UncoupledConstraintCorrection<DataTypes>::UncoupledConstraintCorrection(behavior::MechanicalState<DataTypes> *mm)
@@ -132,7 +131,7 @@ void UncoupledConstraintCorrection< DataTypes >::handleTopologyChange()
         {
         case core::topology::POINTSADDED :
         {
-            unsigned int nbPoints = (static_cast< const PointsAdded *> (*changeIt))->getNbAddedVertices();
+            unsigned int nbPoints = (static_cast< const sofa::core::topology::PointsAdded *> (*changeIt))->getNbAddedVertices();
 
             VecReal addedCompliance;
 
@@ -150,7 +149,7 @@ void UncoupledConstraintCorrection< DataTypes >::handleTopologyChange()
         {
             using sofa::helper::vector;
 
-            const vector< unsigned int > &pts = (static_cast< const PointsRemoved * >(*changeIt))->getArray();
+            const vector< unsigned int > &pts = (static_cast< const sofa::core::topology::PointsRemoved * >(*changeIt))->getArray();
 
             unsigned int lastIndexVec = comp.size() - 1;
 

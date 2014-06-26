@@ -47,11 +47,6 @@ namespace component
 namespace projectiveconstraintset
 {
 
-using helper::vector;
-using core::objectmodel::Data;
-
-
-
 /** Attach given particles to their initial positions. This is a temporary class, somehow redundant with FixedConstraint, simplified to avoid the memory leak issue. @todo Remove one of the two classes
 */
 template <class DataTypes>
@@ -67,6 +62,7 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename MatrixDeriv::RowIterator MatrixDerivRowIterator;
     typedef typename MatrixDeriv::RowType MatrixDerivRowType;
+    typedef sofa::defaulttype::Vector3 Vector3;
     typedef Data<VecCoord> DataVecCoord;
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
