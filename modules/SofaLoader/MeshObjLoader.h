@@ -37,8 +37,6 @@ namespace component
 namespace loader
 {
 
-using sofa::defaulttype::Vec4f;
-
 class SOFA_LOADER_API MeshObjLoader : public sofa::core::loader::MeshLoader
 {
 public:

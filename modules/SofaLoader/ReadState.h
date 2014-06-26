@@ -50,7 +50,7 @@ namespace component
 
 namespace misc
 {
-using namespace sofa::simulation;
+
 /** Read State vectors from file at each timestep
 */
 class SOFA_LOADER_API ReadState: public core::objectmodel::BaseObject
