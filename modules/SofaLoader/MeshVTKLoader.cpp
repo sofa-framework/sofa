@@ -336,7 +336,7 @@ bool MeshVTKLoader::setInputsData()
         const char* dataname = reader->inputPointDataVector[i]->name.c_str();
 
         core::objectmodel::BaseData* basedata = reader->inputPointDataVector[i]->createSofaData();
-        this->addField(basedata, dataname);
+        this->addData(basedata, dataname);
     }
 
     ///Cell Data
@@ -345,7 +345,7 @@ bool MeshVTKLoader::setInputsData()
         const char* dataname = reader->inputCellDataVector[i]->name.c_str();
 
         core::objectmodel::BaseData* basedata = reader->inputCellDataVector[i]->createSofaData();
-        this->addField(basedata, dataname);
+        this->addData(basedata, dataname);
     }
 
     //f = this->getFields();
