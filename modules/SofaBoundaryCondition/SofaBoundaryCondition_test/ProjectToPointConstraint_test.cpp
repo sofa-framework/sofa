@@ -42,7 +42,7 @@ using std::cerr;
 using std::endl;
 using namespace component;
 using namespace defaulttype;
-
+using sofa::core::objectmodel::New;
 
 
 /**  Test suite for ProjectToPointConstraint.
