@@ -1487,7 +1487,7 @@ void BarycentricMapping<TIn, TOut>::applyJ (const core::MechanicalParams * /*mpa
     {
 #endif
         typename Out::VecDeriv* out = _out.beginEdit();
-        out->resize(this->toModel->getX()->size());
+        out->resize(this->toModel->read(core::ConstVecCoordId::position())->getValue().size());
         if (mapper != NULL)
         {
             mapper->applyJ(*out, in.getValue());
@@ -2767,8 +2767,8 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapping<TIn, TOut>::getJ()
 #endif
         mapper!=NULL )
     {
-        const unsigned int outStateSize = this->toModel->getX()->size();
-        const unsigned int  inStateSize = this->fromModel->getX()->size();        
+        const unsigned int outStateSize = this->toModel->read(core::ConstVecCoordId::position())->getValue().size();
+        const unsigned int  inStateSize = this->fromModel->read(core::ConstVecCoordId::position())->getValue().size();
         const sofa::defaulttype::BaseMatrix* matJ = mapper->getJ(outStateSize, inStateSize);
 
         return matJ;
@@ -3302,14 +3302,14 @@ void BarycentricMapping<TIn, TOut>::draw(const core::visual::VisualParams* vpara
 {
     if ( !vparams->displayFlags().getShowMappings() ) return;
 
-    const OutVecCoord& out = *this->toModel->getX();
+    const OutVecCoord& out = this->toModel->read(core::ConstVecCoordId::position())->getValue();
     std::vector< sofa::defaulttype::Vector3 > points;
     for ( unsigned int i=0; i<out.size(); i++ )
     {
         points.push_back ( OutDataTypes::getCPos(out[i]) );
     }
 //	glEnd();
-    const InVecCoord& in = *this->fromModel->getX();
+    const InVecCoord& in = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
     if ( mapper!=NULL ) mapper->draw(vparams,out, in );
 
     vparams->drawTool()->drawPoints ( points, 7, sofa::defaulttype::Vec<4,float> ( 1,1,0,1 ) );
