@@ -5,6 +5,8 @@ project(SofaCore)
 set(SOFACORE_HEADERS
 	core.h
 	VecId.h
+	Plugin.h
+	PluginManager.h
 	ConstraintParams.h
 	ExecParams.h
 	MechanicalParams.h
@@ -164,6 +166,8 @@ set(SOFACORE_SOURCES
 	ObjectFactory.cpp
 	ExecParams.cpp
 	MechanicalParams.cpp
+	Plugin.cpp
+	PluginManager.cpp
 	ConstraintParams.cpp
 	SofaLibrary.cpp
 	CategoryLibrary.cpp

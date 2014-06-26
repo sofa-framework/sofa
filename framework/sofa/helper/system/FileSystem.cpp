@@ -97,9 +97,12 @@ bool listDirectory(const std::string& directoryPath,
 bool exists(const std::string& path)
 {
 #ifdef WIN32
+	::SetLastError(0);
     bool pathExists = PathFileExists(Utils::s2ws(path).c_str()) != 0;
     DWORD errorCode = ::GetLastError();
-    if (errorCode != 0) {
+	if (errorCode != 0
+		&& errorCode != ERROR_FILE_NOT_FOUND
+		&& errorCode != ERROR_PATH_NOT_FOUND) {
         std::cerr << "FileSystem::exists(\"" << path << "\"): "
                   << Utils::GetLastError() << std::endl;
     }

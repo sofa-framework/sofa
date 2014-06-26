@@ -43,7 +43,7 @@
 #include <sofa/gui/Main.h>
 #include <sofa/helper/system/FileRepository.h>
 
-#include <sofa/component/init.h>
+#include <SofaComponentMain/init.h>
 #include <SofaMiscMapping/SubsetMultiMapping.h>
 #include <SofaMiscMapping/DistanceMapping.h>
 #include <SofaMiscMapping/DistanceFromTargetMapping.h>

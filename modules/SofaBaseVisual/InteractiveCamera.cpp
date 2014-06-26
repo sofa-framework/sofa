@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include <SofaBaseVisual/InteractiveCamera.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/ObjectFactory.h>
+#include <SofaBaseVisual/BaseVisual.h>
 
 namespace sofa
 {
@@ -37,7 +37,8 @@ namespace visualmodel
 
 SOFA_DECL_CLASS(InteractiveCamera)
 
-int InteractiveCameraClass = core::RegisterObject("InteractiveCamera")
+int InteractiveCameraClass =
+    BaseVisualPlugin::registerObject("InteractiveCamera")
         .add< InteractiveCamera >()
         .addAlias("Camera")
         ;

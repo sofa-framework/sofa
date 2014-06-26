@@ -51,7 +51,7 @@
 #include <SofaMeshCollision/PointModel.h>
 #include <SofaBaseCollision/MinProximityIntersection.h>
 #include <SofaBaseCollision/BruteForceDetection.h>
-#include <sofa/component/init.h>
+#include <SofaComponentMain/init.h>
 
 #include <SofaBaseVisual/VisualModelImpl.h>
 #include <SofaOpenglVisual/OglModel.h>

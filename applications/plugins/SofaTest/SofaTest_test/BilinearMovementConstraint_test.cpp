@@ -27,7 +27,7 @@
 #include "Sofa_test.h"
 #include<sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileRepository.h>
-#include <sofa/component/init.h>
+#include <SofaComponentMain/init.h>
 #include <sofa/core/ExecParams.h>
 
 //Including Simulation
@@ -52,7 +52,7 @@
 #include <SofaLoader/GridMeshCreator.h>
 #include <SofaBoundaryCondition/BilinearMovementConstraint.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
-#include <SofaSimpleFem/forcefield/TriangularFEMForceField.h>
+#include <SofaSimpleFem/TriangularFEMForceField.h>
 #include <SofaBaseMechanics/UniformMass.h>
 #include <sofa/core/MechanicalParams.h>
 

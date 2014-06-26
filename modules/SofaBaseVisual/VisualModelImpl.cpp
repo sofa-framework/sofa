@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <SofaBaseVisual/BaseVisual.h>
 #include <SofaBaseVisual/VisualModelImpl.h>
 #include <sofa/core/visual/VisualParams.h>
 
@@ -106,7 +107,8 @@ void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
 
 SOFA_DECL_CLASS(VisualModelImpl)
 
-int VisualModelImplClass = core::RegisterObject("Generic visual model. If a viewer is active it will replace the VisualModel alias, otherwise nothing will be displayed.")
+int VisualModelImplClass =
+    BaseVisualPlugin::registerObject("Generic visual model. If a viewer is active it will replace the VisualModel alias, otherwise nothing will be displayed.")
         .add< VisualModelImpl >()
         .addAlias("VisualModel")
         ;
