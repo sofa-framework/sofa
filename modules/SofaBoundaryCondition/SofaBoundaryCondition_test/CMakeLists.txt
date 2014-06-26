@@ -5,6 +5,8 @@ set(SOURCE_FILES
     PlaneForceField_test.cpp
     ProjectDirectionConstraint_test.cpp
     ProjectToPointConstraint_test.cpp
+    FixedConstraint_test.cpp
+    PartialFixedConstraint.cpp
         )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})

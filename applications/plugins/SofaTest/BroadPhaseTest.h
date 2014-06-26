@@ -138,7 +138,7 @@ struct InitIntersection{
 //}
 
 //intersection method used for the narrow phase
-sofa::component::collision::NewProximityIntersection::SPtr proxIntersection = New<sofa::component::collision::NewProximityIntersection>();
+sofa::component::collision::NewProximityIntersection::SPtr proxIntersection = sofa::core::objectmodel::New<sofa::component::collision::NewProximityIntersection>();
 InitIntersection initIntersection(proxIntersection,0);
 double alarmDist = proxIntersection->getAlarmDistance();
 
@@ -163,11 +163,11 @@ void randMoving(sofa::core::CollisionModel* cm,const Vector3 & min_vect,const Ve
     sofa::component::collision::OBBModel * obbm = dynamic_cast<sofa::component::collision::OBBModel*>(cm->getLast());
     MechanicalObjectRigid3* dof = dynamic_cast<MechanicalObjectRigid3*>(obbm->getMechanicalState());
 
-    Data<MechanicalObjectRigid3::VecCoord> & dpositions = *dof->write( sofa::core::VecId::position() );
+    sofa::core::objectmodel::Data<MechanicalObjectRigid3::VecCoord> & dpositions = *dof->write( sofa::core::VecId::position() );
     MechanicalObjectRigid3::VecCoord & positions = *dpositions.beginEdit();
 
     //Editting the velocity of the OBB
-    Data<MechanicalObjectRigid3::VecDeriv> & dvelocities = *dof->write( sofa::core::VecId::velocity() );
+    sofa::core::objectmodel::Data<MechanicalObjectRigid3::VecDeriv> & dvelocities = *dof->write( sofa::core::VecId::velocity() );
     MechanicalObjectRigid3::VecDeriv & velocities = *dvelocities.beginEdit();
 
 
@@ -407,11 +407,11 @@ sofa::component::collision::OBBModel::SPtr makeOBBModel(const std::vector<Vector
     sofa::simulation::Node::SPtr obb = father->createChild("obb");
 
     //creating a mechanical object which will be attached to the OBBModel
-    MechanicalObjectRigid3::SPtr obbDOF = New<MechanicalObjectRigid3>();
+    MechanicalObjectRigid3::SPtr obbDOF = sofa::core::objectmodel::New<MechanicalObjectRigid3>();
 
     //editing DOF related to the OBBModel to be created, size is 1 because it contains just one OBB
     obbDOF->resize(n);
-    Data<MechanicalObjectRigid3::VecCoord> & dpositions = *obbDOF->write( sofa::core::VecId::position() );
+    sofa::core::objectmodel::Data<MechanicalObjectRigid3::VecCoord> & dpositions = *obbDOF->write( sofa::core::VecId::position() );
     MechanicalObjectRigid3::VecCoord & positions = *dpositions.beginEdit();
 
     for(int i = 0 ; i < n ; ++i)
@@ -420,7 +420,7 @@ sofa::component::collision::OBBModel::SPtr makeOBBModel(const std::vector<Vector
     dpositions.endEdit();
 
     //Editting the velocity of the OBB
-    Data<MechanicalObjectRigid3::VecDeriv> & dvelocities = *obbDOF->write( sofa::core::VecId::velocity() );
+    sofa::core::objectmodel::Data<MechanicalObjectRigid3::VecDeriv> & dvelocities = *obbDOF->write( sofa::core::VecId::velocity() );
 
     MechanicalObjectRigid3::VecDeriv & velocities = *dvelocities.beginEdit();
     for(int i = 0 ; i < n ; ++i)
@@ -431,7 +431,7 @@ sofa::component::collision::OBBModel::SPtr makeOBBModel(const std::vector<Vector
     obb->addObject(obbDOF);
 
     //creating an OBBModel and attaching it to the same node than obbDOF
-    sofa::component::collision::OBBModel::SPtr obbCollisionModel = New<sofa::component::collision::OBBModel >();
+    sofa::component::collision::OBBModel::SPtr obbCollisionModel = sofa::core::objectmodel::New<sofa::component::collision::OBBModel >();
     obb->addObject(obbCollisionModel);
 
     //editting the OBBModel
@@ -475,7 +475,7 @@ bool BroadPhaseTest<BroadPhase>::randTest(int seed,int nb1,int nb2,const Vector3
     for(int i = 0 ; i < nb2 ; ++i)
         secondCollision.push_back(randVect(min,max));
 
-    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+    sofa::simulation::Node::SPtr scn = sofa::core::objectmodel::New<sofa::simulation::tree::GNode>();
     sofa::component::collision::OBBModel::SPtr obbm1,obbm2;
     obbm1 = makeOBBModel(firstCollision,scn,getExtent());
     obbm2 = makeOBBModel(secondCollision,scn,getExtent());
@@ -483,7 +483,7 @@ bool BroadPhaseTest<BroadPhase>::randTest(int seed,int nb1,int nb2,const Vector3
     obbm1->setSelfCollision(true);
     obbm2->setSelfCollision(true);
 
-    typename BroadPhase::SPtr pbroadphase = New<BroadPhase>();
+    typename BroadPhase::SPtr pbroadphase = sofa::core::objectmodel::New<BroadPhase>();
     BroadPhase & broadphase = *pbroadphase;
 
     for(int i = 0 ; i < 2 ; ++i){

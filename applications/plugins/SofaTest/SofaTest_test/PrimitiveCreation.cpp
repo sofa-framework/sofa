@@ -1,5 +1,7 @@
 #include "PrimitiveCreation.h"
 
+using sofa::core::objectmodel::New;
+
 namespace sofa{
 
 void rotx(double ax,Vec3 & x,Vec3 & y,Vec3 & z){

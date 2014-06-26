@@ -40,8 +40,6 @@ namespace helper
 
 //#define NULL 0
 
-using namespace system::thread;
-
 #define EPSILON_LCP		0.00000000001	// epsilon pour tests = 0
 #define EPSILON_CONV	0.001			// for GS convergence
 #define MAX_BOU	50	// nombre maximal de boucles de calcul

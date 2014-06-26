@@ -29,11 +29,9 @@
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <iostream>
 
-
 #include <sofa/core/ExecParams.h>
 #include <sofa/core/VecId.h>
 #include <sofa/core/MultiVecId.h>
-using namespace sofa::core;
 
 
 namespace sofa
@@ -47,12 +45,13 @@ namespace simulation
 class SOFA_SIMULATION_COMMON_API MechanicalVPrintVisitor : public Visitor
 {
 public:
-    MechanicalVPrintVisitor(const core::ExecParams* params /* PARAMS FIRST  = core::ExecParams::defaultInstance()*/, ConstMultiVecId v, std::ostream& =std::cerr );
+    MechanicalVPrintVisitor(const core::ExecParams* params /* PARAMS FIRST  = core::ExecParams::defaultInstance()*/,
+                            sofa::core::ConstMultiVecId v, std::ostream& =std::cerr );
     virtual Result processNodeTopDown(simulation::Node* node);
 
     virtual const char* getClassName() const { return "MechanicalVPrintVisitor"; }
 protected:
-    ConstMultiVecId v_;
+    sofa::core::ConstMultiVecId v_;
     std::ostream& out_;
 };
 
@@ -61,12 +60,13 @@ protected:
 class SOFA_SIMULATION_COMMON_API MechanicalVPrintWithElapsedTimeVisitor : public Visitor
 {
 protected:
-    ConstMultiVecId v_;
+    sofa::core::ConstMultiVecId v_;
     unsigned count_;
     unsigned time_;
     std::ostream& out_;
 public:
-    MechanicalVPrintWithElapsedTimeVisitor(const core::ExecParams* params /* PARAMS FIRST  = core::ExecParams::defaultInstance()*/, ConstMultiVecId vid, unsigned time, std::ostream& =std::cerr );
+    MechanicalVPrintWithElapsedTimeVisitor(const core::ExecParams* params /* PARAMS FIRST  = core::ExecParams::defaultInstance()*/,
+                                           sofa::core::ConstMultiVecId vid, unsigned time, std::ostream& =std::cerr );
     virtual Result processNodeTopDown(simulation::Node* node);
     virtual const char* getClassName() const { return "MechanicalVPrintWithElapsedTimeVisitor"; }
 };
@@ -76,12 +76,13 @@ public:
 class SOFA_SIMULATION_COMMON_API DofPrintVisitor : public Visitor
 {
 public:
-    DofPrintVisitor(const core::ExecParams* params /* PARAMS FIRST  = core::ExecParams::defaultInstance()*/, ConstMultiVecId v, const std::string& dofname, std::ostream& =std::cerr );
+    DofPrintVisitor(const core::ExecParams* params /* PARAMS FIRST  = core::ExecParams::defaultInstance()*/,
+                    sofa::core::ConstMultiVecId v, const std::string& dofname, std::ostream& =std::cerr );
     virtual Result processNodeTopDown(simulation::Node* node);
 
     virtual const char* getClassName() const { return "DofPrintVisitor"; }
 protected:
-    ConstMultiVecId v_;
+    sofa::core::ConstMultiVecId v_;
     std::ostream& out_;
     const std::string& dofname_;
 };

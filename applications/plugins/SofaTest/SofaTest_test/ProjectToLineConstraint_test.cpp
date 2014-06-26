@@ -34,6 +34,7 @@
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/defaulttype/VecTypes.h>
 
+using sofa::core::objectmodel::New;
 
 namespace sofa {
 
