@@ -86,7 +86,7 @@ Using LCP contact detection and resolution:
             <Point name="instrument" contactStiffness="10" />
             <RigidMapping name="MM-&gt;CM mapping" input="@instrumentState" output="@instrumentCollisionState" />
         </Node>
-        <VectorSpringForceField object1="Omni/RefModel/instrumentCollisionState" object2="Instrument/CollisionModel/instrumentCollisionState" stiffness="10" viscosity="0" />
-        <JointSpringForceField template="Rigid" name="joint springs" object1="Omni" object2="instrumentState" spring="BEGIN_SPRING 0 0 KS_T 50 50  KS_R 500.0 500.0  KS_B 500.0  KD 0.0 END_SPRING" />
+        <VectorSpringForceField object1="@Omni/RefModel/instrumentCollisionState" object2="@Instrument/CollisionModel/instrumentCollisionState" stiffness="10" viscosity="0" />
+        <JointSpringForceField template="Rigid" name="joint springs" object1="@Omni" object2="@instrumentState" spring="BEGIN_SPRING 0 0 KS_T 50 50  KS_R 500.0 500.0  KS_B 500.0  KD 0.0 END_SPRING" />
     </Node>
 </Node>

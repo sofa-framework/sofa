@@ -38,10 +38,10 @@
                 <RigidMapping />
             </Node>
         </Node>
-        <BilateralInteractionConstraint object1="CUBE_0/Constraints/points" object2="CUBE_1/Constraints/points" first_point="0" second_point="0" />
+        <BilateralInteractionConstraint object1="@CUBE_0/Constraints/points" object2="@CUBE_1/Constraints/points" first_point="0" second_point="0" />
         <Node name="LagrangeMultiplier">
             <MechanicalObject name="LM" template="Vec1d" position="0 0 0" />
         </Node>
-        <LagrangeMultiplierInteraction object1="LagrangeMultiplier/LM" object2="CUBE_1/Constraints/points" />
+        <LagrangeMultiplierInteraction object1="@LagrangeMultiplier/LM" object2="@CUBE_1/Constraints/points" />
     </Node>
 </Node>

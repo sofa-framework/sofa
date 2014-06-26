@@ -51,6 +51,6 @@
 	</Node>
 		
 	<!-- used to fix dynamic matter -->
-	<StiffSpringForceField name="fixSpring" object1="StaticMatter" object2="DynamicMatter" stiffness="1000"/>
-	<StiffSpringForceField name="fix2Spring" object1="Body/SculptedPoints" object2="DynamicMatter/SculptedPoints" stiffness="100000000000000"/>
+	<StiffSpringForceField name="fixSpring" object1="@StaticMatter" object2="@DynamicMatter" stiffness="1000"/>
+	<StiffSpringForceField name="fix2Spring" object1="@Body/SculptedPoints" object2="@DynamicMatter/SculptedPoints" stiffness="100000000000000"/>
 </Node>

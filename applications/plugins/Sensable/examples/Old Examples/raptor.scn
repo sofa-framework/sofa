@@ -63,7 +63,7 @@
 			<Point name="instrument" contactStiffness="10" /> 
 			<RigidMapping name="MM->CM mapping" input="@instrumentState" output="@instrumentCollisionState" />
 		</Node>
-		<VectorSpringForceField  object1="Omni/RefModel/instrumentCollisionState" object2="Instrument/CollisionModel/instrumentCollisionState" stiffness="10" viscosity="0" />
+		<VectorSpringForceField  object1="@Omni/RefModel/instrumentCollisionState" object2="@Instrument/CollisionModel/instrumentCollisionState" stiffness="10" viscosity="0" />
 	</Node>  
 
 </Node>

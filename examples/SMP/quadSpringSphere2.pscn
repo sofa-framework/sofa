@@ -130,7 +130,7 @@ if($i>0){
 $ind1 = ($gz0[$i]-$gz0[$i-1])*$NZ;
 $nind = $gnz[$i-1]*$NZ - $ind1;
 ?>
-<AttachConstraint object1="elem<?=($i-1)?>" object2="elem<?=$i?>" twoWay="true" radius="0.1" indices1="<?=$ind1?>-<?=$ind1+$nind-1?>" indices2="0-<?=$nind-1?>" />
+<AttachConstraint object1="@elem<?=($i-1)?>" object2="@elem<?=$i?>" twoWay="true" radius="0.1" indices1="<?=$ind1?>-<?=$ind1+$nind-1?>" indices2="0-<?=$nind-1?>" />
 <?}?>
 <?}?>
 	</Node>

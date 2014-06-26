@@ -112,7 +112,7 @@ if($i==$elems-1){?>
 		</Node>
 		-->
 	</Node>
-<AttachConstraint object1="elem<?=($i-1)?>" object2="elem<?=$i?>" twoWay="true" radius="0.1" indices1="<?=$indices1?>" indices2="<?=$indices2?>" />
+<AttachConstraint object1="@elem<?=($i-1)?>" object2="@elem<?=$i?>" twoWay="true" radius="0.1" indices1="<?=$indices1?>" indices2="<?=$indices2?>" />
 <?}?>
 	</Node>
 	<Node name="Sphere">

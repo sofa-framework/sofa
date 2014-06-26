@@ -32,7 +32,7 @@
 			/>
 			<ForceField type="RegularGridSpringForceField" name="Springs" stiffness="50" damping="10" />
 		</DynamicModel>
-		<InteractionForceField type="StiffSpringForceField" object1="M1/Points" object2="M2" filename="test4.xs3"/>
-		<InteractionForceField type="StiffSpringForceField" object1="M1/Points" object2="M3" filename="test4c.xs3"/>
+		<InteractionForceField type="StiffSpringForceField" object1="@Points" object2="@M2" filename="test4.xs3"/>
+		<InteractionForceField type="StiffSpringForceField" object1="@Points" object2="@M3" filename="test4c.xs3"/>
 	</Group>
 </Scene>

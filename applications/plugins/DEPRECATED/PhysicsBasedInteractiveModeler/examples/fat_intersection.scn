@@ -109,7 +109,7 @@
 			</Node>
 		</Node>
 		
-		<VectorSpringForceField name="fixSpring" object2="FatTetraMesh/test" object1="MuscleTriangularMesh" stiffness="30"/>
+		<VectorSpringForceField name="fixSpring" object2="@FatTetraMesh/test" object1="@MuscleTriangularMesh" stiffness="30"/>
 	</Node>
 	
 <!--	<Node name="back" >
