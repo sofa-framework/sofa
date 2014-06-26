@@ -44,8 +44,6 @@ namespace component
 namespace collision
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::core::collision;
 
 template<class T>
 bool FFDDistanceGridDiscreteIntersection::testIntersection(FFDDistanceGridCollisionElement&, TSphere<T>&)
@@ -104,7 +102,7 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
                     grad.normalize();
 
                     contacts->resize(contacts->size()+1);
-                    DetectionOutput *detection = &*(contacts->end()-1);
+                    sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
                     detection->normal = Vector3(grad); // normal in global space from p1's surface
                     detection->value = d - d0;
                     detection->elem.first = e1;
