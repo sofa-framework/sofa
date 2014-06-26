@@ -327,7 +327,8 @@ protected:
         , isToPrint( initData(&isToPrint, false, "isToPrint", "suppress somes data before using save as function"))
         , _updateStiffness(initData(&_updateStiffness,false,"updateStiffness","udpate structures (precomputed in init) using stiffness parameters in each iteration (set listening=1)"))
     {
-
+		_poissonRatio.setRequired(true);
+		_youngModulus.setRequired(true);
 
         data.initPtrData(this);
         this->addAlias(&_assembling, "assembling");
