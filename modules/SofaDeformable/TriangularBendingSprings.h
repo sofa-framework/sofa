@@ -59,9 +59,6 @@ namespace component
 
 namespace forcefield
 {
-using namespace sofa::helper;
-using namespace sofa::defaulttype;
-using namespace sofa::component::topology;
 
 /**
 Bending springs added between vertices of triangles sharing a common edge.
@@ -129,22 +126,22 @@ protected:
         }
     };
 
-    EdgeData<helper::vector<EdgeInformation> > edgeInfo;
+    sofa::component::topology::EdgeData<helper::vector<EdgeInformation> > edgeInfo;
 
-    class TriangularBSEdgeHandler : public TopologyDataHandler<Edge,vector<EdgeInformation> >
+    class TriangularBSEdgeHandler : public sofa::component::topology::TopologyDataHandler<sofa::component::topology::Edge, vector<EdgeInformation> >
     {
     public:
         typedef typename TriangularBendingSprings<DataTypes>::EdgeInformation EdgeInformation;
-        TriangularBSEdgeHandler(TriangularBendingSprings<DataTypes>* _ff, EdgeData<sofa::helper::vector<EdgeInformation> >* _data)
-            : TopologyDataHandler<Edge, sofa::helper::vector<EdgeInformation> >(_data), ff(_ff) {}
+        TriangularBSEdgeHandler(TriangularBendingSprings<DataTypes>* _ff, sofa::component::topology::EdgeData<sofa::helper::vector<EdgeInformation> >* _data)
+            : sofa::component::topology::TopologyDataHandler<sofa::component::topology::Edge, sofa::helper::vector<EdgeInformation> >(_data), ff(_ff) {}
 
         void applyCreateFunction(unsigned int edgeIndex,
                 EdgeInformation &ei,
-                const Edge& ,  const sofa::helper::vector< unsigned int > &,
+                const sofa::component::topology::Edge& ,  const sofa::helper::vector< unsigned int > &,
                 const sofa::helper::vector< double >&);
 
         void applyTriangleCreation(const sofa::helper::vector<unsigned int> &triangleAdded,
-                const sofa::helper::vector<Triangle> & ,
+                const sofa::helper::vector<sofa::component::topology::Triangle> & ,
                 const sofa::helper::vector<sofa::helper::vector<unsigned int> > & ,
                 const sofa::helper::vector<sofa::helper::vector<double> > &);
 
@@ -207,7 +204,7 @@ public:
 
 protected:
 
-    EdgeData<helper::vector<EdgeInformation> > &getEdgeInfo() {return edgeInfo;}
+    sofa::component::topology::EdgeData<helper::vector<EdgeInformation> > &getEdgeInfo() {return edgeInfo;}
 
     TriangularBSEdgeHandler* edgeHandler;
 

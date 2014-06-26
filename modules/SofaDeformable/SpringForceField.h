@@ -46,8 +46,6 @@ namespace component
 namespace interactionforcefield
 {
 
-using namespace sofa::defaulttype;
-
 /// This class contains the description of one linear spring
 template<class T>
 class LinearSpring

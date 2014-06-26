@@ -50,8 +50,6 @@ namespace component
 namespace interactionforcefield
 {
 
-using namespace core::behavior;
-
 template<class DataTypes>
 TriangleBendingSprings<DataTypes>::TriangleBendingSprings()
 {

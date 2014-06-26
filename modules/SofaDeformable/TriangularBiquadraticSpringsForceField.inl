@@ -43,18 +43,8 @@ namespace component
 namespace forcefield
 {
 
-using namespace sofa::defaulttype;
-using namespace	sofa::component::topology;
-using namespace core::topology;
-
-
-
-
-
-using core::topology::BaseMeshTopology;
-
-typedef BaseMeshTopology::Triangle			Triangle;
-typedef BaseMeshTopology::EdgesInTriangle		EdgesInTriangle;
+typedef core::topology::BaseMeshTopology::Triangle			Triangle;
+typedef core::topology::BaseMeshTopology::EdgesInTriangle		EdgesInTriangle;
 
 template< class DataTypes >
 void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSTriangleHandler::applyCreateFunction(unsigned int triangleIndex,
@@ -63,6 +53,9 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSTriangleHandler::app
         const sofa::helper::vector<unsigned int> &,
         const sofa::helper::vector<double> &)
 {
+    using namespace sofa::defaulttype;
+    using namespace	sofa::component::topology;
+
     if (ff)
     {
 
@@ -121,6 +114,8 @@ template< class DataTypes >
 void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSTriangleHandler::applyDestroyFunction(unsigned int triangleIndex,
         TriangleRestInformation  &tinfo)
 {
+    using namespace	sofa::component::topology;
+
     if (ff)
     {
 
@@ -145,7 +140,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSTriangleHandler::app
 template< class DataTypes >
 void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSEdgeHandler::applyCreateFunction(unsigned int edgeIndex,
         EdgeRestInformation &ei,
-        const Edge &,
+        const core::topology::Edge &,
         const sofa::helper::vector<unsigned int> &,
         const sofa::helper::vector<double> &)
 
@@ -246,6 +241,8 @@ template <class DataTypes> void TriangularBiquadraticSpringsForceField<DataTypes
 template <class DataTypes>
 void TriangularBiquadraticSpringsForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
 {
+    using namespace sofa::defaulttype;
+
     VecDeriv& f = *d_f.beginEdit();
     const VecCoord& x = d_x.getValue();
     const VecDeriv& v = d_v.getValue();
