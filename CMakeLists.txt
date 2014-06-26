@@ -29,6 +29,7 @@ set(SOFA_EXTLIBS_DIR   "${CMAKE_CURRENT_SOURCE_DIR}/extlibs")
 # extlibs
 set(SOFA_PROJECT_FOLDER "Extlibs")
 add_subdirectory(${SOFA_EXTLIBS_DIR}/tinyxml)
+add_subdirectory(${SOFA_EXTLIBS_DIR}/gtest)
 
 # framework
 set(SOFA_PROJECT_FOLDER "SofaFramework")
