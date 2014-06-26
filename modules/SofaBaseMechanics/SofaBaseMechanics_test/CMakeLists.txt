@@ -1,16 +1,16 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(SOURCE_FILES
-    PlaneForceField_test.cpp
-    AffineMovementConstraint_test.cpp
-    ProjectToPointConstraint_test.cpp
+    UniformMass_test.cpp
+    DiagonalMass_test.cpp
         )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
 AddLinkerDependencies(
     SofaTest
-    SofaBoundaryCondition
+    SofaBaseMechanics
 )
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
+ 

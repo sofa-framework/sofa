@@ -11,7 +11,7 @@ RegisterProjects("SofaBaseLinearSolver" OPTION "SOFA-LIB_COMPONENT_BASE_LINEAR_S
 #RegisterProjects("SofaBaseLinearSolver_test" OPTION "SOFA-LIB_COMPONENT_BASE_LINEAR_SOLVER" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaBaseLinearSolver/SofaBaseLinearSolver_test")
 
 RegisterProjects("SofaBaseMechanics" OPTION "SOFA-LIB_COMPONENT_BASE_MECHANICS" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaBaseMechanics")
-#RegisterProjects("SofaBaseMechanics_test" OPTION "SOFA-LIB_COMPONENT_BASE_MECHANICS" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaBaseMechanics/SofaBaseMechanics_test")
+RegisterProjects("SofaBaseMechanics_test" OPTION "SOFA-LIB_COMPONENT_BASE_MECHANICS" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaBaseMechanics/SofaBaseMechanics_test")
 
 RegisterProjects("SofaBaseTopology" OPTION "SOFA-LIB_COMPONENT_BASE_TOPOLOGY" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaBaseTopology")
 #RegisterProjects("SofaBaseTopology_test" OPTION "SOFA-LIB_COMPONENT_BASE_TOPOLOGY" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaBaseTopology/SofaBaseTopology_test")
