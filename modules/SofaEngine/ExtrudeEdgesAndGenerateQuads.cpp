@@ -36,6 +36,8 @@ namespace component
 namespace engine
 {
 
+using namespace sofa::defaulttype;
+
 SOFA_DECL_CLASS(ExtrudeEdgesAndGenerateQuads)
 
 int ExtrudeEdgesAndGenerateQuadsClass = core::RegisterObject("This engine extrudes an edge-based curve into a quad surface patch")

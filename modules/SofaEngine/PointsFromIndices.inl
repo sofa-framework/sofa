@@ -42,10 +42,6 @@ namespace component
 namespace engine
 {
 
-using namespace sofa::helper;
-using namespace sofa::defaulttype;
-using namespace core::objectmodel;
-
 template <class DataTypes>
 PointsFromIndices<DataTypes>::PointsFromIndices()
     : f_X( initData (&f_X, "position", "Position coordinates of the degrees of freedom") )
@@ -59,11 +55,11 @@ void PointsFromIndices<DataTypes>::init()
 {
     if (f_X.getValue().empty())
     {
-        MechanicalState<DataTypes>* mstate;
+        sofa::core::behavior::MechanicalState<DataTypes>* mstate;
         this->getContext()->get(mstate);
         if (mstate)
         {
-            BaseData* parent = mstate->findField("position");
+            sofa::core::objectmodel::BaseData* parent = mstate->findField("position");
             if (parent)
             {
                 f_X.setParent(parent);

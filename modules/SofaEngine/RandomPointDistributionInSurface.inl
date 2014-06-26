@@ -46,10 +46,6 @@ namespace component
 namespace engine
 {
 
-using namespace sofa::helper;
-using namespace sofa::defaulttype;
-using namespace core::objectmodel;
-
 template <class DataTypes>
 RandomPointDistributionInSurface<DataTypes>::RandomPointDistributionInSurface()
     : initialized(false)
@@ -168,6 +164,8 @@ defaulttype::Vec<3,typename DataTypes::Real> RandomPointDistributionInSurface<Da
 template <class DataTypes>
 bool RandomPointDistributionInSurface<DataTypes>::isInside(Coord p)
 {
+    using sofa::core::topology::BaseMeshTopology;
+
     const VecCoord& vertices = f_vertices.getValue();
     const helper::vector<BaseMeshTopology::Triangle>& triangles = f_triangles.getValue();
 
@@ -216,7 +214,7 @@ void RandomPointDistributionInSurface<DataTypes>::update()
     cleanDirty();
 
     const VecCoord& vertices = f_vertices.getValue();
-    const helper::vector<BaseMeshTopology::Triangle>& triangles = f_triangles.getValue();
+    const helper::vector<sofa::core::topology::BaseMeshTopology::Triangle>& triangles = f_triangles.getValue();
 
     if (triangles.size() <= 1 ||  vertices.size() <= 1)
     {

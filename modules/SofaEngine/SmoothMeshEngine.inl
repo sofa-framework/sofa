@@ -43,10 +43,6 @@ namespace component
 namespace engine
 {
 
-using namespace sofa::helper;
-using namespace sofa::defaulttype;
-using namespace core::objectmodel;
-
 template <class DataTypes>
 SmoothMeshEngine<DataTypes>::SmoothMeshEngine()
     : input_position( initData (&input_position, "input_position", "Input position") )
@@ -81,6 +77,8 @@ void SmoothMeshEngine<DataTypes>::reinit()
 template <class DataTypes>
 void SmoothMeshEngine<DataTypes>::update()
 {
+    using sofa::core::topology::BaseMeshTopology;
+
     cleanDirty();
 
     if (!m_topo) return;
@@ -133,12 +131,13 @@ void SmoothMeshEngine<DataTypes>::update()
 template <class DataTypes>
 void SmoothMeshEngine<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+    using sofa::defaulttype::Vec;
 #ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowVisualModels()) return;
 
     bool wireframe=vparams->displayFlags().getShowWireFrame();
 
-    BaseMeshTopology::SeqTriangles tri = m_topo->getTriangles();
+    sofa::core::topology::BaseMeshTopology::SeqTriangles tri = m_topo->getTriangles();
 
     glPushAttrib( GL_LIGHTING_BIT | GL_ENABLE_BIT | GL_LINE_BIT | GL_CURRENT_BIT);
     glEnable( GL_LIGHTING);

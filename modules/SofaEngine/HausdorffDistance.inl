@@ -44,8 +44,6 @@ namespace component
 namespace engine
 {
 
-using namespace sofa::defaulttype;
-
 template <class DataTypes>
 HausdorffDistance<DataTypes>::HausdorffDistance()
     : f_points_1( initData (&f_points_1, "points1", "Points belonging to the first point cloud") )

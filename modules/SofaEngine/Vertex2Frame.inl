@@ -42,8 +42,6 @@ namespace component
 namespace engine
 {
 
-using namespace sofa::defaulttype;
-
 template <class DataTypes>
 Vertex2Frame<DataTypes>::Vertex2Frame():
     vertices(initData(&vertices,"position","Vertices of the mesh loaded"))
@@ -80,6 +78,8 @@ void Vertex2Frame<DataTypes>::reinit()
 template <class DataTypes>
 void Vertex2Frame<DataTypes>::update()
 {
+    using namespace sofa::defaulttype;
+
     cleanDirty();
 
     const helper::vector<Vector3>& fVertices = vertices.getValue();

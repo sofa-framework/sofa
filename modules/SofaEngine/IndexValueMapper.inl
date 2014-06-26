@@ -39,9 +39,6 @@ namespace component
 namespace engine
 {
 
-using namespace sofa;
-using namespace sofa::core::topology;
-
 template <class DataTypes>
 IndexValueMapper<DataTypes>::IndexValueMapper()
     : f_inputValues(initData(&f_inputValues, "inputValues", "Already existing values (can be empty) "))

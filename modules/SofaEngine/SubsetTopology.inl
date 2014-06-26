@@ -45,11 +45,6 @@ namespace component
 namespace engine
 {
 
-using namespace sofa::helper;
-using namespace sofa::defaulttype;
-using namespace core::objectmodel;
-using namespace core::topology;
-
 template <class DataTypes>
 SubsetTopology<DataTypes>::SubsetTopology()
     : boxes( initData(&boxes, "box", "Box defined by xmin,ymin,zmin, xmax,ymax,zmax") )
@@ -97,12 +92,15 @@ SubsetTopology<DataTypes>::SubsetTopology()
 template <class DataTypes>
 void SubsetTopology<DataTypes>::init()
 {
+    using sofa::core::topology::BaseMeshTopology;
+    using sofa::core::objectmodel::BaseData;
+
     if (centers.isSet())
         typeROI = SPHERE;
 
     if (!f_X0.isSet())
     {
-        MechanicalState<DataTypes>* mstate;
+        sofa::core::behavior::MechanicalState<DataTypes>* mstate;
         this->getContext()->get(mstate);
         if (mstate)
         {

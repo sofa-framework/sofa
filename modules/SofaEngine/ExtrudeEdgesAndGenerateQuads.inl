@@ -43,10 +43,6 @@ namespace component
 namespace engine
 {
 
-using namespace sofa::helper;
-using namespace sofa::defaulttype;
-using namespace core::objectmodel;
-
 template <class DataTypes>
 ExtrudeEdgesAndGenerateQuads<DataTypes>::ExtrudeEdgesAndGenerateQuads()
     : initialized(false)
@@ -85,7 +81,7 @@ void ExtrudeEdgesAndGenerateQuads<DataTypes>::update()
 {
     cleanDirty();
 
-    const helper::vector<BaseMeshTopology::Edge>& curveEdges = f_curveEdges.getValue();
+    const helper::vector<sofa::core::topology::BaseMeshTopology::Edge>& curveEdges = f_curveEdges.getValue();
     const VecCoord& curveVertices = f_curveVertices.getValue();
 
     if (curveEdges.size() < 1 || curveVertices.size() < 1)
@@ -96,9 +92,9 @@ void ExtrudeEdgesAndGenerateQuads<DataTypes>::update()
 
     VecCoord* extrudedVertices = f_extrudedVertices.beginEdit();
     extrudedVertices->clear();
-    helper::vector<BaseMeshTopology::Edge>* extrudedEdges = f_extrudedEdges.beginEdit();
+    helper::vector<sofa::core::topology::BaseMeshTopology::Edge>* extrudedEdges = f_extrudedEdges.beginEdit();
     extrudedEdges->clear();
-    helper::vector<BaseMeshTopology::Quad>* extrudedQuads = f_extrudedQuads.beginEdit();
+    helper::vector<sofa::core::topology::BaseMeshTopology::Quad>* extrudedQuads = f_extrudedQuads.beginEdit();
     extrudedQuads->clear();
 
     int nSlices = f_numberOfSections.getValue();
@@ -122,18 +118,18 @@ void ExtrudeEdgesAndGenerateQuads<DataTypes>::update()
     // compute indices of extruded edges (including initial edges)
     for (unsigned int e=0; e<curveEdges.size(); e++)
     {
-        BaseMeshTopology::Edge edge;
+        sofa::core::topology::BaseMeshTopology::Edge edge;
 
         // edges parallel to the initial curve
         for (int n=0; n<nSlices+1; n++)
         {
-            edge = BaseMeshTopology::Edge(curveEdges[e][0]+n*nVertices, curveEdges[e][1]+n*nVertices);
+            edge = sofa::core::topology::BaseMeshTopology::Edge(curveEdges[e][0]+n*nVertices, curveEdges[e][1]+n*nVertices);
             extrudedEdges->push_back(edge);
         }
         // edges orthogonal to the initial curve
         for (int n=0; n<nSlices; n++)
         {
-            edge = BaseMeshTopology::Edge(curveEdges[e][0]+n*nVertices, curveEdges[e][0]+(n+1)*nVertices);
+            edge = sofa::core::topology::BaseMeshTopology::Edge(curveEdges[e][0]+n*nVertices, curveEdges[e][0]+(n+1)*nVertices);
             extrudedEdges->push_back(edge);
         }
     }
@@ -141,11 +137,11 @@ void ExtrudeEdgesAndGenerateQuads<DataTypes>::update()
     // compute indices of extruded quads
     for (unsigned int e=0; e<curveEdges.size(); e++)
     {
-        BaseMeshTopology::Quad quad;
+        sofa::core::topology::BaseMeshTopology::Quad quad;
 
         for (int n=0; n<nSlices; n++)
         {
-            quad = BaseMeshTopology::Quad(curveEdges[e][0]+n*nVertices, curveEdges[e][1]+n*nVertices, curveEdges[e][1]+(n+1)*nVertices, curveEdges[e][0]+(n+1)*nVertices);
+            quad = sofa::core::topology::BaseMeshTopology::Quad(curveEdges[e][0]+n*nVertices, curveEdges[e][1]+n*nVertices, curveEdges[e][1]+(n+1)*nVertices, curveEdges[e][0]+(n+1)*nVertices);
             extrudedQuads->push_back(quad);
         }
     }

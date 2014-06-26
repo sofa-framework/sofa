@@ -47,11 +47,6 @@ namespace component
 namespace engine
 {
 
-using namespace sofa::helper;
-using namespace sofa::defaulttype;
-using namespace core::objectmodel;
-using namespace core::topology;
-
 template <class DataTypes>
 ValuesFromPositions<DataTypes>::ValuesFromPositions()
     : f_inputValues( initData(&f_inputValues, "inputValues", "Input values") )
@@ -82,9 +77,12 @@ ValuesFromPositions<DataTypes>::ValuesFromPositions()
 template <class DataTypes>
 void ValuesFromPositions<DataTypes>::init()
 {
+    using sofa::core::objectmodel::BaseData;
+    using sofa::core::topology::BaseMeshTopology;
+
     if (!f_X0.isSet())
     {
-        MechanicalState<DataTypes>* mstate;
+        sofa::core::behavior::MechanicalState<DataTypes>* mstate;
         this->getContext()->get(mstate);
         if (mstate)
         {
@@ -307,7 +305,7 @@ void ValuesFromPositions<DataTypes>::update()
     data.x0 = x0;
 
     // Compute min and max of BB
-    Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
+    sofa::defaulttype::Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
     sofa::simulation::Node* context = dynamic_cast<sofa::simulation::Node*>(this->getContext());
     sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
     data.bmin = (Real)*sceneMinBBox.ptr(); /// @todo: shouldn't this be dot(sceneMinBBox,data.dir) ?
@@ -443,7 +441,7 @@ void ValuesFromPositions<DataTypes>::draw(const core::visual::VisualParams* )
         helper::WriteAccessor< Data<sofa::helper::vector<Vec3> > > tetrahedronVectors = f_tetrahedronVectors;
 
         CPos point2, point1;
-        Vec<3,float> colors(0,0,1);
+        sofa::defaulttype::Vec<3,float> colors(0,0,1);
 
         float vectorLength = p_vectorLength.getValue();
         glBegin(GL_LINES);

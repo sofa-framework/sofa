@@ -36,9 +36,6 @@
 #include <sofa/defaulttype/BoundingBox.h>
 #include <limits>
 
-using std::cerr;
-using std::endl;
-
 namespace sofa
 {
 
@@ -47,11 +44,6 @@ namespace component
 
 namespace engine
 {
-
-using namespace sofa::helper;
-using namespace sofa::defaulttype;
-using namespace core::objectmodel;
-using namespace core::topology;
 
 template <class DataTypes>
 PairBoxROI<DataTypes>::PairBoxROI()
@@ -75,9 +67,12 @@ PairBoxROI<DataTypes>::PairBoxROI()
 template <class DataTypes>
 void PairBoxROI<DataTypes>::init()
 {
+    using sofa::core::objectmodel::BaseData;
+    using sofa::core::objectmodel::BaseContext;
+
     if (!f_X0.isSet())
     {
-        BaseMechanicalState* mstate;
+        sofa::core::behavior::BaseMechanicalState* mstate;
         this->getContext()->get(mstate,BaseContext::Local);
         if (mstate)
         {

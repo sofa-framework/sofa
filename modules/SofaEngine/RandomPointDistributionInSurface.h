@@ -47,10 +47,6 @@ namespace component
 namespace engine
 {
 
-using namespace core::behavior;
-using namespace core::topology;
-using namespace core::objectmodel;
-
 /**
  * This class extrudes a surface
  */
@@ -97,7 +93,7 @@ public:
     Data<unsigned int> numberOfTests;
 
     Data<VecCoord> f_vertices;
-    Data< helper::vector<BaseMeshTopology::Triangle> > f_triangles;
+    Data< helper::vector<sofa::core::topology::BaseMeshTopology::Triangle> > f_triangles;
     Data<VecCoord> f_inPoints;
     Data<VecCoord> f_outPoints;
 

@@ -42,10 +42,6 @@ namespace component
 namespace engine
 {
 
-using namespace core::behavior;
-using namespace core::topology;
-using namespace core::objectmodel;
-
 /**
  * This class computes the average of a set of Coordinates
  */
@@ -81,7 +77,7 @@ public:
     static std::string templateName(const NormalsFromPoints<DataTypes>* = NULL) { return DataTypes::Name();    }
 
 protected:
-    MechanicalState<DataTypes> *mstate;
+    sofa::core::behavior::MechanicalState<DataTypes> *mstate;
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_NormalsFromPoints_CPP)

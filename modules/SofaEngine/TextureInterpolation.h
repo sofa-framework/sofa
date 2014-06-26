@@ -45,9 +45,6 @@ namespace component
 namespace engine
 {
 
-//  using namespace sofa::core::topology;
-using namespace sofa::defaulttype;
-
 /**
  * This class give texture coordinate in 1D according to an imput state vector.
  */
@@ -59,10 +56,10 @@ public:
     typedef typename DataTypes::Coord         Coord;
     typedef typename DataTypes::VecCoord      VecCoord;
     typedef typename DataTypes::Real          Real;
-    typedef Vec<1,Real>                       Coord1D;
-    typedef Vec<2,Real>                       Coord2D;
-    typedef Vec<3,Real>                       Coord3D;
-    typedef ResizableExtVector <Coord2D>      ResizableExtVector2D;
+    typedef sofa::defaulttype::Vec<1,Real>                       Coord1D;
+    typedef sofa::defaulttype::Vec<2,Real>                       Coord2D;
+    typedef sofa::defaulttype::Vec<3,Real>                       Coord3D;
+    typedef sofa::defaulttype::ResizableExtVector <Coord2D>      ResizableExtVector2D;
     typedef sofa::helper::vector <Coord3D>    VecCoord3D;
 
 

@@ -36,6 +36,8 @@ namespace component
 namespace engine
 {
 
+using namespace sofa::defaulttype;
+
 SOFA_DECL_CLASS(TextureInterpolation)
 
 int TextureInterpolationClass = core::RegisterObject("Create texture coordinate for a given field")

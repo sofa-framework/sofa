@@ -43,10 +43,6 @@ namespace component
 namespace engine
 {
 
-using namespace sofa::helper;
-using namespace sofa::defaulttype;
-using namespace core::objectmodel;
-
 template <class DataTypes>
 ExtrudeSurface<DataTypes>::ExtrudeSurface()
     : initialized(false)
@@ -81,6 +77,8 @@ void ExtrudeSurface<DataTypes>::reinit()
 template <class DataTypes>
 void ExtrudeSurface<DataTypes>::update()
 {
+    using sofa::core::topology::BaseMeshTopology;
+
     cleanDirty();
 
     const helper::vector<BaseMeshTopology::TriangleID>& surfaceTriangles = f_surfaceTriangles.getValue();
@@ -223,6 +221,9 @@ template <class DataTypes>
 void ExtrudeSurface<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
 #ifndef SOFA_NO_OPENGL
+
+    using sofa::core::topology::BaseMeshTopology;
+
     const helper::vector<BaseMeshTopology::TriangleID> &surfaceTriangles = f_surfaceTriangles.getValue();
 
     helper::vector<BaseMeshTopology::TriangleID>::const_iterator itTriangles;

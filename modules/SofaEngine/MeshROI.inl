@@ -43,11 +43,6 @@ namespace component
 namespace engine
 {
 
-using namespace sofa::helper;
-using namespace sofa::defaulttype;
-using namespace core::objectmodel;
-using namespace core::topology;
-
 template <class DataTypes>
 MeshROI<DataTypes>::MeshROI()
     : f_X0( initData (&f_X0, "position", "Rest position coordinates of the degrees of freedom") )
@@ -95,11 +90,16 @@ MeshROI<DataTypes>::MeshROI()
 template <class DataTypes>
 void MeshROI<DataTypes>::init()
 {
+    using sofa::core::objectmodel::BaseData;
+    using sofa::core::objectmodel::BaseContext;
+    using sofa::core::topology::BaseMeshTopology;
+    using sofa::core::behavior::BaseMechanicalState;
+
     //cerr<<"MeshROI<DataTypes>::init() is called "<<endl;
     if (!f_X0.isSet())
     {
         //cerr<<"MeshROI<DataTypes>::init() f_X0 is not set "<<endl;
-        BaseMechanicalState* mstate;
+        sofa::core::behavior::BaseMechanicalState* mstate;
         this->getContext()->get(mstate,BaseContext::Local);
         if (mstate)
         {

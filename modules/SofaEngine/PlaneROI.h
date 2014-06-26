@@ -47,10 +47,6 @@ namespace component
 namespace engine
 {
 
-using namespace core::behavior;
-using namespace core::topology;
-using namespace core::objectmodel;
-
 /**
  * This class find all the points located inside a given box.
  */
@@ -64,7 +60,7 @@ public:
     typedef defaulttype::Vec<3,Real> Vec3;
     typedef defaulttype::Vec<6,Real> Vec6;
     typedef defaulttype::Vec<10,Real> Vec10;
-    typedef BaseMeshTopology::SetIndex SetIndex;
+    typedef sofa::core::topology::BaseMeshTopology::SetIndex SetIndex;
 
     typedef typename DataTypes::CPos CPos;
 
@@ -96,7 +92,7 @@ public:
         if (!arg->getAttribute("template"))
         {
             // only check if this template is correct if no template was given
-            if (context->getMechanicalState() && dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
+            if (context->getMechanicalState() && dynamic_cast<sofa::core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
                 return false; // this template is not the same as the existing MechanicalState
         }
 
