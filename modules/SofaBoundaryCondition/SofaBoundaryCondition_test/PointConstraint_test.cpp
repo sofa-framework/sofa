@@ -139,12 +139,7 @@ struct PointConstraint_test : public Sofa_test<typename _DataTypes::Real>
 // Define the list of DataTypes to instanciate
 using testing::Types;
 typedef Types<
-    defaulttype::Vec1Types,
-    defaulttype::Vec2Types,
-    defaulttype::Vec3Types,
-    defaulttype::Vec6Types,
-    defaulttype::Rigid2Types,
-    defaulttype::Rigid3Types
+    defaulttype::Vec3Types
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
