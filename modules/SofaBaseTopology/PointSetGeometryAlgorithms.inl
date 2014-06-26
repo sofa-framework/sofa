@@ -42,7 +42,6 @@ namespace component
 
 namespace topology
 {
-using namespace sofa::defaulttype;
 
 template <class DataTypes>
 void PointSetGeometryAlgorithms< DataTypes >::init()
@@ -240,7 +239,7 @@ void PointSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParam
 #ifndef SOFA_NO_OPENGL
     if (showPointIndices.getValue())
     {
-        Mat<4,4, GLfloat> modelviewM;
+        sofa::defaulttype::Mat<4,4, GLfloat> modelviewM;
         sofa::defaulttype::Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
         const VecCoord& coords = *(this->object->getX());
 

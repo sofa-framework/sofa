@@ -50,10 +50,6 @@ namespace component
 namespace mass
 {
 
-
-using namespace	sofa::component::topology;
-using namespace core::topology;
-
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyCreateFunction(unsigned int, MassType &m, const Point &, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
 {
@@ -378,11 +374,6 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(co
     applyHexahedronDestruction(hexahedronRemoved);
 }
 
-
-using namespace sofa::defaulttype;
-using namespace sofa::core::behavior;
-
-
 template <class DataTypes, class MassType>
 DiagonalMass<DataTypes, MassType>::DiagonalMass()
     : f_mass( initData(&f_mass, "mass", "values of the particles masses") )
@@ -500,7 +491,7 @@ double DiagonalMass<DataTypes, MassType>::getPotentialEnergy( const core::Mechan
     helper::ReadAccessor< DataVecCoord > _x = x;
     SReal e = 0;
     // gravity
-    Vec3d g ( this->getContext()->getGravity() );
+    sofa::defaulttype::Vec3d g ( this->getContext()->getGravity() );
     Deriv theGravity;
     DataTypes::set ( theGravity, g[0], g[1], g[2]);
     for (unsigned int i=0; i<masses.size(); i++)
@@ -512,9 +503,10 @@ double DiagonalMass<DataTypes, MassType>::getPotentialEnergy( const core::Mechan
 
 // does nothing by default, need to be specialized in .cpp
 template <class DataTypes, class MassType>
-Vec6d DiagonalMass<DataTypes, MassType>::getMomentum ( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& /*vx*/, const DataVecDeriv& /*vv*/  ) const
+sofa::defaulttype::Vec6d
+DiagonalMass<DataTypes, MassType>::getMomentum ( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& /*vx*/, const DataVecDeriv& /*vv*/  ) const
 {
-    return Vec6d();
+    return sofa::defaulttype::Vec6d();
 }
 
 template <class DataTypes, class MassType>
@@ -737,7 +729,7 @@ void DiagonalMass<DataTypes, MassType>::addGravityToV(const core::MechanicalPara
     {
         VecDeriv& v = *d_v.beginEdit();
         // gravity
-        Vec3d g ( this->getContext()->getGravity() );
+        sofa::defaulttype::Vec3d g ( this->getContext()->getGravity() );
         Deriv theGravity;
         DataTypes::set ( theGravity, g[0], g[1], g[2]);
         Deriv hg = theGravity * (typename DataTypes::Real)mparams->dt();
@@ -796,7 +788,7 @@ void DiagonalMass<DataTypes, MassType>::addForce(const core::MechanicalParams* /
     helper::WriteAccessor< DataVecDeriv > _f = f;
 
     // gravity
-    Vec3d g ( this->getContext()->getGravity() );
+    sofa::defaulttype::Vec3d g ( this->getContext()->getGravity() );
     Deriv theGravity;
     DataTypes::set ( theGravity, g[0], g[1], g[2]);
 
@@ -821,12 +813,12 @@ void DiagonalMass<DataTypes, MassType>::draw(const core::visual::VisualParams* v
     Coord gravityCenter;
     Real totalMass=0.0;
 
-    std::vector<  Vector3 > points;
-    std::vector< Vec<2,int> > indices;
+    std::vector<  sofa::defaulttype::Vector3 > points;
+    std::vector<  sofa::defaulttype::Vec<2,int> > indices;
 
     for (unsigned int i=0; i<x.size(); i++)
     {
-        Vector3 p;
+        sofa::defaulttype::Vector3 p;
         p = DataTypes::getCPos(x[i]);
 
         points.push_back(p);
@@ -834,7 +826,7 @@ void DiagonalMass<DataTypes, MassType>::draw(const core::visual::VisualParams* v
         totalMass += masses[i];
     }
 
-    vparams->drawTool()->drawPoints(points, 2, Vec<4,float>(1,1,1,1));
+    vparams->drawTool()->drawPoints(points, 2, sofa::defaulttype::Vec<4,float>(1,1,1,1));
 
     if(showCenterOfGravity.getValue())
     {

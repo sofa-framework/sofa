@@ -27,12 +27,18 @@
 
 #include <SofaConstraint/ConstraintSolverImpl.h>
 
+#include <sofa/simulation/common/AnimateBeginEvent.h>
+#include <sofa/simulation/common/AnimateEndEvent.h>
+#include <sofa/simulation/common/PropagateEventVisitor.h>
 #include <sofa/simulation/common/BehaviorUpdatePositionVisitor.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/SolveVisitor.h>
 #include <sofa/simulation/common/BehaviorUpdatePositionVisitor.h>
 #include <sofa/simulation/common/MechanicalOperations.h>
-
+#include <sofa/simulation/common/UpdateMappingVisitor.h>
+#include <sofa/simulation/common/UpdateContextVisitor.h>
+#include <sofa/simulation/common/UpdateMappingEndEvent.h>
+#include <sofa/simulation/common/UpdateBoundingBoxVisitor.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/LCPcalc.h>
 
@@ -61,6 +67,7 @@ namespace animationloop
 using namespace sofa::defaulttype;
 using namespace helper::system::thread;
 using namespace core::behavior;
+using namespace sofa::simulation;
 
 
 ConstraintProblem::ConstraintProblem(bool printLog)

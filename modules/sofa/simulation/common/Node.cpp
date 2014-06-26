@@ -961,6 +961,7 @@ void Node::printComponents()
     using core::CollisionModel;
     using core::objectmodel::ContextObject;
     using core::collision::Pipeline;
+    using core::BaseState;
 
     serr<<"BaseAnimationLoop: ";
     for ( Single<BaseAnimationLoop>::iterator i=animationManager.begin(), iend=animationManager.end(); i!=iend; i++ )

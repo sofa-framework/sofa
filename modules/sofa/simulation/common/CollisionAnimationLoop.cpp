@@ -23,14 +23,23 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/simulation/common/CollisionAnimationLoop.h>
-#include <sofa/simulation/common/MechanicalVisitor.h>
-#include <sofa/simulation/common/CollisionVisitor.h>
 
+#include <sofa/simulation/common/AnimateBeginEvent.h>
+#include <sofa/simulation/common/AnimateEndEvent.h>
+#include <sofa/simulation/common/AnimateVisitor.h>
 #include <sofa/simulation/common/PropagateEventVisitor.h>
+#include <sofa/simulation/common/CollisionVisitor.h>
 #include <sofa/simulation/common/CollisionBeginEvent.h>
 #include <sofa/simulation/common/CollisionEndEvent.h>
+#include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/IntegrateBeginEvent.h>
 #include <sofa/simulation/common/IntegrateEndEvent.h>
+#include <sofa/simulation/common/UpdateMappingEndEvent.h>
+#include <sofa/simulation/common/UpdateMappingVisitor.h>
+#include <sofa/simulation/common/UpdateBoundingBoxVisitor.h>
+#include <sofa/simulation/common/UpdateContextVisitor.h>
+#include <sofa/simulation/common/BehaviorUpdatePositionVisitor.h>
+
 
 #include <stdlib.h>
 #include <math.h>
@@ -54,7 +63,7 @@ CollisionAnimationLoop::~CollisionAnimationLoop()
 
 void CollisionAnimationLoop::computeCollision(const core::ExecParams* params)
 {
-    if (this->f_printLog.getValue()) std::cerr<<"CollisionAnimationLoop::computeCollision()"<<endl;
+    if (this->f_printLog.getValue()) std::cerr<<"CollisionAnimationLoop::computeCollision()"<<std::endl;
 
 
     {
