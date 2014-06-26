@@ -40,7 +40,7 @@
                 <TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
                 <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawTetrahedra="0" />
                 <MechanicalObject name="mecaObj3" />
-                <BarycentricMapping input="@.." object2=".." />
+                <BarycentricMapping input="@.." output="@." />
                 <Node>
                     <TriangleSetTopologyContainer name="ContainerTri" />
                     <TriangleSetTopologyModifier name="Modifier" />

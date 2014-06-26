@@ -20,7 +20,7 @@
         <DiagonalMass template="Vec3d" name="mass" massDensity="0.15" />
         <FixedConstraint template="Vec3d" name="FixedDofs" indices="0 1" />
         <OglModel name="Visual" color="red" />
-        <IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="default17" object1=".." output="@Visual" />
+        <IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="default17" input="@." output="@Visual" />
         <Node name="Edge Mesh">
             <EdgeSetTopologyContainer name="Container" />
             <EdgeSetTopologyModifier name="Modifier" />

@@ -20,7 +20,7 @@
         <TetrahedronFEMForceField name="FEM" template="Vec3d" method="polar" poissonRatio="0.3" youngModulus="1116" assembling="0" />
         <TetrahedronModel name="Models" />
         <OglModel name="Visual" template="ExtVec3f" color="red" />
-        <IdentityMapping name="Mapping" template="Mapping&lt;Vec3d,ExtVec3f&gt;" object1=".." output="@Visual" />
+        <IdentityMapping name="Mapping" template="Mapping&lt;Vec3d,ExtVec3f&gt;" input="@." output="@Visual" />
     </Node>
     <Node name="Cylinder Regular Mesh">
         <MechanicalObject name="DOFs" template="Vec3d" translation="0 0 -10" rotation="0 0 -90" />
@@ -32,7 +32,7 @@
         <MeshSpringForceField name="FEM-Bend" template="Vec3d" stiffness="100" damping="1" />
         <TetrahedronFEMForceField name="FEM" template="Vec3d" method="polar" poissonRatio="0.3" youngModulus="1116" assembling="0" />
         <OglModel name="Visual" template="ExtVec3f" color="blue" />
-        <IdentityMapping name="Mapping" template="Mapping&lt;Vec3d,ExtVec3f&gt;" object1=".." output="@Visual" />
+        <IdentityMapping name="Mapping" template="Mapping&lt;Vec3d,ExtVec3f&gt;" input="@." output="@Visual" />
     </Node>
     <Node name="Cylinder Dynamic Mesh">
         <MeshGmshLoader name="loader" filename="mesh/cylinder.msh" />
@@ -49,6 +49,6 @@
         <TetrahedronFEMForceField name="FEM" template="Vec3d" method="polar" poissonRatio="0.3" youngModulus="1116" assembling="0" />
         <TetrahedronModel name="Models" />
         <OglModel name="Visual" template="ExtVec3f" color="green" />
-        <IdentityMapping name="Mapping" template="Mapping&lt;Vec3d,ExtVec3f&gt;" object1=".." output="@Visual" />
+        <IdentityMapping name="Mapping" template="Mapping&lt;Vec3d,ExtVec3f&gt;" input="@." output="@Visual" />
     </Node>
 </Node>
