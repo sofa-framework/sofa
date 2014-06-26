@@ -1,6 +1,8 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.8)
+project(SofaDefaultType)
 
-set(HEADER_FILES
+
+set(SOFADEFAULTTYPE_HEADERS
 
 	defaulttype.h	
 	BaseMatrix.h	
@@ -29,7 +31,7 @@ set(HEADER_FILES
 	Vec3Types.h
 	)
 
-set(SOURCE_FILES
+set(SOFADEFAULTTYPE_SOURCES
 
 	BaseMatrix.cpp
 	BoundingBox.cpp
@@ -37,11 +39,31 @@ set(SOURCE_FILES
 	#RigidInertia.cpp
 	SolidTypes.cpp
 	)
+  
+add_library(${PROJECT_NAME} SHARED ${SOFADEFAULTTYPE_HEADERS} ${SOFADEFAULTTYPE_SOURCES})
+target_link_libraries( ${PROJECT_NAME} SofaHelper )
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+set( SOFADEFAULTTYPE_COMPILER_FLAGS "-DSOFA_BUILD_DEFAULTTYPE")
 
-AddCompilerDefinitions("SOFA_BUILD_DEFAULTTYPE")
-AddLinkerDependencies(SofaHelper)
+# make the name of debug libraries end in _d.
+set_target_properties( ${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d" )
+set_target_properties( ${PROJECT_NAME} PROPERTIES VERSION ${SOFAFRAMEWORK_VERSION} )
+set_target_properties( ${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFADEFAULTTYPE_COMPILER_FLAGS}"  )
 
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+install(TARGETS ${PROJECT_NAME} 
+    COMPONENT SofaFramework_libraries
+    EXPORT  SofaFrameworkTargets
+    RUNTIME DESTINATION "${SOFAFRAMEWORK_INSTALL_BIN_DIR}"
+    LIBRARY DESTINATION "${SOFAFRAMEWORK_INSTALL_LIB_DIR}"
+    ARCHIVE DESTINATION "${SOFAFRAMEWORK_INSTALL_LIB_DIR}"
+    )
 
+install(DIRECTORY ${SofaDefaultType_SOURCE_DIR}/ 
+        DESTINATION "${SOFAFRAMEWORK_INSTALL_INCLUDE_DIR}/sofa/defaulttype"
+        COMPONENT SofaFramework_headers
+        FILES_MATCHING 
+            PATTERN "*.h"
+            PATTERN "*.inl"
+            PATTERN "*.hxx"
+            PATTERN "*.hpp"
+       )

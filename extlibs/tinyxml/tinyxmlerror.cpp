@@ -24,11 +24,6 @@ distribution.
 
 #include "tinyxml.h"
 
-namespace sofa
-{
-
-namespace tinyxml
-{
 
 // The goal of the seperate error file is to make the first
 // step towards localization. tinyxml (currently) only supports
@@ -57,6 +52,3 @@ const char* TiXmlBase::errorString[ TiXmlBase::TIXML_ERROR_STRING_COUNT ] =
 	"Error when TiXmlDocument added to document, because TiXmlDocument can only be at the root.",
 };
 
-} // namespace tinyxml
-
-} // namespace sofa

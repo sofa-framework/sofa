@@ -22,30 +22,27 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_SYSTEM_GL_H
-#define SOFA_HELPER_SYSTEM_GL_H
 
-#ifndef SOFA_NO_OPENGL
+#ifndef _SOFA_FRAMEWORK_H_
+#define _SOFA_FRAMEWORK_H_
 
-#include <sofa/helper/system/config.h>
-#include <sofa/SofaFramework.h>
+#cmakedefine SOFA_HAVE_ZLIB
 
-#if defined (SOFA_HAVE_GLEW) && !defined(PS3)
-#include <GL/glew.h>
-#elif defined(PS3)
-#include <sofa/helper/gl/ps3gl_compat.h>
-#elif defined (__APPLE__)
-#include <OpenGL/gl.h>
-#else
-#define GL_GLEXT_PROTOTYPES // for glext.h : necessary to use glBindBuffer without glew and make GLSLShader file
-#include <GL/gl.h>
-#include <GL/glext.h> // necessary when you havn't glew
-#endif
+#cmakedefine SOFA_HAVE_PNG
 
-extern const char* GetGlExtensionsList();
+#cmakedefine SOFA_HAVE_GLEW
 
-extern bool CanUseGlExtension(char* ext);
+#cmakedefine SOFA_HAVE_GLUT
 
-#endif /* SOFA_NO_OPENGL */
+#cmakedefine SOFA_HAVE_BOOST_THREAD
 
-#endif
+#cmakedefine SOFA_HAVE_BOOST_SYSTEM
+
+#cmakedefine SOFA_HAVE_TINYXML
+
+
+#define SOFAFRAMEWORK_MAJOR_VERSION ${SOFAFRAMEWORK_MAJOR_VERSION}
+#define SOFAFRAMEWORK_MINOR_VERSION ${SOFAFRAMEWORK_MINOR_VERSION}
+#define SOFAFRAMEWORK_BUILD_VERSION ${SOFAFRAMEWORK_BUILD_VERSION}
+
+#endif // _SOFA_FRAMEWORK_H_

@@ -1,22 +1,100 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+# Copyright (C) 2012, 2013 iCub Facility, Istituto Italiano di Tecnologia
+# Author: Daniele E. Domenichelli <daniele.domenichelli@iit.it>
+# CopyPolicy: Released under the terms of the LGPLv2.1 or later, see LGPL.TXT
 
-set(HEADER_FILES
+cmake_minimum_required(VERSION 2.8)
+project(TinyXML)
 
-    tinystr.h
-    tinyxml.h
-	)
 
-set(SOURCE_FILES
+message("Install prefix: ${CMAKE_INSTALL_PREFIX}")
 
+set(TINYXML_MAJOR_VERSION 2)
+set(TINYXML_MINOR_VERSION 6)
+set(TINYXML_PATCH_VERSION 2)
+set(TINYXML_VERSION ${TINYXML_MAJOR_VERSION}.${TINYXML_MINOR_VERSION}.${TINYXML_PATCH_VERSION})
+
+set(TINYXML_BUILD_LIB_DIR ${CMAKE_CURRENT_BINARY_DIR})
+set(TINYXML_BUILD_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR})
+set(TINYXML_BUILD_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+set(TINYXML_BUILD_CMAKE_DIR ${CMAKE_CURRENT_BINARY_DIR}/cmake)
+
+# Offer the user the choice of overriding the installation directories
+set(TINYXML_INSTALL_LIB_DIR     lib CACHE PATH "Installation directory for libraries")
+set(TINYXML_INSTALL_BIN_DIR     bin CACHE PATH "Installation directory for executables")
+set(TINYXML_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files")
+set(TINYXML_INSTALL_CMAKE_DIR   cmake   CACHE PATH "Installation directory for CMake files")
+
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
+
+set(tinyxml_SRCS
     tinystr.cpp
     tinyxml.cpp
     tinyxmlerror.cpp
     tinyxmlparser.cpp
-	)
+)
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+set(tinyxml_HDRS
+    tinystr.h
+    tinyxml.h
+)
 
-AddCompilerDefinitions("SOFA_BUILD_TINYXML" "TIXML_USE_STL")
+add_definitions("-DTIXML_USE_STL -DTI")
 
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+add_library(tinyxml SHARED ${tinyxml_SRCS} ${tinyxml_HDRS})
 
+set_target_properties( tinyxml  PROPERTIES DEBUG_POSTFIX "_d" )
+set_target_properties( tinyxml   PROPERTIES VERSION ${TINYXML_VERSION} )
+
+#target_include_directories(tinyxml PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
+                                          #"$<INSTALL_INTERFACE:${TINYXML_INSTALL_INCLUDE_DIR}>")
+                                          
+install(TARGETS tinyxml
+        EXPORT  TinyXMLTargets
+        RUNTIME DESTINATION "${TINYXML_INSTALL_BIN_DIR}" 
+        LIBRARY DESTINATION "${TINYXML_INSTALL_LIB_DIR}" 
+        ARCHIVE DESTINATION "${TINYXML_INSTALL_LIB_DIR}" 
+        PUBLIC_HEADER DESTINATION "${TINYXML_INSTALL_INCLUDE_DIR}" )
+set(TINYXML_TARGETS tinyxml)
+
+include(CMakePackageConfigHelpers)
+
+
+# TinyXMLConfigVersion.cmake file (same for build tree and intall)
+write_basic_package_version_file(${TINYXML_BUILD_CMAKE_DIR}/TinyXMLConfigVersion.cmake
+                                 VERSION ${TINYXML_VERSION}
+                                 COMPATIBILITY AnyNewerVersion)
+                                
+install(FILES ${TINYXML_BUILD_CMAKE_DIR}/TinyXMLConfigVersion.cmake
+        DESTINATION ${TINYXML_INSTALL_CMAKE_DIR})
+
+
+# TinyXMLConfig.cmake (build tree)
+set(TINYXML_INCLUDE_DIR "${TINYXML_BUILD_INCLUDE_DIR}")
+configure_package_config_file(TinyXMLConfig.cmake.in 
+                              ${TINYXML_BUILD_CMAKE_DIR}/TinyXMLConfig.cmake
+                              INSTALL_DESTINATION ${TINYXML_BUILD_CMAKE_DIR}
+                              PATH_VARS TINYXML_INCLUDE_DIR )
+
+# TinyXMLConfig.cmake (installed)
+set(TINYXML_INCLUDE_DIR "${TINYXML_INSTALL_INCLUDE_DIR}")
+configure_package_config_file(TinyXMLConfig.cmake.in 
+                              ${TINYXML_BUILD_CMAKE_DIR}/TinyXMLConfigInstall.cmake
+                              INSTALL_DESTINATION ${TINYXML_INSTALL_CMAKE_DIR}
+                              PATH_VARS TINYXML_INCLUDE_DIR )
+
+install(FILES ${TINYXML_BUILD_CMAKE_DIR}/TinyXMLConfigInstall.cmake
+        DESTINATION ${TINYXML_INSTALL_CMAKE_DIR}
+        RENAME TinyXMLConfig.cmake)
+
+
+# TinyXMLTargets.cmake (build tree)
+export(TARGETS ${TINYXML_TARGETS}
+       FILE ${TINYXML_BUILD_CMAKE_DIR}/TinyXMLTargets.cmake)
+
+# TinyXMLTargets.cmake (installed)
+install(EXPORT TinyXMLTargets
+        DESTINATION ${TINYXML_INSTALL_CMAKE_DIR})
+
+# Export the package for use from the build-tree
+# (this registers the build-tree with a global CMake-registry)        
+export(PACKAGE TinyXML)

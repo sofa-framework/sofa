@@ -31,12 +31,6 @@ distribution.
 
 #include "tinyxml.h"
 
-namespace sofa
-{
-
-namespace tinyxml
-{
-
 FILE* TiXmlFOpen( const char* filename, const char* mode );
 
 bool TiXmlBase::condenseWhiteSpace = true;
@@ -1599,7 +1593,7 @@ TiXmlAttribute* TiXmlAttributeSet::FindOrCreate( const char* _name )
 
 
 #ifdef TIXML_USE_STL	
-SOFA_TINYXML_API std::istream& operator>> (std::istream & in, TiXmlNode & base)
+EXPORT std::istream& operator>> (std::istream & in, TiXmlNode & base)
 {
 	TIXML_STRING tag;
 	tag.reserve( 8 * 1000 );
@@ -1612,7 +1606,7 @@ SOFA_TINYXML_API std::istream& operator>> (std::istream & in, TiXmlNode & base)
 
 
 #ifdef TIXML_USE_STL	
-SOFA_TINYXML_API std::ostream& operator<< (std::ostream & out, const TiXmlNode & base)
+EXPORT std::ostream& operator<< (std::ostream & out, const TiXmlNode & base)
 {
 	TiXmlPrinter printer;
 	printer.SetStreamPrinting();
@@ -1623,7 +1617,7 @@ SOFA_TINYXML_API std::ostream& operator<< (std::ostream & out, const TiXmlNode &
 }
 
 
-SOFA_TINYXML_API std::string& operator<< (std::string& out, const TiXmlNode& base )
+EXPORT std::string& operator<< (std::string& out, const TiXmlNode& base )
 {
 	TiXmlPrinter printer;
 	printer.SetStreamPrinting();
@@ -1889,7 +1883,3 @@ bool TiXmlPrinter::Visit( const TiXmlUnknown& unknown )
 	DoLineBreak();
 	return true;
 }
-
-} // namespace tinyxml
-
-} // namespace sofa

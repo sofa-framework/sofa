@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_HELPER_IO_IMAGEPNG_H
 #define SOFA_HELPER_IO_IMAGEPNG_H
+#include <sofa/SofaFramework.h>
 
 #include <sofa/helper/io/Image.h>
 #include <string>
@@ -40,10 +41,6 @@ namespace helper
 
 namespace io
 {
-
-//using namespace sofa::defaulttype;
-
-#ifdef SOFA_HAVE_PNG
 
 class SOFA_HELPER_API ImagePNG : public Image
 {
@@ -72,4 +69,4 @@ public:
 
 } // namespace sofa
 
-#endif
+
