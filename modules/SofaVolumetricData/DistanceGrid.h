@@ -38,16 +38,15 @@ namespace component
 namespace container
 {
 
-using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
 class SOFA_VOLUMETRIC_DATA_API DistanceGrid
 {
 public:
     static SReal maxDist() { return (SReal)1e10; }
-    typedef Vector3 Coord;
-    typedef defaulttype::ExtVector<SReal> VecSReal;
-    typedef defaulttype::ExtVector<Coord> VecCoord;
+    typedef sofa::defaulttype::Vector3 Coord;
+    typedef sofa::defaulttype::ExtVector<SReal> VecSReal;
+    typedef sofa::defaulttype::ExtVector<Coord> VecCoord;
 
     DistanceGrid(int nx, int ny, int nz, Coord pmin, Coord pmax);
 
