@@ -28,8 +28,8 @@ Here is an example of xml file, and its equivament in SofaPython code: (xml is c
 	VisuNode = node.createChild('VisuDragon')
 #            <OglModel name="Visual" filename="mesh/dragon.obj" color="red" />
 	VisuNode.createObject('OglModel',name='Visual',filename='mesh/dragon.obj', color=color)
-#            <BarycentricMapping object1="../.." object2="Visual" />
-	VisuNode.createObject('BarycentricMapping',object1='../..', object2='Visual' )
+#            <BarycentricMapping input="@.." output="@Visual" />
+	VisuNode.createObject('BarycentricMapping',input='@..', output='@Visual' )
 #        </Node>	
 
 #        <Node name="Surf">

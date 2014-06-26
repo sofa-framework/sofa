@@ -61,6 +61,7 @@ public:
     typedef typename Out::VecDeriv OutVecDeriv;
     typedef typename Out::Coord OutCoord;
     typedef typename Out::Deriv OutDeriv;
+    typedef typename Out::MatrixDeriv OutMatrixDeriv;
     typedef typename OutCoord::value_type OutReal;
 
     typedef typename In::VecCoord InVecCoord;
@@ -68,6 +69,15 @@ public:
     typedef typename In::Coord InCoord;
     typedef typename In::Deriv InDeriv;
     typedef typename In::Real Real;
+
+    typedef typename In::MatrixDeriv InMatrixDeriv;
+    typedef Data<InVecCoord> InDataVecCoord;
+    typedef Data<InVecDeriv> InDataVecDeriv;
+    typedef Data<InMatrixDeriv> InDataMatrixDeriv;
+
+    typedef Data<OutVecCoord> OutDataVecCoord;
+    typedef Data<OutVecDeriv> OutDataVecDeriv;
+    typedef Data<OutMatrixDeriv> OutDataMatrixDeriv;
 
 protected:
     LineSetSkinningMapping()
@@ -86,13 +96,17 @@ public:
 
     void reinit();
 
-    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
+    virtual void apply( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecCoord& out, const InDataVecCoord& in);
+    //void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
 
-    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
+    virtual void applyJ( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecDeriv& out, const InDataVecDeriv& in);
+    //void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
 
-    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
+    virtual void applyJT( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, InDataVecDeriv& out, const OutDataVecDeriv& in);
+    //void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
 
-    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
+    virtual void applyJT( const sofa::core::ConstraintParams* mparams /* PARAMS FIRST */, InDataMatrixDeriv& out, const OutDataMatrixDeriv& in);
+    //void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
 
     void draw(const core::visual::VisualParams* vparams);
 

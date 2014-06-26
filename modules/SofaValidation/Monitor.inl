@@ -110,9 +110,9 @@ void Monitor<DataTypes>::init()
         return;
     }
 
-    X = mmodel->getX();
-    V = mmodel->getV();
-    F = mmodel->getF();
+    X = &mmodel->read(core::ConstVecCoordId::position())->getValue();
+    V = &mmodel->read(core::ConstVecDerivId::velocity())->getValue();
+    F = &mmodel->read(core::ConstVecDerivId::force())->getValue();
 
 
     initGnuplot ("./");

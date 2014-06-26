@@ -102,7 +102,7 @@ void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTriangle
 
         unsigned int nb_activated = 0;
 
-        const typename DataTypes::VecCoord *restPosition=ff->mstate->getX0();
+        const typename DataTypes::VecCoord& restPosition=ff->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
         helper::vector<EdgeInformation>& edgeData = *(ff->edgeInfo.beginEdit());
 
@@ -166,7 +166,7 @@ void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTriangle
                         ei.ks=m_ks; //(fftest->ks).getValue();
                         ei.kd=m_kd; //(fftest->kd).getValue();
 
-                        Coord u = (*restPosition)[ei.m1] - (*restPosition)[ei.m2];
+                        Coord u = (restPosition)[ei.m1] - (restPosition)[ei.m2];
 
                         Real d = u.norm();
 
@@ -205,7 +205,7 @@ void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTriangle
 
         //unsigned int u,v;
 
-        const typename DataTypes::VecCoord *restPosition=ff->mstate->getX0();
+        const typename DataTypes::VecCoord& restPosition=ff->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
         helper::vector<EdgeInformation>& edgeData = *(ff->edgeInfo.beginEdit());
 
         for (unsigned int i=0; i<triangleRemoved.size(); ++i)
@@ -275,7 +275,7 @@ void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTriangle
                         ei.ks=m_ks; //(fftest->ks).getValue();
                         ei.kd=m_kd; //(fftest->kd).getValue();
 
-                        Coord u = (*restPosition)[ei.m1] - (*restPosition)[ei.m2];
+                        Coord u = (restPosition)[ei.m1] - (restPosition)[ei.m2];
                         Real d = u.norm();
 
                         ei.restlength=(double) d;
@@ -560,7 +560,7 @@ void TriangularBendingSprings<DataTypes>::addForce(const core::MechanicalParams*
     /*        serr<<"TriangularBendingSprings<DataTypes>::addForce()"<<sendl;*/
 
 #if 0
-    const VecCoord& x_rest = *this->mstate->getX0();
+    const VecCoord& x_rest = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 #endif
 
     for(int i=0; i<nbEdges; i++ )
@@ -735,8 +735,8 @@ void TriangularBendingSprings<DataTypes>::draw(const core::visual::VisualParams*
     if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    const VecCoord& x = *this->mstate->getX();
-    //VecCoord& x_rest = *this->mstate->getX0();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    //VecCoord& x_rest = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
     //int nbTriangles=_topology->getNbTriangles();
 
     glDisable(GL_LIGHTING);

@@ -12,7 +12,7 @@
         <UniformMass mass="0.1" />
         <Node name="T">
             <!--			<include href="Objects/TriangleSetTopology.xml" />
-			<Quad2TriangleTopologicalMapping object1="../../cubeTopo" object2="Container"/>            
+			<Quad2TriangleTopologicalMapping input="@../cubeTopo" output="@Container"/>            
 		        <TriangularFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" method="large" />
 			<TriangularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0"/>	
 			
@@ -20,14 +20,14 @@
 	
 			<Node name="Visu">
 				<OglModel name="Visual" color="red" />
-				<IdentityMapping object1="../../../dofs" object2="Visual" />
+				<IdentityMapping input="@../../dofs" output="@Visual" />
 			</Node>	-->
             <!--		<TriangleFEMForceField name="FEM1" youngModulus="500" poissonRatio="0.3" method="large"/>
 		<UniformMass mass="0.1" />
                 <FixedConstraint name="FixedConstraint" indices="3 39 64" />-->
             <!--		<Node name="Visu">
 			<OglModel name="VisualModel" color="red" />
-			<IdentityMapping object1="../.." object2="VisualModel" name="visual mapping"/>
+			<IdentityMapping input="@.." output="@VisualModel" name="visual mapping"/>
 		</Node>-->
             <!--		<Node name="Surf">
 			<MechanicalObject />

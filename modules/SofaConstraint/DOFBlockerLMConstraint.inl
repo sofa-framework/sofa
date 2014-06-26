@@ -184,7 +184,7 @@ void DOFBlockerLMConstraint<DataTypes>::draw(const core::visual::VisualParams* v
 {
 #ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowForceFields()) return;
-    const VecCoord& x = *this->constrainedObject1->getX();
+    const VecCoord& x =this->constrainedObject1->read(core::ConstVecCoordId::position())->getValue();
 
     const SetIndexArray & indices = f_indices.getValue();
 

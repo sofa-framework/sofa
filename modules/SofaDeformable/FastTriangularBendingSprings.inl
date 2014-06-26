@@ -491,8 +491,9 @@ void FastTriangularBendingSprings<DataTypes>::draw(const core::visual::VisualPar
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
 
-    const VecCoord& x = *this->mstate->getX();
-    //VecCoord& x_rest = *this->mstate->getX0();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    //VecCoord& x_rest = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+
     //int nbTriangles=_topology->getNbTriangles();
 
     glPushAttrib(GL_LIGHTING_BIT);

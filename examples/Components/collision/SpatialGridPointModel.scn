@@ -15,7 +15,7 @@
         <SPHFluidForceField radius="0.75" density="15" viscosity="10" pressure="1000" surfaceTension="-1000" />
         <Node id="Visual">
             <OglModel name="VModel" color="blue" />
-            <SPHFluidSurfaceMapping name="MarchingCube" object1="../../MModel" object2="VModel" isoValue="0.5" radius="0.75" step="0.25" />
+            <SPHFluidSurfaceMapping name="MarchingCube" input="@../MModel" output="@VModel" isoValue="0.5" radius="0.75" step="0.25" />
         </Node>
         <SpatialGridPointModel contactStiffness="1000" />
     </Node>

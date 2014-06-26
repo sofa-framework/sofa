@@ -52,7 +52,7 @@ for ($e=0;$e<$elems;$e++) {
 			  -->
 		<Node name="Visu">
 			<OglModel name="Visual" color="0.2 0.3 0.75"/>
-			<IdentityMapping object1="../.." object2="Visual"/>
+			<IdentityMapping input="@.." output="@Visual"/>
 		</Node>
 	</Node>
 	<Node name="SquareCloth1" processor="0">
@@ -91,7 +91,7 @@ if($i==$elems-1){
 if($gz0[$i]==$lz0[$i]){
 ?>
 			<OglModel name="Visual" color="<?=$color?>"/>
-			<IdentityMapping object1="../.." object2="Visual"/>
+			<IdentityMapping input="@.." output="@Visual"/>
 <?} else {?>
 			<RegularGrid
 				nx="<?=$NZ?>" ny="1" nz="<?=$gz0[$i]+$gnz[$i]-$lz0[$i]?>"
@@ -99,7 +99,7 @@ if($gz0[$i]==$lz0[$i]){
 				ymin="7" ymax="7"
 				zmin="<?=-12+$dz*$lz0[$i]?>" zmax="<?=-12+$dz*($gz0[$i]+$gnz[$i]-1)?>" />
 			<OglModel name="Visual" color="<?=$color?>"/>
-			<SubsetMapping object1="../.." object2="Visual"/>
+			<SubsetMapping input="@.." output="@Visual"/>
 <?}?>
 		</Node>
 		<Node>
@@ -130,7 +130,7 @@ if($i>0){
 $ind1 = ($gz0[$i]-$gz0[$i-1])*$NZ;
 $nind = $gnz[$i-1]*$NZ - $ind1;
 ?>
-<AttachConstraint object1="elem<?=($i-1)?>" object2="elem<?=$i?>" twoWay="true" radius="0.1" indices1="<?=$ind1?>-<?=$ind1+$nind-1?>" indices2="0-<?=$nind-1?>" />
+<AttachConstraint object1="@elem<?=($i-1)?>" object2="@elem<?=$i?>" twoWay="true" radius="0.1" indices1="<?=$ind1?>-<?=$ind1+$nind-1?>" indices2="0-<?=$nind-1?>" />
 <?}?>
 <?}?>
 	</Node>

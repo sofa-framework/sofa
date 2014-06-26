@@ -176,7 +176,7 @@ void FixedPlaneConstraint<DataTypes>::setDirection(Coord dir)
 template <class DataTypes>
 void FixedPlaneConstraint<DataTypes>::selectVerticesAlongPlane()
 {
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     unsigned int i;
     for(i=0; i<x.size(); ++i)
     {
@@ -211,7 +211,7 @@ void FixedPlaneConstraint<DataTypes>::draw(const core::visual::VisualParams* vpa
 {
 #ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     glDisable (GL_LIGHTING);
     glPointSize(10);
     glColor4f (1,1.0,0.5,1);

@@ -36,13 +36,14 @@
 
 
 namespace sofa {
+namespace {
 
 using std::cout;
 using std::cerr;
 using std::endl;
 using namespace component;
 using namespace defaulttype;
-
+using sofa::core::objectmodel::New;
 
 
 /**  Test suite for ProjectToPointConstraint.
@@ -245,6 +246,6 @@ TYPED_TEST( ProjectToPointConstraint_test , allParticlesConstrained )
     ASSERT_TRUE(  this->test_projectVelocity() );
 }
 
-
+} // namespace
 } // namespace sofa
 

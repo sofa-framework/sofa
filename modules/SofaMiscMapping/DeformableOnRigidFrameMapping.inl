@@ -152,13 +152,13 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::setRepartition(sofa::hel
 }
 
 template<class DataTypes>
-const typename DataTypes::VecCoord* M_getX0(core::behavior::MechanicalState<DataTypes>* model)
+const typename DataTypes::VecCoord& M_getX0(core::behavior::MechanicalState<DataTypes>* model)
 {
-    return model->getX0();
+    return model->read(core::ConstVecCoordId::restPosition())->getValue();
 }
 
 template<class DataTypes>
-const typename DataTypes::VecCoord* M_getX0(core::State<DataTypes>* /*model*/)
+const typename DataTypes::VecCoord& M_getX0(core::State<DataTypes>* /*model*/)
 {
     return NULL;
 }
@@ -378,7 +378,7 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJT( typename In::Ve
             const InVecCoord xfrom = xfromData->getValue();
             OutDataVecCoord* xtoData = m_toModel->write(core::VecCoordId::position());
             OutVecCoord &xto = *xtoData->beginEdit();
-            apply(xto, xfrom, (m_fromRootModel==NULL ? NULL : m_fromRootModel->getX()));
+            apply(xto, xfrom, (m_fromRootModel==NULL ? NULL : &m_fromRootModel->read(core::ConstVecCoordId::position())->getValue()));
             this->f_printLog.setValue(log);
             xtoData->endEdit();
         }
@@ -518,7 +518,7 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJT( typename In::Ma
                     // Commented by PJ. Bug??
                     // oRoot.addCol(out.size() - 1 - index.getValue(), result);
 
-                    const unsigned int numDofs = m_fromModel->getX()->size();
+                    const unsigned int numDofs = m_fromModel->read(core::ConstVecCoordId::position())->getValue().size();
                     oRoot.addCol(numDofs - 1 - index.getValue(), result);
                 }
             }
@@ -680,7 +680,7 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::handleTopologyChange(cor
 //void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::propagateX()
 //{
 //	if (m_fromModel!=NULL && m_toModel->getX()!=NULL && m_fromModel->getX()!=NULL)
-//		apply(*m_toModel->getX(), *m_fromModel->getX(), (m_fromRootModel==NULL ? NULL : m_fromRootModel->getX()));
+//		apply(*m_toModel->getX(),m_fromModel->getX(), (m_fromRootModel==NULL ? NULL : m_fromRootModel->read(core::ConstVecCoordId::position())->getValue()));
 //
 //
 //	if( this->f_printLog.getValue())	{
@@ -713,13 +713,13 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::handleTopologyChange(cor
 //void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::propagateV()
 //{
 //	if (m_fromModel!=NULL && m_toModel->getV()!=NULL && m_fromModel->getV()!=NULL)
-//		applyJ(*m_toModel->getV(), *m_fromModel->getV(), (m_fromRootModel==NULL ? NULL : m_fromRootModel->getV()));
+//		applyJ(m_toModel->read(core::ConstVecCoordId::velocity())->getValue(), m_fromModel->read(core::ConstVecCoordId::velocity())->getValue(), (m_fromRootModel==NULL ? NULL : m_fromRootModel->getV()));
 //
 //	if( this->f_printLog.getValue()){
 //		serr<<"DeformableOnRigidFrameMapping::propagateV processed"<<sendl;
 //		if (m_fromRootModel!=NULL)
-//			serr<<"V input root: "<<*m_fromRootModel->getV();
-//		serr<<"  - V input: "<<*m_fromModel->getV()<<"   V output : "<<*m_toModel->getV()<<sendl;
+//			serr<<"V input root: "<<m_fromRootModel->read(core::ConstVecCoordId::velocity())->getValue();
+//		serr<<"  - V input: "<<m_fromModel->read(core::ConstVecCoordId::velocity())->getValue()<<"   V output : "<<m_toModel->read(core::ConstVecCoordId::velocity())->getValue()<<sendl;
 //	}
 //
 //}
@@ -847,7 +847,7 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::draw(const core::visual:
     std::vector< Vector3 > points;
     Vector3 point;
 
-    const typename Out::VecCoord& x = *m_toModel->getX();
+    const typename Out::VecCoord& x = m_toModel->read(core::ConstVecCoordId::position())->getValue();
     for (unsigned int i=0; i<x.size(); i++)
     {
         point = Out::getCPos(x[i]);

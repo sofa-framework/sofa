@@ -29,7 +29,6 @@
 #pragma once
 #endif
 
-
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/behavior/Mass.h>
@@ -53,12 +52,6 @@ namespace sofa
 
 namespace simulation
 {
-
-using std::cerr;
-using std::endl;
-
-using namespace sofa::defaulttype;
-using namespace sofa::core;
 
 
 /** Compute the size of a mechanical matrix (mass or stiffness) of the whole scene */
@@ -137,7 +130,7 @@ class SOFA_SIMULATION_COMMON_API MechanicalIntegrateConstraintsVisitor : public 
 public:
 
 
-    const BaseVector *src;
+    const sofa::defaulttype::BaseVector *src;
     const double positionFactor;// use the OdeSolver to get the position integration factor
     const double velocityFactor;// use the OdeSolver to get the position integration factor
     const sofa::core::behavior::MultiMatrixAccessor* matrix;
@@ -274,8 +267,8 @@ public:
 class SOFA_SIMULATION_COMMON_API MechanicalMultiVectorToBaseVectorVisitor : public BaseMechanicalVisitor
 {
 public:
-    ConstMultiVecId src;
-    BaseVector *vect;
+    sofa::core::ConstMultiVecId src;
+    sofa::defaulttype::BaseVector *vect;
     const sofa::core::behavior::MultiMatrixAccessor* matrix;
     int offset;
 
@@ -284,7 +277,8 @@ public:
     virtual const char* getClassName() const { return "MechanicalMultiVector2BaseVectorVisitor"; }
 
     MechanicalMultiVectorToBaseVectorVisitor(
-        const core::ExecParams* params /* PARAMS FIRST  = core::ExecParams::defaultInstance()*/, ConstMultiVecId _src, defaulttype::BaseVector * _vect,
+        const core::ExecParams* params /* PARAMS FIRST  = core::ExecParams::defaultInstance()*/,
+        sofa::core::ConstMultiVecId _src, defaulttype::BaseVector * _vect,
         const sofa::core::behavior::MultiMatrixAccessor* _matrix = NULL )
         : BaseMechanicalVisitor(params) , src(_src), vect(_vect), matrix(_matrix), offset(0)
     {
@@ -307,8 +301,8 @@ public:
 class SOFA_SIMULATION_COMMON_API MechanicalMultiVectorPeqBaseVectorVisitor : public BaseMechanicalVisitor
 {
 public:
-    BaseVector *src;
-    MultiVecDerivId dest;
+    sofa::defaulttype::BaseVector *src;
+    sofa::core::MultiVecDerivId dest;
     const sofa::core::behavior::MultiMatrixAccessor* matrix;
     int offset;
 
@@ -317,7 +311,7 @@ public:
     virtual const char* getClassName() const { return "MechanicalMultiVectorPeqBaseVectorVisitor"; }
 
     MechanicalMultiVectorPeqBaseVectorVisitor(
-        const core::ExecParams* params /* PARAMS FIRST  = core::ExecParams::defaultInstance()*/, MultiVecDerivId _dest, defaulttype::BaseVector * _src,
+        const core::ExecParams* params /* PARAMS FIRST  = core::ExecParams::defaultInstance()*/, sofa::core::MultiVecDerivId _dest, defaulttype::BaseVector * _src,
         const sofa::core::behavior::MultiMatrixAccessor* _matrix = NULL )
         : BaseMechanicalVisitor(params) , src(_src), dest(_dest), matrix(_matrix), offset(0)
     {
@@ -341,8 +335,8 @@ public:
 class SOFA_SIMULATION_COMMON_API MechanicalMultiVectorFromBaseVectorVisitor : public BaseMechanicalVisitor
 {
 public:
-    BaseVector *src;
-    MultiVecId dest;
+    sofa::defaulttype::BaseVector *src;
+    sofa::core::MultiVecId dest;
     const sofa::core::behavior::MultiMatrixAccessor* matrix;
     int offset;
 
@@ -351,7 +345,7 @@ public:
     virtual const char* getClassName() const { return "MechanicalMultiVectorFromBaseVectorVisitor"; }
 
     MechanicalMultiVectorFromBaseVectorVisitor(
-        const core::ExecParams* params /* PARAMS FIRST  = core::ExecParams::defaultInstance()*/, MultiVecId _dest,
+        const core::ExecParams* params /* PARAMS FIRST  = core::ExecParams::defaultInstance()*/, sofa::core::MultiVecId _dest,
         defaulttype::BaseVector * _src,
         const sofa::core::behavior::MultiMatrixAccessor* _matrix = NULL )
         : BaseMechanicalVisitor(params) , src(_src), dest(_dest), matrix(_matrix), offset(0)

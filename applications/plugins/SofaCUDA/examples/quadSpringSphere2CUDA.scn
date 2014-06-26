@@ -18,7 +18,7 @@
 			  -->
 		<Node name="Visu">
 			<OglModel name="Visual" color="red"/>
-			<IdentityMapping object1="../.." object2="Visual"/>
+			<IdentityMapping input="@.." output="@Visual"/>
 		</Node>
 	</Node>
 	<Node name="SquareCloth">
@@ -41,7 +41,7 @@
 		<!--<SpatialGridContainer cellWidth="1" autoUpdate="true" showGrid="true" />-->
 		<Node name="Visu">
 			<!--<OglModel name="Visual" color="green"/>
-			<IdentityMapping object1="../.." object2="Visual"/>-->
+			<IdentityMapping input="@.." output="@Visual"/>-->
 			<CudaVisualModel template="CudaVec3f" diffuse="0 0.8 0 1.0" computeNormals="true" />
 		</Node>
 		<!--
@@ -73,7 +73,7 @@
 		<!--<SpatialGridContainer cellWidth="1" autoUpdate="true" showGrid="true" />-->
 		<Node name="Visu">
 			<!--<OglModel name="Visual" color="green"/>
-			<IdentityMapping object1="../.." object2="Visual"/>-->
+			<IdentityMapping input="@.." output="@Visual"/>-->
 			<CudaVisualModel template="CudaVec3f" diffuse="0 0.8 0 1.0" computeNormals="true" />
 		</Node>
 		<!--
@@ -105,7 +105,7 @@
 		<!--<SpatialGridContainer cellWidth="1" autoUpdate="true" showGrid="true" />-->
 		<Node name="Visu">
 			<!--<OglModel name="Visual" color="green"/>
-			<IdentityMapping object1="../.." object2="Visual"/>-->
+			<IdentityMapping input="@.." output="@Visual"/>-->
 			<CudaVisualModel template="CudaVec3f" diffuse="0 0.8 0 1.0" computeNormals="true" />
 		</Node>
 		<!--
@@ -137,7 +137,7 @@
 		<!--<SpatialGridContainer cellWidth="1" autoUpdate="true" showGrid="true" />-->
 		<Node name="Visu">
 			<!--<OglModel name="Visual" color="green"/>
-			<IdentityMapping object1="../.." object2="Visual"/>-->
+			<IdentityMapping input="@.." output="@Visual"/>-->
 			<CudaVisualModel template="CudaVec3f" diffuse="0 0.8 0 1.0" computeNormals="true" />
 		</Node>
 		<!--

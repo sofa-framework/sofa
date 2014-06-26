@@ -67,7 +67,7 @@ void FixedRotationConstraint<DataTypes>::init()
     this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
 
     // Retrieves mechanical state
-    VecCoord x = *this->mstate->getX();
+    VecCoord x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     // Stores initial orientation for each vertex
     previousOrientation.resize(x.size());

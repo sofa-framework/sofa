@@ -33,19 +33,7 @@ namespace component
 {
 namespace topology
 {
-using core::topology::BaseMeshTopology;
-typedef BaseMeshTopology::HexaID HexaID;
-typedef BaseMeshTopology::Hexa Hexa;
-typedef BaseMeshTopology::SeqHexahedra SeqHexahedra;
-typedef BaseMeshTopology::HexahedraAroundVertex HexahedraAroundVertex;
-typedef BaseMeshTopology::HexahedraAroundEdge HexahedraAroundEdge;
-typedef BaseMeshTopology::HexahedraAroundQuad HexahedraAroundQuad;
-typedef BaseMeshTopology::EdgesInHexahedron EdgesInHexahedron;
-typedef BaseMeshTopology::QuadsInHexahedron QuadsInHexahedron;
 
-typedef Hexa Hexahedron;
-typedef EdgesInHexahedron EdgesInHexahedron;
-typedef QuadsInHexahedron QuadsInHexahedron;
 
 /**
 * A class that provides geometry information on an HexahedronSet.
@@ -56,6 +44,16 @@ class HexahedronSetGeometryAlgorithms : public QuadSetGeometryAlgorithms<DataTyp
 public:
     SOFA_CLASS(SOFA_TEMPLATE(HexahedronSetGeometryAlgorithms,DataTypes),SOFA_TEMPLATE(QuadSetGeometryAlgorithms,DataTypes));
 
+    typedef sofa::core::topology::BaseMeshTopology BaseMeshTopology;
+    typedef BaseMeshTopology::HexaID HexaID;
+    typedef BaseMeshTopology::Hexa Hexa;
+    typedef BaseMeshTopology::SeqHexahedra SeqHexahedra;
+    typedef BaseMeshTopology::HexahedraAroundVertex HexahedraAroundVertex;
+    typedef BaseMeshTopology::HexahedraAroundEdge HexahedraAroundEdge;
+    typedef BaseMeshTopology::HexahedraAroundQuad HexahedraAroundQuad;
+    typedef BaseMeshTopology::EdgesInHexahedron EdgesInHexahedron;
+    typedef BaseMeshTopology::QuadsInHexahedron QuadsInHexahedron;
+    typedef BaseMeshTopology::Hexa Hexahedron;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;

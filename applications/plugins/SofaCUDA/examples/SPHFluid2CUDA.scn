@@ -125,7 +125,7 @@
 <!--
 		<Node id="Visual">
 			<OglModel name="VModel" color="blue" />
-			<SPHFluidSurfaceMapping name="MarchingCube" object1="../../MModel" object2="VModel" isoValue="0.5" radius="0.4" step="0.2"/>
+			<SPHFluidSurfaceMapping name="MarchingCube" input="@../MModel" output="@VModel" isoValue="0.5" radius="0.4" step="0.2"/>
 		</Node>
 -->
 	</Node>

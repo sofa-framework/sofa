@@ -93,8 +93,9 @@ SReal EvalSurfaceDistance<DataTypes>::eval()
 {
     if (!this->mstate1 || !this->mstate2 || !surfaceCM || !pointsCM || !intersection || !detection) return 0.0;
 
-    const VecCoord& x0 = *this->mstate1->getX0();
-    const VecCoord& x1 = *this->mstate1->getX();
+    const VecCoord& x0 = this->mstate1->read(core::ConstVecCoordId::restPosition())->getValue();
+    const VecCoord& x1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
+
     surfaceCM->computeBoundingTree(6);
     pointsCM->computeBoundingTree(6);
     intersection->setAlarmDistance(maxDist.getValue());
@@ -165,7 +166,7 @@ void EvalSurfaceDistance<DataTypes>::draw(const core::visual::VisualParams* )
     if (!this->f_draw.getValue())
         return;
     if (!this->mstate1 || !this->mstate2 || xproj.empty()) return;
-    const VecCoord& x1 = *this->mstate1->getX();
+    const VecCoord& x1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
     const VecCoord& x2 = xproj; //*this->mstate2->getX();
     this->doDraw(x1, x2);
 }

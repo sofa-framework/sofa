@@ -25,14 +25,14 @@
             <TriangleSetTopologyModifier name="Modifier" />
             <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
             <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawTriangles="1" />
-            <Tetra2TriangleTopologicalMapping object1="../../Tetra_topo" object2="Triangle_topo" listening="1" />
+            <Tetra2TriangleTopologicalMapping input="@../Tetra_topo" output="@Triangle_topo" listening="1" />
             <!--<TriangularFEMForceField name="FEM" youngModulus="60" poissonRatio="0.3" method="large" /> 
 		  			<TriangularBendingSprings" name="FEM-Bend" stiffness="300" damping="1.0"/>		    
 					<TrianglePressureForceField" normal="0 0 1" dmin="0.9" dmax="1.1" pressure="0.4 0 0"/> -->
             <TriangleSet />
             <!--		  <Node name="Visu">
 		    <VisualModel name="Visual" color="blue" />
-		    <IdentityMapping object1="../../../Volume" object2="Visual" />
+		    <IdentityMapping input="@../../Volume" output="@Visual" />
 		  </Node>						-->
         </Node>
     </Node>

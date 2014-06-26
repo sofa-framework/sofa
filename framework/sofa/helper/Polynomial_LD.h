@@ -44,9 +44,6 @@ namespace helper
 {
 
 
-using namespace sofa::defaulttype;
-using namespace std;
-
 /**
  * \brief A generic monomial with *N* variables of type *Real*. A monomial is one term of a polynomial.
  *
@@ -120,7 +117,7 @@ public :
     friend Monomial_LD<FReal,FN> & operator*(const FReal & alpha,Monomial_LD<FReal,FN> & r);
 
 protected :
-    sofa::defaulttype::Vec<N,string> variables;
+    sofa::defaulttype::Vec<N,std::string> variables;
 };
 
 

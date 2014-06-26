@@ -299,7 +299,7 @@ void BuoyantForceField<DataTypes>::addDForce(const core::MechanicalParams* mpara
 
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     Real kf = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
     for (unsigned int i = 0 ; i < m_triangles.size() ; i++)

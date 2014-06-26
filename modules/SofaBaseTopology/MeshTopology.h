@@ -234,9 +234,6 @@ public:
     /// get the current revision of this mesh (use to detect changes)
     int getRevision() const { return revision; }
 
-    /// return true if the given cube is active, i.e. it contains or is surrounded by mapped points.
-    /// @deprecated
-    virtual bool isCubeActive(int /*index*/) { return true; }
 
     void draw(const core::visual::VisualParams* vparams);
 

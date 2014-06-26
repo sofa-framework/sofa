@@ -99,7 +99,7 @@ void SubsetMapping<TIn, TOut>::init()
 {
     const bool ignoreNotFound = f_ignoreNotFound.getValue();
     int numnotfound = 0;
-    unsigned int inSize = this->fromModel->getX()->size();
+    unsigned int inSize = this->fromModel->read(core::ConstVecCoordId::position())->getValue().size();
     if (f_indices.getValue().empty() && f_first.getValue() != -1)
     {
         IndexArray& indices = *f_indices.beginEdit();
@@ -118,8 +118,8 @@ void SubsetMapping<TIn, TOut>::init()
     {
 
         // We have to construct the correspondance index
-        const InVecCoord& in   = *this->fromModel->getX();
-        const OutVecCoord& out = *this->toModel->getX();
+        const InVecCoord& in   =this->fromModel->read(core::ConstVecCoordId::position())->getValue();
+        const OutVecCoord& out =this->toModel->read(core::ConstVecCoordId::position())->getValue();
         IndexArray& indices = *f_indices.beginEdit();
 
         indices.resize(out.size());
@@ -305,8 +305,8 @@ const sofa::defaulttype::BaseMatrix* SubsetMapping<TIn, TOut>::getJ()
 {
     if (matrixJ.get() == 0 || updateJ)
     {
-        const OutVecCoord& out = *this->toModel->getX();
-        const InVecCoord& in = *this->fromModel->getX();
+        const OutVecCoord& out =this->toModel->read(core::ConstVecCoordId::position())->getValue();
+        const InVecCoord& in =this->fromModel->read(core::ConstVecCoordId::position())->getValue();
         const IndexArray& indices = f_indices.getValue();
         assert(indices.size() == out.size());
         const unsigned int fromSize = in.size();

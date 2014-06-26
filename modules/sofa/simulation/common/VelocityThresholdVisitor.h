@@ -25,7 +25,6 @@
 #ifndef SOFA_SIMULATION_VelocityThresholdVisitor_H
 #define SOFA_SIMULATION_VelocityThresholdVisitor_H
 
-
 #include <sofa/simulation/common/Visitor.h>
 #include <sofa/core/MultiVecId.h>
 
@@ -35,8 +34,6 @@ namespace sofa
 namespace simulation
 {
 
-
-using namespace sofa::defaulttype;
 class SOFA_SIMULATION_COMMON_API VelocityThresholdVisitor : public Visitor
 {
 public:

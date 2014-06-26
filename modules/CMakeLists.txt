@@ -53,7 +53,7 @@ RegisterProjects("SofaEigen2Solver" OPTION "SOFA-LIB_COMPONENT_EIGEN2_SOLVER" PA
 #RegisterProjects("SofaEigen2Solver_test" OPTION "SOFA-LIB_COMPONENT_EIGEN2_SOLVER" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaEigen2Solver/SofaEigen2Solver_test")
 
 RegisterProjects("SofaEngine" OPTION "SOFA-LIB_COMPONENT_ENGINE" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaEngine")
-#RegisterProjects("SofaEngine_test" OPTION "SOFA-LIB_COMPONENT_ENGINE" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaEngine/SofaEngine_test")
+RegisterProjects("SofaEngine_test" OPTION "SOFA-LIB_COMPONENT_ENGINE" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaEngine/SofaEngine_test")
 
 RegisterProjects("SofaEulerianFluid" OPTION "SOFA-LIB_COMPONENT_EULERIAN_FLUID" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaEulerianFluid")
 #RegisterProjects("SofaEulerianFluid_test" OPTION "SOFA-LIB_COMPONENT_EULERIAN_FLUID" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaEulerianFluid/SofaEulerianFluid_test")

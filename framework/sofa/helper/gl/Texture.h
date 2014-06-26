@@ -41,8 +41,6 @@ namespace helper
 namespace gl
 {
 
-//using namespace sofa::defaulttype;
-
 class SOFA_HELPER_API Texture
 {
 private:

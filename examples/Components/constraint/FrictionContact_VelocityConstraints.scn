@@ -16,7 +16,7 @@
             <UncoupledConstraintCorrection />
             <Node name="Visu">
                 <OglModel name="Visual" fileMesh="mesh/smCube27.obj" color="0.0 0.5 0.8 1.0" scale="0.3" />
-                <RigidMapping object1="../.." object2="Visual" />
+                <RigidMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/smCube27.obj" triangulate="true" />
@@ -34,7 +34,7 @@
             <UncoupledConstraintCorrection />
             <Node name="Visu">
                 <OglModel name="Visual" fileMesh="mesh/smCube27.obj" color="0.0 0.9 0.8 1.0" scale="0.3" />
-                <RigidMapping object1="../.." object2="Visual" />
+                <RigidMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/smCube27.obj" triangulate="true" />
@@ -52,7 +52,7 @@
             <UncoupledConstraintCorrection />
             <Node name="Visu">
                 <OglModel name="Visual" fileMesh="mesh/smCube27.obj" color="0.0 0.5 0.8 1.0" scale="0.3" />
-                <RigidMapping object1="../.." object2="Visual" />
+                <RigidMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/smCube27.obj" triangulate="true" />
@@ -70,7 +70,7 @@
             <UncoupledConstraintCorrection />
             <Node name="Visu">
                 <OglModel name="Visual" fileMesh="mesh/smCube27.obj" color="0.5 0.0 0.5 1.0" scale="0.3" />
-                <RigidMapping object1="../.." object2="Visual" />
+                <RigidMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/smCube27.obj" triangulate="true" />
@@ -88,7 +88,7 @@
             <UncoupledConstraintCorrection />
             <Node name="Visu">
                 <OglModel name="Visual" fileMesh="mesh/smCube27.obj" color="0.5 0.0 0.5 1.0" scale="0.3" />
-                <RigidMapping object1="../.." object2="Visual" />
+                <RigidMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/smCube27.obj" triangulate="true" />
@@ -106,7 +106,7 @@
             <UncoupledConstraintCorrection />
             <Node name="Visu">
                 <OglModel name="Visual" fileMesh="mesh/smCube27.obj" color="0.9 0.0 0.2 1.0" scale="0.3" />
-                <RigidMapping object1="../.." object2="Visual" />
+                <RigidMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/smCube27.obj" triangulate="true" />

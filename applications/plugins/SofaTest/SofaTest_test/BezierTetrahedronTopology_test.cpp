@@ -47,6 +47,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa {
+namespace {
 
 using std::cout;
 using std::cerr;
@@ -328,4 +329,5 @@ TYPED_TEST( BezierTetrahedronTopology_test , testTopology )
 
 
 
+} // namespace
 } // namespace sofa

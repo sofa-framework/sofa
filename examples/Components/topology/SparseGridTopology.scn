@@ -15,7 +15,7 @@
         <BoxConstraint box="10 -10 -6 12 10 6" />
         <Node name="Visu">
             <OglModel name="Visual" fileMesh="mesh/dragon.obj" color="yellow" />
-            <BarycentricMapping object1="../.." object2="Visual" />
+            <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
 	    <SphereLoader filename="mesh/dragon.sph" />
@@ -34,7 +34,7 @@
         <BoxConstraint box="10 -10 10 12 10 22" />
         <Node name="Visu">
             <OglModel name="Visual" fileMesh="mesh/dragon.obj" color="yellow" />
-            <BarycentricMapping object1="../.." object2="Visual" />
+            <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
             <MechanicalObject />
@@ -52,7 +52,7 @@
         <BoxConstraint box="10 -10 26 12 10 38" />
         <Node name="Visu">
             <OglModel name="Visual" fileMesh="mesh/dragon.obj" color="yellow" />
-            <BarycentricMapping object1="../.." object2="Visual" />
+            <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
             <MechanicalObject />

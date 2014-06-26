@@ -138,7 +138,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     int addPoint(const Coord& P, int index, Real&)
     {
-        return this->mapper->createPointInLine(P, this->model->getElemEdgeIndex(index), this->model->getMechanicalState()->getX());
+        return this->mapper->createPointInLine(P, this->model->getElemEdgeIndex(index), &this->model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue());
     }
     int addPointB(const Coord& /*P*/, int index, Real& /*r*/, const Vector3& baryP)
     {
@@ -159,13 +159,13 @@ public:
     {
         int nbt = this->model->getMeshTopology()->getNbTriangles();
         if (index < nbt)
-            return this->mapper->createPointInTriangle(P, index, this->model->getMechanicalState()->getX());
+            return this->mapper->createPointInTriangle(P, index, &this->model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue());
         else
         {
             int qindex = (index - nbt)/2;
             int nbq = this->model->getMeshTopology()->getNbQuads();
             if (qindex < nbq)
-                return this->mapper->createPointInQuad(P, qindex, this->model->getMechanicalState()->getX());
+                return this->mapper->createPointInQuad(P, qindex, &this->model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue());
             else
             {
                 std::cerr << "ContactMapper<TriangleMeshModel>: ERROR invalid contact element index "<<index<<" on a topology with "<<nbt<<" triangles and "<<nbq<<" quads."<<std::endl;
@@ -186,7 +186,7 @@ public:
             int qindex = (index - nbt)/2;
             int nbq = this->model->getMeshTopology()->getNbQuads();
             if (qindex < nbq)
-                return this->mapper->createPointInQuad(P, qindex, this->model->getMechanicalState()->getX());
+                return this->mapper->createPointInQuad(P, qindex, &this->model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue());
             else
             {
                 std::cerr << "ContactMapper<TriangleMeshModel>: ERROR invalid contact element index "<<index<<" on a topology with "<<nbt<<" triangles and "<<nbq<<" quads."<<std::endl;

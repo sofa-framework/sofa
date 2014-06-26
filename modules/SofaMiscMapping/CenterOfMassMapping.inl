@@ -63,14 +63,17 @@ void CenterOfMassMapping<TIn, TOut>::init()
     totalMass = 0.0;
 
     //compute the total mass of the object
-    for (unsigned int i=0 ; i<this->fromModel->getX()->size() ; i++)
+    for (unsigned int i=0, size = this->fromModel->read(core::ConstVecCoordId::position())->getValue().size() ; i< size; i++)
         totalMass += masses->getElementMass(i);
 }
 
 
 template <class TIn, class TOut>
-void CenterOfMassMapping<TIn, TOut>::apply ( typename Out::VecCoord& childPositions, const typename In::VecCoord& parentPositions )
+void CenterOfMassMapping<TIn, TOut>::apply( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecCoord& outData, const InDataVecCoord& inData)
 {
+    OutVecCoord& childPositions = *outData.beginEdit(mparams);
+    const InVecCoord& parentPositions = inData.getValue();
+
     if(!masses || totalMass==0.0)
     {
         serr<<"Error in CenterOfMassMapping : no mass found corresponding to the DOFs"<<sendl;
@@ -87,12 +90,17 @@ void CenterOfMassMapping<TIn, TOut>::apply ( typename Out::VecCoord& childPositi
     }
 
     childPositions[0] = outX / totalMass;
+
+    outData.endEdit(mparams);
 }
 
 
 template <class TIn, class TOut>
-void CenterOfMassMapping<TIn, TOut>::applyJ ( typename Out::VecDeriv& childForces, const typename In::VecDeriv& parentForces )
+void CenterOfMassMapping<TIn, TOut>::applyJ( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecDeriv& outData, const InDataVecDeriv& inData)
 {
+    OutVecDeriv& childForces = *outData.beginEdit(mparams);
+    const InVecDeriv& parentForces = inData.getValue();
+
     if(!masses || totalMass==0.0)
     {
         serr<<"Error in CenterOfMassMapping : no mass found corresponding to the DOFs"<<sendl;
@@ -109,12 +117,17 @@ void CenterOfMassMapping<TIn, TOut>::applyJ ( typename Out::VecDeriv& childForce
     }
 
     childForces[0] = outF / totalMass;
+
+    outData.endEdit(mparams);
 }
 
 
 template <class TIn, class TOut>
-void CenterOfMassMapping<TIn, TOut>::applyJT ( typename In::VecDeriv& parentForces, const typename Out::VecDeriv& childForces )
+void CenterOfMassMapping<TIn, TOut>::applyJT( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, InDataVecDeriv& outData, const OutDataVecDeriv& inData)
 {
+    InVecDeriv& parentForces = *outData.beginEdit(mparams);
+    const OutVecDeriv& childForces = inData.getValue();
+
     if(!masses || totalMass==0.0)
     {
         serr<<"Error in CenterOfMassMapping : no mass found corresponding to the DOFs"<<sendl;
@@ -126,13 +139,15 @@ void CenterOfMassMapping<TIn, TOut>::applyJT ( typename In::VecDeriv& parentForc
     //relation is Fi = Fc * (Mi/Mt), with Fc: force of center of mass, Mi: dof mass, Mt: total mass
     for (unsigned int i=0 ; i<parentForces.size() ; i++)
         getVCenter(parentForces[i]) += childForces[0] * (masses->getElementMass(i) / totalMass);
+
+    outData.endEdit(mparams);
 }
 
 
 template <class TIn, class TOut>
 void CenterOfMassMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
-    const typename Out::VecCoord &X = *this->toModel->getX();
+    const typename Out::VecCoord &X = this->toModel->read(core::ConstVecCoordId::position())->getValue();
 
     std::vector< Vector3 > points;
     Vector3 point1,point2;
@@ -140,8 +155,8 @@ void CenterOfMassMapping<TIn, TOut>::draw(const core::visual::VisualParams* vpar
     {
         OutCoord v;
         v[i] = (Real)0.1;
-        point1 = OutDataTypes::getCPos((X[0] -v));
-        point2 = OutDataTypes::getCPos((X[0] +v));
+        point1 = Out::getCPos((X[0] -v));
+        point2 = Out::getCPos((X[0] +v));
         points.push_back(point1);
         points.push_back(point2);
     }

@@ -17,7 +17,7 @@
         <Node name="PointSetTopology">
 	        <TetrahedronSetTopologyModifier />
         	<BezierTetrahedronSetTopologyContainer name="ContainerBezier"/>	
-		<Mesh2BezierTopologicalMapping object1="Container1" object2="ContainerBezier" bezierTetrahedronDegree="2" />
+		<Mesh2BezierTopologicalMapping input="@Container1" output="@ContainerBezier" bezierTetrahedronDegree="2" />
 		<MechanicalObject showObject="1" showObjectScale="5"/>	
 
         	<FixedConstraint name="FixedConstraint" indices="3 39 64" /> 

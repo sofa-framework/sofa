@@ -37,13 +37,12 @@ namespace component
 
 namespace topology
 {
-using namespace sofa::defaulttype;
 
 template< class DataTypes>
 void QuadSetGeometryAlgorithms< DataTypes >::computeQuadAABB(const QuadID i, Coord& minCoord, Coord& maxCoord) const
 {
     const Quad &t = this->m_topology->getQuad(i);
-    const typename DataTypes::VecCoord& p = *(this->object->getX());
+    const typename DataTypes::VecCoord& p =(this->object->read(core::ConstVecCoordId::position())->getValue());
 
     for(unsigned int i=0; i<3; ++i)
     {
@@ -56,7 +55,7 @@ template<class DataTypes>
 typename DataTypes::Coord QuadSetGeometryAlgorithms<DataTypes>::computeQuadCenter(const QuadID i) const
 {
     const Quad &t = this->m_topology->getQuad(i);
-    const typename DataTypes::VecCoord& p = *(this->object->getX());
+    const typename DataTypes::VecCoord& p =(this->object->read(core::ConstVecCoordId::position())->getValue());
 
     return (p[t[0]] + p[t[1]] + p[t[2]] + p[t[3]]) * (Real) 0.25;
 }
@@ -65,7 +64,7 @@ template< class DataTypes>
 void QuadSetGeometryAlgorithms< DataTypes >::getQuadVertexCoordinates(const QuadID i, Coord pnt[4]) const
 {
     const Quad &t = this->m_topology->getQuad(i);
-    const typename DataTypes::VecCoord& p = *(this->object->getX());
+    const typename DataTypes::VecCoord& p =(this->object->read(core::ConstVecCoordId::position())->getValue());
 
     for(unsigned int i=0; i<4; ++i)
     {
@@ -77,7 +76,7 @@ template< class DataTypes>
 void QuadSetGeometryAlgorithms< DataTypes >::getRestQuadVertexCoordinates(const QuadID i, Coord pnt[4]) const
 {
     const Quad &t = this->m_topology->getQuad(i);
-    const typename DataTypes::VecCoord& p = *(this->object->getX0());
+    const typename DataTypes::VecCoord& p = (this->object->read(core::ConstVecCoordId::restPosition())->getValue());
 
     for(unsigned int i=0; i<4; ++i)
     {
@@ -89,7 +88,7 @@ template< class DataTypes>
 typename DataTypes::Real QuadSetGeometryAlgorithms< DataTypes >::computeQuadArea( const QuadID i) const
 {
     const Quad &t = this->m_topology->getQuad(i);
-    const typename DataTypes::VecCoord& p = *(this->object->getX());
+    const typename DataTypes::VecCoord& p =(this->object->read(core::ConstVecCoordId::position())->getValue());
     Real area = (Real)((areaProduct(p[t[1]]-p[t[0]],p[t[2]]-p[t[0]])
             + areaProduct(p[t[3]]-p[t[2]],p[t[0]]-p[t[2]])) * (Real) 0.5);
     return area;
@@ -99,7 +98,7 @@ template< class DataTypes>
 typename DataTypes::Real QuadSetGeometryAlgorithms< DataTypes >::computeRestQuadArea( const QuadID i) const
 {
     const Quad &t = this->m_topology->getQuad(i);
-    const typename DataTypes::VecCoord& p = *(this->object->getX0());
+    const typename DataTypes::VecCoord& p = (this->object->read(core::ConstVecCoordId::restPosition())->getValue());
     Real area = (Real)((areaProduct(p[t[1]]-p[t[0]],p[t[2]]-p[t[0]])
             + areaProduct(p[t[3]]-p[t[2]],p[t[0]]-p[t[2]])) * (Real) 0.5);
     return area;
@@ -110,7 +109,7 @@ void QuadSetGeometryAlgorithms<DataTypes>::computeQuadArea( BasicArrayInterface<
 {
     //const sofa::helper::vector<Quad> &ta=this->m_topology->getQuads();
     int nb_quads = this->m_topology->getNbQuads();
-    const typename DataTypes::VecCoord& p = *(this->object->getX());
+    const typename DataTypes::VecCoord& p =(this->object->read(core::ConstVecCoordId::position())->getValue());
 
     for(int i=0; i<nb_quads; ++i)
     {
@@ -128,7 +127,7 @@ sofa::defaulttype::Vec<3,double> QuadSetGeometryAlgorithms< DataTypes >::compute
     // HYP :  The quad indexed by ind_q is planar
 
     const Quad &q = this->m_topology->getQuad(ind_q);
-    const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
+    const typename DataTypes::VecCoord& vect_c =(this->object->read(core::ConstVecCoordId::position())->getValue());
 
     const typename DataTypes::Coord& c0=vect_c[q[0]];
     const typename DataTypes::Coord& c1=vect_c[q[1]];
@@ -160,7 +159,7 @@ bool QuadSetGeometryAlgorithms< DataTypes >::isQuadInPlane(const QuadID ind_q,
 
     // HYP : ind_p==q[0] or ind_q==t[1] or ind_q==t[2] or ind_q==q[3]
 
-    const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
+    const typename DataTypes::VecCoord& vect_c =(this->object->read(core::ConstVecCoordId::position())->getValue());
 
     unsigned int ind_1;
     unsigned int ind_2;
@@ -214,7 +213,7 @@ bool QuadSetGeometryAlgorithms< DataTypes >::isPointInQuad(const QuadID ind_q, c
 {
     const double ZERO = 1e-6;
     const Quad &q = this->m_topology->getQuad(ind_q);
-    const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
+    const typename DataTypes::VecCoord& vect_c =(this->object->read(core::ConstVecCoordId::position())->getValue());
 
     sofa::defaulttype::Vec<3,Real> ptest = p;
     sofa::defaulttype::Vec<3,Real> p0(vect_c[q[0]][0], vect_c[q[0]][1], vect_c[q[0]][2]);
@@ -264,7 +263,7 @@ void QuadSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename) co
     std::ofstream myfile;
     myfile.open (filename);
 
-    const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
+    const typename DataTypes::VecCoord& vect_c =(this->object->read(core::ConstVecCoordId::position())->getValue());
 
     const unsigned int numVertices = vect_c.size();
 
@@ -358,7 +357,7 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
     if (showQuadIndices.getValue())
     {
         Mat<4,4, GLfloat> modelviewM;
-        const VecCoord& coords = *(this->object->getX());
+        const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
         const sofa::defaulttype::Vec3f& color = _drawColor.getValue();
         glColor3f(color[0]-0.2f, color[1]-0.2f, color[2]-0.2f);
         glDisable(GL_LIGHTING);
@@ -420,7 +419,7 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
 
         if (!quadArray.empty()) // Draw Quad surfaces
         {
-            const VecCoord& coords = *(this->object->getX());
+            const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
 
             glDisable(GL_LIGHTING);
             const sofa::defaulttype::Vec3f& color = _drawColor.getValue();

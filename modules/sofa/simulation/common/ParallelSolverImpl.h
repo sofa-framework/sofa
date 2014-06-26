@@ -30,7 +30,6 @@
 #include <sofa/component/odesolver/OdeSolverImpl.h>
 #ifdef SOFA_SMP
 #include <sofa/core/behavior/ParallelMultivector.h>
-using namespace sofa::defaulttype::SharedTypes;
 #endif
 namespace sofa
 {
@@ -68,7 +67,7 @@ public:
 
     virtual void v_op(core::VecId v, core::VecId a, core::VecId b, Shared<double> &f); ///< v=a+b*f
 
-    virtual void v_dot(Shared<double> &result,core::VecId a, core::VecId b); ///< a dot b
+    virtual void v_dot(sofa::defaulttype::Shared<double> &result,core::VecId a, core::VecId b); ///< a dot b
     virtual void v_peq(core::VecId v, core::VecId a, Shared<double> &fSh, double f=1.0); ///< v+=f*a
     virtual void v_peq(core::VecId v, core::VecId a, double f=1.0); ///< v+=f*a
 

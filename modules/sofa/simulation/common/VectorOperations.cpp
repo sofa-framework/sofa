@@ -43,6 +43,8 @@ namespace simulation
 namespace common
 {
 
+using namespace sofa::core;
+
 VectorOperations::VectorOperations(const sofa::core::ExecParams* params, sofa::core::objectmodel::BaseContext *ctx):
     sofa::core::behavior::BaseVectorOperations(params,ctx),
     executeVisitor(*ctx)

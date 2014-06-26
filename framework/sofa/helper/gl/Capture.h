@@ -28,9 +28,7 @@
 #ifndef SOFA_NO_OPENGL
 
 #include <sofa/helper/system/gl.h>
-
 #include <sofa/helper/io/Image.h>
-
 #include <sofa/helper/helper.h>
 
 namespace sofa
@@ -41,8 +39,6 @@ namespace helper
 
 namespace gl
 {
-
-//using namespace sofa::defaulttype;
 
 class SOFA_HELPER_API Capture
 {

@@ -27,7 +27,7 @@
         <UncoupledConstraintCorrection />
         <Node name="Visu">
             <OglModel name="Visual" fileMesh="mesh/torus.obj" color="0.0 0.5 0.5 1.0" scale="5.0" />
-            <RigidMapping object1="../.." object2="Visual" />
+            <RigidMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf2">
             <MeshObjLoader filename="mesh/torus_for_collision.obj" name="loader" />
@@ -48,7 +48,7 @@
         <UncoupledConstraintCorrection />
         <Node name="Visu">
             <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="1.0 0.5 0.25 1.0" scale="5.0" />
-            <RigidMapping object1="../.." object2="Visual" />
+            <RigidMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf2">
             <MeshObjLoader filename="mesh/torus2_for_collision.obj" name="loader" />
@@ -69,7 +69,7 @@
         <UncoupledConstraintCorrection />
         <Node name="Visu">
             <OglModel name="Visual" fileMesh="mesh/torus.obj" color="0.0 0.5 0.5 1.0" scale="5.0" />
-            <RigidMapping object1="../.." object2="Visual" />
+            <RigidMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf2">
             <MeshObjLoader filename="mesh/torus_for_collision.obj" name="loader" />

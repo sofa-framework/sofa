@@ -13,5 +13,5 @@
         <MechanicalObject template="Vec3d" name="Particles" restScale="1" position="2 0 0" />
         <UniformMass template="Vec3d" name="Mass" />
     </Node>
-    <StiffSpringForceField template="Vec3d" name="Interaction Spring" object1="FirstObject" object2="SecondObject" spring="1 0 10 0.1 1&#x0A;" />
+    <StiffSpringForceField template="Vec3d" name="Interaction Spring" object1="@FirstObject" object2="@SecondObject" spring="1 0 10 0.1 1&#x0A;" />
 </Node>

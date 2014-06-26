@@ -426,11 +426,11 @@ void HexahedralFEMForceField<DataTypes>::initLarge(const int i)
     // second vector in the plane of the two first edges
     // third vector orthogonal to first and second
 
-    const VecCoord *X0=this->mstate->getX0();
+    const VecCoord& X0=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
     Vec<8,Coord> nodes;
     for(int w=0; w<8; ++w)
-        nodes[w] = (*X0)[_topology->getHexahedron(i)[w]];
+        nodes[w] = (X0)[_topology->getHexahedron(i)[w]];
 
 
     Coord horizontal;
@@ -532,11 +532,11 @@ void HexahedralFEMForceField<DataTypes>::accumulateForceLarge( WDataRefVecDeriv&
 template<class DataTypes>
 void HexahedralFEMForceField<DataTypes>::initPolar(const int i)
 {
-    const VecCoord *X0=this->mstate->getX0();
+    const VecCoord& X0=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
     Vec<8,Coord> nodes;
     for(int j=0; j<8; ++j)
-        nodes[j] = (*X0)[_topology->getHexahedron(i)[j]];
+        nodes[j] = (X0)[_topology->getHexahedron(i)[j]];
 
     Transformation R_0_1; // Rotation matrix (deformed and displaced Hexahedron/world)
     computeRotationPolar( R_0_1, nodes );
@@ -676,7 +676,7 @@ void HexahedralFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
     if (!this->mstate) return;
     if (!f_drawing.getValue()) return;
 
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);

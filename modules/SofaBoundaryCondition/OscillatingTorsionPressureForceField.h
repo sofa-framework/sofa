@@ -138,7 +138,13 @@ public:
     {
         //TODO: remove this line (avoid warning message) ...
         mparams->setKFactorUsed(true);
-    };
+    }
+
+    virtual double getPotentialEnergy(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecCoord&  /* x */) const
+    {
+        serr << "Get potentialEnergy not implemented" << sendl;
+        return 0.0;
+    }
 
 
     void draw(const core::visual::VisualParams* vparams);

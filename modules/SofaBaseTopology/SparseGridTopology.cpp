@@ -648,7 +648,7 @@ void SparseGridTopology::updateMesh()
     {
 #ifndef SOFA_FLOAT
         core::behavior::MechanicalState< Vec3dTypes > *mecha_tempd = collisionTopology->getContext()->get< core::behavior::MechanicalState< Vec3dTypes > >();
-        if (mecha_tempd != NULL && mecha_tempd->getX()->size() < 2) //a triangle mesh has minimum 3elements
+        if (mecha_tempd != NULL && mecha_tempd->read(core::ConstVecCoordId::position())->getValue().size() < 2) //a triangle mesh has minimum 3elements
         {
             list_meshd.push_back(collisionTopology);
             list_Xd.push_back(mecha_tempd->write(core::VecCoordId::position()));
@@ -656,7 +656,7 @@ void SparseGridTopology::updateMesh()
 #endif
 #ifndef SOFA_DOUBLE
         core::behavior::MechanicalState< Vec3fTypes > *mecha_tempf = collisionTopology->getContext()->get< core::behavior::MechanicalState< Vec3fTypes > >();
-        if (mecha_tempf != NULL && mecha_tempf->getX()->size() < 2) //a triangle mesh has minimum 3elements
+        if (mecha_tempf != NULL && mecha_tempf->read(core::ConstVecCoordId::position())->getValue().size() < 2) //a triangle mesh has minimum 3elements
         {
 
             list_meshf.push_back(collisionTopology);

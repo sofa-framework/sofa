@@ -12,7 +12,7 @@
         <BoxConstantForceField box="0 0.5 0  1 1   0" force="0 1  0" arrowSizeCoef=".2" />
         <Node name="Visu">
             <OglModel name="Visual" color="red" />
-            <IdentityMapping object1="../.." object2="Visual" />
+            <IdentityMapping input="@.." output="@Visual" />
         </Node>
     </Node>
 </Node>
