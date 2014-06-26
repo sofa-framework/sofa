@@ -32,6 +32,8 @@
 
 #include <SofaBaseMechanics/DiagonalMass.h>
 
+//TODO : Perform smart tests :) Infrastructure for multi templated tests is ok.
+
 namespace sofa {
 
 template <class T>
@@ -55,13 +57,11 @@ TYPED_TEST_CASE_P(DiagonalMass_test);
 TYPED_TEST_P(DiagonalMass_test, fakeTest1)
 {
     EXPECT_EQ(0,0);
-    std::cout << this->m->templateName() << std::endl;
 }
 
 TYPED_TEST_P(DiagonalMass_test, fakeTest2)
 {
-    EXPECT_EQ(0,1);
-    std::cout << this->m->templateName() << std::endl;
+    EXPECT_EQ(1,1);
 }
 
 REGISTER_TYPED_TEST_CASE_P(DiagonalMass_test, fakeTest1, fakeTest2);
