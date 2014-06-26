@@ -1,4 +1,4 @@
-#!/bin/sed -f 
+#!/usr/bin/sed -f 
 
 
 #---------------------
@@ -13,6 +13,11 @@ s|<\(.*Mapping .*\)object1="../\([^"]*\)"|<\1input="@\2"|g
 
 s|<\(.*Mapping .*\)object1="\([^"@.][^"]*\)"|<\1input="@\2"|g
 
+s|<\(.*Mapping .*\)object1=".."|<\1input="@."|g
+
+
 s|<\(.*Mapping .*\)object2="../\([^"]*\)"|<\1output="@\2"|g
 
 s|<\(.*Mapping .*\)object2="\([^"@.][^"]*\)"|<\1output="@\2"|g
+
+s|<\(.*Mapping .*\)object2=".."|<\1output="@."|g
