@@ -24,7 +24,7 @@
 ******************************************************************************/
 
 #include "Sofa_test.h"
-#include <SofaBoundaryCondition/FixedConstraint.h>
+#include <SofaBoundaryCondition/PartialFixedConstraint.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
@@ -57,22 +57,19 @@ void createUniformMass(simulation::Node::SPtr node, component::container::Mechan
 }
 
 template <typename _DataTypes>
-struct FixedConstraint_test : public Sofa_test<typename _DataTypes::Real>
+struct PartialFixedConstraint_test : public Sofa_test<typename _DataTypes::Real>
 {
     typedef _DataTypes DataTypes;
-    typedef component::projectiveconstraintset::FixedConstraint<DataTypes> FixedConstraint;
+    typedef component::projectiveconstraintset::PartialFixedConstraint<DataTypes> FixedConstraint;
     typedef component::forcefield::ConstantForceField<DataTypes> ForceField;
     typedef component::container::MechanicalObject<DataTypes> MechanicalObject;
-    
     
     typedef typename MechanicalObject::VecCoord  VecCoord;
     typedef typename MechanicalObject::Coord  Coord;
     typedef typename MechanicalObject::VecDeriv  VecDeriv;
     typedef typename MechanicalObject::Deriv  Deriv;
     typedef typename DataTypes::Real  Real;
-
-   
-
+    typedef sofa::helper::fixed_array<bool,Deriv::total_size> VecBool;
 
 	bool test(double epsilon)
 	{
@@ -84,6 +81,9 @@ struct FixedConstraint_test : public Sofa_test<typename _DataTypes::Real>
         Deriv force;
         for(unsigned i=0; i<force.size(); i++)
             force[i]=10;
+        VecBool fixed;
+        for(unsigned i=0; i<fixed.size(); i++)
+            fixed[i]=false;
 
         /// Scene creation 
         simulation::Node::SPtr root = simulation->createNewGraph("root");
@@ -99,21 +99,33 @@ struct FixedConstraint_test : public Sofa_test<typename _DataTypes::Real>
         typename ForceField::SPtr forceField = addNew<ForceField>(node);
         forceField->setForce( 0, force );
 
-        node->addObject(sofa::core::objectmodel::New<FixedConstraint>());
+        typename FixedConstraint::SPtr constraint = addNew<FixedConstraint>(node);
+        
 
         // Init simulation
         sofa::simulation::getSimulation()->init(root.get());
 
-        // Perform one time step
-        sofa::simulation::getSimulation()->animate(root.get(),0.5);
-
-        // Check if the particle moved
-        typename MechanicalObject::ReadVecCoord readX = dofs->readPositions();
-        if( (readX[0]-initCoord).norm2()>epsilon )
+        for(unsigned i=0; i<fixed.size(); i++)
         {
-            ADD_FAILURE() << "Error: unmatching position between " << readX[0] << " and " << initCoord<< endl;
-            return false;
+            fixed[i] = true;
+            constraint->fixedDirections.setValue(fixed);
+
+            // Perform one time step
+            sofa::simulation::getSimulation()->animate(root.get(),0.5);
+
+            // Check if the particle moved in a fixed direction
+            typename MechanicalObject::ReadVecDeriv readV = dofs->readVelocities();
+            if( readV[0][i]>epsilon )
+            {
+                ADD_FAILURE() << "Error: non null velocity in direction " << i << endl;
+                return false;
+            }
+
+            sofa::simulation::getSimulation()->reset(root.get());
+            fixed[i] = false;
         }
+
+        
         return true;
 
 	}
@@ -131,9 +143,9 @@ typedef Types<
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(FixedConstraint_test, DataTypes);
+TYPED_TEST_CASE(PartialFixedConstraint_test, DataTypes);
 // first test case
-TYPED_TEST( FixedConstraint_test , testValue )
+TYPED_TEST( PartialFixedConstraint_test , testValue )
 {
     EXPECT_TRUE(  this->test(1e-8) );
 }
