@@ -24,6 +24,9 @@
 ******************************************************************************/
 #include <SofaConstraint/FrictionContact.inl>
 
+
+using namespace sofa::core::collision;
+
 namespace sofa
 {
 

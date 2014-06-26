@@ -46,7 +46,6 @@ namespace constraintset
 
 using helper::vector;
 using core::objectmodel::Data;
-using namespace sofa::core::objectmodel;
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template <class DataTypes>
@@ -81,8 +80,8 @@ public:
 protected:
     DistanceLMContactConstraint( MechanicalState *dof)
         : core::behavior::LMConstraint<DataTypes,DataTypes>(dof,dof)
-        , pointPairs(Base::initData(&pointPairs, "pointPairs", "List of the edges to constrain"))
-        , contactFriction(Base::initData(&contactFriction, "contactFriction", "Coulomb friction coefficient (same for all)"))
+        , pointPairs(sofa::core::objectmodel::Base::initData(&pointPairs, "pointPairs", "List of the edges to constrain"))
+        , contactFriction(sofa::core::objectmodel::Base::initData(&contactFriction, "contactFriction", "Coulomb friction coefficient (same for all)"))
         , intersection(0)
     {
         initColorContactState();
@@ -90,16 +89,16 @@ protected:
 
     DistanceLMContactConstraint( MechanicalState *dof1, MechanicalState * dof2)
         : core::behavior::LMConstraint<DataTypes,DataTypes>(dof1,dof2)
-        , pointPairs(Base::initData(&pointPairs, "pointPairs", "List of the edges to constrain"))
-        , contactFriction(Base::initData(&contactFriction, "contactFriction", "Coulomb friction coefficient (same for all)"))
+        , pointPairs(sofa::core::objectmodel::Base::initData(&pointPairs, "pointPairs", "List of the edges to constrain"))
+        , contactFriction(sofa::core::objectmodel::Base::initData(&contactFriction, "contactFriction", "Coulomb friction coefficient (same for all)"))
         , intersection(0)
     {
         initColorContactState();
     };
 
     DistanceLMContactConstraint()
-        : pointPairs(Base::initData(&pointPairs, "pointPairs", "List of the edges to constrain"))
-        , contactFriction(Base::initData(&contactFriction, "contactFriction", "Coulomb friction coefficient (same for all)"))
+        : pointPairs(sofa::core::objectmodel::Base::initData(&pointPairs, "pointPairs", "List of the edges to constrain"))
+        , contactFriction(sofa::core::objectmodel::Base::initData(&contactFriction, "contactFriction", "Coulomb friction coefficient (same for all)"))
         , intersection(0)
     {
         initColorContactState();

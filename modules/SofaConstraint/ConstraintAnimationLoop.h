@@ -49,9 +49,6 @@ namespace component
 namespace animationloop
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::component::linearsolver;
-using namespace helper::system::thread;
 
 class SOFA_CONSTRAINT_API MechanicalGetConstraintResolutionVisitor : public simulation::BaseMechanicalVisitor
 {
@@ -197,16 +194,15 @@ protected:
 };
 
 
-
 class SOFA_CONSTRAINT_API ConstraintProblem
 {
 protected:
-    LPtrFullMatrix<double> _W;
-    FullVector<double> _dFree, _force, _d, _df;              // cf. These Duriez + _df for scheme correction
+    sofa::component::linearsolver::LPtrFullMatrix<double> _W;
+    sofa::component::linearsolver::FullVector<double> _dFree, _force, _d, _df;              // cf. These Duriez + _df for scheme correction
     std::vector<core::behavior::ConstraintResolution*> _constraintsResolutions;
     double _tol;
     int _dim;
-    CTime *_timer;
+    sofa::helper::system::thread::CTime *_timer;
     bool m_printLog;
 
 public:
@@ -215,11 +211,11 @@ public:
     virtual void clear(int dim, const double &tol);
 
     inline int getSize(void) {return _dim;};
-    inline LPtrFullMatrix<double>* getW(void) {return &_W;};
-    inline FullVector<double>* getDfree(void) {return &_dFree;};
-    inline FullVector<double>* getD(void) {return &_d;};
-    inline FullVector<double>* getF(void) {return &_force;};
-    inline FullVector<double>* getdF(void) {return &_df;};
+    inline sofa::component::linearsolver::LPtrFullMatrix<double>* getW(void) {return &_W;};
+    inline sofa::component::linearsolver::FullVector<double>* getDfree(void) {return &_dFree;};
+    inline sofa::component::linearsolver::FullVector<double>* getD(void) {return &_d;};
+    inline sofa::component::linearsolver::FullVector<double>* getF(void) {return &_force;};
+    inline sofa::component::linearsolver::FullVector<double>* getdF(void) {return &_df;};
     inline std::vector<core::behavior::ConstraintResolution*>& getConstraintResolutions(void) {return _constraintsResolutions;};
     inline double *getTolerance(void) {return &_tol;};
 
@@ -317,7 +313,7 @@ protected:
             return &CP1;
     }
 
-    CTime *timer;
+    sofa::helper::system::thread::CTime *timer;
     double timeScale, time ;
     bool debug;
 
