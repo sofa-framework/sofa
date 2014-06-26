@@ -36,15 +36,6 @@ namespace component
 
 namespace topology
 {
-using core::topology::BaseMeshTopology;
-using namespace sofa::defaulttype;
-
-typedef BaseMeshTopology::TriangleID TriangleID;
-typedef BaseMeshTopology::Triangle Triangle;
-typedef BaseMeshTopology::SeqTriangles SeqTriangles;
-typedef BaseMeshTopology::TrianglesAroundVertex TrianglesAroundVertex;
-typedef BaseMeshTopology::TrianglesAroundEdge TrianglesAroundEdge;
-typedef BaseMeshTopology::EdgesInTriangle EdgesInTriangle;
 
 /**
 * A class that provides geometry information on an TriangleSet.
@@ -55,11 +46,25 @@ class TriangleSetGeometryAlgorithms : public EdgeSetGeometryAlgorithms<DataTypes
 public:
     SOFA_CLASS(SOFA_TEMPLATE(TriangleSetGeometryAlgorithms,DataTypes), SOFA_TEMPLATE(EdgeSetGeometryAlgorithms,DataTypes));
 
+
+    typedef sofa::core::topology::BaseMeshTopology::EdgeID EdgeID;
+    typedef sofa::core::topology::BaseMeshTopology::Edge Edge;
+    typedef sofa::core::topology::BaseMeshTopology::SeqEdges SeqEdges;
+    typedef sofa::core::topology::BaseMeshTopology::EdgesAroundVertex EdgesAroundVertex;
+
+    typedef BaseMeshTopology::TriangleID TriangleID;
+    typedef BaseMeshTopology::Triangle Triangle;
+    typedef BaseMeshTopology::SeqTriangles SeqTriangles;
+    typedef BaseMeshTopology::TrianglesAroundVertex TrianglesAroundVertex;
+    typedef BaseMeshTopology::TrianglesAroundEdge TrianglesAroundEdge;
+    typedef BaseMeshTopology::EdgesInTriangle EdgesInTriangle;
+
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
+
 protected:
     TriangleSetGeometryAlgorithms()
         : EdgeSetGeometryAlgorithms<DataTypes>()
@@ -87,7 +92,7 @@ public:
 
     Coord computeRestTriangleCenter(const TriangleID i) const;
 
-    void computeTriangleCircumcenterBaryCoefs(Vec<3,Real> &baryCoord, const TriangleID i) const;
+    void computeTriangleCircumcenterBaryCoefs(sofa::defaulttype::Vec<3,Real> &baryCoord, const TriangleID i) const;
 
     Coord computeTriangleCircumcenter(const TriangleID i) const;
 
