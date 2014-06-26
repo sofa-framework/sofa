@@ -65,10 +65,10 @@ void LinearVelocityConstraint<TDataTypes>::FCPointHandler::applyDestroyFunction(
 template <class TDataTypes>
 LinearVelocityConstraint<TDataTypes>::LinearVelocityConstraint()
     : core::behavior::ProjectiveConstraintSet<TDataTypes>(NULL)
-    , m_indices( sofa::core::objectmodel::BaseObject::initData(&m_indices,"indices","Indices of the constrained points") )
-    , m_keyTimes(  sofa::core::objectmodel::BaseObject::initData(&m_keyTimes,"keyTimes","key times for the movements") )
-    , m_keyVelocities(  sofa::core::objectmodel::BaseObject::initData(&m_keyVelocities,"velocities","velocities corresponding to the key times") )
-    , m_coordinates( sofa::core::objectmodel::BaseObject::initData(&m_coordinates, "coordinates", "coordinates on which to apply velocities") )
+    , m_indices( initData(&m_indices,"indices","Indices of the constrained points") )
+    , m_keyTimes(  initData(&m_keyTimes,"keyTimes","key times for the movements") )
+    , m_keyVelocities(  initData(&m_keyVelocities,"velocities","velocities corresponding to the key times") )
+    , m_coordinates( initData(&m_coordinates, "coordinates", "coordinates on which to apply velocities") )
 {
     // default to indice 0
     m_indices.beginEdit()->push_back(0);

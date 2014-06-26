@@ -82,7 +82,7 @@ public:
     typedef linearsolver::EigenSparseMatrix<DataTypes,DataTypes> SparseMatrix;
     typedef typename SparseMatrix::Block Block;                                       ///< projection matrix of a particle displacement to the plane
     enum {bsize=SparseMatrix::Nin};                                                   ///< size of a block
-
+    typedef sofa::defaulttype::Vector3 Vector3;
 
 protected:
     ProjectToPlaneConstraint();
@@ -132,7 +132,7 @@ public:
     {
     public:
         typedef typename ProjectToPlaneConstraint<DataTypes>::Indices Indices;
-
+        typedef typename sofa::core::topology::Point Point;
         FCPointHandler(ProjectToPlaneConstraint<DataTypes>* _fc, component::topology::PointSubsetData<Indices>* _data)
             : sofa::component::topology::TopologySubsetDataHandler<sofa::core::topology::Point, Indices >(_data), fc(_fc) {}
 
