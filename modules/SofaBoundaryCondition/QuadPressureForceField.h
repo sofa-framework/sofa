@@ -40,9 +40,6 @@ namespace component
 namespace forcefield
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::component::topology;
-
 /**
  * @brief QuadPressureForceField Class
  *
@@ -102,7 +99,7 @@ protected:
         }
     };
 
-    QuadSparseData<sofa::helper::vector<QuadPressureInformation> > quadPressureMap;
+    sofa::component::topology::QuadSparseData<sofa::helper::vector<QuadPressureInformation> > quadPressureMap;
 
     sofa::core::topology::BaseMeshTopology* _topology;
 

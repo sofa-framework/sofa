@@ -43,9 +43,6 @@ namespace component
 namespace forcefield
 {
 
-using namespace sofa::defaulttype;
-using namespace core::topology;
-
 template <class DataTypes>
 BuoyantForceField<DataTypes>::BuoyantForceField():
     m_fluidModel(initData(&m_fluidModel, (Real)1.0f, "fluidModel", "1 for a plane, 2 for a box")),

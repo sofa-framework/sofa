@@ -44,22 +44,22 @@ SOFA_DECL_CLASS(ParabolicConstraint)
 
 int ParabolicConstraintClass = core::RegisterObject("Apply a parabolic trajectory to given points")
 #ifndef SOFA_FLOAT
-        .add< ParabolicConstraint<Vec3dTypes> >()
-        .add< ParabolicConstraint<Rigid3dTypes> >()
+        .add< ParabolicConstraint<defaulttype::Vec3dTypes> >()
+        .add< ParabolicConstraint<defaulttype::Rigid3dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
-        .add< ParabolicConstraint<Vec3fTypes> >()
-        .add< ParabolicConstraint<Rigid3fTypes> >()
+        .add< ParabolicConstraint<defaulttype::Vec3fTypes> >()
+        .add< ParabolicConstraint<defaulttype::Rigid3fTypes> >()
 #endif
         ;
 
 #ifndef SOFA_FLOAT
-template class ParabolicConstraint<Rigid3dTypes>;
-template class ParabolicConstraint<Vec3dTypes>;
+template class ParabolicConstraint<defaulttype::Rigid3dTypes>;
+template class ParabolicConstraint<defaulttype::Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class ParabolicConstraint<Rigid3fTypes>;
-template class ParabolicConstraint<Vec3fTypes>;
+template class ParabolicConstraint<defaulttype::Rigid3fTypes>;
+template class ParabolicConstraint<defaulttype::Vec3fTypes>;
 #endif
 
 

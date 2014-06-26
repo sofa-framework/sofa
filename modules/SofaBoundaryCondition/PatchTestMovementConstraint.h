@@ -50,9 +50,6 @@ namespace projectiveconstraintset
 {
 
 using core::objectmodel::Data;
-using namespace sofa::core::objectmodel;
-using namespace sofa::defaulttype;
-using namespace sofa::component::topology;
 
 template<class DataTypes>
 class PatchTestMovementConstraintInternalData
@@ -140,13 +137,13 @@ public:
     /// Draw the constrained points (= border mesh points)
      virtual void draw(const core::visual::VisualParams* vparams);
 
-    class FCPointHandler : public TopologySubsetDataHandler<Point, SetIndexArray >
+    class FCPointHandler : public sofa::component::topology::TopologySubsetDataHandler<sofa::component::topology::Point, SetIndexArray >
     {
     public:
         typedef typename PatchTestMovementConstraint<DataTypes>::SetIndexArray SetIndexArray;
 
-        FCPointHandler(PatchTestMovementConstraint<DataTypes>* _fc, PointSubsetData<SetIndexArray>* _data)
-            : sofa::component::topology::TopologySubsetDataHandler<Point, SetIndexArray >(_data), fc(_fc) {}
+        FCPointHandler(PatchTestMovementConstraint<DataTypes>* _fc, sofa::component::topology::PointSubsetData<SetIndexArray>* _data)
+            : sofa::component::topology::TopologySubsetDataHandler<sofa::component::topology::Point, SetIndexArray >(_data), fc(_fc) {}
 
         void applyDestroyFunction(unsigned int /*index*/, value_type& /*T*/);
 

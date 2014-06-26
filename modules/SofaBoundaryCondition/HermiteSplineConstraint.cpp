@@ -42,22 +42,22 @@ SOFA_DECL_CLASS(HermiteSplineConstraint)
 
 int HermiteSplineConstraintClass = core::RegisterObject("Apply a hermite cubic spline trajectory to given points")
 #ifndef SOFA_FLOAT
-        .add< HermiteSplineConstraint<Vec3dTypes> >()
-        .add< HermiteSplineConstraint<Rigid3dTypes> >()
+        .add< HermiteSplineConstraint<defaulttype::Vec3dTypes> >()
+        .add< HermiteSplineConstraint<defaulttype::Rigid3dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
-        .add< HermiteSplineConstraint<Vec3fTypes> >()
-        .add< HermiteSplineConstraint<Rigid3fTypes> >()
+        .add< HermiteSplineConstraint<defaulttype::Vec3fTypes> >()
+        .add< HermiteSplineConstraint<defaulttype::Rigid3fTypes> >()
 #endif
         ;
 
 #ifndef SOFA_FLOAT
-template class HermiteSplineConstraint<Rigid3dTypes>;
-template class HermiteSplineConstraint<Vec3dTypes>;
+template class HermiteSplineConstraint<defaulttype::Rigid3dTypes>;
+template class HermiteSplineConstraint<defaulttype::Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class HermiteSplineConstraint<Rigid3fTypes>;
-template class HermiteSplineConstraint<Vec3fTypes>;
+template class HermiteSplineConstraint<defaulttype::Rigid3fTypes>;
+template class HermiteSplineConstraint<defaulttype::Vec3fTypes>;
 #endif
 
 

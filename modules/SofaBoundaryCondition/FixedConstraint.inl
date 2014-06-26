@@ -55,9 +55,6 @@ namespace projectiveconstraintset
 
 using namespace core::topology;
 
-using namespace sofa::defaulttype;
-using namespace sofa::helper;
-using namespace sofa::core::behavior;
 
 
 // Define TestNewPointFunction

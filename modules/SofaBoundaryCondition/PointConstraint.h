@@ -49,8 +49,7 @@ namespace projectiveconstraintset
 
 using helper::vector;
 using core::objectmodel::Data;
-using namespace sofa::core::objectmodel;
-using namespace sofa::component::topology;
+
 
 
 /** Attach given particles to their initial positions. This is a temporary class, somehow redundant with FixedConstraint, simplified to avoid the memory leak issue. @todo Remove one of the two classes

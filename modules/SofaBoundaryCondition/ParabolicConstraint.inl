@@ -39,9 +39,6 @@ namespace component
 namespace projectiveconstraintset
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::helper;
-
 template <class DataTypes>
 ParabolicConstraint<DataTypes>::ParabolicConstraint()
     :core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
@@ -111,8 +108,9 @@ void ParabolicConstraint<DataTypes>::init()
         ay.normalize();
         az.normalize();
 
-        Mat<3,3,Real> Mrot(ax, ay, az);
-        Mat<3,3,Real> Mrot2;
+        
+        defaulttype::Mat<3,3,Real> Mrot(ax, ay, az);
+        defaulttype::Mat<3,3,Real> Mrot2;
         Mrot2.transpose(Mrot);
         m_projection.fromMatrix(Mrot2);
         m_projection.normalize();
@@ -248,22 +246,22 @@ void ParabolicConstraint<DataTypes>::draw(const core::visual::VisualParams* vpar
         Vec3R locPos( px , py, 0.0);
         Vec3R worldPos = m_P1.getValue() + m_projection.rotate(locPos);
 
-        gl::glVertexT(worldPos);
+        helper::gl::glVertexT(worldPos);
 
         relativeTime = (i+1)/nbStep;
         px = m_locP3.x()*relativeTime;
         py = (- m_locP2.y() / (m_locP3.x()*m_locP2.x() - m_locP2.x()*m_locP2.x())) * (px *px) + ( (m_locP3.x()*m_locP2.y()) / (m_locP3.x()*m_locP2.x() - m_locP2.x()*m_locP2.x())) * px;
         locPos = Vec3R( px , py, 0.0);
         worldPos = m_P1.getValue() + m_projection.rotate(locPos);
-        gl::glVertexT(worldPos);
+        helper::gl::glVertexT(worldPos);
     }
     glEnd();
 
     //draw points for the 3 control points
     glBegin(GL_POINTS);
-    gl::glVertexT(m_P1.getValue());
-    gl::glVertexT(m_P2.getValue());
-    gl::glVertexT(m_P3.getValue());
+    helper::gl::glVertexT(m_P1.getValue());
+    helper::gl::glVertexT(m_P2.getValue());
+    helper::gl::glVertexT(m_P3.getValue());
     glEnd();
 #endif /* SOFA_NO_OPENGL */
 }

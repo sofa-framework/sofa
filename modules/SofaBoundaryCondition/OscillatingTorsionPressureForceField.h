@@ -40,9 +40,6 @@ namespace component
 namespace forcefield
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::component::topology;
-
 
 
 template<class DataTypes>
@@ -89,7 +86,7 @@ protected:
     std::ofstream file;
 
 public:
-    TriangleSparseData<sofa::helper::vector <TrianglePressureInformation> > trianglePressureMap;
+    sofa::component::topology::TriangleSparseData<sofa::helper::vector <TrianglePressureInformation> > trianglePressureMap;
     sofa::core::topology::BaseMeshTopology* _topology;
 
     Data<Real> moment;   // total moment/torque applied
