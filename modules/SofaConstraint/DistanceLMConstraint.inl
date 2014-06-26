@@ -49,19 +49,12 @@ namespace component
 
 namespace constraintset
 {
-using namespace core;
-using namespace core::topology;
-
-using namespace sofa::defaulttype;
-using namespace sofa::helper;
-using namespace sofa::core::behavior;
-
 
 
 template <class DataTypes>
 void DistanceLMConstraint<DataTypes>::init()
 {
-    LMConstraint<DataTypes,DataTypes>::init();
+    sofa::core::behavior::LMConstraint<DataTypes,DataTypes>::init();
     topology = this->getContext()->getMeshTopology();
     if (vecConstraint.getValue().size() == 0 && (this->constrainedObject1==this->constrainedObject2) ) vecConstraint.setValue(this->topology->getEdges());
 }
@@ -104,13 +97,13 @@ template<class DataTypes>
 void DistanceLMConstraint<DataTypes>::buildConstraintMatrix(const core::ConstraintParams* cParams /* PARAMS FIRST */, core::MultiMatrixDerivId cId, unsigned int &cIndex)
 {
     Data<MatrixDeriv>* dC1 = cId[this->constrainedObject1].write();
-    helper::WriteAccessor<objectmodel::Data<MatrixDeriv> > c1 = *dC1;
+    helper::WriteAccessor<sofa::core::objectmodel::Data<MatrixDeriv> > c1 = *dC1;
 
     Data<MatrixDeriv>* dC2 = cId[this->constrainedObject2].write();
-    helper::WriteAccessor<objectmodel::Data<MatrixDeriv> > c2 = *dC2;
+    helper::WriteAccessor<sofa::core::objectmodel::Data<MatrixDeriv> > c2 = *dC2;
 
-    helper::ReadAccessor<objectmodel::Data<VecCoord> > x1 = *cParams->readX(this->constrainedObject1);
-    helper::ReadAccessor<objectmodel::Data<VecCoord> > x2 = *cParams->readX(this->constrainedObject2);
+    helper::ReadAccessor<sofa::core::objectmodel::Data<VecCoord> > x1 = *cParams->readX(this->constrainedObject1);
+    helper::ReadAccessor<sofa::core::objectmodel::Data<VecCoord> > x2 = *cParams->readX(this->constrainedObject2);
 
     const SeqEdges &edges = vecConstraint.getValue();
 
@@ -196,14 +189,14 @@ void DistanceLMConstraint<DataTypes>::draw(const core::visual::VisualParams* vpa
         const VecCoord &x1=*(this->constrainedObject1->getX());
         const VecCoord &x2=*(this->constrainedObject2->getX());
 
-        std::vector< Vector3 > points;
+        std::vector< sofa::defaulttype::Vector3 > points;
         const SeqEdges &edges =  vecConstraint.getValue();
         for (unsigned int i=0; i<edges.size(); ++i)
         {
             points.push_back(x1[edges[i][0]]);
             points.push_back(x2[edges[i][1]]);
         }
-        vparams->drawTool()->drawLines(points, 1, Vec<4,float>(0.0,1.0,0.0f,1.0f));
+        vparams->drawTool()->drawLines(points, 1, sofa::defaulttype::Vec<4,float>(0.0,1.0,0.0f,1.0f));
     }
 }
 

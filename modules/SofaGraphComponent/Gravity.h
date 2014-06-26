@@ -43,8 +43,6 @@ namespace component
 namespace contextobject
 {
 
-using namespace sofa::defaulttype;
-
 /** Override the default gravity */
 class SOFA_GRAPH_COMPONENT_API Gravity : public core::objectmodel::ContextObject
 {
@@ -53,7 +51,7 @@ public:
 protected:
     Gravity();
 public:
-    Data<Vector3> f_gravity; ///< Gravity in the world coordinate system
+    Data<sofa::defaulttype::Vector3> f_gravity; ///< Gravity in the world coordinate system
 
     /// Modify the context of the Node
     void apply();

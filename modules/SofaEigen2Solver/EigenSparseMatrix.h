@@ -32,8 +32,6 @@
 #include <sofa/helper/vector.h>
 #include <Eigen/Core>
 #include <Eigen/Sparse>
-using std::cerr;
-using std::endl;
 
 namespace sofa
 {
