@@ -80,7 +80,7 @@ ComponentLibrary *CategoryLibrary::addComponent(const std::string &componentName
     bool componentCreationPossible=false;
     //read all the template possible, and remove unused (for Mapping processing)
     std::list<std::string> templates;
-    for (itTemplate=entry->creatorMap.begin(); itTemplate!= entry->creatorMap.end(); itTemplate++)
+    for (itTemplate=entry->creatorMap.begin(); itTemplate!= entry->creatorMap.end(); ++itTemplate)
     {
         const std::string &templateName = itTemplate->first;
         //If the component corresponds to a MechanicalMapping, we must remove the template related to the visual mapping

@@ -584,7 +584,7 @@ void MarchingCubeUtility::propagateFrom ( const sofa::helper::vector<Vec3i>& coo
 
     Vec3i cubeCoord, nextCube;
     stack<Vec3i> cubesToGenerate; // Stack of cubes to generate.
-    for( sofa::helper::vector<Vec3i>::const_iterator it = coord.begin(); it != coord.end(); it++)
+    for( sofa::helper::vector<Vec3i>::const_iterator it = coord.begin(); it != coord.end(); ++it)
     {
         const Vec3i& voxel = *it;
         if ( ( voxel[0] >= bbox.min[0]-1 ) && ( voxel[1] >= bbox.min[1]-1 ) && ( voxel[2] >= bbox.min[2]-1 ) &&
@@ -821,7 +821,7 @@ void MarchingCubeUtility::findSeedsFromRealCoords ( vector<Vec3i>& mCubeCoords, 
     mCubeCoords.clear();
     Vector3 gridSize = Vector3 ( (SReal) 1.0 / dataVoxelSize[0]*cubeStep, (SReal) 1.0 / dataVoxelSize[1]*cubeStep, (SReal) 1.0 / dataVoxelSize[2]*cubeStep );
 
-    for ( vector<Vector3>::const_iterator it = realCoords.begin(); it != realCoords.end(); it++ )
+    for ( vector<Vector3>::const_iterator it = realCoords.begin(); it != realCoords.end(); ++it )
     {
         Vec3i seed = ( ( *it ) - verticesTranslation - ( dataVoxelSize/2.0 ) ).linearProduct ( gridSize );
         mCubeCoords.push_back ( seed );

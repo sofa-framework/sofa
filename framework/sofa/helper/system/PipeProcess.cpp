@@ -84,10 +84,9 @@ bool PipeProcess::executeProcess(const std::string &command,  const std::vector<
 #if defined (_XBOX) || defined(PS3)
 	return false; // not supported
 #else
-    std::string fileIN = filenameStdin;
-
-    //Remove this line below when Windows will be able to read file as stdin
-    fileIN = "";
+    //std::string fileIN = filenameStdin;
+    //Remove this line below and uncomment the one above when Windows will be able to read file as stdin
+    std::string fileIN = "";
 
     fd_t fds[2][2];
 
