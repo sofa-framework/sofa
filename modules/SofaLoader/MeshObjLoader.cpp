@@ -243,7 +243,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
                 curMaterialId = -1;
                 helper::vector<Material>::iterator it = my_materials.begin();
                 helper::vector<Material>::iterator itEnd = my_materials.end();
-                for (; it != itEnd; it++)
+                for (; it != itEnd; ++it)
                 {
                     if (it->name == curMaterialName)
                     {

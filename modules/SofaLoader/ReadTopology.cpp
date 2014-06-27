@@ -92,7 +92,7 @@ void ReadTopologyCreator::addReadTopology(core::topology::BaseMeshTopology* topo
         {
             rt = sofa::core::objectmodel::New<ReadTopology>();
             gnode->addObject(rt);
-            for (core::objectmodel::TagSet::iterator it=this->subsetsToManage.begin(); it != this->subsetsToManage.end(); it++)
+            for (core::objectmodel::TagSet::iterator it=this->subsetsToManage.begin(); it != this->subsetsToManage.end(); ++it)
                 rt->addTag(*it);
         }
 
