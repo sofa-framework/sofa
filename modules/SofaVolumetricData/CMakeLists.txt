@@ -7,10 +7,26 @@ set(HEADER_FILES
     ImplicitSurfaceContainer.h
     InterpolatedImplicitSurface.h
     InterpolatedImplicitSurface.inl
-    DistanceGridForceField.h
-    DistanceGridForceField.inl
     ImplicitSurfaceMapping.h
     ImplicitSurfaceMapping.inl
+
+    )
+
+set(SOURCE_FILES
+
+    initVolumetricData.cpp
+    ImplicitSurfaceContainer.cpp
+    InterpolatedImplicitSurface.cpp
+    ImplicitSurfaceMapping.cpp
+
+    )
+
+if(SOFA_HAVE_MINIFLOWVR)
+
+list(APPEND HEADER_FILES
+
+    DistanceGridForceField.h
+    DistanceGridForceField.inl
     DistanceGrid.h
     DistanceGridCollisionModel.h
     RigidDistanceGridDiscreteIntersection.h
@@ -20,13 +36,10 @@ set(HEADER_FILES
 
     )
 
+
 set(SOURCE_FILES
 
-    initVolumetricData.cpp
-    ImplicitSurfaceContainer.cpp
-    InterpolatedImplicitSurface.cpp
     DistanceGridForceField.cpp
-    ImplicitSurfaceMapping.cpp
     DistanceGrid.cpp
     DistanceGridCollisionModel.cpp
     RayDistanceGridContact.cpp
@@ -35,6 +48,8 @@ set(SOURCE_FILES
     BarycentricPenalityContact_DistanceGrid.cpp
 
     )
+
+endif()
 
 set(GROUP_BASE_DIR "..")
 
