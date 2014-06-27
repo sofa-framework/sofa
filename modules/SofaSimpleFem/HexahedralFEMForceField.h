@@ -43,11 +43,6 @@ namespace component
 namespace forcefield
 {
 
-using namespace sofa::defaulttype;
-using sofa::helper::vector;
-
-using namespace sofa::component::topology;
-
 /** Compute Finite Element forces based on hexahedral elements.
 *
 * Corotational hexahedron from
@@ -94,14 +89,14 @@ public:
     typedef core::topology::BaseMeshTopology::Hexa Element;
     typedef core::topology::BaseMeshTopology::SeqHexahedra VecElement;
 
-    typedef Vec<24, Real> Displacement;		///< the displacement vector
+    typedef defaulttype::Vec<24, Real> Displacement;		///< the displacement vector
 
-    typedef Mat<6, 6, Real> MaterialStiffness;	///< the matrix of material stiffness
+    typedef defaulttype::Mat<6, 6, Real> MaterialStiffness;	///< the matrix of material stiffness
     typedef vector<MaterialStiffness> VecMaterialStiffness;  ///< a vector of material stiffness matrices
-    typedef Mat<24, 24, Real> ElementMass;
+    typedef defaulttype::Mat<24, 24, Real> ElementMass;
 
-    typedef Mat<24, 24, Real> ElementStiffness;
-    typedef vector<ElementStiffness> VecElementStiffness;
+    typedef defaulttype::Mat<24, 24, Real> ElementStiffness;
+    typedef helper::vector<ElementStiffness> VecElementStiffness;
 
 
     enum
@@ -115,12 +110,12 @@ protected:
 
 
 
-    typedef Mat<3, 3, Real> Mat33;
+    typedef defaulttype::Mat<3, 3, Real> Mat33;
     typedef Mat33 Transformation; ///< matrix for rigid transformations like rotations
 
     typedef std::pair<int,Real> Col_Value;
-    typedef vector< Col_Value > CompressedValue;
-    typedef vector< CompressedValue > CompressedMatrix;
+    typedef helper::vector< Col_Value > CompressedValue;
+    typedef helper::vector< CompressedValue > CompressedMatrix;
 
     /// the information stored for each hexahedron
     class HexahedronInformation
@@ -173,7 +168,7 @@ public:
 
 protected:
 
-    virtual void computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M, const Vec<8,Coord> &nodes);
+    virtual void computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M, const defaulttype::Vec<8,Coord> &nodes);
     Mat33 integrateStiffness( int signx0, int signy0, int signz0, int signx1, int signy1, int signz1, const Real u, const Real v, const Real w, const Mat33& J_1  );
 
     /// compute the hookean material matrix
@@ -189,7 +184,7 @@ protected:
 
     ////////////// polar decomposition method
     void initPolar(const int i);
-    void computeRotationPolar( Transformation &r, Vec<8,Coord> &nodes);
+    void computeRotationPolar( Transformation &r, defaulttype::Vec<8,Coord> &nodes);
     virtual void accumulateForcePolar( WDataRefVecDeriv& f, RDataRefVecCoord & p, const int i);
 
 public:
@@ -199,20 +194,20 @@ public:
     Data<Real> f_youngModulus;
     Data<bool> f_drawing;
     /// container that stotes all requires information for each hexahedron
-    HexahedronData<sofa::helper::vector<HexahedronInformation> > hexahedronInfo;
+    topology::HexahedronData<sofa::helper::vector<HexahedronInformation> > hexahedronInfo;
 
-    class HFFHexahedronHandler : public TopologyDataHandler<Hexahedron,sofa::helper::vector<HexahedronInformation> >
+    class HFFHexahedronHandler : public topology::TopologyDataHandler<topology::Hexahedron,sofa::helper::vector<HexahedronInformation> >
     {
     public:
         typedef typename HexahedralFEMForceField<DataTypes>::HexahedronInformation HexahedronInformation;
 
-        HFFHexahedronHandler(HexahedralFEMForceField<DataTypes>* ff, HexahedronData<sofa::helper::vector<HexahedronInformation> >* data )
-            :TopologyDataHandler<Hexahedron,sofa::helper::vector<HexahedronInformation> >(data)
+        HFFHexahedronHandler(HexahedralFEMForceField<DataTypes>* ff, topology::HexahedronData<sofa::helper::vector<HexahedronInformation> >* data )
+            :topology::TopologyDataHandler<topology::Hexahedron,sofa::helper::vector<HexahedronInformation> >(data)
             ,ff(ff)
         {
         }
 
-        void applyCreateFunction(unsigned int, HexahedronInformation &t, const Hexahedron &,
+        void applyCreateFunction(unsigned int, HexahedronInformation &t, const topology::Hexahedron &,
                 const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &);
     protected:
         HexahedralFEMForceField<DataTypes>* ff;
@@ -223,9 +218,9 @@ public:
 protected:
     HFFHexahedronHandler* hexahedronHandler;
 
-    HexahedronSetTopologyContainer* _topology;
+    topology::HexahedronSetTopologyContainer* _topology;
 
-    Mat<8,3,int> _coef; ///< coef of each vertices to compute the strain stress matrix
+    defaulttype::Mat<8,3,int> _coef; ///< coef of each vertices to compute the strain stress matrix
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_HEXAHEDRALFEMFORCEFIELD_CPP)

@@ -45,7 +45,6 @@ namespace component
 namespace forcefield
 {
 
-using namespace sofa::defaulttype;
 using sofa::helper::vector;
 
 template<class DataTypes>
@@ -127,17 +126,17 @@ public:
 
 protected:
 
-    typedef Vec<24, Real> Displacement;		///< the displacement vector
+    typedef defaulttype::Vec<24, Real> Displacement;		///< the displacement vector
 
-    typedef Mat<6, 6, Real> MaterialStiffness;	///< the matrix of material stiffness
+    typedef defaulttype::Mat<6, 6, Real> MaterialStiffness;	///< the matrix of material stiffness
     typedef vector<MaterialStiffness> VecMaterialStiffness;         ///< a vector of material stiffness matrices
     VecMaterialStiffness _materialsStiffnesses;					///< the material stiffness matrices vector
 
-    typedef Mat<24, 24, Real> ElementStiffness;
+    typedef defaulttype::Mat<24, 24, Real> ElementStiffness;
     typedef helper::vector<ElementStiffness> VecElementStiffness;
     Data<VecElementStiffness> _elementStiffnesses;
 
-    typedef Mat<3, 3, Real> Mat33;
+    typedef defaulttype::Mat<3, 3, Real> Mat33;
 
 
     typedef std::pair<int,Real> Col_Value;
@@ -152,7 +151,7 @@ protected:
     Data< VecCoord > _initialPoints; ///< the intial positions of the points
 
 
-    Mat<8,3,int> _coef; ///< coef of each vertices to compute the strain stress matrix
+    defaulttype::Mat<8,3,int> _coef; ///< coef of each vertices to compute the strain stress matrix
 #ifndef SOFA_NEW_HEXA
     static const int _indices[8]; ///< indices ordering is different than in topology node
 #endif
@@ -361,7 +360,7 @@ protected:
 
     ////////////// polar decomposition method
     void initPolar(int i, const Element&elem);
-    void computeRotationPolar( Transformation &r, Vec<8,Coord> &nodes);
+    void computeRotationPolar( Transformation &r, defaulttype::Vec<8,Coord> &nodes);
     virtual void accumulateForcePolar( WDataRefVecDeriv &f, RDataRefVecCoord &p, int i, const Element&elem  );
 
 

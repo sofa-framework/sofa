@@ -66,9 +66,6 @@ namespace component
 namespace forcefield
 {
 
-using std::set;
-using namespace sofa::defaulttype;
-
 #ifndef SOFA_NEW_HEXA
 template<class DataTypes> const int HexahedronFEMForceField<DataTypes>::_indices[8] = {0,1,3,2,4,5,7,6};
 // template<class DataTypes> const int HexahedronFEMForceField<DataTypes>::_indices[8] = {4,5,7,6,0,1,3,2};
@@ -405,7 +402,7 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
                 }
                 for(int i=0; i<8; ++i)
                 {
-                    Mat<6,3,Real> MBi;
+                    defaulttype::Mat<6,3,Real> MBi;
                     //MBi[0][0] = M[0][0] * qx[i]; MBi[0][1] = M[0][1] * qy[i]; MBi[0][2] = M[0][2] * qz[i];
                     //MBi[1][0] = M[1][0] * qx[i]; MBi[1][1] = M[1][1] * qy[i]; MBi[1][2] = M[1][2] * qz[i];
                     //MBi[2][0] = M[2][0] * qx[i]; MBi[2][1] = M[2][1] * qy[i]; MBi[2][2] = M[2][2] * qz[i];
@@ -834,7 +831,7 @@ void HexahedronFEMForceField<DataTypes>::initLarge(int i, const Element &elem)
     // Rotation matrix (initial Tetrahedre/world)
     // edges mean on 3 directions
 
-    Vec<8,Coord> nodes;
+    defaulttype::Vec<8,Coord> nodes;
     for(int w=0; w<8; ++w)
 #ifndef SOFA_NEW_HEXA
         nodes[w] = _initialPoints.getValue()[elem[_indices[w]]];
@@ -907,7 +904,7 @@ void HexahedronFEMForceField<DataTypes>::computeRotationLarge( Transformation &r
 template<class DataTypes>
 void HexahedronFEMForceField<DataTypes>::accumulateForceLarge( WDataRefVecDeriv &f, RDataRefVecCoord &p, int i, const Element&elem )
 {
-    Vec<8,Coord> nodes;
+    defaulttype::Vec<8,Coord> nodes;
     for(int w=0; w<8; ++w)
 #ifndef SOFA_NEW_HEXA
         nodes[w] = p[elem[_indices[w]]];
@@ -926,7 +923,7 @@ void HexahedronFEMForceField<DataTypes>::accumulateForceLarge( WDataRefVecDeriv 
 // 	_rotations[i].transpose(R_0_2);
 
     // positions of the deformed and displaced Tetrahedron in its frame
-    Vec<8,Coord> deformed;
+    defaulttype::Vec<8,Coord> deformed;
     for(int w=0; w<8; ++w)
         deformed[w] = _rotations[i] * nodes[w];
 
@@ -973,7 +970,7 @@ void HexahedronFEMForceField<DataTypes>::accumulateForceLarge( WDataRefVecDeriv 
 template<class DataTypes>
 void HexahedronFEMForceField<DataTypes>::initPolar(int i, const Element& elem)
 {
-    Vec<8,Coord> nodes;
+    defaulttype::Vec<8,Coord> nodes;
     for(int j=0; j<8; ++j)
 #ifndef SOFA_NEW_HEXA
         nodes[j] = _initialPoints.getValue()[elem[_indices[j]]];
@@ -1002,7 +999,7 @@ void HexahedronFEMForceField<DataTypes>::initPolar(int i, const Element& elem)
 
 
 template<class DataTypes>
-void HexahedronFEMForceField<DataTypes>::computeRotationPolar( Transformation &r, Vec<8,Coord> &nodes)
+void HexahedronFEMForceField<DataTypes>::computeRotationPolar( Transformation &r, defaulttype::Vec<8,Coord> &nodes)
 {
     Transformation A;
     Coord Edge =(nodes[1]-nodes[0] + nodes[2]-nodes[3] + nodes[5]-nodes[4] + nodes[6]-nodes[7])*.25;
@@ -1035,7 +1032,7 @@ void HexahedronFEMForceField<DataTypes>::computeRotationPolar( Transformation &r
 template<class DataTypes>
 void HexahedronFEMForceField<DataTypes>::accumulateForcePolar( WDataRefVecDeriv &f, RDataRefVecCoord &p, int i, const Element&elem )
 {
-    Vec<8,Coord> nodes;
+    defaulttype::Vec<8,Coord> nodes;
     for(int j=0; j<8; ++j)
 #ifndef SOFA_NEW_HEXA
         nodes[j] = p[elem[_indices[j]]];
@@ -1050,7 +1047,7 @@ void HexahedronFEMForceField<DataTypes>::accumulateForcePolar( WDataRefVecDeriv 
 
 
     // positions of the deformed and displaced Tetrahedre in its frame
-    Vec<8,Coord> deformed;
+    defaulttype::Vec<8,Coord> deformed;
     for(int j=0; j<8; ++j)
         deformed[j] = _rotations[i] * nodes[j];
 
@@ -1176,7 +1173,7 @@ void HexahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
     {
 
 
-        std::vector< Vector3 > points[6];
+        std::vector< defaulttype::Vector3 > points[6];
 
         Index a = (*it)[0];
         Index b = (*it)[1];
@@ -1285,12 +1282,12 @@ void HexahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
 
 
         vparams->drawTool()->setLightingEnabled(false);
-        vparams->drawTool()->drawTriangles(points[0], Vec<4,float>(0.7f,0.7f,0.1f,(_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f)));
-        vparams->drawTool()->drawTriangles(points[1], Vec<4,float>(0.7f,0.0f,0.0f,(_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f)));
-        vparams->drawTool()->drawTriangles(points[2], Vec<4,float>(0.0f,0.7f,0.0f,(_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f)));
-        vparams->drawTool()->drawTriangles(points[3], Vec<4,float>(0.0f,0.0f,0.7f,(_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f)));
-        vparams->drawTool()->drawTriangles(points[4], Vec<4,float>(0.1f,0.7f,0.7f,(_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f)));
-        vparams->drawTool()->drawTriangles(points[5], Vec<4,float>(0.7f,0.1f,0.7f,(_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f)));
+        vparams->drawTool()->drawTriangles(points[0], defaulttype::Vec<4,float>(0.7f,0.7f,0.1f,(_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f)));
+        vparams->drawTool()->drawTriangles(points[1], defaulttype::Vec<4,float>(0.7f,0.0f,0.0f,(_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f)));
+        vparams->drawTool()->drawTriangles(points[2], defaulttype::Vec<4,float>(0.0f,0.7f,0.0f,(_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f)));
+        vparams->drawTool()->drawTriangles(points[3], defaulttype::Vec<4,float>(0.0f,0.0f,0.7f,(_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f)));
+        vparams->drawTool()->drawTriangles(points[4], defaulttype::Vec<4,float>(0.1f,0.7f,0.7f,(_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f)));
+        vparams->drawTool()->drawTriangles(points[5], defaulttype::Vec<4,float>(0.7f,0.1f,0.7f,(_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f)));
 
     }
 

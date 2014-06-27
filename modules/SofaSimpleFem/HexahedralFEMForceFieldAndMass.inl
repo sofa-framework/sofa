@@ -41,8 +41,6 @@ namespace component
 namespace forcefield
 {
 
-using namespace sofa::defaulttype;
-
 template<class DataTypes>
 HexahedralFEMForceFieldAndMass<DataTypes>::HexahedralFEMForceFieldAndMass()
     : MassT()
@@ -304,7 +302,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::computeElementMasses(  )
 
     for(unsigned int i=0; i<hexahedra.size(); ++i)
     {
-        Vec<8,Coord> nodes;
+        defaulttype::Vec<8,Coord> nodes;
         for(int w=0; w<8; ++w)
             nodes[w] = initialPoints[hexahedra[i][w]];
 
@@ -389,7 +387,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addMDx(const core::MechanicalPar
         const VecElement& hexahedra = this->_topology->getHexahedra();
         for(unsigned int i=0; i<hexahedra.size(); ++i)
         {
-            Vec<24, Real> actualDx, actualF;
+            defaulttype::Vec<24, Real> actualDx, actualF;
 
             for(int k=0 ; k<8 ; ++k )
             {
