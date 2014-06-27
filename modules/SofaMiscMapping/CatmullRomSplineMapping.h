@@ -48,9 +48,6 @@ namespace mapping
  *
  */
 
-using namespace sofa::helper;
-using namespace sofa::core::topology;
-
 template <class TIn, class TOut>
 class CatmullRomSplineMapping : public core::Mapping<TIn, TOut>
 {
@@ -77,6 +74,7 @@ public:
     typedef typename Out::MatrixDeriv OutMatrixDeriv;
     typedef typename Out::Real OutReal;
 
+    typedef sofa::core::topology::BaseMeshTopology BaseMeshTopology;
     typedef BaseMeshTopology::Edge       Edge;
     typedef BaseMeshTopology::SeqEdges   SeqEdges;
     typedef BaseMeshTopology::Triangle       Triangle;
@@ -114,12 +112,12 @@ public:
 };
 
 #ifndef SOFA_FLOAT
-using sofa::defaulttype::Vec3dTypes;
+typedef sofa::defaulttype::Vec3dTypes Vec3dTypes;
 #endif
 
 #ifndef SOFA_DOUBLE
-using sofa::defaulttype::Vec3fTypes;
-using sofa::defaulttype::ExtVec3fTypes;
+typedef sofa::defaulttype::Vec3fTypes Vec3fTypes;
+typedef sofa::defaulttype::ExtVec3fTypes ExtVec3fTypes;
 #endif
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_CATMULLROMSPLINEMAPPING_CPP)

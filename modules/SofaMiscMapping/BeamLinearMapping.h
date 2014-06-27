@@ -122,15 +122,15 @@ public:
 template <int N, class Real> struct RigidMappingMatrixHelper;
 
 #ifndef SOFA_FLOAT
-using sofa::defaulttype::Vec3dTypes;
-using sofa::defaulttype::ExtVec3dTypes;
-using sofa::defaulttype::Rigid3dTypes;
+typedef sofa::defaulttype::Vec3dTypes Vec3dTypes;
+typedef sofa::defaulttype::ExtVec3dTypes ExtVec3dTypes;
+typedef sofa::defaulttype::Rigid3dTypes Rigid3dTypes;
 #endif
 
 #ifndef SOFA_DOUBLE
-using sofa::defaulttype::Vec3fTypes;
-using sofa::defaulttype::ExtVec3fTypes;
-using sofa::defaulttype::Rigid3fTypes;
+typedef sofa::defaulttype::Vec3fTypes Vec3fTypes;
+typedef sofa::defaulttype::ExtVec3fTypes ExtVec3fTypes;
+typedef sofa::defaulttype::Rigid3fTypes Rigid3fTypes;
 #endif
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_BEAMLINEARMAPPING_CPP)

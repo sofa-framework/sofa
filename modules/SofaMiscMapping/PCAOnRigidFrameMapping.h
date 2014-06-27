@@ -44,9 +44,6 @@ namespace component
 namespace mapping
 {
 
-using namespace sofa::defaulttype;
-
-
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template<class InDataTypes, class OutDataTypes>
 class PCAOnRigidFrameMappingInternalData

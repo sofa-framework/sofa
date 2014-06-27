@@ -40,7 +40,7 @@ namespace mapping
 
 SOFA_DECL_CLASS(CenterOfMassMapping)
 
-using namespace defaulttype;
+using namespace sofa::defaulttype;
 
 // Register in the Factory
 int CenterOfMassMappingClass = core::RegisterObject("Set the point to the center of mass of the DOFs it is attached to")
