@@ -221,6 +221,8 @@ protected:
 
         _alreadyInit=false;
 
+		f_poissonRatio.setRequired(true);
+		f_youngModulus.setRequired(true);
     }
 public:
     void setPoissonRatio(Real val) { this->f_poissonRatio.setValue(val); }

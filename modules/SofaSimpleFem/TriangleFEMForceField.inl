@@ -71,6 +71,8 @@ TriangleFEMForceField()
 template <class DataTypes>
 TriangleFEMForceField<DataTypes>::~TriangleFEMForceField()
 {
+	f_poisson.setRequired(true);
+	f_young.setRequired(true);
 }
 
 

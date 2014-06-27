@@ -65,6 +65,8 @@ TriangularAnisotropicFEMForceField<DataTypes>::TriangularAnisotropicFEMForceFiel
 {
     this->_anisotropicMaterial = true;
     triangleHandler = new TRQSTriangleHandler(this, &localFiberDirection);
+
+	f_young2.setRequired(true);
 }
 
 
