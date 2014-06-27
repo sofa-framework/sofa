@@ -454,35 +454,34 @@ void MultiResSparseGridTopology::SparseGrid::setIndicesMap()
     int num = 0;
     std::map<Index3D, Vertex>::iterator iter;
     ///for each pixel, we have to define the indices for the six corresponding faces
-    int v1,v2,v3,v4,v5,v6,v7,v8;
     std::map<Index3D,Voxel>::iterator i;
     /// to find the voxels of the surface, we check if the voxel has neighbours or not
     for(i = voxelsMap.begin(); i != voxelsMap.end(); i++)
     {
         ///finding the order for each of the 8th vertices
         iter = vertexMap.find(Index3D((*i).first.i,(*i).first.j,(*i).first.k));
-        v1 = (*iter).second.index;
+        int v1 = (*iter).second.index;
         //
         iter = vertexMap.find(Index3D((*i).first.i+1,(*i).first.j,(*i).first.k));
-        v2 = (*iter).second.index;
+        int v2 = (*iter).second.index;
         //
         iter = vertexMap.find(Index3D((*i).first.i+1,(*i).first.j+1,(*i).first.k));
-        v3 = (*iter).second.index;
+        int v3 = (*iter).second.index;
         //
         iter = vertexMap.find(Index3D((*i).first.i,(*i).first.j+1,(*i).first.k));
-        v4 = (*iter).second.index;
+        int v4 = (*iter).second.index;
         //
         iter = vertexMap.find(Index3D((*i).first.i,(*i).first.j,(*i).first.k+1));
-        v5 = (*iter).second.index;
+        int v5 = (*iter).second.index;
         //
         iter = vertexMap.find(Index3D((*i).first.i+1,(*i).first.j,(*i).first.k+1));
-        v6 = (*iter).second.index;
+        int v6 = (*iter).second.index;
         //
         iter = vertexMap.find(Index3D((*i).first.i+1,(*i).first.j+1,(*i).first.k+1));
-        v7 = (*iter).second.index;
+        int v7 = (*iter).second.index;
         //
         iter = vertexMap.find(Index3D((*i).first.i,(*i).first.j+1,(*i).first.k+1));
-        v8 = (*iter).second.index;
+        int v8 = (*iter).second.index;
 
         ///Add to the map of voxels the vertices corresponding to a voxel
         voxelsMap[Index3D((*i).first.i,(*i).first.j,(*i).first.k)].vertices[0]= v1;
@@ -549,19 +548,18 @@ int MultiResSparseGridTopology::SparseGrid::setPixels(const char *FileName, int 
     int width=0;
     int height=0;
     ifstream infile;
-    int i = 0;
     int x=0;
     int y=0;
     infile.open(FileName);
     if (!infile)
-        cerr<<"error.."<<endl;
+        cerr << "error.." << endl;
     else
-        for(i=0; i<4; i++)
+        for(int i=0; i < 4; i++)
         {
-            infile>>line;
-            if ( i==1)
+            infile >> line;
+            if(i==1)
                 width = atoi(line);
-            if (i==2)
+            if(i==2)
                 height = atoi(line);
         }
     cout<<"Width is "<<width<<endl;
@@ -781,8 +779,7 @@ int MultiResSparseGridTopology::SparseGrid::readFileVOX( char* fileName,int colo
 
     // le constructeur de ifstream permet d'ouvrir un fichier en lecture
     ifstream fichier( fileName );
-    int pixel_no = 0;
-    if ( fichier != NULL ) // ce test �houe si le fichier n'est pas ouvert
+    if ( fichier != NULL ) // ce test echoue si le fichier n'est pas ouvert
     {
         cout << "Ouverture du fichier " <<  fileName<< " reussit" << endl;
         int nb1, nb2, nb3,nb ;
@@ -801,6 +798,7 @@ int MultiResSparseGridTopology::SparseGrid::readFileVOX( char* fileName,int colo
         setDimVoxY(v2*scale); // Dimension des voxels  selon y.
         setDimVoxZ(v3*scale); // Dimension des voxels  selon z.
 
+		int pixel_no = 0;
         for(int r=0; r<nb3; r++)
         {
             for(int s = 0; s < nb2; s++)
