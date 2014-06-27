@@ -187,7 +187,6 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
     int nbFaces[NBFACETYPE] = {0}; // number of edges, triangles, quads
     int groupF0[NBFACETYPE] = {0}; // first primitives indices in current group for edges, triangles, quads
     std::string line;
-    std::string face, tmp;
     while( std::getline(file,line) )
     {
         if (line.empty()) continue;
