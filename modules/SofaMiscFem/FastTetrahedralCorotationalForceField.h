@@ -220,10 +220,10 @@ protected :
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_FASTTETRAHEDRALCOROTATIONALFORCEFIELD_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_MISC_FEM_API FastTetrahedralCorotationalForceField<Vec3dTypes>;
+extern template class SOFA_MISC_FEM_API FastTetrahedralCorotationalForceField<defaulttype::Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_FEM_API FastTetrahedralCorotationalForceField<Vec3fTypes>;
+extern template class SOFA_MISC_FEM_API FastTetrahedralCorotationalForceField<defaulttype::Vec3fTypes>;
 #endif
 #endif
 
