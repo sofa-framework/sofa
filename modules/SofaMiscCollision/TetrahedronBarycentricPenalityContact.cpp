@@ -37,6 +37,7 @@ namespace collision
 
 using namespace defaulttype;
 using simulation::Node;
+using namespace sofa::core::collision;
 
 SOFA_DECL_CLASS(TetrahedronBarycentricPenalityContact)
 

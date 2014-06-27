@@ -50,6 +50,7 @@ namespace collision
 {
 
 using namespace sofa::core::topology;
+using namespace sofa::defaulttype;
 
 SOFA_DECL_CLASS ( TriangleInRegularGrid );
 
