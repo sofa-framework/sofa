@@ -37,8 +37,6 @@ namespace helper
 namespace io
 {
 
-using namespace sofa::defaulttype;
-
 /// Cette classe permet la fabrication d'un visuel pour un fichier de type trian
 /// ces fichiers se presentent de la maniere suivante
 /// nombre de sommets

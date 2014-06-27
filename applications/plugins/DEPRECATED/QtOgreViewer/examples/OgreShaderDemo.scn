@@ -17,7 +17,7 @@
 		<TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM"  method="large"  poissonRatio="0.3"  youngModulus="100"  computeGlobalMatrix="0" />
 		<Node 	name="Visu" tags="Visual" gravity="0 -9.81 0" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
 			<OgreVisualModel template="ExtVec3f" name="VisualModel"  fileMesh="mesh/liver-smooth.obj"  translation="@../dofs.translation"  material="Default Diffuse 1 0.74902 0.74902 0.74902 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 0 0 0 0 Shininess 0 45"  OGREmaterialFile="Sofa/CelShading" />
-			<BarycentricMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="visual mapping"  object1="../.."  object2="VisualModel"  hexamap="0 " />
+			<BarycentricMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="visual mapping"  input="@.."  output="@VisualModel"  hexamap="0 " />
 		</Node>
 		<Node 	name="Surf" gravity="0 -9.81 0" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
 			<SphereModel name="CollisionModel"  fileSphere="mesh/liver.sph" />
@@ -36,7 +36,7 @@
 		<TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM"  method="large"  poissonRatio="0.3"  youngModulus="100"  computeGlobalMatrix="0" />
 		<Node 	name="Visu" tags="Visual" gravity="0 -9.81 0" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
 			<OgreVisualModel template="ExtVec3f" name="VisualModel"  fileMesh="mesh/liver-smooth.obj"  translation="@../dofs.translation"  material="Default Diffuse 1 0.74902 0.74902 0.74902 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 0 0 0 0 Shininess 0 45"  OGREmaterialFile="Examples/SphereMappedRustySteel" />
-			<BarycentricMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="visual mapping"  object1="../.."  object2="VisualModel"  hexamap="0 " />
+			<BarycentricMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="visual mapping"  input="@.."  output="@VisualModel"  hexamap="0 " />
 		</Node>
 		<Node 	name="Surf" gravity="0 -9.81 0" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
 			<SphereModel name="CollisionModel"  fileSphere="mesh/liver.sph" />
@@ -57,7 +57,7 @@
 			<OgreShaderParameter template="1" name="FurLength"  entryPoint="5"  value="0.02 " />
 			<OgreShaderParameter template="3" name="K"  entryPoint="6"  value="0.05 0.3 0.3 " />
 			<OgreVisualModel template="ExtVec3f" name="VisualModel"  fileMesh="mesh/liver-smoothUV.obj"  translation="@../dofs.translation"  scaleTex="0.05 0.05"  material="Default Diffuse 1 0.74902 0.74902 0.74902 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 0 0 0 0 Shininess 0 45"  OGREmaterialFile="Sofa/Fur" />
-			<BarycentricMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="visual mapping"  object1="../.."  object2="VisualModel"  hexamap="0 " />
+			<BarycentricMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="visual mapping"  input="@.."  output="@VisualModel"  hexamap="0 " />
 		</Node>
 		<Node 	name="Surf" gravity="0 -9.81 0" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
 			<SphereModel name="CollisionModel"  fileSphere="mesh/liver.sph" />

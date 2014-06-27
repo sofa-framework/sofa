@@ -63,8 +63,8 @@ void GetPosOfEdgeVertexOnTriangle(Vector3& pv1, Vector3& pv2, int edge_number, T
     sofa::core::topology::BaseMeshTopology::Edge edge = t.getCollisionModel()->getTopology()->getEdge(edge_number);
     core::behavior::MechanicalState<Vec3Types>* mState= t.getCollisionModel()->getMechanicalState();
     //core::behavior::MechanicalState<Vec3Types>::VecCoord* x =
-    pv1= (*mState->getX())[edge[0]];
-    pv2= (*mState->getX())[edge[1]];
+    pv1= (mState->read(core::ConstVecCoordId::position())->getValue())[edge[0]];
+    pv2= (mState->read(core::ConstVecCoordId::position())->getValue())[edge[1]];
 }
 
 SOFA_DECL_CLASS(LMDNewProximityIntersection)

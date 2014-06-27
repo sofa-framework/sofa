@@ -80,13 +80,13 @@ void HexahedronCompositeFEMMapping<BasicMapping>::init()
     _finestSparseGrid = _sparseGrid->_virtualFinerLevels[_sparseGrid->getNbVirtualFinerLevels() -_forcefield->_nbVirtualFinerLevels.getValue()];
 
 
-    for(unsigned i=0; i<this->toModel->getX()->size(); ++i)
-        _p0.push_back( (*this->toModel->getX())[i] );
+    for(unsigned i=0; i<this->toModel->read(core::ConstVecCoordId::position())->getValue().size(); ++i)
+        _p0.push_back( this->toModel->read(core::ConstVecCoordId::position())->getValue()[i] );
 
-    for(unsigned i=0; i<this->fromModel->getX()->size(); ++i) // par construction de la sparse grid, pas de rotation initiale
-        _qCoarse0.push_back( (*this->fromModel->getX())[i] );
+    for(unsigned i=0; i<this->fromModel->read(core::ConstVecCoordId::position())->getValue().size(); ++i) // par construction de la sparse grid, pas de rotation initiale
+        _qCoarse0.push_back( this->fromModel->read(core::ConstVecCoordId::position())->getValue()[i] );
 
-    InCoord translation0 = (*this->fromModel->getX())[0] - _sparseGrid->getPointPos(0);
+    InCoord translation0 = this->fromModel->read(core::ConstVecCoordId::position())->getValue()[0] - _sparseGrid->getPointPos(0);
 
     for(int i=0; i<_finestSparseGrid->getNbPoints(); ++i)
         _qFine0.push_back( _finestSparseGrid->getPointPos(i)+translation0 );
@@ -233,9 +233,10 @@ void HexahedronCompositeFEMMapping<BasicMapping>::init()
 
 
 template <class BasicMapping>
-void HexahedronCompositeFEMMapping<BasicMapping>::apply ( OutVecCoord& out, const InVecCoord& in )
+void HexahedronCompositeFEMMapping<BasicMapping>::apply( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecCoord& outData, const InDataVecCoord& inData)
 {
-
+    OutVecCoord& out = *outData.beginEdit(mparams);
+    const InVecCoord& in = inData.getValue();
 
     // les deplacements des noeuds grossiers
     helper::vector< Vec< 24 >  > coarseDisplacements( _sparseGrid->getNbHexahedra() );
@@ -301,7 +302,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::apply ( OutVecCoord& out, cons
 
     }
 
-
+    outData.endEdit(mparams);
 
 
 
@@ -309,8 +310,11 @@ void HexahedronCompositeFEMMapping<BasicMapping>::apply ( OutVecCoord& out, cons
 
 
 template <class BasicMapping>
-void HexahedronCompositeFEMMapping<BasicMapping>::applyJ ( OutVecDeriv& out, const InVecDeriv& in )
+void HexahedronCompositeFEMMapping<BasicMapping>::applyJ( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecDeriv& outData, const InDataVecDeriv& inData)
 {
+    OutVecDeriv& out = *outData.beginEdit(mparams);
+    const InVecDeriv& in = inData.getValue();
+
     // les deplacements des noeuds grossiers
     helper::vector< Vec< 24 >  > coarseDisplacements( _sparseGrid->getNbHexahedra() );
     for(int i=0; i<_sparseGrid->getNbHexahedra(); ++i)
@@ -356,12 +360,16 @@ void HexahedronCompositeFEMMapping<BasicMapping>::applyJ ( OutVecDeriv& out, con
             out[i] += (fineDisplacements[ finehexa[w] ]  * _finestBarycentricCoord[i].second[w] );
         }
     }
+    outData.endEdit(mparams);
 }
 
 
 template <class BasicMapping>
-void HexahedronCompositeFEMMapping<BasicMapping>::applyJT ( InVecDeriv& out, const OutVecDeriv& in )
+void HexahedronCompositeFEMMapping<BasicMapping>::applyJT( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, InDataVecDeriv& outData, const OutDataVecDeriv& inData)
 {
+    InVecDeriv& out = *outData.beginEdit(mparams);
+    const OutVecDeriv& in = inData.getValue();
+
     // les forces des noeuds fins
     helper::vector< InDeriv > fineForces( _finestWeights.size() );
 
@@ -394,6 +402,8 @@ void HexahedronCompositeFEMMapping<BasicMapping>::applyJT ( InVecDeriv& out, con
             }
         }
     }
+
+    outData.endEdit(mparams);
 }
 
 

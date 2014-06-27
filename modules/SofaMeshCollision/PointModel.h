@@ -197,7 +197,7 @@ inline TPoint<DataTypes>::TPoint(const core::CollisionElementIterator& i)
 }
 
 template<class DataTypes>
-inline const typename DataTypes::Coord& TPoint<DataTypes>::p() const { return (*this->model->mstate->getX())[this->index]; }
+inline const typename DataTypes::Coord& TPoint<DataTypes>::p() const { return this->model->mstate->read(core::ConstVecCoordId::position())->getValue()[this->index]; }
 
 template<class DataTypes>
 inline const typename DataTypes::Coord& TPoint<DataTypes>::pFree() const
@@ -209,10 +209,10 @@ inline const typename DataTypes::Coord& TPoint<DataTypes>::pFree() const
 }
 
 template<class DataTypes>
-inline const typename DataTypes::Deriv& TPoint<DataTypes>::v() const { return (*this->model->mstate->getV())[this->index]; }
+inline const typename DataTypes::Deriv& TPoint<DataTypes>::v() const { return this->model->mstate->read(core::ConstVecDerivId::velocity())->getValue()[this->index]; }
 
 template<class DataTypes>
-inline const typename DataTypes::Deriv& TPointModel<DataTypes>::velocity(int index) const { return (*mstate->getV())[index]; }
+inline const typename DataTypes::Deriv& TPointModel<DataTypes>::velocity(int index) const { return mstate->read(core::ConstVecDerivId::velocity())->getValue()[index]; }
 
 template<class DataTypes>
 inline typename DataTypes::Deriv TPoint<DataTypes>::n() const { return ((unsigned)this->index<this->model->normals.size()) ? this->model->normals[this->index] : Deriv(); }

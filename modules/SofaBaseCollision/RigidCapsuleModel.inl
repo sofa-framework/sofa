@@ -96,7 +96,7 @@ void TCapsuleModel<StdRigidTypes<3,MyReal> >::init()
         return;
     }
 
-    resize(_mstate->getX()->size());
+    resize(_mstate->read(core::ConstVecCoordId::position())->getValue().size());
 }
 
 template <class MyReal>
@@ -109,7 +109,7 @@ template <class MyReal>
 void TCapsuleModel<StdRigidTypes<3,MyReal> >::computeBoundingTree(int maxDepth)
 {
     CubeModel* cubeModel = createPrevious<CubeModel>();
-    const int ncap = _mstate->getX()->size();
+    const int ncap = _mstate->read(core::ConstVecCoordId::position())->getValue().size();
 
     bool updated = false;
     if (ncap != size)
@@ -199,7 +199,7 @@ typename TCapsuleModel<StdRigidTypes<3,MyReal> >::Real TCapsuleModel<StdRigidTyp
 
 template <class MyReal>
 const typename TCapsuleModel<StdRigidTypes<3,MyReal> >::Coord & TCapsuleModel<StdRigidTypes<3,MyReal> >::center(int i)const{
-    return DataTypes::getCPos((*(_mstate->getX()))[i]);
+    return DataTypes::getCPos((_mstate->read(core::ConstVecCoordId::position())->getValue())[i]);
 }
 
 template <class MyReal>
@@ -246,7 +246,7 @@ typename TCapsule<StdRigidTypes<3,MyReal> >::Real TCapsule<StdRigidTypes<3,MyRea
 
 template<class MyReal>
 const typename TCapsuleModel<StdRigidTypes<3,MyReal> >::Coord & TCapsuleModel<StdRigidTypes<3,MyReal> >::velocity(int index) const {
-    return DataTypes::getDPos(((*(_mstate->getV())))[index]);
+    return DataTypes::getDPos(((_mstate->read(core::ConstVecDerivId::velocity())->getValue()))[index]);
 }
 
 
@@ -255,7 +255,7 @@ const typename TCapsule<StdRigidTypes<3,MyReal> >::Coord & TCapsule<StdRigidType
 
 template<class MyReal>
 const Quaternion TCapsuleModel<StdRigidTypes<3,MyReal> >::orientation(int index)const{
-    return (*_mstate->getX())[index].getOrientation();
+    return _mstate->read(core::ConstVecCoordId::position())->getValue()[index].getOrientation();
 }
 
 template<class MyReal>

@@ -20,7 +20,7 @@
         <TriangleModel />
         <Node>
             <OglModel src="@../STLLoader" name="VisualModel" color="red" />
-            <IdentityMapping name="mapping" object1="../.." object2="VisualModel" />
+            <IdentityMapping name="mapping" input="@.." output="@VisualModel" />
         </Node>
     </Node>
 </Node>

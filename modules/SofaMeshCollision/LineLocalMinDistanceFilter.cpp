@@ -62,7 +62,7 @@ void LineInfo::buildFilter(unsigned int edge_index)
 
     const Edge &e =  bmt->getEdge(edge_index);
 
-//	vector< Vector3 >& x = *(l.getCollisionModel()->getMechanicalState()->getX());
+//	vector< Vector3 >& x =(l.getCollisionModel()->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue());
 
     const Vector3 &pt1 = (*this->position_filtering)[e[0]];
     const Vector3 &pt2 = (*this->position_filtering)[e[1]];
@@ -260,7 +260,7 @@ void LineLocalMinDistanceFilter::PointInfoHandler::applyCreateFunction(unsigned 
     component::container::MechanicalObject<defaulttype::Vec3Types>*  mstateVec3d= dynamic_cast<component::container::MechanicalObject<Vec3Types>*>(lLMDFilter->getContext()->getMechanicalState());
     if(mstateVec3d != NULL)
     {
-        pInfo.setPositionFiltering(mstateVec3d->getX());
+        pInfo.setPositionFiltering(&mstateVec3d->read(core::ConstVecCoordId::position())->getValue());
     }
 
     //component::container::MechanicalObject<Vec3fTypes>*  mstateVec3f= dynamic_cast<component::container::MechanicalObject<Vec3fTypes>*>(context->getMechanicalState())
@@ -285,7 +285,7 @@ void LineLocalMinDistanceFilter::LineInfoHandler::applyCreateFunction(unsigned i
     component::container::MechanicalObject<Vec3Types>*  mstateVec3d= dynamic_cast<component::container::MechanicalObject<Vec3Types>*>(lLMDFilter->getContext()->getMechanicalState());
     if(mstateVec3d != NULL)
     {
-        lInfo.setPositionFiltering(mstateVec3d->getX());
+        lInfo.setPositionFiltering(&mstateVec3d->read(core::ConstVecCoordId::position())->getValue());
     }
 
     //component::container::MechanicalObject<Vec3fTypes>*  mstateVec3f= dynamic_cast<component::container::MechanicalObject<Vec3fTypes>*>(context->getMechanicalState())

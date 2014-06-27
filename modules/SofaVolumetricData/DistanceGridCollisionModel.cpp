@@ -187,7 +187,7 @@ void RigidDistanceGridCollisionModel::updateState()
         Vector3 emin, emax;
         if (rigid)
         {
-            const RigidTypes::Coord& xform = (*rigid->getX())[i];
+            const RigidTypes::Coord& xform = (rigid->read(core::ConstVecCoordId::position())->getValue())[i];
             elems[i].translation = xform.getCenter();
             xform.getOrientation().toMatrix(elems[i].rotation);
             if (useInitRotation)
@@ -667,7 +667,7 @@ void FFDDistanceGridCollisionModel::updateGrid()
 #else
         const sofa::helper::vector<core::topology::BaseMeshTopology::Cube>& cubeCorners = ffdMesh->getCubes();
 #endif
-        const Vec3Types::VecCoord& x = *ffd->getX();
+        const Vec3Types::VecCoord& x = ffd->read(core::ConstVecCoordId::position())->getValue();
         {
             int e = cube.elem;
             DistanceGrid::Coord center;

@@ -38,6 +38,8 @@
 
 //#include "MechanicalIntegration.h"
 
+using namespace sofa::core;
+
 namespace sofa
 {
 

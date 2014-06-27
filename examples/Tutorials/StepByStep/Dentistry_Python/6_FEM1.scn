@@ -81,7 +81,7 @@ FEM force field of the tongue
             <RigidMapping name="MM-&gt;CM mapping" input="@../instrumentState" output="@instrumentCollisionState" />
         </Node>
 
-    <VectorSpringForceField object1="InstrControl/RefModel/instrumentCollisionState" object2="Instrument/CollisionModel/instrumentCollisionState" stiffness="1000" viscosity="0" />
+    <VectorSpringForceField object1="@InstrControl/RefModel/instrumentCollisionState" object2="@Instrument/CollisionModel/instrumentCollisionState" stiffness="1000" viscosity="0" />
 
     </Node>
 

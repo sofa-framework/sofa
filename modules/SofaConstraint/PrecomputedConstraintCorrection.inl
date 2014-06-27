@@ -193,7 +193,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 {
     Inherit::init();
 
-    const VecDeriv& v0 = *this->mstate->getV();
+    const VecDeriv& v0 = this->mstate->read(core::ConstVecDerivId::velocity())->getValue();
 
     nbNodes = v0.size();
 
@@ -465,7 +465,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 template< class DataTypes >
 void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpace(const ConstraintParams *cparams, defaulttype::BaseMatrix* W)
 {
-    const MatrixDeriv& c = *this->mstate->getC();
+    const MatrixDeriv& c = this->mstate->read(ConstMatrixDerivId::holonomicC())->getValue();
 
     double factor = 1.0;
 
@@ -916,7 +916,7 @@ void PrecomputedConstraintCorrection< DataTypes >::draw(const core::visual::Visu
         }
     }
 
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     for (unsigned int i=0; i< x.size(); i++)
     {
         Transformation Ri;
@@ -1070,7 +1070,7 @@ template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(double * f, std::list<unsigned int>& /*renumbering*/)
 {
     constraint_force = f;
-    const MatrixDeriv& c = *this->mstate->getC();
+    const MatrixDeriv& c = this->mstate->read(ConstMatrixDerivId::holonomicC())->getValue();
 
 #ifdef NEW_METHOD_UNBUILT
     constraint_D.clear();

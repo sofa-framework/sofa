@@ -255,6 +255,12 @@ public:
     virtual void addDForce(const sofa::core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv&   datadF , const DataVecDeriv&   datadX );
     virtual void addKToMatrix(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix );
 
+    virtual double getPotentialEnergy(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecCoord&  /* x */) const
+    {
+        serr << "Get potentialEnergy not implemented" << sendl;
+        return 0.0;
+    }
+
     void draw(const core::visual::VisualParams* vparams);
 
     void setBeam(unsigned int i, double E, double L, double nu, double r, double rInner);

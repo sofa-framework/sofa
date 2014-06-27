@@ -36,9 +36,6 @@ namespace sofa
 namespace simulation
 {
 
-
-using namespace sofa::core::collision;
-
 class SOFA_SIMULATION_COMMON_API PipelineImpl : public virtual sofa::core::collision::Pipeline
 {
 

@@ -15,7 +15,7 @@ def createArmadillo(parentNode,name,x,y,z,color):
 	
 	VisuNode = node.createChild('Visu')
 	VisuNode.createObject('OglModel',name='Visual',filename='mesh/Armadillo_simplified.obj', color=color)
-	VisuNode.createObject('BarycentricMapping',object1='@..', object2='@Visual' )
+	VisuNode.createObject('BarycentricMapping',input='@..', output='@Visual' )
 
 	SurfNode = node.createChild('Surf')
 	SurfNode.createObject('MeshObjLoader', name='loader', filename='mesh/Armadillo_verysimplified.obj')

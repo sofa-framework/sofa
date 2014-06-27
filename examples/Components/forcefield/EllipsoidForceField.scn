@@ -20,7 +20,7 @@
 		<PlaneForceField stiffness="1000" damping="20" normal="0 1 0" d="-3" /> -->
         <Node name="Visu">
             <OglModel name="Visual" color="green" />
-            <IdentityMapping object1="../.." object2="Visual" />
+            <IdentityMapping input="@.." output="@Visual" />
         </Node>
         <Node>
             <RegularGrid nx="4" ny="1" nz="4" xmin="12" xmax="-12" ymin="7" ymax="7" zmin="-12" zmax="12" />

@@ -17,18 +17,24 @@
         <FixedConstraint indices="12 15 28 31" />
         <Gravity gravity="0 -9.81 0" />
         <Node name="Q">
-            <include href="Objects/QuadSetTopology.xml" src="@" />
-            <Hexa2QuadTopologicalMapping object1="../../Container" object2="Container" />
+            <QuadSetTopologyContainer  name="Container" />
+            <QuadSetTopologyModifier   name="Modifier" />
+            <QuadSetTopologyAlgorithms name="TopoAlgo"   template="Vec3d" />
+            <QuadSetGeometryAlgorithms name="GeomAlgo"   template="Vec3d" />
+            <Hexa2QuadTopologicalMapping input="@../Container" output="@Container" />
             <Node name="Visu">
                 <OglModel name="Visual" color="blue" />
-                <IdentityMapping object1="../../../Hexa" object2="Visual" />
+                <IdentityMapping input="@../../Hexa" output="@Visual" />
             </Node>
         </Node>
         <Node name="P">
-            <include href="Objects/PointSetTopology.xml" src="@" />
-            <CenterPointTopologicalMapping object1="../../Container" object2="Container" />
+            <PointSetTopologyContainer  name="Container" />
+            <PointSetTopologyModifier   name="Modifier" />
+            <PointSetTopologyAlgorithms name="TopoAlgo"   template="Vec3d" />
+            <PointSetGeometryAlgorithms name="GeomAlgo"   template="Vec3d" />
+            <CenterPointTopologicalMapping input="@../Container" output="@Container" />
             <MechanicalObject name="Point" />
-            <CenterPointMechanicalMapping object1="../../Hexa" object2="Point" />
+            <CenterPointMechanicalMapping input="@../Hexa" output="@Point" />
             <Sphere name="CollisionModel" radius="0.7" />
         </Node>
     </Node>

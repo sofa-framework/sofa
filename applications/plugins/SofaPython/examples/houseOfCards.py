@@ -43,7 +43,7 @@ def createCard(node,position,rotation):
         # VisualNode
         VisuNode = cardNode.createChild('Visu')
         VisuNode.createObject('OglModel',name='Visual',fileMesh='mesh/card.obj')
-        VisuNode.createObject('RigidMapping',object1='@..',object2='@.')
+        VisuNode.createObject('RigidMapping',input='@..',output='@.')
 
         # VisualNode
         collNode = cardNode.createChild('collision')
@@ -53,7 +53,7 @@ def createCard(node,position,rotation):
 	collNode.createObject('Triangle', name='cardt', contactFriction=friction)
 	collNode.createObject('Line', name='cardl',  contactFriction=friction)
 	collNode.createObject('Point', name='cardp', contactFriction=friction)
-        collNode.createObject('RigidMapping',object1='@..',object2='@.')
+        collNode.createObject('RigidMapping',input='@..',output='@.')
 
 	return cardNode;
 	

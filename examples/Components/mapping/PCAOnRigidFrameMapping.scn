@@ -32,7 +32,7 @@
             </Node>
         </Node>
     </Node>
-	<StiffSpringForceField  template="Vec1d" name="ExternalSprings" object1="Femur/weights" object2="Ground/ground"
+	<StiffSpringForceField  template="Vec1d" name="ExternalSprings" object1="@Femur/weights" object2="@Ground/ground"
 							spring="0 0 10 0 0
 									1 0 10 0 0
 									2 0 10 0 0

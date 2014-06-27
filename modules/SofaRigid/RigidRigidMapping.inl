@@ -126,7 +126,7 @@ void RigidRigidMapping<TIn, TOut>::init()
 
     if (this->points.getValue().empty() && this->toModel!=NULL)
     {
-        const OutVecCoord& x = *this->toModel->getX();
+        const OutVecCoord& x =this->toModel->read(core::ConstVecCoordId::position())->getValue();
         OutVecCoord& pts = *points.beginEdit();
 
         pts.resize(x.size());
@@ -134,7 +134,7 @@ void RigidRigidMapping<TIn, TOut>::init()
 
         if(globalToLocalCoords.getValue() == true)
         {
-            const typename In::VecCoord& xfrom = *this->fromModel->getX();
+            const typename In::VecCoord& xfrom =this->fromModel->read(core::ConstVecCoordId::position())->getValue();
             switch (repartition.getValue().size())
             {
             case 0 :
@@ -184,7 +184,7 @@ void RigidRigidMapping<TIn, TOut>::disable()
 {
 if (!this->points.getValue().empty() && this->toModel!=NULL)
 {
-VecCoord& x = *this->toModel->getX();
+VecCoord& x =this->toModel->read(core::ConstVecCoordId::position())->getValue();
 x.resize(points.getValue().size());
 for (unsigned int i=0;i<points.getValue().size();i++)
 x[i] = points.getValue()[i];
@@ -807,7 +807,7 @@ void RigidRigidMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cpar
             {
                 // Commented by PJ. Bug??
                 // o.addCol(out.size() - 1 - index.getValue(), result);
-                const unsigned int numDofs = this->getFromModel()->getX()->size();
+                const unsigned int numDofs = this->getFromModel()->read(core::ConstVecCoordId::position())->getValue().size();
                 o.addCol(numDofs - 1 - index.getValue(), result);
             }
         }
@@ -816,7 +816,7 @@ void RigidRigidMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cpar
     }
     case 1:
     {
-        const unsigned int numDofs = this->getFromModel()->getX()->size();
+        const unsigned int numDofs = this->getFromModel()->read(core::ConstVecCoordId::position())->getValue().size();
         const unsigned int val = repartition.getValue()[0];
 
         typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
@@ -861,7 +861,7 @@ void RigidRigidMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cpar
     }
     default:
     {
-        const unsigned int numDofs = this->getFromModel()->getX()->size();
+        const unsigned int numDofs = this->getFromModel()->read(core::ConstVecCoordId::position())->getValue().size();
 
         typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
 
@@ -999,7 +999,7 @@ void RigidRigidMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparam
 {
 #ifndef SOFA_NO_OPENGL
 	if (!getShow(this,vparams)) return;
-    const typename Out::VecCoord& x = *this->toModel->getX();
+    const typename Out::VecCoord& x =this->toModel->read(core::ConstVecCoordId::position())->getValue();
     for (unsigned int i=0; i<x.size(); i++)
     {
         helper::gl::Axis::draw(x[i].getCenter(), x[i].getOrientation(), axisLength.getValue());

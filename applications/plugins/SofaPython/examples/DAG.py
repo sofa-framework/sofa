@@ -21,7 +21,7 @@ def createDragon(parentnode,name,color):
 
 	VisuNode = node.createChild('VisuDragon')
 	VisuNode.createObject('OglModel',name='Visual',filename='mesh/dragon.obj',color=color)
-	VisuNode.createObject('BarycentricMapping',object1='@..',object2='@Visual')
+	VisuNode.createObject('BarycentricMapping',input='@..',output='@Visual')
 
 	SurfNode = node.createChild('Surf')
 	SurfNode.createObject('MeshObjLoader', name='loader', filename='mesh/dragon.obj')

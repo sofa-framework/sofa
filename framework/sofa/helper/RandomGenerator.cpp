@@ -111,20 +111,6 @@ unsigned long RandomGenerator::randomBase()
     return ((unsigned long) __rand48_seed[2] << 16) + (unsigned long) __rand48_seed[1];
 }
 
-////////////////////
-//// DEPRECATED
-////////////////////
-
-long int RandomGenerator::randomInteger(long min, long max)
-{
-    return random<long>(min,max);
-}
-double RandomGenerator::randomDouble(double min, double max)
-{
-    return random<double>(min,max);
-}
-
-/////////////
 
 
 }

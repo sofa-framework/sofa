@@ -14,7 +14,7 @@
         <HexahedronFEMForceField  name="FEM" youngModulus="200" />
         <Node name="VisualNode" gravity="0 -9.81 0">
             <OglModel name="Objective" fileMesh="mesh/dragon.obj" />
-            <BarycentricMapping  name="Visual Mapping" object2="Objective"  />
+            <BarycentricMapping  name="Visual Mapping" output="@Objective"  />
         </Node>
     </Node>
 </Node>

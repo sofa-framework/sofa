@@ -39,6 +39,9 @@
 
 namespace sofa {
 
+namespace {
+
+
 using std::cout;
 using std::cerr;
 using std::endl;
@@ -70,7 +73,6 @@ struct BilateralInteractionConstraint_test : public Sofa_test<typename _DataType
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
         /// Load the scene
-        //std::string sceneName = "scenes_test/BilateralInteractionConstraint_" + type + ".scn";
         std::string sceneName = "BilateralInteractionConstraint.scn";
         std::string fileName  = std::string(SOFATEST_SCENES_DIR) + "/" + sceneName;
         root = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()));
@@ -101,7 +103,7 @@ struct BilateralInteractionConstraint_test : public Sofa_test<typename _DataType
         if(meca.size()==2)
         {
             for(int i=0; i<meca.size(); i++)
-                points[i]=(*meca[i]->getX())[0];
+                points[i]=(meca[i]->read(core::ConstVecCoordId::position())->getValue())[0];
         }
         else
         {
@@ -136,7 +138,7 @@ TYPED_TEST( BilateralInteractionConstraint_test , constrainedPositions )
     ASSERT_TRUE(  this->test_constrainedPositions() );
 }
 
-
+}
 
 } // namespace sofa
 

@@ -13,7 +13,7 @@
         <TetrahedronFEMForceField name="FEM" youngModulus="25" poissonRatio="0.3" computeGlobalMatrix="false" updateStiffnessMatrix="false" method="large" />
         <Node name="Visu">
             <OglModel name="Visual" fileMesh="mesh/smCube125.obj" color="red" />
-            <SurfaceIdentityMapping object1="../.." object2="Visual" />
+            <SurfaceIdentityMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
 	    <VisualStyle displayFlags="hideCollision" />

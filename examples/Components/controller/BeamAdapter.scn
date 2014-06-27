@@ -31,12 +31,12 @@
 		<Node name="VM">
 			<MechanicalObject name="VisualDOFs"/>
 			<include href="Objects/QuadSetTopology.xml"/>
-			<Edge2QuadTopologicalMapping nbPointsOnEachCircle="10" radius="0.5" object1="../../Container" object2="Container"/>
-			<TubularMapping nbPointsOnEachCircle="10" radius="0.5" object1="../../MechanicalDOFs" object2="../VisualDOFs"/>
+			<Edge2QuadTopologicalMapping nbPointsOnEachCircle="10" radius="0.5" input="@../Container" output="@Container"/>
+			<TubularMapping nbPointsOnEachCircle="10" radius="0.5" input="@../MechanicalDOFs" output="@VisualDOFs"/>
 			
 			<Node name="Visu">
 				<OglModel name="Visual" color="1.0 0.25 0.25 1.0"/>
-				<IdentityMapping object1="../../VisualDOFs" object2="Visual"/>
+				<IdentityMapping input="@../VisualDOFs" output="@Visual"/>
 			</Node>
 		</Node>
 		-->
@@ -66,12 +66,12 @@
 		<Node name="VM">
 			<MechanicalObject name="VisualDOFs"/>
 			<include href="Objects/QuadSetTopology.xml"/>
-			<Edge2QuadTopologicalMapping nbPointsOnEachCircle="10" radius="0.5" object1="../../Container" object2="Container"/>
-			<TubularMapping nbPointsOnEachCircle="10" radius="0.5" object1="../../MechanicalDOFs" object2="../VisualDOFs"/>
+			<Edge2QuadTopologicalMapping nbPointsOnEachCircle="10" radius="0.5" input="@../Container" output="@Container"/>
+			<TubularMapping nbPointsOnEachCircle="10" radius="0.5" input="@../MechanicalDOFs" output="@VisualDOFs"/>
 			
 			<Node name="Visu">
 				<OglModel name="Visual" color="1.0 0.25 0.25 1.0"/>
-				<IdentityMapping object1="../../VisualDOFs" object2="Visual"/>
+				<IdentityMapping input="@../VisualDOFs" output="@Visual"/>
 			</Node>
 		</Node>
 		-->

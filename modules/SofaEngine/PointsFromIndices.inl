@@ -63,7 +63,7 @@ void PointsFromIndices<DataTypes>::init()
         this->getContext()->get(mstate);
         if (mstate)
         {
-            BaseData* parent = mstate->findField("position");
+            BaseData* parent = mstate->findData("position");
             if (parent)
             {
                 f_X.setParent(parent);
