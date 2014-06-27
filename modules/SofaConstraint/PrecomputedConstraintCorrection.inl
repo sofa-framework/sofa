@@ -1381,7 +1381,6 @@ void PrecomputedConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(defa
     int numLocalConstraints = 0;
 
     std::list<int> localActiveDof;
-    std::list<int>::iterator IterateurListe;
     std::vector<int> constraintLocalID;
 
     for (int i = begin; i <= end; i++)

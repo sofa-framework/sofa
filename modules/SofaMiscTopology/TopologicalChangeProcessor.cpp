@@ -886,9 +886,6 @@ void TopologicalChangeProcessor::saveIndices()
 
         unsigned int increment = ( onlyCoordinates ) ? 3 : 4; // 3 if only the coordinates, 4 if there is also a triangle index
 
-        std::vector<unsigned int> indicesToPush;
-        std::vector<Vector3>            coordinatesToPush;
-
 //                    std::cout << "(TopologicalChangeProcessor::saveIndices): values size : " <<  values.size() << std::endl;
 
         for (unsigned int i = 0 ; i < values.size() ; i+=increment)

@@ -178,7 +178,6 @@ void DefaultContactManager::createContacts(const DetectionOutputMap& outputsMap)
 
 	// Then look at previous contacts
 	// and remove inactive contacts
-	std::stack<ContactMap::iterator> deadContacts;
 	for (ContactMap::iterator contactIt = contactMap.begin(), contactItEnd = contactMap.end();
 		contactIt != contactItEnd;)
 	{
