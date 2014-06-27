@@ -43,5 +43,5 @@ add_subdirectory("${SOFA_SIMULATION_DIR}")
 add_subdirectory("${SOFA_BASE_DIR}")
 
 # common
-#add_subdirectory("${SOFA_COMMON_DIR}")
+add_subdirectory("${SOFA_COMMON_DIR}")
 
