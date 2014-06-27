@@ -830,7 +830,6 @@ void LMConstraintSolver::constraintStateCorrection(VecId id,  core::ConstraintPa
     }
     const unsigned int dimensionDofs=dofs->getDerivDimension();
 
-    unsigned int offset=0;
     //In case of position correction, we need to update the velocities
     if (order==core::ConstraintParams::POS)
     {
@@ -839,7 +838,7 @@ void LMConstraintSolver::constraintStateCorrection(VecId id,  core::ConstraintPa
         {
             VectorEigen Acorrection=VectorEigen::Zero(dofs->getSize()*(3+4));
             //We have to transform the Euler Rotations into a quaternion
-            offset=0;
+            unsigned int offset=0;
 
             for (int l=0; l<A.rows(); l+=6)
             {
