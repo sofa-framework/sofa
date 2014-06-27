@@ -39,13 +39,12 @@ install( FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaBase.h
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${SofaBase_ACTUAL_SOURCE_DIR}/../../)
 
-add_subdirectory(${SofaBase_ACTUAL_SOURCE_DIR}/SofaBaseTopology ${CMAKE_CURRENT_BINARY_DIR}/SofaBaseTopology)
-add_subdirectory(${SofaBase_ACTUAL_SOURCE_DIR}/SofaBaseLinearSolver ${CMAKE_CURRENT_BINARY_DIR}/SofaBaseLinearSolver)
-add_subdirectory(${SofaBase_ACTUAL_SOURCE_DIR}/SofaBaseMechanics ${CMAKE_CURRENT_BINARY_DIR}/SofaBaseMechanics)
-add_subdirectory(${SofaBase_ACTUAL_SOURCE_DIR}/SofaBaseCollision ${CMAKE_CURRENT_BINARY_DIR}/SofaBaseCollision)
-# add_subdirectory(${SofaBase_ACTUAL_SOURCE_DIR}/SofaBaseAnimationLoop)
-# add_subdirectory(${SofaBase_ACTUAL_SOURCE_DIR}/SofaBaseVisual)
+set(SOFABASE_TARGETS SofaBaseTopology SofaBaseLinearSolver SofaBaseMechanics SofaBaseCollision 
+                       SofaBaseAnimationLoop SofaBaseVisual)
 
+foreach(TARGET ${SOFABASE_TARGETS})
+  add_subdirectory(${SofaBase_ACTUAL_SOURCE_DIR}/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
+endforeach()
 
 include(CMakePackageConfigHelpers)
 
