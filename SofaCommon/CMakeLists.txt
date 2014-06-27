@@ -29,10 +29,8 @@ set(SOFACOMMON_INSTALL_CMAKE_DIR   lib/cmake/SofaCommon   CACHE PATH "Installati
 
 ## SofaCommon dependencies  
 ##
-find_package(SofaSimulation REQUIRED)
-include_directories( ${SofaSimulation_INCLUDE_DIRS} )
-#find_package(SofaBase REQUIRED)
-#include_directories( ${SofaBase_INCLUDE_DIRS} )
+find_package(SofaBase REQUIRED)
+include_directories( ${SofaBase_INCLUDE_DIRS} )
 
 configure_file( ${SofaCommon_SOURCE_DIR}/SofaCommon.h.in
                 ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaCommon.h )
@@ -44,7 +42,7 @@ include_directories(${SofaCommon_ACTUAL_SOURCE_DIR})
 
 #set(SOFACOMMON_TARGETS SofaLoader SofaRigid SofaDeformable SofaSimpleFem SofaObjectInteraction SofaMeshCollision SofaExplicitOdeSolver SofaImplicitOdeSolver SofaComponentCommon)
 
-set(SOFACOMMON_TARGETS SofaLoader)
+set(SOFACOMMON_TARGETS SofaLoader SofaComponentCommon)
 
 foreach(TARGET ${SOFACOMMON_TARGETS})
   add_subdirectory(${SofaCommon_ACTUAL_SOURCE_DIR}/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})

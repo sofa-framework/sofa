@@ -26,7 +26,7 @@
 #ifndef _SOFA_COMMON_H_
 #define _SOFA_COMMON_H_
 
-#include <sofa/SofaSimulation.h>
+#include <sofa/SofaBase.h>
 
 #define SOFACOMMON_MAJOR_VERSION ${SOFACOMMON_MAJOR_VERSION}
 #define SOFACOMMON_MINOR_VERSION ${SOFACOMMON_MINOR_VERSION}
