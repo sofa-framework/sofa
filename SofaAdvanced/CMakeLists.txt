@@ -30,6 +30,7 @@ set(SOFAADVANCED_INSTALL_CMAKE_DIR   lib/cmake/SofaAdvanced   CACHE PATH "Instal
 ## SofaAdvanced dependencies  
 ##
 find_package(SofaCommon REQUIRED)
+include_directories( ${SofaCommon_INCLUDE_DIRS} )
 
 configure_file( ${SofaAdvanced_SOURCE_DIR}/SofaAdvanced.h.in 
                 ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaAdvanced.h )

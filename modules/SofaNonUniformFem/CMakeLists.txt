@@ -53,7 +53,7 @@ set(GROUP_BASE_DIR "..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-target_link_libraries( ${PROJECT_NAME} SofaSimpleFem ) 
+target_link_libraries( ${PROJECT_NAME} SofaSimpleFem SofaBaseTopology) 
 
 if(SOFA_HAVE_NEWMAT)
   target_link_libraries( ${PROJECT_NAME} SofaDenseSolver ) 
