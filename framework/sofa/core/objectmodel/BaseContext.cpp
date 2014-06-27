@@ -248,7 +248,6 @@ core::topology::BaseMeshTopology* BaseContext::getMeshTopology() const
 core::visual::Shader* BaseContext::getShader() const
 {
     return this->get<sofa::core::visual::Shader>();
-    return NULL;
 }
 
 /// Propagate an event

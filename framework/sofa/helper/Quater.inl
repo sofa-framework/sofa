@@ -252,13 +252,12 @@ Quater<Real> Quater<Real>::inverse() const
 template<class Real>
 void Quater<Real>::normalize()
 {
-    int		i;
     Real	mag;
 
     mag = (_q[0] * _q[0] + _q[1] * _q[1] + _q[2] * _q[2] + _q[3] * _q[3]);
     if( mag != 0)
     {
-        for (i = 0; i < 4; i++)
+        for (int i = 0; i < 4; i++)
         {
             _q[i] /= sqrt(mag);
         }
