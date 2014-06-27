@@ -140,7 +140,7 @@ set_target_properties( ${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFABOUNDARY_
 set_target_properties( ${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}" )
 
 install(TARGETS ${PROJECT_NAME}
-        COMPONENT SofaBoundaryCondition_libraries
+        COMPONENT SofaBoundaryGeneral_libraries
         EXPORT    SofaGeneralTargets
         RUNTIME DESTINATION "${SOFAGENERAL_INSTALL_BIN_DIR}"
         LIBRARY DESTINATION "${SOFAGENERAL_INSTALL_LIB_DIR}"

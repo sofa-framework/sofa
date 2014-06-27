@@ -26,8 +26,11 @@ set(GROUP_BASE_DIR "..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries( ${PROJECT_NAME} SofaBaseCollision SofaLoader SofaMeshCollision )
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>")
+
 if(WIN32)
     include_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Include")
+    target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Include>")
     link_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Lib")
     target_link_libraries( ${PROJECT_NAME} blas lapack )
 endif()

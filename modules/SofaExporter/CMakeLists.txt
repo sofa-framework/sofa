@@ -31,6 +31,8 @@ set(GROUP_BASE_DIR "..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries( ${PROJECT_NAME} SofaSimulationTree)
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>")
+
 # ZLIB dependancy through SofaHelper (?)
 
 set( SOFAEXPORTER_COMPILER_FLAGS "-DSOFA_BUILD_EXPORTER")
