@@ -1,4 +1,5 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8)
+project(SofaExporter)
 
 set(HEADER_FILES
 
@@ -29,8 +30,25 @@ set(SOURCE_FILES
 set(GROUP_BASE_DIR "..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries( ${PROJECT_NAME} SofaSimulationTree)
+# ZLIB dependancy through SofaHelper (?)
 
-AddCompilerDefinitions("SOFA_BUILD_EXPORTER" )
-AddLinkerDependencies(${ZLIB_LIBRARIES_OPTIONAL} SofaSimulationTree )
+set( SOFAEXPORTER_COMPILER_FLAGS "-DSOFA_BUILD_EXPORTER")
 
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+set_target_properties( ${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d" )
+set_target_properties( ${PROJECT_NAME} PROPERTIES VERSION ${SOFAGENERAL_VERSION} )
+set_target_properties( ${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFAEXPORTER_COMPILER_FLAGS}"  )
+
+set_target_properties( SofaExporter  PROPERTIES PUBLIC_HEADER "${HEADER_FILES}" )
+
+install(TARGETS ${PROJECT_NAME}
+        COMPONENT SofaExporter_libraries
+        EXPORT    SofaExporterTargets
+        RUNTIME DESTINATION "${SOFAEXPORTER_INSTALL_BIN_DIR}"
+        LIBRARY DESTINATION "${SOFAEXPORTER_INSTALL_LIB_DIR}"
+        ARCHIVE DESTINATION "${SOFAEXPORTER_INSTALL_LIB_DIR}"
+        PUBLIC_HEADER DESTINATION "${SOFAGENERAL_INSTALL_INCLUDE_DIR}"/Sofaexporter )
+)
+
+
+

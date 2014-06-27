@@ -29,6 +29,7 @@ set(SOFA_FRAMEWORK_DIR   "${CMAKE_CURRENT_SOURCE_DIR}/SofaFramework")
 set(SOFA_SIMULATION_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaSimulation")
 set(SOFA_BASE_DIR   "${CMAKE_CURRENT_SOURCE_DIR}/SofaBase"  )
 set(SOFA_COMMON_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaCommon")
+set(SOFA_GENERAL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaGeneral")
 
 # deps
 add_subdirectory("${SOFA_DEPS_DIR}")
@@ -44,4 +45,7 @@ add_subdirectory("${SOFA_BASE_DIR}")
 
 # common
 add_subdirectory("${SOFA_COMMON_DIR}")
+
+# general
+#add_subdirectory("${SOFA_GENERAL_DIR}")
 
