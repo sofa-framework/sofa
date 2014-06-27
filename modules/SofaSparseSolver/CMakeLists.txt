@@ -7,8 +7,6 @@ set(HEADER_FILES
     initSparseSolver.h
     PrecomputedLinearSolver.h
     PrecomputedLinearSolver.inl
-    SparseCholeskySolver.h
-    SparseLUSolver.h
     SparseLDLSolverImpl.h
     SparseLDLSolver.h
     SparseLDLSolver.inl
@@ -18,16 +16,24 @@ set(SOURCE_FILES
 
     initSparseSolver.cpp
     PrecomputedLinearSolver.cpp
-    SparseCholeskySolver.cpp
-    SparseLUSolver.cpp
     SparseLDLSolver.cpp
     )
+
+if( SOFA_HAVE_CSPARSE )
+	list(APPEND HEADER_FILES "SparseCholeskySolver.h")
+	list(APPEND HEADER_FILES "SparseLUSolver.h")
+
+	list(APPEND SOURCE_FILES "SparseCholeskySolver.cpp")
+	list(APPEND SOURCE_FILES "SparseLUSolver.cpp")
+ endif()
 
 set(GROUP_BASE_DIR "..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries( ${PROJECT_NAME} SofaBaseLinearSolver SofaImplicitOdeSolver csparse )
-
+target_link_libraries( ${PROJECT_NAME} SofaBaseLinearSolver SofaImplicitOdeSolver SofaSimpleFem )
+if( SOFA_HAVE_CSPARSE )
+target_link_libraries( ${PROJECT_NAME} csparse )
+endif()
 set( SOFASPARSE_SOLVER_COMPILER_FLAGS "-DSOFA_BUILD_SPARSE_SOLVER")
 
 set_target_properties( ${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d" )
