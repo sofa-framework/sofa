@@ -42,14 +42,14 @@ RayTriangleIntersection::~RayTriangleIntersection()
 {
 }
 
-bool RayTriangleIntersection::NewComputation(const sofa::defaulttype::Vector3 &p1, const sofa::defaulttype::Vector3 &p2, const sofa::defaulttype::Vector3 &p3, const Vector3 &origin, const Vector3 &direction,   SReal &t,  SReal &u, SReal &v)
+bool RayTriangleIntersection::NewComputation(const sofa::defaulttype::Vector3 &p1, const sofa::defaulttype::Vector3 &p2, const sofa::defaulttype::Vector3 &p3, const sofa::defaulttype::Vector3 &origin, const sofa::defaulttype::Vector3 &direction,   SReal &t,  SReal &u, SReal &v)
 {
     t = 0; u = 0; v = 0;
 
-    Vector3 edge1 = p2 - p1;
-    Vector3 edge2 = p3 - p1;
+    sofa::defaulttype::Vector3 edge1 = p2 - p1;
+    sofa::defaulttype::Vector3 edge2 = p3 - p1;
 
-    Vector3 tvec, pvec, qvec;
+    sofa::defaulttype::Vector3 tvec, pvec, qvec;
     SReal det, inv_det;
 
     pvec = direction.cross(edge2);

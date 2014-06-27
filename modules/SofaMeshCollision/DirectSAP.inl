@@ -90,12 +90,6 @@ inline bool DSAPBox::overlaps(const DSAPBox &other, int axis, double alarmDist) 
     return true;
 }
 
-using namespace sofa::defaulttype;
-using namespace sofa::helper;
-using namespace collision;
-
-using namespace core::objectmodel;
-
 template <template<class T,class Allocator> class List,template <class T> class Allocator>
 TDirectSAP<List,Allocator>::TDirectSAP()
     : bDraw(initData(&bDraw, false, "draw", "enable/disable display of results"))

@@ -57,8 +57,6 @@ namespace component
 namespace collision
 {
 
-using namespace sofa::defaulttype;
-
 
 /// Base class for all mappers using RigidMapping
 template < class TCollisionModel, class DataTypes >

@@ -55,8 +55,6 @@ namespace component
 namespace collision
 {
 
-using namespace sofa::defaulttype;
-
 /// Base class for all mappers using BarycentricMapping
 template < class TCollisionModel, class DataTypes >
 class BarycentricContactMapper : public BaseContactMapper<DataTypes>

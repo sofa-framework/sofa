@@ -54,8 +54,6 @@ namespace component
 namespace collision
 {
 
-using namespace sofa::defaulttype;
-
 /// Base class for IdentityMapping based mappers
 template<class TCollisionModel, class DataTypes>
 class IdentityContactMapper : public BaseContactMapper<DataTypes>

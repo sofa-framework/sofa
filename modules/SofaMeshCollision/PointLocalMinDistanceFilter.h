@@ -48,7 +48,7 @@ namespace collision
 class PointInfo : public InfoFilter //< Point >
 {
 public:
-    typedef std::vector< std::pair< Vector3, double > > TDataContainer;
+    typedef std::vector< std::pair< sofa::defaulttype::Vector3, double > > TDataContainer;
 
     /**
      * @brief Default constructor.

@@ -44,9 +44,6 @@ namespace component
 namespace collision
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::core::collision;
-
 
 template<class T>
 bool MeshDiscreteIntersection::testIntersection( TSphere<T>& sph, Triangle& triangle)

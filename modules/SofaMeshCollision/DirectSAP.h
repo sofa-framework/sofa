@@ -84,8 +84,6 @@ public:
     EndPoint * max;
 };
 
-using namespace sofa::defaulttype;
-
 /**
   *This class is an implementation of sweep and prune in its "direct" version, i.e. at each step
   *it sorts all the primitives along an axis (not checking the moving ones) and computes overlaping pairs without

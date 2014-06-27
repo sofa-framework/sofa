@@ -60,10 +60,6 @@ namespace component
 namespace collision
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::core::collision;
-using namespace helper;
-
 template<class DataTypes>
 TPointModel<DataTypes>::TPointModel()
     : bothSide(initData(&bothSide, false, "bothSide", "activate collision on both side of the point model (when surface normals are defined on these points)") )
