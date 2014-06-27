@@ -198,10 +198,10 @@ class ContactMapper<CylinderModel,TVec3Types > : public RigidContactMapper<Cylin
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_MESH_COLLISION)
-extern template class SOFA_MESH_COLLISION_API ContactMapper<CylinderModel,Vec3Types>;
-extern template class SOFA_MESH_COLLISION_API ContactMapper<RigidCapsuleModel,Vec3Types>;
-extern template class SOFA_MESH_COLLISION_API ContactMapper<RigidSphereModel,Vec3Types>;
-extern template class SOFA_MESH_COLLISION_API ContactMapper<OBBModel,Vec3Types>;
+extern template class SOFA_MESH_COLLISION_API ContactMapper<CylinderModel, defaulttype::Vec3Types>;
+extern template class SOFA_MESH_COLLISION_API ContactMapper<RigidCapsuleModel, defaulttype::Vec3Types>;
+extern template class SOFA_MESH_COLLISION_API ContactMapper<RigidSphereModel, defaulttype::Vec3Types>;
+extern template class SOFA_MESH_COLLISION_API ContactMapper<OBBModel, defaulttype::Vec3Types>;
 #endif
 
 } // namespace collision

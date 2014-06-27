@@ -190,8 +190,8 @@ void TPointModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
             }
         }
 
-        vparams->drawTool()->drawPoints(pointsP, 3, Vec<4,float>(getColor4f()));
-        vparams->drawTool()->drawLines(pointsL, 1, Vec<4,float>(getColor4f()));
+        vparams->drawTool()->drawPoints(pointsP, 3, defaulttype::Vec<4,float>(getColor4f()));
+        vparams->drawTool()->drawLines(pointsL, 1, defaulttype::Vec<4,float>(getColor4f()));
 
         if (m_displayFreePosition.getValue())
         {
@@ -206,7 +206,7 @@ void TPointModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
                 }
             }
 
-            vparams->drawTool()->drawPoints(pointsPFree, 3, Vec<4,float>(0.0f,1.0f,0.2f,1.0f));
+            vparams->drawTool()->drawPoints(pointsPFree, 3, defaulttype::Vec<4,float>(0.0f,1.0f,0.2f,1.0f));
         }
 
         if (vparams->displayFlags().getShowWireFrame())
@@ -469,7 +469,7 @@ bool TPoint<DataTypes>::testLMD(const defaulttype::Vector3 &PQ, double &coneFact
     for (unsigned int i=0; i<trianglesAroundVertex.size(); i++)
     {
         unsigned int t = trianglesAroundVertex[i];
-        const fixed_array<unsigned int,3>& ptr = mesh->getTriangle(t);
+        const helper::fixed_array<unsigned int,3>& ptr = mesh->getTriangle(t);
         defaulttype::Vector3 nCur = (x[ptr[1]]-x[ptr[0]]).cross(x[ptr[2]]-x[ptr[0]]);
         nCur.normalize();
         nMean += nCur;
@@ -480,7 +480,7 @@ bool TPoint<DataTypes>::testLMD(const defaulttype::Vector3 &PQ, double &coneFact
         for (unsigned int i=0; i<edgesAroundVertex.size(); i++)
         {
             unsigned int e = edgesAroundVertex[i];
-            const fixed_array<unsigned int,2>& ped = mesh->getEdge(e);
+            const helper::fixed_array<unsigned int,2>& ped = mesh->getEdge(e);
             defaulttype::Vector3 l = (pt - x[ped[0]]) + (pt - x[ped[1]]);
             l.normalize();
             nMean += l;
@@ -494,7 +494,7 @@ bool TPoint<DataTypes>::testLMD(const defaulttype::Vector3 &PQ, double &coneFact
     for (unsigned int i=0; i<edgesAroundVertex.size(); i++)
     {
         unsigned int e = edgesAroundVertex[i];
-        const fixed_array<unsigned int,2>& ped = mesh->getEdge(e);
+        const helper::fixed_array<unsigned int,2>& ped = mesh->getEdge(e);
         defaulttype::Vector3 l = (pt - x[ped[0]]) + (pt - x[ped[1]]);
         l.normalize();
         double computedAngleCone = dot(nMean , l) * coneFactor;
