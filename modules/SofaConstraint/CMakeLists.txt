@@ -63,8 +63,8 @@ set(SOURCE_FILES
 
     )
 
-if(TARGET SofaEigen2Solver)
-	list(APPEND HEADER_FILES "BarycentricDistanceLMConstraintContact.h")
+if(SOFA_HAVE_EIGEN2)
+ 	list(APPEND HEADER_FILES "BarycentricDistanceLMConstraintContact.h")
 	list(APPEND HEADER_FILES "BarycentricDistanceLMConstraintContact.inl")
 	list(APPEND HEADER_FILES "DOFBlockerLMConstraint.h")
 	list(APPEND HEADER_FILES "DOFBlockerLMConstraint.inl")
@@ -90,7 +90,7 @@ set(GROUP_BASE_DIR "..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries( ${PROJECT_NAME} SofaMeshCollision SofaSimpleFem SofaImplicitOdeSolver SofaUserInteraction SofaBaseLinearSolver)
-if(TARGET SofaEigen2Solver)
+if(SOFA_HAVE_EIGEN2)
    target_link_libraries( ${PROJECT_NAME} SofaEigen2Solver)
 endif()
 
