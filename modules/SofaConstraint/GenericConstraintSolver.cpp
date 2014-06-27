@@ -260,13 +260,12 @@ void GenericConstraintSolver::rebuildSystem(double massFactor, double forceFacto
 
 void afficheLCP(std::ostream& file, double *q, double **M, double *f, int dim, bool printMatrix = true)
 {
-	int compteur, compteur2;
 	file.precision(9);
 	// affichage de la matrice du LCP
         if (printMatrix) {
         file << std::endl << " M = [";
-	for(compteur=0;compteur<dim;compteur++) {
-		for(compteur2=0;compteur2<dim;compteur2++) {
+	for(int compteur=0;compteur<dim;compteur++) {
+		for(int compteur2=0;compteur2<dim;compteur2++) {
 			file << "\t" << M[compteur][compteur2];
 		}
 		file << std::endl;
@@ -276,14 +275,14 @@ void afficheLCP(std::ostream& file, double *q, double **M, double *f, int dim, b
 
 	// affichage de q
 	file << " q = [";
-	for(compteur=0;compteur<dim;compteur++) {
+	for(int compteur=0;compteur<dim;compteur++) {
 		file << "\t" << q[compteur];
 	}
 	file << "      ];" << std::endl << std::endl;
 
 	// affichage de f
 	file << " f = [";
-	for(compteur=0;compteur<dim;compteur++) {
+	for(int compteur=0;compteur<dim;compteur++) {
 		file << "\t" << f[compteur];
 	}
 	file << "      ];" << std::endl << std::endl;

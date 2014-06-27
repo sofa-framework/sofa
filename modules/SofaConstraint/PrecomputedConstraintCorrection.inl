@@ -538,7 +538,6 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
     unsigned int offset, offset2;
     unsigned int ii,jj, it;
     Deriv Vbuf;
-    int indexCurColConst, indexCurRowConst;
     it = 0;
 
     //////////////////////////////////////////
@@ -556,7 +555,7 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
             Vbuf.clear();
 
             MatrixDerivColConstIterator colItEnd = rowIt.end();
-
+            
             for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
             {
                 const Deriv n2 = colIt.val();
@@ -582,7 +581,7 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
 
     for (MatrixDerivRowConstIterator rowIt = c.begin(); rowIt != rowItEnd; ++rowIt)
     {
-        indexCurRowConst = rowIt.index();
+        int indexCurRowConst = rowIt.index();
 
         MatrixDerivColConstIterator colItEnd = rowIt.end();
 
@@ -596,7 +595,7 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
 
             for (MatrixDerivRowConstIterator rowIt2 = rowIt; rowIt2 != rowItEnd; ++rowIt2)
             {
-                indexCurColConst = rowIt2.index();
+                int indexCurColConst = rowIt2.index();
                 double w = _sparseCompliance[temp + curColConst] * n1 * factor;
 
                 W->add(indexCurRowConst, indexCurColConst, w);

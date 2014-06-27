@@ -184,10 +184,10 @@ void ConstraintProblem::gaussSeidelConstraintTimed(double &timeout, int numItMax
             //4. the error is measured (displacement due to the new resolution (i.e. due to the new force))
             if(nb > 1)
             {
-                double terr = 0.0, terr2;
+                double terr = 0.0;
                 for(l=0; l<nb; l++)
                 {
-                    terr2=0;
+                    double terr2 = 0;
                     for (int m=0; m<nb; m++)
                     {
                         terr2 += _W[j+l][j+m] * (_force[j+m] - errF[m]);
@@ -381,8 +381,6 @@ void ConstraintAnimationLoop::setConstraintEquations(const core::ExecParams* par
     if (debug)
         sout<<"constraints Matrix construction is called"<<sendl;
 
-    unsigned int numConstraints = 0;
-
     sofa::helper::AdvancedTimer::stepBegin("Constraints definition");
 
 
@@ -390,6 +388,7 @@ void ConstraintAnimationLoop::setConstraintEquations(const core::ExecParams* par
     {
         /// calling resetConstraint & setConstraint & accumulateConstraint visitors
         /// and resize the constraint problem that will be solved
+        unsigned int numConstraints = 0;
         writeAndAccumulateAndCountConstraintDirections(params /* PARAMS FIRST */, context, numConstraints);
     }
 
