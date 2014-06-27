@@ -70,10 +70,12 @@ endif(PS3)
 ##
 ## Sofa Extlibs dependencies lookup (mandatory)
 ##
+
 #tinyxml 
 find_package(TinyXML  REQUIRED)
 list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${TinyXML_LIBRARIES} )
 set(SOFA_HAVE_TINYXML 1)
+
 # Boost
 set(Boost_USE_STATIC_LIBS OFF)
 set(Boost_USE_MULTITHREADED ON)
@@ -112,6 +114,13 @@ if(SOFA_USE_MINIBOOST)
                 PATTERN "*.hpp"
            )
 endif(SOFA_USE_MINIBOOST)
+
+#Eigen
+
+set(Eigen_INCLUDE_DIRS "${SOFAFRAMEWORK_EXTLIBS_DIR}/eigen-3.2.1")
+list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${Eigen_INCLUDE_DIRS})
+set(SOFA_HAVE_EIGEN2 1)
+
 ##
 ##
 ##

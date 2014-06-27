@@ -16,6 +16,5 @@ if( NOT TARGET SofaComponentCommon )
 endif()
  
 # For compatibility only
-# set(SofaCommon_LIBRARIES SofaLoader SofaRigid SofaDeformable SofaSimpleFem SofaObjectInteraction SofaMeshCollision SofaExplicitOdeSolver SofaImplicitOdeSolver SofaComponentCommon)
 set(SofaCommon_LIBRARIES @SOFACOMMON_TARGETS@)
 set(SofaCommon_INCLUDE_DIRS ${SOFACOMMON_INCLUDE_DIR} )
