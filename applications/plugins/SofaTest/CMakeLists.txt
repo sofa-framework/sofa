@@ -5,6 +5,7 @@ set(HEADER_FILES
     initTestPlugin.h
     Sofa_test.h
     Mapping_test.h
+    Elasticity_test.inl
     Elasticity_test.h
     BroadPhaseTest.h
 	)
