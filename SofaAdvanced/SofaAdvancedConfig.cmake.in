@@ -1,0 +1,20 @@
+# - Config file for the SofaBase package
+# It defines the following variables
+#  SofaAdvanced_INCLUDE_DIRS - include directories for SofaAdvanced
+#  SofaAdvanced_LIBRARIES    - libraries to link against
+
+@PACKAGE_INIT@
+
+set(SOFAADVANCED_INCLUDE_DIR "@PACKAGE_SOFAADVANCED_INCLUDE_DIR@")
+check_required_components(SofaAdvanced)
+
+# required for transitive dependencies
+find_package(SofaCommon REQUIRED)
+
+if( NOT TARGET SofaAdvancedTopology )
+	include("${CMAKE_CURRENT_LIST_DIR}/SofaAdvancedTargets.cmake")
+endif()
+ 
+# For compatibility only
+set(SofaAdvanced_LIBRARIES "@SOFAADVANCED_TARGETS@")
+set(SofaAdvanced_INCLUDE_DIRS ${SOFAADVANCED_INCLUDE_DIR} )
