@@ -71,7 +71,6 @@ using helper::set;
 using std::map;
 using std::string;
 using core::behavior::MechanicalState;
-using namespace sofa::component::topology;
 
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
@@ -90,7 +89,7 @@ class Distances : public core::DataEngine
 public:
     SOFA_CLASS(SOFA_TEMPLATE(Distances,DataTypes),core::DataEngine);
 
-    typedef std::pair< HexaID, double> Distance;
+    typedef std::pair< sofa::component::topology::HexaID, double> Distance;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -101,7 +100,7 @@ protected:
     DistancesInternalData<DataTypes> data;
     friend class DistancesInternalData<DataTypes>;
 
-    Distances ( DynamicSparseGridTopologyContainer* hexaTopoContainer, MechanicalState<DataTypes>* targetPointSet );
+    Distances ( sofa::component::topology::DynamicSparseGridTopologyContainer* hexaTopoContainer, MechanicalState<DataTypes>* targetPointSet );
 
     virtual ~Distances() {}
 
@@ -163,7 +162,7 @@ public:
             context->serr << "Cannot create "<<className ( obj ) <<" as the hexas container is missing."<<context->sendl;
         if ( arg->findObject ( arg->getAttribute ( "targetPath",".." ) ) == NULL )
             context->serr << "Cannot create "<<className ( obj ) <<" as the target point set is missing."<<context->sendl;
-        if ( dynamic_cast<DynamicSparseGridTopologyContainer*> ( arg->findObject ( arg->getAttribute ( "hexaContainerPath","../.." ) ) ) == NULL )
+        if ( dynamic_cast<sofa::component::topology::DynamicSparseGridTopologyContainer*> ( arg->findObject ( arg->getAttribute ( "hexaContainerPath","../.." ) ) ) == NULL )
             return false;
         if ( dynamic_cast<MechanicalState<DataTypes>*> ( arg->findObject ( arg->getAttribute ( "targetPath",".." ) ) ) == NULL )
             return false;
@@ -177,7 +176,7 @@ public:
     static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )
     {
         typename T::SPtr obj = sofa::core::objectmodel::New<T>(
-                ( arg?dynamic_cast<DynamicSparseGridTopologyContainer*> ( arg->findObject ( arg->getAttribute ( "hexaContainerPath","../.." ) ) ) :NULL ),
+                ( arg?dynamic_cast<sofa::component::topology::DynamicSparseGridTopologyContainer*> ( arg->findObject ( arg->getAttribute ( "hexaContainerPath","../.." ) ) ) :NULL ),
                 ( arg?dynamic_cast<MechanicalState<DataTypes>*> ( arg->findObject ( arg->getAttribute ( "targetPath",".." ) ) ) :NULL ) );
 
         if ( context ) context->addObject ( obj );
@@ -215,8 +214,8 @@ private:
     MechanicalState<DataTypes>* target;
 
     Data<string> hexaContainerPath;
-    DynamicSparseGridTopologyContainer* hexaContainer;
-    DynamicSparseGridGeometryAlgorithms< DataTypes >* hexaGeoAlgo;
+    sofa::component::topology::DynamicSparseGridTopologyContainer* hexaContainer;
+    sofa::component::topology::DynamicSparseGridGeometryAlgorithms< DataTypes >* hexaGeoAlgo;
     const unsigned char * densityValues; // Density values
     const unsigned char * segmentIDData; // Density values
 
@@ -227,17 +226,17 @@ private:
     /*************************/
     inline void computeGeodesicalDistance ( const unsigned int& mapIndex, const VecCoord& beginElts, const bool& diffuseAccordingToStiffness, const double& distMax = 0 );
     // Store harmonic coords in the distanceMap structure of the class depending on the fixed values 'hfrom'
-    inline void computeHarmonicCoords ( const unsigned int& mapIndex, const vector<HexaID>& hfrom, const bool& useStiffnessMap );
+    inline void computeHarmonicCoords ( const unsigned int& mapIndex, const vector<sofa::component::topology::HexaID>& hfrom, const bool& useStiffnessMap );
     inline void computeVoronoiDistances( const unsigned int& mapIndex, const VecCoord& beginElts, const double& distMax = 0 );
 
 
     /*************************/
     /*         Utils         */
     /*************************/
-    inline void findCorrespondingHexas ( vector<HexaID>& hexas, const VecCoord& pointSet ); // Find indices from coord.
+    inline void findCorrespondingHexas ( vector<sofa::component::topology::HexaID>& hexas, const VecCoord& pointSet ); // Find indices from coord.
     inline void find1DCoord ( unsigned int& hexaID, const Coord& point );
-    void getNeighbors ( const HexaID& hexaID, helper::set<HexaID>& neighbors ) const;
-    void computeGradients ( const unsigned int mapIndex, vector<double>& distances, VecCoord& gradients, const vector<HexaID>& hexaGoal, const VecCoord& goals );
+    void getNeighbors ( const sofa::component::topology::HexaID& hexaID, helper::set<sofa::component::topology::HexaID>& neighbors ) const;
+    void computeGradients ( const unsigned int mapIndex, vector<double>& distances, VecCoord& gradients, const vector<sofa::component::topology::HexaID>& hexaGoal, const VecCoord& goals );
     inline void addContribution ( double& valueWrite, int& nbTest, const vector<double>& valueRead, const unsigned int& gridID, const int coeff );
     inline void addContribution ( double& valueWrite, int& nbTest, double*** valueRead, const int& x, const int& y, const int& z, const int coeff, const bool& useStiffnessMap );
 };
