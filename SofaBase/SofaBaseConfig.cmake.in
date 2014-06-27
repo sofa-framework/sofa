@@ -16,5 +16,5 @@ if( NOT TARGET SofaBaseToplogy )
 endif()
  
 # For compatibility only
-set(SofaBase_LIBRARIES SofaBaseTopology)
+set(SofaBase_LIBRARIES "@SOFABASE_TARGETS@")
 set(SofaBase_INCLUDE_DIRS ${SOFABASE_INCLUDE_DIR} )
