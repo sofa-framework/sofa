@@ -39,7 +39,7 @@ install( FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaBase.h
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${SofaBase_ACTUAL_SOURCE_DIR}/../../)
 
-add_subdirectory(${SofaBase_ACTUAL_SOURCE_DIR}/SofaBaseTopology)
+add_subdirectory(${SofaBase_ACTUAL_SOURCE_DIR}/SofaBaseTopology ${CMAKE_CURRENT_BINARY_DIR}/SofaBaseTopology)
 # add_subdirectory(${SofaBase_ACTUAL_SOURCE_DIR}/SofaBaseMechanics)
 # add_subdirectory(${SofaBase_ACTUAL_SOURCE_DIR}/SofaBaseCollision)
 # add_subdirectory(${SofaBase_ACTUAL_SOURCE_DIR}/SofaBaseAnimationLoop)
@@ -47,7 +47,7 @@ add_subdirectory(${SofaBase_ACTUAL_SOURCE_DIR}/SofaBaseTopology)
 # add_subdirectory(${SofaBase_ACTUAL_SOURCE_DIR}/SofaBaseVisual)
 
 
-include(CMakePackageConfigHelpers)11
+include(CMakePackageConfigHelpers)
 
 # SofaBaseConfigVersion.cmake file (same for build tree and intall)
 write_basic_package_version_file(${SOFABASE_BUILD_CMAKE_DIR}/SofaBaseConfigVersion.cmake
