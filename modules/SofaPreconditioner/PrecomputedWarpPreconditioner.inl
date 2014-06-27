@@ -70,9 +70,6 @@ namespace component
 namespace linearsolver
 {
 
-using namespace sofa::component::odesolver;
-using namespace sofa::component::linearsolver;
-
 template<class TDataTypes>
 PrecomputedWarpPreconditioner<TDataTypes>::PrecomputedWarpPreconditioner()
     : jmjt_twostep( initData(&jmjt_twostep,true,"jmjt_twostep","Use two step algorithm to compute JMinvJt") )
@@ -160,7 +157,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrix(TMatrix& M)
     dt = this->getContext()->getDt();
 
 
-    EulerImplicitSolver* EulerSolver;
+    sofa::component::odesolver::EulerImplicitSolver* EulerSolver;
     this->getContext()->get(EulerSolver);
     factInt = 1.0; // christian : it is not a compliance... but an admittance that is computed !
     if (EulerSolver) factInt = EulerSolver->getPositionIntegrationFactor(); // here, we compute a compliance
@@ -298,12 +295,12 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
     ss << this->getContext()->getName() << "-" << systemSize << "-" << dt << ((sizeof(Real)==sizeof(float)) ? ".compf" : ".comp");
     std::ifstream compFileIn(ss.str().c_str(), std::ifstream::binary);
 
-    EulerImplicitSolver* EulerSolver;
+    sofa::component::odesolver::EulerImplicitSolver* EulerSolver;
     this->getContext()->get(EulerSolver);
 
     // for the initial computation, the gravity has to be put at 0
-    const Vec3d gravity = this->getContext()->getGravity();
-    const Vec3d gravity_zero(0.0,0.0,0.0);
+    const sofa::defaulttype::Vec3d gravity = this->getContext()->getGravity();
+    const sofa::defaulttype::Vec3d gravity_zero(0.0,0.0,0.0);
     this->getContext()->setGravity(gravity_zero);
 
     CGLinearSolver<GraphScatteredMatrix,GraphScatteredVector>* CGlinearSolver;
@@ -335,8 +332,8 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
         serr<<"PrecomputedContactCorrection must be associated with EulerImplicitSolver+LinearSolver for the precomputation\nNo Precomputation" << sendl;
         return;
     }
-    VecDerivId lhId = core::VecDerivId::velocity();
-    VecDerivId rhId = core::VecDerivId::force();
+    sofa::core::VecDerivId lhId = core::VecDerivId::velocity();
+    sofa::core::VecDerivId rhId = core::VecDerivId::force();
 
 
     mstate->vAvail(core::ExecParams::defaultInstance(), lhId);

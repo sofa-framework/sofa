@@ -28,8 +28,6 @@
 #include "DistanceFromTargetMapping.h"
 #include <sofa/core/visual/VisualParams.h>
 #include <iostream>
-using std::cerr;
-using std::endl;
 
 namespace sofa
 {
@@ -39,9 +37,6 @@ namespace component
 
 namespace mapping
 {
-
-using namespace sofa::defaulttype;
-
 
 template <class TIn, class TOut>
 DistanceFromTargetMapping<TIn, TOut>::DistanceFromTargetMapping()
@@ -226,7 +221,7 @@ void DistanceFromTargetMapping<TIn, TOut>::applyDJT(const core::MechanicalParams
 
     for(unsigned i=0; i<indices.size(); i++ )
     {
-        Mat<Nin,Nin,Real> b;  // = (I - uu^T)
+        sofa::defaulttype::Mat<Nin,Nin,Real> b;  // = (I - uu^T)
         for(unsigned j=0; j<Nin; j++)
         {
             for(unsigned k=0; k<Nin; k++)
@@ -283,7 +278,7 @@ const vector<defaulttype::BaseMatrix*>* DistanceFromTargetMapping<TIn, TOut>::ge
     {
         size_t idx = indices[i];
 
-        Mat<Nin,Nin,Real> b;  // = (I - uu^T)
+        sofa::defaulttype::Mat<Nin,Nin,Real> b;  // = (I - uu^T)
         for(unsigned j=0; j<Nin; j++)
         {
             for(unsigned k=0; k<Nin; k++)
@@ -318,12 +313,12 @@ void DistanceFromTargetMapping<TIn, TOut>::draw(const core::visual::VisualParams
     helper::ReadAccessor< Data<InVecCoord > > targetPositions(f_targetPositions);
     helper::ReadAccessor< Data<vector<unsigned> > > indices(f_indices);
 
-	vector< Vector3 > points;
+    vector< sofa::defaulttype::Vector3 > points;
 
     for(unsigned i=0; i<indices.size(); i++ )
     {
-        points.push_back( Vector3(TIn::getCPos(targetPositions[i]) ) );
-        points.push_back( Vector3(TIn::getCPos(pos[indices[i]]) ) );
+        points.push_back( sofa::defaulttype::Vector3(TIn::getCPos(targetPositions[i]) ) );
+        points.push_back( sofa::defaulttype::Vector3(TIn::getCPos(pos[indices[i]]) ) );
     }
 
     if( !_arrowSize )

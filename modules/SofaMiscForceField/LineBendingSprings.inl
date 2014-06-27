@@ -49,8 +49,6 @@ namespace component
 namespace interactionforcefield
 {
 
-using namespace core::behavior;
-
 template<class DataTypes>
 LineBendingSprings<DataTypes>::LineBendingSprings()
 {
@@ -77,7 +75,6 @@ template<class DataTypes>
 void LineBendingSprings<DataTypes>::registerLine( unsigned a, unsigned b, std::map<Index, unsigned>& ptMap)
 {
     //sout<<"=================================LineBendingSprings<DataTypes>::registerLine "<<a<<", "<<b<<sendl;
-    using namespace std;
     {
         if( ptMap.find( a ) != ptMap.end() )
         {

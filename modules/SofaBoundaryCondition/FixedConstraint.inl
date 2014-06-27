@@ -34,11 +34,7 @@
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
-using std::cerr;
-using std::endl;
 #include <SofaBaseTopology/TopologySubsetData.inl>
-
-
 #include <sofa/helper/gl/BasicShapes.h>
 
 
@@ -52,10 +48,6 @@ namespace component
 
 namespace projectiveconstraintset
 {
-
-using namespace core::topology;
-
-
 
 // Define TestNewPointFunction
 template< class DataTypes>

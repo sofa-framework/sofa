@@ -44,10 +44,6 @@ namespace component
 namespace forcefield
 {
 
-using namespace sofa::defaulttype;
-using namespace core::topology;
-
-
 template <class DataTypes>
 TaitSurfacePressureForceField<DataTypes>::TaitSurfacePressureForceField():
 
@@ -303,9 +299,9 @@ void TaitSurfacePressureForceField<DataTypes>::addKToMatrix(const core::Mechanic
 
 /// Convert a vector cross-product to a to matrix multiplication, i.e. cross(a,b) = matCross(a)*b
 template <typename T>
-inline Mat<3,3,T> matCross( const Vec<3,T>& u )
+inline sofa::defaulttype::Mat<3,3,T> matCross( const sofa::defaulttype::Vec<3,T>& u )
 {
-    Mat<3,3,T> res(NOINIT);
+    sofa::defaulttype::Mat<3,3,T> res(sofa::defaulttype::NOINIT);
     res[0][0] =  0   ; res[0][1] = -u[2]; res[0][2] =  u[1];
     res[1][0] =  u[2]; res[1][1] =  0   ; res[1][2] = -u[0];
     res[2][0] = -u[1]; res[2][1] =  u[0]; res[2][2] =  0   ;
@@ -412,11 +408,8 @@ void TaitSurfacePressureForceField<DataTypes>::draw(const core::visual::VisualPa
 
     helper::ReadAccessor< Data< SeqTriangles > > pressureTriangles = m_pressureTriangles;
 
-    using defaulttype::Vector3;
-    using defaulttype::Vec3i;
-
-    std::vector< defaulttype::Vector3 > points;
-    std::vector< Vec3i > indices;
+    std::vector< sofa::defaulttype::Vector3 > points;
+    std::vector< sofa::defaulttype::Vec3i > indices;
     std::vector< defaulttype::Vector3 > normals;
     if (m_drawForceScale.getValue() != (Real)0.0)
     {
@@ -425,11 +418,11 @@ void TaitSurfacePressureForceField<DataTypes>::draw(const core::visual::VisualPa
         for (unsigned int i=0; i<pressureTriangles.size(); i++)
         {
             Triangle t = pressureTriangles[i];
-            Vector3 a = x[t[0]];
-            Vector3 b = x[t[1]];
-            Vector3 c = x[t[2]];
-            Vector3 n = cross(b-a,c-a) * fscale;
-            Vector3 center = (a+b+c)/(Real)3;
+            sofa::defaulttype::Vector3 a = x[t[0]];
+            sofa::defaulttype::Vector3 b = x[t[1]];
+            sofa::defaulttype::Vector3 c = x[t[2]];
+            sofa::defaulttype::Vector3 n = cross(b-a,c-a) * fscale;
+            sofa::defaulttype::Vector3 center = (a+b+c)/(Real)3;
             points.push_back(center);
             points.push_back(center+n);
         }

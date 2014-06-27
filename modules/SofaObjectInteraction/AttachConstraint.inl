@@ -42,11 +42,6 @@ namespace component
 namespace projectiveconstraintset
 {
 
-using namespace core::topology;
-
-using namespace sofa::defaulttype;
-using namespace sofa::helper;
-using namespace sofa::core::behavior;
 #ifndef SOFA_FLOAT
 template<>
 inline void AttachConstraint<defaulttype::Rigid3dTypes>::projectPosition(Coord& x1, Coord& x2, bool freeRotations, unsigned index)
@@ -71,10 +66,10 @@ inline void AttachConstraint<defaulttype::Rigid3dTypes>::projectPosition(Coord& 
             {
                 // gradually set the velocity along the direction axis
                 Real fact = -lastDist[index] / (lastDist[index+1]-lastDist[index]);
-                Vector3 axis(restRotations[index][0], restRotations[index][1], restRotations[index][2]);
+                sofa::defaulttype::Vector3 axis(restRotations[index][0], restRotations[index][1], restRotations[index][2]);
                 Real angle = acos(restRotations[index][3])*2;
                 //restRotations[index].toAngleAxis(angle,axis);
-                x2.getOrientation() = x1.getOrientation()*Quat(axis,angle*fact);
+                x2.getOrientation() = x1.getOrientation()*sofa::defaulttype::Quat(axis,angle*fact);
             }
         }
         else
@@ -529,7 +524,7 @@ void AttachConstraint<DataTypes>::calcRestRotations()
 
 #ifndef SOFA_FLOAT
 template <>
-void AttachConstraint<Rigid3dTypes>::calcRestRotations();
+void AttachConstraint<sofa::defaulttype::Rigid3dTypes>::calcRestRotations();
 #endif
 
 template <class DataTypes>
@@ -557,7 +552,7 @@ void AttachConstraint<DataTypes>::projectPosition(const core::MechanicalParams *
         if (last)
         {
             Coord p = res1[indices1[i]];
-            Vec<3,Real> p3d;
+            sofa::defaulttype::Vec<3,Real> p3d;
             DataTypes::get(p3d[0],p3d[1],p3d[2],p);
             lastDist[i] = (Real)( (p3d-f_lastPos.getValue())*f_lastDir.getValue());
             if (lastDist[i] > 0.0)
@@ -706,11 +701,11 @@ void AttachConstraint<DataTypes>::applyConstraint(const core::MechanicalParams *
     if (f_twoWay.getValue())
         return;
 
-    MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate2);
+    sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate2);
     if (!r)
         return;
 
-    defaulttype::BaseMatrix *mat = r.matrix;
+    sofa::defaulttype::BaseMatrix *mat = r.matrix;
     unsigned int offset = r.offset;
 
     const SetIndexArray & indices = f_indices2.getValue();
@@ -810,7 +805,7 @@ void AttachConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams
     for (unsigned int i=0; i<indices1.size() && i<indices2.size(); ++i)
     {
         if (activeFlags.size() > i && !activeFlags[i]) continue;
-        gl::glVertexT(x2[indices2[i]]);
+        sofa::helper::gl::glVertexT(x2[indices2[i]]);
     }
     glEnd();
     glPointSize(1);
@@ -819,8 +814,8 @@ void AttachConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams
     for (unsigned int i=0; i<indices1.size() && i<indices2.size(); ++i)
     {
         if (activeFlags.size() > i && !activeFlags[i]) continue;
-        gl::glVertexT(x1[indices1[i]]);
-        gl::glVertexT(x2[indices2[i]]);
+        sofa::helper::gl::glVertexT(x1[indices1[i]]);
+        sofa::helper::gl::glVertexT(x2[indices2[i]]);
     }
     glEnd();
 #endif /* SOFA_NO_OPENGL */

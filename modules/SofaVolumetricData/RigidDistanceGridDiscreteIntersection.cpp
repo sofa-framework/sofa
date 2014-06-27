@@ -123,10 +123,10 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
                     // found a match
                     // translation is the position of cube1 center in cube2 space
                     // so the pair of faces are close if |translation[f2]| is close dim1+dim2
-                    SReal d = rabs(rabs(translation[f2])-(cubeDim1+cubeDim2));
+                    SReal d = sofa::helper::rabs(sofa::helper::rabs(translation[f2])-(cubeDim1+cubeDim2));
                     // we should favor normals that are perpendicular to the relative velocity
                     // however we don't have this information currently, so for now we favor the horizontal face
-                    if (rabs(r2[f2][2]) > 0.99 && d < (cubeDim1 + cubeDim2) * 0.1) d = 0;
+                    if (sofa::helper::rabs(r2[f2][2]) > 0.99 && d < (cubeDim1 + cubeDim2) * 0.1) d = 0;
                     if (d < dist)
                     {
                         dist = d;
@@ -231,9 +231,9 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
                     //double d = p2*normal - cubeDim2;
 
                     DistanceGrid::Coord normal;
-                    normal[0] = rabs(p2[0]) - cubeDim2;
-                    normal[1] = rabs(p2[1]) - cubeDim2;
-                    normal[2] = rabs(p2[2]) - cubeDim2;
+                    normal[0] = sofa::helper::rabs(p2[0]) - cubeDim2;
+                    normal[1] = sofa::helper::rabs(p2[1]) - cubeDim2;
+                    normal[2] = sofa::helper::rabs(p2[2]) - cubeDim2;
 
                     SReal d;
                     // find the smallest penetration
@@ -386,9 +386,9 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
                         continue;
 
                     DistanceGrid::Coord normal;
-                    normal[0] = rabs(p1[0]) - cubeDim1;
-                    normal[1] = rabs(p1[1]) - cubeDim1;
-                    normal[2] = rabs(p1[2]) - cubeDim1;
+                    normal[0] = sofa::helper::rabs(p1[0]) - cubeDim1;
+                    normal[1] = sofa::helper::rabs(p1[1]) - cubeDim1;
+                    normal[2] = sofa::helper::rabs(p1[2]) - cubeDim1;
 
                     SReal d;
                     // find the smallest penetration

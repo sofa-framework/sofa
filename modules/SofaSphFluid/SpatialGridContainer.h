@@ -101,7 +101,6 @@ namespace component
 namespace container
 {
 
-using namespace sofa::defaulttype;
 
 class EmptyClass
 {
@@ -391,10 +390,10 @@ protected:
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_CONTAINER_SPATIALGRIDCONTAINER_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_SPH_FLUID_API SpatialGrid< SpatialGridTypes< Vec3dTypes > >;
+extern template class SOFA_SPH_FLUID_API SpatialGrid< SpatialGridTypes< sofa::defaulttype::Vec3dTypes > >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_SPH_FLUID_API SpatialGrid< SpatialGridTypes< Vec3fTypes > >;
+extern template class SOFA_SPH_FLUID_API SpatialGrid< SpatialGridTypes< sofa::defaulttype::Vec3fTypes > >;
 #endif
 #endif
 

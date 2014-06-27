@@ -44,8 +44,6 @@ namespace component
 namespace forcefield
 {
 
-using namespace sofa::component::container;
-
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template<class DataTypes>
 class SPHFluidForceFieldInternalData
@@ -481,7 +479,7 @@ protected:
     Real lastTime;
     sofa::helper::vector<Particle> particles;
 
-    typedef SpatialGridContainer<DataTypes> Grid;
+    typedef sofa::component::container::SpatialGridContainer<DataTypes> Grid;
 
     Grid* grid;
 

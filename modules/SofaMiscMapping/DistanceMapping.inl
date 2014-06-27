@@ -28,8 +28,6 @@
 #include "DistanceMapping.h"
 #include <sofa/core/visual/VisualParams.h>
 #include <iostream>
-using std::cerr;
-using std::endl;
 
 namespace sofa
 {
@@ -39,9 +37,6 @@ namespace component
 
 namespace mapping
 {
-
-using namespace sofa::defaulttype;
-
 
 template <class TIn, class TOut>
 DistanceMapping<TIn, TOut>::DistanceMapping()
@@ -202,7 +197,7 @@ void DistanceMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams,
 
     for(unsigned i=0; i<links.size(); i++ )
     {
-        Mat<Nin,Nin,Real> b;  // = (I - uu^T)
+        sofa::defaulttype::Mat<Nin,Nin,Real> b;  // = (I - uu^T)
         for(unsigned j=0; j<Nin; j++)
         {
             for(unsigned k=0; k<Nin; k++)
@@ -262,7 +257,7 @@ const vector<defaulttype::BaseMatrix*>* DistanceMapping<TIn, TOut>::getKs()
     for(size_t i=0; i<links.size(); i++)
     {
 
-        Mat<Nin,Nin,Real> b;  // = (I - uu^T)
+        sofa::defaulttype::Mat<Nin,Nin,Real> b;  // = (I - uu^T)
         for(unsigned j=0; j<Nin; j++)
         {
             for(unsigned k=0; k<Nin; k++)
@@ -295,14 +290,14 @@ void DistanceMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
     typename core::behavior::MechanicalState<In>::ReadVecCoord pos = this->getFromModel()->readPositions();
     SeqEdges links = edgeContainer->getEdges();
 
-    vector< Vector3 > points;
+    sofa::defaulttype::vector< sofa::defaulttype::Vector3 > points;
 
     for(unsigned i=0; i<links.size(); i++ )
     {
-        points.push_back( Vector3( TIn::getCPos(pos[links[i][0]]) ) );
-        points.push_back( Vector3( TIn::getCPos(pos[links[i][1]]) ));
+        points.push_back( sofa::defaulttype::Vector3( TIn::getCPos(pos[links[i][0]]) ) );
+        points.push_back( sofa::defaulttype::Vector3( TIn::getCPos(pos[links[i][1]]) ));
     }
-    vparams->drawTool()->drawLines ( points, 1, Vec<4,float> ( 1,1,0,1 ) );
+    vparams->drawTool()->drawLines ( points, 1, sofa::defaulttype::Vec<4,float> ( 1,1,0,1 ) );
 }
 
 

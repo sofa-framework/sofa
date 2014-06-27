@@ -81,10 +81,10 @@ void CompositingVisualLoop::init()
 void CompositingVisualLoop::defaultRendering(sofa::core::visual::VisualParams* vparams)
 {
     vparams->pass() = sofa::core::visual::VisualParams::Std;
-    VisualDrawVisitor act ( vparams );
+    sofa::simulation::VisualDrawVisitor act ( vparams );
     gRoot->execute ( &act );
     vparams->pass() = sofa::core::visual::VisualParams::Transparent;
-    VisualDrawVisitor act2 ( vparams );
+    sofa::simulation::VisualDrawVisitor act2 ( vparams );
     gRoot->execute ( &act2 );
 }
 
@@ -127,7 +127,7 @@ void CompositingVisualLoop::drawStep(sofa::core::visual::VisualParams* vparams)
 #ifdef SOFA_HAVE_GLEW
         if (renderingState == sofa::core::visual::tristate::false_value || renderingState == sofa::core::visual::tristate::neutral_value) return;
 
-        Node::Sequence<core::visual::VisualManager>::iterator begin = gRoot->visualManager.begin(), end = gRoot->visualManager.end(), it;
+        sofa::simulation::Node::Sequence<core::visual::VisualManager>::iterator begin = gRoot->visualManager.begin(), end = gRoot->visualManager.end(), it;
         VisualManagerPass* currentVMP;
         //preDraw sequence
         it=begin;
@@ -153,7 +153,7 @@ void CompositingVisualLoop::drawStep(sofa::core::visual::VisualParams* vparams)
             std::cerr << "VisualLoop error: no visualManager rendered the scene. Please make sure the final visualManager(Secondary)Pass has a renderToScreen=\"true\" attribute" << std::endl;
         }
         //postDraw sequence
-        Node::Sequence<core::visual::VisualManager>::reverse_iterator rbegin = gRoot->visualManager.rbegin(), rend = gRoot->visualManager.rend(), rit;
+        sofa::simulation::Node::Sequence<core::visual::VisualManager>::reverse_iterator rbegin = gRoot->visualManager.rbegin(), rend = gRoot->visualManager.rend(), rit;
         for (rit = rbegin; rit != rend; ++rit)
             (*rit)->postDrawScene(vparams);
 

@@ -46,7 +46,7 @@ namespace constraintset
 using namespace sofa::defaulttype;
 
 template<>
-SOFA_CONSTRAINT_API UncoupledConstraintCorrection< defaulttype::Rigid3Types >::UncoupledConstraintCorrection(behavior::MechanicalState<defaulttype::Rigid3Types> *mm)
+SOFA_CONSTRAINT_API UncoupledConstraintCorrection< sofa::defaulttype::Rigid3Types >::UncoupledConstraintCorrection(sofa::core::behavior::MechanicalState<sofa::defaulttype::Rigid3Types> *mm)
     : Inherit(mm)
     , compliance(initData(&compliance, "compliance", "Rigid compliance value: 1st value for translations, 6 others for upper-triangular part of symmetric 3x3 rotation compliance matrix"))
 {
@@ -109,7 +109,7 @@ SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types
 
 #ifndef NEW_VERSION
 template<>
-SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::addComplianceInConstraintSpace(const ConstraintParams * /*cparams*/, defaulttype::BaseMatrix *W)
+SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::addComplianceInConstraintSpace(const sofa::core::ConstraintParams * /*cparams*/, defaulttype::BaseMatrix *W)
 {
     const MatrixDeriv& constraints = *this->mstate->getC();
 

@@ -46,9 +46,6 @@ namespace component
 namespace projectiveconstraintset
 {
 
-
-using core::objectmodel::Data;
-
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template <class DataTypes>
 class PartialFixedConstraintInternalData
@@ -78,7 +75,7 @@ public:
     typedef Data<MatrixDeriv> DataMatrixDeriv;
     typedef helper::vector<unsigned int> SetIndexArray;
     typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
-
+    typedef sofa::defaulttype::Vector3 Vector3;
 
 protected:
     PartialFixedConstraintInternalData<DataTypes> data;

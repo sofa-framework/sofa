@@ -43,12 +43,6 @@ namespace component
 namespace topology
 {
 
-using namespace sofa::defaulttype;
-
-using namespace sofa::component::topology;
-using namespace sofa::core::topology;
-
-using namespace sofa::core;
 
 /**
 * This class, called Hexa2TetraTopologicalMapping, is a specific implementation of the interface TopologicalMapping where :
@@ -60,10 +54,10 @@ using namespace sofa::core;
 *
 */
 
-class SOFA_TOPOLOGY_MAPPING_API Hexa2TetraTopologicalMapping : public TopologicalMapping
+class SOFA_TOPOLOGY_MAPPING_API Hexa2TetraTopologicalMapping : public sofa::core::topology::TopologicalMapping
 {
 public:
-    SOFA_CLASS(Hexa2TetraTopologicalMapping,TopologicalMapping);
+    SOFA_CLASS(Hexa2TetraTopologicalMapping,sofa::core::topology::TopologicalMapping);
 protected:
     /** \brief Constructor.
     *

@@ -68,12 +68,8 @@ namespace constraintset
 //#define	MAX_NUM_CONSTRAINT_PER_NODE 10000
 //#define EPS_UNITARY_FORCE 0.01
 
-using namespace sofa::component::odesolver;
-using namespace sofa::component::linearsolver;
-using namespace sofa::simulation;
-
 template<class DataTypes>
-PrecomputedConstraintCorrection<DataTypes>::PrecomputedConstraintCorrection(behavior::MechanicalState<DataTypes> *mm)
+PrecomputedConstraintCorrection<DataTypes>::PrecomputedConstraintCorrection(sofa::core::behavior::MechanicalState<DataTypes> *mm)
     : Inherit(mm)
     , m_rotations(initData(&m_rotations, false, "rotations", ""))
     , m_restRotations(initData(&m_restRotations, false, "restDeformations", ""))
@@ -220,13 +216,13 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         invM->data = new Real[nbRows * nbCols];
 
         // for the intial computation, the gravity has to be put at 0
-        const Vec3d gravity = this->getContext()->getGravity();
+        const sofa::defaulttype::Vec3d gravity = this->getContext()->getGravity();
 
-        const Vec3d gravity_zero(0.0,0.0,0.0);
+        const sofa::defaulttype::Vec3d gravity_zero(0.0,0.0,0.0);
         this->getContext()->setGravity(gravity_zero);
 
-        EulerImplicitSolver* eulerSolver;
-        CGLinearSolver< GraphScatteredMatrix, GraphScatteredVector >* cgLinearSolver;
+        sofa::component::odesolver::EulerImplicitSolver* eulerSolver;
+        sofa::component::linearsolver::CGLinearSolver< sofa::component::linearsolver::GraphScatteredMatrix, sofa::component::linearsolver::GraphScatteredVector >* cgLinearSolver;
         core::behavior::LinearSolver* linearSolver;
 
         this->getContext()->get(eulerSolver);
@@ -463,7 +459,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
 
 template< class DataTypes >
-void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpace(const ConstraintParams *cparams, defaulttype::BaseMatrix* W)
+void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, sofa::defaulttype::BaseMatrix* W)
 {
     const MatrixDeriv& c = *this->mstate->getC();
 
@@ -668,8 +664,8 @@ void PrecomputedConstraintCorrection<DataTypes>::computeDx(const Data< VecDeriv 
 
 
 template<class DataTypes>
-void PrecomputedConstraintCorrection<DataTypes>::computeAndApplyMotionCorrection(const ConstraintParams *cparams
-        , Data< VecCoord > &x_d, Data< VecDeriv > &v_d, Data< VecDeriv > &f_d, const BaseVector *lambda)
+void PrecomputedConstraintCorrection<DataTypes>::computeAndApplyMotionCorrection(const sofa::core::ConstraintParams *cparams
+        , sofa::core::objectmodel::Data< VecCoord > &x_d, sofa::core::objectmodel::Data< VecDeriv > &v_d, sofa::core::objectmodel::Data< VecDeriv > &f_d, const sofa::defaulttype::BaseVector *lambda)
 {
     std::list< int > activeDof;
 
@@ -705,7 +701,7 @@ void PrecomputedConstraintCorrection<DataTypes>::computeAndApplyMotionCorrection
 
 
 template<class DataTypes>
-void PrecomputedConstraintCorrection<DataTypes>::computeAndApplyPositionCorrection(const ConstraintParams *cparams, Data< VecCoord > &x_d, Data< VecDeriv > &f_d, const BaseVector *lambda)
+void PrecomputedConstraintCorrection<DataTypes>::computeAndApplyPositionCorrection(const sofa::core::ConstraintParams *cparams, sofa::core::objectmodel::Data< VecCoord > &x_d, sofa::core::objectmodel::Data< VecDeriv > &f_d, const sofa::defaulttype::BaseVector *lambda)
 {
     std::list< int > activeDof;
 
@@ -732,7 +728,7 @@ void PrecomputedConstraintCorrection<DataTypes>::computeAndApplyPositionCorrecti
 
 
 template<class DataTypes>
-void PrecomputedConstraintCorrection<DataTypes>::computeAndApplyVelocityCorrection(const ConstraintParams *cparams, Data< VecDeriv > &v_d, Data< VecDeriv > &f_d, const BaseVector *lambda)
+void PrecomputedConstraintCorrection<DataTypes>::computeAndApplyVelocityCorrection(const sofa::core::ConstraintParams *cparams, sofa::core::objectmodel::Data< VecDeriv > &v_d, sofa::core::objectmodel::Data< VecDeriv > &f_d, const sofa::defaulttype::BaseVector *lambda)
 {
     std::list< int > activeDof;
 

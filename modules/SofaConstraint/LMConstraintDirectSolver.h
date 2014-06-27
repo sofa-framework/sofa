@@ -37,9 +37,6 @@ namespace component
 namespace constraintset
 {
 
-using core::behavior::BaseLMConstraint;
-using core::behavior::ConstraintGroup;
-
 class SOFA_CONSTRAINT_API LMConstraintDirectSolver : public LMConstraintSolver
 {
 //	typedef Eigen::DynamicSparseMatrix<SReal,Eigen::ColMajor>    SparseColMajorMatrixEigen;
@@ -57,7 +54,7 @@ public:
 
 protected:
 
-    void analyseConstraints(const helper::vector< BaseLMConstraint* > &LMConstraints, core::ConstraintParams::ConstOrder order,
+    void analyseConstraints(const helper::vector< sofa::core::behavior::BaseLMConstraint* > &LMConstraints, core::ConstraintParams::ConstOrder order,
             JacobianRows &rowsL,JacobianRows &rowsLT, helper::vector< unsigned int > &rightHandElements) const;
 
     void buildLeftRectangularMatrix(const DofToMatrix& invMassMatrix,

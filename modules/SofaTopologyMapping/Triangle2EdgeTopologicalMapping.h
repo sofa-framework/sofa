@@ -42,13 +42,6 @@ namespace component
 namespace topology
 {
 
-using namespace sofa::defaulttype;
-
-using namespace sofa::component::topology;
-using namespace sofa::core::topology;
-
-using namespace sofa::core;
-
 /**
 * This class, called Triangle2EdgeTopologicalMapping, is a specific implementation of the interface TopologicalMapping where :
 *
@@ -59,10 +52,10 @@ using namespace sofa::core;
 *
 */
 
-class SOFA_TOPOLOGY_MAPPING_API Triangle2EdgeTopologicalMapping : public TopologicalMapping
+class SOFA_TOPOLOGY_MAPPING_API Triangle2EdgeTopologicalMapping : public sofa::core::topology::TopologicalMapping
 {
 public:
-    SOFA_CLASS(Triangle2EdgeTopologicalMapping,TopologicalMapping);
+    SOFA_CLASS(Triangle2EdgeTopologicalMapping,sofa::core::topology::TopologicalMapping);
 protected:
     /** \brief Constructor.
     *

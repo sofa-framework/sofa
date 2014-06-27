@@ -54,7 +54,7 @@ public:
     typedef typename DataTypes::VecReal     VecReal     ;
     typedef Data<VecCoord>                  DataVecCoord;
     typedef Data<VecDeriv>                  DataVecDeriv;
-
+    typedef sofa::defaulttype::Vec3d        Vec3d;
 protected:
 
     class EdgePressureInformation
@@ -155,21 +155,13 @@ protected :
     }
 };
 
-#ifndef SOFA_FLOAT
-using sofa::defaulttype::Vec3dTypes;
-#endif
-
-#ifndef SOFA_DOUBLE
-using sofa::defaulttype::Vec3fTypes;
-#endif
-
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_EDGEPRESSUREFORCEFIELD_CPP)
 
 #ifndef SOFA_FLOAT
-extern template class SOFA_BOUNDARY_CONDITION_API EdgePressureForceField<Vec3dTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API EdgePressureForceField<sofa::defaulttype::Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_BOUNDARY_CONDITION_API EdgePressureForceField<Vec3fTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API EdgePressureForceField<sofa::defaulttype::Vec3fTypes>;
 #endif
 
 #endif //defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_EDGEPRESSUREFORCEFIELD_CPP)
