@@ -75,7 +75,7 @@ public:
 
     typedef typename NonUniformHexahedronFEMForceFieldAndMassT::VecElement VecElement;
 
-    typedef Mat<8*3, 8*3, Real> Weight;
+    typedef defaulttype::Mat<8*3, 8*3, Real> Weight;
 
 
 

@@ -82,9 +82,9 @@ int DynamicSparseGridGeometryAlgorithms<DataTypes>::findNearestElementInRestPos(
     int index = -1;
     distance = 1e10;
 
-    Vec3i resolution = topoContainer->resolution.getValue();
+    defaulttype::Vec3i resolution = topoContainer->resolution.getValue();
     const sofa::defaulttype::Vec3d& translation = dof->getTranslation();
-    Vec3i currentIndex = Vec3i( (int)((pos[0] - translation[0]) / topoContainer->voxelSize.getValue()[0]), (int)((pos[1] - translation[1]) / topoContainer->voxelSize.getValue()[1]), (int)((pos[2] - translation[2]) / topoContainer->voxelSize.getValue()[2]));
+    defaulttype::Vec3i currentIndex = defaulttype::Vec3i( (int)((pos[0] - translation[0]) / topoContainer->voxelSize.getValue()[0]), (int)((pos[1] - translation[1]) / topoContainer->voxelSize.getValue()[1]), (int)((pos[2] - translation[2]) / topoContainer->voxelSize.getValue()[2]));
 
 //        std::cout << "Find Nearest : " << pos << " ; " << baryC << " distance " << distance << " : " << resolution << " : resolution " << currentIndex << " : currentIndex\n";
     // Projection sur la bbox si l'element est en dehors.
