@@ -1245,9 +1245,9 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
 
 
         // assemble the matrix of 8 child
-        Mat<27*3, 27*3, Real> assembledStiffness;
-        Mat<27*3, 27*3, Real> assembledStiffnessWithRigidVoid;
-        Mat<27*3, 27*3, Real> assembledMass;
+        defaulttype::Mat<27*3, 27*3, Real> assembledStiffness;
+        defaulttype::Mat<27*3, 27*3, Real> assembledStiffnessWithRigidVoid;
+        defaulttype::Mat<27*3, 27*3, Real> assembledMass;
 
 
         for ( int i=0; i<8; ++i) //for 8 virtual finer element
@@ -1294,9 +1294,9 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
         }
 
 
-        Mat<27*3, 8*3, Real> Kg; // stiffness of contrained nodes
-        Mat<27*3, 27*3, Real> A; // [Kf -G]  Kf (stiffness of free nodes) with the constaints
-        Mat<27*3, 27*3, Real> Ainv;
+        defaulttype::Mat<27*3, 8*3, Real> Kg; // stiffness of contrained nodes
+        defaulttype::Mat<27*3, 27*3, Real> A; // [Kf -G]  Kf (stiffness of free nodes) with the constaints
+        defaulttype::Mat<27*3, 27*3, Real> Ainv;
 
 
         for ( int i=0; i<27; ++i)
@@ -1361,7 +1361,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
 
 
 
-        Mat<(27-8)*3, 27*3, Real> Ainvf;
+        defaulttype::Mat<(27-8)*3, 27*3, Real> Ainvf;
         for(int i=0; i<27-8; ++i)
         {
             for(int m=0; m<3; ++m)
@@ -1372,11 +1372,11 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
 
 
 
-        Mat<(27-8)*3, 8*3, Real> W;
+        defaulttype::Mat<(27-8)*3, 8*3, Real> W;
         W = Ainvf * Kg;
 
 
-        Mat<27*3, 8*3, Real> WB;
+        defaulttype::Mat<27*3, 8*3, Real> WB;
         for(int i=0; i<27*3; ++i)
         {
             int idx = i/3;
@@ -1401,7 +1401,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
 
 
         // apply the mask to take only concerned values (an edge stays an edge, a face stays a face, if corner=1 opposite borders=0....)
-        Mat<27*3, 8*3, Real> WBmeca;
+        defaulttype::Mat<27*3, 8*3, Real> WBmeca;
         for(int i=0; i<27*3; ++i)
         {
             for(int j=0; j<8*3; ++j)
@@ -2452,24 +2452,24 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::draw(const core::visual::Visual
     const VecCoord& x = *this->mstate->getX();
 
 
-    Vec<4,float> colour;
+    defaulttype::Vec<4,float> colour;
     switch(_drawColor.getValue() )
     {
     case 3:
-        colour=Vec<4,float>(0.2f, 0.8f, 0.2f,1.0f);
+        colour=defaulttype::Vec<4,float>(0.2f, 0.8f, 0.2f,1.0f);
         break;
 
     case 2:
-        colour=Vec<4,float>(0.2f, 0.3f, 0.8f,1.0f);
+        colour=defaulttype::Vec<4,float>(0.2f, 0.3f, 0.8f,1.0f);
         break;
 
     case 1:
-        colour=Vec<4,float>(0.95f, 0.3f, 0.2f,1.0f);
+        colour=defaulttype::Vec<4,float>(0.95f, 0.3f, 0.2f,1.0f);
         break;
 
     case 0:
     default:
-        colour=Vec<4,float>(0.9f, 0.9f, 0.2f,1.0f);
+        colour=defaulttype::Vec<4,float>(0.9f, 0.9f, 0.2f,1.0f);
     }
 
 
@@ -2486,14 +2486,14 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::draw(const core::visual::Visual
     }
     else
     {
-        std::vector< Vector3 > points;
+        std::vector< defaulttype::Vector3 > points;
 
         vparams->drawTool()->setLightingEnabled(false);
 
         for( SparseGridTopology::SeqEdges::const_iterator it = this->_sparseGrid->getEdges().begin() ; it != this->_sparseGrid->getEdges().end(); ++it)
         {
-            points.push_back( x[(*it)[0]] );
             points.push_back( x[(*it)[1]] );
+            points.push_back( x[(*it)[0]] );
         }
         vparams->drawTool()->drawLines(points, _drawSize.getValue(),colour);
     }
@@ -2510,10 +2510,10 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::draw(const core::visual::Visual
         // 				  helper::gl::drawSphere( x[i], _drawSize.getValue()*1.5 );
         // 			  }
 
-        colour=Vec<4,float>(0.95f, 0.95f, 0.7f,1.0f);
+        colour=defaulttype::Vec<4,float>(0.95f, 0.95f, 0.7f,1.0f);
 
 
-        std::vector< Vector3 > points;
+        std::vector< defaulttype::Vector3 > points;
         for(unsigned i=0; i<x.size(); ++i) points.push_back( x[i] );
         vparams->drawTool()->drawSpheres(points, _drawSize.getValue()*1.5f,colour);
     }
@@ -2527,7 +2527,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::draw(const core::visual::Visual
 
     {
 
-        std::vector< Vector3 > points;
+        std::vector< defaulttype::Vector3 > points;
         for(unsigned i=0; i<sgr->getConnexions()->size(); ++i)
         {
             helper::vector< topology::SparseGridRamificationTopology::Connexion *>& con = (*sgr->getConnexions())[i];
@@ -2560,20 +2560,20 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::draw(const core::visual::Visual
             switch( con.size() )
             {
             case 1:
-                colour=Vec<4,float>(0.7f, 0.7f, 0.1f, .4f);
+                colour=defaulttype::Vec<4,float>(0.7f, 0.7f, 0.1f, .4f);
                 break;
             case 2:
-                colour=Vec<4,float>(0.1f, 0.9f, 0.1f, .4f);
+                colour=defaulttype::Vec<4,float>(0.1f, 0.9f, 0.1f, .4f);
                 break;
             case 3:
-                colour=Vec<4,float>(0.9f, 0.1f, 0.1f, .4f);
+                colour=defaulttype::Vec<4,float>(0.9f, 0.1f, 0.1f, .4f);
                 break;
             case 4:
-                colour=Vec<4,float>(0.1f, 0.1f, 0.9f, .4f);
+                colour=defaulttype::Vec<4,float>(0.1f, 0.1f, 0.9f, .4f);
                 break;
             case 5:
             default:
-                colour=Vec<4,float>(0.2f, 0.2f, 0.2f, .4f);
+                colour=defaulttype::Vec<4,float>(0.2f, 0.2f, 0.2f, .4f);
                 break;
             }
 

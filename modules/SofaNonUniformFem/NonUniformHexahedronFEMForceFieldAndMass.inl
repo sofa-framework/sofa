@@ -125,7 +125,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
 
     for (unsigned int i=0; i<this->getIndexedElements()->size(); ++i)
     {
-        Vec<8,Coord> nodes;
+        sofa::defaulttype::Vec<8,Coord> nodes;
         for(int w=0; w<8; ++w)
 #ifndef SOFA_NEW_HEXA
             nodes[w] = this->_initialPoints.getValue()[(*this->getIndexedElements())[i][this->_indices[w]]];
@@ -183,7 +183,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
         int i=0;
         for(typename VecElement::const_iterator it = this->getIndexedElements()->begin() ; it != this->getIndexedElements()->end() ; ++it, ++i)
         {
-            Vec<8,Coord> nodes;
+            defaulttype::Vec<8,Coord> nodes;
             for(int w=0; w<8; ++w)
 #ifndef SOFA_NEW_HEXA
                 nodes[w] = this->_initialPoints.getValue()[(*it)[this->_indices[w]]];

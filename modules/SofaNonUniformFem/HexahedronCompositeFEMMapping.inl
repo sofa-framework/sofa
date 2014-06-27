@@ -120,7 +120,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::init()
 
     for (unsigned int i=0; i<_p0.size(); i++)
     {
-        Vector3 coefs;
+        defaulttype::Vector3 coefs;
 // 		int elementIdx = _sparseGrid->findCube( _p0[i] , coefs[0], coefs[1], coefs[2] );
 // 		if (elementIdx==-1)
 // 		{
@@ -233,7 +233,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::apply ( OutVecCoord& out, cons
 
 
     // les deplacements des noeuds grossiers
-    helper::vector< Vec< 24 >  > coarseDisplacements( _sparseGrid->getNbHexahedra() );
+    helper::vector< defaulttype::Vec< 24 >  > coarseDisplacements( _sparseGrid->getNbHexahedra() );
     for(int i=0; i<_sparseGrid->getNbHexahedra(); ++i)
     {
         const SparseGridTopologyT::Hexa& hexa = _sparseGrid->getHexahedron(i);
@@ -307,7 +307,7 @@ template <class BasicMapping>
 void HexahedronCompositeFEMMapping<BasicMapping>::applyJ ( OutVecDeriv& out, const InVecDeriv& in )
 {
     // les deplacements des noeuds grossiers
-    helper::vector< Vec< 24 >  > coarseDisplacements( _sparseGrid->getNbHexahedra() );
+    helper::vector< defaulttype::Vec< 24 >  > coarseDisplacements( _sparseGrid->getNbHexahedra() );
     for(int i=0; i<_sparseGrid->getNbHexahedra(); ++i)
     {
         const SparseGridTopologyT::Hexa& hexa = _sparseGrid->getHexahedron(i);
@@ -380,7 +380,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::applyJT ( InVecDeriv& out, con
         {
             Transformation& rotation = _rotations[ (*it).first];
 
-            Vec< 24 > dfplat = (*it).second.multTranspose( rotation * fineForces[i] ) / _finestWeights[i].size();
+            defaulttype::Vec< 24 > dfplat = (*it).second.multTranspose( rotation * fineForces[i] ) / _finestWeights[i].size();
 
             const SparseGridTopologyT::Hexa& hexa = _sparseGrid->getHexahedron( (*it).first );
             for(int w=0; w<8; ++w)
@@ -398,8 +398,8 @@ void HexahedronCompositeFEMMapping<BasicMapping>::draw(const core::visual::Visua
 {
     if (!vparams->displayFlags().getShowMappings()) return;
 
-    std::vector< Vector3 > points;
-    Vector3 point;
+    std::vector< defaulttype::Vector3 > points;
+    defaulttype::Vector3 point;
 
     for(unsigned int i=0; i<_qFine.size(); i++)
     {
@@ -408,7 +408,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::draw(const core::visual::Visua
     }
 
 
-    vparams->drawTool()->drawPoints(points, 7, Vec<4,float>(0.2f,1.0f,0.0f,1.0f));
+    vparams->drawTool()->drawPoints(points, 7, defaulttype::Vec<4,float>(0.2f,1.0f,0.0f,1.0f));
 }
 
 
