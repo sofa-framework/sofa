@@ -102,6 +102,8 @@ public:
     virtual double getPotentialEnergy(const sofa::core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecCoord& /* x */) const
     {
         serr << "getPotentialEnergy not implemented" << sendl;
+
+        return 0.0;
     }
 
     void draw(const core::visual::VisualParams* vparams);
