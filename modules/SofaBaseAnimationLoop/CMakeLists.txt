@@ -17,7 +17,7 @@ set(SOURCE_FILES
 
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries( ${PROJECT_NAME} SofaCore ) 
+target_link_libraries( ${PROJECT_NAME} SofaSimulationCommon ) 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>")
 
 set( COMPILER_FLAGS "-DSOFA_BUILD_BASE_COLLISION")
