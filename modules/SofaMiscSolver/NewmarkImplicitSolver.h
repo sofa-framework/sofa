@@ -37,8 +37,6 @@ namespace component
 namespace odesolver
 {
 
-using namespace sofa::defaulttype;
-
 /** Implicit time integrator using Newmark scheme.
  *
  * This integration scheme is based on the following equations:

@@ -39,8 +39,6 @@ namespace sofa {
 
 using std::cout;
 using std::endl;
-using namespace core;
-using namespace modeling;
 
 
 /** @brief Base class for the Mapping tests, with helpers to automatically test applyJ, applyJT, applyDJT and getJs using finite differences.
@@ -117,12 +115,12 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
         /// Parent node
         root = simulation->createNewGraph("root");
-        inDofs = addNew<InDOFs>(root);
+        inDofs = modeling::addNew<InDOFs>(root);
 
         /// Child node
         simulation::Node::SPtr childNode = root->createChild("childNode");
-        outDofs = addNew<OutDOFs>(childNode);
-        mapping = addNew<Mapping>(root).get();
+        outDofs = modeling::addNew<OutDOFs>(childNode);
+        mapping = modeling::addNew<Mapping>(root).get();
         mapping->setModels(inDofs.get(),outDofs.get());
     }
 
@@ -143,10 +141,10 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
          simulation::Node::SPtr elasticityNode = patchNode->getChild("Elasticity");
 
          // Add OutDofs
-         outDofs = addNew<OutDOFs>(elasticityNode);
+         outDofs = modeling::addNew<OutDOFs>(elasticityNode);
 
          // Add mapping to the scene
-         mapping = addNew<Mapping>(elasticityNode).get();
+         mapping = modeling::addNew<Mapping>(elasticityNode).get();
          mapping->setModels(inDofs.get(),outDofs.get());
         
     }
@@ -185,7 +183,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
                   const OutVecCoord expectedChildNew)
     {
         typedef component::linearsolver::EigenSparseMatrix<In,Out> EigenSparseMatrix;
-        MechanicalParams mparams;
+        core::MechanicalParams mparams;
         mparams.setKFactor(1.0);
         mparams.setSymmetricMatrix(false);
 
