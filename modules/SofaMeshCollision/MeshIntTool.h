@@ -210,17 +210,17 @@ int MeshIntTool::computeIntersection(Triangle& tri, TSphere<DataTypes>& sph,type
 
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_MESH_COLLISION)
-extern template SOFA_MESH_COLLISION_API int MeshIntTool::computeIntersection(TCapsule<Vec3Types>& cap, Point& pnt,SReal alarmDist,SReal contactDist,OutputVector* contacts);
-extern template SOFA_MESH_COLLISION_API int MeshIntTool::doCapPointInt(TCapsule<Vec3Types>& cap, const Vector3& q,SReal alarmDist,SReal contactDist,OutputVector* contacts);
-extern template SOFA_MESH_COLLISION_API int MeshIntTool::computeIntersection(TCapsule<Vec3Types>& cap, Line& lin,SReal alarmDist,SReal contactDist,OutputVector* contacts);
-extern template SOFA_MESH_COLLISION_API int MeshIntTool::doCapLineInt(TCapsule<Vec3Types>& cap,const Vector3 & q1,const Vector3 & q2,SReal alarmDist,SReal contactDist,OutputVector* contacts,bool ignore_p1,bool ignore_p2);
-extern template SOFA_MESH_COLLISION_API int MeshIntTool::computeIntersection(TCapsule<Vec3Types>& cap, Triangle& tri,SReal alarmDist,SReal contactDist,OutputVector* contacts);
+extern template SOFA_MESH_COLLISION_API int MeshIntTool::computeIntersection(TCapsule<sofa::defaulttype::Vec3Types>& cap, Point& pnt,SReal alarmDist,SReal contactDist,OutputVector* contacts);
+extern template SOFA_MESH_COLLISION_API int MeshIntTool::doCapPointInt(TCapsule<sofa::defaulttype::Vec3Types>& cap, const sofa::defaulttype::Vector3& q,SReal alarmDist,SReal contactDist,OutputVector* contacts);
+extern template SOFA_MESH_COLLISION_API int MeshIntTool::computeIntersection(TCapsule<sofa::defaulttype::Vec3Types>& cap, Line& lin,SReal alarmDist,SReal contactDist,OutputVector* contacts);
+extern template SOFA_MESH_COLLISION_API int MeshIntTool::doCapLineInt(TCapsule<sofa::defaulttype::Vec3Types>& cap,const sofa::defaulttype::Vector3 & q1,const sofa::defaulttype::Vector3 & q2,SReal alarmDist,SReal contactDist,OutputVector* contacts,bool ignore_p1,bool ignore_p2);
+extern template SOFA_MESH_COLLISION_API int MeshIntTool::computeIntersection(TCapsule<sofa::defaulttype::Vec3Types>& cap, Triangle& tri,SReal alarmDist,SReal contactDist,OutputVector* contacts);
 
-extern template SOFA_MESH_COLLISION_API int MeshIntTool::computeIntersection(TCapsule<Rigid3Types>& cap, Point& pnt,SReal alarmDist,SReal contactDist,OutputVector* contacts);
-extern template SOFA_MESH_COLLISION_API int MeshIntTool::doCapPointInt(TCapsule<Rigid3Types>& cap, const Vector3& q,SReal alarmDist,SReal contactDist,OutputVector* contacts);
-extern template SOFA_MESH_COLLISION_API int MeshIntTool::computeIntersection(TCapsule<Rigid3Types>& cap, Line& lin,SReal alarmDist,SReal contactDist,OutputVector* contacts);
-extern template SOFA_MESH_COLLISION_API int MeshIntTool::doCapLineInt(TCapsule<Rigid3Types>& cap,const Vector3 & q1,const Vector3 & q2,SReal alarmDist,SReal contactDist,OutputVector* contacts,bool ignore_p1,bool ignore_p2);
-extern template SOFA_MESH_COLLISION_API int MeshIntTool::computeIntersection(TCapsule<Rigid3Types>& cap, Triangle& tri,SReal alarmDist,SReal contactDist,OutputVector* contacts);
+extern template SOFA_MESH_COLLISION_API int MeshIntTool::computeIntersection(TCapsule<sofa::defaulttype::Rigid3Types>& cap, Point& pnt,SReal alarmDist,SReal contactDist,OutputVector* contacts);
+extern template SOFA_MESH_COLLISION_API int MeshIntTool::doCapPointInt(TCapsule<sofa::defaulttype::Rigid3Types>& cap, const sofa::defaulttype::Vector3& q,SReal alarmDist,SReal contactDist,OutputVector* contacts);
+extern template SOFA_MESH_COLLISION_API int MeshIntTool::computeIntersection(TCapsule<sofa::defaulttype::Rigid3Types>& cap, Line& lin,SReal alarmDist,SReal contactDist,OutputVector* contacts);
+extern template SOFA_MESH_COLLISION_API int MeshIntTool::doCapLineInt(TCapsule<sofa::defaulttype::Rigid3Types>& cap,const sofa::defaulttype::Vector3 & q1,const sofa::defaulttype::Vector3 & q2,SReal alarmDist,SReal contactDist,OutputVector* contacts,bool ignore_p1,bool ignore_p2);
+extern template SOFA_MESH_COLLISION_API int MeshIntTool::computeIntersection(TCapsule<sofa::defaulttype::Rigid3Types>& cap, Triangle& tri,SReal alarmDist,SReal contactDist,OutputVector* contacts);
 #endif
 
 

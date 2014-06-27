@@ -387,7 +387,7 @@ simulation::Node::SPtr massSpringString
     std::ostringstream oss;
     oss << "string_" << numObject++;
 
-    Vec3d startPoint(x0,y0,z0), endPoint(x1,y1,z1);
+    sofa::defaulttype::Vec3d startPoint(x0,y0,z0), endPoint(x1,y1,z1);
     SReal totalLength = (endPoint-startPoint).norm();
 
     //--------
