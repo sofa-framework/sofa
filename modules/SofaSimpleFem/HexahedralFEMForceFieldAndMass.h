@@ -40,20 +40,16 @@ namespace component
 namespace forcefield
 {
 
-using namespace sofa::defaulttype;
-using sofa::helper::vector;
-using sofa::core::behavior::Mass;
-
 /** Compute Finite Element forces based on hexahedral elements including continuum mass matrices
 */
 template<class DataTypes>
-class HexahedralFEMForceFieldAndMass : virtual public Mass<DataTypes>, virtual public HexahedralFEMForceField<DataTypes>
+class HexahedralFEMForceFieldAndMass : virtual public sofa::core::behavior::Mass<DataTypes>, virtual public HexahedralFEMForceField<DataTypes>
 {
 public:
-    SOFA_CLASS2(SOFA_TEMPLATE(HexahedralFEMForceFieldAndMass,DataTypes), SOFA_TEMPLATE(Mass,DataTypes), SOFA_TEMPLATE(HexahedralFEMForceField,DataTypes));
+    SOFA_CLASS2(SOFA_TEMPLATE(HexahedralFEMForceFieldAndMass,DataTypes), SOFA_TEMPLATE(sofa::core::behavior::Mass,DataTypes), SOFA_TEMPLATE(HexahedralFEMForceField,DataTypes));
 
     typedef HexahedralFEMForceField<DataTypes> HexahedralFEMForceFieldT;
-    typedef Mass<DataTypes> MassT;
+    typedef sofa::core::behavior::Mass<DataTypes> MassT;
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -134,11 +130,11 @@ protected:
     Data<Real> _density;
     Data<bool> _useLumpedMass;
 
-    HexahedronData<sofa::helper::vector<ElementMass> > _elementMasses; ///< mass matrices per element
-    HexahedronData<sofa::helper::vector<Real> > _elementTotalMass; ///< total mass per element
+    topology::HexahedronData<sofa::helper::vector<ElementMass> > _elementMasses; ///< mass matrices per element
+    topology::HexahedronData<sofa::helper::vector<Real> > _elementTotalMass; ///< total mass per element
 
-    PointData<sofa::helper::vector<Real> > _particleMasses; ///< masses per particle in order to compute gravity
-    PointData<sofa::helper::vector<Coord> > _lumpedMasses; ///< masses per particle computed by lumping mass matrices
+    topology::PointData<sofa::helper::vector<Real> > _particleMasses; ///< masses per particle in order to compute gravity
+    topology::PointData<sofa::helper::vector<Coord> > _lumpedMasses; ///< masses per particle computed by lumping mass matrices
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_HEXAHEDRALFEMFORCEFIELDANDMASS_CPP)

@@ -59,9 +59,7 @@ namespace component
 namespace forcefield
 {
 
-using namespace sofa::defaulttype;
 using sofa::helper::vector;
-using namespace sofa::core::topology;
 
 template<class DataTypes>
 class TetrahedronFEMForceField;
@@ -106,7 +104,7 @@ public:
     typedef core::topology::BaseMeshTopology::index_type Index;
     typedef core::topology::BaseMeshTopology::Tetra Element;
     typedef core::topology::BaseMeshTopology::SeqTetrahedra VecElement;
-    typedef BaseMeshTopology::Tetrahedron Tetrahedron;
+    typedef core::topology::BaseMeshTopology::Tetrahedron Tetrahedron;
 
     enum { SMALL = 0,   ///< Symbol of small displacements tetrahedron solver
             LARGE = 1,   ///< Symbol of corotational large displacements tetrahedron solver based on a QR decomposition    -> Nesme et al 2005 "Efficient, Physically Plausible Finite Elements"
@@ -120,22 +118,22 @@ protected:
     /// @{
 
     /// Displacement vector (deformation of the 4 corners of a tetrahedron
-    typedef VecNoInit<12, Real> Displacement;
+    typedef defaulttype::VecNoInit<12, Real> Displacement;
 
     /// Material stiffness matrix of a tetrahedron
-    typedef Mat<6, 6, Real> MaterialStiffness;
+    typedef defaulttype::Mat<6, 6, Real> MaterialStiffness;
 
     /// Strain-displacement matrix
-    typedef Mat<12, 6, Real> StrainDisplacement;
+    typedef defaulttype::Mat<12, 6, Real> StrainDisplacement;
 
     /// Rigid transformation (rotation) matrix
-    typedef MatNoInit<3, 3, Real> Transformation;
+    typedef defaulttype::MatNoInit<3, 3, Real> Transformation;
 
     /// Stiffness matrix ( = RJKJtRt  with K the Material stiffness matrix, J the strain-displacement matrix, and R the transformation matrix if any )
-    typedef Mat<12, 12, Real> StiffnessMatrix;
+    typedef defaulttype::Mat<12, 12, Real> StiffnessMatrix;
 
     /// Symmetrical tensor written as a vector following the Voigt notation
-    typedef VecNoInit<6,Real> VoigtTensor;
+    typedef defaulttype::VecNoInit<6,Real> VoigtTensor;
 
     /// @}
 
@@ -144,9 +142,9 @@ protected:
     typedef vector<StrainDisplacement> VecStrainDisplacement;  ///< a vector of strain-displacement matrices
 
     /// structures used to compute vonMises stress
-    typedef Mat<4, 4, Real> Mat44;
-    typedef Mat<3, 3, Real> Mat33;
-    typedef Mat<4, 3, Real> Mat43;
+    typedef defaulttype::Mat<4, 4, Real> Mat44;
+    typedef defaulttype::Mat<3, 3, Real> Mat33;
+    typedef defaulttype::Mat<4, 3, Real> Mat43;
 
     /// Vector of material stiffness matrices of each tetrahedron
     VecMaterialStiffness materialsStiffnesses;
@@ -277,7 +275,7 @@ public:
     Data<int> _computeVonMisesStress;
     Data<helper::vector<Real> > _vonMisesPerElement;
     Data<helper::vector<Real> > _vonMisesPerNode;
-    Data<helper::vector<Vec3f> > _vonMisesStressColors;
+    Data<helper::vector<defaulttype::Vec3f> > _vonMisesStressColors;
 
 #ifndef SOFA_NO_OPENGL
 	visualmodel::ColorMap::SPtr _showStressColorMapReal;
@@ -290,7 +288,7 @@ public:
     Data < bool > isToPrint;
     Data<bool>  _updateStiffness;
 
-    helper::vector<Vec<6,Real> > elemDisplacements;
+    helper::vector<defaulttype::Vec<6,Real> > elemDisplacements;
 
     bool updateVonMisesStress;
 
@@ -420,7 +418,7 @@ public:
 protected:
 
     void computeStrainDisplacement( StrainDisplacement &J, Coord a, Coord b, Coord c, Coord d );
-    Real peudo_determinant_for_coef ( const Mat<2, 3, Real>&  M );
+    Real peudo_determinant_for_coef ( const defaulttype::Mat<2, 3, Real>&  M );
 
     void computeStiffnessMatrix( StiffnessMatrix& S,StiffnessMatrix& SR,const MaterialStiffness &K, const StrainDisplacement &J, const Transformation& Rot );
 

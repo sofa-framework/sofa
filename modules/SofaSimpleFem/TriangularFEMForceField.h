@@ -52,9 +52,7 @@ namespace forcefield
 //#define PLOT_CURVE //lose some FPS
 
 
-using namespace sofa::defaulttype;
 using sofa::helper::vector;
-using namespace sofa::component::topology;
 
 /** corotational triangle from
 * @InProceedings{NPF05,
@@ -96,13 +94,13 @@ public:
 protected:
 
     bool _anisotropicMaterial;			                 	    /// used to turn on / off optimizations
-    typedef Vec<6, Real> Displacement;					    ///< the displacement vector
-    typedef Mat<3, 3, Real> MaterialStiffness;				    ///< the matrix of material stiffness
+    typedef defaulttype::Vec<6, Real> Displacement;					    ///< the displacement vector
+    typedef defaulttype::Mat<3, 3, Real> MaterialStiffness;				    ///< the matrix of material stiffness
     typedef sofa::helper::vector<MaterialStiffness> VecMaterialStiffness;   ///< a vector of material stiffness matrices
-    typedef Mat<6, 3, Real> StrainDisplacement;				    ///< the strain-displacement matrix
-    typedef Mat<6, 6, Real> Stiffness;					    ///< the stiffness matrix
+    typedef defaulttype::Mat<6, 3, Real> StrainDisplacement;				    ///< the strain-displacement matrix
+    typedef defaulttype::Mat<6, 6, Real> Stiffness;					    ///< the stiffness matrix
     typedef sofa::helper::vector<StrainDisplacement> VecStrainDisplacement; ///< a vector of strain-displacement matrices
-    typedef Mat<3, 3, Real > Transformation;				    ///< matrix for rigid transformations like rotations
+    typedef defaulttype::Mat<3, 3, Real > Transformation;				    ///< matrix for rigid transformations like rotations
 
 
 public:
@@ -140,9 +138,9 @@ public:
         helper::fixed_array<Coord,3> rotatedInitialElements;
         Transformation rotation;
         // strain vector
-        Vec<3,Real> strain;
+        defaulttype::Vec<3,Real> strain;
         // stress vector
-        Vec<3,Real> stress;
+        defaulttype::Vec<3,Real> stress;
         Transformation initialTransformation;
         Coord principalStressDirection;
         Real maxStress;
@@ -216,18 +214,18 @@ public:
     };
 
     /// Topology Data
-    TriangleData<sofa::helper::vector<TriangleInformation> > triangleInfo;
-    PointData<sofa::helper::vector<VertexInformation> > vertexInfo;
-    EdgeData<sofa::helper::vector<EdgeInformation> > edgeInfo;
+    topology::TriangleData<sofa::helper::vector<TriangleInformation> > triangleInfo;
+    topology::PointData<sofa::helper::vector<VertexInformation> > vertexInfo;
+    topology::EdgeData<sofa::helper::vector<EdgeInformation> > edgeInfo;
 
 
-    class TRQSTriangleHandler : public TopologyDataHandler<Triangle,vector<TriangleInformation> >
+    class TRQSTriangleHandler : public topology::TopologyDataHandler<topology::Triangle,vector<TriangleInformation> >
     {
     public:
-        TRQSTriangleHandler(TriangularFEMForceField<DataTypes>* _ff, TriangleData<sofa::helper::vector<TriangleInformation> >* _data) : TopologyDataHandler<Triangle, sofa::helper::vector<TriangleInformation> >(_data), ff(_ff) {}
+        TRQSTriangleHandler(TriangularFEMForceField<DataTypes>* _ff, topology::TriangleData<sofa::helper::vector<TriangleInformation> >* _data) : topology::TopologyDataHandler<topology::Triangle, sofa::helper::vector<TriangleInformation> >(_data), ff(_ff) {}
 
         void applyCreateFunction(unsigned int triangleIndex, TriangleInformation& ,
-                const Triangle & t,
+                const topology::Triangle & t,
                 const sofa::helper::vector< unsigned int > &,
                 const sofa::helper::vector< double > &);
 
@@ -269,15 +267,15 @@ public:
     int  getFracturedEdge();
     void getFractureCriteria(int element, Deriv& direction, Real& value);
     /// Compute value of stress along a given direction (typically the fiber direction and transverse direction in anisotropic materials)
-    void computeStressAlongDirection(Real &stress_along_dir, Index elementIndex, const Coord &direction, const Vec<3,Real> &stress);
+    void computeStressAlongDirection(Real &stress_along_dir, Index elementIndex, const Coord &direction, const defaulttype::Vec<3,Real> &stress);
     /// Compute value of stress along a given direction (typically the fiber direction and transverse direction in anisotropic materials)
     void computeStressAlongDirection(Real &stress_along_dir, Index elementIndex, const Coord &direction);
     /// Compute value of stress across a given direction (typically the fracture direction)
-    void computeStressAcrossDirection(Real &stress_across_dir, Index elementIndex, const Coord &direction, const Vec<3,Real> &stress);
+    void computeStressAcrossDirection(Real &stress_across_dir, Index elementIndex, const Coord &direction, const defaulttype::Vec<3,Real> &stress);
     /// Compute value of stress across a given direction (typically the fracture direction)
     void computeStressAcrossDirection(Real &stress_across_dir, Index elementIndex, const Coord &direction);
     /// Compute current stress
-    void computeStress(Vec<3,Real> &stress, Index elementIndex);
+    void computeStress(defaulttype::Vec<3,Real> &stress, Index elementIndex);
 
     // Getting the rotation of the vertex by averaing the rotation of neighboring elements
     void getRotation(Transformation& R, unsigned int nodeIdx);
@@ -289,11 +287,11 @@ protected :
     void computeDisplacementLarge(Displacement &D, Index elementIndex, const Transformation &R_2_0, const VecCoord &p);
     void computeStrainDisplacement(StrainDisplacement &J, Index elementIndex, Coord a, Coord b, Coord c );
     void computeStiffness(StrainDisplacement &J, Stiffness &K, MaterialStiffness &D);
-    void computeStrain(Vec<3,Real> &strain, const StrainDisplacement &J, const Displacement &D);
-    void computeStress(Vec<3,Real> &stress, MaterialStiffness &K, Vec<3,Real> &strain);
+    void computeStrain(defaulttype::Vec<3,Real> &strain, const StrainDisplacement &J, const Displacement &D);
+    void computeStress(defaulttype::Vec<3,Real> &stress, MaterialStiffness &K, defaulttype::Vec<3,Real> &strain);
     void computeForce(Displacement &F, Index elementIndex, const VecCoord &p);
-    void computePrincipalStrain(Index elementIndex, Vec<3,Real> &strain);
-    void computePrincipalStress(Index elementIndex, Vec<3,Real> &stress);
+    void computePrincipalStrain(Index elementIndex, defaulttype::Vec<3,Real> &strain);
+    void computePrincipalStress(Index elementIndex, defaulttype::Vec<3,Real> &stress);
 
 
     /// f += Kx where K is the stiffness matrix and x a displacement
