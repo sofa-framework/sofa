@@ -2492,8 +2492,8 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::draw(const core::visual::Visual
 
         for( SparseGridTopology::SeqEdges::const_iterator it = this->_sparseGrid->getEdges().begin() ; it != this->_sparseGrid->getEdges().end(); ++it)
         {
-            points.push_back( x[(*it)[1]] );
             points.push_back( x[(*it)[0]] );
+            points.push_back( x[(*it)[1]] );
         }
         vparams->drawTool()->drawLines(points, _drawSize.getValue(),colour);
     }
@@ -2510,10 +2510,10 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::draw(const core::visual::Visual
         // 				  helper::gl::drawSphere( x[i], _drawSize.getValue()*1.5 );
         // 			  }
 
-        colour=defaulttype::Vec<4,float>(0.95f, 0.95f, 0.7f,1.0f);
+        colour=sofa::defaulttype::Vec<4,float>(0.95f, 0.95f, 0.7f,1.0f);
 
 
-        std::vector< defaulttype::Vector3 > points;
+        std::vector< sofa::defaulttype::Vector3 > points;
         for(unsigned i=0; i<x.size(); ++i) points.push_back( x[i] );
         vparams->drawTool()->drawSpheres(points, _drawSize.getValue()*1.5f,colour);
     }
@@ -2527,7 +2527,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::draw(const core::visual::Visual
 
     {
 
-        std::vector< defaulttype::Vector3 > points;
+        std::vector< sofa::defaulttype::Vector3 > points;
         for(unsigned i=0; i<sgr->getConnexions()->size(); ++i)
         {
             helper::vector< topology::SparseGridRamificationTopology::Connexion *>& con = (*sgr->getConnexions())[i];
