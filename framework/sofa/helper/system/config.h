@@ -25,6 +25,8 @@
 #ifndef SOFA_HELPER_SYSTEM_CONFIG_H
 #define SOFA_HELPER_SYSTEM_CONFIG_H
 
+#include <sofa/SofaFramework.h>
+
 // to define NULL
 #include <cstring>
 
