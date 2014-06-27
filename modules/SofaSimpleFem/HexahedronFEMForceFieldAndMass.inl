@@ -40,8 +40,6 @@ namespace component
 namespace forcefield
 {
 
-using namespace sofa::defaulttype;
-
 
 template<class DataTypes>
 HexahedronFEMForceFieldAndMass<DataTypes>::HexahedronFEMForceFieldAndMass()
@@ -71,7 +69,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::init( )
     int i=0;
     for(typename VecElement::const_iterator it = this->getIndexedElements()->begin() ; it != this->getIndexedElements()->end() ; ++it, ++i)
     {
-        Vec<8,Coord> nodes;
+        defaulttype::Vec<8,Coord> nodes;
         for(int w=0; w<8; ++w)
 #ifndef SOFA_NEW_HEXA
             nodes[w] = this->_initialPoints.getValue()[(*it)[this->_indices[w]]];
@@ -149,7 +147,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::computeElementMasses(  )
     typename VecElement::const_iterator it;
     for(it = this->getIndexedElements()->begin() ; it != this->getIndexedElements()->end() ; ++it, ++i)
     {
-        Vec<8,Coord> nodes;
+        defaulttype::Vec<8,Coord> nodes;
         for(int w=0; w<8; ++w)
 #ifndef SOFA_NEW_HEXA
             nodes[w] = this->_initialPoints.getValue()[(*it)[this->_indices[w]]];
@@ -249,7 +247,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addMDx(const core::MechanicalPar
         for(it=this->getIndexedElements()->begin(); it!=this->getIndexedElements()->end(); ++it,++i)
         {
 
-            Vec<24, Real> actualDx, actualF;
+            defaulttype::Vec<24, Real> actualDx, actualF;
 
             for(int k=0 ; k<8 ; ++k )
             {

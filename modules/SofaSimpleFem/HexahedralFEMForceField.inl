@@ -61,15 +61,10 @@ namespace component
 namespace forcefield
 {
 
-using std::set;
-using namespace sofa::defaulttype;
-using namespace	sofa::component::topology;
-using namespace core::topology;
-
 template< class DataTypes>
 void HexahedralFEMForceField<DataTypes>::HFFHexahedronHandler::applyCreateFunction(unsigned int hexahedronIndex,
         HexahedronInformation &,
-        const Hexahedron &,
+        const topology::Hexahedron &,
         const sofa::helper::vector<unsigned int> &,
         const sofa::helper::vector<double> &)
 {
@@ -225,7 +220,7 @@ void HexahedralFEMForceField<DataTypes>::addDForce (const core::MechanicalParams
 }
 
 template<class DataTypes>
-void HexahedralFEMForceField<DataTypes>::computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M, const Vec<8,Coord> &nodes)
+void HexahedralFEMForceField<DataTypes>::computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M, const defaulttype::Vec<8,Coord> &nodes)
 {
     Mat33 J_1; // only accurate for orthogonal regular hexa
     J_1.fill( 0.0 );
@@ -428,7 +423,7 @@ void HexahedralFEMForceField<DataTypes>::initLarge(const int i)
 
     const VecCoord *X0=this->mstate->getX0();
 
-    Vec<8,Coord> nodes;
+    defaulttype::Vec<8,Coord> nodes;
     for(int w=0; w<8; ++w)
         nodes[w] = (*X0)[_topology->getHexahedron(i)[w]];
 
@@ -481,7 +476,7 @@ void HexahedralFEMForceField<DataTypes>::computeRotationLarge( Transformation &r
 template<class DataTypes>
 void HexahedralFEMForceField<DataTypes>::accumulateForceLarge( WDataRefVecDeriv& f, RDataRefVecCoord & p, const int i)
 {
-    Vec<8,Coord> nodes;
+    defaulttype::Vec<8,Coord> nodes;
     for(int w=0; w<8; ++w)
         nodes[w] = p[_topology->getHexahedron(i)[w]];
 
@@ -498,7 +493,7 @@ void HexahedralFEMForceField<DataTypes>::accumulateForceLarge( WDataRefVecDeriv&
     hexahedronInf[i].rotation.transpose(R_0_2);
 
     // positions of the deformed and displaced Hexahedre in its frame
-    Vec<8,Coord> deformed;
+    defaulttype::Vec<8,Coord> deformed;
     for(int w=0; w<8; ++w)
         deformed[w] = R_0_2 * nodes[w];
 
@@ -534,7 +529,7 @@ void HexahedralFEMForceField<DataTypes>::initPolar(const int i)
 {
     const VecCoord *X0=this->mstate->getX0();
 
-    Vec<8,Coord> nodes;
+    defaulttype::Vec<8,Coord> nodes;
     for(int j=0; j<8; ++j)
         nodes[j] = (*X0)[_topology->getHexahedron(i)[j]];
 
@@ -557,7 +552,7 @@ void HexahedralFEMForceField<DataTypes>::initPolar(const int i)
 
 
 template<class DataTypes>
-void HexahedralFEMForceField<DataTypes>::computeRotationPolar( Transformation &r, Vec<8,Coord> &nodes)
+void HexahedralFEMForceField<DataTypes>::computeRotationPolar( Transformation &r, defaulttype::Vec<8,Coord> &nodes)
 {
     Transformation A;
     Coord Edge =(nodes[1]-nodes[0] + nodes[2]-nodes[3] + nodes[5]-nodes[4] + nodes[6]-nodes[7])*.25;
@@ -585,7 +580,7 @@ void HexahedralFEMForceField<DataTypes>::computeRotationPolar( Transformation &r
 template<class DataTypes>
 void HexahedralFEMForceField<DataTypes>::accumulateForcePolar(WDataRefVecDeriv& f, RDataRefVecCoord & p, const int i)
 {
-    Vec<8,Coord> nodes;
+    defaulttype::Vec<8,Coord> nodes;
     for(int j=0; j<8; ++j)
         nodes[j] = p[_topology->getHexahedron(i)[j]];
 
@@ -598,7 +593,7 @@ void HexahedralFEMForceField<DataTypes>::accumulateForcePolar(WDataRefVecDeriv& 
     hexahedronInf[i].rotation.transpose( R_0_2 );
 
     // positions of the deformed and displaced Hexahedre in its frame
-    Vec<8,Coord> deformed;
+    defaulttype::Vec<8,Coord> deformed;
     for(int j=0; j<8; ++j)
         deformed[j] = R_0_2 * nodes[j];
 
@@ -685,7 +680,7 @@ void HexahedralFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
 
     for(int i = 0 ; i<_topology->getNbHexahedra(); ++i)
     {
-        const Hexahedron &t=_topology->getHexahedron(i);
+        const topology::Hexahedron &t=_topology->getHexahedron(i);
 
         Index a = t[0];
         Index b = t[1];

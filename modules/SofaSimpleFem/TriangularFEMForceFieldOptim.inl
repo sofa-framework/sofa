@@ -51,10 +51,6 @@ namespace component
 namespace forcefield
 {
 
-using namespace sofa::defaulttype;
-using namespace	sofa::component::topology;
-using namespace core::topology;
-
 // --------------------------------------------------------------------------------------
 // ---  Topology Creation/Destruction functions
 // --------------------------------------------------------------------------------------
@@ -309,14 +305,14 @@ void TriangularFEMForceFieldOptim<DataTypes>::addForce(const core::MechanicalPar
         Real dcy = ti.cy - ts.frame[1]*ac;
         //sout << "Elem" << i << ": D= 0 0  " << dbx << " 0  " << dcx << " " << dcy << sendl;
 
-        Vec<3,Real> strain (
+        defaulttype::Vec<3,Real> strain (
             ti.cy * dbx,                // ( cy,   0,  0,  0) * (dbx, dby, dcx, dcy)
             ti.bx * dcy,                // (  0, -cx,  0, bx) * (dbx, dby, dcx, dcy)
             ti.bx * dcx - ti.cx * dbx); // (-cx,  cy, bx,  0) * (dbx, dby, dcx, dcy)
 
         Real gammaXY = gamma*(strain[0]+strain[1]);
 
-        Vec<3,Real> stress (
+        defaulttype::Vec<3,Real> stress (
             mu*strain[0] + gammaXY,    // (gamma+mu, gamma   ,    0) * strain
             mu*strain[1] + gammaXY,    // (gamma   , gamma+mu,    0) * strain
             (Real)(0.5)*mu*strain[2]); // (       0,        0, mu/2) * strain
@@ -368,14 +364,14 @@ void TriangularFEMForceFieldOptim<DataTypes>::addDForce(const core::MechanicalPa
         Real dcx = ts.frame[0]*dac;
         Real dcy = ts.frame[1]*dac;
 
-        Vec<3,Real> dstrain (
+        defaulttype::Vec<3,Real> dstrain (
             ti.cy  * dbx,                             // ( cy,   0,  0,  0) * (dbx, dby, dcx, dcy)
             ti.bx * dcy - ti.cx * dby,                // (  0, -cx,  0, bx) * (dbx, dby, dcx, dcy)
             ti.bx * dcx - ti.cx * dbx + ti.cy * dby); // (-cx,  cy, bx,  0) * (dbx, dby, dcx, dcy)
 
         Real gammaXY = gamma*(dstrain[0]+dstrain[1]);
 
-        Vec<3,Real> dstress (
+        defaulttype::Vec<3,Real> dstress (
             mu*dstrain[0] + gammaXY,    // (gamma+mu, gamma   ,    0) * dstrain
             mu*dstrain[1] + gammaXY,    // (gamma   , gamma+mu,    0) * dstrain
             (Real)(0.5)*mu*dstrain[2]); // (       0,        0, mu/2) * dstrain

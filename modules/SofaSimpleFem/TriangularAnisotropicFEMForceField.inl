@@ -51,10 +51,6 @@ namespace component
 namespace forcefield
 {
 
-using namespace sofa::defaulttype;
-using namespace	sofa::component::topology;
-using namespace core::topology;
-
 template <class DataTypes>
 TriangularAnisotropicFEMForceField<DataTypes>::TriangularAnisotropicFEMForceField()
     : f_young2(initData(&f_young2,helper::vector<Real>(1,1000.0),"transverseYoungModulus","transverseYoungModulus","Young modulus along transverse direction"))
@@ -75,7 +71,7 @@ TriangularAnisotropicFEMForceField<DataTypes>::~TriangularAnisotropicFEMForceFie
 }
 
 template< class DataTypes>
-void TriangularAnisotropicFEMForceField<DataTypes>::TRQSTriangleHandler::applyCreateFunction(unsigned int triangleIndex, helper::vector<triangleInfo> &, const Triangle &t, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
+void TriangularAnisotropicFEMForceField<DataTypes>::TRQSTriangleHandler::applyCreateFunction(unsigned int triangleIndex, helper::vector<triangleInfo> &, const topology::Triangle &t, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
 {
     if (ff)
     {
@@ -163,7 +159,7 @@ void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int
     Coord fiberDirGlobal;  // orientation of the fiber in the global frame of reference
 
     Coord fiberDirLocalOrtho; //  // orientation of the fiber in the local orthonormal frame of the element
-    Mat<3,3,Real> T, Tinv;
+    defaulttype::Mat<3,3,Real> T, Tinv;
 
     helper::vector<TriangleInformation>& triangleInf = *(Inherited::triangleInfo.beginEdit());
 
