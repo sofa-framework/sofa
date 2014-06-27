@@ -34,7 +34,7 @@ include_directories( ${SofaSimulation_INCLUDE_DIRS} )
 #find_package(SofaBase REQUIRED)
 #include_directories( ${SofaBase_INCLUDE_DIRS} )
 
-configure_file( ${SofaCommon_SOURCE_DIR}/SofaCommon.config.in 
+configure_file( ${SofaCommon_SOURCE_DIR}/SofaCommon.h.in
                 ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaCommon.h )
 install( FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaCommon.h 
          DESTINATION "${SOFACOMMON_INSTALL_INCLUDE_DIR}/sofa")
