@@ -1,5 +1,4 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
-
+project(SofaNonUniformFem)
 set(HEADER_FILES
 
     initNonUniformFEM.h
@@ -45,7 +44,22 @@ set(GROUP_BASE_DIR "..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-AddCompilerDefinitions("SOFA_BUILD_NON_UNIFORM_FEM" )
-AddLinkerDependencies(SofaSimpleFem ${SOFA_VISUAL_LIB} SofaDenseSolver SofaVolumetricData )
+target_link_libraries( ${PROJECT_NAME} SofaSimpleFem ) 
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>")
 
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+set( COMPILER_FLAGS "-DSOFA_BUILD_NON_UNIFORM_FEM")
+
+set_target_properties( ${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d" )
+set_target_properties( ${PROJECT_NAME} PROPERTIES VERSION ${SOFAADVANCED_VERSION} )
+set_target_properties( ${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${COMPILER_FLAGS}"  )
+set_target_properties( ${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}" )
+
+install(TARGETS ${PROJECT_NAME}
+        COMPONENT SofaAdvanced_libraries
+        EXPORT  SofaAdvancedTargets
+        RUNTIME DESTINATION "${SOFAADVANCED_INSTALL_BIN_DIR}"
+        LIBRARY DESTINATION "${SOFAADVANCED_INSTALL_LIB_DIR}"
+        ARCHIVE DESTINATION "${SOFAADVANCED_INSTALL_LIB_DIR}"
+        PUBLIC_HEADER DESTINATION "${SOFAADVANCED_INSTALL_INCLUDE_DIR}/SofaNonUniformFem"
+        )
+
