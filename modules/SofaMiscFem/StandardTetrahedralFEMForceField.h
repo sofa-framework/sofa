@@ -134,7 +134,7 @@ public :
       /// Input stream
       inline friend istream& operator>> ( istream& in, TetrahedronRestInformation& /*eri*/ ) { return in; }
 
-      TetrahedronRestInformation() {}  
+      TetrahedronRestInformation(): tetraIndices(), tetraEdges() {}  
     };
     typedef typename VecCoord::template rebind<TetrahedronRestInformation>::other tetrahedronRestInfoVector;
     
@@ -152,7 +152,7 @@ public :
 	   /// Input stream
 	   inline friend istream& operator>> ( istream& in, EdgeInformation& /*eri*/ ) { return in; }
 
-     EdgeInformation() {}
+     EdgeInformation(): DfDx(), vertices() {}
    };
    typedef typename VecCoord::template rebind<EdgeInformation>::other edgeInformationVector;
 

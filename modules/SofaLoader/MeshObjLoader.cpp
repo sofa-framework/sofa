@@ -26,6 +26,7 @@
 #include <SofaLoader/MeshObjLoader.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/SetDirectory.h>
+#include <sstream>
 
 namespace sofa
 {
@@ -486,7 +487,9 @@ bool MeshObjLoader::readMTL(const char* filename, helper::vector <Material>& mat
     else
     {
         /* now, read in the data */
-        while (fscanf(file, "%s", buf) != EOF)
+        std::ostringstream cmdScanFormat;
+        cmdScanFormat << "%" << (sizeof(buf) - 1) << "s";
+        while (fscanf(file, cmdScanFormat.str().c_str(), buf) != EOF)
         {
 
             switch (buf[0])
@@ -518,8 +521,8 @@ bool MeshObjLoader::readMTL(const char* filename, helper::vector <Material>& mat
                     else
                         serr << "Error: MeshObjLoader: fgets function has encounter an error. case n." << sendl;
                 }
-
-                sscanf(buf, "%s %s", buf, buf);
+                cmdScanFormat << " %" << (sizeof(buf) - 1) << "s";
+                sscanf(buf, cmdScanFormat.str().c_str(), buf, buf);
                 mat->name = buf;
                 break;
             case 'N':
