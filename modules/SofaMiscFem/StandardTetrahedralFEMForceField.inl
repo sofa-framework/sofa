@@ -64,13 +64,13 @@ namespace forcefield
 template< class DataTypes>
 void StandardTetrahedralFEMForceField<DataTypes>::GHTetrahedronHandler::applyCreateFunction(unsigned int tetrahedronIndex, 
                                                                                             TetrahedronRestInformation & tinfo,                                                                                        
-                                                                                            const Tetrahedron &,
+                                                                                            const topology::Tetrahedron &,
                                                                                             const sofa::helper::vector<unsigned int> &,
                                                                                             const sofa::helper::vector<double> &)
 {
     if (ff) {
-		const vector< Tetrahedron > &tetrahedronArray=ff->_topology->getTetrahedra() ;
-		const std::vector< Edge> &edgeArray=ff->_topology->getEdges() ;
+		const vector< topology::Tetrahedron > &tetrahedronArray=ff->_topology->getTetrahedra() ;
+		const std::vector< topology::Edge> &edgeArray=ff->_topology->getEdges() ;
 		unsigned int j;
                 int k/*,l*/;
 		typename DataTypes::Real volume;
@@ -78,8 +78,8 @@ void StandardTetrahedralFEMForceField<DataTypes>::GHTetrahedronHandler::applyCre
 		const typename DataTypes::VecCoord *restPosition=ff->mstate->getX0();
 
 		///describe the indices of the 4 tetrahedron vertices  
-		const Tetrahedron &t= tetrahedronArray[tetrahedronIndex];
-		BaseMeshTopology::EdgesInTetrahedron te=ff->_topology->getEdgesInTetrahedron(tetrahedronIndex);
+		const topology::Tetrahedron &t= tetrahedronArray[tetrahedronIndex];
+        core::topology::BaseMeshTopology::EdgesInTetrahedron te=ff->_topology->getEdgesInTetrahedron(tetrahedronIndex);
 
         //store point indices
         tinfo.tetraIndices[0] = (float)t[0];
@@ -114,7 +114,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::GHTetrahedronHandler::applyCre
 
 
 		for(j=0;j<6;++j) {
-			Edge e=ff->_topology->getLocalEdgesInTetrahedron(j);
+			topology::Edge e=ff->_topology->getLocalEdgesInTetrahedron(j);
 			k=e[0];
             //l=e[1];
 			if (edgeArray[te[j]][0]!=t[k]) {
@@ -176,60 +176,60 @@ template <class DataTypes> void StandardTetrahedralFEMForceField<DataTypes>::ini
 	}
 	//vector<HyperelasticMaterialTerm *> materialTermArray;
 	/** parse the input material name */
-	string material = f_materialName.getValue();
+    std::string material = f_materialName.getValue();
 	if(material=="ArrudaBoyce") {
 		fem::BoyceAndArruda<DataTypes> *BoyceAndArrudaMaterial = new fem::BoyceAndArruda<DataTypes>;
 		myMaterial = BoyceAndArrudaMaterial;
-		cout<<"The model is "<<material<<endl;
+		std::cout<<"The model is "<<material<<std::endl;
 		//	materialTermArray =  myMaterial->getMaterialTermArray();
 	} 
 	else if (material=="StVenantKirchhoff"){
 		fem::STVenantKirchhoff<DataTypes> *STVenantKirchhoffMaterial = new fem::STVenantKirchhoff<DataTypes>;
 		myMaterial = STVenantKirchhoffMaterial;
-		cout<<"The model is "<<material<<endl;
+		std::cout<<"The model is "<<material<<std::endl;
 		//	materialTermArray =  myMaterial->getMaterialTermArray();
 	}
 	else if (material=="NeoHookean"){
 		fem::NeoHookean<DataTypes> *NeoHookeanMaterial = new fem::NeoHookean<DataTypes>;
 		myMaterial = NeoHookeanMaterial;
-		cout<<"The model is "<<material<<endl;
+		std::cout<<"The model is "<<material<<std::endl;
 		//materialTermArray =  myMaterial->getMaterialTermArray();
 	}
 	else if (material=="MooneyRivlin"){
 		fem::MooneyRivlin<DataTypes> *MooneyRivlinMaterial = new fem::MooneyRivlin<DataTypes>;
 		myMaterial = MooneyRivlinMaterial;
-		cout<<"The model is "<<material<<endl;
+		std::cout<<"The model is "<<material<<std::endl;
 		//	materialTermArray =  myMaterial->getMaterialTermArray();
 	}
 	else if (material=="VerondaWestman"){
 		fem::VerondaWestman<DataTypes> *VerondaWestmanMaterial = new fem::VerondaWestman<DataTypes>;
 		myMaterial = VerondaWestmanMaterial;
-		cout<<"The model is "<<material<<endl;
+		std::cout<<"The model is "<<material<<std::endl;
 		//	materialTermArray =  myMaterial->getMaterialTermArray();
 	}
 
 	else if (material=="Costa"){
 		fem::Costa<DataTypes> *CostaMaterial = new fem::Costa<DataTypes>();
 		myMaterial =CostaMaterial;
-		cout<<"The model is "<<material<<endl;
+		std::cout<<"The model is "<<material<<std::endl;
 		//	materialTermArray =  myMaterial->getMaterialTermArray();
 	}
 	else if (material=="Ogden"){
 		fem::Ogden<DataTypes> *OgdenMaterial = new fem::Ogden<DataTypes>();
 		myMaterial =OgdenMaterial;
-		cout<<"The model is "<<material<<endl;
+		std::cout<<"The model is "<<material<<std::endl;
 		//	materialTermArray =  myMaterial->getMaterialTermArray();
 	}
 
 
 	else {
-		cerr << "material name " << material << " is not valid"<<endl;
+        std::cerr << "material name " << material << " is not valid" << std::endl;
 	}
 
 
 	if (!_topology->getNbTetrahedra())
 	{
-		cerr << "ERROR(StandardTetrahedralFEMForceField): object must have a Tetrahedral Set Topology.\n";
+        std::cerr << "ERROR(StandardTetrahedralFEMForceField): object must have a Tetrahedral Set Topology.\n";
 		return;
 	}
 
@@ -309,7 +309,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::addForce(const core::Mechanica
 	for(i=0; i<nbTetrahedra; i++ )
 	{
 		tetInfo=&tetrahedronInf[i];
-		const Tetrahedron &ta= _topology->getTetrahedron(i);
+		const topology::Tetrahedron &ta= _topology->getTetrahedron(i);
 
 		x0=x[ta[0]];
 
@@ -423,7 +423,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::addDForce(const core::Mechanic
 
 	unsigned int i=0,j=0,k=0,l=0;
 	unsigned int nbEdges=_topology->getNbEdges();
-	const vector< Edge> &edgeArray=_topology->getEdges() ;
+	const vector< topology::Edge> &edgeArray=_topology->getEdges() ;
 
 	helper::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
 	tetrahedronRestInfoVector& tetrahedronInf = *(tetrahedronInfo.beginEdit());
@@ -436,7 +436,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::addDForce(const core::Mechanic
 
 		TetrahedronRestInformation *tetInfo;
 		unsigned int nbTetrahedra=_topology->getNbTetrahedra();
-		const std::vector< Tetrahedron> &tetrahedronArray=_topology->getTetrahedra() ;
+		const std::vector< topology::Tetrahedron> &tetrahedronArray=_topology->getTetrahedra() ;
 
 		for(l=0; l<nbEdges; l++ )edgeInf[l].DfDx.clear();
 		for(i=0; i<nbTetrahedra; i++ )
@@ -444,13 +444,13 @@ void StandardTetrahedralFEMForceField<DataTypes>::addDForce(const core::Mechanic
 			tetInfo=&tetrahedronInf[i];
 //			Matrix3 &df=tetInfo->deformationGradient;
 //			Matrix3 Tdf=df.transposed();
-			BaseMeshTopology::EdgesInTetrahedron te=_topology->getEdgesInTetrahedron(i);
+            core::topology::BaseMeshTopology::EdgesInTetrahedron te=_topology->getEdgesInTetrahedron(i);
 
 			/// describe the jth vertex index of triangle no i 
-			const Tetrahedron &ta= tetrahedronArray[i];
+			const topology::Tetrahedron &ta= tetrahedronArray[i];
 			for(j=0;j<6;j++) {
 				einfo= &edgeInf[te[j]];
-				Edge e=_topology->getLocalEdgesInTetrahedron(j);
+				topology::Edge e=_topology->getLocalEdgesInTetrahedron(j);
 
 				k=e[0];
 				l=e[1];
@@ -544,7 +544,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::draw(const core::visual::Visua
 
 
 template<class DataTypes>
-Mat<3,3,double> StandardTetrahedralFEMForceField<DataTypes>::getPhi(int TetrahedronIndex)
+defaulttype::Mat<3,3,double> StandardTetrahedralFEMForceField<DataTypes>::getPhi(int TetrahedronIndex)
 {
 	tetrahedronRestInfoVector& tetrahedronInf = *(tetrahedronInfo.beginEdit());
 	TetrahedronRestInformation *tetInfo;
@@ -605,7 +605,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::testDerivatives()
 
 		// get current energy around
 		Real energy1 = 0;
-		BaseMeshTopology::TetrahedraAroundVertex vTetras = _topology->getTetrahedraAroundVertex( moveIdx );
+        core::topology::BaseMeshTopology::TetrahedraAroundVertex vTetras = _topology->getTetrahedraAroundVertex( moveIdx );
 		for(unsigned int i = 0; i < vTetras.size(); ++i)
 		{
 			energy1 += tetrahedronInf[vTetras[i]].strainEnergy * tetrahedronInf[vTetras[i]].restVolume;
@@ -641,10 +641,10 @@ void StandardTetrahedralFEMForceField<DataTypes>::testDerivatives()
 		}
 
 		// check 2nd derivative for off-diagonal elements:
-		BaseMeshTopology::EdgesAroundVertex vEdges = _topology->getEdgesAroundVertex( moveIdx ); 
+        core::topology::BaseMeshTopology::EdgesAroundVertex vEdges = _topology->getEdgesAroundVertex( moveIdx ); 
 		for (unsigned int eIdx=0; eIdx<vEdges.size(); eIdx++)
 		{
-			BaseMeshTopology::Edge edge = _topology->getEdge( vEdges[eIdx] );
+            core::topology::BaseMeshTopology::Edge edge = _topology->getEdge( vEdges[eIdx] );
 			unsigned int testIdx = edge[0];
 			if (testIdx==moveIdx) testIdx = edge[1];
 			Coord deltaForceFactual = force2[testIdx] - force1[testIdx];

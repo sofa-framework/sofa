@@ -29,7 +29,6 @@
 #pragma once
 #endif
 #include <SofaMiscFem/HyperelasticMaterial.h>
-#include <sofa/component/component.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/defaulttype/Vec.h>
@@ -50,9 +49,6 @@ namespace component
 
 namespace forcefield
 {
-using namespace std;
-using namespace sofa::defaulttype;
-using namespace sofa::component::topology;
 
 
 //***************** Tetrahedron FEM code for several elastic models: StandardTetrahedralFEMForceField*******************************************************************
@@ -74,17 +70,16 @@ class StandardTetrahedralFEMForceField: public core::behavior::ForceField<DataTy
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
-    typedef Mat<3,3,Real> Matrix3;
-	typedef Mat<6,6,Real> Matrix6;
-	typedef Mat<6,3,Real> Matrix63;
-	typedef MatSym<3,Real> MatrixSym;
+    typedef defaulttype::Mat<3,3,Real> Matrix3;
+    typedef defaulttype::Mat<6,6,Real> Matrix6;
+    typedef defaulttype::Mat<6,3,Real> Matrix63;
+    typedef defaulttype::MatSym<3,Real> MatrixSym;
 
-	typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv; 
-	typedef core::objectmodel::Data<VecCoord>    DataVecCoord; 
+    typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv; 
+    typedef core::objectmodel::Data<VecCoord>    DataVecCoord; 
 
     typedef helper::vector<Real> SetParameterArray;
     typedef helper::vector<Coord> SetAnisotropyDirectionArray;
-	
 
     typedef core::topology::BaseMeshTopology::index_type Index;
     typedef core::topology::BaseMeshTopology::Tetra Element;
@@ -130,9 +125,9 @@ public :
       float tetraEdges[6];
 
       /// Output stream
-      inline friend ostream& operator<< ( ostream& os, const TetrahedronRestInformation& /*eri*/ ) {  return os;  }
+      inline friend std::ostream& operator<< ( std::ostream& os, const TetrahedronRestInformation& /*eri*/ ) {  return os;  }
       /// Input stream
-      inline friend istream& operator>> ( istream& in, TetrahedronRestInformation& /*eri*/ ) { return in; }
+      inline friend std::istream& operator>> ( std::istream& in, TetrahedronRestInformation& /*eri*/ ) { return in; }
 
       TetrahedronRestInformation() {}  
     };
@@ -148,9 +143,9 @@ public :
        float vertices[2];
 
 	   /// Output stream
-	   inline friend ostream& operator<< ( ostream& os, const EdgeInformation& /*eri*/ ) {  return os;  }
+	   inline friend std::ostream& operator<< ( std::ostream& os, const EdgeInformation& /*eri*/ ) {  return os;  }
 	   /// Input stream
-	   inline friend istream& operator>> ( istream& in, EdgeInformation& /*eri*/ ) { return in; }
+	   inline friend std::istream& operator>> ( std::istream& in, EdgeInformation& /*eri*/ ) { return in; }
 
      EdgeInformation() {}
    };
@@ -161,15 +156,15 @@ public :
    VecCoord  _initialPoints;	/// the intial positions of the points
    bool updateMatrix;
    bool  _meshSaved ;
-   Data<string> f_materialName; /// the name of the material
+   Data<std::string> f_materialName; /// the name of the material
    Data<SetParameterArray> f_parameterSet;
    Data<SetAnisotropyDirectionArray> f_anisotropySet;
-   Data<string> f_parameterFileName;
+   Data<std::string> f_parameterFileName;
 
    
 public:
 
-	void setMaterialName(const string name) {
+	void setMaterialName(const std::string name) {
 		f_materialName.setValue(name);
 	}
 	void setparameter(const vector<Real> param) {
@@ -197,22 +192,24 @@ public:
 
     void draw(const core::visual::VisualParams* vparams);
 
-	Mat<3,3,double> getPhi( int );
+    defaulttype::Mat<3,3,double> getPhi( int );
 
-        class GHTetrahedronHandler : public TopologyDataHandler<Tetrahedron, tetrahedronRestInfoVector >
+    class GHTetrahedronHandler : public topology::TopologyDataHandler<topology::Tetrahedron, tetrahedronRestInfoVector >
         {
         public:
           typedef typename StandardTetrahedralFEMForceField<DataTypes>::TetrahedronRestInformation TetrahedronRestInformation;
 
           GHTetrahedronHandler(StandardTetrahedralFEMForceField<DataTypes>* ff,
-                                 TetrahedronData<tetrahedronRestInfoVector>* data )
-            :TopologyDataHandler<Tetrahedron, tetrahedronRestInfoVector >(data)
+                               topology::TetrahedronData<tetrahedronRestInfoVector>* data )
+            :topology::TopologyDataHandler<topology::Tetrahedron, tetrahedronRestInfoVector >(data)
             ,ff(ff)
           {
           }
 
-          void applyCreateFunction(unsigned int, TetrahedronRestInformation &t, const Tetrahedron
-                                   &, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &);
+          void applyCreateFunction(unsigned int, TetrahedronRestInformation &t,
+                                   const topology::Tetrahedron&,
+                                   const sofa::helper::vector<unsigned int> &,
+                                   const sofa::helper::vector<double> &);
 
          protected:
           StandardTetrahedralFEMForceField<DataTypes>* ff;
@@ -224,9 +221,9 @@ public:
 
 	fem::HyperelasticMaterial<DataTypes> *myMaterial;
 
-        TetrahedronData<tetrahedronRestInfoVector> tetrahedronInfo;
+        topology::TetrahedronData<tetrahedronRestInfoVector> tetrahedronInfo;
         //EdgeData<sofa::helper::vector< EdgeInformation> > edgeInfo;
-        EdgeData<edgeInformationVector> edgeInfo;
+        topology::EdgeData<edgeInformationVector> edgeInfo;
 
 
         void testDerivatives();
