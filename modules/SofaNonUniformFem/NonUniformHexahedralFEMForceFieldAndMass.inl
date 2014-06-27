@@ -43,7 +43,6 @@ namespace forcefield
 {
 
 using std::set;
-using namespace sofa::defaulttype;
 
 template <class DataTypes>
 NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::NonUniformHexahedralFEMForceFieldAndMass()
@@ -267,7 +266,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleTopologyChange(core::top
 }
 
 template<class T>
-void NonUniformHexahedralFEMForceFieldAndMass<T>::handleHexaAdded(const HexahedraAdded& hexaAddedEvent)
+void NonUniformHexahedralFEMForceFieldAndMass<T>::handleHexaAdded(const core::topology::HexahedraAdded& hexaAddedEvent)
 {
     const sofa::helper::vector<unsigned int> &hexaModif = hexaAddedEvent.hexahedronIndexArray;
 
@@ -332,7 +331,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleHexaAdded(const Hexahedr
 }
 
 template<class T>
-void NonUniformHexahedralFEMForceFieldAndMass<T>::handleHexaRemoved(const HexahedraRemoved& hexaRemovedEvent)
+void NonUniformHexahedralFEMForceFieldAndMass<T>::handleHexaRemoved(const core::topology::HexahedraRemoved& hexaRemovedEvent)
 {
     const sofa::helper::vector<unsigned int> &hexaModif = hexaRemovedEvent.getArray();
 

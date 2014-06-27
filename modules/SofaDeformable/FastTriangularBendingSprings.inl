@@ -53,7 +53,7 @@ namespace component
 
 namespace forcefield
 {
-typedef core::topology::BaseMeshTopology::BaseMeshTopology::EdgesInTriangle EdgesInTriangle;
+typedef core::topology::BaseMeshTopology::EdgesInTriangle EdgesInTriangle;
 
 template< class DataTypes>
 void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyCreateFunction(unsigned int /*edgeIndex*/, EdgeSpring &ei, const sofa::component::topology::Edge &, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)

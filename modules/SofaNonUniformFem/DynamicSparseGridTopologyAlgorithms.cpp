@@ -25,7 +25,6 @@
 
 #define SOFA_COMPONENT_TOPOLOGY_DYNAMICSPARSEGRIDTOPOLOGYALGORITHMS_CPP
 #include <SofaNonUniformFem/DynamicSparseGridTopologyAlgorithms.h>
-#include <SofaNonUniformFem/DynamicSparseGridTopologyAlgorithms.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>
 
@@ -36,6 +35,7 @@ namespace component
 namespace topology
 {
 using namespace sofa::defaulttype;
+
 SOFA_DECL_CLASS(DynamicSparseGridTopologyAlgorithms);
 int DynamicSparseGridTopologyAlgorithmsClass = core::RegisterObject("Hexahedron set topology algorithms")
 #ifdef SOFA_FLOAT

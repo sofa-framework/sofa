@@ -42,11 +42,6 @@ namespace component
 namespace forcefield
 {
 
-using std::set;
-using namespace sofa::defaulttype;
-using topology::SparseGridMultipleTopology;
-
-
 template <class DataTypes>
 void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
 {
