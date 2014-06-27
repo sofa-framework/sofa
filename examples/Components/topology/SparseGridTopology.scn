@@ -5,6 +5,7 @@
     <BruteForceDetection name="N2" />
     <CollisionResponse name="Response" response="default" />
     <CollisionGroup name="Group" />
+    <DiscreteIntersection/>
     <Node name="DragonCoarse">
         <SparseGrid n="6 5 4" fileTopology="mesh/dragon.obj" />
         <EulerImplicit />
@@ -37,8 +38,9 @@
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
-            <MechanicalObject />
-            <Sphere filename="mesh/dragon.sph" />
+	    <SphereLoader filename="mesh/dragon.sph" />
+            <MechanicalObject position="@[-1].position" />
+            <Sphere listRadius="@[-2].listRadius" />
             <BarycentricMapping />
         </Node>
     </Node>
@@ -55,8 +57,9 @@
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
-            <MechanicalObject />
-            <Sphere filename="mesh/dragon.sph" />
+	    <SphereLoader filename="mesh/dragon.sph" />
+            <MechanicalObject position="@[-1].position" />
+            <Sphere listRadius="@[-2].listRadius" />
             <BarycentricMapping />
         </Node>
     </Node>
