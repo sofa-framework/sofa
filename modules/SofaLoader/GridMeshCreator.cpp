@@ -148,8 +148,8 @@ bool GridMeshCreator::load()
         }
 
     helper::vector<Edge >& my_edges = *(edges.beginEdit());
-    for( std::set<Edge>::const_iterator i=uniqueEdges.begin(),iend=uniqueEdges.end(); i!=iend; i++ )
-        my_edges.push_back( *i );
+    for( std::set<Edge>::const_iterator it=uniqueEdges.begin(),itEnd=uniqueEdges.end(); it!=itEnd; ++it )
+        my_edges.push_back( *it );
     edges.endEdit();
 
     return true;
