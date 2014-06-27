@@ -152,7 +152,7 @@ class ContactMapper<RigidSphereModel,TVec3Types > : public RigidContactMapper<Ri
             RigidSphere e(this->model, index);
             const typename RigidSphereModel::DataTypes::Coord & rCenter = e.rigidCenter();
             const typename TVec3Types::Coord & cP = P - rCenter.getCenter();
-            const Quaternion & ori = rCenter.getOrientation();
+            const defaulttype::Quaternion & ori = rCenter.getOrientation();
 
             //r = e.r();
 
@@ -167,7 +167,7 @@ class ContactMapper<OBBModel,TVec3Types > : public RigidContactMapper<OBBModel, 
         int addPoint(const typename TVec3Types::Coord & P, int index,typename TVec3Types::Real & r)
         {
             const typename TVec3Types::Coord & cP = P - this->model->center(index);
-            const Quaternion & ori = this->model->orientation(index);
+            const defaulttype::Quaternion & ori = this->model->orientation(index);
 
             return RigidContactMapper<OBBModel,TVec3Types >::addPoint(ori.inverseRotate(cP),index,r);
         }
@@ -179,7 +179,7 @@ class ContactMapper<RigidCapsuleModel,TVec3Types > : public RigidContactMapper<R
         int addPoint(const typename TVec3Types::Coord & P, int index,typename TVec3Types::Real & r)
         {
             const typename TVec3Types::Coord & cP = P - this->model->center(index);
-            const Quaternion & ori = this->model->orientation(index);
+            const defaulttype::Quaternion & ori = this->model->orientation(index);
 
             return RigidContactMapper<RigidCapsuleModel,TVec3Types >::addPoint(ori.inverseRotate(cP),index,r);
         }
@@ -191,7 +191,7 @@ class ContactMapper<CylinderModel,TVec3Types > : public RigidContactMapper<Cylin
         int addPoint(const typename TVec3Types::Coord & P, int index,typename TVec3Types::Real & r)
         {
             const typename TVec3Types::Coord & cP = P - this->model->center(index);
-            const Quaternion & ori = this->model->orientation(index);
+            const defaulttype::Quaternion & ori = this->model->orientation(index);
 
             return RigidContactMapper<CylinderModel,TVec3Types >::addPoint(ori.inverseRotate(cP),index,r);
         }

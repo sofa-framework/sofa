@@ -138,7 +138,7 @@ public:
     {
         return this->mapper->createPointInLine(P, this->model->getElemEdgeIndex(index), this->model->getMechanicalState()->getX());
     }
-    int addPointB(const Coord& /*P*/, int index, Real& /*r*/, const Vector3& baryP)
+    int addPointB(const Coord& /*P*/, int index, Real& /*r*/, const defaulttype::Vector3& baryP)
     {
         return this->mapper->addPointInLine(this->model->getElemEdgeIndex(index), baryP.ptr());
     }
@@ -172,7 +172,7 @@ public:
             }
         }
     }
-    int addPointB(const Coord& P, int index, Real& /*r*/, const Vector3& baryP)
+    int addPointB(const Coord& P, int index, Real& /*r*/, const defaulttype::Vector3& baryP)
     {
 
         int nbt = this->model->getMeshTopology()->getNbTriangles();
