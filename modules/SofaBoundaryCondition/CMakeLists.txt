@@ -1,4 +1,5 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8)
+project(SofaBoundaryCondition)
 
 set(HEADER_FILES
 
@@ -106,7 +107,7 @@ set(SOURCE_FILES
     SkeletalMotionConstraint.cpp
     )
 
-if(SOFA-LIB_COMPONENT_EIGEN2_SOLVER)
+if(SOFA_HAVE_EIGEN2)
     list(APPEND HEADER_FILES "ProjectToLineConstraint.h")
     list(APPEND HEADER_FILES "ProjectToLineConstraint.inl")
     list(APPEND HEADER_FILES "ProjectToPlaneConstraint.h")
@@ -124,12 +125,26 @@ endif()
 
 set(GROUP_BASE_DIR "..")
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-AddCompilerDefinitions("SOFA_BUILD_BOUNDARY_CONDITION")
-AddLinkerDependencies(SofaBaseTopology)
-if(SOFA-LIB_COMPONENT_EIGEN2_SOLVER)
-    AddLinkerDependencies(SofaEigen2Solver)
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries( ${PROJECT_NAME} SofaBaseTopology )
+if(SOFA_HAVE_EIGEN2)
+    target_link_libraries( ${PROJECT_NAME} SofaEigen2Solver )
 endif()
 
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+set( SOFABOUNDARY_CONDITION_COMPILER_FLAGS "-DSOFA_BUILD_BOUNDARY_CONDITION")
+
+set_target_properties( ${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d" )
+set_target_properties( ${PROJECT_NAME} PROPERTIES VERSION ${SOFAGENERAL_VERSION} )
+set_target_properties( ${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFABOUNDARY_CONDITION_COMPILER_FLAGS}"  )
+set_target_properties( ${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}" )
+
+install(TARGETS ${PROJECT_NAME}
+        COMPONENT SofaBoundaryCondition_libraries
+        EXPORT    SofaGeneralTargets
+        RUNTIME DESTINATION "${SOFAGENERAL_INSTALL_BIN_DIR}"
+        LIBRARY DESTINATION "${SOFAGENERAL_INSTALL_LIB_DIR}"
+        ARCHIVE DESTINATION "${SOFAGENERAL_INSTALL_LIB_DIR}"
+        PUBLIC_HEADER DESTINATION "${SOFAGENERAL_INSTALL_INCLUDE_DIR}/${PROJECT_NAME}"
+
+)

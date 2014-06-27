@@ -1,4 +1,5 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8)
+project(SofaPreconditioner)
 
 set(HEADER_FILES
 
@@ -30,12 +31,25 @@ set(SOURCE_FILES
 set(GROUP_BASE_DIR "..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-
-AddCompilerDefinitions("SOFA_BUILD_PRECONDITIONER" )
-AddLinkerDependencies(SofaDenseSolver SofaImplicitOdeSolver SofaSimpleFem )
-
-if(SOFA-EXTERNAL_CSPARSE)
-    AddLinkerDependencies(SofaSparseSolver)
+target_link_libraries( ${PROJECT_NAME} SofaDenseSolver SofaImplicitOdeSolver SofaSimpleFem )
+if(SOFA_HAVE_CSPARSE)
+    target_link_libraries( ${PROJECT_NAME} SofaSparseSolver )
 endif()
 
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+
+set( SOFAPRECONDITIONER_COMPILER_FLAGS "-DSOFA_BUILD_PRECONDITIONER")
+
+set_target_properties( ${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d" )
+set_target_properties( ${PROJECT_NAME} PROPERTIES VERSION ${SOFAGENERAL_VERSION} )
+set_target_properties( ${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFAPRECONDITIONER_COMPILER_FLAGS}"  )
+set_target_properties( ${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}" )
+
+install(TARGETS ${PROJECT_NAME}
+        COMPONENT SofaPreconditioner_libraries
+        EXPORT    SofaGeneralTargets
+        RUNTIME DESTINATION "${SOFAGENERAL_INSTALL_BIN_DIR}"
+        LIBRARY DESTINATION "${SOFAGENERAL_INSTALL_LIB_DIR}"
+        ARCHIVE DESTINATION "${SOFAGENERAL_INSTALL_LIB_DIR}"
+        PUBLIC_HEADER DESTINATION "${SOFAGENERAL_INSTALL_INCLUDE_DIR}/${PROJECT_NAME}"
+
+)
