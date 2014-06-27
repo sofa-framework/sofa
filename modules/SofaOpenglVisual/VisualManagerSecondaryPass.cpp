@@ -101,8 +101,6 @@ void VisualManagerSecondaryPass::initVisual()
 void VisualManagerSecondaryPass::initShaderInputTexId()
 {
     nbFbo=0;
-    VisualManagerPass *currentPass=NULL;
-    VisualManagerSecondaryPass *currentSecondaryPass=NULL;
 
     sofa::simulation::Node* gRoot = dynamic_cast<simulation::Node*>(this->getContext());
     sofa::simulation::Node::Sequence<core::visual::VisualManager>::iterator begin = gRoot->visualManager.begin();
@@ -110,8 +108,8 @@ void VisualManagerSecondaryPass::initShaderInputTexId()
     sofa::simulation::Node::Sequence<core::visual::VisualManager>::iterator it;
     for (it = begin; it != end; ++it)
     {
-        currentPass=dynamic_cast<VisualManagerPass*>((*it));
-        currentSecondaryPass=dynamic_cast<VisualManagerSecondaryPass*>((*it));
+        VisualManagerPass *currentPass=dynamic_cast<VisualManagerPass*>((*it));
+        VisualManagerSecondaryPass *currentSecondaryPass=dynamic_cast<VisualManagerSecondaryPass*>((*it));
         if(currentSecondaryPass && (this->getName()!=currentSecondaryPass->getName()))
         {
             if((!currentSecondaryPass->getOutputTags().empty()) && (input_tags.getValue().includes(currentSecondaryPass->getOutputTags())) )
@@ -191,14 +189,14 @@ void VisualManagerSecondaryPass::preDrawScene(core::visual::VisualParams* vp)
 
 void VisualManagerSecondaryPass::traceFullScreenQuad()
 {
-    float vxmax, vymax, vzmax ;
-    float vxmin, vymin, vzmin ;
-    float txmax,tymax,tzmax;
-    float txmin,tymin,tzmin;
+    float vxmax, vymax ;
+    float vxmin, vymin ;
+    float txmax,tymax;
+    float txmin,tymin;
 
-    txmin = tymin = tzmin = 0.0;
-    vxmin = vymin = vzmin = -1.0;
-    vxmax = vymax = vzmax = txmax = tymax = tzmax = 1.0;
+    txmin = tymin = 0.0;
+    vxmin = vymin = -1.0;
+    vxmax = vymax = txmax = tymax = 1.0;
 
     glBegin(GL_QUADS);
     {
@@ -213,8 +211,6 @@ void VisualManagerSecondaryPass::traceFullScreenQuad()
 void VisualManagerSecondaryPass::bindInput(core::visual::VisualParams* /*vp*/)
 {
     nbFbo=0;
-    VisualManagerPass *currentPass=NULL;
-    VisualManagerSecondaryPass *currentSecondaryPass=NULL;
 
     sofa::simulation::Node* gRoot = dynamic_cast<simulation::Node*>(this->getContext());
     sofa::simulation::Node::Sequence<core::visual::VisualManager>::iterator begin = gRoot->visualManager.begin();
@@ -222,8 +218,8 @@ void VisualManagerSecondaryPass::bindInput(core::visual::VisualParams* /*vp*/)
     sofa::simulation::Node::Sequence<core::visual::VisualManager>::iterator it;
     for (it = begin; it != end; ++it)
     {
-        currentPass=dynamic_cast<VisualManagerPass*>((*it));
-        currentSecondaryPass=dynamic_cast<VisualManagerSecondaryPass*>((*it));
+        VisualManagerPass *currentPass=dynamic_cast<VisualManagerPass*>((*it));
+        VisualManagerSecondaryPass *currentSecondaryPass=dynamic_cast<VisualManagerSecondaryPass*>((*it));
         if(currentSecondaryPass && (this->getName()!=currentSecondaryPass->getName()))
         {
             if((!currentSecondaryPass->getOutputTags().empty()) && (input_tags.getValue().includes(currentSecondaryPass->getOutputTags())) )
@@ -239,7 +235,6 @@ void VisualManagerSecondaryPass::bindInput(core::visual::VisualParams* /*vp*/)
                 glBindTexture(GL_TEXTURE_2D, currentSecondaryPass->getFBO()->getColorTexture());
 
                 ++nbFbo;
-
             }
         }
         else
@@ -270,8 +265,6 @@ void VisualManagerSecondaryPass::bindInput(core::visual::VisualParams* /*vp*/)
                     ++nbFbo;
                 }
             }
-
-
         }
     }
     glActiveTexture(GL_TEXTURE0);

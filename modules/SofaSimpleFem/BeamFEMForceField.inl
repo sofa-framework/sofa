@@ -308,8 +308,6 @@ void BeamFEMForceField<DataTypes>::addDForce(const sofa::core::MechanicalParams 
 
     df.resize(dx.size());
 
-    unsigned int i=0;
-
     if (_partial_list_segment)
     {
 
@@ -327,7 +325,7 @@ void BeamFEMForceField<DataTypes>::addDForce(const sofa::core::MechanicalParams 
     else
     {
         typename VecElement::const_iterator it;
-        for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
+        for(it = _indexedElements->begin(), unsigned int i=0 ; it != _indexedElements->end() ; ++it, ++i)
         {
             Index a = (*it)[0];
             Index b = (*it)[1];
@@ -569,12 +567,13 @@ void BeamFEMForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPara
 {
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
     Real k = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
-    unsigned int &offset = r.offset;
     sofa::defaulttype::BaseMatrix* mat = r.matrix;
 
     if (r)
     {
         unsigned int i=0;
+
+		unsigned int &offset = r.offset;
 
         if (_partial_list_segment)
         {

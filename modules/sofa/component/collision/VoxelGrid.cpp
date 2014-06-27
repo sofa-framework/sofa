@@ -406,10 +406,9 @@ void GridCell::setMinMax(const Vector3 &minimum, const Vector3 &maximum)
 
 void GridCell::draw (const core::visual::VisualParams* vparams,int timeStampMethod)
 {
-    if (timeStampMethod != timeStamp || (collisElems.empty() && collisElemsImmobile[1].empty()))
+    if(timeStampMethod != timeStamp || (collisElems.empty() && collisElemsImmobile[1].empty()))
     {
         return;
-        glColor3f (0.0, 0.25, 0.25);
     }
     else
     {

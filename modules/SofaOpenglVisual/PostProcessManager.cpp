@@ -147,14 +147,14 @@ bool PostProcessManager::drawScene(VisualParams* vp)
     const VisualParams::Viewport& viewport = vp->viewport();
     if (postProcessEnabled)
     {
-        float vxmax, vymax, vzmax ;
-        float vxmin, vymin, vzmin ;
-        float txmax,tymax,tzmax;
-        float txmin,tymin,tzmin;
+        float vxmax, vymax;
+        float vxmin, vymin;
+        float txmax,tymax;
+        float txmin,tymin;
 
-        txmin = tymin = tzmin = 0.0;
-        vxmin = vymin = vzmin = -1.0;
-        vxmax = vymax = vzmax = txmax = tymax = tzmax = 1.0;
+        txmin = tymin = 0.0;
+        vxmin = vymin = -1.0;
+        vxmax = vymax = txmax = tymax = 1.0;
 
         glMatrixMode(GL_PROJECTION);
         glPushMatrix();
