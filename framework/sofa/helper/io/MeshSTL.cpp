@@ -178,7 +178,6 @@ void MeshSTL::readBinarySTL (const std::string &filename)
     #endif
     
     std::ifstream dataFile(filename.c_str(), std::ios::in | std::ios::binary);
-    std::string line;
     std::streampos position = 0;
     std::streampos length;
     unsigned long int nbrFacet;

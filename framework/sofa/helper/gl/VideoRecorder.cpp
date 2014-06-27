@@ -345,7 +345,7 @@ bool VideoRecorder::write_video_frame(AVFormatContext *oc, AVStream *st)
 {
     int sws_flags = SWS_BICUBIC;
 
-    int out_size, ret;
+    int ret;
     AVCodecContext *c;
 
     c = st->codec;
@@ -399,7 +399,7 @@ bool VideoRecorder::write_video_frame(AVFormatContext *oc, AVStream *st)
     {
         /* encode the image */
         pPicture->pts = pFrameCount;
-        out_size = avcodec_encode_video(c, videoOutbuf, videoOutbufSize, pPicture);
+        int out_size = avcodec_encode_video(c, videoOutbuf, videoOutbufSize, pPicture);
         /* if zero size, it means the image was buffered */
         if (out_size > 0)
         {
