@@ -1090,7 +1090,9 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
             c1 = constraint/3;
 
             //constraints are treated 3x3 (friction contact)
-            ++it_c; ++it_c;
+            ++it_c; 
+            if(it_c != contact_sequence.end()) 
+                ++it_c;
 
 
 

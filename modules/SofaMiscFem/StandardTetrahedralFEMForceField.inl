@@ -641,7 +641,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::testDerivatives()
 		Real deltaEnergyFactual = (energy2 - energy1);
 		Real energyError = fabs( deltaEnergyPredicted - deltaEnergyFactual );
 		if (energyError > 0.05*fabs(deltaEnergyFactual)) { // allow up to 5% error
-			printf("Error energy %i = %f%%\n", moveIdx, 100.0*energyError/fabs(deltaEnergyFactual) );
+			printf("Error energy %ui = %f%%\n", moveIdx, 100.0*energyError/fabs(deltaEnergyFactual) );
 		}
 
 		// check 2nd derivative for off-diagonal elements:
@@ -661,7 +661,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::testDerivatives()
 				count++;
 			}
 			if (errorNorm > errorThresh) {
-				printf("Error move %i test %i = %f%%\n", moveIdx, testIdx, 100.0*errorNorm/deltaForceFactual.norm() );
+				printf("Error move %ui test %ui = %f%%\n", moveIdx, testIdx, 100.0*errorNorm/deltaForceFactual.norm() );
 			}
 		}
 		// check 2nd derivative for diagonal elements:
@@ -672,7 +672,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::testDerivatives()
 		errorNorm = error.norm();
 		errorThresh = (Real)0.05 * deltaForceFactual.norm(); // allow up to 5% error
 		if (errorNorm > errorThresh) {
-			printf("Error move %i test %i = %f%%\n", moveIdx, testIdx, 100.0*errorNorm/deltaForceFactual.norm() );
+			printf("Error move %ui test %ui = %f%%\n", moveIdx, testIdx, 100.0*errorNorm/deltaForceFactual.norm() );
 		}
 	}
 
