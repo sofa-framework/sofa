@@ -2,6 +2,7 @@
 
 
 namespace sofa{
+using namespace defaulttype;
 namespace component{
 namespace collision{
 
