@@ -1,7 +1,7 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.11)
+project(SofaBaseMechanics)
 
 set(HEADER_FILES
-
     initBaseMechanics.h
     MappedObject.h
     MappedObject.inl
@@ -18,11 +18,9 @@ set(HEADER_FILES
     IdentityMapping.inl
     SubsetMapping.h
     SubsetMapping.inl
-
     )
 
 set(SOURCE_FILES
-
     initBaseMechanics.cpp
     MappedObject.cpp
     MechanicalObject.cpp
@@ -31,19 +29,29 @@ set(SOURCE_FILES
     BarycentricMapping.cpp
     IdentityMapping.cpp
     SubsetMapping.cpp
-
     )
+
 
 if(SOFA-MISC_SMP)
     list(APPEND HEADER_FILES "MechanicalObjectTasks.inl")
 endif()
 
-set(GROUP_BASE_DIR "..")
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>")
+target_link_libraries(${PROJECT_NAME} SofaCore)
 
-AddCompilerDefinitions("SOFA_BUILD_BASE_MECHANICS")
-AddSourceDependencies(eigen)
-AddLinkerDependencies(SofaBaseTopology SofaBaseLinearSolver)
+set( SOFABASEMECHANICS_COMPILER_FLAGS "-DSOFA_BUILD_BASE_MECHANICS")
 
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+set_target_properties( ${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d" )
+set_target_properties( ${PROJECT_NAME} PROPERTIES VERSION ${SOFABASE_VERSION} )
+set_target_properties( ${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFABASEMECHANICS_COMPILER_FLAGS}"  )
+set_target_properties( ${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}" )
+
+install(TARGETS ${PROJECT_NAME}
+        COMPONENT SofaBase_libraries
+        EXPORT  SofaBaseTargets
+        RUNTIME DESTINATION "${SOFABASE_INSTALL_BIN_DIR}"
+        LIBRARY DESTINATION "${SOFABASE_INSTALL_LIB_DIR}"
+        ARCHIVE DESTINATION "${SOFABASE_INSTALL_LIB_DIR}"
+        PUBLIC_HEADER DESTINATION "${SOFABASE_INSTALL_INCLUDE_DIR}/SofaBaseMechanics"
+        )
