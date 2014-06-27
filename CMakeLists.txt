@@ -24,24 +24,21 @@ include("${SOFA_CMAKE_DIR}/SofaBuildFlags.cmake")
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
 
 
-set(SOFA_FRAMEWORK_DIR "${CMAKE_CURRENT_SOURCE_DIR}/framework")
-set(SOFA_MODULES_DIR   "${CMAKE_CURRENT_SOURCE_DIR}/modules")
-set(SOFA_SIMULATION_DIR "${SOFA_MODULES_DIR}/sofa/simulation")
-set(SOFA_EXTLIBS_DIR   "${CMAKE_CURRENT_SOURCE_DIR}/extlibs")
+set(SOFA_DEPS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaDeps")
+set(SOFA_FRAMEWORK_DIR   "${CMAKE_CURRENT_SOURCE_DIR}/SofaFramework")
+set(SOFA_SIMULATION_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaSimulation")
 
-# extlibs
-set(SOFA_PROJECT_FOLDER "Extlibs")
-add_subdirectory(${SOFA_EXTLIBS_DIR}/tinyxml)
+set(SOFA_COMMON_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaCommon")
 
-set(gtest_force_shared_crt ON CACHE BOOL "Use shared (DLL) run-time lib even when Google Test is built as static lib.")
-add_subdirectory(${SOFA_EXTLIBS_DIR}/gtest)
-
+# deps
+add_subdirectory("${SOFA_DEPS_DIR}")
 
 # framework
-set(SOFA_PROJECT_FOLDER "SofaFramework")
 add_subdirectory("${SOFA_FRAMEWORK_DIR}")
 
 # simulation
-set(SOFA_PROJECT_FOLDER "SofaSimulation")
 add_subdirectory("${SOFA_SIMULATION_DIR}")
+
+# common
+#add_subdirectory("${SOFA_COMMON_DIR}")
 
