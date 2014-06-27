@@ -27,6 +27,8 @@ elseif(CMAKE_BUILD_TYPE MATCHES "Release")
         if("${GCXX_VERSION}" VERSION_EQUAL 4.6)
             set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fno-partial-inlining")
         endif()
+        set ( CMAKE_SHARED_LINKER_FLAGS "-Wl,--no-undefined -lc ${CMAKE_SHARED_LINKER_FLAGS}")
+        set ( CMAKE_MODULE_LINKER_FLAGS "-Wl,--no-undefined -lc ${CMAKE_MODULE_LINKER_FLAGS}")
     endif()
 elseif(CMAKE_BUILD_TYPE MATCHES "RelWithDebInfo")
 elseif(CMAKE_BUILD_TYPE MATCHES "MinSizeRel")
@@ -88,5 +90,6 @@ if(SOFA-MISC_VECTORIZE)
     endif(MSVC)
 endif()
 
-# Unit tests activation
+
+# tests activation
 enable_testing()
