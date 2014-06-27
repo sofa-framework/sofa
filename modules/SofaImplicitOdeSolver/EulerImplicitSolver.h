@@ -37,8 +37,6 @@ namespace component
 namespace odesolver
 {
 
-using namespace sofa::defaulttype;
-
 /** Semi-implicit time integrator using backward Euler scheme for first and second degree ODEs. (default: second)
  *
  *** 2nd Order ***
