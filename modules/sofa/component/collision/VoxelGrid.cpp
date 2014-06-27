@@ -157,7 +157,6 @@ void VoxelGrid::add(CollisionModel *cm, int phase)
         sofa::helper::vector<CollisionElementIterator> collisionElems;
         Vector3 minBBox, maxBBox;
         Vector3 ijk, lmn;
-        bool collisionDetected = false;
 
         for (; it != itEnd; it++)
         {
@@ -196,7 +195,6 @@ void VoxelGrid::add(CollisionModel *cm, int phase)
             {
                 //if ((*it)->canCollideWith(*itCollis))
                 {
-                    collisionDetected = true;
                     cmPairs.push_back(std::pair<CollisionModel*, CollisionModel*>(it->getCollisionModel(), itCollis->getCollisionModel()));
                     elemPairs.push_back(std::pair<CollisionElementIterator, CollisionElementIterator> (it, *itCollis));
                 }
