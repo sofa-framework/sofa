@@ -177,7 +177,7 @@ void OscillatingTorsionPressureForceField<DataTypes>::initTriangleInformation()
     sofa::component::topology::TriangleSetGeometryAlgorithms<DataTypes>* triangleGeo;
     this->getContext()->get(triangleGeo);
 
-    const VecCoord *x0 = triangleGeo->getDOF()->getX0();
+    const VecCoord x0 = triangleGeo->getDOF()->read(core::ConstVecCoordId::restPosition())->getValue();
     int idx[3];
     Real d[10];
 
@@ -192,8 +192,8 @@ void OscillatingTorsionPressureForceField<DataTypes>::initTriangleInformation()
         {
             idx[j] = _topology->getTriangle(my_map[i])[j];
             pointActive[idx[j]] = true;
-            origVecFromCenter[idx[j]] = getVecFromRotAxis( (*x0)[idx[j]] );
-            origCenter[idx[j]] = (*x0)[idx[j]] - origVecFromCenter[idx[j]];
+            origVecFromCenter[idx[j]] = getVecFromRotAxis( (x0)[idx[j]] );
+            origCenter[idx[j]] = (x0)[idx[j]] - origVecFromCenter[idx[j]];
             d[j] = origVecFromCenter[idx[j]].norm();
         }
         d[3] = (d[0]+d[1])/2;
@@ -223,7 +223,7 @@ void OscillatingTorsionPressureForceField<DataTypes>::initTriangleInformation()
 template <class DataTypes>
 void OscillatingTorsionPressureForceField<DataTypes>::selectTrianglesAlongPlane()
 {
-    const VecCoord& x = *this->mstate->getX0();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
     std::vector<bool> vArray;
     unsigned int i;
 
@@ -287,7 +287,7 @@ void OscillatingTorsionPressureForceField<DataTypes>::draw(const core::visual::V
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     glDisable(GL_LIGHTING);
 

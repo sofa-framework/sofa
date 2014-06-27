@@ -89,7 +89,7 @@ void RayModel::init()
     }
 
     {
-        const int npoints = mstate->getX()->size();
+        const int npoints = mstate->read(core::ConstVecCoordId::position())->getValue().size();
         resize(npoints);
     }
 }

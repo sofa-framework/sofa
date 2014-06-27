@@ -82,12 +82,12 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::reinit()
     if (this->totalMass.getValue()>0 && this->mstate!=NULL)
     {
         MassType* m = this->mass.beginEdit();
-        *m = ((Real)this->totalMass.getValue() / this->mstate->getX()->size());
+        *m = ((Real)this->totalMass.getValue() / mstate->read(core::ConstVecCoordId::position())->getValue().size());
         this->mass.endEdit();
     }
     else
     {
-        this->totalMass.setValue(  this->mstate->getX()->size()*this->mass.getValue());
+        this->totalMass.setValue(  this->mstate->read(core::ConstVecCoordId::position())->getValue().size()*this->mass.getValue());
     }
 
     this->mass.beginEdit()->recalc();
@@ -214,7 +214,7 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::loadRigidMass(std::string filename)
         }
         this->setMass(m);
     }
-    else if (this->totalMass.getValue()>0 && this->mstate!=NULL) this->mass.setValue((Real)this->totalMass.getValue() / this->mstate->getX()->size());
+    else if (this->totalMass.getValue()>0 && this->mstate!=NULL) this->mass.setValue((Real)this->totalMass.getValue() / mstate->read(core::ConstVecCoordId::position())->getValue().size());
 
 }
 
@@ -225,7 +225,7 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::draw(const core::visual::VisualPara
 #ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
-    const VecCoord& x = *mstate->getX();
+    const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
     RigidTypes::Vec3 gravityCenter;
     defaulttype::Vec3d len;
 
@@ -251,7 +251,7 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::draw(const core::visual::VisualPara
 
     if (showInitialCenterOfGravity.getValue())
     {
-        const VecCoord& x0 = *mstate->getX0();
+        const VecCoord& x0 = mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
         for (unsigned int i=0; i<x0.size(); i++)
         {
@@ -282,7 +282,7 @@ void UniformMass<Rigid2dTypes, Rigid2dMass>::draw(const core::visual::VisualPara
 {
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
-    const VecCoord& x = *mstate->getX();
+    const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
     defaulttype::Vec3d len;
 
     len[0] = len[1] = sqrt(mass.getValue().inertiaMatrix);
@@ -334,8 +334,8 @@ void UniformMass<Vec6dTypes, double>::draw(const core::visual::VisualParams* vpa
 #ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
-    const VecCoord& x = *mstate->getX();
-    const VecCoord& x0 = *mstate->getX0();
+    const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x0 = mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
     Mat3x3d R; R.identity();
     glBegin(GL_LINES);
@@ -370,7 +370,7 @@ void UniformMass<Vec3dTypes, double>::addMDxToVector(defaulttype::BaseVector *re
     unsigned int derivDim = Deriv::size();
     double m = mass.getValue();
 
-    unsigned int vecDim = mstate->getX()->size();
+    unsigned int vecDim = mstate->read(core::ConstVecCoordId::position())->getValue().size();
 
     const double* g = this->getContext()->getGravity().ptr();
 
@@ -456,12 +456,12 @@ void UniformMass<Rigid3fTypes, Rigid3fMass>::reinit()
     if (this->totalMass.getValue()>0 && this->mstate!=NULL)
     {
         MassType* m = this->mass.beginEdit();
-        *m = ((Real)this->totalMass.getValue() / this->mstate->getX()->size());
+        *m = ((Real)this->totalMass.getValue() / mstate->read(core::ConstVecCoordId::position())->getValue().size());
         this->mass.endEdit();
     }
     else
     {
-        this->totalMass.setValue(  this->mstate->getX()->size()*this->mass.getValue());
+        this->totalMass.setValue(  this->mstate->read(core::ConstVecCoordId::position())->getValue().size()*this->mass.getValue());
     }
 
     this->mass.beginEdit()->recalc();
@@ -598,7 +598,7 @@ void UniformMass<Rigid3fTypes, Rigid3fMass>::draw(const core::visual::VisualPara
 #ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
-    const VecCoord& x = *mstate->getX();
+    const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
     RigidTypes::Vec3 gravityCenter;
     defaulttype::Vec3d len;
 
@@ -643,7 +643,7 @@ void UniformMass<Rigid2fTypes, Rigid2fMass>::draw(const core::visual::VisualPara
 {
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
-    const VecCoord& x = *mstate->getX();
+    const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
     defaulttype::Vec3d len;
 
     len[0] = len[1] = sqrt(mass.getValue().inertiaMatrix);
@@ -694,8 +694,8 @@ void UniformMass<Vec6fTypes, float>::draw(const core::visual::VisualParams* vpar
 #ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
-    const VecCoord& x = *mstate->getX();
-    const VecCoord& x0 = *mstate->getX0();
+    const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x0 = mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
     Mat3x3d R;
     glBegin(GL_LINES);
@@ -731,7 +731,7 @@ void UniformMass<Vec3fTypes, float>::addMDxToVector(defaulttype::BaseVector *res
     unsigned int derivDim = Deriv::size();
     float m = mass.getValue();
 
-    unsigned int vecDim = mstate->getX()->size();
+    unsigned int vecDim = mstate->read(core::ConstVecCoordId::position())->getValue().size();
 
     const SReal* g = this->getContext()->getGravity().ptr();
 

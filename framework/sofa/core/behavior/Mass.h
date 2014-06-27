@@ -89,10 +89,6 @@ public:
 
     virtual void addMDx(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecDeriv& dx, double factor);
 
-    /// @deprecated
-    virtual void addMDx(VecDeriv& f, const VecDeriv& dx, double factor = 1.0);
-
-
     ///                            $ dx = M^-1 f $
     ///
     /// This method retrieves the force and dx vector and call the internal
@@ -100,9 +96,6 @@ public:
     virtual void accFromF(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId aid);
 
     virtual void accFromF(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& a, const DataVecDeriv& f);
-
-    /// @deprecated
-    virtual void accFromF(VecDeriv& a, const VecDeriv& f);
 
 
     /// Mass forces (gravity) often have null derivative
@@ -127,8 +120,6 @@ public:
     /// getKineticEnergy(const MechanicalParams* /* PARAMS FIRST */, const DataVecDeriv&) method implemented by the component.
     virtual double getKineticEnergy( const MechanicalParams* mparams) const;
     virtual double getKineticEnergy( const MechanicalParams* mparams /* PARAMS FIRST */, const DataVecDeriv& v) const;
-    /// @deprecated
-    virtual double getKineticEnergy( const VecDeriv& v) const;
 
     ///                         $ e = M g x $
     ///
@@ -136,9 +127,6 @@ public:
     /// getPotentialEnergy(const MechanicalParams* /* PARAMS FIRST */, const VecCoord&) method implemented by the component.
     virtual double getPotentialEnergy( const MechanicalParams* mparams) const;
     virtual double getPotentialEnergy( const MechanicalParams* mparams /* PARAMS FIRST */, const DataVecCoord& x  ) const;
-
-    /// @deprecated
-    virtual double getPotentialEnergy( const VecCoord& x       ) const;
 
 
     ///    $ m = ( Mv, cross(x,Mv)+Iw ) $
@@ -156,14 +144,10 @@ public:
     /// @name Matrix operations
     /// @{
 
-    /// @deprecated
     virtual void addKToMatrix(const MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix);
-    //virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * matrix, double kFact, unsigned int &offset);
 
     virtual void addBToMatrix(const MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix);
 
-    /// @deprecated
-    virtual void addMToMatrix(sofa::defaulttype::BaseMatrix * matrix, double mFact, unsigned int &offset);
     virtual void addMToMatrix(const MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix);
 
     /// Compute the system matrix corresponding to m M + b B + k K

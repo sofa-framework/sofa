@@ -32,6 +32,7 @@
 #include <sofa/simulation/common/SceneLoaderXML.h>
 
 namespace sofa {
+namespace {
 
 /** Test a scene: load a given scene with the xml file contained in the sub-directories Scenes and init it.
 To test a new scene add the xml file in the Scenes directory and add the TEST_F for your scene (see below the example for BilinearConstraint scene). 
@@ -92,7 +93,8 @@ TEST_F( LoadScene_test,PatchTestConstraint)
      ASSERT_NO_THROW(this->initScene("PatchTestConstraint.scn"));
 }
 
-}// namespace sofa
+} // namespace
+} // namespace sofa
 
 
 

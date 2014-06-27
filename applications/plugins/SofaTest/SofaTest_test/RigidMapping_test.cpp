@@ -35,6 +35,7 @@
 
 
 namespace sofa {
+namespace {
 
 using std::cout;
 using std::cerr;
@@ -208,4 +209,5 @@ TYPED_TEST( RigidMappingTest , oneRigid_fourParticles_worldCoords )
     ASSERT_TRUE(this->test_oneRigid_fourParticles_worldCoords());
 }
 
+} // namespace
 } // namespace sofa

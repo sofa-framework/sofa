@@ -96,8 +96,8 @@ void SkinningMapping<TIn, TOut>::init()
         maskTo = &stateTo->forceMask;
 
     unsigned int numChildren = this->toModel->getSize();
-    ReadAccessor<Data<VecOutCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
-    WriteAccessor<Data<VecOutCoord> > initPos(this->f_initPos);
+    ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
+    WriteAccessor<Data<OutVecCoord> > initPos(this->f_initPos);
 
     if( this->f_initPos.getValue().size() != numChildren )
     {
@@ -118,9 +118,9 @@ void SkinningMapping<TIn, TOut>::reinit()
 {
     unsigned int nbref = nbRef.getValue()[0];
 
-    ReadAccessor<Data<VecOutCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
-    ReadAccessor<Data<VecOutCoord> > xto (this->f_initPos);
-    ReadAccessor<Data<VecInCoord> > xfrom = *this->fromModel->read(core::ConstVecCoordId::restPosition());
+    ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
+    ReadAccessor<Data<OutVecCoord> > xto (this->f_initPos);
+    ReadAccessor<Data<InVecCoord> > xfrom = *this->fromModel->read(core::ConstVecCoordId::restPosition());
     WriteAccessor<Data<vector<SVector<InReal> > > > m_weights  ( weight );
     ReadAccessor<Data<vector<SVector<unsigned int> > > > index ( this->f_index );
 
@@ -196,8 +196,8 @@ void SkinningMapping<TIn, TOut>::updateWeights ()
 {
     sout << "UPDATE WEIGHTS" << sendl;
 
-    ReadAccessor<Data<VecOutCoord> > xto (this->f_initPos);
-    ReadAccessor<Data<VecInCoord> > xfrom = *this->fromModel->read(core::ConstVecCoordId::restPosition());
+    ReadAccessor<Data<OutVecCoord> > xto (this->f_initPos);
+    ReadAccessor<Data<InVecCoord> > xfrom = *this->fromModel->read(core::ConstVecCoordId::restPosition());
     WriteAccessor<Data<vector<SVector<InReal> > > > m_weights  ( weight );
     WriteAccessor<Data<vector<SVector<unsigned int> > > > index ( f_index );
 
@@ -253,8 +253,11 @@ void SkinningMapping<TIn, TOut>::setWeights(const vector<SVector<InReal> >& weig
 }
 
 template <class TIn, class TOut>
-void SkinningMapping<TIn, TOut>::apply ( typename Out::VecCoord& out, const typename In::VecCoord& in )
+void SkinningMapping<TIn, TOut>::apply( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecCoord& outData, const InDataVecCoord& inData)
 {
+    OutVecCoord& out = *outData.beginEdit(mparams);
+    const InVecCoord& in = inData.getValue();
+
     unsigned int nbref=nbRef.getValue()[0];
     ReadAccessor<Data<vector<SVector<InReal> > > > m_weights  ( this->weight );
     ReadAccessor<Data<vector<SVector<unsigned int> > > > index ( f_index );
@@ -338,12 +341,16 @@ void SkinningMapping<TIn, TOut>::apply ( typename Out::VecCoord& out, const type
         }
          _J.compress();
     }
+    outData.endEdit(mparams);
 }
 
 
 template <class TIn, class TOut>
-void SkinningMapping<TIn, TOut>::applyJ ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
+void SkinningMapping<TIn, TOut>::applyJ( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecDeriv& outData, const InDataVecDeriv& inData)
 {
+    OutVecDeriv& out = *outData.beginEdit(mparams);
+    const InVecDeriv& in = inData.getValue();
+
     unsigned int nbref=nbRef.getValue()[0];
     ReadAccessor<Data<vector<SVector<InReal> > > > m_weights  ( weight );
     ReadAccessor<Data<vector<SVector<unsigned int> > > > index ( f_index );
@@ -422,11 +429,15 @@ void SkinningMapping<TIn, TOut>::applyJ ( typename Out::VecDeriv& out, const typ
             }
         }
     }
+    outData.endEdit(mparams);
 }
 
 template <class TIn, class TOut>
-void SkinningMapping<TIn, TOut>::applyJT ( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
+void SkinningMapping<TIn, TOut>::applyJT( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, InDataVecDeriv& outData, const OutDataVecDeriv& inData)
 {
+    InVecDeriv& out = *outData.beginEdit(mparams);
+    const OutVecDeriv& in = inData.getValue();
+
     unsigned int nbref=nbRef.getValue()[0];
     ReadAccessor<Data<vector<SVector<InReal> > > > m_weights  ( weight );
     ReadAccessor<Data<vector<SVector<unsigned int> > > > index ( f_index );
@@ -508,13 +519,17 @@ void SkinningMapping<TIn, TOut>::applyJT ( typename In::VecDeriv& out, const typ
             }
         }
     }
+    outData.endEdit(mparams);
 }
 
 
 
 template <class TIn, class TOut>
-void SkinningMapping<TIn, TOut>::applyJT ( typename In::MatrixDeriv& parentJacobians, const typename Out::MatrixDeriv& childJacobians )
+void SkinningMapping<TIn, TOut>::applyJT ( const sofa::core::ConstraintParams* cparams /* PARAMS FIRST */, InDataMatrixDeriv& outData, const OutDataMatrixDeriv& inData)
 {
+    InMatrixDeriv& parentJacobians = *outData.beginEdit(cparams);
+    const OutMatrixDeriv& childJacobians = inData.getValue();
+
     unsigned int nbref=nbRef.getValue()[0];
     ReadAccessor<Data<vector<SVector<InReal> > > > m_weights  ( weight );
     ReadAccessor<Data<vector<SVector<unsigned int> > > > index ( f_index );
@@ -544,27 +559,28 @@ void SkinningMapping<TIn, TOut>::applyJT ( typename In::MatrixDeriv& parentJacob
         }
     else
 #endif
-        for (typename Out::MatrixDeriv::RowConstIterator childJacobian = childJacobians.begin(); childJacobian != childJacobians.end(); ++childJacobian)
+    for (typename Out::MatrixDeriv::RowConstIterator childJacobian = childJacobians.begin(); childJacobian != childJacobians.end(); ++childJacobian)
+    {
+        typename In::MatrixDeriv::RowIterator parentJacobian = parentJacobians.writeLine(childJacobian.index());
+
+        for (typename Out::MatrixDeriv::ColConstIterator childParticle = childJacobian.begin(); childParticle != childJacobian.end(); ++childParticle)
         {
-            typename In::MatrixDeriv::RowIterator parentJacobian = parentJacobians.writeLine(childJacobian.index());
+            unsigned int childIndex = childParticle.index();
+            const OutDeriv& childJacobianVec = childParticle.val();
 
-            for (typename Out::MatrixDeriv::ColConstIterator childParticle = childJacobian.begin(); childParticle != childJacobian.end(); ++childParticle)
+            if(nbRef.getValue().size() == m_weights.size())
+                nbref = nbRef.getValue()[childIndex];
+
+            for ( unsigned int j=0; j<nbref && m_weights[childIndex][j]>0.; j++ )
             {
-                unsigned int childIndex = childParticle.index();
-                const OutDeriv& childJacobianVec = childParticle.val();
-
-                if(nbRef.getValue().size() == m_weights.size())
-                    nbref = nbRef.getValue()[childIndex];
-
-                for ( unsigned int j=0; j<nbref && m_weights[childIndex][j]>0.; j++ )
-                {
-                    InDeriv parentJacobianVec;
-                    getLinear(parentJacobianVec)  += childJacobianVec * m_weights[childIndex][j];
-                    getAngular(parentJacobianVec) += cross(f_rotatedPos[childIndex][j], childJacobianVec);
-                    parentJacobian.addCol(index[childIndex][j],parentJacobianVec);
-                }
+                InDeriv parentJacobianVec;
+                getLinear(parentJacobianVec)  += childJacobianVec * m_weights[childIndex][j];
+                getAngular(parentJacobianVec) += cross(f_rotatedPos[childIndex][j], childJacobianVec);
+                parentJacobian.addCol(index[childIndex][j],parentJacobianVec);
             }
         }
+    }
+    outData.endEdit(cparams);
 }
 
 template <class TIn, class TOut>
@@ -583,8 +599,8 @@ template <class TIn, class TOut>
 void SkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
 #ifndef SOFA_NO_OPENGL
-    const typename Out::VecCoord& xto = *this->toModel->getX();
-    const typename In::VecCoord& xfrom = *this->fromModel->getX();
+    const typename Out::VecCoord& xto = this->toModel->read(core::ConstVecCoordId::position())->getValue();
+    const typename In::VecCoord& xfrom = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
     unsigned int nbref = this->nbRef.getValue()[0];
 
     ReadAccessor<Data<vector<SVector<InReal> > > > m_weights  ( weight );

@@ -88,7 +88,7 @@ void FixedConstraint<Rigid3dTypes>::draw(const core::visual::VisualParams* vpara
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     std::vector< Vector3 > points;
 
-    const VecCoord& x = *mstate->getX();
+    const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
     if( f_fixAll.getValue()==true )
         for (unsigned i=0; i<x.size(); i++ )
             points.push_back(x[i].getCenter());
@@ -120,7 +120,7 @@ void FixedConstraint<Rigid2dTypes>::draw(const core::visual::VisualParams* vpara
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     std::vector< Vector3 > points;
 
-    const VecCoord& x = *mstate->getX();
+    const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
     glDisable (GL_LIGHTING);
     glPointSize(10);
     glColor4f (1,0.5,0.5,1);
@@ -145,7 +145,7 @@ void FixedConstraint<Rigid3fTypes>::draw(const core::visual::VisualParams* vpara
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     std::vector< Vector3 > points;
 
-    const VecCoord& x = *mstate->getX();
+    const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
     if( f_fixAll.getValue()==true )
         for (unsigned i=0; i<x.size(); i++ )
             points.push_back(x[i].getCenter());
@@ -165,7 +165,7 @@ void FixedConstraint<Rigid2fTypes>::draw(const core::visual::VisualParams* vpara
 #ifndef SOFA_NO_OPENGL
     const SetIndexArray & indices = f_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
-    const VecCoord& x = *mstate->getX();
+    const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
     glDisable (GL_LIGHTING);
     glPointSize(10);
     glColor4f (1,0.5,0.5,1);

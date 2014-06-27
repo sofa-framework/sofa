@@ -13,7 +13,7 @@
         <HexahedronFEMForceField template="Vec3d" name="FEM" youngModulus="200" />
         <Node name="VisualNode" gravity="0 -9.81 0">
             <OglModel template="ExtVec3f" name="Objective" fileMesh="mesh/dragon.obj" />
-            <BarycentricMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="Visual Mapping" object2="Objective"  />
+            <BarycentricMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="Visual Mapping" output="@Objective"  />
         </Node>
         <Node name="CollisionNode" gravity="0 -9.81 0">
             <MeshTopology name="Mesh" fileTopology="mesh/cube.obj" />

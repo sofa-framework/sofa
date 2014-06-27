@@ -203,7 +203,7 @@ void PlaneForceField<DataTypes>::drawPlane(const core::visual::VisualParams* vpa
 {
     if (size == 0.0f) size = (float)drawSize.getValue();
 
-    helper::ReadAccessor<VecCoord> p1 = *this->mstate->getX();
+    helper::ReadAccessor<VecCoord> p1 = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     defaulttype::Vec3d normal; normal = planeNormal.getValue();
 

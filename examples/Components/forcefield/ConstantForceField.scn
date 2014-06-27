@@ -12,7 +12,7 @@
         <ConstantForceField points="0 1 2 3" forces="-1 -1 0  1 -1 0  1 1 0  -1 1 0" />
         <Node name="Visu">
             <OglModel name="Visual" color="red" />
-            <IdentityMapping object1="../.." object2="Visual" />
+            <IdentityMapping input="@.." output="@Visual" />
         </Node>
     </Node>
     <Node name="TorusRigid">
@@ -24,7 +24,7 @@
         <ConstantForceField points="0" forces="0 0.10 0     0 1 0 0" />
         <Node name="Visu">
             <OglModel name="Visual" fileMesh="mesh/torus.obj" color="gray" scale="0.3" />
-            <RigidMapping object1="../.." object2="Visual" />
+            <RigidMapping input="@.." output="@Visual" />
         </Node>
     </Node>
 </Node>

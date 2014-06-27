@@ -79,7 +79,6 @@ public:
 
     virtual void init();
     virtual void initVisual();
-    virtual void update() { }
 
     virtual void preDrawScene(core::visual::VisualParams* vp);
     virtual bool drawScene(core::visual::VisualParams* vp);

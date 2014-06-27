@@ -24,12 +24,12 @@
             <QuadSetTopologyModifier name="Modifier" />
             <QuadSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
             <QuadSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawQuads="1" />
-            <Hexa2QuadTopologicalMapping object1="../../Hexa_topo" object2="Quad_topo" />
+            <Hexa2QuadTopologicalMapping input="@../Hexa_topo" output="@Quad_topo" />
             <!--           		<QuadularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0"/>-->
             <TriangleSet />
             <!--			<Node name="Visu">
 				<OglModel name="Visual" color="blue" />
-				<IdentityMapping object1="../../../Hexa" object2="Visual" />
+				<IdentityMapping input="@../../Hexa" output="@Visual" />
 			</Node>-->
         </Node>
     </Node>

@@ -84,7 +84,7 @@ void ProximityROI<DataTypes>::init()
         this->getContext()->get(mstate);
         if (mstate)
         {
-            BaseData* parent = mstate->findField("rest_position");
+            BaseData* parent = mstate->findData("rest_position");
             if (parent)
             {
                 f_X0.setParent(parent);
@@ -97,7 +97,7 @@ void ProximityROI<DataTypes>::init()
             this->getContext()->get(loader);
             if (loader)
             {
-                BaseData* parent = loader->findField("position");
+                BaseData* parent = loader->findData("position");
                 if (parent)
                 {
                     f_X0.setParent(parent);

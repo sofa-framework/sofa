@@ -96,7 +96,7 @@ void TutorialSelector::loadTutorials(const std::string &fileTutorial)
 
     TiXmlHandle hDoc(&doc);
     //Getting the root of the file
-    TiXmlNode* node=hDoc.FirstChildElement().Element();
+    TiXmlNode* node=hDoc.FirstChildElement().ToElement();
     if (!node)
     {
         std::cerr << "Error loading file: " << fileTutorial << std::endl;

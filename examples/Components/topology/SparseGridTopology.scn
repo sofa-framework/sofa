@@ -5,6 +5,7 @@
     <BruteForceDetection name="N2" />
     <CollisionResponse name="Response" response="default" />
     <CollisionGroup name="Group" />
+    <DiscreteIntersection/>
     <Node name="DragonCoarse">
         <SparseGrid n="6 5 4" fileTopology="mesh/dragon.obj" />
         <EulerImplicit />
@@ -15,7 +16,7 @@
         <BoxConstraint box="10 -10 -6 12 10 6" />
         <Node name="Visu">
             <OglModel name="Visual" fileMesh="mesh/dragon.obj" color="yellow" />
-            <BarycentricMapping object1="../.." object2="Visual" />
+            <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
 	    <SphereLoader filename="mesh/dragon.sph" />
@@ -34,11 +35,12 @@
         <BoxConstraint box="10 -10 10 12 10 22" />
         <Node name="Visu">
             <OglModel name="Visual" fileMesh="mesh/dragon.obj" color="yellow" />
-            <BarycentricMapping object1="../.." object2="Visual" />
+            <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
-            <MechanicalObject />
-            <Sphere filename="mesh/dragon.sph" />
+	    <SphereLoader filename="mesh/dragon.sph" />
+            <MechanicalObject position="@[-1].position" />
+            <Sphere listRadius="@[-2].listRadius" />
             <BarycentricMapping />
         </Node>
     </Node>
@@ -52,11 +54,12 @@
         <BoxConstraint box="10 -10 26 12 10 38" />
         <Node name="Visu">
             <OglModel name="Visual" fileMesh="mesh/dragon.obj" color="yellow" />
-            <BarycentricMapping object1="../.." object2="Visual" />
+            <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
-            <MechanicalObject />
-            <Sphere filename="mesh/dragon.sph" />
+	    <SphereLoader filename="mesh/dragon.sph" />
+            <MechanicalObject position="@[-1].position" />
+            <Sphere listRadius="@[-2].listRadius" />
             <BarycentricMapping />
         </Node>
     </Node>

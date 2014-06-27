@@ -41,8 +41,6 @@ namespace helper
 namespace io
 {
 
-//using namespace sofa::defaulttype;
-
 class SOFA_HELPER_API ImageDDS : public Image
 {
 public:

@@ -585,7 +585,7 @@ sofa::helper::vector <unsigned int> RemovePrimitivePerformer<DataTypes>::getElem
     Coord center = picked.point;
 
     // - STEP 2: Compute baryCoord of elements in list:
-    const VecCoord& X = *mstateCollision->getX();
+    const VecCoord& X = mstateCollision->read(core::ConstVecCoordId::position())->getValue();
 
     VecCoord baryCoord;
     baryCoord.resize (elementsToTest.size());
@@ -666,7 +666,7 @@ void RemovePrimitivePerformer<DataTypes>::draw(const core::visual::VisualParams*
     if (mstateCollision == NULL) return;
 
 
-    const VecCoord& X = *mstateCollision->getX();
+    const VecCoord& X = mstateCollision->read(core::ConstVecCoordId::position())->getValue();
     //core::topology::BaseMeshTopology* topo = picked.body->getMeshTopology();
 
     glDisable(GL_LIGHTING);

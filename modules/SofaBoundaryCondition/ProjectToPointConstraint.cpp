@@ -88,7 +88,7 @@ template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<Vec6fTypes>;
 //	if (!vparams->displayFlags().getShowBehaviorModels()) return;
 //	std::vector< Vector3 > points;
 
-//	const VecCoord& x = *mstate->getX();
+//	const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
 //	if( f_fixAll.getValue()==true )
 //	    for (unsigned i=0; i<x.size(); i++ )
 //              points.push_back(x[i].getCenter());
@@ -119,7 +119,7 @@ template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<Vec6fTypes>;
 //  if (!vparams->displayFlags().getShowBehaviorModels()) return;
 //  std::vector< Vector3 > points;
 
-//  const VecCoord& x = *mstate->getX();
+//  const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
 //  glDisable (GL_LIGHTING);
 //  glPointSize(10);
 //  glColor4f (1,0.5,0.5,1);
@@ -143,7 +143,7 @@ template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<Vec6fTypes>;
 //	if (!vparams->displayFlags().getShowBehaviorModels()) return;
 //	std::vector< Vector3 > points;
 
-//	const VecCoord& x = *mstate->getX();
+//	const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
 //	if( f_fixAll.getValue()==true )
 //	    for (unsigned i=0; i<x.size(); i++ )
 //              points.push_back(x[i].getCenter());
@@ -162,7 +162,7 @@ template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<Vec6fTypes>;
 //{
 //  const SetIndexArray & indices = f_indices.getValue();
 //  if (!vparams->displayFlags().getShowBehaviorModels()) return;
-//  const VecCoord& x = *mstate->getX();
+//  const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
 //  glDisable (GL_LIGHTING);
 //  glPointSize(10);
 //  glColor4f (1,0.5,0.5,1);

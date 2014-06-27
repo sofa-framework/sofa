@@ -81,6 +81,9 @@ public:
     typedef defaulttype::Quat Quat;
     typedef defaulttype::Vector3 Vector3;
 
+    typedef typename DataTypes::MatrixDeriv MatrixDeriv;
+    typedef core::objectmodel::Data<MatrixDeriv>    DataMatrixDeriv;
+
     static const unsigned int CoordSize = Coord::total_size;
     typedef Mat<3,3,Real> RotationMatrix;
 
@@ -134,6 +137,11 @@ public:
     void projectVelocity(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& vData);
     /// Apply the computed movements to the border mesh points between beginConstraintTime and endConstraintTime
     void projectPosition(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecCoord& xData);
+
+    void projectJacobianMatrix(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataMatrixDeriv& /* cData */)
+    {
+        serr << "projectJacobianMatrix not implemented" << sendl;
+    }
 
     /// Compute the theoretical final positions
     void getFinalPositions (VecCoord& finalPos, DataVecCoord& xData); 

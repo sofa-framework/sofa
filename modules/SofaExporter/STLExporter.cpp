@@ -88,15 +88,15 @@ void STLExporter::init()
         sofa::core::objectmodel::BaseData* qua = NULL;
         if(vmodel)
         {
-            pos = vmodel->findField("position");
-            tri = vmodel->findField("triangles");
-            qua = vmodel->findField("quads");
+            pos = vmodel->findData("position");
+            tri = vmodel->findData("triangles");
+            qua = vmodel->findData("quads");
         }
         else if(topology)
         {
-            pos = topology->findField("position");
-            tri = topology->findField("triangles");
-            qua = topology->findField("quads");
+            pos = topology->findData("position");
+            tri = topology->findData("triangles");
+            qua = topology->findData("quads");
         }
         else
         {

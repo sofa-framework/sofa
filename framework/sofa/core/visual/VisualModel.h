@@ -67,20 +67,13 @@ public:
      *  Called once before the first frame is drawn, and if the graphical
      *  context has been recreated.
      */
-    virtual void initVisual() { initTextures(); }
+    virtual void initVisual() {  }
 
     /**
      *  \brief clear some graphical resources (generaly called before the deleteVisitor).
      *  \note: for more general usage you can use the cleanup visitor
      */
     virtual void clearVisual() { }
-
-    /**
-     *  \brief Initialize the textures, or other graphical resources.
-     *
-     *  @deprecated Use initVisual() instead.
-     */
-    virtual void initTextures() {}
 
     /**
      *  \brief Called before objects in the current branch are displayed
@@ -121,19 +114,12 @@ public:
     /**
      *  \brief used to update the model if necessary.
      */
-    virtual void updateVisual() { update(); }
+    virtual void updateVisual() {  }
     /**
     *  \brief used to update the model if necessary.
     */
     virtual void parallelUpdateVisual() { }
 
-
-    /**
-     *  \brief used to update the model if necessary.
-     *
-     *  @deprecated Use updateVisual() instead.
-     */
-    virtual void update() {}
 
     /**
      *  \brief used to add the bounding-box of this visual model to the

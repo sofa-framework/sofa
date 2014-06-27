@@ -10,9 +10,9 @@
 			<MechanicalModel type="Vec3d" name="Points">
 				<ForceField type="RepulsiveSpringForceField" filename="test4b.xs3"/>
 			</MechanicalModel>
-			<Mapping type="LineMapping" dx="1.0" dz="0.01" object1=".." object2="Points" />
+			<Mapping type="LineMapping" dx="1.0" dz="0.01" input="@." output="@Points" />
 			<CollisionModel type="Sphere" name="Spheres" filename="test4.sph"/>
-			<Mapping type="LineMapping" object1=".." object2="Spheres" />
+			<Mapping type="LineMapping" input="@." output="@Spheres" />
 		</DynamicModel>
 		<DynamicModel type="MassObject3d" name="M2" mass="0.25">
 			<Topology type="RegularGrid"
@@ -32,7 +32,7 @@
 			/>
 			<ForceField type="RegularGridSpringForceField" name="Springs" stiffness="50" damping="10" />
 		</DynamicModel>
-		<InteractionForceField type="StiffSpringForceField" object1="M1/Points" object2="M2" filename="test4.xs3"/>
-		<InteractionForceField type="StiffSpringForceField" object1="M1/Points" object2="M3" filename="test4c.xs3"/>
+		<InteractionForceField type="StiffSpringForceField" object1="@Points" object2="@M2" filename="test4.xs3"/>
+		<InteractionForceField type="StiffSpringForceField" object1="@Points" object2="@M3" filename="test4c.xs3"/>
 	</Group>
 </Scene>

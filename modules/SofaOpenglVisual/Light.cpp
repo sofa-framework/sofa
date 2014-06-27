@@ -146,7 +146,7 @@ void Light::initVisual()
 #endif
 }
 
-void Light::update()
+void Light::updateVisual()
 {
     if (!needUpdate) return;
     computeShadowMapSize();
@@ -161,7 +161,7 @@ void Light::reinit()
 void Light::drawLight()
 {
     if (needUpdate)
-        update();
+        updateVisual();
     glLightf(GL_LIGHT0+lightID, GL_SPOT_CUTOFF, 180.0);
     GLfloat c[4] = { (GLfloat) color.getValue()[0], (GLfloat)color.getValue()[1], (GLfloat)color.getValue()[2], 1.0 };
     glLightfv(GL_LIGHT0+lightID, GL_AMBIENT, c);
@@ -174,7 +174,7 @@ void Light::drawLight()
 void Light::preDrawShadow(core::visual::VisualParams* /* vp */)
 {
     if (needUpdate)
-        update();
+        updateVisual();
     const Vector3& pos = getPosition();
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();

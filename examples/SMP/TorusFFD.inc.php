@@ -21,7 +21,7 @@ public function printObj(){
 		<RegularGridSpringForceField name="Springs" stiffness="350" damping="1" />
 		<Node name="Visu">
 			<OglModel name="Visual" fileMesh="mesh/torus2_scale3.obj"   dx="<?=$this->dx?>" dy="<?=$this->dy?>" dz="<?=$this->dz?>" rx="<?=$this->rx?>" rz="<?=$this->rz?>" ry="<?=$this->ry?>" color="blue" />
-			<BarycentricMapping object1="../.." object2="Visual" />
+			<BarycentricMapping input="@.." output="@Visual" />
 		</Node>
 		<Node name="Surf">
      	<MeshLoader name="meshLoader" filename="mesh/torus2_scale3.obj"/>

@@ -406,7 +406,7 @@ void LinearMovementConstraint<DataTypes>::draw(const core::visual::VisualParams*
     }
     else
     {
-        const VecCoord& x = *this->mstate->getX();
+        const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
         sofa::helper::vector<Vector3> points;
         Vector3 point;

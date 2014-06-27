@@ -62,7 +62,7 @@ void ParticlesRepulsionForceField<DataTypes>::init()
     this->getContext()->get(grid); //new Grid(distance.getValue());
     if (grid==NULL)
         serr<<"SpatialGridContainer not found by ParticlesRepulsionForceField, slow O(n2) method will be used !!!" << sendl;
-    //int n = (*this->mstate->getX()).size();
+    //int n = (this->mstate->read(core::ConstVecCoordId::position())->getValue()).size();
     //particles.resize(n);
     //for (int i=0;i<n;i++)
     //{
@@ -151,7 +151,7 @@ void ParticlesRepulsionForceField<DataTypes>::addDForce(const core::MechanicalPa
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
 
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     const Real h = distance.getValue();
     const Real h2 = h*h;
     const Real ks = (Real)(stiffness.getValue() * mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue()));
@@ -194,7 +194,7 @@ void ParticlesRepulsionForceField<DataTypes>::draw(const core::visual::VisualPar
     if (!vparams->displayFlags().getShowForceFields() && !vparams->displayFlags().getShowInteractionForceFields()) return;
     //if (grid != NULL)
     //	grid->draw(vparams);
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     const Real h = distance.getValue();
     glDisable(GL_LIGHTING);
     //glEnable(GL_BLEND);

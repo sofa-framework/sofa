@@ -27,16 +27,16 @@
             <Triangle />
             <Node name="Soft gelatin">
                 <OglModel name="VisualBody" fileMesh="mesh/bubille_out.obj" normals="0" color="0.1 .8 .3 .6" />
-                <IdentityMapping object1="../.." object2="VisualBody" />
+                <IdentityMapping input="@.." output="@VisualBody" />
             </Node>
         </Node>
         <Node name="soft bead">
             <OglModel name="VisualBody1" fileMesh="mesh/bubille_in1.obj" normals="0" color="1 0 0 1" />
-            <HexahedronCompositeFEMMapping object1="../.." object2="VisualBody1" />
+            <HexahedronCompositeFEMMapping input="@.." output="@VisualBody1" />
         </Node>
         <Node name="stiff bead">
             <OglModel name="VisualBody2" fileMesh="mesh/bubille_in2.obj" normals="0" color="0 0 1 1" />
-            <HexahedronCompositeFEMMapping object1="../.." object2="VisualBody2" />
+            <HexahedronCompositeFEMMapping input="@.." output="@VisualBody2" />
         </Node>
     </Node>
 </Node>

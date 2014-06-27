@@ -239,6 +239,7 @@ simulation::Node::SPtr Elasticity_test<DT>::createGridScene(
         SReal dampingRatio )
 {
     using helper::vector;
+    using core::objectmodel::New;
 
     // The graph root node
     Node::SPtr  root = simulation::getSimulation()->createNewGraph("root");

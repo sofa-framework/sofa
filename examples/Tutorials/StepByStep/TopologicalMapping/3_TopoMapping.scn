@@ -19,7 +19,7 @@
             <TriangleSetTopologyContainer name="Container" />
             <TriangleSetTopologyModifier name="Modifier" />
             <TriangleSetGeometryAlgorithms  name="GeomAlgo" />
-            <Tetra2TriangleTopologicalMapping name="Mapping" object1="../../Container" object2="Container" />
+            <Tetra2TriangleTopologicalMapping name="Mapping" input="@../Container" output="@Container" />
             <Node name="Visu">
                 <OglModel  name="Visual" material="Default Diffuse 1 0 0 1 1 Ambient 1 0 0 0.2 1 Specular 0 0 0 1 1 Emissive 0 0 0 1 1 Shininess 0 45" />
                 <IdentityMapping  input="@../../Volume" output="@Visual" />

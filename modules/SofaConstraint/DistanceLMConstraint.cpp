@@ -82,8 +82,8 @@ void DistanceLMConstraint<Rigid3dTypes>::draw(const core::visual::VisualParams* 
 
     if (vparams->displayFlags().getShowBehaviorModels())
     {
-        const VecCoord &x1=*(this->constrainedObject1->getX());
-        const VecCoord &x2=*(this->constrainedObject2->getX());
+        const VecCoord &x1= this->constrainedObject1->read(core::ConstVecCoordId::position())->getValue();
+        const VecCoord &x2= this->constrainedObject2->read(core::ConstVecCoordId::position())->getValue();
 
         std::vector< Vector3 > points;
         const SeqEdges &edges =  vecConstraint.getValue();
@@ -114,8 +114,8 @@ void DistanceLMConstraint<Rigid3fTypes>::draw(const core::visual::VisualParams* 
 
     if (vparams->displayFlags().getShowBehaviorModels())
     {
-        const VecCoord &x1=*(this->constrainedObject1->getX());
-        const VecCoord &x2=*(this->constrainedObject2->getX());
+        const VecCoord &x1= this->constrainedObject1->read(core::ConstVecCoordId::position())->getValue();
+        const VecCoord &x2= this->constrainedObject2->read(core::ConstVecCoordId::position())->getValue();
 
         std::vector< Vector3 > points;
         const SeqEdges &edges =  vecConstraint.getValue();

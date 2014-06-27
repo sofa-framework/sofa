@@ -65,7 +65,7 @@ void TOBBModel<DataTypes>::init()
         return;
     }
 
-    const int npoints = _mstate->getX()->size();
+    const int npoints = _mstate->read(core::ConstVecCoordId::position())->getValue().size();
     resize(npoints);
 }
 
@@ -93,7 +93,7 @@ void TOBBModel<DataTypes>::resize(int size){
 template<class DataTypes>
 void TOBBModel<DataTypes>::computeBoundingTree(int maxDepth){
     CubeModel* cubeModel = createPrevious<CubeModel>();
-    const int npoints = _mstate->getX()->size();
+    const int npoints = _mstate->read(core::ConstVecCoordId::position())->getValue().size();
     bool updated = false;
     if (npoints != size)
     {
@@ -206,7 +206,7 @@ void TOBBModel<DataTypes>::draw(const core::visual::VisualParams* vparams){
     {
         vparams->drawTool()->setPolygonMode(0,vparams->displayFlags().getShowWireFrame());
 
-        const int npoints = _mstate->getX()->size();
+        const int npoints = _mstate->read(core::ConstVecCoordId::position())->getValue().size();
         vparams->drawTool()->setLightingEnabled(true); //Enable lightning
         for(int i = 0 ; i < npoints ; ++i )
             draw(vparams,i);
@@ -256,7 +256,7 @@ inline typename TOBB<DataTypes>::Coord TOBB<DataTypes>::localCoordinates(const C
 
 template <class DataTypes>
 inline const typename TOBBModel<DataTypes>::Coord & TOBBModel<DataTypes>::lvelocity(int index)const{
-    return (*(_mstate->getV()))[index].getLinear();
+    return (_mstate->read(core::ConstVecDerivId::velocity())->getValue())[index].getLinear();
 }
 
 template <class DataTypes>
@@ -368,12 +368,12 @@ inline void TOBBModel<DataTypes>::vertices(int index,std::vector<Coord> & vs)con
 
 template<class DataTypes>
 inline const typename TOBBModel<DataTypes>::Coord & TOBBModel<DataTypes>::center(int index)const{
-    return (*_mstate->getX())[index].getCenter();
+    return _mstate->read(core::ConstVecCoordId::position())->getValue()[index].getCenter();
 }
 
 template<class DataTypes>
 inline const typename TOBBModel<DataTypes>::Quaternion & TOBBModel<DataTypes>::orientation(int index)const{
-    return (*_mstate->getX())[index].getOrientation();
+    return _mstate->read(core::ConstVecCoordId::position())->getValue()[index].getOrientation();
 }
 
 template<class DataTypes>
