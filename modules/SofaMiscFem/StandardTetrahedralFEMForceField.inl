@@ -60,10 +60,6 @@ namespace component
 {
 namespace forcefield
 {
-using namespace sofa::defaulttype;
-using namespace	sofa::component::topology;
-using namespace core::topology;
-
 
 template< class DataTypes>
 void StandardTetrahedralFEMForceField<DataTypes>::GHTetrahedronHandler::applyCreateFunction(unsigned int tetrahedronIndex, 

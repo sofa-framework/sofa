@@ -42,12 +42,6 @@ namespace component
 namespace topology
 {
 
-using namespace sofa::defaulttype;
-
-using namespace sofa::component::topology;
-using namespace sofa::core::topology;
-
-using namespace sofa::core;
 
 /**
  * This class, called Tetra2TriangleTopologicalMapping, is a specific implementation of the interface TopologicalMapping where :
@@ -59,10 +53,10 @@ using namespace sofa::core;
  *
 */
 
-class SOFA_TOPOLOGY_MAPPING_API Tetra2TriangleTopologicalMapping : public TopologicalMapping
+class SOFA_TOPOLOGY_MAPPING_API Tetra2TriangleTopologicalMapping : public sofa::core::topology::TopologicalMapping
 {
 public:
-    SOFA_CLASS(Tetra2TriangleTopologicalMapping,TopologicalMapping);
+    SOFA_CLASS(Tetra2TriangleTopologicalMapping,sofa::core::topology::TopologicalMapping);
 protected:
     /** \brief Constructor.
      *

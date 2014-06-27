@@ -691,7 +691,7 @@ void FFDDistanceGridCollisionModel::updateGrid()
                 SReal r2 = (cube.corners[j] - cube.center).norm2();
                 if (r2 > radius2) radius2 = r2;
             }
-            cube.radius = rsqrt(radius2);
+            cube.radius = sofa::helper::rsqrt(radius2);
             cube.updateDeform();
             cube.pointsUpdated = false;
             cube.facesUpdated = false;

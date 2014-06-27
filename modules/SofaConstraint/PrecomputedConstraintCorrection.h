@@ -42,14 +42,11 @@ namespace component
 namespace constraintset
 {
 
-using namespace sofa::core;
-using namespace sofa::defaulttype;
-
 /**
  *  \brief Component computing contact forces within a simulated body using the compliance method.
  */
 template<class TDataTypes>
-class PrecomputedConstraintCorrection : public behavior::ConstraintCorrection< TDataTypes >
+class PrecomputedConstraintCorrection : public sofa::core::behavior::ConstraintCorrection< TDataTypes >
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(PrecomputedConstraintCorrection,TDataTypes), SOFA_TEMPLATE(core::behavior::ConstraintCorrection, TDataTypes));
@@ -65,10 +62,10 @@ public:
     typedef typename DataTypes::MatrixDeriv::RowIterator MatrixDerivRowIterator;
     typedef typename DataTypes::MatrixDeriv::ColIterator MatrixDerivColIterator;
 
-    typedef behavior::ConstraintCorrection< TDataTypes > Inherit;
+    typedef sofa::core::behavior::ConstraintCorrection< TDataTypes > Inherit;
 
     typedef typename Coord::value_type Real;
-    typedef MatNoInit<3, 3, Real> Transformation;
+    typedef sofa::defaulttype::MatNoInit<3, 3, Real> Transformation;
 
     Data<bool> m_rotations;
     Data<bool> m_restRotations;
@@ -78,23 +75,23 @@ public:
     Data<double> debugViewFrameScale;
     sofa::core::objectmodel::DataFileName f_fileCompliance;
 protected:
-    PrecomputedConstraintCorrection(behavior::MechanicalState<DataTypes> *mm = NULL);
+    PrecomputedConstraintCorrection(sofa::core::behavior::MechanicalState<DataTypes> *mm = NULL);
 
     virtual ~PrecomputedConstraintCorrection();
 public:
     virtual void bwdInit();
 
-    virtual void addComplianceInConstraintSpace(const ConstraintParams *cparams, defaulttype::BaseMatrix* W);
+    virtual void addComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, sofa::defaulttype::BaseMatrix* W);
 
     virtual void getComplianceMatrix(defaulttype::BaseMatrix* m) const;
 
-    virtual void computeAndApplyMotionCorrection(const ConstraintParams *cparams, Data< VecCoord > &x, Data< VecDeriv > &v, Data< VecDeriv > &f, const BaseVector *lambda);
+    virtual void computeAndApplyMotionCorrection(const sofa::core::ConstraintParams *cparams, sofa::core::objectmodel::Data< VecCoord > &x, sofa::core::objectmodel::Data< VecDeriv > &v, Data< VecDeriv > &f, const sofa::defaulttype::BaseVector *lambda);
 
-    virtual void computeAndApplyPositionCorrection(const ConstraintParams *cparams, Data< VecCoord > &x, Data< VecDeriv > &f, const BaseVector *lambda);
+    virtual void computeAndApplyPositionCorrection(const sofa::core::ConstraintParams *cparams, sofa::core::objectmodel::Data< VecCoord > &x, sofa::core::objectmodel::Data< VecDeriv > &f, const sofa::defaulttype::BaseVector *lambda);
 
-    virtual void computeAndApplyVelocityCorrection(const ConstraintParams *cparams, Data< VecDeriv > &v, Data< VecDeriv > &f, const BaseVector *lambda);
+    virtual void computeAndApplyVelocityCorrection(const sofa::core::ConstraintParams *cparams, sofa::core::objectmodel::Data< VecDeriv > &v, sofa::core::objectmodel::Data< VecDeriv > &f, const sofa::defaulttype::BaseVector *lambda);
 
-    virtual void applyPredictiveConstraintForce(const ConstraintParams *cparams, Data< VecDeriv > &f, const BaseVector *lambda);
+    virtual void applyPredictiveConstraintForce(const sofa::core::ConstraintParams *cparams, Data< VecDeriv > &f, const sofa::defaulttype::BaseVector *lambda);
 
     /// @name Deprecated API
     /// @{
@@ -245,7 +242,7 @@ template<>
 void PrecomputedConstraintCorrection<defaulttype::Rigid3fTypes>::draw(const core::visual::VisualParams* vparams);
 
 template<>
-void PrecomputedConstraintCorrection<defaulttype::Vec1fTypes>::draw(const core::visual::VisualParams* vparams);
+void PrecomputedConstraintCorrection<sofa::defaulttype::Vec1fTypes>::draw(const sofa::core::visual::VisualParams* vparams);
 
 #endif
 

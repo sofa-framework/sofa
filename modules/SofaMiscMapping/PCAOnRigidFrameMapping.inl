@@ -64,9 +64,6 @@ namespace component
 namespace mapping
 {
 
-using namespace defaulttype;
-using namespace helper;
-
 template <class TIn, class TInRoot, class TOut>
 PCAOnRigidFrameMapping<TIn, TInRoot, TOut>::PCAOnRigidFrameMapping ()
     : basis(initData(&basis,"basis","Basis of deformation modes."))
@@ -160,7 +157,7 @@ void PCAOnRigidFrameMapping<TIn, TInRoot, TOut>::apply( typename Out::VecCoord& 
 
     // deformedpoints = pref + Uw
     deformedPoints.resize(nbpoints);
-    ReadAccessor<Data< OutVecCoord > > _basis = basis;
+    sofa::helper::ReadAccessor<Data< OutVecCoord > > _basis = basis;
     for(unsigned int i=0; i<nbpoints; i++)
     {
         deformedPoints[i] = _basis[i];
@@ -257,7 +254,7 @@ void PCAOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJ( typename Out::VecDeriv&
 
     // deformedpoints' = Uw'
     deformedPoints.resize(nbpoints);
-    ReadAccessor<Data< OutVecCoord > > _basis = basis;
+    sofa::helper::ReadAccessor<Data< OutVecCoord > > _basis = basis;
     for(unsigned int i=0; i<nbpoints; i++)
     {
         deformedPoints[i] = OutCoord();
@@ -346,7 +343,7 @@ void PCAOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJT( typename In::VecDeriv&
 {
     // Jacobian^T : [omega v dw ]^T = [ -rotatedpoints_x  I  RU ]^T dp
 
-    ReadAccessor<Data< OutVecCoord > > _basis = basis;
+    sofa::helper::ReadAccessor<sofa::core::objectmodel::Data< OutVecCoord > > _basis = basis;
     unsigned int nbmodes = outWeights.size();
     unsigned int nbpoints = basis.getValue().size()/(1+nbmodes);
 
@@ -445,7 +442,7 @@ void PCAOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJT(typename In::MatrixDeri
 {
     // Jacobian^T : [omega v dw ]^T = [ -rotatedpoints_x  I  RU ]^T dp
 
-    ReadAccessor<Data< OutVecCoord > > _basis = basis;
+    sofa::helper::ReadAccessor<sofa::core::objectmodel::Data< OutVecCoord > > _basis = basis;
     unsigned int nbmodes = outWeights.size();
 
     Coord p; // sum Ri^T dpi

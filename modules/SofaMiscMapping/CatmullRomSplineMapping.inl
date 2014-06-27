@@ -51,10 +51,6 @@ namespace component
 namespace mapping
 {
 
-using helper::WriteAccessor;
-using helper::ReadAccessor;
-using sofa::defaulttype::Vec;
-
 template <class TIn, class TOut>
 CatmullRomSplineMapping<TIn, TOut>::CatmullRomSplineMapping ( )
     : Inherit ( )
@@ -110,7 +106,7 @@ void CatmullRomSplineMapping<TIn, TOut>::init()
     m_index.resize(targetP);
 
     unsigned int count=0;
-    Vec<4,ID> id(0,0,0,0); vector<ID> n1,n2;
+    sofa::defaulttype::Vec<4,ID> id(0,0,0,0); vector<ID> n1,n2;
     OutReal t,t2,t3;
     for ( unsigned int i=0; i<P; i++ ) // initial points
     {

@@ -70,7 +70,7 @@ bool LCPConstraintSolver::prepareStates(const core::ConstraintParams * /*cParams
 
     time = 0.0;
     timeTotal=0.0;
-    timeScale = 1000.0 / (double)CTime::getTicksPerSec();
+    timeScale = 1000.0 / (double)sofa::helper::system::thread::CTime::getTicksPerSec();
 
     for (unsigned int i=0; i<constraintCorrections.size(); i++)
     {
@@ -310,7 +310,7 @@ LCPConstraintSolver::LCPConstraintSolver()
     //_PreviousContactList = (contactBuf *)malloc(MAX_NUM_CONSTRAINTS * sizeof(contactBuf));
     //_cont_id_list = (long *)malloc(MAX_NUM_CONSTRAINTS * sizeof(long));
 
-    _Wdiag = new SparseMatrix<double>();
+    _Wdiag = new sofa::component::linearsolver::SparseMatrix<double>();
 
 }
 
@@ -884,7 +884,7 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
 
     //helper::system::thread::CTime timer;
     double time = 0.0;
-    double timeScale = 1000.0 / (double)CTime::getTicksPerSec();
+    double timeScale = 1000.0 / (double)sofa::helper::system::thread::CTime::getTicksPerSec();
     if ( displayTime.getValue() )
     {
         time = (double) helper::system::thread::CTime::getTime();
@@ -1218,7 +1218,7 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(double *dfree, double *f, std::
     if ( displayTime.getValue() )
     {
         time = (double) helper::system::thread::CTime::getTime();
-        timeScale = 1000.0 / (double)CTime::getTicksPerSec();
+        timeScale = 1000.0 / (double)sofa::helper::system::thread::CTime::getTicksPerSec();
     }
 
 

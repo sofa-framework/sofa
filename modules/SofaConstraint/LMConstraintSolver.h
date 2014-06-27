@@ -45,9 +45,6 @@ namespace component
 namespace constraintset
 {
 
-using core::behavior::BaseLMConstraint;
-using core::behavior::ConstraintGroup;
-
 class SOFA_CONSTRAINT_API LMConstraintSolver : public sofa::core::behavior::ConstraintSolver
 {
 protected:

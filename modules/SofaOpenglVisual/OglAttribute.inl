@@ -39,8 +39,6 @@ namespace component
 namespace visualmodel
 {
 
-using namespace sofa::core::topology;
-
 template < int size, unsigned int type, class DataTypes>
 OglAttribute< size, type, DataTypes>::OglAttribute() :
     OglShaderElement()
@@ -218,8 +216,8 @@ void OglAttribute< size, type, DataTypes>::handleTopologyChange()
 {
     if( _topology && handleDynamicTopology.getValue())
     {
-        std::list<const TopologyChange *>::const_iterator itBegin=_topology->beginChange();
-        std::list<const TopologyChange *>::const_iterator itEnd=_topology->endChange();
+        std::list<const sofa::core::topology::TopologyChange *>::const_iterator itBegin=_topology->beginChange();
+        std::list<const sofa::core::topology::TopologyChange *>::const_iterator itEnd=_topology->endChange();
 
         while( itBegin != itEnd )
         {
@@ -262,7 +260,7 @@ void OglAttribute< size, type, DataTypes>::handleTopologyChange()
             {
                 //sout << "INFO_print : Vis - POINTSADDED" << sendl;
 
-                unsigned int nbPoints = ( static_cast< const PointsAdded * >( *itBegin ) )->getNbAddedVertices();
+                unsigned int nbPoints = ( static_cast< const sofa::core::topology::PointsAdded * >( *itBegin ) )->getNbAddedVertices();
                 sofa::defaulttype::ResizableExtVector<DataTypes>& data = *value.beginEdit();
                 data.resize( data.size() + nbPoints);
                 value.endEdit();
@@ -275,7 +273,7 @@ void OglAttribute< size, type, DataTypes>::handleTopologyChange()
             {
                 //sout << "INFO_print : Vis - POINTSREMOVED" << sendl;
 
-                const sofa::helper::vector<unsigned int> tab = ( static_cast< const PointsRemoved * >( *itBegin ) )->getArray();
+                const sofa::helper::vector<unsigned int> tab = ( static_cast< const sofa::core::topology::PointsRemoved * >( *itBegin ) )->getArray();
                 sofa::defaulttype::ResizableExtVector<DataTypes>& data = *value.beginEdit();
                 unsigned int last = data.size();
 
@@ -296,7 +294,7 @@ void OglAttribute< size, type, DataTypes>::handleTopologyChange()
             {
                 //sout << "INFO_print : Vis - POINTSRENUMBERING" << sendl;
 
-                const sofa::helper::vector<unsigned int> tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
+                const sofa::helper::vector<unsigned int> tab = ( static_cast< const sofa::core::topology::PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
                 sofa::defaulttype::ResizableExtVector<DataTypes>& data = *value.beginEdit();
                 vector<DataTypes> tmp;
                 for ( unsigned int i = 0; i < tab.size(); ++i)

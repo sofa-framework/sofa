@@ -49,15 +49,6 @@ namespace component
 namespace linearsolver
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::core::behavior;
-using namespace sofa::simulation;
-using namespace sofa::core::objectmodel;
-using sofa::helper::system::thread::CTime;
-using sofa::helper::system::thread::ctime_t;
-using std::cerr;
-using std::endl;
-
 template<class TMatrix, class TVector>
 JacobiPreconditioner<TMatrix,TVector>::JacobiPreconditioner()
     : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )

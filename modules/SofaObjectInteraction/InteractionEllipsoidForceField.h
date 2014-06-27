@@ -41,8 +41,6 @@ namespace component
 
 namespace interactionforcefield
 {
-using namespace sofa::defaulttype;
-using namespace sofa::core;
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template<class DataTypes1, class DataTypes2>
@@ -87,7 +85,7 @@ protected:
     public:
         int index;
         Deriv1 pos,force;
-        Vec<3,SReal> bras_levier;
+        sofa::defaulttype::Vec<3,SReal> bras_levier;
         Mat m;
         Contact( int index=0, const Mat& m=Mat())
             : index(index), m(m)
@@ -152,16 +150,16 @@ public:
         damping.setValue( damp );
     }
 
-    virtual void addForce(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv1& f1, DataVecDeriv2& f2, const DataVecCoord1& x1, const DataVecCoord2& x2, const DataVecDeriv1& v1, const DataVecDeriv2& v2);
+    virtual void addForce(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv1& f1, DataVecDeriv2& f2, const DataVecCoord1& x1, const DataVecCoord2& x2, const DataVecDeriv1& v1, const DataVecDeriv2& v2);
     ///SOFA_DEPRECATED_ForceField <<<virtual void addForce(VecDeriv1& f1, VecDeriv2& f2, const VecCoord1& p1, const VecCoord2& p2, const VecDeriv1& v1, const VecDeriv2& v2);
 
     virtual void addForce2(DataVecDeriv1& f1, DataVecDeriv2& f2, const DataVecCoord1& p1, const DataVecCoord2& p2, const DataVecDeriv1& v1, const DataVecDeriv2& v2);
     ///SOFA_DEPRECATED_ForceField <<<virtual void addForce2(VecDeriv1& f1, VecDeriv2& f2, const VecCoord1& p1, const VecCoord2& p2, const VecDeriv1& v1, const VecDeriv2& v2);
 
-    virtual void addDForce(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv1& df1, DataVecDeriv2& df2, const DataVecDeriv1& dx1, const DataVecDeriv2& dx2);
+    virtual void addDForce(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv1& df1, DataVecDeriv2& df2, const DataVecDeriv1& dx1, const DataVecDeriv2& dx2);
     ///SOFA_DEPRECATED_ForceField <<<virtual void addDForce(VecDeriv1& df1, VecDeriv2& df2, const VecDeriv1& dx1, const VecDeriv2& dx2);
 
-    virtual double getPotentialEnergy(const MechanicalParams* mparams /* PARAMS FIRST */, const DataVecCoord1& x1, const DataVecCoord2& x2)const;
+    virtual double getPotentialEnergy(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, const DataVecCoord1& x1, const DataVecCoord2& x2)const;
     ///SOFA_DEPRECATED_ForceField <<<virtual double getPotentialEnergy(const VecCoord1& x1, const VecCoord2& x2) const;
 
     void init();

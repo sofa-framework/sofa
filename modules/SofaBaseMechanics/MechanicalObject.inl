@@ -48,8 +48,6 @@
 
 #include <assert.h>
 #include <iostream>
-using std::cerr;
-using std::endl;
 
 #include <SofaBaseTopology/TopologyData.inl>
 
@@ -81,10 +79,6 @@ namespace component
 
 namespace container
 {
-
-using namespace sofa::core;
-using namespace sofa::component::topology;
-using namespace sofa::defaulttype;
 
 template <class DataTypes>
 MechanicalObject<DataTypes>::MechanicalObject()
@@ -120,9 +114,6 @@ MechanicalObject<DataTypes>::MechanicalObject()
     , m_gnuplotFileX(NULL)
     , m_gnuplotFileV(NULL)
 {
-
-
-
     // HACK
     if (!restScale.isSet())
     {
@@ -176,9 +167,9 @@ MechanicalObject<DataTypes>::MechanicalObject()
     externalForces  .forceSet();
 
     // do not forget to delete these in the destructor
-    write(VecCoordId::null())->forceSet();
-    write(VecDerivId::null())->forceSet();
-    write(VecDerivId::dforce())->forceSet();
+    write(core::VecCoordId::null())->forceSet();
+    write(core::VecDerivId::null())->forceSet();
+    write(core::VecDerivId::dforce())->forceSet();
 
     // default size is 1
     resize(1);
@@ -196,12 +187,12 @@ MechanicalObject<DataTypes>::~MechanicalObject()
 
     for(unsigned i=core::VecCoordId::V_FIRST_DYNAMIC_INDEX; i<vectorsCoord.size(); i++)
         if( vectorsCoord[i] != NULL ) { delete vectorsCoord[i]; vectorsCoord[i]=NULL; }
-    delete vectorsCoord[VecCoordId::null().getIndex()]; vectorsCoord[VecCoordId::null().getIndex()] = NULL;
+    delete vectorsCoord[sofa::core::VecCoordId::null().getIndex()]; vectorsCoord[core::VecCoordId::null().getIndex()] = NULL;
 
     for(unsigned i=core::VecDerivId::V_FIRST_DYNAMIC_INDEX; i<vectorsDeriv.size(); i++)
         if( vectorsDeriv[i] != NULL )  { delete vectorsDeriv[i]; vectorsDeriv[i]=NULL; }
-    delete vectorsDeriv[VecDerivId::null().getIndex()]; vectorsDeriv[VecDerivId::null().getIndex()] = NULL;
-    delete vectorsDeriv[VecDerivId::dforce().getIndex()]; vectorsDeriv[VecDerivId::dforce().getIndex()] = NULL;
+    delete vectorsDeriv[sofa::core::VecDerivId::null().getIndex()]; vectorsDeriv[core::VecDerivId::null().getIndex()] = NULL;
+    delete vectorsDeriv[sofa::core::VecDerivId::dforce().getIndex()]; vectorsDeriv[core::VecDerivId::dforce().getIndex()] = NULL;
 
     for(unsigned i=core::MatrixDerivId::V_FIRST_DYNAMIC_INDEX; i<vectorsMatrixDeriv.size(); i++)
         if( vectorsMatrixDeriv[i] != NULL )  { delete vectorsMatrixDeriv[i]; vectorsMatrixDeriv[i]=NULL; }
@@ -712,7 +703,7 @@ void MechanicalObject<DataTypes>::reserve(const int size)
 template <class DataTypes>
 void MechanicalObject<DataTypes>::applyTranslation (const double dx, const double dy, const double dz)
 {
-    helper::WriteAccessor< Data<VecCoord> > x_wA = *this->write(VecCoordId::position());
+    helper::WriteAccessor< Data<VecCoord> > x_wA = *this->write(core::VecCoordId::position());
 
     for (unsigned int i = 0; i < x_wA.size(); i++)
     {
@@ -724,20 +715,21 @@ void MechanicalObject<DataTypes>::applyTranslation (const double dx, const doubl
 template <class DataTypes>
 void MechanicalObject<DataTypes>::applyRotation (const double rx, const double ry, const double rz)
 {
-    Quaternion q = helper::Quater< SReal >::createQuaterFromEuler(Vec< 3, SReal >(rx, ry, rz) * M_PI / 180.0);
+    sofa::defaulttype::Quaternion q =
+            helper::Quater< SReal >::createQuaterFromEuler(sofa::defaulttype::Vec< 3, SReal >(rx, ry, rz) * M_PI / 180.0);
     applyRotation(q);
 }
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::applyRotation (const defaulttype::Quat q)
 {
-    helper::WriteAccessor< Data<VecCoord> > x_wA = *this->write(VecCoordId::position());
+    helper::WriteAccessor< Data<VecCoord> > x_wA = *this->write(core::VecCoordId::position());
 
     for (unsigned int i = 0; i < x_wA.size(); i++)
     {
-        Vec<3,Real> pos;
+        sofa::defaulttype::Vec<3,Real> pos;
         DataTypes::get(pos[0], pos[1], pos[2], x_wA[i]);
-        Vec<3,Real> newposition = q.rotate(pos);
+        sofa::defaulttype::Vec<3,Real> newposition = q.rotate(pos);
         DataTypes::set(x_wA[i], newposition[0], newposition[1], newposition[2]);
     }
 }
@@ -745,9 +737,9 @@ void MechanicalObject<DataTypes>::applyRotation (const defaulttype::Quat q)
 template <class DataTypes>
 void MechanicalObject<DataTypes>::applyScale(const double sx,const double sy,const double sz)
 {
-    helper::WriteAccessor< Data<VecCoord> > x_wA = *this->write(VecCoordId::position());
+    helper::WriteAccessor< Data<VecCoord> > x_wA = this->writePositions();
 
-    const Vec<3,Real> s((Real)sx, (Real)sy, (Real)sz);
+    const sofa::defaulttype::Vec<3,Real> s((Real)sx, (Real)sy, (Real)sz);
     for (unsigned int i=0; i<x_wA.size(); i++)
     {
         x_wA[i][0] = x_wA[i][0] * s[0];
@@ -759,7 +751,7 @@ void MechanicalObject<DataTypes>::applyScale(const double sx,const double sy,con
 template <class DataTypes>
 void MechanicalObject<DataTypes>::getIndicesInSpace(sofa::helper::vector<unsigned>& indices, Real xmin, Real xmax, Real ymin, Real ymax, Real zmin, Real zmax) const
 {
-    helper::ReadAccessor< Data<VecCoord> > x_rA = *this->read(ConstVecCoordId::position());
+    helper::ReadAccessor< Data<VecCoord> > x_rA = this->readPositions();
 
     for( unsigned i=0; i<x_rA.size(); ++i )
     {
@@ -832,27 +824,27 @@ void MechanicalObject<DataTypes>::computeWeightedValue( const unsigned int i, co
 template <class DataTypes>
 void MechanicalObject<DataTypes>::forcePointPosition(const unsigned int i, const sofa::helper::vector< double >& m_x)
 {
-    helper::WriteAccessor< Data<VecCoord> > x_wA = *this->write(VecCoordId::position());
-    helper::WriteAccessor< Data<VecDeriv> > v_wA = *this->write(VecDerivId::velocity());
+    helper::WriteAccessor< Data<VecCoord> > x_wA = this->writePositions();
+    helper::WriteAccessor< Data<VecDeriv> > v_wA = this->writeVelocities();
 
     DataTypes::set(x_wA[i], m_x[0], m_x[1], m_x[2]);
     DataTypes::set(v_wA[i], (Real) 0.0, (Real) 0.0, (Real) 0.0);
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::copyToBaseVector(defaulttype::BaseVector * dest, ConstVecId src, unsigned int &offset)
+void MechanicalObject<DataTypes>::copyToBaseVector(defaulttype::BaseVector * dest, core::ConstVecId src, unsigned int &offset)
 {
     if (src.type == sofa::core::V_COORD)
     {
-        helper::ReadAccessor< Data<VecCoord> > vSrc = *this->read(ConstVecCoordId(src));
-        const unsigned int coordDim = DataTypeInfo<Coord>::size();
+        helper::ReadAccessor< Data<VecCoord> > vSrc = *this->read(sofa::core::ConstVecCoordId(src));
+        const unsigned int coordDim = sofa::defaulttype::DataTypeInfo<Coord>::size();
 
         for (unsigned int i = 0; i < vSrc.size(); i++)
         {
             for (unsigned int j = 0; j < coordDim; j++)
             {
                 Real tmp = (Real)0.0;
-                DataTypeInfo<Coord>::getValue(vSrc[i], j, tmp);
+                sofa::defaulttype::DataTypeInfo<Coord>::getValue(vSrc[i], j, tmp);
                 dest->set(offset + i * coordDim + j, tmp);
             }
         }
@@ -861,15 +853,15 @@ void MechanicalObject<DataTypes>::copyToBaseVector(defaulttype::BaseVector * des
     }
     else
     {
-        helper::ReadAccessor< Data<VecDeriv> > vSrc = *this->read(ConstVecDerivId(src));
-        const unsigned int derivDim = DataTypeInfo<Deriv>::size();
+        helper::ReadAccessor< Data<VecDeriv> > vSrc = *this->read(sofa::core::ConstVecDerivId(src));
+        const unsigned int derivDim = defaulttype::DataTypeInfo<Deriv>::size();
 
         for (unsigned int i = 0; i < vSrc.size(); i++)
         {
             for (unsigned int j = 0; j < derivDim; j++)
             {
                 Real tmp;
-                DataTypeInfo<Deriv>::getValue(vSrc[i], j, tmp);
+                sofa::defaulttype::DataTypeInfo<Deriv>::getValue(vSrc[i], j, tmp);
                 dest->set(offset + i * derivDim + j, tmp);
             }
         }
@@ -879,12 +871,12 @@ void MechanicalObject<DataTypes>::copyToBaseVector(defaulttype::BaseVector * des
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::copyFromBaseVector(VecId dest, const defaulttype::BaseVector *src, unsigned int &offset)
+void MechanicalObject<DataTypes>::copyFromBaseVector(sofa::core::VecId dest, const defaulttype::BaseVector *src, unsigned int &offset)
 {
     if (dest.type == sofa::core::V_COORD)
     {
-        helper::WriteAccessor< Data<VecCoord> > vDest = *this->write(VecCoordId(dest));
-        const unsigned int coordDim = DataTypeInfo<Coord>::size();
+        helper::WriteAccessor< Data<VecCoord> > vDest = *this->write(sofa::core::VecCoordId(dest));
+        const unsigned int coordDim = defaulttype::DataTypeInfo<Coord>::size();
 
         for (unsigned int i = 0; i < vDest.size(); i++)
         {
@@ -892,7 +884,7 @@ void MechanicalObject<DataTypes>::copyFromBaseVector(VecId dest, const defaultty
             {
                 Real tmp;
                 tmp = (Real)src->element(offset + i * coordDim + j);
-                DataTypeInfo<Coord>::setValue(vDest[i], j, tmp);
+                sofa::defaulttype::DataTypeInfo<Coord>::setValue(vDest[i], j, tmp);
             }
         }
 
@@ -900,8 +892,8 @@ void MechanicalObject<DataTypes>::copyFromBaseVector(VecId dest, const defaultty
     }
     else
     {
-        helper::WriteAccessor< Data<VecDeriv> > vDest = *this->write(VecDerivId(dest));
-        const unsigned int derivDim = DataTypeInfo<Deriv>::size();
+        helper::WriteAccessor< Data<VecDeriv> > vDest = *this->write(sofa::core::VecDerivId(dest));
+        const unsigned int derivDim = sofa::defaulttype::DataTypeInfo<Deriv>::size();
 
         for (unsigned int i = 0; i < vDest.size(); i++)
         {
@@ -909,7 +901,7 @@ void MechanicalObject<DataTypes>::copyFromBaseVector(VecId dest, const defaultty
             {
                 Real tmp;
                 tmp = (Real)src->element(offset + i * derivDim + j);
-                DataTypeInfo<Deriv>::setValue(vDest[i], j, tmp);
+                defaulttype::DataTypeInfo<Deriv>::setValue(vDest[i], j, tmp);
             }
         }
 
@@ -918,19 +910,19 @@ void MechanicalObject<DataTypes>::copyFromBaseVector(VecId dest, const defaultty
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::addToBaseVector(defaulttype::BaseVector* dest, ConstVecId src, unsigned int &offset)
+void MechanicalObject<DataTypes>::addToBaseVector(defaulttype::BaseVector* dest, sofa::core::ConstVecId src, unsigned int &offset)
 {
     if (src.type == sofa::core::V_COORD)
     {
-        helper::ReadAccessor< Data<VecCoord> > vSrc = *this->read(ConstVecCoordId(src));
-        const unsigned int coordDim = DataTypeInfo<Coord>::size();
+        helper::ReadAccessor< Data<VecCoord> > vSrc = *this->read(core::ConstVecCoordId(src));
+        const unsigned int coordDim = defaulttype::DataTypeInfo<Coord>::size();
 
         for (unsigned int i = 0; i < vSrc.size(); i++)
         {
             for (unsigned int j = 0; j < coordDim; j++)
             {
                 Real tmp = (Real)0.0;
-                DataTypeInfo<Coord>::getValue(vSrc[i], j, tmp);
+                defaulttype::DataTypeInfo<Coord>::getValue(vSrc[i], j, tmp);
                 dest->add(offset + i * coordDim + j, tmp);
             }
         }
@@ -939,15 +931,15 @@ void MechanicalObject<DataTypes>::addToBaseVector(defaulttype::BaseVector* dest,
     }
     else
     {
-        helper::ReadAccessor< Data<VecDeriv> > vSrc = *this->read(ConstVecDerivId(src));
-        const unsigned int derivDim = DataTypeInfo<Deriv>::size();
+        helper::ReadAccessor< Data<VecDeriv> > vSrc = *this->read(core::ConstVecDerivId(src));
+        const unsigned int derivDim = defaulttype::DataTypeInfo<Deriv>::size();
 
         for (unsigned int i = 0; i < vSrc.size(); i++)
         {
             for (unsigned int j = 0; j < derivDim; j++)
             {
                 Real tmp;
-                DataTypeInfo<Deriv>::getValue(vSrc[i], j, tmp);
+                defaulttype::DataTypeInfo<Deriv>::getValue(vSrc[i], j, tmp);
                 dest->add(offset + i * derivDim + j, tmp);
             }
         }
@@ -957,20 +949,20 @@ void MechanicalObject<DataTypes>::addToBaseVector(defaulttype::BaseVector* dest,
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::addFromBaseVectorSameSize(VecId dest, const defaulttype::BaseVector *src, unsigned int &offset)
+void MechanicalObject<DataTypes>::addFromBaseVectorSameSize(sofa::core::VecId dest, const defaulttype::BaseVector *src, unsigned int &offset)
 {
     if (dest.type == sofa::core::V_COORD)
     {
-        helper::WriteAccessor< Data<VecCoord> > vDest = *this->write(VecCoordId(dest));
-        const unsigned int coordDim = DataTypeInfo<Coord>::size();
+        helper::WriteAccessor< Data<VecCoord> > vDest = *this->write(core::VecCoordId(dest));
+        const unsigned int coordDim = defaulttype::DataTypeInfo<Coord>::size();
 
         for (unsigned int i = 0; i < vDest.size(); i++)
         {
             for (unsigned int j = 0; j < coordDim; j++)
             {
                 Real tmp = (Real)0.0;
-                DataTypeInfo<Coord>::getValue(vDest[i], j, tmp);
-                DataTypeInfo<Coord>::setValue(vDest[i], j, tmp + src->element(offset + i * coordDim + j));
+                defaulttype::DataTypeInfo<Coord>::getValue(vDest[i], j, tmp);
+                defaulttype::DataTypeInfo<Coord>::setValue(vDest[i], j, tmp + src->element(offset + i * coordDim + j));
             }
         }
 
@@ -978,16 +970,16 @@ void MechanicalObject<DataTypes>::addFromBaseVectorSameSize(VecId dest, const de
     }
     else
     {
-        helper::WriteAccessor< Data<VecDeriv> > vDest = *this->write(VecDerivId(dest));
-        const unsigned int derivDim = DataTypeInfo<Deriv>::size();
+        helper::WriteAccessor< Data<VecDeriv> > vDest = *this->write(core::VecDerivId(dest));
+        const unsigned int derivDim = defaulttype::DataTypeInfo<Deriv>::size();
 
         for (unsigned int i = 0; i < vDest.size(); i++)
         {
             for (unsigned int j = 0; j < derivDim; j++)
             {
                 Real tmp = (Real)0.0;
-                DataTypeInfo<Deriv>::getValue(vDest[i], j, tmp);
-                DataTypeInfo<Deriv>::setValue(vDest[i], j, tmp + src->element(offset + i * derivDim + j));
+                defaulttype::DataTypeInfo<Deriv>::getValue(vDest[i], j, tmp);
+                defaulttype::DataTypeInfo<Deriv>::setValue(vDest[i], j, tmp + src->element(offset + i * derivDim + j));
             }
         }
 
@@ -996,37 +988,37 @@ void MechanicalObject<DataTypes>::addFromBaseVectorSameSize(VecId dest, const de
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::addFromBaseVectorDifferentSize(VecId dest, const defaulttype::BaseVector* src, unsigned int &offset )
+void MechanicalObject<DataTypes>::addFromBaseVectorDifferentSize(sofa::core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset )
 {
     if (dest.type == sofa::core::V_COORD)
     {
-        helper::WriteAccessor< Data<VecCoord> > vDest = *this->write(VecCoordId(dest));
-        const unsigned int coordDim = DataTypeInfo<Coord>::size();
+        helper::WriteAccessor< Data<VecCoord> > vDest = *this->write(core::VecCoordId(dest));
+        const unsigned int coordDim = defaulttype::DataTypeInfo<Coord>::size();
         const unsigned int nbEntries = src->size()/coordDim;
         for (unsigned int i=0; i<nbEntries; i++)
         {
             for (unsigned int j=0; j<coordDim; ++j)
             {
                 Real tmp = (Real)0.0;
-                DataTypeInfo<Coord>::getValue(vDest[i+offset],j,tmp);
-                DataTypeInfo<Coord>::setValue(vDest[i+offset],j, tmp + src->element(i*coordDim+j));
+                defaulttype::DataTypeInfo<Coord>::getValue(vDest[i+offset],j,tmp);
+                defaulttype::DataTypeInfo<Coord>::setValue(vDest[i+offset],j, tmp + src->element(i*coordDim+j));
             }
         }
         offset += nbEntries;
     }
     else
     {
-        helper::WriteAccessor< Data<VecDeriv> > vDest = *this->write(VecDerivId(dest));
+        helper::WriteAccessor< Data<VecDeriv> > vDest = *this->write(core::VecDerivId(dest));
 
-        const unsigned int derivDim = DataTypeInfo<Deriv>::size();
+        const unsigned int derivDim = defaulttype::DataTypeInfo<Deriv>::size();
         const unsigned int nbEntries = src->size()/derivDim;
         for (unsigned int i=0; i<nbEntries; i++)
         {
             for (unsigned int j=0; j<derivDim; ++j)
             {
                 Real tmp = (Real)0.0;
-                DataTypeInfo<Deriv>::getValue(vDest[i+offset],j,tmp);
-                DataTypeInfo<Deriv>::setValue(vDest[i+offset],j, tmp + src->element(i*derivDim+j));
+                defaulttype::DataTypeInfo<Deriv>::getValue(vDest[i+offset],j,tmp);
+                defaulttype::DataTypeInfo<Deriv>::setValue(vDest[i+offset],j, tmp + src->element(i*derivDim+j));
             }
         }
         offset += nbEntries;
@@ -1047,15 +1039,15 @@ void MechanicalObject<DataTypes>::init()
 
     //helper::WriteAccessor< Data<VecCoord> > x_wA = *this->write(VecCoordId::position());
     //helper::WriteAccessor< Data<VecDeriv> > v_wA = *this->write(VecDerivId::velocity());
-    Data<VecCoord>* x_wAData = this->write(VecCoordId::position());
-    Data<VecDeriv>* v_wAData = this->write(VecDerivId::velocity());
+    Data<VecCoord>* x_wAData = this->write(sofa::core::VecCoordId::position());
+    Data<VecDeriv>* v_wAData = this->write(sofa::core::VecDerivId::velocity());
     VecCoord& x_wA = *x_wAData->beginEdit();
     VecDeriv& v_wA = *v_wAData->beginEdit();
 
     //case if X0 has been set but not X
     if (getX0()->size() > x_wA.size())
     {
-        vOp(core::ExecParams::defaultInstance(), VecId::position(), VecId::restPosition());
+        vOp(core::ExecParams::defaultInstance(), core::VecId::position(), core::VecId::restPosition());
     }
 
     if (x_wA.size() != (std::size_t)vsize || v_wA.size() != (std::size_t)vsize)
@@ -1065,7 +1057,7 @@ void MechanicalObject<DataTypes>::init()
 
         const unsigned int xSize = x_wA.size();
 
-        helper::WriteAccessor< Data<VecDeriv> > v_wA = *this->write(VecDerivId::velocity());
+        helper::WriteAccessor< Data<VecDeriv> > v_wA = *this->write(sofa::core::VecDerivId::velocity());
 
         if (v_wA.size() >= 1 && v_wA.size() < xSize)
         {
@@ -1212,11 +1204,11 @@ template <class DataTypes>
 void MechanicalObject<DataTypes>::storeResetState()
 {
     // Save initial state for reset button
-    vOp(core::ExecParams::defaultInstance(), VecId::resetPosition(), VecId::position());
+    vOp(core::ExecParams::defaultInstance(), core::VecId::resetPosition(), core::VecId::position());
 
     //vOp(VecId::resetVelocity(), VecId::velocity());
     // we only store a resetVelocity if the velocity is not zero
-    helper::ReadAccessor< Data<VecDeriv> > v = *this->read(VecDerivId::velocity());
+    helper::ReadAccessor< Data<VecDeriv> > v = *this->read(core::VecDerivId::velocity());
     bool zero = true;
     for (unsigned int i=0; i<v.size(); ++i)
     {
@@ -1226,7 +1218,7 @@ void MechanicalObject<DataTypes>::storeResetState()
         if (!zero) break;
     }
     if (!zero)
-        vOp(core::ExecParams::defaultInstance(), VecId::resetVelocity(), VecId::velocity());
+        vOp(core::ExecParams::defaultInstance(), core::VecId::resetVelocity(), core::VecId::velocity());
 }
 
 //
@@ -1238,35 +1230,35 @@ void MechanicalObject<DataTypes>::reset()
     if (!reset_position.isSet())
         return;
 
-    vOp(core::ExecParams::defaultInstance(), VecId::position(), VecId::resetPosition());
+    vOp(core::ExecParams::defaultInstance(), core::VecId::position(), core::VecId::resetPosition());
 
     if (!reset_velocity.isSet())
     {
-        vOp(core::ExecParams::defaultInstance(), VecId::velocity());
+        vOp(core::ExecParams::defaultInstance(), core::VecId::velocity());
     }
     else
     {
-        vOp(core::ExecParams::defaultInstance(), VecId::velocity(), VecId::resetVelocity());
+        vOp(core::ExecParams::defaultInstance(), core::VecId::velocity(), core::VecId::resetVelocity());
     }
 
-    vOp(core::ExecParams::defaultInstance(), VecId::freePosition(), VecId::position());
-    vOp(core::ExecParams::defaultInstance(), VecId::freeVelocity(), VecId::velocity());
+    vOp(core::ExecParams::defaultInstance(), core::VecId::freePosition(), core::VecId::position());
+    vOp(core::ExecParams::defaultInstance(), core::VecId::freeVelocity(), core::VecId::velocity());
 }
 
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::writeVec(ConstVecId v, std::ostream &out)
+void MechanicalObject<DataTypes>::writeVec(core::ConstVecId v, std::ostream &out)
 {
     switch (v.type)
     {
     case sofa::core::V_COORD:
-        out << this->read(ConstVecCoordId(v))->getValue();
+        out << this->read(core::ConstVecCoordId(v))->getValue();
         break;
     case sofa::core::V_DERIV:
-        out << this->read(ConstVecDerivId(v))->getValue();
+        out << this->read(core::ConstVecDerivId(v))->getValue();
         break;
     case sofa::core::V_MATDERIV:
-        out << this->read(ConstMatrixDerivId(v))->getValue();
+        out << this->read(core::ConstMatrixDerivId(v))->getValue();
         break;
     default:
         break;
@@ -1274,7 +1266,7 @@ void MechanicalObject<DataTypes>::writeVec(ConstVecId v, std::ostream &out)
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::readVec(VecId v, std::istream &in)
+void MechanicalObject<DataTypes>::readVec(core::VecId v, std::istream &in)
 {
     int i = 0;
 
@@ -1283,7 +1275,7 @@ void MechanicalObject<DataTypes>::readVec(VecId v, std::istream &in)
     case sofa::core::V_COORD:
     {
         Coord coord;
-        helper::WriteAccessor< Data< VecCoord > > vec = *this->write(VecCoordId(v));
+        helper::WriteAccessor< Data< VecCoord > > vec = *this->write(core::VecCoordId(v));
 
         while (in >> coord)
         {
@@ -1297,7 +1289,7 @@ void MechanicalObject<DataTypes>::readVec(VecId v, std::istream &in)
     case sofa::core::V_DERIV:
     {
         Deriv deriv;
-        helper::WriteAccessor< Data< VecDeriv > > vec = *this->write(VecDerivId(v));
+        helper::WriteAccessor< Data< VecDeriv > > vec = *this->write(core::VecDerivId(v));
 
         while (in >> deriv)
         {
@@ -1320,7 +1312,7 @@ void MechanicalObject<DataTypes>::readVec(VecId v, std::istream &in)
 }
 
 template <class DataTypes>
-double MechanicalObject<DataTypes>::compareVec(ConstVecId v, std::istream &in)
+double MechanicalObject<DataTypes>::compareVec(core::ConstVecId v, std::istream &in)
 {
     std::string ref,cur;
     getline(in, ref);
@@ -1330,13 +1322,13 @@ double MechanicalObject<DataTypes>::compareVec(ConstVecId v, std::istream &in)
     switch (v.type)
     {
     case sofa::core::V_COORD:
-        out << this->read(ConstVecCoordId(v))->getValue();
+        out << this->read(core::ConstVecCoordId(v))->getValue();
         break;
     case sofa::core::V_DERIV:
-        out << this->read(ConstVecDerivId(v))->getValue();
+        out << this->read(core::ConstVecDerivId(v))->getValue();
         break;
     case sofa::core::V_MATDERIV:
-        out << this->read(ConstMatrixDerivId(v))->getValue();
+        out << this->read(core::ConstMatrixDerivId(v))->getValue();
         break;
     default:
         break;
@@ -1412,11 +1404,11 @@ void MechanicalObject<DataTypes>::accumulateForce(const core::ExecParams* params
     else
 #endif /* SOFA_SMP */
     {
-        helper::ReadAccessor< Data<VecDeriv> > extForces_rA( params, *this->read(ConstVecDerivId::externalForce()) );
+        helper::ReadAccessor< Data<VecDeriv> > extForces_rA( params, *this->read(core::ConstVecDerivId::externalForce()) );
 
         if (!extForces_rA.empty())
         {
-            helper::WriteAccessor< Data<VecDeriv> > f_wA ( params, *this->write(VecDerivId::force()) );
+            helper::WriteAccessor< Data<VecDeriv> > f_wA ( params, *this->write(core::VecDerivId::force()) );
 
             if (!this->forceMask.isInUse())
             {
@@ -1439,7 +1431,7 @@ void MechanicalObject<DataTypes>::accumulateForce(const core::ExecParams* params
 }
 
 template <class DataTypes>
-Data<typename MechanicalObject<DataTypes>::VecCoord>* MechanicalObject<DataTypes>::write(VecCoordId v)
+Data<typename MechanicalObject<DataTypes>::VecCoord>* MechanicalObject<DataTypes>::write(core::VecCoordId v)
 {
 #ifdef SOFA_SMP_NUMA
     //  if(this->getContext()->getProcessor()!=-1)
@@ -1472,7 +1464,7 @@ Data<typename MechanicalObject<DataTypes>::VecCoord>* MechanicalObject<DataTypes
 }
 
 template <class DataTypes>
-const Data<typename MechanicalObject<DataTypes>::VecCoord>* MechanicalObject<DataTypes>::read(ConstVecCoordId v) const
+const Data<typename MechanicalObject<DataTypes>::VecCoord>* MechanicalObject<DataTypes>::read(core::ConstVecCoordId v) const
 {
     if (v.isNull())
     {
@@ -1498,7 +1490,7 @@ const Data<typename MechanicalObject<DataTypes>::VecCoord>* MechanicalObject<Dat
 }
 
 template <class DataTypes>
-Data<typename MechanicalObject<DataTypes>::VecDeriv>* MechanicalObject<DataTypes>::write(VecDerivId v)
+Data<typename MechanicalObject<DataTypes>::VecDeriv>* MechanicalObject<DataTypes>::write(core::VecDerivId v)
 {
 #ifdef SOFA_SMP_NUMA
     //  if(this->getContext()->getProcessor()!=-1)
@@ -1531,7 +1523,7 @@ Data<typename MechanicalObject<DataTypes>::VecDeriv>* MechanicalObject<DataTypes
 }
 
 template <class DataTypes>
-const Data<typename MechanicalObject<DataTypes>::VecDeriv>* MechanicalObject<DataTypes>::read(ConstVecDerivId v) const
+const Data<typename MechanicalObject<DataTypes>::VecDeriv>* MechanicalObject<DataTypes>::read(core::ConstVecDerivId v) const
 {
     if (v.index < vectorsDeriv.size())
     {
@@ -1553,7 +1545,7 @@ const Data<typename MechanicalObject<DataTypes>::VecDeriv>* MechanicalObject<Dat
 }
 
 template <class DataTypes>
-Data<typename MechanicalObject<DataTypes>::MatrixDeriv>* MechanicalObject<DataTypes>::write(MatrixDerivId v)
+Data<typename MechanicalObject<DataTypes>::MatrixDeriv>* MechanicalObject<DataTypes>::write(core::MatrixDerivId v)
 {
 #ifdef SOFA_SMP_NUMA
     //  if(this->getContext()->getProcessor()!=-1)
@@ -1574,7 +1566,7 @@ Data<typename MechanicalObject<DataTypes>::MatrixDeriv>* MechanicalObject<DataTy
 }
 
 template <class DataTypes>
-const Data<typename MechanicalObject<DataTypes>::MatrixDeriv>* MechanicalObject<DataTypes>::read(ConstMatrixDerivId v) const
+const Data<typename MechanicalObject<DataTypes>::MatrixDeriv>* MechanicalObject<DataTypes>::read(core::ConstMatrixDerivId v) const
 {
     if (v.index < vectorsMatrixDeriv.size())
         return vectorsMatrixDeriv[v.index];
@@ -1687,7 +1679,7 @@ void MechanicalObject<DataTypes>::vAlloc(const core::ExecParams* params /* PARAM
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::vRealloc(const core::ExecParams* params /* PARAMS FIRST */, VecCoordId v)
+void MechanicalObject<DataTypes>::vRealloc(const core::ExecParams* params /* PARAMS FIRST */, core::VecCoordId v)
 {
     Data<VecCoord>* vec_d = this->write(v);
 
@@ -1699,7 +1691,7 @@ void MechanicalObject<DataTypes>::vRealloc(const core::ExecParams* params /* PAR
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::vRealloc(const core::ExecParams* params /* PARAMS FIRST */, VecDerivId v)
+void MechanicalObject<DataTypes>::vRealloc(const core::ExecParams* params /* PARAMS FIRST */, core::VecDerivId v)
 {
     Data<VecDeriv>* vec_d = this->write(v);
 
@@ -1711,7 +1703,7 @@ void MechanicalObject<DataTypes>::vRealloc(const core::ExecParams* params /* PAR
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::vFree(const core::ExecParams* params /* PARAMS FIRST */, VecCoordId vId)
+void MechanicalObject<DataTypes>::vFree(const core::ExecParams* params /* PARAMS FIRST */, core::VecCoordId vId)
 {
     if (vId.index >= sofa::core::VecCoordId::V_FIRST_DYNAMIC_INDEX)
     {
@@ -1726,7 +1718,7 @@ void MechanicalObject<DataTypes>::vFree(const core::ExecParams* params /* PARAMS
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::vFree(const core::ExecParams* params /* PARAMS FIRST */, VecDerivId vId)
+void MechanicalObject<DataTypes>::vFree(const core::ExecParams* params /* PARAMS FIRST */, core::VecDerivId vId)
 {
     if (vId.index >= sofa::core::VecDerivId::V_FIRST_DYNAMIC_INDEX)
     {
@@ -1741,7 +1733,9 @@ void MechanicalObject<DataTypes>::vFree(const core::ExecParams* params /* PARAMS
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::vInit(const core::ExecParams* params /* PARAMS FIRST */, VecCoordId vId, ConstVecCoordId vSrcId)
+void MechanicalObject<DataTypes>::vInit(const core::ExecParams* params /* PARAMS FIRST */
+                                        , core::VecCoordId vId
+                                        , core::ConstVecCoordId vSrcId)
 {
     Data< VecCoord >* vec_d = this->write(vId);
 
@@ -1749,13 +1743,15 @@ void MechanicalObject<DataTypes>::vInit(const core::ExecParams* params /* PARAMS
     {
         vec_d->forceSet(params);
 
-        if (vSrcId != ConstVecCoordId::null())
+        if (vSrcId != core::ConstVecCoordId::null())
             vOp(params, vId, vSrcId);
     }
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::vInit(const core::ExecParams* params /* PARAMS FIRST */, VecDerivId vId, ConstVecDerivId vSrcId)
+void MechanicalObject<DataTypes>::vInit(const core::ExecParams* params /* PARAMS FIRST */,
+                                        core::VecDerivId vId,
+                                        core::ConstVecDerivId vSrcId)
 {
     Data< VecDeriv >* vec_d = this->write(vId);
 
@@ -1763,13 +1759,15 @@ void MechanicalObject<DataTypes>::vInit(const core::ExecParams* params /* PARAMS
     {
         vec_d->forceSet(params);
 
-        if (vSrcId != ConstVecDerivId::null())
+        if (vSrcId != core::ConstVecDerivId::null())
             vOp(params, vId, vSrcId);
     }
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params /* PARAMS FIRST */, VecId v, ConstVecId a, ConstVecId b, double f)
+void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params /* PARAMS FIRST */, core::VecId v,
+                                      core::ConstVecId a,
+                                      core::ConstVecId b, double f)
 {
 #ifdef SOFA_SMP
     if (params->execMode() == core::ExecParams::EXEC_KAAPI)
@@ -1793,14 +1791,14 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params /* PARAMS F
                 // v = 0
                 if (v.type == sofa::core::V_COORD)
                 {
-                    helper::WriteAccessor< Data<VecCoord> > vv( params, *this->write(VecCoordId(v)) );
+                    helper::WriteAccessor< Data<VecCoord> > vv( params, *this->write(core::VecCoordId(v)) );
                     vv.resize(this->vsize);
                     for (unsigned int i=0; i<vv.size(); i++)
                         vv[i] = Coord();
                 }
                 else
                 {
-                    helper::WriteAccessor< Data<VecDeriv> > vv( params, *this->write(VecDerivId(v)) );
+                    helper::WriteAccessor< Data<VecDeriv> > vv( params, *this->write(core::VecDerivId(v)) );
                     vv.resize(this->vsize);
                     for (unsigned int i=0; i<vv.size(); i++)
                         vv[i] = Deriv();
@@ -1819,13 +1817,13 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params /* PARAMS F
                     // v *= f
                     if (v.type == sofa::core::V_COORD)
                     {
-                        helper::WriteAccessor< Data<VecCoord> > vv( params, *this->write(VecCoordId(v)) );
+                        helper::WriteAccessor< Data<VecCoord> > vv( params, *this->write(core::VecCoordId(v)) );
                         for (unsigned int i=0; i<vv.size(); i++)
                             vv[i] *= (Real)f;
                     }
                     else
                     {
-                        helper::WriteAccessor< Data<VecDeriv> > vv( params, *this->write(VecDerivId(v)) );
+                        helper::WriteAccessor< Data<VecDeriv> > vv( params, *this->write(core::VecDerivId(v)) );
                         for (unsigned int i=0; i<vv.size(); i++)
                             vv[i] *= (Real)f;
                     }
@@ -1835,16 +1833,16 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params /* PARAMS F
                     // v = b*f
                     if (v.type == sofa::core::V_COORD)
                     {
-                        helper::WriteAccessor< Data<VecCoord> > vv( params, *this->write(VecCoordId(v)) );
-                        helper::ReadAccessor< Data<VecCoord> > vb( params, *this->read(ConstVecCoordId(b)) );
+                        helper::WriteAccessor< Data<VecCoord> > vv( params, *this->write(core::VecCoordId(v)) );
+                        helper::ReadAccessor< Data<VecCoord> > vb( params, *this->read(core::ConstVecCoordId(b)) );
                         vv.resize(vb.size());
                         for (unsigned int i=0; i<vv.size(); i++)
                             vv[i] = vb[i] * (Real)f;
                     }
                     else
                     {
-                        helper::WriteAccessor< Data<VecDeriv> > vv( params, *this->write(VecDerivId(v)) );
-                        helper::ReadAccessor< Data<VecDeriv> > vb( params, *this->read(ConstVecDerivId(b)) );
+                        helper::WriteAccessor< Data<VecDeriv> > vv( params, *this->write(core::VecDerivId(v)) );
+                        helper::ReadAccessor< Data<VecDeriv> > vb( params, *this->read(core::ConstVecDerivId(b)) );
                         vv.resize(vb.size());
                         for (unsigned int i=0; i<vv.size(); i++)
                             vv[i] = vb[i] * (Real)f;
@@ -1865,16 +1863,16 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params /* PARAMS F
                 // v = a
                 if (v.type == sofa::core::V_COORD)
                 {
-                    helper::WriteAccessor< Data<VecCoord> > vv( params, *this->write(VecCoordId(v)) );
-                    helper::ReadAccessor< Data<VecCoord> > va( params, *this->read(ConstVecCoordId(a)) );
+                    helper::WriteAccessor< Data<VecCoord> > vv( params, *this->write(core::VecCoordId(v)) );
+                    helper::ReadAccessor< Data<VecCoord> > va( params, *this->read(core::ConstVecCoordId(a)) );
                     vv.resize(va.size());
                     for (unsigned int i=0; i<vv.size(); i++)
                         vv[i] = va[i];
                 }
                 else
                 {
-                    helper::WriteAccessor< Data<VecDeriv> > vv( params, *this->write(VecDerivId(v)) );
-                    helper::ReadAccessor< Data<VecDeriv> > va( params, *this->read(ConstVecDerivId(a)) );
+                    helper::WriteAccessor< Data<VecDeriv> > vv( params, *this->write(core::VecDerivId(v)) );
+                    helper::ReadAccessor< Data<VecDeriv> > va( params, *this->read(core::ConstVecDerivId(a)) );
                     vv.resize(va.size());
                     for (unsigned int i=0; i<vv.size(); i++)
                         vv[i] = va[i];
@@ -1889,10 +1887,10 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params /* PARAMS F
                         // v += b
                         if (v.type == sofa::core::V_COORD)
                         {
-                            helper::WriteAccessor< Data<VecCoord> > vv( params, *this->write(VecCoordId(v)) );
+                            helper::WriteAccessor< Data<VecCoord> > vv( params, *this->write(core::VecCoordId(v)) );
                             if (b.type == sofa::core::V_COORD)
                             {
-                                helper::ReadAccessor< Data<VecCoord> > vb( params, *this->read(ConstVecCoordId(b)) );
+                                helper::ReadAccessor< Data<VecCoord> > vb( params, *this->read(core::ConstVecCoordId(b)) );
 
                                 if (vb.size() > vv.size())
                                     vv.resize(vb.size());
@@ -1902,7 +1900,7 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params /* PARAMS F
                             }
                             else
                             {
-                                helper::ReadAccessor< Data<VecDeriv> > vb( params, *this->read(ConstVecDerivId(b)) );
+                                helper::ReadAccessor< Data<VecDeriv> > vb( params, *this->read(core::ConstVecDerivId(b)) );
 
                                 if (vb.size() > vv.size())
                                     vv.resize(vb.size());
@@ -1913,8 +1911,8 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params /* PARAMS F
                         }
                         else if (b.type == sofa::core::V_DERIV)
                         {
-                            helper::WriteAccessor< Data<VecDeriv> > vv( params, *this->write(VecDerivId(v)) );
-                            helper::ReadAccessor< Data<VecDeriv> > vb( params, *this->read(ConstVecDerivId(b)) );
+                            helper::WriteAccessor< Data<VecDeriv> > vv( params, *this->write(core::VecDerivId(v)) );
+                            helper::ReadAccessor< Data<VecDeriv> > vb( params, *this->read(core::ConstVecDerivId(b)) );
 
                             if (vb.size() > vv.size())
                                 vv.resize(vb.size());
@@ -1934,10 +1932,10 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params /* PARAMS F
                         // v += b*f
                         if (v.type == sofa::core::V_COORD)
                         {
-                            helper::WriteAccessor< Data<VecCoord> > vv( params, *this->write(VecCoordId(v)) );
+                            helper::WriteAccessor< Data<VecCoord> > vv( params, *this->write(core::VecCoordId(v)) );
                             if (b.type == sofa::core::V_COORD)
                             {
-                                helper::ReadAccessor< Data<VecCoord> > vb( params, *this->read(ConstVecCoordId(b)) );
+                                helper::ReadAccessor< Data<VecCoord> > vb( params, *this->read(core::ConstVecCoordId(b)) );
 
                                 if (vb.size() > vv.size())
                                     vv.resize(vb.size());
@@ -1947,7 +1945,7 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params /* PARAMS F
                             }
                             else
                             {
-                                helper::ReadAccessor< Data<VecDeriv> > vb( params, *this->read(ConstVecDerivId(b)) );
+                                helper::ReadAccessor< Data<VecDeriv> > vb( params, *this->read(core::ConstVecDerivId(b)) );
 
                                 if (vb.size() > vv.size())
                                     vv.resize(vb.size());
@@ -1958,8 +1956,8 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params /* PARAMS F
                         }
                         else if (b.type == sofa::core::V_DERIV)
                         {
-                            helper::WriteAccessor< Data<VecDeriv> > vv( params, *this->write(VecDerivId(v)) );
-                            helper::ReadAccessor< Data<VecDeriv> > vb( params, *this->read(ConstVecDerivId(b)) );
+                            helper::WriteAccessor< Data<VecDeriv> > vv( params, *this->write(core::VecDerivId(v)) );
+                            helper::ReadAccessor< Data<VecDeriv> > vb( params, *this->read(core::ConstVecDerivId(b)) );
 
                             if (vb.size() > vv.size())
                                 vv.resize(vb.size());
@@ -1982,10 +1980,10 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params /* PARAMS F
                         // v += a
                         if (v.type == sofa::core::V_COORD)
                         {
-                            helper::WriteAccessor< Data<VecCoord> > vv( params, *this->write(VecCoordId(v)) );
+                            helper::WriteAccessor< Data<VecCoord> > vv( params, *this->write(core::VecCoordId(v)) );
                             if (a.type == sofa::core::V_COORD)
                             {
-                                helper::ReadAccessor< Data<VecCoord> > va( params, *this->read(ConstVecCoordId(a)) );
+                                helper::ReadAccessor< Data<VecCoord> > va( params, *this->read(core::ConstVecCoordId(a)) );
 
                                 if (va.size() > vv.size())
                                     vv.resize(va.size());
@@ -1995,7 +1993,7 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params /* PARAMS F
                             }
                             else
                             {
-                                helper::ReadAccessor< Data<VecDeriv> > va( params, *this->read(ConstVecDerivId(a)) );
+                                helper::ReadAccessor< Data<VecDeriv> > va( params, *this->read(core::ConstVecDerivId(a)) );
 
                                 if (va.size() > vv.size())
                                     vv.resize(va.size());
@@ -2006,8 +2004,8 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params /* PARAMS F
                         }
                         else if (a.type == sofa::core::V_DERIV)
                         {
-                            helper::WriteAccessor< Data<VecDeriv> > vv( params, *this->write(VecDerivId(v)) );
-                            helper::ReadAccessor< Data<VecDeriv> > va( params, *this->read(ConstVecDerivId(a)) );
+                            helper::WriteAccessor< Data<VecDeriv> > vv( params, *this->write(core::VecDerivId(v)) );
+                            helper::ReadAccessor< Data<VecDeriv> > va( params, *this->read(core::ConstVecDerivId(a)) );
 
                             if (va.size() > vv.size())
                                 vv.resize(va.size());
@@ -2027,8 +2025,8 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params /* PARAMS F
                         // v = a+v*f
                         if (v.type == sofa::core::V_COORD)
                         {
-                            helper::WriteAccessor< Data<VecCoord> > vv( params, *this->write(VecCoordId(v)) );
-                            helper::ReadAccessor< Data<VecCoord> > va( params, *this->read(ConstVecCoordId(a)) );
+                            helper::WriteAccessor< Data<VecCoord> > vv( params, *this->write(core::VecCoordId(v)) );
+                            helper::ReadAccessor< Data<VecCoord> > va( params, *this->read(core::ConstVecCoordId(a)) );
                             vv.resize(va.size());
                             for (unsigned int i=0; i<vv.size(); i++)
                             {
@@ -2038,8 +2036,8 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params /* PARAMS F
                         }
                         else
                         {
-                            helper::WriteAccessor< Data<VecDeriv> > vv( params, *this->write(VecDerivId(v)) );
-                            helper::ReadAccessor< Data<VecDeriv> > va( params, *this->read(ConstVecDerivId(a)) );
+                            helper::WriteAccessor< Data<VecDeriv> > vv( params, *this->write(core::VecDerivId(v)) );
+                            helper::ReadAccessor< Data<VecDeriv> > va( params, *this->read(core::ConstVecDerivId(a)) );
                             vv.resize(va.size());
                             for (unsigned int i=0; i<vv.size(); i++)
                             {
@@ -2056,12 +2054,12 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params /* PARAMS F
                         // v = a+b
                         if (v.type == sofa::core::V_COORD)
                         {
-                            helper::WriteAccessor< Data<VecCoord> > vv( params, *this->write(VecCoordId(v)) );
-                            helper::ReadAccessor< Data<VecCoord> > va( params, *this->read(ConstVecCoordId(a)) );
+                            helper::WriteAccessor< Data<VecCoord> > vv( params, *this->write(core::VecCoordId(v)) );
+                            helper::ReadAccessor< Data<VecCoord> > va( params, *this->read(core::ConstVecCoordId(a)) );
                             vv.resize(va.size());
                             if (b.type == sofa::core::V_COORD)
                             {
-                                helper::ReadAccessor< Data<VecCoord> > vb( params, *this->read(ConstVecCoordId(b)) );
+                                helper::ReadAccessor< Data<VecCoord> > vb( params, *this->read(core::ConstVecCoordId(b)) );
                                 for (unsigned int i=0; i<vv.size(); i++)
                                 {
                                     vv[i] = va[i];
@@ -2070,7 +2068,7 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params /* PARAMS F
                             }
                             else
                             {
-                                helper::ReadAccessor< Data<VecDeriv> > vb( params, *this->read(ConstVecDerivId(b)) );
+                                helper::ReadAccessor< Data<VecDeriv> > vb( params, *this->read(core::ConstVecDerivId(b)) );
                                 for (unsigned int i=0; i<vv.size(); i++)
                                 {
                                     vv[i] = va[i];
@@ -2080,9 +2078,9 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params /* PARAMS F
                         }
                         else if (b.type == sofa::core::V_DERIV)
                         {
-                            helper::WriteAccessor< Data<VecDeriv> > vv( params, *this->write(VecDerivId(v)) );
-                            helper::ReadAccessor< Data<VecDeriv> > va( params, *this->read(ConstVecDerivId(a)) );
-                            helper::ReadAccessor< Data<VecDeriv> > vb( params, *this->read(ConstVecDerivId(b)) );
+                            helper::WriteAccessor< Data<VecDeriv> > vv( params, *this->write(core::VecDerivId(v)) );
+                            helper::ReadAccessor< Data<VecDeriv> > va( params, *this->read(core::ConstVecDerivId(a)) );
+                            helper::ReadAccessor< Data<VecDeriv> > vb( params, *this->read(core::ConstVecDerivId(b)) );
                             vv.resize(va.size());
                             for (unsigned int i=0; i<vv.size(); i++)
                             {
@@ -2102,12 +2100,12 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params /* PARAMS F
                         // v = a+b*f
                         if (v.type == sofa::core::V_COORD)
                         {
-                            helper::WriteAccessor< Data<VecCoord> > vv( params, *this->write(VecCoordId(v)) );
-                            helper::ReadAccessor< Data<VecCoord> > va( params, *this->read(ConstVecCoordId(a)) );
+                            helper::WriteAccessor< Data<VecCoord> > vv( params, *this->write(core::VecCoordId(v)) );
+                            helper::ReadAccessor< Data<VecCoord> > va( params, *this->read(core::ConstVecCoordId(a)) );
                             vv.resize(va.size());
                             if (b.type == sofa::core::V_COORD)
                             {
-                                helper::ReadAccessor< Data<VecCoord> > vb( params, *this->read(ConstVecCoordId(b)) );
+                                helper::ReadAccessor< Data<VecCoord> > vb( params, *this->read(core::ConstVecCoordId(b)) );
                                 for (unsigned int i=0; i<vv.size(); i++)
                                 {
                                     vv[i] = va[i];
@@ -2116,7 +2114,7 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params /* PARAMS F
                             }
                             else
                             {
-                                helper::ReadAccessor< Data<VecDeriv> > vb( params, *this->read(ConstVecDerivId(b)) );
+                                helper::ReadAccessor< Data<VecDeriv> > vb( params, *this->read(core::ConstVecDerivId(b)) );
                                 for (unsigned int i=0; i<vv.size(); i++)
                                 {
                                     vv[i] = va[i];
@@ -2126,9 +2124,9 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params /* PARAMS F
                         }
                         else if (b.type == sofa::core::V_DERIV)
                         {
-                            helper::WriteAccessor< Data<VecDeriv> > vv( params, *this->write(VecDerivId(v)) );
-                            helper::ReadAccessor< Data<VecDeriv> > va( params, *this->read(ConstVecDerivId(a)) );
-                            helper::ReadAccessor< Data<VecDeriv> > vb( params, *this->read(ConstVecDerivId(b)) );
+                            helper::WriteAccessor< Data<VecDeriv> > vv( params, *this->write(core::VecDerivId(v)) );
+                            helper::ReadAccessor< Data<VecDeriv> > va( params, *this->read(core::ConstVecDerivId(a)) );
+                            helper::ReadAccessor< Data<VecDeriv> > vb( params, *this->read(core::ConstVecDerivId(b)) );
                             vv.resize(va.size());
                             for (unsigned int i=0; i<vv.size(); i++)
                             {
@@ -2163,9 +2161,9 @@ void MechanicalObject<DataTypes>::vMultiOp(const core::ExecParams* params /* PAR
             && ops[0].first.getId(this) == ops[1].second[1].first.getId(this)
             && ops[1].first.getId(this).type == sofa::core::V_COORD)
     {
-        helper::ReadAccessor< Data<VecDeriv> > va( params, *this->read(ConstVecDerivId(ops[0].second[1].first.getId(this))) );
-        helper::WriteAccessor< Data<VecDeriv> > vv( params, *this->write(VecDerivId(ops[0].first.getId(this))) );
-        helper::WriteAccessor< Data<VecCoord> > vx( params, *this->write(VecCoordId(ops[1].first.getId(this))) );
+        helper::ReadAccessor< Data<VecDeriv> > va( params, *this->read(core::ConstVecDerivId(ops[0].second[1].first.getId(this))) );
+        helper::WriteAccessor< Data<VecDeriv> > vv( params, *this->write(core::VecDerivId(ops[0].first.getId(this))) );
+        helper::WriteAccessor< Data<VecCoord> > vx( params, *this->write(core::VecCoordId(ops[1].first.getId(this))) );
 
         const unsigned int n = vx.size();
         const Real f_v_v = (Real)(ops[0].second[0].second);
@@ -2218,13 +2216,13 @@ void MechanicalObject<DataTypes>::vMultiOp(const core::ExecParams* params /* PAR
             && ops[1].second.size()==3
             )
     {
-        helper::ReadAccessor< Data<VecCoord> > v11( params, *this->read(ConstVecCoordId(ops[0].second[0].first.getId(this))) );
-        helper::ReadAccessor< Data<VecCoord> > v21( params, *this->read(ConstVecCoordId(ops[1].second[0].first.getId(this))) );
-        helper::ReadAccessor< Data<VecCoord> > v22( params, *this->read(ConstVecCoordId(ops[1].second[1].first.getId(this))) );
-        helper::ReadAccessor< Data<VecDeriv> > v23( params, *this->read(ConstVecDerivId(ops[1].second[2].first.getId(this))) );
+        helper::ReadAccessor< Data<VecCoord> > v11( params, *this->read(core::ConstVecCoordId(ops[0].second[0].first.getId(this))) );
+        helper::ReadAccessor< Data<VecCoord> > v21( params, *this->read(core::ConstVecCoordId(ops[1].second[0].first.getId(this))) );
+        helper::ReadAccessor< Data<VecCoord> > v22( params, *this->read(core::ConstVecCoordId(ops[1].second[1].first.getId(this))) );
+        helper::ReadAccessor< Data<VecDeriv> > v23( params, *this->read(core::ConstVecDerivId(ops[1].second[2].first.getId(this))) );
 
-        helper::WriteAccessor< Data<VecCoord> > previousPos( params, *this->write(VecCoordId(ops[0].first.getId(this))) );
-        helper::WriteAccessor< Data<VecCoord> > newPos( params, *this->write(VecCoordId(ops[1].first.getId(this))) );
+        helper::WriteAccessor< Data<VecCoord> > previousPos( params, *this->write(core::VecCoordId(ops[0].first.getId(this))) );
+        helper::WriteAccessor< Data<VecCoord> > newPos( params, *this->write(core::VecCoordId(ops[1].first.getId(this))) );
 
         const unsigned int n = v11.size();
         const Real f_1 = (Real)(ops[1].second[0].second);
@@ -2259,11 +2257,11 @@ template<> inline void clear( double& t )
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::vThreshold(VecId v, SReal t)
+void MechanicalObject<DataTypes>::vThreshold(core::VecId v, SReal t)
 {
     if( v.type==sofa::core::V_DERIV)
     {
-        helper::WriteAccessor< Data<VecDeriv> > vv = *this->write(VecDerivId(v));
+        helper::WriteAccessor< Data<VecDeriv> > vv = *this->write(core::VecDerivId(v));
         Real t2 = (Real)(t*t);
         for (unsigned int i=0; i<vv.size(); i++)
         {
@@ -2278,14 +2276,14 @@ void MechanicalObject<DataTypes>::vThreshold(VecId v, SReal t)
 }
 
 template <class DataTypes>
-double MechanicalObject<DataTypes>::vDot(const core::ExecParams* params /* PARAMS FIRST */, ConstVecId a, ConstVecId b)
+double MechanicalObject<DataTypes>::vDot(const core::ExecParams* params /* PARAMS FIRST */, core::ConstVecId a, core::ConstVecId b)
 {
     Real r = 0.0;
 
     if (a.type == sofa::core::V_COORD && b.type == sofa::core::V_COORD)
     {
-        const VecCoord &va = this->read(ConstVecCoordId(a))->getValue(params);
-        const VecCoord &vb = this->read(ConstVecCoordId(b))->getValue(params);
+        const VecCoord &va = this->read(core::ConstVecCoordId(a))->getValue(params);
+        const VecCoord &vb = this->read(core::ConstVecCoordId(b))->getValue(params);
 
         for (unsigned int i=0; i<va.size(); i++)
         {
@@ -2294,8 +2292,8 @@ double MechanicalObject<DataTypes>::vDot(const core::ExecParams* params /* PARAM
     }
     else if (a.type == sofa::core::V_DERIV && b.type == sofa::core::V_DERIV)
     {
-        const VecDeriv &va = this->read(ConstVecDerivId(a))->getValue(params);
-        const VecDeriv &vb = this->read(ConstVecDerivId(b))->getValue(params);
+        const VecDeriv &va = this->read(core::ConstVecDerivId(a))->getValue(params);
+        const VecDeriv &vb = this->read(core::ConstVecDerivId(b))->getValue(params);
 
         for (unsigned int i=0; i<va.size(); i++)
         {
@@ -2313,7 +2311,7 @@ double MechanicalObject<DataTypes>::vDot(const core::ExecParams* params /* PARAM
 typedef std::size_t nat;
 
 template <class DataTypes>
-double MechanicalObject<DataTypes>::vSum(const core::ExecParams* params, ConstVecId a, unsigned l)
+double MechanicalObject<DataTypes>::vSum(const core::ExecParams* params, core::ConstVecId a, unsigned l)
 {
     Real r = 0.0;
 
@@ -2323,7 +2321,7 @@ double MechanicalObject<DataTypes>::vSum(const core::ExecParams* params, ConstVe
     }
     else if (a.type == sofa::core::V_DERIV)
     {
-        const VecDeriv &va = this->read(ConstVecDerivId(a))->getValue(params);
+        const VecDeriv &va = this->read(core::ConstVecDerivId(a))->getValue(params);
 
         if( l==0 ) for (nat i=0; i<va.size(); i++)
         {
@@ -2345,7 +2343,7 @@ double MechanicalObject<DataTypes>::vSum(const core::ExecParams* params, ConstVe
 }
 
 template <class DataTypes>
-double MechanicalObject<DataTypes>::vMax(const core::ExecParams* params, ConstVecId a )
+double MechanicalObject<DataTypes>::vMax(const core::ExecParams* params, core::ConstVecId a )
 {
     Real r = 0.0;
 
@@ -2355,7 +2353,7 @@ double MechanicalObject<DataTypes>::vMax(const core::ExecParams* params, ConstVe
     }
     else if (a.type == sofa::core::V_DERIV)
     {
-        const VecDeriv &va = this->read(ConstVecDerivId(a))->getValue(params);
+        const VecDeriv &va = this->read(core::ConstVecDerivId(a))->getValue(params);
 
         for (nat i=0; i<va.size(); i++)
         {
@@ -2372,16 +2370,16 @@ double MechanicalObject<DataTypes>::vMax(const core::ExecParams* params, ConstVe
 }
 
 template <class DataTypes>
-size_t MechanicalObject<DataTypes>::vSize(const core::ExecParams* params /* PARAMS FIRST */, ConstVecId v)
+size_t MechanicalObject<DataTypes>::vSize(const core::ExecParams* params /* PARAMS FIRST */, core::ConstVecId v)
 {
     if (v.type == sofa::core::V_COORD)
     {
-        const VecCoord &vv = this->read(ConstVecCoordId(v))->getValue(params);
+        const VecCoord &vv = this->read(core::ConstVecCoordId(v))->getValue(params);
         return vv.size() * Coord::total_size;
     }
     else if (v.type == sofa::core::V_DERIV)
     {
-        const VecDeriv &vv = this->read(ConstVecDerivId(v))->getValue(params);
+        const VecDeriv &vv = this->read(core::ConstVecDerivId(v))->getValue(params);
         return vv.size() * Deriv::total_size;
     }
     else
@@ -2396,7 +2394,7 @@ size_t MechanicalObject<DataTypes>::vSize(const core::ExecParams* params /* PARA
 
 #ifndef SOFA_SMP
 template <class DataTypes>
-void MechanicalObject<DataTypes>::printDOF( ConstVecId v, std::ostream& out, int firstIndex, int range) const
+void MechanicalObject<DataTypes>::printDOF( core::ConstVecId v, std::ostream& out, int firstIndex, int range) const
 {
     const unsigned int size=this->getSize();
     if ((unsigned int) (abs(firstIndex)) >= size) return;
@@ -2405,7 +2403,7 @@ void MechanicalObject<DataTypes>::printDOF( ConstVecId v, std::ostream& out, int
 
     if( v.type==sofa::core::V_COORD)
     {
-        const Data<VecCoord>* d_x = this->read(ConstVecCoordId(v));
+        const Data<VecCoord>* d_x = this->read(core::ConstVecCoordId(v));
         if (d_x == NULL) return;
         helper::ReadAccessor< Data<VecCoord> > x = *d_x;
 
@@ -2421,7 +2419,7 @@ void MechanicalObject<DataTypes>::printDOF( ConstVecId v, std::ostream& out, int
     }
     else if( v.type==sofa::core::V_DERIV)
     {
-        const Data<VecDeriv>* d_x = this->read(ConstVecDerivId(v));
+        const Data<VecDeriv>* d_x = this->read(core::ConstVecDerivId(v));
         if (d_x == NULL) return;
         helper::ReadAccessor< Data<VecDeriv> > x = *d_x;
 
@@ -2441,11 +2439,11 @@ void MechanicalObject<DataTypes>::printDOF( ConstVecId v, std::ostream& out, int
 #endif
 
 template <class DataTypes>
-unsigned MechanicalObject<DataTypes>::printDOFWithElapsedTime(VecId v, unsigned count, unsigned time, std::ostream& out)
+unsigned MechanicalObject<DataTypes>::printDOFWithElapsedTime(core::VecId v, unsigned count, unsigned time, std::ostream& out)
 {
     if (v.type == sofa::core::V_COORD)
     {
-        const Data<VecCoord>* d_x = this->read(ConstVecCoordId(v));
+        const Data<VecCoord>* d_x = this->read(core::ConstVecCoordId(v));
         if (d_x == NULL) return 0;
         helper::ReadAccessor< Data<VecCoord> > x = *d_x;
 
@@ -2459,7 +2457,7 @@ unsigned MechanicalObject<DataTypes>::printDOFWithElapsedTime(VecId v, unsigned 
     }
     else if (v.type == sofa::core::V_DERIV)
     {
-        const Data<VecDeriv>* d_x = this->read(ConstVecDerivId(v));
+        const Data<VecDeriv>* d_x = this->read(core::ConstVecDerivId(v));
         if (d_x == NULL) return 0;
         helper::ReadAccessor< Data<VecDeriv> > x = *d_x;
 
@@ -2483,12 +2481,12 @@ void MechanicalObject<DataTypes>::resetForce(const core::ExecParams* params)
 #ifdef SOFA_SMP
     if (params->execMode() == core::ExecParams::EXEC_KAAPI)
     {
-        BaseObject::Task< vClear<VecDeriv, Deriv> >(this, **defaulttype::getShared(*this->write(VecDerivId::force())));
+        BaseObject::Task< vClear<VecDeriv, Deriv> >(this, **defaulttype::getShared(*this->write(core::VecDerivId::force())));
     }
     else
 #endif /* SOFA_SMP */
     {
-        helper::WriteAccessor< Data<VecDeriv> > f( params, *this->write(VecDerivId::force()) );
+        helper::WriteAccessor< Data<VecDeriv> > f( params, *this->write(core::VecDerivId::force()) );
 
         if (!this->forceMask.isInUse())
         {
@@ -2518,12 +2516,12 @@ void MechanicalObject<DataTypes>::resetAcc(const core::ExecParams* params)
 #ifdef SOFA_SMP
     if (params->execMode() == core::ExecParams::EXEC_KAAPI)
     {
-        BaseObject::Task< vClear<VecDeriv, Deriv> >(this, **defaulttype::getShared(*this->write(VecDerivId::dx())));
+        BaseObject::Task< vClear<VecDeriv, Deriv> >(this, **defaulttype::getShared(*this->write(core::VecDerivId::dx())));
     }
     else
 #endif /* SOFA_SMP */
     {
-        helper::WriteAccessor< Data<VecDeriv> > a( params, *this->write(VecDerivId::dx()) );
+        helper::WriteAccessor< Data<VecDeriv> > a( params, *this->write(core::VecDerivId::dx()) );
 
         for (unsigned i = 0; i < a.size(); ++i)
         {
@@ -2535,7 +2533,7 @@ void MechanicalObject<DataTypes>::resetAcc(const core::ExecParams* params)
 template <class DataTypes>
 void MechanicalObject<DataTypes>::resetConstraint(const core::ExecParams* params)
 {
-    Data<MatrixDeriv>& c_data = *this->write(MatrixDerivId::holonomicC());
+    Data<MatrixDeriv>& c_data = *this->write(core::MatrixDerivId::holonomicC());
     MatrixDeriv *c = c_data.beginEdit(params);
     c->clear();
     c_data.endEdit(params);
@@ -2656,11 +2654,11 @@ SReal MechanicalObject<DataTypes>::getConstraintJacobianTimesVecDeriv(unsigned i
     const VecDeriv *data = 0;
 
     // Maybe we should extend this to restvelocity
-    if (id == ConstVecId::velocity())
+    if (id == core::ConstVecId::velocity())
     {
         data = &v.getValue();
     }
-    else if (id == ConstVecId::dx())
+    else if (id == core::ConstVecId::dx())
     {
         data = &dx.getValue();
     }
@@ -2694,7 +2692,7 @@ inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* 
         glColor3f(1.0,1.0,1.0);
         float scale = (float)( ( vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox() ).norm() * showIndicesScale.getValue() );
 
-        Mat<4,4, GLfloat> modelviewM;
+        defaulttype::Mat<4,4, GLfloat> modelviewM;
 
         for (int i=0 ; i< vsize ; i++)
         {
@@ -2713,7 +2711,7 @@ inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* 
             glGetFloatv(GL_MODELVIEW_MATRIX , modelviewM.ptr() );
             modelviewM.transpose();
 
-            Vec3d temp(getPX(i), getPY(i), getPZ(i));
+            defaulttype::Vec3d temp(getPX(i), getPY(i), getPZ(i));
             temp = modelviewM.transform(temp);
 
             //glLoadMatrixf(modelview);
@@ -2733,13 +2731,13 @@ inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* 
     }
     if (showVectors.getValue())
     {
-        Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
+        defaulttype::Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
         sofa::simulation::Node* context = dynamic_cast<sofa::simulation::Node*>(this->getContext());
         glColor3f(1.0,1.0,1.0);
         sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
         //float scale = (sceneMaxBBox - sceneMinBBox).norm() * showVectorsScale.getValue();
         float scale = showVectorsScale.getValue();
-        sofa::helper::ReadAccessor< Data<VecDeriv> > v_rA = *this->read(ConstVecDerivId::velocity());
+        sofa::helper::ReadAccessor< Data<VecDeriv> > v_rA = *this->read(core::ConstVecDerivId::velocity());
         //std::cout << "number of velocity values: " << v_rA.size() << std::endl;
         vector<Vector3> points;
         points.resize(2);
@@ -2759,13 +2757,13 @@ inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* 
             case 0:
                 points[0] = p1;
                 points[1] = p2;
-                vparams->drawTool()->drawLines(points, 1, Vec<4,float>(1.0,1.0,1.0,1.0));
+                vparams->drawTool()->drawLines(points, 1, defaulttype::Vec<4,float>(1.0,1.0,1.0,1.0));
                 break;
             case 1:
-                vparams->drawTool()->drawCylinder(p1, p2, rad, Vec<4,float>(1.0,1.0,1.0,1.0));
+                vparams->drawTool()->drawCylinder(p1, p2, rad, defaulttype::Vec<4,float>(1.0,1.0,1.0,1.0));
                 break;
             case 2:
-                vparams->drawTool()->drawArrow(p1, p2, rad, Vec<4,float>(1.0,1.0,1.0,1.0));
+                vparams->drawTool()->drawArrow(p1, p2, rad, defaulttype::Vec<4,float>(1.0,1.0,1.0,1.0));
                 break;
             default:
                 serr << "No proper drawing mode found!" << sendl;
@@ -2783,23 +2781,23 @@ inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* 
         switch (drawMode.getValue())
         {
         case 0:
-            vparams->drawTool()->drawPoints(positions,scale,Vec<4,float>(1.0,1.0,1.0,1.0));
+            vparams->drawTool()->drawPoints(positions,scale,defaulttype::Vec<4,float>(1.0,1.0,1.0,1.0));
             break;
         case 1:
             glEnable(GL_LIGHTING);
-            vparams->drawTool()->drawSpheres(positions,scale,Vec<4,float>(1.0,1.0,1.0,1.0));
+            vparams->drawTool()->drawSpheres(positions,scale,defaulttype::Vec<4,float>(1.0,1.0,1.0,1.0));
             break;
         case 2:
             glEnable(GL_LIGHTING);
-            vparams->drawTool()->drawSpheres(positions,scale,Vec<4,float>(1.0,0.0,0.0,1.0));
+            vparams->drawTool()->drawSpheres(positions,scale,defaulttype::Vec<4,float>(1.0,0.0,0.0,1.0));
             break;
         case 3:
             glEnable(GL_LIGHTING);
-            vparams->drawTool()->drawSpheres(positions,scale,Vec<4,float>(0.0,1.0,0.0,1.0));
+            vparams->drawTool()->drawSpheres(positions,scale,defaulttype::Vec<4,float>(0.0,1.0,0.0,1.0));
             break;
         case 4:
             glEnable(GL_LIGHTING);
-            vparams->drawTool()->drawSpheres(positions,scale,Vec<4,float>(0.0,0.0,1.0,1.0));
+            vparams->drawTool()->drawSpheres(positions,scale,defaulttype::Vec<4,float>(0.0,0.0,1.0,1.0));
             break;
         default:
             serr << "No proper drawing mode found!" << sendl;
@@ -3386,20 +3384,20 @@ template <class DataTypes>
 bool MechanicalObject<DataTypes>::pickParticles(const core::ExecParams* /* params */ /* PARAMS FIRST */, double rayOx, double rayOy, double rayOz, double rayDx, double rayDy, double rayDz, double radius0, double dRadius,
                                                 std::multimap< double, std::pair<sofa::core::behavior::BaseMechanicalState*, int> >& particles)
 {
-    if (DataTypeInfo<Coord>::size() == 2 || DataTypeInfo<Coord>::size() == 3
-            || (DataTypeInfo<Coord>::size() == 7 && DataTypeInfo<Deriv>::size() == 6))
+    if (defaulttype::DataTypeInfo<Coord>::size() == 2 || defaulttype::DataTypeInfo<Coord>::size() == 3
+            || (defaulttype::DataTypeInfo<Coord>::size() == 7 && defaulttype::DataTypeInfo<Deriv>::size() == 6))
     {
         // seems to be valid DOFs
         const VecCoord& x = *this->getX();
-        Vec<3,Real> origin((Real)rayOx, (Real)rayOy, (Real)rayOz);
-        Vec<3,Real> direction((Real)rayDx, (Real)rayDy, (Real)rayDz);
+        defaulttype::Vec<3,Real> origin((Real)rayOx, (Real)rayOy, (Real)rayOz);
+        defaulttype::Vec<3,Real> direction((Real)rayDx, (Real)rayDy, (Real)rayDz);
 //                            cerr<<"MechanicalObject<DataTypes>::pickParticles, ray point = " << rayOx << ", " << rayOy << ", " << rayOz << endl;
 //                            cerr<<"MechanicalObject<DataTypes>::pickParticles, ray dir = " << rayDx << ", " << rayDy << ", " << rayDz << endl;
 //                            cerr<<"MechanicalObject<DataTypes>::pickParticles, radius0 = " << radius0 << endl;
 //                            cerr<<"MechanicalObject<DataTypes>::pickParticles, dRadius = " << dRadius << endl;
         for (int i=0; i< vsize; ++i)
         {
-            Vec<3,Real> pos;
+            defaulttype::Vec<3,Real> pos;
             DataTypes::get(pos[0],pos[1],pos[2],x[i]);
 
 //                                    cerr<<"MechanicalObject<DataTypes>::pickParticles, point " << i << " = " << pos << endl;
@@ -3407,7 +3405,7 @@ bool MechanicalObject<DataTypes>::pickParticles(const core::ExecParams* /* param
             double dist = (pos-origin)*direction;
             if (dist < 0) continue; // discard particles behind the camera, such as mouse position
 
-            Vec<3,Real> vecPoint = (pos-origin) - direction*dist;
+            defaulttype::Vec<3,Real> vecPoint = (pos-origin) - direction*dist;
             double distToRay = vecPoint.norm2();
             double maxr = radius0 + dRadius*dist;
 //                                    cerr<<"MechanicalObject<DataTypes>::pickParticles, point " << i << ", maxR = " << maxr << endl;

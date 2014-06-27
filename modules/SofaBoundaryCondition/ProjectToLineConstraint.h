@@ -76,6 +76,7 @@ public:
     typedef Data<VecCoord> DataVecCoord;
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
+    typedef sofa::defaulttype::Vector3 Vector3;
     typedef helper::vector<unsigned int> Indices;
     typedef sofa::component::topology::PointSubsetData< Indices > IndexSubsetData;
     typedef linearsolver::EigenBaseSparseMatrix<SReal> BaseSparseMatrix;
@@ -130,7 +131,7 @@ public:
     {
     public:
         typedef typename ProjectToLineConstraint<DataTypes>::Indices Indices;
-
+        typedef sofa::core::topology::Point Point;
         FCPointHandler(ProjectToLineConstraint<DataTypes>* _fc, sofa::component::topology::PointSubsetData<Indices>* _data)
             : sofa::component::topology::TopologySubsetDataHandler<sofa::core::topology::Point, Indices >(_data), fc(_fc) {}
 

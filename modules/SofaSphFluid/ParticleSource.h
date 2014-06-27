@@ -60,8 +60,6 @@ namespace component
 namespace misc
 {
 
-using namespace sofa::component::topology;
-
 template<class TDataTypes>
 class ParticleSource : public core::behavior::ProjectiveConstraintSet<TDataTypes>
 {
@@ -122,15 +120,15 @@ public:
     sofa::component::topology::PointSubsetData< VecIndex > lastparticles;
     VecCoord lastpos;
 
-    class PSPointHandler : public TopologySubsetDataHandler<Point, VecIndex >
+    class PSPointHandler : public sofa::component::topology::TopologySubsetDataHandler<sofa::component::topology::Point, VecIndex >
     {
     public:
         typedef typename ParticleSource<DataTypes>::VecIndex VecIndex;
         typedef VecIndex container_type;
         typedef typename container_type::value_type value_type;
 
-        PSPointHandler(ParticleSource<DataTypes>* _ps, PointSubsetData<VecIndex >* _data)
-            : TopologySubsetDataHandler<Point, VecIndex >(_data), ps(_ps) {}
+        PSPointHandler(ParticleSource<DataTypes>* _ps, sofa::component::topology::PointSubsetData<VecIndex >* _data)
+            : sofa::component::topology::TopologySubsetDataHandler<sofa::component::topology::Point, VecIndex >(_data), ps(_ps) {}
 
         void applyDestroyFunction(unsigned int index, value_type& /*T*/)
         {

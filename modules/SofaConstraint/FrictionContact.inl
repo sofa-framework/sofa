@@ -43,10 +43,6 @@ namespace component
 namespace collision
 {
 
-
-using simulation::Node;
-
-
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes  >
 FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::FrictionContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)
     : model1(model1)

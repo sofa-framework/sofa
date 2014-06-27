@@ -62,8 +62,6 @@ namespace component
 namespace misc
 {
 
-using namespace sofa::component::topology;
-
 template<class TDataTypes>
 class ParticleSink : public core::behavior::ProjectiveConstraintSet<TDataTypes>
 {

@@ -46,9 +46,6 @@ namespace component
 namespace collision
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::helper;
-
 typedef container::DistanceGrid DistanceGrid;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -610,7 +607,7 @@ public:
                     DistanceGrid::Coord coefs;
                     int i = prevGrid->index(P, coefs);
                     SReal d = prevGrid->interp(i,coefs);
-                    if (rabs(d) < 0.3) // todo : control threshold
+                    if (sofa::helper::rabs(d) < 0.3) // todo : control threshold
                     {
                         DistanceGrid::Coord n = prevGrid->grad(i,coefs);
                         v += n * (d  / ( n.norm() * gdt));
