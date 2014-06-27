@@ -116,9 +116,9 @@ void TTriangleModel<DataTypes>::updateNormals()
     for (int i=0; i<size; i++)
     {
         Element t(this,i);
-        const Vector3& pt1 = t.p1();
-        const Vector3& pt2 = t.p2();
-        const Vector3& pt3 = t.p3();
+        const defaulttype::Vector3& pt1 = t.p1();
+        const defaulttype::Vector3& pt2 = t.p2();
+        const defaulttype::Vector3& pt3 = t.p3();
 
         t.n() = cross(pt2-pt1,pt3-pt1);
         t.n().normalize();
@@ -275,9 +275,9 @@ void TTriangleModel<DataTypes>::handleTopologyChange()
             const sofa::component::topology::TrianglesAdded *ta=static_cast< const sofa::component::topology::TrianglesAdded * >( *itBegin );
             for (unsigned int i=0;i<ta->getNbAddedTriangles();++i) {
             Triangle t(this, size - ta->getNbAddedTriangles() + i);
-            const Vector3& pt1 = t.p1();
-            const Vector3& pt2 = t.p2();
-            const Vector3& pt3 = t.p3();
+            const defaulttype::Vector3& pt1 = t.p1();
+            const defaulttype::Vector3& pt2 = t.p2();
+            const defaulttype::Vector3& pt3 = t.p3();
             t.n() = cross(pt2-pt1,pt3-pt1);
             t.n().normalize();
             }
@@ -577,9 +577,9 @@ void TTriangleModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
             vparams->drawTool()->setPolygonMode(1,false);
         }
 
-        std::vector< Vector3 > points;
-        std::vector< Vec<3,int> > indices;
-        std::vector< Vector3 > normals;
+        std::vector< defaulttype::Vector3 > points;
+        std::vector< defaulttype::Vec<3,int> > indices;
+        std::vector< defaulttype::Vector3 > normals;
         int index=0;
         for (int i=0; i<size; i++)
         {
@@ -588,19 +588,19 @@ void TTriangleModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
             points.push_back(t.p1());
             points.push_back(t.p2());
             points.push_back(t.p3());
-            indices.push_back(Vec<3,int>(index,index+1,index+2));
+            indices.push_back(defaulttype::Vec<3,int>(index,index+1,index+2));
             index+=3;
         }
 
         vparams->drawTool()->setLightingEnabled(true);
-        vparams->drawTool()->drawTriangles(points, indices, normals, Vec<4,float>(getColor4f()));
+        vparams->drawTool()->drawTriangles(points, indices, normals, defaulttype::Vec<4,float>(getColor4f()));
         vparams->drawTool()->setLightingEnabled(false);
         vparams->drawTool()->setPolygonMode(0,false);
 
 
         if (vparams->displayFlags().getShowNormals())
         {
-            std::vector< Vector3 > points;
+            std::vector< defaulttype::Vector3 > points;
             for (int i=0; i<size; i++)
             {
                 Element t(this,i);
@@ -608,7 +608,7 @@ void TTriangleModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
                 points.push_back(points.back()+t.n());
             }
 
-            vparams->drawTool()->drawLines(points, 1, Vec<4,float>(1,1,1,1));
+            vparams->drawTool()->drawLines(points, 1, defaulttype::Vec<4,float>(1,1,1,1));
 
         }
     }
@@ -676,7 +676,7 @@ void TTriangleModel<DataTypes>::computeBoundingTree(int maxDepth)
     if (!isMoving() && !cubeModel->empty() && !needsUpdate) return; // No need to recompute BBox if immobile
 
     needsUpdate=false;
-    Vector3 minElem, maxElem;
+    defaulttype::Vector3 minElem, maxElem;
     const VecCoord& x = *this->mstate->getX();
 
     const bool calcNormals = computeNormals.getValue();
@@ -693,7 +693,7 @@ void TTriangleModel<DataTypes>::computeBoundingTree(int maxDepth)
 //            maxElem = x[0];
 //            for (unsigned i=1; i<x.size(); i++)
 //            {
-//                const Vector3& pt1 = x[i];
+//                const defaulttype::Vector3& pt1 = x[i];
 //                if (pt1[0] > maxElem[0]) maxElem[0] = pt1[0];
 //                else if (pt1[0] < minElem[0]) minElem[0] = pt1[0];
 //                if (pt1[1] > maxElem[1]) maxElem[1] = pt1[1];
@@ -712,9 +712,9 @@ void TTriangleModel<DataTypes>::computeBoundingTree(int maxDepth)
 //                for (int i=0; i<size; i++)
 //                {
 //                    Element t(this,i);
-//                    const Vector3& pt1 = x[t.p1Index()];
-//                    const Vector3& pt2 = x[t.p2Index()];
-//                    const Vector3& pt3 = x[t.p3Index()];
+//                    const defaulttype::Vector3& pt1 = x[t.p1Index()];
+//                    const defaulttype::Vector3& pt2 = x[t.p2Index()];
+//                    const defaulttype::Vector3& pt3 = x[t.p3Index()];
 
 //                    /*for (int c = 0; c < 3; c++)
 //                    {
@@ -750,9 +750,9 @@ void TTriangleModel<DataTypes>::computeBoundingTree(int maxDepth)
             for (int i=0; i<size; i++)
             {
                 Element t(this,i);
-                const Vector3& pt1 = x[t.p1Index()];
-                const Vector3& pt2 = x[t.p2Index()];
-                const Vector3& pt3 = x[t.p3Index()];
+                const defaulttype::Vector3& pt1 = x[t.p1Index()];
+                const defaulttype::Vector3& pt2 = x[t.p2Index()];
+                const defaulttype::Vector3& pt3 = x[t.p3Index()];
 
                 for (int c = 0; c < 3; c++)
                 {
@@ -792,7 +792,7 @@ void TTriangleModel<DataTypes>::computeContinuousBoundingTree(double dt, int max
     if (!isMoving() && !cubeModel->empty() && !needsUpdate) return; // No need to recompute BBox if immobile
 
     needsUpdate=false;
-    Vector3 minElem, maxElem;
+    defaulttype::Vector3 minElem, maxElem;
 
     cubeModel->resize(size);
     if (!empty())
@@ -801,12 +801,12 @@ void TTriangleModel<DataTypes>::computeContinuousBoundingTree(double dt, int max
         for (int i=0; i<size; i++)
         {
             Element t(this,i);
-            const Vector3& pt1 = t.p1();
-            const Vector3& pt2 = t.p2();
-            const Vector3& pt3 = t.p3();
-            const Vector3 pt1v = pt1 + t.v1()*dt;
-            const Vector3 pt2v = pt2 + t.v2()*dt;
-            const Vector3 pt3v = pt3 + t.v3()*dt;
+            const defaulttype::Vector3& pt1 = t.p1();
+            const defaulttype::Vector3& pt2 = t.p2();
+            const defaulttype::Vector3& pt3 = t.p3();
+            const defaulttype::Vector3 pt1v = pt1 + t.v1()*dt;
+            const defaulttype::Vector3 pt2v = pt2 + t.v2()*dt;
+            const defaulttype::Vector3 pt3v = pt3 + t.v3()*dt;
 
             for (int c = 0; c < 3; c++)
             {

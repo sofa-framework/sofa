@@ -45,9 +45,9 @@ namespace component
 namespace collision
 {
 
-inline int NewProximityIntersection::doIntersectionPointPoint(SReal dist2, const Vector3& p, const Vector3& q, OutputVector* contacts, int id)
+inline int NewProximityIntersection::doIntersectionPointPoint(SReal dist2, const defaulttype::Vector3& p, const defaulttype::Vector3& q, OutputVector* contacts, int id)
 {
-    Vector3 pq = q-p;
+    defaulttype::Vector3 pq = q-p;
 
     SReal norm2 = pq.norm2();
 

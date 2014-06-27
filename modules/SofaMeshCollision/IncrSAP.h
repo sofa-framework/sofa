@@ -227,7 +227,7 @@ private:
 
     Data<bool> bDraw;
 
-    Data< helper::fixed_array<Vector3,2> > box;
+    Data< helper::fixed_array<defaulttype::Vector3,2> > box;
 
     CubeModel::SPtr boxModel;
 

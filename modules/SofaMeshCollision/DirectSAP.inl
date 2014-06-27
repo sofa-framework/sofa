@@ -58,10 +58,10 @@ inline void DSAPBox::update(int axis, double alarmDist){
 
 
 inline double DSAPBox::squaredDistance(const DSAPBox & other,int axis)const{
-    const Vector3 & min0 = this->cube.minVect();
-    const Vector3 & max0 = this->cube.maxVect();
-    const Vector3 & min1 = other.cube.minVect();
-    const Vector3 & max1 = other.cube.maxVect();
+    const defaulttype::Vector3 & min0 = this->cube.minVect();
+    const defaulttype::Vector3 & max0 = this->cube.maxVect();
+    const defaulttype::Vector3 & min1 = other.cube.minVect();
+    const defaulttype::Vector3 & max1 = other.cube.maxVect();
 
     double temp;
 
@@ -79,10 +79,10 @@ inline double DSAPBox::squaredDistance(const DSAPBox & other,int axis)const{
 
 
 inline bool DSAPBox::overlaps(const DSAPBox &other, int axis, double alarmDist) const{
-    const Vector3 & min0 = this->cube.minVect();
-    const Vector3 & max0 = this->cube.maxVect();
-    const Vector3 & min1 = other.cube.minVect();
-    const Vector3 & max1 = other.cube.maxVect();
+    const defaulttype::Vector3 & min0 = this->cube.minVect();
+    const defaulttype::Vector3 & max0 = this->cube.maxVect();
+    const defaulttype::Vector3 & min1 = other.cube.minVect();
+    const defaulttype::Vector3 & max1 = other.cube.maxVect();
 
     if(min0[axis] >= max1[axis] + alarmDist || min1[axis] >= max0[axis] + alarmDist)
         return false;
@@ -270,8 +270,8 @@ int TDirectSAP<List,Allocator>::greatestVarianceAxis()const{
 
     //computing the mean value of end points on each axis
     for(unsigned int i = 0 ; i < _boxes.size() ; ++i){
-        const Vector3 & min = _boxes[i].cube.minVect();
-        const Vector3 & max = _boxes[i].cube.maxVect();
+        const defaulttype::Vector3 & min = _boxes[i].cube.minVect();
+        const defaulttype::Vector3 & max = _boxes[i].cube.maxVect();
         m[0] += min[0] + max[0];
         m[1] += min[1] + max[1];
         m[2] += min[2] + max[2];
@@ -283,8 +283,8 @@ int TDirectSAP<List,Allocator>::greatestVarianceAxis()const{
 
     //computing the variance of end points on each axis
     for(unsigned int i = 0 ; i < _boxes.size() ; ++i){
-        const Vector3 & min = _boxes[i].cube.minVect();
-        const Vector3 & max = _boxes[i].cube.maxVect();
+        const defaulttype::Vector3 & min = _boxes[i].cube.minVect();
+        const defaulttype::Vector3 & max = _boxes[i].cube.maxVect();
 
         diff = min[0] - m[0];
         v[0] += diff*diff;
