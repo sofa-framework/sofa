@@ -325,7 +325,8 @@ void BeamFEMForceField<DataTypes>::addDForce(const sofa::core::MechanicalParams 
     else
     {
         typename VecElement::const_iterator it;
-        for(it = _indexedElements->begin(), unsigned int i=0 ; it != _indexedElements->end() ; ++it, ++i)
+        unsigned int i = 0;
+        for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
         {
             Index a = (*it)[0];
             Index b = (*it)[1];

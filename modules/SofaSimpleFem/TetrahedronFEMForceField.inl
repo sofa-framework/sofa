@@ -2513,7 +2513,8 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
     vonMisesStressColorsCoeff.resize(_mesh->getNbPoints());
     std::fill(vonMisesStressColorsCoeff.begin(), vonMisesStressColorsCoeff.end(), 0);
 #ifndef SOFA_NO_OPENGL
-    for(it = _indexedElements->begin(), int i = 0 ; it != _indexedElements->end() ; ++it, ++i)
+    unsigned int i = 0;
+    for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
     {
         visualmodel::ColorMap::evaluator<Real> evalColor = _showStressColorMapReal->getEvaluator(minVM, maxVM);
         Vec4f col = evalColor(vME[i]); //*vM[i]);
