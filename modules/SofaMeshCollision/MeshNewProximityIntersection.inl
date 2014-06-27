@@ -386,8 +386,8 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, TSphere<T>& 
     const defaulttype::Vector3 AB = e1.p2() - e1.p1();
     const defaulttype::Vector3 AC = e1.p3() - e1.p1();
     const defaulttype::Vector3 AQ = e2.center() - e1.p1();
-    Matrix2 A;
-    Vector2 b;
+    defaulttype::Matrix2 A;
+    defaulttype::Vector2 b;
     A[0][0] = AB*AB;
     A[1][1] = AC*AC;
     A[0][1] = A[1][0] = AB*AC;
