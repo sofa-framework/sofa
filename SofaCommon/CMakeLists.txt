@@ -42,7 +42,7 @@ include_directories(${SofaCommon_ACTUAL_SOURCE_DIR})
 
 #set(SOFACOMMON_TARGETS SofaLoader SofaRigid SofaDeformable SofaSimpleFem SofaObjectInteraction SofaMeshCollision SofaExplicitOdeSolver SofaImplicitOdeSolver SofaComponentCommon)
 
-set(SOFACOMMON_TARGETS SofaLoader SofaComponentCommon)
+set(SOFACOMMON_TARGETS SofaLoader SofaRigid SofaDeformable SofaComponentCommon)
 
 foreach(TARGET ${SOFACOMMON_TARGETS})
   add_subdirectory(${SofaCommon_ACTUAL_SOURCE_DIR}/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
