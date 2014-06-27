@@ -31,7 +31,6 @@ namespace FileSystem
 static HANDLE helper_FindFirstFile(std::string path, WIN32_FIND_DATA *ffd)
 {
     TCHAR szDir[MAX_PATH];
-    HANDLE hFind = INVALID_HANDLE_VALUE;
 
     // Prepare string for use with FindFile functions.  First, copy the
     // string to a buffer, then append '\*' to the directory name.
@@ -39,7 +38,7 @@ static HANDLE helper_FindFirstFile(std::string path, WIN32_FIND_DATA *ffd)
     StringCchCat(szDir, MAX_PATH, TEXT("\\*"));
 
     // Find the first file in the directory.
-    hFind = FindFirstFile(szDir, ffd);
+    HANDLE hFind = FindFirstFile(szDir, ffd);
 
     return hFind;
 }
