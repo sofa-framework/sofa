@@ -31,7 +31,7 @@ set(SOFABASE_INSTALL_CMAKE_DIR   lib/cmake/SofaBase   CACHE PATH "Installation d
 ##
 find_package(SofaSimulation REQUIRED)
 
-configure_file( ${SofaBase_SOURCE_DIR}/SofaBase.config.in 
+configure_file( ${SofaBase_SOURCE_DIR}/SofaBase.h.in 
                 ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaBase.h )
 install( FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaBase.h 
          DESTINATION "${SOFABASE_INSTALL_INCLUDE_DIR}/sofa")
@@ -40,10 +40,10 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${SofaBase_ACTUAL_SOURCE_DIR}/../../)
 
 add_subdirectory(${SofaBase_ACTUAL_SOURCE_DIR}/SofaBaseTopology ${CMAKE_CURRENT_BINARY_DIR}/SofaBaseTopology)
+add_subdirectory(${SofaBase_ACTUAL_SOURCE_DIR}/SofaBaseLinearSolver ${CMAKE_CURRENT_BINARY_DIR}/SofaBaseLinearSolver)
 # add_subdirectory(${SofaBase_ACTUAL_SOURCE_DIR}/SofaBaseMechanics)
 # add_subdirectory(${SofaBase_ACTUAL_SOURCE_DIR}/SofaBaseCollision)
 # add_subdirectory(${SofaBase_ACTUAL_SOURCE_DIR}/SofaBaseAnimationLoop)
-# add_subdirectory(${SofaBase_ACTUAL_SOURCE_DIR}/SofaBaseLinearSolver)
 # add_subdirectory(${SofaBase_ACTUAL_SOURCE_DIR}/SofaBaseVisual)
 
 
