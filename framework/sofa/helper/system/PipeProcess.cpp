@@ -92,7 +92,6 @@ bool PipeProcess::executeProcess(const std::string &command,  const std::vector<
 
     //char eol = '\n';
     char** cargs;
-    std::string newCommand(command);
 
     cargs = new char* [args.size()+2];
     cargs[0] = (char*)command.c_str();
@@ -109,7 +108,8 @@ bool PipeProcess::executeProcess(const std::string &command,  const std::vector<
 
 //    fdout = GetStdHandle(STD_OUTPUT_HANDLE);
 //    fderr = GetStdHandle(STD_ERROR_HANDLE);
-
+    
+    std::string newCommand(command);
     for (unsigned int i=0 ; i< args.size() ; i++)
         newCommand += " " + args[i];
 
