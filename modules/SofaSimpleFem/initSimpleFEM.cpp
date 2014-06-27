@@ -49,9 +49,9 @@ SOFA_LINK_CLASS(HexahedronFEMForceField)
 SOFA_LINK_CLASS(HexahedronFEMForceFieldAndMass)
 SOFA_LINK_CLASS(TetrahedralCorotationalFEMForceField)
 SOFA_LINK_CLASS(TetrahedronFEMForceField)
-SOFA_LINK_CLASS(TriangularAnisotropicFEMForceField)
-SOFA_LINK_CLASS(TriangleFEMForceField)
-SOFA_LINK_CLASS(TriangularFEMForceField)
+//SOFA_LINK_CLASS(TriangularAnisotropicFEMForceField)
+//SOFA_LINK_CLASS(TriangleFEMForceField)
+//SOFA_LINK_CLASS(TriangularFEMForceField)
 SOFA_LINK_CLASS(TriangularFEMForceFieldOptim)
 
 
