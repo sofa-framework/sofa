@@ -174,8 +174,8 @@ void TPointModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
             resize(npoints);
         }
 
-        std::vector< Vector3 > pointsP;
-        std::vector< Vector3 > pointsL;
+        std::vector< defaulttype::Vector3 > pointsP;
+        std::vector< defaulttype::Vector3 > pointsL;
         for (int i = 0; i < size; i++)
         {
             TPoint<DataTypes> p(this,i);
@@ -195,7 +195,7 @@ void TPointModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
 
         if (m_displayFreePosition.getValue())
         {
-            std::vector< Vector3 > pointsPFree;
+            std::vector< defaulttype::Vector3 > pointsPFree;
 
             for (int i = 0; i < size; i++)
             {
@@ -293,8 +293,8 @@ void TPointModel<DataTypes>::computeBoundingTree(int maxDepth)
         for (int i=0; i<size; i++)
         {
             TPoint<DataTypes> p(this,i);
-            const Vector3& pt = p.p();
-            cubeModel->setParentOf(i, pt - Vector3(distance,distance,distance), pt + Vector3(distance,distance,distance));
+            const defaulttype::Vector3& pt = p.p();
+            cubeModel->setParentOf(i, pt - defaulttype::Vector3(distance,distance,distance), pt + defaulttype::Vector3(distance,distance,distance));
         }
         cubeModel->computeBoundingTree(maxDepth);
     }
@@ -320,7 +320,7 @@ void TPointModel<DataTypes>::computeContinuousBoundingTree(double dt, int maxDep
 
     if (computeNormals.getValue()) updateNormals();
 
-    Vector3 minElem, maxElem;
+    defaulttype::Vector3 minElem, maxElem;
 
     cubeModel->resize(size);
     if (!empty())
@@ -331,8 +331,8 @@ void TPointModel<DataTypes>::computeContinuousBoundingTree(double dt, int maxDep
         for (int i=0; i<size; i++)
         {
             TPoint<DataTypes> p(this,i);
-            const Vector3& pt = p.p();
-            const Vector3 ptv = pt + p.v()*dt;
+            const defaulttype::Vector3& pt = p.p();
+            const defaulttype::Vector3 ptv = pt + p.v()*dt;
 
             for (int c = 0; c < 3; c++)
             {
@@ -452,25 +452,25 @@ void TPointModel<DataTypes>::updateNormals()
 }
 
 template<class DataTypes>
-bool TPoint<DataTypes>::testLMD(const Vector3 &PQ, double &coneFactor, double &coneExtension)
+bool TPoint<DataTypes>::testLMD(const defaulttype::Vector3 &PQ, double &coneFactor, double &coneExtension)
 {
 
-    Vector3 pt = p();
+    defaulttype::Vector3 pt = p();
 
     sofa::core::topology::BaseMeshTopology* mesh = this->model->getMeshTopology();
-    helper::vector<Vector3> x = (*this->model->mstate->getX());
+    helper::vector<defaulttype::Vector3> x = (*this->model->mstate->getX());
 
     const helper::vector <unsigned int>& trianglesAroundVertex = mesh->getTrianglesAroundVertex(this->index);
     const helper::vector <unsigned int>& edgesAroundVertex = mesh->getEdgesAroundVertex(this->index);
 
 
-    Vector3 nMean;
+    defaulttype::Vector3 nMean;
 
     for (unsigned int i=0; i<trianglesAroundVertex.size(); i++)
     {
         unsigned int t = trianglesAroundVertex[i];
         const fixed_array<unsigned int,3>& ptr = mesh->getTriangle(t);
-        Vector3 nCur = (x[ptr[1]]-x[ptr[0]]).cross(x[ptr[2]]-x[ptr[0]]);
+        defaulttype::Vector3 nCur = (x[ptr[1]]-x[ptr[0]]).cross(x[ptr[2]]-x[ptr[0]]);
         nCur.normalize();
         nMean += nCur;
     }
@@ -481,7 +481,7 @@ bool TPoint<DataTypes>::testLMD(const Vector3 &PQ, double &coneFactor, double &c
         {
             unsigned int e = edgesAroundVertex[i];
             const fixed_array<unsigned int,2>& ped = mesh->getEdge(e);
-            Vector3 l = (pt - x[ped[0]]) + (pt - x[ped[1]]);
+            defaulttype::Vector3 l = (pt - x[ped[0]]) + (pt - x[ped[1]]);
             l.normalize();
             nMean += l;
         }
@@ -495,7 +495,7 @@ bool TPoint<DataTypes>::testLMD(const Vector3 &PQ, double &coneFactor, double &c
     {
         unsigned int e = edgesAroundVertex[i];
         const fixed_array<unsigned int,2>& ped = mesh->getEdge(e);
-        Vector3 l = (pt - x[ped[0]]) + (pt - x[ped[1]]);
+        defaulttype::Vector3 l = (pt - x[ped[0]]) + (pt - x[ped[1]]);
         l.normalize();
         double computedAngleCone = dot(nMean , l) * coneFactor;
         if (computedAngleCone<0)

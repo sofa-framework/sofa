@@ -52,30 +52,30 @@ public:
     Tetrahedron() {};
     explicit Tetrahedron(const core::CollisionElementIterator& i);
 
-    const Vector3& p1() const;
-    const Vector3& p2() const;
-    const Vector3& p3() const;
-    const Vector3& p4() const;
+    const defaulttype::Vector3& p1() const;
+    const defaulttype::Vector3& p2() const;
+    const defaulttype::Vector3& p3() const;
+    const defaulttype::Vector3& p4() const;
     int p1Index() const;
     int p2Index() const;
     int p3Index() const;
     int p4Index() const;
 
-    const Vector3& p1Free() const;
-    const Vector3& p2Free() const;
-    const Vector3& p3Free() const;
-    const Vector3& p4Free() const;
+    const defaulttype::Vector3& p1Free() const;
+    const defaulttype::Vector3& p2Free() const;
+    const defaulttype::Vector3& p3Free() const;
+    const defaulttype::Vector3& p4Free() const;
 
-    const Vector3& v1() const;
-    const Vector3& v2() const;
-    const Vector3& v3() const;
-    const Vector3& v4() const;
+    const defaulttype::Vector3& v1() const;
+    const defaulttype::Vector3& v2() const;
+    const defaulttype::Vector3& v3() const;
+    const defaulttype::Vector3& v4() const;
 
-    Vector3 getBary(const Vector3& p) const;
-    Vector3 getDBary(const Vector3& v) const;
+    defaulttype::Vector3 getBary(const defaulttype::Vector3& p) const;
+    defaulttype::Vector3 getDBary(const defaulttype::Vector3& v) const;
 
-    Vector3 getCoord(const Vector3& b) const;
-    Vector3 getDCoord(const Vector3& b) const;
+    defaulttype::Vector3 getCoord(const defaulttype::Vector3& b) const;
+    defaulttype::Vector3 getDCoord(const defaulttype::Vector3& b) const;
 
 };
 
@@ -84,8 +84,8 @@ class SOFA_MISC_COLLISION_API TetrahedronModel : public core::CollisionModel
 public:
     SOFA_CLASS(TetrahedronModel, core::CollisionModel);
 
-    typedef Vec3Types InDataTypes;
-    typedef Vec3Types DataTypes;
+    typedef defaulttype::Vec3Types InDataTypes;
+    typedef defaulttype::Vec3Types DataTypes;
     typedef DataTypes::VecCoord VecCoord;
     typedef DataTypes::VecDeriv VecDeriv;
     typedef DataTypes::Coord Coord;
@@ -96,15 +96,15 @@ public:
 protected:
     struct TetrahedronInfo
     {
-        Vector3 coord0;
-        Matrix3 coord2bary;
-        Matrix3 bary2coord;
+        defaulttype::Vector3 coord0;
+        defaulttype::Matrix3 coord2bary;
+        defaulttype::Matrix3 bary2coord;
     };
 
     sofa::helper::vector<TetrahedronInfo> elems;
     const sofa::core::topology::BaseMeshTopology::SeqTetrahedra* tetra;
 
-    core::behavior::MechanicalState<Vec3Types>* mstate;
+    core::behavior::MechanicalState<defaulttype::Vec3Types>* mstate;
 
     sofa::core::topology::BaseMeshTopology* _topology;
 
@@ -128,7 +128,7 @@ public:
 
     virtual void handleTopologyChange();
 
-    core::behavior::MechanicalState<Vec3Types>* getMechanicalState() { return mstate; }
+    core::behavior::MechanicalState<defaulttype::Vec3Types>* getMechanicalState() { return mstate; }
 
 };
 
@@ -140,30 +140,30 @@ inline Tetrahedron::Tetrahedron(const core::CollisionElementIterator& i)
     : core::TCollisionElementIterator<TetrahedronModel>(static_cast<TetrahedronModel*>(i.getCollisionModel()), i.getIndex())
 {}
 
-inline const Vector3& Tetrahedron::p1() const { return (*model->mstate->getX())[(*(model->tetra))[index][0]]; }
-inline const Vector3& Tetrahedron::p2() const { return (*model->mstate->getX())[(*(model->tetra))[index][1]]; }
-inline const Vector3& Tetrahedron::p3() const { return (*model->mstate->getX())[(*(model->tetra))[index][2]]; }
-inline const Vector3& Tetrahedron::p4() const { return (*model->mstate->getX())[(*(model->tetra))[index][3]]; }
+inline const defaulttype::Vector3& Tetrahedron::p1() const { return (*model->mstate->getX())[(*(model->tetra))[index][0]]; }
+inline const defaulttype::Vector3& Tetrahedron::p2() const { return (*model->mstate->getX())[(*(model->tetra))[index][1]]; }
+inline const defaulttype::Vector3& Tetrahedron::p3() const { return (*model->mstate->getX())[(*(model->tetra))[index][2]]; }
+inline const defaulttype::Vector3& Tetrahedron::p4() const { return (*model->mstate->getX())[(*(model->tetra))[index][3]]; }
 
-inline const Vector3& Tetrahedron::p1Free() const { return model->mstate->read(core::ConstVecCoordId::freePosition())->getValue()[(*(model->tetra))[index][0]]; }
-inline const Vector3& Tetrahedron::p2Free() const { return model->mstate->read(core::ConstVecCoordId::freePosition())->getValue()[(*(model->tetra))[index][1]]; }
-inline const Vector3& Tetrahedron::p3Free() const { return model->mstate->read(core::ConstVecCoordId::freePosition())->getValue()[(*(model->tetra))[index][2]]; }
-inline const Vector3& Tetrahedron::p4Free() const { return model->mstate->read(core::ConstVecCoordId::freePosition())->getValue()[(*(model->tetra))[index][3]]; }
+inline const defaulttype::Vector3& Tetrahedron::p1Free() const { return model->mstate->read(core::ConstVecCoordId::freePosition())->getValue()[(*(model->tetra))[index][0]]; }
+inline const defaulttype::Vector3& Tetrahedron::p2Free() const { return model->mstate->read(core::ConstVecCoordId::freePosition())->getValue()[(*(model->tetra))[index][1]]; }
+inline const defaulttype::Vector3& Tetrahedron::p3Free() const { return model->mstate->read(core::ConstVecCoordId::freePosition())->getValue()[(*(model->tetra))[index][2]]; }
+inline const defaulttype::Vector3& Tetrahedron::p4Free() const { return model->mstate->read(core::ConstVecCoordId::freePosition())->getValue()[(*(model->tetra))[index][3]]; }
 
 inline int Tetrahedron::p1Index() const { return (*(model->tetra))[index][0]; }
 inline int Tetrahedron::p2Index() const { return (*(model->tetra))[index][1]; }
 inline int Tetrahedron::p3Index() const { return (*(model->tetra))[index][2]; }
 inline int Tetrahedron::p4Index() const { return (*(model->tetra))[index][3]; }
 
-inline const Vector3& Tetrahedron::v1() const { return (*model->mstate->getV())[(*(model->tetra))[index][0]]; }
-inline const Vector3& Tetrahedron::v2() const { return (*model->mstate->getV())[(*(model->tetra))[index][1]]; }
-inline const Vector3& Tetrahedron::v3() const { return (*model->mstate->getV())[(*(model->tetra))[index][2]]; }
-inline const Vector3& Tetrahedron::v4() const { return (*model->mstate->getV())[(*(model->tetra))[index][3]]; }
+inline const defaulttype::Vector3& Tetrahedron::v1() const { return (*model->mstate->getV())[(*(model->tetra))[index][0]]; }
+inline const defaulttype::Vector3& Tetrahedron::v2() const { return (*model->mstate->getV())[(*(model->tetra))[index][1]]; }
+inline const defaulttype::Vector3& Tetrahedron::v3() const { return (*model->mstate->getV())[(*(model->tetra))[index][2]]; }
+inline const defaulttype::Vector3& Tetrahedron::v4() const { return (*model->mstate->getV())[(*(model->tetra))[index][3]]; }
 
-inline Vector3 Tetrahedron::getBary(const Vector3& p) const { return model->elems[index].coord2bary*(p-model->elems[index].coord0); }
-inline Vector3 Tetrahedron::getDBary(const Vector3& v) const { return model->elems[index].coord2bary*(v); }
-inline Vector3 Tetrahedron::getCoord(const Vector3& b) const { return model->elems[index].bary2coord*b + model->elems[index].coord0; }
-inline Vector3 Tetrahedron::getDCoord(const Vector3& b) const { return model->elems[index].bary2coord*b; }
+inline defaulttype::Vector3 Tetrahedron::getBary(const defaulttype::Vector3& p) const { return model->elems[index].coord2bary*(p-model->elems[index].coord0); }
+inline defaulttype::Vector3 Tetrahedron::getDBary(const defaulttype::Vector3& v) const { return model->elems[index].coord2bary*(v); }
+inline defaulttype::Vector3 Tetrahedron::getCoord(const defaulttype::Vector3& b) const { return model->elems[index].bary2coord*b + model->elems[index].coord0; }
+inline defaulttype::Vector3 Tetrahedron::getDCoord(const defaulttype::Vector3& b) const { return model->elems[index].bary2coord*b; }
 
 /// Mapper for TetrahedronModel
 template<class DataTypes>
@@ -175,7 +175,7 @@ public:
     int addPoint(const Coord& P, int index, Real&)
     {
         Tetrahedron t(this->model, index);
-        Vector3 b = t.getBary(P);
+        defaulttype::Vector3 b = t.getBary(P);
         return this->mapper->addPointInTetra(index, b.ptr());
     }
 };

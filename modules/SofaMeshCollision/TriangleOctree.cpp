@@ -67,11 +67,11 @@ TriangleOctree::~TriangleOctree()
 void TriangleOctree::draw (const core::visual::VisualParams* vparams)
 {
 #ifndef SOFA_NO_OPENGL
-    Vector3 center;
+    defaulttype::Vector3 center;
     if ( objects.size ())
     {
         center =
-            (Vector3 (x, y, z) + Vector3 (size / 2, size / 2, size / 2));
+            (defaulttype::Vector3 (x, y, z) + defaulttype::Vector3 (size / 2, size / 2, size / 2));
         glPushMatrix ();
         glTranslatef ((float)center[0], (float)center[1], (float)center[2]);
         glutWireCube (size);
@@ -134,11 +134,11 @@ unsigned int choose_next (double x, double y, double z,
 }
 
 int TriangleOctree::nearestTriangle (int minIndex,
-        const Vector3 & origin,
-        const Vector3 & direction, traceResult &result)
+        const defaulttype::Vector3 & origin,
+        const defaulttype::Vector3 & direction, traceResult &result)
 {
     static RayTriangleIntersection intersectionSolver;
-    Vector3 P;
+    defaulttype::Vector3 P;
     const TriangleOctreeRoot::VecCoord& pos = *tm->octreePos;
     //Triangle t1 (tm, minIndex);
     TriangleOctreeRoot::Tri t1 = (*tm->octreeTriangles)[minIndex];
@@ -207,11 +207,11 @@ int TriangleOctree::nearestTriangle (int minIndex,
     return minIndex;
 }
 
-int TriangleOctree::trace (const Vector3 & origin,
-        const Vector3 & direction, double tx0,
+int TriangleOctree::trace (const defaulttype::Vector3 & origin,
+        const defaulttype::Vector3 & direction, double tx0,
         double ty0, double tz0, double tx1,
         double ty1, double tz1, unsigned int a,
-        unsigned int b,Vector3 &origin1,Vector3 &direction1,traceResult &result)
+        unsigned int b,defaulttype::Vector3 &origin1,defaulttype::Vector3 &direction1,traceResult &result)
 {
     if (tx1 < 0.0 || ty1 < 0.0 || tz1 < 0.0)
         return -1;
@@ -435,14 +435,14 @@ int TriangleOctree::trace (const Vector3 & origin,
 }
 
 
-int TriangleOctree::trace (Vector3 origin, Vector3 direction,traceResult &result)
+int TriangleOctree::trace (defaulttype::Vector3 origin, defaulttype::Vector3 direction,traceResult &result)
 {
     unsigned int a = 0;
     unsigned int b = 0;
     //const double EPSILON = 1e-8;
     const double EPSILON = 0;
-    Vector3 origin1=origin;
-    Vector3 direction1=direction;
+    defaulttype::Vector3 origin1=origin;
+    defaulttype::Vector3 direction1=direction;
 
     if (direction[0] == 0.0)
     {
@@ -492,20 +492,20 @@ int TriangleOctree::trace (Vector3 origin, Vector3 direction,traceResult &result
 }
 
 
-void TriangleOctree::allTriangles (const Vector3 & /*origin*/,
-        const Vector3 & /*direction*/,
+void TriangleOctree::allTriangles (const defaulttype::Vector3 & /*origin*/,
+        const defaulttype::Vector3 & /*direction*/,
         std::set<int>& results)
 {
     for (unsigned int i = 0; i < objects.size (); i++)
         results.insert(objects[i]);
 }
 
-void TriangleOctree::allTriangles (const Vector3 & origin,
-        const Vector3 & direction,
+void TriangleOctree::allTriangles (const defaulttype::Vector3 & origin,
+        const defaulttype::Vector3 & direction,
         vector<traceResult>& results)
 {
     static RayTriangleIntersection intersectionSolver;
-    Vector3 P;
+    defaulttype::Vector3 P;
     const TriangleOctreeRoot::VecCoord& pos = *tm->octreePos;
     SReal t, u, v;
     for (unsigned int i = 0; i < objects.size (); i++)
@@ -525,11 +525,11 @@ void TriangleOctree::allTriangles (const Vector3 & origin,
 }
 
 template<class Res>
-void TriangleOctree::traceAll (const Vector3 & origin,
-        const Vector3 & direction, double tx0,
+void TriangleOctree::traceAll (const defaulttype::Vector3 & origin,
+        const defaulttype::Vector3 & direction, double tx0,
         double ty0, double tz0, double tx1,
         double ty1, double tz1, unsigned int a,
-        unsigned int b,Vector3 &origin1,Vector3 &direction1, Res& results)
+        unsigned int b,defaulttype::Vector3 &origin1,defaulttype::Vector3 &direction1, Res& results)
 {
     if (tx1 < 0.0 || ty1 < 0.0 || tz1 < 0.0)
         return;
@@ -720,25 +720,25 @@ void TriangleOctree::traceAll (const Vector3 & origin,
     }
 }
 
-void TriangleOctree::traceAll(Vector3 origin, Vector3 direction, vector<traceResult>& results)
+void TriangleOctree::traceAll(defaulttype::Vector3 origin, defaulttype::Vector3 direction, vector<traceResult>& results)
 {
     traceAllStart(origin, direction, results);
 }
 
-void TriangleOctree::traceAllCandidates(Vector3 origin, Vector3 direction, std::set<int>& results)
+void TriangleOctree::traceAllCandidates(defaulttype::Vector3 origin, defaulttype::Vector3 direction, std::set<int>& results)
 {
     traceAllStart(origin, direction, results);
 }
 
 template<class Res>
-void TriangleOctree::traceAllStart(Vector3 origin, Vector3 direction, Res& results)
+void TriangleOctree::traceAllStart(defaulttype::Vector3 origin, defaulttype::Vector3 direction, Res& results)
 {
     unsigned int a = 0;
     unsigned int b = 0;
     //const double EPSILON = 1e-8;
     const double EPSILON = 0;
-    Vector3 origin1=origin;
-    Vector3 direction1=direction;
+    defaulttype::Vector3 origin1=origin;
+    defaulttype::Vector3 direction1=direction;
 
     if (direction[0] == 0.0)
     {
@@ -786,8 +786,8 @@ void TriangleOctree::traceAllStart(Vector3 origin, Vector3 direction, Res& resul
 }
 
 
-void TriangleOctree::bbAllTriangles(const Vector3 & bbmin,
-        const Vector3 & bbmax,
+void TriangleOctree::bbAllTriangles(const defaulttype::Vector3 & bbmin,
+        const defaulttype::Vector3 & bbmax,
         std::set<int>& results)
 {
     const TriangleOctreeRoot::VecCoord& pos = *tm->octreePos;
@@ -795,11 +795,11 @@ void TriangleOctree::bbAllTriangles(const Vector3 & bbmin,
     for (unsigned int i = 0; i < objects.size (); i++)
     {
         int t = objects[i];
-        Vector3 tmin = pos[tri[t][0]];
-        Vector3 tmax = tmin;
+        defaulttype::Vector3 tmin = pos[tri[t][0]];
+        defaulttype::Vector3 tmax = tmin;
         for (int j=1; j<3; ++j)
         {
-            Vector3 p = pos[tri[t][j]];
+            defaulttype::Vector3 p = pos[tri[t][j]];
             for (int c=0; c<3; ++c)
                     if (p[c] < tmin[c]) tmin[c] = p[c]; else if (p[c] > tmax[c]) tmax[c] = p[c];
         }
@@ -814,9 +814,9 @@ void TriangleOctree::bbAllTriangles(const Vector3 & bbmin,
 }
 
 template<class Res>
-void TriangleOctree::bbAll (const Vector3 & bbmin, const Vector3 & bbmax, Res& results)
+void TriangleOctree::bbAll (const defaulttype::Vector3 & bbmin, const defaulttype::Vector3 & bbmax, Res& results)
 {
-    Vector3 c(x+size/2,y+size/2,z+size/2);
+    defaulttype::Vector3 c(x+size/2,y+size/2,z+size/2);
     //static int level = 0;
     //for (int l=0;l<level;++l) std::cout << ' ';
     //std::cout << "-> " << c[0] << " " << c[1] << " " << c[2] << " " << size << " -> " << objects.size() << std::endl;
@@ -848,7 +848,7 @@ void TriangleOctree::bbAll (const Vector3 & bbmin, const Vector3 & bbmax, Res& r
             }
 }
 
-void TriangleOctree::bboxAllCandidates(Vector3 bbmin, Vector3 bbmax, std::set<int>& results)
+void TriangleOctree::bboxAllCandidates(defaulttype::Vector3 bbmin, defaulttype::Vector3 bbmax, std::set<int>& results)
 {
     bbAll(bbmin, bbmax, results);
 }
@@ -880,10 +880,10 @@ void TriangleOctreeRoot::buildOctree()
     }
 }
 
-int TriangleOctreeRoot::fillOctree (int tId, int /*d*/, Vector3 /*v*/)
+int TriangleOctreeRoot::fillOctree (int tId, int /*d*/, defaulttype::Vector3 /*v*/)
 {
-    Vector3 center;
-    Vector3 corner (-cubeSize, -cubeSize, -cubeSize);
+    defaulttype::Vector3 center;
+    defaulttype::Vector3 corner (-cubeSize, -cubeSize, -cubeSize);
 
     double bb[6];
     double bbsize;

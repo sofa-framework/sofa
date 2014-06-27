@@ -15,11 +15,11 @@ struct IntrUtil<TTriangle<DataType> >{
     /**
       *Returns the squared distance between old pt and projected pt.
       */
-    static Real project(Vec<3,Real> & pt,const TTriangle<DataType> & tri);
+    static Real project(defaulttype::Vec<3,Real> & pt,const TTriangle<DataType> & tri);
 
-    static SReal triSegNearestPoints(const IntrTri & tri,const Vec<3,Real> seg[2],Vec<3,Real> & pt_on_tri,Vec<3,Real> & pt_on_seg);
+    static SReal triSegNearestPoints(const IntrTri & tri,const defaulttype::Vec<3,Real> seg[2],defaulttype::Vec<3,Real> & pt_on_tri,defaulttype::Vec<3,Real> & pt_on_seg);
 
-    static void triFaceNearestPoints(const IntrTri & tri,const Vec<3,Real> * face,int n,Vec<3,Real> & pt_on_tri,Vec<3,Real> & pt_on_face);
+    static void triFaceNearestPoints(const IntrTri & tri,const defaulttype::Vec<3,Real> * face,int n,defaulttype::Vec<3,Real> & pt_on_tri,defaulttype::Vec<3,Real> & pt_on_face);
 };
 
 
@@ -68,9 +68,9 @@ public:
     typedef TTriangle<TDataTypes1> IntrTri;
 
     FindContactSet (const IntrTri& triangle,
-                    const Box& box,const Vec<3,Real> & axis ,int side, const IntrConfiguration<Real>& triCfg,
+                    const Box& box,const defaulttype::Vec<3,Real> & axis ,int side, const IntrConfiguration<Real>& triCfg,
                     const IntrConfiguration<Real>& boxCfg,Real tfirst,
-                    Vec<3,Real> & pt_on_tri,Vec<3,Real> & pt_on_box);
+                    defaulttype::Vec<3,Real> & pt_on_tri,defaulttype::Vec<3,Real> & pt_on_box);
 
 };
 
@@ -78,16 +78,16 @@ public:
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_MESH_COLLISION)
 #ifndef SOFA_FLOAT
-extern template struct SOFA_MESH_COLLISION_API IntrUtil<TTriangle<Vec3dTypes> >;
-extern template class SOFA_MESH_COLLISION_API FindContactSet<TTriangle<Vec3dTypes>,TOBB<Rigid3dTypes> >;
-extern template class SOFA_MESH_COLLISION_API IntrAxis<TTriangle<Vec3dTypes>,TOBB<defaulttype::Rigid3dTypes> >;
-extern template struct SOFA_MESH_COLLISION_API IntrConfigManager<TTriangle<Vec3dTypes> >;
+extern template struct SOFA_MESH_COLLISION_API IntrUtil<TTriangle<defaulttype::Vec3dTypes> >;
+extern template class SOFA_MESH_COLLISION_API FindContactSet<TTriangle<defaulttype::Vec3dTypes>,TOBB<defaulttype::Rigid3dTypes> >;
+extern template class SOFA_MESH_COLLISION_API IntrAxis<TTriangle<defaulttype::Vec3dTypes>,TOBB<defaulttype::Rigid3dTypes> >;
+extern template struct SOFA_MESH_COLLISION_API IntrConfigManager<TTriangle<defaulttype::Vec3dTypes> >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template struct SOFA_MESH_COLLISION_API IntrUtil<TTriangle<Vec3fTypes> >;
-extern template class SOFA_MESH_COLLISION_API FindContactSet<TTriangle<Vec3fTypes>,TOBB<Rigid3fTypes> >;
-extern template class SOFA_MESH_COLLISION_API IntrAxis<TTriangle<Vec3fTypes>,TOBB<defaulttype::Rigid3fTypes> >;
-extern template struct SOFA_MESH_COLLISION_API IntrConfigManager<TTriangle<Vec3fTypes> >;
+extern template struct SOFA_MESH_COLLISION_API IntrUtil<TTriangle<defaulttype::Vec3fTypes> >;
+extern template class SOFA_MESH_COLLISION_API FindContactSet<TTriangle<defaulttype::Vec3fTypes>,TOBB<defaulttype::Rigid3fTypes> >;
+extern template class SOFA_MESH_COLLISION_API IntrAxis<TTriangle<defaulttype::Vec3fTypes>,TOBB<defaulttype::Rigid3fTypes> >;
+extern template struct SOFA_MESH_COLLISION_API IntrConfigManager<TTriangle<defaulttype::Vec3fTypes> >;
 #endif
 #endif
 
