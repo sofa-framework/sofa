@@ -72,8 +72,7 @@ template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<Vec6fTypes>;
 template <> template <class DataDeriv>
 void FixedPlaneConstraint<Rigid3dTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataDeriv& res)
 {
-    const int N=Coord::spatial_dimensions;
-    Vec<N,Real> dir=direction.getValue().getCenter();
+    Vec<Coord::spatial_dimensions,Real> dir=direction.getValue().getCenter();
 
     for (helper::vector< unsigned int > ::const_iterator it = this->indices.getValue().begin(); it != this->indices.getValue().end(); ++it)
     {
@@ -84,8 +83,7 @@ void FixedPlaneConstraint<Rigid3dTypes>::projectResponseT(const core::Mechanical
 template <>
 bool FixedPlaneConstraint<Rigid3dTypes>::isPointInPlane(Rigid3dTypes::Coord p)
 {
-    const int N=Coord::spatial_dimensions;
-    Vec<N,Real> pos = p.getCenter();
+    Vec<Coord::spatial_dimensions,Real> pos = p.getCenter();
     Real d=pos*direction.getValue().getCenter();
     if ((d>dmin.getValue())&& (d<dmax.getValue()))
         return true;
@@ -98,8 +96,7 @@ bool FixedPlaneConstraint<Rigid3dTypes>::isPointInPlane(Rigid3dTypes::Coord p)
 template <> template <class DataDeriv>
 void FixedPlaneConstraint<Rigid3fTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataDeriv& res)
 {
-    const int N=Coord::spatial_dimensions;
-    Vec<N,Real> dir=direction.getValue().getCenter();
+    Vec<Coord::spatial_dimensions,Real> dir=direction.getValue().getCenter();
 
     for (helper::vector< unsigned int > ::const_iterator it = this->indices.getValue().begin(); it != this->indices.getValue().end(); ++it)
     {
@@ -110,8 +107,7 @@ void FixedPlaneConstraint<Rigid3fTypes>::projectResponseT(const core::Mechanical
 template <>
 bool FixedPlaneConstraint<Rigid3fTypes>::isPointInPlane(Coord p)
 {
-    const int N=Coord::spatial_dimensions;
-    Vec<N,Real> pos = p.getCenter();
+    Vec<Coord::spatial_dimensions,Real> pos = p.getCenter();
     Real d=pos*direction.getValue().getCenter();
     if ((d>dmin.getValue())&& (d<dmax.getValue()))
         return true;
