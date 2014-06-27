@@ -149,8 +149,8 @@ void JoinPoints<DataTypes>::update()
         }
         else
         {
-            itCurrentPoint++;
-            itCurrentCoeff++;
+            ++itCurrentPoint;
+            ++itCurrentCoeff;
         }
     }
 
