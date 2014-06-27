@@ -36,6 +36,8 @@ BaseProximityIntersection::BaseProximityIntersection()
     : alarmDistance(initData(&alarmDistance, (SReal)1.0, "alarmDistance","Proximity detection distance"))
     , contactDistance(initData(&contactDistance, (SReal)0.5, "contactDistance","Distance below which a contact is created"))
 {
+	alarmDistance.setRequired(true);
+	contactDistance.setRequired(true);
 }
 
 } // namespace collision

@@ -79,6 +79,9 @@ BeamFEMForceField<DataTypes>::BeamFEMForceField()
     , edgeHandler(NULL)
 {
     edgeHandler = new BeamFFEdgeHandler(this, &beamsData);
+
+	_poissonRatio.setRequired(true);
+	_youngModulus.setReadOnly(true);
 }
 
 template<class DataTypes>
@@ -97,7 +100,10 @@ BeamFEMForceField<DataTypes>::BeamFEMForceField(Real poissonRatio, Real youngMod
     , _assembling(false)
     , edgeHandler(NULL)
 {
-    edgeHandler = new BeamFFEdgeHandler(this, &beamsData);    
+    edgeHandler = new BeamFFEdgeHandler(this, &beamsData);  
+
+	_poissonRatio.setRequired(true);
+	_youngModulus.setReadOnly(true);
 }
 
 template<class DataTypes>

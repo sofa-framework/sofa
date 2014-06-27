@@ -137,6 +137,9 @@ TriangularFEMForceField<DataTypes>::TriangularFEMForceField()
     f_graphCriteria.setWidget("graph");
     f_graphOrientation.setWidget("graph");
 #endif
+
+	f_poisson.setRequired(true);
+	f_young.setRequired(true);
 }
 
 

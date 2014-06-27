@@ -87,6 +87,8 @@ void LocalMinDistance::init()
     intersectors.add<RayModel, TriangleModel, LocalMinDistance>(this);
     intersectors.add<RayModel, SphereModel, LocalMinDistance>(this);
     IntersectorFactory::getInstance()->addIntersectors(this);
+
+	BaseProximityIntersection::init();
 }
 
 bool LocalMinDistance::testIntersection(Cube &cube1, Cube &cube2)

@@ -104,6 +104,9 @@ TriangularFEMForceFieldOptim<DataTypes>::TriangularFEMForceFieldOptim()
 {
     triangleInfoHandler = new TFEMFFOTriangleInfoHandler(this, &triangleInfo);
     triangleStateHandler = new TFEMFFOTriangleStateHandler(this, &triangleState);
+
+	f_poisson.setRequired(true);
+	f_young.setRequired(true);
 }
 
 

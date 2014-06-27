@@ -64,6 +64,7 @@ public:
         FLAG_DISPLAYED = 1 << 1,  ///< True if the Data will be displayed in the GUI
         FLAG_PERSISTENT = 1 << 2, ///< True if the Data contain persistent information
         FLAG_AUTOLINK = 1 << 3, ///< True if the Data should be autolinked
+		FLAG_REQUIRED = 1 << 4, ///< True if the Data has to be set for the owner component to be valid (a warning is displayed at init otherwise) 
         FLAG_ANIMATION_INSTANCE = 1 << 10,
         FLAG_VISUAL_INSTANCE = 1 << 11,
         FLAG_HAPTICS_INSTANCE = 1 << 12,
@@ -200,6 +201,9 @@ public:
     /// True if the Data should be autolinked when using src="" syntax
     bool isAutoLink() const { return getFlag(FLAG_AUTOLINK); }
 
+	/// True if the Data has to be set by the user for the owner component to be valid
+	bool isRequired() const { return getFlag(FLAG_REQUIRED); }
+
     /// Can dynamically change the status of a Data, by making it appear or disappear
     void setDisplayed(bool b)  { setFlag(FLAG_DISPLAYED,b); }
     /// Can dynamically change the status of a Data, by making it readOnly
@@ -208,6 +212,8 @@ public:
     void setPersistent(bool b) { setFlag(FLAG_PERSISTENT,b); }
     /// Control whether this data should be autolinked when using src="" syntax
     void setAutoLink(bool b) { setFlag(FLAG_AUTOLINK,b); }
+	/// A warning is displayed by the owner component at init if the Data has not been set
+	void setRequired(bool b) { setFlag(FLAG_REQUIRED,b); }
 
     /// If we use the Data as a link and not as value directly
     //void setLinkPath(const std::string &path) { m_linkPath = path; }
