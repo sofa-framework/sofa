@@ -1,0 +1,21 @@
+# - Config file for the SofaFramework package
+# It defines the following variables
+#  SofaCommon_INCLUDE_DIRS - include directories for FooBar
+#  SofaCommon_LIBRARIES    - libraries to link against
+
+@PACKAGE_INIT@
+
+set(SOFACOMMON_INCLUDE_DIR "@PACKAGE_SOFACOMMON_INCLUDE_DIR@")
+check_required_components(SofaCommon)
+
+# required for transitive dependencies
+find_package(SofaBase REQUIRED)
+
+if( NOT TARGET SofaComponentCommon )
+	include("${CMAKE_CURRENT_LIST_DIR}/SofaCommonTargets.cmake")
+endif()
+ 
+# For compatibility only
+# set(SofaCommon_LIBRARIES SofaLoader SofaRigid SofaDeformable SofaSimpleFem SofaObjectInteraction SofaMeshCollision SofaExplicitOdeSolver SofaImplicitOdeSolver SofaComponentCommon)
+set(SofaCommon_LIBRARIES @SOFACOMMON_TARGETS@)
+set(SofaCommon_INCLUDE_DIRS ${SOFACOMMON_INCLUDE_DIR} )
