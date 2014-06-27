@@ -48,7 +48,7 @@ public:
 
     sofa::core::topology::BaseMeshTopology* _topology;
     sofa::core::topology::BaseMeshTopology* _higher_topo;
-    core::behavior::MechanicalState<Vec3Types>* _higher_mstate;
+    core::behavior::MechanicalState<defaulttype::Vec3Types>* _higher_mstate;
 
 protected:
     TriangleModelInRegularGrid();

@@ -176,7 +176,7 @@ void SpatialGridPointModel::computeBoundingTree(int maxDepth)
     cubeModel->resize(cells.size());
     if (cells.empty()) return;
     OctreeSorter s(maxDepth);
-    Vector3::value_type cellSize = g->getCellWidth()*ldim; // *GRIDDIM;
+    defaulttype::Vector3::value_type cellSize = g->getCellWidth()*ldim; // *GRIDDIM;
     std::sort(cells.begin(), cells.end(), s);
 
     //sout << "sorted: ";
@@ -186,7 +186,7 @@ void SpatialGridPointModel::computeBoundingTree(int maxDepth)
         //sout << "  " << k;
         int pfirst = cells[i].pfirst;
         int plast = cells[i].plast;
-        Vector3 minElem, maxElem;
+        defaulttype::Vector3 minElem, maxElem;
         for (unsigned int c=0; c<k.size(); ++c)
         {
             minElem[c] = k[c]*cellSize;
