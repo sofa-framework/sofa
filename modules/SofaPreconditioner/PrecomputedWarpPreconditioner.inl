@@ -299,8 +299,8 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
     this->getContext()->get(EulerSolver);
 
     // for the initial computation, the gravity has to be put at 0
-    const Vec3d gravity = this->getContext()->getGravity();
-    const Vec3d gravity_zero(0.0,0.0,0.0);
+    const sofa::defaulttype::Vec3d gravity = this->getContext()->getGravity();
+    const sofa::defaulttype::Vec3d gravity_zero(0.0,0.0,0.0);
     this->getContext()->setGravity(gravity_zero);
 
     CGLinearSolver<GraphScatteredMatrix,GraphScatteredVector>* CGlinearSolver;
@@ -332,8 +332,8 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
         serr<<"PrecomputedContactCorrection must be associated with EulerImplicitSolver+LinearSolver for the precomputation\nNo Precomputation" << sendl;
         return;
     }
-    VecDerivId lhId = core::VecDerivId::velocity();
-    VecDerivId rhId = core::VecDerivId::force();
+    sofa::core::VecDerivId lhId = core::VecDerivId::velocity();
+    sofa::core::VecDerivId rhId = core::VecDerivId::force();
 
 
     mstate->vAvail(core::ExecParams::defaultInstance(), lhId);

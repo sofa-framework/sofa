@@ -117,8 +117,8 @@ void SkinningMapping<TIn, TOut>::reinit()
     sofa::helper::ReadAccessor<Data<VecOutCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
     sofa::helper::ReadAccessor<Data<VecOutCoord> > xto (this->f_initPos);
     sofa::helper::ReadAccessor<Data<VecInCoord> > xfrom = *this->fromModel->read(core::ConstVecCoordId::restPosition());
-    sofa::helper::WriteAccessor<Data<vector<SVector<InReal> > > > m_weights  ( weight );
-    sofa::helper::ReadAccessor<Data<vector<SVector<unsigned int> > > > index ( this->f_index );
+    sofa::helper::WriteAccessor<Data<vector<sofa::helper::SVector<InReal> > > > m_weights  ( weight );
+    sofa::helper::ReadAccessor<Data<vector<sofa::helper::SVector<unsigned int> > > > index ( this->f_index );
 
     sout << "reinit : use nbRef with size = " << nbRef.getValue().size() << " - initpos size = " << xto.size() << sendl;
 
@@ -194,8 +194,8 @@ void SkinningMapping<TIn, TOut>::updateWeights ()
 
     sofa::helper::ReadAccessor<Data<VecOutCoord> > xto (this->f_initPos);
     sofa::helper::ReadAccessor<Data<VecInCoord> > xfrom = *this->fromModel->read(core::ConstVecCoordId::restPosition());
-    sofa::helper::WriteAccessor<Data<vector<SVector<InReal> > > > m_weights  ( weight );
-    sofa::helper::WriteAccessor<Data<vector<SVector<unsigned int> > > > index ( f_index );
+    sofa::helper::WriteAccessor<Data<vector<sofa::helper::SVector<InReal> > > > m_weights  ( weight );
+    sofa::helper::WriteAccessor<Data<vector<sofa::helper::SVector<unsigned int> > > > index ( f_index );
 
     index.resize( xto.size() );
     m_weights.resize ( xto.size() );
@@ -241,7 +241,7 @@ void SkinningMapping<TIn, TOut>::updateWeights ()
 }
 
 template <class TIn, class TOut>
-void SkinningMapping<TIn, TOut>::setWeights(const vector<SVector<InReal> >& weights, const vector<SVector<unsigned int> >& indices, const vector<unsigned int>& nbrefs)
+void SkinningMapping<TIn, TOut>::setWeights(const vector<sofa::helper::SVector<InReal> >& weights, const vector<sofa::helper::SVector<unsigned int> >& indices, const vector<unsigned int>& nbrefs)
 {
     f_index = indices;
     weight = weights;
@@ -252,8 +252,8 @@ template <class TIn, class TOut>
 void SkinningMapping<TIn, TOut>::apply ( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
     unsigned int nbref=nbRef.getValue()[0];
-    sofa::helper::ReadAccessor<Data<vector<SVector<InReal> > > > m_weights  ( this->weight );
-    sofa::helper::ReadAccessor<Data<vector<SVector<unsigned int> > > > index ( f_index );
+    sofa::helper::ReadAccessor<Data<vector<sofa::helper::SVector<InReal> > > > m_weights  ( this->weight );
+    sofa::helper::ReadAccessor<Data<vector<sofa::helper::SVector<unsigned int> > > > index ( f_index );
     MatBlock matblock;
 
 #ifdef SOFA_DEV
@@ -341,8 +341,8 @@ template <class TIn, class TOut>
 void SkinningMapping<TIn, TOut>::applyJ ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
     unsigned int nbref=nbRef.getValue()[0];
-    sofa::helper::ReadAccessor<Data<vector<SVector<InReal> > > > m_weights  ( weight );
-    sofa::helper::ReadAccessor<Data<vector<SVector<unsigned int> > > > index ( f_index );
+    sofa::helper::ReadAccessor<Data<vector<sofa::helper::SVector<InReal> > > > m_weights  ( weight );
+    sofa::helper::ReadAccessor<Data<vector<sofa::helper::SVector<unsigned int> > > > index ( f_index );
 
     if ( ! ( this->maskTo->isInUse() ) )
     {
@@ -424,8 +424,8 @@ template <class TIn, class TOut>
 void SkinningMapping<TIn, TOut>::applyJT ( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
 {
     unsigned int nbref=nbRef.getValue()[0];
-    sofa::helper::ReadAccessor<Data<vector<SVector<InReal> > > > m_weights  ( weight );
-    sofa::helper::ReadAccessor<Data<vector<SVector<unsigned int> > > > index ( f_index );
+    sofa::helper::ReadAccessor<Data<vector<sofa::helper::SVector<InReal> > > > m_weights  ( weight );
+    sofa::helper::ReadAccessor<Data<vector<sofa::helper::SVector<unsigned int> > > > index ( f_index );
 
     if ( ! ( this->maskTo->isInUse() ) )
     {
@@ -512,8 +512,8 @@ template <class TIn, class TOut>
 void SkinningMapping<TIn, TOut>::applyJT ( typename In::MatrixDeriv& parentJacobians, const typename Out::MatrixDeriv& childJacobians )
 {
     unsigned int nbref=nbRef.getValue()[0];
-    sofa::helper::ReadAccessor<Data<vector<SVector<InReal> > > > m_weights  ( weight );
-    sofa::helper::ReadAccessor<Data<vector<SVector<unsigned int> > > > index ( f_index );
+    sofa::helper::ReadAccessor<Data<vector<sofa::helper::SVector<InReal> > > > m_weights  ( weight );
+    sofa::helper::ReadAccessor<Data<vector<sofa::helper::SVector<unsigned int> > > > index ( f_index );
 
 #ifdef SOFA_DEV
     if(this->useDQ.getValue())
@@ -583,8 +583,8 @@ void SkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
     const typename In::VecCoord& xfrom = *this->fromModel->getX();
     unsigned int nbref = this->nbRef.getValue()[0];
 
-    sofa::helper::ReadAccessor<Data<vector<SVector<InReal> > > > m_weights  ( weight );
-    sofa::helper::ReadAccessor<Data<vector<SVector<unsigned int> > > > index ( f_index );
+    sofa::helper::ReadAccessor<Data<vector<sofa::helper::SVector<InReal> > > > m_weights  ( weight );
+    sofa::helper::ReadAccessor<Data<vector<sofa::helper::SVector<unsigned int> > > > index ( f_index );
 
     glPushAttrib( GL_LIGHTING_BIT | GL_COLOR_BUFFER_BIT | GL_ENABLE_BIT);
     glDisable ( GL_LIGHTING );

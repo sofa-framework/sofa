@@ -39,15 +39,13 @@ namespace component
 namespace visualmodel
 {
 
-using sofa::defaulttype::Vector3;
-
 class SOFA_OPENGL_VISUAL_API ClipPlane : public core::visual::VisualModel
 {
 public:
     SOFA_CLASS(ClipPlane, core::visual::VisualModel);
 
-    Data<Vector3> position;
-    Data<Vector3> normal;
+    Data<sofa::defaulttype::Vector3> position;
+    Data<sofa::defaulttype::Vector3> normal;
     Data<int> id;
     Data<bool> active;
 protected:
