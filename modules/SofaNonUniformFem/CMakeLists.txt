@@ -1,3 +1,4 @@
+cmake_minimum_required(VERSION 2.8.11)
 project(SofaNonUniformFem)
 set(HEADER_FILES
 
@@ -17,8 +18,6 @@ set(HEADER_FILES
     MultilevelHexahedronSetTopologyContainer.h
     SparseGridMultipleTopology.h
     SparseGridRamificationTopology.h
-    HexahedronCompositeFEMForceFieldAndMass.h
-    HexahedronCompositeFEMForceFieldAndMass.inl
     HexahedronCompositeFEMMapping.h
     HexahedronCompositeFEMMapping.inl
     )
@@ -36,15 +35,30 @@ set(SOURCE_FILES
     DynamicSparseGridTopologyModifier.cpp
     SparseGridMultipleTopology.cpp
     SparseGridRamificationTopology.cpp
-    HexahedronCompositeFEMForceFieldAndMass.cpp
     HexahedronCompositeFEMMapping.cpp
     )
+
+if(SOFA_HAVE_NEWMAT)
+  list(APPEND HEADER_FILES
+    HexahedronCompositeFEMForceFieldAndMass.h
+    HexahedronCompositeFEMForceFieldAndMass.inl
+   
+  )
+  list(APPEND SOURCE_FILES
+    HexahedronCompositeFEMForceFieldAndMass.cpp
+  )
+endif()
 
 set(GROUP_BASE_DIR "..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 target_link_libraries( ${PROJECT_NAME} SofaSimpleFem ) 
+
+if(SOFA_HAVE_NEWMAT)
+  target_link_libraries( ${PROJECT_NAME} SofaDenseSolver ) 
+endif()
+
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>")
 
 set( COMPILER_FLAGS "-DSOFA_BUILD_NON_UNIFORM_FEM")

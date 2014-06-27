@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/SofaGeneral.h>
 #include <sofa/helper/system/config.h>
 #include <SofaNonUniformFem/initNonUniformFEM.h>
 
@@ -51,7 +52,9 @@ SOFA_LINK_CLASS(DynamicSparseGridTopologyModifier)
 SOFA_LINK_CLASS(MultilevelHexahedronSetTopologyContainer)
 SOFA_LINK_CLASS(SparseGridMultipleTopology)
 SOFA_LINK_CLASS(SparseGridRamificationTopology)
+#ifdef SOFA_HAVE_NEWMAT
 SOFA_LINK_CLASS(HexahedronCompositeFEMForceFieldAndMass)
+#endif
 SOFA_LINK_CLASS(HexahedronCompositeFEMMapping)
 
 } // namespace component
