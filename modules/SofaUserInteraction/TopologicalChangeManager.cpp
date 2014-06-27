@@ -384,8 +384,7 @@ int TopologicalChangeManager::removeItemsFromCollisionModel(sofa::core::Collisio
 
 
 // Handle Cutting (activated only for a triangular topology), using global variables to register the two last input points
-bool TopologicalChangeManager::incisionCollisionModel(sofa::core::CollisionElementIterator elem, Vector3& pos, const bool firstInput,
-        int snapingValue, int snapingBorderValue)
+bool TopologicalChangeManager::incisionCollisionModel(sofa::core::CollisionElementIterator elem, defaulttype::Vector3& pos, const bool firstInput, int snapingValue, int snapingBorderValue)
 {
     Triangle triangle(elem);
     TriangleModel* model = triangle.getCollisionModel();
