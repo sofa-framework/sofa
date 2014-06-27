@@ -152,7 +152,7 @@ set(SOFA_HAVE_GLUT ${GLUT_FOUND})
 ##
 ##
 
-configure_file( ${SofaFramework_SOURCE_DIR}/SofaFramework.config.in
+configure_file( ${SofaFramework_SOURCE_DIR}/SofaFramework.h.in
                 ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaFramework.h )
 install( FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaFramework.h 
          DESTINATION "${SOFAFRAMEWORK_INSTALL_INCLUDE_DIR}/sofa")
