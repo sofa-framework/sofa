@@ -41,8 +41,7 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${SofaGeneral_ACTUAL_SOURCE_DIR}/)
 
 # temporarily limited to a subset of projects
-#set(SOFAGENERAL_TARGETS SofaEngine SofaUserInteraction SofaConstraint SofaHaptics SofaPreconditioner )
-set(SOFAGENERAL_TARGETS SofaValidation SofaExporter SofaGraphComponent SofaTopologyMapping SofaBoundaryCondition SofaComponentGeneral)
+set(SOFAGENERAL_TARGETS SofaValidation SofaExporter SofaGraphComponent SofaTopologyMapping SofaBoundaryCondition SofaComponentGeneral SofaEngine SofaUserInteraction SofaConstraint SofaHaptics SofaPreconditioner)
 if(SOFA_HAVE_NEWMAT)
   list(APPEND SOFAGENERAL_TARGETS SofaDenseSolver)
 endif()

@@ -29,7 +29,6 @@
 #include <sofa/core/behavior/LinearSolver.h>
 #include <SofaPreconditioner/ShewchukPCGLinearSolver.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaDenseSolver/NewMatMatrix.h>
 #include <SofaBaseLinearSolver/FullMatrix.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
