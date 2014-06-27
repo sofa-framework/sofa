@@ -47,5 +47,5 @@ add_subdirectory("${SOFA_BASE_DIR}")
 add_subdirectory("${SOFA_COMMON_DIR}")
 
 # general
-#add_subdirectory("${SOFA_GENERAL_DIR}")
+add_subdirectory("${SOFA_GENERAL_DIR}")
 

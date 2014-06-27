@@ -1,4 +1,5 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8)
+project(SofaConstraint)
 
 set(HEADER_FILES
 
@@ -90,13 +91,25 @@ endif()
 set(GROUP_BASE_DIR "..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-
-AddCompilerDefinitions("SOFA_BUILD_CONSTRAINT" )
-AddSourceDependencies(eigen)
-AddLinkerDependencies(SofaMeshCollision SofaSimpleFem SofaImplicitOdeSolver SofaUserInteraction )
-AddSourceDependencies(eigen)
-if(SOFA-LIB_COMPONENT_EIGEN2_SOLVER)
-    AddLinkerDependencies(SofaEigen2Solver)
+target_link_libraries( ${PROJECT_NAME} SofaMeshCollision SofaSimpleFem SofaImplicitOdeSolver SofaUserInteraction)
+if(SOFA_HAVE_EIGEN2)
+    target_link_libraries( ${PROJECT_NAME} SofaEigen2Solver)
 endif()
 
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+set( SOFACONSTRAINT_COMPILER_FLAGS "-DSOFA_BUILD_CONSTRAINT")
+
+set_target_properties( ${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d" )
+set_target_properties( ${PROJECT_NAME} PROPERTIES VERSION ${SOFAGENERAL_VERSION} )
+set_target_properties( ${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFACONSTRAINT_COMPILER_FLAGS}"  )
+set_target_properties( ${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}" )
+
+install(TARGETS ${PROJECT_NAME}
+        COMPONENT SofaConstraint_libraries
+        EXPORT    SofaGeneralTargets
+        RUNTIME DESTINATION "${SOFAGENERAL_INSTALL_BIN_DIR}"
+        LIBRARY DESTINATION "${SOFAGENERAL_INSTALL_LIB_DIR}"
+        ARCHIVE DESTINATION "${SOFAGENERAL_INSTALL_LIB_DIR}"
+        PUBLIC_HEADER DESTINATION "${SOFAGENERAL_INSTALL_INCLUDE_DIR}/${PROJECT_NAME}"
+
+)
+
